@@ -11,11 +11,17 @@
 class TriangleEngine3 : public Engine {
 public:
     TriangleEngine3() {
-        title = "Triangle 1";
+        title = "Triangle 3";
         //   throttleFps = FPS_30;
     }
 
     Mesh* createElementMesh() {
+        char* vertexShaderSource = loadShader("shader/triangle.vs");
+        char* fragmentShaderSource = loadShader("shader/triangle.fs");
+        if (!vertexShaderSource || !fragmentShaderSource) {
+            return NULL;
+        }
+
         // set up vertex data (and buffer(s)) and configure vertex attributes
         // ------------------------------------------------------------------
         float vertices[] = {
@@ -38,11 +44,6 @@ public:
     }
 
     int onSetup() override {
-        vertexShaderSource = loadShader("shader/triangle.vs");
-        fragmentShaderSource = loadShader("shader/triangle.fs");
-        if (!vertexShaderSource || !fragmentShaderSource) {
-            return -1;
-        }
         mesh = createElementMesh();
         if (!mesh) {
             return -1;
@@ -52,7 +53,7 @@ public:
     }
 
     int onRender(float dt) override {
-        //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -67,8 +68,6 @@ public:
         return 0;
     }
 private:
-    char* vertexShaderSource = NULL;
-    char* fragmentShaderSource = NULL;
     Mesh* mesh = NULL;
 };
 

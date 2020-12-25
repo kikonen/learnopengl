@@ -16,6 +16,12 @@ public:
     }
 
     Mesh* createElementMesh() {
+        char* vertexShaderSource = loadShader("shader/triangle.vs");
+        char* fragmentShaderSource = loadShader("shader/triangle.fs");
+        if (!vertexShaderSource || !fragmentShaderSource) {
+            return NULL;
+        }
+
         // set up vertex data (and buffer(s)) and configure vertex attributes
         // ------------------------------------------------------------------
         float vertices[] = {
@@ -38,11 +44,6 @@ public:
     }
 
     int onSetup() override {
-        vertexShaderSource = loadShader("shader/triangle.vs");
-        fragmentShaderSource = loadShader("shader/triangle.fs");
-        if (!vertexShaderSource || !fragmentShaderSource) {
-            return -1;
-        }
         mesh = createElementMesh();
         if (!mesh) {
             return -1;
@@ -67,8 +68,6 @@ public:
         return 0;
     }
 private:
-    char* vertexShaderSource = NULL;
-    char* fragmentShaderSource = NULL;
     Mesh* mesh = NULL;
 };
 
