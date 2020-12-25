@@ -145,14 +145,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="learnopengl.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="triangle.h" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="triangle2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="include\engine.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />
