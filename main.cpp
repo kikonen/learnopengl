@@ -5,7 +5,7 @@
 
 #include "engine.h"
 
-#include "triangle.h"
+//#include "triangle.h"
 #include "triangle2.h"
 
 

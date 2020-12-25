@@ -40,18 +40,18 @@ public:
     }
 
     void onRender(Mesh* mesh) override {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw our first triangle
         glUseProgram(mesh->shaderProgram);
         glBindVertexArray(mesh->VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
-        if (debug) {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        }
+        
+//        glDrawArrays(GL_POINTS, 0, 6);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        // glBindVertexArray(0); // no need to unbind it every time
+        glBindVertexArray(0);
     }
 private:
     const char* vertexShaderSource = "#version 330 core\n"
