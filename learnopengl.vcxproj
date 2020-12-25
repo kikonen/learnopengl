@@ -160,8 +160,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\mesh.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="include\engine.h" />
+    <ClInclude Include="triangle3.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

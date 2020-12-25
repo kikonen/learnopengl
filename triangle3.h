@@ -8,9 +8,9 @@
 #include "engine.h"
 #include "mesh.h"
 
-class TriangleEngine2 : public Engine {
+class TriangleEngine3 : public Engine {
 public:
-    TriangleEngine2() {
+    TriangleEngine3() {
         title = "Triangle 1";
         //   throttleFps = FPS_30;
     }
@@ -52,7 +52,7 @@ public:
     }
 
     int onRender(float dt) override {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);

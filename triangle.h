@@ -1,13 +1,16 @@
+#pragma once
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
 
 #include "engine.h"
+#include "mesh.h"
 
-class TriangleEngine : public Engine {
+class TriangleEngine1 : public Engine {
 public:
-    TriangleEngine() {
+    TriangleEngine1() {
         title = "Triangle 1";
      //   throttleFps = FPS_30;
     }
@@ -34,15 +37,21 @@ public:
         return mesh;
     }
 
-    void onSetup() override {
+    int onSetup() override {
         vertexShaderSource = loadShader("shader/triangle.vs");
         fragmentShaderSource = loadShader("shader/triangle.fs");
-        if (vertexShaderSource && fragmentShaderSource) {
-            addMesh(createElementMesh());
+        if (!vertexShaderSource || !fragmentShaderSource) {
+            return -1;
         }
+        mesh = createElementMesh();
+        if (!mesh) {
+            return -1;
+        }
+
+        return 0;
     }
 
-    void onRender(float dt, Mesh* mesh) override {
+    int onRender(float dt) override {
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -54,10 +63,13 @@ public:
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
+
+        return 0;
     }
 private:
-    char* vertexShaderSource;
-    char* fragmentShaderSource;
+    char* vertexShaderSource = NULL;
+    char* fragmentShaderSource = NULL;
+    Mesh* mesh = NULL;
 };
 
 

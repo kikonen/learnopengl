@@ -7,11 +7,11 @@
 
 #include "triangle.h"
 #include "triangle2.h"
-
+#include "triangle3.h"
 
 int main()
 {
-    Engine* engine = new TriangleEngine2();
+    Engine* engine = new TriangleEngine3();
 
     if (!engine->init()) {
         return -1;
