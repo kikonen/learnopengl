@@ -156,6 +156,8 @@ public:
 
             // render
             // ------
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
             onRender(mesh);
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -174,6 +176,7 @@ public:
 
     /*
     void render() {
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -181,9 +184,6 @@ public:
         glUseProgram(mesh->shaderProgram);
         glBindVertexArray(mesh->VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         //glDrawArrays(GL_TRIANGLES, 0, 6);
-        if (debug) {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        }
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         // glBindVertexArray(0); // no need to unbind it every time 
     }
@@ -208,7 +208,7 @@ public:
         {
             std::cout << "Failed to create GLFW window" << std::endl;
             glfwTerminate();
-            return nullptr;
+            return NULL;
         }
         glfwMakeContextCurrent(window);
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -218,7 +218,7 @@ public:
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
             std::cout << "Failed to initialize GLAD" << std::endl;
-            return nullptr;
+            return NULL;
         }
 
         return window;

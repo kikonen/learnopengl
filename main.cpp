@@ -12,7 +12,7 @@
 int main()
 {
     Engine* engine = new TriangleEngine2();
-    engine->init();
+
     if (!engine->init()) {
         return -1;
     }
