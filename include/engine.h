@@ -5,7 +5,16 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <fstream>
+#include <strstream>
+#include <chrono>
+#include <thread>
 
+const int FPS_120 = 8;
+const int FPS_60 = 16;
+const int FPS_30 = 33;
+const int FPS_15 = 66;
+const int FPS_10 = 100;
 
 class Mesh {
 public:
@@ -116,10 +125,11 @@ private:
 class Engine {
 public:
     Engine() {
-        this->title = "GL test";
-        this->width = 800;
-        this->height = 600;
-        this->debug = false;
+        title = "GL test";
+        width = 800;
+        height = 600;
+        debug = false;
+        throttleFps = FPS_15;
     }
 
     ~Engine() {
@@ -146,10 +156,22 @@ public:
 
         onSetup();
 
+        if (!mesh) {
+            return;
+        }
+
+        auto tp1 = std::chrono::system_clock::now();
+        auto tp2 = std::chrono::system_clock::now();
+
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
         {
+            tp2 = std::chrono::system_clock::now();
+            std::chrono::duration<float> elapsedTime = tp2 - tp1;
+            tp1 = tp2;
+            float dt = elapsedTime.count();
+
             // input
             // -----
             processInput(window);
@@ -158,21 +180,26 @@ public:
             // ------
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-            onRender(mesh);
+            onRender(dt, mesh);
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
             glfwSwapBuffers(window);
             glfwPollEvents();
+
+            char s[256];
+            sprintf_s(s, 256, "%s - FPS: %3.2f", title, 1.0f / dt);
+            glfwSetWindowTitle(window, s);
+
+            // NOTE KI aim 60fps (no reason to overheat CPU/GPU)
+            if (throttleFps > 0) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(throttleFps));
+            }
         }
     }
 
-    void addMesh(Mesh* mesh) {
-        this->mesh = mesh;
-    }
-
     virtual void onSetup() = 0;
-    virtual void onRender(Mesh* mesh) = 0;
+    virtual void onRender(float dt, Mesh* mesh) = 0;
 
     /*
     void render() {
@@ -185,9 +212,35 @@ public:
         glBindVertexArray(mesh->VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        // glBindVertexArray(0); // no need to unbind it every time 
+        // glBindVertexArray(0); // no need to unbind it every time
     }
     */
+
+
+    void addMesh(Mesh* mesh) {
+        this->mesh = mesh;
+    }
+
+    /**
+    * Load shader file
+    */
+    char* loadShader(const char* filename) {
+        std::ifstream f(filename);
+        if (!f.is_open())
+            return NULL;
+
+        std::strstream s;
+
+        while (!f.eof()) {
+            char line[1024];
+            f.getline(line, sizeof(line));
+            s << line;
+            s << "\n";
+        }
+        std::cout << "\n== " << filename << " ===\n" << s.str() << "\n--------\n";
+
+        return s.str();
+    }
 
     GLFWwindow* createWindow() {
         // glfw: initialize and configure
@@ -242,10 +295,10 @@ public:
     }
 public:
     bool debug;
+    int throttleFps;
     int width;
     int height;
     const char* title;
-
 private:
     GLFWwindow* window = nullptr;
     Mesh* mesh = nullptr;

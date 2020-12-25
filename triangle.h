@@ -9,6 +9,7 @@ class TriangleEngine : public Engine {
 public:
     TriangleEngine() {
         title = "Triangle 1";
+     //   throttleFps = FPS_30;
     }
 
     Mesh* createElementMesh() {
@@ -34,10 +35,14 @@ public:
     }
 
     void onSetup() override {
-        addMesh(createElementMesh());
+        vertexShaderSource = loadShader("shader/triangle.vs");
+        fragmentShaderSource = loadShader("shader/triangle.fs");
+        if (vertexShaderSource && fragmentShaderSource) {
+            addMesh(createElementMesh());
+        }
     }
 
-    void onRender(Mesh* mesh) override {
+    void onRender(float dt, Mesh* mesh) override {
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -51,19 +56,8 @@ public:
         glBindVertexArray(0);
     }
 private:
-    const char* vertexShaderSource = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "}\0";
-
-    const char* fragmentShaderSource = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main()\n"
-        "{\n"
-        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "}\n\0";
+    char* vertexShaderSource;
+    char* fragmentShaderSource;
 };
 
 
