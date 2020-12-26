@@ -18,7 +18,7 @@ public:
 
     Mesh* createElementMesh() {
         Shader* shader = new Shader("shader/triangle.vs", "shader/triangle.fs");
-        if (!shader->load()) {
+        if (!shader->setup()) {
             return NULL;
         }
 
@@ -38,7 +38,7 @@ public:
         Mesh* mesh = new Mesh(
             "mesh",
             shader,
-            vertices, sizeof(vertices) / sizeof(float),
+            vertices, sizeof(vertices) / sizeof(float), false,
             indices, sizeof(indices) / sizeof(unsigned int));
 
         return mesh;
@@ -60,7 +60,7 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw our first triangle
-        glUseProgram(mesh->shaderProgram);
+        mesh->shader->use();
         glBindVertexArray(mesh->VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
