@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>;
+#include <vector>
 
 #include "Mesh.h"
 #include "Tri.h"
@@ -16,8 +16,8 @@ private:
 	std::string modelPath;
 
 	std::vector<Tri> tris;
-	std::vector<float> vertexes;
-    std::vector<float> textureVertexes;
+	std::vector<float[3]> vertexes;
+    std::vector<float[3]> textureVertexes;
 
     float pos[3];
  };

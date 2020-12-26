@@ -14,10 +14,10 @@ SimpleMesh* Test3::createElementMesh1() {
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 	float vertices[] = {
-		 0.5f,  0.5f, 0.0f, 0.5f, 0.3f, 0.8f, // top right
-		 0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.1f, // bottom right
-		-0.5f, -0.5f, 0.0f, 0.5f, 0.8f, 0.2f, // bottom left
-		-0.5f,  0.5f, 0.0f, 0.5f, 0.9f, 0.2f, // top left
+		 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.9f, // top right
+		 0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.1f, // bottom right
+		-0.5f, -0.5f, 0.0f, 0.2f, 0.8f, 0.2f, // bottom left
+		-0.5f,  0.5f, 0.0f, 0.0f, 0.7f, 0.7f, // top left
 	};
 	unsigned int indices[] = {  // note that we start from 0!
 		0, 1, 3,  // first Triangle
