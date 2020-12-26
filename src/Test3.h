@@ -16,7 +16,7 @@ public:
         //   throttleFps = FPS_30;
     }
 
-    Mesh* createElementMesh1() {
+    SimpleMesh* createElementMesh1() {
         Shader* shader = new Shader("shader/triangle3_1.vs", "shader/triangle3_1.fs");
         if (shader->setup()) {
             return NULL;
@@ -35,7 +35,7 @@ public:
             1, 2, 3   // second Triangle
         };
 
-        Mesh* mesh = new Mesh(
+        SimpleMesh* mesh = new SimpleMesh(
             "mesh",
             shader,
             vertices, sizeof(vertices) / sizeof(float), true,
@@ -44,7 +44,7 @@ public:
         return mesh;
     }
 
-    Mesh* createElementMesh2() {
+   SimpleMesh* createElementMesh2() {
         Shader* shader = new Shader("shader/triangle3_2.vs", "shader/triangle3_2.fs");
         if (shader->setup()) {
             return NULL;
@@ -62,7 +62,7 @@ public:
             0, 1, 2,
         };
 
-        Mesh* mesh = new Mesh(
+        SimpleMesh* mesh = new SimpleMesh(
             "tri",
             shader,
             vertices, sizeof(vertices) / sizeof(float), false,
@@ -111,6 +111,6 @@ public:
 private:
     float elapsed = 0;
 
-    Mesh* mesh1 = NULL;
-    Mesh* mesh2 = NULL;
+    SimpleMesh* mesh1 = NULL;
+    SimpleMesh* mesh2 = NULL;
 };

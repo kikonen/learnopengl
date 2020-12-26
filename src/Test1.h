@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "Engine.h"
-#include "Mesh.h"
+#include "SimpleMesh.h"
 #include "Shader.h"
 
 class Test1 : public Engine {
@@ -16,7 +16,7 @@ public:
      //   throttleFps = FPS_30;
     }
 
-    Mesh* createElementMesh() {
+    SimpleMesh* createElementMesh() {
         Shader* shader = new Shader("shader/triangle.vs", "shader/triangle.fs");
         if (!shader->setup()) {
             return NULL;
@@ -35,7 +35,7 @@ public:
             1, 2, 3   // second Triangle
         };
 
-        Mesh* mesh = new Mesh(
+        SimpleMesh* mesh = new SimpleMesh(
             "mesh",
             shader,
             vertices, sizeof(vertices) / sizeof(float), false,
@@ -69,7 +69,7 @@ public:
         return 0;
     }
 private:
-    Mesh* mesh = NULL;
+    SimpleMesh* mesh = NULL;
 };
 
 

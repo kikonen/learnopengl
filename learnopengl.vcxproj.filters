@@ -33,9 +33,6 @@
     <ClCompile Include="src\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -43,6 +40,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SimpleMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,13 +68,16 @@
     <ClInclude Include="src\Test3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SimpleMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
