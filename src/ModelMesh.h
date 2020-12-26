@@ -8,7 +8,7 @@
 #include "Mesh.h"
 #include "Tri.h"
 #include "Material.h"
-
+#include "Shader.h"
 
 class ModelMesh : Mesh
 {
@@ -16,8 +16,18 @@ public:
 	ModelMesh(const std::string& modelName);
 	~ModelMesh();
 
+	int prepare();
+	int bind(float dt);
+	int draw(float dt);
+
 	int load();
 	int loadMaterials(std::string libraryName);
+
+public:
+	unsigned int VBO, VAO, EBO;
+
+	Shader* shader;
+
 private:
 	std::string modelName;
 	std::string name;
