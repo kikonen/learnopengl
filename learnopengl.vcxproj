@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ModelMesh.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\SimpleMesh.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="src\Test1.h" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Test2.h" />
+    <ClCompile Include="src\Test3.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Tri.cpp" />
   </ItemGroup>
@@ -167,6 +169,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ModelMesh.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\SimpleMesh.h" />
     <ClInclude Include="src\Material.h" />
