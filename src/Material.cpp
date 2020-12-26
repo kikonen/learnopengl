@@ -16,8 +16,18 @@ Material::~Material()
 	delete texture;
 }
 
-int Material::load(std::string& materialDir)
+int Material::loadTexture(const std::string& baseDir)
 {
-	int result = 0;
-	return result;
+	if (map_kd.empty()) {
+		return 0;
+	}
+
+	std::string texturePath = baseDir + "/" + map_kd;
+
+	std::cout << "\n== TEXTURE: " << texturePath << " ===\n";
+
+	texture = new Texture(texturePath);
+	texture->load();
+
+	return 0;
 }

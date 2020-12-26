@@ -25,7 +25,7 @@ class Material
 public:
     Material(std::string& name);
     ~Material();
-    int load(std::string& materialDir);
+    int loadTexture(const std::string& baseDir);
 public:
     std::string materialDir;
     std::string name;

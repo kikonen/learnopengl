@@ -131,5 +131,10 @@ int ModelMesh::loadMaterials(std::string libraryName) {
 	}
 	std::cout << "\n== " << modelName << " - " << libraryName << " ===\n" << "materials: " << materials.size() << "\n--------\n";
 
+	for (auto const& x : materials) {
+		Material* material = x.second;
+		material->loadTexture(BASE_DIR);
+	}
+
 	return 0;
 }

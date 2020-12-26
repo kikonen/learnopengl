@@ -11,5 +11,6 @@ public:
 	int load();
 public:
 	std::string path;
+	unsigned char* image;
 };
 
