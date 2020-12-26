@@ -1,16 +1,20 @@
 #pragma once
 
-#include <vector>
+#include <array>
+#include <string>
 
+#include "Material.h"
 
 class Tri
 {
 public:
-	Tri(const int* vertexIndexes, const int* textureIndexes);
+	Tri(const std::array<int, 3>& vertexes, const std::array<int, 3>& textureVertexes, int normalIndex);
 	~Tri();
 
 public:
-	const int* vertexIndexes;
-	const int* textureIndexes;
+	std::array<int, 3> vertexIndexes;
+	std::array<int, 3> textureIndexes;
+	int normalIndex;
+	Material* material;
 };
 
