@@ -40,9 +40,9 @@ int ModelMesh::prepare()
 		vboBuffer[i * 3 + 1] = v[1];
 		vboBuffer[i * 3 + 2] = v[2];
 
-		std::cout << "vbo[" << i * 3 + 0 << "] = " << v[0] << "\n";
-		std::cout << "vbo[" << i * 3 + 1 << "] = " << v[1] << "\n";
-		std::cout << "vbo[" << i * 3 + 2 << "] = " << v[2] << "\n";
+//		std::cout << "vbo[" << i * 3 + 0 << "] = " << v[0] << "\n";
+//		std::cout << "vbo[" << i * 3 + 1 << "] = " << v[1] << "\n";
+//		std::cout << "vbo[" << i * 3 + 2 << "] = " << v[2] << "\n";
 	}
 
 	for (int i = 0; i < tris.size(); i++) {
@@ -52,9 +52,9 @@ int ModelMesh::prepare()
 		indexBuffer[i * 3 + 1] = v[1];
 		indexBuffer[i * 3 + 2] = v[2];
 
-		std::cout << "idx[" << i * 3 + 0 << "] = " << v[0] << "\n";
-		std::cout << "idx[" << i * 3 + 1 << "] = " << v[1] << "\n";
-		std::cout << "idx[" << i * 3 + 2 << "] = " << v[2] << "\n";
+//		std::cout << "idx[" << i * 3 + 0 << "] = " << v[0] << "\n";
+//		std::cout << "idx[" << i * 3 + 1 << "] = " << v[1] << "\n";
+//		std::cout << "idx[" << i * 3 + 2 << "] = " << v[2] << "\n";
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -95,7 +95,7 @@ int ModelMesh::draw(float dt)
 int ModelMesh::load() {
 	int result = -1;
 
-	float scale = 0.5;
+	float scale = 0.3;
 
 	std::string modelPath = BASE_DIR + "/" + modelName + ".obj";
 	std::ifstream file;

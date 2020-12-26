@@ -8,7 +8,7 @@ Test4::Test4() {
 }
 
 int Test4::onSetup() {
-	mesh = new ModelMesh("cube");
+	mesh = new ModelMesh("cow");
 	if (mesh->load()) {
 		return -1;
 	}
@@ -19,7 +19,7 @@ int Test4::onSetup() {
 }
 
 int Test4::onRender(float dt) {
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
