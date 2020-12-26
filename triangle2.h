@@ -16,9 +16,9 @@ public:
     }
 
     Mesh* createElementMesh() {
-        char* vertexShaderSource = loadShader("shader/triangle.vs");
-        char* fragmentShaderSource = loadShader("shader/triangle.fs");
-        if (!vertexShaderSource || !fragmentShaderSource) {
+        std::string vertexShaderSource = loadShader("shader/triangle.vs");
+        std::string fragmentShaderSource = loadShader("shader/triangle.fs");
+        if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
             return NULL;
         }
 
@@ -36,6 +36,7 @@ public:
         };
 
         Mesh* mesh = new Mesh(
+            "mesh",
             vertexShaderSource, fragmentShaderSource,
             vertices, sizeof(vertices) / sizeof(float),
             indices, sizeof(indices) / sizeof(unsigned int));

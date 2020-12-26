@@ -8,16 +8,22 @@
 #include <strstream>
 #include <chrono>
 #include <thread>
+#include <string>
 
 class Mesh {
 public:
     Mesh(
-        const char* vertexShaderSource,
-        const char* fragmentShaderSource,
+        const std::string name,
+        const std::string vertexShaderSource,
+        const std::string fragmentShaderSource,
         float vertices[],
         int verticesCount,
         unsigned int indices[],
         int indicesCount) {
+
+        this->name = name;
+        this->verticesCount = verticesCount;
+        this->indicesCount = indicesCount;
 
         shaderProgram = createShaderProgram(vertexShaderSource, fragmentShaderSource);
 
@@ -56,7 +62,13 @@ public:
         glDeleteProgram(shaderProgram);
     }
 
-    int createShaderProgram(const char* vertexShaderSource, const char* fragmentShaderSource) {
+    void render() {
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
+    }
+
+    int createShaderProgram(const std::string vertexShaderSource, const std::string fragmentShaderSource) {
         int success;
         char infoLog[512];
 
@@ -65,7 +77,8 @@ public:
         // vertex shader
         int vertexShader = glCreateShader(GL_VERTEX_SHADER);
         {
-            glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+            const char* src = vertexShaderSource.c_str();
+            glShaderSource(vertexShader, 1, &src, NULL);
             glCompileShader(vertexShader);
             // check for shader compile errors
             glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
@@ -78,7 +91,8 @@ public:
         // fragment shader
         int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         {
-            glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+            const char* src = fragmentShaderSource.c_str();
+            glShaderSource(fragmentShader, 1, &src, NULL);
             glCompileShader(fragmentShader);
             // check for shader compile errors
             glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
@@ -103,12 +117,20 @@ public:
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
 
+        std::string color = name + "Color";
+        uniColor = glGetUniformLocation(shaderProgram, color.c_str());
+        glUniform3f(uniColor, 1.0f, 0.0f, 0.0f);
+
         return shaderProgram;
     }
 
     unsigned int VBO, VAO, EBO;
 
+    std::string name;
     int shaderProgram;
+    GLint uniColor;
 private:
+    int verticesCount;
+    int indicesCount;
 };
 

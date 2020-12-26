@@ -15,10 +15,10 @@ public:
         //   throttleFps = FPS_30;
     }
 
-    Mesh* createElementMesh() {
-        char* vertexShaderSource = loadShader("shader/triangle.vs");
-        char* fragmentShaderSource = loadShader("shader/triangle.fs");
-        if (!vertexShaderSource || !fragmentShaderSource) {
+    Mesh* createElementMesh1() {
+        std::string vertexShaderSource = loadShader("shader/triangle.vs");
+        std::string fragmentShaderSource = loadShader("shader/triangle.fs");
+        if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
             return NULL;
         }
 
@@ -36,6 +36,34 @@ public:
         };
 
         Mesh* mesh = new Mesh(
+            "mesh",
+            vertexShaderSource, fragmentShaderSource,
+            vertices, sizeof(vertices) / sizeof(float),
+            indices, sizeof(indices) / sizeof(unsigned int));
+
+        return mesh;
+    }
+
+    Mesh* createElementMesh2() {
+        std::string vertexShaderSource = loadShader("shader/triangle3_2.vs");
+        std::string fragmentShaderSource = loadShader("shader/triangle3_2.fs");
+        if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
+            return NULL;
+        }
+
+        // set up vertex data (and buffer(s)) and configure vertex attributes
+        // ------------------------------------------------------------------
+        float vertices[] = {
+            -0.8f,  0.8f, -0.2f,  
+             0.0f,  0.0f, -0.2f,  
+            -0.8f,  -0.8f, -0.2f   
+        };
+        unsigned int indices[] = { 
+            0, 1, 2,
+        };
+
+        Mesh* mesh = new Mesh(
+            "tri",
             vertexShaderSource, fragmentShaderSource,
             vertices, sizeof(vertices) / sizeof(float),
             indices, sizeof(indices) / sizeof(unsigned int));
@@ -44,8 +72,9 @@ public:
     }
 
     int onSetup() override {
-        mesh = createElementMesh();
-        if (!mesh) {
+        mesh1 = createElementMesh1();
+        mesh2 = createElementMesh2();
+        if (!mesh1 || !mesh2) {
             return -1;
         }
 
@@ -53,22 +82,26 @@ public:
     }
 
     int onRender(float dt) override {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // draw our first triangle
-        glUseProgram(mesh->shaderProgram);
-        glBindVertexArray(mesh->VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // tri 1
+        mesh1->render();
+
+        // tri 2
+        glUniform3f(mesh2->uniColor, (sin(dt * 4.0f) + 1.0f) / 2.0f, 0.0f, 0.0f);
+
+        mesh2->render();
+
         glBindVertexArray(0);
 
         return 0;
     }
 private:
-    Mesh* mesh = NULL;
+    Mesh* mesh1 = NULL;
+    Mesh* mesh2 = NULL;
 };
 
 

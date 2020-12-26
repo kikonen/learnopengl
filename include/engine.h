@@ -82,7 +82,7 @@ public:
             glfwPollEvents();
 
             char s[256];
-            sprintf_s(s, 256, "%s - FPS: %3.2f", title, 1.0f / dt);
+            sprintf_s(s, 256, "%s - FPS: %3.2f", title.c_str(), 1.0f / dt);
             glfwSetWindowTitle(window, s);
 
             // NOTE KI aim 60fps (no reason to overheat CPU/GPU)
@@ -113,10 +113,10 @@ public:
     /**
     * Load shader file
     */
-    char* loadShader(const char* filename) {
+    std::string loadShader(const char* filename) {
         std::ifstream f(filename);
         if (!f.is_open())
-            return NULL;
+            return "";
 
         std::strstream s;
 
@@ -145,7 +145,7 @@ public:
 
         // glfw window creation
         // --------------------
-        GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
+        GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
         if (window == NULL)
         {
             std::cout << "Failed to create GLFW window" << std::endl;
@@ -187,7 +187,7 @@ public:
     int throttleFps;
     int width;
     int height;
-    const char* title;
+    std::string title;
 private:
     GLFWwindow* window = nullptr;
 };
