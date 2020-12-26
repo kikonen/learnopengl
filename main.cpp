@@ -3,17 +3,17 @@
 
 #include <iostream>
 
-#include "engine.h"
+#include "Engine.h"
 
-#include "triangle.h"
-#include "triangle2.h"
-#include "triangle3.h"
+#include "Test1.h"
+#include "Test2.h"
+#include "Test3.h"
 
 int main()
 {
-    Engine* engine = new TriangleEngine3();
+    Engine* engine = new Test3();
 
-    if (!engine->init()) {
+    if (engine->init()) {
         return -1;
     }
 

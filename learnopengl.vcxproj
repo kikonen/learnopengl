@@ -152,18 +152,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="triangle.h" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Test1.h" />
     <ClCompile Include="src\glad.c" />
-    <ClCompile Include="triangle2.h" />
+    <ClCompile Include="Test2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\mesh.h" />
+    <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="include\engine.h" />
-    <ClInclude Include="triangle3.h" />
+    <ClInclude Include="include\Engine.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="Test3.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

@@ -1,24 +1,23 @@
 #pragma once
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <iostream>
 
-#include "engine.h"
-#include "mesh.h"
+#include "Engine.h"
+#include "Mesh.h"
+#include "Shader.h"
 
-class TriangleEngine2 : public Engine {
+class Test2 : public Engine {
 public:
-    TriangleEngine2() {
+    Test2() {
         title = "Triangle 2";
         //   throttleFps = FPS_30;
     }
 
     Mesh* createElementMesh() {
-        std::string vertexShaderSource = loadShader("shader/triangle.vs");
-        std::string fragmentShaderSource = loadShader("shader/triangle.fs");
-        if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
+        Shader* shader = new Shader("shader/triangle.vs", "shader/triangle.fs");
+        if (!shader->load()) {
             return NULL;
         }
 
@@ -37,7 +36,7 @@ public:
 
         Mesh* mesh = new Mesh(
             "mesh",
-            vertexShaderSource, fragmentShaderSource,
+            shader,
             vertices, sizeof(vertices) / sizeof(float),
             indices, sizeof(indices) / sizeof(unsigned int));
 

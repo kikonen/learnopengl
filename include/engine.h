@@ -40,6 +40,7 @@ public:
         if (!window) {
             return -1;
         }
+        return 0;
     }
 
     void run() {
@@ -109,27 +110,6 @@ public:
         // glBindVertexArray(0); // no need to unbind it every time
     }
     */
-
-    /**
-    * Load shader file
-    */
-    std::string loadShader(const char* filename) {
-        std::ifstream f(filename);
-        if (!f.is_open())
-            return "";
-
-        std::strstream s;
-
-        while (!f.eof()) {
-            char line[1024];
-            f.getline(line, sizeof(line));
-            s << line;
-            s << "\n";
-        }
-        std::cout << "\n== " << filename << " ===\n" << s.str() << "\n--------\n";
-
-        return s.str();
-    }
 
     GLFWwindow* createWindow() {
         // glfw: initialize and configure

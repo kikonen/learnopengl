@@ -1,7 +1,6 @@
 #pragma once
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <iostream>
 #include <fstream>
@@ -10,12 +9,13 @@
 #include <thread>
 #include <string>
 
+#include "Shader.h"
+
 class Mesh {
 public:
     Mesh(
-        const std::string name,
-        const std::string vertexShaderSource,
-        const std::string fragmentShaderSource,
+        const std::string& name,
+        const Shader* shader,
         float vertices[],
         int verticesCount,
         unsigned int indices[],
@@ -25,7 +25,7 @@ public:
         this->verticesCount = verticesCount;
         this->indicesCount = indicesCount;
 
-        shaderProgram = createShaderProgram(vertexShaderSource, fragmentShaderSource);
+        shaderProgram = createShaderProgram(shader);
 
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
@@ -62,13 +62,16 @@ public:
         glDeleteProgram(shaderProgram);
     }
 
-    void render() {
+    void bind(float dt) {
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
+    }
+
+    void draw(float dt) {
         glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
     }
 
-    int createShaderProgram(const std::string vertexShaderSource, const std::string fragmentShaderSource) {
+    int createShaderProgram(const Shader* shader) {
         int success;
         char infoLog[512];
 
@@ -77,7 +80,7 @@ public:
         // vertex shader
         int vertexShader = glCreateShader(GL_VERTEX_SHADER);
         {
-            const char* src = vertexShaderSource.c_str();
+            const char* src = shader->vertexShaderSource.c_str();
             glShaderSource(vertexShader, 1, &src, NULL);
             glCompileShader(vertexShader);
             // check for shader compile errors
@@ -91,7 +94,7 @@ public:
         // fragment shader
         int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         {
-            const char* src = fragmentShaderSource.c_str();
+            const char* src = shader->fragmentShaderSource.c_str();
             glShaderSource(fragmentShader, 1, &src, NULL);
             glCompileShader(fragmentShader);
             // check for shader compile errors
@@ -117,10 +120,6 @@ public:
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
 
-        std::string color = name + "Color";
-        uniColor = glGetUniformLocation(shaderProgram, color.c_str());
-        glUniform3f(uniColor, 1.0f, 0.0f, 0.0f);
-
         return shaderProgram;
     }
 
@@ -128,7 +127,6 @@ public:
 
     std::string name;
     int shaderProgram;
-    GLint uniColor;
 private:
     int verticesCount;
     int indicesCount;

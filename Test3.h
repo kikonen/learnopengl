@@ -5,20 +5,20 @@
 
 #include <iostream>
 
-#include "engine.h"
-#include "mesh.h"
+#include "Engine.h"
+#include "Mesh.h"
+#include "Shader.h"
 
-class TriangleEngine3 : public Engine {
+class Test3 : public Engine {
 public:
-    TriangleEngine3() {
+    Test3() {
         title = "Triangle 3";
         //   throttleFps = FPS_30;
     }
 
     Mesh* createElementMesh1() {
-        std::string vertexShaderSource = loadShader("shader/triangle.vs");
-        std::string fragmentShaderSource = loadShader("shader/triangle.fs");
-        if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
+        Shader* shader = new Shader("shader/triangle.vs", "shader/triangle.fs");
+        if (shader->load()) {
             return NULL;
         }
 
@@ -37,7 +37,7 @@ public:
 
         Mesh* mesh = new Mesh(
             "mesh",
-            vertexShaderSource, fragmentShaderSource,
+            shader,
             vertices, sizeof(vertices) / sizeof(float),
             indices, sizeof(indices) / sizeof(unsigned int));
 
@@ -45,11 +45,11 @@ public:
     }
 
     Mesh* createElementMesh2() {
-        std::string vertexShaderSource = loadShader("shader/triangle3_2.vs");
-        std::string fragmentShaderSource = loadShader("shader/triangle3_2.fs");
-        if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
+        Shader* shader = new Shader("shader/triangle3_2.vs", "shader/triangle3_2.fs");
+        if (shader->load()) {
             return NULL;
         }
+
 
         // set up vertex data (and buffer(s)) and configure vertex attributes
         // ------------------------------------------------------------------
@@ -64,7 +64,7 @@ public:
 
         Mesh* mesh = new Mesh(
             "tri",
-            vertexShaderSource, fragmentShaderSource,
+            shader,
             vertices, sizeof(vertices) / sizeof(float),
             indices, sizeof(indices) / sizeof(unsigned int));
 
@@ -88,18 +88,23 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
 
         // tri 1
-        mesh1->render();
+        mesh1->bind(dt);
+        mesh1->draw(dt);
 
         // tri 2
-        glUniform3f(mesh2->uniColor, (sin(dt * 4.0f) + 1.0f) / 2.0f, 0.0f, 0.0f);
-
-        mesh2->render();
+        elapsed += dt;
+        mesh2->bind(dt);
+        GLint uniColor = glGetUniformLocation(mesh2->shaderProgram, "triColor");
+        glUniform3f(uniColor, (sin(elapsed * 4.0f) + 1.0f) / 2.0f, 0.0f, 0.0f);
+        mesh2->draw(dt);
 
         glBindVertexArray(0);
 
         return 0;
     }
 private:
+    float elapsed = 0;
+
     Mesh* mesh1 = NULL;
     Mesh* mesh2 = NULL;
 };
