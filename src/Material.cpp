@@ -31,3 +31,17 @@ int Material::loadTexture(const std::string& baseDir)
 
 	return 0;
 }
+
+void Material::prepare(Shader* shader)
+{
+	if (texture) {
+		texture->prepare(shader);
+	}
+}
+
+void Material::bind()
+{
+	if (texture) {
+		texture->bind();
+	}
+}

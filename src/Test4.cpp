@@ -9,7 +9,7 @@ Test4::Test4() {
 }
 
 int Test4::onSetup() {
-	mesh = new ModelMesh("cow");
+	mesh = new ModelMesh("texture_cube");
 	if (mesh->load()) {
 		return -1;
 	}
@@ -26,6 +26,15 @@ int Test4::onRender(float dt) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);
+
+	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+	std::string lightPosName = { "lightPos" };
+	mesh->shader->setFloat3(lightPosName, lightPos.x, lightPos.y, lightPos.z);
+
+	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+
+	std::string lightColorName = { "lightColor" };
+	mesh->shader->setFloat3(lightColorName, 0.8f, 0.8f, 0.1f);
 
 	glm::mat4 view = camera.updateCamera(dt);
 

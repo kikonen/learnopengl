@@ -14,7 +14,7 @@ public:
 public:
 	std::array<int, 3> vertexIndexes;
 	std::array<int, 3> textureIndexes;
-	int normalIndex;
-	Material* material;
+	int normalIndex = 0;
+	Material* material = NULL;
 };
 

@@ -4,6 +4,7 @@
 #include <array>
 
 #include "Texture.h"
+#include "Shader.h"
 
 /*
 # Blender MTL File : 'texture_cube.blend'
@@ -26,6 +27,9 @@ public:
     Material(std::string& name);
     ~Material();
     int loadTexture(const std::string& baseDir);
+
+    void prepare(Shader* shader);
+    void bind();
 public:
     std::string materialDir;
     std::string name;

@@ -4,6 +4,7 @@
 
 #include <string>
 #include <fstream>
+#include <istream>
 #include <sstream>
 #include <iostream>
 
@@ -23,6 +24,11 @@ int ModelMesh::prepare()
 	shader = new Shader("shader/test4.vs", "shader/test4.fs");
 	if (shader->setup()) {
 		return -1;
+	}
+
+	for (auto const& x : materials) {
+		Material* material = x.second;
+		material->prepare(shader);
 	}
 
 	glGenVertexArrays(1, &VAO);
@@ -81,8 +87,14 @@ int ModelMesh::prepare()
 
 int ModelMesh::bind(Camera& camera, float dt)
 {
+	for (auto const& x : materials) {
+		Material* material = x.second;
+		material->bind();
+	}
+
 	shader->use();
 	glBindVertexArray(VAO);
+
 	return 0;
 }
 
@@ -138,7 +150,7 @@ int ModelMesh::load() {
 				std::array<float, 3> v = { stof(v1) * scale, stof(v2) * scale, stof(v3) * scale };
 				vertexes.push_back(v);
 			} else if (k == "vt") {
-				std::array<float, 3> v = { stof(v1), stof(v2), stof(v3) };
+				std::array<float, 2> v = { stof(v1), stof(v2) };
 				textureVertexes.push_back(v);
 			} else if (k == "vn") {
 				std::array<float, 3> v = { stof(v1), stof(v2), stof(v3) };
@@ -146,8 +158,17 @@ int ModelMesh::load() {
 			} else if (k == "usemtl") {
 				material = materials[v1];
 			} else if (k == "f") {
-				std::array<int, 3> v = { stoi(v1) - 1, stoi(v2) - 1, stoi(v3) - 1};
-				std::array<int, 3> tv = { 0, 0, 0 };
+				std::vector<std::string> vv1;
+				std::vector<std::string> vv2;
+				std::vector<std::string> vv3;
+
+				splitFragmentValue(v1, vv1);
+				splitFragmentValue(v2, vv2);
+				splitFragmentValue(v3, vv3);
+
+				std::array<int, 3> v = { stoi(vv1[0]) - 1, stoi(vv2[0]) - 1, stoi(vv3[0]) - 1};
+				std::array<int, 3> tv = { stoi(vv1[1]) - 1, stoi(vv2[1]) - 1, stoi(vv3[1]) - 1 };
+
 				Tri tri = { v, tv, -1 };
 				tri.material = material;
 				material = NULL;
@@ -169,6 +190,16 @@ int ModelMesh::load() {
 
 	return result;
 }
+
+// https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
+void ModelMesh::splitFragmentValue(const std::string& v, std::vector<std::string>& vv) {
+	std::istringstream f(v);
+	std::string s;
+	while (getline(f, s, '/')) {
+		vv.push_back(s);
+	}
+}
+
 
 int ModelMesh::loadMaterials(std::string libraryName) {
 	std::string materialPath = BASE_DIR + "/" + libraryName;

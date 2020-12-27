@@ -22,6 +22,7 @@ public:
 	int draw(Camera& camera, float dt);
 
 	int load();
+	void splitFragmentValue(const std::string& v, std::vector<std::string>& vv);
 	int loadMaterials(std::string libraryName);
 
 public:
@@ -35,7 +36,7 @@ private:
 
 	std::vector<Tri> tris;
 	std::vector<std::array<float, 3>> vertexes;
-    std::vector<std::array<float, 3>> textureVertexes;
+    std::vector<std::array<float, 2>> textureVertexes;
 	std::vector<std::array<float, 3>> normals;
 
 	std::map<std::string, Material*> materials;

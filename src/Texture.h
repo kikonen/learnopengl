@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "Shader.h"
 
 /*
 * https://learnopengl.com/Getting-started/Textures
@@ -11,7 +12,7 @@ public:
 	Texture(std::string& path);
 	~Texture();
 
-	void prepare();
+	void prepare(Shader* shader);
 	void bind();
 	int load();
 public:

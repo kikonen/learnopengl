@@ -5,6 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include "Shader.h"
 
 Texture::Texture(std::string& path)
 {
@@ -17,13 +18,9 @@ Texture::~Texture()
 	image = NULL;
 }
 
-void Texture::prepare()
+void Texture::prepare(Shader* shader)
 {
 	glGenTextures(1, &id);
-}
-
-void Texture::bind()
-{
 	glBindTexture(GL_TEXTURE_2D, id);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -33,11 +30,18 @@ void Texture::bind()
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
+
+	std::string textureName = "texture1";
+	shader->setInt(textureName, 0);
+}
+
+void Texture::bind()
+{
 }
 
 int Texture::load() {
 
-//	stbi_set_flip_vertically_on_load(true);
+	//	stbi_set_flip_vertically_on_load(true);
 	image = stbi_load(
 		path.c_str(),
 		&width,

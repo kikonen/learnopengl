@@ -12,3 +12,5 @@ This is just scatchpad app for following OpenGL tutorial at learnopengl.com.
 - https://open.gl/drawing
 - https://github.com/nothings/stb
 - https://github.com/nothings/stb/blob/master/stb_image.h
+- http://paulbourke.net/dataformats/obj/
+- http://paulbourke.net/dataformats/mtl/
