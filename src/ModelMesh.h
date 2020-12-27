@@ -41,5 +41,7 @@ private:
 	std::map<std::string, Material*> materials;
 
     float pos[3];
+
+	float elapsed = 0;
  };
 

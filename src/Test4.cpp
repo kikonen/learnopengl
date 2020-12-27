@@ -20,12 +20,23 @@ int Test4::onSetup() {
 }
 
 int Test4::onRender(float dt) {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);
+
+	glm::mat4 view = camera.updateCamera(dt);
+
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+	std::string projectionName = { "projection" };
+	mesh->shader->setMat4(projectionName, projection);
+
+	std::string viewName = { "view" };
+	mesh->shader->setMat4(viewName, view);
 
 	// tri 1
 	mesh->bind(camera, dt);

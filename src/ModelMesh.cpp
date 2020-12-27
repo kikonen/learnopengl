@@ -88,23 +88,16 @@ int ModelMesh::bind(Camera& camera, float dt)
 
 int ModelMesh::draw(Camera& camera, float dt)
 {
+	elapsed += dt;
+
 	glEnable(GL_CULL_FACE); // cull face
 	glCullFace(GL_BACK); // cull back face
 	glFrontFace(GL_CW); // GL_CCW for counter clock-wise
 
-	glm::mat4 view = camera.updateCamera(dt);
-
-	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+	std::string modelColor = { "modelColor" };
+	shader->setFloat3(modelColor, 0.8f, 0.8f, 0.1f);
 
 	glm::mat4 model = glm::mat4(1.0f);
-
-	std::string projectionName = { "projection" };
-	shader->setMat4(projectionName, projection);
-
-	std::string viewName = { "view" };
-	shader->setMat4(viewName, view);
-
 	std::string modelName = { "model" };
 	shader->setMat4(modelName, model);
 
