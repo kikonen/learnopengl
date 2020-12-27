@@ -14,3 +14,4 @@ This is just scatchpad app for following OpenGL tutorial at learnopengl.com.
 - https://github.com/nothings/stb/blob/master/stb_image.h
 - http://paulbourke.net/dataformats/obj/
 - http://paulbourke.net/dataformats/mtl/
+- http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/

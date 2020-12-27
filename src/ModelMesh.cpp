@@ -21,6 +21,7 @@ ModelMesh::~ModelMesh()
 
 int ModelMesh::prepare()
 {
+	bool useTexture = false;
 	shader = new Shader("shader/test4.vs", "shader/test4.fs");
 	if (shader->setup()) {
 		return -1;
@@ -32,45 +33,81 @@ int ModelMesh::prepare()
 	}
 
 	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	glGenBuffers(1, &VBO_vertex);
+	glGenBuffers(1, &EBO_vertex);
+
+	glGenBuffers(1, &VBO_tex);
+	glGenBuffers(1, &EBO_tex);
+
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
 	glBindVertexArray(VAO);
 
-	float* vboBuffer = new float[sizeof(float) * vertexes.size() * 3];
-	int* indexBuffer = new int[sizeof(int) * tris.size() * 3];
+	// vertex
+	{
+		float* vertexBuffer = new float[3 * vertexes.size()];
 
-	for (int i = 0; i < vertexes.size(); i++) {
-		std::array<float, 3>& v = vertexes[i];
-		vboBuffer[i * 3 + 0] = v[0];
-		vboBuffer[i * 3 + 1] = v[1];
-		vboBuffer[i * 3 + 2] = v[2];
+		for (int i = 0; i < vertexes.size(); i++) {
+			std::array<float, 3>& v = vertexes[i];
+			vertexBuffer[i * 3 + 0] = v[0];
+			vertexBuffer[i * 3 + 1] = v[1];
+			vertexBuffer[i * 3 + 2] = v[2];
+		}
 
-//		std::cout << "vbo[" << i * 3 + 0 << "] = " << v[0] << "\n";
-//		std::cout << "vbo[" << i * 3 + 1 << "] = " << v[1] << "\n";
-//		std::cout << "vbo[" << i * 3 + 2 << "] = " << v[2] << "\n";
+		glBindBuffer(GL_ARRAY_BUFFER, VBO_vertex);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * vertexes.size(), vertexBuffer, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
 	}
 
-	for (int i = 0; i < tris.size(); i++) {
-		Tri& tri = tris[i];
-		std::array<int, 3>& v = tri.vertexIndexes;
-		indexBuffer[i * 3 + 0] = v[0];
-		indexBuffer[i * 3 + 1] = v[1];
-		indexBuffer[i * 3 + 2] = v[2];
+	// texVertex
+	if (!textureVertexes.empty() && useTexture) {
+		float* texBuffer = new float[2 * textureVertexes.size()];
 
-//		std::cout << "idx[" << i * 3 + 0 << "] = " << v[0] << "\n";
-//		std::cout << "idx[" << i * 3 + 1 << "] = " << v[1] << "\n";
-//		std::cout << "idx[" << i * 3 + 2 << "] = " << v[2] << "\n";
+		for (int i = 0; i < textureVertexes.size(); i++) {
+			std::array<float, 2>& v = textureVertexes[i];
+			texBuffer[i * 2 + 0] = v[0];
+			texBuffer[i * 2 + 1] = v[1];
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO_tex);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * textureVertexes.size(), texBuffer, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
 	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexes.size() * 3, vboBuffer, GL_STATIC_DRAW);
+	// texIndex
+	if (!textureVertexes.empty() && useTexture) {
+		int* texEboBuffer = new int[3 * tris.size()];
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tris.size() * 3, indexBuffer, GL_STATIC_DRAW);
+		for (int i = 0; i < tris.size(); i++) {
+			Tri& tri = tris[i];
+			std::array<int, 3>& v = tri.textureIndexes;
+			texEboBuffer[i * 3 + 0] = v[0];
+			texEboBuffer[i * 3 + 1] = v[1];
+			texEboBuffer[i * 3 + 2] = v[2];
+		}
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_tex);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tris.size() * 3, texEboBuffer, GL_STATIC_DRAW);
+	}
+
+	// vertexIndex
+	{
+		int* vertexEboBuffer = new int[3 * tris.size()];
+
+		for (int i = 0; i < tris.size(); i++) {
+			Tri& tri = tris[i];
+			std::array<int, 3>& v = tri.vertexIndexes;
+			vertexEboBuffer[i * 3 + 0] = v[0];
+			vertexEboBuffer[i * 3 + 1] = v[1];
+			vertexEboBuffer[i * 3 + 2] = v[2];
+		}
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_vertex);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tris.size() * 3, vertexEboBuffer, GL_STATIC_DRAW);
+	}
 
 	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -102,9 +139,9 @@ int ModelMesh::draw(Camera& camera, float dt)
 {
 	elapsed += dt;
 
-	glEnable(GL_CULL_FACE); // cull face
-	glCullFace(GL_BACK); // cull back face
-	glFrontFace(GL_CW); // GL_CCW for counter clock-wise
+	//glEnable(GL_CULL_FACE); // cull face
+	//glCullFace(GL_BACK); // cull back face
+	//glFrontFace(GL_CW); // GL_CCW for counter clock-wise
 
 	std::string modelColor = { "modelColor" };
 	shader->setFloat3(modelColor, 0.8f, 0.8f, 0.1f);
@@ -122,7 +159,7 @@ int ModelMesh::draw(Camera& camera, float dt)
 int ModelMesh::load() {
 	int result = -1;
 
-	float scale = 0.6;
+	float scale = 1.0;
 
 	std::string modelPath = BASE_DIR + "/" + modelName + ".obj";
 	std::ifstream file;
@@ -167,9 +204,24 @@ int ModelMesh::load() {
 				splitFragmentValue(v3, vv3);
 
 				std::array<int, 3> v = { stoi(vv1[0]) - 1, stoi(vv2[0]) - 1, stoi(vv3[0]) - 1};
-				std::array<int, 3> tv = { stoi(vv1[1]) - 1, stoi(vv2[1]) - 1, stoi(vv3[1]) - 1 };
 
-				Tri tri = { v, tv, -1 };
+				std::array<int, 3> tv;
+				if (vv1.size() > 1) {
+					tv = { stoi(vv1[1]) - 1, stoi(vv2[1]) - 1, stoi(vv3[1]) - 1 };
+				}
+				else {
+					tv = { 0, 0, 0 };
+				}
+
+				std::array<int, 3> n;
+				if (vv1.size() > 2) {
+					n = { stoi(vv1[2]) - 1, stoi(vv2[2]) - 1, stoi(vv3[2]) - 1 };
+				}
+				else {
+					n = { 0, 0, 0 };
+				}
+
+				Tri tri = { v, tv, n };
 				tri.material = material;
 				material = NULL;
 				tris.push_back(tri);

@@ -26,7 +26,11 @@ public:
 	int loadMaterials(std::string libraryName);
 
 public:
-	unsigned int VBO, VAO, EBO;
+	unsigned int VAO;
+	unsigned int VBO_vertex;
+	unsigned int VBO_tex;
+	unsigned int EBO_vertex;
+	unsigned int EBO_tex;
 
 	Shader* shader;
 
@@ -39,6 +43,7 @@ private:
     std::vector<std::array<float, 2>> textureVertexes;
 	std::vector<std::array<float, 3>> normals;
 
+	std::array<float, 3> color = { 0.8f, 0.8f, 0.0f };
 	std::map<std::string, Material*> materials;
 
     float pos[3];
