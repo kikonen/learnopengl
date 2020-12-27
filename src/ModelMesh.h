@@ -38,6 +38,20 @@ private:
 	std::string name;
 
 	glm::vec3 color = { 0.8f, 0.8f, 0.0f };
+	std::vector<glm::vec3> colors = { 
+		{ 1.0f, 0.0f, 0.0f }, 
+		{ 0.0f, 1.0f, 0.0f }, 
+		{ 0.0f, 0.0f, 1.0f },
+
+		{ 1.0f, 1.0f, 0.0f },
+		{ 0.0f, 1.0f, 1.0f },
+		{ 1.0f, 0.0f, 1.0f },
+
+		{ 1.0f, 0.5f, 0.5f },
+		{ 0.5f, 1.0f, 0.5f },
+		{ 0.5f, 0.5f, 1.0f },
+	};
+
 	std::vector<Tri> tris;
 	std::vector<Vertex> vertexes;
 

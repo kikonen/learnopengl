@@ -60,9 +60,9 @@ int ModelMesh::prepare()
 			vboBuffer[base + 2] = p[2];
 			base += 3;
 			// color
-			vboBuffer[base + 0] = n[0];
-			vboBuffer[base + 1] = n[1];
-			vboBuffer[base + 2] = n[2];
+			vboBuffer[base + 0] = c[0];
+			vboBuffer[base + 1] = c[1];
+			vboBuffer[base + 2] = c[2];
 			base += 3;
 			// texture
 			vboBuffer[base + 0] = t[0];
@@ -86,7 +86,7 @@ int ModelMesh::prepare()
 		glEnableVertexAttribArray(1);
 
 		// texture attr
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3) * sizeof(float)));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3) * sizeof(float)));
 		glEnableVertexAttribArray(2);
 
 		// normal attr
@@ -231,8 +231,10 @@ int ModelMesh::load() {
 			material->loadTexture(BASE_DIR);
 		}
 
+		int colorIdx = 0;
 		for (auto const& v : positions) {
-			Vertex vertex = { v, v, v, color };
+			glm::vec3 c = colors[(colorIdx++) % colors.size()];
+			Vertex vertex = { v, v, v, c };
 			vertexes.push_back(vertex);
 		}
 		
