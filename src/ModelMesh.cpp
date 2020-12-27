@@ -25,8 +25,14 @@ ModelMesh::~ModelMesh()
 
 int ModelMesh::prepare()
 {
-	bool useTexture = false;
-	shader = new Shader("shader/test4.vs", "shader/test4.fs");
+	bool useTexture = true;
+
+	if (useTexture && hasTexture) {
+		shader = new Shader("shader/test4.vs", "shader/test4_tex.fs");
+	} else {
+		shader = new Shader("shader/test4.vs", "shader/test4.fs");
+	}
+
 	if (shader->setup()) {
 		return -1;
 	}
@@ -224,7 +230,7 @@ int ModelMesh::load() {
 
 				glm::uvec3 v = { 0, 0, 0 };
 				for (int i = 0; i < 3; i++) {
-					v[i] = resolveVertexIndex(positions, textures, normals, pi[i], ti[i], ni[i]);
+					v[i] = resolveVertexIndex(positions, textures, normals, material, pi[i], ti[i], ni[i]);
 				}
 
 				Tri tri = { v };
@@ -274,14 +280,19 @@ void ModelMesh::splitFragmentValue(const std::string& v, std::vector<std::string
 
 int ModelMesh::resolveVertexIndex(
 	std::vector<glm::vec3>& positions,
-	std::vector<glm::vec2>& textures,
-	std::vector<glm::vec3>& normals,
-	int pi,
+    std::vector<glm::vec2>& textures,
+    std::vector<glm::vec3>& normals,
+    Material* material, 
+	int pi, 
 	int ti,
 	int ni)
 {
-	// TODO KI actually do sharing of vertexes
-	glm::vec3 color = colors[pi % colors.size()];
+    // TODO KI actually do sharing of vertexes
+    // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
+    glm::vec3& color = colors[pi % colors.size()];
+    if (material && material->kd.x >= 0) {
+        color = material->kd;
+    }
 	Vertex v = { positions[pi], textures.empty() ? EMPTY_TEX : textures[ti], normals.empty() ? EMPTY_NORMAL : normals[ni], color };
 	vertexes.push_back(v);
 	return vertexes.size() - 1;
@@ -344,6 +355,9 @@ int ModelMesh::loadMaterials(std::string libraryName) {
 	for (auto const& x : materials) {
 		Material* material = x.second;
 		material->loadTexture(BASE_DIR);
+		if (material->texture) {
+			hasTexture = true;
+		}
 	}
 
 	return 0;

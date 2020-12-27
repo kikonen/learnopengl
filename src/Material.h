@@ -37,7 +37,7 @@ public:
 
     float ns = 0.0f;
     glm::vec3 ka;
-    glm::vec3 kd;
+    glm::vec3 kd = { -1, -1, -1 };
     glm::vec3 ks;
     glm::vec3 ke;
     float ni = 0.0f;

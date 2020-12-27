@@ -40,6 +40,8 @@ void Texture::prepare(Shader* shader)
 
 void Texture::bind()
 {
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, id);
 }
 
 int Texture::load() {

@@ -34,6 +34,7 @@ void Engine::run() {
 
 	auto tp1 = std::chrono::system_clock::now();
 	auto tp2 = std::chrono::system_clock::now();
+    auto tp3 = std::chrono::system_clock::now();
 
 	// render loop
 	// -----------
@@ -41,7 +42,6 @@ void Engine::run() {
 	{
 		tp2 = std::chrono::system_clock::now();
 		std::chrono::duration<float> elapsedTime = tp2 - tp1;
-		tp1 = tp2;
 		float dt = elapsedTime.count();
 
 		// input
@@ -53,6 +53,7 @@ void Engine::run() {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		int res = onRender(dt);
+
 		if (res) {
 			glfwSetWindowShouldClose(window, true);
 		}
@@ -62,9 +63,15 @@ void Engine::run() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
+		tp3 = std::chrono::system_clock::now();
+        std::chrono::duration<float> loopTime = tp3 - tp2;
+        float ts = loopTime.count() * 1000;
+
 		char s[256];
-		sprintf_s(s, 256, "%s - FPS: %3.2f", title.c_str(), 1.0f / dt);
+		sprintf_s(s, 256, "%s - FPS: %3.2f - %3.2fms", title.c_str(), 1.0f / dt, ts);
 		glfwSetWindowTitle(window, s);
+
+		tp1 = tp2;
 
 		// NOTE KI aim 60fps (no reason to overheat CPU/GPU)
 		if (throttleFps > 0) {

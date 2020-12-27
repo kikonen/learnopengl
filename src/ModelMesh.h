@@ -26,6 +26,7 @@ public:
 		std::vector<glm::vec3>& positions,
 		std::vector<glm::vec2>& textures,
 		std::vector<glm::vec3>& normals,
+		Material* material,
 		int pi,
 		int ti,
 		int ni);
@@ -66,6 +67,6 @@ private:
 	std::map<std::string, Material*> materials;
 
     float pos[3];
-
+	bool hasTexture;
 	float elapsed = 0;
  };
