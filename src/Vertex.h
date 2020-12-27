@@ -6,12 +6,13 @@
 class Vertex
 {
 public:
-	Vertex(const glm::vec3& vertex, const glm::vec2& texture, const glm::vec3& normal);
+	Vertex(const glm::vec3& pos, const glm::vec2& texture, const glm::vec3& normal, const glm::vec3& color);
 	~Vertex();
 
 public:
-	glm::vec3 vertex;
+	glm::vec3 pos;
 	glm::vec2 texture;
 	glm::vec3 normal;
+	glm::vec3 color;
 };
 

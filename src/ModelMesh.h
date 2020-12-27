@@ -37,10 +37,10 @@ private:
 	std::string modelName;
 	std::string name;
 
+	glm::vec3 color = { 0.8f, 0.8f, 0.0f };
 	std::vector<Tri> tris;
 	std::vector<Vertex> vertexes;
 
-	std::array<float, 3> color = { 0.8f, 0.8f, 0.0f };
 	std::map<std::string, Material*> materials;
 
     float pos[3];

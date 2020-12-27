@@ -42,21 +42,27 @@ int ModelMesh::prepare()
 
 	// VBO
 	{
-		// vertex + texture + normal
-		const int sz = 3 + 2 + 3;
+		// vertex + color + texture + normal
+		const int sz = 3 + 3 + 2 + 3;
 		float* vboBuffer = new float[sz * vertexes.size()];
 
 		for (int i = 0; i < vertexes.size(); i++) {
 			Vertex& vertex = vertexes[i];
-			glm::vec3 v = vertex.vertex;
+			glm::vec3 p = vertex.pos;
 			glm::vec2 t = vertex.texture;
 			glm::vec3 n = vertex.normal;
+			glm::vec3 c = vertex.color;
 
 			int base = i * sz;
 			// vertex
-			vboBuffer[base + 0] = v[0];
-			vboBuffer[base + 1] = v[1];
-			vboBuffer[base + 2] = v[2];
+			vboBuffer[base + 0] = p[0];
+			vboBuffer[base + 1] = p[1];
+			vboBuffer[base + 2] = p[2];
+			base += 3;
+			// color
+			vboBuffer[base + 0] = n[0];
+			vboBuffer[base + 1] = n[1];
+			vboBuffer[base + 2] = n[2];
 			base += 3;
 			// texture
 			vboBuffer[base + 0] = t[0];
@@ -75,13 +81,17 @@ int ModelMesh::prepare()
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 
-		// texture attr
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)(3 * sizeof(float)));
+		// color attr
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3) * sizeof(float)));
 		glEnableVertexAttribArray(1);
 
-		// normal attr
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)(3 * sizeof(float) + 2 * sizeof(float)));
+		// texture attr
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3) * sizeof(float)));
 		glEnableVertexAttribArray(2);
+
+		// normal attr
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3 + 2) * sizeof(float)));
+		glEnableVertexAttribArray(3);
 	}
 
 	// EBO
@@ -151,7 +161,7 @@ int ModelMesh::draw(Camera& camera, float dt)
 int ModelMesh::load() {
 	int result = -1;
 
-	std::vector<glm::vec3> vectors;
+	std::vector<glm::vec3> positions;
 	std::vector<glm::vec2> textures;
 	std::vector<glm::vec3> normals;
 
@@ -181,7 +191,7 @@ int ModelMesh::load() {
 				name = v1;
 			} else if (k == "v") {
 				glm::vec3 v = { stof(v1) * scale, stof(v2) * scale, stof(v3) * scale };
-				vectors.push_back(v);
+				positions.push_back(v);
 			} else if (k == "vt") {
 				glm::vec2 v = { stof(v1), stof(v2) };
 				textures.push_back(v);
@@ -221,8 +231,8 @@ int ModelMesh::load() {
 			material->loadTexture(BASE_DIR);
 		}
 
-		for (auto const& v : vectors) {
-			Vertex vertex = { v, v, v };
+		for (auto const& v : positions) {
+			Vertex vertex = { v, v, v, color };
 			vertexes.push_back(vertex);
 		}
 		
@@ -234,7 +244,7 @@ int ModelMesh::load() {
 	}
 	std::cout << "\n== " << modelName << " ===\n" 
 		<< "tris: " << tris.size() 
-		<< ", vectors: " << vectors.size() 
+		<< ", positions: " << positions.size()
 		<< ", textures: " << textures.size()
 		<< ", normals: " << normals.size()
 		<< ", vertexes: " << vertexes.size()
