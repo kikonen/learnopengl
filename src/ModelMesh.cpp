@@ -11,6 +11,9 @@
 
 const std::string BASE_DIR = "3d_model";
 
+const glm::vec2 EMPTY_TEX = { 0, 0 };
+const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
+
 ModelMesh::ModelMesh(const std::string& modelName)
 {
 	this->modelName = modelName;
@@ -209,17 +212,22 @@ int ModelMesh::load() {
 				splitFragmentValue(v2, vv2);
 				splitFragmentValue(v3, vv3);
 
-				glm::uvec3 vi = { stoi(vv1[0]) - 1, stoi(vv2[0]) - 1, stoi(vv3[0]) - 1};
+				glm::uvec3 pi = { stoi(vv1[0]) - 1, stoi(vv2[0]) - 1, stoi(vv3[0]) - 1};
 				glm::uvec3 ti = { 0, 0, 0 };
 				glm::uvec3 ni = { 0, 0, 0 };
-				if (vv1.size() > 1) {
-					glm::uvec3 ti = { stoi(vv1[1]) - 1, stoi(vv2[1]) - 1, stoi(vv3[1]) - 1 };
+				if (vv1.size() > 1 && !vv1[1].empty()) {
+					ti = { stoi(vv1[1]) - 1, stoi(vv2[1]) - 1, stoi(vv3[1]) - 1 };
 				}
-				if (vv1.size() > 2) {
-					glm::uvec3 ni = { stoi(vv1[2]) - 1, stoi(vv2[2]) - 1, stoi(vv3[2]) - 1 };
+				if (vv1.size() > 2 && !vv1[2].empty()) {
+					ni = { stoi(vv1[2]) - 1, stoi(vv2[2]) - 1, stoi(vv3[2]) - 1 };
 				}
 
-				Tri tri = { vi };
+				glm::uvec3 v = { 0, 0, 0 };
+				for (int i = 0; i < 3; i++) {
+					v[i] = resolveVertexIndex(positions, textures, normals, pi[i], ti[i], ni[i]);
+				}
+
+				Tri tri = { v };
 				tri.material = material;
 				material = NULL;
 				tris.push_back(tri);
@@ -231,13 +239,13 @@ int ModelMesh::load() {
 			material->loadTexture(BASE_DIR);
 		}
 
-		int colorIdx = 0;
+/*		int colorIdx = 0;
 		for (auto const& v : positions) {
 			glm::vec3 c = colors[(colorIdx++) % colors.size()];
 			Vertex vertex = { v, v, v, c };
 			vertexes.push_back(vertex);
 		}
-		
+	*/	
 		file.close();
 		result = 0;
 	} catch (std::ifstream::failure e) {
@@ -264,6 +272,20 @@ void ModelMesh::splitFragmentValue(const std::string& v, std::vector<std::string
 	}
 }
 
+int ModelMesh::resolveVertexIndex(
+	std::vector<glm::vec3>& positions,
+	std::vector<glm::vec2>& textures,
+	std::vector<glm::vec3>& normals,
+	int pi,
+	int ti,
+	int ni)
+{
+	// TODO KI actually do sharing of vertexes
+	glm::vec3 color = colors[pi % colors.size()];
+	Vertex v = { positions[pi], textures.empty() ? EMPTY_TEX : textures[ti], normals.empty() ? EMPTY_NORMAL : normals[ni], color };
+	vertexes.push_back(v);
+	return vertexes.size() - 1;
+}
 
 int ModelMesh::loadMaterials(std::string libraryName) {
 	std::string materialPath = BASE_DIR + "/" + libraryName;

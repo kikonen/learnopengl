@@ -22,6 +22,14 @@ public:
 	int bind(Camera& camera, float dt);
 	int draw(Camera& camera, float dt);
 
+	int resolveVertexIndex(
+		std::vector<glm::vec3>& positions,
+		std::vector<glm::vec2>& textures,
+		std::vector<glm::vec3>& normals,
+		int pi,
+		int ti,
+		int ni);
+
 	int load();
 	void splitFragmentValue(const std::string& v, std::vector<std::string>& vv);
 	int loadMaterials(std::string libraryName);
