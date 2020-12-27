@@ -111,6 +111,12 @@ void Shader::setBool(std::string& name, bool value)
     glUniform1i(glGetUniformLocation(id, name.c_str()), (int)value);
 }
 
+void Shader::setMat4(std::string& name, glm::mat4 mat)
+{
+    int loc = glGetUniformLocation(id, name.c_str());
+    glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat));
+}
+
 /**
 * Load shader file
 */

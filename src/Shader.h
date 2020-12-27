@@ -7,6 +7,9 @@
 #include <strstream>
 #include <string>
 
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+
 class Shader
 {
 public:
@@ -26,6 +29,8 @@ public:
     void setFloat(std::string& name, float value);
     void setInt(std::string& name, int value);
     void setBool(std::string& name, bool value);
+
+    void setMat4(std::string& name, glm::mat4 mat);
 public:
     unsigned int id;
     std::string vertexShaderSource;

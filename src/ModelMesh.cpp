@@ -79,15 +79,37 @@ int ModelMesh::prepare()
 	return 0;
 }
 
-int ModelMesh::bind(float dt)
+int ModelMesh::bind(Camera& camera, float dt)
 {
 	shader->use();
 	glBindVertexArray(VAO);
 	return 0;
 }
 
-int ModelMesh::draw(float dt)
+int ModelMesh::draw(Camera& camera, float dt)
 {
+	glEnable(GL_CULL_FACE); // cull face
+	glCullFace(GL_BACK); // cull back face
+	glFrontFace(GL_CW); // GL_CCW for counter clock-wise
+
+	glm::mat4 view = camera.updateCamera(dt);
+
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+	glm::mat4 model = glm::mat4(1.0f);
+
+	std::string projectionName = { "projection" };
+	shader->setMat4(projectionName, projection);
+
+	std::string viewName = { "view" };
+	shader->setMat4(viewName, view);
+
+	std::string modelName = { "model" };
+	shader->setMat4(modelName, model);
+
+	shader->use();
+
 	glDrawElements(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0);
 	return 0;
 }
@@ -95,7 +117,7 @@ int ModelMesh::draw(float dt)
 int ModelMesh::load() {
 	int result = -1;
 
-	float scale = 0.3;
+	float scale = 0.6;
 
 	std::string modelPath = BASE_DIR + "/" + modelName + ".obj";
 	std::ifstream file;
@@ -196,7 +218,7 @@ int ModelMesh::loadMaterials(std::string libraryName) {
 			} else if (k == "d") {
 				material->d = stof(v1);
 			} else if (k == "illum") {
-				material->d = stoi(v1);
+				material->d = stof(v1);
 			} else if (k == "map_Kd") {
 				material->map_kd = v1;
 			}

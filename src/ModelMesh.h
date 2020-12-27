@@ -9,6 +9,7 @@
 #include "Tri.h"
 #include "Material.h"
 #include "Shader.h"
+#include "Camera.h"
 
 class ModelMesh : Mesh
 {
@@ -17,8 +18,8 @@ public:
 	~ModelMesh();
 
 	int prepare();
-	int bind(float dt);
-	int draw(float dt);
+	int bind(Camera& camera, float dt);
+	int draw(Camera& camera, float dt);
 
 	int load();
 	int loadMaterials(std::string libraryName);

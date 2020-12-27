@@ -42,9 +42,8 @@ int Test4::onRender(float dt) {
 		*/
 
 	// tri 1
-	mesh->bind(dt);
-	mesh->shader->use();
-	mesh->draw(dt);
+	mesh->bind(camera, dt);
+	mesh->draw(camera, dt);
 	glBindVertexArray(0);
 
 	return 0;

@@ -9,6 +9,8 @@
 #include <chrono>
 #include <thread>
 
+#include "Camera.h"
+
 
 const int FPS_120 = 8;
 const int FPS_60 = 16;
@@ -49,7 +51,7 @@ public:
 
     // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
     // ---------------------------------------------------------------------------------------------------------
-    void processInput(GLFWwindow* window);
+    void processInput(GLFWwindow* window, float dt);
 
     // glfw: whenever the window size changed (by OS or user resize) this callback function executes
     // ---------------------------------------------------------------------------------------------
@@ -61,6 +63,8 @@ public:
     int width;
     int height;
     std::string title;
+
+    Camera camera;
 private:
     GLFWwindow* window = nullptr;
 };

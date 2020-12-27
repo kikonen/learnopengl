@@ -46,7 +46,7 @@ void Engine::run() {
 
 		// input
 		// -----
-		processInput(window);
+		processInput(window, dt);
 
 		// render
 		// ------
@@ -110,10 +110,12 @@ GLFWwindow* Engine::createWindow() {
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void Engine::processInput(GLFWwindow* window)
+void Engine::processInput(GLFWwindow* window, float dt)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
+	}
+	camera.handleInput(window, dt);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
