@@ -1,6 +1,7 @@
 #include "ModelMesh.h"
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #include <string>
 #include <fstream>
@@ -33,79 +34,70 @@ int ModelMesh::prepare()
 	}
 
 	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO_vertex);
-	glGenBuffers(1, &EBO_vertex);
-
-	glGenBuffers(1, &VBO_tex);
-	glGenBuffers(1, &EBO_tex);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
 	glBindVertexArray(VAO);
 
-	// vertex
+	// VBO
 	{
-		float* vertexBuffer = new float[3 * vertexes.size()];
+		// vertex + texture + normal
+		const int sz = 3 + 2 + 3;
+		float* vboBuffer = new float[sz * vertexes.size()];
 
 		for (int i = 0; i < vertexes.size(); i++) {
-			std::array<float, 3>& v = vertexes[i];
-			vertexBuffer[i * 3 + 0] = v[0];
-			vertexBuffer[i * 3 + 1] = v[1];
-			vertexBuffer[i * 3 + 2] = v[2];
+			Vertex& vertex = vertexes[i];
+			glm::vec3 v = vertex.vertex;
+			glm::vec2 t = vertex.texture;
+			glm::vec3 n = vertex.normal;
+
+			int base = i * sz;
+			// vertex
+			vboBuffer[base + 0] = v[0];
+			vboBuffer[base + 1] = v[1];
+			vboBuffer[base + 2] = v[2];
+			base += 3;
+			// texture
+			vboBuffer[base + 0] = t[0];
+			vboBuffer[base + 1] = t[1];
+			base += 2;
+			// normal
+			vboBuffer[base + 0] = n[0];
+			vboBuffer[base + 1] = n[1];
+			vboBuffer[base + 2] = n[2];
 		}
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_vertex);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * vertexes.size(), vertexBuffer, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * sz * vertexes.size(), vboBuffer, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		// vertex attr
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-	}
 
-	// texVertex
-	if (!textureVertexes.empty() && useTexture) {
-		float* texBuffer = new float[2 * textureVertexes.size()];
-
-		for (int i = 0; i < textureVertexes.size(); i++) {
-			std::array<float, 2>& v = textureVertexes[i];
-			texBuffer[i * 2 + 0] = v[0];
-			texBuffer[i * 2 + 1] = v[1];
-		}
-
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_tex);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * textureVertexes.size(), texBuffer, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+		// texture attr
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
+
+		// normal attr
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)(3 * sizeof(float) + 2 * sizeof(float)));
+		glEnableVertexAttribArray(2);
 	}
 
-	// texIndex
-	if (!textureVertexes.empty() && useTexture) {
-		int* texEboBuffer = new int[3 * tris.size()];
-
-		for (int i = 0; i < tris.size(); i++) {
-			Tri& tri = tris[i];
-			std::array<int, 3>& v = tri.textureIndexes;
-			texEboBuffer[i * 3 + 0] = v[0];
-			texEboBuffer[i * 3 + 1] = v[1];
-			texEboBuffer[i * 3 + 2] = v[2];
-		}
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_tex);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tris.size() * 3, texEboBuffer, GL_STATIC_DRAW);
-	}
-
-	// vertexIndex
+	// EBO
 	{
 		int* vertexEboBuffer = new int[3 * tris.size()];
 
 		for (int i = 0; i < tris.size(); i++) {
 			Tri& tri = tris[i];
-			std::array<int, 3>& v = tri.vertexIndexes;
-			vertexEboBuffer[i * 3 + 0] = v[0];
-			vertexEboBuffer[i * 3 + 1] = v[1];
-			vertexEboBuffer[i * 3 + 2] = v[2];
+			glm::uvec3& vi = tri.vertexIndexes;
+			const int base = i * 3;
+			vertexEboBuffer[base + 0] = vi[0];
+			vertexEboBuffer[base + 1] = vi[1];
+			vertexEboBuffer[base + 2] = vi[2];
 		}
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_vertex);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tris.size() * 3, vertexEboBuffer, GL_STATIC_DRAW);
 	}
 
@@ -159,6 +151,10 @@ int ModelMesh::draw(Camera& camera, float dt)
 int ModelMesh::load() {
 	int result = -1;
 
+	std::vector<glm::vec3> vectors;
+	std::vector<glm::vec2> textures;
+	std::vector<glm::vec3> normals;
+
 	float scale = 1.0;
 
 	std::string modelPath = BASE_DIR + "/" + modelName + ".obj";
@@ -184,13 +180,13 @@ int ModelMesh::load() {
 			} else if (k == "o") {
 				name = v1;
 			} else if (k == "v") {
-				std::array<float, 3> v = { stof(v1) * scale, stof(v2) * scale, stof(v3) * scale };
-				vertexes.push_back(v);
+				glm::vec3 v = { stof(v1) * scale, stof(v2) * scale, stof(v3) * scale };
+				vectors.push_back(v);
 			} else if (k == "vt") {
-				std::array<float, 2> v = { stof(v1), stof(v2) };
-				textureVertexes.push_back(v);
+				glm::vec2 v = { stof(v1), stof(v2) };
+				textures.push_back(v);
 			} else if (k == "vn") {
-				std::array<float, 3> v = { stof(v1), stof(v2), stof(v3) };
+				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
 				normals.push_back(v);
 			} else if (k == "usemtl") {
 				material = materials[v1];
@@ -203,30 +199,33 @@ int ModelMesh::load() {
 				splitFragmentValue(v2, vv2);
 				splitFragmentValue(v3, vv3);
 
-				std::array<int, 3> v = { stoi(vv1[0]) - 1, stoi(vv2[0]) - 1, stoi(vv3[0]) - 1};
-
-				std::array<int, 3> tv;
+				glm::uvec3 vi = { stoi(vv1[0]) - 1, stoi(vv2[0]) - 1, stoi(vv3[0]) - 1};
+				glm::uvec3 ti = { 0, 0, 0 };
+				glm::uvec3 ni = { 0, 0, 0 };
 				if (vv1.size() > 1) {
-					tv = { stoi(vv1[1]) - 1, stoi(vv2[1]) - 1, stoi(vv3[1]) - 1 };
+					glm::uvec3 ti = { stoi(vv1[1]) - 1, stoi(vv2[1]) - 1, stoi(vv3[1]) - 1 };
 				}
-				else {
-					tv = { 0, 0, 0 };
-				}
-
-				std::array<int, 3> n;
 				if (vv1.size() > 2) {
-					n = { stoi(vv1[2]) - 1, stoi(vv2[2]) - 1, stoi(vv3[2]) - 1 };
-				}
-				else {
-					n = { 0, 0, 0 };
+					glm::uvec3 ni = { stoi(vv1[2]) - 1, stoi(vv2[2]) - 1, stoi(vv3[2]) - 1 };
 				}
 
-				Tri tri = { v, tv, n };
+				Tri tri = { vi };
 				tri.material = material;
 				material = NULL;
 				tris.push_back(tri);
 			}
 	 	}
+
+		for (auto const& x : materials) {
+			Material* material = x.second;
+			material->loadTexture(BASE_DIR);
+		}
+
+		for (auto const& v : vectors) {
+			Vertex vertex = { v, v, v };
+			vertexes.push_back(vertex);
+		}
+		
 		file.close();
 		result = 0;
 	} catch (std::ifstream::failure e) {
@@ -235,9 +234,10 @@ int ModelMesh::load() {
 	}
 	std::cout << "\n== " << modelName << " ===\n" 
 		<< "tris: " << tris.size() 
-		<< ", vertexes: " << vertexes.size() 
-		<< ", textureVertexes: " << textureVertexes.size()
+		<< ", vectors: " << vectors.size() 
+		<< ", textures: " << textures.size()
 		<< ", normals: " << normals.size()
+		<< ", vertexes: " << vertexes.size()
 		<< "\n--------\n";
 
 	return result;
@@ -278,16 +278,16 @@ int ModelMesh::loadMaterials(std::string libraryName) {
 			} else if (k == "Ns") {
 				material->ns = stof(v1);
 			} else if (k == "Ka") {
-				std::array<float, 3> v = { stof(v1), stof(v2), stof(v3)};
+				glm::vec3 v = { stof(v1), stof(v2), stof(v3)};
 				material->ka = v;
 			} else if (k == "Kd") {
-				std::array<float, 3> v = { stof(v1), stof(v2), stof(v3) };
+				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
 				material->kd = v;
 			} else if (k == "Ks") {
-				std::array<float, 3> v = { stof(v1), stof(v2), stof(v3) };
+				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
 				material->ks = v;
 			} else if (k == "Ke") {
-				std::array<float, 3> v = { stof(v1), stof(v2), stof(v3) };
+				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
 				material->ke = v;
 			} else if (k == "Ni") {
 				material->ni = stof(v1);

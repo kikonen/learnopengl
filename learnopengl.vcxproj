@@ -166,6 +166,7 @@
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Tri.cpp" />
     <ClCompile Include="src\Test4.cpp" />
+    <ClCompile Include="src\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -184,6 +185,7 @@
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Tri.h" />
     <ClInclude Include="src\Test4.h" />
+    <ClInclude Include="src\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

@@ -10,6 +10,7 @@
 #include "Material.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "Vertex.h"
 
 class ModelMesh : Mesh
 {
@@ -27,10 +28,8 @@ public:
 
 public:
 	unsigned int VAO;
-	unsigned int VBO_vertex;
-	unsigned int VBO_tex;
-	unsigned int EBO_vertex;
-	unsigned int EBO_tex;
+	unsigned int VBO;
+	unsigned int EBO;
 
 	Shader* shader;
 
@@ -39,9 +38,7 @@ private:
 	std::string name;
 
 	std::vector<Tri> tris;
-	std::vector<std::array<float, 3>> vertexes;
-    std::vector<std::array<float, 2>> textureVertexes;
-	std::vector<std::array<float, 3>> normals;
+	std::vector<Vertex> vertexes;
 
 	std::array<float, 3> color = { 0.8f, 0.8f, 0.0f };
 	std::map<std::string, Material*> materials;
@@ -50,4 +47,3 @@ private:
 
 	float elapsed = 0;
  };
-

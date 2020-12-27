@@ -1,10 +1,8 @@
 #include "Tri.h"
 
-Tri::Tri(const std::array<int, 3>& vertexIndexes, const std::array<int, 3>& textureIndexes, const std::array<int, 3>& normalIndexes)
+Tri::Tri(const glm::uvec3& vertexIndexes)
 {
 	this->vertexIndexes = vertexIndexes;
-	this->textureIndexes = textureIndexes;
-	this->normalIndexes = normalIndexes;
 }
 
 Tri::~Tri()

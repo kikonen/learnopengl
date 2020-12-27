@@ -2,6 +2,7 @@
 
 #include <string>
 #include <array>
+#include <glm/glm.hpp>
 
 #include "Texture.h"
 #include "Shader.h"
@@ -35,10 +36,10 @@ public:
     std::string name;
 
     float ns = 0.0f;
-    std::array<float, 3> ka;
-    std::array<float, 3> kd;
-    std::array<float, 3> ks;
-    std::array<float, 3> ke;
+    glm::vec3 ka;
+    glm::vec3 kd;
+    glm::vec3 ks;
+    glm::vec3 ke;
     float ni = 0.0f;
     float d = 0.0f;
     int illum = 0;

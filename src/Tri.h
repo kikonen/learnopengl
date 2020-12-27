@@ -2,19 +2,18 @@
 
 #include <array>
 #include <string>
+#include <glm/glm.hpp>
 
 #include "Material.h"
 
 class Tri
 {
 public:
-	Tri(const std::array<int, 3>& vertexes, const std::array<int, 3>& textureVertexes, const std::array<int, 3>& normalIndexes);
+	Tri(const glm::uvec3& vertexIndexes);
 	~Tri();
 
 public:
-	std::array<int, 3> vertexIndexes;
-	std::array<int, 3> textureIndexes;
-	std::array<int, 3> normalIndexes;
+	glm::uvec3 vertexIndexes;
 	Material* material = NULL;
 };
 
