@@ -5,11 +5,11 @@
 
 Test4::Test4() {
 	title = "Test 4";
-	//throttleFps = 0;
+	throttleFps = FPS_30;
 }
 
 int Test4::onSetup() {
-	mesh = new ModelMesh("texture_cube");
+	mesh = new ModelMesh("texture_ball");
 	if (mesh->load()) {
 		return -1;
 	}
@@ -48,6 +48,30 @@ int Test4::onRender(float dt) {
 	mesh->shader->setMat4(viewName, view);
 
 	// tri 1
+	if (true) {
+		const float radius = 4.0f;
+		float posX = sin(accumulatedTime / 0.9) * radius;
+		float posY = sin(accumulatedTime * 1.1) * radius / 3;
+		float posZ = cos(accumulatedTime) * radius / 2;
+
+		mesh->setPos(glm::vec3(posX, posY, posZ));
+	}
+	if (true) {
+		const float radius = 2.0f;
+		float rotX = accumulatedTime* radius;
+		float rotY = accumulatedTime* radius * 1.1;
+		float rotZ = accumulatedTime* radius * 1.2;
+
+		mesh->setRotation(glm::vec3(rotX, rotY, rotZ));
+	}
+
+	if (true) {
+		const float radius = 2.0f;
+		float scale = sin(accumulatedTime / 4) * radius;
+
+		mesh->setScale(scale);
+	}
+
 	mesh->bind(camera, dt);
 	mesh->draw(camera, dt);
 	glBindVertexArray(0);

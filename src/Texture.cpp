@@ -46,7 +46,7 @@ void Texture::bind()
 
 int Texture::load() {
 
-	//	stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(true);
 	image = stbi_load(
 		path.c_str(),
 		&width,

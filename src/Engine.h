@@ -65,6 +65,8 @@ public:
     std::string title;
 
     Camera camera;
+
+    float accumulatedTime = 0.0f;
 private:
     GLFWwindow* window = nullptr;
 };

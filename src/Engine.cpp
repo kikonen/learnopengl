@@ -44,6 +44,8 @@ void Engine::run() {
 		std::chrono::duration<float> elapsedTime = tp2 - tp1;
 		float dt = elapsedTime.count();
 
+		accumulatedTime += dt;
+
 		// input
 		// -----
 		processInput(window, dt);

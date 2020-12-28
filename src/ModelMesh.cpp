@@ -150,16 +150,17 @@ int ModelMesh::draw(Camera& camera, float dt)
 {
 	elapsed += dt;
 
-	//glEnable(GL_CULL_FACE); // cull face
-	//glCullFace(GL_BACK); // cull back face
-	//glFrontFace(GL_CW); // GL_CCW for counter clock-wise
+	updateModelMatrix();
+
+	glEnable(GL_CULL_FACE); // cull face
+	glCullFace(GL_BACK); // cull back face
+	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
 
 	std::string modelColor = { "modelColor" };
 	shader->setFloat3(modelColor, 0.8f, 0.8f, 0.1f);
 
-	glm::mat4 model = glm::mat4(1.0f);
 	std::string modelName = { "model" };
-	shader->setMat4(modelName, model);
+	shader->setMat4(modelName, modelMat);
 
 	shader->use();
 
@@ -173,8 +174,6 @@ int ModelMesh::load() {
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec2> textures;
 	std::vector<glm::vec3> normals;
-
-	float scale = 1.0;
 
 	std::string modelPath = BASE_DIR + "/" + modelName + ".obj";
 	std::ifstream file;
@@ -361,4 +360,73 @@ int ModelMesh::loadMaterials(std::string libraryName) {
 	}
 
 	return 0;
+}
+
+void ModelMesh::updateModelMatrix() {
+	if (!dirtyMat) {
+		return;
+	}
+
+	// ORDER: yaw - pitch - roll
+	glm::mat4 rotMat = glm::mat4(1.0f);
+	{
+		rotMat = glm::rotate(
+			rotMat,
+			rotation.z,
+			glm::vec3(0.0f, 0.0f, 1.0f)
+		);
+
+		rotMat = glm::rotate(
+			rotMat,
+			rotation.y,
+			glm::vec3(0.0f, 1.0f, 0.0f)
+		);
+
+		rotMat = glm::rotate(
+			rotMat,
+			rotation.x,
+			glm::vec3(-1.0f, 0.0f, 0.0f)
+		);
+	}
+
+	glm::mat4 scaleMat = glm::scale(
+		glm::mat4(1.0f),
+		glm::vec3(scale)
+	);
+
+	glm::mat4 posMat = glm::translate(
+		glm::mat4(1.0f),
+		pos
+	);
+
+	modelMat = rotMat * scaleMat * posMat;
+
+//	glUniformMatrix4fv(LocationMVP, 1, GL_FALSE, glm::value_ptr(MVP));
+}
+
+void ModelMesh::setPos(const glm::vec3& pos) {
+	this->pos = pos;
+	dirtyMat = true;
+}
+
+const glm::vec3& ModelMesh::getPos() {
+	return pos;
+}
+
+void ModelMesh::setRotation(const glm::vec3& rotation) {
+	this->rotation = rotation;
+	dirtyMat = true;
+}
+
+const glm::vec3& ModelMesh::getRotation() {
+	return rotation;
+}
+
+void ModelMesh::setScale(float scale) {
+	this->scale = scale;
+	dirtyMat = true;
+}
+
+float ModelMesh::getScale() {
+	return 0.0f;
 }

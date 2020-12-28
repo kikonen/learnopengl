@@ -12,8 +12,7 @@
 #include "Camera.h"
 #include "Vertex.h"
 
-class ModelMesh : Mesh
-{
+class ModelMesh : Mesh {
 public:
 	ModelMesh(const std::string& modelName);
 	~ModelMesh();
@@ -35,6 +34,17 @@ public:
 	void splitFragmentValue(const std::string& v, std::vector<std::string>& vv);
 	int loadMaterials(std::string libraryName);
 
+	void setPos(const glm::vec3& pos);
+	const glm::vec3& getPos();
+
+	void setScale(float scale);
+	float getScale();
+
+	void setRotation(const glm::vec3& rotation);
+	const glm::vec3& getRotation();
+
+	void updateModelMatrix();
+
 public:
 	unsigned int VAO;
 	unsigned int VBO;
@@ -47,9 +57,9 @@ private:
 	std::string name;
 
 	glm::vec3 color = { 0.8f, 0.8f, 0.0f };
-	std::vector<glm::vec3> colors = { 
-		{ 1.0f, 0.0f, 0.0f }, 
-		{ 0.0f, 1.0f, 0.0f }, 
+	std::vector<glm::vec3> colors = {
+		{ 1.0f, 0.0f, 0.0f },
+		{ 0.0f, 1.0f, 0.0f },
 		{ 0.0f, 0.0f, 1.0f },
 
 		{ 1.0f, 1.0f, 0.0f },
@@ -66,7 +76,13 @@ private:
 
 	std::map<std::string, Material*> materials;
 
-    float pos[3];
+	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
+	float scale = 1.0f;
+
+	glm::mat4 modelMat = glm::mat4(1.0f);
+
+	bool dirtyMat = true;
 	bool hasTexture;
 	float elapsed = 0;
  };

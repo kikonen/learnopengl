@@ -25,20 +25,22 @@ glm::mat4 Camera::updateCamera(float dt)
 	cameraRight = glm::normalize(glm::cross(up, cameraDirection));
 	cameraUp = glm::cross(cameraDirection, cameraRight);
 
-/*
-glm::mat4 view;
-	view = glm::lookAt(
-		glm::vec3(0.0f, 0.0f, 3.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));
-*/
-	const float radius = 10.0f;
-	float camX = sin(accumulatedTime) * radius;
-    float camY = sin(accumulatedTime) * radius / 4;
-    float camZ = cos(accumulatedTime) * radius / 2;
-
 	glm::mat4 view;
-	view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+
+	if (false	) {
+		view = glm::lookAt(
+			glm::vec3(0.0f, 0.0f, 10.0f),
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f));
+	} else {
+		const float radius = 10.0f;
+		float camX = sin(accumulatedTime) * radius;
+		float camY = sin(accumulatedTime) * radius / 4;
+		float camZ = cos(accumulatedTime) * radius / 2;
+
+		view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+	}
+
 	return view;
 }
 
