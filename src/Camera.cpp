@@ -34,10 +34,11 @@ glm::mat4 view;
 */
 	const float radius = 10.0f;
 	float camX = sin(accumulatedTime) * radius;
-	float camZ = cos(accumulatedTime) * radius;
+    float camY = sin(accumulatedTime) * radius / 4;
+    float camZ = cos(accumulatedTime) * radius / 2;
 
 	glm::mat4 view;
-	view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+	view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	return view;
 }
 
