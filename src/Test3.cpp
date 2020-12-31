@@ -25,6 +25,7 @@ SimpleMesh* Test3::createElementMesh1() {
 	};
 
 	SimpleMesh* mesh = new SimpleMesh(
+		*this,
 		"mesh",
 		shader,
 		vertices, sizeof(vertices) / sizeof(float), true,
@@ -52,6 +53,7 @@ SimpleMesh* Test3::createElementMesh2() {
 	};
 
 	SimpleMesh* mesh = new SimpleMesh(
+		*this,
 		"tri",
 		shader,
 		vertices, sizeof(vertices) / sizeof(float), false,

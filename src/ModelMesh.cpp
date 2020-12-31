@@ -14,9 +14,10 @@ const std::string BASE_DIR = "3d_model";
 const glm::vec2 EMPTY_TEX = { 0, 0 };
 const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
 
-ModelMesh::ModelMesh(const std::string& modelName)
+ModelMesh::ModelMesh(const Engine& engine, const std::string& modelName) 
+	: Mesh(engine, modelName),
+	modelName(modelName)
 {
-	this->modelName = modelName;
 }
 
 ModelMesh::~ModelMesh()
@@ -133,7 +134,7 @@ int ModelMesh::prepare()
 	return 0;
 }
 
-int ModelMesh::bind(Camera& camera, float dt)
+int ModelMesh::bind(float dt)
 {
 	for (auto const& x : materials) {
 		Material* material = x.second;
@@ -146,7 +147,7 @@ int ModelMesh::bind(Camera& camera, float dt)
 	return 0;
 }
 
-int ModelMesh::draw(Camera& camera, float dt)
+int ModelMesh::draw(float dt)
 {
 	elapsed += dt;
 

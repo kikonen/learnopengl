@@ -1,6 +1,8 @@
 #include "Mesh.h"
 
-Mesh::Mesh()
+Mesh::Mesh(const Engine& engine, std::string name)
+	: engine(engine),
+	name(name)
 {
 }
 

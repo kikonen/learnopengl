@@ -1,6 +1,7 @@
 #include "SimpleMesh.h"
 
 SimpleMesh::SimpleMesh(
+	const Engine& engine,
 	const std::string& name,
 	Shader* shader,
 	float vertices[],
@@ -8,11 +9,10 @@ SimpleMesh::SimpleMesh(
 	bool hasVertexColor,
 	unsigned int indices[],
 	int indicesCount
-) {
-	this->name = name;
-	this->verticesCount = verticesCount;
-	this->indicesCount = indicesCount;
-
+) : Mesh(engine, name),
+	verticesCount(verticesCount),
+	indicesCount(indicesCount)
+{
 	this->shader = shader;
 
 	glGenVertexArrays(1, &VAO);
@@ -61,12 +61,18 @@ SimpleMesh::~SimpleMesh() {
 	shader = NULL;
 }
 
-void SimpleMesh::bind(float dt) {
-	shader->use();
-	glBindVertexArray(VAO);
+int SimpleMesh::prepare() {
+	return 0;
 }
 
-void SimpleMesh::draw(float dt) {
+int SimpleMesh::bind(float dt) {
+	shader->use();
+	glBindVertexArray(VAO);
+	return 0;
+}
+
+int SimpleMesh::draw(float dt) {
 	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
+	return 0;
 }
 

@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\ModelMesh.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\stb_image.cpp" />
     <ClCompile Include="src\Test1.h" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Test2.h" />
@@ -167,11 +169,13 @@
     <ClCompile Include="src\Tri.cpp" />
     <ClCompile Include="src\Test4.cpp" />
     <ClCompile Include="src\Vertex.cpp" />
+    <ClCompile Include="src\Test5.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="src\ModelMesh.h" />
@@ -186,6 +190,7 @@
     <ClInclude Include="src\Tri.h" />
     <ClInclude Include="src\Test4.h" />
     <ClInclude Include="src\Vertex.h" />
+    <ClInclude Include="src\Test5.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

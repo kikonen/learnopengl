@@ -9,10 +9,11 @@
 #include "Test2.h"
 #include "Test3.h"
 #include "Test4.h"
+#include "Test5.h"
 
 int main()
 {
-    Engine* engine = new Test4();
+    Engine* engine = new Test5();
 
     if (engine->init()) {
         return -1;

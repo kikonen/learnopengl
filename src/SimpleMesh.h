@@ -12,9 +12,10 @@
 #include "Mesh.h"
 #include "Shader.h"
 
-class SimpleMesh : Mesh {
+class SimpleMesh : public Mesh {
 public:
     SimpleMesh(
+        const Engine& engine,
         const std::string& name,
         Shader* shader,
         float vertices[],
@@ -25,14 +26,11 @@ public:
     );
     ~SimpleMesh();
 
-    void bind(float dt);
-    void draw(float dt);
+    virtual int prepare() override;
+    virtual int bind(float dt) override;
+    virtual int draw(float dt) override;
 
 public:
-    unsigned int VBO, VAO, EBO;
-
-    std::string name;
-    Shader* shader;
 private:
     int verticesCount;
     int indicesCount;

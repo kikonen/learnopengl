@@ -12,14 +12,14 @@
 #include "Camera.h"
 #include "Vertex.h"
 
-class ModelMesh : Mesh {
+class ModelMesh : public Mesh {
 public:
-	ModelMesh(const std::string& modelName);
+	ModelMesh(const Engine& engine, const std::string& modelName);
 	~ModelMesh();
 
-	int prepare();
-	int bind(Camera& camera, float dt);
-	int draw(Camera& camera, float dt);
+	virtual int prepare() override;
+	virtual int bind(float dt) override;
+	virtual int draw(float dt) override;
 
 	int resolveVertexIndex(
 		std::vector<glm::vec3>& positions,
@@ -46,15 +46,9 @@ public:
 	void updateModelMatrix();
 
 public:
-	unsigned int VAO;
-	unsigned int VBO;
-	unsigned int EBO;
-
-	Shader* shader;
 
 private:
 	std::string modelName;
-	std::string name;
 
 	glm::vec3 color = { 0.8f, 0.8f, 0.0f };
 	std::vector<glm::vec3> colors = {
@@ -83,6 +77,6 @@ private:
 	glm::mat4 modelMat = glm::mat4(1.0f);
 
 	bool dirtyMat = true;
-	bool hasTexture;
+	bool hasTexture = false;
 	float elapsed = 0;
  };

@@ -36,6 +36,7 @@ public:
         };
 
         SimpleMesh* mesh = new SimpleMesh(
+            *this,
             "mesh",
             shader,
             vertices, sizeof(vertices) / sizeof(float), false,
