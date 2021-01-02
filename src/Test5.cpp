@@ -27,8 +27,12 @@ int Test5::onRender(float dt) {
 
 	glEnable(GL_DEPTH_TEST);
 
+	int w = 0;
+	int h = 0;
+	glfwGetWindowSize(window, &w, &h);
+
 	glm::mat4 view = camera.updateCamera(dt);
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
 
 	const glm::mat4 vpMat = projection * view;
 

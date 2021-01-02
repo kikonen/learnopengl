@@ -60,13 +60,14 @@ public:
 public:
     bool debug;
     int throttleFps;
-    int width;
-    int height;
     std::string title;
 
     Camera camera;
 
     float accumulatedTime = 0.0f;
-private:
+protected:
     GLFWwindow* window = nullptr;
+private:
+    int width;
+    int height;
 };
