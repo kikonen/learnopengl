@@ -31,7 +31,7 @@ int Test5::onRender(float dt) {
 	int h = 0;
 	glfwGetWindowSize(window, &w, &h);
 
-	glm::mat4 view = camera.updateCamera(dt);
+	glm::mat4 view = camera.getView();
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
 
 	const glm::mat4 vpMat = projection * view;
@@ -68,5 +68,9 @@ int Test5::onRender(float dt) {
 	glBindVertexArray(0);
 
 	return 0;
+}
+
+void Test5::processInput(GLFWwindow* window, float dt) {
+	Engine::processInput(window, dt);
 }
 

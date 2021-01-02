@@ -36,7 +36,7 @@ int Test4::onRender(float dt) {
 	std::string lightColorName = { "lightColor" };
 	mesh->shader->setFloat3(lightColorName, 0.8f, 0.8f, 0.1f);
 
-	glm::mat4 view = camera.updateCamera(dt);
+	glm::mat4 view = camera.getView();
 
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);

@@ -16,19 +16,26 @@ public:
 	Camera();
 	~Camera();
 
-	void handleInput(GLFWwindow* window, float dt);
-
-	glm::mat4 updateCamera(float dt);
+	const glm::mat4& getView();
+	void processInput(GLFWwindow* window, float dt);
 private:
-
-	glm::vec3 cameraPos;
-	glm::vec3 cameraTarget;
-	glm::vec3 cameraDirection;
-
+	glm::vec3 pos;
+	glm::vec3 front;
+	glm::vec3 right;
 	glm::vec3 up;
-	glm::vec3 cameraRight;
-	glm::vec3 cameraUp;
+
+	glm::mat4 viewMat;
+	glm::mat4 rotateMat;
+
+	glm::vec3 viewFront;
+	glm::vec3 viewRight;
+	glm::vec3 viewUp;
 
 	float accumulatedTime = 0;
+
+	bool dirty;
+
+	void updateCamera();
+	glm::mat4 createRotate(float angleX, float angleY, float angleZ);
 };
 

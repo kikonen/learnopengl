@@ -51,7 +51,7 @@ public:
 
     // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
     // ---------------------------------------------------------------------------------------------------------
-    void processInput(GLFWwindow* window, float dt);
+    virtual void processInput(GLFWwindow* window, float dt);
 
     // glfw: whenever the window size changed (by OS or user resize) this callback function executes
     // ---------------------------------------------------------------------------------------------

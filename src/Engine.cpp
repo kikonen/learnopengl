@@ -124,7 +124,7 @@ void Engine::processInput(GLFWwindow* window, float dt)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
-	camera.handleInput(window, dt);
+	camera.processInput(window, dt);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
