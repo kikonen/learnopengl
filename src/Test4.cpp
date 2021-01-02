@@ -9,7 +9,7 @@ Test4::Test4() {
 }
 
 int Test4::onSetup() {
-	mesh = new ModelMesh(*this, "texture_cube");
+	mesh = new ModelMesh(*this, "texture_cube", "test4");
 	if (mesh->load()) {
 		return -1;
 	}
@@ -72,8 +72,9 @@ int Test4::onRender(float dt) {
 		mesh->setScale(scale);
 	}
 
-	mesh->bind(dt);
-	mesh->draw(dt);
+	glm::mat4 vpMat(1.0f);
+	mesh->bind(dt, vpMat);
+	mesh->draw(dt, vpMat);
 	glBindVertexArray(0);
 
 	return 0;

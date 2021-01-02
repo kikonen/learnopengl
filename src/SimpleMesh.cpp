@@ -65,13 +65,13 @@ int SimpleMesh::prepare() {
 	return 0;
 }
 
-int SimpleMesh::bind(float dt) {
+int SimpleMesh::bind(float dt, const glm::mat4& vpMat) {
 	shader->use();
 	glBindVertexArray(VAO);
 	return 0;
 }
 
-int SimpleMesh::draw(float dt) {
+int SimpleMesh::draw(float dt, const glm::mat4& vpMat) {
 	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
 	return 0;
 }

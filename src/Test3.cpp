@@ -78,22 +78,24 @@ int Test3::onRender(float dt) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	glm::mat4 vpMat(1.0f);
+
 	// tri 1
-	mesh1->bind(dt);
+	mesh1->bind(dt, vpMat);
 	mesh1->shader->use();
-	mesh1->draw(dt);
+	mesh1->draw(dt, vpMat);
 	glBindVertexArray(0);
 
 	// tri 2
 	elapsed += dt;
-	mesh2->bind(dt);
+	mesh2->bind(dt, vpMat);
 	mesh2->shader->use();
 
 	std::string triOffset = { "triOffset" };
 	std::string triColor = { "triColor" };
 	mesh2->shader->setFloat3(triColor, (sin(elapsed * 4.0f) + 1.0f) / 2.0f, 0.0f, 0.0f);
 	mesh2->shader->setFloat3(triOffset, sin(elapsed) / 2.0f, cos(elapsed) / 2.0f, 0.0f);
-	mesh2->draw(dt);
+	mesh2->draw(dt, vpMat);
 
 	glBindVertexArray(0);
 

@@ -14,12 +14,12 @@
 
 class ModelMesh : public Mesh {
 public:
-	ModelMesh(const Engine& engine, const std::string& modelName);
+	ModelMesh(const Engine& engine, const std::string& modelName, const std::string& shaderName);
 	~ModelMesh();
 
 	virtual int prepare() override;
-	virtual int bind(float dt) override;
-	virtual int draw(float dt) override;
+	virtual int bind(float dt, const glm::mat4& vpMat) override;
+	virtual int draw(float dt, const glm::mat4& vpMat) override;
 
 	int resolveVertexIndex(
 		std::vector<glm::vec3>& positions,
@@ -49,6 +49,8 @@ public:
 
 private:
 	std::string modelName;
+	std::string shaderName;
+	std::string shaderPathBase;
 
 	glm::vec3 color = { 0.8f, 0.8f, 0.0f };
 	std::vector<glm::vec3> colors = {

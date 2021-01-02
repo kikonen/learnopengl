@@ -4,12 +4,12 @@
 #include <glm/ext.hpp>
 
 Test5::Test5() {
-	title = "Test 4";
+	title = "Test 5";
 	//throttleFps = FPS_30;
 }
 
 int Test5::onSetup() {
-	mesh = new ModelMesh(*this, "texture_cube");
+	mesh = new ModelMesh(*this, "texture_cube", "test5");
 	if (mesh->load()) {
 		return -1;
 	}
@@ -28,15 +28,11 @@ int Test5::onRender(float dt) {
 	glEnable(GL_DEPTH_TEST);
 
 	glm::mat4 view = camera.updateCamera(dt);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+	const glm::mat4 vpMat = projection * view;
 
-	std::string projectionName = { "projection" };
-	mesh->shader->setMat4(projectionName, projection);
-
-	std::string viewName = { "view" };
-	mesh->shader->setMat4(viewName, view);
+//	mesh->setPos(glm::vec3(0, 0, -10.0f));
 
 	// tri 1
 	if (false) {
@@ -63,8 +59,8 @@ int Test5::onRender(float dt) {
 		mesh->setScale(scale);
 	}
 
-	mesh->bind(dt);
-	mesh->draw(dt);
+	mesh->bind(dt, vpMat);
+	mesh->draw(dt, vpMat);
 	glBindVertexArray(0);
 
 	return 0;

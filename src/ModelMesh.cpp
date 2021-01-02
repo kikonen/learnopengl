@@ -14,10 +14,12 @@ const std::string BASE_DIR = "3d_model";
 const glm::vec2 EMPTY_TEX = { 0, 0 };
 const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
 
-ModelMesh::ModelMesh(const Engine& engine, const std::string& modelName) 
+ModelMesh::ModelMesh(const Engine& engine, const std::string& modelName, const std::string& shaderName)
 	: Mesh(engine, modelName),
-	modelName(modelName)
+	modelName(modelName),
+	shaderName(shaderName)
 {
+	shaderPathBase = "shader/" + shaderName;
 }
 
 ModelMesh::~ModelMesh()
@@ -29,9 +31,9 @@ int ModelMesh::prepare()
 	bool useTexture = true;
 
 	if (useTexture && hasTexture) {
-		shader = new Shader("shader/test4.vs", "shader/test4_tex.fs");
+		shader = new Shader(shaderPathBase + ".vs", shaderPathBase + "_tex.fs");
 	} else {
-		shader = new Shader("shader/test4.vs", "shader/test4.fs");
+		shader = new Shader(shaderPathBase + ".vs", shaderPathBase + ".fs");
 	}
 
 	if (shader->setup()) {
@@ -134,7 +136,7 @@ int ModelMesh::prepare()
 	return 0;
 }
 
-int ModelMesh::bind(float dt)
+int ModelMesh::bind(float dt, const glm::mat4& vpMat)
 {
 	for (auto const& x : materials) {
 		Material* material = x.second;
@@ -144,26 +146,23 @@ int ModelMesh::bind(float dt)
 	shader->use();
 	glBindVertexArray(VAO);
 
-	return 0;
-}
-
-int ModelMesh::draw(float dt)
-{
-	elapsed += dt;
-
 	updateModelMatrix();
-
-	glEnable(GL_CULL_FACE); // cull face
-	glCullFace(GL_BACK); // cull back face
-	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
+	std::string mvpName("transform");
+	shader->setMat4(mvpName, vpMat * modelMat);
 
 	std::string modelColor = { "modelColor" };
 	shader->setFloat3(modelColor, 0.8f, 0.8f, 0.1f);
 
-	std::string modelName = { "model" };
-	shader->setMat4(modelName, modelMat);
+	return 0;
+}
 
-	shader->use();
+int ModelMesh::draw(float dt, const glm::mat4& vpMat)
+{
+	elapsed += dt;
+
+	glEnable(GL_CULL_FACE); // cull face
+	glCullFace(GL_BACK); // cull back face
+	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
 
 	glDrawElements(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0);
 	return 0;
@@ -395,12 +394,12 @@ void ModelMesh::updateModelMatrix() {
 		glm::vec3(scale)
 	);
 
-	glm::mat4 posMat = glm::translate(
+	glm::mat4 transMat = glm::translate(
 		glm::mat4(1.0f),
 		pos
 	);
 
-	modelMat = rotMat * scaleMat * posMat;
+	modelMat = transMat * rotMat * scaleMat;
 
 //	glUniformMatrix4fv(LocationMVP, 1, GL_FALSE, glm::value_ptr(MVP));
 }

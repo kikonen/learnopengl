@@ -27,7 +27,7 @@ glm::mat4 Camera::updateCamera(float dt)
 
 	glm::mat4 view;
 
-	if (false	) {
+	if (false) {
 		view = glm::lookAt(
 			glm::vec3(0.0f, 0.0f, 10.0f),
 			glm::vec3(0.0f, 0.0f, 0.0f),
@@ -35,8 +35,8 @@ glm::mat4 Camera::updateCamera(float dt)
 	} else {
 		const float radius = 10.0f;
 		float camX = sin(accumulatedTime) * radius;
-		float camY = sin(accumulatedTime) * radius / 4;
-		float camZ = cos(accumulatedTime) * radius / 2;
+		float camY = 4.0f;// sin(accumulatedTime)* radius / 4;
+		float camZ = cos(accumulatedTime) * radius;
 
 		view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	}
