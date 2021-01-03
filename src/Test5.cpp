@@ -7,7 +7,7 @@
 
 Test5::Test5() {
 	title = "Test 5";
-	throttleFps = 0;
+	//throttleFps = 0;
 }
 
 int Test5::onSetup() {
