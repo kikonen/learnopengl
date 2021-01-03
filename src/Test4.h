@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "Engine.h"
-#include "ModelMesh.h"
+#include "Node.h"
 #include "Shader.h"
 
 class Test4 : public Engine {
@@ -19,5 +19,5 @@ public:
 private:
 	float elapsed = 0;
 
-	ModelMesh* mesh = NULL;
+	Node* node;
 };

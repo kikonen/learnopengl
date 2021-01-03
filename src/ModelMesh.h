@@ -34,17 +34,6 @@ public:
 	void splitFragmentValue(const std::string& v, std::vector<std::string>& vv);
 	int loadMaterials(std::string libraryName);
 
-	void setPos(const glm::vec3& pos);
-	const glm::vec3& getPos();
-
-	void setScale(float scale);
-	float getScale();
-
-	void setRotation(const glm::vec3& rotation);
-	const glm::vec3& getRotation();
-
-	void updateModelMatrix();
-
 public:
 
 private:
@@ -72,13 +61,6 @@ private:
 
 	std::map<std::string, Material*> materials;
 
-	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
-	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
-	float scale = 1.0f;
-
-	glm::mat4 modelMat = glm::mat4(1.0f);
-
-	bool dirtyMat = true;
 	bool hasTexture = false;
 	float elapsed = 0;
  };

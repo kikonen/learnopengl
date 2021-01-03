@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "Engine.h"
-#include "ModelMesh.h"
+#include "Node.h"
 #include "Shader.h"
 #include "Light.h"
 
@@ -21,7 +21,8 @@ public:
 private:
 	float elapsed = 0;
 
-	ModelMesh* mesh = NULL;
+	std::vector<Node*> nodes;
+	Node* active;
 
 	Light light;
 };

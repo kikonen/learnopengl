@@ -3,18 +3,22 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "ModelMesh.h"
+
 Test4::Test4() {
 	title = "Test 4";
 	//throttleFps = FPS_30;
 }
 
 int Test4::onSetup() {
-	mesh = new ModelMesh(*this, "texture_cube", "test4");
+	ModelMesh* mesh = new ModelMesh(*this, "texture_cube", "test4");
 	if (mesh->load()) {
 		return -1;
 	}
 
 	mesh->prepare();
+
+	node = new Node(mesh, glm::vec3(0));
 
 	return 0;
 }
@@ -27,14 +31,16 @@ int Test4::onRender(float dt) {
 
 	glEnable(GL_DEPTH_TEST);
 
+	Shader* shader = node->mesh->shader;
+
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	std::string lightPosName = { "lightPos" };
-	mesh->shader->setFloat3(lightPosName, lightPos.x, lightPos.y, lightPos.z);
+	shader->setFloat3(lightPosName, lightPos.x, lightPos.y, lightPos.z);
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 
 	std::string lightColorName = { "lightColor" };
-	mesh->shader->setFloat3(lightColorName, 0.8f, 0.8f, 0.1f);
+	shader->setFloat3(lightColorName, 0.8f, 0.8f, 0.1f);
 
 	glm::mat4 view = camera.getView();
 
@@ -42,10 +48,10 @@ int Test4::onRender(float dt) {
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
 	std::string projectionName = { "projection" };
-	mesh->shader->setMat4(projectionName, projection);
+	shader->setMat4(projectionName, projection);
 
 	std::string viewName = { "view" };
-	mesh->shader->setMat4(viewName, view);
+	shader->setMat4(viewName, view);
 
 	// tri 1
 	if (false) {
@@ -54,7 +60,7 @@ int Test4::onRender(float dt) {
 		float posY = sin(accumulatedTime * 1.1f) * radius / 3;
 		float posZ = cos(accumulatedTime) * radius / 2.0f;
 
-		mesh->setPos(glm::vec3(posX, posY, posZ));
+		node->setPos(glm::vec3(posX, posY, posZ));
 	}
 	if (false) {
 		const float radius = 2.0f;
@@ -62,19 +68,18 @@ int Test4::onRender(float dt) {
 		float rotY = accumulatedTime* radius * 1.1f;
 		float rotZ = accumulatedTime* radius * 1.2f;
 
-		mesh->setRotation(glm::vec3(rotX, rotY, rotZ));
+		node->setRotation(glm::vec3(rotX, rotY, rotZ));
 	}
 
 	if (false) {
 		const float radius = 2.0f;
 		float scale = sin(accumulatedTime / 4) * radius;
 
-		mesh->setScale(scale);
+		node->setScale(scale);
 	}
 
 	glm::mat4 vpMat(1.0f);
-	mesh->bind(dt, vpMat);
-	mesh->draw(dt, vpMat);
+	node->draw(dt, vpMat);
 	glBindVertexArray(0);
 
 	return 0;

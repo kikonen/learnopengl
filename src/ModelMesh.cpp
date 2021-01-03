@@ -146,10 +146,6 @@ int ModelMesh::bind(float dt, const glm::mat4& vpMat)
 	shader->use();
 	glBindVertexArray(VAO);
 
-	updateModelMatrix();
-	std::string mvpName("transform");
-	shader->setMat4(mvpName, vpMat * modelMat);
-
 	std::string modelColor = { "modelColor" };
 	shader->setFloat3(modelColor, 0.8f, 0.8f, 0.1f);
 
@@ -159,10 +155,6 @@ int ModelMesh::bind(float dt, const glm::mat4& vpMat)
 int ModelMesh::draw(float dt, const glm::mat4& vpMat)
 {
 	elapsed += dt;
-
-	glEnable(GL_CULL_FACE); // cull face
-	glCullFace(GL_BACK); // cull back face
-	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
 
 	glDrawElements(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0);
 	return 0;
@@ -198,7 +190,7 @@ int ModelMesh::load() {
 			} else if (k == "o") {
 				name = v1;
 			} else if (k == "v") {
-				glm::vec3 v = { stof(v1) * scale, stof(v2) * scale, stof(v3) * scale };
+				glm::vec3 v = { stof(v1), stof(v2), stof(v3)};
 				positions.push_back(v);
 			} else if (k == "vt") {
 				glm::vec2 v = { stof(v1), stof(v2) };
@@ -362,71 +354,3 @@ int ModelMesh::loadMaterials(std::string libraryName) {
 	return 0;
 }
 
-void ModelMesh::updateModelMatrix() {
-	if (!dirtyMat) {
-		return;
-	}
-
-	// ORDER: yaw - pitch - roll
-	glm::mat4 rotMat = glm::mat4(1.0f);
-	{
-		rotMat = glm::rotate(
-			rotMat,
-			rotation.z,
-			glm::vec3(0.0f, 0.0f, 1.0f)
-		);
-
-		rotMat = glm::rotate(
-			rotMat,
-			rotation.y,
-			glm::vec3(0.0f, 1.0f, 0.0f)
-		);
-
-		rotMat = glm::rotate(
-			rotMat,
-			rotation.x,
-			glm::vec3(-1.0f, 0.0f, 0.0f)
-		);
-	}
-
-	glm::mat4 scaleMat = glm::scale(
-		glm::mat4(1.0f),
-		glm::vec3(scale)
-	);
-
-	glm::mat4 transMat = glm::translate(
-		glm::mat4(1.0f),
-		pos
-	);
-
-	modelMat = transMat * rotMat * scaleMat;
-
-//	glUniformMatrix4fv(LocationMVP, 1, GL_FALSE, glm::value_ptr(MVP));
-}
-
-void ModelMesh::setPos(const glm::vec3& pos) {
-	this->pos = pos;
-	dirtyMat = true;
-}
-
-const glm::vec3& ModelMesh::getPos() {
-	return pos;
-}
-
-void ModelMesh::setRotation(const glm::vec3& rotation) {
-	this->rotation = rotation;
-	dirtyMat = true;
-}
-
-const glm::vec3& ModelMesh::getRotation() {
-	return rotation;
-}
-
-void ModelMesh::setScale(float scale) {
-	this->scale = scale;
-	dirtyMat = true;
-}
-
-float ModelMesh::getScale() {
-	return 0.0f;
-}

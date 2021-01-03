@@ -5,7 +5,7 @@ Camera::Camera()
 	pos = glm::vec3(0.0f, 0.0f, 5.0f);
 
 	front = glm::vec3(0.0f, 0.0f, -1.0f);
-	right = glm::vec3(1.0f, 0.0f, 0.0f);
+	right = glm::vec3(-1.0f, 0.0f, 0.0f);
 	up = glm::cross(front, right);
 
 	rotateMat = createRotate(0.f, 0.f, 0.f);
@@ -36,8 +36,8 @@ void Camera::processInput(GLFWwindow* window, float dt)
 {
 	accumulatedTime += dt;
 
-	const float moveSpeed = 5.0f;
-	const float rotateSpeed = 0.5f;
+	const float moveSpeed = 7.0f;
+	const float rotateSpeed = 0.9f;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		updateCamera();
@@ -78,16 +78,11 @@ void Camera::processInput(GLFWwindow* window, float dt)
 	float angleY = 0.0f;
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		angleY -= rotateSpeed * dt;
-		dirty = true;
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		angleY -= rotateSpeed * dt;
+		angleY += rotateSpeed * dt;
 		dirty = true;
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		angleY += rotateSpeed * dt;
+		angleY -= rotateSpeed * dt;
 		dirty = true;
 	}
 

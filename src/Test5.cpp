@@ -3,18 +3,69 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "ModelMesh.h"
+
 Test5::Test5() {
 	title = "Test 5";
-	//throttleFps = FPS_30;
+	throttleFps = 0;
 }
 
 int Test5::onSetup() {
-	mesh = new ModelMesh(*this, "texture_cube", "test5");
-	if (mesh->load()) {
-		return -1;
+	// mountains
+	if (true) {
+		ModelMesh* mesh = new ModelMesh(*this, "mountains", "test5");
+		if (mesh->load()) {
+			return -1;
+		}
+
+		mesh->prepare();
+
+		Node* node = new Node(mesh, glm::vec3(0, -20, -20));
+//		node->setScale(0.01);
+		nodes.push_back(node);
 	}
 
-	mesh->prepare();
+	// active
+	if (true) {
+		ModelMesh* mesh = new ModelMesh(*this, "texture_cube", "test5");
+		if (mesh->load()) {
+			return -1;
+		}
+
+		mesh->prepare();
+
+		active = new Node(mesh, glm::vec3(0));
+		nodes.push_back(active);
+	}
+
+	// cubes
+	if (true) {
+		ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test5");
+		if (mesh->load()) {
+			return -1;
+		}
+
+		mesh->prepare();
+
+		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, -5)));
+		nodes.push_back(new Node(mesh, glm::vec3(5, 0, -5)));
+		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, 5)));
+		nodes.push_back(new Node(mesh, glm::vec3(5, 0, 5)));
+	}
+
+	// ball
+	if (true) {
+		ModelMesh* mesh = new ModelMesh(*this, "texture_ball", "test5");
+		if (mesh->load()) {
+			return -1;
+		}
+
+		mesh->prepare();
+
+		Node* node = new Node(mesh, glm::vec3(0, 3, 0));
+		node->setScale(2.0f);
+		nodes.push_back(node);
+	}
 
 	return 0;
 }
@@ -25,46 +76,54 @@ int Test5::onRender(float dt) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glEnable(GL_CULL_FACE); // cull face
+	glCullFace(GL_BACK); // cull back face
+	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
+
 	glEnable(GL_DEPTH_TEST);
 
 	int w = 0;
 	int h = 0;
 	glfwGetWindowSize(window, &w, &h);
 
-	glm::mat4 view = camera.getView();
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
+	const glm::mat4& view = camera.getView();
+	const glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 1000.0f);
 
 	const glm::mat4 vpMat = projection * view;
 
 //	mesh->setPos(glm::vec3(0, 0, -10.0f));
 
-	// tri 1
-	if (false) {
-		const float radius = 4.0f;
-		float posX = sin(accumulatedTime / 0.9f) * radius;
-		float posY = sin(accumulatedTime * 1.1f) * radius / 3.0f;
-		float posZ = cos(accumulatedTime) * radius / 2.0f;
+	if (active) {
+		if (true) {
+			const float radius = 4.0f;
+			float posX = sin(accumulatedTime / 0.9f) * radius;
+			float posY = sin(accumulatedTime * 1.1f) * radius / 3.0f;
+			float posZ = cos(accumulatedTime) * radius / 2.0f;
 
-		mesh->setPos(glm::vec3(posX, posY, posZ));
+			active->setPos(glm::vec3(posX, posY, posZ));
+		}
+
+		if (true) {
+			const float radius = 2.0f;
+			float rotX = accumulatedTime * radius;
+			float rotY = accumulatedTime * radius * 1.1f;
+			float rotZ = accumulatedTime * radius * 1.2f;
+
+			active->setRotation(glm::vec3(rotX, rotY, rotZ));
+		}
+
+		if (true) {
+			const float radius = 2.0f;
+			float scale = sin(accumulatedTime / 4.0f) * radius;
+
+			active->setScale(scale);
+		}
 	}
-	if (false) {
-		const float radius = 2.0f;
-		float rotX = accumulatedTime * radius;
-		float rotY = accumulatedTime * radius * 1.1f;
-		float rotZ = accumulatedTime * radius * 1.2f;
 
-		mesh->setRotation(glm::vec3(rotX, rotY, rotZ));
+	for (auto node : nodes) {
+		node->draw(dt, vpMat);
 	}
 
-	if (false) {
-		const float radius = 2.0f;
-		float scale = sin(accumulatedTime / 4.0f) * radius;
-
-		mesh->setScale(scale);
-	}
-
-	mesh->bind(dt, vpMat);
-	mesh->draw(dt, vpMat);
 	glBindVertexArray(0);
 
 	return 0;
