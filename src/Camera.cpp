@@ -8,7 +8,8 @@ Camera::Camera()
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
 	right = glm::cross(front, up);
 
-	rotateMat = createRotate(0.f, 0.f, 0.f);
+	rotateMat = glm::mat4(1.0f);
+	updateRotate(rotateMat, 0.f, 0.f, 0.f);
 
 	dirty = true;
 	updateCamera();
@@ -32,68 +33,111 @@ const glm::mat4& Camera::getView()
 	return viewMat;
 }
 
-void Camera::processInput(GLFWwindow* window, float dt)
+void Camera::onKey(GLFWwindow* window, float dt)
 {
 	accumulatedTime += dt;
 
-	const float moveSpeed = 7.0f;
-	const float rotateSpeed = 0.9f;
-
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		updateCamera();
-		this->pos += viewFront * dt * moveSpeed;
+		this->pos += viewFront * dt * moveStep;
 		dirty = true;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 		updateCamera();
-		this->pos -= viewFront * dt * moveSpeed;
+		this->pos -= viewFront * dt * moveStep;
 		dirty = true;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		updateCamera();
-		this->pos -= viewRight * dt * moveSpeed;
+		this->pos -= viewRight * dt * moveStep;
 		dirty = true;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		updateCamera();
-		this->pos += viewRight * dt * moveSpeed;
+		this->pos += viewRight * dt * moveStep;
 		dirty = true;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 		updateCamera();
-		this->pos += viewUp * dt * moveSpeed;
+		this->pos += viewUp * dt * moveStep;
 		dirty = true;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 		updateCamera();
-		this->pos -= viewUp * dt * moveSpeed;
+		this->pos -= viewUp * dt * moveStep;
 		dirty = true;
 	}
 
+	float angleX = 0.0f;
 	float angleY = 0.0f;
+	float angleZ = 0.0f;
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		angleY += rotateSpeed * dt;
+		angleY += rotateStep * dt;
 		dirty = true;
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		angleY -= rotateSpeed * dt;
+		angleY -= rotateStep * dt;
 		dirty = true;
 	}
 
-	if (angleY) {
-		rotateMat = glm::rotate(
-			rotateMat,
-			angleY,
-			glm::vec3(0.0f, 1.0f, 0.0f)
-		);
+	if (angleX || angleY || angleZ) {
+		updateRotate(rotateMat, angleX, angleY, angleZ);
 		dirty = true;
 	}
+}
+
+void Camera::onMouseMove(GLFWwindow* window, float xoffset, float yoffset)
+{
+	float angleX = 0.0f;
+	float angleY = 0.0f;
+	float angleZ = 0.0f;
+
+	const float MAX_CHANGE = 25.f;
+
+	if (true) {
+		angleY -= mouseSensitivity * xoffset;
+
+		if (angleY < -MAX_CHANGE) {
+			angleY = -MAX_CHANGE;
+		}
+		if (angleY > MAX_CHANGE) {
+			angleY = MAX_CHANGE;
+		}
+	}
+
+	if (true) {
+		angleX += mouseSensitivity * yoffset;
+
+		if (angleX < -MAX_CHANGE) {
+			angleX = -MAX_CHANGE;
+		}
+		if (angleX > MAX_CHANGE) {
+			angleX = MAX_CHANGE;
+		}
+	}
+
+	if (angleX || angleY || angleZ) {
+		updateRotate(rotateMat, angleX, angleY, angleZ);
+		dirty = true;
+	}
+}
+
+void Camera::onMouseScroll(GLFWwindow* window, float xoffset, float yoffset)
+{
+	zoom -= yoffset;
+	if (zoom <= 0.1f) {
+		zoom = 0.1f;
+	}
+	if (zoom <= 10.f) {
+		zoom = 10.f;
+	}
+	dirty = true;
 }
 
 void Camera::updateCamera()
@@ -107,26 +151,24 @@ void Camera::updateCamera()
 	viewRight = glm::cross(viewFront, viewUp);
 }
 
-glm::mat4 Camera::createRotate(float angleX, float angleY, float angleZ)
+void Camera::updateRotate(glm::mat4& rot, float angleX, float angleY, float angleZ)
 {
 	// ORDER: yaw - pitch - roll
-	glm::mat4 rot = glm::mat4(1.0f);
 	rot = glm::rotate(
 		rot,
-		angleX,
-		glm::vec3(0.0f, 0.0f, 1.0f)
+		glm::radians(angleX),
+		glm::vec3(1.0f, 0.0f, 0.0f)
 	);
 
 	rot = glm::rotate(
 		rot,
-		angleY,
+		glm::radians(angleY),
 		glm::vec3(0.0f, 1.0f, 0.0f)
 	);
 
 	rot = glm::rotate(
 		rot,
-		angleZ,
-		glm::vec3(-1.0f, 0.0f, 0.0f)
+		glm::radians(angleZ),
+		glm::vec3(0.0f, 0.0f, 1.0f)
 	);
-	return rot;
 }

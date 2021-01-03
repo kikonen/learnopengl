@@ -131,7 +131,7 @@ int Test5::onRender(float dt) {
 	return 0;
 }
 
-void Test5::processInput(GLFWwindow* window, float dt) {
-	Engine::processInput(window, dt);
+void Test5::processInput(float dt) {
+	Engine::processInput(dt);
 }
 

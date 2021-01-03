@@ -49,13 +49,16 @@ public:
 
     GLFWwindow* createWindow();
 
-    // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-    // ---------------------------------------------------------------------------------------------------------
-    virtual void processInput(GLFWwindow* window, float dt);
+    virtual void processInput(float dt);
 
-    // glfw: whenever the window size changed (by OS or user resize) this callback function executes
-    // ---------------------------------------------------------------------------------------------
+    // https://stackoverflow.com/questions/31581200/glfw-call-to-non-static-class-function-in-static-key-callback
+    void on_framebuffer_size(int width, int height);
+    void on_mouse(double xpos, double ypos);
+    void on_scroll(double xoffset, double yoffset);
+
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+    static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+    static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 public:
     bool debug;
@@ -65,9 +68,15 @@ public:
     Camera camera;
 
     float accumulatedTime = 0.0f;
+
+    static Engine* current;
 protected:
     GLFWwindow* window = nullptr;
 private:
     int width;
     int height;
+
+    float lastMouseX = 0;
+    float lastMouseY = 0;
+    bool firstMouse = true;
 };

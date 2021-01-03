@@ -1,6 +1,8 @@
 #include "Engine.h"
 
 
+Engine* Engine::current = nullptr;
+
 Engine::Engine() {
 	title = "GL test";
 	width = 800;
@@ -48,7 +50,7 @@ void Engine::run() {
 
 		// input
 		// -----
-		processInput(window, dt);
+		processInput(dt);
 
 		// render
 		// ------
@@ -104,7 +106,11 @@ GLFWwindow* Engine::createWindow() {
 		return NULL;
 	}
 	glfwMakeContextCurrent(window);
+
+	// callbacks
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
@@ -117,21 +123,55 @@ GLFWwindow* Engine::createWindow() {
 	return window;
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void Engine::processInput(GLFWwindow* window, float dt)
+void Engine::processInput(float dt)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
-	camera.processInput(window, dt);
+	camera.onKey(window, dt);
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
+void Engine::on_framebuffer_size(int width, int height)
+{
+	glViewport(0, 0, width, height);
+	this->width = width;
+	this->height = height;
+}
+
+void Engine::on_mouse(double xpos, double ypos)
+{
+	if (firstMouse) {
+		lastMouseX = xpos;
+		lastMouseX = ypos;
+		firstMouse = false;
+	}
+
+	// NOTE KI Match world axis directions
+	int xoffset = xpos - lastMouseX;
+	int yoffset = lastMouseY - ypos;
+
+	lastMouseX = xpos;
+	lastMouseY = ypos;
+
+	camera.onMouseMove(window, xoffset, yoffset);
+}
+
+void Engine::on_scroll(double xoffset, double yoffset)
+{
+	camera.onMouseScroll(window, xoffset, yoffset);
+}
+
 void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	// make sure the viewport matches the new window dimensions; note that width and 
-	// height will be significantly larger than specified on retina displays.
-	glViewport(0, 0, width, height);
+	current->on_framebuffer_size(width, height);
+}
+
+void Engine::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	current->on_mouse(xpos, ypos);
+}
+
+void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	current->on_scroll(xoffset, yoffset);
 }

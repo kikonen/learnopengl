@@ -17,7 +17,7 @@ public:
 	int onSetup() override;
 	int onRender(float dt) override;
 
-	void processInput(GLFWwindow* window, float dt) override;
+	void processInput(float dt) override;
 private:
 	float elapsed = 0;
 

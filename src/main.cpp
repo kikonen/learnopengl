@@ -14,6 +14,7 @@
 int main()
 {
     Engine* engine = new Test5();
+    Engine::current = engine;
 
     if (engine->init()) {
         return -1;
