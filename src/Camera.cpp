@@ -5,8 +5,8 @@ Camera::Camera()
 	pos = glm::vec3(0.0f, 0.0f, 5.0f);
 
 	front = glm::vec3(0.0f, 0.0f, -1.0f);
-	right = glm::vec3(-1.0f, 0.0f, 0.0f);
-	up = glm::cross(front, right);
+	up = glm::vec3(0.0f, 1.0f, 0.0f);
+	right = glm::cross(front, up);
 
 	rotateMat = createRotate(0.f, 0.f, 0.f);
 
@@ -53,13 +53,13 @@ void Camera::processInput(GLFWwindow* window, float dt)
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		updateCamera();
-		this->pos += viewRight * dt * moveSpeed;
+		this->pos -= viewRight * dt * moveSpeed;
 		dirty = true;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		updateCamera();
-		this->pos -= viewRight * dt * moveSpeed;
+		this->pos += viewRight * dt * moveSpeed;
 		dirty = true;
 	}
 
@@ -103,8 +103,8 @@ void Camera::updateCamera()
 	}
 
 	viewFront = glm::normalize(rotateMat * glm::vec4(front, 1.f));
-	viewRight = glm::normalize(rotateMat * glm::vec4(right, 1.f));
-	viewUp = glm::cross(front, right);
+	viewUp = glm::normalize(rotateMat * glm::vec4(up, 1.f));
+	viewRight = glm::cross(viewFront, viewUp);
 }
 
 glm::mat4 Camera::createRotate(float angleX, float angleY, float angleZ)
