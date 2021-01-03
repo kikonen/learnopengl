@@ -6,7 +6,7 @@ Camera::Camera()
 
 	front = glm::vec3(0.0f, 0.0f, -1.0f);
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
-	right = glm::cross(front, up);
+	right = glm::normalize(glm::cross(front, up));
 
 	rotateMat = glm::mat4(1.0f);
 	updateRotate(rotateMat, 0.f, 0.f, 0.f);
@@ -148,7 +148,7 @@ void Camera::updateCamera()
 
 	viewFront = glm::normalize(rotateMat * glm::vec4(front, 1.f));
 	viewUp = glm::normalize(rotateMat * glm::vec4(up, 1.f));
-	viewRight = glm::cross(viewFront, viewUp);
+	viewRight = glm::normalize(glm::cross(viewFront, viewUp));
 }
 
 void Camera::updateRotate(glm::mat4& rot, float angleX, float angleY, float angleZ)
