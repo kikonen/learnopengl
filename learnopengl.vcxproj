@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ModelMeshLoader.cpp" />
     <ClCompile Include="src\Node.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Camera.cpp" />
@@ -176,6 +177,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ModelMeshLoader.h" />
     <ClInclude Include="src\Node.h" />
     <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\Camera.h" />

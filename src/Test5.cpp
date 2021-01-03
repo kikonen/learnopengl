@@ -36,6 +36,8 @@ int Test5::onSetup() {
 
 		active = new Node(mesh, glm::vec3(0));
 		nodes.push_back(active);
+
+		nodes.push_back(new Node(mesh, glm::vec3(5, 5, 5)));
 	}
 
 	// cubes
