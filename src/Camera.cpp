@@ -1,5 +1,9 @@
 #include "Camera.h"
 
+const float MIN_ZOOM = 1.0f;
+const float MAX_ZOOM = 45.0f;
+
+
 Camera::Camera()
 {
 	pos = glm::vec3(0.0f, 0.0f, 5.0f);
@@ -74,72 +78,66 @@ void Camera::onKey(Input* input, float dt)
 	}
 
 	if (true) {
-		float angleX = 0.0f;
-		float angleY = 0.0f;
-		float angleZ = 0.0f;
-
 		if (input->isPressed(Key::ROTATE_LEFT)) {
-			angleY += rotateStep * dt;
+			yaw += rotateStep * dt;
 			dirty = true;
 		}
 		if (input->isPressed(Key::ROTATE_RIGHT)) {
-			angleY -= rotateStep * dt;
+			yaw -= rotateStep * dt;
 			dirty = true;
 		}
 
-		if (angleX || angleY || angleZ) {
-			updateRotate(rotateMat, angleX, angleY, angleZ);
-			dirty = true;
-		}
+		updateRotate(rotateMat, yaw, pitch, roll);
+	}
+
+	if (input->isPressed(Key::ZOOM_IN)) {
+		updateZoom(zoom - zoomStep * dt);
+	}
+	if (input->isPressed(Key::ZOOM_OUT)) {
+		updateZoom(zoom + zoomStep * dt);
 	}
 }
 
 void Camera::onMouseMove(Input* input, float xoffset, float yoffset)
 {
-	float angleX = 0.0f;
-	float angleY = 0.0f;
-	float angleZ = 0.0f;
-
-	const float MAX_CHANGE = 25.f;
+	const float MAX_ANGLE = 89.f;
 
 	if (true) {
-		angleY -= mouseSensitivity * xoffset;
-
-		if (angleY < -MAX_CHANGE) {
-			angleY = -MAX_CHANGE;
-		}
-		if (angleY > MAX_CHANGE) {
-			angleY = MAX_CHANGE;
-		}
+		yaw -= mouseSensitivity * xoffset;
 	}
 
 	if (true) {
-		angleX += mouseSensitivity * yoffset;
+		pitch += mouseSensitivity * yoffset;
 
-		if (angleX < -MAX_CHANGE) {
-			angleX = -MAX_CHANGE;
+		if (pitch < -MAX_ANGLE) {
+			pitch = -MAX_ANGLE;
 		}
-		if (angleX > MAX_CHANGE) {
-			angleX = MAX_CHANGE;
+		if (pitch > MAX_ANGLE) {
+			pitch = MAX_ANGLE;
 		}
 	}
 
-	if (angleX || angleY || angleZ) {
-		updateRotate(rotateMat, angleX, angleY, angleZ);
-		dirty = true;
-	}
+	updateRotate(rotateMat, yaw, pitch, roll);
+	dirty = true;
 }
 
 void Camera::onMouseScroll(Input* input, float xoffset, float yoffset)
 {
-	zoom -= yoffset;
-	if (zoom <= 0.1f) {
-		zoom = 0.1f;
+	updateZoom(zoom - yoffset);
+}
+
+void Camera::updateZoom(float aZoom)
+{
+	if (aZoom < MIN_ZOOM) {
+		aZoom = MIN_ZOOM;
 	}
-	if (zoom <= 10.f) {
-		zoom = 10.f;
+	if (aZoom > MAX_ZOOM) {
+		aZoom = MAX_ZOOM;
 	}
-	dirty = true;
+	if (aZoom != zoom) {
+		zoom = aZoom;
+		dirty = true;
+	}
 }
 
 void Camera::updateCamera()
@@ -153,24 +151,26 @@ void Camera::updateCamera()
 	viewRight = glm::normalize(glm::cross(viewFront, viewUp));
 }
 
-void Camera::updateRotate(glm::mat4& rot, float angleX, float angleY, float angleZ)
+void Camera::updateRotate(glm::mat4& rot, float yaw, float pitch, float roll)
 {
+	rot = glm::mat4(1.f);
+
 	// ORDER: yaw - pitch - roll
 	rot = glm::rotate(
 		rot,
-		glm::radians(angleX),
-		glm::vec3(1.0f, 0.0f, 0.0f)
-	);
-
-	rot = glm::rotate(
-		rot,
-		glm::radians(angleY),
+		glm::radians(yaw),
 		glm::vec3(0.0f, 1.0f, 0.0f)
 	);
 
 	rot = glm::rotate(
 		rot,
-		glm::radians(angleZ),
+		glm::radians(pitch),
+		glm::vec3(1.0f, 0.0f, 0.0f)
+	);
+
+	rot = glm::rotate(
+		rot,
+		glm::radians(roll),
 		glm::vec3(0.0f, 0.0f, 1.0f)
 	);
 }

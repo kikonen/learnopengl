@@ -11,6 +11,9 @@ Input::Input(GLFWwindow* window) : window(window)
 	mapping[ROTATE_RIGHT] = new int[] { GLFW_KEY_E, 0 };
 	mapping[UP] = new int[] { GLFW_KEY_PAGE_UP, 0 };
 	mapping[DOWN] = new int[] { GLFW_KEY_PAGE_DOWN, 0 };
+
+	mapping[ZOOM_IN] = new int[] { GLFW_KEY_HOME, 0 };
+	mapping[ZOOM_OUT] = new int[] { GLFW_KEY_END, 0 };
 }
 
 Input::~Input()

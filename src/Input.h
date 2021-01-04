@@ -13,6 +13,8 @@ enum Key {
 	BACKWARD,
 	ROTATE_LEFT,
 	ROTATE_RIGHT,
+	ZOOM_IN,
+	ZOOM_OUT,
 };
 
 //

@@ -23,11 +23,14 @@ public:
 	void onMouseMove(Input* input, float xoffset, float yoffset);
 	void onMouseScroll(Input* input, float xoffset, float yoffset);
 
+public:
+	float zoom = 45.0f;
+
 private:
 	float moveStep = 8.0f;
 	float rotateStep = 20.f;
+	float zoomStep = 5.0f;
 	float mouseSensitivity = 0.1f;
-	float zoom = 1.0f;
 
 	glm::vec3 pos;
 	glm::vec3 front;
@@ -41,9 +44,15 @@ private:
 	glm::vec3 viewRight;
 	glm::vec3 viewUp;
 
+	int yaw = 0;
+	int pitch = 0;
+	int roll = 0;
+
 	float accumulatedTime = 0;
 
 	bool dirty;
+
+	void updateZoom(float aZoom);
 
 	void updateCamera();
 	void updateRotate(glm::mat4& rot, float angleX, float angleY, float angleZ);
