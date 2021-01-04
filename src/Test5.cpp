@@ -91,7 +91,7 @@ int Test5::onRender(float dt) {
 	glfwGetWindowSize(window, &w, &h);
 
 	const glm::mat4& view = camera.getView();
-	const glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 1000.0f);
+	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
 
 	const glm::mat4 vpMat = projection * view;
 
