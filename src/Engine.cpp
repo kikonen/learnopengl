@@ -120,15 +120,17 @@ GLFWwindow* Engine::createWindow() {
 		return NULL;
 	}
 
+	input = new Input(window);
+
 	return window;
 }
 
 void Engine::processInput(float dt)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+	if (input->isPressed(Key::EXIT)) {
 		glfwSetWindowShouldClose(window, true);
 	}
-	camera.onKey(window, dt);
+	camera.onKey(input, dt);
 }
 
 void Engine::on_framebuffer_size(int width, int height)
@@ -140,25 +142,13 @@ void Engine::on_framebuffer_size(int width, int height)
 
 void Engine::on_mouse(double xpos, double ypos)
 {
-	if (firstMouse) {
-		lastMouseX = xpos;
-		lastMouseX = ypos;
-		firstMouse = false;
-	}
-
-	// NOTE KI Match world axis directions
-	int xoffset = xpos - lastMouseX;
-	int yoffset = lastMouseY - ypos;
-
-	lastMouseX = xpos;
-	lastMouseY = ypos;
-
-	camera.onMouseMove(window, xoffset, yoffset);
+	input->handleMouse(xpos, ypos);
+	camera.onMouseMove(input, input->mouseXoffset, input->mouseYoffset);
 }
 
 void Engine::on_scroll(double xoffset, double yoffset)
 {
-	camera.onMouseScroll(window, xoffset, yoffset);
+	camera.onMouseScroll(input, xoffset, yoffset);
 }
 
 void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)

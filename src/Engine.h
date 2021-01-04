@@ -9,6 +9,7 @@
 #include <chrono>
 #include <thread>
 
+#include "Input.h"
 #include "Camera.h"
 
 
@@ -72,11 +73,8 @@ public:
     static Engine* current;
 protected:
     GLFWwindow* window = nullptr;
+    Input* input;
 private:
     int width;
     int height;
-
-    float lastMouseX = 0;
-    float lastMouseY = 0;
-    bool firstMouse = true;
 };

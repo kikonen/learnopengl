@@ -69,6 +69,8 @@ int Test5::onSetup() {
 		nodes.push_back(node);
 	}
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	return 0;
 }
 

@@ -33,66 +33,68 @@ const glm::mat4& Camera::getView()
 	return viewMat;
 }
 
-void Camera::onKey(GLFWwindow* window, float dt)
+void Camera::onKey(Input* input, float dt)
 {
 	accumulatedTime += dt;
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+	if (input->isPressed(Key::FORWARD)) {
 		updateCamera();
 		this->pos += viewFront * dt * moveStep;
 		dirty = true;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+	if (input->isPressed(Key::BACKWARD)) {
 		updateCamera();
 		this->pos -= viewFront * dt * moveStep;
 		dirty = true;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+	if (input->isPressed(Key::LEFT)) {
 		updateCamera();
 		this->pos -= viewRight * dt * moveStep;
 		dirty = true;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+	if (input->isPressed(Key::RIGHT)) {
 		updateCamera();
 		this->pos += viewRight * dt * moveStep;
 		dirty = true;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+	if (input->isPressed(Key::UP)) {
 		updateCamera();
 		this->pos += viewUp * dt * moveStep;
 		dirty = true;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+	if (input->isPressed(Key::DOWN)) {
 		updateCamera();
 		this->pos -= viewUp * dt * moveStep;
 		dirty = true;
 	}
 
-	float angleX = 0.0f;
-	float angleY = 0.0f;
-	float angleZ = 0.0f;
+	if (true) {
+		float angleX = 0.0f;
+		float angleY = 0.0f;
+		float angleZ = 0.0f;
 
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		angleY += rotateStep * dt;
-		dirty = true;
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		angleY -= rotateStep * dt;
-		dirty = true;
-	}
+		if (input->isPressed(Key::ROTATE_LEFT)) {
+			angleY += rotateStep * dt;
+			dirty = true;
+		}
+		if (input->isPressed(Key::ROTATE_RIGHT)) {
+			angleY -= rotateStep * dt;
+			dirty = true;
+		}
 
-	if (angleX || angleY || angleZ) {
-		updateRotate(rotateMat, angleX, angleY, angleZ);
-		dirty = true;
+		if (angleX || angleY || angleZ) {
+			updateRotate(rotateMat, angleX, angleY, angleZ);
+			dirty = true;
+		}
 	}
 }
 
-void Camera::onMouseMove(GLFWwindow* window, float xoffset, float yoffset)
+void Camera::onMouseMove(Input* input, float xoffset, float yoffset)
 {
 	float angleX = 0.0f;
 	float angleY = 0.0f;
@@ -128,7 +130,7 @@ void Camera::onMouseMove(GLFWwindow* window, float xoffset, float yoffset)
 	}
 }
 
-void Camera::onMouseScroll(GLFWwindow* window, float xoffset, float yoffset)
+void Camera::onMouseScroll(Input* input, float xoffset, float yoffset)
 {
 	zoom -= yoffset;
 	if (zoom <= 0.1f) {

@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "Input.h"
 
 /**
 * https://learnopengl.com/Getting-started/Camera
@@ -18,9 +19,9 @@ public:
 
 	const glm::mat4& getView();
 
-	void onKey(GLFWwindow* window, float dt);
-	void onMouseMove(GLFWwindow* window, float xoffset, float yoffset);
-	void onMouseScroll(GLFWwindow* window, float xoffset, float yoffset);
+	void onKey(Input* input, float dt);
+	void onMouseMove(Input* input, float xoffset, float yoffset);
+	void onMouseScroll(Input* input, float xoffset, float yoffset);
 
 private:
 	float moveStep = 8.0f;
