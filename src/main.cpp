@@ -5,15 +5,11 @@
 
 #include "Engine.h"
 
-#include "Test1.h"
-#include "Test2.h"
-#include "Test3.h"
-#include "Test4.h"
-#include "Test5.h"
+#include "Test6.h"
 
 int main()
 {
-    Engine* engine = new Test5();
+    Engine* engine = new Test6();
     Engine::current = engine;
 
     if (engine->init()) {

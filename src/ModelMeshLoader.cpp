@@ -71,7 +71,9 @@ int ModelMeshLoader::load(
 				normals.push_back(v);
 			}
 			else if (k == "usemtl") {
-				material = materials[v1];
+				if (materials.count(v1)) {
+					material = materials[v1];
+				}
 			}
 			else if (k == "f") {
 				std::vector<std::string> vv1;
@@ -102,11 +104,6 @@ int ModelMeshLoader::load(
 				material = NULL;
 				tris.push_back(tri);
 			}
-		}
-
-		for (auto const& x : materials) {
-			Material* material = x.second;
-			material->loadTexture(BASE_DIR);
 		}
 
 		/*		int colorIdx = 0;
@@ -218,7 +215,13 @@ int ModelMeshLoader::loadMaterials(
 				material->d = stof(v1);
 			}
 			else if (k == "map_Kd") {
-				material->map_kd = v1;
+				std::stringstream is2(line);
+				is2 >> k;
+				std::stringstream tmp;
+				tmp << is2.rdbuf();
+				std::string path = tmp.str();
+				path.erase(0, path.find_first_not_of(' '));
+				material->map_kd = path;
 			}
 		}
 		file.close();

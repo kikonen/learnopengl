@@ -26,10 +26,13 @@ int Material::loadTexture(const std::string& baseDir)
 
 	std::cout << "\n== TEXTURE: " << texturePath << " ===\n";
 
-	texture = new Texture(texturePath);
-	texture->load();
 
-	return 0;
+	Texture* tmp = new Texture(texturePath);
+	int res = tmp->load();
+	if (!res) {
+		texture = tmp;
+	}
+	return res;
 }
 
 void Material::prepare(Shader* shader)

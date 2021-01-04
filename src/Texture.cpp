@@ -52,5 +52,11 @@ int Texture::load() {
 		&channels,
 		STBI_rgb);
 
-	return 0;
+	if (image) {
+		std::cout << "LOADED::IMAGE " << path << std::endl;
+	} else {
+		std::cout << "ERROR::IMAGE::LOAD_FAILED " << path << std::endl;
+	}
+
+	return image ? 0 : -1;
 }
