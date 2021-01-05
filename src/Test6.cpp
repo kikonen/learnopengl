@@ -23,7 +23,9 @@ int Test6::onSetup() {
 		Node* node = new Node(mesh, glm::vec3(0, 4, 0));
 		//node->setScale(0.5f);
 		nodes.push_back(node);
-		light = node;
+
+		light = new Light();
+		light->pos = node->getPos();
 	}
 
 	// mountains
@@ -108,7 +110,7 @@ int Test6::onRender(float dt) {
 	const glm::mat4& view = camera.getView();
 	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
 
-	const glm::mat4 vpMat = projection * view;
+	RenderContext ctx(*this, dt, view, projection, nullptr);
 
 	//	mesh->setPos(glm::vec3(0, 0, -10.0f));
 
@@ -140,7 +142,7 @@ int Test6::onRender(float dt) {
 	}
 
 	for (auto node : nodes) {
-		node->draw(dt, vpMat);
+		node->draw(ctx);
 	}
 
 	glBindVertexArray(0);

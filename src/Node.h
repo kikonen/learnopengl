@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "ModelMesh.h"
+#include "RenderContext.h"
 
 class Node
 {
@@ -9,7 +10,7 @@ public:
 	Node(ModelMesh* mesh, const glm::vec3& pos);
 	~Node();
 
-	int draw(float dt, const glm::mat4& vpMat);
+	int draw(const RenderContext& ctx);
 
 	void setPos(const glm::vec3& pos);
 	const glm::vec3& getPos();

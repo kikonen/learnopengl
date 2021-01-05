@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "Mesh.h"
+#include "Shader.h"
 
 class Light
 {
@@ -9,10 +9,10 @@ public:
 	Light();
 	~Light();
 
-	void bind(Mesh* mesh);
-private:
-	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
-	glm::vec3 dir = { 0.0f, 0.0f, -1.0f };
+	void bind(Shader* shader);
+public:
+	glm::vec3 pos = { 0.0f, 3.0f, 0.f };
 	glm::vec3 color = { 0.8f, 0.8f, 0.1f };
+private:
 };
 

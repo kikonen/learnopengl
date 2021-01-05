@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Vertex.h"
+#include "Light.h"
 
 class ModelMesh : public Mesh {
 public:
@@ -18,8 +19,8 @@ public:
 	~ModelMesh();
 
 	virtual int prepare() override;
-	virtual int bind(float dt, const glm::mat4& vpMat) override;
-	virtual int draw(float dt, const glm::mat4& vpMat) override;
+	virtual int bind(const RenderContext& ctx) override;
+	virtual int draw(const RenderContext& ctx) override;
 
 	int load();
 public:
@@ -35,6 +36,4 @@ private:
 
 	std::map<std::string, Material*> materials;
 	bool hasTexture = false;
-
-	float elapsed = 0;
  };

@@ -1,10 +1,12 @@
 #version 330 core
 in vec2 texCoord;
 in vec4 color;
-in float colorW;
+
+uniform vec3 lightColor;
 
 out vec4 fragColor;
 
 void main() {
-  fragColor = vec4(color.x, color.y, color.z, 1.0f);
+//  fragColor = vec4(color * lightColor, 1.0f);
+  fragColor = color;
 }

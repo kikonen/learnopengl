@@ -4,6 +4,7 @@
 #include <glm/ext.hpp>
 
 #include "ModelMesh.h"
+#include "RenderContext.h"
 
 Test5::Test5() {
 	title = "Test 5";
@@ -90,11 +91,10 @@ int Test5::onRender(float dt) {
 	int h = 0;
 	glfwGetWindowSize(window, &w, &h);
 
-	const glm::mat4& view = camera.getView();
-	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
+	const glm::mat4& viewMat = camera.getView();
+	const glm::mat4 projectionMat = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
 
-	const glm::mat4 vpMat = projection * view;
-
+	RenderContext ctx(*this, dt, viewMat, projectionMat, nullptr);
 //	mesh->setPos(glm::vec3(0, 0, -10.0f));
 
 	if (active) {
@@ -125,7 +125,7 @@ int Test5::onRender(float dt) {
 	}
 
 	for (auto node : nodes) {
-		node->draw(dt, vpMat);
+		node->draw(ctx);
 	}
 
 	glBindVertexArray(0);

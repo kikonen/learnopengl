@@ -9,16 +9,16 @@ Node::~Node()
 {
 }
 
-int Node::draw(float dt, const glm::mat4& vpMat)
+int Node::draw(const RenderContext& ctx)
 {
 	updateModelMatrix();
 
-	mesh->bind(dt, vpMat);
+	mesh->bind(ctx);
 
 	std::string transformName("transform");
-	mesh->shader->setMat4(transformName, vpMat * modelMat);
+	mesh->shader->setMat4(transformName, ctx.projected * modelMat);
 
-	mesh->draw(dt, vpMat);
+	mesh->draw(ctx);
 	return 0;
 }
 

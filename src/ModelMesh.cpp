@@ -130,7 +130,7 @@ int ModelMesh::prepare()
 	return 0;
 }
 
-int ModelMesh::bind(float dt, const glm::mat4& vpMat)
+int ModelMesh::bind(const RenderContext& ctx)
 {
 	for (auto const& x : materials) {
 		Material* material = x.second;
@@ -143,13 +143,20 @@ int ModelMesh::bind(float dt, const glm::mat4& vpMat)
 	std::string modelColor = { "modelColor" };
 	shader->setFloat3(modelColor, 0.8f, 0.8f, 0.1f);
 
+//		shader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+	std::string lightColor = { "modelColor" };
+	if (ctx.light) {
+		shader->setVec3(lightColor, ctx.light->color);
+	}
+	else {
+		shader->setVec3(lightColor, glm::vec3(1.f));
+	}
+
 	return 0;
 }
 
-int ModelMesh::draw(float dt, const glm::mat4& vpMat)
+int ModelMesh::draw(const RenderContext& ctx)
 {
-	elapsed += dt;
-
 	glDrawElements(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0);
 	return 0;
 }

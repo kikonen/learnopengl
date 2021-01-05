@@ -9,7 +9,8 @@ SimpleMesh::SimpleMesh(
 	bool hasVertexColor,
 	unsigned int indices[],
 	int indicesCount
-) : Mesh(engine, name),
+) : engine(engine),
+	name(name),
 	verticesCount(verticesCount),
 	indicesCount(indicesCount)
 {

@@ -25,6 +25,7 @@ public:
     int createProgram();
 
     void setFloat3(std::string& name, float v1, float v2, float v3);
+    void setVec3(std::string& name, glm::vec3 v);
 
     void setFloat(std::string& name, float value);
     void setInt(std::string& name, int value);

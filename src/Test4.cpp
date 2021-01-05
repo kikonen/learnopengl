@@ -47,6 +47,8 @@ int Test4::onRender(float dt) {
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
+	RenderContext ctx(*this, dt, view, projection, nullptr);
+
 	std::string projectionName = { "projection" };
 	shader->setMat4(projectionName, projection);
 
@@ -78,8 +80,7 @@ int Test4::onRender(float dt) {
 		node->setScale(scale);
 	}
 
-	glm::mat4 vpMat(1.0f);
-	node->draw(dt, vpMat);
+	node->draw(ctx);
 	glBindVertexArray(0);
 
 	return 0;

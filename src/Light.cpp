@@ -5,19 +5,18 @@
 
 Light::Light()
 {
-
 }
 
 Light::~Light()
 {
 }
 
-void Light::bind(Mesh* mesh)
+void Light::bind(Shader* shader)
 {
 	std::string lightPosName = { "lightPos" };
-	mesh->shader->setFloat3(lightPosName, pos.x, pos.y, pos.z);
+	shader->setVec3(lightPosName, pos);
 
 	std::string lightColorName = { "lightColor" };
-	mesh->shader->setFloat3(lightColorName, color.x, color.y, color.z);
-
+	shader->setVec3(lightColorName, color);
 }
+

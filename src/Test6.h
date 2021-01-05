@@ -24,5 +24,5 @@ private:
 	std::vector<Node*> nodes;
 	Node* active;
 
-	Node* light;
+	Light* light;
 };

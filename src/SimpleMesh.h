@@ -9,10 +9,10 @@
 #include <thread>
 #include <string>
 
-#include "Mesh.h"
+#include "Engine.h"
 #include "Shader.h"
 
-class SimpleMesh : public Mesh {
+class SimpleMesh {
 public:
     SimpleMesh(
         const Engine& engine,
@@ -26,11 +26,19 @@ public:
     );
     ~SimpleMesh();
 
-    virtual int prepare() override;
-    virtual int bind(float dt, const glm::mat4& vpMat) override;
-    virtual int draw(float dt, const glm::mat4& vpMat) override;
+    virtual int prepare();
+    virtual int bind(float dt, const glm::mat4& vpMat);
+    virtual int draw(float dt, const glm::mat4& vpMat);
 
 public:
+    unsigned int VBO = 0;
+    unsigned int VAO = 0;
+    unsigned int EBO = 0;
+
+    std::string name;
+    Shader* shader;
+protected:
+    const Engine& engine;
 private:
     int verticesCount;
     int indicesCount;
