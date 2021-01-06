@@ -11,7 +11,7 @@ const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
 
 ModelMeshLoader::ModelMeshLoader(
 	ModelMesh& mesh, 
-	const std::string& modelName) 
+	const std::string& modelName)
 	: mesh(mesh),
 	modelName(modelName)
 {
@@ -152,11 +152,17 @@ int ModelMeshLoader::resolveVertexIndex(
 {
 	// TODO KI actually do sharing of vertexes
 	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
-	glm::vec3& color = colors[pi % colors.size()];
-	if (material && material->kd.x >= 0) {
-		color = material->kd;
+
+	glm::vec3& vertexColor = color;
+	if (debugColors) {
+		vertexColor = colors[pi % colors.size()];
+	} else {
+		if (material && material->kd.x >= 0) {
+			vertexColor = material->kd;
+		}
 	}
-	Vertex v = { positions[pi], textures.empty() ? EMPTY_TEX : textures[ti], normals.empty() ? EMPTY_NORMAL : normals[ni], color };
+
+	Vertex v = { positions[pi], textures.empty() ? EMPTY_TEX : textures[ti], normals.empty() ? EMPTY_NORMAL : normals[ni], vertexColor };
 	vertexes.push_back(v);
 	return vertexes.size() - 1;
 }

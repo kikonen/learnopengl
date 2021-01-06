@@ -14,10 +14,10 @@ int Test6::onSetup() {
 	// light
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "light", "test6");
+		mesh->useWireframe = true;
 		if (mesh->load()) {
 			return -1;
 		}
-
 		mesh->prepare();
 
 		Node* node = new Node(mesh, glm::vec3(0, 4, 0));
@@ -31,10 +31,10 @@ int Test6::onSetup() {
 	// mountains
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "mountains", "test6");
+		mesh->debugColors = true;
 		if (mesh->load()) {
 			return -1;
 		}
-
 		mesh->prepare();
 
 		Node* node = new Node(mesh, glm::vec3(0, -20, -20));
@@ -86,7 +86,7 @@ int Test6::onSetup() {
 		nodes.push_back(node);
 	}
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	return 0;
 }
@@ -111,6 +111,7 @@ int Test6::onRender(float dt) {
 	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
 
 	RenderContext ctx(*this, dt, view, projection, nullptr);
+	//ctx.useWireframe = true;
 
 	//	mesh->setPos(glm::vec3(0, 0, -10.0f));
 

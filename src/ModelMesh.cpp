@@ -22,8 +22,6 @@ ModelMesh::~ModelMesh()
 
 int ModelMesh::prepare()
 {
-	bool useTexture = true;
-
 	if (useTexture && hasTexture) {
 		shader = new Shader(shaderPathBase + ".vs", shaderPathBase + "_tex.fs");
 	} else {
@@ -140,16 +138,18 @@ int ModelMesh::bind(const RenderContext& ctx)
 	shader->use();
 	glBindVertexArray(VAO);
 
-	std::string modelColor = { "modelColor" };
-	shader->setFloat3(modelColor, 0.8f, 0.8f, 0.1f);
-
-//		shader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-	std::string lightColor = { "modelColor" };
+	std::string lightColor = { "lightColor" };
 	if (ctx.light) {
 		shader->setVec3(lightColor, ctx.light->color);
 	}
 	else {
 		shader->setVec3(lightColor, glm::vec3(1.f));
+	}
+
+	if (ctx.useWireframe || useWireframe) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	} else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
 	return 0;
@@ -164,6 +164,8 @@ int ModelMesh::draw(const RenderContext& ctx)
 int ModelMesh::load()
 {
 	ModelMeshLoader loader(*this, modelName);
+	loader.color = color;
+	loader.debugColors = debugColors;
 	int res = loader.load(tris, vertexes, materials);
 
 	for (auto const& x : materials) {

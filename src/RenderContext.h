@@ -21,5 +21,7 @@ public:
 	const glm::mat4& projection;
 	const glm::mat4 projected;
 	const Light* light;
+
+	bool useWireframe = false;
 };
 

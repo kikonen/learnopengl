@@ -23,8 +23,10 @@ public:
 	ModelMesh& mesh;
 	const std::string& modelName;
 
-private:
+	bool debugColors;
 	glm::vec3 color = { 0.8f, 0.8f, 0.0f };
+
+private:
 	std::vector<glm::vec3> colors = {
 		{ 1.0f, 0.0f, 0.0f },
 		{ 0.0f, 1.0f, 0.0f },

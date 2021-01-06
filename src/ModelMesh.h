@@ -24,6 +24,10 @@ public:
 
 	int load();
 public:
+	bool useTexture = true;
+	bool useWireframe = false;
+	bool debugColors = false;
+	glm::vec3 color = { 0.8f, 0.8f, 0.0f };
 
 private:
 	std::string modelName;
