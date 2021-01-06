@@ -25,15 +25,17 @@ map_Kd texture_cube.jpg
 class Material
 {
 public:
-    Material(std::string& name);
+    Material(std::string& name, unsigned int materialId);
     ~Material();
     int loadTexture(const std::string& baseDir);
 
     void prepare(Shader* shader);
-    void bind();
+    void bind(Shader* shader);
 public:
+    const std::string name;
+    const unsigned int materialId;
+
     std::string materialDir;
-    std::string name;
 
     float ns = 0.0f;
     glm::vec3 ka;

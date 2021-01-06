@@ -6,8 +6,8 @@
 #include "Shader.h"
 
 Texture::Texture(std::string& path)
+	: path(path)
 {
-	this->path = path;
 }
 
 Texture::~Texture()
@@ -31,14 +31,11 @@ void Texture::prepare(Shader* shader)
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
-
-	std::string textureName = "texture1";
-	shader->setInt(textureName, 0);
 }
 
-void Texture::bind()
+void Texture::bind(Shader* shader)
 {
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(unitId);
 	glBindTexture(GL_TEXTURE_2D, id);
 }
 

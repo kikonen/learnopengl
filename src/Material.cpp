@@ -6,9 +6,10 @@
 #include <iostream>
 
 
-Material::Material(std::string& name)
+Material::Material(std::string& name, unsigned int materialId)
+	: name(name),
+	materialId(materialId)
 {
-	this->name = name;
 }
 
 Material::~Material()
@@ -26,7 +27,6 @@ int Material::loadTexture(const std::string& baseDir)
 
 	std::cout << "\n== TEXTURE: " << texturePath << " ===\n";
 
-
 	Texture* tmp = new Texture(texturePath);
 	int res = tmp->load();
 	if (!res) {
@@ -42,9 +42,9 @@ void Material::prepare(Shader* shader)
 	}
 }
 
-void Material::bind()
+void Material::bind(Shader* shader)
 {
 	if (texture) {
-		texture->bind();
+		texture->bind(shader);
 	}
 }

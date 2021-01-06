@@ -23,5 +23,6 @@ public:
 	const Light* light;
 
 	bool useWireframe = false;
+	bool useLight = true;
 };
 

@@ -37,6 +37,15 @@ const glm::mat4& Camera::getView()
 	return viewMat;
 }
 
+void Camera::setPos(const glm::vec3& pos) {
+	this->pos = pos;
+	dirty = true;
+}
+
+const glm::vec3& Camera::getPos() {
+	return pos;
+}
+
 void Camera::onKey(Input* input, float dt)
 {
 	accumulatedTime += dt;

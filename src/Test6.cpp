@@ -11,21 +11,39 @@ Test6::Test6() {
 }
 
 int Test6::onSetup() {
+	glm::vec3 groundOffset(0.f, 15.f, -10.f);
+
 	// light
 	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "light", "test6");
-		mesh->useWireframe = true;
+		ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
+		//mesh->useWireframe = true;
+		mesh->useTexture = false;
+
 		if (mesh->load()) {
 			return -1;
 		}
 		mesh->prepare();
 
-		Node* node = new Node(mesh, glm::vec3(0, 4, 0));
+		Node* node = new Node(mesh, glm::vec3(0, 10, 0) + groundOffset);
 		//node->setScale(0.5f);
 		nodes.push_back(node);
 
 		light = new Light();
 		light->pos = node->getPos();
+	}
+
+	// waterball
+	if (true) {
+		ModelMesh* mesh = new ModelMesh(*this, "light", "test6");
+		//mesh->useWireframe = true;
+		if (mesh->load()) {
+			return -1;
+		}
+		mesh->prepare();
+
+		Node* node = new Node(mesh, glm::vec3(0, 3, 0) + groundOffset);
+		//node->setScale(0.5f);
+		nodes.push_back(node);
 	}
 
 	// mountains
@@ -37,7 +55,7 @@ int Test6::onSetup() {
 		}
 		mesh->prepare();
 
-		Node* node = new Node(mesh, glm::vec3(0, -20, -20));
+		Node* node = new Node(mesh, glm::vec3(0));
 		//		node->setScale(0.01);
 		nodes.push_back(node);
 	}
@@ -51,25 +69,26 @@ int Test6::onSetup() {
 
 		mesh->prepare();
 
-		active = new Node(mesh, glm::vec3(0));
+		active = new Node(mesh, glm::vec3(0) + groundOffset);
 		nodes.push_back(active);
 
-		nodes.push_back(new Node(mesh, glm::vec3(5, 5, 5)));
+		nodes.push_back(new Node(mesh, glm::vec3(5, 5, 5) + groundOffset));
 	}
 
 	// cubes
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6");
+		//mesh->useTexture = false;
 		if (mesh->load()) {
 			return -1;
 		}
 
 		mesh->prepare();
 
-		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, -5)));
-		nodes.push_back(new Node(mesh, glm::vec3(5, 0, -5)));
-		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, 5)));
-		nodes.push_back(new Node(mesh, glm::vec3(5, 0, 5)));
+		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, -5) + groundOffset));
+		nodes.push_back(new Node(mesh, glm::vec3(5, 0, -5) + groundOffset));
+		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, 5) + groundOffset));
+		nodes.push_back(new Node(mesh, glm::vec3(5, 0, 5) + groundOffset));
 	}
 
 	// ball
@@ -81,12 +100,14 @@ int Test6::onSetup() {
 
 		mesh->prepare();
 
-		Node* node = new Node(mesh, glm::vec3(0, -2, 0));
+		Node* node = new Node(mesh, glm::vec3(0, -2, 0) + groundOffset);
 		node->setScale(2.0f);
 		nodes.push_back(node);
 	}
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	camera.setPos(camera.getPos() + groundOffset);
 
 	return 0;
 }
@@ -110,19 +131,21 @@ int Test6::onRender(float dt) {
 	const glm::mat4& view = camera.getView();
 	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
 
-	RenderContext ctx(*this, dt, view, projection, nullptr);
+	RenderContext ctx(*this, dt, view, projection, light);
 	//ctx.useWireframe = true;
+	ctx.useLight = false;
 
 	//	mesh->setPos(glm::vec3(0, 0, -10.0f));
 
 	if (active) {
+		glm::vec3 groundOffset(0.f, 15.f, -10.f);
 		if (true) {
 			const float radius = 4.0f;
 			float posX = sin(accumulatedTime / 0.9f) * radius;
 			float posY = sin(accumulatedTime * 1.1f) * radius / 3.0f;
 			float posZ = cos(accumulatedTime) * radius / 2.0f;
 
-			active->setPos(glm::vec3(posX, posY, posZ));
+			active->setPos(glm::vec3(posX, posY, posZ) + groundOffset);
 		}
 
 		if (true) {

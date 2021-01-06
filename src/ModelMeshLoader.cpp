@@ -5,6 +5,41 @@
 #include <sstream>
 #include <iostream>
 
+const int UNIT_IDS[] = {
+	GL_TEXTURE0,
+	GL_TEXTURE1,
+	GL_TEXTURE2,
+	GL_TEXTURE3,
+	GL_TEXTURE4,
+	GL_TEXTURE5,
+	GL_TEXTURE6,
+	GL_TEXTURE7,
+	GL_TEXTURE8,
+	GL_TEXTURE9,
+	GL_TEXTURE10,
+	GL_TEXTURE11,
+	GL_TEXTURE12,
+	GL_TEXTURE13,
+	GL_TEXTURE14,
+	GL_TEXTURE15,
+	GL_TEXTURE16,
+	GL_TEXTURE17,
+	GL_TEXTURE18,
+	GL_TEXTURE19,
+	GL_TEXTURE20,
+	GL_TEXTURE21,
+	GL_TEXTURE22,
+	GL_TEXTURE23,
+	GL_TEXTURE24,
+	GL_TEXTURE25,
+	GL_TEXTURE26,
+	GL_TEXTURE27,
+	GL_TEXTURE28,
+	GL_TEXTURE29,
+	GL_TEXTURE30,
+	GL_TEXTURE31,
+};
+
 const glm::vec2 EMPTY_TEX = { 0, 0 };
 const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
 
@@ -162,7 +197,12 @@ int ModelMeshLoader::resolveVertexIndex(
 		}
 	}
 
-	Vertex v = { positions[pi], textures.empty() ? EMPTY_TEX : textures[ti], normals.empty() ? EMPTY_NORMAL : normals[ni], vertexColor };
+	Vertex v(
+		positions[pi], 
+		textures.empty() ? EMPTY_TEX : textures[ti], 
+		normals.empty() ? EMPTY_NORMAL : normals[ni], 
+		vertexColor,
+		material);
 	vertexes.push_back(v);
 	return vertexes.size() - 1;
 }
@@ -178,7 +218,9 @@ int ModelMeshLoader::loadMaterials(
 	try {
 		file.open(materialPath);
 
+		unsigned int materialId = 0;
 		Material* material = NULL;
+
 		std::string line;
 		while (std::getline(file, line)) {
 			std::stringstream ss(line);
@@ -190,7 +232,7 @@ int ModelMeshLoader::loadMaterials(
 			ss >> v1 >> v2 >> v3;
 
 			if (k == "newmtl") {
-				material = new Material(v1);
+				material = new Material(v1, materialId++);
 				materials[v1] = material;
 			}
 			else if (k == "Ns") {
@@ -238,10 +280,21 @@ int ModelMeshLoader::loadMaterials(
 	}
 	std::cout << "\n== " << modelName << " - " << libraryName << " ===\n" << "materials: " << materials.size() << "\n--------\n";
 
+	unsigned int unitId = 0;
+	textureCount = 0;
+
 	for (auto const& x : materials) {
 		Material* material = x.second;
 		material->loadTexture(BASE_DIR);
+		if (material->texture) {
+			material->texture->textureIindex = unitId;
+			material->texture->unitId = UNIT_IDS[unitId];
+			unitId++;
+			textureCount++;
+		}
 	}
+
+	mesh.textureCount = textureCount;
 
 	return 0;
 }

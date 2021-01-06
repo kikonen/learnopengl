@@ -19,6 +19,9 @@ public:
 
 	const glm::mat4& getView();
 
+	void setPos(const glm::vec3& pos);
+	const glm::vec3& getPos();
+
 	void onKey(Input* input, float dt);
 	void onMouseMove(Input* input, float xoffset, float yoffset);
 	void onMouseScroll(Input* input, float xoffset, float yoffset);

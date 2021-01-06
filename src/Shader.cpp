@@ -111,6 +111,12 @@ void Shader::setInt(std::string& name, int value)
     glUniform1i(glGetUniformLocation(id, name.c_str()), value);
 }
 
+void Shader::setIntArray(std::string& name, int count, const GLint* values)
+{
+    GLint vi = glGetUniformLocation(id, name.c_str());
+    glUniform1iv(vi, count, values);
+}
+
 void Shader::setBool(std::string& name, bool value)
 {
     glUniform1i(glGetUniformLocation(id, name.c_str()), (int)value);

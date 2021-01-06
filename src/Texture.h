@@ -13,11 +13,15 @@ public:
 	~Texture();
 
 	void prepare(Shader* shader);
-	void bind();
+	void bind(Shader* shader);
 	int load();
 public:
-	std::string path;
+	const std::string path;
+
 	unsigned int id;
+	unsigned int unitId = 0;
+
+	unsigned int textureIindex;
 
 	unsigned char* image;
 	int width, height, channels;

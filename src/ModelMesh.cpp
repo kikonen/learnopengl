@@ -32,9 +32,11 @@ int ModelMesh::prepare()
 		return -1;
 	}
 
-	for (auto const& x : materials) {
-		Material* material = x.second;
-		material->prepare(shader);
+	if (useTexture) {
+		for (auto const& x : materials) {
+			Material* material = x.second;
+			material->prepare(shader);
+		}
 	}
 
 	glGenVertexArrays(1, &VAO);
@@ -46,16 +48,17 @@ int ModelMesh::prepare()
 
 	// VBO
 	{
-		// vertex + color + texture + normal
-		const int sz = 3 + 3 + 2 + 3;
+		// vertex + color + textureId + texture + normal
+		const int sz = 3 + 3 + 1 + 2 + 3;
 		float* vboBuffer = new float[sz * vertexes.size()];
 
 		for (int i = 0; i < vertexes.size(); i++) {
 			Vertex& vertex = vertexes[i];
-			glm::vec3 p = vertex.pos;
-			glm::vec2 t = vertex.texture;
-			glm::vec3 n = vertex.normal;
-			glm::vec3 c = vertex.color;
+			const glm::vec3& p = vertex.pos;
+			const glm::vec2& t = vertex.texture;
+			const glm::vec3& n = vertex.normal;
+			const glm::vec3& c = vertex.color;
+			const Material* m = vertex.material;
 
 			int base = i * sz;
 			// vertex
@@ -69,9 +72,10 @@ int ModelMesh::prepare()
 			vboBuffer[base + 2] = c[2];
 			base += 3;
 			// texture
-			vboBuffer[base + 0] = t[0];
-			vboBuffer[base + 1] = t[1];
-			base += 2;
+			vboBuffer[base + 0] = m && m->texture ? m->texture->textureIindex : 0;
+			vboBuffer[base + 1] = t[0];
+			vboBuffer[base + 2] = t[1];
+			base += 3;
 			// normal
 			vboBuffer[base + 0] = n[0];
 			vboBuffer[base + 1] = n[1];
@@ -89,13 +93,17 @@ int ModelMesh::prepare()
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3) * sizeof(float)));
 		glEnableVertexAttribArray(1);
 
-		// texture attr
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3) * sizeof(float)));
+		// textureId attr
+		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3) * sizeof(float)));
 		glEnableVertexAttribArray(2);
 
-		// normal attr
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3 + 2) * sizeof(float)));
+		// texture attr
+		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 1) * sizeof(float)));
 		glEnableVertexAttribArray(3);
+
+		// normal attr
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 1 + 3 + 2) * sizeof(float)));
+		glEnableVertexAttribArray(4);
 	}
 
 	// EBO
@@ -130,21 +138,41 @@ int ModelMesh::prepare()
 
 int ModelMesh::bind(const RenderContext& ctx)
 {
-	for (auto const& x : materials) {
-		Material* material = x.second;
-		material->bind();
-	}
-
 	shader->use();
 	glBindVertexArray(VAO);
 
+	if (useTexture && hasTexture) {
+		GLint* textures = new GLint[textureCount];
+		for (int i = 0; i < textureCount; i++) {
+			textures[i] = 0;
+		}
+
+		for (auto const& x : materials) {
+			Material* material = x.second;
+			material->bind(shader);
+			if (material->texture) {
+				textures[material->texture->textureIindex] = material->texture->textureIindex;
+			}
+		}
+
+		std::string texturesName = "textures";
+		shader->setIntArray(texturesName, textureCount, textures);
+	}
+
+	std::string useLight = { "useLight" };
 	std::string lightColor = { "lightColor" };
-	if (ctx.light) {
+	std::string lightPos = { "lightPos" };
+
+	if (ctx.useLight && ctx.light) {
+		shader->setBool(useLight, true);
+
 		shader->setVec3(lightColor, ctx.light->color);
-	}
-	else {
+		shader->setVec3(lightPos, ctx.light->pos);
+	} else {
+		shader->setBool(useLight, false);
 		shader->setVec3(lightColor, glm::vec3(1.f));
-	}
+		shader->setVec3(lightPos, glm::vec3(0.f, 100.f, 0.f));
+	} 
 
 	if (ctx.useWireframe || useWireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

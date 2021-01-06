@@ -28,7 +28,10 @@ public:
     void setVec3(std::string& name, glm::vec3 v);
 
     void setFloat(std::string& name, float value);
+ 
     void setInt(std::string& name, int value);
+    void setIntArray(std::string& name, int count, const GLint* values);
+
     void setBool(std::string& name, bool value);
 
     void setMat4(std::string& name, glm::mat4 mat);

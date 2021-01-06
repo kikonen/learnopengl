@@ -18,6 +18,9 @@ int Node::draw(const RenderContext& ctx)
 	std::string transformName("transform");
 	mesh->shader->setMat4(transformName, ctx.projected * modelMat);
 
+	std::string modelName("model");
+	mesh->shader->setMat4(modelName, modelMat);
+
 	mesh->draw(ctx);
 	return 0;
 }
