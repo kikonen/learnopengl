@@ -136,7 +136,6 @@ int ModelMeshLoader::load(
 
 				Tri tri = { v };
 				tri.material = material;
-				material = NULL;
 				tris.push_back(tri);
 			}
 		}
