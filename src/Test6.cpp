@@ -51,6 +51,7 @@ int Test6::onSetup() {
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "mountains", "test6");
 		//mesh->debugColors = true;
+		mesh->useMaterialColor = false;
 		if (mesh->load()) {
 			return -1;
 		}
@@ -107,9 +108,25 @@ int Test6::onSetup() {
 		nodes.push_back(node);
 	}
 
+	// spyro
+	if (true) {
+		ModelMesh* mesh = new ModelMesh(*this, "spyro2", "test6");
+		mesh->color = glm::vec3(0.560, 0.278, 0.568);
+		mesh->useMaterialColor = false;
+		if (mesh->load()) {
+			return -1;
+		}
+
+		mesh->prepare();
+
+		Node* node = new Node(mesh, glm::vec3(0, 20, 0) + groundOffset);
+		node->setScale(0.1f);
+		nodes.push_back(node);
+	}
+
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	camera.setPos(glm::vec3(0, 0, 10.f) + groundOffset);
+	camera.setPos(glm::vec3(0, 0, 7.f) + groundOffset);
 
 	return 0;
 }

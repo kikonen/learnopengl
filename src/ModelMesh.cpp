@@ -192,6 +192,7 @@ int ModelMesh::load()
 {
 	ModelMeshLoader loader(*this, modelName);
 	loader.color = color;
+	loader.useMaterialColor = useMaterialColor;
 	loader.debugColors = debugColors;
 	int res = loader.load(tris, vertexes, materials);
 

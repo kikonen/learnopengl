@@ -191,7 +191,7 @@ int ModelMeshLoader::resolveVertexIndex(
 	if (debugColors) {
 		vertexColor = colors[pi % colors.size()];
 	} else {
-		if (material && material->kd.x >= 0) {
+		if (material && material->kd.x >= 0 && useMaterialColor) {
 			vertexColor = material->kd;
 		}
 	}

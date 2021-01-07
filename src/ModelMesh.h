@@ -29,6 +29,7 @@ public:
 	bool debugColors = false;
 
 	glm::vec3 color = { 0.8f, 0.8f, 0.0f };
+	bool useMaterialColor = true;
 
 	unsigned int textureCount = 0;
 

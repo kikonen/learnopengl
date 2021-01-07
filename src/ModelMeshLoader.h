@@ -25,8 +25,9 @@ public:
 
 	bool debugColors;
 	glm::vec3 color = { 0.8f, 0.8f, 0.0f };
+	bool useMaterialColor = true;
 
-	unsigned int textureCount = 0;
+ 	unsigned int textureCount = 0;
 
 private:
 	std::vector<glm::vec3> colors = {
