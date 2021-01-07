@@ -5,17 +5,17 @@
 
 #include "ModelMesh.h"
 
+glm::vec3 groundOffset(0.f, 15.f, -10.f);
+
 Test6::Test6() {
 	title = "Test 5";
 	//throttleFps = 0;
 }
 
 int Test6::onSetup() {
-	glm::vec3 groundOffset(0.f, 15.f, -10.f);
-
 	// light
 	light = new Light();
-	light->pos = glm::vec3(0, 10, 0) + groundOffset;
+	light->pos = glm::vec3(10, 10, 10) + groundOffset;
 
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
@@ -141,7 +141,6 @@ int Test6::onRender(float dt) {
 	//	mesh->setPos(glm::vec3(0, 0, -10.0f));
 
 	if (active) {
-		glm::vec3 groundOffset(0.f, 15.f, -10.f);
 		if (true) {
 			const float radius = 4.0f;
 			float posX = sin(accumulatedTime / 0.9f) * radius;
@@ -165,6 +164,19 @@ int Test6::onRender(float dt) {
 			float scale = sin(accumulatedTime / 4.0f) * radius;
 
 			active->setScale(scale);
+		}
+	}
+
+	if (true) {
+		const float radius = 10.0f;
+		float posX = sin(accumulatedTime / 2) * radius;
+		float posZ = cos(accumulatedTime / 2) * radius;
+
+		glm::vec3 pos = glm::vec3(posX, 10, posZ) + groundOffset;
+
+		light->pos = pos;
+		if (lightNode) {
+			lightNode->setPos(pos);
 		}
 	}
 
