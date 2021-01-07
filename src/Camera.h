@@ -30,8 +30,8 @@ public:
 	float zoom = 45.0f;
 
 private:
-	float moveStep = 8.0f;
-	float rotateStep = 20.f;
+	float moveStep = 10.0f;
+	float rotateStep = 25.f;
 	float zoomStep = 5.0f;
 	float mouseSensitivity = 0.1f;
 
