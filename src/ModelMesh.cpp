@@ -97,7 +97,7 @@ int ModelMesh::prepare()
 		glEnableVertexAttribArray(3);
 
 		// normal attr
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 1 + 3 + 2) * sizeof(float)));
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 1 + 2) * sizeof(float)));
 		glEnableVertexAttribArray(4);
 	}
 

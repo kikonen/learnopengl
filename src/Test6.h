@@ -25,4 +25,5 @@ private:
 	Node* active;
 
 	Light* light;
+	Node* lightNode;
 };

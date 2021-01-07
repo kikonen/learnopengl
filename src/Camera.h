@@ -32,7 +32,7 @@ public:
 private:
 	float moveStep = 10.0f;
 	float rotateStep = 25.f;
-	float zoomStep = 5.0f;
+	float zoomStep = 20.0f;
 	float mouseSensitivity = 0.1f;
 
 	glm::vec3 pos;

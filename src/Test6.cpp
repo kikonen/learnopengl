@@ -14,6 +14,9 @@ int Test6::onSetup() {
 	glm::vec3 groundOffset(0.f, 15.f, -10.f);
 
 	// light
+	light = new Light();
+	light->pos = glm::vec3(0, 10, 0) + groundOffset;
+
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
 		//mesh->useWireframe = true;
@@ -24,12 +27,10 @@ int Test6::onSetup() {
 		}
 		mesh->prepare();
 
-		Node* node = new Node(mesh, glm::vec3(0, 10, 0) + groundOffset);
+		Node* node = new Node(mesh, light->pos);
 		//node->setScale(0.5f);
 		nodes.push_back(node);
-
-		light = new Light();
-		light->pos = node->getPos();
+		lightNode = node;
 	}
 
 	// waterball
@@ -62,7 +63,8 @@ int Test6::onSetup() {
 
 	// active
 	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6");
+		ModelMesh* mesh = new ModelMesh(*this, "texture_cube", "test6");
+		//mesh->useTexture = false;
 		if (mesh->load()) {
 			return -1;
 		}
@@ -134,7 +136,7 @@ int Test6::onRender(float dt) {
 
 	RenderContext ctx(*this, dt, view, projection, light);
 	//ctx.useWireframe = true;
-	ctx.useLight = false;
+	//ctx.useLight = false;
 
 	//	mesh->setPos(glm::vec3(0, 0, -10.0f));
 
