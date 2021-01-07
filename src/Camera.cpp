@@ -42,7 +42,7 @@ void Camera::setPos(const glm::vec3& pos) {
 	dirty = true;
 }
 
-const glm::vec3& Camera::getPos() {
+const glm::vec3& Camera::getPos() const {
 	return pos;
 }
 

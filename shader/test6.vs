@@ -7,6 +7,7 @@ layout (location = 4) in vec3 aNormal;
 
 uniform mat4 transform;
 uniform mat4 model;
+uniform mat3 normalMat;
 
 out vec3 color;
 flat out float texIndex;
@@ -23,5 +24,5 @@ void main() {
   texCoord = aTexCoord;
 
   fragPos = vec3(model * vec4(aPos, 1.0));
-  normal = aNormal;
+  normal = normalMat * aNormal;
 }

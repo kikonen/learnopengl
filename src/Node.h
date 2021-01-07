@@ -31,6 +31,7 @@ private:
 	float scale = 1.0f;
 
 	glm::mat4 modelMat = glm::mat4(1.0f);
+	glm::mat3 normalMat = glm::mat3(1.0f);
 
 	bool dirtyMat = true;
 

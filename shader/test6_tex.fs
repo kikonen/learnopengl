@@ -7,6 +7,8 @@ in vec3 normal;
 
 uniform sampler2D textures[8];
 
+uniform vec3 viewPos;
+
 uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform bool useLight;
@@ -28,8 +30,16 @@ void main()
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
 
+    // specular
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - fragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor;
+
     // combined
-    vec3 shaded = (ambient + diffuse);
+    vec3 shaded = (ambient + diffuse + specular);
 
     //  FragColor = mix(texture(textures[texId], TexCoord), texture(texture2, TexCoord), 0.2);
     fragColor = texture(textures[texId], texCoord);// * vec4(color.x, color.y, color.z, 0.1);

@@ -154,6 +154,10 @@ int ModelMesh::bind(const RenderContext& ctx)
 		shader->setIntArray(texturesName, textureCount, textures);
 	}
 
+	std::string viewPosName("viewPos");
+	const glm::vec3& pos = ctx.engine.camera.getPos();
+	shader->setVec3(viewPosName, pos);
+
 	std::string useLight = { "useLight" };
 	std::string lightColor = { "lightColor" };
 	std::string lightPos = { "lightPos" };

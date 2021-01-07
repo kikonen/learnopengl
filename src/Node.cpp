@@ -21,6 +21,9 @@ int Node::draw(const RenderContext& ctx)
 	std::string modelName("model");
 	mesh->shader->setMat4(modelName, modelMat);
 
+	std::string normalName("normalMat");
+	mesh->shader->setMat3(normalName, normalMat);
+
 	mesh->draw(ctx);
 	return 0;
 }
@@ -64,7 +67,10 @@ void Node::updateModelMatrix() {
 
 	modelMat = transMat * rotMat * scaleMat;
 
-	//	glUniformMatrix4fv(LocationMVP, 1, GL_FALSE, glm::value_ptr(MVP));
+	// https://learnopengl.com/Lighting/Basic-Lighting
+	// http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
+	// normal = mat3(transpose(inverse(model))) * aNormal;
+	glm::mat3 normalMat = glm::transpose(glm::inverse(modelMat));
 }
 
 void Node::setPos(const glm::vec3& pos) {

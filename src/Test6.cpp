@@ -50,7 +50,7 @@ int Test6::onSetup() {
 	// mountains
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "mountains", "test6");
-		mesh->debugColors = true;
+		//mesh->debugColors = true;
 		if (mesh->load()) {
 			return -1;
 		}
