@@ -17,15 +17,18 @@ void main()
 {
   int texId = int(texIndex);
   if (useLight) {
+    // ambient
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
+
+    // diffuse
     vec3 norm = normalize(normal);
     vec3 lightDir = normalize(lightPos - fragPos);
 
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
 
-    float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * lightColor;
-
+    // combined
     vec3 shaded = (ambient + diffuse);
 
     //  FragColor = mix(texture(textures[texId], TexCoord), texture(texture2, TexCoord), 0.2);

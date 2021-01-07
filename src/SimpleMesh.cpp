@@ -58,7 +58,6 @@ SimpleMesh::~SimpleMesh() {
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
 
-	delete shader;
 	shader = NULL;
 }
 

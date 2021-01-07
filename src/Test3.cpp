@@ -6,7 +6,7 @@ Test3::Test3() {
 }
 
 SimpleMesh* Test3::createElementMesh1() {
-	Shader* shader = new Shader("shader/triangle3_1.vs", "shader/triangle3_1.fs");
+	Shader* shader = Shader::getShader("triangle3_1", false);
 	if (shader->setup()) {
 		return NULL;
 	}
@@ -35,7 +35,7 @@ SimpleMesh* Test3::createElementMesh1() {
 }
 
 SimpleMesh* Test3::createElementMesh2() {
-	Shader* shader = new Shader("shader/triangle3_2.vs", "shader/triangle3_2.fs");
+	Shader* shader = Shader::getShader("triangle3_2", false);
 	if (shader->setup()) {
 		return NULL;
 	}

@@ -1,10 +1,29 @@
 #include "Shader.h"
 
+#include <map>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
+
+std::map<std::string, Shader*> textureShaders;
+std::map<std::string, Shader*> plainShaders;
+
+
+Shader* Shader::getShader(const std::string& name, bool texture)
+{
+    std::map<std::string, Shader*>& cache = texture ? textureShaders : plainShaders;
+    Shader* shader = cache[name];
+
+    if (!shader) {
+        std::string shaderPathBase = "shader/" + name;
+        shader = new Shader(shaderPathBase + ".vs", shaderPathBase + (texture ? "_tex.fs" : ".fs"));
+        cache[name] = shader;
+    }
+
+    return shader;
+}
 
 Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 {
@@ -25,6 +44,10 @@ const void Shader::use()
 
 int Shader::setup()
 {
+    if (setupDone) {
+        return 0;
+    }
+
     vertexShaderSource = loadSource(vertexShaderPath);
     fragmentShaderSource = loadSource(fragmentShaderPath);
 
@@ -36,6 +59,7 @@ int Shader::setup()
         return -1;
     }
 
+    setupDone = true;
     return 0;
 }
 

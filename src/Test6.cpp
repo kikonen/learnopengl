@@ -62,7 +62,7 @@ int Test6::onSetup() {
 
 	// active
 	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "texture_cube", "test6");
+		ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6");
 		if (mesh->load()) {
 			return -1;
 		}
@@ -107,7 +107,7 @@ int Test6::onSetup() {
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	camera.setPos(camera.getPos() + groundOffset);
+	camera.setPos(glm::vec3(0, 0, 10.f) + groundOffset);
 
 	return 0;
 }
@@ -118,6 +118,7 @@ int Test6::onRender(float dt) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
 	glEnable(GL_CULL_FACE); // cull face
 	glCullFace(GL_BACK); // cull back face
 	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise

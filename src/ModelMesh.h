@@ -36,8 +36,6 @@ private:
 	std::string modelName;
 	std::string shaderName;
 
-	std::string shaderPathBase;
-
 	std::vector<Tri> tris;
 	std::vector<Vertex> vertexes;
 

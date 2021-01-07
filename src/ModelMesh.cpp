@@ -13,7 +13,6 @@ ModelMesh::ModelMesh(const Engine& engine, const std::string& modelName, const s
 	modelName(modelName),
 	shaderName(shaderName)
 {
-	shaderPathBase = "shader/" + shaderName;
 }
 
 ModelMesh::~ModelMesh()
@@ -22,11 +21,7 @@ ModelMesh::~ModelMesh()
 
 int ModelMesh::prepare()
 {
-	if (useTexture && hasTexture) {
-		shader = new Shader(shaderPathBase + ".vs", shaderPathBase + "_tex.fs");
-	} else {
-		shader = new Shader(shaderPathBase + ".vs", shaderPathBase + ".fs");
-	}
+	shader = Shader::getShader(shaderName, useTexture && hasTexture);
 
 	if (shader->setup()) {
 		return -1;
@@ -177,7 +172,7 @@ int ModelMesh::bind(const RenderContext& ctx)
 	if (ctx.useWireframe || useWireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	} else {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glPolygonMode(GL_FRONT, GL_FILL);
 	}
 
 	return 0;

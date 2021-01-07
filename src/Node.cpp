@@ -35,14 +35,14 @@ void Node::updateModelMatrix() {
 	{
 		rotMat = glm::rotate(
 			rotMat,
-			glm::radians(rotation.x),
-			glm::vec3(1.0f, 0.0f, 0.0f)
+			glm::radians(rotation.y),
+			glm::vec3(0.0f, 1.0f, 0.0f)
 		);
 
 		rotMat = glm::rotate(
 			rotMat,
-			glm::radians(rotation.y),
-			glm::vec3(0.0f, 1.0f, 0.0f)
+			glm::radians(rotation.x),
+			glm::vec3(1.0f, 0.0f, 0.0f)
 		);
 
 		rotMat = glm::rotate(

@@ -13,16 +13,17 @@
 class Shader
 {
 public:
+    static Shader* getShader(const std::string& name, bool texture);
+private:
 	Shader(
         const std::string& vertexShaderSource,
         const std::string& fragmentShaderSource);
 
     ~Shader();
 
+public:
     const void use();
-
     int setup();
-    int createProgram();
 
     void setFloat3(std::string& name, float v1, float v2, float v3);
     void setVec3(std::string& name, glm::vec3 v);
@@ -41,9 +42,12 @@ public:
     std::string fragmentShaderSource;
 
 private:
+    bool setupDone = false;
     std::string loadSource(const std::string& filename);
 
     std::string vertexShaderPath;
     std::string fragmentShaderPath;
+
+    int createProgram();
 };
 
