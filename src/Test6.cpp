@@ -108,6 +108,21 @@ int Test6::onSetup() {
 		nodes.push_back(node);
 	}
 
+	// cow
+	if (true) {
+		ModelMesh* mesh = new ModelMesh(*this, "cow", "test6");
+		mesh->color = glm::vec3(0.160, 0.578, 0.168);
+		mesh->useMaterialColor = false;
+		if (mesh->load()) {
+			return -1;
+		}
+
+		mesh->prepare();
+
+		Node* node = new Node(mesh, glm::vec3(5, 5, -5) + groundOffset);
+		nodes.push_back(node);
+	}
+
 	// spyro
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "spyro2", "test6");
