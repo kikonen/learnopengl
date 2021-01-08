@@ -28,7 +28,7 @@ map_Kd texture_cube.jpg
 class Material
 {
 public:
-    Material(std::string& name, unsigned int materialId);
+    Material(std::string& name, unsigned int materialIndex);
     ~Material();
     int loadTexture(const std::string& baseDir);
 
@@ -37,7 +37,7 @@ public:
  
 public:
     const std::string name;
-    const unsigned int materialId;
+    const unsigned int materialIndex;
 
     std::string materialDir;
 
@@ -64,7 +64,7 @@ public:
     // the result does not depend upon the thickness of the object. 
     // A value of 1.0 for "d" is the default and means fully opaque, as does a value of 0.0 for "Tr". 
     // Dissolve works on all illumination models.
-    float d = 0.0f;
+    float d = 1.0f;
 
     // Multiple illumination models are available, per material
     // 0. Color on and Ambient off

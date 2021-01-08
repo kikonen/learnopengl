@@ -15,14 +15,9 @@ int Node::draw(const RenderContext& ctx)
 
 	mesh->bind(ctx);
 
-	std::string transformName("transform");
-	mesh->shader->setMat4(transformName, ctx.projected * modelMat);
-
-	std::string modelName("model");
-	mesh->shader->setMat4(modelName, modelMat);
-
-	std::string normalName("normalMat");
-	mesh->shader->setMat3(normalName, normalMat);
+	mesh->shader->setMat4("transform", ctx.projected * modelMat);
+	mesh->shader->setMat4("model", modelMat);
+	mesh->shader->setMat3("normalMat", normalMat);
 
 	mesh->draw(ctx);
 	return 0;

@@ -13,10 +13,9 @@ Light::~Light()
 
 void Light::bind(Shader* shader)
 {
-	std::string lightPosName = { "lightPos" };
-	shader->setVec3(lightPosName, pos);
-
-	std::string lightColorName = { "lightColor" };
-	shader->setVec3(lightColorName, color);
+	shader->setVec3("light.pos", pos);
+	shader->setVec3("light.ambient", ambient);
+	shader->setVec3("light.diffuse", diffuse);
+	shader->setVec3("light.specular", specular);
 }
 

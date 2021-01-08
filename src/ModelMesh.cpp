@@ -67,7 +67,7 @@ int ModelMesh::prepare()
 			vboBuffer[base + 2] = c[2];
 			base += 3;
 			// texture
-			vboBuffer[base + 0] = m && m->texture ? m->texture->textureIindex : 0;
+			vboBuffer[base + 0] = m ? m->materialIndex : 0;
 			vboBuffer[base + 1] = t[0];
 			vboBuffer[base + 2] = t[1];
 			base += 3;
@@ -136,42 +136,48 @@ int ModelMesh::bind(const RenderContext& ctx)
 	shader->use();
 	glBindVertexArray(VAO);
 
-	if (useTexture && hasTexture) {
-		GLint* textures = new GLint[textureCount];
-		for (int i = 0; i < textureCount; i++) {
+	//if (useTexture && hasTexture) 
+	{
+		const unsigned int sz = materials.size();
+		GLint* textures = new GLint[sz];
+		for (int i = 0; i < sz; i++) {
 			textures[i] = 0;
 		}
 
 		for (auto const& x : materials) {
 			Material* material = x.second;
 			material->bind(shader);
-			if (material->texture) {
-				textures[material->texture->textureIindex] = material->texture->textureIindex;
-			}
+			unsigned int idx = material->materialIndex;
+			textures[idx] = material->texture ? material->texture->textureIindex : 0;
+
+			char name[200];
+
+			sprintf_s(name, "materials[%i].ambient", idx);
+			shader->setVec3(name, material->ka);
+
+			sprintf_s(name, "materials[%i].diffuse", idx);
+			shader->setVec3(name, material->kd);
+
+			sprintf_s(name, "materials[%i].specular", idx);
+			shader->setVec3(name, material->ks);
+
+			sprintf_s(name, "materials[%i].shininess", idx);
+			shader->setFloat(name, material->ns);
 		}
 
-		std::string texturesName = "textures";
-		shader->setIntArray(texturesName, textureCount, textures);
+		shader->setIntArray("textures", textureCount, textures);
 	}
 
-	std::string viewPosName("viewPos");
 	const glm::vec3& pos = ctx.engine.camera.getPos();
-	shader->setVec3(viewPosName, pos);
-
-	std::string useLight = { "useLight" };
-	std::string lightColor = { "lightColor" };
-	std::string lightPos = { "lightPos" };
+	shader->setVec3("viewPos", pos);
 
 	if (ctx.useLight && ctx.light) {
-		shader->setBool(useLight, true);
-
-		shader->setVec3(lightColor, ctx.light->color);
-		shader->setVec3(lightPos, ctx.light->pos);
+		shader->setBool("light.use", true);
 	} else {
-		shader->setBool(useLight, false);
-		shader->setVec3(lightColor, glm::vec3(1.f));
-		shader->setVec3(lightPos, glm::vec3(0.f, 100.f, 0.f));
-	} 
+		shader->setBool("light.use", false);
+		shader->setVec3("light.specular", glm::vec3(1.0f));
+	}
+	ctx.light->bind(shader);
 
 	if (ctx.useWireframe || useWireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

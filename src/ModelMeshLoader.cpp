@@ -217,7 +217,7 @@ int ModelMeshLoader::loadMaterials(
 	try {
 		file.open(materialPath);
 
-		unsigned int materialId = 0;
+		unsigned int materialIndex = 0;
 		Material* material = NULL;
 
 		std::string line;
@@ -231,7 +231,7 @@ int ModelMeshLoader::loadMaterials(
 			ss >> v1 >> v2 >> v3;
 
 			if (k == "newmtl") {
-				material = new Material(v1, materialId++);
+				material = new Material(v1, materialIndex++);
 				materials[v1] = material;
 			}
 			else if (k == "Ns") {

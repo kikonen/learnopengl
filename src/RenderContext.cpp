@@ -5,7 +5,7 @@ RenderContext::RenderContext(
 	const float dt, 
 	const glm::mat4& view, 
 	const glm::mat4& projection,
-	const Light* light)
+	Light* light)
 	: engine(engine),
 	dt(dt),
 	view(view),

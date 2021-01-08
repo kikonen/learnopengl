@@ -6,9 +6,9 @@
 #include <iostream>
 
 
-Material::Material(std::string& name, unsigned int materialId)
+Material::Material(std::string& name, unsigned int materialIndex)
 	: name(name),
-	materialId(materialId)
+	materialIndex(materialIndex)
 {
 }
 

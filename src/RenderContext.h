@@ -13,14 +13,14 @@ public:
 		const float dt,
 		const glm::mat4& view,
 		const glm::mat4& projection,
-		const Light* light);
+		Light* light);
 public:
 	const Engine& engine;
 	const float dt;
 	const glm::mat4& view;
 	const glm::mat4& projection;
 	const glm::mat4 projected;
-	const Light* light;
+	Light* light;
 
 	bool useWireframe = false;
 	bool useLight = true;
