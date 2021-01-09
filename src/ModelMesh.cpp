@@ -8,11 +8,21 @@
 #include "ModelMeshLoader.h"
 
 
+Material* createDefaultMaterial() {
+	Material* mat = new Material("default", 0);
+	mat->ns = 100.f;
+	mat->ks = glm::vec3(0.9f, 0.9f, 0.0f);
+	mat->ka = glm::vec3(0.3f, 0.3f, 0.0f);
+	mat->kd = glm::vec3(0.8f, 0.8f, 0.0f);
+	return mat;
+}
+
 ModelMesh::ModelMesh(const Engine& engine, const std::string& modelName, const std::string& shaderName)
 	: Mesh(engine, modelName),
 	modelName(modelName),
 	shaderName(shaderName)
 {
+	defaultMaterial = createDefaultMaterial();
 }
 
 ModelMesh::~ModelMesh()
@@ -28,7 +38,7 @@ int ModelMesh::prepare()
 	}
 
 	if (useTexture) {
-		for (auto const& x : materials) {
+			for (auto const& x : materials) {
 			Material* material = x.second;
 			material->prepare(shader);
 		}
@@ -163,7 +173,7 @@ int ModelMesh::bind(const RenderContext& ctx)
 			shader->setInt(name, material->texture ? material->texture->textureIindex : 0);
 
 			sprintf_s(name, "materials[%i].useTexture", idx);
-			shader->setInt(name, !!material->texture);
+			shader->setBool(name, !!material->texture && useTexture);
 		}
 	}
 
@@ -196,8 +206,8 @@ int ModelMesh::draw(const RenderContext& ctx)
 int ModelMesh::load()
 {
 	ModelMeshLoader loader(*this, modelName);
-	loader.color = color;
-	loader.useMaterialColor = useMaterialColor;
+	loader.defaultMaterial = defaultMaterial;
+	loader.overrideMaterials = overrideMaterials;
 	loader.debugColors = debugColors;
 	int res = loader.load(tris, vertexes, materials);
 

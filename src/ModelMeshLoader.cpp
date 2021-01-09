@@ -76,6 +76,8 @@ int ModelMeshLoader::load(
 	try {
 		file.open(modelPath);
 
+		materials[defaultMaterial->name] = defaultMaterial;
+
 		Material* material = NULL;
 		std::string line;
 		while (std::getline(file, line)) {
@@ -127,6 +129,8 @@ int ModelMeshLoader::load(
 				}
 				if (vv1.size() > 2 && !vv1[2].empty()) {
 					ni = { stoi(vv1[2]) - 1, stoi(vv2[2]) - 1, stoi(vv3[2]) - 1 };
+				} else {
+					ni = createNormal(positions, normals, pi);
 				}
 
 				glm::uvec3 v = { 0, 0, 0 };
@@ -187,13 +191,15 @@ int ModelMeshLoader::resolveVertexIndex(
 	// TODO KI actually do sharing of vertexes
 	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
 
-	glm::vec3& vertexColor = color;
+	if (overrideMaterials || !material) {
+		material = defaultMaterial;
+	}
+
+	glm::vec3& vertexColor = material->kd;
 	if (debugColors) {
 		vertexColor = colors[pi % colors.size()];
 	} else {
-		if (material && material->kd.x >= 0 && useMaterialColor) {
-			vertexColor = material->kd;
-		}
+		vertexColor = material->kd;
 	}
 
 	Vertex v(
@@ -204,6 +210,21 @@ int ModelMeshLoader::resolveVertexIndex(
 		material);
 	vertexes.push_back(v);
 	return vertexes.size() - 1;
+}
+
+glm::vec3 ModelMeshLoader::createNormal(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, glm::uvec3 pi)
+{
+	glm::vec3 p1 = positions[pi[0]];
+	glm::vec3 p2 = positions[pi[1]];
+	glm::vec3 p3 = positions[pi[2]];
+
+	glm::vec3 a = p2 - p1;
+	glm::vec3 b = p3 - p1;
+
+	glm::vec3 normal = glm::cross(a, b);
+	normals.push_back(normal);
+	int idx = normals.size() - 1;
+	return glm::vec3(idx, idx, idx);
 }
 
 int ModelMeshLoader::loadMaterials(
@@ -217,7 +238,6 @@ int ModelMeshLoader::loadMaterials(
 	try {
 		file.open(materialPath);
 
-		unsigned int materialIndex = 0;
 		Material* material = NULL;
 
 		std::string line;
@@ -231,7 +251,7 @@ int ModelMeshLoader::loadMaterials(
 			ss >> v1 >> v2 >> v3;
 
 			if (k == "newmtl") {
-				material = new Material(v1, materialIndex++);
+				material = new Material(v1, materials.size());
 				materials[v1] = material;
 			}
 			else if (k == "Ns") {

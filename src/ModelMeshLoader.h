@@ -23,9 +23,9 @@ public:
 	ModelMesh& mesh;
 	const std::string& modelName;
 
-	bool debugColors;
-	glm::vec3 color = { 0.8f, 0.8f, 0.0f };
-	bool useMaterialColor = true;
+	bool debugColors = false;
+	Material* defaultMaterial = nullptr;
+	bool overrideMaterials = true;
 
  	unsigned int textureCount = 0;
 
@@ -54,6 +54,11 @@ private:
 		int pi,
 		int ti,
 		int ni);
+
+	glm::vec3 createNormal(
+		std::vector<glm::vec3>& positions,
+		std::vector<glm::vec3>& normals,
+		glm::uvec3 pi);
 
 	void splitFragmentValue(const std::string& v, std::vector<std::string>& vv);
 	int loadMaterials(std::map<std::string, Material*>& materials, std::string libraryName);

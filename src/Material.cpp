@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-Material::Material(std::string& name, unsigned int materialIndex)
+Material::Material(const std::string& name, unsigned int materialIndex)
 	: name(name),
 	materialIndex(materialIndex)
 {

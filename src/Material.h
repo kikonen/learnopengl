@@ -28,7 +28,7 @@ map_Kd texture_cube.jpg
 class Material
 {
 public:
-    Material(std::string& name, unsigned int materialIndex);
+    Material(const std::string& name, unsigned int materialIndex);
     ~Material();
     int loadTexture(const std::string& baseDir);
 
