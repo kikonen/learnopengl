@@ -185,7 +185,7 @@ int ModelMesh::bind(const RenderContext& ctx)
 			sprintf_s(name, "materials[%i].hasDiffuseTex", idx);
 			shader->setBool(name, !!material->diffuseTex && useTexture);
 
-			sprintf_s(name, "materials[%i].hasEmisssiveTex", idx);
+			sprintf_s(name, "materials[%i].hasEmissiveTex", idx);
 			shader->setBool(name, !!material->emissiveTex && useTexture);
 
 			sprintf_s(name, "materials[%i].hasSpecularTex", idx);
@@ -227,12 +227,7 @@ int ModelMesh::load()
 	loader.debugColors = debugColors;
 	int res = loader.load(tris, vertexes, materials);
 
-	for (auto const& x : materials) {
-		Material* material = x.second;
-		if (material->diffuseTex) {
-			hasTexture = true;
-		}
-	}
+	hasTexture = textureCount > 0;
 
 	return res;
 }

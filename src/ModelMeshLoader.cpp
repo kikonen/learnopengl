@@ -306,7 +306,6 @@ int ModelMeshLoader::loadMaterials(
 			texture->textureIndex = textureIndex;
 			texture->unitId = UNIT_IDS[textureIndex];
 			textureIndex++;
-			textureCount++;
 		}
 	}
 

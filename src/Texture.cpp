@@ -34,13 +34,15 @@ void Texture::prepare(Shader* shader)
 //	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->data);
-	glGenerateMipmap(GL_TEXTURE_2D);
+//	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void Texture::bind(Shader* shader)
 {
 	glActiveTexture(unitId);
 	glBindTexture(GL_TEXTURE_2D, id);
+	// NOTE KI other textures may caus mipmaps are discarded?!?
+	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 int Texture::load() {
