@@ -42,7 +42,8 @@ void Texture::bind(Shader* shader)
 	glActiveTexture(unitId);
 	glBindTexture(GL_TEXTURE_2D, id);
 	// NOTE KI other textures may caus mipmaps are discarded?!?
-	glGenerateMipmap(GL_TEXTURE_2D);
+	// => was due to *TOO* large material array in fragment shader
+	//glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 int Texture::load() {

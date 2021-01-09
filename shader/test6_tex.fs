@@ -5,10 +5,10 @@ struct Material {
   vec3 specular;
   float shininess;
   sampler2D diffuseTex;
+  sampler2D emissionTex;
   sampler2D specularTex;
-  sampler2D emissiveTex;
   bool hasDiffuseTex;
-  bool hasEmissiveTex;
+  bool hasemissionTex;
   bool hasSpecularTex;
 };
 struct Light {
@@ -26,7 +26,8 @@ in vec3 normal;
 
 uniform vec3 viewPos;
 
-uniform Material materials[32];
+// NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
+uniform Material materials[16];
 
 uniform Light light;
 
@@ -49,8 +50,8 @@ void main()
     }
 
     vec3 emission;
-    if (materials[texId].hasEmissiveTex){
-      emission = vec3(texture(materials[texId].emissiveTex, texCoord));
+    if (materials[texId].hasemissionTex){
+      emission = vec3(texture(materials[texId].emissionTex, texCoord));
     }
 
     // ambient
@@ -72,7 +73,7 @@ void main()
 
     // combined
     vec3 shaded = ambient + diffuse + specular + emission;
-    if (materials[texId].hasEmissiveTex) {
+    if (materials[texId].hasemissionTex) {
 //      shaded = emission;
 //      shaded = shaded + vec3(1.0, 0.0, 0.0);
     }

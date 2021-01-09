@@ -16,13 +16,13 @@ Material::~Material()
 {
 	delete diffuseTex;
 	delete specularTex;
-	delete emissiveTex;
+	delete emissionTex;
 }
 
 int Material::loadTextures(const std::string& baseDir)
 {
 	diffuseTex = loadTexture(baseDir, map_kd);
-	emissiveTex = loadTexture(baseDir, map_ke);
+	emissionTex = loadTexture(baseDir, map_ke);
 	specularTex = loadTexture(baseDir, map_ks);
 	return 0;
 }

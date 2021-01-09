@@ -173,7 +173,7 @@ int Test6::onSetup() {
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	camera.setPos(glm::vec3(0, 0, 7.f) + groundOffset);
+	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
 
 	return 0;
 }

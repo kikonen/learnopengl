@@ -46,7 +46,7 @@ public:
 
     Texture* diffuseTex;
     Texture* specularTex;
-    Texture* emissiveTex;
+    Texture* emissionTex;
 
     std::vector<Texture*> textures;
 
