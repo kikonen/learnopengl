@@ -139,16 +139,11 @@ int ModelMesh::bind(const RenderContext& ctx)
 	//if (useTexture && hasTexture) 
 	{
 		const unsigned int sz = materials.size();
-		GLint* textures = new GLint[sz];
-		for (int i = 0; i < sz; i++) {
-			textures[i] = 0;
-		}
 
 		for (auto const& x : materials) {
 			Material* material = x.second;
 			material->bind(shader);
 			unsigned int idx = material->materialIndex;
-			textures[idx] = material->texture ? material->texture->textureIindex : 0;
 
 			char name[200];
 
@@ -163,9 +158,10 @@ int ModelMesh::bind(const RenderContext& ctx)
 
 			sprintf_s(name, "materials[%i].shininess", idx);
 			shader->setFloat(name, material->ns);
-		}
 
-		shader->setIntArray("textures", textureCount, textures);
+			sprintf_s(name, "materials[%i].diffuseTex", idx);
+			shader->setInt(name, material->texture ? material->texture->textureIindex : 0);
+		}
 	}
 
 	const glm::vec3& pos = ctx.engine.camera.getPos();
