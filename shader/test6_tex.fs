@@ -69,12 +69,17 @@ void main()
     vec3 reflectDir = reflect(-lightDir, norm);
 
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), materials[texId].shininess);
-    vec3 specular = light.specular * (spec * materials[texId].specular);
+
+    vec3 specular;
+    if (materials[texId].hasSpecularTex){
+      specular = light.specular * (spec * texture(materials[texId].specularTex, texCoord).rgb);
+    } else {
+      specular = light.specular * (spec * materials[texId].specular);
+    }
 
     // combined
     vec3 shaded = ambient + diffuse + specular + emission;
-    if (materials[texId].hasemissionTex) {
-//      shaded = emission;
+    if (materials[texId].hasSpecularTex) {
 //      shaded = shaded + vec3(1.0, 0.0, 0.0);
     }
 

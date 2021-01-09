@@ -19,7 +19,7 @@ in vec3 normal;
 
 uniform vec3 viewPos;
 
-uniform Material materials[32];
+uniform Material materials[16];
 uniform Light light;
 
 out vec4 fragColor;
