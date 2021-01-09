@@ -18,10 +18,9 @@ public:
 public:
 	const std::string path;
 
-	unsigned int id;
-	unsigned int unitId = 0;
-
-	unsigned int textureIindex;
+	unsigned int id = -1;
+	unsigned int unitId = -1;
+	unsigned int textureIndex = -1;
 
 	unsigned char* image;
 	int width, height, channels;

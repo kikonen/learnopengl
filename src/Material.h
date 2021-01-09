@@ -30,32 +30,42 @@ class Material
 public:
     Material(const std::string& name, unsigned int materialIndex);
     ~Material();
-    int loadTexture(const std::string& baseDir);
+    int loadTextures(const std::string& baseDir);
 
     void prepare(Shader* shader);
     void bind(Shader* shader);
  
+private:
+    Texture* loadTexture(const std::string& baseDir, const std::string& name);
+
 public:
     const std::string name;
     const unsigned int materialIndex;
 
     std::string materialDir;
 
+    Texture* diffuseTex;
+    Texture* specularTex;
+    Texture* emissiveTex;
+
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     // ranges between 0 and 1000
     float ns = 0.0f;
 
     // The ambient color of the material is declared using Ka. 
-    glm::vec3 ka;
+    glm::vec3 ka = { 0.f, 0.f, 0.f };
 
     // Similarly, the diffuse color is declared using Kd.
-    glm::vec3 kd = { -1, -1, -1 };
+    glm::vec3 kd = { 0.f, 0.f, 0.f };
+    std::string map_kd = "";
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
-    glm::vec3 ks;
+    glm::vec3 ks = { 0.f, 0.f, 0.f };
+    std::string map_ks = "";
 
     // Ke/map_Ke     # emissive
-    glm::vec3 ke;
+    glm::vec3 ke = { 0.f, 0.f, 0.f };
+    std::string map_ke = "";
 
     // A material can also have an optical density for its surface. This is also known as index of refraction.
     float ni = 0.0f;
@@ -79,9 +89,5 @@ public:
     // 9. Transparency : Glass on, Reflection : Ray trace off
     // 10. Casts shadows onto invisible surfaces
     int illum = 0;
-
-    std::string map_kd;
-
-    Texture* texture;
 };
 

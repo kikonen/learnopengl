@@ -5,7 +5,8 @@
 
 #include "ModelMesh.h"
 
-glm::vec3 groundOffset(0.f, 15.f, -10.f);
+//glm::vec3 groundOffset(0.f, 15.f, -15.f);
+glm::vec3 groundOffset(0.f, 15.f, -40.f);
 
 Test6::Test6() {
 	title = "Test 5";
@@ -53,7 +54,7 @@ int Test6::onSetup() {
 
 	// mountains
 	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "mountains", "test6");
+		ModelMesh* mesh = new ModelMesh(*this, "texture_mountains", "test6");
 		//mesh->debugColors = true;
 		if (mesh->load()) {
 			return -1;

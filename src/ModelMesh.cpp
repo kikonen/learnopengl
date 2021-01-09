@@ -170,10 +170,10 @@ int ModelMesh::bind(const RenderContext& ctx)
 			shader->setFloat(name, material->ns);
 
 			sprintf_s(name, "materials[%i].diffuseTex", idx);
-			shader->setInt(name, material->texture ? material->texture->textureIindex : 0);
+			shader->setInt(name, material->diffuseTex ? material->diffuseTex->textureIndex : 0);
 
 			sprintf_s(name, "materials[%i].useTexture", idx);
-			shader->setBool(name, !!material->texture && useTexture);
+			shader->setBool(name, !!material->diffuseTex && useTexture);
 		}
 	}
 
@@ -213,7 +213,7 @@ int ModelMesh::load()
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
-		if (material->texture) {
+		if (material->diffuseTex) {
 			hasTexture = true;
 		}
 	}

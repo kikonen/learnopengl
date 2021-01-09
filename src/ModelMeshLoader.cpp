@@ -280,15 +280,12 @@ int ModelMeshLoader::loadMaterials(
 			}
 			else if (k == "illum") {
 				material->d = stof(v1);
-			}
-			else if (k == "map_Kd") {
-				std::stringstream is2(line);
-				is2 >> k;
-				std::stringstream tmp;
-				tmp << is2.rdbuf();
-				std::string path = tmp.str();
-				path.erase(0, path.find_first_not_of(' '));
-				material->map_kd = path;
+			} else if (k == "map_Kd") {
+				material->map_kd = resolveTexturePath(line);
+			} else if (k == "map_Ke") {
+				material->map_ke = resolveTexturePath(line);
+			} else if (k == "map_Ks") {
+				material->map_ks = resolveTexturePath(line);
 			}
 		}
 		file.close();
@@ -299,16 +296,16 @@ int ModelMeshLoader::loadMaterials(
 	}
 	std::cout << "\n== " << modelName << " - " << libraryName << " ===\n" << "materials: " << materials.size() << "\n--------\n";
 
-	unsigned int unitId = 0;
+	unsigned int textureIndex = 0;
 	textureCount = 0;
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
-		material->loadTexture(BASE_DIR);
-		if (material->texture) {
-			material->texture->textureIindex = unitId;
-			material->texture->unitId = UNIT_IDS[unitId];
-			unitId++;
+		material->loadTextures(BASE_DIR);
+		if (material->diffuseTex) {
+			material->diffuseTex->textureIndex = textureIndex;
+			material->diffuseTex->unitId = UNIT_IDS[textureIndex];
+			textureIndex++;
 			textureCount++;
 		}
 	}
@@ -316,5 +313,17 @@ int ModelMeshLoader::loadMaterials(
 	mesh.textureCount = textureCount;
 
 	return 0;
+}
+
+std::string ModelMeshLoader::resolveTexturePath(const std::string& line)
+{
+	std::string k;
+	std::stringstream is2(line);
+	is2 >> k;
+	std::stringstream tmp;
+	tmp << is2.rdbuf();
+	std::string path = tmp.str();
+	path.erase(0, path.find_first_not_of(' '));
+	return path;
 }
 
