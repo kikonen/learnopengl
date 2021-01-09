@@ -169,11 +169,27 @@ int ModelMesh::bind(const RenderContext& ctx)
 			sprintf_s(name, "materials[%i].shininess", idx);
 			shader->setFloat(name, material->ns);
 
-			sprintf_s(name, "materials[%i].diffuseTex", idx);
-			shader->setInt(name, material->diffuseTex ? material->diffuseTex->textureIndex : 0);
+			if (material->diffuseTex && useTexture) {
+				sprintf_s(name, "materials[%i].diffuseTex", idx);
+				shader->setInt(name, material->diffuseTex->textureIndex);
+			}
+			if (material->emissiveTex && useTexture) {
+				sprintf_s(name, "materials[%i].emissiveTex", idx);
+				shader->setInt(name, material->emissiveTex->textureIndex);
+			}
+			if (material->specularTex && useTexture) {
+				sprintf_s(name, "materials[%i].specularTex", idx);
+				shader->setInt(name, material->specularTex->textureIndex);
+			}
 
-			sprintf_s(name, "materials[%i].useTexture", idx);
+			sprintf_s(name, "materials[%i].hasDiffuseTex", idx);
 			shader->setBool(name, !!material->diffuseTex && useTexture);
+
+			sprintf_s(name, "materials[%i].hasEmisssiveTex", idx);
+			shader->setBool(name, !!material->emissiveTex && useTexture);
+
+			sprintf_s(name, "materials[%i].hasSpecularTex", idx);
+			shader->setBool(name, !!material->specularTex && useTexture);
 		}
 	}
 

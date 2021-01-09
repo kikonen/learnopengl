@@ -5,7 +5,11 @@ struct Material {
   vec3 specular;
   float shininess;
   sampler2D diffuseTex;
-  bool useTexture;
+  sampler2D specularTex;
+  sampler2D emissiveTex;
+  bool hasDiffuseTex;
+  bool hasEmissiveTex;
+  bool hasSpecularTex;
 };
 struct Light {
   vec3 pos;
@@ -36,7 +40,7 @@ void main()
     vec3 materialAmbient;
     vec3 materialDiffuse;
 
-    if (materials[texId].useTexture) {
+    if (materials[texId].hasDiffuseTex) {
       materialDiffuse = texture(materials[texId].diffuseTex, texCoord).rgb;
       materialAmbient = materialDiffuse;
     } else {

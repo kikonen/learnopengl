@@ -297,20 +297,21 @@ int ModelMeshLoader::loadMaterials(
 	std::cout << "\n== " << modelName << " - " << libraryName << " ===\n" << "materials: " << materials.size() << "\n--------\n";
 
 	unsigned int textureIndex = 0;
-	textureCount = 0;
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
 		material->loadTextures(BASE_DIR);
-		if (material->diffuseTex) {
-			material->diffuseTex->textureIndex = textureIndex;
-			material->diffuseTex->unitId = UNIT_IDS[textureIndex];
+
+		for (auto const& texture : material->textures) {
+			texture->textureIndex = textureIndex;
+			texture->unitId = UNIT_IDS[textureIndex];
 			textureIndex++;
 			textureCount++;
 		}
 	}
 
-	mesh.textureCount = textureCount;
+	textureCount = textureIndex;
+	mesh.textureCount = textureIndex;
 
 	return 0;
 }
