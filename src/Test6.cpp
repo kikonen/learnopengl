@@ -17,6 +17,10 @@ int Test6::onSetup() {
 	// light
 	light = new Light();
 	light->pos = glm::vec3(10, 10, 10) + groundOffset;
+
+	light->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
+	light->directional = true;
+
 	light->ambient = { 0.2f, 0.2f, 0.2f };
 	light->diffuse = { 0.8f, 0.8f, 0.8f };
 	light->specular = { 1.0f, 1.0f, 1.0f };
