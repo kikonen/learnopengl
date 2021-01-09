@@ -43,32 +43,22 @@ Texture* Material::loadTexture(const std::string& baseDir, const std::string& na
 	if (res) {
 		delete texture;
 		texture = nullptr;
+	} else {
+		textures.push_back(texture);
 	}
 	return texture;
 }
 
 void Material::prepare(Shader* shader)
 {
-	if (diffuseTex) {
-		diffuseTex->prepare(shader);
-	}
-	if (emissiveTex) {
-		emissiveTex->prepare(shader);
-	}
-	if (specularTex) {
-		specularTex->prepare(shader);
+	for (auto const x : textures) {
+		x->prepare(shader);
 	}
 }
 
 void Material::bind(Shader* shader)
 {
-	if (diffuseTex) {
-		diffuseTex->bind(shader);
-	}
-	if (emissiveTex) {
-		emissiveTex->bind(shader);
-	}
-	if (specularTex) {
-		specularTex->bind(shader);
+	for (auto const x : textures) {
+		x->bind(shader);
 	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <array>
+#include <vector>
 #include <glm/glm.hpp>
 
 #include "Texture.h"
@@ -47,6 +47,8 @@ public:
     Texture* diffuseTex;
     Texture* specularTex;
     Texture* emissiveTex;
+
+    std::vector<Texture*> textures;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     // ranges between 0 and 1000
