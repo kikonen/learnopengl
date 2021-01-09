@@ -55,7 +55,6 @@ int Test6::onSetup() {
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "mountains", "test6");
 		//mesh->debugColors = true;
-		mesh->useMaterialColor = false;
 		if (mesh->load()) {
 			return -1;
 		}
@@ -98,6 +97,19 @@ int Test6::onSetup() {
 		nodes.push_back(new Node(mesh, glm::vec3(5, 0, 5) + groundOffset));
 	}
 
+	// cube 4
+	if (true) {
+		ModelMesh* mesh = new ModelMesh(*this, "texture_cube_4", "test6");
+		//mesh->useTexture = false;
+		if (mesh->load()) {
+			return -1;
+		}
+
+		mesh->prepare();
+
+		nodes.push_back(new Node(mesh, glm::vec3(-5, 5, 5) + groundOffset));
+	}
+
 	// ball
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "texture_ball", "test6");
@@ -115,8 +127,8 @@ int Test6::onSetup() {
 	// cow
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "cow", "test6");
-		mesh->color = glm::vec3(0.160, 0.578, 0.168);
-		mesh->useMaterialColor = false;
+		mesh->defaultMaterial->kd = glm::vec3(0.160, 0.578, 0.168);
+		mesh->overrideMaterials = true;
 		if (mesh->load()) {
 			return -1;
 		}
@@ -127,11 +139,26 @@ int Test6::onSetup() {
 		nodes.push_back(node);
 	}
 
+	// teapot
+	if (true) {
+		ModelMesh* mesh = new ModelMesh(*this, "teapot", "test6");
+		mesh->defaultMaterial->kd = glm::vec3(0.578, 0.578, 0.168);
+		mesh->overrideMaterials = true;
+		if (mesh->load()) {
+			return -1;
+		}
+
+		mesh->prepare();
+
+		Node* node = new Node(mesh, glm::vec3(-5, 5, -5) + groundOffset);
+		nodes.push_back(node);
+	}
+
 	// spyro
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "spyro2", "test6");
-		mesh->color = glm::vec3(0.560, 0.278, 0.568);
-		mesh->useMaterialColor = false;
+		//mesh->color = glm::vec3(0.560, 0.278, 0.568);
+		//mesh->useMaterialColor = false;
 		if (mesh->load()) {
 			return -1;
 		}
