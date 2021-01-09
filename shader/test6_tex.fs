@@ -17,8 +17,14 @@ struct Light {
   vec3 ambient;
   vec3 diffuse;
   vec3 specular;
+
+  float constant;
+  float linear;
+  float quadratic;
+
   bool use;
   bool directional;
+  bool point;
 };
 
 flat in float texIndex;
@@ -84,6 +90,15 @@ void main()
       specular = light.specular * (spec * texture(materials[texId].specularTex, texCoord).rgb);
     } else {
       specular = light.specular * (spec * materials[texId].specular);
+    }
+
+    if (light.point) {
+      float distance = length(light.pos - fragPos);
+      float attenuation = 1.0 / (light.constant + light.linear * distance +
+                                 light.quadratic * (distance * distance));
+      ambient  *= attenuation;
+      diffuse  *= attenuation;
+      specular *= attenuation;
     }
 
     // combined

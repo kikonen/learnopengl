@@ -22,8 +22,12 @@ private:
 	float elapsed = 0;
 
 	std::vector<Node*> nodes;
-	Node* active;
+	Node* active = nullptr;
 
-	Light* light;
-	Node* lightNode;
+	Light* light = nullptr;
+	Node* lightNode = nullptr;
+
+	Light* sun = nullptr;
+	Node* sunNode = nullptr;
+
 };

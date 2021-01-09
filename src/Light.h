@@ -12,6 +12,12 @@ public:
 	void bind(Shader* shader);
 public:
 	bool directional = false;
+	bool point = false;
+
+	// http://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
+	float constant = 1.f;
+	float linear = 0.f;
+	float quadratic = 0.f;
 
 	glm::vec3 pos = { 0.0f, 3.0f, 0.f };
 	glm::vec3 dir = { 0.0f, 0.0f, 0.f };

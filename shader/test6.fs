@@ -8,11 +8,18 @@ struct Material {
 struct Light {
   vec3 pos;
   vec3 dir;
+
   vec3 ambient;
   vec3 diffuse;
   vec3 specular;
+
+  float constant;
+  float linear;
+  float quadratic;
+
   bool use;
   bool directional;
+  bool point;
 };
 
 flat in float texIndex;
@@ -54,6 +61,15 @@ void main() {
 
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * (spec * material.specular);
+
+    if (light.point) {
+      float distance = length(light.pos - fragPos);
+      float attenuation = 1.0 / (light.constant + light.linear * distance +
+                                 light.quadratic * (distance * distance));
+      ambient  *= attenuation;
+      diffuse  *= attenuation;
+      specular *= attenuation;
+    }
 
     // combined
     vec3 shaded = ambient + diffuse + specular;
