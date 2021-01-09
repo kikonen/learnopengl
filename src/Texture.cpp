@@ -1,23 +1,27 @@
 #include "Texture.h"
 
 #include <glad/glad.h>
-#include <stb_image.h>
 
 #include "Shader.h"
 
-Texture::Texture(std::string& path)
+
+Texture::Texture(const std::string& path)
 	: path(path)
 {
 }
 
 Texture::~Texture()
 {
-	stbi_image_free(image);
+	delete image;
 	image = NULL;
 }
 
 void Texture::prepare(Shader* shader)
 {
+	if (!image) {
+		return;
+	}
+
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
 
@@ -26,10 +30,10 @@ void Texture::prepare(Shader* shader)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+//	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+//	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
@@ -40,20 +44,10 @@ void Texture::bind(Shader* shader)
 }
 
 int Texture::load() {
-
-	stbi_set_flip_vertically_on_load(true);
-	image = stbi_load(
-		path.c_str(),
-		&width,
-		&height,
-		&channels,
-		STBI_rgb);
-
-	if (image) {
-		std::cout << "LOADED::IMAGE " << path << std::endl;
-	} else {
-		std::cout << "ERROR::IMAGE::LOAD_FAILED " << path << std::endl;
+	Image* tmp = Image::getImage(path);
+	int res = tmp->load();
+	if (!res) {
+		image = tmp;
 	}
-
-	return image ? 0 : -1;
+	return res;
 }

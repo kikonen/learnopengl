@@ -48,6 +48,11 @@ void main()
       materialAmbient = materials[texId].ambient;
     }
 
+    vec3 emissive;
+    if (materials[texId].hasEmissiveTex){
+//      emissive = texture(materials[texId].emissiveTex, texCoord).rgb;
+    }
+
     // ambient
     vec3 ambient = light.ambient * materialAmbient;
 
@@ -66,7 +71,7 @@ void main()
     vec3 specular = light.specular * (spec * materials[texId].specular);
 
     // combined
-    vec3 shaded = ambient + diffuse + specular;
+    vec3 shaded = ambient + diffuse + specular + emissive;
 
     fragColor = vec4(shaded, 1.0);
   } else {

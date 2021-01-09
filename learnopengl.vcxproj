@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\RenderContext.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\ModelMeshLoader.cpp" />
@@ -180,6 +181,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Image.h" />
     <ClInclude Include="src\RenderContext.h" />
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\ModelMeshLoader.h" />
