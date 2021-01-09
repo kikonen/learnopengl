@@ -5,6 +5,7 @@ struct Material {
   vec3 specular;
   float shininess;
   sampler2D diffuseTex;
+  bool useTexture;
 };
 struct Light {
   vec3 pos;
@@ -32,15 +33,26 @@ void main()
   int texId = int(texIndex);
 
   if (light.use) {
+    vec3 materialAmbient;
+    vec3 materialDiffuse;
+
+    if (materials[texId].useTexture) {
+      materialDiffuse = texture(materials[texId].diffuseTex, texCoord).rgb;
+      materialAmbient = materialDiffuse;
+    } else {
+      materialDiffuse = materials[texId].diffuse;
+      materialAmbient = materials[texId].ambient;
+    }
+
     // ambient
-    vec3 ambient = light.ambient * texture(materials[texId].diffuseTex, texCoord).rgb;
+    vec3 ambient = light.ambient * materialAmbient;
 
     // diffuse
     vec3 norm = normalize(normal);
     vec3 lightDir = normalize(light.pos - fragPos);
     float diff = max(dot(norm, lightDir), 0.0);
 
-    vec3 diffuse = light.diffuse * (diff * texture(materials[texId].diffuseTex, texCoord).rgb);
+    vec3 diffuse = light.diffuse * (diff * materialDiffuse);
 
     // specular
     vec3 viewDir = normalize(viewPos - fragPos);
@@ -54,6 +66,6 @@ void main()
 
     fragColor = vec4(shaded, 1.0);
   } else {
-    fragColor = texture(materials[texId].diffuseTex, texCoord);
+    fragColor = vec4(materials[texId].diffuse, 1.0);
   }
 }

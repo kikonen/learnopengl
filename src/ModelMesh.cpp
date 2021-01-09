@@ -161,6 +161,9 @@ int ModelMesh::bind(const RenderContext& ctx)
 
 			sprintf_s(name, "materials[%i].diffuseTex", idx);
 			shader->setInt(name, material->texture ? material->texture->textureIindex : 0);
+
+			sprintf_s(name, "materials[%i].useTexture", idx);
+			shader->setInt(name, !!material->texture);
 		}
 	}
 
