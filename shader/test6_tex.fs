@@ -22,9 +22,12 @@ struct Light {
   float linear;
   float quadratic;
 
+  float cutoff;
+
   bool use;
   bool directional;
   bool point;
+  bool spot;
 };
 
 flat in float texIndex;
@@ -75,21 +78,29 @@ void main()
       lightDir = normalize(light.pos - fragPos);
     }
 
-    float diff = max(dot(norm, lightDir), 0.0);
+    bool shade = true;
+    if (light.spot) {
+      float theta = dot(lightDir, normalize(-light.dir));
+      shade = theta > light.cutoff;
+    }
 
-    vec3 diffuse = light.diffuse * (diff * materialDiffuse);
-
-    // specular
-    vec3 viewDir = normalize(viewPos - fragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), materials[texId].shininess);
-
+    vec3 diffuse;
     vec3 specular;
-    if (materials[texId].hasSpecularTex){
-      specular = light.specular * (spec * texture(materials[texId].specularTex, texCoord).rgb);
-    } else {
-      specular = light.specular * (spec * materials[texId].specular);
+    if (shade) {
+      float diff = max(dot(norm, lightDir), 0.0);
+      diffuse = light.diffuse * (diff * materialDiffuse);
+
+      // specular
+      vec3 viewDir = normalize(viewPos - fragPos);
+      vec3 reflectDir = reflect(-lightDir, norm);
+
+      float spec = pow(max(dot(viewDir, reflectDir), 0.0), materials[texId].shininess);
+
+      if (materials[texId].hasSpecularTex){
+        specular = light.specular * (spec * texture(materials[texId].specularTex, texCoord).rgb);
+      } else {
+        specular = light.specular * (spec * materials[texId].specular);
+      }
     }
 
     if (light.point) {
@@ -103,9 +114,9 @@ void main()
 
     // combined
     vec3 shaded = ambient + diffuse + specular + emission;
-    if (materials[texId].hasSpecularTex) {
+//    if (materials[texId].hasSpecularTex) {
 //      shaded = shaded + vec3(1.0, 0.0, 0.0);
-    }
+//    }
 
     fragColor = vec4(shaded, 1.0);
   } else {

@@ -13,6 +13,8 @@ struct Light {
   vec3 diffuse;
   vec3 specular;
 
+  float cutoff;
+
   float constant;
   float linear;
   float quadratic;
@@ -20,6 +22,7 @@ struct Light {
   bool use;
   bool directional;
   bool point;
+  bool spot;
 };
 
 flat in float texIndex;
@@ -51,16 +54,26 @@ void main() {
       lightDir = normalize(light.pos - fragPos);
     }
 
-    float diff = max(dot(norm, lightDir), 0.0);
+    bool shade = true;
+    if (light.spot) {
+      float theta = dot(lightDir, normalize(-light.dir));
+      shade = theta > light.cutoff;
+    }
 
-    vec3 diffuse = light.diffuse * (diff * material.diffuse);
+    vec3 diffuse;
+    vec3 specular;
+    if (shade) {
+      float diff = max(dot(norm, lightDir), 0.0);
 
-    // specular
-    vec3 viewDir = normalize(viewPos - fragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
+      diffuse = light.diffuse * (diff * material.diffuse);
 
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    vec3 specular = light.specular * (spec * material.specular);
+      // specular
+      vec3 viewDir = normalize(viewPos - fragPos);
+      vec3 reflectDir = reflect(-lightDir, norm);
+
+      float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+      specular = light.specular * (spec * material.specular);
+    }
 
     if (light.point) {
       float distance = length(light.pos - fragPos);

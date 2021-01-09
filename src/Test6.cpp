@@ -32,9 +32,14 @@ int Test6::onSetup() {
 		light = new Light();
 		light->pos = glm::vec3(10, -10, 10) + groundOffset;
 
-		// 50
-		light->linear = 0.09f;
-		light->quadratic = 0.032f;
+		// 160
+		light->point = true;
+		light->linear = 0.027f;
+		light->quadratic = 0.0028f;
+
+		light->spot = true;
+		light->cutoffAngle = 25.f;
+		light->dir = glm::vec3(0.01f, 1.0f, 0.01f);
 
 		light->ambient = { 0.2f, 0.2f, 0.15f };
 		light->diffuse = { 0.8f, 0.8f, 0.7f };
