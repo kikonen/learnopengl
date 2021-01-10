@@ -28,25 +28,25 @@ int Test6::onSetup() {
 	}
 
 	// light
-	if (true) {
+	if (false) {
 		light = new Light();
 		light->pos = glm::vec3(10, -10, 10) + groundOffset;
 
 		// 160
-		light->point = true;
+		light->point = false;
 		light->linear = 0.027f;
 		light->quadratic = 0.0028f;
 
 		light->spot = true;
-		light->cutoffAngle = 25.f;
-		light->dir = glm::vec3(0.01f, 1.0f, 0.01f);
+		light->cutoffAngle = 10.f;
+		light->dir = glm::vec3(0.01f, -1.0f, 0.01f);
 
 		light->ambient = { 0.2f, 0.2f, 0.15f };
 		light->diffuse = { 0.8f, 0.8f, 0.7f };
 		light->specular = { 1.0f, 1.0f, 0.9f };
 	}
 
-	// sun
+	// sun node
 	if (true && sun) {
 		ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
 		mesh->useTexture = false;
@@ -62,7 +62,7 @@ int Test6::onSetup() {
 		sunNode = node;
 	}
 
-	// light
+	// light node
 	if (true && light) {
 		ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
 		mesh->useTexture = false;
@@ -211,9 +211,9 @@ int Test6::onSetup() {
 		nodes.push_back(node);
 	}
 
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	return 0;
 }
@@ -278,7 +278,9 @@ int Test6::onRender(float dt) {
 
 		glm::vec3 pos = glm::vec3(posX, -8, posZ) + groundOffset;
 
-		light->pos = pos;
+		if (light) {
+			light->pos = pos;
+		}
 		if (lightNode) {
 			lightNode->setPos(pos);
 		}

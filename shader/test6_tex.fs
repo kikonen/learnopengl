@@ -23,6 +23,7 @@ struct Light {
   float quadratic;
 
   float cutoff;
+  float outerCutoff;
 
   bool use;
   bool directional;
@@ -48,18 +49,18 @@ void main()
 {
   int texId = int(texIndex);
 
+  vec3 materialAmbient;
+  vec3 materialDiffuse;
+
+  if (materials[texId].hasDiffuseTex) {
+    materialDiffuse = texture(materials[texId].diffuseTex, texCoord).rgb;
+    materialAmbient = materialDiffuse;
+  } else {
+    materialDiffuse = materials[texId].diffuse;
+    materialAmbient = materials[texId].ambient;
+  }
+
   if (light.use) {
-    vec3 materialAmbient;
-    vec3 materialDiffuse;
-
-    if (materials[texId].hasDiffuseTex) {
-      materialDiffuse = texture(materials[texId].diffuseTex, texCoord).rgb;
-      materialAmbient = materialDiffuse;
-    } else {
-      materialDiffuse = materials[texId].diffuse;
-      materialAmbient = materials[texId].ambient;
-    }
-
     vec3 emission;
     if (materials[texId].hasemissionTex){
       emission = vec3(texture(materials[texId].emissionTex, texCoord));
@@ -120,6 +121,6 @@ void main()
 
     fragColor = vec4(shaded, 1.0);
   } else {
-    fragColor = vec4(materials[texId].diffuse, 1.0);
+    fragColor = vec4(materialDiffuse, 1.0);
   }
 }

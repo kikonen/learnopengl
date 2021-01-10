@@ -193,22 +193,7 @@ int ModelMesh::bind(const RenderContext& ctx)
 		}
 	}
 
-	const glm::vec3& pos = ctx.engine.camera.getPos();
-	shader->setVec3("viewPos", pos);
-
-	if (ctx.useLight && ctx.light) {
-		shader->setBool("light.use", true);
-	} else {
-		shader->setBool("light.use", false);
-		shader->setVec3("light.specular", glm::vec3(1.0f));
-	}
-	ctx.light->bind(shader);
-
-	if (ctx.useWireframe || useWireframe) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	} else {
-		glPolygonMode(GL_FRONT, GL_FILL);
-	}
+	ctx.bind(shader, useWireframe);
 
 	return 0;
 }

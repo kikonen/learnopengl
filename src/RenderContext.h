@@ -14,6 +14,8 @@ public:
 		const glm::mat4& view,
 		const glm::mat4& projection,
 		Light* light);
+
+	void bind(Shader* shader, bool wireframe) const;
 public:
 	const Engine& engine;
 	const float dt;

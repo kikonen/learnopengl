@@ -89,6 +89,6 @@ void main() {
 
     fragColor = vec4(shaded, 1.0);
   } else {
-    fragColor = vec4(light.specular, 1.0);
+    fragColor = vec4(material.diffuse, 1.0);
   }
 }

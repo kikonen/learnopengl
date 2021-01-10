@@ -24,6 +24,7 @@ void Light::bind(Shader* shader)
 	shader->setFloat("light.quadratic", quadratic);
 
 	shader->setFloat("light.cutOff", glm::cos(glm::radians(cutoffAngle)));
+	shader->setFloat("light.outerCutOff", glm::cos(glm::radians(outerCutoffAngle)));
 
 	shader->setBool("light.directional", directional);
 	shader->setBool("light.point", point);

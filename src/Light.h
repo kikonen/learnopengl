@@ -22,6 +22,8 @@ public:
 
 	// degrees
 	float cutoffAngle = 0.f;
+	// degrees
+	float outerCutoffAngle = 0.f;
 
 	glm::vec3 pos = { 0.0f, 3.0f, 0.f };
 	glm::vec3 dir = { 0.0f, 0.0f, 0.f };
