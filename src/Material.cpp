@@ -16,10 +16,12 @@ struct Names {
 	std::string diffuseTex;
 	std::string emissionTex;
 	std::string specularTex;
+	std::string bumpTex;
 
 	std::string hasDiffuseTex;
 	std::string hasEmissionTex;
 	std::string hasSpecularTex;
+	std::string hasBumpTex;
 };
 
 std::map<int, const Names*> varNames;
@@ -50,7 +52,10 @@ const Names* createNames(const std::string arr, int idx) {
 	
 	sprintf_s(name, "%s[%i].specularTex", arr.c_str(), idx);
 	names->specularTex = name;
-	
+
+	sprintf_s(name, "%s[%i].bumpTex", arr.c_str(), idx);
+	names->bumpTex = name;
+
 	sprintf_s(name, "%s[%i].hasDiffuseTex", arr.c_str(), idx);
 	names->hasDiffuseTex = name;
 	
@@ -59,7 +64,10 @@ const Names* createNames(const std::string arr, int idx) {
 	
 	sprintf_s(name, "%s[%i].hasSpecularTex", arr.c_str(), idx);
 	names->hasSpecularTex = name;
-	
+
+	sprintf_s(name, "%s[%i].hasBumpTex", arr.c_str(), idx);
+	names->hasBumpTex = name;
+
 	return names;
 }
 
@@ -85,6 +93,7 @@ Material::~Material()
 	delete diffuseTex;
 	delete specularTex;
 	delete emissionTex;
+	delete bumpTex;
 }
 
 int Material::loadTextures(const std::string& baseDir)
@@ -92,6 +101,7 @@ int Material::loadTextures(const std::string& baseDir)
 	diffuseTex = loadTexture(baseDir, map_kd);
 	emissionTex = loadTexture(baseDir, map_ke);
 	specularTex = loadTexture(baseDir, map_ks);
+	bumpTex = loadTexture(baseDir, map_bump);
 	return 0;
 }
 
@@ -142,9 +152,13 @@ void Material::bind(Shader* shader, int index, bool useTexture)
 	if (specularTex && useTexture) {
 		shader->setInt(names->specularTex, specularTex->textureIndex);
 	}
+	if (bumpTex && useTexture) {
+		shader->setInt(names->bumpTex, bumpTex->textureIndex);
+	}
 	shader->setBool(names->hasDiffuseTex, !!diffuseTex && useTexture);
 	shader->setBool(names->hasEmissionTex, !!emissionTex && useTexture);
 	shader->setBool(names->hasSpecularTex, !!specularTex && useTexture);
+	shader->setBool(names->hasBumpTex, !!bumpTex && useTexture);
 
 	for (auto const x : textures) {
 		x->bind(shader);

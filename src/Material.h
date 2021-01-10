@@ -46,6 +46,7 @@ public:
     Texture* diffuseTex;
     Texture* specularTex;
     Texture* emissionTex;
+    Texture* bumpTex;
 
     std::vector<Texture*> textures;
 
@@ -67,6 +68,11 @@ public:
     // Ke/map_Ke     # emissive
     glm::vec3 ke = { 0.f, 0.f, 0.f };
     std::string map_ke = "";
+
+    // some implementations use 'map_bump' instead of 'bump' below
+    // bump map(which by default uses luminance channel of the image)
+    // bump lemur_bump.tga
+    std::string map_bump = "";
 
     // A material can also have an optical density for its surface. This is also known as index of refraction.
     float ni = 0.0f;

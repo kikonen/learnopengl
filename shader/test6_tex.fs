@@ -12,10 +12,12 @@ struct Material {
   sampler2D diffuseTex;
   sampler2D emissionTex;
   sampler2D specularTex;
+  sampler2D bumpTex;
 
   bool hasDiffuseTex;
   bool hasEmissionTex;
   bool hasSpecularTex;
+  bool hasBumpTex;
 };
 struct DirLight {
   vec3 dir;

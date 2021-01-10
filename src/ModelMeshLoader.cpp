@@ -109,6 +109,16 @@ int ModelMeshLoader::load(
 				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
 				normals.push_back(v);
 			}
+			else if (k == "s") {
+				// Smooth shading across polygons is enabled by smoothing groups.
+				// Smooth shading can be disabled as well.
+				// s off
+				int smoothing = v1 == "off" ? 0 : stoi(v1);
+			} 
+			else if (k == "g") {
+				// group
+				int group = stoi(v1);
+			}
 			else if (k == "usemtl") {
 				if (materials.count(v1)) {
 					material = materials[v1];
@@ -288,6 +298,10 @@ int ModelMeshLoader::loadMaterials(
 				material->map_ke = resolveTexturePath(line);
 			} else if (k == "map_Ks") {
 				material->map_ks = resolveTexturePath(line);
+			} else if (k == "map_Bump") {
+				material->map_bump = resolveTexturePath(line);
+			} else if (k == "bump") {
+				material->map_bump = resolveTexturePath(line);
 			}
 		}
 		file.close();
