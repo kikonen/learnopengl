@@ -17,8 +17,21 @@ Material* createDefaultMaterial() {
 	return mat;
 }
 
-ModelMesh::ModelMesh(const Engine& engine, const std::string& modelName, const std::string& shaderName)
+ModelMesh::ModelMesh(
+	const Engine& engine,
+	const std::string& modelName,
+	const std::string& shaderName)
+	: ModelMesh(engine, "/", modelName, shaderName)
+{
+}
+
+ModelMesh::ModelMesh(
+	const Engine& engine, 
+	const std::string& path,
+	const std::string& modelName,
+	const std::string& shaderName)
 	: Mesh(engine, modelName),
+	path(path),
 	modelName(modelName),
 	shaderName(shaderName)
 {
@@ -164,7 +177,7 @@ int ModelMesh::draw(const RenderContext& ctx)
 
 int ModelMesh::load()
 {
-	ModelMeshLoader loader(*this, modelName);
+	ModelMeshLoader loader(*this, path, modelName);
 	loader.defaultMaterial = defaultMaterial;
 	loader.overrideMaterials = overrideMaterials;
 	loader.debugColors = debugColors;

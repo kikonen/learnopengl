@@ -46,8 +46,10 @@ const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
 
 ModelMeshLoader::ModelMeshLoader(
 	ModelMesh& mesh, 
+	const std::string& path,
 	const std::string& modelName)
 	: mesh(mesh),
+	path(path),
 	modelName(modelName)
 {
 }
@@ -69,7 +71,7 @@ int ModelMeshLoader::load(
 	std::vector<glm::vec2> textures;
 	std::vector<glm::vec3> normals;
 
-	std::string modelPath = BASE_DIR + "/" + modelName + ".obj";
+	std::string modelPath = BASE_DIR + path + "/" + modelName + ".obj";
 	std::ifstream file;
 	//	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	file.exceptions(std::ifstream::badbit);
@@ -231,7 +233,7 @@ int ModelMeshLoader::loadMaterials(
 	std::map<std::string, Material*>& materials,
 	std::string libraryName)
 {
-	std::string materialPath = BASE_DIR + "/" + libraryName;
+	std::string materialPath = BASE_DIR + path + "/" + libraryName;
 	std::ifstream file;
 	//	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	file.exceptions(std::ifstream::badbit);
@@ -300,7 +302,7 @@ int ModelMeshLoader::loadMaterials(
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
-		material->loadTextures(BASE_DIR);
+		material->loadTextures(BASE_DIR + path);
 
 		for (auto const& texture : material->textures) {
 			texture->textureIndex = textureIndex;

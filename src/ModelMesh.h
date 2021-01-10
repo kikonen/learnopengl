@@ -15,7 +15,17 @@
 
 class ModelMesh : public Mesh {
 public:
-	ModelMesh(const Engine& engine, const std::string& modelName, const std::string& shaderName);
+	ModelMesh(
+		const Engine& engine,
+		const std::string& modelName,
+		const std::string& shaderName);
+
+	ModelMesh(
+		const Engine& engine, 
+		const std::string& path,
+		const std::string& modelName,
+		const std::string& shaderName);
+
 	~ModelMesh();
 
 	virtual int prepare() override;
@@ -34,8 +44,9 @@ public:
 	unsigned int textureCount = 0;
 
 private:
-	std::string modelName;
-	std::string shaderName;
+	const std::string path;
+	const std::string modelName;
+	const std::string shaderName;
 
 	std::vector<Tri> tris;
 	std::vector<Vertex> vertexes;

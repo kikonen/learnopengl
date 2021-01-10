@@ -10,7 +10,7 @@ const std::string BASE_DIR = "3d_model";
 class ModelMeshLoader
 {
 public:
-	ModelMeshLoader(ModelMesh& mesh, const std::string& modelName);
+	ModelMeshLoader(ModelMesh& mesh, const std::string& path, const std::string& modelName);
 	~ModelMeshLoader();
 
 	int load(
@@ -21,6 +21,7 @@ public:
 
 public:
 	ModelMesh& mesh;
+	const std::string& path;
 	const std::string& modelName;
 
 	bool debugColors = false;
