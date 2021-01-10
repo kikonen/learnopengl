@@ -226,7 +226,7 @@ int Test6::onSetup() {
 		}
 		mesh->prepare();
 
-		Node* node = new Node(mesh, glm::vec3(-5, 5, -15) + groundOffset);
+		Node* node = new Node(mesh, glm::vec3(0, -8, 0) + groundOffset);
 		node->setScale(1.5f);
 		nodes.push_back(node);
 	}
