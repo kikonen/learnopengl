@@ -219,7 +219,7 @@ int Test6::onSetup() {
 
 	// backback
 	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "/backpack", "backpack", "test6");
+		ModelMesh* mesh = new ModelMesh(*this, "/backpack/", "backpack", "test6");
 		//mesh->useWireframe = true;
 		if (mesh->load()) {
 			return -1;

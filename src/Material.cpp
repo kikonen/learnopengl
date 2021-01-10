@@ -111,7 +111,7 @@ Texture* Material::loadTexture(const std::string& baseDir, const std::string& na
 		return nullptr;
 	}
 
-	std::string texturePath = baseDir + "/" + name;
+	std::string texturePath = baseDir + name;
 
 	std::cout << "\n== TEXTURE: " << texturePath << " ===\n";
 
@@ -158,7 +158,7 @@ void Material::bind(Shader* shader, int index, bool useTexture)
 	shader->setBool(names->hasDiffuseTex, !!diffuseTex && useTexture);
 	shader->setBool(names->hasEmissionTex, !!emissionTex && useTexture);
 	shader->setBool(names->hasSpecularTex, !!specularTex && useTexture);
-	shader->setBool(names->normalMap, !!normalMap);
+	shader->setBool(names->hasNormalMap, !!normalMap);
 
 	for (auto const x : textures) {
 		x->bind(shader);

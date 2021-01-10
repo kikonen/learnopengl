@@ -71,7 +71,7 @@ int ModelMeshLoader::load(
 	std::vector<glm::vec2> textures;
 	std::vector<glm::vec3> normals;
 
-	std::string modelPath = BASE_DIR + path + "/" + modelName + ".obj";
+	std::string modelPath = BASE_DIR + path + modelName + ".obj";
 	std::ifstream file;
 	//	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	file.exceptions(std::ifstream::badbit);
@@ -243,7 +243,7 @@ int ModelMeshLoader::loadMaterials(
 	std::map<std::string, Material*>& materials,
 	std::string libraryName)
 {
-	std::string materialPath = BASE_DIR + path + "/" + libraryName;
+	std::string materialPath = BASE_DIR + path + libraryName;
 	std::ifstream file;
 	//	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	file.exceptions(std::ifstream::badbit);
