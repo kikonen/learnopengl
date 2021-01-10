@@ -1,5 +1,6 @@
 #include "Test4.h"
 
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
@@ -47,7 +48,9 @@ int Test4::onRender(float dt) {
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-	RenderContext ctx(*this, dt, view, projection, nullptr);
+	std::vector<Light*> pointLights;
+	std::vector<Light*> spotLights;
+	RenderContext ctx(*this, dt, view, projection, nullptr, pointLights, spotLights);
 
 	std::string projectionName = { "projection" };
 	shader->setMat4(projectionName, projection);

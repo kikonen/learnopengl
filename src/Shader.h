@@ -17,6 +17,7 @@ public:
     static Shader* getShader(const std::string& name, bool texture);
 private:
 	Shader(
+        const std::string& name,
         const std::string& vertexShaderSource,
         const std::string& fragmentShaderSource);
 
@@ -43,6 +44,8 @@ public:
     void setMat3(const std::string& name, const glm::mat3& mat);
     void setMat2(const std::string& name, const glm::mat2& mat);
 public:
+    const std::string shaderName;
+
     unsigned int id;
     std::string vertexShaderSource;
     std::string fragmentShaderSource;

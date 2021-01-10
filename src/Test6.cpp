@@ -15,21 +15,21 @@ Test6::Test6() {
 
 int Test6::onSetup() {
 	// sun
-	if (false) {
+	if (true) {
 		sun = new Light();
 		sun->pos = glm::vec3(10, 100, 10) + groundOffset;
 
 		sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
 		sun->directional = true;
 
-		sun->ambient = { 0.2f, 0.2f, 0.1f };
-		sun->diffuse = { 0.8f, 0.8f, 0.7f };
-		sun->specular = { 1.0f, 1.0f, 0.9f };
+		sun->ambient = { 0.1f, 0.1f, 0.1f };
+		sun->diffuse = { 0.8f, 0.8f, 0.8f };
+		sun->specular = { 1.0f, 1.0f, 1.0f };
 	}
 
 	// light
 	if (true) {
-		light = new Light();
+		Light* light = new Light();
 		light->pos = glm::vec3(10, -10, 10) + groundOffset;
 
 		// 160
@@ -45,6 +45,13 @@ int Test6::onSetup() {
 		light->ambient = { 0.2f, 0.2f, 0.15f };
 		light->diffuse = { 0.8f, 0.8f, 0.7f };
 		light->specular = { 1.0f, 1.0f, 0.9f };
+
+		if (light->spot) {
+			spotLights.push_back(light);
+		} else {
+			pointLights.push_back(light);
+		}
+		activeLight = light;
 	}
 
 	// sun node
@@ -64,19 +71,22 @@ int Test6::onSetup() {
 	}
 
 	// light node
-	if (true && light) {
+	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
 		mesh->useTexture = false;
-	
 		if (mesh->load()) {
 			return -1;
 		}
 		mesh->prepare();
 
-		Node* node = new Node(mesh, light->pos);
-		//node->setScale(0.5f);
-		nodes.push_back(node);
-		lightNode = node;
+		for (auto light : pointLights) {
+			Node* node = new Node(mesh, light->pos);
+			//node->setScale(0.5f);
+			nodes.push_back(node);
+			if (light == activeLight) {
+				activeLightNode = node;
+			}
+		}
 	}
 
 	// waterball
@@ -239,7 +249,7 @@ int Test6::onRender(float dt) {
 	const glm::mat4& view = camera.getView();
 	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
 
-	RenderContext ctx(*this, dt, view, projection, sun ? sun : light);
+	RenderContext ctx(*this, dt, view, projection, sun, pointLights, spotLights);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 
@@ -279,11 +289,11 @@ int Test6::onRender(float dt) {
 
 		glm::vec3 pos = glm::vec3(posX, -8, posZ) + groundOffset;
 
-		if (light) {
-			light->pos = pos;
+		if (activeLight) {
+			activeLight->pos = pos;
 		}
-		if (lightNode) {
-			lightNode->setPos(pos);
+		if (activeLightNode) {
+			activeLightNode->setPos(pos);
 		}
 	}
 

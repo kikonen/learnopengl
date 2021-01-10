@@ -18,14 +18,15 @@ Shader* Shader::getShader(const std::string& name, bool texture)
 
     if (!shader) {
         std::string shaderPathBase = "shader/" + name;
-        shader = new Shader(shaderPathBase + ".vs", shaderPathBase + (texture ? "_tex.fs" : ".fs"));
+        shader = new Shader(name, shaderPathBase + ".vs", shaderPathBase + (texture ? "_tex.fs" : ".fs"));
         cache[name] = shader;
     }
 
     return shader;
 }
 
-Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+Shader::Shader(const std::string& name, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+    : shaderName(name)
 {
     this->vertexShaderPath = vertexShaderPath;
     this->fragmentShaderPath = fragmentShaderPath;
@@ -69,6 +70,9 @@ GLint Shader::getUniformLoc(const std::string& name)
     if (!vi) {
         vi = glGetUniformLocation(id, name.c_str());
         uniforms[name] = vi;
+        if (vi < 0) {
+            std::cout << "SHADER::MISSING_UNIFORM: " << shaderName << " uniform=" << name << std::endl;
+        }
     }
     return vi;
 }

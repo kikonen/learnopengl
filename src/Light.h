@@ -9,8 +9,13 @@ public:
 	Light();
 	~Light();
 
-	void bind(Shader* shader);
+	void bind(Shader* shader, int index);
+private:
+	void bindDirectional(Shader* shader);
+	void bindPoint(Shader* shader, int index);
+	void bindSpot(Shader* shader, int index);
 public:
+	bool use = true;
 	bool directional = false;
 	bool point = false;
 	bool spot = false;

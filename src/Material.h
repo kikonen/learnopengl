@@ -33,8 +33,7 @@ public:
     int loadTextures(const std::string& baseDir);
 
     void prepare(Shader* shader);
-    void bind(Shader* shader);
- 
+    void bind(Shader* shader, int index, bool useTexture);
 private:
     Texture* loadTexture(const std::string& baseDir, const std::string& name);
 

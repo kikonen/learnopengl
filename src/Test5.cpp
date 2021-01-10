@@ -1,5 +1,6 @@
 #include "Test5.h"
 
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
@@ -94,7 +95,9 @@ int Test5::onRender(float dt) {
 	const glm::mat4& viewMat = camera.getView();
 	const glm::mat4 projectionMat = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
 
-	RenderContext ctx(*this, dt, viewMat, projectionMat, nullptr);
+	std::vector<Light*> pointLights;
+	std::vector<Light*> spotLights;
+	RenderContext ctx(*this, dt, viewMat, projectionMat, nullptr, pointLights, spotLights);
 //	mesh->setPos(glm::vec3(0, 0, -10.0f));
 
 	if (active) {

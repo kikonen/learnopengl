@@ -24,10 +24,12 @@ private:
 	std::vector<Node*> nodes;
 	Node* active = nullptr;
 
-	Light* light = nullptr;
-	Node* lightNode = nullptr;
+	Light* activeLight = nullptr;
+	Node* activeLightNode = nullptr;
 
 	Light* sun = nullptr;
 	Node* sunNode = nullptr;
 
+	std::vector<Light*> pointLights;
+	std::vector<Light*> spotLights;
 };

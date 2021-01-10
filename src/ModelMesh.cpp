@@ -146,51 +146,9 @@ int ModelMesh::bind(const RenderContext& ctx)
 	shader->use();
 	glBindVertexArray(VAO);
 
-	//if (useTexture && hasTexture) 
-	{
-		const unsigned int sz = materials.size();
-
-		for (auto const& x : materials) {
-			Material* material = x.second;
-			material->bind(shader);
-			unsigned int idx = material->materialIndex;
-
-			char name[200];
-
-			sprintf_s(name, "materials[%i].ambient", idx);
-			shader->setVec3(name, material->ka);
-
-			sprintf_s(name, "materials[%i].diffuse", idx);
-			shader->setVec3(name, material->kd);
-
-			sprintf_s(name, "materials[%i].specular", idx);
-			shader->setVec3(name, material->ks);
-
-			sprintf_s(name, "materials[%i].shininess", idx);
-			shader->setFloat(name, material->ns);
-
-			if (material->diffuseTex && useTexture) {
-				sprintf_s(name, "materials[%i].diffuseTex", idx);
-				shader->setInt(name, material->diffuseTex->textureIndex);
-			}
-			if (material->emissionTex && useTexture) {
-				sprintf_s(name, "materials[%i].emissionTex", idx);
-				shader->setInt(name, material->emissionTex->textureIndex);
-			}
-			if (material->specularTex && useTexture) {
-				sprintf_s(name, "materials[%i].specularTex", idx);
-				shader->setInt(name, material->specularTex->textureIndex);
-			}
-
-			sprintf_s(name, "materials[%i].hasDiffuseTex", idx);
-			shader->setBool(name, !!material->diffuseTex && useTexture);
-
-			sprintf_s(name, "materials[%i].hasemissionTex", idx);
-			shader->setBool(name, !!material->emissionTex && useTexture);
-
-			sprintf_s(name, "materials[%i].hasSpecularTex", idx);
-			shader->setBool(name, !!material->specularTex && useTexture);
-		}
+	for (auto const& x : materials) {
+		Material* material = x.second;
+		material->bind(shader, material->materialIndex, useTexture);
 	}
 
 	ctx.bind(shader, useWireframe);

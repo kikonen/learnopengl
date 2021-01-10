@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <glm/glm.hpp>
 
 #include "Light.h"
@@ -13,7 +14,9 @@ public:
 		const float dt,
 		const glm::mat4& view,
 		const glm::mat4& projection,
-		Light* light);
+		Light* dirLight,
+		const std::vector<Light*> pointLights,
+		const std::vector<Light*> spotLights);
 
 	void bind(Shader* shader, bool wireframe) const;
 public:
@@ -22,7 +25,10 @@ public:
 	const glm::mat4& view;
 	const glm::mat4& projection;
 	const glm::mat4 projected;
-	Light* light;
+
+	Light* dirLight = nullptr;
+	const std::vector<Light*> pointLights;
+	const std::vector<Light*> spotLights;
 
 	bool useWireframe = false;
 	bool useLight = true;
