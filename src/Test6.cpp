@@ -217,6 +217,20 @@ int Test6::onSetup() {
 		nodes.push_back(node);
 	}
 
+	// backback
+	if (true) {
+		ModelMesh* mesh = new ModelMesh(*this, "/backpack", "backpack", "test6");
+		//mesh->useWireframe = true;
+		if (mesh->load()) {
+			return -1;
+		}
+		mesh->prepare();
+
+		Node* node = new Node(mesh, glm::vec3(-5, 5, -15) + groundOffset);
+		node->setScale(1.5f);
+		nodes.push_back(node);
+	}
+
 	// spyro
 	if (true) {
 		ModelMesh* mesh = new ModelMesh(*this, "spyro2", "test6");
