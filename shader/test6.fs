@@ -14,6 +14,7 @@ struct Light {
   vec3 specular;
 
   float cutoff;
+  float outerCutoff;
 
   float constant;
   float linear;
@@ -41,10 +42,6 @@ void main() {
   Material material = materials[texId];
 
   if (light.use) {
-    // ambient
-    vec3 ambient = material.ambient * light.ambient;
-
-    // diffuse
     vec3 norm = normalize(normal);
 
     vec3 lightDir;
@@ -55,16 +52,26 @@ void main() {
     }
 
     bool shade = true;
+    float intensity;
     if (light.spot) {
       float theta = dot(lightDir, normalize(-light.dir));
       shade = theta > light.cutoff;
+
+      if (shade) {
+        float epsilon = light.cutoff - light.outerCutoff;
+        intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+      }
     }
 
+    vec3 ambient;
     vec3 diffuse;
     vec3 specular;
     if (shade) {
-      float diff = max(dot(norm, lightDir), 0.0);
+      // ambient
+      ambient = material.ambient * light.ambient;
 
+      // diffuse
+      float diff = max(dot(norm, lightDir), 0.0);
       diffuse = light.diffuse * (diff * material.diffuse);
 
       // specular
@@ -73,6 +80,13 @@ void main() {
 
       float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
       specular = light.specular * (spec * material.specular);
+
+      if (light.spot) {
+        diffuse  *= intensity;
+        specular *= intensity;
+      }
+    } else {
+      ambient = light.ambient * material.diffuse;
     }
 
     if (light.point) {

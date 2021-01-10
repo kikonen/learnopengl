@@ -66,10 +66,6 @@ void main()
       emission = vec3(texture(materials[texId].emissionTex, texCoord));
     }
 
-    // ambient
-    vec3 ambient = light.ambient * materialAmbient;
-
-    // diffuse
     vec3 norm = normalize(normal);
 
     vec3 lightDir;
@@ -80,14 +76,25 @@ void main()
     }
 
     bool shade = true;
+    float intensity;
     if (light.spot) {
       float theta = dot(lightDir, normalize(-light.dir));
       shade = theta > light.cutoff;
+
+      if (shade) {
+        float epsilon = light.cutoff - light.outerCutoff;
+        intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+      }
     }
 
+    vec3 ambient;
     vec3 diffuse;
     vec3 specular;
     if (shade) {
+      // ambient
+      ambient = light.ambient * materialAmbient;
+
+      // diffuse
       float diff = max(dot(norm, lightDir), 0.0);
       diffuse = light.diffuse * (diff * materialDiffuse);
 
@@ -102,6 +109,13 @@ void main()
       } else {
         specular = light.specular * (spec * materials[texId].specular);
       }
+
+      if (light.spot) {
+        diffuse  *= intensity;
+        specular *= intensity;
+      }
+    } else {
+      ambient = light.ambient * materialDiffuse;
     }
 
     if (light.point) {
