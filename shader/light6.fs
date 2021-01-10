@@ -38,7 +38,7 @@ void main() {
 
   // combined
   //vec3 shaded = light.ambient + light.diffuse + light.specular;
-  vec3 shaded = light.specular;
+  vec3 shaded = material.diffuse; //light.specular;
 
   fragColor = vec4(shaded, 1.0);
 }

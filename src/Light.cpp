@@ -132,6 +132,8 @@ void Light::bindPoint(Shader* shader, int index)
 {
 	const Names& names = getPointNames(index);
 
+	shader->setBool(names.use, use);
+
 	shader->setVec3(names.pos, pos);
 
 	shader->setVec3(names.ambient, ambient);

@@ -33,11 +33,11 @@ int Test6::onSetup() {
 		light->pos = glm::vec3(10, -10, 10) + groundOffset;
 
 		// 160
-		light->point = false;
+		light->point = true;
 		light->linear = 0.027f;
 		light->quadratic = 0.0028f;
 
-		light->spot = true;
+		light->spot = false;
 		light->cutoffAngle = 12.5f;
 		light->outerCutoffAngle = 25.f;
 		light->dir = glm::vec3(0.01f, 1.0f, 0.01f);
@@ -57,6 +57,8 @@ int Test6::onSetup() {
 	// sun node
 	if (true && sun) {
 		ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
+		mesh->defaultMaterial->kd = sun->specular;
+		mesh->overrideMaterials = true;
 		mesh->useTexture = false;
 
 		if (mesh->load()) {
@@ -80,6 +82,15 @@ int Test6::onSetup() {
 		mesh->prepare();
 
 		for (auto light : pointLights) {
+			Node* node = new Node(mesh, light->pos);
+			//node->setScale(0.5f);
+			nodes.push_back(node);
+			if (light == activeLight) {
+				activeLightNode = node;
+			}
+		}
+
+		for (auto light : spotLights) {
 			Node* node = new Node(mesh, light->pos);
 			//node->setScale(0.5f);
 			nodes.push_back(node);
