@@ -11,7 +11,7 @@
 class Texture
 {
 public:
-	Texture(const std::string& path);
+	Texture(const std::string& path, bool normal);
 	~Texture();
 
 	void prepare(Shader* shader);
@@ -20,6 +20,7 @@ public:
 
 public:
 	const std::string path;
+	const bool normal;
 
 	unsigned int id = -1;
 	unsigned int unitId = -1;

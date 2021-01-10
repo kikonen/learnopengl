@@ -12,12 +12,12 @@ struct Material {
   sampler2D diffuseTex;
   sampler2D emissionTex;
   sampler2D specularTex;
-  sampler2D bumpTex;
+  sampler2D normalMap;
 
   bool hasDiffuseTex;
   bool hasEmissionTex;
   bool hasSpecularTex;
-  bool hasBumpTex;
+  bool hasNormalMap;
 };
 struct DirLight {
   vec3 dir;
@@ -107,7 +107,17 @@ vec3 calculateSpotLight(
 
 void main() {
   int texId = int(texIndex);
-  vec3 norm = normalize(normal);
+
+  bool hasNormalMap = false;
+  vec3 norm;
+  if (materials[texId].hasNormalMap) {
+    norm = texture(materials[texId].normalMap, texCoord).rgb;
+    norm = normalize(norm * 2.0 - 1.0);
+    hasNormalMap = true;
+  } else {
+    norm = normalize(normal);
+  }
+
   vec3 viewDir = normalize(viewPos - fragPos);
 
   vec3 matAmbient;
@@ -166,10 +176,10 @@ void main() {
   vec3 shaded =  dirShaded + pointShaded + spotShaded + emission;
 
   if (hasLight) {
+//    if (hasNormalMap) {
+//      shaded = shaded + vec3(1.0, 0.0, 0.0);
+//    }
     fragColor = vec4(shaded, 1.0);
-  //    if (materials[texId].hasSpecularTex) {
-  //      shaded = shaded + vec3(1.0, 0.0, 0.0);
-  //    }
   } else {
     fragColor = vec4(matDiffuse + emission, 1.0);
   }

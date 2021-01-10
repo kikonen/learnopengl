@@ -16,12 +16,12 @@ struct Names {
 	std::string diffuseTex;
 	std::string emissionTex;
 	std::string specularTex;
-	std::string bumpTex;
+	std::string normalMap;
 
 	std::string hasDiffuseTex;
 	std::string hasEmissionTex;
 	std::string hasSpecularTex;
-	std::string hasBumpTex;
+	std::string hasNormalMap;
 };
 
 std::map<int, const Names*> varNames;
@@ -53,8 +53,8 @@ const Names* createNames(const std::string arr, int idx) {
 	sprintf_s(name, "%s[%i].specularTex", arr.c_str(), idx);
 	names->specularTex = name;
 
-	sprintf_s(name, "%s[%i].bumpTex", arr.c_str(), idx);
-	names->bumpTex = name;
+	sprintf_s(name, "%s[%i].normalMap", arr.c_str(), idx);
+	names->normalMap = name;
 
 	sprintf_s(name, "%s[%i].hasDiffuseTex", arr.c_str(), idx);
 	names->hasDiffuseTex = name;
@@ -65,8 +65,8 @@ const Names* createNames(const std::string arr, int idx) {
 	sprintf_s(name, "%s[%i].hasSpecularTex", arr.c_str(), idx);
 	names->hasSpecularTex = name;
 
-	sprintf_s(name, "%s[%i].hasBumpTex", arr.c_str(), idx);
-	names->hasBumpTex = name;
+	sprintf_s(name, "%s[%i].hasNormalMap", arr.c_str(), idx);
+	names->hasNormalMap = name;
 
 	return names;
 }
@@ -93,19 +93,19 @@ Material::~Material()
 	delete diffuseTex;
 	delete specularTex;
 	delete emissionTex;
-	delete bumpTex;
+	delete normalMap;
 }
 
 int Material::loadTextures(const std::string& baseDir)
 {
-	diffuseTex = loadTexture(baseDir, map_kd);
-	emissionTex = loadTexture(baseDir, map_ke);
-	specularTex = loadTexture(baseDir, map_ks);
-	bumpTex = loadTexture(baseDir, map_bump);
+	diffuseTex = loadTexture(baseDir, map_kd, false);
+	emissionTex = loadTexture(baseDir, map_ke, false);
+	specularTex = loadTexture(baseDir, map_ks, false);
+	normalMap = loadTexture(baseDir, map_bump, true);
 	return 0;
 }
 
-Texture* Material::loadTexture(const std::string& baseDir, const std::string& name)
+Texture* Material::loadTexture(const std::string& baseDir, const std::string& name, bool normal)
 {
 	if (name.empty()) {
 		return nullptr;
@@ -115,7 +115,7 @@ Texture* Material::loadTexture(const std::string& baseDir, const std::string& na
 
 	std::cout << "\n== TEXTURE: " << texturePath << " ===\n";
 
-	Texture* texture = new Texture(texturePath);
+	Texture* texture = new Texture(texturePath, normal);
 	int res = texture->load();
 
 	if (res) {
@@ -152,13 +152,13 @@ void Material::bind(Shader* shader, int index, bool useTexture)
 	if (specularTex && useTexture) {
 		shader->setInt(names->specularTex, specularTex->textureIndex);
 	}
-	if (bumpTex && useTexture) {
-		shader->setInt(names->bumpTex, bumpTex->textureIndex);
+	if (normalMap) {
+		shader->setInt(names->normalMap, normalMap->textureIndex);
 	}
 	shader->setBool(names->hasDiffuseTex, !!diffuseTex && useTexture);
 	shader->setBool(names->hasEmissionTex, !!emissionTex && useTexture);
 	shader->setBool(names->hasSpecularTex, !!specularTex && useTexture);
-	shader->setBool(names->hasBumpTex, !!bumpTex && useTexture);
+	shader->setBool(names->normalMap, !!normalMap);
 
 	for (auto const x : textures) {
 		x->bind(shader);

@@ -35,7 +35,7 @@ public:
     void prepare(Shader* shader);
     void bind(Shader* shader, int index, bool useTexture);
 private:
-    Texture* loadTexture(const std::string& baseDir, const std::string& name);
+    Texture* loadTexture(const std::string& baseDir, const std::string& name, bool normal);
 
 public:
     const std::string name;
@@ -46,7 +46,7 @@ public:
     Texture* diffuseTex;
     Texture* specularTex;
     Texture* emissionTex;
-    Texture* bumpTex;
+    Texture* normalMap;
 
     std::vector<Texture*> textures;
 
