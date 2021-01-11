@@ -188,6 +188,7 @@ int Test6::onSetup() {
 
 		Node* node = new Node(mesh, glm::vec3(5, 5, -5) + groundOffset);
 		nodes.push_back(node);
+		selection.push_back(node);
 	}
 
 	// teapot
@@ -343,7 +344,7 @@ int Test6::onRender(float dt) {
 
 		for (auto node : selection) {
 			float scale = node->getScale();
-			node->setScale(scale * 1.01);
+			node->setScale(scale * 1.02);
 			node->draw(ctx, true);
 			node->setScale(scale);
 		}
