@@ -9,20 +9,15 @@ Node::~Node()
 {
 }
 
-int Node::prepare()
+int Node::prepare(bool stencil)
 {
-	if (mesh->prepare(false)) {
+	if (mesh->prepare(stencil)) {
 		return -1;
-	}
-	if (stencil) {
-		if (mesh->prepare(stencil)) {
-			return -1;
-		}
 	}
 	return 0;
 }
 
-int Node::draw(const RenderContext& ctx)
+int Node::draw(const RenderContext& ctx, bool stencil)
 {
 	updateModelMatrix();
 
@@ -108,5 +103,5 @@ void Node::setScale(float scale) {
 }
 
 float Node::getScale() {
-	return 0.0f;
+	return scale;
 }

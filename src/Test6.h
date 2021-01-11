@@ -24,6 +24,8 @@ private:
 	std::vector<Node*> nodes;
 	Node* active = nullptr;
 
+	std::vector<Node*> selection;
+
 	Light* activeLight = nullptr;
 	Node* activeLightNode = nullptr;
 

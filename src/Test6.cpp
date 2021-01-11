@@ -160,7 +160,9 @@ int Test6::onSetup() {
 			return -1;
 		}
 
-		nodes.push_back(new Node(mesh, glm::vec3(-5, 5, 5) + groundOffset));
+		Node* node = new Node(mesh, glm::vec3(-5, 5, 5) + groundOffset);
+		nodes.push_back(node);
+		selection.push_back(node);
 	}
 
 	// ball
@@ -199,6 +201,7 @@ int Test6::onSetup() {
 
 		Node* node = new Node(mesh, glm::vec3(-5, 5, -5) + groundOffset);
 		nodes.push_back(node);
+		selection.push_back(node);
 	}
 
 	// backback
@@ -232,6 +235,10 @@ int Test6::onSetup() {
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 	return 0;
 }
 
@@ -239,7 +246,7 @@ int Test6::onRender(float dt) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
 	glEnable(GL_CULL_FACE); // cull face
@@ -305,11 +312,45 @@ int Test6::onRender(float dt) {
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	for (auto node : nodes) {
-		node->prepare();
+		node->prepare(false);
 	}
 
+	for (auto node : selection) {
+		node->prepare(true);
+	}
+
+	// draw all non selected nodes
+	glStencilMask(0x00);
 	for (auto node : nodes) {
-		node->draw(ctx);
+		if (std::find(selection.begin(), selection.end(), node) != selection.end()) {
+			continue;
+		}	
+		node->draw(ctx, false);
+	}
+
+	// draw all selected nodes with stencil
+	if (selection.size() > 0) {
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
+
+		for (auto node : selection) {
+			node->draw(ctx, false);
+		}
+
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
+
+		for (auto node : selection) {
+			float scale = node->getScale();
+			node->setScale(scale * 1.01);
+			node->draw(ctx, true);
+			node->setScale(scale);
+		}
+
+		glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 0, 0xFF);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	glBindVertexArray(0);

@@ -120,7 +120,7 @@ int Test5::onRender(float dt) {
 	}
 
 	for (auto node : nodes) {
-		node->draw(ctx);
+		node->draw(ctx, false);
 	}
 
 	glBindVertexArray(0);

@@ -11,8 +11,8 @@ uniform mat4 model;
 out vec3 fragPos;
 
 void main() {
-//  gl_Position = transform * vec4(aPos, 1.0);
-  gl_Position = transform * vec4(aPos + aNormal * 0.02, 1.0);
+  gl_Position = transform * vec4(aPos, 1.0);
+//  gl_Position = transform * vec4(aPos + aNormal * 0.3, 1.0);
 
   fragPos = vec3(model * vec4(aPos, 1.0));
 }

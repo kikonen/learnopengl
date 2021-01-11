@@ -10,8 +10,8 @@ public:
 	Node(ModelMesh* mesh, const glm::vec3& pos);
 	~Node();
 
-	int prepare();
-	int draw(const RenderContext& ctx);
+	int prepare(bool stencil);
+	int draw(const RenderContext& ctx, bool stencil);
 
 	void setPos(const glm::vec3& pos);
 	const glm::vec3& getPos();
@@ -24,8 +24,6 @@ public:
 
 public:
 	ModelMesh* mesh;
-
-	bool stencil = false;
 
 private:
 

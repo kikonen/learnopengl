@@ -81,7 +81,7 @@ int Test4::onRender(float dt) {
 		node->setScale(scale);
 	}
 
-	node->draw(ctx);
+	node->draw(ctx, false);
 	glBindVertexArray(0);
 
 	return 0;
