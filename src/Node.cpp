@@ -9,15 +9,31 @@ Node::~Node()
 {
 }
 
+int Node::prepare()
+{
+	if (mesh->prepare(false)) {
+		return -1;
+	}
+	if (stencil) {
+		if (mesh->prepare(stencil)) {
+			return -1;
+		}
+	}
+	return 0;
+}
+
 int Node::draw(const RenderContext& ctx)
 {
 	updateModelMatrix();
 
-	mesh->bind(ctx);
+	if (mesh->bind(ctx, stencil)) {
+		return -1;
+	}
 
-	mesh->shader->setMat4("transform", ctx.projected * modelMat);
-	mesh->shader->setMat4("model", modelMat);
-	mesh->shader->setMat3("normalMat", normalMat);
+	Shader* shader = mesh->bound->shader;
+	shader->setMat4("transform", ctx.projected * modelMat);
+	shader->setMat4("model", modelMat);
+	shader->setMat3("normalMat", normalMat);
 
 	mesh->draw(ctx);
 	return 0;

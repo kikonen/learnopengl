@@ -20,8 +20,6 @@ int Test5::onSetup() {
 			return -1;
 		}
 
-		mesh->prepare();
-
 		Node* node = new Node(mesh, glm::vec3(0, -20, -20));
 //		node->setScale(0.01);
 		nodes.push_back(node);
@@ -33,8 +31,6 @@ int Test5::onSetup() {
 		if (mesh->load()) {
 			return -1;
 		}
-
-		mesh->prepare();
 
 		active = new Node(mesh, glm::vec3(0));
 		nodes.push_back(active);
@@ -49,8 +45,6 @@ int Test5::onSetup() {
 			return -1;
 		}
 
-		mesh->prepare();
-
 		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, -5)));
 		nodes.push_back(new Node(mesh, glm::vec3(5, 0, -5)));
 		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, 5)));
@@ -63,8 +57,6 @@ int Test5::onSetup() {
 		if (mesh->load()) {
 			return -1;
 		}
-
-		mesh->prepare();
 
 		Node* node = new Node(mesh, glm::vec3(0, 3, 0));
 		node->setScale(2.0f);

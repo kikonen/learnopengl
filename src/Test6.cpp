@@ -9,7 +9,7 @@
 glm::vec3 groundOffset(0.f, 15.f, -40.f);
 
 Test6::Test6() {
-	title = "Test 5";
+	title = "Test 6";
 	//throttleFps = 0;
 }
 
@@ -64,7 +64,6 @@ int Test6::onSetup() {
 		if (mesh->load()) {
 			return -1;
 		}
-		mesh->prepare();
 
 		Node* node = new Node(mesh, sun->pos);
 		node->setScale(4.f);
@@ -79,7 +78,6 @@ int Test6::onSetup() {
 		if (mesh->load()) {
 			return -1;
 		}
-		mesh->prepare();
 
 		for (auto light : pointLights) {
 			Node* node = new Node(mesh, light->pos);
@@ -107,7 +105,6 @@ int Test6::onSetup() {
 		if (mesh->load()) {
 			return -1;
 		}
-		mesh->prepare();
 
 		Node* node = new Node(mesh, glm::vec3(0, 3, 0) + groundOffset);
 		//node->setScale(0.5f);
@@ -121,7 +118,6 @@ int Test6::onSetup() {
 		if (mesh->load()) {
 			return -1;
 		}
-		mesh->prepare();
 
 		Node* node = new Node(mesh, glm::vec3(0));
 		//		node->setScale(0.01);
@@ -135,8 +131,6 @@ int Test6::onSetup() {
 		if (mesh->load()) {
 			return -1;
 		}
-
-		mesh->prepare();
 
 		active = new Node(mesh, glm::vec3(0) + groundOffset);
 		nodes.push_back(active);
@@ -152,8 +146,6 @@ int Test6::onSetup() {
 			return -1;
 		}
 
-		mesh->prepare();
-
 		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, -5) + groundOffset));
 		nodes.push_back(new Node(mesh, glm::vec3(5, 0, -5) + groundOffset));
 		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, 5) + groundOffset));
@@ -168,8 +160,6 @@ int Test6::onSetup() {
 			return -1;
 		}
 
-		mesh->prepare();
-
 		nodes.push_back(new Node(mesh, glm::vec3(-5, 5, 5) + groundOffset));
 	}
 
@@ -179,8 +169,6 @@ int Test6::onSetup() {
 		if (mesh->load()) {
 			return -1;
 		}
-
-		mesh->prepare();
 
 		Node* node = new Node(mesh, glm::vec3(0, -2, 0) + groundOffset);
 		node->setScale(2.0f);
@@ -196,8 +184,6 @@ int Test6::onSetup() {
 			return -1;
 		}
 
-		mesh->prepare();
-
 		Node* node = new Node(mesh, glm::vec3(5, 5, -5) + groundOffset);
 		nodes.push_back(node);
 	}
@@ -211,20 +197,17 @@ int Test6::onSetup() {
 			return -1;
 		}
 
-		mesh->prepare();
-
 		Node* node = new Node(mesh, glm::vec3(-5, 5, -5) + groundOffset);
 		nodes.push_back(node);
 	}
 
 	// backback
-	if (true) {
+	if (false) {
 		ModelMesh* mesh = new ModelMesh(*this, "/backpack/", "backpack", "test6");
 		//mesh->useWireframe = true;
 		if (mesh->load()) {
 			return -1;
 		}
-		mesh->prepare();
 
 		Node* node = new Node(mesh, glm::vec3(0, -8, 0) + groundOffset);
 		node->setScale(1.5f);
@@ -239,8 +222,6 @@ int Test6::onSetup() {
 		if (mesh->load()) {
 			return -1;
 		}
-
-		mesh->prepare();
 
 		Node* node = new Node(mesh, glm::vec3(0, 20, 0) + groundOffset);
 		node->setScale(0.1f);
@@ -320,6 +301,11 @@ int Test6::onRender(float dt) {
 		if (activeLightNode) {
 			activeLightNode->setPos(pos);
 		}
+	}
+
+	// NOTE KI OpenGL does NOT like interleaved draw and prepare
+	for (auto node : nodes) {
+		node->prepare();
 	}
 
 	for (auto node : nodes) {

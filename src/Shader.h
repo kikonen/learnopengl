@@ -15,6 +15,7 @@ class Shader
 {
 public:
     static Shader* getShader(const std::string& name, bool texture);
+    static Shader* getStencil(const std::string& name);
 private:
 	Shader(
         const std::string& name,
@@ -51,6 +52,7 @@ public:
     std::string fragmentShaderSource;
 
 private:
+    int res;
     bool setupDone = false;
     std::string loadSource(const std::string& filename);
 

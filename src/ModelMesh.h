@@ -5,7 +5,11 @@
 #include <vector>
 #include <map>
 
-#include "Mesh.h"
+#include "Engine.h"
+#include "Shader.h"
+#include "ShaderInfo.h"
+#include "RenderContext.h"
+
 #include "Tri.h"
 #include "Material.h"
 #include "Shader.h"
@@ -13,7 +17,7 @@
 #include "Vertex.h"
 #include "Light.h"
 
-class ModelMesh : public Mesh {
+class ModelMesh {
 public:
 	ModelMesh(
 		const Engine& engine,
@@ -28,15 +32,22 @@ public:
 
 	~ModelMesh();
 
-	virtual int prepare() override;
-	virtual int bind(const RenderContext& ctx) override;
-	virtual int draw(const RenderContext& ctx) override;
+	int prepare(bool stencil);
+	int bind(const RenderContext& ctx, bool stencil);
+	int draw(const RenderContext& ctx);
 
 	int load();
+
+private:
+	ShaderInfo* prepareShader(Shader* shader, bool stencil);
 public:
 	bool useTexture = true;
 	bool useWireframe = false;
 	bool debugColors = false;
+
+	std::string name;
+	
+	ShaderInfo* bound = nullptr;
 
 	Material* defaultMaterial;
 	bool overrideMaterials;
@@ -44,6 +55,10 @@ public:
 	unsigned int textureCount = 0;
 
 private:
+	const Engine& engine;
+
+	std::map<bool, ShaderInfo*> shaders;
+
 	const std::string path;
 	const std::string modelName;
 	const std::string shaderName;

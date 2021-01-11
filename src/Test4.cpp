@@ -17,8 +17,6 @@ int Test4::onSetup() {
 		return -1;
 	}
 
-	mesh->prepare();
-
 	node = new Node(mesh, glm::vec3(0));
 
 	return 0;
@@ -32,7 +30,7 @@ int Test4::onRender(float dt) {
 
 	glEnable(GL_DEPTH_TEST);
 
-	Shader* shader = node->mesh->shader;
+	Shader* shader = nullptr; // ->mesh->shader;
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	std::string lightPosName = { "lightPos" };

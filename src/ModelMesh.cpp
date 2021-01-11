@@ -30,7 +30,8 @@ ModelMesh::ModelMesh(
 	const std::string& path,
 	const std::string& modelName,
 	const std::string& shaderName)
-	: Mesh(engine, modelName),
+	: engine(engine),
+	name(modelName),
 	path(path),
 	modelName(modelName),
 	shaderName(shaderName)
@@ -42,27 +43,35 @@ ModelMesh::~ModelMesh()
 {
 }
 
-int ModelMesh::prepare()
+int ModelMesh::prepare(bool stencil)
 {
-	shader = Shader::getShader(shaderName, useTexture && hasTexture);
-
-	if (shader->setup()) {
-		return -1;
+	ShaderInfo* info = shaders[stencil];
+	if (!info) {
+		Shader* shader = stencil ? Shader::getStencil(shaderName) : Shader::getShader(shaderName, useTexture && hasTexture);
+		info = prepareShader(shader, stencil);
+		shaders[stencil] = info;
 	}
+	return info ? 0 : -1;
+}
 
-	if (useTexture) {
-			for (auto const& x : materials) {
+ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil) 
+{
+	ShaderInfo* info = new ShaderInfo(shader, stencil, useTexture && !stencil);
+
+	if (info->prepare()) {
+		return nullptr;
+	}
+	info->bind();
+
+	if (info->useTexture) {
+		for (auto const& x : materials) {
 			Material* material = x.second;
 			material->prepare(shader);
 		}
 	}
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	glBindVertexArray(VAO);
+	glBindVertexArray(info->VAO);
 
 	// VBO
 	{
@@ -100,7 +109,7 @@ int ModelMesh::prepare()
 			vboBuffer[base + 2] = n[2];
 		}
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, info->VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * sz * vertexes.size(), vboBuffer, GL_STATIC_DRAW);
 
 		// vertex attr
@@ -137,7 +146,7 @@ int ModelMesh::prepare()
 			vertexEboBuffer[base + 2] = vi[2];
 		}
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, info->EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tris.size() * 3, vertexEboBuffer, GL_STATIC_DRAW);
 	}
 
@@ -151,20 +160,25 @@ int ModelMesh::prepare()
 	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 	glBindVertexArray(0);
 
-	return 0;
+	return info;
 }
 
-int ModelMesh::bind(const RenderContext& ctx)
+int ModelMesh::bind(const RenderContext& ctx, bool stencil)
 {
-	shader->use();
-	glBindVertexArray(VAO);
+	bound = shaders[stencil];
+	if (!bound) {
+		return -1;
+	}
+	bound->bind();
+
+	glBindVertexArray(bound->VAO);
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
-		material->bind(shader, material->materialIndex, useTexture);
+		material->bind(bound->shader, material->materialIndex, useTexture);
 	}
 
-	ctx.bind(shader, useWireframe);
+	ctx.bind(bound->shader, useWireframe);
 
 	return 0;
 }

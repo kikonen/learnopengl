@@ -8,8 +8,22 @@
 
 
 std::map<std::string, Shader*> textureShaders;
+std::map<std::string, Shader*> stencilShaders;
 std::map<std::string, Shader*> plainShaders;
 
+Shader* Shader::getStencil(const std::string& name)
+{
+    std::map<std::string, Shader*>& cache = stencilShaders;
+    Shader* shader = cache[name];
+
+    if (!shader) {
+        std::string shaderPathBase = "shader/" + name;
+        shader = new Shader(name, shaderPathBase + "_stencil.vs", shaderPathBase + "_stencil.fs");
+        cache[name] = shader;
+    }
+
+    return shader;
+}
 
 Shader* Shader::getShader(const std::string& name, bool texture)
 {
@@ -18,7 +32,8 @@ Shader* Shader::getShader(const std::string& name, bool texture)
 
     if (!shader) {
         std::string shaderPathBase = "shader/" + name;
-        shader = new Shader(name, shaderPathBase + ".vs", shaderPathBase + (texture ? "_tex.fs" : ".fs"));
+        std::string type = texture ? "_tex" : "";
+        shader = new Shader(name, shaderPathBase + ".vs", shaderPathBase + type + ".fs");
         cache[name] = shader;
     }
 
@@ -46,8 +61,10 @@ const void Shader::use()
 int Shader::setup()
 {
     if (setupDone) {
-        return 0;
+        return res;
     }
+    setupDone = true;
+    res = -1;
 
     vertexShaderSource = loadSource(vertexShaderPath);
     fragmentShaderSource = loadSource(fragmentShaderPath);
@@ -59,9 +76,8 @@ int Shader::setup()
     if (createProgram()) {
         return -1;
     }
-
-    setupDone = true;
-    return 0;
+    res = 0;
+    return res;
 }
 
 GLint Shader::getUniformLoc(const std::string& name)
