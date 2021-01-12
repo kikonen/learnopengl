@@ -320,6 +320,16 @@ int Test6::onRender(float dt) {
 		node->prepare(true);
 	}
 
+	// draw all selected nodes for stencil
+	if (selection.size() > 0) {
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
+
+		for (auto node : selection) {
+			node->draw(ctx, false);
+		}
+	}
+
 	// draw all non selected nodes
 	glStencilMask(0x00);
 	for (auto node : nodes) {
@@ -331,13 +341,6 @@ int Test6::onRender(float dt) {
 
 	// draw all selected nodes with stencil
 	if (selection.size() > 0) {
-		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		glStencilMask(0xFF);
-
-		for (auto node : selection) {
-			node->draw(ctx, false);
-		}
-
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 		glStencilMask(0x00);
 		glDisable(GL_DEPTH_TEST);
