@@ -16,9 +16,12 @@ public:
 
 	int onSetup() override;
 
+	int setupNodeSkybox();
+
 	int setupNodeStainedWindows();
 	int setupNodeWindow2();
 	int setupNodeWindow1();
+
 	int setupNodeSpyro();
 	int setupNodeBackpack();
 	int setupNodeTeapot();
@@ -29,6 +32,7 @@ public:
 	int setupNodeActive();
 	int setupNodeMountains();
 	int setupNodeWaterBall();
+
 	int setupNodeLightMoving();
 	int setupNodeSun();
 

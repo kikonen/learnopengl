@@ -19,7 +19,7 @@ int Test6::onSetup() {
 	setupNodeSun();
 	setupNodeLightMoving();
 	setupNodeWaterBall();
-	setupNodeMountains();
+
 	setupNodeActive();
 	setupNodeCubes();
 	setupNodeCube4();
@@ -33,6 +33,9 @@ int Test6::onSetup() {
 	setupNodeWindow1();
 	setupNodeStainedWindows();
 
+	setupNodeMountains();
+	setupNodeSkybox();
+
 	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -43,6 +46,19 @@ int Test6::onSetup() {
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	return 0;
+}
+
+int Test6::setupNodeSkybox()
+{
+	ModelMesh* mesh = new ModelMesh(*this, "skybox", "light6");
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(0, 0, 0) + groundOffset);
+	node->setScale(100);
+	nodes.push_back(node);
 	return 0;
 }
 
