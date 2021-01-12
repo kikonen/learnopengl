@@ -41,7 +41,6 @@ int Test6::onSetup() {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	return 0;
@@ -488,7 +487,8 @@ void Test6::processInput(float dt) {
 
 void Test6::renderBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 {
-	glDisable(GL_CULL_FACE); 
+	glEnable(GL_BLEND);
+	glDisable(GL_CULL_FACE);
 
 	// TODO KI discards nodes if *same* distance
 	std::map<float, Node*> sorted;
@@ -503,5 +503,6 @@ void Test6::renderBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 	}
 
 	glEnable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
 }
 
