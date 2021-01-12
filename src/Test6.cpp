@@ -490,6 +490,7 @@ void Test6::renderBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 {
 	glDisable(GL_CULL_FACE); 
 
+	// TODO KI discards nodes if *same* distance
 	std::map<float, Node*> sorted;
 	for (auto node : nodes) {
 		float distance = glm::length(camera.getPos() - node->getPos());
