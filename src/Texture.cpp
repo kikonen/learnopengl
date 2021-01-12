@@ -34,7 +34,11 @@ void Texture::prepare(Shader* shader)
 //	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 //	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->data);
+	if (image->channels == 4) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->width, image->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image->data);
+	} else {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->data);
+	}
 	if (!normal) {
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}

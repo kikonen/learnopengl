@@ -100,6 +100,10 @@ Light::~Light()
 
 void Light::bind(Shader* shader, int index)
 {
+	if (ambient.w != 1.0f || diffuse.w != 1.0f || specular.w != 1.0f) {
+		int x = 0;
+	}
+
 	if (directional) {
 		bindDirectional(shader);
 	} else if (spot) {
@@ -118,9 +122,9 @@ void Light::bindDirectional(Shader* shader)
 	shader->setBool("light.use", true);
 
 	shader->setVec3("light.dir", dir);
-	shader->setVec3("light.ambient", ambient);
-	shader->setVec3("light.diffuse", diffuse);
-	shader->setVec3("light.specular", specular);
+	shader->setVec4("light.ambient", ambient);
+	shader->setVec4("light.diffuse", diffuse);
+	shader->setVec4("light.specular", specular);
 }
 
 void Light::bindPoint(Shader* shader, int index)
@@ -131,9 +135,9 @@ void Light::bindPoint(Shader* shader, int index)
 
 	shader->setVec3(names->pos, pos);
 
-	shader->setVec3(names->ambient, ambient);
-	shader->setVec3(names->diffuse, diffuse);
-	shader->setVec3(names->specular, specular);
+	shader->setVec4(names->ambient, ambient);
+	shader->setVec4(names->diffuse, diffuse);
+	shader->setVec4(names->specular, specular);
 
 	shader->setFloat(names->constant, constant);
 	shader->setFloat(names->linear, linear);
@@ -149,9 +153,9 @@ void Light::bindSpot(Shader* shader, int index)
 	shader->setVec3(names->pos, pos);
 	shader->setVec3(names->dir, dir);
 
-	shader->setVec3(names->ambient, ambient);
-	shader->setVec3(names->diffuse, diffuse);
-	shader->setVec3(names->specular, specular);
+	shader->setVec4(names->ambient, ambient);
+	shader->setVec4(names->diffuse, diffuse);
+	shader->setVec4(names->specular, specular);
 
 	shader->setFloat(names->constant, constant);
 	shader->setFloat(names->linear, linear);

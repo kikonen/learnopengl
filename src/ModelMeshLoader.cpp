@@ -207,7 +207,7 @@ int ModelMeshLoader::resolveVertexIndex(
 		material = defaultMaterial;
 	}
 
-	glm::vec3& vertexColor = material->kd;
+	glm::vec4& vertexColor = material->kd;
 	if (debugColors) {
 		vertexColor = colors[pi % colors.size()];
 	} else {
@@ -270,18 +270,18 @@ int ModelMeshLoader::loadMaterials(
 				material->ns = stof(v1);
 			}
 			else if (k == "Ka") {
-				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
+				glm::vec4 v = { stof(v1), stof(v2), stof(v3), 1.f };
 				material->ka = v;
 			} else if (k == "Kd") {
-				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
+				glm::vec4 v = { stof(v1), stof(v2), stof(v3), 1.f };
 				material->kd = v;
 			}
 			else if (k == "Ks") {
-				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
+				glm::vec4 v = { stof(v1), stof(v2), stof(v3), 1.f };
 				material->ks = v;
 			}
 			else if (k == "Ke") {
-				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
+				glm::vec4 v = { stof(v1), stof(v2), stof(v3), 1.f };
 				material->ke = v;
 			}
 			else if (k == "Ni") {

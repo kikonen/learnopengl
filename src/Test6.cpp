@@ -29,6 +29,7 @@ int Test6::onSetup() {
 	//setupNodeBackpack();
 
 	setupNodeSpyro();
+	setupNodeWindow2();
 	setupNodeWindow1();
 
 	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
@@ -38,6 +39,9 @@ int Test6::onSetup() {
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	return 0;
 }
@@ -50,8 +54,25 @@ int Test6::setupNodeWindow1()
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(7, 5, -5) + groundOffset);
+	Node* node = new Node(mesh, glm::vec3(5, -5, -5) + groundOffset);
+	node->setRotation(glm::vec3(0, 180, 0));
 	nodes.push_back(node);
+//	selection.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeWindow2()
+{
+	// window1
+	ModelMesh* mesh = new ModelMesh(*this, "window2", "test6");
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(7, -5, -8) + groundOffset);
+	node->setRotation(glm::vec3(0, 180, 0));
+	nodes.push_back(node);
+	//	selection.push_back(node);
 	return 0;
 }
 
@@ -59,7 +80,7 @@ int Test6::setupNodeSpyro()
 {
 	// spyro
 	ModelMesh* mesh = new ModelMesh(*this, "spyro2", "test6");
-	//mesh->color = glm::vec3(0.560, 0.278, 0.568);
+	//mesh->color = glm::vec3(0.560f, 0.278f, 0.568f, 1.f);
 	//mesh->useMaterialColor = false;
 	if (mesh->load()) {
 		return -1;
@@ -90,7 +111,7 @@ int Test6::setupNodeTeapot()
 {
 	// teapot
 	ModelMesh* mesh = new ModelMesh(*this, "teapot", "test6");
-	mesh->defaultMaterial->kd = glm::vec3(0.578, 0.578, 0.168);
+	mesh->defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
 	mesh->overrideMaterials = true;
 	if (mesh->load()) {
 		return -1;
@@ -106,7 +127,7 @@ int Test6::setupNodeCow()
 {
 	// cow
 	ModelMesh* mesh = new ModelMesh(*this, "cow", "test6");
-	mesh->defaultMaterial->kd = glm::vec3(0.160, 0.578, 0.168);
+	mesh->defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
 	mesh->overrideMaterials = true;
 	if (mesh->load()) {
 		return -1;
@@ -276,9 +297,9 @@ void Test6::setupLightMoving()
 	light->outerCutoffAngle = 25.f;
 	light->dir = glm::vec3(0.01f, 1.0f, 0.01f);
 
-	light->ambient = { 0.2f, 0.2f, 0.15f };
-	light->diffuse = { 0.8f, 0.8f, 0.7f };
-	light->specular = { 1.0f, 1.0f, 0.9f };
+	light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
+	light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
+	light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
 
 	if (light->spot) {
 		spotLights.push_back(light);
@@ -298,9 +319,9 @@ void Test6::setupLightSun()
 	sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
 	sun->directional = true;
 
-	sun->ambient = { 0.1f, 0.1f, 0.1f };
-	sun->diffuse = { 0.8f, 0.8f, 0.8f };
-	sun->specular = { 1.0f, 1.0f, 1.0f };
+	sun->ambient = { 0.1f, 0.1f, 0.1f, 1.f };
+	sun->diffuse = { 0.8f, 0.8f, 0.8f, 1.f };
+	sun->specular = { 1.0f, 1.0f, 1.0f, 1.f };
 }
 
 int Test6::onRender(float dt) {

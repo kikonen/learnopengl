@@ -1,16 +1,16 @@
 #version 330 core
 struct Material {
-  vec3 ambient;
-  vec3 diffuse;
-  vec3 specular;
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 specular;
   float shininess;
 };
 struct Light {
   vec3 pos;
   vec3 dir;
-  vec3 ambient;
-  vec3 diffuse;
-  vec3 specular;
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 specular;
 
   float constant;
   float linear;
@@ -38,7 +38,10 @@ void main() {
 
   // combined
   //vec3 shaded = light.ambient + light.diffuse + light.specular;
-  vec3 shaded = material.diffuse; //light.specular;
+  vec4 texColor = material.diffuse; //light.specular;
 
-  fragColor = vec4(shaded, 1.0);
+  if (texColor.a < 0.1)
+    discard;
+
+  fragColor = texColor;
 }

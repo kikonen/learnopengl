@@ -41,10 +41,13 @@ int Image::load() {
 		&width,
 		&height,
 		&channels,
-		STBI_rgb);
+		STBI_default);
 
 	if (data) {
-		std::cout << "LOADED::IMAGE " << path << std::endl;
+		std::cout << "LOADED::IMAGE " << path 
+			<< " channels=" << channels 
+			<< " width=" << width 
+			<< " height=" << height << std::endl;
 	}
 	else {
 		std::cout << "ERROR::IMAGE::LOAD_FAILED " << path << std::endl;

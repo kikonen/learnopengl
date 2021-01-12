@@ -138,9 +138,9 @@ void Material::bind(Shader* shader, int index, bool useTexture)
 {
 	const Names* names = getNames(index);
 
-	shader->setVec3(names->ambient, ka);
-	shader->setVec3(names->diffuse, kd);
-	shader->setVec3(names->specular, ks);
+	shader->setVec4(names->ambient, ka);
+	shader->setVec4(names->diffuse, kd);
+	shader->setVec4(names->specular, ks);
 	shader->setFloat(names->shininess, ns);
 
 	if (diffuseTex && useTexture) {

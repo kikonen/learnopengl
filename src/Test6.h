@@ -16,6 +16,7 @@ public:
 
 	int onSetup() override;
 
+	int setupNodeWindow2();
 	int setupNodeWindow1();
 	int setupNodeSpyro();
 	int setupNodeBackpack();

@@ -11,9 +11,9 @@
 Material* createDefaultMaterial() {
 	Material* mat = new Material("default", 0);
 	mat->ns = 100.f;
-	mat->ks = glm::vec3(0.9f, 0.9f, 0.0f);
-	mat->ka = glm::vec3(0.3f, 0.3f, 0.0f);
-	mat->kd = glm::vec3(0.8f, 0.8f, 0.0f);
+	mat->ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
+	mat->ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
+	mat->kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
 	return mat;
 }
 
@@ -75,8 +75,8 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil)
 
 	// VBO
 	{
-		// vertex + color + textureId + texture + normal
-		const int sz = 3 + 3 + 1 + 2 + 3;
+		// vertex + color (RGBA) + textureId + texture + normal
+		const int sz = 3 + 4 + 1 + 2 + 3;
 		float* vboBuffer = new float[sz * vertexes.size()];
 
 		for (int i = 0; i < vertexes.size(); i++) {
@@ -84,7 +84,7 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil)
 			const glm::vec3& p = vertex.pos;
 			const glm::vec2& t = vertex.texture;
 			const glm::vec3& n = vertex.normal;
-			const glm::vec3& c = vertex.color;
+			const glm::vec4& c = vertex.color;
 			const Material* m = vertex.material;
 
 			int base = i * sz;
@@ -97,7 +97,8 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil)
 			vboBuffer[base + 0] = c[0];
 			vboBuffer[base + 1] = c[1];
 			vboBuffer[base + 2] = c[2];
-			base += 3;
+			vboBuffer[base + 3] = c[3];
+			base += 4;
 			// texture
 			vboBuffer[base + 0] = m ? m->materialIndex : 0;
 			vboBuffer[base + 1] = t[0];
@@ -117,15 +118,15 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil)
 		glEnableVertexAttribArray(0);
 
 		// color attr
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3) * sizeof(float)));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3) * sizeof(float)));
 		glEnableVertexAttribArray(1);
 
 		// textureId attr
-		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3) * sizeof(float)));
+		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 4) * sizeof(float)));
 		glEnableVertexAttribArray(2);
 
 		// texture attr
-		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 1) * sizeof(float)));
+		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 4 + 1) * sizeof(float)));
 		glEnableVertexAttribArray(3);
 
 		// normal attr
