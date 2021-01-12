@@ -15,6 +15,24 @@ public:
 	Test6();
 
 	int onSetup() override;
+
+	int setupNodeWindow1();
+	int setupNodeSpyro();
+	int setupNodeBackpack();
+	int setupNodeTeapot();
+	int setupNodeCow();
+	int setupNodeBall();
+	int setupNodeCube4();
+	int setupNodeCubes();
+	int setupNodeActive();
+	int setupNodeMountains();
+	int setupNodeWaterBall();
+	int setupNodeLightMoving();
+	int setupNodeSun();
+
+	void setupLightMoving();
+	void setupLightSun();
+
 	int onRender(float dt) override;
 
 	void processInput(float dt) override;

@@ -14,223 +14,22 @@ Test6::Test6() {
 }
 
 int Test6::onSetup() {
-	// sun
-	if (true) {
-		sun = new Light();
-		sun->pos = glm::vec3(10, 100, 10) + groundOffset;
+	setupLightSun();
+	setupLightMoving();
+	setupNodeSun();
+	setupNodeLightMoving();
+	setupNodeWaterBall();
+	setupNodeMountains();
+	setupNodeActive();
+	setupNodeCubes();
+	setupNodeCube4();
+	setupNodeBall();
+	setupNodeCow();
+	setupNodeTeapot();
+	//setupNodeBackpack();
 
-		sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
-		sun->directional = true;
-
-		sun->ambient = { 0.1f, 0.1f, 0.1f };
-		sun->diffuse = { 0.8f, 0.8f, 0.8f };
-		sun->specular = { 1.0f, 1.0f, 1.0f };
-	}
-
-	// light
-	if (true) {
-		Light* light = new Light();
-		light->pos = glm::vec3(10, -10, 10) + groundOffset;
-
-		// 160
-		light->point = true;
-		light->linear = 0.027f;
-		light->quadratic = 0.0028f;
-
-		light->spot = false;
-		light->cutoffAngle = 12.5f;
-		light->outerCutoffAngle = 25.f;
-		light->dir = glm::vec3(0.01f, 1.0f, 0.01f);
-
-		light->ambient = { 0.2f, 0.2f, 0.15f };
-		light->diffuse = { 0.8f, 0.8f, 0.7f };
-		light->specular = { 1.0f, 1.0f, 0.9f };
-
-		if (light->spot) {
-			spotLights.push_back(light);
-		} else {
-			pointLights.push_back(light);
-		}
-		activeLight = light;
-	}
-
-	// sun node
-	if (true && sun) {
-		ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
-		mesh->defaultMaterial->kd = sun->specular;
-		mesh->overrideMaterials = true;
-		mesh->useTexture = false;
-
-		if (mesh->load()) {
-			return -1;
-		}
-
-		Node* node = new Node(mesh, sun->pos);
-		node->setScale(4.f);
-		nodes.push_back(node);
-		sunNode = node;
-	}
-
-	// light node
-	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
-		mesh->useTexture = false;
-		if (mesh->load()) {
-			return -1;
-		}
-
-		for (auto light : pointLights) {
-			Node* node = new Node(mesh, light->pos);
-			//node->setScale(0.5f);
-			nodes.push_back(node);
-			if (light == activeLight) {
-				activeLightNode = node;
-			}
-		}
-
-		for (auto light : spotLights) {
-			Node* node = new Node(mesh, light->pos);
-			//node->setScale(0.5f);
-			nodes.push_back(node);
-			if (light == activeLight) {
-				activeLightNode = node;
-			}
-		}
-	}
-
-	// waterball
-	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "light", "test6");
-		//mesh->useWireframe = true;
-		if (mesh->load()) {
-			return -1;
-		}
-
-		Node* node = new Node(mesh, glm::vec3(0, 3, 0) + groundOffset);
-		//node->setScale(0.5f);
-		nodes.push_back(node);
-	}
-
-	// mountains
-	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "texture_mountains", "test6");
-		//mesh->debugColors = true;
-		if (mesh->load()) {
-			return -1;
-		}
-
-		Node* node = new Node(mesh, glm::vec3(0));
-		//		node->setScale(0.01);
-		nodes.push_back(node);
-	}
-
-	// active
-	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "texture_cube", "test6");
-		//mesh->useTexture = false;
-		if (mesh->load()) {
-			return -1;
-		}
-
-		active = new Node(mesh, glm::vec3(0) + groundOffset);
-		nodes.push_back(active);
-
-		nodes.push_back(new Node(mesh, glm::vec3(5, 5, 5) + groundOffset));
-	}
-
-	// cubes
-	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6");
-		//mesh->useTexture = false;
-		if (mesh->load()) {
-			return -1;
-		}
-
-		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, -5) + groundOffset));
-		nodes.push_back(new Node(mesh, glm::vec3(5, 0, -5) + groundOffset));
-		nodes.push_back(new Node(mesh, glm::vec3(-5, 0, 5) + groundOffset));
-		nodes.push_back(new Node(mesh, glm::vec3(5, 0, 5) + groundOffset));
-	}
-
-	// cube 4
-	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "texture_cube_4", "test6");
-		//mesh->useTexture = false;
-		if (mesh->load()) {
-			return -1;
-		}
-
-		Node* node = new Node(mesh, glm::vec3(-5, 5, 5) + groundOffset);
-		nodes.push_back(node);
-		selection.push_back(node);
-	}
-
-	// ball
-	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "texture_ball", "test6");
-		if (mesh->load()) {
-			return -1;
-		}
-
-		Node* node = new Node(mesh, glm::vec3(0, -2, 0) + groundOffset);
-		node->setScale(2.0f);
-		nodes.push_back(node);
-	}
-
-	// cow
-	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "cow", "test6");
-		mesh->defaultMaterial->kd = glm::vec3(0.160, 0.578, 0.168);
-		mesh->overrideMaterials = true;
-		if (mesh->load()) {
-			return -1;
-		}
-
-		Node* node = new Node(mesh, glm::vec3(5, 5, -5) + groundOffset);
-		nodes.push_back(node);
-		selection.push_back(node);
-	}
-
-	// teapot
-	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "teapot", "test6");
-		mesh->defaultMaterial->kd = glm::vec3(0.578, 0.578, 0.168);
-		mesh->overrideMaterials = true;
-		if (mesh->load()) {
-			return -1;
-		}
-
-		Node* node = new Node(mesh, glm::vec3(-5, 5, -5) + groundOffset);
-		nodes.push_back(node);
-		selection.push_back(node);
-	}
-
-	// backback
-	if (false) {
-		ModelMesh* mesh = new ModelMesh(*this, "/backpack/", "backpack", "test6");
-		//mesh->useWireframe = true;
-		if (mesh->load()) {
-			return -1;
-		}
-
-		Node* node = new Node(mesh, glm::vec3(0, -8, 0) + groundOffset);
-		node->setScale(1.5f);
-		nodes.push_back(node);
-	}
-
-	// spyro
-	if (true) {
-		ModelMesh* mesh = new ModelMesh(*this, "spyro2", "test6");
-		//mesh->color = glm::vec3(0.560, 0.278, 0.568);
-		//mesh->useMaterialColor = false;
-		if (mesh->load()) {
-			return -1;
-		}
-
-		Node* node = new Node(mesh, glm::vec3(0, 20, 0) + groundOffset);
-		node->setScale(0.1f);
-		nodes.push_back(node);
-	}
+	setupNodeSpyro();
+	setupNodeWindow1();
 
 	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
 
@@ -241,6 +40,267 @@ int Test6::onSetup() {
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	return 0;
+}
+
+int Test6::setupNodeWindow1()
+{
+	// window1
+	ModelMesh* mesh = new ModelMesh(*this, "window1", "test6");
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(7, 5, -5) + groundOffset);
+	nodes.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeSpyro()
+{
+	// spyro
+	ModelMesh* mesh = new ModelMesh(*this, "spyro2", "test6");
+	//mesh->color = glm::vec3(0.560, 0.278, 0.568);
+	//mesh->useMaterialColor = false;
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(0, 20, 0) + groundOffset);
+	node->setScale(0.1f);
+	nodes.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeBackpack()
+{
+	// backback
+	ModelMesh* mesh = new ModelMesh(*this, "/backpack/", "backpack", "test6");
+	//mesh->useWireframe = true;
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(0, -8, 0) + groundOffset);
+	node->setScale(1.5f);
+	nodes.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeTeapot()
+{
+	// teapot
+	ModelMesh* mesh = new ModelMesh(*this, "teapot", "test6");
+	mesh->defaultMaterial->kd = glm::vec3(0.578, 0.578, 0.168);
+	mesh->overrideMaterials = true;
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(-5, 5, -5) + groundOffset);
+	nodes.push_back(node);
+	selection.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeCow()
+{
+	// cow
+	ModelMesh* mesh = new ModelMesh(*this, "cow", "test6");
+	mesh->defaultMaterial->kd = glm::vec3(0.160, 0.578, 0.168);
+	mesh->overrideMaterials = true;
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(5, 5, -5) + groundOffset);
+	nodes.push_back(node);
+	selection.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeBall()
+{
+	// ball
+	ModelMesh* mesh = new ModelMesh(*this, "texture_ball", "test6");
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(0, -2, 0) + groundOffset);
+	node->setScale(2.0f);
+	nodes.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeCube4()
+{
+	// cube 4
+	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_4", "test6");
+	//mesh->useTexture = false;
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(-5, 5, 5) + groundOffset);
+	nodes.push_back(node);
+	selection.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeCubes()
+{
+	// cubes
+	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6");
+	//mesh->useTexture = false;
+	if (mesh->load()) {
+		return -1;
+	}
+
+	nodes.push_back(new Node(mesh, glm::vec3(-5, 0, -5) + groundOffset));
+	nodes.push_back(new Node(mesh, glm::vec3(5, 0, -5) + groundOffset));
+	nodes.push_back(new Node(mesh, glm::vec3(-5, 0, 5) + groundOffset));
+	nodes.push_back(new Node(mesh, glm::vec3(5, 0, 5) + groundOffset));
+	return 0;
+}
+
+int Test6::setupNodeActive()
+{
+	// active
+	ModelMesh* mesh = new ModelMesh(*this, "texture_cube", "test6");
+	//mesh->useTexture = false;
+	if (mesh->load()) {
+		return -1;
+	}
+
+	active = new Node(mesh, glm::vec3(0) + groundOffset);
+	nodes.push_back(active);
+
+	nodes.push_back(new Node(mesh, glm::vec3(5, 5, 5) + groundOffset));
+	return 0;
+}
+
+int Test6::setupNodeMountains()
+{
+	// mountains
+	ModelMesh* mesh = new ModelMesh(*this, "texture_mountains", "test6");
+	//mesh->debugColors = true;
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(0));
+	//		node->setScale(0.01);
+	nodes.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeWaterBall()
+{
+	ModelMesh* mesh = new ModelMesh(*this, "light", "test6");
+	//mesh->useWireframe = true;
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(0, 3, 0) + groundOffset);
+	//node->setScale(0.5f);
+	nodes.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeLightMoving()
+{
+	// light node
+	ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
+	mesh->useTexture = false;
+	if (mesh->load()) {
+		return -1;
+	}
+
+	for (auto light : pointLights) {
+		Node* node = new Node(mesh, light->pos);
+		//node->setScale(0.5f);
+		nodes.push_back(node);
+		if (light == activeLight) {
+			activeLightNode = node;
+		}
+	}
+
+	for (auto light : spotLights) {
+		Node* node = new Node(mesh, light->pos);
+		//node->setScale(0.5f);
+		nodes.push_back(node);
+		if (light == activeLight) {
+			activeLightNode = node;
+		}
+	}
+	return 0;
+}
+
+int Test6::setupNodeSun()
+{
+	// sun node
+	if (!sun) {
+		return -1;
+	}
+	ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
+	mesh->defaultMaterial->kd = sun->specular;
+	mesh->overrideMaterials = true;
+	mesh->useTexture = false;
+
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, sun->pos);
+	node->setScale(4.f);
+	nodes.push_back(node);
+	sunNode = node;
+
+	return 0;
+}
+
+void Test6::setupLightMoving()
+{
+	// light
+	Light* light = new Light();
+	light->pos = glm::vec3(10, -10, 10) + groundOffset;
+
+	// 160
+	light->point = true;
+	light->linear = 0.027f;
+	light->quadratic = 0.0028f;
+
+	light->spot = false;
+	light->cutoffAngle = 12.5f;
+	light->outerCutoffAngle = 25.f;
+	light->dir = glm::vec3(0.01f, 1.0f, 0.01f);
+
+	light->ambient = { 0.2f, 0.2f, 0.15f };
+	light->diffuse = { 0.8f, 0.8f, 0.7f };
+	light->specular = { 1.0f, 1.0f, 0.9f };
+
+	if (light->spot) {
+		spotLights.push_back(light);
+	}
+	else {
+		pointLights.push_back(light);
+	}
+	activeLight = light;
+}
+
+void Test6::setupLightSun()
+{
+	// sun
+	sun = new Light();
+	sun->pos = glm::vec3(10, 100, 10) + groundOffset;
+
+	sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
+	sun->directional = true;
+
+	sun->ambient = { 0.1f, 0.1f, 0.1f };
+	sun->diffuse = { 0.8f, 0.8f, 0.8f };
+	sun->specular = { 1.0f, 1.0f, 1.0f };
 }
 
 int Test6::onRender(float dt) {
