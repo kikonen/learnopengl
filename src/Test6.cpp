@@ -31,6 +31,7 @@ int Test6::onSetup() {
 	setupNodeSpyro();
 	setupNodeWindow2();
 	setupNodeWindow1();
+	setupNodeStainedWindows();
 
 	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
 
@@ -56,6 +57,7 @@ int Test6::setupNodeWindow1()
 
 	Node* node = new Node(mesh, glm::vec3(5, -5, -5) + groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
+	node->blend = true;
 	nodes.push_back(node);
 //	selection.push_back(node);
 	return 0;
@@ -63,7 +65,7 @@ int Test6::setupNodeWindow1()
 
 int Test6::setupNodeWindow2()
 {
-	// window1
+	// window2
 	ModelMesh* mesh = new ModelMesh(*this, "window2", "test6");
 	if (mesh->load()) {
 		return -1;
@@ -71,8 +73,26 @@ int Test6::setupNodeWindow2()
 
 	Node* node = new Node(mesh, glm::vec3(7, -5, -8) + groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
+	node->blend = true;
 	nodes.push_back(node);
 	//	selection.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeStainedWindows()
+{
+	// window2
+	ModelMesh* mesh = new ModelMesh(*this, "window2", "test6");
+	if (mesh->load()) {
+		return -1;
+	}
+
+	for (int i = 0; i < 10; i++) {
+		Node* node = new Node(mesh, glm::vec3(-10 + i * 2, 0, 10) + groundOffset);
+		node->setRotation(glm::vec3(0, 180, 0));
+		node->blend = true;
+		nodes.push_back(node);
+	}
 	return 0;
 }
 
@@ -406,18 +426,37 @@ int Test6::onRender(float dt) {
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glStencilMask(0xFF);
 
+		std::vector<Node*> blendedNodes;
 		for (auto node : selection) {
 			node->draw(ctx, false);
+			if (node->blend) {
+				blendedNodes.push_back(node);
+			}
+			else {
+				node->draw(ctx, false);
+			}
 		}
+
+		renderBlended(blendedNodes, ctx);
 	}
 
 	// draw all non selected nodes
 	glStencilMask(0x00);
-	for (auto node : nodes) {
-		if (std::find(selection.begin(), selection.end(), node) != selection.end()) {
-			continue;
-		}	
-		node->draw(ctx, false);
+	{
+		std::vector<Node*> blendedNodes;
+		for (auto node : nodes) {
+			if (std::find(selection.begin(), selection.end(), node) != selection.end()) {
+				continue;
+			}
+			if (node->blend) {
+				blendedNodes.push_back(node);
+			}
+			else {
+				node->draw(ctx, false);
+			}
+		}
+
+		renderBlended(blendedNodes, ctx);
 	}
 
 	// draw all selected nodes with stencil
@@ -445,5 +484,23 @@ int Test6::onRender(float dt) {
 
 void Test6::processInput(float dt) {
 	Engine::processInput(dt);
+}
+
+void Test6::renderBlended(std::vector<Node*>& nodes, RenderContext& ctx)
+{
+	glDisable(GL_CULL_FACE); 
+
+	std::map<float, Node*> sorted;
+	for (auto node : nodes) {
+		float distance = glm::length(camera.getPos() - node->getPos());
+		sorted[distance] = node;
+	}
+
+	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
+		Node* node = it->second;
+		node->draw(ctx, false);
+	}
+
+	glEnable(GL_CULL_FACE);
 }
 

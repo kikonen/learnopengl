@@ -16,6 +16,7 @@ public:
 
 	int onSetup() override;
 
+	int setupNodeStainedWindows();
 	int setupNodeWindow2();
 	int setupNodeWindow1();
 	int setupNodeSpyro();
@@ -37,6 +38,10 @@ public:
 	int onRender(float dt) override;
 
 	void processInput(float dt) override;
+
+private:
+	void renderBlended(std::vector<Node*>& nodes, RenderContext& ctx);
+
 private:
 	float elapsed = 0;
 

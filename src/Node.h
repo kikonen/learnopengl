@@ -24,7 +24,7 @@ public:
 
 public:
 	ModelMesh* mesh;
-
+	bool blend = false;
 private:
 
 	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
