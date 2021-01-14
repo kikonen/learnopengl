@@ -11,6 +11,8 @@ public:
 	~Node();
 
 	int prepare(bool stencil);
+
+	int bind(const RenderContext& ctx, bool stencil);
 	int draw(const RenderContext& ctx, bool stencil);
 
 	void setPos(const glm::vec3& pos);

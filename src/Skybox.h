@@ -16,7 +16,7 @@ public:
 
 	int prepare();
 
-	void bind(const RenderContext& ctx);
+	void assign(Shader* shader);
 	int draw(const RenderContext& ctx);
 
 private:

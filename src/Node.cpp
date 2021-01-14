@@ -17,7 +17,7 @@ int Node::prepare(bool stencil)
 	return 0;
 }
 
-int Node::draw(const RenderContext& ctx, bool stencil)
+int Node::bind(const RenderContext& ctx, bool stencil)
 {
 	updateModelMatrix();
 
@@ -31,6 +31,11 @@ int Node::draw(const RenderContext& ctx, bool stencil)
 	shader->setMat4("model", modelMat);
 	shader->setMat3("normalMat", normalMat);
 
+	return 0;
+}
+
+int Node::draw(const RenderContext& ctx, bool stencil)
+{
 	mesh->draw(ctx);
 	return 0;
 }

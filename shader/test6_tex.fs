@@ -65,6 +65,7 @@ in vec3 fragPos;
 in vec3 normal;
 
 uniform vec3 viewPos;
+uniform samplerCube skybox;
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 uniform Material materials[MAT_COUNT];
@@ -187,6 +188,10 @@ void main() {
 
   if (texColor.a < 0.1)
     discard;
+
+//  vec3 i = normalize(fragPos - viewPos);
+//  vec3 r = reflect(i, norm);
+//  texColor = vec4(texture(skybox, r).rgb, 1.0);
 
   fragColor = texColor;
 }

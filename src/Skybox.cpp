@@ -98,26 +98,28 @@ int Skybox::prepare()
 	return 0;
 }
 
-void Skybox::bind(const RenderContext& ctx)
+void Skybox::assign(Shader* shader)
 {
-    glBindVertexArray(VAO);
-
+    shader->setInt("skybox", 31);
     glActiveTexture(GL_TEXTURE31);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 }
 
 int Skybox::draw(const RenderContext& ctx)
 {
-    glDepthFunc(GL_LEQUAL); 
-    
     shader->use();
-    shader->setInt("skybox", 0);
+    shader->setInt("skybox", 31);
 
     // remove translation from the view matrix
     glm::mat4 view = glm::mat4(glm::mat3(ctx.view));
     shader->setMat4("view", view);
     shader->setMat4("projection", ctx.projection);
 
+    glActiveTexture(GL_TEXTURE31);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    glDepthFunc(GL_LEQUAL);
+    glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
     glDepthFunc(GL_LESS);
