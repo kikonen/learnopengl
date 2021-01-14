@@ -11,13 +11,13 @@ std::map<std::string, Shader*> textureShaders;
 std::map<std::string, Shader*> stencilShaders;
 std::map<std::string, Shader*> plainShaders;
 
-Shader* Shader::getStencil(const std::string& name)
+Shader* Shader::getStencil(const Assets& assets, const std::string& name)
 {
     std::map<std::string, Shader*>& cache = stencilShaders;
     Shader* shader = cache[name];
 
     if (!shader) {
-        std::string shaderPathBase = "shader/" + name;
+        std::string shaderPathBase = assets.shadersDir + "/" + name;
         shader = new Shader(name, shaderPathBase + "_stencil.vs", shaderPathBase + "_stencil.fs");
         cache[name] = shader;
     }
@@ -25,7 +25,7 @@ Shader* Shader::getStencil(const std::string& name)
     return shader;
 }
 
-Shader* Shader::getShader(const std::string& name, bool texture)
+Shader* Shader::getShader(const Assets& assets, const std::string& name, bool texture)
 {
     std::map<std::string, Shader*>& cache = texture ? textureShaders : plainShaders;
     Shader* shader = cache[name];

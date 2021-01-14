@@ -3,14 +3,17 @@
 #include <string>
 
 #include "ModelMesh.h"
-
-const std::string BASE_DIR = "3d_model";
+#include "Assets.h"
 
 
 class ModelMeshLoader
 {
 public:
-	ModelMeshLoader(ModelMesh& mesh, const std::string& path, const std::string& modelName);
+	ModelMeshLoader(
+		const Assets& assets,
+		ModelMesh& mesh, 
+		const std::string& path, 
+		const std::string& modelName);
 	~ModelMeshLoader();
 
 	int load(
@@ -20,6 +23,7 @@ public:
 	);
 
 public:
+	const Assets& assets;
 	ModelMesh& mesh;
 	const std::string& path;
 	const std::string& modelName;

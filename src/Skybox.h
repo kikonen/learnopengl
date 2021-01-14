@@ -6,18 +6,22 @@
 #include "RenderContext.h"
 #include "Texture.h"
 #include "ShaderInfo.h"
+#include "Assets.h"
 
 class Skybox
 {
 public:
-	Skybox(const std::string& name);
+	Skybox(const Assets& assets, const std::string& name);
 	~Skybox();
 
-	int prepare(const std::string& baseDir);
+	int prepare();
+
+	void bind(const RenderContext& ctx);
 	int draw(const RenderContext& ctx);
 
 private:
-	std::string name;
+	const Assets& assets;
+	const std::string name;
 
 	unsigned int textureID;
 	unsigned int VBO = 0;

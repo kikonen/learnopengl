@@ -16,6 +16,7 @@
 #include "Camera.h"
 #include "Vertex.h"
 #include "Light.h"
+#include "Assets.h"
 
 class ModelMesh {
 public:

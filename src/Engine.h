@@ -11,7 +11,7 @@
 
 #include "Input.h"
 #include "Camera.h"
-
+#include "Assets.h"
 
 const int FPS_120 = 8;
 const int FPS_60 = 16;
@@ -71,6 +71,9 @@ public:
     float accumulatedTime = 0.0f;
 
     static Engine* current;
+
+    Assets assets;
+
 protected:
     GLFWwindow* window = nullptr;
     Input* input;

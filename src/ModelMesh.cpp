@@ -47,7 +47,9 @@ int ModelMesh::prepare(bool stencil)
 {
 	ShaderInfo* info = shaders[stencil];
 	if (!info) {
-		Shader* shader = stencil ? Shader::getStencil(shaderName) : Shader::getShader(shaderName, useTexture && hasTexture);
+		Shader* shader = stencil 
+			? Shader::getStencil(engine.assets, shaderName) 
+			: Shader::getShader(engine.assets, shaderName, useTexture && hasTexture);
 		info = prepareShader(shader, stencil);
 		shaders[stencil] = info;
 	}
@@ -193,7 +195,7 @@ int ModelMesh::draw(const RenderContext& ctx)
 
 int ModelMesh::load()
 {
-	ModelMeshLoader loader(*this, path, modelName);
+	ModelMeshLoader loader(engine.assets, *this, path, modelName);
 	loader.defaultMaterial = defaultMaterial;
 	loader.overrideMaterials = overrideMaterials;
 	loader.debugColors = debugColors;

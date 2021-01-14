@@ -51,8 +51,8 @@ int Test6::onSetup() {
 
 int Test6::setupNodeSkybox()
 {
-	skybox = new Skybox("skybox");
-	skybox->prepare("3d_model");
+	skybox = new Skybox(assets, "skybox");
+	skybox->prepare();
 
 	return 0;
 }

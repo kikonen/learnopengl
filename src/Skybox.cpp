@@ -46,8 +46,9 @@ const float skyboxVertices[] = {
      1.0f, -1.0f,  1.0f
 };
 
-Skybox::Skybox(const std::string& name)
-	: name(name)
+Skybox::Skybox(const Assets& assets, const std::string& name)
+	: name(name),
+    assets(assets)
 {
 }
 
@@ -55,8 +56,9 @@ Skybox::~Skybox()
 {
 }
 
-int Skybox::prepare(const std::string& baseDir)
+int Skybox::prepare()
 {
+    const std::string& baseDir = assets.modelsDir;
 	std::string texturePath = baseDir + name;
 
     std::vector<std::string> faces{
@@ -70,7 +72,7 @@ int Skybox::prepare(const std::string& baseDir)
 
     textureID = loadCubemap(faces);
 
-    shader = Shader::getShader(name, false);
+    shader = Shader::getShader(assets, name, false);
 
     if (shader->setup()) {
         return -1;
@@ -96,24 +98,25 @@ int Skybox::prepare(const std::string& baseDir)
 	return 0;
 }
 
+void Skybox::bind(const RenderContext& ctx)
+{
+    glBindVertexArray(VAO);
+
+    glActiveTexture(GL_TEXTURE31);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+}
+
 int Skybox::draw(const RenderContext& ctx)
 {
     glDepthFunc(GL_LEQUAL); 
     
     shader->use();
-
     shader->setInt("skybox", 0);
 
     // remove translation from the view matrix
     glm::mat4 view = glm::mat4(glm::mat3(ctx.view));
-
     shader->setMat4("view", view);
     shader->setMat4("projection", ctx.projection);
-
-    glBindVertexArray(VAO);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);

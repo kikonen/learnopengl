@@ -11,11 +11,13 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "Assets.h"
+
 class Shader
 {
 public:
-    static Shader* getShader(const std::string& name, bool texture);
-    static Shader* getStencil(const std::string& name);
+    static Shader* getShader(const Assets& assets, const std::string& name, bool texture);
+    static Shader* getStencil(const Assets& assets, const std::string& name);
 private:
 	Shader(
         const std::string& name,
