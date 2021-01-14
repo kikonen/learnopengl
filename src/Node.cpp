@@ -27,6 +27,7 @@ int Node::draw(const RenderContext& ctx, bool stencil)
 
 	Shader* shader = mesh->bound->shader;
 	shader->setMat4("transform", ctx.projected * modelMat);
+	shader->setMat4("projected", ctx.projected);
 	shader->setMat4("model", modelMat);
 	shader->setMat3("normalMat", normalMat);
 

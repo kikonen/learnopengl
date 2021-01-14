@@ -9,7 +9,7 @@ public:
 	Image(const std::string& path);
 	~Image();
 
-	int load();
+	int load(bool flip);
 		
 	static Image* getImage(const std::string& path);
 public:
@@ -19,6 +19,7 @@ public:
 	int height = 0;
 	int channels = 0;
 
+	bool flipped = false;
 	unsigned char* data = nullptr;
 
 private:

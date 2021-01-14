@@ -210,7 +210,7 @@ std::string Shader::loadSource(const std::string& path) {
         file.close();
         src = buf.str();
     } catch (std::ifstream::failure e) {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ " << path << std::endl;
     }
     std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
 

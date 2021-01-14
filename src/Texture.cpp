@@ -55,7 +55,7 @@ void Texture::bind(Shader* shader)
 
 int Texture::load() {
 	Image* tmp = Image::getImage(path);
-	int res = tmp->load();
+	int res = tmp->load(true);
 	if (!res) {
 		image = tmp;
 	}

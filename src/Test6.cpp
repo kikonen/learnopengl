@@ -51,14 +51,9 @@ int Test6::onSetup() {
 
 int Test6::setupNodeSkybox()
 {
-	ModelMesh* mesh = new ModelMesh(*this, "skybox", "light6");
-	if (mesh->load()) {
-		return -1;
-	}
+	skybox = new Skybox("skybox");
+	skybox->prepare("3d_model");
 
-	Node* node = new Node(mesh, glm::vec3(0, 0, 0) + groundOffset);
-	node->setScale(100);
-	nodes.push_back(node);
 	return 0;
 }
 
@@ -471,6 +466,9 @@ int Test6::onRender(float dt) {
 			}
 		}
 
+		if (skybox) {
+			skybox->draw(ctx);
+		}
 		renderBlended(blendedNodes, ctx);
 	}
 

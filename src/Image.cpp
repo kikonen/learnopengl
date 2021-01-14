@@ -29,13 +29,15 @@ Image::~Image()
 	data = nullptr;
 }
 
-int Image::load() {
+int Image::load(bool flip) {
 	if (loaded) {
 		return res;
 	}
 	loaded = true;
 
-	stbi_set_flip_vertically_on_load(true);
+	flipped = flip;
+	stbi_set_flip_vertically_on_load(flip);
+
 	data = stbi_load(
 		path.c_str(),
 		&width,
@@ -45,6 +47,7 @@ int Image::load() {
 
 	if (data) {
 		std::cout << "LOADED::IMAGE " << path 
+			<< " flipped=" << flipped
 			<< " channels=" << channels 
 			<< " width=" << width 
 			<< " height=" << height << std::endl;

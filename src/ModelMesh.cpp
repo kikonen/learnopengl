@@ -59,6 +59,7 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil)
 	ShaderInfo* info = new ShaderInfo(shader, stencil, useTexture && !stencil);
 
 	if (info->prepare()) {
+		delete info;
 		return nullptr;
 	}
 	info->bind();

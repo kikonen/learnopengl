@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Skybox.cpp" />
     <ClCompile Include="src\ShaderInfo.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\RenderContext.cpp" />
@@ -181,6 +182,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Skybox.h" />
     <ClInclude Include="src\ShaderInfo.h" />
     <ClInclude Include="src\Image.h" />
     <ClInclude Include="src\RenderContext.h" />

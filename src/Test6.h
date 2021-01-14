@@ -9,6 +9,7 @@
 #include "Node.h"
 #include "Shader.h"
 #include "Light.h"
+#include "Skybox.h"
 
 class Test6 : public Engine {
 public:
@@ -48,6 +49,8 @@ private:
 
 private:
 	float elapsed = 0;
+
+	Skybox* skybox;
 
 	std::vector<Node*> nodes;
 	Node* active = nullptr;
