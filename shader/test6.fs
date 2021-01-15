@@ -143,13 +143,19 @@ void main() {
   if (texColor.a < 0.1)
     discard;
 
-// reflection test
-//  vec3 i = normalize(fragPos - viewPos);
-//  vec3 r = reflect(i, norm);
-//  texColor = vec4(texture(skybox, r).rgb, 1.0);
+  // reflection test
+  //float ratio = 1.0 / 1.33;
+  //vec3 i = normalize(fragPos - viewPos);
+  //vec3 r = reflect(i, norm);
+  //vec3 r = refract(i, norm, ratio);
+  //texColor = vec4(texture(skybox, r).rgb, 1.0);
 
   fragColor = texColor;
 }
+
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
 
 vec4 calculateDirLight(
   DirLight light,
