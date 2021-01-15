@@ -54,10 +54,8 @@ in vec3 fragPos;
 in vec3 normal;
 
 layout (std140) uniform Data {
-//  vec3 viewPos;
-  float a;
+  vec3 viewPos;
 };
-uniform vec3 viewPos;
 uniform samplerCube skybox;
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously

@@ -29,6 +29,8 @@ void Engine::run() {
 	// uncomment this call to draw in wireframe polygons.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	std::cout << "ENGINE::OPENGL_VERSION " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
 	int res = onSetup();
 	if (res) {
 		glfwSetWindowShouldClose(window, true);

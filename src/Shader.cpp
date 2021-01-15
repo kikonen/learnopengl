@@ -201,6 +201,7 @@ void Shader::setUBO(const std::string& name, unsigned int UBO)
     unsigned int blockIndex = glGetUniformBlockIndex(id, name.c_str());
     if (blockIndex == GL_INVALID_INDEX) {
         std::cout << "ERROR::SHADER::MISSING_UBO " << shaderName << " UBO=" << name << std::endl;
+        return;
     } 
     glUniformBlockBinding(id, blockIndex, UBO);
 }

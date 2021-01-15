@@ -36,9 +36,9 @@ void RenderContext::bindGlobal() const
 	{
 		const glm::vec3& pos = engine.camera.getPos();
 
-//		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.data);
-//		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_VEC_SIZE, glm::value_ptr(pos));
-//		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.data);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_VEC_SIZE, glm::value_ptr(pos));
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
 	// Lights
@@ -47,13 +47,14 @@ void RenderContext::bindGlobal() const
 //		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_MAT_SIZE, glm::value_ptr(projection));
 //		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
+
+	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_MATRICES, engine.ubo.matrices);
+	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_DATA, engine.ubo.data);
+	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_LIGHTS, engine.ubo.lights);
 }
 
 void RenderContext::bind(Shader* shader, bool wireframe) const
 {
-	const glm::vec3 & pos = engine.camera.getPos();
-	shader->setVec3("viewPos", pos);
-
 	{
 		shader->setInt("skybox", 31);
 		glActiveTexture(GL_TEXTURE31);
