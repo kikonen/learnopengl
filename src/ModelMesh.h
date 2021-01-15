@@ -33,7 +33,7 @@ public:
 
 	~ModelMesh();
 
-	int prepare(bool stencil);
+	ShaderInfo* prepare(bool stencil);
 	int bind(const RenderContext& ctx, bool stencil);
 	int draw(const RenderContext& ctx);
 

@@ -64,8 +64,16 @@ in vec2 texCoord;
 in vec3 fragPos;
 in vec3 normal;
 
+layout (std140) uniform Data {
+//  vec3 viewPos;
+  float a;
+};
 uniform vec3 viewPos;
 uniform samplerCube skybox;
+
+layout (std140) uniform Light {
+  float b;
+};
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 uniform Material materials[MAT_COUNT];
@@ -192,6 +200,10 @@ void main() {
 //  vec3 i = normalize(fragPos - viewPos);
 //  vec3 r = reflect(i, norm);
 //  texColor = vec4(texture(skybox, r).rgb, 1.0);
+
+  if (gl_FrontFacing) {
+//    texColor = vec4(0.8, 0, 0, 1.0);
+  }
 
   fragColor = texColor;
 }

@@ -43,7 +43,7 @@ ModelMesh::~ModelMesh()
 {
 }
 
-int ModelMesh::prepare(bool stencil)
+ShaderInfo* ModelMesh::prepare(bool stencil)
 {
 	ShaderInfo* info = shaders[stencil];
 	if (!info) {
@@ -53,7 +53,7 @@ int ModelMesh::prepare(bool stencil)
 		info = prepareShader(shader, stencil);
 		shaders[stencil] = info;
 	}
-	return info ? 0 : -1;
+	return info;
 }
 
 ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil) 

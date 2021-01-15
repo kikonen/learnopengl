@@ -9,11 +9,22 @@ Node::~Node()
 {
 }
 
-int Node::prepare(bool stencil)
+int Node::prepare(UBO ubo, bool stencil)
 {
-	if (mesh->prepare(stencil)) {
+	if (prepared) {
+		return 0;
+	}
+	ShaderInfo* info = mesh->prepare(stencil);
+	if (!info) {
 		return -1;
 	}
+
+	Shader* shader = info->shader;
+	shader->setUBO("Matrices", UBO_MATRICES);
+	shader->setUBO("Data", UBO_DATA);
+//	shader->setUBO("Lights", UBO_LIGHTS);
+
+	prepared = true;
 	return 0;
 }
 
@@ -26,8 +37,8 @@ int Node::bind(const RenderContext& ctx, bool stencil)
 	}
 
 	Shader* shader = mesh->bound->shader;
-	shader->setMat4("transform", ctx.projected * modelMat);
-	shader->setMat4("projected", ctx.projected);
+//	shader->setMat4("transform", ctx.projected * modelMat);
+//	shader->setMat4("projected", ctx.projected);
 	shader->setMat4("model", modelMat);
 	shader->setMat3("normalMat", normalMat);
 

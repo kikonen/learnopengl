@@ -19,11 +19,13 @@ public:
 	void assign(Shader* shader);
 	int draw(const RenderContext& ctx);
 
+public:
+	unsigned int textureID;
+
 private:
 	const Assets& assets;
 	const std::string name;
 
-	unsigned int textureID;
 	unsigned int VBO = 0;
 	unsigned int VAO = 0;
 	unsigned int EBO = 0;

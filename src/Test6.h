@@ -40,6 +40,8 @@ public:
 	void setupLightMoving();
 	void setupLightSun();
 
+	void setupUBOs();
+
 	int onRender(float dt) override;
 
 	void processInput(float dt) override;

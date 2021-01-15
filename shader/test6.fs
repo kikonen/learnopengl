@@ -53,6 +53,10 @@ flat in float texIndex;
 in vec3 fragPos;
 in vec3 normal;
 
+layout (std140) uniform Data {
+//  vec3 viewPos;
+  float a;
+};
 uniform vec3 viewPos;
 uniform samplerCube skybox;
 
@@ -144,11 +148,14 @@ void main() {
     discard;
 
   // reflection test
-  //float ratio = 1.0 / 1.33;
-  //vec3 i = normalize(fragPos - viewPos);
-  //vec3 r = reflect(i, norm);
-  //vec3 r = refract(i, norm, ratio);
-  //texColor = vec4(texture(skybox, r).rgb, 1.0);
+  float ratio = 1.0 / 1.33;
+  vec3 r;
+  if (gl_FragCoord.x < 400) {
+    r = reflect(-viewDir, norm);
+  } else {
+    r = refract(-viewDir, norm, ratio);
+  }
+  texColor = vec4(texture(skybox, r).rgb, 1.0);
 
   fragColor = texColor;
 }

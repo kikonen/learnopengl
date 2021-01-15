@@ -173,6 +173,9 @@
     <ClInclude Include="src\Assets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\UBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

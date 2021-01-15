@@ -12,6 +12,7 @@
 #include "Input.h"
 #include "Camera.h"
 #include "Assets.h"
+#include "UBO.h"
 
 const int FPS_120 = 8;
 const int FPS_60 = 16;
@@ -67,6 +68,7 @@ public:
     std::string title;
 
     Camera camera;
+    UBO ubo;
 
     float accumulatedTime = 0.0f;
 
@@ -77,6 +79,7 @@ public:
 protected:
     GLFWwindow* window = nullptr;
     Input* input;
+
 private:
     int width;
     int height;

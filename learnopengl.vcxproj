@@ -207,6 +207,7 @@
     <ClInclude Include="src\Vertex.h" />
     <ClInclude Include="src\Test5.h" />
     <ClInclude Include="src\Test6.h" />
+    <ClInclude Include="src\UBO.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

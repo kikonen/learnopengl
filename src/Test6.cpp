@@ -46,6 +46,8 @@ int Test6::onSetup() {
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	setupUBOs();
+
 	return 0;
 }
 
@@ -202,7 +204,7 @@ int Test6::setupNodeCubes()
 {
 	// cubes
 	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6");
-	//mesh->useTexture = false;
+	mesh->useTexture = false;
 	if (mesh->load()) {
 		return -1;
 	}
@@ -354,6 +356,40 @@ void Test6::setupLightSun()
 	sun->specular = { 1.0f, 1.0f, 1.0f, 1.f };
 }
 
+void Test6::setupUBOs()
+{
+	// Matrices
+	{
+		glGenBuffers(1, &ubo.matrices);
+		glBindBuffer(GL_UNIFORM_BUFFER, ubo.matrices);
+		// projection + view
+		int sz = UBO_MAT_SIZE * 2;
+		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATRICES, ubo.matrices, 0, sz);
+	}
+	// Data
+	{
+		glGenBuffers(1, &ubo.data);
+		glBindBuffer(GL_UNIFORM_BUFFER, ubo.data);
+		// ??
+		int sz = UBO_VEC_SIZE;
+		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, ubo.data, 0, sz);
+	}
+	// Lights
+	{
+		glGenBuffers(1, &ubo.lights);
+		glBindBuffer(GL_UNIFORM_BUFFER, ubo.lights);
+		// ??
+		int sz = UBO_MAT_SIZE;
+		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, ubo.lights, 0, sz);
+	}
+}
+
 int Test6::onRender(float dt) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -374,9 +410,11 @@ int Test6::onRender(float dt) {
 	const glm::mat4& view = camera.getView();
 	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
 
-	RenderContext ctx(*this, dt, view, projection, sun, pointLights, spotLights);
+	RenderContext ctx(*this, dt, view, projection, skybox->textureID, sun, pointLights, spotLights);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
+
+	ctx.bindGlobal();
 
 	//	mesh->setPos(glm::vec3(0, 0, -10.0f));
 
@@ -424,11 +462,11 @@ int Test6::onRender(float dt) {
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	for (auto node : nodes) {
-		node->prepare(false);
+		node->prepare(ubo, false);
 	}
 
 	for (auto node : selection) {
-		node->prepare(true);
+		node->prepare(ubo, true);
 	}
 
 	// draw all selected nodes for stencil
@@ -463,7 +501,6 @@ int Test6::onRender(float dt) {
 			}
 			else {
 				node->bind(ctx, false);
-//				skybox->assign(node->mesh->bound->shader);
 				node->draw(ctx, false);
 			}
 		}

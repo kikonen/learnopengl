@@ -10,7 +10,7 @@ public:
 	Node(ModelMesh* mesh, const glm::vec3& pos);
 	~Node();
 
-	int prepare(bool stencil);
+	int prepare(UBO ubo, bool stencil);
 
 	int bind(const RenderContext& ctx, bool stencil);
 	int draw(const RenderContext& ctx, bool stencil);
@@ -28,7 +28,7 @@ public:
 	ModelMesh* mesh;
 	bool blend = false;
 private:
-
+	
 	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
 	float scale = 1.0f;
@@ -36,6 +36,7 @@ private:
 	glm::mat4 modelMat = glm::mat4(1.0f);
 	glm::mat3 normalMat = glm::mat3(1.0f);
 
+	bool prepared = false;
 	bool dirtyMat = true;
 
 	void updateModelMatrix();

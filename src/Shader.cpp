@@ -82,13 +82,14 @@ int Shader::setup()
 
 GLint Shader::getUniformLoc(const std::string& name)
 {
-    GLint vi = uniforms[name];
-    if (!vi) {
-        vi = glGetUniformLocation(id, name.c_str());
-        uniforms[name] = vi;
-        if (vi < 0) {
-            std::cout << "SHADER::MISSING_UNIFORM: " << shaderName << " uniform=" << name << std::endl;
-        }
+    if (uniforms.count(name)) {
+        return uniforms[name];
+    }
+
+    GLint vi = glGetUniformLocation(id, name.c_str());
+    uniforms[name] = vi;
+    if (vi < 0) {
+        std::cout << "SHADER::MISSING_UNIFORM: " << shaderName << " uniform=" << name << std::endl;
     }
     return vi;
 }
@@ -110,7 +111,7 @@ int Shader::createProgram() {
         if (!success)
         {
             glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED " << shaderName << "\n" << infoLog << std::endl;
         }
     }
     // fragment shader
@@ -124,7 +125,7 @@ int Shader::createProgram() {
         if (!success)
         {
             glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED " << shaderName << "\n" << infoLog << std::endl;
         }
     }
 
@@ -137,7 +138,7 @@ int Shader::createProgram() {
     glGetProgramiv(id, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(id, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED " << shaderName << "\n" << infoLog << std::endl;
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
@@ -195,6 +196,15 @@ void Shader::setMat2(const std::string& name, const glm::mat2& mat)
     glUniformMatrix2fv(getUniformLoc(name), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
+void Shader::setUBO(const std::string& name, unsigned int UBO)
+{
+    unsigned int blockIndex = glGetUniformBlockIndex(id, name.c_str());
+    if (blockIndex == GL_INVALID_INDEX) {
+        std::cout << "ERROR::SHADER::MISSING_UBO " << shaderName << " UBO=" << name << std::endl;
+    } 
+    glUniformBlockBinding(id, blockIndex, UBO);
+}
+
 /**
 * Load shader file
 */
@@ -210,7 +220,7 @@ std::string Shader::loadSource(const std::string& path) {
         file.close();
         src = buf.str();
     } catch (std::ifstream::failure e) {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ " << path << std::endl;
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;
     }
     std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
 

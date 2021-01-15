@@ -48,7 +48,7 @@ int Test4::onRender(float dt) {
 
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
-	RenderContext ctx(*this, dt, view, projection, nullptr, pointLights, spotLights);
+	RenderContext ctx(*this, dt, view, projection, 0, nullptr, pointLights, spotLights);
 
 	std::string projectionName = { "projection" };
 	shader->setMat4(projectionName, projection);

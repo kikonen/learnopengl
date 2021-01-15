@@ -46,6 +46,8 @@ public:
     void setMat4(const std::string& name, const glm::mat4& mat);
     void setMat3(const std::string& name, const glm::mat3& mat);
     void setMat2(const std::string& name, const glm::mat2& mat);
+
+    void setUBO(const std::string& name, unsigned int UBO);
 public:
     const std::string shaderName;
 

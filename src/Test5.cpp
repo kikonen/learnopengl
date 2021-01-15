@@ -89,7 +89,7 @@ int Test5::onRender(float dt) {
 
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
-	RenderContext ctx(*this, dt, viewMat, projectionMat, nullptr, pointLights, spotLights);
+	RenderContext ctx(*this, dt, viewMat, projectionMat, 0, nullptr, pointLights, spotLights);
 //	mesh->setPos(glm::vec3(0, 0, -10.0f));
 
 	if (active) {

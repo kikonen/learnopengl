@@ -3,9 +3,10 @@
 
 RenderContext::RenderContext(
 	const Engine& engine, 
-	const float dt, 
+	const float dt,
 	const glm::mat4& view, 
 	const glm::mat4& projection,
+	unsigned int skyboxTextureID,
 	Light* dirLight,
 	const std::vector<Light*> pointLights,
 	const std::vector<Light*> spotLights)
@@ -14,16 +15,50 @@ RenderContext::RenderContext(
 	view(view),
 	projection(projection),
 	projected(projection * view),
+	skyboxTextureID(skyboxTextureID),
 	dirLight(dirLight),
 	pointLights(pointLights),
 	spotLights(spotLights)
 {
 }
 
+void RenderContext::bindGlobal() const
+{
+	// Matrices
+	{
+		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.matrices);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_MAT_SIZE, glm::value_ptr(projection));
+		glBufferSubData(GL_UNIFORM_BUFFER, UBO_MAT_SIZE, UBO_MAT_SIZE, glm::value_ptr(view));
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+
+	// Data
+	{
+		const glm::vec3& pos = engine.camera.getPos();
+
+//		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.data);
+//		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_VEC_SIZE, glm::value_ptr(pos));
+//		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+
+	// Lights
+	{
+//		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.lights);
+//		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_MAT_SIZE, glm::value_ptr(projection));
+//		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+}
+
 void RenderContext::bind(Shader* shader, bool wireframe) const
 {
-	const glm::vec3& pos = engine.camera.getPos();
+	const glm::vec3 & pos = engine.camera.getPos();
 	shader->setVec3("viewPos", pos);
+
+	{
+		shader->setInt("skybox", 31);
+		glActiveTexture(GL_TEXTURE31);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTextureID);
+	}
 
 	if (dirLight) {
 		dirLight->bind(shader, -1);
