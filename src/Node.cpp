@@ -11,15 +11,11 @@ Node::~Node()
 
 int Node::prepare(UBO ubo, bool stencil)
 {
-	if (prepared) {
-		return 0;
-	}
 	ShaderInfo* info = mesh->prepare(stencil);
 	if (!info) {
 		return -1;
 	}
 
-	prepared = true;
 	return 0;
 }
 
