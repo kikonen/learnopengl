@@ -36,6 +36,7 @@ public:
 	ShaderInfo* prepare(Shader* shader);
 	int bind(const RenderContext& ctx, Shader* shader);
 	int draw(const RenderContext& ctx);
+	int drawInstanced(const RenderContext& ctx, int instanceCount);
 
 	int load();
 

@@ -44,10 +44,10 @@ ModelMesh::~ModelMesh()
 
 ShaderInfo* ModelMesh::prepare(Shader* shader)
 {
-	ShaderInfo* info = shaders[shader->shaderName];
+	ShaderInfo* info = shaders[shader->key];
 	if (!info) {
 		info = prepareShader(shader);
-		shaders[shader->shaderName] = info;
+		shaders[shader->key] = info;
 	}
 	return info;
 }
@@ -156,7 +156,7 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 
 int ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 {
-	bound = shaders[shader->shaderName];
+	bound = shaders[shader->key];
 	if (!bound) {
 		return -1;
 	}
@@ -177,6 +177,12 @@ int ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 int ModelMesh::draw(const RenderContext& ctx)
 {
 	glDrawElements(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0);
+	return 0;
+}
+
+int ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
+{
+	glDrawElementsInstanced(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0, instanceCount);
 	return 0;
 }
 

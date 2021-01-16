@@ -14,6 +14,7 @@ public:
 
 	int bind(const RenderContext& ctx, Shader* shader);
 	int draw(const RenderContext& ctx);
+	int drawInstanced(const RenderContext& ctx, int instanceCount);
 
 	void setPos(const glm::vec3& pos);
 	const glm::vec3& getPos();

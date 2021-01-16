@@ -82,6 +82,8 @@ uniform DirLight light;
 uniform PointLight pointLights[LIGHT_COUNT];
 uniform SpotLight spotLights[LIGHT_COUNT];
 
+uniform bool drawInstanced;
+
 out vec4 fragColor;
 
 vec4 calculateDirLight(
@@ -203,6 +205,9 @@ void main() {
 
   if (gl_FrontFacing) {
 //    texColor = vec4(0.8, 0, 0, 1.0);
+  }
+  if (drawInstanced) {
+    //texColor = vec4(0, 0.8, 0, 1.0);
   }
 
   fragColor = texColor;

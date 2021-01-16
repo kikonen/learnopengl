@@ -25,12 +25,13 @@ class Shader
 public:
     static Shader* getShader(
         const Assets& assets, 
-        const std::string& name, 
+        const std::string& name,
         const std::string& geometryType);
  
 private:
     Shader(
         const Assets& assets,
+        const std::string& key,
         const std::string& name,
         const std::string& geometryType);
 
@@ -60,6 +61,7 @@ public:
     void setUBO(const std::string& name, unsigned int UBO);
 public:
     const std::string shaderName;
+    const std::string key;
 
     const Assets& assets;
     const std::string& geometryType;

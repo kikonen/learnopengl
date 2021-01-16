@@ -21,7 +21,7 @@ Shader* Shader::getShader(
     Shader* shader = shaders[key];
 
     if (!shader) {
-        shader = new Shader(assets, name, geometryType);
+        shader = new Shader(assets, key, name, geometryType);
         shaders[key] = shader;
     }
 
@@ -30,9 +30,11 @@ Shader* Shader::getShader(
 
 Shader::Shader(
     const Assets& assets,
+    const std::string& key,
     const std::string& name,
     const std::string& geometryType)
     : assets(assets),
+    key(key),
     shaderName(name),
     geometryType(geometryType),
     geometryOptional(geometryType.empty())
@@ -287,7 +289,8 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
             std::cout << "INFO::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;
         }
     }
-    std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
+//    std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
+    std::cout << "== " << path << std::endl;
 
     return src;
 }

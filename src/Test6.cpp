@@ -16,6 +16,7 @@ Test6::Test6() {
 int Test6::onSetup() {
 	setupLightSun();
 	setupLightMoving();
+
 	setupNodeSun();
 	setupNodeLightMoving();
 	setupNodeWaterBall();
@@ -34,6 +35,11 @@ int Test6::onSetup() {
 	setupNodeStainedWindows();
 
 	setupNodeMountains();
+
+	setupNodePlanet();
+	setupNodeAsteroids();
+	setupNodeAsteroidBelt();
+
 	setupNodeSkybox();
 
 	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
@@ -203,7 +209,7 @@ int Test6::setupNodeCube4()
 int Test6::setupNodeCubes()
 {
 	// cubes
-	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6" + TEX_TEXTURE);
+	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6" +TEX_TEXTURE);
 	if (mesh->load()) {
 		return -1;
 	}
@@ -254,6 +260,99 @@ int Test6::setupNodeWaterBall()
 	Node* node = new Node(mesh, glm::vec3(0, 3, 0) + groundOffset);
 	//node->setScale(0.5f);
 	nodes.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodePlanet()
+{
+	ModelMesh* mesh = new ModelMesh(*this, "/planet/", "planet", "test6" + TEX_TEXTURE);
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(10, 100, 100) + groundOffset);
+	node->setScale(10);
+	nodes.push_back(node);
+	return 0;
+}
+
+int Test6::setupNodeAsteroids()
+{
+	glm::vec3 planetPos = glm::vec3(10, 100, 100);
+
+	ModelMesh* mesh = new ModelMesh(*this, "/rock/", "rock", "test6" + TEX_TEXTURE);
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(10, 50, 100) + groundOffset);
+	nodes.push_back(node);
+
+	{
+		// light
+		Light* light = new Light();
+		light->pos = glm::vec3(13, 48, 100) + groundOffset;
+
+		// 160
+		light->point = true;
+		light->linear = 0.0027f;
+		light->quadratic = 0.00028f;
+
+		light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
+		light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
+		light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
+
+		pointLights.push_back(light);
+	}
+	return 0;
+}
+
+int Test6::setupNodeAsteroidBelt()
+{
+	glm::vec3 planetPos = glm::vec3(10, 100, 100);
+
+	ModelMesh* mesh = new ModelMesh(*this, "/rock/", "rock", "test6" + TEX_TEXTURE);
+	if (mesh->load()) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh, glm::vec3(10, 50, 100) + groundOffset);
+	asteroid = node;
+
+	unsigned int amount = 1000;
+	srand(glfwGetTime()); // initialize random seed	
+
+	float radius = 70.0;
+	float offset = 20.5f;
+	for (unsigned int i = 0; i < amount; i++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		// 1. translation: displace along circle with 'radius' in range [-offset, offset]
+		float angle = (float)i / (float)amount * 360.0f;
+
+		float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float x = sin(angle) * radius + displacement;
+
+		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
+
+		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float z = cos(angle) * radius + displacement;
+
+		model = glm::translate(model, glm::vec3(x, y, z) + planetPos + groundOffset);
+
+		// 2. scale: scale between 0.05 and 0.25f
+		float scale = (rand() % 20) / 100.0f + 0.05;
+		model = glm::scale(model, glm::vec3(scale));
+
+		// 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+		float rotAngle = (rand() % 360);
+		model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+
+		// 4. now add to list of matrices
+		asteroidMatrixes.push_back(model);
+	}
+
 	return 0;
 }
 
@@ -464,6 +563,9 @@ int Test6::onRender(float dt) {
 			node->prepare(getShader(node, "test6_normal"));
 		}
 	}
+	if (asteroid) {
+		asteroid->prepare(getShader(asteroid));
+	}
 
 	// draw all selected nodes for stencil
 	if (selection.size() > 0) {
@@ -526,6 +628,8 @@ int Test6::onRender(float dt) {
 		glEnable(GL_DEPTH_TEST);
 	}
 
+	renderAsteroidInstances(ctx);
+
 	if (showNormals) {
 		for (auto node : nodes) {
 			node->bind(ctx, getShader(node, "test6_normal"));
@@ -572,5 +676,70 @@ void Test6::renderBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
+}
+
+void Test6::renderAsteroids(RenderContext& ctx)
+{
+	Node* node = asteroid;
+	for (auto mat : asteroidMatrixes) {
+		node->bind(ctx, getShader(node));
+
+		Shader* shader = node->mesh->bound->shader;
+		shader->setMat4("model", mat);
+
+		glm::mat3 normalMat = glm::transpose(glm::inverse(mat));
+		shader->setMat3("normalMat", normalMat);
+
+		node->draw(ctx);
+	}
+}
+
+void Test6::renderAsteroidInstances(RenderContext& ctx)
+{
+	Node* node = asteroid;
+	Shader* shader = getShader(node);
+	ShaderInfo* info = node->mesh->prepare(shader);
+
+	prepareAsteroidInstances(ctx, info);
+
+	node->bind(ctx, shader);
+	shader->setBool("drawInstanced", true);
+	node->drawInstanced(ctx, asteroidMatrixes.size());
+}
+
+void Test6::prepareAsteroidInstances(RenderContext& ctx, ShaderInfo* info)
+{
+	if (asteroidBuffer >= 0) {
+//		return;
+	}
+
+	glGenBuffers(1, &asteroidBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, asteroidBuffer);
+	glBufferData(GL_ARRAY_BUFFER, asteroidMatrixes.size() * sizeof(glm::mat4), &asteroidMatrixes[0], GL_STATIC_DRAW);
+
+	glBindVertexArray(info->VAO);
+
+	// vertex attributes
+	std::size_t vec4Size = sizeof(glm::vec4);
+
+	// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+
+	glEnableVertexAttribArray(7);
+	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+	glVertexAttribDivisor(4, 1);
+	glVertexAttribDivisor(5, 1);
+	glVertexAttribDivisor(6, 1);
+	glVertexAttribDivisor(7, 1);
+
+	glBindVertexArray(0);
 }
 

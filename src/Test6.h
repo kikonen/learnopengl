@@ -33,6 +33,9 @@ public:
 	int setupNodeActive();
 	int setupNodeMountains();
 	int setupNodeWaterBall();
+	int setupNodePlanet();
+	int setupNodeAsteroids();
+	int setupNodeAsteroidBelt();
 
 	int setupNodeLightMoving();
 	int setupNodeSun();
@@ -48,6 +51,11 @@ public:
 
 private:
 	void renderBlended(std::vector<Node*>& nodes, RenderContext& ctx);
+	void renderAsteroids(RenderContext& ctx);
+
+	void renderAsteroidInstances(RenderContext& ctx);
+	void prepareAsteroidInstances(RenderContext& ctx, ShaderInfo* info);
+
 	Shader* getShader(const Node* node, std::string shaderName = "", std::string geometryType = "");
 
 private:
@@ -70,4 +78,8 @@ private:
 
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
+
+	Node* asteroid = nullptr;
+	std::vector<glm::mat4> asteroidMatrixes;
+	unsigned int asteroidBuffer = -1;
 };

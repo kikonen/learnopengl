@@ -31,6 +31,7 @@ int Node::bind(const RenderContext& ctx, Shader* shader)
 //	shader->setMat4("projected", ctx.projected);
 	shader->setMat4("model", modelMat);
 	shader->setMat3("normalMat", normalMat);
+	shader->setBool("drawInstanced", false);
 
 	return 0;
 }
@@ -38,6 +39,12 @@ int Node::bind(const RenderContext& ctx, Shader* shader)
 int Node::draw(const RenderContext& ctx)
 {
 	mesh->draw(ctx);
+	return 0;
+}
+
+int Node::drawInstanced(const RenderContext& ctx, int instanceCount)
+{
+	mesh->drawInstanced(ctx, instanceCount);
 	return 0;
 }
 
