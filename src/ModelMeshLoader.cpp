@@ -210,18 +210,10 @@ int ModelMeshLoader::resolveVertexIndex(
 		material = defaultMaterial;
 	}
 
-	glm::vec4& vertexColor = material->kd;
-	if (debugColors) {
-		vertexColor = colors[pi % colors.size()];
-	} else {
-		vertexColor = material->kd;
-	}
-
 	Vertex v(
 		positions[pi], 
 		textures.empty() ? EMPTY_TEX : textures[ti], 
 		normals.empty() ? EMPTY_NORMAL : normals[ni], 
-		vertexColor,
 		material);
 	vertexes.push_back(v);
 	return vertexes.size() - 1;

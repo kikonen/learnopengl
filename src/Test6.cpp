@@ -62,7 +62,7 @@ int Test6::setupNodeSkybox()
 int Test6::setupNodeWindow1()
 {
 	// window1
-	ModelMesh* mesh = new ModelMesh(*this, "window1", "test6");
+	ModelMesh* mesh = new ModelMesh(*this, "window1", "test6" + TEX_TEXTURE);
 	if (mesh->load()) {
 		return -1;
 	}
@@ -78,7 +78,7 @@ int Test6::setupNodeWindow1()
 int Test6::setupNodeWindow2()
 {
 	// window2
-	ModelMesh* mesh = new ModelMesh(*this, "window2", "test6");
+	ModelMesh* mesh = new ModelMesh(*this, "window2", "test6" + TEX_TEXTURE);
 	if (mesh->load()) {
 		return -1;
 	}
@@ -94,7 +94,7 @@ int Test6::setupNodeWindow2()
 int Test6::setupNodeStainedWindows()
 {
 	// window2
-	ModelMesh* mesh = new ModelMesh(*this, "window2", "test6");
+	ModelMesh* mesh = new ModelMesh(*this, "window2", "test6" + TEX_TEXTURE);
 	if (mesh->load()) {
 		return -1;
 	}
@@ -127,7 +127,7 @@ int Test6::setupNodeSpyro()
 int Test6::setupNodeBackpack()
 {
 	// backback
-	ModelMesh* mesh = new ModelMesh(*this, "/backpack/", "backpack", "test6");
+	ModelMesh* mesh = new ModelMesh(*this, "/backpack/", "backpack", "test6" + TEX_TEXTURE);
 	//mesh->useWireframe = true;
 	if (mesh->load()) {
 		return -1;
@@ -175,7 +175,7 @@ int Test6::setupNodeCow()
 int Test6::setupNodeBall()
 {
 	// ball
-	ModelMesh* mesh = new ModelMesh(*this, "texture_ball", "test6");
+	ModelMesh* mesh = new ModelMesh(*this, "texture_ball", "test6" + TEX_TEXTURE);
 	if (mesh->load()) {
 		return -1;
 	}
@@ -189,8 +189,7 @@ int Test6::setupNodeBall()
 int Test6::setupNodeCube4()
 {
 	// cube 4
-	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_4", "test6");
-	//mesh->useTexture = false;
+	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_4", "test6" + TEX_TEXTURE);
 	if (mesh->load()) {
 		return -1;
 	}
@@ -204,8 +203,7 @@ int Test6::setupNodeCube4()
 int Test6::setupNodeCubes()
 {
 	// cubes
-	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6");
-	mesh->useTexture = false;
+	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6" + TEX_TEXTURE);
 	if (mesh->load()) {
 		return -1;
 	}
@@ -220,8 +218,7 @@ int Test6::setupNodeCubes()
 int Test6::setupNodeActive()
 {
 	// active
-	ModelMesh* mesh = new ModelMesh(*this, "texture_cube", "test6");
-	//mesh->useTexture = false;
+	ModelMesh* mesh = new ModelMesh(*this, "texture_cube", "test6" + TEX_TEXTURE);
 	if (mesh->load()) {
 		return -1;
 	}
@@ -236,8 +233,7 @@ int Test6::setupNodeActive()
 int Test6::setupNodeMountains()
 {
 	// mountains
-	ModelMesh* mesh = new ModelMesh(*this, "texture_mountains", "test6");
-	//mesh->debugColors = true;
+	ModelMesh* mesh = new ModelMesh(*this, "texture_mountains", "test6" + TEX_TEXTURE);
 	if (mesh->load()) {
 		return -1;
 	}
@@ -250,8 +246,7 @@ int Test6::setupNodeMountains()
 
 int Test6::setupNodeWaterBall()
 {
-	ModelMesh* mesh = new ModelMesh(*this, "light", "test6");
-	//mesh->useWireframe = true;
+	ModelMesh* mesh = new ModelMesh(*this, "light", "test6" + TEX_TEXTURE);
 	if (mesh->load()) {
 		return -1;
 	}
@@ -266,7 +261,6 @@ int Test6::setupNodeLightMoving()
 {
 	// light node
 	ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
-	mesh->useTexture = false;
 	if (mesh->load()) {
 		return -1;
 	}
@@ -300,7 +294,6 @@ int Test6::setupNodeSun()
 	ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
 	mesh->defaultMaterial->kd = sun->specular;
 	mesh->overrideMaterials = true;
-	mesh->useTexture = false;
 
 	if (mesh->load()) {
 		return -1;
@@ -464,11 +457,9 @@ int Test6::onRender(float dt) {
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	for (auto node : nodes) {
-		node->prepare(ubo, false);
-	}
-
-	for (auto node : selection) {
-		node->prepare(ubo, true);
+		node->prepare(getShader(node));
+		node->prepare(getShader(node, "test6_stencil"));
+//		node->prepare(getShader(node, "test6_normal"));
 	}
 
 	// draw all selected nodes for stencil
@@ -482,8 +473,8 @@ int Test6::onRender(float dt) {
 				blendedNodes.push_back(node);
 			}
 			else {
-				node->bind(ctx, false);
-				node->draw(ctx, false);
+				node->bind(ctx, getShader(node));
+				node->draw(ctx);
 			}
 		}
 
@@ -502,8 +493,8 @@ int Test6::onRender(float dt) {
 				blendedNodes.push_back(node);
 			}
 			else {
-				node->bind(ctx, false);
-				node->draw(ctx, false);
+				node->bind(ctx, getShader(node));
+				node->draw(ctx);
 			}
 		}
 
@@ -522,8 +513,8 @@ int Test6::onRender(float dt) {
 		for (auto node : selection) {
 			float scale = node->getScale();
 			node->setScale(scale * 1.02);
-			node->bind(ctx, true);
-			node->draw(ctx, true);
+			node->bind(ctx, getShader(node, "test6_stencil"));
+			node->draw(ctx);
 			node->setScale(scale);
 		}
 
@@ -532,9 +523,25 @@ int Test6::onRender(float dt) {
 		glEnable(GL_DEPTH_TEST);
 	}
 
+	for (auto node : nodes) {
+//		node->bind(ctx, getShader(node, "test6_normal"));
+//		node->draw(ctx);
+	}
+
 	glBindVertexArray(0);
 
 	return 0;
+}
+
+Shader* Test6::getShader(const Node* node, std::string shaderName, std::string geometryType)
+{
+	if (shaderName.empty()) {
+		shaderName = node->mesh->shaderName;
+		if (geometryType.empty()) {
+			geometryType = node->mesh->geometryType;
+		}
+	}
+	return Shader::getShader(assets, shaderName, geometryType);
 }
 
 void Test6::processInput(float dt) {
@@ -555,8 +562,8 @@ void Test6::renderBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		Node* node = it->second;
-		node->bind(ctx, false);
-		node->draw(ctx, false);
+		node->bind(ctx, getShader(node));
+		node->draw(ctx);
 	}
 
 	glEnable(GL_CULL_FACE);

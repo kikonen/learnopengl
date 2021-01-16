@@ -48,6 +48,7 @@ public:
 
 private:
 	void renderBlended(std::vector<Node*>& nodes, RenderContext& ctx);
+	Shader* getShader(const Node* node, std::string shaderName = "", std::string geometryType = "");
 
 private:
 	float elapsed = 0;

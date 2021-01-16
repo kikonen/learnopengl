@@ -10,10 +10,10 @@ public:
 	Node(ModelMesh* mesh, const glm::vec3& pos);
 	~Node();
 
-	int prepare(UBO ubo, bool stencil);
+	int prepare(Shader* shader);
 
-	int bind(const RenderContext& ctx, bool stencil);
-	int draw(const RenderContext& ctx, bool stencil);
+	int bind(const RenderContext& ctx, Shader* shader);
+	int draw(const RenderContext& ctx);
 
 	void setPos(const glm::vec3& pos);
 	const glm::vec3& getPos();

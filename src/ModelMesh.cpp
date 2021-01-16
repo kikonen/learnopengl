@@ -42,21 +42,19 @@ ModelMesh::~ModelMesh()
 {
 }
 
-ShaderInfo* ModelMesh::prepare(bool stencil)
+ShaderInfo* ModelMesh::prepare(Shader* shader)
 {
-	ShaderInfo* info = shaders[stencil];
+	ShaderInfo* info = shaders[shader->shaderName];
 	if (!info) {
-		std::string texType = stencil ? stencilType : (useTexture && hasTexture ? textureType : TEX_NONE);
-		Shader* shader = Shader::getShader(engine.assets, shaderName, texType, geometryType);
-		info = prepareShader(shader, stencil);
-		shaders[stencil] = info;
+		info = prepareShader(shader);
+		shaders[shader->shaderName] = info;
 	}
 	return info;
 }
 
-ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil)
+ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 {
-	ShaderInfo* info = new ShaderInfo(shader, stencil);
+	ShaderInfo* info = new ShaderInfo(shader);
 
 	if (info->prepare()) {
 		delete info;
@@ -156,9 +154,9 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil)
 	return info;
 }
 
-int ModelMesh::bind(const RenderContext& ctx, bool stencil)
+int ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 {
-	bound = shaders[stencil];
+	bound = shaders[shader->shaderName];
 	if (!bound) {
 		return -1;
 	}

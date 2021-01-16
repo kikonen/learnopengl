@@ -33,25 +33,23 @@ public:
 
 	~ModelMesh();
 
-	ShaderInfo* prepare(bool stencil);
-	int bind(const RenderContext& ctx, bool stencil);
+	ShaderInfo* prepare(Shader* shader);
+	int bind(const RenderContext& ctx, Shader* shader);
 	int draw(const RenderContext& ctx);
 
 	int load();
 
 private:
-	ShaderInfo* prepareShader(Shader* shader, bool stencil);
+	ShaderInfo* prepareShader(Shader* shader);
 public:
-	bool useTexture = true;
 	bool useWireframe = false;
 	bool debugColors = false;
 
-	std::string textureType = TEX_TEXTURE;
-	std::string stencilType = TEX_STENCIL;
-	std::string geometryType = GEOM_NONE;
-
 	std::string name;
-	
+
+	const std::string shaderName;
+	std::string geometryType;
+
 	ShaderInfo* bound = nullptr;
 
 	Material* defaultMaterial;
@@ -62,11 +60,10 @@ public:
 private:
 	const Engine& engine;
 
-	std::map<bool, ShaderInfo*> shaders;
+	std::map<std::string, ShaderInfo*> shaders;
 
 	const std::string path;
 	const std::string modelName;
-	const std::string shaderName;
 
 	std::vector<Tri> tris;
 	std::vector<Vertex> vertexes;
@@ -74,4 +71,4 @@ private:
 	std::map<std::string, Material*> materials;
 
 	bool hasTexture = false;
- };
+};

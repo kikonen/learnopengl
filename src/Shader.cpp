@@ -8,22 +8,21 @@
 
 #include "UBO.h"
 
-// name + key = tex + geom
+// name + geom
 std::map<std::string, Shader*> shaders;
 
 
 Shader* Shader::getShader(
     const Assets& assets, 
     const std::string& name, 
-    const std::string& textureType,
     const std::string& geometryType)
 {
-    std::string key = name + "_" + textureType + "_" + geometryType;
+    std::string key = name + geometryType;
     Shader* shader = shaders[key];
 
     if (!shader) {
-        shader = new Shader(assets, name, textureType, geometryType);
-        shaders[name] = shader;
+        shader = new Shader(assets, name, geometryType);
+        shaders[key] = shader;
     }
 
     return shader;
@@ -32,18 +31,16 @@ Shader* Shader::getShader(
 Shader::Shader(
     const Assets& assets,
     const std::string& name,
-    const std::string& textureType,
     const std::string& geometryType)
     : assets(assets),
     shaderName(name),
-    textureType(textureType),
     geometryType(geometryType),
-    geometryOptional(geometryType.empty() || textureType == TEX_STENCIL)
+    geometryOptional(geometryType.empty())
 {
     std::string basePath = assets.shadersDir + "/" + name;
-    vertexShaderPath = basePath + textureType + ".vs";
-    fragmentShaderPath = basePath + textureType + ".fs";
-    geometryShaderPath = basePath + textureType + geometryType + ".gs";
+    vertexShaderPath = basePath + ".vs";
+    fragmentShaderPath = basePath + ".fs";
+    geometryShaderPath = basePath + geometryType + ".gs";
 
     bindTexture = true;
 }

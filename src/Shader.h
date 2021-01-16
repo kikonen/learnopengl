@@ -16,6 +16,7 @@
 const std::string TEX_NONE = "";
 const std::string TEX_TEXTURE = "_tex";
 const std::string TEX_STENCIL = "_stencil";
+const std::string TEX_NORMAL = "_normal";
 
 const std::string GEOM_NONE = "";
 
@@ -25,14 +26,12 @@ public:
     static Shader* getShader(
         const Assets& assets, 
         const std::string& name, 
-        const std::string& textureType, 
         const std::string& geometryType);
  
 private:
     Shader(
         const Assets& assets,
         const std::string& name,
-        const std::string& textureType,
         const std::string& geometryType);
 
     ~Shader();
@@ -63,7 +62,6 @@ public:
     const std::string shaderName;
 
     const Assets& assets;
-    const std::string& textureType;
     const std::string& geometryType;
     const bool geometryOptional;
 

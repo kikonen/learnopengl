@@ -5,7 +5,7 @@
 class ShaderInfo
 {
 public:
-	ShaderInfo(Shader* shader, bool stencil);
+	ShaderInfo(Shader* shader);
 
 	int prepare();
 	void bind();
@@ -15,7 +15,6 @@ public:
 	unsigned int EBO = 0;
 
 	Shader* shader;
-	const bool stencil;
 	const bool bindTexture;
 };
 

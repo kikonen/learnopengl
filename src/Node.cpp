@@ -9,9 +9,9 @@ Node::~Node()
 {
 }
 
-int Node::prepare(UBO ubo, bool stencil)
+int Node::prepare(Shader* shader)
 {
-	ShaderInfo* info = mesh->prepare(stencil);
+	ShaderInfo* info = mesh->prepare(shader);
 	if (!info) {
 		return -1;
 	}
@@ -19,15 +19,14 @@ int Node::prepare(UBO ubo, bool stencil)
 	return 0;
 }
 
-int Node::bind(const RenderContext& ctx, bool stencil)
+int Node::bind(const RenderContext& ctx, Shader* shader)
 {
 	updateModelMatrix();
 
-	if (mesh->bind(ctx, stencil)) {
+	if (mesh->bind(ctx, shader)) {
 		return -1;
 	}
 
-	Shader* shader = mesh->bound->shader;
 //	shader->setMat4("transform", ctx.projected * modelMat);
 //	shader->setMat4("projected", ctx.projected);
 	shader->setMat4("model", modelMat);
@@ -36,7 +35,7 @@ int Node::bind(const RenderContext& ctx, bool stencil)
 	return 0;
 }
 
-int Node::draw(const RenderContext& ctx, bool stencil)
+int Node::draw(const RenderContext& ctx)
 {
 	mesh->draw(ctx);
 	return 0;
