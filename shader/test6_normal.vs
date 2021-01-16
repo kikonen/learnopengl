@@ -9,7 +9,6 @@ layout (std140) uniform Matrices {
   mat4 view;
 };
 
-uniform mat3 normalMat;
 uniform mat4 model;
 
 out VS_OUT {
@@ -18,6 +17,8 @@ out VS_OUT {
 
 void main() {
   gl_Position = view * model * vec4(aPos, 1.0);
+
+  mat3 normalMat = mat3(transpose(inverse(view * model)));
 
   vs_out.normal = normalMat * aNormal;
 }
