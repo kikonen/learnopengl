@@ -14,7 +14,7 @@ public:
 	Texture(const std::string& path, bool normal);
 	~Texture();
 
-	void prepare(Shader* shader);
+	void prepare();
 	void bind(Shader* shader);
 	int load();
 

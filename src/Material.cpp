@@ -127,10 +127,10 @@ Texture* Material::loadTexture(const std::string& baseDir, const std::string& na
 	return texture;
 }
 
-void Material::prepare(Shader* shader)
+void Material::prepare()
 {
 	for (auto const x : textures) {
-		x->prepare(shader);
+		x->prepare();
 	}
 }
 

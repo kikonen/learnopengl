@@ -7,7 +7,6 @@
 
 #include "ModelMeshLoader.h"
 
-
 Material* createDefaultMaterial() {
 	Material* mat = new Material("default", 0);
 	mat->ns = 100.f;
@@ -69,7 +68,7 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil)
 	if (info->useTexture) {
 		for (auto const& x : materials) {
 			Material* material = x.second;
-			material->prepare(shader);
+			material->prepare();
 		}
 	}
 

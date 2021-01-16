@@ -19,11 +19,6 @@ int Node::prepare(UBO ubo, bool stencil)
 		return -1;
 	}
 
-	Shader* shader = info->shader;
-	shader->setUBO("Matrices", UBO_MATRICES);
-	shader->setUBO("Data", UBO_DATA);
-//	shader->setUBO("Lights", UBO_LIGHTS);
-
 	prepared = true;
 	return 0;
 }

@@ -17,7 +17,7 @@ Texture::~Texture()
 	image = NULL;
 }
 
-void Texture::prepare(Shader* shader)
+void Texture::prepare()
 {
 	if (!image) {
 		return;

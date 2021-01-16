@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iostream>
 
+#include "UBO.h"
 
 std::map<std::string, Shader*> textureShaders;
 std::map<std::string, Shader*> stencilShaders;
@@ -142,6 +143,12 @@ int Shader::createProgram() {
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+
+    // NOTE KI set UBOs only once for shader
+    setUBO("Matrices", UBO_MATRICES);
+    setUBO("Data", UBO_DATA);
+    setUBO("Lights", UBO_LIGHTS);
+
 
     return 0;
 }
