@@ -12,16 +12,17 @@ layout (std140) uniform Matrices {
 uniform mat3 normalMat;
 uniform mat4 model;
 
-out vec4 color;
-flat out float materialIndex;
-out vec3 fragPos;
-out vec3 normal;
+out VS_OUT {
+  flat float materialIndex;
+  vec3 fragPos;
+  vec3 normal;
+} vs_out;
 
 void main() {
   gl_Position = projection * view * model * vec4(aPos, 1.0);
 
-  materialIndex = aMaterialIndex;
+  vs_out.materialIndex = aMaterialIndex;
 
-  fragPos = vec3(model * vec4(aPos, 1.0));
-  normal = normalMat * aNormal;
+  vs_out.fragPos = vec3(model * vec4(aPos, 1.0));
+  vs_out.normal = normalMat * aNormal;
 }

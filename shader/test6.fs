@@ -160,6 +160,7 @@ void main() {
     r = refract(-viewDir, norm, ratio);
   }
   texColor = vec4(texture(skybox, r).rgb, 1.0);
+//  texColor = vec4(0.0, 0.8, 0, 1.0);
 
   fragColor = texColor;
 }

@@ -40,10 +40,10 @@ Shader::Shader(
     geometryType(geometryType),
     geometryOptional(geometryType.empty())
 {
-    std::string basePath = "shader/" + name;
+    std::string basePath = assets.shadersDir + "/" + name;
     vertexShaderPath = basePath + textureType + ".vs";
     fragmentShaderPath = basePath + textureType + ".fs";
-    geometryShaderPath = basePath + geometryType + ".gs";
+    geometryShaderPath = basePath + textureType + geometryType + ".gs";
 
     bindTexture = true;
 }
@@ -145,7 +145,7 @@ int Shader::createProgram() {
         if (!success)
         {
             glGetShaderInfoLog(geometryShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::GEOMETRY::COMPILATION_FAILED " << shaderName << " frag=" << fragmentShaderPath << "\n" << infoLog << std::endl;
+            std::cout << "ERROR::SHADER::GEOMETRY::COMPILATION_FAILED " << shaderName << " frag=" << geometryShaderPath << "\n" << infoLog << std::endl;
         }
     }
 
