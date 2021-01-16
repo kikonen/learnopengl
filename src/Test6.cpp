@@ -387,6 +387,7 @@ void Test6::setupUBOs()
 
 int Test6::onRender(float dt) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//showNormals = true;
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -459,7 +460,9 @@ int Test6::onRender(float dt) {
 	for (auto node : nodes) {
 		node->prepare(getShader(node));
 		node->prepare(getShader(node, "test6_stencil"));
-//		node->prepare(getShader(node, "test6_normal"));
+		if (showNormals) {
+			node->prepare(getShader(node, "test6_normal"));
+		}
 	}
 
 	// draw all selected nodes for stencil
@@ -523,11 +526,12 @@ int Test6::onRender(float dt) {
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	for (auto node : nodes) {
-//		node->bind(ctx, getShader(node, "test6_normal"));
-//		node->draw(ctx);
+	if (showNormals) {
+		for (auto node : nodes) {
+			node->bind(ctx, getShader(node, "test6_normal"));
+			node->draw(ctx);
+		}
 	}
-
 	glBindVertexArray(0);
 
 	return 0;

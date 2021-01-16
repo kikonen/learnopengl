@@ -53,6 +53,8 @@ private:
 private:
 	float elapsed = 0;
 
+	bool showNormals = false;
+
 	Skybox* skybox;
 
 	std::vector<Node*> nodes;
