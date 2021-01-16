@@ -43,9 +43,11 @@ void RenderContext::bindGlobal() const
 
 	// Lights
 	{
-//		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.lights);
-//		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_MAT_SIZE, glm::value_ptr(projection));
-//		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.lights);
+		if (dirLight) {
+			dirLight->bindUBO(-1);
+		}
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
 	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_MATRICES, engine.ubo.matrices);

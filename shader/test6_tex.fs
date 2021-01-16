@@ -20,7 +20,7 @@ struct Material {
   bool hasNormalMap;
 };
 struct DirLight {
-  vec3 dir;
+  vec4 dir;
 
   vec4 ambient;
   vec4 diffuse;
@@ -69,12 +69,14 @@ layout (std140) uniform Data {
 };
 uniform samplerCube skybox;
 
-layout (std140) uniform Light {
-  float b;
-};
-
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 uniform Material materials[MAT_COUNT];
+
+layout (std140) uniform Lights {
+  DirLight light2;
+//  PointLight pointLights2[LIGHT_COUNT];
+//  SpotLight spotLights2[LIGHT_COUNT];
+};
 
 uniform DirLight light;
 uniform PointLight pointLights[LIGHT_COUNT];
@@ -218,7 +220,7 @@ vec4 calculateDirLight(
   vec4 matDiffuse,
   vec4 matSpecular,
   float matShininess) {
-  vec3 lightDir = normalize(-light.dir);
+  vec3 lightDir = normalize(-vec3(light.dir));
 
   // ambient
   vec4 ambient = light.ambient * matAmbient;

@@ -382,8 +382,9 @@ void Test6::setupUBOs()
 	{
 		glGenBuffers(1, &ubo.lights);
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo.lights);
-		// ??
-		int sz = UBO_MAT_SIZE;
+		// DirLight + PointLight + SpotLight
+		int s2 = SZ_DIR_LIGHT_UBO;
+		int sz = SZ_DIR_LIGHT_UBO;// +SZ_POINT_LIGHT_UBO + SZ_SPOT_LIGHT_UBO;
 		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, ubo.lights, 0, sz);

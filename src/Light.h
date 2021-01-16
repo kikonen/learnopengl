@@ -9,11 +9,16 @@ public:
 	Light();
 	~Light();
 
+	void bindUBO(int index);
 	void bind(Shader* shader, int index);
 private:
 	void bindDirectional(Shader* shader);
 	void bindPoint(Shader* shader, int index);
 	void bindSpot(Shader* shader, int index);
+
+	void bindDirectionalUBO();
+	void bindPointUBO(int index);
+	void bindSpotUBO(int index);
 public:
 	bool use = true;
 	bool directional = false;

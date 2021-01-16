@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Light.h"
+#include "UBO.h"
 
 struct Names {
 	int index;
@@ -163,5 +164,75 @@ void Light::bindSpot(Shader* shader, int index)
 
 	shader->setFloat(names->cutoff, glm::cos(glm::radians(cutoffAngle)));
 	shader->setFloat(names->outerCutoff, glm::cos(glm::radians(outerCutoffAngle)));
+}
+
+void Light::bindUBO(int index)
+{
+	if (ambient.w != 1.0f || diffuse.w != 1.0f || specular.w != 1.0f) {
+		int x = 0;
+	}
+
+	if (directional) {
+		bindDirectionalUBO();
+	}
+	else if (spot) {
+		bindSpotUBO(index);
+	}
+	else {
+		bindPointUBO(index);
+	}
+}
+
+void Light::bindDirectionalUBO()
+{
+	if (use) {
+		glm::vec4 dir4 = glm::vec4(dir, 0);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_VEC_SIZE, glm::value_ptr(dir4));
+		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 1, UBO_VEC_SIZE, glm::value_ptr(ambient));
+		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 2, UBO_VEC_SIZE, glm::value_ptr(diffuse));
+		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 3, UBO_VEC_SIZE, glm::value_ptr(specular));
+	}
+	int v = use ? 1 : 0;
+//	glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 4, UBO_BOOL_SIZE, &v);
+}
+
+void Light::bindPointUBO(int index)
+{
+/*	const Names* names = getPointNames(index);
+
+	shader->setBool(names->use, use);
+
+	shader->setVec3(names->pos, pos);
+
+	shader->setVec4(names->ambient, ambient);
+	shader->setVec4(names->diffuse, diffuse);
+	shader->setVec4(names->specular, specular);
+
+	shader->setFloat(names->constant, constant);
+	shader->setFloat(names->linear, linear);
+	shader->setFloat(names->quadratic, quadratic);
+*/
+}
+
+void Light::bindSpotUBO(int index)
+{
+/*	const Names* names = getSpotNames(index);
+
+	shader->setBool(names->use, use);
+
+	shader->setVec3(names->pos, pos);
+	shader->setVec3(names->dir, dir);
+
+	shader->setVec4(names->ambient, ambient);
+	shader->setVec4(names->diffuse, diffuse);
+	shader->setVec4(names->specular, specular);
+
+	shader->setFloat(names->constant, constant);
+	shader->setFloat(names->linear, linear);
+	shader->setFloat(names->quadratic, quadratic);
+
+	shader->setFloat(names->cutoff, glm::cos(glm::radians(cutoffAngle)));
+	shader->setFloat(names->outerCutoff, glm::cos(glm::radians(outerCutoffAngle)));
+*/
 }
 
