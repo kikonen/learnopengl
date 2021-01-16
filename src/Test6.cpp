@@ -161,6 +161,7 @@ int Test6::setupNodeCow()
 	ModelMesh* mesh = new ModelMesh(*this, "cow", "test6");
 	mesh->defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
 	mesh->overrideMaterials = true;
+	mesh->geometryType = "_explode";
 	if (mesh->load()) {
 		return -1;
 	}

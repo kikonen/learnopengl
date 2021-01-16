@@ -63,6 +63,8 @@ void RenderContext::bind(Shader* shader, bool wireframe) const
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTextureID);
 	}
 
+	shader->setFloat("time", glfwGetTime());
+
 	if (dirLight) {
 		dirLight->bind(shader, -1);
 	}

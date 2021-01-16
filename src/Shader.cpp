@@ -38,7 +38,7 @@ Shader::Shader(
     shaderName(name),
     textureType(textureType),
     geometryType(geometryType),
-    geometryOptional(geometryType.empty())
+    geometryOptional(geometryType.empty() || textureType == TEX_STENCIL)
 {
     std::string basePath = assets.shadersDir + "/" + name;
     vertexShaderPath = basePath + textureType + ".vs";
