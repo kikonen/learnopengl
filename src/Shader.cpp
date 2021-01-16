@@ -44,6 +44,8 @@ Shader::Shader(
     vertexShaderPath = basePath + textureType + ".vs";
     fragmentShaderPath = basePath + textureType + ".fs";
     geometryShaderPath = basePath + geometryType + ".gs";
+
+    bindTexture = true;
 }
 
 Shader::~Shader()

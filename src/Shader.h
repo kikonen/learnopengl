@@ -67,7 +67,9 @@ public:
     const std::string& geometryType;
     const bool geometryOptional;
 
-    unsigned int id;
+    bool bindTexture = false;
+
+    unsigned int id = -1;
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
     std::string geometryShaderSource;

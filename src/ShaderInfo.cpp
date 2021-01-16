@@ -1,9 +1,9 @@
 #include "ShaderInfo.h"
 
-ShaderInfo::ShaderInfo(Shader* shader, bool stencil, bool useTexture)
+ShaderInfo::ShaderInfo(Shader* shader, bool stencil)
 	: shader(shader),
 	stencil(stencil),
-	useTexture(useTexture)
+	bindTexture(shader->bindTexture)
 {
 }
 

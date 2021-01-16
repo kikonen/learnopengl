@@ -46,6 +46,10 @@ public:
 	bool useWireframe = false;
 	bool debugColors = false;
 
+	std::string textureType = TEX_TEXTURE;
+	std::string stencilType = TEX_STENCIL;
+	std::string geometryType = GEOM_NONE;
+
 	std::string name;
 	
 	ShaderInfo* bound = nullptr;
@@ -68,5 +72,6 @@ private:
 	std::vector<Vertex> vertexes;
 
 	std::map<std::string, Material*> materials;
+
 	bool hasTexture = false;
  };

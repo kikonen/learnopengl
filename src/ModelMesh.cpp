@@ -46,17 +46,17 @@ ShaderInfo* ModelMesh::prepare(bool stencil)
 {
 	ShaderInfo* info = shaders[stencil];
 	if (!info) {
-		std::string texType = stencil ? TEX_STENCIL : (useTexture && hasTexture ? TEX_TEXTURE : TEX_NONE);
-		Shader* shader = Shader::getShader(engine.assets, shaderName, texType, GEOM_NONE);
+		std::string texType = stencil ? stencilType : (useTexture && hasTexture ? textureType : TEX_NONE);
+		Shader* shader = Shader::getShader(engine.assets, shaderName, texType, geometryType);
 		info = prepareShader(shader, stencil);
 		shaders[stencil] = info;
 	}
 	return info;
 }
 
-ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil) 
+ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil)
 {
-	ShaderInfo* info = new ShaderInfo(shader, stencil, useTexture && !stencil);
+	ShaderInfo* info = new ShaderInfo(shader, stencil);
 
 	if (info->prepare()) {
 		delete info;
@@ -64,7 +64,7 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader, bool stencil)
 	}
 	info->bind();
 
-	if (info->useTexture) {
+	if (info->bindTexture) {
 		for (auto const& x : materials) {
 			Material* material = x.second;
 			material->prepare();
@@ -177,7 +177,7 @@ int ModelMesh::bind(const RenderContext& ctx, bool stencil)
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
-		material->bind(bound->shader, material->materialIndex, useTexture);
+		material->bind(bound->shader, material->materialIndex, bound->bindTexture);
 	}
 
 	ctx.bind(bound->shader, useWireframe);
