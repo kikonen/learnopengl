@@ -46,9 +46,8 @@ ShaderInfo* ModelMesh::prepare(bool stencil)
 {
 	ShaderInfo* info = shaders[stencil];
 	if (!info) {
-		Shader* shader = stencil 
-			? Shader::getStencil(engine.assets, shaderName) 
-			: Shader::getShader(engine.assets, shaderName, useTexture && hasTexture);
+		std::string texType = stencil ? TEX_STENCIL : (useTexture && hasTexture ? TEX_TEXTURE : TEX_NONE);
+		Shader* shader = Shader::getShader(engine.assets, shaderName, texType, GEOM_NONE);
 		info = prepareShader(shader, stencil);
 		shaders[stencil] = info;
 	}

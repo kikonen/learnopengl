@@ -8,44 +8,45 @@
 
 #include "UBO.h"
 
-std::map<std::string, Shader*> textureShaders;
-std::map<std::string, Shader*> stencilShaders;
-std::map<std::string, Shader*> plainShaders;
+// name + key = tex + geom
+std::map<std::string, Shader*> shaders;
 
-Shader* Shader::getStencil(const Assets& assets, const std::string& name)
+
+Shader* Shader::getShader(
+    const Assets& assets, 
+    const std::string& name, 
+    const std::string& textureType,
+    const std::string& geometryType)
 {
-    std::map<std::string, Shader*>& cache = stencilShaders;
-    Shader* shader = cache[name];
-
-    if (!shader) {
-        std::string shaderPathBase = assets.shadersDir + "/" + name;
-        shader = new Shader(name, shaderPathBase + "_stencil.vs", shaderPathBase + "_stencil.fs");
-        cache[name] = shader;
-    }
-
-    return shader;
-}
-
-Shader* Shader::getShader(const Assets& assets, const std::string& name, bool texture)
-{
-    std::map<std::string, Shader*>& cache = texture ? textureShaders : plainShaders;
-    Shader* shader = cache[name];
+    std::string key = name + "_" + textureType + "_" + geometryType;
+    Shader* shader = shaders[key];
 
     if (!shader) {
         std::string shaderPathBase = "shader/" + name;
-        std::string type = texture ? "_tex" : "";
-        shader = new Shader(name, shaderPathBase + ".vs", shaderPathBase + type + ".fs");
-        cache[name] = shader;
+        shader = new Shader(
+            name, 
+            shaderPathBase + textureType + ".vs", 
+            shaderPathBase + textureType + ".fs",
+            shaderPathBase + geometryType + ".gs",
+            geometryType.empty());
+        shaders[name] = shader;
     }
 
     return shader;
 }
 
-Shader::Shader(const std::string& name, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
-    : shaderName(name)
+Shader::Shader(
+    const std::string& name, 
+    const std::string& vertexShaderPath, 
+    const std::string& fragmentShaderPath,
+    const std::string& geometryShaderPath,
+    bool geometryOptional)
+    : shaderName(name),
+    vertexShaderPath(vertexShaderPath),
+    fragmentShaderPath(fragmentShaderPath),
+    geometryShaderPath(geometryShaderPath),
+    geometryOptional(geometryOptional)
 {
-    this->vertexShaderPath = vertexShaderPath;
-    this->fragmentShaderPath = fragmentShaderPath;
 }
 
 Shader::~Shader()
@@ -67,8 +68,9 @@ int Shader::setup()
     setupDone = true;
     res = -1;
 
-    vertexShaderSource = loadSource(vertexShaderPath);
-    fragmentShaderSource = loadSource(fragmentShaderPath);
+    vertexShaderSource = loadSource(vertexShaderPath, false);
+    fragmentShaderSource = loadSource(fragmentShaderPath, false);
+    geometryShaderSource = loadSource(geometryShaderPath, geometryOptional);
 
     if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
         return -1;
@@ -115,6 +117,7 @@ int Shader::createProgram() {
             std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED " << shaderName << " vert=" << vertexShaderPath << "\n" << infoLog << std::endl;
         }
     }
+
     // fragment shader
     int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     {
@@ -130,10 +133,30 @@ int Shader::createProgram() {
         }
     }
 
+    // geoemtry shader
+    int geometryShader = -1;
+    if (!geometryShaderSource.empty()) {
+        geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+
+        const char* src = geometryShaderSource.c_str();
+        glShaderSource(geometryShader, 1, &src, NULL);
+        glCompileShader(geometryShader);
+        // check for shader compile errors
+        glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(geometryShader, 512, NULL, infoLog);
+            std::cout << "ERROR::SHADER::GEOMETRY::COMPILATION_FAILED " << shaderName << " frag=" << fragmentShaderPath << "\n" << infoLog << std::endl;
+        }
+    }
+
     // link shaders
     id = glCreateProgram();
     glAttachShader(id, vertexShader);
     glAttachShader(id, fragmentShader);
+    if (geometryShader != -1) {
+        glAttachShader(id, geometryShader);
+    }
     glLinkProgram(id);
     // check for linking errors
     glGetProgramiv(id, GL_LINK_STATUS, &success);
@@ -143,6 +166,9 @@ int Shader::createProgram() {
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+    if (geometryShader != -1) {
+        glDeleteShader(geometryShader);
+    }
 
     // NOTE KI set UBOs only once for shader
     setUBO("Matrices", UBO_MATRICES);
@@ -246,7 +272,7 @@ void Shader::setUBO(const std::string& name, unsigned int UBO)
 /**
 * Load shader file
 */
-std::string Shader::loadSource(const std::string& path) {
+std::string Shader::loadSource(const std::string& path, bool optional) {
     std::string src;
     std::ifstream file;
 
@@ -258,7 +284,12 @@ std::string Shader::loadSource(const std::string& path) {
         file.close();
         src = buf.str();
     } catch (std::ifstream::failure e) {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;
+        if (!optional) {
+            std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;
+        }
+        else {
+            std::cout << "INFO::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;
+        }
     }
     std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
 

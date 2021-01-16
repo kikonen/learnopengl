@@ -13,16 +13,32 @@
 
 #include "Assets.h"
 
+const std::string TEX_NONE = "";
+const std::string TEX_TEXTURE = "_tex";
+const std::string TEX_STENCIL = "_stencil";
+
+const std::string GEOM_NONE = "";
+
 class Shader
 {
 public:
-    static Shader* getShader(const Assets& assets, const std::string& name, bool texture);
-    static Shader* getStencil(const Assets& assets, const std::string& name);
+    static Shader* getShader(
+        const Assets& assets, 
+        const std::string& name, 
+        const std::string& textureType, 
+        const std::string& geometryType);
+ 
+    static Shader* getStencil(
+        const Assets& assets, 
+        const std::string& name, 
+        const std::string& geometryType);
 private:
 	Shader(
         const std::string& name,
         const std::string& vertexShaderSource,
-        const std::string& fragmentShaderSource);
+        const std::string& fragmentShaderSource,
+        const std::string& geometryShaderPath,
+        bool geometryOptional);
 
     ~Shader();
 
@@ -54,14 +70,17 @@ public:
     unsigned int id;
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
+    std::string geometryShaderSource;
 
 private:
     int res;
     bool setupDone = false;
-    std::string loadSource(const std::string& filename);
+    std::string loadSource(const std::string& filename, bool optional);
 
-    std::string vertexShaderPath;
-    std::string fragmentShaderPath;
+    const std::string vertexShaderPath;
+    const std::string fragmentShaderPath;
+    const std::string geometryShaderPath;
+    const bool geometryOptional;
 
     std::map<std::string, GLint> uniforms;
 

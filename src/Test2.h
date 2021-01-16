@@ -16,7 +16,7 @@ public:
     }
 
     SimpleMesh* createElementMesh() {
-        Shader* shader = Shader::getShader(assets, "triangle", false);
+        Shader* shader = Shader::getShader(assets, "triangle", TEX_NONE, GEOM_NONE);
         if (!shader->setup()) {
             return NULL;
         }
