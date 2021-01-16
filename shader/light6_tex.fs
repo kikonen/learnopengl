@@ -1,5 +1,5 @@
 #version 330 core
-in vec2 texCoord;
+in vec2 texCoords;
 in vec4 color;
 in vec3 fragPos;
 in vec3 normal;
@@ -14,7 +14,7 @@ out vec4 fragColor;
 
 void main()
 {
-  vec4 texColor = texture(texture1, texCoord);
+  vec4 texColor = texture(texture1, texCoords);
 
   if (texColor.a < 0.1)
     discard;

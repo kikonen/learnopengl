@@ -6,7 +6,7 @@ struct Material {
   float shininess;
 };
 
-flat in float texIndex;
+flat in float materialIndex;
 in vec3 fragPos;
 in vec3 normal;
 
@@ -19,8 +19,8 @@ uniform Material materials[16];
 out vec4 fragColor;
 
 void main() {
-  int texId = int(texIndex);
-  Material material = materials[texId];
+  int matIdx = int(materialIndex);
+  Material material = materials[matIdx];
 
   // combined
   vec4 texColor = material.diffuse;

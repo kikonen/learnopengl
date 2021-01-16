@@ -49,7 +49,7 @@ struct SpotLight {
   bool use;
 };
 
-flat in float texIndex;
+flat in float materialIndex;
 in vec3 fragPos;
 in vec3 normal;
 
@@ -103,15 +103,15 @@ vec4 calculateSpotLight(
   float matShininess);
 
 void main() {
-  int texId = int(texIndex);
+  int matIdx = int(materialIndex);
   vec3 norm = normalize(normal);
   vec3 viewDir = normalize(viewPos - fragPos);
 
-  vec4 matAmbient = materials[texId].ambient;
-  vec4 matDiffuse = materials[texId].diffuse;
+  vec4 matAmbient = materials[matIdx].ambient;
+  vec4 matDiffuse = materials[matIdx].diffuse;
   vec4 matEmission;
-  vec4 matSpecular = materials[texId].specular;
-  float matShininess = materials[texId].shininess;
+  vec4 matSpecular = materials[matIdx].specular;
+  float matShininess = materials[matIdx].shininess;
 
   vec4 emission = matEmission;
 

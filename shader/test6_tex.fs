@@ -59,8 +59,8 @@ struct SpotLight {
   bool use;
 };
 
-flat in float texIndex;
-in vec2 texCoord;
+flat in float materialIndex;
+in vec2 texCoords;
 in vec3 fragPos;
 in vec3 normal;
 
@@ -115,12 +115,12 @@ vec4 calculateSpotLight(
 
 
 void main() {
-  int texId = int(texIndex);
+  int matIdx = int(materialIndex);
 
   bool hasNormalMap = false;
   vec3 norm;
-  if (materials[texId].hasNormalMap) {
-    norm = texture(materials[texId].normalMap, texCoord).rgb;
+  if (materials[matIdx].hasNormalMap) {
+    norm = texture(materials[matIdx].normalMap, texCoords).rgb;
     norm = normalize(norm * 2.0 - 1.0);
     hasNormalMap = true;
   } else {
@@ -136,24 +136,24 @@ void main() {
   float matShininess;
 
   {
-    if (materials[texId].hasDiffuseTex) {
-      matDiffuse = texture(materials[texId].diffuseTex, texCoord).rgba;
+    if (materials[matIdx].hasDiffuseTex) {
+      matDiffuse = texture(materials[matIdx].diffuseTex, texCoords).rgba;
       matAmbient = matDiffuse;
     } else {
-      matDiffuse = materials[texId].diffuse;
-      matAmbient = materials[texId].ambient;
+      matDiffuse = materials[matIdx].diffuse;
+      matAmbient = materials[matIdx].ambient;
     }
 
-    if (materials[texId].hasEmissionTex){
-      matEmission = texture(materials[texId].emissionTex, texCoord).rgba;
+    if (materials[matIdx].hasEmissionTex){
+      matEmission = texture(materials[matIdx].emissionTex, texCoords).rgba;
     }
 
-    if (materials[texId].hasSpecularTex){
-      matSpecular = texture(materials[texId].specularTex, texCoord).rgba;
+    if (materials[matIdx].hasSpecularTex){
+      matSpecular = texture(materials[matIdx].specularTex, texCoords).rgba;
     } else {
-      matSpecular = materials[texId].specular;
+      matSpecular = materials[matIdx].specular;
     }
-    matShininess = materials[texId].shininess;
+    matShininess = materials[matIdx].shininess;
   }
 
   vec4 emission = matEmission;
