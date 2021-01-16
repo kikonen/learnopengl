@@ -28,17 +28,12 @@ public:
         const std::string& textureType, 
         const std::string& geometryType);
  
-    static Shader* getStencil(
-        const Assets& assets, 
-        const std::string& name, 
-        const std::string& geometryType);
 private:
-	Shader(
+    Shader(
+        const Assets& assets,
         const std::string& name,
-        const std::string& vertexShaderSource,
-        const std::string& fragmentShaderSource,
-        const std::string& geometryShaderPath,
-        bool geometryOptional);
+        const std::string& textureType,
+        const std::string& geometryType);
 
     ~Shader();
 
@@ -67,6 +62,11 @@ public:
 public:
     const std::string shaderName;
 
+    const Assets& assets;
+    const std::string& textureType;
+    const std::string& geometryType;
+    const bool geometryOptional;
+
     unsigned int id;
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
@@ -77,10 +77,9 @@ private:
     bool setupDone = false;
     std::string loadSource(const std::string& filename, bool optional);
 
-    const std::string vertexShaderPath;
-    const std::string fragmentShaderPath;
-    const std::string geometryShaderPath;
-    const bool geometryOptional;
+    std::string vertexShaderPath;
+    std::string fragmentShaderPath;
+    std::string geometryShaderPath;
 
     std::map<std::string, GLint> uniforms;
 

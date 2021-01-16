@@ -22,13 +22,7 @@ Shader* Shader::getShader(
     Shader* shader = shaders[key];
 
     if (!shader) {
-        std::string shaderPathBase = "shader/" + name;
-        shader = new Shader(
-            name, 
-            shaderPathBase + textureType + ".vs", 
-            shaderPathBase + textureType + ".fs",
-            shaderPathBase + geometryType + ".gs",
-            geometryType.empty());
+        shader = new Shader(assets, name, textureType, geometryType);
         shaders[name] = shader;
     }
 
@@ -36,17 +30,20 @@ Shader* Shader::getShader(
 }
 
 Shader::Shader(
-    const std::string& name, 
-    const std::string& vertexShaderPath, 
-    const std::string& fragmentShaderPath,
-    const std::string& geometryShaderPath,
-    bool geometryOptional)
-    : shaderName(name),
-    vertexShaderPath(vertexShaderPath),
-    fragmentShaderPath(fragmentShaderPath),
-    geometryShaderPath(geometryShaderPath),
-    geometryOptional(geometryOptional)
+    const Assets& assets,
+    const std::string& name,
+    const std::string& textureType,
+    const std::string& geometryType)
+    : assets(assets),
+    shaderName(name),
+    textureType(textureType),
+    geometryType(geometryType),
+    geometryOptional(geometryType.empty())
 {
+    std::string basePath = "shader/" + name;
+    vertexShaderPath = basePath + textureType + ".vs";
+    fragmentShaderPath = basePath + textureType + ".fs";
+    geometryShaderPath = basePath + geometryType + ".gs";
 }
 
 Shader::~Shader()
