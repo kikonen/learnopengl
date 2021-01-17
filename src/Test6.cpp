@@ -709,9 +709,10 @@ void Test6::renderAsteroidInstances(RenderContext& ctx)
 
 void Test6::prepareAsteroidInstances(RenderContext& ctx, ShaderInfo* info)
 {
-	if (asteroidBuffer >= 0) {
-//		return;
+	if (preparedAsteroids) {
+		return;
 	}
+	preparedAsteroids = true;
 
 	glGenBuffers(1, &asteroidBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, asteroidBuffer);

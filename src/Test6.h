@@ -81,5 +81,6 @@ private:
 
 	Node* asteroid = nullptr;
 	std::vector<glm::mat4> asteroidMatrixes;
-	unsigned int asteroidBuffer = -1;
+	unsigned int asteroidBuffer = 0;
+	bool preparedAsteroids = false;
 };
