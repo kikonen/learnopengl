@@ -47,6 +47,18 @@ public:
 
 	int onRender(float dt) override;
 
+	void drawNormals(RenderContext& ctx);
+
+	void drawSelectedStencil(RenderContext& ctx);
+
+	void drawNodes(RenderContext& ctx);
+
+	void drawSelected(RenderContext& ctx);
+
+	void moveLight();
+
+	void moveActive();
+
 	void processInput(float dt) override;
 
 private:

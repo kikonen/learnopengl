@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\Assets.cpp" />
     <ClCompile Include="src\Skybox.cpp" />
     <ClCompile Include="src\ShaderInfo.cpp" />
@@ -183,6 +184,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Sprite.h" />
     <ClInclude Include="src\Assets.h" />
     <ClInclude Include="src\Skybox.h" />
     <ClInclude Include="src\ShaderInfo.h" />

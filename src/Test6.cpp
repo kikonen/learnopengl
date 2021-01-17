@@ -514,8 +514,134 @@ int Test6::onRender(float dt) {
 
 	ctx.bindGlobal();
 
-	//	mesh->setPos(glm::vec3(0, 0, -10.0f));
+	moveActive();
+	moveLight();
 
+	// NOTE KI OpenGL does NOT like interleaved draw and prepare
+	for (auto node : nodes) {
+		node->prepare(getShader(node));
+		node->prepare(getShader(node, "test6_stencil"));
+		if (showNormals) {
+			node->prepare(getShader(node, "test6_normal"));
+		}
+	}
+	if (asteroid) {
+		asteroid->prepare(getShader(asteroid));
+	}
+
+	drawSelected(ctx);
+	drawNodes(ctx);
+	renderAsteroidInstances(ctx);
+	drawSelectedStencil(ctx);
+
+	//drawNormals(ctx);
+
+	glBindVertexArray(0);
+
+	return 0;
+}
+
+void Test6::drawNormals(RenderContext& ctx)
+{
+	for (auto node : nodes) {
+		node->bind(ctx, getShader(node, "test6_normal"));
+		node->draw(ctx);
+	}
+}
+
+// draw all non selected nodes
+void Test6::drawNodes(RenderContext& ctx)
+{
+	glStencilMask(0x00);
+	std::vector<Node*> blendedNodes;
+	for (auto node : nodes) {
+		if (std::find(selection.begin(), selection.end(), node) != selection.end()) {
+			continue;
+		}
+		if (node->blend) {
+			blendedNodes.push_back(node);
+		}
+		else {
+			node->bind(ctx, getShader(node));
+			node->draw(ctx);
+		}
+	}
+
+	if (skybox) {
+		skybox->draw(ctx);
+	}
+	renderBlended(blendedNodes, ctx);
+}
+
+// draw all selected nodes for stencil
+void Test6::drawSelected(RenderContext& ctx)
+{
+	if (selection.empty()) {
+		return;
+	}
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+
+	std::vector<Node*> blendedNodes;
+	for (auto node : selection) {
+		if (node->blend) {
+			blendedNodes.push_back(node);
+		}
+		else {
+			node->bind(ctx, getShader(node));
+			node->draw(ctx);
+		}
+	}
+
+	renderBlended(blendedNodes, ctx);
+}
+
+// draw all selected nodes with stencil
+void Test6::drawSelectedStencil(RenderContext& ctx)
+{
+	if (selection.empty()) {
+		return;
+	}
+
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
+	glDisable(GL_DEPTH_TEST);
+
+	for (auto node : selection) {
+		float scale = node->getScale();
+		node->setScale(scale * 1.02);
+		node->bind(ctx, getShader(node, "test6_stencil"));
+		node->draw(ctx);
+		node->setScale(scale);
+	}
+
+	glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	glEnable(GL_DEPTH_TEST);
+}
+
+void Test6::moveLight()
+{
+	if (true) {
+		//glm::vec3 planetPos = glm::vec3(10, 100, 100);
+		const float radius = 10.0f;
+		float posX = sin(accumulatedTime / 2) * radius;
+		float posZ = cos(accumulatedTime / 2) * radius;
+
+		glm::vec3 pos = glm::vec3(posX, -8, posZ) + groundOffset;
+
+		if (activeLight) {
+			activeLight->pos = pos;
+		}
+		if (activeLightNode) {
+			activeLightNode->setPos(pos);
+		}
+	}
+}
+
+void Test6::moveActive()
+{
 	if (active) {
 		if (true) {
 			const float radius = 4.0f;
@@ -542,106 +668,6 @@ int Test6::onRender(float dt) {
 			active->setScale(scale);
 		}
 	}
-
-	if (true) {
-		const float radius = 10.0f;
-		float posX = sin(accumulatedTime / 2) * radius;
-		float posZ = cos(accumulatedTime / 2) * radius;
-
-		glm::vec3 pos = glm::vec3(posX, -8, posZ) + groundOffset;
-
-		if (activeLight) {
-			activeLight->pos = pos;
-		}
-		if (activeLightNode) {
-			activeLightNode->setPos(pos);
-		}
-	}
-
-	// NOTE KI OpenGL does NOT like interleaved draw and prepare
-	for (auto node : nodes) {
-		node->prepare(getShader(node));
-		node->prepare(getShader(node, "test6_stencil"));
-		if (showNormals) {
-			node->prepare(getShader(node, "test6_normal"));
-		}
-	}
-	if (asteroid) {
-		asteroid->prepare(getShader(asteroid));
-	}
-
-	// draw all selected nodes for stencil
-	if (selection.size() > 0) {
-		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		glStencilMask(0xFF);
-
-		std::vector<Node*> blendedNodes;
-		for (auto node : selection) {
-			if (node->blend) {
-				blendedNodes.push_back(node);
-			}
-			else {
-				node->bind(ctx, getShader(node));
-				node->draw(ctx);
-			}
-		}
-
-		renderBlended(blendedNodes, ctx);
-	}
-
-	// draw all non selected nodes
-	glStencilMask(0x00);
-	{
-		std::vector<Node*> blendedNodes;
-		for (auto node : nodes) {
-			if (std::find(selection.begin(), selection.end(), node) != selection.end()) {
-				continue;
-			}
-			if (node->blend) {
-				blendedNodes.push_back(node);
-			}
-			else {
-				node->bind(ctx, getShader(node));
-				node->draw(ctx);
-			}
-		}
-
-		if (skybox) {
-			skybox->draw(ctx);
-		}
-		renderBlended(blendedNodes, ctx);
-	}
-
-	// draw all selected nodes with stencil
-	if (selection.size() > 0) {
-		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-		glStencilMask(0x00);
-		glDisable(GL_DEPTH_TEST);
-
-		for (auto node : selection) {
-			float scale = node->getScale();
-			node->setScale(scale * 1.02);
-			node->bind(ctx, getShader(node, "test6_stencil"));
-			node->draw(ctx);
-			node->setScale(scale);
-		}
-
-		glStencilMask(0xFF);
-		glStencilFunc(GL_ALWAYS, 0, 0xFF);
-		glEnable(GL_DEPTH_TEST);
-	}
-
-	renderAsteroidInstances(ctx);
-
-	if (showNormals) {
-		for (auto node : nodes) {
-			node->bind(ctx, getShader(node, "test6_normal"));
-			node->draw(ctx);
-		}
-	}
-	glBindVertexArray(0);
-
-	return 0;
 }
 
 Shader* Test6::getShader(const Node* node, std::string shaderName, std::string geometryType)
@@ -684,7 +710,7 @@ void Test6::renderBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 void Test6::renderAsteroids(RenderContext& ctx)
 {
 	Node* node = asteroid;
-	for (auto mat : asteroidMatrixes) {
+	for (auto const& mat : asteroidMatrixes) {
 		node->bind(ctx, getShader(node));
 
 		Shader* shader = node->mesh->bound->shader;
