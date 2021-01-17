@@ -31,7 +31,7 @@ public:
 
 private:
 	float moveStep = 10.0f;
-	float rotateStep = 25.f;
+	float rotateStep = 30.f;
 	float zoomStep = 20.0f;
 	float mouseSensitivity = 0.1f;
 
@@ -47,9 +47,9 @@ private:
 	glm::vec3 viewRight;
 	glm::vec3 viewUp;
 
-	int yaw = 0;
-	int pitch = 0;
-	int roll = 0;
+	float yaw = 0;
+	float pitch = 0;
+	float roll = 0;
 
 	float accumulatedTime = 0;
 

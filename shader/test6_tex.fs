@@ -209,6 +209,7 @@ void main() {
   if (drawInstanced) {
     //texColor = vec4(0, 0.8, 0, 1.0);
   }
+  //texColor = vec4(normal, 1.0);
 
   fragColor = texColor;
 }

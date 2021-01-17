@@ -11,6 +11,7 @@ glm::vec3 groundOffset(0.f, 15.f, -40.f);
 Test6::Test6() {
 	title = "Test 6";
 	//throttleFps = 0;
+	glfwWindowHint(GLFW_SAMPLES, 4);
 }
 
 int Test6::onSetup() {
@@ -29,7 +30,7 @@ int Test6::onSetup() {
 	setupNodeTeapot();
 	//setupNodeBackpack();
 
-	setupNodeSpyro();
+ 	setupNodeSpyro();
 	setupNodeWindow2();
 	setupNodeWindow1();
 	setupNodeStainedWindows();
@@ -51,6 +52,8 @@ int Test6::onSetup() {
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_MULTISAMPLE);
 
 	setupUBOs();
 
@@ -77,7 +80,7 @@ int Test6::setupNodeWindow1()
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	nodes.push_back(node);
-//	selection.push_back(node);
+	selection.push_back(node);
 	return 0;
 }
 
@@ -724,22 +727,22 @@ void Test6::prepareAsteroidInstances(RenderContext& ctx, ShaderInfo* info)
 	std::size_t vec4Size = sizeof(glm::vec4);
 
 	// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-
-	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-
 	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
 
 	glEnableVertexAttribArray(7);
-	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
 
-	glVertexAttribDivisor(4, 1);
-	glVertexAttribDivisor(5, 1);
+	glEnableVertexAttribArray(8);
+	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+
+	glEnableVertexAttribArray(9);
+	glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
 	glVertexAttribDivisor(6, 1);
 	glVertexAttribDivisor(7, 1);
+	glVertexAttribDivisor(8, 1);
+	glVertexAttribDivisor(9, 1);
 
 	glBindVertexArray(0);
 }
