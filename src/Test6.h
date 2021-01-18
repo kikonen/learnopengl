@@ -66,7 +66,7 @@ private:
 	void renderAsteroids(RenderContext& ctx);
 
 	void renderAsteroidInstances(RenderContext& ctx);
-	void prepareAsteroidInstances(RenderContext& ctx, ShaderInfo* info);
+	void prepareAsteroidInstances(RenderContext& ctx);
 
 	Shader* getShader(const Node* node, std::string shaderName = "", std::string geometryType = "");
 

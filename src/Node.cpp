@@ -39,12 +39,14 @@ int Node::bind(const RenderContext& ctx, Shader* shader)
 int Node::draw(const RenderContext& ctx)
 {
 	mesh->draw(ctx);
+	glBindVertexArray(0);
 	return 0;
 }
 
 int Node::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
 	mesh->drawInstanced(ctx, instanceCount);
+	glBindVertexArray(0);
 	return 0;
 }
 
@@ -52,6 +54,7 @@ void Node::updateModelMatrix() {
 	if (!dirtyMat) {
 		return;
 	}
+	dirtyMat = false;
 
 	// ORDER: yaw - pitch - roll
 	glm::mat4 rotMat = glm::mat4(1.0f);

@@ -527,6 +527,7 @@ int Test6::onRender(float dt) {
 	}
 	if (asteroid) {
 		asteroid->prepare(getShader(asteroid));
+		prepareAsteroidInstances(ctx);
 	}
 
 	drawSelected(ctx);
@@ -534,15 +535,17 @@ int Test6::onRender(float dt) {
 	renderAsteroidInstances(ctx);
 	drawSelectedStencil(ctx);
 
-	//drawNormals(ctx);
-
-	glBindVertexArray(0);
+	drawNormals(ctx);
 
 	return 0;
 }
 
 void Test6::drawNormals(RenderContext& ctx)
 {
+	if (!showNormals) {
+		return;
+	}
+
 	for (auto node : nodes) {
 		node->bind(ctx, getShader(node, "test6_normal"));
 		node->draw(ctx);
@@ -623,50 +626,50 @@ void Test6::drawSelectedStencil(RenderContext& ctx)
 
 void Test6::moveLight()
 {
-	if (true) {
-		//glm::vec3 planetPos = glm::vec3(10, 100, 100);
-		const float radius = 10.0f;
-		float posX = sin(accumulatedTime / 2) * radius;
-		float posZ = cos(accumulatedTime / 2) * radius;
+	//glm::vec3 planetPos = glm::vec3(10, 100, 100);
+	const float radius = 10.0f;
+	float posX = sin(accumulatedTime / 2) * radius;
+	float posZ = cos(accumulatedTime / 2) * radius;
 
-		glm::vec3 pos = glm::vec3(posX, -8, posZ) + groundOffset;
+	glm::vec3 pos = glm::vec3(posX, -8, posZ) + groundOffset;
 
-		if (activeLight) {
-			activeLight->pos = pos;
-		}
-		if (activeLightNode) {
-			activeLightNode->setPos(pos);
-		}
+	if (activeLight) {
+		activeLight->pos = pos;
+	}
+	if (activeLightNode) {
+		activeLightNode->setPos(pos);
 	}
 }
 
 void Test6::moveActive()
 {
-	if (active) {
-		if (true) {
-			const float radius = 4.0f;
-			float posX = sin(accumulatedTime / 0.9f) * radius;
-			float posY = sin(accumulatedTime * 1.1f) * radius / 3.0f;
-			float posZ = cos(accumulatedTime) * radius / 2.0f;
+	if (!active) {
+		return;
+	}
 
-			active->setPos(glm::vec3(posX, posY, posZ) + groundOffset);
-		}
+	if (true) {
+		const float radius = 4.0f;
+		float posX = sin(accumulatedTime / 0.9f) * radius;
+		float posY = sin(accumulatedTime * 1.1f) * radius / 3.0f;
+		float posZ = cos(accumulatedTime) * radius / 2.0f;
 
-		if (true) {
-			const float radius = 2.0f;
-			float rotX = accumulatedTime * radius;
-			float rotY = accumulatedTime * radius * 1.1f;
-			float rotZ = accumulatedTime * radius * 1.2f;
+		active->setPos(glm::vec3(posX, posY, posZ) + groundOffset);
+	}
 
-			active->setRotation(glm::vec3(rotX, rotY, rotZ));
-		}
+	if (true) {
+		const float radius = 2.0f;
+		float rotX = accumulatedTime * radius;
+		float rotY = accumulatedTime * radius * 1.1f;
+		float rotZ = accumulatedTime * radius * 1.2f;
 
-		if (true) {
-			const float radius = 2.0f;
-			float scale = sin(accumulatedTime / 4.0f) * radius;
+		active->setRotation(glm::vec3(rotX, rotY, rotZ));
+	}
 
-			active->setScale(scale);
-		}
+	if (true) {
+		const float radius = 2.0f;
+		float scale = sin(accumulatedTime / 4.0f) * radius;
+
+		active->setScale(scale);
 	}
 }
 
@@ -729,19 +732,21 @@ void Test6::renderAsteroidInstances(RenderContext& ctx)
 	Shader* shader = getShader(node);
 	ShaderInfo* info = node->mesh->prepare(shader);
 
-	prepareAsteroidInstances(ctx, info);
-
 	node->bind(ctx, shader);
 	shader->setBool("drawInstanced", true);
 	node->drawInstanced(ctx, asteroidMatrixes.size());
 }
 
-void Test6::prepareAsteroidInstances(RenderContext& ctx, ShaderInfo* info)
+void Test6::prepareAsteroidInstances(RenderContext& ctx)
 {
 	if (preparedAsteroids) {
 		return;
 	}
 	preparedAsteroids = true;
+
+	Node* node = asteroid;
+	Shader* shader = getShader(node);
+	ShaderInfo* info = node->mesh->prepare(shader);
 
 	glGenBuffers(1, &asteroidBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, asteroidBuffer);
