@@ -4,6 +4,7 @@
 #include <glm/ext.hpp>
 
 #include "ModelMesh.h"
+#include "AsteroidBeltNode.h"
 
 //glm::vec3 groundOffset(0.f, 15.f, -15.f);
 glm::vec3 groundOffset(0.f, 15.f, -40.f);
@@ -55,6 +56,9 @@ int Test6::onSetup() {
 
 	glDisable(GL_MULTISAMPLE);
 
+	stencilShader = getShader("test6_stencil");
+	normalShader = getShader("test6_normal");
+
 	setupUBOs();
 
 	return 0;
@@ -71,12 +75,14 @@ int Test6::setupNodeSkybox()
 int Test6::setupNodeWindow1()
 {
 	// window1
-	ModelMesh* mesh = new ModelMesh(*this, "window1", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("window1");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(5, -5, -5) + groundOffset);
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(5, -5, -5) + groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	nodes.push_back(node);
@@ -87,12 +93,14 @@ int Test6::setupNodeWindow1()
 int Test6::setupNodeWindow2()
 {
 	// window2
-	ModelMesh* mesh = new ModelMesh(*this, "window2", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("window2");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(7, -5, -8) + groundOffset);
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(7, -5, -8) + groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	nodes.push_back(node);
@@ -103,13 +111,15 @@ int Test6::setupNodeWindow2()
 int Test6::setupNodeStainedWindows()
 {
 	// window2
-	ModelMesh* mesh = new ModelMesh(*this, "window2", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("window2");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
 	for (int i = 0; i < 10; i++) {
-		Node* node = new Node(mesh, glm::vec3(-10 + i * 2, 0, 10) + groundOffset);
+		Node* node = new Node(mesh);
+		node->setPos(glm::vec3(-10 + i * 2, 0, 10) + groundOffset);
 		node->setRotation(glm::vec3(0, 180, 0));
 		node->blend = true;
 		nodes.push_back(node);
@@ -120,14 +130,14 @@ int Test6::setupNodeStainedWindows()
 int Test6::setupNodeSpyro()
 {
 	// spyro
-	ModelMesh* mesh = new ModelMesh(*this, "spyro2", "test6");
-	//mesh->color = glm::vec3(0.560f, 0.278f, 0.568f, 1.f);
-	//mesh->useMaterialColor = false;
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("spyro2");
+	mesh->defaultShader = getShader("test6");
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(0, 20, 0) + groundOffset);
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(0, 20, 0) + groundOffset);
 	node->setScale(0.1f);
 	nodes.push_back(node);
 	return 0;
@@ -136,13 +146,14 @@ int Test6::setupNodeSpyro()
 int Test6::setupNodeBackpack()
 {
 	// backback
-	ModelMesh* mesh = new ModelMesh(*this, "/backpack/", "backpack", "test6" + TEX_TEXTURE);
-	//mesh->useWireframe = true;
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("backpack", "/backpack/");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(0, -8, 0) + groundOffset);
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(0, -8, 0) + groundOffset);
 	node->setScale(1.5f);
 	nodes.push_back(node);
 	return 0;
@@ -151,14 +162,15 @@ int Test6::setupNodeBackpack()
 int Test6::setupNodeTeapot()
 {
 	// teapot
-	ModelMesh* mesh = new ModelMesh(*this, "teapot", "test6");
+	ModelMesh* mesh = new ModelMesh("teapot");
+	mesh->defaultShader = getShader("test6");
 	mesh->defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
-	mesh->overrideMaterials = true;
-	if (mesh->load()) {
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(-5, 5, -5) + groundOffset);
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(-5, 5, -5) + groundOffset);
 	nodes.push_back(node);
 	selection.push_back(node);
 	return 0;
@@ -167,15 +179,15 @@ int Test6::setupNodeTeapot()
 int Test6::setupNodeCow()
 {
 	// cow
-	ModelMesh* mesh = new ModelMesh(*this, "cow", "test6");
+	ModelMesh* mesh = new ModelMesh("cow");
+	mesh->defaultShader = getShader("test6", "_explode");
 	mesh->defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
-	mesh->overrideMaterials = true;
-	mesh->geometryType = "_explode";
-	if (mesh->load()) {
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(5, 5, -5) + groundOffset);
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(5, 5, -5) + groundOffset);
 	nodes.push_back(node);
 	selection.push_back(node);
 	return 0;
@@ -184,12 +196,14 @@ int Test6::setupNodeCow()
 int Test6::setupNodeBall()
 {
 	// ball
-	ModelMesh* mesh = new ModelMesh(*this, "texture_ball", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("texture_ball");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(0, -2, 0) + groundOffset);
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(0, -2, 0) + groundOffset);
 	node->setScale(2.0f);
 	nodes.push_back(node);
 	return 0;
@@ -198,12 +212,14 @@ int Test6::setupNodeBall()
 int Test6::setupNodeCube4()
 {
 	// cube 4
-	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_4", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("texture_cube_4");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(-5, 5, 5) + groundOffset);
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(-5, 5, 5) + groundOffset);
 	nodes.push_back(node);
 	selection.push_back(node);
 	return 0;
@@ -212,42 +228,58 @@ int Test6::setupNodeCube4()
 int Test6::setupNodeCubes()
 {
 	// cubes
-	ModelMesh* mesh = new ModelMesh(*this, "texture_cube_3", "test6" +TEX_TEXTURE);
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("texture_cube_3");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	nodes.push_back(new Node(mesh, glm::vec3(-5, 0, -5) + groundOffset));
-	nodes.push_back(new Node(mesh, glm::vec3(5, 0, -5) + groundOffset));
-	nodes.push_back(new Node(mesh, glm::vec3(-5, 0, 5) + groundOffset));
-	nodes.push_back(new Node(mesh, glm::vec3(5, 0, 5) + groundOffset));
+	std::vector<glm::vec3> points = {
+		glm::vec3(-5, 0, -5),
+		glm::vec3(5, 0, -5),
+		glm::vec3(-5, 0, 5),
+		glm::vec3(5, 0, 5),
+	};
+
+	for (auto p : points) {
+		Node* node = new Node(mesh);
+		node->setPos(p + groundOffset);
+		nodes.push_back(node);
+	}
+
 	return 0;
 }
 
 int Test6::setupNodeActive()
 {
 	// active
-	ModelMesh* mesh = new ModelMesh(*this, "texture_cube", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("texture_cube");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	active = new Node(mesh, glm::vec3(0) + groundOffset);
+	active = new Node(mesh);
+	active->setPos(glm::vec3(0) + groundOffset);
 	nodes.push_back(active);
 
-	nodes.push_back(new Node(mesh, glm::vec3(5, 5, 5) + groundOffset));
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(5, 5, 5) + groundOffset);
+	nodes.push_back(node);
 	return 0;
 }
 
 int Test6::setupNodeMountains()
 {
 	// mountains
-	ModelMesh* mesh = new ModelMesh(*this, "texture_mountains", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("texture_mountains");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(0));
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(0));
 	//		node->setScale(0.01);
 	nodes.push_back(node);
 	return 0;
@@ -255,12 +287,14 @@ int Test6::setupNodeMountains()
 
 int Test6::setupNodeWaterBall()
 {
-	ModelMesh* mesh = new ModelMesh(*this, "light", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("light");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(0, 3, 0) + groundOffset);
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(0, 3, 0) + groundOffset);
 	//node->setScale(0.5f);
 	nodes.push_back(node);
 	return 0;
@@ -268,27 +302,15 @@ int Test6::setupNodeWaterBall()
 
 int Test6::setupNodePlanet()
 {
-	ModelMesh* mesh = new ModelMesh(*this, "/planet/", "planet", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("planet", "/planet/");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, glm::vec3(10, 100, 100) + groundOffset);
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(10, 100, 100) + groundOffset);
 	node->setScale(10);
-	nodes.push_back(node);
-	return 0;
-}
-
-int Test6::setupNodeAsteroids()
-{
-	glm::vec3 planetPos = glm::vec3(10, 100, 100);
-
-	ModelMesh* mesh = new ModelMesh(*this, "/rock/", "rock", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
-		return -1;
-	}
-
-	Node* node = new Node(mesh, glm::vec3(10, 50, 100) + groundOffset);
 	nodes.push_back(node);
 
 	{
@@ -307,68 +329,50 @@ int Test6::setupNodeAsteroids()
 
 		pointLights.push_back(light);
 	}
+
+	return 0;
+}
+
+int Test6::setupNodeAsteroids()
+{
+	glm::vec3 planetPos = glm::vec3(10, 100, 100);
+
+	ModelMesh* mesh = new ModelMesh("rock", "/rock/");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	if (mesh->load(*this)) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(10, 50, 100) + groundOffset);
+	nodes.push_back(node);
+
 	return 0;
 }
 
 int Test6::setupNodeAsteroidBelt()
 {
-	glm::vec3 planetPos = glm::vec3(10, 100, 100);
+	ModelMesh* mesh = new ModelMesh("rock", "/rock/");
+	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
+	mesh->load(*this);
 
-	ModelMesh* mesh = new ModelMesh(*this, "/rock/", "rock", "test6" + TEX_TEXTURE);
-	if (mesh->load()) {
-		return -1;
-	}
-
-	Node* node = new Node(mesh, glm::vec3(10, 50, 100) + groundOffset);
-	asteroid = node;
-
-	unsigned int amount = 1000;
-	srand(glfwGetTime()); // initialize random seed	
-
-	float radius = 70.0;
-	float offset = 20.5f;
-	for (unsigned int i = 0; i < amount; i++)
-	{
-		glm::mat4 model = glm::mat4(1.0f);
-		// 1. translation: displace along circle with 'radius' in range [-offset, offset]
-		float angle = (float)i / (float)amount * 360.0f;
-
-		float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-		float x = sin(angle) * radius + displacement;
-
-		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-		float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
-
-		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-		float z = cos(angle) * radius + displacement;
-
-		model = glm::translate(model, glm::vec3(x, y, z) + planetPos + groundOffset);
-
-		// 2. scale: scale between 0.05 and 0.25f
-		float scale = (rand() % 20) / 100.0f + 0.05;
-		model = glm::scale(model, glm::vec3(scale));
-
-		// 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
-		float rotAngle = (rand() % 360);
-		model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
-
-		// 4. now add to list of matrices
-		asteroidMatrixes.push_back(model);
-	}
-
+	Node* node = new AsteroidBeltNode(mesh);
+	nodes.push_back(node);
 	return 0;
 }
 
 int Test6::setupNodeLightMoving()
 {
 	// light node
-	ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
-	if (mesh->load()) {
+	ModelMesh* mesh = new ModelMesh("light");
+	mesh->defaultShader = getShader("light6");
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
 	for (auto light : pointLights) {
-		Node* node = new Node(mesh, light->pos);
+		Node* node = new Node(mesh);
+		node->setPos(light->pos);
 		//node->setScale(0.5f);
 		nodes.push_back(node);
 		if (light == activeLight) {
@@ -377,7 +381,8 @@ int Test6::setupNodeLightMoving()
 	}
 
 	for (auto light : spotLights) {
-		Node* node = new Node(mesh, light->pos);
+		Node* node = new Node(mesh);
+		node->setPos(light->pos);
 		//node->setScale(0.5f);
 		nodes.push_back(node);
 		if (light == activeLight) {
@@ -393,15 +398,16 @@ int Test6::setupNodeSun()
 	if (!sun) {
 		return -1;
 	}
-	ModelMesh* mesh = new ModelMesh(*this, "light", "light6");
+	ModelMesh* mesh = new ModelMesh("light");
+	mesh->defaultShader = getShader("light6");
 	mesh->defaultMaterial->kd = sun->specular;
-	mesh->overrideMaterials = true;
 
-	if (mesh->load()) {
+	if (mesh->load(*this)) {
 		return -1;
 	}
 
-	Node* node = new Node(mesh, sun->pos);
+	Node* node = new Node(mesh);
+	node->setPos(sun->pos);
 	node->setScale(4.f);
 	nodes.push_back(node);
 	sunNode = node;
@@ -519,20 +525,15 @@ int Test6::onRender(float dt) {
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	for (auto node : nodes) {
-		node->prepare(getShader(node));
-		node->prepare(getShader(node, "test6_stencil"));
+		node->prepare(nullptr);
+		node->prepare(stencilShader);
 		if (showNormals) {
-			node->prepare(getShader(node, "test6_normal"));
+			node->prepare(normalShader);
 		}
-	}
-	if (asteroid) {
-		asteroid->prepare(getShader(asteroid));
-		prepareAsteroidInstances(ctx);
 	}
 
 	drawSelected(ctx);
 	drawNodes(ctx);
-	renderAsteroidInstances(ctx);
 	drawSelectedStencil(ctx);
 
 	drawNormals(ctx);
@@ -547,7 +548,7 @@ void Test6::drawNormals(RenderContext& ctx)
 	}
 
 	for (auto node : nodes) {
-		node->bind(ctx, getShader(node, "test6_normal"));
+		node->bind(ctx, normalShader);
 		node->draw(ctx);
 	}
 }
@@ -565,7 +566,7 @@ void Test6::drawNodes(RenderContext& ctx)
 			blendedNodes.push_back(node);
 		}
 		else {
-			node->bind(ctx, getShader(node));
+			node->bind(ctx, nullptr);
 			node->draw(ctx);
 		}
 	}
@@ -592,7 +593,7 @@ void Test6::drawSelected(RenderContext& ctx)
 			blendedNodes.push_back(node);
 		}
 		else {
-			node->bind(ctx, getShader(node));
+			node->bind(ctx, nullptr);
 			node->draw(ctx);
 		}
 	}
@@ -614,7 +615,7 @@ void Test6::drawSelectedStencil(RenderContext& ctx)
 	for (auto node : selection) {
 		float scale = node->getScale();
 		node->setScale(scale * 1.02);
-		node->bind(ctx, getShader(node, "test6_stencil"));
+		node->bind(ctx, stencilShader);
 		node->draw(ctx);
 		node->setScale(scale);
 	}
@@ -673,17 +674,6 @@ void Test6::moveActive()
 	}
 }
 
-Shader* Test6::getShader(const Node* node, std::string shaderName, std::string geometryType)
-{
-	if (shaderName.empty()) {
-		shaderName = node->mesh->shaderName;
-		if (geometryType.empty()) {
-			geometryType = node->mesh->geometryType;
-		}
-	}
-	return Shader::getShader(assets, shaderName, geometryType);
-}
-
 void Test6::processInput(float dt) {
 	Engine::processInput(dt);
 }
@@ -702,7 +692,7 @@ void Test6::renderBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		Node* node = it->second;
-		node->bind(ctx, getShader(node));
+		node->bind(ctx, nullptr);
 		node->draw(ctx);
 	}
 
@@ -710,71 +700,4 @@ void Test6::renderBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 	glDisable(GL_BLEND);
 }
 
-void Test6::renderAsteroids(RenderContext& ctx)
-{
-	Node* node = asteroid;
-	for (auto const& mat : asteroidMatrixes) {
-		node->bind(ctx, getShader(node));
-
-		Shader* shader = node->mesh->bound->shader;
-		shader->setMat4("model", mat);
-
-		glm::mat3 normalMat = glm::transpose(glm::inverse(mat));
-		shader->setMat3("normalMat", normalMat);
-
-		node->draw(ctx);
-	}
-}
-
-void Test6::renderAsteroidInstances(RenderContext& ctx)
-{
-	Node* node = asteroid;
-	Shader* shader = getShader(node);
-	ShaderInfo* info = node->mesh->prepare(shader);
-
-	node->bind(ctx, shader);
-	shader->setBool("drawInstanced", true);
-	node->drawInstanced(ctx, asteroidMatrixes.size());
-}
-
-void Test6::prepareAsteroidInstances(RenderContext& ctx)
-{
-	if (preparedAsteroids) {
-		return;
-	}
-	preparedAsteroids = true;
-
-	Node* node = asteroid;
-	Shader* shader = getShader(node);
-	ShaderInfo* info = node->mesh->prepare(shader);
-
-	glGenBuffers(1, &asteroidBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, asteroidBuffer);
-	glBufferData(GL_ARRAY_BUFFER, asteroidMatrixes.size() * sizeof(glm::mat4), &asteroidMatrixes[0], GL_STATIC_DRAW);
-
-	glBindVertexArray(info->VAO);
-
-	// vertex attributes
-	std::size_t vec4Size = sizeof(glm::vec4);
-
-	// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
-	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-
-	glEnableVertexAttribArray(7);
-	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-
-	glEnableVertexAttribArray(8);
-	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-
-	glEnableVertexAttribArray(9);
-	glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
-
-	glVertexAttribDivisor(6, 1);
-	glVertexAttribDivisor(7, 1);
-	glVertexAttribDivisor(8, 1);
-	glVertexAttribDivisor(9, 1);
-
-	glBindVertexArray(0);
-}
 

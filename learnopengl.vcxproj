@@ -151,6 +151,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="src\AsteroidBeltNode.cpp" />
     <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\Assets.cpp" />
     <ClCompile Include="src\Skybox.cpp" />
@@ -175,15 +177,15 @@
     <ClCompile Include="src\Test3.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Tri.cpp" />
-    <ClCompile Include="src\Test4.cpp" />
     <ClCompile Include="src\Vertex.cpp" />
-    <ClCompile Include="src\Test5.cpp" />
     <ClCompile Include="src\Test6.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="src\AsteroidBeltNode.h" />
     <ClInclude Include="src\Sprite.h" />
     <ClInclude Include="src\Assets.h" />
     <ClInclude Include="src\Skybox.h" />
@@ -205,9 +207,7 @@
     <ClInclude Include="src\Test3.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Tri.h" />
-    <ClInclude Include="src\Test4.h" />
     <ClInclude Include="src\Vertex.h" />
-    <ClInclude Include="src\Test5.h" />
     <ClInclude Include="src\Test6.h" />
     <ClInclude Include="src\UBO.h" />
   </ItemGroup>

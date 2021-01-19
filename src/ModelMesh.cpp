@@ -17,23 +17,16 @@ Material* createDefaultMaterial() {
 }
 
 ModelMesh::ModelMesh(
-	const Engine& engine,
-	const std::string& modelName,
-	const std::string& shaderName)
-	: ModelMesh(engine, "/", modelName, shaderName)
+	const std::string& modelName)
+	: ModelMesh(modelName, "/")
 {
 }
 
 ModelMesh::ModelMesh(
-	const Engine& engine, 
-	const std::string& path,
 	const std::string& modelName,
-	const std::string& shaderName)
-	: engine(engine),
-	name(modelName),
-	path(path),
-	modelName(modelName),
-	shaderName(shaderName)
+	const std::string& path)
+	: modelName(modelName),
+	path(path)
 {
 	defaultMaterial = createDefaultMaterial();
 }
@@ -44,6 +37,7 @@ ModelMesh::~ModelMesh()
 
 ShaderInfo* ModelMesh::prepare(Shader* shader)
 {
+	shader = shader ? shader : defaultShader;
 	ShaderInfo* info = shaders[shader->key];
 	if (!info) {
 		info = prepareShader(shader);
@@ -174,46 +168,46 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 	return info;
 }
 
-int ModelMesh::bind(const RenderContext& ctx, Shader* shader)
+ShaderInfo* ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 {
-	bound = shaders[shader->key];
-	if (!bound) {
-		return -1;
+	shader = shader ? shader : defaultShader;
+	ShaderInfo* info = shaders[shader->key];
+	if (!info) {
+		return nullptr;
 	}
-	bound->bind();
 
-	glBindVertexArray(bound->VAO);
+	info->bind();
+
+	glBindVertexArray(info->VAO);
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
-		material->bind(bound->shader, material->materialIndex, bound->bindTexture);
+		material->bind(info->shader, material->materialIndex, info->bindTexture);
 	}
 
-	ctx.bind(bound->shader, useWireframe);
+	ctx.bind(info->shader, useWireframe);
+	bound = info;
 
-	return 0;
+	return info;
 }
 
-int ModelMesh::draw(const RenderContext& ctx)
+void ModelMesh::draw(const RenderContext& ctx)
 {
 	glDrawElements(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0);
-	return 0;
 }
 
-int ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
+void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
 	glDrawElementsInstanced(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0, instanceCount);
-	return 0;
 }
 
-int ModelMesh::load()
+int ModelMesh::load(Engine& engine)
 {
-	ModelMeshLoader loader(engine.assets, *this, path, modelName);
+	ModelMeshLoader loader(engine.assets, path, modelName);
 	loader.defaultMaterial = defaultMaterial;
-	loader.overrideMaterials = overrideMaterials;
-	loader.debugColors = debugColors;
 	int res = loader.load(tris, vertexes, materials);
 
+	textureCount = loader.textureCount;
 	hasTexture = textureCount > 0;
 
 	return res;

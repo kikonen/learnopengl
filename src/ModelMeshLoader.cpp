@@ -47,11 +47,9 @@ const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
 
 ModelMeshLoader::ModelMeshLoader(
 	const Assets& assets,
-	ModelMesh& mesh, 
 	const std::string& path,
 	const std::string& modelName)
-	: mesh(mesh),
-	path(path),
+	: path(path),
 	modelName(modelName),
 	assets(assets)
 {
@@ -411,7 +409,6 @@ int ModelMeshLoader::loadMaterials(
 	}
 
 	textureCount = textureIndex;
-	mesh.textureCount = textureIndex;
 
 	return 0;
 }

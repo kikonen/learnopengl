@@ -48,27 +48,17 @@ public:
 	int onRender(float dt) override;
 
 	void drawNormals(RenderContext& ctx);
-
 	void drawSelectedStencil(RenderContext& ctx);
-
 	void drawNodes(RenderContext& ctx);
-
 	void drawSelected(RenderContext& ctx);
 
 	void moveLight();
-
 	void moveActive();
 
 	void processInput(float dt) override;
 
 private:
 	void renderBlended(std::vector<Node*>& nodes, RenderContext& ctx);
-	void renderAsteroids(RenderContext& ctx);
-
-	void renderAsteroidInstances(RenderContext& ctx);
-	void prepareAsteroidInstances(RenderContext& ctx);
-
-	Shader* getShader(const Node* node, std::string shaderName = "", std::string geometryType = "");
 
 private:
 	float elapsed = 0;
@@ -76,6 +66,9 @@ private:
 	bool showNormals = false;
 
 	Skybox* skybox;
+
+	Shader* stencilShader;
+	Shader* normalShader;
 
 	std::vector<Node*> nodes;
 	Node* active = nullptr;
@@ -90,9 +83,4 @@ private:
 
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
-
-	Node* asteroid = nullptr;
-	std::vector<glm::mat4> asteroidMatrixes;
-	unsigned int asteroidBuffer = 0;
-	bool preparedAsteroids = false;
 };

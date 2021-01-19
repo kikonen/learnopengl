@@ -7,14 +7,14 @@
 class Node
 {
 public:
-	Node(ModelMesh* mesh, const glm::vec3& pos);
+	Node(ModelMesh* mesh);
 	~Node();
 
-	int prepare(Shader* shader);
+	virtual ShaderInfo* prepare(Shader* shader);
 
-	int bind(const RenderContext& ctx, Shader* shader);
-	int draw(const RenderContext& ctx);
-	int drawInstanced(const RenderContext& ctx, int instanceCount);
+	virtual int bind(const RenderContext& ctx, Shader* shader);
+	virtual void draw(const RenderContext& ctx);
+	virtual void drawInstanced(const RenderContext& ctx, int instanceCount);
 
 	void setPos(const glm::vec3& pos);
 	const glm::vec3& getPos();

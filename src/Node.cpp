@@ -1,6 +1,6 @@
 #include "Node.h"
 
-Node::Node(ModelMesh* mesh, const glm::vec3& pos) : mesh(mesh), pos(pos)
+Node::Node(ModelMesh* mesh) : mesh(mesh)
 {
 	dirtyMat = true;
 }
@@ -9,23 +9,22 @@ Node::~Node()
 {
 }
 
-int Node::prepare(Shader* shader)
+ShaderInfo* Node::prepare(Shader* shader)
 {
 	ShaderInfo* info = mesh->prepare(shader);
-	if (!info) {
-		return -1;
-	}
-
-	return 0;
+	return info;
 }
 
 int Node::bind(const RenderContext& ctx, Shader* shader)
 {
 	updateModelMatrix();
 
-	if (mesh->bind(ctx, shader)) {
+	ShaderInfo* info = mesh->bind(ctx, shader);
+	if (!info) {
 		return -1;
 	}
+
+	shader = info->shader;
 
 //	shader->setMat4("transform", ctx.projected * modelMat);
 //	shader->setMat4("projected", ctx.projected);
@@ -36,18 +35,16 @@ int Node::bind(const RenderContext& ctx, Shader* shader)
 	return 0;
 }
 
-int Node::draw(const RenderContext& ctx)
+void Node::draw(const RenderContext& ctx)
 {
 	mesh->draw(ctx);
 	glBindVertexArray(0);
-	return 0;
 }
 
-int Node::drawInstanced(const RenderContext& ctx, int instanceCount)
+void Node::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
 	mesh->drawInstanced(ctx, instanceCount);
 	glBindVertexArray(0);
-	return 0;
 }
 
 void Node::updateModelMatrix() {

@@ -90,6 +90,11 @@ void Engine::run() {
 	}
 }
 
+Shader* Engine::getShader(const std::string& name, const std::string& geometryType)
+{
+	return Shader::getShader(assets, name, geometryType);
+}
+
 GLFWwindow* Engine::createWindow() {
 	// glfw: initialize and configure
 	// ------------------------------

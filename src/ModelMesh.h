@@ -21,50 +21,38 @@
 class ModelMesh {
 public:
 	ModelMesh(
-		const Engine& engine,
-		const std::string& modelName,
-		const std::string& shaderName);
+		const std::string& modelName);
 
 	ModelMesh(
-		const Engine& engine, 
-		const std::string& path,
 		const std::string& modelName,
-		const std::string& shaderName);
+		const std::string& path);
 
 	~ModelMesh();
 
 	ShaderInfo* prepare(Shader* shader);
-	int bind(const RenderContext& ctx, Shader* shader);
-	int draw(const RenderContext& ctx);
-	int drawInstanced(const RenderContext& ctx, int instanceCount);
+	ShaderInfo* bind(const RenderContext& ctx, Shader* shader);
+	void draw(const RenderContext& ctx);
+	void drawInstanced(const RenderContext& ctx, int instanceCount);
 
-	int load();
+	int	load(Engine& engine);
 
 private:
 	ShaderInfo* prepareShader(Shader* shader);
 public:
 	bool useWireframe = false;
-	bool debugColors = false;
-
-	std::string name;
-
-	const std::string shaderName;
-	std::string geometryType;
 
 	ShaderInfo* bound = nullptr;
 
-	Material* defaultMaterial;
-	bool overrideMaterials;
+	Shader* defaultShader = nullptr;
+	Material* defaultMaterial = nullptr;
 
 	unsigned int textureCount = 0;
 
 private:
-	const Engine& engine;
-
 	std::map<std::string, ShaderInfo*> shaders;
 
-	const std::string path;
-	const std::string modelName;
+	const std::string path = { "/" };
+	const std::string modelName = { "" };
 
 	std::vector<Tri> tris;
 	std::vector<Vertex> vertexes;

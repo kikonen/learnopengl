@@ -11,7 +11,6 @@ class ModelMeshLoader
 public:
 	ModelMeshLoader(
 		const Assets& assets,
-		ModelMesh& mesh, 
 		const std::string& path, 
 		const std::string& modelName);
 	~ModelMeshLoader();
@@ -24,13 +23,12 @@ public:
 
 public:
 	const Assets& assets;
-	ModelMesh& mesh;
 	const std::string& path;
 	const std::string& modelName;
 
 	bool debugColors = false;
 	Material* defaultMaterial = nullptr;
-	bool overrideMaterials = true;
+	bool overrideMaterials = false;
 
  	unsigned int textureCount = 0;
 

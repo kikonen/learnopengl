@@ -13,6 +13,8 @@
 #include "Camera.h"
 #include "Assets.h"
 #include "UBO.h"
+#include "Shader.h"
+
 
 const int FPS_120 = 8;
 const int FPS_60 = 16;
@@ -33,6 +35,10 @@ public:
 
     virtual int onSetup() = 0;
     virtual int onRender(float dt) = 0;
+
+    Shader* getShader(
+        const std::string& name,
+        const std::string& geometryType = "");
 
     /*
     void render() {
