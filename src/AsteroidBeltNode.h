@@ -16,7 +16,7 @@ private:
 
 private:
 	std::vector<glm::mat4> asteroidMatrixes;
+	std::vector<glm::mat4> selectionMatrixes;
 	unsigned int asteroidBuffer = 0;
-	bool preparedAsteroids = false;
 };
 

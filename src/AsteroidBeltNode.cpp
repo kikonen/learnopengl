@@ -34,14 +34,18 @@ void AsteroidBeltNode::setup()
 
 		// 2. scale: scale between 0.05 and 0.25f
 		float scale = (rand() % 20) / 100.0f + 0.05;
-		model = glm::scale(model, glm::vec3(scale));
+		glm::mat4 plainModel = glm::scale(model, glm::vec3(scale));
 
 		// 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
 		float rotAngle = (rand() % 360);
-		model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+		plainModel = glm::rotate(plainModel, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+
+		glm::mat4 selectionModel = glm::scale(model, glm::vec3(scale * 1.02));
+		selectionModel = glm::rotate(selectionModel, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
 
 		// 4. now add to list of matrices
-		asteroidMatrixes.push_back(model);
+		asteroidMatrixes.push_back(plainModel);
+		selectionMatrixes.push_back(selectionModel);
 	}
 }
 
@@ -49,14 +53,20 @@ ShaderInfo* AsteroidBeltNode::prepare(Shader* shader)
 {
 	ShaderInfo* info = Node::prepare(shader);
 
-	if (preparedAsteroids) {
+	if (info->preparedNode) {
 		return info;
 	}
-	preparedAsteroids = true;
+	bool selection = info->shader->shaderName == "test6_stencil";
+	info->preparedNode = true;
 
 	glGenBuffers(1, &asteroidBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, asteroidBuffer);
-	glBufferData(GL_ARRAY_BUFFER, asteroidMatrixes.size() * sizeof(glm::mat4), &asteroidMatrixes[0], GL_STATIC_DRAW);
+	if (selection) {
+		glBufferData(GL_ARRAY_BUFFER, selectionMatrixes.size() * sizeof(glm::mat4), &selectionMatrixes[0], GL_STATIC_DRAW);
+	}
+	else {
+		glBufferData(GL_ARRAY_BUFFER, asteroidMatrixes.size() * sizeof(glm::mat4), &asteroidMatrixes[0], GL_STATIC_DRAW);
+	}
 
 	glBindVertexArray(info->VAO);
 

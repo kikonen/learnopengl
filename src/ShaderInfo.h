@@ -16,5 +16,7 @@ public:
 
 	Shader* shader;
 	const bool bindTexture;
+
+	bool preparedNode = false;
 };
 

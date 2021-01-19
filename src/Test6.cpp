@@ -358,6 +358,7 @@ int Test6::setupNodeAsteroidBelt()
 
 	Node* node = new AsteroidBeltNode(mesh);
 	nodes.push_back(node);
+	selection.push_back(node);
 	return 0;
 }
 
