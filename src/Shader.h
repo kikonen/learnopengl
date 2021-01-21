@@ -64,7 +64,7 @@ public:
     const std::string key;
 
     const Assets& assets;
-    const std::string& geometryType;
+    const std::string geometryType;
     const bool geometryOptional;
 
     bool bindTexture = false;

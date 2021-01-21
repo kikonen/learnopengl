@@ -173,7 +173,6 @@ int Shader::createProgram() {
     setUBO("Data", UBO_DATA);
     setUBO("Lights", UBO_LIGHTS);
 
-
     return 0;
 }
 
