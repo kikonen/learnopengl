@@ -22,6 +22,11 @@ RenderContext::RenderContext(
 {
 }
 
+struct DataUBO {
+	glm::vec3 viewPos;
+	float time;
+};
+
 void RenderContext::bindGlobal() const
 {
 	// Matrices
@@ -34,10 +39,10 @@ void RenderContext::bindGlobal() const
 
 	// Data
 	{
-		const glm::vec3& pos = engine.camera.getPos();
+		DataUBO data = { engine.camera.getPos(), glfwGetTime() };
 
 		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.data);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_VEC_SIZE, glm::value_ptr(pos));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(DataUBO), &data);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
@@ -55,6 +60,7 @@ void RenderContext::bindGlobal() const
 	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_DATA, engine.ubo.data);
 	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_LIGHTS, engine.ubo.lights);
 	*/
+	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, engine.ubo.lights, 0, engine.ubo.lightsSize);
 }
 
 void RenderContext::bind(Shader* shader, bool wireframe) const
@@ -64,8 +70,6 @@ void RenderContext::bind(Shader* shader, bool wireframe) const
 		glActiveTexture(GL_TEXTURE31);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTextureID);
 	}
-
-	shader->setFloat("time", glfwGetTime());
 
 	if (dirLight) {
 		dirLight->bind(shader, -1);

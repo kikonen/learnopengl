@@ -115,7 +115,10 @@ Texture* Material::loadTexture(const std::string& baseDir, const std::string& na
 
 	std::cout << "\n== TEXTURE: " << texturePath << " ===\n";
 
-	Texture* texture = Texture::getTexture(texturePath, normalMap);
+	// NOTE KI sharing fails since causes texture unit conflicts across materials
+//	Texture* texture = Texture::getTexture(texturePath, normalMap);
+	Texture* texture = new Texture(texturePath, normalMap);
+
 	int res = texture->load();
 
 	if (res) {

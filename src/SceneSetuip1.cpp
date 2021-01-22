@@ -63,6 +63,10 @@ void SceneSetup1::process(RenderContext& ctx)
 	moveLight(ctx);
 }
 
+void SceneSetup1::bind(RenderContext& ctx)
+{
+}
+
 void SceneSetup1::draw(RenderContext& ctx)
 {
 	scene->draw(ctx);
@@ -85,8 +89,9 @@ void SceneSetup1::setupUBOs()
 	{
 		glGenBuffers(1, &ubo.data);
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo.data);
-		// cameraPos
-		int sz = UBO_VEC_SIZE;
+
+		// cameraPos + time
+		int sz = UBO_VEC_SIZE + UBO_FLOAT_SIZE;
 		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, ubo.data, 0, sz);

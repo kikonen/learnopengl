@@ -1,4 +1,4 @@
-#include "Test6.h"
+	#include "Test6.h"
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
@@ -60,10 +60,10 @@ int Test6::onRender(float dt) {
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 
-	ctx.bindGlobal();
-
 	currentScene->process(ctx);
 
+	ctx.bindGlobal();
+	currentScene->bind(ctx);
 	currentScene->draw(ctx);
 
 	return 0;

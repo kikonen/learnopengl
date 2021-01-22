@@ -12,7 +12,10 @@ flat out float materialIndex;
 out vec3 fragPos;
 out vec3 normal;
 
-uniform float time;
+layout (std140) uniform Data {
+  vec3 viewPos;
+  float time;
+};
 
 vec3 getNormal()
 {

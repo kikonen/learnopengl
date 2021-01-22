@@ -1,7 +1,7 @@
 #version 330 core
 
-#define MAT_COUNT 16
-#define LIGHT_COUNT 8
+#define MAT_COUNT 8
+#define LIGHT_COUNT 4
 
 struct Material {
   vec4 ambient;
@@ -64,21 +64,22 @@ in vec2 texCoords;
 in vec3 fragPos;
 in vec3 normal;
 
-layout (std140) uniform Data {
+layout(std140) uniform Data {
   vec3 viewPos;
+  float time;
 };
 uniform samplerCube skybox;
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 uniform Material materials[MAT_COUNT];
 
-layout (std140) uniform Lights {
-  DirLight light2;
+layout(std140) uniform Lights {
+  DirLight light;
 //  PointLight pointLights2[LIGHT_COUNT];
 //  SpotLight spotLights2[LIGHT_COUNT];
 };
 
-uniform DirLight light;
+//uniform DirLight light2;
 uniform PointLight pointLights[LIGHT_COUNT];
 uniform SpotLight spotLights[LIGHT_COUNT];
 
@@ -165,7 +166,7 @@ void main() {
   vec4 pointShaded;
   vec4 spotShaded;
 
-  if (true || light.use) {
+  if (light.use) {
     dirShaded = calculateDirLight(light, norm, viewDir, matAmbient, matDiffuse, matSpecular, matShininess);
     hasLight = true;
   }

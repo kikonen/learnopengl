@@ -183,20 +183,25 @@ void Light::bindUBO(int index)
 	}
 }
 
+struct DirLight {
+	glm::vec3 dir;
+	float pad1;
+	glm::vec4 ambient;
+	glm::vec4 diffuse;
+	glm::vec4 specular;
+
+	unsigned int use;
+	float pad2;
+	float pad3;
+	float pad4;
+};
+
 void Light::bindDirectionalUBO()
 {
-	if (use) {
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_VEC_SIZE, glm::value_ptr(dir));
-		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 1, UBO_VEC_SIZE, glm::value_ptr(ambient));
-		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 2, UBO_VEC_SIZE, glm::value_ptr(diffuse));
-		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 3, UBO_VEC_SIZE, glm::value_ptr(specular));
-
-//		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 1, UBO_VEC_SIZE, glm::value_ptr(glm::vec4(1.0f, 1.0f, 0.f, 1.f)));
-//		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 2, UBO_VEC_SIZE, glm::value_ptr(glm::vec4(0.0f, 0.0f, 1.0f, 1.f)));
-		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 3, UBO_VEC_SIZE, glm::value_ptr(glm::vec4(0.0f, 0.0f, 1.0f, 1.f)));
-	}
-	int v = use ? 1 : 0;
-	glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 4, UBO_BOOL_SIZE, &v);
+	// https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
+	DirLight light = { dir, 0.f, ambient, diffuse, specular, use, 0.f, 0.f, 0.f };
+	int sz = sizeof(DirLight);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sz, &light);
 }
 
 void Light::bindPointUBO(int index)

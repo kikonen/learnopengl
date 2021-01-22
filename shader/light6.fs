@@ -12,6 +12,7 @@ in vec3 normal;
 
 layout (std140) uniform Data {
   vec3 viewPos;
+  float time;
 };
 
 uniform Material materials[16];

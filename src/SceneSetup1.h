@@ -17,6 +17,7 @@ public:
 
 	void setup();
 	void process(RenderContext& ctx);
+	void bind(RenderContext& ctx);
 	void draw(RenderContext& ctx);
 private:
 	void setupUBOs();
