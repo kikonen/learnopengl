@@ -8,9 +8,12 @@ in VS_OUT {
   vec3 normal;
 } vs_in[];
 
-flat out float materialIndex;
-out vec3 fragPos;
-out vec3 normal;
+out VS_OUT {
+  vec3 fragPos;
+
+  flat float materialIndex;
+  vec3 normal;
+} gs_out;
 
 layout (std140) uniform Data {
   vec3 viewPos;
@@ -34,9 +37,9 @@ vec4 explode(vec4 pos, vec3 normal)
 
 void sendVertex(int i, vec4 pos) {
   gl_Position = pos;
-  materialIndex = vs_in[i].materialIndex;
-  fragPos = vs_in[i].fragPos;
-  normal = vs_in[i].normal;
+  gs_out.materialIndex = vs_in[i].materialIndex;
+  gs_out.fragPos = vs_in[i].fragPos;
+  gs_out.normal = vs_in[i].normal;
   EmitVertex();
 }
 

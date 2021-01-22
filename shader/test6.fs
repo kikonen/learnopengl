@@ -56,9 +56,12 @@ struct SpotLight {
   bool use;
 };
 
-flat in float materialIndex;
-in vec3 fragPos;
-in vec3 normal;
+in VS_OUT {
+  vec3 fragPos;
+
+  flat float materialIndex;
+  vec3 normal;
+} fs_in;
 
 layout (std140) uniform Data {
   vec3 viewPos;
@@ -107,10 +110,11 @@ vec4 calculateSpotLight(
   vec4 matSpecular,
   float matShininess);
 
+
 void main() {
-  int matIdx = int(materialIndex);
-  vec3 norm = normalize(normal);
-  vec3 viewDir = normalize(viewPos - fragPos);
+  int matIdx = int(fs_in.materialIndex);
+  vec3 norm = normalize(fs_in.normal);
+  vec3 viewDir = normalize(viewPos - fs_in.fragPos);
 
   vec4 matAmbient = materials[matIdx].ambient;
   vec4 matDiffuse = materials[matIdx].diffuse;
@@ -132,14 +136,14 @@ void main() {
 
   for (int i = 0; i < LIGHT_COUNT; i++) {
     if (pointLights[i].use) {
-      pointShaded += calculatePointLight(pointLights[i], norm, viewDir, fragPos, matAmbient, matDiffuse, matSpecular, matShininess);
+      pointShaded += calculatePointLight(pointLights[i], norm, viewDir, fs_in.fragPos, matAmbient, matDiffuse, matSpecular, matShininess);
       hasLight = true;
     }
   }
 
   for (int i = 0; i < LIGHT_COUNT; i++) {
     if (spotLights[i].use) {
-      spotShaded += calculateSpotLight(spotLights[i], norm, viewDir, fragPos, matAmbient, matDiffuse, matSpecular, matShininess);
+      spotShaded += calculateSpotLight(spotLights[i], norm, viewDir, fs_in.fragPos, matAmbient, matDiffuse, matSpecular, matShininess);
       hasLight = true;
     }
   }

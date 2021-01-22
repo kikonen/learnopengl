@@ -8,15 +8,18 @@ in VS_OUT {
   vec3 normal;
 } vs_in[];
 
-flat out float materialIndex;
-out vec3 fragPos;
-out vec3 normal;
+out VS_OUT {
+  vec3 fragPos;
+
+  flat float materialIndex;
+  vec3 normal;
+} gs_out;
 
 void sendVertex(int i) {
   gl_Position = gl_in[i].gl_Position;
-  materialIndex = vs_in[i].materialIndex;
-  fragPos = vs_in[i].fragPos;
-  normal = vs_in[i].normal;
+  gs_out.materialIndex = vs_in[i].materialIndex;
+  gs_out.fragPos = vs_in[i].fragPos;
+  gs_out.normal = vs_in[i].normal;
   EmitVertex();
 }
 

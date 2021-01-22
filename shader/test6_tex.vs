@@ -16,10 +16,18 @@ uniform mat3 normalMat;
 uniform mat4 model;
 uniform bool drawInstanced;
 
-flat out float materialIndex;
-out vec2 texCoords;
-out vec3 fragPos;
-out vec3 normal;
+out VS_OUT {
+  vec3 fragPos;
+  vec2 texCoords;
+
+  flat float materialIndex;
+  vec3 normal;
+
+  vec3 tangentLightPos;
+  vec3 tangentViewPos;
+  vec3 tangentFragPos;
+} vs_out;
+
 
 void main() {
   if (drawInstanced) {
@@ -36,9 +44,9 @@ void main() {
     TBN = mat3(T, B, N);
   }
 
-  materialIndex = aMaterialIndex;
-  texCoords = aTexCoords;
+  vs_out.materialIndex = aMaterialIndex;
+  vs_out.texCoords = aTexCoords;
 
-  fragPos = vec3(model * vec4(aPos, 1.0));
-  normal = normalMat * aNormal;
+  vs_out.fragPos = vec3(model * vec4(aPos, 1.0));
+  vs_out.normal = normalMat * aNormal;
 }
