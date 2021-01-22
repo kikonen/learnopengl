@@ -29,6 +29,8 @@ public:
 
 	std::vector<Node*> selection;
 	std::vector<Node*> nodes;
+
+	Light* dirLight;
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
 

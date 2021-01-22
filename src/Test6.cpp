@@ -52,7 +52,11 @@ int Test6::onRender(float dt) {
 	const glm::mat4& view = camera.getView();
 	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
 
-	RenderContext ctx(*this, dt, view, projection, scene->skybox->textureID, currentScene->sun, scene->pointLights, scene->spotLights);
+	RenderContext ctx(
+		*this, dt, 
+		view, projection, 
+		scene->skybox->textureID, 
+		scene->dirLight, scene->pointLights, scene->spotLights);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 

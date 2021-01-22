@@ -23,6 +23,12 @@ private:
 
 	int setupNodeSkybox(Scene* scene);
 
+	void setupLightDirectional(Scene* scene);
+	void setupLightMoving(Scene* scene);
+
+	int setupNodeDirectional(Scene* scene);
+	int setupNodeLightMoving(Scene* scene);
+
 	int setupNodeStainedWindows(Scene* scene);
 	int setupNodeWindow2(Scene* scene);
 	int setupNodeWindow1(Scene* scene);
@@ -41,12 +47,6 @@ private:
 	int setupNodeAsteroids(Scene* scene);
 	int setupNodeAsteroidBelt(Scene* scene);
 
-	int setupNodeLightMoving(Scene* scene);
-	int setupNodeSun(Scene* scene);
-
-	void setupLightMoving(Scene* scene);
-	void setupLightSun(Scene* scene);
-
 	void moveLight(RenderContext& ctx);
 	void moveActive(RenderContext& ctx);
 
@@ -64,7 +64,6 @@ public:
 	Light* activeLight = nullptr;
 	Node* activeLightNode = nullptr;
 
-	Light* sun = nullptr;
 	Node* sunNode = nullptr;
 };
 

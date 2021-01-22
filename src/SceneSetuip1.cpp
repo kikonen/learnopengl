@@ -24,11 +24,12 @@ void SceneSetup1::setup()
 
 	setupUBOs();
 
-	setupLightSun(scene);
+	setupLightDirectional(scene);
 	setupLightMoving(scene);
 
-	setupNodeSun(scene);
+	setupNodeDirectional(scene);
 	setupNodeLightMoving(scene);
+
 	setupNodeWaterBall(scene);
 
 	setupNodeActive(scene);
@@ -113,6 +114,126 @@ int SceneSetup1::setupNodeSkybox(Scene* scene)
 	scene->skybox = skybox;
 
 	return 0;
+}
+
+void SceneSetup1::setupLightDirectional(Scene* scene)
+{
+	// sun
+	Light* sun = new Light();
+	sun->pos = glm::vec3(10, 100, 10) + groundOffset;
+
+	sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
+	sun->directional = true;
+
+	sun->ambient = { 0.1f, 0.1f, 0.1f, 1.f };
+	sun->diffuse = { 0.0f, 0.1f, 0.0f, 1.f };
+	sun->specular = { 0.0f, 1.0f, 0.0f, 1.f };
+
+	scene->dirLight = sun;
+}
+
+void SceneSetup1::setupLightMoving(Scene* scene)
+{
+	// light
+	Light* light = new Light();
+	light->pos = glm::vec3(10, -10, 10) + groundOffset;
+
+	// 160
+	light->point = true;
+	light->linear = 0.027f;
+	light->quadratic = 0.0028f;
+
+	light->spot = false;
+	light->cutoffAngle = 12.5f;
+	light->outerCutoffAngle = 25.f;
+	light->dir = glm::vec3(0.01f, 1.0f, 0.01f);
+
+	light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
+	light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
+	light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
+
+	if (light->spot) {
+		scene->spotLights.push_back(light);
+	}
+	else {
+		scene->pointLights.push_back(light);
+	}
+	activeLight = light;
+}
+
+int SceneSetup1::setupNodeDirectional(Scene* scene)
+{
+	Light* sun = scene->dirLight;
+
+	// sun node
+	if (!sun) {
+		return -1;
+	}
+	ModelMesh* mesh = new ModelMesh("light");
+	mesh->defaultShader = getShader("light6");
+	mesh->defaultMaterial->kd = sun->specular;
+
+	if (mesh->load(assets)) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh);
+	node->setPos(sun->pos);
+	node->setScale(4.f);
+	scene->nodes.push_back(node);
+	sunNode = node;
+
+	return 0;
+}
+
+int SceneSetup1::setupNodeLightMoving(Scene* scene)
+{
+	// light node
+	ModelMesh* mesh = new ModelMesh("light");
+	mesh->defaultShader = getShader("light6");
+	if (mesh->load(assets)) {
+		return -1;
+	}
+
+	for (auto light : scene->pointLights) {
+		Node* node = new Node(mesh);
+		node->setPos(light->pos);
+		//node->setScale(0.5f);
+		scene->nodes.push_back(node);
+		if (light == activeLight) {
+			activeLightNode = node;
+		}
+	}
+
+	for (auto light : scene->spotLights) {
+		Node* node = new Node(mesh);
+		node->setPos(light->pos);
+		//node->setScale(0.5f);
+		scene->nodes.push_back(node);
+		if (light == activeLight) {
+			activeLightNode = node;
+		}
+	}
+	return 0;
+}
+
+void SceneSetup1::moveLight(RenderContext& ctx)
+{
+	float elapsed = glfwGetTime();
+
+	//glm::vec3 planetPos = glm::vec3(10, 100, 100);
+	const float radius = 10.0f;
+	float posX = sin(elapsed / 2) * radius;
+	float posZ = cos(elapsed / 2) * radius;
+
+	glm::vec3 pos = glm::vec3(posX, -8, posZ) + groundOffset;
+
+	if (activeLight) {
+		activeLight->pos = pos;
+	}
+	if (activeLightNode) {
+		activeLightNode->setPos(pos);
+	}
 }
 
 int SceneSetup1::setupNodeWindow1(Scene* scene)
@@ -403,122 +524,6 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 	scene->nodes.push_back(node);
 	scene->selection.push_back(node);
 	return 0;
-}
-
-int SceneSetup1::setupNodeLightMoving(Scene* scene)
-{
-	// light node
-	ModelMesh* mesh = new ModelMesh("light");
-	mesh->defaultShader = getShader("light6");
-	if (mesh->load(assets)) {
-		return -1;
-	}
-
-	for (auto light : scene->pointLights) {
-		Node* node = new Node(mesh);
-		node->setPos(light->pos);
-		//node->setScale(0.5f);
-		scene->nodes.push_back(node);
-		if (light == activeLight) {
-			activeLightNode = node;
-		}
-	}
-
-	for (auto light : scene->spotLights) {
-		Node* node = new Node(mesh);
-		node->setPos(light->pos);
-		//node->setScale(0.5f);
-		scene->nodes.push_back(node);
-		if (light == activeLight) {
-			activeLightNode = node;
-		}
-	}
-	return 0;
-}
-
-int SceneSetup1::setupNodeSun(Scene* scene)
-{
-	// sun node
-	if (!sun) {
-		return -1;
-	}
-	ModelMesh* mesh = new ModelMesh("light");
-	mesh->defaultShader = getShader("light6");
-	mesh->defaultMaterial->kd = sun->specular;
-
-	if (mesh->load(assets)) {
-		return -1;
-	}
-
-	Node* node = new Node(mesh);
-	node->setPos(sun->pos);
-	node->setScale(4.f);
-	scene->nodes.push_back(node);
-	sunNode = node;
-
-	return 0;
-}
-
-void SceneSetup1::setupLightMoving(Scene* scene)
-{
-	// light
-	Light* light = new Light();
-	light->pos = glm::vec3(10, -10, 10) + groundOffset;
-
-	// 160
-	light->point = true;
-	light->linear = 0.027f;
-	light->quadratic = 0.0028f;
-
-	light->spot = false;
-	light->cutoffAngle = 12.5f;
-	light->outerCutoffAngle = 25.f;
-	light->dir = glm::vec3(0.01f, 1.0f, 0.01f);
-
-	light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
-	light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
-	light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
-
-	if (light->spot) {
-		scene->spotLights.push_back(light);
-	}
-	else {
-		scene->pointLights.push_back(light);
-	}
-	activeLight = light;
-}
-
-void SceneSetup1::setupLightSun(Scene* scene)
-{
-	// sun
-	sun = new Light();
-	sun->pos = glm::vec3(10, 100, 10) + groundOffset;
-
-	sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
-	sun->directional = true;
-
-	sun->ambient = { 0.1f, 0.1f, 0.1f, 1.f };
-	sun->diffuse = { 0.0f, 0.1f, 0.0f, 1.f };
-	sun->specular = { 0.0f, 1.0f, 0.0f, 1.f };
-}
-
-void SceneSetup1::moveLight(RenderContext& ctx)
-{
-	float elapsed = glfwGetTime();
-
-	//glm::vec3 planetPos = glm::vec3(10, 100, 100);
-	const float radius = 10.0f;
-	float posX = sin(elapsed / 2) * radius;
-	float posZ = cos(elapsed / 2) * radius;
-
-	glm::vec3 pos = glm::vec3(posX, -8, posZ) + groundOffset;
-
-	if (activeLight) {
-		activeLight->pos = pos;
-	}
-	if (activeLightNode) {
-		activeLightNode->setPos(pos);
-	}
 }
 
 void SceneSetup1::moveActive(RenderContext& ctx)
