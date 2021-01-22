@@ -1,5 +1,6 @@
 #version 330 core
 
+// NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 #define MAT_COUNT 8
 #define LIGHT_COUNT 8
 
@@ -8,7 +9,13 @@ struct Material {
   vec4 diffuse;
   vec4 specular;
   float shininess;
+
+  bool hasDiffuseTex;
+  bool hasEmissionTex;
+  bool hasSpecularTex;
+  bool hasNormalMap;
 };
+
 struct DirLight {
   vec4 dir;
 
@@ -59,8 +66,9 @@ layout (std140) uniform Data {
 };
 uniform samplerCube skybox;
 
-// NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
-uniform Material materials[MAT_COUNT];
+layout (std140) uniform Materials {
+  Material materials[MAT_COUNT];
+};
 
 layout(std140) uniform Lights {
   DirLight light;

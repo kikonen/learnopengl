@@ -1,5 +1,6 @@
 #version 330 core
 
+// NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 #define MAT_COUNT 8
 #define LIGHT_COUNT 8
 
@@ -73,8 +74,9 @@ layout(std140) uniform Data {
 };
 uniform samplerCube skybox;
 
-// NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
-uniform Material materials[MAT_COUNT];
+layout (std140) uniform Materials {
+  Material materials[MAT_COUNT];
+};
 uniform Texture textures[MAT_COUNT];
 
 layout(std140) uniform Lights {
@@ -209,6 +211,9 @@ void main() {
   }
   if (drawInstanced) {
     //texColor = vec4(0, 0.8, 0, 1.0);
+  }
+  if (materials[matIdx].hasDiffuseTex) {
+//    texColor = vec4(1.0, 0.0, 0.0, 1.0);
   }
   //texColor = vec4(normal, 1.0);
 

@@ -8,16 +8,6 @@
 
 struct Names {
 	int index;
-	std::string ambient;
-	std::string diffuse;
-	std::string specular;
-	std::string shininess;
-
-	std::string hasDiffuseTex;
-	std::string hasEmissionTex;
-	std::string hasSpecularTex;
-	std::string hasNormalMap;
-
 	std::string diffuseTex;
 	std::string emissionTex;
 	std::string specularTex;
@@ -31,31 +21,7 @@ const Names* createNames(const std::string arr, int idx) {
 	names->index = idx;
 
 	char name[255];
-
-	sprintf_s(name, "%s[%i].ambient", arr.c_str(), idx);
-	names->ambient = name;
-
-	sprintf_s(name, "%s[%i].diffuse", arr.c_str(), idx);
-	names->diffuse = name;
 	
-	sprintf_s(name, "%s[%i].specular", arr.c_str(), idx);
-	names->specular = name;
-
-	sprintf_s(name, "%s[%i].shininess", arr.c_str(), idx);
-	names->shininess = name;
-	
-	sprintf_s(name, "%s[%i].hasDiffuseTex", arr.c_str(), idx);
-	names->hasDiffuseTex = name;
-	
-	sprintf_s(name, "%s[%i].hasEmissionTex", arr.c_str(), idx);
-	names->hasEmissionTex = name;
-	
-	sprintf_s(name, "%s[%i].hasSpecularTex", arr.c_str(), idx);
-	names->hasSpecularTex = name;
-
-	sprintf_s(name, "%s[%i].hasNormalMap", arr.c_str(), idx);
-	names->hasNormalMap = name;
-
 	sprintf_s(name, "textures[%i].diffuse", idx);
 	names->diffuseTex = name;
 
@@ -141,29 +107,39 @@ void Material::bind(Shader* shader, int index, bool useTexture)
 {
 	const Names* names = getNames(index);
 
-	shader->setVec4(names->ambient, ka);
-	shader->setVec4(names->diffuse, kd);
-	shader->setVec4(names->specular, ks);
-	shader->setFloat(names->shininess, ns);
-
-	if (diffuseTex && useTexture) {
+	if (diffuseTex) {
 		shader->setInt(names->diffuseTex, diffuseTex->textureIndex);
 	}
-	if (emissionTex && useTexture) {
+	if (emissionTex) {
 		shader->setInt(names->emissionTex, emissionTex->textureIndex);
 	}
-	if (specularTex && useTexture) {
+	if (specularTex) {
 		shader->setInt(names->specularTex, specularTex->textureIndex);
 	}
 	if (normalMap) {
 		shader->setInt(names->normalMap, normalMap->textureIndex);
 	}
-	shader->setBool(names->hasDiffuseTex, !!diffuseTex && useTexture);
-	shader->setBool(names->hasEmissionTex, !!emissionTex && useTexture);
-	shader->setBool(names->hasSpecularTex, !!specularTex && useTexture);
-	shader->setBool(names->hasNormalMap, !!normalMap);
 
 	for (auto const x : textures) {
 		x->bind(shader);
 	}
+}
+
+MaterialUBO Material::toUBO()
+{
+	return {
+		ka,
+		kd,
+		ks,
+		ns,
+
+		!!diffuseTex,
+		!!emissionTex,
+		!!specularTex,
+		!!normalMap,
+
+		0,
+		0,
+		0
+	};
 }

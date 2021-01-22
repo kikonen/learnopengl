@@ -6,6 +6,7 @@
 
 #include "Texture.h"
 #include "Shader.h"
+#include "UBO.h"
 
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
@@ -34,6 +35,8 @@ public:
 
     void prepare();
     void bind(Shader* shader, int index, bool useTexture);
+
+    MaterialUBO toUBO();
 private:
     Texture* loadTexture(const std::string& baseDir, const std::string& name, bool normalMap);
 

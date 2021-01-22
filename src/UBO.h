@@ -7,16 +7,20 @@ struct UBO {
 	unsigned int matrices;
 	unsigned int data;
 	unsigned int lights;
+	unsigned int materials;
 
 	unsigned int matricesSize;
 	unsigned int dataSize;
 	unsigned int lightsSize;
+	unsigned int materialsSize;
 };
 
 const unsigned int UBO_MATRICES = 0;
 const unsigned int UBO_DATA = 1;
 const unsigned int UBO_LIGHTS = 2;
+const unsigned int UBO_MATERIALS = 3;
 
+const unsigned int MATERIAL_COUNT = 8;
 const unsigned int LIGHT_COUNT = 8;
 
 
@@ -83,4 +87,24 @@ struct LightsUBO {
 	DirLightUBO light;
 	PointLightUBO pointLights[LIGHT_COUNT];
 	SpotLightUBO spotLights[LIGHT_COUNT];
+};
+
+struct MaterialUBO {
+	glm::vec4 ambient;
+	glm::vec4 diffuse;
+	glm::vec4 specular;
+	float shininess;
+
+	unsigned int hasDiffuseTex;
+	unsigned int hasEmissionTex;
+	unsigned int hasSpecularTex;
+	unsigned int hasNormalMap;
+
+	int pad1;
+	int pad2;
+	int pad3;
+};
+
+struct MaterialsUBO {
+	MaterialUBO materials[MATERIAL_COUNT];
 };

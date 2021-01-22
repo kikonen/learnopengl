@@ -28,40 +28,47 @@ void RenderContext::bindGlobal() const
 
 	// Matrices
 	{
-		MatricesUBO data = { projection, view };
+		MatricesUBO matricesUbo = { projection, view };
 
 		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.matrices);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MatricesUBO), &data);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MatricesUBO), &matricesUbo);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
 	// Data
 	{
-		DataUBO data = { engine.camera.getPos(), glfwGetTime() };
+		DataUBO dataUbo = { engine.camera.getPos(), glfwGetTime() };
 
 		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.data);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(DataUBO), &data);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(DataUBO), &dataUbo);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
 	// Lights
 	{
 		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.lights);
-		LightsUBO lights;
-		lights.light = dirLight->toDirLightUBO();
-		//lights.light.use = false;
+		LightsUBO lightsUbo;
+		if (dirLight) {
+			lightsUbo.light = dirLight->toDirLightUBO();
+			//lights.light.use = false;
+		}
+		else {
+			DirLightUBO none;
+			none.use = false;
+			lightsUbo.light = none;
+		}
 
 		{
 			int index = 0;
 			for (auto light : pointLights) {
-				lights.pointLights[index] = light->toPointightUBO();
+				lightsUbo.pointLights[index] = light->toPointightUBO();
 				//lights.pointLights[index].use = false;
 				index++;
 			}
 			PointLightUBO none;
 			none.use = false;
 			while (index < LIGHT_COUNT) {
-				lights.pointLights[index] = none;
+				lightsUbo.pointLights[index] = none;
 				index++;
 			}
 		}
@@ -69,19 +76,19 @@ void RenderContext::bindGlobal() const
 		{
 			int index = 0;
 			for (auto light : spotLights) {
-				lights.spotLights[index] = light->toSpotLightUBO();
+				lightsUbo.spotLights[index] = light->toSpotLightUBO();
 				//lights.spotLights[index].use = false;
 				index++;
 			}
 			SpotLightUBO none;
 			none.use = false;
 			while (index < LIGHT_COUNT) {
-				lights.spotLights[index] = none;
+				lightsUbo.spotLights[index] = none;
 				index++;
 			}
 		}
 
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightsUBO), &lights);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightsUBO), &lightsUbo);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 }

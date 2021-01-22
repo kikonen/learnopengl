@@ -58,5 +58,9 @@ private:
 
 	std::map<std::string, Material*> materials;
 
+	MaterialsUBO materialsUbo;
+	unsigned int  materialsUboId;
+	unsigned int materialsUboSize;
+
 	bool hasTexture = false;
 };

@@ -111,6 +111,18 @@ void SceneSetup1::setupUBOs()
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, ubo.lights, 0, sz);
 		ubo.lightsSize = sz;
 	}
+
+	// materials
+	{
+		glGenBuffers(1, &ubo.materials);
+		glBindBuffer(GL_UNIFORM_BUFFER, ubo.materials);
+		int sz = sizeof(MaterialsUBO);
+		int sz2 = sizeof(MaterialUBO);
+		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STREAM_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, ubo.materials, 0, sz);
+		ubo.materialsSize = sz;
+	}
 }
 
 int SceneSetup1::setupNodeSkybox(Scene* scene)

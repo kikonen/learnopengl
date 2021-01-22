@@ -1,9 +1,17 @@
 #version 330 core
+
+#define MAT_COUNT 8
+
 struct Material {
   vec4 ambient;
   vec4 diffuse;
   vec4 specular;
   float shininess;
+
+  bool hasDiffuseTex;
+  bool hasEmissionTex;
+  bool hasSpecularTex;
+  bool hasNormalMap;
 };
 
 flat in float materialIndex;
@@ -15,7 +23,9 @@ layout (std140) uniform Data {
   float time;
 };
 
-uniform Material materials[16];
+layout (std140) uniform Materials {
+  Material materials[MAT_COUNT];
+};
 
 out vec4 fragColor;
 

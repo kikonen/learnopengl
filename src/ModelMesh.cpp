@@ -165,6 +165,30 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 	glBindVertexArray(0);
 
+	// materials
+	{
+		/*
+		glGenBuffers(1, &materialsUboId);
+		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
+		int sz = sizeof(MaterialsUBO);
+		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, sz);
+		materialsUboSize = sz;
+*/
+		int index = 0;
+		for (auto const& x : materials) {
+			Material* material = x.second;
+			materialsUbo.materials[material->materialIndex] = material->toUBO();
+			index++;
+		}
+		/*
+		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, materialsUboSize, &materialsUbo);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		*/
+	}
+
 	return info;
 }
 
@@ -175,6 +199,10 @@ ShaderInfo* ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 	if (!info) {
 		return nullptr;
 	}
+
+	glBindBuffer(GL_UNIFORM_BUFFER, ctx.engine.ubo.materials);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MaterialsUBO), &materialsUbo);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	info->bind();
 

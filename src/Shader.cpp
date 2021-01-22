@@ -172,6 +172,7 @@ int Shader::createProgram() {
     setUBO("Matrices", UBO_MATRICES);
     setUBO("Data", UBO_DATA);
     setUBO("Lights", UBO_LIGHTS);
+    setUBO("Materials", UBO_MATERIALS);
 
     return 0;
 }
