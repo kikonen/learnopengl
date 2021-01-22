@@ -167,7 +167,6 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 
 	// materials
 	{
-		/*
 		glGenBuffers(1, &materialsUboId);
 		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
 		int sz = sizeof(MaterialsUBO);
@@ -175,18 +174,17 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, sz);
 		materialsUboSize = sz;
-*/
+
 		int index = 0;
 		for (auto const& x : materials) {
 			Material* material = x.second;
 			materialsUbo.materials[material->materialIndex] = material->toUBO();
 			index++;
 		}
-		/*
+
 		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, materialsUboSize, &materialsUbo);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		*/
 	}
 
 	return info;
@@ -200,9 +198,10 @@ ShaderInfo* ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 		return nullptr;
 	}
 
-	glBindBuffer(GL_UNIFORM_BUFFER, ctx.engine.ubo.materials);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MaterialsUBO), &materialsUbo);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+//	glBindBuffer(GL_UNIFORM_BUFFER, ctx.engine.ubo.materials);
+//	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MaterialsUBO), &materialsUbo);
+//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize);
 
 	info->bind();
 
