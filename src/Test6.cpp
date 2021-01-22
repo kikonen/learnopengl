@@ -16,6 +16,27 @@ Test6::Test6() {
 }
 
 int Test6::onSetup() {
+	currentScene = setupScene1();
+
+	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_MULTISAMPLE);
+
+	setupUBOs();
+
+	return 0;
+}
+
+Scene* Test6::setupScene1()
+{
 	Scene* scene = new Scene();
 
 	setupLightSun(scene);
@@ -33,7 +54,7 @@ int Test6::onSetup() {
 	setupNodeTeapot(scene);
 	//setupNodeBackpack(scene);
 
- 	setupNodeSpyro(scene);
+	setupNodeSpyro(scene);
 	setupNodeWindow2(scene);
 	setupNodeWindow1(scene);
 	setupNodeStainedWindows(scene);
@@ -46,26 +67,10 @@ int Test6::onSetup() {
 
 	setupNodeSkybox(scene);
 
-	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
-
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_MULTISAMPLE);
-
 	scene->stencilShader = getShader("test6_stencil");
 	scene->normalShader = getShader("test6_normal");
 
-	setupUBOs();
-
-	currentScene = scene;
-
-	return 0;
+	return scene;
 }
 
 int Test6::setupNodeSkybox(Scene* scene)

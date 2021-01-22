@@ -18,6 +18,8 @@ public:
 
 	int onSetup() override;
 
+	Scene* setupScene1();
+
 	int setupNodeSkybox(Scene* scene);
 
 	int setupNodeStainedWindows(Scene* scene);
