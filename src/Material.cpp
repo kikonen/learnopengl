@@ -13,15 +13,15 @@ struct Names {
 	std::string specular;
 	std::string shininess;
 
-	std::string diffuseTex;
-	std::string emissionTex;
-	std::string specularTex;
-	std::string normalMap;
-
 	std::string hasDiffuseTex;
 	std::string hasEmissionTex;
 	std::string hasSpecularTex;
 	std::string hasNormalMap;
+
+	std::string diffuseTex;
+	std::string emissionTex;
+	std::string specularTex;
+	std::string normalMap;
 };
 
 std::map<int, const Names*> varNames;
@@ -44,18 +44,6 @@ const Names* createNames(const std::string arr, int idx) {
 	sprintf_s(name, "%s[%i].shininess", arr.c_str(), idx);
 	names->shininess = name;
 	
-	sprintf_s(name, "%s[%i].diffuseTex", arr.c_str(), idx);
-	names->diffuseTex = name;
-
-	sprintf_s(name, "%s[%i].emissionTex", arr.c_str(), idx);
-	names->emissionTex = name;
-	
-	sprintf_s(name, "%s[%i].specularTex", arr.c_str(), idx);
-	names->specularTex = name;
-
-	sprintf_s(name, "%s[%i].normalMap", arr.c_str(), idx);
-	names->normalMap = name;
-
 	sprintf_s(name, "%s[%i].hasDiffuseTex", arr.c_str(), idx);
 	names->hasDiffuseTex = name;
 	
@@ -67,6 +55,18 @@ const Names* createNames(const std::string arr, int idx) {
 
 	sprintf_s(name, "%s[%i].hasNormalMap", arr.c_str(), idx);
 	names->hasNormalMap = name;
+
+	sprintf_s(name, "textures[%i].diffuse", idx);
+	names->diffuseTex = name;
+
+	sprintf_s(name, "textures[%i].emission", idx);
+	names->emissionTex = name;
+
+	sprintf_s(name, "textures[%i].specular", idx);
+	names->specularTex = name;
+
+	sprintf_s(name, "textures[%i].normalMap", idx);
+	names->normalMap = name;
 
 	return names;
 }

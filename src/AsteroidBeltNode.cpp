@@ -8,7 +8,7 @@ AsteroidBeltNode::AsteroidBeltNode(ModelMesh* mesh) : Node(mesh)
 
 void AsteroidBeltNode::setup()
 {
-	glm::vec3 planetPos = glm::vec3(10, 100, 100);
+	glm::vec3 planetPos = glm::vec3(10, 100, 60);
 
 	unsigned int amount = 1000;
 	srand(glfwGetTime()); // initialize random seed	

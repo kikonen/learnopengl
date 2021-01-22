@@ -9,16 +9,19 @@ struct Material {
   vec4 specular;
   float shininess;
 
-  sampler2D diffuseTex;
-  sampler2D emissionTex;
-  sampler2D specularTex;
-  sampler2D normalMap;
-
   bool hasDiffuseTex;
   bool hasEmissionTex;
   bool hasSpecularTex;
   bool hasNormalMap;
 };
+
+struct Texture {
+  sampler2D diffuse;
+  sampler2D emission;
+  sampler2D specular;
+  sampler2D normalMap;
+};
+
 struct DirLight {
   vec3 dir;
 
@@ -72,6 +75,7 @@ uniform samplerCube skybox;
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 uniform Material materials[MAT_COUNT];
+uniform Texture textures[MAT_COUNT];
 
 layout(std140) uniform Lights {
   DirLight light;
@@ -119,7 +123,7 @@ void main() {
   bool hasNormalMap = false;
   vec3 norm;
   if (materials[matIdx].hasNormalMap) {
-    norm = texture(materials[matIdx].normalMap, texCoords).rgb;
+    norm = texture(textures[matIdx].normalMap, texCoords).rgb;
     norm = normalize(norm * 2.0 - 1.0);
     hasNormalMap = true;
   } else {
@@ -136,7 +140,7 @@ void main() {
 
   {
     if (materials[matIdx].hasDiffuseTex) {
-      matDiffuse = texture(materials[matIdx].diffuseTex, texCoords).rgba;
+      matDiffuse = texture(textures[matIdx].diffuse, texCoords).rgba;
       matAmbient = matDiffuse;
     } else {
       matDiffuse = materials[matIdx].diffuse;
@@ -144,11 +148,11 @@ void main() {
     }
 
     if (materials[matIdx].hasEmissionTex){
-      matEmission = texture(materials[matIdx].emissionTex, texCoords).rgba;
+      matEmission = texture(textures[matIdx].emission, texCoords).rgba;
     }
 
     if (materials[matIdx].hasSpecularTex){
-      matSpecular = texture(materials[matIdx].specularTex, texCoords).rgba;
+      matSpecular = texture(textures[matIdx].specular, texCoords).rgba;
     } else {
       matSpecular = materials[matIdx].specular;
     }
