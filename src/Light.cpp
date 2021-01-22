@@ -186,14 +186,17 @@ void Light::bindUBO(int index)
 void Light::bindDirectionalUBO()
 {
 	if (use) {
-		glm::vec4 dir4 = glm::vec4(dir, 0);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_VEC_SIZE, glm::value_ptr(dir4));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_VEC_SIZE, glm::value_ptr(dir));
 		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 1, UBO_VEC_SIZE, glm::value_ptr(ambient));
 		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 2, UBO_VEC_SIZE, glm::value_ptr(diffuse));
 		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 3, UBO_VEC_SIZE, glm::value_ptr(specular));
+
+//		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 1, UBO_VEC_SIZE, glm::value_ptr(glm::vec4(1.0f, 1.0f, 0.f, 1.f)));
+//		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 2, UBO_VEC_SIZE, glm::value_ptr(glm::vec4(0.0f, 0.0f, 1.0f, 1.f)));
+		glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 3, UBO_VEC_SIZE, glm::value_ptr(glm::vec4(0.0f, 0.0f, 1.0f, 1.f)));
 	}
 	int v = use ? 1 : 0;
-//	glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 4, UBO_BOOL_SIZE, &v);
+	glBufferSubData(GL_UNIFORM_BUFFER, UBO_VEC_SIZE * 4, UBO_BOOL_SIZE, &v);
 }
 
 void Light::bindPointUBO(int index)

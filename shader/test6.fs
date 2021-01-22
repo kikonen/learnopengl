@@ -61,11 +61,11 @@ uniform samplerCube skybox;
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 uniform Material materials[MAT_COUNT];
 
-layout (std140) uniform Lights {
-  DirLight light2;
+//layout (std140) uniform Lights {
+//  DirLight light2;
 //  PointLight pointLights2[LIGHT_COUNT];
 //  SpotLight spotLights2[LIGHT_COUNT];
-};
+//};
 
 uniform DirLight light;
 uniform PointLight pointLights[LIGHT_COUNT];

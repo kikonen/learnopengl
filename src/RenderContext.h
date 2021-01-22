@@ -39,4 +39,3 @@ public:
 	bool useWireframe = false;
 	bool useLight = true;
 };
-

@@ -16,33 +16,35 @@ Test6::Test6() {
 }
 
 int Test6::onSetup() {
-	setupLightSun();
-	setupLightMoving();
+	Scene* scene = new Scene();
 
-	setupNodeSun();
-	setupNodeLightMoving();
-	setupNodeWaterBall();
+	setupLightSun(scene);
+	setupLightMoving(scene);
 
-	setupNodeActive();
-	setupNodeCubes();
-	setupNodeCube4();
-	setupNodeBall();
-	setupNodeCow();
-	setupNodeTeapot();
-	//setupNodeBackpack();
+	setupNodeSun(scene);
+	setupNodeLightMoving(scene);
+	setupNodeWaterBall(scene);
 
- 	setupNodeSpyro();
-	setupNodeWindow2();
-	setupNodeWindow1();
-	setupNodeStainedWindows();
+	setupNodeActive(scene);
+	setupNodeCubes(scene);
+	setupNodeCube4(scene);
+	setupNodeBall(scene);
+	setupNodeCow(scene);
+	setupNodeTeapot(scene);
+	//setupNodeBackpack(scene);
 
-	setupNodeMountains();
+ 	setupNodeSpyro(scene);
+	setupNodeWindow2(scene);
+	setupNodeWindow1(scene);
+	setupNodeStainedWindows(scene);
 
-	setupNodePlanet();
-	setupNodeAsteroids();
-	setupNodeAsteroidBelt();
+	setupNodeMountains(scene);
 
-	setupNodeSkybox();
+	setupNodePlanet(scene);
+	setupNodeAsteroids(scene);
+	setupNodeAsteroidBelt(scene);
+
+	setupNodeSkybox(scene);
 
 	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
 
@@ -56,23 +58,27 @@ int Test6::onSetup() {
 
 	glDisable(GL_MULTISAMPLE);
 
-	stencilShader = getShader("test6_stencil");
-	normalShader = getShader("test6_normal");
+	scene->stencilShader = getShader("test6_stencil");
+	scene->normalShader = getShader("test6_normal");
 
 	setupUBOs();
 
+	currentScene = scene;
+
 	return 0;
 }
 
-int Test6::setupNodeSkybox()
+int Test6::setupNodeSkybox(Scene* scene)
 {
-	skybox = new Skybox(assets, "skybox");
+	Skybox* skybox = new Skybox(assets, "skybox");
 	skybox->prepare();
 
+	scene->skybox = skybox;
+
 	return 0;
 }
 
-int Test6::setupNodeWindow1()
+int Test6::setupNodeWindow1(Scene* scene)
 {
 	// window1
 	ModelMesh* mesh = new ModelMesh("window1");
@@ -85,12 +91,12 @@ int Test6::setupNodeWindow1()
 	node->setPos(glm::vec3(5, -5, -5) + groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
-	nodes.push_back(node);
-	selection.push_back(node);
+	scene->nodes.push_back(node);
+	scene->selection.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeWindow2()
+int Test6::setupNodeWindow2(Scene* scene)
 {
 	// window2
 	ModelMesh* mesh = new ModelMesh("window2");
@@ -103,12 +109,12 @@ int Test6::setupNodeWindow2()
 	node->setPos(glm::vec3(7, -5, -8) + groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
-	nodes.push_back(node);
+	scene->nodes.push_back(node);
 	//	selection.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeStainedWindows()
+int Test6::setupNodeStainedWindows(Scene* scene)
 {
 	// window2
 	ModelMesh* mesh = new ModelMesh("window2");
@@ -122,12 +128,12 @@ int Test6::setupNodeStainedWindows()
 		node->setPos(glm::vec3(-10 + i * 2, 0, 10) + groundOffset);
 		node->setRotation(glm::vec3(0, 180, 0));
 		node->blend = true;
-		nodes.push_back(node);
+		scene->nodes.push_back(node);
 	}
 	return 0;
 }
 
-int Test6::setupNodeSpyro()
+int Test6::setupNodeSpyro(Scene* scene)
 {
 	// spyro
 	ModelMesh* mesh = new ModelMesh("spyro2");
@@ -139,11 +145,11 @@ int Test6::setupNodeSpyro()
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0, 20, 0) + groundOffset);
 	node->setScale(0.1f);
-	nodes.push_back(node);
+	scene->nodes.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeBackpack()
+int Test6::setupNodeBackpack(Scene* scene)
 {
 	// backback
 	ModelMesh* mesh = new ModelMesh("backpack", "/backpack/");
@@ -155,11 +161,11 @@ int Test6::setupNodeBackpack()
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0, -8, 0) + groundOffset);
 	node->setScale(1.5f);
-	nodes.push_back(node);
+	scene->nodes.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeTeapot()
+int Test6::setupNodeTeapot(Scene* scene)
 {
 	// teapot
 	ModelMesh* mesh = new ModelMesh("teapot");
@@ -171,12 +177,12 @@ int Test6::setupNodeTeapot()
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(-5, 5, -5) + groundOffset);
-	nodes.push_back(node);
-	selection.push_back(node);
+	scene->nodes.push_back(node);
+	scene->selection.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeCow()
+int Test6::setupNodeCow(Scene* scene)
 {
 	// cow
 	ModelMesh* mesh = new ModelMesh("cow");
@@ -188,12 +194,12 @@ int Test6::setupNodeCow()
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(5, 5, -5) + groundOffset);
-	nodes.push_back(node);
-	selection.push_back(node);
+	scene->nodes.push_back(node);
+	scene->selection.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeBall()
+int Test6::setupNodeBall(Scene* scene)
 {
 	// ball
 	ModelMesh* mesh = new ModelMesh("texture_ball");
@@ -205,11 +211,11 @@ int Test6::setupNodeBall()
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0, -2, 0) + groundOffset);
 	node->setScale(2.0f);
-	nodes.push_back(node);
+	scene->nodes.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeCube4()
+int Test6::setupNodeCube4(Scene* scene)
 {
 	// cube 4
 	ModelMesh* mesh = new ModelMesh("texture_cube_4");
@@ -220,12 +226,12 @@ int Test6::setupNodeCube4()
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(-5, 5, 5) + groundOffset);
-	nodes.push_back(node);
-	selection.push_back(node);
+	scene->nodes.push_back(node);
+	scene->selection.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeCubes()
+int Test6::setupNodeCubes(Scene* scene)
 {
 	// cubes
 	ModelMesh* mesh = new ModelMesh("texture_cube_3");
@@ -244,13 +250,13 @@ int Test6::setupNodeCubes()
 	for (auto p : points) {
 		Node* node = new Node(mesh);
 		node->setPos(p + groundOffset);
-		nodes.push_back(node);
+		scene->nodes.push_back(node);
 	}
 
 	return 0;
 }
 
-int Test6::setupNodeActive()
+int Test6::setupNodeActive(Scene* scene)
 {
 	// active
 	ModelMesh* mesh = new ModelMesh("texture_cube");
@@ -261,15 +267,15 @@ int Test6::setupNodeActive()
 
 	active = new Node(mesh);
 	active->setPos(glm::vec3(0) + groundOffset);
-	nodes.push_back(active);
+	scene->nodes.push_back(active);
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(5, 5, 5) + groundOffset);
-	nodes.push_back(node);
+	scene->nodes.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeMountains()
+int Test6::setupNodeMountains(Scene* scene)
 {
 	// mountains
 	ModelMesh* mesh = new ModelMesh("texture_mountains");
@@ -281,11 +287,11 @@ int Test6::setupNodeMountains()
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0));
 	//		node->setScale(0.01);
-	nodes.push_back(node);
+	scene->nodes.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeWaterBall()
+int Test6::setupNodeWaterBall(Scene* scene)
 {
 	ModelMesh* mesh = new ModelMesh("light");
 	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
@@ -296,11 +302,11 @@ int Test6::setupNodeWaterBall()
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0, 3, 0) + groundOffset);
 	//node->setScale(0.5f);
-	nodes.push_back(node);
+	scene->nodes.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodePlanet()
+int Test6::setupNodePlanet(Scene* scene)
 {
 	ModelMesh* mesh = new ModelMesh("planet", "/planet/");
 	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
@@ -311,7 +317,7 @@ int Test6::setupNodePlanet()
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(10, 100, 100) + groundOffset);
 	node->setScale(10);
-	nodes.push_back(node);
+	scene->nodes.push_back(node);
 
 	{
 		// light
@@ -327,13 +333,13 @@ int Test6::setupNodePlanet()
 		light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
 		light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
 
-		pointLights.push_back(light);
+		scene->pointLights.push_back(light);
 	}
 
 	return 0;
 }
 
-int Test6::setupNodeAsteroids()
+int Test6::setupNodeAsteroids(Scene* scene)
 {
 	glm::vec3 planetPos = glm::vec3(10, 100, 100);
 
@@ -345,24 +351,24 @@ int Test6::setupNodeAsteroids()
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(10, 50, 100) + groundOffset);
-	nodes.push_back(node);
+	scene->nodes.push_back(node);
 
 	return 0;
 }
 
-int Test6::setupNodeAsteroidBelt()
+int Test6::setupNodeAsteroidBelt(Scene* scene)
 {
 	ModelMesh* mesh = new ModelMesh("rock", "/rock/");
 	mesh->defaultShader = getShader("test6" + TEX_TEXTURE);
 	mesh->load(*this);
 
 	Node* node = new AsteroidBeltNode(mesh);
-	nodes.push_back(node);
-	selection.push_back(node);
+	scene->nodes.push_back(node);
+	scene->selection.push_back(node);
 	return 0;
 }
 
-int Test6::setupNodeLightMoving()
+int Test6::setupNodeLightMoving(Scene* scene)
 {
 	// light node
 	ModelMesh* mesh = new ModelMesh("light");
@@ -371,21 +377,21 @@ int Test6::setupNodeLightMoving()
 		return -1;
 	}
 
-	for (auto light : pointLights) {
+	for (auto light : scene->pointLights) {
 		Node* node = new Node(mesh);
 		node->setPos(light->pos);
 		//node->setScale(0.5f);
-		nodes.push_back(node);
+		scene->nodes.push_back(node);
 		if (light == activeLight) {
 			activeLightNode = node;
 		}
 	}
 
-	for (auto light : spotLights) {
+	for (auto light : scene->spotLights) {
 		Node* node = new Node(mesh);
 		node->setPos(light->pos);
 		//node->setScale(0.5f);
-		nodes.push_back(node);
+		scene->nodes.push_back(node);
 		if (light == activeLight) {
 			activeLightNode = node;
 		}
@@ -393,7 +399,7 @@ int Test6::setupNodeLightMoving()
 	return 0;
 }
 
-int Test6::setupNodeSun()
+int Test6::setupNodeSun(Scene* scene)
 {
 	// sun node
 	if (!sun) {
@@ -410,13 +416,13 @@ int Test6::setupNodeSun()
 	Node* node = new Node(mesh);
 	node->setPos(sun->pos);
 	node->setScale(4.f);
-	nodes.push_back(node);
+	scene->nodes.push_back(node);
 	sunNode = node;
 
 	return 0;
 }
 
-void Test6::setupLightMoving()
+void Test6::setupLightMoving(Scene* scene)
 {
 	// light
 	Light* light = new Light();
@@ -437,15 +443,15 @@ void Test6::setupLightMoving()
 	light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
 
 	if (light->spot) {
-		spotLights.push_back(light);
+		scene->spotLights.push_back(light);
 	}
 	else {
-		pointLights.push_back(light);
+		scene->pointLights.push_back(light);
 	}
 	activeLight = light;
 }
 
-void Test6::setupLightSun()
+void Test6::setupLightSun(Scene* scene)
 {
 	// sun
 	sun = new Light();
@@ -455,8 +461,8 @@ void Test6::setupLightSun()
 	sun->directional = true;
 
 	sun->ambient = { 0.1f, 0.1f, 0.1f, 1.f };
-	sun->diffuse = { 0.8f, 0.8f, 0.8f, 1.f };
-	sun->specular = { 1.0f, 1.0f, 1.0f, 1.f };
+	sun->diffuse = { 0.0f, 0.1f, 0.0f, 1.f };
+	sun->specular = { 0.0f, 1.0f, 0.0f, 1.f };
 }
 
 void Test6::setupUBOs()
@@ -467,7 +473,7 @@ void Test6::setupUBOs()
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo.matrices);
 		// projection + view
 		int sz = UBO_MAT_SIZE * 2;
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATRICES, ubo.matrices, 0, sz);
 	}
@@ -475,9 +481,9 @@ void Test6::setupUBOs()
 	{
 		glGenBuffers(1, &ubo.data);
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo.data);
-		// ??
+		// cameraPos
 		int sz = UBO_VEC_SIZE;
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, ubo.data, 0, sz);
 	}
@@ -488,7 +494,7 @@ void Test6::setupUBOs()
 		// DirLight + PointLight + SpotLight
 		int s2 = SZ_DIR_LIGHT_UBO;
 		int sz = SZ_DIR_LIGHT_UBO;// +SZ_POINT_LIGHT_UBO + SZ_SPOT_LIGHT_UBO;
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, ubo.lights, 0, sz);
 	}
@@ -515,7 +521,7 @@ int Test6::onRender(float dt) {
 	const glm::mat4& view = camera.getView();
 	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
 
-	RenderContext ctx(*this, dt, view, projection, skybox->textureID, sun, pointLights, spotLights);
+	RenderContext ctx(*this, dt, view, projection, currentScene->skybox->textureID, sun, currentScene->pointLights, currentScene->spotLights);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 
@@ -524,106 +530,9 @@ int Test6::onRender(float dt) {
 	moveActive();
 	moveLight();
 
-	// NOTE KI OpenGL does NOT like interleaved draw and prepare
-	for (auto node : nodes) {
-		node->prepare(nullptr);
-		node->prepare(stencilShader);
-		if (showNormals) {
-			node->prepare(normalShader);
-		}
-	}
-
-	drawSelected(ctx);
-	drawNodes(ctx);
-	drawSelectedStencil(ctx);
-
-	drawNormals(ctx);
+	currentScene->draw(ctx);
 
 	return 0;
-}
-
-void Test6::drawNormals(RenderContext& ctx)
-{
-	if (!showNormals) {
-		return;
-	}
-
-	for (auto node : nodes) {
-		node->bind(ctx, normalShader);
-		node->draw(ctx);
-	}
-}
-
-// draw all non selected nodes
-void Test6::drawNodes(RenderContext& ctx)
-{
-	glStencilMask(0x00);
-	std::vector<Node*> blendedNodes;
-	for (auto node : nodes) {
-		if (std::find(selection.begin(), selection.end(), node) != selection.end()) {
-			continue;
-		}
-		if (node->blend) {
-			blendedNodes.push_back(node);
-		}
-		else {
-			node->bind(ctx, nullptr);
-			node->draw(ctx);
-		}
-	}
-
-	if (skybox) {
-		skybox->draw(ctx);
-	}
-	renderBlended(blendedNodes, ctx);
-}
-
-// draw all selected nodes for stencil
-void Test6::drawSelected(RenderContext& ctx)
-{
-	if (selection.empty()) {
-		return;
-	}
-
-	glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	glStencilMask(0xFF);
-
-	std::vector<Node*> blendedNodes;
-	for (auto node : selection) {
-		if (node->blend) {
-			blendedNodes.push_back(node);
-		}
-		else {
-			node->bind(ctx, nullptr);
-			node->draw(ctx);
-		}
-	}
-
-	renderBlended(blendedNodes, ctx);
-}
-
-// draw all selected nodes with stencil
-void Test6::drawSelectedStencil(RenderContext& ctx)
-{
-	if (selection.empty()) {
-		return;
-	}
-
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilMask(0x00);
-	glDisable(GL_DEPTH_TEST);
-
-	for (auto node : selection) {
-		float scale = node->getScale();
-		node->setScale(scale * 1.02);
-		node->bind(ctx, stencilShader);
-		node->draw(ctx);
-		node->setScale(scale);
-	}
-
-	glStencilMask(0xFF);
-	glStencilFunc(GL_ALWAYS, 0, 0xFF);
-	glEnable(GL_DEPTH_TEST);
 }
 
 void Test6::moveLight()
@@ -678,27 +587,4 @@ void Test6::moveActive()
 void Test6::processInput(float dt) {
 	Engine::processInput(dt);
 }
-
-void Test6::renderBlended(std::vector<Node*>& nodes, RenderContext& ctx)
-{
-	glEnable(GL_BLEND);
-	glDisable(GL_CULL_FACE);
-
-	// TODO KI discards nodes if *same* distance
-	std::map<float, Node*> sorted;
-	for (auto node : nodes) {
-		float distance = glm::length(camera.getPos() - node->getPos());
-		sorted[distance] = node;
-	}
-
-	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
-		Node* node = it->second;
-		node->bind(ctx, nullptr);
-		node->draw(ctx);
-	}
-
-	glEnable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
-}
-
 

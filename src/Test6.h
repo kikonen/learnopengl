@@ -10,6 +10,7 @@
 #include "Shader.h"
 #include "Light.h"
 #include "Skybox.h"
+#include "Scene.h"
 
 class Test6 : public Engine {
 public:
@@ -17,40 +18,35 @@ public:
 
 	int onSetup() override;
 
-	int setupNodeSkybox();
+	int setupNodeSkybox(Scene* scene);
 
-	int setupNodeStainedWindows();
-	int setupNodeWindow2();
-	int setupNodeWindow1();
+	int setupNodeStainedWindows(Scene* scene);
+	int setupNodeWindow2(Scene* scene);
+	int setupNodeWindow1(Scene* scene);
 
-	int setupNodeSpyro();
-	int setupNodeBackpack();
-	int setupNodeTeapot();
-	int setupNodeCow();
-	int setupNodeBall();
-	int setupNodeCube4();
-	int setupNodeCubes();
-	int setupNodeActive();
-	int setupNodeMountains();
-	int setupNodeWaterBall();
-	int setupNodePlanet();
-	int setupNodeAsteroids();
-	int setupNodeAsteroidBelt();
+	int setupNodeSpyro(Scene* scene);
+	int setupNodeBackpack(Scene* scene);
+	int setupNodeTeapot(Scene* scene);
+	int setupNodeCow(Scene* scene);
+	int setupNodeBall(Scene* scene);
+	int setupNodeCube4(Scene* scene);
+	int setupNodeCubes(Scene* scene);
+	int setupNodeActive(Scene* scene);
+	int setupNodeMountains(Scene* scene);
+	int setupNodeWaterBall(Scene* scene);
+	int setupNodePlanet(Scene* scene);
+	int setupNodeAsteroids(Scene* scene);
+	int setupNodeAsteroidBelt(Scene* scene);
 
-	int setupNodeLightMoving();
-	int setupNodeSun();
+	int setupNodeLightMoving(Scene* scene);
+	int setupNodeSun(Scene* scene);
 
-	void setupLightMoving();
-	void setupLightSun();
+	void setupLightMoving(Scene* scene);
+	void setupLightSun(Scene* scene);
 
 	void setupUBOs();
 
 	int onRender(float dt) override;
-
-	void drawNormals(RenderContext& ctx);
-	void drawSelectedStencil(RenderContext& ctx);
-	void drawNodes(RenderContext& ctx);
-	void drawSelected(RenderContext& ctx);
 
 	void moveLight();
 	void moveActive();
@@ -58,29 +54,17 @@ public:
 	void processInput(float dt) override;
 
 private:
-	void renderBlended(std::vector<Node*>& nodes, RenderContext& ctx);
 
 private:
 	float elapsed = 0;
 
-	bool showNormals = false;
+	Scene* currentScene = nullptr;
 
-	Skybox* skybox;
-
-	Shader* stencilShader;
-	Shader* normalShader;
-
-	std::vector<Node*> nodes;
 	Node* active = nullptr;
-
-	std::vector<Node*> selection;
 
 	Light* activeLight = nullptr;
 	Node* activeLightNode = nullptr;
 
 	Light* sun = nullptr;
 	Node* sunNode = nullptr;
-
-	std::vector<Light*> pointLights;
-	std::vector<Light*> spotLights;
 };

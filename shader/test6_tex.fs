@@ -1,7 +1,7 @@
 #version 330 core
 
 #define MAT_COUNT 16
-#define LIGHT_COUNT 16
+#define LIGHT_COUNT 8
 
 struct Material {
   vec4 ambient;
@@ -20,7 +20,7 @@ struct Material {
   bool hasNormalMap;
 };
 struct DirLight {
-  vec4 dir;
+  vec3 dir;
 
   vec4 ambient;
   vec4 diffuse;
@@ -165,7 +165,7 @@ void main() {
   vec4 pointShaded;
   vec4 spotShaded;
 
-  if (light.use) {
+  if (true || light.use) {
     dirShaded = calculateDirLight(light, norm, viewDir, matAmbient, matDiffuse, matSpecular, matShininess);
     hasLight = true;
   }
@@ -226,7 +226,7 @@ vec4 calculateDirLight(
   vec4 matDiffuse,
   vec4 matSpecular,
   float matShininess) {
-  vec3 lightDir = normalize(-vec3(light.dir));
+  vec3 lightDir = normalize(-light.dir);
 
   // ambient
   vec4 ambient = light.ambient * matAmbient;
