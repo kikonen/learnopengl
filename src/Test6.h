@@ -58,8 +58,6 @@ public:
 private:
 
 private:
-	float elapsed = 0;
-
 	Scene* currentScene = nullptr;
 
 	Node* active = nullptr;

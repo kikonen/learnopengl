@@ -18,9 +18,10 @@ public:
 	void bind(Shader* shader);
 	int load();
 
+	static Texture* getTexture(const std::string& path, bool normalMap);
 public:
 	const std::string path;
-	const bool normal;
+	const bool normalMap;
 
 	unsigned int id = -1;
 	unsigned int unitId = -1;

@@ -5,9 +5,24 @@
 #include "Shader.h"
 
 
-Texture::Texture(const std::string& path, bool normal)
+std::map<std::string, Texture*> textures;
+std::map<std::string, Texture*> normalMaps;
+
+Texture* Texture::getTexture(const std::string& path, bool normalMap)
+{
+	std::map<std::string, Texture*>& cache = normalMap ? normalMaps : textures;
+
+	Texture* tex = cache[path];
+	if (!tex) {
+		tex = new Texture(path, normalMap);
+		cache[path] = tex;
+	}
+	return tex;
+}
+
+Texture::Texture(const std::string& path, bool normalMap)
 	: path(path),
-	normal(normal)
+	normalMap(normalMap)
 {
 }
 
@@ -20,6 +35,9 @@ Texture::~Texture()
 void Texture::prepare()
 {
 	if (!image) {
+		return;
+	}
+	if (id != -1) {
 		return;
 	}
 
@@ -39,7 +57,7 @@ void Texture::prepare()
 	} else {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->data);
 	}
-	if (!normal) {
+	if (!normalMap) {
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 }

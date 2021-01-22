@@ -14,6 +14,7 @@ public:
 	Scene();
 	~Scene();
 
+	void prepare();
 	void draw(RenderContext& ctx);
 
 	void drawNormals(RenderContext& ctx);

@@ -105,7 +105,7 @@ int Material::loadTextures(const std::string& baseDir)
 	return 0;
 }
 
-Texture* Material::loadTexture(const std::string& baseDir, const std::string& name, bool normal)
+Texture* Material::loadTexture(const std::string& baseDir, const std::string& name, bool normalMap)
 {
 	if (name.empty()) {
 		return nullptr;
@@ -115,7 +115,7 @@ Texture* Material::loadTexture(const std::string& baseDir, const std::string& na
 
 	std::cout << "\n== TEXTURE: " << texturePath << " ===\n";
 
-	Texture* texture = new Texture(texturePath, normal);
+	Texture* texture = Texture::getTexture(texturePath, normalMap);
 	int res = texture->load();
 
 	if (res) {

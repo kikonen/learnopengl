@@ -8,6 +8,18 @@ Scene::~Scene()
 {
 }
 
+void Scene::prepare()
+{
+	// NOTE KI OpenGL does NOT like interleaved draw and prepare
+	for (auto node : nodes) {
+		node->prepare(nullptr);
+		node->prepare(stencilShader);
+		if (showNormals) {
+			node->prepare(normalShader);
+		}
+	}
+}
+
 void Scene::draw(RenderContext& ctx)
 {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -24,15 +36,6 @@ void Scene::draw(RenderContext& ctx)
 	glEnable(GL_DEPTH_TEST);
 
 	ctx.bindGlobal();
-
-	// NOTE KI OpenGL does NOT like interleaved draw and prepare
-	for (auto node : nodes) {
-		node->prepare(nullptr);
-		node->prepare(stencilShader);
-		if (showNormals) {
-			node->prepare(normalShader);
-		}
-	}
 
 	drawSelected(ctx);
 	drawNodes(ctx);

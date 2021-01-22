@@ -16,8 +16,6 @@ Test6::Test6() {
 }
 
 int Test6::onSetup() {
-	currentScene = setupScene1();
-
 	camera.setPos(glm::vec3(-8, 5, 10.f) + groundOffset);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -32,7 +30,52 @@ int Test6::onSetup() {
 
 	setupUBOs();
 
+	Scene* scene = setupScene1();
+	//scene->showNormals = true;
+	scene->prepare();
+	currentScene = scene;
+
 	return 0;
+}
+
+int Test6::onRender(float dt) {
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	Scene* scene = currentScene;
+
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
+	glEnable(GL_CULL_FACE); // cull face
+	glCullFace(GL_BACK); // cull back face
+	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
+
+	glEnable(GL_DEPTH_TEST);
+
+	int w = 0;
+	int h = 0;
+	glfwGetWindowSize(window, &w, &h);
+
+	const glm::mat4& view = camera.getView();
+	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
+
+	RenderContext ctx(*this, dt, view, projection, scene->skybox->textureID, sun, scene->pointLights, scene->spotLights);
+	//ctx.useWireframe = true;
+	//ctx.useLight = false;
+
+	ctx.bindGlobal();
+
+	moveActive();
+	moveLight();
+
+	currentScene->draw(ctx);
+
+	return 0;
+}
+
+void Test6::processInput(float dt) {
+	Engine::processInput(dt);
 }
 
 Scene* Test6::setupScene1()
@@ -505,41 +548,6 @@ void Test6::setupUBOs()
 	}
 }
 
-int Test6::onRender(float dt) {
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//showNormals = true;
-
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
-	glEnable(GL_CULL_FACE); // cull face
-	glCullFace(GL_BACK); // cull back face
-	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
-
-	glEnable(GL_DEPTH_TEST);
-
-	int w = 0;
-	int h = 0;
-	glfwGetWindowSize(window, &w, &h);
-
-	const glm::mat4& view = camera.getView();
-	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
-
-	RenderContext ctx(*this, dt, view, projection, currentScene->skybox->textureID, sun, currentScene->pointLights, currentScene->spotLights);
-	//ctx.useWireframe = true;
-	//ctx.useLight = false;
-
-	ctx.bindGlobal();
-
-	moveActive();
-	moveLight();
-
-	currentScene->draw(ctx);
-
-	return 0;
-}
-
 void Test6::moveLight()
 {
 	//glm::vec3 planetPos = glm::vec3(10, 100, 100);
@@ -588,8 +596,3 @@ void Test6::moveActive()
 		active->setScale(scale);
 	}
 }
-
-void Test6::processInput(float dt) {
-	Engine::processInput(dt);
-}
-
