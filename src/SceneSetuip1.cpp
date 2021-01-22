@@ -78,6 +78,7 @@ void SceneSetup1::setupUBOs()
 		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATRICES, ubo.matrices, 0, sz);
+		ubo.matricesSize = sz;
 	}
 	// Data
 	{
@@ -88,6 +89,7 @@ void SceneSetup1::setupUBOs()
 		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, ubo.data, 0, sz);
+		ubo.dataSize = sz;
 	}
 	// Lights
 	{
@@ -99,6 +101,7 @@ void SceneSetup1::setupUBOs()
 		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, ubo.lights, 0, sz);
+		ubo.lightsSize = sz;
 	}
 }
 

@@ -50,9 +50,11 @@ void RenderContext::bindGlobal() const
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
+	/*
 	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_MATRICES, engine.ubo.matrices);
 	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_DATA, engine.ubo.data);
 	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_LIGHTS, engine.ubo.lights);
+	*/
 }
 
 void RenderContext::bind(Shader* shader, bool wireframe) const

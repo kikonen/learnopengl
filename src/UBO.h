@@ -4,6 +4,10 @@ struct UBO {
 	unsigned int matrices;
 	unsigned int data;
 	unsigned int lights;
+
+	unsigned int matricesSize;
+	unsigned int dataSize;
+	unsigned int lightsSize;
 };
 
 const unsigned int UBO_MATRICES = 0;
