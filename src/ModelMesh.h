@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-#include "Engine.h"
+#include "Assets.h"
 #include "Shader.h"
 #include "ShaderInfo.h"
 #include "RenderContext.h"
@@ -34,8 +34,7 @@ public:
 	void draw(const RenderContext& ctx);
 	void drawInstanced(const RenderContext& ctx, int instanceCount);
 
-	int	load(Engine& engine);
-
+	int load(const Assets& assets);
 private:
 	ShaderInfo* prepareShader(Shader* shader);
 public:

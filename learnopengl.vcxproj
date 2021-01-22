@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\SceneSetuip1.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\AsteroidBeltNode.cpp" />
     <ClCompile Include="src\Sprite.cpp" />
@@ -184,6 +185,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\SceneSetup1.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\AsteroidBeltNode.h" />
     <ClInclude Include="src\Sprite.h" />

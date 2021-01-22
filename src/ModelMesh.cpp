@@ -201,9 +201,9 @@ void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 	glDrawElementsInstanced(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0, instanceCount);
 }
 
-int ModelMesh::load(Engine& engine)
+int ModelMesh::load(const Assets& assets)
 {
-	ModelMeshLoader loader(engine.assets, path, modelName);
+	ModelMeshLoader loader(assets, path, modelName);
 	loader.defaultMaterial = defaultMaterial;
 	int res = loader.load(tris, vertexes, materials);
 
