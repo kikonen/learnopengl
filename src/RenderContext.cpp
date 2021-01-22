@@ -22,18 +22,16 @@ RenderContext::RenderContext(
 {
 }
 
-struct DataUBO {
-	glm::vec3 viewPos;
-	float time;
-};
-
 void RenderContext::bindGlobal() const
 {
+	// https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
+
 	// Matrices
 	{
+		MatricesUBO data = { projection, view };
+
 		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.matrices);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, UBO_MAT_SIZE, glm::value_ptr(projection));
-		glBufferSubData(GL_UNIFORM_BUFFER, UBO_MAT_SIZE, UBO_MAT_SIZE, glm::value_ptr(view));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MatricesUBO), &data);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
@@ -49,18 +47,43 @@ void RenderContext::bindGlobal() const
 	// Lights
 	{
 		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.lights);
-		if (dirLight) {
-			dirLight->bindUBO(-1);
+		LightsUBO lights;
+		lights.light = dirLight->toDirLightUBO();
+		//lights.light.use = false;
+
+		{
+			int index = 0;
+			for (auto light : pointLights) {
+				lights.pointLights[index] = light->toPointightUBO();
+				//lights.pointLights[index].use = false;
+				index++;
+			}
+			PointLightUBO none;
+			none.use = false;
+			while (index < LIGHT_COUNT) {
+				lights.pointLights[index] = none;
+				index++;
+			}
 		}
+
+		{
+			int index = 0;
+			for (auto light : spotLights) {
+				lights.spotLights[index] = light->toSpotLightUBO();
+				//lights.spotLights[index].use = false;
+				index++;
+			}
+			SpotLightUBO none;
+			none.use = false;
+			while (index < LIGHT_COUNT) {
+				lights.spotLights[index] = none;
+				index++;
+			}
+		}
+
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightsUBO), &lights);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
-
-	/*
-	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_MATRICES, engine.ubo.matrices);
-	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_DATA, engine.ubo.data);
-	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_LIGHTS, engine.ubo.lights);
-	*/
-	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, engine.ubo.lights, 0, engine.ubo.lightsSize);
 }
 
 void RenderContext::bind(Shader* shader, bool wireframe) const
@@ -69,22 +92,6 @@ void RenderContext::bind(Shader* shader, bool wireframe) const
 		shader->setInt("skybox", 31);
 		glActiveTexture(GL_TEXTURE31);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTextureID);
-	}
-
-	if (dirLight) {
-		dirLight->bind(shader, -1);
-	}
-
-	int index = 0;
-	for (auto light : pointLights) {
-		light->bind(shader, index);
-		index++;
-	}
-
-	index = 0;
-	for (auto light : spotLights) {
-		light->bind(shader, index);
-		index++;
 	}
 
 	if (useWireframe || wireframe) {

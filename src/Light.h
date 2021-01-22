@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "Shader.h"
+#include "UBO.h"
 
 class Light
 {
@@ -9,16 +10,9 @@ public:
 	Light();
 	~Light();
 
-	void bindUBO(int index);
-	void bind(Shader* shader, int index);
-private:
-	void bindDirectional(Shader* shader);
-	void bindPoint(Shader* shader, int index);
-	void bindSpot(Shader* shader, int index);
-
-	void bindDirectionalUBO();
-	void bindPointUBO(int index);
-	void bindSpotUBO(int index);
+	DirLightUBO toDirLightUBO();
+	PointLightUBO toPointightUBO();
+	SpotLightUBO toSpotLightUBO();
 public:
 	bool use = true;
 	bool directional = false;

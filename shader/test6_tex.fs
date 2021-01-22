@@ -1,7 +1,7 @@
 #version 330 core
 
 #define MAT_COUNT 8
-#define LIGHT_COUNT 4
+#define LIGHT_COUNT 8
 
 struct Material {
   vec4 ambient;
@@ -75,13 +75,9 @@ uniform Material materials[MAT_COUNT];
 
 layout(std140) uniform Lights {
   DirLight light;
-//  PointLight pointLights2[LIGHT_COUNT];
-//  SpotLight spotLights2[LIGHT_COUNT];
+  PointLight pointLights[LIGHT_COUNT];
+  SpotLight spotLights[LIGHT_COUNT];
 };
-
-//uniform DirLight light2;
-uniform PointLight pointLights[LIGHT_COUNT];
-uniform SpotLight spotLights[LIGHT_COUNT];
 
 uniform bool drawInstanced;
 

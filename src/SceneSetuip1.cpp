@@ -79,7 +79,7 @@ void SceneSetup1::setupUBOs()
 		glGenBuffers(1, &ubo.matrices);
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo.matrices);
 		// projection + view
-		int sz = UBO_MAT_SIZE * 2;
+		int sz = sizeof(MatricesUBO);
 		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATRICES, ubo.matrices, 0, sz);
@@ -91,7 +91,7 @@ void SceneSetup1::setupUBOs()
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo.data);
 
 		// cameraPos + time
-		int sz = UBO_VEC_SIZE + UBO_FLOAT_SIZE;
+		int sz = sizeof(DataUBO);
 		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, ubo.data, 0, sz);
@@ -102,8 +102,10 @@ void SceneSetup1::setupUBOs()
 		glGenBuffers(1, &ubo.lights);
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo.lights);
 		// DirLight + PointLight + SpotLight
-		int s2 = SZ_DIR_LIGHT_UBO;
-		int sz = SZ_DIR_LIGHT_UBO;// +SZ_POINT_LIGHT_UBO + SZ_SPOT_LIGHT_UBO;
+		int sz = sizeof(LightsUBO);
+		int sz2 = sizeof(DirLightUBO);
+		int sz3 = sizeof(PointLightUBO);
+		int sz4 = sizeof(SpotLightUBO);
 		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, ubo.lights, 0, sz);
