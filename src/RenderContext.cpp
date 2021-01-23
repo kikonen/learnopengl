@@ -28,7 +28,7 @@ void RenderContext::bindGlobal() const
 
 	// Matrices
 	{
-		MatricesUBO matricesUbo = { projection, view };
+		MatricesUBO matricesUbo = { projection, view, lightSpaceMatrix };
 
 		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.matrices);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MatricesUBO), &matricesUbo);

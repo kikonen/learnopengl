@@ -1,8 +1,38 @@
 #include "Scene.h"
 
 
-const unsigned int SHADOW_WIDTH = 800,
-	SHADOW_HEIGHT = 600;
+const unsigned int SHADOW_WIDTH = 1024,
+	SHADOW_HEIGHT = 1024;
+
+unsigned int quadVAO = 0;
+unsigned int quadVBO;
+void drawQuad()
+{
+	if (quadVAO == 0)
+	{
+		float quadVertices[] = {
+			// positions        // texture Coords
+			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			 0.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+			 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		};
+		// setup plane VAO
+		glGenVertexArrays(1, &quadVAO);
+		glGenBuffers(1, &quadVBO);
+		glBindVertexArray(quadVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	}
+	glBindVertexArray(quadVAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
+}
+
 
 Scene::Scene()
 {
@@ -18,12 +48,13 @@ void Scene::prepare()
 	for (auto node : nodes) {
 		node->prepare(nullptr);
 		node->prepare(stencilShader);
+		node->prepare(depthShader);
 		if (showNormals) {
 			node->prepare(normalShader);
 		}
 	}
 
-	prepareShadowMap();
+	prepareDepthMap();
 }
 
 void Scene::draw(RenderContext& ctx)
@@ -41,11 +72,14 @@ void Scene::draw(RenderContext& ctx)
 
 	glEnable(GL_DEPTH_TEST);
 
+	bindDepthMap(ctx);
 	ctx.bindGlobal();
 
-	drawShadowMap(ctx);
+	drawDepthMap(ctx);
+
 	drawScene(ctx);
 	drawNormals(ctx);
+	drawDebugDepth(ctx);
 }
 
 void Scene::drawScene(RenderContext& ctx)
@@ -161,7 +195,7 @@ void Scene::drawBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 	glDisable(GL_BLEND);
 }
 
-void Scene::prepareShadowMap()
+void Scene::prepareDepthMap()
 {
 	glGenFramebuffers(1, &depthMapFBO);
 
@@ -175,9 +209,25 @@ void Scene::prepareShadowMap()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+	depthShader->setup();
+	depthDebugShader->setup();
 }
 
-void Scene::drawShadowMap(RenderContext& ctx)
+void Scene::bindDepthMap(RenderContext& ctx)
+{
+	glm::vec3 lightPos = { 30.f, 30.f, -30.f };
+	//lightPos = ctx.engine.camera.getPos();
+
+	float near_plane = 1.0f, far_plane = 100.f;
+	glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane);
+	glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+
+	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
+	ctx.lightSpaceMatrix = lightSpaceMatrix;
+}
+
+void Scene::drawDepthMap(RenderContext& ctx)
 {
 	// bind
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -191,15 +241,37 @@ void Scene::drawShadowMap(RenderContext& ctx)
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	drawScene(ctx);
+	drawDepth(ctx);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// 2. then render scene as normal with shadow mapping (using depth map)
-	glViewport(0, 0, 800, 600);
+	// reset viewport
+	glViewport(0, 0, ctx.engine.width, ctx.engine.height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glBindTexture(GL_TEXTURE_2D, depthMap); 
 }
 
+void Scene::drawDepth(RenderContext& ctx)
+{
+	for (auto node : nodes) {
+		node->bind(ctx, depthShader);
+		node->draw(ctx);
+	}
+}
+
+void Scene::drawDebugDepth(RenderContext& ctx)
+{
+	Shader* shader = depthDebugShader;
+	shader->use();
+	shader->setInt("depthMap", 0);
+
+	float near_plane = 1.0f, far_plane = 7.5f;
+
+	shader->setFloat("nearPlane", near_plane);
+	shader->setFloat("farPLane", far_plane);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+
+	drawQuad();
+}
 

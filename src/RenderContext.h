@@ -30,6 +30,8 @@ public:
 	const glm::mat4& projection;
 	const glm::mat4 projected;
 
+	glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
+
 	const unsigned int skyboxTextureID;
 
 	Light* dirLight = nullptr;

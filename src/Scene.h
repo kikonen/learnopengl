@@ -26,8 +26,12 @@ private:
 	void drawSelected(RenderContext& ctx);
 	void drawBlended(std::vector<Node*>& nodes, RenderContext& ctx);
 
-	void prepareShadowMap();
-	void drawShadowMap(RenderContext& ctx);
+	void prepareDepthMap();
+	void bindDepthMap(RenderContext& ctx);
+	void drawDepthMap(RenderContext& ctx);
+
+	void drawDepth(RenderContext& ctx);
+	void drawDebugDepth(RenderContext& ctx);
 public:
 	bool showNormals = false;
 	Skybox* skybox;
@@ -41,6 +45,9 @@ public:
 
 	Shader* stencilShader;
 	Shader* normalShader;
+
+	Shader* depthShader;
+	Shader* depthDebugShader;
 
 	unsigned int depthMapFBO;
 	unsigned int depthMap;

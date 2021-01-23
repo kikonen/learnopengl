@@ -57,6 +57,8 @@ void SceneSetup1::setup()
 
 	scene->stencilShader = getShader(TEX_STENCIL);
 	scene->normalShader = getShader(TEX_NORMAL);
+	scene->depthShader = getShader(TEX_SIMPLE_DEPTH);
+	scene->depthDebugShader = getShader(TEX_DEBUG_DEPTH);
 }
 
 void SceneSetup1::process(RenderContext& ctx)

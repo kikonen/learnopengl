@@ -16,6 +16,8 @@ const std::string TEX_TEXTURE = "tex";
 const std::string TEX_STENCIL = "stencil";
 const std::string TEX_NORMAL = "normal";
 const std::string TEX_LIGHT = "light";
+const std::string TEX_SIMPLE_DEPTH = "simple_depth";
+const std::string TEX_DEBUG_DEPTH = "debug_depth";
 
 const std::string GEOM_NONE = "";
 
@@ -70,7 +72,7 @@ public:
 
     bool bindTexture = false;
 
-    unsigned int id = -1;
+    int id = -1;
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
     std::string geometryShaderSource;

@@ -82,11 +82,11 @@ public:
 
     Assets assets;
 
+    int width;
+    int height;
 protected:
     GLFWwindow* window = nullptr;
     Input* input;
 
 private:
-    int width;
-    int height;
 };
