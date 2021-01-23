@@ -13,10 +13,11 @@
 
 #include "Assets.h"
 
-const std::string TEX_NONE = "";
-const std::string TEX_TEXTURE = "_tex";
-const std::string TEX_STENCIL = "_stencil";
-const std::string TEX_NORMAL = "_normal";
+const std::string TEX_PLAIN = "plain";
+const std::string TEX_TEXTURE = "tex";
+const std::string TEX_STENCIL = "stencil";
+const std::string TEX_NORMAL = "normal";
+const std::string TEX_LIGHT = "light";
 
 const std::string GEOM_NONE = "";
 

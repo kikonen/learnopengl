@@ -7,6 +7,7 @@
 
 Test6::Test6() {
 	title = "Test 6";
+	assets.shadersDir = "shader/test6";
 	//throttleFps = 0;
 	glfwWindowHint(GLFW_SAMPLES, 4);
 }

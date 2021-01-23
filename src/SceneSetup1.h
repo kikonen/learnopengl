@@ -30,9 +30,10 @@ private:
 	int setupNodeDirectional(Scene* scene);
 	int setupNodeLightMoving(Scene* scene);
 
-	int setupNodeStainedWindows(Scene* scene);
-	int setupNodeWindow2(Scene* scene);
 	int setupNodeWindow1(Scene* scene);
+	int setupNodeWindow2(Scene* scene);
+	int setupNodeStainedWindows(Scene* scene);
+	int setupNodeBrickwall(Scene* scene);
 
 	int setupNodeSpyro(Scene* scene);
 	int setupNodeBackpack(Scene* scene);

@@ -56,7 +56,7 @@ ShaderInfo* AsteroidBeltNode::prepare(Shader* shader)
 	if (info->preparedNode) {
 		return info;
 	}
-	bool selection = info->shader->shaderName == "test6_stencil";
+	bool selection = info->shader->shaderName == "stencil";
 	info->preparedNode = true;
 
 	glGenBuffers(1, &asteroidBuffer);

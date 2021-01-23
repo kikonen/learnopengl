@@ -5,6 +5,7 @@ layout (line_strip, max_vertices = 6) out;
 layout (std140) uniform Matrices {
   mat4 projection;
   mat4 view;
+  mat4 lightSpace;
 };
 
 in VS_OUT {

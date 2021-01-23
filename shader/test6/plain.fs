@@ -16,15 +16,8 @@ struct Material {
   bool hasNormalMap;
 };
 
-struct Texture {
-  sampler2D diffuse;
-  sampler2D emission;
-  sampler2D specular;
-  sampler2D normalMap;
-};
-
 struct DirLight {
-  vec3 dir;
+  vec4 dir;
 
   vec4 ambient;
   vec4 diffuse;
@@ -65,26 +58,21 @@ struct SpotLight {
 
 in VS_OUT {
   vec3 fragPos;
-  vec2 texCoords;
 
   flat float materialIndex;
   vec3 normal;
-
-  vec3 tangentLightPos;
-  vec3 tangentViewPos;
-  vec3 tangentFragPos;
 } fs_in;
 
-layout(std140) uniform Data {
+layout (std140) uniform Data {
   vec3 viewPos;
   float time;
 };
+
 uniform samplerCube skybox;
 
 layout (std140) uniform Materials {
   Material materials[MAT_COUNT];
 };
-uniform Texture textures[MAT_COUNT];
 
 layout(std140) uniform Lights {
   DirLight light;
@@ -101,8 +89,7 @@ vec4 calculateDirLight(
   vec4 matAmbient,
   vec4 matDiffuse,
   vec4 matSpecular,
-  float matShininess,
-  bool hasNormalMap);
+  float matShininess);
 
 vec4 calculatePointLight(
   PointLight light,
@@ -112,8 +99,7 @@ vec4 calculatePointLight(
   vec4 matAmbient,
   vec4 matDiffuse,
   vec4 matSpecular,
-  float matShininess,
-  bool hasNormalMap);
+  float matShininess);
 
 vec4 calculateSpotLight(
   SpotLight light,
@@ -123,50 +109,19 @@ vec4 calculateSpotLight(
   vec4 matAmbient,
   vec4 matDiffuse,
   vec4 matSpecular,
-  float matShininess,
-  bool hasNormalMap);
+  float matShininess);
+
 
 void main() {
   int matIdx = int(fs_in.materialIndex);
-
-  bool hasNormalMap = false;
-  vec3 norm;
-  if (materials[matIdx].hasNormalMap) {
-    norm = texture(textures[matIdx].normalMap, fs_in.texCoords).rgb;
-    norm = normalize(norm * 2.0 - 1.0);
-    hasNormalMap = true;
-  } else {
-    norm = normalize(fs_in.normal);
-  }
-
+  vec3 norm = normalize(fs_in.normal);
   vec3 viewDir = normalize(viewPos - fs_in.fragPos);
 
-  vec4 matAmbient;
-  vec4 matDiffuse;
+  vec4 matAmbient = materials[matIdx].ambient;
+  vec4 matDiffuse = materials[matIdx].diffuse;
   vec4 matEmission;
-  vec4 matSpecular;
-  float matShininess;
-
-  {
-    if (materials[matIdx].hasDiffuseTex) {
-      matDiffuse = texture(textures[matIdx].diffuse, fs_in.texCoords).rgba;
-      matAmbient = matDiffuse;
-    } else {
-      matDiffuse = materials[matIdx].diffuse;
-      matAmbient = materials[matIdx].ambient;
-    }
-
-    if (materials[matIdx].hasEmissionTex){
-      matEmission = texture(textures[matIdx].emission, fs_in.texCoords).rgba;
-    }
-
-    if (materials[matIdx].hasSpecularTex){
-      matSpecular = texture(textures[matIdx].specular, fs_in.texCoords).rgba;
-    } else {
-      matSpecular = materials[matIdx].specular;
-    }
-    matShininess = materials[matIdx].shininess;
-  }
+  vec4 matSpecular = materials[matIdx].specular;
+  float matShininess = materials[matIdx].shininess;
 
   vec4 emission = matEmission;
 
@@ -176,31 +131,28 @@ void main() {
   vec4 spotShaded;
 
   if (light.use) {
-    dirShaded = calculateDirLight(light, norm, viewDir, matAmbient, matDiffuse, matSpecular, matShininess, hasNormalMap);
+    dirShaded = calculateDirLight(light, norm, viewDir, matAmbient, matDiffuse, matSpecular, matShininess);
     hasLight = true;
   }
 
   for (int i = 0; i < LIGHT_COUNT; i++) {
     if (pointLights[i].use) {
-      pointShaded += calculatePointLight(pointLights[i], norm, viewDir, fs_in.fragPos, matAmbient, matDiffuse, matSpecular, matShininess, hasNormalMap);
+      pointShaded += calculatePointLight(pointLights[i], norm, viewDir, fs_in.fragPos, matAmbient, matDiffuse, matSpecular, matShininess);
       hasLight = true;
     }
   }
 
   for (int i = 0; i < LIGHT_COUNT; i++) {
     if (spotLights[i].use) {
-      spotShaded += calculateSpotLight(spotLights[i], norm, viewDir, fs_in.fragPos, matAmbient, matDiffuse, matSpecular, matShininess, hasNormalMap);
+      spotShaded += calculateSpotLight(spotLights[i], norm, viewDir, fs_in.fragPos, matAmbient, matDiffuse, matSpecular, matShininess);
       hasLight = true;
     }
   }
 
-  vec4 shaded = dirShaded + pointShaded + spotShaded + emission;
+  vec4 shaded =  dirShaded + pointShaded + spotShaded + emission;
 
   vec4 texColor;
   if (hasLight) {
-//    if (hasNormalMap) {
-//      shaded = shaded + vec4(1.0, 0.0, 0.0, 0.5);
-//    }
     texColor = shaded;
   } else {
     texColor = matDiffuse + emission;
@@ -209,18 +161,16 @@ void main() {
   if (texColor.a < 0.1)
     discard;
 
-  if (hasNormalMap) {
-//    texColor = vec4(fs_in.tangentFragPos, 1.0);
+  // reflection test
+  float ratio = 1.0 / 1.33;
+  vec3 r;
+  if (gl_FragCoord.x < 400) {
+    r = reflect(-viewDir, norm);
+  } else {
+    r = refract(-viewDir, norm, ratio);
   }
-
-//  vec3 i = normalize(fs_in.fragPos - viewPos);
-//  vec3 r = reflect(i, norm);
-//  texColor = vec4(texture(skybox, r).rgb, 1.0);
-
-  if (gl_FrontFacing) {
-//    texColor = vec4(0.8, 0, 0, 1.0);
-  }
-  //texColor = vec4(normal, 1.0);
+  texColor = vec4(texture(skybox, r).rgb, 1.0);
+//  texColor = vec4(0.0, 0.8, 0, 1.0);
 
   fragColor = texColor;
 }
@@ -236,10 +186,8 @@ vec4 calculateDirLight(
   vec4 matAmbient,
   vec4 matDiffuse,
   vec4 matSpecular,
-  float matShininess,
-  bool hasNormalMap)
-{
-  vec3 lightDir = normalize(-light.dir);
+  float matShininess) {
+  vec3 lightDir = normalize(-vec3(light.dir));
 
   // ambient
   vec4 ambient = light.ambient * matAmbient;
@@ -264,16 +212,8 @@ vec4 calculatePointLight(
   vec4 matAmbient,
   vec4 matDiffuse,
   vec4 matSpecular,
-  float matShininess,
-  bool hasNormalMap)
-{
-  vec3 lightDir;
-  if (hasNormalMap) {
-    lightDir = normalize(-(fs_in.tangentLightPos - fs_in.tangentFragPos));
-    viewDir = normalize(fs_in.tangentViewPos - fs_in.tangentFragPos);
-  } else {
-    lightDir = normalize(light.pos - fragPos);
-  }
+  float matShininess) {
+  vec3 lightDir = normalize(light.pos - fragPos);
 
   // ambient
   vec4 ambient = light.ambient * matAmbient;
@@ -284,8 +224,7 @@ vec4 calculatePointLight(
 
   // specular
   vec3 reflectDir = reflect(-lightDir, normal);
-  vec3 halfwayDir = normalize(lightDir + viewDir);
-  float spec = pow(max(dot(normal, halfwayDir), 0.0), matShininess);
+  float spec = pow(max(dot(viewDir, reflectDir), 0.0), matShininess);
   vec4 specular = light.specular * (spec * matSpecular);
 
   float distance = length(light.pos - fragPos);
@@ -307,9 +246,7 @@ vec4 calculateSpotLight(
   vec4 matAmbient,
   vec4 matDiffuse,
   vec4 matSpecular,
-  float matShininess,
-  bool hasNormalMap)
-{
+  float matShininess) {
   vec3 lightDir = normalize(light.pos - fragPos);
 
   float theta = dot(lightDir, normalize(-light.dir));
@@ -332,7 +269,7 @@ vec4 calculateSpotLight(
     // specular
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), matShininess);
-    specular = light.specular * (spec * matSpecular);
+    vec4 specular = light.specular * (spec * matSpecular);
 
     diffuse  *= intensity;
     specular *= intensity;

@@ -1,5 +1,9 @@
 #include "Scene.h"
 
+
+const unsigned int SHADOW_WIDTH = 800,
+	SHADOW_HEIGHT = 600;
+
 Scene::Scene()
 {
 }
@@ -18,6 +22,8 @@ void Scene::prepare()
 			node->prepare(normalShader);
 		}
 	}
+
+	prepareShadowMap();
 }
 
 void Scene::draw(RenderContext& ctx)
@@ -37,11 +43,16 @@ void Scene::draw(RenderContext& ctx)
 
 	ctx.bindGlobal();
 
+	drawShadowMap(ctx);
+	drawScene(ctx);
+	drawNormals(ctx);
+}
+
+void Scene::drawScene(RenderContext& ctx)
+{
 	drawSelected(ctx);
 	drawNodes(ctx);
 	drawSelectedStencil(ctx);
-
-	drawNormals(ctx);
 }
 
 void Scene::drawNormals(RenderContext& ctx)
@@ -148,6 +159,47 @@ void Scene::drawBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
+}
+
+void Scene::prepareShadowMap()
+{
+	glGenFramebuffers(1, &depthMapFBO);
+
+	// depth map
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+}
+
+void Scene::drawShadowMap(RenderContext& ctx)
+{
+	// bind
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// 1. first render to depth map
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	drawScene(ctx);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// 2. then render scene as normal with shadow mapping (using depth map)
+	glViewport(0, 0, 800, 600);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glBindTexture(GL_TEXTURE_2D, depthMap); 
 }
 
 
