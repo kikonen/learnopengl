@@ -278,7 +278,7 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
     }
 
     std::string src = sb.str();
-    //std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
+    std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
 
     return src;
 }
@@ -313,6 +313,7 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
                 for (auto l : processInclude(v1, lineNumber)) {
                     lines.push_back(l);
                 }
+                lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
             }
             else {
                 lines.push_back(line);
@@ -335,12 +336,17 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
     return lines;
 }
 
-std::vector<std::string> Shader::processInclude(const std::string& includePath, int lineNumber) {
-    std::vector<std::string> result;
-
+std::vector<std::string> Shader::processInclude(const std::string& includePath, int lineNumber) 
+{
     std::string path = assets.shadersDir + "/" + includePath;
     std::vector<std::string> lines = loadSourceLines(path, false);
 
-    return lines;
+    std::vector<std::string> result;
+    result.push_back("#line 1 " + std::to_string(lineNumber));
+    for (auto line : lines) {
+        result.push_back(line);
+    }
+
+    return result;
 }
 
