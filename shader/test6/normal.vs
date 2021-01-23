@@ -2,11 +2,7 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 
-layout (std140) uniform Matrices {
-  mat4 projection;
-  mat4 view;
-  mat4 lightSpace;
-};
+#include uniform_matrices.glsl
 
 uniform mat4 model;
 

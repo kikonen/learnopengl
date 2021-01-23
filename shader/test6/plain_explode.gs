@@ -2,6 +2,8 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
+#include uniform_data.glsl
+
 in VS_OUT {
   flat float materialIndex;
   vec3 fragPos;
@@ -14,11 +16,6 @@ out VS_OUT {
   flat float materialIndex;
   vec3 normal;
 } gs_out;
-
-layout (std140) uniform Data {
-  vec3 viewPos;
-  float time;
-};
 
 vec3 getNormal()
 {
@@ -42,6 +39,10 @@ void sendVertex(int i, vec4 pos) {
   gs_out.normal = vs_in[i].normal;
   EmitVertex();
 }
+
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
 
 void main() {
   vec3 normal = getNormal();

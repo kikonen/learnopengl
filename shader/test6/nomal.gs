@@ -2,11 +2,7 @@
 layout (triangles) in;
 layout (line_strip, max_vertices = 6) out;
 
-layout (std140) uniform Matrices {
-  mat4 projection;
-  mat4 view;
-  mat4 lightSpace;
-};
+#include uniform_matrices.glsl
 
 in VS_OUT {
   vec3 normal;
@@ -24,6 +20,10 @@ void generateLine(int index)
   EmitVertex();
   EndPrimitive();
 }
+
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
 
 void main() {
   for (int i = 0; i < vs_in.length(); i++) {

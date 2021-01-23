@@ -4,11 +4,7 @@ layout (location = 1) in vec3 aNormal;
 layout (location = 4) in float aMaterialIndex;
 layout (location = 6) in mat4 aInstanceMatrix;
 
-layout (std140) uniform Matrices {
-  mat4 projection;
-  mat4 view;
-  mat4 lightSpace;
-};
+#include uniform_matrices.glsl
 
 uniform mat3 normalMat;
 uniform mat4 model;
@@ -19,6 +15,10 @@ out VS_OUT {
   vec3 fragPos;
   vec3 normal;
 } vs_out;
+
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
 
 void main() {
   if (drawInstanced) {

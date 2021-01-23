@@ -1,12 +1,13 @@
 #version 330 core
 
-// NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
-#define MAT_COUNT 8
-#define LIGHT_COUNT 8
-
 #include struct_lights.glsl
 #include struct_material.glsl
 #include struct_texture.glsl
+
+#include uniform_matrices.glsl
+#include uniform_data.glsl
+#include uniform_lights.glsl
+#include uniform_materials.glsl
 
 in VS_OUT {
   vec3 fragPos;
@@ -20,29 +21,19 @@ in VS_OUT {
   vec3 tangentFragPos;
 } fs_in;
 
-layout(std140) uniform Data {
-  vec3 viewPos;
-  float time;
-};
-
 uniform samplerCube skybox;
 
-layout (std140) uniform Materials {
-  Material materials[MAT_COUNT];
-};
 uniform Texture textures[MAT_COUNT];
-
-layout(std140) uniform Lights {
-  DirLight light;
-  PointLight pointLights[LIGHT_COUNT];
-  SpotLight spotLights[LIGHT_COUNT];
-};
 
 out vec4 fragColor;
 
 #include fn_tex_dir_light.glsl
 #include fn_tex_point_light.glsl
 #include fn_tex_spot_light.glsl
+
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
 
 void main() {
   int matIdx = int(fs_in.materialIndex);
@@ -142,7 +133,3 @@ void main() {
 
   fragColor = texColor;
 }
-
-////////////////////////////////////////////////////////////
-//
-////////////////////////////////////////////////////////////
