@@ -1,7 +1,5 @@
 #include "Shader.h"
 
-#include <map>
-#include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -271,17 +269,60 @@ void Shader::setUBO(const std::string& name, unsigned int UBO)
 * Load shader file
 */
 std::string Shader::loadSource(const std::string& path, bool optional) {
-    std::string src;
+    std::vector<std::string> lines = loadSourceLines(path, optional);
+
+    std::stringstream sb;
+    
+    for (auto line : lines) {
+        sb << line << std::endl;
+    }
+
+    std::string src = sb.str();
+    //std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
+
+    return src;
+}
+
+/**
+* Load shader file
+*/
+std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool optional) {
     std::ifstream file;
+
+    std::vector<std::string> lines;
 
     file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try {
+        std::ifstream file;
+        //	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+        file.exceptions(std::ifstream::badbit);
         file.open(path);
-        std::stringstream buf;
-        buf << file.rdbuf();
+
+        std::string line;
+        int lineNumber = 1;
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+            std::string k;
+            std::string v1;
+            std::string v2;
+            std::string v3;
+            ss >> k;
+            ss >> v1 >> v2 >> v3;
+
+            if (k == "#include") {
+                for (auto l : processInclude(v1, lineNumber)) {
+                    lines.push_back(l);
+                }
+            }
+            else {
+                lines.push_back(line);
+            }
+            lineNumber++;
+        }
+
         file.close();
-        src = buf.str();
-    } catch (std::ifstream::failure e) {
+    }
+    catch (std::ifstream::failure e) {
         if (!optional) {
             std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;
         }
@@ -289,8 +330,17 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
             std::cout << "INFO::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;
         }
     }
-//    std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
     std::cout << "== " << path << std::endl;
 
-    return src;
+    return lines;
 }
+
+std::vector<std::string> Shader::processInclude(const std::string& includePath, int lineNumber) {
+    std::vector<std::string> result;
+
+    std::string path = assets.shadersDir + "/" + includePath;
+    std::vector<std::string> lines = loadSourceLines(path, false);
+
+    return lines;
+}
+

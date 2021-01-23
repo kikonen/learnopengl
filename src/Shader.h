@@ -3,9 +3,7 @@
 #include <glad/glad.h>
 
 #include <map>
-#include <iostream>
-#include <fstream>
-#include <strstream>
+#include <vector>
 #include <string>
 
 #include <glm/glm.hpp>
@@ -38,6 +36,8 @@ private:
 
     ~Shader();
 
+    std::vector<std::string> loadSourceLines(const std::string& path, bool optional);
+    std::vector<std::string> processInclude(const std::string& includePath, int lineNumber);
 public:
     const void use();
     int setup();

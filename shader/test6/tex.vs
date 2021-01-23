@@ -4,6 +4,10 @@
 #define MAT_COUNT 8
 #define LIGHT_COUNT 8
 
+#include struct_lights.glsl
+#include struct_material.glsl
+#include struct_texture.glsl
+
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec3 aTangent;
@@ -12,58 +16,6 @@ layout (location = 4) in float aMaterialIndex;
 layout (location = 5) in vec2 aTexCoords;
 layout (location = 6) in mat4 aInstanceMatrix;
 // TODO KI InstanceNormalMatrix for lights
-
-struct Material {
-  vec4 ambient;
-  vec4 diffuse;
-  vec4 specular;
-  float shininess;
-
-  bool hasDiffuseTex;
-  bool hasEmissionTex;
-  bool hasSpecularTex;
-  bool hasNormalMap;
-};
-
-struct DirLight {
-  vec3 dir;
-
-  vec4 ambient;
-  vec4 diffuse;
-  vec4 specular;
-
-  bool use;
-};
-struct PointLight {
-  vec3 pos;
-
-  vec4 ambient;
-  vec4 diffuse;
-  vec4 specular;
-
-  float constant;
-  float linear;
-  float quadratic;
-
-  bool use;
-};
-struct SpotLight {
-  vec3 pos;
-  vec3 dir;
-
-  vec4 ambient;
-  vec4 diffuse;
-  vec4 specular;
-
-  float constant;
-  float linear;
-  float quadratic;
-
-  float cutoff;
-  float outerCutoff;
-
-  bool use;
-};
 
 layout (std140) uniform Matrices {
   mat4 projection;

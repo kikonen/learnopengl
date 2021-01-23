@@ -320,8 +320,15 @@ int SceneSetup1::setupNodeBrickwall(Scene* scene)
 		return -1;
 	}
 
+	ModelMesh* mesh2 = new ModelMesh("brickwall2");
+	mesh2->defaultShader = getShader(TEX_TEXTURE);
+	if (mesh2->load(assets)) {
+		return -1;
+	}
+
+
 	for (int i = 0; i < 5; i++) {
-		Node* node = new Node(mesh);
+		Node* node = new Node(i % 2 == 0 ? mesh : mesh2);
 		node->setPos(glm::vec3(-5 + i * 2, -8, 14) + groundOffset);
 		//node->setRotation(glm::vec3(0, 180, 0));
 		//node->blend = true;
