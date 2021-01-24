@@ -25,33 +25,36 @@ void SceneSetup1::setup()
 	setupUBOs();
 
 	setupLightDirectional(scene);
-	setupLightMoving(scene);
+	//setupLightMoving(scene);
 
 	setupNodeDirectional(scene);
-	setupNodeLightMoving(scene);
+	//setupNodeLightMoving(scene);
 
-	setupNodeWaterBall(scene);
+	setupNodeZero(scene);
 
-	setupNodeActive(scene);
+	//setupNodeWaterBall(scene);
+
+	//setupNodeActive(scene);
 	setupNodeCubes(scene);
-	setupNodeCube4(scene);
-	setupNodeBall(scene);
-	setupNodeCow(scene);
-	setupNodeTeapot(scene);
+	//setupNodeCube4(scene);
+	//setupNodeBall(scene);
+	//setupNodeCow(scene);
+	//setupNodeTeapot(scene);
 	//setupNodeBackpack(scene);
 
-	setupNodeSpyro(scene);
-	setupNodeWindow2(scene);
-	setupNodeWindow1(scene);
-	setupNodeStainedWindows(scene);
+	//setupNodeSpyro(scene);
+	//setupNodeWindow2(scene);
+	//setupNodeWindow1(scene);
+	//setupNodeStainedWindows(scene);
 
-	setupNodeBrickwall(scene);
+	//setupNodeBrickwall(scene);
 
-	setupNodeMountains(scene);
+	setupNodeBrickwallBox(scene);
+	//setupNodeMountains(scene);
 
-	setupNodePlanet(scene);
-	setupNodeAsteroids(scene);
-	setupNodeAsteroidBelt(scene);
+	//setupNodePlanet(scene);
+	//setupNodeAsteroids(scene);
+	//setupNodeAsteroidBelt(scene);
 
 	setupNodeSkybox(scene);
 
@@ -69,10 +72,14 @@ void SceneSetup1::process(RenderContext& ctx)
 
 void SceneSetup1::bind(RenderContext& ctx)
 {
+	scene->bind(ctx);
 }
 
 void SceneSetup1::draw(RenderContext& ctx)
 {
+	if (sunNode) {
+		sunNode->setPos(scene->dirLight->pos);
+	}
 	scene->draw(ctx);
 }
 
@@ -143,13 +150,13 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 {
 	// sun
 	Light* sun = new Light();
-	sun->pos = glm::vec3(10, 100, 10) + groundOffset;
+	sun->pos = glm::vec3(10, 100, 10) + scene->groundOffset;
 
 	sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
 	sun->directional = true;
 
-	sun->ambient = { 0.1f, 0.1f, 0.1f, 1.f };
-	sun->diffuse = { 0.0f, 0.1f, 0.0f, 1.f };
+	sun->ambient = { 0.5f, 0.5f, 0.5f, 1.f };
+	sun->diffuse = { 0.0f, 0.2f, 0.0f, 1.f };
 	sun->specular = { 0.0f, 1.0f, 0.0f, 1.f };
 
 	scene->dirLight = sun;
@@ -159,7 +166,7 @@ void SceneSetup1::setupLightMoving(Scene* scene)
 {
 	// light
 	Light* light = new Light();
-	light->pos = glm::vec3(10, -10, 10) + groundOffset;
+	light->pos = glm::vec3(10, -10, 10) + scene->groundOffset;
 
 	// 160
 	light->point = true;
@@ -202,7 +209,8 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 
 	Node* node = new Node(mesh);
 	node->setPos(sun->pos);
-	node->setScale(4.f);
+	node->setScale(3.f);
+	node->light = true;
 	scene->nodes.push_back(node);
 	sunNode = node;
 
@@ -221,7 +229,8 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 	for (auto light : scene->pointLights) {
 		Node* node = new Node(mesh);
 		node->setPos(light->pos);
-		//node->setScale(0.5f);
+		node->setScale(0.5f);
+		node->light = true;
 		scene->nodes.push_back(node);
 		if (light == activeLight) {
 			activeLightNode = node;
@@ -231,7 +240,8 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 	for (auto light : scene->spotLights) {
 		Node* node = new Node(mesh);
 		node->setPos(light->pos);
-		//node->setScale(0.5f);
+		node->setScale(0.5f);
+		node->light = true;
 		scene->nodes.push_back(node);
 		if (light == activeLight) {
 			activeLightNode = node;
@@ -249,7 +259,7 @@ void SceneSetup1::moveLight(RenderContext& ctx)
 	float posX = sin(elapsed / 2) * radius;
 	float posZ = cos(elapsed / 2) * radius;
 
-	glm::vec3 pos = glm::vec3(posX, -8, posZ) + groundOffset;
+	glm::vec3 pos = glm::vec3(posX, -8, posZ) + scene->groundOffset;
 
 	if (activeLight) {
 		activeLight->pos = pos;
@@ -257,6 +267,20 @@ void SceneSetup1::moveLight(RenderContext& ctx)
 	if (activeLightNode) {
 		activeLightNode->setPos(pos);
 	}
+}
+
+int SceneSetup1::setupNodeZero(Scene* scene) {
+	ModelMesh* mesh = new ModelMesh("waterball");
+	mesh->defaultShader = getShader(TEX_TEXTURE);
+	if (mesh->load(assets)) {
+		return -1;
+	}
+
+	Node* node = new Node(mesh);
+	node->setPos(glm::vec3(0, 0, 0) + scene->groundOffset);
+	node->setScale(0.3f);
+	scene->nodes.push_back(node);
+	return 0;
 }
 
 int SceneSetup1::setupNodeWindow1(Scene* scene)
@@ -269,9 +293,10 @@ int SceneSetup1::setupNodeWindow1(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(5, -5, -5) + groundOffset);
+	node->setPos(glm::vec3(5, -5, -5) + scene->groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
+	node->flat = true;
 	scene->nodes.push_back(node);
 	scene->selection.push_back(node);
 	return 0;
@@ -287,9 +312,10 @@ int SceneSetup1::setupNodeWindow2(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(7, -5, -8) + groundOffset);
+	node->setPos(glm::vec3(7, -5, -8) + scene->groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
+	node->flat = true;
 	scene->nodes.push_back(node);
 	//	selection.push_back(node);
 	return 0;
@@ -306,9 +332,10 @@ int SceneSetup1::setupNodeStainedWindows(Scene* scene)
 
 	for (int i = 0; i < 10; i++) {
 		Node* node = new Node(mesh);
-		node->setPos(glm::vec3(-10 + i * 2, 0, 10) + groundOffset);
+		node->setPos(glm::vec3(-10 + i * 2, 0, 10) + scene->groundOffset);
 		node->setRotation(glm::vec3(0, 180, 0));
 		node->blend = true;
+		node->flat = true;
 		scene->nodes.push_back(node);
 	}
 	return 0;
@@ -331,9 +358,47 @@ int SceneSetup1::setupNodeBrickwall(Scene* scene)
 
 	for (int i = 0; i < 5; i++) {
 		Node* node = new Node(i % 2 == 0 ? mesh : mesh2);
-		node->setPos(glm::vec3(-5 + i * 2, -8, 14) + groundOffset);
+		node->setPos(glm::vec3(-5 + i * 2, -8, 14) + scene->groundOffset);
 		//node->setRotation(glm::vec3(0, 180, 0));
-		//node->blend = true;
+		node->flat = true;
+		scene->nodes.push_back(node);
+	}
+	return 0;
+}
+
+int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
+{
+	ModelMesh* mesh = new ModelMesh("brickwall2");
+	mesh->defaultShader = getShader(TEX_TEXTURE);
+	if (mesh->load(assets)) {
+		return -1;
+	}
+
+	glm::vec3 pos[] = {
+		{0.0, 1.0, 0.0},
+		{0.0, -1.0, .0},
+		{1.0, 0.0, 0.0},
+		{-1.0, 0.0, 0.0},
+		{0.0, 0.0, 1.0},
+		{0.0, 0.0, -1.0},
+	};
+
+	glm::vec3 rot[] = {
+		{270, 0, 0},
+		{90, 0, 0},
+		{0, 90, 0},
+		{0, 270, 0},
+		{0, 0, 0},
+		{0, 180, 0},
+	};
+
+	float scale = 25;
+	for (int i = 0; i < 6; i++) {
+		Node* node = new Node(mesh);
+		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 3, 0) + scene->groundOffset);
+		node->setScale(scale);
+		node->setRotation(rot[i]);
+		node->flat = true;
 		scene->nodes.push_back(node);
 	}
 	return 0;
@@ -349,7 +414,7 @@ int SceneSetup1::setupNodeSpyro(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, 20, 0) + groundOffset);
+	node->setPos(glm::vec3(0, 20, 0) + scene->groundOffset);
 	node->setScale(0.1f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -365,7 +430,7 @@ int SceneSetup1::setupNodeBackpack(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, -8, 0) + groundOffset);
+	node->setPos(glm::vec3(0, -8, 0) + scene->groundOffset);
 	node->setScale(1.5f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -382,7 +447,7 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(-5, 5, -5) + groundOffset);
+	node->setPos(glm::vec3(-5, 5, -5) + scene->groundOffset);
 	scene->nodes.push_back(node);
 	scene->selection.push_back(node);
 	return 0;
@@ -399,7 +464,7 @@ int SceneSetup1::setupNodeCow(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(5, 5, -5) + groundOffset);
+	node->setPos(glm::vec3(5, 5, -5) + scene->groundOffset);
 	scene->nodes.push_back(node);
 	scene->selection.push_back(node);
 	return 0;
@@ -415,7 +480,7 @@ int SceneSetup1::setupNodeBall(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, -2, 0) + groundOffset);
+	node->setPos(glm::vec3(0, -2, 0) + scene->groundOffset);
 	node->setScale(2.0f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -431,7 +496,7 @@ int SceneSetup1::setupNodeCube4(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(-5, 5, 5) + groundOffset);
+	node->setPos(glm::vec3(-5, 5, 5) + scene->groundOffset);
 	scene->nodes.push_back(node);
 	scene->selection.push_back(node);
 	return 0;
@@ -455,7 +520,7 @@ int SceneSetup1::setupNodeCubes(Scene* scene)
 
 	for (auto p : points) {
 		Node* node = new Node(mesh);
-		node->setPos(p + groundOffset);
+		node->setPos(p + scene->groundOffset);
 		scene->nodes.push_back(node);
 	}
 
@@ -472,11 +537,11 @@ int SceneSetup1::setupNodeActive(Scene* scene)
 	}
 
 	active = new Node(mesh);
-	active->setPos(glm::vec3(0) + groundOffset);
+	active->setPos(glm::vec3(0) + scene->groundOffset);
 	scene->nodes.push_back(active);
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(5, 5, 5) + groundOffset);
+	node->setPos(glm::vec3(5, 5, 5) + scene->groundOffset);
 	scene->nodes.push_back(node);
 	return 0;
 }
@@ -506,7 +571,7 @@ int SceneSetup1::setupNodeWaterBall(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, 3, 0) + groundOffset);
+	node->setPos(glm::vec3(0, 3, 0) + scene->groundOffset);
 	//node->setScale(0.5f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -521,14 +586,14 @@ int SceneSetup1::setupNodePlanet(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(10, 100, 100) + groundOffset);
+	node->setPos(glm::vec3(10, 100, 100) + scene->groundOffset);
 	node->setScale(10);
 	scene->nodes.push_back(node);
 
 	{
 		// light
 		Light* light = new Light();
-		light->pos = glm::vec3(13, 48, 100) + groundOffset;
+		light->pos = glm::vec3(13, 48, 100) + scene->groundOffset;
 
 		// 160
 		light->point = true;
@@ -556,7 +621,7 @@ int SceneSetup1::setupNodeAsteroids(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(10, 50, 100) + groundOffset);
+	node->setPos(glm::vec3(10, 50, 100) + scene->groundOffset);
 	scene->nodes.push_back(node);
 
 	return 0;
@@ -588,7 +653,7 @@ void SceneSetup1::moveActive(RenderContext& ctx)
 		float posY = sin(elapsed * 1.1f) * radius / 3.0f;
 		float posZ = cos(elapsed) * radius / 2.0f;
 
-		active->setPos(glm::vec3(posX, posY, posZ) + groundOffset);
+		active->setPos(glm::vec3(posX, posY, posZ) + scene->groundOffset);
 	}
 
 	if (true) {

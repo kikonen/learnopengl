@@ -12,10 +12,10 @@ void drawQuad()
 	{
 		float quadVertices[] = {
 			// positions        // texture Coords
-			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-			-1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			 0.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-			 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+			-0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
+			-0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
 		};
 		// setup plane VAO
 		glGenVertexArrays(1, &quadVAO);
@@ -57,6 +57,12 @@ void Scene::prepare()
 	prepareDepthMap();
 }
 
+void Scene::bind(RenderContext& ctx)
+{
+	bindDepthMap(ctx);
+	ctx.bindGlobal();
+}
+
 void Scene::draw(RenderContext& ctx)
 {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -72,10 +78,10 @@ void Scene::draw(RenderContext& ctx)
 
 	glEnable(GL_DEPTH_TEST);
 
-	bindDepthMap(ctx);
-	ctx.bindGlobal();
-
 	drawDepthMap(ctx);
+
+	glActiveTexture(ctx.engine.assets.depthMapUnitId);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
 
 	drawScene(ctx);
 	drawNormals(ctx);
@@ -115,6 +121,7 @@ void Scene::drawNodes(RenderContext& ctx)
 		}
 		else {
 			node->bind(ctx, nullptr);
+			node->mesh->bound->shader->setInt("depthMap", ctx.engine.assets.depthMapUnitIndex);
 			node->draw(ctx);
 		}
 	}
@@ -142,6 +149,7 @@ void Scene::drawSelected(RenderContext& ctx)
 		}
 		else {
 			node->bind(ctx, nullptr);
+			node->mesh->bound->shader->setInt("depthMap", ctx.engine.assets.depthMapUnitIndex);
 			node->draw(ctx);
 		}
 	}
@@ -162,7 +170,7 @@ void Scene::drawSelectedStencil(RenderContext& ctx)
 
 	for (auto node : selection) {
 		float scale = node->getScale();
-		node->setScale(scale * 1.02);
+		node->setScale(scale * 1.02f);
 		node->bind(ctx, stencilShader);
 		node->draw(ctx);
 		node->setScale(scale);
@@ -188,6 +196,7 @@ void Scene::drawBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		Node* node = it->second;
 		node->bind(ctx, nullptr);
+		node->mesh->bound->shader->setInt("depthMap", ctx.engine.assets.depthMapUnitIndex);
 		node->draw(ctx);
 	}
 
@@ -215,14 +224,27 @@ void Scene::prepareDepthMap()
 
 void Scene::bindDepthMap(RenderContext& ctx)
 {
-	glm::vec3 lightPos = { 30.f, 30.f, -30.f };
+	//glm::vec3 lightPos = { 30.f, 30.f, -30.f };
+	//glm::vec3 lightPos = { 10.f, 30.f, -20.f };
+	glm::vec3 lightPos = { 5.f, 30.f, -10.f };
 	//lightPos = ctx.engine.camera.getPos();
 
-	float near_plane = 1.0f, far_plane = 100.f;
-	glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane);
-	glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+	const float radius = 10.0f;
+	float posX = sin(glfwGetTime() / 16) * radius;
+	//float posY = sin(glfwGetTime() / 16) * radius;
+	float posZ = cos(glfwGetTime() / 16) * radius;
+
+	lightPos = glm::vec3(posX, 10, posZ) + groundOffset;
+
+	glm::vec3 target = glm::vec3(0.0f) + groundOffset;
+	float near_plane = 1.0f, far_plane = 25.5f;
+	glm::mat4 lightProjection = glm::ortho(-26.0f, 26.0f, -26.0f, 26.0f, near_plane, far_plane);
+	glm::mat4 lightView = glm::lookAt(lightPos, target, glm::vec3(0.0, 1.0, 0.0));
 
 	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
+	dirLight->pos = lightPos;
+	dirLight->dir = target - lightPos;
 
 	ctx.lightSpaceMatrix = lightSpaceMatrix;
 }
@@ -252,25 +274,33 @@ void Scene::drawDepthMap(RenderContext& ctx)
 
 void Scene::drawDepth(RenderContext& ctx)
 {
+	glCullFace(GL_FRONT);
+
 	for (auto node : nodes) {
+		if (node->light) {
+			continue;
+		}
 		node->bind(ctx, depthShader);
 		node->draw(ctx);
 	}
+
+	glCullFace(GL_BACK); 
 }
 
 void Scene::drawDebugDepth(RenderContext& ctx)
 {
 	Shader* shader = depthDebugShader;
 	shader->use();
-	shader->setInt("depthMap", 0);
+	shader->setInt("depthMap", ctx.engine.assets.depthMapUnitIndex);
+
+	glActiveTexture(ctx.engine.assets.depthMapUnitId);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
 
 	float near_plane = 1.0f, far_plane = 7.5f;
 
 	shader->setFloat("nearPlane", near_plane);
 	shader->setFloat("farPLane", far_plane);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
 
 	drawQuad();
 }

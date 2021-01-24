@@ -8,6 +8,8 @@ in VS_OUT {
   flat float materialIndex;
   vec3 fragPos;
   vec3 normal;
+
+  vec4 fragPosLightSpace;
 } vs_in[];
 
 out VS_OUT {
@@ -15,6 +17,8 @@ out VS_OUT {
 
   flat float materialIndex;
   vec3 normal;
+
+  vec4 fragPosLightSpace;
 } gs_out;
 
 vec3 getNormal()
@@ -37,6 +41,7 @@ void sendVertex(int i, vec4 pos) {
   gs_out.materialIndex = vs_in[i].materialIndex;
   gs_out.fragPos = vs_in[i].fragPos;
   gs_out.normal = vs_in[i].normal;
+  gs_out.fragPosLightSpace = vs_in[i].fragPosLightSpace;
   EmitVertex();
 }
 

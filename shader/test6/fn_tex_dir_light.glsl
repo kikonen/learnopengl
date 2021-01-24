@@ -1,3 +1,21 @@
+float calcShadow(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir)
+{
+  // perform perspective divide
+  vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+  // transform to [0,1] range
+  projCoords = projCoords * 0.5 + 0.5;
+  // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+  float closestDepth = texture(shadowMap, projCoords.xy).r;
+  // get depth of current fragment from light's perspective
+  float currentDepth = projCoords.z;
+
+  // check whether current frag pos is in shadow
+  float bias = 0;//max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+  float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+  //shadow = 0;
+  return shadow;
+}
+
 vec4 calculateDirLight(
   DirLight light,
   vec3 normal,
@@ -6,7 +24,8 @@ vec4 calculateDirLight(
   vec4 matDiffuse,
   vec4 matSpecular,
   float matShininess,
-  bool hasNormalMap)
+  bool hasNormalMap,
+  vec4 fragPosLightSpace)
 {
   vec3 lightDir = normalize(-light.dir);
 
@@ -22,5 +41,10 @@ vec4 calculateDirLight(
   float spec = pow(max(dot(viewDir, reflectDir), 0.0), matShininess);
   vec4 specular = light.specular * (spec * matSpecular);
 
-  return ambient + diffuse + specular;
+  // calculate shadow
+  float shadow = calcShadow(fragPosLightSpace, normal, lightDir);
+  vec4 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * matDiffuse;
+
+  return lighting;
+  //return ambient + diffuse + specular;
 }

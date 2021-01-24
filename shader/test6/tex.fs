@@ -16,24 +16,27 @@ in VS_OUT {
   flat float materialIndex;
   vec3 normal;
 
+  vec4 fragPosLightSpace;
+
   vec3 tangentLightPos;
   vec3 tangentViewPos;
   vec3 tangentFragPos;
 } fs_in;
 
 uniform samplerCube skybox;
+uniform sampler2D shadowMap;
 
 uniform Texture textures[MAT_COUNT];
 
 out vec4 fragColor;
 
-#include fn_tex_dir_light.glsl
-#include fn_tex_point_light.glsl
-#include fn_tex_spot_light.glsl
-
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
+
+#include fn_tex_dir_light.glsl
+#include fn_tex_point_light.glsl
+#include fn_tex_spot_light.glsl
 
 void main() {
   int matIdx = int(fs_in.materialIndex);
@@ -85,7 +88,7 @@ void main() {
   vec4 spotShaded;
 
   if (light.use) {
-    dirShaded = calculateDirLight(light, norm, viewDir, matAmbient, matDiffuse, matSpecular, matShininess, hasNormalMap);
+    dirShaded = calculateDirLight(light, norm, viewDir, matAmbient, matDiffuse, matSpecular, matShininess, hasNormalMap, fs_in.fragPosLightSpace);
     hasLight = true;
   }
 
@@ -130,6 +133,7 @@ void main() {
 //    texColor = vec4(0.8, 0, 0, 1.0);
   }
   //texColor = vec4(normal, 1.0);
+  //texColor = fs_in.fragPosLightSpace;
 
   fragColor = texColor;
 }

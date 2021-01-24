@@ -100,22 +100,22 @@ int Skybox::prepare()
 
 void Skybox::assign(Shader* shader)
 {
-    shader->setInt("skybox", 31);
-    glActiveTexture(GL_TEXTURE31);
+    shader->setInt("skybox", assets.skyboxUnitIndex);
+    glActiveTexture(assets.skyboxUnitId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 }
 
 int Skybox::draw(const RenderContext& ctx)
 {
     shader->use();
-    shader->setInt("skybox", 31);
+    shader->setInt("skybox", assets.skyboxUnitIndex);
 
     // remove translation from the view matrix
     glm::mat4 view = glm::mat4(glm::mat3(ctx.view));
     shader->setMat4("view", view);
     shader->setMat4("projection", ctx.projection);
 
-    glActiveTexture(GL_TEXTURE31);
+    glActiveTexture(assets.skyboxUnitId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     glDepthFunc(GL_LEQUAL);

@@ -28,6 +28,8 @@ out VS_OUT {
   flat float materialIndex;
   vec3 normal;
 
+  vec4 fragPosLightSpace;
+
   vec3 tangentLightPos;
   vec3 tangentViewPos;
   vec3 tangentFragPos;
@@ -53,6 +55,7 @@ void main() {
   vs_out.fragPos = vec3(model * vec4(aPos, 1.0));
   vs_out.normal = normalMat * aNormal;
 
+  vs_out.fragPosLightSpace = lightSpace * vec4(vs_out.fragPos, 1.0);
 
   bool hasNormalMap = materials[matIdx].hasNormalMap;
   if (hasNormalMap) {

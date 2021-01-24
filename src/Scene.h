@@ -15,6 +15,7 @@ public:
 	~Scene();
 
 	void prepare();
+	void bind(RenderContext& ctx);
 	void draw(RenderContext& ctx);
 
 	void drawScene(RenderContext& ctx);
@@ -34,20 +35,23 @@ private:
 	void drawDebugDepth(RenderContext& ctx);
 public:
 	bool showNormals = false;
-	Skybox* skybox;
+	Skybox* skybox = nullptr;
+
+	//glm::vec3 groundOffset(0.f, 15.f, -15.f);
+	glm::vec3 groundOffset = { 0.f, 15.f, -40.f };
 
 	std::vector<Node*> selection;
 	std::vector<Node*> nodes;
 
-	Light* dirLight;
+	Light* dirLight = nullptr;
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
 
-	Shader* stencilShader;
-	Shader* normalShader;
+	Shader* stencilShader = nullptr;
+	Shader* normalShader = nullptr;
 
-	Shader* depthShader;
-	Shader* depthDebugShader;
+	Shader* depthShader = nullptr;
+	Shader* depthDebugShader = nullptr;
 
 	unsigned int depthMapFBO;
 	unsigned int depthMap;

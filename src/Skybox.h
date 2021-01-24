@@ -30,7 +30,7 @@ private:
 	unsigned int VAO = 0;
 	unsigned int EBO = 0;
 
-	Shader* shader;
+	Shader* shader = nullptr;
 
 	unsigned int loadCubemap(std::vector<std::string> faces);
 };

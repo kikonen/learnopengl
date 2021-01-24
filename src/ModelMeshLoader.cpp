@@ -36,6 +36,7 @@ const int UNIT_IDS[] = {
 	GL_TEXTURE27,
 	GL_TEXTURE28,
 	GL_TEXTURE29,
+	// NOTE KI 30 == depthMap
 	GL_TEXTURE30,
 	// NOTE KI 31 == skybox
 	GL_TEXTURE31,

@@ -16,7 +16,7 @@ int Test6::onSetup() {
 	SceneSetup1* sceneSetup = setupScene1();
 	currentScene = sceneSetup;
 
-	camera.setPos(glm::vec3(-8, 5, 10.f) + sceneSetup->groundOffset);
+	camera.setPos(glm::vec3(-8, 5, 10.f) + sceneSetup->scene->groundOffset);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -63,7 +63,6 @@ int Test6::onRender(float dt) {
 
 	currentScene->process(ctx);
 
-	ctx.bindGlobal();
 	currentScene->bind(ctx);
 	currentScene->draw(ctx);
 

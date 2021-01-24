@@ -14,6 +14,8 @@ out VS_OUT {
   flat float materialIndex;
   vec3 fragPos;
   vec3 normal;
+
+  vec4 fragPosLightSpace;
 } vs_out;
 
 ////////////////////////////////////////////////////////////
@@ -31,4 +33,6 @@ void main() {
 
   vs_out.fragPos = vec3(model * vec4(aPos, 1.0));
   vs_out.normal = normalMat * aNormal;
+
+  vs_out.fragPosLightSpace = lightSpace * vec4(vs_out.fragPos, 1.0);
 }

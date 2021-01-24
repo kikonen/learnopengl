@@ -24,6 +24,12 @@ int Node::bind(const RenderContext& ctx, Shader* shader)
 		return -1;
 	}
 
+	if (flat) {
+		glDisable(GL_CULL_FACE);
+	} else {
+		glEnable(GL_CULL_FACE);
+	}
+
 	shader = info->shader;
 
 //	shader->setMat4("transform", ctx.projected * modelMat);
@@ -90,7 +96,7 @@ void Node::updateModelMatrix() {
 	// https://learnopengl.com/Lighting/Basic-Lighting
 	// http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
 	// normal = mat3(transpose(inverse(model))) * aNormal;
-	glm::mat3 normalMat = glm::transpose(glm::inverse(modelMat));
+	normalMat = glm::transpose(glm::inverse(glm::mat3(modelMat)));
 }
 
 void Node::setPos(const glm::vec3& pos) {

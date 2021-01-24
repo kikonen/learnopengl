@@ -14,19 +14,23 @@ in VS_OUT {
 
   flat float materialIndex;
   vec3 normal;
+
+  vec4 fragPosLightSpace;
 } fs_in;
 
 uniform samplerCube skybox;
+uniform sampler2D shadowMap;
 
 out vec4 fragColor;
+
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
 
 #include fn_plain_dir_light.glsl
 #include fn_plain_point_light.glsl
 #include fn_plain_spot_light.glsl
 
-////////////////////////////////////////////////////////////
-//
-////////////////////////////////////////////////////////////
 void main() {
   int matIdx = int(fs_in.materialIndex);
   vec3 norm = normalize(fs_in.normal);
@@ -46,7 +50,7 @@ void main() {
   vec4 spotShaded;
 
   if (light.use) {
-    dirShaded = calculateDirLight(light, norm, viewDir, matAmbient, matDiffuse, matSpecular, matShininess);
+    dirShaded = calculateDirLight(light, norm, viewDir, matAmbient, matDiffuse, matSpecular, matShininess, fs_in.fragPosLightSpace);
     hasLight = true;
   }
 
