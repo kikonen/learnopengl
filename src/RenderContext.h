@@ -32,7 +32,7 @@ public:
 
 	glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 
-	const unsigned int skyboxTextureID;
+	const unsigned int skyboxTextureID = -1;
 
 	Light* dirLight = nullptr;
 	const std::vector<Light*> pointLights;

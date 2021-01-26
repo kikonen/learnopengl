@@ -1,5 +1,7 @@
 #include "Node.h"
 
+#include "KIGL.h"
+
 Node::Node(ModelMesh* mesh) : mesh(mesh)
 {
 	dirtyMat = true;

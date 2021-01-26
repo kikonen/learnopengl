@@ -5,6 +5,8 @@
 
 #include "ModelMesh.h"
 
+#include "KIGL.h"
+
 Test6::Test6() {
 	title = "Test 6";
 	assets.shadersDir = "shader/test6";

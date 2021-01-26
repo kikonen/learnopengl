@@ -6,6 +6,7 @@
 #include <string>
 
 #include "ModelMeshLoader.h"
+#include "KIGL.h"
 
 Material* createDefaultMaterial() {
 	Material* mat = new Material("default", 0);

@@ -1,5 +1,6 @@
 #include "RenderContext.h"
 
+#include "KIGL.h"
 
 RenderContext::RenderContext(
 	const Engine& engine, 
@@ -95,15 +96,15 @@ void RenderContext::bindGlobal() const
 
 void RenderContext::bind(Shader* shader, bool wireframe) const
 {
-	{
+	if (skyboxTextureID != -1) {
 		glActiveTexture(engine.assets.skyboxUnitId);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTextureID);
 		shader->setInt("skybox", engine.assets.skyboxUnitIndex);
 	}
 
 	if (useWireframe || wireframe) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 	} else {
-		glPolygonMode(GL_FRONT, GL_FILL);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 }

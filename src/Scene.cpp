@@ -1,5 +1,6 @@
 #include "Scene.h"
 
+#include "KIGL.h"
 
 const unsigned int SHADOW_WIDTH = 1024,
 	SHADOW_HEIGHT = 1024;
@@ -86,6 +87,8 @@ void Scene::draw(RenderContext& ctx)
 	drawScene(ctx);
 	drawNormals(ctx);
 	drawDebugDepth(ctx);
+
+	KIGL::checkErrors("scene.draw");
 }
 
 void Scene::drawScene(RenderContext& ctx)
@@ -183,6 +186,10 @@ void Scene::drawSelectedStencil(RenderContext& ctx)
 
 void Scene::drawBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 {
+	if (nodes.empty()) {
+		return;
+	}
+
 	glEnable(GL_BLEND);
 	glDisable(GL_CULL_FACE);
 
