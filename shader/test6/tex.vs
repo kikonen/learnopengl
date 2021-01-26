@@ -52,7 +52,7 @@ void main() {
   vs_out.materialIndex = aMaterialIndex;
   vs_out.texCoords = aTexCoords;
 
-  vs_out.fragPos = vec3(model * vec4(aPos, 1.0));
+  vs_out.fragPos = (model * vec4(aPos, 1.0)).xyz;
   vs_out.normal = normalMat * aNormal;
 
   vs_out.fragPosLightSpace = lightSpace * vec4(vs_out.fragPos, 1.0);

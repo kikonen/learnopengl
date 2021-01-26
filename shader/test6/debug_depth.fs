@@ -5,7 +5,7 @@ in vec2 texCoords;
 
 uniform float nearPlane;
 uniform float farPlane;
-uniform sampler2D depthMap;
+uniform sampler2D shadowMap;
 
 // required when using a perspective projection matrix
 float LinearizeDepth(float depth)
@@ -16,7 +16,7 @@ float LinearizeDepth(float depth)
 
 void main()
 {
-  float depthValue = texture(depthMap, texCoords).r;
+  float depthValue = texture(shadowMap, texCoords).r;
 //  fragColor = vec4(vec3(LinearizeDepth(depthValue) / farPlane), 1.0); // perspective
   fragColor = vec4(vec3(depthValue), 1.0); // orthographic
 }

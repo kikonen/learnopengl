@@ -30,6 +30,7 @@ public:
 	bool blend = false;
 	bool light = false;
 	bool flat = false;
+	bool skipShadow = false;
 private:
 	
 	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };

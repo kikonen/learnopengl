@@ -11,7 +11,7 @@ Test6::Test6() {
 	title = "Test 6";
 	assets.shadersDir = "shader/test6";
 	//throttleFps = 0;
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	//glfwWindowHint(GLFW_SAMPLES, 4);
 }
 
 int Test6::onSetup() {
@@ -28,7 +28,10 @@ int Test6::onSetup() {
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_MULTISAMPLE);
+	//glDisable(GL_MULTISAMPLE);
+
+	KIGL::startError();
+	KIGL::startDebug();
 
 	return 0;
 }
@@ -58,7 +61,7 @@ int Test6::onRender(float dt) {
 	RenderContext ctx(
 		*this, dt, 
 		view, projection, 
-		scene->skybox->textureID, 
+		scene->skybox ? scene->skybox->textureID : -1,
 		scene->dirLight, scene->pointLights, scene->spotLights);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;

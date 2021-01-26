@@ -399,6 +399,7 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 		node->setScale(scale);
 		node->setRotation(rot[i]);
 		node->flat = true;
+		//node->skipShadow = true;
 		scene->nodes.push_back(node);
 	}
 	return 0;
