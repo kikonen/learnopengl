@@ -13,7 +13,7 @@ Light::~Light()
 }
 
 DirLightUBO Light::toDirLightUBO() {
-	return { dir, 0, ambient, diffuse, specular, use, 0, 0, 0 };
+	return { pos, 0, dir, 0, ambient, diffuse, specular, use, 0, 0, 0 };
 }
 
 PointLightUBO Light::toPointightUBO()

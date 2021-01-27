@@ -34,5 +34,12 @@ void main() {
   vs_out.fragPos = vec3(model * vec4(aPos, 1.0));
   vs_out.normal = normalMat * aNormal;
 
-  vs_out.fragPosLightSpace = lightSpace * vec4(vs_out.fragPos, 1.0);
+  mat4 b = {
+    {0.5f, 0.0f, 0.0f, 0.0f},
+    {0.0f, 0.5f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 0.5f, 0.0f},
+    {0.5f, 0.5f, 0.5f, 1.0f},
+  };
+
+  vs_out.fragPosLightSpace = lightSpace * model * vec4(aPos, 1.0);
 }

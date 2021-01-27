@@ -124,7 +124,7 @@ void Scene::drawNodes(RenderContext& ctx)
 		}
 		else {
 			node->bind(ctx, nullptr);
-			node->mesh->bound->shader->setInt("depthMap", ctx.engine.assets.depthMapUnitIndex);
+			node->mesh->bound->shader->setInt("shadowMap", ctx.engine.assets.depthMapUnitIndex);
 			node->draw(ctx);
 		}
 	}
@@ -152,7 +152,7 @@ void Scene::drawSelected(RenderContext& ctx)
 		}
 		else {
 			node->bind(ctx, nullptr);
-			node->mesh->bound->shader->setInt("depthMap", ctx.engine.assets.depthMapUnitIndex);
+			node->mesh->bound->shader->setInt("shadowMap", ctx.engine.assets.depthMapUnitIndex);
 			node->draw(ctx);
 		}
 	}
@@ -203,7 +203,7 @@ void Scene::drawBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		Node* node = it->second;
 		node->bind(ctx, nullptr);
-		node->mesh->bound->shader->setInt("depthMap", ctx.engine.assets.depthMapUnitIndex);
+		node->mesh->bound->shader->setInt("shadowMap", ctx.engine.assets.depthMapUnitIndex);
 		node->draw(ctx);
 	}
 
@@ -220,10 +220,17 @@ void Scene::prepareDepthMap()
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
 		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	depthShader->setup();
 	depthDebugShader->setup();
@@ -231,27 +238,39 @@ void Scene::prepareDepthMap()
 
 void Scene::bindDepthMap(RenderContext& ctx)
 {
+	glm::mat4 b = {
+		{0.5f, 0.0f, 0.0f, 0.0f},
+		{0.0f, 0.5f, 0.0f, 0.0f},
+		{0.0f, 0.0f, 0.5f, 0.0f},
+		{0.5f, 0.5f, 0.5f, 1.0f},
+	};
+
 	//glm::vec3 lightPos = { 30.f, 30.f, -30.f };
 	//glm::vec3 lightPos = { 10.f, 30.f, -20.f };
 	glm::vec3 lightPos = { 5.f, 30.f, -10.f };
 	//lightPos = ctx.engine.camera.getPos();
 
-	const float radius = 10.0f;
-	float posX = sin(glfwGetTime() / 16) * radius;
-	//float posY = sin(glfwGetTime() / 16) * radius;
-	float posZ = cos(glfwGetTime() / 16) * radius;
+	const float radius = 15.0f;
+	float posX = sin(glfwGetTime() / 8) * radius;
+	//float posY = sin(glfwGetTime() / 16) * radius
+	float posZ = cos(glfwGetTime() / 8) * radius;
 
 	lightPos = glm::vec3(posX, 10, posZ) + groundOffset;
+	//lightPos = glm::vec3(10, 7, 0) + groundOffset;
 
 	glm::vec3 target = glm::vec3(0.0f) + groundOffset;
-	float near_plane = 1.0f, far_plane = 25.5f;
-	glm::mat4 lightProjection = glm::ortho(-26.0f, 26.0f, -26.0f, 26.0f, near_plane, far_plane);
+	//target = lightPos + glm::vec3(1, 0, 0);
 	glm::mat4 lightView = glm::lookAt(lightPos, target, glm::vec3(0.0, 1.0, 0.0));
+
+	float near_plane = 0.1f, far_plane = 100.5f;
+	glm::mat4 lightProjection = glm::ortho(-30.0f, 30.0f, -30.0f, 30.0f, near_plane, far_plane);
+
+	//lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
 
 	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
 	dirLight->pos = lightPos;
-	dirLight->dir = target - lightPos;
+	dirLight->dir = glm::normalize(target - lightPos);
 
 	ctx.lightSpaceMatrix = lightSpaceMatrix;
 }
@@ -259,16 +278,11 @@ void Scene::bindDepthMap(RenderContext& ctx)
 void Scene::drawDepthMap(RenderContext& ctx)
 {
 	// bind
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	// 1. first render to depth map
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	glClear(GL_DEPTH_BUFFER_BIT);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	drawDepth(ctx);
 
@@ -276,38 +290,37 @@ void Scene::drawDepthMap(RenderContext& ctx)
 
 	// reset viewport
 	glViewport(0, 0, ctx.engine.width, ctx.engine.height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void Scene::drawDepth(RenderContext& ctx)
 {
-	glCullFace(GL_FRONT);
+	//glCullFace(GL_FRONT);
 
 	for (auto node : nodes) {
-		if (node->light) {
+		if (node->light || node->skipShadow) {
 			continue;
 		}
 		node->bind(ctx, depthShader);
 		node->draw(ctx);
 	}
 
-	glCullFace(GL_BACK); 
+	//glCullFace(GL_BACK); 
 }
 
 void Scene::drawDebugDepth(RenderContext& ctx)
 {
 	Shader* shader = depthDebugShader;
 	shader->use();
-	shader->setInt("depthMap", ctx.engine.assets.depthMapUnitIndex);
+	shader->setInt("shadowMap", ctx.engine.assets.depthMapUnitIndex);
 
 	glActiveTexture(ctx.engine.assets.depthMapUnitId);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 
-	float near_plane = 1.0f, far_plane = 7.5f;
+	float near_plane = 0.1f, far_plane = 100.5f;
 
 	shader->setFloat("nearPlane", near_plane);
-	shader->setFloat("farPLane", far_plane);
-
+	shader->setFloat("farPlane", far_plane);
 
 	drawQuad();
 }

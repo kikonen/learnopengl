@@ -1,4 +1,5 @@
 struct DirLight {
+  vec3 pos;
   vec3 dir;
 
   vec4 ambient;

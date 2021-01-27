@@ -50,6 +50,7 @@ int Test6::onRender(float dt) {
 	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
 
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 
 	int w = 0;
 	int h = 0;

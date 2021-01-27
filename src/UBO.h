@@ -36,16 +36,18 @@ struct DataUBO {
 };
 
 struct DirLightUBO {
-	glm::vec3 dir;
+	glm::vec3 pos;
 	int pad1;
+	glm::vec3 dir;
+	int pad2;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
 
 	unsigned int use;
-	int pad2;
 	int pad3;
 	int pad4;
+	int pad5;
 };
 
 struct PointLightUBO {

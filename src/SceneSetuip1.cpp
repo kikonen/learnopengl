@@ -25,29 +25,29 @@ void SceneSetup1::setup()
 	setupUBOs();
 
 	setupLightDirectional(scene);
-	//setupLightMoving(scene);
+	setupLightMoving(scene);
 
 	setupNodeDirectional(scene);
-	//setupNodeLightMoving(scene);
+	setupNodeLightMoving(scene);
 
 	setupNodeZero(scene);
 
-	//setupNodeWaterBall(scene);
+	setupNodeWaterBall(scene);
 
-	//setupNodeActive(scene);
+	setupNodeActive(scene);
 	setupNodeCubes(scene);
-	//setupNodeCube4(scene);
-	//setupNodeBall(scene);
-	//setupNodeCow(scene);
-	//setupNodeTeapot(scene);
+	setupNodeCube4(scene);
+	setupNodeBall(scene);
+	setupNodeCow(scene);
+	setupNodeTeapot(scene);
 	//setupNodeBackpack(scene);
 
-	//setupNodeSpyro(scene);
-	//setupNodeWindow2(scene);
-	//setupNodeWindow1(scene);
-	//setupNodeStainedWindows(scene);
+	setupNodeSpyro(scene);
+	setupNodeWindow2(scene);
+	setupNodeWindow1(scene);
+	setupNodeStainedWindows(scene);
 
-	//setupNodeBrickwall(scene);
+	setupNodeBrickwall(scene);
 
 	setupNodeBrickwallBox(scene);
 	//setupNodeMountains(scene);
@@ -156,7 +156,7 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 	sun->directional = true;
 
 	sun->ambient = { 0.5f, 0.5f, 0.5f, 1.f };
-	sun->diffuse = { 0.0f, 0.2f, 0.0f, 1.f };
+	sun->diffuse = { 0.0f, 0.6f, 0.0f, 1.f };
 	sun->specular = { 0.0f, 1.0f, 0.0f, 1.f };
 
 	scene->dirLight = sun;
@@ -209,7 +209,7 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 
 	Node* node = new Node(mesh);
 	node->setPos(sun->pos);
-	node->setScale(3.f);
+	node->setScale(1.5f);
 	node->light = true;
 	scene->nodes.push_back(node);
 	sunNode = node;
@@ -392,10 +392,10 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 		{0, 180, 0},
 	};
 
-	float scale = 25;
+	float scale = 40;
 	for (int i = 0; i < 6; i++) {
 		Node* node = new Node(mesh);
-		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 3, 0) + scene->groundOffset);
+		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 25, 0) + scene->groundOffset);
 		node->setScale(scale);
 		node->setRotation(rot[i]);
 		node->flat = true;
