@@ -52,16 +52,16 @@ void SceneSetup1::setup()
 	setupNodeBrickwallBox(scene);
 	//setupNodeMountains(scene);
 
-	//setupNodePlanet(scene);
-	//setupNodeAsteroids(scene);
-	//setupNodeAsteroidBelt(scene);
+	setupNodePlanet(scene);
+	setupNodeAsteroids(scene);
+	setupNodeAsteroidBelt(scene);
 
 	setupNodeSkybox(scene);
 
 	scene->stencilShader = getShader(TEX_STENCIL);
 	scene->normalShader = getShader(TEX_NORMAL);
-	scene->depthShader = getShader(TEX_SIMPLE_DEPTH);
-	scene->depthDebugShader = getShader(TEX_DEBUG_DEPTH);
+	scene->shadowShader = getShader(TEX_SIMPLE_DEPTH);
+	scene->shadowDebugShader = getShader(TEX_DEBUG_DEPTH);
 }
 
 void SceneSetup1::process(RenderContext& ctx)

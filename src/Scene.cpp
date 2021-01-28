@@ -49,18 +49,18 @@ void Scene::prepare()
 	for (auto node : nodes) {
 		node->prepare(nullptr);
 		node->prepare(stencilShader);
-		node->prepare(depthShader);
+		node->prepare(shadowShader);
 		if (showNormals) {
 			node->prepare(normalShader);
 		}
 	}
 
-	prepareDepthMap();
+	prepareShadowMap();
 }
 
 void Scene::bind(RenderContext& ctx)
 {
-	bindDepthMap(ctx);
+	bindShadowMap(ctx);
 	ctx.bindGlobal();
 }
 
@@ -78,15 +78,15 @@ void Scene::draw(RenderContext& ctx)
 
 	glEnable(GL_DEPTH_TEST);
 
-	drawDepthMap(ctx);
+	drawShadowMap(ctx);
 
 	glActiveTexture(ctx.engine.assets.depthMapUnitId);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glBindTexture(GL_TEXTURE_2D, shadowMap);
 
 	drawScene(ctx);
 
 	drawNormals(ctx);
-	drawDebugDepth(ctx);
+	drawDebugShadowMap(ctx);
 
 	KIGL::checkErrors("scene.draw");
 }
@@ -211,13 +211,13 @@ void Scene::drawBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 	glDisable(GL_BLEND);
 }
 
-void Scene::prepareDepthMap()
+void Scene::prepareShadowMap()
 {
-	glGenFramebuffers(1, &depthMapFBO);
+	glGenFramebuffers(1, &shadowMapFBO);
 
 	// depth map
-	glGenTextures(1, &depthMap);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glGenTextures(1, &shadowMap);
+	glBindTexture(GL_TEXTURE_2D, shadowMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
 		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
@@ -226,17 +226,17 @@ void Scene::prepareDepthMap()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	depthShader->setup();
-	depthDebugShader->setup();
+	shadowShader->setup();
+	shadowDebugShader->setup();
 }
 
-void Scene::bindDepthMap(RenderContext& ctx)
+void Scene::bindShadowMap(RenderContext& ctx)
 {
 	glm::mat4 b = {
 		{0.5f, 0.0f, 0.0f, 0.0f},
@@ -275,16 +275,16 @@ void Scene::bindDepthMap(RenderContext& ctx)
 	ctx.lightSpaceMatrix = lightSpaceMatrix;
 }
 
-void Scene::drawDepthMap(RenderContext& ctx)
+void Scene::drawShadowMap(RenderContext& ctx)
 {
 	// bind
 	// 1. first render to depth map
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	drawDepth(ctx);
+	drawShadow(ctx);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -293,29 +293,63 @@ void Scene::drawDepthMap(RenderContext& ctx)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
-void Scene::drawDepth(RenderContext& ctx)
+void Scene::drawShadow(RenderContext& ctx)
 {
 	//glCullFace(GL_FRONT);
 
+	std::vector<Node*> blendedNodes;
 	for (auto node : nodes) {
 		if (node->light || node->skipShadow) {
 			continue;
 		}
-		node->bind(ctx, depthShader);
-		node->draw(ctx);
+		if (node->blend) {
+			blendedNodes.push_back(node);
+		}
+		else {
+			node->bind(ctx, shadowShader);
+			node->draw(ctx);
+		}
 	}
+
+	drawBlendedShadow(blendedNodes, ctx);
 
 	//glCullFace(GL_BACK); 
 }
 
-void Scene::drawDebugDepth(RenderContext& ctx)
+void Scene::drawBlendedShadow(std::vector<Node*>& nodes, RenderContext& ctx)
 {
-	Shader* shader = depthDebugShader;
+	if (nodes.empty()) {
+		return;
+	}
+
+	glEnable(GL_BLEND);
+	glDisable(GL_CULL_FACE);
+
+	// TODO KI discards nodes if *same* distance
+	std::map<float, Node*> sorted;
+	for (auto node : nodes) {
+		float distance = glm::length(ctx.engine.camera.getPos() - node->getPos());
+		sorted[distance] = node;
+	}
+
+	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
+		Node* node = it->second;
+		node->bind(ctx, shadowShader);
+		node->draw(ctx);
+	}
+
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+}
+
+void Scene::drawDebugShadowMap(RenderContext& ctx)
+{
+	Shader* shader = shadowDebugShader;
 	shader->use();
 	shader->setInt("shadowMap", ctx.engine.assets.depthMapUnitIndex);
 
 	glActiveTexture(ctx.engine.assets.depthMapUnitId);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glBindTexture(GL_TEXTURE_2D, shadowMap);
 
 	float near_plane = 0.1f, far_plane = 100.5f;
 
