@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ShadowMap.cpp" />
     <ClCompile Include="src\KIGL.cpp" />
     <ClCompile Include="src\SceneSetuip1.cpp" />
     <ClCompile Include="src\Scene.cpp" />
@@ -183,6 +184,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ShadowMap.h" />
     <ClInclude Include="src\KIGL.h" />
     <ClInclude Include="src\SceneSetup1.h" />
     <ClInclude Include="src\Scene.h" />

@@ -7,11 +7,13 @@
 #include "RenderContext.h"
 #include "Node.h"
 #include "Skybox.h"
+#include "ShadowMap.h"
+
 
 class Scene
 {
 public:
-	Scene();
+	Scene(const Assets& assets);
 	~Scene();
 
 	void prepare();
@@ -27,20 +29,12 @@ private:
 	void drawSelected(RenderContext& ctx);
 	void drawBlended(std::vector<Node*>& nodes, RenderContext& ctx);
 
-	void prepareShadowMap();
-	void bindShadowMap(RenderContext& ctx);
-	void drawShadowMap(RenderContext& ctx);
-
-	void drawShadow(RenderContext& ctx);
-	void drawBlendedShadow(std::vector<Node*>& nodes, RenderContext& ctx);
-
-	void drawDebugShadowMap(RenderContext& ctx);
 public:
+	const Assets& assets;
+
 	bool showNormals = false;
 	Skybox* skybox = nullptr;
-
-	//glm::vec3 groundOffset(0.f, 15.f, -15.f);
-	glm::vec3 groundOffset = { 0.f, 15.f, -40.f };
+	ShadowMap* shadowMap = nullptr;
 
 	std::vector<Node*> selection;
 	std::vector<Node*> nodes;
@@ -51,12 +45,6 @@ public:
 
 	Shader* stencilShader = nullptr;
 	Shader* normalShader = nullptr;
-
-	Shader* shadowShader = nullptr;
-	Shader* shadowDebugShader = nullptr;
-
-	unsigned int shadowMapFBO;
-	unsigned int shadowMap;
 
 private:
 };

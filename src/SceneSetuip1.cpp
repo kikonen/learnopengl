@@ -20,7 +20,7 @@ Shader* SceneSetup1::getShader(const std::string& name, const std::string& geome
 
 void SceneSetup1::setup()
 {
-	scene = new Scene();
+	scene = new Scene(assets);
 
 	setupUBOs();
 
@@ -60,8 +60,6 @@ void SceneSetup1::setup()
 
 	scene->stencilShader = getShader(TEX_STENCIL);
 	scene->normalShader = getShader(TEX_NORMAL);
-	scene->shadowShader = getShader(TEX_SIMPLE_DEPTH);
-	scene->shadowDebugShader = getShader(TEX_DEBUG_DEPTH);
 }
 
 void SceneSetup1::process(RenderContext& ctx)
@@ -150,7 +148,7 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 {
 	// sun
 	Light* sun = new Light();
-	sun->pos = glm::vec3(10, 100, 10) + scene->groundOffset;
+	sun->pos = glm::vec3(10, 100, 10) + assets.groundOffset;
 
 	sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
 	sun->directional = true;
@@ -166,7 +164,7 @@ void SceneSetup1::setupLightMoving(Scene* scene)
 {
 	// light
 	Light* light = new Light();
-	light->pos = glm::vec3(10, -10, 10) + scene->groundOffset;
+	light->pos = glm::vec3(10, -10, 10) + assets.groundOffset;
 
 	// 160
 	light->point = true;
@@ -259,7 +257,7 @@ void SceneSetup1::moveLight(RenderContext& ctx)
 	float posX = sin(elapsed / 2) * radius;
 	float posZ = cos(elapsed / 2) * radius;
 
-	glm::vec3 pos = glm::vec3(posX, -8, posZ) + scene->groundOffset;
+	glm::vec3 pos = glm::vec3(posX, -8, posZ) + assets.groundOffset;
 
 	if (activeLight) {
 		activeLight->pos = pos;
@@ -277,7 +275,7 @@ int SceneSetup1::setupNodeZero(Scene* scene) {
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, 0, 0) + scene->groundOffset);
+	node->setPos(glm::vec3(0, 0, 0) + assets.groundOffset);
 	node->setScale(0.3f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -293,7 +291,7 @@ int SceneSetup1::setupNodeWindow1(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(5, -5, -5) + scene->groundOffset);
+	node->setPos(glm::vec3(5, -5, -5) + assets.groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	node->flat = true;
@@ -312,7 +310,7 @@ int SceneSetup1::setupNodeWindow2(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(7, -5, -8) + scene->groundOffset);
+	node->setPos(glm::vec3(7, -5, -8) + assets.groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	node->flat = true;
@@ -332,7 +330,7 @@ int SceneSetup1::setupNodeStainedWindows(Scene* scene)
 
 	for (int i = 0; i < 10; i++) {
 		Node* node = new Node(mesh);
-		node->setPos(glm::vec3(-10 + i * 2, 0, 10) + scene->groundOffset);
+		node->setPos(glm::vec3(-10 + i * 2, 0, 10) + assets.groundOffset);
 		node->setRotation(glm::vec3(0, 180, 0));
 		node->blend = true;
 		node->flat = true;
@@ -358,7 +356,7 @@ int SceneSetup1::setupNodeBrickwall(Scene* scene)
 
 	for (int i = 0; i < 5; i++) {
 		Node* node = new Node(i % 2 == 0 ? mesh : mesh2);
-		node->setPos(glm::vec3(-5 + i * 2, -8, 14) + scene->groundOffset);
+		node->setPos(glm::vec3(-5 + i * 2, -8, 14) + assets.groundOffset);
 		//node->setRotation(glm::vec3(0, 180, 0));
 		node->flat = true;
 		scene->nodes.push_back(node);
@@ -395,7 +393,7 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 	float scale = 100;
 	for (int i = 0; i < 1; i++) {
 		Node* node = new Node(mesh);
-		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 90, 0) + scene->groundOffset);
+		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 90, 0) + assets.groundOffset);
 		node->setScale(scale);
 		node->setRotation(rot[i]);
 		node->flat = true;
@@ -415,7 +413,7 @@ int SceneSetup1::setupNodeSpyro(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, 20, 0) + scene->groundOffset);
+	node->setPos(glm::vec3(0, 20, 0) + assets.groundOffset);
 	node->setScale(0.1f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -431,7 +429,7 @@ int SceneSetup1::setupNodeBackpack(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, -8, 0) + scene->groundOffset);
+	node->setPos(glm::vec3(0, -8, 0) + assets.groundOffset);
 	node->setScale(1.5f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -448,7 +446,7 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(-5, 5, -5) + scene->groundOffset);
+	node->setPos(glm::vec3(-5, 5, -5) + assets.groundOffset);
 	scene->nodes.push_back(node);
 	scene->selection.push_back(node);
 	return 0;
@@ -465,7 +463,7 @@ int SceneSetup1::setupNodeCow(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(5, 5, -5) + scene->groundOffset);
+	node->setPos(glm::vec3(5, 5, -5) + assets.groundOffset);
 	scene->nodes.push_back(node);
 	scene->selection.push_back(node);
 	return 0;
@@ -481,7 +479,7 @@ int SceneSetup1::setupNodeBall(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, -2, 0) + scene->groundOffset);
+	node->setPos(glm::vec3(0, -2, 0) + assets.groundOffset);
 	node->setScale(2.0f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -497,7 +495,7 @@ int SceneSetup1::setupNodeCube4(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(-5, 5, 5) + scene->groundOffset);
+	node->setPos(glm::vec3(-5, 5, 5) + assets.groundOffset);
 	scene->nodes.push_back(node);
 	scene->selection.push_back(node);
 	return 0;
@@ -521,7 +519,7 @@ int SceneSetup1::setupNodeCubes(Scene* scene)
 
 	for (auto p : points) {
 		Node* node = new Node(mesh);
-		node->setPos(p + scene->groundOffset);
+		node->setPos(p + assets.groundOffset);
 		scene->nodes.push_back(node);
 	}
 
@@ -538,11 +536,11 @@ int SceneSetup1::setupNodeActive(Scene* scene)
 	}
 
 	active = new Node(mesh);
-	active->setPos(glm::vec3(0) + scene->groundOffset);
+	active->setPos(glm::vec3(0) + assets.groundOffset);
 	scene->nodes.push_back(active);
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(5, 5, 5) + scene->groundOffset);
+	node->setPos(glm::vec3(5, 5, 5) + assets.groundOffset);
 	scene->nodes.push_back(node);
 	return 0;
 }
@@ -572,7 +570,7 @@ int SceneSetup1::setupNodeWaterBall(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, 3, 0) + scene->groundOffset);
+	node->setPos(glm::vec3(0, 3, 0) + assets.groundOffset);
 	//node->setScale(0.5f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -587,14 +585,14 @@ int SceneSetup1::setupNodePlanet(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(10, 100, 100) + scene->groundOffset);
+	node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
 	node->setScale(10);
 	scene->nodes.push_back(node);
 
 	{
 		// light
 		Light* light = new Light();
-		light->pos = glm::vec3(13, 48, 100) + scene->groundOffset;
+		light->pos = glm::vec3(13, 48, 100) + assets.groundOffset;
 
 		// 160
 		light->point = true;
@@ -622,7 +620,7 @@ int SceneSetup1::setupNodeAsteroids(Scene* scene)
 	}
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(10, 50, 100) + scene->groundOffset);
+	node->setPos(glm::vec3(10, 50, 100) + assets.groundOffset);
 	scene->nodes.push_back(node);
 
 	return 0;
@@ -654,7 +652,7 @@ void SceneSetup1::moveActive(RenderContext& ctx)
 		float posY = sin(elapsed * 1.1f) * radius / 3.0f;
 		float posZ = cos(elapsed) * radius / 2.0f;
 
-		active->setPos(glm::vec3(posX, posY, posZ) + scene->groundOffset);
+		active->setPos(glm::vec3(posX, posY, posZ) + assets.groundOffset);
 	}
 
 	if (true) {
