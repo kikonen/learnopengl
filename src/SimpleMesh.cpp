@@ -66,7 +66,7 @@ int SimpleMesh::prepare() {
 }
 
 int SimpleMesh::bind(float dt, const glm::mat4& vpMat) {
-	shader->use();
+	shader->bind();
 	glBindVertexArray(VAO);
 	return 0;
 }

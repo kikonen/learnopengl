@@ -173,10 +173,7 @@
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
-    <ClCompile Include="src\Test1.h" />
     <ClCompile Include="src\glad.c" />
-    <ClCompile Include="src\Test2.h" />
-    <ClCompile Include="src\Test3.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Tri.cpp" />
     <ClCompile Include="src\Vertex.cpp" />
@@ -208,7 +205,6 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\Test3.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Tri.h" />
     <ClInclude Include="src\Vertex.h" />

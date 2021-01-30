@@ -34,11 +34,9 @@ int Node::bind(const RenderContext& ctx, Shader* shader)
 
 	shader = info->shader;
 
-//	shader->setMat4("transform", ctx.projected * modelMat);
-//	shader->setMat4("projected", ctx.projected);
-	shader->setMat4("model", modelMat);
-	shader->setMat3("normalMat", normalMat);
-	shader->setBool("drawInstanced", false);
+	shader->modelMatrix.set(modelMat);
+	shader->normalMatrix.set(normalMat);
+	shader->drawInstanced.set(false);
 
 	return 0;
 }

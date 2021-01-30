@@ -375,27 +375,27 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 	}
 
 	glm::vec3 pos[] = {
-		{0.0, 1.0, 0.0},
+//		{0.0, 1.0, 0.0},
 		{0.0, -1.0, .0},
-		{1.0, 0.0, 0.0},
-		{-1.0, 0.0, 0.0},
-		{0.0, 0.0, 1.0},
-		{0.0, 0.0, -1.0},
+//		{1.0, 0.0, 0.0},
+//		{-1.0, 0.0, 0.0},
+//		{0.0, 0.0, 1.0},
+//		{0.0, 0.0, -1.0},
 	};
 
 	glm::vec3 rot[] = {
-		{270, 0, 0},
+//		{270, 0, 0},
 		{90, 0, 0},
-		{0, 90, 0},
-		{0, 270, 0},
-		{0, 0, 0},
-		{0, 180, 0},
+//		{0, 90, 0},
+//		{0, 270, 0},
+//		{0, 0, 0},
+//		{0, 180, 0},
 	};
 
-	float scale = 40;
-	for (int i = 0; i < 6; i++) {
+	float scale = 100;
+	for (int i = 0; i < 1; i++) {
 		Node* node = new Node(mesh);
-		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 25, 0) + scene->groundOffset);
+		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 90, 0) + scene->groundOffset);
 		node->setScale(scale);
 		node->setRotation(rot[i]);
 		node->flat = true;

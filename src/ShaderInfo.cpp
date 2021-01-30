@@ -21,6 +21,6 @@ int ShaderInfo::prepare()
 
 void ShaderInfo::bind()
 {
-	shader->use();
+	shader->bind();
 }
 

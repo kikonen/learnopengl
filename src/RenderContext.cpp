@@ -99,7 +99,7 @@ void RenderContext::bind(Shader* shader, bool wireframe) const
 	if (skyboxTextureID != -1) {
 		glActiveTexture(engine.assets.skyboxUnitId);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTextureID);
-		shader->setInt("skybox", engine.assets.skyboxUnitIndex);
+		shader->skybox.set(engine.assets.skyboxUnitIndex);
 	}
 
 	if (useWireframe || wireframe) {

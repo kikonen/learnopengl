@@ -73,12 +73,13 @@ int Skybox::prepare()
     textureID = loadCubemap(faces);
 
     shader = Shader::getShader(assets, name, GEOM_NONE);
+    shader->setup();
 
     if (shader->setup()) {
         return -1;
     }
 
-    shader->use();
+    shader->bind();
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -100,20 +101,21 @@ int Skybox::prepare()
 
 void Skybox::assign(Shader* shader)
 {
-    shader->setInt("skybox", assets.skyboxUnitIndex);
+    shader->skybox.set(assets.skyboxUnitIndex);
     glActiveTexture(assets.skyboxUnitId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 }
 
 int Skybox::draw(const RenderContext& ctx)
 {
-    shader->use();
-    shader->setInt("skybox", assets.skyboxUnitIndex);
+    shader->bind();
+    shader->skybox.set(assets.skyboxUnitIndex);
 
     // remove translation from the view matrix
-    glm::mat4 view = glm::mat4(glm::mat3(ctx.view));
-    shader->setMat4("view", view);
-    shader->setMat4("projection", ctx.projection);
+    glm::mat4 viewMatrix = glm::mat4(glm::mat3(ctx.view));
+
+    shader->viewMatrix.set(viewMatrix);
+    shader->projectionMatrix.set(ctx.projection);
 
     glActiveTexture(assets.skyboxUnitId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);

@@ -124,7 +124,7 @@ void Scene::drawNodes(RenderContext& ctx)
 		}
 		else {
 			node->bind(ctx, nullptr);
-			node->mesh->bound->shader->setInt("shadowMap", ctx.engine.assets.depthMapUnitIndex);
+			node->mesh->bound->shader->shadowMap.set(ctx.engine.assets.depthMapUnitIndex);
 			node->draw(ctx);
 		}
 	}
@@ -152,7 +152,7 @@ void Scene::drawSelected(RenderContext& ctx)
 		}
 		else {
 			node->bind(ctx, nullptr);
-			node->mesh->bound->shader->setInt("shadowMap", ctx.engine.assets.depthMapUnitIndex);
+			node->mesh->bound->shader->shadowMap.set(ctx.engine.assets.depthMapUnitIndex);
 			node->draw(ctx);
 		}
 	}
@@ -203,7 +203,7 @@ void Scene::drawBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		Node* node = it->second;
 		node->bind(ctx, nullptr);
-		node->mesh->bound->shader->setInt("shadowMap", ctx.engine.assets.depthMapUnitIndex);
+		node->mesh->bound->shader->shadowMap.set(ctx.engine.assets.depthMapUnitIndex);
 		node->draw(ctx);
 	}
 
@@ -223,8 +223,10 @@ void Scene::prepareShadowMap()
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glm::vec4 borderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(borderColor));
 
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
@@ -345,16 +347,17 @@ void Scene::drawBlendedShadow(std::vector<Node*>& nodes, RenderContext& ctx)
 void Scene::drawDebugShadowMap(RenderContext& ctx)
 {
 	Shader* shader = shadowDebugShader;
-	shader->use();
-	shader->setInt("shadowMap", ctx.engine.assets.depthMapUnitIndex);
+	shader->bind();
+	shader->shadowMap.set(ctx.engine.assets.depthMapUnitIndex);
 
 	glActiveTexture(ctx.engine.assets.depthMapUnitId);
 	glBindTexture(GL_TEXTURE_2D, shadowMap);
 
 	float near_plane = 0.1f, far_plane = 100.5f;
 
-	shader->setFloat("nearPlane", near_plane);
-	shader->setFloat("farPlane", far_plane);
+
+	shader->nearPlane.set(near_plane);
+	shader->farPlane.set(far_plane);
 
 	drawQuad();
 }

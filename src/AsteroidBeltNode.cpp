@@ -103,6 +103,6 @@ int AsteroidBeltNode::bind(const RenderContext& ctx, Shader* shader)
 
 void AsteroidBeltNode::draw(const RenderContext& ctx)
 {
-	mesh->bound->shader->setBool("drawInstanced", true);
+	mesh->bound->shader->drawInstanced.set(true);
 	drawInstanced(ctx, asteroidMatrixes.size());
 }

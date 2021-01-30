@@ -49,6 +49,7 @@ ShaderInfo* ModelMesh::prepare(Shader* shader)
 
 ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 {
+	shader->setup();
 	ShaderInfo* info = new ShaderInfo(shader);
 
 	if (info->prepare()) {
