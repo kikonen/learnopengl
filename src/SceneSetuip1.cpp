@@ -49,8 +49,8 @@ void SceneSetup1::setup()
 
 	setupNodeBrickwall(scene);
 
-	setupNodeBrickwallBox(scene);
-	//setupNodeMountains(scene);
+	//setupNodeBrickwallBox(scene);
+	setupNodeMountains(scene);
 
 	setupNodePlanet(scene);
 	setupNodeAsteroids(scene);
@@ -155,9 +155,9 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 	sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
 	sun->directional = true;
 
-	sun->ambient = { 0.5f, 0.5f, 0.5f, 1.f };
+	sun->ambient = { 0.3f, 0.3f, 0.3f, 1.f };
 	sun->diffuse = { 0.0f, 0.6f, 0.0f, 1.f };
-	sun->specular = { 0.0f, 1.0f, 0.0f, 1.f };
+	sun->specular = { 0.0f, 0.8f, 0.0f, 1.f };
 
 	scene->dirLight = sun;
 }

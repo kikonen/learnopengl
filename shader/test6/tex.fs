@@ -24,7 +24,7 @@ in VS_OUT {
 } fs_in;
 
 uniform samplerCube skybox;
-uniform sampler2D shadowMap;
+uniform sampler2DShadow shadowMap;
 
 uniform Texture textures[MAT_COUNT];
 

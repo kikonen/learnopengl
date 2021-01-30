@@ -19,7 +19,7 @@ in VS_OUT {
 } fs_in;
 
 uniform samplerCube skybox;
-uniform sampler2D shadowMap;
+uniform sampler2DShadow shadowMap;
 
 out vec4 fragColor;
 

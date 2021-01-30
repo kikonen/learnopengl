@@ -41,5 +41,5 @@ void main() {
     {0.5f, 0.5f, 0.5f, 1.0f},
   };
 
-  vs_out.fragPosLightSpace = lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
+  vs_out.fragPosLightSpace = b * lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 }
