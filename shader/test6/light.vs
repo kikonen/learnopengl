@@ -8,8 +8,8 @@ layout (location = 4) in vec3 aNormal;
 #include uniform_matrices.glsl
 
 //uniform mat4 transform;
-uniform mat4 model;
-uniform mat3 normalMat;
+uniform mat4 modelMatrix;
+uniform mat3 normalMatrix;
 
 out vec4 color;
 flat out float materialIndex;
@@ -22,13 +22,13 @@ out vec3 normal;
 ////////////////////////////////////////////////////////////
 
 void main() {
-  gl_Position = projection * view * model * vec4(aPos, 1.0);
+  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(aPos, 1.0);
 
   color = aColor;
 
   materialIndex = aMaterialIndex;
   texCoords = aTexCoords;
 
-  fragPos = vec3(model * vec4(aPos, 1.0));
-  normal = normalMat * aNormal;
+  fragPos = vec3(modelMatrix * vec4(aPos, 1.0));
+  normal = normalMatrix * aNormal;
 }

@@ -17,8 +17,8 @@ layout (location = 6) in mat4 aInstanceMatrix;
 #include uniform_lights.glsl
 #include uniform_materials.glsl
 
-uniform mat3 normalMat;
-uniform mat4 model;
+uniform mat3 normalMatrix;
+uniform mat4 modelMatrix;
 uniform bool drawInstanced;
 
 out VS_OUT {
@@ -44,16 +44,16 @@ void main() {
   int matIdx = int(aMaterialIndex);
 
   if (drawInstanced) {
-    gl_Position = projection * view * aInstanceMatrix * vec4(aPos, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * aInstanceMatrix * vec4(aPos, 1.0);
   } else {
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(aPos, 1.0);
   }
 
   vs_out.materialIndex = aMaterialIndex;
   vs_out.texCoords = aTexCoords;
 
-  vs_out.fragPos = (model * vec4(aPos, 1.0)).xyz;
-  vs_out.normal = normalMat * aNormal;
+  vs_out.fragPos = (modelMatrix * vec4(aPos, 1.0)).xyz;
+  vs_out.normal = normalMatrix * aNormal;
 
   mat4 b = {
     {0.5f, 0.0f, 0.0f, 0.0f},
@@ -62,12 +62,12 @@ void main() {
     {0.5f, 0.5f, 0.5f, 1.0f},
   };
 
-  vs_out.fragPosLightSpace = lightSpace * model * vec4(aPos, 1.0);
+  vs_out.fragPosLightSpace = lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 
   bool hasNormalMap = materials[matIdx].hasNormalMap;
   if (hasNormalMap) {
-    vec3 T = normalize(normalMat * aTangent);
-    vec3 N = normalize(normalMat * aNormal);
+    vec3 T = normalize(normalMatrix * aTangent);
+    vec3 N = normalize(normalMatrix * aNormal);
     T = normalize(T - dot(T, N) * N);
     vec3 B = cross(N, T);
 

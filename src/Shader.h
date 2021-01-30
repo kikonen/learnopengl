@@ -237,10 +237,10 @@ public:
     std::string fragmentShaderSource;
     std::string geometryShaderSource;
 
-    Shader::Mat4 projectionMatrix = { this, "projection" };
-    Shader::Mat4 viewMatrix = { this, "view" };
-    Shader::Mat4 modelMatrix = { this, "model" };
-    Shader::Mat3 normalMatrix = { this, "normalMat" };
+    Shader::Mat4 projectionMatrix = { this, "projectionMatrix" };
+    Shader::Mat4 viewMatrix = { this, "viewMatrix" };
+    Shader::Mat4 modelMatrix = { this, "modelMatrix" };
+    Shader::Mat3 normalMatrix = { this, "normalMatrix" };
 
     Shader::Int normalMap = { this, "normalMap" };
     Shader::Int shadowMap = { this, "shadowMap" };
