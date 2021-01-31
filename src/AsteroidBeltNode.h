@@ -20,9 +20,7 @@ private:
 	std::vector<glm::mat4> asteroidMatrices;
 	std::vector<glm::mat4> selectionMatrices;
 
-	unsigned int selectedVBO = 0;
-	unsigned int selectedVAO = 0;
-	unsigned int selectedEBO = 0;
+	MeshBuffers selectedBuffers;
 
 	unsigned int asteroidBuffer = -1;
 	unsigned int selectedBuffer = -1;

@@ -17,6 +17,7 @@
 #include "Vertex.h"
 #include "Light.h"
 #include "Assets.h"
+#include "MeshBuffers.h"
 
 class ModelMesh {
 public:
@@ -30,7 +31,7 @@ public:
 	~ModelMesh();
 
 	void prepare();
-	void prepareBuffers(unsigned int currVBO, unsigned int currVAO, unsigned int currEBO);
+	void prepareBuffers(MeshBuffers& curr);
 	ShaderInfo* bind(const RenderContext& ctx, Shader* shader);
 	void draw(const RenderContext& ctx);
 	void drawInstanced(const RenderContext& ctx, int instanceCount);
@@ -48,9 +49,7 @@ public:
 
 	unsigned int textureCount = 0;
 
-	unsigned int VBO = 0;
-	unsigned int VAO = 0;
-	unsigned int EBO = 0;
+	MeshBuffers buffers;
 
 private:
 	std::map<std::string, ShaderInfo*> shaders;

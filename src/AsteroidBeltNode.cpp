@@ -82,22 +82,20 @@ void AsteroidBeltNode::prepare()
 	{
 		glGenBuffers(1, &asteroidBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, asteroidBuffer);
-		glBindVertexArray(mesh->VAO);
+		glBindVertexArray(mesh->buffers.VAO);
 		prepareBuffer(asteroidMatrices);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
 
 	{
-		glGenVertexArrays(1, &selectedVAO);
-		glGenBuffers(1, &selectedVBO);
-		glGenBuffers(1, &selectedEBO);
+		selectedBuffers.prepare();
 
-		mesh->prepareBuffers(selectedVBO, selectedVAO, selectedEBO);
+		mesh->prepareBuffers(selectedBuffers);
 
 		glGenBuffers(1, &selectedBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, selectedBuffer);
-		glBindVertexArray(selectedVAO);
+		glBindVertexArray(selectedBuffers.VAO);
 		prepareBuffer(selectionMatrices);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
@@ -109,7 +107,7 @@ ShaderInfo* AsteroidBeltNode::bind(const RenderContext& ctx, Shader* shader)
 	ShaderInfo* info = Node::bind(ctx, shader);
 
 	if (info->shader->selection) {
-		glBindVertexArray(selectedVAO);
+		glBindVertexArray(selectedBuffers.VAO);
 	}
 
 	return info;

@@ -38,9 +38,7 @@ ModelMesh::~ModelMesh()
 
 void ModelMesh::prepare()
 {
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	buffers.prepare();
 
 	if (bindTexture) {
 		for (auto const& x : materials) {
@@ -49,7 +47,7 @@ void ModelMesh::prepare()
 		}
 	}
 
-	prepareBuffers(VBO, VAO, EBO);
+	prepareBuffers(buffers);
 
 	// materials
 	{
@@ -74,10 +72,10 @@ void ModelMesh::prepare()
 	}
 }
 
-void ModelMesh::prepareBuffers(unsigned int currVBO, unsigned int currVAO, unsigned int currEBO)
+void ModelMesh::prepareBuffers(MeshBuffers& curr)
 {
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	glBindVertexArray(currVAO);
+	glBindVertexArray(curr.VAO);
 
 	// VBO
 	{
@@ -123,7 +121,7 @@ void ModelMesh::prepareBuffers(unsigned int currVBO, unsigned int currVAO, unsig
 			vboBuffer[base + 1] = t[1];
 		}
 
-		glBindBuffer(GL_ARRAY_BUFFER, currVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, curr.VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * sz * vertexes.size(), vboBuffer, GL_STATIC_DRAW);
 
 		// vertex attr
@@ -164,7 +162,7 @@ void ModelMesh::prepareBuffers(unsigned int currVBO, unsigned int currVAO, unsig
 			vertexEboBuffer[base + 2] = vi[2];
 		}
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, currEBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curr.EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tris.size() * 3, vertexEboBuffer, GL_STATIC_DRAW);
 	}
 
@@ -205,7 +203,7 @@ ShaderInfo* ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 
 	info->bind();
 
-	glBindVertexArray(VAO);
+	glBindVertexArray(buffers.VAO);
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
