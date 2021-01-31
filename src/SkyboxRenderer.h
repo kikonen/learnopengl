@@ -8,11 +8,11 @@
 #include "ShaderInfo.h"
 #include "Assets.h"
 
-class Skybox
+class SkyboxRenderer
 {
 public:
-	Skybox(const Assets& assets, const std::string& name);
-	~Skybox();
+	SkyboxRenderer(const Assets& assets, const std::string& name);
+	~SkyboxRenderer();
 
 	int prepare();
 

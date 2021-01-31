@@ -74,11 +74,13 @@ void Scene::drawScene(RenderContext& ctx)
 {
 	int selectedCount = drawNodes(ctx, true);
 	drawNodes(ctx, false);
+
 	if (selectedCount > 0) {
 		drawSelectionStencil(ctx);
 	}
-	if (skybox) {
-		skybox->draw(ctx);
+
+	if (skyboxRenderer) {
+		skyboxRenderer->draw(ctx);
 	}
 }
 

@@ -6,7 +6,6 @@ layout (location = 3) in vec3 aBitangent;
 layout (location = 4) in float aMaterialIndex;
 layout (location = 5) in vec2 aTexCoords;
 layout (location = 6) in mat4 aInstanceMatrix;
-// TODO KI InstanceNormalMatrix for lights
 
 #include struct_lights.glsl
 #include struct_material.glsl
@@ -53,7 +52,13 @@ void main() {
   vs_out.texCoords = aTexCoords;
 
   vs_out.fragPos = (modelMatrix * vec4(aPos, 1.0)).xyz;
-  vs_out.normal = normalMatrix * aNormal;
+
+  if (false && drawInstanced) {
+    //mat3 mat = glm::transpose(glm::inverse(glm::mat3(aInstanceMatrix)));
+    //vs_out.normal = mat * aNormal;
+  } else {
+    vs_out.normal = normalMatrix * aNormal;
+  }
 
   mat4 b = {
     {0.5f, 0.0f, 0.0f, 0.0f},

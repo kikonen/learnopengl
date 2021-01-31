@@ -152,14 +152,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\NormalRenderer.cpp" />
-    <ClCompile Include="src\ShadowMap.cpp" />
+    <ClCompile Include="src\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\KIGL.cpp" />
     <ClCompile Include="src\SceneSetuip1.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\AsteroidBeltNode.cpp" />
     <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\Assets.cpp" />
-    <ClCompile Include="src\Skybox.cpp" />
+    <ClCompile Include="src\SkyboxRenderer.cpp" />
     <ClCompile Include="src\ShaderInfo.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\RenderContext.cpp" />
@@ -186,14 +186,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\NormalRenderer.h" />
-    <ClInclude Include="src\ShadowMap.h" />
+    <ClInclude Include="src\ShadowMapRenderer.h" />
     <ClInclude Include="src\KIGL.h" />
     <ClInclude Include="src\SceneSetup1.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\AsteroidBeltNode.h" />
     <ClInclude Include="src\Sprite.h" />
     <ClInclude Include="src\Assets.h" />
-    <ClInclude Include="src\Skybox.h" />
+    <ClInclude Include="src\SkyboxRenderer.h" />
     <ClInclude Include="src\ShaderInfo.h" />
     <ClInclude Include="src\Image.h" />
     <ClInclude Include="src\RenderContext.h" />

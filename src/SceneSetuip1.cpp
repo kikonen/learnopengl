@@ -135,10 +135,10 @@ void SceneSetup1::setupUBOs()
 
 int SceneSetup1::setupNodeSkybox(Scene* scene)
 {
-	Skybox* skybox = new Skybox(assets, "skybox");
+	SkyboxRenderer* skybox = new SkyboxRenderer(assets, "skybox");
 	skybox->prepare();
 
-	scene->skybox = skybox;
+	scene->skyboxRenderer = skybox;
 
 	return 0;
 }

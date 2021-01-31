@@ -1,4 +1,4 @@
-#include "Skybox.h"
+#include "SkyboxRenderer.h"
 
 
 const float skyboxVertices[] = {
@@ -46,17 +46,17 @@ const float skyboxVertices[] = {
      1.0f, -1.0f,  1.0f
 };
 
-Skybox::Skybox(const Assets& assets, const std::string& name)
+SkyboxRenderer::SkyboxRenderer(const Assets& assets, const std::string& name)
 	: name(name),
     assets(assets)
 {
 }
 
-Skybox::~Skybox()
+SkyboxRenderer::~SkyboxRenderer()
 {
 }
 
-int Skybox::prepare()
+int SkyboxRenderer::prepare()
 {
     const std::string& baseDir = assets.modelsDir;
 	std::string texturePath = baseDir + name;
@@ -99,14 +99,14 @@ int Skybox::prepare()
 	return 0;
 }
 
-void Skybox::assign(Shader* shader)
+void SkyboxRenderer::assign(Shader* shader)
 {
     shader->skybox.set(assets.skyboxUnitIndex);
     glActiveTexture(assets.skyboxUnitId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 }
 
-int Skybox::draw(const RenderContext& ctx)
+int SkyboxRenderer::draw(const RenderContext& ctx)
 {
     shader->bind();
     shader->skybox.set(assets.skyboxUnitIndex);
@@ -138,7 +138,7 @@ int Skybox::draw(const RenderContext& ctx)
 // +Z (front) 
 // -Z (back)
 // -------------------------------------------------------
-unsigned int Skybox::loadCubemap(std::vector<std::string> faces)
+unsigned int SkyboxRenderer::loadCubemap(std::vector<std::string> faces)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);

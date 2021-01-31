@@ -6,8 +6,8 @@
 #include "Light.h"
 #include "RenderContext.h"
 #include "Node.h"
-#include "Skybox.h"
-#include "ShadowMap.h"
+#include "SkyboxRenderer.h"
+#include "ShadowMapRenderer.h"
 #include "NormalRenderer.h"
 
 class Scene
@@ -31,7 +31,7 @@ public:
 	const Assets& assets;
 
 	bool showNormals = false;
-	Skybox* skybox = nullptr;
+	SkyboxRenderer* skyboxRenderer = nullptr;
 
 	ShadowMapRenderer* shadowMapRenderer = nullptr;
 	NormalRenderer* normalRenderer = nullptr;

@@ -1,4 +1,4 @@
-#include "ShadowMap.h"
+#include "ShadowMapRenderer.h"
 
 const unsigned int SHADOW_WIDTH = 1024,
 SHADOW_HEIGHT = 1024;

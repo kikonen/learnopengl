@@ -62,7 +62,7 @@ int Test6::onRender(float dt) {
 	RenderContext ctx(
 		*this, dt, 
 		view, projection, 
-		scene->skybox ? scene->skybox->textureID : -1,
+		scene->skyboxRenderer ? scene->skyboxRenderer->textureID : -1,
 		scene->dirLight, scene->pointLights, scene->spotLights);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
