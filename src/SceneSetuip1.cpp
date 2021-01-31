@@ -629,8 +629,8 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 	mesh->load(assets);
 
 	Node* node = new AsteroidBeltNode(mesh);
+	node->selected = true;
 	scene->nodes.push_back(node);
-//	scene->selection.push_back(node);
 	return 0;
 }
 

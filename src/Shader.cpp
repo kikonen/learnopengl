@@ -171,6 +171,12 @@ int Shader::createProgram() {
         glDeleteShader(geometryShader);
     }
 
+    glValidateProgram(id);
+    if (!success) {
+        glGetProgramInfoLog(id, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::VALIDATE_FAILED " << shaderName << "\n" << infoLog << std::endl;
+    }
+
     // NOTE KI set UBOs only once for shader
     setUBO("Matrices", UBO_MATRICES);
     setUBO("Data", UBO_DATA);

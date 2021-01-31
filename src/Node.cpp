@@ -11,10 +11,9 @@ Node::~Node()
 {
 }
 
-ShaderInfo* Node::prepare(Shader* shader)
+void Node::prepare()
 {
-	ShaderInfo* info = mesh->prepare(shader);
-	return info;
+	mesh->prepare();
 }
 
 ShaderInfo* Node::bind(const RenderContext& ctx, Shader* shader)

@@ -10,7 +10,7 @@ public:
 	Node(ModelMesh* mesh);
 	~Node();
 
-	virtual ShaderInfo* prepare(Shader* shader);
+	virtual void prepare();
 
 	virtual ShaderInfo* bind(const RenderContext& ctx, Shader* shader);
 	virtual void draw(const RenderContext& ctx);

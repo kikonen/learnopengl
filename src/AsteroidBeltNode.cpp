@@ -44,31 +44,14 @@ void AsteroidBeltNode::setup()
 		selectionModel = glm::rotate(selectionModel, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
 
 		// 4. now add to list of matrices
-		asteroidMatrixes.push_back(plainModel);
-		selectionMatrixes.push_back(selectionModel);
+		asteroidMatrices.push_back(plainModel);
+		selectionMatrices.push_back(selectionModel);
 	}
 }
 
-ShaderInfo* AsteroidBeltNode::prepare(Shader* shader)
+void AsteroidBeltNode::prepareBuffer(std::vector<glm::mat4> matrices)
 {
-	ShaderInfo* info = Node::prepare(shader);
-
-	if (info->preparedNode) {
-		return info;
-	}
-	bool selection = info->shader->shaderName == "stencil";
-	info->preparedNode = true;
-
-	glGenBuffers(1, &asteroidBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, asteroidBuffer);
-	if (selection) {
-		glBufferData(GL_ARRAY_BUFFER, selectionMatrixes.size() * sizeof(glm::mat4), &selectionMatrixes[0], GL_STATIC_DRAW);
-	}
-	else {
-		glBufferData(GL_ARRAY_BUFFER, asteroidMatrixes.size() * sizeof(glm::mat4), &asteroidMatrixes[0], GL_STATIC_DRAW);
-	}
-
-	glBindVertexArray(info->VAO);
+	glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(glm::mat4), &matrices[0], GL_STATIC_DRAW);
 
 	// vertex attributes
 	std::size_t vec4Size = sizeof(glm::vec4);
@@ -90,19 +73,50 @@ ShaderInfo* AsteroidBeltNode::prepare(Shader* shader)
 	glVertexAttribDivisor(7, 1);
 	glVertexAttribDivisor(8, 1);
 	glVertexAttribDivisor(9, 1);
+}
 
-	glBindVertexArray(0);
+void AsteroidBeltNode::prepare()
+{
+	Node::prepare();
 
-	return info;
+	{
+		glGenBuffers(1, &asteroidBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, asteroidBuffer);
+		glBindVertexArray(mesh->VAO);
+		prepareBuffer(asteroidMatrices);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+
+	{
+		glGenVertexArrays(1, &selectedVAO);
+		glGenBuffers(1, &selectedVBO);
+		glGenBuffers(1, &selectedEBO);
+
+		mesh->prepareBuffers(selectedVBO, selectedVAO, selectedEBO);
+
+		glGenBuffers(1, &selectedBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, selectedBuffer);
+		glBindVertexArray(selectedVAO);
+		prepareBuffer(selectionMatrices);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
 }
 
 ShaderInfo* AsteroidBeltNode::bind(const RenderContext& ctx, Shader* shader)
 {
-	return Node::bind(ctx, shader);
+	ShaderInfo* info = Node::bind(ctx, shader);
+
+	if (info->shader->selection) {
+		glBindVertexArray(selectedVAO);
+	}
+
+	return info;
 }
 
 void AsteroidBeltNode::draw(const RenderContext& ctx)
 {
 	mesh->bound->shader->drawInstanced.set(true);
-	drawInstanced(ctx, asteroidMatrixes.size());
+	drawInstanced(ctx, asteroidMatrices.size());
 }

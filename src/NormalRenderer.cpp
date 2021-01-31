@@ -10,9 +10,6 @@ NormalRenderer::NormalRenderer(const Assets& assets)
 
 void NormalRenderer::prepare(std::vector<Node*>& nodes)
 {
-	for (auto node : nodes) {
-		node->prepare(shader);
-	}
 }
 
 void NormalRenderer::bind(RenderContext& ctx, std::vector<Node*>& nodes)

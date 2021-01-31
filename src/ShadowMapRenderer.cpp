@@ -114,10 +114,6 @@ void ShadowMapRenderer::bind(RenderContext& ctx)
 
 void ShadowMapRenderer::draw(RenderContext& ctx, std::vector<Node*>& nodes)
 {
-	for (auto node : nodes) {
-		node->prepare(shadowShader);
-	}
-
 	// bind
 	// 1. first render to depth map
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);

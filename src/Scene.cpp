@@ -19,6 +19,10 @@ Scene::~Scene()
 
 void Scene::prepare()
 {
+	for (auto node : nodes) {
+		node->prepare();
+	}
+
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	nodeRenderer->prepare(nodes);
 

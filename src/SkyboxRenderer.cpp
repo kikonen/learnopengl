@@ -79,7 +79,7 @@ int SkyboxRenderer::prepare()
         return -1;
     }
 
-    shader->bind();
+    shader->unbind();
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

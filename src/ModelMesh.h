@@ -29,7 +29,8 @@ public:
 
 	~ModelMesh();
 
-	ShaderInfo* prepare(Shader* shader);
+	void prepare();
+	void prepareBuffers(unsigned int currVBO, unsigned int currVAO, unsigned int currEBO);
 	ShaderInfo* bind(const RenderContext& ctx, Shader* shader);
 	void draw(const RenderContext& ctx);
 	void drawInstanced(const RenderContext& ctx, int instanceCount);
@@ -47,6 +48,10 @@ public:
 
 	unsigned int textureCount = 0;
 
+	unsigned int VBO = 0;
+	unsigned int VAO = 0;
+	unsigned int EBO = 0;
+
 private:
 	std::map<std::string, ShaderInfo*> shaders;
 
@@ -59,8 +64,9 @@ private:
 	std::map<std::string, Material*> materials;
 
 	MaterialsUBO materialsUbo;
-	unsigned int  materialsUboId;
-	unsigned int materialsUboSize;
+	unsigned int  materialsUboId = -1;
+	unsigned int materialsUboSize = -1;
+	const bool bindTexture = true;
 
 	bool hasTexture = false;
 };

@@ -1,8 +1,7 @@
 #include "ShaderInfo.h"
 
 ShaderInfo::ShaderInfo(Shader* shader)
-	: shader(shader),
-	bindTexture(shader->bindTexture)
+	: shader(shader)
 {
 }
 
@@ -12,15 +11,16 @@ int ShaderInfo::prepare()
 		return -1;
 	}
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
 	return 0;
 }
 
 void ShaderInfo::bind()
 {
 	shader->bind();
+}
+
+void ShaderInfo::unbind()
+{
+	shader->unbind();
 }
 

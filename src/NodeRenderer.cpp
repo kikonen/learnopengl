@@ -5,14 +5,11 @@ NodeRenderer::NodeRenderer(const Assets& assets)
 	: assets(assets)
 {
 	selectionShader = Shader::getShader(assets, TEX_SELECTION, "");
+	selectionShader->selection = true;
 }
 
 void NodeRenderer::prepare(std::vector<Node*>& nodes)
 {
-	for (auto node : nodes) {
-		node->prepare(nullptr);
-		node->prepare(selectionShader);
-	}
 }
 
 void NodeRenderer::bind(RenderContext& ctx, std::vector<Node*>& nodes)

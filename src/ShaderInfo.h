@@ -9,13 +9,9 @@ public:
 
 	int prepare();
 	void bind();
+	void unbind();
 public:
-	unsigned int VBO = 0;
-	unsigned int VAO = 0;
-	unsigned int EBO = 0;
-
 	Shader* shader;
-	const bool bindTexture;
 
 	bool preparedNode = false;
 };

@@ -231,6 +231,7 @@ public:
     const bool geometryOptional;
 
     bool bindTexture = false;
+    bool selection = false;
 
     int id = -1;
     std::string vertexShaderSource;

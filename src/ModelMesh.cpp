@@ -36,37 +36,48 @@ ModelMesh::~ModelMesh()
 {
 }
 
-ShaderInfo* ModelMesh::prepare(Shader* shader)
+void ModelMesh::prepare()
 {
-	shader = shader ? shader : defaultShader;
-	ShaderInfo* info = shaders[shader->key];
-	if (!info) {
-		info = prepareShader(shader);
-		shaders[shader->key] = info;
-	}
-	return info;
-}
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
-ShaderInfo* ModelMesh::prepareShader(Shader* shader)
-{
-	shader->setup();
-	ShaderInfo* info = new ShaderInfo(shader);
-
-	if (info->prepare()) {
-		delete info;
-		return nullptr;
-	}
-	info->bind();
-
-	if (info->bindTexture) {
+	if (bindTexture) {
 		for (auto const& x : materials) {
 			Material* material = x.second;
 			material->prepare();
 		}
 	}
 
+	prepareBuffers(VBO, VAO, EBO);
+
+	// materials
+	{
+		glGenBuffers(1, &materialsUboId);
+		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
+		int sz = sizeof(MaterialsUBO);
+		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, sz);
+		materialsUboSize = sz;
+
+		int index = 0;
+		for (auto const& x : materials) {
+			Material* material = x.second;
+			materialsUbo.materials[material->materialIndex] = material->toUBO();
+			index++;
+		}
+
+		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, materialsUboSize, &materialsUbo);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+}
+
+void ModelMesh::prepareBuffers(unsigned int currVBO, unsigned int currVAO, unsigned int currEBO)
+{
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	glBindVertexArray(info->VAO);
+	glBindVertexArray(currVAO);
 
 	// VBO
 	{
@@ -112,7 +123,7 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 			vboBuffer[base + 1] = t[1];
 		}
 
-		glBindBuffer(GL_ARRAY_BUFFER, info->VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, currVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * sz * vertexes.size(), vboBuffer, GL_STATIC_DRAW);
 
 		// vertex attr
@@ -153,7 +164,7 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 			vertexEboBuffer[base + 2] = vi[2];
 		}
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, info->EBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, currEBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tris.size() * 3, vertexEboBuffer, GL_STATIC_DRAW);
 	}
 
@@ -166,36 +177,23 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 	// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
 	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 	glBindVertexArray(0);
+}
 
-	// materials
-	{
-		glGenBuffers(1, &materialsUboId);
-		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
-		int sz = sizeof(MaterialsUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, sz);
-		materialsUboSize = sz;
-
-		int index = 0;
-		for (auto const& x : materials) {
-			Material* material = x.second;
-			materialsUbo.materials[material->materialIndex] = material->toUBO();
-			index++;
-		}
-
-		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, materialsUboSize, &materialsUbo);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+ShaderInfo* ModelMesh::prepareShader(Shader* shader)
+{
+	shader = shader ? shader : defaultShader;
+	ShaderInfo* info = shaders[shader->key];
+	if (!info) {
+		info = new ShaderInfo(shader);
+		info->prepare();
+		shaders[shader->key] = info;
 	}
-
 	return info;
 }
 
 ShaderInfo* ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 {
-	shader = shader ? shader : defaultShader;
-	ShaderInfo* info = shaders[shader->key];
+	ShaderInfo* info = prepareShader(shader);
 	if (!info) {
 		return nullptr;
 	}
@@ -207,11 +205,11 @@ ShaderInfo* ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 
 	info->bind();
 
-	glBindVertexArray(info->VAO);
+	glBindVertexArray(VAO);
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
-		material->bind(info->shader, material->materialIndex, info->bindTexture);
+		material->bind(info->shader, material->materialIndex, bindTexture);
 	}
 
 	ctx.bind(info->shader, useWireframe);
