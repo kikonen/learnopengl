@@ -404,7 +404,7 @@ int SceneSetup1::setupNodeSpyro(Scene* scene)
 {
 	// spyro
 	ModelMesh* mesh = new ModelMesh("spyro2");
-	mesh->defaultShader = getShader(TEX_PLAIN);
+	mesh->defaultShader = getShader(TEX_TEXTURE);
 	if (mesh->load(assets)) {
 		return -1;
 	}
@@ -435,8 +435,8 @@ int SceneSetup1::setupNodeBackpack(Scene* scene)
 int SceneSetup1::setupNodeTeapot(Scene* scene)
 {
 	// teapot
-	ModelMesh* mesh = new ModelMesh("teapot");
-	mesh->defaultShader = getShader(TEX_PLAIN);
+	ModelMesh* mesh = new ModelMesh("smooth_teapot");
+	mesh->defaultShader = getShader(TEX_TEXTURE);
 	mesh->defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
 	if (mesh->load(assets)) {
 		return -1;
@@ -452,9 +452,9 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 int SceneSetup1::setupNodeCow(Scene* scene)
 {
 	// cow
-	ModelMesh* mesh = new ModelMesh("cow");
+	ModelMesh* mesh = new ModelMesh("texture_cow");
 	//mesh->defaultShader = getShader(TEX_PLAIN, "_explode");
-	mesh->defaultShader = getShader(TEX_PLAIN);
+	mesh->defaultShader = getShader(TEX_TEXTURE);
 	mesh->defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
 	if (mesh->load(assets)) {
 		return -1;
