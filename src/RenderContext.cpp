@@ -62,6 +62,13 @@ void RenderContext::bindGlobal() const
 		{
 			int index = 0;
 			for (auto light : pointLights) {
+				if (index >= LIGHT_COUNT) {
+					break;
+				}
+				if (!light->use) {
+					continue;
+				}
+
 				lightsUbo.pointLights[index] = light->toPointightUBO();
 				//lights.pointLights[index].use = false;
 				index++;
@@ -77,6 +84,13 @@ void RenderContext::bindGlobal() const
 		{
 			int index = 0;
 			for (auto light : spotLights) {
+				if (index >= LIGHT_COUNT) {
+					break;
+				}
+				if (!light->use) {
+					continue;
+				}
+
 				lightsUbo.spotLights[index] = light->toSpotLightUBO();
 				//lights.spotLights[index].use = false;
 				index++;

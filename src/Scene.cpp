@@ -18,7 +18,7 @@ void Scene::prepare()
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	for (auto node : nodes) {
 		node->prepare(nullptr);
-		node->prepare(stencilShader);
+		node->prepare(selectionShader);
 		if (showNormals) {
 			node->prepare(normalShader);
 		}
@@ -66,9 +66,14 @@ void Scene::draw(RenderContext& ctx)
 
 void Scene::drawScene(RenderContext& ctx)
 {
-	drawSelected(ctx);
-	drawNodes(ctx);
-	drawSelectedStencil(ctx);
+	int selectedCount = drawNodes(ctx, true);
+	drawNodes(ctx, false);
+	if (selectedCount > 0) {
+		drawSelectionStencil(ctx);
+	}
+	if (skybox) {
+		skybox->draw(ctx);
+	}
 }
 
 void Scene::drawNormals(RenderContext& ctx)
@@ -84,14 +89,24 @@ void Scene::drawNormals(RenderContext& ctx)
 }
 
 // draw all non selected nodes
-void Scene::drawNodes(RenderContext& ctx)
+int Scene::drawNodes(RenderContext& ctx, bool selection)
 {
-	glStencilMask(0x00);
+	int renderCount = 0;
+
+	if (selection) {
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
+	}
+	else {
+		glStencilMask(0x00);
+	}
+
 	std::vector<Node*> blendedNodes;
 	for (auto node : nodes) {
-		if (std::find(selection.begin(), selection.end(), node) != selection.end()) {
+		if (node->selected != selection) {
 			continue;
 		}
+
 		if (node->blend) {
 			blendedNodes.push_back(node);
 		}
@@ -100,54 +115,29 @@ void Scene::drawNodes(RenderContext& ctx)
 			node->mesh->bound->shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 			node->draw(ctx);
 		}
-	}
-
-	if (skybox) {
-		skybox->draw(ctx);
-	}
-	drawBlended(blendedNodes, ctx);
-}
-
-// draw all selected nodes for stencil
-void Scene::drawSelected(RenderContext& ctx)
-{
-	if (selection.empty()) {
-		return;
-	}
-
-	glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	glStencilMask(0xFF);
-
-	std::vector<Node*> blendedNodes;
-	for (auto node : selection) {
-		if (node->blend) {
-			blendedNodes.push_back(node);
-		}
-		else {
-			node->bind(ctx, nullptr);
-			node->mesh->bound->shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
-			node->draw(ctx);
-		}
+		renderCount++;
 	}
 
 	drawBlended(blendedNodes, ctx);
+
+	return renderCount;
 }
 
 // draw all selected nodes with stencil
-void Scene::drawSelectedStencil(RenderContext& ctx)
+void Scene::drawSelectionStencil(RenderContext& ctx)
 {
-	if (selection.empty()) {
-		return;
-	}
-
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);
 	glDisable(GL_DEPTH_TEST);
 
-	for (auto node : selection) {
+	for (auto node : nodes) {
+		if (!node->selected) {
+			continue;
+		}
+
 		float scale = node->getScale();
 		node->setScale(scale * 1.02f);
-		node->bind(ctx, stencilShader);
+		node->bind(ctx, selectionShader);
 		node->draw(ctx);
 		node->setScale(scale);
 	}
@@ -175,6 +165,7 @@ void Scene::drawBlended(std::vector<Node*>& nodes, RenderContext& ctx)
 
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		Node* node = it->second;
+
 		node->bind(ctx, nullptr);
 		node->mesh->bound->shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 		node->draw(ctx);

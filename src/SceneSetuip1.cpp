@@ -58,7 +58,7 @@ void SceneSetup1::setup()
 
 	setupNodeSkybox(scene);
 
-	scene->stencilShader = getShader(TEX_STENCIL);
+	scene->selectionShader = getShader(TEX_SELECTION);
 	scene->normalShader = getShader(TEX_NORMAL);
 }
 
@@ -295,8 +295,8 @@ int SceneSetup1::setupNodeWindow1(Scene* scene)
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	node->flat = true;
+	node->selected = true;
 	scene->nodes.push_back(node);
-	scene->selection.push_back(node);
 	return 0;
 }
 
@@ -447,8 +447,8 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(-5, 5, -5) + assets.groundOffset);
+	node->selected = true;
 	scene->nodes.push_back(node);
-	scene->selection.push_back(node);
 	return 0;
 }
 
@@ -464,8 +464,8 @@ int SceneSetup1::setupNodeCow(Scene* scene)
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(5, 5, -5) + assets.groundOffset);
+	node->selected = true;
 	scene->nodes.push_back(node);
-	scene->selection.push_back(node);
 	return 0;
 }
 
@@ -496,8 +496,8 @@ int SceneSetup1::setupNodeCube4(Scene* scene)
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(-5, 5, 5) + assets.groundOffset);
+	node->selected = true;
 	scene->nodes.push_back(node);
-	scene->selection.push_back(node);
 	return 0;
 }
 

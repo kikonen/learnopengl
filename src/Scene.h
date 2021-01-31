@@ -23,12 +23,12 @@ public:
 	void drawScene(RenderContext& ctx);
 
 private:
-	void drawNormals(RenderContext& ctx);
-	void drawSelectedStencil(RenderContext& ctx);
-	void drawNodes(RenderContext& ctx);
-	void drawSelected(RenderContext& ctx);
+	int drawNodes(RenderContext& ctx, bool selection);
 	void drawBlended(std::vector<Node*>& nodes, RenderContext& ctx);
 
+	void drawSelectionStencil(RenderContext& ctx);
+
+	void drawNormals(RenderContext& ctx);
 public:
 	const Assets& assets;
 
@@ -36,14 +36,13 @@ public:
 	Skybox* skybox = nullptr;
 	ShadowMap* shadowMap = nullptr;
 
-	std::vector<Node*> selection;
 	std::vector<Node*> nodes;
 
 	Light* dirLight = nullptr;
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
 
-	Shader* stencilShader = nullptr;
+	Shader* selectionShader = nullptr;
 	Shader* normalShader = nullptr;
 
 private:
