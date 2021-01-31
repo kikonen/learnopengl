@@ -1,6 +1,6 @@
-# Blender v2.91.0 OBJ File: 'texture_ball.blend'
+# Blender v2.91.0 OBJ File: 'water_ball.blend'
 # www.blender.org
-mtllib texture_ball.mtl
+mtllib water_ball.mtl
 o Sphere
 v 0.000000 0.980785 -0.195090
 v 0.000000 0.923880 -0.382683
@@ -1525,7 +1525,7 @@ vn -0.1626 -0.5528 -0.8173
 vn -0.1385 0.7041 -0.6965
 vn -0.1385 -0.7041 -0.6965
 vn -0.1626 0.5528 -0.8173
-usemtl kari
+usemtl water
 s 1
 f 8/1/1 19/2/2 9/3/3
 f 1/4/4 12/5/5 2/6/6

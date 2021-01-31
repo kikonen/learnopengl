@@ -266,7 +266,7 @@ void SceneSetup1::moveLight(RenderContext& ctx)
 }
 
 int SceneSetup1::setupNodeZero(Scene* scene) {
-	ModelMesh* mesh = new ModelMesh("waterball");
+	ModelMesh* mesh = new ModelMesh("water_ball");
 	mesh->defaultShader = getShader(TEX_TEXTURE);
 	if (mesh->load(assets)) {
 		return -1;
@@ -561,7 +561,7 @@ int SceneSetup1::setupNodeMountains(Scene* scene)
 
 int SceneSetup1::setupNodeWaterBall(Scene* scene)
 {
-	ModelMesh* mesh = new ModelMesh("light");
+	ModelMesh* mesh = new ModelMesh("water_ball");
 	mesh->defaultShader = getShader(TEX_TEXTURE);
 	if (mesh->load(assets)) {
 		return -1;
