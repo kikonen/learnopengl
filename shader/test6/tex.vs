@@ -42,11 +42,14 @@ out VS_OUT {
 void main() {
   int matIdx = int(aMaterialIndex);
 
+  mat4 vmMat;
   if (drawInstanced) {
-    gl_Position = projectionMatrix * viewMatrix * aInstanceMatrix * vec4(aPos, 1.0);
+    vmMat = viewMatrix * aInstanceMatrix;
   } else {
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(aPos, 1.0);
+    vmMat = viewMatrix * modelMatrix;
   }
+
+  gl_Position = projectionMatrix * vmMat * vec4(aPos, 1.0);
 
   vs_out.materialIndex = aMaterialIndex;
   vs_out.texCoords = aTexCoords;
@@ -54,8 +57,8 @@ void main() {
   vs_out.fragPos = (modelMatrix * vec4(aPos, 1.0)).xyz;
 
   if (false && drawInstanced) {
-    //mat3 mat = glm::transpose(glm::inverse(glm::mat3(aInstanceMatrix)));
-    //vs_out.normal = mat * aNormal;
+    mat3 mat = transpose(inverse(mat3(aInstanceMatrix)));
+    vs_out.normal = mat * aNormal;
   } else {
     vs_out.normal = normalMatrix * aNormal;
   }

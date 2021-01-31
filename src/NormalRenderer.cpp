@@ -5,6 +5,7 @@ NormalRenderer::NormalRenderer(const Assets& assets)
 	: assets(assets)
 {
 	shader = Shader::getShader(assets, TEX_NORMAL, "");
+	shader->setup();
 }
 
 void NormalRenderer::prepare(std::vector<Node*>& nodes)

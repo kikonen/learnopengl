@@ -52,17 +52,12 @@ int Test6::onRender(float dt) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	int w = 0;
-	int h = 0;
-	glfwGetWindowSize(window, &w, &h);
-
-	const glm::mat4& view = camera.getView();
-	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)w / (float)h, 0.1f, 1000.0f);
+	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)width / (float)height, 0.1f, 1000.0f);
 
 	RenderContext ctx(
 		*this, dt, 
-		view, projection, 
-		scene->skyboxRenderer ? scene->skyboxRenderer->textureID : -1,
+		camera.getView(), 
+		projection,
 		scene->dirLight, scene->pointLights, scene->spotLights);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;

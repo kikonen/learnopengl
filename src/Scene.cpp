@@ -108,6 +108,7 @@ int Scene::drawNodes(RenderContext& ctx, bool selection)
 		}
 		else {
 			node->bind(ctx, nullptr);
+			skyboxRenderer->assign(node->mesh->bound->shader);
 			node->mesh->bound->shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 			node->draw(ctx);
 		}

@@ -15,10 +15,9 @@ public:
 		const float dt,
 		const glm::mat4& view,
 		const glm::mat4& projection,
-		unsigned int skyboxTextureID,
 		Light* dirLight,
-		const std::vector<Light*> pointLights,
-		const std::vector<Light*> spotLights);
+		const std::vector<Light*>& pointLights,
+		const std::vector<Light*>& spotLights);
 
 	void bindGlobal() const;
 	void bind(Shader* shader, bool wireframe) const;
@@ -32,11 +31,9 @@ public:
 
 	glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 
-	const unsigned int skyboxTextureID = -1;
-
 	Light* dirLight = nullptr;
-	const std::vector<Light*> pointLights;
-	const std::vector<Light*> spotLights;
+	const std::vector<Light*>& pointLights;
+	const std::vector<Light*>& spotLights;
 
 	bool useWireframe = false;
 	bool useLight = true;

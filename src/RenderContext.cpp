@@ -7,16 +7,14 @@ RenderContext::RenderContext(
 	const float dt,
 	const glm::mat4& view, 
 	const glm::mat4& projection,
-	unsigned int skyboxTextureID,
 	Light* dirLight,
-	const std::vector<Light*> pointLights,
-	const std::vector<Light*> spotLights)
+	const std::vector<Light*>& pointLights,
+	const std::vector<Light*>& spotLights)
 	: engine(engine),
 	dt(dt),
 	view(view),
 	projection(projection),
 	projected(projection * view),
-	skyboxTextureID(skyboxTextureID),
 	dirLight(dirLight),
 	pointLights(pointLights),
 	spotLights(spotLights)
@@ -110,12 +108,6 @@ void RenderContext::bindGlobal() const
 
 void RenderContext::bind(Shader* shader, bool wireframe) const
 {
-	if (skyboxTextureID != -1) {
-		glActiveTexture(engine.assets.skyboxUnitId);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTextureID);
-		shader->skybox.set(engine.assets.skyboxUnitIndex);
-	}
-
 	if (useWireframe || wireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 	} else {
