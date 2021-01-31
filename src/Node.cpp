@@ -17,13 +17,13 @@ ShaderInfo* Node::prepare(Shader* shader)
 	return info;
 }
 
-int Node::bind(const RenderContext& ctx, Shader* shader)
+ShaderInfo* Node::bind(const RenderContext& ctx, Shader* shader)
 {
 	updateModelMatrix();
 
 	ShaderInfo* info = mesh->bind(ctx, shader);
 	if (!info) {
-		return -1;
+		return nullptr;
 	}
 
 	if (flat) {
@@ -38,7 +38,7 @@ int Node::bind(const RenderContext& ctx, Shader* shader)
 	shader->normalMatrix.set(normalMat);
 	shader->drawInstanced.set(false);
 
-	return 0;
+	return info;
 }
 
 void Node::draw(const RenderContext& ctx)

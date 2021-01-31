@@ -294,7 +294,6 @@ int SceneSetup1::setupNodeWindow1(Scene* scene)
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	node->flat = true;
-	node->selected = true;
 	scene->nodes.push_back(node);
 	return 0;
 }

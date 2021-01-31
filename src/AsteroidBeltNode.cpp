@@ -96,7 +96,7 @@ ShaderInfo* AsteroidBeltNode::prepare(Shader* shader)
 	return info;
 }
 
-int AsteroidBeltNode::bind(const RenderContext& ctx, Shader* shader)
+ShaderInfo* AsteroidBeltNode::bind(const RenderContext& ctx, Shader* shader)
 {
 	return Node::bind(ctx, shader);
 }

@@ -78,10 +78,6 @@ void Scene::drawScene(RenderContext& ctx)
 	if (selectedCount > 0) {
 		drawSelectionStencil(ctx);
 	}
-
-	if (skyboxRenderer) {
-		skyboxRenderer->draw(ctx);
-	}
 }
 
 // draw all non selected nodes
@@ -99,7 +95,7 @@ int Scene::drawNodes(RenderContext& ctx, bool selection)
 
 	std::vector<Node*> blendedNodes;
 	for (auto node : nodes) {
-		if (node->selected != selection) {
+		if (selection ? !node->selected : node->selected) {
 			continue;
 		}
 
@@ -107,12 +103,16 @@ int Scene::drawNodes(RenderContext& ctx, bool selection)
 			blendedNodes.push_back(node);
 		}
 		else {
-			node->bind(ctx, nullptr);
-			skyboxRenderer->assign(node->mesh->bound->shader);
-			node->mesh->bound->shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
+			ShaderInfo* info = node->bind(ctx, nullptr);
+			skyboxRenderer->assign(info->shader);
+			info->shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 			node->draw(ctx);
 		}
 		renderCount++;
+	}
+
+	if (skyboxRenderer) {
+		skyboxRenderer->draw(ctx);
 	}
 
 	drawBlended(blendedNodes, ctx);

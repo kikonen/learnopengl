@@ -79,7 +79,7 @@ SceneSetup1* Test6::setupScene1()
 	SceneSetup1* sceneSetup = new SceneSetup1(assets, ubo);
 	sceneSetup->setup();
 
-	sceneSetup->scene->showNormals = true;
+	//sceneSetup->scene->showNormals = true;
 	sceneSetup->scene->prepare();
 
 	return sceneSetup;
