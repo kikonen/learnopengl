@@ -16,6 +16,8 @@ public:
 		const Material* material);
 	~Vertex();
 
+	bool operator==(const Vertex& b) const;
+	bool operator!=(const Vertex& b) const;
 public:
 	const glm::vec3 pos;
 	const glm::vec2 texture;
@@ -24,5 +26,7 @@ public:
 	const glm::vec3 tangent;
 
 	const Material* material;
+
+	int index = -1;
 };
 

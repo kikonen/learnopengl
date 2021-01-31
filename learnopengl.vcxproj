@@ -182,6 +182,8 @@
     <ClCompile Include="src\Tri.cpp" />
     <ClCompile Include="src\Vertex.cpp" />
     <ClCompile Include="src\Test6.cpp" />
+    <ClCompile Include="src\TerrainRenderer.cpp" />
+    <ClCompile Include="src\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -218,6 +220,8 @@
     <ClInclude Include="src\Vertex.h" />
     <ClInclude Include="src\Test6.h" />
     <ClInclude Include="src\UBO.h" />
+    <ClInclude Include="src\TerrainRenderer.h" />
+    <ClInclude Include="src\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

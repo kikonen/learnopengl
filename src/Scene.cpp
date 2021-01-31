@@ -7,6 +7,7 @@ Scene::Scene(const Assets& assets)
 	: assets(assets)
 {
 	nodeRenderer = new NodeRenderer(assets);
+	terrainRenderer = new TerrainRenderer(assets);
 	shadowMapRenderer = new ShadowMapRenderer(assets);
 	normalRenderer = new NormalRenderer(assets);
 }
@@ -55,8 +56,10 @@ void Scene::draw(RenderContext& ctx)
 
 	shadowMapRenderer->draw(ctx, nodes);
 
-	dirLight->pos = shadowMapRenderer->lightPos;
-	dirLight->dir = shadowMapRenderer->lightDir;
+	if (dirLight) {
+		dirLight->pos = shadowMapRenderer->lightPos;
+		dirLight->dir = shadowMapRenderer->lightDir;
+	}
 
 	glActiveTexture(ctx.engine.assets.shadowMapUnitId);
 	glBindTexture(GL_TEXTURE_2D, shadowMapRenderer->shadowMap);

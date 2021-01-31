@@ -57,8 +57,8 @@ private:
 	const std::string path = { "/" };
 	const std::string modelName = { "" };
 
-	std::vector<Tri> tris;
-	std::vector<Vertex> vertexes;
+	std::vector<Tri*> tris;
+	std::vector<Vertex*> vertexes;
 
 	std::map<std::string, Material*> materials;
 

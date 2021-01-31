@@ -19,3 +19,18 @@ Vertex::Vertex(
 Vertex::~Vertex()
 {
 }
+
+bool Vertex::operator==(const Vertex& b) const
+{
+	return pos == b.pos &&
+		texture == b.texture &&
+		normal == b.normal &&
+		bitangent == b.bitangent &&
+		tangent == b.tangent &&
+		material == b.material;
+}
+
+bool Vertex::operator!=(const Vertex& b) const
+{
+	return !(*this == b);
+}

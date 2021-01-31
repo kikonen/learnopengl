@@ -16,8 +16,8 @@ public:
 	~ModelMeshLoader();
 
 	int load(
-		std::vector<Tri>& tris,
-		std::vector<Vertex>& vertexes,
+		std::vector<Tri*>& tris,
+		std::vector<Vertex*>& vertexes,
 		std::map<std::string, Material*>& materials
 	);
 
@@ -49,7 +49,8 @@ private:
 
 
 	int resolveVertexIndex(
-		std::vector<Vertex>& vertexes,
+		std::map<glm::vec3*, Vertex*>& vertexMapping,
+		std::vector<Vertex*>& vertexes,
 		std::vector<glm::vec3>& positions,
 		std::vector<glm::vec2>& textures,
 		std::vector<glm::vec3>& normals,

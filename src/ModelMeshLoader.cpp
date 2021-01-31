@@ -61,13 +61,15 @@ ModelMeshLoader::~ModelMeshLoader()
 }
 
 int ModelMeshLoader::load(
-	std::vector<Tri>& tris,
-	std::vector<Vertex>& vertexes,
+	std::vector<Tri*>& tris,
+	std::vector<Vertex*>& vertexes,
 	std::map<std::string, Material*>& materials
 ) {
 	int result = -1;
 
 	std::string name;
+
+	std::map<glm::vec3*, Vertex*> vertexMapping;
 
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec2> textures;
@@ -159,6 +161,7 @@ int ModelMeshLoader::load(
 				glm::uvec3 v = { 0, 0, 0 };
 				for (int i = 0; i < 3; i++) {
 					v[i] = resolveVertexIndex(
+						vertexMapping,
 						vertexes, 
 						positions, 
 						textures, 
@@ -173,8 +176,8 @@ int ModelMeshLoader::load(
 						bitangenti[i]);
 				}
 
-				Tri tri = { v };
-				tri.material = material;
+				Tri* tri = new Tri(v);
+				tri->material = material;
 				tris.push_back(tri);
 			}
 		}
@@ -214,7 +217,8 @@ void ModelMeshLoader::splitFragmentValue(const std::string& v, std::vector<std::
 }
 
 int ModelMeshLoader::resolveVertexIndex(
-	std::vector<Vertex>& vertexes,
+	std::map<glm::vec3*, Vertex*>& vertexMapping,
+	std::vector<Vertex*>& vertexes,
 	std::vector<glm::vec3>& positions,
 	std::vector<glm::vec2>& textures,
 	std::vector<glm::vec3>& normals,
@@ -234,15 +238,29 @@ int ModelMeshLoader::resolveVertexIndex(
 		material = defaultMaterial;
 	}
 
-	Vertex v(
-		positions[pi], 
-		textures.empty() ? EMPTY_TEX : textures[ti], 
-		normals.empty() ? EMPTY_NORMAL : normals[ni], 
+	glm::vec3& pos = positions[pi];
+
+	Vertex* old = vertexMapping[&pos];
+
+	Vertex* v = new Vertex(
+		pos,
+		textures.empty() ? EMPTY_TEX : textures[ti],
+		normals.empty() ? EMPTY_NORMAL : normals[ni],
 		tangents.empty() ? EMPTY_NORMAL : tangents[tangenti],
 		bitangents.empty() ? EMPTY_NORMAL : bitangents[bitangenti],
 		material);
+
+	if (old && *old == *v) {
+		delete v;
+		return old->index;
+	}
+
 	vertexes.push_back(v);
-	return vertexes.size() - 1;
+	v->index = vertexes.size() - 1;
+
+	vertexMapping[&pos] = v;
+
+	return v->index;
 }
 
 glm::vec3 ModelMeshLoader::createNormal(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, glm::uvec3 pi)

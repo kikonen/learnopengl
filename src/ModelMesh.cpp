@@ -84,13 +84,13 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 		float* vboBuffer = new float[sz * vertexes.size()];
 
 		for (int i = 0; i < vertexes.size(); i++) {
-			Vertex& vertex = vertexes[i];
-			const glm::vec3& p = vertex.pos;
-			const glm::vec3& n = vertex.normal;
-			const glm::vec3& tan = vertex.tangent;
-			const glm::vec3& bit = vertex.bitangent;
-			const Material* m = vertex.material;
-			const glm::vec2& t = vertex.texture;
+			Vertex* vertex = vertexes[i];
+			const glm::vec3& p = vertex->pos;
+			const glm::vec3& n = vertex->normal;
+			const glm::vec3& tan = vertex->tangent;
+			const glm::vec3& bit = vertex->bitangent;
+			const Material* m = vertex->material;
+			const glm::vec2& t = vertex->texture;
 
 			int base = i * sz;
 			// vertex
@@ -154,8 +154,8 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 		int* vertexEboBuffer = new int[3 * tris.size()];
 
 		for (int i = 0; i < tris.size(); i++) {
-			Tri& tri = tris[i];
-			glm::uvec3& vi = tri.vertexIndexes;
+			Tri* tri = tris[i];
+			const glm::uvec3& vi = tri->vertexIndexes;
 			const int base = i * 3;
 			vertexEboBuffer[base + 0] = vi[0];
 			vertexEboBuffer[base + 1] = vi[1];

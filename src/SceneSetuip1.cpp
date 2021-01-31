@@ -40,12 +40,13 @@ void SceneSetup1::setup()
 	setupNodeBall(scene);
 	setupNodeCow(scene);
 	setupNodeTeapot(scene);
-	//setupNodeBackpack(scene);
 
 	setupNodeSpyro(scene);
 	setupNodeWindow2(scene);
 	setupNodeWindow1(scene);
 	setupNodeStainedWindows(scene);
+
+	//setupNodeBackpack(scene);
 
 	setupNodeBrickwall(scene);
 

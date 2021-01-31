@@ -13,7 +13,7 @@ public:
 	~Tri();
 
 public:
-	glm::uvec3 vertexIndexes;
-	Material* material = NULL;
+	const glm::uvec3 vertexIndexes;
+	Material* material = nullptr;
 };
 
