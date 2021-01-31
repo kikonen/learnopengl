@@ -8,7 +8,7 @@
 #include "Node.h"
 #include "Skybox.h"
 #include "ShadowMap.h"
-
+#include "NormalRenderer.h"
 
 class Scene
 {
@@ -27,14 +27,14 @@ private:
 	void drawBlended(std::vector<Node*>& nodes, RenderContext& ctx);
 
 	void drawSelectionStencil(RenderContext& ctx);
-
-	void drawNormals(RenderContext& ctx);
 public:
 	const Assets& assets;
 
 	bool showNormals = false;
 	Skybox* skybox = nullptr;
-	ShadowMap* shadowMap = nullptr;
+
+	ShadowMapRenderer* shadowMapRenderer = nullptr;
+	NormalRenderer* normalRenderer = nullptr;
 
 	std::vector<Node*> nodes;
 
@@ -43,7 +43,6 @@ public:
 	std::vector<Light*> spotLights;
 
 	Shader* selectionShader = nullptr;
-	Shader* normalShader = nullptr;
 
 private:
 };

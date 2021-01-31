@@ -59,7 +59,6 @@ void SceneSetup1::setup()
 	setupNodeSkybox(scene);
 
 	scene->selectionShader = getShader(TEX_SELECTION);
-	scene->normalShader = getShader(TEX_NORMAL);
 }
 
 void SceneSetup1::process(RenderContext& ctx)

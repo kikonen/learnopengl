@@ -6,11 +6,14 @@
 Scene::Scene(const Assets& assets)
 	: assets(assets)
 {
-	shadowMap = new ShadowMap(assets);
+	shadowMapRenderer = new ShadowMapRenderer(assets);
+	normalRenderer = new NormalRenderer(assets);
 }
 
 Scene::~Scene()
 {
+	delete shadowMapRenderer;
+	delete normalRenderer;
 }
 
 void Scene::prepare()
@@ -19,17 +22,18 @@ void Scene::prepare()
 	for (auto node : nodes) {
 		node->prepare(nullptr);
 		node->prepare(selectionShader);
-		if (showNormals) {
-			node->prepare(normalShader);
-		}
 	}
 
-	shadowMap->prepare();
+	if (showNormals) {
+		normalRenderer->prepare(nodes);
+	}
+
+	shadowMapRenderer->prepare();
 }
 
 void Scene::bind(RenderContext& ctx)
 {
-	shadowMap->bind(ctx);
+	shadowMapRenderer->bind(ctx);
 	ctx.bindGlobal();
 }
 
@@ -47,19 +51,21 @@ void Scene::draw(RenderContext& ctx)
 
 	glEnable(GL_DEPTH_TEST);
 
-	shadowMap->draw(ctx, nodes);
+	shadowMapRenderer->draw(ctx, nodes);
 
-	dirLight->pos = shadowMap->lightPos;
-	dirLight->dir = shadowMap->lightDir;
+	dirLight->pos = shadowMapRenderer->lightPos;
+	dirLight->dir = shadowMapRenderer->lightDir;
 
 	glActiveTexture(ctx.engine.assets.shadowMapUnitId);
-	glBindTexture(GL_TEXTURE_2D, shadowMap->shadowMap);
+	glBindTexture(GL_TEXTURE_2D, shadowMapRenderer->shadowMap);
 
 	drawScene(ctx);
 
-	drawNormals(ctx);
+	if (showNormals) {
+		normalRenderer->render(ctx, nodes);
+	}
 
-	shadowMap->drawDebug(ctx);
+	shadowMapRenderer->drawDebug(ctx);
 
 	KIGL::checkErrors("scene.draw");
 }
@@ -73,18 +79,6 @@ void Scene::drawScene(RenderContext& ctx)
 	}
 	if (skybox) {
 		skybox->draw(ctx);
-	}
-}
-
-void Scene::drawNormals(RenderContext& ctx)
-{
-	if (!showNormals) {
-		return;
-	}
-
-	for (auto node : nodes) {
-		node->bind(ctx, normalShader);
-		node->draw(ctx);
 	}
 }
 

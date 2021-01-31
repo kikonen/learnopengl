@@ -33,7 +33,7 @@ void drawQuad()
 }
 
 
-ShadowMap::ShadowMap(const Assets& assets)
+ShadowMapRenderer::ShadowMapRenderer(const Assets& assets)
 	: assets(assets)
 {
 	shadowShader = Shader::getShader(assets, TEX_SIMPLE_DEPTH, "");
@@ -41,7 +41,7 @@ ShadowMap::ShadowMap(const Assets& assets)
 }
 
 
-void ShadowMap::prepare()
+void ShadowMapRenderer::prepare()
 {
 	glGenFramebuffers(1, &shadowMapFBO);
 
@@ -73,7 +73,7 @@ void ShadowMap::prepare()
 	shadowDebugShader->setup();
 }
 
-void ShadowMap::bind(RenderContext& ctx)
+void ShadowMapRenderer::bind(RenderContext& ctx)
 {
 	glm::mat4 b = {
 		{0.5f, 0.0f, 0.0f, 0.0f},
@@ -112,7 +112,7 @@ void ShadowMap::bind(RenderContext& ctx)
 	ctx.lightSpaceMatrix = lightSpaceMatrix;
 }
 
-void ShadowMap::draw(RenderContext& ctx, std::vector<Node*>& nodes)
+void ShadowMapRenderer::draw(RenderContext& ctx, std::vector<Node*>& nodes)
 {
 	for (auto node : nodes) {
 		node->prepare(shadowShader);
@@ -134,7 +134,7 @@ void ShadowMap::draw(RenderContext& ctx, std::vector<Node*>& nodes)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
-void ShadowMap::drawNodes(RenderContext& ctx, std::vector<Node*>& nodes)
+void ShadowMapRenderer::drawNodes(RenderContext& ctx, std::vector<Node*>& nodes)
 {
 	//glCullFace(GL_FRONT);
 
@@ -157,7 +157,7 @@ void ShadowMap::drawNodes(RenderContext& ctx, std::vector<Node*>& nodes)
 	//glCullFace(GL_BACK); 
 }
 
-void ShadowMap::drawBlendedNodes(std::vector<Node*>& nodes, RenderContext& ctx)
+void ShadowMapRenderer::drawBlendedNodes(std::vector<Node*>& nodes, RenderContext& ctx)
 {
 	if (nodes.empty()) {
 		return;
@@ -183,7 +183,7 @@ void ShadowMap::drawBlendedNodes(std::vector<Node*>& nodes, RenderContext& ctx)
 	glDisable(GL_BLEND);
 }
 
-void ShadowMap::drawDebug(RenderContext& ctx)
+void ShadowMapRenderer::drawDebug(RenderContext& ctx)
 {
 	Shader* shader = shadowDebugShader;
 	shader->bind();

@@ -5,10 +5,10 @@
 #include "RenderContext.h"
 #include "Node.h"
 
-class ShadowMap
+class ShadowMapRenderer
 {
 public:
-	ShadowMap(const Assets& assets);
+	ShadowMapRenderer(const Assets& assets);
 
 	void prepare();
 	void bind(RenderContext& ctx);
