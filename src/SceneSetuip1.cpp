@@ -57,8 +57,6 @@ void SceneSetup1::setup()
 	setupNodeAsteroidBelt(scene);
 
 	setupNodeSkybox(scene);
-
-	scene->selectionShader = getShader(TEX_SELECTION);
 }
 
 void SceneSetup1::process(RenderContext& ctx)

@@ -6,6 +6,8 @@
 #include "Light.h"
 #include "RenderContext.h"
 #include "Node.h"
+
+#include "NodeRenderer.h"
 #include "SkyboxRenderer.h"
 #include "ShadowMapRenderer.h"
 #include "NormalRenderer.h"
@@ -19,20 +21,13 @@ public:
 	void prepare();
 	void bind(RenderContext& ctx);
 	void draw(RenderContext& ctx);
-
-	void drawScene(RenderContext& ctx);
-
-private:
-	int drawNodes(RenderContext& ctx, bool selection);
-	void drawBlended(std::vector<Node*>& nodes, RenderContext& ctx);
-
-	void drawSelectionStencil(RenderContext& ctx);
 public:
 	const Assets& assets;
 
 	bool showNormals = false;
-	SkyboxRenderer* skyboxRenderer = nullptr;
 
+	NodeRenderer* nodeRenderer = nullptr;
+	SkyboxRenderer* skyboxRenderer = nullptr;
 	ShadowMapRenderer* shadowMapRenderer = nullptr;
 	NormalRenderer* normalRenderer = nullptr;
 
@@ -41,8 +36,6 @@ public:
 	Light* dirLight = nullptr;
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
-
-	Shader* selectionShader = nullptr;
 
 private:
 };
