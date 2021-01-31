@@ -151,7 +151,7 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 	sun->directional = true;
 
 	sun->ambient = { 0.3f, 0.3f, 0.3f, 1.f };
-	sun->diffuse = { 0.0f, 0.6f, 0.0f, 1.f };
+	sun->diffuse = { 0.5f, 0.5f, 0.5f, 1.f };
 	sun->specular = { 0.0f, 0.8f, 0.0f, 1.f };
 
 	scene->dirLight = sun;
@@ -452,7 +452,8 @@ int SceneSetup1::setupNodeCow(Scene* scene)
 {
 	// cow
 	ModelMesh* mesh = new ModelMesh("cow");
-	mesh->defaultShader = getShader(TEX_PLAIN, "_explode");
+	//mesh->defaultShader = getShader(TEX_PLAIN, "_explode");
+	mesh->defaultShader = getShader(TEX_PLAIN);
 	mesh->defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
 	if (mesh->load(assets)) {
 		return -1;
@@ -629,7 +630,7 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 	mesh->load(assets);
 
 	Node* node = new AsteroidBeltNode(mesh);
-	node->selected = true;
+	//node->selected = true;
 	scene->nodes.push_back(node);
 	return 0;
 }
