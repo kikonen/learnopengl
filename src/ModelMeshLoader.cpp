@@ -422,7 +422,7 @@ int ModelMeshLoader::loadMaterials(
 
 		for (auto const& texture : material->textures) {
 			texture->textureIndex = textureIndex;
-			texture->unitId = UNIT_IDS[textureIndex];
+			texture->unitID = UNIT_IDS[textureIndex];
 			textureIndex++;
 		}
 	}

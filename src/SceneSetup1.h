@@ -56,6 +56,8 @@ private:
 	void moveLight(RenderContext& ctx);
 	void moveActive(RenderContext& ctx);
 
+	void moveDirLight(RenderContext& ctx);
+
 public:
 	const Assets& assets;
 	Scene* scene;

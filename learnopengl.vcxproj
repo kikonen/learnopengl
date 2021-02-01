@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\FrameBuffer.cpp" />
     <ClCompile Include="src\MeshBuffers.cpp" />
     <ClCompile Include="src\NodeRenderer.cpp" />
     <ClCompile Include="src\NormalRenderer.cpp" />
@@ -184,11 +185,14 @@
     <ClCompile Include="src\Test6.cpp" />
     <ClCompile Include="src\TerrainRenderer.cpp" />
     <ClCompile Include="src\Terrain.cpp" />
+    <ClCompile Include="src\Viewport.cpp" />
+    <ClCompile Include="src\ViewportRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\FrameBuffer.h" />
     <ClInclude Include="src\MeshBuffers.h" />
     <ClInclude Include="src\NodeRenderer.h" />
     <ClInclude Include="src\NormalRenderer.h" />
@@ -222,6 +226,8 @@
     <ClInclude Include="src\UBO.h" />
     <ClInclude Include="src\TerrainRenderer.h" />
     <ClInclude Include="src\Terrain.h" />
+    <ClInclude Include="src\Viewport.h" />
+    <ClInclude Include="src\ViewportRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

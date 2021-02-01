@@ -8,6 +8,8 @@ Scene::Scene(const Assets& assets)
 {
 	nodeRenderer = new NodeRenderer(assets);
 	terrainRenderer = new TerrainRenderer(assets);
+	viewportRenderer = new ViewportRenderer(assets);
+
 	shadowMapRenderer = new ShadowMapRenderer(assets);
 	normalRenderer = new NormalRenderer(assets);
 }
@@ -25,13 +27,17 @@ void Scene::prepare()
 	}
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
-	nodeRenderer->prepare(nodes);
+	nodeRenderer->prepare();
+	terrainRenderer->prepare();
+	viewportRenderer->prepare();
 
 	if (showNormals) {
 		normalRenderer->prepare(nodes);
 	}
 
 	shadowMapRenderer->prepare();
+
+	viewports.push_back(shadowMapRenderer->debugViewport);
 }
 
 void Scene::bind(RenderContext& ctx)
@@ -54,18 +60,12 @@ void Scene::draw(RenderContext& ctx)
 
 	glEnable(GL_DEPTH_TEST);
 
-	shadowMapRenderer->draw(ctx, nodes);
+	shadowMapRenderer->render(ctx, nodes);
 
-	if (dirLight) {
-		dirLight->pos = shadowMapRenderer->lightPos;
-		dirLight->dir = shadowMapRenderer->lightDir;
-	}
-
-	glActiveTexture(ctx.engine.assets.shadowMapUnitId);
-	glBindTexture(GL_TEXTURE_2D, shadowMapRenderer->shadowMap);
+	shadowMapRenderer->bindTexture(ctx);
 
 	if (skyboxRenderer) {
-		skyboxRenderer->draw(ctx);
+		skyboxRenderer->render(ctx);
 	}
 
 	nodeRenderer->render(ctx, nodes);
@@ -74,7 +74,7 @@ void Scene::draw(RenderContext& ctx)
 		normalRenderer->render(ctx, nodes);
 	}
 
-	shadowMapRenderer->drawDebug(ctx);
+	viewportRenderer->render(ctx, viewports);
 
 	KIGL::checkErrors("scene.draw");
 }

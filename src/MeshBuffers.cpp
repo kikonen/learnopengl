@@ -22,6 +22,7 @@ void MeshBuffers::prepare()
 		return;
 	}
 	prepared = true;
+
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);

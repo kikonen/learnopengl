@@ -10,7 +10,7 @@ class NodeRenderer
 public:
 	NodeRenderer(const Assets& assets);
 
-	void prepare(std::vector<Node*>& nodes);
+	void prepare();
 	void bind(RenderContext& ctx, std::vector<Node*>& nodes);
 	void render(RenderContext& ctx, std::vector<Node*>& nodes);
 

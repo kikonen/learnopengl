@@ -17,7 +17,7 @@ public:
 	int prepare();
 
 	void assign(Shader* shader);
-	int draw(const RenderContext& ctx);
+	void render(const RenderContext& ctx);
 
 public:
 	unsigned int textureID;

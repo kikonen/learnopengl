@@ -106,7 +106,7 @@ void SkyboxRenderer::assign(Shader* shader)
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 }
 
-int SkyboxRenderer::draw(const RenderContext& ctx)
+void SkyboxRenderer::render(const RenderContext& ctx)
 {
     shader->bind();
     shader->skybox.set(assets.skyboxUnitIndex);
@@ -125,8 +125,6 @@ int SkyboxRenderer::draw(const RenderContext& ctx)
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
     glDepthFunc(GL_LESS);
-
-    return 0;
 }
 
 // loads a cubemap texture from 6 individual texture faces

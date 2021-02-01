@@ -8,7 +8,7 @@ NodeRenderer::NodeRenderer(const Assets& assets)
 	selectionShader->selection = true;
 }
 
-void NodeRenderer::prepare(std::vector<Node*>& nodes)
+void NodeRenderer::prepare()
 {
 }
 

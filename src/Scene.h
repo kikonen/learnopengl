@@ -7,9 +7,11 @@
 #include "RenderContext.h"
 #include "Node.h"
 #include "Terrain.h"
+#include "Viewport.h"
 
 #include "NodeRenderer.h"
 #include "TerrainRenderer.h"
+#include "ViewportRenderer.h"
 #include "SkyboxRenderer.h"
 #include "ShadowMapRenderer.h"
 #include "NormalRenderer.h"
@@ -30,12 +32,15 @@ public:
 
 	NodeRenderer* nodeRenderer = nullptr;
 	TerrainRenderer* terrainRenderer = nullptr;
+	ViewportRenderer* viewportRenderer = nullptr;
+
 	SkyboxRenderer* skyboxRenderer = nullptr;
 	ShadowMapRenderer* shadowMapRenderer = nullptr;
 	NormalRenderer* normalRenderer = nullptr;
 
 	std::vector<Node*> nodes;
 	std::vector<Terrain*> terrains;
+	std::vector<Viewport*> viewports;
 
 	Light* dirLight = nullptr;
 	std::vector<Light*> pointLights;

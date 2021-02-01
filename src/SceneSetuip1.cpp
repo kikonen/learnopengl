@@ -64,6 +64,7 @@ void SceneSetup1::process(RenderContext& ctx)
 {
 	moveActive(ctx);
 	moveLight(ctx);
+	moveDirLight(ctx);
 }
 
 void SceneSetup1::bind(RenderContext& ctx)
@@ -668,4 +669,20 @@ void SceneSetup1::moveActive(RenderContext& ctx)
 
 		active->setScale(scale);
 	}
+}
+
+void SceneSetup1::moveDirLight(RenderContext& ctx)
+{
+	if (!ctx.dirLight) {
+		return;
+	}
+
+	const float radius = 15.0f;
+	float posX = sin(glfwGetTime() / 8) * radius;
+	float posZ = cos(glfwGetTime() / 8) * radius;
+
+	glm::vec3 lightPos = glm::vec3(posX, 20, posZ) + assets.groundOffset;
+
+	ctx.dirLight->pos = lightPos;
+	//ctx.dirLight->dir = glm::normalize(target - lightPos);
 }

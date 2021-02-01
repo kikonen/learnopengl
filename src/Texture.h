@@ -23,13 +23,14 @@ public:
 	const std::string path;
 	const bool normalMap;
 
-	unsigned int id = -1;
-	unsigned int unitId = -1;
+	unsigned int textureID = -1;
+	unsigned int unitID = -1;
 	unsigned int textureIndex = -1;
 
 	Image* image = nullptr;
 
 private:
+	bool prepared = false;
 	bool loaded = false;
 	int res = 0;
 };
