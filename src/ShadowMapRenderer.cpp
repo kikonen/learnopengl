@@ -25,8 +25,8 @@ void ShadowMapRenderer::prepare()
 
 	frameBuffer.unbind();
 
-	shadowShader->setup();
-	shadowDebugShader->setup();
+	shadowShader->prepare();
+	shadowDebugShader->prepare();
 
 	debugViewport = new Viewport(glm::vec3(-1 + 0.01, 1 - 0.01, 0), glm::vec3(0, 0, 0), glm::vec2(0.5f, 0.5f), frameBuffer, shadowDebugShader);
 	debugViewport->prepare();

@@ -7,6 +7,8 @@
 #include "Texture.h"
 #include "ShaderInfo.h"
 #include "Assets.h"
+#include "MeshBuffers.h"
+
 
 class SkyboxRenderer
 {
@@ -26,9 +28,7 @@ private:
 	const Assets& assets;
 	const std::string name;
 
-	unsigned int VBO = 0;
-	unsigned int VAO = 0;
-	unsigned int EBO = 0;
+	MeshBuffers buffers;
 
 	Shader* shader = nullptr;
 

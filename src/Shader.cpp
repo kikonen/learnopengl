@@ -61,12 +61,12 @@ const void Shader::unbind()
     glUseProgram(0);
 }
 
-int Shader::setup()
+int Shader::prepare()
 {
-    if (setupDone) {
+    if (prepared) {
         return res;
     }
-    setupDone = true;
+    prepared = true;
     res = -1;
 
     vertexShaderSource = loadSource(vertexShaderPath, false);

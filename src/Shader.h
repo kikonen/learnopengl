@@ -41,9 +41,9 @@ private:
     std::vector<std::string> loadSourceLines(const std::string& path, bool optional);
     std::vector<std::string> processInclude(const std::string& includePath, int lineNumber);
 public:
+    int prepare();
     const void bind();
     const void unbind();
-    int setup();
 
     GLint getUniformLoc(const std::string& name);
 
@@ -255,7 +255,7 @@ public:
 
 private:
     int res;
-    bool setupDone = false;
+    bool prepared = false;
     std::string loadSource(const std::string& filename, bool optional);
 
     std::string vertexShaderPath;

@@ -73,21 +73,19 @@ int SkyboxRenderer::prepare()
     textureID = loadCubemap(faces);
 
     shader = Shader::getShader(assets, name, GEOM_NONE);
-    shader->setup();
+    shader->prepare();
 
-    if (shader->setup()) {
+    if (shader->prepare()) {
         return -1;
     }
 
     shader->unbind();
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    buffers.prepare();
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(buffers.VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
@@ -121,7 +119,7 @@ void SkyboxRenderer::render(const RenderContext& ctx)
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     glDepthFunc(GL_LEQUAL);
-    glBindVertexArray(VAO);
+    glBindVertexArray(buffers.VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
     glDepthFunc(GL_LESS);

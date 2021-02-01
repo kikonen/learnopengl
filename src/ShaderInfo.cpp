@@ -7,7 +7,7 @@ ShaderInfo::ShaderInfo(Shader* shader)
 
 int ShaderInfo::prepare()
 {
-	if (shader->setup()) {
+	if (shader->prepare()) {
 		return -1;
 	}
 
