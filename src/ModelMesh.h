@@ -51,7 +51,7 @@ public:
 	MeshBuffers buffers;
 
 	std::vector<Tri*> tris;
-	std::vector<Vertex*> vertexes;
+	std::vector<Vertex*> vertices;
 
 	std::map<std::string, Material*> materials;
 

@@ -71,7 +71,7 @@ ModelMeshLoader::~ModelMeshLoader()
 
 ModelMesh* ModelMeshLoader::load() {
 	ModelMesh* mesh = new ModelMesh(modelName, path);	
-	loadData(mesh->tris, mesh->vertexes, mesh->materials);
+	loadData(mesh->tris, mesh->vertices, mesh->materials);
 	mesh->defaultShader = shader;
 	mesh->textureCount = textureCount;
 	mesh->hasTexture = textureCount > 0;
@@ -80,7 +80,7 @@ ModelMesh* ModelMeshLoader::load() {
 
 int ModelMeshLoader::loadData(
 		std::vector<Tri*>&tris,
-		std::vector<Vertex*>&vertexes,
+		std::vector<Vertex*>&vertices,
 		std::map<std::string, Material*>&materials)
 {
 	int result = -1;
@@ -180,7 +180,7 @@ int ModelMeshLoader::loadData(
 				for (int i = 0; i < 3; i++) {
 					v[i] = resolveVertexIndex(
 						vertexMapping,
-						vertexes, 
+						vertices, 
 						positions, 
 						textures, 
 						normals, 
@@ -204,7 +204,7 @@ int ModelMeshLoader::loadData(
 				for (auto const& v : positions) {
 					glm::vec3 c = colors[(colorIdx++) % colors.size()];
 					Vertex vertex = { v, v, v, c };
-					vertexes.push_back(vertex);
+					vertices.push_back(vertex);
 				}
 			*/
 		file.close();
@@ -219,7 +219,7 @@ int ModelMeshLoader::loadData(
 		<< ", positions: " << positions.size()
 		<< ", textures: " << textures.size()
 		<< ", normals: " << normals.size()
-		<< ", vertexes: " << vertexes.size()
+		<< ", vertices: " << vertices.size()
 		<< "\n--------\n";
 
 	return result;
@@ -236,7 +236,7 @@ void ModelMeshLoader::splitFragmentValue(const std::string& v, std::vector<std::
 
 int ModelMeshLoader::resolveVertexIndex(
 	std::map<glm::vec3*, Vertex*>& vertexMapping,
-	std::vector<Vertex*>& vertexes,
+	std::vector<Vertex*>& vertices,
 	std::vector<glm::vec3>& positions,
 	std::vector<glm::vec2>& textures,
 	std::vector<glm::vec3>& normals,
@@ -249,7 +249,7 @@ int ModelMeshLoader::resolveVertexIndex(
 	int tangenti,
 	int bitangenti)
 {
-	// TODO KI actually do sharing of vertexes
+	// TODO KI actually do sharing of vertices
 	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
 
 	if (overrideMaterials || !material) {
@@ -273,8 +273,8 @@ int ModelMeshLoader::resolveVertexIndex(
 		return old->index;
 	}
 
-	vertexes.push_back(v);
-	v->index = vertexes.size() - 1;
+	vertices.push_back(v);
+	v->index = vertices.size() - 1;
 
 	vertexMapping[&pos] = v;
 

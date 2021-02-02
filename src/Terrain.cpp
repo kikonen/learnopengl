@@ -23,7 +23,7 @@ void Terrain::prepare()
 	mesh = new ModelMesh("terrain");
 
 	std::vector<Tri*> tris;
-	std::vector<Vertex*> verteces;
+	std::vector<Vertex*> vertices;
 	std::map<std::string, Material*> materials;
 
 	for (int x = 0; x < VERTEX_COUNT; x++) {
