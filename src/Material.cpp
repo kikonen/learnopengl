@@ -48,6 +48,15 @@ const Names* getNames(int index) {
 	return varNames[index];
 }
 
+Material* Material::createDefaultMaterial() {
+	Material* mat = new Material("default", 0);
+	mat->ns = 100.f;
+	mat->ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
+	mat->ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
+	mat->kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
+	return mat;
+}
+
 Material::Material(const std::string& name, unsigned int materialIndex)
 	: name(name),
 	materialIndex(materialIndex)

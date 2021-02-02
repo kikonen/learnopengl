@@ -36,7 +36,6 @@ public:
 	void draw(const RenderContext& ctx);
 	void drawInstanced(const RenderContext& ctx, int instanceCount);
 
-	int load(const Assets& assets);
 private:
 	ShaderInfo* prepareShader(Shader* shader);
 public:
@@ -51,21 +50,20 @@ public:
 
 	MeshBuffers buffers;
 
-private:
-	std::map<std::string, ShaderInfo*> shaders;
-
-	const std::string path = { "/" };
-	const std::string modelName = { "" };
-
 	std::vector<Tri*> tris;
 	std::vector<Vertex*> vertexes;
 
 	std::map<std::string, Material*> materials;
 
+	bool hasTexture = false;
+private:
+	std::map<std::string, ShaderInfo*> shaders;
+
+	const std::string modelName;
+	const std::string path;
+
 	MaterialsUBO materialsUbo;
 	unsigned int  materialsUboId = -1;
 	unsigned int materialsUboSize = -1;
 	const bool bindTexture = true;
-
-	bool hasTexture = false;
 };

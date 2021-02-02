@@ -28,7 +28,7 @@ private:
 public:
 	FrameBuffer frameBuffer = { SHADOW_WIDTH, SHADOW_HEIGHT };
 
-	Viewport* debugViewport;
+	Viewport* debugViewport = nullptr;
 
 private:
 	const Assets& assets;

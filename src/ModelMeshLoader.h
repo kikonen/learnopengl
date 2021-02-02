@@ -10,12 +10,20 @@ class ModelMeshLoader
 {
 public:
 	ModelMeshLoader(
-		const Assets& assets,
-		const std::string& path, 
+		Shader* shader,
 		const std::string& modelName);
+
+	ModelMeshLoader(
+		Shader* shader,
+		const std::string& modelName,
+		const std::string& path);
+
 	~ModelMeshLoader();
 
-	int load(
+	ModelMesh* load();
+
+private:
+	int loadData(
 		std::vector<Tri*>& tris,
 		std::vector<Vertex*>& vertexes,
 		std::map<std::string, Material*>& materials
@@ -23,8 +31,10 @@ public:
 
 public:
 	const Assets& assets;
-	const std::string& path;
-	const std::string& modelName;
+	const std::string modelName;
+	const std::string path;
+
+	Shader* shader;
 
 	bool debugColors = false;
 	Material* defaultMaterial = nullptr;

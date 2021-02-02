@@ -47,24 +47,42 @@ const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
 
 
 ModelMeshLoader::ModelMeshLoader(
-	const Assets& assets,
-	const std::string& path,
+	Shader* shader,
 	const std::string& modelName)
-	: path(path),
-	modelName(modelName),
-	assets(assets)
+	: ModelMeshLoader(shader, modelName, "/")
 {
+}
+
+ModelMeshLoader::ModelMeshLoader(
+	Shader* shader,
+	const std::string& modelName,
+	const std::string& path)
+	: assets(shader->assets),
+	shader(shader),
+	modelName(modelName),
+	path(path)
+{
+	defaultMaterial = Material::createDefaultMaterial();
 }
 
 ModelMeshLoader::~ModelMeshLoader()
 {
 }
 
-int ModelMeshLoader::load(
-	std::vector<Tri*>& tris,
-	std::vector<Vertex*>& vertexes,
-	std::map<std::string, Material*>& materials
-) {
+ModelMesh* ModelMeshLoader::load() {
+	ModelMesh* mesh = new ModelMesh(modelName, path);	
+	loadData(mesh->tris, mesh->vertexes, mesh->materials);
+	mesh->defaultShader = shader;
+	mesh->textureCount = textureCount;
+	mesh->hasTexture = textureCount > 0;
+	return mesh;
+}
+
+int ModelMeshLoader::loadData(
+		std::vector<Tri*>&tris,
+		std::vector<Vertex*>&vertexes,
+		std::map<std::string, Material*>&materials)
+{
 	int result = -1;
 
 	std::string name;

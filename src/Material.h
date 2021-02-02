@@ -37,6 +37,8 @@ public:
     void bind(Shader* shader, int index, bool useTexture);
 
     MaterialUBO toUBO();
+
+    static Material* createDefaultMaterial();
 private:
     Texture* loadTexture(const std::string& baseDir, const std::string& name, bool normalMap);
 

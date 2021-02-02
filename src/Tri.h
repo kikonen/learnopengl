@@ -14,6 +14,8 @@ public:
 
 public:
 	const glm::uvec3 vertexIndexes;
+
+	// NOTE KI for troubleshooting
 	Material* material = nullptr;
 };
 

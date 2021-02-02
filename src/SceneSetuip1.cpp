@@ -1,7 +1,7 @@
 #include "SceneSetup1.h"
 
 #include "AsteroidBeltNode.h"
-
+#include "ModelMeshLoader.h"
 
 SceneSetup1::SceneSetup1(const Assets& assets, UBO& ubo)
 	: assets(assets),
@@ -196,13 +196,10 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 	if (!sun) {
 		return -1;
 	}
-	ModelMesh* mesh = new ModelMesh("light");
-	mesh->defaultShader = getShader(TEX_LIGHT);
-	mesh->defaultMaterial->kd = sun->specular;
 
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_LIGHT), "light");
+	loader.defaultMaterial->kd = sun->specular;
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(sun->pos);
@@ -216,12 +213,8 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 
 int SceneSetup1::setupNodeLightMoving(Scene* scene)
 {
-	// light node
-	ModelMesh* mesh = new ModelMesh("light");
-	mesh->defaultShader = getShader(TEX_LIGHT);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_LIGHT), "light");
+	ModelMesh* mesh = loader.load();
 
 	for (auto light : scene->pointLights) {
 		Node* node = new Node(mesh);
@@ -267,11 +260,8 @@ void SceneSetup1::moveLight(RenderContext& ctx)
 }
 
 int SceneSetup1::setupNodeZero(Scene* scene) {
-	ModelMesh* mesh = new ModelMesh("water_ball");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "water_ball");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0, 0, 0) + assets.groundOffset);
@@ -282,12 +272,8 @@ int SceneSetup1::setupNodeZero(Scene* scene) {
 
 int SceneSetup1::setupNodeWindow1(Scene* scene)
 {
-	// window1
-	ModelMesh* mesh = new ModelMesh("window1");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "window1");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(5, -5, -5) + assets.groundOffset);
@@ -300,12 +286,8 @@ int SceneSetup1::setupNodeWindow1(Scene* scene)
 
 int SceneSetup1::setupNodeWindow2(Scene* scene)
 {
-	// window2
-	ModelMesh* mesh = new ModelMesh("window2");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "window2");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(7, -5, -8) + assets.groundOffset);
@@ -319,12 +301,8 @@ int SceneSetup1::setupNodeWindow2(Scene* scene)
 
 int SceneSetup1::setupNodeStainedWindows(Scene* scene)
 {
-	// window2
-	ModelMesh* mesh = new ModelMesh("window2");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "window2");
+	ModelMesh* mesh = loader.load();
 
 	for (int i = 0; i < 10; i++) {
 		Node* node = new Node(mesh);
@@ -339,18 +317,11 @@ int SceneSetup1::setupNodeStainedWindows(Scene* scene)
 
 int SceneSetup1::setupNodeBrickwall(Scene* scene)
 {
-	ModelMesh* mesh = new ModelMesh("brickwall");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "brickwall");
+	ModelMesh* mesh = loader.load();
 
-	ModelMesh* mesh2 = new ModelMesh("brickwall2");
-	mesh2->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh2->load(assets)) {
-		return -1;
-	}
-
+	ModelMeshLoader loader2(getShader(TEX_TEXTURE), "brickwall2");
+	ModelMesh* mesh2 = loader2.load();
 
 	for (int i = 0; i < 5; i++) {
 		Node* node = new Node(i % 2 == 0 ? mesh : mesh2);
@@ -364,11 +335,8 @@ int SceneSetup1::setupNodeBrickwall(Scene* scene)
 
 int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 {
-	ModelMesh* mesh = new ModelMesh("brickwall2");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "brickwall2");
+	ModelMesh* mesh = loader.load();
 
 	glm::vec3 pos[] = {
 //		{0.0, 1.0, 0.0},
@@ -403,12 +371,8 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 
 int SceneSetup1::setupNodeSpyro(Scene* scene)
 {
-	// spyro
-	ModelMesh* mesh = new ModelMesh("spyro2");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "spyro2");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0, 20, 0) + assets.groundOffset);
@@ -419,12 +383,8 @@ int SceneSetup1::setupNodeSpyro(Scene* scene)
 
 int SceneSetup1::setupNodeBackpack(Scene* scene)
 {
-	// backback
-	ModelMesh* mesh = new ModelMesh("backpack", "/backpack/");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "backpack", "/backpack/");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0, -8, 0) + assets.groundOffset);
@@ -435,13 +395,9 @@ int SceneSetup1::setupNodeBackpack(Scene* scene)
 
 int SceneSetup1::setupNodeTeapot(Scene* scene)
 {
-	// teapot
-	ModelMesh* mesh = new ModelMesh("smooth_teapot");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	mesh->defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "smooth_teapot");
+	loader.defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(-5, 5, -5) + assets.groundOffset);
@@ -452,14 +408,10 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 
 int SceneSetup1::setupNodeCow(Scene* scene)
 {
-	// cow
-	ModelMesh* mesh = new ModelMesh("texture_cow");
 	//mesh->defaultShader = getShader(TEX_PLAIN, "_explode");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	mesh->defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "texture_cow");
+	loader.defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(5, 5, -5) + assets.groundOffset);
@@ -470,12 +422,8 @@ int SceneSetup1::setupNodeCow(Scene* scene)
 
 int SceneSetup1::setupNodeBall(Scene* scene)
 {
-	// ball
-	ModelMesh* mesh = new ModelMesh("texture_ball");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "texture_ball");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0, -2, 0) + assets.groundOffset);
@@ -486,12 +434,8 @@ int SceneSetup1::setupNodeBall(Scene* scene)
 
 int SceneSetup1::setupNodeCube4(Scene* scene)
 {
-	// cube 4
-	ModelMesh* mesh = new ModelMesh("texture_cube_4");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "texture_cube_4");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(-5, 5, 5) + assets.groundOffset);
@@ -502,12 +446,8 @@ int SceneSetup1::setupNodeCube4(Scene* scene)
 
 int SceneSetup1::setupNodeCubes(Scene* scene)
 {
-	// cubes
-	ModelMesh* mesh = new ModelMesh("texture_cube_3");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "texture_cube_3");
+	ModelMesh* mesh = loader.load();
 
 	std::vector<glm::vec3> points = {
 		glm::vec3(-5, 0, -5),
@@ -527,12 +467,8 @@ int SceneSetup1::setupNodeCubes(Scene* scene)
 
 int SceneSetup1::setupNodeActive(Scene* scene)
 {
-	// active
-	ModelMesh* mesh = new ModelMesh("texture_cube");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "texture_cube");
+	ModelMesh* mesh = loader.load();
 
 	active = new Node(mesh);
 	active->setPos(glm::vec3(0) + assets.groundOffset);
@@ -546,12 +482,8 @@ int SceneSetup1::setupNodeActive(Scene* scene)
 
 int SceneSetup1::setupNodeMountains(Scene* scene)
 {
-	// mountains
-	ModelMesh* mesh = new ModelMesh("texture_mountains");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "texture_mountains");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0));
@@ -562,11 +494,8 @@ int SceneSetup1::setupNodeMountains(Scene* scene)
 
 int SceneSetup1::setupNodeWaterBall(Scene* scene)
 {
-	ModelMesh* mesh = new ModelMesh("water_ball");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "water_ball");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(0, 3, 0) + assets.groundOffset);
@@ -577,11 +506,8 @@ int SceneSetup1::setupNodeWaterBall(Scene* scene)
 
 int SceneSetup1::setupNodePlanet(Scene* scene)
 {
-	ModelMesh* mesh = new ModelMesh("planet", "/planet/");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "planet", "/planet/");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
@@ -612,11 +538,8 @@ int SceneSetup1::setupNodeAsteroids(Scene* scene)
 {
 	glm::vec3 planetPos = glm::vec3(10, 100, 100);
 
-	ModelMesh* mesh = new ModelMesh("rock", "/rock/");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	if (mesh->load(assets)) {
-		return -1;
-	}
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "rock", "/rock/");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(10, 50, 100) + assets.groundOffset);
@@ -627,9 +550,8 @@ int SceneSetup1::setupNodeAsteroids(Scene* scene)
 
 int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 {
-	ModelMesh* mesh = new ModelMesh("rock", "/rock/");
-	mesh->defaultShader = getShader(TEX_TEXTURE);
-	mesh->load(assets);
+	ModelMeshLoader loader(getShader(TEX_TEXTURE), "rock", "/rock/");
+	ModelMesh* mesh = loader.load();
 
 	Node* node = new AsteroidBeltNode(mesh);
 	//node->selected = true;

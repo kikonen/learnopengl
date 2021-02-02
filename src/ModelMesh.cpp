@@ -5,17 +5,7 @@
 
 #include <string>
 
-#include "ModelMeshLoader.h"
 #include "KIGL.h"
-
-Material* createDefaultMaterial() {
-	Material* mat = new Material("default", 0);
-	mat->ns = 100.f;
-	mat->ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
-	mat->ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
-	mat->kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
-	return mat;
-}
 
 ModelMesh::ModelMesh(
 	const std::string& modelName)
@@ -29,7 +19,6 @@ ModelMesh::ModelMesh(
 	: modelName(modelName),
 	path(path)
 {
-	defaultMaterial = createDefaultMaterial();
 }
 
 ModelMesh::~ModelMesh()
@@ -224,16 +213,4 @@ void ModelMesh::draw(const RenderContext& ctx)
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
 	glDrawElementsInstanced(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0, instanceCount);
-}
-
-int ModelMesh::load(const Assets& assets)
-{
-	ModelMeshLoader loader(assets, path, modelName);
-	loader.defaultMaterial = defaultMaterial;
-	int res = loader.load(tris, vertexes, materials);
-
-	textureCount = loader.textureCount;
-	hasTexture = textureCount > 0;
-
-	return res;
 }
