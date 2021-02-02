@@ -47,9 +47,9 @@ void Viewport::bind(RenderContext& ctx)
 void Viewport::draw(RenderContext& ctx)
 {
 	shader->bind();
-	shader->shadowMap.set(shader->assets.shadowMapUnitIndex);
+	shader->shadowMap.set(0);
 
-	tex.bindTexture(shader->assets.shadowMapUnitIndex);
+	tex.bindTexture(GL_TEXTURE0);
 
 	shader->nearPlane.set(0.1f);
 	shader->farPlane.set(1000.f);
