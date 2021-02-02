@@ -70,10 +70,10 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 	{
 		// vertCoords + normalCoords + tangentCoords + bitangentCoords + materialIdx + texCoords
 		const int sz = 3 + 3 + 3 + 3 + 1 + 2;
-		float* vboBuffer = new float[sz * vertexes.size()];
+		float* vboBuffer = new float[sz * verteces.size()];
 
-		for (int i = 0; i < vertexes.size(); i++) {
-			Vertex* vertex = vertexes[i];
+		for (int i = 0; i < verteces.size(); i++) {
+			Vertex* vertex = verteces[i];
 			const glm::vec3& p = vertex->pos;
 			const glm::vec3& n = vertex->normal;
 			const glm::vec3& tan = vertex->tangent;
@@ -111,7 +111,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, curr.VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * sz * vertexes.size(), vboBuffer, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * sz * verteces.size(), vboBuffer, GL_STATIC_DRAW);
 
 		// vertex attr
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)0);

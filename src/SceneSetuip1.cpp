@@ -2,6 +2,8 @@
 
 #include "AsteroidBeltNode.h"
 #include "ModelMeshLoader.h"
+#include "Terrain.h"
+
 
 SceneSetup1::SceneSetup1(const Assets& assets, UBO& ubo)
 	: assets(assets),
@@ -57,6 +59,7 @@ void SceneSetup1::setup()
 	setupNodeAsteroids(scene);
 	setupNodeAsteroidBelt(scene);
 
+	setupTerrain(scene);
 	setupNodeSkybox(scene);
 }
 
@@ -556,6 +559,24 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 	Node* node = new AsteroidBeltNode(mesh);
 	//node->selected = true;
 	scene->nodes.push_back(node);
+	return 0;
+}
+
+int SceneSetup1::setupTerrain(Scene* scene)
+{
+	Material* material = new Material("terrain", 0);
+	material->map_kd = "two-kingdoms.jpg";
+	material->loadTextures(assets.modelsDir + "/");
+	material->prepare();
+
+	Shader* shader = getShader(TEX_TERRAIN);
+
+	for (int x = 0; x < 3; x++) {
+		for (int z = 0; z < 3; z++) {
+			Terrain* terrain = new Terrain(x, z, material, shader);
+			scene->terrains.push_back(terrain);
+		}
+	}
 	return 0;
 }
 

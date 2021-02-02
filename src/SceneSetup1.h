@@ -53,6 +53,8 @@ private:
 	int setupNodeAsteroids(Scene* scene);
 	int setupNodeAsteroidBelt(Scene* scene);
 
+	int setupTerrain(Scene* scene);
+
 	void moveLight(RenderContext& ctx);
 	void moveActive(RenderContext& ctx);
 
