@@ -2,8 +2,8 @@
 
 #include <vector>
 
-const int TILE_SIZE = 800;
-const int VERTEX_COUNT = 128;
+const int TILE_SIZE = 400;
+const int VERTEX_COUNT = 4;
 
 
 Terrain::Terrain(int worldX, int worldZ, Material* material, Shader* shader)
@@ -13,6 +13,7 @@ Terrain::Terrain(int worldX, int worldZ, Material* material, Shader* shader)
 
 Terrain::~Terrain()
 {
+	delete node;
 	delete mesh;
 }
 
@@ -21,15 +22,21 @@ void Terrain::prepare()
 	pos = { worldX * TILE_SIZE, 0, worldZ * TILE_SIZE };
 
 	mesh = new ModelMesh("terrain");
+	mesh->materials[material->name] = material;
+	mesh->defaultShader = shader;
+	mesh->textureCount = 1;
+	mesh->hasTexture = true;
 
-	std::vector<Tri*> tris;
-	std::vector<Vertex*> vertices;
-	std::map<std::string, Material*> materials;
+	for (int z = 0; z < VERTEX_COUNT; z++) {
+		float gz = (z / ((float)VERTEX_COUNT - 1)) * TILE_SIZE;
+		float tz = (z / ((float)VERTEX_COUNT - 1));
 
-	for (int x = 0; x < VERTEX_COUNT; x++) {
-		for (int z = 0; z < VERTEX_COUNT; z++) {
-			glm::vec3 pos = { (float)x / TILE_SIZE, 0.f, (float)z / TILE_SIZE };
-			glm::vec2 texture = { (float)x / TILE_SIZE, (float)z / TILE_SIZE };
+		for (int x = 0; x < VERTEX_COUNT; x++) {
+			float gx = (x / ((float)VERTEX_COUNT - 1)) * TILE_SIZE;
+			float tx = (x / ((float)VERTEX_COUNT - 1));
+
+			glm::vec3 pos = { gx, 0.f, gz };
+			glm::vec2 texture = { tx, tz };
 			glm::vec3 normal = { 0.f, 1.f, 0.f };
 
 			Vertex* v = new Vertex(
@@ -39,18 +46,37 @@ void Terrain::prepare()
 				glm::vec3(0.f),
 				glm::vec3(0.f),
 				material);
+			mesh->vertices.push_back(v);
 		}
 	}
 
-	mesh->prepare();
+	for (int z = 0; z < VERTEX_COUNT; z++) {
+		for (int x = 0; x < VERTEX_COUNT; x++) {
+			int topLeft = (z * VERTEX_COUNT) + x;
+			int topRight = (z * VERTEX_COUNT) + x + 1;
+			int bottomLeft = ((z + 1) * VERTEX_COUNT) + x;
+			int bottomRight = ((z + 1) * VERTEX_COUNT) + x + 1;
+
+			Tri* tri1 = new Tri(glm::uvec3(topLeft, bottomLeft, topRight));
+			Tri* tri2 = new Tri(glm::uvec3(topRight, bottomLeft, bottomRight));
+
+			mesh->tris.push_back(tri1);
+			mesh->tris.push_back(tri2);
+		}
+	}
+
+	node = new Node(mesh);
+	node->setPos(pos);
+	node->flat = true;
+	node->prepare();
 }
 
-void Terrain::bind(RenderContext& ctx)
+ShaderInfo* Terrain::bind(const RenderContext& ctx, Shader* shader)
 {
-	mesh->bind(ctx, shader);
+	return node->bind(ctx, shader);
 }
 
 void Terrain::draw(RenderContext& ctx)
 {
-	mesh->draw(ctx);
+	node->draw(ctx);
 }

@@ -26,6 +26,10 @@ void Scene::prepare()
 		node->prepare();
 	}
 
+	for (auto terrain : terrains) {
+		terrain->prepare();
+	}
+
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	nodeRenderer->prepare();
 	terrainRenderer->prepare();
@@ -74,6 +78,8 @@ void Scene::draw(RenderContext& ctx)
 		normalRenderer->render(ctx, nodes);
 	}
 
+	terrainRenderer->render(ctx, terrains);
+	
 	viewportRenderer->render(ctx, viewports);
 
 	KIGL::checkErrors("scene.draw");

@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 #include "Material.h"
 #include "Shader.h"
-#include "ModelMesh.h"
+#include "Node.h"
 #include "RenderContext.h"
 
 
@@ -14,7 +14,7 @@ public:
 	~Terrain();
 
 	void prepare();
-	void bind(RenderContext& ctx);
+	virtual ShaderInfo* bind(const RenderContext& ctx, Shader* shader);
 	void draw(RenderContext& ctx);
 public:
 	const int worldX;
@@ -24,6 +24,7 @@ public:
 
 	glm::vec3 pos = { 0, 0, 0 };
 private:
+	Node* node = nullptr;
 	ModelMesh* mesh = nullptr;
 };
 

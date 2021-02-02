@@ -53,7 +53,7 @@ void SceneSetup1::setup()
 	setupNodeBrickwall(scene);
 
 	//setupNodeBrickwallBox(scene);
-	setupNodeMountains(scene);
+	//setupNodeMountains(scene);
 
 	setupNodePlanet(scene);
 	setupNodeAsteroids(scene);
@@ -569,10 +569,18 @@ int SceneSetup1::setupTerrain(Scene* scene)
 	material->loadTextures(assets.modelsDir + "/");
 	material->prepare();
 
-	Shader* shader = getShader(TEX_TERRAIN);
+	unsigned int textureIndex = 0;
+	for (auto const& texture : material->textures) {
+		texture->textureIndex = textureIndex;
+		texture->unitID = GL_TEXTURE0 + textureIndex;
+		textureIndex++;
+	}
 
-	for (int x = 0; x < 3; x++) {
-		for (int z = 0; z < 3; z++) {
+	Shader* shader = getShader(TEX_TERRAIN);
+	shader->prepare();
+
+	for (int x = 0; x < 2; x++) {
+		for (int z = 0; z < 2; z++) {
 			Terrain* terrain = new Terrain(x, z, material, shader);
 			scene->terrains.push_back(terrain);
 		}
