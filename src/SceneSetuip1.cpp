@@ -59,6 +59,8 @@ void SceneSetup1::setup()
 	setupNodeAsteroids(scene);
 	setupNodeAsteroidBelt(scene);
 
+	setupSpriteFlare(scene);
+
 	setupTerrain(scene);
 	setupNodeSkybox(scene);
 }
@@ -150,7 +152,7 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 {
 	// sun
 	Light* sun = new Light();
-	sun->pos = glm::vec3(10, 100, 10) + assets.groundOffset;
+	sun->pos = glm::vec3(10, 80, 10) + assets.groundOffset;
 
 	sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
 	sun->directional = true;
@@ -166,7 +168,7 @@ void SceneSetup1::setupLightMoving(Scene* scene)
 {
 	// light
 	Light* light = new Light();
-	light->pos = glm::vec3(10, -10, 10) + assets.groundOffset;
+	light->pos = glm::vec3(10, 5, 10) + assets.groundOffset;
 
 	// 160
 	light->point = true;
@@ -252,7 +254,7 @@ void SceneSetup1::moveLight(RenderContext& ctx)
 	float posX = sin(elapsed / 2) * radius;
 	float posZ = cos(elapsed / 2) * radius;
 
-	glm::vec3 pos = glm::vec3(posX, -8, posZ) + assets.groundOffset;
+	glm::vec3 pos = glm::vec3(posX, 5, posZ) + assets.groundOffset;
 
 	if (activeLight) {
 		activeLight->pos = pos;
@@ -279,7 +281,7 @@ int SceneSetup1::setupNodeWindow1(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(5, -5, -5) + assets.groundOffset);
+	node->setPos(glm::vec3(5, 10, -5) + assets.groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	node->renderBack = true;
@@ -293,7 +295,7 @@ int SceneSetup1::setupNodeWindow2(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(7, -5, -8) + assets.groundOffset);
+	node->setPos(glm::vec3(7, 10, -8) + assets.groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	node->renderBack = true;
@@ -309,7 +311,7 @@ int SceneSetup1::setupNodeStainedWindows(Scene* scene)
 
 	for (int i = 0; i < 10; i++) {
 		Node* node = new Node(mesh);
-		node->setPos(glm::vec3(-10 + i * 2, 0, 10) + assets.groundOffset);
+		node->setPos(glm::vec3(-10 + i * 2, 15, 10) + assets.groundOffset);
 		node->setRotation(glm::vec3(0, 180, 0));
 		node->blend = true;
 		node->renderBack = true;
@@ -328,7 +330,7 @@ int SceneSetup1::setupNodeBrickwall(Scene* scene)
 
 	for (int i = 0; i < 5; i++) {
 		Node* node = new Node(i % 2 == 0 ? mesh : mesh2);
-		node->setPos(glm::vec3(-5 + i * 2, -8, 14) + assets.groundOffset);
+		node->setPos(glm::vec3(-5 + i * 2, 5, 14) + assets.groundOffset);
 		//node->setRotation(glm::vec3(0, 180, 0));
 		node->renderBack = true;
 		scene->nodes.push_back(node);
@@ -378,7 +380,7 @@ int SceneSetup1::setupNodeSpyro(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, 20, 0) + assets.groundOffset);
+	node->setPos(glm::vec3(0, 30, 30) + assets.groundOffset);
 	node->setScale(0.1f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -390,7 +392,7 @@ int SceneSetup1::setupNodeBackpack(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, -8, 0) + assets.groundOffset);
+	node->setPos(glm::vec3(0, 3, 0) + assets.groundOffset);
 	node->setScale(1.5f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -403,7 +405,7 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(-5, 5, -5) + assets.groundOffset);
+	node->setPos(glm::vec3(-5, 20, -5) + assets.groundOffset);
 	node->renderBack = true;
 	node->selected = true;
 	scene->nodes.push_back(node);
@@ -418,7 +420,7 @@ int SceneSetup1::setupNodeCow(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(5, 5, -5) + assets.groundOffset);
+	node->setPos(glm::vec3(5, 20, -5) + assets.groundOffset);
 	node->selected = true;
 	scene->nodes.push_back(node);
 	return 0;
@@ -430,7 +432,7 @@ int SceneSetup1::setupNodeBall(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, -2, 0) + assets.groundOffset);
+	node->setPos(glm::vec3(0, 8, 0) + assets.groundOffset);
 	node->setScale(2.0f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -442,7 +444,7 @@ int SceneSetup1::setupNodeCube4(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(-5, 5, 5) + assets.groundOffset);
+	node->setPos(glm::vec3(-5, 20, 5) + assets.groundOffset);
 	node->selected = true;
 	scene->nodes.push_back(node);
 	return 0;
@@ -454,10 +456,10 @@ int SceneSetup1::setupNodeCubes(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	std::vector<glm::vec3> points = {
-		glm::vec3(-5, 0, -5),
-		glm::vec3(5, 0, -5),
-		glm::vec3(-5, 0, 5),
-		glm::vec3(5, 0, 5),
+		glm::vec3(-5, 15, -5),
+		glm::vec3(5, 15, -5),
+		glm::vec3(-5, 15, 5),
+		glm::vec3(5, 15, 5),
 	};
 
 	for (auto p : points) {
@@ -479,7 +481,7 @@ int SceneSetup1::setupNodeActive(Scene* scene)
 	scene->nodes.push_back(active);
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(5, 5, 5) + assets.groundOffset);
+	node->setPos(glm::vec3(5, 20, 5) + assets.groundOffset);
 	scene->nodes.push_back(node);
 	return 0;
 }
@@ -502,7 +504,7 @@ int SceneSetup1::setupNodeWaterBall(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, 3, 0) + assets.groundOffset);
+	node->setPos(glm::vec3(0, 20, 0) + assets.groundOffset);
 	//node->setScale(0.5f);
 	scene->nodes.push_back(node);
 	return 0;
@@ -575,6 +577,7 @@ int SceneSetup1::setupSpriteFlare(Scene* scene)
 	material->prepare();
 
 	Sprite* sprite = new Sprite(glm::vec2(2, 2), material);
+	sprite->setPos(glm::vec3(0, 5, 20) + assets.groundOffset);
 	scene->sprites.push_back(sprite);
 
 	return 0;
@@ -618,7 +621,7 @@ void SceneSetup1::moveActive(RenderContext& ctx)
 	if (true) {
 		const float radius = 4.0f;
 		float posX = sin(elapsed / 0.9f) * radius;
-		float posY = sin(elapsed * 1.1f) * radius / 3.0f;
+		float posY = sin(elapsed * 1.1f) * radius / 3.0f + 15.f;
 		float posZ = cos(elapsed) * radius / 2.0f;
 
 		active->setPos(glm::vec3(posX, posY, posZ) + assets.groundOffset);
@@ -651,7 +654,7 @@ void SceneSetup1::moveDirLight(RenderContext& ctx)
 	float posX = sin(glfwGetTime() / 8) * radius;
 	float posZ = cos(glfwGetTime() / 8) * radius;
 
-	glm::vec3 lightPos = glm::vec3(posX, 20, posZ) + assets.groundOffset;
+	glm::vec3 lightPos = glm::vec3(posX, 40, posZ) + assets.groundOffset;
 
 	ctx.dirLight->pos = lightPos;
 	//ctx.dirLight->dir = glm::normalize(target - lightPos);

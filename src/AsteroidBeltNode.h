@@ -7,7 +7,7 @@ class AsteroidBeltNode : public Node
 public:
 	AsteroidBeltNode(Mesh* mesh);
 
-	void prepare() override;
+	void prepare(const Assets& assets) override;
 	Shader* bind(const RenderContext& ctx, Shader* shader) override;
 	void draw(const RenderContext& ctx) override;
 

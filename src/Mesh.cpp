@@ -25,7 +25,7 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::prepare()
+void Mesh::prepare(const Assets& assets)
 {
 	buffers.prepare();
 

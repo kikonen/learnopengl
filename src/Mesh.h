@@ -27,7 +27,7 @@ public:
 
 	~Mesh();
 
-	void prepare();
+	void prepare(const Assets& assets);
 	void prepareBuffers(MeshBuffers& curr);
 	Shader* bind(const RenderContext& ctx, Shader* shader);
 	void draw(const RenderContext& ctx);

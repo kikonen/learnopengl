@@ -8,7 +8,7 @@ NormalRenderer::NormalRenderer(const Assets& assets)
 	shader->prepare();
 }
 
-void NormalRenderer::prepare(std::vector<Node*>& nodes)
+void NormalRenderer::prepare()
 {
 }
 

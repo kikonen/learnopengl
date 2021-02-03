@@ -15,7 +15,7 @@ public:
     std::string texturesDir = "textures";
 
     //glm::vec3 groundOffset = { 0.f, 15.f, -40.f };
-    glm::vec3 groundOffset = { 200.f, 15.f, 200.f };
+    glm::vec3 groundOffset = { 200.f, 0.f, 200.f };
 
     int shadowMapUnitId = GL_TEXTURE30;
     unsigned int shadowMapUnitIndex = 30;

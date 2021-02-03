@@ -7,10 +7,10 @@
 class Node
 {
 public:
-	Node(Mesh* mesh);
+	Node(Mesh* mesh = nullptr);
 	~Node();
 
-	virtual void prepare();
+	virtual void prepare(const Assets& assets);
 
 	virtual Shader* bind(const RenderContext& ctx, Shader* shader);
 	virtual void draw(const RenderContext& ctx);
@@ -19,11 +19,14 @@ public:
 	void setPos(const glm::vec3& pos);
 	const glm::vec3& getPos();
 
+	void setRotation(const glm::vec3& rotation);
+	const glm::vec3& getRotation();
+
 	void setScale(float scale);
 	float getScale();
 
-	void setRotation(const glm::vec3& rotation);
-	const glm::vec3& getRotation();
+protected:
+	virtual void updateModelMatrix();
 
 public:
 	Mesh* mesh;
@@ -32,8 +35,8 @@ public:
 	bool renderBack = false;
 	bool skipShadow = false;
 	bool selected = false;
+
 private:
-	
 	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
 	float scale = 1.0f;
@@ -43,7 +46,5 @@ private:
 
 	bool prepared = false;
 	bool dirtyMat = true;
-
-	void updateModelMatrix();
 };
 

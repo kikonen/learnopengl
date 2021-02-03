@@ -13,7 +13,7 @@ public:
 	Terrain(int worldX, int worldZ, Material* material, Shader* shader);
 	~Terrain();
 
-	void prepare();
+	void prepare(const Assets& assets);
 	virtual Shader* bind(const RenderContext& ctx, Shader* shader);
 	void draw(RenderContext& ctx);
 public:

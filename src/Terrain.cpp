@@ -18,7 +18,7 @@ Terrain::~Terrain()
 	delete mesh;
 }
 
-void Terrain::prepare()
+void Terrain::prepare(const Assets& assets)
 {
 	pos = { worldX * TILE_SIZE, 0, worldZ * TILE_SIZE };
 
@@ -70,7 +70,7 @@ void Terrain::prepare()
 	node = new Node(mesh);
 	node->setPos(pos);
 	node->renderBack = true;
-	node->prepare();
+	node->prepare(assets);
 }
 
 Shader* Terrain::bind(const RenderContext& ctx, Shader* shader)

@@ -13,6 +13,7 @@
 
 const std::string TEX_PLAIN = "plain";
 const std::string TEX_TEXTURE = "tex";
+const std::string TEX_SPRITE = "sprite";
 const std::string TEX_SELECTION = "selection";
 const std::string TEX_TERRAIN = "terrain";
 const std::string TEX_NORMAL = "normal";

@@ -18,9 +18,7 @@ MeshBuffers::~MeshBuffers()
 
 void MeshBuffers::prepare()
 {
-	if (prepared) {
-		return;
-	}
+	if (prepared) return;
 	prepared = true;
 
 	glGenVertexArrays(1, &VAO);

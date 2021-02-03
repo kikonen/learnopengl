@@ -103,5 +103,8 @@ public:
     // 9. Transparency : Glass on, Reflection : Ray trace off
     // 10. Casts shadows onto invisible surfaces
     int illum = 0;
+
+private:
+    bool loaded = false;
 };
 

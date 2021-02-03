@@ -75,9 +75,9 @@ void AsteroidBeltNode::prepareBuffer(std::vector<glm::mat4> matrices)
 	glVertexAttribDivisor(9, 1);
 }
 
-void AsteroidBeltNode::prepare()
+void AsteroidBeltNode::prepare(const Assets& assets)
 {
-	Node::prepare();
+	Node::prepare(assets);
 
 	setup();
 

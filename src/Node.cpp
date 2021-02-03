@@ -4,16 +4,15 @@
 
 Node::Node(Mesh* mesh) : mesh(mesh)
 {
-	dirtyMat = true;
 }
 
 Node::~Node()
 {
 }
 
-void Node::prepare()
+void Node::prepare(const Assets& assets)
 {
-	mesh->prepare();
+	mesh->prepare(assets);
 }
 
 Shader* Node::bind(const RenderContext& ctx, Shader* shader)

@@ -29,11 +29,15 @@ Scene::~Scene()
 void Scene::prepare()
 {
 	for (auto node : nodes) {
-		node->prepare();
+		node->prepare(assets);
+	}
+
+	for (auto sprite : sprites) {
+		sprite->prepare(assets);
 	}
 
 	for (auto terrain : terrains) {
-		terrain->prepare();
+		terrain->prepare(assets);
 	}
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
@@ -44,7 +48,7 @@ void Scene::prepare()
 	viewportRenderer->prepare();
 
 	if (showNormals) {
-		normalRenderer->prepare(nodes);
+		normalRenderer->prepare();
 	}
 
 	shadowMapRenderer->prepare();

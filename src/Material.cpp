@@ -73,6 +73,9 @@ Material::~Material()
 
 int Material::loadTextures(const std::string& baseDir)
 {
+	if (loaded) return 0;
+	loaded = true;
+
 	diffuseTex = loadTexture(baseDir, map_kd, false);
 	emissionTex = loadTexture(baseDir, map_ke, false);
 	specularTex = loadTexture(baseDir, map_ks, false);
