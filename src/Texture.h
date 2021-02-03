@@ -11,16 +11,17 @@
 class Texture
 {
 public:
-	Texture(const std::string& path, bool normal);
+	Texture(const std::string& path, int textureMode, bool normalMap);
 	~Texture();
 
 	void prepare();
 	void bind(Shader* shader);
 	int load();
 
-	static Texture* getTexture(const std::string& path, bool normalMap);
+	static Texture* getTexture(const std::string& path, int textureMode, bool normalMap);
 public:
 	const std::string path;
+	const int textureMode;
 	const bool normalMap;
 
 	unsigned int textureID = -1;

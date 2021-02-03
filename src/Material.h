@@ -48,6 +48,8 @@ public:
 
     std::string materialDir;
 
+    int textureMode = GL_CLAMP_TO_EDGE;
+
     Texture* diffuseTex;
     Texture* specularTex;
     Texture* emissionTex;

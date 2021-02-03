@@ -565,7 +565,8 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 int SceneSetup1::setupTerrain(Scene* scene)
 {
 	Material* material = new Material("terrain", 0);
-	material->map_kd = "two-kingdoms.jpg";
+	material->textureMode = GL_REPEAT;
+	material->map_kd = "Grass Dark_VH.PNG";
 	material->loadTextures(assets.modelsDir + "/");
 	material->prepare();
 

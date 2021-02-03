@@ -6,22 +6,24 @@
 
 
 std::map<std::string, Texture*> textures;
-std::map<std::string, Texture*> normalMaps;
+std::map<std::string, Texture*> normals;
 
-Texture* Texture::getTexture(const std::string& path, bool normalMap)
+Texture* Texture::getTexture(const std::string& path, int textureMode, bool normalMap)
 {
-	std::map<std::string, Texture*>& cache = normalMap ? normalMaps : textures;
+	std::string cacheKey = path + "_" + std::to_string(textureMode);
+	std::map<std::string, Texture*>& cache = normalMap ? normals : textures;
 
 	Texture* tex = cache[path];
 	if (!tex) {
-		tex = new Texture(path, normalMap);
+		tex = new Texture(path, normalMap, textureMode);
 		cache[path] = tex;
 	}
 	return tex;
 }
 
-Texture::Texture(const std::string& path, bool normalMap)
+Texture::Texture(const std::string& path, int textureMode, bool normalMap)
 	: path(path),
+	textureMode(textureMode),
 	normalMap(normalMap)
 {
 }
@@ -48,8 +50,8 @@ void Texture::prepare()
 
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureMode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureMode);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

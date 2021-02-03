@@ -92,7 +92,7 @@ Texture* Material::loadTexture(const std::string& baseDir, const std::string& na
 
 	// NOTE KI sharing fails since causes texture unit conflicts across materials
 //	Texture* texture = Texture::getTexture(texturePath, normalMap);
-	Texture* texture = new Texture(texturePath, normalMap);
+	Texture* texture = new Texture(texturePath, textureMode, normalMap);
 
 	int res = texture->load();
 
