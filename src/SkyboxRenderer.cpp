@@ -72,7 +72,7 @@ int SkyboxRenderer::prepare()
 
     textureID = loadCubemap(faces);
 
-    shader = Shader::getShader(assets, name, GEOM_NONE);
+    shader = Shader::getShader(assets, name);
     shader->prepare();
 
     if (shader->prepare()) {

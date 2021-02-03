@@ -4,7 +4,7 @@
 NodeRenderer::NodeRenderer(const Assets& assets)
 	: assets(assets)
 {
-	selectionShader = Shader::getShader(assets, TEX_SELECTION, "");
+	selectionShader = Shader::getShader(assets, TEX_SELECTION);
 	selectionShader->selection = true;
 }
 

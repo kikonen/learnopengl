@@ -4,7 +4,7 @@
 NormalRenderer::NormalRenderer(const Assets& assets)
 	: assets(assets)
 {
-	shader = Shader::getShader(assets, TEX_NORMAL, "");
+	shader = Shader::getShader(assets, TEX_NORMAL);
 	shader->prepare();
 }
 

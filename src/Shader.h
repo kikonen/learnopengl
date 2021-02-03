@@ -27,6 +27,10 @@ class Shader
 {
 public:
     static Shader* getShader(
+        const Assets& assets,
+        const std::string& name);
+
+    static Shader* getShader(
         const Assets& assets, 
         const std::string& name,
         const std::string& geometryType);

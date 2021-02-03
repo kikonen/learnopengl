@@ -18,7 +18,7 @@ void Sprite::prepare(const Assets& assets)
 //	mesh->materials[material->name] = material;
 //	mesh->defaultShader = Shader::getShader(assets, TEX_TEXTURE, "");
 
-	MeshLoader loader(Shader::getShader(assets, TEX_TEXTURE, ""), "brickwall2");
+	MeshLoader loader(Shader::getShader(assets, TEX_TEXTURE), "brickwall2");
 	loader.defaultMaterial = material;
 	loader.overrideMaterials = true;
 	mesh = loader.load();

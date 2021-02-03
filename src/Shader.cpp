@@ -11,6 +11,13 @@ std::map<std::string, Shader*> shaders;
 
 
 Shader* Shader::getShader(
+    const Assets& assets,
+    const std::string& name)
+{
+    return Shader::getShader(assets, name, "");
+}
+
+Shader* Shader::getShader(
     const Assets& assets, 
     const std::string& name, 
     const std::string& geometryType)
