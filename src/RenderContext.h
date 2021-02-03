@@ -20,7 +20,7 @@ public:
 		const std::vector<Light*>& spotLights);
 
 	void bindGlobal() const;
-	void bind(Shader* shader, bool wireframe) const;
+	void bind(Shader* shader) const;
 public:
 	const Engine& engine;
 

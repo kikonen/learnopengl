@@ -34,7 +34,7 @@ public:
     int loadTextures(const std::string& baseDir);
 
     void prepare();
-    void bind(Shader* shader, int index, bool useTexture);
+    void bind(Shader* shader, int index);
 
     MaterialUBO toUBO();
 

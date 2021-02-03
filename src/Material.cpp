@@ -112,7 +112,7 @@ void Material::prepare()
 	}
 }
 
-void Material::bind(Shader* shader, int index, bool useTexture)
+void Material::bind(Shader* shader, int index)
 {
 	const Names* names = getNames(index);
 

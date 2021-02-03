@@ -25,8 +25,6 @@ void Terrain::prepare()
 	mesh = new Mesh("terrain");
 	mesh->materials[material->name] = material;
 	mesh->defaultShader = shader;
-	mesh->textureCount = 1;
-	mesh->hasTexture = true;
 
 	Perlin perlin(-1);
 

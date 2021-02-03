@@ -29,11 +29,9 @@ void Mesh::prepare()
 {
 	buffers.prepare();
 
-	if (bindTexture) {
-		for (auto const& x : materials) {
-			Material* material = x.second;
-			material->prepare();
-		}
+	for (auto const& x : materials) {
+		Material* material = x.second;
+		material->prepare();
 	}
 
 	prepareBuffers(buffers);
@@ -196,10 +194,10 @@ ShaderInfo* Mesh::bind(const RenderContext& ctx, Shader* shader)
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
-		material->bind(info->shader, material->materialIndex, bindTexture);
+		material->bind(info->shader, material->materialIndex);
 	}
 
-	ctx.bind(info->shader, useWireframe);
+	ctx.bind(info->shader);
 	bound = info;
 
 	return info;

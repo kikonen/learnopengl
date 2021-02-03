@@ -16,8 +16,6 @@ void Sprite::prepare()
 	mesh = new Mesh("sprite");
 	mesh->materials[material->name] = material;
 //	mesh->defaultShader = Shader::getShader(assets, TEX_TEXTURE, "");
-	mesh->textureCount = 1;
-	mesh->hasTexture = true;
 
 	float vertices[] = {
 		// pos      // tex

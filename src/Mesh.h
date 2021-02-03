@@ -39,14 +39,10 @@ public:
 private:
 	ShaderInfo* prepareShader(Shader* shader);
 public:
-	bool useWireframe = false;
-
 	ShaderInfo* bound = nullptr;
 
 	Shader* defaultShader = nullptr;
 	Material* defaultMaterial = nullptr;
-
-	unsigned int textureCount = 0;
 
 	MeshBuffers buffers;
 
@@ -55,7 +51,6 @@ public:
 
 	std::map<std::string, Material*> materials;
 
-	bool hasTexture = false;
 private:
 	std::map<std::string, ShaderInfo*> shaders;
 
@@ -65,5 +60,4 @@ private:
 	MaterialsUBO materialsUbo;
 	unsigned int  materialsUboId = -1;
 	unsigned int materialsUboSize = -1;
-	const bool bindTexture = true;
 };

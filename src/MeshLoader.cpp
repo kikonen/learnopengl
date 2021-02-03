@@ -73,8 +73,6 @@ Mesh* MeshLoader::load() {
 	Mesh* mesh = new Mesh(modelName, path);	
 	loadData(mesh->tris, mesh->vertices, mesh->materials);
 	mesh->defaultShader = shader;
-	mesh->textureCount = textureCount;
-	mesh->hasTexture = textureCount > 0;
 	return mesh;
 }
 
