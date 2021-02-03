@@ -5,7 +5,6 @@
 
 #include "RenderContext.h"
 #include "Texture.h"
-#include "ShaderInfo.h"
 #include "Assets.h"
 #include "MeshBuffers.h"
 

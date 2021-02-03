@@ -29,7 +29,7 @@ void Sprite::prepare()
 	};
 }
 
-ShaderInfo* Sprite::bind(const RenderContext& ctx, Shader* shader)
+Shader* Sprite::bind(const RenderContext& ctx, Shader* shader)
 {
 	return nullptr;
 }

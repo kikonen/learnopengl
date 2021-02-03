@@ -21,6 +21,7 @@ Shader* Shader::getShader(
     if (!shader) {
         shader = new Shader(assets, key, name, geometryType);
         shaders[key] = shader;
+        shader->prepare();
     }
 
     return shader;

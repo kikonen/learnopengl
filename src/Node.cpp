@@ -16,12 +16,12 @@ void Node::prepare()
 	mesh->prepare();
 }
 
-ShaderInfo* Node::bind(const RenderContext& ctx, Shader* shader)
+Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 {
 	updateModelMatrix();
 
-	ShaderInfo* info = mesh->bind(ctx, shader);
-	if (!info) {
+	shader = mesh->bind(ctx, shader);
+	if (!shader) {
 		return nullptr;
 	}
 
@@ -31,13 +31,11 @@ ShaderInfo* Node::bind(const RenderContext& ctx, Shader* shader)
 		glEnable(GL_CULL_FACE);
 	}
 
-	shader = info->shader;
-
 	shader->modelMatrix.set(modelMat);
 	shader->normalMatrix.set(normalMat);
 	shader->drawInstanced.set(false);
 
-	return info;
+	return shader;
 }
 
 void Node::draw(const RenderContext& ctx)

@@ -8,7 +8,7 @@ public:
 	AsteroidBeltNode(Mesh* mesh);
 
 	void prepare() override;
-	ShaderInfo* bind(const RenderContext& ctx, Shader* shader) override;
+	Shader* bind(const RenderContext& ctx, Shader* shader) override;
 	void draw(const RenderContext& ctx) override;
 
 private:

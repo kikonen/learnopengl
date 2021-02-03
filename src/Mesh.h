@@ -7,15 +7,12 @@
 
 #include "Assets.h"
 #include "Shader.h"
-#include "ShaderInfo.h"
 #include "RenderContext.h"
 
 #include "Tri.h"
 #include "Material.h"
 #include "Shader.h"
-#include "Camera.h"
 #include "Vertex.h"
-#include "Light.h"
 #include "Assets.h"
 #include "MeshBuffers.h"
 
@@ -32,14 +29,12 @@ public:
 
 	void prepare();
 	void prepareBuffers(MeshBuffers& curr);
-	ShaderInfo* bind(const RenderContext& ctx, Shader* shader);
+	Shader* bind(const RenderContext& ctx, Shader* shader);
 	void draw(const RenderContext& ctx);
 	void drawInstanced(const RenderContext& ctx, int instanceCount);
 
-private:
-	ShaderInfo* prepareShader(Shader* shader);
 public:
-	ShaderInfo* bound = nullptr;
+	Shader* bound = nullptr;
 
 	Shader* defaultShader = nullptr;
 	Material* defaultMaterial = nullptr;
@@ -52,8 +47,6 @@ public:
 	std::map<std::string, Material*> materials;
 
 private:
-	std::map<std::string, ShaderInfo*> shaders;
-
 	const std::string modelName;
 	const std::string path;
 

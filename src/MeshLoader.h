@@ -36,28 +36,10 @@ public:
 
 	Shader* shader;
 
-	bool debugColors = false;
 	Material* defaultMaterial = nullptr;
 	bool overrideMaterials = false;
 
- 	unsigned int textureCount = 0;
-
 private:
-	std::vector<glm::vec4> colors = {
-		{ 1.0f, 0.0f, 0.0f, 1.f },
-		{ 0.0f, 1.0f, 0.0f, 1.f },
-		{ 0.0f, 0.0f, 1.0f, 1.f },
-
-		{ 1.0f, 1.0f, 0.0f, 1.f },
-		{ 0.0f, 1.0f, 1.0f, 1.f },
-		{ 1.0f, 0.0f, 1.0f, 1.f },
-
-		{ 1.0f, 0.5f, 0.5f, 1.f },
-		{ 0.5f, 1.0f, 0.5f, 1.f },
-		{ 0.5f, 0.5f, 1.0f, 1.f },
-	};
-
-
 	int resolveVertexIndex(
 		std::map<glm::vec3*, Vertex*>& vertexMapping,
 		std::vector<Vertex*>& vertices,

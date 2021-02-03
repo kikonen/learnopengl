@@ -12,7 +12,7 @@ public:
 
 	virtual void prepare();
 
-	virtual ShaderInfo* bind(const RenderContext& ctx, Shader* shader);
+	virtual Shader* bind(const RenderContext& ctx, Shader* shader);
 	virtual void draw(const RenderContext& ctx);
 	virtual void drawInstanced(const RenderContext& ctx, int instanceCount);
 

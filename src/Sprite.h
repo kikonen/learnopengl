@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 
 #include "Material.h"
-#include "ShaderInfo.h"
 #include "RenderContext.h"
 #include "Mesh.h"
 
@@ -14,7 +13,7 @@ public:
 	~Sprite();
 
 	void prepare();
-	virtual ShaderInfo* bind(const RenderContext& ctx, Shader* shader);
+	virtual Shader* bind(const RenderContext& ctx, Shader* shader);
 	virtual void draw(const RenderContext& ctx);
 	virtual void drawInstanced(const RenderContext& ctx, int instanceCount);
 

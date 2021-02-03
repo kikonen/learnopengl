@@ -14,7 +14,7 @@ public:
 	~Terrain();
 
 	void prepare();
-	virtual ShaderInfo* bind(const RenderContext& ctx, Shader* shader);
+	virtual Shader* bind(const RenderContext& ctx, Shader* shader);
 	void draw(RenderContext& ctx);
 public:
 	const int worldX;

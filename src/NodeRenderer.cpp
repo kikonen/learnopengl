@@ -49,8 +49,8 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::vector<Node*>& nodes, bool 
 			blendedNodes.push_back(node);
 		}
 		else {
-			ShaderInfo* info = node->bind(ctx, nullptr);
-			info->shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
+			Shader* shader = node->bind(ctx, nullptr);
+			shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 			node->draw(ctx);
 		}
 		renderCount++;
@@ -105,7 +105,7 @@ void NodeRenderer::drawBlended(RenderContext& ctx, std::vector<Node*>& nodes)
 		Node* node = it->second;
 
 		node->bind(ctx, nullptr);
-		node->mesh->bound->shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
+		node->mesh->bound->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 		node->draw(ctx);
 	}
 

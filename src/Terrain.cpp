@@ -73,7 +73,7 @@ void Terrain::prepare()
 	node->prepare();
 }
 
-ShaderInfo* Terrain::bind(const RenderContext& ctx, Shader* shader)
+Shader* Terrain::bind(const RenderContext& ctx, Shader* shader)
 {
 	return node->bind(ctx, shader);
 }

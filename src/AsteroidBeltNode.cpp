@@ -104,19 +104,19 @@ void AsteroidBeltNode::prepare()
 	}
 }
 
-ShaderInfo* AsteroidBeltNode::bind(const RenderContext& ctx, Shader* shader)
+Shader* AsteroidBeltNode::bind(const RenderContext& ctx, Shader* shader)
 {
-	ShaderInfo* info = Node::bind(ctx, shader);
+	shader = Node::bind(ctx, shader);
 
-	if (info->shader->selection) {
+	if (shader->selection) {
 		glBindVertexArray(selectedBuffers.VAO);
 	}
 
-	return info;
+	return shader;
 }
 
 void AsteroidBeltNode::draw(const RenderContext& ctx)
 {
-	mesh->bound->shader->drawInstanced.set(true);
+	mesh->bound->drawInstanced.set(true);
 	drawInstanced(ctx, asteroidMatrices.size());
 }

@@ -165,7 +165,6 @@
     <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\Assets.cpp" />
     <ClCompile Include="src\SkyboxRenderer.cpp" />
-    <ClCompile Include="src\ShaderInfo.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\RenderContext.cpp" />
     <ClCompile Include="src\Input.cpp" />
@@ -207,7 +206,6 @@
     <ClInclude Include="src\Sprite.h" />
     <ClInclude Include="src\Assets.h" />
     <ClInclude Include="src\SkyboxRenderer.h" />
-    <ClInclude Include="src\ShaderInfo.h" />
     <ClInclude Include="src\Image.h" />
     <ClInclude Include="src\RenderContext.h" />
     <ClInclude Include="src\Input.h" />

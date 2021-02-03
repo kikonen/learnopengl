@@ -193,18 +193,10 @@ int MeshLoader::loadData(
 				}
 
 				Tri* tri = new Tri(v);
-				tri->material = material;
 				tris.push_back(tri);
 			}
 		}
 
-		/*		int colorIdx = 0;
-				for (auto const& v : positions) {
-					glm::vec3 c = colors[(colorIdx++) % colors.size()];
-					Vertex vertex = { v, v, v, c };
-					vertices.push_back(vertex);
-				}
-			*/
 		file.close();
 		result = 0;
 	}
@@ -442,8 +434,6 @@ int MeshLoader::loadMaterials(
 			textureIndex++;
 		}
 	}
-
-	textureCount = textureIndex;
 
 	return 0;
 }

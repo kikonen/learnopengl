@@ -164,22 +164,10 @@ void Mesh::prepareBuffers(MeshBuffers& curr)
 	glBindVertexArray(0);
 }
 
-ShaderInfo* Mesh::prepareShader(Shader* shader)
+Shader* Mesh::bind(const RenderContext& ctx, Shader* shader)
 {
 	shader = shader ? shader : defaultShader;
-	ShaderInfo* info = shaders[shader->key];
-	if (!info) {
-		info = new ShaderInfo(shader);
-		info->prepare();
-		shaders[shader->key] = info;
-	}
-	return info;
-}
-
-ShaderInfo* Mesh::bind(const RenderContext& ctx, Shader* shader)
-{
-	ShaderInfo* info = prepareShader(shader);
-	if (!info) {
+	if (!shader) {
 		return nullptr;
 	}
 
@@ -188,19 +176,19 @@ ShaderInfo* Mesh::bind(const RenderContext& ctx, Shader* shader)
 //	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize);
 
-	info->bind();
+	shader->bind();
 
 	glBindVertexArray(buffers.VAO);
 
 	for (auto const& x : materials) {
 		Material* material = x.second;
-		material->bind(info->shader, material->materialIndex);
+		material->bind(shader, material->materialIndex);
 	}
 
-	ctx.bind(info->shader);
-	bound = info;
+	ctx.bind(shader);
+	bound = shader;
 
-	return info;
+	return shader;
 }
 
 void Mesh::draw(const RenderContext& ctx)
