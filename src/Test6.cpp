@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "ModelMesh.h"
+#include "Mesh.h"
 
 #include "KIGL.h"
 

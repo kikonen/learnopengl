@@ -49,9 +49,12 @@ private:
 	int setupNodeActive(Scene* scene);
 	int setupNodeMountains(Scene* scene);
 	int setupNodeWaterBall(Scene* scene);
+
 	int setupNodePlanet(Scene* scene);
 	int setupNodeAsteroids(Scene* scene);
 	int setupNodeAsteroidBelt(Scene* scene);
+
+	int setupSpriteFlare(Scene* scene);
 
 	int setupTerrain(Scene* scene);
 

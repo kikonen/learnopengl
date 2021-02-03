@@ -1,13 +1,13 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "ModelMesh.h"
+#include "Mesh.h"
 #include "RenderContext.h"
 
 class Node
 {
 public:
-	Node(ModelMesh* mesh);
+	Node(Mesh* mesh);
 	~Node();
 
 	virtual void prepare();
@@ -26,7 +26,7 @@ public:
 	const glm::vec3& getRotation();
 
 public:
-	ModelMesh* mesh;
+	Mesh* mesh;
 	bool blend = false;
 	bool light = false;
 	bool renderBack = false;

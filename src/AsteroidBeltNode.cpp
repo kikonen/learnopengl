@@ -1,7 +1,7 @@
 #include "AsteroidBeltNode.h"
 
 
-AsteroidBeltNode::AsteroidBeltNode(ModelMesh* mesh)
+AsteroidBeltNode::AsteroidBeltNode(Mesh* mesh)
 	: Node(mesh)
 {
 }

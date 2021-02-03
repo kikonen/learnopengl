@@ -25,6 +25,6 @@ public:
 	glm::vec3 pos = { 0, 0, 0 };
 private:
 	Node* node = nullptr;
-	ModelMesh* mesh = nullptr;
+	Mesh* mesh = nullptr;
 };
 

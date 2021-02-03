@@ -11,6 +11,8 @@ class Assets
 public: 
     std::string modelsDir = "3d_model";
     std::string shadersDir = "shader";
+    std::string spritesDir = "sprites";
+    std::string texturesDir = "textures";
 
     //glm::vec3 groundOffset = { 0.f, 15.f, -40.f };
     glm::vec3 groundOffset = { 200.f, 15.f, 200.f };

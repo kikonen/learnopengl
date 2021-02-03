@@ -1,4 +1,4 @@
-#include "ModelMesh.h"
+#include "Mesh.h"
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -7,13 +7,13 @@
 
 #include "KIGL.h"
 
-ModelMesh::ModelMesh(
+Mesh::Mesh(
 	const std::string& modelName)
-	: ModelMesh(modelName, "/")
+	: Mesh(modelName, "/")
 {
 }
 
-ModelMesh::ModelMesh(
+Mesh::Mesh(
 	const std::string& modelName,
 	const std::string& path)
 	: modelName(modelName),
@@ -21,11 +21,11 @@ ModelMesh::ModelMesh(
 {
 }
 
-ModelMesh::~ModelMesh()
+Mesh::~Mesh()
 {
 }
 
-void ModelMesh::prepare()
+void Mesh::prepare()
 {
 	buffers.prepare();
 
@@ -61,7 +61,7 @@ void ModelMesh::prepare()
 	}
 }
 
-void ModelMesh::prepareBuffers(MeshBuffers& curr)
+void Mesh::prepareBuffers(MeshBuffers& curr)
 {
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
 	glBindVertexArray(curr.VAO);
@@ -166,7 +166,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 	glBindVertexArray(0);
 }
 
-ShaderInfo* ModelMesh::prepareShader(Shader* shader)
+ShaderInfo* Mesh::prepareShader(Shader* shader)
 {
 	shader = shader ? shader : defaultShader;
 	ShaderInfo* info = shaders[shader->key];
@@ -178,7 +178,7 @@ ShaderInfo* ModelMesh::prepareShader(Shader* shader)
 	return info;
 }
 
-ShaderInfo* ModelMesh::bind(const RenderContext& ctx, Shader* shader)
+ShaderInfo* Mesh::bind(const RenderContext& ctx, Shader* shader)
 {
 	ShaderInfo* info = prepareShader(shader);
 	if (!info) {
@@ -205,12 +205,12 @@ ShaderInfo* ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 	return info;
 }
 
-void ModelMesh::draw(const RenderContext& ctx)
+void Mesh::draw(const RenderContext& ctx)
 {
 	glDrawElements(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0);
 }
 
-void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
+void Mesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
 	glDrawElementsInstanced(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0, instanceCount);
 }

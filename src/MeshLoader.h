@@ -2,25 +2,25 @@
 
 #include <string>
 
-#include "ModelMesh.h"
+#include "Mesh.h"
 #include "Assets.h"
 
 
-class ModelMeshLoader
+class MeshLoader
 {
 public:
-	ModelMeshLoader(
+	MeshLoader(
 		Shader* shader,
 		const std::string& modelName);
 
-	ModelMeshLoader(
+	MeshLoader(
 		Shader* shader,
 		const std::string& modelName,
 		const std::string& path);
 
-	~ModelMeshLoader();
+	~MeshLoader();
 
-	ModelMesh* load();
+	Mesh* load();
 
 private:
 	int loadData(

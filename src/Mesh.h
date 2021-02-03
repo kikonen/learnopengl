@@ -19,16 +19,16 @@
 #include "Assets.h"
 #include "MeshBuffers.h"
 
-class ModelMesh {
+class Mesh {
 public:
-	ModelMesh(
+	Mesh(
 		const std::string& modelName);
 
-	ModelMesh(
+	Mesh(
 		const std::string& modelName,
 		const std::string& path);
 
-	~ModelMesh();
+	~Mesh();
 
 	void prepare();
 	void prepareBuffers(MeshBuffers& curr);

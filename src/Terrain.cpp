@@ -22,7 +22,7 @@ void Terrain::prepare()
 {
 	pos = { worldX * TILE_SIZE, 0, worldZ * TILE_SIZE };
 
-	mesh = new ModelMesh("terrain");
+	mesh = new Mesh("terrain");
 	mesh->materials[material->name] = material;
 	mesh->defaultShader = shader;
 	mesh->textureCount = 1;

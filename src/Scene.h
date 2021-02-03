@@ -10,7 +10,9 @@
 #include "Viewport.h"
 
 #include "NodeRenderer.h"
+#include "SpriteRenderer.h"
 #include "TerrainRenderer.h"
+
 #include "ViewportRenderer.h"
 #include "SkyboxRenderer.h"
 #include "ShadowMapRenderer.h"
@@ -31,6 +33,8 @@ public:
 	bool showNormals = false;
 
 	NodeRenderer* nodeRenderer = nullptr;
+	SpriteRenderer* spriteRenderer = nullptr;
+
 	TerrainRenderer* terrainRenderer = nullptr;
 	ViewportRenderer* viewportRenderer = nullptr;
 
@@ -39,6 +43,7 @@ public:
 	NormalRenderer* normalRenderer = nullptr;
 
 	std::vector<Node*> nodes;
+	std::vector<Sprite*> sprites;
 	std::vector<Terrain*> terrains;
 	std::vector<Viewport*> viewports;
 

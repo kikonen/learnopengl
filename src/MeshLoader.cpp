@@ -1,4 +1,4 @@
-#include "ModelMeshLoader.h"
+#include "MeshLoader.h"
 
 #include <fstream>
 #include <istream>
@@ -46,14 +46,14 @@ const glm::vec2 EMPTY_TEX = { 0, 0 };
 const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
 
 
-ModelMeshLoader::ModelMeshLoader(
+MeshLoader::MeshLoader(
 	Shader* shader,
 	const std::string& modelName)
-	: ModelMeshLoader(shader, modelName, "/")
+	: MeshLoader(shader, modelName, "/")
 {
 }
 
-ModelMeshLoader::ModelMeshLoader(
+MeshLoader::MeshLoader(
 	Shader* shader,
 	const std::string& modelName,
 	const std::string& path)
@@ -65,12 +65,12 @@ ModelMeshLoader::ModelMeshLoader(
 	defaultMaterial = Material::createDefaultMaterial();
 }
 
-ModelMeshLoader::~ModelMeshLoader()
+MeshLoader::~MeshLoader()
 {
 }
 
-ModelMesh* ModelMeshLoader::load() {
-	ModelMesh* mesh = new ModelMesh(modelName, path);	
+Mesh* MeshLoader::load() {
+	Mesh* mesh = new Mesh(modelName, path);	
 	loadData(mesh->tris, mesh->vertices, mesh->materials);
 	mesh->defaultShader = shader;
 	mesh->textureCount = textureCount;
@@ -78,7 +78,7 @@ ModelMesh* ModelMeshLoader::load() {
 	return mesh;
 }
 
-int ModelMeshLoader::loadData(
+int MeshLoader::loadData(
 		std::vector<Tri*>&tris,
 		std::vector<Vertex*>&vertices,
 		std::map<std::string, Material*>&materials)
@@ -226,7 +226,7 @@ int ModelMeshLoader::loadData(
 }
 
 // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
-void ModelMeshLoader::splitFragmentValue(const std::string& v, std::vector<std::string>& vv) {
+void MeshLoader::splitFragmentValue(const std::string& v, std::vector<std::string>& vv) {
 	std::istringstream f(v);
 	std::string s;
 	while (getline(f, s, '/')) {
@@ -234,7 +234,7 @@ void ModelMeshLoader::splitFragmentValue(const std::string& v, std::vector<std::
 	}
 }
 
-int ModelMeshLoader::resolveVertexIndex(
+int MeshLoader::resolveVertexIndex(
 	std::map<glm::vec3*, Vertex*>& vertexMapping,
 	std::vector<Vertex*>& vertices,
 	std::vector<glm::vec3>& positions,
@@ -281,7 +281,7 @@ int ModelMeshLoader::resolveVertexIndex(
 	return v->index;
 }
 
-glm::vec3 ModelMeshLoader::createNormal(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, glm::uvec3 pi)
+glm::vec3 MeshLoader::createNormal(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, glm::uvec3 pi)
 {
 	glm::vec3 p1 = positions[pi[0]];
 	glm::vec3 p2 = positions[pi[1]];
@@ -296,7 +296,7 @@ glm::vec3 ModelMeshLoader::createNormal(std::vector<glm::vec3>& positions, std::
 	return glm::vec3(idx, idx, idx);
 }
 
-void ModelMeshLoader::createTangents(
+void MeshLoader::createTangents(
 	std::vector<glm::vec3>& positions,
 	std::vector<glm::vec2>& textures,
 	std::vector<glm::vec3>& normals,
@@ -359,7 +359,7 @@ void ModelMeshLoader::createTangents(
 }
 
 
-int ModelMeshLoader::loadMaterials(
+int MeshLoader::loadMaterials(
 	std::map<std::string, Material*>& materials,
 	std::string libraryName)
 {
@@ -450,7 +450,7 @@ int ModelMeshLoader::loadMaterials(
 	return 0;
 }
 
-std::string ModelMeshLoader::resolveTexturePath(const std::string& line)
+std::string MeshLoader::resolveTexturePath(const std::string& line)
 {
 	std::string k;
 	std::stringstream is2(line);

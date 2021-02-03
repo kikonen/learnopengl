@@ -7,6 +7,7 @@ Scene::Scene(const Assets& assets)
 	: assets(assets)
 {
 	nodeRenderer = new NodeRenderer(assets);
+	spriteRenderer = new SpriteRenderer(assets);
 	terrainRenderer = new TerrainRenderer(assets);
 	viewportRenderer = new ViewportRenderer(assets);
 
@@ -16,6 +17,11 @@ Scene::Scene(const Assets& assets)
 
 Scene::~Scene()
 {
+	delete nodeRenderer;
+	delete spriteRenderer;
+	delete terrainRenderer;
+	delete viewportRenderer;
+
 	delete shadowMapRenderer;
 	delete normalRenderer;
 }
@@ -32,6 +38,8 @@ void Scene::prepare()
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	nodeRenderer->prepare();
+	spriteRenderer->prepare();
+
 	terrainRenderer->prepare();
 	viewportRenderer->prepare();
 
@@ -73,6 +81,8 @@ void Scene::draw(RenderContext& ctx)
 	}
 
 	nodeRenderer->render(ctx, nodes);
+
+	spriteRenderer->render(ctx, sprites);
 
 	if (showNormals) {
 		normalRenderer->render(ctx, nodes);

@@ -2,7 +2,7 @@
 
 #include "KIGL.h"
 
-Node::Node(ModelMesh* mesh) : mesh(mesh)
+Node::Node(Mesh* mesh) : mesh(mesh)
 {
 	dirtyMat = true;
 }
