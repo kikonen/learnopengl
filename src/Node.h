@@ -29,7 +29,7 @@ public:
 	ModelMesh* mesh;
 	bool blend = false;
 	bool light = false;
-	bool flat = false;
+	bool renderBack = false;
 	bool skipShadow = false;
 	bool selected = false;
 private:

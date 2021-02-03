@@ -71,7 +71,7 @@ void Terrain::prepare()
 
 	node = new Node(mesh);
 	node->setPos(pos);
-	node->flat = true;
+	node->renderBack = true;
 	node->prepare();
 }
 

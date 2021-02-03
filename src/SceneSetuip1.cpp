@@ -282,7 +282,7 @@ int SceneSetup1::setupNodeWindow1(Scene* scene)
 	node->setPos(glm::vec3(5, -5, -5) + assets.groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
-	node->flat = true;
+	node->renderBack = true;
 	scene->nodes.push_back(node);
 	return 0;
 }
@@ -296,7 +296,7 @@ int SceneSetup1::setupNodeWindow2(Scene* scene)
 	node->setPos(glm::vec3(7, -5, -8) + assets.groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
-	node->flat = true;
+	node->renderBack = true;
 	scene->nodes.push_back(node);
 	//	selection.push_back(node);
 	return 0;
@@ -312,7 +312,7 @@ int SceneSetup1::setupNodeStainedWindows(Scene* scene)
 		node->setPos(glm::vec3(-10 + i * 2, 0, 10) + assets.groundOffset);
 		node->setRotation(glm::vec3(0, 180, 0));
 		node->blend = true;
-		node->flat = true;
+		node->renderBack = true;
 		scene->nodes.push_back(node);
 	}
 	return 0;
@@ -330,7 +330,7 @@ int SceneSetup1::setupNodeBrickwall(Scene* scene)
 		Node* node = new Node(i % 2 == 0 ? mesh : mesh2);
 		node->setPos(glm::vec3(-5 + i * 2, -8, 14) + assets.groundOffset);
 		//node->setRotation(glm::vec3(0, 180, 0));
-		node->flat = true;
+		node->renderBack = true;
 		scene->nodes.push_back(node);
 	}
 	return 0;
@@ -365,7 +365,7 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 90, 0) + assets.groundOffset);
 		node->setScale(scale);
 		node->setRotation(rot[i]);
-		node->flat = true;
+		node->renderBack = true;
 		//node->skipShadow = true;
 		scene->nodes.push_back(node);
 	}
@@ -404,6 +404,7 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 
 	Node* node = new Node(mesh);
 	node->setPos(glm::vec3(-5, 5, -5) + assets.groundOffset);
+	node->renderBack = true;
 	node->selected = true;
 	scene->nodes.push_back(node);
 	return 0;

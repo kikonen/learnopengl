@@ -25,7 +25,7 @@ ShaderInfo* Node::bind(const RenderContext& ctx, Shader* shader)
 		return nullptr;
 	}
 
-	if (flat) {
+	if (renderBack) {
 		glDisable(GL_CULL_FACE);
 	} else {
 		glEnable(GL_CULL_FACE);
