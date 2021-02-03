@@ -2,9 +2,10 @@
 
 #include <vector>
 
-const int TILE_SIZE = 400;
-const int VERTEX_COUNT = 4;
+#include "Perlin.h"
 
+const int TILE_SIZE = 400;
+const int VERTEX_COUNT = 128;
 
 Terrain::Terrain(int worldX, int worldZ, Material* material, Shader* shader)
 	: worldX(worldX), worldZ(worldZ), material(material), shader(shader)
@@ -27,6 +28,8 @@ void Terrain::prepare()
 	mesh->textureCount = 1;
 	mesh->hasTexture = true;
 
+	Perlin perlin(-1);
+
 	for (int z = 0; z < VERTEX_COUNT; z++) {
 		float gz = (z / ((float)VERTEX_COUNT - 1)) * TILE_SIZE;
 		float tz = (z / ((float)VERTEX_COUNT - 1));
@@ -35,7 +38,8 @@ void Terrain::prepare()
 			float gx = (x / ((float)VERTEX_COUNT - 1)) * TILE_SIZE;
 			float tx = (x / ((float)VERTEX_COUNT - 1));
 
-			glm::vec3 pos = { gx, 0.f, gz };
+			float gy = perlin.perlin(gx, 0, gz) * 5;
+			glm::vec3 pos = { gx, gy, gz };
 			glm::vec2 texture = { tx, tz };
 			glm::vec3 normal = { 0.f, 1.f, 0.f };
 

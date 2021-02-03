@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Perlin.cpp" />
     <ClCompile Include="src\FrameBuffer.cpp" />
     <ClCompile Include="src\MeshBuffers.cpp" />
     <ClCompile Include="src\NodeRenderer.cpp" />
@@ -192,6 +193,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Perlin.h" />
     <ClInclude Include="src\FrameBuffer.h" />
     <ClInclude Include="src\MeshBuffers.h" />
     <ClInclude Include="src\NodeRenderer.h" />
