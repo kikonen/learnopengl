@@ -72,5 +72,6 @@ public:
 	Node* activeLightNode = nullptr;
 
 	Node* sunNode = nullptr;
+	Node* planet = nullptr;
 };
 

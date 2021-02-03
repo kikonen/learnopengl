@@ -1,14 +1,14 @@
 #include "AsteroidBeltNode.h"
 
 
-AsteroidBeltNode::AsteroidBeltNode(ModelMesh* mesh) : Node(mesh)
+AsteroidBeltNode::AsteroidBeltNode(ModelMesh* mesh)
+	: Node(mesh)
 {
-	setup();
 }
 
 void AsteroidBeltNode::setup()
 {
-	glm::vec3 planetPos = glm::vec3(10, 100, 60);
+	glm::vec3 planetPos = planet ? planet->getPos() : glm::vec3(0.f, 40.f, 0.f);
 
 	unsigned int amount = 1000;
 	srand(glfwGetTime()); // initialize random seed	
@@ -78,6 +78,8 @@ void AsteroidBeltNode::prepareBuffer(std::vector<glm::mat4> matrices)
 void AsteroidBeltNode::prepare()
 {
 	Node::prepare();
+
+	setup();
 
 	{
 		glGenBuffers(1, &asteroidBuffer);

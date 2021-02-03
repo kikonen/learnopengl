@@ -16,6 +16,9 @@ private:
 
 	void prepareBuffer(std::vector<glm::mat4> matrices);
 
+public:
+	Node* planet = nullptr;
+
 private:
 	std::vector<glm::mat4> asteroidMatrices;
 	std::vector<glm::mat4> selectionMatrices;

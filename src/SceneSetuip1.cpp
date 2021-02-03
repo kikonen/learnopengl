@@ -517,6 +517,8 @@ int SceneSetup1::setupNodePlanet(Scene* scene)
 	node->setScale(10);
 	scene->nodes.push_back(node);
 
+	planet = node;
+
 	{
 		// light
 		Light* light = new Light();
@@ -545,7 +547,8 @@ int SceneSetup1::setupNodeAsteroids(Scene* scene)
 	ModelMesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(10, 50, 100) + assets.groundOffset);
+	glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 50, 0) : glm::vec3(10, 50, 100) + assets.groundOffset;
+	node->setPos(pos);
 	scene->nodes.push_back(node);
 
 	return 0;
@@ -556,7 +559,8 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 	ModelMeshLoader loader(getShader(TEX_TEXTURE), "rock", "/rock/");
 	ModelMesh* mesh = loader.load();
 
-	Node* node = new AsteroidBeltNode(mesh);
+	AsteroidBeltNode* node = new AsteroidBeltNode(mesh);
+	node->planet = planet;
 	//node->selected = true;
 	scene->nodes.push_back(node);
 	return 0;
