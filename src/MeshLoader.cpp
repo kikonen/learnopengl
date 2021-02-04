@@ -79,12 +79,13 @@ Mesh* MeshLoader::load() {
 int MeshLoader::loadData(
 		std::vector<Tri*>&tris,
 		std::vector<Vertex*>&vertices,
-		std::map<std::string, Material*>&materials)
+		std::vector<Material*>& materials)
 {
 	int result = -1;
 
 	std::string name;
 
+	std::map<std::string, Material*> loadedMaterials;
 	std::map<glm::vec3*, Vertex*> vertexMapping;
 
 	std::vector<glm::vec3> positions;
@@ -100,7 +101,8 @@ int MeshLoader::loadData(
 	try {
 		file.open(modelPath);
 
-		materials[defaultMaterial->name] = defaultMaterial;
+		defaultMaterial->used = false;
+		loadedMaterials[defaultMaterial->name] = defaultMaterial;
 
 		Material* material = NULL;
 		std::string line;
@@ -114,7 +116,7 @@ int MeshLoader::loadData(
 			ss >> v1 >> v2 >> v3;
 
 			if (k == "mtllib") {
-				loadMaterials(materials, v1);
+				loadMaterials(loadedMaterials, v1);
 			}
 			else if (k == "o") {
 				name = v1;
@@ -142,8 +144,8 @@ int MeshLoader::loadData(
 				int group = stoi(v1);
 			}
 			else if (k == "usemtl") {
-				if (materials.count(v1)) {
-					material = materials[v1];
+				if (loadedMaterials.count(v1)) {
+					material = loadedMaterials[v1];
 				}
 			}
 			else if (k == "f") {
@@ -197,6 +199,15 @@ int MeshLoader::loadData(
 			}
 		}
 
+		int materialIndex = 0;
+		for (auto const& x : loadedMaterials) {
+			Material* material = x.second;
+			if (material->used) {
+				material->materialIndex = materialIndex++;
+				materials.push_back(material);
+			}
+		}
+
 		file.close();
 		result = 0;
 	}
@@ -245,6 +256,7 @@ int MeshLoader::resolveVertexIndex(
 	if (overrideMaterials || !material) {
 		material = defaultMaterial;
 	}
+	material->used = true;
 
 	glm::vec3& pos = positions[pi];
 
@@ -373,7 +385,7 @@ int MeshLoader::loadMaterials(
 			ss >> v1 >> v2 >> v3;
 
 			if (k == "newmtl") {
-				material = new Material(v1, materials.size());
+				material = new Material(v1);
 				materials[v1] = material;
 			}
 			else if (k == "Ns") {

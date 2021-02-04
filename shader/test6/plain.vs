@@ -12,10 +12,15 @@ uniform bool drawInstanced;
 
 out VS_OUT {
   flat float materialIndex;
+
   vec3 fragPos;
   vec3 normal;
 
   vec4 fragPosLightSpace;
+
+  vec3 tangentLightPos;
+  vec3 tangentViewPos;
+  vec3 tangentFragPos;
 } vs_out;
 
 ////////////////////////////////////////////////////////////
@@ -23,16 +28,27 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
+  int matIdx = int(aMaterialIndex);
+
+  mat4 vmMat;
   if (drawInstanced) {
-    gl_Position = projectionMatrix * viewMatrix * aInstanceMatrix * vec4(aPos, 1.0);
+    vmMat = viewMatrix * aInstanceMatrix;
   } else {
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(aPos, 1.0);
+    vmMat = viewMatrix * modelMatrix;
   }
+
+  gl_Position = projectionMatrix * vmMat * vec4(aPos, 1.0);
 
   vs_out.materialIndex = aMaterialIndex;
 
-  vs_out.fragPos = vec3(modelMatrix * vec4(aPos, 1.0));
-  vs_out.normal = normalMatrix * aNormal;
+  vs_out.fragPos = (modelMatrix * vec4(aPos, 1.0)).xyz;
+
+  if (drawInstanced) {
+    mat3 mat = transpose(inverse(mat3(aInstanceMatrix)));
+    vs_out.normal = mat * aNormal;
+  } else {
+    vs_out.normal = normalMatrix * aNormal;
+  }
 
   mat4 b = {
     {0.5f, 0.0f, 0.0f, 0.0f},

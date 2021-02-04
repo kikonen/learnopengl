@@ -23,7 +23,7 @@ void Terrain::prepare(const Assets& assets)
 	pos = { worldX * TILE_SIZE, 0, worldZ * TILE_SIZE };
 
 	mesh = new Mesh("terrain");
-	mesh->materials[material->name] = material;
+	mesh->materials.push_back(material);
 	mesh->defaultShader = shader;
 
 	Perlin perlin(-1);

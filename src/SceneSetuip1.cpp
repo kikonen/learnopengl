@@ -204,6 +204,7 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 
 	MeshLoader loader(getShader(TEX_LIGHT), "light");
 	loader.defaultMaterial->kd = sun->specular;
+	loader.overrideMaterials = true;
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
@@ -219,6 +220,7 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 int SceneSetup1::setupNodeLightMoving(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_LIGHT), "light");
+	loader.overrideMaterials = true;
 	Mesh* mesh = loader.load();
 
 	for (auto light : scene->pointLights) {
@@ -400,7 +402,7 @@ int SceneSetup1::setupNodeBackpack(Scene* scene)
 
 int SceneSetup1::setupNodeTeapot(Scene* scene)
 {
-	MeshLoader loader(getShader(TEX_TEXTURE), "smooth_teapot");
+	MeshLoader loader(getShader(TEX_PLAIN), "smooth_teapot");
 	loader.defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
 	Mesh* mesh = loader.load();
 
@@ -571,7 +573,7 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 
 int SceneSetup1::setupSpriteFlare(Scene* scene)
 {
-	Material* material = new Material("flare", 0);
+	Material* material = new Material("flare");
 	material->map_kd = "Skeleton_VH.PNG";
 	material->loadTextures(assets.spritesDir + "/");
 	material->prepare();
@@ -585,7 +587,7 @@ int SceneSetup1::setupSpriteFlare(Scene* scene)
 
 int SceneSetup1::setupTerrain(Scene* scene)
 {
-	Material* material = new Material("terrain", 0);
+	Material* material = new Material("terrain");
 	material->textureMode = GL_REPEAT;
 	material->map_kd = "Grass Dark_VH.PNG";
 	material->loadTextures(assets.texturesDir + "/");

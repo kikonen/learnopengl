@@ -10,12 +10,16 @@
 #include uniform_materials.glsl
 
 in VS_OUT {
-  vec3 fragPos;
-
   flat float materialIndex;
+
+  vec3 fragPos;
   vec3 normal;
 
   vec4 fragPosLightSpace;
+
+  vec3 tangentLightPos;
+  vec3 tangentViewPos;
+  vec3 tangentFragPos;
 } fs_in;
 
 uniform samplerCube skybox;
@@ -27,69 +31,36 @@ out vec4 fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-#include fn_plain_dir_light.glsl
-#include fn_plain_point_light.glsl
-#include fn_plain_spot_light.glsl
+#include fn_plain_resolve_material.glsl
+#include fn_calculate_dir_light.glsl
+#include fn_calculate_point_light.glsl
+#include fn_calculate_spot_light.glsl
+#include fn_calculate_light.glsl
 
 void main() {
   int matIdx = int(fs_in.materialIndex);
-  vec3 norm = normalize(fs_in.normal);
+  Material material = resolveMaterial(matIdx);
+
+  vec3 normal = normalize(fs_in.normal);
   vec3 viewDir = normalize(viewPos - fs_in.fragPos);
 
-  vec4 matAmbient = materials[matIdx].ambient;
-  vec4 matDiffuse = materials[matIdx].diffuse;
-  vec4 matEmission;
-  vec4 matSpecular = materials[matIdx].specular;
-  float matShininess = materials[matIdx].shininess;
-
-  vec4 emission = matEmission;
-
-  // https://community.khronos.org/t/default-value-of-uninitialized-local-variable-and-uniforms/74701/2
-  bool hasLight = false;
-  vec4 dirShaded = vec4(0);
-  vec4 pointShaded = vec4(0);
-  vec4 spotShaded = vec4(0);
-
-  if (light.use) {
-    dirShaded = calculateDirLight(light, norm, viewDir, matAmbient, matDiffuse, matSpecular, matShininess, fs_in.fragPosLightSpace);
-    hasLight = true;
-  }
-
-  for (int i = 0; i < LIGHT_COUNT; i++) {
-    if (pointLights[i].use) {
-      pointShaded += calculatePointLight(pointLights[i], norm, viewDir, fs_in.fragPos, matAmbient, matDiffuse, matSpecular, matShininess);
-      hasLight = true;
-    }
-  }
-
-  for (int i = 0; i < LIGHT_COUNT; i++) {
-    if (spotLights[i].use) {
-      spotShaded += calculateSpotLight(spotLights[i], norm, viewDir, fs_in.fragPos, matAmbient, matDiffuse, matSpecular, matShininess);
-      hasLight = true;
-    }
-  }
-
-  vec4 shaded =  dirShaded + pointShaded + spotShaded + emission;
-
-  vec4 texColor;
-  if (hasLight) {
-    texColor = shaded;
-  } else {
-    texColor = matDiffuse + emission;
-  }
+  vec4 shaded = calculateLight(normal, viewDir, material);
+  vec4 texColor = shaded;
 
   if (texColor.a < 0.1)
     discard;
 
   // reflection test
-  float ratio = 1.0 / 1.33;
-  vec3 r;
-  if (gl_FragCoord.x < 400) {
-    r = reflect(-viewDir, norm);
-  } else {
-    r = refract(-viewDir, norm, ratio);
+  if (false) {
+    float ratio = 1.0 / 1.33;
+    vec3 r;
+    if (gl_FragCoord.x < 400) {
+      r = reflect(-viewDir, normal);
+    } else {
+      r = refract(-viewDir, normal, ratio);
+    }
+    //texColor = vec4(texture(skybox, r).rgb, 1.0);
   }
-  //texColor = vec4(texture(skybox, r).rgb, 1.0);
 //  texColor = vec4(0.0, 0.8, 0, 1.0);
 
   fragColor = texColor;

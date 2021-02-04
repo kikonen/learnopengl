@@ -29,7 +29,7 @@ map_Kd texture_cube.jpg
 class Material
 {
 public:
-    Material(const std::string& name, unsigned int materialIndex);
+    Material(const std::string& name);
     ~Material();
     int loadTextures(const std::string& baseDir);
 
@@ -44,16 +44,18 @@ private:
 
 public:
     const std::string name;
-    const unsigned int materialIndex;
+    unsigned int materialIndex = 0;
 
-    std::string materialDir;
+    bool used = false;
+
+    std::string materialDir = { "" };
 
     int textureMode = GL_CLAMP_TO_EDGE;
 
-    Texture* diffuseTex;
-    Texture* specularTex;
-    Texture* emissionTex;
-    Texture* normalMap;
+    Texture* diffuseTex = nullptr;
+    Texture* specularTex = nullptr;
+    Texture* emissionTex = nullptr;
+    Texture* normalMap = nullptr;
 
     std::vector<Texture*> textures;
 

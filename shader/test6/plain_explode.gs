@@ -10,15 +10,23 @@ in VS_OUT {
   vec3 normal;
 
   vec4 fragPosLightSpace;
+
+  vec3 tangentLightPos;
+  vec3 tangentViewPos;
+  vec3 tangentFragPos;
 } vs_in[];
 
 out VS_OUT {
-  vec3 fragPos;
-
   flat float materialIndex;
+
+  vec3 fragPos;
   vec3 normal;
 
   vec4 fragPosLightSpace;
+
+  vec3 tangentLightPos;
+  vec3 tangentViewPos;
+  vec3 tangentFragPos;
 } gs_out;
 
 vec3 getNormal()

@@ -44,7 +44,7 @@ public:
 	std::vector<Tri*> tris;
 	std::vector<Vertex*> vertices;
 
-	std::map<std::string, Material*> materials;
+	std::vector<Material*> materials;
 
 private:
 	const std::string modelName;

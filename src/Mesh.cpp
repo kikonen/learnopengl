@@ -29,8 +29,7 @@ void Mesh::prepare(const Assets& assets)
 {
 	buffers.prepare();
 
-	for (auto const& x : materials) {
-		Material* material = x.second;
+	for (auto const& material : materials) {
 		material->prepare();
 	}
 
@@ -47,8 +46,7 @@ void Mesh::prepare(const Assets& assets)
 		materialsUboSize = sz;
 
 		int index = 0;
-		for (auto const& x : materials) {
-			Material* material = x.second;
+		for (auto const& material : materials) {
 			materialsUbo.materials[material->materialIndex] = material->toUBO();
 			index++;
 		}
@@ -180,8 +178,7 @@ Shader* Mesh::bind(const RenderContext& ctx, Shader* shader)
 
 	glBindVertexArray(buffers.VAO);
 
-	for (auto const& x : materials) {
-		Material* material = x.second;
+	for (auto const& material : materials) {
 		material->bind(shader, material->materialIndex);
 	}
 

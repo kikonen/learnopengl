@@ -3,14 +3,10 @@ vec4 calculateSpotLight(
   vec3 normal,
   vec3 viewDir,
   vec3 fragPos,
-  vec4 matAmbient,
-  vec4 matDiffuse,
-  vec4 matSpecular,
-  float matShininess,
-  bool hasNormalMap)
+  Material material)
 {
   vec3 lightDir;
-  if (hasNormalMap) {
+  if (material.hasNormalMap) {
     lightDir = normalize(-(fs_in.tangentLightPos - fs_in.tangentFragPos));
     viewDir = normalize(fs_in.tangentViewPos - fs_in.tangentFragPos);
   } else {
@@ -28,21 +24,21 @@ vec4 calculateSpotLight(
     float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
 
     // ambient
-    ambient = light.ambient * matAmbient;
+    ambient = light.ambient * material.ambient;
 
     // diffuse
     float diff = max(dot(normal, lightDir), 0.0);
-    diffuse = light.diffuse * (diff * matDiffuse);
+    diffuse = light.diffuse * (diff * material.diffuse);
 
     // specular
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), matShininess);
-    specular = light.specular * (spec * matSpecular);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    specular = light.specular * (spec * material.specular);
 
     diffuse  *= intensity;
     specular *= intensity;
   } else {
-    ambient = light.ambient * matDiffuse;
+    ambient = light.ambient * material.diffuse;
   }
 
   float distance = length(light.pos - fragPos);
