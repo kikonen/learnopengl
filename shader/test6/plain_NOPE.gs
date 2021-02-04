@@ -4,6 +4,7 @@ layout(triangle_strip, max_vertices = 3) out;
 
 in VS_OUT {
   flat float materialIndex;
+
   vec3 fragPos;
   vec3 normal;
 

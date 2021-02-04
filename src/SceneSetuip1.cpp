@@ -404,6 +404,7 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_PLAIN), "smooth_teapot");
 	loader.defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
+	loader.overrideMaterials = true;
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
