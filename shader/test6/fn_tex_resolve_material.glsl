@@ -2,25 +2,28 @@ Material resolveMaterial(int matIdx) {
   Material mat;
   mat.hasNormalMap = false;
 
-  if (materials[matIdx].hasDiffuseTex) {
+  Material orig = materials[matIdx];
+
+  if (orig.hasDiffuseTex) {
     mat.diffuse = texture(textures[matIdx].diffuse, fs_in.texCoords).rgba;
-    mat.ambient = materials[matIdx].ambient;
-    mat.ambient = mat.diffuse;
+    mat.ambient = orig.ambient;
   } else {
-    mat.diffuse = materials[matIdx].diffuse;
-    mat.ambient = materials[matIdx].ambient;
+    mat.diffuse = orig.diffuse;
+    mat.ambient = orig.ambient;
   }
 
-  if (materials[matIdx].hasEmissionTex){
+  if (orig.hasEmissionTex){
     mat.emission = texture(textures[matIdx].emission, fs_in.texCoords).rgba;
+  } else {
+    mat.emission = orig.emission;
   }
 
-  if (materials[matIdx].hasSpecularTex){
+  if (orig.hasSpecularTex){
     mat.specular = texture(textures[matIdx].specular, fs_in.texCoords).rgba;
   } else {
-    mat.specular = materials[matIdx].specular;
+    mat.specular = orig.specular;
   }
-  mat.shininess = materials[matIdx].shininess;
+  mat.shininess = orig.shininess;
 
   return mat;
 }

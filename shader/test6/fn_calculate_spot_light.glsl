@@ -31,9 +31,12 @@ vec4 calculateSpotLight(
     diffuse = light.diffuse * (diff * material.diffuse);
 
     // specular
-    vec3 reflectDir = reflect(-toLight, normal);
-    float spec = pow(max(dot(toView, reflectDir), 0.0), material.shininess);
-    specular = light.specular * (spec * material.specular);
+    vec4 specular = vec4(0);
+    if (material.shininess > 0) {
+      vec3 reflectDir = reflect(-toLight, normal);
+      float spec = pow(max(dot(toView, reflectDir), 0.0), material.shininess);
+      specular = spec * light.specular * material.specular;
+    }
 
     diffuse  *= intensity;
     specular *= intensity;

@@ -75,10 +75,10 @@ void ShadowMapRenderer::render(
 		sprite->bind(ctx, shadowShader);
 		sprite->draw(ctx);
 	}
-	for (auto terrain : terrains) {
-		terrain->bind(ctx, shadowShader);
-		terrain->draw(ctx);
-	}
+	//for (auto terrain : terrains) {
+	//	terrain->bind(ctx, shadowShader);
+	//	terrain->draw(ctx);
+	//}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

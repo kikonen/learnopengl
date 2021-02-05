@@ -35,20 +35,23 @@ vec4 calculateDirLight(
   vec3 toLight = normalize(-light.dir);
 
   // ambient
-  vec4 ambient = light.ambient * material.ambient;
+  vec4 ambient = light.ambient * material.diffuse;
 
   // diffuse
-  vec4 diffuse = max(dot(normal, toLight), 0.0) * light.diffuse * material.diffuse;
+  float diff = max(dot(normal, toLight), 0.0);
+  vec4 diffuse = diff * light.diffuse * material.diffuse;
 
   // specular
-  vec3 reflectDir = reflect(-toLight, normal);
-  float spec = pow(max(dot(toView, reflectDir), 0.0), material.shininess);
-  vec4 specular = spec * light.specular * material.specular;
+  vec4 specular = vec4(0);
+  if (material.shininess > 0) {
+    vec3 reflectDir = reflect(-toLight, normal);
+    float spec = pow(max(dot(toView, reflectDir), 0.0), material.shininess);
+    specular = spec * light.specular * material.specular;
+  }
 
   // calculate shadow
-  float shadow = calcShadow(fragPosLightSpace, normal, lightDir);
+  float shadow = calcShadow(fragPosLightSpace, normal, toLight);
   vec4 lighting = ambient + shadow * (diffuse + specular);
 
   return lighting;
-  //return ambient + diffuse + specular;
 }

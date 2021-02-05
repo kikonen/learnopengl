@@ -32,7 +32,7 @@ void SceneSetup1::setup()
 	setupLightMoving(scene);
 
 	setupNodeDirectional(scene);
-//	setupNodeLightMoving(scene);
+	setupNodeLightMoving(scene);
 
 	setupNodeZero(scene);
 
@@ -558,6 +558,8 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 int SceneSetup1::setupSpriteFlare(Scene* scene)
 {
 	Material* material = new Material("flare");
+	material->ns = 50;
+	material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 	material->map_kd = "Skeleton_VH.PNG";
 	material->loadTextures(assets.spritesDir + "/");
 	material->prepare();
@@ -573,6 +575,8 @@ int SceneSetup1::setupTerrain(Scene* scene)
 {
 	Material* material = new Material("terrain");
 	material->textureMode = GL_REPEAT;
+	material->ns = 50;
+	material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 	material->map_kd = "Grass Dark_VH.PNG";
 	material->loadTextures(assets.texturesDir + "/");
 	material->prepare();
