@@ -7,24 +7,17 @@
 #include "RenderContext.h"
 
 
-class Terrain
+class Terrain : public Node
 {
 public:
 	Terrain(int worldX, int worldZ, Material* material, Shader* shader);
 	~Terrain();
 
-	void prepare(const Assets& assets);
-	virtual Shader* bind(const RenderContext& ctx, Shader* shader);
-	void draw(RenderContext& ctx);
+	void prepare(const Assets& assets) override;
 public:
 	const int worldX;
 	const int worldZ;
 	Material* material;
 	Shader* shader;
-
-	glm::vec3 pos = { 0, 0, 0 };
-private:
-	Node* node = nullptr;
-	Mesh* mesh = nullptr;
 };
 

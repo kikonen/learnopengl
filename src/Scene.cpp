@@ -90,6 +90,9 @@ void Scene::draw(RenderContext& ctx)
 
 	if (showNormals) {
 		normalRenderer->render(ctx, nodes);
+
+		std::vector<Node*> r(terrains.begin(), terrains.end());
+		normalRenderer->render(ctx, r);
 	}
 
 	terrainRenderer->render(ctx, terrains);

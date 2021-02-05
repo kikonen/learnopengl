@@ -14,14 +14,10 @@ Terrain::Terrain(int worldX, int worldZ, Material* material, Shader* shader)
 
 Terrain::~Terrain()
 {
-	delete node;
-	delete mesh;
 }
 
 void Terrain::prepare(const Assets& assets)
 {
-	pos = { worldX * TILE_SIZE, 0, worldZ * TILE_SIZE };
-
 	mesh = new Mesh("terrain");
 	mesh->materials.push_back(material);
 	mesh->defaultShader = shader;
@@ -67,18 +63,7 @@ void Terrain::prepare(const Assets& assets)
 		}
 	}
 
-	node = new Node(mesh);
-	node->setPos(pos);
-	node->renderBack = true;
-	node->prepare(assets);
-}
-
-Shader* Terrain::bind(const RenderContext& ctx, Shader* shader)
-{
-	return node->bind(ctx, shader);
-}
-
-void Terrain::draw(RenderContext& ctx)
-{
-	node->draw(ctx);
+	setPos({ worldX * TILE_SIZE, 0, worldZ * TILE_SIZE });
+	renderBack = true;
+	Node::prepare(assets);
 }

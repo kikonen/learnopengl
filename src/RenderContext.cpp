@@ -109,7 +109,7 @@ void RenderContext::bindGlobal() const
 void RenderContext::bind(Shader* shader) const
 {
 	if (useWireframe) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	} else {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
