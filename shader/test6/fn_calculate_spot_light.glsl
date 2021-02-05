@@ -1,19 +1,19 @@
 vec4 calculateSpotLight(
   SpotLight light,
   vec3 normal,
-  vec3 viewDir,
+  vec3 toView,
   vec3 fragPos,
   Material material)
 {
-  vec3 lightDir;
+  vec3 toLight;
   if (material.hasNormalMap) {
-    lightDir = normalize(-(fs_in.tangentLightPos - fs_in.tangentFragPos));
-    viewDir = normalize(fs_in.tangentViewPos - fs_in.tangentFragPos);
+    toLight = normalize(-(fs_in.tangentLightPos - fs_in.tangentFragPos));
+    toView = normalize(fs_in.tangentViewPos - fs_in.tangentFragPos);
   } else {
-    lightDir = normalize(light.pos - fragPos);
+    toLight = normalize(light.pos - fragPos);
   }
 
-  float theta = dot(lightDir, normalize(-light.dir));
+  float theta = dot(toLight, normalize(-light.dir));
   bool shade = theta > light.cutoff;
 
   vec4 ambient;
@@ -27,12 +27,12 @@ vec4 calculateSpotLight(
     ambient = light.ambient * material.ambient;
 
     // diffuse
-    float diff = max(dot(normal, lightDir), 0.0);
+    float diff = max(dot(normal, toLight), 0.0);
     diffuse = light.diffuse * (diff * material.diffuse);
 
     // specular
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 reflectDir = reflect(-toLight, normal);
+    float spec = pow(max(dot(toView, reflectDir), 0.0), material.shininess);
     specular = light.specular * (spec * material.specular);
 
     diffuse  *= intensity;

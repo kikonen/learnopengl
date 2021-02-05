@@ -17,15 +17,15 @@ void InstancedNode::prepareBuffer(std::vector<glm::mat4> matrices)
 	// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
 	std::size_t vec4Size = sizeof(glm::vec4);
 
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-	glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+	glVertexAttribPointer(ATTR_INSTANCE_MATRIX_1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+	glVertexAttribPointer(ATTR_INSTANCE_MATRIX_2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+	glVertexAttribPointer(ATTR_INSTANCE_MATRIX_3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+	glVertexAttribPointer(ATTR_INSTANCE_MATRIX_4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
 
-	glVertexAttribDivisor(6, 1);
-	glVertexAttribDivisor(7, 1);
-	glVertexAttribDivisor(8, 1);
-	glVertexAttribDivisor(9, 1);
+	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_1, 1);
+	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_2, 1);
+	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_3, 1);
+	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_4, 1);
 }
 
 void InstancedNode::updateBuffer(std::vector<glm::mat4> matrices)
@@ -106,10 +106,10 @@ Shader* InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 		glBindVertexArray(selectedBuffers.VAO);
 	}
 
-	glEnableVertexAttribArray(6);
-	glEnableVertexAttribArray(7);
-	glEnableVertexAttribArray(8);
-	glEnableVertexAttribArray(9);
+	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_1);
+	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_2);
+	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_3);
+	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_4);
 
 	return shader;
 }

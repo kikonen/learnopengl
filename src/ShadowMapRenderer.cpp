@@ -34,6 +34,9 @@ void ShadowMapRenderer::prepare()
 
 void ShadowMapRenderer::bind(RenderContext& ctx)
 {
+	Light* light = ctx.dirLight;
+	if (!light) return;
+
 	glm::mat4 b = {
 		{0.5f, 0.0f, 0.0f, 0.0f},
 		{0.0f, 0.5f, 0.0f, 0.0f},
@@ -41,9 +44,7 @@ void ShadowMapRenderer::bind(RenderContext& ctx)
 		{0.5f, 0.5f, 0.5f, 1.0f},
 	};
 
-	glm::vec3 target = glm::vec3(0.0f) + assets.groundOffset;
-	//target = lightPos + glm::vec3(1, 0, 0);
-	glm::mat4 lightView = glm::lookAt(ctx.dirLight->pos, target, glm::vec3(0.0, 1.0, 0.0));
+	glm::mat4 lightView = glm::lookAt(light->pos, light->target, glm::vec3(0.0, 1.0, 0.0));
 
 	glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, nearPlane, farPlane);
 
@@ -59,13 +60,25 @@ void ShadowMapRenderer::bindTexture(RenderContext& ctx)
 	frameBuffer.bindTexture(assets.shadowMapUnitId);
 }
 
-void ShadowMapRenderer::render(RenderContext& ctx, std::vector<Node*>& nodes)
+void ShadowMapRenderer::render(
+	RenderContext& ctx, 
+	std::vector<Node*>& nodes,
+	std::vector<Sprite*>& sprites,
+	std::vector<Terrain*>& terrains)
 {
 	frameBuffer.bind();
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	drawNodes(ctx, nodes);
+	for (auto sprite : sprites) {
+		sprite->bind(ctx, shadowShader);
+		sprite->draw(ctx);
+	}
+	for (auto terrain : terrains) {
+		terrain->bind(ctx, shadowShader);
+		terrain->draw(ctx);
+	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

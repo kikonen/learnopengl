@@ -60,24 +60,15 @@ private:
 	int setupSpriteFlare(Scene* scene);
 
 	int setupTerrain(Scene* scene);
-
-	void moveLight(RenderContext& ctx);
-	void moveActive(RenderContext& ctx);
-
-	void moveDirLight(RenderContext& ctx);
-
 public:
-	const Assets& assets;
 	Scene* scene;
+
+private:
+	const Assets& assets;
 
 	UBO& ubo;
 
-	Node* active = nullptr;
-
 	Light* activeLight = nullptr;
-	Node* activeLightNode = nullptr;
-
-	Node* sunNode = nullptr;
 	Node* planet = nullptr;
 };
 

@@ -4,6 +4,8 @@
 
 #include "RenderContext.h"
 #include "Node.h"
+#include "Sprite.h"
+#include "Terrain.h"
 #include "FrameBuffer.h"
 #include "Viewport.h"
 
@@ -17,9 +19,15 @@ public:
 	ShadowMapRenderer(const Assets& assets);
 
 	void prepare();
-	void bind(RenderContext& ctx);
+
 	void bindTexture(RenderContext& ctx);
-	void render(RenderContext& ctx, std::vector<Node*>& nodes);
+
+	void bind(RenderContext& ctx);
+	void render(
+		RenderContext& ctx,
+		std::vector<Node*>& nodes,
+		std::vector<Sprite*>& sprites,
+		std::vector<Terrain*>& terrains);
 
 private:
 	void drawNodes(RenderContext& ctx, std::vector<Node*>& nodes);

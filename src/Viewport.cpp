@@ -1,5 +1,8 @@
 #include "Viewport.h"
 
+const int ATTR_VIEW_POS = 0;
+const int ATTR_VIEW_TEX = 1;
+
 Viewport::Viewport(const glm::vec3& pos, const glm::vec3& rotation, const glm::vec2& size, FrameBuffer& tex, Shader* shader)
 	: pos(pos), rotation(rotation), size(size), tex(tex), shader(shader)
 {
@@ -34,10 +37,8 @@ void Viewport::prepare()
 	glBindVertexArray(buffers.VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(ATTR_VIEW_POS, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(ATTR_VIEW_TEX, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 }
 
 void Viewport::update(RenderContext& ctx)
@@ -46,6 +47,8 @@ void Viewport::update(RenderContext& ctx)
 
 void Viewport::bind(RenderContext& ctx)
 {
+	glEnableVertexAttribArray(ATTR_VIEW_POS);
+	glEnableVertexAttribArray(ATTR_VIEW_TEX);
 }
 
 void Viewport::draw(RenderContext& ctx)

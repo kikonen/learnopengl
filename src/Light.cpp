@@ -1,8 +1,9 @@
-#include <string>
+#include "Light.h"
 
+#include <string>
 #include <cstdio>
 
-#include "Light.h"
+#include "RenderContext.h"
 
 Light::Light()
 {
@@ -10,6 +11,11 @@ Light::Light()
 
 Light::~Light()
 {
+}
+
+void Light::update(RenderContext& ctx)
+{
+	dir = glm::normalize(target - pos);
 }
 
 DirLightUBO Light::toDirLightUBO() {

@@ -1,6 +1,6 @@
 vec4 calculateLight(
   vec3 normal,
-  vec3 viewDir,
+  vec3 toView,
   Material material)
 {
   bool hasLight = false;
@@ -12,20 +12,20 @@ vec4 calculateLight(
   vec4 spotShaded = vec4(0);
 
   if (light.use) {
-    dirShaded = calculateDirLight(light, normal, viewDir, fs_in.fragPosLightSpace, material);
+    dirShaded = calculateDirLight(light, normal, toView, fs_in.fragPosLightSpace, material);
     hasLight = true;
   }
 
   for (int i = 0; i < LIGHT_COUNT; i++) {
     if (pointLights[i].use) {
-      pointShaded += calculatePointLight(pointLights[i], normal, viewDir, fs_in.fragPos, material);
+      pointShaded += calculatePointLight(pointLights[i], normal, toView, fs_in.fragPos, material);
       hasLight = true;
     }
   }
 
   for (int i = 0; i < LIGHT_COUNT; i++) {
     if (spotLights[i].use) {
-      spotShaded += calculateSpotLight(spotLights[i], normal, viewDir, fs_in.fragPos, material);
+      spotShaded += calculateSpotLight(spotLights[i], normal, toView, fs_in.fragPos, material);
       hasLight = true;
     }
   }

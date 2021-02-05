@@ -1,6 +1,7 @@
 #include "RenderContext.h"
 
 #include "KIGL.h"
+#include "Light.h"
 
 RenderContext::RenderContext(
 	const Engine& engine, 

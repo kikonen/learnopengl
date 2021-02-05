@@ -8,9 +8,9 @@ float lookup(vec4 pos, float x, float y, float bias)
   return t;
 }
 
-float calcShadow(vec4 pos, vec3 normal, vec3 lightDir)
+float calcShadow(vec4 pos, vec3 normal, vec3 toLight)
 {
-  float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+  float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
 
   float swidth = 2.5;
   vec2 o = mod(floor(gl_FragCoord.xy), 2.0) * swidth;
@@ -28,26 +28,25 @@ float calcShadow(vec4 pos, vec3 normal, vec3 lightDir)
 vec4 calculateDirLight(
   DirLight light,
   vec3 normal,
-  vec3 viewDir,
+  vec3 toView,
   vec4 fragPosLightSpace,
   Material material)
 {
-  vec3 lightDir = normalize(-light.dir);
+  vec3 toLight = normalize(-light.dir);
 
   // ambient
   vec4 ambient = light.ambient * material.ambient;
 
   // diffuse
-  vec4 diffuse = max(dot(normal, lightDir), 0.0) * light.diffuse * material.diffuse;
+  vec4 diffuse = max(dot(normal, toLight), 0.0) * light.diffuse * material.diffuse;
 
   // specular
-  vec3 reflectDir = reflect(-lightDir, normal);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+  vec3 reflectDir = reflect(-toLight, normal);
+  float spec = pow(max(dot(toView, reflectDir), 0.0), material.shininess);
   vec4 specular = spec * light.specular * material.specular;
 
   // calculate shadow
   float shadow = calcShadow(fragPosLightSpace, normal, lightDir);
-  //shadow = 0;
   vec4 lighting = ambient + shadow * (diffuse + specular);
 
   return lighting;

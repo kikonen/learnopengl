@@ -110,22 +110,22 @@ void Mesh::updateBuffers(MeshBuffers& curr)
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * sz * vertices.size(), vboBuffer, GL_STATIC_DRAW);
 
 		// vertex attr
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)0);
+		glVertexAttribPointer(ATTR_POS, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)0);
 
 		// normal attr
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3) * sizeof(float)));
+		glVertexAttribPointer(ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3) * sizeof(float)));
 
 		// tangent attr
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3) * sizeof(float)));
+		glVertexAttribPointer(ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3) * sizeof(float)));
 
 		// bitangent attr
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3) * sizeof(float)));
+		glVertexAttribPointer(ATTR_BITANGENT, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3) * sizeof(float)));
 
 		// materialID attr
-		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3 + 3) * sizeof(float)));
+		glVertexAttribPointer(ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3 + 3) * sizeof(float)));
 
 		// texture attr
-		glVertexAttribPointer(5, 2, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3 + 3 + 1) * sizeof(float)));
+		glVertexAttribPointer(ATTR_TEX, 2, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3 + 3 + 1) * sizeof(float)));
 	}
 
 	// EBO
@@ -176,12 +176,12 @@ Shader* Mesh::bind(const RenderContext& ctx, Shader* shader)
 		material->bind(shader, material->materialIndex);
 	}
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
-	glEnableVertexAttribArray(5);
+	glEnableVertexAttribArray(ATTR_POS);
+	glEnableVertexAttribArray(ATTR_NORMAL);
+	glEnableVertexAttribArray(ATTR_TANGENT);
+	glEnableVertexAttribArray(ATTR_BITANGENT);
+	glEnableVertexAttribArray(ATTR_MATERIAL_INDEX);
+	glEnableVertexAttribArray(ATTR_TEX);
 
 	ctx.bind(shader);
 	bound = shader;

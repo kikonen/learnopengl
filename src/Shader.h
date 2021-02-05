@@ -21,6 +21,17 @@ const std::string TEX_LIGHT = "light";
 const std::string TEX_SIMPLE_DEPTH = "simple_depth";
 const std::string TEX_DEBUG_DEPTH = "debug_depth";
 
+const int ATTR_POS = 0;
+const int ATTR_NORMAL = 1;
+const int ATTR_TANGENT = 2;
+const int ATTR_BITANGENT = 3;
+const int ATTR_MATERIAL_INDEX = 4;
+const int ATTR_TEX = 5;
+const int ATTR_INSTANCE_MATRIX_1 = 6;
+const int ATTR_INSTANCE_MATRIX_2 = 7;
+const int ATTR_INSTANCE_MATRIX_3 = 8;
+const int ATTR_INSTANCE_MATRIX_4 = 9;
+
 const std::string GEOM_NONE = "";
 
 class Shader

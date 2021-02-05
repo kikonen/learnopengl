@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\NodePathUpdater.cpp" />
     <ClCompile Include="src\InstancedUpdater.cpp" />
     <ClCompile Include="src\MovingLightUpdater.cpp" />
     <ClCompile Include="src\AsteroidBeltUpdater.cpp" />
@@ -196,6 +197,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\NodePathUpdater.h" />
     <ClInclude Include="src\InstancedUpdater.h" />
     <ClInclude Include="src\MovingLightUpdater.h" />
     <ClInclude Include="src\AsteroidBeltUpdater.h" />

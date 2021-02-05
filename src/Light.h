@@ -4,11 +4,15 @@
 #include "Shader.h"
 #include "UBO.h"
 
+class RenderContext;
+
 class Light
 {
 public:
 	Light();
 	~Light();
+
+	void update(RenderContext& ctx);
 
 	DirLightUBO toDirLightUBO();
 	PointLightUBO toPointightUBO();
@@ -30,7 +34,9 @@ public:
 	float outerCutoffAngle = 0.f;
 
 	glm::vec3 pos = { 0.0f, 3.0f, 0.f };
+	// dir = FROM pos to TARGET
 	glm::vec3 dir = { 0.0f, 0.0f, 0.f };
+	glm::vec3 target = { 0.f, 0.f, 0.f };
 
 	glm::vec4 ambient = { 0.2f, 0.2f, 0.2f, 1.f };
 	glm::vec4 diffuse = { 0.5f, 0.5f, 0.5f, 1.f };

@@ -58,13 +58,24 @@ void Scene::prepare()
 
 void Scene::update(RenderContext& ctx)
 {
+	if (dirLight) {
+		dirLight->update(ctx);
+	}
+	for (auto light : pointLights) {
+		light->update(ctx);
+	}
+	for (auto light : spotLights) {
+		light->update(ctx);
+	}
+
 	if (skyboxRenderer) {
 		skyboxRenderer->update(ctx);
 	}
 
 	nodeRenderer->update(ctx, nodes);
-
 	spriteRenderer->update(ctx, sprites);
+	terrainRenderer->update(ctx, terrains);
+	viewportRenderer->update(ctx, viewports);
 
 	if (showNormals) {
 		normalRenderer->update(ctx, nodes);
@@ -72,9 +83,6 @@ void Scene::update(RenderContext& ctx)
 		std::vector<Node*> r(terrains.begin(), terrains.end());
 		normalRenderer->update(ctx, r);
 	}
-
-	terrainRenderer->update(ctx, terrains);
-	viewportRenderer->update(ctx, viewports);
 }
 
 void Scene::bind(RenderContext& ctx)
@@ -97,7 +105,7 @@ void Scene::draw(RenderContext& ctx)
 
 	glEnable(GL_DEPTH_TEST);
 
-	shadowMapRenderer->render(ctx, nodes);
+	shadowMapRenderer->render(ctx, nodes, sprites, terrains);
 
 	shadowMapRenderer->bindTexture(ctx);
 

@@ -4,7 +4,8 @@
 #include "Terrain.h"
 #include "InstancedNode.h"
 #include "AsteroidBeltUpdater.h"
-
+#include "MovingLightUpdater.h"
+#include "NodePathUpdater.h"
 
 SceneSetup1::SceneSetup1(const Assets& assets, UBO& ubo)
 	: assets(assets),
@@ -31,7 +32,7 @@ void SceneSetup1::setup()
 	setupLightMoving(scene);
 
 	setupNodeDirectional(scene);
-	setupNodeLightMoving(scene);
+//	setupNodeLightMoving(scene);
 
 	setupNodeZero(scene);
 
@@ -68,9 +69,6 @@ void SceneSetup1::setup()
 
 void SceneSetup1::process(RenderContext& ctx)
 {
-	moveActive(ctx);
-	moveLight(ctx);
-	moveDirLight(ctx);
 }
 
 void SceneSetup1::update(RenderContext& ctx)
@@ -85,9 +83,6 @@ void SceneSetup1::bind(RenderContext& ctx)
 
 void SceneSetup1::draw(RenderContext& ctx)
 {
-	if (sunNode) {
-		sunNode->setPos(scene->dirLight->pos);
-	}
 	scene->draw(ctx);
 }
 
@@ -158,9 +153,9 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 {
 	// sun
 	Light* sun = new Light();
-	sun->pos = glm::vec3(10, 80, 10) + assets.groundOffset;
+	sun->pos = glm::vec3(10, 40, 10) + assets.groundOffset;
+	sun->target = glm::vec3(0.0f) + assets.groundOffset;
 
-	sun->dir = glm::vec3(-0.2f, -1.0f, -0.2f);
 	sun->directional = true;
 
 	sun->ambient = { 0.3f, 0.3f, 0.3f, 1.f };
@@ -184,7 +179,8 @@ void SceneSetup1::setupLightMoving(Scene* scene)
 	light->spot = false;
 	light->cutoffAngle = 12.5f;
 	light->outerCutoffAngle = 25.f;
-	light->dir = glm::vec3(0.01f, 1.0f, 0.01f);
+
+	light->target = glm::vec3(0.0f) + assets.groundOffset;
 
 	light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
 	light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
@@ -202,11 +198,7 @@ void SceneSetup1::setupLightMoving(Scene* scene)
 int SceneSetup1::setupNodeDirectional(Scene* scene)
 {
 	Light* sun = scene->dirLight;
-
-	// sun node
-	if (!sun) {
-		return -1;
-	}
+	if (!sun) return -1;
 
 	MeshLoader loader(getShader(TEX_LIGHT), "light");
 	loader.defaultMaterial->kd = sun->specular;
@@ -218,7 +210,10 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 	node->setScale(1.5f);
 	node->light = true;
 	scene->nodes.push_back(node);
-	sunNode = node;
+
+	const float radius = 20.0f;
+	const float speed = 8.f;
+	node->updater = new MovingLightUpdater(assets, glm::vec3(0, 30, 0), radius, speed, scene->dirLight);
 
 	return 0;
 }
@@ -236,7 +231,7 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 		node->light = true;
 		scene->nodes.push_back(node);
 		if (light == activeLight) {
-			activeLightNode = node;
+			node->updater = new MovingLightUpdater(assets, glm::vec3(0, 7, 0), 10.f, 2.f, light);
 		}
 	}
 
@@ -247,29 +242,10 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 		node->light = true;
 		scene->nodes.push_back(node);
 		if (light == activeLight) {
-			activeLightNode = node;
+			node->updater = new MovingLightUpdater(assets, glm::vec3(0, 7, 0), 10.f, 2.f, light);
 		}
 	}
 	return 0;
-}
-
-void SceneSetup1::moveLight(RenderContext& ctx)
-{
-	float elapsed = glfwGetTime();
-
-	//glm::vec3 planetPos = glm::vec3(10, 100, 100);
-	const float radius = 10.0f;
-	float posX = sin(elapsed / 2) * radius;
-	float posZ = cos(elapsed / 2) * radius;
-
-	glm::vec3 pos = glm::vec3(posX, 5, posZ) + assets.groundOffset;
-
-	if (activeLight) {
-		activeLight->pos = pos;
-	}
-	if (activeLightNode) {
-		activeLightNode->setPos(pos);
-	}
 }
 
 int SceneSetup1::setupNodeZero(Scene* scene) {
@@ -485,7 +461,8 @@ int SceneSetup1::setupNodeActive(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_cube");
 	Mesh* mesh = loader.load();
 
-	active = new Node(mesh);
+	Node* active = new Node(mesh);
+	active->updater = new NodePathUpdater(assets, 0);
 	active->setPos(glm::vec3(0) + assets.groundOffset);
 	scene->nodes.push_back(active);
 
@@ -619,52 +596,3 @@ int SceneSetup1::setupTerrain(Scene* scene)
 	return 0;
 }
 
-void SceneSetup1::moveActive(RenderContext& ctx)
-{
-	if (!active) {
-		return;
-	}
-
-	float elapsed = glfwGetTime();
-
-	if (true) {
-		const float radius = 4.0f;
-		float posX = sin(elapsed / 0.9f) * radius;
-		float posY = sin(elapsed * 1.1f) * radius / 3.0f + 15.f;
-		float posZ = cos(elapsed) * radius / 2.0f;
-
-		active->setPos(glm::vec3(posX, posY, posZ) + assets.groundOffset);
-	}
-
-	if (true) {
-		const float radius = 2.0f;
-		float rotX = elapsed * radius;
-		float rotY = elapsed * radius * 1.1f;
-		float rotZ = elapsed * radius * 1.2f;
-
-		active->setRotation(glm::vec3(rotX, rotY, rotZ));
-	}
-
-	if (true) {
-		const float radius = 2.0f;
-		float scale = sin(elapsed / 4.0f) * radius;
-
-		active->setScale(scale);
-	}
-}
-
-void SceneSetup1::moveDirLight(RenderContext& ctx)
-{
-	if (!ctx.dirLight) {
-		return;
-	}
-
-	const float radius = 15.0f;
-	float posX = sin(glfwGetTime() / 8) * radius;
-	float posZ = cos(glfwGetTime() / 8) * radius;
-
-	glm::vec3 lightPos = glm::vec3(posX, 40, posZ) + assets.groundOffset;
-
-	ctx.dirLight->pos = lightPos;
-	//ctx.dirLight->dir = glm::normalize(target - lightPos);
-}

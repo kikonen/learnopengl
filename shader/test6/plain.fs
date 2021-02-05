@@ -42,9 +42,9 @@ void main() {
   Material material = resolveMaterial(matIdx);
 
   vec3 normal = normalize(fs_in.normal);
-  vec3 viewDir = normalize(viewPos - fs_in.fragPos);
+  vec3 toView = normalize(viewPos - fs_in.fragPos);
 
-  vec4 shaded = calculateLight(normal, viewDir, material);
+  vec4 shaded = calculateLight(normal, toView, material);
   vec4 texColor = shaded;
 
   if (texColor.a < 0.1)
@@ -55,9 +55,9 @@ void main() {
     float ratio = 1.0 / 1.33;
     vec3 r;
     if (gl_FragCoord.x < 400) {
-      r = reflect(-viewDir, normal);
+      r = reflect(-toView, normal);
     } else {
-      r = refract(-viewDir, normal, ratio);
+      r = refract(-toView, normal, ratio);
     }
     //texColor = vec4(texture(skybox, r).rgb, 1.0);
   }

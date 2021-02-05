@@ -7,6 +7,8 @@
 #include "Engine.h"
 #include "UBO.h"
 
+class Light;
+
 class RenderContext
 {
 public:

@@ -54,9 +54,9 @@ void main() {
     normal = normalize(fs_in.normal);
   }
 
-  vec3 viewDir = normalize(viewPos - fs_in.fragPos);
+  vec3 toView = normalize(viewPos - fs_in.fragPos);
 
-  vec4 shaded = calculateLight(normal, viewDir, material);
+  vec4 shaded = calculateLight(normal, toView, material);
   vec4 texColor = shaded;
 
   if (texColor.a < 0.1)
