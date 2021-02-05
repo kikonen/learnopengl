@@ -51,6 +51,8 @@ vec4 calculateSpotLight(
   diffuse  *= attenuation;
   specular *= attenuation;
 
-  // combined
-  return ambient + diffuse + specular;
+  vec4 lighting = ambient + diffuse + specular;
+  lighting.a = material.diffuse.a;
+
+  return lighting;
 }

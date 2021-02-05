@@ -52,6 +52,7 @@ vec4 calculateDirLight(
   // calculate shadow
   float shadow = calcShadow(fragPosLightSpace, normal, toLight);
   vec4 lighting = ambient + shadow * (diffuse + specular);
+  lighting.a = material.diffuse.a;
 
   return lighting;
 }
