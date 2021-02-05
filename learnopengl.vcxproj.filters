@@ -123,10 +123,16 @@
     <ClCompile Include="src\AsteroidBeltUpdater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\InstancedUpdater.cpp">
+    <ClCompile Include="src\InstancedNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\InstancedNode.cpp">
+    <ClCompile Include="src\MovingLightUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NodeUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\InstancedUpdater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -242,10 +248,16 @@
     <ClInclude Include="src\AsteroidBeltUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\InstancedUpdater.h">
+    <ClInclude Include="src\InstancedNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\InstancedNode.h">
+    <ClInclude Include="src\MovingLightUpdater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NodeUpdater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\InstancedUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,10 +1,9 @@
 #include "InstancedNode.h"
-#include "InstancedUpdater.h";
 
-InstancedNode::InstancedNode(Mesh* mesh, InstancedUpdater* updater)
-	: Node(mesh),
-	updater(updater)
+InstancedNode::InstancedNode(Mesh* mesh, NodeUpdater* updater)
+	: Node(mesh)
 {
+	this->updater = updater;
 }
 
 InstancedNode::~InstancedNode()
@@ -37,7 +36,6 @@ void InstancedNode::updateBuffer(std::vector<glm::mat4> matrices)
 void InstancedNode::prepare(const Assets& assets)
 {
 	Node::prepare(assets);
-	updater->prepare(*this);
 	prepareBuffers();
 	buffersDirty = false;
 }
@@ -90,14 +88,14 @@ void InstancedNode::updateBuffers(const RenderContext& ctx)
 	buffersDirty = false;
 }
 
-void InstancedNode::update(const RenderContext& ctx)
+bool InstancedNode::update(const RenderContext& ctx)
 {
-	Node::update(ctx);
-	bool updated = updater->update(ctx, *this);
+	bool updated = Node::update(ctx);
 	buffersDirty = buffersDirty || updated;
 	if (buffersDirty) {
 		updateBuffers(ctx);
 	}
+	return updated;
 }
 
 Shader* InstancedNode::bind(const RenderContext& ctx, Shader* shader)

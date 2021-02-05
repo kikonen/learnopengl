@@ -151,8 +151,10 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\AsteroidBeltUpdater.cpp" />
     <ClCompile Include="src\InstancedUpdater.cpp" />
+    <ClCompile Include="src\MovingLightUpdater.cpp" />
+    <ClCompile Include="src\AsteroidBeltUpdater.cpp" />
+    <ClCompile Include="src\NodeUpdater.cpp" />
     <ClCompile Include="src\InstancedNode.cpp" />
     <ClCompile Include="src\SpriteRenderer.cpp" />
     <ClCompile Include="src\Perlin.cpp" />
@@ -194,8 +196,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\AsteroidBeltUpdater.h" />
     <ClInclude Include="src\InstancedUpdater.h" />
+    <ClInclude Include="src\MovingLightUpdater.h" />
+    <ClInclude Include="src\AsteroidBeltUpdater.h" />
+    <ClInclude Include="src\NodeUpdater.h" />
     <ClInclude Include="src\InstancedNode.h" />
     <ClInclude Include="src\SpriteRenderer.h" />
     <ClInclude Include="src\Perlin.h" />

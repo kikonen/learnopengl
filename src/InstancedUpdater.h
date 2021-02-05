@@ -1,17 +1,20 @@
 #pragma once
 
-#include "InstancedNode.h"
+#include "NodeUpdater.h"
 
-class InstancedUpdater
+class InstancedNode;
+
+class InstancedUpdater : public NodeUpdater
 {
 public:
 	InstancedUpdater(const Assets& assets);
 	~InstancedUpdater();
 
-	virtual void prepare(InstancedNode& node);
-	virtual bool update(const RenderContext& ctx, InstancedNode& node);
+	virtual void prepare(Node& node) override;
+	virtual bool update(const RenderContext& ctx, Node& node) override;
 
-protected:
-	const Assets& assets;
+	virtual void prepareInstanced(InstancedNode& node);
+	virtual bool updateInstanced(const RenderContext& ctx, InstancedNode& node);
+
 };
 

@@ -1,5 +1,6 @@
 #include "Node.h"
 
+#include "NodeUpdater.h";
 #include "KIGL.h"
 
 Node::Node(Mesh* mesh) : mesh(mesh)
@@ -12,11 +13,16 @@ Node::~Node()
 
 void Node::prepare(const Assets& assets)
 {
+	if (updater) {
+		updater->prepare(*this);
+	}
 	mesh->prepare(assets);
 }
 
-void Node::update(const RenderContext& ctx)
+bool Node::update(const RenderContext& ctx)
 {
+	if (!updater) return false;
+	return updater->update(ctx, *this);
 }
 
 Shader* Node::bind(const RenderContext& ctx, Shader* shader)

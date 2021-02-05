@@ -2,12 +2,11 @@
 
 #include "Node.h"
 
-class InstancedUpdater;
 
 class InstancedNode : public Node
 {
 public:
-	InstancedNode(Mesh* mesh, InstancedUpdater* updater);
+	InstancedNode(Mesh* mesh, NodeUpdater* updater);
 	~InstancedNode();
 
 	void prepare(const Assets& assets) override;
@@ -15,7 +14,7 @@ public:
 	void prepareBuffers();
 	void updateBuffers(const RenderContext& ctx);
 
-	void update(const RenderContext& ctx);
+	bool update(const RenderContext& ctx) override;
 	Shader* bind(const RenderContext& ctx, Shader* shader) override;
 	void draw(const RenderContext& ctx) override;
 
@@ -28,7 +27,6 @@ public:
 	std::vector<glm::mat4> selectionMatrices;
 
 private:
-	InstancedUpdater* updater;
 	MeshBuffers selectedBuffers;
 
 	bool buffersDirty = true;

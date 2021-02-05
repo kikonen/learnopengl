@@ -4,6 +4,8 @@
 #include "Mesh.h"
 #include "RenderContext.h"
 
+class NodeUpdater;
+
 class Node
 {
 public:
@@ -12,7 +14,7 @@ public:
 
 	virtual void prepare(const Assets& assets);
 
-	virtual void update(const RenderContext& ctx);
+	virtual bool update(const RenderContext& ctx);
 	virtual Shader* bind(const RenderContext& ctx, Shader* shader);
 	virtual void draw(const RenderContext& ctx);
 
@@ -36,6 +38,8 @@ public:
 	bool skipShadow = false;
 	bool selected = false;
 
+	NodeUpdater* updater = nullptr;
+
 private:
 	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
@@ -43,6 +47,7 @@ private:
 
 	glm::mat4 modelMat = glm::mat4(1.0f);
 	glm::mat3 normalMat = glm::mat3(1.0f);
+
 
 	bool prepared = false;
 	bool dirtyMat = true;
