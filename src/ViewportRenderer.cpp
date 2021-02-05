@@ -23,6 +23,7 @@ void ViewportRenderer::update(RenderContext& ctx, std::vector<Viewport*>& viewpo
 void ViewportRenderer::render(RenderContext& ctx, std::vector<Viewport*>& viewports)
 {
 	for (auto viewport : viewports) {
+		viewport->bind(ctx);
 		viewport->draw(ctx);
 	}
 }

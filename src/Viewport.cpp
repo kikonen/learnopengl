@@ -47,21 +47,22 @@ void Viewport::update(RenderContext& ctx)
 
 void Viewport::bind(RenderContext& ctx)
 {
+	shader->bind();
+
+	shader->nearPlane.set(0.1f);
+	shader->farPlane.set(1000.f);
+
+	shader->shadowMap.set(0);
+	tex.bindTexture(GL_TEXTURE0);
+
+	glBindVertexArray(buffers.VAO);
+
 	glEnableVertexAttribArray(ATTR_VIEW_POS);
 	glEnableVertexAttribArray(ATTR_VIEW_TEX);
 }
 
 void Viewport::draw(RenderContext& ctx)
 {
-	shader->bind();
-	shader->shadowMap.set(0);
-
-	tex.bindTexture(GL_TEXTURE0);
-
-	shader->nearPlane.set(0.1f);
-	shader->farPlane.set(1000.f);
-
-	glBindVertexArray(buffers.VAO);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
 }
