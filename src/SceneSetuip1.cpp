@@ -158,8 +158,8 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 
 	sun->directional = true;
 
-	sun->ambient = { 0.3f, 0.3f, 0.3f, 1.f };
-	sun->diffuse = { 0.5f, 0.5f, 0.5f, 1.f };
+	sun->ambient = { 0.1f, 0.1f, 0.1f, 1.f };
+	sun->diffuse = { 0.4f, 0.4f, 0.4f, 1.f };
 	sun->specular = { 0.0f, 0.8f, 0.0f, 1.f };
 
 	scene->dirLight = sun;
@@ -558,7 +558,7 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 int SceneSetup1::setupSpriteFlare(Scene* scene)
 {
 	Material* material = new Material("flare");
-	material->ns = 50;
+	material->ns = 100;
 	material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 	material->map_kd = "Skeleton_VH.PNG";
 	material->loadTextures(assets.spritesDir + "/");

@@ -45,6 +45,9 @@ void main() {
   int matIdx = int(fs_in.materialIndex);
   Material material = resolveMaterial(matIdx);
 
+  if (material.diffuse.a < 0.01)
+    discard;
+
   vec3 normal;
   if (materials[matIdx].hasNormalMap) {
     normal = texture(textures[matIdx].normalMap, fs_in.texCoords).rgb;
