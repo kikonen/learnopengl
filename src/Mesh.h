@@ -28,7 +28,7 @@ public:
 	~Mesh();
 
 	void prepare(const Assets& assets);
-	void prepareBuffers(MeshBuffers& curr);
+	void updateBuffers(MeshBuffers& curr);
 	Shader* bind(const RenderContext& ctx, Shader* shader);
 	void draw(const RenderContext& ctx);
 	void drawInstanced(const RenderContext& ctx, int instanceCount);

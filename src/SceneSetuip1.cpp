@@ -1,8 +1,9 @@
 #include "SceneSetup1.h"
 
-#include "AsteroidBeltNode.h"
 #include "MeshLoader.h"
 #include "Terrain.h"
+#include "InstancedNode.h"
+#include "AsteroidBeltUpdater.h"
 
 
 SceneSetup1::SceneSetup1(const Assets& assets, UBO& ubo)
@@ -70,6 +71,11 @@ void SceneSetup1::process(RenderContext& ctx)
 	moveActive(ctx);
 	moveLight(ctx);
 	moveDirLight(ctx);
+}
+
+void SceneSetup1::update(RenderContext& ctx)
+{
+	scene->update(ctx);
 }
 
 void SceneSetup1::bind(RenderContext& ctx)
@@ -565,9 +571,9 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "rock", "/rock/");
 	Mesh* mesh = loader.load();
 
-	AsteroidBeltNode* node = new AsteroidBeltNode(mesh);
-	node->planet = planet;
-	//node->selected = true;
+	AsteroidBeltUpdater* updater = new AsteroidBeltUpdater(assets, planet);
+	InstancedNode* node = new InstancedNode(mesh, updater);
+	node->selected = true;
 	scene->nodes.push_back(node);
 	return 0;
 }

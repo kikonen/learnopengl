@@ -15,6 +15,10 @@ void Node::prepare(const Assets& assets)
 	mesh->prepare(assets);
 }
 
+void Node::update(const RenderContext& ctx)
+{
+}
+
 Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 {
 	updateModelMatrix();
@@ -40,12 +44,6 @@ Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 void Node::draw(const RenderContext& ctx)
 {
 	mesh->draw(ctx);
-	glBindVertexArray(0);
-}
-
-void Node::drawInstanced(const RenderContext& ctx, int instanceCount)
-{
-	mesh->drawInstanced(ctx, instanceCount);
 	glBindVertexArray(0);
 }
 

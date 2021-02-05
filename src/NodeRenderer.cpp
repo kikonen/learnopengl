@@ -12,6 +12,13 @@ void NodeRenderer::prepare()
 {
 }
 
+void NodeRenderer::update(RenderContext& ctx, std::vector<Node*>& nodes)
+{
+	for (auto node : nodes) {
+		node->update(ctx);
+	}
+}
+
 void NodeRenderer::bind(RenderContext& ctx, std::vector<Node*>& nodes)
 {
 }

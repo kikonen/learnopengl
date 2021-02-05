@@ -13,6 +13,13 @@ void TerrainRenderer::prepare()
 {
 }
 
+void TerrainRenderer::update(RenderContext& ctx, std::vector<Terrain*>& terrains)
+{
+	for (auto terrain : terrains) {
+		terrain->update(ctx);
+	}
+}
+
 void TerrainRenderer::render(RenderContext& ctx, std::vector<Terrain*>& terrains)
 {
 	for (auto terrain : terrains) {

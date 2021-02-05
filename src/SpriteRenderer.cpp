@@ -9,6 +9,13 @@ void SpriteRenderer::prepare()
 {
 }
 
+void SpriteRenderer::update(RenderContext& ctx, std::vector<Sprite*>& sprites)
+{
+	for (auto sprite : sprites) {
+		sprite->update(ctx);
+	}
+}
+
 void SpriteRenderer::bind(RenderContext& ctx, std::vector<Sprite*>& sprites)
 {
 }

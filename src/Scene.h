@@ -25,6 +25,8 @@ public:
 	~Scene();
 
 	void prepare();
+
+	void update(RenderContext& ctx);
 	void bind(RenderContext& ctx);
 	void draw(RenderContext& ctx);
 public:

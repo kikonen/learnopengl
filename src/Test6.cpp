@@ -64,6 +64,7 @@ int Test6::onRender(float dt) {
 
 	currentScene->process(ctx);
 
+	currentScene->update(ctx);
 	currentScene->bind(ctx);
 	currentScene->draw(ctx);
 

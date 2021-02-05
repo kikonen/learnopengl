@@ -13,6 +13,8 @@ public:
 	~TerrainRenderer();
 
 	void prepare();
+
+	void update(RenderContext& ctx, std::vector<Terrain*>& terrains);
 	void render(RenderContext& ctx, std::vector<Terrain*>& terrains);
 
 public:

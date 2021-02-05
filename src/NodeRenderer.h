@@ -11,6 +11,7 @@ public:
 	NodeRenderer(const Assets& assets);
 
 	void prepare();
+	void update(RenderContext& ctx, std::vector<Node*>& nodes);
 	void bind(RenderContext& ctx, std::vector<Node*>& nodes);
 	void render(RenderContext& ctx, std::vector<Node*>& nodes);
 

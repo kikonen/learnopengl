@@ -12,6 +12,13 @@ void NormalRenderer::prepare()
 {
 }
 
+void NormalRenderer::update(RenderContext& ctx, std::vector<Node*>& nodes)
+{
+	for (auto node : nodes) {
+		node->update(ctx);
+	}
+}
+
 void NormalRenderer::bind(RenderContext& ctx, std::vector<Node*>& nodes)
 {
 }

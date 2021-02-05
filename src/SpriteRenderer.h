@@ -11,6 +11,8 @@ public:
 	SpriteRenderer(const Assets& assets);
 
 	void prepare();
+
+	void update(RenderContext& ctx, std::vector<Sprite*>& sprites);
 	void bind(RenderContext& ctx, std::vector<Sprite*>& sprites);
 	void render(RenderContext& ctx, std::vector<Sprite*>& sprites);
 

@@ -33,7 +33,7 @@ void Mesh::prepare(const Assets& assets)
 		material->prepare();
 	}
 
-	prepareBuffers(buffers);
+	updateBuffers(buffers);
 
 	// materials
 	{
@@ -57,7 +57,7 @@ void Mesh::prepare(const Assets& assets)
 	}
 }
 
-void Mesh::prepareBuffers(MeshBuffers& curr)
+void Mesh::updateBuffers(MeshBuffers& curr)
 {
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
 	glBindVertexArray(curr.VAO);
@@ -111,27 +111,21 @@ void Mesh::prepareBuffers(MeshBuffers& curr)
 
 		// vertex attr
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
 
 		// normal attr
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3) * sizeof(float)));
-		glEnableVertexAttribArray(1);
 
 		// tangent attr
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3) * sizeof(float)));
-		glEnableVertexAttribArray(2);
 
 		// bitangent attr
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3) * sizeof(float)));
-		glEnableVertexAttribArray(3);
 
 		// materialID attr
 		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3 + 3) * sizeof(float)));
-		glEnableVertexAttribArray(4);
 
 		// texture attr
 		glVertexAttribPointer(5, 2, GL_FLOAT, GL_FALSE, sz * sizeof(float), (void*)((3 + 3 + 3 + 3 + 1) * sizeof(float)));
-		glEnableVertexAttribArray(5);
 	}
 
 	// EBO
@@ -181,6 +175,13 @@ Shader* Mesh::bind(const RenderContext& ctx, Shader* shader)
 	for (auto const& material : materials) {
 		material->bind(shader, material->materialIndex);
 	}
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
+	glEnableVertexAttribArray(5);
 
 	ctx.bind(shader);
 	bound = shader;

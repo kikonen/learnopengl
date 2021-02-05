@@ -12,9 +12,9 @@ public:
 
 	virtual void prepare(const Assets& assets);
 
+	virtual void update(const RenderContext& ctx);
 	virtual Shader* bind(const RenderContext& ctx, Shader* shader);
 	virtual void draw(const RenderContext& ctx);
-	virtual void drawInstanced(const RenderContext& ctx, int instanceCount);
 
 	void setPos(const glm::vec3& pos);
 	const glm::vec3& getPos();

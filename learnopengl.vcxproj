@@ -151,6 +151,9 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AsteroidBeltUpdater.cpp" />
+    <ClCompile Include="src\InstancedUpdater.cpp" />
+    <ClCompile Include="src\InstancedNode.cpp" />
     <ClCompile Include="src\SpriteRenderer.cpp" />
     <ClCompile Include="src\Perlin.cpp" />
     <ClCompile Include="src\FrameBuffer.cpp" />
@@ -161,7 +164,6 @@
     <ClCompile Include="src\KIGL.cpp" />
     <ClCompile Include="src\SceneSetuip1.cpp" />
     <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\AsteroidBeltNode.cpp" />
     <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\Assets.cpp" />
     <ClCompile Include="src\SkyboxRenderer.cpp" />
@@ -192,6 +194,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AsteroidBeltUpdater.h" />
+    <ClInclude Include="src\InstancedUpdater.h" />
+    <ClInclude Include="src\InstancedNode.h" />
     <ClInclude Include="src\SpriteRenderer.h" />
     <ClInclude Include="src\Perlin.h" />
     <ClInclude Include="src\FrameBuffer.h" />
@@ -202,7 +207,6 @@
     <ClInclude Include="src\KIGL.h" />
     <ClInclude Include="src\SceneSetup1.h" />
     <ClInclude Include="src\Scene.h" />
-    <ClInclude Include="src\AsteroidBeltNode.h" />
     <ClInclude Include="src\Sprite.h" />
     <ClInclude Include="src\Assets.h" />
     <ClInclude Include="src\SkyboxRenderer.h" />

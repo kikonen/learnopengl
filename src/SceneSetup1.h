@@ -16,7 +16,10 @@ public:
 	Shader* getShader(const std::string& name, const std::string& geometryType = "");
 
 	void setup();
+
 	void process(RenderContext& ctx);
+
+	void update(RenderContext& ctx);
 	void bind(RenderContext& ctx);
 	void draw(RenderContext& ctx);
 private:

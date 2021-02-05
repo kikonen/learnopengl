@@ -56,6 +56,27 @@ void Scene::prepare()
 	viewports.push_back(shadowMapRenderer->debugViewport);
 }
 
+void Scene::update(RenderContext& ctx)
+{
+	if (skyboxRenderer) {
+		skyboxRenderer->update(ctx);
+	}
+
+	nodeRenderer->update(ctx, nodes);
+
+	spriteRenderer->update(ctx, sprites);
+
+	if (showNormals) {
+		normalRenderer->update(ctx, nodes);
+
+		std::vector<Node*> r(terrains.begin(), terrains.end());
+		normalRenderer->update(ctx, r);
+	}
+
+	terrainRenderer->update(ctx, terrains);
+	viewportRenderer->update(ctx, viewports);
+}
+
 void Scene::bind(RenderContext& ctx)
 {
 	shadowMapRenderer->bind(ctx);

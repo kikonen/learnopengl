@@ -104,6 +104,10 @@ void SkyboxRenderer::assign(Shader* shader)
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 }
 
+void SkyboxRenderer::update(const RenderContext& ctx)
+{
+}
+
 void SkyboxRenderer::render(const RenderContext& ctx)
 {
     shader->bind();
