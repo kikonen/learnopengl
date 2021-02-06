@@ -41,7 +41,7 @@ void main() {
   int matIdx = int(fs_in.materialIndex);
   Material material = resolveMaterial(matIdx);
 
-  vec3 normal = normalize(fs_in.normal);
+  vec3 normal = fs_in.normal;
   vec3 toView = normalize(viewPos - fs_in.fragPos);
 
   vec4 shaded = calculateLight(normal, toView, material);

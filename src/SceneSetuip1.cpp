@@ -158,8 +158,8 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 
 	sun->directional = true;
 
-	sun->ambient = { 0.1f, 0.1f, 0.1f, 1.f };
-	sun->diffuse = { 0.4f, 0.4f, 0.4f, 1.f };
+	sun->ambient = { 0.2f, 0.2f, 0.2f, 1.f };
+	sun->diffuse = { 0.5f, 0.5f, 0.5f, 1.f };
 	sun->specular = { 0.0f, 0.8f, 0.0f, 1.f };
 
 	scene->dirLight = sun;
@@ -211,9 +211,9 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 	node->light = true;
 	scene->nodes.push_back(node);
 
-	const float radius = 20.0f;
+	const float radius = 15.0f;
 	const float speed = 8.f;
-	node->updater = new MovingLightUpdater(assets, glm::vec3(0, 30, 0), radius, speed, scene->dirLight);
+	node->updater = new MovingLightUpdater(assets, glm::vec3(0, 30, 0) + assets.groundOffset, radius, speed, scene->dirLight);
 
 	return 0;
 }

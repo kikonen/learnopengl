@@ -111,8 +111,8 @@ void NodeRenderer::drawBlended(RenderContext& ctx, std::vector<Node*>& nodes)
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		Node* node = it->second;
 
-		node->bind(ctx, nullptr);
-		node->mesh->bound->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
+		Shader* shader = node->bind(ctx, nullptr);
+		shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 		node->draw(ctx);
 	}
 

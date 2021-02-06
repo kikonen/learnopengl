@@ -59,9 +59,9 @@ void main() {
 
   if (drawInstanced) {
     mat3 mat = transpose(inverse(mat3(aInstanceMatrix)));
-    vs_out.normal = mat * aNormal;
+    vs_out.normal = normalize(mat * aNormal);
   } else {
-    vs_out.normal = normalMatrix * aNormal;
+    vs_out.normal = normalize(normalMatrix * aNormal);
   }
 
   mat4 b = {

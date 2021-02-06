@@ -22,7 +22,7 @@ bool MovingLightUpdater::update(const RenderContext& ctx, Node& node)
 	float posY = sin(elapsed / 2) * 2;
 	float posZ = cos(elapsed) * radius;
 
-	glm::vec3 pos = glm::vec3(posX, posY, posZ) + center + assets.groundOffset;
+	glm::vec3 pos = glm::vec3(posX, posY, posZ) + center;
 
 	light->pos = pos;
 	node.setPos(pos);

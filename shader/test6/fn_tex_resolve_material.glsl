@@ -12,13 +12,13 @@ Material resolveMaterial(int matIdx) {
     mat.ambient = orig.ambient;
   }
 
-  if (orig.hasEmissionTex){
+  if (orig.hasEmissionTex) {
     mat.emission = texture(textures[matIdx].emission, fs_in.texCoords).rgba;
   } else {
     mat.emission = orig.emission;
   }
 
-  if (orig.hasSpecularTex){
+  if (orig.hasSpecularTex) {
     mat.specular = texture(textures[matIdx].specular, fs_in.texCoords).rgba;
   } else {
     mat.specular = orig.specular;

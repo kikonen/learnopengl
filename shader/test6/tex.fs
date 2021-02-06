@@ -54,7 +54,7 @@ void main() {
     normal = normalize(normal * 2.0 - 1.0);
     material.hasNormalMap = true;
   } else {
-    normal = normalize(fs_in.normal);
+    normal = fs_in.normal;
   }
 
   vec3 toView = normalize(viewPos - fs_in.fragPos);
@@ -76,8 +76,6 @@ void main() {
   if (gl_FrontFacing) {
 //    texColor = vec4(0.8, 0, 0, 1.0);
   }
-  //texColor = vec4(normal, 1.0);
-  //texColor = fs_in.fragPosLightSpace;
 
   fragColor = texColor;
 }
