@@ -35,7 +35,6 @@ out vec4 fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-#include fn_tex_resolve_material.glsl
 #include fn_calculate_dir_light.glsl
 #include fn_calculate_point_light.glsl
 #include fn_calculate_spot_light.glsl
@@ -43,7 +42,9 @@ out vec4 fragColor;
 
 void main() {
   int matIdx = int(fs_in.materialIndex);
-  Material material = resolveMaterial(matIdx);
+
+  // Material material;
+  #include fn_tex_resolve_material.glsl
 
   vec3 normal;
   if (materials[matIdx].hasNormalMap) {

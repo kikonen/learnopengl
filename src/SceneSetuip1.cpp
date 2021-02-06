@@ -41,7 +41,7 @@ void SceneSetup1::setup()
 	setupNodeCube4(scene);
 	setupNodeBall(scene);
 	setupNodeCow(scene);
-	setupNodeTeapot(scene);
+	//setupNodeTeapot(scene);
 
 	setupNodeSpyro(scene);
 	setupNodeWindow2(scene);
@@ -52,16 +52,16 @@ void SceneSetup1::setup()
 
 	setupNodeBrickwall(scene);
 
-	//setupNodeBrickwallBox(scene);
+	setupNodeBrickwallBox(scene);
 	//setupNodeMountains(scene);
 
-	setupNodePlanet(scene);
-	setupNodeAsteroids(scene);
-	setupNodeAsteroidBelt(scene);
+	//setupNodePlanet(scene);
+	//setupNodeAsteroids(scene);
+	//setupNodeAsteroidBelt(scene);
 
 	setupSpriteFlare(scene);
 
-	setupTerrain(scene);
+//	setupTerrain(scene);
 	setupNodeSkybox(scene);
 }
 
