@@ -22,7 +22,6 @@ void ShadowMapRenderer::prepare()
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	frameBuffer.unbind();
 
 	shadowShader->prepare();
@@ -70,15 +69,7 @@ void ShadowMapRenderer::render(
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	drawNodes(ctx, nodes);
-	for (auto sprite : sprites) {
-		sprite->bind(ctx, shadowShader);
-		sprite->draw(ctx);
-	}
-	//for (auto terrain : terrains) {
-	//	terrain->bind(ctx, shadowShader);
-	//	terrain->draw(ctx);
-	//}
+	drawNodes(ctx, nodes, sprites, terrains);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -87,51 +78,27 @@ void ShadowMapRenderer::render(
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
-void ShadowMapRenderer::drawNodes(RenderContext& ctx, std::vector<Node*>& nodes)
+void ShadowMapRenderer::drawNodes(
+	RenderContext& ctx, 
+	std::vector<Node*>& nodes,
+	std::vector<Sprite*>& sprites,
+	std::vector<Terrain*>& terrains)
 {
-	//glCullFace(GL_FRONT);
-
-	std::vector<Node*> blendedNodes;
 	for (auto node : nodes) {
 		if (node->light || node->skipShadow) {
 			continue;
 		}
-		if (node->blend) {
-			blendedNodes.push_back(node);
-		}
-		else {
-			node->bind(ctx, shadowShader);
-			node->draw(ctx);
-		}
-	}
-
-	drawBlendedNodes(blendedNodes, ctx);
-
-	//glCullFace(GL_BACK); 
-}
-
-void ShadowMapRenderer::drawBlendedNodes(std::vector<Node*>& nodes, RenderContext& ctx)
-{
-	if (nodes.empty()) {
-		return;
-	}
-
-	glEnable(GL_BLEND);
-	glDisable(GL_CULL_FACE);
-
-	// TODO KI discards nodes if *same* distance
-	std::map<float, Node*> sorted;
-	for (auto node : nodes) {
-		float distance = glm::length(ctx.engine.camera.getPos() - node->getPos());
-		sorted[distance] = node;
-	}
-
-	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
-		Node* node = it->second;
 		node->bind(ctx, shadowShader);
 		node->draw(ctx);
 	}
 
-	glEnable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
+	//for (auto terrain : terrains) {
+	//	terrain->bind(ctx, shadowShader);
+	//	terrain->draw(ctx);
+	//}
+
+	for (auto sprite : sprites) {
+		sprite->bind(ctx, shadowShader);
+		sprite->draw(ctx);
+	}
 }

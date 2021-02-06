@@ -12,17 +12,26 @@ float calcShadow(vec4 pos, vec3 normal, vec3 toLight)
 {
   float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
 
-  float swidth = 2.5;
+  float swidth = 0.5;
   vec2 o = mod(floor(gl_FragCoord.xy), 2.0) * swidth;
 
+  float d1 = 0.5 * swidth;
+  float d2 = 1.5 * swidth;
+
   float shadowFactor = 0.0;
-  shadowFactor += lookup(pos, -1.5*swidth + o.x,  1.5*swidth - o.y, bias);
-  shadowFactor += lookup(pos, -1.5*swidth + o.x, -0.5*swidth - o.y, bias);
-  shadowFactor += lookup(pos, 0.5*swidth + o.x,  1.5*swidth - o.y, bias);
-  shadowFactor += lookup(pos, 0.5*swidth + o.x, -0.5*swidth - o.y, bias);
+  shadowFactor += lookup(pos, -d2 + o.x,  d2 - o.y, bias);
+  shadowFactor += lookup(pos, -d2 + o.x, -d1 - o.y, bias);
+  shadowFactor += lookup(pos,  d1 + o.x,  d2 - o.y, bias);
+  shadowFactor += lookup(pos,  d1 + o.x, -d1 - o.y, bias);
   shadowFactor = shadowFactor / 4.0;
 
   return shadowFactor;
+}
+
+float calcShadow2(vec4 pos, vec3 normal, vec3 toLight)
+{
+  float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
+  return textureProj(shadowMap, pos, bias);
 }
 
 vec4 calculateDirLight(
@@ -51,6 +60,9 @@ vec4 calculateDirLight(
 
   // calculate shadow
   float shadow = calcShadow(fragPosLightSpace, normal, toLight);
+  // if (shadow != 0.0) {
+  //   shadow = 1;
+  // }
   vec4 lighting = ambient + shadow * (diffuse + specular);
   lighting.a = material.diffuse.a;
 

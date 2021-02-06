@@ -9,8 +9,9 @@
 #include "FrameBuffer.h"
 #include "Viewport.h"
 
-const unsigned int SHADOW_WIDTH = 1024,
-	SHADOW_HEIGHT = 1024;
+// NOTE KI MUST match lookup() in light shadow shader
+const unsigned int SHADOW_WIDTH = 1000,
+	SHADOW_HEIGHT = 1000;
 
 
 class ShadowMapRenderer
@@ -30,8 +31,11 @@ public:
 		std::vector<Terrain*>& terrains);
 
 private:
-	void drawNodes(RenderContext& ctx, std::vector<Node*>& nodes);
-	void drawBlendedNodes(std::vector<Node*>& nodes, RenderContext& ctx);
+	void drawNodes(
+		RenderContext& ctx,
+		std::vector<Node*>& nodes,
+		std::vector<Sprite*>& sprites,
+		std::vector<Terrain*>& terrains);
 
 public:
 	FrameBuffer frameBuffer = { SHADOW_WIDTH, SHADOW_HEIGHT };

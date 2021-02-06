@@ -211,9 +211,9 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 	node->light = true;
 	scene->nodes.push_back(node);
 
-	const float radius = 15.0f;
+	const float radius = 20.0f;
 	const float speed = 8.f;
-	node->updater = new MovingLightUpdater(assets, glm::vec3(0, 30, 0) + assets.groundOffset, radius, speed, scene->dirLight);
+	node->updater = new MovingLightUpdater(assets, glm::vec3(0, 40, 0) + assets.groundOffset, radius, speed, scene->dirLight);
 
 	return 0;
 }
@@ -348,7 +348,7 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 	float scale = 100;
 	for (int i = 0; i < 1; i++) {
 		Node* node = new Node(mesh);
-		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 90, 0) + assets.groundOffset);
+		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 95, 0) + assets.groundOffset);
 		node->setScale(scale);
 		node->setRotation(rot[i]);
 		node->renderBack = true;

@@ -114,10 +114,8 @@ void Scene::draw(RenderContext& ctx)
 	}
 
 	terrainRenderer->render(ctx, terrains);
-
-	nodeRenderer->render(ctx, nodes);
-
 	spriteRenderer->render(ctx, sprites);
+	nodeRenderer->render(ctx, nodes);
 
 	if (showNormals) {
 		normalRenderer->render(ctx, nodes);
