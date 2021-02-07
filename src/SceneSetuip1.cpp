@@ -31,9 +31,6 @@ void SceneSetup1::setup()
 	setupLightDirectional(scene);
 	setupLightMoving(scene);
 
-	setupNodeDirectional(scene);
-	setupNodeLightMoving(scene);
-
 	setupNodeZero(scene);
 
 	setupNodeWaterBall(scene);
@@ -65,6 +62,9 @@ void SceneSetup1::setup()
 
 	setupTerrain(scene);
 	setupNodeSkybox(scene);
+
+	setupNodeDirectional(scene);
+	setupNodeLightMoving(scene);
 }
 
 void SceneSetup1::process(RenderContext& ctx)
@@ -200,6 +200,8 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 	Light* sun = scene->dirLight;
 	if (!sun) return -1;
 
+	//sun->target = planet->getPos();
+
 	MeshLoader loader(getShader(TEX_LIGHT), "light");
 	loader.defaultMaterial->kd = sun->specular;
 	loader.overrideMaterials = true;
@@ -211,9 +213,11 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 	node->light = true;
 	scene->nodes.push_back(node);
 
-	const float radius = 20.0f;
-	const float speed = 8.f;
-	node->updater = new MovingLightUpdater(assets, glm::vec3(0, 40, 0) + assets.groundOffset, radius, speed, scene->dirLight);
+	const float radius = 80.0f;
+	const float speed = 20.f;
+	//glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
+	glm::vec3 center = planet->getPos();
+	node->updater = new MovingLightUpdater(assets, center, radius, speed, scene->dirLight);
 
 	return 0;
 }
@@ -224,6 +228,8 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 	loader.overrideMaterials = true;
 	Mesh* mesh = loader.load();
 
+	glm::vec3 center = glm::vec3(0, 7, 0) + assets.groundOffset;
+
 	for (auto light : scene->pointLights) {
 		Node* node = new Node(mesh);
 		node->setPos(light->pos);
@@ -231,7 +237,7 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 		node->light = true;
 		scene->nodes.push_back(node);
 		if (light == activeLight) {
-			node->updater = new MovingLightUpdater(assets, glm::vec3(0, 7, 0), 10.f, 2.f, light);
+			node->updater = new MovingLightUpdater(assets, center, 10.f, 2.f, light);
 		}
 	}
 
@@ -242,7 +248,7 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 		node->light = true;
 		scene->nodes.push_back(node);
 		if (light == activeLight) {
-			node->updater = new MovingLightUpdater(assets, glm::vec3(0, 7, 0), 10.f, 2.f, light);
+			node->updater = new MovingLightUpdater(assets, center, 10.f, 2.f, light);
 		}
 	}
 	return 0;
@@ -376,7 +382,7 @@ int SceneSetup1::setupNodeBackpack(Scene* scene)
 	Mesh* mesh = loader.load();
 
 	Node* node = new Node(mesh);
-	node->setPos(glm::vec3(0, 3, 0) + assets.groundOffset);
+	node->setPos(glm::vec3(0, 5, 5) + assets.groundOffset);
 	node->setScale(1.5f);
 	scene->nodes.push_back(node);
 	return 0;
