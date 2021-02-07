@@ -20,7 +20,7 @@ int Test6::onSetup() {
 
 	camera.setPos(glm::vec3(-8, 5, 10.f) + assets.groundOffset);
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);

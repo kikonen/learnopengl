@@ -154,7 +154,15 @@ void Engine::on_framebuffer_size(int width, int height)
 void Engine::on_mouse(double xpos, double ypos)
 {
 	input->handleMouse(xpos, ypos);
-	camera.onMouseMove(input, input->mouseXoffset, input->mouseYoffset);
+
+	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+	if (state == GLFW_PRESS) {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		camera.onMouseMove(input, input->mouseXoffset, input->mouseYoffset);
+	}
+	else {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
 }
 
 void Engine::on_scroll(double xoffset, double yoffset)
