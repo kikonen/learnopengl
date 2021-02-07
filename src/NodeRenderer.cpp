@@ -12,29 +12,31 @@ void NodeRenderer::prepare()
 {
 }
 
-void NodeRenderer::update(RenderContext& ctx, std::vector<Node*>& nodes)
+void NodeRenderer::update(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
 {
-	for (auto node : nodes) {
-		node->update(ctx);
+	for (auto& x : typeNodes) {
+		for (auto& e : x.second) {
+			e->update(ctx);
+		}
 	}
 }
 
-void NodeRenderer::bind(RenderContext& ctx, std::vector<Node*>& nodes)
+void NodeRenderer::bind(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
 {
 }
 
-void NodeRenderer::render(RenderContext& ctx, std::vector<Node*>& nodes)
+void NodeRenderer::render(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
 {
-	int selectedCount = drawNodes(ctx, nodes, true);
-	drawNodes(ctx, nodes, false);
+	int selectedCount = drawNodes(ctx, typeNodes, true);
+	drawNodes(ctx, typeNodes, false);
 
 	if (selectedCount > 0) {
-		drawSelectionStencil(ctx, nodes);
+		drawSelectionStencil(ctx, typeNodes);
 	}
 }
 
 // draw all non selected nodes
-int NodeRenderer::drawNodes(RenderContext& ctx, std::vector<Node*>& nodes, bool selection)
+int NodeRenderer::drawNodes(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes, bool selection)
 {
 	int renderCount = 0;
 
@@ -46,45 +48,48 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::vector<Node*>& nodes, bool 
 		glStencilMask(0x00);
 	}
 
-	std::vector<Node*> blendedNodes;
-	for (auto node : nodes) {
-		if (selection ? !node->selected : node->selected) {
-			continue;
-		}
+	for (auto& x : typeNodes) {
+		std::vector<Node*> blendedNodes;
+		for (auto& e : x.second) {
+			if (selection ? !e->selected : e->selected) {
+				continue;
+			}
 
-		if (node->blend) {
-			blendedNodes.push_back(node);
+			if (e->blend) {
+				blendedNodes.push_back(e);
+			}
+			else {
+				Shader* shader = e->bind(ctx, nullptr);
+				shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
+				e->draw(ctx);
+			}
+			renderCount++;
 		}
-		else {
-			Shader* shader = node->bind(ctx, nullptr);
-			shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
-			node->draw(ctx);
-		}
-		renderCount++;
+		drawBlended(ctx, blendedNodes);
 	}
-
-	drawBlended(ctx, blendedNodes);
 
 	return renderCount;
 }
 
 // draw all selected nodes with stencil
-void NodeRenderer::drawSelectionStencil(RenderContext& ctx, std::vector<Node*>& nodes)
+void NodeRenderer::drawSelectionStencil(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
 {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);
 	glDisable(GL_DEPTH_TEST);
 
-	for (auto node : nodes) {
-		if (!node->selected) {
-			continue;
-		}
+	for (auto& x : typeNodes) {
+		for (auto& e : x.second) {
+			if (!e->selected) {
+				continue;
+			}
 
-		float scale = node->getScale();
-		node->setScale(scale * 1.02f);
-		node->bind(ctx, selectionShader);
-		node->draw(ctx);
-		node->setScale(scale);
+			float scale = e->getScale();
+			e->setScale(scale * 1.02f);
+			e->bind(ctx, selectionShader);
+			e->draw(ctx);
+			e->setScale(scale);
+		}
 	}
 
 	glStencilMask(0xFF);

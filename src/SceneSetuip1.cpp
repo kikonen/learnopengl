@@ -213,7 +213,7 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 	node->setPos(sun->pos);
 	node->setScale(1.5f);
 	node->light = true;
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 
 	const float radius = 80.0f;
 	const float speed = 20.f;
@@ -239,7 +239,7 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 		node->setPos(light->pos);
 		node->setScale(0.5f);
 		node->light = true;
-		scene->nodes.push_back(node);
+		scene->addNode(node);
 		if (light == activeLight) {
 			node->updater = new MovingLightUpdater(assets, center, 10.f, 2.f, light);
 		}
@@ -250,7 +250,7 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 		node->setPos(light->pos);
 		node->setScale(0.5f);
 		node->light = true;
-		scene->nodes.push_back(node);
+		scene->addNode(node);
 		if (light == activeLight) {
 			node->updater = new MovingLightUpdater(assets, center, 10.f, 2.f, light);
 		}
@@ -267,7 +267,7 @@ int SceneSetup1::setupNodeZero(Scene* scene) {
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0, 0, 0) + assets.groundOffset);
 	node->setScale(0.3f);
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -283,7 +283,7 @@ int SceneSetup1::setupNodeWindow1(Scene* scene)
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	node->renderBack = true;
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -299,7 +299,7 @@ int SceneSetup1::setupNodeWindow2(Scene* scene)
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
 	node->renderBack = true;
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	//	selection.push_back(node);
 	return 0;
 }
@@ -317,7 +317,7 @@ int SceneSetup1::setupNodeStainedWindows(Scene* scene)
 		node->setRotation(glm::vec3(0, 180, 0));
 		node->blend = true;
 		node->renderBack = true;
-		scene->nodes.push_back(node);
+		scene->addNode(node);
 	}
 	return 0;
 }
@@ -340,7 +340,7 @@ int SceneSetup1::setupNodeBrickwall(Scene* scene)
 		node->setPos(glm::vec3(-5 + i * 2, 5, 14) + assets.groundOffset);
 		//node->setRotation(glm::vec3(0, 180, 0));
 		node->renderBack = true;
-		scene->nodes.push_back(node);
+		scene->addNode(node);
 	}
 	return 0;
 }
@@ -378,7 +378,7 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 		node->setRotation(rot[i]);
 		node->renderBack = true;
 		//node->skipShadow = true;
-		scene->nodes.push_back(node);
+		scene->addNode(node);
 	}
 	return 0;
 }
@@ -393,7 +393,7 @@ int SceneSetup1::setupNodeSpyro(Scene* scene)
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0, 30, 30) + assets.groundOffset);
 	node->setScale(0.1f);
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -407,7 +407,7 @@ int SceneSetup1::setupNodeBackpack(Scene* scene)
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0, 5, 5) + assets.groundOffset);
 	node->setScale(1.5f);
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -424,7 +424,7 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 	node->setPos(glm::vec3(-5, 20, -5) + assets.groundOffset);
 	node->renderBack = true;
 	node->selected = true;
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -440,7 +440,7 @@ int SceneSetup1::setupNodeCow(Scene* scene)
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(5, 20, -5) + assets.groundOffset);
 	node->selected = true;
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -454,7 +454,7 @@ int SceneSetup1::setupNodeBall(Scene* scene)
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0, 8, 0) + assets.groundOffset);
 	node->setScale(2.0f);
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -468,7 +468,7 @@ int SceneSetup1::setupNodeCube4(Scene* scene)
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(-5, 20, 5) + assets.groundOffset);
 	node->selected = true;
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -489,7 +489,7 @@ int SceneSetup1::setupNodeCubes(Scene* scene)
 	for (auto p : points) {
 		Node* node = new Node(objectID, mesh);
 		node->setPos(p + assets.groundOffset);
-		scene->nodes.push_back(node);
+		scene->addNode(node);
 	}
 
 	return 0;
@@ -505,11 +505,11 @@ int SceneSetup1::setupNodeActive(Scene* scene)
 	Node* active = new Node(objectID, mesh);
 	active->updater = new NodePathUpdater(assets, 0);
 	active->setPos(glm::vec3(0) + assets.groundOffset);
-	scene->nodes.push_back(active);
+	scene->addNode(active);
 
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(5, 20, 5) + assets.groundOffset);
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -523,7 +523,7 @@ int SceneSetup1::setupNodeMountains(Scene* scene)
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0));
 	//		node->setScale(0.01);
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -537,7 +537,7 @@ int SceneSetup1::setupNodeWaterBall(Scene* scene)
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0, 20, 0) + assets.groundOffset);
 	//node->setScale(0.5f);
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -551,7 +551,7 @@ int SceneSetup1::setupNodePlanet(Scene* scene)
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
 	node->setScale(10);
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 
 	planet = node;
 
@@ -587,7 +587,7 @@ int SceneSetup1::setupNodeAsteroids(Scene* scene)
 	Node* node = new Node(objectID, mesh);
 	glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 50, 0) : glm::vec3(10, 50, 100) + assets.groundOffset;
 	node->setPos(pos);
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 
 	return 0;
 }
@@ -602,7 +602,7 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 	AsteroidBeltUpdater* updater = new AsteroidBeltUpdater(assets, planet);
 	InstancedNode* node = new InstancedNode(objectID, mesh, updater);
 	//node->selected = true;
-	scene->nodes.push_back(node);
+	scene->addNode(node);
 	return 0;
 }
 
@@ -619,7 +619,7 @@ int SceneSetup1::setupSpriteFlare(Scene* scene)
 
 	Sprite* sprite = new Sprite(objectID, glm::vec2(2, 2), material);
 	sprite->setPos(glm::vec3(0, 5, 20) + assets.groundOffset);
-	scene->sprites.push_back(sprite);
+	scene->addSprite(sprite);
 
 	return 0;
 }
@@ -649,7 +649,7 @@ int SceneSetup1::setupTerrain(Scene* scene)
 	for (int x = 0; x < 2; x++) {
 		for (int z = 0; z < 2; z++) {
 			Terrain* terrain = new Terrain(objectID, x, z, material, shader);
-			scene->terrains.push_back(terrain);
+			scene->addTerrain(terrain);
 		}
 	}
 	return 0;

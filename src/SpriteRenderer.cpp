@@ -9,25 +9,29 @@ void SpriteRenderer::prepare()
 {
 }
 
-void SpriteRenderer::update(RenderContext& ctx, std::vector<Sprite*>& sprites)
+void SpriteRenderer::update(RenderContext& ctx, std::map<int, std::vector<Sprite*>>& typeSprites)
 {
-	for (auto sprite : sprites) {
-		sprite->update(ctx);
+	for (auto& x : typeSprites) {
+		for (auto& e : x.second) {
+			e->update(ctx);
+		}
 	}
 }
 
-void SpriteRenderer::bind(RenderContext& ctx, std::vector<Sprite*>& sprites)
+void SpriteRenderer::bind(RenderContext& ctx, std::map<int, std::vector<Sprite*>>& typeSprites)
 {
 }
 
-void SpriteRenderer::render(RenderContext& ctx, std::vector<Sprite*>& sprites)
+void SpriteRenderer::render(RenderContext& ctx, std::map<int, std::vector<Sprite*>>& typeSprites)
 {
 	glEnable(GL_BLEND);
 	glDisable(GL_CULL_FACE);
 
-	for (auto sprite : sprites) {
-		sprite->bind(ctx, nullptr);
-		sprite->draw(ctx);
+	for (auto& x : typeSprites) {
+		for (auto& e : x.second) {
+			e->bind(ctx, nullptr);
+			e->draw(ctx);
+		}
 	}
 
 	glEnable(GL_CULL_FACE);

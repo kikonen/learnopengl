@@ -29,6 +29,16 @@ public:
 	void update(RenderContext& ctx);
 	void bind(RenderContext& ctx);
 	void draw(RenderContext& ctx);
+
+	void addNode(Node* node);
+	void addSprite(Sprite* sprite);
+	void addTerrain(Terrain* terrain);
+	void addViewPort(Viewport* viewport);
+
+private:
+	std::map<int, std::vector<Node*>> terrainToNodes();
+	std::map<int, std::vector<Node*>> spriteToNodes();
+
 public:
 	const Assets& assets;
 
@@ -44,14 +54,14 @@ public:
 	ShadowMapRenderer* shadowMapRenderer = nullptr;
 	NormalRenderer* normalRenderer = nullptr;
 
-	std::vector<Node*> nodes;
-	std::vector<Sprite*> sprites;
-	std::vector<Terrain*> terrains;
-	std::vector<Viewport*> viewports;
-
 	Light* dirLight = nullptr;
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
 
 private:
+	std::map<int, std::vector<Node*>> typeNodes;
+	std::map<int, std::vector<Sprite*>> typeSprites;
+	std::map<int, std::vector<Terrain*>> typeTerrains;
+
+	std::vector<Viewport*> viewports;
 };

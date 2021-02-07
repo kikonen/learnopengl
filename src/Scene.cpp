@@ -28,16 +28,22 @@ Scene::~Scene()
 
 void Scene::prepare()
 {
-	for (auto node : nodes) {
-		node->prepare(assets);
+	for (auto& x : typeNodes) {
+		for (auto& e : x.second) {
+			e->prepare(assets);
+		}
 	}
 
-	for (auto sprite : sprites) {
-		sprite->prepare(assets);
+	for (auto& x : typeSprites) {
+		for (auto& e : x.second) {
+			e->prepare(assets);
+		}
 	}
 
-	for (auto terrain : terrains) {
-		terrain->prepare(assets);
+	for (auto& x : typeTerrains) {
+		for (auto& e : x.second) {
+			e->prepare(assets);
+		}
 	}
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
@@ -72,16 +78,19 @@ void Scene::update(RenderContext& ctx)
 		skyboxRenderer->update(ctx);
 	}
 
-	nodeRenderer->update(ctx, nodes);
-	spriteRenderer->update(ctx, sprites);
-	terrainRenderer->update(ctx, terrains);
+	nodeRenderer->update(ctx, typeNodes);
+	spriteRenderer->update(ctx, typeSprites);
+	terrainRenderer->update(ctx, typeTerrains);
 	viewportRenderer->update(ctx, viewports);
 
 	if (showNormals) {
-		normalRenderer->update(ctx, nodes);
+		normalRenderer->update(ctx, typeNodes);
 
-		std::vector<Node*> r(terrains.begin(), terrains.end());
-		normalRenderer->update(ctx, r);
+		std::map<int, std::vector<Node*>> r1 = spriteToNodes();
+		normalRenderer->update(ctx, r1);
+
+		std::map<int, std::vector<Node*>> r2 = terrainToNodes();
+		normalRenderer->update(ctx, r1);
 	}
 }
 
@@ -105,7 +114,7 @@ void Scene::draw(RenderContext& ctx)
 
 	glEnable(GL_DEPTH_TEST);
 
-	shadowMapRenderer->render(ctx, nodes, sprites, terrains);
+	shadowMapRenderer->render(ctx, typeNodes, typeSprites, typeTerrains);
 
 	shadowMapRenderer->bindTexture(ctx);
 
@@ -113,19 +122,70 @@ void Scene::draw(RenderContext& ctx)
 		skyboxRenderer->render(ctx);
 	}
 
-	terrainRenderer->render(ctx, terrains);
-	spriteRenderer->render(ctx, sprites);
-	nodeRenderer->render(ctx, nodes);
+	terrainRenderer->render(ctx, typeTerrains);
+	spriteRenderer->render(ctx, typeSprites);
+	nodeRenderer->render(ctx, typeNodes);
 
 	if (showNormals) {
-		normalRenderer->render(ctx, nodes);
+		normalRenderer->render(ctx, typeNodes);
 
-		std::vector<Node*> r(terrains.begin(), terrains.end());
-		normalRenderer->render(ctx, r);
+		std::map<int, std::vector<Node*>> r1 = spriteToNodes();
+		normalRenderer->render(ctx, r1);
+
+		std::map<int, std::vector<Node*>> r2 = terrainToNodes();
+		normalRenderer->render(ctx, r1);
 	}
 
 	viewportRenderer->render(ctx, viewports);
 
 	KIGL::checkErrors("scene.draw");
+}
+
+void Scene::addNode(Node* node)
+{
+	typeNodes[node->objectID].push_back(node);
+}
+
+void Scene::addSprite(Sprite* sprite)
+{
+	typeSprites[sprite->objectID].push_back(sprite);
+}
+
+void Scene::addTerrain(Terrain* terrain)
+{
+	typeTerrains[terrain->objectID].push_back(terrain);
+}
+
+void Scene::addViewPort(Viewport* viewport)
+{
+	viewports.push_back(viewport);
+}
+
+std::map<int, std::vector<Node*>> Scene::terrainToNodes()
+{
+	std::map<int, std::vector<Node*>> r;
+
+	for (auto& x : typeTerrains) {
+		auto a = r[x.first];
+		a.reserve(x.second.size());
+		for (auto& e : x.second) {
+			a.push_back(e);
+		}
+	}
+	return r;
+}
+
+std::map<int, std::vector<Node*>> Scene::spriteToNodes()
+{
+	std::map<int, std::vector<Node*>> r;
+
+	for (auto& x : typeSprites) {
+		auto a = r[x.first];
+		a.reserve(x.second.size());
+		for (auto& e : x.second) {
+			a.push_back(e);
+		}
+	}
+	return r;
 }
 
