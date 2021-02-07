@@ -10,7 +10,7 @@
 class Terrain : public Node
 {
 public:
-	Terrain(int worldX, int worldZ, Material* material, Shader* shader);
+	Terrain(int objectID, int worldX, int worldZ, Material* material, Shader* shader);
 	~Terrain();
 
 	void prepare(const Assets& assets) override;

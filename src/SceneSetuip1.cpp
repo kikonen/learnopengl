@@ -47,8 +47,6 @@ void SceneSetup1::setup()
 	setupNodeWindow1(scene);
 	setupNodeStainedWindows(scene);
 
-	//setupNodeBackpack(scene);
-
 	setupNodeBrickwall(scene);
 
 	//setupNodeBrickwallBox(scene);
@@ -65,6 +63,8 @@ void SceneSetup1::setup()
 
 	setupNodeDirectional(scene);
 	setupNodeLightMoving(scene);
+
+	//setupNodeBackpack(scene);
 }
 
 void SceneSetup1::process(RenderContext& ctx)
@@ -207,7 +207,9 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 	loader.overrideMaterials = true;
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(sun->pos);
 	node->setScale(1.5f);
 	node->light = true;
@@ -228,10 +230,12 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 	loader.overrideMaterials = true;
 	Mesh* mesh = loader.load();
 
+	const int objectID = Node::nextID();
+
 	glm::vec3 center = glm::vec3(0, 7, 0) + assets.groundOffset;
 
 	for (auto light : scene->pointLights) {
-		Node* node = new Node(mesh);
+		Node* node = new Node(objectID, mesh);
 		node->setPos(light->pos);
 		node->setScale(0.5f);
 		node->light = true;
@@ -242,7 +246,7 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 	}
 
 	for (auto light : scene->spotLights) {
-		Node* node = new Node(mesh);
+		Node* node = new Node(objectID, mesh);
 		node->setPos(light->pos);
 		node->setScale(0.5f);
 		node->light = true;
@@ -258,7 +262,9 @@ int SceneSetup1::setupNodeZero(Scene* scene) {
 	MeshLoader loader(getShader(TEX_TEXTURE), "water_ball");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0, 0, 0) + assets.groundOffset);
 	node->setScale(0.3f);
 	scene->nodes.push_back(node);
@@ -270,7 +276,9 @@ int SceneSetup1::setupNodeWindow1(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "window1");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(5, 10, -5) + assets.groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
@@ -284,7 +292,9 @@ int SceneSetup1::setupNodeWindow2(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "window2");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(7, 10, -8) + assets.groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
 	node->blend = true;
@@ -299,8 +309,10 @@ int SceneSetup1::setupNodeStainedWindows(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "window2");
 	Mesh* mesh = loader.load();
 
+	const int objectID = Node::nextID();
+
 	for (int i = 0; i < 10; i++) {
-		Node* node = new Node(mesh);
+		Node* node = new Node(objectID, mesh);
 		node->setPos(glm::vec3(-10 + i * 2, 15, 10) + assets.groundOffset);
 		node->setRotation(glm::vec3(0, 180, 0));
 		node->blend = true;
@@ -312,14 +324,19 @@ int SceneSetup1::setupNodeStainedWindows(Scene* scene)
 
 int SceneSetup1::setupNodeBrickwall(Scene* scene)
 {
-	MeshLoader loader(getShader(TEX_TEXTURE), "brickwall");
-	Mesh* mesh = loader.load();
+	MeshLoader loader1(getShader(TEX_TEXTURE), "brickwall");
+	Mesh* mesh1 = loader1.load();
+
+	const int objectID1 = Node::nextID();
+	const int objectID2 = Node::nextID();
 
 	MeshLoader loader2(getShader(TEX_TEXTURE), "brickwall2");
 	Mesh* mesh2 = loader2.load();
 
 	for (int i = 0; i < 5; i++) {
-		Node* node = new Node(i % 2 == 0 ? mesh : mesh2);
+		Node* node = new Node(
+			i % 2 == 0 ? objectID1 : objectID1,
+			i % 2 == 0 ? mesh1 : mesh2);
 		node->setPos(glm::vec3(-5 + i * 2, 5, 14) + assets.groundOffset);
 		//node->setRotation(glm::vec3(0, 180, 0));
 		node->renderBack = true;
@@ -332,6 +349,8 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "brickwall2");
 	Mesh* mesh = loader.load();
+
+	const int objectID = Node::nextID();
 
 	glm::vec3 pos[] = {
 //		{0.0, 1.0, 0.0},
@@ -353,7 +372,7 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 
 	float scale = 100;
 	for (int i = 0; i < 1; i++) {
-		Node* node = new Node(mesh);
+		Node* node = new Node(objectID, mesh);
 		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 95, 0) + assets.groundOffset);
 		node->setScale(scale);
 		node->setRotation(rot[i]);
@@ -369,7 +388,9 @@ int SceneSetup1::setupNodeSpyro(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "spyro2");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0, 30, 30) + assets.groundOffset);
 	node->setScale(0.1f);
 	scene->nodes.push_back(node);
@@ -381,7 +402,9 @@ int SceneSetup1::setupNodeBackpack(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "backpack", "/backpack/");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0, 5, 5) + assets.groundOffset);
 	node->setScale(1.5f);
 	scene->nodes.push_back(node);
@@ -395,7 +418,9 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 	//loader.overrideMaterials = true;
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(-5, 20, -5) + assets.groundOffset);
 	node->renderBack = true;
 	node->selected = true;
@@ -410,7 +435,9 @@ int SceneSetup1::setupNodeCow(Scene* scene)
 	loader.defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(5, 20, -5) + assets.groundOffset);
 	node->selected = true;
 	scene->nodes.push_back(node);
@@ -422,7 +449,9 @@ int SceneSetup1::setupNodeBall(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_ball");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0, 8, 0) + assets.groundOffset);
 	node->setScale(2.0f);
 	scene->nodes.push_back(node);
@@ -434,7 +463,9 @@ int SceneSetup1::setupNodeCube4(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_cube_4");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(-5, 20, 5) + assets.groundOffset);
 	node->selected = true;
 	scene->nodes.push_back(node);
@@ -446,6 +477,8 @@ int SceneSetup1::setupNodeCubes(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_cube_3");
 	Mesh* mesh = loader.load();
 
+	const int objectID = Node::nextID();
+
 	std::vector<glm::vec3> points = {
 		glm::vec3(-5, 15, -5),
 		glm::vec3(5, 15, -5),
@@ -454,7 +487,7 @@ int SceneSetup1::setupNodeCubes(Scene* scene)
 	};
 
 	for (auto p : points) {
-		Node* node = new Node(mesh);
+		Node* node = new Node(objectID, mesh);
 		node->setPos(p + assets.groundOffset);
 		scene->nodes.push_back(node);
 	}
@@ -467,12 +500,14 @@ int SceneSetup1::setupNodeActive(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_cube");
 	Mesh* mesh = loader.load();
 
-	Node* active = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* active = new Node(objectID, mesh);
 	active->updater = new NodePathUpdater(assets, 0);
 	active->setPos(glm::vec3(0) + assets.groundOffset);
 	scene->nodes.push_back(active);
 
-	Node* node = new Node(mesh);
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(5, 20, 5) + assets.groundOffset);
 	scene->nodes.push_back(node);
 	return 0;
@@ -483,7 +518,9 @@ int SceneSetup1::setupNodeMountains(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_mountains");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0));
 	//		node->setScale(0.01);
 	scene->nodes.push_back(node);
@@ -495,7 +532,9 @@ int SceneSetup1::setupNodeWaterBall(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "water_ball");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(0, 20, 0) + assets.groundOffset);
 	//node->setScale(0.5f);
 	scene->nodes.push_back(node);
@@ -507,7 +546,9 @@ int SceneSetup1::setupNodePlanet(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "planet", "/planet/");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
 	node->setScale(10);
 	scene->nodes.push_back(node);
@@ -541,7 +582,9 @@ int SceneSetup1::setupNodeAsteroids(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "rock", "/rock/");
 	Mesh* mesh = loader.load();
 
-	Node* node = new Node(mesh);
+	const int objectID = Node::nextID();
+
+	Node* node = new Node(objectID, mesh);
 	glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 50, 0) : glm::vec3(10, 50, 100) + assets.groundOffset;
 	node->setPos(pos);
 	scene->nodes.push_back(node);
@@ -554,8 +597,10 @@ int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 	MeshLoader loader(getShader(TEX_TEXTURE), "rock", "/rock/");
 	Mesh* mesh = loader.load();
 
+	const int objectID = Node::nextID();
+
 	AsteroidBeltUpdater* updater = new AsteroidBeltUpdater(assets, planet);
-	InstancedNode* node = new InstancedNode(mesh, updater);
+	InstancedNode* node = new InstancedNode(objectID, mesh, updater);
 	//node->selected = true;
 	scene->nodes.push_back(node);
 	return 0;
@@ -570,7 +615,9 @@ int SceneSetup1::setupSpriteFlare(Scene* scene)
 	material->loadTextures(assets.spritesDir + "/");
 	material->prepare();
 
-	Sprite* sprite = new Sprite(glm::vec2(2, 2), material);
+	const int objectID = Node::nextID();
+
+	Sprite* sprite = new Sprite(objectID, glm::vec2(2, 2), material);
 	sprite->setPos(glm::vec3(0, 5, 20) + assets.groundOffset);
 	scene->sprites.push_back(sprite);
 
@@ -587,6 +634,8 @@ int SceneSetup1::setupTerrain(Scene* scene)
 	material->loadTextures(assets.texturesDir + "/");
 	material->prepare();
 
+	const int objectID = Node::nextID();
+
 	unsigned int textureIndex = 0;
 	for (auto const& texture : material->textures) {
 		texture->textureIndex = textureIndex;
@@ -599,7 +648,7 @@ int SceneSetup1::setupTerrain(Scene* scene)
 
 	for (int x = 0; x < 2; x++) {
 		for (int z = 0; z < 2; z++) {
-			Terrain* terrain = new Terrain(x, z, material, shader);
+			Terrain* terrain = new Terrain(objectID, x, z, material, shader);
 			scene->terrains.push_back(terrain);
 		}
 	}

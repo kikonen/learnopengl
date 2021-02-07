@@ -9,7 +9,9 @@ class NodeUpdater;
 class Node
 {
 public:
-	Node(Mesh* mesh = nullptr);
+	static int nextID();
+
+	Node(int objectID, Mesh* mesh = nullptr);
 	~Node();
 
 	virtual void prepare(const Assets& assets);
@@ -32,6 +34,8 @@ protected:
 
 public:
 	Mesh* mesh;
+	int objectID = -1;
+
 	bool blend = false;
 	bool light = false;
 	bool renderBack = false;

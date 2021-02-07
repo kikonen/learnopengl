@@ -3,7 +3,16 @@
 #include "NodeUpdater.h";
 #include "KIGL.h"
 
-Node::Node(Mesh* mesh) : mesh(mesh)
+int objectIDbase = 0;
+
+int Node::nextID()
+{
+	return ++objectIDbase;
+}
+
+Node::Node(int objectID, Mesh* mesh)
+	: objectID(objectID),
+	mesh(mesh)
 {
 }
 

@@ -2,8 +2,9 @@
 
 #include "MeshLoader.h"
 
-Sprite::Sprite(glm::vec2 size, Material* material)
-	: size(size),
+Sprite::Sprite(int objectID, glm::vec2 size, Material* material)
+	: Node(objectID),
+	size(size),
 	material(material)
 {
 }

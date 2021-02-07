@@ -6,7 +6,7 @@
 class InstancedNode : public Node
 {
 public:
-	InstancedNode(Mesh* mesh, NodeUpdater* updater);
+	InstancedNode(int objectID, Mesh* mesh, NodeUpdater* updater);
 	~InstancedNode();
 
 	void prepare(const Assets& assets) override;

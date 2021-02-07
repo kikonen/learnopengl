@@ -7,7 +7,7 @@
 class Sprite : public Node
 {
 public:
-	Sprite(glm::vec2 size, Material* material);
+	Sprite(int objectID, glm::vec2 size, Material* material);
 	~Sprite();
 
 	void prepare(const Assets& assets) override;

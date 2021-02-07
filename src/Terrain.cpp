@@ -7,8 +7,8 @@
 const int TILE_SIZE = 400;
 const int VERTEX_COUNT = 128;
 
-Terrain::Terrain(int worldX, int worldZ, Material* material, Shader* shader)
-	: worldX(worldX), worldZ(worldZ), material(material), shader(shader)
+Terrain::Terrain(int objectID, int worldX, int worldZ, Material* material, Shader* shader)
+	: Node(objectID), worldX(worldX), worldZ(worldZ), material(material), shader(shader)
 {
 }
 

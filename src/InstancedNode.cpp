@@ -1,7 +1,7 @@
 #include "InstancedNode.h"
 
-InstancedNode::InstancedNode(Mesh* mesh, NodeUpdater* updater)
-	: Node(mesh)
+InstancedNode::InstancedNode(int objectID, Mesh* mesh, NodeUpdater* updater)
+	: Node(objectID, mesh)
 {
 	this->updater = updater;
 }
