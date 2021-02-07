@@ -19,6 +19,7 @@ int Test6::onSetup() {
 	currentScene = sceneSetup;
 
 	camera.setPos(glm::vec3(-8, 5, 10.f) + assets.groundOffset);
+	//camera.setPos(glm::vec3(-8, 5, 10.f));
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 

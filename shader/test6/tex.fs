@@ -63,17 +63,9 @@ void main() {
   if (texColor.a < 0.1)
     discard;
 
-  if (material.hasNormalMap) {
-//    texColor = vec4(fs_in.tangentFragPos, 1.0);
-  }
-
 //  vec3 i = normalize(fs_in.fragPos - viewPos);
 //  vec3 r = reflect(i, normal);
 //  texColor = vec4(texture(skybox, r).rgb, 1.0);
-
-  if (gl_FrontFacing) {
-//    texColor = vec4(0.8, 0, 0, 1.0);
-  }
 
   fragColor = texColor;
 }

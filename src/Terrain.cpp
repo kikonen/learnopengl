@@ -48,8 +48,8 @@ void Terrain::prepare(const Assets& assets)
 		}
 	}
 
-	for (int z = 0; z < VERTEX_COUNT; z++) {
-		for (int x = 0; x < VERTEX_COUNT; x++) {
+	for (int z = 0; z < VERTEX_COUNT - 1; z++) {
+		for (int x = 0; x < VERTEX_COUNT - 1; x++) {
 			int topLeft = (z * VERTEX_COUNT) + x;
 			int topRight = (z * VERTEX_COUNT) + x + 1;
 			int bottomLeft = ((z + 1) * VERTEX_COUNT) + x;

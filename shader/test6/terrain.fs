@@ -42,7 +42,7 @@ out vec4 fragColor;
 void main() {
   #include var_tex_material.glsl
 
-  vec3 normal = normalize(fs_in.normal);
+  vec3 normal = fs_in.normal;
   vec3 toView = normalize(viewPos - fs_in.fragPos);
 
   vec4 texColor = calculateLight(normal, toView, material);
