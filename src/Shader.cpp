@@ -312,7 +312,7 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
     }
 
     std::string src = sb.str();
-    std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
+//    std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
 
     return src;
 }
