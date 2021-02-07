@@ -94,11 +94,16 @@ int MeshLoader::loadData(
 	std::vector<glm::vec3> tangents;
 	std::vector<glm::vec3> bitangents;
 
+	positions.reserve(10000);
+
 	std::string modelPath = assets.modelsDir + path + modelName + ".obj";
 	std::ifstream file;
 	//	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	file.exceptions(std::ifstream::badbit);
 	try {
+		auto tp1 = std::chrono::system_clock::now();
+		auto tp2 = std::chrono::system_clock::now();
+
 		file.open(modelPath);
 
 		defaultMaterial->used = false;
@@ -117,21 +122,27 @@ int MeshLoader::loadData(
 
 			if (k == "mtllib") {
 				loadMaterials(loadedMaterials, v1);
+				for (auto& x : loadedMaterials) {
+					Material* material = x.second;
+					if (!material->map_bump.empty()) {
+						tangents.reserve(positions.size());
+						bitangents.reserve(positions.size());
+					}
+				}
 			}
 			else if (k == "o") {
 				name = v1;
 			}
 			else if (k == "v") {
-				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
-				positions.push_back(v);
+				positions.emplace_back(stof(v1), stof(v2), stof(v3));
 			}
 			else if (k == "vt") {
-				glm::vec2 v = { stof(v1), stof(v2) };
-				textures.push_back(v);
+				textures.reserve(positions.size());
+				textures.emplace_back(stof(v1), stof(v2));
 			}
 			else if (k == "vn") {
-				glm::vec3 v = { stof(v1), stof(v2), stof(v3) };
-				normals.push_back(v);
+				normals.reserve(positions.size());
+				normals.emplace_back(stof(v1), stof(v2), stof(v3));
 			}
 			else if (k == "s") {
 				// Smooth shading across polygons is enabled by smoothing groups.
@@ -149,9 +160,15 @@ int MeshLoader::loadData(
 				}
 			}
 			else if (k == "f") {
+				vertices.reserve(positions.size() * 2);
+				tris.reserve(positions.size() * 2);
+
 				std::vector<std::string> vv1;
 				std::vector<std::string> vv2;
 				std::vector<std::string> vv3;
+				vv1.reserve(3);
+				vv2.reserve(3);
+				vv3.reserve(3);
 
 				splitFragmentValue(v1, vv1);
 				splitFragmentValue(v2, vv2);
@@ -209,6 +226,13 @@ int MeshLoader::loadData(
 		}
 
 		file.close();
+
+		tp2 = std::chrono::system_clock::now();
+		std::chrono::duration<float> ts = tp2 - tp1;
+		float loadTime = ts.count() * 1000;
+
+		std::cout << "Duration: " << std::to_string(loadTime) << " ms";
+
 		result = 0;
 	}
 	catch (std::ifstream::failure e) {
@@ -231,7 +255,7 @@ void MeshLoader::splitFragmentValue(const std::string& v, std::vector<std::strin
 	std::istringstream f(v);
 	std::string s;
 	while (getline(f, s, '/')) {
-		vv.push_back(s);
+		vv.emplace_back(s);
 	}
 }
 
