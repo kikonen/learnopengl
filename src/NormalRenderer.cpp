@@ -14,11 +14,11 @@ void NormalRenderer::prepare()
 
 void NormalRenderer::update(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
 {
-	for (auto& x : typeNodes) {
-		for (auto& e : x.second) {
-			e->update(ctx);
-		}
-	}
+	//for (auto& x : typeNodes) {
+	//	for (auto& e : x.second) {
+	//		e->update(ctx);
+	//	}
+	//}
 }
 
 void NormalRenderer::bind(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)

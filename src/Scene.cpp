@@ -100,15 +100,15 @@ void Scene::update(RenderContext& ctx)
 	terrainRenderer->update(ctx, typeTerrains);
 	viewportRenderer->update(ctx, viewports);
 
-	if (showNormals) {
-		normalRenderer->update(ctx, typeNodes);
+	//if (showNormals) {
+	//	normalRenderer->update(ctx, typeNodes);
 
-		std::map<int, std::vector<Node*>> r1 = spriteToNodes();
-		normalRenderer->update(ctx, r1);
+	//	std::map<int, std::vector<Node*>> r1 = spriteToNodes();
+	//	normalRenderer->update(ctx, r1);
 
-		std::map<int, std::vector<Node*>> r2 = terrainToNodes();
-		normalRenderer->update(ctx, r1);
-	}
+	//	std::map<int, std::vector<Node*>> r2 = terrainToNodes();
+	//	normalRenderer->update(ctx, r1);
+	//}
 }
 
 void Scene::bind(RenderContext& ctx)
@@ -211,11 +211,12 @@ std::map<int, std::vector<Node*>> Scene::terrainToNodes()
 	std::map<int, std::vector<Node*>> r;
 
 	for (auto& x : typeTerrains) {
-		auto a = r[x.first];
+		std::vector<Node*> a;
 		a.reserve(x.second.size());
 		for (auto& e : x.second) {
 			a.push_back(e);
 		}
+		r[x.first] = a;
 	}
 	return r;
 }
@@ -225,11 +226,12 @@ std::map<int, std::vector<Node*>> Scene::spriteToNodes()
 	std::map<int, std::vector<Node*>> r;
 
 	for (auto& x : typeSprites) {
-		auto a = r[x.first];
+		std::vector<Node*> a;
 		a.reserve(x.second.size());
 		for (auto& e : x.second) {
 			a.push_back(e);
 		}
+		r[x.first] = a;
 	}
 	return r;
 }
