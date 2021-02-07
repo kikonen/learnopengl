@@ -27,7 +27,7 @@ void RenderContext::bindGlobal() const
 	{
 		MatricesUBO matricesUbo = { projection, view, lightSpaceMatrix };
 
-		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.matrices);
+		glBindBuffer(GL_UNIFORM_BUFFER, scene->ubo.matrices);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MatricesUBO), &matricesUbo);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
@@ -36,14 +36,14 @@ void RenderContext::bindGlobal() const
 	{
 		DataUBO dataUbo = { engine.camera.getPos(), glfwGetTime() };
 
-		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.data);
+		glBindBuffer(GL_UNIFORM_BUFFER, scene->ubo.data);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(DataUBO), &dataUbo);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
 	// Lights
 	{
-		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.lights);
+		glBindBuffer(GL_UNIFORM_BUFFER, scene->ubo.lights);
 		LightsUBO lightsUbo;
 		if (scene->getDirLight()) {
 			lightsUbo.light = scene->getDirLight()->toDirLightUBO();

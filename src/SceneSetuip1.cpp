@@ -7,9 +7,8 @@
 #include "MovingLightUpdater.h"
 #include "NodePathUpdater.h"
 
-SceneSetup1::SceneSetup1(const Assets& assets, UBO& ubo)
-	: assets(assets),
-	ubo(ubo)
+SceneSetup1::SceneSetup1(const Assets& assets)
+	: assets(assets)
 {
 }
 
@@ -25,8 +24,6 @@ Shader* SceneSetup1::getShader(const std::string& name, const std::string& geome
 void SceneSetup1::setup()
 {
 	scene = new Scene(assets);
-
-	setupUBOs();
 
 	setupLightDirectional(scene);
 	setupLightMoving(scene);
@@ -84,59 +81,6 @@ void SceneSetup1::bind(RenderContext& ctx)
 void SceneSetup1::draw(RenderContext& ctx)
 {
 	scene->draw(ctx);
-}
-
-void SceneSetup1::setupUBOs()
-{
-	// Matrices
-	{
-		glGenBuffers(1, &ubo.matrices);
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo.matrices);
-		// projection + view
-		int sz = sizeof(MatricesUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATRICES, ubo.matrices, 0, sz);
-		ubo.matricesSize = sz;
-	}
-	// Data
-	{
-		glGenBuffers(1, &ubo.data);
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo.data);
-
-		// cameraPos + time
-		int sz = sizeof(DataUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, ubo.data, 0, sz);
-		ubo.dataSize = sz;
-	}
-	// Lights
-	{
-		glGenBuffers(1, &ubo.lights);
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo.lights);
-		// DirLight + PointLight + SpotLight
-		int sz = sizeof(LightsUBO);
-		int sz2 = sizeof(DirLightUBO);
-		int sz3 = sizeof(PointLightUBO);
-		int sz4 = sizeof(SpotLightUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, ubo.lights, 0, sz);
-		ubo.lightsSize = sz;
-	}
-
-	// materials
-	{
-		glGenBuffers(1, &ubo.materials);
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo.materials);
-		int sz = sizeof(MaterialsUBO);
-		int sz2 = sizeof(MaterialUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STREAM_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, ubo.materials, 0, sz);
-		ubo.materialsSize = sz;
-	}
 }
 
 void SceneSetup1::setupNodeSkybox(Scene* scene)

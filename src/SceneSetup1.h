@@ -5,12 +5,11 @@
 #include "Scene.h"
 #include "RenderContext.h"
 #include "Assets.h"
-#include "UBO.h"
 
 class SceneSetup1
 {
 public:
-	SceneSetup1(const Assets& assets, UBO& ubo);
+	SceneSetup1(const Assets& assets);
 	~SceneSetup1();
 
 	Shader* getShader(const std::string& name, const std::string& geometryType = "");
@@ -23,8 +22,6 @@ public:
 	void bind(RenderContext& ctx);
 	void draw(RenderContext& ctx);
 private:
-	void setupUBOs();
-
 	void setupNodeSkybox(Scene* scene);
 
 	void setupLightDirectional(Scene* scene);
@@ -65,8 +62,6 @@ public:
 
 private:
 	const Assets& assets;
-
-	UBO& ubo;
 
 	Light* activeLight = nullptr;
 	Node* planet = nullptr;

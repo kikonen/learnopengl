@@ -77,7 +77,7 @@ void Test6::processInput(float dt) {
 
 SceneSetup1* Test6::setupScene1()
 {
-	SceneSetup1* sceneSetup = new SceneSetup1(assets, ubo);
+	SceneSetup1* sceneSetup = new SceneSetup1(assets);
 	sceneSetup->setup();
 
 	//sceneSetup->scene->showNormals = true;

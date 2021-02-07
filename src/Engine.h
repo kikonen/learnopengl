@@ -74,7 +74,6 @@ public:
     std::string title;
 
     Camera camera;
-    UBO ubo;
 
     float accumulatedTime = 0.0f;
 

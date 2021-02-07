@@ -46,6 +46,8 @@ public:
 	void addViewPort(Viewport* viewport);
 
 private:
+	void prepareUBOs();
+
 	std::map<int, std::vector<Node*>> terrainToNodes();
 	std::map<int, std::vector<Node*>> spriteToNodes();
 
@@ -55,6 +57,7 @@ public:
 	bool showNormals = false;
 
 	SkyboxRenderer* skyboxRenderer = nullptr;
+	UBO ubo;
 private:
 	std::vector<std::function<void(Scene*)>> loaders;
 
