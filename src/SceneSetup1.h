@@ -25,41 +25,41 @@ public:
 private:
 	void setupUBOs();
 
-	int setupNodeSkybox(Scene* scene);
+	void setupNodeSkybox(Scene* scene);
 
 	void setupLightDirectional(Scene* scene);
 	void setupLightMoving(Scene* scene);
 
-	int setupNodeDirectional(Scene* scene);
-	int setupNodeLightMoving(Scene* scene);
+	void setupNodeDirectional(Scene* scene);
+	void setupNodeLightMoving(Scene* scene);
 
-	int setupNodeZero(Scene* scene);
+	void setupNodeZero(Scene* scene);
 
-	int setupNodeWindow1(Scene* scene);
-	int setupNodeWindow2(Scene* scene);
-	int setupNodeStainedWindows(Scene* scene);
+	void setupNodeWindow1(Scene* scene);
+	void setupNodeWindow2(Scene* scene);
+	void setupNodeStainedWindows(Scene* scene);
 
-	int setupNodeBrickwall(Scene* scene);
-	int setupNodeBrickwallBox(Scene* scene);
+	void setupNodeBrickwall(Scene* scene);
+	void setupNodeBrickwallBox(Scene* scene);
 
-	int setupNodeSpyro(Scene* scene);
-	int setupNodeBackpack(Scene* scene);
-	int setupNodeTeapot(Scene* scene);
-	int setupNodeCow(Scene* scene);
-	int setupNodeBall(Scene* scene);
-	int setupNodeCube4(Scene* scene);
-	int setupNodeCubes(Scene* scene);
-	int setupNodeActive(Scene* scene);
-	int setupNodeMountains(Scene* scene);
-	int setupNodeWaterBall(Scene* scene);
+	void setupNodeSpyro(Scene* scene);
+	void setupNodeBackpack(Scene* scene);
+	void setupNodeTeapot(Scene* scene);
+	void setupNodeCow(Scene* scene);
+	void setupNodeBall(Scene* scene);
+	void setupNodeCube4(Scene* scene);
+	void setupNodeCubes(Scene* scene);
+	void setupNodeActive(Scene* scene);
+	void setupNodeMountains(Scene* scene);
+	void setupNodeWaterBall(Scene* scene);
 
-	int setupNodePlanet(Scene* scene);
-	int setupNodeAsteroids(Scene* scene);
-	int setupNodeAsteroidBelt(Scene* scene);
+	void setupNodePlanet(Scene* scene);
+	void setupNodeAsteroids(Scene* scene);
+	void setupNodeAsteroidBelt(Scene* scene);
 
-	int setupSpriteFlare(Scene* scene);
+	void setupSpriteFlare(Scene* scene);
 
-	int setupTerrain(Scene* scene);
+	void setupTerrain(Scene* scene);
 public:
 	Scene* scene;
 

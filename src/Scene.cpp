@@ -26,6 +26,20 @@ Scene::~Scene()
 	delete normalRenderer;
 }
 
+
+void Scene::addLoader(std::function<void(Scene*)> loader)
+{
+	loaders.push_back(loader);
+}
+
+void Scene::load(std::function<void(Scene*)> onLoad)
+{
+	for (auto& loader : loaders) {
+		loader(this);
+	}
+	onLoad(this);
+}
+
 void Scene::prepare()
 {
 	for (auto& x : typeNodes) {

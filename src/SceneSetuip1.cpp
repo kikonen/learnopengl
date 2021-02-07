@@ -139,14 +139,12 @@ void SceneSetup1::setupUBOs()
 	}
 }
 
-int SceneSetup1::setupNodeSkybox(Scene* scene)
+void SceneSetup1::setupNodeSkybox(Scene* scene)
 {
 	SkyboxRenderer* skybox = new SkyboxRenderer(assets, "skybox");
 	skybox->prepare();
 
 	scene->skyboxRenderer = skybox;
-
-	return 0;
 }
 
 void SceneSetup1::setupLightDirectional(Scene* scene)
@@ -191,10 +189,10 @@ void SceneSetup1::setupLightMoving(Scene* scene)
 	activeLight = light;
 }
 
-int SceneSetup1::setupNodeDirectional(Scene* scene)
+void SceneSetup1::setupNodeDirectional(Scene* scene)
 {
 	Light* sun = scene->getDirLight();
-	if (!sun) return -1;
+	if (!sun) return;
 
 	//sun->target = planet->getPos();
 
@@ -218,11 +216,9 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 		center = planet->getPos();
 	}
 	node->updater = new MovingLightUpdater(assets, center, radius, speed, scene->getDirLight());
-
-	return 0;
 }
 
-int SceneSetup1::setupNodeLightMoving(Scene* scene)
+void SceneSetup1::setupNodeLightMoving(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_LIGHT), "light");
 	loader.overrideMaterials = true;
@@ -253,10 +249,9 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 			node->updater = new MovingLightUpdater(assets, center, 10.f, 2.f, light);
 		}
 	}
-	return 0;
 }
 
-int SceneSetup1::setupNodeZero(Scene* scene) {
+void SceneSetup1::setupNodeZero(Scene* scene) {
 	MeshLoader loader(getShader(TEX_TEXTURE), "water_ball");
 	Mesh* mesh = loader.load();
 
@@ -266,10 +261,9 @@ int SceneSetup1::setupNodeZero(Scene* scene) {
 	node->setPos(glm::vec3(0, 0, 0) + assets.groundOffset);
 	node->setScale(0.3f);
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeWindow1(Scene* scene)
+void SceneSetup1::setupNodeWindow1(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "window1");
 	Mesh* mesh = loader.load();
@@ -282,10 +276,9 @@ int SceneSetup1::setupNodeWindow1(Scene* scene)
 	node->blend = true;
 	node->renderBack = true;
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeWindow2(Scene* scene)
+void SceneSetup1::setupNodeWindow2(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "window2");
 	Mesh* mesh = loader.load();
@@ -299,10 +292,9 @@ int SceneSetup1::setupNodeWindow2(Scene* scene)
 	node->renderBack = true;
 	scene->addNode(node);
 	//	selection.push_back(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeStainedWindows(Scene* scene)
+void SceneSetup1::setupNodeStainedWindows(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "window2");
 	Mesh* mesh = loader.load();
@@ -317,10 +309,9 @@ int SceneSetup1::setupNodeStainedWindows(Scene* scene)
 		node->renderBack = true;
 		scene->addNode(node);
 	}
-	return 0;
 }
 
-int SceneSetup1::setupNodeBrickwall(Scene* scene)
+void SceneSetup1::setupNodeBrickwall(Scene* scene)
 {
 	MeshLoader loader1(getShader(TEX_TEXTURE), "brickwall");
 	Mesh* mesh1 = loader1.load();
@@ -340,10 +331,9 @@ int SceneSetup1::setupNodeBrickwall(Scene* scene)
 		node->renderBack = true;
 		scene->addNode(node);
 	}
-	return 0;
 }
 
-int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
+void SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "brickwall2");
 	Mesh* mesh = loader.load();
@@ -378,10 +368,9 @@ int SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 		//node->skipShadow = true;
 		scene->addNode(node);
 	}
-	return 0;
 }
 
-int SceneSetup1::setupNodeSpyro(Scene* scene)
+void SceneSetup1::setupNodeSpyro(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "spyro2");
 	Mesh* mesh = loader.load();
@@ -392,10 +381,9 @@ int SceneSetup1::setupNodeSpyro(Scene* scene)
 	node->setPos(glm::vec3(0, 30, 30) + assets.groundOffset);
 	node->setScale(0.1f);
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeBackpack(Scene* scene)
+void SceneSetup1::setupNodeBackpack(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "backpack", "/backpack/");
 	Mesh* mesh = loader.load();
@@ -406,10 +394,9 @@ int SceneSetup1::setupNodeBackpack(Scene* scene)
 	node->setPos(glm::vec3(0, 5, 5) + assets.groundOffset);
 	node->setScale(1.5f);
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeTeapot(Scene* scene)
+void SceneSetup1::setupNodeTeapot(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "smooth_teapot");
 	loader.defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
@@ -423,10 +410,9 @@ int SceneSetup1::setupNodeTeapot(Scene* scene)
 	node->renderBack = true;
 	node->selected = true;
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeCow(Scene* scene)
+void SceneSetup1::setupNodeCow(Scene* scene)
 {
 	//mesh->defaultShader = getShader(TEX_PLAIN, "_explode");
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_cow");
@@ -439,10 +425,9 @@ int SceneSetup1::setupNodeCow(Scene* scene)
 	node->setPos(glm::vec3(5, 20, -5) + assets.groundOffset);
 	node->selected = true;
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeBall(Scene* scene)
+void SceneSetup1::setupNodeBall(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_ball");
 	Mesh* mesh = loader.load();
@@ -453,10 +438,9 @@ int SceneSetup1::setupNodeBall(Scene* scene)
 	node->setPos(glm::vec3(0, 8, 0) + assets.groundOffset);
 	node->setScale(2.0f);
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeCube4(Scene* scene)
+void SceneSetup1::setupNodeCube4(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_cube_4");
 	Mesh* mesh = loader.load();
@@ -467,10 +451,9 @@ int SceneSetup1::setupNodeCube4(Scene* scene)
 	node->setPos(glm::vec3(-5, 20, 5) + assets.groundOffset);
 	node->selected = true;
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeCubes(Scene* scene)
+void SceneSetup1::setupNodeCubes(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_cube_3");
 	Mesh* mesh = loader.load();
@@ -489,11 +472,9 @@ int SceneSetup1::setupNodeCubes(Scene* scene)
 		node->setPos(p + assets.groundOffset);
 		scene->addNode(node);
 	}
-
-	return 0;
 }
 
-int SceneSetup1::setupNodeActive(Scene* scene)
+void SceneSetup1::setupNodeActive(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_cube");
 	Mesh* mesh = loader.load();
@@ -508,10 +489,9 @@ int SceneSetup1::setupNodeActive(Scene* scene)
 	Node* node = new Node(objectID, mesh);
 	node->setPos(glm::vec3(5, 20, 5) + assets.groundOffset);
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeMountains(Scene* scene)
+void SceneSetup1::setupNodeMountains(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "texture_mountains");
 	Mesh* mesh = loader.load();
@@ -522,10 +502,9 @@ int SceneSetup1::setupNodeMountains(Scene* scene)
 	node->setPos(glm::vec3(0));
 	//		node->setScale(0.01);
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodeWaterBall(Scene* scene)
+void SceneSetup1::setupNodeWaterBall(Scene* scene)
 {
 	MeshLoader loader(getShader(TEX_TEXTURE), "water_ball");
 	Mesh* mesh = loader.load();
@@ -536,48 +515,42 @@ int SceneSetup1::setupNodeWaterBall(Scene* scene)
 	node->setPos(glm::vec3(0, 20, 0) + assets.groundOffset);
 	//node->setScale(0.5f);
 	scene->addNode(node);
-	return 0;
 }
 
-int SceneSetup1::setupNodePlanet(Scene* scene)
+void SceneSetup1::setupNodePlanet(Scene* scene)
 {
-	auto loader = [this](Scene* scene) {
-		MeshLoader loader(getShader(TEX_TEXTURE), "planet", "/planet/");
-		Mesh* mesh = loader.load();
+	MeshLoader loader(getShader(TEX_TEXTURE), "planet", "/planet/");
+	Mesh* mesh = loader.load();
 
-		const int objectID = Node::nextID();
+	const int objectID = Node::nextID();
 
-		Node* node = new Node(objectID, mesh);
-		node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
-		node->setScale(10);
+	Node* node = new Node(objectID, mesh);
+	node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
+	node->setScale(10);
 
-		scene->addNode(node);
+	scene->addNode(node);
 
-		planet = node;
+	planet = node;
 
-		{
-			// light
-			Light* light = new Light();
-			light->pos = glm::vec3(13, 48, 100) + assets.groundOffset;
+	{
+		// light
+		Light* light = new Light();
+		light->pos = glm::vec3(13, 48, 100) + assets.groundOffset;
 
-			// 160
-			light->point = true;
-			light->linear = 0.0027f;
-			light->quadratic = 0.00028f;
+		// 160
+		light->point = true;
+		light->linear = 0.0027f;
+		light->quadratic = 0.00028f;
 
-			light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
-			light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
-			light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
+		light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
+		light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
+		light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
 
-			scene->addLight(light);
-		}
-	};
-	loader(scene);
-
-	return 0;
+		scene->addLight(light);
+	}
 }
 
-int SceneSetup1::setupNodeAsteroids(Scene* scene)
+void SceneSetup1::setupNodeAsteroids(Scene* scene)
 {
 	glm::vec3 planetPos = glm::vec3(10, 100, 100);
 
@@ -590,25 +563,25 @@ int SceneSetup1::setupNodeAsteroids(Scene* scene)
 	glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 50, 0) : glm::vec3(10, 50, 100) + assets.groundOffset;
 	node->setPos(pos);
 	scene->addNode(node);
-
-	return 0;
 }
 
-int SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
+void SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 {
-	MeshLoader loader(getShader(TEX_TEXTURE), "rock", "/rock/");
-	Mesh* mesh = loader.load();
+	auto loader = [this](Scene* scene) {
+		MeshLoader loader(getShader(TEX_TEXTURE), "rock", "/rock/");
+		Mesh* mesh = loader.load();
 
-	const int objectID = Node::nextID();
+		const int objectID = Node::nextID();
 
-	AsteroidBeltUpdater* updater = new AsteroidBeltUpdater(assets, planet);
-	InstancedNode* node = new InstancedNode(objectID, mesh, updater);
-	//node->selected = true;
-	scene->addNode(node);
-	return 0;
+		AsteroidBeltUpdater* updater = new AsteroidBeltUpdater(assets, planet);
+		InstancedNode* node = new InstancedNode(objectID, mesh, updater);
+		//node->selected = true;
+		scene->addNode(node);
+	};
+	scene->addLoader(loader);
 }
 
-int SceneSetup1::setupSpriteFlare(Scene* scene)
+void SceneSetup1::setupSpriteFlare(Scene* scene)
 {
 	Material* material = new Material("flare");
 	material->ns = 100;
@@ -622,11 +595,9 @@ int SceneSetup1::setupSpriteFlare(Scene* scene)
 	Sprite* sprite = new Sprite(objectID, glm::vec2(2, 2), material);
 	sprite->setPos(glm::vec3(0, 5, 20) + assets.groundOffset);
 	scene->addSprite(sprite);
-
-	return 0;
 }
 
-int SceneSetup1::setupTerrain(Scene* scene)
+void SceneSetup1::setupTerrain(Scene* scene)
 {
 	Material* material = new Material("terrain");
 	material->textureMode = GL_REPEAT;
@@ -654,6 +625,5 @@ int SceneSetup1::setupTerrain(Scene* scene)
 			scene->addTerrain(terrain);
 		}
 	}
-	return 0;
 }
 
