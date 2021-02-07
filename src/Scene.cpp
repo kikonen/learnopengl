@@ -150,7 +150,7 @@ void Scene::draw(RenderContext& ctx)
 		normalRenderer->render(ctx, r1);
 
 		std::map<int, std::vector<Node*>> r2 = terrainToNodes();
-		normalRenderer->render(ctx, r1);
+		normalRenderer->render(ctx, r2);
 	}
 
 	viewportRenderer->render(ctx, viewports);
