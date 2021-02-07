@@ -1,5 +1,6 @@
 #include "ShadowMapRenderer.h"
 
+#include "Scene.h"
 
 ShadowMapRenderer::ShadowMapRenderer(const Assets& assets)
 	: assets(assets)
@@ -33,7 +34,7 @@ void ShadowMapRenderer::prepare()
 
 void ShadowMapRenderer::bind(RenderContext& ctx)
 {
-	Light* light = ctx.dirLight;
+	Light* light = ctx.scene->getDirLight();
 	if (!light) return;
 
 	glm::mat4 b = {

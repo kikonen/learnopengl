@@ -30,6 +30,12 @@ public:
 	void bind(RenderContext& ctx);
 	void draw(RenderContext& ctx);
 
+	Light* getDirLight();
+	std::vector<Light*>& getPointLights();
+	std::vector<Light*>& getSpotLights();
+
+	void addLight(Light* light);
+
 	void addNode(Node* node);
 	void addSprite(Sprite* sprite);
 	void addTerrain(Terrain* terrain);
@@ -44,13 +50,14 @@ public:
 
 	bool showNormals = false;
 
+	SkyboxRenderer* skyboxRenderer = nullptr;
+private:
 	NodeRenderer* nodeRenderer = nullptr;
 	SpriteRenderer* spriteRenderer = nullptr;
 
 	TerrainRenderer* terrainRenderer = nullptr;
 	ViewportRenderer* viewportRenderer = nullptr;
 
-	SkyboxRenderer* skyboxRenderer = nullptr;
 	ShadowMapRenderer* shadowMapRenderer = nullptr;
 	NormalRenderer* normalRenderer = nullptr;
 
@@ -58,7 +65,6 @@ public:
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
 
-private:
 	std::map<int, std::vector<Node*>> typeNodes;
 	std::map<int, std::vector<Sprite*>> typeSprites;
 	std::map<int, std::vector<Terrain*>> typeTerrains;

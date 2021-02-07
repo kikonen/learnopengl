@@ -162,7 +162,7 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 	sun->diffuse = { 0.5f, 0.5f, 0.5f, 1.f };
 	sun->specular = { 0.0f, 0.8f, 0.0f, 1.f };
 
-	scene->dirLight = sun;
+	scene->addLight(sun);
 }
 
 void SceneSetup1::setupLightMoving(Scene* scene)
@@ -186,18 +186,14 @@ void SceneSetup1::setupLightMoving(Scene* scene)
 	light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
 	light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
 
-	if (light->spot) {
-		scene->spotLights.push_back(light);
-	}
-	else {
-		scene->pointLights.push_back(light);
-	}
+	scene->addLight(light);
+
 	activeLight = light;
 }
 
 int SceneSetup1::setupNodeDirectional(Scene* scene)
 {
-	Light* sun = scene->dirLight;
+	Light* sun = scene->getDirLight();
 	if (!sun) return -1;
 
 	//sun->target = planet->getPos();
@@ -217,9 +213,11 @@ int SceneSetup1::setupNodeDirectional(Scene* scene)
 
 	const float radius = 80.0f;
 	const float speed = 20.f;
-	//glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
-	glm::vec3 center = planet->getPos();
-	node->updater = new MovingLightUpdater(assets, center, radius, speed, scene->dirLight);
+	glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
+	if (planet) {
+		center = planet->getPos();
+	}
+	node->updater = new MovingLightUpdater(assets, center, radius, speed, scene->getDirLight());
 
 	return 0;
 }
@@ -234,7 +232,7 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 
 	glm::vec3 center = glm::vec3(0, 7, 0) + assets.groundOffset;
 
-	for (auto light : scene->pointLights) {
+	for (auto light : scene->getPointLights()) {
 		Node* node = new Node(objectID, mesh);
 		node->setPos(light->pos);
 		node->setScale(0.5f);
@@ -245,7 +243,7 @@ int SceneSetup1::setupNodeLightMoving(Scene* scene)
 		}
 	}
 
-	for (auto light : scene->spotLights) {
+	for (auto light : scene->getSpotLights()) {
 		Node* node = new Node(objectID, mesh);
 		node->setPos(light->pos);
 		node->setScale(0.5f);
@@ -543,34 +541,38 @@ int SceneSetup1::setupNodeWaterBall(Scene* scene)
 
 int SceneSetup1::setupNodePlanet(Scene* scene)
 {
-	MeshLoader loader(getShader(TEX_TEXTURE), "planet", "/planet/");
-	Mesh* mesh = loader.load();
+	auto loader = [this](Scene* scene) {
+		MeshLoader loader(getShader(TEX_TEXTURE), "planet", "/planet/");
+		Mesh* mesh = loader.load();
 
-	const int objectID = Node::nextID();
+		const int objectID = Node::nextID();
 
-	Node* node = new Node(objectID, mesh);
-	node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
-	node->setScale(10);
-	scene->addNode(node);
+		Node* node = new Node(objectID, mesh);
+		node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
+		node->setScale(10);
 
-	planet = node;
+		scene->addNode(node);
 
-	{
-		// light
-		Light* light = new Light();
-		light->pos = glm::vec3(13, 48, 100) + assets.groundOffset;
+		planet = node;
 
-		// 160
-		light->point = true;
-		light->linear = 0.0027f;
-		light->quadratic = 0.00028f;
+		{
+			// light
+			Light* light = new Light();
+			light->pos = glm::vec3(13, 48, 100) + assets.groundOffset;
 
-		light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
-		light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
-		light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
+			// 160
+			light->point = true;
+			light->linear = 0.0027f;
+			light->quadratic = 0.00028f;
 
-		scene->pointLights.push_back(light);
-	}
+			light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
+			light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
+			light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
+
+			scene->addLight(light);
+		}
+	};
+	loader(scene);
 
 	return 0;
 }

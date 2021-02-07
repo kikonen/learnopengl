@@ -13,6 +13,10 @@ void AsteroidBeltUpdater::prepareInstanced(InstancedNode& node)
 	glm::vec3 planetPos = planet ? planet->getPos() : glm::vec3(0.f, 40.f, 0.f);
 
 	unsigned int amount = 1000;
+
+	node.instanceMatrices.reserve(amount);
+	node.selectionMatrices.reserve(amount);
+
 	srand(glfwGetTime()); // initialize random seed	
 
 	float radius = 70.0;

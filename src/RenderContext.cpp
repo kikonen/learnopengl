@@ -2,23 +2,20 @@
 
 #include "KIGL.h"
 #include "Light.h"
+#include "Scene.h"
 
 RenderContext::RenderContext(
 	const Engine& engine, 
 	const float dt,
 	const glm::mat4& view, 
 	const glm::mat4& projection,
-	Light* dirLight,
-	const std::vector<Light*>& pointLights,
-	const std::vector<Light*>& spotLights)
+	Scene* scene)
 	: engine(engine),
 	dt(dt),
 	view(view),
 	projection(projection),
 	projected(projection * view),
-	dirLight(dirLight),
-	pointLights(pointLights),
-	spotLights(spotLights)
+	scene(scene)
 {
 }
 
@@ -48,8 +45,8 @@ void RenderContext::bindGlobal() const
 	{
 		glBindBuffer(GL_UNIFORM_BUFFER, engine.ubo.lights);
 		LightsUBO lightsUbo;
-		if (dirLight) {
-			lightsUbo.light = dirLight->toDirLightUBO();
+		if (scene->getDirLight()) {
+			lightsUbo.light = scene->getDirLight()->toDirLightUBO();
 			//lights.light.use = false;
 		}
 		else {
@@ -60,7 +57,7 @@ void RenderContext::bindGlobal() const
 
 		{
 			int index = 0;
-			for (auto light : pointLights) {
+			for (auto& light : scene->getPointLights()) {
 				if (index >= LIGHT_COUNT) {
 					break;
 				}
@@ -82,7 +79,7 @@ void RenderContext::bindGlobal() const
 
 		{
 			int index = 0;
-			for (auto light : spotLights) {
+			for (auto& light : scene->getSpotLights()) {
 				if (index >= LIGHT_COUNT) {
 					break;
 				}

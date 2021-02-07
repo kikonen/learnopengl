@@ -141,6 +141,34 @@ void Scene::draw(RenderContext& ctx)
 	KIGL::checkErrors("scene.draw");
 }
 
+Light* Scene::getDirLight()
+{
+	return dirLight;
+}
+
+std::vector<Light*>& Scene::getPointLights()
+{
+	return pointLights;
+}
+
+std::vector<Light*>& Scene::getSpotLights()
+{
+	return spotLights;
+}
+
+void Scene::addLight(Light* light)
+{
+	if (light->directional) {
+		dirLight = light;
+	}
+	else if (light->point) {
+		pointLights.push_back(light);
+	}
+	else if (light->spot) {
+		spotLights.push_back(light);
+	}
+}
+
 void Scene::addNode(Node* node)
 {
 	typeNodes[node->objectID].push_back(node);
