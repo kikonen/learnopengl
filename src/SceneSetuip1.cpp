@@ -144,6 +144,8 @@ void SceneSetup1::setupNodeDirectional(Scene* scene)
 	//sun->target = planet->getPos();
 
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_LIGHT));
+	type->light = true;
+
 	MeshLoader loader(assets, "light");
 	loader.defaultMaterial->kd = sun->specular;
 	loader.overrideMaterials = true;
@@ -152,7 +154,6 @@ void SceneSetup1::setupNodeDirectional(Scene* scene)
 	Node* node = new Node(type);
 	node->setPos(sun->pos);
 	node->setScale(1.5f);
-	node->light = true;
 	scene->addNode(node);
 
 	const float radius = 80.0f;
@@ -167,6 +168,8 @@ void SceneSetup1::setupNodeDirectional(Scene* scene)
 void SceneSetup1::setupNodeLightMoving(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_LIGHT));
+	type->light = true;
+
 	MeshLoader loader(assets, "light");
 	loader.overrideMaterials = true;
 	type->mesh = loader.load();
@@ -177,7 +180,6 @@ void SceneSetup1::setupNodeLightMoving(Scene* scene)
 		Node* node = new Node(type);
 		node->setPos(light->pos);
 		node->setScale(0.5f);
-		node->light = true;
 		scene->addNode(node);
 		if (light == activeLight) {
 			node->updater = new MovingLightUpdater(assets, center, 10.f, 2.f, light);
@@ -188,7 +190,6 @@ void SceneSetup1::setupNodeLightMoving(Scene* scene)
 		Node* node = new Node(type);
 		node->setPos(light->pos);
 		node->setScale(0.5f);
-		node->light = true;
 		scene->addNode(node);
 		if (light == activeLight) {
 			node->updater = new MovingLightUpdater(assets, center, 10.f, 2.f, light);
@@ -210,28 +211,30 @@ void SceneSetup1::setupNodeZero(Scene* scene) {
 void SceneSetup1::setupNodeWindow1(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+	type->blend = true;
+	type->renderBack = true;
+
 	MeshLoader loader(assets, "window1");
 	type->mesh = loader.load();
 
 	Node* node = new Node(type);
 	node->setPos(glm::vec3(5, 10, -5) + assets.groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
-	node->blend = true;
-	node->renderBack = true;
 	scene->addNode(node);
 }
 
 void SceneSetup1::setupNodeWindow2(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+	type->blend = true;
+	type->renderBack = true;
+
 	MeshLoader loader(assets, "window2");
 	type->mesh = loader.load();
 
 	Node* node = new Node(type);
 	node->setPos(glm::vec3(7, 10, -8) + assets.groundOffset);
 	node->setRotation(glm::vec3(0, 180, 0));
-	node->blend = true;
-	node->renderBack = true;
 	scene->addNode(node);
 	//	selection.push_back(node);
 }
@@ -239,6 +242,9 @@ void SceneSetup1::setupNodeWindow2(Scene* scene)
 void SceneSetup1::setupNodeStainedWindows(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+	type->blend = true;
+	type->renderBack = true;
+
 	MeshLoader loader(assets, "window2");
 	type->mesh = loader.load();
 
@@ -246,8 +252,6 @@ void SceneSetup1::setupNodeStainedWindows(Scene* scene)
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(-10 + i * 2, 15, 10) + assets.groundOffset);
 		node->setRotation(glm::vec3(0, 180, 0));
-		node->blend = true;
-		node->renderBack = true;
 		scene->addNode(node);
 	}
 }
@@ -255,10 +259,14 @@ void SceneSetup1::setupNodeStainedWindows(Scene* scene)
 void SceneSetup1::setupNodeBrickwall(Scene* scene)
 {
 	NodeType* type1 = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+	type1->renderBack = true;
+
 	MeshLoader loader1(assets, "brickwall");
 	type1->mesh = loader1.load();
 
 	NodeType* type2 = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+	type2->renderBack = true;
+
 	MeshLoader loader2(assets, "brickwall2");
 	type2->mesh = loader2.load();
 
@@ -266,7 +274,6 @@ void SceneSetup1::setupNodeBrickwall(Scene* scene)
 		Node* node = new Node(i % 2 == 0 ? type1 : type2);
 		node->setPos(glm::vec3(-5 + i * 2, 5, 14) + assets.groundOffset);
 		//node->setRotation(glm::vec3(0, 180, 0));
-		node->renderBack = true;
 		scene->addNode(node);
 	}
 }
@@ -274,6 +281,8 @@ void SceneSetup1::setupNodeBrickwall(Scene* scene)
 void SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+	type->renderBack = true;
+
 	MeshLoader loader(assets, "brickwall2");
 	type->mesh = loader.load();
 
@@ -301,7 +310,6 @@ void SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 		node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 95, 0) + assets.groundOffset);
 		node->setScale(scale);
 		node->setRotation(rot[i]);
-		node->renderBack = true;
 		//node->skipShadow = true;
 		scene->addNode(node);
 	}
@@ -334,6 +342,8 @@ void SceneSetup1::setupNodeBackpack(Scene* scene)
 void SceneSetup1::setupNodeTeapot(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+	type->renderBack = true;
+
 	MeshLoader loader(assets, "smooth_teapot");
 	loader.defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
 	//loader.overrideMaterials = true;
@@ -341,7 +351,6 @@ void SceneSetup1::setupNodeTeapot(Scene* scene)
 
 	Node* node = new Node(type);
 	node->setPos(glm::vec3(-5, 20, -5) + assets.groundOffset);
-	node->renderBack = true;
 	node->selected = true;
 	scene->addNode(node);
 }
@@ -508,6 +517,7 @@ void SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 void SceneSetup1::setupSpriteFlare(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+	type->renderBack = true;
 
 	Material* material = new Material("flare");
 	material->ns = 100;
@@ -551,7 +561,9 @@ void SceneSetup1::setupTerrain(Scene* scene)
 	for (int x = 0; x < 2; x++) {
 		for (int z = 0; z < 2; z++) {
 			NodeType* type = new NodeType(NodeType::nextID(), shader);
+			type->renderBack = true;
 			type->mesh = generator.generateTerrain(material);
+
 			Terrain* terrain = new Terrain(type, x, z);
 			scene->addTerrain(terrain);
 		}

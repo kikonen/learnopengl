@@ -34,12 +34,6 @@ Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 		return nullptr;
 	}
 
-	if (renderBack) {
-		glDisable(GL_CULL_FACE);
-	} else {
-		glEnable(GL_CULL_FACE);
-	}
-
 	shader->modelMatrix.set(modelMat);
 	shader->normalMatrix.set(normalMat);
 	shader->drawInstanced.set(false);

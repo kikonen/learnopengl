@@ -36,7 +36,5 @@ void Sprite::prepare(const Assets& assets)
 		1.0f, 0.0f, 1.0f, 0.0f
 	};
 
-	renderBack = true;
-
 	Node::prepare(assets);
 }

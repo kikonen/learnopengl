@@ -31,8 +31,6 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 {
 	if (!mesh) return nullptr;
 
-
-
 	shader = shader ? shader : defaultShader;
 	if (!shader) return nullptr;
 	boundShader = shader;
@@ -40,6 +38,13 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 	shader->bind();
 	mesh->bind(ctx, shader);
 	ctx.bind(shader);
+
+	if (renderBack) {
+		glDisable(GL_CULL_FACE);
+	}
+	else {
+		glEnable(GL_CULL_FACE);
+	}
 
 	return shader;
 }

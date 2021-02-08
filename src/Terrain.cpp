@@ -17,6 +17,5 @@ Terrain::~Terrain()
 void Terrain::prepare(const Assets& assets)
 {
 	setPos({ worldX * assets.terrainTileSize, 0, worldZ * assets.terrainTileSize });
-	renderBack = true;
 	Node::prepare(assets);
 }

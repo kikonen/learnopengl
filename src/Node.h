@@ -34,10 +34,6 @@ protected:
 public:
 	NodeType* type;
 
-	bool blend = false;
-	bool light = false;
-	bool renderBack = false;
-	bool skipShadow = false;
 	bool selected = false;
 
 	NodeUpdater* updater = nullptr;
@@ -50,8 +46,6 @@ private:
 	glm::mat4 modelMat = glm::mat4(1.0f);
 	glm::mat3 normalMat = glm::mat3(1.0f);
 
-
-	bool prepared = false;
 	bool dirtyMat = true;
 };
 

@@ -86,12 +86,14 @@ void ShadowMapRenderer::drawNodes(
 	std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
 {
 	for (auto& x : typeNodes) {
-		x.first->bind(ctx, shadowShader);
+		NodeType* t = x.first;
+		if (t->light || t->skipShadow) {
+			continue;
+		}
+
+		t->bind(ctx, shadowShader);
 
 		for (auto& e : x.second) {
-			if (e->light || e->skipShadow) {
-				continue;
-			}
 			e->bind(ctx, shadowShader);
 			e->draw(ctx);
 		}

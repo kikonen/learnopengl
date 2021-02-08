@@ -52,7 +52,8 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<
 	std::vector<Node*> blendedNodes;
 
 	for (auto& x : typeNodes) {
-		Shader* shader = x.first->bind(ctx, nullptr);
+		NodeType* t = x.first;
+		Shader* shader = t->bind(ctx, nullptr);
 		if (!shader) continue;
 		shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 
@@ -61,7 +62,7 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<
 				continue;
 			}
 
-			if (e->blend) {
+			if (t->blend) {
 				blendedNodes.push_back(e);
 				continue;
 			}
