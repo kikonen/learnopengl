@@ -1,7 +1,7 @@
 #include "TerrainRenderer.h"
 
 TerrainRenderer::TerrainRenderer(const Assets& assets)
-	: assets(assets)
+	: Renderer(assets)
 {
 }
 

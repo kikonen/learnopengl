@@ -2,7 +2,7 @@
 
 
 NodeRenderer::NodeRenderer(const Assets& assets)
-	: assets(assets)
+	: Renderer(assets)
 {
 	selectionShader = Shader::getShader(assets, TEX_SELECTION);
 	selectionShader->selection = true;

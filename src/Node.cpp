@@ -41,6 +41,12 @@ Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 	return shader;
 }
 
+void Node::bindBatch(const RenderContext& ctx, Batch& batch)
+{
+	updateModelMatrix();
+	batch.matrices.push_back(modelMat);
+}
+
 void Node::draw(const RenderContext& ctx)
 {
 	type->mesh->draw(ctx);

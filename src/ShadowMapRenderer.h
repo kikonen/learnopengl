@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Renderer.h"
 #include "RenderContext.h"
 #include "Node.h"
 #include "Sprite.h"
@@ -14,7 +15,7 @@ const unsigned int SHADOW_WIDTH = 1000,
 	SHADOW_HEIGHT = 1000;
 
 
-class ShadowMapRenderer
+class ShadowMapRenderer : public Renderer
 {
 public:
 	ShadowMapRenderer(const Assets& assets);
@@ -43,8 +44,6 @@ public:
 	Viewport* debugViewport = nullptr;
 
 private:
-	const Assets& assets;
-
 	float nearPlane = 0.1f;
 	float farPlane = 1000.0f;
 

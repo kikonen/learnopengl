@@ -2,10 +2,11 @@
 
 #include <vector>
 
+#include "Renderer.h"
 #include "RenderContext.h"
 #include "Node.h"
 
-class NormalRenderer
+class NormalRenderer : public Renderer
 {
 public:
 	NormalRenderer(const Assets& assets);
@@ -17,8 +18,6 @@ public:
 	void render(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes);
 
 private:
-	const Assets& assets;
 	Shader* normalShader = nullptr;
-
 };
 

@@ -1,7 +1,7 @@
 #include "ViewportRenderer.h"
 
 ViewportRenderer::ViewportRenderer(const Assets& assets)
-	: assets(assets)
+	: Renderer(assets)
 {
 }
 

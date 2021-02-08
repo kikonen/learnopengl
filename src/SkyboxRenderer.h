@@ -3,13 +3,14 @@
 #include <string>
 #include <vector>
 
+#include "Renderer.h"
 #include "RenderContext.h"
 #include "Texture.h"
 #include "Assets.h"
 #include "MeshBuffers.h"
 
 
-class SkyboxRenderer
+class SkyboxRenderer : public Renderer
 {
 public:
 	SkyboxRenderer(const Assets& assets, const std::string& name);
@@ -26,7 +27,6 @@ public:
 	unsigned int textureID;
 
 private:
-	const Assets& assets;
 	const std::string name;
 
 	MeshBuffers buffers;

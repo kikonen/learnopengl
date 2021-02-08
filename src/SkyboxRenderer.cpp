@@ -49,8 +49,8 @@ const float skyboxVertices[] = {
 };
 
 SkyboxRenderer::SkyboxRenderer(const Assets& assets, const std::string& name)
-	: name(name),
-    assets(assets)
+	: Renderer(assets),
+    name(name)
 {
 }
 

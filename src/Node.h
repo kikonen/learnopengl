@@ -4,6 +4,7 @@
 
 #include "NodeType.h"
 #include "RenderContext.h"
+#include "Batch.h"
 
 class NodeUpdater;
 
@@ -17,6 +18,7 @@ public:
 
 	virtual bool update(const RenderContext& ctx);
 	virtual Shader* bind(const RenderContext& ctx, Shader* shader);
+	virtual void bindBatch(const RenderContext& ctx, Batch& batch);
 	virtual void draw(const RenderContext& ctx);
 
 	void setPos(const glm::vec3& pos);

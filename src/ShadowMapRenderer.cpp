@@ -3,7 +3,7 @@
 #include "Scene.h"
 
 ShadowMapRenderer::ShadowMapRenderer(const Assets& assets)
-	: assets(assets)
+	: Renderer(assets)
 {
 	shadowShader = Shader::getShader(assets, TEX_SIMPLE_DEPTH);
 	shadowDebugShader = Shader::getShader(assets, TEX_DEBUG_DEPTH);

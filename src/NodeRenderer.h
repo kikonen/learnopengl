@@ -2,10 +2,11 @@
 
 #include <vector>
 
+#include "Renderer.h"
 #include "RenderContext.h"
 #include "Node.h"
 
-class NodeRenderer
+class NodeRenderer : public Renderer
 {
 public:
 	NodeRenderer(const Assets& assets);
@@ -22,9 +23,5 @@ private:
 	void drawSelectionStencil(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes);
 
 private:
-	const Assets& assets;
-
 	Shader* selectionShader = nullptr;
-
 };
-

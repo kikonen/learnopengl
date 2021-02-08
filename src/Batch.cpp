@@ -1,0 +1,48 @@
+#include "Batch.h"
+
+Batch::Batch()
+{
+}
+
+void Batch::prepare(int batchSize)
+{
+	size = batchSize;
+	matrices.reserve(batchSize);
+	glm::mat4 tmp(0.f);
+	for (int i = 0; i < size; i++) {
+		matrices.push_back(tmp);
+	}
+
+	glBufferData(GL_ARRAY_BUFFER, batchSize * sizeof(glm::mat4), &matrices[0], GL_DYNAMIC_DRAW);
+
+	// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
+	std::size_t vec4Size = sizeof(glm::vec4);
+
+	glVertexAttribPointer(ATTR_INSTANCE_MATRIX_1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+	glVertexAttribPointer(ATTR_INSTANCE_MATRIX_2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+	glVertexAttribPointer(ATTR_INSTANCE_MATRIX_3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+	glVertexAttribPointer(ATTR_INSTANCE_MATRIX_4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_1, 1);
+	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_2, 1);
+	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_3, 1);
+	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_4, 1);
+}
+
+void Batch::update(int count)
+{
+	if (count > size) {
+		count = size;
+	}
+	glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(glm::mat4), &matrices[0]);
+}
+
+void Batch::bind(const RenderContext& ctx, Shader* shader)
+{
+	shader->drawInstanced.set(true);
+
+	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_1);
+	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_2);
+	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_3);
+	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_4);
+}

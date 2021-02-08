@@ -1,7 +1,7 @@
 #include "SpriteRenderer.h"
 
 SpriteRenderer::SpriteRenderer(const Assets& assets)
-	: assets(assets)
+	: Renderer(assets)
 {
 }
 

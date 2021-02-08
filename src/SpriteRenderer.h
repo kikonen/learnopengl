@@ -2,10 +2,11 @@
 
 #include <vector>
 
+#include "Renderer.h"
 #include "RenderContext.h"
 #include "Sprite.h"
 
-class SpriteRenderer
+class SpriteRenderer : public Renderer
 {
 public:
 	SpriteRenderer(const Assets& assets);
@@ -15,8 +16,4 @@ public:
 	void update(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites);
 	void bind(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites);
 	void render(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites);
-
-private:
-	const Assets& assets;
 };
-

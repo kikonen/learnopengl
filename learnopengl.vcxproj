@@ -151,6 +151,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Batch.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\NodeType.cpp" />
     <ClCompile Include="src\NodePathUpdater.cpp" />
     <ClCompile Include="src\InstancedUpdater.cpp" />
@@ -199,6 +201,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Batch.h" />
+    <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\NodeType.h" />
     <ClInclude Include="src\NodePathUpdater.h" />
     <ClInclude Include="src\InstancedUpdater.h" />

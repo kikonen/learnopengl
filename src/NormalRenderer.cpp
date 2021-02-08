@@ -2,7 +2,7 @@
 
 
 NormalRenderer::NormalRenderer(const Assets& assets)
-	: assets(assets)
+	: Renderer(assets)
 {
 	normalShader = Shader::getShader(assets, TEX_NORMAL);
 	normalShader->prepare();

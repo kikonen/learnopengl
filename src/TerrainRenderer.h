@@ -2,11 +2,12 @@
 
 #include <vector>
 
+#include "Renderer.h"
 #include "Assets.h"
 #include "RenderContext.h"
 #include "Terrain.h"
 
-class TerrainRenderer
+class TerrainRenderer : public Renderer
 {
 public:
 	TerrainRenderer(const Assets& assets);
@@ -16,8 +17,5 @@ public:
 
 	void update(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
 	void render(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
-
-public:
-	const Assets& assets;
 };
 
