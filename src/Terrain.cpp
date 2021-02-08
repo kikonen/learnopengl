@@ -69,4 +69,5 @@ void Terrain::prepare(const Assets& assets)
 	setPos({ worldX * TILE_SIZE, 0, worldZ * TILE_SIZE });
 	renderBack = true;
 	Node::prepare(assets);
+	type->mesh->prepare(assets);
 }

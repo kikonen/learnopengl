@@ -163,8 +163,6 @@ Shader* Mesh::bind(const RenderContext& ctx, Shader* shader)
 //	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize);
 
-	shader->bind();
-
 	glBindVertexArray(buffers.VAO);
 
 	for (auto const& material : materials) {

@@ -18,7 +18,6 @@ void Node::prepare(const Assets& assets)
 	if (updater) {
 		updater->prepare(*this);
 	}
-	type->prepare(assets);
 }
 
 bool Node::update(const RenderContext& ctx)
@@ -31,7 +30,6 @@ Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 {
 	updateModelMatrix();
 
-	shader = type->bind(ctx, shader);
 	if (!shader) {
 		return nullptr;
 	}
@@ -52,7 +50,6 @@ Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 void Node::draw(const RenderContext& ctx)
 {
 	type->mesh->draw(ctx);
-	glBindVertexArray(0);
 }
 
 void Node::updateModelMatrix() {

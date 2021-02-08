@@ -20,10 +20,10 @@ void Sprite::prepare(const Assets& assets)
 //	mesh->materials[material->name] = material;
 //	mesh->defaultShader = Shader::getShader(assets, TEX_TEXTURE, "");
 
-	MeshLoader loader(assets, "brickwall2");
-	loader.defaultMaterial = material;
-	loader.overrideMaterials = true;
-	type->mesh = loader.load();
+	//MeshLoader loader(assets, "brickwall2");
+	//loader.defaultMaterial = material;
+	//loader.overrideMaterials = true;
+	//type->mesh = loader.load();
 
 	float vertices[] = {
 		// pos      // tex

@@ -46,18 +46,21 @@ void Scene::prepare()
 	prepareUBOs();
 
 	for (auto& x : typeNodes) {
+		x.first->prepare(assets);
 		for (auto& e : x.second) {
 			e->prepare(assets);
 		}
 	}
 
 	for (auto& x : typeSprites) {
+		x.first->prepare(assets);
 		for (auto& e : x.second) {
 			e->prepare(assets);
 		}
 	}
 
 	for (auto& x : typeTerrains) {
+		x.first->prepare(assets);
 		for (auto& e : x.second) {
 			e->prepare(assets);
 		}

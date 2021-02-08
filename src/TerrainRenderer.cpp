@@ -25,9 +25,12 @@ void TerrainRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector
 void TerrainRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
 {
 	for (auto& x : typeTerrains) {
+		Shader* shader = x.first->bind(ctx, nullptr);
+		if (!shader) continue;
+		shader->shadowMap.set(assets.shadowMapUnitIndex);
+
 		for (auto& e : x.second) {
-			Shader* shader = e->bind(ctx, nullptr);
-			shader->shadowMap.set(assets.shadowMapUnitIndex);
+			e->bind(ctx, shader);
 			e->draw(ctx);
 		}
 	}

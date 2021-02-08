@@ -26,4 +26,5 @@ void ViewportRenderer::render(RenderContext& ctx, std::vector<Viewport*>& viewpo
 		viewport->bind(ctx);
 		viewport->draw(ctx);
 	}
+	glBindVertexArray(0);
 }

@@ -18,7 +18,7 @@ public:
 
 private:
 	const Assets& assets;
-	Shader* shader = nullptr;
+	Shader* normalShader = nullptr;
 
 };
 

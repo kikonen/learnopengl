@@ -515,6 +515,11 @@ void SceneSetup1::setupSpriteFlare(Scene* scene)
 	material->loadTextures(assets.spritesDir + "/");
 	material->prepare();
 
+	MeshLoader loader(assets, "brickwall2");
+	loader.defaultMaterial = material;
+	loader.overrideMaterials = true;
+	type->mesh = loader.load();
+
 	Sprite* sprite = new Sprite(type, glm::vec2(2, 2), material);
 	sprite->setPos(glm::vec3(0, 5, 20) + assets.groundOffset);
 	scene->addSprite(sprite);

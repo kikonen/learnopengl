@@ -119,5 +119,4 @@ void InstancedNode::draw(const RenderContext& ctx)
 	Shader* shader = type->boundShader;
 	shader->drawInstanced.set(true);
 	type->mesh->drawInstanced(ctx, shader->selection ? selectionMatrices.size() : instanceMatrices.size());
-	glBindVertexArray(0);
 }
