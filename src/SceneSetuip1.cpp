@@ -8,6 +8,7 @@
 #include "NodePathUpdater.h"
 
 #include "NodeType.h"
+#include "TerrainGenerator.h"
 
 SceneSetup1::SceneSetup1(const Assets& assets)
 	: assets(assets)
@@ -527,7 +528,6 @@ void SceneSetup1::setupSpriteFlare(Scene* scene)
 
 void SceneSetup1::setupTerrain(Scene* scene)
 {
-	NodeType* type = new NodeType(NodeType::nextID());
 	Material* material = new Material("terrain");
 	material->textureMode = GL_REPEAT;
 	material->ns = 50;
@@ -546,9 +546,13 @@ void SceneSetup1::setupTerrain(Scene* scene)
 	Shader* shader = getShader(TEX_TERRAIN);
 	shader->prepare();
 
+	TerrainGenerator generator(assets);
+
 	for (int x = 0; x < 2; x++) {
 		for (int z = 0; z < 2; z++) {
-			Terrain* terrain = new Terrain(type, x, z, material, shader);
+			NodeType* type = new NodeType(NodeType::nextID(), shader);
+			type->mesh = generator.generateTerrain(material);
+			Terrain* terrain = new Terrain(type, x, z);
 			scene->addTerrain(terrain);
 		}
 	}

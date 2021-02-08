@@ -193,6 +193,7 @@
     <ClCompile Include="src\Terrain.cpp" />
     <ClCompile Include="src\Viewport.cpp" />
     <ClCompile Include="src\ViewportRenderer.cpp" />
+    <ClCompile Include="src\TerrainGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -240,6 +241,7 @@
     <ClInclude Include="src\Terrain.h" />
     <ClInclude Include="src\Viewport.h" />
     <ClInclude Include="src\ViewportRenderer.h" />
+    <ClInclude Include="src\TerrainGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />
