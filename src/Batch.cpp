@@ -1,19 +1,27 @@
 #include "Batch.h"
 
+#include "NodeType.h"
+
 Batch::Batch()
 {
 }
 
-void Batch::prepare(int batchSize)
+void Batch::prepare(NodeType* type)
 {
-	size = batchSize;
-	matrices.reserve(batchSize);
+	if (size == 0) return;
+	if (prepared) return;
+	prepared = true;
+
+	matrices.reserve(size);
 	glm::mat4 tmp(0.f);
 	for (int i = 0; i < size; i++) {
 		matrices.push_back(tmp);
 	}
 
-	glBufferData(GL_ARRAY_BUFFER, batchSize * sizeof(glm::mat4), &matrices[0], GL_DYNAMIC_DRAW);
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBindVertexArray(type->mesh->buffers.VAO);
+	glBufferData(GL_ARRAY_BUFFER, size * sizeof(glm::mat4), &matrices[0], GL_DYNAMIC_DRAW);
 
 	// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
 	std::size_t vec4Size = sizeof(glm::vec4);
@@ -27,18 +35,27 @@ void Batch::prepare(int batchSize)
 	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_2, 1);
 	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_3, 1);
 	glVertexAttribDivisor(ATTR_INSTANCE_MATRIX_4, 1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Batch::update(int count)
 {
+	if (size == 0) return;
+
 	if (count > size) {
 		count = size;
 	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(glm::mat4), &matrices[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Batch::bind(const RenderContext& ctx, Shader* shader)
 {
+	if (size == 0) return;
+
 	shader->drawInstanced.set(true);
 
 	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_1);

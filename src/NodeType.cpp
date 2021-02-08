@@ -25,6 +25,9 @@ void NodeType::prepare(const Assets& assets)
 {
 	if (!mesh) return;
 	mesh->prepare(assets);
+	if (batch.size > 0) {
+		batch.prepare(this);
+	}
 }
 
 Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
@@ -38,6 +41,8 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 	shader->bind();
 	mesh->bind(ctx, shader);
 	ctx.bind(shader);
+
+	shader->drawInstanced.set(false);
 
 	if (renderBack) {
 		glDisable(GL_CULL_FACE);

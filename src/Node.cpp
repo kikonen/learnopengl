@@ -36,7 +36,6 @@ Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 
 	shader->modelMatrix.set(modelMat);
 	shader->normalMatrix.set(normalMat);
-	shader->drawInstanced.set(false);
 
 	return shader;
 }

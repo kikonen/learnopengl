@@ -11,6 +11,4 @@ public:
 
 protected:
 	const Assets& assets;
-	Batch batch;
 };
-

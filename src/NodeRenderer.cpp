@@ -10,6 +10,7 @@ NodeRenderer::NodeRenderer(const Assets& assets)
 
 void NodeRenderer::prepare()
 {
+//	batch.prepare(1000);
 }
 
 void NodeRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)

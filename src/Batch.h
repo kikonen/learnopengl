@@ -3,18 +3,20 @@
 #include "RenderContext.h"
 #include "Shader.h"
 
+class NodeType;
 
 class Batch
 {
 public:
 	Batch();
 
-	void prepare(int batchSize);
+	void prepare(NodeType* type);
 	void update(int count);
 	void bind(const RenderContext& ctx, Shader* shader);
 
 public:
-	unsigned int size = 10000;
+	bool prepared = false;
+	unsigned int size = 0;
 	unsigned int buffer = -1;
 
 	std::vector<glm::mat4> matrices;

@@ -3,6 +3,7 @@
 #include "RenderContext.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "Batch.h"
 
 class NodeType
 {
@@ -30,6 +31,8 @@ public:
 	Mesh* mesh = nullptr;
 	Shader* defaultShader = nullptr;
 	Shader* boundShader = nullptr;
+
+	Batch batch;
 private:
 };
 
