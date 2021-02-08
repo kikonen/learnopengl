@@ -49,12 +49,13 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<
 		glStencilMask(0x00);
 	}
 
+	std::vector<Node*> blendedNodes;
+
 	for (auto& x : typeNodes) {
 		Shader* shader = x.first->bind(ctx, nullptr);
 		if (!shader) continue;
 		shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 
-		std::vector<Node*> blendedNodes;
 		for (auto& e : x.second) {
 			if (selection ? !e->selected : e->selected) {
 				continue;
@@ -62,15 +63,16 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<
 
 			if (e->blend) {
 				blendedNodes.push_back(e);
+				continue;
 			}
-			else {
-				e->bind(ctx, shader);
-				e->draw(ctx);
-			}
+
+			e->bind(ctx, shader);
+			e->draw(ctx);
 			renderCount++;
 		}
-		drawBlended(ctx, blendedNodes);
 	}
+
+	drawBlended(ctx, blendedNodes);
 
 	return renderCount;
 }
@@ -119,12 +121,18 @@ void NodeRenderer::drawBlended(RenderContext& ctx, std::vector<Node*>& nodes)
 		sorted[distance] = node;
 	}
 
+	NodeType* type = nullptr;
+	Shader* shader = nullptr;
+
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		Node* node = it->second;
 
-		Shader* shader = node->type->bind(ctx, nullptr);
-		if (!shader) continue;
-		shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
+		if (type != node->type) {
+			type = node->type;
+			shader = type->bind(ctx, nullptr);
+			if (!shader) continue;
+			shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
+		}
 
 		node->bind(ctx, shader);
 		node->draw(ctx);
