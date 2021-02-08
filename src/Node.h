@@ -1,7 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "Mesh.h"
+
+#include "NodeType.h"
 #include "RenderContext.h"
 
 class NodeUpdater;
@@ -9,9 +10,7 @@ class NodeUpdater;
 class Node
 {
 public:
-	static int nextID();
-
-	Node(int objectID, Mesh* mesh = nullptr);
+	Node(NodeType* type);
 	~Node();
 
 	virtual void prepare(const Assets& assets);
@@ -33,8 +32,7 @@ protected:
 	virtual void updateModelMatrix();
 
 public:
-	Mesh* mesh;
-	int objectID = -1;
+	NodeType* type;
 
 	bool blend = false;
 	bool light = false;

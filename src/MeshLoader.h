@@ -10,11 +10,11 @@ class MeshLoader
 {
 public:
 	MeshLoader(
-		Shader* shader,
+		const Assets& assets,
 		const std::string& modelName);
 
 	MeshLoader(
-		Shader* shader,
+		const Assets& assets,
 		const std::string& modelName,
 		const std::string& path);
 
@@ -33,8 +33,6 @@ public:
 	const Assets& assets;
 	const std::string modelName;
 	const std::string path;
-
-	Shader* shader;
 
 	Material* defaultMaterial = nullptr;
 	bool overrideMaterials = false;

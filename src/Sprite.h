@@ -3,11 +3,12 @@
 #include <glm/glm.hpp>
 
 #include "Node.h"
+#include "Material.h"
 
 class Sprite : public Node
 {
 public:
-	Sprite(int objectID, glm::vec2 size, Material* material);
+	Sprite(NodeType* type, glm::vec2 size, Material* material);
 	~Sprite();
 
 	void prepare(const Assets& assets) override;

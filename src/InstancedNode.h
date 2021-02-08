@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Node.h"
-
+#include "MeshBuffers.h"
 
 class InstancedNode : public Node
 {
 public:
-	InstancedNode(int objectID, Mesh* mesh, NodeUpdater* updater);
+	InstancedNode(NodeType* type, NodeUpdater* updater);
 	~InstancedNode();
 
 	void prepare(const Assets& assets) override;

@@ -146,10 +146,10 @@ void Scene::draw(RenderContext& ctx)
 	if (showNormals) {
 		normalRenderer->render(ctx, typeNodes);
 
-		std::map<int, std::vector<Node*>> r1 = spriteToNodes();
+		std::map<NodeType*, std::vector<Node*>> r1 = spriteToNodes();
 		normalRenderer->render(ctx, r1);
 
-		std::map<int, std::vector<Node*>> r2 = terrainToNodes();
+		std::map<NodeType*, std::vector<Node*>> r2 = terrainToNodes();
 		normalRenderer->render(ctx, r2);
 	}
 
@@ -188,17 +188,17 @@ void Scene::addLight(Light* light)
 
 void Scene::addNode(Node* node)
 {
-	typeNodes[node->objectID].push_back(node);
+	typeNodes[node->type].push_back(node);
 }
 
 void Scene::addSprite(Sprite* sprite)
 {
-	typeSprites[sprite->objectID].push_back(sprite);
+	typeSprites[sprite->type].push_back(sprite);
 }
 
 void Scene::addTerrain(Terrain* terrain)
 {
-	typeTerrains[terrain->objectID].push_back(terrain);
+	typeTerrains[terrain->type].push_back(terrain);
 }
 
 void Scene::addViewPort(Viewport* viewport)
@@ -206,9 +206,9 @@ void Scene::addViewPort(Viewport* viewport)
 	viewports.push_back(viewport);
 }
 
-std::map<int, std::vector<Node*>> Scene::terrainToNodes()
+std::map<NodeType*, std::vector<Node*>> Scene::terrainToNodes()
 {
-	std::map<int, std::vector<Node*>> r;
+	std::map<NodeType*, std::vector<Node*>> r;
 
 	for (auto& x : typeTerrains) {
 		std::vector<Node*> a;
@@ -221,9 +221,9 @@ std::map<int, std::vector<Node*>> Scene::terrainToNodes()
 	return r;
 }
 
-std::map<int, std::vector<Node*>> Scene::spriteToNodes()
+std::map<NodeType*, std::vector<Node*>> Scene::spriteToNodes()
 {
-	std::map<int, std::vector<Node*>> r;
+	std::map<NodeType*, std::vector<Node*>> r;
 
 	for (auto& x : typeSprites) {
 		std::vector<Node*> a;

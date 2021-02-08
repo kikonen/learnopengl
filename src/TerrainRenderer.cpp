@@ -13,7 +13,7 @@ void TerrainRenderer::prepare()
 {
 }
 
-void TerrainRenderer::update(RenderContext& ctx, std::map<int, std::vector<Terrain*>>& typeTerrains)
+void TerrainRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
 {
 	for (auto& x : typeTerrains) {
 		for (auto& e : x.second) {
@@ -22,7 +22,7 @@ void TerrainRenderer::update(RenderContext& ctx, std::map<int, std::vector<Terra
 	}
 }
 
-void TerrainRenderer::render(RenderContext& ctx, std::map<int, std::vector<Terrain*>>& typeTerrains)
+void TerrainRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
 {
 	for (auto& x : typeTerrains) {
 		for (auto& e : x.second) {

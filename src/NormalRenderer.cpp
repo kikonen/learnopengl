@@ -12,7 +12,7 @@ void NormalRenderer::prepare()
 {
 }
 
-void NormalRenderer::update(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
+void NormalRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
 {
 	//for (auto& x : typeNodes) {
 	//	for (auto& e : x.second) {
@@ -21,11 +21,11 @@ void NormalRenderer::update(RenderContext& ctx, std::map<int, std::vector<Node*>
 	//}
 }
 
-void NormalRenderer::bind(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
+void NormalRenderer::bind(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
 {
 }
 
-void NormalRenderer::render(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
+void NormalRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
 {
 	for (auto& x : typeNodes) {
 		for (auto& e : x.second) {

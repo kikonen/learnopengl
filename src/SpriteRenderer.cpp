@@ -9,7 +9,7 @@ void SpriteRenderer::prepare()
 {
 }
 
-void SpriteRenderer::update(RenderContext& ctx, std::map<int, std::vector<Sprite*>>& typeSprites)
+void SpriteRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites)
 {
 	for (auto& x : typeSprites) {
 		for (auto& e : x.second) {
@@ -18,11 +18,11 @@ void SpriteRenderer::update(RenderContext& ctx, std::map<int, std::vector<Sprite
 	}
 }
 
-void SpriteRenderer::bind(RenderContext& ctx, std::map<int, std::vector<Sprite*>>& typeSprites)
+void SpriteRenderer::bind(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites)
 {
 }
 
-void SpriteRenderer::render(RenderContext& ctx, std::map<int, std::vector<Sprite*>>& typeSprites)
+void SpriteRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites)
 {
 	glEnable(GL_BLEND);
 	glDisable(GL_CULL_FACE);

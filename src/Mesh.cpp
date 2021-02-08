@@ -158,11 +158,6 @@ void Mesh::updateBuffers(MeshBuffers& curr)
 
 Shader* Mesh::bind(const RenderContext& ctx, Shader* shader)
 {
-	shader = shader ? shader : defaultShader;
-	if (!shader) {
-		return nullptr;
-	}
-
 //	glBindBuffer(GL_UNIFORM_BUFFER, ctx.engine.ubo.materials);
 //	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MaterialsUBO), &materialsUbo);
 //	glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -182,9 +177,6 @@ Shader* Mesh::bind(const RenderContext& ctx, Shader* shader)
 	glEnableVertexAttribArray(ATTR_BITANGENT);
 	glEnableVertexAttribArray(ATTR_MATERIAL_INDEX);
 	glEnableVertexAttribArray(ATTR_TEX);
-
-	ctx.bind(shader);
-	bound = shader;
 
 	return shader;
 }

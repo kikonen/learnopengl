@@ -1,7 +1,7 @@
 #include "InstancedNode.h"
 
-InstancedNode::InstancedNode(int objectID, Mesh* mesh, NodeUpdater* updater)
-	: Node(objectID, mesh)
+InstancedNode::InstancedNode(NodeType* type, NodeUpdater* updater)
+	: Node(type)
 {
 	this->updater = updater;
 }
@@ -45,7 +45,7 @@ void InstancedNode::prepareBuffers()
 	{
 		glGenBuffers(1, &instanceBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-		glBindVertexArray(mesh->buffers.VAO);
+		glBindVertexArray(type->mesh->buffers.VAO);
 		prepareBuffer(instanceMatrices);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
@@ -67,7 +67,7 @@ void InstancedNode::updateBuffers(const RenderContext& ctx)
 {
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-		glBindVertexArray(mesh->buffers.VAO);
+		glBindVertexArray(type->mesh->buffers.VAO);
 		updateBuffer(instanceMatrices);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
@@ -76,7 +76,7 @@ void InstancedNode::updateBuffers(const RenderContext& ctx)
 	{
 		selectedBuffers.prepare();
 
-		mesh->updateBuffers(selectedBuffers);
+		type->mesh->updateBuffers(selectedBuffers);
 
 		glBindBuffer(GL_ARRAY_BUFFER, selectedBuffer);
 		glBindVertexArray(selectedBuffers.VAO);
@@ -116,8 +116,8 @@ Shader* InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 
 void InstancedNode::draw(const RenderContext& ctx)
 {
-	Shader* shader = mesh->bound;
+	Shader* shader = type->boundShader;
 	shader->drawInstanced.set(true);
-	mesh->drawInstanced(ctx, shader->selection ? selectionMatrices.size() : instanceMatrices.size());
+	type->mesh->drawInstanced(ctx, shader->selection ? selectionMatrices.size() : instanceMatrices.size());
 	glBindVertexArray(0);
 }

@@ -14,8 +14,8 @@ public:
 
 	void prepare();
 
-	void update(RenderContext& ctx, std::map<int, std::vector<Terrain*>>& typeTerrains);
-	void render(RenderContext& ctx, std::map<int, std::vector<Terrain*>>& typeTerrains);
+	void update(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
+	void render(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
 
 public:
 	const Assets& assets;

@@ -2,8 +2,9 @@
 
 #include "MeshLoader.h"
 
-Sprite::Sprite(int objectID, glm::vec2 size, Material* material)
-	: Node(objectID),
+
+Sprite::Sprite(NodeType* type, glm::vec2 size, Material* material)
+	: Node(type),
 	size(size),
 	material(material)
 {
@@ -19,10 +20,10 @@ void Sprite::prepare(const Assets& assets)
 //	mesh->materials[material->name] = material;
 //	mesh->defaultShader = Shader::getShader(assets, TEX_TEXTURE, "");
 
-	MeshLoader loader(Shader::getShader(assets, TEX_TEXTURE), "brickwall2");
+	MeshLoader loader(assets, "brickwall2");
 	loader.defaultMaterial = material;
 	loader.overrideMaterials = true;
-	mesh = loader.load();
+	type->mesh = loader.load();
 
 	float vertices[] = {
 		// pos      // tex

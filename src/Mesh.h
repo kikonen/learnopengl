@@ -34,9 +34,6 @@ public:
 	void drawInstanced(const RenderContext& ctx, int instanceCount);
 
 public:
-	Shader* bound = nullptr;
-
-	Shader* defaultShader = nullptr;
 	Material* defaultMaterial = nullptr;
 
 	MeshBuffers buffers;

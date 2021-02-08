@@ -3,12 +3,13 @@
 #include <vector>
 
 #include "Perlin.h"
+#include "Mesh.h"
 
 const int TILE_SIZE = 400;
 const int VERTEX_COUNT = 128;
 
-Terrain::Terrain(int objectID, int worldX, int worldZ, Material* material, Shader* shader)
-	: Node(objectID), worldX(worldX), worldZ(worldZ), material(material), shader(shader)
+Terrain::Terrain(NodeType* type, int worldX, int worldZ, Material* material, Shader* shader)
+	: Node(type), worldX(worldX), worldZ(worldZ), material(material), shader(shader)
 {
 }
 
@@ -18,9 +19,11 @@ Terrain::~Terrain()
 
 void Terrain::prepare(const Assets& assets)
 {
-	mesh = new Mesh("terrain");
+	Mesh* mesh = new Mesh("terrain");
 	mesh->materials.push_back(material);
-	mesh->defaultShader = shader;
+
+	type->mesh = mesh;
+	type->defaultShader = shader;
 
 	Perlin perlin(-1);
 

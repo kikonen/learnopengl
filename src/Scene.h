@@ -48,8 +48,8 @@ public:
 private:
 	void prepareUBOs();
 
-	std::map<int, std::vector<Node*>> terrainToNodes();
-	std::map<int, std::vector<Node*>> spriteToNodes();
+	std::map<NodeType*, std::vector<Node*>> terrainToNodes();
+	std::map<NodeType*, std::vector<Node*>> spriteToNodes();
 
 public:
 	const Assets& assets;
@@ -74,9 +74,9 @@ private:
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
 
-	std::map<int, std::vector<Node*>> typeNodes;
-	std::map<int, std::vector<Sprite*>> typeSprites;
-	std::map<int, std::vector<Terrain*>> typeTerrains;
+	std::map<NodeType*, std::vector<Node*>> typeNodes;
+	std::map<NodeType*, std::vector<Sprite*>> typeSprites;
+	std::map<NodeType*, std::vector<Terrain*>> typeTerrains;
 
 	std::vector<Viewport*> viewports;
 };

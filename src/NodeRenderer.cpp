@@ -12,7 +12,7 @@ void NodeRenderer::prepare()
 {
 }
 
-void NodeRenderer::update(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
+void NodeRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
 {
 	for (auto& x : typeNodes) {
 		for (auto& e : x.second) {
@@ -21,11 +21,11 @@ void NodeRenderer::update(RenderContext& ctx, std::map<int, std::vector<Node*>>&
 	}
 }
 
-void NodeRenderer::bind(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
+void NodeRenderer::bind(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
 {
 }
 
-void NodeRenderer::render(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
+void NodeRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
 {
 	int selectedCount = drawNodes(ctx, typeNodes, true);
 	drawNodes(ctx, typeNodes, false);
@@ -36,7 +36,7 @@ void NodeRenderer::render(RenderContext& ctx, std::map<int, std::vector<Node*>>&
 }
 
 // draw all non selected nodes
-int NodeRenderer::drawNodes(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes, bool selection)
+int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes, bool selection)
 {
 	int renderCount = 0;
 
@@ -72,7 +72,7 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::map<int, std::vector<Node*>
 }
 
 // draw all selected nodes with stencil
-void NodeRenderer::drawSelectionStencil(RenderContext& ctx, std::map<int, std::vector<Node*>>& typeNodes)
+void NodeRenderer::drawSelectionStencil(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
 {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);

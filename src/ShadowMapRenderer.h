@@ -26,16 +26,16 @@ public:
 	void bind(RenderContext& ctx);
 	void render(
 		RenderContext& ctx,
-		std::map<int, std::vector<Node*>>& typeNodes,
-		std::map<int, std::vector<Sprite*>>& typeSprites,
-		std::map<int, std::vector<Terrain*>>& typeTerrains);
+		std::map<NodeType*, std::vector<Node*>>& typeNodes,
+		std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
+		std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
 
 private:
 	void drawNodes(
 		RenderContext& ctx,
-		std::map<int, std::vector<Node*>>& typeNodes,
-		std::map<int, std::vector<Sprite*>>& typeSprites,
-		std::map<int, std::vector<Terrain*>>& typeTerrains);
+		std::map<NodeType*, std::vector<Node*>>& typeNodes,
+		std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
+		std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
 
 public:
 	FrameBuffer frameBuffer = { SHADOW_WIDTH, SHADOW_HEIGHT };

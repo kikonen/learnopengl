@@ -12,9 +12,9 @@ public:
 
 	void prepare();
 
-	void update(RenderContext& ctx, std::map<int, std::vector<Sprite*>>& typeSprites);
-	void bind(RenderContext& ctx, std::map<int, std::vector<Sprite*>>& typeSprites);
-	void render(RenderContext& ctx, std::map<int, std::vector<Sprite*>>& typeSprites);
+	void update(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites);
+	void bind(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites);
+	void render(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites);
 
 private:
 	const Assets& assets;

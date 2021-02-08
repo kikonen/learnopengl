@@ -1,18 +1,11 @@
 #include "Node.h"
 
-#include "NodeUpdater.h";
 #include "KIGL.h"
+#include "NodeUpdater.h";
 
-int objectIDbase = 0;
 
-int Node::nextID()
-{
-	return ++objectIDbase;
-}
-
-Node::Node(int objectID, Mesh* mesh)
-	: objectID(objectID),
-	mesh(mesh)
+Node::Node(NodeType* type)
+	: type(type)
 {
 }
 
@@ -25,7 +18,7 @@ void Node::prepare(const Assets& assets)
 	if (updater) {
 		updater->prepare(*this);
 	}
-	mesh->prepare(assets);
+	type->prepare(assets);
 }
 
 bool Node::update(const RenderContext& ctx)
@@ -38,7 +31,7 @@ Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 {
 	updateModelMatrix();
 
-	shader = mesh->bind(ctx, shader);
+	shader = type->bind(ctx, shader);
 	if (!shader) {
 		return nullptr;
 	}
@@ -58,7 +51,7 @@ Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 
 void Node::draw(const RenderContext& ctx)
 {
-	mesh->draw(ctx);
+	type->mesh->draw(ctx);
 	glBindVertexArray(0);
 }
 

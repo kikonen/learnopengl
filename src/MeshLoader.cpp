@@ -47,18 +47,17 @@ const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
 
 
 MeshLoader::MeshLoader(
-	Shader* shader,
+	const Assets& assets,
 	const std::string& modelName)
-	: MeshLoader(shader, modelName, "/")
+	: MeshLoader(assets, modelName, "/")
 {
 }
 
 MeshLoader::MeshLoader(
-	Shader* shader,
+	const Assets& assets,
 	const std::string& modelName,
 	const std::string& path)
-	: assets(shader->assets),
-	shader(shader),
+	: assets(assets),
 	modelName(modelName),
 	path(path)
 {
@@ -72,7 +71,6 @@ MeshLoader::~MeshLoader()
 Mesh* MeshLoader::load() {
 	Mesh* mesh = new Mesh(modelName, path);	
 	loadData(mesh->tris, mesh->vertices, mesh->materials);
-	mesh->defaultShader = shader;
 	return mesh;
 }
 

@@ -62,9 +62,9 @@ void ShadowMapRenderer::bindTexture(RenderContext& ctx)
 
 void ShadowMapRenderer::render(
 	RenderContext& ctx, 
-	std::map<int, std::vector<Node*>>& typeNodes,
-	std::map<int, std::vector<Sprite*>>& typeSprites,
-	std::map<int, std::vector<Terrain*>>& typeTerrains)
+	std::map<NodeType*, std::vector<Node*>>& typeNodes,
+	std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
+	std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
 {
 	frameBuffer.bind();
 
@@ -81,9 +81,9 @@ void ShadowMapRenderer::render(
 
 void ShadowMapRenderer::drawNodes(
 	RenderContext& ctx, 
-	std::map<int, std::vector<Node*>>& typeNodes,
-	std::map<int, std::vector<Sprite*>>& typeSprites,
-	std::map<int, std::vector<Terrain*>>& typeTerrains)
+	std::map<NodeType*, std::vector<Node*>>& typeNodes,
+	std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
+	std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
 {
 	for (auto& x : typeNodes) {
 		for (auto& e : x.second) {
