@@ -27,6 +27,7 @@ public:
 	bool light = false;
 	bool renderBack = false;
 	bool skipShadow = false;
+	bool instanced = false;
 
 	Mesh* mesh = nullptr;
 	Shader* defaultShader = nullptr;

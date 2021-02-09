@@ -11,6 +11,7 @@ Test6::Test6() {
 	title = "Test 6";
 	assets.shadersDir = "shader/test6";
 	//throttleFps = 0;
+	//throttleFps = FPS_60;
 	//glfwWindowHint(GLFW_SAMPLES, 4);
 }
 
@@ -78,7 +79,7 @@ void Test6::processInput(float dt) {
 
 SceneSetup1* Test6::setupScene1()
 {
-	assets.batchSize = 10000;
+	assets.batchSize = 1000;
 
 	SceneSetup1* sceneSetup = new SceneSetup1(assets);
 	sceneSetup->setup();
