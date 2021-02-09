@@ -34,6 +34,9 @@ const int ATTR_INSTANCE_MATRIX_4 = 9;
 
 const std::string GEOM_NONE = "";
 
+struct TextureInfo;
+
+
 class Shader
 {
 public:
@@ -57,12 +60,14 @@ private:
 
     std::vector<std::string> loadSourceLines(const std::string& path, bool optional);
     std::vector<std::string> processInclude(const std::string& includePath, int lineNumber);
+
+    int createProgram();
+    void prepareTextureUniforms();
+    GLint getUniformLoc(const std::string& name);
 public:
     int prepare();
     const void bind();
     const void unbind();
-
-    GLint getUniformLoc(const std::string& name);
 
     //void setFloat3(const std::string& name, float v1, float v2, float v3);
     //void setVec3(const std::string& name, const glm::vec3& v);
@@ -83,22 +88,21 @@ public:
 
     class Uniform {
     protected:
-        Uniform(Shader* shader, const std::string& name) : shader(shader), name(name) {
+        Uniform(const std::string& name) : name(name) {
         }
 
     public:
-        void init() {
+        void init(Shader* shader) {
             locId = shader->getUniformLoc(name);
         }
     protected:
-        Shader* shader;
         const std::string name;
         GLuint locId = -1;
     };
 
     class Mat4 : public Uniform {
     public:
-        Mat4(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        Mat4(const std::string& name) : Uniform(name) {
         }
 
         void set(const glm::mat4& value) {
@@ -111,7 +115,7 @@ public:
 
     class Mat3 : public Uniform {
     public:
-        Mat3(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        Mat3(const std::string& name) : Uniform(name) {
         }
 
         void set(const glm::mat3& value) {
@@ -124,7 +128,7 @@ public:
 
     class Mat2 : public Uniform {
     public:
-        Mat2(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        Mat2(const std::string& name) : Uniform(name) {
         }
 
         void set(const glm::mat2& value) {
@@ -137,7 +141,7 @@ public:
 
     class Vec4 : public Uniform {
     public:
-        Vec4(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        Vec4(const std::string& name) : Uniform(name) {
         }
 
         void set(const glm::vec4& value) {
@@ -150,7 +154,7 @@ public:
 
     class Vec3 : public Uniform {
     public:
-        Vec3(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        Vec3(const std::string& name) : Uniform(name) {
         }
 
         void set(const glm::vec3& value) {
@@ -163,7 +167,7 @@ public:
 
     class Vec2 : public Uniform {
     public:
-        Vec2(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        Vec2(const std::string& name) : Uniform(name) {
         }
 
         void set(const glm::vec2& value) {
@@ -176,7 +180,7 @@ public:
 
     class FloatArray : public Uniform {
     public:
-        FloatArray(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        FloatArray(const std::string& name) : Uniform(name) {
         }
 
         void set(int count, const float* values) {
@@ -189,7 +193,7 @@ public:
 
     class IntArray : public Uniform {
     public:
-        IntArray(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        IntArray(const std::string& name) : Uniform(name) {
         }
 
         void set(int count, const GLint* values) {
@@ -202,7 +206,7 @@ public:
 
     class Float : public Uniform {
     public:
-        Float(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        Float(const std::string& name) : Uniform(name) {
         }
 
         void set(const float value) {
@@ -215,7 +219,7 @@ public:
 
     class Int : public Uniform {
     public:
-        Int(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        Int(const std::string& name) : Uniform(name) {
         }
 
         void set(const int value) {
@@ -228,7 +232,7 @@ public:
 
     class Bool : public Uniform {
     public:
-        Bool(Shader* shader, const std::string& name) : Uniform(shader, name) {
+        Bool(const std::string& name) : Uniform(name) {
         }
 
         void set(const bool value) {
@@ -255,20 +259,22 @@ public:
     std::string fragmentShaderSource;
     std::string geometryShaderSource;
 
-    Shader::Mat4 projectionMatrix = { this, "projectionMatrix" };
-    Shader::Mat4 viewMatrix = { this, "viewMatrix" };
-    Shader::Mat4 modelMatrix = { this, "modelMatrix" };
-    Shader::Mat3 normalMatrix = { this, "normalMatrix" };
+        Shader::Mat4 projectionMatrix = { "projectionMatrix" };
+    Shader::Mat4 viewMatrix = { "viewMatrix" };
+    Shader::Mat4 modelMatrix = { "modelMatrix" };
+    Shader::Mat3 normalMatrix = { "normalMatrix" };
 
-    Shader::Int normalMap = { this, "normalMap" };
-    Shader::Int shadowMap = { this, "shadowMap" };
+    Shader::Int normalMap = { "normalMap" };
+    Shader::Int shadowMap = { "shadowMap" };
 
-    Shader::Bool drawInstanced = { this, "drawInstanced" };
+    Shader::Bool drawInstanced = { "drawInstanced" };
 
-    Shader::Float nearPlane = { this, "nearPlane" };
-    Shader::Float farPlane = { this, "farPlane" };
+    Shader::Float nearPlane = { "nearPlane" };
+    Shader::Float farPlane = { "farPlane" };
 
-    Shader::Int skybox = { this, "skybox" };
+    Shader::Int skybox = { "skybox" };
+
+    std::vector<TextureInfo> textures;
 
 private:
     int res;
@@ -280,7 +286,11 @@ private:
     std::string geometryShaderPath;
 
     std::map<const std::string, GLint> uniformLocations;
-
-    int createProgram();
 };
 
+struct TextureInfo {
+    Shader::Int* diffuseTex;
+    Shader::Int* emissionTex;
+    Shader::Int* specularTex;
+    Shader::Int* normalMap;
+};

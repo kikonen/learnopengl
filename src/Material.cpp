@@ -6,47 +6,6 @@
 #include <sstream>
 #include <iostream>
 
-struct Names {
-	int index;
-	std::string diffuseTex;
-	std::string emissionTex;
-	std::string specularTex;
-	std::string normalMap;
-};
-
-std::map<int, const Names*> varNames;
-
-const Names* createNames(const std::string arr, int idx) {
-	Names* names = new Names();
-	names->index = idx;
-
-	char name[255];
-	
-	sprintf_s(name, "textures[%i].diffuse", idx);
-	names->diffuseTex = name;
-
-	sprintf_s(name, "textures[%i].emission", idx);
-	names->emissionTex = name;
-
-	sprintf_s(name, "textures[%i].specular", idx);
-	names->specularTex = name;
-
-	sprintf_s(name, "textures[%i].normalMap", idx);
-	names->normalMap = name;
-
-	return names;
-}
-
-const Names* getNames(int index) {
-	if (varNames.count(index)) {
-		return varNames[index];
-	}
-
-	const Names* names = createNames("materials", index);
-	varNames[index] = names;
-
-	return varNames[index];
-}
 
 Material* Material::createDefaultMaterial() {
 	Material* mat = new Material("default");
@@ -116,19 +75,19 @@ void Material::prepare()
 
 void Material::bind(Shader* shader, int index)
 {
-	const Names* names = getNames(index);
+	TextureInfo info = shader->textures[index];
 
 	if (diffuseTex) {
-		shader->setInt(names->diffuseTex, diffuseTex->textureIndex);
+		info.diffuseTex->set(diffuseTex->textureIndex);
 	}
 	if (emissionTex) {
-		shader->setInt(names->emissionTex, emissionTex->textureIndex);
+		info.emissionTex->set(emissionTex->textureIndex);
 	}
 	if (specularTex) {
-		shader->setInt(names->specularTex, specularTex->textureIndex);
+		info.specularTex->set(specularTex->textureIndex);
 	}
 	if (normalMap) {
-		shader->setInt(names->normalMap, normalMap->textureIndex);
+		info.normalMap->set(normalMap->textureIndex);
 	}
 
 	for (auto const x : textures) {

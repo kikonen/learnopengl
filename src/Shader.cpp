@@ -191,23 +191,53 @@ int Shader::createProgram() {
     setUBO("Lights", UBO_LIGHTS);
     setUBO("Materials", UBO_MATERIALS);
 
-    projectionMatrix.init();
-    viewMatrix.init();
-    modelMatrix.init(); 
-    normalMatrix.init();
+    projectionMatrix.init(this);
+    viewMatrix.init(this);
+    modelMatrix.init(this); 
+    normalMatrix.init(this);
 
-    normalMap.init(); 
-    shadowMap.init();
+    normalMap.init(this); 
+    shadowMap.init(this);
 
-    drawInstanced.init();
+    drawInstanced.init(this);
 
-    nearPlane.init(); 
-    farPlane.init();
+    nearPlane.init(this); 
+    farPlane.init(this);
 
-    skybox.init();
+    skybox.init(this);
+
+    prepareTextureUniforms();
 
     return 0;
 }
+
+void Shader::prepareTextureUniforms()
+{
+    for (int i = 0; i < MATERIAL_COUNT; i++) {
+        TextureInfo info;
+
+        char name[255];
+
+        sprintf_s(name, "textures[%i].diffuse", i);
+        info.diffuseTex = new Shader::Int(name);
+        info.diffuseTex->init(this);
+
+        sprintf_s(name, "textures[%i].emission", i);
+        info.emissionTex = new Shader::Int(name);
+        info.emissionTex->init(this);
+
+        sprintf_s(name, "textures[%i].specular", i);
+        info.specularTex = new Shader::Int(name);
+        info.specularTex->init(this);
+
+        sprintf_s(name, "textures[%i].normalMap", i);
+        info.normalMap = new Shader::Int(name);
+        info.normalMap->init(this);
+
+        textures.push_back(info);
+    }
+}
+
 
 //void Shader::setFloat3(const std::string& name, float v1, float v2, float v3)
 //{
