@@ -28,7 +28,8 @@ public:
 	const glm::vec3& getRotation();
 
 	void setScale(float scale);
-	float getScale();
+	void setScale(const glm::vec3& scale);
+	const glm::vec3& getScale();
 
 protected:
 	virtual void updateModelMatrix();
@@ -43,7 +44,8 @@ public:
 private:
 	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
-	float scale = 1.0f;
+
+	glm::vec3 scale = { 1.f, 1.f, 1.f };
 
 	glm::mat4 modelMat = glm::mat4(1.0f);
 	glm::mat3 normalMat = glm::mat3(1.0f);

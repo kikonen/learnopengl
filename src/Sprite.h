@@ -8,13 +8,16 @@
 class Sprite : public Node
 {
 public:
-	Sprite(NodeType* type, glm::vec2 size, Material* material);
+	static NodeType* getNodeType(const Assets& assets, const std::string& name);
+
+	Sprite(NodeType* type, glm::vec2 size);
 	~Sprite();
 
-	void prepare(const Assets& assets) override;
+private:
+	static Material* getMaterial(const Assets& assets, const std::string& name);
+	static Mesh* getMesh(const Assets& assets, Material* material);
 
 public:
 	const glm::vec2 size;
-	Material* material;
 };
 

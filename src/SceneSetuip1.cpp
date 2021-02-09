@@ -518,25 +518,12 @@ void SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 
 void SceneSetup1::setupSpriteFlare(Scene* scene)
 {
-	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
-	type->renderBack = true;
-
-	Material* material = new Material("flare");
-	material->ns = 100;
-	material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
-	material->map_kd = "Skeleton_VH.PNG";
-	material->loadTextures(assets.spritesDir + "/");
-	material->prepare();
-
-	MeshLoader loader(assets, "brickwall2");
-	loader.defaultMaterial = material;
-	loader.overrideMaterials = true;
-	type->mesh = loader.load();
+	NodeType* type = Sprite::getNodeType(assets, "Skeleton_VH.PNG");
 
 	glm::vec3 pos = glm::vec3(0, 5, 20) + assets.groundOffset;
 	for (int i = 0; i < 1001; i++) {
-		Sprite* sprite = new Sprite(type, glm::vec2(2, 2), material);
-		sprite->setPos(pos + glm::vec3(0, 0, 0.1 * i));
+		Sprite* sprite = new Sprite(type, glm::vec2(1.5, 3));
+		sprite->setPos(pos + glm::vec3(0, 1.5, 0.1 * i));
 		sprite->setRotation(glm::vec3(0, 0, 180));
 		scene->addSprite(sprite);
 	}

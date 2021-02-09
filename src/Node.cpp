@@ -90,16 +90,12 @@ void Node::updateModelMatrix() {
 		pos
 	);
 
-	if (scale != 1.0f) {
-		glm::mat4 scaleMat = glm::scale(
-			glm::mat4(1.0f),
-			glm::vec3(scale)
-		);
-		modelMat = transMat * rotMat * scaleMat;
-	}
-	else {
-		modelMat = transMat * rotMat;
-	}
+	glm::mat4 scaleMat = glm::scale(
+		glm::mat4(1.0f),
+		scale
+	);
+
+	modelMat = transMat * rotMat * scaleMat;
 
 	// https://learnopengl.com/Lighting/Basic-Lighting
 	// http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
@@ -126,10 +122,18 @@ const glm::vec3&  Node::getRotation() {
 }
 
 void Node::setScale(float scale) {
+	this->scale.x = scale;
+	this->scale.y = scale;
+	this->scale.z = scale;
+	dirtyMat = true;
+}
+
+void Node::setScale(const glm::vec3& scale)
+{
 	this->scale = scale;
 	dirtyMat = true;
 }
 
-float Node::getScale() {
+const glm::vec3& Node::getScale() {
 	return scale;
 }

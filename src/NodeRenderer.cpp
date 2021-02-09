@@ -98,7 +98,7 @@ void NodeRenderer::drawSelectionStencil(RenderContext& ctx, std::map<NodeType*, 
 				continue;
 			}
 
-			float scale = e->getScale();
+			glm::vec3 scale = e->getScale();
 			e->setScale(scale * 1.02f);
 			e->bind(ctx, selectionShader);
 			e->draw(ctx);
