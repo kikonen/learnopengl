@@ -19,7 +19,7 @@
 #include "ShadowMapRenderer.h"
 #include "NormalRenderer.h"
 
-class Scene
+class Scene final
 {
 public:
 	Scene(const Assets& assets);

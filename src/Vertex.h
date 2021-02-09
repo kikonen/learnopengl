@@ -4,7 +4,7 @@
 
 #include "Material.h"
 
-class Vertex
+class Vertex final
 {
 public:
 	Vertex(

@@ -1,7 +1,7 @@
 #pragma once
 
 
-class FrameBuffer
+class FrameBuffer final
 {
 public:
 	FrameBuffer(int w, int h);

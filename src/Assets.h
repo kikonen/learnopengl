@@ -6,7 +6,7 @@
 #include "glm/glm.hpp"
 
 // configure assets locations
-class Assets
+class Assets final
 {
 public: 
     std::string modelsDir = "3d_model";

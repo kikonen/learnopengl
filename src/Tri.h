@@ -6,7 +6,7 @@
 
 #include "Material.h"
 
-class Tri
+class Tri final
 {
 public:
 	Tri(const glm::uvec3& vertexIndexes);

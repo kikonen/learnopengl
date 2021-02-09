@@ -8,7 +8,7 @@
 /*
 * https://learnopengl.com/Getting-started/Textures
 */
-class Texture
+class Texture final
 {
 public:
 	Texture(const std::string& path, int textureMode, bool normalMap);

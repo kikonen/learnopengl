@@ -6,7 +6,7 @@
 #include "RenderContext.h"
 #include "Sprite.h"
 
-class SpriteRenderer : public Renderer
+class SpriteRenderer final : public Renderer
 {
 public:
 	SpriteRenderer(const Assets& assets);

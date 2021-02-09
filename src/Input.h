@@ -20,7 +20,7 @@ enum Key {
 //
 // Handle keyboard mapping
 //
-class Input
+class Input final
 {
 public:
 	Input(GLFWwindow* window);

@@ -4,7 +4,7 @@
 #include "MeshBuffers.h"
 #include "FrameBuffer.h"
 
-class Viewport
+class Viewport final
 {
 public:
 	Viewport(const glm::vec3& pos, const glm::vec3& rotation, const glm::vec2& size, FrameBuffer& tex, Shader* shader);

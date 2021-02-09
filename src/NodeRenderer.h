@@ -6,7 +6,7 @@
 #include "RenderContext.h"
 #include "Node.h"
 
-class NodeRenderer : public Renderer
+class NodeRenderer final : public Renderer
 {
 public:
 	NodeRenderer(const Assets& assets);

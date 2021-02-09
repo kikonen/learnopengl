@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include "Batch.h"
 
-class NodeType
+class NodeType final
 {
 public:
 	static int nextID();

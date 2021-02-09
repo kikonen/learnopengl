@@ -10,7 +10,7 @@
 #include "MeshBuffers.h"
 
 
-class SkyboxRenderer : public Renderer
+class SkyboxRenderer final : public Renderer
 {
 public:
 	SkyboxRenderer(const Assets& assets, const std::string& name);

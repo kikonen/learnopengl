@@ -6,7 +6,7 @@
 
 class RenderContext;
 
-class Light
+class Light final
 {
 public:
 	Light();

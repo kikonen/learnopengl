@@ -26,7 +26,7 @@ d 1.000000
 illum 2
 map_Kd texture_cube.jpg
 */
-class Material
+class Material final
 {
 public:
     Material(const std::string& name);

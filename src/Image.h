@@ -3,7 +3,7 @@
 #include <string>
 
 
-class Image
+class Image final
 {
 public:
 	Image(const std::string& path);

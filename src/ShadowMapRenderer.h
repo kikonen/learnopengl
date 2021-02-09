@@ -15,7 +15,7 @@ const unsigned int SHADOW_WIDTH = 1000,
 	SHADOW_HEIGHT = 1000;
 
 
-class ShadowMapRenderer : public Renderer
+class ShadowMapRenderer final : public Renderer
 {
 public:
 	ShadowMapRenderer(const Assets& assets);

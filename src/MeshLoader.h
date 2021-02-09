@@ -6,7 +6,7 @@
 #include "Assets.h"
 
 
-class MeshLoader
+class MeshLoader final
 {
 public:
 	MeshLoader(

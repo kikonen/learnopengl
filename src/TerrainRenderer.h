@@ -7,7 +7,7 @@
 #include "RenderContext.h"
 #include "Terrain.h"
 
-class TerrainRenderer : public Renderer
+class TerrainRenderer final : public Renderer
 {
 public:
 	TerrainRenderer(const Assets& assets);

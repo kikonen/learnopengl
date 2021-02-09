@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 
 // https://gist.github.com/jdarpinian/d8fbaf7360be754016a287450364d738
-class KIGL
+class KIGL final
 {
 public:
 	static void startError();

@@ -2,7 +2,7 @@
 
 // https://adrianb.io/2014/08/09/perlinnoise.html
 // https://www.scratchapixel.com/code.php?id=57&origin=/lessons/procedural-generation-virtual-worlds/perlin-noise-part-2
-class Perlin
+class Perlin final
 {
 public:
 	Perlin(int repeat = -1);

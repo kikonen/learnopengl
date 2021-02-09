@@ -1,6 +1,6 @@
 #pragma once
 
-class MeshBuffers
+class MeshBuffers final
 {
 public:
 	MeshBuffers();

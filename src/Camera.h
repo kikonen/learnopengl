@@ -11,7 +11,7 @@
 /**
 * https://learnopengl.com/Getting-started/Camera
 */
-class Camera
+class Camera final
 {
 public:
 	Camera();

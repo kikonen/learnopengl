@@ -5,7 +5,7 @@
 
 class NodeType;
 
-class Batch
+class Batch final
 {
 public:
 	Batch();
