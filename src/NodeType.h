@@ -27,7 +27,7 @@ public:
 	bool light = false;
 	bool renderBack = false;
 	bool skipShadow = false;
-	bool instanced = false;
+	bool batchMode = true;
 
 	Mesh* mesh = nullptr;
 	Shader* defaultShader = nullptr;

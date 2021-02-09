@@ -25,11 +25,12 @@ void NodeType::prepare(const Assets& assets)
 {
 	if (!mesh) return;
 	mesh->prepare(assets);
-	if (instanced) {
-		batch.size = 0;
-	}
-	if (batch.size > 0) {
+
+	if (batchMode && batch.size > 0) {
 		batch.prepare(this);
+	}
+	else {
+		batch.size = 0;
 	}
 }
 

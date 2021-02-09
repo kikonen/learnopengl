@@ -503,7 +503,7 @@ void SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 {
 	auto loader = [this](Scene* scene) {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
-		type->instanced = true;
+		type->batchMode = false;
 
 		MeshLoader loader(assets, "rock", "/rock/");
 		type->mesh = loader.load();
