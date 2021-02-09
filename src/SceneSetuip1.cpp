@@ -518,7 +518,6 @@ void SceneSetup1::setupSpriteFlare(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	type->renderBack = true;
-	type->batch.size = 10000;
 
 	Material* material = new Material("flare");
 	material->ns = 100;
@@ -533,7 +532,7 @@ void SceneSetup1::setupSpriteFlare(Scene* scene)
 	type->mesh = loader.load();
 
 	glm::vec3 pos = glm::vec3(0, 5, 20) + assets.groundOffset;
-	for (int i = 0; i < 1000; i++) {
+	for (int i = 0; i < 1001; i++) {
 		Sprite* sprite = new Sprite(type, glm::vec2(2, 2), material);
 		sprite->setPos(pos + glm::vec3(0, 0, 0.1 * i));
 		sprite->setRotation(glm::vec3(0, 0, 180));

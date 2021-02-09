@@ -35,27 +35,12 @@ void SpriteRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);
-		batch.matrices.clear();
 
 		for (auto& e : x.second) {
-			if (batch.size) {
-				e->bindBatch(ctx, batch);
-				if (batch.matrices.size() == batch.size) {
-					batch.update(batch.matrices.size());
-					t->mesh->drawInstanced(ctx, batch.matrices.size());
-					batch.matrices.clear();
-				}
-			}
-			else {
-				e->bind(ctx, shader);
-				e->draw(ctx);
-			}
+			batch.draw(ctx, e, shader);
 		}
 
-		if (!batch.matrices.empty()) {
-			batch.update(batch.matrices.size());
-			t->mesh->drawInstanced(ctx, batch.matrices.size());
-		}
+		batch.flush(ctx, t);
 	}
 
 	glEnable(GL_CULL_FACE);

@@ -58,6 +58,9 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<
 		if (!shader) continue;
 		shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 
+		Batch& batch = t->batch;
+		batch.bind(ctx, shader);
+
 		for (auto& e : x.second) {
 			if (selection ? !e->selected : e->selected) {
 				continue;
@@ -68,10 +71,11 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<
 				continue;
 			}
 
-			e->bind(ctx, shader);
-			e->draw(ctx);
+			batch.draw(ctx, e, shader);
 			renderCount++;
 		}
+
+		batch.flush(ctx, t);
 	}
 
 	drawBlended(ctx, blendedNodes);
@@ -125,19 +129,28 @@ void NodeRenderer::drawBlended(RenderContext& ctx, std::vector<Node*>& nodes)
 
 	NodeType* type = nullptr;
 	Shader* shader = nullptr;
+	Batch* batch = nullptr;
 
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		Node* node = it->second;
 
 		if (type != node->type) {
+			if (batch) {
+				batch->flush(ctx, type);
+			}
 			type = node->type;
 			shader = type->bind(ctx, nullptr);
 			if (!shader) continue;
 			shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
+
+			batch = &type->batch;
+			batch->bind(ctx, shader);
 		}
 
-		node->bind(ctx, shader);
-		node->draw(ctx);
+		batch->draw(ctx, node, shader);
+	}
+	if (batch) {
+		batch->flush(ctx, type);
 	}
 
 	glEnable(GL_CULL_FACE);

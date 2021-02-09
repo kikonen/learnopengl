@@ -4,6 +4,7 @@
 #include "Shader.h"
 
 class NodeType;
+class Node;
 
 class Batch final
 {
@@ -13,6 +14,8 @@ public:
 	void prepare(NodeType* type);
 	void update(int count);
 	void bind(const RenderContext& ctx, Shader* shader);
+	void draw(const RenderContext& ctx, Node* node, Shader* shader);
+	void flush(const RenderContext& ctx, NodeType* type);
 
 public:
 	bool prepared = false;

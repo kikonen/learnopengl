@@ -87,16 +87,18 @@ void ShadowMapRenderer::drawNodes(
 {
 	for (auto& x : typeNodes) {
 		NodeType* t = x.first;
-		if (t->light || t->skipShadow) {
-			continue;
-		}
+		if (t->light || t->skipShadow) continue;
 
 		t->bind(ctx, shadowShader);
 
+		Batch& batch = t->batch;
+		batch.bind(ctx, shadowShader);
+
 		for (auto& e : x.second) {
-			e->bind(ctx, shadowShader);
-			e->draw(ctx);
+			batch.draw(ctx, e, shadowShader);
 		}
+
+		batch.flush(ctx, t);
 	}
 
 	//for (auto& x : typeTerrains) {
@@ -107,11 +109,16 @@ void ShadowMapRenderer::drawNodes(
 	//}
 
 	for (auto& x : typeSprites) {
-		x.first->bind(ctx, shadowShader);
+		NodeType* t = x.first;
+		t->bind(ctx, shadowShader);
+
+		Batch& batch = t->batch;
+		batch.bind(ctx, shadowShader);
 
 		for (auto& e : x.second) {
-			e->bind(ctx, shadowShader);
-			e->draw(ctx);
+			batch.draw(ctx, e, shadowShader);
 		}
+
+		batch.flush(ctx, t);
 	}
 }

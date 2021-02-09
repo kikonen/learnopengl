@@ -1,6 +1,7 @@
 #include "Batch.h"
 
 #include "NodeType.h"
+#include "Node.h"
 
 Batch::Batch()
 {
@@ -62,4 +63,30 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_2);
 	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_3);
 	glEnableVertexAttribArray(ATTR_INSTANCE_MATRIX_4);
+
+	matrices.clear();
+}
+
+void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
+{
+	if (size == 0) {
+		node->bind(ctx, shader);
+		node->draw(ctx);
+		return;
+	}
+
+	node->bindBatch(ctx, *this);
+
+	if (matrices.size() < size) return;
+
+	flush(ctx, node->type);
+}
+
+void Batch::flush(const RenderContext& ctx, NodeType* type)
+{
+	if (size == 0 || matrices.empty()) return;
+	
+	update(matrices.size());
+	type->mesh->drawInstanced(ctx, matrices.size());
+	matrices.clear();
 }

@@ -78,6 +78,8 @@ void Test6::processInput(float dt) {
 
 SceneSetup1* Test6::setupScene1()
 {
+	assets.batchSize = 10000;
+
 	SceneSetup1* sceneSetup = new SceneSetup1(assets);
 	sceneSetup->setup();
 

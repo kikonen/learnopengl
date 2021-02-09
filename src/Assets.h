@@ -19,6 +19,8 @@ public:
 
     int terrainTileSize = 400;
 
+    int batchSize = 1000;
+
     int shadowMapUnitId = GL_TEXTURE30;
     unsigned int shadowMapUnitIndex = 30;
 

@@ -46,21 +46,30 @@ void Scene::prepare()
 	prepareUBOs();
 
 	for (auto& x : typeNodes) {
-		x.first->prepare(assets);
+		NodeType* t = x.first;
+		t->batch.size = assets.batchSize;
+		t->prepare(assets);
+
 		for (auto& e : x.second) {
 			e->prepare(assets);
 		}
 	}
 
 	for (auto& x : typeSprites) {
-		x.first->prepare(assets);
+		NodeType* t = x.first;
+		t->batch.size = assets.batchSize;
+		t->prepare(assets);
+
 		for (auto& e : x.second) {
 			e->prepare(assets);
 		}
 	}
 
 	for (auto& x : typeTerrains) {
-		x.first->prepare(assets);
+		NodeType* t = x.first;
+		t->batch.size = assets.batchSize;
+		t->prepare(assets);
+
 		for (auto& e : x.second) {
 			e->prepare(assets);
 		}
@@ -102,16 +111,6 @@ void Scene::update(RenderContext& ctx)
 	spriteRenderer->update(ctx, typeSprites);
 	terrainRenderer->update(ctx, typeTerrains);
 	viewportRenderer->update(ctx, viewports);
-
-	//if (showNormals) {
-	//	normalRenderer->update(ctx, typeNodes);
-
-	//	std::map<int, std::vector<Node*>> r1 = spriteToNodes();
-	//	normalRenderer->update(ctx, r1);
-
-	//	std::map<int, std::vector<Node*>> r2 = terrainToNodes();
-	//	normalRenderer->update(ctx, r1);
-	//}
 }
 
 void Scene::bind(RenderContext& ctx)
@@ -147,13 +146,7 @@ void Scene::draw(RenderContext& ctx)
 	nodeRenderer->render(ctx, typeNodes);
 
 	if (showNormals) {
-		normalRenderer->render(ctx, typeNodes);
-
-		std::map<NodeType*, std::vector<Node*>> r1 = spriteToNodes();
-		normalRenderer->render(ctx, r1);
-
-		std::map<NodeType*, std::vector<Node*>> r2 = terrainToNodes();
-		normalRenderer->render(ctx, r2);
+		normalRenderer->render(ctx, typeNodes, typeSprites, typeTerrains);
 	}
 
 	viewportRenderer->render(ctx, viewports);
