@@ -16,7 +16,7 @@
 #include "Assets.h"
 #include "MeshBuffers.h"
 
-class Mesh {
+class Mesh final {
 public:
 	Mesh(
 		const std::string& modelName);
@@ -29,7 +29,7 @@ public:
 
 	void prepare(const Assets& assets);
 	void updateBuffers(MeshBuffers& curr);
-	Shader* bind(const RenderContext& ctx, Shader* shader);
+	void bind(const RenderContext& ctx, Shader* shader);
 	void draw(const RenderContext& ctx);
 	void drawInstanced(const RenderContext& ctx, int instanceCount);
 
