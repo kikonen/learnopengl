@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Mesh.h"
+#include "ModelMesh.h"
 #include "Assets.h"
 
 
@@ -20,7 +20,7 @@ public:
 
 	~MeshLoader();
 
-	Mesh* load();
+	ModelMesh* load();
 
 private:
 	int loadData(

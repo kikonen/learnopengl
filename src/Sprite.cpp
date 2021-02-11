@@ -1,30 +1,17 @@
 #include "Sprite.h"
 
 #include "MeshLoader.h"
+#include "QuadMesh.h"
 
-Mesh* spriteMesh = nullptr;
+ModelMesh* spriteMesh = nullptr;
 
-const float vertices[] = {
-	// pos      // tex
-	0.0f, 1.0f, 0.0f, 1.0f,
-	1.0f, 0.0f, 1.0f, 0.0f,
-	0.0f, 0.0f, 0.0f, 0.0f,
-
-	0.0f, 1.0f, 0.0f, 1.0f,
-	1.0f, 1.0f, 1.0f, 1.0f,
-	1.0f, 0.0f, 1.0f, 0.0f
-};
 
 Mesh* Sprite::getMesh(const Assets& assets, Material* material)
 {
-	MeshLoader loader(assets, "brickwall2");
-	loader.defaultMaterial = material;
-	loader.overrideMaterials = true;
-	return loader.load();
+	QuadMesh* mesh = new QuadMesh();
+	mesh->material = material;
 
-	if (!spriteMesh) {
-	}
-	return spriteMesh;
+	return mesh;
 }
 
 Material* Sprite::getMaterial(const Assets& assets, const std::string& name)
@@ -34,7 +21,8 @@ Material* Sprite::getMaterial(const Assets& assets, const std::string& name)
 	material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 	material->map_kd = name;
 	material->loadTextures(assets.spritesDir + "/");
-	material->prepare();
+	material->diffuseTex->unitIndex = 0;
+
 	return material;
 }
 

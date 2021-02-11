@@ -25,8 +25,7 @@ public:
 	const bool normalMap;
 
 	unsigned int textureID = -1;
-	unsigned int unitID = -1;
-	unsigned int textureIndex = -1;
+	unsigned int unitIndex = -1;
 
 	Image* image = nullptr;
 

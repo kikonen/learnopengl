@@ -76,7 +76,7 @@ void InstancedNode::updateBuffers(const RenderContext& ctx)
 	{
 		selectedBuffers.prepare();
 
-		type->mesh->updateBuffers(selectedBuffers);
+		type->mesh->prepareBuffers(selectedBuffers);
 
 		glBindBuffer(GL_ARRAY_BUFFER, selectedBuffer);
 		glBindVertexArray(selectedBuffers.VAO);

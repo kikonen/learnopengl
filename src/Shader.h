@@ -62,6 +62,7 @@ private:
     std::vector<std::string> processInclude(const std::string& includePath, int lineNumber);
 
     int createProgram();
+    void prepareTextureUniform();
     void prepareTextureUniforms();
     GLint getUniformLoc(const std::string& name);
 public:
@@ -275,6 +276,7 @@ public:
     Shader::Int skybox = { "skybox" };
 
     std::vector<TextureInfo> textures;
+    TextureInfo* texture;
 
 private:
     int res;

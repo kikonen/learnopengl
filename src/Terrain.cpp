@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include "Mesh.h"
-
 
 Terrain::Terrain(NodeType* type, int worldX, int worldZ)
 	: Node(type), worldX(worldX), worldZ(worldZ)

@@ -539,11 +539,9 @@ void SceneSetup1::setupTerrain(Scene* scene)
 	material->loadTextures(assets.texturesDir + "/");
 	material->prepare();
 
-	unsigned int textureIndex = 0;
+	unsigned int unitIndex = 0;
 	for (auto const& texture : material->textures) {
-		texture->textureIndex = textureIndex;
-		texture->unitID = GL_TEXTURE0 + textureIndex;
-		textureIndex++;
+		texture->unitIndex = unitIndex++;
 	}
 
 	Shader* shader = getShader(TEX_TERRAIN);

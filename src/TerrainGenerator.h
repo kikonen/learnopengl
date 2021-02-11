@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Mesh.h"
+#include "ModelMesh.h"
 
 class TerrainGenerator
 {
 public:
 	TerrainGenerator(const Assets& assets);
 
-	Mesh* generateTerrain(Material* material);
+	ModelMesh* generateTerrain(Material* material);
 
 public:
 	const Assets& assets;

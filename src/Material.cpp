@@ -73,21 +73,43 @@ void Material::prepare()
 	}
 }
 
-void Material::bind(Shader* shader, int index)
+void Material::bind(Shader* shader)
 {
-	TextureInfo info = shader->textures[index];
+	TextureInfo& info = *shader->texture;
 
 	if (diffuseTex) {
-		info.diffuseTex->set(diffuseTex->textureIndex);
+		info.diffuseTex->set(diffuseTex->unitIndex);
 	}
 	if (emissionTex) {
-		info.emissionTex->set(emissionTex->textureIndex);
+		info.emissionTex->set(emissionTex->unitIndex);
 	}
 	if (specularTex) {
-		info.specularTex->set(specularTex->textureIndex);
+		info.specularTex->set(specularTex->unitIndex);
 	}
 	if (normalMap) {
-		info.normalMap->set(normalMap->textureIndex);
+		info.normalMap->set(normalMap->unitIndex);
+	}
+
+	for (auto const x : textures) {
+		x->bind(shader);
+	}
+}
+
+void Material::bindArray(Shader* shader, int index)
+{
+	TextureInfo& info = shader->textures[index];
+
+	if (diffuseTex) {
+		info.diffuseTex->set(diffuseTex->unitIndex);
+	}
+	if (emissionTex) {
+		info.emissionTex->set(emissionTex->unitIndex);
+	}
+	if (specularTex) {
+		info.specularTex->set(specularTex->unitIndex);
+	}
+	if (normalMap) {
+		info.normalMap->set(normalMap->unitIndex);
 	}
 
 	for (auto const x : textures) {

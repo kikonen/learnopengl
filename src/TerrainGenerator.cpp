@@ -9,9 +9,9 @@ TerrainGenerator::TerrainGenerator(const Assets& assets)
 {
 }
 
-Mesh* TerrainGenerator::generateTerrain(Material* material)
+ModelMesh* TerrainGenerator::generateTerrain(Material* material)
 {
-	Mesh* mesh = new Mesh("terrain");
+	ModelMesh* mesh = new ModelMesh("terrain");
 	mesh->materials.push_back(material);
 
 	Perlin perlin(-1);

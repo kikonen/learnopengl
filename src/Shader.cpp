@@ -206,13 +206,34 @@ int Shader::createProgram() {
 
     skybox.init(this);
 
+    prepareTextureUniform();
     prepareTextureUniforms();
 
     return 0;
 }
 
+void Shader::prepareTextureUniform()
+{
+    TextureInfo* info = new TextureInfo();
+    info->diffuseTex = new Shader::Int("diffuse");
+    info->diffuseTex->init(this);
+
+    info->emissionTex = new Shader::Int("emission");
+    info->emissionTex->init(this);
+
+    info->specularTex = new Shader::Int("specular");
+    info->specularTex->init(this);
+
+    info->normalMap = new Shader::Int("normalMap");
+    info->normalMap->init(this);
+
+    texture = info;
+}
+
 void Shader::prepareTextureUniforms()
 {
+    textures.reserve(MATERIAL_COUNT);
+
     for (int i = 0; i < MATERIAL_COUNT; i++) {
         TextureInfo info;
 
@@ -237,7 +258,6 @@ void Shader::prepareTextureUniforms()
         textures.push_back(info);
     }
 }
-
 
 //void Shader::setFloat3(const std::string& name, float v1, float v2, float v3)
 //{

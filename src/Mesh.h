@@ -1,53 +1,22 @@
 #pragma once
 
-#include <string>
-#include <array>
-#include <vector>
-#include <map>
-
+#include "MeshBuffers.h"
 #include "Assets.h"
-#include "Shader.h"
 #include "RenderContext.h"
 
-#include "Tri.h"
-#include "Material.h"
-#include "Shader.h"
-#include "Vertex.h"
-#include "Assets.h"
-#include "MeshBuffers.h"
-
-class Mesh final {
+class Mesh
+{
 public:
-	Mesh(
-		const std::string& modelName);
-
-	Mesh(
-		const std::string& modelName,
-		const std::string& path);
-
+	Mesh();
 	~Mesh();
 
-	void prepare(const Assets& assets);
-	void updateBuffers(MeshBuffers& curr);
-	void bind(const RenderContext& ctx, Shader* shader);
-	void draw(const RenderContext& ctx);
-	void drawInstanced(const RenderContext& ctx, int instanceCount);
+	virtual void prepare(const Assets& assets) = 0;
+	virtual void prepareBuffers(MeshBuffers& curr) = 0;
+	virtual void bind(const RenderContext& ctx, Shader* shader) = 0;
+	virtual void draw(const RenderContext& ctx) = 0;
+	virtual void drawInstanced(const RenderContext& ctx, int instanceCount) = 0;
 
 public:
-	Material* defaultMaterial = nullptr;
-
 	MeshBuffers buffers;
-
-	std::vector<Tri*> tris;
-	std::vector<Vertex*> vertices;
-
-	std::vector<Material*> materials;
-
-private:
-	const std::string modelName;
-	const std::string path;
-
-	MaterialsUBO materialsUbo;
-	unsigned int  materialsUboId = -1;
-	unsigned int materialsUboSize = -1;
 };
+

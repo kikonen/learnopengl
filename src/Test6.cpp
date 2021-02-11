@@ -3,8 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "Mesh.h"
-
 #include "KIGL.h"
 
 Test6::Test6() {

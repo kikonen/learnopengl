@@ -1,7 +1,6 @@
 #include "NodeType.h"
 
 #include "Assets.h"
-#include "Mesh.h"
 #include "RenderContext.h"
 
 int objectIDbase = 0;
