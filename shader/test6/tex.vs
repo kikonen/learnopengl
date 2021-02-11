@@ -23,7 +23,7 @@ uniform bool drawInstanced;
 out VS_OUT {
   vec2 texCoords;
 
-  flat float materialIndex;
+  flat int materialIndex;
 
   vec3 fragPos;
   vec3 normal;
@@ -52,7 +52,7 @@ void main() {
 
   gl_Position = projectionMatrix * vmMat * vec4(aPos, 1.0);
 
-  vs_out.materialIndex = aMaterialIndex;
+  vs_out.materialIndex = int(aMaterialIndex);
   vs_out.texCoords = aTexCoords;
 
   vs_out.fragPos = (modelMatrix * vec4(aPos, 1.0)).xyz;

@@ -1,4 +1,4 @@
-int matIdx = int(fs_in.materialIndex);
+int matIdx = fs_in.materialIndex;
 Material material = materials[matIdx];
 {
   if (material.hasDiffuseTex) {

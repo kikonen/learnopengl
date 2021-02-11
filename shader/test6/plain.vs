@@ -11,7 +11,7 @@ uniform mat4 modelMatrix;
 uniform bool drawInstanced;
 
 out VS_OUT {
-  flat float materialIndex;
+  flat int materialIndex;
 
   vec3 fragPos;
   vec3 normal;

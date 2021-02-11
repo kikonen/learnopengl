@@ -13,7 +13,7 @@ uniform mat3 normalMatrix;
 uniform bool drawInstanced;
 
 out vec4 color;
-flat out float materialIndex;
+flat out int materialIndex;
 out vec2 texCoords;
 out vec3 fragPos;
 out vec3 normal;
@@ -34,7 +34,7 @@ void main() {
 
   color = aColor;
 
-  materialIndex = aMaterialIndex;
+  materialIndex = int(aMaterialIndex);
   texCoords = aTexCoords;
 
   fragPos = vec3(modelMatrix * vec4(aPos, 1.0));

@@ -3,7 +3,7 @@ layout(triangles) in;
 layout(triangle_strip, max_vertices = 3) out;
 
 in VS_OUT {
-  flat float materialIndex;
+  flat int materialIndex;
 
   vec3 fragPos;
   vec3 normal;
@@ -16,7 +16,7 @@ in VS_OUT {
 } vs_in[];
 
 out VS_OUT {
-  flat float materialIndex;
+  flat int materialIndex;
 
   vec3 fragPos;
   vec3 normal;

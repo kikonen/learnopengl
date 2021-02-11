@@ -10,7 +10,7 @@
 #include uniform_materials.glsl
 
 in VS_OUT {
-  flat float materialIndex;
+  flat int materialIndex;
 
   vec3 fragPos;
   vec3 normal;

@@ -1,8 +1,6 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec3 aTangent;
-layout (location = 3) in vec3 aBitangent;
 layout (location = 4) in float aMaterialIndex;
 layout (location = 5) in vec2 aTexCoords;
 layout (location = 6) in mat4 aInstanceMatrix;
@@ -24,7 +22,7 @@ out VS_OUT {
   vec3 fragPos;
   vec2 texCoords;
 
-  flat float materialIndex;
+  flat int materialIndex;
   vec3 normal;
 
   vec4 fragPosLightSpace;
@@ -40,8 +38,6 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
-  int matIdx = int(aMaterialIndex);
-
   mat4 vmMat;
   if (drawInstanced) {
     vmMat = viewMatrix * aInstanceMatrix;
@@ -51,7 +47,7 @@ void main() {
 
   gl_Position = projectionMatrix * vmMat * vec4(aPos, 1.0);
 
-  vs_out.materialIndex = aMaterialIndex;
+  vs_out.materialIndex = int(aMaterialIndex);
   vs_out.texCoords = aTexCoords * 60;
 
   vs_out.fragPos = (modelMatrix * vec4(aPos, 1.0)).xyz;
@@ -71,19 +67,4 @@ void main() {
   };
 
   vs_out.fragPosLightSpace = b * lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
-
-  bool hasNormalMap = materials[matIdx].hasNormalMap;
-  if (hasNormalMap) {
-    vec3 T = normalize(normalMatrix * aTangent);
-    vec3 N = normalize(normalMatrix * aNormal);
-    T = normalize(T - dot(T, N) * N);
-    vec3 B = cross(N, T);
-
-    vec3 lightPos = pointLights[0].pos;
-
-    mat3 TBN = transpose(mat3(T, B, N));
-    vs_out.tangentLightPos = TBN * lightPos;
-    vs_out.tangentViewPos  = TBN * viewPos;
-    vs_out.tangentFragPos  = TBN * vs_out.fragPos;
-  }
 }

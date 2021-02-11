@@ -12,7 +12,7 @@
 in VS_OUT {
   vec2 texCoords;
 
-  flat float materialIndex;
+  flat int materialIndex;
 
   vec3 fragPos;
   vec3 normal;
