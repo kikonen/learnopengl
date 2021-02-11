@@ -23,8 +23,6 @@ public:
 	Material* material = nullptr;
 
 private:
-	MeshBuffers buffers;
-
 	MaterialsUBO materialsUbo;
 	unsigned int  materialsUboId = -1;
 	unsigned int materialsUboSize = -1;

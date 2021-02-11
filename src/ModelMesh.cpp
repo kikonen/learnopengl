@@ -144,6 +144,8 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curr.EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tris.size() * 3, vertexEboBuffer, GL_STATIC_DRAW);
+
+		delete vertexEboBuffer;
 	}
 
 	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind

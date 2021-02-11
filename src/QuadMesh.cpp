@@ -8,6 +8,14 @@ const float VERTICES[] = {
 	 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
 };
 
+const int INDECES[] = {
+	0, 1, 2,
+	2, 1, 3,
+};
+
+const int VERTEX_COUNT = 6;
+
+
 QuadMesh::QuadMesh()
 {
 }
@@ -66,6 +74,12 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
 		glVertexAttribPointer(ATTR_TEX, 2, GL_FLOAT, GL_FALSE, rz, (void*)((3 + 3 + 1) * sizeof(float)));
 	}
 
+	// EBO
+	//{
+	//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curr.EBO);
+	//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(INDECES), &INDECES, GL_STATIC_DRAW);
+	//}
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
@@ -87,9 +101,11 @@ void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
 void QuadMesh::draw(const RenderContext& ctx)
 {
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	//glDrawElements(GL_TRIANGLES, VERTEX_COUNT, GL_UNSIGNED_INT, 0);
 }
 
 void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount);
+	//glDrawElementsInstanced(GL_TRIANGLES, VERTEX_COUNT, GL_UNSIGNED_INT, 0, instanceCount);
 }
