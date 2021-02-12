@@ -8,11 +8,11 @@
 
 class Engine;
 
-class GuiWindow
+class Frame
 {
 public:
-	GuiWindow(Engine& engine);
-	~GuiWindow();
+	Frame(Engine& engine);
+	~Frame();
 
 	virtual void prepare();
 	virtual void bind(const RenderContext& ctx);

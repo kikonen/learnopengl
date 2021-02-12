@@ -1,21 +1,21 @@
-#include "GuiWindow.h"
+#include "Frame.h"
 
 #include "Engine.h"
 
-GuiWindow::GuiWindow(Engine& engine)
+Frame::Frame(Engine& engine)
 	: engine(engine)
 {
 }
 
-GuiWindow::~GuiWindow()
+Frame::~Frame()
 {
 }
 
-void GuiWindow::prepare()
+void Frame::prepare()
 {
 }
 
-void GuiWindow::bind(const RenderContext& ctx)
+void Frame::bind(const RenderContext& ctx)
 {
 	// feed inputs to dear imgui, start new frame
 	ImGui_ImplOpenGL3_NewFrame();
@@ -23,7 +23,7 @@ void GuiWindow::bind(const RenderContext& ctx)
 	ImGui::NewFrame();
 }
 
-void GuiWindow::render(const RenderContext& ctx)
+void Frame::render(const RenderContext& ctx)
 {
 	// Render dear imgui into screen
 	ImGui::Render();

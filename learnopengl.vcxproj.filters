@@ -198,13 +198,13 @@
     <ClCompile Include="external\src\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\EditorWindow.cpp">
+    <ClCompile Include="src\Frame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GuiInit.cpp">
+    <ClCompile Include="src\EditorFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GuiWindow.cpp">
+    <ClCompile Include="src\FrameInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -371,12 +371,6 @@
     <ClInclude Include="src\ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="external\src\imgui\backends\imgui_impl_glfw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="external\src\imgui\misc\single_file\imgui_single_file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="external\src\imgui\imgui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -395,9 +389,6 @@
     <ClInclude Include="external\src\imgui\imconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="external\src\imgui\backends\imgui_impl_opengl3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AsteroidBeltUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -407,13 +398,13 @@
     <ClInclude Include="external\src\imgui\imgui_impl_opengl3.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\EditorWindow.h">
+    <ClInclude Include="src\Frame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GuiInit.h">
+    <ClInclude Include="src\EditorFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GuiWindow.h">
+    <ClInclude Include="src\FrameInit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

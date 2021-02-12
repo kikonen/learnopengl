@@ -2,11 +2,11 @@
 
 class Engine;
 
-class GuiInit
+class FrameInit
 {
 public:
-	GuiInit(Engine& engine);
-	~GuiInit();
+	FrameInit(Engine& engine);
+	~FrameInit();
 
 private:
 	Engine& engine;

@@ -4,7 +4,7 @@
 #include <glm/ext.hpp>
 
 #include "KIGL.h"
-#include "EditorWindow.h"
+#include "EditorFrame.h"
 
 
 Test6::Test6() {
@@ -35,8 +35,8 @@ int Test6::onSetup() {
 	KIGL::startError();
 	KIGL::startDebug();
 
-	guiInit = new GuiInit(*this);
-	guiWindow = new EditorWindow(*this);
+	frameInit = new FrameInit(*this);
+	frame = new EditorFrame(*this);
 
 	return 0;
 }
@@ -67,7 +67,7 @@ int Test6::onRender(float dt) {
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 
-	guiWindow->bind(ctx);
+	frame->bind(ctx);
 
 	currentScene->process(ctx);
 
@@ -75,8 +75,8 @@ int Test6::onRender(float dt) {
 	currentScene->bind(ctx);
 	currentScene->draw(ctx);
 
-	guiWindow->draw(ctx);
-	guiWindow->render(ctx);
+	frame->draw(ctx);
+	frame->render(ctx);
 
 	return 0;
 }

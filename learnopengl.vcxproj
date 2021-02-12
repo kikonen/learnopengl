@@ -151,8 +151,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\GuiInit.cpp" />
-    <ClCompile Include="src\EditorWindow.cpp" />
+    <ClCompile Include="src\FrameInit.cpp" />
+    <ClCompile Include="src\EditorFrame.cpp" />
     <ClCompile Include="external\src\glad\glad.c" />
     <ClCompile Include="external\src\imgui\imgui.cpp" />
     <ClCompile Include="external\src\imgui\imgui_demo.cpp" />
@@ -214,14 +214,14 @@
     <ClCompile Include="src\TerrainGenerator.cpp" />
     <ClCompile Include="src\Water.cpp" />
     <ClCompile Include="src\WaterRenderer.cpp" />
-    <ClCompile Include="src\GuiWindow.cpp" />
+    <ClCompile Include="src\Frame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GuiInit.h" />
-    <ClInclude Include="src\EditorWindow.h" />
+    <ClInclude Include="src\FrameInit.h" />
+    <ClInclude Include="src\EditorFrame.h" />
     <ClInclude Include="external\src\imgui\imconfig.h" />
     <ClInclude Include="external\src\imgui\imgui.h" />
     <ClInclude Include="external\src\imgui\imgui_impl_glfw.h" />
@@ -284,7 +284,7 @@
     <ClInclude Include="src\TerrainGenerator.h" />
     <ClInclude Include="src\Water.h" />
     <ClInclude Include="src\WaterRenderer.h" />
-    <ClInclude Include="src\GuiWindow.h" />
+    <ClInclude Include="src\Frame.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

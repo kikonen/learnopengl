@@ -1,4 +1,4 @@
-#include "GuiInit.h"
+#include "FrameInit.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -6,7 +6,7 @@
 
 #include "Engine.h"
 
-GuiInit::GuiInit(Engine& engine)
+FrameInit::FrameInit(Engine& engine)
 	: engine(engine)
 {
 	// Setup Dear ImGui context
@@ -20,7 +20,7 @@ GuiInit::GuiInit(Engine& engine)
 	ImGui::StyleColorsLight();
 }
 
-GuiInit::~GuiInit()
+FrameInit::~FrameInit()
 {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();

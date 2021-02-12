@@ -8,8 +8,8 @@
 #include "Engine.h"
 #include "SceneSetup1.h"
 
-#include "GuiInit.h"
-#include "GuiWindow.h"
+#include "FrameInit.h"
+#include "Frame.h"
 
 
 class Test6 final : public Engine {
@@ -26,6 +26,6 @@ public:
 
 private:
 	SceneSetup1* currentScene = nullptr;
-	GuiWindow* guiWindow;
-	GuiInit* guiInit;
+	Frame* frame;
+	FrameInit* frameInit;
 };
