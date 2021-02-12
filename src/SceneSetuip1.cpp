@@ -524,7 +524,7 @@ void SceneSetup1::setupSpriteFlare(Scene* scene)
 	for (int i = 0; i < 1001; i++) {
 		Sprite* sprite = new Sprite(type, glm::vec2(1.5, 3));
 		sprite->setPos(pos + glm::vec3(0, 1.5, 0.1 * i));
-		sprite->setRotation(glm::vec3(0, 0, 180));
+		//sprite->setRotation(glm::vec3(0, 0, 180));
 		scene->addSprite(sprite);
 	}
 }
