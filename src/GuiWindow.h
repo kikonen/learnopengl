@@ -18,6 +18,8 @@ public:
 	virtual void bind(const RenderContext& ctx);
 	virtual void draw(const RenderContext& ctx) = 0;
 
+	virtual void render(const RenderContext& ctx);
+
 private:
 	Engine& engine;
 };

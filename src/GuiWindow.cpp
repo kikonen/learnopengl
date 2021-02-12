@@ -23,3 +23,11 @@ void GuiWindow::bind(const RenderContext& ctx)
 	ImGui::NewFrame();
 }
 
+void GuiWindow::render(const RenderContext& ctx)
+{
+	// Render dear imgui into screen
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+

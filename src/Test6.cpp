@@ -76,6 +76,7 @@ int Test6::onRender(float dt) {
 	currentScene->draw(ctx);
 
 	guiWindow->draw(ctx);
+	guiWindow->render(ctx);
 
 	return 0;
 }
