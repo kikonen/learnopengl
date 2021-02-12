@@ -1,13 +1,13 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include <iostream>
 #include <fstream>
 #include <strstream>
 #include <chrono>
 #include <thread>
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include "Input.h"
 #include "Camera.h"
@@ -35,6 +35,10 @@ public:
 
     virtual int onSetup() = 0;
     virtual int onRender(float dt) = 0;
+    virtual void onDestroy();
+
+    virtual void onSetupGUI();
+    virtual void onDestroyGUI();
 
     Shader* getShader(
         const std::string& name,

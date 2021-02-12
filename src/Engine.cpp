@@ -1,5 +1,9 @@
 #include "Engine.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 
 Engine* Engine::current = nullptr;
 
@@ -39,6 +43,8 @@ void Engine::run() {
 	if (res) {
 		glfwSetWindowShouldClose(window, true);
 	}
+
+	onSetupGUI();
 
 	auto tp1 = std::chrono::system_clock::now();
 	auto tp2 = std::chrono::system_clock::now();
@@ -88,6 +94,33 @@ void Engine::run() {
 			std::this_thread::sleep_for(std::chrono::milliseconds(throttleFps));
 		}
 	}
+
+	onDestroyGUI();
+	onDestroy();
+}
+
+void Engine::onDestroy()
+{
+}
+
+void Engine::onSetupGUI()
+{
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	// Setup Platform/Renderer bindings
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
+	// Setup Dear ImGui style
+	ImGui::StyleColorsLight();
+}
+
+void Engine::onDestroyGUI()
+{
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
 Shader* Engine::getShader(const std::string& name, const std::string& geometryType)
@@ -156,7 +189,7 @@ void Engine::on_mouse(double xpos, double ypos)
 	input->handleMouse(xpos, ypos);
 
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-	if (state == GLFW_PRESS) {
+	if (state == GLFW_PRESS && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		camera.onMouseMove(input, input->mouseXoffset, input->mouseYoffset);
 	}

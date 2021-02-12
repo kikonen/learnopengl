@@ -1,9 +1,14 @@
-	#include "Test6.h"
+#include "Test6.h"
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
 #include "KIGL.h"
+
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 
 Test6::Test6() {
 	title = "Test 6";
@@ -44,6 +49,11 @@ int Test6::onRender(float dt) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+	// feed inputs to dear imgui, start new frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
 	glEnable(GL_CULL_FACE); // cull face
 	glCullFace(GL_BACK); // cull back face
@@ -68,7 +78,13 @@ int Test6::onRender(float dt) {
 	currentScene->bind(ctx);
 	currentScene->draw(ctx);
 
+	renderUI(ctx);
+
 	return 0;
+}
+
+void Test6::onDestroy()
+{
 }
 
 void Test6::processInput(float dt) {
@@ -90,3 +106,18 @@ SceneSetup1* Test6::setupScene1()
 	return sceneSetup;
 }
 
+void Test6::renderUI(const RenderContext& ctx)
+{
+	// render your GUI
+	ImGui::Begin("Demo window");
+	ImGui::Button("Hello!");
+	ImGui::End();
+
+	// Render dear imgui into screen
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void save() {
+
+}
