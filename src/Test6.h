@@ -8,7 +8,7 @@
 #include "Engine.h"
 #include "SceneSetup1.h"
 
-class Test6 : public Engine {
+class Test6 final : public Engine {
 public:
 	Test6();
 
