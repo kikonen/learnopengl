@@ -4,10 +4,7 @@
 #include <glm/ext.hpp>
 
 #include "KIGL.h"
-
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "EditorWindow.h"
 
 
 Test6::Test6() {
@@ -38,6 +35,9 @@ int Test6::onSetup() {
 	KIGL::startError();
 	KIGL::startDebug();
 
+	guiInit = new GuiInit(*this);
+	guiWindow = new EditorWindow(*this);
+
 	return 0;
 }
 
@@ -48,11 +48,6 @@ int Test6::onRender(float dt) {
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-	// feed inputs to dear imgui, start new frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
 
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
 	glEnable(GL_CULL_FACE); // cull face
@@ -72,13 +67,15 @@ int Test6::onRender(float dt) {
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 
+	guiWindow->bind(ctx);
+
 	currentScene->process(ctx);
 
 	currentScene->update(ctx);
 	currentScene->bind(ctx);
 	currentScene->draw(ctx);
 
-	renderUI(ctx);
+	guiWindow->draw(ctx);
 
 	return 0;
 }
@@ -104,18 +101,6 @@ SceneSetup1* Test6::setupScene1()
 	});
 
 	return sceneSetup;
-}
-
-void Test6::renderUI(const RenderContext& ctx)
-{
-	// render your GUI
-	ImGui::Begin("Demo window");
-	ImGui::Button("Hello!");
-	ImGui::End();
-
-	// Render dear imgui into screen
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void save() {

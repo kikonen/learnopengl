@@ -151,6 +151,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GuiInit.cpp" />
+    <ClCompile Include="src\EditorWindow.cpp" />
     <ClCompile Include="external\src\glad\glad.c" />
     <ClCompile Include="external\src\imgui\imgui.cpp" />
     <ClCompile Include="external\src\imgui\imgui_demo.cpp" />
@@ -212,13 +214,14 @@
     <ClCompile Include="src\TerrainGenerator.cpp" />
     <ClCompile Include="src\Water.cpp" />
     <ClCompile Include="src\WaterRenderer.cpp" />
+    <ClCompile Include="src\GuiWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="external\src\imgui\backends\imgui_impl_glfw.h" />
-    <ClInclude Include="external\src\imgui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\GuiInit.h" />
+    <ClInclude Include="src\EditorWindow.h" />
     <ClInclude Include="external\src\imgui\imconfig.h" />
     <ClInclude Include="external\src\imgui\imgui.h" />
     <ClInclude Include="external\src\imgui\imgui_impl_glfw.h" />
@@ -227,7 +230,6 @@
     <ClInclude Include="external\src\imgui\imstb_rectpack.h" />
     <ClInclude Include="external\src\imgui\imstb_textedit.h" />
     <ClInclude Include="external\src\imgui\imstb_truetype.h" />
-    <ClInclude Include="external\src\imgui\misc\single_file\imgui_single_file.h" />
     <ClInclude Include="src\Particle.h" />
     <ClInclude Include="src\ParticleGenerator.h" />
     <ClInclude Include="src\ParticleRenderer.h" />
@@ -282,6 +284,7 @@
     <ClInclude Include="src\TerrainGenerator.h" />
     <ClInclude Include="src\Water.h" />
     <ClInclude Include="src\WaterRenderer.h" />
+    <ClInclude Include="src\GuiWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

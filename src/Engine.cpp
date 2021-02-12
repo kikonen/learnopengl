@@ -1,8 +1,6 @@
 #include "Engine.h"
 
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 
 
 Engine* Engine::current = nullptr;
@@ -43,8 +41,6 @@ void Engine::run() {
 	if (res) {
 		glfwSetWindowShouldClose(window, true);
 	}
-
-	onSetupGUI();
 
 	auto tp1 = std::chrono::system_clock::now();
 	auto tp2 = std::chrono::system_clock::now();
@@ -95,32 +91,11 @@ void Engine::run() {
 		}
 	}
 
-	onDestroyGUI();
 	onDestroy();
 }
 
 void Engine::onDestroy()
 {
-}
-
-void Engine::onSetupGUI()
-{
-	// Setup Dear ImGui context
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	// Setup Platform/Renderer bindings
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 330");
-	// Setup Dear ImGui style
-	ImGui::StyleColorsLight();
-}
-
-void Engine::onDestroyGUI()
-{
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
 }
 
 Shader* Engine::getShader(const std::string& name, const std::string& geometryType)

@@ -37,9 +37,6 @@ public:
     virtual int onRender(float dt) = 0;
     virtual void onDestroy();
 
-    virtual void onSetupGUI();
-    virtual void onDestroyGUI();
-
     Shader* getShader(
         const std::string& name,
         const std::string& geometryType = "");
@@ -87,9 +84,12 @@ public:
 
     int width;
     int height;
-protected:
+
+    std::string glsl_version = "#version 330";
+
     GLFWwindow* window = nullptr;
-    Input* input;
+protected:
+    Input* input = nullptr;
 
 private:
 };

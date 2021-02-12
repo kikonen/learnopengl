@@ -8,6 +8,10 @@
 #include "Engine.h"
 #include "SceneSetup1.h"
 
+#include "GuiInit.h"
+#include "GuiWindow.h"
+
+
 class Test6 final : public Engine {
 public:
 	Test6();
@@ -21,8 +25,7 @@ public:
 	void processInput(float dt) override;
 
 private:
-	void renderUI(const RenderContext& ctx);
-
-private:
 	SceneSetup1* currentScene = nullptr;
+	GuiWindow* guiWindow;
+	GuiInit* guiInit;
 };
