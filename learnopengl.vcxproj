@@ -151,6 +151,11 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Particle.cpp" />
+    <ClCompile Include="src\ParticleGenerator.cpp" />
+    <ClCompile Include="src\ParticleRenderer.cpp" />
+    <ClCompile Include="src\ParticleSystem.cpp" />
+    <ClCompile Include="src\ReflectionMapRenderer.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\QuadMesh.cpp" />
     <ClCompile Include="src\Batch.cpp" />
@@ -205,6 +210,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Particle.h" />
+    <ClInclude Include="src\ParticleGenerator.h" />
+    <ClInclude Include="src\ParticleRenderer.h" />
+    <ClInclude Include="src\ParticleSystem.h" />
+    <ClInclude Include="src\ReflectionMapRenderer.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\QuadMesh.h" />
     <ClInclude Include="src\Batch.h" />
