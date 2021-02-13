@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "KIGL.h"
+#include "ki/GL.h"
 
 ModelMesh::ModelMesh(
 	const std::string& modelName)

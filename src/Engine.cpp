@@ -2,6 +2,8 @@
 
 #include "imgui.h"
 
+#include "ki/GL.h"
+#include "ki/Timer.h"
 
 Engine* Engine::current = nullptr;
 
@@ -46,48 +48,66 @@ void Engine::run() {
 	auto tp2 = std::chrono::system_clock::now();
     auto tp3 = std::chrono::system_clock::now();
 
+	std::chrono::duration<float> duration;
+	float ts;
+	char titleSB[256];
+
+	std::chrono::duration<float> elapsedTime;
+
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
 	{
-		tp2 = std::chrono::system_clock::now();
-		std::chrono::duration<float> elapsedTime = tp2 - tp1;
-		float dt = elapsedTime.count();
+		float dt;
+		{
+			//ki::Timer t("loop");
 
-		accumulatedTime += dt;
+			tp2 = std::chrono::system_clock::now();
+			elapsedTime = tp2 - tp1;
+			dt = elapsedTime.count();
 
-		// input
-		// -----
-		processInput(dt);
+			accumulatedTime += dt;
 
-		// render
-		// ------
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			// input
+			// -----
+			processInput(dt);
 
-		int res = onRender(dt);
+			// render
+			// ------
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		if (res) {
-			glfwSetWindowShouldClose(window, true);
+			int res = onRender(dt);
+
+			if (res) {
+				glfwSetWindowShouldClose(window, true);
+			}
+
+			// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+			// -------------------------------------------------------------------------------
+			glfwSwapBuffers(window);
+			glfwPollEvents();
 		}
 
-		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-		// -------------------------------------------------------------------------------
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		{
+			tp3 = std::chrono::system_clock::now();
+			duration = tp3 - tp2;
+			ts = duration.count() * 1000;
 
-		tp3 = std::chrono::system_clock::now();
-        std::chrono::duration<float> loopTime = tp3 - tp2;
-        float ts = loopTime.count() * 1000;
+			tp1 = tp2;
+			sprintf_s(titleSB, 256, "%s - FPS: %3.2f - %3.2fms", title.c_str(), 1.0f / dt, ts);
+			glfwSetWindowTitle(window, titleSB);
+		}
 
-		char s[256];
-		sprintf_s(s, 256, "%s - FPS: %3.2f - %3.2fms", title.c_str(), 1.0f / dt, ts);
-		glfwSetWindowTitle(window, s);
-
-		tp1 = tp2;
+		ki::GL::checkErrors("engine.loop");
 
 		// NOTE KI aim 60fps (no reason to overheat CPU/GPU)
 		if (throttleFps > 0) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(throttleFps));
+			int sleep = throttleFps - ts;
+			if (sleep < 0) {
+				sleep = 10;
+			}
+//			std::cout << "sleep: " << sleep << "ms\n";
+			std::this_thread::sleep_for(std::chrono::milliseconds(sleep));
 		}
 	}
 

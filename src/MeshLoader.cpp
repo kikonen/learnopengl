@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 
+#include "ki/Timer.h"
 
 const glm::vec2 EMPTY_TEX = { 0, 0 };
 const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
@@ -43,6 +44,8 @@ int MeshLoader::loadData(
 		std::vector<Vertex*>&vertices,
 		std::vector<Material*>& materials)
 {
+	ki::Timer t("loadData-" + modelName);
+
 	int result = -1;
 
 	std::string name;

@@ -1,6 +1,6 @@
 #include "Node.h"
 
-#include "KIGL.h"
+#include "ki/GL.h"
 #include "NodeUpdater.h";
 
 

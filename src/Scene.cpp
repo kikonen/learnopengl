@@ -1,6 +1,9 @@
 #include "Scene.h"
 
-#include "KIGL.h"
+#include <thread>
+
+#include "ki/GL.h"
+#include "ki/Timer.h"
 #include "UBO.h"
 
 

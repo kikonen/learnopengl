@@ -69,9 +69,6 @@
     <ClCompile Include="src\Vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\KIGL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\RenderContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -207,6 +204,9 @@
     <ClCompile Include="src\FrameInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ki\GL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -267,9 +267,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\KIGL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\RenderContext.h">
@@ -405,6 +402,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\FrameInit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ki\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ki\GL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

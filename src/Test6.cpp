@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "KIGL.h"
+#include "ki/GL.h"
 #include "EditorFrame.h"
 
 
@@ -32,8 +32,8 @@ int Test6::onSetup() {
 
 	//glDisable(GL_MULTISAMPLE);
 
-	KIGL::startError();
-	KIGL::startDebug();
+	ki::GL::startError();
+	ki::GL::startDebug();
 
 	frameInit = new FrameInit(*this);
 	frame = new EditorFrame(*this);

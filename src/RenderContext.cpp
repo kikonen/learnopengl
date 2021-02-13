@@ -1,6 +1,6 @@
 #include "RenderContext.h"
 
-#include "KIGL.h"
+#include "ki/GL.h"
 #include "Light.h"
 #include "Scene.h"
 
