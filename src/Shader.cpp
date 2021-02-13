@@ -8,9 +8,9 @@
 #include "UBO.h"
 
 // name + geom
-std::map<std::string, Shader*> shaders;
+static std::map<std::string, Shader*> shaders;
 
-std::mutex shaders_lock;
+static std::mutex shaders_lock;
 
 Shader* Shader::getShader(
     const Assets& assets,

@@ -42,10 +42,10 @@ const int UNIT_IDS[] = {
 	GL_TEXTURE31,
 };
 
-std::map<std::string, Texture*> textures;
-std::map<std::string, Texture*> normals;
+static std::map<std::string, Texture*> textures;
+static std::map<std::string, Texture*> normals;
 
-std::mutex textures_lock;
+static std::mutex textures_lock;
 
 Texture* Texture::getTexture(const std::string& path, int textureMode, bool normalMap)
 {
