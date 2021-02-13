@@ -1,5 +1,6 @@
 #include "Texture.h"
 
+#include <mutex>
 #include <glad/glad.h>
 
 #include "Shader.h"
@@ -44,8 +45,12 @@ const int UNIT_IDS[] = {
 std::map<std::string, Texture*> textures;
 std::map<std::string, Texture*> normals;
 
+std::mutex textures_lock;
+
 Texture* Texture::getTexture(const std::string& path, int textureMode, bool normalMap)
 {
+	std::lock_guard<std::mutex> lock(textures_lock);
+
 	std::string cacheKey = path + "_" + std::to_string(textureMode);
 	std::map<std::string, Texture*>& cache = normalMap ? normals : textures;
 
