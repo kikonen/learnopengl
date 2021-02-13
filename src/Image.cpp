@@ -9,6 +9,7 @@
 std::map<std::string, Image*> images;
 
 std::mutex images_lock;
+std::mutex load_lock;
 
 Image* Image::getImage(const std::string& path)
 {
@@ -34,11 +35,15 @@ Image::~Image()
 	data = nullptr;
 }
 
+// NOTE KI *NOT* thread safe
+// https://github.com/nothings/stb/issues/309
 int Image::load(bool flip) {
 	if (loaded) {
 		return res;
 	}
 	loaded = true;
+
+	std::lock_guard<std::mutex> lock(load_lock);
 
 	flipped = flip;
 	stbi_set_flip_vertically_on_load(flip);
