@@ -2,11 +2,12 @@
 
 #include "glm/glm.hpp"
 
+#include "SceneSetup.h"
 #include "Scene.h"
 #include "RenderContext.h"
 #include "Assets.h"
 
-class SceneSetup1
+class SceneSetup1 : public SceneSetup
 {
 public:
 	SceneSetup1(const Assets& assets);
@@ -57,12 +58,8 @@ private:
 	void setupSpriteFlare(Scene* scene);
 
 	void setupTerrain(Scene* scene);
-public:
-	Scene* scene;
 
 private:
-	const Assets& assets;
-
 	Light* activeLight = nullptr;
 	Node* planet = nullptr;
 };

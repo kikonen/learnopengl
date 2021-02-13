@@ -11,7 +11,7 @@
 #include "TerrainGenerator.h"
 
 SceneSetup1::SceneSetup1(const Assets& assets)
-	: assets(assets)
+	: SceneSetup(assets)
 {
 }
 
@@ -501,7 +501,7 @@ void SceneSetup1::setupNodeAsteroids(Scene* scene)
 
 void SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 {
-	auto loader = [this](Scene* scene) {
+	auto loader = [this]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 		type->batchMode = false;
 
@@ -512,9 +512,9 @@ void SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 		InstancedNode* node = new InstancedNode(type, updater);
 		//node->selected = true;
 		std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-		scene->addNode(node);
+		this->scene->addNode(node);
 	};
-	scene->addLoader(loader);
+	addLoader(loader);
 }
 
 void SceneSetup1::setupSpriteFlare(Scene* scene)

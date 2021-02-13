@@ -1,7 +1,6 @@
 #include "Scene.h"
 
 #include <thread>
-#include <future>
 
 #include "ki/GL.h"
 #include "ki/Timer.h"
@@ -31,21 +30,6 @@ Scene::~Scene()
 
 	delete shadowMapRenderer;
 	delete normalRenderer;
-}
-
-
-void Scene::addLoader(std::function<void(Scene*)> loader)
-{
-	loaders.push_back(loader);
-}
-
-void Scene::load(std::function<void(Scene*)> onLoad)
-{
-	for (auto& loader : loaders) {
-		startedLoaders.push_back(std::async(std::launch::async, loader, this));
-	}
-
-	onLoad(this);
 }
 
 void Scene::prepare()

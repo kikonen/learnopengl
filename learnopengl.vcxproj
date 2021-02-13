@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\SceneSetup.cpp" />
     <ClCompile Include="src\FrameInit.cpp" />
     <ClCompile Include="src\EditorFrame.cpp" />
     <ClCompile Include="external\src\glad\glad.c" />
@@ -220,6 +221,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\SceneSetup.h" />
     <ClInclude Include="src\FrameInit.h" />
     <ClInclude Include="src\EditorFrame.h" />
     <ClInclude Include="external\src\imgui\imconfig.h" />

@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 #include <functional>
-#include <future>
 
 #include "Light.h"
 #include "RenderContext.h"
@@ -28,9 +27,6 @@ class Scene final
 public:
 	Scene(const Assets& assets);
 	~Scene();
-
-	void addLoader(std::function<void(Scene*)> loader);
-	void load(std::function<void(Scene*)> onLoad);
 
 	void prepare();
 
@@ -64,11 +60,6 @@ public:
 	SkyboxRenderer* skyboxRenderer = nullptr;
 	UBO ubo;
 private:
-	std::vector<std::function<void(Scene*)>> loaders;
-
-	// https://stackoverflow.com/questions/20126551/storing-a-future-in-a-list
-	std::vector<std::future<void>> startedLoaders;
-
 	NodeRenderer* nodeRenderer = nullptr;
 	SpriteRenderer* spriteRenderer = nullptr;
 

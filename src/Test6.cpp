@@ -97,9 +97,8 @@ SceneSetup1* Test6::setupScene1()
 	sceneSetup->setup();
 
 	//sceneSetup->scene->showNormals = true;
-	sceneSetup->scene->load([](Scene* scene) {
-		scene->prepare();
-	});
+	sceneSetup->load();
+	sceneSetup->scene->prepare();
 
 	return sceneSetup;
 }
