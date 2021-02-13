@@ -53,6 +53,7 @@ private:
 	void setupTerrain();
 
 private:
+	void setPlanet(Node* planet);
 	Node* getPlanet();
 
 private:

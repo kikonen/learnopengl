@@ -1,6 +1,7 @@
 #include "Scene.h"
 
 #include <thread>
+#include <mutex>
 
 #include "ki/GL.h"
 #include "ki/Timer.h"
@@ -199,6 +200,7 @@ std::vector<Light*>& Scene::getSpotLights()
 
 void Scene::addLight(Light* light)
 {
+	std::lock_guard<std::mutex> lock(load_lock);
 	if (light->directional) {
 		dirLight = light;
 	}
@@ -212,21 +214,25 @@ void Scene::addLight(Light* light)
 
 void Scene::addNode(Node* node)
 {
+	std::lock_guard<std::mutex> lock(load_lock);
 	nodes.push_back(node);
 }
 
 void Scene::addSprite(Sprite* sprite)
 {
+	std::lock_guard<std::mutex> lock(load_lock);
 	sprites.push_back(sprite);
 }
 
 void Scene::addTerrain(Terrain* terrain)
 {
+	std::lock_guard<std::mutex> lock(load_lock);
 	terrains.push_back(terrain);
 }
 
 void Scene::addViewPort(Viewport* viewport)
 {
+	std::lock_guard<std::mutex> lock(load_lock);
 	viewports.push_back(viewport);
 }
 

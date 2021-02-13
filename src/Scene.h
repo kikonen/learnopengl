@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <mutex>
 
 #include "Light.h"
 #include "RenderContext.h"
@@ -60,6 +61,10 @@ public:
 
 	SkyboxRenderer* skyboxRenderer = nullptr;
 	UBO ubo;
+
+protected:
+	std::mutex load_lock;
+
 private:
 	NodeRenderer* nodeRenderer = nullptr;
 	SpriteRenderer* spriteRenderer = nullptr;

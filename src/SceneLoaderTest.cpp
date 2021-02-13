@@ -10,6 +10,7 @@
 #include "NodeType.h"
 #include "TerrainGenerator.h"
 
+
 SceneLoaderTest::SceneLoaderTest(const Assets& assets)
 	: SceneLoader(assets)
 {
@@ -500,7 +501,7 @@ void SceneLoaderTest::setupNodePlanet()
 			scene->addLight(light);
 		}
 
-		loadedPlanet = node;
+		setPlanet(node);
 	});
 }
 
@@ -581,10 +582,17 @@ void SceneLoaderTest::setupTerrain()
 	});
 }
 
+void SceneLoaderTest::setPlanet(Node* planet)
+{
+	std::lock_guard<std::mutex> lock(load_lock);
+	loadedPlanet = planet;
+}
+
 Node* SceneLoaderTest::getPlanet()
 {
 	if (!planetFuture) return loadedPlanet;
-	if (!loadedPlanet) planetFuture->get();
+	planetFuture->wait();
+	std::lock_guard<std::mutex> lock(load_lock);
 	planetFuture = nullptr;
 	return loadedPlanet;
 }

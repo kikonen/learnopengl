@@ -1,6 +1,7 @@
 #pragma once
 
 #include <future>
+#include <mutex>
 
 #include "Assets.h"
 #include "Scene.h"
@@ -23,9 +24,9 @@ public:
 	Scene* scene = nullptr;
 
 protected:
-	std::vector<std::function<void()>> loaders;
-
 	// https://stackoverflow.com/questions/20126551/storing-a-future-in-a-list
-	std::vector<std::future<void>> startedLoaders;
+	std::vector<std::future<void>> loaders;
+
+	std::mutex load_lock;
 };
 
