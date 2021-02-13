@@ -45,9 +45,6 @@
     <ClCompile Include="src\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneSetuip1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -207,7 +204,10 @@
     <ClCompile Include="src\ki\GL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneSetup.cpp">
+    <ClCompile Include="src\SceneLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneLoaderTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -246,9 +246,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SceneSetup1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Shader.h">
@@ -413,7 +410,10 @@
     <ClInclude Include="src\ki\GL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SceneSetup.h">
+    <ClInclude Include="src\SceneLoaderTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

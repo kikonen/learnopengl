@@ -1,4 +1,4 @@
-#include "SceneSetup1.h"
+#include "SceneLoaderTest.h"
 
 #include "MeshLoader.h"
 #include "Terrain.h"
@@ -10,21 +10,16 @@
 #include "NodeType.h"
 #include "TerrainGenerator.h"
 
-SceneSetup1::SceneSetup1(const Assets& assets)
-	: SceneSetup(assets)
+SceneLoaderTest::SceneLoaderTest(const Assets& assets)
+	: SceneLoader(assets)
 {
 }
 
-SceneSetup1::~SceneSetup1()
+SceneLoaderTest::~SceneLoaderTest()
 {
 }
 
-Shader* SceneSetup1::getShader(const std::string& name, const std::string& geometryType)
-{
-	return Shader::getShader(assets, name, geometryType);
-}
-
-void SceneSetup1::setup()
+void SceneLoaderTest::setup()
 {
 	scene = new Scene(assets);
 
@@ -67,26 +62,7 @@ void SceneSetup1::setup()
 	//setupNodeBackpack(scene);
 }
 
-void SceneSetup1::process(RenderContext& ctx)
-{
-}
-
-void SceneSetup1::update(RenderContext& ctx)
-{
-	scene->update(ctx);
-}
-
-void SceneSetup1::bind(RenderContext& ctx)
-{
-	scene->bind(ctx);
-}
-
-void SceneSetup1::draw(RenderContext& ctx)
-{
-	scene->draw(ctx);
-}
-
-void SceneSetup1::setupNodeSkybox(Scene* scene)
+void SceneLoaderTest::setupNodeSkybox(Scene* scene)
 {
 	SkyboxRenderer* skybox = new SkyboxRenderer(assets, "skybox");
 	skybox->prepare();
@@ -94,7 +70,7 @@ void SceneSetup1::setupNodeSkybox(Scene* scene)
 	scene->skyboxRenderer = skybox;
 }
 
-void SceneSetup1::setupLightDirectional(Scene* scene)
+void SceneLoaderTest::setupLightDirectional(Scene* scene)
 {
 	// sun
 	Light* sun = new Light();
@@ -110,7 +86,7 @@ void SceneSetup1::setupLightDirectional(Scene* scene)
 	scene->addLight(sun);
 }
 
-void SceneSetup1::setupLightMoving(Scene* scene)
+void SceneLoaderTest::setupLightMoving(Scene* scene)
 {
 	// light
 	Light* light = new Light();
@@ -136,7 +112,7 @@ void SceneSetup1::setupLightMoving(Scene* scene)
 	activeLight = light;
 }
 
-void SceneSetup1::setupNodeDirectional(Scene* scene)
+void SceneLoaderTest::setupNodeDirectional(Scene* scene)
 {
 	Light* sun = scene->getDirLight();
 	if (!sun) return;
@@ -165,7 +141,7 @@ void SceneSetup1::setupNodeDirectional(Scene* scene)
 	node->updater = new MovingLightUpdater(assets, center, radius, speed, scene->getDirLight());
 }
 
-void SceneSetup1::setupNodeLightMoving(Scene* scene)
+void SceneLoaderTest::setupNodeLightMoving(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_LIGHT));
 	type->light = true;
@@ -197,7 +173,7 @@ void SceneSetup1::setupNodeLightMoving(Scene* scene)
 	}
 }
 
-void SceneSetup1::setupNodeZero(Scene* scene) {
+void SceneLoaderTest::setupNodeZero(Scene* scene) {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "water_ball");
 	type->mesh = loader.load();
@@ -208,7 +184,7 @@ void SceneSetup1::setupNodeZero(Scene* scene) {
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeWindow1(Scene* scene)
+void SceneLoaderTest::setupNodeWindow1(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	type->blend = true;
@@ -223,7 +199,7 @@ void SceneSetup1::setupNodeWindow1(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeWindow2(Scene* scene)
+void SceneLoaderTest::setupNodeWindow2(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	type->blend = true;
@@ -239,7 +215,7 @@ void SceneSetup1::setupNodeWindow2(Scene* scene)
 	//	selection.push_back(node);
 }
 
-void SceneSetup1::setupNodeStainedWindows(Scene* scene)
+void SceneLoaderTest::setupNodeStainedWindows(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	type->blend = true;
@@ -256,7 +232,7 @@ void SceneSetup1::setupNodeStainedWindows(Scene* scene)
 	}
 }
 
-void SceneSetup1::setupNodeBrickwall(Scene* scene)
+void SceneLoaderTest::setupNodeBrickwall(Scene* scene)
 {
 	NodeType* type1 = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	type1->renderBack = true;
@@ -278,7 +254,7 @@ void SceneSetup1::setupNodeBrickwall(Scene* scene)
 	}
 }
 
-void SceneSetup1::setupNodeBrickwallBox(Scene* scene)
+void SceneLoaderTest::setupNodeBrickwallBox(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	type->renderBack = true;
@@ -315,7 +291,7 @@ void SceneSetup1::setupNodeBrickwallBox(Scene* scene)
 	}
 }
 
-void SceneSetup1::setupNodeSpyro(Scene* scene)
+void SceneLoaderTest::setupNodeSpyro(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "spyro2");
@@ -327,7 +303,7 @@ void SceneSetup1::setupNodeSpyro(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeBackpack(Scene* scene)
+void SceneLoaderTest::setupNodeBackpack(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "backpack", "/backpack/");
@@ -339,7 +315,7 @@ void SceneSetup1::setupNodeBackpack(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeTeapot(Scene* scene)
+void SceneLoaderTest::setupNodeTeapot(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	type->renderBack = true;
@@ -355,7 +331,7 @@ void SceneSetup1::setupNodeTeapot(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeCow(Scene* scene)
+void SceneLoaderTest::setupNodeCow(Scene* scene)
 {
 	//mesh->defaultShader = getShader(TEX_PLAIN, "_explode");
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
@@ -369,7 +345,7 @@ void SceneSetup1::setupNodeCow(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeBall(Scene* scene)
+void SceneLoaderTest::setupNodeBall(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "texture_ball");
@@ -381,7 +357,7 @@ void SceneSetup1::setupNodeBall(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeCube4(Scene* scene)
+void SceneLoaderTest::setupNodeCube4(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "texture_cube_4");
@@ -393,7 +369,7 @@ void SceneSetup1::setupNodeCube4(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeCubes(Scene* scene)
+void SceneLoaderTest::setupNodeCubes(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "texture_cube_3");
@@ -413,7 +389,7 @@ void SceneSetup1::setupNodeCubes(Scene* scene)
 	}
 }
 
-void SceneSetup1::setupNodeActive(Scene* scene)
+void SceneLoaderTest::setupNodeActive(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "texture_cube");
@@ -429,7 +405,7 @@ void SceneSetup1::setupNodeActive(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeMountains(Scene* scene)
+void SceneLoaderTest::setupNodeMountains(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "texture_mountains");
@@ -441,7 +417,7 @@ void SceneSetup1::setupNodeMountains(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeWaterBall(Scene* scene)
+void SceneLoaderTest::setupNodeWaterBall(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "water_ball");
@@ -453,7 +429,7 @@ void SceneSetup1::setupNodeWaterBall(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodePlanet(Scene* scene)
+void SceneLoaderTest::setupNodePlanet(Scene* scene)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "planet", "/planet/");
@@ -485,7 +461,7 @@ void SceneSetup1::setupNodePlanet(Scene* scene)
 	}
 }
 
-void SceneSetup1::setupNodeAsteroids(Scene* scene)
+void SceneLoaderTest::setupNodeAsteroids(Scene* scene)
 {
 	glm::vec3 planetPos = glm::vec3(10, 100, 100);
 
@@ -499,7 +475,7 @@ void SceneSetup1::setupNodeAsteroids(Scene* scene)
 	scene->addNode(node);
 }
 
-void SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
+void SceneLoaderTest::setupNodeAsteroidBelt(Scene* scene)
 {
 	auto loader = [this]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
@@ -517,7 +493,7 @@ void SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 	addLoader(loader);
 }
 
-void SceneSetup1::setupSpriteFlare(Scene* scene)
+void SceneLoaderTest::setupSpriteFlare(Scene* scene)
 {
 	NodeType* type = Sprite::getNodeType(assets, "Skeleton_VH.PNG");
 
@@ -530,7 +506,7 @@ void SceneSetup1::setupSpriteFlare(Scene* scene)
 	}
 }
 
-void SceneSetup1::setupTerrain(Scene* scene)
+void SceneLoaderTest::setupTerrain(Scene* scene)
 {
 	Material* material = new Material("terrain");
 	material->textureMode = GL_REPEAT;

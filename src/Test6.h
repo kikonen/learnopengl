@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "Engine.h"
-#include "SceneSetup1.h"
+#include "SceneLoader.h"
 
 #include "FrameInit.h"
 #include "Frame.h"
@@ -18,14 +18,14 @@ public:
 
 	int onSetup() override;
 
-	SceneSetup1* setupScene1();
+	SceneLoader* loadScene();
 
 	int onRender(float dt) override;
 	void onDestroy() override;
 	void processInput(float dt) override;
 
 private:
-	SceneSetup1* currentScene = nullptr;
+	Scene* currentScene = nullptr;
 	Frame* frame;
 	FrameInit* frameInit;
 };

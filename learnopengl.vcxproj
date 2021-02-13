@@ -151,7 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\SceneSetup.cpp" />
+    <ClCompile Include="src\SceneLoader.cpp" />
     <ClCompile Include="src\FrameInit.cpp" />
     <ClCompile Include="src\EditorFrame.cpp" />
     <ClCompile Include="external\src\glad\glad.c" />
@@ -186,7 +186,7 @@
     <ClCompile Include="src\NormalRenderer.cpp" />
     <ClCompile Include="src\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\ki\GL.cpp" />
-    <ClCompile Include="src\SceneSetuip1.cpp" />
+    <ClCompile Include="src\SceneLoaderTest.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\Assets.cpp" />
@@ -221,7 +221,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\SceneSetup.h" />
+    <ClInclude Include="src\SceneLoader.h" />
     <ClInclude Include="src\FrameInit.h" />
     <ClInclude Include="src\EditorFrame.h" />
     <ClInclude Include="external\src\imgui\imconfig.h" />
@@ -256,7 +256,7 @@
     <ClInclude Include="src\NormalRenderer.h" />
     <ClInclude Include="src\ShadowMapRenderer.h" />
     <ClInclude Include="src\ki\GL.h" />
-    <ClInclude Include="src\SceneSetup1.h" />
+    <ClInclude Include="src\SceneLoaderTest.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Sprite.h" />
     <ClInclude Include="src\Assets.h" />

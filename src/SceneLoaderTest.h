@@ -2,26 +2,19 @@
 
 #include "glm/glm.hpp"
 
-#include "SceneSetup.h"
+#include "SceneLoader.h"
 #include "Scene.h"
 #include "RenderContext.h"
 #include "Assets.h"
 
-class SceneSetup1 : public SceneSetup
+class SceneLoaderTest : public SceneLoader
 {
 public:
-	SceneSetup1(const Assets& assets);
-	~SceneSetup1();
+	SceneLoaderTest(const Assets& assets);
+	~SceneLoaderTest();
 
-	Shader* getShader(const std::string& name, const std::string& geometryType = "");
+	void setup() override;
 
-	void setup();
-
-	void process(RenderContext& ctx);
-
-	void update(RenderContext& ctx);
-	void bind(RenderContext& ctx);
-	void draw(RenderContext& ctx);
 private:
 	void setupNodeSkybox(Scene* scene);
 

@@ -5,13 +5,18 @@
 #include "Assets.h"
 #include "Scene.h"
 
-class SceneSetup
+class SceneLoader
 {
 public:
-	SceneSetup(const Assets& assets);
+	SceneLoader(const Assets& assets);
+
+	virtual void setup();
 
 	void addLoader(std::function<void()> loader);
 	void load();
+
+protected:
+	Shader* getShader(const std::string& name, const std::string& geometryType = "");
 
 public:
 	const Assets& assets;

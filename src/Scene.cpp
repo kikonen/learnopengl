@@ -109,6 +109,9 @@ void Scene::attachNodes()
 	}
 }
 
+void Scene::processEvents(RenderContext& ctx) 
+{
+}
 
 void Scene::update(RenderContext& ctx)
 {

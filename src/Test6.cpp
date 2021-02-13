@@ -6,6 +6,7 @@
 #include "ki/GL.h"
 #include "EditorFrame.h"
 
+#include "SceneLoaderTest.h"
 
 Test6::Test6() {
 	title = "Test 6";
@@ -16,8 +17,8 @@ Test6::Test6() {
 }
 
 int Test6::onSetup() {
-	SceneSetup1* sceneSetup = setupScene1();
-	currentScene = sceneSetup;
+	SceneLoader* loader = loadScene();
+	currentScene = loader->scene;
 
 	camera.setPos(glm::vec3(-8, 5, 10.f) + assets.groundOffset);
 	//camera.setPos(glm::vec3(-8, 5, 10.f));
@@ -44,8 +45,6 @@ int Test6::onSetup() {
 int Test6::onRender(float dt) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	Scene* scene = currentScene->scene;
-
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -63,14 +62,13 @@ int Test6::onRender(float dt) {
 		*this, dt,
 		camera.getView(),
 		projection,
-		scene);
+		currentScene);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 
 	frame->bind(ctx);
 
-	currentScene->process(ctx);
-
+	currentScene->processEvents(ctx);
 	currentScene->update(ctx);
 	currentScene->bind(ctx);
 	currentScene->draw(ctx);
@@ -89,18 +87,18 @@ void Test6::processInput(float dt) {
 	Engine::processInput(dt);
 }
 
-SceneSetup1* Test6::setupScene1()
+SceneLoader* Test6::loadScene()
 {
 	assets.batchSize = 1000;
 
-	SceneSetup1* sceneSetup = new SceneSetup1(assets);
-	sceneSetup->setup();
+	SceneLoader* loader = new SceneLoaderTest(assets);
+	loader->setup();
 
 	//sceneSetup->scene->showNormals = true;
-	sceneSetup->load();
-	sceneSetup->scene->prepare();
+	loader->load();
+	loader->scene->prepare();
 
-	return sceneSetup;
+	return loader;
 }
 
 void save() {
