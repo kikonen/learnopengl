@@ -210,6 +210,9 @@
     <ClCompile Include="src\SceneLoaderTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\CubeMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -414,6 +417,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\SceneLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CubeMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

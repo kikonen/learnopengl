@@ -265,8 +265,14 @@ public:
     Shader::Mat4 modelMatrix = { "modelMatrix" };
     Shader::Mat3 normalMatrix = { "normalMatrix" };
 
-    Shader::Int normalMap = { "normalMap" };
+    Shader::Bool hasReflectionMap = { "hasReflectionMap" };
+    Shader::Int reflectionMap = { "reflectionMap" };
+
+    Shader::Bool hasRefactionMap = { "hasRefactionMap" };
+    Shader::Int refactionMap = { "refactionMap" };
+
     Shader::Int shadowMap = { "shadowMap" };
+    Shader::Int normalMap = { "normalMap" };
 
     Shader::Bool drawInstanced = { "drawInstanced" };
 

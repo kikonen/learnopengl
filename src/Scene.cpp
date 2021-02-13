@@ -17,6 +17,7 @@ Scene::Scene(const Assets& assets)
 	viewportRenderer = new ViewportRenderer(assets);
 
 	shadowMapRenderer = new ShadowMapRenderer(assets);
+	reflectionMapRenderer = new ReflectionMapRenderer(assets);
 	normalRenderer = new NormalRenderer(assets);
 
 	particleSystem = new ParticleSystem(assets);
@@ -30,6 +31,7 @@ Scene::~Scene()
 	delete viewportRenderer;
 
 	delete shadowMapRenderer;
+	delete reflectionMapRenderer;
 	delete normalRenderer;
 }
 
@@ -44,11 +46,12 @@ void Scene::prepare()
 	terrainRenderer->prepare();
 	viewportRenderer->prepare();
 
+	shadowMapRenderer->prepare();
+	reflectionMapRenderer->prepare();
+
 	if (showNormals) {
 		normalRenderer->prepare();
 	}
-
-	shadowMapRenderer->prepare();
 
 	particleSystem->prepare();
 
@@ -140,12 +143,16 @@ void Scene::update(RenderContext& ctx)
 	terrainRenderer->update(ctx, typeTerrains);
 	viewportRenderer->update(ctx, viewports);
 
+	glm::vec3 pos = glm::vec3(0, 20, 0) + assets.groundOffset;
+	reflectionMapRenderer->center = pos;
+
 	particleSystem->update(ctx);
 }
 
 void Scene::bind(RenderContext& ctx)
 {
 	shadowMapRenderer->bind(ctx);
+	reflectionMapRenderer->bind(ctx);
 	ctx.bindGlobal();
 }
 
@@ -164,11 +171,20 @@ void Scene::draw(RenderContext& ctx)
 	glEnable(GL_DEPTH_TEST);
 
 	shadowMapRenderer->render(ctx, typeNodes, typeSprites, typeTerrains);
-
 	shadowMapRenderer->bindTexture(ctx);
+
+	reflectionMapRenderer->render(ctx, typeNodes, typeSprites, typeTerrains);
+	reflectionMapRenderer->bindTexture(ctx);
 
 	if (skyboxRenderer) {
 		skyboxRenderer->render(ctx);
+		skyboxRenderer->bindTexture(ctx);
+
+		glActiveTexture(assets.reflectionMapUnitId);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->textureID);
+
+		glActiveTexture(assets.refactionMapUnitId);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->textureID);
 	}
 
 	terrainRenderer->render(ctx, typeTerrains);
@@ -237,36 +253,6 @@ void Scene::addViewPort(Viewport* viewport)
 {
 	std::lock_guard<std::mutex> lock(load_lock);
 	viewports.push_back(viewport);
-}
-
-std::map<NodeType*, std::vector<Node*>> Scene::terrainToNodes()
-{
-	std::map<NodeType*, std::vector<Node*>> r;
-
-	for (auto& x : typeTerrains) {
-		std::vector<Node*> a;
-		a.reserve(x.second.size());
-		for (auto& e : x.second) {
-			a.push_back(e);
-		}
-		r[x.first] = a;
-	}
-	return r;
-}
-
-std::map<NodeType*, std::vector<Node*>> Scene::spriteToNodes()
-{
-	std::map<NodeType*, std::vector<Node*>> r;
-
-	for (auto& x : typeSprites) {
-		std::vector<Node*> a;
-		a.reserve(x.second.size());
-		for (auto& e : x.second) {
-			a.push_back(e);
-		}
-		r[x.first] = a;
-	}
-	return r;
 }
 
 void Scene::prepareUBOs()

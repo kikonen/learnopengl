@@ -11,6 +11,8 @@ uniform mat4 modelMatrix;
 uniform bool drawInstanced;
 
 out VS_OUT {
+  vec3 vertexPos;
+
   flat int materialIndex;
 
   vec3 fragPos;
@@ -42,6 +44,7 @@ void main() {
   vs_out.materialIndex = aMaterialIndex;
 
   vs_out.fragPos = (modelMatrix * vec4(aPos, 1.0)).xyz;
+  vs_out.vertexPos = aPos;
 
   if (drawInstanced) {
     mat3 mat = transpose(inverse(mat3(aInstanceMatrix)));

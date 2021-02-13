@@ -4,7 +4,7 @@
 class FrameBuffer final
 {
 public:
-	FrameBuffer(int w, int h);
+	FrameBuffer(int width, int height);
 	~FrameBuffer();
 
 	void prepare();
@@ -14,8 +14,8 @@ public:
 	void bindTexture(int unitID);
 
 public:
-	const int w;
-	const int h;
+	const int width;
+	const int height;
 
 	unsigned int FBO;
 	unsigned int textureID;

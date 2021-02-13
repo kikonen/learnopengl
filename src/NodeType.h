@@ -28,6 +28,7 @@ public:
 	bool renderBack = false;
 	bool skipShadow = false;
 	bool batchMode = true;
+	bool reflection = false;
 
 	Mesh* mesh = nullptr;
 	Shader* defaultShader = nullptr;

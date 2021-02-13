@@ -24,6 +24,7 @@ public:
 	void bind(Shader* shader) const;
 public:
 	const Engine& engine;
+	const Assets& assets;
 
 	Scene* scene;
 

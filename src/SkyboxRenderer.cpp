@@ -1,5 +1,7 @@
 #include "SkyboxRenderer.h"
 
+#include "CubeMap.h"
+
 const int ATTR_SKYBOX_POS = 0;
 
 
@@ -73,9 +75,11 @@ int SkyboxRenderer::prepare()
         baseDir + "/" + name + "/back.jpg"
     };
 
-    textureID = loadCubemap(faces);
+    CubeMap cube;
+    textureID = cube.createFromImages(faces);
 
     shader->prepare();
+    shader->skybox.set(assets.skyboxUnitIndex);
 
     if (shader->prepare()) {
         return -1;
@@ -101,6 +105,10 @@ int SkyboxRenderer::prepare()
 void SkyboxRenderer::assign(Shader* shader)
 {
     shader->skybox.set(assets.skyboxUnitIndex);
+}
+
+void SkyboxRenderer::bindTexture(const RenderContext& ctx)
+{
     glActiveTexture(assets.skyboxUnitId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 }
@@ -112,16 +120,13 @@ void SkyboxRenderer::update(const RenderContext& ctx)
 void SkyboxRenderer::render(const RenderContext& ctx)
 {
     shader->bind();
-    shader->skybox.set(assets.skyboxUnitIndex);
+    bindTexture(ctx);
 
     // remove translation from the view matrix
     glm::mat4 viewMatrix = glm::mat4(glm::mat3(ctx.view));
 
     shader->viewMatrix.set(viewMatrix);
     shader->projectionMatrix.set(ctx.projection);
-
-    glActiveTexture(assets.skyboxUnitId);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     glDepthFunc(GL_LEQUAL);
     glBindVertexArray(buffers.VAO);
@@ -131,33 +136,3 @@ void SkyboxRenderer::render(const RenderContext& ctx)
     glDepthFunc(GL_LESS);
 }
 
-// loads a cubemap texture from 6 individual texture faces
-// order:
-// +X (right)
-// -X (left)
-// +Y (top)
-// -Y (bottom)
-// +Z (front) 
-// -Z (back)
-// -------------------------------------------------------
-unsigned int SkyboxRenderer::loadCubemap(std::vector<std::string> faces)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-    for (unsigned int i = 0; i < faces.size(); i++)
-    {
-        Image* image = Image::getImage(faces[i]);
-        if (!image->load(false)) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->data);
-        }
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    return textureID;
-}

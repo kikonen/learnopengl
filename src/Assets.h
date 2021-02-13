@@ -21,6 +21,12 @@ public:
 
     int batchSize = 1000;
 
+    int refactionMapUnitId = GL_TEXTURE28;
+    unsigned int refactionMapUnitIndex = 28;
+
+    int reflectionMapUnitId = GL_TEXTURE29;
+    unsigned int reflectionMapUnitIndex = 29;
+
     int shadowMapUnitId = GL_TEXTURE30;
     unsigned int shadowMapUnitIndex = 30;
 

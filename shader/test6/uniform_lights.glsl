@@ -1,5 +1,5 @@
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
-#define LIGHT_COUNT 8
+#define LIGHT_COUNT 4
 
 layout(std140) uniform Lights {
   DirLight light;

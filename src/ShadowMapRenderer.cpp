@@ -87,38 +87,48 @@ void ShadowMapRenderer::drawNodes(
 	std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
 	std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
 {
-	for (auto& x : typeNodes) {
+#if 0
+	for (auto& x : typeTerrains) {
 		NodeType* t = x.first;
 		if (t->light || t->skipShadow) continue;
-
-		t->bind(ctx, shadowShader);
+		Shader* shader = t->bind(ctx, shadowShader);
 
 		Batch& batch = t->batch;
-		batch.bind(ctx, shadowShader);
+		batch.bind(ctx, shader);
 
 		for (auto& e : x.second) {
-			batch.draw(ctx, e, shadowShader);
+			batch.draw(ctx, e, shader);
+		}
+
+		batch.flush(ctx, t);
+	}
+#endif
+
+	for (auto& x : typeSprites) {
+		NodeType* t = x.first;
+		if (t->light || t->skipShadow) continue;
+		Shader* shader = t->bind(ctx, shadowShader);
+
+		Batch& batch = t->batch;
+		batch.bind(ctx, shader);
+
+		for (auto& e : x.second) {
+			batch.draw(ctx, e, shader);
 		}
 
 		batch.flush(ctx, t);
 	}
 
-	//for (auto& x : typeTerrains) {
-	//	for (auto& e : x.second) {
-	//		e->bind(ctx, shadowShader);
-	//		e->draw(ctx);
-	//	}
-	//}
-
-	for (auto& x : typeSprites) {
+	for (auto& x : typeNodes) {
 		NodeType* t = x.first;
-		t->bind(ctx, shadowShader);
+		if (t->light || t->skipShadow) continue;
+		Shader* shader = t->bind(ctx, shadowShader);
 
 		Batch& batch = t->batch;
-		batch.bind(ctx, shadowShader);
+		batch.bind(ctx, shader);
 
 		for (auto& e : x.second) {
-			batch.draw(ctx, e, shadowShader);
+			batch.draw(ctx, e, shader);
 		}
 
 		batch.flush(ctx, t);

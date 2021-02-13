@@ -3,8 +3,8 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 
-FrameBuffer::FrameBuffer(int w, int h)
-	: w(w), h(h)
+FrameBuffer::FrameBuffer(int width, int height)
+	: width(width), height(height)
 {
 }
 
@@ -26,7 +26,7 @@ void FrameBuffer::prepare()
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32,
-		w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+		width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -46,7 +46,7 @@ void FrameBuffer::prepare()
 
 void FrameBuffer::bind()
 {
-	glViewport(0, 0, w, h);
+	glViewport(0, 0, width, height);
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 }
 

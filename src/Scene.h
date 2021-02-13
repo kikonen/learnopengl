@@ -18,6 +18,7 @@
 #include "ViewportRenderer.h"
 #include "SkyboxRenderer.h"
 #include "ShadowMapRenderer.h"
+#include "ReflectionMapRenderer.h"
 #include "NormalRenderer.h"
 
 #include "ParticleSystem.h"
@@ -51,9 +52,6 @@ private:
 	void prepareUBOs();
 	void attachNodes();
 
-	std::map<NodeType*, std::vector<Node*>> terrainToNodes();
-	std::map<NodeType*, std::vector<Node*>> spriteToNodes();
-
 public:
 	const Assets& assets;
 
@@ -73,6 +71,7 @@ private:
 	ViewportRenderer* viewportRenderer = nullptr;
 
 	ShadowMapRenderer* shadowMapRenderer = nullptr;
+	ReflectionMapRenderer* reflectionMapRenderer = nullptr;
 	NormalRenderer* normalRenderer = nullptr;
 
 	ParticleSystem* particleSystem = nullptr;

@@ -27,6 +27,7 @@ void TerrainRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector
 	for (auto& x : typeTerrains) {
 		Shader* shader = x.first->bind(ctx, nullptr);
 		if (!shader) continue;
+		shader->reflectionMap.set(assets.reflectionMapUnitIndex);
 		shader->shadowMap.set(assets.shadowMapUnitIndex);
 
 		for (auto& e : x.second) {

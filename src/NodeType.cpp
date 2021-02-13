@@ -27,6 +27,10 @@ void NodeType::prepare(const Assets& assets)
 
 	if (defaultShader) {
 		defaultShader->prepare();
+		defaultShader->reflectionMap.set(assets.reflectionMapUnitIndex);
+		defaultShader->refactionMap.set(assets.refactionMapUnitIndex);
+		defaultShader->shadowMap.set(assets.shadowMapUnitIndex);
+		defaultShader->skybox.set(assets.skyboxUnitIndex);
 	}
 
 	if (batchMode && batch.size > 0) {
@@ -50,6 +54,7 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 	ctx.bind(shader);
 
 	shader->drawInstanced.set(false);
+	shader->hasReflectionMap.set(reflection);
 
 	if (renderBack) {
 		glDisable(GL_CULL_FACE);

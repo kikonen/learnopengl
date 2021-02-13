@@ -200,8 +200,14 @@ int Shader::createProgram() {
     modelMatrix.init(this); 
     normalMatrix.init(this);
 
-    normalMap.init(this); 
+    hasReflectionMap.init(this);
+    reflectionMap.init(this);
+   
+    hasRefactionMap.init(this);
+    refactionMap.init(this);
+
     shadowMap.init(this);
+    normalMap.init(this); 
 
     drawInstanced.init(this);
 

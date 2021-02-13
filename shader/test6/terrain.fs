@@ -23,7 +23,6 @@ in VS_OUT {
   vec3 tangentFragPos;
 } fs_in;
 
-uniform samplerCube skybox;
 uniform sampler2DShadow shadowMap;
 
 uniform Texture textures[MAT_COUNT];

@@ -21,8 +21,8 @@ const unsigned int UBO_LIGHTS = 2;
 const unsigned int UBO_MATERIALS = 3;
 const unsigned int UBO_MATERIAL = 4;
 
-const unsigned int MATERIAL_COUNT = 8;
-const unsigned int LIGHT_COUNT = 8;
+const unsigned int MATERIAL_COUNT = 4;
+const unsigned int LIGHT_COUNT = 4;
 
 
 struct MatricesUBO {

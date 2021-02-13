@@ -31,6 +31,7 @@ void SpriteRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);
 		if (!shader) continue;
+		shader->reflectionMap.set(assets.reflectionMapUnitIndex);
 		shader->shadowMap.set(assets.shadowMapUnitIndex);
 
 		Batch& batch = t->batch;

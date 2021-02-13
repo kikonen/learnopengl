@@ -57,7 +57,6 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);
 		if (!shader) continue;
-		shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);
@@ -142,7 +141,6 @@ void NodeRenderer::drawBlended(RenderContext& ctx, std::vector<Node*>& nodes)
 			type = node->type;
 			shader = type->bind(ctx, nullptr);
 			if (!shader) continue;
-			shader->shadowMap.set(ctx.engine.assets.shadowMapUnitIndex);
 
 			batch = &type->batch;
 			batch->bind(ctx, shader);

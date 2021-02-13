@@ -57,8 +57,9 @@ void Viewport::bind(RenderContext& ctx)
 	shader->nearPlane.set(0.1f);
 	shader->farPlane.set(1000.f);
 
-	shader->shadowMap.set(0);
-	tex.bindTexture(GL_TEXTURE0);
+	const int unitID = 0;
+	shader->shadowMap.set(unitID);
+	tex.bindTexture(GL_TEXTURE0 + unitID);
 
 	glBindVertexArray(buffers.VAO);
 

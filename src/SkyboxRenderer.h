@@ -19,6 +19,7 @@ public:
 	int prepare();
 
 	void assign(Shader* shader);
+	void bindTexture(const RenderContext& ctx);
 
 	void update(const RenderContext& ctx);
 	void render(const RenderContext& ctx);
@@ -32,7 +33,5 @@ private:
 	MeshBuffers buffers;
 
 	Shader* shader = nullptr;
-
-	unsigned int loadCubemap(std::vector<std::string> faces);
 };
 

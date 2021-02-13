@@ -11,6 +11,7 @@ RenderContext::RenderContext(
 	const glm::mat4& projection,
 	Scene* scene)
 	: engine(engine),
+	assets(engine.assets),
 	dt(dt),
 	view(view),
 	projection(projection),

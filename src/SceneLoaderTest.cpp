@@ -461,6 +461,8 @@ void SceneLoaderTest::setupNodeWaterBall()
 {
 	addLoader([this]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+		type->reflection = true;
+
 		MeshLoader loader(assets, "water_ball");
 		type->mesh = loader.load();
 
