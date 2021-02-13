@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <future>
 
 #include "Light.h"
 #include "RenderContext.h"
@@ -50,6 +51,7 @@ public:
 
 private:
 	void prepareUBOs();
+	void attachNodes();
 
 	std::map<NodeType*, std::vector<Node*>> terrainToNodes();
 	std::map<NodeType*, std::vector<Node*>> spriteToNodes();
@@ -63,6 +65,9 @@ public:
 	UBO ubo;
 private:
 	std::vector<std::function<void(Scene*)>> loaders;
+
+	// https://stackoverflow.com/questions/20126551/storing-a-future-in-a-list
+	std::vector<std::future<void>> startedLoaders;
 
 	NodeRenderer* nodeRenderer = nullptr;
 	SpriteRenderer* spriteRenderer = nullptr;
@@ -79,9 +84,14 @@ private:
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
 
+	std::vector<Node*> nodes;
+	std::vector<Sprite*> sprites;
+	std::vector<Terrain*> terrains;
+
 	std::map<NodeType*, std::vector<Node*>> typeNodes;
 	std::map<NodeType*, std::vector<Sprite*>> typeSprites;
 	std::map<NodeType*, std::vector<Terrain*>> typeTerrains;
 
 	std::vector<Viewport*> viewports;
+
 };

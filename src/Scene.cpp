@@ -1,6 +1,7 @@
 #include "Scene.h"
 
 #include <thread>
+#include <future>
 
 #include "ki/GL.h"
 #include "ki/Timer.h"
@@ -41,44 +42,15 @@ void Scene::addLoader(std::function<void(Scene*)> loader)
 void Scene::load(std::function<void(Scene*)> onLoad)
 {
 	for (auto& loader : loaders) {
-		loader(this);
+		startedLoaders.push_back(std::async(std::launch::async, loader, this));
 	}
+
 	onLoad(this);
 }
 
 void Scene::prepare()
 {
 	prepareUBOs();
-
-	for (auto& x : typeNodes) {
-		NodeType* t = x.first;
-		t->batch.size = assets.batchSize;
-		t->prepare(assets);
-
-		for (auto& e : x.second) {
-			e->prepare(assets);
-		}
-	}
-
-	for (auto& x : typeSprites) {
-		NodeType* t = x.first;
-		t->batch.size = assets.batchSize;
-		t->prepare(assets);
-
-		for (auto& e : x.second) {
-			e->prepare(assets);
-		}
-	}
-
-	for (auto& x : typeTerrains) {
-		NodeType* t = x.first;
-		t->batch.size = assets.batchSize;
-		t->prepare(assets);
-
-		for (auto& e : x.second) {
-			e->prepare(assets);
-		}
-	}
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	nodeRenderer->prepare();
@@ -98,8 +70,66 @@ void Scene::prepare()
 	viewports.push_back(shadowMapRenderer->debugViewport);
 }
 
+void Scene::attachNodes()
+{
+	std::map<NodeType*, std::vector<Node*>> newNodes;
+	std::map<NodeType*, std::vector<Sprite*>> newSprites;
+	std::map<NodeType*, std::vector<Terrain*>> newTerrains;
+
+	{
+		for (auto e : nodes) {
+			newNodes[e->type].push_back(e);
+		}
+		for (auto e : sprites) {
+			newSprites[e->type].push_back(e);
+		}
+		for (auto e : terrains) {
+			newTerrains[e->type].push_back(e);
+		}
+		nodes.clear();
+		sprites.clear();
+		terrains.clear();
+	}
+
+	for (auto& x : newNodes) {
+		NodeType* t = x.first;
+		t->batch.size = assets.batchSize;
+		t->prepare(assets);
+
+		for (auto& e : x.second) {
+			e->prepare(assets);
+			typeNodes[e->type].push_back(e);
+		}
+	}
+
+	for (auto& x : newSprites) {
+		NodeType* t = x.first;
+		t->batch.size = assets.batchSize;
+		t->prepare(assets);
+
+		for (auto& e : x.second) {
+			e->prepare(assets);
+			typeSprites[e->type].push_back(e);
+		}
+	}
+
+	for (auto& x : newTerrains) {
+		NodeType* t = x.first;
+		t->batch.size = assets.batchSize;
+		t->prepare(assets);
+
+		for (auto& e : x.second) {
+			e->prepare(assets);
+			typeTerrains[e->type].push_back(e);
+		}
+	}
+}
+
+
 void Scene::update(RenderContext& ctx)
 {
+	attachNodes();
+
 	if (dirLight) {
 		dirLight->update(ctx);
 	}
@@ -195,17 +225,17 @@ void Scene::addLight(Light* light)
 
 void Scene::addNode(Node* node)
 {
-	typeNodes[node->type].push_back(node);
+	nodes.push_back(node);
 }
 
 void Scene::addSprite(Sprite* sprite)
 {
-	typeSprites[sprite->type].push_back(sprite);
+	sprites.push_back(sprite);
 }
 
 void Scene::addTerrain(Terrain* terrain)
 {
-	typeTerrains[terrain->type].push_back(terrain);
+	terrains.push_back(terrain);
 }
 
 void Scene::addViewPort(Viewport* viewport)

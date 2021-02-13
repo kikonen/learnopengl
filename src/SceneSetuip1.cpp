@@ -511,6 +511,7 @@ void SceneSetup1::setupNodeAsteroidBelt(Scene* scene)
 		AsteroidBeltUpdater* updater = new AsteroidBeltUpdater(assets, planet);
 		InstancedNode* node = new InstancedNode(type, updater);
 		//node->selected = true;
+		std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 		scene->addNode(node);
 	};
 	scene->addLoader(loader);
