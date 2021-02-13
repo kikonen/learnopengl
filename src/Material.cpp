@@ -68,7 +68,11 @@ Texture* Material::loadTexture(const std::string& baseDir, const std::string& na
 
 void Material::prepare()
 {
+	unsigned int unitIndex = 0;
 	for (auto const x : textures) {
+		if (x->unitIndex == -1) {
+			x->unitIndex = unitIndex++;
+		}
 		x->prepare();
 	}
 }

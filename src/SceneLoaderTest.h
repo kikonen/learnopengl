@@ -16,44 +16,49 @@ public:
 	void setup() override;
 
 private:
-	void setupNodeSkybox(Scene* scene);
+	void setupNodeSkybox();
 
-	void setupLightDirectional(Scene* scene);
-	void setupLightMoving(Scene* scene);
+	void setupLightDirectional();
+	void setupLightMoving();
 
-	void setupNodeDirectional(Scene* scene);
-	void setupNodeLightMoving(Scene* scene);
+	void setupNodeDirectional();
+	void setupNodeLightMoving();
 
-	void setupNodeZero(Scene* scene);
+	void setupNodeZero();
 
-	void setupNodeWindow1(Scene* scene);
-	void setupNodeWindow2(Scene* scene);
-	void setupNodeStainedWindows(Scene* scene);
+	void setupNodeWindow1();
+	void setupNodeWindow2();
+	void setupNodeStainedWindows();
 
-	void setupNodeBrickwall(Scene* scene);
-	void setupNodeBrickwallBox(Scene* scene);
+	void setupNodeBrickwall();
+	void setupNodeBrickwallBox();
 
-	void setupNodeSpyro(Scene* scene);
-	void setupNodeBackpack(Scene* scene);
-	void setupNodeTeapot(Scene* scene);
-	void setupNodeCow(Scene* scene);
-	void setupNodeBall(Scene* scene);
-	void setupNodeCube4(Scene* scene);
-	void setupNodeCubes(Scene* scene);
-	void setupNodeActive(Scene* scene);
-	void setupNodeMountains(Scene* scene);
-	void setupNodeWaterBall(Scene* scene);
+	void setupNodeSpyro();
+	void setupNodeBackpack();
+	void setupNodeTeapot();
+	void setupNodeCow();
+	void setupNodeBall();
+	void setupNodeCube4();
+	void setupNodeCubes();
+	void setupNodeActive();
+	void setupNodeMountains();
+	void setupNodeWaterBall();
 
-	void setupNodePlanet(Scene* scene);
-	void setupNodeAsteroids(Scene* scene);
-	void setupNodeAsteroidBelt(Scene* scene);
+	void setupNodePlanet();
+	void setupNodeAsteroids();
+	void setupNodeAsteroidBelt();
 
-	void setupSpriteFlare(Scene* scene);
+	void setupSpriteFlare();
 
-	void setupTerrain(Scene* scene);
+	void setupTerrain();
+
+private:
+	Node* getPlanet();
 
 private:
 	Light* activeLight = nullptr;
-	Node* planet = nullptr;
+
+	int planetIndex = -1;
+	Node* loadedPlanet;
 };
 
