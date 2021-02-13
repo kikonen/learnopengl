@@ -57,6 +57,9 @@ void Scene::prepare()
 
 void Scene::attachNodes()
 {
+	std::lock_guard<std::mutex> lock(load_lock);
+	if (nodes.empty() && sprites.empty() && terrains.empty()) return;
+
 	std::map<NodeType*, std::vector<Node*>> newNodes;
 	std::map<NodeType*, std::vector<Sprite*>> newSprites;
 	std::map<NodeType*, std::vector<Terrain*>> newTerrains;
