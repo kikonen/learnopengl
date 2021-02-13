@@ -10,10 +10,11 @@ void SceneLoader::setup()
 {
 }
 
-int SceneLoader::addLoader(std::function<void()> loader)
+std::future<void>* SceneLoader::addLoader(std::function<void()> loader)
 {
-	loaders.push_back(loader);
-	return loaders.size() - 1;
+	startedLoaders.push_back(std::async(std::launch::async, loader));
+	std::future<void>* f = &startedLoaders[startedLoaders.size() - 1];
+	return f;
 }
 
 void SceneLoader::load()

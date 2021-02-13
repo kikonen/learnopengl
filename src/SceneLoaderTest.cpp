@@ -472,7 +472,7 @@ void SceneLoaderTest::setupNodeWaterBall()
 
 void SceneLoaderTest::setupNodePlanet()
 {
-	planetIndex = addLoader([this]() {
+	planetFuture = addLoader([this]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "planet", "/planet/");
 		type->mesh = loader.load();
@@ -499,14 +499,14 @@ void SceneLoaderTest::setupNodePlanet()
 
 			scene->addLight(light);
 		}
+
+		loadedPlanet = node;
 	});
 }
 
 void SceneLoaderTest::setupNodeAsteroids()
 {
 	addLoader([this]() {
-		startedLoaders[planetIndex].get();
-
 		glm::vec3 planetPos = glm::vec3(10, 100, 100);
 
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
@@ -583,9 +583,9 @@ void SceneLoaderTest::setupTerrain()
 
 Node* SceneLoaderTest::getPlanet()
 {
-	if (planetIndex == -1) return nullptr;
-
-	startedLoaders[planetIndex].get();
+	if (!planetFuture) return loadedPlanet;
+	if (!loadedPlanet) planetFuture->get();
+	planetFuture = nullptr;
 	return loadedPlanet;
 }
 

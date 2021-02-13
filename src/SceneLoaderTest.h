@@ -58,7 +58,7 @@ private:
 private:
 	Light* activeLight = nullptr;
 
-	int planetIndex = -1;
+	std::future<void>* planetFuture = nullptr;
 	Node* loadedPlanet;
 };
 

@@ -52,6 +52,7 @@ SkyboxRenderer::SkyboxRenderer(const Assets& assets, const std::string& name)
 	: Renderer(assets),
     name(name)
 {
+    shader = Shader::getShader(assets, name);
 }
 
 SkyboxRenderer::~SkyboxRenderer()
@@ -74,7 +75,6 @@ int SkyboxRenderer::prepare()
 
     textureID = loadCubemap(faces);
 
-    shader = Shader::getShader(assets, name);
     shader->prepare();
 
     if (shader->prepare()) {

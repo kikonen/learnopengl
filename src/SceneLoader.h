@@ -12,7 +12,7 @@ public:
 
 	virtual void setup();
 
-	int addLoader(std::function<void()> loader);
+	std::future<void>* addLoader(std::function<void()> loader);
 	void load();
 
 protected:
