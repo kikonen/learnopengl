@@ -9,9 +9,11 @@ ShadowMapRenderer::ShadowMapRenderer(const Assets& assets)
 	shadowDebugShader = Shader::getShader(assets, TEX_DEBUG_DEPTH);
 }
 
-
 void ShadowMapRenderer::prepare()
 {
+	shadowShader->prepare();
+	shadowDebugShader->prepare();
+	
 	frameBuffer.prepare();
 
 	frameBuffer.bindTexture(assets.shadowMapUnitId);

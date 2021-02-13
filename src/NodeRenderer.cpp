@@ -10,6 +10,7 @@ NodeRenderer::NodeRenderer(const Assets& assets)
 
 void NodeRenderer::prepare()
 {
+	selectionShader->prepare();
 //	batch.prepare(1000);
 }
 

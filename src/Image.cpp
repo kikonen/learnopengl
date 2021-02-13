@@ -2,13 +2,18 @@
 
 #include <iostream>
 #include <map>
+#include <mutex>
 
 #include <stb_image.h>
 
 std::map<std::string, Image*> images;
 
+std::mutex images_lock;
+
 Image* Image::getImage(const std::string& path)
 {
+	std::lock_guard<std::mutex> lock(images_lock);
+
 	Image* image = images[path];
 	if (!image) {
 		image = new Image(path);

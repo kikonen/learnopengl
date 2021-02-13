@@ -25,6 +25,10 @@ void NodeType::prepare(const Assets& assets)
 	if (!mesh) return;
 	mesh->prepare(assets);
 
+	if (defaultShader) {
+		defaultShader->prepare();
+	}
+
 	if (batchMode && batch.size > 0) {
 		batch.prepare(this);
 	}

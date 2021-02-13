@@ -3,12 +3,14 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <mutex>
 
 #include "UBO.h"
 
 // name + geom
 std::map<std::string, Shader*> shaders;
 
+std::mutex shaders_lock;
 
 Shader* Shader::getShader(
     const Assets& assets,
@@ -22,13 +24,15 @@ Shader* Shader::getShader(
     const std::string& name, 
     const std::string& geometryType)
 {
+    std::lock_guard<std::mutex> lock(shaders_lock);
+
     std::string key = name + geometryType;
     Shader* shader = shaders[key];
 
     if (!shader) {
         shader = new Shader(assets, key, name, geometryType);
         shaders[key] = shader;
-        shader->prepare();
+//        shader->prepare();
     }
 
     return shader;

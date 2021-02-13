@@ -5,11 +5,11 @@ NormalRenderer::NormalRenderer(const Assets& assets)
 	: Renderer(assets)
 {
 	normalShader = Shader::getShader(assets, TEX_NORMAL);
-	normalShader->prepare();
 }
 
 void NormalRenderer::prepare()
 {
+	normalShader->prepare();
 }
 
 void NormalRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
