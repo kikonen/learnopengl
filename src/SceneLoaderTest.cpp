@@ -59,7 +59,7 @@ void SceneLoaderTest::setup()
 	setupNodeDirectional();
 	setupNodeLightMoving();
 
-	setupNodeBackpack();
+	//setupNodeBackpack();
 }
 
 void SceneLoaderTest::setupNodeSkybox()
