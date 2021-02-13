@@ -17,6 +17,8 @@ Scene::Scene(const Assets& assets)
 
 	shadowMapRenderer = new ShadowMapRenderer(assets);
 	normalRenderer = new NormalRenderer(assets);
+
+	particleSystem = new ParticleSystem(assets);
 }
 
 Scene::~Scene()
@@ -91,6 +93,8 @@ void Scene::prepare()
 
 	shadowMapRenderer->prepare();
 
+	particleSystem->prepare();
+
 	viewports.push_back(shadowMapRenderer->debugViewport);
 }
 
@@ -114,6 +118,8 @@ void Scene::update(RenderContext& ctx)
 	spriteRenderer->update(ctx, typeSprites);
 	terrainRenderer->update(ctx, typeTerrains);
 	viewportRenderer->update(ctx, viewports);
+
+	particleSystem->update(ctx);
 }
 
 void Scene::bind(RenderContext& ctx)
@@ -148,13 +154,15 @@ void Scene::draw(RenderContext& ctx)
 	spriteRenderer->render(ctx, typeSprites);
 	nodeRenderer->render(ctx, typeNodes);
 
+	particleSystem->render(ctx);
+
 	if (showNormals) {
 		normalRenderer->render(ctx, typeNodes, typeSprites, typeTerrains);
 	}
 
 	viewportRenderer->render(ctx, viewports);
 
-	KIGL::checkErrors("scene.draw");
+	ki::GL::checkErrors("scene.draw");
 }
 
 Light* Scene::getDirLight()

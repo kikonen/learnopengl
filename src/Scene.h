@@ -19,6 +19,9 @@
 #include "ShadowMapRenderer.h"
 #include "NormalRenderer.h"
 
+#include "ParticleSystem.h"
+
+
 class Scene final
 {
 public:
@@ -69,6 +72,8 @@ private:
 
 	ShadowMapRenderer* shadowMapRenderer = nullptr;
 	NormalRenderer* normalRenderer = nullptr;
+
+	ParticleSystem* particleSystem = nullptr;
 
 	Light* dirLight = nullptr;
 	std::vector<Light*> pointLights;
