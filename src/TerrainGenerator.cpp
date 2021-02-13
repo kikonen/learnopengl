@@ -36,7 +36,6 @@ ModelMesh* TerrainGenerator::generateTerrain(Material* material)
 				texture,
 				normal,
 				glm::vec3(0.f),
-				glm::vec3(0.f),
 				material);
 			mesh->vertices.push_back(v);
 		}

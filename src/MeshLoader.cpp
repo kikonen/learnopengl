@@ -57,7 +57,6 @@ int MeshLoader::loadData(
 	std::vector<glm::vec2> textures;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec3> tangents;
-	std::vector<glm::vec3> bitangents;
 
 	positions.reserve(10000);
 
@@ -91,7 +90,6 @@ int MeshLoader::loadData(
 					Material* material = x.second;
 					if (!material->map_bump.empty()) {
 						tangents.reserve(positions.size());
-						bitangents.reserve(positions.size());
 					}
 				}
 			}
@@ -155,7 +153,7 @@ int MeshLoader::loadData(
 				}
 
 				if (material && !material->map_bump.empty()) {
-					createTangents(positions, textures, normals, tangents, bitangents, pi, ti, ni, tangenti, bitangenti);
+					createTangents(positions, textures, normals, tangents, pi, ti, ni, tangenti);
 				}
 
 				glm::uvec3 v = { 0, 0, 0 };
@@ -167,13 +165,11 @@ int MeshLoader::loadData(
 						textures, 
 						normals, 
 						tangents,
-						bitangents,
 						material, 
 						pi[i], 
 						ti[i], 
 						ni[i],
-						tangenti[i],
-						bitangenti[i]);
+						tangenti[i]);
 				}
 
 				Tri* tri = new Tri(v);
@@ -236,13 +232,11 @@ int MeshLoader::resolveVertexIndex(
 	std::vector<glm::vec2>& textures,
 	std::vector<glm::vec3>& normals,
 	std::vector<glm::vec3>& tangents,
-	std::vector<glm::vec3>& bitangents,
 	Material* material,
 	int pi,
 	int ti,
 	int ni,
-	int tangenti,
-	int bitangenti)
+	int tangenti)
 {
 	// TODO KI actually do sharing of vertices
 	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
@@ -261,7 +255,6 @@ int MeshLoader::resolveVertexIndex(
 		textures.empty() ? EMPTY_TEX : textures[ti],
 		normals.empty() ? EMPTY_NORMAL : normals[ni],
 		tangents.empty() ? EMPTY_NORMAL : tangents[tangenti],
-		bitangents.empty() ? EMPTY_NORMAL : bitangents[bitangenti],
 		material);
 
 	if (old && *old == *v) {
@@ -297,20 +290,16 @@ void MeshLoader::createTangents(
 	std::vector<glm::vec2>& textures,
 	std::vector<glm::vec3>& normals,
 	std::vector<glm::vec3>& tangents,
-	std::vector<glm::vec3>& bitangents,
 	const glm::uvec3& pi,
 	const glm::uvec3& ti,
 	const glm::uvec3& ni,
-	glm::uvec3& tangenti,
-	glm::uvec3& bitangenti)
+	glm::uvec3& tangenti)
 {
 	int lastNI = -1;
 	int lastTI = -1;
-	int lastBI = -1;
 	for (int i = 0; i < 3; i++) {
 		if (ni[i] == lastNI) {
 			tangenti[i] = lastTI;
-			bitangenti[i] = lastBI;
 			continue;
 		}
 
@@ -337,20 +326,12 @@ void MeshLoader::createTangents(
 		tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
 		tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
 
-		glm::vec3 bitangent;
-		bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
-		bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
-		bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
-
 		tangents.push_back(tangent);
-		bitangents.push_back(bitangent);
 
 		tangenti[i] = tangents.size() - 1;
-		bitangenti[i] = tangents.size() - 1;
 
 		lastNI = ni[i];
 		lastTI = tangenti[i];
-		lastBI = bitangenti[i];
 	}
 }
 

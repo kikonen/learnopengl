@@ -45,13 +45,11 @@ private:
 		std::vector<glm::vec2>& textures,
 		std::vector<glm::vec3>& normals,
 		std::vector<glm::vec3>& tangents,
-		std::vector<glm::vec3>& bitangents,
 		Material* material,
 		int pi,
 		int ti,
 		int ni,
-		int tangenti,
-		int bitangenti);
+		int tangenti);
 
 	glm::vec3 createNormal(
 		std::vector<glm::vec3>& positions,
@@ -63,12 +61,10 @@ private:
 		std::vector<glm::vec2>& textures,
 		std::vector<glm::vec3>& normals,
 		std::vector<glm::vec3>& tangents,
-		std::vector<glm::vec3>& bitangents,
 		const glm::uvec3& pi,
 		const glm::uvec3& ti,
 		const glm::uvec3& ni,
-		glm::uvec3& tangenti,
-		glm::uvec3& bitangenti);
+		glm::uvec3& tangenti);
 
 	void splitFragmentValue(const std::string& v, std::vector<std::string>& vv);
 	int loadMaterials(std::map<std::string, Material*>& materials, std::string libraryName);
