@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(ProjectDir)\external\src\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\imgui\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,7 +138,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(ProjectDir)\external\src\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\imgui\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,14 +155,14 @@
     <ClCompile Include="src\SceneLoader.cpp" />
     <ClCompile Include="src\FrameInit.cpp" />
     <ClCompile Include="src\EditorFrame.cpp" />
-    <ClCompile Include="external\src\glad\glad.c" />
-    <ClCompile Include="external\src\imgui\imgui.cpp" />
-    <ClCompile Include="external\src\imgui\imgui_demo.cpp" />
-    <ClCompile Include="external\src\imgui\imgui_draw.cpp" />
-    <ClCompile Include="external\src\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="external\src\imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="external\src\imgui\imgui_tables.cpp" />
-    <ClCompile Include="external\src\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="vendor\glad\src\glad.c" />
+    <ClCompile Include="vendor\imgui\src\imgui.cpp" />
+    <ClCompile Include="vendor\imgui\src\imgui_demo.cpp" />
+    <ClCompile Include="vendor\imgui\src\imgui_draw.cpp" />
+    <ClCompile Include="vendor\imgui\src\imgui_impl_glfw.cpp" />
+    <ClCompile Include="vendor\imgui\src\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="vendor\imgui\src\imgui_tables.cpp" />
+    <ClCompile Include="vendor\imgui\src\imgui_widgets.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleGenerator.cpp" />
     <ClCompile Include="src\ParticleRenderer.cpp" />
@@ -204,7 +204,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\stb_image.cpp" />
+    <ClCompile Include="vendor\stb_image\src\stb_image.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Tri.cpp" />
     <ClCompile Include="src\Vertex.cpp" />
@@ -226,14 +226,14 @@
     <ClInclude Include="src\SceneLoader.h" />
     <ClInclude Include="src\FrameInit.h" />
     <ClInclude Include="src\EditorFrame.h" />
-    <ClInclude Include="external\src\imgui\imconfig.h" />
-    <ClInclude Include="external\src\imgui\imgui.h" />
-    <ClInclude Include="external\src\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="external\src\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="external\src\imgui\imgui_internal.h" />
-    <ClInclude Include="external\src\imgui\imstb_rectpack.h" />
-    <ClInclude Include="external\src\imgui\imstb_textedit.h" />
-    <ClInclude Include="external\src\imgui\imstb_truetype.h" />
+    <ClInclude Include="vendor\imgui\src\imconfig.h" />
+    <ClInclude Include="vendor\imgui\src\imgui.h" />
+    <ClInclude Include="vendor\imgui\src\imgui_impl_glfw.h" />
+    <ClInclude Include="vendor\imgui\src\imgui_impl_opengl3.h" />
+    <ClInclude Include="vendor\imgui\src\imgui_internal.h" />
+    <ClInclude Include="vendor\imgui\src\imstb_rectpack.h" />
+    <ClInclude Include="vendor\imgui\src\imstb_textedit.h" />
+    <ClInclude Include="vendor\imgui\src\imstb_truetype.h" />
     <ClInclude Include="src\Particle.h" />
     <ClInclude Include="src\ParticleGenerator.h" />
     <ClInclude Include="src\ParticleRenderer.h" />
@@ -270,7 +270,7 @@
     <ClInclude Include="src\Node.h" />
     <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="include\stb_image.h" />
+    <ClInclude Include="vendor\stb_image\src\stb_image.h" />
     <ClInclude Include="src\ModelMesh.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="resource.h" />
