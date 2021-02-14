@@ -27,8 +27,8 @@ public:
 	Input(Window* window);
 	~Input();
 
-	bool isPressed(Key key);
-	void handleMouse(double xpos, double ypos);
+	bool isKeyPressed(Key key);
+	void onMouseMove(double xpos, double ypos);
 
 public:
 	float mouseX = 0;

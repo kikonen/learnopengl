@@ -28,15 +28,9 @@ public:
 
 	void processInput(float dt);
 
-	// https://stackoverflow.com/questions/31581200/glfw-call-to-non-static-class-function-in-static-key-callback
-	void on_framebuffer_size(int width, int height);
-	void on_mouse(double xpos, double ypos);
-	void on_scroll(double xoffset, double yoffset);
-
-	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
+	void onWindowResize(int width, int height);
+	void onMouseMove(double xpos, double ypos);
+	void onMouseWheel(double xoffset, double yoffset);
 private:
 	void createGLFWWindow();
 	void destroyGLFWWindow();

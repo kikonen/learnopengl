@@ -86,39 +86,57 @@ void Window::destroyGLFWWindow()
 
 void Window::bindGLFWCallbacks()
 {
-
-	// callbacks
 	// NOTE KI GLFW does NOT like class functions as callbacks
 	// https://stackoverflow.com/questions/7676971/pointing-to-a-function-that-is-a-class-member-glfw-setkeycallback
-	// <GLFWwindow*, int, int>
-//	auto resize = std::bind(&Engine::on_framebuffer_size, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-	//glfwSetFramebufferSizeCallback(window, resize);
+	// https://stackoverflow.com/questions/31581200/glfw-call-to-non-static-class-function-in-static-key-callback
 
-	glfwSetFramebufferSizeCallback(glfwWindow, framebuffer_size_callback);
+	//auto fn = [](GLFWwindow* w, int x, int y, int b)
+	//{
+	//	static_cast<Window*>(glfwGetWindowUserPointer(w))->on_mouse(x, y, v);
+	//}
+	//glfwSetMouseButtonCallback(glfwWindow, fn);
 
-	glfwSetCursorPosCallback(glfwWindow, mouse_callback);
-	glfwSetScrollCallback(glfwWindow, scroll_callback);
+    //glfwSetFramebufferSizeCallback(glfwWindow, framebuffer_size_callback);
+	glfwSetFramebufferSizeCallback(
+		glfwWindow, 
+		[](GLFWwindow* gw, int width, int height) {
+		static_cast<Window*>(glfwGetWindowUserPointer(gw))->onWindowResize(width, height);
+	});
+
+	//glfwSetCursorPosCallback(glfwWindow, mouse_callback);
+	glfwSetCursorPosCallback(
+		glfwWindow,
+		[](GLFWwindow* gw, double xpos, double ypos) {
+			static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseMove(xpos, ypos);
+		});
+
+	//glfwSetScrollCallback(glfwWindow, scroll_callback);
+	glfwSetScrollCallback(
+		glfwWindow,
+		[](GLFWwindow* gw, double xoffset, double yoffset) {
+			static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseWheel(xoffset, yoffset);
+		});
 }
 
 void Window::processInput(float dt)
 {
-	if (input->isPressed(Key::EXIT)) {
+	if (input->isKeyPressed(Key::EXIT)) {
 		close();
 		return;
 	}
 	engine.camera.onKey(input, dt);
 }
 
-void Window::on_framebuffer_size(int width, int height)
+void Window::onWindowResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
 	this->width = width;
 	this->height = height;
 }
 
-void Window::on_mouse(double xpos, double ypos)
+void Window::onMouseMove(double xpos, double ypos)
 {
-	input->handleMouse(xpos, ypos);
+	input->onMouseMove(xpos, ypos);
 
 	int state = glfwGetMouseButton(glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
@@ -130,25 +148,7 @@ void Window::on_mouse(double xpos, double ypos)
 	}
 }
 
-void Window::on_scroll(double xoffset, double yoffset)
+void Window::onMouseWheel(double xoffset, double yoffset)
 {
 	engine.camera.onMouseScroll(input, xoffset, yoffset);
-}
-
-void Window::framebuffer_size_callback(GLFWwindow* glfwWindow, int width, int height)
-{
-	Window* window = (Window *)glfwGetWindowUserPointer(glfwWindow);
-	window->on_framebuffer_size(width, height);
-}
-
-void Window::mouse_callback(GLFWwindow* glfwWindow, double xpos, double ypos)
-{
-	Window* window = (Window*)glfwGetWindowUserPointer(glfwWindow);
-	window->on_mouse(xpos, ypos);
-}
-
-void Window::scroll_callback(GLFWwindow* glfwWindow, double xoffset, double yoffset)
-{
-	Window* window = (Window*)glfwGetWindowUserPointer(glfwWindow);
-	window->on_scroll(xoffset, yoffset);
 }

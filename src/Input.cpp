@@ -23,7 +23,7 @@ Input::~Input()
 {
 }
 
-bool Input::isPressed(Key key)
+bool Input::isKeyPressed(Key key)
 {
 	int* code = mapping[key];
 	if (code) {
@@ -37,7 +37,7 @@ bool Input::isPressed(Key key)
 	return false;
 }
 
-void Input::handleMouse(double xpos, double ypos)
+void Input::onMouseMove(double xpos, double ypos)
 {
 	if (firstMouse) {
 		mouseX = xpos;
