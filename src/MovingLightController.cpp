@@ -1,21 +1,26 @@
 #include "MovingLightController.h"
 
+#include "Light.h"
+
 MovingLightController::MovingLightController(
 	const Assets& assets, 
 	const glm::vec3& center, 
 	float radius,
 	float speed,
-	Light* light)
+	Node* node)
 	: NodeController(assets),
 	center(center),
 	radius(radius),
 	speed(speed),
-	light(light)
+	node(node)
 {
 }
 
 bool MovingLightController::update(const RenderContext& ctx, Node& node)
 {
+	Light* light = node.light;
+	if (!light) return false;
+
 	float elapsed = glfwGetTime() / speed;
 
 	float posX = sin(elapsed) * radius;
