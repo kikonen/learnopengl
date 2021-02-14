@@ -2,10 +2,8 @@
 
 #include <math.h>
 
-#include "Engine.h"
-
-EditorFrame::EditorFrame(Engine& engine)
-	: Frame(engine)
+EditorFrame::EditorFrame(Window& window)
+	: Frame(window)
 {
 }
 

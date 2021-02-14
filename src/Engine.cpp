@@ -1,5 +1,7 @@
 #include "Engine.h"
 
+#include <functional>
+
 #include "imgui.h"
 
 #include "ki/GL.h"
@@ -8,25 +10,17 @@
 Engine* Engine::current = nullptr;
 
 Engine::Engine() {
-	title = "GL test";
-	width = 800;
-	height = 600;
 	debug = false;
 	throttleFps = FPS_15;
+	window = new Window(*this);
 }
 
 Engine::~Engine() {
-	// glfw: terminate, clearing all previously allocated GLFW resources.
-	// ------------------------------------------------------------------
-	glfwTerminate();
+	delete window;
 }
 
 int Engine::init() {
-	window = createWindow();
-	if (!window) {
-		return -1;
-	}
-	return 0;
+	return window->create() ? 0 : -1;
 }
 
 void Engine::run() {
@@ -41,7 +35,7 @@ void Engine::run() {
 		<< std::endl;
 	int res = onSetup();
 	if (res) {
-		glfwSetWindowShouldClose(window, true);
+		window->close();
 	}
 
 	auto tp1 = std::chrono::system_clock::now();
@@ -56,7 +50,7 @@ void Engine::run() {
 
 	// render loop
 	// -----------
-	while (!glfwWindowShouldClose(window))
+	while (!window->isClosed())
 	{
 		float dt;
 		{
@@ -70,7 +64,7 @@ void Engine::run() {
 
 			// input
 			// -----
-			processInput(dt);
+			window->processInput(dt);
 
 			// render
 			// ------
@@ -79,12 +73,12 @@ void Engine::run() {
 			int res = onRender(dt);
 
 			if (res) {
-				glfwSetWindowShouldClose(window, true);
+				window->close();
 			}
 
 			// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 			// -------------------------------------------------------------------------------
-			glfwSwapBuffers(window);
+			glfwSwapBuffers(window->glfwWindow);
 			glfwPollEvents();
 		}
 
@@ -95,7 +89,7 @@ void Engine::run() {
 
 			tp1 = tp2;
 			sprintf_s(titleSB, 256, "%s - FPS: %3.2f - %3.2fms", title.c_str(), 1.0f / dt, ts);
-			glfwSetWindowTitle(window, titleSB);
+			window->setTitle(titleSB);
 		}
 
 		ki::GL::checkErrors("engine.loop");
@@ -118,97 +112,3 @@ void Engine::onDestroy()
 {
 }
 
-Shader* Engine::getShader(const std::string& name, const std::string& geometryType)
-{
-	return Shader::getShader(assets, name, geometryType);
-}
-
-GLFWwindow* Engine::createWindow() {
-	// glfw: initialize and configure
-	// ------------------------------
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-	// glfw window creation
-	// --------------------
-	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return NULL;
-	}
-	glfwMakeContextCurrent(window);
-
-	// callbacks
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
-
-	// glad: load all OpenGL function pointers
-	// ---------------------------------------
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return NULL;
-	}
-
-	input = new Input(window);
-
-	return window;
-}
-
-void Engine::processInput(float dt)
-{
-	if (input->isPressed(Key::EXIT)) {
-		glfwSetWindowShouldClose(window, true);
-	}
-	camera.onKey(input, dt);
-}
-
-void Engine::on_framebuffer_size(int width, int height)
-{
-	glViewport(0, 0, width, height);
-	this->width = width;
-	this->height = height;
-}
-
-void Engine::on_mouse(double xpos, double ypos)
-{
-	input->handleMouse(xpos, ypos);
-
-	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-	if (state == GLFW_PRESS && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		camera.onMouseMove(input, input->mouseXoffset, input->mouseYoffset);
-	}
-	else {
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	}
-}
-
-void Engine::on_scroll(double xoffset, double yoffset)
-{
-	camera.onMouseScroll(input, xoffset, yoffset);
-}
-
-void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	current->on_framebuffer_size(width, height);
-}
-
-void Engine::mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-	current->on_mouse(xpos, ypos);
-}
-
-void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	current->on_scroll(xoffset, yoffset);
-}

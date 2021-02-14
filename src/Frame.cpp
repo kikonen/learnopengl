@@ -1,9 +1,7 @@
 #include "Frame.h"
 
-#include "Engine.h"
-
-Frame::Frame(Engine& engine)
-	: engine(engine)
+Frame::Frame(Window& window)
+	: window(window)
 {
 }
 

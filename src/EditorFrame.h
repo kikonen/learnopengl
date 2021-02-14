@@ -6,7 +6,7 @@
 class EditorFrame : public Frame
 {
 public:
-	EditorFrame(Engine& engine);
+	EditorFrame(Window& window);
 
 	void draw(const RenderContext& ctx) override;
 

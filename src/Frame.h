@@ -6,12 +6,12 @@
 
 #include "RenderContext.h"
 
-class Engine;
+#include "Window.h"
 
 class Frame
 {
 public:
-	Frame(Engine& engine);
+	Frame(Window& window);
 	~Frame();
 
 	virtual void prepare();
@@ -21,6 +21,6 @@ public:
 	virtual void render(const RenderContext& ctx);
 
 private:
-	Engine& engine;
+	Window& window;
 };
 

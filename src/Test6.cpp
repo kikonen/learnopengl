@@ -36,8 +36,8 @@ int Test6::onSetup() {
 	ki::GL::startError();
 	ki::GL::startDebug();
 
-	frameInit = new FrameInit(*this);
-	frame = new EditorFrame(*this);
+	frameInit = new FrameInit(*window);
+	frame = new EditorFrame(*window);
 
 	return 0;
 }
@@ -56,7 +56,7 @@ int Test6::onRender(float dt) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)width / (float)height, 0.1f, 1000.0f);
+	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)window->width / (float)window->height, 0.1f, 1000.0f);
 
 	RenderContext ctx(
 		*this, dt,
@@ -81,10 +81,6 @@ int Test6::onRender(float dt) {
 
 void Test6::onDestroy()
 {
-}
-
-void Test6::processInput(float dt) {
-	Engine::processInput(dt);
 }
 
 SceneLoader* Test6::loadScene()

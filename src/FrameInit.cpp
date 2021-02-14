@@ -6,16 +6,16 @@
 
 #include "Engine.h"
 
-FrameInit::FrameInit(Engine& engine)
-	: engine(engine)
+FrameInit::FrameInit(Window& window)
+	: window(window)
 {
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	// Setup Platform/Renderer bindings
-	ImGui_ImplGlfw_InitForOpenGL(engine.window, true);
-	ImGui_ImplOpenGL3_Init(engine.glsl_version.c_str());
+	ImGui_ImplGlfw_InitForOpenGL(window.glfwWindow, true);
+	ImGui_ImplOpenGL3_Init(window.glsl_version.c_str());
 	// Setup Dear ImGui style
 	ImGui::StyleColorsLight();
 }

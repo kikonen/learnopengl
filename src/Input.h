@@ -1,7 +1,8 @@
 #pragma once
 
 #include <map>
-#include <GLFW/glfw3.h>
+
+class Window;
 
 enum Key {
 	EXIT,
@@ -23,7 +24,7 @@ enum Key {
 class Input final
 {
 public:
-	Input(GLFWwindow* window);
+	Input(Window* window);
 	~Input();
 
 	bool isPressed(Key key);
@@ -36,8 +37,8 @@ public:
 	float mouseXoffset = 0;
 	float mouseYoffset = 0;
 
+	Window* window;
 private:
-	GLFWwindow* window;
 
 	std::map<Key, int*> mapping;
 

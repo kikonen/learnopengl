@@ -26,6 +26,9 @@ public:
 	const Engine& engine;
 	const Assets& assets;
 
+	const int width;
+	const int height;
+
 	Scene* scene;
 
 	const float dt;

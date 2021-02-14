@@ -48,7 +48,7 @@ void ReflectionMapRenderer::render(RenderContext& ctx, std::map<NodeType*, std::
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// reset viewport
-		glViewport(0, 0, ctx.engine.width, ctx.engine.height);
+		glViewport(0, 0, ctx.engine.window->width, ctx.engine.window->height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 }

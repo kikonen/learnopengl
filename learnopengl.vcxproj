@@ -217,6 +217,7 @@
     <ClCompile Include="src\Water.cpp" />
     <ClCompile Include="src\WaterRenderer.cpp" />
     <ClCompile Include="src\Frame.cpp" />
+    <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -290,6 +291,7 @@
     <ClInclude Include="src\WaterRenderer.h" />
     <ClInclude Include="src\Frame.h" />
     <ClInclude Include="src\ki\Timer.h" />
+    <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

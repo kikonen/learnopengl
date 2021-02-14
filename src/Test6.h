@@ -22,7 +22,6 @@ public:
 
 	int onRender(float dt) override;
 	void onDestroy() override;
-	void processInput(float dt) override;
 
 private:
 	Scene* currentScene = nullptr;

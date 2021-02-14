@@ -21,7 +21,6 @@ void FrameBuffer::prepare()
 
 	glGenFramebuffers(1, &FBO);
 
-	// depth map
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 

@@ -12,6 +12,8 @@ RenderContext::RenderContext(
 	Scene* scene)
 	: engine(engine),
 	assets(engine.assets),
+	width(engine.window->width),
+	height(engine.window->height),
 	dt(dt),
 	view(view),
 	projection(projection),

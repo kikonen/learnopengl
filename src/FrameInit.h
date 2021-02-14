@@ -1,14 +1,15 @@
 #pragma once
 
-class Engine;
+#include "Window.h"
+
 
 class FrameInit
 {
 public:
-	FrameInit(Engine& engine);
+	FrameInit(Window& window);
 	~FrameInit();
 
 private:
-	Engine& engine;
+	Window& window;
 };
 
