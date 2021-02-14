@@ -36,7 +36,7 @@ public:
 public:
 	Material* defaultMaterial = nullptr;
 
-	std::vector<Tri*> tris;
+	std::vector<glm::uvec3> tris;
 	std::vector<Vertex*> vertices;
 
 	std::vector<Material*> materials;

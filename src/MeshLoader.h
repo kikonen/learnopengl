@@ -24,7 +24,7 @@ public:
 
 private:
 	int loadData(
-		std::vector<Tri*>& tris,
+		std::vector<glm::uvec3>& tris,
 		std::vector<Vertex*>& vertices,
 		std::vector<Material*>& materials
 	);

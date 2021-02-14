@@ -40,7 +40,7 @@ ModelMesh* MeshLoader::load() {
 }
 
 int MeshLoader::loadData(
-		std::vector<Tri*>&tris,
+		std::vector<glm::uvec3>&tris,
 		std::vector<Vertex*>&vertices,
 		std::vector<Material*>& materials)
 {
@@ -172,8 +172,8 @@ int MeshLoader::loadData(
 						tangenti[i]);
 				}
 
-				Tri* tri = new Tri(v);
-				tris.push_back(tri);
+				//Tri* tri = new Tri(v);
+				tris.push_back(v);
 			}
 		}
 

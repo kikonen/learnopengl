@@ -125,8 +125,9 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 		int* vertexEboBuffer = new int[3 * tris.size()];
 
 		for (int i = 0; i < tris.size(); i++) {
-			Tri* tri = tris[i];
-			const glm::uvec3& vi = tri->vertexIndexes;
+			//Tri* tri = tris[i];
+			//const glm::uvec3& vi = tri->vertexIndexes;
+			const glm::uvec3& vi = tris[i];
 			const int base = i * 3;
 			vertexEboBuffer[base + 0] = vi[0];
 			vertexEboBuffer[base + 1] = vi[1];

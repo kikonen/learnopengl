@@ -12,6 +12,7 @@ static std::map<std::string, Shader*> shaders;
 
 static std::mutex shaders_lock;
 
+
 Shader* Shader::getShader(
     const Assets& assets,
     const std::string& name)
@@ -59,13 +60,12 @@ Shader::Shader(
 
 Shader::~Shader()
 {
-    glDeleteProgram(id);
-    id = 0;
+    glDeleteProgram(programId);
 }
 
 const void Shader::bind()
 {
-    glUseProgram(id); 
+    glUseProgram(programId); 
 }
 
 const void Shader::unbind()
@@ -81,14 +81,6 @@ int Shader::prepare()
     prepared = true;
     res = -1;
 
-    vertexShaderSource = loadSource(vertexShaderPath, false);
-    fragmentShaderSource = loadSource(fragmentShaderPath, false);
-    geometryShaderSource = loadSource(geometryShaderPath, geometryOptional);
-
-    if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
-        return -1;
-    }
-
     if (createProgram()) {
         return -1;
     }
@@ -102,7 +94,7 @@ GLint Shader::getUniformLoc(const std::string& name)
         return uniformLocations[name];
     }
 
-    GLint vi = glGetUniformLocation(id, name.c_str());
+    GLint vi = glGetUniformLocation(programId, name.c_str());
     uniformLocations[name] = vi;
     if (vi < 0) {
         std::cout << "SHADER::MISSING_UNIFORM: " << shaderName << " uniform=" << name << std::endl;
@@ -113,6 +105,14 @@ GLint Shader::getUniformLoc(const std::string& name)
 int Shader::createProgram() {
     int success;
     char infoLog[512];
+
+    std::string vertexShaderSource = loadSource(vertexShaderPath, false);
+    std::string fragmentShaderSource = loadSource(fragmentShaderPath, false);
+    std::string geometryShaderSource = loadSource(geometryShaderPath, geometryOptional);
+
+    if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
+        return -1;
+    }
 
     // build and compile our shader program
     // ------------------------------------
@@ -164,17 +164,20 @@ int Shader::createProgram() {
     }
 
     // link shaders
-    id = glCreateProgram();
-    glAttachShader(id, vertexShader);
-    glAttachShader(id, fragmentShader);
+    programId = glCreateProgram();
+
+    glAttachShader(programId, vertexShader);
+    glAttachShader(programId, fragmentShader);
     if (geometryShader != -1) {
-        glAttachShader(id, geometryShader);
+        glAttachShader(programId, geometryShader);
     }
-    glLinkProgram(id);
+
+    glLinkProgram(programId);
+
     // check for linking errors
-    glGetProgramiv(id, GL_LINK_STATUS, &success);
+    glGetProgramiv(programId, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(id, 512, NULL, infoLog);
+        glGetProgramInfoLog(programId, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED " << shaderName << "\n" << infoLog << std::endl;
     }
     glDeleteShader(vertexShader);
@@ -183,9 +186,9 @@ int Shader::createProgram() {
         glDeleteShader(geometryShader);
     }
 
-    glValidateProgram(id);
+    glValidateProgram(programId);
     if (!success) {
-        glGetProgramInfoLog(id, 512, NULL, infoLog);
+        glGetProgramInfoLog(programId, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::VALIDATE_FAILED " << shaderName << "\n" << infoLog << std::endl;
     }
 
@@ -269,38 +272,6 @@ void Shader::prepareTextureUniforms()
     }
 }
 
-//void Shader::setFloat3(const std::string& name, float v1, float v2, float v3)
-//{
-//    GLint vi = getUniformLoc(name);
-//    if (vi != -1) {
-//        glUniform3f(vi, v1, v2, v3);
-//    }
-//}
-
-//void Shader::setVec3(const std::string& name, const glm::vec3& v)
-//{
-//    GLint vi = getUniformLoc(name);
-//    if (vi != -1) {
-//        glUniform3f(vi, v.x, v.y, v.z);
-//    }
-//}
-//
-//void Shader::setVec4(const std::string& name, const glm::vec4& v)
-//{
-//    GLint vi = getUniformLoc(name);
-//    if (vi != -1) {
-//        glUniform4f(vi, v.x, v.y, v.z, v.w);
-//    }
-//}
-
-//void Shader::setFloat(const std::string& name, float value)
-//{
-//    GLint vi = getUniformLoc(name);
-//    if (vi != -1) {
-//        glUniform1f(vi, value);
-//    }
-//}
-//
 void Shader::setInt(const std::string& name, int value)
 {
     GLint vi = getUniformLoc(name);
@@ -309,54 +280,14 @@ void Shader::setInt(const std::string& name, int value)
     }
 }
 
-//void Shader::setIntArray(const std::string& name, int count, const GLint* values)
-//{
-//    GLint vi = getUniformLoc(name);
-//    if (vi != -1) {
-//        glUniform1iv(vi, count, values);
-//    }
-//}
-
-//void Shader::setBool(const std::string& name, bool value)
-//{
-//    GLint vi = getUniformLoc(name);
-//    if (vi != -1) {
-//        glUniform1i(vi, (int)value);
-//    }
-//}
-//
-//void Shader::setMat4(const std::string& name, const glm::mat4& mat)
-//{
-//    GLint vi = getUniformLoc(name);
-//    if (vi != -1) {
-//        glUniformMatrix4fv(vi, 1, GL_FALSE, glm::value_ptr(mat));
-//    }
-//}
-//
-//void Shader::setMat3(const std::string& name, const glm::mat3& mat)
-//{
-//    GLint vi = getUniformLoc(name);
-//    if (vi != -1) {
-//        glUniformMatrix3fv(vi, 1, GL_FALSE, glm::value_ptr(mat));
-//    }
-//}
-//
-//void Shader::setMat2(const std::string& name, const glm::mat2& mat)
-//{
-//    GLint vi = getUniformLoc(name);
-//    if (vi != -1) {
-//        glUniformMatrix2fv(vi, 1, GL_FALSE, glm::value_ptr(mat));
-//    }
-//}
-
 void Shader::setUBO(const std::string& name, unsigned int UBO)
 {
-    unsigned int blockIndex = glGetUniformBlockIndex(id, name.c_str());
+    unsigned int blockIndex = glGetUniformBlockIndex(programId, name.c_str());
     if (blockIndex == GL_INVALID_INDEX) {
         std::cout << "ERROR::SHADER::MISSING_UBO " << shaderName << " UBO=" << name << std::endl;
         return;
     } 
-    glUniformBlockBinding(id, blockIndex, UBO);
+    glUniformBlockBinding(programId, blockIndex, UBO);
 }
 
 /**

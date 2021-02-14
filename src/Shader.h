@@ -58,10 +58,12 @@ private:
 
     ~Shader();
 
+    int createProgram();
+
+    std::string loadSource(const std::string& filename, bool optional);
     std::vector<std::string> loadSourceLines(const std::string& path, bool optional);
     std::vector<std::string> processInclude(const std::string& includePath, int lineNumber);
 
-    int createProgram();
     void prepareTextureUniform();
     void prepareTextureUniforms();
     GLint getUniformLoc(const std::string& name);
@@ -70,20 +72,7 @@ public:
     const void bind();
     const void unbind();
 
-    //void setFloat3(const std::string& name, float v1, float v2, float v3);
-    //void setVec3(const std::string& name, const glm::vec3& v);
-    //void setVec4(const std::string& name, const glm::vec4& v);
-
-    //void setFloat(const std::string& name, float value);
- 
     void setInt(const std::string& name, int value);
-    //void setIntArray(const std::string& name, int count, const GLint* values);
-
-//    void setBool(const std::string& name, bool value);
-
-//    void setMat4(const std::string& name, const glm::mat4& mat);
-//    void setMat3(const std::string& name, const glm::mat3& mat);
-//    void setMat2(const std::string& name, const glm::mat2& mat);
 
     void setUBO(const std::string& name, unsigned int UBO);
 
@@ -108,7 +97,7 @@ public:
 
         void set(const glm::mat4& value) {
             if (locId != -1) {
-                glUniformMatrix4fv(locId, 1,GL_FALSE, glm::value_ptr(value));
+                glUniformMatrix4fv(locId, 1, GL_FALSE, glm::value_ptr(value));
             }
 
         }
@@ -255,10 +244,7 @@ public:
     bool bindTexture = false;
     bool selection = false;
 
-    int id = -1;
-    std::string vertexShaderSource;
-    std::string fragmentShaderSource;
-    std::string geometryShaderSource;
+    int programId = -1;
 
         Shader::Mat4 projectionMatrix = { "projectionMatrix" };
     Shader::Mat4 viewMatrix = { "viewMatrix" };
@@ -287,7 +273,6 @@ public:
 private:
     int res;
     bool prepared = false;
-    std::string loadSource(const std::string& filename, bool optional);
 
     std::string vertexShaderPath;
     std::string fragmentShaderPath;
