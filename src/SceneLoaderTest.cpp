@@ -515,10 +515,10 @@ void SceneLoaderTest::setupNodePlanet()
 		{
 			light->pos = planet->getPos() - glm::vec3(0, 40, 0);
 
-			// 160
+			// 325 = 0.014	0.0007
 			light->point = true;
-			light->linear = 0.0027f;
-			light->quadratic = 0.00028f;
+			light->linear = 0.014f;
+			light->quadratic = 0.0007f;
 
 			light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
 			light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
@@ -537,7 +537,12 @@ void SceneLoaderTest::setupNodePlanet()
 		Node* node = new Node(type);
 		node->setPos(light->pos);
 		node->setScale(0.5f);
+		node->light = light;
 		scene->addNode(node);
+
+		glm::vec3 center = light->pos;
+		node->controller = new MovingLightController(assets, center, 4.f, 2.f, node);
+
 	});
 }
 
