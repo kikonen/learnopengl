@@ -37,6 +37,11 @@ const glm::mat4& Camera::getView()
 	return viewMat;
 }
 
+const glm::vec3& Camera::getFront()
+{
+	return front;
+}
+
 void Camera::setPos(const glm::vec3& pos) {
 	this->pos = pos;
 	dirty = true;
@@ -44,6 +49,18 @@ void Camera::setPos(const glm::vec3& pos) {
 
 const glm::vec3& Camera::getPos() const {
 	return pos;
+}
+
+void Camera::setRotation(const glm::vec3& rotation)
+{
+	yaw = rotation.y;
+	pitch = rotation.x;
+	roll = rotation.z;
+}
+
+const glm::vec3 Camera::getRotation()
+{
+	return glm::vec3(pitch, yaw, roll);
 }
 
 void Camera::onKey(Input* input, float dt)

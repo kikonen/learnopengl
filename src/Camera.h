@@ -19,8 +19,13 @@ public:
 
 	const glm::mat4& getView();
 
+	const glm::vec3& getFront();
+
 	void setPos(const glm::vec3& pos);
 	const glm::vec3& getPos() const;
+
+	void setRotation(const glm::vec3& rotation);
+	const glm::vec3 getRotation();
 
 	void onKey(Input* input, float dt);
 	void onMouseMove(Input* input, float xoffset, float yoffset);

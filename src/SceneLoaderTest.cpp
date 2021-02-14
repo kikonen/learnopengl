@@ -69,7 +69,7 @@ void SceneLoaderTest::setupCamera()
 	Camera* camera = new Camera();
 
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
-	MeshLoader loader(assets, "water_ball");
+	MeshLoader loader(assets, "spyro2");
 	type->mesh = loader.load();
 	type->reflection = true;
 
@@ -80,7 +80,7 @@ void SceneLoaderTest::setupCamera()
 
 	Node* node = new Node(type);
 	node->setPos(pos);
-	node->setScale(0.3f);
+	node->setScale(0.001f);
 	node->camera = camera;
 	node->controller = new CameraController(assets);
 
@@ -609,14 +609,17 @@ void SceneLoaderTest::setupTerrain()
 
 void SceneLoaderTest::setPlanet(Node* planet)
 {
-	std::lock_guard<std::mutex> lock(load_lock);
+	std::lock_guard<std::mutex> lock(planet_lock);
 	loadedPlanet = planet;
+	planetFuture = nullptr;
 }
 
 Node* SceneLoaderTest::getPlanet()
 {
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	std::lock_guard<std::mutex> lock(planet_lock);
+
 	if (!planetFuture) return loadedPlanet;
-	std::lock_guard<std::mutex> lock(load_lock);
 	planetFuture->get();
 	planetFuture = nullptr;
 	return loadedPlanet;

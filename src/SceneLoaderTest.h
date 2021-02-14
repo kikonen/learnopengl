@@ -56,6 +56,7 @@ private:
 	Node* getPlanet();
 
 private:
+	std::mutex planet_lock;
 	std::future<void>* planetFuture = nullptr;
 	Node* loadedPlanet;
 };
