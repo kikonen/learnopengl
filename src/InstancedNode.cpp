@@ -1,9 +1,9 @@
 #include "InstancedNode.h"
 
-InstancedNode::InstancedNode(NodeType* type, NodeUpdater* updater)
+InstancedNode::InstancedNode(NodeType* type, NodeController* controller)
 	: Node(type)
 {
-	this->updater = updater;
+	this->controller = controller;
 }
 
 InstancedNode::~InstancedNode()

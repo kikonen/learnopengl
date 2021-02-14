@@ -1,12 +1,12 @@
-#include "MovingLightUpdater.h"
+#include "MovingLightController.h"
 
-MovingLightUpdater::MovingLightUpdater(
+MovingLightController::MovingLightController(
 	const Assets& assets, 
 	const glm::vec3& center, 
 	float radius,
 	float speed,
 	Light* light)
-	: NodeUpdater(assets),
+	: NodeController(assets),
 	center(center),
 	radius(radius),
 	speed(speed),
@@ -14,7 +14,7 @@ MovingLightUpdater::MovingLightUpdater(
 {
 }
 
-bool MovingLightUpdater::update(const RenderContext& ctx, Node& node)
+bool MovingLightController::update(const RenderContext& ctx, Node& node)
 {
 	float elapsed = glfwGetTime() / speed;
 

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "InstancedUpdater.h"
+#include "InstancedController.h"
 
-class AsteroidBeltUpdater : public InstancedUpdater
+class AsteroidBeltController : public InstancedController
 {
 public:
-	AsteroidBeltUpdater(const Assets& assets, Node* planet);
+	AsteroidBeltController(const Assets& assets, Node* planet);
 
 	void prepareInstanced(InstancedNode& node) override;
 	bool updateInstanced(const RenderContext& ctx, InstancedNode& node) override;

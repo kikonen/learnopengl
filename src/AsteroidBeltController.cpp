@@ -1,14 +1,14 @@
-#include "AsteroidBeltUpdater.h"
+#include "AsteroidBeltController.h"
 
 #include "InstancedNode.h"
 
-AsteroidBeltUpdater::AsteroidBeltUpdater(const Assets& assets, Node* planet)
-	: InstancedUpdater(assets), 
+AsteroidBeltController::AsteroidBeltController(const Assets& assets, Node* planet)
+	: InstancedController(assets), 
 	planet(planet)
 {
 }
 
-void AsteroidBeltUpdater::prepareInstanced(InstancedNode& node)
+void AsteroidBeltController::prepareInstanced(InstancedNode& node)
 {
 	glm::vec3 planetPos = planet ? planet->getPos() : glm::vec3(0.f, 40.f, 0.f);
 
@@ -55,7 +55,7 @@ void AsteroidBeltUpdater::prepareInstanced(InstancedNode& node)
 	}
 }
 
-bool AsteroidBeltUpdater::updateInstanced(const RenderContext& ctx, InstancedNode& node)
+bool AsteroidBeltController::updateInstanced(const RenderContext& ctx, InstancedNode& node)
 {
 	if (false) {
 		node.instanceMatrices.clear();

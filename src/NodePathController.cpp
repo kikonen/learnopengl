@@ -1,16 +1,16 @@
-#include "NodePathUpdater.h"
+#include "NodePathController.h"
 
-NodePathUpdater::NodePathUpdater(const Assets& assets, int pathMode)
-	: NodeUpdater(assets),
+NodePathController::NodePathController(const Assets& assets, int pathMode)
+	: NodeController(assets),
 	pathMode(pathMode)
 {
 }
 
-NodePathUpdater::~NodePathUpdater()
+NodePathController::~NodePathController()
 {
 }
 
-bool NodePathUpdater::update(const RenderContext& ctx, Node& node)
+bool NodePathController::update(const RenderContext& ctx, Node& node)
 {
 	float elapsed = glfwGetTime();
 

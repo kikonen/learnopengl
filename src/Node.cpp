@@ -1,7 +1,7 @@
 #include "Node.h"
 
 #include "ki/GL.h"
-#include "NodeUpdater.h";
+#include "NodeController.h";
 
 
 Node::Node(NodeType* type)
@@ -15,15 +15,15 @@ Node::~Node()
 
 void Node::prepare(const Assets& assets)
 {
-	if (updater) {
-		updater->prepare(*this);
+	if (controller) {
+		controller->prepare(*this);
 	}
 }
 
 bool Node::update(const RenderContext& ctx)
 {
-	if (!updater) return false;
-	return updater->update(ctx, *this);
+	if (!controller) return false;
+	return controller->update(ctx, *this);
 }
 
 Shader* Node::bind(const RenderContext& ctx, Shader* shader)

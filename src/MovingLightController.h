@@ -1,13 +1,13 @@
 #pragma once
 
-#include "NodeUpdater.h"
+#include "NodeController.h"
 
 #include "Light.h"
 
-class MovingLightUpdater : public NodeUpdater
+class MovingLightController : public NodeController
 {
 public:
-	MovingLightUpdater(
+	MovingLightController(
 		const Assets& assets, 
 		const glm::vec3& center, 
 		float radius, 

@@ -2,11 +2,11 @@
 
 #include "Node.h"
 
-class NodeUpdater
+class NodeController
 {
 public:
-	NodeUpdater(const Assets& assets);
-	~NodeUpdater();
+	NodeController(const Assets& assets);
+	~NodeController();
 
 	virtual void prepare(Node& node);
 	virtual bool update(const RenderContext& ctx, Node& node);

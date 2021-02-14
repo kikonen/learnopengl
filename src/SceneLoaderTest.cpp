@@ -3,9 +3,10 @@
 #include "MeshLoader.h"
 #include "Terrain.h"
 #include "InstancedNode.h"
-#include "AsteroidBeltUpdater.h"
-#include "MovingLightUpdater.h"
-#include "NodePathUpdater.h"
+
+#include "AsteroidBeltController.h"
+#include "MovingLightController.h"
+#include "NodePathController.h"
 
 #include "NodeType.h"
 #include "TerrainGenerator.h"
@@ -145,7 +146,7 @@ void SceneLoaderTest::setupNodeDirectional()
 			center = planet->getPos();
 		}
 
-		node->updater = new MovingLightUpdater(assets, center, radius, speed, scene->getDirLight());
+		node->controller = new MovingLightController(assets, center, radius, speed, scene->getDirLight());
 	});
 }
 
@@ -167,7 +168,7 @@ void SceneLoaderTest::setupNodeLightMoving()
 			node->setScale(0.5f);
 			scene->addNode(node);
 			if (light == activeLight) {
-				node->updater = new MovingLightUpdater(assets, center, 10.f, 2.f, light);
+				node->controller = new MovingLightController(assets, center, 10.f, 2.f, light);
 			}
 		}
 
@@ -177,7 +178,7 @@ void SceneLoaderTest::setupNodeLightMoving()
 			node->setScale(0.5f);
 			scene->addNode(node);
 			if (light == activeLight) {
-				node->updater = new MovingLightUpdater(assets, center, 10.f, 2.f, light);
+				node->controller = new MovingLightController(assets, center, 10.f, 2.f, light);
 			}
 		}
 	});
@@ -433,7 +434,7 @@ void SceneLoaderTest::setupNodeActive()
 		type->mesh = loader.load();
 
 		Node* active = new Node(type);
-		active->updater = new NodePathUpdater(assets, 0);
+		active->controller = new NodePathController(assets, 0);
 		active->setPos(glm::vec3(0) + assets.groundOffset);
 		scene->addNode(active);
 
@@ -534,8 +535,8 @@ void SceneLoaderTest::setupNodeAsteroidBelt()
 		type->mesh = loader.load();
 
 		Node* planet = getPlanet();
-		AsteroidBeltUpdater* updater = new AsteroidBeltUpdater(assets, planet);
-		InstancedNode* node = new InstancedNode(type, updater);
+		AsteroidBeltController* controller = new AsteroidBeltController(assets, planet);
+		InstancedNode* node = new InstancedNode(type, controller);
 		//node->selected = true;
 		//std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 		this->scene->addNode(node);

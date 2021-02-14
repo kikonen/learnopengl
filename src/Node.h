@@ -6,7 +6,7 @@
 #include "RenderContext.h"
 #include "Batch.h"
 
-class NodeUpdater;
+class NodeController;
 
 class Node
 {
@@ -39,7 +39,7 @@ public:
 
 	bool selected = false;
 
-	NodeUpdater* updater = nullptr;
+	NodeController* controller = nullptr;
 
 private:
 	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };

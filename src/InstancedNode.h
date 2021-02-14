@@ -6,7 +6,7 @@
 class InstancedNode : public Node
 {
 public:
-	InstancedNode(NodeType* type, NodeUpdater* updater);
+	InstancedNode(NodeType* type, NodeController* updater);
 	~InstancedNode();
 
 	void prepare(const Assets& assets) override;

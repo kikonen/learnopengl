@@ -1,14 +1,14 @@
 #pragma once
 
-#include "NodeUpdater.h"
+#include "NodeController.h"
 
 class InstancedNode;
 
-class InstancedUpdater : public NodeUpdater
+class InstancedController : public NodeController
 {
 public:
-	InstancedUpdater(const Assets& assets);
-	~InstancedUpdater();
+	InstancedController(const Assets& assets);
+	~InstancedController();
 
 	virtual void prepare(Node& node) override;
 	virtual bool update(const RenderContext& ctx, Node& node) override;
