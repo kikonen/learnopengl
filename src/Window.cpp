@@ -90,27 +90,24 @@ void Window::bindGLFWCallbacks()
 	// https://stackoverflow.com/questions/7676971/pointing-to-a-function-that-is-a-class-member-glfw-setkeycallback
 	// https://stackoverflow.com/questions/31581200/glfw-call-to-non-static-class-function-in-static-key-callback
 
-	//auto fn = [](GLFWwindow* w, int x, int y, int b)
-	//{
-	//	static_cast<Window*>(glfwGetWindowUserPointer(w))->on_mouse(x, y, v);
-	//}
-	//glfwSetMouseButtonCallback(glfwWindow, fn);
-
-    //glfwSetFramebufferSizeCallback(glfwWindow, framebuffer_size_callback);
 	glfwSetFramebufferSizeCallback(
 		glfwWindow, 
 		[](GLFWwindow* gw, int width, int height) {
 		static_cast<Window*>(glfwGetWindowUserPointer(gw))->onWindowResize(width, height);
 	});
 
-	//glfwSetCursorPosCallback(glfwWindow, mouse_callback);
 	glfwSetCursorPosCallback(
 		glfwWindow,
 		[](GLFWwindow* gw, double xpos, double ypos) {
 			static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseMove(xpos, ypos);
 		});
 
-	//glfwSetScrollCallback(glfwWindow, scroll_callback);
+	glfwSetMouseButtonCallback(
+		glfwWindow,
+		[](GLFWwindow* gw, int button, int action, int modifiers) {
+			static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseButton(button, action, modifiers);
+		});
+
 	glfwSetScrollCallback(
 		glfwWindow,
 		[](GLFWwindow* gw, double xoffset, double yoffset) {
@@ -146,6 +143,11 @@ void Window::onMouseMove(double xpos, double ypos)
 	else {
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
+}
+
+void Window::onMouseButton(int button, int action, int modifiers)
+{
+	input->onMouseButton(button, action, modifiers);
 }
 
 void Window::onMouseWheel(double xoffset, double yoffset)

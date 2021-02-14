@@ -52,3 +52,7 @@ void Input::onMouseMove(double xpos, double ypos)
 	mouseX = xpos;
 	mouseY = ypos;
 }
+
+void Input::onMouseButton(int button, int action, int modifiers)
+{
+}

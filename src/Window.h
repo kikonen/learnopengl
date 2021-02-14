@@ -30,6 +30,7 @@ public:
 
 	void onWindowResize(int width, int height);
 	void onMouseMove(double xpos, double ypos);
+	void onMouseButton(int button, int action, int modifiers);
 	void onMouseWheel(double xoffset, double yoffset);
 private:
 	void createGLFWWindow();

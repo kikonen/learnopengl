@@ -29,6 +29,7 @@ public:
 
 	bool isKeyPressed(Key key);
 	void onMouseMove(double xpos, double ypos);
+	void onMouseButton(int button, int action, int modifiers);
 
 public:
 	float mouseX = 0;
