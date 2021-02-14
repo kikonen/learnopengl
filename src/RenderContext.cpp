@@ -1,25 +1,31 @@
 #include "RenderContext.h"
 
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+
 #include "ki/GL.h"
 #include "Light.h"
 #include "Scene.h"
 
+
 RenderContext::RenderContext(
-	const Engine& engine, 
+	const Engine& engine,
 	const float dt,
-	const glm::mat4& view, 
-	const glm::mat4& projection,
 	Scene* scene)
 	: engine(engine),
 	assets(engine.assets),
+	scene(scene),
 	width(engine.window->width),
 	height(engine.window->height),
-	dt(dt),
-	view(view),
-	projection(projection),
-	projected(projection * view),
-	scene(scene)
+	dt(dt)
 {
+	camera = scene->getCamera();
+	if (!camera) {
+		camera = new Camera();
+	}
+	view = camera->getView();
+	projection = glm::perspective(glm::radians(camera->zoom), (float)width / (float)height, 0.1f, 1000.0f);
+	projected = projection * view;
 }
 
 void RenderContext::bindGlobal() const
@@ -37,7 +43,7 @@ void RenderContext::bindGlobal() const
 
 	// Data
 	{
-		DataUBO dataUbo = { engine.camera.getPos(), glfwGetTime() };
+		DataUBO dataUbo = { camera->getPos(), glfwGetTime() };
 
 		glBindBuffer(GL_UNIFORM_BUFFER, scene->ubo.data);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(DataUBO), &dataUbo);

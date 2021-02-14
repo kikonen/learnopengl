@@ -2,7 +2,9 @@
 
 #include <iostream>
 
+#include "Camera.h"
 #include "Engine.h"
+#include "Scene.h"
 
 Window::Window(Engine& engine)
 	: engine(engine),
@@ -121,7 +123,11 @@ void Window::processInput(float dt)
 		close();
 		return;
 	}
-	engine.camera.onKey(input, dt);
+
+	Camera* camera = engine.currentScene->getCamera();
+	if (camera) {
+		camera->onKey(input, dt);
+	}
 }
 
 void Window::onWindowResize(int width, int height)
@@ -138,7 +144,11 @@ void Window::onMouseMove(double xpos, double ypos)
 	int state = glfwGetMouseButton(glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		engine.camera.onMouseMove(input, input->mouseXoffset, input->mouseYoffset);
+
+		Camera* camera = engine.currentScene->getCamera();
+		if (camera) {
+			camera->onMouseMove(input, input->mouseXoffset, input->mouseYoffset);
+		}
 	}
 	else {
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -152,5 +162,8 @@ void Window::onMouseButton(int button, int action, int modifiers)
 
 void Window::onMouseWheel(double xoffset, double yoffset)
 {
-	engine.camera.onMouseScroll(input, xoffset, yoffset);
+	Camera* camera = engine.currentScene->getCamera();
+	if (camera) {
+		camera->onMouseScroll(input, xoffset, yoffset);
+	}
 }

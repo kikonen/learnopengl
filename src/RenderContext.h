@@ -1,13 +1,12 @@
 #pragma once
 
-#include <vector>
 #include <glm/glm.hpp>
 
-#include "Light.h"
-#include "Engine.h"
 #include "UBO.h"
+#include "Engine.h"
+#include "Camera.h"
+#include "Shader.h"
 
-class Light;
 class Scene;
 
 class RenderContext
@@ -16,25 +15,24 @@ public:
 	RenderContext(
 		const Engine& engine,
 		const float dt,
-		const glm::mat4& view,
-		const glm::mat4& projection,
 		Scene* scene);
 
 	void bindGlobal() const;
 	void bind(Shader* shader) const;
 public:
-	const Engine& engine;
 	const Assets& assets;
+	const Engine& engine;
 
 	const int width;
 	const int height;
+	const float dt;
 
 	Scene* scene;
+	Camera* camera;
 
-	const float dt;
-	const glm::mat4& view;
-	const glm::mat4& projection;
-	const glm::mat4 projected;
+	glm::mat4 view;
+	glm::mat4 projection;
+	glm::mat4 projected;
 
 	glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 

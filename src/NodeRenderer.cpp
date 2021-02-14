@@ -120,10 +120,12 @@ void NodeRenderer::drawBlended(RenderContext& ctx, std::vector<Node*>& nodes)
 	glEnable(GL_BLEND);
 	glDisable(GL_CULL_FACE);
 
+	const glm::vec3& viewPos = ctx.camera->getPos();
+
 	// TODO KI discards nodes if *same* distance
 	std::map<float, Node*> sorted;
 	for (auto node : nodes) {
-		float distance = glm::length(ctx.engine.camera.getPos() - node->getPos());
+		float distance = glm::length(viewPos - node->getPos());
 		sorted[distance] = node;
 	}
 

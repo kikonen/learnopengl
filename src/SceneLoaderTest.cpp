@@ -4,6 +4,7 @@
 #include "Terrain.h"
 #include "InstancedNode.h"
 
+#include "CameraController.h"
 #include "AsteroidBeltController.h"
 #include "MovingLightController.h"
 #include "NodePathController.h"
@@ -24,6 +25,8 @@ SceneLoaderTest::~SceneLoaderTest()
 void SceneLoaderTest::setup()
 {
 	scene = new Scene(assets);
+
+	setupCamera();
 
 	setupLightDirectional();
 	setupLightMoving();
@@ -58,10 +61,30 @@ void SceneLoaderTest::setup()
 	setupTerrain();
 	setupNodeSkybox();
 
-	setupNodeDirectional();
-	setupNodeLightMoving();
-
 	//setupNodeBackpack();
+}
+
+void SceneLoaderTest::setupCamera()
+{
+	Camera* camera = new Camera();
+
+	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+	MeshLoader loader(assets, "water_ball");
+	type->mesh = loader.load();
+	type->reflection = true;
+
+	glm::vec3 pos = glm::vec3(-8, 5, 10.f) + assets.groundOffset;
+	// pos = glm::vec3(-8, 5, 10.f);
+
+	camera->setPos(pos);
+
+	Node* node = new Node(type);
+	node->setPos(pos);
+	node->setScale(0.3f);
+	node->camera = camera;
+	node->controller = new CameraController(assets);
+
+	scene->addNode(node);
 }
 
 void SceneLoaderTest::setupNodeSkybox()
@@ -78,52 +101,18 @@ void SceneLoaderTest::setupLightDirectional()
 {
 	// sun
 	Light* sun = new Light();
-	sun->pos = glm::vec3(10, 40, 10) + assets.groundOffset;
-	sun->target = glm::vec3(0.0f) + assets.groundOffset;
+	{
+		sun->pos = glm::vec3(10, 40, 10) + assets.groundOffset;
+		sun->target = glm::vec3(0.0f) + assets.groundOffset;
 
-	sun->directional = true;
+		sun->directional = true;
 
-	sun->ambient = { 0.2f, 0.2f, 0.2f, 1.f };
-	sun->diffuse = { 0.5f, 0.5f, 0.5f, 1.f };
-	sun->specular = { 0.0f, 0.8f, 0.0f, 1.f };
+		sun->ambient = { 0.2f, 0.2f, 0.2f, 1.f };
+		sun->diffuse = { 0.5f, 0.5f, 0.5f, 1.f };
+		sun->specular = { 0.0f, 0.8f, 0.0f, 1.f };
+	}
 
-	scene->addLight(sun);
-}
-
-void SceneLoaderTest::setupLightMoving()
-{
-	// light
-	Light* light = new Light();
-	light->pos = glm::vec3(10, 5, 10) + assets.groundOffset;
-
-	// 160
-	light->point = true;
-	light->linear = 0.027f;
-	light->quadratic = 0.0028f;
-
-	light->spot = false;
-	light->cutoffAngle = 12.5f;
-	light->outerCutoffAngle = 25.f;
-
-	light->target = glm::vec3(0.0f) + assets.groundOffset;
-
-	light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
-	light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
-	light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
-
-	scene->addLight(light);
-
-	activeLight = light;
-}
-
-void SceneLoaderTest::setupNodeDirectional()
-{
-	addLoader([this]() {
-		Light* sun = scene->getDirLight();
-		if (!sun) return;
-
-		//sun->target = planet->getPos();
-
+	addLoader([this, sun]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_LIGHT));
 		type->light = true;
 
@@ -135,6 +124,8 @@ void SceneLoaderTest::setupNodeDirectional()
 		Node* node = new Node(type);
 		node->setPos(sun->pos);
 		node->setScale(1.5f);
+		node->light = sun;
+
 		scene->addNode(node);
 
 		const float radius = 80.0f;
@@ -150,9 +141,35 @@ void SceneLoaderTest::setupNodeDirectional()
 	});
 }
 
-void SceneLoaderTest::setupNodeLightMoving()
+void SceneLoaderTest::setupLightMoving()
 {
-	addLoader([this]() {
+	Light* active = nullptr;
+	std::vector<Light*> lights;
+
+	{
+		Light* light = new Light();
+		light->pos = glm::vec3(10, 5, 10) + assets.groundOffset;
+
+		// 160
+		light->point = true;
+		light->linear = 0.027f;
+		light->quadratic = 0.0028f;
+
+		light->spot = false;
+		light->cutoffAngle = 12.5f;
+		light->outerCutoffAngle = 25.f;
+
+		light->target = glm::vec3(0.0f) + assets.groundOffset;
+
+		light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
+		light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
+		light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
+
+		lights.push_back(light);
+		active = light;
+	}
+
+	addLoader([this, lights, active]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_LIGHT));
 		type->light = true;
 
@@ -160,26 +177,18 @@ void SceneLoaderTest::setupNodeLightMoving()
 		loader.overrideMaterials = true;
 		type->mesh = loader.load();
 
-		glm::vec3 center = glm::vec3(0, 7, 0) + assets.groundOffset;
-
-		for (auto light : scene->getPointLights()) {
+		for (auto light : lights) {
 			Node* node = new Node(type);
 			node->setPos(light->pos);
 			node->setScale(0.5f);
-			scene->addNode(node);
-			if (light == activeLight) {
-				node->controller = new MovingLightController(assets, center, 10.f, 2.f, light);
-			}
-		}
+			node->light = light;
 
-		for (auto light : scene->getSpotLights()) {
-			Node* node = new Node(type);
-			node->setPos(light->pos);
-			node->setScale(0.5f);
-			scene->addNode(node);
-			if (light == activeLight) {
+			if (light == active) {
+				glm::vec3 center = glm::vec3(0, 7, 0) + assets.groundOffset;
 				node->controller = new MovingLightController(assets, center, 10.f, 2.f, light);
 			}
+		
+			scene->addNode(node);
 		}
 	});
 }
@@ -486,25 +495,38 @@ void SceneLoaderTest::setupNodePlanet()
 		node->setScale(10);
 
 		scene->addNode(node);
+		setPlanet(node);
 
-		{
+		planetFuture = addLoader([this]() {
 			// light
 			Light* light = new Light();
-			light->pos = glm::vec3(13, 48, 100) + assets.groundOffset;
+			{
+				light->pos = glm::vec3(13, 48, 100) + assets.groundOffset;
 
-			// 160
-			light->point = true;
-			light->linear = 0.0027f;
-			light->quadratic = 0.00028f;
+				// 160
+				light->point = true;
+				light->linear = 0.0027f;
+				light->quadratic = 0.00028f;
 
-			light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
-			light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
-			light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
+				light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
+				light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
+				light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
+			}
 
-			scene->addLight(light);
-		}
+			NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_LIGHT));
+			{
+				type->light = true;
 
-		setPlanet(node);
+				MeshLoader loader(assets, "light");
+				loader.overrideMaterials = true;
+				type->mesh = loader.load();
+			}
+
+			Node* node = new Node(type);
+			node->setPos(light->pos);
+			node->setScale(0.5f);
+			scene->addNode(node);
+		});
 	});
 }
 
@@ -594,8 +616,8 @@ void SceneLoaderTest::setPlanet(Node* planet)
 Node* SceneLoaderTest::getPlanet()
 {
 	if (!planetFuture) return loadedPlanet;
-	planetFuture->wait();
 	std::lock_guard<std::mutex> lock(load_lock);
+	planetFuture->get();
 	planetFuture = nullptr;
 	return loadedPlanet;
 }

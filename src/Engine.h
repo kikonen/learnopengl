@@ -1,22 +1,12 @@
 #pragma once
 
-#include <iostream>
-#include <fstream>
-#include <strstream>
-#include <chrono>
-#include <thread>
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Input.h"
-#include "Camera.h"
 #include "Assets.h"
-#include "UBO.h"
-#include "Shader.h"
-
 #include "Window.h"
 
+class Scene;
 
 const int FPS_120 = 8;
 const int FPS_60 = 16;
@@ -45,7 +35,7 @@ public:
 
     Window* window = nullptr;
 
-    Camera camera;
+    Scene* currentScene = nullptr;
 
     float accumulatedTime = 0.0f;
 

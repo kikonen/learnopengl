@@ -90,6 +90,9 @@ void Scene::attachNodes()
 		for (auto& e : x.second) {
 			e->prepare(assets);
 			typeNodes[e->type].push_back(e);
+
+			addCamera(e);
+			addLight(e);
 		}
 	}
 
@@ -202,6 +205,16 @@ void Scene::draw(RenderContext& ctx)
 	ki::GL::checkErrors("scene.draw");
 }
 
+Camera* Scene::getCamera()
+{
+	return cameraNode ? cameraNode->camera : nullptr;
+}
+
+Node* Scene::getCameraNode()
+{
+	return cameraNode;
+}
+
 Light* Scene::getDirLight()
 {
 	return dirLight;
@@ -217,9 +230,17 @@ std::vector<Light*>& Scene::getSpotLights()
 	return spotLights;
 }
 
-void Scene::addLight(Light* light)
+void Scene::addCamera(Node* node)
 {
-	std::lock_guard<std::mutex> lock(load_lock);
+	if (!node->camera) return;
+	cameraNode = node;
+}
+
+void Scene::addLight(Node* node)
+{
+	Light* light = node->light;
+	if (!light) return;
+
 	if (light->directional) {
 		dirLight = light;
 	}

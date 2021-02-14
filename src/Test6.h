@@ -24,7 +24,6 @@ public:
 	void onDestroy() override;
 
 private:
-	Scene* currentScene = nullptr;
 	Frame* frame;
 	FrameInit* frameInit;
 };

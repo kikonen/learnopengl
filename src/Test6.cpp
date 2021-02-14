@@ -20,9 +20,6 @@ int Test6::onSetup() {
 	SceneLoader* loader = loadScene();
 	currentScene = loader->scene;
 
-	camera.setPos(glm::vec3(-8, 5, 10.f) + assets.groundOffset);
-	//camera.setPos(glm::vec3(-8, 5, 10.f));
-
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glEnable(GL_STENCIL_TEST);
@@ -56,13 +53,7 @@ int Test6::onRender(float dt) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	const glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)window->width / (float)window->height, 0.1f, 1000.0f);
-
-	RenderContext ctx(
-		*this, dt,
-		camera.getView(),
-		projection,
-		currentScene);
+	RenderContext ctx(*this, dt, currentScene);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 

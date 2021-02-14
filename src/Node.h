@@ -7,6 +7,8 @@
 #include "Batch.h"
 
 class NodeController;
+class Camera;
+class Light;
 
 class Node
 {
@@ -40,6 +42,9 @@ public:
 	bool selected = false;
 
 	NodeController* controller = nullptr;
+
+	Camera* camera;
+	Light* light;
 
 private:
 	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };

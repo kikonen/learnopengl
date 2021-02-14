@@ -16,13 +16,12 @@ public:
 	void setup() override;
 
 private:
+	void setupCamera();
+
 	void setupNodeSkybox();
 
 	void setupLightDirectional();
 	void setupLightMoving();
-
-	void setupNodeDirectional();
-	void setupNodeLightMoving();
 
 	void setupNodeZero();
 
@@ -57,8 +56,6 @@ private:
 	Node* getPlanet();
 
 private:
-	Light* activeLight = nullptr;
-
 	std::future<void>* planetFuture = nullptr;
 	Node* loadedPlanet;
 };

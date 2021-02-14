@@ -37,11 +37,12 @@ public:
 	void bind(RenderContext& ctx);
 	void draw(RenderContext& ctx);
 
+	Camera* getCamera();
+	Node* getCameraNode();
+
 	Light* getDirLight();
 	std::vector<Light*>& getPointLights();
 	std::vector<Light*>& getSpotLights();
-
-	void addLight(Light* light);
 
 	void addNode(Node* node);
 	void addSprite(Sprite* sprite);
@@ -51,6 +52,9 @@ public:
 private:
 	void prepareUBOs();
 	void attachNodes();
+
+	void addCamera(Node* node);
+	void addLight(Node* node);
 
 public:
 	const Assets& assets;
@@ -75,6 +79,8 @@ private:
 	NormalRenderer* normalRenderer = nullptr;
 
 	ParticleSystem* particleSystem = nullptr;
+
+	Node* cameraNode = nullptr;
 
 	Light* dirLight = nullptr;
 	std::vector<Light*> pointLights;
