@@ -20,6 +20,7 @@ in VS_OUT {
 
   vec4 fragPosLightSpace;
 
+  mat3 TBN;
   vec3 tangentLightPos;
   vec3 tangentViewPos;
   vec3 tangentFragPos;
@@ -53,10 +54,10 @@ void main() {
     discard;
 
   vec3 normal;
-  if (materials[matIdx].hasNormalMap) {
+  if (material.hasNormalMap) {
     normal = texture(textures[matIdx].normalMap, fs_in.texCoords).rgb;
-    normal = normalize(normal * 2.0 - 1.0);
-    material.hasNormalMap = true;
+    normal = normal * 2.0 - 1.0;
+    normal = normalize(fs_in.TBN * normal);
   } else {
     normal = fs_in.normal;
   }
@@ -98,6 +99,10 @@ void main() {
 //  vec3 i = normalize(fs_in.fragPos - viewPos);
 //  vec3 r = reflect(i, normal);
 //  texColor = vec4(texture(skybox, r).rgb, 1.0);
+
+  // if (material.hasNormalMap) {
+  //   texColor = vec4(normal, 1.0);
+  // }
 
   fragColor = texColor;
 }

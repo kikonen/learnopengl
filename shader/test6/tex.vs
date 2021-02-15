@@ -30,6 +30,7 @@ out VS_OUT {
 
   vec4 fragPosLightSpace;
 
+  mat3 TBN;
   vec3 tangentLightPos;
   vec3 tangentViewPos;
   vec3 tangentFragPos;
@@ -43,27 +44,26 @@ out VS_OUT {
 void main() {
   int matIdx = int(aMaterialIndex);
 
-  mat4 vmMat;
+  mat4 modelMat;
+  mat3 normalMat;
+
   if (drawInstanced) {
-    vmMat = viewMatrix * aInstanceMatrix;
+    modelMat = aInstanceMatrix;
+    normalMat = transpose(inverse(mat3(modelMat)));
   } else {
-    vmMat = viewMatrix * modelMatrix;
+    modelMat = modelMatrix;
+    normalMat = normalMatrix;
   }
 
-  gl_Position = projectionMatrix * vmMat * vec4(aPos, 1.0);
+  gl_Position = projectionMatrix * viewMatrix * modelMat * vec4(aPos, 1.0);
 
   vs_out.materialIndex = int(aMaterialIndex);
   vs_out.texCoords = aTexCoords;
 
-  vs_out.fragPos = (modelMatrix * vec4(aPos, 1.0)).xyz;
+  vs_out.fragPos = (modelMat * vec4(aPos, 1.0)).xyz;
   vs_out.vertexPos = aPos;
 
-  if (drawInstanced) {
-    mat3 mat = transpose(inverse(mat3(aInstanceMatrix)));
-    vs_out.normal = normalize(mat * aNormal);
-  } else {
-    vs_out.normal = normalize(normalMatrix * aNormal);
-  }
+  vs_out.normal = normalize(normalMat * aNormal);
 
   mat4 b = {
     {0.5f, 0.0f, 0.0f, 0.0f},
@@ -74,18 +74,17 @@ void main() {
 
   vs_out.fragPosLightSpace = b * lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 
-  bool hasNormalMap = materials[matIdx].hasNormalMap;
-  if (hasNormalMap) {
-    vec3 T = normalize(normalMatrix * aTangent);
-    vec3 N = normalize(normalMatrix * aNormal);
+  if (materials[matIdx].hasNormalMap) {
+    vec3 N = vs_out.normal;
+    vec3 T = normalize(normalMat * aTangent);
     T = normalize(T - dot(T, N) * N);
     vec3 B = cross(N, T);
 
-    vec3 lightPos = pointLights[0].pos;
+//    vec3 lightPos = pointLights[0].pos;
 
-    mat3 TBN = transpose(mat3(T, B, N));
-    vs_out.tangentLightPos = TBN * lightPos;
-    vs_out.tangentViewPos  = TBN * viewPos;
-    vs_out.tangentFragPos  = TBN * vs_out.fragPos;
+    vs_out.TBN = mat3(T, B, N);
+    // vs_out.tangentLightPos = TBN * lightPos;
+    // vs_out.tangentViewPos  = TBN * viewPos;
+    // vs_out.tangentFragPos  = TBN * vs_out.fragPos;
   }
 }

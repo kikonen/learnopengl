@@ -105,9 +105,8 @@ void Texture::prepare()
 	} else {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->data);
 	}
-	if (!normalMap) {
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
+
+	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void Texture::bind(Shader* shader)

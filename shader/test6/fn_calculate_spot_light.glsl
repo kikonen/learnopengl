@@ -6,7 +6,7 @@ vec4 calculateSpotLight(
   Material material)
 {
   vec3 toLight;
-  if (material.hasNormalMap) {
+  if (false && material.hasNormalMap) {
     toLight = normalize(-(fs_in.tangentLightPos - fs_in.tangentFragPos));
     toView = normalize(fs_in.tangentViewPos - fs_in.tangentFragPos);
   } else {

@@ -11,6 +11,7 @@ Ni 1.450000
 d 1.000000
 illum 2
 map_Kd daisy.png
+map_Bump daisy_normal.png
 
 newmtl kari
 Ns 225.000000
@@ -23,6 +24,7 @@ d 1.000000
 illum 2
 map_Kd kari.jpg
 map_Ke matrix.jpg
+map_Bump kari_normal.png
 
 newmtl wood
 Ns 225.000000
