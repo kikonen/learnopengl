@@ -108,8 +108,8 @@ void SceneLoaderTest::setupLightDirectional()
 		sun->directional = true;
 
 		sun->ambient = { 0.2f, 0.2f, 0.2f, 1.f };
-		sun->diffuse = { 0.5f, 0.5f, 0.5f, 1.f };
-		sun->specular = { 0.0f, 0.8f, 0.0f, 1.f };
+		sun->diffuse = { 0.4f, 0.4f, 0.4f, 1.f };
+		sun->specular = { 0.0f, 0.7f, 0.0f, 1.f };
 	}
 
 	addLoader([this, sun]() {

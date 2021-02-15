@@ -26,6 +26,7 @@ in VS_OUT {
   vec3 tangentFragPos;
 } fs_in;
 
+uniform int hasPattern;
 uniform bool hasReflectionMap;
 uniform samplerCube reflectionMap;
 
@@ -62,7 +63,7 @@ void main() {
     normal = fs_in.normal;
   }
 
-  if (hasReflectionMap || hasRefractionMap) {
+  if (hasPattern == 1) {
     float a = 0.25;
     float b = 50.0;
     float x = fs_in.vertexPos.x;
