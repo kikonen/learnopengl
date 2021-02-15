@@ -141,7 +141,6 @@ int MeshLoader::loadData(
 				glm::uvec3 ti = { 0, 0, 0 };
 				glm::uvec3 ni = { 0, 0, 0 };
 				glm::uvec3 tangenti = { 0, 0, 0 };
-				glm::uvec3 bitangenti = { 0, 0, 0 };
 
 				if (vv1.size() > 1 && !vv1[1].empty()) {
 					ti = { stoi(vv1[1]) - 1, stoi(vv2[1]) - 1, stoi(vv3[1]) - 1 };
@@ -303,21 +302,31 @@ void MeshLoader::createTangents(
 			continue;
 		}
 
-		glm::vec3& p1 = positions[i];
-		glm::vec3& p2 = positions[(i + 1) % 3];
-		glm::vec3& p3 = positions[(i + 2) % 3];
+		const int ni1 = ni[i];
 
-		glm::vec2& uv1 = textures[i];
-		glm::vec2& uv2 = textures[(i + 1) % 3];
-		glm::vec2& uv3 = textures[(i + 2) % 3];
+		const int pi1 = pi[i];
+		const int pi2 = pi[(i + 1) % 3];
+		const int pi3 = pi[(i + 2) % 3];
 
-		glm::vec3& n = normals[i];
+		const int ti1 = ti[i];
+		const int ti2 = ti[(i + 1) % 3];
+		const int ti3 = ti[(i + 2) % 3];
 
-		glm::vec3 edge1 = p2 - p1;
-		glm::vec3 edge2 = p3 - p1;
+		const glm::vec3& p1 = positions[pi1];
+		const glm::vec3& p2 = positions[pi2];
+		const glm::vec3& p3 = positions[pi3];
 
-		glm::vec2 deltaUV1 = uv2 - uv1;
-		glm::vec2 deltaUV2 = uv3 - uv1;
+		const glm::vec2& uv1 = textures[ti1];
+		const glm::vec2& uv2 = textures[ti2];
+		const glm::vec2& uv3 = textures[ti3];
+
+		const glm::vec3& n = normals[ni1];
+
+		const glm::vec3 edge1 = p2 - p1;
+		const glm::vec3 edge2 = p3 - p1;
+
+		const glm::vec2 deltaUV1 = uv2 - uv1;
+		const glm::vec2 deltaUV2 = uv3 - uv1;
 
 		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
 	
@@ -326,7 +335,10 @@ void MeshLoader::createTangents(
 		tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
 		tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
 
-		tangents.push_back(tangent);
+		glm::vec3 nt = glm::normalize(tangent);
+//		if (tangent != nt) __debugbreak();
+
+		tangents.push_back(nt);
 
 		tangenti[i] = tangents.size() - 1;
 

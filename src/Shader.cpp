@@ -128,6 +128,7 @@ int Shader::createProgram() {
         {
             glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
             std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED " << shaderName << " vert=" << vertexShaderPath << "\n" << infoLog << std::endl;
+            __debugbreak();
         }
     }
 
@@ -143,6 +144,7 @@ int Shader::createProgram() {
         {
             glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
             std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED " << shaderName << " frag=" << fragmentShaderPath << "\n" << infoLog << std::endl;
+            __debugbreak();
         }
     }
 
@@ -160,6 +162,7 @@ int Shader::createProgram() {
         {
             glGetShaderInfoLog(geometryShader, 512, NULL, infoLog);
             std::cout << "ERROR::SHADER::GEOMETRY::COMPILATION_FAILED " << shaderName << " frag=" << geometryShaderPath << "\n" << infoLog << std::endl;
+            __debugbreak();
         }
     }
 
@@ -179,6 +182,7 @@ int Shader::createProgram() {
     if (!success) {
         glGetProgramInfoLog(programId, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED " << shaderName << "\n" << infoLog << std::endl;
+        __debugbreak();
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
@@ -190,6 +194,7 @@ int Shader::createProgram() {
     if (!success) {
         glGetProgramInfoLog(programId, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::VALIDATE_FAILED " << shaderName << "\n" << infoLog << std::endl;
+        __debugbreak();
     }
 
     // NOTE KI set UBOs only once for shader
