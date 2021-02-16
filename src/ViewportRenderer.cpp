@@ -9,20 +9,20 @@ void ViewportRenderer::prepare()
 {
 }
 
-void ViewportRenderer::bind(RenderContext& ctx)
+void ViewportRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void ViewportRenderer::update(RenderContext& ctx, std::vector<Viewport*>& viewports)
+void ViewportRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto viewport : viewports) {
+	for (auto viewport : registry.viewports) {
 		viewport->update(ctx);
 	}
 }
 
-void ViewportRenderer::render(RenderContext& ctx, std::vector<Viewport*>& viewports)
+void ViewportRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto viewport : viewports) {
+	for (auto viewport : registry.viewports) {
 		viewport->bind(ctx);
 		viewport->draw(ctx);
 	}

@@ -9,25 +9,25 @@ void SpriteRenderer::prepare()
 {
 }
 
-void SpriteRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites)
+void SpriteRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto& x : typeSprites) {
+	for (auto& x : registry.sprites) {
 		for (auto& e : x.second) {
 			e->update(ctx);
 		}
 	}
 }
 
-void SpriteRenderer::bind(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites)
+void SpriteRenderer::bind(const RenderContext& ctx, NodeRegistry& registry)
 {
 }
 
-void SpriteRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites)
+void SpriteRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
 	glEnable(GL_BLEND);
 	glDisable(GL_CULL_FACE);
 
-	for (auto& x : typeSprites) {
+	for (auto& x : registry.sprites) {
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);
 		if (!shader) continue;

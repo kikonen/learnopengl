@@ -15,7 +15,8 @@ public:
 	RenderContext(
 		const Engine& engine,
 		const float dt,
-		Scene* scene);
+		Scene* scene,
+		Camera* camera);
 
 	void bindGlobal() const;
 	void bind(Shader* shader) const;
@@ -32,7 +33,7 @@ public:
 
 	glm::mat4 view;
 	glm::mat4 projection;
-	glm::mat4 projected;
+	//glm::mat4 projected;
 
 	glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 

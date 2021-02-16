@@ -11,9 +11,9 @@ public:
 
 	void prepare();
 
-	void update(RenderContext& ctx);
-	void bind(RenderContext& ctx);
-	void draw(RenderContext& ctx);
+	void update(const RenderContext& ctx);
+	void bind(const RenderContext& ctx);
+	void draw(const RenderContext& ctx);
 
 private:
 	const glm::vec3 pos;

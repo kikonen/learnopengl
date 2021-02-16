@@ -21,6 +21,9 @@ public:
 
     int batchSize = 1000;
 
+    float nearPlane = 0.1f;
+    float farPlane = 1000.0f;
+
     int refactionMapUnitId = GL_TEXTURE28;
     unsigned int refactionMapUnitIndex = 28;
 

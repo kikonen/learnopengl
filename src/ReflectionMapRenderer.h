@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "FrameBuffer.h"
 
+#include "NodeRegistry.h"
 #include "Sprite.h"
 #include "Terrain.h"
 
@@ -16,25 +17,20 @@ public:
 	~ReflectionMapRenderer();
 
 	void prepare();
-	void bind(RenderContext& ctx);
-	void bindTexture(RenderContext& ctx);
-	void render(
-		RenderContext& ctx,
-		std::map<NodeType*, std::vector<Node*>>& typeNodes,
-		std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
-		std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
+	void bind(const RenderContext& ctx);
+	void bindTexture(const RenderContext& ctx);
+	void render(const RenderContext& ctx, NodeRegistry& registry);
 
 private:
-	void drawNodes(
-		RenderContext& ctx,
-		std::map<NodeType*, std::vector<Node*>>& typeNodes,
-		std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
-		std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
+	void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
 	glm::vec3 center = { 0, 0, 0 };
 
 private:
+	float nearPlane = 0.1f;
+	float farPlane = 1000.0f;
+
 	FrameBuffer frameBuffers[6] = {
 		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },
 		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },

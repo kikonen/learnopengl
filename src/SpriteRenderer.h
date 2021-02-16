@@ -5,6 +5,7 @@
 #include "Renderer.h"
 #include "RenderContext.h"
 #include "Sprite.h"
+#include "NodeRegistry.h"
 
 class SpriteRenderer final : public Renderer
 {
@@ -13,7 +14,7 @@ public:
 
 	void prepare();
 
-	void update(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites);
-	void bind(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites);
-	void render(RenderContext& ctx, std::map<NodeType*, std::vector<Sprite*>>& typeSprites);
+	void update(const RenderContext& ctx, NodeRegistry& registry);
+	void bind(const RenderContext& ctx, NodeRegistry& registry);
+	void render(const RenderContext& ctx, NodeRegistry& registry);
 };

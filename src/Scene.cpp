@@ -9,7 +9,8 @@
 
 
 Scene::Scene(const Assets& assets)
-	: assets(assets)
+	: assets(assets),
+	registry(*this)
 {
 	nodeRenderer = new NodeRenderer(assets);
 	spriteRenderer = new SpriteRenderer(assets);
@@ -55,69 +56,9 @@ void Scene::prepare()
 
 	particleSystem->prepare();
 
-	viewports.push_back(shadowMapRenderer->debugViewport);
+	registry.addViewPort(shadowMapRenderer->debugViewport);
 }
 
-void Scene::attachNodes()
-{
-	std::lock_guard<std::mutex> lock(load_lock);
-	if (nodes.empty() && sprites.empty() && terrains.empty()) return;
-
-	std::map<NodeType*, std::vector<Node*>> newNodes;
-	std::map<NodeType*, std::vector<Sprite*>> newSprites;
-	std::map<NodeType*, std::vector<Terrain*>> newTerrains;
-
-	{
-		for (auto e : nodes) {
-			newNodes[e->type].push_back(e);
-		}
-		for (auto e : sprites) {
-			newSprites[e->type].push_back(e);
-		}
-		for (auto e : terrains) {
-			newTerrains[e->type].push_back(e);
-		}
-		nodes.clear();
-		sprites.clear();
-		terrains.clear();
-	}
-
-	for (auto& x : newNodes) {
-		NodeType* t = x.first;
-		t->batch.size = assets.batchSize;
-		t->prepare(assets);
-
-		for (auto& e : x.second) {
-			e->prepare(assets);
-			typeNodes[e->type].push_back(e);
-
-			addCamera(e);
-			addLight(e);
-		}
-	}
-
-	for (auto& x : newSprites) {
-		NodeType* t = x.first;
-		t->batch.size = assets.batchSize;
-		t->prepare(assets);
-
-		for (auto& e : x.second) {
-			e->prepare(assets);
-			typeSprites[e->type].push_back(e);
-		}
-	}
-
-	for (auto& x : newTerrains) {
-		NodeType* t = x.first;
-		t->batch.size = assets.batchSize;
-		t->prepare(assets);
-
-		for (auto& e : x.second) {
-			e->prepare(assets);
-			typeTerrains[e->type].push_back(e);
-		}
-	}
-}
 
 void Scene::processEvents(RenderContext& ctx) 
 {
@@ -125,7 +66,7 @@ void Scene::processEvents(RenderContext& ctx)
 
 void Scene::update(RenderContext& ctx)
 {
-	attachNodes();
+	registry.attachNodes();
 
 	if (dirLight) {
 		dirLight->update(ctx);
@@ -141,10 +82,10 @@ void Scene::update(RenderContext& ctx)
 		skyboxRenderer->update(ctx);
 	}
 
-	nodeRenderer->update(ctx, typeNodes);
-	spriteRenderer->update(ctx, typeSprites);
-	terrainRenderer->update(ctx, typeTerrains);
-	viewportRenderer->update(ctx, viewports);
+	nodeRenderer->update(ctx, registry);
+	spriteRenderer->update(ctx, registry);
+	terrainRenderer->update(ctx, registry);
+	viewportRenderer->update(ctx, registry);
 
 	glm::vec3 pos = glm::vec3(0, 20, 0) + assets.groundOffset;
 	reflectionMapRenderer->center = pos;
@@ -173,10 +114,10 @@ void Scene::draw(RenderContext& ctx)
 
 	glEnable(GL_DEPTH_TEST);
 
-	shadowMapRenderer->render(ctx, typeNodes, typeSprites, typeTerrains);
+	shadowMapRenderer->render(ctx, registry);
 	shadowMapRenderer->bindTexture(ctx);
 
-	reflectionMapRenderer->render(ctx, typeNodes, typeSprites, typeTerrains);
+	reflectionMapRenderer->render(ctx, registry);
 	reflectionMapRenderer->bindTexture(ctx);
 
 	if (skyboxRenderer) {
@@ -190,17 +131,17 @@ void Scene::draw(RenderContext& ctx)
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->textureID);
 	}
 
-	terrainRenderer->render(ctx, typeTerrains);
-	spriteRenderer->render(ctx, typeSprites);
-	nodeRenderer->render(ctx, typeNodes);
+	terrainRenderer->render(ctx, registry);
+	spriteRenderer->render(ctx, registry);
+	nodeRenderer->render(ctx, registry);
 
 	particleSystem->render(ctx);
 
 	if (showNormals) {
-		normalRenderer->render(ctx, typeNodes, typeSprites, typeTerrains);
+		normalRenderer->render(ctx, registry);
 	}
 
-	viewportRenderer->render(ctx, viewports);
+	viewportRenderer->render(ctx, registry);
 
 	ki::GL::checkErrors("scene.draw");
 }
@@ -250,30 +191,6 @@ void Scene::addLight(Node* node)
 	else if (light->spot) {
 		spotLights.push_back(light);
 	}
-}
-
-void Scene::addNode(Node* node)
-{
-	std::lock_guard<std::mutex> lock(load_lock);
-	nodes.push_back(node);
-}
-
-void Scene::addSprite(Sprite* sprite)
-{
-	std::lock_guard<std::mutex> lock(load_lock);
-	sprites.push_back(sprite);
-}
-
-void Scene::addTerrain(Terrain* terrain)
-{
-	std::lock_guard<std::mutex> lock(load_lock);
-	terrains.push_back(terrain);
-}
-
-void Scene::addViewPort(Viewport* viewport)
-{
-	std::lock_guard<std::mutex> lock(load_lock);
-	viewports.push_back(viewport);
 }
 
 void Scene::prepareUBOs()

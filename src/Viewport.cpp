@@ -46,11 +46,11 @@ void Viewport::prepare()
 	glBindVertexArray(0);
 }
 
-void Viewport::update(RenderContext& ctx)
+void Viewport::update(const RenderContext& ctx)
 {
 }
 
-void Viewport::bind(RenderContext& ctx)
+void Viewport::bind(const RenderContext& ctx)
 {
 	shader->bind();
 
@@ -67,7 +67,7 @@ void Viewport::bind(RenderContext& ctx)
 	glEnableVertexAttribArray(ATTR_VIEW_TEX);
 }
 
-void Viewport::draw(RenderContext& ctx)
+void Viewport::draw(const RenderContext& ctx)
 {
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }

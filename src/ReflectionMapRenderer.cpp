@@ -27,39 +27,37 @@ void ReflectionMapRenderer::prepare()
 	}
 }
 
-void ReflectionMapRenderer::bind(RenderContext& ctx)
+void ReflectionMapRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void ReflectionMapRenderer::bindTexture(RenderContext& ctx)
+void ReflectionMapRenderer::bindTexture(const RenderContext& ctx)
 {
 //	frameBuffer.bindTexture(assets.shadowMapUnitId);
 }
 
-void ReflectionMapRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes, std::map<NodeType*, std::vector<Sprite*>>& typeSprites, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
+void ReflectionMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
+	RenderContext reflectionCtx(ctx.engine, ctx.dt, ctx.scene, ctx.camera);
+
 	for (auto& frameBuffer : frameBuffers) {
 		frameBuffer.bind();
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		drawNodes(ctx, typeNodes, typeSprites, typeTerrains);
+		drawNodes(reflectionCtx, registry);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// reset viewport
-		glViewport(0, 0, ctx.engine.window->width, ctx.engine.window->height);
+		glViewport(0, 0, reflectionCtx.width, reflectionCtx.height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 }
 
-void ReflectionMapRenderer::drawNodes(
-	RenderContext& ctx,
-	std::map<NodeType*, std::vector<Node*>>& typeNodes,
-	std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
-	std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
+void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto& x : typeTerrains) {
+	for (auto& x : registry.terrains) {
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);
 
@@ -73,7 +71,7 @@ void ReflectionMapRenderer::drawNodes(
 		batch.flush(ctx, t);
 	}
 
-	for (auto& x : typeSprites) {
+	for (auto& x : registry.sprites) {
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);
 
@@ -87,7 +85,7 @@ void ReflectionMapRenderer::drawNodes(
 		batch.flush(ctx, t);
 	}
 
-	for (auto& x : typeNodes) {
+	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
 		if (t->light || t->skipShadow) continue;
 		Shader* shader = t->bind(ctx, nullptr);

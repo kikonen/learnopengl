@@ -12,7 +12,7 @@ void NormalRenderer::prepare()
 	normalShader->prepare();
 }
 
-void NormalRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
+void NormalRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
 {
 	//for (auto& x : typeNodes) {
 	//	for (auto& e : x.second) {
@@ -21,17 +21,13 @@ void NormalRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<
 	//}
 }
 
-void NormalRenderer::bind(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
+void NormalRenderer::bind(const RenderContext& ctx, NodeRegistry& registry)
 {
 }
 
-void NormalRenderer::render(
-	RenderContext& ctx,
-	std::map<NodeType*, std::vector<Node*>>& typeNodes,
-	std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
-	std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
+void NormalRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto& x : typeNodes) {
+	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
 		if (t->light || t->skipShadow) continue;
 
@@ -47,7 +43,7 @@ void NormalRenderer::render(
 		batch.flush(ctx, t);
 	}
 
-	for (auto& x : typeTerrains) {
+	for (auto& x : registry.terrains) {
 		NodeType* t = x.first;
 		if (t->light || t->skipShadow) continue;
 
@@ -63,7 +59,7 @@ void NormalRenderer::render(
 		batch.flush(ctx, t);
 	}
 
-	for (auto& x : typeSprites) {
+	for (auto& x : registry.sprites) {
 		NodeType* t = x.first;
 		t->bind(ctx, normalShader);
 

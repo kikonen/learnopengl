@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Assets.h"
 #include "Viewport.h"
+#include "NodeRegistry.h"
 
 class ViewportRenderer : public Renderer
 {
@@ -11,8 +12,8 @@ public:
 
 	void prepare();
 
-	void update(RenderContext& ctx, std::vector<Viewport*>& viewports);
-	void bind(RenderContext& ctx);
-	void render(RenderContext& ctx, std::vector<Viewport*>& viewports);
+	void update(const RenderContext& ctx, NodeRegistry& registry);
+	void bind(const RenderContext& ctx);
+	void render(const RenderContext& ctx, NodeRegistry& registry);
 };
 

@@ -9,6 +9,7 @@
 #include "Terrain.h"
 #include "FrameBuffer.h"
 #include "Viewport.h"
+#include "NodeRegistry.h"
 
 // NOTE KI MUST match lookup() in light shadow shader
 const unsigned int SHADOW_WIDTH = 1000,
@@ -22,21 +23,13 @@ public:
 
 	void prepare();
 
-	void bindTexture(RenderContext& ctx);
+	void bindTexture(const RenderContext& ctx);
 
 	void bind(RenderContext& ctx);
-	void render(
-		RenderContext& ctx,
-		std::map<NodeType*, std::vector<Node*>>& typeNodes,
-		std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
-		std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
+	void render(const RenderContext& ctx, NodeRegistry& registry);
 
 private:
-	void drawNodes(
-		RenderContext& ctx,
-		std::map<NodeType*, std::vector<Node*>>& typeNodes,
-		std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
-		std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
+	void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
 	FrameBuffer frameBuffer = { SHADOW_WIDTH, SHADOW_HEIGHT };

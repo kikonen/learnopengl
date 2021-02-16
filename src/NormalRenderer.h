@@ -7,6 +7,7 @@
 #include "Node.h"
 #include "Sprite.h"
 #include "Terrain.h"
+#include "NodeRegistry.h"
 
 class NormalRenderer final : public Renderer
 {
@@ -15,13 +16,9 @@ public:
 
 	void prepare();
 
-	void update(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes);
-	void bind(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes);
-	void render(
-		RenderContext& ctx,
-		std::map<NodeType*, std::vector<Node*>>& typeNodes,
-		std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
-		std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
+	void update(const RenderContext& ctx, NodeRegistry& registry);
+	void bind(const RenderContext& ctx, NodeRegistry& registry);
+	void render(const RenderContext& ctx, NodeRegistry& registry);
 
 private:
 	Shader* normalShader = nullptr;

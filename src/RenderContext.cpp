@@ -11,21 +11,23 @@
 RenderContext::RenderContext(
 	const Engine& engine,
 	const float dt,
-	Scene* scene)
+	Scene* scene,
+	Camera* camera)
 	: engine(engine),
 	assets(engine.assets),
 	scene(scene),
+	camera(camera),
 	width(engine.window->width),
 	height(engine.window->height),
 	dt(dt)
 {
-	camera = scene->getCamera();
 	if (!camera) {
 		camera = new Camera();
+		this->camera = camera;
 	}
 	view = camera->getView();
-	projection = glm::perspective(glm::radians(camera->zoom), (float)width / (float)height, 0.1f, 1000.0f);
-	projected = projection * view;
+	projection = glm::perspective(glm::radians(camera->zoom), (float)width / (float)height, assets.nearPlane, assets.farPlane);
+	//projected = projection * view;
 }
 
 void RenderContext::bindGlobal() const

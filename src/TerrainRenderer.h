@@ -6,6 +6,7 @@
 #include "Assets.h"
 #include "RenderContext.h"
 #include "Terrain.h"
+#include "NodeRegistry.h"
 
 class TerrainRenderer final : public Renderer
 {
@@ -15,7 +16,7 @@ public:
 
 	void prepare();
 
-	void update(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
-	void render(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains);
+	void update(const RenderContext& ctx, NodeRegistry& registry);
+	void render(const RenderContext& ctx, NodeRegistry& registry);
 };
 

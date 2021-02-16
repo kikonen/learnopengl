@@ -84,7 +84,7 @@ void SceneLoaderTest::setupCamera()
 	node->camera = camera;
 	node->controller = new CameraController(assets);
 
-	scene->addNode(node);
+	scene->registry.addNode(node);
 }
 
 void SceneLoaderTest::setupNodeSkybox()
@@ -126,7 +126,7 @@ void SceneLoaderTest::setupLightDirectional()
 		node->setScale(1.5f);
 		node->light = sun;
 
-		scene->addNode(node);
+		scene->registry.addNode(node);
 
 		const float radius = 80.0f;
 		const float speed = 20.f;
@@ -196,7 +196,7 @@ void SceneLoaderTest::setupLightMoving()
 				node->controller = new MovingLightController(assets, center, 10.f, 2.f, node);
 			}
 		
-			scene->addNode(node);
+			scene->registry.addNode(node);
 		}
 	});
 }
@@ -210,7 +210,7 @@ void SceneLoaderTest::setupNodeZero() {
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(0, 0, 0) + assets.groundOffset);
 		node->setScale(0.3f);
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -227,7 +227,7 @@ void SceneLoaderTest::setupNodeWindow1()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 10, -5) + assets.groundOffset);
 		node->setRotation(glm::vec3(0, 180, 0));
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -244,7 +244,7 @@ void SceneLoaderTest::setupNodeWindow2()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(7, 10, -8) + assets.groundOffset);
 		node->setRotation(glm::vec3(0, 180, 0));
-		scene->addNode(node);
+		scene->registry.addNode(node);
 		//	selection.push_back(node);
 	});
 }
@@ -263,7 +263,7 @@ void SceneLoaderTest::setupNodeStainedWindows()
 			Node* node = new Node(type);
 			node->setPos(glm::vec3(-10 + i * 2, 15, 10) + assets.groundOffset);
 			node->setRotation(glm::vec3(0, 180, 0));
-			scene->addNode(node);
+			scene->registry.addNode(node);
 		}
 	});
 }
@@ -287,7 +287,7 @@ void SceneLoaderTest::setupNodeBrickwall()
 			Node* node = new Node(i % 2 == 0 ? type1 : type2);
 			node->setPos(glm::vec3(-5 + i * 2, 5, 14) + assets.groundOffset);
 			//node->setRotation(glm::vec3(0, 180, 0));
-			scene->addNode(node);
+			scene->registry.addNode(node);
 		}
 	});
 }
@@ -326,7 +326,7 @@ void SceneLoaderTest::setupNodeBrickwallBox()
 			node->setScale(scale);
 			node->setRotation(rot[i]);
 			//node->skipShadow = true;
-			scene->addNode(node);
+			scene->registry.addNode(node);
 		}
 	});
 }
@@ -341,7 +341,7 @@ void SceneLoaderTest::setupNodeSpyro()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(0, 30, 30) + assets.groundOffset);
 		node->setScale(0.1f);
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -355,7 +355,7 @@ void SceneLoaderTest::setupNodeBackpack()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(0, 5, 5) + assets.groundOffset);
 		node->setScale(1.5f);
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -373,7 +373,7 @@ void SceneLoaderTest::setupNodeTeapot()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(-5, 20, -5) + assets.groundOffset);
 		node->selected = true;
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -389,7 +389,7 @@ void SceneLoaderTest::setupNodeCow()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 20, -5) + assets.groundOffset);
 		node->selected = true;
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -403,7 +403,7 @@ void SceneLoaderTest::setupNodeBall()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(0, 8, 0) + assets.groundOffset);
 		node->setScale(2.0f);
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -417,7 +417,7 @@ void SceneLoaderTest::setupNodeCube4()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(-5, 20, 5) + assets.groundOffset);
 		node->selected = true;
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -438,7 +438,7 @@ void SceneLoaderTest::setupNodeCubes()
 		for (auto p : points) {
 			Node* node = new Node(type);
 			node->setPos(p + assets.groundOffset);
-			scene->addNode(node);
+			scene->registry.addNode(node);
 		}
 	});
 }
@@ -453,11 +453,11 @@ void SceneLoaderTest::setupNodeActive()
 		Node* active = new Node(type);
 		active->controller = new NodePathController(assets, 0);
 		active->setPos(glm::vec3(0) + assets.groundOffset);
-		scene->addNode(active);
+		scene->registry.addNode(active);
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 20, 5) + assets.groundOffset);
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -471,7 +471,7 @@ void SceneLoaderTest::setupNodeMountains()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(0));
 		//		node->setScale(0.01);
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -487,7 +487,7 @@ void SceneLoaderTest::setupNodeWaterBall()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(0, 20, 0) + assets.groundOffset);
 		//node->setScale(0.5f);
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -504,7 +504,7 @@ void SceneLoaderTest::setupNodePlanet()
 		node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
 		node->setScale(10);
 
-		scene->addNode(node);
+		scene->registry.addNode(node);
 		setPlanet(node);
 	});
 
@@ -538,7 +538,7 @@ void SceneLoaderTest::setupNodePlanet()
 		node->setPos(light->pos);
 		node->setScale(0.5f);
 		node->light = light;
-		scene->addNode(node);
+		scene->registry.addNode(node);
 
 		glm::vec3 center = light->pos;
 		node->controller = new MovingLightController(assets, center, 4.f, 2.f, node);
@@ -559,7 +559,7 @@ void SceneLoaderTest::setupNodeAsteroids()
 		Node* planet = getPlanet();
 		glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 50, 0) : glm::vec3(10, 50, 100) + assets.groundOffset;
 		node->setPos(pos);
-		scene->addNode(node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -577,7 +577,7 @@ void SceneLoaderTest::setupNodeAsteroidBelt()
 		InstancedNode* node = new InstancedNode(type, controller);
 		//node->selected = true;
 		//std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-		this->scene->addNode(node);
+		this->scene->registry.addNode(node);
 	});
 }
 
@@ -591,7 +591,7 @@ void SceneLoaderTest::setupSpriteFlare()
 			Sprite* sprite = new Sprite(type, glm::vec2(1.5, 3));
 			sprite->setPos(pos + glm::vec3(0, 1.5, 0.1 * i));
 			//sprite->setRotation(glm::vec3(0, 0, 180));
-			scene->addSprite(sprite);
+			scene->registry.addSprite(sprite);
 		}
 	});
 }
@@ -617,7 +617,7 @@ void SceneLoaderTest::setupTerrain()
 				type->mesh = generator.generateTerrain(material);
 
 				Terrain* terrain = new Terrain(type, x, z);
-				scene->addTerrain(terrain);
+				scene->registry.addTerrain(terrain);
 			}
 		}
 	});

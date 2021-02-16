@@ -13,18 +13,18 @@ void TerrainRenderer::prepare()
 {
 }
 
-void TerrainRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
+void TerrainRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto& x : typeTerrains) {
+	for (auto& x : registry.terrains) {
 		for (auto& e : x.second) {
 			e->update(ctx);
 		}
 	}
 }
 
-void TerrainRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
+void TerrainRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto& x : typeTerrains) {
+	for (auto& x : registry.terrains) {
 		Shader* shader = x.first->bind(ctx, nullptr);
 		if (!shader) continue;
 		shader->reflectionMap.set(assets.reflectionMapUnitIndex);

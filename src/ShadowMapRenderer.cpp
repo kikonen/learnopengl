@@ -57,22 +57,18 @@ void ShadowMapRenderer::bind(RenderContext& ctx)
 	ctx.lightSpaceMatrix = lightSpaceMatrix;
 }
 
-void ShadowMapRenderer::bindTexture(RenderContext& ctx)
+void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 {
 	frameBuffer.bindTexture(assets.shadowMapUnitId);
 }
 
-void ShadowMapRenderer::render(
-	RenderContext& ctx, 
-	std::map<NodeType*, std::vector<Node*>>& typeNodes,
-	std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
-	std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
+void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
 	frameBuffer.bind();
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	drawNodes(ctx, typeNodes, typeSprites, typeTerrains);
+	drawNodes(ctx, registry);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -81,14 +77,10 @@ void ShadowMapRenderer::render(
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
-void ShadowMapRenderer::drawNodes(
-	RenderContext& ctx, 
-	std::map<NodeType*, std::vector<Node*>>& typeNodes,
-	std::map<NodeType*, std::vector<Sprite*>>& typeSprites,
-	std::map<NodeType*, std::vector<Terrain*>>& typeTerrains)
+void ShadowMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
 {
 #if 0
-	for (auto& x : typeTerrains) {
+	for (auto& x : registry.terrains) {
 		NodeType* t = x.first;
 		if (t->light || t->skipShadow) continue;
 		Shader* shader = t->bind(ctx, shadowShader);
@@ -104,7 +96,7 @@ void ShadowMapRenderer::drawNodes(
 	}
 #endif
 
-	for (auto& x : typeSprites) {
+	for (auto& x : registry.sprites) {
 		NodeType* t = x.first;
 		if (t->light || t->skipShadow) continue;
 		Shader* shader = t->bind(ctx, shadowShader);
@@ -119,7 +111,7 @@ void ShadowMapRenderer::drawNodes(
 		batch.flush(ctx, t);
 	}
 
-	for (auto& x : typeNodes) {
+	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
 		if (t->light || t->skipShadow) continue;
 		Shader* shader = t->bind(ctx, shadowShader);

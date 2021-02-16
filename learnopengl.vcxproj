@@ -151,6 +151,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\NodeRegistry.cpp" />
     <ClCompile Include="src\CameraController.cpp" />
     <ClCompile Include="src\CubeMap.cpp" />
     <ClCompile Include="src\SceneLoader.cpp" />
@@ -224,6 +225,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\NodeRegistry.h" />
     <ClInclude Include="src\CameraController.h" />
     <ClInclude Include="src\CubeMap.h" />
     <ClInclude Include="src\SceneLoader.h" />

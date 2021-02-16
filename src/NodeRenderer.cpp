@@ -14,32 +14,32 @@ void NodeRenderer::prepare()
 //	batch.prepare(1000);
 }
 
-void NodeRenderer::update(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
+void NodeRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto& x : typeNodes) {
+	for (auto& x : registry.nodes) {
 		for (auto& e : x.second) {
 			e->update(ctx);
 		}
 	}
 }
 
-void NodeRenderer::bind(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
+void NodeRenderer::bind(const RenderContext& ctx, NodeRegistry& registry)
 {
 }
 
-void NodeRenderer::render(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
+void NodeRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
-	int selectedCount = drawNodes(ctx, typeNodes, true);
-	drawNodes(ctx, typeNodes, false);
+	int selectedCount = drawNodes(ctx, registry, true);
+	drawNodes(ctx, registry, false);
 
 	if (selectedCount > 0) {
-		drawSelectionStencil(ctx, typeNodes);
+		drawSelectionStencil(ctx, registry);
 	}
 	glBindVertexArray(0);
 }
 
 // draw all non selected nodes
-int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes, bool selection)
+int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bool selection)
 {
 	int renderCount = 0;
 
@@ -53,7 +53,7 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<
 
 	std::vector<Node*> blendedNodes;
 
-	for (auto& x : typeNodes) {
+	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);
 		if (!shader) continue;
@@ -84,13 +84,13 @@ int NodeRenderer::drawNodes(RenderContext& ctx, std::map<NodeType*, std::vector<
 }
 
 // draw all selected nodes with stencil
-void NodeRenderer::drawSelectionStencil(RenderContext& ctx, std::map<NodeType*, std::vector<Node*>>& typeNodes)
+void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, NodeRegistry& registry)
 {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);
 	glDisable(GL_DEPTH_TEST);
 
-	for (auto& x : typeNodes) {
+	for (auto& x : registry.nodes) {
 		x.first->bind(ctx, selectionShader);
 
 		for (auto& e : x.second) {
@@ -111,7 +111,7 @@ void NodeRenderer::drawSelectionStencil(RenderContext& ctx, std::map<NodeType*, 
 	glEnable(GL_DEPTH_TEST);
 }
 
-void NodeRenderer::drawBlended(RenderContext& ctx, std::vector<Node*>& nodes)
+void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nodes)
 {
 	if (nodes.empty()) {
 		return;
