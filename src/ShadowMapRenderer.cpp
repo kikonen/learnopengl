@@ -64,6 +64,9 @@ void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 
 void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
+	if (++drawIndex < drawSkip) return;
+	drawIndex = 0;
+
 	frameBuffer.bind();
 
 	glClear(GL_DEPTH_BUFFER_BIT);

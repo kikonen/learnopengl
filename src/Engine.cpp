@@ -43,39 +43,42 @@ void Engine::run() {
 		window->close();
 	}
 
-	auto tp1 = std::chrono::system_clock::now();
-	auto tp2 = std::chrono::system_clock::now();
-    auto tp3 = std::chrono::system_clock::now();
+	auto prevLoopTime = std::chrono::system_clock::now();
+	auto loopTime = std::chrono::system_clock::now();
+    auto renderTime = std::chrono::system_clock::now();
 
-	std::chrono::duration<float> duration;
-	float ts;
+	std::chrono::duration<float> elapsedDuration;
+	std::chrono::duration<float> renderDuration;
+
+	float renderSecs = 0;
+
 	char titleSB[256];
 
-	std::chrono::duration<float> elapsedTime;
+	float sleepSecs = 0;
 
 	// render loop
 	// -----------
 	while (!window->isClosed())
 	{
-		float dt;
+		float elapsedSecs;
 		{
 			//ki::Timer t("loop");
 
-			tp2 = std::chrono::system_clock::now();
-			elapsedTime = tp2 - tp1;
-			dt = elapsedTime.count();
+			loopTime = std::chrono::system_clock::now();
+			elapsedDuration = loopTime - prevLoopTime;
+			elapsedSecs = elapsedDuration.count();
 
-			accumulatedTime += dt;
+			accumulatedSecs += elapsedSecs;
 
 			// input
 			// -----
-			window->processInput(dt);
+			window->processInput(elapsedSecs);
 
 			// render
 			// ------
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-			int res = onRender(dt);
+			int res = onRender(elapsedSecs);
 
 			if (res) {
 				window->close();
@@ -88,25 +91,27 @@ void Engine::run() {
 		}
 
 		{
-			tp3 = std::chrono::system_clock::now();
-			duration = tp3 - tp2;
-			ts = duration.count() * 1000;
+			renderTime = std::chrono::system_clock::now();
+			renderDuration = renderTime - loopTime;
+			renderSecs = renderDuration.count();
 
-			tp1 = tp2;
-			sprintf_s(titleSB, 256, "%s - FPS: %3.2f - %3.2fms", title.c_str(), 1.0f / dt, ts);
+			prevLoopTime = loopTime;;
+
+			sprintf_s(titleSB, 256, "%s - FPS: %3.2f - RENDER: %3.2fms (%3.2f fps)", title.c_str(), 1.0f / elapsedSecs, renderSecs * 1000.f, 1.0f / renderSecs);
 			window->setTitle(titleSB);
+			//std::cout << titleSB << "\n";
 		}
 
 		ki::GL::checkErrors("engine.loop");
 
 		// NOTE KI aim 60fps (no reason to overheat CPU/GPU)
 		if (throttleFps > 0) {
-			int sleep = throttleFps - ts;
-			if (sleep < 0) {
-				sleep = 10;
+			sleepSecs = throttleFps / 1000.f - renderSecs * 2;
+			if (sleepSecs < 0) {
+				sleepSecs = 0.01;
 			}
-//			std::cout << "sleep: " << sleep << "ms\n";
-			std::this_thread::sleep_for(std::chrono::milliseconds(sleep));
+			//std::cout << "dt: " << elapsedSecs * 1000.f << "ms - " << "render: " << renderSecs * 1000 << "ms - " << "sleep: " << sleepSecs * 1000 << "ms\n";
+			std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepSecs * 1000.f)));
 		}
 	}
 

@@ -31,6 +31,9 @@ private:
 	float nearPlane = 0.1f;
 	float farPlane = 1000.0f;
 
+	int drawIndex = 0;
+	int drawSkip = 4;
+
 	FrameBuffer frameBuffers[6] = {
 		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },
 		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },

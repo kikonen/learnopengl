@@ -40,6 +40,9 @@ private:
 	float nearPlane = 0.1f;
 	float farPlane = 1000.0f;
 
+	int drawIndex = 0;
+	int drawSkip = 2;
+
 	Shader* shadowShader = nullptr;
 	Shader* shadowDebugShader = nullptr;
 };

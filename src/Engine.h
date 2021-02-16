@@ -8,11 +8,11 @@
 
 class Scene;
 
-const int FPS_120 = 8;
-const int FPS_60 = 16;
-const int FPS_30 = 33;
-const int FPS_15 = 66;
-const int FPS_10 = 100;
+const float FPS_120 = 8;
+const float FPS_60 = 16;
+const float FPS_30 = 33;
+const float FPS_15 = 66;
+const float FPS_10 = 100;
 
 /**
  * Base engine 
@@ -31,13 +31,13 @@ public:
 
 public:
     bool debug;
-    int throttleFps;
+    float throttleFps;
 
     Window* window = nullptr;
 
     Scene* currentScene = nullptr;
 
-    float accumulatedTime = 0.0f;
+    float accumulatedSecs = 0.0f;
 
     static Engine* current;
 

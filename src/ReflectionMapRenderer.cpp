@@ -38,6 +38,9 @@ void ReflectionMapRenderer::bindTexture(const RenderContext& ctx)
 
 void ReflectionMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
+	if (++drawIndex < drawSkip) return;
+	drawIndex = 0;
+
 	RenderContext reflectionCtx(ctx.engine, ctx.dt, ctx.scene, ctx.camera);
 
 	for (auto& frameBuffer : frameBuffers) {
@@ -45,7 +48,7 @@ void ReflectionMapRenderer::render(const RenderContext& ctx, NodeRegistry& regis
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		drawNodes(reflectionCtx, registry);
+//		drawNodes(reflectionCtx, registry);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
