@@ -140,7 +140,7 @@ void Scene::draw(RenderContext& ctx)
 
 	viewportRenderer->render(ctx, registry);
 
-	ki::GL::checkErrors("scene.draw");
+	KI_GL_DEBUG("scene.draw");
 }
 
 Camera* Scene::getCamera()

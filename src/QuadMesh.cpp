@@ -1,5 +1,7 @@
 #include "QuadMesh.h"
 
+#include "ki/GL.h"
+
 const float VERTICES[] = {
 	// pos              // normal         //mat // tex
 	-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
@@ -16,7 +18,8 @@ const int INDECES[] = {
 const int VERTEX_COUNT = 6;
 
 
-QuadMesh::QuadMesh()
+QuadMesh::QuadMesh(const std::string& name)
+	: name(name)
 {
 }
 
@@ -102,10 +105,12 @@ void QuadMesh::draw(const RenderContext& ctx)
 {
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	//glDrawElements(GL_TRIANGLES, VERTEX_COUNT, GL_UNSIGNED_INT, 0);
+	KI_GL_DEBUG("quadmesh.draw-" + name);
 }
 
 void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount);
 	//glDrawElementsInstanced(GL_TRIANGLES, VERTEX_COUNT, GL_UNSIGNED_INT, 0, instanceCount);
+	KI_GL_DEBUG("quadmesh.drawinstanced-" + name);
 }

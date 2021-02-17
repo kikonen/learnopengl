@@ -8,7 +8,7 @@ ModelMesh* spriteMesh = nullptr;
 
 Mesh* Sprite::getMesh(const Assets& assets, Material* material)
 {
-	QuadMesh* mesh = new QuadMesh();
+	QuadMesh* mesh = new QuadMesh("sprite");
 	mesh->material = material;
 
 	return mesh;

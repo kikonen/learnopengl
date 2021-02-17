@@ -3,6 +3,7 @@
 #include "MeshBuffers.h"
 #include "Assets.h"
 #include "RenderContext.h"
+#include "ki/GL.h"
 
 class Mesh
 {

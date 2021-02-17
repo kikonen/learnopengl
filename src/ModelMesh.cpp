@@ -174,9 +174,11 @@ void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 void ModelMesh::draw(const RenderContext& ctx)
 {
 	glDrawElements(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0);
+	KI_GL_DEBUG("mesh.draw-" + modelName);
 }
 
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
 	glDrawElementsInstanced(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0, instanceCount);
+	KI_GL_DEBUG("modelmesh.drawinstanced-" + modelName);
 }

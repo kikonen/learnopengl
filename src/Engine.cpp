@@ -102,7 +102,7 @@ void Engine::run() {
 			//std::cout << titleSB << "\n";
 		}
 
-		ki::GL::checkErrors("engine.loop");
+		KI_GL_DEBUG("engine.loop");
 
 		// NOTE KI aim 60fps (no reason to overheat CPU/GPU)
 		if (throttleFps > 0) {

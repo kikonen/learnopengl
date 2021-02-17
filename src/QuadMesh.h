@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "MeshBuffers.h"
 #include "Assets.h"
 #include "RenderContext.h"
@@ -10,7 +12,7 @@
 class QuadMesh : public Mesh
 {
 public:
-	QuadMesh();
+	QuadMesh(const std::string& name);
 	~QuadMesh();
 
 	void prepare(const Assets& assets) override;
@@ -20,6 +22,7 @@ public:
 	void drawInstanced(const RenderContext& ctx, int instanceCount) override;
 
 public:
+	std::string name;
 	Material* material = nullptr;
 
 private:
