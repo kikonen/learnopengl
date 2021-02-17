@@ -63,41 +63,40 @@ SkyboxRenderer::~SkyboxRenderer()
 
 int SkyboxRenderer::prepare()
 {
-    const std::string& baseDir = assets.modelsDir;
-	std::string texturePath = baseDir + name;
-
-    std::vector<std::string> faces{
-        baseDir + "/" + name + "/right.jpg",
-        baseDir + "/" + name + "/left.jpg",
-        baseDir + "/" + name + "/top.jpg",
-        baseDir + "/" + name + "/bottom.jpg",
-        baseDir + "/" + name + "/front.jpg",
-        baseDir + "/" + name + "/back.jpg"
-    };
-
-    CubeMap cube;
-    textureID = cube.createFromImages(faces);
-
     shader->prepare();
+    shader->bind();
     shader->skybox.set(assets.skyboxUnitIndex);
-
-    if (shader->prepare()) {
-        return -1;
-    }
-
     shader->unbind();
 
-    buffers.prepare();
+    {
+        const std::string& baseDir = assets.modelsDir;
+        std::string texturePath = baseDir + name;
 
-    glBindVertexArray(buffers.VAO);
+        std::vector<std::string> faces{
+            baseDir + "/" + name + "/right.jpg",
+            baseDir + "/" + name + "/left.jpg",
+            baseDir + "/" + name + "/top.jpg",
+            baseDir + "/" + name + "/bottom.jpg",
+            baseDir + "/" + name + "/front.jpg",
+            baseDir + "/" + name + "/back.jpg"
+        };
 
-    glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+        textureID = CubeMap::createFromImages(faces);
+    }
 
-    glVertexAttribPointer(ATTR_SKYBOX_POS, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    {
+        buffers.prepare();
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+        glBindVertexArray(buffers.VAO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(ATTR_SKYBOX_POS, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
 
 	return 0;
 }

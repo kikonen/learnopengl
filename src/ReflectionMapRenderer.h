@@ -5,9 +5,6 @@
 
 #include "NodeRegistry.h"
 
-const unsigned int REFLECTION_WIDTH = 640,
-  REFLECTION_HEIGHT = 480;
-
 class ReflectionMapRenderer final : public Renderer
 {
 public:
@@ -32,14 +29,5 @@ private:
 	int drawIndex = 0;
 	int drawSkip = 4;
 
-	unsigned int cubeMapTextureID;
-
-	TextureBuffer textureBuffers[6] = {
-		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },
-		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },
-		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },
-		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },
-		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },
-		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },
-	};
+	unsigned int textureID = -1;
 };

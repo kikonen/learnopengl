@@ -5,6 +5,9 @@
 #include "CubeMap.h"
 
 
+const int CUBE_SIZE = 400;
+
+
 ReflectionMapRenderer::ReflectionMapRenderer(const Assets& assets)
 	: Renderer(assets)
 {
@@ -16,15 +19,6 @@ ReflectionMapRenderer::~ReflectionMapRenderer()
 
 void ReflectionMapRenderer::prepare()
 {
-	std::vector<TextureBuffer*> faces;
-
-	for (auto& tb : textureBuffers) {
-		tb.prepare();
-		faces.push_back(&tb);
-	}
-
-	CubeMap cube;
-//	cubeMapTextureID = cube.createFromFrameBuffers(faces);
 }
 
 void ReflectionMapRenderer::bind(const RenderContext& ctx)
@@ -33,28 +27,49 @@ void ReflectionMapRenderer::bind(const RenderContext& ctx)
 
 void ReflectionMapRenderer::bindTexture(const RenderContext& ctx)
 {
-	if (cubeMapTextureID == -1) return;
 	glActiveTexture(assets.refactionMapUnitId);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTextureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 }
 
 void ReflectionMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
+	textureID = CubeMap::createEmpty(CUBE_SIZE);
+
 	if (++drawIndex < drawSkip) return;
 	drawIndex = 0;
 
-	RenderContext reflectionCtx(ctx.engine, ctx.dt, ctx.scene, ctx.camera);
+	unsigned int FBO;
+	unsigned int RBO;
 
-	for (auto& tb : textureBuffers) {
-		tb.bind();
+	{
+		glGenFramebuffers(1, &FBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	}
 
-		glClear(GL_DEPTH_BUFFER_BIT);
-		drawNodes(reflectionCtx, registry);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	{
+		glGenRenderbuffers(1, &RBO);
+		glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, CUBE_SIZE, CUBE_SIZE);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+	}
+
+	glViewport(0, 0, CUBE_SIZE, CUBE_SIZE);
+
+//	RenderContext reflectionCtx(ctx.engine, ctx.dt, ctx.scene, ctx.camera);
+
+	for (int i = 0; i < 6; i++) {
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, textureID, 0);
+		drawNodes(ctx, registry);
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, reflectionCtx.width, reflectionCtx.height);
+	//glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	glDeleteRenderbuffers(1, &RBO);
+	glDeleteFramebuffers(1, &FBO);
+
+	glViewport(0, 0, ctx.width, ctx.height);
 }
 
 void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)

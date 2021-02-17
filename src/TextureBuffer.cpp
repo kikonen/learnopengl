@@ -13,6 +13,9 @@ TextureBuffer::TextureBuffer(int width, int height)
 
 TextureBuffer::~TextureBuffer()
 {
+	if (!prepared) return;
+	glDeleteRenderbuffers(1, &RBO);
+	glDeleteFramebuffers(1, &FBO);
 }
 
 void TextureBuffer::prepare()
@@ -40,7 +43,6 @@ void TextureBuffer::prepare()
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-
 	{
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
 	}
@@ -48,8 +50,8 @@ void TextureBuffer::prepare()
 	{
 		glGenRenderbuffers(1, &RBO);
 		glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
 	}
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
