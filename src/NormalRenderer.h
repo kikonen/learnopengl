@@ -4,9 +4,6 @@
 
 #include "Renderer.h"
 #include "RenderContext.h"
-#include "Node.h"
-#include "Sprite.h"
-#include "Terrain.h"
 #include "NodeRegistry.h"
 
 class NormalRenderer final : public Renderer

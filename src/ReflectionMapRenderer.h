@@ -4,8 +4,6 @@
 #include "TextureBuffer.h"
 
 #include "NodeRegistry.h"
-#include "Sprite.h"
-#include "Terrain.h"
 
 const unsigned int REFLECTION_WIDTH = 640,
   REFLECTION_HEIGHT = 480;

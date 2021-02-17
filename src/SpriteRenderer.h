@@ -4,7 +4,6 @@
 
 #include "Renderer.h"
 #include "RenderContext.h"
-#include "Sprite.h"
 #include "NodeRegistry.h"
 
 class SpriteRenderer final : public Renderer

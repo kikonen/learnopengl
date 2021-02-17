@@ -4,7 +4,6 @@
 
 #include "Renderer.h"
 #include "RenderContext.h"
-#include "Node.h"
 #include "NodeRegistry.h"
 
 class NodeRenderer final : public Renderer

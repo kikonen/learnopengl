@@ -5,7 +5,6 @@
 #include "Renderer.h"
 #include "Assets.h"
 #include "RenderContext.h"
-#include "Terrain.h"
 #include "NodeRegistry.h"
 
 class TerrainRenderer final : public Renderer

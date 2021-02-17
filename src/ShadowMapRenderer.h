@@ -4,9 +4,6 @@
 
 #include "Renderer.h"
 #include "RenderContext.h"
-#include "Node.h"
-#include "Sprite.h"
-#include "Terrain.h"
 #include "ShadowBuffer.h"
 #include "Viewport.h"
 #include "NodeRegistry.h"
