@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "FrameBuffer.h"
+#include "TextureBuffer.h"
 
 
 class CubeMap
@@ -11,7 +11,7 @@ class CubeMap
 public:
 	CubeMap();
 
-	unsigned int createFromFrameBuffers(std::vector<FrameBuffer*> faces);
+	unsigned int createFromFrameBuffers(std::vector<TextureBuffer*> faces);
 	unsigned int createFromImages(std::vector<std::string> faces);
 
 public:

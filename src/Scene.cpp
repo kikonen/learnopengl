@@ -122,13 +122,10 @@ void Scene::draw(RenderContext& ctx)
 
 	if (skyboxRenderer) {
 		skyboxRenderer->render(ctx);
-		skyboxRenderer->bindTexture(ctx);
+		//skyboxRenderer->bindTexture(ctx);
 
-		glActiveTexture(assets.reflectionMapUnitId);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->textureID);
-
-		glActiveTexture(assets.refactionMapUnitId);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->textureID);
+		//glActiveTexture(assets.reflectionMapUnitId);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->textureID);
 	}
 
 	terrainRenderer->render(ctx, registry);

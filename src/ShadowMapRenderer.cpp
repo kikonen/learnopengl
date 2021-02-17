@@ -14,23 +14,18 @@ void ShadowMapRenderer::prepare()
 	shadowShader->prepare();
 	shadowDebugShader->prepare();
 	
-	frameBuffer.prepare();
-
-	frameBuffer.bindTexture(assets.shadowMapUnitId);
-	glm::vec4 borderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(borderColor));
-
-	frameBuffer.bind();
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, frameBuffer.textureID, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	frameBuffer.unbind();
+	shadowBuffer.prepare();
 
 	shadowShader->prepare();
 	shadowDebugShader->prepare();
 
-	debugViewport = new Viewport(glm::vec3(-1 + 0.01, 1 - 0.01, 0), glm::vec3(0, 0, 0), glm::vec2(0.5f, 0.5f), frameBuffer, shadowDebugShader);
+	debugViewport = new Viewport(
+		glm::vec3(-1 + 0.01, 1 - 0.01, 0), 
+		glm::vec3(0, 0, 0), 
+		glm::vec2(0.5f, 0.5f), 
+		shadowBuffer, 
+		shadowDebugShader);
+
 	debugViewport->prepare();
 }
 
@@ -59,7 +54,7 @@ void ShadowMapRenderer::bind(RenderContext& ctx)
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 {
-	frameBuffer.bindTexture(assets.shadowMapUnitId);
+	shadowBuffer.bindTexture(assets.shadowMapUnitId);
 }
 
 void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
@@ -67,7 +62,7 @@ void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 	if (++drawIndex < drawSkip) return;
 	drawIndex = 0;
 
-	frameBuffer.bind();
+	shadowBuffer.bind();
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 

@@ -1,13 +1,12 @@
 #pragma once
 
-
-class FrameBuffer final
+class FrameBuffer
 {
 public:
 	FrameBuffer(int width, int height);
 	~FrameBuffer();
 
-	void prepare();
+	virtual void prepare() = 0;
 	void bind();
 	void unbind();
 
@@ -17,10 +16,10 @@ public:
 	const int width;
 	const int height;
 
-	unsigned int FBO;
-	unsigned int textureID;
+	unsigned int FBO = -1;
+	unsigned int textureID = -1;
 
-private:
+protected:
 	bool prepared = false;
 };
 

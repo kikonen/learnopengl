@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Renderer.h"
-#include "FrameBuffer.h"
+#include "TextureBuffer.h"
 
 #include "NodeRegistry.h"
 #include "Sprite.h"
 #include "Terrain.h"
 
-const unsigned int REFLECTION_WIDTH = 1000,
-	REFLECTION_HEIGHT = 1000;
+const unsigned int REFLECTION_WIDTH = 640,
+  REFLECTION_HEIGHT = 480;
 
 class ReflectionMapRenderer final : public Renderer
 {
@@ -34,7 +34,9 @@ private:
 	int drawIndex = 0;
 	int drawSkip = 4;
 
-	FrameBuffer frameBuffers[6] = {
+	unsigned int cubeMapTextureID;
+
+	TextureBuffer textureBuffers[6] = {
 		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },
 		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },
 		{ REFLECTION_WIDTH, REFLECTION_HEIGHT },

@@ -7,9 +7,10 @@
 #include "Node.h"
 #include "Sprite.h"
 #include "Terrain.h"
-#include "FrameBuffer.h"
+#include "ShadowBuffer.h"
 #include "Viewport.h"
 #include "NodeRegistry.h"
+
 
 // NOTE KI MUST match lookup() in light shadow shader
 const unsigned int SHADOW_WIDTH = 1000,
@@ -32,7 +33,7 @@ private:
 	void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
-	FrameBuffer frameBuffer = { SHADOW_WIDTH, SHADOW_HEIGHT };
+	ShadowBuffer shadowBuffer = { SHADOW_WIDTH, SHADOW_HEIGHT };
 
 	Viewport* debugViewport = nullptr;
 
