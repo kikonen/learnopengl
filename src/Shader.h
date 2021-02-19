@@ -20,6 +20,7 @@ const std::string TEX_NORMAL = "normal";
 const std::string TEX_LIGHT = "light";
 const std::string TEX_SIMPLE_DEPTH = "simple_depth";
 const std::string TEX_DEBUG_DEPTH = "debug_depth";
+const std::string TEX_VIEWPORT = "viewport";
 
 const int ATTR_POS = 0;
 const int ATTR_NORMAL = 1;
@@ -254,8 +255,8 @@ public:
     Shader::Bool hasReflectionMap = { "hasReflectionMap" };
     Shader::Int reflectionMap = { "reflectionMap" };
 
-    Shader::Bool hasRefactionMap = { "hasRefactionMap" };
-    Shader::Int refactionMap = { "refactionMap" };
+    Shader::Bool hasRefractionMap = { "hasRefractionMap" };
+    Shader::Int refractionMap = { "refractionMap" };
 
     Shader::Int shadowMap = { "shadowMap" };
     Shader::Int normalMap = { "normalMap" };
@@ -266,6 +267,8 @@ public:
     Shader::Float farPlane = { "farPlane" };
 
     Shader::Int skybox = { "skybox" };
+
+    Shader::Int viewportTexture = { "viewportTexture" };
 
     std::vector<TextureInfo> textures;
     TextureInfo* texture;

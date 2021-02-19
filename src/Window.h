@@ -3,8 +3,7 @@
 #include <functional>
 #include <string>
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "ki/GL.h"
 
 #include "imgui.h"
 

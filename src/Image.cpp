@@ -6,10 +6,12 @@
 
 #include <stb_image.h>
 
-static std::map<std::string, Image*> images;
+namespace {
+	std::map<std::string, Image*> images;
 
-static std::mutex images_lock;
-static std::mutex load_lock;
+	std::mutex images_lock;
+	std::mutex load_lock;
+}
 
 Image* Image::getImage(const std::string& path)
 {

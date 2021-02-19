@@ -1,10 +1,12 @@
 #include "Viewport.h"
 
+#include <functional>
+
 const int ATTR_VIEW_POS = 0;
 const int ATTR_VIEW_TEX = 1;
 
-Viewport::Viewport(const glm::vec3& pos, const glm::vec3& rotation, const glm::vec2& size, FrameBuffer& tex, Shader* shader)
-	: pos(pos), rotation(rotation), size(size), tex(tex), shader(shader)
+Viewport::Viewport(const glm::vec3& pos, const glm::vec3& rotation, const glm::vec2& size, FrameBuffer& tex, Shader* shader, std::function<void(Viewport&)> binder)
+	: pos(pos), rotation(rotation), size(size), tex(tex), shader(shader), binder(binder)
 {
 }
 
@@ -18,13 +20,6 @@ void Viewport::prepare()
 
 	float w = size.x;
 	float h = size.y;
-
-	//// positions        // texture Coords
-	//-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-	//	-1.0f, 0.5f, 0.0f, 0.0f, 0.0f,
-	//	-0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
-	//	-0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-
 
 	float vertices[] = {
 		x,     y,     z, 0.0f, 1.0f,
@@ -54,17 +49,16 @@ void Viewport::bind(const RenderContext& ctx)
 {
 	shader->bind();
 
-	shader->nearPlane.set(0.1f);
-	shader->farPlane.set(1000.f);
-
-	const int unitID = 0;
-	shader->shadowMap.set(unitID);
-	tex.bindTexture(GL_TEXTURE0 + unitID);
+	const int unitIndex = 0;
+	shader->viewportTexture.set(unitIndex);
+	tex.bindTexture(GL_TEXTURE0 + unitIndex);
 
 	glBindVertexArray(buffers.VAO);
 
 	glEnableVertexAttribArray(ATTR_VIEW_POS);
 	glEnableVertexAttribArray(ATTR_VIEW_TEX);
+
+	binder(*this);
 }
 
 void Viewport::draw(const RenderContext& ctx)

@@ -28,7 +28,7 @@ void NodeType::prepare(const Assets& assets)
 	if (defaultShader) {
 		defaultShader->prepare();
 		defaultShader->reflectionMap.set(assets.reflectionMapUnitIndex);
-		defaultShader->refactionMap.set(assets.refactionMapUnitIndex);
+		defaultShader->refractionMap.set(assets.refractionMapUnitIndex);
 		defaultShader->shadowMap.set(assets.shadowMapUnitIndex);
 		defaultShader->skybox.set(assets.skyboxUnitIndex);
 	}

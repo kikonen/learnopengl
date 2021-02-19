@@ -2,16 +2,13 @@
 
 #include <iostream>
 
-#define GLFW_INCLUDE_GLCOREARB
-#define GL_GLEXT_PROTOTYPES
-#include <GLFW/glfw3.h>
 
 namespace ki {
-	static void glfwErrorCallback(int, const char* message) {
+	void glfwErrorCallback(int, const char* message) {
 		std::cout << message << std::endl;
 	}
 
-	static void glMessageCallback(GLenum, GLenum, GLuint, GLenum, GLsizei,
+	void glMessageCallback(GLenum, GLenum, GLuint, GLenum, GLsizei,
 		const GLchar* message, const void*) {
 		glfwErrorCallback(0, message);
 	}
@@ -41,5 +38,15 @@ namespace ki {
 		}
 	}
 	*/
+
+	void GL::checkErrors(const std::string& loc) {
+		GLenum err;
+		while ((err = glGetError()) != GL_NO_ERROR)
+		{
+			// https://www.khronos.org/opengl/wiki/OpenGL_Error
+			std::cout << loc << ": " << "0x" << std::hex << err << std::dec << " (" << err << ")" << std::endl;
+			//__debugbreak();
+		}
+	}
 
 }

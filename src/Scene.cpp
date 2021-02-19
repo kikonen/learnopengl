@@ -22,6 +22,8 @@ Scene::Scene(const Assets& assets)
 	normalRenderer = new NormalRenderer(assets);
 
 	particleSystem = new ParticleSystem(assets);
+
+	viewportShader = Shader::getShader(assets, TEX_VIEWPORT);
 }
 
 Scene::~Scene()
@@ -98,13 +100,30 @@ void Scene::bind(RenderContext& ctx)
 	shadowMapRenderer->bind(ctx);
 	reflectionMapRenderer->bind(ctx);
 	ctx.bindGlobal();
+
+	if (!framebuffer) {
+		framebuffer = new TextureBuffer(ctx.width, ctx.height);
+		framebuffer->prepare();
+
+		viewportShader->prepare();
+
+		frameViewport = new Viewport(
+			glm::vec3(0.5, 1, 0),
+			glm::vec3(0, 0, 0),
+			glm::vec2(0.5f, 0.5f),
+			*framebuffer,
+			viewportShader);
+
+		frameViewport->prepare();
+		registry.addViewPort(frameViewport);
+	}
 }
 
 void Scene::draw(RenderContext& ctx)
 {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
@@ -117,28 +136,53 @@ void Scene::draw(RenderContext& ctx)
 	shadowMapRenderer->render(ctx, registry);
 	shadowMapRenderer->bindTexture(ctx);
 
-	reflectionMapRenderer->render(ctx, registry);
-	reflectionMapRenderer->bindTexture(ctx);
+	reflectionMapRenderer->render(ctx, registry, skyboxRenderer);
 
-	if (skyboxRenderer) {
-		skyboxRenderer->render(ctx);
-		//skyboxRenderer->bindTexture(ctx);
+	// "back mirror" viewport
+	{
+		framebuffer->bind();
+		glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		//glActiveTexture(assets.reflectionMapUnitId);
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->textureID);
+		reflectionMapRenderer->bindTexture(ctx);
+
+		if (skyboxRenderer) {
+			skyboxRenderer->render(ctx);
+		}
+
+		terrainRenderer->render(ctx, registry);
+		spriteRenderer->render(ctx, registry);
+		nodeRenderer->render(ctx, registry);
+
+		particleSystem->render(ctx);
+
+		if (showNormals) {
+			normalRenderer->render(ctx, registry);
+		}
+
+		framebuffer->unbind();
+		glViewport(0, 0, ctx.width, ctx.height);
 	}
 
-	terrainRenderer->render(ctx, registry);
-	spriteRenderer->render(ctx, registry);
-	nodeRenderer->render(ctx, registry);
+	{
+		reflectionMapRenderer->bindTexture(ctx);
 
-	particleSystem->render(ctx);
+		if (skyboxRenderer) {
+			skyboxRenderer->render(ctx);
+		}
 
-	if (showNormals) {
-		normalRenderer->render(ctx, registry);
+		terrainRenderer->render(ctx, registry);
+		spriteRenderer->render(ctx, registry);
+		nodeRenderer->render(ctx, registry);
+
+		particleSystem->render(ctx);
+
+		if (showNormals) {
+			normalRenderer->render(ctx, registry);
+		}
+
+		viewportRenderer->render(ctx, registry);
 	}
-
-	viewportRenderer->render(ctx, registry);
 
 	KI_GL_DEBUG("scene.draw");
 }

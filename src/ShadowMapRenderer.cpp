@@ -24,7 +24,11 @@ void ShadowMapRenderer::prepare()
 		glm::vec3(0, 0, 0), 
 		glm::vec2(0.5f, 0.5f), 
 		shadowBuffer, 
-		shadowDebugShader);
+		shadowDebugShader, 
+		[this](Viewport& vp) {
+			shadowDebugShader->nearPlane.set(0.1f);
+			shadowDebugShader->farPlane.set(1000.f);
+		});
 
 	debugViewport->prepare();
 }

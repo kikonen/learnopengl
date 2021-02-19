@@ -1,10 +1,6 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include <iostream>
 
 #include "Engine.h"
-
 #include "Test6.h"
 
 int main()

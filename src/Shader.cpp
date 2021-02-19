@@ -7,11 +7,12 @@
 
 #include "UBO.h"
 
-// name + geom
-static std::map<std::string, Shader*> shaders;
+namespace {
+    // name + geom
+    std::map<std::string, Shader*> shaders;
 
-static std::mutex shaders_lock;
-
+    std::mutex shaders_lock;
+}
 
 Shader* Shader::getShader(
     const Assets& assets,
@@ -111,6 +112,8 @@ int Shader::createProgram() {
     std::string geometryShaderSource = loadSource(geometryShaderPath, geometryOptional);
 
     if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
+        std::cout << "ERROR::SHADER::FILE_EMPTY " << shaderName << std::endl;
+        __debugbreak();
         return -1;
     }
 
@@ -211,8 +214,8 @@ int Shader::createProgram() {
     hasReflectionMap.init(this);
     reflectionMap.init(this);
    
-    hasRefactionMap.init(this);
-    refactionMap.init(this);
+    hasRefractionMap.init(this);
+    refractionMap.init(this);
 
     shadowMap.init(this);
     normalMap.init(this); 
@@ -223,6 +226,8 @@ int Shader::createProgram() {
     farPlane.init(this);
 
     skybox.init(this);
+
+    viewportTexture.init(this);
 
     prepareTextureUniform();
     prepareTextureUniforms();
@@ -356,6 +361,7 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
     catch (std::ifstream::failure e) {
         if (!optional) {
             std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;
+            __debugbreak();
         }
         else {
             std::cout << "INFO::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;

@@ -24,6 +24,7 @@
 
 #include "ParticleSystem.h"
 
+#include "TextureBuffer.h"
 
 class Scene final
 {
@@ -81,4 +82,8 @@ private:
 	NormalRenderer* normalRenderer = nullptr;
 
 	ParticleSystem* particleSystem = nullptr;
+
+	TextureBuffer* framebuffer = nullptr;
+	Viewport* frameViewport = nullptr;
+	Shader* viewportShader = nullptr;
 };

@@ -4,8 +4,10 @@
 
 #include "CubeMap.h"
 
+#include "SkyboxRenderer.h"
 
-const int CUBE_SIZE = 400;
+
+const int CUBE_SIZE = 512;
 
 
 ReflectionMapRenderer::ReflectionMapRenderer(const Assets& assets)
@@ -15,10 +17,30 @@ ReflectionMapRenderer::ReflectionMapRenderer(const Assets& assets)
 
 ReflectionMapRenderer::~ReflectionMapRenderer()
 {
+	glDeleteRenderbuffers(1, &depthBuffer);
+	glDeleteFramebuffers(1, &FBO);
 }
 
 void ReflectionMapRenderer::prepare()
 {
+	{
+		glGenFramebuffers(1, &FBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	}
+
+	{
+		glGenRenderbuffers(1, &depthBuffer);
+		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, CUBE_SIZE, CUBE_SIZE);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+	}
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	textureID = CubeMap::createEmpty(CUBE_SIZE);
 }
 
 void ReflectionMapRenderer::bind(const RenderContext& ctx)
@@ -27,47 +49,40 @@ void ReflectionMapRenderer::bind(const RenderContext& ctx)
 
 void ReflectionMapRenderer::bindTexture(const RenderContext& ctx)
 {
-	glActiveTexture(assets.refactionMapUnitId);
+	glActiveTexture(assets.reflectionMapUnitId);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 }
 
-void ReflectionMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
+void ReflectionMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
 {
-	textureID = CubeMap::createEmpty(CUBE_SIZE);
-
 	if (++drawIndex < drawSkip) return;
 	drawIndex = 0;
 
-	unsigned int FBO;
-	unsigned int RBO;
+	// https://www.youtube.com/watch?v=lW_iqrtJORc
+	// https://eng.libretexts.org/Bookshelves/Computer_Science/Book%3A_Introduction_to_Computer_Graphics_(Eck)/07%3A_3D_Graphics_with_WebGL/7.04%3A_Framebuffers
+	// view-source:math.hws.edu/eck/cs424/graphicsbook2018/source/webgl/cube-camera.html
 
-	{
-		glGenFramebuffers(1, &FBO);
-		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		glDrawBuffer(GL_COLOR_ATTACHMENT0);
-	}
-
-	{
-		glGenRenderbuffers(1, &RBO);
-		glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, CUBE_SIZE, CUBE_SIZE);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
-	}
-
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 	glViewport(0, 0, CUBE_SIZE, CUBE_SIZE);
 
 //	RenderContext reflectionCtx(ctx.engine, ctx.dt, ctx.scene, ctx.camera);
 
+	bindTexture(ctx);
+
 	for (int i = 0; i < 6; i++) {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, textureID, 0);
+		glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		skybox->render(ctx);
 		drawNodes(ctx, registry);
 	}
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	//bindTexture(ctx);
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-	glDeleteRenderbuffers(1, &RBO);
-	glDeleteFramebuffers(1, &FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	glViewport(0, 0, ctx.width, ctx.height);
 }
@@ -77,6 +92,7 @@ void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& re
 	for (auto& x : registry.terrains) {
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);
+		shader->hasReflectionMap.set(false);
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);
@@ -91,6 +107,7 @@ void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& re
 	for (auto& x : registry.sprites) {
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);
+		shader->hasReflectionMap.set(false);
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);
@@ -106,6 +123,7 @@ void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& re
 		NodeType* t = x.first;
 		if (t->light || t->skipShadow) continue;
 		Shader* shader = t->bind(ctx, nullptr);
+		shader->hasReflectionMap.set(false);
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);
