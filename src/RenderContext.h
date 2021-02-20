@@ -16,7 +16,9 @@ public:
 		const Engine& engine,
 		const float dt,
 		Scene* scene,
-		Camera* camera);
+		Camera* camera, 
+		int width,
+		int height);
 
 	void bindUBOs() const;
 	void bindMatricesUBO() const;
@@ -30,8 +32,8 @@ public:
 
 	const float dt;
 
-	int width;
-	int height;
+	const int width;
+	const int height;
 
 	Scene* scene;
 	Camera* camera;

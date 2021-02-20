@@ -53,7 +53,7 @@ int Test6::onRender(float dt) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	RenderContext ctx(*this, dt, currentScene, currentScene->getCamera());
+	RenderContext ctx(*this, dt, currentScene, currentScene->getCamera(), window->width, window->height);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 
