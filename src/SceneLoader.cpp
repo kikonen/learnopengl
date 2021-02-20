@@ -10,13 +10,17 @@ void SceneLoader::setup()
 {
 }
 
-std::future<void>* SceneLoader::addLoader(std::function<void()> loader)
+int SceneLoader::addLoader(std::function<void()> loader)
 {
 	std::lock_guard<std::mutex> lock(load_lock);
-
 	loaders.emplace_back(std::async(std::launch::async, loader));
-	std::future<void>* f = &loaders[loaders.size() - 1];
-	return f;
+	int index = loaders.size() - 1;
+	return index;
+}
+
+const std::future<void>& SceneLoader::getLoader(int index)
+{
+	return loaders[index];
 }
 
 void SceneLoader::load()
@@ -25,6 +29,7 @@ void SceneLoader::load()
 	//	startedLoaders.push_back(std::async(std::launch::async, loader));
 	//}
 }
+
 
 Shader* SceneLoader::getShader(const std::string& name, const std::string& geometryType)
 {

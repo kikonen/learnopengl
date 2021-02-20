@@ -78,11 +78,11 @@ SceneLoader* Test6::loadScene()
 {
 	assets.batchSize = 1000;
 
-	SceneLoader* loader = new SceneLoaderTest(assets);
+	loader = new SceneLoaderTest(assets);
 	loader->setup();
 
 	//sceneSetup->scene->showNormals = true;
-	loader->load();
+	//loader->load();
 	loader->scene->prepare();
 
 	return loader;

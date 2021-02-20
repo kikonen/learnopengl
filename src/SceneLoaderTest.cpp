@@ -504,7 +504,7 @@ void SceneLoaderTest::setupNodePlanet()
 {
 	std::lock_guard<std::mutex> lock(planet_lock);
 
-	planetFuture = addLoader([this]() {
+	planetFutureIndex = addLoader([this]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "planet", "/planet/");
 		type->mesh = loader.load();
@@ -637,31 +637,26 @@ void SceneLoaderTest::setPlanet(Node* planet)
 	{
 		std::lock_guard<std::mutex> lock(planet_lock);
 		loadedPlanet = planet;
-	}
-	//planetFuture->share();
-	{
-		std::lock_guard<std::mutex> lock(planet_lock);
-		planetFuture = nullptr;
+		planetFutureIndex = -1;
 	}
 }
 
 Node* SceneLoaderTest::getPlanet()
 {
-	std::future<void>* f;
+	int index = -1;
 	{
 		std::lock_guard<std::mutex> lock(planet_lock);
-		f = planetFuture;
+		index = planetFutureIndex;
 	}
 
-	if (f) {
-		if (f->valid()) {
-			f->wait();
-		}
+	if (index == -1) {
+		return loadedPlanet;
 	}
+
+	getLoader(index).wait();
+
 	{
 		std::lock_guard<std::mutex> lock(planet_lock);
-		if (!planetFuture) return loadedPlanet;
-		planetFuture = nullptr;
 		return loadedPlanet;
 	}
 }

@@ -25,4 +25,6 @@ public:
 private:
 	Frame* frame;
 	FrameInit* frameInit;
+
+	SceneLoader* loader = nullptr;
 };

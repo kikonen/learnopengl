@@ -60,7 +60,7 @@ private:
 
 private:
 	std::mutex planet_lock;
-	std::future<void>* planetFuture = nullptr;
+	int planetFutureIndex = -1;
 	Node* loadedPlanet = nullptr;
 };
 
