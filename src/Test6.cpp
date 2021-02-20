@@ -42,9 +42,6 @@ int Test6::onSetup() {
 int Test6::onRender(float dt) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
 	glEnable(GL_CULL_FACE); // cull face
 	glCullFace(GL_BACK); // cull back face

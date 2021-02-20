@@ -25,8 +25,8 @@ public:
 	const glm::vec3 getRotation();
 
 	void onKey(Input* input, float dt);
-	void onMouseMove(Input* input, float xoffset, float yoffset);
-	void onMouseScroll(Input* input, float xoffset, float yoffset);
+	void onMouseMove(Input* input, double xoffset, double yoffset);
+	void onMouseScroll(Input* input, double xoffset, double yoffset);
 
 private:
 	void updateZoom(float aZoom);

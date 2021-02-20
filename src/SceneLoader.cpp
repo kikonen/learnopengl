@@ -10,15 +10,14 @@ void SceneLoader::setup()
 {
 }
 
-int SceneLoader::addLoader(std::function<void()> loader)
+size_t SceneLoader::addLoader(std::function<void()> loader)
 {
 	std::lock_guard<std::mutex> lock(load_lock);
 	loaders.emplace_back(std::async(std::launch::async, loader));
-	int index = loaders.size() - 1;
-	return index;
+	return loaders.size() - 1;
 }
 
-const std::future<void>& SceneLoader::getLoader(int index)
+const std::future<void>& SceneLoader::getLoader(unsigned int index)
 {
 	return loaders[index];
 }

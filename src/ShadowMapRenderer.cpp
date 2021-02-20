@@ -60,7 +60,7 @@ void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 
 void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
-	if (++drawIndex < drawSkip) return;
+	if (drawIndex++ < drawSkip) return;
 	drawIndex = 0;
 
 	shadowBuffer.bind();

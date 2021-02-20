@@ -12,7 +12,7 @@ public:
 	Batch();
 
 	void prepare(NodeType* type);
-	void update(int count);
+	void update(unsigned int count);
 	void bind(const RenderContext& ctx, Shader* shader);
 	void draw(const RenderContext& ctx, Node* node, Shader* shader);
 	void flush(const RenderContext& ctx, NodeType* type);

@@ -18,6 +18,12 @@ enum Key {
 	ZOOM_OUT,
 };
 
+enum Modifier {
+	SHIFT,
+	CONTROL,
+	ALT,
+};
+
 //
 // Handle keyboard mapping
 //
@@ -28,20 +34,24 @@ public:
 	~Input();
 
 	bool isKeyPressed(Key key);
+	bool isModifier(Modifier modifier);
+
 	void onMouseMove(double xpos, double ypos);
 	void onMouseButton(int button, int action, int modifiers);
 
 public:
-	float mouseX = 0;
-	float mouseY = 0;
+	double mouseX = 0;
+	double mouseY = 0;
 
-	float mouseXoffset = 0;
-	float mouseYoffset = 0;
+	double mouseXoffset = 0;
+	double mouseYoffset = 0;
 
 	Window* window;
 private:
 
 	std::map<Key, int*> mapping;
+
+	std::map<Modifier, int*> modifiers;
 
 	bool firstMouse = true;
 

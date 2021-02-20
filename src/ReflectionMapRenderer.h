@@ -31,7 +31,7 @@ private:
 	float farPlane = 1000.0f;
 
 	int drawIndex = 0;
-	int drawSkip = 4;
+	int drawSkip = 1;
 
 	unsigned int FBO = -1;
 	unsigned int depthBuffer = -1;

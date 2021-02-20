@@ -64,49 +64,56 @@ const glm::vec3 Camera::getRotation()
 
 void Camera::onKey(Input* input, float dt)
 {
+	float moveSize = moveStep;
+	float rotateSize = rotateStep;
+	if (input->isModifier(Modifier::SHIFT)) {
+		moveSize *= 2;
+		rotateSize *= 2;
+	}
+
 	if (input->isKeyPressed(Key::FORWARD)) {
 		updateCamera();
-		this->pos += viewFront * dt * moveStep;
+		this->pos += viewFront * dt * moveSize;
 		dirty = true;
 	}
 
 	if (input->isKeyPressed(Key::BACKWARD)) {
 		updateCamera();
-		this->pos -= viewFront * dt * moveStep;
+		this->pos -= viewFront * dt * moveSize;
 		dirty = true;
 	}
 
 	if (input->isKeyPressed(Key::LEFT)) {
 		updateCamera();
-		this->pos -= viewRight * dt * moveStep;
+		this->pos -= viewRight * dt * moveSize;
 		dirty = true;
 	}
 
 	if (input->isKeyPressed(Key::RIGHT)) {
 		updateCamera();
-		this->pos += viewRight * dt * moveStep;
+		this->pos += viewRight * dt * moveSize;
 		dirty = true;
 	}
 
 	if (input->isKeyPressed(Key::UP)) {
 		updateCamera();
-		this->pos += viewUp * dt * moveStep;
+		this->pos += viewUp * dt * moveSize;
 		dirty = true;
 	}
 
 	if (input->isKeyPressed(Key::DOWN)) {
 		updateCamera();
-		this->pos -= viewUp * dt * moveStep;
+		this->pos -= viewUp * dt * moveSize;
 		dirty = true;
 	}
 
 	if (true) {
 		if (input->isKeyPressed(Key::ROTATE_LEFT)) {
-			yaw += rotateStep * dt;
+			yaw += rotateSize * dt;
 			dirty = true;
 		}
 		if (input->isKeyPressed(Key::ROTATE_RIGHT)) {
-			yaw -= rotateStep * dt;
+			yaw -= rotateSize * dt;
 			dirty = true;
 		}
 
@@ -121,7 +128,7 @@ void Camera::onKey(Input* input, float dt)
 	}
 }
 
-void Camera::onMouseMove(Input* input, float xoffset, float yoffset)
+void Camera::onMouseMove(Input* input, double xoffset, double yoffset)
 {
 	const float MAX_ANGLE = 89.f;
 
@@ -143,7 +150,7 @@ void Camera::onMouseMove(Input* input, float xoffset, float yoffset)
 	dirty = true;
 }
 
-void Camera::onMouseScroll(Input* input, float xoffset, float yoffset)
+void Camera::onMouseScroll(Input* input, double xoffset, double yoffset)
 {
 	updateZoom(zoom - yoffset);
 }

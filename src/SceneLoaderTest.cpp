@@ -76,12 +76,12 @@ void SceneLoaderTest::setupCamera()
 	Camera* camera = new Camera(pos, front, up);
 
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
-	MeshLoader loader(assets, "water_ball");
+	MeshLoader loader(assets, "player");
 	type->mesh = loader.load();
 
 	Node* node = new Node(type);
 	node->setPos(pos);
-	node->setScale(0.7f);
+	node->setScale(0.8f);
 	node->camera = camera;
 	node->controller = new CameraController(assets);
 
@@ -147,7 +147,7 @@ void SceneLoaderTest::setupLightMoving()
 	//Light* active = nullptr;
 	std::vector<Light*> lights;
 
-	int radius = 10.f;
+	float radius = 10.f;
 
 	for (int x = 0; x < 2; x ++) {
 		for (int z = 0; z < 2; z++) {

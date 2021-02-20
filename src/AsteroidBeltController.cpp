@@ -39,14 +39,14 @@ void AsteroidBeltController::prepareInstanced(InstancedNode& node)
 		model = glm::translate(model, glm::vec3(x, y, z) + planetPos);
 
 		// 2. scale: scale between 0.05 and 0.25f
-		float scale = (rand() % 20) / 100.0f + 0.05;
+		float scale = (rand() % 20) / 100.0f + 0.05f;
 		glm::mat4 plainModel = glm::scale(model, glm::vec3(scale));
 
 		// 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
 		float rotAngle = (rand() % 360);
 		plainModel = glm::rotate(plainModel, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
 
-		glm::mat4 selectionModel = glm::scale(model, glm::vec3(scale * 1.02));
+		glm::mat4 selectionModel = glm::scale(model, glm::vec3(scale * 1.02f));
 		selectionModel = glm::rotate(selectionModel, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
 
 		// 4. now add to list of matrices

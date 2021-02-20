@@ -55,8 +55,8 @@ void ReflectionMapRenderer::bindTexture(const RenderContext& ctx)
 
 void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registry, SkyboxRenderer* skybox)
 {
-	//if (++drawIndex < drawSkip) return;
-	//drawIndex = 0;
+	if (drawIndex++ < drawSkip) return;
+	drawIndex = 0;
 
 	// https://www.youtube.com/watch?v=lW_iqrtJORc
 	// https://eng.libretexts.org/Bookshelves/Computer_Science/Book%3A_Introduction_to_Computer_Graphics_(Eck)/07%3A_3D_Graphics_with_WebGL/7.04%3A_Framebuffers

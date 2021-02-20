@@ -11,8 +11,8 @@
 #define GL_GLEXT_PROTOTYPES
 #include <GLFW/glfw3.h>
 
-#define KI_GL_DEBUG 1
-#define KI_GL_DEBUG_BIND 0
+#define KI_GL_DEBUG
+//#define KI_GL_DEBUG_BIND
 
 
 #ifdef KI_GL_DEBUG

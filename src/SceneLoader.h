@@ -13,9 +13,9 @@ public:
 
 	virtual void setup();
 
-	int addLoader(std::function<void()> loader);
+	size_t addLoader(std::function<void()> loader);
 	void load();
-	const std::future<void>& getLoader(int index);
+	const std::future<void>& getLoader(unsigned int index);
 
 protected:
 	Shader* getShader(const std::string& name, const std::string& geometryType = "");
