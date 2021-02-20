@@ -1,5 +1,8 @@
 #include "Node.h"
 
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 #include "ki/GL.h"
 
 #include "controller/NodeController.h";
@@ -58,33 +61,8 @@ void Node::updateModelMatrix() {
 	}
 	dirtyMat = false;
 
-	// ORDER: yaw - pitch - roll
-	glm::mat4 rotMat = glm::mat4(1.0f);
-	{
-		if (rotation.y) {
-			rotMat = glm::rotate(
-				rotMat,
-				glm::radians(rotation.y),
-				glm::vec3(0.0f, 1.0f, 0.0f)
-			);
-		}
-
-		if (rotation.x) {
-			rotMat = glm::rotate(
-				rotMat,
-				glm::radians(rotation.x),
-				glm::vec3(1.0f, 0.0f, 0.0f)
-			);
-		}
-
-		if (rotation.z) {
-			rotMat = glm::rotate(
-				rotMat,
-				glm::radians(rotation.z),
-				glm::vec3(0.0f, 0.0f, 1.0f)
-			);
-		}
-	}
+	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
+	glm::mat4 rotMat = glm::toMat4(glm::quat(glm::radians(rotation)));
 
 	glm::mat4 transMat = glm::translate(
 		glm::mat4(1.0f),

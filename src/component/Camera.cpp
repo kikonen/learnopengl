@@ -1,5 +1,9 @@
 #include "Camera.h"
 
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+
 const float MIN_ZOOM = 1.0f;
 const float MAX_ZOOM = 45.0f;
 
@@ -143,8 +147,6 @@ void Camera::onKey(Input* input, float dt)
 			yaw -= rotateSize * dt;
 			dirty = true;
 		}
-
-		updateRotate(rotateMat, yaw, pitch, roll);
 	}
 
 	if (input->isKeyPressed(Key::ZOOM_IN)) {
@@ -202,34 +204,11 @@ void Camera::updateCamera()
 		return;
 	}
 
-	updateRotate(rotateMat, yaw, pitch, roll);
+	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
+	rotateMat = glm::toMat4(glm::quat(glm::radians(glm::vec3(pitch, yaw, roll))));
 
 	// NOTE KI glm::normalize for vec4 *IS* incorrect (4d len...)
 	viewFront = glm::normalize(glm::vec3(rotateMat * glm::vec4(front, 1.f)));
 	viewUp = glm::normalize(glm::vec3(rotateMat * glm::vec4(up, 1.f)));
 	viewRight = glm::normalize(glm::cross(viewFront, viewUp));
-}
-
-void Camera::updateRotate(glm::mat4& rot, float yaw, float pitch, float roll)
-{
-	rot = glm::mat4(1.f);
-
-	// ORDER: yaw - pitch - roll
-	rot = glm::rotate(
-		rot,
-		glm::radians(yaw),
-		glm::vec3(0.0f, 1.0f, 0.0f)
-	);
-
-	rot = glm::rotate(
-		rot,
-		glm::radians(pitch),
-		glm::vec3(1.0f, 0.0f, 0.0f)
-	);
-
-	rot = glm::rotate(
-		rot,
-		glm::radians(roll),
-		glm::vec3(0.0f, 0.0f, 1.0f)
-	);
 }

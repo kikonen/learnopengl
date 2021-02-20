@@ -35,9 +35,7 @@ public:
 
 private:
 	void updateZoom(float aZoom);
-
 	void updateCamera();
-	void updateRotate(glm::mat4& rot, float angleX, float angleY, float angleZ);
 
 public:
 	float zoom = 45.0f;
