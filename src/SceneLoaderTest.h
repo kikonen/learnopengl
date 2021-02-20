@@ -44,6 +44,8 @@ private:
 	void setupNodeBrickCube();
 
 	void setupNodeMountains();
+
+	void setupNodeGlassBall();
 	void setupNodeWaterBall();
 
 	void setupNodePlanet();

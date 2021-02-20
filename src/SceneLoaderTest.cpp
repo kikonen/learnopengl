@@ -30,6 +30,7 @@ void SceneLoaderTest::setup()
 
 	setupNodeZero();
 
+	setupNodeGlassBall();
 	setupNodeWaterBall();
 
 	setupNodeCubes();
@@ -75,12 +76,12 @@ void SceneLoaderTest::setupCamera()
 	Camera* camera = new Camera(pos, front, up);
 
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
-	MeshLoader loader(assets, "spyro2");
+	MeshLoader loader(assets, "water_ball");
 	type->mesh = loader.load();
 
 	Node* node = new Node(type);
 	node->setPos(pos);
-	node->setScale(0.001f);
+	node->setScale(0.7f);
 	node->camera = camera;
 	node->controller = new CameraController(assets);
 
@@ -485,18 +486,32 @@ void SceneLoaderTest::setupNodeMountains()
 	});
 }
 
-void SceneLoaderTest::setupNodeWaterBall()
+void SceneLoaderTest::setupNodeGlassBall()
 {
 	addLoader([this]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 		type->reflection = true;
 
-		MeshLoader loader(assets, "water_ball");
+		MeshLoader loader(assets, "glass_ball");
 		type->mesh = loader.load();
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(0, 20, 0) + assets.groundOffset);
-		node->setScale(1.2f);
+		node->setScale(1.3f);
+		scene->registry.addNode(node);
+		});
+}
+
+void SceneLoaderTest::setupNodeWaterBall()
+{
+	addLoader([this]() {
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+
+		MeshLoader loader(assets, "water_ball");
+		type->mesh = loader.load();
+
+		Node* node = new Node(type);
+		node->setPos(glm::vec3(5, 20, 0) + assets.groundOffset);
 		scene->registry.addNode(node);
 	});
 }
@@ -614,6 +629,7 @@ void SceneLoaderTest::setupTerrain()
 		material->ns = 50;
 		material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 		material->map_kd = "Grass Dark_VH.PNG";
+		material->map_kd = "singing_brushes.png";	
 		material->loadTextures(assets.texturesDir + "/");
 
 		Shader* shader = getShader(TEX_TERRAIN);

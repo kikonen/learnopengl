@@ -7,7 +7,7 @@
 #include "SkyboxRenderer.h"
 
 
-const int CUBE_SIZE = 512;
+const int CUBE_SIZE = 400;
 
 
 ReflectionMapRenderer::ReflectionMapRenderer(const Assets& assets)
