@@ -90,7 +90,7 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 
 	for (int i = 0; i < 6; i++) {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, textureID, 0);
-		glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
+		//glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		Camera camera(center, cameraFront[i], cameraUp[i]);
@@ -104,8 +104,8 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 		drawNodes(ctx, registry);
 	}
 
-	bindTexture(mainCtx);
-	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+//	bindTexture(mainCtx);
+//	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
