@@ -187,7 +187,7 @@ void Scene::draw(RenderContext& ctx)
 		viewportRenderer->render(ctx, registry);
 	}
 
-	KI_GL_DEBUG("scene.draw");
+	//KI_GL_DEBUG("scene.draw");
 }
 
 Camera* Scene::getCamera()

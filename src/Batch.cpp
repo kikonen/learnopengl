@@ -50,7 +50,7 @@ void Batch::update(int count)
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(glm::mat4), &matrices[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
 void Batch::bind(const RenderContext& ctx, Shader* shader)

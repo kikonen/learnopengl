@@ -47,8 +47,8 @@ void InstancedNode::prepareBuffers()
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
 		glBindVertexArray(type->mesh->buffers.VAO);
 		prepareBuffer(instanceMatrices);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+		KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		KI_GL_UNBIND(glBindVertexArray(0));
 	}
 
 	{
@@ -58,8 +58,8 @@ void InstancedNode::prepareBuffers()
 		glBindBuffer(GL_ARRAY_BUFFER, selectedBuffer);
 		glBindVertexArray(selectedBuffers.VAO);
 		prepareBuffer(selectionMatrices);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+		KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		KI_GL_UNBIND(glBindVertexArray(0));
 	}
 }
 
@@ -69,8 +69,8 @@ void InstancedNode::updateBuffers(const RenderContext& ctx)
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
 		glBindVertexArray(type->mesh->buffers.VAO);
 		updateBuffer(instanceMatrices);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+		KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		KI_GL_UNBIND(glBindVertexArray(0));
 	}
 
 	{
@@ -81,8 +81,8 @@ void InstancedNode::updateBuffers(const RenderContext& ctx)
 		glBindBuffer(GL_ARRAY_BUFFER, selectedBuffer);
 		glBindVertexArray(selectedBuffers.VAO);
 		updateBuffer(selectionMatrices);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+		KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		KI_GL_UNBIND(glBindVertexArray(0));
 	}
 
 	buffersDirty = false;
