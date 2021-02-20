@@ -5,10 +5,10 @@
 #include <iostream>
 
 #include "Engine.h"
-#include "SceneLoader.h"
+#include "scene/SceneLoader.h"
 
-#include "FrameInit.h"
-#include "Frame.h"
+#include "gui/FrameInit.h"
+#include "gui/Frame.h"
 
 
 class Test6 final : public Engine {

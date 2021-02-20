@@ -2,10 +2,7 @@
 
 #include "glm/glm.hpp"
 
-#include "SceneLoader.h"
-#include "Scene.h"
-#include "RenderContext.h"
-#include "Assets.h"
+#include "scene/SceneLoader.h"
 
 class SceneLoaderTest : public SceneLoader
 {

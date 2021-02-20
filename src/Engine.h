@@ -2,8 +2,8 @@
 
 #include "ki/GL.h"
 
-#include "Assets.h"
-#include "Window.h"
+#include "asset/Assets.h"
+#include "gui/Window.h"
 
 class Scene;
 

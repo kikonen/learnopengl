@@ -1,0 +1,25 @@
+#pragma once
+
+#include <vector>
+
+#include "Renderer.h"
+
+class NodeRenderer final : public Renderer
+{
+public:
+	NodeRenderer(const Assets& assets);
+
+	void prepare() override;
+	void update(const RenderContext& ctx, NodeRegistry& registry) override;
+	void bind(const RenderContext& ctx) override;
+	void render(const RenderContext& ctx, NodeRegistry& registry) override;
+
+private:
+	int drawNodes(const RenderContext& ctx, NodeRegistry& registry, bool selection);
+	void drawBlended(const RenderContext& ctx, std::vector<Node*>& nodes);
+
+	void drawSelectionStencil(const RenderContext& ctx, NodeRegistry& registry);
+
+private:
+	Shader* selectionShader = nullptr;
+};

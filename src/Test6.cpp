@@ -4,7 +4,7 @@
 #include <glm/ext.hpp>
 
 #include "ki/GL.h"
-#include "EditorFrame.h"
+#include "editor/EditorFrame.h"
 
 #include "SceneLoaderTest.h"
 
@@ -21,6 +21,8 @@ int Test6::onSetup() {
 	currentScene = loader->scene;
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	//glfwSwapInterval(0);
 
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);

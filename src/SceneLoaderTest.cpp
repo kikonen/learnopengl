@@ -1,16 +1,16 @@
 #include "SceneLoaderTest.h"
 
-#include "MeshLoader.h"
-#include "Terrain.h"
-#include "InstancedNode.h"
+#include "asset/MeshLoader.h"
+#include "model/Terrain.h"
+#include "model/InstancedNode.h"
 
-#include "CameraController.h"
-#include "AsteroidBeltController.h"
-#include "MovingLightController.h"
-#include "NodePathController.h"
+#include "controller/CameraController.h"
+#include "controller/AsteroidBeltController.h"
+#include "controller/MovingLightController.h"
+#include "controller/NodePathController.h"
 
-#include "NodeType.h"
-#include "TerrainGenerator.h"
+#include "scene/NodeType.h"
+#include "scene/TerrainGenerator.h"
 
 
 SceneLoaderTest::SceneLoaderTest(const Assets& assets)
