@@ -170,8 +170,9 @@ void Camera::updateCamera()
 
 	updateRotate(rotateMat, yaw, pitch, roll);
 
-	viewFront = glm::normalize(rotateMat * glm::vec4(front, 1.f));
-	viewUp = glm::normalize(rotateMat * glm::vec4(up, 1.f));
+	// NOTE KI glm::normalize for vec4 *IS* incorrect (4d len...)
+	viewFront = glm::normalize(glm::vec3(rotateMat * glm::vec4(front, 1.f)));
+	viewUp = glm::normalize(glm::vec3(rotateMat * glm::vec4(up, 1.f)));
 	viewRight = glm::normalize(glm::cross(viewFront, viewUp));
 }
 
