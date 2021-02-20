@@ -18,15 +18,20 @@ public:
 		Scene* scene,
 		Camera* camera);
 
-	void bindGlobal() const;
+	void bindUBOs() const;
+	void bindMatricesUBO() const;
+	void bindDataUBO() const;
+	void bindLightsUBO() const;
+
 	void bind(Shader* shader) const;
 public:
 	const Assets& assets;
 	const Engine& engine;
 
-	const int width;
-	const int height;
 	const float dt;
+
+	int width;
+	int height;
 
 	Scene* scene;
 	Camera* camera;

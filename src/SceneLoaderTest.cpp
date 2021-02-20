@@ -32,9 +32,12 @@ void SceneLoaderTest::setup()
 
 	setupNodeWaterBall();
 
-	setupNodeActive();
 	setupNodeCubes();
 	setupNodeCube4();
+
+	setupNodeBrickCube();
+	setupNodeActive();
+
 	setupNodeBall();
 	setupNodeCow();
 	setupNodeTeapot();
@@ -66,17 +69,13 @@ void SceneLoaderTest::setup()
 
 void SceneLoaderTest::setupCamera()
 {
-	Camera* camera = new Camera();
+	glm::vec3 pos = glm::vec3(-8, 5, 10.f) + assets.groundOffset;
+	glm::vec3 front = glm::vec3(0, 0, -1);
+	Camera* camera = new Camera(pos, front);
 
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "spyro2");
 	type->mesh = loader.load();
-	type->reflection = true;
-
-	glm::vec3 pos = glm::vec3(-8, 5, 10.f) + assets.groundOffset;
-	// pos = glm::vec3(-8, 5, 10.f);
-
-	camera->setPos(pos);
 
 	Node* node = new Node(type);
 	node->setPos(pos);
@@ -454,6 +453,16 @@ void SceneLoaderTest::setupNodeActive()
 		active->controller = new NodePathController(assets, 0);
 		active->setPos(glm::vec3(0) + assets.groundOffset);
 		scene->registry.addNode(active);
+	});
+}
+
+void SceneLoaderTest::setupNodeBrickCube()
+{
+	addLoader([this]() {
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+		MeshLoader loader(assets, "texture_cube");
+		type->mesh = loader.load();
+		type->reflection = true;
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 20, 5) + assets.groundOffset);
@@ -513,7 +522,7 @@ void SceneLoaderTest::setupNodePlanet()
 
 		Light* light = new Light();
 		{
-			light->pos = planet->getPos() - glm::vec3(0, 40, 0);
+			light->pos = planet ? planet->getPos() - glm::vec3(0, 40, 0) : glm::vec3(0, 40, 0);
 
 			// 325 = 0.014	0.0007
 			light->point = true;
@@ -643,7 +652,12 @@ Node* SceneLoaderTest::getPlanet()
 		std::lock_guard<std::mutex> lock(planet_lock);
 		f = planetFuture;
 	}
-	if (f) f->wait();
+
+	if (f) {
+		if (f->valid()) {
+			f->wait();
+		}
+	}
 	{
 		std::lock_guard<std::mutex> lock(planet_lock);
 		if (!planetFuture) return loadedPlanet;

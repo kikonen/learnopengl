@@ -38,22 +38,19 @@ void ShadowMapRenderer::bind(RenderContext& ctx)
 	Light* light = ctx.scene->getDirLight();
 	if (!light) return;
 
-	glm::mat4 b = {
-		{0.5f, 0.0f, 0.0f, 0.0f},
-		{0.0f, 0.5f, 0.0f, 0.0f},
-		{0.0f, 0.0f, 0.5f, 0.0f},
-		{0.5f, 0.5f, 0.5f, 1.0f},
-	};
+	//glm::mat4 b = {
+	//	{0.5f, 0.0f, 0.0f, 0.0f},
+	//	{0.0f, 0.5f, 0.0f, 0.0f},
+	//	{0.0f, 0.0f, 0.5f, 0.0f},
+	//	{0.5f, 0.5f, 0.5f, 1.0f},
+	//};
 
 	glm::mat4 lightView = glm::lookAt(light->pos, light->target, glm::vec3(0.0, 1.0, 0.0));
-
 	glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, nearPlane, farPlane);
 
 	//lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
 
-	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-
-	ctx.lightSpaceMatrix = lightSpaceMatrix;
+	ctx.lightSpaceMatrix = lightProjection * lightView;
 }
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)

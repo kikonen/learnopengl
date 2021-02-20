@@ -4,19 +4,18 @@ const float MIN_ZOOM = 1.0f;
 const float MAX_ZOOM = 45.0f;
 
 
-Camera::Camera()
+Camera::Camera(const glm::vec3& aPos, const glm::vec3 aFront)
 {
-	pos = glm::vec3(0.0f, 0.0f, 5.0f);
+	pos = aPos;
 
-	front = glm::vec3(0.0f, 0.0f, -1.0f);
+	// Default: look to Z direction
+	front = glm::normalize(aFront);
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
 	right = glm::normalize(glm::cross(front, up));
 
 	rotateMat = glm::mat4(1.0f);
-	updateRotate(rotateMat, 0.f, 0.f, 0.f);
 
 	dirty = true;
-	updateCamera();
 }
 
 Camera::~Camera()
@@ -65,8 +64,6 @@ const glm::vec3 Camera::getRotation()
 
 void Camera::onKey(Input* input, float dt)
 {
-	accumulatedTime += dt;
-
 	if (input->isKeyPressed(Key::FORWARD)) {
 		updateCamera();
 		this->pos += viewFront * dt * moveStep;
@@ -143,7 +140,6 @@ void Camera::onMouseMove(Input* input, float xoffset, float yoffset)
 		}
 	}
 
-	updateRotate(rotateMat, yaw, pitch, roll);
 	dirty = true;
 }
 
@@ -171,6 +167,8 @@ void Camera::updateCamera()
 	if (!dirty) {
 		return;
 	}
+
+	updateRotate(rotateMat, yaw, pitch, roll);
 
 	viewFront = glm::normalize(rotateMat * glm::vec4(front, 1.f));
 	viewUp = glm::normalize(rotateMat * glm::vec4(up, 1.f));

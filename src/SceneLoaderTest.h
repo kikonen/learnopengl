@@ -39,7 +39,10 @@ private:
 	void setupNodeBall();
 	void setupNodeCube4();
 	void setupNodeCubes();
+
 	void setupNodeActive();
+	void setupNodeBrickCube();
+
 	void setupNodeMountains();
 	void setupNodeWaterBall();
 

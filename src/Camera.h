@@ -11,7 +11,7 @@
 class Camera final
 {
 public:
-	Camera();
+	Camera(const glm::vec3& pos, const glm::vec3 front);
 	~Camera();
 
 	const glm::mat4& getView();
@@ -27,6 +27,12 @@ public:
 	void onKey(Input* input, float dt);
 	void onMouseMove(Input* input, float xoffset, float yoffset);
 	void onMouseScroll(Input* input, float xoffset, float yoffset);
+
+private:
+	void updateZoom(float aZoom);
+
+	void updateCamera();
+	void updateRotate(glm::mat4& rot, float angleX, float angleY, float angleZ);
 
 public:
 	float zoom = 45.0f;
@@ -53,13 +59,6 @@ private:
 	float pitch = 0;
 	float roll = 0;
 
-	float accumulatedTime = 0;
-
-	bool dirty;
-
-	void updateZoom(float aZoom);
-
-	void updateCamera();
-	void updateRotate(glm::mat4& rot, float angleX, float angleY, float angleZ);
+	bool dirty = true;
 };
 

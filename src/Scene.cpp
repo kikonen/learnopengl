@@ -90,6 +90,7 @@ void Scene::update(RenderContext& ctx)
 	viewportRenderer->update(ctx, registry);
 
 	glm::vec3 pos = glm::vec3(0, 20, 0) + assets.groundOffset;
+	pos = glm::vec3(5, 20, 5) + assets.groundOffset;
 	reflectionMapRenderer->center = pos;
 
 	particleSystem->update(ctx);
@@ -99,7 +100,7 @@ void Scene::bind(RenderContext& ctx)
 {
 	shadowMapRenderer->bind(ctx);
 	reflectionMapRenderer->bind(ctx);
-	ctx.bindGlobal();
+	ctx.bindUBOs();
 
 	if (!framebuffer) {
 		framebuffer = new TextureBuffer(ctx.width, ctx.height);

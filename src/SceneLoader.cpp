@@ -14,7 +14,7 @@ std::future<void>* SceneLoader::addLoader(std::function<void()> loader)
 {
 	std::lock_guard<std::mutex> lock(load_lock);
 
-	loaders.push_back(std::async(std::launch::async, loader));
+	loaders.emplace_back(std::async(std::launch::async, loader));
 	std::future<void>* f = &loaders[loaders.size() - 1];
 	return f;
 }
