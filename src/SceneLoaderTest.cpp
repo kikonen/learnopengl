@@ -71,7 +71,8 @@ void SceneLoaderTest::setupCamera()
 {
 	glm::vec3 pos = glm::vec3(-8, 5, 10.f) + assets.groundOffset;
 	glm::vec3 front = glm::vec3(0, 0, -1);
-	Camera* camera = new Camera(pos, front);
+	glm::vec3 up = glm::vec3(0, 1, 0);
+	Camera* camera = new Camera(pos, front, up);
 
 	NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "spyro2");
@@ -462,7 +463,7 @@ void SceneLoaderTest::setupNodeBrickCube()
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "texture_cube");
 		type->mesh = loader.load();
-		type->reflection = true;
+		//type->reflection = true;
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 20, 5) + assets.groundOffset);
@@ -495,7 +496,7 @@ void SceneLoaderTest::setupNodeWaterBall()
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(0, 20, 0) + assets.groundOffset);
-		//node->setScale(0.5f);
+		node->setScale(1.2f);
 		scene->registry.addNode(node);
 	});
 }

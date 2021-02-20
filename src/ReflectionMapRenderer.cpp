@@ -65,16 +65,13 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 	glViewport(0, 0, CUBE_SIZE, CUBE_SIZE);
 
-
-	//bindTexture(ctx);
-
 	// +X (right)
 	// -X (left)
 	// +Y (top)
 	// -Y (bottom)
 	// +Z (front) 
 	// -Z (back)
-	glm::vec3 cameraDirections[6] = {
+	glm::vec3 cameraFront[6] = {
 		{  1,  0,  0 },
 		{ -1,  0,  0 },
 		{  0,  1,  0 },
@@ -82,13 +79,21 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 		{  0,  0,  1 },
 		{  0,  0, -1 },
 	};
+	glm::vec3 cameraUp[6] = {
+		{  0, -1,  0 },
+		{  0, -1,  0 },
+		{  0,  0,  1 },
+		{  0,  0, -1 },
+		{  0, -1,  0 },
+		{  0, -1,  0 },
+	};
 
 	for (int i = 0; i < 6; i++) {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, textureID, 0);
 		glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Camera camera(center, cameraDirections[i]);
+		Camera camera(center, cameraFront[i], cameraUp[i]);
 		RenderContext ctx(mainCtx.engine, mainCtx.dt, mainCtx.scene, &camera);
 		ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
 		glm::mat4 view = camera.getView();
@@ -98,7 +103,7 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 		drawNodes(ctx, registry);
 	}
 
-	//bindTexture(ctx);
+	bindTexture(mainCtx);
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -143,6 +148,7 @@ void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& re
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
 		if (t->light || t->skipShadow) continue;
+		//if (t->reflection) continue;
 		Shader* shader = t->bind(ctx, nullptr);
 		shader->hasReflectionMap.set(false);
 

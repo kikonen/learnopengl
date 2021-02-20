@@ -4,13 +4,13 @@ const float MIN_ZOOM = 1.0f;
 const float MAX_ZOOM = 45.0f;
 
 
-Camera::Camera(const glm::vec3& aPos, const glm::vec3 aFront)
+Camera::Camera(const glm::vec3& aPos, const glm::vec3 aFront, const glm::vec3 aUp)
 {
 	pos = aPos;
 
 	// Default: look to Z direction
 	front = glm::normalize(aFront);
-	up = glm::vec3(0.0f, 1.0f, 0.0f);
+	up = glm::normalize(aUp);
 	right = glm::normalize(glm::cross(front, up));
 
 	rotateMat = glm::mat4(1.0f);

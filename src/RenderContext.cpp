@@ -20,7 +20,7 @@ RenderContext::RenderContext(
 	dt(dt)
 {
 	if (!camera) {
-		camera = new Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1));
+		camera = new Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 		this->camera = camera;
 	}
 	view = camera->getView();

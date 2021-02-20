@@ -91,6 +91,8 @@ void Scene::update(RenderContext& ctx)
 
 	glm::vec3 pos = glm::vec3(0, 20, 0) + assets.groundOffset;
 	pos = glm::vec3(5, 20, 5) + assets.groundOffset;
+	pos = glm::vec3(0, 20, 0) + assets.groundOffset;
+
 	reflectionMapRenderer->center = pos;
 
 	particleSystem->update(ctx);

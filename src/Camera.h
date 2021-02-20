@@ -11,7 +11,7 @@
 class Camera final
 {
 public:
-	Camera(const glm::vec3& pos, const glm::vec3 front);
+	Camera(const glm::vec3& pos, const glm::vec3 front, const glm::vec3 aUp);
 	~Camera();
 
 	const glm::mat4& getView();
