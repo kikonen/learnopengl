@@ -98,7 +98,7 @@ void Scene::bind(RenderContext& ctx)
 	reflectionMapRenderer->bind(ctx);
 	ctx.bindUBOs();
 
-	if (!framebuffer) {
+	if (!framebuffer && useMirrorView) {
 		framebuffer = new TextureBuffer(ctx.width, ctx.height);
 		framebuffer->prepare();
 
@@ -118,6 +118,7 @@ void Scene::bind(RenderContext& ctx)
 
 void Scene::draw(RenderContext& ctx)
 {
+	useMirrorView = false;
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
@@ -136,7 +137,7 @@ void Scene::draw(RenderContext& ctx)
 	reflectionMapRenderer->render(ctx, registry, skyboxRenderer);
 
 	// "back mirror" viewport
-	{
+	if (useMirrorView) {
 		framebuffer->bind();
 		glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

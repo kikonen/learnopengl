@@ -7,7 +7,7 @@
 #include "SkyboxRenderer.h"
 
 
-const int CUBE_SIZE = 600;
+const int CUBE_SIZE = 1000;
 
 
 ReflectionMapRenderer::ReflectionMapRenderer(const Assets& assets)
@@ -186,7 +186,7 @@ Node* ReflectionMapRenderer::findCenter(const RenderContext& ctx, NodeRegistry& 
 		}
 	}
 
-	for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
+	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		return it->second;
 	}
 	return nullptr;

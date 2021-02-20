@@ -305,11 +305,21 @@ void SceneLoaderTest::setupNodeBigMirror()
 		MeshLoader loader(assets, "woodwall");
 		type->mesh = loader.load();
 
-		Node* node = new Node(type);
-		node->setPos(glm::vec3(-65, 20, -10) + assets.groundOffset);
-		node->setRotation(glm::vec3(0, 45, 0));
-		node->setScale(15.f);
-		scene->registry.addNode(node);
+		{
+			Node* node = new Node(type);
+			node->setPos(glm::vec3(-65, 20, -10) + assets.groundOffset);
+			node->setRotation(glm::vec3(0, 45, 0));
+			node->setScale(15.f);
+			scene->registry.addNode(node);
+		}
+
+		{
+			Node* node = new Node(type);
+			node->setPos(glm::vec3(65, 20, -10) + assets.groundOffset);
+			node->setRotation(glm::vec3(0, -45, 0));
+			node->setScale(15.f);
+			scene->registry.addNode(node);
+		}
 	});
 }
 
@@ -653,7 +663,7 @@ void SceneLoaderTest::setupTerrain()
 		material->ns = 50;
 		material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 		material->map_kd = "Grass Dark_VH.PNG";
-		material->map_kd = "singing_brushes.png";	
+		//material->map_kd = "singing_brushes.png";	
 		material->loadTextures(assets.texturesDir + "/");
 
 		Shader* shader = getShader(TEX_TERRAIN);

@@ -83,6 +83,7 @@ private:
 
 	ParticleSystem* particleSystem = nullptr;
 
+	bool useMirrorView = false;
 	TextureBuffer* framebuffer = nullptr;
 	Viewport* frameViewport = nullptr;
 	Shader* viewportShader = nullptr;
