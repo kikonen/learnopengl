@@ -7,7 +7,7 @@
 #include "SkyboxRenderer.h"
 
 
-const int CUBE_SIZE = 400;
+const int CUBE_SIZE = 600;
 
 
 ReflectionMapRenderer::ReflectionMapRenderer(const Assets& assets)
@@ -58,6 +58,9 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 	if (drawIndex++ < drawSkip) return;
 	drawIndex = 0;
 
+	Node* centerNode = findCenter(mainCtx, registry);
+	if (!centerNode) return;
+
 	// https://www.youtube.com/watch?v=lW_iqrtJORc
 	// https://eng.libretexts.org/Bookshelves/Computer_Science/Book%3A_Introduction_to_Computer_Graphics_(Eck)/07%3A_3D_Graphics_with_WebGL/7.04%3A_Framebuffers
 	// view-source:math.hws.edu/eck/cs424/graphicsbook2018/source/webgl/cube-camera.html
@@ -87,6 +90,8 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 		{  0, -1,  0 },
 		{  0, -1,  0 },
 	};
+
+	const glm::vec3& center = centerNode->getPos();
 
 	for (int i = 0; i < 6; i++) {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, textureID, 0);
@@ -148,10 +153,8 @@ void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& re
 
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
-		if (t->light || t->skipShadow) continue;
-		//if (t->reflection) continue;
 		Shader* shader = t->bind(ctx, nullptr);
-		shader->hasReflectionMap.set(false);
+		//shader->hasReflectionMap.set(false);
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);
@@ -162,4 +165,24 @@ void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& re
 
 		batch.flush(ctx, t);
 	}
+}
+
+Node* ReflectionMapRenderer::findCenter(const RenderContext& ctx, NodeRegistry& registry)
+{
+	const glm::vec3& viewPos = ctx.camera->getPos();
+
+	std::map<float, Node*> sorted;
+	for (auto& x : registry.nodes) {
+		if (!x.first->reflection) continue;
+
+		for (auto& e : x.second) {
+			float distance = glm::length(viewPos - e->getPos());
+			sorted[distance] = e;
+		}
+	}
+
+	for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
+		return it->second;
+	}
+	return nullptr;
 }

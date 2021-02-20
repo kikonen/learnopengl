@@ -75,6 +75,9 @@ void main() {
     N.z = normal.z + a * sin(b*z);
     normal = normalize(N);
   }
+  if (!gl_FrontFacing) {
+    normal = -normal;
+  }
 
   vec3 toView = normalize(viewPos - fs_in.fragPos);
 

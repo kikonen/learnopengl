@@ -30,6 +30,8 @@ private:
 	void setupNodeStainedWindows();
 
 	void setupNodeBrickwall();
+	void setupNodeBigMirror();
+
 	void setupNodeBrickwallBox();
 
 	void setupNodeSpyro();
@@ -49,7 +51,7 @@ private:
 	void setupNodeWaterBall();
 
 	void setupNodePlanet();
-	void setupNodeAsteroids();
+	void setupNodeAsteroid();
 	void setupNodeAsteroidBelt();
 
 	void setupSpriteFlare();

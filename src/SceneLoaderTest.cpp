@@ -49,12 +49,13 @@ void SceneLoaderTest::setup()
 	setupNodeStainedWindows();
 
 	setupNodeBrickwall();
+	setupNodeBigMirror();
 
 	//setupNodeBrickwallBox();
 	//setupNodeMountains();
 
 	setupNodePlanet();
-	setupNodeAsteroids();
+	setupNodeAsteroid();
 	setupNodeAsteroidBelt();
 
 	setupSpriteFlare();
@@ -281,8 +282,9 @@ void SceneLoaderTest::setupNodeBrickwall()
 		NodeType* type2 = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 		type2->renderBack = true;
 
-		MeshLoader loader2(assets, "brickwall2");
+		MeshLoader loader2(assets, "woodwall");
 		type2->mesh = loader2.load();
+		type2->reflection = true;
 
 		for (int i = 0; i < 5; i++) {
 			Node* node = new Node(i % 2 == 0 ? type1 : type2);
@@ -292,6 +294,25 @@ void SceneLoaderTest::setupNodeBrickwall()
 		}
 	});
 }
+
+void SceneLoaderTest::setupNodeBigMirror()
+{
+	addLoader([this]() {
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+		type->renderBack = true;
+		type->reflection = true;
+
+		MeshLoader loader(assets, "woodwall");
+		type->mesh = loader.load();
+
+		Node* node = new Node(type);
+		node->setPos(glm::vec3(-65, 20, -10) + assets.groundOffset);
+		node->setRotation(glm::vec3(0, 45, 0));
+		node->setScale(15.f);
+		scene->registry.addNode(node);
+	});
+}
+
 
 void SceneLoaderTest::setupNodeBrickwallBox()
 {
@@ -386,6 +407,7 @@ void SceneLoaderTest::setupNodeCow()
 		MeshLoader loader(assets, "texture_cow");
 		loader.defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
 		type->mesh = loader.load();
+		type->reflection = true;
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 20, -5) + assets.groundOffset);
@@ -511,7 +533,7 @@ void SceneLoaderTest::setupNodeWaterBall()
 		type->mesh = loader.load();
 
 		Node* node = new Node(type);
-		node->setPos(glm::vec3(5, 20, 0) + assets.groundOffset);
+		node->setPos(glm::vec3(5, 25, 0) + assets.groundOffset);
 		scene->registry.addNode(node);
 	});
 }
@@ -571,7 +593,7 @@ void SceneLoaderTest::setupNodePlanet()
 	});
 }
 
-void SceneLoaderTest::setupNodeAsteroids()
+void SceneLoaderTest::setupNodeAsteroid()
 {
 	addLoader([this]() {
 		glm::vec3 planetPos = glm::vec3(10, 100, 100);
@@ -579,6 +601,7 @@ void SceneLoaderTest::setupNodeAsteroids()
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "rock", "/rock/");
 		type->mesh = loader.load();
+		type->reflection = true;
 
 		Node* node = new Node(type);
 		Node* planet = getPlanet();
@@ -609,7 +632,8 @@ void SceneLoaderTest::setupNodeAsteroidBelt()
 void SceneLoaderTest::setupSpriteFlare()
 {
 	addLoader([this]() {
-		NodeType* type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "Skeleton_VH_normal.PNG");
+		//NodeType* type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "Skeleton_VH_normal.PNG");
+		NodeType* type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "");
 
 		glm::vec3 pos = glm::vec3(0, 5, 20) + assets.groundOffset;
 		for (int i = 0; i < 1001; i++) {

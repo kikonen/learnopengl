@@ -20,6 +20,7 @@ public:
 
 private:
 	void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
+	Node* findCenter(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
 	glm::vec3 center = { 0, 0, 0 };
