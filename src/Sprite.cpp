@@ -14,24 +14,35 @@ Mesh* Sprite::getMesh(const Assets& assets, Material* material)
 	return mesh;
 }
 
-Material* Sprite::getMaterial(const Assets& assets, const std::string& name)
+Material* Sprite::getMaterial(
+	const Assets& assets, 
+	const std::string& path,
+	const std::string& normalMapPath)
 {
-	Material* material = new Material(name);
+	Material* material = new Material(path);
 	material->ns = 100;
 	material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
-	material->map_kd = name;
+	material->map_kd = path;
+	material->map_bump = normalMapPath;
 	material->loadTextures(assets.spritesDir + "/");
+
 	material->diffuseTex->unitIndex = 0;
+	if (material->normalMap) {
+		material->normalMap->unitIndex = 1;
+	}
 
 	return material;
 }
 
-NodeType* Sprite::getNodeType(const Assets& assets, const std::string& name)
+NodeType* Sprite::getNodeType(
+	const Assets& assets, 
+	const std::string& path,
+	const std::string& normalMapPath)
 {
 	NodeType* type = new NodeType(NodeType::nextID(), Shader::getShader(assets, TEX_TEXTURE, ""));
 	type->renderBack = true;
 
-	Material* material = Sprite::getMaterial(assets, "Skeleton_VH.PNG");
+	Material* material = Sprite::getMaterial(assets, path, normalMapPath);
 	type->mesh = getMesh(assets, material);
 
 	return type;

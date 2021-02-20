@@ -609,12 +609,12 @@ void SceneLoaderTest::setupNodeAsteroidBelt()
 void SceneLoaderTest::setupSpriteFlare()
 {
 	addLoader([this]() {
-		NodeType* type = Sprite::getNodeType(assets, "Skeleton_VH.PNG");
+		NodeType* type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "Skeleton_VH_normal.PNG");
 
 		glm::vec3 pos = glm::vec3(0, 5, 20) + assets.groundOffset;
 		for (int i = 0; i < 1001; i++) {
 			Sprite* sprite = new Sprite(type, glm::vec2(1.5, 3));
-			sprite->setPos(pos + glm::vec3(0, 1.5, 0.1 * i));
+			sprite->setPos(pos + glm::vec3(0, 1.5, 0.2 * i));
 			//sprite->setRotation(glm::vec3(0, 0, 180));
 			scene->registry.addSprite(sprite);
 		}
