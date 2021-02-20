@@ -15,8 +15,13 @@ public:
 	~Camera();
 
 	const glm::mat4& getView();
+	const glm::vec3& getViewFront();
+	const glm::vec3& getViewRight();
+	const glm::vec3& getViewUp();
 
 	const glm::vec3& getFront();
+	const glm::vec3& getRight();
+	const glm::vec3& getUp();
 
 	void setPos(const glm::vec3& pos);
 	const glm::vec3& getPos() const;

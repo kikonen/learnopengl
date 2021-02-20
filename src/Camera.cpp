@@ -24,9 +24,7 @@ Camera::~Camera()
 
 const glm::mat4& Camera::getView()
 {
-	if (!dirty) {
-		return viewMat;
-	}
+	if (!dirty) return viewMat;
 
 	updateCamera();
 	viewMat = glm::lookAt(
@@ -36,9 +34,38 @@ const glm::mat4& Camera::getView()
 	return viewMat;
 }
 
+const glm::vec3& Camera::getViewFront()
+{
+	if (dirty) updateCamera();
+	return viewFront;
+}
+
+const glm::vec3& Camera::getViewRight()
+{
+	if (dirty) updateCamera();
+	return viewRight;
+}
+
+const glm::vec3& Camera::getViewUp()
+{
+	if (dirty) updateCamera();
+	return viewUp;
+}
+
+
 const glm::vec3& Camera::getFront()
 {
 	return front;
+}
+
+const glm::vec3& Camera::getRight()
+{
+	return right;
+}
+
+const glm::vec3& Camera::getUp()
+{
+	return up;
 }
 
 void Camera::setPos(const glm::vec3& pos) {

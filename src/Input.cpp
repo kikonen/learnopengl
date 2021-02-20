@@ -18,7 +18,7 @@ Input::Input(Window* window)
 	mapping[ZOOM_IN] = new int[] { GLFW_KEY_HOME, 0 };
 	mapping[ZOOM_OUT] = new int[] { GLFW_KEY_END, 0 };
 
-	modifiers[SHIFT] = new int[] { GLFW_KEY_LEFT_SHIFT, GLFW_KEY_RIGHT_SHIFT, 0 };
+	modifiers[SHIFT] = new int[] { GLFW_KEY_LEFT_SHIFT, GLFW_KEY_RIGHT_SHIFT, GLFW_KEY_CAPS_LOCK, 0 };
 	modifiers[CONTROL] = new int[] { GLFW_KEY_LEFT_CONTROL, GLFW_KEY_RIGHT_CONTROL, 0 };
 	modifiers[ALT] = new int[] { GLFW_KEY_LEFT_ALT, GLFW_KEY_RIGHT_ALT, 0 };
 }
