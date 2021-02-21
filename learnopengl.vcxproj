@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\imgui\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\imgui\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -155,6 +155,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\asset\ImageTexture.cpp" />
+    <ClCompile Include="src\asset\PlainTexture.cpp" />
     <ClCompile Include="src\scene\Raycast.cpp" />
     <ClCompile Include="src\scene\TextureBuffer.cpp" />
     <ClCompile Include="src\scene\ShadowBuffer.cpp" />
@@ -173,8 +175,8 @@
     <ClCompile Include="vendor\imgui\src\imgui_tables.cpp" />
     <ClCompile Include="vendor\imgui\src\imgui_widgets.cpp" />
     <ClCompile Include="src\model\Particle.cpp" />
-    <ClCompile Include="src\scene\ParticleGenerator.cpp" />
-    <ClCompile Include="src\component\ParticleRenderer.cpp" />
+    <ClCompile Include="src\component\ParticleGenerator.cpp" />
+    <ClCompile Include="src\renderer\ParticleRenderer.cpp" />
     <ClCompile Include="src\scene\ParticleSystem.cpp" />
     <ClCompile Include="src\renderer\ReflectionMapRenderer.cpp" />
     <ClCompile Include="src\asset\Mesh.cpp" />
@@ -232,6 +234,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\asset\ImageTexture.h" />
+    <ClInclude Include="src\asset\PlainTexture.h" />
     <ClInclude Include="src\scene\Raycast.h" />
     <ClInclude Include="src\scene\TextureBuffer.h" />
     <ClInclude Include="src\scene\ShadowBuffer.h" />

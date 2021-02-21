@@ -24,8 +24,8 @@ Material* Sprite::getMaterial(
 	material->loadTextures(assets.spritesDir + "/");
 
 	material->diffuseTex->unitIndex = 0;
-	if (material->normalMap) {
-		material->normalMap->unitIndex = 1;
+	if (material->normalMapTex) {
+		material->normalMapTex->unitIndex = 1;
 	}
 
 	return material;

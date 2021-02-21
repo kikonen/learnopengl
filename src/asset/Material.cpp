@@ -6,6 +6,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "ImageTexture.h"
+
 
 Material* Material::createDefaultMaterial() {
 	Material* mat = new Material("default");
@@ -23,10 +25,10 @@ Material::Material(const std::string& name)
 
 Material::~Material()
 {
-	delete diffuseTex;
-	delete specularTex;
-	delete emissionTex;
-	delete normalMap;
+	//delete diffuseTex;
+	//delete specularTex;
+	//delete emissionTex;
+	//delete normalMap;
 }
 
 int Material::loadTextures(const std::string& baseDir)
@@ -34,14 +36,15 @@ int Material::loadTextures(const std::string& baseDir)
 	if (loaded) return 0;
 	loaded = true;
 
-	diffuseTex = loadTexture(baseDir, map_kd, false);
-	emissionTex = loadTexture(baseDir, map_ke, false);
-	specularTex = loadTexture(baseDir, map_ks, false);
-	normalMap = loadTexture(baseDir, map_bump, true);
+	textures.reserve(2);
+	diffuseTex = loadTexture(baseDir, map_kd);
+	emissionTex = loadTexture(baseDir, map_ke);
+	specularTex = loadTexture(baseDir, map_ks);
+	normalMapTex = loadTexture(baseDir, map_bump);
 	return 0;
 }
 
-Texture* Material::loadTexture(const std::string& baseDir, const std::string& name, bool normalMap)
+BoundTexture* Material::loadTexture(const std::string& baseDir, const std::string& name)
 {
 	if (name.empty()) {
 		return nullptr;
@@ -51,29 +54,23 @@ Texture* Material::loadTexture(const std::string& baseDir, const std::string& na
 
 	std::cout << "\n== TEXTURE: " << texturePath << " ===\n";
 
-	// NOTE KI sharing fails since causes texture unit conflicts across materials
-//	Texture* texture = Texture::getTexture(texturePath, normalMap);
-	Texture* texture = new Texture(texturePath, textureMode, normalMap);
+	ImageTexture* texture = ImageTexture::getTexture(texturePath, textureSpec);
+	if (!texture) return nullptr;
 
-	int res = texture->load();
+	BoundTexture* tex = new BoundTexture();
+	tex->texture = texture;
 
-	if (res) {
-		delete texture;
-		texture = nullptr;
-	} else {
-		textures.push_back(texture);
-	}
-	return texture;
+ 	textures.push_back(tex);
+
+	return tex;
 }
 
 void Material::prepare()
 {
 	unsigned int unitIndex = 0;
-	for (auto const x : textures) {
-		if (x->unitIndex == -1) {
-			x->unitIndex = unitIndex++;
-		}
-		x->prepare();
+	for (auto & x : textures) {
+		x->unitIndex = unitIndex++;
+		x->texture->prepare();
 	}
 }
 
@@ -90,12 +87,12 @@ void Material::bind(Shader* shader)
 	if (specularTex) {
 		info.specularTex->set(specularTex->unitIndex);
 	}
-	if (normalMap) {
-		info.normalMap->set(normalMap->unitIndex);
+	if (normalMapTex) {
+		info.normalMap->set(normalMapTex->unitIndex);
 	}
 
-	for (auto const x : textures) {
-		x->bind(shader);
+	for (auto & x : textures) {
+		x->bind();
 	}
 }
 
@@ -112,12 +109,12 @@ void Material::bindArray(Shader* shader, int index)
 	if (specularTex) {
 		info.specularTex->set(specularTex->unitIndex);
 	}
-	if (normalMap) {
-		info.normalMap->set(normalMap->unitIndex);
+	if (normalMapTex) {
+		info.normalMap->set(normalMapTex->unitIndex);
 	}
 
-	for (auto const x : textures) {
-		x->bind(shader);
+	for (auto& x : textures) {
+		x->bind();
 	}
 }
 
@@ -133,7 +130,7 @@ MaterialUBO Material::toUBO()
 		!!diffuseTex,
 		!!emissionTex,
 		!!specularTex,
-		!!normalMap,
+		!!normalMapTex,
 
 		0,
 		0,

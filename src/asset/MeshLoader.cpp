@@ -177,16 +177,11 @@ int MeshLoader::loadData(
 		}
 
 		int materialIndex = 0;
-		unsigned int unitIndex = 0;
 		for (auto const& x : loadedMaterials) {
 			Material* material = x.second;
 			if (material->used) {
 				material->materialIndex = materialIndex++;
 				materials.push_back(material);
-
-				for (auto const& texture : material->textures) {
-					texture->unitIndex = unitIndex++;
-				}
 			}
 		}
 

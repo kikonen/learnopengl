@@ -1,37 +1,37 @@
 #pragma once
 
 #include <string>
-#include "Shader.h"
 
-#include "Image.h"
+#include <glad/glad.h>
+
+
+struct TextureSpec {
+	int mode = GL_CLAMP_TO_EDGE;
+};
 
 /*
 * https://learnopengl.com/Getting-started/Textures
 */
-class Texture final
+class Texture 
 {
 public:
-	Texture(const std::string& path, int textureMode, bool normalMap);
+	Texture(const std::string& name, const TextureSpec& spec);
 	~Texture();
 
-	void prepare();
-	void bind(Shader* shader);
-	int load();
+	virtual void prepare() = 0;
 
-	static Texture* getTexture(const std::string& path, int textureMode, bool normalMap);
 public:
-	const std::string path;
-	const int textureMode;
-	const bool normalMap;
+	const std::string name;
+	const TextureSpec spec;
 
 	unsigned int textureID = -1;
-	unsigned int unitIndex = -1;
 
-	Image* image = nullptr;
-
-private:
+protected:
 	bool prepared = false;
-	bool loaded = false;
-	int res = 0;
+
+	int width = 0;
+	int height = 0;
+	int format = 0;
+	int internalFormat = 0;
 };
 

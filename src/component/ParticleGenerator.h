@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Assets.h"
-#include "ParticleSystem.h"
-#include "RenderContext.h"
-#include "Material.h"
+#include "asset/Assets.h"
+#include "asset/Material.h"
+#include "scene/ParticleSystem.h"
+#include "scene/RenderContext.h"
 
 struct ParticleDefinition {
 	glm::vec3 dir = { 0.f, 0.f, 0.f };

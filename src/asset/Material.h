@@ -8,6 +8,23 @@
 #include "Shader.h"
 #include "UBO.h"
 
+struct BoundTexture {
+    Texture* texture = nullptr;
+    int unitIndex = -1;
+
+    void bind()
+    {
+        if (!texture) return;
+        glActiveTexture(GL_TEXTURE0 + unitIndex);
+        glBindTexture(GL_TEXTURE_2D, texture->textureID);
+    }
+
+    void unbind()
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+};
+
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
 * http://paulbourke.net/dataformats/obj/
@@ -41,7 +58,7 @@ public:
 
     static Material* createDefaultMaterial();
 private:
-    Texture* loadTexture(const std::string& baseDir, const std::string& name, bool normalMap);
+    BoundTexture* loadTexture(const std::string& baseDir, const std::string& name);
 
 public:
     const std::string name;
@@ -51,14 +68,14 @@ public:
 
     std::string materialDir = { "" };
 
-    int textureMode = GL_CLAMP_TO_EDGE;
+    TextureSpec textureSpec;
 
-    Texture* diffuseTex = nullptr;
-    Texture* specularTex = nullptr;
-    Texture* emissionTex = nullptr;
-    Texture* normalMap = nullptr;
+    BoundTexture* diffuseTex = nullptr;
+    BoundTexture* emissionTex = nullptr;
+    BoundTexture* specularTex = nullptr;
+    BoundTexture* normalMapTex = nullptr;
 
-    std::vector<Texture*> textures;
+    std::vector<BoundTexture*> textures;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     // ranges between 0 and 1000
