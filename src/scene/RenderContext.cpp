@@ -29,7 +29,7 @@ RenderContext::RenderContext(
 	}
 	view = camera->getView();
 
-	projection = glm::perspective(glm::radians(camera->zoom), (float)width / (float)height, assets.nearPlane, assets.farPlane);
+	projection = glm::perspective(glm::radians(camera->getZoom()), (float)width / (float)height, assets.nearPlane, assets.farPlane);
 	//projected = projection * view;
 }
 

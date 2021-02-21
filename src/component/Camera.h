@@ -23,6 +23,9 @@ public:
 	const glm::vec3& getRight();
 	const glm::vec3& getUp();
 
+	float getZoom();
+	void setZoom(float zoom);
+
 	void setPos(const glm::vec3& pos);
 	const glm::vec3& getPos() const;
 
@@ -37,10 +40,9 @@ private:
 	void updateZoom(float aZoom);
 	void updateCamera();
 
-public:
+private:
 	float zoom = 45.0f;
 
-private:
 	float moveStep = 10.0f;
 	float rotateStep = 30.f;
 	float zoomStep = 20.0f;

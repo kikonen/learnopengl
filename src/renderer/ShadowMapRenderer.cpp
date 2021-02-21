@@ -23,7 +23,7 @@ void ShadowMapRenderer::prepare()
 		glm::vec3(-1 + 0.01, 1 - 0.01, 0), 
 		glm::vec3(0, 0, 0), 
 		glm::vec2(0.5f, 0.5f), 
-		shadowBuffer, 
+		shadowBuffer.textureID, 
 		shadowDebugShader, 
 		[this](Viewport& vp) {
 			shadowDebugShader->nearPlane.set(0.1f);

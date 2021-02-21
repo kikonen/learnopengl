@@ -23,8 +23,6 @@ Scene::Scene(const Assets& assets)
 	normalRenderer = new NormalRenderer(assets);
 
 	particleSystem = new ParticleSystem(assets);
-
-	viewportShader = Shader::getShader(assets, TEX_VIEWPORT);
 }
 
 Scene::~Scene()
@@ -99,27 +97,24 @@ void Scene::bind(RenderContext& ctx)
 	reflectionMapRenderer->bind(ctx);
 	ctx.bindUBOs();
 
-	if (!framebuffer && useMirrorView) {
-		framebuffer = new TextureBuffer(ctx.width, ctx.height);
-		framebuffer->prepare();
+	if (!mirrorBuffer && showMirrorView) {
+		mirrorBuffer = new TextureBuffer(640, 480);
+		mirrorBuffer->prepare();
 
-		viewportShader->prepare();
-
-		frameViewport = new Viewport(
+		mirrorViewport = new Viewport(
 			glm::vec3(0.5, 1, 0),
 			glm::vec3(0, 0, 0),
 			glm::vec2(0.5f, 0.5f),
-			*framebuffer,
-			viewportShader);
+			mirrorBuffer->textureID,
+			Shader::getShader(assets, TEX_VIEWPORT));
 
-		frameViewport->prepare();
-		registry.addViewPort(frameViewport);
+		mirrorViewport->prepare();
+		registry.addViewPort(mirrorViewport);
 	}
 }
 
 void Scene::draw(RenderContext& ctx)
 {
-	useMirrorView = false;
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
@@ -138,29 +133,40 @@ void Scene::draw(RenderContext& ctx)
 	reflectionMapRenderer->render(ctx, registry, skyboxRenderer);
 
 	// "back mirror" viewport
-	if (useMirrorView) {
-		framebuffer->bind();
+	if (showMirrorView) {
+		mirrorBuffer->bind();
+		glViewport(0, 0, mirrorBuffer->width, mirrorBuffer->height);
+
 		glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		reflectionMapRenderer->bindTexture(ctx);
+		Camera camera(ctx.camera->getPos(), ctx.camera->getFront(), ctx.camera->getUp());
+		camera.setZoom(ctx.camera->getZoom());
+		camera.setRotation(ctx.camera->getRotation() + glm::vec3(0, 180, 0));
+		RenderContext mirrorCtx(ctx.engine, ctx.dt, ctx.scene, &camera, mirrorBuffer->width, mirrorBuffer->height);
+		mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
+		mirrorCtx.bindUBOs();
 
 		if (skyboxRenderer) {
-			skyboxRenderer->render(ctx, registry);
+			skyboxRenderer->render(mirrorCtx, registry);
 		}
 
-		terrainRenderer->render(ctx, registry);
-		spriteRenderer->render(ctx, registry);
-		nodeRenderer->render(ctx, registry);
+		reflectionMapRenderer->bindTexture(mirrorCtx);
 
-		particleSystem->render(ctx);
+		terrainRenderer->render(mirrorCtx, registry);
+		spriteRenderer->render(mirrorCtx, registry);
+		nodeRenderer->render(mirrorCtx, registry);
+
+		particleSystem->render(mirrorCtx);
 
 		if (showNormals) {
-			normalRenderer->render(ctx, registry);
+			normalRenderer->render(mirrorCtx, registry);
 		}
 
-		framebuffer->unbind();
+		mirrorBuffer->unbind();
 		glViewport(0, 0, ctx.width, ctx.height);
+
+		ctx.bindUBOs();
 	}
 
 	{
@@ -181,6 +187,7 @@ void Scene::draw(RenderContext& ctx)
 			normalRenderer->render(ctx, registry);
 		}
 
+		glDisable(GL_DEPTH_TEST);
 		viewportRenderer->render(ctx, registry);
 	}
 

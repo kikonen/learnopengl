@@ -5,13 +5,21 @@
 const int ATTR_VIEW_POS = 0;
 const int ATTR_VIEW_TEX = 1;
 
-Viewport::Viewport(const glm::vec3& pos, const glm::vec3& rotation, const glm::vec2& size, FrameBuffer& tex, Shader* shader, std::function<void(Viewport&)> binder)
-	: pos(pos), rotation(rotation), size(size), tex(tex), shader(shader), binder(binder)
+Viewport::Viewport(
+	const glm::vec3& pos, 
+	const glm::vec3& rotation, 
+	const glm::vec2& size, 
+	unsigned int textureID, 
+	Shader* shader, 
+	std::function<void(Viewport&)> binder)
+	: pos(pos), rotation(rotation), size(size), textureID(textureID), shader(shader), binder(binder)
 {
 }
 
 void Viewport::prepare()
 {
+	shader->prepare();
+
 	buffers.prepare();
 
 	float x = pos.x;
@@ -50,8 +58,11 @@ void Viewport::bind(const RenderContext& ctx)
 	shader->bind();
 
 	const int unitIndex = 0;
+
+	glActiveTexture(GL_TEXTURE0 + unitIndex);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
 	shader->viewportTexture.set(unitIndex);
-	tex.bindTexture(GL_TEXTURE0 + unitIndex);
 
 	glBindVertexArray(buffers.VAO);
 

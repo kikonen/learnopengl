@@ -100,10 +100,9 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		Camera camera(center, cameraFront[i], cameraUp[i]);
-		camera.zoom = 90;
+		camera.setZoom(90);
 		RenderContext ctx(mainCtx.engine, mainCtx.dt, mainCtx.scene, &camera, CUBE_SIZE, CUBE_SIZE);
 		ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
-		glm::mat4 view = camera.getView();
 		ctx.bindUBOs();
 
 		skybox->render(ctx, registry);

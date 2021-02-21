@@ -1,6 +1,8 @@
 #include "SceneLoaderTest.h"
 
 #include "asset/MeshLoader.h"
+#include "asset/PlainTexture.h"
+
 #include "model/Terrain.h"
 #include "model/InstancedNode.h"
 
@@ -681,6 +683,24 @@ void SceneLoaderTest::setupTerrain()
 			}
 		}
 	});
+}
+
+void SceneLoaderTest::setupViewport1()
+{
+	TextureSpec spec;
+	PlainTexture* texture = new PlainTexture("checkerboard", spec, 1, 1);
+	unsigned int color = 0x904030ff;
+	texture->setData(&color, sizeof(unsigned int));
+
+	texture->prepare();
+
+	Viewport* viewport = new Viewport(
+		glm::vec3(-1, 0.5, 0),
+		glm::vec3(0, 0, 0),
+		glm::vec2(0.5f, 0.5f),
+		texture->textureID,
+		Shader::getShader(assets, TEX_VIEWPORT));
+	scene->registry.addViewPort(viewport);
 }
 
 void SceneLoaderTest::setPlanet(Node* planet)

@@ -54,6 +54,7 @@ public:
 	const Assets& assets;
 
 	bool showNormals = false;
+	bool showMirrorView = false;
 
 	SkyboxRenderer* skyboxRenderer = nullptr;
 	UBO ubo;
@@ -81,8 +82,6 @@ private:
 
 	ParticleSystem* particleSystem = nullptr;
 
-	bool useMirrorView = false;
-	TextureBuffer* framebuffer = nullptr;
-	Viewport* frameViewport = nullptr;
-	Shader* viewportShader = nullptr;
+	TextureBuffer* mirrorBuffer = nullptr;
+	Viewport* mirrorViewport = nullptr;
 };

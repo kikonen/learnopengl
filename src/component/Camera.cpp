@@ -72,6 +72,17 @@ const glm::vec3& Camera::getUp()
 	return up;
 }
 
+float Camera::getZoom()
+{
+	return zoom;
+}
+
+void Camera::setZoom(float zoom)
+{
+	this->zoom = zoom;
+	dirty = true;
+}
+
 void Camera::setPos(const glm::vec3& pos) {
 	this->pos = pos;
 	dirty = true;

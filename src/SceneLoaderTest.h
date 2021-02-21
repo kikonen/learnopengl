@@ -55,6 +55,7 @@ private:
 
 	void setupTerrain();
 
+	void setupViewport1();
 private:
 	void setPlanet(Node* planet);
 	Node* getPlanet();

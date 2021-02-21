@@ -9,5 +9,5 @@ public:
 	~PlainTexture();
 
 	void prepare() override;
+	void setData(void* data, int size);
 };
-

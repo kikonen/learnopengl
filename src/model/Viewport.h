@@ -1,7 +1,6 @@
 #pragma once
 
 #include "asset/MeshBuffers.h"
-#include "scene/FrameBuffer.h"
 #include "scene/RenderContext.h"
 
 class Viewport final
@@ -11,7 +10,7 @@ public:
 		const glm::vec3& pos, 
 		const glm::vec3& rotation, 
 		const glm::vec2& size, 
-		FrameBuffer& tex, 
+		unsigned int textureID, 
 		Shader* shader, 
 		std::function<void(Viewport&)> binder = [](Viewport&) {});
 
@@ -28,7 +27,7 @@ private:
 
 	MeshBuffers buffers;
 
-	FrameBuffer& tex;
+	unsigned int textureID;
 	Shader* shader;
 	std::function<void(Viewport&)> binder;
 };
