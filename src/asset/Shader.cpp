@@ -66,7 +66,7 @@ Shader::~Shader()
 
 const void Shader::bind()
 {
-    glUseProgram(programId); 
+    KI_GL_CALL(glUseProgram(programId));
 }
 
 const void Shader::unbind()

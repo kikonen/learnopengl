@@ -11,16 +11,21 @@
 #define GL_GLEXT_PROTOTYPES
 #include <GLFW/glfw3.h>
 
-#define KI_GL_DEBUG
+#define KI_GL_DEBUG_CHECK
+//#define KI_GL_DEBUG_CALL
 //#define KI_GL_DEBUG_BIND
 
 
-#ifdef KI_GL_DEBUG
-	#define KI_GL_CHECK(msg) ki::GL::checkErrors(std::string(#msg" - ") + __FILE__ + ":" + std::to_string(__LINE__))
+#ifdef KI_GL_DEBUG_CALL
 	#define KI_GL_CALL(x) x; ki::GL::checkErrors(std::string(#x" - ") + __FILE__ + ":" + std::to_string(__LINE__))
 #else
-	#define KI_GL_CHECK(msg)
 	#define KI_GL_CALL(x) x
+#endif
+
+#ifdef KI_GL_DEBUG_CHECK
+	#define KI_GL_CHECK(msg) ki::GL::checkErrors(std::string(#msg" - ") + __FILE__ + ":" + std::to_string(__LINE__))
+#else
+	#define KI_GL_CHECK(msg)
 #endif
 
 // NOTE KI *SKIP* unbind; not rquired, useful for debugging

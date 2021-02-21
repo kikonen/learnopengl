@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "ki/GL.h"
 #include "Assets.h"
 
 const std::string TEX_PLAIN = "plain";

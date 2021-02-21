@@ -55,7 +55,8 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 {
-	shadowBuffer.bindTexture(assets.shadowMapUnitId);
+	if (!rendered) return;
+	KI_GL_CALL(shadowBuffer.bindTexture(assets.shadowMapUnitId));
 }
 
 void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
@@ -65,15 +66,16 @@ void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 
 	shadowBuffer.bind();
 
-	glClear(GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	drawNodes(ctx, registry);
+	KI_GL_CALL(drawNodes(ctx, registry));
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	rendered = true;
+
 	// reset viewport
 	glViewport(0, 0, ctx.width, ctx.height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void ShadowMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)

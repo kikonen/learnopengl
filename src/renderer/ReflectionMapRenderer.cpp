@@ -49,8 +49,9 @@ void ReflectionMapRenderer::bind(const RenderContext& ctx)
 
 void ReflectionMapRenderer::bindTexture(const RenderContext& ctx)
 {
+	if (!rendered) return;
 	glActiveTexture(assets.reflectionMapUnitId);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	KI_GL_CALL(glBindTexture(GL_TEXTURE_CUBE_MAP, textureID));
 }
 
 void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registry, SkyboxRenderer* skybox)
@@ -114,6 +115,8 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	rendered = true;
 
 	glViewport(0, 0, mainCtx.width, mainCtx.height);
 	mainCtx.bindUBOs();

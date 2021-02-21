@@ -45,7 +45,7 @@ namespace ki {
 		{
 			// https://www.khronos.org/opengl/wiki/OpenGL_Error
 			std::cout << loc << ": " << "0x" << std::hex << err << std::dec << " (" << err << ")" << std::endl;
-			//__debugbreak();
+			__debugbreak();
 		}
 	}
 

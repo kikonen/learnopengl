@@ -69,7 +69,7 @@ void Scene::processEvents(RenderContext& ctx)
 
 void Scene::update(RenderContext& ctx)
 {
-	registry.attachNodes();
+	KI_GL_CALL(registry.attachNodes());
 
 	if (dirLight) {
 		dirLight->update(ctx);
@@ -82,15 +82,15 @@ void Scene::update(RenderContext& ctx)
 	}
 
 	if (skyboxRenderer) {
-		skyboxRenderer->update(ctx, registry);
+		KI_GL_CALL(skyboxRenderer->update(ctx, registry));
 	}
 
-	nodeRenderer->update(ctx, registry);
-	spriteRenderer->update(ctx, registry);
-	terrainRenderer->update(ctx, registry);
-	viewportRenderer->update(ctx, registry);
+	KI_GL_CALL(nodeRenderer->update(ctx, registry));
+	KI_GL_CALL(spriteRenderer->update(ctx, registry));
+	KI_GL_CALL(terrainRenderer->update(ctx, registry));
+	KI_GL_CALL(viewportRenderer->update(ctx, registry));
 
-	particleSystem->update(ctx);
+	KI_GL_CALL(particleSystem->update(ctx));
 }
 
 void Scene::bind(RenderContext& ctx)
@@ -169,6 +169,7 @@ void Scene::draw(RenderContext& ctx)
 		if (skyboxRenderer) {
 			skyboxRenderer->render(ctx, registry);
 		}
+
 
 		terrainRenderer->render(ctx, registry);
 		spriteRenderer->render(ctx, registry);

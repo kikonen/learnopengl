@@ -36,4 +36,5 @@ private:
 	unsigned int FBO = -1;
 	unsigned int depthBuffer = -1;
 
+	bool rendered = false;
 };

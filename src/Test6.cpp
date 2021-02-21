@@ -56,12 +56,12 @@ int Test6::onRender(float dt) {
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 
-	frame->bind(ctx);
+	KI_GL_CALL(frame->bind(ctx));
 
-	currentScene->processEvents(ctx);
-	currentScene->update(ctx);
-	currentScene->bind(ctx);
-	currentScene->draw(ctx);
+	KI_GL_CALL(currentScene->processEvents(ctx));
+	KI_GL_CALL(currentScene->update(ctx));
+	KI_GL_CALL(currentScene->bind(ctx));
+	KI_GL_CALL(currentScene->draw(ctx));
 
 	frame->draw(ctx);
 	frame->render(ctx);

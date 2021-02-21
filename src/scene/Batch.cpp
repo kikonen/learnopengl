@@ -16,13 +16,14 @@ void Batch::prepare(NodeType* type)
 	matrices.reserve(size);
 	glm::mat4 tmp(0.f);
 	for (unsigned int i = 0; i < size; i++) {
-		matrices.push_back(tmp);
+		matrices.emplace_back(tmp);
 	}
 
 	glGenBuffers(1, &buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBindVertexArray(type->mesh->buffers.VAO);
-	glBufferData(GL_ARRAY_BUFFER, size * sizeof(glm::mat4), &matrices[0], GL_DYNAMIC_DRAW);
+	KI_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, buffer));
+	KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, size * sizeof(glm::mat4), &matrices[0], GL_DYNAMIC_DRAW));
+
+	KI_GL_CALL(glBindVertexArray(type->mesh->buffers.VAO));
 
 	// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
 	size_t vec4Size = sizeof(glm::vec4);

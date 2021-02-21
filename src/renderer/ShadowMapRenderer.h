@@ -39,6 +39,8 @@ private:
 	int drawIndex = 0;
 	int drawSkip = 1;
 
+	bool rendered = false;
+
 	Shader* shadowShader = nullptr;
 	Shader* shadowDebugShader = nullptr;
 };

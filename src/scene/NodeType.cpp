@@ -23,18 +23,14 @@ NodeType::~NodeType()
 void NodeType::prepare(const Assets& assets)
 {
 	if (!mesh) return;
-	mesh->prepare(assets);
+	KI_GL_CALL(mesh->prepare(assets));
 
 	if (defaultShader) {
-		defaultShader->prepare();
-		defaultShader->reflectionMap.set(assets.reflectionMapUnitIndex);
-		defaultShader->refractionMap.set(assets.refractionMapUnitIndex);
-		defaultShader->shadowMap.set(assets.shadowMapUnitIndex);
-		defaultShader->skybox.set(assets.skyboxUnitIndex);
+		KI_GL_CALL(defaultShader->prepare());
 	}
-
+	
 	if (batchMode && batch.size > 0) {
-		batch.prepare(this);
+		KI_GL_CALL(batch.prepare(this));
 	}
 	else {
 		batch.size = 0;
@@ -55,6 +51,11 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 
 	shader->drawInstanced.set(false);
 	shader->hasReflectionMap.set(reflection);
+
+	KI_GL_CALL(shader->reflectionMap.set(ctx.assets.reflectionMapUnitIndex));
+	KI_GL_CALL(shader->refractionMap.set(ctx.assets.refractionMapUnitIndex));
+	KI_GL_CALL(shader->shadowMap.set(ctx.assets.shadowMapUnitIndex));
+	KI_GL_CALL(shader->skybox.set(ctx.assets.skyboxUnitIndex));
 
 	if (renderBack) {
 		glDisable(GL_CULL_FACE);

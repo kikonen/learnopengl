@@ -103,14 +103,12 @@ void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
 
 void QuadMesh::draw(const RenderContext& ctx)
 {
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	KI_GL_CALL(glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
 	//glDrawElements(GL_TRIANGLES, VERTEX_COUNT, GL_UNSIGNED_INT, 0);
-	//KI_GL_CHECK("quadmesh.draw-" + name);
 }
 
 void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount);
+	KI_GL_CALL(glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount));
 	//glDrawElementsInstanced(GL_TRIANGLES, VERTEX_COUNT, GL_UNSIGNED_INT, 0, instanceCount);
-	//KI_GL_CHECK("quadmesh.drawinstanced-" + name);
 }

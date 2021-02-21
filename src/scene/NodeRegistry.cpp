@@ -59,10 +59,10 @@ void NodeRegistry::attachNodes()
 	for (auto& x : newNodes) {
 		NodeType* t = x.first;
 		t->batch.size = assets.batchSize;
-		t->prepare(assets);
+		KI_GL_CALL(t->prepare(assets));
 
 		for (auto& e : x.second) {
-			e->prepare(assets);
+			KI_GL_CALL(e->prepare(assets));
 			nodes[e->type].push_back(e);
 
 			scene.addCamera(e);
@@ -73,10 +73,10 @@ void NodeRegistry::attachNodes()
 	for (auto& x : newSprites) {
 		NodeType* t = x.first;
 		t->batch.size = assets.batchSize;
-		t->prepare(assets);
+		KI_GL_CALL(t->prepare(assets));
 
 		for (auto& e : x.second) {
-			e->prepare(assets);
+			KI_GL_CALL(e->prepare(assets));
 			sprites[e->type].push_back(e);
 		}
 	}
@@ -84,10 +84,10 @@ void NodeRegistry::attachNodes()
 	for (auto& x : newTerrains) {
 		NodeType* t = x.first;
 		t->batch.size = assets.batchSize;
-		t->prepare(assets);
+		KI_GL_CALL(t->prepare(assets));
 
 		for (auto& e : x.second) {
-			e->prepare(assets);
+			KI_GL_CALL(e->prepare(assets));
 			terrains[e->type].push_back(e);
 		}
 	}
