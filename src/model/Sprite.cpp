@@ -23,11 +23,6 @@ Material* Sprite::getMaterial(
 	material->map_bump = normalMapPath;
 	material->loadTextures(assets.spritesDir + "/");
 
-	material->diffuseTex->unitIndex = 0;
-	if (material->normalMapTex) {
-		material->normalMapTex->unitIndex = 1;
-	}
-
 	return material;
 }
 

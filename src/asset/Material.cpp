@@ -69,7 +69,9 @@ void Material::prepare()
 {
 	unsigned int unitIndex = 0;
 	for (auto & x : textures) {
-		x->unitIndex = unitIndex++;
+		if (x->unitIndex == -1) {
+			x->unitIndex = unitIndex++;
+		}
 		x->texture->prepare();
 	}
 }
