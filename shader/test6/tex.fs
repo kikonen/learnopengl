@@ -1,4 +1,4 @@
-#version 330 core
+#version 430 core
 
 #include struct_lights.glsl
 #include struct_material.glsl

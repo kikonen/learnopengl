@@ -55,21 +55,21 @@ void Viewport::update(const RenderContext& ctx)
 
 void Viewport::bind(const RenderContext& ctx)
 {
-	shader->bind();
+	KI_GL_CALL(shader->bind());
 
 	const int unitIndex = 0;
 
 	glActiveTexture(GL_TEXTURE0 + unitIndex);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
-	shader->viewportTexture.set(unitIndex);
+	KI_GL_CALL(shader->viewportTexture.set(unitIndex));
 
-	glBindVertexArray(buffers.VAO);
+	KI_GL_CALL(glBindVertexArray(buffers.VAO));
 
-	glEnableVertexAttribArray(ATTR_VIEW_POS);
-	glEnableVertexAttribArray(ATTR_VIEW_TEX);
+	KI_GL_CALL(glEnableVertexAttribArray(ATTR_VIEW_POS));
+	KI_GL_CALL(glEnableVertexAttribArray(ATTR_VIEW_TEX));
 
-	binder(*this);
+	KI_GL_CALL(binder(*this));
 }
 
 void Viewport::draw(const RenderContext& ctx)

@@ -188,7 +188,9 @@ void Scene::draw(RenderContext& ctx)
 		}
 
 		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
 		viewportRenderer->render(ctx, registry);
+		glDisable(GL_BLEND);
 	}
 
 	//KI_GL_DEBUG("scene.draw");

@@ -38,14 +38,13 @@ private:
 	void bindGLFWCallbacks();
 
 public:
+	const Assets& assets;
+
 	GLFWwindow* glfwWindow = nullptr;
 	int width;
 	int height;
 
-	std::string glsl_version = "#version 330";
-
 protected:
-	const Assets& assets;
 	Engine& engine;
 	Input* input = nullptr;
 

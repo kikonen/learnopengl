@@ -41,11 +41,11 @@ void ImageTexture::prepare()
 
 	if (image->channels == 4) {
 		format = GL_RGBA;
-		internalFormat = GL_RGBA;
+		internalFormat = GL_RGBA8;
 	}
 	else {
 		format = GL_RGB;
-		internalFormat = GL_RGB;
+		internalFormat = GL_RGB8;
 	}
 
 	glGenTextures(1, &textureID);

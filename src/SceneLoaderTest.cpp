@@ -67,6 +67,8 @@ void SceneLoaderTest::setup()
 
 	//setupNodeBackpack();
 
+	setupViewport1();
+
 	setupLightDirectional();
 	setupLightMoving();
 }
@@ -689,17 +691,18 @@ void SceneLoaderTest::setupViewport1()
 {
 	TextureSpec spec;
 	PlainTexture* texture = new PlainTexture("checkerboard", spec, 1, 1);
-	unsigned int color = 0x904030ff;
-	texture->setData(&color, sizeof(unsigned int));
-
 	texture->prepare();
 
+	unsigned int color = 0x90ff2020;
+	texture->setData(&color, sizeof(unsigned int));
+
 	Viewport* viewport = new Viewport(
-		glm::vec3(-1, 0.5, 0),
+		glm::vec3(-1, -0.5, 0),
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),
 		texture->textureID,
 		Shader::getShader(assets, TEX_VIEWPORT));
+	viewport->prepare();
 	scene->registry.addViewPort(viewport);
 }
 

@@ -1,4 +1,4 @@
-#version 330 core
+#version 430 core
 layout (location = 0) in vec3 aPos;
 layout (location = 4) in float aMaterialIndex;
 layout (location = 5) in vec2 aTexCoords;
