@@ -21,9 +21,6 @@ in VS_OUT {
   vec4 fragPosLightSpace;
 
   mat3 TBN;
-  vec3 tangentLightPos;
-  vec3 tangentViewPos;
-  vec3 tangentFragPos;
 } fs_in;
 
 uniform int hasPattern;

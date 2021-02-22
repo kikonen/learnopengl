@@ -31,9 +31,6 @@ out VS_OUT {
   vec4 fragPosLightSpace;
 
   mat3 TBN;
-  vec3 tangentLightPos;
-  vec3 tangentViewPos;
-  vec3 tangentFragPos;
 } vs_out;
 
 
@@ -83,8 +80,5 @@ void main() {
 //    vec3 lightPos = pointLights[0].pos;
 
     vs_out.TBN = mat3(T, B, N);
-    // vs_out.tangentLightPos = TBN * lightPos;
-    // vs_out.tangentViewPos  = TBN * viewPos;
-    // vs_out.tangentFragPos  = TBN * vs_out.fragPos;
   }
 }

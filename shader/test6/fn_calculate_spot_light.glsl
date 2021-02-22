@@ -5,13 +5,7 @@ vec4 calculateSpotLight(
   vec3 fragPos,
   Material material)
 {
-  vec3 toLight;
-  if (false && material.hasNormalMap) {
-    toLight = normalize(-(fs_in.tangentLightPos - fs_in.tangentFragPos));
-    toView = normalize(fs_in.tangentViewPos - fs_in.tangentFragPos);
-  } else {
-    toLight = normalize(light.pos - fragPos);
-  }
+  vec3 toLight = normalize(light.pos - fragPos);
 
   float theta = dot(toLight, normalize(-light.dir));
   bool shade = theta > light.cutoff;
