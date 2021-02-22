@@ -3,7 +3,8 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 4) in float aMaterialIndex;
 layout (location = 5) in vec2 aTexCoords;
-layout (location = 6) in mat4 aInstanceMatrix;
+layout (location = 6) in mat4 aInstanceModelMatrix;
+layout (location = 10) in mat3 aInstanceNormalMatrix;
 
 #include struct_lights.glsl
 #include struct_material.glsl
@@ -34,26 +35,25 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
-  mat4 vmMat;
+  mat4 modelMat;
+  mat3 normalMat;
+
   if (drawInstanced) {
-    vmMat = viewMatrix * aInstanceMatrix;
+    modelMat = aInstanceModelMatrix;
+    normalMat = aInstanceNormalMatrix;
   } else {
-    vmMat = viewMatrix * modelMatrix;
+    modelMat = modelMatrix;
+    normalMat = normalMatrix;
   }
 
-  gl_Position = projectionMatrix * vmMat * vec4(aPos, 1.0);
+  gl_Position = projectionMatrix * viewMatrix * modelMat * vec4(aPos, 1.0);
 
   vs_out.materialIndex = int(aMaterialIndex);
   vs_out.texCoords = aTexCoords * 60;
 
-  vs_out.fragPos = (modelMatrix * vec4(aPos, 1.0)).xyz;
+  vs_out.fragPos = (modelMat * vec4(aPos, 1.0)).xyz;
 
-  if (drawInstanced) {
-    mat3 mat = transpose(inverse(mat3(aInstanceMatrix)));
-    vs_out.normal = normalize(mat * aNormal);
-  } else {
-    vs_out.normal = normalize(normalMatrix * aNormal);
-  }
+  vs_out.normal = normalize(normalMat * aNormal);
 
   mat4 b = {
     {0.5f, 0.0f, 0.0f, 0.0f},

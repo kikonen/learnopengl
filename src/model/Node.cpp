@@ -47,7 +47,8 @@ Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 void Node::bindBatch(const RenderContext& ctx, Batch& batch)
 {
 	updateModelMatrix();
-	batch.matrices.push_back(modelMat);
+	batch.modelMatrices.push_back(modelMat);
+	batch.normalMatrices.push_back(normalMat);
 }
 
 void Node::draw(const RenderContext& ctx)

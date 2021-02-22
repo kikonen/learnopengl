@@ -29,10 +29,15 @@ const int ATTR_TANGENT = 2;
 //const int ATTR_BITANGENT = 3;
 const int ATTR_MATERIAL_INDEX = 4;
 const int ATTR_TEX = 5;
-const int ATTR_INSTANCE_MATRIX_1 = 6;
-const int ATTR_INSTANCE_MATRIX_2 = 7;
-const int ATTR_INSTANCE_MATRIX_3 = 8;
-const int ATTR_INSTANCE_MATRIX_4 = 9;
+
+const int ATTR_INSTANCE_MODEL_MATRIX_1 = 6;
+const int ATTR_INSTANCE_MODEL_MATRIX_2 = 7;
+const int ATTR_INSTANCE_MODEL_MATRIX_3 = 8;
+const int ATTR_INSTANCE_MODEL_MATRIX_4 = 9;
+
+const int ATTR_INSTANCE_NORMAL_MATRIX_1 = 10;
+const int ATTR_INSTANCE_NORMAL_MATRIX_2 = 11;
+const int ATTR_INSTANCE_NORMAL_MATRIX_3 = 12;
 
 const std::string GEOM_NONE = "";
 

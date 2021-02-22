@@ -20,8 +20,11 @@ public:
 public:
 	bool prepared = false;
 	unsigned int size = 0;
-	unsigned int buffer = -1;
 
-	std::vector<glm::mat4> matrices;
+	unsigned int modelBuffer = -1;
+	unsigned int normalBuffer = -1;
+
+	std::vector<glm::mat4> modelMatrices;
+	std::vector<glm::mat3> normalMatrices;
 };
 

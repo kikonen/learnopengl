@@ -4,7 +4,8 @@ layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec3 aTangent;
 layout (location = 4) in float aMaterialIndex;
 layout (location = 5) in vec2 aTexCoords;
-layout (location = 6) in mat4 aInstanceMatrix;
+layout (location = 6) in mat4 aInstanceModelMatrix;
+layout (location = 10) in mat3 aInstanceNormalMatrix;
 
 #include struct_lights.glsl
 #include struct_material.glsl
@@ -45,8 +46,8 @@ void main() {
   mat3 normalMat;
 
   if (drawInstanced) {
-    modelMat = aInstanceMatrix;
-    normalMat = transpose(inverse(mat3(modelMat)));
+    modelMat = aInstanceModelMatrix;
+    normalMat = aInstanceNormalMatrix;
   } else {
     modelMat = modelMatrix;
     normalMat = normalMatrix;
@@ -76,8 +77,6 @@ void main() {
     vec3 T = normalize(normalMat * aTangent);
     T = normalize(T - dot(T, N) * N);
     vec3 B = cross(N, T);
-
-//    vec3 lightPos = pointLights[0].pos;
 
     vs_out.TBN = mat3(T, B, N);
   }
