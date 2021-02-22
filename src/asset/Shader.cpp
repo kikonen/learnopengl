@@ -34,7 +34,7 @@ Shader* Shader::getShader(
     if (!shader) {
         shader = new Shader(assets, key, name, geometryType);
         shaders[key] = shader;
-//        shader->prepare();
+        shader->load();
     }
 
     return shader;
@@ -74,6 +74,13 @@ const void Shader::unbind()
     glUseProgram(0);
 }
 
+void Shader::load()
+{
+    vertexShaderSource = loadSource(vertexShaderPath, false);
+    fragmentShaderSource = loadSource(fragmentShaderPath, false);
+    geometryShaderSource = loadSource(geometryShaderPath, geometryOptional);
+}
+
 int Shader::prepare()
 {
     if (prepared) {
@@ -106,10 +113,6 @@ GLint Shader::getUniformLoc(const std::string& name)
 int Shader::createProgram() {
     int success;
     char infoLog[512];
-
-    std::string vertexShaderSource = loadSource(vertexShaderPath, false);
-    std::string fragmentShaderSource = loadSource(fragmentShaderPath, false);
-    std::string geometryShaderSource = loadSource(geometryShaderPath, geometryOptional);
 
     if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
         std::cout << "ERROR::SHADER::FILE_EMPTY " << shaderName << std::endl;
@@ -231,6 +234,10 @@ int Shader::createProgram() {
 
     prepareTextureUniform();
     prepareTextureUniforms();
+
+    vertexShaderSource = "";
+    fragmentShaderSource = "";
+    geometryShaderSource = "";
 
     return 0;
 }

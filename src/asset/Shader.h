@@ -12,7 +12,6 @@
 #include "ki/GL.h"
 #include "Assets.h"
 
-const std::string TEX_PLAIN = "plain";
 const std::string TEX_TEXTURE = "tex";
 const std::string TEX_SPRITE = "sprite";
 const std::string TEX_SELECTION = "selection";
@@ -52,6 +51,16 @@ public:
         const std::string& name,
         const std::string& geometryType);
  
+public:
+    void load();
+    int prepare();
+    const void bind();
+    const void unbind();
+
+    void setInt(const std::string& name, int value);
+
+    void setUBO(const std::string& name, unsigned int UBO);
+
 private:
     Shader(
         const Assets& assets,
@@ -70,15 +79,8 @@ private:
     void prepareTextureUniform();
     void prepareTextureUniforms();
     GLint getUniformLoc(const std::string& name);
+
 public:
-    int prepare();
-    const void bind();
-    const void unbind();
-
-    void setInt(const std::string& name, int value);
-
-    void setUBO(const std::string& name, unsigned int UBO);
-
     class Uniform {
     protected:
         Uniform(const std::string& name) : name(name) {
@@ -282,6 +284,10 @@ private:
     std::string vertexShaderPath;
     std::string fragmentShaderPath;
     std::string geometryShaderPath;
+
+    std::string vertexShaderSource;
+    std::string fragmentShaderSource;
+    std::string geometryShaderSource;
 
     std::map<const std::string, GLint> uniformLocations;
 };
