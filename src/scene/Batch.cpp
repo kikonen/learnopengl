@@ -15,10 +15,15 @@ void Batch::prepare(NodeType* type)
 
 	// model
 	{
-		modelMatrices.reserve(size);
-		glm::mat4 tmp(0.f);
-		for (unsigned int i = 0; i < size; i++) {
-			modelMatrices.emplace_back(tmp);
+		if (modelMatrices.empty()) {
+			modelMatrices.reserve(size);
+			glm::mat4 tmp(0.f);
+			for (unsigned int i = 0; i < size; i++) {
+				modelMatrices.emplace_back(tmp);
+			}
+		}
+		else {
+			size = modelMatrices.size();
 		}
 
 		glGenBuffers(1, &modelBuffer);
@@ -43,10 +48,15 @@ void Batch::prepare(NodeType* type)
 
 	// normal
 	{
-		normalMatrices.reserve(size);
-		glm::mat3 tmp(0.f);
-		for (unsigned int i = 0; i < size; i++) {
-			normalMatrices.emplace_back(tmp);
+		if (normalMatrices.empty()) {
+			normalMatrices.reserve(size);
+			glm::mat3 tmp(0.f);
+			for (unsigned int i = 0; i < size; i++) {
+				normalMatrices.emplace_back(tmp);
+			}
+		}
+		else {
+			size = normalMatrices.size();
 		}
 
 		glGenBuffers(1, &normalBuffer);
@@ -65,6 +75,11 @@ void Batch::prepare(NodeType* type)
 		glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_1, 1);
 		glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_2, 1);
 		glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_3, 1);
+	}
+
+	if (clearBuffer) {
+		modelMatrices.clear();
+		normalMatrices.clear();
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -91,7 +106,7 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 {
 	if (size == 0) return;
 
-	shader->drawInstanced.set(true);
+	//shader->drawInstanced.set(true);
 
 	glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_1);
 	glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_2);
@@ -102,8 +117,10 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 	glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_2);
 	glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_3);
 
-	modelMatrices.clear();
-	normalMatrices.clear();
+	if (clearBuffer) {
+		modelMatrices.clear();
+		normalMatrices.clear();
+	}
 }
 
 void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
@@ -127,6 +144,9 @@ void Batch::flush(const RenderContext& ctx, NodeType* type)
 	
 	update(modelMatrices.size());
 	type->mesh->drawInstanced(ctx, modelMatrices.size());
-	modelMatrices.clear();
-	normalMatrices.clear();
+
+	if (clearBuffer) {
+		modelMatrices.clear();
+		normalMatrices.clear();
+	}
 }

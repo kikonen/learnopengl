@@ -10,80 +10,27 @@ InstancedNode::~InstancedNode()
 {
 }
 
-void InstancedNode::prepareBuffer(std::vector<glm::mat4> matrices)
-{
-	glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(glm::mat4), &matrices[0], GL_DYNAMIC_DRAW);
-
-	// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
-	std::size_t vec4Size = sizeof(glm::vec4);
-
-	glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-	glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-	glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-	glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
-
-	glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_1, 1);
-	glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_2, 1);
-	glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_3, 1);
-	glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_4, 1);
-}
-
-void InstancedNode::updateBuffer(std::vector<glm::mat4> matrices)
-{
-	glBufferSubData(GL_ARRAY_BUFFER, 0, matrices.size() * sizeof(glm::mat4), &matrices[0]);
-}
-
 void InstancedNode::prepare(const Assets& assets)
 {
 	Node::prepare(assets);
-	prepareBuffers();
+
+	modelBatch.size = 1000;
+	selectedBatch.size = 1000;
+
+	modelBatch.clearBuffer = false;
+	selectedBatch.clearBuffer = false;
+
+	modelBatch.prepare(type);
+	selectedBatch.prepare(type);
+
 	buffersDirty = false;
-}
-
-void InstancedNode::prepareBuffers()
-{
-	{
-		glGenBuffers(1, &instanceBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-		glBindVertexArray(type->mesh->buffers.VAO);
-		prepareBuffer(instanceMatrices);
-		KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
-		KI_GL_UNBIND(glBindVertexArray(0));
-	}
-
-	{
-		selectedBuffers.prepare(true);
-
-		glGenBuffers(1, &selectedBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, selectedBuffer);
-		glBindVertexArray(selectedBuffers.VAO);
-		prepareBuffer(selectionMatrices);
-		KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
-		KI_GL_UNBIND(glBindVertexArray(0));
-	}
 }
 
 void InstancedNode::updateBuffers(const RenderContext& ctx)
 {
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-		glBindVertexArray(type->mesh->buffers.VAO);
-		updateBuffer(instanceMatrices);
-		KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
-		KI_GL_UNBIND(glBindVertexArray(0));
-	}
-
-	{
-		selectedBuffers.prepare(true);
-
-		type->mesh->prepareBuffers(selectedBuffers);
-
-		glBindBuffer(GL_ARRAY_BUFFER, selectedBuffer);
-		glBindVertexArray(selectedBuffers.VAO);
-		updateBuffer(selectionMatrices);
-		KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
-		KI_GL_UNBIND(glBindVertexArray(0));
-	}
+	int size = modelBatch.modelMatrices.size();
+	modelBatch.update(size);
+	selectedBatch.update(size);
 
 	buffersDirty = false;
 }
@@ -103,13 +50,11 @@ Shader* InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 	shader = Node::bind(ctx, shader);
 
 	if (shader->selection) {
-		glBindVertexArray(selectedBuffers.VAO);
+		selectedBatch.bind(ctx, shader);
 	}
-
-	glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_1);
-	glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_2);
-	glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_3);
-	glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_4);
+	else {
+		modelBatch.bind(ctx, shader);
+	}
 
 	return shader;
 }
@@ -117,6 +62,10 @@ Shader* InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 void InstancedNode::draw(const RenderContext& ctx)
 {
 	Shader* shader = type->boundShader;
-	shader->drawInstanced.set(true);
-	type->mesh->drawInstanced(ctx, shader->selection ? selectionMatrices.size() : instanceMatrices.size());
+	if (shader->selection) {
+		selectedBatch.flush(ctx, type);
+	}
+	else {
+		modelBatch.flush(ctx, type);
+	}
 }

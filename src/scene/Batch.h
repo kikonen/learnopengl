@@ -21,6 +21,9 @@ public:
 	bool prepared = false;
 	unsigned int size = 0;
 
+	bool clearBuffer = true;
+	bool instanedNode = false;
+
 	unsigned int modelBuffer = -1;
 	unsigned int normalBuffer = -1;
 

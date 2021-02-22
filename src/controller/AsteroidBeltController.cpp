@@ -14,8 +14,13 @@ void AsteroidBeltController::prepareInstanced(InstancedNode& node)
 
 	unsigned int amount = 1000;
 
-	node.instanceMatrices.reserve(amount);
-	node.selectionMatrices.reserve(amount);
+	Batch& modelBatch = node.modelBatch;
+	Batch& selectedBatch = node.selectedBatch;
+
+	modelBatch.modelMatrices.reserve(amount);
+	modelBatch.normalMatrices.reserve(amount);
+	selectedBatch.modelMatrices.reserve(amount);
+	selectedBatch.normalMatrices.reserve(amount);
 
 	srand(glfwGetTime()); // initialize random seed	
 
@@ -50,18 +55,24 @@ void AsteroidBeltController::prepareInstanced(InstancedNode& node)
 		selectionModel = glm::rotate(selectionModel, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
 
 		// 4. now add to list of matrices
-		node.instanceMatrices.push_back(plainModel);
-		node.selectionMatrices.push_back(selectionModel);
+		modelBatch.modelMatrices.push_back(plainModel);
+		selectedBatch.modelMatrices.push_back(selectionModel);
+
+		glm::mat3 plainNormal = glm::transpose(glm::inverse(glm::mat3(plainModel)));
+		glm::mat3 selectionNormal = glm::transpose(glm::inverse(glm::mat3(selectionModel)));
+
+		modelBatch.normalMatrices.push_back(plainNormal);
+		selectedBatch.normalMatrices.push_back(selectionNormal);
 	}
 }
 
 bool AsteroidBeltController::updateInstanced(const RenderContext& ctx, InstancedNode& node)
 {
-	if (false) {
-		node.instanceMatrices.clear();
-		node.selectionMatrices.clear();
-		prepare(node);
-		return true;
-	}
+	//if (false) {
+	//	node.instanceMatrices.clear();
+	//	node.selectionMatrices.clear();
+	//	prepare(node);
+	//	return true;
+	//}
 	return false;
 }

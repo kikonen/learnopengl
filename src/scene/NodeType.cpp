@@ -49,7 +49,7 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 	mesh->bind(ctx, shader);
 	ctx.bind(shader);
 
-	shader->drawInstanced.set(false);
+	//shader->drawInstanced.set(false);
 	shader->hasReflectionMap.set(reflection);
 
 	KI_GL_CALL(shader->reflectionMap.set(ctx.assets.reflectionMapUnitIndex));

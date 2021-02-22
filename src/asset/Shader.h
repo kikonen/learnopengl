@@ -256,10 +256,10 @@ public:
 
     int programId = -1;
 
-        Shader::Mat4 projectionMatrix = { "projectionMatrix" };
+    Shader::Mat4 projectionMatrix = { "projectionMatrix" };
     Shader::Mat4 viewMatrix = { "viewMatrix" };
-    Shader::Mat4 modelMatrix = { "modelMatrix" };
-    Shader::Mat3 normalMatrix = { "normalMatrix" };
+    //Shader::Mat4 modelMatrix = { "modelMatrix" };
+    //Shader::Mat3 normalMatrix = { "normalMatrix" };
 
     Shader::Bool hasReflectionMap = { "hasReflectionMap" };
     Shader::Int reflectionMap = { "reflectionMap" };
@@ -270,7 +270,7 @@ public:
     Shader::Int shadowMap = { "shadowMap" };
     Shader::Int normalMap = { "normalMap" };
 
-    Shader::Bool drawInstanced = { "drawInstanced" };
+    //Shader::Bool drawInstanced = { "drawInstanced" };
 
     Shader::Float nearPlane = { "nearPlane" };
     Shader::Float farPlane = { "farPlane" };

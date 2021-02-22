@@ -211,8 +211,8 @@ int Shader::createProgram() {
 
     projectionMatrix.init(this);
     viewMatrix.init(this);
-    modelMatrix.init(this); 
-    normalMatrix.init(this);
+    //modelMatrix.init(this); 
+    //normalMatrix.init(this);
 
     hasReflectionMap.init(this);
     reflectionMap.init(this);
@@ -223,7 +223,7 @@ int Shader::createProgram() {
     shadowMap.init(this);
     normalMap.init(this); 
 
-    drawInstanced.init(this);
+    //drawInstanced.init(this);
 
     nearPlane.init(this); 
     farPlane.init(this);

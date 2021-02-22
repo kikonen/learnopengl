@@ -38,8 +38,8 @@ Shader* Node::bind(const RenderContext& ctx, Shader* shader)
 		return nullptr;
 	}
 
-	shader->modelMatrix.set(modelMat);
-	shader->normalMatrix.set(normalMat);
+	//shader->modelMatrix.set(modelMat);
+	//shader->normalMatrix.set(normalMat);
 
 	return shader;
 }
