@@ -27,7 +27,7 @@ ModelMesh::~ModelMesh()
 
 void ModelMesh::prepare(const Assets& assets)
 {
-	buffers.prepare();
+	buffers.prepare(true);
 
 	for (auto const& material : materials) {
 		material->prepare();

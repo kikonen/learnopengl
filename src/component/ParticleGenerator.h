@@ -19,14 +19,15 @@ class ParticleGenerator
 {
 public:
 	ParticleGenerator(
-		const Assets& assets, 
-		ParticleSystem* system,
-		ParticleDefinition definition);
+		const Assets& assets,
+		const ParticleDefinition definition);
 
-	virtual void generate(const RenderContext& ctx);
+	virtual void update(const RenderContext& ctx);
+
+public:
+	ParticleSystem* system = nullptr;
 
 private:
 	const Assets& assets;
-	ParticleSystem* system;
-	ParticleDefinition definition;
+	const ParticleDefinition definition;
 };

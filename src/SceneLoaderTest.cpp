@@ -90,6 +90,9 @@ void SceneLoaderTest::setupCamera()
 	node->camera = camera;
 	node->controller = new CameraController(assets);
 
+	ParticleDefinition pd;
+	node->particleGenerator = new ParticleGenerator(assets, pd);
+
 	scene->registry.addNode(node);
 }
 
@@ -548,6 +551,12 @@ void SceneLoaderTest::setupNodeWaterBall()
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 25, 0) + assets.groundOffset);
+
+		ParticleDefinition pd;
+		//pd.material = Sprite::getMaterial(assets, "Skeleton_VH.PNG", "");
+
+		node->particleGenerator = new ParticleGenerator(assets, pd);
+
 		scene->registry.addNode(node);
 	});
 }
@@ -697,9 +706,9 @@ void SceneLoaderTest::setupViewport1()
 	texture->setData(&color, sizeof(unsigned int));
 
 	Viewport* viewport = new Viewport(
-		glm::vec3(-1, -0.5, 0),
+		glm::vec3(-1, -0.75, 0),
 		glm::vec3(0, 0, 0),
-		glm::vec2(0.5f, 0.5f),
+		glm::vec2(0.25f, 0.25f),
 		texture->textureID,
 		Shader::getShader(assets, TEX_VIEWPORT));
 	viewport->prepare();

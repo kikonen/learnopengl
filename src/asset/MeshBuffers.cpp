@@ -16,12 +16,14 @@ MeshBuffers::~MeshBuffers()
 	}
 }
 
-void MeshBuffers::prepare()
+void MeshBuffers::prepare(bool useIndeces)
 {
 	if (prepared) return;
 	prepared = true;
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	if (useIndeces) {
+		glGenBuffers(1, &EBO);
+	}
 }

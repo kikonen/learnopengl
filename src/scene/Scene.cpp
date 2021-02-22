@@ -79,6 +79,10 @@ void Scene::update(RenderContext& ctx)
 		light->update(ctx);
 	}
 
+	for (auto generator : particleGenerators) {
+		generator->update(ctx);
+	}
+
 	if (skyboxRenderer) {
 		KI_GL_CALL(skyboxRenderer->update(ctx, registry));
 	}
@@ -221,25 +225,28 @@ std::vector<Light*>& Scene::getSpotLights()
 	return spotLights;
 }
 
-void Scene::addCamera(Node* node)
+void Scene::bindComponents(Node* node)
 {
-	if (!node->camera) return;
-	cameraNode = node;
-}
+	if (node->camera) {
+		cameraNode = node;
+	}
 
-void Scene::addLight(Node* node)
-{
 	Light* light = node->light;
-	if (!light) return;
+	if (light) {
+		if (light->directional) {
+			dirLight = light;
+		}
+		else if (light->point) {
+			pointLights.push_back(light);
+		}
+		else if (light->spot) {
+			spotLights.push_back(light);
+		}
+	}
 
-	if (light->directional) {
-		dirLight = light;
-	}
-	else if (light->point) {
-		pointLights.push_back(light);
-	}
-	else if (light->spot) {
-		spotLights.push_back(light);
+	if (node->particleGenerator) {
+		node->particleGenerator->system = particleSystem;
+		particleGenerators.push_back(node->particleGenerator);
 	}
 }
 

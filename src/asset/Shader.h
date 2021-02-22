@@ -17,6 +17,7 @@ const std::string TEX_TEXTURE = "tex";
 const std::string TEX_SPRITE = "sprite";
 const std::string TEX_SELECTION = "selection";
 const std::string TEX_TERRAIN = "terrain";
+const std::string TEX_PARTICLE = "particle";
 const std::string TEX_NORMAL = "normal";
 const std::string TEX_LIGHT = "light";
 const std::string TEX_SIMPLE_DEPTH = "simple_depth";

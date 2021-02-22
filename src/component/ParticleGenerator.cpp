@@ -4,15 +4,20 @@
 #include "scene/ParticleSystem.h"
 
 ParticleGenerator::ParticleGenerator(
-	const Assets& assets, 
-	ParticleSystem* system, 
+	const Assets& assets,
 	ParticleDefinition definition)
 	: assets(assets),
-	system(system),
 	definition(definition)
 {
 }
 
-void ParticleGenerator::generate(const RenderContext& ctx)
+void ParticleGenerator::update(const RenderContext& ctx)
 {
+	Particle particle;
+	particle.pos = { 10, 10, 10 };
+	particle.dir = { 0, 1, 0 };
+	particle.velocity = 2;
+	particle.lifetime = 5;
+
+	system->addParticle(particle);
 }

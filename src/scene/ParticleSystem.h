@@ -19,8 +19,10 @@ public:
 
 	void addParticle(const Particle& particle);
 
-private:
+public:
 	const Assets& assets;
+
+private:
 	std::vector<Particle> particles;
 
 	Batch batch;

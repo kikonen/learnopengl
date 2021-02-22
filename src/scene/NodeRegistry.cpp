@@ -65,8 +65,7 @@ void NodeRegistry::attachNodes()
 			KI_GL_CALL(e->prepare(assets));
 			nodes[e->type].push_back(e);
 
-			scene.addCamera(e);
-			scene.addLight(e);
+			scene.bindComponents(e);
 		}
 	}
 

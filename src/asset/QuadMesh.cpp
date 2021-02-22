@@ -10,10 +10,10 @@ const float VERTICES[] = {
 	 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 };
 
-const int INDECES[] = {
-	0, 1, 2,
-	2, 1, 3,
-};
+//const int INDECES[] = {
+//	0, 1, 2,
+//	2, 1, 3,
+//};
 
 const int VERTEX_COUNT = 6;
 
@@ -29,7 +29,7 @@ QuadMesh::~QuadMesh()
 
 void QuadMesh::prepare(const Assets& assets)
 {
-	buffers.prepare();
+	buffers.prepare(false);
 	material->prepare();
 	prepareBuffers(buffers);
 

@@ -20,7 +20,7 @@ void Viewport::prepare()
 {
 	shader->prepare();
 
-	buffers.prepare();
+	buffers.prepare(false);
 
 	float x = pos.x;
 	float y = pos.y;

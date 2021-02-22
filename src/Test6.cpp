@@ -63,6 +63,8 @@ int Test6::onRender(float dt) {
 	KI_GL_CALL(currentScene->bind(ctx));
 	KI_GL_CALL(currentScene->draw(ctx));
 
+	//ImGui::ShowDemoWindow();
+
 	frame->draw(ctx);
 	frame->render(ctx);
 

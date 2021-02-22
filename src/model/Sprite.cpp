@@ -3,14 +3,6 @@
 #include "asset/QuadMesh.h"
 
 
-Mesh* Sprite::getMesh(const Assets& assets, Material* material)
-{
-	QuadMesh* mesh = new QuadMesh("sprite");
-	mesh->material = material;
-
-	return mesh;
-}
-
 Material* Sprite::getMaterial(
 	const Assets& assets, 
 	const std::string& path,
@@ -34,8 +26,10 @@ NodeType* Sprite::getNodeType(
 	NodeType* type = new NodeType(NodeType::nextID(), Shader::getShader(assets, TEX_TEXTURE, ""));
 	type->renderBack = true;
 
-	Material* material = Sprite::getMaterial(assets, path, normalMapPath);
-	type->mesh = getMesh(assets, material);
+	QuadMesh* mesh = new QuadMesh(path);
+	mesh->material = Sprite::getMaterial(assets, path, normalMapPath);
+
+	type->mesh = mesh;
 
 	return type;
 }

@@ -44,8 +44,7 @@ public:
 	std::vector<Light*>& getPointLights();
 	std::vector<Light*>& getSpotLights();
 
-	void addCamera(Node* node);
-	void addLight(Node* node);
+	void bindComponents(Node* node);
 
 private:
 	void prepareUBOs();
@@ -69,6 +68,7 @@ private:
 	Light* dirLight = nullptr;
 	std::vector<Light*> pointLights;
 	std::vector<Light*> spotLights;
+	std::vector<ParticleGenerator*> particleGenerators;
 
 	NodeRenderer* nodeRenderer = nullptr;
 	SpriteRenderer* spriteRenderer = nullptr;

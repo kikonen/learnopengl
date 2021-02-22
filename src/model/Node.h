@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 
+#include "component/ParticleGenerator.h"
 #include "scene/NodeType.h"
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
@@ -37,14 +38,15 @@ protected:
 	virtual void updateModelMatrix();
 
 public:
-	NodeType* type;
+	NodeType* type = nullptr;
 
 	bool selected = false;
 
 	NodeController* controller = nullptr;
 
-	Camera* camera;
-	Light* light;
+	Camera* camera = nullptr;
+	Light* light = nullptr;
+	ParticleGenerator* particleGenerator = nullptr;
 
 private:
 	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };

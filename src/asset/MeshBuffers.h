@@ -6,7 +6,7 @@ public:
 	MeshBuffers();
 	~MeshBuffers();
 
-	void prepare();
+	void prepare(bool useIndeces);
 public:
 	unsigned int VBO = 0;
 	unsigned int VAO = 0;
@@ -15,4 +15,3 @@ public:
 private:
 	bool prepared = false;
 };
-

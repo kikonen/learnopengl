@@ -52,7 +52,7 @@ void InstancedNode::prepareBuffers()
 	}
 
 	{
-		selectedBuffers.prepare();
+		selectedBuffers.prepare(true);
 
 		glGenBuffers(1, &selectedBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, selectedBuffer);
@@ -74,7 +74,7 @@ void InstancedNode::updateBuffers(const RenderContext& ctx)
 	}
 
 	{
-		selectedBuffers.prepare();
+		selectedBuffers.prepare(true);
 
 		type->mesh->prepareBuffers(selectedBuffers);
 

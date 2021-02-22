@@ -85,7 +85,7 @@ void SkyboxRenderer::prepare()
     }
 
     {
-        buffers.prepare();
+        buffers.prepare(false);
 
         glBindVertexArray(buffers.VAO);
 
