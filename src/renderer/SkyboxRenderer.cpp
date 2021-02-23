@@ -94,6 +94,8 @@ void SkyboxRenderer::prepare()
 
         glVertexAttribPointer(ATTR_SKYBOX_POS, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
+        glEnableVertexAttribArray(ATTR_SKYBOX_POS);
+
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
@@ -127,10 +129,9 @@ void SkyboxRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 
     glDepthFunc(GL_LEQUAL);
     glBindVertexArray(buffers.VAO);
-    glEnableVertexAttribArray(ATTR_SKYBOX_POS);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    glBindVertexArray(0);
     glDepthFunc(GL_LESS);
 
-    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    KI_GL_UNBIND(glBindVertexArray(0));
+    KI_GL_UNBIND(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
 }

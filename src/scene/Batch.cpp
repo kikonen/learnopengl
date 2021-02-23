@@ -13,6 +13,8 @@ void Batch::prepare(NodeType* type)
 	if (prepared) return;
 	prepared = true;
 
+	KI_GL_CALL(glBindVertexArray(type->mesh->buffers.VAO));
+
 	// model
 	{
 		if (modelMatrices.empty()) {
@@ -30,8 +32,6 @@ void Batch::prepare(NodeType* type)
 		KI_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, modelBuffer));
 		KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, size * sizeof(glm::mat4), &modelMatrices[0], GL_DYNAMIC_DRAW));
 
-		KI_GL_CALL(glBindVertexArray(type->mesh->buffers.VAO));
-
 		// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
 		size_t vecSize = sizeof(glm::vec4);
 
@@ -44,6 +44,11 @@ void Batch::prepare(NodeType* type)
 		glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_2, 1);
 		glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_3, 1);
 		glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_4, 1);
+
+		glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_1);
+		glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_2);
+		glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_3);
+		glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_4);
 	}
 
 	// normal
@@ -63,8 +68,6 @@ void Batch::prepare(NodeType* type)
 		KI_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, normalBuffer));
 		KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, size * sizeof(glm::mat3), &normalMatrices[0], GL_DYNAMIC_DRAW));
 
-		KI_GL_CALL(glBindVertexArray(type->mesh->buffers.VAO));
-
 		// NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
 		size_t vecSize = sizeof(glm::vec3);
 
@@ -75,11 +78,19 @@ void Batch::prepare(NodeType* type)
 		glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_1, 1);
 		glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_2, 1);
 		glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_3, 1);
+
+		glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_1);
+		glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_2);
+		glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_3);
 	}
 
 	if (clearBuffer) {
 		modelMatrices.clear();
 		normalMatrices.clear();
+		dirty = false;
+	}
+	else {
+		dirty = !modelMatrices.empty();
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -88,6 +99,7 @@ void Batch::prepare(NodeType* type)
 void Batch::update(unsigned int count)
 {
 	if (size == 0) return;
+	//if (!dirty) return;
 
 	if (count > size) {
 		count = size;
@@ -107,15 +119,6 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 	if (size == 0) return;
 
 	//shader->drawInstanced.set(true);
-
-	glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_1);
-	glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_2);
-	glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_3);
-	glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_4);
-
-	glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_1);
-	glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_2);
-	glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_3);
 
 	if (clearBuffer) {
 		modelMatrices.clear();

@@ -49,4 +49,14 @@ namespace ki {
 		}
 	}
 
+	OpenGLInfo GL::getInfo()
+	{
+		OpenGLInfo info;
+
+		glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &info.maxVertexUniformComponents);
+		glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &info.maxVertexAttributes);
+
+		return info;
+	}
+
 }

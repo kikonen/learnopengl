@@ -113,7 +113,7 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 //	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	KI_GL_UNBIND(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
 
 	rendered = true;
 

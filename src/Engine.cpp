@@ -32,12 +32,12 @@ void Engine::run() {
 	// uncomment this call to draw in wireframe polygons.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	int maxUniforms;
-	glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &maxUniforms);
-	std::cout << "ENGINE::INIT" 
-		<< " VER=" << glGetString(GL_SHADING_LANGUAGE_VERSION) 
-		<< " MAX_UNIFORMS=" << maxUniforms
-		<< std::endl;
+	OpenGLInfo info = ki::GL::getInfo();
+	std::cout << "ENGINE::INIT" << std::endl
+		<< " VER=" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl
+		<< " GL_MAX_VERTEX_UNIFORM_COMPONENTS=" << info.maxVertexUniformComponents << std::endl
+		<< " GL_MAX_VERTEX_ATTRIBS=" << info.maxVertexAttributes << std::endl;
+
 	int res = onSetup();
 	if (res) {
 		window->close();

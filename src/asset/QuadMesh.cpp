@@ -75,6 +75,11 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
 
 		// texture attr
 		glVertexAttribPointer(ATTR_TEX, 2, GL_FLOAT, GL_FALSE, rz, (void*)((3 + 3 + 1) * sizeof(float)));
+
+		glEnableVertexAttribArray(ATTR_POS);
+		glEnableVertexAttribArray(ATTR_NORMAL);
+		glEnableVertexAttribArray(ATTR_MATERIAL_INDEX);
+		glEnableVertexAttribArray(ATTR_TEX);
 	}
 
 	// EBO
@@ -94,11 +99,6 @@ void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
 	glBindVertexArray(buffers.VAO);
 
 	material->bindArray(shader, 0);
-
-	glEnableVertexAttribArray(ATTR_POS);
-	glEnableVertexAttribArray(ATTR_NORMAL);
-	glEnableVertexAttribArray(ATTR_MATERIAL_INDEX);
-	glEnableVertexAttribArray(ATTR_TEX);
 }
 
 void QuadMesh::draw(const RenderContext& ctx)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ki/GL.h"
+
 class FrameBuffer
 {
 public:

@@ -118,6 +118,12 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 
 		// texture attr
 		glVertexAttribPointer(ATTR_TEX, 2, GL_FLOAT, GL_FALSE, count * sizeof(float), (void*)((3 + 3 + 3 + 1) * sizeof(float)));
+
+		glEnableVertexAttribArray(ATTR_POS);
+		glEnableVertexAttribArray(ATTR_NORMAL);
+		glEnableVertexAttribArray(ATTR_TANGENT);
+		glEnableVertexAttribArray(ATTR_MATERIAL_INDEX);
+		glEnableVertexAttribArray(ATTR_TEX);
 	}
 
 	// EBO
@@ -161,12 +167,6 @@ void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 	for (auto const& material : materials) {
 		material->bindArray(shader, material->materialIndex);
 	}
-
-	glEnableVertexAttribArray(ATTR_POS);
-	glEnableVertexAttribArray(ATTR_NORMAL);
-	glEnableVertexAttribArray(ATTR_TANGENT);
-	glEnableVertexAttribArray(ATTR_MATERIAL_INDEX);
-	glEnableVertexAttribArray(ATTR_TEX);
 }
 
 void ModelMesh::draw(const RenderContext& ctx)

@@ -37,6 +37,17 @@
 #endif
 
 
+struct RenderClock final {
+	// 	std::chrono::system_clock::time_point ts;
+	double ts;
+	float elapsedSecs;
+};
+
+struct OpenGLInfo final {
+	int maxVertexUniformComponents;
+	int maxVertexAttributes;
+};
+
 namespace ki {
 	// https://gist.github.com/jdarpinian/d8fbaf7360be754016a287450364d738
 	class GL final
@@ -46,12 +57,7 @@ namespace ki {
 		static void startDebug();
 
 		static void checkErrors(const std::string& loc);
+
+		static OpenGLInfo getInfo();
 	};
-
 }
-
-struct RenderClock final {
-// 	std::chrono::system_clock::time_point ts;
-	double ts;
-	float elapsedSecs;
-};

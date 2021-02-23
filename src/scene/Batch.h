@@ -24,10 +24,12 @@ public:
 	bool clearBuffer = true;
 	bool instanedNode = false;
 
-	unsigned int modelBuffer = -1;
-	unsigned int normalBuffer = -1;
-
+	bool dirty = false;
 	std::vector<glm::mat4> modelMatrices;
 	std::vector<glm::mat3> normalMatrices;
+
+private:
+	unsigned int modelBuffer = -1;
+	unsigned int normalBuffer = -1;
 };
 
