@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
 
 #include <glad/glad.h>
 
@@ -14,7 +15,6 @@
 #define KI_GL_DEBUG_CHECK
 //#define KI_GL_DEBUG_CALL
 //#define KI_GL_DEBUG_BIND
-
 
 #ifdef KI_GL_DEBUG_CALL
 	#define KI_GL_CALL(x) x; ki::GL::checkErrors(std::string(#x" - ") + __FILE__ + ":" + std::to_string(__LINE__))
@@ -47,4 +47,11 @@ namespace ki {
 
 		static void checkErrors(const std::string& loc);
 	};
+
 }
+
+struct RenderClock final {
+// 	std::chrono::system_clock::time_point ts;
+	double ts;
+	float elapsedSecs;
+};

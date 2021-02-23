@@ -10,7 +10,7 @@
 
 RenderContext::RenderContext(
 	const Engine& engine,
-	const float dt,
+	const RenderClock& clock,
 	Scene* scene,
 	Camera* camera,
 	int width,
@@ -19,7 +19,7 @@ RenderContext::RenderContext(
 	assets(engine.assets),
 	scene(scene),
 	camera(camera),
-	dt(dt),
+	clock(clock),
 	width(width),
 	height(height)
 {
@@ -53,7 +53,7 @@ void RenderContext::bindMatricesUBO() const
 
 void RenderContext::bindDataUBO() const
 {
-	DataUBO dataUbo = { camera->getPos(), glfwGetTime() };
+	DataUBO dataUbo = { camera->getPos(), clock.ts };
 
 	glBindBuffer(GL_UNIFORM_BUFFER, scene->ubo.data);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(DataUBO), &dataUbo);

@@ -12,7 +12,7 @@ NodePathController::~NodePathController()
 
 bool NodePathController::update(const RenderContext& ctx, Node& node)
 {
-	float elapsed = glfwGetTime();
+	float elapsed = ctx.clock.ts;
 
 	if (true) {
 		const float radius = 4.0f;

@@ -12,6 +12,7 @@ struct ParticleDefinition {
 	float velocityVariation = 0.f;
 	float size = 1.f;
 	float sizeVariation = 1.f;
+	float particlesPerSec = 1;
 	Material* material = nullptr;
 };
 
@@ -30,4 +31,6 @@ public:
 private:
 	const Assets& assets;
 	const ParticleDefinition definition;
+
+	float lastTs = -1;
 };

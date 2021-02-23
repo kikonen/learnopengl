@@ -13,6 +13,10 @@ ParticleGenerator::ParticleGenerator(
 
 void ParticleGenerator::update(const RenderContext& ctx)
 {
+	definition.particlesPerSec * ctx.clock.elapsedSecs;
+
+	//if ()
+//	definition.
 	Particle particle;
 	particle.pos = { 10, 10, 10 };
 	particle.dir = { 0, 1, 0 };

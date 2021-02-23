@@ -101,7 +101,7 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 
 		Camera camera(center, cameraFront[i], cameraUp[i]);
 		camera.setZoom(90);
-		RenderContext ctx(mainCtx.engine, mainCtx.dt, mainCtx.scene, &camera, CUBE_SIZE, CUBE_SIZE);
+		RenderContext ctx(mainCtx.engine, mainCtx.clock, mainCtx.scene, &camera, CUBE_SIZE, CUBE_SIZE);
 		ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
 		ctx.bindUBOs();
 

@@ -25,7 +25,7 @@ public:
     void run();
 
     virtual int onSetup() = 0;
-    virtual int onRender(float dt) = 0;
+    virtual int onRender(const RenderClock& clock) = 0;
     virtual void onDestroy();
 
 public:
@@ -36,7 +36,7 @@ public:
 
     Scene* currentScene = nullptr;
 
-    float accumulatedSecs = 0.0f;
+    RenderClock startClock;
 
     static Engine* current;
 

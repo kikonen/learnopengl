@@ -50,6 +50,8 @@ void Engine::run() {
 	std::chrono::duration<float> elapsedDuration;
 	std::chrono::duration<float> renderDuration;
 
+	RenderClock clock;
+
 	float renderSecs = 0;
 
 	char titleSB[256];
@@ -60,25 +62,24 @@ void Engine::run() {
 	// -----------
 	while (!window->isClosed())
 	{
-		float elapsedSecs;
 		{
 			//ki::Timer t("loop");
 
 			loopTime = std::chrono::system_clock::now();
 			elapsedDuration = loopTime - prevLoopTime;
-			elapsedSecs = elapsedDuration.count();
 
-			accumulatedSecs += elapsedSecs;
+			clock.ts = glfwGetTime();
+			clock.elapsedSecs = elapsedDuration.count();
 
 			// input
 			// -----
-			window->processInput(elapsedSecs);
+			window->processInput(clock);
 
 			// render
 			// ------
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-			int res = onRender(elapsedSecs);
+			int res = onRender(clock);
 
 			if (res) {
 				window->close();
@@ -95,9 +96,9 @@ void Engine::run() {
 			renderDuration = renderTime - loopTime;
 			renderSecs = renderDuration.count();
 
-			prevLoopTime = loopTime;;
+			prevLoopTime = loopTime;
 
-			sprintf_s(titleSB, 256, "%s - FPS: %3.2f - RENDER: %3.2fms (%3.2f fps)", title.c_str(), 1.0f / elapsedSecs, renderSecs * 1000.f, 1.0f / renderSecs);
+			sprintf_s(titleSB, 256, "%s - FPS: %3.2f - RENDER: %3.2fms (%3.2f fps)", title.c_str(), 1.0f / clock.elapsedSecs, renderSecs * 1000.f, 1.0f / renderSecs);
 			window->setTitle(titleSB);
 			//std::cout << titleSB << "\n";
 		}

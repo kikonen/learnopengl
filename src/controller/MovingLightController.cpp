@@ -21,7 +21,7 @@ bool MovingLightController::update(const RenderContext& ctx, Node& node)
 	Light* light = node.light;
 	if (!light) return false;
 
-	float elapsed = glfwGetTime() / speed;
+	float elapsed = ctx.clock.ts / speed;
 
 	float posX = sin(elapsed) * radius;
 	float posY = sin(elapsed / 2) * 2;

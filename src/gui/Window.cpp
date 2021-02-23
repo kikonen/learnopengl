@@ -117,7 +117,7 @@ void Window::bindGLFWCallbacks()
 		});
 }
 
-void Window::processInput(float dt)
+void Window::processInput(const RenderClock& clock)
 {
 	if (input->isKeyPressed(Key::EXIT)) {
 		close();
@@ -126,7 +126,7 @@ void Window::processInput(float dt)
 
 	Camera* camera = engine.currentScene->getCamera();
 	if (camera) {
-		camera->onKey(input, dt);
+		camera->onKey(input, clock);
 	}
 }
 

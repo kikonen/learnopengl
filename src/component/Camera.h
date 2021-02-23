@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "ki/GL.h"
 #include "gui/Input.h"
 
 /**
@@ -32,7 +33,7 @@ public:
 	void setRotation(const glm::vec3& rotation);
 	const glm::vec3 getRotation();
 
-	void onKey(Input* input, float dt);
+	void onKey(Input* input, const RenderClock& clock);
 	void onMouseMove(Input* input, double xoffset, double yoffset);
 	void onMouseScroll(Input* input, double xoffset, double yoffset);
 

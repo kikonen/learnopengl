@@ -41,7 +41,7 @@ int Test6::onSetup() {
 	return 0;
 }
 
-int Test6::onRender(float dt) {
+int Test6::onRender(const RenderClock& clock) {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
@@ -52,7 +52,7 @@ int Test6::onRender(float dt) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	RenderContext ctx(*this, dt, currentScene, currentScene->getCamera(), window->width, window->height);
+	RenderContext ctx(*this, clock, currentScene, currentScene->getCamera(), window->width, window->height);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 

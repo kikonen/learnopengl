@@ -14,7 +14,7 @@ class RenderContext
 public:
 	RenderContext(
 		const Engine& engine,
-		const float dt,
+		const RenderClock& clock,
 		Scene* scene,
 		Camera* camera, 
 		int width,
@@ -30,7 +30,7 @@ public:
 	const Assets& assets;
 	const Engine& engine;
 
-	const float dt;
+	const RenderClock& clock;
 
 	const int width;
 	const int height;

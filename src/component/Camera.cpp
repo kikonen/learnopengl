@@ -104,8 +104,9 @@ const glm::vec3 Camera::getRotation()
 	return glm::vec3(pitch, yaw, roll);
 }
 
-void Camera::onKey(Input* input, float dt)
+void Camera::onKey(Input* input, const RenderClock& clock)
 {
+	float dt = clock.elapsedSecs;
 	float moveSize = moveStep;
 	float rotateSize = rotateStep;
 	if (input->isModifier(Modifier::SHIFT)) {

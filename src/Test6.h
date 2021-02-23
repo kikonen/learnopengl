@@ -19,7 +19,7 @@ public:
 
 	SceneLoader* loadScene();
 
-	int onRender(float dt) override;
+	int onRender(const RenderClock& clock) override;
 	void onDestroy() override;
 
 private:
