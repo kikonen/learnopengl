@@ -1,11 +1,8 @@
 #include "Engine.h"
 
 #include <iostream>
-#include <fstream>
-#include <strstream>
 #include <chrono>
 #include <thread>
-#include <functional>
 
 #include "imgui.h"
 
