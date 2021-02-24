@@ -48,29 +48,21 @@ struct OpenGLInfo {
 	int maxVertexAttributes;
 };
 
-union KI_RGB10_A2
+struct KI_RGB10_A2
 {
-	struct
-	{
-		unsigned int alpha : 2;
-		unsigned int blue : 10;
-		unsigned int green : 10;
-		unsigned int red : 10;
-	};
-	unsigned int value;
+	unsigned int red : 10;
+	unsigned int green : 10;
+	unsigned int blue : 10;
+	unsigned int alpha : 2;
 };
 const int SCALE_RGB10 = (1 << 9) - 1;
 
-union KI_VEC10
+struct KI_VEC10
 {
-	struct
-	{
-		int not_used : 2;
-		int z : 10;
-		int y : 10;
-		int x : 10;
-	};
-	unsigned int value;
+	int x : 10;
+	int y : 10;
+	int z : 10;
+	int not_used : 2;
 };
 const int SCALE_VEC10 = (1 << 9) - 1;
 

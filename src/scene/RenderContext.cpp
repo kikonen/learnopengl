@@ -65,7 +65,7 @@ void RenderContext::bindLightsUBO() const
 	// Lights
 	glBindBuffer(GL_UNIFORM_BUFFER, scene->ubo.lights);
 	LightsUBO lightsUbo;
-	if (scene->getDirLight()) {
+	if (scene->getDirLight() && useLight) {
 		lightsUbo.light = scene->getDirLight()->toDirLightUBO();
 		//lights.light.use = false;
 	}
@@ -78,6 +78,7 @@ void RenderContext::bindLightsUBO() const
 	{
 		int index = 0;
 		for (auto& light : scene->getPointLights()) {
+			if (!useLight) continue;
 			if (index >= LIGHT_COUNT) {
 				break;
 			}
@@ -100,6 +101,7 @@ void RenderContext::bindLightsUBO() const
 	{
 		int index = 0;
 		for (auto& light : scene->getSpotLights()) {
+			if (!useLight) continue;
 			if (index >= LIGHT_COUNT) {
 				break;
 			}

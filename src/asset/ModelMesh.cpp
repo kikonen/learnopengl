@@ -119,9 +119,6 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 			}
 		}
 
-		TexVBO* vbo = (TexVBO *)vboBuffer;
-		vbo += (vertices.size() - 1);
-
 		glBindBuffer(GL_ARRAY_BUFFER, curr.VBO);
 		KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, stride_size * vertices.size(), vboBuffer, GL_STATIC_DRAW));
 		delete vboBuffer;
