@@ -55,11 +55,8 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
 
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
-		Shader* shader = t->bind(ctx, nullptr);
-		if (!shader) continue;
-
+		Shader* shader = nullptr;
 		Batch& batch = t->batch;
-		batch.bind(ctx, shader);
 
 		for (auto& e : x.second) {
 			if (selection ? !e->selected : e->selected) {
@@ -69,6 +66,11 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
 			if (t->blend) {
 				blendedNodes.push_back(e);
 				continue;
+			}
+
+			if (!shader) {
+				shader = t->bind(ctx, nullptr);
+				batch.bind(ctx, shader);
 			}
 
 			batch.draw(ctx, e, shader);
