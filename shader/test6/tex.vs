@@ -40,7 +40,7 @@ void main() {
 
   gl_Position = projectionMatrix * viewMatrix * aModelMatrix * vec4(aPos, 1.0);
 
-  vs_out.materialIndex = int(aMaterialIndex);
+  vs_out.materialIndex = matIdx;
   vs_out.texCoords = aTexCoords;
 
   vs_out.fragPos = (aModelMatrix * vec4(aPos, 1.0)).xyz;

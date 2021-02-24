@@ -57,6 +57,17 @@ void ModelMesh::prepare(const Assets& assets)
 	}
 }
 
+#pragma pack(push, 1)
+struct TexVBO {
+	glm::vec3 pos;
+	KI_VEC10 normal;
+	KI_VEC10 tangent;
+	float material;
+	KI_UV16 texCoords;
+};
+#pragma pack(pop)
+
+
 void ModelMesh::prepareBuffers(MeshBuffers& curr)
 {
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
@@ -64,60 +75,77 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 
 	// VBO
 	{
+		// https://paroj.github.io/gltut/Basic%20Optimization.html
 		// vertCoords + normalCoords + tangentCoords + bitangentCoords + materialIdx + texCoords
-		const int count = 3 + 3  + 3 + 1 + 2;
-		float* vboBuffer = new float[count * vertices.size()];
+		//int sz1 = sizeof(TexVBO);
+		//int scale_vec = SCALE_VEC10;
+		//int scale_uv = SCALE_UV16;
+		//const int stride_size2 = sizeof(glm::vec3) + sizeof(KI_VEC10) + sizeof(KI_VEC10) + sizeof(char) + sizeof(KI_UV16);
+		const int stride_size = sizeof(TexVBO);
 
-		for (int i = 0; i < vertices.size(); i++) {
-			Vertex* vertex = vertices[i];
-			const glm::vec3& p = vertex->pos;
-			const glm::vec3& n = vertex->normal;
-			const glm::vec3& tan = vertex->tangent;
-			const Material* m = vertex->material;
-			const glm::vec2& t = vertex->texture;
+		void* vboBuffer = new unsigned char[stride_size * vertices.size()];
+		memset(vboBuffer, 0, stride_size * vertices.size());
 
-			int base = i * count;
-			// vertex
-			vboBuffer[base + 0] = p[0];
-			vboBuffer[base + 1] = p[1];
-			vboBuffer[base + 2] = p[2];
-			base += 3;
-			// normal
-			vboBuffer[base + 0] = n[0];
-			vboBuffer[base + 1] = n[1];
-			vboBuffer[base + 2] = n[2];
-			base += 3;
-			// tangent
-			vboBuffer[base + 0] = tan[0];
-			vboBuffer[base + 1] = tan[1];
-			vboBuffer[base + 2] = tan[2];
-			base += 3;
-			// meterial
-			vboBuffer[base + 0] = m ? m->materialIndex : 0;
-			base += 1;
-			// texture
-			vboBuffer[base + 0] = t[0];
-			vboBuffer[base + 1] = t[1];
+		Vertex* lastVertex = nullptr;
+		{
+			TexVBO* vbo = (TexVBO*)vboBuffer;
+			for (int i = 0; i < vertices.size(); i++) {
+				Vertex* vertex = vertices[i];
+				const glm::vec3& p = vertex->pos;
+				const glm::vec3& n = vertex->normal;
+				const glm::vec3& tan = vertex->tangent;
+				const Material* m = vertex->material;
+				const glm::vec2& t = vertex->texture;
+
+				vbo->pos.x = p.x;
+				vbo->pos.y = p.y;
+				vbo->pos.z = p.z;
+
+				vbo->normal.x = n.x * SCALE_VEC10;
+				vbo->normal.y = n.y * SCALE_VEC10;
+				vbo->normal.z = n.z * SCALE_VEC10;
+
+				vbo->tangent.x = tan.x * SCALE_VEC10;
+				vbo->tangent.y = tan.y * SCALE_VEC10;
+				vbo->tangent.z = tan.z * SCALE_VEC10;
+
+				vbo->material = m ? m->materialIndex : 0;
+
+				vbo->texCoords.u = t.x * SCALE_UV16;
+				vbo->texCoords.v = t.y * SCALE_UV16;
+
+				vbo++;
+				lastVertex = vertex;
+			}
 		}
 
+		TexVBO* vbo = (TexVBO *)vboBuffer;
+		vbo += (vertices.size() - 1);
+
 		glBindBuffer(GL_ARRAY_BUFFER, curr.VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * count * vertices.size(), vboBuffer, GL_STATIC_DRAW);
+		KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, stride_size * vertices.size(), vboBuffer, GL_STATIC_DRAW));
 		delete vboBuffer;
 
+		int offset = 0;
+
 		// vertex attr
-		glVertexAttribPointer(ATTR_POS, 3, GL_FLOAT, GL_FALSE, count * sizeof(float), (void*)0);
+		KI_GL_CALL(glVertexAttribPointer(ATTR_POS, 3, GL_FLOAT, GL_FALSE, stride_size, (void*)offset));
+		offset += sizeof(glm::vec3);
 
 		// normal attr
-		glVertexAttribPointer(ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, count * sizeof(float), (void*)((3) * sizeof(float)));
+		KI_GL_CALL(glVertexAttribPointer(ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, stride_size, (void*)offset));
+		offset += sizeof(KI_VEC10);
 
 		// tangent attr
-		glVertexAttribPointer(ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, count * sizeof(float), (void*)((3 + 3) * sizeof(float)));
+		KI_GL_CALL(glVertexAttribPointer(ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, stride_size, (void*)offset));
+		offset += sizeof(KI_VEC10);
 
 		// materialID attr
-		glVertexAttribPointer(ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, count * sizeof(float), (void*)((3 + 3 + 3) * sizeof(float)));
+		KI_GL_CALL(glVertexAttribPointer(ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, stride_size, (void*)offset));
+		offset += sizeof(float);
 
 		// texture attr
-		glVertexAttribPointer(ATTR_TEX, 2, GL_FLOAT, GL_FALSE, count * sizeof(float), (void*)((3 + 3 + 3 + 1) * sizeof(float)));
+		KI_GL_CALL(glVertexAttribPointer(ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, stride_size, (void*)offset));
 
 		glEnableVertexAttribArray(ATTR_POS);
 		glEnableVertexAttribArray(ATTR_NORMAL);
@@ -128,7 +156,8 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 
 	// EBO
 	{
-		int* vertexEboBuffer = new int[3 * tris.size()];
+		int index_count = tris.size() * 3;
+		int* vertexEboBuffer = new int[index_count];
 
 		for (int i = 0; i < tris.size(); i++) {
 			const glm::uvec3& vi = tris[i];
@@ -139,19 +168,16 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 		}
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curr.EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tris.size() * 3, vertexEboBuffer, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * index_count, vertexEboBuffer, GL_STATIC_DRAW);
 
 		delete vertexEboBuffer;
 	}
 
-	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 	glBindVertexArray(0);
 }
 

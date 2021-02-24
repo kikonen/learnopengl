@@ -43,5 +43,5 @@ void ParticleSystem::render(RenderContext& ctx)
 
 void ParticleSystem::addParticle(const Particle& particle)
 {
-	particles.push_back(particle);
+//	particles.push_back(particle);
 }

@@ -37,16 +37,50 @@
 #endif
 
 
-struct RenderClock final {
+struct RenderClock {
 	// 	std::chrono::system_clock::time_point ts;
 	double ts;
 	float elapsedSecs;
 };
 
-struct OpenGLInfo final {
+struct OpenGLInfo {
 	int maxVertexUniformComponents;
 	int maxVertexAttributes;
 };
+
+union KI_RGB10_A2
+{
+	struct
+	{
+		unsigned int alpha : 2;
+		unsigned int blue : 10;
+		unsigned int green : 10;
+		unsigned int red : 10;
+	};
+	unsigned int value;
+};
+const int SCALE_RGB10 = (1 << 9) - 1;
+
+union KI_VEC10
+{
+	struct
+	{
+		int not_used : 2;
+		int z : 10;
+		int y : 10;
+		int x : 10;
+	};
+	unsigned int value;
+};
+const int SCALE_VEC10 = (1 << 9) - 1;
+
+struct KI_UV16
+{
+	unsigned short u;
+	unsigned short v;
+};
+const int SCALE_UV16 = (1 << 16) - 1;
+
 
 namespace ki {
 	// https://gist.github.com/jdarpinian/d8fbaf7360be754016a287450364d738
