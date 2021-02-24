@@ -45,9 +45,9 @@ bool InstancedNode::update(const RenderContext& ctx)
 	return updated;
 }
 
-Shader* InstancedNode::bind(const RenderContext& ctx, Shader* shader)
+void InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 {
-	shader = Node::bind(ctx, shader);
+	Node::bind(ctx, shader);
 
 	if (shader->selection) {
 		selectedBatch.bind(ctx, shader);
@@ -55,8 +55,6 @@ Shader* InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 	else {
 		modelBatch.bind(ctx, shader);
 	}
-
-	return shader;
 }
 
 void InstancedNode::draw(const RenderContext& ctx)

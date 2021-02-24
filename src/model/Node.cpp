@@ -30,18 +30,9 @@ bool Node::update(const RenderContext& ctx)
 	return controller->update(ctx, *this);
 }
 
-Shader* Node::bind(const RenderContext& ctx, Shader* shader)
+void Node::bind(const RenderContext& ctx, Shader* shader)
 {
 	updateModelMatrix();
-
-	if (!shader) {
-		return nullptr;
-	}
-
-	//shader->modelMatrix.set(modelMat);
-	//shader->normalMatrix.set(normalMat);
-
-	return shader;
 }
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch)
