@@ -28,6 +28,7 @@ const unsigned int LIGHT_COUNT = 8;
 
 
 struct MatricesUBO {
+	glm::mat4 projected;
 	glm::mat4 projection;
 	glm::mat4 view;
 	glm::mat4 lightSpace;

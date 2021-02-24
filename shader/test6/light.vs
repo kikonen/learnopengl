@@ -20,7 +20,7 @@ out vec3 normal;
 ////////////////////////////////////////////////////////////
 
 void main() {
-  gl_Position = projectionMatrix * viewMatrix * aModelMatrix * vec4(aPos, 1.0);
+  gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
 
   color = aColor;
 

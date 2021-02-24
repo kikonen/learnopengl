@@ -27,10 +27,10 @@ RenderContext::RenderContext(
 		camera = new Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 		this->camera = camera;
 	}
-	view = camera->getView();
+	viewMatrix = camera->getView();
 
-	projection = glm::perspective(glm::radians(camera->getZoom()), (float)width / (float)height, assets.nearPlane, assets.farPlane);
-	//projected = projection * view;
+	projectionMatrix = glm::perspective(glm::radians(camera->getZoom()), (float)width / (float)height, assets.nearPlane, assets.farPlane);
+	projectedMatrix = projectionMatrix * viewMatrix;
 }
 
 void RenderContext::bindUBOs() const
@@ -44,7 +44,7 @@ void RenderContext::bindUBOs() const
 
 void RenderContext::bindMatricesUBO() const
 {
-	MatricesUBO matricesUbo = { projection, view, lightSpaceMatrix };
+	MatricesUBO matricesUbo = { projectedMatrix, projectionMatrix, viewMatrix, lightSpaceMatrix };
 
 	glBindBuffer(GL_UNIFORM_BUFFER, scene->ubo.matrices);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MatricesUBO), &matricesUbo);

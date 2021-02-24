@@ -38,9 +38,9 @@ public:
 	Scene* scene;
 	Camera* camera;
 
-	glm::mat4 view;
-	glm::mat4 projection;
-	//glm::mat4 projected;
+	glm::mat4 viewMatrix;
+	glm::mat4 projectionMatrix;
+	glm::mat4 projectedMatrix;
 
 	mutable glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 

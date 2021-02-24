@@ -7,7 +7,7 @@ layout (location = 6) in mat4 aModelMatrix;
 out vec3 fragPos;
 
 void main() {
-  gl_Position = projectionMatrix * viewMatrix * aModelMatrix * vec4(aPos, 1.0);
+  gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
 
   fragPos = vec3(aModelMatrix * vec4(aPos, 1.0));
 }
