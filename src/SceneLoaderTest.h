@@ -51,7 +51,7 @@ private:
 	void setupNodeAsteroid();
 	void setupNodeAsteroidBelt();
 
-	void setupSpriteFlare();
+	void setupSpriteSkeleton();
 
 	void setupTerrain();
 

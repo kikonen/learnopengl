@@ -23,7 +23,7 @@ namespace {
 		glm::vec3 pos;
 		KI_VEC10 normal;
 		KI_VEC10 tangent;
-		float material;
+		unsigned char material;
 		KI_UV16 texCoords;
 	};
 #pragma pack(pop)
@@ -121,8 +121,8 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
 		offset += sizeof(KI_VEC10);
 
 		// materialID attr
-		KI_GL_CALL(glVertexAttribPointer(ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, stride_size, (void*)offset));
-		offset += sizeof(float);
+		KI_GL_CALL(glVertexAttribIPointer(ATTR_MATERIAL_INDEX, 1, GL_UNSIGNED_BYTE, stride_size, (void*)offset));
+		offset += sizeof(unsigned char);
 
 		// texture attr
 		KI_GL_CALL(glVertexAttribPointer(ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, stride_size, (void*)offset));

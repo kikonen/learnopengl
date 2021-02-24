@@ -60,7 +60,7 @@ void SceneLoaderTest::setup()
 	setupNodeAsteroid();
 	setupNodeAsteroidBelt();
 
-	setupSpriteFlare();
+	setupSpriteSkeleton();
 
 	setupTerrain();
 	setupNodeSkybox();
@@ -652,7 +652,7 @@ void SceneLoaderTest::setupNodeAsteroidBelt()
 	});
 }
 
-void SceneLoaderTest::setupSpriteFlare()
+void SceneLoaderTest::setupSpriteSkeleton()
 {
 	addLoader([this]() {
 		//NodeType* type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "Skeleton_VH_normal.PNG");
@@ -660,7 +660,7 @@ void SceneLoaderTest::setupSpriteFlare()
 
 		glm::vec3 pos = glm::vec3(0, 5, 20) + assets.groundOffset;
 		for (int x = 0; x < 10; x++) {
-			for (int z = 0; z < 1001; z++) {
+			for (int z = 0; z < 101; z++) {
 				Sprite* sprite = new Sprite(type, glm::vec2(1.5, 3));
 				sprite->setPos(pos + glm::vec3(15 - x * 4, 1.5, 0.2 * z));
 				//sprite->setRotation(glm::vec3(0, 0, 180));

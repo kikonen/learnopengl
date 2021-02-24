@@ -1,7 +1,7 @@
 #version 430 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
-layout (location = 4) in float aMaterialIndex;
+layout (location = 4) in int aMaterialIndex;
 layout (location = 5) in vec2 aTexCoords;
 layout (location = 6) in mat4 aModelMatrix;
 layout (location = 10) in mat3 aNormalMatrix;
@@ -33,7 +33,7 @@ out VS_OUT {
 void main() {
   gl_Position = projectionMatrix * viewMatrix * aModelMatrix * vec4(aPos, 1.0);
 
-  vs_out.materialIndex = int(aMaterialIndex);
+  vs_out.materialIndex = aMaterialIndex;
   vs_out.texCoords = aTexCoords * 60;
 
   vs_out.fragPos = (aModelMatrix * vec4(aPos, 1.0)).xyz;
