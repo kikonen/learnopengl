@@ -7,6 +7,18 @@
 
 #include "ki/GL.h"
 
+namespace {
+#pragma pack(push, 1)
+	struct TexVBO {
+		glm::vec3 pos;
+		KI_VEC10 normal;
+		KI_VEC10 tangent;
+		float material;
+		KI_UV16 texCoords;
+	};	
+#pragma pack(pop)
+}
+
 ModelMesh::ModelMesh(
 	const std::string& modelName)
 	: ModelMesh(modelName, "/")
@@ -57,17 +69,6 @@ void ModelMesh::prepare(const Assets& assets)
 	}
 }
 
-#pragma pack(push, 1)
-struct TexVBO {
-	glm::vec3 pos;
-	KI_VEC10 normal;
-	KI_VEC10 tangent;
-	float material;
-	KI_UV16 texCoords;
-};
-#pragma pack(pop)
-
-
 void ModelMesh::prepareBuffers(MeshBuffers& curr)
 {
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
@@ -76,17 +77,9 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 	// VBO
 	{
 		// https://paroj.github.io/gltut/Basic%20Optimization.html
-		// vertCoords + normalCoords + tangentCoords + bitangentCoords + materialIdx + texCoords
-		//int sz1 = sizeof(TexVBO);
-		//int scale_vec = SCALE_VEC10;
-		//int scale_uv = SCALE_UV16;
-		//const int stride_size2 = sizeof(glm::vec3) + sizeof(KI_VEC10) + sizeof(KI_VEC10) + sizeof(char) + sizeof(KI_UV16);
 		const int stride_size = sizeof(TexVBO);
-
 		void* vboBuffer = new unsigned char[stride_size * vertices.size()];
-		memset(vboBuffer, 0, stride_size * vertices.size());
 
-		Vertex* lastVertex = nullptr;
 		{
 			TexVBO* vbo = (TexVBO*)vboBuffer;
 			for (int i = 0; i < vertices.size(); i++) {
@@ -115,7 +108,6 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 				vbo->texCoords.v = t.y * SCALE_UV16;
 
 				vbo++;
-				lastVertex = vertex;
 			}
 		}
 

@@ -3,11 +3,11 @@
 #include "ki/GL.h"
 
 const float VERTICES[] = {
-	// pos              // normal         //mat // tex
-	-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-	-1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-	 1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-	 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+	// pos              // normal         // tangent        //mat // tex
+	-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+	-1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	 1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+	 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 };
 
 //const int INDECES[] = {
@@ -15,7 +15,19 @@ const float VERTICES[] = {
 //	2, 1, 3,
 //};
 
-const int VERTEX_COUNT = 6;
+//const int VERTEX_COUNT = 6;
+
+namespace {
+#pragma pack(push, 1)
+	struct TexVBO {
+		glm::vec3 pos;
+		KI_VEC10 normal;
+		KI_VEC10 tangent;
+		float material;
+		KI_UV16 texCoords;
+	};
+#pragma pack(pop)
+}
 
 
 QuadMesh::QuadMesh(const std::string& name)
@@ -58,26 +70,66 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
 
 	// VBO
 	{
-		const int sz = sizeof(VERTICES);
-		const int rz = sz / 4;
+		int row_size = 12;// sizeof(VERTICES) / 4;
+
+		// https://paroj.github.io/gltut/Basic%20Optimization.html
+		const int stride_size = sizeof(TexVBO);
+		void* vboBuffer = new unsigned char[stride_size * 4];
+
+		{
+			TexVBO* vbo = (TexVBO*)vboBuffer;
+			for (int i = 0; i < 4; i++) {
+				int base = i * row_size;
+
+				vbo->pos.x = VERTICES[base++];
+				vbo->pos.y = VERTICES[base++];
+				vbo->pos.z = VERTICES[base++];
+
+				vbo->normal.x = VERTICES[base++] * SCALE_VEC10;
+				vbo->normal.y = VERTICES[base++] * SCALE_VEC10;
+				vbo->normal.z = VERTICES[base++] * SCALE_VEC10;
+
+				vbo->tangent.x = VERTICES[base++] * SCALE_VEC10;
+				vbo->tangent.y = VERTICES[base++] * SCALE_VEC10;
+				vbo->tangent.z = VERTICES[base++] * SCALE_VEC10;
+
+				vbo->material = VERTICES[base++];
+
+				vbo->texCoords.u = VERTICES[base++] * SCALE_UV16;
+				vbo->texCoords.v = VERTICES[base++] * SCALE_UV16;
+
+				vbo++;
+			}
+		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, curr.VBO);
-		glBufferData(GL_ARRAY_BUFFER, sz, &VERTICES, GL_STATIC_DRAW);
+		KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, stride_size * 4, vboBuffer, GL_STATIC_DRAW));
+		delete vboBuffer;
+
+		int offset = 0;
 
 		// vertex attr
-		glVertexAttribPointer(ATTR_POS, 3, GL_FLOAT, GL_FALSE, rz, (void*)0);
+		KI_GL_CALL(glVertexAttribPointer(ATTR_POS, 3, GL_FLOAT, GL_FALSE, stride_size, (void*)offset));
+		offset += sizeof(glm::vec3);
 
 		// normal attr
-		glVertexAttribPointer(ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, rz, (void*)((3) * sizeof(float)));
+		KI_GL_CALL(glVertexAttribPointer(ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, stride_size, (void*)offset));
+		offset += sizeof(KI_VEC10);
+
+		// tangent attr
+		KI_GL_CALL(glVertexAttribPointer(ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, stride_size, (void*)offset));
+		offset += sizeof(KI_VEC10);
 
 		// materialID attr
-		glVertexAttribPointer(ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, rz, (void*)((3 + 3) * sizeof(float)));
+		KI_GL_CALL(glVertexAttribPointer(ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, stride_size, (void*)offset));
+		offset += sizeof(float);
 
 		// texture attr
-		glVertexAttribPointer(ATTR_TEX, 2, GL_FLOAT, GL_FALSE, rz, (void*)((3 + 3 + 1) * sizeof(float)));
+		KI_GL_CALL(glVertexAttribPointer(ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, stride_size, (void*)offset));
 
 		glEnableVertexAttribArray(ATTR_POS);
 		glEnableVertexAttribArray(ATTR_NORMAL);
+		glEnableVertexAttribArray(ATTR_TANGENT);
 		glEnableVertexAttribArray(ATTR_MATERIAL_INDEX);
 		glEnableVertexAttribArray(ATTR_TEX);
 	}
