@@ -5,7 +5,7 @@
 Assets::Assets()
 {
     glsl_version[0] = 4;
-    glsl_version[1] = 2;
+    glsl_version[1] = 5;
     glsl_version[2] = 0;
 
     glsl_version_str = "#version " + std::to_string(glsl_version[0]) + std::to_string(glsl_version[1]) + std::to_string(glsl_version[2]);
