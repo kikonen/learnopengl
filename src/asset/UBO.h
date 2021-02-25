@@ -25,6 +25,7 @@ const unsigned int UBO_MATERIAL = 4;
 
 const unsigned int MATERIAL_COUNT = 4;
 const unsigned int LIGHT_COUNT = 8;
+const unsigned int TEXTURE_COUNT = 8;
 
 
 struct MatricesUBO {
@@ -103,10 +104,10 @@ struct MaterialUBO {
 	glm::vec4 specular;
 	float shininess;
 
-	unsigned int hasDiffuseTex;
-	unsigned int hasEmissionTex;
-	unsigned int hasSpecularTex;
-	unsigned int hasNormalMap;
+	int diffuseTex;
+	int emissionTex;
+	int specularTex;
+	int normalMap;
 
 	int pad1;
 	int pad2;

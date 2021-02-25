@@ -52,7 +52,7 @@ public:
 
     void prepare();
     void bindArray(Shader* shader, int index);
-    void bind(Shader* shader);
+    //void bind(Shader* shader);
 
     MaterialUBO toUBO();
 

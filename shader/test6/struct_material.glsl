@@ -5,8 +5,8 @@ struct Material {
   vec4 specular;
   float shininess;
 
-  bool hasDiffuseTex;
-  bool hasEmissionTex;
-  bool hasSpecularTex;
-  bool hasNormalMap;
+  int diffuseTex;
+  int emissionTex;
+  int specularTex;
+  int normalMapTex;
 };

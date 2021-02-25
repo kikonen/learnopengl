@@ -2,7 +2,6 @@
 
 #include struct_lights.glsl
 #include struct_material.glsl
-#include struct_texture.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -21,7 +20,7 @@ in VS_OUT {
 
 uniform sampler2DShadow shadowMap;
 
-uniform Texture textures[MAT_COUNT];
+uniform sampler2D textures[TEX_COUNT];
 
 out vec4 fragColor;
 

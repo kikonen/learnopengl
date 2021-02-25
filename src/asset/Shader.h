@@ -81,7 +81,7 @@ private:
     std::vector<std::string> loadSourceLines(const std::string& path, bool optional);
     std::vector<std::string> processInclude(const std::string& includePath, int lineNumber);
 
-    void prepareTextureUniform();
+    //void prepareTextureUniform();
     void prepareTextureUniforms();
     GLint getUniformLoc(const std::string& name);
 
@@ -279,8 +279,7 @@ public:
 
     Shader::Int viewportTexture = { "viewportTexture" };
 
-    std::vector<TextureInfo> textures;
-    TextureInfo* texture;
+    std::vector<Shader::Int> textures;
 
 private:
     int res;
@@ -295,11 +294,4 @@ private:
     std::string geometryShaderSource;
 
     std::map<const std::string, GLint> uniformLocations;
-};
-
-struct TextureInfo {
-    Shader::Int* diffuseTex;
-    Shader::Int* emissionTex;
-    Shader::Int* specularTex;
-    Shader::Int* normalMap;
 };

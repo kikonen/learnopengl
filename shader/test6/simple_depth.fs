@@ -2,10 +2,6 @@
 
 #include struct_material.glsl
 
-struct Texture {
-  sampler2D diffuse;
-};
-
 #include uniform_materials.glsl
 
 in VS_OUT {
@@ -13,15 +9,17 @@ in VS_OUT {
   flat int materialIndex;
 } fs_in;
 
-uniform Texture textures[MAT_COUNT];
+uniform sampler2D textures[TEX_COUNT];
+
 
 void main()
 {
   int matIdx = fs_in.materialIndex;
+  int diffuseTexIdx = materials[matIdx].diffuseTex;
 
   float alpha;
-  if (materials[matIdx].hasDiffuseTex) {
-    alpha = texture(textures[matIdx].diffuse, fs_in.texCoords).a;
+  if (diffuseTexIdx >= 0) {
+    alpha = texture(textures[diffuseTexIdx], fs_in.texCoords).a;
   } else {
     alpha = materials[matIdx].diffuse.a;
   }

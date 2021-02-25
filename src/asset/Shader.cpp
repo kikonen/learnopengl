@@ -232,7 +232,7 @@ int Shader::createProgram() {
 
     viewportTexture.init(this);
 
-    prepareTextureUniform();
+    //prepareTextureUniform();
     prepareTextureUniforms();
 
     vertexShaderSource = "";
@@ -242,50 +242,33 @@ int Shader::createProgram() {
     return 0;
 }
 
-void Shader::prepareTextureUniform()
-{
-    TextureInfo* info = new TextureInfo();
-    info->diffuseTex = new Shader::Int("diffuse");
-    info->diffuseTex->init(this);
-
-    info->emissionTex = new Shader::Int("emission");
-    info->emissionTex->init(this);
-
-    info->specularTex = new Shader::Int("specular");
-    info->specularTex->init(this);
-
-    info->normalMap = new Shader::Int("normalMap");
-    info->normalMap->init(this);
-
-    texture = info;
-}
+//void Shader::prepareTextureUniform()
+//{
+//    TextureInfo* info = new TextureInfo();
+//    info->diffuseTex = new Shader::Int("diffuse");
+//    info->diffuseTex->init(this);
+//
+//    info->emissionTex = new Shader::Int("emission");
+//    info->emissionTex->init(this);
+//
+//    info->specularTex = new Shader::Int("specular");
+//    info->specularTex->init(this);
+//
+//    info->normalMap = new Shader::Int("normalMap");
+//    info->normalMap->init(this);
+//
+//    texture = info;
+//}
 
 void Shader::prepareTextureUniforms()
 {
-    textures.reserve(MATERIAL_COUNT);
+    textures.reserve(TEXTURE_COUNT);
 
-    for (int i = 0; i < MATERIAL_COUNT; i++) {
-        TextureInfo info;
-
-        char name[255];
-
-        sprintf_s(name, "textures[%i].diffuse", i);
-        info.diffuseTex = new Shader::Int(name);
-        info.diffuseTex->init(this);
-
-        sprintf_s(name, "textures[%i].emission", i);
-        info.emissionTex = new Shader::Int(name);
-        info.emissionTex->init(this);
-
-        sprintf_s(name, "textures[%i].specular", i);
-        info.specularTex = new Shader::Int(name);
-        info.specularTex->init(this);
-
-        sprintf_s(name, "textures[%i].normalMap", i);
-        info.normalMap = new Shader::Int(name);
-        info.normalMap->init(this);
-
-        textures.push_back(info);
+    char name[16];
+    for (int i = 0; i < TEXTURE_COUNT; i++) {
+        sprintf_s(name, "textures[%i]", i);
+        Shader::Int& v = textures.emplace_back(name);
+        v.init(this);
     }
 }
 

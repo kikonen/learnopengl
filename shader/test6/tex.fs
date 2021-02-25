@@ -2,7 +2,6 @@
 
 #include struct_lights.glsl
 #include struct_material.glsl
-#include struct_texture.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -32,7 +31,7 @@ uniform samplerCube refractionMap;
 
 uniform sampler2DShadow shadowMap;
 
-uniform Texture textures[MAT_COUNT];
+uniform sampler2D textures[TEX_COUNT];
 
 out vec4 fragColor;
 
@@ -52,8 +51,8 @@ void main() {
     discard;
 
   vec3 normal;
-  if (material.hasNormalMap) {
-    normal = texture(textures[matIdx].normalMap, fs_in.texCoords).rgb;
+  if (material.normalMapTex >= 0) {
+    normal = texture(textures[material.normalMapTex], fs_in.texCoords).rgb;
     normal = normal * 2.0 - 1.0;
     normal = normalize(fs_in.TBN * normal);
   } else {
@@ -101,7 +100,7 @@ void main() {
 //  vec3 r = reflect(i, normal);
 //  texColor = vec4(texture(skybox, r).rgb, 1.0);
 
-  // if (material.hasNormalMap) {
+  // if (material.normalMapTex >= 0) {
   //   texColor = vec4(normal, 1.0);
   // }
 

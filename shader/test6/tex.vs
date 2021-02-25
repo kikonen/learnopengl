@@ -55,7 +55,7 @@ void main() {
 
   vs_out.fragPosLightSpace = b * lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 
-  if (materials[aMaterialIndex].hasNormalMap) {
+  if (materials[aMaterialIndex].normalMapTex >= 0) {
     vec3 N = vs_out.normal;
     vec3 T = normalize(aNormalMatrix * aTangent);
     T = normalize(T - dot(T, N) * N);
