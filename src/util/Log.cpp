@@ -1,6 +1,7 @@
 #include "Log.h"
 
 #include <iostream>
+#include <sstream>
 
 #include <spdlog/sinks/basic_file_sink.h>
 
@@ -10,7 +11,7 @@ void Log::init()
 {
 	try
 	{
-		Log::logger = spdlog::basic_logger_mt("basic_logger", "log/development.log");
+		Log::logger = spdlog::basic_logger_mt("main", "log/development.log");
 	}
 	catch (const spdlog::spdlog_ex& ex)
 	{
@@ -27,11 +28,12 @@ void Log::glDebug(
 	const GLchar* message,
 	const void* userParam)
 {
-	std::cout << "source=" << source
+	std::stringstream ss;
+	ss << "source=" << source
 		<< " type=" << type
 		<< " id=" << id
 		<< " severity=" << severity
 		<< " lenth=" << length
-		<< " message=" << message
-		<< std::endl;
+		<< " message=" << message;
+	getLogger().warn(ss.str());
 }
