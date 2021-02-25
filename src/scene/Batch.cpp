@@ -105,11 +105,13 @@ void Batch::update(unsigned int count)
 		count = size;
 	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, modelBuffer);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(glm::mat4), &modelMatrices[0]);
+	//glBindBuffer(GL_ARRAY_BUFFER, modelBuffer);
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(glm::mat4), &modelMatrices[0]);
+	KI_GL_CALL(glNamedBufferSubData(modelBuffer, 0, count * sizeof(glm::mat4), &modelMatrices[0]));
 
-	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(glm::mat3), &normalMatrices[0]);
+	//glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(glm::mat3), &normalMatrices[0]);
+	KI_GL_CALL(glNamedBufferSubData(normalBuffer, 0, count * sizeof(glm::mat3), &normalMatrices[0]));
 
 	KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
