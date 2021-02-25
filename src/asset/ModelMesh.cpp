@@ -52,7 +52,7 @@ void ModelMesh::prepare(const Assets& assets)
 		glGenBuffers(1, &materialsUboId);
 		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
 		int sz = sizeof(MaterialsUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, sz);
 		materialsUboSize = sz;
