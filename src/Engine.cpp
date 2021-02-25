@@ -14,6 +14,7 @@ Engine* Engine::current = nullptr;
 Engine::Engine() {
 	debug = false;
 	throttleFps = FPS_15;
+	Log::init();
 	window = new Window(*this);
 }
 
@@ -35,6 +36,7 @@ void Engine::run() {
 		<< " GL_MAX_VERTEX_UNIFORM_COMPONENTS=" << info.maxVertexUniformComponents << std::endl
 		<< " GL_MAX_VERTEX_ATTRIBS=" << info.maxVertexAttributes << std::endl;
 
+	Log::getLogger().info("setup");
 	int res = onSetup();
 	if (res) {
 		window->close();

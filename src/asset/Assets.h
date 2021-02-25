@@ -14,6 +14,8 @@ public:
     int glsl_version[3];
     std::string glsl_version_str;
 
+    std::string logFile;
+
     std::string modelsDir;
     std::string shadersDir;
     std::string spritesDir;

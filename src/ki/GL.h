@@ -12,6 +12,9 @@
 #define GL_GLEXT_PROTOTYPES
 #include <GLFW/glfw3.h>
 
+#include "util/Log.h"
+
+
 #define KI_GL_DEBUG_CHECK
 //#define KI_GL_DEBUG_CALL
 //#define KI_GL_DEBUG_BIND

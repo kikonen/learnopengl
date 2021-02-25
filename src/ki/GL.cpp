@@ -4,13 +4,21 @@
 
 
 namespace ki {
-	void glfwErrorCallback(int, const char* message) {
+	void glfwErrorCallback(int, const char* message) 
+	{
 		std::cout << message << std::endl;
 	}
 
-	void glMessageCallback(GLenum, GLenum, GLuint, GLenum, GLsizei,
-		const GLchar* message, const void*) {
-		glfwErrorCallback(0, message);
+	void glMessageCallback(
+		GLenum source, 
+		GLenum type, 
+		GLuint id, 
+		GLenum severity, 
+		GLsizei length,
+		const GLchar* message, 
+		const void* userParam) 
+	{
+		Log::glDebug(source, type, id, severity, length, message, userParam);
 	}
 
 	void GL::startError()
@@ -21,10 +29,13 @@ namespace ki {
 	void GL::startDebug()
 	{
 		// Enable debug output
-		//glDebugMessageCallback(glMessageCallback, 0);
-		//glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
-		//glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH, 0, NULL, GL_TRUE);
-		//glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, NULL, GL_TRUE);
+		glEnable(GL_DEBUG_OUTPUT);
+		glDebugMessageCallback(glMessageCallback, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, NULL, GL_TRUE);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH, 0, NULL, GL_TRUE);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, NULL, GL_TRUE);
+		checkErrors("init");
 	}
 
 	/*
