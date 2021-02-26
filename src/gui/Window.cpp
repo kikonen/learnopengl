@@ -141,8 +141,10 @@ void Window::onMouseMove(double xpos, double ypos)
 {
 	input->onMouseMove(xpos, ypos);
 
+	bool isAlt = input->isModifier(Modifier::ALT);
 	int state = glfwGetMouseButton(glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
-	if (state == GLFW_PRESS && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
+
+	if ((isAlt || state == GLFW_PRESS) && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		Camera* camera = engine.currentScene->getCamera();
