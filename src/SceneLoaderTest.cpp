@@ -296,9 +296,8 @@ void SceneLoaderTest::setupNodeBrickwall()
 		type2->renderBack = true;
 		{
 			MeshLoader loader(assets, "woodwall");
-			loader.defaultMaterial->reflection = true;
-			loader.overrideMaterials = true;
 			type2->mesh = loader.load();
+			type2->setReflection(0.3);
 		}
 
 		for (int i = 0; i < 5; i++) {
@@ -318,9 +317,8 @@ void SceneLoaderTest::setupNodeBigMirror()
 		
 		{
 			MeshLoader loader(assets, "woodwall");
-			loader.defaultMaterial->reflection = true;
-			loader.overrideMaterials = true;
 			type->mesh = loader.load();
+			type->setReflection(0.8);
 		}
 
 		{
@@ -417,7 +415,6 @@ void SceneLoaderTest::setupNodeTeapot()
 
 		MeshLoader loader(assets, "smooth_teapot");
 		loader.defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
-		//loader.overrideMaterials = true;
 		type->mesh = loader.load();
 
 		Node* node = new Node(type);
@@ -435,9 +432,8 @@ void SceneLoaderTest::setupNodeCow()
 		{
 			MeshLoader loader(assets, "texture_cow");
 			loader.defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
-			loader.defaultMaterial->reflection = true;
-			loader.overrideMaterials = true;
 			type->mesh = loader.load();
+			type->setReflection(0.5);
 		}
 
 		Node* node = new Node(type);
@@ -517,7 +513,6 @@ void SceneLoaderTest::setupNodeBrickCube()
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "texture_cube");
 		type->mesh = loader.load();
-		//type->reflection = true;
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 20, 5) + assets.groundOffset);
@@ -546,9 +541,8 @@ void SceneLoaderTest::setupNodeGlassBall()
 
 		{
 			MeshLoader loader(assets, "glass_ball");
-			loader.defaultMaterial->reflection = true;
-			loader.overrideMaterials = true;
 			type->mesh = loader.load();
+			type->setReflection(1.0);
 		}
 
 		Node* node = new Node(type);
@@ -565,6 +559,7 @@ void SceneLoaderTest::setupNodeWaterBall()
 
 		MeshLoader loader(assets, "water_ball");
 		type->mesh = loader.load();
+		type->setReflection(0.3);
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 25, 0) + assets.groundOffset);
@@ -642,9 +637,8 @@ void SceneLoaderTest::setupNodeAsteroid()
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 		{
 			MeshLoader loader(assets, "rock", "/rock/");
-			loader.defaultMaterial->reflection = true;
-			loader.overrideMaterials = true;
 			type->mesh = loader.load();
+			type->setReflection(0.7);
 		}
 
 		Node* node = new Node(type);
@@ -733,13 +727,14 @@ void SceneLoaderTest::setupWater()
 
 		NodeType* type = new NodeType(NodeType::nextID(), shader);
 		type->renderBack = true;
-		type->blend = true;
+//		type->blend = true;
 		type->noShadow = true;
 		type->mesh = generator.generateWater(material);
 
 		glm::vec3 pos = assets.groundOffset;
 		Water* water = new Water(type, pos.x, pos.y + 5, pos.z);
 		water->setPos(pos + glm::vec3(0, 5, 0));
+		water->setScale(100);
 		water->setRotation({ 0, 0, 90 });
 
 		scene->registry.addWater(water);

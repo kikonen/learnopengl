@@ -49,6 +49,16 @@ bool QuadMesh::hasRefraction()
 	return material->refraction;
 }
 
+void QuadMesh::setReflection(float reflection)
+{
+	material->reflection = reflection;
+}
+
+void QuadMesh::setRefraction(float refraction)
+{
+	material->refraction = refraction;
+}
+
 void QuadMesh::prepare(const Assets& assets)
 {
 	buffers.prepare(false);

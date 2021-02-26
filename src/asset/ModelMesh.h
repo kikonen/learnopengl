@@ -30,6 +30,9 @@ public:
 	bool hasReflection() override;
 	bool hasRefraction() override;
 
+	void setReflection(float reflection) override;
+	void setRefraction(float refraction) override;
+
 	void prepare(const Assets& assets) override;
 	void prepareBuffers(MeshBuffers& curr) override;
 	void bind(const RenderContext& ctx, Shader* shader) override;

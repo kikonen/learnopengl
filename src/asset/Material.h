@@ -71,8 +71,8 @@ public:
     TextureSpec textureSpec;
 
     int pattern = -1;
-    bool reflection = false;
-    bool refraction = false;
+    float reflection = 0.f;
+    float refraction = 0.f;
 
     BoundTexture* diffuseTex = nullptr;
     BoundTexture* emissionTex = nullptr;

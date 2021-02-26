@@ -32,6 +32,16 @@ bool NodeType::hasRefraction()
 	return mesh->hasRefraction();
 }
 
+void NodeType::setReflection(float reflection)
+{
+	mesh->setReflection(reflection);
+}
+
+void NodeType::setRefraction(float refraction)
+{
+	mesh->setRefraction(refraction);
+}
+
 void NodeType::prepare(const Assets& assets)
 {
 	if (!mesh) return;

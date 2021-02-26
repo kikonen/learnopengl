@@ -47,6 +47,20 @@ bool ModelMesh::hasRefraction()
 	return refraction;
 }
 
+void ModelMesh::setReflection(float reflection)
+{
+	for (auto& material : materials) {
+		material->reflection = reflection;
+	}
+}
+
+void ModelMesh::setRefraction(float refraction)
+{
+	for (auto& material : materials) {
+		material->refraction = refraction;
+	}
+}
+
 void ModelMesh::prepare(const Assets& assets)
 {
 	buffers.prepare(true);
@@ -55,8 +69,8 @@ void ModelMesh::prepare(const Assets& assets)
 	refraction = false;
 	for (auto const& material : materials) {
 		material->prepare();
-		reflection |= material->reflection;
-		refraction |= material->refraction;
+		reflection |= material->reflection > 0;
+		refraction |= material->refraction > 0;
 	}
 
 	prepareBuffers(buffers);

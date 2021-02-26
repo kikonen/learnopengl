@@ -16,6 +16,9 @@ public:
 	bool hasReflection();
 	bool hasRefraction();
 
+	void setReflection(float reflection);
+	void setRefraction(float refraction);
+
 	void prepare(const Assets& assets);
 	Shader* bind(const RenderContext& ctx, Shader* shader);
 

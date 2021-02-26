@@ -11,6 +11,6 @@ struct Material {
   int normalMapTex;
 
   int pattern;
-  bool reflection;
-  bool refraction;
+  float reflection;
+  float refraction;
 };

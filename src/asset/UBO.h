@@ -118,8 +118,8 @@ struct MaterialUBO {
 
 	int pattern;
 
-	int reflection;
-	int refraction;
+	float reflection;
+	float refraction;
 };
 
 // NOTE KI align 16
