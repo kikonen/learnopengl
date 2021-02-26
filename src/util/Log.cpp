@@ -35,5 +35,10 @@ void Log::glDebug(
 		<< " severity=" << severity
 		<< " lenth=" << length
 		<< " message=" << message;
+
+	std::cout << ss.str() << std::endl;
 	getLogger().warn(ss.str());
+	if (severity == GL_DEBUG_SEVERITY_HIGH) {
+		__debugbreak();
+	}
 }

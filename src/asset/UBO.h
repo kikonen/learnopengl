@@ -9,12 +9,12 @@ struct UBO {
 	unsigned int matrices;
 	unsigned int data;
 	unsigned int lights;
-	unsigned int materials;
+	//unsigned int materials;
 
 	unsigned int matricesSize;
 	unsigned int dataSize;
 	unsigned int lightsSize;
-	unsigned int materialsSize;
+	//unsigned int materialsSize;
 };
 
 const unsigned int UBO_MATRICES = 0;

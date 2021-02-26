@@ -45,7 +45,6 @@ private:
 	const std::string modelName;
 	const std::string path;
 
-	MaterialsUBO materialsUbo;
 	unsigned int  materialsUboId = -1;
 	unsigned int materialsUboSize = -1;
 };

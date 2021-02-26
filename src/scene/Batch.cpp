@@ -28,14 +28,13 @@ void Batch::prepare(NodeType* type)
 			size = modelMatrices.size();
 		}
 
-		glGenBuffers(1, &modelBuffer);
-		KI_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, modelBuffer));
-		KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, size * sizeof(glm::mat4), &modelMatrices[0], GL_DYNAMIC_DRAW));
-		//glCreateBuffers(1, &modelBuffer);
-		//KI_GL_CALL(glNamedBufferStorage(modelBuffer, size * sizeof(glm::mat4), &modelMatrices[0], GL_DYNAMIC_STORAGE_BIT));
+		glCreateBuffers(1, &modelBuffer);
+		KI_GL_CALL(glNamedBufferStorage(modelBuffer, size * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT));
 
 		// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
 		size_t vecSize = sizeof(glm::vec4);
+
+		KI_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, modelBuffer));
 
 		glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_1, 4, GL_FLOAT, GL_FALSE, 4 * vecSize, (void*)0);
 		glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_2, 4, GL_FLOAT, GL_FALSE, 4 * vecSize, (void*)(1 * vecSize));
@@ -66,14 +65,13 @@ void Batch::prepare(NodeType* type)
 			size = normalMatrices.size();
 		}
 
-		glGenBuffers(1, &normalBuffer);
-		KI_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, normalBuffer));
-		KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, size * sizeof(glm::mat3), &normalMatrices[0], GL_DYNAMIC_DRAW));
-		//glCreateBuffers(1, &normalBuffer);
-		//KI_GL_CALL(glNamedBufferStorage(normalBuffer, size * sizeof(glm::mat3), &normalMatrices[0], GL_DYNAMIC_STORAGE_BIT));
+		glCreateBuffers(1, &normalBuffer);
+		KI_GL_CALL(glNamedBufferStorage(normalBuffer, size * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT));
 
 		// NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
 		size_t vecSize = sizeof(glm::vec3);
+
+		KI_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, normalBuffer));
 
 		glVertexAttribPointer(ATTR_INSTANCE_NORMAL_MATRIX_1, 3, GL_FLOAT, GL_FALSE, 3 * vecSize, (void*)0);
 		glVertexAttribPointer(ATTR_INSTANCE_NORMAL_MATRIX_2, 3, GL_FLOAT, GL_FALSE, 3 * vecSize, (void*)(1 * vecSize));

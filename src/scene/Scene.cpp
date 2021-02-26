@@ -254,51 +254,47 @@ void Scene::prepareUBOs()
 {
 	// Matrices
 	{
-		glGenBuffers(1, &ubo.matrices);
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo.matrices);
-		// projection + view
 		int sz = sizeof(MatricesUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		glCreateBuffers(1, &ubo.matrices);
+		glNamedBufferStorage(ubo.matrices, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATRICES, ubo.matrices, 0, sz);
 		ubo.matricesSize = sz;
 	}
 	// Data
 	{
-		glGenBuffers(1, &ubo.data);
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo.data);
-
-		// cameraPos + time
 		int sz = sizeof(DataUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		glCreateBuffers(1, &ubo.data);
+		glNamedBufferStorage(ubo.data, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, ubo.data, 0, sz);
 		ubo.dataSize = sz;
 	}
 	// Lights
 	{
-		glGenBuffers(1, &ubo.lights);
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo.lights);
-		// DirLight + PointLight + SpotLight
 		int sz = sizeof(LightsUBO);
-		int sz2 = sizeof(DirLightUBO);
-		int sz3 = sizeof(PointLightUBO);
-		int sz4 = sizeof(SpotLightUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		//int sz2 = sizeof(DirLightUBO);
+		//int sz3 = sizeof(PointLightUBO);
+		//int sz4 = sizeof(SpotLightUBO);
+
+		glCreateBuffers(1, &ubo.lights);
+		glNamedBufferStorage(ubo.lights, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, ubo.lights, 0, sz);
 		ubo.lightsSize = sz;
 	}
 
-	// materials
-	{
-		glGenBuffers(1, &ubo.materials);
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo.materials);
-		int sz = sizeof(MaterialsUBO);
-		int sz2 = sizeof(MaterialUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STREAM_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, ubo.materials, 0, sz);
-		ubo.materialsSize = sz;
-	}
+	//// materials
+	//{
+	//	int sz = sizeof(MaterialsUBO);
+	//	//int sz2 = sizeof(MaterialUBO);
+
+	//	glCreateBuffers(1, &ubo.materials);
+	//	glNamedBufferStorage(ubo.materials, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+
+	//	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, ubo.materials, 0, sz);
+	//	ubo.materialsSize = sz;
+	//}
 }

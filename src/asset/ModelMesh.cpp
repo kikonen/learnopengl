@@ -49,13 +49,10 @@ void ModelMesh::prepare(const Assets& assets)
 
 	// materials
 	{
-		glGenBuffers(1, &materialsUboId);
-		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
 		int sz = sizeof(MaterialsUBO);
-		glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STATIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, sz);
 		materialsUboSize = sz;
+
+		MaterialsUBO materialsUbo;
 
 		int index = 0;
 		for (auto const& material : materials) {
@@ -63,9 +60,8 @@ void ModelMesh::prepare(const Assets& assets)
 			index++;
 		}
 
-		glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, materialsUboSize, &materialsUbo);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glCreateBuffers(1, &materialsUboId);
+		glNamedBufferStorage(materialsUboId, sz, &materialsUbo, 0);
 	}
 }
 
@@ -113,6 +109,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 
 		glBindBuffer(GL_ARRAY_BUFFER, curr.VBO);
 		KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, stride_size * vertices.size(), vboBuffer, GL_STATIC_DRAW));
+
 		delete vboBuffer;
 
 		int offset = 0;

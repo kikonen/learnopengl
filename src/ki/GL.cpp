@@ -28,8 +28,10 @@ namespace ki {
 
 	void GL::startDebug()
 	{
-		// Enable debug output
+		// https://bcmpinc.wordpress.com/2015/08/21/debugging-since-opengl-4-3/
 		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
 		glDebugMessageCallback(glMessageCallback, nullptr);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, NULL, GL_TRUE);

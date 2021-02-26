@@ -88,6 +88,7 @@ void Engine::run() {
 			// -------------------------------------------------------------------------------
 			glfwSwapBuffers(window->glfwWindow);
 			glfwPollEvents();
+			//glFinish();
 		}
 
 		{
