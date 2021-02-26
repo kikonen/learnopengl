@@ -102,7 +102,7 @@ void ShadowMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& regist
 
 	for (auto& x : registry.sprites) {
 		NodeType* t = x.first;
-		if (t->light || t->skipShadow) continue;
+		if (t->noShadow) continue;
 		Shader* shader = t->bind(ctx, shadowShader);
 
 		Batch& batch = t->batch;
@@ -117,7 +117,7 @@ void ShadowMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& regist
 
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
-		if (t->light || t->skipShadow) continue;
+		if (t->noShadow) continue;
 		Shader* shader = t->bind(ctx, shadowShader);
 
 		Batch& batch = t->batch;

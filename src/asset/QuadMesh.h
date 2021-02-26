@@ -16,6 +16,9 @@ public:
 	QuadMesh(const std::string& name);
 	~QuadMesh();
 
+	bool hasReflection() override;
+	bool hasRefraction() override;
+
 	void prepare(const Assets& assets) override;
 	void prepareBuffers(MeshBuffers& curr) override;
 	void bind(const RenderContext& ctx, Shader* shader) override;

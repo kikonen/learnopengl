@@ -29,8 +29,6 @@ void NormalRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
-		if (t->light || t->skipShadow) continue;
-
 		t->bind(ctx, normalShader);
 
 		Batch& batch = t->batch;
@@ -45,8 +43,6 @@ void NormalRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 
 	for (auto& x : registry.terrains) {
 		NodeType* t = x.first;
-		if (t->light || t->skipShadow) continue;
-
 		t->bind(ctx, normalShader);
 
 		Batch& batch = t->batch;

@@ -22,16 +22,10 @@ in VS_OUT {
   mat3 TBN;
 } fs_in;
 
-uniform int hasPattern;
-uniform bool hasReflectionMap;
-uniform samplerCube reflectionMap;
-
-uniform bool hasRefractionMap;
-uniform samplerCube refractionMap;
-
-uniform sampler2DShadow shadowMap;
-
 uniform sampler2D textures[TEX_COUNT];
+uniform samplerCube reflectionMap;
+uniform samplerCube refractionMap;
+uniform sampler2DShadow shadowMap;
 
 out vec4 fragColor;
 
@@ -49,7 +43,7 @@ void main() {
 
   vec3 normal = fs_in.normal;
 
-  if (hasPattern == 1) {
+  if (material.pattern == 1) {
     float a = 0.25;
     float b = 50.0;
     float x = fs_in.vertexPos.x;
@@ -67,12 +61,12 @@ void main() {
 
   vec3 toView = normalize(viewPos - fs_in.fragPos);
 
-  if (hasReflectionMap) {
+  if (material.reflection) {
     vec3 r = reflect(-toView, normal);
     material.diffuse = vec4(texture(reflectionMap, r).rgb, 1.0);
   }
 
-  if (hasRefractionMap) {
+  if (material.refraction) {
     float ratio = 1.0 / 1.33;
     vec3 r = refract(-toView, normal, ratio);
     material.diffuse = vec4(texture(refractionMap, r).rgb, 1.0);

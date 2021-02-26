@@ -39,6 +39,16 @@ QuadMesh::~QuadMesh()
 {
 }
 
+bool QuadMesh::hasReflection()
+{
+	return material->reflection;
+}
+
+bool QuadMesh::hasRefraction()
+{
+	return material->refraction;
+}
+
 void QuadMesh::prepare(const Assets& assets)
 {
 	buffers.prepare(false);

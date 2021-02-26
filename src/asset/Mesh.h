@@ -9,7 +9,10 @@ class Mesh
 {
 public:
 	Mesh();
-	~Mesh();
+	virtual ~Mesh();
+
+	virtual bool hasReflection() = 0;
+	virtual bool hasRefraction() = 0;
 
 	virtual void prepare(const Assets& assets) = 0;
 	virtual void prepareBuffers(MeshBuffers& curr) = 0;

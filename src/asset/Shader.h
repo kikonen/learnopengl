@@ -262,10 +262,7 @@ public:
     //Shader::Mat4 modelMatrix = { "modelMatrix" };
     //Shader::Mat3 normalMatrix = { "normalMatrix" };
 
-    Shader::Bool hasReflectionMap = { "hasReflectionMap" };
     Shader::Int reflectionMap = { "reflectionMap" };
-
-    Shader::Bool hasRefractionMap = { "hasRefractionMap" };
     Shader::Int refractionMap = { "refractionMap" };
 
     Shader::Int shadowMap = { "shadowMap" };

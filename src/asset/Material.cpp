@@ -132,8 +132,8 @@ MaterialUBO Material::toUBO()
 		specularTex ? specularTex->unitIndex : -1,
 		normalMapTex ? normalMapTex->unitIndex : -1,
 
-		0,
-		0,
-		0
+		pattern,
+		reflection,
+		refraction,
 	};
 }

@@ -100,7 +100,6 @@ void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& re
 	for (auto& x : registry.terrains) {
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);
-		shader->hasReflectionMap.set(false);
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);
@@ -115,7 +114,6 @@ void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& re
 	for (auto& x : registry.sprites) {
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);
-		shader->hasReflectionMap.set(false);
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);
@@ -150,7 +148,7 @@ Node* ReflectionMapRenderer::findCenter(const RenderContext& ctx, NodeRegistry& 
 
 	std::map<float, Node*> sorted;
 	for (auto& x : registry.nodes) {
-		if (!x.first->reflection) continue;
+		if (!x.first->hasReflection()) continue;
 
 		for (auto& e : x.second) {
 			glm::vec3 ray = e->getPos() - cameraPos;

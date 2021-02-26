@@ -9,4 +9,8 @@ struct Material {
   int emissionTex;
   int specularTex;
   int normalMapTex;
+
+  int pattern;
+  bool reflection;
+  bool refraction;
 };

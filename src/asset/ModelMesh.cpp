@@ -37,12 +37,26 @@ ModelMesh::~ModelMesh()
 {
 }
 
+bool ModelMesh::hasReflection()
+{
+	return reflection;
+}
+
+bool ModelMesh::hasRefraction()
+{
+	return refraction;
+}
+
 void ModelMesh::prepare(const Assets& assets)
 {
 	buffers.prepare(true);
 
+	reflection = false;
+	refraction = false;
 	for (auto const& material : materials) {
 		material->prepare();
+		reflection |= material->reflection;
+		refraction |= material->refraction;
 	}
 
 	prepareBuffers(buffers);

@@ -214,10 +214,7 @@ int Shader::createProgram() {
     //modelMatrix.init(this); 
     //normalMatrix.init(this);
 
-    hasReflectionMap.init(this);
     reflectionMap.init(this);
-   
-    hasRefractionMap.init(this);
     refractionMap.init(this);
 
     shadowMap.init(this);

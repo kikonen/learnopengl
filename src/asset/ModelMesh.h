@@ -27,6 +27,9 @@ public:
 
 	~ModelMesh();
 
+	bool hasReflection() override;
+	bool hasRefraction() override;
+
 	void prepare(const Assets& assets) override;
 	void prepareBuffers(MeshBuffers& curr) override;
 	void bind(const RenderContext& ctx, Shader* shader) override;
@@ -44,6 +47,9 @@ public:
 private:
 	const std::string modelName;
 	const std::string path;
+
+	bool refraction = false;
+	bool reflection = false;
 
 	unsigned int  materialsUboId = -1;
 	unsigned int materialsUboSize = -1;

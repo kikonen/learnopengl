@@ -13,6 +13,9 @@ public:
 	NodeType(int objectID, Shader* defaultShader = nullptr);
 	~NodeType();
 
+	bool hasReflection();
+	bool hasRefraction();
+
 	void prepare(const Assets& assets);
 	Shader* bind(const RenderContext& ctx, Shader* shader);
 
@@ -26,9 +29,8 @@ public:
 	bool blend = false;
 	bool light = false;
 	bool renderBack = false;
-	bool skipShadow = false;
+	bool noShadow = false;
 	bool batchMode = true;
-	bool reflection = false;
 
 	Mesh* mesh = nullptr;
 	Shader* defaultShader = nullptr;

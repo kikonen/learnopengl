@@ -20,6 +20,18 @@ NodeType::~NodeType()
 {
 }
 
+bool NodeType::hasReflection()
+{
+	if (!mesh) return false;
+	return mesh->hasReflection();
+}
+
+bool NodeType::hasRefraction()
+{
+	if (!mesh) return false;
+	return mesh->hasRefraction();
+}
+
 void NodeType::prepare(const Assets& assets)
 {
 	if (!mesh) return;
@@ -48,9 +60,6 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 	shader->bind();
 	mesh->bind(ctx, shader);
 	ctx.bind(shader);
-
-	//shader->drawInstanced.set(false);
-	shader->hasReflectionMap.set(reflection);
 
 	KI_GL_CALL(shader->reflectionMap.set(ctx.assets.reflectionMapUnitIndex));
 	KI_GL_CALL(shader->refractionMap.set(ctx.assets.refractionMapUnitIndex));

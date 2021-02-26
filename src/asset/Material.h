@@ -70,6 +70,10 @@ public:
 
     TextureSpec textureSpec;
 
+    int pattern = -1;
+    bool reflection = false;
+    bool refraction = false;
+
     BoundTexture* diffuseTex = nullptr;
     BoundTexture* emissionTex = nullptr;
     BoundTexture* specularTex = nullptr;
