@@ -26,6 +26,12 @@ void NodeRegistry::addTerrain(Terrain* terrain)
 	pendingTerrains.push_back(terrain);
 }
 
+void NodeRegistry::addWater(Water* water)
+{
+	std::lock_guard<std::mutex> lock(load_lock);
+	pendingWaters.push_back(water);
+}
+
 void NodeRegistry::addViewPort(Viewport* viewport)
 {
 	std::lock_guard<std::mutex> lock(load_lock);
@@ -40,6 +46,7 @@ void NodeRegistry::attachNodes()
 	std::map<NodeType*, std::vector<Node*>> newNodes;
 	std::map<NodeType*, std::vector<Sprite*>> newSprites;
 	std::map<NodeType*, std::vector<Terrain*>> newTerrains;
+	std::map<NodeType*, std::vector<Water*>> newWaters;
 
 	{
 		for (auto e : pendingNodes) {
@@ -51,9 +58,13 @@ void NodeRegistry::attachNodes()
 		for (auto e : pendingTerrains) {
 			newTerrains[e->type].push_back(e);
 		}
+		for (auto e : pendingWaters) {
+			newWaters[e->type].push_back(e);
+		}
 		pendingNodes.clear();
 		pendingSprites.clear();
 		pendingTerrains.clear();
+		pendingWaters.clear();
 	}
 
 	for (auto& x : newNodes) {
@@ -88,6 +99,17 @@ void NodeRegistry::attachNodes()
 		for (auto& e : x.second) {
 			KI_GL_CALL(e->prepare(assets));
 			terrains[e->type].push_back(e);
+		}
+	}
+
+	for (auto& x : newWaters) {
+		NodeType* t = x.first;
+		t->batch.size = assets.batchSize;
+		KI_GL_CALL(t->prepare(assets));
+
+		for (auto& e : x.second) {
+			KI_GL_CALL(e->prepare(assets));
+			waters[e->type].push_back(e);
 		}
 	}
 }

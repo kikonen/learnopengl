@@ -20,14 +20,13 @@ Assets::Assets()
     //groundOffset = { 0.f, 15.f, -40.f };
     groundOffset = { 200.f, 0.f, 200.f };
 
+    waterTileSize = 100;
     terrainTileSize = 400;
 
     batchSize = 1000;
 
     nearPlane = 0.1f;
     farPlane = 1000.0f;
-
-    waterPlane = 0.0f;
 
     shadowNearPlane = 0.1f;
     shadowFarPlane = 1000.0f;

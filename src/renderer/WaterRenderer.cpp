@@ -17,8 +17,13 @@ void WaterRenderer::prepare()
 	refractionMap = new DynamicCubeMap(assets.waterRefractionCubeSize);
 }
 
-void WaterRenderer::bind(const RenderContext& ctx)
+void WaterRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
 {
+	for (auto& x : registry.waters) {
+		for (auto& e : x.second) {
+			e->update(ctx);
+		}
+	}
 }
 
 void WaterRenderer::bindTexture(const RenderContext& ctx)
@@ -29,6 +34,21 @@ void WaterRenderer::bindTexture(const RenderContext& ctx)
 	refractionMap->bindTexture(ctx, assets.waterReflectionMapUnitId);
 }
 
-void WaterRenderer::render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
+void WaterRenderer::bind(const RenderContext& ctx)
 {
+}
+
+void WaterRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
+{
+	for (auto& x : registry.waters) {
+		Shader* shader = x.first->bind(ctx, nullptr);
+		if (!shader) continue;
+		shader->reflectionMap.set(assets.reflectionMapUnitIndex);
+		shader->shadowMap.set(assets.shadowMapUnitIndex);
+
+		for (auto& e : x.second) {
+			e->bind(ctx, shader);
+			e->draw(ctx);
+		}
+	}
 }

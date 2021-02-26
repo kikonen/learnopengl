@@ -2,6 +2,8 @@
 
 #include "ki/GL.h"
 
+#include "scene/RenderContext.h"
+
 class FrameBuffer
 {
 public:
@@ -9,8 +11,8 @@ public:
 	~FrameBuffer();
 
 	virtual void prepare() = 0;
-	void bind();
-	void unbind();
+	void bind(const RenderContext& ctx);
+	void unbind(const RenderContext& ctx);
 
 	void bindTexture(int unitID);
 

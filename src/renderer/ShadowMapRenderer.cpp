@@ -71,18 +71,14 @@ void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 	if (drawIndex++ < drawSkip) return;
 	drawIndex = 0;
 
-	shadowBuffer->bind();
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	drawNodes(ctx, registry);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	{
+		shadowBuffer->bind(ctx);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		drawNodes(ctx, registry);
+		shadowBuffer->unbind(ctx);
+	}
 
 	rendered = true;
-
-	// reset viewport
-	glViewport(0, 0, ctx.width, ctx.height);
 }
 
 void ShadowMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)

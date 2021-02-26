@@ -13,6 +13,7 @@ public:
 	void prepare() override;
 
 	void update(const RenderContext& ctx, NodeRegistry& registry) override;
+
 	void render(const RenderContext& ctx, NodeRegistry& registry) override;
 };
 

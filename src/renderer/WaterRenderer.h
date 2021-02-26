@@ -14,9 +14,12 @@ public:
 
 	void prepare() override;
 
-	void bind(const RenderContext& ctx);
+	void update(const RenderContext& ctx, NodeRegistry& registry) override;
+
 	void bindTexture(const RenderContext& ctx);
-	void render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox);
+
+	void bind(const RenderContext& ctx);
+	void render(const RenderContext& ctx, NodeRegistry& registry) override;
 
 public:
 

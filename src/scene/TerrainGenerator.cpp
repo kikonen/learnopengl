@@ -60,3 +60,11 @@ ModelMesh* TerrainGenerator::generateTerrain(Material* material)
 
 	return mesh;
 }
+
+QuadMesh* TerrainGenerator::generateWater(Material* material)
+{
+	QuadMesh* mesh = new QuadMesh("water");
+	mesh->material = material;
+
+	return mesh;
+}

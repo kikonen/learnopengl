@@ -4,6 +4,7 @@
 #include "asset/PlainTexture.h"
 
 #include "model/Terrain.h"
+#include "model/Water.h"
 #include "model/InstancedNode.h"
 
 #include "controller/CameraController.h"
@@ -63,6 +64,8 @@ void SceneLoaderTest::setup()
 	setupSpriteSkeleton();
 
 	setupTerrain();
+	setupWater();
+
 	setupNodeSkybox();
 
 	//setupNodeBackpack();
@@ -691,10 +694,36 @@ void SceneLoaderTest::setupTerrain()
 				type->renderBack = true;
 				type->mesh = generator.generateTerrain(material);
 
-				Terrain* terrain = new Terrain(type, x, z);
+				Terrain* terrain = new Terrain(type, x, 0, z);
 				scene->registry.addTerrain(terrain);
 			}
 		}
+	});
+}
+
+void SceneLoaderTest::setupWater()
+{
+	addLoader([this]() {
+		Material* material = new Material("water");
+		material->ns = 100;
+		material->ks = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
+		material->kd = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
+
+		Shader* shader = getShader(TEX_WATER);
+
+		TerrainGenerator generator(assets);
+
+		NodeType* type = new NodeType(NodeType::nextID(), shader);
+		type->renderBack = true;
+		type->blend = true;
+		type->mesh = generator.generateWater(material);
+
+		glm::vec3 pos = assets.groundOffset;
+		Water* water = new Water(type, pos.x, pos.y + 5, pos.z);
+		water->setPos(pos + glm::vec3(0, 5, 0));
+		water->setRotation({ 0, 0, 90 });
+
+		scene->registry.addWater(water);
 	});
 }
 

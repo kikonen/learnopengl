@@ -23,14 +23,13 @@ public:
 
     glm::vec3 groundOffset;
 
+    int waterTileSize;
     int terrainTileSize;
 
     int batchSize;
 
     float nearPlane;
     float farPlane;
-
-    float waterPlane;
 
     // NOTE KI MUST match lookup() in light shadow shader
     float shadowNearPlane;

@@ -17,15 +17,16 @@ FrameBuffer::~FrameBuffer()
 	}
 }
 
-void FrameBuffer::bind()
+void FrameBuffer::bind(const RenderContext& ctx)
 {
-	glViewport(0, 0, width, height);
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	glViewport(0, 0, width, height);
 }
 
-void FrameBuffer::unbind()
+void FrameBuffer::unbind(const RenderContext& ctx)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, ctx.width, ctx.height);
 }
 
 void FrameBuffer::bindTexture(int unitID)

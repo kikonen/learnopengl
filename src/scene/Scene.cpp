@@ -16,6 +16,8 @@ Scene::Scene(const Assets& assets)
 	nodeRenderer = new NodeRenderer(assets);
 	spriteRenderer = new SpriteRenderer(assets);
 	terrainRenderer = new TerrainRenderer(assets);
+	waterRenderer = new WaterRenderer(assets);
+
 	viewportRenderer = new ViewportRenderer(assets);
 
 	shadowMapRenderer = new ShadowMapRenderer(assets);
@@ -30,11 +32,15 @@ Scene::~Scene()
 	delete nodeRenderer;
 	delete spriteRenderer;
 	delete terrainRenderer;
+	delete waterRenderer;
+
 	delete viewportRenderer;
 
 	delete shadowMapRenderer;
 	delete reflectionMapRenderer;
 	delete normalRenderer;
+
+	delete particleSystem;
 }
 
 void Scene::prepare()
@@ -44,8 +50,9 @@ void Scene::prepare()
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	nodeRenderer->prepare();
 	spriteRenderer->prepare();
-
 	terrainRenderer->prepare();
+	waterRenderer->prepare();
+
 	viewportRenderer->prepare();
 
 	shadowMapRenderer->prepare();
@@ -57,6 +64,21 @@ void Scene::prepare()
 
 	particleSystem->prepare();
 
+	if (!mirrorBuffer && showMirrorView) {
+		mirrorBuffer = new TextureBuffer(640, 480);
+		mirrorBuffer->prepare();
+
+		mirrorViewport = new Viewport(
+			glm::vec3(0.5, 1, 0),
+			glm::vec3(0, 0, 0),
+			glm::vec2(0.5f, 0.5f),
+			mirrorBuffer->textureID,
+			Shader::getShader(assets, TEX_VIEWPORT));
+
+		mirrorViewport->prepare();
+		registry.addViewPort(mirrorViewport);
+	}
+
 	registry.addViewPort(shadowMapRenderer->debugViewport);
 }
 
@@ -67,7 +89,7 @@ void Scene::processEvents(RenderContext& ctx)
 
 void Scene::update(RenderContext& ctx)
 {
-	KI_GL_CALL(registry.attachNodes());
+	registry.attachNodes();
 
 	if (dirLight) {
 		dirLight->update(ctx);
@@ -84,50 +106,40 @@ void Scene::update(RenderContext& ctx)
 	}
 
 	if (skyboxRenderer) {
-		KI_GL_CALL(skyboxRenderer->update(ctx, registry));
+		skyboxRenderer->update(ctx, registry);
 	}
 
-	KI_GL_CALL(nodeRenderer->update(ctx, registry));
-	KI_GL_CALL(spriteRenderer->update(ctx, registry));
-	KI_GL_CALL(terrainRenderer->update(ctx, registry));
-	KI_GL_CALL(viewportRenderer->update(ctx, registry));
+	nodeRenderer->update(ctx, registry);
+	spriteRenderer->update(ctx, registry);
+	terrainRenderer->update(ctx, registry);
+	waterRenderer->update(ctx, registry);
 
-	KI_GL_CALL(particleSystem->update(ctx));
+	viewportRenderer->update(ctx, registry);
+
+	particleSystem->update(ctx);
 }
 
 void Scene::bind(RenderContext& ctx)
 {
+	nodeRenderer->bind(ctx);
+	spriteRenderer->bind(ctx);
+	terrainRenderer->bind(ctx);
+	waterRenderer->bind(ctx);
+
+	viewportRenderer->bind(ctx);
+
 	shadowMapRenderer->bind(ctx);
 	reflectionMapRenderer->bind(ctx);
+
 	ctx.bindUBOs();
-
-	if (!mirrorBuffer && showMirrorView) {
-		mirrorBuffer = new TextureBuffer(640, 480);
-		mirrorBuffer->prepare();
-
-		mirrorViewport = new Viewport(
-			glm::vec3(0.5, 1, 0),
-			glm::vec3(0, 0, 0),
-			glm::vec2(0.5f, 0.5f),
-			mirrorBuffer->textureID,
-			Shader::getShader(assets, TEX_VIEWPORT));
-
-		mirrorViewport->prepare();
-		registry.addViewPort(mirrorViewport);
-	}
 }
 
 void Scene::draw(RenderContext& ctx)
 {
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
-	glEnable(GL_CULL_FACE); // cull face
-	glCullFace(GL_BACK); // cull back face
-	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
+	glEnable(GL_CULL_FACE); 
+	glCullFace(GL_BACK); 
+	glFrontFace(GL_CCW); 
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -136,68 +148,60 @@ void Scene::draw(RenderContext& ctx)
 
 	reflectionMapRenderer->render(ctx, registry, skyboxRenderer);
 
-	// "back mirror" viewport
-	if (showMirrorView) {
-		mirrorBuffer->bind();
-		glViewport(0, 0, mirrorBuffer->width, mirrorBuffer->height);
+	drawMirror(ctx);
+	drawScene(ctx);
+	drawViewports(ctx);
+}
 
-		glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+// "back mirror" viewport
+void Scene::drawMirror(RenderContext& ctx)
+{
+	if (!showMirrorView) return;
 
-		Camera camera(ctx.camera->getPos(), ctx.camera->getFront(), ctx.camera->getUp());
-		camera.setZoom(ctx.camera->getZoom());
-		camera.setRotation(ctx.camera->getRotation() + glm::vec3(0, 180, 0));
-		RenderContext mirrorCtx(ctx.engine, ctx.clock, ctx.scene, &camera, mirrorBuffer->width, mirrorBuffer->height);
-		mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
-		mirrorCtx.bindUBOs();
+	Camera camera(ctx.camera->getPos(), ctx.camera->getFront(), ctx.camera->getUp());
+	camera.setZoom(ctx.camera->getZoom());
+	camera.setRotation(ctx.camera->getRotation() + glm::vec3(0, 180, 0));
+	RenderContext mirrorCtx(ctx.engine, ctx.clock, ctx.scene, &camera, mirrorBuffer->width, mirrorBuffer->height);
+	mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
+	mirrorCtx.bindUBOs();
 
-		if (skyboxRenderer) {
-			skyboxRenderer->render(mirrorCtx, registry);
-		}
+	mirrorBuffer->bind(mirrorCtx);
 
-		reflectionMapRenderer->bindTexture(mirrorCtx);
+	drawScene(mirrorCtx);
 
-		terrainRenderer->render(mirrorCtx, registry);
-		spriteRenderer->render(mirrorCtx, registry);
-		nodeRenderer->render(mirrorCtx, registry);
+	mirrorBuffer->unbind(ctx);
+	ctx.bindUBOs();
+}
 
-		particleSystem->render(mirrorCtx);
+void Scene::drawViewports(RenderContext& ctx)
+{
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	viewportRenderer->render(ctx, registry);
+	glDisable(GL_BLEND);
+}
 
-		if (showNormals) {
-			normalRenderer->render(mirrorCtx, registry);
-		}
+void Scene::drawScene(RenderContext& ctx)
+{
+	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		mirrorBuffer->unbind();
-		glViewport(0, 0, ctx.width, ctx.height);
+	reflectionMapRenderer->bindTexture(ctx);
 
-		ctx.bindUBOs();
+	if (skyboxRenderer) {
+		skyboxRenderer->render(ctx, registry);
 	}
 
-	{
-		reflectionMapRenderer->bindTexture(ctx);
+	waterRenderer->render(ctx, registry);
+	terrainRenderer->render(ctx, registry);
+	spriteRenderer->render(ctx, registry);
+	nodeRenderer->render(ctx, registry);
 
-		if (skyboxRenderer) {
-			skyboxRenderer->render(ctx, registry);
-		}
+	particleSystem->render(ctx);
 
-
-		terrainRenderer->render(ctx, registry);
-		spriteRenderer->render(ctx, registry);
-		nodeRenderer->render(ctx, registry);
-
-		particleSystem->render(ctx);
-
-		if (showNormals) {
-			normalRenderer->render(ctx, registry);
-		}
-
-		glDisable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-		viewportRenderer->render(ctx, registry);
-		glDisable(GL_BLEND);
+	if (showNormals) {
+		normalRenderer->render(ctx, registry);
 	}
-
-	//KI_GL_DEBUG("scene.draw");
 }
 
 Camera* Scene::getCamera()

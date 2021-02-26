@@ -54,6 +54,7 @@ private:
 	void setupSpriteSkeleton();
 
 	void setupTerrain();
+	void setupWater();
 
 	void setupViewport1();
 private:

@@ -13,6 +13,7 @@
 #include "renderer/NodeRenderer.h"
 #include "renderer/SpriteRenderer.h"
 #include "renderer/TerrainRenderer.h"
+#include "renderer/WaterRenderer.h"
 
 #include "renderer/ViewportRenderer.h"
 #include "renderer/SkyboxRenderer.h"
@@ -35,7 +36,13 @@ public:
 	void processEvents(RenderContext& ctx);
 	void update(RenderContext& ctx);
 	void bind(RenderContext& ctx);
+
 	void draw(RenderContext& ctx);
+
+	void drawMirror(RenderContext& ctx);
+	void drawViewports(RenderContext& ctx);
+
+	void drawScene(RenderContext& ctx);
 
 	Camera* getCamera();
 	Node* getCameraNode();
@@ -74,6 +81,7 @@ private:
 	SpriteRenderer* spriteRenderer = nullptr;
 
 	TerrainRenderer* terrainRenderer = nullptr;
+	WaterRenderer* waterRenderer = nullptr;
 	ViewportRenderer* viewportRenderer = nullptr;
 
 	ShadowMapRenderer* shadowMapRenderer = nullptr;
