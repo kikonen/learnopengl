@@ -2,12 +2,8 @@
 
 #include <vector>
 
-#include "scene/CubeMap.h"
-
 #include "SkyboxRenderer.h"
 
-
-const int CUBE_SIZE = 1000;
 
 
 ReflectionMapRenderer::ReflectionMapRenderer(const Assets& assets)
@@ -17,30 +13,13 @@ ReflectionMapRenderer::ReflectionMapRenderer(const Assets& assets)
 
 ReflectionMapRenderer::~ReflectionMapRenderer()
 {
-	glDeleteRenderbuffers(1, &depthBuffer);
-	glDeleteFramebuffers(1, &FBO);
+	delete reflectionMap;
 }
 
 void ReflectionMapRenderer::prepare()
 {
-	{
-		glGenFramebuffers(1, &FBO);
-		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	}
-
-	{
-		glGenRenderbuffers(1, &depthBuffer);
-		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, CUBE_SIZE, CUBE_SIZE);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-	}
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	textureID = CubeMap::createEmpty(CUBE_SIZE);
+	reflectionMap = new DynamicCubeMap(assets.reflectionCubeSize);
+	reflectionMap->prepare();
 }
 
 void ReflectionMapRenderer::bind(const RenderContext& ctx)
@@ -50,8 +29,7 @@ void ReflectionMapRenderer::bind(const RenderContext& ctx)
 void ReflectionMapRenderer::bindTexture(const RenderContext& ctx)
 {
 	if (!rendered) return;
-	glActiveTexture(assets.reflectionMapUnitId);
-	KI_GL_CALL(glBindTexture(GL_TEXTURE_CUBE_MAP, textureID));
+	reflectionMap->bindTexture(ctx, assets.reflectionMapUnitId);
 }
 
 void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registry, SkyboxRenderer* skybox)
@@ -66,8 +44,7 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 	// https://eng.libretexts.org/Bookshelves/Computer_Science/Book%3A_Introduction_to_Computer_Graphics_(Eck)/07%3A_3D_Graphics_with_WebGL/7.04%3A_Framebuffers
 	// view-source:math.hws.edu/eck/cs424/graphicsbook2018/source/webgl/cube-camera.html
 
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	glViewport(0, 0, CUBE_SIZE, CUBE_SIZE);
+	reflectionMap->bind(mainCtx);
 
 	// +X (right)
 	// -X (left)
@@ -95,13 +72,13 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 	const glm::vec3& center = centerNode->getPos();
 
 	for (int i = 0; i < 6; i++) {
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, textureID, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionMap->textureID, 0);
 		//glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		Camera camera(center, cameraFront[i], cameraUp[i]);
 		camera.setZoom(90);
-		RenderContext ctx(mainCtx.engine, mainCtx.clock, mainCtx.scene, &camera, CUBE_SIZE, CUBE_SIZE);
+		RenderContext ctx(mainCtx.engine, mainCtx.clock, mainCtx.scene, &camera, reflectionMap->size, reflectionMap->size);
 		ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
 		ctx.bindUBOs();
 
@@ -112,13 +89,10 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 //	bindTexture(mainCtx);
 //	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	KI_GL_UNBIND(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
+	reflectionMap->unbind(mainCtx);
 
 	rendered = true;
 
-	glViewport(0, 0, mainCtx.width, mainCtx.height);
-	mainCtx.bindUBOs();
 }
 
 void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)

@@ -27,6 +27,24 @@ Assets::Assets()
     nearPlane = 0.1f;
     farPlane = 1000.0f;
 
+    waterPlane = 0.0f;
+
+    shadowNearPlane = 0.1f;
+    shadowFarPlane = 1000.0f;
+    shadowMapSize = 1000;
+
+    waterReflectionCubeSize = 1000;
+    waterRefractionCubeSize = 1000;
+
+    reflectionCubeSize = 1000;
+    refractionCubeSize = 1000;
+
+    waterRefractionMapUnitIndex = 26;
+    waterRefractionMapUnitId = GL_TEXTURE0 + waterRefractionMapUnitIndex;
+
+    waterReflectionMapUnitIndex = 27;
+    waterReflectionMapUnitId = GL_TEXTURE0 + waterReflectionMapUnitIndex;
+
     refractionMapUnitIndex = 28;
     refractionMapUnitId = GL_TEXTURE0 + refractionMapUnitIndex;
 

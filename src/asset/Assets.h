@@ -30,6 +30,25 @@ public:
     float nearPlane;
     float farPlane;
 
+    float waterPlane;
+
+    // NOTE KI MUST match lookup() in light shadow shader
+    float shadowNearPlane;
+    float shadowFarPlane;
+    int shadowMapSize;
+
+    int waterReflectionCubeSize;
+    int waterRefractionCubeSize;
+
+    int reflectionCubeSize;
+    int refractionCubeSize;
+
+    int waterRefractionMapUnitId;
+    unsigned int waterRefractionMapUnitIndex;
+
+    int waterReflectionMapUnitId;
+    unsigned int waterReflectionMapUnitIndex;
+
     int refractionMapUnitId;
     unsigned int refractionMapUnitIndex;
 

@@ -37,6 +37,9 @@ void Engine::run() {
 		<< " GL_MAX_VERTEX_ATTRIBS=" << info.maxVertexAttributes << std::endl;
 
 	Log::getLogger().info("setup");
+	ki::GL::startError();
+	ki::GL::startDebug();
+
 	int res = onSetup();
 	if (res) {
 		window->close();

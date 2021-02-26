@@ -32,12 +32,15 @@ ImageTexture::ImageTexture(const std::string& path, const TextureSpec& spec)
 
 ImageTexture::~ImageTexture()
 {
+	delete image;
 }
 
 void ImageTexture::prepare()
 {
 	if (prepared) return;
 	prepared = true;
+
+	if (!image) return;
 
 	if (image->channels == 4) {
 		format = GL_RGBA;
@@ -60,16 +63,24 @@ void ImageTexture::prepare()
 	//	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 	//	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->data);
+	//glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->data);
+
+	glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, image->width, image->height);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image->width, image->height, format, GL_UNSIGNED_BYTE, image->data);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
+
+	delete image;
+	image = nullptr;
 }
 
 int ImageTexture::load() {
-	Image* tmp = Image::getImage(name);
+	Image* tmp = new Image(name);
 	int res = tmp->load(true);
-	if (!res) {
-		image = tmp;
+	if (res) {
+		delete tmp;
+		tmp = nullptr;
 	}
+	image = tmp;
 	return res;
 }

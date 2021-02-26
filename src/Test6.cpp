@@ -32,9 +32,6 @@ int Test6::onSetup() {
 
 	//glDisable(GL_MULTISAMPLE);
 
-	ki::GL::startError();
-	ki::GL::startDebug();
-
 	frameInit = new FrameInit(*window);
 	frame = new EditorFrame(*window);
 

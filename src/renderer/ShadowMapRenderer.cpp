@@ -9,25 +9,32 @@ ShadowMapRenderer::ShadowMapRenderer(const Assets& assets)
 	shadowDebugShader = Shader::getShader(assets, TEX_DEBUG_DEPTH);
 }
 
+ShadowMapRenderer::~ShadowMapRenderer()
+{
+	delete shadowBuffer;
+	delete debugViewport;
+}
+
 void ShadowMapRenderer::prepare()
 {
 	shadowShader->prepare();
-	shadowDebugShader->prepare();
-	
-	shadowBuffer.prepare();
+	shadowDebugShader->prepare();	
 
 	shadowShader->prepare();
 	shadowDebugShader->prepare();
+
+	shadowBuffer = new ShadowBuffer(assets.shadowMapSize, assets.shadowMapSize);
+	shadowBuffer->prepare();
 
 	debugViewport = new Viewport(
 		glm::vec3(-1 + 0.01, 1 - 0.01, 0), 
 		glm::vec3(0, 0, 0), 
 		glm::vec2(0.5f, 0.5f), 
-		shadowBuffer.textureID, 
+		shadowBuffer->textureID, 
 		shadowDebugShader, 
 		[this](Viewport& vp) {
-			shadowDebugShader->nearPlane.set(0.1f);
-			shadowDebugShader->farPlane.set(1000.f);
+			shadowDebugShader->nearPlane.set(assets.shadowNearPlane);
+			shadowDebugShader->farPlane.set(assets.shadowFarPlane);
 		});
 
 	debugViewport->prepare();
@@ -46,7 +53,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 	//};
 
 	glm::mat4 lightView = glm::lookAt(light->pos, light->target, glm::vec3(0.0, 1.0, 0.0));
-	glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, nearPlane, farPlane);
+	glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, assets.shadowNearPlane, assets.shadowFarPlane);
 
 	//lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
 
@@ -56,7 +63,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 {
 	if (!rendered) return;
-	KI_GL_CALL(shadowBuffer.bindTexture(assets.shadowMapUnitId));
+	shadowBuffer->bindTexture(assets.shadowMapUnitId);
 }
 
 void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
@@ -64,11 +71,11 @@ void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 	if (drawIndex++ < drawSkip) return;
 	drawIndex = 0;
 
-	shadowBuffer.bind();
+	shadowBuffer->bind();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	KI_GL_CALL(drawNodes(ctx, registry));
+	drawNodes(ctx, registry);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
