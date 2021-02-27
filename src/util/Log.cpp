@@ -18,6 +18,8 @@ void Log::init()
 {
 	try
 	{
+		spdlog::set_level(spdlog::level::trace);
+
 		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
 		console_sink->set_level(spdlog::level::err);
 		console_sink->set_pattern("[%^%l%$] %v");
@@ -28,8 +30,9 @@ void Log::init()
 		std::vector<spdlog::sink_ptr> sinks{ console_sink, file_sink };
 
 		g_logger = std::make_shared<spdlog::logger>("main", sinks.begin(), sinks.end());
-		spdlog::register_logger(g_logger);
+		g_logger->set_level(spdlog::level::debug);
 
+		spdlog::register_logger(g_logger);
 		spdlog::flush_every(std::chrono::seconds(3));
 	}
 	catch (const spdlog::spdlog_ex& ex)
@@ -41,6 +44,11 @@ void Log::init()
 void Log::flush()
 {
 	g_logger->flush();
+}
+
+void Log::critical(const std::string& msg)
+{
+	g_logger->critical(msg);
 }
 
 void Log::error(const std::string& msg)
@@ -61,4 +69,9 @@ void Log::info(const std::string& msg)
 void Log::debug(const std::string& msg)
 {
 	g_logger->debug(msg);
+}
+
+void Log::trace(const std::string& msg)
+{
+	g_logger->trace(msg);
 }

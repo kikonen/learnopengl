@@ -303,7 +303,7 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
     }
 
     std::string src = sb.str();
-    KI_DEBUG_SB("== " << path << " ===\n" << src);
+    KI_TRACE_SB("== " << path << " ===\n" << src);
 
     return src;
 }

@@ -14,6 +14,8 @@ Test6::Test6() {
 	//throttleFps = 0;
 	//throttleFps = FPS_60;
 	//glfwWindowHint(GLFW_SAMPLES, 4);
+
+	useIMGUI = false;
 }
 
 int Test6::onSetup() {
@@ -32,8 +34,10 @@ int Test6::onSetup() {
 
 	//glDisable(GL_MULTISAMPLE);
 
-	frameInit = new FrameInit(*window);
-	frame = new EditorFrame(*window);
+	if (useIMGUI) {
+		frameInit = new FrameInit(*window);
+		frame = new EditorFrame(*window);
+	}
 
 	return 0;
 }
@@ -53,17 +57,21 @@ int Test6::onRender(const RenderClock& clock) {
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 
-	KI_GL_CALL(frame->bind(ctx));
+	if (useIMGUI) {
+		frame->bind(ctx);
+	}
 
-	KI_GL_CALL(currentScene->processEvents(ctx));
-	KI_GL_CALL(currentScene->update(ctx));
-	KI_GL_CALL(currentScene->bind(ctx));
-	KI_GL_CALL(currentScene->draw(ctx));
+	currentScene->processEvents(ctx);
+	currentScene->update(ctx);
+	currentScene->bind(ctx);
+	currentScene->draw(ctx);
 
 	//ImGui::ShowDemoWindow();
 
-	frame->draw(ctx);
-	frame->render(ctx);
+	if (useIMGUI) {
+		frame->draw(ctx);
+		frame->render(ctx);
+	}
 
 	return 0;
 }

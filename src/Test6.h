@@ -27,4 +27,6 @@ private:
 	FrameInit* frameInit;
 
 	SceneLoader* loader = nullptr;
+
+	bool useIMGUI = false;
 };

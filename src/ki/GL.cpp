@@ -79,10 +79,10 @@ namespace ki {
 			KI_WARN(ss.str());
 			break;
 		case GL_DEBUG_SEVERITY_LOW:
-			KI_DEBUG(ss.str());
+			KI_INFO(ss.str());
 			break;
 		default:
-			KI_INFO(ss.str());
+			KI_DEBUG(ss.str());
 		};
 	}
 
@@ -99,9 +99,15 @@ namespace ki {
 
 		glDebugMessageCallback(glMessageCallback, nullptr);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
-		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, NULL, GL_TRUE);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, NULL, GL_TRUE);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH, 0, NULL, GL_TRUE);
+
+		//// https://gitter.im/mosra/magnum/archives/2018/05/16?at=5afbda8fd245fe2eb7b459cf
+		///* Disable rather spammy "Buffer detailed info" debug messages on NVidia drivers */
+		//GL::DebugOutput::setEnabled(
+		//	GL::DebugOutput::Source::Api, GL::DebugOutput::Type::Other, { 131185 }, false);
+
 		checkErrors("init");
 	}
 
@@ -125,6 +131,18 @@ namespace ki {
 			KI_ERROR_SB(loc << ": " << "0x" << std::hex << err << std::dec << " (" << err << ")");
 			KI_BREAK();
 		}
+	}
+
+	void GL::unbindFBO() {
+		GLint drawFboId = 0, readFboId = 0, plainFboId = 0;
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &plainFboId);
+		glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
+		glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
+		KI_DEBUG_SB("PLAIN_FBO=" << plainFboId);
+		KI_DEBUG_SB("DRAW_FBO=" << drawFboId);
+		KI_DEBUG_SB("READ_FBO=" << readFboId);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	OpenGLInfo GL::getInfo()
