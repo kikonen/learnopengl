@@ -3,6 +3,7 @@ Debug/*
 packages/*
 x64/*
 log/*.log
+dist/*
 
 imgui.ini
 

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <chrono>
 
+#include "util/Log.h"
+
 namespace ki {
 	struct Timer final
  	{
@@ -20,7 +22,7 @@ namespace ki {
 			duration = end - start;
 
 			float ms = duration.count() * 1000.f;
-			std::cout << label << ": " << ms << "ms\n";
+			KI_INFO_SB(label << ": " << ms << "ms");
 		}
 	};
 }

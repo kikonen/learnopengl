@@ -5,6 +5,9 @@
 
 int main()
 {
+    Log::init();
+    KI_INFO("START");
+
     Engine* engine = new Test6();
     Engine::current = engine;
 
@@ -15,6 +18,11 @@ int main()
     engine->run();
 
     delete engine;
+
+    KI_INFO("DONE");
+
+    std::cout << "PRESS [ENTER] TO CLOSE";
+    std::cin.get();
 
     return 0;
 }

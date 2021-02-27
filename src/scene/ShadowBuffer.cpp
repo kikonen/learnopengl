@@ -51,7 +51,7 @@ void ShadowBuffer::prepare()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-		std::cout << "ERROR::ShadowBuffer:: Framebuffer is not complete!" << std::endl;
+		KI_ERROR_SB("ShadowBuffer:: Framebuffer is not complete!");
 	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);

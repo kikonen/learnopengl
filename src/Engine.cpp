@@ -14,7 +14,6 @@ Engine* Engine::current = nullptr;
 Engine::Engine() {
 	debug = false;
 	throttleFps = FPS_15;
-	Log::init();
 	window = new Window(*this);
 }
 
@@ -31,12 +30,12 @@ void Engine::run() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	OpenGLInfo info = ki::GL::getInfo();
-	std::cout << "ENGINE::INIT" << std::endl
+	KI_INFO_SB("ENGINE::INIT" << std::endl
 		<< " VER=" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl
 		<< " GL_MAX_VERTEX_UNIFORM_COMPONENTS=" << info.maxVertexUniformComponents << std::endl
-		<< " GL_MAX_VERTEX_ATTRIBS=" << info.maxVertexAttributes << std::endl;
+		<< " GL_MAX_VERTEX_ATTRIBS=" << info.maxVertexAttributes);
 
-	Log::getLogger().info("setup");
+	KI_INFO("setup");
 	ki::GL::startError();
 	ki::GL::startDebug();
 
@@ -103,7 +102,7 @@ void Engine::run() {
 
 			sprintf_s(titleSB, 256, "%s - FPS: %3.2f - RENDER: %3.2fms (%3.2f fps)", title.c_str(), 1.0f / clock.elapsedSecs, renderSecs * 1000.f, 1.0f / renderSecs);
 			window->setTitle(titleSB);
-			//std::cout << titleSB << "\n";
+			//KI_DEBUG_SB(titleSB);
 		}
 
 		KI_GL_CHECK("engine.loop");
@@ -114,7 +113,7 @@ void Engine::run() {
 			if (sleepSecs < 0) {
 				sleepSecs = 0.01;
 			}
-			//std::cout << "dt: " << elapsedSecs * 1000.f << "ms - " << "render: " << renderSecs * 1000 << "ms - " << "sleep: " << sleepSecs * 1000 << "ms\n";
+			//KI_DEBUG_SB("dt: " << elapsedSecs * 1000.f << "ms - " << "render: " << renderSecs * 1000 << "ms - " << "sleep: " << sleepSecs * 1000 << "ms");
 			std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepSecs * 1000.f)));
 		}
 	}

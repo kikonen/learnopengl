@@ -1,12 +1,35 @@
 #include "GL.h"
 
 #include <iostream>
+#include <sstream>
 
 
 namespace ki {
+	std::string formatSeverity(GLenum severity) {
+		std::stringstream ss;
+
+		switch (severity) {
+		case GL_DEBUG_SEVERITY_HIGH:
+			ss << "HIGH";
+			break;
+		case GL_DEBUG_SEVERITY_MEDIUM:
+			ss << "HIGH";
+			break;
+		case GL_DEBUG_SEVERITY_LOW:
+			ss << "LOW";
+			break;
+		default:
+			ss << "UNKNOWN";
+		};
+
+		ss << " 0x" << std::hex << severity << std::dec << " (" << severity << ")";
+
+		return ss.str();
+	}
+
 	void glfwErrorCallback(int, const char* message) 
 	{
-		std::cout << message << std::endl;
+		KI_ERROR_SB(message);
 	}
 
 	void glMessageCallback(
@@ -18,12 +41,32 @@ namespace ki {
 		const GLchar* message, 
 		const void* userParam) 
 	{
-		Log::glDebug(source, type, id, severity, length, message, userParam);
+		std::stringstream ss;
+		ss << "src=" << source
+			<< " type=" << type
+			<< " id=" << id
+			<< formatSeverity(severity)
+			<< " lenth=" << length
+			<< " message=" << message;
+
+		switch (severity) {
+		case GL_DEBUG_SEVERITY_HIGH:
+			KI_ERROR(ss.str());
+			break;
+		case GL_DEBUG_SEVERITY_MEDIUM:
+			KI_WARN(ss.str());
+			break;
+		case GL_DEBUG_SEVERITY_LOW:
+			KI_DEBUG(ss.str());
+			break;
+		default:
+			KI_INFO(ss.str());
+		};
 	}
 
 	void GL::startError()
 	{
-		glfwSetErrorCallback(glfwErrorCallback);
+//		glfwSetErrorCallback(glfwErrorCallback);
 	}
 
 	void GL::startDebug()
@@ -35,8 +78,8 @@ namespace ki {
 		glDebugMessageCallback(glMessageCallback, nullptr);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, NULL, GL_TRUE);
-		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH, 0, NULL, GL_TRUE);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, NULL, GL_TRUE);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH, 0, NULL, GL_TRUE);
 		checkErrors("init");
 	}
 
@@ -47,7 +90,7 @@ namespace ki {
 		while ((err = glGetError()) != GL_NO_ERROR)
 		{
 			// https://www.khronos.org/opengl/wiki/OpenGL_Error
-			std::cout << "0x" << std::hex << err << std::dec << " (" << err << ")" << std::endl;
+			KI_ERROR_SB("0x" << std::hex << err << std::dec << " (" << err << ")");
 		}
 	}
 	*/
@@ -57,8 +100,8 @@ namespace ki {
 		while ((err = glGetError()) != GL_NO_ERROR)
 		{
 			// https://www.khronos.org/opengl/wiki/OpenGL_Error
-			std::cout << loc << ": " << "0x" << std::hex << err << std::dec << " (" << err << ")" << std::endl;
-			__debugbreak();
+			KI_ERROR_SB(loc << ": " << "0x" << std::hex << err << std::dec << " (" << err << ")");
+			KI_BREAK();
 		}
 	}
 

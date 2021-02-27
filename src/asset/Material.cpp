@@ -52,7 +52,7 @@ BoundTexture* Material::loadTexture(const std::string& baseDir, const std::strin
 
 	std::string texturePath = baseDir + name;
 
-	std::cout << "\n== TEXTURE: " << texturePath << " ===\n";
+	KI_INFO_SB("TEXTURE: " << texturePath);
 
 	ImageTexture* texture = ImageTexture::getTexture(texturePath, textureSpec);
 	if (!texture) return nullptr;

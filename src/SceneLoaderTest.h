@@ -32,7 +32,11 @@ private:
 	void setupNodeBrickwallBox();
 
 	void setupNodeSpyro();
+
 	void setupNodeBackpack();
+	void setupNodeBunny();
+	void setupNodeDragon();
+
 	void setupNodeTeapot();
 	void setupNodeCow();
 	void setupNodeBall();

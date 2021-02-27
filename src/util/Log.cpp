@@ -3,15 +3,31 @@
 #include <iostream>
 #include <sstream>
 
+#include "spdlog/spdlog.h"
+
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/sinks/rotating_file_sink.h"
 #include <spdlog/sinks/basic_file_sink.h>
 
-std::shared_ptr<spdlog::logger> Log::logger = nullptr;
+namespace {
+	std::shared_ptr<spdlog::logger> g_logger = nullptr;
+}
 
 void Log::init()
 {
 	try
 	{
-		Log::logger = spdlog::basic_logger_mt("main", "log/development.log");
+		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+		console_sink->set_level(spdlog::level::err);
+		console_sink->set_pattern("[%^%l%$] %v");
+
+		auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("log/development.log", true);
+		file_sink->set_level(spdlog::level::trace);
+
+		std::vector<spdlog::sink_ptr> sinks{ console_sink, file_sink };
+
+		g_logger = std::make_shared<spdlog::logger>("main", sinks.begin(), sinks.end());
+		//spdlog::register_logger(g_logger);
 	}
 	catch (const spdlog::spdlog_ex& ex)
 	{
@@ -19,26 +35,22 @@ void Log::init()
 	}
 }
 
-void Log::glDebug(
-	GLenum source,
-	GLenum type,
-	GLuint id,
-	GLenum severity,
-	GLsizei length,
-	const GLchar* message,
-	const void* userParam)
+void Log::error(const std::string& msg)
 {
-	std::stringstream ss;
-	ss << "source=" << source
-		<< " type=" << type
-		<< " id=" << id
-		<< " severity=" << severity
-		<< " lenth=" << length
-		<< " message=" << message;
+	g_logger->error(msg);
+}
 
-	std::cout << ss.str() << std::endl;
-	getLogger().warn(ss.str());
-	if (severity == GL_DEBUG_SEVERITY_HIGH) {
-		__debugbreak();
-	}
+void Log::warn(const std::string& msg)
+{
+	g_logger->warn(msg);
+}
+
+void Log::info(const std::string& msg)
+{
+	g_logger->info(msg);
+}
+
+void Log::debug(const std::string& msg)
+{
+	g_logger->debug(msg);
 }

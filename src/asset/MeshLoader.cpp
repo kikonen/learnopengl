@@ -196,21 +196,21 @@ int MeshLoader::loadData(
 		std::chrono::duration<float> ts = tp2 - tp1;
 		float loadTime = ts.count() * 1000;
 
-		std::cout << "Duration: " << std::to_string(loadTime) << " ms";
+		KI_INFO_SB("Duration: " << loadTime << " ms");
 
 		result = 0;
 	}
 	catch (std::ifstream::failure e) {
-		std::cout << "ERROR::MODEL::FILE_NOT_SUCCESFULLY_READ: " << modelPath << std::endl;
-		std::cout << e.what();
+		KI_ERROR_SB("MODEL::FILE_NOT_SUCCESFULLY_READ: " << modelPath << std::endl << e.what());
 	}
-	std::cout << "\n== " << modelName << " ===\n"
+
+	KI_INFO_SB("== " << modelName << " ===\n"
 		<< "tris: " << tris.size()
 		<< ", positions: " << positions.size()
 		<< ", textures: " << textures.size()
 		<< ", normals: " << normals.size()
 		<< ", vertices: " << vertices.size()
-		<< "\n--------\n";
+		<< "\n--------\n");
 
 	return result;
 }
@@ -336,7 +336,7 @@ void MeshLoader::createTangents(
 		tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
 
 		glm::vec3 nt = glm::normalize(tangent);
-//		if (tangent != nt) __debugbreak();
+//		if (tangent != nt) KI_BREAK();
 
 		tangents.push_back(nt);
 
@@ -416,10 +416,10 @@ int MeshLoader::loadMaterials(
 		file.close();
 	}
 	catch (std::ifstream::failure e) {
-		std::cout << "ERROR::TEXTURE::FILE_NOT_SUCCESFULLY_READ: " << materialPath << std::endl;
-		std::cout << e.what();
+		KI_ERROR_SB("TEXTURE::FILE_NOT_SUCCESFULLY_READ: " << materialPath << std::endl << e.what());
 	}
-	std::cout << "\n== " << modelName << " - " << libraryName << " ===\n" << "materials: " << materials.size() << "\n--------\n";
+
+	KI_INFO_SB("== " << modelName << " - " << libraryName << " ===\n" << "materials: " << materials.size());
 
 	for (auto const& x : materials) {
 		Material* material = x.second;

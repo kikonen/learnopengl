@@ -15,9 +15,16 @@
 #include "util/Log.h"
 
 
+#define KI_GL_DEBUG_BREAK
 #define KI_GL_DEBUG_CHECK
 //#define KI_GL_DEBUG_CALL
 //#define KI_GL_DEBUG_BIND
+
+#ifdef KI_GL_DEBUG_BREAK
+	#define KI_BREAK() __debugbreak();
+#else
+	#define KI_BREAK()
+#endif
 
 #ifdef KI_GL_DEBUG_CALL
 	#define KI_GL_CALL(x) x; ki::GL::checkErrors(std::string(#x" - ") + __FILE__ + ":" + std::to_string(__LINE__))
@@ -33,7 +40,7 @@
 
 // NOTE KI *SKIP* unbind; not rquired, useful for debugging
 #ifdef KI_GL_DEBUG_BIND
-	//#define KI_GL_UNBIND(x) std::cout << std::string("unbind: "#x" - ") + __FILE__ + ":" + std::to_string(__LINE__) + "\n"; x
+	//#define KI_GL_UNBIND(x) KI_DEBUG_SB(std::string("unbind: "#x" - ") + __FILE__ + ":" + std::to_string(__LINE__)); x
 	#define KI_GL_UNBIND(x) x
 #else
 	#define KI_GL_UNBIND(x)

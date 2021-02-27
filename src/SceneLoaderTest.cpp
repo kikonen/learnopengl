@@ -69,6 +69,8 @@ void SceneLoaderTest::setup()
 	setupNodeSkybox();
 
 	//setupNodeBackpack();
+	//setupNodeBunny();
+	//setupNodeDragon();
 
 	setupViewport1();
 
@@ -403,6 +405,38 @@ void SceneLoaderTest::setupNodeBackpack()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(0, 5, 5) + assets.groundOffset);
 		node->setScale(1.5f);
+		scene->registry.addNode(node);
+	});
+}
+
+void SceneLoaderTest::setupNodeBunny()
+{
+	addLoader([this]() {
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+		MeshLoader loader(assets, "bunny");
+		type->renderBack = true;
+		type->mesh = loader.load();
+		type->setReflection(0.9);
+
+		Node* node = new Node(type);
+		node->setPos(glm::vec3(-15, 10, 5) + assets.groundOffset);
+		node->setScale(20.f);
+		scene->registry.addNode(node);
+	});
+}
+
+void SceneLoaderTest::setupNodeDragon()
+{
+	addLoader([this]() {
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+		MeshLoader loader(assets, "dragon");
+		type->mesh = loader.load();
+		type->renderBack = true;
+//		type->setReflection(0.6);
+
+		Node* node = new Node(type);
+		node->setPos(glm::vec3(-15, 15, 0) + assets.groundOffset);
+		node->setScale(30.f);
 		scene->registry.addNode(node);
 	});
 }

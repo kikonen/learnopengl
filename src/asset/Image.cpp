@@ -6,6 +6,8 @@
 
 #include <stb_image.h>
 
+#include "util/Log.h"
+
 namespace {
 	std::map<std::string, Image*> images;
 
@@ -58,14 +60,14 @@ int Image::load(bool flip) {
 		STBI_default);
 
 	if (data) {
-		std::cout << "LOADED::IMAGE " << path 
-			<< " flipped=" << flipped
-			<< " channels=" << channels 
-			<< " width=" << width 
-			<< " height=" << height << std::endl;
+		KI_INFO_SB("LOADED::IMAGE " << path
+			+ " flipped=" << flipped
+			+ " channels=" << channels
+			+ " width=" << width 
+			+ " height=" << height);
 	}
 	else {
-		std::cout << "ERROR::IMAGE::LOAD_FAILED " << path << std::endl;
+		KI_ERROR_SB("ERROR::IMAGE::LOAD_FAILED " << path);
 	}
 
 	res = data ? 0 : -1;

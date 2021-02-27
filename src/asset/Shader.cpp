@@ -105,7 +105,7 @@ GLint Shader::getUniformLoc(const std::string& name)
     GLint vi = glGetUniformLocation(programId, name.c_str());
     uniformLocations[name] = vi;
     if (vi < 0) {
-        std::cout << "SHADER::MISSING_UNIFORM: " << shaderName << " uniform=" << name << std::endl;
+        KI_WARN_SB("SHADER::MISSING_UNIFORM: " << shaderName << " uniform=" << name);
     }
     return vi;
 }
@@ -115,8 +115,8 @@ int Shader::createProgram() {
     char infoLog[512];
 
     if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
-        std::cout << "ERROR::SHADER::FILE_EMPTY " << shaderName << std::endl;
-        __debugbreak();
+        KI_ERROR_SB("SHADER::FILE_EMPTY " << shaderName);
+        KI_BREAK();
         return -1;
     }
 
@@ -133,8 +133,8 @@ int Shader::createProgram() {
         if (!success)
         {
             glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED " << shaderName << " vert=" << vertexShaderPath << "\n" << infoLog << std::endl;
-            __debugbreak();
+            KI_ERROR_SB("SHADER::VERTEX::COMPILATION_FAILED " << shaderName << " vert=" << vertexShaderPath << "\n" << infoLog);
+            KI_BREAK();
         }
     }
 
@@ -149,8 +149,8 @@ int Shader::createProgram() {
         if (!success)
         {
             glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED " << shaderName << " frag=" << fragmentShaderPath << "\n" << infoLog << std::endl;
-            __debugbreak();
+            KI_ERROR_SB("SHADER::FRAGMENT::COMPILATION_FAILED " << shaderName << " frag=" << fragmentShaderPath << "\n" << infoLog);
+            KI_BREAK();
         }
     }
 
@@ -167,8 +167,8 @@ int Shader::createProgram() {
         if (!success)
         {
             glGetShaderInfoLog(geometryShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::GEOMETRY::COMPILATION_FAILED " << shaderName << " frag=" << geometryShaderPath << "\n" << infoLog << std::endl;
-            __debugbreak();
+            KI_ERROR_SB("SHADER::GEOMETRY::COMPILATION_FAILED " << shaderName << " frag=" << geometryShaderPath << "\n" << infoLog);
+            KI_BREAK();
         }
     }
 
@@ -187,8 +187,8 @@ int Shader::createProgram() {
     glGetProgramiv(programId, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(programId, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED " << shaderName << "\n" << infoLog << std::endl;
-        __debugbreak();
+        KI_ERROR_SB("SHADER::PROGRAM::LINKING_FAILED " << shaderName << "\n" << infoLog);
+        KI_BREAK();
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
@@ -199,8 +199,8 @@ int Shader::createProgram() {
     glValidateProgram(programId);
     if (!success) {
         glGetProgramInfoLog(programId, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::VALIDATE_FAILED " << shaderName << "\n" << infoLog << std::endl;
-        __debugbreak();
+        KI_ERROR_SB("SHADER::PROGRAM::VALIDATE_FAILED " << shaderName << "\n" << infoLog);
+        KI_BREAK();
     }
 
     // NOTE KI set UBOs only once for shader
@@ -281,7 +281,7 @@ void Shader::setUBO(const std::string& name, unsigned int UBO)
 {
     unsigned int blockIndex = glGetUniformBlockIndex(programId, name.c_str());
     if (blockIndex == GL_INVALID_INDEX) {
-        std::cout << "ERROR::SHADER::MISSING_UBO " << shaderName << " UBO=" << name << std::endl;
+        KI_ERROR_SB("SHADER::MISSING_UBO " << shaderName << " UBO=" << name);
         return;
     } 
     glUniformBlockBinding(programId, blockIndex, UBO);
@@ -300,7 +300,7 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
     }
 
     std::string src = sb.str();
-//    std::cout << "\n== " << path << " ===\n" << src << "\n--------\n";
+    KI_DEBUG_SB("== " << path << " ===\n" << src);
 
     return src;
 }
@@ -347,14 +347,14 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
     }
     catch (std::ifstream::failure e) {
         if (!optional) {
-            std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;
-            __debugbreak();
+            KI_ERROR_SB("SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path);
+            KI_BREAK();
         }
         else {
-            std::cout << "INFO::SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path << std::endl;
+            KI_INFO_SB("SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path);
         }
     }
-    std::cout << "== " << path << std::endl;
+    KI_INFO_SB("FILE: " << path);
 
     return lines;
 }

@@ -52,8 +52,8 @@ void TextureBuffer::prepare()
 	}
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-		__debugbreak();
+		KI_ERROR_SB("FRAMEBUFFER:: Framebuffer is not complete!");
+		KI_BREAK();
 	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);
