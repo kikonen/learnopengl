@@ -21,8 +21,7 @@ public:
 	bool prepared = false;
 	unsigned int size = 0;
 
-	bool clearBuffer = true;
-	bool instanedNode = false;
+	bool staticBuffer = false;
 
 	bool dirty = false;
 	std::vector<glm::mat4> modelMatrices;

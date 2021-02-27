@@ -14,11 +14,8 @@ void InstancedNode::prepare(const Assets& assets)
 {
 	Node::prepare(assets);
 
-	modelBatch.size = 1000;
-	selectedBatch.size = 1000;
-
-	modelBatch.clearBuffer = false;
-	selectedBatch.clearBuffer = false;
+	modelBatch.staticBuffer = true;
+	selectedBatch.staticBuffer = true;
 
 	modelBatch.prepare(type);
 	selectedBatch.prepare(type);
