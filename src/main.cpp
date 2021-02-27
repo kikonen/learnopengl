@@ -21,8 +21,10 @@ int main()
 
     KI_INFO("DONE");
 
-    std::cout << "PRESS [ENTER] TO CLOSE";
-    std::cin.get();
+    if (false) {
+        std::cout << "PRESS [ENTER] TO CLOSE";
+        std::cin.get();
+    }
 
     return 0;
 }

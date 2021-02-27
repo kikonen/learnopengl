@@ -158,7 +158,12 @@ void Scene::drawMirror(RenderContext& ctx)
 
 	Camera camera(ctx.camera->getPos(), ctx.camera->getFront(), ctx.camera->getUp());
 	camera.setZoom(ctx.camera->getZoom());
-	camera.setRotation(ctx.camera->getRotation() + glm::vec3(0, 180, 0));
+
+	glm::vec3 rot = ctx.camera->getRotation();
+	//rot.y += 180;
+	rot.y += 180;
+	camera.setRotation(-rot);
+
 	RenderContext mirrorCtx(ctx.assets, ctx.clock, ctx.scene, &camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
 	mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 	mirrorCtx.bindUBOs();
