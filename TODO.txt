@@ -1,0 +1,23 @@
+PENDING ERRORS
+
+1)
+[2021-02-27 01:39:53.585] [main] [warning] 
+source=33350 type=33361 id=131204 severity=37192 lenth=157 message=
+Texture state usage warning: The texture object (0) bound to texture image unit 28 does not have a defined base level and cannot be used for texture mapping.
+
+2)
+Program undefined behavior warning: 
+The current GL state uses a sampler (0) that has depth comparisons enabled, with a texture object (3) with a depth format, 
+by a shader that samples it with a non-shadow sampler. 
+Using this state to sample would result in undefined behavior
+
+3)
+[2021-02-27 01:57:17.218] [main] [warning] source=33350 type=33358 id=131222 severity=37191 
+
+Program undefined behavior warning: The current GL state uses a sampler (0) that has depth comparisons enabled, with a texture object (3) with a depth format, 
+by a shader that samples it with a non-shadow sampler. 
+This will result in undefined behavior
+
+4)
+[2021-02-26 16:36:04.817] [main] [warning] source=33350 type=33360 id=8 severity=37192 lenth=140 
+message=API_ID_REDUNDANT_FBO performance warning has been generated. Redundant state change in glBindFramebuffer API call, FBO 0, "", already bound.
