@@ -15,7 +15,7 @@ class Node
 {
 public:
 	Node(NodeType* type);
-	~Node();
+	virtual ~Node();
 
 	virtual void prepare(const Assets& assets);
 

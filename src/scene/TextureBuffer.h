@@ -5,7 +5,7 @@
 class TextureBuffer final : public FrameBuffer
 {
 public:
-	TextureBuffer(int width, int height);
+	TextureBuffer(const FrameBufferSpecification& spec);
 	~TextureBuffer();
 
 	void prepare() override;

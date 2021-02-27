@@ -65,7 +65,7 @@ void Scene::prepare()
 	particleSystem->prepare();
 
 	if (!mirrorBuffer && showMirrorView) {
-		mirrorBuffer = new TextureBuffer(640, 480);
+		mirrorBuffer = new TextureBuffer({ 640, 480 });
 		mirrorBuffer->prepare();
 
 		mirrorViewport = new Viewport(
@@ -161,7 +161,7 @@ void Scene::drawMirror(RenderContext& ctx)
 	Camera camera(ctx.camera->getPos(), ctx.camera->getFront(), ctx.camera->getUp());
 	camera.setZoom(ctx.camera->getZoom());
 	camera.setRotation(ctx.camera->getRotation() + glm::vec3(0, 180, 0));
-	RenderContext mirrorCtx(ctx.engine, ctx.clock, ctx.scene, &camera, mirrorBuffer->width, mirrorBuffer->height);
+	RenderContext mirrorCtx(ctx.engine, ctx.clock, ctx.scene, &camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
 	mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 	mirrorCtx.bindUBOs();
 

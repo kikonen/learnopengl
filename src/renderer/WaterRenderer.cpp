@@ -13,8 +13,9 @@ WaterRenderer::~WaterRenderer()
 
 void WaterRenderer::prepare()
 {
-	reflectionMap = new DynamicCubeMap(assets.waterReflectionCubeSize);
-	refractionMap = new DynamicCubeMap(assets.waterRefractionCubeSize);
+	FrameBufferSpecification spec = { assets.waterReflectionSize , assets.waterReflectionSize };
+	reflectionMap = new TextureBuffer(spec);
+	refractionMap = new TextureBuffer(spec);
 }
 
 void WaterRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
@@ -31,7 +32,7 @@ void WaterRenderer::bindTexture(const RenderContext& ctx)
 	if (!rendered) return;
 
 	reflectionMap->bindTexture(ctx, assets.waterReflectionMapUnitId);
-	refractionMap->bindTexture(ctx, assets.waterReflectionMapUnitId);
+	refractionMap->bindTexture(ctx, assets.waterRefractionMapUnitId);
 }
 
 void WaterRenderer::bind(const RenderContext& ctx)

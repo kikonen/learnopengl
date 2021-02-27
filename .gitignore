@@ -4,6 +4,7 @@ packages/*
 x64/*
 log/*.log
 dist/*
+local/*
 
 imgui.ini
 

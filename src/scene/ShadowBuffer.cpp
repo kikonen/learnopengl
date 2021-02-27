@@ -7,8 +7,8 @@
 #include <glm/ext.hpp>
 
 
-ShadowBuffer::ShadowBuffer(int width, int height)
-	: FrameBuffer(width, height)
+ShadowBuffer::ShadowBuffer(const FrameBufferSpecification& spec)
+	: FrameBuffer(spec)
 {
 }
 
@@ -25,8 +25,8 @@ void ShadowBuffer::prepare()
 		glGenTextures(1, &textureID);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-			width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F,
+			spec.width, spec.height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

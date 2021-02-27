@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Renderer.h"
-#include "asset/DynamicCubeMap.h"
+#include "scene/TextureBuffer.h"
 #include "model/Water.h"
 
 class SkyboxRenderer;
@@ -30,8 +30,8 @@ private:
 	int drawIndex = 0;
 	int drawSkip = 1;
 
-	DynamicCubeMap* reflectionMap = nullptr;
-	DynamicCubeMap* refractionMap = nullptr;
+	TextureBuffer* reflectionMap = nullptr;
+	TextureBuffer* refractionMap = nullptr;
 
 	bool rendered = false;
 };

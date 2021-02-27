@@ -32,8 +32,8 @@ Assets::Assets()
     shadowFarPlane = 1000.0f;
     shadowMapSize = 1000;
 
-    waterReflectionCubeSize = 1000;
-    waterRefractionCubeSize = 1000;
+    waterReflectionSize = 1000;
+    waterRefractionSize = 1000;
 
     reflectionCubeSize = 1000;
     refractionCubeSize = 1000;

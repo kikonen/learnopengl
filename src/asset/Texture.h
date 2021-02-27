@@ -4,6 +4,7 @@
 
 #include <glad/glad.h>
 
+#include "scene/RenderContext.h"
 
 struct TextureSpec {
 	int mode = GL_CLAMP_TO_EDGE;

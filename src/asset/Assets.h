@@ -36,8 +36,8 @@ public:
     float shadowFarPlane;
     int shadowMapSize;
 
-    int waterReflectionCubeSize;
-    int waterRefractionCubeSize;
+    int waterReflectionSize;
+    int waterRefractionSize;
 
     int reflectionCubeSize;
     int refractionCubeSize;

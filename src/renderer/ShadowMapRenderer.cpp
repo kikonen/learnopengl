@@ -23,7 +23,7 @@ void ShadowMapRenderer::prepare()
 	shadowShader->prepare();
 	shadowDebugShader->prepare();
 
-	shadowBuffer = new ShadowBuffer(assets.shadowMapSize, assets.shadowMapSize);
+	shadowBuffer = new ShadowBuffer({ assets.shadowMapSize, assets.shadowMapSize });
 	shadowBuffer->prepare();
 
 	debugViewport = new Viewport(
@@ -63,7 +63,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 {
 	if (!rendered) return;
-	shadowBuffer->bindTexture(assets.shadowMapUnitId);
+	shadowBuffer->bindTexture(ctx, assets.shadowMapUnitId);
 }
 
 void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)

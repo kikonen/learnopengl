@@ -4,21 +4,34 @@
 
 #include "scene/RenderContext.h"
 
+
+struct FrameBufferSpecification {
+	int width;
+	int height;
+
+	bool useMibMap = false;
+	bool useStencil = false;
+
+	int internalFormat = GL_RGB8;
+	int format = GL_RGB;
+
+	int textureWrap = GL_CLAMP_TO_EDGE;
+};
+
 class FrameBuffer
 {
 public:
-	FrameBuffer(int width, int height);
+	FrameBuffer(const FrameBufferSpecification& spec);
 	~FrameBuffer();
 
 	virtual void prepare() = 0;
 	void bind(const RenderContext& ctx);
 	void unbind(const RenderContext& ctx);
 
-	void bindTexture(int unitID);
+	void bindTexture(const RenderContext& ctx, int unitID);
 
 public:
-	const int width;
-	const int height;
+	FrameBufferSpecification spec;
 
 	unsigned int FBO = -1;
 	unsigned int textureID = -1;

@@ -5,8 +5,8 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 
-FrameBuffer::FrameBuffer(int width, int height)
-	: width(width), height(height)
+FrameBuffer::FrameBuffer(const FrameBufferSpecification& spec)
+	: spec(spec)
 {
 }
 
@@ -20,7 +20,7 @@ FrameBuffer::~FrameBuffer()
 void FrameBuffer::bind(const RenderContext& ctx)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, spec.width, spec.height);
 }
 
 void FrameBuffer::unbind(const RenderContext& ctx)
@@ -29,7 +29,7 @@ void FrameBuffer::unbind(const RenderContext& ctx)
 	glViewport(0, 0, ctx.width, ctx.height);
 }
 
-void FrameBuffer::bindTexture(int unitID)
+void FrameBuffer::bindTexture(const RenderContext& ctx, int unitID)
 {
 	glActiveTexture(unitID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
