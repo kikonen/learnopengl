@@ -58,5 +58,7 @@ private:
 	glm::mat3 normalMat = glm::mat3(1.0f);
 
 	bool dirtyMat = true;
+
+	Batch singleBatch;
 };
 

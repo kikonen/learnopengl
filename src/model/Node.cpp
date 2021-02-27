@@ -44,7 +44,12 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch)
 
 void Node::draw(const RenderContext& ctx)
 {
-	type->mesh->draw(ctx);
+	// NOTE KI shader side supports *ONLY* instanced rendering
+	singleBatch.size = 1;
+	singleBatch.prepare(type);
+
+	singleBatch.draw(ctx, this, type->boundShader);
+	//type->mesh->draw(ctx);
 }
 
 void Node::updateModelMatrix() {
