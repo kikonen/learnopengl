@@ -65,7 +65,9 @@ void SceneLoaderTest::setup()
 	setupSpriteSkeleton();
 
 	setupTerrain();
-	setupWater();
+
+	setupWaterBottom();
+	setupWaterSurface();
 
 	setupNodeSkybox();
 
@@ -749,10 +751,30 @@ void SceneLoaderTest::setupTerrain()
 	});
 }
 
-void SceneLoaderTest::setupWater()
+void SceneLoaderTest::setupWaterBottom()
 {
 	addLoader([this]() {
-		Material* material = new Material("water");
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+		type->renderBack = true;
+		{
+			MeshLoader loader(assets, "woodwall");
+			type->mesh = loader.load();
+		}
+
+		glm::vec3 pos = assets.groundOffset;
+
+		Node* node = new Node(type);
+		node->setPos(pos + glm::vec3(0, 4, -10));
+		node->setScale(10.f);
+		node->setRotation({ 90, 0, 0 });
+		scene->registry.addNode(node);
+	});
+}
+
+void SceneLoaderTest::setupWaterSurface()
+{
+	addLoader([this]() {
+		Material* material = new Material("water_surface");
 		material->ns = 100;
 		material->ks = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
 		material->kd = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
@@ -770,9 +792,9 @@ void SceneLoaderTest::setupWater()
 
 		glm::vec3 pos = assets.groundOffset;
 		Water* water = new Water(type, pos.x, pos.y + 5, pos.z);
-		water->setPos(pos + glm::vec3(0, 5, 50));
+		water->setPos(pos + glm::vec3(0, 7, -10));
 		water->setScale(10);
-		water->setRotation({ 0, 0, 180 });
+		water->setRotation({ 90, 0, 0 });
 
 		scene->registry.addNode(water);
 	});
