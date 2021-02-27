@@ -93,19 +93,25 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, NodeRegistry& 
 	glDisable(GL_DEPTH_TEST);
 
 	for (auto& x : registry.nodes) {
-		x.first->bind(ctx, selectionShader);
+		NodeType* t = x.first;
+		Shader* shader = nullptr;
+		Batch& batch = t->batch;
 
 		for (auto& e : x.second) {
-			if (!e->selected) {
-				continue;
+			if (!e->selected) continue;
+
+			if (!shader) {
+				shader = t->bind(ctx, selectionShader);
+				batch.bind(ctx, shader);
 			}
 
 			glm::vec3 scale = e->getScale();
 			e->setScale(scale * 1.02f);
-			e->bind(ctx, selectionShader);
-			e->draw(ctx);
+			batch.draw(ctx, e, shader);
 			e->setScale(scale);
 		}
+
+		batch.flush(ctx, t);
 	}
 
 	glStencilMask(0xFF);

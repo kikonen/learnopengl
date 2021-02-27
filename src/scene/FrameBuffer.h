@@ -10,7 +10,7 @@ struct FrameBufferSpecification {
 	int height;
 
 	bool useMibMap = false;
-	bool useStencil = false;
+	bool useStencil = true;
 
 	int internalFormat = GL_RGB8;
 	int format = GL_RGB;
