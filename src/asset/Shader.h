@@ -262,6 +262,9 @@ public:
     //Shader::Mat4 modelMatrix = { "modelMatrix" };
     //Shader::Mat3 normalMatrix = { "normalMatrix" };
 
+    Shader::Int reflectionTex = { "reflectionTex" };
+    Shader::Int refractionTex = { "refractionTex" };
+
     Shader::Int reflectionMap = { "reflectionMap" };
     Shader::Int refractionMap = { "refractionMap" };
 

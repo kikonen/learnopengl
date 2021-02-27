@@ -71,10 +71,13 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 	mesh->bind(ctx, shader);
 	ctx.bind(shader);
 
-	KI_GL_CALL(shader->reflectionMap.set(ctx.assets.reflectionMapUnitIndex));
-	KI_GL_CALL(shader->refractionMap.set(ctx.assets.refractionMapUnitIndex));
-	KI_GL_CALL(shader->shadowMap.set(ctx.assets.shadowMapUnitIndex));
-	KI_GL_CALL(shader->skybox.set(ctx.assets.skyboxUnitIndex));
+	shader->reflectionTex.set(ctx.assets.waterReflectionMapUnitIndex);
+	shader->refractionTex.set(ctx.assets.waterRefractionMapUnitIndex);
+
+	shader->reflectionMap.set(ctx.assets.reflectionMapUnitIndex);
+	shader->refractionMap.set(ctx.assets.refractionMapUnitIndex);
+	shader->shadowMap.set(ctx.assets.shadowMapUnitIndex);
+	shader->skybox.set(ctx.assets.skyboxUnitIndex);
 
 	if (renderBack) {
 		glDisable(GL_CULL_FACE);

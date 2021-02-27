@@ -3,9 +3,9 @@
 #include <glm/glm.hpp>
 
 #include "asset/UBO.h"
+#include "asset/Assets.h"
 #include "asset/Shader.h"
 #include "component/Camera.h"
-#include "Engine.h"
 
 class Scene;
 
@@ -13,7 +13,7 @@ class RenderContext
 {
 public:
 	RenderContext(
-		const Engine& engine,
+		const Assets& assets,
 		const RenderClock& clock,
 		Scene* scene,
 		Camera* camera, 
@@ -28,7 +28,6 @@ public:
 	void bind(Shader* shader) const;
 public:
 	const Assets& assets;
-	const Engine& engine;
 
 	const RenderClock& clock;
 

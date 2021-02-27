@@ -9,14 +9,13 @@
 
 
 RenderContext::RenderContext(
-	const Engine& engine,
+	const Assets& assets,
 	const RenderClock& clock,
 	Scene* scene,
 	Camera* camera,
 	int width,
 	int height)
-	: engine(engine),
-	assets(engine.assets),
+	: assets(assets),
 	scene(scene),
 	camera(camera),
 	clock(clock),

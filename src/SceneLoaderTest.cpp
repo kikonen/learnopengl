@@ -300,7 +300,7 @@ void SceneLoaderTest::setupNodeBrickwall()
 		{
 			MeshLoader loader(assets, "woodwall");
 			type2->mesh = loader.load();
-			type2->setReflection(0.3);
+			type2->setReflection(0.3f);
 		}
 
 		for (int i = 0; i < 5; i++) {
@@ -321,7 +321,7 @@ void SceneLoaderTest::setupNodeBigMirror()
 		{
 			MeshLoader loader(assets, "woodwall");
 			type->mesh = loader.load();
-			type->setReflection(0.8);
+			type->setReflection(0.8f);
 		}
 
 		{
@@ -417,7 +417,7 @@ void SceneLoaderTest::setupNodeBunny()
 		MeshLoader loader(assets, "bunny");
 		type->renderBack = true;
 		type->mesh = loader.load();
-		type->setReflection(0.9);
+		type->setReflection(0.9f);
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(-15, 10, 5) + assets.groundOffset);
@@ -594,7 +594,7 @@ void SceneLoaderTest::setupNodeWaterBall()
 
 		MeshLoader loader(assets, "water_ball");
 		type->mesh = loader.load();
-		type->setReflection(0.3);
+		type->setReflection(0.3f);
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 25, 0) + assets.groundOffset);
@@ -673,7 +673,7 @@ void SceneLoaderTest::setupNodeAsteroid()
 		{
 			MeshLoader loader(assets, "rock", "/rock/");
 			type->mesh = loader.load();
-			type->setReflection(0.7);
+			type->setReflection(0.7f);
 		}
 
 		Node* node = new Node(type);
@@ -756,13 +756,14 @@ void SceneLoaderTest::setupWater()
 		material->ns = 100;
 		material->ks = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
 		material->kd = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
-
+//		material->pattern = 1;
 		Shader* shader = getShader(TEX_WATER);
 
 		TerrainGenerator generator(assets);
 
 		NodeType* type = new NodeType(NodeType::nextID(), shader);
 		type->renderBack = true;
+		type->water = true;
 //		type->blend = true;
 		type->noShadow = true;
 		type->mesh = generator.generateWater(material);

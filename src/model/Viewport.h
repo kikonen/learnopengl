@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "asset/MeshBuffers.h"
 #include "scene/RenderContext.h"
 

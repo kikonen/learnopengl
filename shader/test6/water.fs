@@ -25,6 +25,10 @@ in VS_OUT {
 uniform sampler2D textures[TEX_COUNT];
 uniform samplerCube reflectionMap;
 uniform samplerCube refractionMap;
+
+uniform sampler2D reflectionTex;
+uniform sampler2D refractionTex;
+
 uniform sampler2DShadow shadowMap;
 
 out vec4 fragColor;
@@ -54,6 +58,11 @@ void main() {
   vec3 toView = normalize(viewPos - fs_in.fragPos);
 
   #include var_calculate_diffuse.glsl
+
+  vec4 reflectColor = texture(reflectionTex, fs_in.texCoords).rgba;
+  vec4 refractColor = texture(refractionTex, fs_in.texCoords).rgba;
+
+  material.diffuse = reflectColor;
 
   vec4 shaded = calculateLight(normal, toView, material);
   vec4 texColor = shaded;

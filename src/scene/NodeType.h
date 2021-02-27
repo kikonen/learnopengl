@@ -31,6 +31,7 @@ public:
 
 	bool blend = false;
 	bool light = false;
+	bool water = false;
 	bool renderBack = false;
 	bool noShadow = false;
 	bool batchMode = true;

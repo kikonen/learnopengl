@@ -49,7 +49,7 @@ int Test6::onRender(const RenderClock& clock) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	RenderContext ctx(*this, clock, currentScene, currentScene->getCamera(), window->width, window->height);
+	RenderContext ctx(assets, clock, currentScene, currentScene->getCamera(), window->width, window->height);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 

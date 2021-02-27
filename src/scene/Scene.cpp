@@ -79,6 +79,7 @@ void Scene::prepare()
 	}
 
 	registry.addViewPort(shadowMapRenderer->debugViewport);
+	registry.addViewPort(waterMapRenderer->debugViewport);
 }
 
 
@@ -143,6 +144,7 @@ void Scene::draw(RenderContext& ctx)
 	shadowMapRenderer->bindTexture(ctx);
 
 	reflectionMapRenderer->render(ctx, registry, skyboxRenderer);
+	waterMapRenderer->render(ctx, registry, skyboxRenderer);
 
 	drawMirror(ctx);
 	drawScene(ctx);
@@ -157,7 +159,7 @@ void Scene::drawMirror(RenderContext& ctx)
 	Camera camera(ctx.camera->getPos(), ctx.camera->getFront(), ctx.camera->getUp());
 	camera.setZoom(ctx.camera->getZoom());
 	camera.setRotation(ctx.camera->getRotation() + glm::vec3(0, 180, 0));
-	RenderContext mirrorCtx(ctx.engine, ctx.clock, ctx.scene, &camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
+	RenderContext mirrorCtx(ctx.assets, ctx.clock, ctx.scene, &camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
 	mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 	mirrorCtx.bindUBOs();
 
@@ -183,6 +185,7 @@ void Scene::drawScene(RenderContext& ctx)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	reflectionMapRenderer->bindTexture(ctx);
+	waterMapRenderer->bindTexture(ctx);
 
 	if (skyboxRenderer) {
 		skyboxRenderer->render(ctx, registry);
