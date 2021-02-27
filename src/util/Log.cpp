@@ -27,12 +27,19 @@ void Log::init()
 		std::vector<spdlog::sink_ptr> sinks{ console_sink, file_sink };
 
 		g_logger = std::make_shared<spdlog::logger>("main", sinks.begin(), sinks.end());
-		//spdlog::register_logger(g_logger);
+		spdlog::register_logger(g_logger);
+
+		spdlog::flush_every(std::chrono::seconds(3));
 	}
 	catch (const spdlog::spdlog_ex& ex)
 	{
 		std::cout << "Log init failed: " << ex.what() << std::endl;
 	}
+}
+
+void Log::flush()
+{
+	g_logger->flush();
 }
 
 void Log::error(const std::string& msg)

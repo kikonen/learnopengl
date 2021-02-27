@@ -5,25 +5,48 @@
 
 
 namespace ki {
-	std::string formatSeverity(GLenum severity) {
-		std::stringstream ss;
+	// https://gist.github.com/liam-middlebrook/c52b069e4be2d87a6d2f
 
-		switch (severity) {
-		case GL_DEBUG_SEVERITY_HIGH:
-			ss << "HIGH";
-			break;
-		case GL_DEBUG_SEVERITY_MEDIUM:
-			ss << "HIGH";
-			break;
-		case GL_DEBUG_SEVERITY_LOW:
-			ss << "LOW";
-			break;
-		default:
-			ss << "UNKNOWN";
+	std::string formatSource(GLenum source) {
+		switch (source) {
+		case GL_DEBUG_SOURCE_API: "API";
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM: "WINDOW";
+		case GL_DEBUG_SOURCE_SHADER_COMPILER: "COMPILER";
+		case GL_DEBUG_SOURCE_THIRD_PARTY: "3RD_PARTY";
+		case GL_DEBUG_SOURCE_APPLICATION: "APP";
+		case GL_DEBUG_SOURCE_OTHER: return "OTHER";
 		};
 
-		ss << " 0x" << std::hex << severity << std::dec << " (" << severity << ")";
+		std::stringstream ss;
+		ss << "0x" << std::hex << source;
+		return ss.str();
+	}
 
+
+	std::string formatType(GLenum type) {
+		switch (type) {
+		case GL_DEBUG_TYPE_ERROR: "ERROR";
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: "DEPRECATED";
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: "UNDEFINED";
+		case GL_DEBUG_TYPE_PORTABILITY: "PORTABILITY";
+		case GL_DEBUG_TYPE_PERFORMANCE: "PERFORMANCE";
+		case GL_DEBUG_TYPE_OTHER: return "OTHER";
+		};
+
+		std::stringstream ss;
+		ss << "0x" << std::hex << type;
+		return ss.str();
+	}
+
+	std::string formatSeverity(GLenum severity) {
+		switch (severity) {
+		case GL_DEBUG_SEVERITY_HIGH: "HIGH";
+		case GL_DEBUG_SEVERITY_MEDIUM: return "MEDIUM";
+		case GL_DEBUG_SEVERITY_LOW: return "LOW";
+		};
+
+		std::stringstream ss;
+		ss << "0x" << std::hex << severity;
 		return ss.str();
 	}
 
@@ -42,12 +65,11 @@ namespace ki {
 		const void* userParam) 
 	{
 		std::stringstream ss;
-		ss << "src=" << source
-			<< " type=" << type
-			<< " id=" << id
-			<< formatSeverity(severity)
-			<< " lenth=" << length
-			<< " message=" << message;
+		ss << formatSource(source)
+			<< " (" << id << ")"
+			<< " " << formatType(type)
+			<< " " << formatSeverity(severity)
+			<< " - " << message;
 
 		switch (severity) {
 		case GL_DEBUG_SEVERITY_HIGH:

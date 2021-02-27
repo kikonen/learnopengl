@@ -21,7 +21,7 @@
 //#define KI_GL_DEBUG_BIND
 
 #ifdef KI_GL_DEBUG_BREAK
-	#define KI_BREAK() __debugbreak();
+	#define KI_BREAK() Log::flush(); __debugbreak();
 #else
 	#define KI_BREAK()
 #endif

@@ -5,6 +5,8 @@
 
 #include <glad/glad.h>
 
+#define KI_FLUSH() Log::flush()
+
 #define KI_ERROR(msg) Log::error(msg)
 #define KI_WARN(msg) Log::warn(msg)
 #define KI_INFO(msg) Log::info(msg)
@@ -19,6 +21,7 @@ class Log
 {
 public:
 	static void init();
+	static void flush();
 
 	static void error(const std::string& msg);
 	static void warn(const std::string& msg);
