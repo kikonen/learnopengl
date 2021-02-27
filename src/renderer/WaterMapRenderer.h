@@ -22,7 +22,7 @@ public:
 	void render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox);
 
 private:
-	void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
+	void drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox);
 	Water* findClosest(const RenderContext& ctx, NodeRegistry& registry);
 
 public:

@@ -46,7 +46,7 @@ void WaterMapRenderer::bind(const RenderContext& ctx)
 
 void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
 {
-//	if (drawIndex++ < drawSkip) return;
+	if (drawIndex++ < drawSkip) return;
 	drawIndex = 0;
 
 	Water* closest = findClosest(ctx, registry);
@@ -69,8 +69,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 
 		reflectionBuffer->bind(localCtx);
 
-		skybox->render(localCtx, registry);
-		drawNodes(localCtx, registry);
+		drawNodes(localCtx, registry, skybox);
 
 		reflectionBuffer->unbind(ctx);
 	}
@@ -87,8 +86,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 
 		refractionBuffer->bind(localCtx);
 
-		skybox->render(localCtx, registry);
-		drawNodes(localCtx, registry);
+		drawNodes(localCtx, registry, skybox);
 
 		refractionBuffer->unbind(ctx);
 	}
@@ -97,8 +95,13 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 	rendered = true;
 }
 
-void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
+void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
 {
+	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	skybox->render(ctx, registry);
+
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
 		if (t->water) continue;
