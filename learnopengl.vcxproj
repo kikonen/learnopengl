@@ -194,7 +194,6 @@
     <ClCompile Include="src\controller\AsteroidBeltController.cpp" />
     <ClCompile Include="src\controller\NodeController.cpp" />
     <ClCompile Include="src\model\InstancedNode.cpp" />
-    <ClCompile Include="src\renderer\SpriteRenderer.cpp" />
     <ClCompile Include="src\util\Perlin.cpp" />
     <ClCompile Include="src\scene\FrameBuffer.cpp" />
     <ClCompile Include="src\asset\MeshBuffers.cpp" />
@@ -224,13 +223,12 @@
     <ClCompile Include="src\asset\Tri.cpp" />
     <ClCompile Include="src\asset\Vertex.cpp" />
     <ClCompile Include="src\Test6.cpp" />
-    <ClCompile Include="src\renderer\TerrainRenderer.cpp" />
     <ClCompile Include="src\model\Terrain.cpp" />
     <ClCompile Include="src\model\Viewport.cpp" />
     <ClCompile Include="src\renderer\ViewportRenderer.cpp" />
     <ClCompile Include="src\scene\TerrainGenerator.cpp" />
     <ClCompile Include="src\model\Water.cpp" />
-    <ClCompile Include="src\renderer\WaterRenderer.cpp" />
+    <ClCompile Include="src\renderer\WaterMapRenderer.cpp" />
     <ClCompile Include="src\gui\Frame.cpp" />
     <ClCompile Include="src\gui\Window.cpp" />
   </ItemGroup>
@@ -275,7 +273,6 @@
     <ClInclude Include="src\controller\AsteroidBeltController.h" />
     <ClInclude Include="src\controller\NodeController.h" />
     <ClInclude Include="src\model\InstancedNode.h" />
-    <ClInclude Include="src\renderer\SpriteRenderer.h" />
     <ClInclude Include="src\util\Perlin.h" />
     <ClInclude Include="src\scene\FrameBuffer.h" />
     <ClInclude Include="src\asset\MeshBuffers.h" />
@@ -306,13 +303,12 @@
     <ClInclude Include="src\asset\Vertex.h" />
     <ClInclude Include="src\Test6.h" />
     <ClInclude Include="src\asset\UBO.h" />
-    <ClInclude Include="src\renderer\TerrainRenderer.h" />
     <ClInclude Include="src\model\Terrain.h" />
     <ClInclude Include="src\model\Viewport.h" />
     <ClInclude Include="src\renderer\ViewportRenderer.h" />
     <ClInclude Include="src\scene\TerrainGenerator.h" />
     <ClInclude Include="src\model\Water.h" />
-    <ClInclude Include="src\renderer\WaterRenderer.h" />
+    <ClInclude Include="src\renderer\WaterMapRenderer.h" />
     <ClInclude Include="src\gui\Frame.h" />
     <ClInclude Include="src\ki\Timer.h" />
     <ClInclude Include="src\gui\Window.h" />

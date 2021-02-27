@@ -2,7 +2,7 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 6) in mat4 aInstanceMatrix;
-layout (location = 10) in mat3 aNormalMatrix;
+layout (location = 6) in mat4 aModelMatrix;
 
 #include uniform_matrices.glsl
 

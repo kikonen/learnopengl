@@ -11,14 +11,15 @@
 #include "RenderContext.h"
 
 #include "renderer/NodeRenderer.h"
-#include "renderer/SpriteRenderer.h"
-#include "renderer/TerrainRenderer.h"
-#include "renderer/WaterRenderer.h"
-
+//#include "renderer/TerrainRenderer.h"
 #include "renderer/ViewportRenderer.h"
-#include "renderer/SkyboxRenderer.h"
-#include "renderer/ShadowMapRenderer.h"
+
+#include "renderer/WaterMapRenderer.h"
 #include "renderer/ReflectionMapRenderer.h"
+#include "renderer/ShadowMapRenderer.h"
+
+#include "renderer/SkyboxRenderer.h"
+
 #include "renderer/NormalRenderer.h"
 
 #include "ParticleSystem.h"
@@ -78,14 +79,14 @@ private:
 	std::vector<ParticleGenerator*> particleGenerators;
 
 	NodeRenderer* nodeRenderer = nullptr;
-	SpriteRenderer* spriteRenderer = nullptr;
 
-	TerrainRenderer* terrainRenderer = nullptr;
-	WaterRenderer* waterRenderer = nullptr;
+	//TerrainRenderer* terrainRenderer = nullptr;
 	ViewportRenderer* viewportRenderer = nullptr;
 
-	ShadowMapRenderer* shadowMapRenderer = nullptr;
+	WaterMapRenderer* waterMapRenderer = nullptr;
 	ReflectionMapRenderer* reflectionMapRenderer = nullptr;
+	ShadowMapRenderer* shadowMapRenderer = nullptr;
+
 	NormalRenderer* normalRenderer = nullptr;
 
 	ParticleSystem* particleSystem = nullptr;

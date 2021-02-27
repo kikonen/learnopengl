@@ -11,7 +11,6 @@ public:
 
 	void prepare() override;
 
-	void update(const RenderContext& ctx, NodeRegistry& registry) override;
 	void bind(const RenderContext& ctx) override;
 	void render(const RenderContext& ctx, NodeRegistry& registry) override;
 

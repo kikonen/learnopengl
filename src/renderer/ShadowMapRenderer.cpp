@@ -83,38 +83,6 @@ void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 
 void ShadowMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
 {
-#if 0
-	for (auto& x : registry.terrains) {
-		NodeType* t = x.first;
-		if (t->light || t->skipShadow) continue;
-		Shader* shader = t->bind(ctx, shadowShader);
-
-		Batch& batch = t->batch;
-		batch.bind(ctx, shader);
-
-		for (auto& e : x.second) {
-			batch.draw(ctx, e, shader);
-		}
-
-		batch.flush(ctx, t);
-	}
-#endif
-
-	for (auto& x : registry.sprites) {
-		NodeType* t = x.first;
-		if (t->noShadow) continue;
-		Shader* shader = t->bind(ctx, shadowShader);
-
-		Batch& batch = t->batch;
-		batch.bind(ctx, shader);
-
-		for (auto& e : x.second) {
-			batch.draw(ctx, e, shader);
-		}
-
-		batch.flush(ctx, t);
-	}
-
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
 		if (t->noShadow) continue;

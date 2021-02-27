@@ -6,15 +6,13 @@
 
 class SkyboxRenderer;
 
-class WaterRenderer final : public Renderer
+class WaterMapRenderer final : public Renderer
 {
 public:
-	WaterRenderer(const Assets& assets);
-	~WaterRenderer();
+	WaterMapRenderer(const Assets& assets);
+	~WaterMapRenderer();
 
 	void prepare() override;
-
-	void update(const RenderContext& ctx, NodeRegistry& registry) override;
 
 	void bindTexture(const RenderContext& ctx);
 

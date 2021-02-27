@@ -75,12 +75,6 @@
     <ClCompile Include="src\renderer\SkyboxRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\SpriteRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderer\TerrainRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\model\InstancedNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -133,9 +127,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\controller\NodeController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderer\WaterRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\ViewportRenderer.cpp">
@@ -243,6 +234,9 @@
     <ClCompile Include="src\asset\DynamicCubeMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\WaterMapRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -311,12 +305,6 @@
     <ClInclude Include="src\renderer\SkyboxRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\SpriteRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\TerrainRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\model\InstancedNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -369,9 +357,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\NodeController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\WaterRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\ViewportRenderer.h">
@@ -480,6 +465,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\DynamicCubeMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\WaterMapRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,14 +14,14 @@ Scene::Scene(const Assets& assets)
 	registry(*this)
 {
 	nodeRenderer = new NodeRenderer(assets);
-	spriteRenderer = new SpriteRenderer(assets);
-	terrainRenderer = new TerrainRenderer(assets);
-	waterRenderer = new WaterRenderer(assets);
+	//terrainRenderer = new TerrainRenderer(assets);
 
 	viewportRenderer = new ViewportRenderer(assets);
 
-	shadowMapRenderer = new ShadowMapRenderer(assets);
+	waterMapRenderer = new WaterMapRenderer(assets);
 	reflectionMapRenderer = new ReflectionMapRenderer(assets);
+	shadowMapRenderer = new ShadowMapRenderer(assets);
+
 	normalRenderer = new NormalRenderer(assets);
 
 	particleSystem = new ParticleSystem(assets);
@@ -30,14 +30,14 @@ Scene::Scene(const Assets& assets)
 Scene::~Scene()
 {
 	delete nodeRenderer;
-	delete spriteRenderer;
-	delete terrainRenderer;
-	delete waterRenderer;
+	//delete terrainRenderer;
 
 	delete viewportRenderer;
 
-	delete shadowMapRenderer;
+	delete waterMapRenderer;
 	delete reflectionMapRenderer;
+	delete shadowMapRenderer;
+
 	delete normalRenderer;
 
 	delete particleSystem;
@@ -49,14 +49,13 @@ void Scene::prepare()
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
 	nodeRenderer->prepare();
-	spriteRenderer->prepare();
-	terrainRenderer->prepare();
-	waterRenderer->prepare();
+	//terrainRenderer->prepare();
 
 	viewportRenderer->prepare();
 
-	shadowMapRenderer->prepare();
+	waterMapRenderer->prepare();
 	reflectionMapRenderer->prepare();
+	shadowMapRenderer->prepare();
 
 	if (showNormals) {
 		normalRenderer->prepare();
@@ -110,9 +109,7 @@ void Scene::update(RenderContext& ctx)
 	}
 
 	nodeRenderer->update(ctx, registry);
-	spriteRenderer->update(ctx, registry);
-	terrainRenderer->update(ctx, registry);
-	waterRenderer->update(ctx, registry);
+	//terrainRenderer->update(ctx, registry);
 
 	viewportRenderer->update(ctx, registry);
 
@@ -122,14 +119,13 @@ void Scene::update(RenderContext& ctx)
 void Scene::bind(RenderContext& ctx)
 {
 	nodeRenderer->bind(ctx);
-	spriteRenderer->bind(ctx);
-	terrainRenderer->bind(ctx);
-	waterRenderer->bind(ctx);
+	//terrainRenderer->bind(ctx);
 
 	viewportRenderer->bind(ctx);
 
-	shadowMapRenderer->bind(ctx);
+	waterMapRenderer->bind(ctx);
 	reflectionMapRenderer->bind(ctx);
+	shadowMapRenderer->bind(ctx);
 
 	ctx.bindUBOs();
 }
@@ -192,9 +188,7 @@ void Scene::drawScene(RenderContext& ctx)
 		skyboxRenderer->render(ctx, registry);
 	}
 
-	waterRenderer->render(ctx, registry);
-	terrainRenderer->render(ctx, registry);
-	spriteRenderer->render(ctx, registry);
+	//terrainRenderer->render(ctx, registry);
 	nodeRenderer->render(ctx, registry);
 
 	particleSystem->render(ctx);
@@ -279,9 +273,6 @@ void Scene::prepareUBOs()
 	// Lights
 	{
 		int sz = sizeof(LightsUBO);
-		//int sz2 = sizeof(DirLightUBO);
-		//int sz3 = sizeof(PointLightUBO);
-		//int sz4 = sizeof(SpotLightUBO);
 
 		glCreateBuffers(1, &ubo.lights);
 		glNamedBufferStorage(ubo.lights, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
@@ -289,16 +280,4 @@ void Scene::prepareUBOs()
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, ubo.lights, 0, sz);
 		ubo.lightsSize = sz;
 	}
-
-	//// materials
-	//{
-	//	int sz = sizeof(MaterialsUBO);
-	//	//int sz2 = sizeof(MaterialUBO);
-
-	//	glCreateBuffers(1, &ubo.materials);
-	//	glNamedBufferStorage(ubo.materials, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
-
-	//	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, ubo.materials, 0, sz);
-	//	ubo.materialsSize = sz;
-	//}
 }

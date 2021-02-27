@@ -97,34 +97,6 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 
 void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto& x : registry.terrains) {
-		NodeType* t = x.first;
-		Shader* shader = t->bind(ctx, nullptr);
-
-		Batch& batch = t->batch;
-		batch.bind(ctx, shader);
-
-		for (auto& e : x.second) {
-			batch.draw(ctx, e, shader);
-		}
-
-		batch.flush(ctx, t);
-	}
-
-	for (auto& x : registry.sprites) {
-		NodeType* t = x.first;
-		Shader* shader = t->bind(ctx, nullptr);
-
-		Batch& batch = t->batch;
-		batch.bind(ctx, shader);
-
-		for (auto& e : x.second) {
-			batch.draw(ctx, e, shader);
-		}
-
-		batch.flush(ctx, t);
-	}
-
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
 		Shader* shader = t->bind(ctx, nullptr);

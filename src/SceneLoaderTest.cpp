@@ -3,6 +3,7 @@
 #include "asset/MeshLoader.h"
 #include "asset/PlainTexture.h"
 
+#include "model/Sprite.h"
 #include "model/Terrain.h"
 #include "model/Water.h"
 #include "model/InstancedNode.h"
@@ -713,7 +714,7 @@ void SceneLoaderTest::setupSpriteSkeleton()
 				Sprite* sprite = new Sprite(type, glm::vec2(1.5, 3));
 				sprite->setPos(pos + glm::vec3(15 - x * 4, 1.5, 0.2 * z));
 				//sprite->setRotation(glm::vec3(0, 0, 180));
-				scene->registry.addSprite(sprite);
+				scene->registry.addNode(sprite);
 			}
 		}
 	});
@@ -737,11 +738,12 @@ void SceneLoaderTest::setupTerrain()
 		for (int x = 0; x < 2; x++) {
 			for (int z = 0; z < 2; z++) {
 				NodeType* type = new NodeType(NodeType::nextID(), shader);
-				type->renderBack = true;
+				//type->renderBack = true;
+				type->noShadow = true;
 				type->mesh = generator.generateTerrain(material);
 
 				Terrain* terrain = new Terrain(type, x, 0, z);
-				scene->registry.addTerrain(terrain);
+				scene->registry.addNode(terrain);
 			}
 		}
 	});
@@ -767,11 +769,11 @@ void SceneLoaderTest::setupWater()
 
 		glm::vec3 pos = assets.groundOffset;
 		Water* water = new Water(type, pos.x, pos.y + 5, pos.z);
-		water->setPos(pos + glm::vec3(0, 5, 0));
-		water->setScale(100);
-		water->setRotation({ 0, 0, 90 });
+		water->setPos(pos + glm::vec3(0, 5, 50));
+		water->setScale(10);
+		water->setRotation({ 0, 0, 180 });
 
-		scene->registry.addWater(water);
+		scene->registry.addNode(water);
 	});
 }
 
