@@ -78,7 +78,7 @@ void Scene::prepare()
 		registry.addViewPort(mirrorViewport);
 	}
 
-	registry.addViewPort(shadowMapRenderer->debugViewport);
+	//registry.addViewPort(shadowMapRenderer->debugViewport);
 	registry.addViewPort(waterMapRenderer->debugViewport);
 }
 

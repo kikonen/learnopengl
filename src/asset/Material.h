@@ -92,6 +92,7 @@ public:
     BoundTexture* normalMapTex = nullptr;
 
     std::vector<BoundTexture*> textures;
+    std::vector<GLuint> textureIDs;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     // ranges between 0 and 1000
