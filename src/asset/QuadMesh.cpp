@@ -62,8 +62,12 @@ void QuadMesh::setRefraction(float refraction)
 void QuadMesh::prepare(const Assets& assets)
 {
 	buffers.prepare(false);
-	material->prepare();
 	prepareBuffers(buffers);
+
+	material->prepare();
+	for (auto const& t : material->textures) {
+		textureIDs.push_back(t->texture->textureID);
+	}
 
 	// materials
 	{
@@ -170,7 +174,11 @@ void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
 
 	glBindVertexArray(buffers.VAO);
 
-	material->bindArray(shader, 0);
+	material->bindArray(shader, 0, false);
+
+	if (!textureIDs.empty()) {
+		glBindTextures(0, textureIDs.size(), &textureIDs[0]);
+	}
 }
 
 void QuadMesh::draw(const RenderContext& ctx)

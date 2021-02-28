@@ -46,6 +46,7 @@ public:
 	std::vector<Vertex*> vertices;
 
 	std::vector<Material*> materials;
+	std::vector<GLuint> textureIDs;
 
 private:
 	const std::string modelName;

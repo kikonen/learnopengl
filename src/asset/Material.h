@@ -59,7 +59,7 @@ public:
     int loadTextures(const std::string& baseDir);
 
     void prepare();
-    void bindArray(Shader* shader, int index);
+    void bindArray(Shader* shader, int index, bool bindTextureIDs);
     //void bind(Shader* shader);
 
     MaterialUBO toUBO();
@@ -92,7 +92,6 @@ public:
     BoundTexture* normalMapTex = nullptr;
 
     std::vector<BoundTexture*> textures;
-    std::vector<GLuint> textureIDs;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     // ranges between 0 and 1000

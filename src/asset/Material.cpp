@@ -111,7 +111,6 @@ void Material::prepare()
 			x->unitIndex = unitIndex++;
 		}
 		x->texture->prepare();
-		textureIDs.push_back(x->texture->textureID);
 	}
 }
 
@@ -137,7 +136,7 @@ void Material::prepare()
 //	}
 //}
 
-void Material::bindArray(Shader* shader, int index)
+void Material::bindArray(Shader* shader, int index, bool bindTextureIDs)
 {
 	if (textures.empty()) return;
 
@@ -154,10 +153,11 @@ void Material::bindArray(Shader* shader, int index)
 		shader->textures[normalMapTex->unitIndex].set(normalMapTex->unitIndex);
 	}
 
-	//for (auto& x : textures) {
-	//	x->bind();
-	//}
-	glBindTextures(textures[0]->unitIndex, textureIDs.size(), &textureIDs[0]);
+	if (bindTextureIDs) {
+		for (auto& x : textures) {
+			x->bind();
+		}
+	}
 }
 
 MaterialUBO Material::toUBO()

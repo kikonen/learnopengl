@@ -71,6 +71,10 @@ void ModelMesh::prepare(const Assets& assets)
 		material->prepare();
 		reflection |= material->reflection > 0;
 		refraction |= material->refraction > 0;
+
+		for (auto const& t : material->textures) {
+			textureIDs.push_back(t->texture->textureID);
+		}
 	}
 
 	prepareBuffers(buffers);
@@ -203,7 +207,11 @@ void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 	glBindVertexArray(buffers.VAO);
 
 	for (auto const& material : materials) {
-		material->bindArray(shader, material->materialIndex);
+		material->bindArray(shader, material->materialIndex, false);
+	}
+
+	if (!textureIDs.empty()) {
+		glBindTextures(0, textureIDs.size(), &textureIDs[0]);
 	}
 }
 

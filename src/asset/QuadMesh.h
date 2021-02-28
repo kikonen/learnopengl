@@ -31,6 +31,7 @@ public:
 public:
 	std::string name;
 	Material* material = nullptr;
+	std::vector<GLuint> textureIDs;
 
 private:
 	MaterialsUBO materialsUbo;
