@@ -33,7 +33,7 @@ void DynamicCubeMap::unbind(const RenderContext& ctx)
 	// Reset viewport back
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, ctx.width, ctx.height);
-	ctx.bindUBOs();
+	ctx.bindMatricesUBO();
 }
 
 void DynamicCubeMap::prepare()

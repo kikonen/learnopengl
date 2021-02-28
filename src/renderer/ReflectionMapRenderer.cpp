@@ -80,7 +80,7 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 		camera.setZoom(90);
 		RenderContext ctx(mainCtx.assets, mainCtx.clock, mainCtx.scene, &camera, reflectionMap->size, reflectionMap->size);
 		ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
-		ctx.bindUBOs();
+		ctx.bindMatricesUBO();
 
 		skybox->render(ctx, registry);
 		drawNodes(ctx, registry);

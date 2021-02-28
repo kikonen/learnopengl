@@ -166,14 +166,14 @@ void Scene::drawMirror(RenderContext& ctx)
 
 	RenderContext mirrorCtx(ctx.assets, ctx.clock, ctx.scene, &camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
 	mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
-	mirrorCtx.bindUBOs();
+	mirrorCtx.bindMatricesUBO();
 
 	mirrorBuffer->bind(mirrorCtx);
 
 	drawScene(mirrorCtx);
 
 	mirrorBuffer->unbind(ctx);
-	ctx.bindUBOs();
+	ctx.bindMatricesUBO();
 }
 
 void Scene::drawViewports(RenderContext& ctx)

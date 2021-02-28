@@ -65,7 +65,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 
 		RenderContext localCtx(ctx.assets, ctx.clock, ctx.scene, &camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
 		localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
-		localCtx.bindUBOs();
+		localCtx.bindMatricesUBO();
 
 		reflectionBuffer->bind(localCtx);
 
@@ -82,7 +82,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 
 		RenderContext localCtx(ctx.assets, ctx.clock, ctx.scene, &camera, refractionBuffer->spec.width, refractionBuffer->spec.height);
 		localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
-		localCtx.bindUBOs();
+		localCtx.bindMatricesUBO();
 
 		refractionBuffer->bind(localCtx);
 
@@ -91,7 +91,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 		refractionBuffer->unbind(ctx);
 	}
 
-	ctx.bindUBOs();
+	ctx.bindMatricesUBO();
 	rendered = true;
 }
 
