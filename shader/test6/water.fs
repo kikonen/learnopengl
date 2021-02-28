@@ -65,10 +65,9 @@ void main() {
 
   vec4 refractColor = texture(refractionTex, (vec2(fs_in.glp.x, fs_in.glp.y)) / (2.0 * fs_in.glp.w) + 0.5);
   vec4 reflectColor = texture(reflectionTex, (vec2(fs_in.glp.x, -fs_in.glp.y)) / (2.0 * fs_in.glp.w) + 0.5);
-  vec4 mixColor = (0.2 * refractColor) + (1.0 * reflectColor);
-//  mixColor = (1.0 * refractColor);
+  vec4 mixColor = mix(reflectColor, refractColor, 0.35);
 
-  material.diffuse = mixColor;
+  material.diffuse = mix(material.diffuse, mixColor, 0.9);
 
   vec4 shaded = calculateLight(normal, toView, material);
   vec4 texColor = shaded;
