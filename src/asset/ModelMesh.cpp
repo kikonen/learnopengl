@@ -77,6 +77,7 @@ void ModelMesh::prepare(const Assets& assets)
 
 	// materials
 	{
+		int sz_single = sizeof(MaterialUBO);
 		int sz = sizeof(MaterialsUBO);
 		materialsUboSize = sz;
 

@@ -13,4 +13,6 @@ struct Material {
   int pattern;
   float reflection;
   float refraction;
+
+  float tiling;
 };

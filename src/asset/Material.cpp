@@ -135,5 +135,7 @@ MaterialUBO Material::toUBO()
 		pattern,
 		reflection,
 		refraction,
+
+		tiling,
 	};
 }

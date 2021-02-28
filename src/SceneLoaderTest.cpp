@@ -744,6 +744,7 @@ void SceneLoaderTest::setupTerrain()
 	addLoader([this]() {
 		Material* material = new Material("terrain");
 		material->textureSpec.mode = GL_REPEAT;
+		material->tiling = 60;
 		material->ns = 50;
 		material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 		material->map_kd = "Grass Dark_VH.PNG";

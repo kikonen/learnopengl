@@ -74,6 +74,8 @@ public:
     float reflection = 0.f;
     float refraction = 0.f;
 
+    float tiling = 1.0f;
+
     BoundTexture* diffuseTex = nullptr;
     BoundTexture* emissionTex = nullptr;
     BoundTexture* specularTex = nullptr;
