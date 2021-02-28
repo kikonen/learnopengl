@@ -52,6 +52,8 @@ private:
 	void setupNodeGlassBall();
 	void setupNodeWaterBall();
 
+	void setupNodeMaterialBalls();
+
 	void setupNodePlanet();
 	void setupNodeAsteroid();
 	void setupNodeAsteroidBelt();

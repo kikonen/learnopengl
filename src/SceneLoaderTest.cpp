@@ -36,6 +36,7 @@ void SceneLoaderTest::setup()
 
 	setupNodeGlassBall();
 	setupNodeWaterBall();
+	setupNodeMaterialBalls();
 
 	setupNodeCubes();
 	setupNodeCube4();
@@ -624,6 +625,30 @@ void SceneLoaderTest::setupNodeWaterBall()
 		node->particleGenerator = new ParticleGenerator(assets, pd);
 
 		scene->registry.addNode(node);
+	});
+}
+
+void SceneLoaderTest::setupNodeMaterialBalls()
+{
+	addLoader([this]() {
+		MaterialType materialTypes[4] = { basic, gold, silver, bronze };
+
+		int index = 0;
+		for (auto mt : materialTypes) {
+			NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+
+			MeshLoader loader(assets, "water_ball");
+			loader.defaultMaterial = Material::createMaterial(mt);
+			loader.overrideMaterials = true;
+			type->mesh = loader.load();
+			type->setReflection(0.05f);
+
+			Node* node = new Node(type);
+			node->setPos(glm::vec3(5, 25, 5 + index * 5) + assets.groundOffset);
+
+			scene->registry.addNode(node);
+			index++;
+		}
 	});
 }
 

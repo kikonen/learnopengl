@@ -25,6 +25,13 @@ struct BoundTexture {
     }
 };
 
+enum MaterialType {
+    basic,
+    gold,
+    silver,
+    bronze,
+};
+
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
 * http://paulbourke.net/dataformats/obj/
@@ -57,6 +64,8 @@ public:
     MaterialUBO toUBO();
 
     static Material* createDefaultMaterial();
+
+    static Material* createMaterial(MaterialType type);
 private:
     BoundTexture* loadTexture(const std::string& baseDir, const std::string& name);
 
