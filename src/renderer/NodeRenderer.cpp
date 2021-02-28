@@ -90,7 +90,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, NodeRegistry& 
 {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);
-	glDisable(GL_DEPTH_TEST);
+	ctx.state.disable(GL_DEPTH_TEST);
 
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
@@ -116,7 +116,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, NodeRegistry& 
 
 	glStencilMask(0xFF);
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
-	glEnable(GL_DEPTH_TEST);
+	ctx.state.enable(GL_DEPTH_TEST);
 }
 
 void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nodes)
@@ -125,8 +125,8 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nod
 		return;
 	}
 
-	glEnable(GL_BLEND);
-	glDisable(GL_CULL_FACE);
+	ctx.state.enable(GL_BLEND);
+	ctx.state.disable(GL_CULL_FACE);
 
 	const glm::vec3& viewPos = ctx.camera->getPos();
 
@@ -162,7 +162,7 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nod
 		batch->flush(ctx, type);
 	}
 
-	glEnable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
+	ctx.state.enable(GL_CULL_FACE);
+	ctx.state.disable(GL_BLEND);
 }
 

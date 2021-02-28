@@ -21,8 +21,8 @@ void ParticleSystem::bind(RenderContext& ctx)
 
 void ParticleSystem::render(RenderContext& ctx)
 {
-	glEnable(GL_BLEND);
-	glDisable(GL_CULL_FACE);
+	ctx.state.enable(GL_BLEND);
+	ctx.state.disable(GL_CULL_FACE);
 
 	for (auto& w : particles) {
 		//Shader* shader;// = t->bind(ctx, nullptr);
@@ -37,8 +37,8 @@ void ParticleSystem::render(RenderContext& ctx)
 		//batch.flush(ctx, t);
 	}
 
-	glEnable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
+	ctx.state.enable(GL_CULL_FACE);
+	ctx.state.disable(GL_BLEND);
 }
 
 void ParticleSystem::addParticle(const Particle& particle)

@@ -63,7 +63,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 		camera.setZoom(ctx.camera->getZoom());
 		camera.setRotation(ctx.camera->getRotation());
 
-		RenderContext localCtx(ctx.assets, ctx.clock, ctx.scene, &camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
+		RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, &camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
 		localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 		localCtx.bindMatricesUBO();
 
@@ -80,7 +80,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 		camera.setZoom(ctx.camera->getZoom());
 		camera.setRotation(ctx.camera->getRotation());
 
-		RenderContext localCtx(ctx.assets, ctx.clock, ctx.scene, &camera, refractionBuffer->spec.width, refractionBuffer->spec.height);
+		RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, &camera, refractionBuffer->spec.width, refractionBuffer->spec.height);
 		localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 		localCtx.bindMatricesUBO();
 

@@ -80,10 +80,10 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 	shader->skybox.set(ctx.assets.skyboxUnitIndex);
 
 	if (renderBack) {
-		glDisable(GL_CULL_FACE);
+		ctx.state.disable(GL_CULL_FACE);
 	}
 	else {
-		glEnable(GL_CULL_FACE);
+		ctx.state.enable(GL_CULL_FACE);
 	}
 
 	return shader;

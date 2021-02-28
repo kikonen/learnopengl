@@ -2,6 +2,7 @@
 
 #include "ki/GL.h"
 
+#include "asset/GLState.h"
 #include "asset/Assets.h"
 #include "gui/Window.h"
 
@@ -45,4 +46,6 @@ public:
 
 protected:
     std::string title;
+
+    GLState state;
 };

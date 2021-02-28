@@ -26,9 +26,6 @@ int Engine::init() {
 }
 
 void Engine::run() {
-	// uncomment this call to draw in wireframe polygons.
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	OpenGLInfo info = ki::GL::getInfo();
 	KI_INFO_SB("ENGINE::INIT" << std::endl
 		<< " VER=" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl
@@ -78,8 +75,6 @@ void Engine::run() {
 
 			// render
 			// ------
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 			int res = onRender(clock);
 
 			if (res) {

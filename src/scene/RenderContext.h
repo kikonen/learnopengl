@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 
 #include "asset/UBO.h"
+#include "asset/GLState.h"
 #include "asset/Assets.h"
 #include "asset/Shader.h"
 #include "component/Camera.h"
@@ -15,6 +16,7 @@ public:
 	RenderContext(
 		const Assets& assets,
 		const RenderClock& clock,
+		GLState& state,
 		Scene* scene,
 		Camera* camera, 
 		int width,
@@ -30,6 +32,8 @@ public:
 	const Assets& assets;
 
 	const RenderClock& clock;
+
+	GLState& state;
 
 	const int width;
 	const int height;

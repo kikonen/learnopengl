@@ -157,6 +157,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\asset\GLState.cpp" />
     <ClCompile Include="src\asset\DynamicCubeMap.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
     <ClCompile Include="src\asset\ImageTexture.cpp" />
@@ -236,6 +237,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\asset\GLState.h" />
     <ClInclude Include="src\asset\DynamicCubeMap.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\asset\ImageTexture.h" />

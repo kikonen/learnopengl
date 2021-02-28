@@ -26,13 +26,13 @@ int Test6::onSetup() {
 
 	//glfwSwapInterval(0);
 
-	glEnable(GL_STENCIL_TEST);
+	state.enable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//glDisable(GL_MULTISAMPLE);
+	//state.disable(GL_MULTISAMPLE);
 
 	if (useIMGUI) {
 		frameInit = new FrameInit(*window);
@@ -43,19 +43,17 @@ int Test6::onSetup() {
 }
 
 int Test6::onRender(const RenderClock& clock) {
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
-	glEnable(GL_CULL_FACE); // cull face
-	glCullFace(GL_BACK); // cull back face
-	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-
-	RenderContext ctx(assets, clock, currentScene, currentScene->getCamera(), window->width, window->height);
+	RenderContext ctx(assets, clock, state, currentScene, currentScene->getCamera(), window->width, window->height);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
+
+	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
+	ctx.state.enable(GL_CULL_FACE);
+	ctx.state.cullFace(GL_BACK);
+	ctx.state.frontFace(GL_CCW);
+	
+	ctx.state.enable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 
 	if (useIMGUI) {
 		frame->bind(ctx);

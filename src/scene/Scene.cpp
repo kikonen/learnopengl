@@ -134,11 +134,11 @@ void Scene::bind(RenderContext& ctx)
 void Scene::draw(RenderContext& ctx)
 {
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
-	glEnable(GL_CULL_FACE); 
-	glCullFace(GL_BACK); 
-	glFrontFace(GL_CCW); 
+	ctx.state.enable(GL_CULL_FACE);
+	ctx.state.cullFace(GL_BACK); 
+	ctx.state.frontFace(GL_CCW); 
 
-	glEnable(GL_DEPTH_TEST);
+	ctx.state.enable(GL_DEPTH_TEST);
 
 	shadowMapRenderer->render(ctx, registry);
 	shadowMapRenderer->bindTexture(ctx);
@@ -164,7 +164,7 @@ void Scene::drawMirror(RenderContext& ctx)
 	rot.y += 180;
 	camera.setRotation(-rot);
 
-	RenderContext mirrorCtx(ctx.assets, ctx.clock, ctx.scene, &camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
+	RenderContext mirrorCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, &camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
 	mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 	mirrorCtx.bindMatricesUBO();
 
@@ -178,10 +178,10 @@ void Scene::drawMirror(RenderContext& ctx)
 
 void Scene::drawViewports(RenderContext& ctx)
 {
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
+	ctx.state.disable(GL_DEPTH_TEST);
+	ctx.state.enable(GL_BLEND);
 	viewportRenderer->render(ctx, registry);
-	glDisable(GL_BLEND);
+	ctx.state.disable(GL_BLEND);
 }
 
 void Scene::drawScene(RenderContext& ctx)

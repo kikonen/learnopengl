@@ -11,14 +11,16 @@
 RenderContext::RenderContext(
 	const Assets& assets,
 	const RenderClock& clock,
+	GLState& state,
 	Scene* scene,
 	Camera* camera,
 	int width,
 	int height)
 	: assets(assets),
+	clock(clock),
+	state(state),
 	scene(scene),
 	camera(camera),
-	clock(clock),
 	width(width),
 	height(height)
 {
@@ -130,8 +132,8 @@ void RenderContext::bindLightsUBO() const
 void RenderContext::bind(Shader* shader) const
 {
 	if (useWireframe) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		state.polygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	} else {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		state.polygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 }
