@@ -9,26 +9,32 @@ layout (location = 10) in mat3 aNormalMatrix;
 #include struct_lights.glsl
 #include struct_material.glsl
 #include struct_texture.glsl
+#include struct_clip_plane.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_lights.glsl
 #include uniform_materials.glsl
+#include uniform_clip_planes.glsl
 
 out VS_OUT {
   vec3 fragPos;
+  vec3 normal;
   vec2 texCoords;
+  vec3 vertexPos;
 
   flat int materialIndex;
-  vec3 normal;
 
   vec4 fragPosLightSpace;
 } vs_out;
 
+out float gl_ClipDistance[CLIP_COUNT];
 
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
+
+#include fn_calculate_clipping.glsl
 
 void main() {
   gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
@@ -39,6 +45,8 @@ void main() {
   vs_out.fragPos = (aModelMatrix * vec4(aPos, 1.0)).xyz;
 
   vs_out.normal = normalize(aNormalMatrix * aNormal);
+
+  bool clipped = calculateClipping(aModelMatrix * vec4(aPos, 1.0));
 
   mat4 b = {
     {0.5f, 0.0f, 0.0f, 0.0f},

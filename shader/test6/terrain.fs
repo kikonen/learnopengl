@@ -10,10 +10,11 @@
 
 in VS_OUT {
   vec3 fragPos;
+  vec3 normal;
   vec2 texCoords;
+  vec3 vertexPos;
 
   flat int materialIndex;
-  vec3 normal;
 
   vec4 fragPosLightSpace;
 } fs_in;

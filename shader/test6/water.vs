@@ -11,14 +11,16 @@ layout (location = 10) in mat3 aNormalMatrix;
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 
+
 out VS_OUT {
+  vec4 glp;
+
+  vec3 fragPos;
+  vec3 normal;
   vec2 texCoords;
   vec3 vertexPos;
 
   flat int materialIndex;
-
-  vec3 fragPos;
-  vec3 normal;
 
   vec4 fragPosLightSpace;
 
@@ -31,7 +33,8 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
-  gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
+  vs_out.glp = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
+  gl_Position = vs_out.glp;
 
   vs_out.materialIndex = aMaterialIndex;
   vs_out.texCoords = aTexCoords;

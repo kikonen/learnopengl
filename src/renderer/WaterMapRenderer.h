@@ -26,7 +26,8 @@ private:
 	Water* findClosest(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
-	Viewport* debugViewport = nullptr;
+	Viewport* reflectionDebugViewport = nullptr;
+	Viewport* refractionDebugViewport = nullptr;
 
 private:
 	float nearPlane = 0.1f;

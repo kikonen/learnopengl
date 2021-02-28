@@ -9,13 +9,14 @@
 #include uniform_materials.glsl
 
 in VS_OUT {
+  vec4 glp;
+
+  vec3 fragPos;
+  vec3 normal;
   vec2 texCoords;
   vec3 vertexPos;
 
   flat int materialIndex;
-
-  vec3 fragPos;
-  vec3 normal;
 
   vec4 fragPosLightSpace;
 
@@ -59,10 +60,15 @@ void main() {
 
   #include var_calculate_diffuse.glsl
 
-  vec4 reflectColor = texture(reflectionTex, fs_in.texCoords).rgba;
-  vec4 refractColor = texture(refractionTex, fs_in.texCoords).rgba;
+//  vec4 reflectColor = texture(reflectionTex, fs_in.texCoords).rgba;
+//  vec4 refractColor = texture(refractionTex, fs_in.texCoords).rgba;
 
-  material.diffuse = reflectColor;
+  vec4 refractColor = texture(refractionTex, (vec2(fs_in.glp.x, fs_in.glp.y)) / (2.0 * fs_in.glp.w) + 0.5);
+  vec4 reflectColor = texture(reflectionTex, (vec2(fs_in.glp.x, -fs_in.glp.y)) / (2.0 * fs_in.glp.w) + 0.5);
+  vec4 mixColor = (0.2 * refractColor) + (1.0 * reflectColor);
+//  mixColor = (1.0 * refractColor);
+
+  material.diffuse = mixColor;
 
   vec4 shaded = calculateLight(normal, toView, material);
   vec4 texColor = shaded;

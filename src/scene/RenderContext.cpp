@@ -32,6 +32,10 @@ RenderContext::RenderContext(
 
 	projectionMatrix = glm::perspective(glm::radians(camera->getZoom()), (float)width / (float)height, assets.nearPlane, assets.farPlane);
 	projectedMatrix = projectionMatrix * viewMatrix;
+
+	for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
+		clipPlanes.clipping[i].enabled = false;
+	}
 }
 
 void RenderContext::bindUBOs() const
@@ -39,17 +43,14 @@ void RenderContext::bindUBOs() const
 	// https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
 	bindMatricesUBO();
 	bindDataUBO();
+	bindClipPlanesUBO();
 	bindLightsUBO();
-
 }
 
 void RenderContext::bindMatricesUBO() const
 {
 	MatricesUBO matricesUbo = { projectedMatrix, projectionMatrix, viewMatrix, lightSpaceMatrix };
 
-	//glBindBuffer(GL_UNIFORM_BUFFER, scene->ubo.matrices);
-	//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MatricesUBO), &matricesUbo);
-	//glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	glNamedBufferSubData(scene->ubo.matrices, 0, sizeof(MatricesUBO), &matricesUbo);
 }
 
@@ -57,16 +58,16 @@ void RenderContext::bindDataUBO() const
 {
 	DataUBO dataUbo = { camera->getPos(), clock.ts };
 
-	//glBindBuffer(GL_UNIFORM_BUFFER, scene->ubo.data);
-	//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(DataUBO), &dataUbo);
-	//glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	glNamedBufferSubData(scene->ubo.data, 0, sizeof(DataUBO), &dataUbo);
+}
+
+void RenderContext::bindClipPlanesUBO() const
+{
+	glNamedBufferSubData(scene->ubo.clipPlanes, 0, sizeof(ClipPlanesUBO), &clipPlanes);
 }
 
 void RenderContext::bindLightsUBO() const
 {
-	// Lights
-	//glBindBuffer(GL_UNIFORM_BUFFER, scene->ubo.lights);
 	LightsUBO lightsUbo;
 	if (scene->getDirLight() && useLight) {
 		lightsUbo.light = scene->getDirLight()->toDirLightUBO();
@@ -124,8 +125,6 @@ void RenderContext::bindLightsUBO() const
 		}
 	}
 
-	//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightsUBO), &lightsUbo);
-	//glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	glNamedBufferSubData(scene->ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);
 }
 

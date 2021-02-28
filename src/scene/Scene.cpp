@@ -79,7 +79,8 @@ void Scene::prepare()
 	}
 
 	//registry.addViewPort(shadowMapRenderer->debugViewport);
-	registry.addViewPort(waterMapRenderer->debugViewport);
+	registry.addViewPort(waterMapRenderer->reflectionDebugViewport);
+	registry.addViewPort(waterMapRenderer->refractionDebugViewport);
 }
 
 
@@ -196,8 +197,17 @@ void Scene::drawScene(RenderContext& ctx)
 		skyboxRenderer->render(ctx, registry);
 	}
 
-	//terrainRenderer->render(ctx, registry);
+	//ctx.state.enable(GL_CLIP_DISTANCE0);
+	//ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
+	//clip.enabled = true;
+	//clip.plane = glm::vec4(0, -1, 0, 15);
+	//ctx.bindClipPlanesUBO();
+
 	nodeRenderer->render(ctx, registry);
+
+	//clip.enabled = false;
+	//ctx.bindClipPlanesUBO();
+	//ctx.state.disable(GL_CLIP_DISTANCE0);
 
 	particleSystem->render(ctx);
 
@@ -277,6 +287,16 @@ void Scene::prepareUBOs()
 
 		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, ubo.data, 0, sz);
 		ubo.dataSize = sz;
+	}
+	// Clipping
+	{
+		int sz = sizeof(ClipPlanesUBO);
+
+		glCreateBuffers(1, &ubo.clipPlanes);
+		glNamedBufferStorage(ubo.clipPlanes, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+
+		glBindBufferRange(GL_UNIFORM_BUFFER, UBO_CLIP_PLANES, ubo.clipPlanes, 0, sz);
+		ubo.clipPlanesSize = sz;
 	}
 	// Lights
 	{

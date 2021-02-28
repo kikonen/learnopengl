@@ -798,7 +798,8 @@ void SceneLoaderTest::setupWaterBottom()
 {
 	addLoader([this]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
-		type->renderBack = true;
+		//type->renderBack = true;
+		type->noShadow = true;
 		{
 			MeshLoader loader(assets, "woodwall");
 			type->mesh = loader.load();
@@ -837,7 +838,7 @@ void SceneLoaderTest::setupWaterSurface()
 		Water* water = new Water(type, pos.x, pos.y + 5, pos.z);
 		water->setPos(pos + glm::vec3(0, 7, -10));
 		water->setScale(10);
-		water->setRotation({ 90, 0, 0 });
+		water->setRotation({ 270, 0, 0 });
 
 		scene->registry.addNode(water);
 	});

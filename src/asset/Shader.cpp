@@ -208,6 +208,7 @@ int Shader::createProgram() {
     setUBO("Data", UBO_DATA);
     setUBO("Lights", UBO_LIGHTS);
     setUBO("Materials", UBO_MATERIALS);
+    setUBO("ClipPlanes", UBO_CLIP_PLANES);
 
     projectionMatrix.init(this);
     viewMatrix.init(this);

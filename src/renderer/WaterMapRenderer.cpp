@@ -22,14 +22,22 @@ void WaterMapRenderer::prepare()
 	reflectionBuffer->prepare();
 	refractionBuffer->prepare();
 
-	debugViewport = new Viewport(
+	reflectionDebugViewport = new Viewport(
 		glm::vec3(0.5, 0.5, 0),
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),
 		reflectionBuffer->textureID,
 		Shader::getShader(assets, TEX_VIEWPORT));
 
-	debugViewport->prepare();
+	refractionDebugViewport = new Viewport(
+		glm::vec3(0.5, 0.0, 0),
+		glm::vec3(0, 0, 0),
+		glm::vec2(0.5f, 0.5f),
+		refractionBuffer->textureID,
+		Shader::getShader(assets, TEX_VIEWPORT));
+
+	reflectionDebugViewport->prepare();
+	refractionDebugViewport->prepare();
 }
 
 void WaterMapRenderer::bindTexture(const RenderContext& ctx)
@@ -46,7 +54,7 @@ void WaterMapRenderer::bind(const RenderContext& ctx)
 
 void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
 {
-	if (drawIndex++ < drawSkip) return;
+	//if (drawIndex++ < drawSkip) return;
 	drawIndex = 0;
 
 	Water* closest = findClosest(ctx, registry);
@@ -55,16 +63,27 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 	// https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
 	// computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-	const glm::vec3& pos = closest->getPos();
+	glm::vec3 planePos = closest->getPos();
 
+	// https://prideout.net/clip-planes
 	// reflection map
 	{
-		Camera camera(ctx.camera->getPos(), ctx.camera->getFront(), ctx.camera->getUp());
+		glm::vec3 rot = ctx.camera->getRotation();
+		glm::vec3 pos = ctx.camera->getPos();
+		//rot.x = -rot.x;
+		//rot.z = -rot.z;
+
+		Camera camera(pos, ctx.camera->getFront(), ctx.camera->getUp());
 		camera.setZoom(ctx.camera->getZoom());
-		camera.setRotation(ctx.camera->getRotation());
+		camera.setRotation(rot);
 
 		RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, &camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
 		localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
+
+		ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
+		clip.enabled = true;
+		clip.plane = glm::vec4(0, 1, 0, -planePos.y);
+
 		localCtx.bindMatricesUBO();
 
 		reflectionBuffer->bind(localCtx);
@@ -72,16 +91,27 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 		drawNodes(localCtx, registry, skybox);
 
 		reflectionBuffer->unbind(ctx);
+		ctx.bindClipPlanesUBO();
 	}
 
 	// refraction map
 	{
-		Camera camera(ctx.camera->getPos(), ctx.camera->getFront(), ctx.camera->getUp());
+		glm::vec3 rot = ctx.camera->getRotation();
+		glm::vec3 pos = ctx.camera->getPos();
+		const int dist = pos.y - planePos.y;
+		pos.y = planePos.y - dist;
+
+		Camera camera(pos, ctx.camera->getFront(), ctx.camera->getUp());
 		camera.setZoom(ctx.camera->getZoom());
-		camera.setRotation(ctx.camera->getRotation());
+		camera.setRotation(rot);
 
 		RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, &camera, refractionBuffer->spec.width, refractionBuffer->spec.height);
 		localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
+
+		ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
+		clip.enabled = true;
+		clip.plane = glm::vec4(0, -1, 0, planePos.y);
+
 		localCtx.bindMatricesUBO();
 
 		refractionBuffer->bind(localCtx);
@@ -89,9 +119,11 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 		drawNodes(localCtx, registry, skybox);
 
 		refractionBuffer->unbind(ctx);
+		ctx.bindClipPlanesUBO();
 	}
 
 	ctx.bindMatricesUBO();
+
 	rendered = true;
 }
 
@@ -101,6 +133,9 @@ void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	skybox->render(ctx, registry);
+
+	ctx.bindClipPlanesUBO();
+	ctx.state.enable(GL_CLIP_DISTANCE0);
 
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
@@ -116,6 +151,8 @@ void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 
 		batch.flush(ctx, t);
 	}
+
+	ctx.state.disable(GL_CLIP_DISTANCE0);
 }
 
 Water* WaterMapRenderer::findClosest(const RenderContext& ctx, NodeRegistry& registry)

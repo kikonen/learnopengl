@@ -8,24 +8,26 @@
 struct UBO {
 	unsigned int matrices;
 	unsigned int data;
+	unsigned int clipPlanes;
 	unsigned int lights;
-	//unsigned int materials;
 
 	unsigned int matricesSize;
 	unsigned int dataSize;
+	unsigned int clipPlanesSize;
 	unsigned int lightsSize;
-	//unsigned int materialsSize;
 };
 
 const unsigned int UBO_MATRICES = 0;
 const unsigned int UBO_DATA = 1;
-const unsigned int UBO_LIGHTS = 2;
-const unsigned int UBO_MATERIALS = 3;
-const unsigned int UBO_MATERIAL = 4;
+const unsigned int UBO_CLIP_PLANES = 2;
+const unsigned int UBO_LIGHTS = 3;
+const unsigned int UBO_MATERIALS = 4;
+const unsigned int UBO_MATERIAL = 5;
 
 const unsigned int MATERIAL_COUNT = 4;
 const unsigned int LIGHT_COUNT = 8;
 const unsigned int TEXTURE_COUNT = 8;
+const unsigned int CLIP_PLANE_COUNT = 2;
 
 
 // NOTE KI align 16
@@ -131,4 +133,19 @@ struct MaterialUBO {
 // NOTE KI align 16
 struct MaterialsUBO {
 	MaterialUBO materials[MATERIAL_COUNT];
+};
+
+// NOTE KI align 16
+struct ClipPlaneUBO {
+	glm::vec4 plane;
+	bool enabled;
+
+	int pad1;
+	int pad2;
+	int pad3;
+};
+
+// NOTE KI align 16
+struct ClipPlanesUBO {
+	ClipPlaneUBO clipping[CLIP_PLANE_COUNT];
 };
