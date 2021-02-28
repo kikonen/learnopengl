@@ -60,14 +60,14 @@ int Image::load(bool flip) {
 		STBI_default);
 
 	if (data) {
-		KI_INFO_SB("LOADED::IMAGE " << path
-			+ " flipped=" << flipped
-			+ " channels=" << channels
-			+ " width=" << width 
-			+ " height=" << height);
+		KI_INFO_SB("IMAGE::LOADED " << path
+			+ " flipped=" << std::to_string(flipped)
+			+ " channels=" << std::to_string(channels)
+			+ " width=" << std::to_string(width)
+			+ " height=" << std::to_string(height));
 	}
 	else {
-		KI_ERROR_SB("ERROR::IMAGE::LOAD_FAILED " << path);
+		KI_ERROR_SB("IMAGE::LOAD_FAILED " << path);
 	}
 
 	res = data ? 0 : -1;

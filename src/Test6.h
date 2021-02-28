@@ -28,5 +28,4 @@ private:
 
 	SceneLoader* loader = nullptr;
 
-	bool useIMGUI = false;
 };

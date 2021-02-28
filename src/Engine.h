@@ -31,6 +31,7 @@ public:
 public:
     bool debug;
     float throttleFps;
+    bool useIMGUI = false;
 
     Window* window = nullptr;
 

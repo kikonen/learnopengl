@@ -74,6 +74,7 @@ void SceneLoaderTest::setup()
 	//setupNodeBackpack();
 	//setupNodeBunny();
 	//setupNodeDragon();
+	setupNodeSpaceShuttle();
 
 	setupViewport1();
 
@@ -440,6 +441,22 @@ void SceneLoaderTest::setupNodeDragon()
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(-15, 15, 0) + assets.groundOffset);
 		node->setScale(30.f);
+		scene->registry.addNode(node);
+	});
+}
+
+void SceneLoaderTest::setupNodeSpaceShuttle()
+{
+	addLoader([this]() {
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+		MeshLoader loader(assets, "shuttle", "/opengl_book/NasaShuttle/");
+		type->mesh = loader.load();
+		//type->renderBack = true;
+		//		type->setReflection(0.6);
+
+		Node* node = new Node(type);
+		node->setPos(glm::vec3(20, 40, -50) + assets.groundOffset);
+		node->setScale(20.f);
 		scene->registry.addNode(node);
 	});
 }

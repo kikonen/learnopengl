@@ -352,6 +352,7 @@ int MeshLoader::loadMaterials(
 	std::map<std::string, Material*>& materials,
 	std::string libraryName)
 {
+	KI_INFO_SB("LOADER::LOAD_MATERIAL_LIB: " << libraryName);
 	std::string materialPath = assets.modelsDir + path + libraryName;
 	std::ifstream file;
 	//	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
