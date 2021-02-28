@@ -808,8 +808,8 @@ void SceneLoaderTest::setupWaterBottom()
 		glm::vec3 pos = assets.groundOffset;
 
 		Node* node = new Node(type);
-		node->setPos(pos + glm::vec3(0, 4, -10));
-		node->setScale(10.f);
+		node->setPos(pos + glm::vec3(0, 3, -10));
+		node->setScale(20.f);
 		node->setRotation({ 90, 0, 0 });
 		scene->registry.addNode(node);
 	});
@@ -836,8 +836,8 @@ void SceneLoaderTest::setupWaterSurface()
 
 		glm::vec3 pos = assets.groundOffset;
 		Water* water = new Water(type, pos.x, pos.y + 5, pos.z);
-		water->setPos(pos + glm::vec3(0, 7, -10));
-		water->setScale(10);
+		water->setPos(pos + glm::vec3(0, 3.5, -10));
+		water->setScale(20);
 		water->setRotation({ 270, 0, 0 });
 
 		scene->registry.addNode(water);

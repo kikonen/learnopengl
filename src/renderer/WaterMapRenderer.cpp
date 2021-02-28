@@ -68,10 +68,12 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 	// https://prideout.net/clip-planes
 	// reflection map
 	{
-		glm::vec3 rot = ctx.camera->getRotation();
 		glm::vec3 pos = ctx.camera->getPos();
-		//rot.x = -rot.x;
-		//rot.z = -rot.z;
+		const int dist = pos.y - planePos.y;
+		pos.y -= dist * 2;
+
+		glm::vec3 rot = ctx.camera->getRotation();
+		rot.x = -rot.x;
 
 		Camera camera(pos, ctx.camera->getFront(), ctx.camera->getUp());
 		camera.setZoom(ctx.camera->getZoom());
@@ -98,8 +100,6 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 	{
 		glm::vec3 rot = ctx.camera->getRotation();
 		glm::vec3 pos = ctx.camera->getPos();
-		const int dist = pos.y - planePos.y;
-		pos.y = planePos.y - dist;
 
 		Camera camera(pos, ctx.camera->getFront(), ctx.camera->getUp());
 		camera.setZoom(ctx.camera->getZoom());
