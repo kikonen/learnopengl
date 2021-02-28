@@ -39,20 +39,9 @@ Assets::Assets()
     refractionCubeSize = 1000;
 
     waterRefractionMapUnitIndex = 26;
-    waterRefractionMapUnitId = GL_TEXTURE0 + waterRefractionMapUnitIndex;
-
     waterReflectionMapUnitIndex = 27;
-    waterReflectionMapUnitId = GL_TEXTURE0 + waterReflectionMapUnitIndex;
-
     refractionMapUnitIndex = 28;
-    refractionMapUnitId = GL_TEXTURE0 + refractionMapUnitIndex;
-
     reflectionMapUnitIndex = 29;
-    reflectionMapUnitId = GL_TEXTURE0 + reflectionMapUnitIndex;
-
     shadowMapUnitIndex = 30;
-    shadowMapUnitId = GL_TEXTURE0 + shadowMapUnitIndex;
-
     skyboxUnitIndex = 31;
-    skyboxUnitId = GL_TEXTURE0 + skyboxUnitIndex;
 }

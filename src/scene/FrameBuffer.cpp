@@ -29,8 +29,7 @@ void FrameBuffer::unbind(const RenderContext& ctx)
 	glViewport(0, 0, ctx.width, ctx.height);
 }
 
-void FrameBuffer::bindTexture(const RenderContext& ctx, int unitID)
+void FrameBuffer::bindTexture(const RenderContext& ctx, int unitIndex)
 {
-	glActiveTexture(unitID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	glBindTextures(unitIndex, 1, &textureID);
 }

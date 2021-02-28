@@ -29,7 +29,7 @@ void ReflectionMapRenderer::bind(const RenderContext& ctx)
 void ReflectionMapRenderer::bindTexture(const RenderContext& ctx)
 {
 	if (!rendered) return;
-	reflectionMap->bindTexture(ctx, assets.reflectionMapUnitId);
+	reflectionMap->bindTexture(ctx, assets.reflectionMapUnitIndex);
 }
 
 void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registry, SkyboxRenderer* skybox)

@@ -42,22 +42,11 @@ public:
     int reflectionCubeSize;
     int refractionCubeSize;
 
-    int waterRefractionMapUnitId;
     unsigned int waterRefractionMapUnitIndex;
-
-    int waterReflectionMapUnitId;
     unsigned int waterReflectionMapUnitIndex;
-
-    int refractionMapUnitId;
     unsigned int refractionMapUnitIndex;
-
-    int reflectionMapUnitId;
     unsigned int reflectionMapUnitIndex;
-
-    int shadowMapUnitId;
     unsigned int shadowMapUnitIndex;
-
-    int skyboxUnitId;
     unsigned int skyboxUnitIndex;
 };
 

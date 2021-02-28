@@ -198,12 +198,9 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 
 void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 {
-//	glBindBuffer(GL_UNIFORM_BUFFER, ctx.engine.ubo.materials);
-//	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(MaterialsUBO), &materialsUbo);
-//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	KI_GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize));
+	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize);
 
-	KI_GL_CALL(glBindVertexArray(buffers.VAO));
+	glBindVertexArray(buffers.VAO);
 
 	for (auto const& material : materials) {
 		material->bindArray(shader, material->materialIndex);

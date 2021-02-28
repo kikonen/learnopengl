@@ -59,18 +59,17 @@ void Viewport::update(const RenderContext& ctx)
 
 void Viewport::bind(const RenderContext& ctx)
 {
-	KI_GL_CALL(shader->bind());
+	shader->bind();
 
 	const int unitIndex = 0;
 
-	glActiveTexture(GL_TEXTURE0 + unitIndex);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	glBindTextures(unitIndex, 1, &textureID);
 
-	KI_GL_CALL(shader->viewportTexture.set(unitIndex));
+	shader->viewportTexture.set(unitIndex);
 
-	KI_GL_CALL(glBindVertexArray(buffers.VAO));
+	glBindVertexArray(buffers.VAO);
 
-	KI_GL_CALL(binder(*this));
+	binder(*this);
 }
 
 void Viewport::draw(const RenderContext& ctx)

@@ -15,8 +15,9 @@ struct BoundTexture {
     void bind()
     {
         if (!texture) return;
-        glActiveTexture(GL_TEXTURE0 + unitIndex);
-        glBindTexture(GL_TEXTURE_2D, texture->textureID);
+        //glActiveTexture(GL_TEXTURE0 + unitIndex);
+        //glBindTexture(GL_TEXTURE_2D, texture->textureID);
+        glBindTextures(unitIndex, 1, &texture->textureID);
     }
 
     void unbind()

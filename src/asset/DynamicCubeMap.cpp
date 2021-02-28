@@ -14,10 +14,11 @@ DynamicCubeMap::~DynamicCubeMap()
 	glDeleteFramebuffers(1, &FBO);
 }
 
-void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitID)
+void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
 {
-	glActiveTexture(unitID);
-	KI_GL_CALL(glBindTexture(GL_TEXTURE_CUBE_MAP, textureID));
+	//glActiveTexture(GL_TEXTURE0 + unitIndex);
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	glBindTextures(unitIndex, 1, &textureID);
 }
 
 void DynamicCubeMap::bind(const RenderContext& ctx)

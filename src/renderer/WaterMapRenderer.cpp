@@ -36,8 +36,8 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 {
 	if (!rendered) return;
 
-	reflectionBuffer->bindTexture(ctx, assets.waterReflectionMapUnitId);
-	refractionBuffer->bindTexture(ctx, assets.waterRefractionMapUnitId);
+	reflectionBuffer->bindTexture(ctx, assets.waterReflectionMapUnitIndex);
+	refractionBuffer->bindTexture(ctx, assets.waterRefractionMapUnitIndex);
 }
 
 void WaterMapRenderer::bind(const RenderContext& ctx)

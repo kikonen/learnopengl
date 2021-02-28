@@ -63,7 +63,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 {
 	if (!rendered) return;
-	shadowBuffer->bindTexture(ctx, assets.shadowMapUnitId);
+	shadowBuffer->bindTexture(ctx, assets.shadowMapUnitIndex);
 }
 
 void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
