@@ -101,7 +101,7 @@ void main() {
   vec4 shaded = calculateLight(normal, toView, material);
   vec4 texColor = shaded;
 
-  texColor = calculateFog(texColor);
+  texColor = calculateFog(material.fogRatio, texColor);
 
 //  texColor = vec4(1, 0, 0, 1);
 

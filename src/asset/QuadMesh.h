@@ -19,8 +19,8 @@ public:
 	bool hasReflection() override;
 	bool hasRefraction() override;
 
-	void setReflection(float reflection) override;
-	void setRefraction(float refraction) override;
+	Material* findMaterial(std::function<bool(Material&)> fn) override;
+	void modifyMaterials(std::function<void(Material&)> fn) override;
 
 	void prepare(const Assets& assets) override;
 	void prepareBuffers(MeshBuffers& curr) override;

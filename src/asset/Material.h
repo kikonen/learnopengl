@@ -84,6 +84,8 @@ public:
     float reflection = 0.f;
     float refraction = 0.f;
 
+    float fogRatio = 1.0f;
+
     float tiling = 1.0f;
 
     BoundTexture* diffuseTex = nullptr;

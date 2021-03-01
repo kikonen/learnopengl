@@ -47,17 +47,18 @@ bool ModelMesh::hasRefraction()
 	return refraction;
 }
 
-void ModelMesh::setReflection(float reflection)
+Material* ModelMesh::findMaterial(std::function<bool(Material&)> fn)
 {
 	for (auto& material : materials) {
-		material->reflection = reflection;
+		if (fn(*material)) return material;
 	}
+	return nullptr;
 }
 
-void ModelMesh::setRefraction(float refraction)
+void ModelMesh::modifyMaterials(std::function<void(Material&)> fn)
 {
 	for (auto& material : materials) {
-		material->refraction = refraction;
+		fn(*material);
 	}
 }
 

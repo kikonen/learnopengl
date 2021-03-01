@@ -73,7 +73,7 @@ void main() {
   if (texColor.a < 0.1)
     discard;
 
-  texColor = calculateFog(texColor);
+  texColor = calculateFog(material.fogRatio, texColor);
 
 //  texColor = vec4(0.0, 0.8, 0, 1.0);
 

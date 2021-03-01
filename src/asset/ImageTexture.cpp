@@ -5,6 +5,8 @@
 
 
 namespace {
+	const int MIP_MAP_LEVELS = 3;
+
 	std::map<std::string, ImageTexture*> textures;
 
 	std::mutex textures_lock;
@@ -65,7 +67,7 @@ void ImageTexture::prepare()
 
 	//glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->data);
 
-	glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, image->width, image->height);
+	glTexStorage2D(GL_TEXTURE_2D, MIP_MAP_LEVELS, internalFormat, image->width, image->height);
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image->width, image->height, format, GL_UNSIGNED_BYTE, image->data);
 
 	glGenerateMipmap(GL_TEXTURE_2D);

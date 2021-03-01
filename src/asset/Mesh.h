@@ -1,7 +1,10 @@
 #pragma once
 
+#include <functional>
+
 #include "MeshBuffers.h"
 #include "Assets.h"
+#include "Material.h"
 #include "scene/RenderContext.h"
 #include "ki/GL.h"
 
@@ -14,8 +17,8 @@ public:
 	virtual bool hasReflection() = 0;
 	virtual bool hasRefraction() = 0;
 
-	virtual void setReflection(float reflection) = 0;
-	virtual void setRefraction(float refraction) = 0;
+	virtual Material* findMaterial(std::function<bool(Material&)> fn) = 0;
+	virtual void modifyMaterials(std::function<void(Material&)> fn) = 0;
 
 	virtual void prepare(const Assets& assets) = 0;
 	virtual void prepareBuffers(MeshBuffers& curr) = 0;

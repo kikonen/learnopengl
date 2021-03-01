@@ -14,5 +14,6 @@ struct Material {
   float reflection;
   float refraction;
 
+  float fogRatio;
   float tiling;
 };

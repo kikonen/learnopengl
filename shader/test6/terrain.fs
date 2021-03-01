@@ -43,7 +43,7 @@ void main() {
   vec3 toView = normalize(viewPos - fs_in.fragPos);
 
   vec4 texColor = calculateLight(normal, toView, material);
-  texColor = calculateFog(texColor);
+  texColor = calculateFog(material.fogRatio, texColor);
 
   fragColor = texColor;
 }

@@ -49,14 +49,15 @@ bool QuadMesh::hasRefraction()
 	return material->refraction;
 }
 
-void QuadMesh::setReflection(float reflection)
+Material* QuadMesh::findMaterial(std::function<bool(Material&)> fn)
 {
-	material->reflection = reflection;
+	if (fn(*material)) return material;
+	return nullptr;
 }
 
-void QuadMesh::setRefraction(float refraction)
+void QuadMesh::modifyMaterials(std::function<void(Material&)> fn)
 {
-	material->refraction = refraction;
+	fn(*material);
 }
 
 void QuadMesh::prepare(const Assets& assets)

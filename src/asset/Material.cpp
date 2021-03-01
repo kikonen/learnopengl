@@ -176,9 +176,11 @@ MaterialUBO Material::toUBO()
 		normalMapTex ? normalMapTex->unitIndex : -1,
 
 		pattern,
+
 		reflection,
 		refraction,
 
+		fogRatio,
 		tiling,
 	};
 }

@@ -304,7 +304,7 @@ void SceneLoaderTest::setupNodeBrickwall()
 		{
 			MeshLoader loader(assets, "woodwall");
 			type2->mesh = loader.load();
-			type2->setReflection(0.3f);
+			type2->modifyMaterials([](Material& m) { m.reflection = 0.3f; });
 		}
 
 		for (int i = 0; i < 5; i++) {
@@ -325,7 +325,7 @@ void SceneLoaderTest::setupNodeBigMirror()
 		{
 			MeshLoader loader(assets, "woodwall");
 			type->mesh = loader.load();
-			type->setReflection(0.8f);
+			type->modifyMaterials([](Material& m) { m.reflection = 0.8f; });
 		}
 
 		{
@@ -421,7 +421,7 @@ void SceneLoaderTest::setupNodeBunny()
 		MeshLoader loader(assets, "bunny");
 		type->renderBack = true;
 		type->mesh = loader.load();
-		type->setReflection(0.9f);
+		type->modifyMaterials([](Material& m) { m.reflection = 0.9f; });
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(-15, 10, 5) + assets.groundOffset);
@@ -488,7 +488,7 @@ void SceneLoaderTest::setupNodeCow()
 			MeshLoader loader(assets, "texture_cow");
 			loader.defaultMaterial->kd = glm::vec4(0.160f, 0.578f, 0.168f, 1.f);
 			type->mesh = loader.load();
-			type->setReflection(0.5);
+			type->modifyMaterials([](Material& m) { m.reflection = 0.5f; });
 		}
 
 		Node* node = new Node(type);
@@ -597,7 +597,7 @@ void SceneLoaderTest::setupNodeGlassBall()
 		{
 			MeshLoader loader(assets, "glass_ball");
 			type->mesh = loader.load();
-			type->setReflection(1.0);
+			type->modifyMaterials([](Material& m) { m.reflection = 1.0f; });
 		}
 
 		Node* node = new Node(type);
@@ -614,7 +614,7 @@ void SceneLoaderTest::setupNodeWaterBall()
 
 		MeshLoader loader(assets, "water_ball");
 		type->mesh = loader.load();
-		type->setReflection(0.3f);
+		type->modifyMaterials([](Material& m) { m.reflection = 0.3f; });
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(5, 25, 0) + assets.groundOffset);
@@ -641,7 +641,7 @@ void SceneLoaderTest::setupNodeMaterialBalls()
 			loader.defaultMaterial = Material::createMaterial(mt);
 			loader.overrideMaterials = true;
 			type->mesh = loader.load();
-			type->setReflection(0.05f);
+			type->modifyMaterials([](Material& m) { m.reflection = 0.05f; });
 
 			Node* node = new Node(type);
 			node->setPos(glm::vec3(5, 25, 5 + index * 5) + assets.groundOffset);
@@ -660,6 +660,7 @@ void SceneLoaderTest::setupNodePlanet()
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "planet", "/planet/");
 		type->mesh = loader.load();
+		type->modifyMaterials([](Material& m) { m.fogRatio = 0; });
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
@@ -717,7 +718,7 @@ void SceneLoaderTest::setupNodeAsteroid()
 		{
 			MeshLoader loader(assets, "rock", "/rock/");
 			type->mesh = loader.load();
-			type->setReflection(0.7f);
+			type->modifyMaterials([](Material& m) { m.reflection = 0.7f; });
 		}
 
 		Node* node = new Node(type);

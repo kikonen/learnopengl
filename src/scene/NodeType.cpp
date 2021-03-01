@@ -32,14 +32,16 @@ bool NodeType::hasRefraction()
 	return mesh->hasRefraction();
 }
 
-void NodeType::setReflection(float reflection)
+Material* NodeType::findMaterial(std::function<bool(Material&)> fn)
 {
-	mesh->setReflection(reflection);
+	if (!mesh) return nullptr;
+	return mesh->findMaterial(fn);
 }
 
-void NodeType::setRefraction(float refraction)
+void NodeType::modifyMaterials(std::function<void(Material&)> fn)
 {
-	mesh->setRefraction(refraction);
+	if (!mesh) return;
+	mesh->modifyMaterials(fn);
 }
 
 void NodeType::prepare(const Assets& assets)

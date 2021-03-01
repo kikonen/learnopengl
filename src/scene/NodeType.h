@@ -16,8 +16,8 @@ public:
 	bool hasReflection();
 	bool hasRefraction();
 
-	void setReflection(float reflection);
-	void setRefraction(float refraction);
+	Material* findMaterial(std::function<bool(Material&)> fn);
+	void modifyMaterials(std::function<void(Material&)> fn);
 
 	void prepare(const Assets& assets);
 	Shader* bind(const RenderContext& ctx, Shader* shader);
