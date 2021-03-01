@@ -13,6 +13,7 @@ in VS_OUT {
   vec3 normal;
   vec2 texCoords;
   vec3 vertexPos;
+  vec3 viewVertexPos;
 
   flat int materialIndex;
 
@@ -33,6 +34,7 @@ out vec4 fragColor;
 #include fn_calculate_point_light.glsl
 #include fn_calculate_spot_light.glsl
 #include fn_calculate_light.glsl
+#include fn_calculate_fog.glsl
 
 void main() {
   #include var_tex_material.glsl
@@ -41,6 +43,7 @@ void main() {
   vec3 toView = normalize(viewPos - fs_in.fragPos);
 
   vec4 texColor = calculateLight(normal, toView, material);
+  texColor = calculateFog(texColor);
 
   fragColor = texColor;
 }

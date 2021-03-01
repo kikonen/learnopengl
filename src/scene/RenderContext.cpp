@@ -66,7 +66,13 @@ void RenderContext::bindMatricesUBO() const
 
 void RenderContext::bindDataUBO() const
 {
-	DataUBO dataUbo = { camera->getPos(), clock.ts };
+	DataUBO dataUbo = {
+		camera->getPos(),
+		clock.ts,
+		assets.fogColor,
+		assets.fogStart,
+		assets.fogEnd,
+	};
 
 	glNamedBufferSubData(scene->ubo.data, 0, sizeof(DataUBO), &dataUbo);
 }

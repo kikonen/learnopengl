@@ -22,6 +22,7 @@ out VS_OUT {
   vec3 normal;
   vec2 texCoords;
   vec3 vertexPos;
+  vec3 viewVertexPos;
 
   flat int materialIndex;
 
@@ -43,6 +44,8 @@ void main() {
   vs_out.texCoords = aTexCoords * materials[aMaterialIndex].tiling;
 
   vs_out.fragPos = (aModelMatrix * vec4(aPos, 1.0)).xyz;
+  vs_out.vertexPos = aPos;
+  vs_out.viewVertexPos = (viewMatrix * aModelMatrix * vec4(aPos, 1.0)).xyz;
 
   vs_out.normal = normalize(aNormalMatrix * aNormal);
 

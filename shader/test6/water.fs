@@ -15,6 +15,7 @@ in VS_OUT {
   vec3 normal;
   vec2 texCoords;
   vec3 vertexPos;
+  vec3 viewVertexPos;
 
   flat int materialIndex;
 
@@ -44,6 +45,7 @@ out vec4 fragColor;
 #include fn_calculate_spot_light.glsl
 #include fn_calculate_light.glsl
 #include fn_calculate_normal_pattern.glsl
+#include fn_calculate_fog.glsl
 
 vec3 estimateWaveNormal(float offset, float mapScale, float hScale) {
   vec2 tc = fs_in.texCoords;
@@ -98,6 +100,8 @@ void main() {
 
   vec4 shaded = calculateLight(normal, toView, material);
   vec4 texColor = shaded;
+
+  texColor = calculateFog(texColor);
 
 //  texColor = vec4(1, 0, 0, 1);
 

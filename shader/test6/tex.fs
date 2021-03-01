@@ -13,6 +13,7 @@ in VS_OUT {
   vec3 normal;
   vec2 texCoords;
   vec3 vertexPos;
+  vec3 viewVertexPos;
 
   flat int materialIndex;
 
@@ -37,6 +38,7 @@ out vec4 fragColor;
 #include fn_calculate_spot_light.glsl
 #include fn_calculate_light.glsl
 #include fn_calculate_normal_pattern.glsl
+#include fn_calculate_fog.glsl
 
 void main() {
   #include var_tex_material.glsl
@@ -67,8 +69,11 @@ void main() {
   vec4 shaded = calculateLight(normal, toView, material);
   vec4 texColor = shaded;
 
+
   if (texColor.a < 0.1)
     discard;
+
+  texColor = calculateFog(texColor);
 
 //  texColor = vec4(0.0, 0.8, 0, 1.0);
 

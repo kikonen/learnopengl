@@ -28,6 +28,10 @@ Assets::Assets()
     nearPlane = 0.1f;
     farPlane = 1000.0f;
 
+    fogColor = glm::vec4(0.1, 0.1, 0.2, 1.0);
+    fogStart = 50.0;
+    fogEnd = 700.0;
+
     shadowNearPlane = 0.1f;
     shadowFarPlane = 1000.0f;
     shadowMapSize = 1000;

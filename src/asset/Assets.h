@@ -31,6 +31,10 @@ public:
     float nearPlane;
     float farPlane;
 
+    glm::vec4 fogColor;
+    float fogStart;
+    float fogEnd;
+
     // NOTE KI MUST match lookup() in light shadow shader
     float shadowNearPlane;
     float shadowFarPlane;
