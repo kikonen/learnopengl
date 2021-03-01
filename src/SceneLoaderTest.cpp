@@ -804,6 +804,7 @@ void SceneLoaderTest::setupWaterBottom()
 		{
 			MeshLoader loader(assets, "woodwall");
 			type->mesh = loader.load();
+			type->modifyMaterials([](Material& m) { m.tiling = 4; });
 		}
 
 		glm::vec3 pos = assets.groundOffset;
@@ -824,8 +825,9 @@ void SceneLoaderTest::setupWaterSurface()
 		material->ks = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
 		material->kd = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
 		material->map_kd = "CD3B_Water 1_HI.PNG";
-		material->map_bump = "CD3B_Water 1_HI_normal.PNG";
-		material->textureSpec.mode = GL_MIRRORED_REPEAT;
+		material->map_bump = "CD3B_Water 1_HI_normal_surface.PNG";
+		material->tiling = 8;
+		material->textureSpec.mode = GL_REPEAT;
 		//		material->pattern = 1;
 		material->loadTextures(assets.modelsDir);
 		Shader* shader = getShader(TEX_WATER);
