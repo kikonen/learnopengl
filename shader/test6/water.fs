@@ -66,15 +66,20 @@ vec3 estimateWaveNormal(float offset, float mapScale, float hScale) {
 void main() {
   #include var_tex_material.glsl
 
+  vec2 tc = vec2(fs_in.texCoords.x * sin(time / 40), fs_in.texCoords.y);
+
+  material.diffuse = texture(textures[material.diffuseTex], tc).rgba;
+
   vec3 normal;
   if (material.normalMapTex >= 0) {
-    normal = texture(textures[material.normalMapTex], fs_in.texCoords).rgb;
+    normal = texture(textures[material.normalMapTex], tc).rgb;
     normal = normal * 2.0 - 1.0;
     normal = normalize(fs_in.TBN * normal);
   } else {
     normal = fs_in.normal;
   }
 
+//  normal = normalize(vec3(sin(normal.x * time), cos(normal.y * time), 2 * sin(normal.z * time)));
   if (material.pattern == 1) {
     normal = calculateNormalPattern(normal);
   }
