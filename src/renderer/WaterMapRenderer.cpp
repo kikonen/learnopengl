@@ -69,7 +69,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 	// reflection map
 	{
 		glm::vec3 pos = ctx.camera->getPos();
-		const int dist = pos.y - planePos.y;
+		const float dist = pos.y - planePos.y;
 		pos.y -= dist * 2;
 
 		glm::vec3 rot = ctx.camera->getRotation();
