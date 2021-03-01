@@ -16,7 +16,7 @@ ImageTexture* ImageTexture::getTexture(const std::string& path, const TextureSpe
 
 	std::string cacheKey = path + "_" + std::to_string(spec.mode);
 
-	ImageTexture* tex = textures[path];
+	ImageTexture* tex = textures[cacheKey];
 	if (!tex) {
 		tex = new ImageTexture(path, spec);
 		int res = tex->load();

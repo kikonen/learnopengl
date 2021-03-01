@@ -88,7 +88,8 @@ BoundTexture* Material::loadTexture(const std::string& baseDir, const std::strin
 		return nullptr;
 	}
 
-	std::string texturePath = baseDir + name;
+	const char& ch = baseDir.at(baseDir.length() - 1);
+	std::string texturePath = (ch == u'/' ? baseDir : baseDir + "/") + name;
 
 	KI_INFO_SB("TEXTURE: " << texturePath);
 

@@ -24,8 +24,8 @@ in VS_OUT {
 } fs_in;
 
 uniform sampler2D textures[TEX_COUNT];
-uniform samplerCube reflectionMap;
-uniform samplerCube refractionMap;
+// uniform samplerCube reflectionMap;
+// uniform samplerCube refractionMap;
 
 uniform sampler2D reflectionTex;
 uniform sampler2D refractionTex;
@@ -73,7 +73,7 @@ void main() {
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex.
   // input parameters are offset for neighbors, and scaling for width and height
-  normal = estimateWaveNormal(.0002, 32.0, 16.0);
+//  normal = estimateWaveNormal(.0002, 32.0, 16.0);
 
   if (!gl_FrontFacing) {
     normal = -normal;
@@ -81,7 +81,7 @@ void main() {
 
   vec3 toView = normalize(viewPos - fs_in.fragPos);
 
-  #include var_calculate_diffuse.glsl
+//  #include var_calculate_diffuse.glsl
 
   // vec2 ndc = (fs_in.glp.xy / (fs_in.glp.w * 2.0)) + 0.5;
   // vec2 refractTexCoords = ndc;

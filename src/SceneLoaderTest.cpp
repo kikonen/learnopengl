@@ -822,7 +822,11 @@ void SceneLoaderTest::setupWaterSurface()
 		material->ns = 100;
 		material->ks = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
 		material->kd = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
-//		material->pattern = 1;
+		material->map_kd = "CD3B_Water 1_HI.PNG";
+		material->map_bump = "CD3B_Water 1_HI_normal.PNG";
+		material->textureSpec.mode = GL_MIRRORED_REPEAT;
+		//		material->pattern = 1;
+		material->loadTextures(assets.modelsDir);
 		Shader* shader = getShader(TEX_WATER);
 
 		TerrainGenerator generator(assets);
