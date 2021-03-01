@@ -232,6 +232,7 @@
     <ClCompile Include="src\renderer\WaterMapRenderer.cpp" />
     <ClCompile Include="src\gui\Frame.cpp" />
     <ClCompile Include="src\gui\Window.cpp" />
+    <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -314,6 +315,7 @@
     <ClInclude Include="src\gui\Frame.h" />
     <ClInclude Include="src\ki\Timer.h" />
     <ClInclude Include="src\gui\Window.h" />
+    <ClInclude Include="src\renderer\WaterNoiseGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

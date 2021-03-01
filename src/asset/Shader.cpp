@@ -215,6 +215,7 @@ int Shader::createProgram() {
     //modelMatrix.init(this); 
     //normalMatrix.init(this);
 
+    noiseTex.init(this);
     reflectionTex.init(this);
     refractionTex.init(this);
 

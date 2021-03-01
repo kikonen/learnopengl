@@ -38,6 +38,7 @@ Assets::Assets()
     reflectionCubeSize = 1000;
     refractionCubeSize = 1000;
 
+    noiseUnitIndex = 25;
     waterRefractionMapUnitIndex = 26;
     waterReflectionMapUnitIndex = 27;
     refractionMapUnitIndex = 28;

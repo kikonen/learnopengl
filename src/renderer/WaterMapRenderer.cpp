@@ -1,6 +1,7 @@
 #include "WaterMapRenderer.h"
 
 #include "SkyboxRenderer.h"
+#include "WaterNoiseGenerator.h"
 
 WaterMapRenderer::WaterMapRenderer(const Assets& assets)
 	: Renderer(assets)
@@ -21,6 +22,9 @@ void WaterMapRenderer::prepare()
 
 	reflectionBuffer->prepare();
 	refractionBuffer->prepare();
+
+	//WaterNoiseGenerator generator;
+	//noiseTextureID = generator.generate();
 
 	reflectionDebugViewport = new Viewport(
 		glm::vec3(0.5, 0.5, 0),
@@ -46,6 +50,9 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 
 	reflectionBuffer->bindTexture(ctx, assets.waterReflectionMapUnitIndex);
 	refractionBuffer->bindTexture(ctx, assets.waterRefractionMapUnitIndex);
+	if (noiseTextureID != -1) {
+		glBindTextures(assets.noiseUnitIndex, 1, &noiseTextureID);
+	}
 }
 
 void WaterMapRenderer::bind(const RenderContext& ctx)

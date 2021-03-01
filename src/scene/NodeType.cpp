@@ -71,6 +71,7 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 	mesh->bind(ctx, shader);
 	ctx.bind(shader);
 
+	shader->noiseTex.set(ctx.assets.noiseUnitIndex);
 	shader->reflectionTex.set(ctx.assets.waterReflectionMapUnitIndex);
 	shader->refractionTex.set(ctx.assets.waterRefractionMapUnitIndex);
 

@@ -29,6 +29,7 @@ uniform samplerCube refractionMap;
 
 uniform sampler2D reflectionTex;
 uniform sampler2D refractionTex;
+uniform sampler3D noiseTex;
 
 uniform sampler2DShadow shadowMap;
 
@@ -44,6 +45,22 @@ out vec4 fragColor;
 #include fn_calculate_light.glsl
 #include fn_calculate_normal_pattern.glsl
 
+vec3 estimateWaveNormal(float offset, float mapScale, float hScale) {
+  vec2 tc = fs_in.texCoords;
+  // estimate the normal using the noise texture
+  // by looking up three height values around this vertex
+  float h1 = (texture(noiseTex, vec3(((tc.s))*mapScale, 0.5, ((tc.t)+offset)*mapScale))).r * hScale;
+  float h2 = (texture(noiseTex, vec3(((tc.s)-offset)*mapScale, 0.5, ((tc.t)-offset)*mapScale))).r * hScale;
+  float h3 = (texture(noiseTex, vec3(((tc.s)+offset)*mapScale, 0.5, ((tc.t)-offset)*mapScale))).r * hScale;
+  vec3 v1 = vec3(0, h1, -1);
+  vec3 v2 = vec3(-1, h2, 1);
+  vec3 v3 = vec3(1, h3, 1);
+  vec3 v4 = v2-v1;
+  vec3 v5 = v3-v1;
+  vec3 normEst = normalize(cross(v4,v5));
+  return normEst;
+}
+
 void main() {
   #include var_tex_material.glsl
 
@@ -52,6 +69,12 @@ void main() {
   if (material.pattern == 1) {
     normal = calculateNormalPattern(normal);
   }
+
+  // estimate the normal using the noise texture
+  // by looking up three height values around this vertex.
+  // input parameters are offset for neighbors, and scaling for width and height
+  normal = estimateWaveNormal(.0002, 32.0, 16.0);
+
   if (!gl_FrontFacing) {
     normal = -normal;
   }

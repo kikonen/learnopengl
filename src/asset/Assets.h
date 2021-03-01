@@ -42,6 +42,7 @@ public:
     int reflectionCubeSize;
     int refractionCubeSize;
 
+    unsigned int noiseUnitIndex;
     unsigned int waterRefractionMapUnitIndex;
     unsigned int waterReflectionMapUnitIndex;
     unsigned int refractionMapUnitIndex;

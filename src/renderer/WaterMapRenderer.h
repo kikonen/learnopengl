@@ -39,5 +39,7 @@ private:
 	TextureBuffer* reflectionBuffer = nullptr;
 	TextureBuffer* refractionBuffer = nullptr;
 
+	unsigned int noiseTextureID = -1;
+
 	bool rendered = false;
 };
