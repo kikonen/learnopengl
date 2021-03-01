@@ -11,8 +11,8 @@
 Test6::Test6() {
 	title = "Test 6";
 	assets.shadersDir = "shader/test6";
-	//throttleFps = 0;
-	//throttleFps = FPS_60;
+	throttleFps = 0;
+	//throttleFps = FPS_30;
 	//glfwWindowHint(GLFW_SAMPLES, 4);
 
 	useIMGUI = false;
@@ -24,7 +24,7 @@ int Test6::onSetup() {
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	//glfwSwapInterval(0);
+	glfwSwapInterval(3);
 
 	state.enable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);

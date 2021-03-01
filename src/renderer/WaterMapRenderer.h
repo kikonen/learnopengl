@@ -34,7 +34,7 @@ private:
 	float farPlane = 1000.0f;
 
 	int drawIndex = 1;
-	int drawSkip = 2;
+	int drawSkip = 0;
 
 	TextureBuffer* reflectionBuffer = nullptr;
 	TextureBuffer* refractionBuffer = nullptr;

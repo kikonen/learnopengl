@@ -29,8 +29,8 @@ public:
 	Viewport* debugViewport = nullptr;
 
 private:
-	int drawIndex = 2;
-	int drawSkip = 2;
+	int drawIndex = 1;
+	int drawSkip = 1;
 
 	bool rendered = false;
 

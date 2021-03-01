@@ -30,7 +30,7 @@ private:
 	float farPlane = 1000.0f;
 
 	int drawIndex = 0;
-	int drawSkip = 2;
+	int drawSkip = 1;
 
 	DynamicCubeMap* reflectionMap = nullptr;
 
