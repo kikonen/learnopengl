@@ -86,7 +86,7 @@ SceneLoader* Test6::loadScene()
 	loader->setup();
 
 	//loader->scene->showNormals = true;
-	loader->scene->showMirrorView = true;
+	//loader->scene->showMirrorView = true;
 	//loader->load();
 	loader->scene->prepare();
 

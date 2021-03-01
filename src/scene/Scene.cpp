@@ -129,6 +129,7 @@ void Scene::bind(RenderContext& ctx)
 	reflectionMapRenderer->bind(ctx);
 	shadowMapRenderer->bind(ctx);
 
+	ctx.bindGlobal();
 	ctx.bindUBOs();
 }
 

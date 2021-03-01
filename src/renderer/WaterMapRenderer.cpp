@@ -61,7 +61,7 @@ void WaterMapRenderer::bind(const RenderContext& ctx)
 
 void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
 {
-	//if (drawIndex++ < drawSkip) return;
+	if (drawIndex++ < drawSkip) return;
 	drawIndex = 0;
 
 	Water* closest = findClosest(ctx, registry);

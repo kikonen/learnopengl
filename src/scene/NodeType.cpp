@@ -45,14 +45,26 @@ void NodeType::setRefraction(float refraction)
 void NodeType::prepare(const Assets& assets)
 {
 	if (!mesh) return;
-	KI_GL_CALL(mesh->prepare(assets));
+	mesh->prepare(assets);
 
-	if (defaultShader) {
-		KI_GL_CALL(defaultShader->prepare());
+	Shader* shader = defaultShader;
+	if (shader) {
+		shader->prepare();
+
+		shader->bind();
+		shader->noiseTex.set(assets.noiseUnitIndex);
+		shader->reflectionTex.set(assets.waterReflectionMapUnitIndex);
+		shader->refractionTex.set(assets.waterRefractionMapUnitIndex);
+
+		shader->reflectionMap.set(assets.reflectionMapUnitIndex);
+		shader->refractionMap.set(assets.refractionMapUnitIndex);
+		shader->shadowMap.set(assets.shadowMapUnitIndex);
+		shader->skybox.set(assets.skyboxUnitIndex);
+		shader->unbind();
 	}
 	
 	if (batchMode && batch.size > 0) {
-		KI_GL_CALL(batch.prepare(this));
+		batch.prepare(this);
 	}
 	else {
 		batch.size = 0;
@@ -70,15 +82,6 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 	shader->bind();
 	mesh->bind(ctx, shader);
 	ctx.bind(shader);
-
-	shader->noiseTex.set(ctx.assets.noiseUnitIndex);
-	shader->reflectionTex.set(ctx.assets.waterReflectionMapUnitIndex);
-	shader->refractionTex.set(ctx.assets.waterRefractionMapUnitIndex);
-
-	shader->reflectionMap.set(ctx.assets.reflectionMapUnitIndex);
-	shader->refractionMap.set(ctx.assets.refractionMapUnitIndex);
-	shader->shadowMap.set(ctx.assets.shadowMapUnitIndex);
-	shader->skybox.set(ctx.assets.skyboxUnitIndex);
 
 	if (renderBack) {
 		ctx.state.disable(GL_CULL_FACE);

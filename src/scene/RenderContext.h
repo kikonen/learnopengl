@@ -22,6 +22,7 @@ public:
 		int width,
 		int height);
 
+	void bindGlobal() const;
 	void bindUBOs() const;
 	void bindMatricesUBO() const;
 	void bindDataUBO() const;

@@ -38,6 +38,16 @@ RenderContext::RenderContext(
 	}
 }
 
+void RenderContext::bindGlobal() const
+{
+	if (useWireframe) {
+		state.polygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else {
+		state.polygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+}
+
 void RenderContext::bindUBOs() const
 {
 	// https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
@@ -130,9 +140,5 @@ void RenderContext::bindLightsUBO() const
 
 void RenderContext::bind(Shader* shader) const
 {
-	if (useWireframe) {
-		state.polygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	} else {
-		state.polygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
+
 }
