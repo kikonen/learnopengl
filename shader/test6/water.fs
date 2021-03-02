@@ -70,9 +70,12 @@ void main() {
 
   vec2 totalDistortion = vec2(0);
   if (material.dudvMapTex >= 0) {
-    float moveFactor = (sin(time / 20.0) + 1.0) * 0.5;
+    float moveFactor = (sin(time / 10.0) + 1.0) * 0.5;
 
-    totalDistortion = (texture(textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg * 2.0 - 1.0) * waveStrength;
+    vec2 distortion1 = (texture(textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg * 2.0 - 1.0) * waveStrength;
+    vec2 distortion2 = (texture(textures[material.dudvMapTex], vec2(-fs_in.texCoords.x + moveFactor, fs_in.texCoords.y + moveFactor)).rg * 2.0 - 1.0) * waveStrength;
+
+    totalDistortion = distortion1 + distortion2;
   }
 
   material.diffuse = texture(textures[material.diffuseTex], fs_in.texCoords).rgba;
@@ -118,7 +121,7 @@ void main() {
   //vec4 refractColor = texture(refractionTex, vec2(gp.x, gp.y) / (gp.w * 2.0) + 0.5);
   //vec4 reflectColor = texture(reflectionTex, vec2(gp.x, -gp.y) / (gp.w * 2.0) + 0.5);
 
-  vec4 mixColor = mix(reflectColor, refractColor, 0.2);
+  vec4 mixColor = mix(reflectColor, refractColor, 0.4);
 
   material.diffuse = mix(material.diffuse, mixColor, 0.9);
 

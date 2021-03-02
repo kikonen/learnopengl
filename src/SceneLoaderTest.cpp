@@ -827,7 +827,7 @@ void SceneLoaderTest::setupWaterSurface()
 		material->map_kd = "CD3B_Water 1_HI.PNG";
 		material->map_bump = "CD3B_Water 1_HI_normal_surface.PNG";
 		material->map_dudv = "waterDUDV.png";
-		material->tiling = 6;
+		material->tiling = 8;
 		material->textureSpec.mode = GL_REPEAT;
 		//		material->pattern = 1;
 		material->loadTextures(assets.modelsDir);
@@ -845,7 +845,7 @@ void SceneLoaderTest::setupWaterSurface()
 		glm::vec3 pos = assets.groundOffset;
 		Water* water = new Water(type, pos.x, pos.y + 5, pos.z);
 		water->setPos(pos + glm::vec3(0, 3.5, -10));
-		water->setScale(20);
+		water->setScale(30);
 		water->setRotation({ 270, 0, 0 });
 
 		scene->registry.addNode(water);
