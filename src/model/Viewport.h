@@ -11,6 +11,7 @@ enum class ViewportEffect {
 	grayScale = 2,
 	sharpen = 3,
 	blur = 4,
+	edge = 5,
 };
 
 

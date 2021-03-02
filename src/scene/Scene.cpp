@@ -71,7 +71,7 @@ void Scene::prepare()
 			-1,
 			Shader::getShader(assets, TEX_VIEWPORT));
 		
-		mainViewport->effect = ViewportEffect::blur;
+		mainViewport->effect = ViewportEffect::edge;
 
 		mainViewport->prepare();
 		registry.addViewPort(mainViewport);
