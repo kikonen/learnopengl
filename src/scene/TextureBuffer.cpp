@@ -16,6 +16,7 @@ TextureBuffer::~TextureBuffer()
 	if (!prepared) return;
 	glDeleteRenderbuffers(1, &RBO);
 	glDeleteFramebuffers(1, &FBO);
+	glDeleteTextures(1, &textureID);
 }
 
 void TextureBuffer::prepare()

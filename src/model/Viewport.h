@@ -16,6 +16,8 @@ public:
 		Shader* shader, 
 		std::function<void(Viewport&)> binder = [](Viewport&) {});
 
+	void setTextureID(unsigned int textureID);
+
 	void prepare();
 
 	void update(const RenderContext& ctx);

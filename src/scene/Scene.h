@@ -40,6 +40,7 @@ public:
 
 	void draw(RenderContext& ctx);
 
+	void drawMain(RenderContext& ctx);
 	void drawMirror(RenderContext& ctx);
 	void drawViewports(RenderContext& ctx);
 
@@ -55,6 +56,7 @@ public:
 	void bindComponents(Node* node);
 
 private:
+	void updateMainViewport(RenderContext& ctx);
 	void prepareUBOs();
 
 public:
@@ -93,4 +95,7 @@ private:
 
 	TextureBuffer* mirrorBuffer = nullptr;
 	Viewport* mirrorViewport = nullptr;
+
+	TextureBuffer* mainBuffer = nullptr;
+	Viewport* mainViewport = nullptr;
 };

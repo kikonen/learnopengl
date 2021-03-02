@@ -63,6 +63,18 @@ void Scene::prepare()
 
 	particleSystem->prepare();
 
+	{
+		mainViewport = new Viewport(
+			glm::vec3(-0.75, 0.75, 0),
+			glm::vec3(0, 0, 0),
+			glm::vec2(1.5f, 1.5f),
+			-1,
+			Shader::getShader(assets, TEX_VIEWPORT));
+
+		mainViewport->prepare();
+		registry.addViewPort(mainViewport);
+	}
+
 	if (!mirrorBuffer && showMirrorView) {
 		mirrorBuffer = new TextureBuffer({ 640, 480 });
 		mirrorBuffer->prepare();
@@ -116,6 +128,8 @@ void Scene::update(RenderContext& ctx)
 	viewportRenderer->update(ctx, registry);
 
 	particleSystem->update(ctx);
+
+	updateMainViewport(ctx);
 }
 
 void Scene::bind(RenderContext& ctx)
@@ -135,6 +149,9 @@ void Scene::bind(RenderContext& ctx)
 
 void Scene::draw(RenderContext& ctx)
 {
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
 	ctx.state.enable(GL_CULL_FACE);
 	ctx.state.cullFace(GL_BACK); 
@@ -148,9 +165,20 @@ void Scene::draw(RenderContext& ctx)
 	reflectionMapRenderer->render(ctx, registry, skyboxRenderer);
 	waterMapRenderer->render(ctx, registry, skyboxRenderer);
 
+	drawMain(ctx);
 	drawMirror(ctx);
-	drawScene(ctx);
+	//drawScene(ctx);
 	drawViewports(ctx);
+}
+
+void Scene::drawMain(RenderContext& ctx)
+{
+	RenderContext mainCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, ctx.camera, mainBuffer->spec.width, mainBuffer->spec.height);
+	mainCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
+
+	mainBuffer->bind(mainCtx);
+	drawScene(mainCtx);
+	mainBuffer->unbind(ctx);
 }
 
 // "back mirror" viewport
@@ -264,6 +292,15 @@ void Scene::bindComponents(Node* node)
 	if (node->particleGenerator) {
 		node->particleGenerator->system = particleSystem;
 		particleGenerators.push_back(node->particleGenerator);
+	}
+}
+
+void Scene::updateMainViewport(RenderContext& ctx)
+{
+	if (!mainBuffer) {
+		mainBuffer = new TextureBuffer({ ctx.width, ctx.height });
+		mainBuffer->prepare();
+		mainViewport->setTextureID(mainBuffer->textureID);
 	}
 }
 
