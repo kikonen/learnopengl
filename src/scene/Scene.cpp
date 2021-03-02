@@ -70,6 +70,8 @@ void Scene::prepare()
 			glm::vec2(1.5f, 1.5f),
 			-1,
 			Shader::getShader(assets, TEX_VIEWPORT));
+		
+		mainViewport->effect = ViewportEffect::grayScale;
 
 		mainViewport->prepare();
 		registry.addViewPort(mainViewport);

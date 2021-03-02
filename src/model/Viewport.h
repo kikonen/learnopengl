@@ -1,9 +1,16 @@
 #pragma once
-
 #include <functional>
 
 #include "asset/MeshBuffers.h"
+
 #include "scene/RenderContext.h"
+
+enum class ViewportEffect {
+	none = 0,
+	invert = 1,
+	grayScale = 2,
+};
+
 
 class Viewport final
 {
@@ -24,6 +31,9 @@ public:
 	void bind(const RenderContext& ctx);
 	void draw(const RenderContext& ctx);
 
+public:
+	ViewportEffect effect = ViewportEffect::none;
+
 private:
 	const glm::vec3 pos;
 	const glm::vec3 rotation;
@@ -32,6 +42,7 @@ private:
 	MeshBuffers buffers;
 
 	unsigned int textureID;
+
 	Shader* shader;
 	std::function<void(Viewport&)> binder;
 };

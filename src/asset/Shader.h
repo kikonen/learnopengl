@@ -274,6 +274,8 @@ public:
 
     //Shader::Bool drawInstanced = { "drawInstanced" };
 
+    Shader::Int effect = { "effect" };
+
     Shader::Float nearPlane = { "nearPlane" };
     Shader::Float farPlane = { "farPlane" };
 

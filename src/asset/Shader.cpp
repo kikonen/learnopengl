@@ -227,6 +227,8 @@ int Shader::createProgram() {
 
     //drawInstanced.init(this);
 
+    effect.init(this);
+
     nearPlane.init(this); 
     farPlane.init(this);
 

@@ -69,8 +69,9 @@ void Viewport::bind(const RenderContext& ctx)
 	const int unitIndex = 0;
 
 	glBindTextures(unitIndex, 1, &textureID);
-
 	shader->viewportTexture.set(unitIndex);
+
+	shader->effect.set((int)effect);
 
 	glBindVertexArray(buffers.VAO);
 
