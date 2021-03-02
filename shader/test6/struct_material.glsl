@@ -9,6 +9,7 @@ struct Material {
   int emissionTex;
   int specularTex;
   int normalMapTex;
+  int dudvMapTex;
 
   int pattern;
   float reflection;

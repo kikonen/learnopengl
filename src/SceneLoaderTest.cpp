@@ -67,7 +67,7 @@ void SceneLoaderTest::setup()
 
 	setupTerrain();
 
-	setupWaterBottom();
+	//setupWaterBottom();
 	setupWaterSurface();
 
 	setupNodeSkybox();
@@ -77,7 +77,7 @@ void SceneLoaderTest::setup()
 	//setupNodeDragon();
 	setupNodeSpaceShuttle();
 
-	setupViewport1();
+	//setupViewport1();
 
 	setupLightDirectional();
 	setupLightMoving();
@@ -826,7 +826,8 @@ void SceneLoaderTest::setupWaterSurface()
 		material->kd = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
 		material->map_kd = "CD3B_Water 1_HI.PNG";
 		material->map_bump = "CD3B_Water 1_HI_normal_surface.PNG";
-		material->tiling = 8;
+		material->map_dudv = "waterDUDV.png";
+		material->tiling = 6;
 		material->textureSpec.mode = GL_REPEAT;
 		//		material->pattern = 1;
 		material->loadTextures(assets.modelsDir);

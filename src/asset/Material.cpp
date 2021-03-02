@@ -79,6 +79,7 @@ int Material::loadTextures(const std::string& baseDir)
 	emissionTex = loadTexture(baseDir, map_ke);
 	specularTex = loadTexture(baseDir, map_ks);
 	normalMapTex = loadTexture(baseDir, map_bump);
+	dudvMapTex = loadTexture(baseDir, map_dudv);
 	return 0;
 }
 
@@ -153,6 +154,9 @@ void Material::bindArray(Shader* shader, int index, bool bindTextureIDs)
 	if (normalMapTex) {
 		shader->textures[normalMapTex->unitIndex].set(normalMapTex->unitIndex);
 	}
+	if (dudvMapTex) {
+		shader->textures[dudvMapTex->unitIndex].set(dudvMapTex->unitIndex);
+	}
 
 	if (bindTextureIDs) {
 		for (auto& x : textures) {
@@ -174,6 +178,7 @@ MaterialUBO Material::toUBO()
 		emissionTex ? emissionTex->unitIndex : -1,
 		specularTex ? specularTex->unitIndex : -1,
 		normalMapTex ? normalMapTex->unitIndex : -1,
+		dudvMapTex ? dudvMapTex->unitIndex : -1,
 
 		pattern,
 

@@ -92,6 +92,7 @@ public:
     BoundTexture* emissionTex = nullptr;
     BoundTexture* specularTex = nullptr;
     BoundTexture* normalMapTex = nullptr;
+    BoundTexture* dudvMapTex = nullptr;
 
     std::vector<BoundTexture*> textures;
 
@@ -142,6 +143,7 @@ public:
     // 10. Casts shadows onto invisible surfaces
     int illum = 0;
 
+    std::string map_dudv = "";
 private:
     bool loaded = false;
 };

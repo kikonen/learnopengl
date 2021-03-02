@@ -79,8 +79,8 @@ void Scene::prepare()
 	}
 
 	//registry.addViewPort(shadowMapRenderer->debugViewport);
-	registry.addViewPort(waterMapRenderer->reflectionDebugViewport);
-	registry.addViewPort(waterMapRenderer->refractionDebugViewport);
+	//registry.addViewPort(waterMapRenderer->reflectionDebugViewport);
+	//registry.addViewPort(waterMapRenderer->refractionDebugViewport);
 }
 
 

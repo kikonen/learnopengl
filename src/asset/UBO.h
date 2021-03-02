@@ -124,6 +124,7 @@ struct MaterialUBO {
 	int emissionTex;
 	int specularTex;
 	int normalMap;
+	int dudvMap;
 
 	int pattern;
 
@@ -134,7 +135,6 @@ struct MaterialUBO {
 	float tiling;
 
 	int pad1;
-	int pad2;
 };
 
 // NOTE KI align 16

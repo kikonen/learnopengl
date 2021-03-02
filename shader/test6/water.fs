@@ -63,16 +63,23 @@ vec3 estimateWaveNormal(float offset, float mapScale, float hScale) {
   return normEst;
 }
 
+const float waveStrength = 0.01;
+
 void main() {
   #include var_tex_material.glsl
 
-  vec2 tc = vec2(fs_in.texCoords.x * sin(time / 40), fs_in.texCoords.y);
+  vec2 totalDistortion = vec2(0);
+  if (material.dudvMapTex >= 0) {
+    float moveFactor = (sin(time / 20.0) + 1.0) * 0.5;
 
-  material.diffuse = texture(textures[material.diffuseTex], tc).rgba;
+    totalDistortion = (texture(textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg * 2.0 - 1.0) * waveStrength;
+  }
+
+  material.diffuse = texture(textures[material.diffuseTex], fs_in.texCoords).rgba;
 
   vec3 normal;
   if (material.normalMapTex >= 0) {
-    normal = texture(textures[material.normalMapTex], tc).rgb;
+    normal = texture(textures[material.normalMapTex], fs_in.texCoords).rgb;
     normal = normal * 2.0 - 1.0;
     normal = normalize(fs_in.TBN * normal);
   } else {
@@ -97,14 +104,19 @@ void main() {
 
 //  #include var_calculate_diffuse.glsl
 
-  // vec2 ndc = (fs_in.glp.xy / (fs_in.glp.w * 2.0)) + 0.5;
-  // vec2 refractTexCoords = ndc;
-  // vec2 reflectTexCoords = vec2(ndc.x, -ndc.y);
-  // vec4 refractColor = texture(refractionTex, refractTexCoords);
-  // vec4 reflectColor = texture(reflectionTex, reflectTexCoords);
+  vec4 gp = fs_in.glp;
+  vec2 refractCoord = vec2(gp.x, gp.y) / (gp.w * 2.0) + 0.5 + totalDistortion;
+  vec2 reflectCoord = vec2(gp.x, -gp.y) / (gp.w * 2.0) + 0.5 + totalDistortion;
 
-  vec4 refractColor = texture(refractionTex, (vec2(fs_in.glp.x, fs_in.glp.y)) / (2.0 * fs_in.glp.w) + 0.5);
-  vec4 reflectColor = texture(reflectionTex, (vec2(fs_in.glp.x, -fs_in.glp.y)) / (2.0 * fs_in.glp.w) + 0.5);
+//  refractCoord = clamp(refractCoord, 0.001, 0.999);
+//  reflectCoord.x = clamp(reflectCoord.x, 0.001, 0.999);
+//  reflectCoord.y = clamp(reflectCoord.y, -0.999, -0.001);
+
+  vec4 refractColor = texture(refractionTex, refractCoord);
+  vec4 reflectColor = texture(reflectionTex, reflectCoord);
+
+  //vec4 refractColor = texture(refractionTex, vec2(gp.x, gp.y) / (gp.w * 2.0) + 0.5);
+  //vec4 reflectColor = texture(reflectionTex, vec2(gp.x, -gp.y) / (gp.w * 2.0) + 0.5);
 
   vec4 mixColor = mix(reflectColor, refractColor, 0.2);
 
@@ -114,6 +126,8 @@ void main() {
   vec4 texColor = shaded;
 
   texColor = calculateFog(material.fogRatio, texColor);
+
+//  texColor = texture(textures[material.dudvMapTex], fs_in.texCoords);
 
 //  texColor = vec4(1, 0, 0, 1);
 
