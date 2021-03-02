@@ -833,7 +833,7 @@ void SceneLoaderTest::setupWaterSurface()
 		//material->map_bump = "CD3B_Water 1_HI_normal_surface.PNG";
 		material->map_bump = "waterNormalMap.png";
 		material->map_dudv = "waterDUDV.png";
-		material->tiling = 4;
+		material->tiling = 2;
 		material->textureSpec.mode = GL_REPEAT;
 		//		material->pattern = 1;
 		material->loadTextures();

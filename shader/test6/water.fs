@@ -68,14 +68,11 @@ const float waveStrength = 0.01;
 void main() {
   #include var_tex_material.glsl
 
+  vec2 distortedTexCoords = fs_in.texCoords;
   vec2 totalDistortion = vec2(0);
+
   if (material.dudvMapTex >= 0) {
     float moveFactor = (sin(time / 10.0) + 1.0) * 0.5;
-
-    // vec2 distortion1 = (texture(textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg * 2.0 - 1.0) * waveStrength;
-    // vec2 distortion2 = (texture(textures[material.dudvMapTex], vec2(-fs_in.texCoords.x + moveFactor, fs_in.texCoords.y + moveFactor)).rg * 2.0 - 1.0) * waveStrength;
-
-    // totalDistortion = distortion1 + distortion2;
 
     vec2 distortedTexCoords = texture(textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg*0.1;
     distortedTexCoords = fs_in.texCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
@@ -84,16 +81,11 @@ void main() {
 
   vec3 normal;
   if (material.normalMapTex >= 0) {
-    normal = texture(textures[material.normalMapTex], fs_in.texCoords).rgb;
+    normal = texture(textures[material.normalMapTex], distortedTexCoords).rgb;
     normal = normal * 2.0 - 1.0;
     normal = normalize(fs_in.TBN * normal);
   } else {
     normal = fs_in.normal;
-  }
-
-//  normal = normalize(vec3(sin(normal.x * time), cos(normal.y * time), 2 * sin(normal.z * time)));
-  if (material.pattern == 1) {
-    normal = calculateNormalPattern(normal);
   }
 
   // estimate the normal using the noise texture
