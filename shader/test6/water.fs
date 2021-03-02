@@ -78,8 +78,6 @@ void main() {
     totalDistortion = distortion1 + distortion2;
   }
 
-  material.diffuse = texture(textures[material.diffuseTex], fs_in.texCoords).rgba;
-
   vec3 normal;
   if (material.normalMapTex >= 0) {
     normal = texture(textures[material.normalMapTex], fs_in.texCoords).rgb;
@@ -118,9 +116,6 @@ void main() {
   vec4 refractColor = texture(refractionTex, refractCoord);
   vec4 reflectColor = texture(reflectionTex, reflectCoord);
 
-  //vec4 refractColor = texture(refractionTex, vec2(gp.x, gp.y) / (gp.w * 2.0) + 0.5);
-  //vec4 reflectColor = texture(reflectionTex, vec2(gp.x, -gp.y) / (gp.w * 2.0) + 0.5);
-
   vec4 mixColor = mix(reflectColor, refractColor, 0.4);
 
   material.diffuse = mix(material.diffuse, mixColor, 0.9);
@@ -129,8 +124,6 @@ void main() {
   vec4 texColor = shaded;
 
   texColor = calculateFog(material.fogRatio, texColor);
-
-//  texColor = texture(textures[material.dudvMapTex], fs_in.texCoords);
 
 //  texColor = vec4(1, 0, 0, 1);
 

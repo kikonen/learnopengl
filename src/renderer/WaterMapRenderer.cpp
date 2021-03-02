@@ -146,7 +146,7 @@ void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
-		if (t->water) continue;
+		if (t->water || t->noShadow) continue;
  		Shader* shader = t->bind(ctx, nullptr);
 
 		Batch& batch = t->batch;

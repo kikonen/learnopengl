@@ -821,10 +821,10 @@ void SceneLoaderTest::setupWaterSurface()
 {
 	addLoader([this]() {
 		Material* material = new Material("water_surface");
-		material->ns = 100;
-		material->ks = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
-		material->kd = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
-		material->map_kd = "CD3B_Water 1_HI.PNG";
+		material->ns = 150;
+		material->ks = glm::vec4(0.4f, 0.5f, 0.5f, 1.f);
+		material->kd = glm::vec4(0.0f, 0.1f, 0.8f, 1.f);
+		//material->map_kd = "CD3B_Water 1_HI.PNG";
 		material->map_bump = "CD3B_Water 1_HI_normal_surface.PNG";
 		material->map_dudv = "waterDUDV.png";
 		material->tiling = 8;
