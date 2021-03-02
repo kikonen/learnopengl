@@ -36,6 +36,7 @@ public:
 
 	Material* defaultMaterial = nullptr;
 	bool overrideMaterials = false;
+	bool loadTextures = true;
 
 private:
 	int resolveVertexIndex(

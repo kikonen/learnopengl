@@ -8,12 +8,12 @@ Material* Sprite::getMaterial(
 	const std::string& path,
 	const std::string& normalMapPath)
 {
-	Material* material = new Material(path);
+	Material* material = new Material(path, assets.spritesDir + "/");
 	material->ns = 100;
 	material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 	material->map_kd = path;
 	material->map_bump = normalMapPath;
-	material->loadTextures(assets.spritesDir + "/");
+	material->loadTextures();
 
 	return material;
 }

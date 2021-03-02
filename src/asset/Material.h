@@ -26,7 +26,7 @@ struct BoundTexture {
     }
 };
 
-enum MaterialType {
+enum class MaterialType {
     basic,
     gold,
     silver,
@@ -54,9 +54,9 @@ map_Kd texture_cube.jpg
 class Material final
 {
 public:
-    Material(const std::string& name);
+    Material(const std::string& name, const std::string& baseDir);
     ~Material();
-    int loadTextures(const std::string& baseDir);
+    int loadTextures();
 
     void prepare();
     void bindArray(Shader* shader, int index, bool bindTextureIDs);
@@ -72,6 +72,7 @@ private:
 
 public:
     const std::string name;
+    const std::string baseDir;
     unsigned int materialIndex = 0;
 
     bool used = false;

@@ -10,7 +10,7 @@
 
 
 Material* createGoldMaterial() {
-	Material* mat = new Material("gold");
+	Material* mat = new Material("gold", "");
 	mat->ns = 51.2f;
 	mat->ks = glm::vec4(0.6283f, 0.5559f, 0.3661f, 1.f);
 	mat->ka = glm::vec4(0.2473f, 0.1995f, 0.0745f, 1.f);
@@ -19,7 +19,7 @@ Material* createGoldMaterial() {
 }
 
 Material* createSilverMaterial() {
-	Material* mat = new Material("silver");
+	Material* mat = new Material("silver", "");
 	mat->ns = 51.2f;
 	mat->ks = glm::vec4(0.5083f, 0.5083f, 0.5083f, 1.f);
 	mat->ka = glm::vec4(0.1923f, 0.1923f, 0.1923f, 1.f);
@@ -28,7 +28,7 @@ Material* createSilverMaterial() {
 }
 
 Material* createBronzeMaterial() {
-	Material* mat = new Material("bronze");
+	Material* mat = new Material("bronze", "");
 	mat->ns = 25.6f;
 	mat->ks = glm::vec4(0.3936f, 0.2719f, 0.1667f, 1.f);
 	mat->ka = glm::vec4(0.2125f, 0.1275f, 0.0540f, 1.f);
@@ -37,7 +37,7 @@ Material* createBronzeMaterial() {
 }
 
 Material* Material::createDefaultMaterial() {
-	Material* mat = new Material("default");
+	Material* mat = new Material("default", "");
 	mat->ns = 100.f;
 	mat->ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
 	mat->ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
@@ -48,16 +48,16 @@ Material* Material::createDefaultMaterial() {
 Material* Material::createMaterial(MaterialType type)
 {
 	switch (type) {
-	case gold: return createGoldMaterial();
-	case silver: return createSilverMaterial();
-	case bronze: return createBronzeMaterial();
+	case MaterialType::gold: return createGoldMaterial();
+	case MaterialType::silver: return createSilverMaterial();
+	case MaterialType::bronze: return createBronzeMaterial();
 	}
 
 	return createDefaultMaterial();
 }
 
-Material::Material(const std::string& name)
-	: name(name)
+Material::Material(const std::string& name, const std::string& baseDir)
+	: name(name), baseDir(baseDir)
 {
 }
 
@@ -69,7 +69,7 @@ Material::~Material()
 	//delete normalMap;
 }
 
-int Material::loadTextures(const std::string& baseDir)
+int Material::loadTextures()
 {
 	if (loaded) return 0;
 	loaded = true;

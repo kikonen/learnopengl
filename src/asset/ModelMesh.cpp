@@ -68,12 +68,14 @@ void ModelMesh::prepare(const Assets& assets)
 
 	reflection = false;
 	refraction = false;
+	unsigned int unitIndex = 0;
 	for (auto const& material : materials) {
 		material->prepare();
 		reflection |= material->reflection > 0;
 		refraction |= material->refraction > 0;
 
 		for (auto const& t : material->textures) {
+			t->unitIndex = unitIndex++;
 			textureIDs.push_back(t->texture->textureID);
 		}
 	}

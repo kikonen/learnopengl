@@ -67,7 +67,7 @@ void SceneLoaderTest::setup()
 
 	setupTerrain();
 
-	//setupWaterBottom();
+	setupWaterBottom();
 	setupWaterSurface();
 
 	setupNodeSkybox();
@@ -631,7 +631,7 @@ void SceneLoaderTest::setupNodeWaterBall()
 void SceneLoaderTest::setupNodeMaterialBalls()
 {
 	addLoader([this]() {
-		MaterialType materialTypes[4] = { basic, gold, silver, bronze };
+		MaterialType materialTypes[4] = { MaterialType::basic, MaterialType::gold, MaterialType::silver, MaterialType::bronze };
 
 		int index = 0;
 		for (auto mt : materialTypes) {
@@ -768,14 +768,14 @@ void SceneLoaderTest::setupSpriteSkeleton()
 void SceneLoaderTest::setupTerrain()
 {
 	addLoader([this]() {
-		Material* material = new Material("terrain");
+		Material* material = new Material("terrain", assets.texturesDir + "/");
 		material->textureSpec.mode = GL_REPEAT;
 		material->tiling = 60;
 		material->ns = 50;
 		material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 		material->map_kd = "Grass Dark_VH.PNG";
 		//material->map_kd = "singing_brushes.png";	
-		material->loadTextures(assets.texturesDir + "/");
+		material->loadTextures();
 
 		Shader* shader = getShader(TEX_TERRAIN);
 
@@ -802,16 +802,21 @@ void SceneLoaderTest::setupWaterBottom()
 		//type->renderBack = true;
 		type->noShadow = true;
 		{
-			MeshLoader loader(assets, "woodwall");
+			MeshLoader loader(assets, "marble_plate");
+			loader.loadTextures = false;
 			type->mesh = loader.load();
-			type->modifyMaterials([](Material& m) { m.tiling = 4; });
+			type->modifyMaterials([](Material& m) { 
+				m.textureSpec.mode = GL_REPEAT;
+				m.tiling = 8; 
+				m.loadTextures();
+			});
 		}
 
 		glm::vec3 pos = assets.groundOffset;
 
 		Node* node = new Node(type);
 		node->setPos(pos + glm::vec3(0, 3, -10));
-		node->setScale(20.f);
+		node->setScale(30.f);
 		node->setRotation({ 90, 0, 0 });
 		scene->registry.addNode(node);
 	});
@@ -820,17 +825,18 @@ void SceneLoaderTest::setupWaterBottom()
 void SceneLoaderTest::setupWaterSurface()
 {
 	addLoader([this]() {
-		Material* material = new Material("water_surface");
+		Material* material = new Material("water_surface", assets.modelsDir);
 		material->ns = 150;
-		material->ks = glm::vec4(0.4f, 0.5f, 0.5f, 1.f);
+		material->ks = glm::vec4(0.2f, 0.2f, 0.5f, 1.f);
 		material->kd = glm::vec4(0.0f, 0.1f, 0.8f, 1.f);
 		//material->map_kd = "CD3B_Water 1_HI.PNG";
-		material->map_bump = "CD3B_Water 1_HI_normal_surface.PNG";
+		//material->map_bump = "CD3B_Water 1_HI_normal_surface.PNG";
+		material->map_bump = "waterNormalMap.png";
 		material->map_dudv = "waterDUDV.png";
-		material->tiling = 8;
+		material->tiling = 4;
 		material->textureSpec.mode = GL_REPEAT;
 		//		material->pattern = 1;
-		material->loadTextures(assets.modelsDir);
+		material->loadTextures();
 		Shader* shader = getShader(TEX_WATER);
 
 		TerrainGenerator generator(assets);

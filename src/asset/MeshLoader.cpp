@@ -184,8 +184,11 @@ int MeshLoader::loadData(
 				material->materialIndex = materialIndex++;
 				materials.push_back(material);
 
-				for (auto & tex : material->textures) {
-					tex->unitIndex = unitIndex++;
+				if (loadTextures) {
+					material->loadTextures();
+					for (auto& tex : material->textures) {
+						tex->unitIndex = unitIndex++;
+					}
 				}
 			}
 		}
@@ -373,7 +376,7 @@ int MeshLoader::loadMaterials(
 			ss >> v1 >> v2 >> v3;
 
 			if (k == "newmtl") {
-				material = new Material(v1);
+				material = new Material(v1, assets.modelsDir + path);
 				materials[v1] = material;
 			}
 			else if (k == "Ns") {
@@ -421,11 +424,6 @@ int MeshLoader::loadMaterials(
 	}
 
 	KI_INFO_SB("== " << modelName << " - " << libraryName << " ===\n" << "materials: " << materials.size());
-
-	for (auto const& x : materials) {
-		Material* material = x.second;
-		material->loadTextures(assets.modelsDir + path);
-	}
 
 	return 0;
 }
