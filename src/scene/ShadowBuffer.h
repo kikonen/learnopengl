@@ -7,9 +7,7 @@ class ShadowBuffer final : public FrameBuffer
 {
 public:
 	ShadowBuffer(const FrameBufferSpecification& spec);
-	~ShadowBuffer();
-
-	void prepare() override;
+	~ShadowBuffer() override = default;
 
 public:
 };

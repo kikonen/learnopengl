@@ -6,11 +6,8 @@ class TextureBuffer final : public FrameBuffer
 {
 public:
 	TextureBuffer(const FrameBufferSpecification& spec);
-	~TextureBuffer();
-
-	void prepare() override;
+	~TextureBuffer() override = default;
 
 public:
-	unsigned int RBO = -1;
 };
 

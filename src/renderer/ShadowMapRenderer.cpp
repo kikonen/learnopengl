@@ -23,14 +23,14 @@ void ShadowMapRenderer::prepare()
 	shadowShader->prepare();
 	shadowDebugShader->prepare();
 
-	shadowBuffer = new ShadowBuffer({ assets.shadowMapSize, assets.shadowMapSize });
+	shadowBuffer = new ShadowBuffer({ assets.shadowMapSize, assets.shadowMapSize, { FrameBufferAttachment::getDepthTexture() } });
 	shadowBuffer->prepare();
 
 	debugViewport = new Viewport(
 		glm::vec3(-1 + 0.01, 1 - 0.01, 0), 
 		glm::vec3(0, 0, 0), 
 		glm::vec2(0.5f, 0.5f), 
-		shadowBuffer->textureID, 
+		shadowBuffer->spec.attachments[0].textureID, 
 		shadowDebugShader, 
 		[this](Viewport& vp) {
 			shadowDebugShader->nearPlane.set(assets.shadowNearPlane);
@@ -63,7 +63,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 {
 	if (!rendered) return;
-	shadowBuffer->bindTexture(ctx, assets.shadowMapUnitIndex);
+	shadowBuffer->bindTexture(ctx, 0, assets.shadowMapUnitIndex);
 }
 
 void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)

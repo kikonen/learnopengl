@@ -71,21 +71,21 @@ void Scene::prepare()
 			-1,
 			Shader::getShader(assets, TEX_VIEWPORT));
 		
-		mainViewport->effect = ViewportEffect::edge;
+		//mainViewport->effect = ViewportEffect::edge;
 
 		mainViewport->prepare();
 		registry.addViewPort(mainViewport);
 	}
 
 	if (!mirrorBuffer && showMirrorView) {
-		mirrorBuffer = new TextureBuffer({ 640, 480 });
+		mirrorBuffer = new TextureBuffer({ 640, 480, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
 		mirrorBuffer->prepare();
 
 		mirrorViewport = new Viewport(
 			glm::vec3(0.5, 1, 0),
 			glm::vec3(0, 0, 0),
 			glm::vec2(0.5f, 0.5f),
-			mirrorBuffer->textureID,
+			mirrorBuffer->spec.attachments[0].textureID,
 			Shader::getShader(assets, TEX_VIEWPORT));
 
 		mirrorViewport->prepare();
@@ -300,9 +300,9 @@ void Scene::bindComponents(Node* node)
 void Scene::updateMainViewport(RenderContext& ctx)
 {
 	if (!mainBuffer) {
-		mainBuffer = new TextureBuffer({ ctx.width, ctx.height });
+		mainBuffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
 		mainBuffer->prepare();
-		mainViewport->setTextureID(mainBuffer->textureID);
+		mainViewport->setTextureID(mainBuffer->spec.attachments[0].textureID);
 	}
 }
 

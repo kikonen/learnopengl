@@ -16,7 +16,12 @@ WaterMapRenderer::~WaterMapRenderer()
 
 void WaterMapRenderer::prepare()
 {
-	FrameBufferSpecification spec = { assets.waterReflectionSize , assets.waterReflectionSize };
+	FrameBufferSpecification spec = { 
+		assets.waterReflectionSize , 
+		assets.waterReflectionSize, 
+		{ FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepth() } 
+	};
+
 	reflectionBuffer = new TextureBuffer(spec);
 	refractionBuffer = new TextureBuffer(spec);
 
@@ -30,14 +35,14 @@ void WaterMapRenderer::prepare()
 		glm::vec3(0.5, 0.5, 0),
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),
-		reflectionBuffer->textureID,
+		reflectionBuffer->spec.attachments[0].textureID,
 		Shader::getShader(assets, TEX_VIEWPORT));
 
 	refractionDebugViewport = new Viewport(
 		glm::vec3(0.5, 0.0, 0),
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),
-		refractionBuffer->textureID,
+		reflectionBuffer->spec.attachments[0].textureID,
 		Shader::getShader(assets, TEX_VIEWPORT));
 
 	reflectionDebugViewport->prepare();
@@ -48,8 +53,8 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 {
 	if (!rendered) return;
 
-	reflectionBuffer->bindTexture(ctx, assets.waterReflectionMapUnitIndex);
-	refractionBuffer->bindTexture(ctx, assets.waterRefractionMapUnitIndex);
+	reflectionBuffer->bindTexture(ctx, 0, assets.waterReflectionMapUnitIndex);
+	refractionBuffer->bindTexture(ctx, 0, assets.waterRefractionMapUnitIndex);
 	if (noiseTextureID != -1) {
 		glBindTextures(assets.noiseUnitIndex, 1, &noiseTextureID);
 	}
