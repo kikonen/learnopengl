@@ -9,6 +9,8 @@
 #include uniform_materials.glsl
 
 in VS_OUT {
+  flat vec3 objectID;
+
   vec4 glp;
 
   vec3 fragPos;
@@ -35,7 +37,7 @@ uniform sampler3D noiseTex;
 uniform sampler2DShadow shadowMap;
 
 layout (location = 0) out vec4 fragColor;
-layout (location = 1) out vec4 objectID;
+layout (location = 1) out vec3 fragObjectID;
 
 ////////////////////////////////////////////////////////////
 //
@@ -129,5 +131,5 @@ void main() {
 //  texColor = vec4(1, 0, 0, 1);
 
   fragColor = texColor;
-  objectID = origDiffuse;
+  fragObjectID = fs_in.objectID;
 }

@@ -4,7 +4,7 @@
 
 class Window;
 
-enum Key {
+enum class Key {
 	EXIT,
 	UP,
 	DOWN,
@@ -18,7 +18,7 @@ enum Key {
 	ZOOM_OUT,
 };
 
-enum Modifier {
+enum class Modifier {
 	SHIFT,
 	CONTROL,
 	ALT,

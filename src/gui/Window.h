@@ -44,9 +44,10 @@ public:
 	int width;
 	int height;
 
+	Input* input = nullptr;
+
 protected:
 	Engine& engine;
-	Input* input = nullptr;
 
 	std::string title;
 };

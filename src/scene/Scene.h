@@ -54,6 +54,7 @@ public:
 	std::vector<Light*>& getSpotLights();
 
 	void bindComponents(Node* node);
+	int getObjectID(const RenderContext& ctx, double posx, double posy);
 
 private:
 	void updateMainViewport(RenderContext& ctx);

@@ -7,6 +7,18 @@ Batch::Batch()
 {
 }
 
+void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
+{
+	modelMatrices.push_back(model);
+	normalMatrices.push_back(normal);
+
+	int r = (objectID & 0xff) >> 0;
+	int g = (objectID & 0xff00) >> 8;
+	int b = (objectID & 0xff0000) >> 16;
+
+	objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f);
+}
+
 void Batch::prepare(NodeType* type)
 {
 	if (staticBuffer) {
@@ -24,12 +36,12 @@ void Batch::prepare(NodeType* type)
 		modelMatrices.reserve(size);
 
 		glCreateBuffers(1, &modelBuffer);
-		KI_GL_CALL(glNamedBufferStorage(modelBuffer, size * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT));
+		glNamedBufferStorage(modelBuffer, size * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
 		// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
 		size_t vecSize = sizeof(glm::vec4);
 
-		KI_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, modelBuffer));
+		glBindBuffer(GL_ARRAY_BUFFER, modelBuffer);
 
 		glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_1, 4, GL_FLOAT, GL_FALSE, 4 * vecSize, (void*)0);
 		glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_2, 4, GL_FLOAT, GL_FALSE, 4 * vecSize, (void*)(1 * vecSize));
@@ -52,12 +64,12 @@ void Batch::prepare(NodeType* type)
 		normalMatrices.reserve(size);
 
 		glCreateBuffers(1, &normalBuffer);
-		KI_GL_CALL(glNamedBufferStorage(normalBuffer, size * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT));
+		glNamedBufferStorage(normalBuffer, size * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
 		// NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
 		size_t vecSize = sizeof(glm::vec3);
 
-		KI_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, normalBuffer));
+		glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
 
 		glVertexAttribPointer(ATTR_INSTANCE_NORMAL_MATRIX_1, 3, GL_FLOAT, GL_FALSE, 3 * vecSize, (void*)0);
 		glVertexAttribPointer(ATTR_INSTANCE_NORMAL_MATRIX_2, 3, GL_FLOAT, GL_FALSE, 3 * vecSize, (void*)(1 * vecSize));
@@ -70,6 +82,22 @@ void Batch::prepare(NodeType* type)
 		glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_1);
 		glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_2);
 		glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_3);
+	}
+
+	// objectIDs
+	{
+		objectIDs.reserve(size);
+
+		glCreateBuffers(1, &objectIDBuffer);
+		glNamedBufferStorage(objectIDBuffer, size * sizeof(glm::vec3), nullptr, GL_DYNAMIC_STORAGE_BIT);
+
+		glBindBuffer(GL_ARRAY_BUFFER, objectIDBuffer);
+
+		glVertexAttribPointer(ATTR_INSTANCE_OBJECT_ID, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+
+		glVertexAttribDivisor(ATTR_INSTANCE_OBJECT_ID, 1);
+
+		glEnableVertexAttribArray(ATTR_INSTANCE_OBJECT_ID);
 	}
 
 	if (staticBuffer) {
@@ -90,6 +118,7 @@ void Batch::update(unsigned int count)
 
 	glNamedBufferSubData(modelBuffer, 0, count * sizeof(glm::mat4), &modelMatrices[0]);
 	glNamedBufferSubData(normalBuffer, 0, count * sizeof(glm::mat3), &normalMatrices[0]);
+	glNamedBufferSubData(objectIDBuffer, 0, count * sizeof(int), &objectIDs[0]);
 
 	KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
@@ -101,6 +130,7 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 	if (!staticBuffer) {
 		modelMatrices.clear();
 		normalMatrices.clear();
+		objectIDs.clear();
 	}
 }
 
@@ -132,5 +162,6 @@ void Batch::flush(const RenderContext& ctx, NodeType* type)
 	if (!staticBuffer) {
 		modelMatrices.clear();
 		normalMatrices.clear();
+		objectIDs.clear();
 	}
 }

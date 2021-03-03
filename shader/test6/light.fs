@@ -4,19 +4,24 @@
 #include uniform_data.glsl
 #include uniform_materials.glsl
 
-flat in int materialIndex;
-in vec3 fragPos;
-in vec3 normal;
+in VS_OUT {
+  flat vec3 objectID;
+  vec4 color;
+  flat int materialIndex;
+  vec2 texCoords;
+  vec3 fragPos;
+  vec3 normal;
+} fs_in;
 
 layout (location = 0) out vec4 fragColor;
-layout (location = 1) out vec4 objectID;
+layout (location = 1) out vec3 fragObjectID;
 
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
 
 void main() {
-  Material material = materials[materialIndex];
+  Material material = materials[fs_in.materialIndex];
 
   // combined
   vec4 texColor = material.diffuse;
@@ -25,5 +30,5 @@ void main() {
     discard;
 
   fragColor = texColor;
-  objectID = vec4(normal, 1.0);
+  fragObjectID = fs_in.objectID;
 }

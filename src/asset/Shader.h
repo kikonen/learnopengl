@@ -40,6 +40,8 @@ const int ATTR_INSTANCE_NORMAL_MATRIX_1 = 10;
 const int ATTR_INSTANCE_NORMAL_MATRIX_2 = 11;
 const int ATTR_INSTANCE_NORMAL_MATRIX_3 = 12;
 
+const int ATTR_INSTANCE_OBJECT_ID = 13;
+
 const std::string GEOM_NONE = "";
 
 struct TextureInfo;

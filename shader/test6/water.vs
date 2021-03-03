@@ -6,6 +6,7 @@ layout (location = 4) in int aMaterialIndex;
 layout (location = 5) in vec2 aTexCoords;
 layout (location = 6) in mat4 aModelMatrix;
 layout (location = 10) in mat3 aNormalMatrix;
+layout (location = 13) in vec3 aObjectID;
 
 #include struct_material.glsl
 #include struct_texture.glsl
@@ -16,6 +17,8 @@ layout (location = 10) in mat3 aNormalMatrix;
 
 
 out VS_OUT {
+  flat vec3 objectID;
+
   vec4 glp;
 
   vec3 fragPos;
@@ -40,6 +43,7 @@ void main() {
   vs_out.glp = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
   gl_Position = vs_out.glp;
 
+  vs_out.objectID = aObjectID;
   vs_out.materialIndex = aMaterialIndex;
   vs_out.texCoords = aTexCoords * materials[aMaterialIndex].tiling;
 

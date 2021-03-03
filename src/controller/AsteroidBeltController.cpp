@@ -55,14 +55,11 @@ void AsteroidBeltController::prepareInstanced(InstancedNode& node)
 		selectionModel = glm::rotate(selectionModel, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
 
 		// 4. now add to list of matrices
-		modelBatch.modelMatrices.push_back(plainModel);
-		selectedBatch.modelMatrices.push_back(selectionModel);
-
 		glm::mat3 plainNormal = glm::transpose(glm::inverse(glm::mat3(plainModel)));
 		glm::mat3 selectionNormal = glm::transpose(glm::inverse(glm::mat3(selectionModel)));
 
-		modelBatch.normalMatrices.push_back(plainNormal);
-		selectedBatch.normalMatrices.push_back(selectionNormal);
+		modelBatch.add(plainModel, plainNormal, node.objectID);
+		selectedBatch.add(selectionModel, selectionNormal, node.objectID);
 	}
 }
 

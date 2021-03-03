@@ -11,6 +11,8 @@ class Batch final
 public:
 	Batch();
 
+	void add(const glm::mat4& model, const glm::mat3& normal, int objectID);
+
 	void prepare(NodeType* type);
 	void update(unsigned int count);
 	void bind(const RenderContext& ctx, Shader* shader);
@@ -26,9 +28,11 @@ public:
 	bool dirty = false;
 	std::vector<glm::mat4> modelMatrices;
 	std::vector<glm::mat3> normalMatrices;
+	std::vector<glm::vec3> objectIDs;
 
 private:
 	unsigned int modelBuffer = -1;
 	unsigned int normalBuffer = -1;
+	unsigned int objectIDBuffer = -1;
 };
 

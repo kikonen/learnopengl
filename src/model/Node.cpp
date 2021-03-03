@@ -9,7 +9,7 @@
 
 
 namespace {
-	int objectIDbase = 0;
+	int objectIDbase = 1000;
 }
 
 
@@ -49,8 +49,7 @@ void Node::bind(const RenderContext& ctx, Shader* shader)
 void Node::bindBatch(const RenderContext& ctx, Batch& batch)
 {
 	updateModelMatrix();
-	batch.modelMatrices.push_back(modelMat);
-	batch.normalMatrices.push_back(normalMat);
+	batch.add(modelMat, normalMat, objectID);
 }
 
 void Node::draw(const RenderContext& ctx)

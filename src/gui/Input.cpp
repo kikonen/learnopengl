@@ -5,22 +5,22 @@
 Input::Input(Window* window) 
 	: window(window)
 {
-	mapping[EXIT] = new int[] { GLFW_KEY_ESCAPE, 0 };
-	mapping[FORWARD] = new int[] { GLFW_KEY_W, GLFW_KEY_UP, 0 };
-	mapping[BACKWARD] = new int[] { GLFW_KEY_S, GLFW_KEY_DOWN, 0 };
-	mapping[LEFT] = new int[] { GLFW_KEY_A, GLFW_KEY_LEFT, 0 };
-	mapping[RIGHT] = new int[] { GLFW_KEY_D, GLFW_KEY_RIGHT, 0 };
-	mapping[ROTATE_LEFT] = new int[] { GLFW_KEY_Q, 0 };
-	mapping[ROTATE_RIGHT] = new int[] { GLFW_KEY_E, 0 };
-	mapping[UP] = new int[] { GLFW_KEY_PAGE_UP, 0 };
-	mapping[DOWN] = new int[] { GLFW_KEY_PAGE_DOWN, 0 };
+	mapping[Key::EXIT] = new int[] { GLFW_KEY_ESCAPE, 0 };
+	mapping[Key::FORWARD] = new int[] { GLFW_KEY_W, GLFW_KEY_UP, 0 };
+	mapping[Key::BACKWARD] = new int[] { GLFW_KEY_S, GLFW_KEY_DOWN, 0 };
+	mapping[Key::LEFT] = new int[] { GLFW_KEY_A, GLFW_KEY_LEFT, 0 };
+	mapping[Key::RIGHT] = new int[] { GLFW_KEY_D, GLFW_KEY_RIGHT, 0 };
+	mapping[Key::ROTATE_LEFT] = new int[] { GLFW_KEY_Q, 0 };
+	mapping[Key::ROTATE_RIGHT] = new int[] { GLFW_KEY_E, 0 };
+	mapping[Key::UP] = new int[] { GLFW_KEY_PAGE_UP, 0 };
+	mapping[Key::DOWN] = new int[] { GLFW_KEY_PAGE_DOWN, 0 };
 
-	mapping[ZOOM_IN] = new int[] { GLFW_KEY_HOME, 0 };
-	mapping[ZOOM_OUT] = new int[] { GLFW_KEY_END, 0 };
+	mapping[Key::ZOOM_IN] = new int[] { GLFW_KEY_HOME, 0 };
+	mapping[Key::ZOOM_OUT] = new int[] { GLFW_KEY_END, 0 };
 
-	modifiers[SHIFT] = new int[] { GLFW_KEY_LEFT_SHIFT, GLFW_KEY_RIGHT_SHIFT, GLFW_KEY_CAPS_LOCK, 0 };
-	modifiers[CONTROL] = new int[] { GLFW_KEY_LEFT_CONTROL, GLFW_KEY_RIGHT_CONTROL, 0 };
-	modifiers[ALT] = new int[] { GLFW_KEY_LEFT_ALT, GLFW_KEY_RIGHT_ALT, 0 };
+	modifiers[Modifier::SHIFT] = new int[] { GLFW_KEY_LEFT_SHIFT, GLFW_KEY_RIGHT_SHIFT, GLFW_KEY_CAPS_LOCK, 0 };
+	modifiers[Modifier::CONTROL] = new int[] { GLFW_KEY_LEFT_CONTROL, GLFW_KEY_RIGHT_CONTROL, 0 };
+	modifiers[Modifier::ALT] = new int[] { GLFW_KEY_LEFT_ALT, GLFW_KEY_RIGHT_ALT, 0 };
 }
 
 Input::~Input()

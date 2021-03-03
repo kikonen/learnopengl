@@ -65,9 +65,11 @@ void Scene::prepare()
 
 	{
 		mainViewport = new Viewport(
-			glm::vec3(-0.75, 0.75, 0),
+			//glm::vec3(-0.75, 0.75, 0),
+			glm::vec3(-1.0f, 1.f, 0),
 			glm::vec3(0, 0, 0),
-			glm::vec2(1.5f, 1.5f),
+			//glm::vec2(1.5f, 1.5f),
+			glm::vec2(2.f, 2.f),
 			-1,
 			Shader::getShader(assets, TEX_VIEWPORT));
 		
@@ -321,6 +323,31 @@ void Scene::bindComponents(Node* node)
 		node->particleGenerator->system = particleSystem;
 		particleGenerators.push_back(node->particleGenerator);
 	}
+}
+
+int Scene::getObjectID(const RenderContext& ctx, double posx, double posy)
+{
+	// https://stackoverflow.com/questions/10123601/opengl-read-pixels-from-framebuffer-for-picking-rounded-up-to-255-0xff
+	glFlush();
+	glFinish();
+
+	unsigned char data[4];
+
+	{
+		mainBuffer->bind(ctx);
+		glReadBuffer(GL_COLOR_ATTACHMENT1);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glReadPixels(posx, posy, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+		mainBuffer->unbind(ctx);
+	}
+
+	int objectID =
+		data[0] +
+		data[1] * 256 +
+		data[2] * 256 * 256;
+
+	return objectID;
 }
 
 void Scene::updateMainViewport(RenderContext& ctx)
