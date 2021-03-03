@@ -29,6 +29,7 @@ public:
 	Scene& scene;
 	std::mutex load_lock;
 
+	std::map<int, Node*> idToNode;
 	std::map<NodeType*, std::vector<Node*>> nodes;
 
 	std::vector<Viewport*> viewports;

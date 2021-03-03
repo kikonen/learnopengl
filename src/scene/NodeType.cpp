@@ -3,7 +3,9 @@
 #include "asset/Assets.h"
 #include "RenderContext.h"
 
-int objectIDbase = 0;
+namespace {
+	int objectIDbase = 0;
+}
 
 int NodeType::nextID()
 {

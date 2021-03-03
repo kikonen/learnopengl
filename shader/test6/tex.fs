@@ -27,7 +27,8 @@ uniform samplerCube reflectionMap;
 uniform samplerCube refractionMap;
 uniform sampler2DShadow shadowMap;
 
-out vec4 fragColor;
+layout (location = 0) out vec4 fragColor;
+layout (location = 1) out vec4 objectID;
 
 ////////////////////////////////////////////////////////////
 //
@@ -86,4 +87,6 @@ void main() {
   // }
 
   fragColor = texColor;
+
+  objectID = material.diffuse;
 }

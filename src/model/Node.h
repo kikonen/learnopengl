@@ -34,10 +34,14 @@ public:
 	void setScale(const glm::vec3& scale);
 	const glm::vec3& getScale();
 
+	static int nextID();
+
 protected:
 	virtual void updateModelMatrix();
 
 public:
+	int objectID = 0;
+
 	NodeType* type = nullptr;
 
 	bool selected = false;

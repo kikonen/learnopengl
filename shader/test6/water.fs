@@ -34,7 +34,8 @@ uniform sampler3D noiseTex;
 
 uniform sampler2DShadow shadowMap;
 
-out vec4 fragColor;
+layout (location = 0) out vec4 fragColor;
+layout (location = 1) out vec4 objectID;
 
 ////////////////////////////////////////////////////////////
 //
@@ -117,6 +118,7 @@ void main() {
 
   vec4 mixColor = mix(reflectColor, refractColor, refractiveFactor);
 
+  vec4 origDiffuse = material.diffuse;
   material.diffuse = mix(material.diffuse, mixColor, 0.9);
 
   vec4 shaded = calculateLight(normal, toView, material);
@@ -127,4 +129,5 @@ void main() {
 //  texColor = vec4(1, 0, 0, 1);
 
   fragColor = texColor;
+  objectID = origDiffuse;
 }

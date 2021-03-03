@@ -41,6 +41,16 @@ struct FrameBufferAttachment {
 		return spec;
 	}
 
+	static FrameBufferAttachment getMousePick() {
+		FrameBufferAttachment spec;
+		spec.type = FrameBufferAttachmentType::texture;
+		spec.internalFormat = GL_RGBA8;
+		spec.format = GL_RGBA;
+		spec.attachment = GL_COLOR_ATTACHMENT1;
+
+		return spec;
+	}
+
 	static FrameBufferAttachment getDepthTexture() {
 		FrameBufferAttachment spec;
 		spec.type = FrameBufferAttachmentType::depth_texture;

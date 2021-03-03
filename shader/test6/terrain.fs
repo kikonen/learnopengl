@@ -24,7 +24,8 @@ uniform sampler2DShadow shadowMap;
 
 uniform sampler2D textures[TEX_COUNT];
 
-out vec4 fragColor;
+layout (location = 0) out vec4 fragColor;
+layout (location = 1) out vec4 objectID;
 
 ////////////////////////////////////////////////////////////
 //
@@ -46,4 +47,5 @@ void main() {
   texColor = calculateFog(material.fogRatio, texColor);
 
   fragColor = texColor;
+  objectID = vec4(material.diffuse);
 }

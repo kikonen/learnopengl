@@ -77,8 +77,20 @@ void Scene::prepare()
 		registry.addViewPort(mainViewport);
 	}
 
+	{
+		pickViewport = new Viewport(
+			glm::vec3(-1.0, -0.5, 0),
+			glm::vec3(0, 0, 0),
+			glm::vec2(0.5f, 0.5f),
+			-1,
+			Shader::getShader(assets, TEX_VIEWPORT));
+
+		pickViewport->prepare();
+		registry.addViewPort(pickViewport);
+	}
+
 	if (!mirrorBuffer && showMirrorView) {
-		mirrorBuffer = new TextureBuffer({ 640, 480, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+		mirrorBuffer = new TextureBuffer({ 640, 480, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getMousePick(), FrameBufferAttachment::getRBODepthStencil() } });
 		mirrorBuffer->prepare();
 
 		mirrorViewport = new Viewport(
@@ -161,16 +173,20 @@ void Scene::draw(RenderContext& ctx)
 
 	ctx.state.enable(GL_DEPTH_TEST);
 
-	shadowMapRenderer->render(ctx, registry);
-	shadowMapRenderer->bindTexture(ctx);
+	{
+		shadowMapRenderer->render(ctx, registry);
+		shadowMapRenderer->bindTexture(ctx);
 
-	reflectionMapRenderer->render(ctx, registry, skyboxRenderer);
-	waterMapRenderer->render(ctx, registry, skyboxRenderer);
+		reflectionMapRenderer->render(ctx, registry, skyboxRenderer);
+		waterMapRenderer->render(ctx, registry, skyboxRenderer);
+	}
 
-	drawMain(ctx);
-	drawMirror(ctx);
-	//drawScene(ctx);
-	drawViewports(ctx);
+	{
+		drawMain(ctx);
+		drawMirror(ctx);
+		//drawScene(ctx);
+		drawViewports(ctx);
+	}
 }
 
 void Scene::drawMain(RenderContext& ctx)
@@ -218,7 +234,8 @@ void Scene::drawViewports(RenderContext& ctx)
 
 void Scene::drawScene(RenderContext& ctx)
 {
-	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
+	glm::vec4 bg = { 0.9f, 0.3f, 0.3f, 1.0f };
+	glClearBufferfv(GL_COLOR, 0, glm::value_ptr(bg));
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	reflectionMapRenderer->bindTexture(ctx);
@@ -234,7 +251,16 @@ void Scene::drawScene(RenderContext& ctx)
 	//clip.plane = glm::vec4(0, -1, 0, 15);
 	//ctx.bindClipPlanesUBO();
 
-	nodeRenderer->render(ctx, registry);
+	{
+		GLenum buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		glDrawBuffers(2, buffers);
+		glm::vec4 black = { 0.f, 0.f, 0.f, 1.f };
+		glClearBufferfv(GL_COLOR, 1, glm::value_ptr(black));
+
+		nodeRenderer->render(ctx, registry);
+
+		glDrawBuffers(1, buffers);
+	}
 
 	//clip.enabled = false;
 	//ctx.bindClipPlanesUBO();
@@ -300,9 +326,10 @@ void Scene::bindComponents(Node* node)
 void Scene::updateMainViewport(RenderContext& ctx)
 {
 	if (!mainBuffer) {
-		mainBuffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+		mainBuffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getMousePick(), FrameBufferAttachment::getRBODepthStencil() } });
 		mainBuffer->prepare();
 		mainViewport->setTextureID(mainBuffer->spec.attachments[0].textureID);
+		pickViewport->setTextureID(mainBuffer->spec.attachments[1].textureID);
 	}
 }
 

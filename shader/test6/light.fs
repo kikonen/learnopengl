@@ -8,7 +8,8 @@ flat in int materialIndex;
 in vec3 fragPos;
 in vec3 normal;
 
-out vec4 fragColor;
+layout (location = 0) out vec4 fragColor;
+layout (location = 1) out vec4 objectID;
 
 ////////////////////////////////////////////////////////////
 //
@@ -24,4 +25,5 @@ void main() {
     discard;
 
   fragColor = texColor;
+  objectID = vec4(normal, 1.0);
 }

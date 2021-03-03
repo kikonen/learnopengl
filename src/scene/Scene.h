@@ -98,4 +98,6 @@ private:
 
 	TextureBuffer* mainBuffer = nullptr;
 	Viewport* mainViewport = nullptr;
+
+	Viewport* pickViewport = nullptr;
 };

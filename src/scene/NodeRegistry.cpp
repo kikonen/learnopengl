@@ -42,6 +42,7 @@ void NodeRegistry::attachNodes()
 		for (auto& e : x.second) {
 			KI_GL_CALL(e->prepare(assets));
 			nodes[e->type].push_back(e);
+			idToNode[e->objectID] = e;
 
 			scene.bindComponents(e);
 		}

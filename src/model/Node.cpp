@@ -8,9 +8,20 @@
 #include "controller/NodeController.h";
 
 
+namespace {
+	int objectIDbase = 0;
+}
+
+
+int Node::nextID()
+{
+	return ++objectIDbase;
+}
+
 Node::Node(NodeType* type)
 	: type(type)
 {
+	objectID = nextID();
 }
 
 Node::~Node()
@@ -113,3 +124,4 @@ void Node::setScale(const glm::vec3& scale)
 const glm::vec3& Node::getScale() {
 	return scale;
 }
+
