@@ -256,8 +256,10 @@ void Scene::drawScene(RenderContext& ctx)
 	{
 		GLenum buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 		glDrawBuffers(2, buffers);
-		glm::vec4 black = { 0.f, 0.f, 0.f, 1.f };
-		glClearBufferfv(GL_COLOR, 1, glm::value_ptr(black));
+		{
+			glm::vec4 bg = { 0.f, 0.f, 0.f, 1.f };
+			glClearBufferfv(GL_COLOR, 1, glm::value_ptr(bg));
+		}
 
 		nodeRenderer->render(ctx, registry);
 
@@ -328,10 +330,14 @@ void Scene::bindComponents(Node* node)
 int Scene::getObjectID(const RenderContext& ctx, double posx, double posy)
 {
 	// https://stackoverflow.com/questions/10123601/opengl-read-pixels-from-framebuffer-for-picking-rounded-up-to-255-0xff
+	// https://stackoverflow.com/questions/748162/what-are-the-differences-between-a-frame-buffer-object-and-a-pixel-buffer-object
+
 	glFlush();
 	glFinish();
 
+
 	unsigned char data[4];
+	memset(data, 100, sizeof(data));
 
 	{
 		mainBuffer->bind(ctx);
