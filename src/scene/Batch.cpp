@@ -142,7 +142,7 @@ void Batch::update(unsigned int count)
 
 	glNamedBufferSubData(modelBuffer, 0, count * sizeof(glm::mat4), &modelMatrices[0]);
 	glNamedBufferSubData(normalBuffer, 0, count * sizeof(glm::mat3), &normalMatrices[0]);
-	glNamedBufferSubData(objectIDBuffer, 0, count * sizeof(int), &objectIDs[0]);
+	glNamedBufferSubData(objectIDBuffer, 0, count * sizeof(glm::vec4), &objectIDs[0]);
 
 	KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
