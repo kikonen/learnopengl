@@ -17,6 +17,9 @@ public:
 	NodeRegistry(Scene& scene);
 
 	void addNode(Node* node);
+	Node* getNode(int objectID);
+
+	void selectNodeById(int objectID, bool append);
 
 	void addViewPort(Viewport* viewport);
 

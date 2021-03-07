@@ -363,6 +363,12 @@ void Scene::updateMainViewport(RenderContext& ctx)
 		mainBuffer->prepare();
 		mainViewport->setTextureID(mainBuffer->spec.attachments[0].textureID);
 		pickViewport->setTextureID(mainBuffer->spec.attachments[1].textureID);
+
+		// https://riptutorial.com/opengl/example/28872/using-pbos
+		//glGenBuffers(1, &pbo);
+		//glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo);
+		//glBufferData(GL_PIXEL_UNPACK_BUFFER, ctx.width * ctx.height * 3, nullptr, GL_STREAM_COPY);
+		//glReadPixels(0, 0, ctx.width, ctx.height, GL_BGR, GL_UNSIGNED_BYTE, 0);
 	}
 }
 

@@ -11,7 +11,7 @@
 
 
 namespace {
-	int objectIDbase = 255 << 15;
+	int objectIDbase = 255 << 16;
 
 	std::mutex object_id_lock;
 }

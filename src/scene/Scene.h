@@ -101,4 +101,6 @@ private:
 	Viewport* mainViewport = nullptr;
 
 	Viewport* pickViewport = nullptr;
+
+	unsigned int pbo = -1;
 };

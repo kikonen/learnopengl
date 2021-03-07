@@ -14,6 +14,27 @@ void NodeRegistry::addNode(Node* node)
 	pendingNodes.push_back(node);
 }
 
+Node* NodeRegistry::getNode(int objectID)
+{
+	if (!idToNode.count(objectID)) return nullptr;
+	return idToNode[objectID];
+}
+
+void NodeRegistry::selectNodeById(int objectID, bool append)
+{
+	if (!append) {
+		for (auto& x : idToNode) {
+			x.second->selected = false;
+		}
+	}
+
+	Node* node = getNode(objectID);
+	if (node) {
+		KI_INFO_SB("SELECTED: objectID: " << objectID)
+		node->selected = true;
+	}
+}
+
 void NodeRegistry::addViewPort(Viewport* viewport)
 {
 	std::lock_guard<std::mutex> lock(load_lock);
