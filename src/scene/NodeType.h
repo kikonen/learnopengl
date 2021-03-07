@@ -10,7 +10,7 @@ class NodeType final
 public:
 	static int nextID();
 
-	NodeType(int objectID, Shader* defaultShader = nullptr);
+	NodeType(int typeID, Shader* defaultShader = nullptr);
 	~NodeType();
 
 	bool hasReflection();
@@ -27,7 +27,7 @@ public:
 	//}
 
 public:
-	const int objectID;
+	const int typeID;
 
 	bool blend = false;
 	bool light = false;

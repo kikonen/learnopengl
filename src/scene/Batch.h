@@ -12,6 +12,8 @@ public:
 	Batch();
 
 	void add(const glm::mat4& model, const glm::mat3& normal, int objectID);
+	void reserve(int count);
+	int size();
 
 	void prepare(NodeType* type);
 	void update(unsigned int count);
@@ -21,16 +23,17 @@ public:
 
 public:
 	bool prepared = false;
-	unsigned int size = 0;
+	unsigned int batchSize = 0;
 
 	bool staticBuffer = false;
 
 	bool dirty = false;
-	std::vector<glm::mat4> modelMatrices;
-	std::vector<glm::mat3> normalMatrices;
-	std::vector<glm::vec3> objectIDs;
 
 private:
+	std::vector<glm::mat4> modelMatrices;
+	std::vector<glm::mat3> normalMatrices;
+	std::vector<glm::vec4> objectIDs;
+
 	unsigned int modelBuffer = -1;
 	unsigned int normalBuffer = -1;
 	unsigned int objectIDBuffer = -1;

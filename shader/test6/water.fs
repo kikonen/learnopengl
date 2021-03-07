@@ -9,7 +9,7 @@
 #include uniform_materials.glsl
 
 in VS_OUT {
-  flat vec3 objectID;
+  flat vec4 objectID;
 
   vec4 glp;
 
@@ -37,7 +37,7 @@ uniform sampler3D noiseTex;
 uniform sampler2DShadow shadowMap;
 
 layout (location = 0) out vec4 fragColor;
-layout (location = 1) out vec3 fragObjectID;
+layout (location = 1) out vec4 fragObjectID;
 
 ////////////////////////////////////////////////////////////
 //

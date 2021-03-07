@@ -12,20 +12,40 @@ void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
 	modelMatrices.push_back(model);
 	normalMatrices.push_back(normal);
 
+	if (objectID < (15 << 16)) {
+		__debugbreak();
+	}
+
 	int r = (objectID & 0xff) >> 0;
 	int g = (objectID & 0xff00) >> 8;
 	int b = (objectID & 0xff0000) >> 16;
 
-	objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f);
+	b = 255;
+	r = 0;
+	g = 0;
+
+	objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f, 0);
+}
+
+void Batch::reserve(int count)
+{
+	modelMatrices.reserve(count);
+	normalMatrices.reserve(count);
+	objectIDs.reserve(count);
+}
+
+int Batch::size()
+{
+	return modelMatrices.size();
 }
 
 void Batch::prepare(NodeType* type)
 {
 	if (staticBuffer) {
-		size = modelMatrices.size();
+		batchSize = modelMatrices.size();
 	}
 
-	if (size == 0) return;
+	if (batchSize == 0) return;
 	if (prepared) return;
 	prepared = true;
 
@@ -33,10 +53,10 @@ void Batch::prepare(NodeType* type)
 
 	// model
 	{
-		modelMatrices.reserve(size);
+		modelMatrices.reserve(batchSize);
 
 		glCreateBuffers(1, &modelBuffer);
-		glNamedBufferStorage(modelBuffer, size * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
+		glNamedBufferStorage(modelBuffer, batchSize * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
 		// NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
 		size_t vecSize = sizeof(glm::vec4);
@@ -61,10 +81,10 @@ void Batch::prepare(NodeType* type)
 
 	// normal
 	{
-		normalMatrices.reserve(size);
+		normalMatrices.reserve(batchSize);
 
 		glCreateBuffers(1, &normalBuffer);
-		glNamedBufferStorage(normalBuffer, size * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT);
+		glNamedBufferStorage(normalBuffer, batchSize * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
 		// NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
 		size_t vecSize = sizeof(glm::vec3);
@@ -86,14 +106,14 @@ void Batch::prepare(NodeType* type)
 
 	// objectIDs
 	{
-		objectIDs.reserve(size);
+		objectIDs.reserve(batchSize);
 
 		glCreateBuffers(1, &objectIDBuffer);
-		glNamedBufferStorage(objectIDBuffer, size * sizeof(glm::vec3), nullptr, GL_DYNAMIC_STORAGE_BIT);
+		glNamedBufferStorage(objectIDBuffer, batchSize * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
 		glBindBuffer(GL_ARRAY_BUFFER, objectIDBuffer);
 
-		glVertexAttribPointer(ATTR_INSTANCE_OBJECT_ID, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+		glVertexAttribPointer(ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
 
 		glVertexAttribDivisor(ATTR_INSTANCE_OBJECT_ID, 1);
 
@@ -101,7 +121,7 @@ void Batch::prepare(NodeType* type)
 	}
 
 	if (staticBuffer) {
-		update(size);
+		update(batchSize);
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -109,11 +129,11 @@ void Batch::prepare(NodeType* type)
 
 void Batch::update(unsigned int count)
 {
-	if (size == 0) return;
+	if (batchSize == 0) return;
 
-	if (count > size) {
-		KI_WARN_SB("BATCH::CUT_OFF_BUFFER: count=" << count << " size=" << size);
-		count = size;
+	if (count > batchSize) {
+		KI_WARN_SB("BATCH::CUT_OFF_BUFFER: count=" << count << " batchSize=" << batchSize);
+		count = batchSize;
 	}
 
 	glNamedBufferSubData(modelBuffer, 0, count * sizeof(glm::mat4), &modelMatrices[0]);
@@ -125,7 +145,7 @@ void Batch::update(unsigned int count)
 
 void Batch::bind(const RenderContext& ctx, Shader* shader)
 {
-	if (size == 0) return;
+	if (batchSize == 0) return;
 
 	if (!staticBuffer) {
 		modelMatrices.clear();
@@ -136,7 +156,7 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 
 void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
 {
-	if (size == 0) {
+	if (batchSize == 0) {
 		node->bind(ctx, shader);
 		node->draw(ctx);
 		return;
@@ -144,14 +164,14 @@ void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
 
 	node->bindBatch(ctx, *this);
 
-	if (modelMatrices.size() < size) return;
+	if (modelMatrices.size() < batchSize) return;
 
 	flush(ctx, node->type);
 }
 
 void Batch::flush(const RenderContext& ctx, NodeType* type)
 {
-	if (size == 0 || modelMatrices.empty()) return;
+	if (batchSize == 0 || modelMatrices.empty()) return;
 	
 	if (!staticBuffer) {
 		update(modelMatrices.size());

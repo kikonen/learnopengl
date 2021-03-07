@@ -17,10 +17,8 @@ void AsteroidBeltController::prepareInstanced(InstancedNode& node)
 	Batch& modelBatch = node.modelBatch;
 	Batch& selectedBatch = node.selectedBatch;
 
-	modelBatch.modelMatrices.reserve(amount);
-	modelBatch.normalMatrices.reserve(amount);
-	selectedBatch.modelMatrices.reserve(amount);
-	selectedBatch.normalMatrices.reserve(amount);
+	modelBatch.reserve(amount);
+	selectedBatch.reserve(amount);
 
 	srand(glfwGetTime()); // initialize random seed	
 

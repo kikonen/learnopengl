@@ -25,7 +25,7 @@ void InstancedNode::prepare(const Assets& assets)
 
 void InstancedNode::updateBuffers(const RenderContext& ctx)
 {
-	int size = modelBatch.modelMatrices.size();
+	int size = modelBatch.size();
 	modelBatch.update(size);
 	selectedBatch.update(size);
 

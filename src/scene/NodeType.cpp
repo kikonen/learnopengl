@@ -1,19 +1,24 @@
 #include "NodeType.h"
 
+#include <mutex>
+
 #include "asset/Assets.h"
 #include "RenderContext.h"
 
 namespace {
-	int objectIDbase = 0;
+	int typeIDbase = 0;
+
+	std::mutex type_id_lock;
 }
 
 int NodeType::nextID()
 {
-	return ++objectIDbase;
+	std::lock_guard<std::mutex> lock(type_id_lock);
+	return ++typeIDbase;
 }
 
-NodeType::NodeType(int objectID, Shader* defaultShader)
-	: objectID(objectID),
+NodeType::NodeType(int typeID, Shader* defaultShader)
+	: typeID(typeID),
 	defaultShader(defaultShader)
 {
 }
@@ -67,11 +72,11 @@ void NodeType::prepare(const Assets& assets)
 		shader->unbind();
 	}
 	
-	if (batchMode && batch.size > 0) {
+	if (batchMode && batch.batchSize > 0) {
 		batch.prepare(this);
 	}
 	else {
-		batch.size = 0;
+		batch.batchSize = 0;
 	}
 }
 

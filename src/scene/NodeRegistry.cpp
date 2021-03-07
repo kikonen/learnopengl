@@ -36,13 +36,15 @@ void NodeRegistry::attachNodes()
 
 	for (auto& x : newNodes) {
 		NodeType* t = x.first;
-		t->batch.size = assets.batchSize;
+		t->batch.batchSize = assets.batchSize;
 		KI_GL_CALL(t->prepare(assets));
 
 		for (auto& e : x.second) {
 			KI_GL_CALL(e->prepare(assets));
 			nodes[e->type].push_back(e);
 			idToNode[e->objectID] = e;
+
+			KI_INFO_SB("id=" << e->objectID << ", type=" << e->type->typeID);
 
 			scene.bindComponents(e);
 		}

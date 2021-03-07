@@ -5,7 +5,7 @@
 #include uniform_materials.glsl
 
 in VS_OUT {
-  flat vec3 objectID;
+  flat vec4 objectID;
   vec4 color;
   flat int materialIndex;
   vec2 texCoords;
@@ -14,7 +14,7 @@ in VS_OUT {
 } fs_in;
 
 layout (location = 0) out vec4 fragColor;
-layout (location = 1) out vec3 fragObjectID;
+layout (location = 1) out vec4 fragObjectID;
 
 ////////////////////////////////////////////////////////////
 //

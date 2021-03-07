@@ -1,5 +1,7 @@
 #include "Node.h"
 
+#include <mutex>
+
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -9,12 +11,15 @@
 
 
 namespace {
-	int objectIDbase = 1000;
+	int objectIDbase = 255 << 15;
+
+	std::mutex object_id_lock;
 }
 
 
 int Node::nextID()
 {
+	std::lock_guard<std::mutex> lock(object_id_lock);
 	return ++objectIDbase;
 }
 
@@ -55,7 +60,7 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch)
 void Node::draw(const RenderContext& ctx)
 {
 	// NOTE KI shader side supports *ONLY* instanced rendering
-	singleBatch.size = 1;
+	singleBatch.batchSize = 1;
 	singleBatch.prepare(type);
 
 	singleBatch.draw(ctx, this, type->boundShader);

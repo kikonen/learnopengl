@@ -368,7 +368,7 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
 
 std::vector<std::string> Shader::processInclude(const std::string& includePath, int lineNumber) 
 {
-    std::string path = assets.shadersDir + "/" + includePath;
+    std::string path = assets.shadersDir + "/_" + includePath;
     std::vector<std::string> lines = loadSourceLines(path, false);
 
     std::vector<std::string> result;
