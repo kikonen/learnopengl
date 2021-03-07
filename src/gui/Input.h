@@ -33,8 +33,12 @@ public:
 	Input(Window* window);
 	~Input();
 
-	bool isKeyPressed(Key key);
-	bool isModifier(Modifier modifier);
+	void updateKeyStates();
+
+	bool isKeyDown(Key key);
+	bool isModifierDown(Modifier modifier);
+
+	bool isModifierPressed(Modifier modifier);
 
 	void onMouseMove(double xpos, double ypos);
 	void onMouseButton(int button, int action, int modifiers);
@@ -47,11 +51,15 @@ public:
 	double mouseYoffset = 0;
 
 	Window* window;
+
 private:
+	std::map<Key, int*> keyMappings;
 
-	std::map<Key, int*> mapping;
+	std::map<Modifier, int*> modifierMappings;
 
-	std::map<Modifier, int*> modifiers;
+	std::map<Modifier, bool> modifierDown;
+	std::map<Modifier, bool> modifierPressed;
+	std::map<Modifier, bool> modifierReleased;
 
 	bool firstMouse = true;
 

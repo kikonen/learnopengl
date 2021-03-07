@@ -30,9 +30,9 @@ void NodeRegistry::selectNodeById(int objectID, bool append)
 
 	Node* node = getNode(objectID);
 	if (node) {
-		if (append) {
+		if (append && node->selected) {
 			KI_INFO_SB("DESELECT: objectID: " << objectID)
-				node->selected = false;
+			node->selected = false;
 		}
 		else {
 			KI_INFO_SB("SELECT: objectID: " << objectID)

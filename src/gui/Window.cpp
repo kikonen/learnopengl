@@ -119,7 +119,9 @@ void Window::bindGLFWCallbacks()
 
 void Window::processInput(const RenderClock& clock)
 {
-	if (input->isKeyPressed(Key::EXIT)) {
+	input->updateKeyStates();
+
+	if (input->isKeyDown(Key::EXIT)) {
 		close();
 		return;
 	}
@@ -141,7 +143,7 @@ void Window::onMouseMove(double xpos, double ypos)
 {
 	input->onMouseMove(xpos, ypos);
 
-	bool isAlt = input->isModifier(Modifier::ALT);
+	bool isAlt = input->isModifierDown(Modifier::ALT);
 	int state = glfwGetMouseButton(glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
 	if ((isAlt || state == GLFW_PRESS) && (!engine.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {

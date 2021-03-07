@@ -60,8 +60,8 @@ int Test6::onRender(const RenderClock& clock) {
 	currentScene->bind(ctx);
 	currentScene->draw(ctx);
 
-	bool isCtrl = window->input->isModifier(Modifier::CONTROL);
-	bool isShift = window->input->isModifier(Modifier::SHIFT);
+	bool isCtrl = window->input->isModifierDown(Modifier::CONTROL);
+	bool isShift = window->input->isModifierDown(Modifier::SHIFT);
 	int state = glfwGetMouseButton(window->glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
 	if ((isCtrl && state == GLFW_PRESS) && (!useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {

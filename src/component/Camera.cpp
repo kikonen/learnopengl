@@ -109,62 +109,62 @@ void Camera::onKey(Input* input, const RenderClock& clock)
 	float dt = clock.elapsedSecs;
 	float moveSize = moveStep;
 	float rotateSize = rotateStep;
-	if (input->isModifier(Modifier::SHIFT)) {
+	if (input->isModifierDown(Modifier::SHIFT)) {
 		moveSize *= 2;
 		rotateSize *= 2;
 	}
 
-	if (input->isKeyPressed(Key::FORWARD)) {
+	if (input->isKeyDown(Key::FORWARD)) {
 		updateCamera();
 		this->pos += viewFront * dt * moveSize;
 		dirty = true;
 	}
 
-	if (input->isKeyPressed(Key::BACKWARD)) {
+	if (input->isKeyDown(Key::BACKWARD)) {
 		updateCamera();
 		this->pos -= viewFront * dt * moveSize;
 		dirty = true;
 	}
 
-	if (input->isKeyPressed(Key::LEFT)) {
+	if (input->isKeyDown(Key::LEFT)) {
 		updateCamera();
 		this->pos -= viewRight * dt * moveSize;
 		dirty = true;
 	}
 
-	if (input->isKeyPressed(Key::RIGHT)) {
+	if (input->isKeyDown(Key::RIGHT)) {
 		updateCamera();
 		this->pos += viewRight * dt * moveSize;
 		dirty = true;
 	}
 
-	if (input->isKeyPressed(Key::UP)) {
+	if (input->isKeyDown(Key::UP)) {
 		updateCamera();
 		this->pos += viewUp * dt * moveSize;
 		dirty = true;
 	}
 
-	if (input->isKeyPressed(Key::DOWN)) {
+	if (input->isKeyDown(Key::DOWN)) {
 		updateCamera();
 		this->pos -= viewUp * dt * moveSize;
 		dirty = true;
 	}
 
 	if (true) {
-		if (input->isKeyPressed(Key::ROTATE_LEFT)) {
+		if (input->isKeyDown(Key::ROTATE_LEFT)) {
 			yaw += rotateSize * dt;
 			dirty = true;
 		}
-		if (input->isKeyPressed(Key::ROTATE_RIGHT)) {
+		if (input->isKeyDown(Key::ROTATE_RIGHT)) {
 			yaw -= rotateSize * dt;
 			dirty = true;
 		}
 	}
 
-	if (input->isKeyPressed(Key::ZOOM_IN)) {
+	if (input->isKeyDown(Key::ZOOM_IN)) {
 		updateZoom(zoom - zoomStep * dt);
 	}
-	if (input->isKeyPressed(Key::ZOOM_OUT)) {
+	if (input->isKeyDown(Key::ZOOM_OUT)) {
 		updateZoom(zoom + zoomStep * dt);
 	}
 }
