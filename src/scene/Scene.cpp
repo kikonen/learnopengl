@@ -165,7 +165,8 @@ void Scene::bind(RenderContext& ctx)
 
 void Scene::draw(RenderContext& ctx)
 {
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.9f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
@@ -236,8 +237,7 @@ void Scene::drawViewports(RenderContext& ctx)
 
 void Scene::drawScene(RenderContext& ctx)
 {
-	glm::vec4 bg = { 0.9f, 0.3f, 0.3f, 1.0f };
-	glClearBufferfv(GL_COLOR, 0, glm::value_ptr(bg));
+	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	reflectionMapRenderer->bindTexture(ctx);
@@ -341,11 +341,27 @@ int Scene::getObjectID(const RenderContext& ctx, double posx, double posy)
 
 	{
 		mainBuffer->bind(ctx);
-		glReadBuffer(GL_COLOR_ATTACHMENT1);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glReadPixels(posx, posy, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
 
+		//GLenum buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		//glDrawBuffers(2, buffers);
+
+		glReadBuffer(GL_COLOR_ATTACHMENT1);
+
+		int readFormat;
+		glGetFramebufferParameteriv(GL_FRAMEBUFFER, GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
+
+		//glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo);
+		//void* mappedBuffer = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+
+		//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glReadPixels(posx, posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+		//glDrawBuffers(1, buffers);
+
+		//glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+		int x = 0;
 		mainBuffer->unbind(ctx);
+
 	}
 
 	int objectID =

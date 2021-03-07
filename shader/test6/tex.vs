@@ -30,7 +30,7 @@ out VS_OUT {
 
   vec4 fragPosLightSpace;
 
-  mat3 TBN;
+  flat mat3 TBN;
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];

@@ -21,7 +21,7 @@ in VS_OUT {
 
   vec4 fragPosLightSpace;
 
-  mat3 TBN;
+  flat mat3 TBN;
 } fs_in;
 
 uniform sampler2D textures[TEX_COUNT];

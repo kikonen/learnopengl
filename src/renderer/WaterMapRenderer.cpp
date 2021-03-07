@@ -142,7 +142,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
 {
 	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	skybox->render(ctx, registry);
 

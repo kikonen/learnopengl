@@ -26,10 +26,6 @@ int Test6::onSetup() {
 
 	glfwSwapInterval(3);
 
-	state.enable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//state.disable(GL_MULTISAMPLE);

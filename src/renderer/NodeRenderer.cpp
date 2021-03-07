@@ -29,13 +29,20 @@ void NodeRenderer::bind(const RenderContext& ctx)
 
 void NodeRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
+	ctx.state.enable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 	int selectedCount = drawNodes(ctx, registry, true);
 	drawNodes(ctx, registry, false);
 
 	if (selectedCount > 0) {
 		drawSelectionStencil(ctx, registry);
 	}
-	glBindVertexArray(0);
+
+	KI_GL_UNBIND(glBindVertexArray(0));
+
+	ctx.state.disable(GL_STENCIL_TEST);
 }
 
 // draw all non selected nodes

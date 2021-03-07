@@ -28,7 +28,7 @@ void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
 	//r = 0;
 	//g = 0;
 
-	objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f, 0.5f);
+	objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
 }
 
 void Batch::reserve(int count)
