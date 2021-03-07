@@ -354,7 +354,7 @@ int Scene::getObjectID(const RenderContext& ctx, double posx, double posy)
 		//void* mappedBuffer = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 
 		//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glReadPixels(posx, posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glReadPixels(posx, mainBuffer->spec.height - posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 		//glDrawBuffers(1, buffers);
 

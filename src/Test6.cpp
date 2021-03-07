@@ -61,12 +61,13 @@ int Test6::onRender(const RenderClock& clock) {
 	currentScene->draw(ctx);
 
 	bool isCtrl = window->input->isModifier(Modifier::CONTROL);
+	bool isShift = window->input->isModifier(Modifier::SHIFT);
 	int state = glfwGetMouseButton(window->glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
 	if ((isCtrl && state == GLFW_PRESS) && (!useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
 		int objectID = currentScene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
 
-		currentScene->registry.selectNodeById(objectID, false);
+		currentScene->registry.selectNodeById(objectID, isShift);
 
 		KI_INFO_SB("selected: " << objectID);
 	}
