@@ -360,23 +360,13 @@ int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double scree
 	{
 		mainBuffer->bind(ctx);
 
-		//GLenum buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-		//glDrawBuffers(2, buffers);
-
 		glReadBuffer(GL_COLOR_ATTACHMENT1);
 
 		int readFormat;
 		glGetFramebufferParameteriv(GL_FRAMEBUFFER, GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
 
-		//glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo);
-		//void* mappedBuffer = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-
-		//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glReadPixels(posx, mainBuffer->spec.height - posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-		//glDrawBuffers(1, buffers);
-
-		//glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 		int x = 0;
 		mainBuffer->unbind(ctx);
 
@@ -399,10 +389,6 @@ void Scene::updateMainViewport(RenderContext& ctx)
 		pickViewport->setTextureID(mainBuffer->spec.attachments[1].textureID);
 
 		// https://riptutorial.com/opengl/example/28872/using-pbos
-		//glGenBuffers(1, &pbo);
-		//glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo);
-		//glBufferData(GL_PIXEL_UNPACK_BUFFER, ctx.width * ctx.height * 3, nullptr, GL_STREAM_COPY);
-		//glReadPixels(0, 0, ctx.width, ctx.height, GL_BGR, GL_UNSIGNED_BYTE, 0);
 	}
 }
 
