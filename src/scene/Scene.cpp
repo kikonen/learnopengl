@@ -65,11 +65,11 @@ void Scene::prepare()
 
 	{
 		mainViewport = new Viewport(
-			//glm::vec3(-0.75, 0.75, 0),
-			glm::vec3(-1.0f, 1.f, 0),
+			glm::vec3(-0.75, 0.75, 0),
+			//glm::vec3(-1.0f, 1.f, 0),
 			glm::vec3(0, 0, 0),
-			//glm::vec2(1.5f, 1.5f),
-			glm::vec2(2.f, 2.f),
+			glm::vec2(1.5f, 1.5f),
+			//glm::vec2(2.f, 2.f),
 			-1,
 			Shader::getShader(assets, TEX_VIEWPORT));
 		
@@ -165,8 +165,8 @@ void Scene::bind(RenderContext& ctx)
 
 void Scene::draw(RenderContext& ctx)
 {
-	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClearColor(0.9f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	//glClearColor(0.9f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// https://cmichel.io/understanding-front-faces-winding-order-and-normals
@@ -327,7 +327,7 @@ void Scene::bindComponents(Node* node)
 	}
 }
 
-int Scene::getObjectID(const RenderContext& ctx, double posx, double posy)
+int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double screenPosY)
 {
 	// https://stackoverflow.com/questions/10123601/opengl-read-pixels-from-framebuffer-for-picking-rounded-up-to-255-0xff
 	// https://stackoverflow.com/questions/748162/what-are-the-differences-between-a-frame-buffer-object-and-a-pixel-buffer-object
@@ -338,6 +338,24 @@ int Scene::getObjectID(const RenderContext& ctx, double posx, double posy)
 
 	unsigned char data[4];
 	memset(data, 100, sizeof(data));
+
+	int screenW = ctx.width;
+	int screenH = ctx.height;
+
+	float w = screenW * (mainViewport->size.x / 2.f);
+	float h = screenH * (mainViewport->size.y / 2.f);
+
+	float ratioX = mainBuffer->spec.width / w;
+	float ratioY = mainBuffer->spec.height / h;
+
+	float offsetX = screenW * (mainViewport->pos.x + 1.f) / 2.f;
+	float offsetY = screenH * (1.f - (mainViewport->pos.y + 1.f) / 2.f);
+
+	float posx = (screenPosX - offsetX) * ratioX;
+	float posy = (screenPosY - offsetY) * ratioY;
+
+	if (posx < 0 || posx > w || posy < 0 || posy > h) return -1;
+
 
 	{
 		mainBuffer->bind(ctx);

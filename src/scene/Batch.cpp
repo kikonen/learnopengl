@@ -12,21 +12,9 @@ void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
 	modelMatrices.push_back(model);
 	normalMatrices.push_back(normal);
 
-	if (objectID < (15 << 16)) {
-		__debugbreak();
-	}
-
-	//int r = (objectID & 0xff) >> 0;
-	//int g = (objectID & 0xff00) >> 8;
-	//int b = (objectID & 0xff0000) >> 16;
-
 	int r = (objectID & 0x000000FF) >> 0;
 	int g = (objectID & 0x0000FF00) >> 8;
 	int b = (objectID & 0x00FF0000) >> 16;
-
-	//b = 255;
-	//r = 0;
-	//g = 0;
 
 	objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
 }
