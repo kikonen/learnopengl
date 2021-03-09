@@ -39,6 +39,13 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
+const mat4 b = {
+  {0.5f, 0.0f, 0.0f, 0.0f},
+  {0.0f, 0.5f, 0.0f, 0.0f},
+  {0.0f, 0.0f, 0.5f, 0.0f},
+  {0.5f, 0.5f, 0.5f, 1.0f},
+};
+
 void main() {
   vs_out.glp = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
   gl_Position = vs_out.glp;
@@ -52,13 +59,6 @@ void main() {
   vs_out.viewVertexPos = (viewMatrix * aModelMatrix * vec4(aPos, 1.0)).xyz;
 
   vs_out.normal = normalize(aNormalMatrix * aNormal);
-
-  mat4 b = {
-    {0.5f, 0.0f, 0.0f, 0.0f},
-    {0.0f, 0.5f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 0.5f, 0.0f},
-    {0.5f, 0.5f, 0.5f, 1.0f},
-  };
 
   vs_out.fragPosLightSpace = b * lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 

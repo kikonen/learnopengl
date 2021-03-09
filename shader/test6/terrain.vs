@@ -40,6 +40,13 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 #include fn_calculate_clipping.glsl
 
+const mat4 b = {
+  {0.5f, 0.0f, 0.0f, 0.0f},
+  {0.0f, 0.5f, 0.0f, 0.0f},
+  {0.0f, 0.0f, 0.5f, 0.0f},
+  {0.5f, 0.5f, 0.5f, 1.0f},
+};
+
 void main() {
   gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
 
@@ -54,13 +61,6 @@ void main() {
   vs_out.normal = normalize(aNormalMatrix * aNormal);
 
   bool clipped = calculateClipping(aModelMatrix * vec4(aPos, 1.0));
-
-  mat4 b = {
-    {0.5f, 0.0f, 0.0f, 0.0f},
-    {0.0f, 0.5f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 0.5f, 0.0f},
-    {0.5f, 0.5f, 0.5f, 1.0f},
-  };
 
   vs_out.fragPosLightSpace = b * lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 }
