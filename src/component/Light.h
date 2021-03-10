@@ -13,7 +13,7 @@ public:
 	Light();
 	~Light();
 
-	void update(RenderContext& ctx);
+	void update(const RenderContext& ctx);
 
 	const glm::vec3& getPos();
 	void setPos(const glm::vec3& pos);

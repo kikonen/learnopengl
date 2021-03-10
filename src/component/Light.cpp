@@ -13,7 +13,7 @@ Light::~Light()
 {
 }
 
-void Light::update(RenderContext& ctx)
+void Light::update(const RenderContext& ctx)
 {
 	if (!dirty) return;
 
