@@ -110,6 +110,7 @@ void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& re
 		}
 
 		batch.flush(ctx, t);
+		t->unbind(ctx);
 	}
 }
 

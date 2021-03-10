@@ -200,6 +200,7 @@ void SceneLoaderTest::setupLightMoving()
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_LIGHT));
 		type->light = true;
 		type->noShadow = true;
+		type->wireframe = true;
 
 		MeshLoader loader(assets, "light");
 		loader.overrideMaterials = true;

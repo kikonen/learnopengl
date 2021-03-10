@@ -96,5 +96,6 @@ void ShadowMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& regist
 		}
 
 		batch.flush(ctx, t);
+		t->unbind(ctx);
 	}
 }

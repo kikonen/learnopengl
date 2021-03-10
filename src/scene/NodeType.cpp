@@ -99,5 +99,14 @@ Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
 		ctx.state.enable(GL_CULL_FACE);
 	}
 
+	if (wireframe) {
+		ctx.state.polygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
 	return shader;
+}
+
+void NodeType::unbind(const RenderContext& ctx)
+{
+	ctx.bindGlobal();
 }

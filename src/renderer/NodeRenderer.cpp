@@ -84,7 +84,10 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
 			renderCount++;
 		}
 
-		batch.flush(ctx, t);
+		if (shader) {
+			batch.flush(ctx, t);
+			t->unbind(ctx);
+		}
 	}
 
 	drawBlended(ctx, blendedNodes);
@@ -118,7 +121,10 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, NodeRegistry& 
 			e->setScale(scale);
 		}
 
-		batch.flush(ctx, t);
+		if (shader) {
+			batch.flush(ctx, t);
+			t->unbind(ctx);
+		}
 	}
 
 	glStencilMask(0xFF);
@@ -153,11 +159,12 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nod
 
 		if (type != node->type) {
 			if (batch) {
+				// NOTE KI Changing batch
 				batch->flush(ctx, type);
+				type->unbind(ctx);
 			}
 			type = node->type;
 			shader = type->bind(ctx, nullptr);
-			if (!shader) continue;
 
 			batch = &type->batch;
 			batch->bind(ctx, shader);
@@ -165,8 +172,10 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nod
 
 		batch->draw(ctx, node, shader);
 	}
+
 	if (batch) {
 		batch->flush(ctx, type);
+		type->unbind(ctx);
 	}
 
 	ctx.state.enable(GL_CULL_FACE);

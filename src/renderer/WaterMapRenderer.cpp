@@ -162,6 +162,7 @@ void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 		}
 
 		batch.flush(ctx, t);
+		t->unbind(ctx);
 	}
 
 	ctx.state.disable(GL_CLIP_DISTANCE0);

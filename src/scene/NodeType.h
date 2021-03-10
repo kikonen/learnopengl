@@ -21,10 +21,7 @@ public:
 
 	void prepare(const Assets& assets);
 	Shader* bind(const RenderContext& ctx, Shader* shader);
-
-	//bool operator< (const NodeType& b) {
-	//	return objectID < b.objectID;
-	//}
+	void unbind(const RenderContext& ctx);
 
 public:
 	const int typeID;
@@ -35,6 +32,7 @@ public:
 	bool renderBack = false;
 	bool noShadow = false;
 	bool batchMode = true;
+	bool wireframe = false;
 
 	Mesh* mesh = nullptr;
 	Shader* defaultShader = nullptr;
