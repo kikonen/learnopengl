@@ -121,8 +121,8 @@ void SceneLoaderTest::setupLightDirectional()
 	// sun
 	Light* sun = new Light();
 	{
-		sun->pos = glm::vec3(10, 40, 10) + assets.groundOffset;
-		sun->target = glm::vec3(0.0f) + assets.groundOffset;
+		sun->setPos(glm::vec3(10, 40, 10) + assets.groundOffset);
+		sun->setTarget(glm::vec3(0.0f) + assets.groundOffset);
 
 		sun->directional = true;
 
@@ -142,7 +142,7 @@ void SceneLoaderTest::setupLightDirectional()
 		type->mesh = loader.load();
 
 		Node* node = new Node(type);
-		node->setPos(sun->pos);
+		node->setPos(sun->getPos());
 		node->setScale(1.5f);
 		node->light = sun;
 
@@ -173,8 +173,8 @@ void SceneLoaderTest::setupLightMoving()
 			Light* light = new Light();
 
 			glm::vec3 center = glm::vec3(0 + x * radius * 3, 7 + x + z, z * radius * 3) + assets.groundOffset;
-			light->pos = glm::vec3(10, 5, 10) + assets.groundOffset;
-			light->pos = center;
+			//light->pos = glm::vec3(10, 5, 10) + assets.groundOffset;
+			light->setPos(center);
 
 			// 160
 			light->point = true;
@@ -185,7 +185,7 @@ void SceneLoaderTest::setupLightMoving()
 			light->cutoffAngle = 12.5f;
 			light->outerCutoffAngle = 25.f;
 
-			light->target = glm::vec3(0.0f) + assets.groundOffset;
+			light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
 
 			light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
 			light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
@@ -207,13 +207,13 @@ void SceneLoaderTest::setupLightMoving()
 
 		for (auto light : lights) {
 			Node* node = new Node(type);
-			node->setPos(light->pos);
+			node->setPos(light->getPos());
 			node->setScale(0.5f);
 			node->light = light;
 
 			{
 				//glm::vec3 center = glm::vec3(0, 7, 0) + assets.groundOffset;
-				glm::vec3 center = light->pos;
+				glm::vec3 center = light->getPos();
 				node->controller = new MovingLightController(assets, center, 10.f, 2.f, node);
 			}
 		
@@ -675,7 +675,8 @@ void SceneLoaderTest::setupNodePlanet()
 
 		Light* light = new Light();
 		{
-			light->pos = planet ? planet->getPos() - glm::vec3(0, 40, 0) : glm::vec3(0, 40, 0);
+			glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 40, 0) : glm::vec3(0, 40, 0);
+			light->setPos(pos);
 
 			// 325 = 0.014	0.0007
 			light->point = true;
@@ -698,12 +699,12 @@ void SceneLoaderTest::setupNodePlanet()
 		}
 
 		Node* node = new Node(type);
-		node->setPos(light->pos);
+		node->setPos(light->getPos());
 		node->setScale(0.5f);
 		node->light = light;
 		scene->registry.addNode(node);
 
-		glm::vec3 center = light->pos;
+		glm::vec3 center = light->getPos();
 		node->controller = new MovingLightController(assets, center, 4.f, 2.f, node);
 
 	});

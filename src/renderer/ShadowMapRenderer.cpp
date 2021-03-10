@@ -52,7 +52,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 	//	{0.5f, 0.5f, 0.5f, 1.0f},
 	//};
 
-	glm::mat4 lightView = glm::lookAt(light->pos, light->target, glm::vec3(0.0, 1.0, 0.0));
+	glm::mat4 lightView = glm::lookAt(light->getPos(), light->getTarget(), glm::vec3(0.0, 1.0, 0.0));
 	glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, assets.shadowNearPlane, assets.shadowFarPlane);
 
 	//lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
