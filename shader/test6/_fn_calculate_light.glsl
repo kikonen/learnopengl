@@ -42,5 +42,8 @@ vec4 calculateLight(
   } else {
     shaded = material.diffuse;// + material.emission;
   }
+  // NOTE KI keep blending from material
+  shaded.a = material.diffuse.a;
+
   return shaded;
 }

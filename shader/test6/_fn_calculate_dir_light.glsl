@@ -64,7 +64,6 @@ vec4 calculateDirLight(
   //   shadow = 1;
   // }
   vec4 lighting = ambient + shadow * (diffuse + specular);
-  lighting.a = material.diffuse.a;
 
   return lighting;
 }
