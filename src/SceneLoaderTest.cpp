@@ -192,7 +192,6 @@ void SceneLoaderTest::setupLightMoving()
 			light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
 
 			lights.push_back(light);
-			//active = light;
 		}
 	}
 
@@ -200,10 +199,10 @@ void SceneLoaderTest::setupLightMoving()
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_LIGHT));
 		type->light = true;
 		type->noShadow = true;
-		type->wireframe = true;
+		//type->wireframe = true;
 
 		MeshLoader loader(assets, "light");
-		loader.overrideMaterials = true;
+		//loader.overrideMaterials = true;
 		type->mesh = loader.load();
 
 		for (auto light : lights) {
@@ -213,7 +212,6 @@ void SceneLoaderTest::setupLightMoving()
 			node->light = light;
 
 			{
-				//glm::vec3 center = glm::vec3(0, 7, 0) + assets.groundOffset;
 				glm::vec3 center = light->getPos();
 				node->controller = new MovingLightController(assets, center, 10.f, 2.f, node);
 			}
