@@ -1,15 +1,16 @@
 struct DirLight {
   vec3 pos;
+  bool use;
+
   vec3 dir;
 
   vec4 ambient;
   vec4 diffuse;
   vec4 specular;
-
-  bool use;
 };
 struct PointLight {
   vec3 pos;
+  bool use;
 
   vec4 ambient;
   vec4 diffuse;
@@ -18,11 +19,12 @@ struct PointLight {
   float constant;
   float linear;
   float quadratic;
-
-  bool use;
+  float radius;
 };
 struct SpotLight {
   vec3 pos;
+  bool use;
+
   vec3 dir;
 
   vec4 ambient;
@@ -35,6 +37,5 @@ struct SpotLight {
 
   float cutoff;
   float outerCutoff;
-
-  bool use;
+  float radius;
 };

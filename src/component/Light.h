@@ -34,6 +34,8 @@ public:
 	// degrees
 	float outerCutoffAngle = 0.f;
 
+	float radius = 0.f;
+
 	glm::vec3 pos = { 0.0f, 3.0f, 0.f };
 	// dir = FROM pos to TARGET
 	glm::vec3 dir = { 0.0f, 0.0f, 0.f };

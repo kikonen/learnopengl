@@ -16,17 +16,23 @@ Light::~Light()
 void Light::update(RenderContext& ctx)
 {
 	dir = glm::normalize(target - pos);
+
+	if (!directional) {
+		float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
+		radius = (-linear + std::sqrtf(linear * linear - 4 * quadratic * (constant - (256.0 / 5.0) * lightMax))) / (2 * quadratic);
+	}
 }
 
 DirLightUBO Light::toDirLightUBO() {
-	return { pos, 0, dir, 0, ambient, diffuse, specular, use, 0, 0, 0 };
+	return { pos, use, dir, 0, ambient, diffuse, specular };
 }
 
 PointLightUBO Light::toPointightUBO()
 {
 	return {
 		pos,
-		0,
+		use,
+
 		ambient,
 		diffuse,
 		specular,
@@ -34,7 +40,7 @@ PointLightUBO Light::toPointightUBO()
 		constant,
 		linear,
 		quadratic,
-		use
+		radius,
 	};
 }
 
@@ -42,7 +48,7 @@ SpotLightUBO Light::toSpotLightUBO()
 {
 	return {
 		pos,
-		0,
+		use,
 		dir,
 		0,
 		ambient,
@@ -55,8 +61,7 @@ SpotLightUBO Light::toSpotLightUBO()
 
 		cutoffAngle,
 		outerCutoffAngle,
-
-		use,
+		radius,
 
 		0,
 		0,

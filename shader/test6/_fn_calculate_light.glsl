@@ -18,15 +18,21 @@ vec4 calculateLight(
 
   for (int i = 0; i < LIGHT_COUNT; i++) {
     if (pointLights[i].use) {
-      pointShaded += calculatePointLight(pointLights[i], normal, toView, fs_in.fragPos, material);
-      hasLight = true;
+      float dist = length(pointLights[i].pos - fs_in.fragPos);
+      if (dist < pointLights[i].radius) {
+        pointShaded += calculatePointLight(pointLights[i], normal, toView, fs_in.fragPos, material);
+        hasLight = true;
+      }
     }
   }
 
   for (int i = 0; i < LIGHT_COUNT; i++) {
     if (spotLights[i].use) {
-      spotShaded += calculateSpotLight(spotLights[i], normal, toView, fs_in.fragPos, material);
-      hasLight = true;
+      float dist = length(spotLights[i].pos - fs_in.fragPos);
+      if (dist < spotLights[i].radius) {
+        spotShaded += calculateSpotLight(spotLights[i], normal, toView, fs_in.fragPos, material);
+        hasLight = true;
+      }
     }
   }
 

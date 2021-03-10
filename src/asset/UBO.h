@@ -54,23 +54,19 @@ struct DataUBO {
 // NOTE KI align 16
 struct DirLightUBO {
 	glm::vec3 pos;
-	int pad1;
+	unsigned int use;
 	glm::vec3 dir;
-	int pad2;
+	int pad1;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
-
-	unsigned int use;
-	int pad3;
-	int pad4;
-	int pad5;
 };
 
 // NOTE KI align 16
 struct PointLightUBO {
 	glm::vec3 pos;
-	int pad1;
+	unsigned int use;
+
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
@@ -78,16 +74,15 @@ struct PointLightUBO {
 	float constant;
 	float linear;
 	float quadratic;
-
-	unsigned int use;
+	float radius;
 };
 
 // NOTE KI align 16
 struct SpotLightUBO {
 	glm::vec3 pos;
-	int pad1;
+	unsigned int use;
 	glm::vec3 dir;
-	int pad2;
+	int pad1;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
@@ -98,11 +93,10 @@ struct SpotLightUBO {
 
 	float cutoff;
 	float outerCutoff;
+	float radius;
 
-	unsigned int use;
-
+	int pad2;
 	int pad3;
-	int pad4;
 };
 
 // NOTE KI align 16

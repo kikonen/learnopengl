@@ -178,8 +178,8 @@ void SceneLoaderTest::setupLightMoving()
 
 			// 160
 			light->point = true;
-			light->linear = 0.027f;
-			light->quadratic = 0.0028f;
+			light->linear = 0.14f;
+			light->quadratic = 0.07f;
 
 			light->spot = false;
 			light->cutoffAngle = 12.5f;
