@@ -67,7 +67,7 @@ public:
 
     void setInt(const std::string& name, int value);
 
-    void setUBO(const std::string& name, unsigned int UBO);
+    void setUBO(const std::string& name, unsigned int UBO, unsigned int expectedSize);
 
 private:
     Shader(

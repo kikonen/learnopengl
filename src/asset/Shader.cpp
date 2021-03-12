@@ -204,11 +204,12 @@ int Shader::createProgram() {
     }
 
     // NOTE KI set UBOs only once for shader
-    setUBO("Matrices", UBO_MATRICES);
-    setUBO("Data", UBO_DATA);
-    setUBO("Lights", UBO_LIGHTS);
-    setUBO("Materials", UBO_MATERIALS);
-    setUBO("ClipPlanes", UBO_CLIP_PLANES);
+    setUBO("Matrices", UBO_MATRICES, sizeof(MatricesUBO));
+    setUBO("Data", UBO_DATA, sizeof(DataUBO));
+    setUBO("Lights", UBO_LIGHTS, sizeof(LightsUBO));
+    setUBO("Materials", UBO_MATERIALS, sizeof(MaterialsUBO));
+    setUBO("ClipPlanes", UBO_CLIP_PLANES, sizeof(ClipPlanesUBO));
+
 
     projectionMatrix.init(this);
     viewMatrix.init(this);
@@ -284,7 +285,7 @@ void Shader::setInt(const std::string& name, int value)
     }
 }
 
-void Shader::setUBO(const std::string& name, unsigned int UBO)
+void Shader::setUBO(const std::string& name, unsigned int UBO, unsigned int expectedSize)
 {
     unsigned int blockIndex = glGetUniformBlockIndex(programId, name.c_str());
     if (blockIndex == GL_INVALID_INDEX) {
@@ -292,6 +293,15 @@ void Shader::setUBO(const std::string& name, unsigned int UBO)
         return;
     } 
     glUniformBlockBinding(programId, blockIndex, UBO);
+
+    GLint  blockSize;
+    glGetActiveUniformBlockiv(programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
+
+    KI_INFO_SB("SHADER::UBO_SIZE " << shaderName << " UBO=" << name << " size=" << blockSize << " expected_size=" << expectedSize);
+    if (blockSize != expectedSize) {
+        KI_CRITICAL_SB("SHADER::UBO_SIZE " << shaderName << " UBO=" << name << " size=" << blockSize << " expected_size=" << expectedSize);
+        __debugbreak();
+    }
 }
 
 /**
