@@ -119,32 +119,32 @@ void SceneLoaderTest::setupNodeSkybox()
 void SceneLoaderTest::setupLightDirectional()
 {
 	// sun
-	Light* sun = new Light();
+	Light* light = new Light();
 	{
-		sun->setPos(glm::vec3(10, 40, 10) + assets.groundOffset);
-		sun->setTarget(glm::vec3(0.0f) + assets.groundOffset);
+		light->setPos(glm::vec3(10, 40, 10) + assets.groundOffset);
+		light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
 
-		sun->directional = true;
+		light->directional = true;
 
-		sun->ambient = { 0.2f, 0.2f, 0.2f, 1.f };
-		sun->diffuse = { 0.4f, 0.4f, 0.4f, 1.f };
-		sun->specular = { 0.0f, 0.7f, 0.0f, 1.f };
+		light->ambient = { 0.4f, 0.4f, 0.4f, 1.f };
+		light->diffuse = { 0.4f, 0.4f, 0.4f, 1.f };
+		light->specular = { 0.0f, 0.7f, 0.0f, 1.f };
 	}
 
-	addLoader([this, sun]() {
+	addLoader([this, light]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_LIGHT));
 		type->light = true;
 		type->noShadow = true;
 
 		MeshLoader loader(assets, "light");
-		loader.defaultMaterial->kd = sun->specular;
+		loader.defaultMaterial->kd = light->specular;
 		loader.overrideMaterials = true;
 		type->mesh = loader.load();
 
 		Node* node = new Node(type);
-		node->setPos(sun->getPos());
+		node->setPos(light->getPos());
 		node->setScale(1.5f);
-		node->light = sun;
+		node->light = light;
 
 		scene->registry.addNode(node);
 
@@ -187,7 +187,7 @@ void SceneLoaderTest::setupLightMoving()
 
 			light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
 
-			light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
+			light->ambient = { 0.4f, 0.4f, 0.2f, 1.f };
 			light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
 			light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
 
@@ -682,7 +682,7 @@ void SceneLoaderTest::setupNodePlanet()
 			light->linear = 0.014f;
 			light->quadratic = 0.0007f;
 
-			light->ambient = { 0.2f, 0.2f, 0.15f, 1.f };
+			light->ambient = { 0.4f, 0.4f, 0.2f, 1.f };
 			light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
 			light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
 		}
