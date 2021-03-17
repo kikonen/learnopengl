@@ -12,8 +12,11 @@ struct Material {
   int dudvMapTex;
 
   int pattern;
+
   float reflection;
   float refraction;
+
+  float refractionRatio;
 
   float fogRatio;
   float tiling;

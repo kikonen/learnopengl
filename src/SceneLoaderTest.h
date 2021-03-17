@@ -50,6 +50,8 @@ private:
 	void setupNodeMountains();
 
 	void setupNodeGlassBall();
+	void setupNodeMirrorBall();
+
 	void setupNodeWaterBall();
 
 	void setupNodeMaterialBalls();

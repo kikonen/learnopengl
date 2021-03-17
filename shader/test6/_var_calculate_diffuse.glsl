@@ -9,9 +9,8 @@
     }
 
     if (material.refraction > 0) {
-      float ratio = 1.0 / 1.33;
-      vec3 r = refract(-toView, normal, ratio);
-      diffuse += texture(refractionMap, r).rgb * material.refraction;
+      vec3 r = refract(-toView, normal, material.refractionRatio);
+      diffuse += texture(reflectionMap, r).rgb * material.refraction;
     }
 
     material.diffuse = vec4(diffuse, material.diffuse.a);

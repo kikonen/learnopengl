@@ -35,6 +35,8 @@ void SceneLoaderTest::setup()
 	setupNodeZero();
 
 	setupNodeGlassBall();
+	setupNodeMirrorBall();
+
 	setupNodeWaterBall();
 	setupNodeMaterialBalls();
 
@@ -589,6 +591,28 @@ void SceneLoaderTest::setupNodeMountains()
 }
 
 void SceneLoaderTest::setupNodeGlassBall()
+{
+	addLoader([this]() {
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+
+		{
+			MeshLoader loader(assets, "glass_ball");
+			type->mesh = loader.load();
+			type->modifyMaterials([](Material& m) {
+				m.reflection = 0.1f;
+				m.refraction = 0.9f;
+				m.refractionRatio = 1.0f / 1.52;
+			});
+		}
+
+		Node* node = new Node(type);
+		node->setPos(glm::vec3(5, 20, 0) + assets.groundOffset);
+		node->setScale(1.3f);
+		scene->registry.addNode(node);
+		});
+}
+
+void SceneLoaderTest::setupNodeMirrorBall()
 {
 	addLoader([this]() {
 		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));

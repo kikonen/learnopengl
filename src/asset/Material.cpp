@@ -184,6 +184,7 @@ MaterialUBO Material::toUBO()
 
 		reflection,
 		refraction,
+		refractionRatio,
 
 		fogRatio,
 		tiling,

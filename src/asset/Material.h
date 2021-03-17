@@ -84,6 +84,7 @@ public:
     int pattern = -1;
     float reflection = 0.f;
     float refraction = 0.f;
+    float refractionRatio = 0.f;
 
     float fogRatio = 1.0f;
 

@@ -125,10 +125,12 @@ struct MaterialUBO {
 	float reflection;
 	float refraction;
 
+	float refractionRatio;
+
 	float fogRatio;
 	float tiling;
 
-	int pad1;
+	//int pad1;
 };
 
 // NOTE KI align 16

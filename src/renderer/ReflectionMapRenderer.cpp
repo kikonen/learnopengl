@@ -121,7 +121,7 @@ Node* ReflectionMapRenderer::findCenter(const RenderContext& ctx, NodeRegistry& 
 
 	std::map<float, Node*> sorted;
 	for (auto& x : registry.nodes) {
-		if (!x.first->hasReflection()) continue;
+		if (!(x.first->hasReflection() || x.first->hasRefraction())) continue;
 
 		for (auto& e : x.second) {
 			glm::vec3 ray = e->getPos() - cameraPos;
@@ -129,7 +129,7 @@ Node* ReflectionMapRenderer::findCenter(const RenderContext& ctx, NodeRegistry& 
 			glm::vec3 fromCamera = glm::normalize(ray);
 			float dot = glm::dot(fromCamera, cameraDir);
 			if (dot < 0) continue;
-			sorted[dot] = e;
+			sorted[-distance] = e;
 		}
 	}
 

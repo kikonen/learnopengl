@@ -65,11 +65,11 @@ void Scene::prepare()
 
 	{
 		mainViewport = new Viewport(
-			glm::vec3(-0.75, 0.75, 0),
-			//glm::vec3(-1.0f, 1.f, 0),
+			//glm::vec3(-0.75, 0.75, 0),
+			glm::vec3(-1.0f, 1.f, 0),
 			glm::vec3(0, 0, 0),
-			glm::vec2(1.5f, 1.5f),
-			//glm::vec2(2.f, 2.f),
+			//glm::vec2(1.5f, 1.5f),
+			glm::vec2(2.f, 2.f),
 			-1,
 			Shader::getShader(assets, TEX_VIEWPORT));
 		
@@ -79,7 +79,7 @@ void Scene::prepare()
 		registry.addViewPort(mainViewport);
 	}
 
-	{
+	if (false) {
 		pickViewport = new Viewport(
 			glm::vec3(-1.0, -0.5, 0),
 			glm::vec3(0, 0, 0),
@@ -386,8 +386,10 @@ void Scene::updateMainViewport(RenderContext& ctx)
 		mainBuffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getMousePick(), FrameBufferAttachment::getRBODepthStencil() } });
 		mainBuffer->prepare();
 		mainViewport->setTextureID(mainBuffer->spec.attachments[0].textureID);
-		pickViewport->setTextureID(mainBuffer->spec.attachments[1].textureID);
 
+		if (pickViewport) {
+			pickViewport->setTextureID(mainBuffer->spec.attachments[1].textureID);
+		}
 		// https://riptutorial.com/opengl/example/28872/using-pbos
 	}
 }
