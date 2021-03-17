@@ -6,6 +6,8 @@
 WaterMapRenderer::WaterMapRenderer(const Assets& assets)
 	: Renderer(assets)
 {
+	drawIndex = 1;
+	drawSkip = 0;
 }
 
 WaterMapRenderer::~WaterMapRenderer()
@@ -66,8 +68,7 @@ void WaterMapRenderer::bind(const RenderContext& ctx)
 
 void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
 {
-	if (drawIndex++ < drawSkip) return;
-	drawIndex = 0;
+	if (!stepRender()) return;
 
 	Water* closest = findClosest(ctx, registry);
 	if (!closest) return;
@@ -102,7 +103,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 
 		reflectionBuffer->bind(localCtx);
 
-		drawNodes(localCtx, registry, skybox);
+		drawNodes(localCtx, registry, skybox, closest);
 
 		reflectionBuffer->unbind(ctx);
 		ctx.bindClipPlanesUBO();
@@ -128,7 +129,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 
 		refractionBuffer->bind(localCtx);
 
-		drawNodes(localCtx, registry, skybox);
+		drawNodes(localCtx, registry, skybox, closest);
 
 		refractionBuffer->unbind(ctx);
 		ctx.bindClipPlanesUBO();
@@ -139,7 +140,7 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 	rendered = true;
 }
 
-void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
+void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox, Node* current)
 {
 	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -151,13 +152,14 @@ void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
-		if (t->water || t->light) continue;
+		//if (t->water || t->light) continue;
  		Shader* shader = t->bind(ctx, nullptr);
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);
 
 		for (auto& e : x.second) {
+			if (e == current) continue;
 			batch.draw(ctx, e, shader);
 		}
 

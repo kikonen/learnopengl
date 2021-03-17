@@ -22,6 +22,7 @@ Scene::Scene(const Assets& assets)
 	cubeMapRenderer = new CubeMapRenderer(assets);
 	shadowMapRenderer = new ShadowMapRenderer(assets);
 
+	objectIdRenderer = new ObjectIdRenderer(assets);
 	normalRenderer = new NormalRenderer(assets);
 
 	particleSystem = new ParticleSystem(assets);
@@ -57,6 +58,8 @@ void Scene::prepare()
 	cubeMapRenderer->prepare();
 	shadowMapRenderer->prepare();
 
+	objectIdRenderer->prepare();
+
 	if (showNormals) {
 		normalRenderer->prepare();
 	}
@@ -79,20 +82,10 @@ void Scene::prepare()
 		registry.addViewPort(mainViewport);
 	}
 
-	if (false) {
-		pickViewport = new Viewport(
-			glm::vec3(-1.0, -0.5, 0),
-			glm::vec3(0, 0, 0),
-			glm::vec2(0.5f, 0.5f),
-			-1,
-			Shader::getShader(assets, TEX_VIEWPORT));
-
-		pickViewport->prepare();
-		registry.addViewPort(pickViewport);
-	}
+	registry.addViewPort(objectIdRenderer->debugViewport);
 
 	if (!mirrorBuffer && showMirrorView) {
-		mirrorBuffer = new TextureBuffer({ 640, 480, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getMousePick(), FrameBufferAttachment::getRBODepthStencil() } });
+		mirrorBuffer = new TextureBuffer({ 640, 480, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
 		mirrorBuffer->prepare();
 
 		mirrorViewport = new Viewport(
@@ -139,7 +132,8 @@ void Scene::update(RenderContext& ctx)
 	}
 
 	nodeRenderer->update(ctx, registry);
-	//terrainRenderer->update(ctx, registry);
+
+	objectIdRenderer->update(ctx, registry);
 
 	viewportRenderer->update(ctx, registry);
 
@@ -187,7 +181,6 @@ void Scene::draw(RenderContext& ctx)
 	{
 		drawMain(ctx);
 		drawMirror(ctx);
-		//drawScene(ctx);
 		drawViewports(ctx);
 	}
 }
@@ -329,68 +322,16 @@ void Scene::bindComponents(Node* node)
 
 int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double screenPosY)
 {
-	// https://stackoverflow.com/questions/10123601/opengl-read-pixels-from-framebuffer-for-picking-rounded-up-to-255-0xff
-	// https://stackoverflow.com/questions/748162/what-are-the-differences-between-a-frame-buffer-object-and-a-pixel-buffer-object
-
-	glFlush();
-	glFinish();
-
-
-	unsigned char data[4];
-	memset(data, 100, sizeof(data));
-
-	int screenW = ctx.width;
-	int screenH = ctx.height;
-
-	float w = screenW * (mainViewport->size.x / 2.f);
-	float h = screenH * (mainViewport->size.y / 2.f);
-
-	float ratioX = mainBuffer->spec.width / w;
-	float ratioY = mainBuffer->spec.height / h;
-
-	float offsetX = screenW * (mainViewport->pos.x + 1.f) / 2.f;
-	float offsetY = screenH * (1.f - (mainViewport->pos.y + 1.f) / 2.f);
-
-	float posx = (screenPosX - offsetX) * ratioX;
-	float posy = (screenPosY - offsetY) * ratioY;
-
-	if (posx < 0 || posx > w || posy < 0 || posy > h) return -1;
-
-
-	{
-		mainBuffer->bind(ctx);
-
-		glReadBuffer(GL_COLOR_ATTACHMENT1);
-
-		int readFormat;
-		glGetFramebufferParameteriv(GL_FRAMEBUFFER, GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
-
-		glReadPixels(posx, mainBuffer->spec.height - posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-		int x = 0;
-		mainBuffer->unbind(ctx);
-
-	}
-
-	int objectID =
-		data[0] +
-		data[1] * 256 +
-		data[2] * 256 * 256;
-
-	return objectID;
+	objectIdRenderer->render(ctx, registry);
+	return objectIdRenderer->getObjectId(ctx, screenPosX, screenPosY, mainViewport);
 }
 
 void Scene::updateMainViewport(RenderContext& ctx)
 {
 	if (!mainBuffer) {
-		mainBuffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getMousePick(), FrameBufferAttachment::getRBODepthStencil() } });
+		mainBuffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
 		mainBuffer->prepare();
 		mainViewport->setTextureID(mainBuffer->spec.attachments[0].textureID);
-
-		if (pickViewport) {
-			pickViewport->setTextureID(mainBuffer->spec.attachments[1].textureID);
-		}
-		// https://riptutorial.com/opengl/example/28872/using-pbos
 	}
 }
 

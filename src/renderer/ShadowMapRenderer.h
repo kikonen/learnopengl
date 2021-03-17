@@ -29,11 +29,6 @@ public:
 	Viewport* debugViewport = nullptr;
 
 private:
-	int drawIndex = 1;
-	int drawSkip = 1;
-
-	bool rendered = false;
-
 	Shader* shadowShader = nullptr;
 	Shader* shadowDebugShader = nullptr;
 };

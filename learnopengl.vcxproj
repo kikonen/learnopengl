@@ -157,6 +157,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
     <ClCompile Include="src\asset\GLState.cpp" />
     <ClCompile Include="src\asset\DynamicCubeMap.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
@@ -238,6 +239,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\renderer\ObjectIdRenderer.h" />
     <ClInclude Include="src\asset\GLState.h" />
     <ClInclude Include="src\asset\DynamicCubeMap.h" />
     <ClInclude Include="src\util\Log.h" />

@@ -6,7 +6,6 @@ layout (location = 3) in vec2 aTexCoords;
 layout (location = 4) in vec3 aNormal;
 layout (location = 6) in mat4 aModelMatrix;
 layout (location = 10) in mat3 aNormalMatrix;
-layout (location = 13) in vec4 aObjectID;
 
 #include struct_clip_plane.glsl
 
@@ -14,8 +13,6 @@ layout (location = 13) in vec4 aObjectID;
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
-  flat vec4 objectID;
-
   vec4 color;
   flat int materialIndex;
   vec2 texCoords;
@@ -33,8 +30,6 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 void main() {
   gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
-
-  vs_out.objectID = aObjectID;
 
   bool clipped = calculateClipping(aModelMatrix * vec4(aPos, 1.0));
 

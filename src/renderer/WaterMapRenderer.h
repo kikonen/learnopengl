@@ -22,7 +22,7 @@ public:
 	void render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox);
 
 private:
-	void drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox);
+	void drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox, Node* current);
 	Water* findClosest(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
@@ -33,13 +33,8 @@ private:
 	float nearPlane = 0.1f;
 	float farPlane = 1000.0f;
 
-	int drawIndex = 1;
-	int drawSkip = 0;
-
 	TextureBuffer* reflectionBuffer = nullptr;
 	TextureBuffer* refractionBuffer = nullptr;
 
 	unsigned int noiseTextureID = -1;
-
-	bool rendered = false;
 };

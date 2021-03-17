@@ -19,6 +19,7 @@ const std::string TEX_TERRAIN = "terrain";
 const std::string TEX_WATER = "water";
 const std::string TEX_PARTICLE = "particle";
 const std::string TEX_NORMAL = "normal";
+const std::string TEX_OBJECT_ID = "object_id";
 const std::string TEX_LIGHT = "light";
 const std::string TEX_SIMPLE_DEPTH = "simple_depth";
 const std::string TEX_DEBUG_DEPTH = "debug_depth";

@@ -20,6 +20,7 @@
 
 #include "renderer/SkyboxRenderer.h"
 
+#include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
 
 #include "ParticleSystem.h"
@@ -90,6 +91,7 @@ private:
 	CubeMapRenderer* cubeMapRenderer = nullptr;
 	ShadowMapRenderer* shadowMapRenderer = nullptr;
 
+	ObjectIdRenderer* objectIdRenderer = nullptr;
 	NormalRenderer* normalRenderer = nullptr;
 
 	ParticleSystem* particleSystem = nullptr;
@@ -99,8 +101,6 @@ private:
 
 	TextureBuffer* mainBuffer = nullptr;
 	Viewport* mainViewport = nullptr;
-
-	Viewport* pickViewport = nullptr;
 
 	unsigned int pbo = -1;
 };

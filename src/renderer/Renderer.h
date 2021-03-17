@@ -15,5 +15,13 @@ public:
 	virtual void render(const RenderContext& ctx, NodeRegistry& registry);
 
 protected:
+	bool stepRender();
+
+protected:
 	const Assets& assets;
+
+	int drawIndex;
+	int drawSkip;
+
+	bool rendered;
 };

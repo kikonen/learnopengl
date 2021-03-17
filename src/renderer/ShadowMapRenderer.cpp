@@ -5,6 +5,9 @@
 ShadowMapRenderer::ShadowMapRenderer(const Assets& assets)
 	: Renderer(assets)
 {
+	drawIndex = 1;
+	drawSkip = 1;
+
 	shadowShader = Shader::getShader(assets, TEX_SIMPLE_DEPTH);
 	shadowDebugShader = Shader::getShader(assets, TEX_DEBUG_DEPTH);
 }
@@ -68,8 +71,7 @@ void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 
 void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
-	if (drawIndex++ < drawSkip) return;
-	drawIndex = 0;
+	if (!stepRender()) return;
 
 	{
 		shadowBuffer->bind(ctx);

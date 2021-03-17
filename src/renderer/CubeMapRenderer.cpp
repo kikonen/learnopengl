@@ -9,6 +9,8 @@
 CubeMapRenderer::CubeMapRenderer(const Assets& assets)
 	: Renderer(assets)
 {
+	drawIndex = 0;
+	drawSkip = 1;
 }
 
 CubeMapRenderer::~CubeMapRenderer()
@@ -34,8 +36,7 @@ void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 
 void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registry, SkyboxRenderer* skybox)
 {
-	if (drawIndex++ < drawSkip) return;
-	drawIndex = 0;
+	if (!stepRender()) return;
 
 	Node* centerNode = findCenter(mainCtx, registry);
 	if (!centerNode) return;

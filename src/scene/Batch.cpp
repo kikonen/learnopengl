@@ -10,13 +10,16 @@ Batch::Batch()
 void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
 {
 	modelMatrices.push_back(model);
-	normalMatrices.push_back(normal);
 
-	int r = (objectID & 0x000000FF) >> 0;
-	int g = (objectID & 0x0000FF00) >> 8;
-	int b = (objectID & 0x00FF0000) >> 16;
+	if (objectId) {
+		int r = (objectID & 0x000000FF) >> 0;
+		int g = (objectID & 0x0000FF00) >> 8;
+		int b = (objectID & 0x00FF0000) >> 16;
 
-	objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+		objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+	} else {
+		normalMatrices.push_back(normal);
+	}
 }
 
 void Batch::reserve(int count)
@@ -129,8 +132,13 @@ void Batch::update(unsigned int count)
 	}
 
 	glNamedBufferSubData(modelBuffer, 0, count * sizeof(glm::mat4), &modelMatrices[0]);
-	glNamedBufferSubData(normalBuffer, 0, count * sizeof(glm::mat3), &normalMatrices[0]);
-	glNamedBufferSubData(objectIDBuffer, 0, count * sizeof(glm::vec4), &objectIDs[0]);
+
+	if (objectId) {
+		glNamedBufferSubData(objectIDBuffer, 0, count * sizeof(glm::vec4), &objectIDs[0]);
+	}
+	else {
+		glNamedBufferSubData(normalBuffer, 0, count * sizeof(glm::mat3), &normalMatrices[0]);
+	}
 
 	KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }

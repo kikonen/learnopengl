@@ -6,7 +6,6 @@ layout (location = 4) in int aMaterialIndex;
 layout (location = 5) in vec2 aTexCoords;
 layout (location = 6) in mat4 aModelMatrix;
 layout (location = 10) in mat3 aNormalMatrix;
-layout (location = 13) in vec4 aObjectID;
 
 #include struct_material.glsl
 #include struct_texture.glsl
@@ -18,8 +17,6 @@ layout (location = 13) in vec4 aObjectID;
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
-  flat vec4 objectID;
-
   vec3 fragPos;
   vec3 normal;
   vec2 texCoords;
@@ -51,7 +48,6 @@ const mat4 b = {
 void main() {
   gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
 
-  vs_out.objectID = aObjectID;
   vs_out.materialIndex = aMaterialIndex;
   vs_out.texCoords = aTexCoords * materials[aMaterialIndex].tiling;
 

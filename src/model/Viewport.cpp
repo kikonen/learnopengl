@@ -64,6 +64,8 @@ void Viewport::update(const RenderContext& ctx)
 
 void Viewport::bind(const RenderContext& ctx)
 {
+	if (textureID == -1) return;
+
 	shader->bind();
 
 	const int unitIndex = 0;
@@ -80,5 +82,6 @@ void Viewport::bind(const RenderContext& ctx)
 
 void Viewport::draw(const RenderContext& ctx)
 {
+	if (textureID == -1) return;
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }

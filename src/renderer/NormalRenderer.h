@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include "Renderer.h"
 
 class NormalRenderer final : public Renderer
@@ -13,6 +11,9 @@ public:
 
 	void bind(const RenderContext& ctx) override;
 	void render(const RenderContext& ctx, NodeRegistry& registry) override;
+
+private:
+	void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
 
 private:
 	Shader* normalShader = nullptr;

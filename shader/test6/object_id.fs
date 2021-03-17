@@ -1,0 +1,15 @@
+#version 450 core
+
+in VS_OUT {
+  flat vec4 objectID;
+} fs_in;
+
+layout (location = 0) out vec4 fragObjectID;
+
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
+
+void main() {
+  fragObjectID = fs_in.objectID;
+}

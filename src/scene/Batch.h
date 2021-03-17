@@ -28,6 +28,7 @@ public:
 	bool staticBuffer = false;
 
 	bool dirty = false;
+	bool objectId = false;
 
 private:
 	std::vector<glm::mat4> modelMatrices;

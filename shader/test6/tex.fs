@@ -9,8 +9,6 @@
 #include uniform_materials.glsl
 
 in VS_OUT {
-  flat vec4 objectID;
-
   vec3 fragPos;
   vec3 normal;
   vec2 texCoords;
@@ -25,11 +23,11 @@ in VS_OUT {
 } fs_in;
 
 uniform sampler2D textures[TEX_COUNT];
+uniform samplerCube mirrorTex;
 uniform samplerCube cubeMap;
 uniform sampler2DShadow shadowMap;
 
 layout (location = 0) out vec4 fragColor;
-layout (location = 1) out vec4 fragObjectID;
 
 ////////////////////////////////////////////////////////////
 //
@@ -77,16 +75,5 @@ void main() {
 
   texColor = calculateFog(material.fogRatio, texColor);
 
-//  texColor = vec4(0.0, 0.8, 0, 1.0);
-
-//  vec3 i = normalize(fs_in.fragPos - viewPos);
-//  vec3 r = reflect(i, normal);
-//  texColor = vec4(texture(skybox, r).rgb, 1.0);
-
-  // if (material.normalMapTex >= 0) {
-  //   texColor = vec4(normal, 1.0);
-  // }
-
   fragColor = texColor;
-  fragObjectID = fs_in.objectID;
 }
