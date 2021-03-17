@@ -25,8 +25,7 @@ in VS_OUT {
 } fs_in;
 
 uniform sampler2D textures[TEX_COUNT];
-uniform samplerCube reflectionMap;
-uniform samplerCube refractionMap;
+uniform samplerCube cubeMap;
 uniform sampler2DShadow shadowMap;
 
 layout (location = 0) out vec4 fragColor;

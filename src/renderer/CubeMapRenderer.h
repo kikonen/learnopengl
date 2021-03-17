@@ -7,11 +7,11 @@
 
 class SkyboxRenderer;
 
-class ReflectionMapRenderer final : public Renderer
+class CubeMapRenderer final : public Renderer
 {
 public:
-	ReflectionMapRenderer(const Assets& assets);
-	~ReflectionMapRenderer();
+	CubeMapRenderer(const Assets& assets);
+	~CubeMapRenderer();
 
 	void prepare();
 	void bind(const RenderContext& ctx);
@@ -32,7 +32,7 @@ private:
 	int drawIndex = 0;
 	int drawSkip = 1;
 
-	DynamicCubeMap* reflectionMap = nullptr;
+	DynamicCubeMap* cubeMap = nullptr;
 
 	bool rendered = false;
 };

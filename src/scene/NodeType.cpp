@@ -65,8 +65,7 @@ void NodeType::prepare(const Assets& assets)
 		shader->reflectionTex.set(assets.waterReflectionMapUnitIndex);
 		shader->refractionTex.set(assets.waterRefractionMapUnitIndex);
 
-		shader->reflectionMap.set(assets.reflectionMapUnitIndex);
-		shader->refractionMap.set(assets.refractionMapUnitIndex);
+		shader->cubeMap.set(assets.cubeMapUnitIndex);
 		shader->shadowMap.set(assets.shadowMapUnitIndex);
 		shader->skybox.set(assets.skyboxUnitIndex);
 		shader->unbind();

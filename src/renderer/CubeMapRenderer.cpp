@@ -1,4 +1,4 @@
-#include "ReflectionMapRenderer.h"
+#include "CubeMapRenderer.h"
 
 #include <vector>
 
@@ -6,33 +6,33 @@
 
 
 
-ReflectionMapRenderer::ReflectionMapRenderer(const Assets& assets)
+CubeMapRenderer::CubeMapRenderer(const Assets& assets)
 	: Renderer(assets)
 {
 }
 
-ReflectionMapRenderer::~ReflectionMapRenderer()
+CubeMapRenderer::~CubeMapRenderer()
 {
-	delete reflectionMap;
+	delete cubeMap;
 }
 
-void ReflectionMapRenderer::prepare()
+void CubeMapRenderer::prepare()
 {
-	reflectionMap = new DynamicCubeMap(assets.reflectionCubeSize);
-	reflectionMap->prepare();
+	cubeMap = new DynamicCubeMap(assets.cubeMapSize);
+	cubeMap->prepare();
 }
 
-void ReflectionMapRenderer::bind(const RenderContext& ctx)
+void CubeMapRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void ReflectionMapRenderer::bindTexture(const RenderContext& ctx)
+void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 {
 	if (!rendered) return;
-	reflectionMap->bindTexture(ctx, assets.reflectionMapUnitIndex);
+	cubeMap->bindTexture(ctx, assets.cubeMapUnitIndex);
 }
 
-void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registry, SkyboxRenderer* skybox)
+void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registry, SkyboxRenderer* skybox)
 {
 	if (drawIndex++ < drawSkip) return;
 	drawIndex = 0;
@@ -44,7 +44,7 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 	// https://eng.libretexts.org/Bookshelves/Computer_Science/Book%3A_Introduction_to_Computer_Graphics_(Eck)/07%3A_3D_Graphics_with_WebGL/7.04%3A_Framebuffers
 	// view-source:math.hws.edu/eck/cs424/graphicsbook2018/source/webgl/cube-camera.html
 
-	reflectionMap->bind(mainCtx);
+	cubeMap->bind(mainCtx);
 
 	// +X (right)
 	// -X (left)
@@ -72,13 +72,13 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 	const glm::vec3& center = centerNode->getPos();
 
 	for (int i = 0; i < 6; i++) {
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionMap->textureID, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubeMap->textureID, 0);
 		//glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		Camera camera(center, cameraFront[i], cameraUp[i]);
 		camera.setZoom(90);
-		RenderContext ctx(mainCtx.assets, mainCtx.clock, mainCtx.state, mainCtx.scene, &camera, reflectionMap->size, reflectionMap->size);
+		RenderContext ctx(mainCtx.assets, mainCtx.clock, mainCtx.state, mainCtx.scene, &camera, cubeMap->size, cubeMap->size);
 		ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
 		ctx.bindMatricesUBO();
 
@@ -89,13 +89,13 @@ void ReflectionMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& r
 //	bindTexture(mainCtx);
 //	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-	reflectionMap->unbind(mainCtx);
+	cubeMap->unbind(mainCtx);
 
 	rendered = true;
 
 }
 
-void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
+void CubeMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
 {
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
@@ -114,7 +114,7 @@ void ReflectionMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& re
 	}
 }
 
-Node* ReflectionMapRenderer::findCenter(const RenderContext& ctx, NodeRegistry& registry)
+Node* CubeMapRenderer::findCenter(const RenderContext& ctx, NodeRegistry& registry)
 {
 	const glm::vec3& cameraPos = ctx.camera->getPos();
 	const glm::vec3& cameraDir = ctx.camera->getViewFront();

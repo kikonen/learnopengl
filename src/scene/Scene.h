@@ -15,7 +15,7 @@
 #include "renderer/ViewportRenderer.h"
 
 #include "renderer/WaterMapRenderer.h"
-#include "renderer/ReflectionMapRenderer.h"
+#include "renderer/CubeMapRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
 
 #include "renderer/SkyboxRenderer.h"
@@ -87,7 +87,7 @@ private:
 	ViewportRenderer* viewportRenderer = nullptr;
 
 	WaterMapRenderer* waterMapRenderer = nullptr;
-	ReflectionMapRenderer* reflectionMapRenderer = nullptr;
+	CubeMapRenderer* cubeMapRenderer = nullptr;
 	ShadowMapRenderer* shadowMapRenderer = nullptr;
 
 	NormalRenderer* normalRenderer = nullptr;

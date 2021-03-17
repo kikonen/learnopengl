@@ -183,7 +183,7 @@
     <ClCompile Include="src\component\ParticleGenerator.cpp" />
     <ClCompile Include="src\renderer\ParticleRenderer.cpp" />
     <ClCompile Include="src\scene\ParticleSystem.cpp" />
-    <ClCompile Include="src\renderer\ReflectionMapRenderer.cpp" />
+    <ClCompile Include="src\renderer\CubeMapRenderer.cpp" />
     <ClCompile Include="src\asset\Mesh.cpp" />
     <ClCompile Include="src\asset\QuadMesh.cpp" />
     <ClCompile Include="src\scene\Batch.cpp" />
@@ -264,7 +264,7 @@
     <ClInclude Include="src\component\ParticleGenerator.h" />
     <ClInclude Include="src\renderer\ParticleRenderer.h" />
     <ClInclude Include="src\scene\ParticleSystem.h" />
-    <ClInclude Include="src\renderer\ReflectionMapRenderer.h" />
+    <ClInclude Include="src\renderer\CubeMapRenderer.h" />
     <ClInclude Include="src\asset\Mesh.h" />
     <ClInclude Include="src\asset\QuadMesh.h" />
     <ClInclude Include="src\scene\Batch.h" />

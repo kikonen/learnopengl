@@ -19,7 +19,7 @@ Scene::Scene(const Assets& assets)
 	viewportRenderer = new ViewportRenderer(assets);
 
 	waterMapRenderer = new WaterMapRenderer(assets);
-	reflectionMapRenderer = new ReflectionMapRenderer(assets);
+	cubeMapRenderer = new CubeMapRenderer(assets);
 	shadowMapRenderer = new ShadowMapRenderer(assets);
 
 	normalRenderer = new NormalRenderer(assets);
@@ -35,7 +35,7 @@ Scene::~Scene()
 	delete viewportRenderer;
 
 	delete waterMapRenderer;
-	delete reflectionMapRenderer;
+	delete cubeMapRenderer;
 	delete shadowMapRenderer;
 
 	delete normalRenderer;
@@ -54,7 +54,7 @@ void Scene::prepare()
 	viewportRenderer->prepare();
 
 	waterMapRenderer->prepare();
-	reflectionMapRenderer->prepare();
+	cubeMapRenderer->prepare();
 	shadowMapRenderer->prepare();
 
 	if (showNormals) {
@@ -156,7 +156,7 @@ void Scene::bind(RenderContext& ctx)
 	viewportRenderer->bind(ctx);
 
 	waterMapRenderer->bind(ctx);
-	reflectionMapRenderer->bind(ctx);
+	cubeMapRenderer->bind(ctx);
 	shadowMapRenderer->bind(ctx);
 
 	ctx.bindGlobal();
@@ -180,7 +180,7 @@ void Scene::draw(RenderContext& ctx)
 		shadowMapRenderer->render(ctx, registry);
 		shadowMapRenderer->bindTexture(ctx);
 
-		reflectionMapRenderer->render(ctx, registry, skyboxRenderer);
+		cubeMapRenderer->render(ctx, registry, skyboxRenderer);
 		waterMapRenderer->render(ctx, registry, skyboxRenderer);
 	}
 
@@ -240,7 +240,7 @@ void Scene::drawScene(RenderContext& ctx)
 	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	reflectionMapRenderer->bindTexture(ctx);
+	cubeMapRenderer->bindTexture(ctx);
 	waterMapRenderer->bindTexture(ctx);
 
 	if (skyboxRenderer) {

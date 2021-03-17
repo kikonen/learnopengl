@@ -220,8 +220,7 @@ int Shader::createProgram() {
     reflectionTex.init(this);
     refractionTex.init(this);
 
-    reflectionMap.init(this);
-    refractionMap.init(this);
+    cubeMap.init(this);
 
     shadowMap.init(this);
     normalMap.init(this); 

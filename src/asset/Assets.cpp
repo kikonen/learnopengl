@@ -39,14 +39,12 @@ Assets::Assets()
     waterReflectionSize = 1000;
     waterRefractionSize = 1000;
 
-    reflectionCubeSize = 1000;
-    refractionCubeSize = 1000;
+    cubeMapSize = 1000;
 
-    noiseUnitIndex = 25;
-    waterRefractionMapUnitIndex = 26;
-    waterReflectionMapUnitIndex = 27;
-    refractionMapUnitIndex = 28;
-    reflectionMapUnitIndex = 29;
+    noiseUnitIndex = 24;
+    waterRefractionMapUnitIndex = 27;
+    waterReflectionMapUnitIndex = 28;
+    cubeMapUnitIndex = 29;
     shadowMapUnitIndex = 30;
     skyboxUnitIndex = 31;
 }

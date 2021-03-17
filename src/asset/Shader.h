@@ -268,8 +268,7 @@ public:
     Shader::Int reflectionTex = { "reflectionTex" };
     Shader::Int refractionTex = { "refractionTex" };
 
-    Shader::Int reflectionMap = { "reflectionMap" };
-    Shader::Int refractionMap = { "refractionMap" };
+    Shader::Int cubeMap = { "cubeMap" };
 
     Shader::Int shadowMap = { "shadowMap" };
     Shader::Int normalMap = { "normalMap" };

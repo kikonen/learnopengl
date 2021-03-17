@@ -27,8 +27,6 @@ in VS_OUT {
 } fs_in;
 
 uniform sampler2D textures[TEX_COUNT];
-// uniform samplerCube reflectionMap;
-// uniform samplerCube refractionMap;
 
 uniform sampler2D reflectionTex;
 uniform sampler2D refractionTex;

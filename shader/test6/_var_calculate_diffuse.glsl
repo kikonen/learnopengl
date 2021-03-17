@@ -5,12 +5,12 @@
 
     if (material.reflection > 0) {
       vec3 r = reflect(-toView, normal);
-      diffuse += texture(reflectionMap, r).rgb * material.reflection;
+      diffuse += texture(cubeMap, r).rgb * material.reflection;
     }
 
     if (material.refraction > 0) {
       vec3 r = refract(-toView, normal, material.refractionRatio);
-      diffuse += texture(reflectionMap, r).rgb * material.refraction;
+      diffuse += texture(cubeMap, r).rgb * material.refraction;
     }
 
     material.diffuse = vec4(diffuse, material.diffuse.a);
