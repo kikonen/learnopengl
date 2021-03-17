@@ -51,6 +51,50 @@ struct FrameBufferAttachment {
 		return spec;
 	}
 
+	// G buffer: position
+	static FrameBufferAttachment getGBufferPosition() {
+		FrameBufferAttachment spec;
+		spec.type = FrameBufferAttachmentType::texture;
+		spec.internalFormat = GL_RGB16F;
+		spec.format = GL_RGB16F;
+		spec.attachment = GL_COLOR_ATTACHMENT1;
+
+		return spec;
+	}
+
+	// G buffer: normal
+	static FrameBufferAttachment getGBufferNormal() {
+		FrameBufferAttachment spec;
+		spec.type = FrameBufferAttachmentType::texture;
+		spec.internalFormat = GL_RGB16F;
+		spec.format = GL_RGB16F;
+		spec.attachment = GL_COLOR_ATTACHMENT2;
+
+		return spec;
+	}
+
+	// G buffer: diffuse + specular
+	static FrameBufferAttachment getGBufferAlbedo() {
+		FrameBufferAttachment spec;
+		spec.type = FrameBufferAttachmentType::texture;
+		spec.internalFormat = GL_RGBA16F;
+		spec.format = GL_RGBA16F;
+		spec.attachment = GL_COLOR_ATTACHMENT3;
+
+		return spec;
+	}
+
+	// G buffer: emission
+	static FrameBufferAttachment getGBufferEmission() {
+		FrameBufferAttachment spec;
+		spec.type = FrameBufferAttachmentType::texture;
+		spec.internalFormat = GL_RGB16F;
+		spec.format = GL_RGB16F;
+		spec.attachment = GL_COLOR_ATTACHMENT3;
+
+		return spec;
+	}
+
 	static FrameBufferAttachment getDepthTexture() {
 		FrameBufferAttachment spec;
 		spec.type = FrameBufferAttachmentType::depth_texture;
