@@ -326,7 +326,13 @@ void SceneLoaderTest::setupNodeBigMirror()
 		{
 			MeshLoader loader(assets, "woodwall");
 			type->mesh = loader.load();
-			type->modifyMaterials([](Material& m) { m.reflection = 0.8f; });
+			//type->modifyMaterials([](Material& m) { m.reflection = 0.8f; });
+			type->modifyMaterials([](Material& m) {
+				m.reflection = 0.1f;
+				m.refraction = 0.9f;
+				m.refractionRatio = 1.0f / 1.52;
+			});
+			type->mirrorPlane = glm::vec4(0, 1, 0, -1);
 		}
 
 		{
@@ -472,6 +478,11 @@ void SceneLoaderTest::setupNodeTeapot()
 		MeshLoader loader(assets, "smooth_teapot");
 		loader.defaultMaterial->kd = glm::vec4(0.578f, 0.578f, 0.168f, 1.f);
 		type->mesh = loader.load();
+		type->modifyMaterials([](Material& m) {
+			m.reflection = 0.0f;
+			m.refraction = 1.f;
+			m.refractionRatio = 1.0f / 1.52;
+		});
 
 		Node* node = new Node(type);
 		node->setPos(glm::vec3(-5, 20, -5) + assets.groundOffset);

@@ -36,12 +36,17 @@ Assets::Assets()
     shadowFarPlane = 1000.0f;
     shadowMapSize = 1000;
 
+    mirrorReflectionSize = 1000;
+    mirrorRefractionSize = 1000;
+
     waterReflectionSize = 1000;
     waterRefractionSize = 1000;
 
     cubeMapSize = 1000;
 
     noiseUnitIndex = 24;
+    mirrorRefractionMapUnitIndex = 25;
+    mirrorReflectionMapUnitIndex = 26;
     waterRefractionMapUnitIndex = 27;
     waterReflectionMapUnitIndex = 28;
     cubeMapUnitIndex = 29;

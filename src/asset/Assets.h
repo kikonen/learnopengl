@@ -40,12 +40,17 @@ public:
     float shadowFarPlane;
     int shadowMapSize;
 
+    int mirrorReflectionSize;
+    int mirrorRefractionSize;
+
     int waterReflectionSize;
     int waterRefractionSize;
 
     int cubeMapSize;
 
     unsigned int noiseUnitIndex;
+    unsigned int mirrorRefractionMapUnitIndex;
+    unsigned int mirrorReflectionMapUnitIndex;
     unsigned int waterRefractionMapUnitIndex;
     unsigned int waterReflectionMapUnitIndex;
     unsigned int cubeMapUnitIndex;
