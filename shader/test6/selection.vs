@@ -19,7 +19,7 @@ out float gl_ClipDistance[CLIP_COUNT];
 void main() {
   gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
 
-  bool clipped = calculateClipping(aModelMatrix * vec4(aPos, 1.0));
+  calculateClipping(aModelMatrix * vec4(aPos, 1.0));
 
   fragPos = vec3(aModelMatrix * vec4(aPos, 1.0));
 }

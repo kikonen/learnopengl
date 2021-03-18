@@ -57,7 +57,7 @@ void main() {
 
   vs_out.normal = normalize(aNormalMatrix * aNormal);
 
-  bool clipped = calculateClipping(aModelMatrix * vec4(aPos, 1.0));
+  calculateClipping(aModelMatrix * vec4(aPos, 1.0));
 
   vs_out.fragPosLightSpace = b * lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 

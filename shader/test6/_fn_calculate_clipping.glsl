@@ -1,15 +1,5 @@
-bool calculateClipping(vec4 worldPos) {
-  bool clipped = false;
+void calculateClipping(vec4 worldPos) {
   for (int i = 0; i < CLIP_COUNT; i++) {
-    if (!clipping[i].enabled) {
-      gl_ClipDistance[i] = -1;
-      continue;
-    }
-    gl_ClipDistance[i] = dot(worldPos, clipping[i].plane);
-    if (gl_ClipDistance[i] < 0) {
-      clipped = true;
-    }
+    gl_ClipDistance[i] = clipping[i].enabled ? dot(worldPos, clipping[i].plane) : 1.0;
   }
-
-  return clipped;
 }
