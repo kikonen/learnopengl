@@ -1,11 +1,15 @@
 #version 450 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aTexCoords;
+layout (location = 1) in vec4 aColor;
+layout (location = 6) in mat4 aModelMatrix;
 
-out vec2 texCoords;
+#include uniform_matrices.glsl
+#include uniform_data.glsl
+
+flat out vec4 color;
 
 void main()
 {
-  texCoords = aTexCoords;
-  gl_Position = vec4(aPos, 1.0);
+  gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
+  color = aColor;
 }
