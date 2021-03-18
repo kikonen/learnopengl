@@ -1,8 +1,31 @@
 #version 450 core
-in vec3 fragPos;
+
+#include struct_material.glsl
+
+#include uniform_materials.glsl
+
+in VS_OUT {
+  vec2 texCoords;
+  flat int materialIndex;
+} fs_in;
+
+uniform sampler2D textures[TEX_COUNT];
 
 out vec4 fragColor;
 
 void main() {
+  int matIdx = fs_in.materialIndex;
+  int diffuseTexIdx = materials[matIdx].diffuseTex;
+
+  float alpha;
+  if (diffuseTexIdx >= 0) {
+    alpha = texture(textures[diffuseTexIdx], fs_in.texCoords).a;
+  } else {
+    alpha = materials[matIdx].diffuse.a;
+  }
+
+  if (alpha < 0.4)
+    discard;
+
   fragColor = vec4(0.8, 0.0, 0.0, 1.0);
 }
