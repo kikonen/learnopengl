@@ -4,6 +4,13 @@
 
 #include uniform_materials.glsl
 
+#ifndef USE_ALPHA
+// https://www.khronos.org/opengl/wiki/Early_Fragment_Test
+// https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
+layout(early_fragment_tests) in;
+#endif
+
+
 in VS_OUT {
   vec2 texCoords;
   flat int materialIndex;
@@ -24,8 +31,10 @@ void main() {
     alpha = materials[matIdx].diffuse.a;
   }
 
+#ifdef USE_ALPHA
   if (alpha < 0.4)
     discard;
+#endif
 
   fragColor = vec4(0.8, 0.0, 0.0, 1.0);
 }

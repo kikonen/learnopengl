@@ -23,7 +23,10 @@ const std::string TEX_OBJECT_ID = "object_id";
 const std::string TEX_LIGHT = "light";
 const std::string TEX_SIMPLE_DEPTH = "simple_depth";
 const std::string TEX_DEBUG_DEPTH = "debug_depth";
+const std::string TEX_EFFECT = "effect";
 const std::string TEX_VIEWPORT = "viewport";
+
+const std::string DEF_USE_ALPHA = "USE_ALPHA";
 
 const int ATTR_POS = 0;
 const int ATTR_NORMAL = 1;
@@ -56,9 +59,15 @@ public:
         const std::string& name);
 
     static Shader* getShader(
+        const Assets& assets,
+        const std::string& name,
+        const std::vector<std::string>& defines);
+
+    static Shader* getShader(
         const Assets& assets, 
         const std::string& name,
-        const std::string& geometryType);
+        const std::string& geometryType,
+        const std::vector<std::string>& defines);
  
 public:
     void load();
@@ -75,11 +84,14 @@ private:
         const Assets& assets,
         const std::string& key,
         const std::string& name,
-        const std::string& geometryType);
+        const std::string& geometryType,
+        const std::vector<std::string>& defines);
 
     ~Shader();
 
     int createProgram();
+
+     void appendDefines(std::vector<std::string>& lines);
 
     std::string loadSource(const std::string& filename, bool optional);
     std::vector<std::string> loadSourceLines(const std::string& path, bool optional);
@@ -290,6 +302,8 @@ public:
 private:
     int res;
     bool prepared = false;
+
+    const std::vector<std::string> defines;
 
     std::string vertexShaderPath;
     std::string fragmentShaderPath;

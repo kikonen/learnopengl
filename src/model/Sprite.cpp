@@ -23,7 +23,7 @@ NodeType* Sprite::getNodeType(
 	const std::string& path,
 	const std::string& normalMapPath)
 {
-	NodeType* type = new NodeType(NodeType::nextID(), Shader::getShader(assets, TEX_TEXTURE, ""));
+	NodeType* type = new NodeType(NodeType::nextID(), Shader::getShader(assets, TEX_TEXTURE, { DEF_USE_ALPHA }));
 	type->renderBack = true;
 
 	QuadMesh* mesh = new QuadMesh(path);

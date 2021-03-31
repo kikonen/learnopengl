@@ -18,7 +18,12 @@ public:
 	const std::future<void>& getLoader(unsigned int index);
 
 protected:
-	Shader* getShader(const std::string& name, const std::string& geometryType = "");
+	Shader* getShader(
+		const std::string& name);
+
+	Shader* getShader(
+		const std::string& name,
+		const std::vector<std::string>& defines);
 
 public:
 	const Assets& assets;

@@ -30,7 +30,12 @@ void SceneLoader::load()
 }
 
 
-Shader* SceneLoader::getShader(const std::string& name, const std::string& geometryType)
+Shader* SceneLoader::getShader(const std::string& name)
 {
-	return Shader::getShader(assets, name, geometryType);
+	return Shader::getShader(assets, name);
+}
+
+Shader* SceneLoader::getShader(const std::string& name, const std::vector<std::string>& defines)
+{
+	return Shader::getShader(assets, name, "", defines);
 }

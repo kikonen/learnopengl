@@ -14,6 +14,9 @@ out VS_OUT {
 void main()
 {
   gl_Position = lightSpaceMatrix * aModelMatrix * vec4(aPos, 1.0);
+
+#ifdef USE_ALPHA
   vs_out.materialIndex = aMaterialIndex;
   vs_out.texCoords = aTexCoords;
+#endif
 }

@@ -24,8 +24,5 @@ void main() {
   // combined
   vec4 texColor = material.diffuse;
 
-  if (texColor.a < 0.1)
-    discard;
-
   fragColor = texColor;
 }

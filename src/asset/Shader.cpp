@@ -18,21 +18,35 @@ Shader* Shader::getShader(
     const Assets& assets,
     const std::string& name)
 {
-    return Shader::getShader(assets, name, "");
+    return Shader::getShader(assets, name, "", {});
+}
+
+Shader* Shader::getShader(
+    const Assets& assets,
+    const std::string& name,
+    const std::vector<std::string>& defines)
+{
+    return Shader::getShader(assets, name, "", defines);
 }
 
 Shader* Shader::getShader(
     const Assets& assets, 
     const std::string& name, 
-    const std::string& geometryType)
+    const std::string& geometryType,
+    const std::vector<std::string>& defines)
 {
     std::lock_guard<std::mutex> lock(shaders_lock);
 
-    std::string key = name + geometryType;
+    std::string key = name + "_" + geometryType;
+
+    for (auto& x : defines) {
+        key += "_" + x;
+    }
+
     Shader* shader = shaders[key];
 
     if (!shader) {
-        shader = new Shader(assets, key, name, geometryType);
+        shader = new Shader(assets, key, name, geometryType, defines);
         shaders[key] = shader;
         shader->load();
     }
@@ -44,12 +58,14 @@ Shader::Shader(
     const Assets& assets,
     const std::string& key,
     const std::string& name,
-    const std::string& geometryType)
+    const std::string& geometryType,
+    const std::vector<std::string>& defines)
     : assets(assets),
     key(key),
     shaderName(name),
     geometryType(geometryType),
-    geometryOptional(geometryType.empty())
+    geometryOptional(geometryType.empty()),
+    defines(defines)
 {
     std::string basePath = assets.shadersDir + "/" + name;
     vertexShaderPath = basePath + ".vs";
@@ -126,6 +142,7 @@ int Shader::createProgram() {
     int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     {
         const char* src = vertexShaderSource.c_str();
+
         glShaderSource(vertexShader, 1, &src, NULL);
         glCompileShader(vertexShader);
         // check for shader compile errors
@@ -142,6 +159,7 @@ int Shader::createProgram() {
     int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     {
         const char* src = fragmentShaderSource.c_str();
+
         glShaderSource(fragmentShader, 1, &src, NULL);
         glCompileShader(fragmentShader);
         // check for shader compile errors
@@ -160,6 +178,7 @@ int Shader::createProgram() {
         geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 
         const char* src = geometryShaderSource.c_str();
+
         glShaderSource(geometryShader, 1, &src, NULL);
         glCompileShader(geometryShader);
         // check for shader compile errors
@@ -244,6 +263,13 @@ int Shader::createProgram() {
     geometryShaderSource = "";
 
     return 0;
+}
+
+void Shader::appendDefines(std::vector<std::string>& lines)
+{
+    for (auto d : defines) {
+        lines.push_back("#define " + d);
+    }
 }
 
 //void Shader::prepareTextureUniform()
@@ -347,7 +373,11 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
             ss >> k;
             ss >> v1 >> v2 >> v3;
 
-            if (k == "#include") {
+            if (k == "#version") {
+                lines.push_back(line);
+                appendDefines(lines);
+                lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
+            } else if (k == "#include") {
                 for (auto l : processInclude(v1, lineNumber)) {
                     lines.push_back(l);
                 }

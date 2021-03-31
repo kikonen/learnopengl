@@ -239,7 +239,7 @@ void SceneLoaderTest::setupNodeZero() {
 void SceneLoaderTest::setupNodeWindow1()
 {
 	addLoader([this]() {
-		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE, { DEF_USE_ALPHA }));
 		type->blend = true;
 		type->renderBack = true;
 

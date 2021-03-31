@@ -8,9 +8,11 @@
 #include uniform_lights.glsl
 #include uniform_materials.glsl
 
+#ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
-//layout(early_fragment_tests) in;
+layout(early_fragment_tests) in;
+#endif
 
 in VS_OUT {
   vec3 fragPos;
@@ -47,8 +49,10 @@ layout (location = 0) out vec4 fragColor;
 void main() {
   #include var_tex_material.glsl
 
+#ifdef USE_ALPHA
   if (material.diffuse.a < 0.01)
     discard;
+#endif
 
   vec3 normal;
   if (material.normalMapTex >= 0) {
@@ -73,9 +77,10 @@ void main() {
   vec4 shaded = calculateLight(normal, toView, material);
   vec4 texColor = shaded;
 
-
+#ifdef USE_ALPHA
   if (texColor.a < 0.1)
     discard;
+#endif
 
   texColor = calculateFog(material.fogRatio, texColor);
 
