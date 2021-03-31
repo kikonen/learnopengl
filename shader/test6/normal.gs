@@ -8,9 +8,9 @@ in VS_OUT {
   vec3 normal;
 } vs_in[];
 
-const float MAGNITUDE = 0.4;
+const float MAGNITUDE = 0.2;
 
-void generateLine(int index)
+void generateLine(const int index)
 {
   gl_Position = projectionMatrix * gl_in[index].gl_Position;
   EmitVertex();
