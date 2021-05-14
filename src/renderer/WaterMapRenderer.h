@@ -4,7 +4,7 @@
 #include "scene/TextureBuffer.h"
 #include "model/Water.h"
 
-#include "model/Viewport.h";
+#include "model/Viewport.h"
 
 class SkyboxRenderer;
 
