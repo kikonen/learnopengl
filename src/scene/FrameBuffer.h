@@ -100,7 +100,7 @@ struct FrameBufferAttachment {
 	static FrameBufferAttachment getDepthTexture() {
 		FrameBufferAttachment spec;
 		spec.type = FrameBufferAttachmentType::depth_texture;
-		spec.internalFormat = GL_DEPTH_COMPONENT24;
+		spec.internalFormat = GL_DEPTH_COMPONENT16;
 		spec.format = GL_RGBA;
 		spec.attachment = GL_DEPTH_ATTACHMENT;
 		spec.minFilter = GL_LINEAR;

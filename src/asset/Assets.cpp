@@ -34,7 +34,7 @@ Assets::Assets()
 
     shadowNearPlane = 0.1f;
     shadowFarPlane = 1000.0f;
-    shadowMapSize = 1000;
+    shadowMapSize = 1024;
 
     mirrorReflectionSize = 1000;
     mirrorRefractionSize = 1000;
