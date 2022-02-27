@@ -50,6 +50,8 @@ void FrameBuffer::prepare()
 
 			glTexStorage2D(GL_TEXTURE_2D, 1, att.internalFormat, spec.width, spec.height);
 
+			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
+
 			glFramebufferTexture2D(GL_FRAMEBUFFER, att.attachment, GL_TEXTURE_2D, att.textureID, 0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}

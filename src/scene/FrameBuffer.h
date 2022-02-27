@@ -26,6 +26,8 @@ struct FrameBufferAttachment {
 
 	int textureWrap = GL_CLAMP_TO_EDGE;
 
+	glm::vec4 borderColor = { 0.0, 0.0, 0.0, 0.0 };
+
 	bool useMibMap = false;
 
 	unsigned int textureID = -1;
@@ -103,7 +105,7 @@ struct FrameBufferAttachment {
 		spec.attachment = GL_DEPTH_ATTACHMENT;
 		spec.minFilter = GL_LINEAR;
 		spec.magFilter = GL_LINEAR;
-		spec.textureWrap = GL_CLAMP_TO_EDGE;
+		spec.textureWrap = GL_CLAMP_TO_BORDER;
 
 		return spec;
 	}
