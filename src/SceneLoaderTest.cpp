@@ -78,6 +78,7 @@ void SceneLoaderTest::setup()
 	//setupNodeBunny();
 	//setupNodeDragon();
 	setupNodeSpaceShuttle();
+	setupNodeSword2();
 
 	//setupViewport1();
 
@@ -467,6 +468,22 @@ void SceneLoaderTest::setupNodeSpaceShuttle()
 		node->setScale(20.f);
 		scene->registry.addNode(node);
 	});
+}
+
+void SceneLoaderTest::setupNodeSword2()
+{
+	addLoader([this]() {
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+		MeshLoader loader(assets, "sword2");
+		type->mesh = loader.load();
+		//type->renderBack = true;
+		//		type->setReflection(0.6);
+
+		Node* node = new Node(type);
+		node->setPos(glm::vec3(0, 40, -50) + assets.groundOffset);
+		node->setScale(1.f);
+		scene->registry.addNode(node);
+		});
 }
 
 void SceneLoaderTest::setupNodeTeapot()

@@ -37,6 +37,7 @@ private:
 	void setupNodeBunny();
 	void setupNodeDragon();
 	void setupNodeSpaceShuttle();
+	void setupNodeSword2();
 
 	void setupNodeTeapot();
 	void setupNodeCow();

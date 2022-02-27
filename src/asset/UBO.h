@@ -24,7 +24,7 @@ const unsigned int UBO_LIGHTS = 3;
 const unsigned int UBO_MATERIALS = 4;
 const unsigned int UBO_MATERIAL = 5;
 
-const unsigned int MATERIAL_COUNT = 4;
+const unsigned int MATERIAL_COUNT = 8;
 const unsigned int LIGHT_COUNT = 8;
 const unsigned int TEXTURE_COUNT = 8;
 const unsigned int CLIP_PLANE_COUNT = 2;
