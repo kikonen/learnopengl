@@ -5,6 +5,7 @@
 
 #include "model/Sprite.h"
 #include "model/Terrain.h"
+#include "model/Billboard.h"
 #include "model/Water.h"
 #include "model/InstancedNode.h"
 
@@ -79,6 +80,8 @@ void SceneLoaderTest::setup()
 	//setupNodeDragon();
 	setupNodeSpaceShuttle();
 	setupNodeSword2();
+
+	//setupEffectExplosion();
 
 	//setupViewport1();
 
@@ -826,7 +829,7 @@ void SceneLoaderTest::setupTerrain()
 		material->ns = 50;
 		material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 		material->map_kd = "Grass Dark_VH.PNG";
-		//material->map_kd = "singing_brushes.png";	
+		//material->map_kd = "singing_brushes.png";
 		material->loadTextures();
 
 		Shader* shader = getShader(TEX_TERRAIN);
@@ -857,9 +860,9 @@ void SceneLoaderTest::setupWaterBottom()
 			MeshLoader loader(assets, "marble_plate");
 			loader.loadTextures = false;
 			type->mesh = loader.load();
-			type->modifyMaterials([](Material& m) { 
+			type->modifyMaterials([](Material& m) {
 				m.textureSpec.mode = GL_REPEAT;
-				m.tiling = 8; 
+				m.tiling = 8;
 				m.loadTextures();
 			});
 		}
@@ -910,6 +913,26 @@ void SceneLoaderTest::setupWaterSurface()
 	});
 }
 
+void SceneLoaderTest::setupEffectExplosion()
+{
+	addLoader([this]() {
+		Shader* shader = getShader(TEX_EFFECT);
+
+		TerrainGenerator generator(assets);
+
+		NodeType* type = new NodeType(NodeType::nextID(), shader);
+		type->renderBack = true;
+		type->noShadow = true;
+
+		glm::vec3 pos = assets.groundOffset;
+		Billboard* node = new Billboard(type);
+		node->setPos(pos + glm::vec3(0, 3.5, -20));
+		node->setScale(2);
+
+		scene->registry.addNode(node);
+	});
+}
+
 void SceneLoaderTest::setupViewport1()
 {
 	TextureSpec spec;
@@ -957,4 +980,3 @@ Node* SceneLoaderTest::getPlanet()
 		return loadedPlanet;
 	}
 }
-

@@ -68,6 +68,8 @@ private:
 	void setupWaterBottom();
 	void setupWaterSurface();
 
+	void setupEffectExplosion();
+
 	void setupViewport1();
 private:
 	void setPlanet(Node* planet);
