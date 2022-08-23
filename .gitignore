@@ -10,3 +10,5 @@ local/*
 imgui.ini
 
 *~
+
+.emacs*
