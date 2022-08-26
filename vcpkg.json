@@ -1,0 +1,47 @@
+{
+  "name": "learnopengl",
+  "version": "1.0.0",
+  "dependencies": [
+    {
+      "name": "entt",
+      "platform": "windows & x64",
+      "version>=": "3.10.1#1"
+    },
+    {
+      "name": "freetype",
+      "platform": "windows & x64",
+      "version>=": "2.12.1#2"
+    },
+    {
+      "name": "glad",
+      "platform": "windows & x64",
+      "version>=": "0.1.36"
+    },
+    {
+      "name": "glfw3",
+      "platform": "windows & x64",
+      "version>=": "3.3.8"
+    },
+    {
+      "name": "glm",
+      "platform": "windows & x64",
+      "version>=": "0.9.9.8#1"
+    },
+    {
+      "name": "imgui",
+      "platform": "windows & x64",
+      "version>=": "1.81#2",
+      "default-features": false,
+      "features": [
+        "glfw-binding",
+        "opengl3-binding"
+      ]
+    },
+    {
+      "name": "spdlog",
+      "platform": "windows & x64",
+      "version>=": "1.10.0#1"
+    }
+  ],
+  "builtin-baseline": "e5eb2da7fb508571f99c69a0f96386e815a90c9f"
+}

@@ -26,6 +26,7 @@ Window::~Window()
 bool Window::create()
 {
 	createGLFWWindow();
+	input->prepare();
 	return glfwWindow != nullptr;
 }
 

@@ -33,6 +33,8 @@ public:
 	Input(Window* window);
 	~Input();
 
+	void prepare();
+
 	void updateKeyStates();
 
 	bool isKeyDown(Key key);

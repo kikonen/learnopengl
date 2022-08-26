@@ -82,6 +82,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -120,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\spdlog\include;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\imgui\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -140,7 +143,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\spdlog\include;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\imgui\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
@@ -174,14 +177,6 @@
     <ClCompile Include="src\scene\SceneLoader.cpp" />
     <ClCompile Include="src\gui\FrameInit.cpp" />
     <ClCompile Include="src\editor\EditorFrame.cpp" />
-    <ClCompile Include="vendor\glad\src\glad.c" />
-    <ClCompile Include="vendor\imgui\src\imgui.cpp" />
-    <ClCompile Include="vendor\imgui\src\imgui_demo.cpp" />
-    <ClCompile Include="vendor\imgui\src\imgui_draw.cpp" />
-    <ClCompile Include="vendor\imgui\src\imgui_impl_glfw.cpp" />
-    <ClCompile Include="vendor\imgui\src\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="vendor\imgui\src\imgui_tables.cpp" />
-    <ClCompile Include="vendor\imgui\src\imgui_widgets.cpp" />
     <ClCompile Include="src\model\Particle.cpp" />
     <ClCompile Include="src\component\ParticleGenerator.cpp" />
     <ClCompile Include="src\renderer\ParticleRenderer.cpp" />
@@ -238,9 +233,6 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="src\model\Billboard.h" />
     <ClInclude Include="src\renderer\ObjectIdRenderer.h" />
     <ClInclude Include="src\renderer\MirrorMapRenderer.h" />
@@ -258,14 +250,6 @@
     <ClInclude Include="src\scene\SceneLoader.h" />
     <ClInclude Include="src\gui\FrameInit.h" />
     <ClInclude Include="src\editor\EditorFrame.h" />
-    <ClInclude Include="vendor\imgui\src\imconfig.h" />
-    <ClInclude Include="vendor\imgui\src\imgui.h" />
-    <ClInclude Include="vendor\imgui\src\imgui_impl_glfw.h" />
-    <ClInclude Include="vendor\imgui\src\imgui_impl_opengl3.h" />
-    <ClInclude Include="vendor\imgui\src\imgui_internal.h" />
-    <ClInclude Include="vendor\imgui\src\imstb_rectpack.h" />
-    <ClInclude Include="vendor\imgui\src\imstb_textedit.h" />
-    <ClInclude Include="vendor\imgui\src\imstb_truetype.h" />
     <ClInclude Include="src\model\Particle.h" />
     <ClInclude Include="src\component\ParticleGenerator.h" />
     <ClInclude Include="src\renderer\ParticleRenderer.h" />
@@ -327,23 +311,5 @@
     <ResourceCompile Include="learnopengl.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets" Condition="Exists('packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" />
-    <Import Project="packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets" Condition="Exists('packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" />
-    <Import Project="packages\glm.0.9.9.800\build\native\glm.targets" Condition="Exists('packages\glm.0.9.9.800\build\native\glm.targets')" />
-    <Import Project="packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets" Condition="Exists('packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets')" />
-    <Import Project="packages\freetype.2.8.0.1\build\native\freetype.targets" Condition="Exists('packages\freetype.2.8.0.1\build\native\freetype.targets')" />
-    <Import Project="packages\glfw.3.3.8\build\native\glfw.targets" Condition="Exists('packages\glfw.3.3.8\build\native\glfw.targets')" />
-  </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets'))" />
-    <Error Condition="!Exists('packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets'))" />
-    <Error Condition="!Exists('packages\glm.0.9.9.800\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\glm.0.9.9.800\build\native\glm.targets'))" />
-    <Error Condition="!Exists('packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets'))" />
-    <Error Condition="!Exists('packages\freetype.2.8.0.1\build\native\freetype.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\freetype.2.8.0.1\build\native\freetype.targets'))" />
-    <Error Condition="!Exists('packages\glfw.3.3.8\build\native\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\glfw.3.3.8\build\native\glfw.targets'))" />
-  </Target>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

@@ -72,9 +72,9 @@ int Test6::onRender(const RenderClock& clock) {
 		KI_INFO_SB("selected: " << objectID);
 	}
 
-	//ImGui::ShowDemoWindow();
-
 	if (useIMGUI) {
+		//ImGui::ShowDemoWindow();
+
 		frame->draw(ctx);
 		frame->render(ctx);
 	}

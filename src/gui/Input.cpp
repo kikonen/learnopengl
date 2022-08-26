@@ -35,11 +35,15 @@ Input::Input(Window* window)
 		modifierPressed[mod] = false;
 		modifierReleased[mod] = false;
 	}
-	updateKeyStates();
 }
 
 Input::~Input()
 {
+}
+
+void Input::prepare()
+{
+	updateKeyStates();
 }
 
 void Input::updateKeyStates()
