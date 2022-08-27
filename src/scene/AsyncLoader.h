@@ -6,18 +6,16 @@
 #include "asset/Assets.h"
 #include "Scene.h"
 
-class SceneLoader
+class AsyncLoader
 {
 public:
-	SceneLoader(const Assets& assets);
+	AsyncLoader(const Assets& assets);
 
 	virtual void setup();
 
 	size_t addLoader(std::function<void()> loader);
-	void load();
 	const std::future<void>& getLoader(unsigned int index);
 
-protected:
 	Shader* getShader(
 		const std::string& name);
 

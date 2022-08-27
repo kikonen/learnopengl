@@ -6,7 +6,7 @@
 #include "ki/GL.h"
 #include "editor/EditorFrame.h"
 
-#include "SceneLoaderTest.h"
+#include "TestSceneSetup.h"
 
 Test6::Test6() {
 	title = "Test 6";
@@ -19,8 +19,8 @@ Test6::Test6() {
 }
 
 int Test6::onSetup() {
-	SceneLoader* loader = loadScene();
-	currentScene = loader->scene;
+	TestSceneSetup* setup = loadScene();
+	currentScene = setup->scene;
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -86,19 +86,19 @@ void Test6::onDestroy()
 {
 }
 
-SceneLoader* Test6::loadScene()
+TestSceneSetup* Test6::loadScene()
 {
 	assets.batchSize = 1000;
 
-	loader = new SceneLoaderTest(assets);
-	loader->setup();
+	TestSceneSetup* setup = new TestSceneSetup(assets);
+	setup->setup();
 
 	//loader->scene->showNormals = true;
 	//loader->scene->showMirrorView = true;
 	//loader->load();
-	loader->scene->prepare();
+	setup->scene->prepare();
 
-	return loader;
+	return setup;
 }
 
 void save() {

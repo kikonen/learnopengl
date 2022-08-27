@@ -27,7 +27,7 @@
     <ClCompile Include="src\ki\GL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneLoaderTest.cpp">
+    <ClCompile Include="src\TestSceneSetup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\src\stb_image.cpp">
@@ -147,7 +147,7 @@
     <ClCompile Include="src\scene\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\SceneLoader.cpp">
+    <ClCompile Include="src\scene\AsyncLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Renderer.cpp">
@@ -245,7 +245,7 @@
     <ClInclude Include="src\ki\GL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SceneLoaderTest.h">
+    <ClInclude Include="src\TestSceneSetup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendor\stb_image\src\stb_image.h">
@@ -365,7 +365,7 @@
     <ClInclude Include="src\scene\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\SceneLoader.h">
+    <ClInclude Include="src\scene\AsyncLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Renderer.h">

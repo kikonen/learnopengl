@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "Engine.h"
-#include "scene/SceneLoader.h"
+#include "TestSceneSetup.h"
 
 #include "gui/FrameInit.h"
 #include "gui/Frame.h"
@@ -17,7 +17,7 @@ public:
 
 	int onSetup() override;
 
-	SceneLoader* loadScene();
+	TestSceneSetup* loadScene();
 
 	int onRender(const RenderClock& clock) override;
 	void onDestroy() override;
@@ -25,7 +25,5 @@ public:
 private:
 	Frame* frame;
 	FrameInit* frameInit;
-
-	SceneLoader* loader = nullptr;
 
 };

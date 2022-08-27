@@ -41,6 +41,11 @@
       "name": "spdlog",
       "platform": "windows & x64",
       "version>=": "1.10.0#1"
+    },
+    {
+      "name": "yaml-cpp",
+      "platform": "windows & x64",
+      "version>=": "0.7.0#1"
     }
   ],
   "builtin-baseline": "e5eb2da7fb508571f99c69a0f96386e815a90c9f"

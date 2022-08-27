@@ -2,15 +2,18 @@
 
 #include "glm/glm.hpp"
 
-#include "scene/SceneLoader.h"
+#include "scene/AsyncLoader.h"
 
-class SceneLoaderTest : public SceneLoader
+class TestSceneSetup
 {
 public:
-	SceneLoaderTest(const Assets& assets);
-	~SceneLoaderTest();
+	Scene* scene = nullptr;
 
-	void setup() override;
+public:
+	TestSceneSetup(const Assets& assets);
+	~TestSceneSetup();
+
+	void setup();
 
 private:
 	void setupCamera();
@@ -68,6 +71,8 @@ private:
 	void setupWaterBottom();
 	void setupWaterSurface();
 
+	void setupSculpture1();
+
 	void setupEffectExplosion();
 
 	void setupViewport1();
@@ -79,5 +84,8 @@ private:
 	std::mutex planet_lock;
 	int planetFutureIndex = -1;
 	Node* loadedPlanet = nullptr;
+
+	const Assets& assets;
+	AsyncLoader loader;
 };
 

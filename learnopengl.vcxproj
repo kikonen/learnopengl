@@ -174,7 +174,7 @@
     <ClCompile Include="src\scene\NodeRegistry.cpp" />
     <ClCompile Include="src\controller\CameraController.cpp" />
     <ClCompile Include="src\scene\CubeMap.cpp" />
-    <ClCompile Include="src\scene\SceneLoader.cpp" />
+    <ClCompile Include="src\scene\AsyncLoader.cpp" />
     <ClCompile Include="src\gui\FrameInit.cpp" />
     <ClCompile Include="src\editor\EditorFrame.cpp" />
     <ClCompile Include="src\model\Particle.cpp" />
@@ -200,7 +200,7 @@
     <ClCompile Include="src\renderer\NormalRenderer.cpp" />
     <ClCompile Include="src\renderer\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\ki\GL.cpp" />
-    <ClCompile Include="src\SceneLoaderTest.cpp" />
+    <ClCompile Include="src\TestSceneSetup.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\model\Sprite.cpp" />
     <ClCompile Include="src\asset\Assets.cpp" />
@@ -247,7 +247,7 @@
     <ClInclude Include="src\scene\NodeRegistry.h" />
     <ClInclude Include="src\controller\CameraController.h" />
     <ClInclude Include="src\scene\CubeMap.h" />
-    <ClInclude Include="src\scene\SceneLoader.h" />
+    <ClInclude Include="src\scene\AsyncLoader.h" />
     <ClInclude Include="src\gui\FrameInit.h" />
     <ClInclude Include="src\editor\EditorFrame.h" />
     <ClInclude Include="src\model\Particle.h" />
@@ -273,7 +273,7 @@
     <ClInclude Include="src\renderer\NormalRenderer.h" />
     <ClInclude Include="src\renderer\ShadowMapRenderer.h" />
     <ClInclude Include="src\ki\GL.h" />
-    <ClInclude Include="src\SceneLoaderTest.h" />
+    <ClInclude Include="src\TestSceneSetup.h" />
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\model\Sprite.h" />
     <ClInclude Include="src\asset\Assets.h" />
