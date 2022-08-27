@@ -6,10 +6,12 @@ layout (location = 6) in mat4 aModelMatrix;
 
 #include uniform_matrices.glsl
 
+#ifdef USE_ALPHA
 out VS_OUT {
   vec2 texCoords;
   flat int materialIndex;
 } vs_out;
+#endif
 
 void main()
 {

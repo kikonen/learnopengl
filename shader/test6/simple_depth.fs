@@ -1,8 +1,10 @@
 #version 450 core
 
+#ifdef USE_ALPHA
 #include struct_material.glsl
 
 #include uniform_materials.glsl
+#endif
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -10,13 +12,14 @@
 layout(early_fragment_tests) in;
 #endif
 
+#ifdef USE_ALPHA
 in VS_OUT {
   vec2 texCoords;
   flat int materialIndex;
 } fs_in;
 
 uniform sampler2D textures[TEX_COUNT];
-
+#endif
 
 void main()
 {
