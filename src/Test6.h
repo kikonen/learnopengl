@@ -5,7 +5,6 @@
 #include <iostream>
 
 #include "Engine.h"
-#include "TestSceneSetup.h"
 
 #include "gui/FrameInit.h"
 #include "gui/Frame.h"
@@ -22,7 +21,7 @@ protected:
 	void onDestroy() override;
 
 private:
-	TestSceneSetup* loadScene();
+	Scene* loadScene();
 
 private:
 	Frame* frame;

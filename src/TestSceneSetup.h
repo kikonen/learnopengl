@@ -88,4 +88,3 @@ private:
 	const Assets& assets;
 	AsyncLoader loader;
 };
-

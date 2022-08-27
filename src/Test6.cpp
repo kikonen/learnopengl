@@ -7,6 +7,8 @@
 #include "editor/EditorFrame.h"
 
 #include "TestSceneSetup.h"
+#include "SceneFile.h"
+
 
 Test6::Test6() {
 	title = "Test 6";
@@ -19,8 +21,7 @@ Test6::Test6() {
 }
 
 int Test6::onSetup() {
-	TestSceneSetup* setup = loadScene();
-	currentScene = setup->scene;
+	currentScene = loadScene();
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -86,7 +87,7 @@ void Test6::onDestroy()
 {
 }
 
-TestSceneSetup* Test6::loadScene()
+Scene* Test6::loadScene()
 {
 	assets.batchSize = 1000;
 
@@ -98,7 +99,10 @@ TestSceneSetup* Test6::loadScene()
 	//loader->load();
 	setup->scene->prepare();
 
-	return setup;
+	SceneFile file(assets, "scene/scene_full.yml");
+	file.load();
+
+	return setup->scene;
 }
 
 void save() {

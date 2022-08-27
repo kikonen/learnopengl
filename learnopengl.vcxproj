@@ -160,6 +160,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\SceneFile.cpp" />
     <ClCompile Include="src\model\Billboard.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
     <ClCompile Include="src\renderer\MirrorMapRenderer.cpp" />
@@ -233,6 +234,7 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\SceneFile.h" />
     <ClInclude Include="src\model\Billboard.h" />
     <ClInclude Include="src\renderer\ObjectIdRenderer.h" />
     <ClInclude Include="src\renderer\MirrorMapRenderer.h" />
