@@ -25,6 +25,7 @@ public:
     int init();
     void run();
 
+protected:
     virtual int onSetup() = 0;
     virtual int onRender(const RenderClock& clock) = 0;
     virtual void onDestroy();

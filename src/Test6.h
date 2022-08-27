@@ -15,12 +15,14 @@ class Test6 final : public Engine {
 public:
 	Test6();
 
+protected:
 	int onSetup() override;
-
-	TestSceneSetup* loadScene();
 
 	int onRender(const RenderClock& clock) override;
 	void onDestroy() override;
+
+private:
+	TestSceneSetup* loadScene();
 
 private:
 	Frame* frame;
