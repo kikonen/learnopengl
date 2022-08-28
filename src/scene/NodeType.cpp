@@ -17,6 +17,12 @@ int NodeType::nextID()
 	return ++typeIDbase;
 }
 
+void NodeType::setBaseID(int baseId)
+{
+	std::lock_guard<std::mutex> lock(type_id_lock);
+	typeIDbase = baseId;
+}
+
 NodeType::NodeType(int typeID, Shader* defaultShader)
 	: typeID(typeID),
 	defaultShader(defaultShader)

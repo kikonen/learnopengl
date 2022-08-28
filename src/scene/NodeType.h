@@ -9,6 +9,7 @@ class NodeType final
 {
 public:
 	static int nextID();
+	static void setBaseID(int baseId);
 
 	NodeType(int typeID, Shader* defaultShader = nullptr);
 	~NodeType();

@@ -29,6 +29,8 @@ TestSceneSetup::~TestSceneSetup()
 
 void TestSceneSetup::setup()
 {
+	NodeType::setBaseID(10000);
+
 	scene = new Scene(assets);
 	loader.scene = scene;
 
