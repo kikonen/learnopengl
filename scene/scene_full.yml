@@ -5,6 +5,7 @@ skybox:
 lights: {}
 entities:
   - name: EXAMPLE
+    type_id: 1
     model: glass_ball
     shader: texture
     pos: [0.0, 0.0, 0.0]
@@ -26,11 +27,13 @@ entities:
       y_multiply: 1
       z_multiply: 1
   - name: ZERO
+    type_id: 2
     model: water_ball
     shader: texture
     pos: [0.0, 0.0, 0.0]
     scale: 0.3
   - name: Window 1
+    type_id: 3
     model: window1
     shader: texture
     pos: [5.0, 10.0, -5.0]
@@ -39,6 +42,7 @@ entities:
       blend: true
       render_back: true
   - name: Window 2
+    type_id: 4
     model: window2
     shader: texture
     pos: [7.0, 10.0, -8.0]
@@ -47,6 +51,7 @@ entities:
       blend: true
       render_back: true
   - name: Stained windows
+    type_id: 5
     model: window2
     shader: texture
     pos: [-10.0, 15.0, 10.0]
@@ -58,6 +63,7 @@ entities:
       x_count: 10
       x_multiply: 2
   - name: Wood wall
+    type_id: 6
     model: woodwall
     shader: texture
     pos: [-5.0, 5.0, 14.0]
@@ -69,6 +75,7 @@ entities:
       x_count: 5
       x_multiply: 2
   - name: Big mirror 1
+    type_id: 7
     model: woodwall
     shader: texture
     pos: [-65.0, 20.0, -10.0]
@@ -83,10 +90,11 @@ entities:
       refaction: 0.1
       refraction_ratio: 1.0 / 1.52
   - name: Big mirror 2
+    type_id: 8
     model: woodwall
     shader: texture
     pos: [65.0, 20.0, -10.0]
-    rotation: [0.0, -45.0, 0.0]
+    rotation: [0.0, 45.0, 0.0]
     scale: 15.0
     render_options:
       render_back: true
@@ -97,16 +105,19 @@ entities:
       refaction: 0.1
       refraction_ratio: 1.0 / 1.52
   - name: Spyro
+    type_id: 9
     model: spyro2
     shader: texture
     pos: [0.0, 30.0, 30.0]
-    scale: 0.1
+    scale: 0.01
   - name: Backback
+    type_id: 10
     model: [backback, /backback/]
     shader: texture
     pos: [0.0, 5.0, 5.0]
     scale: 1.5
   - name: Bunny
+    type_id: 11
     model: bunny
     shader: texture
     pos: [-15.0, 10.0, 5.0]
@@ -116,6 +127,7 @@ entities:
     render_options:
       render_back: true
   - name: Dragon
+    type_id: 12
     model: dragon
     shader: texture
     pos: [-15.0, 15.0, 0.0]
@@ -123,16 +135,19 @@ entities:
     render_options:
       render_back: true
   - name: Shuttle
+    type_id: 13
     model: [shuttle, /opengl_book/NasaShuttle/]
     shader: texture
     pos: [20.0, 40.0, -50.0]
     scale: 20.0
   - name: Sword 2
+    type_id: 14
     model: sword2
     shader: texture
     pos: [0.0, 40.0, -50.0]
     scale: 1.0
   - name: Teapot
+    type_id: 15
     model: smooth_teapot
     shader: texture
     pos: [-5.0, 20.0, -5.0]
@@ -145,6 +160,7 @@ entities:
     render_options:
       render_back: true
   - name: Cow
+    type_id: 16
     model: texture_cow
     shader: texture
     pos: [5.0, 20.0, -5.0]
@@ -155,16 +171,19 @@ entities:
     render_options:
       render_back: true
   - name: Mountains
+    type_id: 17
     model: texture_mountains
     shader: texture
     pos: [100.0, 0.0, -100.0]
     scale: 1.0
   - name: Ball
+    type_id: 18
     model: texture_ball
     shader: texture
     pos: [0.0, 8.0, 0.0]
     scale: 2.0
   - name: Glass ball
+    type_id: 19
     model: glass_ball
     shader: texture
     pos: [5.0, 20.0, 0.0]
@@ -174,6 +193,7 @@ entities:
       refaction: 0.9
       refraction_ratio: 1.0 / 1.52
   - name: Mirror ball
+    type_id: 20
     model: glass_ball
     shader: texture
     pos: [0.0, 20.0, 0.0]
@@ -181,6 +201,7 @@ entities:
     material_modifier:
       reflection: 0.1
   - name: Water ball
+    type_id: 21
     model: water_ball
     shader: texture
     pos: [5.0, 25.0, 0.0]
@@ -188,6 +209,7 @@ entities:
     material_modifier:
       reflection: 0.3
   - name: Basic ball
+    type_id: 22
     model: water_ball
     shader: texture
     pos: [5.0, 25.0, 5.0]
@@ -197,76 +219,75 @@ entities:
       override: true
       reflection: 0.05
   - name: Gold ball
+    type_id: 23
     model: water_ball
     shader: texture
     pos: [5.0, 25.0, 10.0]
     scale: 1.3
     material: gold_ball
   - name: Silver ball
+    type_id: 24
     model: water_ball
     shader: texture
     pos: [5.0, 25.0, 15.0]
     scale: 1.3
     material: silver_ball
   - name: Bronze ball
+    type_id: 25
     model: water_ball
     shader: texture
     pos: [5.0, 25.0, 20.0]
     scale: 1.3
     material: bronze_ball
 materials:
-  skybox:
+  - name: skybox
+    type: skybox
     asset: skybox
-  default:
-    name: Default
+  - name: default
     ns: 100.0
     ks: [0.9, 0.9, 0.0, 1.0]
     ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.8, 0.8, 0.0, 1.0]
     reflection: 0.05
-  teapot:
-    name: Teapot
+  - name: teapot
     ns: 100.0
     ks: [0.9, 0.9, 0.0, 1.0]
     ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.578, 0.578, 0.168, 1.0]
     reflection: 0.05
-  cow:
-    name: Teapot
+  - name: cow
     ns: 100.0
     ks: [0.9, 0.9, 0.0, 1.0]
     ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.160, 0.578, 0.168, 1.0]
     reflection: 0.05
-  default_ball:
-    name: Default
+  - name: default_ball
     ns: 100.0
     ks: [0.9, 0.9, 0.0, 1.0]
     ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.8, 0.8, 0.0, 1.0]
     reflection: 0.05
-  default_ball:
-    name: Default
+  - name: default_ball
     ns: 100.0
     ks: [0.9, 0.9, 0.0, 1.0]
     ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.8, 0.8, 0.0, 1.0]
     reflection: 0.05
-  gold_ball:
+  - name: gold_ball
     ns: 51.2
     ks: [0.6283, 0.5559, 0.3661, 1.0]
     ka: [0.2473, 0.1995, 0.0745, 1.0]
     kd: [0.7516, 0.6065, 0.2265, 1.0]
     reflection: 0.05
-  silver_ball:
+  - name: silver_ball
     ns: 51.2
-    ks: [0.5083 0.5083 0.5083 1.0]
-    ka: [0.1923 0.1923 0.1923 1.0]
-    kd: [0.5075 0.5075 0.5075 1.0]
+    ks: [0.5083, 0.5083, 0.5083, 1.0]
+    ka: [0.1923, 0.1923, 0.1923, 1.0]
+    kd: [0.5075, 0.5075, 0.5075, 1.0]
     reflection: 0.05
-  bronze_ball:
+  - name: bronze_ball
     ns: 25.6
-    ks: [0.3936 0.2719 0.1667 1.0]
-    ka: [0.2125 0.1275 0.0540 1.0]
-    kd: [0.7140 0.4284 0.1814 1.0]
+    ks: [0.3936, 0.2719, 0.1667, 1.0]
+    ka: [0.2125, 0.1275, 0.0540, 1.0]
+    kd: [0.7140, 0.4284, 0.1814, 1.0]
     reflection: 0.05

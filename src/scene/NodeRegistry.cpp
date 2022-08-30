@@ -11,6 +11,7 @@ NodeRegistry::NodeRegistry(Scene& scene)
 void NodeRegistry::addNode(Node* node)
 {
 	std::lock_guard<std::mutex> lock(load_lock);
+	KI_INFO_SB("ADD_NODE: id=" << node->objectID << ", type=" << node->type->typeID);
 	pendingNodes.push_back(node);
 }
 
@@ -71,10 +72,9 @@ void NodeRegistry::attachNodes()
 			nodes[e->type].push_back(e);
 			idToNode[e->objectID] = e;
 
-			KI_INFO_SB("id=" << e->objectID << ", type=" << e->type->typeID);
+			KI_INFO_SB("ATTACH_NODE: id=" << e->objectID << ", type=" << e->type->typeID);
 
 			scene.bindComponents(e);
 		}
 	}
 }
-

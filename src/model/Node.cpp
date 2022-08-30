@@ -7,7 +7,7 @@
 
 #include "ki/GL.h"
 
-#include "controller/NodeController.h";
+#include "controller/NodeController.h"
 
 
 namespace {
@@ -54,6 +54,9 @@ void Node::bind(const RenderContext& ctx, Shader* shader)
 void Node::bindBatch(const RenderContext& ctx, Batch& batch)
 {
 	updateModelMatrix();
+	if (type->mirror) {
+		int x = 0;
+	}
 	batch.add(modelMat, normalMat, objectID);
 }
 
@@ -128,4 +131,3 @@ void Node::setScale(const glm::vec3& scale)
 const glm::vec3& Node::getScale() {
 	return scale;
 }
-

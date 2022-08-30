@@ -61,6 +61,8 @@ int MeshLoader::loadData(
 	positions.reserve(10000);
 
 	std::string modelPath = assets.modelsDir + path + modelName + ".obj";
+	KI_INFO_SB("LOAD_MODEL: path=" << modelPath);
+
 	std::ifstream file;
 	//	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	file.exceptions(std::ifstream::badbit);

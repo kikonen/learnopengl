@@ -77,7 +77,7 @@ public:
 
     bool used = false;
 
-    std::string materialDir = { "" };
+    std::string materialDir { "" };
 
     TextureSpec textureSpec;
 
@@ -103,24 +103,24 @@ public:
     float ns = 0.0f;
 
     // The ambient color of the material is declared using Ka. 
-    glm::vec4 ka = { 0.f, 0.f, 0.f, 1.f };
+    glm::vec4 ka { 0.f, 0.f, 0.f, 1.f };
 
     // Similarly, the diffuse color is declared using Kd.
-    glm::vec4 kd = { 0.f, 0.f, 0.f, 1.f };
-    std::string map_kd = "";
+    glm::vec4 kd { 0.f, 0.f, 0.f, 1.f };
+    std::string map_kd { "" };
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
-    glm::vec4 ks = { 0.f, 0.f, 0.f, 1.f };
-    std::string map_ks = "";
+    glm::vec4 ks { 0.f, 0.f, 0.f, 1.f };
+    std::string map_ks { "" };
 
     // Ke/map_Ke     # emissive
-    glm::vec4 ke = { 0.f, 0.f, 0.f, 1.f };
-    std::string map_ke = "";
+    glm::vec4 ke { 0.f, 0.f, 0.f, 1.f };
+    std::string map_ke { "" };
 
     // some implementations use 'map_bump' instead of 'bump' below
     // bump map(which by default uses luminance channel of the image)
     // bump lemur_bump.tga
-    std::string map_bump = "";
+    std::string map_bump { "" };
 
     // A material can also have an optical density for its surface. This is also known as index of refraction.
     float ni = 0.0f;
@@ -145,7 +145,7 @@ public:
     // 10. Casts shadows onto invisible surfaces
     int illum = 0;
 
-    std::string map_dudv = "";
+    std::string map_dudv { "" };
 private:
     bool loaded = false;
 };

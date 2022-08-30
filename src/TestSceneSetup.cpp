@@ -27,19 +27,22 @@ TestSceneSetup::~TestSceneSetup()
 {
 }
 
-void TestSceneSetup::setup()
+void TestSceneSetup::setup(Scene* scene)
 {
 	NodeType::setBaseID(10000);
 
-	scene = new Scene(assets);
+	this->scene = scene;
 	loader.scene = scene;
 
 	setupCamera();
 
+	setupNodeSkybox();
+
+	setupNodeBrickCube();
+
 	setupNodeCubes();
 	setupNodeCube4();
 
-	setupNodeBrickCube();
 	setupNodeActive();
 
 	setupNodePlanet();
@@ -52,8 +55,6 @@ void TestSceneSetup::setup()
 
 	setupWaterBottom();
 	setupWaterSurface();
-
-	setupNodeSkybox();
 
 	//setupEffectExplosion();
 

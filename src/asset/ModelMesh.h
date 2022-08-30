@@ -40,7 +40,7 @@ public:
 	void drawInstanced(const RenderContext& ctx, int instanceCount) override;
 
 public:
-	Material* defaultMaterial = nullptr;
+	//Material* defaultMaterial = nullptr;
 
 	std::vector<glm::uvec3> tris;
 	std::vector<Vertex*> vertices;

@@ -7,13 +7,10 @@
 class TestSceneSetup
 {
 public:
-	Scene* scene = nullptr;
-
-public:
 	TestSceneSetup(const Assets& assets);
 	~TestSceneSetup();
 
-	void setup();
+	void setup(Scene* scene);
 
 private:
 	void setupCamera();
@@ -87,4 +84,6 @@ private:
 
 	const Assets& assets;
 	AsyncLoader loader;
+
+	Scene* scene = nullptr;
 };

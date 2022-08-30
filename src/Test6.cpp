@@ -17,7 +17,7 @@ Test6::Test6() {
 	//throttleFps = FPS_30;
 	//glfwWindowHint(GLFW_SAMPLES, 4);
 
-	useIMGUI = false;
+	useIMGUI = true;
 }
 
 int Test6::onSetup() {
@@ -91,18 +91,20 @@ Scene* Test6::loadScene()
 {
 	assets.batchSize = 1000;
 
-	TestSceneSetup* setup = new TestSceneSetup(assets);
-	setup->setup();
-
-	//loader->scene->showNormals = true;
-	//loader->scene->showMirrorView = true;
-	//loader->load();
-	setup->scene->prepare();
+	Scene *scene = new Scene(assets);
 
 	SceneFile file(assets, "scene/scene_full.yml");
-	file.load();
+	file.load(scene);
 
-	return setup->scene;
+	TestSceneSetup setup(assets);
+	setup.setup(scene);
+
+	//loader.scene->showNormals = true;
+	//loader.scene->showMirrorView = true;
+	//loader.load();
+	scene->prepare();
+
+	return scene;
 }
 
 void save() {
