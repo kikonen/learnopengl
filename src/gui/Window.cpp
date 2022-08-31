@@ -50,7 +50,9 @@ void Window::createGLFWWindow()
 {
 	// glfw: initialize and configure
 	// ------------------------------
+	KI_INFO("START: GLFW INIT");
 	glfwInit();
+	KI_INFO("DONE: GLFW INIT");
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, assets.glsl_version[0]);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, assets.glsl_version[1]);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -59,6 +61,7 @@ void Window::createGLFWWindow()
 //	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 //#endif
 
+	KI_INFO("START: WDINDOW CREATE");
 	glfwWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 	if (glfwWindow == nullptr)
 	{

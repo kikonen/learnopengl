@@ -27,7 +27,7 @@ int Engine::init() {
 
 void Engine::run() {
 	OpenGLInfo info = ki::GL::getInfo();
-	KI_INFO_SB("ENGINE::INIT" << std::endl
+	KI_INFO_SB("ENGINE::RUN" << std::endl
 		<< " VER=" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl
 		<< " GL_MAX_VERTEX_UNIFORM_COMPONENTS=" << info.maxVertexUniformComponents << std::endl
 		<< " GL_MAX_VERTEX_ATTRIBS=" << info.maxVertexAttributes);
@@ -119,4 +119,3 @@ void Engine::run() {
 void Engine::onDestroy()
 {
 }
-

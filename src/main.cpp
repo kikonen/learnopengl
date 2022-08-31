@@ -16,9 +16,12 @@ int main()
     Engine* engine = new Test6();
     Engine::current = engine;
 
+    KI_INFO("START: ENGINE INIT");
     if (engine->init()) {
+        KI_INFO("FAIL: ENGINE INIT");
         return -1;
     }
+    KI_INFO("DONE: ENGINE INIT");
 
     engine->run();
 
