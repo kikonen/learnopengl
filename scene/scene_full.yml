@@ -16,9 +16,9 @@ entities:
       reflection: 0.1
       refaction: 0.9
       refraction_ratio: 1.0 / 1.52
-    render_options:
-      blend: true
-      render_back: true
+    render_flags:
+      - blend
+      - render_back
     repeat:
       x_count: 1
       y_count: 1
@@ -38,27 +38,33 @@ entities:
     shader: texture
     pos: [5.0, 10.0, -5.0]
     rotation: [0.0, 180.0, 0.0]
-    render_options:
-      blend: true
-      render_back: true
+    shader_definitions:
+      - USE_ALPHA
+    render_flags:
+      - blend
+      - render_back
   - name: Window 2
     type_id: 4
     model: window2
     shader: texture
     pos: [7.0, 10.0, -8.0]
     rotation: [0.0, 180.0, 0.0]
-    render_options:
-      blend: true
-      render_back: true
+    shader_definitions:
+      - USE_ALPHA
+    render_flags:
+      - blend
+      - render_back
   - name: Stained windows
     type_id: 5
     model: window2
     shader: texture
     pos: [-10.0, 15.0, 10.0]
     rotation: [0.0, 180.0, 0.0]
-    render_options:
-      blend: true
-      render_back: true
+    shader_definitions:
+      - USE_ALPHA
+    render_flags:
+      - blend
+      - render_back
     repeat:
       x_count: 10
       x_multiply: 2
@@ -67,8 +73,8 @@ entities:
     model: woodwall
     shader: texture
     pos: [-5.0, 5.0, 14.0]
-    render_options:
-      render_back: true
+    render_flags:
+      - render_back
     material_modifier:
       reflection: 0.3
     repeat:
@@ -81,10 +87,10 @@ entities:
     pos: [-65.0, 20.0, -10.0]
     rotation: [0.0, 45.0, 0.0]
     scale: 15.0
-    render_options:
-      render_back: true
-      mirror: true
-      mirror_plane: [0.0, 1.0, 0.0, -1.0]
+    render_flags:
+      - render_back
+      - mirror
+    mirror_plane: [0.0, 1.0, 0.0, -1.0]
     material_modifier:
       reflection: 0.9
       refaction: 0.1
@@ -94,12 +100,12 @@ entities:
     model: woodwall
     shader: texture
     pos: [65.0, 20.0, -10.0]
-    rotation: [0.0, 45.0, 0.0]
+    rotation: [0.0, -45.0, 0.0]
     scale: 15.0
-    render_options:
-      render_back: true
-      mirror: true
-      mirror_plane: [0.0, 1.0, 0.0, -1.0]
+    render_flags:
+      - render_back
+      - mirror
+    mirror_plane: [0.0, 1.0, 0.0, -1.0]
     material_modifier:
       reflection: 0.9
       refaction: 0.1
@@ -124,16 +130,16 @@ entities:
     scale: 20.0
     material_modifier:
       reflection: 0.9
-    render_options:
-      render_back: true
+    render_flags:
+      - render_back
   - name: Dragon
     type_id: 12
     model: dragon
     shader: texture
     pos: [-15.0, 15.0, 0.0]
     scale: 30.0
-    render_options:
-      render_back: true
+    render_flags:
+      - render_back
   - name: Shuttle
     type_id: 13
     model: [shuttle, /opengl_book/NasaShuttle/]
@@ -157,8 +163,8 @@ entities:
       reflection: 0.0
       refaction: 1.0
       refraction_ratio: 1.0 / 1.52
-    render_options:
-      render_back: true
+    render_flags:
+      - render_back
   - name: Cow
     type_id: 16
     model: texture_cow
@@ -168,8 +174,8 @@ entities:
     material: cow
     material_modifier:
       reflection: 0.5
-    render_options:
-      render_back: true
+    render_flags:
+      - render_back
   - name: Mountains
     type_id: 17
     model: texture_mountains

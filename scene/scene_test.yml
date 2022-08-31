@@ -4,13 +4,17 @@ skybox:
   material: skybox
 lights: {}
 entities:
-  - name: Gold ball
-    type_id: 23
-    model: water_ball
+  - name: Window 1
+    type_id: 3
+    model: window1
     shader: texture
-    pos: [5.0, 20.0, 10.0]
-    scale: 1.3
-    material: gold_ball
+    pos: [5.0, 10.0, -5.0]
+    rotation: [0.0, 180.0, 0.0]
+    shader_definitions:
+      - USE_ALPHA
+    render_flags:
+      - blend
+      - render_back
 materials:
   - name: skybox
     type: skybox

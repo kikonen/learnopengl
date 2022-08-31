@@ -33,7 +33,7 @@ Scene* SceneFile::load(Scene* scene)
     loadMaterials(doc);
     loadEntities(doc);
 
-    testYAML();
+//    testYAML();
 
     return scene;
 }
@@ -44,18 +44,22 @@ void SceneFile::loadEntities(const YAML::Node& doc) {
 	for (auto entry : entries) {
 		int typeId { 0 };
 		std::string name {};
-		std::string model {};
-		std::string path { "/" };
-		std::string material {};
-		std::string shader { TEX_TEXTURE };
+		std::string modelName {};
+		std::string modelPath { "/" };
+		std::string materialName {};
+		std::string shaderName { TEX_TEXTURE };
+		std::vector<std::string> shaderDefinitions {};
+		std::map<std::string, bool> renderFlags {};
 		glm::vec3 pos { 0 };
+		glm::vec3 rotation{ 0 };
+		glm::vec4 mirrorPlane{ 0 };
 		double scale { 1 };
 
 		for (auto pair : entry) {
 			const std::string& k = pair.first.as<std::string>();
 			const YAML::Node& v = pair.second;
 
-			std::cout << k << " = " << v << "\n";
+			//std::cout << k << " = " << v << "\n";
 
 			if (k == "name") {
 				name = v.as<std::string>();
@@ -65,27 +69,51 @@ void SceneFile::loadEntities(const YAML::Node& doc) {
 			}
 			else if (k == "model") {
 				if (v.Type() == YAML::NodeType::Sequence) {
-					model = v[0].as<std::string>();
-					path = v[1].as<std::string>();
+					modelName = v[0].as<std::string>();
+					modelPath = v[1].as<std::string>();
 				}
 				else {
-					model = v.as<std::string>();
+					modelName = v.as<std::string>();
 				}
 			}
 			else if (k == "shader") {
-				shader = v.as<std::string>();
-				if (shader == "texture") {
-					shader = TEX_TEXTURE;
+				shaderName = v.as<std::string>();
+				if (shaderName == "texture") {
+					shaderName = TEX_TEXTURE;
 				}
 			}
+			else if (k == "shader_definitions") {
+				if (v.Type() == YAML::NodeType::Sequence) {
+					for (auto name : v) {
+						shaderDefinitions.push_back(name.as<std::string>());
+					}
+				}
+			}
+			else if (k == "render_flags") {
+				if (v.Type() == YAML::NodeType::Sequence) {
+					for (auto name : v) {
+						auto flag = name.as<std::string>();
+						renderFlags[flag] = true;
+					}
+				}
+			}
+			else if (k == "mirror_plane") {
+				mirrorPlane = readVec4(v);
+			}
 			else if (k == "material") {
-				material = v.as<std::string>();
+				materialName = v.as<std::string>();
 			}
 			else if (k == "pos") {
 				pos = readVec3(v);
 			}
+			else if (k == "rotation") {
+				rotation = readVec3(v);
+			}
 			else if (k == "scale") {
 				scale = v.as<double>();
+			}
+			else {
+				std::cout << "UNKNOWN: " << k << "\n";
 			}
 		}
 
@@ -113,30 +141,110 @@ void SceneLoaderTest::setupNodeMaterialBalls()
 		}
 	});
 }
-*/
-		loader.addLoader([this, typeId, shader, model, pos, material, path, scale]() {
-			NodeType* type = new NodeType(typeId, loader.getShader(shader));
-			MeshLoader meshLoader(assets, model, path);
+void SceneLoaderTest::setupNodeWindow1()
+{
+	addLoader([this]() {
+		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE, { DEF_USE_ALPHA }));
+		type->blend = true;
+		type->renderBack = true;
 
-			if (material != "") {
-				if (materials.count(material)) {
-					meshLoader.defaultMaterial = materials[material];
-					meshLoader.overrideMaterials = true;
+		MeshLoader loader(assets, "window1");
+		type->mesh = loader.load();
+
+		Node* node = new Node(type);
+		node->setPos(glm::vec3(5, 10, -5) + assets.groundOffset);
+		node->setRotation(glm::vec3(0, 180, 0));
+		scene->registry.addNode(node);
+	});
+}*/
+
+//loader.addLoader([this, typeId, shaderName, shaderDefinitions, renderFlags, modelName, modelPath, pos, rotation, scale, materialName]() {
+			NodeType* type = new NodeType(typeId, loader.getShader(shaderName, shaderDefinitions));
+
+			{
+				std::string flag{ "blend" };
+				if (renderFlags.count(flag)) {
+					type->blend = renderFlags[flag];
 				}
+			}
+			{
+				std::string flag{ "render_back" };
+				if (renderFlags.count(flag)) {
+					type->renderBack = renderFlags[flag];
+				}
+			}
+			{
+				std::string flag{ "no_shadow" };
+				if (renderFlags.count(flag)) {
+					type->noShadow = renderFlags[flag];
+				}
+			}
+			bool mirror = false;
+			{
+				std::string flag{ "mirror" };
+				if (renderFlags.count(flag)) {
+					type->mirror = renderFlags[flag];
+				}
+
+				if (renderFlags.count(flag) && renderFlags[flag]) {
+					mirror = true;
+					type->mirrorPlane = mirrorPlane;
+				}
+			}
+			{
+				std::string flag{ "water" };
+				if (renderFlags.count(flag)) {
+					type->water = renderFlags[flag];
+				}
+			}
+			{
+				std::string flag{ "light" };
+				if (renderFlags.count(flag)) {
+					type->light = renderFlags[flag];
+				}
+			}
+			{
+				std::string flag{ "batch_mode" };
+				if (renderFlags.count(flag)) {
+					type->batchMode = renderFlags[flag];
+				}
+			}
+			{
+				std::string flag{ "wireframe" };
+				if (renderFlags.count(flag)) {
+					type->wireframe = renderFlags[flag];
+				}
+			}
+
+			MeshLoader meshLoader(assets, modelName, modelPath);
+
+			Material* material = nullptr;
+			if (materials.count(materialName)) {
+				material = materials[materialName];
+			}
+
+			if (material) {
+				meshLoader.defaultMaterial = material;
+				meshLoader.overrideMaterials = true;
 			}
 
 			type->mesh = meshLoader.load();
 
-			if (material != "") {
-				//type->modifyMaterials([](Material& m) { m.reflection = 0.05f; });
+			if (mirror) {
+				type->modifyMaterials([](Material& m) {
+					m.reflection = 0.1f;
+					m.refraction = 0.9f;
+					m.refractionRatio = 1.0f / 1.52;
+				});
 			}
 
 			Node* node = new Node(type);
 			node->setPos(pos + assets.groundOffset);
+			node->setRotation(rotation);
 			node->setScale(scale);
 
 			loader.scene->registry.addNode(node);
-		});
+//		});
 	}
 }
 
