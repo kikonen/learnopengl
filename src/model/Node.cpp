@@ -46,7 +46,7 @@ bool Node::update(const RenderContext& ctx)
 	return controller->update(ctx, *this);
 }
 
-void Node::bind(const RenderContext& ctx, Shader* shader)
+void Node::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
 {
 	updateModelMatrix();
 }

@@ -21,10 +21,10 @@ protected:
 	void onDestroy() override;
 
 private:
-	Scene* loadScene();
+	std::shared_ptr<Scene> loadScene();
 
 private:
-	Frame* frame;
-	FrameInit* frameInit;
+	std::unique_ptr<Frame> frame;
+	std::unique_ptr<FrameInit> frameInit;
 
 };

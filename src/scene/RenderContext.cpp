@@ -12,8 +12,8 @@ RenderContext::RenderContext(
 	const Assets& assets,
 	const RenderClock& clock,
 	GLState& state,
-	Scene* scene,
-	Camera* camera,
+	std::shared_ptr<Scene> scene,
+	Camera& camera,
 	int width,
 	int height)
 	: assets(assets),
@@ -24,13 +24,9 @@ RenderContext::RenderContext(
 	width(width),
 	height(height)
 {
-	if (!camera) {
-		camera = new Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
-		this->camera = camera;
-	}
-	viewMatrix = camera->getView();
+	viewMatrix = camera.getView();
 
-	projectionMatrix = glm::perspective(glm::radians(camera->getZoom()), (float)width / (float)height, assets.nearPlane, assets.farPlane);
+	projectionMatrix = glm::perspective(glm::radians(camera.getZoom()), (float)width / (float)height, assets.nearPlane, assets.farPlane);
 	projectedMatrix = projectionMatrix * viewMatrix;
 
 	for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
@@ -67,7 +63,7 @@ void RenderContext::bindMatricesUBO() const
 void RenderContext::bindDataUBO() const
 {
 	DataUBO dataUbo = {
-		camera->getPos(),
+		camera.getPos(),
 		clock.ts,
 		assets.fogColor,
 		assets.fogStart,
@@ -144,7 +140,7 @@ void RenderContext::bindLightsUBO() const
 	glNamedBufferSubData(scene->ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);
 }
 
-void RenderContext::bind(Shader* shader) const
+void RenderContext::bind(std::shared_ptr<Shader> shader) const
 {
 
 }

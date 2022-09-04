@@ -10,7 +10,7 @@ public:
 	TestSceneSetup(const Assets& assets);
 	~TestSceneSetup();
 
-	void setup(Scene* scene);
+	void setup(std::shared_ptr<Scene> scene);
 
 private:
 	void setupCamera();
@@ -85,5 +85,5 @@ private:
 	const Assets& assets;
 	AsyncLoader loader;
 
-	Scene* scene = nullptr;
+	std::shared_ptr<Scene> scene = nullptr;
 };

@@ -19,18 +19,18 @@ public:
 	bool hasReflection() override;
 	bool hasRefraction() override;
 
-	Material* findMaterial(std::function<bool(Material&)> fn) override;
+	std::shared_ptr<Material> findMaterial(std::function<bool(Material&)> fn) override;
 	void modifyMaterials(std::function<void(Material&)> fn) override;
 
 	void prepare(const Assets& assets) override;
 	void prepareBuffers(MeshBuffers& curr) override;
-	void bind(const RenderContext& ctx, Shader* shader) override;
+	void bind(const RenderContext& ctx, std::shared_ptr<Shader> shader) override;
 	void draw(const RenderContext& ctx) override;
 	void drawInstanced(const RenderContext& ctx, int instanceCount) override;
 
 public:
 	std::string name;
-	Material* material = nullptr;
+	std::shared_ptr<Material> material = nullptr;
 	std::vector<GLuint> textureIDs;
 
 private:

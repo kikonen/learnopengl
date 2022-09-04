@@ -126,6 +126,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

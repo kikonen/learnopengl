@@ -8,9 +8,15 @@
 
 #include "ImageTexture.h"
 
+constexpr int DIFFUSE_IDX = 0;
+constexpr int EMISSION_IDX = 1;
+constexpr int SPECULAR_IDX = 2;
+constexpr int NORMAL_MAP_IDX = 3;
+constexpr int DUDV_MAP_IDX = 4;
 
-Material* createGoldMaterial() {
-	Material* mat = new Material("gold", "");
+
+std::shared_ptr<Material> createGoldMaterial() {
+	std::shared_ptr<Material> mat = std::make_shared<Material>("gold", "");
 	mat->ns = 51.2f;
 	mat->ks = glm::vec4(0.6283f, 0.5559f, 0.3661f, 1.f);
 	mat->ka = glm::vec4(0.2473f, 0.1995f, 0.0745f, 1.f);
@@ -18,8 +24,8 @@ Material* createGoldMaterial() {
 	return mat;
 }
 
-Material* createSilverMaterial() {
-	Material* mat = new Material("silver", "");
+std::shared_ptr<Material> createSilverMaterial() {
+	std::shared_ptr<Material> mat = std::make_shared<Material>("silver", "");
 	mat->ns = 51.2f;
 	mat->ks = glm::vec4(0.5083f, 0.5083f, 0.5083f, 1.f);
 	mat->ka = glm::vec4(0.1923f, 0.1923f, 0.1923f, 1.f);
@@ -27,8 +33,8 @@ Material* createSilverMaterial() {
 	return mat;
 }
 
-Material* createBronzeMaterial() {
-	Material* mat = new Material("bronze", "");
+std::shared_ptr<Material> createBronzeMaterial() {
+	std::shared_ptr<Material> mat = std::make_shared<Material>("bronze", "");
 	mat->ns = 25.6f;
 	mat->ks = glm::vec4(0.3936f, 0.2719f, 0.1667f, 1.f);
 	mat->ka = glm::vec4(0.2125f, 0.1275f, 0.0540f, 1.f);
@@ -36,8 +42,8 @@ Material* createBronzeMaterial() {
 	return mat;
 }
 
-Material* Material::createDefaultMaterial() {
-	Material* mat = new Material("default", "");
+std::shared_ptr<Material> Material::createDefaultMaterial() {
+	std::shared_ptr<Material> mat = std::make_shared<Material>("default", "");
 	mat->ns = 100.f;
 	mat->ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
 	mat->ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
@@ -45,7 +51,7 @@ Material* Material::createDefaultMaterial() {
 	return mat;
 }
 
-Material* Material::createMaterial(MaterialType type)
+std::shared_ptr<Material> Material::createMaterial(MaterialType type)
 {
 	switch (type) {
 	case MaterialType::gold: return createGoldMaterial();
@@ -63,60 +69,56 @@ Material::Material(const std::string& name, const std::string& baseDir)
 
 Material::~Material()
 {
+	materialIndex = -2;
 	//delete diffuseTex;
 	//delete specularTex;
 	//delete emissionTex;
 	//delete normalMap;
 }
 
-int Material::loadTextures()
+void Material::loadTextures()
 {
-	if (loaded) return 0;
+	if (loaded) return;
 	loaded = true;
 
-	textures.reserve(2);
-	diffuseTex = loadTexture(baseDir, map_kd);
-	emissionTex = loadTexture(baseDir, map_ke);
-	specularTex = loadTexture(baseDir, map_ks);
-	normalMapTex = loadTexture(baseDir, map_bump);
-	dudvMapTex = loadTexture(baseDir, map_dudv);
-	return 0;
+	textures.reserve(5);
+	loadTexture(DIFFUSE_IDX, baseDir, map_kd);
+	loadTexture(EMISSION_IDX, baseDir, map_ke);
+	loadTexture(SPECULAR_IDX, baseDir, map_ks);
+	loadTexture(NORMAL_MAP_IDX, baseDir, map_bump);
+	loadTexture(DUDV_MAP_IDX, baseDir, map_dudv);
 }
 
-BoundTexture* Material::loadTexture(const std::string& baseDir, const std::string& name)
+void Material::loadTexture(int idx, const std::string& baseDir, const std::string& name)
 {
-	if (name.empty()) {
-		return nullptr;
+	BoundTexture tex;
+
+	if (!name.empty()) {
+
+		const char& ch = baseDir.at(baseDir.length() - 1);
+		std::string texturePath = (ch == u'/' ? baseDir : baseDir + "/") + name;
+
+		KI_INFO_SB("TEXTURE: " << texturePath);
+
+		tex.texture = ImageTexture::getTexture(texturePath, textureSpec);
 	}
 
-	const char& ch = baseDir.at(baseDir.length() - 1);
-	std::string texturePath = (ch == u'/' ? baseDir : baseDir + "/") + name;
-
-	KI_INFO_SB("TEXTURE: " << texturePath);
-
-	ImageTexture* texture = ImageTexture::getTexture(texturePath, textureSpec);
-	if (!texture) return nullptr;
-
-	BoundTexture* tex = new BoundTexture();
-	tex->texture = texture;
-
- 	textures.push_back(tex);
-
-	return tex;
+	textures.emplace_back(tex);
 }
 
 void Material::prepare()
 {
 	unsigned int unitIndex = 0;
 	for (auto & x : textures) {
-		if (x->unitIndex == -1) {
-			x->unitIndex = unitIndex++;
+		if (!x.texture) continue;
+		if (x.unitIndex == -1) {
+			x.unitIndex = unitIndex++;
 		}
-		x->texture->prepare();
+		x.texture->prepare();
 	}
 }
 
-//void Material::bind(Shader* shader)
+//void Material::bind(std::shared_ptr<Shader shader)
 //{
 //	TextureInfo& info = *shader->texture;
 //
@@ -138,29 +140,45 @@ void Material::prepare()
 //	}
 //}
 
-void Material::bindArray(Shader* shader, int index, bool bindTextureIDs)
+void Material::bindArray(std::shared_ptr<Shader> shader, int index, bool bindTextureIDs)
 {
 	if (textures.empty()) return;
 
-	if (diffuseTex) {
-		shader->textures[diffuseTex->unitIndex].set(diffuseTex->unitIndex);
+	{
+		auto& tex = textures[DIFFUSE_IDX];
+		if (tex.texture) {
+			shader->textures[tex.unitIndex].set(tex.unitIndex);
+		}
 	}
-	if (emissionTex) {
-		shader->textures[emissionTex->unitIndex].set(emissionTex->unitIndex);
+
+	{
+		auto& tex = textures[EMISSION_IDX];
+		if (tex.texture) {
+			shader->textures[tex.unitIndex].set(tex.unitIndex);
+		}
 	}
-	if (specularTex) {
-		shader->textures[specularTex->unitIndex].set(specularTex->unitIndex);
+	{
+		auto& tex = textures[DIFFUSE_IDX];
+		if (tex.texture) {
+			shader->textures[tex.unitIndex].set(tex.unitIndex);
+		}
 	}
-	if (normalMapTex) {
-		shader->textures[normalMapTex->unitIndex].set(normalMapTex->unitIndex);
+	{
+		auto& tex = textures[DIFFUSE_IDX];
+		if (tex.texture) {
+			shader->textures[tex.unitIndex].set(tex.unitIndex);
+		}
 	}
-	if (dudvMapTex) {
-		shader->textures[dudvMapTex->unitIndex].set(dudvMapTex->unitIndex);
+	{
+		auto& tex = textures[DUDV_MAP_IDX];
+		if (tex.texture) {
+			shader->textures[tex.unitIndex].set(tex.unitIndex);
+		}
 	}
 
 	if (bindTextureIDs) {
 		for (auto& x : textures) {
-			x->bind();
+			x.bind();
 		}
 	}
 }
@@ -174,11 +192,11 @@ MaterialUBO Material::toUBO()
 		ks,
 		ns,
 
-		diffuseTex ? diffuseTex->unitIndex : -1,
-		emissionTex ? emissionTex->unitIndex : -1,
-		specularTex ? specularTex->unitIndex : -1,
-		normalMapTex ? normalMapTex->unitIndex : -1,
-		dudvMapTex ? dudvMapTex->unitIndex : -1,
+		textures[DIFFUSE_IDX].unitIndex,
+		textures[EMISSION_IDX].unitIndex,
+		textures[SPECULAR_IDX].unitIndex,
+		textures[NORMAL_MAP_IDX].unitIndex,
+		textures[DUDV_MAP_IDX].unitIndex,
 
 		pattern,
 

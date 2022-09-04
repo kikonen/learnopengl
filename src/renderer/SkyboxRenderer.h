@@ -15,7 +15,7 @@ public:
 
 	void prepare() override;
 
-	void assign(Shader* shader);
+	void assign(std::shared_ptr<Shader> shader);
 	void bindTexture(const RenderContext& ctx);
 
 	void update(const RenderContext& ctx, NodeRegistry& registry) override;
@@ -29,6 +29,6 @@ private:
 
 	MeshBuffers buffers;
 
-	Shader* shader = nullptr;
+	std::shared_ptr<Shader> shader = nullptr;
 };
 

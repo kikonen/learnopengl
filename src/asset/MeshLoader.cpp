@@ -33,8 +33,8 @@ MeshLoader::~MeshLoader()
 {
 }
 
-ModelMesh* MeshLoader::load() {
-	ModelMesh* mesh = new ModelMesh(modelName, path);	
+std::unique_ptr<ModelMesh> MeshLoader::load() {
+	auto mesh = std::make_unique<ModelMesh>(modelName, path);
 	loadData(mesh->tris, mesh->vertices, mesh->materials);
 	return mesh;
 }
@@ -42,7 +42,7 @@ ModelMesh* MeshLoader::load() {
 int MeshLoader::loadData(
 		std::vector<glm::uvec3>&tris,
 		std::vector<Vertex*>&vertices,
-		std::vector<Material*>& materials)
+		std::vector<std::shared_ptr<Material>>& materials)
 {
 	ki::Timer t("loadData-" + modelName);
 
@@ -50,7 +50,7 @@ int MeshLoader::loadData(
 
 	std::string name;
 
-	std::map<std::string, Material*> loadedMaterials;
+	std::map<std::string, std::shared_ptr<Material>> loadedMaterials;
 	std::map<glm::vec3*, Vertex*> vertexMapping;
 
 	std::vector<glm::vec3> positions;
@@ -75,7 +75,7 @@ int MeshLoader::loadData(
 		defaultMaterial->used = false;
 		loadedMaterials[defaultMaterial->name] = defaultMaterial;
 
-		Material* material = NULL;
+		std::shared_ptr<Material> material = nullptr;
 		std::string line;
 		while (std::getline(file, line)) {
 			std::stringstream ss(line);
@@ -89,7 +89,7 @@ int MeshLoader::loadData(
 			if (k == "mtllib") {
 				loadMaterials(loadedMaterials, v1);
 				for (auto& x : loadedMaterials) {
-					Material* material = x.second;
+					auto& material = x.second;
 					if (!material->map_bump.empty()) {
 						tangents.reserve(positions.size());
 					}
@@ -120,8 +120,9 @@ int MeshLoader::loadData(
 				int group = stoi(v1);
 			}
 			else if (k == "usemtl") {
-				if (loadedMaterials.count(v1)) {
-					material = loadedMaterials[v1];
+				auto e = loadedMaterials.find(v1);
+				if (e != loadedMaterials.end()) {
+					material = e->second;
 				}
 			}
 			else if (k == "f") {
@@ -181,7 +182,7 @@ int MeshLoader::loadData(
 		int materialIndex = 0;
 		unsigned int unitIndex = 0;
 		for (auto const& x : loadedMaterials) {
-			Material* material = x.second;
+			std::shared_ptr<Material> material = x.second;
 			if (material->used) {
 				material->materialIndex = materialIndex++;
 				materials.push_back(material);
@@ -189,7 +190,9 @@ int MeshLoader::loadData(
 				if (loadTextures) {
 					material->loadTextures();
 					for (auto& tex : material->textures) {
-						tex->unitIndex = unitIndex++;
+						if (tex.texture) {
+							tex.unitIndex = unitIndex++;
+						}
 					}
 				}
 			}
@@ -236,7 +239,7 @@ int MeshLoader::resolveVertexIndex(
 	std::vector<glm::vec2>& textures,
 	std::vector<glm::vec3>& normals,
 	std::vector<glm::vec3>& tangents,
-	Material* material,
+	std::shared_ptr<Material> material,
 	int pi,
 	int ti,
 	int ni,
@@ -248,6 +251,7 @@ int MeshLoader::resolveVertexIndex(
 	if (overrideMaterials || !material) {
 		material = defaultMaterial;
 	}
+	// TODO KI danger with shared default material
 	material->used = true;
 
 	glm::vec3& pos = positions[pi];
@@ -354,7 +358,7 @@ void MeshLoader::createTangents(
 
 
 int MeshLoader::loadMaterials(
-	std::map<std::string, Material*>& materials,
+	std::map<std::string, std::shared_ptr<Material>>& materials,
 	std::string libraryName)
 {
 	KI_INFO_SB("LOADER::LOAD_MATERIAL_LIB: " << libraryName);
@@ -365,7 +369,7 @@ int MeshLoader::loadMaterials(
 	try {
 		file.open(materialPath);
 
-		Material* material = NULL;
+		std::shared_ptr<Material> material = nullptr;
 
 		std::string line;
 		while (std::getline(file, line)) {
@@ -378,7 +382,7 @@ int MeshLoader::loadMaterials(
 			ss >> v1 >> v2 >> v3;
 
 			if (k == "newmtl") {
-				material = new Material(v1, assets.modelsDir + path);
+				material = std::make_shared<Material>(v1, assets.modelsDir + path);
 				materials[v1] = material;
 			}
 			else if (k == "Ns") {

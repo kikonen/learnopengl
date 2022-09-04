@@ -62,7 +62,7 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
 
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
-		Shader* shader = nullptr;
+		std::shared_ptr<Shader> shader = nullptr;
 		Batch& batch = t->batch;
 
 		for (auto& e : x.second) {
@@ -105,7 +105,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, NodeRegistry& 
 
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
-		Shader* shader = nullptr;
+		std::shared_ptr<Shader> shader = nullptr;
 		Batch& batch = t->batch;
 
 		for (auto& e : x.second) {
@@ -142,7 +142,7 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nod
 	ctx.state.enable(GL_BLEND);
 	ctx.state.disable(GL_CULL_FACE);
 
-	const glm::vec3& viewPos = ctx.camera->getPos();
+	const glm::vec3& viewPos = ctx.camera.getPos();
 
 	// TODO KI discards nodes if *same* distance
 	std::map<float, Node*> sorted;
@@ -152,7 +152,7 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nod
 	}
 
 	NodeType* type = nullptr;
-	Shader* shader = nullptr;
+	std::shared_ptr<Shader> shader = nullptr;
 	Batch* batch = nullptr;
 
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {

@@ -17,14 +17,14 @@ public:
 	~Sprite();
 
 private:
-	static Material* getMaterial(
+	static std::shared_ptr<Material> getMaterial(
 		const Assets& assets, 
 		const std::string& path,
 		const std::string& normalMapPath);
 
 	static Mesh* getMesh(
 		const Assets& assets, 
-		Material* material);
+		std::shared_ptr<Material> material);
 
 public:
 	const glm::vec2 size;

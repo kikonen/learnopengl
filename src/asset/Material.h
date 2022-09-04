@@ -12,6 +12,10 @@ struct BoundTexture {
     Texture* texture = nullptr;
     int unitIndex = -1;
 
+    bool valid() {
+        return texture;
+    }
+
     void bind()
     {
         if (!texture) return;
@@ -56,19 +60,19 @@ class Material final
 public:
     Material(const std::string& name, const std::string& baseDir);
     ~Material();
-    int loadTextures();
+    void loadTextures();
 
     void prepare();
-    void bindArray(Shader* shader, int index, bool bindTextureIDs);
-    //void bind(Shader* shader);
+    void bindArray(std::shared_ptr<Shader> shader, int index, bool bindTextureIDs);
+    //void bind(std::shared_ptr<Shader> shader);
 
     MaterialUBO toUBO();
 
-    static Material* createDefaultMaterial();
+    static std::shared_ptr<Material> createDefaultMaterial();
 
-    static Material* createMaterial(MaterialType type);
+    static std::shared_ptr<Material> createMaterial(MaterialType type);
 private:
-    BoundTexture* loadTexture(const std::string& baseDir, const std::string& name);
+    void loadTexture(int idx, const std::string& baseDir, const std::string& name);
 
 public:
     const std::string name;
@@ -77,7 +81,7 @@ public:
 
     bool used = false;
 
-    std::string materialDir { "" };
+    std::string materialDir;
 
     TextureSpec textureSpec;
 
@@ -90,13 +94,7 @@ public:
 
     float tiling = 1.0f;
 
-    BoundTexture* diffuseTex = nullptr;
-    BoundTexture* emissionTex = nullptr;
-    BoundTexture* specularTex = nullptr;
-    BoundTexture* normalMapTex = nullptr;
-    BoundTexture* dudvMapTex = nullptr;
-
-    std::vector<BoundTexture*> textures;
+    std::vector<BoundTexture> textures;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     // ranges between 0 and 1000
@@ -107,20 +105,20 @@ public:
 
     // Similarly, the diffuse color is declared using Kd.
     glm::vec4 kd { 0.f, 0.f, 0.f, 1.f };
-    std::string map_kd { "" };
+    std::string map_kd;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     glm::vec4 ks { 0.f, 0.f, 0.f, 1.f };
-    std::string map_ks { "" };
+    std::string map_ks;
 
     // Ke/map_Ke     # emissive
     glm::vec4 ke { 0.f, 0.f, 0.f, 1.f };
-    std::string map_ke { "" };
+    std::string map_ke;
 
     // some implementations use 'map_bump' instead of 'bump' below
     // bump map(which by default uses luminance channel of the image)
     // bump lemur_bump.tga
-    std::string map_bump { "" };
+    std::string map_bump;
 
     // A material can also have an optical density for its surface. This is also known as index of refraction.
     float ni = 0.0f;
@@ -145,7 +143,7 @@ public:
     // 10. Casts shadows onto invisible surfaces
     int illum = 0;
 
-    std::string map_dudv { "" };
+    std::string map_dudv;
 private:
     bool loaded = false;
 };

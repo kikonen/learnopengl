@@ -27,6 +27,6 @@ private:
 
 	Batch batch;
 
-	Shader* particleShader = nullptr;
+	std::shared_ptr<Shader> particleShader = nullptr;
 	NodeType* type;
 };

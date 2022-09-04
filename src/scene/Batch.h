@@ -17,8 +17,8 @@ public:
 
 	void prepare(NodeType* type);
 	void update(unsigned int count);
-	void bind(const RenderContext& ctx, Shader* shader);
-	void draw(const RenderContext& ctx, Node* node, Shader* shader);
+	void bind(const RenderContext& ctx, std::shared_ptr<Shader> shader);
+	void draw(const RenderContext& ctx, Node* node, std::shared_ptr<Shader> shader);
 	void flush(const RenderContext& ctx, NodeType* type);
 
 public:

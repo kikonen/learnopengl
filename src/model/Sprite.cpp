@@ -3,12 +3,12 @@
 #include "asset/QuadMesh.h"
 
 
-Material* Sprite::getMaterial(
+std::shared_ptr<Material> Sprite::getMaterial(
 	const Assets& assets, 
 	const std::string& path,
 	const std::string& normalMapPath)
 {
-	Material* material = new Material(path, assets.spritesDir + "/");
+	std::shared_ptr<Material> material = std::make_shared<Material>(path, assets.spritesDir + "/");
 	material->ns = 100;
 	material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 	material->map_kd = path;
@@ -26,10 +26,10 @@ NodeType* Sprite::getNodeType(
 	NodeType* type = new NodeType(NodeType::nextID(), Shader::getShader(assets, TEX_TEXTURE, { DEF_USE_ALPHA }));
 	type->renderBack = true;
 
-	QuadMesh* mesh = new QuadMesh(path);
-	mesh->material = Sprite::getMaterial(assets, path, normalMapPath);
+	auto quad = std::make_unique<QuadMesh>(path);
+	quad->material = Sprite::getMaterial(assets, path, normalMapPath);
 
-	type->mesh = mesh;
+	type->mesh = std::unique_ptr<Mesh>(std::move(quad));
 
 	return type;
 }

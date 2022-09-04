@@ -54,16 +54,16 @@ struct TextureInfo;
 class Shader
 {
 public:
-    static Shader* getShader(
+    static std::shared_ptr<Shader> getShader(
         const Assets& assets,
         const std::string& name);
 
-    static Shader* getShader(
+    static std::shared_ptr<Shader> getShader(
         const Assets& assets,
         const std::string& name,
         const std::vector<std::string>& defines);
 
-    static Shader* getShader(
+    static std::shared_ptr<Shader> getShader(
         const Assets& assets, 
         const std::string& name,
         const std::string& geometryType,
@@ -79,7 +79,8 @@ public:
 
     void setUBO(const std::string& name, unsigned int UBO, unsigned int expectedSize);
 
-private:
+public:
+    // public due to shared_ptr
     Shader(
         const Assets& assets,
         const std::string& key,
@@ -87,8 +88,10 @@ private:
         const std::string& geometryType,
         const std::vector<std::string>& defines);
 
+    // public due to shared_ptr
     ~Shader();
 
+private:
     int createProgram();
 
      void appendDefines(std::vector<std::string>& lines);
@@ -99,6 +102,7 @@ private:
 
     //void prepareTextureUniform();
     void prepareTextureUniforms();
+
     GLint getUniformLoc(const std::string& name);
 
 public:

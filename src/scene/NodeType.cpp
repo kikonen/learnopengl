@@ -23,7 +23,7 @@ void NodeType::setBaseID(int baseId)
 	typeIDbase = baseId;
 }
 
-NodeType::NodeType(int typeID, Shader* defaultShader)
+NodeType::NodeType(int typeID, std::shared_ptr<Shader> defaultShader)
 	: typeID(typeID),
 	defaultShader(defaultShader)
 {
@@ -45,7 +45,7 @@ bool NodeType::hasRefraction()
 	return mesh->hasRefraction();
 }
 
-Material* NodeType::findMaterial(std::function<bool(Material&)> fn)
+std::shared_ptr<Material> NodeType::findMaterial(std::function<bool(Material&)> fn)
 {
 	if (!mesh) return nullptr;
 	return mesh->findMaterial(fn);
@@ -62,7 +62,7 @@ void NodeType::prepare(const Assets& assets)
 	if (!mesh) return;
 	mesh->prepare(assets);
 
-	Shader* shader = defaultShader;
+	std::shared_ptr<Shader> shader = defaultShader;
 	if (shader) {
 		shader->prepare();
 
@@ -85,7 +85,9 @@ void NodeType::prepare(const Assets& assets)
 	}
 }
 
-Shader* NodeType::bind(const RenderContext& ctx, Shader* shader)
+std::shared_ptr<Shader> NodeType::bind(
+	const RenderContext& ctx, 
+	std::shared_ptr<Shader> shader)
 {
 	if (!mesh) return nullptr;
 

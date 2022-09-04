@@ -21,5 +21,5 @@ private:
 	void drawSelectionStencil(const RenderContext& ctx, NodeRegistry& registry);
 
 private:
-	Shader* selectionShader = nullptr;
+	std::shared_ptr<Shader> selectionShader = nullptr;
 };

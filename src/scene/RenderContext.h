@@ -17,8 +17,8 @@ public:
 		const Assets& assets,
 		const RenderClock& clock,
 		GLState& state,
-		Scene* scene,
-		Camera* camera, 
+		std::shared_ptr<Scene> scene,
+		Camera& camera,
 		int width,
 		int height);
 
@@ -29,7 +29,7 @@ public:
 	void bindClipPlanesUBO() const;
 	void bindLightsUBO() const;
 
-	void bind(Shader* shader) const;
+	void bind(std::shared_ptr<Shader> shader) const;
 public:
 	const Assets& assets;
 
@@ -40,8 +40,8 @@ public:
 	const int width;
 	const int height;
 
-	Scene* scene;
-	Camera* camera;
+	std::shared_ptr<Scene> scene = nullptr;
+	Camera& camera;
 
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;

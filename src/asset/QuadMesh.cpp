@@ -49,7 +49,7 @@ bool QuadMesh::hasRefraction()
 	return material->refraction;
 }
 
-Material* QuadMesh::findMaterial(std::function<bool(Material&)> fn)
+std::shared_ptr<Material> QuadMesh::findMaterial(std::function<bool(Material&)> fn)
 {
 	if (fn(*material)) return material;
 	return nullptr;
@@ -67,7 +67,9 @@ void QuadMesh::prepare(const Assets& assets)
 
 	material->prepare();
 	for (auto const& t : material->textures) {
-		textureIDs.push_back(t->texture->textureID);
+		if (t.texture) {
+			textureIDs.push_back(t.texture->textureID);
+		}
 	}
 
 	// materials
@@ -169,7 +171,7 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
 	glBindVertexArray(0);
 }
 
-void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
+void QuadMesh::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
 {
 	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize);
 

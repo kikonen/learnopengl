@@ -143,7 +143,7 @@ void Batch::update(unsigned int count)
 	KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
-void Batch::bind(const RenderContext& ctx, Shader* shader)
+void Batch::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
 {
 	if (batchSize == 0) return;
 
@@ -154,7 +154,7 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 	}
 }
 
-void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
+void Batch::draw(const RenderContext& ctx, Node* node, std::shared_ptr<Shader> shader)
 {
 	if (batchSize == 0) {
 		node->bind(ctx, shader);

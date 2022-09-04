@@ -9,19 +9,19 @@
 
 namespace {
     // name + geom
-    std::map<std::string, Shader*> shaders;
+    std::map<std::string, std::shared_ptr<Shader>> shaders;
 
     std::mutex shaders_lock;
 }
 
-Shader* Shader::getShader(
+std::shared_ptr<Shader> Shader::getShader(
     const Assets& assets,
     const std::string& name)
 {
     return Shader::getShader(assets, name, "", {});
 }
 
-Shader* Shader::getShader(
+std::shared_ptr<Shader> Shader::getShader(
     const Assets& assets,
     const std::string& name,
     const std::vector<std::string>& defines)
@@ -29,7 +29,7 @@ Shader* Shader::getShader(
     return Shader::getShader(assets, name, "", defines);
 }
 
-Shader* Shader::getShader(
+std::shared_ptr<Shader> Shader::getShader(
     const Assets& assets, 
     const std::string& name, 
     const std::string& geometryType,
@@ -43,10 +43,16 @@ Shader* Shader::getShader(
         key += "_" + x;
     }
 
-    Shader* shader = shaders[key];
+    std::shared_ptr<Shader> shader = nullptr;
+    {
+        auto e = shaders.find(key);
+        if (e != shaders.end()) {
+            shader = e->second;
+        }
+    }
 
     if (!shader) {
-        shader = new Shader(assets, key, name, geometryType, defines);
+        shader = std::make_shared<Shader>(assets, key, name, geometryType, defines);
         shaders[key] = shader;
         shader->load();
     }
@@ -114,8 +120,9 @@ int Shader::prepare()
 
 GLint Shader::getUniformLoc(const std::string& name)
 {
-    if (uniformLocations.count(name)) {
-        return uniformLocations[name];
+    auto e = uniformLocations.find(name);
+    if (e != uniformLocations.end()) {
+        return e->second;
     }
 
     GLint vi = glGetUniformLocation(programId, name.c_str());
@@ -244,7 +251,7 @@ int Shader::createProgram() {
     shadowMap.init(this);
     normalMap.init(this); 
 
-    //drawInstanced.init(this);
+    //drawInstanced.init(*this);
 
     effect.init(this);
 

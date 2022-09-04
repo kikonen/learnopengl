@@ -47,7 +47,7 @@ bool ModelMesh::hasRefraction()
 	return refraction;
 }
 
-Material* ModelMesh::findMaterial(std::function<bool(Material&)> fn)
+std::shared_ptr<Material> ModelMesh::findMaterial(std::function<bool(Material&)> fn)
 {
 	for (auto& material : materials) {
 		if (fn(*material)) return material;
@@ -74,9 +74,10 @@ void ModelMesh::prepare(const Assets& assets)
 		reflection |= material->reflection > 0;
 		refraction |= material->refraction > 0;
 
-		for (auto const& t : material->textures) {
-			t->unitIndex = unitIndex++;
-			textureIDs.push_back(t->texture->textureID);
+		for (auto& t : material->textures) {
+			if (!t.texture) continue;
+			t.unitIndex = unitIndex++;
+			textureIDs.push_back(t.texture->textureID);
 		}
 	}
 
@@ -119,7 +120,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 				const glm::vec3& p = vertex->pos;
 				const glm::vec3& n = vertex->normal;
 				const glm::vec3& tan = vertex->tangent;
-				const Material* m = vertex->material;
+				const std::shared_ptr<Material> m = vertex->material;
 				const glm::vec2& t = vertex->texture;
 
 				vbo->pos.x = p.x;
@@ -203,7 +204,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 	glBindVertexArray(0);
 }
 
-void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
+void ModelMesh::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
 {
 	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize);
 

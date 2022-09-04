@@ -23,7 +23,7 @@ public:
 		const glm::vec3& rotation, 
 		const glm::vec2& size, 
 		unsigned int textureID, 
-		Shader* shader, 
+		std::shared_ptr<Shader> shader,
 		std::function<void(Viewport&)> binder = [](Viewport&) {});
 
 	void setTextureID(unsigned int textureID);
@@ -46,7 +46,7 @@ private:
 
 	unsigned int textureID;
 
-	Shader* shader;
+	std::shared_ptr<Shader> shader;
 	std::function<void(Viewport&)> binder;
 };
 

@@ -20,13 +20,13 @@ public:
 
 	~MeshLoader();
 
-	ModelMesh* load();
+	std::unique_ptr<ModelMesh> load();
 
 private:
 	int loadData(
 		std::vector<glm::uvec3>& tris,
 		std::vector<Vertex*>& vertices,
-		std::vector<Material*>& materials
+		std::vector<std::shared_ptr<Material>>& materials
 	);
 
 public:
@@ -34,7 +34,7 @@ public:
 	const std::string modelName;
 	const std::string path;
 
-	Material* defaultMaterial = nullptr;
+	std::shared_ptr<Material> defaultMaterial = nullptr;
 	bool overrideMaterials = false;
 	bool loadTextures = true;
 
@@ -46,7 +46,7 @@ private:
 		std::vector<glm::vec2>& textures,
 		std::vector<glm::vec3>& normals,
 		std::vector<glm::vec3>& tangents,
-		Material* material,
+		std::shared_ptr<Material> material,
 		int pi,
 		int ti,
 		int ni,
@@ -68,7 +68,10 @@ private:
 		glm::uvec3& tangenti);
 
 	void splitFragmentValue(const std::string& v, std::vector<std::string>& vv);
-	int loadMaterials(std::map<std::string, Material*>& materials, std::string libraryName);
+	int loadMaterials(
+		std::map<std::string, std::shared_ptr<Material>>& materials, 
+		std::string libraryName);
+
 	std::string resolveTexturePath(const std::string& line);
 };
 

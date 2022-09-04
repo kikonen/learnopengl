@@ -35,6 +35,8 @@ public:
 
 	void prepare();
 
+	void attachNodes();
+
 	void processEvents(RenderContext& ctx);
 	void update(RenderContext& ctx);
 	void bind(RenderContext& ctx);

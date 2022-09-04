@@ -25,7 +25,7 @@ void ParticleSystem::render(RenderContext& ctx)
 	ctx.state.disable(GL_CULL_FACE);
 
 	for (auto& w : particles) {
-		//Shader* shader;// = t->bind(ctx, nullptr);
+		//std::shared_ptr<Shader> shader;// = t->bind(ctx, nullptr);
 		//if (!shader) continue;
 		//shader->shadowMap.set(assets.shadowMapUnitIndex);
 

@@ -37,7 +37,7 @@ public:
 
     Window* window = nullptr;
 
-    Scene* currentScene = nullptr;
+    std::shared_ptr<Scene> currentScene = nullptr;
 
     RenderClock startClock;
 

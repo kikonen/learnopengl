@@ -9,14 +9,14 @@ void GLState::reload() {
 
 void GLState::enable(GLenum key)
 {
-	//if (enabled.count(key)) return;
+	//if (enabled.find(key) != enabled.end()) return;
 	glEnable(key);
 	enabled.insert(key);
 }
 
 void GLState::disable(GLenum key)
 {
-	//if (!enabled.count(key)) return;
+	//if (enabled.find(key) == enabled.end()) return;
 	glDisable(key);
 	enabled.erase(key);
 }

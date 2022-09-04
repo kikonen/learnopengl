@@ -104,6 +104,10 @@ void Scene::prepare()
 	//registry.addViewPort(waterMapRenderer->refractionDebugViewport);
 }
 
+void Scene::attachNodes()
+{
+	registry.attachNodes();
+}
 
 void Scene::processEvents(RenderContext& ctx) 
 {
@@ -111,8 +115,6 @@ void Scene::processEvents(RenderContext& ctx)
 
 void Scene::update(RenderContext& ctx)
 {
-	registry.attachNodes();
-
 	if (dirLight) {
 		dirLight->update(ctx);
 	}
@@ -200,15 +202,15 @@ void Scene::drawMirror(RenderContext& ctx)
 {
 	if (!showMirrorView) return;
 
-	Camera camera(ctx.camera->getPos(), ctx.camera->getFront(), ctx.camera->getUp());
-	camera.setZoom(ctx.camera->getZoom());
+	Camera camera(ctx.camera.getPos(), ctx.camera.getFront(), ctx.camera.getUp());
+	camera.setZoom(ctx.camera.getZoom());
 
-	glm::vec3 rot = ctx.camera->getRotation();
+	glm::vec3 rot = ctx.camera.getRotation();
 	//rot.y += 180;
 	rot.y += 180;
 	camera.setRotation(-rot);
 
-	RenderContext mirrorCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, &camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
+	RenderContext mirrorCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
 	mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 	mirrorCtx.bindMatricesUBO();
 

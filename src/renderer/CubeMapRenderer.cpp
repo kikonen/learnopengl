@@ -79,7 +79,7 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registr
 
 		Camera camera(center, cameraFront[i], cameraUp[i]);
 		camera.setZoom(90);
-		RenderContext ctx(mainCtx.assets, mainCtx.clock, mainCtx.state, mainCtx.scene, &camera, cubeMap->size, cubeMap->size);
+		RenderContext ctx(mainCtx.assets, mainCtx.clock, mainCtx.state, mainCtx.scene, camera, cubeMap->size, cubeMap->size);
 		ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
 		ctx.bindMatricesUBO();
 
@@ -100,7 +100,7 @@ void CubeMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry
 {
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
-		Shader* shader = t->bind(ctx, nullptr);
+		std::shared_ptr<Shader> shader = t->bind(ctx, nullptr);
 		//shader->hasReflectionMap.set(false);
 
 		Batch& batch = t->batch;
@@ -117,8 +117,8 @@ void CubeMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry
 
 Node* CubeMapRenderer::findCenter(const RenderContext& ctx, NodeRegistry& registry)
 {
-	const glm::vec3& cameraPos = ctx.camera->getPos();
-	const glm::vec3& cameraDir = ctx.camera->getViewFront();
+	const glm::vec3& cameraPos = ctx.camera.getPos();
+	const glm::vec3& cameraDir = ctx.camera.getViewFront();
 
 	std::map<float, Node*> sorted;
 	for (auto& x : registry.nodes) {

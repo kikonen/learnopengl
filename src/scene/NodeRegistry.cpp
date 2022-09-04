@@ -17,7 +17,7 @@ void NodeRegistry::addNode(Node* node)
 
 Node* NodeRegistry::getNode(int objectID)
 {
-	if (!idToNode.count(objectID)) return nullptr;
+	if (idToNode.find(objectID) == idToNode.end()) return nullptr;
 	return idToNode[objectID];
 }
 

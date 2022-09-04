@@ -11,17 +11,17 @@ public:
 	static int nextID();
 	static void setBaseID(int baseId);
 
-	NodeType(int typeID, Shader* defaultShader = nullptr);
+	NodeType(int typeID, std::shared_ptr<Shader> defaultShader = nullptr);
 	~NodeType();
 
 	bool hasReflection();
 	bool hasRefraction();
 
-	Material* findMaterial(std::function<bool(Material&)> fn);
+	std::shared_ptr<Material> findMaterial(std::function<bool(Material&)> fn);
 	void modifyMaterials(std::function<void(Material&)> fn);
 
 	void prepare(const Assets& assets);
-	Shader* bind(const RenderContext& ctx, Shader* shader);
+	std::shared_ptr<Shader> bind(const RenderContext& ctx, std::shared_ptr<Shader> shader);
 	void unbind(const RenderContext& ctx);
 
 public:
@@ -38,9 +38,9 @@ public:
 
 	glm::vec4 mirrorPlane;
 
-	Mesh* mesh = nullptr;
-	Shader* defaultShader = nullptr;
-	Shader* boundShader = nullptr;
+	std::unique_ptr<Mesh> mesh = nullptr;
+	std::shared_ptr<Shader> defaultShader = nullptr;
+	std::shared_ptr<Shader> boundShader = nullptr;
 
 	Batch batch;
 private:

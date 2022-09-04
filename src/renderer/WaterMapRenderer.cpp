@@ -81,18 +81,18 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 	// https://prideout.net/clip-planes
 	// reflection map
 	{
-		glm::vec3 pos = ctx.camera->getPos();
+		glm::vec3 pos = ctx.camera.getPos();
 		const float dist = pos.y - planePos.y;
 		pos.y -= dist * 2;
 
-		glm::vec3 rot = ctx.camera->getRotation();
+		glm::vec3 rot = ctx.camera.getRotation();
 		rot.x = -rot.x;
 
-		Camera camera(pos, ctx.camera->getFront(), ctx.camera->getUp());
-		camera.setZoom(ctx.camera->getZoom());
+		Camera camera(pos, ctx.camera.getFront(), ctx.camera.getUp());
+		camera.setZoom(ctx.camera.getZoom());
 		camera.setRotation(rot);
 
-		RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, &camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
+		RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
 		localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
 		ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
@@ -111,14 +111,14 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
 
 	// refraction map
 	{
-		glm::vec3 rot = ctx.camera->getRotation();
-		glm::vec3 pos = ctx.camera->getPos();
+		glm::vec3 rot = ctx.camera.getRotation();
+		glm::vec3 pos = ctx.camera.getPos();
 
-		Camera camera(pos, ctx.camera->getFront(), ctx.camera->getUp());
-		camera.setZoom(ctx.camera->getZoom());
+		Camera camera(pos, ctx.camera.getFront(), ctx.camera.getUp());
+		camera.setZoom(ctx.camera.getZoom());
 		camera.setRotation(rot);
 
-		RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, &camera, refractionBuffer->spec.width, refractionBuffer->spec.height);
+		RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, refractionBuffer->spec.width, refractionBuffer->spec.height);
 		localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
 		ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
@@ -153,7 +153,7 @@ void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 	for (auto& x : registry.nodes) {
 		NodeType* t = x.first;
 		//if (t->water || t->light) continue;
- 		Shader* shader = t->bind(ctx, nullptr);
+		std::shared_ptr<Shader> shader = t->bind(ctx, nullptr);
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);
@@ -172,8 +172,8 @@ void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 
 Water* WaterMapRenderer::findClosest(const RenderContext& ctx, NodeRegistry& registry)
 {
-	const glm::vec3& cameraPos = ctx.camera->getPos();
-	const glm::vec3& cameraDir = ctx.camera->getViewFront();
+	const glm::vec3& cameraPos = ctx.camera.getPos();
+	const glm::vec3& cameraDir = ctx.camera.getViewFront();
 
 	std::map<float, Node*> sorted;
 	for (auto& x : registry.nodes) {

@@ -27,7 +27,7 @@ TestSceneSetup::~TestSceneSetup()
 {
 }
 
-void TestSceneSetup::setup(Scene* scene)
+void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 {
 	NodeType::setBaseID(10000);
 
@@ -409,7 +409,7 @@ void TestSceneSetup::setupSpriteSkeleton()
 		glm::vec3 pos = glm::vec3(0, 5, 20) + assets.groundOffset;
 		for (int x = 0; x < 10; x++) {
 			for (int z = 0; z < 101; z++) {
-				Sprite* sprite = new Sprite(type, glm::vec2(1.5, 3));
+				auto sprite = new Sprite(type, glm::vec2(1.5, 3));
 				sprite->setPos(pos + glm::vec3(15 - x * 4, 1.5, 0.2 * z));
 				//sprite->setRotation(glm::vec3(0, 0, 180));
 				scene->registry.addNode(sprite);
@@ -421,7 +421,7 @@ void TestSceneSetup::setupSpriteSkeleton()
 void TestSceneSetup::setupTerrain()
 {
 	loader.addLoader([this]() {
-		Material* material = new Material("terrain", assets.texturesDir + "/");
+		std::shared_ptr<Material> material = std::make_shared<Material>("terrain", assets.texturesDir + "/");
 		material->textureSpec.mode = GL_REPEAT;
 		material->tiling = 60;
 		material->ns = 50;
@@ -430,7 +430,7 @@ void TestSceneSetup::setupTerrain()
 		//material->map_kd = "singing_brushes.png";
 		material->loadTextures();
 
-		Shader* shader = loader.getShader(TEX_TERRAIN);
+		auto shader = loader.getShader(TEX_TERRAIN);
 
 		TerrainGenerator generator(assets);
 
@@ -478,7 +478,7 @@ void TestSceneSetup::setupWaterBottom()
 void TestSceneSetup::setupWaterSurface()
 {
 	loader.addLoader([this]() {
-		Material* material = new Material("water_surface", assets.modelsDir);
+		std::shared_ptr<Material> material = std::make_shared<Material>("water_surface", assets.modelsDir);
 		material->ns = 150;
 		material->ks = glm::vec4(0.2f, 0.2f, 0.5f, 1.f);
 		material->kd = glm::vec4(0.0f, 0.1f, 0.8f, 1.f);
@@ -490,7 +490,7 @@ void TestSceneSetup::setupWaterSurface()
 		material->textureSpec.mode = GL_REPEAT;
 		//		material->pattern = 1;
 		material->loadTextures();
-		Shader* shader = loader.getShader(TEX_WATER);
+		std::shared_ptr<Shader> shader = loader.getShader(TEX_WATER);
 
 		TerrainGenerator generator(assets);
 
@@ -514,7 +514,7 @@ void TestSceneSetup::setupWaterSurface()
 void TestSceneSetup::setupEffectExplosion()
 {
 	loader.addLoader([this]() {
-		Shader* shader = loader.getShader(TEX_EFFECT);
+		std::shared_ptr<Shader> shader = loader.getShader(TEX_EFFECT);
 
 		TerrainGenerator generator(assets);
 

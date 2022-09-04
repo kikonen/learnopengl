@@ -42,7 +42,7 @@ bool InstancedNode::update(const RenderContext& ctx)
 	return updated;
 }
 
-void InstancedNode::bind(const RenderContext& ctx, Shader* shader)
+void InstancedNode::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
 {
 	Node::bind(ctx, shader);
 
@@ -56,7 +56,7 @@ void InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 
 void InstancedNode::draw(const RenderContext& ctx)
 {
-	Shader* shader = type->boundShader;
+	std::shared_ptr<Shader> shader = type->boundShader;
 	if (shader->selection) {
 		selectedBatch.flush(ctx, type);
 	}

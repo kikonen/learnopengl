@@ -32,15 +32,22 @@ int Test6::onSetup() {
 	//state.disable(GL_MULTISAMPLE);
 
 	if (useIMGUI) {
-		frameInit = new FrameInit(*window);
-		frame = new EditorFrame(*window);
+		frameInit = std::make_unique<FrameInit>(*window);
+		frame = std::make_unique<EditorFrame>(*window);
 	}
 
 	return 0;
 }
 
 int Test6::onRender(const RenderClock& clock) {
-	RenderContext ctx(assets, clock, state, currentScene, currentScene->getCamera(), window->width, window->height);
+	currentScene->attachNodes();
+
+	Camera* camera = currentScene->getCamera();
+	if (!camera) {
+		return 0;
+	}
+
+	RenderContext ctx(assets, clock, state, currentScene, *camera, window->width, window->height);
 	//ctx.useWireframe = true;
 	//ctx.useLight = false;
 
@@ -87,11 +94,11 @@ void Test6::onDestroy()
 {
 }
 
-Scene* Test6::loadScene()
+std::shared_ptr<Scene> Test6::loadScene()
 {
 	assets.batchSize = 1000;
 
-	Scene *scene = new Scene(assets);
+	auto scene = std::make_shared<Scene>(assets);
 
 	SceneFile file(assets, "scene/scene_full.yml");
 	file.load(scene);

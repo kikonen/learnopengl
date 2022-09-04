@@ -101,7 +101,7 @@ void SkyboxRenderer::prepare()
     }
 }
 
-void SkyboxRenderer::assign(Shader* shader)
+void SkyboxRenderer::assign(std::shared_ptr<Shader> shader)
 {
     shader->skybox.set(assets.skyboxUnitIndex);
 }

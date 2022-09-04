@@ -9,9 +9,9 @@ TerrainGenerator::TerrainGenerator(const Assets& assets)
 {
 }
 
-ModelMesh* TerrainGenerator::generateTerrain(Material* material)
+std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(std::shared_ptr<Material> material)
 {
-	ModelMesh* mesh = new ModelMesh("terrain");
+	auto mesh = std::make_unique<ModelMesh>("terrain");
 	mesh->materials.push_back(material);
 
 	Perlin perlin(-1);
@@ -61,9 +61,9 @@ ModelMesh* TerrainGenerator::generateTerrain(Material* material)
 	return mesh;
 }
 
-QuadMesh* TerrainGenerator::generateWater(Material* material)
+std::unique_ptr<QuadMesh> TerrainGenerator::generateWater(std::shared_ptr<Material> material)
 {
-	QuadMesh* mesh = new QuadMesh("water");
+	auto mesh = std::make_unique<QuadMesh>("water");
 	mesh->material = material;
 
 	return mesh;

@@ -30,22 +30,22 @@ public:
 	bool hasReflection() override;
 	bool hasRefraction() override;
 
-	Material* findMaterial(std::function<bool(Material&)> fn) override;
+	std::shared_ptr<Material> findMaterial(std::function<bool(Material&)> fn) override;
 	void modifyMaterials(std::function<void(Material&)> fn) override;
 
 	void prepare(const Assets& assets) override;
 	void prepareBuffers(MeshBuffers& curr) override;
-	void bind(const RenderContext& ctx, Shader* shader) override;
+	void bind(const RenderContext& ctx, std::shared_ptr<Shader> shader) override;
 	void draw(const RenderContext& ctx) override;
 	void drawInstanced(const RenderContext& ctx, int instanceCount) override;
 
 public:
-	//Material* defaultMaterial = nullptr;
+	//std::shared_ptr<Material> defaultMaterial = nullptr;
 
 	std::vector<glm::uvec3> tris;
 	std::vector<Vertex*> vertices;
 
-	std::vector<Material*> materials;
+	std::vector<std::shared_ptr<Material>> materials;
 	std::vector<GLuint> textureIDs;
 
 private:

@@ -12,7 +12,7 @@ public:
 		const glm::vec2& texture,
 		const glm::vec3& normal,
 		const glm::vec3& tangent,
-		const Material* material);
+		const std::shared_ptr<Material> material);
 	~Vertex();
 
 	bool operator==(const Vertex& b) const;
@@ -23,7 +23,7 @@ public:
 	const glm::vec3 normal;
 	const glm::vec3 tangent;
 
-	const Material* material;
+	const std::shared_ptr<Material> material;
 
 	int index = -1;
 };

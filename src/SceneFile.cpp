@@ -20,25 +20,26 @@ SceneFile::~SceneFile()
 {
 }
 
-Scene* SceneFile::load(Scene* scene)
+std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
 {
-	if (!scene) {
-		scene = new Scene(assets);
-	}
 	loader.scene = scene;
 
     std::ifstream fin(filename);
     YAML::Node doc = YAML::Load(fin);
 
-    loadMaterials(doc);
-    loadEntities(doc);
+	std::map<const std::string, std::shared_ptr<Material>> materials;
+
+    loadMaterials(doc, materials);
+    loadEntities(doc, materials);
 
 //    testYAML();
 
-    return scene;
+	return scene;
 }
 
-void SceneFile::loadEntities(const YAML::Node& doc) {
+void SceneFile::loadEntities(
+	const YAML::Node& doc,
+	std::map<const std::string, std::shared_ptr<Material>>& materials) {
 	const YAML::Node& entries = doc["entities"];
 
 	for (auto entry : entries) {
@@ -49,7 +50,7 @@ void SceneFile::loadEntities(const YAML::Node& doc) {
 		std::string materialName {};
 		std::string shaderName { TEX_TEXTURE };
 		std::vector<std::string> shaderDefinitions {};
-		std::map<std::string, bool> renderFlags {};
+		std::map<const std::string, bool> renderFlags {};
 		glm::vec3 pos { 0 };
 		glm::vec3 rotation{ 0 };
 		glm::vec4 mirrorPlane{ 0 };
@@ -158,69 +159,74 @@ void SceneLoaderTest::setupNodeWindow1()
 	});
 }*/
 
-//loader.addLoader([this, typeId, shaderName, shaderDefinitions, renderFlags, modelName, modelPath, pos, rotation, scale, materialName]() {
+	loader.addLoader([this, typeId, 
+		shaderName, shaderDefinitions, 
+		renderFlags, mirrorPlane, 
+		modelName, modelPath, 
+		pos, rotation, scale, 
+		materialName, materials]() {
 			NodeType* type = new NodeType(typeId, loader.getShader(shaderName, shaderDefinitions));
 
 			{
-				std::string flag{ "blend" };
-				if (renderFlags.count(flag)) {
-					type->blend = renderFlags[flag];
+				auto e = renderFlags.find("blend");
+				if (e != renderFlags.end()) {
+					type->blend = e->second;
 				}
 			}
 			{
-				std::string flag{ "render_back" };
-				if (renderFlags.count(flag)) {
-					type->renderBack = renderFlags[flag];
+				auto e = renderFlags.find("render_back");
+				if (e != renderFlags.end()) {
+					type->renderBack = e->second;
 				}
 			}
 			{
-				std::string flag{ "no_shadow" };
-				if (renderFlags.count(flag)) {
-					type->noShadow = renderFlags[flag];
+				auto e = renderFlags.find("no_shadow");
+				if (e != renderFlags.end()) {
+					type->noShadow = e->second;
 				}
 			}
 			bool mirror = false;
 			{
-				std::string flag{ "mirror" };
-				if (renderFlags.count(flag)) {
-					type->mirror = renderFlags[flag];
-				}
-
-				if (renderFlags.count(flag) && renderFlags[flag]) {
-					mirror = true;
+				auto e = renderFlags.find("mirror");
+				if (e != renderFlags.end()) {
+					type->mirror = e->second;
 					type->mirrorPlane = mirrorPlane;
+					mirror = true;
 				}
 			}
 			{
-				std::string flag{ "water" };
-				if (renderFlags.count(flag)) {
-					type->water = renderFlags[flag];
+				auto e = renderFlags.find("water");
+				if (e != renderFlags.end()) {
+					type->water = e->second;
 				}
 			}
 			{
-				std::string flag{ "light" };
-				if (renderFlags.count(flag)) {
-					type->light = renderFlags[flag];
+				auto e = renderFlags.find("light");
+				if (e != renderFlags.end()) {
+					type->light = e->second;
 				}
 			}
 			{
-				std::string flag{ "batch_mode" };
-				if (renderFlags.count(flag)) {
-					type->batchMode = renderFlags[flag];
+				auto e = renderFlags.find("batch_mode");
+				if (e != renderFlags.end()) {
+					type->batchMode = e->second;
 				}
 			}
 			{
-				std::string flag{ "wireframe" };
-				if (renderFlags.count(flag)) {
-					type->wireframe = renderFlags[flag];
+				auto e = renderFlags.find("wireframe");
+				if (e != renderFlags.end()) {
+					type->wireframe = e->second;
 				}
 			}
 
 			MeshLoader meshLoader(assets, modelName, modelPath);
 
-			Material* material = nullptr;
-			if (materials.count(materialName)) {
-				material = materials[materialName];
+			std::shared_ptr<Material> material = nullptr;
+			{
+				auto e = materials.find(materialName);
+				if (e != materials.end()) {
+					std::shared_ptr<Material> material = e->second;
+				}
 			}
 
 			if (material) {
@@ -244,24 +250,27 @@ void SceneLoaderTest::setupNodeWindow1()
 			node->setScale(scale);
 
 			loader.scene->registry.addNode(node);
-//		});
+		});
 	}
 }
 
-void SceneFile::loadMaterials(const YAML::Node& doc) {
+void SceneFile::loadMaterials(
+	const YAML::Node& doc,
+	std::map<const std::string, std::shared_ptr<Material>>& materials) {
 	const std::string materialPath = assets.modelsDir;
 
 	const YAML::Node& entries = doc["materials"];
 
 	for (auto entry : entries) {
-		Material* material = nullptr;
+		std::shared_ptr<Material> material = nullptr;
+
 		for (auto pair : entry) {
 			const std::string& k = pair.first.as<std::string>();
 			const YAML::Node& v = pair.second;
 
 			if (k == "name") {
 				const std::string& name = v.as<std::string>();
-				material = new Material(name, materialPath);
+				material = std::make_shared<Material>(name, materialPath);
 			}
 			else if (material) {
 				if (k == "ns") {
