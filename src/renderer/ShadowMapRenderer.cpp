@@ -15,7 +15,6 @@ ShadowMapRenderer::ShadowMapRenderer(const Assets& assets)
 ShadowMapRenderer::~ShadowMapRenderer()
 {
 	delete shadowBuffer;
-	delete debugViewport;
 }
 
 void ShadowMapRenderer::prepare()
@@ -29,7 +28,7 @@ void ShadowMapRenderer::prepare()
 	shadowBuffer = new ShadowBuffer({ assets.shadowMapSize, assets.shadowMapSize, { FrameBufferAttachment::getDepthTexture() } });
 	shadowBuffer->prepare();
 
-	debugViewport = new Viewport(
+	debugViewport = std::make_shared<Viewport>(
 		glm::vec3(-1 + 0.01, 1 - 0.01, 0), 
 		glm::vec3(0, 0, 0), 
 		glm::vec2(0.5f, 0.5f), 

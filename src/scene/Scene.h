@@ -99,10 +99,10 @@ private:
 	ParticleSystem* particleSystem = nullptr;
 
 	TextureBuffer* mirrorBuffer = nullptr;
-	Viewport* mirrorViewport = nullptr;
+	std::shared_ptr<Viewport> mirrorViewport;
 
 	TextureBuffer* mainBuffer = nullptr;
-	Viewport* mainViewport = nullptr;
+	std::shared_ptr<Viewport> mainViewport;
 
 	unsigned int pbo = -1;
 };

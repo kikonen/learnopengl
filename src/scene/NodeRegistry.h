@@ -21,7 +21,7 @@ public:
 
 	void selectNodeById(int objectID, bool append);
 
-	void addViewPort(Viewport* viewport);
+	void addViewPort(std::shared_ptr<Viewport> viewport);
 
 	void attachNodes();
 
@@ -35,7 +35,7 @@ public:
 	std::map<int, Node*> idToNode;
 	std::map<std::shared_ptr<NodeType>, std::vector<Node*>> nodes;
 
-	std::vector<Viewport*> viewports;
+	std::vector<std::shared_ptr<Viewport>> viewports;
 
 private:
 	std::vector<Node*> pendingNodes;

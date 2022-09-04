@@ -540,7 +540,7 @@ void TestSceneSetup::setupViewport1()
 	unsigned int color = 0x90ff2020;
 	texture->setData(&color, sizeof(unsigned int));
 
-	Viewport* viewport = new Viewport(
+	auto viewport = std::make_shared<Viewport>(
 		glm::vec3(-1, -0.75, 0),
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.25f, 0.25f),

@@ -26,7 +26,7 @@ private:
 public:
 	ShadowBuffer* shadowBuffer = nullptr;
 
-	Viewport* debugViewport = nullptr;
+	std::shared_ptr<Viewport> debugViewport;
 
 private:
 	std::shared_ptr<Shader> shadowShader = nullptr;

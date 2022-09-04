@@ -64,7 +64,7 @@ void ObjectIdRenderer::prepare()
 {
 	idShader->prepare();
 
-	debugViewport = new Viewport(
+	debugViewport = std::make_shared<Viewport>(
 		glm::vec3(-1.0, -0.5, 0),
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),

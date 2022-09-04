@@ -69,7 +69,7 @@ void Scene::prepare()
 	particleSystem->prepare();
 
 	{
-		mainViewport = new Viewport(
+		mainViewport = std::make_shared<Viewport>(
 			//glm::vec3(-0.75, 0.75, 0),
 			glm::vec3(-1.0f, 1.f, 0),
 			glm::vec3(0, 0, 0),
@@ -90,7 +90,7 @@ void Scene::prepare()
 		mirrorBuffer = new TextureBuffer({ 640, 480, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
 		mirrorBuffer->prepare();
 
-		mirrorViewport = new Viewport(
+		mirrorViewport = std::make_shared<Viewport>(
 			glm::vec3(0.5, 1, 0),
 			glm::vec3(0, 0, 0),
 			glm::vec2(0.5f, 0.5f),
@@ -327,7 +327,7 @@ void Scene::bindComponents(Node* node)
 int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double screenPosY)
 {
 	objectIdRenderer->render(ctx, registry);
-	return objectIdRenderer->getObjectId(ctx, screenPosX, screenPosY, mainViewport);
+	return objectIdRenderer->getObjectId(ctx, screenPosX, screenPosY, mainViewport.get());
 }
 
 void Scene::updateMainViewport(RenderContext& ctx)

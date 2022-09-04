@@ -21,10 +21,10 @@ private:
 	void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
-	Viewport* debugViewport = nullptr;
+	std::shared_ptr<Viewport> debugViewport;
 
 private:
-	std::shared_ptr<Shader> idShader = nullptr;
+	std::shared_ptr<Shader> idShader;
 
 	TextureBuffer* idBuffer = nullptr;
 };

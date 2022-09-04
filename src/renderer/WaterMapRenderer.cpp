@@ -33,14 +33,14 @@ void WaterMapRenderer::prepare()
 	//WaterNoiseGenerator generator;
 	//noiseTextureID = generator.generate();
 
-	reflectionDebugViewport = new Viewport(
+	reflectionDebugViewport = std::make_shared<Viewport>(
 		glm::vec3(0.5, 0.5, 0),
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),
 		reflectionBuffer->spec.attachments[0].textureID,
 		Shader::getShader(assets, TEX_VIEWPORT));
 
-	refractionDebugViewport = new Viewport(
+	refractionDebugViewport = std::make_shared<Viewport>(
 		glm::vec3(0.5, 0.0, 0),
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),

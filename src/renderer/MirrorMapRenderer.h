@@ -26,7 +26,7 @@ private:
 	Node* findClosest(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
-	Viewport* debugViewport = nullptr;
+	std::shared_ptr<Viewport> debugViewport;
 
 private:
 	float nearPlane = 0.1f;
