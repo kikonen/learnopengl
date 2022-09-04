@@ -15,12 +15,11 @@ CubeMapRenderer::CubeMapRenderer(const Assets& assets)
 
 CubeMapRenderer::~CubeMapRenderer()
 {
-	delete cubeMap;
 }
 
 void CubeMapRenderer::prepare()
 {
-	cubeMap = new DynamicCubeMap(assets.cubeMapSize);
+	cubeMap = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
 	cubeMap->prepare();
 }
 

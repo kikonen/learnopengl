@@ -29,5 +29,5 @@ private:
 	float nearPlane = 0.1f;
 	float farPlane = 1000.0f;
 
-	DynamicCubeMap* cubeMap = nullptr;
+	std::unique_ptr<DynamicCubeMap> cubeMap;
 };
