@@ -14,11 +14,10 @@
 Engine::Engine() {
 	debug = false;
 	throttleFps = FPS_15;
-	window = new Window(*this);
+	window = std::make_unique<Window>(*this);
 }
 
 Engine::~Engine() {
-	delete window;
 }
 
 int Engine::init() {

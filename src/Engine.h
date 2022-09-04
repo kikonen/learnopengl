@@ -35,9 +35,9 @@ public:
     float throttleFps;
     bool useIMGUI = false;
 
-    Window* window = nullptr;
+    std::unique_ptr<Window> window;
 
-    std::shared_ptr<Scene> currentScene = nullptr;
+    std::shared_ptr<Scene> currentScene;
 
     RenderClock startClock;
 
