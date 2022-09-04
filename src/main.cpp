@@ -13,8 +13,7 @@ int main()
     Log::init();
     KI_INFO("START");
 
-    Engine* engine = new Test6();
-    Engine::current = engine;
+    auto engine = std::make_unique<Test6>();
 
     KI_INFO("START: ENGINE INIT");
     if (engine->init()) {
@@ -24,8 +23,6 @@ int main()
     KI_INFO("DONE: ENGINE INIT");
 
     engine->run();
-
-    delete engine;
 
     KI_INFO("DONE");
 

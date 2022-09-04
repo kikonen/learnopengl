@@ -41,8 +41,6 @@ public:
 
     RenderClock startClock;
 
-    static Engine* current;
-
     Assets assets;
 
 protected:

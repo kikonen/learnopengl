@@ -9,7 +9,7 @@
 #include "ki/GL.h"
 #include "ki/Timer.h"
 
-Engine* Engine::current = nullptr;
+//std::shared_ptr<Engine> Engine::current = nullptr;
 
 Engine::Engine() {
 	debug = false;
