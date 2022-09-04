@@ -23,7 +23,7 @@ int Node::nextID()
 	return ++objectIDbase;
 }
 
-Node::Node(NodeType* type)
+Node::Node(std::shared_ptr<NodeType> type)
 	: type(type)
 {
 	objectID = nextID();

@@ -111,7 +111,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (auto& x : registry.nodes) {
-		NodeType* t = x.first;
+		auto t = x.first;
 		t->bind(ctx, idShader);
 
 		Batch& batch = t->batch;

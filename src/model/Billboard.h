@@ -6,6 +6,6 @@
 class Billboard : public Node
 {
 public:
-	Billboard(NodeType* type);
+	Billboard(std::shared_ptr<NodeType> type);
 };
 

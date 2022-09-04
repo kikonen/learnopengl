@@ -8,12 +8,12 @@
 class Sprite : public Node
 {
 public:
-	static NodeType* getNodeType(
+	static std::shared_ptr<NodeType> getNodeType(
 		const Assets& assets, 
 		const std::string& path,
 		const std::string& normalMapPath);
 
-	Sprite(NodeType* type, glm::vec2 size);
+	Sprite(std::shared_ptr<NodeType> type, glm::vec2 size);
 	~Sprite();
 
 private:

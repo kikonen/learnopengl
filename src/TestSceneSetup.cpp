@@ -71,7 +71,7 @@ void TestSceneSetup::setupCamera()
 	glm::vec3 up = glm::vec3(0, 1, 0);
 	Camera* camera = new Camera(pos, front, up);
 
-	NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+	auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "player");
 	type->mesh = loader.load();
 
@@ -113,7 +113,7 @@ void TestSceneSetup::setupLightDirectional()
 	}
 
 	loader.addLoader([this, light]() {
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_LIGHT));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_LIGHT));
 		type->light = true;
 		type->noShadow = true;
 
@@ -177,7 +177,7 @@ void TestSceneSetup::setupLightMoving()
 	}
 
 	loader.addLoader([this, lights]() {
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_LIGHT));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_LIGHT));
 		type->light = true;
 		type->noShadow = true;
 		//type->wireframe = true;
@@ -205,7 +205,7 @@ void TestSceneSetup::setupLightMoving()
 void TestSceneSetup::setupNodeBrickwallBox()
 {
 	loader.addLoader([this]() {
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 		type->renderBack = true;
 
 		MeshLoader loader(assets, "brickwall2");
@@ -244,7 +244,7 @@ void TestSceneSetup::setupNodeBrickwallBox()
 void TestSceneSetup::setupNodeCube4()
 {
 	loader.addLoader([this]() {
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "texture_cube_4");
 		type->mesh = loader.load();
 
@@ -258,7 +258,7 @@ void TestSceneSetup::setupNodeCube4()
 void TestSceneSetup::setupNodeCubes()
 {
 	loader.addLoader([this]() {
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "texture_cube_3");
 		type->mesh = loader.load();
 
@@ -280,7 +280,7 @@ void TestSceneSetup::setupNodeCubes()
 void TestSceneSetup::setupNodeActive()
 {
 	loader.addLoader([this]() {
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "texture_cube");
 		type->mesh = loader.load();
 
@@ -294,7 +294,7 @@ void TestSceneSetup::setupNodeActive()
 void TestSceneSetup::setupNodeBrickCube()
 {
 	loader.addLoader([this]() {
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "texture_cube");
 		type->mesh = loader.load();
 
@@ -309,7 +309,7 @@ void TestSceneSetup::setupNodePlanet()
 	std::lock_guard<std::mutex> lock(planet_lock);
 
 	planetFutureIndex = loader.addLoader([this]() {
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 		MeshLoader loader(assets, "planet", "/planet/");
 		type->mesh = loader.load();
 		type->modifyMaterials([](Material& m) { m.fogRatio = 0; });
@@ -340,7 +340,7 @@ void TestSceneSetup::setupNodePlanet()
 			light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
 		}
 
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_LIGHT));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_LIGHT));
 		{
 			type->light = true;
 			type->noShadow = true;
@@ -367,7 +367,7 @@ void TestSceneSetup::setupNodeAsteroid()
 	loader.addLoader([this]() {
 		glm::vec3 planetPos = glm::vec3(10, 100, 100);
 
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 		{
 			MeshLoader loader(assets, "rock", "/rock/");
 			type->mesh = loader.load();
@@ -385,7 +385,7 @@ void TestSceneSetup::setupNodeAsteroid()
 void TestSceneSetup::setupNodeAsteroidBelt()
 {
 	loader.addLoader([this]() {
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 		type->batchMode = false;
 
 		MeshLoader loader(assets, "rock", "/rock/");
@@ -403,8 +403,8 @@ void TestSceneSetup::setupNodeAsteroidBelt()
 void TestSceneSetup::setupSpriteSkeleton()
 {
 	loader.addLoader([this]() {
-		//NodeType* type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "Skeleton_VH_normal.PNG");
-		NodeType* type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "");
+		//auto type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "Skeleton_VH_normal.PNG");
+		auto type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "");
 
 		glm::vec3 pos = glm::vec3(0, 5, 20) + assets.groundOffset;
 		for (int x = 0; x < 10; x++) {
@@ -436,7 +436,7 @@ void TestSceneSetup::setupTerrain()
 
 		for (int x = 0; x < 2; x++) {
 			for (int z = 0; z < 2; z++) {
-				NodeType* type = new NodeType(NodeType::nextID(), shader);
+				auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
 				//type->renderBack = true;
 				type->noShadow = true;
 				type->mesh = generator.generateTerrain(material);
@@ -451,7 +451,7 @@ void TestSceneSetup::setupTerrain()
 void TestSceneSetup::setupWaterBottom()
 {
 	loader.addLoader([this]() {
-		NodeType* type = new NodeType(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 		//type->renderBack = true;
 		type->noShadow = true;
 		{
@@ -494,7 +494,7 @@ void TestSceneSetup::setupWaterSurface()
 
 		TerrainGenerator generator(assets);
 
-		NodeType* type = new NodeType(NodeType::nextID(), shader);
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
 		type->renderBack = true;
 		type->water = true;
 //		type->blend = true;
@@ -518,7 +518,7 @@ void TestSceneSetup::setupEffectExplosion()
 
 		TerrainGenerator generator(assets);
 
-		NodeType* type = new NodeType(NodeType::nextID(), shader);
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
 		type->renderBack = true;
 		type->noShadow = true;
 

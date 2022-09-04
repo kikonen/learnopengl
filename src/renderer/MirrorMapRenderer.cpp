@@ -105,7 +105,7 @@ void MirrorMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& regist
 	ctx.state.enable(GL_CLIP_DISTANCE0);
 
 	for (auto& x : registry.nodes) {
-		NodeType* t = x.first;
+		auto t = x.first;
 		std::shared_ptr<Shader> shader = t->bind(ctx, nullptr);
 
 		Batch& batch = t->batch;

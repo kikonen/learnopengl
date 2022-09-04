@@ -61,7 +61,7 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
 	std::vector<Node*> blendedNodes;
 
 	for (auto& x : registry.nodes) {
-		NodeType* t = x.first;
+		auto t = x.first;
 		std::shared_ptr<Shader> shader = nullptr;
 		Batch& batch = t->batch;
 
@@ -104,7 +104,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, NodeRegistry& 
 	ctx.state.disable(GL_DEPTH_TEST);
 
 	for (auto& x : registry.nodes) {
-		NodeType* t = x.first;
+		auto t = x.first;
 		std::shared_ptr<Shader> shader = nullptr;
 		Batch& batch = t->batch;
 
@@ -151,8 +151,8 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nod
 		sorted[distance] = node;
 	}
 
-	NodeType* type = nullptr;
-	std::shared_ptr<Shader> shader = nullptr;
+	std::shared_ptr<NodeType> type;
+	std::shared_ptr<Shader> shader;
 	Batch* batch = nullptr;
 
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {

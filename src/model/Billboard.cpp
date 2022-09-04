@@ -1,6 +1,6 @@
 #include "Billboard.h"
 
-Billboard::Billboard(NodeType* type)
+Billboard::Billboard(std::shared_ptr<NodeType> type)
 	: Node(type)
 {
 }

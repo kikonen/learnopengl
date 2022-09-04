@@ -31,6 +31,7 @@ MeshLoader::MeshLoader(
 
 MeshLoader::~MeshLoader()
 {
+	KI_INFO_SB("MESH_LOADER: deleted: " << modelName);
 }
 
 std::unique_ptr<ModelMesh> MeshLoader::load() {

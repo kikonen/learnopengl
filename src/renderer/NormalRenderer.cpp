@@ -24,7 +24,7 @@ void NormalRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 void NormalRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
 {
 	for (auto& x : registry.nodes) {
-		NodeType* t = x.first;
+		auto t = x.first;
 		t->bind(ctx, normalShader);
 
 		Batch& batch = t->batch;

@@ -18,12 +18,12 @@ std::shared_ptr<Material> Sprite::getMaterial(
 	return material;
 }
 
-NodeType* Sprite::getNodeType(
+std::shared_ptr<NodeType> Sprite::getNodeType(
 	const Assets& assets, 
 	const std::string& path,
 	const std::string& normalMapPath)
 {
-	NodeType* type = new NodeType(NodeType::nextID(), Shader::getShader(assets, TEX_TEXTURE, { DEF_USE_ALPHA }));
+	auto type = std::make_shared<NodeType>(NodeType::nextID(), Shader::getShader(assets, TEX_TEXTURE, { DEF_USE_ALPHA }));
 	type->renderBack = true;
 
 	auto quad = std::make_unique<QuadMesh>(path);
@@ -34,7 +34,7 @@ NodeType* Sprite::getNodeType(
 	return type;
 }
 
-Sprite::Sprite(NodeType* type, glm::vec2 size)
+Sprite::Sprite(std::shared_ptr<NodeType> type, glm::vec2 size)
 	: Node(type),
 	size(size)
 {

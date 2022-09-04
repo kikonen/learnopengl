@@ -74,6 +74,7 @@ Material::~Material()
 	//delete specularTex;
 	//delete emissionTex;
 	//delete normalMap;
+	KI_INFO_SB("MATERIAL: " << name << " deleted");
 }
 
 void Material::loadTextures()

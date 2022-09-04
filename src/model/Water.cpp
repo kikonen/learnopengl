@@ -1,6 +1,6 @@
 #include "Water.h"
 
-Water::Water(NodeType* type, int worldX, int worldY, int worldZ)
+Water::Water(std::shared_ptr<NodeType> type, int worldX, int worldY, int worldZ)
 	: Node(type), worldX(worldX), worldY(worldY), worldZ(worldZ)
 {
 }

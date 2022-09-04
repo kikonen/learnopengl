@@ -7,7 +7,7 @@
 class Terrain : public Node
 {
 public:
-	Terrain(NodeType* type, int worldX, int worldY, int worldZ);
+	Terrain(std::shared_ptr<NodeType> type, int worldX, int worldY, int worldZ);
 	~Terrain();
 
 	void prepare(const Assets& assets) override;

@@ -14,7 +14,7 @@ class Light;
 class Node
 {
 public:
-	Node(NodeType* type);
+	Node(std::shared_ptr<NodeType> type);
 	virtual ~Node();
 
 	virtual void prepare(const Assets& assets);
@@ -42,7 +42,7 @@ protected:
 public:
 	int objectID = 0;
 
-	NodeType* type = nullptr;
+	std::shared_ptr<NodeType> type;
 
 	bool selected = false;
 

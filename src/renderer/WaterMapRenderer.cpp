@@ -151,11 +151,11 @@ void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 	ctx.state.enable(GL_CLIP_DISTANCE0);
 
 	for (auto& x : registry.nodes) {
-		NodeType* t = x.first;
+		auto t = x.first;
 		//if (t->water || t->light) continue;
 		std::shared_ptr<Shader> shader = t->bind(ctx, nullptr);
 
-		Batch& batch = t->batch;
+		auto& batch = t->batch;
 		batch.bind(ctx, shader);
 
 		for (auto& e : x.second) {

@@ -6,7 +6,7 @@
 class Water final : public Node
 {
 public:
-	Water(NodeType* type, int worldX, int worldY, int worldZ);
+	Water(std::shared_ptr<NodeType> type, int worldX, int worldY, int worldZ);
 	~Water();
 
 	void prepare(const Assets& assets) override;

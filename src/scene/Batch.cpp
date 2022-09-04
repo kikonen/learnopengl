@@ -34,6 +34,11 @@ int Batch::size()
 	return modelMatrices.size();
 }
 
+void Batch::prepare(std::shared_ptr<NodeType> type)
+{
+	prepare(type.get());
+}
+
 void Batch::prepare(NodeType* type)
 {
 	if (staticBuffer) {
@@ -167,6 +172,11 @@ void Batch::draw(const RenderContext& ctx, Node* node, std::shared_ptr<Shader> s
 	if (modelMatrices.size() < batchSize) return;
 
 	flush(ctx, node->type);
+}
+
+void Batch::flush(const RenderContext& ctx, std::shared_ptr<NodeType> type)
+{
+	flush(ctx, type.get());
 }
 
 void Batch::flush(const RenderContext& ctx, NodeType* type)

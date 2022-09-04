@@ -42,6 +42,8 @@ Scene::~Scene()
 	delete normalRenderer;
 
 	delete particleSystem;
+
+	KI_INFO_SB("SCENE: deleted");
 }
 
 void Scene::prepare()

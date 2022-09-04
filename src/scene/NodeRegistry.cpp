@@ -42,7 +42,7 @@ void NodeRegistry::selectNodeById(int objectID, bool append)
 	}
 }
 
-void NodeRegistry::addViewPort(Viewport* viewport)
+void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport)
 {
 	std::lock_guard<std::mutex> lock(load_lock);
 	viewports.push_back(viewport);
@@ -53,7 +53,7 @@ void NodeRegistry::attachNodes()
 	std::lock_guard<std::mutex> lock(load_lock);
 	if (pendingNodes.empty()) return;
 
-	std::map<NodeType*, std::vector<Node*>> newNodes;
+	std::map<std::shared_ptr<NodeType>, std::vector<Node*>> newNodes;
 
 	{
 		for (auto e : pendingNodes) {
@@ -63,7 +63,7 @@ void NodeRegistry::attachNodes()
 	}
 
 	for (auto& x : newNodes) {
-		NodeType* t = x.first;
+		auto t = x.first;
 		t->batch.batchSize = assets.batchSize;
 		KI_GL_CALL(t->prepare(assets));
 

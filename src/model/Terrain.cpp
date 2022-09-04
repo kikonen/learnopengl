@@ -3,7 +3,7 @@
 #include <vector>
 
 
-Terrain::Terrain(NodeType* type, int worldX, int worldY, int worldZ)
+Terrain::Terrain(std::shared_ptr<NodeType> type, int worldX, int worldY, int worldZ)
 	: Node(type), worldX(worldX), worldY(worldY), worldZ(worldZ)
 {
 }

@@ -99,7 +99,7 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registr
 void CubeMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
 {
 	for (auto& x : registry.nodes) {
-		NodeType* t = x.first;
+		auto t = x.first;
 		std::shared_ptr<Shader> shader = t->bind(ctx, nullptr);
 		//shader->hasReflectionMap.set(false);
 

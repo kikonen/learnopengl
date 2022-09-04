@@ -86,7 +86,7 @@ void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 void ShadowMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
 {
 	for (auto& x : registry.nodes) {
-		NodeType* t = x.first;
+		auto t = x.first;
 		if (t->noShadow) continue;
 		std::shared_ptr<Shader> shader = t->bind(ctx, shadowShader);
 

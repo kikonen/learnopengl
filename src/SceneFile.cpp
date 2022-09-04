@@ -126,7 +126,7 @@ void SceneLoaderTest::setupNodeMaterialBalls()
 
 		int index = 0;
 		for (auto mt : materialTypes) {
-			NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE));
+			auto type = std::make_shared<NodeType>(NodeType::nextID(), getShader(TEX_TEXTURE));
 
 			MeshLoader loader(assets, "water_ball");
 			loader.defaultMaterial = Material::createMaterial(mt);
@@ -145,7 +145,7 @@ void SceneLoaderTest::setupNodeMaterialBalls()
 void SceneLoaderTest::setupNodeWindow1()
 {
 	addLoader([this]() {
-		NodeType* type = new NodeType(NodeType::nextID(), getShader(TEX_TEXTURE, { DEF_USE_ALPHA }));
+		auto type = std::make_shared<NodeType>(NodeType::nextID(), getShader(TEX_TEXTURE, { DEF_USE_ALPHA }));
 		type->blend = true;
 		type->renderBack = true;
 
@@ -165,7 +165,7 @@ void SceneLoaderTest::setupNodeWindow1()
 		modelName, modelPath, 
 		pos, rotation, scale, 
 		materialName, materials]() {
-			NodeType* type = new NodeType(typeId, loader.getShader(shaderName, shaderDefinitions));
+			auto type = std::make_shared<NodeType>(typeId, loader.getShader(shaderName, shaderDefinitions));
 
 			{
 				auto e = renderFlags.find("blend");
@@ -244,7 +244,7 @@ void SceneLoaderTest::setupNodeWindow1()
 				});
 			}
 
-			Node* node = new Node(type);
+			auto node = new Node(type);
 			node->setPos(pos + assets.groundOffset);
 			node->setRotation(rotation);
 			node->setScale(scale);
