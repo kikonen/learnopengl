@@ -9,7 +9,7 @@
 #include "util/Log.h"
 
 namespace {
-	std::map<std::string, Image*> images;
+	std::map<const std::string, std::unique_ptr<Image>> images;
 
 	std::mutex images_lock;
 	std::mutex load_lock;
@@ -19,12 +19,14 @@ Image* Image::getImage(const std::string& path)
 {
 	std::lock_guard<std::mutex> lock(images_lock);
 
-	Image* image = images[path];
-	if (!image) {
-		image = new Image(path);
-		images[path] = image;
+	const std::string cacheKey = path;
+
+	auto e = images.find(cacheKey);
+	if (e == images.end()) {
+		images[cacheKey] = std::make_unique<Image>(path);
+		e = images.find(cacheKey);
 	}
-	return image;
+	return e->second.get();
 }
 
 
@@ -42,12 +44,12 @@ Image::~Image()
 // NOTE KI *NOT* thread safe
 // https://github.com/nothings/stb/issues/309
 int Image::load(bool flip) {
+	std::lock_guard<std::mutex> lock(load_lock);
+
 	if (loaded) {
 		return res;
 	}
 	loaded = true;
-
-	std::lock_guard<std::mutex> lock(load_lock);
 
 	flipped = flip;
 	stbi_set_flip_vertically_on_load(flip);

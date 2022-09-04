@@ -15,12 +15,14 @@ public:
 
 	void prepare() override;
 
+	bool isValid() { return valid; }
 private:
-	int load();
+	void load();
 
 private:
+	bool valid = false;
 	bool prepared = false;
 
-	Image* image = nullptr;
+	std::unique_ptr<Image> image;
 };
 

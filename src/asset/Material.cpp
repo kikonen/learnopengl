@@ -101,7 +101,10 @@ void Material::loadTexture(int idx, const std::string& baseDir, const std::strin
 
 		KI_INFO_SB("TEXTURE: " << texturePath);
 
-		tex.texture = ImageTexture::getTexture(texturePath, textureSpec);
+		auto texture = ImageTexture::getTexture(texturePath, textureSpec);
+		if (texture->isValid()) {
+			tex.texture = texture;
+		}
 	}
 
 	textures.emplace_back(tex);

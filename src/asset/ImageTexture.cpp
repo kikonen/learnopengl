@@ -7,7 +7,7 @@
 namespace {
 	const int MIP_MAP_LEVELS = 3;
 
-	std::map<std::string, ImageTexture*> textures;
+	std::map<const std::string, std::unique_ptr<ImageTexture>> textures;
 
 	std::mutex textures_lock;
 }
@@ -16,15 +16,15 @@ ImageTexture* ImageTexture::getTexture(const std::string& path, const TextureSpe
 {
 	std::lock_guard<std::mutex> lock(textures_lock);
 
-	std::string cacheKey = path + "_" + std::to_string(spec.mode);
+	const std::string cacheKey = path + "_" + std::to_string(spec.mode);
 
-	ImageTexture* tex = textures[cacheKey];
-	if (!tex) {
-		tex = new ImageTexture(path, spec);
-		int res = tex->load();
-		textures[path] = tex;
+	auto e = textures.find(cacheKey);
+	if (e == textures.end()) {
+		textures[cacheKey] = std::make_unique<ImageTexture>(path, spec);
+		e = textures.find(cacheKey);
+		e->second->load();
 	}
-	return tex;
+	return e->second.get();
 }
 
 ImageTexture::ImageTexture(const std::string& path, const TextureSpec& spec)
@@ -34,7 +34,6 @@ ImageTexture::ImageTexture(const std::string& path, const TextureSpec& spec)
 
 ImageTexture::~ImageTexture()
 {
-	delete image;
 }
 
 void ImageTexture::prepare()
@@ -42,7 +41,7 @@ void ImageTexture::prepare()
 	if (prepared) return;
 	prepared = true;
 
-	if (!image) return;
+	if (!valid) return;
 
 	if (image->channels == 4) {
 		format = GL_RGBA;
@@ -72,17 +71,15 @@ void ImageTexture::prepare()
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-	delete image;
-	image = nullptr;
+	image.reset();
 }
 
-int ImageTexture::load() {
-	Image* tmp = new Image(name);
-	int res = tmp->load(true);
+void ImageTexture::load() {
+	image = std::make_unique<Image>(name);
+	int res = image->load(true);
 	if (res) {
-		delete tmp;
-		tmp = nullptr;
+		image.reset();
+		return;
 	}
-	image = tmp;
-	return res;
+	valid = true;
 }
