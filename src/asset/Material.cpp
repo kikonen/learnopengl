@@ -122,29 +122,7 @@ void Material::prepare()
 	}
 }
 
-//void Material::bind(std::shared_ptr<Shader shader)
-//{
-//	TextureInfo& info = *shader->texture;
-//
-//	if (diffuseTex) {
-//		info.diffuseTex->set(diffuseTex->unitIndex);
-//	}
-//	if (emissionTex) {
-//		info.emissionTex->set(emissionTex->unitIndex);
-//	}
-//	if (specularTex) {
-//		info.specularTex->set(specularTex->unitIndex);
-//	}
-//	if (normalMapTex) {
-//		info.normalMap->set(normalMapTex->unitIndex);
-//	}
-//
-//	for (auto & x : textures) {
-//		x->bind();
-//	}
-//}
-
-void Material::bindArray(std::shared_ptr<Shader> shader, int index, bool bindTextureIDs)
+void Material::bindArray(Shader* shader, int index, bool bindTextureIDs)
 {
 	if (textures.empty()) return;
 

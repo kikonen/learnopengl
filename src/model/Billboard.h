@@ -3,9 +3,11 @@
 #include "glm/glm.hpp"
 #include "Node.h"
 
-class Billboard : public Node
+class Billboard final : public Node
 {
 public:
 	Billboard(std::shared_ptr<NodeType> type);
+
+	virtual ~Billboard();
 };
 

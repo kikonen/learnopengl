@@ -11,7 +11,7 @@ class CubeMapRenderer final : public Renderer
 {
 public:
 	CubeMapRenderer(const Assets& assets);
-	~CubeMapRenderer();
+	virtual ~CubeMapRenderer();
 
 	void prepare();
 	void bind(const RenderContext& ctx);

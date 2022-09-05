@@ -23,15 +23,16 @@ void NormalRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 
 void NormalRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
 {
+	auto shader = normalShader.get();
 	for (auto& x : registry.nodes) {
 		auto t = x.first;
-		t->bind(ctx, normalShader);
+		t->bind(ctx, shader);
 
 		Batch& batch = t->batch;
-		batch.bind(ctx, normalShader);
+		batch.bind(ctx, shader);
 
 		for (auto& e : x.second) {
-			batch.draw(ctx, e, normalShader);
+			batch.draw(ctx, e, shader);
 		}
 
 		batch.flush(ctx, t);

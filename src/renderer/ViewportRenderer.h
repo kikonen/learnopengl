@@ -2,7 +2,7 @@
 
 #include "Renderer.h"
 
-class ViewportRenderer : public Renderer
+class ViewportRenderer final : public Renderer
 {
 public:
 	ViewportRenderer(const Assets& assets);

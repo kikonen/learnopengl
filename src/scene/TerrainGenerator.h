@@ -3,7 +3,7 @@
 #include "asset/ModelMesh.h"
 #include "asset/QuadMesh.h"
 
-class TerrainGenerator
+class TerrainGenerator final
 {
 public:
 	TerrainGenerator(const Assets& assets);

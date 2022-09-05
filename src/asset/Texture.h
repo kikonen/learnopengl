@@ -17,7 +17,7 @@ class Texture
 {
 public:
 	Texture(const std::string& name, const TextureSpec& spec);
-	~Texture();
+	virtual ~Texture();
 
 	virtual void prepare() = 0;
 

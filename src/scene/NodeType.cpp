@@ -31,6 +31,7 @@ NodeType::NodeType(int typeID, std::shared_ptr<Shader> defaultShader)
 
 NodeType::~NodeType()
 {
+	KI_INFO_SB("NODE_TYPE: delete " << typeID);
 }
 
 bool NodeType::hasReflection()
@@ -85,13 +86,13 @@ void NodeType::prepare(const Assets& assets)
 	}
 }
 
-std::shared_ptr<Shader> NodeType::bind(
+Shader* NodeType::bind(
 	const RenderContext& ctx, 
-	std::shared_ptr<Shader> shader)
+	Shader* shader)
 {
 	if (!mesh) return nullptr;
 
-	shader = shader ? shader : defaultShader;
+	shader = shader ? shader : defaultShader.get();
 	if (!shader) return nullptr;
 	boundShader = shader;
 

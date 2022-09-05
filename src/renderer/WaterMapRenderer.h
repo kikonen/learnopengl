@@ -12,7 +12,7 @@ class WaterMapRenderer final : public Renderer
 {
 public:
 	WaterMapRenderer(const Assets& assets);
-	~WaterMapRenderer();
+	virtual ~WaterMapRenderer();
 
 	void prepare() override;
 

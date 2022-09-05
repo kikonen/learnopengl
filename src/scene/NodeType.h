@@ -21,7 +21,7 @@ public:
 	void modifyMaterials(std::function<void(Material&)> fn);
 
 	void prepare(const Assets& assets);
-	std::shared_ptr<Shader> bind(const RenderContext& ctx, std::shared_ptr<Shader> shader);
+	Shader* bind(const RenderContext& ctx, Shader* shader);
 	void unbind(const RenderContext& ctx);
 
 public:
@@ -36,11 +36,11 @@ public:
 	bool batchMode = true;
 	bool wireframe = false;
 
-	glm::vec4 mirrorPlane;
+	glm::vec4 mirrorPlane{ 0 };
 
 	std::unique_ptr<Mesh> mesh = nullptr;
 	std::shared_ptr<Shader> defaultShader = nullptr;
-	std::shared_ptr<Shader> boundShader = nullptr;
+	Shader* boundShader = nullptr;
 
 	Batch batch;
 private:

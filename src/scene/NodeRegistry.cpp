@@ -8,6 +8,18 @@ NodeRegistry::NodeRegistry(Scene& scene)
 {
 }
 
+NodeRegistry::~NodeRegistry()
+{
+	KI_INFO_SB("NODE_REGISTRY: delete");
+	for (auto& e : nodes) {
+		KI_INFO_SB("NODE_REGISTRY: delete " << e.first->typeID);
+		for (auto& n : e.second) {
+			delete n;
+		}
+	}
+	nodes.clear();
+}
+
 void NodeRegistry::addNode(Node* node)
 {
 	std::lock_guard<std::mutex> lock(load_lock);
@@ -53,11 +65,11 @@ void NodeRegistry::attachNodes()
 	std::lock_guard<std::mutex> lock(load_lock);
 	if (pendingNodes.empty()) return;
 
-	std::map<std::shared_ptr<NodeType>, std::vector<Node*>> newNodes;
+	std::map<NodeType*, std::vector<Node*>> newNodes;
 
 	{
-		for (auto e : pendingNodes) {
-			newNodes[e->type].push_back(e);
+		for (auto n : pendingNodes) {
+			newNodes[n->type.get()].push_back(n);
 		}
 		pendingNodes.clear();
 	}
@@ -67,14 +79,14 @@ void NodeRegistry::attachNodes()
 		t->batch.batchSize = assets.batchSize;
 		KI_GL_CALL(t->prepare(assets));
 
-		for (auto& e : x.second) {
-			KI_GL_CALL(e->prepare(assets));
-			nodes[e->type].push_back(e);
-			idToNode[e->objectID] = e;
+		for (auto& n : x.second) {
+			KI_GL_CALL(n->prepare(assets));
+			nodes[n->type.get()].push_back(n);
+			idToNode[n->objectID] = n;
 
-			KI_INFO_SB("ATTACH_NODE: id=" << e->objectID << ", type=" << e->type->typeID);
+			KI_INFO_SB("ATTACH_NODE: id=" << n->objectID << ", type=" << t->typeID);
 
-			scene.bindComponents(e);
+			scene.bindComponents(n);
 		}
 	}
 }

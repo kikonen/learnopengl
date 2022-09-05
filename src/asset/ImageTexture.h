@@ -5,13 +5,13 @@
 #include "Texture.h"
 #include "Image.h"
 
-class ImageTexture : public Texture
+class ImageTexture final : public Texture
 {
 public:
 	static ImageTexture* getTexture(const std::string& path, const TextureSpec& spec);
 
 	ImageTexture(const std::string& path, const TextureSpec& spec);
-	~ImageTexture();
+	virtual ~ImageTexture();
 
 	void prepare() override;
 

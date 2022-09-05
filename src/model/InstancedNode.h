@@ -4,18 +4,18 @@
 
 #include "Node.h"
 
-class InstancedNode : public Node
+class InstancedNode final : public Node
 {
 public:
 	InstancedNode(std::shared_ptr<NodeType> type, NodeController* updater);
-	~InstancedNode();
+	virtual ~InstancedNode();
 
 	void prepare(const Assets& assets) override;
 
 	void updateBuffers(const RenderContext& ctx);
 
 	bool update(const RenderContext& ctx) override;
-	void bind(const RenderContext& ctx, std::shared_ptr<Shader> shader) override;
+	void bind(const RenderContext& ctx, Shader* shader) override;
 	void draw(const RenderContext& ctx) override;
 
 private:

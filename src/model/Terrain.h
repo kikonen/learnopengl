@@ -4,11 +4,11 @@
 #include "Node.h"
 
 
-class Terrain : public Node
+class Terrain final : public Node
 {
 public:
 	Terrain(std::shared_ptr<NodeType> type, int worldX, int worldY, int worldZ);
-	~Terrain();
+	virtual ~Terrain();
 
 	void prepare(const Assets& assets) override;
 public:

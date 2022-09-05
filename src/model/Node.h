@@ -20,7 +20,7 @@ public:
 	virtual void prepare(const Assets& assets);
 
 	virtual bool update(const RenderContext& ctx);
-	virtual void bind(const RenderContext& ctx, std::shared_ptr<Shader> shader);
+	virtual void bind(const RenderContext& ctx, Shader* shader);
 	virtual void bindBatch(const RenderContext& ctx, Batch& batch);
 	virtual void draw(const RenderContext& ctx);
 

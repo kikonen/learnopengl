@@ -10,11 +10,11 @@
 
 #include "scene/RenderContext.h"
 
-class QuadMesh : public Mesh
+class QuadMesh final : public Mesh
 {
 public:
 	QuadMesh(const std::string& name);
-	~QuadMesh();
+	virtual ~QuadMesh();
 
 	bool hasReflection() override;
 	bool hasRefraction() override;
@@ -24,7 +24,7 @@ public:
 
 	void prepare(const Assets& assets) override;
 	void prepareBuffers(MeshBuffers& curr) override;
-	void bind(const RenderContext& ctx, std::shared_ptr<Shader> shader) override;
+	void bind(const RenderContext& ctx, Shader* shader) override;
 	void draw(const RenderContext& ctx) override;
 	void drawInstanced(const RenderContext& ctx, int instanceCount) override;
 

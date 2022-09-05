@@ -63,8 +63,7 @@ public:
     void loadTextures();
 
     void prepare();
-    void bindArray(std::shared_ptr<Shader> shader, int index, bool bindTextureIDs);
-    //void bind(std::shared_ptr<Shader> shader);
+    void bindArray(Shader* shader, int index, bool bindTextureIDs);
 
     MaterialUBO toUBO();
 

@@ -9,6 +9,10 @@ Renderer::Renderer(const Assets& assets)
 {
 }
 
+Renderer::~Renderer()
+{
+}
+
 void Renderer::prepare()
 {
 }

@@ -153,7 +153,7 @@ void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 	for (auto& x : registry.nodes) {
 		auto t = x.first;
 		//if (t->water || t->light) continue;
-		std::shared_ptr<Shader> shader = t->bind(ctx, nullptr);
+		auto shader = t->bind(ctx, nullptr);
 
 		auto& batch = t->batch;
 		batch.bind(ctx, shader);

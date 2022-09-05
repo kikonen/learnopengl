@@ -5,7 +5,7 @@
 #include "asset/Material.h"
 #include "Node.h"
 
-class Sprite : public Node
+class Sprite final : public Node
 {
 public:
 	static std::shared_ptr<NodeType> getNodeType(
@@ -14,7 +14,7 @@ public:
 		const std::string& normalMapPath);
 
 	Sprite(std::shared_ptr<NodeType> type, glm::vec2 size);
-	~Sprite();
+	virtual ~Sprite();
 
 private:
 	static std::shared_ptr<Material> getMaterial(

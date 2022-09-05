@@ -2,7 +2,7 @@
 
 #include "Renderer.h"
 
-class ParticleRenderer : public Renderer
+class ParticleRenderer final : public Renderer
 {
 public:
 	ParticleRenderer(const Assets& assets);

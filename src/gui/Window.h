@@ -12,7 +12,7 @@
 
 class Engine;
 
-class Window
+class Window final
 {
 public:
 	Window(Engine& engine);

@@ -106,7 +106,7 @@ void MirrorMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& regist
 
 	for (auto& x : registry.nodes) {
 		auto t = x.first;
-		std::shared_ptr<Shader> shader = t->bind(ctx, nullptr);
+		auto shader = t->bind(ctx, nullptr);
 
 		Batch& batch = t->batch;
 		batch.bind(ctx, shader);

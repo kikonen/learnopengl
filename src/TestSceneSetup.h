@@ -4,7 +4,7 @@
 
 #include "scene/AsyncLoader.h"
 
-class TestSceneSetup
+class TestSceneSetup final
 {
 public:
 	TestSceneSetup(const Assets& assets);

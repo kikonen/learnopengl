@@ -11,7 +11,7 @@ class ShadowMapRenderer final : public Renderer
 {
 public:
 	ShadowMapRenderer(const Assets& assets);
-	~ShadowMapRenderer();
+	virtual ~ShadowMapRenderer();
 
 	void prepare() override;
 

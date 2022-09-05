@@ -35,6 +35,7 @@ ModelMesh::ModelMesh(
 
 ModelMesh::~ModelMesh()
 {
+	KI_INFO_SB("MODEL_MESH: delete " << modelName);
 }
 
 bool ModelMesh::hasReflection()
@@ -204,7 +205,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 	glBindVertexArray(0);
 }
 
-void ModelMesh::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
+void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 {
 	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize);
 

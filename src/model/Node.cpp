@@ -31,6 +31,7 @@ Node::Node(std::shared_ptr<NodeType> type)
 
 Node::~Node()
 {
+	KI_INFO_SB("DLETE: delete type=" << type->typeID << " objectId=" << objectID);
 }
 
 void Node::prepare(const Assets& assets)
@@ -46,7 +47,7 @@ bool Node::update(const RenderContext& ctx)
 	return controller->update(ctx, *this);
 }
 
-void Node::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
+void Node::bind(const RenderContext& ctx, Shader* shader)
 {
 	updateModelMatrix();
 }
@@ -64,7 +65,7 @@ void Node::draw(const RenderContext& ctx)
 {
 	// NOTE KI shader side supports *ONLY* instanced rendering
 	singleBatch.batchSize = 1;
-	singleBatch.prepare(type);
+	singleBatch.prepare(type.get());
 
 	singleBatch.draw(ctx, this, type->boundShader);
 	//type->mesh->draw(ctx);

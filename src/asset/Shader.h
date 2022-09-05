@@ -51,7 +51,7 @@ const std::string GEOM_NONE = "";
 struct TextureInfo;
 
 
-class Shader
+class Shader final
 {
 public:
     static std::shared_ptr<Shader> getShader(

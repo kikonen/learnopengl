@@ -26,6 +26,8 @@ public:
 		std::shared_ptr<Shader> shader,
 		std::function<void(Viewport&)> binder = [](Viewport&) {});
 
+	~Viewport();
+
 	void setTextureID(unsigned int textureID);
 
 	void prepare();

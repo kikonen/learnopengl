@@ -11,7 +11,7 @@ class SkyboxRenderer final : public Renderer
 {
 public:
 	SkyboxRenderer(const Assets& assets, const std::string& name);
-	~SkyboxRenderer();
+	virtual ~SkyboxRenderer();
 
 	void prepare() override;
 

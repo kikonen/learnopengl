@@ -17,8 +17,8 @@ void InstancedNode::prepare(const Assets& assets)
 	modelBatch.staticBuffer = true;
 	selectedBatch.staticBuffer = true;
 
-	modelBatch.prepare(type);
-	selectedBatch.prepare(type);
+	modelBatch.prepare(type.get());
+	selectedBatch.prepare(type.get());
 
 	buffersDirty = false;
 }
@@ -42,7 +42,7 @@ bool InstancedNode::update(const RenderContext& ctx)
 	return updated;
 }
 
-void InstancedNode::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
+void InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 {
 	Node::bind(ctx, shader);
 
@@ -56,11 +56,11 @@ void InstancedNode::bind(const RenderContext& ctx, std::shared_ptr<Shader> shade
 
 void InstancedNode::draw(const RenderContext& ctx)
 {
-	std::shared_ptr<Shader> shader = type->boundShader;
+	auto shader = type->boundShader;
 	if (shader->selection) {
-		selectedBatch.flush(ctx, type);
+		selectedBatch.flush(ctx, type.get());
 	}
 	else {
-		modelBatch.flush(ctx, type);
+		modelBatch.flush(ctx, type.get());
 	}
 }

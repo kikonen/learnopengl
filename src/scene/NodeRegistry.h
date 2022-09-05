@@ -11,10 +11,12 @@
 
 class Sccene;
 
-class NodeRegistry
+class NodeRegistry final
 {
 public:
 	NodeRegistry(Scene& scene);
+
+	~NodeRegistry();
 
 	void addNode(Node* node);
 	Node* getNode(int objectID);
@@ -33,7 +35,7 @@ public:
 	std::mutex load_lock;
 
 	std::map<int, Node*> idToNode;
-	std::map<std::shared_ptr<NodeType>, std::vector<Node*>> nodes;
+	std::map<NodeType*, std::vector<Node*>> nodes;
 
 	std::vector<std::shared_ptr<Viewport>> viewports;
 

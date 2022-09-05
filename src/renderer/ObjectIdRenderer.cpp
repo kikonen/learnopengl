@@ -110,16 +110,18 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	auto shader = idShader.get();
+
 	for (auto& x : registry.nodes) {
 		auto t = x.first;
-		t->bind(ctx, idShader);
+		t->bind(ctx, shader);
 
 		Batch& batch = t->batch;
 		batch.objectId = true;
-		batch.bind(ctx, idShader);
+		batch.bind(ctx, shader);
 
 		for (auto& e : x.second) {
-			batch.draw(ctx, e, idShader);
+			batch.draw(ctx, e, shader);
 		}
 
 		batch.flush(ctx, t);

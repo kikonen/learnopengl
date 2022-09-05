@@ -2,7 +2,7 @@
 
 #include "RenderContext.h"
 
-class Raycast
+class Raycast final
 {
 public:
 	Raycast();

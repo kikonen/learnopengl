@@ -62,7 +62,7 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
 
 	for (auto& x : registry.nodes) {
 		auto t = x.first;
-		std::shared_ptr<Shader> shader = nullptr;
+		Shader* shader = nullptr;
 		Batch& batch = t->batch;
 
 		for (auto& e : x.second) {
@@ -105,14 +105,14 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, NodeRegistry& 
 
 	for (auto& x : registry.nodes) {
 		auto t = x.first;
-		std::shared_ptr<Shader> shader = nullptr;
+		Shader* shader = nullptr;
 		Batch& batch = t->batch;
 
 		for (auto& e : x.second) {
 			if (!e->selected) continue;
 
 			if (!shader) {
-				shader = t->bind(ctx, selectionShader);
+				shader = t->bind(ctx, selectionShader.get());
 				batch.bind(ctx, shader);
 			}
 
@@ -151,20 +151,20 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nod
 		sorted[distance] = node;
 	}
 
-	std::shared_ptr<NodeType> type;
-	std::shared_ptr<Shader> shader;
+	NodeType* type = nullptr;
+	Shader* shader = nullptr;
 	Batch* batch = nullptr;
 
 	for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
 		Node* node = it->second;
 
-		if (type != node->type) {
+		if (type != node->type.get()) {
 			if (batch) {
 				// NOTE KI Changing batch
 				batch->flush(ctx, type);
 				type->unbind(ctx);
 			}
-			type = node->type;
+			type = node->type.get();
 			shader = type->bind(ctx, nullptr);
 
 			batch = &type->batch;

@@ -2,7 +2,7 @@
 
 #include "ki/GL.h"
 
-class WaterNoiseGenerator
+class WaterNoiseGenerator final
 {
 public:
 	WaterNoiseGenerator();

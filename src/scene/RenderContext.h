@@ -10,7 +10,7 @@
 
 class Scene;
 
-class RenderContext
+class RenderContext final
 {
 public:
 	RenderContext(
@@ -29,7 +29,7 @@ public:
 	void bindClipPlanesUBO() const;
 	void bindLightsUBO() const;
 
-	void bind(std::shared_ptr<Shader> shader) const;
+	void bind(Shader* shader) const;
 public:
 	const Assets& assets;
 

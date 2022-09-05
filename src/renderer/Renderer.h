@@ -8,6 +8,7 @@ class Renderer
 {
 public:
 	Renderer(const Assets& assets);
+	virtual ~Renderer();
 
 	virtual void prepare();
 	virtual void update(const RenderContext& ctx, NodeRegistry& registry);

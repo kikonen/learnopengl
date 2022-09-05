@@ -140,7 +140,7 @@ void RenderContext::bindLightsUBO() const
 	glNamedBufferSubData(scene->ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);
 }
 
-void RenderContext::bind(std::shared_ptr<Shader> shader) const
+void RenderContext::bind(Shader* shader) const
 {
 
 }

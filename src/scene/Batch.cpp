@@ -34,11 +34,6 @@ int Batch::size()
 	return modelMatrices.size();
 }
 
-void Batch::prepare(std::shared_ptr<NodeType> type)
-{
-	prepare(type.get());
-}
-
 void Batch::prepare(NodeType* type)
 {
 	if (staticBuffer) {
@@ -148,7 +143,7 @@ void Batch::update(unsigned int count)
 	KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
-void Batch::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
+void Batch::bind(const RenderContext& ctx, Shader* shader)
 {
 	if (batchSize == 0) return;
 
@@ -159,7 +154,7 @@ void Batch::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
 	}
 }
 
-void Batch::draw(const RenderContext& ctx, Node* node, std::shared_ptr<Shader> shader)
+void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
 {
 	if (batchSize == 0) {
 		node->bind(ctx, shader);
@@ -171,12 +166,7 @@ void Batch::draw(const RenderContext& ctx, Node* node, std::shared_ptr<Shader> s
 
 	if (modelMatrices.size() < batchSize) return;
 
-	flush(ctx, node->type);
-}
-
-void Batch::flush(const RenderContext& ctx, std::shared_ptr<NodeType> type)
-{
-	flush(ctx, type.get());
+	flush(ctx, node->type.get());
 }
 
 void Batch::flush(const RenderContext& ctx, NodeType* type)

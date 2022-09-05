@@ -171,7 +171,7 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
 	glBindVertexArray(0);
 }
 
-void QuadMesh::bind(const RenderContext& ctx, std::shared_ptr<Shader> shader)
+void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
 {
 	glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize);
 

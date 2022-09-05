@@ -16,6 +16,11 @@ Viewport::Viewport(
 {
 }
 
+Viewport::~Viewport()
+{
+	KI_INFO_SB("VIEW_PORT: delete");
+}
+
 void Viewport::setTextureID(unsigned int textureID)
 {
 	this->textureID = textureID;
