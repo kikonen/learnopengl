@@ -27,4 +27,3 @@ public:
 
 	int index = -1;
 };
-

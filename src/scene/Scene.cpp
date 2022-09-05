@@ -13,37 +13,26 @@ Scene::Scene(const Assets& assets)
 	: assets(assets),
 	registry(*this)
 {
-	nodeRenderer = new NodeRenderer(assets);
-	//terrainRenderer = new TerrainRenderer(assets);
+	nodeRenderer = std::make_unique<NodeRenderer>(assets);
+	//terrainRenderer = std::make_unique<TerrainRenderer>(assets);
 
-	viewportRenderer = new ViewportRenderer(assets);
+	viewportRenderer = std::make_unique<ViewportRenderer>(assets);
 
-	waterMapRenderer = new WaterMapRenderer(assets);
-	cubeMapRenderer = new CubeMapRenderer(assets);
-	shadowMapRenderer = new ShadowMapRenderer(assets);
+	waterMapRenderer = std::make_unique<WaterMapRenderer>(assets);
+	cubeMapRenderer = std::make_unique<CubeMapRenderer>(assets);
+	shadowMapRenderer = std::make_unique<ShadowMapRenderer>(assets);
 
-	objectIdRenderer = new ObjectIdRenderer(assets);
-	normalRenderer = new NormalRenderer(assets);
+	objectIdRenderer = std::make_unique<ObjectIdRenderer>(assets);
+	normalRenderer = std::make_unique<NormalRenderer>(assets);
 
-	particleSystem = new ParticleSystem(assets);
+	particleSystem = std::make_unique<ParticleSystem>(assets);
 }
 
 Scene::~Scene()
 {
-	delete nodeRenderer;
-	//delete terrainRenderer;
-
-	delete viewportRenderer;
-
-	delete waterMapRenderer;
-	delete cubeMapRenderer;
-	delete shadowMapRenderer;
-
-	delete normalRenderer;
-
-	delete particleSystem;
-
 	KI_INFO_SB("SCENE: deleted");
+
+	particleGenerators.clear();
 }
 
 void Scene::prepare()
@@ -51,22 +40,22 @@ void Scene::prepare()
 	prepareUBOs();
 
 	// NOTE KI OpenGL does NOT like interleaved draw and prepare
-	nodeRenderer->prepare();
-	//terrainRenderer->prepare();
+	nodeRenderer->prepare(shaders);
+	//terrainRenderer->prepare(shaders);
 
-	viewportRenderer->prepare();
+	viewportRenderer->prepare(shaders);
 
-	waterMapRenderer->prepare();
-	cubeMapRenderer->prepare();
-	shadowMapRenderer->prepare();
+	waterMapRenderer->prepare(shaders);
+	cubeMapRenderer->prepare(shaders);
+	shadowMapRenderer->prepare(shaders);
 
-	objectIdRenderer->prepare();
+	objectIdRenderer->prepare(shaders);
 
 	if (showNormals) {
-		normalRenderer->prepare();
+		normalRenderer->prepare(shaders);
 	}
 
-	particleSystem->prepare();
+	particleSystem->prepare(shaders);
 
 	{
 		mainViewport = std::make_shared<Viewport>(
@@ -76,7 +65,7 @@ void Scene::prepare()
 			//glm::vec2(1.5f, 1.5f),
 			glm::vec2(2.f, 2.f),
 			-1,
-			Shader::getShader(assets, TEX_VIEWPORT));
+			shaders.getShader(assets, TEX_VIEWPORT));
 		
 		//mainViewport->effect = ViewportEffect::edge;
 
@@ -87,7 +76,8 @@ void Scene::prepare()
 	registry.addViewPort(objectIdRenderer->debugViewport);
 
 	if (!mirrorBuffer && showMirrorView) {
-		mirrorBuffer = new TextureBuffer({ 640, 480, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+		auto buffer = new TextureBuffer({ 640, 480, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+		mirrorBuffer.reset(buffer);
 		mirrorBuffer->prepare();
 
 		mirrorViewport = std::make_shared<Viewport>(
@@ -95,7 +85,7 @@ void Scene::prepare()
 			glm::vec3(0, 0, 0),
 			glm::vec2(0.5f, 0.5f),
 			mirrorBuffer->spec.attachments[0].textureID,
-			Shader::getShader(assets, TEX_VIEWPORT));
+			shaders.getShader(assets, TEX_VIEWPORT));
 
 		mirrorViewport->prepare();
 		registry.addViewPort(mirrorViewport);
@@ -178,8 +168,8 @@ void Scene::draw(RenderContext& ctx)
 		shadowMapRenderer->render(ctx, registry);
 		shadowMapRenderer->bindTexture(ctx);
 
-		cubeMapRenderer->render(ctx, registry, skyboxRenderer);
-		waterMapRenderer->render(ctx, registry, skyboxRenderer);
+		cubeMapRenderer->render(ctx, registry, skyboxRenderer.get());
+		waterMapRenderer->render(ctx, registry, skyboxRenderer.get());
 	}
 
 	{
@@ -276,7 +266,7 @@ void Scene::drawScene(RenderContext& ctx)
 
 Camera* Scene::getCamera()
 {
-	return cameraNode ? cameraNode->camera : nullptr;
+	return cameraNode ? cameraNode->camera.get() : nullptr;
 }
 
 Node* Scene::getCameraNode()
@@ -319,8 +309,8 @@ void Scene::bindComponents(Node* node)
 	}
 
 	if (node->particleGenerator) {
-		node->particleGenerator->system = particleSystem;
-		particleGenerators.push_back(node->particleGenerator);
+		node->particleGenerator->system = particleSystem.get();
+		particleGenerators.push_back(node->particleGenerator.get());
 	}
 }
 
@@ -333,7 +323,8 @@ int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double scree
 void Scene::updateMainViewport(RenderContext& ctx)
 {
 	if (!mainBuffer) {
-		mainBuffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+		auto buffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+		mainBuffer.reset(buffer);
 		mainBuffer->prepare();
 		mainViewport->setTextureID(mainBuffer->spec.attachments[0].textureID);
 	}

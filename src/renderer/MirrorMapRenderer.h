@@ -14,7 +14,7 @@ public:
 	MirrorMapRenderer(const Assets& assets);
 	~MirrorMapRenderer();
 
-	void prepare() override;
+	void prepare(ShaderRegistry& shaders) override;
 
 	void bindTexture(const RenderContext& ctx);
 
@@ -32,5 +32,5 @@ private:
 	float nearPlane = 0.1f;
 	float farPlane = 1000.0f;
 
-	TextureBuffer* reflectionBuffer = nullptr;
+	std::unique_ptr<TextureBuffer> reflectionBuffer{ nullptr };
 };

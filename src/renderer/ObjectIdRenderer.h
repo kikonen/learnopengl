@@ -8,10 +8,11 @@ class ObjectIdRenderer final : public Renderer
 {
 public:
 	ObjectIdRenderer(const Assets& assets);
+	virtual ~ObjectIdRenderer();
 
 	int getObjectId(const RenderContext& ctx, double screenPosX, double screenPosY, Viewport* mainViewport);
 
-	void prepare() override;
+	void prepare(ShaderRegistry& shaders) override;
 
 	void update(const RenderContext& ctx, NodeRegistry& registry) override;
 	void bind(const RenderContext& ctx) override;
@@ -26,6 +27,6 @@ public:
 private:
 	std::shared_ptr<Shader> idShader;
 
-	TextureBuffer* idBuffer = nullptr;
+	std::unique_ptr<TextureBuffer> idBuffer{ nullptr };
 };
 

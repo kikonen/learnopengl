@@ -4,12 +4,13 @@
 NodeRenderer::NodeRenderer(const Assets& assets)
 	: Renderer(assets)
 {
-	selectionShader = Shader::getShader(assets, TEX_SELECTION);
-	selectionShader->selection = true;
 }
 
-void NodeRenderer::prepare()
+void NodeRenderer::prepare(ShaderRegistry& shaders)
 {
+	selectionShader = shaders.getShader(assets, TEX_SELECTION);
+	selectionShader->selection = true;
+
 	selectionShader->prepare();
 //	batch.prepare(1000);
 }

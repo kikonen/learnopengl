@@ -13,7 +13,7 @@ public:
 	SkyboxRenderer(const Assets& assets, const std::string& name);
 	virtual ~SkyboxRenderer();
 
-	void prepare() override;
+	void prepare(ShaderRegistry& shaders) override;
 
 	void assign(std::shared_ptr<Shader> shader);
 	void bindTexture(const RenderContext& ctx);

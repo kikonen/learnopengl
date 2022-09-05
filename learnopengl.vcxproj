@@ -162,6 +162,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\asset\ShaderRegistry.cpp" />
     <ClCompile Include="src\SceneFile.cpp" />
     <ClCompile Include="src\model\Billboard.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
@@ -236,6 +237,7 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\asset\ShaderRegistry.h" />
     <ClInclude Include="src\SceneFile.h" />
     <ClInclude Include="src\model\Billboard.h" />
     <ClInclude Include="src\renderer\ObjectIdRenderer.h" />

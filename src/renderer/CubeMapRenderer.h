@@ -13,7 +13,7 @@ public:
 	CubeMapRenderer(const Assets& assets);
 	virtual ~CubeMapRenderer();
 
-	void prepare();
+	void prepare(ShaderRegistry& shaders) override;
 	void bind(const RenderContext& ctx);
 	void bindTexture(const RenderContext& ctx);
 	void render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox);

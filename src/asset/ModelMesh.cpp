@@ -36,6 +36,11 @@ ModelMesh::ModelMesh(
 ModelMesh::~ModelMesh()
 {
 	KI_INFO_SB("MODEL_MESH: delete " << modelName);
+
+	for (auto v : vertices) {
+		delete v;
+	}
+	vertices.clear();
 }
 
 bool ModelMesh::hasReflection()

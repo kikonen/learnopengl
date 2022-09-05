@@ -7,7 +7,7 @@ class ViewportRenderer final : public Renderer
 public:
 	ViewportRenderer(const Assets& assets);
 
-	void prepare() override;
+	void prepare(ShaderRegistry& shaders) override;
 
 	void update(const RenderContext& ctx, NodeRegistry& registry) override;
 	void bind(const RenderContext& ctx) override;

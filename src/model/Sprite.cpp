@@ -20,10 +20,11 @@ std::shared_ptr<Material> Sprite::getMaterial(
 
 std::shared_ptr<NodeType> Sprite::getNodeType(
 	const Assets& assets, 
+	ShaderRegistry& shaders,
 	const std::string& path,
 	const std::string& normalMapPath)
 {
-	auto type = std::make_shared<NodeType>(NodeType::nextID(), Shader::getShader(assets, TEX_TEXTURE, { DEF_USE_ALPHA }));
+	auto type = std::make_shared<NodeType>(NodeType::nextID(), shaders.getShader(assets, TEX_TEXTURE, { DEF_USE_ALPHA }));
 	type->renderBack = true;
 
 	auto quad = std::make_unique<QuadMesh>(path);

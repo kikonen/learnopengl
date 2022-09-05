@@ -4,7 +4,10 @@
 ObjectIdRenderer::ObjectIdRenderer(const Assets& assets)
 	: Renderer(assets)
 {
-	idShader = Shader::getShader(assets, TEX_OBJECT_ID);
+}
+
+ObjectIdRenderer::~ObjectIdRenderer()
+{
 }
 
 int ObjectIdRenderer::getObjectId(const RenderContext& ctx, double screenPosX, double screenPosY, Viewport* mainViewport)
@@ -60,8 +63,9 @@ int ObjectIdRenderer::getObjectId(const RenderContext& ctx, double screenPosX, d
 	return objectID;
 }
 
-void ObjectIdRenderer::prepare()
+void ObjectIdRenderer::prepare(ShaderRegistry& shaders)
 {
+	idShader = shaders.getShader(assets, TEX_OBJECT_ID);
 	idShader->prepare();
 
 	debugViewport = std::make_shared<Viewport>(
@@ -69,7 +73,7 @@ void ObjectIdRenderer::prepare()
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),
 		-1,
-		Shader::getShader(assets, TEX_VIEWPORT));
+		shaders.getShader(assets, TEX_VIEWPORT));
 
 	debugViewport->prepare();
 }
@@ -79,7 +83,8 @@ void ObjectIdRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
 	if (idBuffer) return;
 	// https://riptutorial.com/opengl/example/28872/using-pbos
 
-	idBuffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getObjectId(), FrameBufferAttachment::getRBODepth() } });
+	auto buffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getObjectId(), FrameBufferAttachment::getRBODepth() } });
+	idBuffer.reset(buffer);
 	idBuffer->prepare();
 	debugViewport->setTextureID(idBuffer->spec.attachments[0].textureID);
 }

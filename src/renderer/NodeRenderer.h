@@ -9,7 +9,7 @@ class NodeRenderer final : public Renderer
 public:
 	NodeRenderer(const Assets& assets);
 
-	void prepare() override;
+	void prepare(ShaderRegistry& shaders) override;
 	void update(const RenderContext& ctx, NodeRegistry& registry) override;
 	void bind(const RenderContext& ctx) override;
 	void render(const RenderContext& ctx, NodeRegistry& registry) override;

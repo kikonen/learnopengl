@@ -9,10 +9,9 @@ MirrorMapRenderer::MirrorMapRenderer(const Assets& assets)
 
 MirrorMapRenderer::~MirrorMapRenderer()
 {
-	delete reflectionBuffer;
 }
 
-void MirrorMapRenderer::prepare()
+void MirrorMapRenderer::prepare(ShaderRegistry& shaders)
 {
 	FrameBufferSpecification spec = {
 		assets.mirrorReflectionSize ,
@@ -20,7 +19,7 @@ void MirrorMapRenderer::prepare()
 		{ FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepth() }
 	};
 
-	reflectionBuffer = new TextureBuffer(spec);
+	reflectionBuffer = std::make_unique<TextureBuffer>(spec);
 
 	reflectionBuffer->prepare();
 
@@ -29,7 +28,7 @@ void MirrorMapRenderer::prepare()
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),
 		reflectionBuffer->spec.attachments[0].textureID,
-		Shader::getShader(assets, TEX_VIEWPORT));
+		shaders.getShader(assets, TEX_VIEWPORT));
 
 	debugViewport->prepare();
 	debugViewport->prepare();

@@ -46,17 +46,17 @@ public:
 
 	bool selected = false;
 
-	NodeController* controller = nullptr;
+	NodeController* controller{ nullptr };
 
-	Camera* camera = nullptr;
-	Light* light = nullptr;
-	ParticleGenerator* particleGenerator = nullptr;
+	std::unique_ptr<Camera> camera{ nullptr };
+	Light* light{ nullptr };
+	std::unique_ptr<ParticleGenerator> particleGenerator{ nullptr };
 
 private:
-	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
-	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 pos{ 0.0f, 0.0f, 0.0f };
+	glm::vec3 rotation{ 0.0f, 0.0f, 0.0f };
 
-	glm::vec3 scale = { 1.f, 1.f, 1.f };
+	glm::vec3 scale{ 1.f, 1.f, 1.f };
 
 	glm::mat4 modelMat = glm::mat4(1.0f);
 	glm::mat3 normalMat = glm::mat3(1.0f);

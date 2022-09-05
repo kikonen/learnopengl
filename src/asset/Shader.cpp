@@ -7,58 +7,6 @@
 
 #include "UBO.h"
 
-namespace {
-    // name + geom
-    std::map<std::string, std::shared_ptr<Shader>> shaders;
-
-    std::mutex shaders_lock;
-}
-
-std::shared_ptr<Shader> Shader::getShader(
-    const Assets& assets,
-    const std::string& name)
-{
-    return Shader::getShader(assets, name, "", {});
-}
-
-std::shared_ptr<Shader> Shader::getShader(
-    const Assets& assets,
-    const std::string& name,
-    const std::vector<std::string>& defines)
-{
-    return Shader::getShader(assets, name, "", defines);
-}
-
-std::shared_ptr<Shader> Shader::getShader(
-    const Assets& assets, 
-    const std::string& name, 
-    const std::string& geometryType,
-    const std::vector<std::string>& defines)
-{
-    std::lock_guard<std::mutex> lock(shaders_lock);
-
-    std::string key = name + "_" + geometryType;
-
-    for (auto& x : defines) {
-        key += "_" + x;
-    }
-
-    std::shared_ptr<Shader> shader = nullptr;
-    {
-        auto e = shaders.find(key);
-        if (e != shaders.end()) {
-            shader = e->second;
-        }
-    }
-
-    if (!shader) {
-        shader = std::make_shared<Shader>(assets, key, name, geometryType, defines);
-        shaders[key] = shader;
-        shader->load();
-    }
-
-    return shader;
-}
 
 Shader::Shader(
     const Assets& assets,
@@ -83,6 +31,7 @@ Shader::Shader(
 
 Shader::~Shader()
 {
+    KI_INFO_SB("DELETE: shader " << shaderName);
     glDeleteProgram(programId);
 }
 

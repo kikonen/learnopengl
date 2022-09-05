@@ -13,7 +13,7 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::prepare()
+void Renderer::prepare(ShaderRegistry& shaders)
 {
 }
 

@@ -4,11 +4,11 @@
 NormalRenderer::NormalRenderer(const Assets& assets)
 	: Renderer(assets)
 {
-	normalShader = Shader::getShader(assets, TEX_NORMAL);
 }
 
-void NormalRenderer::prepare()
+void NormalRenderer::prepare(ShaderRegistry& shaders)
 {
+	normalShader = shaders.getShader(assets, TEX_NORMAL);
 	normalShader->prepare();
 }
 

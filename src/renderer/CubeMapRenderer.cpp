@@ -17,7 +17,7 @@ CubeMapRenderer::~CubeMapRenderer()
 {
 }
 
-void CubeMapRenderer::prepare()
+void CubeMapRenderer::prepare(ShaderRegistry& shaders)
 {
 	cubeMap = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
 	cubeMap->prepare();

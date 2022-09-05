@@ -69,12 +69,8 @@ Material::Material(const std::string& name, const std::string& baseDir)
 
 Material::~Material()
 {
+	KI_INFO_SB("MATERIAL: " << name << " delete");
 	materialIndex = -2;
-	//delete diffuseTex;
-	//delete specularTex;
-	//delete emissionTex;
-	//delete normalMap;
-	KI_INFO_SB("MATERIAL: " << name << " deleted");
 }
 
 void Material::loadTextures()

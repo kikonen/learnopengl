@@ -54,15 +54,16 @@ SkyboxRenderer::SkyboxRenderer(const Assets& assets, const std::string& name)
 	: Renderer(assets),
     name(name)
 {
-    shader = Shader::getShader(assets, name);
 }
 
 SkyboxRenderer::~SkyboxRenderer()
 {
 }
 
-void SkyboxRenderer::prepare()
+void SkyboxRenderer::prepare(ShaderRegistry& shaders)
 {
+    shader = shaders.getShader(assets, name);
+
     shader->prepare();
     shader->bind();
     shader->skybox.set(assets.skyboxUnitIndex);

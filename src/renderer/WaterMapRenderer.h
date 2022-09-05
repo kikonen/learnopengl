@@ -14,7 +14,7 @@ public:
 	WaterMapRenderer(const Assets& assets);
 	virtual ~WaterMapRenderer();
 
-	void prepare() override;
+	void prepare(ShaderRegistry& shaders) override;
 
 	void bindTexture(const RenderContext& ctx);
 
@@ -30,11 +30,11 @@ public:
 	std::shared_ptr<Viewport> refractionDebugViewport;
 
 private:
-	float nearPlane = 0.1f;
-	float farPlane = 1000.0f;
+	float nearPlane{ 0.1f };
+	float farPlane{ 1000.0f };
 
-	TextureBuffer* reflectionBuffer = nullptr;
-	TextureBuffer* refractionBuffer = nullptr;
+	std::unique_ptr<TextureBuffer> reflectionBuffer{ nullptr };
+	std::unique_ptr<TextureBuffer> refractionBuffer{ nullptr };
 
-	unsigned int noiseTextureID = -1;
+	unsigned int noiseTextureID{ 0 };
 };

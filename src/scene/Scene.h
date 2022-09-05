@@ -5,6 +5,8 @@
 #include <functional>
 #include <mutex>
 
+#include "asset/ShaderRegistry.h"
+
 #include "model/Node.h"
 #include "component/Light.h"
 #include "NodeRegistry.h"
@@ -69,10 +71,11 @@ public:
 	bool showNormals = false;
 	bool showMirrorView = false;
 
-	SkyboxRenderer* skyboxRenderer = nullptr;
+	std::unique_ptr<SkyboxRenderer> skyboxRenderer{ nullptr };
 	UBO ubo;
 
 	NodeRegistry registry;
+	ShaderRegistry shaders;
 
 protected:
 
@@ -84,24 +87,24 @@ private:
 	std::vector<Light*> spotLights;
 	std::vector<ParticleGenerator*> particleGenerators;
 
-	NodeRenderer* nodeRenderer = nullptr;
+	std::unique_ptr<NodeRenderer> nodeRenderer{ nullptr };
 
-	//TerrainRenderer* terrainRenderer = nullptr;
-	ViewportRenderer* viewportRenderer = nullptr;
+	//std::unique_ptr<TerrainRenderer> terrainRenderer{ nullptr };
+	std::unique_ptr<ViewportRenderer> viewportRenderer{ nullptr };
 
-	WaterMapRenderer* waterMapRenderer = nullptr;
-	CubeMapRenderer* cubeMapRenderer = nullptr;
-	ShadowMapRenderer* shadowMapRenderer = nullptr;
+	std::unique_ptr<WaterMapRenderer> waterMapRenderer{ nullptr };
+	std::unique_ptr<CubeMapRenderer> cubeMapRenderer{ nullptr };
+	std::unique_ptr<ShadowMapRenderer> shadowMapRenderer{ nullptr };
 
-	ObjectIdRenderer* objectIdRenderer = nullptr;
-	NormalRenderer* normalRenderer = nullptr;
+	std::unique_ptr<ObjectIdRenderer> objectIdRenderer{ nullptr };
+	std::unique_ptr<NormalRenderer> normalRenderer{ nullptr };
 
-	ParticleSystem* particleSystem = nullptr;
+	std::unique_ptr<ParticleSystem> particleSystem{ nullptr };
 
-	TextureBuffer* mirrorBuffer = nullptr;
+	std::unique_ptr<TextureBuffer> mirrorBuffer{ nullptr };
 	std::shared_ptr<Viewport> mirrorViewport;
 
-	TextureBuffer* mainBuffer = nullptr;
+	std::unique_ptr<TextureBuffer> mainBuffer{ nullptr };
 	std::shared_ptr<Viewport> mainViewport;
 
 	unsigned int pbo = -1;

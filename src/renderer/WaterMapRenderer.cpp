@@ -12,11 +12,9 @@ WaterMapRenderer::WaterMapRenderer(const Assets& assets)
 
 WaterMapRenderer::~WaterMapRenderer()
 {
-	delete reflectionBuffer;
-	delete refractionBuffer;
 }
 
-void WaterMapRenderer::prepare()
+void WaterMapRenderer::prepare(ShaderRegistry& shaders)
 {
 	FrameBufferSpecification spec = { 
 		assets.waterReflectionSize , 
@@ -24,8 +22,8 @@ void WaterMapRenderer::prepare()
 		{ FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepth() } 
 	};
 
-	reflectionBuffer = new TextureBuffer(spec);
-	refractionBuffer = new TextureBuffer(spec);
+	reflectionBuffer = std::make_unique<TextureBuffer>(spec);
+	refractionBuffer = std::make_unique<TextureBuffer>(spec);
 
 	reflectionBuffer->prepare();
 	refractionBuffer->prepare();
@@ -38,14 +36,14 @@ void WaterMapRenderer::prepare()
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),
 		reflectionBuffer->spec.attachments[0].textureID,
-		Shader::getShader(assets, TEX_VIEWPORT));
+		shaders.getShader(assets, TEX_VIEWPORT));
 
 	refractionDebugViewport = std::make_shared<Viewport>(
 		glm::vec3(0.5, 0.0, 0),
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.5f, 0.5f),
 		reflectionBuffer->spec.attachments[0].textureID,
-		Shader::getShader(assets, TEX_VIEWPORT));
+		shaders.getShader(assets, TEX_VIEWPORT));
 
 	reflectionDebugViewport->prepare();
 	refractionDebugViewport->prepare();

@@ -8,24 +8,25 @@ ShadowMapRenderer::ShadowMapRenderer(const Assets& assets)
 	drawIndex = 1;
 	drawSkip = 1;
 
-	shadowShader = Shader::getShader(assets, TEX_SIMPLE_DEPTH);
-	shadowDebugShader = Shader::getShader(assets, TEX_DEBUG_DEPTH);
 }
 
 ShadowMapRenderer::~ShadowMapRenderer()
 {
-	delete shadowBuffer;
 }
 
-void ShadowMapRenderer::prepare()
+void ShadowMapRenderer::prepare(ShaderRegistry& shaders)
 {
+	shadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
+	shadowDebugShader = shaders.getShader(assets, TEX_DEBUG_DEPTH);
+
 	shadowShader->prepare();
 	shadowDebugShader->prepare();	
 
 	shadowShader->prepare();
 	shadowDebugShader->prepare();
 
-	shadowBuffer = new ShadowBuffer({ assets.shadowMapSize, assets.shadowMapSize, { FrameBufferAttachment::getDepthTexture() } });
+	auto buffer = new ShadowBuffer({ assets.shadowMapSize, assets.shadowMapSize, { FrameBufferAttachment::getDepthTexture() } });
+	shadowBuffer.reset(buffer);
 	shadowBuffer->prepare();
 
 	debugViewport = std::make_shared<Viewport>(

@@ -31,7 +31,10 @@ Node::Node(std::shared_ptr<NodeType> type)
 
 Node::~Node()
 {
-	KI_INFO_SB("DLETE: delete type=" << type->typeID << " objectId=" << objectID);
+	KI_INFO_SB("NODE: delete type=" << type->typeID << " objectId=" << objectID);
+
+	delete light;
+	delete controller;
 }
 
 void Node::prepare(const Assets& assets)

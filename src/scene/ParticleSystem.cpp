@@ -3,12 +3,12 @@
 ParticleSystem::ParticleSystem(const Assets& assets)
 	: assets(assets)
 {
-	particleShader = Shader::getShader(assets, TEX_TEXTURE);
-	particleShader->prepare();
 }
 
-void ParticleSystem::prepare()
+void ParticleSystem::prepare(ShaderRegistry& shaders)
 {
+	particleShader = shaders.getShader(assets, TEX_TEXTURE);
+	particleShader->prepare();
 }
 
 void ParticleSystem::update(RenderContext& ctx)

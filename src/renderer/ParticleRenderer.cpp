@@ -3,11 +3,11 @@
 ParticleRenderer::ParticleRenderer(const Assets& assets)
 	: Renderer(assets)
 {
-	particleShader = Shader::getShader(assets, TEX_PARTICLE);
 }
 
-void ParticleRenderer::prepare()
+void ParticleRenderer::prepare(ShaderRegistry& shaders)
 {
+	particleShader = shaders.getShader(assets, TEX_PARTICLE);
 	particleShader->prepare();
 }
 

@@ -54,22 +54,6 @@ struct TextureInfo;
 class Shader final
 {
 public:
-    static std::shared_ptr<Shader> getShader(
-        const Assets& assets,
-        const std::string& name);
-
-    static std::shared_ptr<Shader> getShader(
-        const Assets& assets,
-        const std::string& name,
-        const std::vector<std::string>& defines);
-
-    static std::shared_ptr<Shader> getShader(
-        const Assets& assets, 
-        const std::string& name,
-        const std::string& geometryType,
-        const std::vector<std::string>& defines);
- 
-public:
     void load();
     int prepare();
     const void bind();

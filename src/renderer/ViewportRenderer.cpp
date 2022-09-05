@@ -5,7 +5,7 @@ ViewportRenderer::ViewportRenderer(const Assets& assets)
 {
 }
 
-void ViewportRenderer::prepare()
+void ViewportRenderer::prepare(ShaderRegistry& shaders)
 {
 }
 

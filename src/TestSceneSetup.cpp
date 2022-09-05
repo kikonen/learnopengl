@@ -69,20 +69,21 @@ void TestSceneSetup::setupCamera()
 	glm::vec3 pos = glm::vec3(-8, 5, 10.f) + assets.groundOffset;
 	glm::vec3 front = glm::vec3(0, 0, -1);
 	glm::vec3 up = glm::vec3(0, 1, 0);
-	Camera* camera = new Camera(pos, front, up);
 
 	auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
 	MeshLoader loader(assets, "player");
 	type->mesh = loader.load();
 
 	Node* node = new Node(type);
-	node->setPos(pos);
-	node->setScale(0.8f);
-	node->camera = camera;
-	node->controller = new CameraController(assets);
+	{
+		node->setPos(pos);
+		node->setScale(0.8f);
+		node->camera = std::make_unique<Camera>(pos, front, up);
+		node->controller = new CameraController(assets);
 
-	ParticleDefinition pd;
-	node->particleGenerator = new ParticleGenerator(assets, pd);
+		ParticleDefinition pd;
+		node->particleGenerator = std::make_unique<ParticleGenerator>(assets, pd);
+	}
 
 	scene->registry.addNode(node);
 }
@@ -92,9 +93,9 @@ void TestSceneSetup::setupNodeSkybox()
 	//addLoader([this]() {
 	//});
 	SkyboxRenderer* skybox = new SkyboxRenderer(assets, "skybox");
-	skybox->prepare();
+	skybox->prepare(scene->shaders);
 
-	scene->skyboxRenderer = skybox;
+	scene->skyboxRenderer.reset(skybox);
 }
 
 void TestSceneSetup::setupLightDirectional()
@@ -127,18 +128,20 @@ void TestSceneSetup::setupLightDirectional()
 		node->setScale(1.5f);
 		node->light = light;
 
-		scene->registry.addNode(node);
+		{
+			const float radius = 80.0f;
+			const float speed = 20.f;
+			glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
 
-		const float radius = 80.0f;
-		const float speed = 20.f;
-		glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
+			Node* planet = getPlanet();
+			if (planet) {
+				center = planet->getPos();
+			}
 
-		Node* planet = getPlanet();
-		if (planet) {
-			center = planet->getPos();
+			node->controller = new MovingLightController(assets, center, radius, speed, node);
 		}
 
-		node->controller = new MovingLightController(assets, center, radius, speed, node);
+		scene->registry.addNode(node);
 	});
 }
 
@@ -353,12 +356,15 @@ void TestSceneSetup::setupNodePlanet()
 		Node* node = new Node(type);
 		node->setPos(light->getPos());
 		node->setScale(0.5f);
+
 		node->light = light;
+
+		{
+			glm::vec3 center = light->getPos();
+			node->controller = new MovingLightController(assets, center, 4.f, 2.f, node);
+		}
+
 		scene->registry.addNode(node);
-
-		glm::vec3 center = light->getPos();
-		node->controller = new MovingLightController(assets, center, 4.f, 2.f, node);
-
 	});
 }
 
@@ -404,7 +410,7 @@ void TestSceneSetup::setupSpriteSkeleton()
 {
 	loader.addLoader([this]() {
 		//auto type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "Skeleton_VH_normal.PNG");
-		auto type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "");
+		auto type = Sprite::getNodeType(assets, scene->shaders, "Skeleton_VH.PNG", "");
 
 		glm::vec3 pos = glm::vec3(0, 5, 20) + assets.groundOffset;
 		for (int x = 0; x < 10; x++) {
@@ -534,6 +540,7 @@ void TestSceneSetup::setupEffectExplosion()
 void TestSceneSetup::setupViewport1()
 {
 	TextureSpec spec;
+	// NOTE KI memory_leak
 	PlainTexture* texture = new PlainTexture("checkerboard", spec, 1, 1);
 	texture->prepare();
 
@@ -545,7 +552,7 @@ void TestSceneSetup::setupViewport1()
 		glm::vec3(0, 0, 0),
 		glm::vec2(0.25f, 0.25f),
 		texture->textureID,
-		Shader::getShader(assets, TEX_VIEWPORT));
+		scene->shaders.getShader(assets, TEX_VIEWPORT));
 	viewport->prepare();
 	scene->registry.addViewPort(viewport);
 }

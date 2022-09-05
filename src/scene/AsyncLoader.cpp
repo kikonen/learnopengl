@@ -24,10 +24,10 @@ const std::future<void>& AsyncLoader::getLoader(unsigned int index)
 
 std::shared_ptr<Shader> AsyncLoader::getShader(const std::string& name)
 {
-	return Shader::getShader(assets, name);
+	return scene->shaders.getShader(assets, name);
 }
 
 std::shared_ptr<Shader> AsyncLoader::getShader(const std::string& name, const std::vector<std::string>& defines)
 {
-	return Shader::getShader(assets, name, "", defines);
+	return scene->shaders.getShader(assets, name, "", defines);
 }
