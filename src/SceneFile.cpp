@@ -7,6 +7,10 @@
 
 #include "SceneFile.h"
 
+namespace {
+    const double DEF_ALPHA = 1.0;
+}
+
 SceneFile::SceneFile(
     const Assets& assets,
     const std::string& filename)
@@ -22,103 +26,109 @@ SceneFile::~SceneFile()
 
 std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
 {
-	loader.scene = scene;
+    loader.scene = scene;
 
     std::ifstream fin(filename);
     YAML::Node doc = YAML::Load(fin);
 
-	std::map<const std::string, std::shared_ptr<Material>> materials;
+    std::map<const std::string, std::shared_ptr<Material>> materials;
 
     loadMaterials(doc, materials);
     loadEntities(doc, materials);
 
-//    testYAML();
+    //    testYAML();
 
-	return scene;
+    return scene;
 }
 
 void SceneFile::loadEntities(
 	const YAML::Node& doc,
-	std::map<const std::string, std::shared_ptr<Material>>& materials) {
-	const YAML::Node& entries = doc["entities"];
+	std::map<const std::string, std::shared_ptr<Material>>& materials) 
+{
+    for (auto entry : doc["entities"]) {
+	    loadEntity(entry, materials);
+    }
+}
 
-	for (auto entry : entries) {
-		int typeId { 0 };
-		std::string name {};
-		std::string modelName {};
-		std::string modelPath { "/" };
-		std::string materialName {};
-		std::string shaderName { TEX_TEXTURE };
-		std::vector<std::string> shaderDefinitions {};
-		std::map<const std::string, bool> renderFlags {};
-		glm::vec3 pos { 0 };
-		glm::vec3 rotation{ 0 };
-		glm::vec4 mirrorPlane{ 0 };
-		double scale { 1 };
+void SceneFile::loadEntity(
+	const YAML::Node& node,
+	std::map<const std::string, std::shared_ptr<Material>>& materials) 
+{
+    EntityData data;
 
-		for (auto pair : entry) {
-			const std::string& k = pair.first.as<std::string>();
-			const YAML::Node& v = pair.second;
+    for (auto pair : node) {
+	    const std::string& k = pair.first.as<std::string>();
+	    const YAML::Node& v = pair.second;
 
-			//std::cout << k << " = " << v << "\n";
+	    //std::cout << k << " = " << v << "\n";
 
-			if (k == "name") {
-				name = v.as<std::string>();
-			}
-			else if (k == "type_id") {
-				typeId = v.as<int>();
-			}
-			else if (k == "model") {
-				if (v.Type() == YAML::NodeType::Sequence) {
-					modelName = v[0].as<std::string>();
-					modelPath = v[1].as<std::string>();
-				}
-				else {
-					modelName = v.as<std::string>();
-				}
-			}
-			else if (k == "shader") {
-				shaderName = v.as<std::string>();
-				if (shaderName == "texture") {
-					shaderName = TEX_TEXTURE;
-				}
-			}
-			else if (k == "shader_definitions") {
-				if (v.Type() == YAML::NodeType::Sequence) {
-					for (auto name : v) {
-						shaderDefinitions.push_back(name.as<std::string>());
-					}
-				}
-			}
-			else if (k == "render_flags") {
-				if (v.Type() == YAML::NodeType::Sequence) {
-					for (auto name : v) {
-						auto flag = name.as<std::string>();
-						renderFlags[flag] = true;
-					}
-				}
-			}
-			else if (k == "mirror_plane") {
-				mirrorPlane = readVec4(v);
-			}
-			else if (k == "material") {
-				materialName = v.as<std::string>();
-			}
-			else if (k == "pos") {
-				pos = readVec3(v);
-			}
-			else if (k == "rotation") {
-				rotation = readVec3(v);
-			}
-			else if (k == "scale") {
-				scale = v.as<double>();
-			}
-			else {
-				std::cout << "UNKNOWN: " << k << "\n";
-			}
-		}
+	    if (k == "name") {
+		    data.name = v.as<std::string>();
+	    }
+	    else if (k == "type_id") {
+		    data.typeId = v.as<int>();
+	    }
+	    else if (k == "model") {
+		    if (v.Type() == YAML::NodeType::Sequence) {
+			    data.modelName = v[0].as<std::string>();
+			    data.modelPath = v[1].as<std::string>();
+		    }
+		    else {
+			    data.modelName = v.as<std::string>();
+		    }
+	    }
+	    else if (k == "shader") {
+		    data.shaderName = v.as<std::string>();
+		    if (data.shaderName == "texture") {
+			    data.shaderName = TEX_TEXTURE;
+		    }
+	    }
+	    else if (k == "shader_definitions") {
+		    if (v.Type() == YAML::NodeType::Sequence) {
+			    for (auto name : v) {
+				    data.shaderDefinitions.push_back(name.as<std::string>());
+			    }
+		    }
+	    }
+	    else if (k == "render_flags") {
+		    if (v.Type() == YAML::NodeType::Sequence) {
+			    for (auto name : v) {
+				    auto flag = name.as<std::string>();
+				    data.renderFlags[flag] = true;
+			    }
+		    }
+	    }
+	    else if (k == "mirror_plane") {
+		    data.mirrorPlane = readVec4(v);
+	    }
+	    else if (k == "default_material") {
+		    std::string materialName = v.as<std::string>();
+		    auto entry = materials.find(materialName);
+		    if (entry != materials.end()) {
+			    data.defaultMaterial = entry->second;
+		    }
+	    }
+	    else if (k == "material_modifier") {
+		    loadMaterialModifiers(v, data);
+	    }
+	    else if (k == "override_material") {
+		    data.overrideMaterials = v.as<bool>();
+	    }
+	    else if (k == "pos") {
+		    data.pos = readVec3(v);
+	    }
+	    else if (k == "rotation") {
+		    data.rotation = readVec3(v);
+	    }
+	    else if (k == "scale") {
+		    data.scale = v.as<double>();
+	    }
+	    else {
+		    std::cout << "UNKNOWN ENTITY_ENTRY: " << k << "=" << v << "\n";
+	    }
+    }
 
-		/*
+/*
 void SceneLoaderTest::setupNodeMaterialBalls()
 {
 	addLoader([this]() {
@@ -159,186 +169,198 @@ void SceneLoaderTest::setupNodeWindow1()
 	});
 }*/
 
-	loader.addLoader([this, typeId, 
-		shaderName, shaderDefinitions, 
-		renderFlags, mirrorPlane, 
-		modelName, modelPath, 
-		pos, rotation, scale, 
-		materialName, materials]() {
-			auto type = std::make_shared<NodeType>(typeId, loader.getShader(shaderName, shaderDefinitions));
+    loader.addLoader([this, data, materials]() {
+	    auto type = std::make_shared<NodeType>(data.typeId, loader.getShader(data.shaderName, data.shaderDefinitions));
 
-			{
-				auto e = renderFlags.find("blend");
-				if (e != renderFlags.end()) {
-					type->blend = e->second;
-				}
-			}
-			{
-				auto e = renderFlags.find("render_back");
-				if (e != renderFlags.end()) {
-					type->renderBack = e->second;
-				}
-			}
-			{
-				auto e = renderFlags.find("no_shadow");
-				if (e != renderFlags.end()) {
-					type->noShadow = e->second;
-				}
-			}
-			bool mirror = false;
-			{
-				auto e = renderFlags.find("mirror");
-				if (e != renderFlags.end()) {
-					type->mirror = e->second;
-					type->mirrorPlane = mirrorPlane;
-					mirror = true;
-				}
-			}
-			{
-				auto e = renderFlags.find("water");
-				if (e != renderFlags.end()) {
-					type->water = e->second;
-				}
-			}
-			{
-				auto e = renderFlags.find("light");
-				if (e != renderFlags.end()) {
-					type->light = e->second;
-				}
-			}
-			{
-				auto e = renderFlags.find("batch_mode");
-				if (e != renderFlags.end()) {
-					type->batchMode = e->second;
-				}
-			}
-			{
-				auto e = renderFlags.find("wireframe");
-				if (e != renderFlags.end()) {
-					type->wireframe = e->second;
-				}
-			}
+	    {
+		    auto e = data.renderFlags.find("blend");
+		    if (e != data.renderFlags.end()) {
+			    type->blend = e->second;
+		    }
+	    }
+	    {
+		    auto e = data.renderFlags.find("render_back");
+		    if (e != data.renderFlags.end()) {
+			    type->renderBack = e->second;
+		    }
+	    }
+	    {
+		    auto e = data.renderFlags.find("no_shadow");
+		    if (e != data.renderFlags.end()) {
+			    type->noShadow = e->second;
+		    }
+	    }
+	    {
+		    auto e = data.renderFlags.find("mirror");
+		    if (e != data.renderFlags.end()) {
+			    type->mirror = e->second;
+			    type->mirrorPlane = data.mirrorPlane;
+		    }
+	    }
+	    {
+		    auto e = data.renderFlags.find("water");
+		    if (e != data.renderFlags.end()) {
+			    type->water = e->second;
+		    }
+	    }
+	    {
+		    auto e = data.renderFlags.find("light");
+		    if (e != data.renderFlags.end()) {
+			    type->light = e->second;
+		    }
+	    }
+	    {
+		    auto e = data.renderFlags.find("batch_mode");
+		    if (e != data.renderFlags.end()) {
+			    type->batchMode = e->second;
+		    }
+	    }
+	    {
+		    auto e = data.renderFlags.find("wireframe");
+		    if (e != data.renderFlags.end()) {
+			    type->wireframe = e->second;
+		    }
+	    }
 
-			MeshLoader meshLoader(assets, modelName, modelPath);
+	    MeshLoader meshLoader(assets, data.modelName, data.modelPath);
 
-			std::shared_ptr<Material> material = nullptr;
-			{
-				auto e = materials.find(materialName);
-				if (e != materials.end()) {
-					std::shared_ptr<Material> material = e->second;
-				}
-			}
+	    if (data.defaultMaterial) {
+		    meshLoader.defaultMaterial = data.defaultMaterial;
+		    meshLoader.overrideMaterials = data.overrideMaterials;
+	    }
 
-			if (material) {
-				meshLoader.defaultMaterial = material;
-				meshLoader.overrideMaterials = true;
-			}
+	    type->mesh = meshLoader.load();
 
-			type->mesh = meshLoader.load();
+	    type->modifyMaterials([&data](Material& m) {
+		    if (data.materialModifierFields.reflection) {
+			    m.reflection = data.materialModifiers->reflection;
+		    }
+		    if (data.materialModifierFields.refraction) {
+			    m.refraction = data.materialModifiers->refraction;
+		    }
+		    if (data.materialModifierFields.refractionRatio) {
+			    m.refractionRatio = data.materialModifiers->refractionRatio;
+		    }
+	    });
 
-			if (mirror) {
-				type->modifyMaterials([](Material& m) {
-					m.reflection = 0.1f;
-					m.refraction = 0.9f;
-					m.refractionRatio = 1.0f / 1.52;
-				});
-			}
+	    auto node = new Node(type);
+	    node->setPos(data.pos + assets.groundOffset);
+	    node->setRotation(data.rotation);
+	    node->setScale(data.scale);
 
-			auto node = new Node(type);
-			node->setPos(pos + assets.groundOffset);
-			node->setRotation(rotation);
-			node->setScale(scale);
+	    loader.scene->registry.addNode(node);
+    });
+}
 
-			loader.scene->registry.addNode(node);
-		});
-	}
+void SceneFile::loadMaterialModifiers(
+	const YAML::Node& node,
+	EntityData& data)
+{
+    const std::string materialPath = assets.modelsDir;
+    const std::string& name{ "override_material" };
+    data.materialModifiers = std::make_shared<Material>(name, materialPath);
+
+    loadMaterial(node, data.materialModifierFields, data.materialModifiers);
 }
 
 void SceneFile::loadMaterials(
-	const YAML::Node& doc,
-	std::map<const std::string, std::shared_ptr<Material>>& materials) {
-	const std::string materialPath = assets.modelsDir;
+    const YAML::Node& doc,
+    std::map<const std::string, std::shared_ptr<Material>>& materials) {
 
-	const YAML::Node& entries = doc["materials"];
+    for (auto entry : doc["materials"]) {
+	    MaterialField fields;
+	    std::shared_ptr<Material> material{ nullptr };
 
-	for (auto entry : entries) {
-		std::shared_ptr<Material> material = nullptr;
+	    loadMaterial(entry, fields, material);
+	    if (material) {
+		    materials[material->name] = material;
+	    }
+    }
+}
 
-		for (auto pair : entry) {
-			const std::string& k = pair.first.as<std::string>();
-			const YAML::Node& v = pair.second;
+void SceneFile::loadMaterial(
+	const YAML::Node& node,
+	MaterialField& fields,
+	std::shared_ptr<Material>& material)
+{
+    const std::string materialPath = assets.modelsDir;
 
-			if (k == "name") {
-				const std::string& name = v.as<std::string>();
-				material = std::make_shared<Material>(name, materialPath);
-			}
-			else if (material) {
-				if (k == "ns") {
-					material->ns = v.as<double>();
-				} 
-				else if (k == "ka") {
-					material->ka = readVec4(v);
-				}
-				else if (k == "kd") {
-					material->kd = readVec4(v);
-				}
-				else if (k == "ks") {
-					material->ks = readVec4(v);
-				}
-				else if (k == "ke") {
-					material->ke = readVec4(v);
-				}
-				else if (k == "ni") {
-					material->ni = v.as<double>();
-				}
-				else if (k == "d") {
-					material->d = v.as<double>();
-				}
-				else if (k == "illum") {
-					material->d = v.as<double>();
-				}
-				else if (k == "map_kd") {
-					std::string line = v.as<std::string>();
-					material->map_kd = resolveTexturePath(line);
-				}
-				else if (k == "map_ke") {
-					std::string line = v.as<std::string>();
-					material->map_ke = resolveTexturePath(line);
-				}
-				else if (k == "map_ks") {
-					std::string line = v.as<std::string>();
-					material->map_ks = resolveTexturePath(line);
-				}
-				else if (k == "map_bump") {
-					std::string line = v.as<std::string>();
-					material->map_bump = resolveTexturePath(line);
-				}
-				else if (k == "bump") {
-					std::string line = v.as<std::string>();
-					material->map_bump = resolveTexturePath(line);
-				}
-				else if (k == "reflection") {
-					material->reflection = v.as<double>();
-				}
-				else if (k == "refraction") {
-					material->refraction = v.as<double>();
-				}
-				else if (k == "refraction_ratio") {
-					material->refractionRatio = v.as<double>();
-				}
-				else if (k == "fog_ratio") {
-					material->fogRatio = v.as<double>();
-				}
-				else if (k == "tiling") {
-					material->tiling = v.as<double>();
-				}
-			}
-		}
+    for (auto pair : node) {
+	    const std::string& k = pair.first.as<std::string>();
+	    const YAML::Node& v = pair.second;
 
-		if (material) {
-			materials[material->name] = material;
-		}
-	}
+	    if (k == "name") {
+		    const std::string& name = v.as<std::string>();
+		    material = std::make_shared<Material>(name, materialPath);
+	    }
+	    else if (material) {
+		    if (k == "ns") {
+			    material->ns = v.as<double>();
+		    }
+		    else if (k == "ka") {
+			    material->ka = readVec4(v);
+		    }
+		    else if (k == "kd") {
+			    material->kd = readVec4(v);
+		    }
+		    else if (k == "ks") {
+			    material->ks = readVec4(v);
+		    }
+		    else if (k == "ke") {
+			    material->ke = readVec4(v);
+		    }
+		    else if (k == "ni") {
+			    material->ni = v.as<double>();
+		    }
+		    else if (k == "d") {
+			    material->d = v.as<double>();
+		    }
+		    else if (k == "illum") {
+			    material->d = v.as<double>();
+		    }
+		    else if (k == "map_kd") {
+			    std::string line = v.as<std::string>();
+			    material->map_kd = resolveTexturePath(line);
+		    }
+		    else if (k == "map_ke") {
+			    std::string line = v.as<std::string>();
+			    material->map_ke = resolveTexturePath(line);
+		    }
+		    else if (k == "map_ks") {
+			    std::string line = v.as<std::string>();
+			    material->map_ks = resolveTexturePath(line);
+		    }
+		    else if (k == "map_bump") {
+			    std::string line = v.as<std::string>();
+			    material->map_bump = resolveTexturePath(line);
+		    }
+		    else if (k == "bump") {
+			    std::string line = v.as<std::string>();
+			    material->map_bump = resolveTexturePath(line);
+		    }
+		    else if (k == "reflection") {
+			    material->reflection = v.as<double>();
+			    fields.reflection = true;
+		    }
+		    else if (k == "refraction") {
+			    material->refraction = v.as<double>();
+			    fields.refraction = true;
+		    }
+		    else if (k == "refraction_ratio") {
+			    material->refractionRatio = readRefractionRatio(v);
+			    fields.refractionRatio = true;
+		    }
+		    else if (k == "fog_ratio") {
+			    material->fogRatio = v.as<double>();
+		    }
+		    else if (k == "tiling") {
+			    material->tiling = v.as<double>();
+		    }
+		    else {
+			    std::cout << "UNKNOWN MATERIAL_ENTRY: " << k << "=" << v << "\n";
+		    }
+	    }
+    }
 }
 
 void SceneFile::testYAML() {
@@ -383,34 +405,50 @@ void SceneFile::testYAML() {
         }
         std::cout << "---------------\n";
         //        std::string name = node["name"].as<std::string>();
-//        std::cout << name << "\n";
+    //        std::cout << name << "\n";
     }
 }
 
-const glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
-	std::vector<double> a;
-	for (auto e : node) {
-		a.push_back(e.as<double>());
-	}
-	return glm::vec3{ a[0], a[1], a[2] };
+glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
+    std::vector<double> a;
+    for (auto e : node) {
+	    a.push_back(e.as<double>());
+    }
+    return glm::vec3{ a[0], a[1], a[2] };
 }
 
-const glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
-	std::vector<double> a;
-	for (auto e : node) {
-		a.push_back(e.as<double>());
-	}
-	return glm::vec4{ a[0], a[1], a[2], a[3] };
+glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
+    std::vector<double> a;
+    for (auto e : node) {
+	    a.push_back(e.as<double>());
+    }
+    // NOTE KI check if alpha is missing
+    if (a.size() < 4) {
+	    a.push_back(DEF_ALPHA);
+    }
+    return glm::vec4{ a[0], a[1], a[2], a[3] };
+}
+
+double SceneFile::readRefractionRatio(const YAML::Node& node) {
+    std::vector<double> a;
+    for (auto e : node) {
+	    a.push_back(e.as<double>());
+    }
+    // NOTE KI check if just single number
+    if (a.size() < 1) {
+	    a.push_back(1.0);
+    }
+    return a[0] / a[1];
 }
 
 const std::string SceneFile::resolveTexturePath(const std::string& line)
 {
-	std::string k;
-	std::stringstream is2(line);
-	is2 >> k;
-	std::stringstream tmp;
-	tmp << is2.rdbuf();
-	std::string path = tmp.str();
-	path.erase(0, path.find_first_not_of(' '));
-	return path;
+    std::string k;
+    std::stringstream is2(line);
+    is2 >> k;
+    std::stringstream tmp;
+    tmp << is2.rdbuf();
+    std::string path = tmp.str();
+    path.erase(0, path.find_first_not_of(' '));
+    return path;
 }
