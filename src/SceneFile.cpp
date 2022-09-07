@@ -65,6 +65,9 @@ void SceneFile::loadEntity(
         if (k == "name") {
             data.name = v.as<std::string>();
         }
+        else if (k == "desc") {
+            data.desc = v.as<std::string>();
+        }
         else if (k == "type_id") {
             data.typeId = v.as<int>();
         }
@@ -126,13 +129,26 @@ void SceneFile::loadEntity(
         else if (k == "scale") {
             data.scale = v.as<double>();
         }
+        else if (k == "repeat") {
+            loadRepeat(v, data);
+        }
+        else if (k == "selected") {
+            data.selected = v.as<bool>();
+        }
+        else if (k == "enabled") {
+            data.enabled = v.as<bool>();
+        }
         else {
             std::cout << "UNKNOWN ENTITY_ENTRY: " << k << "=" << v << "\n";
         }
     }
 
     loader.addLoader([this, data, materials]() {
-    auto type = std::make_shared<NodeType>(data.typeId, loader.getShader(data.shaderName, data.shaderDefinitions));
+        if (!data.enabled) {
+            return;
+        }
+
+        auto type = std::make_shared<NodeType>(data.typeId, loader.getShader(data.shaderName, data.shaderDefinitions));
 
         {
             auto e = data.renderFlags.find("blend");
@@ -205,12 +221,25 @@ void SceneFile::loadEntity(
             }
             });
 
-        auto node = new Node(type);
-        node->setPos(data.pos + assets.groundOffset);
-        node->setRotation(data.rotation);
-        node->setScale(data.scale);
+        auto& repeat = data.repeat;
+        for (auto z = 0; z < repeat.zCount; z++) {
+            for (auto y = 0; y < repeat.yCount; y++) {
+                for (auto x = 0; x < repeat.xCount; x++) {
+                    auto node = new Node(type);
 
-        loader.scene->registry.addNode(node);
+                    auto pos = data.pos;
+                    pos = { pos.x + x * repeat.xStep, pos.y + y * repeat.yStep, pos.z + z * repeat.zStep };
+
+                    node->setPos(pos + assets.groundOffset);
+                    node->setRotation(data.rotation);
+                    node->setScale(data.scale);
+
+                    node->selected = data.selected;
+
+                    loader.scene->registry.addNode(node);
+                }
+            }
+        }
         });
 }
 
@@ -223,6 +252,38 @@ void SceneFile::loadMaterialModifiers(
     data.materialModifiers = std::make_shared<Material>(name, materialPath);
 
     loadMaterial(node, data.materialModifierFields, data.materialModifiers);
+}
+
+void SceneFile::loadRepeat(const YAML::Node& node, EntityData& data)
+{
+    auto& repeat = data.repeat;
+
+    for (auto pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "x_count") {
+            repeat.xCount = v.as<int>();
+        }
+        else if (k == "y_count") {
+            repeat.yCount = v.as<int>();
+        }
+        else if (k == "z_count") {
+            repeat.zCount = v.as<int>();
+        }
+        else if (k == "x_step") {
+            repeat.xStep = v.as<double>();
+        }
+        else if (k == "y_step") {
+            repeat.yStep = v.as<double>();
+        }
+        else if (k == "z_step") {
+            repeat.zStep = v.as<double>();
+        }
+        else {
+            std::cout << "UNKNOWN REPEAT_ENTRY: " << k << "=" << v << "\n";
+        }
+    }
 }
 
 void SceneFile::loadMaterials(

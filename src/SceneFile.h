@@ -20,9 +20,21 @@ class SceneFile
         }
     };
 
+    struct Repeat {
+        int xCount{ 1 };
+        int yCount{ 1 };
+        int zCount{ 1 };
+
+        double xStep{ 0 };
+        double yStep{ 0 };
+        double zStep{ 0 };
+    };
+
     struct EntityData {
         int typeId{ 0 };
+        bool enabled{ false };
         std::string name{};
+        std::string desc{};
         std::string modelName{};
         std::string modelPath{ "/" };
         std::string shaderName{ TEX_TEXTURE };
@@ -33,12 +45,16 @@ class SceneFile
         glm::vec4 mirrorPlane{ 0 };
         double scale{ 1 };
 
+        bool selected{ false };
+
         std::shared_ptr<Material> defaultMaterial;
         // NOTE KI overrides *ALL* materials with defaultMaterial
         bool overrideMaterials{ false };
 
         MaterialField materialModifierFields;
         std::shared_ptr<Material> materialModifiers;
+
+        Repeat repeat;
     };
 
 public:
@@ -64,6 +80,10 @@ private:
         const YAML::Node& node,
         EntityData& data);
 
+    void loadRepeat(
+        const YAML::Node& node,
+        EntityData& data);
+
     void loadMaterials(
         const YAML::Node& doc,
         std::map<const std::string, std::shared_ptr<Material>>& materials);
@@ -84,4 +104,3 @@ private:
     const Assets& assets;
     const std::string filename;
 };
-

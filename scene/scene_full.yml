@@ -23,15 +23,17 @@ entities:
       x_count: 1
       y_count: 1
       z_count: 1
-      x_multiply: 1
-      y_multiply: 1
-      z_multiply: 1
+      x_step: 1
+      y_step: 1
+      z_step: 1
+    enabled: true
   - name: ZERO
     type_id: 2
     model: water_ball
     shader: texture
     pos: [0.0, 0.0, 0.0]
     scale: 0.3
+    enabled: true
   - name: Window 1
     type_id: 3
     model: window1
@@ -43,6 +45,7 @@ entities:
     render_flags:
       - blend
       - render_back
+    enabled: true
   - name: Window 2
     type_id: 4
     model: window2
@@ -54,6 +57,7 @@ entities:
     render_flags:
       - blend
       - render_back
+    enabled: true
   - name: Stained windows
     type_id: 5
     model: window2
@@ -67,7 +71,8 @@ entities:
       - render_back
     repeat:
       x_count: 10
-      x_multiply: 2
+      x_step: 2
+    enabled: true
   - name: Wood wall
     type_id: 6
     model: woodwall
@@ -79,7 +84,8 @@ entities:
       - render_back
     repeat:
       x_count: 5
-      x_multiply: 2
+      x_step: 2
+    enabled: true
   - name: Big mirror 1
     type_id: 7
     model: woodwall
@@ -95,6 +101,7 @@ entities:
       - render_back
       - mirror
     mirror_plane: [0.0, 1.0, 0.0, -1.0]
+    enabled: true
   - name: Big mirror 2
     type_id: 8
     model: woodwall
@@ -110,18 +117,22 @@ entities:
       - render_back
       - mirror
     mirror_plane: [0.0, 1.0, 0.0, -1.0]
+    enabled: true
   - name: Spyro
     type_id: 9
     model: spyro2
     shader: texture
     pos: [0.0, 30.0, 30.0]
-    scale: 0.01
+    scale: 0.06
+    enabled: true
   - name: Backback
+    desc: TODO not showing up
     type_id: 10
     model: [backback, /backback/]
     shader: texture
     pos: [0.0, 5.0, 5.0]
     scale: 1.5
+    enabled: true
   - name: Bunny
     type_id: 11
     model: bunny
@@ -132,6 +143,7 @@ entities:
       reflection: 0.9
     render_flags:
       - render_back
+    enabled: false
   - name: Dragon
     type_id: 12
     model: dragon
@@ -140,18 +152,21 @@ entities:
     scale: 30.0
     render_flags:
       - render_back
+    enabled: false
   - name: Shuttle
     type_id: 13
     model: [shuttle, /opengl_book/NasaShuttle/]
     shader: texture
     pos: [20.0, 40.0, -50.0]
     scale: 20.0
+    enabled: true
   - name: Sword 2
     type_id: 14
     model: sword2
     shader: texture
     pos: [0.0, 40.0, -50.0]
     scale: 1.0
+    enabled: true
   - name: Teapot
     type_id: 15
     model: smooth_teapot
@@ -165,6 +180,8 @@ entities:
       refraction_ratio: [1.0, 1.52]
     render_flags:
       - render_back
+    selected: true
+    enabled: true
   - name: Cow
     type_id: 16
     model: texture_cow
@@ -176,18 +193,22 @@ entities:
       reflection: 0.5
     render_flags:
       - render_back
+    selected: true
+    enabled: true
   - name: Mountains
     type_id: 17
     model: texture_mountains
     shader: texture
     pos: [100.0, 0.0, -100.0]
     scale: 1.0
+    enabled: true
   - name: Ball
     type_id: 18
     model: texture_ball
     shader: texture
     pos: [0.0, 8.0, 0.0]
     scale: 2.0
+    enabled: true
   - name: Glass ball
     type_id: 19
     model: glass_ball
@@ -198,6 +219,7 @@ entities:
       reflection: 0.1
       refraction: 0.9
       refraction_ratio: [1.0, 1.52]
+    enabled: true
   - name: Mirror ball
     type_id: 20
     model: glass_ball
@@ -206,6 +228,7 @@ entities:
     scale: 1.3
     material_modifier:
       reflection: 0.1
+    enabled: true
   - name: Water ball
     type_id: 21
     model: water_ball
@@ -214,6 +237,7 @@ entities:
     scale: 1.3
     material_modifier:
       reflection: 0.3
+    enabled: true
   - name: Basic ball
     type_id: 22
     model: water_ball
@@ -224,6 +248,7 @@ entities:
     override_material: true
     material_modifier:
       reflection: 0.05
+    enabled: true
   - name: Gold ball
     type_id: 23
     model: water_ball
@@ -232,6 +257,7 @@ entities:
     scale: 1.3
     override_material: true
     default_material: gold_ball
+    enabled: true
   - name: Silver ball
     type_id: 24
     model: water_ball
@@ -240,6 +266,7 @@ entities:
     scale: 1.3
     override_material: true
     default_material: silver_ball
+    enabled: true
   - name: Bronze ball
     type_id: 25
     model: water_ball
@@ -248,6 +275,7 @@ entities:
     scale: 1.3
     override_material: true
     default_material: bronze_ball
+    enabled: true
 materials:
   - name: skybox
     type: skybox
@@ -257,19 +285,16 @@ materials:
     ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.8, 0.8, 0.0, 1.0]
     ks: [0.9, 0.9, 0.0, 1.0]
-    reflection: 0.05
   - name: teapot
     ns: 100.0
     ka: [0.3, 0.3, 0.0, 1.0]
-    ks: [0.9, 0.9, 0.0, 1.0]
     kd: [0.578, 0.578, 0.168, 1.0]
-    reflection: 0.05
+    ks: [0.9, 0.9, 0.0, 1.0]
   - name: cow
     ns: 100.0
     ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.160, 0.578, 0.168, 1.0]
     ks: [0.9, 0.9, 0.0, 1.0]
-    reflection: 0.05
   - name: default_ball
     ns: 100.0
     ka: [0.3, 0.3, 0.0, 1.0]
