@@ -38,11 +38,6 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 
     setupNodeSkybox();
 
-    setupNodeBrickCube();
-
-    setupNodeCubes();
-    setupNodeCube4();
-
     setupNodeActive();
 
     setupNodePlanet();
@@ -142,7 +137,7 @@ void TestSceneSetup::setupLightDirectional()
         }
 
         scene->registry.addNode(node);
-    });
+        });
 }
 
 void TestSceneSetup::setupLightMoving()
@@ -152,7 +147,7 @@ void TestSceneSetup::setupLightMoving()
 
     float radius = 10.f;
 
-    for (int x = 0; x < 2; x ++) {
+    for (int x = 0; x < 2; x++) {
         for (int z = 0; z < 2; z++) {
             auto light = new Light();
 
@@ -202,7 +197,7 @@ void TestSceneSetup::setupLightMoving()
 
             scene->registry.addNode(node);
         }
-    });
+        });
 }
 
 void TestSceneSetup::setupNodeBrickwallBox()
@@ -215,21 +210,21 @@ void TestSceneSetup::setupNodeBrickwallBox()
         type->mesh = loader.load();
 
         glm::vec3 pos[] = {
-    //        {0.0, 1.0, 0.0},
-            {0.0, -1.0, .0},
-    //        {1.0, 0.0, 0.0},
-    //        {-1.0, 0.0, 0.0},
-    //        {0.0, 0.0, 1.0},
-    //        {0.0, 0.0, -1.0},
+            //        {0.0, 1.0, 0.0},
+                    {0.0, -1.0, .0},
+                    //        {1.0, 0.0, 0.0},
+                    //        {-1.0, 0.0, 0.0},
+                    //        {0.0, 0.0, 1.0},
+                    //        {0.0, 0.0, -1.0},
         };
 
         glm::vec3 rot[] = {
-    //        {270, 0, 0},
-            {90, 0, 0},
-    //        {0, 90, 0},
-    //        {0, 270, 0},
-    //        {0, 0, 0},
-    //        {0, 180, 0},
+            //        {270, 0, 0},
+                    {90, 0, 0},
+                    //        {0, 90, 0},
+                    //        {0, 270, 0},
+                    //        {0, 0, 0},
+                    //        {0, 180, 0},
         };
 
         float scale = 100;
@@ -241,43 +236,7 @@ void TestSceneSetup::setupNodeBrickwallBox()
             //node->skipShadow = true;
             scene->registry.addNode(node);
         }
-    });
-}
-
-void TestSceneSetup::setupNodeCube4()
-{
-    loader.addLoader([this]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
-        MeshLoader loader(assets, "texture_cube_4");
-        type->mesh = loader.load();
-
-        auto node = new Node(type);
-        node->setPos(glm::vec3(-5, 20, 5) + assets.groundOffset);
-        node->selected = true;
-        scene->registry.addNode(node);
-    });
-}
-
-void TestSceneSetup::setupNodeCubes()
-{
-    loader.addLoader([this]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
-        MeshLoader loader(assets, "texture_cube_3");
-        type->mesh = loader.load();
-
-        std::vector<glm::vec3> points = {
-            glm::vec3(-5, 15, -5),
-            glm::vec3(5, 15, -5),
-            glm::vec3(-5, 15, 5),
-            glm::vec3(5, 15, 5),
-        };
-
-        for (auto p : points) {
-            auto node = new Node(type);
-            node->setPos(p + assets.groundOffset);
-            scene->registry.addNode(node);
-        }
-    });
+        });
 }
 
 void TestSceneSetup::setupNodeActive()
@@ -291,20 +250,7 @@ void TestSceneSetup::setupNodeActive()
         active->controller = new NodePathController(assets, 0);
         active->setPos(glm::vec3(0) + assets.groundOffset);
         scene->registry.addNode(active);
-    });
-}
-
-void TestSceneSetup::setupNodeBrickCube()
-{
-    loader.addLoader([this]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
-        MeshLoader loader(assets, "texture_cube");
-        type->mesh = loader.load();
-
-        auto node = new Node(type);
-        node->setPos(glm::vec3(5, 20, 5) + assets.groundOffset);
-        scene->registry.addNode(node);
-    });
+        });
 }
 
 void TestSceneSetup::setupNodePlanet()
@@ -323,7 +269,7 @@ void TestSceneSetup::setupNodePlanet()
 
         scene->registry.addNode(node);
         setPlanet(node);
-    });
+        });
 
     loader.addLoader([this]() {
         auto planet = getPlanet();
@@ -365,7 +311,7 @@ void TestSceneSetup::setupNodePlanet()
         }
 
         scene->registry.addNode(node);
-    });
+        });
 }
 
 void TestSceneSetup::setupNodeAsteroid()
@@ -385,7 +331,7 @@ void TestSceneSetup::setupNodeAsteroid()
         glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 50, 0) : glm::vec3(10, 50, 100) + assets.groundOffset;
         node->setPos(pos);
         scene->registry.addNode(node);
-    });
+        });
 }
 
 void TestSceneSetup::setupNodeAsteroidBelt()
@@ -403,7 +349,7 @@ void TestSceneSetup::setupNodeAsteroidBelt()
         //node->selected = true;
         //std::this_thread::sleep_for(std::chrono::milliseconds(10000));
         this->scene->registry.addNode(node);
-    });
+        });
 }
 
 void TestSceneSetup::setupSpriteSkeleton()
@@ -421,7 +367,7 @@ void TestSceneSetup::setupSpriteSkeleton()
                 scene->registry.addNode(sprite);
             }
         }
-    });
+        });
 }
 
 void TestSceneSetup::setupTerrain()
@@ -451,7 +397,7 @@ void TestSceneSetup::setupTerrain()
                 scene->registry.addNode(terrain);
             }
         }
-    });
+        });
 }
 
 void TestSceneSetup::setupWaterBottom()
@@ -468,7 +414,7 @@ void TestSceneSetup::setupWaterBottom()
                 m.textureSpec.mode = GL_REPEAT;
                 m.tiling = 8;
                 m.loadTextures();
-            });
+                });
         }
 
         glm::vec3 pos = assets.groundOffset;
@@ -478,7 +424,7 @@ void TestSceneSetup::setupWaterBottom()
         node->setScale(30.f);
         node->setRotation({ 90, 0, 0 });
         scene->registry.addNode(node);
-    });
+        });
 }
 
 void TestSceneSetup::setupWaterSurface()
@@ -503,7 +449,7 @@ void TestSceneSetup::setupWaterSurface()
         auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
         type->renderBack = true;
         type->water = true;
-//        type->blend = true;
+        //        type->blend = true;
         type->noShadow = true;
         type->mesh = generator.generateWater(material);
 
@@ -515,7 +461,7 @@ void TestSceneSetup::setupWaterSurface()
         water->setRotation({ 270, 0, 0 });
 
         scene->registry.addNode(water);
-    });
+        });
 }
 
 void TestSceneSetup::setupEffectExplosion()
@@ -536,7 +482,7 @@ void TestSceneSetup::setupEffectExplosion()
         node->setScale(2);
 
         scene->registry.addNode(node);
-    });
+        });
 }
 
 void TestSceneSetup::setupViewport1()

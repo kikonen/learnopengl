@@ -40,13 +40,15 @@ class SceneFile
         std::string shaderName{ TEX_TEXTURE };
         std::vector<std::string> shaderDefinitions{};
         std::map<const std::string, bool> renderFlags{};
-        glm::vec3 pos{ 0 };
+        //glm::vec3 pos{ 0 };
+        std::vector<glm::vec3> positions{};
         glm::vec3 rotation{ 0 };
         glm::vec4 mirrorPlane{ 0 };
         double scale{ 1 };
 
         bool selected{ false };
 
+        bool loadTextures{ true };
         std::shared_ptr<Material> defaultMaterial;
         // NOTE KI overrides *ALL* materials with defaultMaterial
         bool overrideMaterials{ false };

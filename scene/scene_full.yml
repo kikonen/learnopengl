@@ -132,7 +132,7 @@ entities:
     shader: texture
     pos: [0.0, 5.0, 5.0]
     scale: 1.5
-    enabled: true
+    enabled: false
   - name: Bunny
     type_id: 11
     model: bunny
@@ -227,7 +227,7 @@ entities:
     pos: [0.0, 20.0, 0.0]
     scale: 1.3
     material_modifier:
-      reflection: 0.1
+      reflection: 1.0
     enabled: true
   - name: Water ball
     type_id: 21
@@ -235,6 +235,10 @@ entities:
     shader: texture
     pos: [5.0, 25.0, 0.0]
     scale: 1.3
+    particle_generator:
+      - ParticleDefinition pd;
+      - //pd.material = Sprite::getMaterial(assets, "Skeleton_VH.PNG", "");
+      - node->particleGenerator = new ParticleGenerator(assets, pd);
     material_modifier:
       reflection: 0.3
     enabled: true
@@ -257,6 +261,8 @@ entities:
     scale: 1.3
     override_material: true
     default_material: gold_ball
+    material_modifier:
+      reflection: 0.05
     enabled: true
   - name: Silver ball
     type_id: 24
@@ -266,6 +272,8 @@ entities:
     scale: 1.3
     override_material: true
     default_material: silver_ball
+    material_modifier:
+      reflection: 0.05
     enabled: true
   - name: Bronze ball
     type_id: 25
@@ -275,6 +283,50 @@ entities:
     scale: 1.3
     override_material: true
     default_material: bronze_ball
+    material_modifier:
+      reflection: 0.05
+    enabled: true
+  - name: Brickcube
+    type_id: 26
+    model: texture_cube
+    shader: texture
+    pos: [5.0, 20.0, 5.0]
+    scale: 1
+    enabled: true
+  - name: Four cubes
+    type_id: 27
+    model: texture_cube_3
+    shader: texture
+    positions:
+      - [-5.0, 15.0, -5.0]
+      - [5.0, 15.0, -5.0]
+      - [-5.0, 15.0, 5.0]
+      - [5.0, 15.0, 5.0]
+    scale: 1
+    enabled: true
+  - name: Cube 4
+    type_id: 28
+    model: texture_cube_4
+    shader: texture
+    pos: [-5.0, 20.0, 5.0]
+    scale: 1
+    selected: true
+    enabled: true
+  - name: Water bottom
+    type_id: 29
+    model: marble_plate
+    shader: texture
+    pos: [0.0, 30.0, -10.0]
+    rotation: [90.0, 0.0, 0.0]
+    scale: 30
+    load_textures: false
+    material_modifier:
+      texture_spec:
+        mode: GL_REPEAT
+      tiling: 8
+    render_flags:
+      - no_shadow
+    selected: true
     enabled: true
 materials:
   - name: skybox
@@ -300,31 +352,21 @@ materials:
     ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.8, 0.8, 0.0, 1.0]
     ks: [0.9, 0.9, 0.0, 1.0]
-    reflection: 0.05
-  - name: default_ball
-    ns: 100.0
-    ka: [0.3, 0.3, 0.0, 1.0]
-    kd: [0.8, 0.8, 0.0, 1.0]
-    ks: [0.9, 0.9, 0.0, 1.0]
-    reflection: 0.05
   - name: gold_ball
     ns: 51.2
     ka: [0.2473, 0.1995, 0.0745, 1.0]
     kd: [0.7516, 0.6065, 0.2265, 1.0]
     ks: [0.6283, 0.5559, 0.3661, 1.0]
-    reflection: 0.05
   - name: silver_ball
     ns: 51.2
     ka: [0.1923, 0.1923, 0.1923, 1.0]
     kd: [0.5075, 0.5075, 0.5075, 1.0]
     ks: [0.5083, 0.5083, 0.5083, 1.0]
-    reflection: 0.05
   - name: bronze_ball
     ns: 25.6
     ka: [0.2125, 0.1275, 0.0540, 1.0]
     kd: [0.7140, 0.4284, 0.1814, 1.0]
     ks: [0.3936, 0.2719, 0.1667, 1.0]
-    reflection: 0.05
   - name: copper
     ns: 225.000000
     ka: [1.000000, 1.000000, 1.000000]

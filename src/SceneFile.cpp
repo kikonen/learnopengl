@@ -121,7 +121,13 @@ void SceneFile::loadEntity(
             data.overrideMaterials = v.as<bool>();
         }
         else if (k == "pos") {
-            data.pos = readVec3(v);
+            data.positions.push_back(readVec3(v));
+        }
+        else if (k == "positions") {
+            data.positions.clear();
+            for (auto p : v) {
+                data.positions.push_back(readVec3(p));
+            }
         }
         else if (k == "rotation") {
             data.rotation = readVec3(v);
@@ -225,18 +231,19 @@ void SceneFile::loadEntity(
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
-                    auto node = new Node(type);
+                    for (auto& p : data.positions) {
+                        glm::vec3 pos = { p.x + x * repeat.xStep, p.y + y * repeat.yStep, p.z + z * repeat.zStep };
 
-                    auto pos = data.pos;
-                    pos = { pos.x + x * repeat.xStep, pos.y + y * repeat.yStep, pos.z + z * repeat.zStep };
+                        auto node = new Node(type);
 
-                    node->setPos(pos + assets.groundOffset);
-                    node->setRotation(data.rotation);
-                    node->setScale(data.scale);
+                        node->setPos(pos + assets.groundOffset);
+                        node->setRotation(data.rotation);
+                        node->setScale(data.scale);
 
-                    node->selected = data.selected;
+                        node->selected = data.selected;
 
-                    loader.scene->registry.addNode(node);
+                        loader.scene->registry.addNode(node);
+                    }
                 }
             }
         }
