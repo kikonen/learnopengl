@@ -5,9 +5,9 @@
 class Raycast final
 {
 public:
-	Raycast();
-	~Raycast();
+    Raycast();
+    ~Raycast();
 
-	int castRay(const RenderContext& ctx);
+    int castRay(const RenderContext& ctx);
 };
 

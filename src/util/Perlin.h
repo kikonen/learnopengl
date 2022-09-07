@@ -5,20 +5,20 @@
 class Perlin final
 {
 public:
-	Perlin(int repeat = -1);
+    Perlin(int repeat = -1);
 
-	double perlin(double x, double y, double z);
-	double octavePerlin(double x, double y, double z, int octaves, double persistence);
-
-private:
-	int inc(int num);
-
-	static double grad(int hash, double x, double y, double z);
-	static double fade(double t);
-	static double lerp(double a, double b, double x);
+    double perlin(double x, double y, double z);
+    double octavePerlin(double x, double y, double z, int octaves, double persistence);
 
 private:
-	int repeat;
+    int inc(int num);
+
+    static double grad(int hash, double x, double y, double z);
+    static double fade(double t);
+    static double lerp(double a, double b, double x);
+
+private:
+    int repeat;
 };
 
 

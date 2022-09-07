@@ -32,80 +32,80 @@
 class Scene final
 {
 public:
-	Scene(const Assets& assets);
-	~Scene();
+    Scene(const Assets& assets);
+    ~Scene();
 
-	void prepare();
+    void prepare();
 
-	void attachNodes();
+    void attachNodes();
 
-	void processEvents(RenderContext& ctx);
-	void update(RenderContext& ctx);
-	void bind(RenderContext& ctx);
+    void processEvents(RenderContext& ctx);
+    void update(RenderContext& ctx);
+    void bind(RenderContext& ctx);
 
-	void draw(RenderContext& ctx);
+    void draw(RenderContext& ctx);
 
-	void drawMain(RenderContext& ctx);
-	void drawMirror(RenderContext& ctx);
-	void drawViewports(RenderContext& ctx);
+    void drawMain(RenderContext& ctx);
+    void drawMirror(RenderContext& ctx);
+    void drawViewports(RenderContext& ctx);
 
-	void drawScene(RenderContext& ctx);
+    void drawScene(RenderContext& ctx);
 
-	Camera* getCamera();
-	Node* getCameraNode();
+    Camera* getCamera();
+    Node* getCameraNode();
 
-	Light* getDirLight();
-	std::vector<Light*>& getPointLights();
-	std::vector<Light*>& getSpotLights();
+    Light* getDirLight();
+    std::vector<Light*>& getPointLights();
+    std::vector<Light*>& getSpotLights();
 
-	void bindComponents(Node* node);
-	int getObjectID(const RenderContext& ctx, double posx, double posy);
+    void bindComponents(Node* node);
+    int getObjectID(const RenderContext& ctx, double posx, double posy);
 
 private:
-	void updateMainViewport(RenderContext& ctx);
-	void prepareUBOs();
+    void updateMainViewport(RenderContext& ctx);
+    void prepareUBOs();
 
 public:
-	const Assets& assets;
+    const Assets& assets;
 
-	bool showNormals = false;
-	bool showMirrorView = false;
+    bool showNormals = false;
+    bool showMirrorView = false;
 
-	std::unique_ptr<SkyboxRenderer> skyboxRenderer{ nullptr };
-	UBO ubo;
+    std::unique_ptr<SkyboxRenderer> skyboxRenderer{ nullptr };
+    UBO ubo;
 
-	NodeRegistry registry;
-	ShaderRegistry shaders;
+    NodeRegistry registry;
+    ShaderRegistry shaders;
 
 protected:
 
 private:
-	Node* cameraNode = nullptr;
+    Node* cameraNode = nullptr;
 
-	Light* dirLight = nullptr;
-	std::vector<Light*> pointLights;
-	std::vector<Light*> spotLights;
-	std::vector<ParticleGenerator*> particleGenerators;
+    Light* dirLight = nullptr;
+    std::vector<Light*> pointLights;
+    std::vector<Light*> spotLights;
+    std::vector<ParticleGenerator*> particleGenerators;
 
-	std::unique_ptr<NodeRenderer> nodeRenderer{ nullptr };
+    std::unique_ptr<NodeRenderer> nodeRenderer{ nullptr };
 
-	//std::unique_ptr<TerrainRenderer> terrainRenderer{ nullptr };
-	std::unique_ptr<ViewportRenderer> viewportRenderer{ nullptr };
+    //std::unique_ptr<TerrainRenderer> terrainRenderer{ nullptr };
+    std::unique_ptr<ViewportRenderer> viewportRenderer{ nullptr };
 
-	std::unique_ptr<WaterMapRenderer> waterMapRenderer{ nullptr };
-	std::unique_ptr<CubeMapRenderer> cubeMapRenderer{ nullptr };
-	std::unique_ptr<ShadowMapRenderer> shadowMapRenderer{ nullptr };
+    std::unique_ptr<WaterMapRenderer> waterMapRenderer{ nullptr };
+    std::unique_ptr<CubeMapRenderer> cubeMapRenderer{ nullptr };
+    std::unique_ptr<ShadowMapRenderer> shadowMapRenderer{ nullptr };
 
-	std::unique_ptr<ObjectIdRenderer> objectIdRenderer{ nullptr };
-	std::unique_ptr<NormalRenderer> normalRenderer{ nullptr };
+    std::unique_ptr<ObjectIdRenderer> objectIdRenderer{ nullptr };
+    std::unique_ptr<NormalRenderer> normalRenderer{ nullptr };
 
-	std::unique_ptr<ParticleSystem> particleSystem{ nullptr };
+    std::unique_ptr<ParticleSystem> particleSystem{ nullptr };
 
-	std::unique_ptr<TextureBuffer> mirrorBuffer{ nullptr };
-	std::shared_ptr<Viewport> mirrorViewport;
+    std::unique_ptr<TextureBuffer> mirrorBuffer{ nullptr };
+    std::shared_ptr<Viewport> mirrorViewport;
 
-	std::unique_ptr<TextureBuffer> mainBuffer{ nullptr };
-	std::shared_ptr<Viewport> mainViewport;
+    std::unique_ptr<TextureBuffer> mainBuffer{ nullptr };
+    std::shared_ptr<Viewport> mainViewport;
 
-	unsigned int pbo = -1;
+    unsigned int pbo = -1;
 };

@@ -15,40 +15,40 @@ class Engine;
 class Window final
 {
 public:
-	Window(Engine& engine);
-	~Window();
+    Window(Engine& engine);
+    ~Window();
 
-	bool create();
+    bool create();
 
-	void close();
-	bool isClosed();
+    void close();
+    bool isClosed();
 
-	void setTitle(const std::string& title);
+    void setTitle(const std::string& title);
 
-	void processInput(const RenderClock& clock);
+    void processInput(const RenderClock& clock);
 
-	void onWindowResize(int width, int height);
-	void onMouseMove(double xpos, double ypos);
-	void onMouseButton(int button, int action, int modifiers);
-	void onMouseWheel(double xoffset, double yoffset);
+    void onWindowResize(int width, int height);
+    void onMouseMove(double xpos, double ypos);
+    void onMouseButton(int button, int action, int modifiers);
+    void onMouseWheel(double xoffset, double yoffset);
 private:
-	void createGLFWWindow();
-	void destroyGLFWWindow();
+    void createGLFWWindow();
+    void destroyGLFWWindow();
 
-	void bindGLFWCallbacks();
+    void bindGLFWCallbacks();
 
 public:
-	const Assets& assets;
+    const Assets& assets;
 
-	GLFWwindow* glfwWindow{ nullptr };
-	int width = 0;
-	int height = 0;
+    GLFWwindow* glfwWindow{ nullptr };
+    int width = 0;
+    int height = 0;
 
-	std::unique_ptr<Input> input{ nullptr };
+    std::unique_ptr<Input> input{ nullptr };
 
 protected:
-	Engine& engine;
+    Engine& engine;
 
-	std::string title;
+    std::string title;
 };
 

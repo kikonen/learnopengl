@@ -8,6 +8,6 @@
 
 
 ShadowBuffer::ShadowBuffer(const FrameBufferSpecification& spec)
-	: FrameBuffer(spec)
+    : FrameBuffer(spec)
 {
 }

@@ -6,5 +6,5 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
-	KI_INFO_SB("MESH: delete");
+    KI_INFO_SB("MESH: delete");
 }

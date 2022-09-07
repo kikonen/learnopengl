@@ -14,38 +14,38 @@ class Sccene;
 class NodeRegistry final
 {
 public:
-	NodeRegistry(Scene& scene);
+    NodeRegistry(Scene& scene);
 
-	~NodeRegistry();
+    ~NodeRegistry();
 
-	void addNode(Node* node);
-	Node* getNode(int objectID);
+    void addNode(Node* node);
+    Node* getNode(int objectID);
 
-	void selectNodeById(int objectID, bool append);
+    void selectNodeById(int objectID, bool append);
 
-	void addViewPort(std::shared_ptr<Viewport> viewport);
+    void addViewPort(std::shared_ptr<Viewport> viewport);
 
-	void attachNodes();
+    void attachNodes();
 
 private:
 
 public:
-	const Assets& assets;
-	Scene& scene;
-	std::mutex load_lock;
+    const Assets& assets;
+    Scene& scene;
+    std::mutex load_lock;
 
-	std::map<int, Node*> idToNode;
-	std::map<NodeType*, std::vector<Node*>> nodes;
+    std::map<int, Node*> idToNode;
+    std::map<NodeType*, std::vector<Node*>> nodes;
 
-	std::vector<std::shared_ptr<Viewport>> viewports;
+    std::vector<std::shared_ptr<Viewport>> viewports;
 
 private:
-	std::vector<Node*> pendingNodes;
+    std::vector<Node*> pendingNodes;
 
-	Node* cameraNode = nullptr;
+    Node* cameraNode = nullptr;
 
-	Light* dirLight = nullptr;
-	std::vector<Light*> pointLights;
-	std::vector<Light*> spotLights;
+    Light* dirLight = nullptr;
+    std::vector<Light*> pointLights;
+    std::vector<Light*> spotLights;
 };
 

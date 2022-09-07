@@ -15,90 +15,90 @@ Light::~Light()
 
 void Light::update(const RenderContext& ctx)
 {
-	if (!dirty) return;
+    if (!dirty) return;
 
-	dir = glm::normalize(target - pos);
+    dir = glm::normalize(target - pos);
 
-	if (!directional) {
-		float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
-		radius = (-linear + std::sqrtf(linear * linear - 4 * quadratic * (constant - (256.0 / 5.0) * lightMax))) / (2 * quadratic);
-	}
+    if (!directional) {
+        float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
+        radius = (-linear + std::sqrtf(linear * linear - 4 * quadratic * (constant - (256.0 / 5.0) * lightMax))) / (2 * quadratic);
+    }
 }
 
 const glm::vec3& Light::getPos()
 {
-	return pos;
+    return pos;
 }
 
 void Light::setPos(const glm::vec3& pos)
 {
-	this->pos = pos;
-	dirty = true;
+    this->pos = pos;
+    dirty = true;
 }
 
 const glm::vec3& Light::getDir()
 {
-	return dir;
+    return dir;
 }
 
 void Light::setDir(const glm::vec3& pos)
 {
-	this->dir = dir;
-	dirty = true;
+    this->dir = dir;
+    dirty = true;
 }
 
 const glm::vec3& Light::getTarget()
 {
-	return target;
+    return target;
 }
 
 void Light::setTarget(const glm::vec3& target)
 {
-	this->target = target;
-	dirty = true;
+    this->target = target;
+    dirty = true;
 }
 
 DirLightUBO Light::toDirLightUBO() {
-	return { pos, use, dir, 0, ambient, diffuse, specular };
+    return { pos, use, dir, 0, ambient, diffuse, specular };
 }
 
 PointLightUBO Light::toPointightUBO()
 {
-	return {
-		pos,
-		use,
+    return {
+        pos,
+        use,
 
-		ambient,
-		diffuse,
-		specular,
+        ambient,
+        diffuse,
+        specular,
 
-		constant,
-		linear,
-		quadratic,
-		radius,
-	};
+        constant,
+        linear,
+        quadratic,
+        radius,
+    };
 }
 
 SpotLightUBO Light::toSpotLightUBO()
 {
-	return {
-		pos,
-		use,
-		dir,
-		0,
-		ambient,
-		diffuse,
-		specular,
+    return {
+        pos,
+        use,
+        dir,
+        0,
+        ambient,
+        diffuse,
+        specular,
 
-		constant,
-		linear,
-		quadratic,
+        constant,
+        linear,
+        quadratic,
 
-		cutoffAngle,
-		outerCutoffAngle,
-		radius,
+        cutoffAngle,
+        outerCutoffAngle,
+        radius,
 
-		0,
-		0,
-	};
+        0,
+        0,
+    };
 }

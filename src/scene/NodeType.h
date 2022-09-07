@@ -8,41 +8,41 @@
 class NodeType final
 {
 public:
-	static int nextID();
-	static void setBaseID(int baseId);
+    static int nextID();
+    static void setBaseID(int baseId);
 
-	NodeType(int typeID, std::shared_ptr<Shader> defaultShader = nullptr);
-	~NodeType();
+    NodeType(int typeID, std::shared_ptr<Shader> defaultShader = nullptr);
+    ~NodeType();
 
-	bool hasReflection();
-	bool hasRefraction();
+    bool hasReflection();
+    bool hasRefraction();
 
-	std::shared_ptr<Material> findMaterial(std::function<bool(Material&)> fn);
-	void modifyMaterials(std::function<void(Material&)> fn);
+    std::shared_ptr<Material> findMaterial(std::function<bool(Material&)> fn);
+    void modifyMaterials(std::function<void(Material&)> fn);
 
-	void prepare(const Assets& assets);
-	Shader* bind(const RenderContext& ctx, Shader* shader);
-	void unbind(const RenderContext& ctx);
+    void prepare(const Assets& assets);
+    Shader* bind(const RenderContext& ctx, Shader* shader);
+    void unbind(const RenderContext& ctx);
 
 public:
-	const int typeID;
+    const int typeID;
 
-	bool blend = false;
-	bool light = false;
-	bool mirror = false;
-	bool water = false;
-	bool renderBack = false;
-	bool noShadow = false;
-	bool batchMode = true;
-	bool wireframe = false;
+    bool blend = false;
+    bool light = false;
+    bool mirror = false;
+    bool water = false;
+    bool renderBack = false;
+    bool noShadow = false;
+    bool batchMode = true;
+    bool wireframe = false;
 
-	glm::vec4 mirrorPlane{ 0 };
+    glm::vec4 mirrorPlane{ 0 };
 
-	std::unique_ptr<Mesh> mesh = nullptr;
-	std::shared_ptr<Shader> defaultShader = nullptr;
-	Shader* boundShader = nullptr;
+    std::unique_ptr<Mesh> mesh = nullptr;
+    std::shared_ptr<Shader> defaultShader = nullptr;
+    Shader* boundShader = nullptr;
 
-	Batch batch;
+    Batch batch;
 private:
 };
 

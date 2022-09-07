@@ -1,7 +1,7 @@
 #include "NodeController.h"
 
 NodeController::NodeController(const Assets& assets)
-	: assets(assets)
+    : assets(assets)
 {
 }
 
@@ -15,5 +15,5 @@ void NodeController::prepare(Node& node)
 
 bool NodeController::update(const RenderContext& ctx, Node& node)
 {
-	return false;
+    return false;
 }

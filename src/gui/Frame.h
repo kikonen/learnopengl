@@ -11,16 +11,16 @@
 class Frame
 {
 public:
-	Frame(Window& window);
-	~Frame();
+    Frame(Window& window);
+    ~Frame();
 
-	virtual void prepare();
-	virtual void bind(const RenderContext& ctx);
-	virtual void draw(const RenderContext& ctx) = 0;
+    virtual void prepare();
+    virtual void bind(const RenderContext& ctx);
+    virtual void draw(const RenderContext& ctx) = 0;
 
-	virtual void render(const RenderContext& ctx);
+    virtual void render(const RenderContext& ctx);
 
 private:
-	Window& window;
+    Window& window;
 };
 

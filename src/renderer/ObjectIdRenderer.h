@@ -7,26 +7,26 @@
 class ObjectIdRenderer final : public Renderer
 {
 public:
-	ObjectIdRenderer(const Assets& assets);
-	virtual ~ObjectIdRenderer();
+    ObjectIdRenderer(const Assets& assets);
+    virtual ~ObjectIdRenderer();
 
-	int getObjectId(const RenderContext& ctx, double screenPosX, double screenPosY, Viewport* mainViewport);
+    int getObjectId(const RenderContext& ctx, double screenPosX, double screenPosY, Viewport* mainViewport);
 
-	void prepare(ShaderRegistry& shaders) override;
+    void prepare(ShaderRegistry& shaders) override;
 
-	void update(const RenderContext& ctx, NodeRegistry& registry) override;
-	void bind(const RenderContext& ctx) override;
-	void render(const RenderContext& ctx, NodeRegistry& registry) override;
+    void update(const RenderContext& ctx, NodeRegistry& registry) override;
+    void bind(const RenderContext& ctx) override;
+    void render(const RenderContext& ctx, NodeRegistry& registry) override;
 
 private:
-	void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
+    void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
-	std::shared_ptr<Viewport> debugViewport;
+    std::shared_ptr<Viewport> debugViewport;
 
 private:
-	std::shared_ptr<Shader> idShader;
+    std::shared_ptr<Shader> idShader;
 
-	std::unique_ptr<TextureBuffer> idBuffer{ nullptr };
+    std::unique_ptr<TextureBuffer> idBuffer{ nullptr };
 };
 

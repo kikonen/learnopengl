@@ -8,21 +8,21 @@
 class ImageTexture final : public Texture
 {
 public:
-	static ImageTexture* getTexture(const std::string& path, const TextureSpec& spec);
+    static ImageTexture* getTexture(const std::string& path, const TextureSpec& spec);
 
-	ImageTexture(const std::string& path, const TextureSpec& spec);
-	virtual ~ImageTexture();
+    ImageTexture(const std::string& path, const TextureSpec& spec);
+    virtual ~ImageTexture();
 
-	void prepare() override;
+    void prepare() override;
 
-	bool isValid() { return valid; }
+    bool isValid() { return valid; }
 private:
-	void load();
+    void load();
 
 private:
-	bool valid = false;
-	bool prepared = false;
+    bool valid = false;
+    bool prepared = false;
 
-	std::unique_ptr<Image> image;
+    std::unique_ptr<Image> image;
 };
 

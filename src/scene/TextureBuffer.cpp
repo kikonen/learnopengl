@@ -7,6 +7,6 @@
 
 
 TextureBuffer::TextureBuffer(const FrameBufferSpecification& spec)
-	: FrameBuffer(spec)
+    : FrameBuffer(spec)
 {
 }

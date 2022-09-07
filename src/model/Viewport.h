@@ -6,49 +6,49 @@
 #include "scene/RenderContext.h"
 
 enum class ViewportEffect {
-	none = 0,
-	invert = 1,
-	grayScale = 2,
-	sharpen = 3,
-	blur = 4,
-	edge = 5,
+    none = 0,
+    invert = 1,
+    grayScale = 2,
+    sharpen = 3,
+    blur = 4,
+    edge = 5,
 };
 
 
 class Viewport final
 {
 public:
-	Viewport(
-		const glm::vec3& pos, 
-		const glm::vec3& rotation, 
-		const glm::vec2& size, 
-		unsigned int textureID, 
-		std::shared_ptr<Shader> shader,
-		std::function<void(Viewport&)> binder = [](Viewport&) {});
+    Viewport(
+        const glm::vec3& pos, 
+        const glm::vec3& rotation, 
+        const glm::vec2& size, 
+        unsigned int textureID, 
+        std::shared_ptr<Shader> shader,
+        std::function<void(Viewport&)> binder = [](Viewport&) {});
 
-	~Viewport();
+    ~Viewport();
 
-	void setTextureID(unsigned int textureID);
+    void setTextureID(unsigned int textureID);
 
-	void prepare();
+    void prepare();
 
-	void update(const RenderContext& ctx);
-	void bind(const RenderContext& ctx);
-	void draw(const RenderContext& ctx);
+    void update(const RenderContext& ctx);
+    void bind(const RenderContext& ctx);
+    void draw(const RenderContext& ctx);
 
 public:
-	ViewportEffect effect = ViewportEffect::none;
+    ViewportEffect effect = ViewportEffect::none;
 
-	const glm::vec3 pos;
-	const glm::vec3 rotation;
-	const glm::vec2 size;
+    const glm::vec3 pos;
+    const glm::vec3 rotation;
+    const glm::vec2 size;
 
 private:
-	MeshBuffers buffers;
+    MeshBuffers buffers;
 
-	unsigned int textureID;
+    unsigned int textureID;
 
-	std::shared_ptr<Shader> shader;
-	std::function<void(Viewport&)> binder;
+    std::shared_ptr<Shader> shader;
+    std::function<void(Viewport&)> binder;
 };
 

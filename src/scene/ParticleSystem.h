@@ -12,23 +12,23 @@
 class ParticleSystem final
 {
 public:
-	ParticleSystem(const Assets& assets);
+    ParticleSystem(const Assets& assets);
 
-	void prepare(ShaderRegistry& shaders);
-	void update(RenderContext& ctx);
-	void bind(RenderContext& ctx);
-	void render(RenderContext& ctx);
+    void prepare(ShaderRegistry& shaders);
+    void update(RenderContext& ctx);
+    void bind(RenderContext& ctx);
+    void render(RenderContext& ctx);
 
-	void addParticle(const Particle& particle);
+    void addParticle(const Particle& particle);
 
 public:
-	const Assets& assets;
+    const Assets& assets;
 
 private:
-	std::vector<Particle> particles;
+    std::vector<Particle> particles;
 
-	Batch batch;
+    Batch batch;
 
-	std::shared_ptr<Shader> particleShader = nullptr;
-	NodeType* type;
+    std::shared_ptr<Shader> particleShader = nullptr;
+    NodeType* type;
 };

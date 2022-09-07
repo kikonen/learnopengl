@@ -9,29 +9,29 @@ void GLState::reload() {
 
 void GLState::enable(GLenum key)
 {
-	//if (enabled.find(key) != enabled.end()) return;
-	glEnable(key);
-	enabled.insert(key);
+    //if (enabled.find(key) != enabled.end()) return;
+    glEnable(key);
+    enabled.insert(key);
 }
 
 void GLState::disable(GLenum key)
 {
-	//if (enabled.find(key) == enabled.end()) return;
-	glDisable(key);
-	enabled.erase(key);
+    //if (enabled.find(key) == enabled.end()) return;
+    glDisable(key);
+    enabled.erase(key);
 }
 
 void GLState::cullFace(GLenum mode)
 {
-	glCullFace(mode);
+    glCullFace(mode);
 }
 
 void GLState::frontFace(GLenum mode)
 {
-	glFrontFace(mode); 
+    glFrontFace(mode); 
 }
 
 void GLState::polygonMode(GLenum face, GLenum mode)
 {
-	glPolygonMode(face, mode);
+    glPolygonMode(face, mode);
 }

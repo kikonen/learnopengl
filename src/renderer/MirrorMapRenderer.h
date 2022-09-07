@@ -11,26 +11,26 @@ class SkyboxRenderer;
 class MirrorMapRenderer final : public Renderer
 {
 public:
-	MirrorMapRenderer(const Assets& assets);
-	~MirrorMapRenderer();
+    MirrorMapRenderer(const Assets& assets);
+    ~MirrorMapRenderer();
 
-	void prepare(ShaderRegistry& shaders) override;
+    void prepare(ShaderRegistry& shaders) override;
 
-	void bindTexture(const RenderContext& ctx);
+    void bindTexture(const RenderContext& ctx);
 
-	void bind(const RenderContext& ctx);
-	void render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox);
+    void bind(const RenderContext& ctx);
+    void render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox);
 
 private:
-	void drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox, Node* current);
-	Node* findClosest(const RenderContext& ctx, NodeRegistry& registry);
+    void drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox, Node* current);
+    Node* findClosest(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
-	std::shared_ptr<Viewport> debugViewport;
+    std::shared_ptr<Viewport> debugViewport;
 
 private:
-	float nearPlane = 0.1f;
-	float farPlane = 1000.0f;
+    float nearPlane = 0.1f;
+    float farPlane = 1000.0f;
 
-	std::unique_ptr<TextureBuffer> reflectionBuffer{ nullptr };
+    std::unique_ptr<TextureBuffer> reflectionBuffer{ nullptr };
 };

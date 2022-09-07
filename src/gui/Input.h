@@ -5,23 +5,23 @@
 class Window;
 
 enum class Key {
-	EXIT,
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	FORWARD,
-	BACKWARD,
-	ROTATE_LEFT,
-	ROTATE_RIGHT,
-	ZOOM_IN,
-	ZOOM_OUT,
+    EXIT,
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    FORWARD,
+    BACKWARD,
+    ROTATE_LEFT,
+    ROTATE_RIGHT,
+    ZOOM_IN,
+    ZOOM_OUT,
 };
 
 enum class Modifier {
-	SHIFT,
-	CONTROL,
-	ALT,
+    SHIFT,
+    CONTROL,
+    ALT,
 };
 
 //
@@ -30,40 +30,40 @@ enum class Modifier {
 class Input final
 {
 public:
-	Input(Window* window);
-	~Input();
+    Input(Window* window);
+    ~Input();
 
-	void prepare();
+    void prepare();
 
-	void updateKeyStates();
+    void updateKeyStates();
 
-	bool isKeyDown(Key key);
-	bool isModifierDown(Modifier modifier);
+    bool isKeyDown(Key key);
+    bool isModifierDown(Modifier modifier);
 
-	bool isModifierPressed(Modifier modifier);
+    bool isModifierPressed(Modifier modifier);
 
-	void onMouseMove(double xpos, double ypos);
-	void onMouseButton(int button, int action, int modifiers);
+    void onMouseMove(double xpos, double ypos);
+    void onMouseButton(int button, int action, int modifiers);
 
 public:
-	double mouseX = 0;
-	double mouseY = 0;
+    double mouseX = 0;
+    double mouseY = 0;
 
-	double mouseXoffset = 0;
-	double mouseYoffset = 0;
+    double mouseXoffset = 0;
+    double mouseYoffset = 0;
 
-	Window* window;
+    Window* window;
 
 private:
-	std::map<Key, int*> keyMappings;
+    std::map<Key, int*> keyMappings;
 
-	std::map<Modifier, int*> modifierMappings;
+    std::map<Modifier, int*> modifierMappings;
 
-	std::map<Modifier, bool> modifierDown;
-	std::map<Modifier, bool> modifierPressed;
-	std::map<Modifier, bool> modifierReleased;
+    std::map<Modifier, bool> modifierDown;
+    std::map<Modifier, bool> modifierPressed;
+    std::map<Modifier, bool> modifierReleased;
 
-	bool firstMouse = true;
+    bool firstMouse = true;
 
 };
 

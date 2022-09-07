@@ -6,10 +6,10 @@
 class FrameInit
 {
 public:
-	FrameInit(Window& window);
-	~FrameInit();
+    FrameInit(Window& window);
+    ~FrameInit();
 
 private:
-	Window& window;
+    Window& window;
 };
 

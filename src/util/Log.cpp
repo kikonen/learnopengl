@@ -11,67 +11,67 @@
 #include <spdlog/sinks/basic_file_sink.h>
 
 namespace {
-	std::shared_ptr<spdlog::logger> g_logger = nullptr;
+    std::shared_ptr<spdlog::logger> g_logger = nullptr;
 }
 
 void Log::init()
 {
-	try
-	{
-		spdlog::set_level(spdlog::level::trace);
+    try
+    {
+        spdlog::set_level(spdlog::level::trace);
 
-		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-		console_sink->set_level(spdlog::level::err);
-		console_sink->set_pattern("[%^%l%$] %v");
+        auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+        console_sink->set_level(spdlog::level::err);
+        console_sink->set_pattern("[%^%l%$] %v");
 
-		auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("log/development.log", true);
-		file_sink->set_level(spdlog::level::trace);
+        auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("log/development.log", true);
+        file_sink->set_level(spdlog::level::trace);
 
-		std::vector<spdlog::sink_ptr> sinks{ console_sink, file_sink };
+        std::vector<spdlog::sink_ptr> sinks{ console_sink, file_sink };
 
-		g_logger = std::make_shared<spdlog::logger>("main", sinks.begin(), sinks.end());
-		g_logger->set_level(spdlog::level::debug);
+        g_logger = std::make_shared<spdlog::logger>("main", sinks.begin(), sinks.end());
+        g_logger->set_level(spdlog::level::debug);
 
-		spdlog::register_logger(g_logger);
-		spdlog::flush_every(std::chrono::seconds(3));
-	}
-	catch (const spdlog::spdlog_ex& ex)
-	{
-		std::cout << "Log init failed: " << ex.what() << std::endl;
-	}
+        spdlog::register_logger(g_logger);
+        spdlog::flush_every(std::chrono::seconds(3));
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Log init failed: " << ex.what() << std::endl;
+    }
 }
 
 void Log::flush()
 {
-	g_logger->flush();
+    g_logger->flush();
 }
 
 void Log::critical(const std::string& msg)
 {
-	g_logger->critical(msg);
+    g_logger->critical(msg);
 }
 
 void Log::error(const std::string& msg)
 {
-	g_logger->error(msg);
+    g_logger->error(msg);
 }
 
 void Log::warn(const std::string& msg)
 {
-	g_logger->warn(msg);
+    g_logger->warn(msg);
 }
 
 void Log::info(const std::string& msg)
 {
-	g_logger->info(msg);
+    g_logger->info(msg);
 }
 
 void Log::debug(const std::string& msg)
 {
-	g_logger->debug(msg);
+    g_logger->debug(msg);
 }
 
 void Log::trace(const std::string& msg)
 {
-	g_logger->trace(msg);
+    g_logger->trace(msg);
 }

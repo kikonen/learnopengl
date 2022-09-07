@@ -7,7 +7,7 @@
 #include "scene/RenderContext.h"
 
 struct TextureSpec {
-	int mode = GL_CLAMP_TO_EDGE;
+    int mode = GL_CLAMP_TO_EDGE;
 };
 
 /*
@@ -16,23 +16,23 @@ struct TextureSpec {
 class Texture 
 {
 public:
-	Texture(const std::string& name, const TextureSpec& spec);
-	virtual ~Texture();
+    Texture(const std::string& name, const TextureSpec& spec);
+    virtual ~Texture();
 
-	virtual void prepare() = 0;
+    virtual void prepare() = 0;
 
 public:
-	const std::string name;
-	const TextureSpec spec;
+    const std::string name;
+    const TextureSpec spec;
 
-	unsigned int textureID = -1;
+    unsigned int textureID = -1;
 
 protected:
-	bool prepared = false;
+    bool prepared = false;
 
-	int width = 0;
-	int height = 0;
-	int format = 0;
-	int internalFormat = 0;
+    int width = 0;
+    int height = 0;
+    int format = 0;
+    int internalFormat = 0;
 };
 

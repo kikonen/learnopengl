@@ -1,7 +1,7 @@
 #include "ViewportRenderer.h"
 
 ViewportRenderer::ViewportRenderer(const Assets& assets)
-	: Renderer(assets)
+    : Renderer(assets)
 {
 }
 
@@ -15,16 +15,16 @@ void ViewportRenderer::bind(const RenderContext& ctx)
 
 void ViewportRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto viewport : registry.viewports) {
-		viewport->update(ctx);
-	}
+    for (auto viewport : registry.viewports) {
+        viewport->update(ctx);
+    }
 }
 
 void ViewportRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 {
-	for (auto& viewport : registry.viewports) {
-		viewport->bind(ctx);
-		viewport->draw(ctx);
-	}
-	glBindVertexArray(0);
+    for (auto& viewport : registry.viewports) {
+        viewport->bind(ctx);
+        viewport->draw(ctx);
+    }
+    glBindVertexArray(0);
 }

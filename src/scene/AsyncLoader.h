@@ -9,28 +9,28 @@
 class AsyncLoader
 {
 public:
-	AsyncLoader(const Assets& assets);
+    AsyncLoader(const Assets& assets);
 
-	virtual void setup();
+    virtual void setup();
 
-	size_t addLoader(std::function<void()> loader);
-	const std::future<void>& getLoader(unsigned int index);
+    size_t addLoader(std::function<void()> loader);
+    const std::future<void>& getLoader(unsigned int index);
 
-	std::shared_ptr<Shader> getShader(
-		const std::string& name);
+    std::shared_ptr<Shader> getShader(
+        const std::string& name);
 
-	std::shared_ptr<Shader> getShader(
-		const std::string& name,
-		const std::vector<std::string>& defines);
+    std::shared_ptr<Shader> getShader(
+        const std::string& name,
+        const std::vector<std::string>& defines);
 
 public:
-	const Assets& assets;
-	std::shared_ptr<Scene> scene = nullptr;
+    const Assets& assets;
+    std::shared_ptr<Scene> scene = nullptr;
 
 protected:
-	// https://stackoverflow.com/questions/20126551/storing-a-future-in-a-list
-	std::vector<std::future<void>> loaders;
+    // https://stackoverflow.com/questions/20126551/storing-a-future-in-a-list
+    std::vector<std::future<void>> loaders;
 
-	std::mutex load_lock;
+    std::mutex load_lock;
 };
 

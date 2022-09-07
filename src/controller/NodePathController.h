@@ -5,13 +5,13 @@
 class NodePathController : public NodeController
 {
 public:
-	NodePathController(const Assets& assets, int pathMode);
-	~NodePathController();
+    NodePathController(const Assets& assets, int pathMode);
+    ~NodePathController();
 
-	bool update(const RenderContext& ctx, Node& node) override;
+    bool update(const RenderContext& ctx, Node& node) override;
 
 private:
-	const int pathMode;
+    const int pathMode;
 
 };
 

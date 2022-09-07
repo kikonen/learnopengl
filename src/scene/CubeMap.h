@@ -7,6 +7,6 @@
 class CubeMap
 {
 public:
-	static unsigned int createEmpty(int size);
-	static unsigned int createFromImages(std::vector<std::string> faces);
+    static unsigned int createEmpty(int size);
+    static unsigned int createFromImages(std::vector<std::string> faces);
 };

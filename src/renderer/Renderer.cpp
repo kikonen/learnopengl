@@ -2,10 +2,10 @@
 
 
 Renderer::Renderer(const Assets& assets)
-	:assets(assets),
-	drawIndex(0),
-	drawSkip(0),
-	rendered(false)
+    :assets(assets),
+    drawIndex(0),
+    drawSkip(0),
+    rendered(false)
 {
 }
 
@@ -31,10 +31,10 @@ void Renderer::render(const RenderContext& ctx, NodeRegistry& registry)
 
 bool Renderer::stepRender()
 {
-	drawIndex++;
-	if (drawIndex >= drawSkip) {
-		drawIndex = 0;
-		return true;
-	}
-	return false;
+    drawIndex++;
+    if (drawIndex >= drawSkip) {
+        drawIndex = 0;
+        return true;
+    }
+    return false;
 }

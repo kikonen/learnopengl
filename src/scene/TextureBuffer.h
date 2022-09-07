@@ -5,8 +5,8 @@
 class TextureBuffer final : public FrameBuffer
 {
 public:
-	TextureBuffer(const FrameBufferSpecification& spec);
-	virtual ~TextureBuffer() override = default;
+    TextureBuffer(const FrameBufferSpecification& spec);
+    virtual ~TextureBuffer() override = default;
 
 public:
 };

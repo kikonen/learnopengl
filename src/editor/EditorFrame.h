@@ -6,9 +6,9 @@
 class EditorFrame : public Frame
 {
 public:
-	EditorFrame(Window& window);
+    EditorFrame(Window& window);
 
-	void draw(const RenderContext& ctx) override;
+    void draw(const RenderContext& ctx) override;
 
 };
 

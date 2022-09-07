@@ -6,23 +6,23 @@
 class DynamicCubeMap
 {
 public:
-	DynamicCubeMap(int size);
-	~DynamicCubeMap();
+    DynamicCubeMap(int size);
+    ~DynamicCubeMap();
 
-	void prepare();
+    void prepare();
 
-	void bindTexture(const RenderContext& ctx, int unitIndex);
+    void bindTexture(const RenderContext& ctx, int unitIndex);
 
-	void bind(const RenderContext& ctx);
-	void unbind(const RenderContext& ctx);
+    void bind(const RenderContext& ctx);
+    void unbind(const RenderContext& ctx);
 
 public:
-	const int size;
+    const int size;
 
-	unsigned int textureID = -1;
+    unsigned int textureID = -1;
 
 private:
-	unsigned int FBO = -1;
-	unsigned int depthBuffer = -1;
+    unsigned int FBO = -1;
+    unsigned int depthBuffer = -1;
 };
 

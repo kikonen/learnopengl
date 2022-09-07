@@ -3,15 +3,15 @@
 class MeshBuffers final
 {
 public:
-	MeshBuffers();
-	~MeshBuffers();
+    MeshBuffers();
+    ~MeshBuffers();
 
-	void prepare(bool useIndeces);
+    void prepare(bool useIndeces);
 public:
-	unsigned int VBO = 0;
-	unsigned int VAO = 0;
-	unsigned int EBO = 0;
+    unsigned int VBO = 0;
+    unsigned int VAO = 0;
+    unsigned int EBO = 0;
 
 private:
-	bool prepared = false;
+    bool prepared = false;
 };

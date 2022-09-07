@@ -8,22 +8,22 @@
 class Renderer
 {
 public:
-	Renderer(const Assets& assets);
-	virtual ~Renderer();
+    Renderer(const Assets& assets);
+    virtual ~Renderer();
 
-	virtual void prepare(ShaderRegistry& shaders);
-	virtual void update(const RenderContext& ctx, NodeRegistry& registry);
-	virtual void bind(const RenderContext& ctx);
-	virtual void render(const RenderContext& ctx, NodeRegistry& registry);
-
-protected:
-	bool stepRender();
+    virtual void prepare(ShaderRegistry& shaders);
+    virtual void update(const RenderContext& ctx, NodeRegistry& registry);
+    virtual void bind(const RenderContext& ctx);
+    virtual void render(const RenderContext& ctx, NodeRegistry& registry);
 
 protected:
-	const Assets& assets;
+    bool stepRender();
 
-	int drawIndex;
-	int drawSkip;
+protected:
+    const Assets& assets;
 
-	bool rendered;
+    int drawIndex;
+    int drawSkip;
+
+    bool rendered;
 };

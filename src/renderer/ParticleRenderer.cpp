@@ -1,14 +1,14 @@
 #include "ParticleRenderer.h"
 
 ParticleRenderer::ParticleRenderer(const Assets& assets)
-	: Renderer(assets)
+    : Renderer(assets)
 {
 }
 
 void ParticleRenderer::prepare(ShaderRegistry& shaders)
 {
-	particleShader = shaders.getShader(assets, TEX_PARTICLE);
-	particleShader->prepare();
+    particleShader = shaders.getShader(assets, TEX_PARTICLE);
+    particleShader->prepare();
 }
 
 void ParticleRenderer::update(const RenderContext& ctx, NodeRegistry& registry)

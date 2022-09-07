@@ -13,44 +13,44 @@ class Scene;
 class RenderContext final
 {
 public:
-	RenderContext(
-		const Assets& assets,
-		const RenderClock& clock,
-		GLState& state,
-		std::shared_ptr<Scene> scene,
-		Camera& camera,
-		int width,
-		int height);
+    RenderContext(
+        const Assets& assets,
+        const RenderClock& clock,
+        GLState& state,
+        std::shared_ptr<Scene> scene,
+        Camera& camera,
+        int width,
+        int height);
 
-	void bindGlobal() const;
-	void bindUBOs() const;
-	void bindMatricesUBO() const;
-	void bindDataUBO() const;
-	void bindClipPlanesUBO() const;
-	void bindLightsUBO() const;
+    void bindGlobal() const;
+    void bindUBOs() const;
+    void bindMatricesUBO() const;
+    void bindDataUBO() const;
+    void bindClipPlanesUBO() const;
+    void bindLightsUBO() const;
 
-	void bind(Shader* shader) const;
+    void bind(Shader* shader) const;
 public:
-	const Assets& assets;
+    const Assets& assets;
 
-	const RenderClock& clock;
+    const RenderClock& clock;
 
-	GLState& state;
+    GLState& state;
 
-	const int width;
-	const int height;
+    const int width;
+    const int height;
 
-	std::shared_ptr<Scene> scene = nullptr;
-	Camera& camera;
+    std::shared_ptr<Scene> scene = nullptr;
+    Camera& camera;
 
-	glm::mat4 viewMatrix;
-	glm::mat4 projectionMatrix;
-	glm::mat4 projectedMatrix;
+    glm::mat4 viewMatrix;
+    glm::mat4 projectionMatrix;
+    glm::mat4 projectedMatrix;
 
-	mutable glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
+    mutable glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 
-	mutable ClipPlanesUBO clipPlanes;
+    mutable ClipPlanesUBO clipPlanes;
 
-	bool useWireframe = false;
-	bool useLight = true;
+    bool useWireframe = false;
+    bool useLight = true;
 };

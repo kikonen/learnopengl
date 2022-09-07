@@ -314,7 +314,7 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
     file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try {
         std::ifstream file;
-        //	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+        //    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         file.exceptions(std::ifstream::badbit);
         file.open(path);
 
