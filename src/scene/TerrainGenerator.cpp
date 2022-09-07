@@ -28,9 +28,9 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(std::shared_ptr<Mat
 			float tx = (x / ((float)VERTEX_COUNT - 1));
 
 			float gy = perlin.perlin(gx, 0, gz) * 5;
-			glm::vec3 pos = { gx, gy, gz };
-			glm::vec2 texture = { tx, tz };
-			glm::vec3 normal = { 0.f, 1.f, 0.f };
+			glm::vec3 pos{ gx, gy, gz };
+			glm::vec2 texture{ tx, tz };
+			glm::vec3 normal{ 0.f, 1.f, 0.f };
 
 			Vertex* v = new Vertex(
 				pos,

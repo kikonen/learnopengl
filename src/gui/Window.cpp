@@ -14,13 +14,12 @@ Window::Window(Engine& engine)
 	height = 600;
 	title = "GL test";
 
-	input = new Input(this);
+	input = std::make_unique<Input>(this);
 }
 
 Window::~Window()
 {
 	destroyGLFWWindow();
-	delete input;
 }
 
 bool Window::create()
@@ -132,7 +131,7 @@ void Window::processInput(const RenderClock& clock)
 
 	Camera* camera = engine.currentScene->getCamera();
 	if (camera) {
-		camera->onKey(input, clock);
+		camera->onKey(input.get(), clock);
 	}
 }
 
@@ -155,7 +154,7 @@ void Window::onMouseMove(double xpos, double ypos)
 
 		Camera* camera = engine.currentScene->getCamera();
 		if (camera) {
-			camera->onMouseMove(input, input->mouseXoffset, input->mouseYoffset);
+			camera->onMouseMove(input.get(), input->mouseXoffset, input->mouseYoffset);
 		}
 	}
 	else {
@@ -172,6 +171,6 @@ void Window::onMouseWheel(double xoffset, double yoffset)
 {
 	Camera* camera = engine.currentScene->getCamera();
 	if (camera) {
-		camera->onMouseScroll(input, xoffset, yoffset);
+		camera->onMouseScroll(input.get(), xoffset, yoffset);
 	}
 }

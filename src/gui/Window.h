@@ -40,11 +40,11 @@ private:
 public:
 	const Assets& assets;
 
-	GLFWwindow* glfwWindow = nullptr;
-	int width;
-	int height;
+	GLFWwindow* glfwWindow{ nullptr };
+	int width = 0;
+	int height = 0;
 
-	Input* input = nullptr;
+	std::unique_ptr<Input> input{ nullptr };
 
 protected:
 	Engine& engine;

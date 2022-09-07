@@ -6,7 +6,7 @@
 #include "scene/RenderContext.h"
 
 struct ParticleDefinition {
-	glm::vec3 dir = { 0.f, 0.f, 0.f };
+	glm::vec3 dir{ 0.f, 0.f, 0.f };
 	float radius = 0.f;
 	float velocity = 0.f;
 	float velocityVariation = 0.f;

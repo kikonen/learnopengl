@@ -7,8 +7,8 @@
 
 #include "ki/Timer.h"
 
-const glm::vec2 EMPTY_TEX = { 0, 0 };
-const glm::vec3 EMPTY_NORMAL = { 0, 0, 0 };
+const glm::vec2 EMPTY_TEX{ 0, 0 };
+const glm::vec3 EMPTY_NORMAL{ 0, 0, 0 };
 
 
 MeshLoader::MeshLoader(
@@ -141,10 +141,10 @@ int MeshLoader::loadData(
 				splitFragmentValue(v2, vv2);
 				splitFragmentValue(v3, vv3);
 
-				glm::uvec3 pi = { stoi(vv1[0]) - 1, stoi(vv2[0]) - 1, stoi(vv3[0]) - 1 };
-				glm::uvec3 ti = { 0, 0, 0 };
-				glm::uvec3 ni = { 0, 0, 0 };
-				glm::uvec3 tangenti = { 0, 0, 0 };
+				glm::uvec3 pi{ stoi(vv1[0]) - 1, stoi(vv2[0]) - 1, stoi(vv3[0]) - 1 };
+				glm::uvec3 ti{ 0, 0, 0 };
+				glm::uvec3 ni{ 0, 0, 0 };
+				glm::uvec3 tangenti{ 0, 0, 0 };
 
 				if (vv1.size() > 1 && !vv1[1].empty()) {
 					ti = { stoi(vv1[1]) - 1, stoi(vv2[1]) - 1, stoi(vv3[1]) - 1 };
@@ -159,7 +159,7 @@ int MeshLoader::loadData(
 					createTangents(positions, textures, normals, tangents, pi, ti, ni, tangenti);
 				}
 
-				glm::uvec3 v = { 0, 0, 0 };
+				glm::uvec3 v{ 0, 0, 0 };
 				for (int i = 0; i < 3; i++) {
 					v[i] = resolveVertexIndex(
 						vertexMapping,
@@ -279,7 +279,10 @@ int MeshLoader::resolveVertexIndex(
 	return v->index;
 }
 
-glm::vec3 MeshLoader::createNormal(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, glm::uvec3 pi)
+glm::vec3 MeshLoader::createNormal(
+	std::vector<glm::vec3>& positions, 
+	std::vector<glm::vec3>& normals, 
+	glm::uvec3 pi)
 {
 	glm::vec3 p1 = positions[pi[0]];
 	glm::vec3 p2 = positions[pi[1]];
@@ -360,7 +363,7 @@ void MeshLoader::createTangents(
 
 int MeshLoader::loadMaterials(
 	std::map<std::string, std::shared_ptr<Material>>& materials,
-	std::string libraryName)
+	const std::string& libraryName)
 {
 	KI_INFO_SB("LOADER::LOAD_MATERIAL_LIB: " << libraryName);
 	std::string materialPath = assets.modelsDir + path + libraryName;
@@ -390,18 +393,18 @@ int MeshLoader::loadMaterials(
 				material->ns = stof(v1);
 			}
 			else if (k == "Ka") {
-				glm::vec4 v = { stof(v1), stof(v2), stof(v3), 1.f };
+				glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };
 				material->ka = v;
 			} else if (k == "Kd") {
-				glm::vec4 v = { stof(v1), stof(v2), stof(v3), 1.f };
+				glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };
 				material->kd = v;
 			}
 			else if (k == "Ks") {
-				glm::vec4 v = { stof(v1), stof(v2), stof(v3), 1.f };
+				glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };
 				material->ks = v;
 			}
 			else if (k == "Ke") {
-				glm::vec4 v = { stof(v1), stof(v2), stof(v3), 1.f };
+				glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };
 				material->ke = v;
 			}
 			else if (k == "Ni") {

@@ -23,7 +23,7 @@ private:
 	Node* findCenter(const RenderContext& ctx, NodeRegistry& registry);
 
 public:
-	glm::vec3 center = { 0, 0, 0 };
+	glm::vec3 center{ 0, 0, 0 };
 
 private:
 	float nearPlane = 0.1f;

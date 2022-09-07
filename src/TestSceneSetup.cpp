@@ -74,7 +74,7 @@ void TestSceneSetup::setupCamera()
 	MeshLoader loader(assets, "player");
 	type->mesh = loader.load();
 
-	Node* node = new Node(type);
+	auto node = new Node(type);
 	{
 		node->setPos(pos);
 		node->setScale(0.8f);
@@ -92,7 +92,7 @@ void TestSceneSetup::setupNodeSkybox()
 {
 	//addLoader([this]() {
 	//});
-	SkyboxRenderer* skybox = new SkyboxRenderer(assets, "skybox");
+	auto skybox = new SkyboxRenderer(assets, "skybox");
 	skybox->prepare(scene->shaders);
 
 	scene->skyboxRenderer.reset(skybox);
@@ -101,7 +101,7 @@ void TestSceneSetup::setupNodeSkybox()
 void TestSceneSetup::setupLightDirectional()
 {
 	// sun
-	Light* light = new Light();
+	auto light = new Light();
 	{
 		light->setPos(glm::vec3(10, 40, 10) + assets.groundOffset);
 		light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
@@ -123,7 +123,7 @@ void TestSceneSetup::setupLightDirectional()
 		loader.overrideMaterials = true;
 		type->mesh = loader.load();
 
-		Node* node = new Node(type);
+		auto node = new Node(type);
 		node->setPos(light->getPos());
 		node->setScale(1.5f);
 		node->light = light;
@@ -133,7 +133,7 @@ void TestSceneSetup::setupLightDirectional()
 			const float speed = 20.f;
 			glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
 
-			Node* planet = getPlanet();
+			auto planet = getPlanet();
 			if (planet) {
 				center = planet->getPos();
 			}
@@ -154,7 +154,7 @@ void TestSceneSetup::setupLightMoving()
 
 	for (int x = 0; x < 2; x ++) {
 		for (int z = 0; z < 2; z++) {
-			Light* light = new Light();
+			auto light = new Light();
 
 			glm::vec3 center = glm::vec3(0 + x * radius * 3, 7 + x + z, z * radius * 3) + assets.groundOffset;
 			//light->pos = glm::vec3(10, 5, 10) + assets.groundOffset;
@@ -190,7 +190,7 @@ void TestSceneSetup::setupLightMoving()
 		type->mesh = loader.load();
 
 		for (auto light : lights) {
-			Node* node = new Node(type);
+			auto node = new Node(type);
 			node->setPos(light->getPos());
 			node->setScale(0.5f);
 			node->light = light;
@@ -234,7 +234,7 @@ void TestSceneSetup::setupNodeBrickwallBox()
 
 		float scale = 100;
 		for (int i = 0; i < 1; i++) {
-			Node* node = new Node(type);
+			auto node = new Node(type);
 			node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 95, 0) + assets.groundOffset);
 			node->setScale(scale);
 			node->setRotation(rot[i]);
@@ -251,7 +251,7 @@ void TestSceneSetup::setupNodeCube4()
 		MeshLoader loader(assets, "texture_cube_4");
 		type->mesh = loader.load();
 
-		Node* node = new Node(type);
+		auto node = new Node(type);
 		node->setPos(glm::vec3(-5, 20, 5) + assets.groundOffset);
 		node->selected = true;
 		scene->registry.addNode(node);
@@ -273,7 +273,7 @@ void TestSceneSetup::setupNodeCubes()
 		};
 
 		for (auto p : points) {
-			Node* node = new Node(type);
+			auto node = new Node(type);
 			node->setPos(p + assets.groundOffset);
 			scene->registry.addNode(node);
 		}
@@ -287,7 +287,7 @@ void TestSceneSetup::setupNodeActive()
 		MeshLoader loader(assets, "texture_cube");
 		type->mesh = loader.load();
 
-		Node* active = new Node(type);
+		auto active = new Node(type);
 		active->controller = new NodePathController(assets, 0);
 		active->setPos(glm::vec3(0) + assets.groundOffset);
 		scene->registry.addNode(active);
@@ -301,7 +301,7 @@ void TestSceneSetup::setupNodeBrickCube()
 		MeshLoader loader(assets, "texture_cube");
 		type->mesh = loader.load();
 
-		Node* node = new Node(type);
+		auto node = new Node(type);
 		node->setPos(glm::vec3(5, 20, 5) + assets.groundOffset);
 		scene->registry.addNode(node);
 	});
@@ -317,7 +317,7 @@ void TestSceneSetup::setupNodePlanet()
 		type->mesh = loader.load();
 		type->modifyMaterials([](Material& m) { m.fogRatio = 0; });
 
-		Node* node = new Node(type);
+		auto node = new Node(type);
 		node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
 		node->setScale(10);
 
@@ -326,9 +326,9 @@ void TestSceneSetup::setupNodePlanet()
 	});
 
 	loader.addLoader([this]() {
-		Node* planet = getPlanet();
+		auto planet = getPlanet();
 
-		Light* light = new Light();
+		auto light = new Light();
 		{
 			glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 40, 0) : glm::vec3(0, 40, 0);
 			light->setPos(pos);
@@ -353,7 +353,7 @@ void TestSceneSetup::setupNodePlanet()
 			type->mesh = loader.load();
 		}
 
-		Node* node = new Node(type);
+		auto node = new Node(type);
 		node->setPos(light->getPos());
 		node->setScale(0.5f);
 
@@ -380,8 +380,8 @@ void TestSceneSetup::setupNodeAsteroid()
 			type->modifyMaterials([](Material& m) { m.reflection = 0.7f; });
 		}
 
-		Node* node = new Node(type);
-		Node* planet = getPlanet();
+		auto node = new Node(type);
+		auto planet = getPlanet();
 		glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 50, 0) : glm::vec3(10, 50, 100) + assets.groundOffset;
 		node->setPos(pos);
 		scene->registry.addNode(node);
@@ -397,9 +397,9 @@ void TestSceneSetup::setupNodeAsteroidBelt()
 		MeshLoader loader(assets, "rock", "/rock/");
 		type->mesh = loader.load();
 
-		Node* planet = getPlanet();
-		AsteroidBeltController* controller = new AsteroidBeltController(assets, planet);
-		InstancedNode* node = new InstancedNode(type, controller);
+		auto planet = getPlanet();
+		auto controller = new AsteroidBeltController(assets, planet);
+		auto node = new InstancedNode(type, controller);
 		//node->selected = true;
 		//std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 		this->scene->registry.addNode(node);
@@ -447,7 +447,7 @@ void TestSceneSetup::setupTerrain()
 				type->noShadow = true;
 				type->mesh = generator.generateTerrain(material);
 
-				Terrain* terrain = new Terrain(type, x, 0, z);
+				auto terrain = new Terrain(type, x, 0, z);
 				scene->registry.addNode(terrain);
 			}
 		}
@@ -473,7 +473,7 @@ void TestSceneSetup::setupWaterBottom()
 
 		glm::vec3 pos = assets.groundOffset;
 
-		Node* node = new Node(type);
+		auto node = new Node(type);
 		node->setPos(pos + glm::vec3(0, 3, -10));
 		node->setScale(30.f);
 		node->setRotation({ 90, 0, 0 });
@@ -508,7 +508,8 @@ void TestSceneSetup::setupWaterSurface()
 		type->mesh = generator.generateWater(material);
 
 		glm::vec3 pos = assets.groundOffset;
-		Water* water = new Water(type, pos.x, pos.y + 5, pos.z);
+
+		auto water = new Water(type, pos.x, pos.y + 5, pos.z);
 		water->setPos(pos + glm::vec3(0, 3.5, -10));
 		water->setScale(30);
 		water->setRotation({ 270, 0, 0 });
@@ -529,7 +530,8 @@ void TestSceneSetup::setupEffectExplosion()
 		type->noShadow = true;
 
 		glm::vec3 pos = assets.groundOffset;
-		Billboard* node = new Billboard(type);
+
+		auto node = new Billboard(type);
 		node->setPos(pos + glm::vec3(0, 3.5, -20));
 		node->setScale(2);
 
@@ -541,7 +543,7 @@ void TestSceneSetup::setupViewport1()
 {
 	TextureSpec spec;
 	// NOTE KI memory_leak
-	PlainTexture* texture = new PlainTexture("checkerboard", spec, 1, 1);
+	auto texture = new PlainTexture("checkerboard", spec, 1, 1);
 	texture->prepare();
 
 	unsigned int color = 0x90ff2020;

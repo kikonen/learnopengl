@@ -78,7 +78,7 @@ void FrameBuffer::prepare()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, att.textureWrap);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, att.textureWrap);
 
-			glm::vec4 borderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+			glm::vec4 borderColor{ 1.0f, 1.0f, 1.0f, 1.0f };
 			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(borderColor));
 
 			glBindTexture(GL_TEXTURE_2D, 0);

@@ -69,8 +69,8 @@ private:
 
 	void splitFragmentValue(const std::string& v, std::vector<std::string>& vv);
 	int loadMaterials(
-		std::map<std::string, std::shared_ptr<Material>>& materials, 
-		std::string libraryName);
+		std::map<std::string, std::shared_ptr<Material>>& materials,
+		const std::string& libraryName);
 
 	std::string resolveTexturePath(const std::string& line);
 };

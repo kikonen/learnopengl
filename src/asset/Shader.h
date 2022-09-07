@@ -12,21 +12,21 @@
 #include "ki/GL.h"
 #include "Assets.h"
 
-const std::string TEX_TEXTURE = "tex";
-const std::string TEX_SPRITE = "sprite";
-const std::string TEX_SELECTION = "selection";
-const std::string TEX_TERRAIN = "terrain";
-const std::string TEX_WATER = "water";
-const std::string TEX_PARTICLE = "particle";
-const std::string TEX_NORMAL = "normal";
-const std::string TEX_OBJECT_ID = "object_id";
-const std::string TEX_LIGHT = "light";
-const std::string TEX_SIMPLE_DEPTH = "simple_depth";
-const std::string TEX_DEBUG_DEPTH = "debug_depth";
-const std::string TEX_EFFECT = "effect";
-const std::string TEX_VIEWPORT = "viewport";
+const std::string TEX_TEXTURE{ "tex" };
+const std::string TEX_SPRITE{ "sprite" };
+const std::string TEX_SELECTION{ "selection" };
+const std::string TEX_TERRAIN{ "terrain" };
+const std::string TEX_WATER{ "water" };
+const std::string TEX_PARTICLE{ "particle" };
+const std::string TEX_NORMAL{ "normal" };
+const std::string TEX_OBJECT_ID{ "object_id" };
+const std::string TEX_LIGHT{ "light" };
+const std::string TEX_SIMPLE_DEPTH{ "simple_depth" };
+const std::string TEX_DEBUG_DEPTH{ "debug_depth" };
+const std::string TEX_EFFECT{ "effect" };
+const std::string TEX_VIEWPORT{ "viewport" };
 
-const std::string DEF_USE_ALPHA = "USE_ALPHA";
+const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 
 const int ATTR_POS = 0;
 const int ATTR_NORMAL = 1;
@@ -46,7 +46,7 @@ const int ATTR_INSTANCE_NORMAL_MATRIX_3 = 12;
 
 const int ATTR_INSTANCE_OBJECT_ID = 13;
 
-const std::string GEOM_NONE = "";
+const std::string GEOM_NONE{ "" };
 
 struct TextureInfo;
 
@@ -104,7 +104,7 @@ public:
         GLuint locId = -1;
     };
 
-    class Mat4 : public Uniform {
+    class Mat4 final : public Uniform {
     public:
         Mat4(const std::string& name) : Uniform(name) {
         }
@@ -117,7 +117,7 @@ public:
         }
     };
 
-    class Mat3 : public Uniform {
+    class Mat3 final : public Uniform {
     public:
         Mat3(const std::string& name) : Uniform(name) {
         }
@@ -130,7 +130,7 @@ public:
         }
     };
 
-    class Mat2 : public Uniform {
+    class Mat2 final : public Uniform {
     public:
         Mat2(const std::string& name) : Uniform(name) {
         }
@@ -143,7 +143,7 @@ public:
         }
     };
 
-    class Vec4 : public Uniform {
+    class Vec4 final : public Uniform {
     public:
         Vec4(const std::string& name) : Uniform(name) {
         }
@@ -156,7 +156,7 @@ public:
         }
     };
 
-    class Vec3 : public Uniform {
+    class Vec3 final : public Uniform {
     public:
         Vec3(const std::string& name) : Uniform(name) {
         }
@@ -169,7 +169,7 @@ public:
         }
     };
 
-    class Vec2 : public Uniform {
+    class Vec2 final : public Uniform {
     public:
         Vec2(const std::string& name) : Uniform(name) {
         }
@@ -182,7 +182,7 @@ public:
         }
     };
 
-    class FloatArray : public Uniform {
+    class FloatArray final : public Uniform {
     public:
         FloatArray(const std::string& name) : Uniform(name) {
         }
@@ -195,7 +195,7 @@ public:
         }
     };
 
-    class IntArray : public Uniform {
+    class IntArray final : public Uniform {
     public:
         IntArray(const std::string& name) : Uniform(name) {
         }
@@ -208,7 +208,7 @@ public:
         }
     };
 
-    class Float : public Uniform {
+    class Float final : public Uniform {
     public:
         Float(const std::string& name) : Uniform(name) {
         }
@@ -221,7 +221,7 @@ public:
         }
     };
 
-    class Int : public Uniform {
+    class Int final : public Uniform {
     public:
         Int(const std::string& name) : Uniform(name) {
         }
@@ -234,7 +234,7 @@ public:
         }
     };
 
-    class Bool : public Uniform {
+    class Bool final : public Uniform {
     public:
         Bool(const std::string& name) : Uniform(name) {
         }
@@ -260,30 +260,30 @@ public:
 
     int programId = -1;
 
-    Shader::Mat4 projectionMatrix = { "projectionMatrix" };
-    Shader::Mat4 viewMatrix = { "viewMatrix" };
-    //Shader::Mat4 modelMatrix = { "modelMatrix" };
-    //Shader::Mat3 normalMatrix = { "normalMatrix" };
+    Shader::Mat4 projectionMatrix{ "projectionMatrix" };
+    Shader::Mat4 viewMatrix{ "viewMatrix" };
+    //Shader::Mat4 modelMatrix{ "modelMatrix" };
+    //Shader::Mat3 normalMatrix{ "normalMatrix" };
 
-    Shader::Int noiseTex = { "noiseTex" };
-    Shader::Int reflectionTex = { "reflectionTex" };
-    Shader::Int refractionTex = { "refractionTex" };
+    Shader::Int noiseTex{ "noiseTex" };
+    Shader::Int reflectionTex{ "reflectionTex" };
+    Shader::Int refractionTex{ "refractionTex" };
 
-    Shader::Int cubeMap = { "cubeMap" };
+    Shader::Int cubeMap{ "cubeMap" };
 
-    Shader::Int shadowMap = { "shadowMap" };
-    Shader::Int normalMap = { "normalMap" };
+    Shader::Int shadowMap{ "shadowMap" };
+    Shader::Int normalMap{ "normalMap" };
 
-    //Shader::Bool drawInstanced = { "drawInstanced" };
+    //Shader::Bool drawInstanced{ "drawInstanced" };
 
-    Shader::Int effect = { "effect" };
+    Shader::Int effect{ "effect" };
 
-    Shader::Float nearPlane = { "nearPlane" };
-    Shader::Float farPlane = { "farPlane" };
+    Shader::Float nearPlane{ "nearPlane" };
+    Shader::Float farPlane{ "farPlane" };
 
-    Shader::Int skybox = { "skybox" };
+    Shader::Int skybox{ "skybox" };
 
-    Shader::Int viewportTexture = { "viewportTexture" };
+    Shader::Int viewportTexture{ "viewportTexture" };
 
     std::vector<Shader::Int> textures;
 

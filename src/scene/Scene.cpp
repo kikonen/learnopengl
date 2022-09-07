@@ -244,7 +244,7 @@ void Scene::drawScene(RenderContext& ctx)
 		GLenum buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 		glDrawBuffers(2, buffers);
 		{
-			glm::vec4 bg = { 0.f, 0.f, 0.f, 1.f };
+			glm::vec4 bg{ 0.f, 0.f, 0.f, 1.f };
 			glClearBufferfv(GL_COLOR, 1, glm::value_ptr(bg));
 		}
 

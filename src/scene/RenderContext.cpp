@@ -62,7 +62,7 @@ void RenderContext::bindMatricesUBO() const
 
 void RenderContext::bindDataUBO() const
 {
-	DataUBO dataUbo = {
+	DataUBO dataUbo{
 		camera.getPos(),
 		clock.ts,
 		assets.fogColor,
