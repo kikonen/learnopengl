@@ -14,6 +14,10 @@ class SceneFile
 		bool reflection = false;
 		bool refraction = false;
 		bool refractionRatio = false;
+
+        bool any() {
+            return reflection || refraction || refractionRatio;
+        }
 	};
 
 	struct EntityData {

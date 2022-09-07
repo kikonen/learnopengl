@@ -105,7 +105,10 @@ void SceneFile::loadEntity(
 		    std::string materialName = v.as<std::string>();
 		    auto entry = materials.find(materialName);
 		    if (entry != materials.end()) {
-			    data.defaultMaterial = entry->second;
+                // NOTE KI need to create copy *IF* modifiers
+                data.defaultMaterial = data.materialModifierFields.any()
+                    ? std::make_shared<Material>(*entry->second)
+                    : entry->second;
 		    }
 	    }
 	    else if (k == "material_modifier") {
