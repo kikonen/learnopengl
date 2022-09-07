@@ -14,7 +14,7 @@ namespace {
 SceneFile::SceneFile(
     const Assets& assets,
     const std::string& filename)
-    : filename(filename), 
+    : filename(filename),
     assets(assets),
     loader(assets)
 {
@@ -43,7 +43,7 @@ std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
 
 void SceneFile::loadEntities(
     const YAML::Node& doc,
-    std::map<const std::string, std::shared_ptr<Material>>& materials) 
+    std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
     for (auto entry : doc["entities"]) {
         loadEntity(entry, materials);
@@ -52,7 +52,7 @@ void SceneFile::loadEntities(
 
 void SceneFile::loadEntity(
     const YAML::Node& node,
-    std::map<const std::string, std::shared_ptr<Material>>& materials) 
+    std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
     EntityData data;
 
@@ -131,49 +131,8 @@ void SceneFile::loadEntity(
         }
     }
 
-/*
-void SceneLoaderTest::setupNodeMaterialBalls()
-{
-    addLoader([this]() {
-        MaterialType materialTypes[4] = { MaterialType::basic, MaterialType::gold, MaterialType::silver, MaterialType::bronze };
-
-        int index = 0;
-        for (auto mt : materialTypes) {
-            auto type = std::make_shared<NodeType>(NodeType::nextID(), getShader(TEX_TEXTURE));
-
-            MeshLoader loader(assets, "water_ball");
-            loader.defaultMaterial = Material::createMaterial(mt);
-            loader.overrideMaterials = true;
-            type->mesh = loader.load();
-            type->modifyMaterials([](Material& m) { m.reflection = 0.05f; });
-
-            Node* node = new Node(type);
-            node->setPos(glm::vec3(5, 25, 5 + index * 5) + assets.groundOffset);
-
-            scene->registry.addNode(node);
-            index++;
-        }
-    });
-}
-void SceneLoaderTest::setupNodeWindow1()
-{
-    addLoader([this]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), getShader(TEX_TEXTURE, { DEF_USE_ALPHA }));
-        type->blend = true;
-        type->renderBack = true;
-
-        MeshLoader loader(assets, "window1");
-        type->mesh = loader.load();
-
-        Node* node = new Node(type);
-        node->setPos(glm::vec3(5, 10, -5) + assets.groundOffset);
-        node->setRotation(glm::vec3(0, 180, 0));
-        scene->registry.addNode(node);
-    });
-}*/
-
     loader.addLoader([this, data, materials]() {
-        auto type = std::make_shared<NodeType>(data.typeId, loader.getShader(data.shaderName, data.shaderDefinitions));
+    auto type = std::make_shared<NodeType>(data.typeId, loader.getShader(data.shaderName, data.shaderDefinitions));
 
         {
             auto e = data.renderFlags.find("blend");
@@ -244,7 +203,7 @@ void SceneLoaderTest::setupNodeWindow1()
             if (data.materialModifierFields.refractionRatio) {
                 m.refractionRatio = data.materialModifiers->refractionRatio;
             }
-        });
+            });
 
         auto node = new Node(type);
         node->setPos(data.pos + assets.groundOffset);
@@ -252,7 +211,7 @@ void SceneLoaderTest::setupNodeWindow1()
         node->setScale(data.scale);
 
         loader.scene->registry.addNode(node);
-    });
+        });
 }
 
 void SceneFile::loadMaterialModifiers(
@@ -269,7 +228,6 @@ void SceneFile::loadMaterialModifiers(
 void SceneFile::loadMaterials(
     const YAML::Node& doc,
     std::map<const std::string, std::shared_ptr<Material>>& materials) {
-
     for (auto entry : doc["materials"]) {
         MaterialField fields;
         std::shared_ptr<Material> material{ nullptr };
