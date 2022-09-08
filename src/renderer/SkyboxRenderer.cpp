@@ -50,9 +50,13 @@ const float skyboxVertices[] = {
      1.0f, -1.0f,  1.0f
 };
 
-SkyboxRenderer::SkyboxRenderer(const Assets& assets, const std::string& name)
-    : Renderer(assets),
-    name(name)
+SkyboxRenderer::SkyboxRenderer(
+    const Assets& assets,
+    const std::string& shaderName,
+    const std::string& materialName)
+: Renderer(assets),
+    shaderName(shaderName),
+    materialName(materialName)
 {
 }
 
@@ -62,7 +66,7 @@ SkyboxRenderer::~SkyboxRenderer()
 
 void SkyboxRenderer::prepare(ShaderRegistry& shaders)
 {
-    shader = shaders.getShader(assets, name);
+    shader = shaders.getShader(assets, shaderName);
 
     shader->prepare();
     shader->bind();
@@ -71,15 +75,15 @@ void SkyboxRenderer::prepare(ShaderRegistry& shaders)
 
     {
         const std::string& baseDir = assets.modelsDir;
-        std::string texturePath = baseDir + name;
+        //std::string texturePath = baseDir + materialName;
 
         std::vector<std::string> faces{
-            baseDir + "/" + name + "/right.jpg",
-            baseDir + "/" + name + "/left.jpg",
-            baseDir + "/" + name + "/top.jpg",
-            baseDir + "/" + name + "/bottom.jpg",
-            baseDir + "/" + name + "/front.jpg",
-            baseDir + "/" + name + "/back.jpg"
+            baseDir + "/" + materialName + "/right.jpg",
+            baseDir + "/" + materialName + "/left.jpg",
+            baseDir + "/" + materialName + "/top.jpg",
+            baseDir + "/" + materialName + "/bottom.jpg",
+            baseDir + "/" + materialName + "/front.jpg",
+            baseDir + "/" + materialName + "/back.jpg"
         };
 
         textureID = CubeMap::createFromImages(faces);

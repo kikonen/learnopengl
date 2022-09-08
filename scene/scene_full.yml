@@ -20,12 +20,12 @@ entities:
       - blend
       - render_back
     repeat:
-      x_count: 1
+      x_count: 2
       y_count: 1
-      z_count: 1
-      x_step: 1
-      y_step: 1
-      z_step: 1
+      z_count: 2
+      x_step: 2
+      y_step: 2
+      z_step: 2
     enabled: true
   - name: ZERO
     type_id: 2
@@ -326,6 +326,7 @@ entities:
       tiling: 8
     render_flags:
       - no_shadow
+      - render_back
     selected: true
     enabled: true
 materials:

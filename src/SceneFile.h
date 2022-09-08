@@ -10,6 +10,11 @@
 
 class SceneFile
 {
+    struct SkyboxData {
+        std::string shaderName{ "skybox" };
+        std::string materialName{};
+    };
+
     struct MaterialField {
         bool reflection = false;
         bool refraction = false;
@@ -69,6 +74,10 @@ public:
 
 private:
     void testYAML();
+
+    void loadSkybox(
+        const YAML::Node& node,
+        std::map<const std::string, std::shared_ptr<Material>>& materials);
 
     void loadEntities(
         const YAML::Node& doc,

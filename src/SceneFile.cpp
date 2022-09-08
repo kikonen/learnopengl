@@ -33,12 +33,45 @@ std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
 
     std::map<const std::string, std::shared_ptr<Material>> materials;
 
+    loadSkybox(doc, materials);
     loadMaterials(doc, materials);
     loadEntities(doc, materials);
 
     //    testYAML();
 
     return scene;
+}
+
+void SceneFile::loadSkybox(
+    const YAML::Node& doc,
+    std::map<const std::string, std::shared_ptr<Material>>& materials)
+{
+    SkyboxData data;
+
+    auto node = doc["skybox"];
+
+    if (!node) return;
+
+    for (auto pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "shader") {
+            data.shaderName = v.as<std::string>();
+        }
+        else if (k == "material") {
+            data.materialName = v.as<std::string>();
+        }
+        else {
+            std::cout << "UNKNOWN SKYBOX_ENTRY: " << k << "=" << v << "\n";
+        }
+    }
+
+    auto scene = loader.scene;
+    auto skybox = new SkyboxRenderer(assets, data.shaderName, data.materialName);
+    skybox->prepare(scene->shaders);
+
+    scene->skyboxRenderer.reset(skybox);
 }
 
 void SceneFile::loadEntities(

@@ -36,8 +36,6 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 
     setupCamera();
 
-    setupNodeSkybox();
-
     setupNodeActive();
 
     setupNodePlanet();
@@ -81,16 +79,6 @@ void TestSceneSetup::setupCamera()
     }
 
     scene->registry.addNode(node);
-}
-
-void TestSceneSetup::setupNodeSkybox()
-{
-    //addLoader([this]() {
-    //});
-    auto skybox = new SkyboxRenderer(assets, "skybox");
-    skybox->prepare(scene->shaders);
-
-    scene->skyboxRenderer.reset(skybox);
 }
 
 void TestSceneSetup::setupLightDirectional()

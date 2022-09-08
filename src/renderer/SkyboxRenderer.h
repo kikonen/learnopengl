@@ -10,7 +10,10 @@
 class SkyboxRenderer final : public Renderer
 {
 public:
-    SkyboxRenderer(const Assets& assets, const std::string& name);
+    SkyboxRenderer(
+        const Assets& assets,
+        const std::string& shaderName,
+        const std::string& materialName);
     virtual ~SkyboxRenderer();
 
     void prepare(ShaderRegistry& shaders) override;
@@ -25,10 +28,11 @@ public:
     unsigned int textureID;
 
 private:
-    const std::string name;
+    const std::string shaderName;
+    const std::string materialName;
 
     MeshBuffers buffers;
 
-    std::shared_ptr<Shader> shader = nullptr;
+    std::shared_ptr<Shader> shader{ nullptr };
 };
 
