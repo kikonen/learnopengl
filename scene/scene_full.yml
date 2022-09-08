@@ -75,18 +75,29 @@ entities:
       x_count: 10
       x_step: 2
     enabled: true
+  - name: Brick wall
+    id: 43e08833-6167-40cd-b472-96d29cd8a08c
+    model: brickwall
+    shader: texture
+    pos: [-5.0, 5.0, 14.0]
+    render_flags:
+      - render_back
+    repeat:
+      x_count: 3
+      x_step: 4
+    enabled: true
   - name: Wood wall
     id: 43e417b5-9697-4821-9abb-84dbad3adfce
     model: woodwall
     shader: texture
-    pos: [-5.0, 5.0, 14.0]
+    pos: [-3.0, 5.0, 14.0]
     material_modifier:
       reflection: 0.3
     render_flags:
       - render_back
     repeat:
-      x_count: 5
-      x_step: 2
+      x_count: 2
+      x_step: 4
     enabled: true
   - name: Big mirror 1
     id: 640a76d4-fa07-4407-8204-009c9bc3ff29
