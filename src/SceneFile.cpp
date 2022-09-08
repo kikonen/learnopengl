@@ -32,7 +32,7 @@ std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
     YAML::Node doc = YAML::Load(fin);
 
     SkyboxData skybox;
-    std::map<const std::string, EntityData> entities;
+    std::map<const uuids::uuid, EntityData> entities;
     std::map<const std::string, std::shared_ptr<Material>> materials;
 
     loadSkybox(doc, skybox, materials);
@@ -46,7 +46,7 @@ std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
 
 void SceneFile::attach(
     SkyboxData& skybox,
-    std::map<const std::string, EntityData>& entities,
+    std::map<const uuids::uuid, EntityData>& entities,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
     attachSkybox(skybox, materials);
@@ -68,7 +68,7 @@ void SceneFile::attachSkybox(
 
 void SceneFile::attachEntity(
     const EntityData& data,
-    std::map<const std::string, EntityData>& entities,
+    std::map<const uuids::uuid, EntityData>& entities,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
     loader.addLoader([this, data, entities, materials]() {
@@ -77,7 +77,7 @@ void SceneFile::attachEntity(
         }
 
         const EntityData* parent = nullptr;
-        if (!data.parentId.empty()) {
+        if (!data.parentId.is_nil()) {
             auto entry = entities.find(data.parentId);
             if (entry != entities.end()) {
                 auto& e = entry->second;
@@ -214,14 +214,14 @@ void SceneFile::loadSkybox(
 
 void SceneFile::loadEntities(
     const YAML::Node& doc,
-    std::map<const std::string, EntityData>& entities,
+    std::map<const uuids::uuid, EntityData>& entities,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
     for (auto entry : doc["entities"]) {
         EntityData data;
         loadEntity(entry, materials, data);
         // NOTE KI ignore elements without ID
-        if (data.id.empty()) continue;
+        if (data.id.is_nil()) continue;
         entities[data.id] = data;
     }
 }
@@ -244,14 +244,14 @@ void SceneFile::loadEntity(
             data.desc = v.as<std::string>();
         }
         else if (k == "id") {
-            data.id = v.as<std::string>();
+           data.id = uuids::uuid::from_string(v.as<std::string>()).value();
         }
         else if (k == "type_id") {
             //data.typeId = v.as<int>();
             data.typeId = NodeType::nextID();
         }
         else if (k == "parent_id") {
-            data.parentId = v.as<std::string>();
+            data.parentId = uuids::uuid::from_string(v.as<std::string>()).value();
         }
         else if (k == "model") {
             if (v.Type() == YAML::NodeType::Sequence) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <stduuid/uuid.h>
 
 #include "component/ParticleGenerator.h"
 #include "scene/NodeType.h"
@@ -45,10 +46,10 @@ public:
     const int objectID;
 
     // UUID of node for persistency
-    std::string id;
+    uuids::uuid id;
 
     // UUID of node's parent
-    std::string parentId;
+    uuids::uuid parentId;
 
     std::shared_ptr<NodeType> type;
 

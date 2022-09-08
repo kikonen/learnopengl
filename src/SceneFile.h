@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 
+#include <stduuid/uuid.h>
 #include <yaml-cpp/yaml.h>
 
 #include <scene/AsyncLoader.h>
@@ -41,9 +42,9 @@ class SceneFile
 
         std::string name{};
         std::string desc{};
-        std::string id{};
 
-        std::string parentId{};
+        uuids::uuid id{};
+        uuids::uuid parentId{};
 
         std::string modelName{};
         std::string modelPath{ "/" };
@@ -82,7 +83,7 @@ private:
 
     void attach(
         SkyboxData& skybox,
-        std::map<const std::string, EntityData>& entities,
+        std::map<const uuids::uuid, EntityData>& entities,
         std::map<const std::string, std::shared_ptr<Material>>& materials);
 
     void attachSkybox(
@@ -91,7 +92,7 @@ private:
 
     void attachEntity(
         const EntityData& data,
-        std::map<const std::string, EntityData>& entities,
+        std::map<const uuids::uuid, EntityData>& entities,
         std::map<const std::string, std::shared_ptr<Material>>& materials);
 
     void loadSkybox(
@@ -101,7 +102,7 @@ private:
 
     void loadEntities(
         const YAML::Node& doc,
-        std::map<const std::string, EntityData>& entities,
+        std::map<const uuids::uuid, EntityData>& entities,
         std::map<const std::string, std::shared_ptr<Material>>& materials);
 
     void loadEntity(

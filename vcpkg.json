@@ -43,6 +43,15 @@
       "version>=": "1.10.0#1"
     },
     {
+      "name": "stduuid",
+      "platform": "windows & x64",
+      "version>=": "1.2.2",
+      "features": [
+        "gsl-span",
+        "system-gen"
+      ]
+    },
+    {
       "name": "yaml-cpp",
       "platform": "windows & x64",
       "version>=": "0.7.0#1"
