@@ -38,8 +38,13 @@ class SceneFile
     struct EntityData {
         int typeId{ 0 };
         bool enabled{ false };
+
         std::string name{};
         std::string desc{};
+        std::string id{};
+
+        std::string parentId{};
+
         std::string modelName{};
         std::string modelPath{ "/" };
         std::string shaderName{ TEX_TEXTURE };
@@ -75,17 +80,34 @@ public:
 private:
     void testYAML();
 
+    void attach(
+        SkyboxData& skybox,
+        std::map<const std::string, EntityData>& entities,
+        std::map<const std::string, std::shared_ptr<Material>>& materials);
+
+    void attachSkybox(
+        SkyboxData& data,
+        std::map<const std::string, std::shared_ptr<Material>>& materials);
+
+    void attachEntity(
+        const EntityData& data,
+        std::map<const std::string, EntityData>& entities,
+        std::map<const std::string, std::shared_ptr<Material>>& materials);
+
     void loadSkybox(
         const YAML::Node& node,
+        SkyboxData& data,
         std::map<const std::string, std::shared_ptr<Material>>& materials);
 
     void loadEntities(
         const YAML::Node& doc,
+        std::map<const std::string, EntityData>& entities,
         std::map<const std::string, std::shared_ptr<Material>>& materials);
 
     void loadEntity(
         const YAML::Node& node,
-        std::map<const std::string, std::shared_ptr<Material>>& materials);
+        std::map<const std::string, std::shared_ptr<Material>>& materials,
+        EntityData& data);
 
     void loadMaterialModifiers(
         const YAML::Node& node,

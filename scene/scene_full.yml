@@ -1,11 +1,13 @@
 ---
 name: Full
+viewports:
 skybox:
+  shader: skybox
   material: skybox
 lights: {}
 entities:
   - name: EXAMPLE
-    type_id: 1
+    id: 68f300d2-34b0-4fb0-aa4e-6690e091d63c
     model: glass_ball
     shader: texture
     pos: [0.0, 0.0, 0.0]
@@ -28,14 +30,14 @@ entities:
       z_step: 2
     enabled: true
   - name: ZERO
-    type_id: 2
+    id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     model: water_ball
     shader: texture
     pos: [0.0, 0.0, 0.0]
     scale: 0.3
     enabled: true
   - name: Window 1
-    type_id: 3
+    id: 348ec505-240a-4d86-9d97-2a62eb0eefaf
     model: window1
     shader: texture
     pos: [5.0, 10.0, -5.0]
@@ -47,7 +49,7 @@ entities:
       - render_back
     enabled: true
   - name: Window 2
-    type_id: 4
+    id: 33550e8b-8540-4114-b73d-0322444e6453
     model: window2
     shader: texture
     pos: [7.0, 10.0, -8.0]
@@ -59,7 +61,7 @@ entities:
       - render_back
     enabled: true
   - name: Stained windows
-    type_id: 5
+    id: 21ed5ac7-073c-4ae2-8bd0-d721f92d2b9b
     model: window2
     shader: texture
     pos: [-10.0, 15.0, 10.0]
@@ -74,7 +76,7 @@ entities:
       x_step: 2
     enabled: true
   - name: Wood wall
-    type_id: 6
+    id: 43e417b5-9697-4821-9abb-84dbad3adfce
     model: woodwall
     shader: texture
     pos: [-5.0, 5.0, 14.0]
@@ -87,7 +89,7 @@ entities:
       x_step: 2
     enabled: true
   - name: Big mirror 1
-    type_id: 7
+    id: 640a76d4-fa07-4407-8204-009c9bc3ff29
     model: woodwall
     shader: texture
     pos: [-65.0, 20.0, -10.0]
@@ -103,7 +105,7 @@ entities:
     mirror_plane: [0.0, 1.0, 0.0, -1.0]
     enabled: true
   - name: Big mirror 2
-    type_id: 8
+    id: d3ceb264-e4dc-4063-9f9d-6c3734e4f616
     model: woodwall
     shader: texture
     pos: [65.0, 20.0, -10.0]
@@ -119,7 +121,7 @@ entities:
     mirror_plane: [0.0, 1.0, 0.0, -1.0]
     enabled: true
   - name: Spyro
-    type_id: 9
+    id: d96d4ca9-26c7-48c8-8459-f31b8270b5e2
     model: spyro2
     shader: texture
     pos: [0.0, 30.0, 30.0]
@@ -127,14 +129,14 @@ entities:
     enabled: true
   - name: Backback
     desc: TODO not showing up
-    type_id: 10
+    id: 0bdeb80d-0469-468f-95b9-e9928266d93a
     model: [backback, /backback/]
     shader: texture
     pos: [0.0, 5.0, 5.0]
     scale: 1.5
     enabled: false
   - name: Bunny
-    type_id: 11
+    id: 7deb60bf-cdc6-497a-b296-32c0a5a9a5aa
     model: bunny
     shader: texture
     pos: [-15.0, 10.0, 5.0]
@@ -145,7 +147,7 @@ entities:
       - render_back
     enabled: false
   - name: Dragon
-    type_id: 12
+    id: cab47b14-9a9d-4db2-96fd-7b872f79e096
     model: dragon
     shader: texture
     pos: [-15.0, 15.0, 0.0]
@@ -154,21 +156,21 @@ entities:
       - render_back
     enabled: false
   - name: Shuttle
-    type_id: 13
+    id: 9a2ba708-dc8b-4e5e-902c-0375ce432a1f
     model: [shuttle, /opengl_book/NasaShuttle/]
     shader: texture
     pos: [20.0, 40.0, -50.0]
     scale: 20.0
     enabled: true
   - name: Sword 2
-    type_id: 14
+    id: 96e6e2b2-6110-45cc-aef3-19ba321a8443
     model: sword2
     shader: texture
     pos: [0.0, 40.0, -50.0]
     scale: 1.0
     enabled: true
   - name: Teapot
-    type_id: 15
+    id: 53f4bd23-8f9f-4cc4-b4ce-7f71d6484ce4
     model: smooth_teapot
     shader: texture
     pos: [-5.0, 20.0, -5.0]
@@ -183,7 +185,7 @@ entities:
     selected: true
     enabled: true
   - name: Cow
-    type_id: 16
+    id: 03804c4f-ec37-445f-9fbd-675c667a704a
     model: texture_cow
     shader: texture
     pos: [5.0, 20.0, -5.0]
@@ -196,21 +198,21 @@ entities:
     selected: true
     enabled: true
   - name: Mountains
-    type_id: 17
+    id: 63ca20c5-dce1-4400-8968-6484cb4af8ca
     model: texture_mountains
     shader: texture
     pos: [100.0, 0.0, -100.0]
     scale: 1.0
     enabled: true
   - name: Ball
-    type_id: 18
+    id: 378a3ab8-5923-449b-9cb3-fc8a43ad01ff
     model: texture_ball
     shader: texture
     pos: [0.0, 8.0, 0.0]
     scale: 2.0
     enabled: true
   - name: Glass ball
-    type_id: 19
+    id: 765cc20c-f0ec-4beb-8ca0-c8b8e61fe867
     model: glass_ball
     shader: texture
     pos: [5.0, 20.0, 0.0]
@@ -221,7 +223,7 @@ entities:
       refraction_ratio: [1.0, 1.52]
     enabled: true
   - name: Mirror ball
-    type_id: 20
+    id: 7dba2d65-e7c2-4e93-8e99-b2347733becf
     model: glass_ball
     shader: texture
     pos: [0.0, 20.0, 0.0]
@@ -230,7 +232,7 @@ entities:
       reflection: 1.0
     enabled: true
   - name: Water ball
-    type_id: 21
+    id: 6d104f0b-d706-4919-9a7a-732e3c1f5749
     model: water_ball
     shader: texture
     pos: [5.0, 25.0, 0.0]
@@ -243,7 +245,7 @@ entities:
       reflection: 0.3
     enabled: true
   - name: Basic ball
-    type_id: 22
+    id: 3fa60b1c-db58-4c0d-b96a-56672a1a8ca9
     model: water_ball
     shader: texture
     pos: [5.0, 25.0, 5.0]
@@ -254,7 +256,7 @@ entities:
       reflection: 0.05
     enabled: true
   - name: Gold ball
-    type_id: 23
+    id: 056709c1-e452-4069-8482-fd56a578ebfd
     model: water_ball
     shader: texture
     pos: [5.0, 25.0, 10.0]
@@ -265,7 +267,7 @@ entities:
       reflection: 0.05
     enabled: true
   - name: Silver ball
-    type_id: 24
+    id: 82896a38-e5cf-4274-b4be-e79ac8325b65
     model: water_ball
     shader: texture
     pos: [5.0, 25.0, 15.0]
@@ -276,10 +278,11 @@ entities:
       reflection: 0.05
     enabled: true
   - name: Bronze ball
-    type_id: 25
+    id: 3254214e-feff-4e12-8099-0da57eae709a
+    parent_id: 82896a38-e5cf-4274-b4be-e79ac8325b65
     model: water_ball
     shader: texture
-    pos: [5.0, 25.0, 20.0]
+    pos: [0.0, 0.0, 5.0]
     scale: 1.3
     override_material: true
     default_material: bronze_ball
@@ -287,14 +290,14 @@ entities:
       reflection: 0.05
     enabled: true
   - name: Brickcube
-    type_id: 26
+    id: 06106e7a-c538-4c7f-ae4e-4ab7a5012a94
     model: texture_cube
     shader: texture
     pos: [5.0, 20.0, 5.0]
     scale: 1
     enabled: true
   - name: Four cubes
-    type_id: 27
+    id: 6c4675b6-3716-4c9e-bb4b-32e49de7349c
     model: texture_cube_3
     shader: texture
     positions:
@@ -305,7 +308,7 @@ entities:
     scale: 1
     enabled: true
   - name: Cube 4
-    type_id: 28
+    id: c732f488-903e-40d0-8b24-389374d89a63
     model: texture_cube_4
     shader: texture
     pos: [-5.0, 20.0, 5.0]
@@ -313,7 +316,7 @@ entities:
     selected: true
     enabled: true
   - name: Water bottom
-    type_id: 29
+    id: 0f93cffa-a1e9-4040-885f-3075bbcca722
     model: marble_plate
     shader: texture
     pos: [0.0, 30.0, -10.0]

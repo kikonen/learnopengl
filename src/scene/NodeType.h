@@ -38,9 +38,9 @@ public:
 
     glm::vec4 mirrorPlane{ 0 };
 
-    std::unique_ptr<Mesh> mesh = nullptr;
-    std::shared_ptr<Shader> defaultShader = nullptr;
-    Shader* boundShader = nullptr;
+    std::unique_ptr<Mesh> mesh{ nullptr };
+    std::shared_ptr<Shader> defaultShader{ nullptr };
+    Shader* boundShader{ nullptr };
 
     Batch batch;
 private:

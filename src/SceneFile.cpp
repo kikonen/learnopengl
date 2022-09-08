@@ -31,160 +31,58 @@ std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
     std::ifstream fin(filename);
     YAML::Node doc = YAML::Load(fin);
 
+    SkyboxData skybox;
+    std::map<const std::string, EntityData> entities;
     std::map<const std::string, std::shared_ptr<Material>> materials;
 
-    loadSkybox(doc, materials);
+    loadSkybox(doc, skybox, materials);
     loadMaterials(doc, materials);
-    loadEntities(doc, materials);
+    loadEntities(doc, entities, materials);
 
-    //    testYAML();
+    attach(skybox, entities, materials);
 
     return scene;
 }
 
-void SceneFile::loadSkybox(
-    const YAML::Node& doc,
+void SceneFile::attach(
+    SkyboxData& skybox,
+    std::map<const std::string, EntityData>& entities,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
-    SkyboxData data;
+    attachSkybox(skybox, materials);
 
-    auto node = doc["skybox"];
-
-    if (!node) return;
-
-    for (auto pair : node) {
-        const std::string& k = pair.first.as<std::string>();
-        const YAML::Node& v = pair.second;
-
-        if (k == "shader") {
-            data.shaderName = v.as<std::string>();
-        }
-        else if (k == "material") {
-            data.materialName = v.as<std::string>();
-        }
-        else {
-            std::cout << "UNKNOWN SKYBOX_ENTRY: " << k << "=" << v << "\n";
-        }
+    for (auto entry : entities) {
+        attachEntity(entry.second, entities, materials);
     }
+}
 
+void SceneFile::attachSkybox(
+    SkyboxData& data,
+    std::map<const std::string, std::shared_ptr<Material>>& materials)
+{
     auto scene = loader.scene;
     auto skybox = new SkyboxRenderer(assets, data.shaderName, data.materialName);
     skybox->prepare(scene->shaders);
-
     scene->skyboxRenderer.reset(skybox);
 }
 
-void SceneFile::loadEntities(
-    const YAML::Node& doc,
+void SceneFile::attachEntity(
+    const EntityData& data,
+    std::map<const std::string, EntityData>& entities,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
-    for (auto entry : doc["entities"]) {
-        loadEntity(entry, materials);
-    }
-}
-
-void SceneFile::loadEntity(
-    const YAML::Node& node,
-    std::map<const std::string, std::shared_ptr<Material>>& materials)
-{
-    EntityData data;
-
-    for (auto pair : node) {
-        const std::string& k = pair.first.as<std::string>();
-        const YAML::Node& v = pair.second;
-
-        //std::cout << k << " = " << v << "\n";
-
-        if (k == "name") {
-            data.name = v.as<std::string>();
-        }
-        else if (k == "desc") {
-            data.desc = v.as<std::string>();
-        }
-        else if (k == "type_id") {
-            data.typeId = v.as<int>();
-        }
-        else if (k == "model") {
-            if (v.Type() == YAML::NodeType::Sequence) {
-                data.modelName = v[0].as<std::string>();
-                data.modelPath = v[1].as<std::string>();
-            }
-            else {
-                data.modelName = v.as<std::string>();
-            }
-        }
-        else if (k == "shader") {
-            data.shaderName = v.as<std::string>();
-            if (data.shaderName == "texture") {
-                data.shaderName = TEX_TEXTURE;
-            }
-        }
-        else if (k == "shader_definitions") {
-            if (v.Type() == YAML::NodeType::Sequence) {
-                for (auto name : v) {
-                    data.shaderDefinitions.push_back(name.as<std::string>());
-                }
-            }
-        }
-        else if (k == "render_flags") {
-            if (v.Type() == YAML::NodeType::Sequence) {
-                for (auto name : v) {
-                    auto flag = name.as<std::string>();
-                    data.renderFlags[flag] = true;
-                }
-            }
-        }
-        else if (k == "mirror_plane") {
-            data.mirrorPlane = readVec4(v);
-        }
-        else if (k == "default_material") {
-            std::string materialName = v.as<std::string>();
-            auto entry = materials.find(materialName);
-            if (entry != materials.end()) {
-                // NOTE KI need to create copy *IF* modifiers
-                data.defaultMaterial = data.materialModifierFields.any()
-                    ? std::make_shared<Material>(*entry->second)
-                    : entry->second;
-            }
-        }
-        else if (k == "material_modifier") {
-            loadMaterialModifiers(v, data);
-        }
-        else if (k == "override_material") {
-            data.overrideMaterials = v.as<bool>();
-        }
-        else if (k == "pos") {
-            data.positions.push_back(readVec3(v));
-        }
-        else if (k == "positions") {
-            data.positions.clear();
-            for (auto p : v) {
-                data.positions.push_back(readVec3(p));
-            }
-        }
-        else if (k == "rotation") {
-            data.rotation = readVec3(v);
-        }
-        else if (k == "scale") {
-            data.scale = v.as<double>();
-        }
-        else if (k == "repeat") {
-            loadRepeat(v, data);
-        }
-        else if (k == "selected") {
-            data.selected = v.as<bool>();
-        }
-        else if (k == "enabled") {
-            data.enabled = v.as<bool>();
-        }
-        else {
-            std::cout << "UNKNOWN ENTITY_ENTRY: " << k << "=" << v << "\n";
-        }
-    }
-
-    loader.addLoader([this, data, materials]() {
+    loader.addLoader([this, data, entities, materials]() {
         if (!data.enabled) {
             return;
+        }
+
+        const EntityData* parent = nullptr;
+        if (!data.parentId.empty()) {
+            auto entry = entities.find(data.parentId);
+            if (entry != entities.end()) {
+                auto& e = entry->second;
+                parent = &e;
+            }
         }
 
         auto type = std::make_shared<NodeType>(data.typeId, loader.getShader(data.shaderName, data.shaderDefinitions));
@@ -265,9 +163,15 @@ void SceneFile::loadEntity(
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
                     for (auto& p : data.positions) {
-                        glm::vec3 pos = { p.x + x * repeat.xStep, p.y + y * repeat.yStep, p.z + z * repeat.zStep };
+                        glm::vec3 pos = p;
+                        if (parent) {
+                            pos += parent->positions[0];
+                        }
+                        pos += glm::vec3{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
                         auto node = new Node(type);
+                        node->id = data.id;
+                        node->parentId = data.parentId;
 
                         node->setPos(pos + assets.groundOffset);
                         node->setRotation(data.rotation);
@@ -281,6 +185,156 @@ void SceneFile::loadEntity(
             }
         }
         });
+}
+
+void SceneFile::loadSkybox(
+    const YAML::Node& doc,
+    SkyboxData& data,
+    std::map<const std::string, std::shared_ptr<Material>>& materials)
+{
+    auto node = doc["skybox"];
+
+    if (!node) return;
+
+    for (auto pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "shader") {
+            data.shaderName = v.as<std::string>();
+        }
+        else if (k == "material") {
+            data.materialName = v.as<std::string>();
+        }
+        else {
+            std::cout << "UNKNOWN SKYBOX_ENTRY: " << k << "=" << v << "\n";
+        }
+    }
+}
+
+void SceneFile::loadEntities(
+    const YAML::Node& doc,
+    std::map<const std::string, EntityData>& entities,
+    std::map<const std::string, std::shared_ptr<Material>>& materials)
+{
+    for (auto entry : doc["entities"]) {
+        EntityData data;
+        loadEntity(entry, materials, data);
+        // NOTE KI ignore elements without ID
+        if (data.id.empty()) continue;
+        entities[data.id] = data;
+    }
+}
+
+void SceneFile::loadEntity(
+    const YAML::Node& node,
+    std::map<const std::string, std::shared_ptr<Material>>& materials,
+    EntityData& data)
+{
+    for (auto pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        //std::cout << k << " = " << v << "\n";
+
+        if (k == "name") {
+            data.name = v.as<std::string>();
+        }
+        else if (k == "desc") {
+            data.desc = v.as<std::string>();
+        }
+        else if (k == "id") {
+            data.id = v.as<std::string>();
+        }
+        else if (k == "type_id") {
+            //data.typeId = v.as<int>();
+            data.typeId = NodeType::nextID();
+        }
+        else if (k == "parent_id") {
+            data.parentId = v.as<std::string>();
+        }
+        else if (k == "model") {
+            if (v.Type() == YAML::NodeType::Sequence) {
+                data.modelName = v[0].as<std::string>();
+                data.modelPath = v[1].as<std::string>();
+            }
+            else {
+                data.modelName = v.as<std::string>();
+            }
+        }
+        else if (k == "shader") {
+            data.shaderName = v.as<std::string>();
+            if (data.shaderName == "texture") {
+                data.shaderName = TEX_TEXTURE;
+            }
+        }
+        else if (k == "shader_definitions") {
+            if (v.Type() == YAML::NodeType::Sequence) {
+                for (auto name : v) {
+                    data.shaderDefinitions.push_back(name.as<std::string>());
+                }
+            }
+        }
+        else if (k == "render_flags") {
+            if (v.Type() == YAML::NodeType::Sequence) {
+                for (auto name : v) {
+                    auto flag = name.as<std::string>();
+                    data.renderFlags[flag] = true;
+                }
+            }
+        }
+        else if (k == "mirror_plane") {
+            data.mirrorPlane = readVec4(v);
+        }
+        else if (k == "default_material") {
+            std::string materialName = v.as<std::string>();
+            auto entry = materials.find(materialName);
+            if (entry != materials.end()) {
+                // NOTE KI need to create copy *IF* modifiers
+                data.defaultMaterial = data.materialModifierFields.any()
+                    ? std::make_shared<Material>(*entry->second)
+                    : entry->second;
+            }
+        }
+        else if (k == "material_modifier") {
+            loadMaterialModifiers(v, data);
+        }
+        else if (k == "override_material") {
+            data.overrideMaterials = v.as<bool>();
+        }
+        else if (k == "pos") {
+            data.positions.push_back(readVec3(v));
+        }
+        else if (k == "positions") {
+            data.positions.clear();
+            for (auto p : v) {
+                data.positions.push_back(readVec3(p));
+            }
+        }
+        else if (k == "rotation") {
+            data.rotation = readVec3(v);
+        }
+        else if (k == "scale") {
+            data.scale = v.as<double>();
+        }
+        else if (k == "repeat") {
+            loadRepeat(v, data);
+        }
+        else if (k == "selected") {
+            data.selected = v.as<bool>();
+        }
+        else if (k == "enabled") {
+            data.enabled = v.as<bool>();
+        }
+        else {
+            std::cout << "UNKNOWN ENTITY_ENTRY: " << k << "=" << v << "\n";
+        }
+    }
+
+    if (data.positions.empty()) {
+        // NOTE KI *ENSURE* there is position
+        data.positions.emplace_back(0);
+    }
 }
 
 void SceneFile::loadMaterialModifiers(

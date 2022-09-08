@@ -40,7 +40,15 @@ protected:
     virtual void updateModelMatrix();
 
 public:
-    int objectID = 0;
+    // *INTERNAL* locally unique ID in scene
+    // used for object identity in shader
+    const int objectID;
+
+    // UUID of node for persistency
+    std::string id;
+
+    // UUID of node's parent
+    std::string parentId;
 
     std::shared_ptr<NodeType> type;
 

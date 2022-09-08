@@ -24,9 +24,9 @@ int Node::nextID()
 }
 
 Node::Node(std::shared_ptr<NodeType> type)
-    : type(type)
+    : type(type),
+    objectID(nextID())
 {
-    objectID = nextID();
 }
 
 Node::~Node()
