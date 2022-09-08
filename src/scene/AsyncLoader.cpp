@@ -10,11 +10,26 @@ void AsyncLoader::setup()
 {
 }
 
-size_t AsyncLoader::addLoader(std::function<void()> loader)
+void AsyncLoader::waitForReady()
+{
+    std::unique_lock<std::mutex> lock(load_lock);
+
+    bool done = false;
+    while (!done) {
+        waitCondition.wait(lock);
+        done = loadedCount == loaders.size();
+    }
+}
+
+void AsyncLoader::addLoader(std::function<void()> loader)
 {
     std::lock_guard<std::mutex> lock(load_lock);
-    loaders.emplace_back(std::async(std::launch::async, loader));
-    return loaders.size() - 1;
+    loaders.emplace_back(std::async(std::launch::async, [this, loader]() {
+        loader();
+        std::unique_lock<std::mutex> lock(load_lock);
+        loadedCount++;
+        waitCondition.notify_all();
+    }));
 }
 
 const std::future<void>& AsyncLoader::getLoader(unsigned int index)

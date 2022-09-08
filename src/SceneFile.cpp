@@ -41,6 +41,8 @@ std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
 
     attach(skybox, entities, materials);
 
+    loader.waitForReady();
+
     return scene;
 }
 

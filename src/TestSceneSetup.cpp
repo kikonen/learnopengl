@@ -18,6 +18,19 @@
 #include "scene/TerrainGenerator.h"
 
 
+namespace {
+    uuids::uuid planetUUID;
+
+    const std::string PLANET_UUID{ "8712cec1-e1a3-4973-8889-533adfbbb196" };
+
+    const uuids::uuid getPlanetID() {
+        if (planetUUID.is_nil()) {
+            planetUUID = uuids::uuid::from_string(PLANET_UUID).value();
+        }
+        return planetUUID;
+    }
+}
+
 TestSceneSetup::TestSceneSetup(const Assets& assets)
     : assets(assets), loader(assets)
 {
@@ -39,7 +52,6 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
     setupNodeActive();
 
     setupNodePlanet();
-    setupNodeAsteroid();
     setupNodeAsteroidBelt();
 
     setupSpriteSkeleton();
@@ -116,7 +128,7 @@ void TestSceneSetup::setupLightDirectional()
             const float speed = 20.f;
             glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
 
-            auto planet = getPlanet();
+            auto planet = scene->registry.getNode(getPlanetID());
             if (planet) {
                 center = planet->getPos();
             }
@@ -243,24 +255,8 @@ void TestSceneSetup::setupNodeActive()
 
 void TestSceneSetup::setupNodePlanet()
 {
-    std::lock_guard<std::mutex> lock(planet_lock);
-
-    planetFutureIndex = loader.addLoader([this]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
-        MeshLoader loader(assets, "planet", "/planet/");
-        type->mesh = loader.load();
-        type->modifyMaterials([](Material& m) { m.fogRatio = 0; });
-
-        auto node = new Node(type);
-        node->setPos(glm::vec3(10, 100, 100) + assets.groundOffset);
-        node->setScale(10);
-
-        scene->registry.addNode(node);
-        setPlanet(node);
-        });
-
     loader.addLoader([this]() {
-        auto planet = getPlanet();
+        auto planet = scene->registry.getNode(getPlanetID());
 
         auto light = new Light();
         {
@@ -302,26 +298,6 @@ void TestSceneSetup::setupNodePlanet()
         });
 }
 
-void TestSceneSetup::setupNodeAsteroid()
-{
-    loader.addLoader([this]() {
-        glm::vec3 planetPos = glm::vec3(10, 100, 100);
-
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
-        {
-            MeshLoader loader(assets, "rock", "/rock/");
-            type->mesh = loader.load();
-            type->modifyMaterials([](Material& m) { m.reflection = 0.7f; });
-        }
-
-        auto node = new Node(type);
-        auto planet = getPlanet();
-        glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 50, 0) : glm::vec3(10, 50, 100) + assets.groundOffset;
-        node->setPos(pos);
-        scene->registry.addNode(node);
-        });
-}
-
 void TestSceneSetup::setupNodeAsteroidBelt()
 {
     loader.addLoader([this]() {
@@ -331,7 +307,7 @@ void TestSceneSetup::setupNodeAsteroidBelt()
         MeshLoader loader(assets, "rock", "/rock/");
         type->mesh = loader.load();
 
-        auto planet = getPlanet();
+        auto planet = scene->registry.getNode(getPlanetID());
         auto controller = new AsteroidBeltController(assets, planet);
         auto node = new InstancedNode(type, controller);
         //node->selected = true;
@@ -491,33 +467,4 @@ void TestSceneSetup::setupViewport1()
         scene->shaders.getShader(assets, TEX_VIEWPORT));
     viewport->prepare();
     scene->registry.addViewPort(viewport);
-}
-
-void TestSceneSetup::setPlanet(Node* planet)
-{
-    {
-        std::lock_guard<std::mutex> lock(planet_lock);
-        loadedPlanet = planet;
-        planetFutureIndex = -1;
-    }
-}
-
-Node* TestSceneSetup::getPlanet()
-{
-    int index = -1;
-    {
-        std::lock_guard<std::mutex> lock(planet_lock);
-        index = planetFutureIndex;
-    }
-
-    if (index == -1) {
-        return loadedPlanet;
-    }
-
-    loader.getLoader(index).wait();
-
-    {
-        std::lock_guard<std::mutex> lock(planet_lock);
-        return loadedPlanet;
-    }
 }

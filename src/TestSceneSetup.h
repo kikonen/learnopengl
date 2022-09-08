@@ -72,15 +72,8 @@ private:
     void setupEffectExplosion();
 
     void setupViewport1();
-private:
-    void setPlanet(Node* planet);
-    Node* getPlanet();
 
 private:
-    std::mutex planet_lock;
-    int planetFutureIndex = -1;
-    Node* loadedPlanet = nullptr;
-
     const Assets& assets;
     AsyncLoader loader;
 

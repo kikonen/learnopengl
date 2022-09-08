@@ -341,7 +341,25 @@ entities:
     render_flags:
       - no_shadow
       - render_back
-    selected: true
+    enabled: true
+  - name: Planet
+    id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    model: [planet, /planet/]
+    shader: texture
+    pos: [10.0, 100.0, 100.0]
+    scale: 10
+    material_modifier:
+      fog_ratio: 0
+    enabled: true
+  - name: Rock
+    id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
+    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    model: [rock, /rock/]
+    shader: texture
+    pos: [0.0, -50.0, 0.0]
+    scale: 1
+    material_modifier:
+      reflection: 0.7
     enabled: true
 materials:
   - name: skybox

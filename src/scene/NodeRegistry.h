@@ -4,6 +4,8 @@
 #include <vector>
 #include <mutex>
 
+#include <stduuid/uuid.h>
+
 #include "NodeType.h"
 
 #include "model/Node.h"
@@ -19,13 +21,16 @@ public:
     ~NodeRegistry();
 
     void addNode(Node* node);
+
     Node* getNode(int objectID);
+    Node* getNode(const uuids::uuid& id);
 
     void selectNodeById(int objectID, bool append);
 
     void addViewPort(std::shared_ptr<Viewport> viewport);
 
     void attachNodes();
+
 
 private:
 
@@ -35,6 +40,7 @@ public:
     std::mutex load_lock;
 
     std::map<int, Node*> idToNode;
+    std::map<uuids::uuid, Node*> uuidToNode;
     std::map<NodeType*, std::vector<Node*>> nodes;
 
     std::vector<std::shared_ptr<Viewport>> viewports;

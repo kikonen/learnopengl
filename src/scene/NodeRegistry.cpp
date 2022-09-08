@@ -25,6 +25,15 @@ void NodeRegistry::addNode(Node* node)
     std::lock_guard<std::mutex> lock(load_lock);
     KI_INFO_SB("ADD_NODE: id=" << node->objectID << ", type=" << node->type->typeID);
     pendingNodes.push_back(node);
+    uuidToNode[node->id] = node;
+}
+
+Node* NodeRegistry::getNode(const uuids::uuid& id)
+{
+    std::lock_guard<std::mutex> lock(load_lock);
+    auto entry = uuidToNode.find(id);
+    if (entry == uuidToNode.end()) return nullptr;
+    return entry->second;
 }
 
 Node* NodeRegistry::getNode(int objectID)
@@ -32,6 +41,7 @@ Node* NodeRegistry::getNode(int objectID)
     if (idToNode.find(objectID) == idToNode.end()) return nullptr;
     return idToNode[objectID];
 }
+
 
 void NodeRegistry::selectNodeById(int objectID, bool append)
 {
@@ -79,14 +89,15 @@ void NodeRegistry::attachNodes()
         t->batch.batchSize = assets.batchSize;
         KI_GL_CALL(t->prepare(assets));
 
-        for (auto& n : x.second) {
-            KI_GL_CALL(n->prepare(assets));
-            nodes[n->type.get()].push_back(n);
-            idToNode[n->objectID] = n;
+        for (auto& node : x.second) {
+            KI_GL_CALL(node->prepare(assets));
+            nodes[node->type.get()].push_back(node);
+            idToNode[node->objectID] = node;
 
-            KI_INFO_SB("ATTACH_NODE: id=" << n->objectID << ", type=" << t->typeID);
+            KI_INFO_SB("ATTACH_NODE: id=" << node->objectID << ", type=" << t->typeID);
 
-            scene.bindComponents(n);
+            scene.bindComponents(node);
         }
     }
 }
+
