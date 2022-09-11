@@ -9,12 +9,16 @@
 #include "ki/GL.h"
 #include "ki/Timer.h"
 
+#include "scene/AsyncLoader.h"
+
 //std::shared_ptr<Engine> Engine::current = nullptr;
 
-Engine::Engine() {
+Engine::Engine()
+{
     debug = false;
     throttleFps = FPS_15;
     window = std::make_unique<Window>(*this);
+    asyncLoader = std::make_shared<AsyncLoader>(shaders, assets);
 }
 
 Engine::~Engine() {

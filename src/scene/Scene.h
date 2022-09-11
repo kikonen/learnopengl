@@ -5,8 +5,6 @@
 #include <functional>
 #include <mutex>
 
-#include "asset/ShaderRegistry.h"
-
 #include "model/Node.h"
 #include "component/Light.h"
 #include "NodeRegistry.h"
@@ -35,7 +33,7 @@ public:
     Scene(const Assets& assets);
     ~Scene();
 
-    void prepare();
+    void prepare(ShaderRegistry& shaders);
 
     void attachNodes();
 
@@ -75,7 +73,6 @@ public:
     UBO ubo;
 
     NodeRegistry registry;
-    ShaderRegistry shaders;
 
 protected:
 

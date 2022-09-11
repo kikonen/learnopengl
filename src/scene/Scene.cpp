@@ -35,7 +35,7 @@ Scene::~Scene()
     particleGenerators.clear();
 }
 
-void Scene::prepare()
+void Scene::prepare(ShaderRegistry& shaders)
 {
     prepareUBOs();
 
@@ -66,7 +66,7 @@ void Scene::prepare()
             glm::vec2(2.f, 2.f),
             -1,
             shaders.getShader(assets, TEX_VIEWPORT));
-        
+
         //mainViewport->effect = ViewportEffect::edge;
 
         mainViewport->prepare();
@@ -101,7 +101,7 @@ void Scene::attachNodes()
     registry.attachNodes();
 }
 
-void Scene::processEvents(RenderContext& ctx) 
+void Scene::processEvents(RenderContext& ctx)
 {
 }
 
@@ -159,8 +159,8 @@ void Scene::draw(RenderContext& ctx)
 
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
     ctx.state.enable(GL_CULL_FACE);
-    ctx.state.cullFace(GL_BACK); 
-    ctx.state.frontFace(GL_CCW); 
+    ctx.state.cullFace(GL_BACK);
+    ctx.state.frontFace(GL_CCW);
 
     ctx.state.enable(GL_DEPTH_TEST);
 

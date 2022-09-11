@@ -12,11 +12,12 @@ namespace {
 }
 
 SceneFile::SceneFile(
+    std::shared_ptr<AsyncLoader> asyncLoader,
     const Assets& assets,
     const std::string& filename)
     : filename(filename),
     assets(assets),
-    loader(assets)
+    asyncLoader(asyncLoader)
 {
 }
 
@@ -26,8 +27,6 @@ SceneFile::~SceneFile()
 
 std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
 {
-    loader.scene = scene;
-
     std::ifstream fin(filename);
     YAML::Node doc = YAML::Load(fin);
 
@@ -39,41 +38,43 @@ std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
     loadMaterials(doc, materials);
     loadEntities(doc, entities, materials);
 
-    attach(skybox, entities, materials);
-
-    loader.waitForReady();
+    attach(scene, skybox, entities, materials);
 
     return scene;
 }
 
 void SceneFile::attach(
+    std::shared_ptr<Scene> scene,
     SkyboxData& skybox,
     std::map<const uuids::uuid, EntityData>& entities,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
-    attachSkybox(skybox, materials);
+    attachSkybox(scene, skybox, materials);
 
     for (auto entry : entities) {
-        attachEntity(entry.second, entities, materials);
+        attachEntity(scene, entry.second, entities, materials);
     }
 }
 
 void SceneFile::attachSkybox(
+    std::shared_ptr<Scene> scene,
     SkyboxData& data,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
-    auto scene = loader.scene;
     auto skybox = new SkyboxRenderer(assets, data.shaderName, data.materialName);
-    skybox->prepare(scene->shaders);
+    skybox->prepare(asyncLoader->shaders);
     scene->skyboxRenderer.reset(skybox);
 }
 
 void SceneFile::attachEntity(
+    std::shared_ptr<Scene> scene,
     const EntityData& data,
     std::map<const uuids::uuid, EntityData>& entities,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
-    loader.addLoader([this, data, entities, materials]() {
+    asyncLoader->addLoader([this, scene, data, entities, materials]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(2 * 1000.f)));
+
         if (!data.enabled) {
             return;
         }
@@ -87,7 +88,7 @@ void SceneFile::attachEntity(
             }
         }
 
-        auto type = std::make_shared<NodeType>(data.typeId, loader.getShader(data.shaderName, data.shaderDefinitions));
+        auto type = std::make_shared<NodeType>(data.typeId, asyncLoader->getShader(data.shaderName, data.shaderDefinitions));
 
         {
             auto e = data.renderFlags.find("blend");
@@ -181,7 +182,7 @@ void SceneFile::attachEntity(
 
                         node->selected = data.selected;
 
-                        loader.scene->registry.addNode(node);
+                        scene->registry.addNode(node);
                     }
                 }
             }
@@ -246,7 +247,7 @@ void SceneFile::loadEntity(
             data.desc = v.as<std::string>();
         }
         else if (k == "id") {
-           data.id = uuids::uuid::from_string(v.as<std::string>()).value();
+            data.id = uuids::uuid::from_string(v.as<std::string>()).value();
         }
         else if (k == "type_id") {
             //data.typeId = v.as<int>();

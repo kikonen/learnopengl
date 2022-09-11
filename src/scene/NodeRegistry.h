@@ -22,7 +22,10 @@ public:
 
     void addNode(Node* node);
 
+    // @return node null if not found
     Node* getNode(int objectID);
+
+    // @return node null if not found
     Node* getNode(const uuids::uuid& id);
 
     void selectNodeById(int objectID, bool append);
@@ -37,7 +40,6 @@ private:
 public:
     const Assets& assets;
     Scene& scene;
-    std::mutex load_lock;
 
     std::map<int, Node*> idToNode;
     std::map<uuids::uuid, Node*> uuidToNode;
@@ -46,6 +48,9 @@ public:
     std::vector<std::shared_ptr<Viewport>> viewports;
 
 private:
+    std::mutex load_lock;
+    std::condition_variable waitCondition;
+
     std::vector<Node*> pendingNodes;
 
     Node* cameraNode = nullptr;
@@ -54,4 +59,3 @@ private:
     std::vector<Light*> pointLights;
     std::vector<Light*> spotLights;
 };
-

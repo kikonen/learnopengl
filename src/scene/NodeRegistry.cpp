@@ -26,6 +26,8 @@ void NodeRegistry::addNode(Node* node)
     KI_INFO_SB("ADD_NODE: id=" << node->objectID << ", type=" << node->type->typeID);
     pendingNodes.push_back(node);
     uuidToNode[node->id] = node;
+
+    waitCondition.notify_all();
 }
 
 Node* NodeRegistry::getNode(const uuids::uuid& id)
@@ -55,11 +57,11 @@ void NodeRegistry::selectNodeById(int objectID, bool append)
     if (node) {
         if (append && node->selected) {
             KI_INFO_SB("DESELECT: objectID: " << objectID)
-            node->selected = false;
+                node->selected = false;
         }
         else {
             KI_INFO_SB("SELECT: objectID: " << objectID)
-            node->selected = true;
+                node->selected = true;
         }
     }
 }
@@ -100,4 +102,3 @@ void NodeRegistry::attachNodes()
         }
     }
 }
-

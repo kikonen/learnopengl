@@ -31,8 +31,10 @@ namespace {
     }
 }
 
-TestSceneSetup::TestSceneSetup(const Assets& assets)
-    : assets(assets), loader(assets)
+TestSceneSetup::TestSceneSetup(
+    std::shared_ptr<AsyncLoader> asyncLoader,
+    const Assets& assets)
+    : assets(assets), asyncLoader(asyncLoader)
 {
 }
 
@@ -45,7 +47,6 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
     NodeType::setBaseID(10000);
 
     this->scene = scene;
-    loader.scene = scene;
 
     setupCamera();
 
@@ -75,7 +76,7 @@ void TestSceneSetup::setupCamera()
     glm::vec3 front = glm::vec3(0, 0, -1);
     glm::vec3 up = glm::vec3(0, 1, 0);
 
-    auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+    auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
     MeshLoader loader(assets, "player");
     type->mesh = loader.load();
 
@@ -108,8 +109,8 @@ void TestSceneSetup::setupLightDirectional()
         light->specular = { 0.0f, 0.7f, 0.0f, 1.f };
     }
 
-    loader.addLoader([this, light]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_LIGHT));
+    asyncLoader->addLoader([this, light]() {
+        auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_LIGHT));
         type->light = true;
         type->noShadow = true;
 
@@ -128,7 +129,7 @@ void TestSceneSetup::setupLightDirectional()
             const float speed = 20.f;
             glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
 
-            auto planet = scene->registry.getNode(getPlanetID());
+            auto planet = asyncLoader->waitNode(getPlanetID());
             if (planet) {
                 center = planet->getPos();
             }
@@ -174,8 +175,8 @@ void TestSceneSetup::setupLightMoving()
         }
     }
 
-    loader.addLoader([this, lights]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_LIGHT));
+    asyncLoader->addLoader([this, lights]() {
+        auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_LIGHT));
         type->light = true;
         type->noShadow = true;
         //type->wireframe = true;
@@ -202,8 +203,8 @@ void TestSceneSetup::setupLightMoving()
 
 void TestSceneSetup::setupNodeBrickwallBox()
 {
-    loader.addLoader([this]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+    asyncLoader->addLoader([this]() {
+        auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
         type->renderBack = true;
 
         MeshLoader loader(assets, "brickwall2");
@@ -241,8 +242,8 @@ void TestSceneSetup::setupNodeBrickwallBox()
 
 void TestSceneSetup::setupNodeActive()
 {
-    loader.addLoader([this]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+    asyncLoader->addLoader([this]() {
+        auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
         MeshLoader loader(assets, "texture_cube");
         type->mesh = loader.load();
 
@@ -255,8 +256,8 @@ void TestSceneSetup::setupNodeActive()
 
 void TestSceneSetup::setupNodePlanet()
 {
-    loader.addLoader([this]() {
-        auto planet = scene->registry.getNode(getPlanetID());
+    asyncLoader->addLoader([this]() {
+        auto planet = asyncLoader->waitNode(getPlanetID());
 
         auto light = new Light();
         {
@@ -273,7 +274,7 @@ void TestSceneSetup::setupNodePlanet()
             light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
         }
 
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_LIGHT));
+        auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_LIGHT));
         {
             type->light = true;
             type->noShadow = true;
@@ -300,14 +301,14 @@ void TestSceneSetup::setupNodePlanet()
 
 void TestSceneSetup::setupNodeAsteroidBelt()
 {
-    loader.addLoader([this]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+    asyncLoader->addLoader([this]() {
+        auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
         type->batchMode = false;
 
         MeshLoader loader(assets, "rock", "/rock/");
         type->mesh = loader.load();
 
-        auto planet = scene->registry.getNode(getPlanetID());
+        auto planet = asyncLoader->waitNode(getPlanetID());
         auto controller = new AsteroidBeltController(assets, planet);
         auto node = new InstancedNode(type, controller);
         //node->selected = true;
@@ -318,9 +319,9 @@ void TestSceneSetup::setupNodeAsteroidBelt()
 
 void TestSceneSetup::setupSpriteSkeleton()
 {
-    loader.addLoader([this]() {
+    asyncLoader->addLoader([this]() {
         //auto type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "Skeleton_VH_normal.PNG");
-        auto type = Sprite::getNodeType(assets, scene->shaders, "Skeleton_VH.PNG", "");
+        auto type = Sprite::getNodeType(assets, asyncLoader->shaders, "Skeleton_VH.PNG", "");
 
         glm::vec3 pos = glm::vec3(0, 5, 20) + assets.groundOffset;
         for (int x = 0; x < 10; x++) {
@@ -336,7 +337,7 @@ void TestSceneSetup::setupSpriteSkeleton()
 
 void TestSceneSetup::setupTerrain()
 {
-    loader.addLoader([this]() {
+    asyncLoader->addLoader([this]() {
         std::shared_ptr<Material> material = std::make_shared<Material>("terrain", assets.texturesDir + "/");
         material->textureSpec.mode = GL_REPEAT;
         material->tiling = 60;
@@ -346,7 +347,7 @@ void TestSceneSetup::setupTerrain()
         //material->map_kd = "singing_brushes.png";
         material->loadTextures();
 
-        auto shader = loader.getShader(TEX_TERRAIN);
+        auto shader = asyncLoader->getShader(TEX_TERRAIN);
 
         TerrainGenerator generator(assets);
 
@@ -366,8 +367,8 @@ void TestSceneSetup::setupTerrain()
 
 void TestSceneSetup::setupWaterBottom()
 {
-    loader.addLoader([this]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), loader.getShader(TEX_TEXTURE));
+    asyncLoader->addLoader([this]() {
+        auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
         //type->renderBack = true;
         type->noShadow = true;
         {
@@ -393,7 +394,7 @@ void TestSceneSetup::setupWaterBottom()
 
 void TestSceneSetup::setupWaterSurface()
 {
-    loader.addLoader([this]() {
+    asyncLoader->addLoader([this]() {
         std::shared_ptr<Material> material = std::make_shared<Material>("water_surface", assets.modelsDir);
         material->ns = 150;
         material->ks = glm::vec4(0.2f, 0.2f, 0.5f, 1.f);
@@ -406,7 +407,7 @@ void TestSceneSetup::setupWaterSurface()
         material->textureSpec.mode = GL_REPEAT;
         //        material->pattern = 1;
         material->loadTextures();
-        std::shared_ptr<Shader> shader = loader.getShader(TEX_WATER);
+        std::shared_ptr<Shader> shader = asyncLoader->getShader(TEX_WATER);
 
         TerrainGenerator generator(assets);
 
@@ -430,8 +431,8 @@ void TestSceneSetup::setupWaterSurface()
 
 void TestSceneSetup::setupEffectExplosion()
 {
-    loader.addLoader([this]() {
-        std::shared_ptr<Shader> shader = loader.getShader(TEX_EFFECT);
+    asyncLoader->addLoader([this]() {
+        std::shared_ptr<Shader> shader = asyncLoader->getShader(TEX_EFFECT);
 
         TerrainGenerator generator(assets);
 
@@ -464,7 +465,7 @@ void TestSceneSetup::setupViewport1()
         glm::vec3(0, 0, 0),
         glm::vec2(0.25f, 0.25f),
         texture->textureID,
-        scene->shaders.getShader(assets, TEX_VIEWPORT));
+        asyncLoader->shaders.getShader(assets, TEX_VIEWPORT));
     viewport->prepare();
     scene->registry.addViewPort(viewport);
 }

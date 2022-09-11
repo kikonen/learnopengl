@@ -10,7 +10,8 @@
 #include "SceneFile.h"
 
 
-Test6::Test6() {
+Test6::Test6()
+{
     title = "Test 6";
     assets.shadersDir = "shader/test6";
     throttleFps = 0;
@@ -55,7 +56,7 @@ int Test6::onRender(const RenderClock& clock) {
     ctx.state.enable(GL_CULL_FACE);
     ctx.state.cullFace(GL_BACK);
     ctx.state.frontFace(GL_CCW);
-    
+
     ctx.state.enable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
@@ -100,20 +101,21 @@ std::shared_ptr<Scene> Test6::loadScene()
 
     auto scene = std::make_shared<Scene>(assets);
 
-    SceneFile file(assets, "scene/scene_full.yml");
-    file.load(scene);
+    asyncLoader->scene = scene;
 
-    TestSceneSetup setup(assets);
-    setup.setup(scene);
+    file = std::make_shared<SceneFile>(asyncLoader, assets, "scene/scene_full.yml");
+    file->load(scene);
+
+    testSetup = std::make_shared<TestSceneSetup>(asyncLoader, assets);
+    testSetup->setup(scene);
 
     //loader.scene->showNormals = true;
     //loader.scene->showMirrorView = true;
     //loader.load();
-    scene->prepare();
+    scene->prepare(shaders);
 
     return scene;
 }
 
 void save() {
-
 }

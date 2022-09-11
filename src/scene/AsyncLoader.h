@@ -4,12 +4,17 @@
 #include <mutex>
 
 #include "asset/Assets.h"
+#include "asset/ShaderRegistry.h"
+
 #include "Scene.h"
+
 
 class AsyncLoader
 {
 public:
-    AsyncLoader(const Assets& assets);
+    AsyncLoader(
+        ShaderRegistry& shaders,
+        const Assets& assets);
 
     virtual void setup();
 
@@ -23,9 +28,14 @@ public:
         const std::string& name,
         const std::vector<std::string>& defines);
 
+    // wait for loading of node
+    // @return node null if not found
+    Node* waitNode(const uuids::uuid& id);
+
     void waitForReady();
 
 public:
+    ShaderRegistry& shaders;
     const Assets& assets;
     std::shared_ptr<Scene> scene = nullptr;
 
@@ -39,4 +49,3 @@ protected:
 
     std::mutex load_lock;
 };
-

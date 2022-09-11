@@ -72,6 +72,7 @@ class SceneFile
 
 public:
     SceneFile(
+        std::shared_ptr<AsyncLoader> asyncLoader,
         const Assets& assets,
         const std::string& filename);
     ~SceneFile();
@@ -82,15 +83,18 @@ private:
     void testYAML();
 
     void attach(
+        std::shared_ptr<Scene> scene,
         SkyboxData& skybox,
         std::map<const uuids::uuid, EntityData>& entities,
         std::map<const std::string, std::shared_ptr<Material>>& materials);
 
     void attachSkybox(
+        std::shared_ptr<Scene> scene,
         SkyboxData& data,
         std::map<const std::string, std::shared_ptr<Material>>& materials);
 
     void attachEntity(
+        std::shared_ptr<Scene> scene,
         const EntityData& data,
         std::map<const uuids::uuid, EntityData>& entities,
         std::map<const std::string, std::shared_ptr<Material>>& materials);
@@ -134,7 +138,7 @@ private:
     const std::string resolveTexturePath(const std::string& line);
 
 private:
-    AsyncLoader loader;
+    std::shared_ptr<AsyncLoader> asyncLoader;
     const Assets& assets;
     const std::string filename;
 };

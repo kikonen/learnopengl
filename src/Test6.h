@@ -9,6 +9,9 @@
 #include "gui/FrameInit.h"
 #include "gui/Frame.h"
 
+class SceneFile;
+class TestSceneSetup;
+
 
 class Test6 final : public Engine {
 public:
@@ -27,4 +30,6 @@ private:
     std::unique_ptr<Frame> frame;
     std::unique_ptr<FrameInit> frameInit;
 
+    std::shared_ptr<SceneFile> file;
+    std::shared_ptr<TestSceneSetup> testSetup;
 };

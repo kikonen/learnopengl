@@ -1,8 +1,11 @@
 #include "AsyncLoader.h"
 
 
-AsyncLoader::AsyncLoader(const Assets& assets)
-    : assets(assets)
+AsyncLoader::AsyncLoader(
+    ShaderRegistry& shaders,
+    const Assets& assets)
+    : shaders(shaders),
+    assets(assets)
 {
 }
 
@@ -10,11 +13,28 @@ void AsyncLoader::setup()
 {
 }
 
+Node* AsyncLoader::waitNode(const uuids::uuid& id)
+{
+    std::unique_lock<std::mutex> lock(load_lock);
+
+    auto node = scene->registry.getNode(id);
+    bool done = loadedCount == loaders.size();
+
+    while (!done && !node) {
+        waitCondition.wait(lock);
+        done = loadedCount == loaders.size();
+        node = scene->registry.getNode(id);
+    }
+
+    return node;
+}
+
 void AsyncLoader::waitForReady()
 {
     std::unique_lock<std::mutex> lock(load_lock);
 
-    bool done = false;
+    bool done = loadedCount == loaders.size();
+
     while (!done) {
         waitCondition.wait(lock);
         done = loadedCount == loaders.size();
@@ -29,7 +49,7 @@ void AsyncLoader::addLoader(std::function<void()> loader)
         std::unique_lock<std::mutex> lock(load_lock);
         loadedCount++;
         waitCondition.notify_all();
-    }));
+        }));
 }
 
 const std::future<void>& AsyncLoader::getLoader(unsigned int index)
@@ -39,10 +59,10 @@ const std::future<void>& AsyncLoader::getLoader(unsigned int index)
 
 std::shared_ptr<Shader> AsyncLoader::getShader(const std::string& name)
 {
-    return scene->shaders.getShader(assets, name);
+    return shaders.getShader(assets, name);
 }
 
 std::shared_ptr<Shader> AsyncLoader::getShader(const std::string& name, const std::vector<std::string>& defines)
 {
-    return scene->shaders.getShader(assets, name, "", defines);
+    return shaders.getShader(assets, name, "", defines);
 }

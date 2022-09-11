@@ -3,10 +3,14 @@
 #include "ki/GL.h"
 
 #include "asset/GLState.h"
+
 #include "asset/Assets.h"
+#include "asset/ShaderRegistry.h"
+
 #include "gui/Window.h"
 
 class Scene;
+class AsyncLoader;
 
 const float FPS_120 = 8;
 const float FPS_60 = 16;
@@ -15,7 +19,7 @@ const float FPS_15 = 66;
 const float FPS_10 = 100;
 
 /**
- * Base engine 
+ * Base engine
  */
 class Engine {
 public:
@@ -43,7 +47,11 @@ public:
 
     Assets assets;
 
+    ShaderRegistry shaders;
+
 protected:
+    std::shared_ptr<AsyncLoader> asyncLoader;
+
     std::string title;
 
     GLState state;
