@@ -73,8 +73,6 @@ void SceneFile::attachEntity(
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
     asyncLoader->addLoader([this, scene, data, entities, materials]() {
-        std::this_thread::sleep_for(std::chrono::milliseconds((int)(2 * 1000.f)));
-
         if (!data.enabled) {
             return;
         }

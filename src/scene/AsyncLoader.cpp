@@ -45,6 +45,8 @@ void AsyncLoader::addLoader(std::function<void()> loader)
 {
     std::lock_guard<std::mutex> lock(load_lock);
     loaders.emplace_back(std::async(std::launch::async, [this, loader]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(2 * 1000.f)));
+
         loader();
         std::unique_lock<std::mutex> lock(load_lock);
         loadedCount++;
