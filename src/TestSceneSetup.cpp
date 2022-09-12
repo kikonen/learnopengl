@@ -96,20 +96,20 @@ void TestSceneSetup::setupCamera()
 
 void TestSceneSetup::setupLightDirectional()
 {
-    // sun
-    auto light = new Light();
-    {
-        light->setPos(glm::vec3(10, 40, 10) + assets.groundOffset);
-        light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
+    asyncLoader->addLoader([this]() {
+        // sun
+        auto light = std::make_unique<Light>();
+        {
+            light->setPos(glm::vec3(10, 40, 10) + assets.groundOffset);
+            light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
 
-        light->directional = true;
+            light->directional = true;
 
-        light->ambient = { 0.4f, 0.4f, 0.4f, 1.f };
-        light->diffuse = { 0.4f, 0.4f, 0.4f, 1.f };
-        light->specular = { 0.0f, 0.7f, 0.0f, 1.f };
-    }
+            light->ambient = { 0.4f, 0.4f, 0.4f, 1.f };
+            light->diffuse = { 0.4f, 0.4f, 0.4f, 1.f };
+            light->specular = { 0.0f, 0.7f, 0.0f, 1.f };
+        }
 
-    asyncLoader->addLoader([this, light]() {
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_LIGHT));
         type->light = true;
         type->noShadow = true;
@@ -122,7 +122,7 @@ void TestSceneSetup::setupLightDirectional()
         auto node = new Node(type);
         node->setPos(light->getPos());
         node->setScale(1.5f);
-        node->light = light;
+        node->light.reset(light.release());
 
         {
             const float radius = 80.0f;
@@ -143,39 +143,38 @@ void TestSceneSetup::setupLightDirectional()
 
 void TestSceneSetup::setupLightMoving()
 {
-    //Light* active = nullptr;
-    std::vector<Light*> lights;
+    asyncLoader->addLoader([this]() {
+        //Light* active = nullptr;
+        std::vector<std::unique_ptr<Light>> lights;
 
-    float radius = 10.f;
+        float radius = 10.f;
 
-    for (int x = 0; x < 2; x++) {
-        for (int z = 0; z < 2; z++) {
-            auto light = new Light();
+        for (int x = 0; x < 2; x++) {
+            for (int z = 0; z < 2; z++) {
+                auto light = new Light();
+                lights.push_back(std::unique_ptr<Light>(light));
 
-            glm::vec3 center = glm::vec3(0 + x * radius * 3, 7 + x + z, z * radius * 3) + assets.groundOffset;
-            //light->pos = glm::vec3(10, 5, 10) + assets.groundOffset;
-            light->setPos(center);
+                glm::vec3 center = glm::vec3(0 + x * radius * 3, 7 + x + z, z * radius * 3) + assets.groundOffset;
+                //light->pos = glm::vec3(10, 5, 10) + assets.groundOffset;
+                light->setPos(center);
 
-            // 160
-            light->point = true;
-            light->linear = 0.14f;
-            light->quadratic = 0.07f;
+                // 160
+                light->point = true;
+                light->linear = 0.14f;
+                light->quadratic = 0.07f;
 
-            light->spot = false;
-            light->cutoffAngle = 12.5f;
-            light->outerCutoffAngle = 25.f;
+                light->spot = false;
+                light->cutoffAngle = 12.5f;
+                light->outerCutoffAngle = 25.f;
 
-            light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
+                light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
 
-            light->ambient = { 0.4f, 0.4f, 0.2f, 1.f };
-            light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
-            light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
-
-            lights.push_back(light);
+                light->ambient = { 0.4f, 0.4f, 0.2f, 1.f };
+                light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
+                light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
+            }
         }
-    }
 
-    asyncLoader->addLoader([this, lights]() {
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_LIGHT));
         type->light = true;
         type->noShadow = true;
@@ -185,14 +184,14 @@ void TestSceneSetup::setupLightMoving()
         //loader.overrideMaterials = true;
         type->mesh = loader.load();
 
-        for (auto light : lights) {
+        for (auto& light : lights) {
             auto node = new Node(type);
             node->setPos(light->getPos());
             node->setScale(0.5f);
-            node->light = light;
+            node->light.reset(light.release());
 
             {
-                glm::vec3 center = light->getPos();
+                glm::vec3 center = node->getPos();
                 node->controller = new MovingLightController(assets, center, 10.f, 2.f, node);
             }
 
@@ -259,7 +258,7 @@ void TestSceneSetup::setupNodePlanet()
     asyncLoader->addLoader([this]() {
         auto planet = asyncLoader->waitNode(getPlanetID());
 
-        auto light = new Light();
+        auto light = std::make_unique<Light>();
         {
             glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 40, 0) : glm::vec3(0, 40, 0);
             light->setPos(pos);
@@ -288,10 +287,10 @@ void TestSceneSetup::setupNodePlanet()
         node->setPos(light->getPos());
         node->setScale(0.5f);
 
-        node->light = light;
+        node->light.reset(light.release());
 
         {
-            glm::vec3 center = light->getPos();
+            glm::vec3 center = node->getPos();
             node->controller = new MovingLightController(assets, center, 4.f, 2.f, node);
         }
 
@@ -345,7 +344,7 @@ void TestSceneSetup::setupTerrain()
         material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
         material->map_kd = "Grass Dark_VH.PNG";
         //material->map_kd = "singing_brushes.png";
-        material->loadTextures();
+        material->loadTextures(assets);
 
         auto shader = asyncLoader->getShader(TEX_TERRAIN);
 
@@ -375,10 +374,10 @@ void TestSceneSetup::setupWaterBottom()
             MeshLoader loader(assets, "marble_plate");
             loader.loadTextures = false;
             type->mesh = loader.load();
-            type->modifyMaterials([](Material& m) {
+            type->modifyMaterials([this](Material& m) {
                 m.textureSpec.mode = GL_REPEAT;
                 m.tiling = 8;
-                m.loadTextures();
+                m.loadTextures(assets);
                 });
         }
 
@@ -406,7 +405,7 @@ void TestSceneSetup::setupWaterSurface()
         material->tiling = 2;
         material->textureSpec.mode = GL_REPEAT;
         //        material->pattern = 1;
-        material->loadTextures();
+        material->loadTextures(assets);
         std::shared_ptr<Shader> shader = asyncLoader->getShader(TEX_WATER);
 
         TerrainGenerator generator(assets);

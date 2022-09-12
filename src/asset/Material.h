@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 #include <glm/glm.hpp>
 
 #include "Texture.h"
@@ -60,18 +61,20 @@ class Material final
 public:
     Material(const std::string& name, const std::string& baseDir);
     ~Material();
-    void loadTextures();
+    void loadTextures(const Assets& assets);
 
-    void prepare();
+    void prepare(const Assets& assets);
     void bindArray(Shader* shader, int index, bool bindTextureIDs);
 
     MaterialUBO toUBO();
+
+    float getRefractionRatio() { return refractionRatio[1] != 0 ? refractionRatio[0] / refractionRatio[1] : refractionRatio[0]; }
 
     static std::shared_ptr<Material> createDefaultMaterial();
 
     static std::shared_ptr<Material> createMaterial(MaterialType type);
 private:
-    void loadTexture(int idx, const std::string& baseDir, const std::string& name);
+    void loadTexture(const Assets& assets, int idx, const std::string& baseDir, const std::string& name);
 
 public:
     const std::string name;
@@ -87,13 +90,13 @@ public:
     int pattern = -1;
     float reflection = 0.f;
     float refraction = 0.f;
-    float refractionRatio = 0.f;
+    glm::vec2 refractionRatio{ 0 };
 
     float fogRatio = 1.0f;
 
     float tiling = 1.0f;
 
-    std::vector<BoundTexture> textures;
+    std::array<BoundTexture, 5> textures;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     // ranges between 0 and 1000

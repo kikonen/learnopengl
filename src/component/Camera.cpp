@@ -77,7 +77,7 @@ float Camera::getZoom()
     return zoom;
 }
 
-void Camera::setZoom(float zoom)
+void Camera::setZoom(double zoom)
 {
     this->zoom = zoom;
     dirty = true;
@@ -196,7 +196,7 @@ void Camera::onMouseScroll(Input* input, double xoffset, double yoffset)
     updateZoom(zoom - yoffset);
 }
 
-void Camera::updateZoom(float aZoom)
+void Camera::updateZoom(double aZoom)
 {
     if (aZoom < MIN_ZOOM) {
         aZoom = MIN_ZOOM;

@@ -43,7 +43,11 @@ void ImageTexture::prepare()
 
     if (!valid) return;
 
-    if (image->channels == 4) {
+    if (image->channels == 1) {
+        valid = false;
+        image.reset();
+        return;
+    } else if (image->channels == 4) {
         format = GL_RGBA;
         internalFormat = GL_RGBA8;
     }

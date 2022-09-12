@@ -25,7 +25,7 @@ public:
     const glm::vec3& getUp();
 
     float getZoom();
-    void setZoom(float zoom);
+    void setZoom(double zoom);
 
     void setPos(const glm::vec3& pos);
     const glm::vec3& getPos() const;
@@ -38,7 +38,7 @@ public:
     void onMouseScroll(Input* input, double xoffset, double yoffset);
 
 private:
-    void updateZoom(float aZoom);
+    void updateZoom(double aZoom);
     void updateCamera();
 
 private:

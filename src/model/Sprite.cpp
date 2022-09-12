@@ -13,7 +13,7 @@ std::shared_ptr<Material> Sprite::getMaterial(
     material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
     material->map_kd = path;
     material->map_bump = normalMapPath;
-    material->loadTextures();
+    material->loadTextures(assets);
 
     return material;
 }

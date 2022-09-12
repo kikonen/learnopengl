@@ -21,6 +21,9 @@ public:
     std::string spritesDir;
     std::string texturesDir;
 
+    bool placeHolderTextureAlways;
+    std::string placeHolderTexture;
+
     glm::vec3 groundOffset;
 
     int waterTileSize;

@@ -8,9 +8,10 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+#include "component/Light.h"
+
 class NodeController;
 class Camera;
-class Light;
 
 class Node
 {
@@ -58,7 +59,7 @@ public:
     NodeController* controller{ nullptr };
 
     std::unique_ptr<Camera> camera{ nullptr };
-    Light* light{ nullptr };
+    std::unique_ptr <Light> light{ nullptr };
     std::unique_ptr<ParticleGenerator> particleGenerator{ nullptr };
 
 private:

@@ -30,10 +30,6 @@ std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
     std::ifstream fin(filename);
     YAML::Node doc = YAML::Load(fin);
 
-    SkyboxData skybox;
-    std::map<const uuids::uuid, EntityData> entities;
-    std::map<const std::string, std::shared_ptr<Material>> materials;
-
     loadSkybox(doc, skybox, materials);
     loadMaterials(doc, materials);
     loadEntities(doc, entities, materials);
@@ -51,7 +47,7 @@ void SceneFile::attach(
 {
     attachSkybox(scene, skybox, materials);
 
-    for (auto entry : entities) {
+    for (auto& entry : entities) {
         attachEntity(scene, entry.second, entities, materials);
     }
 }
@@ -72,7 +68,7 @@ void SceneFile::attachEntity(
     std::map<const uuids::uuid, EntityData>& entities,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
-    asyncLoader->addLoader([this, scene, data, entities, materials]() {
+    asyncLoader->addLoader([this, scene, &data, &entities, &materials]() {
         if (!data.enabled) {
             return;
         }
@@ -193,7 +189,7 @@ void SceneFile::loadSkybox(
     SkyboxData& data,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
-    auto node = doc["skybox"];
+    auto& node = doc["skybox"];
 
     if (!node) return;
 
@@ -218,7 +214,7 @@ void SceneFile::loadEntities(
     std::map<const uuids::uuid, EntityData>& entities,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
-    for (auto entry : doc["entities"]) {
+    for (auto& entry : doc["entities"]) {
         EntityData data;
         loadEntity(entry, materials, data);
         // NOTE KI ignore elements without ID
@@ -232,7 +228,7 @@ void SceneFile::loadEntity(
     std::map<const std::string, std::shared_ptr<Material>>& materials,
     EntityData& data)
 {
-    for (auto pair : node) {
+    for (auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
@@ -271,14 +267,14 @@ void SceneFile::loadEntity(
         }
         else if (k == "shader_definitions") {
             if (v.Type() == YAML::NodeType::Sequence) {
-                for (auto name : v) {
+                for (auto& name : v) {
                     data.shaderDefinitions.push_back(name.as<std::string>());
                 }
             }
         }
         else if (k == "render_flags") {
             if (v.Type() == YAML::NodeType::Sequence) {
-                for (auto name : v) {
+                for (auto& name : v) {
                     auto flag = name.as<std::string>();
                     data.renderFlags[flag] = true;
                 }
@@ -308,7 +304,7 @@ void SceneFile::loadEntity(
         }
         else if (k == "positions") {
             data.positions.clear();
-            for (auto p : v) {
+            for (auto& p : v) {
                 data.positions.push_back(readVec3(p));
             }
         }
@@ -353,7 +349,7 @@ void SceneFile::loadRepeat(const YAML::Node& node, EntityData& data)
 {
     auto& repeat = data.repeat;
 
-    for (auto pair : node) {
+    for (auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
@@ -384,7 +380,7 @@ void SceneFile::loadRepeat(const YAML::Node& node, EntityData& data)
 void SceneFile::loadMaterials(
     const YAML::Node& doc,
     std::map<const std::string, std::shared_ptr<Material>>& materials) {
-    for (auto entry : doc["materials"]) {
+    for (auto& entry : doc["materials"]) {
         MaterialField fields;
         std::shared_ptr<Material> material{ nullptr };
 
@@ -402,7 +398,7 @@ void SceneFile::loadMaterial(
 {
     const std::string materialPath = assets.modelsDir;
 
-    for (auto pair : node) {
+    for (auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
@@ -412,7 +408,7 @@ void SceneFile::loadMaterial(
         }
         else if (material) {
             if (k == "ns") {
-                material->ns = v.as<double>();
+                material->ns = v.as<float>();
             }
             else if (k == "ka") {
                 material->ka = readVec4(v);
@@ -427,13 +423,13 @@ void SceneFile::loadMaterial(
                 material->ke = readVec4(v);
             }
             else if (k == "ni") {
-                material->ni = v.as<double>();
+                material->ni = v.as<float>();
             }
             else if (k == "d") {
-                material->d = v.as<double>();
+                material->d = v.as<float>();
             }
             else if (k == "illum") {
-                material->d = v.as<double>();
+                material->d = v.as<float>();
             }
             else if (k == "map_kd") {
                 std::string line = v.as<std::string>();
@@ -456,11 +452,11 @@ void SceneFile::loadMaterial(
                 material->map_bump = resolveTexturePath(line);
             }
             else if (k == "reflection") {
-                material->reflection = v.as<double>();
+                material->reflection = v.as<float>();
                 fields.reflection = true;
             }
             else if (k == "refraction") {
-                material->refraction = v.as<double>();
+                material->refraction = v.as<float>();
                 fields.refraction = true;
             }
             else if (k == "refraction_ratio") {
@@ -468,10 +464,10 @@ void SceneFile::loadMaterial(
                 fields.refractionRatio = true;
             }
             else if (k == "fog_ratio") {
-                material->fogRatio = v.as<double>();
+                material->fogRatio = v.as<float>();
             }
             else if (k == "tiling") {
-                material->tiling = v.as<double>();
+                material->tiling = v.as<float>();
             }
             else {
                 std::cout << "UNKNOWN MATERIAL_ENTRY: " << k << "=" << v << "\n";
@@ -480,55 +476,17 @@ void SceneFile::loadMaterial(
     }
 }
 
-void SceneFile::testYAML() {
-    std::ifstream fin(filename);
-
-    YAML::Node doc = YAML::Load(fin);
-    if (!doc["name"]) {
-        std::cerr << "FAILED to load " << filename;
-        return;
+glm::vec2 SceneFile::readVec2(const YAML::Node& node) {
+    std::vector<float> a;
+    for (auto& e : node) {
+        a.push_back(e.as<float>());
     }
-
-    std::string name = doc["name"].as<std::string>();
-    std::cout << name << "\n";
-
-    const YAML::Node& entities = doc["entities"];
-    std::cout << entities.size() << "\n";
-    std::cout << "---------------\n";
-
-    for (auto node : entities) {
-        for (auto pair : node) {
-            std::string k = pair.first.as<std::string>();
-            auto v = pair.second;
-            switch (node.Type()) {
-            case YAML::NodeType::Null:
-                std::cout << "Type: null\n";
-                break;
-            case YAML::NodeType::Scalar:
-                std::cout << "Type: scalar\n";
-                break;
-            case YAML::NodeType::Sequence:
-                std::cout << "Type: sequence\n";
-                break;
-            case YAML::NodeType::Map:
-                std::cout << "Type: map\n";
-                break;
-            case YAML::NodeType::Undefined:
-                std::cout << "Type: undefined\n";
-                break;
-            }
-            std::cout << "key: " << k << "\n";
-            std::cout << "Val: { " << v << " }\n";
-        }
-        std::cout << "---------------\n";
-        //        std::string name = node["name"].as<std::string>();
-    //        std::cout << name << "\n";
-    }
+    return glm::vec2{ a[0], a[1] };
 }
 
 glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
     std::vector<double> a;
-    for (auto e : node) {
+    for (auto& e : node) {
         a.push_back(e.as<double>());
     }
     return glm::vec3{ a[0], a[1], a[2] };
@@ -536,7 +494,7 @@ glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
 
 glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
     std::vector<double> a;
-    for (auto e : node) {
+    for (auto& e : node) {
         a.push_back(e.as<double>());
     }
     // NOTE KI check if alpha is missing
@@ -546,16 +504,16 @@ glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
     return glm::vec4{ a[0], a[1], a[2], a[3] };
 }
 
-double SceneFile::readRefractionRatio(const YAML::Node& node) {
-    std::vector<double> a;
-    for (auto e : node) {
+glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) {
+    std::vector<float> a;
+    for (auto& e : node) {
         a.push_back(e.as<double>());
     }
     // NOTE KI check if just single number
     if (a.size() < 1) {
         a.push_back(1.0);
     }
-    return a[0] / a[1];
+    return glm::vec2{ a[0], a[1] };
 }
 
 const std::string SceneFile::resolveTexturePath(const std::string& line)

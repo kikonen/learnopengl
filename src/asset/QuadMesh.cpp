@@ -65,7 +65,7 @@ void QuadMesh::prepare(const Assets& assets)
     buffers.prepare(false);
     prepareBuffers(buffers);
 
-    material->prepare();
+    material->prepare(assets);
     for (auto const& t : material->textures) {
         if (t.texture) {
             textureIDs.push_back(t.texture->textureID);
@@ -112,18 +112,18 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
                 vbo->pos.y = VERTICES[base++];
                 vbo->pos.z = VERTICES[base++];
 
-                vbo->normal.x = VERTICES[base++] * SCALE_VEC10;
-                vbo->normal.y = VERTICES[base++] * SCALE_VEC10;
-                vbo->normal.z = VERTICES[base++] * SCALE_VEC10;
+                vbo->normal.x = (int)(VERTICES[base++] * SCALE_VEC10);
+                vbo->normal.y = (int)(VERTICES[base++] * SCALE_VEC10);
+                vbo->normal.z = (int)(VERTICES[base++] * SCALE_VEC10);
 
-                vbo->tangent.x = VERTICES[base++] * SCALE_VEC10;
-                vbo->tangent.y = VERTICES[base++] * SCALE_VEC10;
-                vbo->tangent.z = VERTICES[base++] * SCALE_VEC10;
+                vbo->tangent.x = (int)(VERTICES[base++] * SCALE_VEC10);
+                vbo->tangent.y = (int)(VERTICES[base++] * SCALE_VEC10);
+                vbo->tangent.z = (int)(VERTICES[base++] * SCALE_VEC10);
 
                 vbo->material = VERTICES[base++];
 
-                vbo->texCoords.u = VERTICES[base++] * SCALE_UV16;
-                vbo->texCoords.v = VERTICES[base++] * SCALE_UV16;
+                vbo->texCoords.u = (int)(VERTICES[base++] * SCALE_UV16);
+                vbo->texCoords.v = (int)(VERTICES[base++] * SCALE_UV16);
 
                 vbo++;
             }

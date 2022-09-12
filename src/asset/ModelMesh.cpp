@@ -76,7 +76,7 @@ void ModelMesh::prepare(const Assets& assets)
     refraction = false;
     unsigned int unitIndex = 0;
     for (auto const& material : materials) {
-        material->prepare();
+        material->prepare(assets);
         reflection |= material->reflection > 0;
         refraction |= material->refraction > 0;
 
@@ -133,18 +133,18 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
                 vbo->pos.y = p.y;
                 vbo->pos.z = p.z;
 
-                vbo->normal.x = n.x * SCALE_VEC10;
-                vbo->normal.y = n.y * SCALE_VEC10;
-                vbo->normal.z = n.z * SCALE_VEC10;
+                vbo->normal.x = (int)(n.x * SCALE_VEC10);
+                vbo->normal.y = (int)(n.y * SCALE_VEC10);
+                vbo->normal.z = (int)(n.z * SCALE_VEC10);
 
-                vbo->tangent.x = tan.x * SCALE_VEC10;
-                vbo->tangent.y = tan.y * SCALE_VEC10;
-                vbo->tangent.z = tan.z * SCALE_VEC10;
+                vbo->tangent.x = (int)(tan.x * SCALE_VEC10);
+                vbo->tangent.y = (int)(tan.y * SCALE_VEC10);
+                vbo->tangent.z = (int)(tan.z * SCALE_VEC10);
 
                 vbo->material = m ? m->materialIndex : 0;
 
-                vbo->texCoords.u = t.x * SCALE_UV16;
-                vbo->texCoords.v = t.y * SCALE_UV16;
+                vbo->texCoords.u = (int)(t.x * SCALE_UV16);
+                vbo->texCoords.v = (int)(t.y * SCALE_UV16);
 
                 vbo++;
             }

@@ -12,12 +12,12 @@ public:
     Batch();
 
     void add(const glm::mat4& model, const glm::mat3& normal, int objectID);
-    void reserve(int count);
+    void reserve(size_t count);
     int size();
 
     void prepare(NodeType* type);
 
-    void update(unsigned int count);
+    void update(size_t count);
     void bind(const RenderContext& ctx, Shader* shader);
     void draw(const RenderContext& ctx, Node* node, Shader* shader);
 

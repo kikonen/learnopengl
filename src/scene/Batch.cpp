@@ -22,7 +22,7 @@ void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
     }
 }
 
-void Batch::reserve(int count)
+void Batch::reserve(size_t count)
 {
     modelMatrices.reserve(count);
     normalMatrices.reserve(count);
@@ -54,7 +54,7 @@ void Batch::prepare(NodeType* type)
         glNamedBufferStorage(modelBuffer, batchSize * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
         // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
-        size_t vecSize = sizeof(glm::vec4);
+        GLsizei vecSize = sizeof(glm::vec4);
 
         glBindBuffer(GL_ARRAY_BUFFER, modelBuffer);
 
@@ -82,7 +82,7 @@ void Batch::prepare(NodeType* type)
         glNamedBufferStorage(normalBuffer, batchSize * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
         // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
-        size_t vecSize = sizeof(glm::vec3);
+        GLsizei vecSize = sizeof(glm::vec3);
 
         glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
 
@@ -122,7 +122,7 @@ void Batch::prepare(NodeType* type)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Batch::update(unsigned int count)
+void Batch::update(size_t count)
 {
     if (batchSize == 0) return;
 

@@ -131,9 +131,10 @@ private:
         MaterialField& fields,
         std::shared_ptr<Material>& material);
 
+    glm::vec2 readVec2(const YAML::Node& node);
     glm::vec3 readVec3(const YAML::Node& node);
     glm::vec4 readVec4(const YAML::Node& node);
-    double readRefractionRatio(const YAML::Node& node);
+    glm::vec2 readRefractionRatio(const YAML::Node& node);
 
     const std::string resolveTexturePath(const std::string& line);
 
@@ -141,4 +142,8 @@ private:
     std::shared_ptr<AsyncLoader> asyncLoader;
     const Assets& assets;
     const std::string filename;
+
+    SkyboxData skybox;
+    std::map<const uuids::uuid, EntityData> entities;
+    std::map<const std::string, std::shared_ptr<Material>> materials;
 };

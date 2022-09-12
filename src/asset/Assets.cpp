@@ -17,6 +17,9 @@ Assets::Assets()
     spritesDir = "sprites";
     texturesDir = "textures";
 
+    placeHolderTextureAlways = false;
+    placeHolderTexture = "textures/tiles.png";
+
     //groundOffset = { 0.f, 15.f, -40.f };
     groundOffset = { 200.f, 0.f, 200.f };
 

@@ -18,7 +18,7 @@ MovingLightController::MovingLightController(
 
 bool MovingLightController::update(const RenderContext& ctx, Node& node)
 {
-    Light* light = node.light;
+    Light* light = node.light.get();
     if (!light) return false;
 
     float elapsed = ctx.clock.ts / speed;

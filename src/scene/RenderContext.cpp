@@ -64,7 +64,7 @@ void RenderContext::bindDataUBO() const
 {
     DataUBO dataUbo{
         camera.getPos(),
-        clock.ts,
+        (float)clock.ts,
         assets.fogColor,
         assets.fogStart,
         assets.fogEnd,

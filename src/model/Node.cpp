@@ -33,7 +33,6 @@ Node::~Node()
 {
     KI_INFO_SB("NODE: delete type=" << type->typeID << " objectId=" << objectID);
 
-    delete light;
     delete controller;
 }
 

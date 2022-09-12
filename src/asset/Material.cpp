@@ -8,12 +8,13 @@
 
 #include "ImageTexture.h"
 
-constexpr int DIFFUSE_IDX = 0;
-constexpr int EMISSION_IDX = 1;
-constexpr int SPECULAR_IDX = 2;
-constexpr int NORMAL_MAP_IDX = 3;
-constexpr int DUDV_MAP_IDX = 4;
-
+namespace {
+    constexpr int DIFFUSE_IDX = 0;
+    constexpr int EMISSION_IDX = 1;
+    constexpr int SPECULAR_IDX = 2;
+    constexpr int NORMAL_MAP_IDX = 3;
+    constexpr int DUDV_MAP_IDX = 4;
+}
 
 std::shared_ptr<Material> createGoldMaterial() {
     std::shared_ptr<Material> mat = std::make_shared<Material>("gold", "");
@@ -73,23 +74,22 @@ Material::~Material()
     materialIndex = -2;
 }
 
-void Material::loadTextures()
+void Material::loadTextures(const Assets& assets)
 {
     if (loaded) return;
     loaded = true;
 
-    textures.reserve(5);
-    loadTexture(DIFFUSE_IDX, baseDir, map_kd);
-    loadTexture(EMISSION_IDX, baseDir, map_ke);
-    loadTexture(SPECULAR_IDX, baseDir, map_ks);
-    loadTexture(NORMAL_MAP_IDX, baseDir, map_bump);
-    loadTexture(DUDV_MAP_IDX, baseDir, map_dudv);
+    loadTexture(assets, DIFFUSE_IDX, baseDir, map_kd);
+    loadTexture(assets, EMISSION_IDX, baseDir, map_ke);
+    loadTexture(assets, SPECULAR_IDX, baseDir, map_ks);
+    loadTexture(assets, NORMAL_MAP_IDX, baseDir, map_bump);
+    loadTexture(assets, DUDV_MAP_IDX, baseDir, map_dudv);
 }
 
-void Material::loadTexture(int idx, const std::string& baseDir, const std::string& name)
+void Material::loadTexture(
+    const Assets& assets,
+    int idx, const std::string& baseDir, const std::string& name)
 {
-    BoundTexture tex;
-
     if (!name.empty()) {
 
         const char& ch = baseDir.at(baseDir.length() - 1);
@@ -97,16 +97,17 @@ void Material::loadTexture(int idx, const std::string& baseDir, const std::strin
 
         KI_INFO_SB("TEXTURE: " << texturePath);
 
-        auto texture = ImageTexture::getTexture(texturePath, textureSpec);
+        auto texture = ImageTexture::getTexture(assets.placeHolderTextureAlways ? assets.placeHolderTexture : texturePath, textureSpec);
         if (texture->isValid()) {
-            tex.texture = texture;
+            texture = ImageTexture::getTexture(assets.placeHolderTexture, textureSpec);
+        }
+        if (texture->isValid()) {
+            textures[idx].texture = texture;
         }
     }
-
-    textures.emplace_back(tex);
 }
 
-void Material::prepare()
+void Material::prepare(const Assets& assets)
 {
     unsigned int unitIndex = 0;
     for (auto & x : textures) {
@@ -180,7 +181,7 @@ MaterialUBO Material::toUBO()
 
         reflection,
         refraction,
-        refractionRatio,
+        getRefractionRatio(),
 
         fogRatio,
         tiling,

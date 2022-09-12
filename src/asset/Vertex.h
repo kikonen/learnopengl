@@ -25,5 +25,5 @@ public:
 
     const std::shared_ptr<Material> material;
 
-    int index = -1;
+    size_t index = 0;
 };

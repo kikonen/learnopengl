@@ -295,8 +295,8 @@ void Scene::bindComponents(Node* node)
         cameraNode = node;
     }
 
-    Light* light = node->light;
-    if (light) {
+    Light* light = node->light.get();
+    if (node->light) {
         if (light->directional) {
             dirLight = light;
         }

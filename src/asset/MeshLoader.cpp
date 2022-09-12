@@ -189,7 +189,7 @@ int MeshLoader::loadData(
                 materials.push_back(material);
 
                 if (loadTextures) {
-                    material->loadTextures();
+                    material->loadTextures(assets);
                     for (auto& tex : material->textures) {
                         if (tex.texture) {
                             tex.unitIndex = unitIndex++;
@@ -233,7 +233,7 @@ void MeshLoader::splitFragmentValue(const std::string& v, std::vector<std::strin
     }
 }
 
-int MeshLoader::resolveVertexIndex(
+size_t MeshLoader::resolveVertexIndex(
     std::map<glm::vec3*, Vertex*>& vertexMapping,
     std::vector<Vertex*>& vertices,
     std::vector<glm::vec3>& positions,
@@ -293,7 +293,7 @@ glm::vec3 MeshLoader::createNormal(
 
     glm::vec3 normal = glm::cross(a, b);
     normals.push_back(normal);
-    int idx = normals.size() - 1;
+    size_t idx = normals.size() - 1;
     return glm::vec3(idx, idx, idx);
 }
 
