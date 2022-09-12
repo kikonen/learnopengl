@@ -19,7 +19,6 @@ public:
     virtual void setup();
 
     void addLoader(std::function<void()> loader);
-    const std::future<void>& getLoader(unsigned int index);
 
     std::shared_ptr<Shader> getShader(
         const std::string& name);
@@ -39,10 +38,8 @@ public:
     const Assets& assets;
     std::shared_ptr<Scene> scene = nullptr;
 
-protected:
-    // https://stackoverflow.com/questions/20126551/storing-a-future-in-a-list
-    std::vector<std::future<void>> loaders;
-
+private:
+    int startedCount = 0;
     int loadedCount = 0;
 
     std::condition_variable waitCondition;

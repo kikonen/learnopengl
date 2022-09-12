@@ -18,11 +18,11 @@ Node* AsyncLoader::waitNode(const uuids::uuid& id)
     std::unique_lock<std::mutex> lock(load_lock);
 
     auto node = scene->registry.getNode(id);
-    bool done = loadedCount == loaders.size();
+    bool done = loadedCount == startedCount;
 
     while (!done && !node) {
         waitCondition.wait(lock);
-        done = loadedCount == loaders.size();
+        done = loadedCount == startedCount;
         node = scene->registry.getNode(id);
     }
 
@@ -33,30 +33,32 @@ void AsyncLoader::waitForReady()
 {
     std::unique_lock<std::mutex> lock(load_lock);
 
-    bool done = loadedCount == loaders.size();
+    bool done = loadedCount == startedCount;
 
     while (!done) {
         waitCondition.wait(lock);
-        done = loadedCount == loaders.size();
+        done = loadedCount == startedCount;
     }
 }
 
 void AsyncLoader::addLoader(std::function<void()> loader)
 {
     std::lock_guard<std::mutex> lock(load_lock);
-    loaders.emplace_back(std::async(std::launch::async, [this, loader]() {
-        std::this_thread::sleep_for(std::chrono::milliseconds((int)(2 * 1000.f)));
+    startedCount++;
 
-        loader();
-        std::unique_lock<std::mutex> lock(load_lock);
-        loadedCount++;
-        waitCondition.notify_all();
-        }));
-}
+    // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic
+    // https://stackoverflow.com/questions/21531096/can-i-use-stdasync-without-waiting-for-the-future-limitation
+    auto th = std::thread{
+        [this, loader]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds((int)(2 * 1000.f)));
 
-const std::future<void>& AsyncLoader::getLoader(unsigned int index)
-{
-    return loaders[index];
+            loader();
+            std::unique_lock<std::mutex> lock(load_lock);
+            loadedCount++;
+            waitCondition.notify_all();
+        }
+    };
+    th.detach();
 }
 
 std::shared_ptr<Shader> AsyncLoader::getShader(const std::string& name)
