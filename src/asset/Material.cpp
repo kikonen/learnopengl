@@ -98,7 +98,7 @@ void Material::loadTexture(
         KI_INFO_SB("TEXTURE: " << texturePath);
 
         auto texture = ImageTexture::getTexture(assets.placeHolderTextureAlways ? assets.placeHolderTexture : texturePath, textureSpec);
-        if (texture->isValid()) {
+        if (!texture->isValid()) {
             texture = ImageTexture::getTexture(assets.placeHolderTexture, textureSpec);
         }
         if (texture->isValid()) {

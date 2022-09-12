@@ -141,7 +141,9 @@ void SceneFile::attachEntity(
             meshLoader.overrideMaterials = data.overrideMaterials;
         }
 
-        type->mesh = meshLoader.load();
+        auto mesh = meshLoader.load();
+        KI_INFO_SB("SCENE_FILE ATTACH: type=" << type->typeID << ", mesh=" << mesh->modelName);
+        type->mesh.reset(mesh.release());
 
         type->modifyMaterials([&data](Material& m) {
             if (data.materialModifierFields.reflection) {

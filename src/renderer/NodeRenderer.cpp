@@ -26,25 +26,52 @@ void NodeRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
 
 void NodeRenderer::bind(const RenderContext& ctx)
 {
+    selectedCount = 0;
+    blendedNodes.clear();
 }
 
-void NodeRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
+void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, NodeRegistry& registry)
 {
     ctx.state.enable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    int selectedCount = drawNodes(ctx, registry, true);
+    selectedCount = drawNodes(ctx, registry, true);
+
+    ctx.state.disable(GL_STENCIL_TEST);
+
+    KI_GL_UNBIND(glBindVertexArray(0));
+}
+
+void NodeRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
+{
     drawNodes(ctx, registry, false);
+
+    KI_GL_UNBIND(glBindVertexArray(0));
+}
+
+void NodeRenderer::renderBlended(const RenderContext& ctx, NodeRegistry& registry)
+{
+    drawBlended(ctx, blendedNodes);
+
+    KI_GL_UNBIND(glBindVertexArray(0));
+}
+
+void NodeRenderer::renderSelection(const RenderContext& ctx, NodeRegistry& registry)
+{
+    ctx.state.enable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     if (selectedCount > 0) {
         drawSelectionStencil(ctx, registry);
     }
 
-    KI_GL_UNBIND(glBindVertexArray(0));
-
     ctx.state.disable(GL_STENCIL_TEST);
+
+    KI_GL_UNBIND(glBindVertexArray(0));
 }
+
 
 // draw all non selected nodes
 int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bool selection)
@@ -58,8 +85,6 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
     else {
         glStencilMask(0x00);
     }
-
-    std::vector<Node*> blendedNodes;
 
     for (auto& x : registry.nodes) {
         auto t = x.first;
@@ -91,8 +116,6 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
             t->unbind(ctx);
         }
     }
-
-    drawBlended(ctx, blendedNodes);
 
     return renderCount;
 }

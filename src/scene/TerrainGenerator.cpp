@@ -2,14 +2,14 @@
 
 #include "util/Perlin.h"
 
-const int VERTEX_COUNT = 128;
-
 TerrainGenerator::TerrainGenerator(const Assets& assets)
     : assets(assets)
 {
 }
 
-std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(std::shared_ptr<Material> material)
+std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
+    const Assets& assets,
+    std::shared_ptr<Material> material)
 {
     auto mesh = std::make_unique<ModelMesh>("terrain");
     mesh->materials.push_back(material);
@@ -17,6 +17,8 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(std::shared_ptr<Mat
     Perlin perlin(-1);
 
     const int tileSize = assets.terrainTileSize;
+
+    const int VERTEX_COUNT = assets.terrainVertexCount;
 
     mesh->vertices.reserve(VERTEX_COUNT * VERTEX_COUNT);
     for (int z = 0; z < VERTEX_COUNT; z++) {
@@ -61,7 +63,9 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(std::shared_ptr<Mat
     return mesh;
 }
 
-std::unique_ptr<QuadMesh> TerrainGenerator::generateWater(std::shared_ptr<Material> material)
+std::unique_ptr<QuadMesh> TerrainGenerator::generateWater(
+    const Assets& assets,
+    std::shared_ptr<Material> material)
 {
     auto mesh = std::make_unique<QuadMesh>("water");
     mesh->material = material;

@@ -43,17 +43,17 @@ void ImageTexture::prepare()
 
     if (!valid) return;
 
-    if (image->channels == 1) {
-        valid = false;
-        image.reset();
-        return;
+    if (image->channels == 3) {
+        format = GL_RGB;
+        internalFormat = GL_RGB8;
     } else if (image->channels == 4) {
         format = GL_RGBA;
         internalFormat = GL_RGBA8;
-    }
-    else {
-        format = GL_RGB;
-        internalFormat = GL_RGB8;
+    } else {
+        KI_WARN_SB("IMAGE: unsupported channels " << image->channels);
+        valid = false;
+        image.reset();
+        return;
     }
 
     glGenTextures(1, &textureID);
@@ -85,5 +85,12 @@ void ImageTexture::load() {
         image.reset();
         return;
     }
+
+    if (image->channels != 3 && image->channels != 4) {
+        KI_WARN_SB("IMAGE: unsupported channels " << image->channels);
+        image.reset();
+        return;
+    }
+
     valid = true;
 }

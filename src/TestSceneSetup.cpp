@@ -350,13 +350,13 @@ void TestSceneSetup::setupTerrain()
 
         TerrainGenerator generator(assets);
 
+        auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
+        //type->renderBack = true;
+        type->noShadow = true;
+        type->mesh = generator.generateTerrain(assets, material);
+
         for (int x = 0; x < 2; x++) {
             for (int z = 0; z < 2; z++) {
-                auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
-                //type->renderBack = true;
-                type->noShadow = true;
-                type->mesh = generator.generateTerrain(material);
-
                 auto terrain = new Terrain(type, x, 0, z);
                 scene->registry.addNode(terrain);
             }
@@ -415,7 +415,7 @@ void TestSceneSetup::setupWaterSurface()
         type->water = true;
         //        type->blend = true;
         type->noShadow = true;
-        type->mesh = generator.generateWater(material);
+        type->mesh = generator.generateWater(assets, material);
 
         glm::vec3 pos = assets.groundOffset;
 

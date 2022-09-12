@@ -230,10 +230,6 @@ void Scene::drawScene(RenderContext& ctx)
     cubeMapRenderer->bindTexture(ctx);
     waterMapRenderer->bindTexture(ctx);
 
-    if (skyboxRenderer) {
-        skyboxRenderer->render(ctx, registry);
-    }
-
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     //ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
     //clip.enabled = true;
@@ -248,7 +244,17 @@ void Scene::drawScene(RenderContext& ctx)
             glClearBufferfv(GL_COLOR, 1, glm::value_ptr(bg));
         }
 
+        nodeRenderer->renderSelectionStencil(ctx, registry);
+
         nodeRenderer->render(ctx, registry);
+
+        if (skyboxRenderer) {
+            skyboxRenderer->render(ctx, registry);
+        }
+
+        nodeRenderer->renderBlended(ctx, registry);
+
+        nodeRenderer->renderSelection(ctx, registry);
 
         glDrawBuffers(1, buffers);
     }

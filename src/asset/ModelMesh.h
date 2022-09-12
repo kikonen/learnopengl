@@ -48,10 +48,10 @@ public:
     std::vector<std::shared_ptr<Material>> materials;
     std::vector<GLuint> textureIDs;
 
-private:
     const std::string modelName;
     const std::string path;
 
+private:
     bool refraction = false;
     bool reflection = false;
 

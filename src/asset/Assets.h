@@ -27,6 +27,8 @@ public:
     glm::vec3 groundOffset;
 
     int waterTileSize;
+
+    int terrainVertexCount;
     int terrainTileSize;
 
     int batchSize;

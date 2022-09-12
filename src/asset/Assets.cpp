@@ -24,6 +24,8 @@ Assets::Assets()
     groundOffset = { 200.f, 0.f, 200.f };
 
     waterTileSize = 100;
+
+    terrainVertexCount = 64;
     terrainTileSize = 400;
 
     batchSize = 1000;
