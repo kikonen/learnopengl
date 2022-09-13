@@ -122,11 +122,11 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
         {
             TexVBO* vbo = (TexVBO*)vboBuffer;
             for (int i = 0; i < vertices.size(); i++) {
-                Vertex* vertex = vertices[i];
+                const Vertex* vertex = vertices[i];
                 const glm::vec3& p = vertex->pos;
                 const glm::vec3& n = vertex->normal;
                 const glm::vec3& tan = vertex->tangent;
-                const std::shared_ptr<Material> m = vertex->material;
+                const std::shared_ptr<Material>& m = vertex->material;
                 const glm::vec2& t = vertex->texture;
 
                 vbo->pos.x = p.x;
