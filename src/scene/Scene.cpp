@@ -153,9 +153,16 @@ void Scene::bind(RenderContext& ctx)
 
 void Scene::draw(RenderContext& ctx)
 {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    //glClearColor(0.9f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    if (assets.debugClearColor) {
+        //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.9f, 0.9f, 0.1f, 1.0f);
+    }
+    if (assets.clearColor) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    }
+    else {
+        glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    }
 
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
     ctx.state.enable(GL_CULL_FACE);
@@ -224,8 +231,15 @@ void Scene::drawViewports(RenderContext& ctx)
 
 void Scene::drawScene(RenderContext& ctx)
 {
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    if (assets.debugClearColor) {
+        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+    }
+    if (assets.clearColor) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    }
+    else {
+        glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    }
 
     cubeMapRenderer->bindTexture(ctx);
     waterMapRenderer->bindTexture(ctx);

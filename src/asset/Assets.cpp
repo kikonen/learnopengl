@@ -23,6 +23,11 @@ Assets::Assets()
     //groundOffset = { 0.f, 15.f, -40.f };
     groundOffset = { 200.f, 0.f, 200.f };
 
+    // NOTE KI no skipping of frames
+    drawSkip = 0;
+    debugClearColor = true;
+    clearColor = false;
+
     waterTileSize = 100;
 
     terrainVertexCount = 64;
@@ -48,6 +53,7 @@ Assets::Assets()
     waterRefractionSize = 1000;
 
     cubeMapSize = 1000;
+    cubeMapDrawSkip = 1;
 
     noiseUnitIndex = 24;
     mirrorRefractionMapUnitIndex = 25;

@@ -95,10 +95,19 @@ void MirrorMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry,
 
 void MirrorMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox, Node* current)
 {
-    glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (assets.debugClearColor) {
+        glClearColor(0.9f, 0.3f, 0.9f, 1.0f);
+    }
+    if (assets.clearColor) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    else {
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
 
-    skybox->render(ctx, registry);
+    if (skybox) {
+        skybox->render(ctx, registry);
+    }
 
     ctx.bindClipPlanesUBO();
     ctx.state.enable(GL_CLIP_DISTANCE0);

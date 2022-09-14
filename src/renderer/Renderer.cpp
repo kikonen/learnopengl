@@ -4,7 +4,7 @@
 Renderer::Renderer(const Assets& assets)
     :assets(assets),
     drawIndex(0),
-    drawSkip(0),
+    drawSkip(assets.drawSkip),
     rendered(false)
 {
 }

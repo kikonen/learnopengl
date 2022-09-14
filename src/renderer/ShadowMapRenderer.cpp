@@ -75,7 +75,14 @@ void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 
     {
         shadowBuffer->bind(ctx);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        if (assets.clearColor) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+        else {
+            glClear(GL_DEPTH_BUFFER_BIT);
+        }
+
         drawNodes(ctx, registry);
         shadowBuffer->unbind(ctx);
     }

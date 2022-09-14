@@ -26,6 +26,10 @@ public:
 
     glm::vec3 groundOffset;
 
+    int drawSkip;
+    bool debugClearColor;
+    int clearColor;
+
     int waterTileSize;
 
     int terrainVertexCount;
@@ -52,6 +56,7 @@ public:
     int waterRefractionSize;
 
     int cubeMapSize;
+    int cubeMapDrawSkip;
 
     unsigned int noiseUnitIndex;
     unsigned int mirrorRefractionMapUnitIndex;

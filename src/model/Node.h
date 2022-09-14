@@ -23,7 +23,7 @@ public:
 
     virtual bool update(const RenderContext& ctx);
     virtual void bind(const RenderContext& ctx, Shader* shader);
-    virtual void bindBatch(const RenderContext& ctx, Batch& batch);
+    void bindBatch(const RenderContext& ctx, Batch& batch);
     virtual void draw(const RenderContext& ctx);
 
     void setPos(const glm::vec3& pos);
@@ -68,10 +68,16 @@ private:
 
     glm::vec3 scale{ 1.f, 1.f, 1.f };
 
-    glm::mat4 modelMat = glm::mat4(1.0f);
-    glm::mat3 normalMat = glm::mat3(1.0f);
+    glm::mat4 modelMat{ 1.0 };
+    glm::mat3 normalMat{ 1.0 };
 
-    bool dirtyMat = true;
+    glm::mat4 rotMat{ 0 };
+    glm::mat4 transMat{ 0 };
+    glm::mat4 scaleMat{ 0 };
+
+    bool dirtyRot = true;
+    bool dirtyTrans = true;
+    bool dirtyScale = true;
 
     Batch singleBatch;
 };

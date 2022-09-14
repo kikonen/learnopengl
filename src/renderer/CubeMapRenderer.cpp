@@ -10,7 +10,7 @@ CubeMapRenderer::CubeMapRenderer(const Assets& assets)
     : Renderer(assets)
 {
     drawIndex = 0;
-    drawSkip = 1;
+    drawSkip = assets.cubeMapDrawSkip;
 }
 
 CubeMapRenderer::~CubeMapRenderer()
@@ -73,8 +73,15 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registr
 
     for (int i = 0; i < 6; i++) {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubeMap->textureID, 0);
-        //glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if (assets.debugClearColor) {
+            glClearColor(0.3f, 0.9f, 0.3f, 1.0f);
+        }
+        if (assets.clearColor) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+        else {
+            glClear(GL_DEPTH_BUFFER_BIT);
+        }
 
         Camera camera(center, cameraFront[i], cameraUp[i]);
         camera.setZoom(90);
@@ -82,8 +89,11 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registr
         ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
         ctx.bindMatricesUBO();
 
-        skybox->render(ctx, registry);
         drawNodes(ctx, registry);
+
+        if (skybox) {
+            skybox->render(ctx, registry);
+        }
     }
 
 //    bindTexture(mainCtx);
