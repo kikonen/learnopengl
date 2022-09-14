@@ -46,14 +46,20 @@ void Engine::run() {
 
     auto prevLoopTime = std::chrono::system_clock::now();
     auto loopTime = std::chrono::system_clock::now();
-    auto renderTime = std::chrono::system_clock::now();
+
+    auto renderStart = std::chrono::system_clock::now();
+    auto renderEnd = std::chrono::system_clock::now();
+
+    auto frameTime = std::chrono::system_clock::now();
 
     std::chrono::duration<float> elapsedDuration;
     std::chrono::duration<float> renderDuration;
+    std::chrono::duration<float> frameDuration;
 
     RenderClock clock;
 
     float renderSecs = 0;
+    float frameSecs = 0;
 
     char titleSB[256];
 
@@ -63,6 +69,7 @@ void Engine::run() {
     // -----------
     while (!window->isClosed())
     {
+        int close = 0;
         {
             //ki::Timer t("loop");
 
@@ -78,12 +85,23 @@ void Engine::run() {
 
             // render
             // ------
-            int res = onRender(clock);
+            {
+                renderStart = std::chrono::system_clock::now();
 
-            if (res) {
-                window->close();
+                close = onRender(clock);
+
+                renderEnd = std::chrono::system_clock::now();
+                renderDuration = renderEnd - renderStart;
+                renderSecs = renderDuration.count();
             }
 
+            if (close) {
+                window->close();
+            }
+        }
+
+
+        if (!close) {
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
             glfwSwapBuffers(window->glfwWindow);
@@ -91,14 +109,14 @@ void Engine::run() {
             //glFinish();
         }
 
-        {
-            renderTime = std::chrono::system_clock::now();
-            renderDuration = renderTime - loopTime;
-            renderSecs = renderDuration.count();
+        if (!close) {
+            frameTime = std::chrono::system_clock::now();
+            frameDuration = frameTime - loopTime;
+            frameSecs = frameDuration.count();
 
             prevLoopTime = loopTime;
 
-            sprintf_s(titleSB, 256, "%s - FPS: %3.2f - RENDER: %3.2fms (%3.2f fps)", title.c_str(), 1.0f / clock.elapsedSecs, renderSecs * 1000.f, 1.0f / renderSecs);
+            sprintf_s(titleSB, 256, "%s - FPS: %3.2f - RENDER: %3.2fms FRAME: (%3.2f fps)", title.c_str(), 1.0f / clock.elapsedSecs, renderSecs * 1000.f, 1.0f / frameSecs);
             window->setTitle(titleSB);
             //KI_DEBUG_SB(titleSB);
         }
@@ -106,7 +124,7 @@ void Engine::run() {
         KI_GL_CHECK("engine.loop");
 
         // NOTE KI aim 60fps (no reason to overheat CPU/GPU)
-        if (throttleFps > 0) {
+        if (!close && throttleFps > 0) {
             sleepSecs = throttleFps / 1000.f - renderSecs * 2;
             if (sleepSecs < 0) {
                 sleepSecs = 0.01;
