@@ -384,7 +384,7 @@ void TestSceneSetup::setupWaterBottom()
         glm::vec3 pos = assets.groundOffset;
 
         auto node = new Node(type);
-        node->setPos(pos + glm::vec3(0, 3, -10));
+        node->setPos(pos + glm::vec3(0, 3.2, -10));
         node->setScale(30.f);
         node->setRotation({ 90, 0, 0 });
         scene->registry.addNode(node);
@@ -420,9 +420,12 @@ void TestSceneSetup::setupWaterSurface()
         glm::vec3 pos = assets.groundOffset;
 
         auto water = new Water(type, pos.x, pos.y + 5, pos.z);
-        water->setPos(pos + glm::vec3(0, 3.5, -10));
+        water->setPos(pos + glm::vec3(0, 5, -10));
         water->setScale(30);
+        // TODO KI why rotate is 270?!?
+        // - due to normals ?!?
         water->setRotation({ 270, 0, 0 });
+        //water->setRotation({ 90, 0, 0 });
 
         scene->registry.addNode(water);
         });

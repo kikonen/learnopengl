@@ -79,7 +79,7 @@ entities:
     id: 43e08833-6167-40cd-b472-96d29cd8a08c
     model: brickwall
     shader: texture
-    pos: [-5.0, 5.0, 14.0]
+    pos: [-5.0, 6.5, 14.0]
     render_flags:
       - render_back
     repeat:
@@ -90,7 +90,7 @@ entities:
     id: 43e417b5-9697-4821-9abb-84dbad3adfce
     model: woodwall
     shader: texture
-    pos: [-3.0, 5.0, 14.0]
+    pos: [-3.0, 6.5, 14.0]
     material_modifier:
       reflection: 0.3
     render_flags:
