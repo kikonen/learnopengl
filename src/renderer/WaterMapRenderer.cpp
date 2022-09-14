@@ -7,7 +7,7 @@ WaterMapRenderer::WaterMapRenderer(const Assets& assets)
     : Renderer(assets)
 {
     drawIndex = 1;
-    drawSkip = 0;
+    drawSkip = assets.waterDrawSkip;
 }
 
 WaterMapRenderer::~WaterMapRenderer()

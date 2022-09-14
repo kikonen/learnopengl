@@ -31,6 +31,7 @@ public:
     int clearColor;
 
     int waterTileSize;
+    int waterDrawSkip;
 
     int terrainVertexCount;
     int terrainTileSize;
@@ -48,6 +49,7 @@ public:
     float shadowNearPlane;
     float shadowFarPlane;
     int shadowMapSize;
+    int shadowDrawSkip;
 
     int mirrorReflectionSize;
     int mirrorRefractionSize;

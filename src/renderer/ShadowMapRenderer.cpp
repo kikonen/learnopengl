@@ -6,7 +6,7 @@ ShadowMapRenderer::ShadowMapRenderer(const Assets& assets)
     : Renderer(assets)
 {
     drawIndex = 1;
-    drawSkip = 1;
+    drawSkip = assets.shadowDrawSkip;
 
 }
 
