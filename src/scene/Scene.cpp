@@ -303,7 +303,7 @@ void Scene::drawScene(RenderContext& ctx)
         glDrawBuffers(2, buffers);
         {
             glm::vec4 bg{ 0.f, 0.f, 0.f, 1.f };
-            glClearBufferfv(GL_COLOR, 1, glm::value_ptr(bg));
+            //glClearBufferfv(GL_COLOR, 1, glm::value_ptr(bg));
         }
 
         if (nodeRenderer) {
