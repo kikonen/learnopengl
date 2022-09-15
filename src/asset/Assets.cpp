@@ -28,7 +28,7 @@ Assets::Assets()
     // NOTE KI no skipping of frames
     drawSkip = 0;
     debugClearColor = true;
-    clearColor = false;
+    clearColor = true;
 
     waterTileSize = 100;
     // NOTE KI water tolerates less skip than shadow/cube
