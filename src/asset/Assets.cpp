@@ -23,6 +23,8 @@ Assets::Assets()
     //groundOffset = { 0.f, 15.f, -40.f };
     groundOffset = { 200.f, 0.f, 200.f };
 
+    useIMGUI = false;
+
     // NOTE KI no skipping of frames
     drawSkip = 0;
     debugClearColor = true;

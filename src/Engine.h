@@ -37,7 +37,7 @@ protected:
 public:
     bool debug;
     float throttleFps;
-    bool useIMGUI = false;
+    bool useIMGUI{ false };
 
     std::unique_ptr<Window> window;
 

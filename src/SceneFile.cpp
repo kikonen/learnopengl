@@ -57,6 +57,8 @@ void SceneFile::attachSkybox(
     SkyboxData& data,
     std::map<const std::string, std::shared_ptr<Material>>& materials)
 {
+    if (!skybox.valid()) return;
+
     auto skybox = std::make_unique<SkyboxRenderer>(assets, data.shaderName, data.materialName);
     skybox->prepare(asyncLoader->shaders);
     scene->skyboxRenderer.reset(skybox.release());

@@ -14,6 +14,10 @@ class SceneFile
     struct SkyboxData {
         std::string shaderName{ "skybox" };
         std::string materialName{};
+
+        bool valid() {
+            return !materialName.empty();
+        }
     };
 
     struct MaterialField {

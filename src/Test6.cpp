@@ -18,7 +18,7 @@ Test6::Test6()
     //throttleFps = FPS_30;
     //glfwWindowHint(GLFW_SAMPLES, 4);
 
-    useIMGUI = true;
+    useIMGUI = assets.useIMGUI;
 }
 
 int Test6::onSetup() {

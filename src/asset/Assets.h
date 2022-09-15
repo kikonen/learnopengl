@@ -26,6 +26,8 @@ public:
 
     glm::vec3 groundOffset;
 
+    bool useIMGUI;
+
     int drawSkip;
     bool debugClearColor;
     int clearColor;
