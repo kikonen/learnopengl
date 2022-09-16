@@ -299,11 +299,24 @@ void Scene::drawScene(RenderContext& ctx)
     //ctx.bindClipPlanesUBO();
 
     {
-        GLenum buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-        glDrawBuffers(2, buffers);
-        {
-            glm::vec4 bg{ 0.f, 0.f, 0.f, 1.f };
-            //glClearBufferfv(GL_COLOR, 1, glm::value_ptr(bg));
+        // NOTE KI multitarget *WAS* just to support ObjectID, which is now separate renderer
+        // => If shader needs it need to define some logic
+        int bufferCount = 1;
+
+        GLenum buffers[] = {
+            GL_COLOR_ATTACHMENT0,
+            GL_COLOR_ATTACHMENT1,
+            GL_COLOR_ATTACHMENT2,
+            GL_COLOR_ATTACHMENT3,
+            GL_COLOR_ATTACHMENT4,
+        };
+        if (bufferCount > 1) {
+            glDrawBuffers(bufferCount, buffers);
+            {
+                // NOTE KI this was *ONLY* for ObjectID case
+                //glm::vec4 bg{ 0.f, 0.f, 0.f, 1.f };
+                //glClearBufferfv(GL_COLOR, 1, glm::value_ptr(bg));
+            }
         }
 
         if (nodeRenderer) {
@@ -320,7 +333,9 @@ void Scene::drawScene(RenderContext& ctx)
             nodeRenderer->renderSelection(ctx, registry);
         }
 
-        glDrawBuffers(1, buffers);
+        if (bufferCount > 1) {
+            glDrawBuffers(1, buffers);
+        }
     }
 
     //clip.enabled = false;
