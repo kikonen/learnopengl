@@ -59,7 +59,6 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 
     setupTerrain();
 
-    setupWaterBottom();
     setupWaterSurface();
 
     //setupEffectExplosion();
@@ -361,33 +360,6 @@ void TestSceneSetup::setupTerrain()
                 scene->registry.addNode(terrain);
             }
         }
-        });
-}
-
-void TestSceneSetup::setupWaterBottom()
-{
-    asyncLoader->addLoader([this]() {
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
-        //type->renderBack = true;
-        type->noShadow = true;
-        {
-            MeshLoader loader(assets, "marble_plate");
-            loader.loadTextures = false;
-            type->mesh = loader.load();
-            type->modifyMaterials([this](Material& m) {
-                m.textureSpec.mode = GL_REPEAT;
-                m.tiling = 8;
-                m.loadTextures(assets);
-                });
-        }
-
-        glm::vec3 pos = assets.groundOffset;
-
-        auto node = new Node(type);
-        node->setPos(pos + glm::vec3(0, 3.2, -10));
-        node->setScale(30.f);
-        node->setRotation({ 90, 0, 0 });
-        scene->registry.addNode(node);
         });
 }
 

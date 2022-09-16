@@ -34,7 +34,7 @@ public:
     const std::string modelName;
     const std::string path;
 
-    std::shared_ptr<Material> defaultMaterial = nullptr;
+    std::shared_ptr<Material> defaultMaterial;
     bool overrideMaterials = false;
     bool loadTextures = true;
 

@@ -24,9 +24,11 @@ class SceneFile
         bool reflection = false;
         bool refraction = false;
         bool refractionRatio = false;
+        bool textureSpec = false;
+        bool tiling = false;
 
         bool any() {
-            return reflection || refraction || refractionRatio;
+            return reflection || refraction || refractionRatio || textureSpec || tiling;
         }
     };
 
@@ -135,10 +137,15 @@ private:
         MaterialField& fields,
         std::shared_ptr<Material>& material);
 
+    void loadTextureSpec(
+        const YAML::Node& node,
+        TextureSpec& textureSpec);
+
     glm::vec2 readVec2(const YAML::Node& node);
     glm::vec3 readVec3(const YAML::Node& node);
     glm::vec4 readVec4(const YAML::Node& node);
     glm::vec2 readRefractionRatio(const YAML::Node& node);
+
 
     const std::string resolveTexturePath(const std::string& line);
 

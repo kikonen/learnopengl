@@ -136,18 +136,21 @@ void SceneFile::attachEntity(
             }
         }
 
-        MeshLoader meshLoader(assets, data.modelName, data.modelPath);
+        {
+            MeshLoader meshLoader(assets, data.modelName, data.modelPath);
 
-        if (data.defaultMaterial) {
-            meshLoader.defaultMaterial = data.defaultMaterial;
-            meshLoader.overrideMaterials = data.overrideMaterials;
+            if (data.defaultMaterial) {
+                meshLoader.defaultMaterial = data.defaultMaterial;
+                meshLoader.overrideMaterials = data.overrideMaterials;
+            }
+            meshLoader.loadTextures = data.loadTextures;
+
+            auto mesh = meshLoader.load();
+            KI_INFO_SB("SCENE_FILE ATTACH: type=" << type->typeID << ", mesh=" << mesh->modelName);
+            type->mesh.reset(mesh.release());
         }
 
-        auto mesh = meshLoader.load();
-        KI_INFO_SB("SCENE_FILE ATTACH: type=" << type->typeID << ", mesh=" << mesh->modelName);
-        type->mesh.reset(mesh.release());
-
-        type->modifyMaterials([&data](Material& m) {
+        type->modifyMaterials([this, &data](Material& m) {
             if (data.materialModifierFields.reflection) {
                 m.reflection = data.materialModifiers->reflection;
             }
@@ -157,7 +160,18 @@ void SceneFile::attachEntity(
             if (data.materialModifierFields.refractionRatio) {
                 m.refractionRatio = data.materialModifiers->refractionRatio;
             }
-            });
+            if (data.materialModifierFields.tiling) {
+                m.tiling = data.materialModifiers->tiling;
+            }
+            if (data.materialModifierFields.textureSpec) {
+                m.textureSpec = data.materialModifiers->textureSpec;
+            }
+
+            // NOTE KI if textures were not loaded, then need to load them now
+            if (!data.loadTextures) {
+                m.loadTextures(asyncLoader->assets);
+            }
+         });
 
         auto& repeat = data.repeat;
         for (auto z = 0; z < repeat.zCount; z++) {
@@ -302,6 +316,9 @@ void SceneFile::loadEntity(
         }
         else if (k == "override_material") {
             data.overrideMaterials = v.as<bool>();
+        }
+        else if (k == "load_textures") {
+            data.loadTextures = v.as<bool>();
         }
         else if (k == "pos") {
             data.positions.push_back(readVec3(v));
@@ -472,10 +489,34 @@ void SceneFile::loadMaterial(
             }
             else if (k == "tiling") {
                 material->tiling = v.as<float>();
+                fields.tiling = true;
+            }
+            else if (k == "texture_spec") {
+                loadTextureSpec(v, material->textureSpec);
+                fields.textureSpec = true;
             }
             else {
                 std::cout << "UNKNOWN MATERIAL_ENTRY: " << k << "=" << v << "\n";
             }
+        }
+    }
+}
+
+void SceneFile::loadTextureSpec(
+    const YAML::Node& node,
+    TextureSpec& textureSpec)
+{
+    for (auto& pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "mode") {
+            if (v.as<std::string>() == "GL_REPEAT") {
+                textureSpec.mode = GL_REPEAT;
+            }
+        }
+        else {
+            std::cout << "UNKNOWN TEXTURE_SPEC: " << k << "=" << v << "\n";
         }
     }
 }

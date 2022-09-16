@@ -330,7 +330,7 @@ entities:
     id: 0f93cffa-a1e9-4040-885f-3075bbcca722
     model: marble_plate
     shader: texture
-    pos: [0.0, 30.0, -10.0]
+    pos: [0.0, 3.2, -10.0]
     rotation: [90.0, 0.0, 0.0]
     scale: 30
     load_textures: false
@@ -340,7 +340,6 @@ entities:
       tiling: 8
     render_flags:
       - no_shadow
-      - render_back
     enabled: true
   - name: Planet
     id: 8712cec1-e1a3-4973-8889-533adfbbb196
