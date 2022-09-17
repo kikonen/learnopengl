@@ -50,23 +50,27 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 
     setupCamera();
 
-    setupNodeActive();
+    if (true) {
+        setupNodeActive();
 
-    setupNodePlanet();
-    setupNodeAsteroidBelt();
+        setupNodePlanet();
+        setupNodeAsteroidBelt();
+    }
 
     setupSpriteSkeleton();
 
-    setupTerrain();
+    if (true) {
+        setupTerrain();
 
-    setupWaterSurface();
+        setupWaterSurface();
 
-    //setupEffectExplosion();
+        //setupEffectExplosion();
 
-    //setupViewport1();
+        //setupViewport1();
 
-    setupLightDirectional();
-    setupLightMoving();
+        setupLightDirectional();
+        setupLightMoving();
+    }
 }
 
 void TestSceneSetup::setupCamera()
