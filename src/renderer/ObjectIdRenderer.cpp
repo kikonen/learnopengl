@@ -112,10 +112,10 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
     ctx.state.cullFace(GL_BACK);
     ctx.state.frontFace(GL_CCW);
 
-    if (assets.debugClearColor) {
-        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-    }
     if (assets.clearColor) {
+        if (assets.debugClearColor) {
+            glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+        }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     else {

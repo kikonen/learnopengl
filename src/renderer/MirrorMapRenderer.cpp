@@ -95,10 +95,10 @@ void MirrorMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry,
 
 void MirrorMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox, Node* current)
 {
-    if (assets.debugClearColor) {
-        glClearColor(0.9f, 0.3f, 0.9f, 1.0f);
-    }
     if (assets.clearColor) {
+        if (assets.debugClearColor) {
+            glClearColor(0.9f, 0.3f, 0.9f, 1.0f);
+        }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     else {
