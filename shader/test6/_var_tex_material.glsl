@@ -3,7 +3,8 @@ Material material = materials[matIdx];
 {
   if (material.diffuseTex >= 0) {
     material.diffuse = texture(textures[material.diffuseTex], fs_in.texCoords).rgba;
-    material.ambient = material.ambient;
+    // TODO KI WHAT was going on here?!?
+    //material.ambient = material.ambient;
   }
 
   if (material.emissionTex >= 0) {
