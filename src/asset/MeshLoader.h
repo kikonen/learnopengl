@@ -23,11 +23,15 @@ public:
     std::unique_ptr<ModelMesh> load();
 
 private:
-    int loadData(
+    void loadData(
         std::vector<glm::uvec3>& tris,
         std::vector<Vertex*>& vertices,
         std::vector<std::shared_ptr<Material>>& materials
     );
+
+    void prepareTextures(
+        Material& material,
+        unsigned int& unitIndex);
 
 public:
     const Assets& assets;
@@ -68,8 +72,9 @@ private:
         glm::uvec3& tangenti);
 
     void splitFragmentValue(const std::string& v, std::vector<std::string>& vv);
-    int loadMaterials(
-        std::map<std::string, std::shared_ptr<Material>>& materials,
+
+    void loadMaterials(
+        std::vector<std::shared_ptr<Material>>& materials,
         const std::string& libraryName);
 
     std::string resolveTexturePath(const std::string& line);

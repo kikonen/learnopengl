@@ -92,32 +92,32 @@ private:
         std::shared_ptr<Scene> scene,
         SkyboxData& skybox,
         std::map<const uuids::uuid, EntityData>& entities,
-        std::map<const std::string, std::shared_ptr<Material>>& materials);
+        std::vector<std::shared_ptr<Material>>& materials);
 
     void attachSkybox(
         std::shared_ptr<Scene> scene,
         SkyboxData& data,
-        std::map<const std::string, std::shared_ptr<Material>>& materials);
+        std::vector<std::shared_ptr<Material>>& materials);
 
     void attachEntity(
         std::shared_ptr<Scene> scene,
         const EntityData& data,
         std::map<const uuids::uuid, EntityData>& entities,
-        std::map<const std::string, std::shared_ptr<Material>>& materials);
+        std::vector<std::shared_ptr<Material>>& materials);
 
     void loadSkybox(
         const YAML::Node& node,
         SkyboxData& data,
-        std::map<const std::string, std::shared_ptr<Material>>& materials);
+        std::vector<std::shared_ptr<Material>>& materials);
 
     void loadEntities(
         const YAML::Node& doc,
         std::map<const uuids::uuid, EntityData>& entities,
-        std::map<const std::string, std::shared_ptr<Material>>& materials);
+        std::vector<std::shared_ptr<Material>>& materials);
 
     void loadEntity(
         const YAML::Node& node,
-        std::map<const std::string, std::shared_ptr<Material>>& materials,
+        std::vector<std::shared_ptr<Material>>& materials,
         EntityData& data);
 
     void loadMaterialModifiers(
@@ -130,7 +130,7 @@ private:
 
     void loadMaterials(
         const YAML::Node& doc,
-        std::map<const std::string, std::shared_ptr<Material>>& materials);
+        std::vector<std::shared_ptr<Material>>& materials);
 
     void loadMaterial(
         const YAML::Node& node,
@@ -156,5 +156,5 @@ private:
 
     SkyboxData skybox;
     std::map<const uuids::uuid, EntityData> entities;
-    std::map<const std::string, std::shared_ptr<Material>> materials;
+    std::vector<std::shared_ptr<Material>> materials;
 };

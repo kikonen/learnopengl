@@ -40,18 +40,16 @@ std::unique_ptr<ModelMesh> MeshLoader::load() {
     return mesh;
 }
 
-int MeshLoader::loadData(
-        std::vector<glm::uvec3>&tris,
-        std::vector<Vertex*>&vertices,
-        std::vector<std::shared_ptr<Material>>& materials)
+void MeshLoader::loadData(
+    std::vector<glm::uvec3>&tris,
+    std::vector<Vertex*>&vertices,
+    std::vector<std::shared_ptr<Material>>& materials)
 {
     ki::Timer t("loadData-" + modelName);
 
-    int result = -1;
-
     std::string name;
 
-    std::map<std::string, std::shared_ptr<Material>> loadedMaterials;
+    std::vector<std::shared_ptr<Material>> loadedMaterials;
     std::map<glm::vec3*, Vertex*> vertexMapping;
 
     std::vector<glm::vec3> positions;
@@ -61,7 +59,7 @@ int MeshLoader::loadData(
 
     positions.reserve(10000);
 
-    std::string modelPath = assets.modelsDir + path + modelName + ".obj";
+    const std::string modelPath = assets.modelsDir + path + modelName + ".obj";
     KI_INFO_SB("LOAD_MODEL: path=" << modelPath);
 
     std::ifstream file;
@@ -73,10 +71,9 @@ int MeshLoader::loadData(
 
         file.open(modelPath);
 
-        defaultMaterial->used = false;
-        loadedMaterials[defaultMaterial->name] = defaultMaterial;
+        assert(defaultMaterial->used == false);
 
-        std::shared_ptr<Material> material = nullptr;
+        std::shared_ptr<Material> material{ nullptr };
         std::string line;
         while (std::getline(file, line)) {
             std::stringstream ss(line);
@@ -89,8 +86,7 @@ int MeshLoader::loadData(
 
             if (k == "mtllib") {
                 loadMaterials(loadedMaterials, v1);
-                for (auto& x : loadedMaterials) {
-                    auto& material = x.second;
+                for (auto& material : loadedMaterials) {
                     if (!material->map_bump.empty()) {
                         tangents.reserve(positions.size());
                     }
@@ -121,10 +117,7 @@ int MeshLoader::loadData(
                 int group = stoi(v1);
             }
             else if (k == "usemtl") {
-                auto e = loadedMaterials.find(v1);
-                if (e != loadedMaterials.end()) {
-                    material = e->second;
-                }
+                material = Material::find(v1, loadedMaterials);
             }
             else if (k == "f") {
                 vertices.reserve(positions.size() * 2);
@@ -180,22 +173,29 @@ int MeshLoader::loadData(
             }
         }
 
-        int materialIndex = 0;
-        unsigned int unitIndex = 0;
-        for (auto const& x : loadedMaterials) {
-            const std::shared_ptr<Material>& material = x.second;
-            if (material->used) {
+        {
+            int materialIndex = 0;
+            unsigned int unitIndex = 0;
+
+            // NOTE KI defaultMaterial *CANNOT* be pushed into loadedMaterials
+            // since name *CAN* (and will) collide
+            if (defaultMaterial->used) {
+                defaultMaterial->materialIndex = materialIndex++;
+                loadedMaterials.push_back(defaultMaterial);
+
+                if (loadTextures) {
+                    prepareTextures(*material, unitIndex);
+                }
+            }
+
+            for (auto const& material : loadedMaterials) {
+                if (!material->used) continue;
+
                 material->materialIndex = materialIndex++;
                 materials.push_back(material);
 
-                if (loadTextures) {
-                    material->loadTextures(assets);
-                    for (auto& tex : material->textures) {
-                        if (tex.texture) {
-                            tex.unitIndex = unitIndex++;
-                        }
-                    }
-                }
+                if (!loadTextures) continue;
+                prepareTextures(*material, unitIndex);
             }
         }
 
@@ -206,8 +206,6 @@ int MeshLoader::loadData(
         float loadTime = ts.count() * 1000;
 
         KI_INFO_SB("Duration: " << loadTime << " ms");
-
-        result = 0;
     }
     catch (std::ifstream::failure e) {
         KI_ERROR_SB("MODEL::FILE_NOT_SUCCESFULLY_READ: " << modelPath << std::endl << e.what());
@@ -220,8 +218,21 @@ int MeshLoader::loadData(
         << ", normals: " << normals.size()
         << ", vertices: " << vertices.size()
         << "\n--------\n");
+}
 
-    return result;
+void MeshLoader::prepareTextures(
+    Material& material,
+    unsigned int& unitIndex)
+{
+    material.loadTextures(assets);
+
+    // TODO KI if loadTextures == false then this will NOT get done!!!
+    // => strange errors in render?!?
+    for (auto& tex : material.textures) {
+        if (!tex.texture) continue;
+        tex.unitIndex = unitIndex++;
+        assert(tex.unitIndex < TEXTURE_COUNT);
+    }
 }
 
 // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
@@ -361,8 +372,8 @@ void MeshLoader::createTangents(
 }
 
 
-int MeshLoader::loadMaterials(
-    std::map<std::string, std::shared_ptr<Material>>& materials,
+void MeshLoader::loadMaterials(
+    std::vector<std::shared_ptr<Material>>& materials,
     const std::string& libraryName)
 {
     KI_INFO_SB("LOADER::LOAD_MATERIAL_LIB: " << libraryName);
@@ -387,7 +398,7 @@ int MeshLoader::loadMaterials(
 
             if (k == "newmtl") {
                 material = std::make_shared<Material>(v1, assets.modelsDir + path);
-                materials[v1] = material;
+                materials.push_back(material);
             }
             else if (k == "Ns") {
                 material->ns = stof(v1);
@@ -434,8 +445,6 @@ int MeshLoader::loadMaterials(
     }
 
     KI_INFO_SB("== " << modelName << " - " << libraryName << " ===\n" << "materials: " << materials.size());
-
-    return 0;
 }
 
 std::string MeshLoader::resolveTexturePath(const std::string& line)

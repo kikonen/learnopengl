@@ -63,6 +63,20 @@ std::shared_ptr<Material> Material::createMaterial(MaterialType type)
     return createDefaultMaterial();
 }
 
+std::shared_ptr<Material> Material::find(
+    const std::string& name,
+    std::vector<std::shared_ptr<Material>>& materials)
+{
+    auto e = std::find_if(
+        materials.begin(),
+        materials.end(),
+        [&name](std::shared_ptr<Material>& m) { return m->name == name; });
+    if (name == "kari") {
+        KI_GL_DEBUG_BREAK("WTF");
+    }
+    return e != materials.end() ? *e : nullptr;
+}
+
 Material::Material(const std::string& name, const std::string& baseDir)
     : name(name), baseDir(baseDir)
 {

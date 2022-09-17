@@ -43,7 +43,7 @@ void SceneFile::attach(
     std::shared_ptr<Scene> scene,
     SkyboxData& skybox,
     std::map<const uuids::uuid, EntityData>& entities,
-    std::map<const std::string, std::shared_ptr<Material>>& materials)
+    std::vector<std::shared_ptr<Material>>& materials)
 {
     attachSkybox(scene, skybox, materials);
 
@@ -55,7 +55,7 @@ void SceneFile::attach(
 void SceneFile::attachSkybox(
     std::shared_ptr<Scene> scene,
     SkyboxData& data,
-    std::map<const std::string, std::shared_ptr<Material>>& materials)
+    std::vector<std::shared_ptr<Material>>& materials)
 {
     if (!skybox.valid()) return;
 
@@ -68,7 +68,7 @@ void SceneFile::attachEntity(
     std::shared_ptr<Scene> scene,
     const EntityData& data,
     std::map<const uuids::uuid, EntityData>& entities,
-    std::map<const std::string, std::shared_ptr<Material>>& materials)
+    std::vector<std::shared_ptr<Material>>& materials)
 {
     asyncLoader->addLoader([this, scene, &data, &entities, &materials]() {
         if (!data.enabled) {
@@ -205,7 +205,7 @@ void SceneFile::attachEntity(
 void SceneFile::loadSkybox(
     const YAML::Node& doc,
     SkyboxData& data,
-    std::map<const std::string, std::shared_ptr<Material>>& materials)
+    std::vector<std::shared_ptr<Material>>& materials)
 {
     auto& node = doc["skybox"];
 
@@ -230,7 +230,7 @@ void SceneFile::loadSkybox(
 void SceneFile::loadEntities(
     const YAML::Node& doc,
     std::map<const uuids::uuid, EntityData>& entities,
-    std::map<const std::string, std::shared_ptr<Material>>& materials)
+    std::vector<std::shared_ptr<Material>>& materials)
 {
     for (auto& entry : doc["entities"]) {
         EntityData data;
@@ -243,7 +243,7 @@ void SceneFile::loadEntities(
 
 void SceneFile::loadEntity(
     const YAML::Node& node,
-    std::map<const std::string, std::shared_ptr<Material>>& materials,
+    std::vector<std::shared_ptr<Material>>& materials,
     EntityData& data)
 {
     for (auto& pair : node) {
@@ -302,13 +302,14 @@ void SceneFile::loadEntity(
             data.mirrorPlane = readVec4(v);
         }
         else if (k == "default_material") {
-            std::string materialName = v.as<std::string>();
-            auto entry = materials.find(materialName);
-            if (entry != materials.end()) {
+            const std::string materialName = v.as<std::string>();
+            auto material = Material::find(materialName, materials);
+            if (material) {
                 // NOTE KI need to create copy *IF* modifiers
+                // TODO KI should make copy *ALWAYS* for safety
                 data.defaultMaterial = data.materialModifierFields.any()
-                    ? std::make_shared<Material>(*entry->second)
-                    : entry->second;
+                    ? std::make_shared<Material>(*material)
+                    : material;
             }
         }
         else if (k == "material_modifier") {
@@ -400,14 +401,14 @@ void SceneFile::loadRepeat(const YAML::Node& node, EntityData& data)
 
 void SceneFile::loadMaterials(
     const YAML::Node& doc,
-    std::map<const std::string, std::shared_ptr<Material>>& materials) {
+    std::vector<std::shared_ptr<Material>>& materials) {
     for (auto& entry : doc["materials"]) {
         MaterialField fields;
         std::shared_ptr<Material> material{ nullptr };
 
         loadMaterial(entry, fields, material);
         if (material) {
-            materials[material->name] = material;
+            materials.push_back(material);
         }
     }
 }

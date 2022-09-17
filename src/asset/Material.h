@@ -73,6 +73,10 @@ public:
     static std::shared_ptr<Material> createDefaultMaterial();
 
     static std::shared_ptr<Material> createMaterial(MaterialType type);
+
+    static std::shared_ptr<Material> find(
+        const std::string& name,
+        std::vector<std::shared_ptr<Material>>& materials);
 private:
     void loadTexture(const Assets& assets, int idx, const std::string& baseDir, const std::string& name);
 
