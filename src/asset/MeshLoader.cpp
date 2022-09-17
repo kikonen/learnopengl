@@ -59,6 +59,12 @@ void MeshLoader::loadData(
 
     positions.reserve(10000);
 
+    {
+        defaultMaterial->isDefault = true;
+        assert(!defaultMaterial->used);
+        loadedMaterials.push_back(defaultMaterial);
+    }
+
     const std::string modelPath = assets.modelsDir + path + modelName + ".obj";
     KI_INFO_SB("LOAD_MODEL: path=" << modelPath);
 
@@ -70,8 +76,6 @@ void MeshLoader::loadData(
         auto tp2 = std::chrono::system_clock::now();
 
         file.open(modelPath);
-
-        assert(defaultMaterial->used == false);
 
         std::shared_ptr<Material> material{ nullptr };
         std::string line;
@@ -174,28 +178,14 @@ void MeshLoader::loadData(
         }
 
         {
-            int materialIndex = 0;
-            unsigned int unitIndex = 0;
-
-            // NOTE KI defaultMaterial *CANNOT* be pushed into loadedMaterials
-            // since name *CAN* (and will) collide
-            if (defaultMaterial->used) {
-                defaultMaterial->materialIndex = materialIndex++;
-                loadedMaterials.push_back(defaultMaterial);
-
-                if (loadTextures) {
-                    prepareTextures(*material, unitIndex);
-                }
-            }
-
             for (auto const& material : loadedMaterials) {
                 if (!material->used) continue;
 
-                material->materialIndex = materialIndex++;
-                materials.push_back(material);
+                if (loadTextures) {
+                    material->loadTextures(assets);
+                }
 
-                if (!loadTextures) continue;
-                prepareTextures(*material, unitIndex);
+                materials.push_back(material);
             }
         }
 
@@ -218,21 +208,6 @@ void MeshLoader::loadData(
         << ", normals: " << normals.size()
         << ", vertices: " << vertices.size()
         << "\n--------\n");
-}
-
-void MeshLoader::prepareTextures(
-    Material& material,
-    unsigned int& unitIndex)
-{
-    material.loadTextures(assets);
-
-    // TODO KI if loadTextures == false then this will NOT get done!!!
-    // => strange errors in render?!?
-    for (auto& tex : material.textures) {
-        if (!tex.texture) continue;
-        tex.unitIndex = unitIndex++;
-        assert(tex.unitIndex < TEXTURE_COUNT);
-    }
 }
 
 // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g

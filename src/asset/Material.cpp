@@ -70,10 +70,7 @@ std::shared_ptr<Material> Material::find(
     auto e = std::find_if(
         materials.begin(),
         materials.end(),
-        [&name](std::shared_ptr<Material>& m) { return m->name == name; });
-    if (name == "kari") {
-        KI_GL_DEBUG_BREAK("WTF");
-    }
+        [&name](std::shared_ptr<Material>& m) { return m->name == name && !m->isDefault; });
     return e != materials.end() ? *e : nullptr;
 }
 
@@ -85,7 +82,7 @@ Material::Material(const std::string& name, const std::string& baseDir)
 Material::~Material()
 {
     KI_INFO_SB("MATERIAL: " << name << " delete");
-    materialIndex = -2;
+    materialIndex = -1;
 }
 
 void Material::loadTextures(const Assets& assets)
@@ -102,76 +99,45 @@ void Material::loadTextures(const Assets& assets)
 
 void Material::loadTexture(
     const Assets& assets,
-    int idx, const std::string& baseDir, const std::string& name)
+    int idx, const std::string& baseDir, const std::string& textureName)
 {
-    if (!name.empty()) {
+    if (textureName.empty()) return;
 
-        const char& ch = baseDir.at(baseDir.length() - 1);
-        std::string texturePath = (ch == u'/' ? baseDir : baseDir + "/") + name;
+    const char& ch = baseDir.at(baseDir.length() - 1);
+    std::string texturePath = (ch == u'/' ? baseDir : baseDir + "/") + textureName;
 
-        KI_INFO_SB("TEXTURE: " << texturePath);
+    KI_INFO_SB("TEXTURE: " << texturePath);
 
-        auto texture = ImageTexture::getTexture(assets.placeHolderTextureAlways ? assets.placeHolderTexture : texturePath, textureSpec);
-        if (!texture->isValid()) {
-            texture = ImageTexture::getTexture(assets.placeHolderTexture, textureSpec);
-        }
-        if (texture->isValid()) {
-            textures[idx].texture = texture;
-        }
+    auto texture = ImageTexture::getTexture(assets.placeHolderTextureAlways ? assets.placeHolderTexture : texturePath, textureSpec);
+    if (!texture->isValid()) {
+        texture = ImageTexture::getTexture(assets.placeHolderTexture, textureSpec);
+    }
+    if (texture->isValid()) {
+        textures[idx].texture = texture;
     }
 }
 
 void Material::prepare(const Assets& assets)
 {
+    // MOTE KI this loop is for "non ModelMesh" case
     unsigned int unitIndex = 0;
-    for (auto & x : textures) {
-        if (!x.texture) continue;
-        if (x.unitIndex == -1) {
-            x.unitIndex = unitIndex++;
+    for (auto& tex : textures) {
+        if (!tex.texture) continue;
+        if (tex.unitIndex < 0) {
+            tex.unitIndex = unitIndex++;
         }
-        x.texture->prepare();
+        tex.texture->prepare();
     }
 }
 
 void Material::bindArray(Shader* shader, int index, bool bindTextureIDs)
 {
-    if (textures.empty()) return;
-
-    {
-        auto& tex = textures[DIFFUSE_IDX];
-        if (tex.texture) {
-            shader->textures[tex.unitIndex].set(tex.unitIndex);
-        }
-    }
-
-    {
-        auto& tex = textures[EMISSION_IDX];
-        if (tex.texture) {
-            shader->textures[tex.unitIndex].set(tex.unitIndex);
-        }
-    }
-    {
-        auto& tex = textures[DIFFUSE_IDX];
-        if (tex.texture) {
-            shader->textures[tex.unitIndex].set(tex.unitIndex);
-        }
-    }
-    {
-        auto& tex = textures[DIFFUSE_IDX];
-        if (tex.texture) {
-            shader->textures[tex.unitIndex].set(tex.unitIndex);
-        }
-    }
-    {
-        auto& tex = textures[DUDV_MAP_IDX];
-        if (tex.texture) {
-            shader->textures[tex.unitIndex].set(tex.unitIndex);
-        }
-    }
-
-    if (bindTextureIDs) {
-        for (auto& x : textures) {
-            x.bind();
+    for (auto& tex : textures) {
+        if (!tex.texture) continue;
+        assert(tex.unitIndex >= 0);
+        shader->textures[tex.unitIndex].set(tex.unitIndex);
+        if (bindTextureIDs) {
+            tex.bind();
         }
     }
 }

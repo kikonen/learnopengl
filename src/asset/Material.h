@@ -20,6 +20,7 @@ struct BoundTexture {
     void bind()
     {
         if (!texture) return;
+        assert(unitIndex >= 0);
         //glActiveTexture(GL_TEXTURE0 + unitIndex);
         //glBindTexture(GL_TEXTURE_2D, texture->textureID);
         glBindTextures(unitIndex, 1, &texture->textureID);
@@ -27,6 +28,7 @@ struct BoundTexture {
 
     void unbind()
     {
+        if (!texture) return;
         KI_GL_UNBIND(glBindTexture(GL_TEXTURE_2D, 0));
     }
 };
@@ -83,8 +85,9 @@ private:
 public:
     const std::string name;
     const std::string baseDir;
-    unsigned int materialIndex = 0;
+    int materialIndex = -1;
 
+    bool isDefault = false;
     bool used = false;
 
     std::string materialDir;

@@ -74,16 +74,25 @@ void ModelMesh::prepare(const Assets& assets)
 
     reflection = false;
     refraction = false;
-    unsigned int unitIndex = 0;
-    for (auto const& material : materials) {
-        material->prepare(assets);
-        reflection |= material->reflection > 0;
-        refraction |= material->refraction > 0;
 
-        for (auto& t : material->textures) {
-            if (!t.texture) continue;
-            t.unitIndex = unitIndex++;
-            textureIDs.push_back(t.texture->textureID);
+    {
+        int materialIndex = 0;
+        unsigned int unitIndex = 0;
+
+        for (auto const& material : materials) {
+            material->materialIndex = materialIndex++;
+            assert(material->materialIndex < MATERIAL_COUNT);
+
+            reflection |= material->reflection > 0;
+            refraction |= material->refraction > 0;
+
+            material->prepare(assets);
+
+            for (auto& tex : material->textures) {
+                if (!tex.texture) continue;
+                tex.unitIndex = unitIndex++;
+                textureIDs.push_back(tex.texture->textureID);
+            }
         }
     }
 
@@ -97,10 +106,8 @@ void ModelMesh::prepare(const Assets& assets)
 
         MaterialsUBO materialsUbo;
 
-        int index = 0;
         for (auto const& material : materials) {
             materialsUbo.materials[material->materialIndex] = material->toUBO();
-            index++;
         }
 
         glCreateBuffers(1, &materialsUboId);
@@ -141,6 +148,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
                 vbo->tangent.y = (int)(tan.y * SCALE_VEC10);
                 vbo->tangent.z = (int)(tan.z * SCALE_VEC10);
 
+                // TODO KI should use noticeable value for missing
                 vbo->material = m ? m->materialIndex : 0;
 
                 vbo->texCoords.u = (int)(t.x * SCALE_UV16);
