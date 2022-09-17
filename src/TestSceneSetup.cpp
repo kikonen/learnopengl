@@ -128,7 +128,7 @@ void TestSceneSetup::setupLightDirectional()
             const float speed = 20.f;
             glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
 
-            auto planet = asyncLoader->waitNode(getPlanetID());
+            auto planet = asyncLoader->waitNode(getPlanetID(), true);
             if (planet) {
                 center = planet->getPos();
             }
@@ -255,7 +255,7 @@ void TestSceneSetup::setupNodeActive()
 void TestSceneSetup::setupNodePlanet()
 {
     asyncLoader->addLoader([this]() {
-        auto planet = asyncLoader->waitNode(getPlanetID());
+        auto planet = asyncLoader->waitNode(getPlanetID(), true);
 
         auto light = std::make_unique<Light>();
         {
@@ -306,7 +306,7 @@ void TestSceneSetup::setupNodeAsteroidBelt()
         MeshLoader loader(assets, "rock", "/rock/");
         type->mesh = loader.load();
 
-        auto planet = asyncLoader->waitNode(getPlanetID());
+        auto planet = asyncLoader->waitNode(getPlanetID(), true);
         auto controller = new AsteroidBeltController(assets, planet);
         auto node = new InstancedNode(type, controller);
         //node->selected = true;
