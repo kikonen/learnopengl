@@ -89,7 +89,7 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registr
         ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
         ctx.bindMatricesUBO();
 
-        drawNodes(ctx, registry);
+        drawNodes(ctx, registry, centerNode);
 
         if (skybox) {
             skybox->render(ctx, registry);
@@ -105,7 +105,10 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registr
 
 }
 
-void CubeMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
+void CubeMapRenderer::drawNodes(
+    const RenderContext& ctx,
+    NodeRegistry& registry,
+    Node* centerNode)
 {
     for (auto& x : registry.nodes) {
         auto t = x.first;
@@ -116,6 +119,9 @@ void CubeMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry
         batch.bind(ctx, shader);
 
         for (auto& e : x.second) {
+            // NOTE KI skip drawing center node itself (can produce odd results)
+            // => i.e. show garbage from old render round and such
+            if (e == centerNode) continue;
             batch.draw(ctx, e, shader);
         }
 
