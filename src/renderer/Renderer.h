@@ -22,8 +22,8 @@ protected:
 protected:
     const Assets& assets;
 
-    int drawIndex;
-    int drawSkip;
+    int drawIndex = 0;
+    int drawSkip = 0;
 
-    bool rendered;
+    bool rendered = false;
 };

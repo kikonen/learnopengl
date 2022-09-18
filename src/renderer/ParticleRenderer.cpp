@@ -7,6 +7,8 @@ ParticleRenderer::ParticleRenderer(const Assets& assets)
 
 void ParticleRenderer::prepare(ShaderRegistry& shaders)
 {
+    Renderer::prepare(shaders);
+
     particleShader = shaders.getShader(assets, TEX_PARTICLE);
     particleShader->prepare();
 }

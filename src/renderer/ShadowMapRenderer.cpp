@@ -6,8 +6,6 @@ ShadowMapRenderer::ShadowMapRenderer(const Assets& assets)
     : Renderer(assets)
 {
     drawIndex = 1;
-    drawSkip = assets.shadowDrawSkip;
-
 }
 
 ShadowMapRenderer::~ShadowMapRenderer()
@@ -16,6 +14,10 @@ ShadowMapRenderer::~ShadowMapRenderer()
 
 void ShadowMapRenderer::prepare(ShaderRegistry& shaders)
 {
+    Renderer::prepare(shaders);
+
+    drawSkip = assets.shadowDrawSkip;
+
     shadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
     shadowDebugShader = shaders.getShader(assets, TEX_DEBUG_DEPTH);
 

@@ -7,6 +7,7 @@ ViewportRenderer::ViewportRenderer(const Assets& assets)
 
 void ViewportRenderer::prepare(ShaderRegistry& shaders)
 {
+    Renderer::prepare(shaders);
 }
 
 void ViewportRenderer::bind(const RenderContext& ctx)

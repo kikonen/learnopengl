@@ -8,6 +8,8 @@ NormalRenderer::NormalRenderer(const Assets& assets)
 
 void NormalRenderer::prepare(ShaderRegistry& shaders)
 {
+    Renderer::prepare(shaders);
+
     normalShader = shaders.getShader(assets, TEX_NORMAL);
     normalShader->prepare();
 }

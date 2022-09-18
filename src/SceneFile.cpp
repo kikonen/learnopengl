@@ -433,16 +433,16 @@ void SceneFile::loadMaterial(
                 material->ns = v.as<float>();
             }
             else if (k == "ka") {
-                material->ka = readVec4(v);
+                material->ka = readRGBA(v);
             }
             else if (k == "kd") {
-                material->kd = readVec4(v);
+                material->kd = readRGBA(v);
             }
             else if (k == "ks") {
-                material->ks = readVec4(v);
+                material->ks = readRGBA(v);
             }
             else if (k == "ke") {
-                material->ke = readVec4(v);
+                material->ke = readRGBA(v);
             }
             else if (k == "ni") {
                 material->ni = v.as<float>();
@@ -539,6 +539,14 @@ glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
 }
 
 glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
+    std::vector<double> a;
+    for (auto& e : node) {
+        a.push_back(e.as<double>());
+    }
+    return glm::vec4{ a[0], a[1], a[2], a[3] };
+}
+
+glm::vec4 SceneFile::readRGBA(const YAML::Node& node) {
     std::vector<double> a;
     for (auto& e : node) {
         a.push_back(e.as<double>());

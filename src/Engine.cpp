@@ -11,20 +11,21 @@
 
 #include "scene/AsyncLoader.h"
 
-//std::shared_ptr<Engine> Engine::current = nullptr;
 
 Engine::Engine()
 {
-    debug = false;
-    throttleFps = FPS_15;
-    window = std::make_unique<Window>(*this);
-    asyncLoader = std::make_shared<AsyncLoader>(shaders, assets);
 }
 
 Engine::~Engine() {
 }
 
 int Engine::init() {
+    debug = false;
+
+    onInit();
+    asyncLoader = std::make_shared<AsyncLoader>(shaders, assets);
+
+    window = std::make_unique<Window>(*this, assets);
     return window->create() ? 0 : -1;
 }
 
@@ -129,16 +130,6 @@ void Engine::run() {
         }
 
         KI_GL_CHECK("engine.loop");
-
-        // NOTE KI aim 60fps (no reason to overheat CPU/GPU)
-        if (!close && throttleFps > 0) {
-            sleepSecs = throttleFps / 1000.f - renderSecs * 2;
-            if (sleepSecs < 0) {
-                sleepSecs = 0.01;
-            }
-            //KI_DEBUG_SB("dt: " << elapsedSecs * 1000.f << "ms - " << "render: " << renderSecs * 1000 << "ms - " << "sleep: " << sleepSecs * 1000 << "ms");
-            std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepSecs * 1000.f)));
-        }
     }
 
     onDestroy();

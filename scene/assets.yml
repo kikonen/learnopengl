@@ -1,0 +1,55 @@
+assets:
+  log_file: log/development.log
+
+  models_dir: 3d_model
+  shaders_dir: shader/test6
+  sprites_dir: sprites
+  textures_dir: textures
+  ground_offset: [200, 0, 200]
+
+  placeHolder_texture_always: false
+  placeHolder_texture: textures/tiles.png
+
+  ground_offset_nope: [0.0, 15.0, -40.0]
+  ground_offset: [200, 0, 200]
+
+  use_imgui: false
+
+  show_normals: true
+  show_mirror_view: true
+  show_shadowMap_view: true
+  show_reflection_view: true
+  show_refraction_view: true
+
+  draw_skip: 0
+  debug_clear_color: true
+  clear_color: true
+
+  water_tile_size: 100
+  water_draw_skip: 1
+
+  terrain_vertex_count: 64
+  terrain_tile_size: 400
+
+  batch_size: 1000
+
+  near_plane: 0.1
+  far_plane: 1000.0
+
+  fog_color: [0.1, 0.1, 0.2, 1.0]
+  fog_start: 50.0
+  fog_end: 700.0
+
+  shadow_near_plane: 0.1
+  shadow_far_plane: 1000.0
+  shadow_map_size: 1024
+  shadow_draw_skip: 2
+
+  mirror_reflection_size: 1000
+  mirror_rdRefraction_size: 1000
+
+  water_reflection_size: 1000
+  water_refraction_size: 1000
+
+  cube_map_size: 1000
+  cube_map_draw_skip: 2

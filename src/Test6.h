@@ -18,12 +18,14 @@ public:
     Test6();
 
 protected:
+    int onInit() override;
     int onSetup() override;
 
     int onRender(const RenderClock& clock) override;
     void onDestroy() override;
 
 private:
+    Assets loadAssets();
     std::shared_ptr<Scene> loadScene();
 
 private:

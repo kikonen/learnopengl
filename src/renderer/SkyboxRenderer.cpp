@@ -66,6 +66,8 @@ SkyboxRenderer::~SkyboxRenderer()
 
 void SkyboxRenderer::prepare(ShaderRegistry& shaders)
 {
+    Renderer::prepare(shaders);
+
     shader = shaders.getShader(assets, shaderName);
 
     shader->prepare();

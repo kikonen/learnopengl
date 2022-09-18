@@ -6,9 +6,9 @@
 #include "scene/Scene.h"
 #include "Engine.h"
 
-Window::Window(Engine& engine)
+Window::Window(Engine& engine, const Assets& assets)
     : engine(engine),
-    assets(engine.assets)
+    assets(assets)
 {
     width = 800;
     height = 600;
@@ -149,7 +149,7 @@ void Window::onMouseMove(double xpos, double ypos)
     bool isAlt = input->isModifierDown(Modifier::ALT);
     int state = glfwGetMouseButton(glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
-    if ((isAlt || state == GLFW_PRESS) && (!engine.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+    if ((isAlt || state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         Camera* camera = engine.currentScene->getCamera();

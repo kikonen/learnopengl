@@ -7,18 +7,22 @@
 #include "editor/EditorFrame.h"
 
 #include "TestSceneSetup.h"
+
+#include "AssetsFile.h"
 #include "SceneFile.h"
 
 
 Test6::Test6()
 {
+}
+
+int Test6::onInit()
+{
     title = "Test 6";
-    assets.shadersDir = "shader/test6";
-    throttleFps = 0;
-    //throttleFps = FPS_30;
     //glfwWindowHint(GLFW_SAMPLES, 4);
 
-    useIMGUI = assets.useIMGUI;
+    assets = loadAssets();
+    return 0;
 }
 
 int Test6::onSetup() {
@@ -32,7 +36,7 @@ int Test6::onSetup() {
 
     //state.disable(GL_MULTISAMPLE);
 
-    if (useIMGUI) {
+    if (assets.useIMGUI) {
         frameInit = std::make_unique<FrameInit>(*window);
         frame = std::make_unique<EditorFrame>(*window);
     }
@@ -60,7 +64,7 @@ int Test6::onRender(const RenderClock& clock) {
     ctx.state.enable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    if (useIMGUI) {
+    if (assets.useIMGUI) {
         frame->bind(ctx);
     }
 
@@ -73,7 +77,7 @@ int Test6::onRender(const RenderClock& clock) {
     bool isShift = window->input->isModifierDown(Modifier::SHIFT);
     int state = glfwGetMouseButton(window->glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
-    if ((isCtrl && state == GLFW_PRESS) && (!useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+    if ((isCtrl && state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         int objectID = currentScene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
 
         currentScene->registry.selectNodeById(objectID, isShift);
@@ -81,7 +85,7 @@ int Test6::onRender(const RenderClock& clock) {
         KI_INFO_SB("selected: " << objectID);
     }
 
-    if (useIMGUI) {
+    if (assets.useIMGUI) {
         //ImGui::ShowDemoWindow();
 
         frame->draw(ctx);
@@ -95,10 +99,14 @@ void Test6::onDestroy()
 {
 }
 
+Assets Test6::loadAssets()
+{
+    AssetsFile file{ "scene/assets.yml" };
+    return file.load();
+}
+
 std::shared_ptr<Scene> Test6::loadScene()
 {
-    assets.batchSize = 1000;
-
     auto scene = std::make_shared<Scene>(assets);
 
     asyncLoader->scene = scene;

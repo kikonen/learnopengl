@@ -13,6 +13,8 @@ MirrorMapRenderer::~MirrorMapRenderer()
 
 void MirrorMapRenderer::prepare(ShaderRegistry& shaders)
 {
+    Renderer::prepare(shaders);
+
     FrameBufferSpecification spec = {
         assets.mirrorReflectionSize ,
         assets.mirrorReflectionSize,

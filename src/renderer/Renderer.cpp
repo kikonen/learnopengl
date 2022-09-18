@@ -2,10 +2,7 @@
 
 
 Renderer::Renderer(const Assets& assets)
-    :assets(assets),
-    drawIndex(0),
-    drawSkip(assets.drawSkip),
-    rendered(false)
+    : assets(assets)
 {
 }
 
@@ -15,6 +12,7 @@ Renderer::~Renderer()
 
 void Renderer::prepare(ShaderRegistry& shaders)
 {
+    drawSkip = assets.drawSkip;
 }
 
 void Renderer::update(const RenderContext& ctx, NodeRegistry& registry)

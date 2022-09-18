@@ -15,7 +15,7 @@ class Engine;
 class Window final
 {
 public:
-    Window(Engine& engine);
+    Window(Engine& engine, const Assets& assets);
     ~Window();
 
     bool create();

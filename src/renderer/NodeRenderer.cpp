@@ -8,6 +8,8 @@ NodeRenderer::NodeRenderer(const Assets& assets)
 
 void NodeRenderer::prepare(ShaderRegistry& shaders)
 {
+    Renderer::prepare(shaders);
+
     selectionShader = shaders.getShader(assets, TEX_SELECTION);
     selectionShader->selection = true;
 

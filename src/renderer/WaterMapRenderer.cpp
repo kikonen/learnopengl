@@ -7,7 +7,6 @@ WaterMapRenderer::WaterMapRenderer(const Assets& assets)
     : Renderer(assets)
 {
     drawIndex = 1;
-    drawSkip = assets.waterDrawSkip;
 }
 
 WaterMapRenderer::~WaterMapRenderer()
@@ -16,7 +15,11 @@ WaterMapRenderer::~WaterMapRenderer()
 
 void WaterMapRenderer::prepare(ShaderRegistry& shaders)
 {
-    FrameBufferSpecification spec = { 
+    Renderer::prepare(shaders);
+
+    drawSkip = assets.waterDrawSkip;
+
+    FrameBufferSpecification spec = {
         assets.waterReflectionSize , 
         assets.waterReflectionSize, 
         { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepth() } 

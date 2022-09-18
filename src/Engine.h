@@ -12,12 +12,6 @@
 class Scene;
 class AsyncLoader;
 
-const float FPS_120 = 8;
-const float FPS_60 = 16;
-const float FPS_30 = 33;
-const float FPS_15 = 66;
-const float FPS_10 = 100;
-
 /**
  * Base engine
  */
@@ -30,14 +24,13 @@ public:
     void run();
 
 protected:
+    virtual int onInit() = 0;
     virtual int onSetup() = 0;
     virtual int onRender(const RenderClock& clock) = 0;
     virtual void onDestroy();
 
 public:
     bool debug;
-    float throttleFps;
-    bool useIMGUI{ false };
 
     std::unique_ptr<Window> window;
 
@@ -45,11 +38,11 @@ public:
 
     RenderClock startClock;
 
-    Assets assets;
-
     ShaderRegistry shaders;
 
 protected:
+    Assets assets;
+
     std::shared_ptr<AsyncLoader> asyncLoader;
 
     std::string title;

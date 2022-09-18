@@ -13,12 +13,6 @@ Scene::Scene(const Assets& assets)
     : assets(assets),
     registry(*this)
 {
-    showNormals = assets.showNormals;
-    showMirrorView = assets.showMirrorView;
-    showShadowMapView = assets.showShadowMapView;
-    showReflectionView = assets.showReflectionView;
-    showRefractionView = assets.showRefractionView;
-
     nodeRenderer = std::make_unique<NodeRenderer>(assets);
     //terrainRenderer = std::make_unique<TerrainRenderer>(assets);
 
@@ -69,7 +63,7 @@ void Scene::prepare(ShaderRegistry& shaders)
         objectIdRenderer->prepare(shaders);
     }
 
-    if (showNormals) {
+    if (assets.showNormals) {
         if (normalRenderer) {
             normalRenderer->prepare(shaders);
         }
@@ -99,7 +93,7 @@ void Scene::prepare(ShaderRegistry& shaders)
         registry.addViewPort(objectIdRenderer->debugViewport);
     }
 
-    if (!mirrorBuffer && showMirrorView) {
+    if (!mirrorBuffer && assets.showMirrorView) {
         auto buffer = new TextureBuffer({ 640, 480, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
         mirrorBuffer.reset(buffer);
         mirrorBuffer->prepare();
@@ -115,13 +109,13 @@ void Scene::prepare(ShaderRegistry& shaders)
         registry.addViewPort(mirrorViewport);
     }
 
-    if (showShadowMapView) {
+    if (assets.showShadowMapView) {
         registry.addViewPort(shadowMapRenderer->debugViewport);
     }
-    if (showReflectionView) {
+    if (assets.showReflectionView) {
         registry.addViewPort(waterMapRenderer->reflectionDebugViewport);
     }
-    if (showRefractionView) {
+    if (assets.showRefractionView) {
         registry.addViewPort(waterMapRenderer->refractionDebugViewport);
     }
 }
@@ -255,7 +249,7 @@ void Scene::drawMain(RenderContext& ctx)
 // "back mirror" viewport
 void Scene::drawMirror(RenderContext& ctx)
 {
-    if (!showMirrorView) return;
+    if (!assets.showMirrorView) return;
 
     Camera camera(ctx.camera.getPos(), ctx.camera.getFront(), ctx.camera.getUp());
     camera.setZoom(ctx.camera.getZoom());
@@ -361,7 +355,7 @@ void Scene::drawScene(RenderContext& ctx)
         particleSystem->render(ctx);
     }
 
-    if (showNormals) {
+    if (assets.showNormals) {
         if (normalRenderer) {
             normalRenderer->render(ctx, registry);
         }
