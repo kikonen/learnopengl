@@ -14,6 +14,8 @@ public:
     int glsl_version[3];
     std::string glsl_version_str;
 
+    int glfwSwapInterval;
+
     std::string logFile;
 
     std::string modelsDir;
@@ -21,8 +23,8 @@ public:
     std::string spritesDir;
     std::string texturesDir;
 
-    bool placeHolderTextureAlways;
-    std::string placeHolderTexture;
+    bool placeholderTextureAlways;
+    std::string placeholderTexture;
 
     glm::vec3 groundOffset;
 

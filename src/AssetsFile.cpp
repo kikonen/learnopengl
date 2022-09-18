@@ -47,6 +47,9 @@ void AssetsFile::loadAssets(
         if (k == "log_file") {
             data.logFile = v.as<std::string>();
         }
+        else if (k == "glfw_swap_interval") {
+            data.glfwSwapInterval = v.as<int>();
+        }
         else if (k == "models_dir") {
             data.modelsDir = v.as<std::string>();
         }
@@ -60,10 +63,10 @@ void AssetsFile::loadAssets(
             data.texturesDir = v.as<std::string>();
         }
         else if (k == "placeholder_texture_always") {
-            data.placeHolderTextureAlways = v.as<bool>();
+            data.placeholderTextureAlways = v.as<bool>();
         }
         else if (k == "placeholder_texture") {
-            data.placeHolderTexture = v.as<std::string>();
+            data.placeholderTexture = v.as<std::string>();
         }
         else if (k == "ground_offset") {
             data.groundOffset = readVec3(v);

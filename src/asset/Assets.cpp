@@ -10,6 +10,8 @@ Assets::Assets()
 
     glsl_version_str = "#version " + std::to_string(glsl_version[0]) + std::to_string(glsl_version[1]) + std::to_string(glsl_version[2]);
 
+    glfwSwapInterval = 3;
+
     logFile = "log/development.log";
 
     modelsDir = "3d_model";
@@ -17,8 +19,8 @@ Assets::Assets()
     spritesDir = "sprites";
     texturesDir = "textures";
 
-    placeHolderTextureAlways = false;
-    placeHolderTexture = "textures/tiles.png";
+    placeholderTextureAlways = false;
+    placeholderTexture = "textures/tiles.png";
 
     //groundOffset = { 0.f, 15.f, -40.f };
     groundOffset = { 200.f, 0.f, 200.f };

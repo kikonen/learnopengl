@@ -30,7 +30,7 @@ int Test6::onSetup() {
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    glfwSwapInterval(3);
+    glfwSwapInterval(assets.glfwSwapInterval);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

@@ -1,14 +1,16 @@
 assets:
   log_file: log/development.log
 
+  glfw_swap_interval: 0
+
   models_dir: 3d_model
   shaders_dir: shader/test6
   sprites_dir: sprites
   textures_dir: textures
   ground_offset: [200, 0, 200]
 
-  placeHolder_texture_always: false
-  placeHolder_texture: textures/tiles.png
+  placeholder_texture_always: false
+  placeholder_texture: textures/tiles.png
 
   ground_offset_nope: [0.0, 15.0, -40.0]
   ground_offset: [200, 0, 200]

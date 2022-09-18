@@ -108,9 +108,10 @@ void Material::loadTexture(
 
     KI_INFO_SB("TEXTURE: " << texturePath);
 
-    auto texture = ImageTexture::getTexture(assets.placeHolderTextureAlways ? assets.placeHolderTexture : texturePath, textureSpec);
+    std::string placeholderPath{ assets.placeholderTexture };
+    auto texture = ImageTexture::getTexture(assets.placeholderTextureAlways ? placeholderPath : texturePath, textureSpec);
     if (!texture->isValid()) {
-        texture = ImageTexture::getTexture(assets.placeHolderTexture, textureSpec);
+        texture = ImageTexture::getTexture(placeholderPath, textureSpec);
     }
     if (texture->isValid()) {
         textures[idx].texture = texture;
