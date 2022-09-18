@@ -20,7 +20,7 @@ PlainTexture::~PlainTexture()
 {
 }
 
-void PlainTexture::prepare()
+void PlainTexture::prepare(const Assets& assets)
 {
     if (prepared) return;
     prepared = true;

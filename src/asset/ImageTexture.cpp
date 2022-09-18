@@ -36,7 +36,7 @@ ImageTexture::~ImageTexture()
 {
 }
 
-void ImageTexture::prepare()
+void ImageTexture::prepare(const Assets& assets)
 {
     if (prepared) return;
     prepared = true;

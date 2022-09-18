@@ -8,6 +8,6 @@ public:
     PlainTexture(const std::string& name, const TextureSpec& spec, int width, int height);
     virtual ~PlainTexture();
 
-    void prepare() override;
+    void prepare(const Assets& assets) override;
     void setData(void* data, int size);
 };

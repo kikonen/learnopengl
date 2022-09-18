@@ -75,9 +75,11 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 
 void TestSceneSetup::setupCamera()
 {
-    glm::vec3 pos = glm::vec3(-8, 5, 10.f) + assets.groundOffset;
     glm::vec3 front = glm::vec3(0, 0, -1);
     glm::vec3 up = glm::vec3(0, 1, 0);
+
+    glm::vec3 pos = glm::vec3(-10, 7, -20.f) + assets.groundOffset;
+    glm::vec3 rotation = glm::vec3(0, 180, 0.f);
 
     auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
     MeshLoader loader(assets, "player");
@@ -85,9 +87,15 @@ void TestSceneSetup::setupCamera()
 
     auto node = new Node(type);
     {
+        node->allowNormals = false;
+
         node->setPos(pos);
+        node->setRotation(rotation);
         node->setScale(0.8f);
+
         node->camera = std::make_unique<Camera>(pos, front, up);
+        node->camera->setRotation(rotation);
+
         node->controller = new CameraController(assets);
 
         ParticleDefinition pd;
@@ -433,7 +441,7 @@ void TestSceneSetup::setupViewport1()
     TextureSpec spec;
     // NOTE KI memory_leak
     auto texture = new PlainTexture("checkerboard", spec, 1, 1);
-    texture->prepare();
+    texture->prepare(assets);
 
     unsigned int color = 0x90ff2020;
     texture->setData(&color, sizeof(unsigned int));

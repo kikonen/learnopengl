@@ -13,7 +13,7 @@ public:
     ImageTexture(const std::string& path, const TextureSpec& spec);
     virtual ~ImageTexture();
 
-    void prepare() override;
+    void prepare(const Assets& assets) override;
 
     bool isValid() { return valid; }
 private:

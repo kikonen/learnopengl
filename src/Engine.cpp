@@ -70,8 +70,15 @@ void Engine::run() {
     while (!window->isClosed())
     {
         int close = 0;
+
+        {
+            // make clear color by default black
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        }
+
         {
             //ki::Timer t("loop");
+
 
             loopTime = std::chrono::system_clock::now();
             elapsedDuration = loopTime - prevLoopTime;

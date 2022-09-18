@@ -107,6 +107,7 @@ void FrameBuffer::bind(const RenderContext& ctx)
 
 void FrameBuffer::unbind(const RenderContext& ctx)
 {
+    // NOTE KI 0 stands for "default"
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, ctx.width, ctx.height);
 }

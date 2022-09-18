@@ -19,7 +19,7 @@ public:
     Texture(const std::string& name, const TextureSpec& spec);
     virtual ~Texture();
 
-    virtual void prepare() = 0;
+    virtual void prepare(const Assets& assets) = 0;
 
 public:
     const std::string name;

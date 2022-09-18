@@ -13,6 +13,8 @@ Scene::Scene(const Assets& assets)
     : assets(assets),
     registry(*this)
 {
+    showNormals = assets.showNormals;
+
     nodeRenderer = std::make_unique<NodeRenderer>(assets);
     //terrainRenderer = std::make_unique<TerrainRenderer>(assets);
 

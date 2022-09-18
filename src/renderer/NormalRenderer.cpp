@@ -32,6 +32,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
         batch.bind(ctx, shader);
 
         for (auto& e : x.second) {
+            if (!e->allowNormals) continue;
             batch.draw(ctx, e, shader);
         }
 

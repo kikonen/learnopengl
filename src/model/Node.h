@@ -55,6 +55,7 @@ public:
     std::shared_ptr<NodeType> type;
 
     bool selected = false;
+    bool allowNormals = true;
 
     NodeController* controller{ nullptr };
 

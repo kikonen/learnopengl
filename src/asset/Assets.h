@@ -28,6 +28,8 @@ public:
 
     bool useIMGUI;
 
+    bool showNormals;
+
     int drawSkip;
     bool debugClearColor;
     int clearColor;

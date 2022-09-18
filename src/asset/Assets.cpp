@@ -25,6 +25,8 @@ Assets::Assets()
 
     useIMGUI = false;
 
+    showNormals = true;
+
     // NOTE KI no skipping of frames
     drawSkip = 0;
     debugClearColor = true;
