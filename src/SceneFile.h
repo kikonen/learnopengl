@@ -11,6 +11,11 @@
 
 class SceneFile
 {
+    enum class EntityType {
+        node,
+        sprite
+    };
+
     struct SkyboxData {
         std::string shaderName{ "skybox" };
         std::string materialName{};
@@ -46,6 +51,8 @@ class SceneFile
         int typeId{ 0 };
         bool enabled{ false };
 
+        EntityType type { EntityType::node };
+
         std::string name{};
         std::string desc{};
 
@@ -53,7 +60,7 @@ class SceneFile
         uuids::uuid parentId{};
 
         std::string modelName{};
-        std::string modelPath{ "/" };
+        std::string modelPath{ "" };
         std::string shaderName{ TEX_TEXTURE };
         std::vector<std::string> shaderDefinitions{};
         std::map<const std::string, bool> renderFlags{};

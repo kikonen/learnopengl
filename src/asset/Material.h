@@ -33,11 +33,17 @@ struct BoundTexture {
     }
 };
 
-enum class MaterialType {
+enum class BasicMaterial {
     basic,
     gold,
     silver,
     bronze,
+};
+
+enum class MaterialType {
+    model,
+    texture,
+    sprite
 };
 
 /*
@@ -61,7 +67,7 @@ map_Kd texture_cube.jpg
 class Material final
 {
 public:
-    Material(const std::string& name, const std::string& baseDir);
+    Material();
     ~Material();
     void loadTextures(const Assets& assets);
 
@@ -74,17 +80,26 @@ public:
 
     static std::shared_ptr<Material> createDefaultMaterial();
 
-    static std::shared_ptr<Material> createMaterial(MaterialType type);
+    static std::shared_ptr<Material> createMaterial(BasicMaterial type);
 
     static std::shared_ptr<Material> find(
         const std::string& name,
         std::vector<std::shared_ptr<Material>>& materials);
 private:
-    void loadTexture(const Assets& assets, int idx, const std::string& baseDir, const std::string& name);
+    std::string resolveBaseDir(const Assets& assets);
+
+    void loadTexture(
+        const Assets& assets,
+        int idx,
+        const std::string& baseDir,
+        const std::string& name);
 
 public:
-    const std::string name;
-    const std::string baseDir;
+    std::string name;
+    std::string path;
+
+    MaterialType type{ MaterialType::model };
+
     int materialIndex = -1;
 
     bool isDefault = false;

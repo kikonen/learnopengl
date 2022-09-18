@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <mutex>
+#include <filesystem>
 
 #include "UBO.h"
 
@@ -21,7 +22,14 @@ Shader::Shader(
     geometryOptional(geometryType.empty()),
     defines(defines)
 {
-    std::string basePath = assets.shadersDir + "/" + name;
+    std::string basePath;
+    {
+        std::filesystem::path fp;
+        fp /= assets.shadersDir;
+        fp /= name;
+        basePath = fp.string();
+    }
+
     vertexShaderPath = basePath + ".vs";
     fragmentShaderPath = basePath + ".fs";
     geometryShaderPath = basePath + geometryType + ".gs";
@@ -363,7 +371,14 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
 
 std::vector<std::string> Shader::processInclude(const std::string& includePath, int lineNumber) 
 {
-    std::string path = assets.shadersDir + "/_" + includePath;
+    std::string path;
+    {
+        std::filesystem::path fp;
+        fp /= assets.shadersDir;
+        fp /= "_" + includePath;
+        path = fp.string();
+    }
+
     std::vector<std::string> lines = loadSourceLines(path, false);
 
     std::vector<std::string> result;

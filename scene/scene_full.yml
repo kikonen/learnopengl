@@ -141,7 +141,7 @@ entities:
   - name: Backback
     desc: TODO not showing up
     id: 0bdeb80d-0469-468f-95b9-e9928266d93a
-    model: [backback, /backback/]
+    model: [backback, backback]
     shader: texture
     pos: [0.0, 5.0, 5.0]
     scale: 1.5
@@ -168,7 +168,7 @@ entities:
     enabled: false
   - name: Shuttle
     id: 9a2ba708-dc8b-4e5e-902c-0375ce432a1f
-    model: [shuttle, /opengl_book/NasaShuttle/]
+    model: [shuttle, opengl_book/NasaShuttle]
     shader: texture
     pos: [20.0, 40.0, -50.0]
     scale: 20.0
@@ -343,7 +343,7 @@ entities:
     enabled: true
   - name: Planet
     id: 8712cec1-e1a3-4973-8889-533adfbbb196
-    model: [planet, /planet/]
+    model: [planet, planet]
     shader: texture
     pos: [10.0, 100.0, 100.0]
     scale: 10
@@ -353,13 +353,30 @@ entities:
   - name: Rock
     id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
-    model: [rock, /rock/]
+    model: [rock, rock]
     shader: texture
     pos: [0.0, -50.0, 0.0]
     scale: 1
     material_modifier:
       reflection: 0.7
     enabled: true
+  - name: Skeleton army
+    id: fb7ba424-f219-4c12-a00f-703b9ecebbbf
+    type: sprite
+    shader: texture
+    pos: [15, 10.5, 2.0]
+    default_material: skeleton
+    shader_definitions:
+      - USE_ALPHA
+    render_flags:
+      - render_back
+    scale: 1
+    repeat:
+      x_count: 10
+      z_count: 101
+      x_step: -4
+      z_step: 0.2
+    enabled: false
 materials:
   - name: skybox
     type: skybox
@@ -441,3 +458,9 @@ materials:
     illum: 2
     map_kd: wood.png
     reflection: 0.3
+  - name: skeleton
+    type: sprite
+    ns: 100
+    ks: [0.6, 0.6, 0.6, 1.0]
+    map_kd: Skeleton_VH.PNG
+    bump_map: Skeleton_VH_normal.PNG

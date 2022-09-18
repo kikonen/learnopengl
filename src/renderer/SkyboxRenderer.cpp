@@ -1,5 +1,7 @@
 #include "SkyboxRenderer.h"
 
+#include <filesystem>
+
 #include "scene/CubeMap.h"
 
 const int ATTR_SKYBOX_POS = 0;
@@ -76,16 +78,21 @@ void SkyboxRenderer::prepare(ShaderRegistry& shaders)
     shader->unbind();
 
     {
-        const std::string& baseDir = assets.modelsDir;
-        //std::string texturePath = baseDir + materialName;
+        std::string basePath;
+        {
+            std::filesystem::path fp;
+            fp /= assets.modelsDir;
+            fp /= materialName;
+            basePath = fp.string();
+        }
 
         std::vector<std::string> faces{
-            baseDir + "/" + materialName + "/right.jpg",
-            baseDir + "/" + materialName + "/left.jpg",
-            baseDir + "/" + materialName + "/top.jpg",
-            baseDir + "/" + materialName + "/bottom.jpg",
-            baseDir + "/" + materialName + "/front.jpg",
-            baseDir + "/" + materialName + "/back.jpg"
+            basePath + "/right.jpg",
+            basePath + "/left.jpg",
+            basePath + "/top.jpg",
+            basePath + "/bottom.jpg",
+            basePath + "/front.jpg",
+            basePath + "/back.jpg"
         };
 
         textureID = CubeMap::createFromImages(faces);

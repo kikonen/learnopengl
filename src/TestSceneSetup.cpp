@@ -315,7 +315,7 @@ void TestSceneSetup::setupNodeAsteroidBelt()
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
         type->batchMode = false;
 
-        MeshLoader loader(assets, "rock", "/rock/");
+        MeshLoader loader(assets, "rock", "rock");
         type->mesh = loader.load();
 
         auto planet = asyncLoader->waitNode(getPlanetID(), true);
@@ -348,7 +348,9 @@ void TestSceneSetup::setupSpriteSkeleton()
 void TestSceneSetup::setupTerrain()
 {
     asyncLoader->addLoader([this]() {
-        std::shared_ptr<Material> material = std::make_shared<Material>("terrain", assets.texturesDir + "/");
+        std::shared_ptr<Material> material = std::make_shared<Material>();
+        material->name = "terrain";
+        material->type = MaterialType::texture;
         material->textureSpec.mode = GL_REPEAT;
         material->tiling = 60;
         material->ns = 50;
@@ -378,7 +380,8 @@ void TestSceneSetup::setupTerrain()
 void TestSceneSetup::setupWaterSurface()
 {
     asyncLoader->addLoader([this]() {
-        std::shared_ptr<Material> material = std::make_shared<Material>("water_surface", assets.modelsDir);
+        std::shared_ptr<Material> material = std::make_shared<Material>();
+        material->name = "water_surface";
         material->ns = 150;
         material->ks = glm::vec4(0.2f, 0.2f, 0.5f, 1.f);
         material->kd = glm::vec4(0.0f, 0.1f, 0.8f, 1.f);

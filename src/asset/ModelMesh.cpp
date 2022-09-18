@@ -21,15 +21,15 @@ namespace {
 
 ModelMesh::ModelMesh(
     const std::string& modelName)
-    : ModelMesh(modelName, "/")
+    : ModelMesh(modelName, "")
 {
 }
 
 ModelMesh::ModelMesh(
     const std::string& modelName,
-    const std::string& path)
+    const std::string& modelPath)
     : modelName(modelName),
-    path(path)
+    modelPath(modelPath)
 {
 }
 

@@ -8,7 +8,9 @@ std::shared_ptr<Material> Sprite::getMaterial(
     const std::string& path,
     const std::string& normalMapPath)
 {
-    std::shared_ptr<Material> material = std::make_shared<Material>(path, assets.spritesDir + "/");
+    std::shared_ptr<Material> material = std::make_shared<Material>();
+    material->name = path;
+    material->type = MaterialType::sprite;
     material->ns = 100;
     material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
     material->map_kd = path;

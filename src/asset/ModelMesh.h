@@ -23,7 +23,7 @@ public:
 
     ModelMesh(
         const std::string& modelName,
-        const std::string& path);
+        const std::string& modelPath);
 
     virtual ~ModelMesh();
 
@@ -49,7 +49,7 @@ public:
     std::vector<GLuint> textureIDs;
 
     const std::string modelName;
-    const std::string path;
+    const std::string modelPath;
 
 private:
     bool refraction = false;

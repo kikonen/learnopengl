@@ -16,7 +16,7 @@ public:
     MeshLoader(
         const Assets& assets,
         const std::string& modelName,
-        const std::string& path);
+        const std::string& modelPath);
 
     ~MeshLoader();
 
@@ -36,7 +36,7 @@ private:
 public:
     const Assets& assets;
     const std::string modelName;
-    const std::string path;
+    const std::string modelPath;
 
     std::shared_ptr<Material> defaultMaterial;
     bool overrideMaterials = false;

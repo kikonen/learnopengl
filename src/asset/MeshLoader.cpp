@@ -4,6 +4,7 @@
 #include <istream>
 #include <sstream>
 #include <iostream>
+#include <filesystem>
 
 #include "ki/Timer.h"
 
@@ -14,18 +15,19 @@ const glm::vec3 EMPTY_NORMAL{ 0, 0, 0 };
 MeshLoader::MeshLoader(
     const Assets& assets,
     const std::string& modelName)
-    : MeshLoader(assets, modelName, "/")
+    : MeshLoader(assets, modelName, "")
 {
 }
 
 MeshLoader::MeshLoader(
     const Assets& assets,
     const std::string& modelName,
-    const std::string& path)
+    const std::string& modelPath)
     : assets(assets),
     modelName(modelName),
-    path(path)
+    modelPath(modelPath)
 {
+    // TODO KI *undesired*; this is modified externally
     defaultMaterial = Material::createDefaultMaterial();
 }
 
@@ -35,7 +37,7 @@ MeshLoader::~MeshLoader()
 }
 
 std::unique_ptr<ModelMesh> MeshLoader::load() {
-    auto mesh = std::make_unique<ModelMesh>(modelName, path);
+    auto mesh = std::make_unique<ModelMesh>(modelName, modelPath);
     loadData(mesh->tris, mesh->vertices, mesh->materials);
     return mesh;
 }
@@ -60,13 +62,21 @@ void MeshLoader::loadData(
     positions.reserve(10000);
 
     {
+        if (!defaultMaterial) {
+//            defaultMaterial = Material::createDefaultMaterial();
+        }
         defaultMaterial->isDefault = true;
         assert(!defaultMaterial->used);
         loadedMaterials.push_back(defaultMaterial);
     }
 
-    const std::string modelPath = assets.modelsDir + path + modelName + ".obj";
-    KI_INFO_SB("LOAD_MODEL: path=" << modelPath);
+    std::filesystem::path filePath;
+    filePath /= assets.modelsDir;
+    filePath /= modelPath;
+    filePath /= modelName + ".obj";
+
+    //const std::string modelPath = assets.modelsDir + path + modelName + ".obj";
+    KI_INFO_SB("LOAD_MODEL: path=" << filePath);
 
     std::ifstream file;
     //    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -75,7 +85,7 @@ void MeshLoader::loadData(
         auto tp1 = std::chrono::system_clock::now();
         auto tp2 = std::chrono::system_clock::now();
 
-        file.open(modelPath);
+        file.open(filePath);
 
         std::shared_ptr<Material> material{ nullptr };
         std::string line;
@@ -352,12 +362,18 @@ void MeshLoader::loadMaterials(
     const std::string& libraryName)
 {
     KI_INFO_SB("LOADER::LOAD_MATERIAL_LIB: " << libraryName);
-    std::string materialPath = assets.modelsDir + path + libraryName;
+
+    std::filesystem::path filePath;
+    filePath /= assets.modelsDir;
+    filePath /= modelPath;
+    filePath /= libraryName;
+
+    //std::string materialPath = assets.modelsDir + path + libraryName;
     std::ifstream file;
     //    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     file.exceptions(std::ifstream::badbit);
     try {
-        file.open(materialPath);
+        file.open(filePath);
 
         std::shared_ptr<Material> material = nullptr;
 
@@ -372,7 +388,9 @@ void MeshLoader::loadMaterials(
             ss >> v1 >> v2 >> v3;
 
             if (k == "newmtl") {
-                material = std::make_shared<Material>(v1, assets.modelsDir + path);
+                material = std::make_shared<Material>();
+                material->name = v1;
+                material->path = modelPath;
                 materials.push_back(material);
             }
             else if (k == "Ns") {
@@ -416,7 +434,7 @@ void MeshLoader::loadMaterials(
         file.close();
     }
     catch (std::ifstream::failure e) {
-        KI_ERROR_SB("TEXTURE::FILE_NOT_SUCCESFULLY_READ: " << materialPath << std::endl << e.what());
+        KI_ERROR_SB("TEXTURE::FILE_NOT_SUCCESFULLY_READ: " << filePath << std::endl << e.what());
     }
 
     KI_INFO_SB("== " << modelName << " - " << libraryName << " ===\n" << "materials: " << materials.size());

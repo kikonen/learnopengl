@@ -252,7 +252,19 @@ void SceneFile::loadEntity(
 
         //std::cout << k << " = " << v << "\n";
 
-        if (k == "name") {
+        if (k == "type") {
+            std::string type = v.as<std::string>();
+            if (type == "node") {
+                data.type = EntityType::node;
+            }
+            else if (type == "sprite") {
+                data.type = EntityType::sprite;
+            }
+            else {
+                std::cout << "UNKNOWN ENTITY_TYPE: " << k << "=" << v << "\n";
+            }
+        }
+        else if (k == "name") {
             data.name = v.as<std::string>();
         }
         else if (k == "desc") {
@@ -360,9 +372,8 @@ void SceneFile::loadMaterialModifiers(
     const YAML::Node& node,
     EntityData& data)
 {
-    const std::string materialPath = assets.modelsDir;
-    const std::string& name{ "override_material" };
-    data.materialModifiers = std::make_shared<Material>(name, materialPath);
+    data.materialModifiers = std::make_shared<Material>();
+    data.materialModifiers->name = "<modifier>";
 
     loadMaterial(node, data.materialModifierFields, data.materialModifiers);
 }
@@ -418,18 +429,32 @@ void SceneFile::loadMaterial(
     MaterialField& fields,
     std::shared_ptr<Material>& material)
 {
-    const std::string materialPath = assets.modelsDir;
-
     for (auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
         if (k == "name") {
             const std::string& name = v.as<std::string>();
-            material = std::make_shared<Material>(name, materialPath);
+            material = std::make_shared<Material>();
+            material->name = name;
         }
         else if (material) {
-            if (k == "ns") {
+            if (k == "type") {
+                std::string type = v.as<std::string>();
+                if (type == "model") {
+                    material->type = MaterialType::model;
+                }
+                else if (type == "texture") {
+                    material->type = MaterialType::texture;
+                }
+                else if (type == "sprite") {
+                    material->type = MaterialType::sprite;
+                }
+                else {
+                    std::cout << "UNKNOWN MATERIAL_TYPE: " << k << "=" << v << "\n";
+                }
+            }
+            else if (k == "ns") {
                 material->ns = v.as<float>();
             }
             else if (k == "ka") {

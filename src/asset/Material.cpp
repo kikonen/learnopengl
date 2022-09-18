@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <filesystem>
 
 #include "ImageTexture.h"
 
@@ -17,7 +18,8 @@ namespace {
 }
 
 std::shared_ptr<Material> createGoldMaterial() {
-    std::shared_ptr<Material> mat = std::make_shared<Material>("gold", "");
+    std::shared_ptr<Material> mat = std::make_shared<Material>();
+    mat->name = "<gold>";
     mat->ns = 51.2f;
     mat->ks = glm::vec4(0.6283f, 0.5559f, 0.3661f, 1.f);
     mat->ka = glm::vec4(0.2473f, 0.1995f, 0.0745f, 1.f);
@@ -26,7 +28,8 @@ std::shared_ptr<Material> createGoldMaterial() {
 }
 
 std::shared_ptr<Material> createSilverMaterial() {
-    std::shared_ptr<Material> mat = std::make_shared<Material>("silver", "");
+    std::shared_ptr<Material> mat = std::make_shared<Material>();
+    mat->name = "<silver>";
     mat->ns = 51.2f;
     mat->ks = glm::vec4(0.5083f, 0.5083f, 0.5083f, 1.f);
     mat->ka = glm::vec4(0.1923f, 0.1923f, 0.1923f, 1.f);
@@ -35,7 +38,8 @@ std::shared_ptr<Material> createSilverMaterial() {
 }
 
 std::shared_ptr<Material> createBronzeMaterial() {
-    std::shared_ptr<Material> mat = std::make_shared<Material>("bronze", "");
+    std::shared_ptr<Material> mat = std::make_shared<Material>();
+    mat->name = "<bronze>";
     mat->ns = 25.6f;
     mat->ks = glm::vec4(0.3936f, 0.2719f, 0.1667f, 1.f);
     mat->ka = glm::vec4(0.2125f, 0.1275f, 0.0540f, 1.f);
@@ -44,7 +48,8 @@ std::shared_ptr<Material> createBronzeMaterial() {
 }
 
 std::shared_ptr<Material> Material::createDefaultMaterial() {
-    std::shared_ptr<Material> mat = std::make_shared<Material>("default", "");
+    std::shared_ptr<Material> mat = std::make_shared<Material>();
+    mat->name = "<default>";
     mat->ns = 100.f;
     mat->ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
     mat->ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
@@ -52,12 +57,12 @@ std::shared_ptr<Material> Material::createDefaultMaterial() {
     return mat;
 }
 
-std::shared_ptr<Material> Material::createMaterial(MaterialType type)
+std::shared_ptr<Material> Material::createMaterial(BasicMaterial type)
 {
     switch (type) {
-    case MaterialType::gold: return createGoldMaterial();
-    case MaterialType::silver: return createSilverMaterial();
-    case MaterialType::bronze: return createBronzeMaterial();
+    case BasicMaterial::gold: return createGoldMaterial();
+    case BasicMaterial::silver: return createSilverMaterial();
+    case BasicMaterial::bronze: return createBronzeMaterial();
     }
 
     return createDefaultMaterial();
@@ -74,8 +79,7 @@ std::shared_ptr<Material> Material::find(
     return e != materials.end() ? *e : nullptr;
 }
 
-Material::Material(const std::string& name, const std::string& baseDir)
-    : name(name), baseDir(baseDir)
+Material::Material()
 {
 }
 
@@ -90,6 +94,8 @@ void Material::loadTextures(const Assets& assets)
     if (loaded) return;
     loaded = true;
 
+    auto baseDir = resolveBaseDir(assets);
+
     loadTexture(assets, DIFFUSE_IDX, baseDir, map_kd);
     loadTexture(assets, EMISSION_IDX, baseDir, map_ke);
     loadTexture(assets, SPECULAR_IDX, baseDir, map_ks);
@@ -97,22 +103,47 @@ void Material::loadTextures(const Assets& assets)
     loadTexture(assets, DUDV_MAP_IDX, baseDir, map_dudv);
 }
 
+std::string Material::resolveBaseDir(const Assets& assets)
+{
+    std::string baseDir;
+    switch (type) {
+    case MaterialType::model:
+        return assets.modelsDir;    
+    case MaterialType::texture:
+        return assets.texturesDir;
+    case MaterialType::sprite:
+        return assets.spritesDir;
+    }
+    return assets.modelsDir;
+}
+
 void Material::loadTexture(
     const Assets& assets,
-    int idx, const std::string& baseDir, const std::string& textureName)
+    int idx,
+    const std::string& baseDir,
+    const std::string& textureName)
 {
     if (textureName.empty()) return;
 
-    const char& ch = baseDir.at(baseDir.length() - 1);
-    std::string texturePath = (ch == u'/' ? baseDir : baseDir + "/") + textureName;
+    std::string texturePath;
+    {
+        std::filesystem::path fp;
+        fp /= baseDir;
+        fp /= path;
+        fp /= textureName;
+        texturePath = fp.string();
+    }
 
     KI_INFO_SB("TEXTURE: " << texturePath);
 
-    std::string placeholderPath{ assets.placeholderTexture };
-    auto texture = ImageTexture::getTexture(assets.placeholderTextureAlways ? placeholderPath : texturePath, textureSpec);
+    std::string placeholderPath = assets.placeholderTexture;
+    auto texture = ImageTexture::getTexture(
+        assets.placeholderTextureAlways ? placeholderPath : texturePath,
+        textureSpec);
     if (!texture->isValid()) {
         texture = ImageTexture::getTexture(placeholderPath, textureSpec);
     }
+    assert(texture->isValid());
     if (texture->isValid()) {
         textures[idx].texture = texture;
     }
