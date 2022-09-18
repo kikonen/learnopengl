@@ -97,7 +97,7 @@ void MirrorMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& regist
 {
     if (assets.clearColor) {
         if (assets.debugClearColor) {
-            glClearColor(0.9f, 0.3f, 0.9f, 1.0f);
+            glClearColor(0.9f, 0.0f, 0.9f, 1.0f);
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }

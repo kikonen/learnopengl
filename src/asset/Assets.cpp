@@ -27,6 +27,9 @@ Assets::Assets()
 
     showNormals = true;
     showMirrorView = true;
+    showShadowMapView = true;
+    showReflectionView = true;
+    showRefractionView = true;
 
     // NOTE KI no skipping of frames
     drawSkip = 0;

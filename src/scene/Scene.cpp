@@ -15,6 +15,9 @@ Scene::Scene(const Assets& assets)
 {
     showNormals = assets.showNormals;
     showMirrorView = assets.showMirrorView;
+    showShadowMapView = assets.showShadowMapView;
+    showReflectionView = assets.showReflectionView;
+    showRefractionView = assets.showRefractionView;
 
     nodeRenderer = std::make_unique<NodeRenderer>(assets);
     //terrainRenderer = std::make_unique<TerrainRenderer>(assets);
@@ -112,9 +115,15 @@ void Scene::prepare(ShaderRegistry& shaders)
         registry.addViewPort(mirrorViewport);
     }
 
-    //registry.addViewPort(shadowMapRenderer->debugViewport);
-    //registry.addViewPort(waterMapRenderer->reflectionDebugViewport);
-    //registry.addViewPort(waterMapRenderer->refractionDebugViewport);
+    if (showShadowMapView) {
+        registry.addViewPort(shadowMapRenderer->debugViewport);
+    }
+    if (showReflectionView) {
+        registry.addViewPort(waterMapRenderer->reflectionDebugViewport);
+    }
+    if (showRefractionView) {
+        registry.addViewPort(waterMapRenderer->refractionDebugViewport);
+    }
 }
 
 void Scene::attachNodes()
@@ -280,7 +289,7 @@ void Scene::drawViewports(RenderContext& ctx)
 
 void Scene::drawScene(RenderContext& ctx)
 {
-    // NOTE KI clear for current draw buffer buffer (should be "main" here)
+    // NOTE KI clear for current draw buffer buffer (main/mirror/etc.)
     if (assets.clearColor) {
         if (assets.debugClearColor) {
             glClearColor(0.0f, 0.0f, 1.0f, 1.0f);

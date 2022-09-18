@@ -68,6 +68,9 @@ public:
 
     bool showNormals = false;
     bool showMirrorView = false;
+    bool showShadowMapView = false;
+    bool showReflectionView = false;
+    bool showRefractionView = false;
 
     std::unique_ptr<SkyboxRenderer> skyboxRenderer{ nullptr };
     UBO ubo;

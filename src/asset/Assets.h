@@ -30,6 +30,9 @@ public:
 
     bool showNormals;
     bool showMirrorView;
+    bool showShadowMapView;
+    bool showReflectionView;
+    bool showRefractionView;
 
     int drawSkip;
     bool debugClearColor;

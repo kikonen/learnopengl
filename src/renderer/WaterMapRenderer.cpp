@@ -42,7 +42,7 @@ void WaterMapRenderer::prepare(ShaderRegistry& shaders)
         glm::vec3(0.5, 0.0, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        reflectionBuffer->spec.attachments[0].textureID,
+        refractionBuffer->spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
 
     reflectionDebugViewport->prepare();
