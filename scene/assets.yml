@@ -1,7 +1,7 @@
 assets:
   log_file: log/development.log
 
-  glfw_swap_interval: 0
+  glfw_swap_interval: 3
 
   models_dir: 3d_model
   shaders_dir: shader/test6
@@ -17,7 +17,7 @@ assets:
 
   use_imgui: false
 
-  show_normals: true
+  show_normals: false
   show_mirror_view: true
   show_shadowMap_view: true
   show_reflection_view: true
