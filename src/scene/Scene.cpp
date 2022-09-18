@@ -14,6 +14,7 @@ Scene::Scene(const Assets& assets)
     registry(*this)
 {
     showNormals = assets.showNormals;
+    showMirrorView = assets.showMirrorView;
 
     nodeRenderer = std::make_unique<NodeRenderer>(assets);
     //terrainRenderer = std::make_unique<TerrainRenderer>(assets);
@@ -191,10 +192,12 @@ void Scene::bind(RenderContext& ctx)
 
 void Scene::draw(RenderContext& ctx)
 {
+    // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
+    // => Stencil is not supposed to exist here
     if (assets.clearColor) {
         if (assets.debugClearColor) {
             //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClearColor(0.9f, 0.9f, 0.1f, 1.0f);
+            glClearColor(0.9f, 0.9f, 0.0f, 1.0f);
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
@@ -277,6 +280,7 @@ void Scene::drawViewports(RenderContext& ctx)
 
 void Scene::drawScene(RenderContext& ctx)
 {
+    // NOTE KI clear for current draw buffer buffer (should be "main" here)
     if (assets.clearColor) {
         if (assets.debugClearColor) {
             glClearColor(0.0f, 0.0f, 1.0f, 1.0f);

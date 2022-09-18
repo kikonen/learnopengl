@@ -26,6 +26,7 @@ Assets::Assets()
     useIMGUI = false;
 
     showNormals = true;
+    showMirrorView = true;
 
     // NOTE KI no skipping of frames
     drawSkip = 0;

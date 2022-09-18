@@ -119,14 +119,12 @@ void Material::loadTexture(
 
 void Material::prepare(const Assets& assets)
 {
-    // MOTE KI this loop is for "non ModelMesh" case
+    // MOTE KI this loop is for "non ModelMesh" case (like sprite)
     unsigned int unitIndex = 0;
     for (auto& tex : textures) {
         if (!tex.texture) continue;
-        if (tex.unitIndex < 0) {
-            tex.unitIndex = unitIndex++;
-        }
-        tex.texture->prepare();
+        tex.unitIndex = unitIndex++;
+        tex.texture->prepare(assets);
     }
 }
 

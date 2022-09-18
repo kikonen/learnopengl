@@ -29,6 +29,7 @@ public:
     bool useIMGUI;
 
     bool showNormals;
+    bool showMirrorView;
 
     int drawSkip;
     bool debugClearColor;

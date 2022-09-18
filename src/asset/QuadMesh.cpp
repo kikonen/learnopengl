@@ -67,9 +67,8 @@ void QuadMesh::prepare(const Assets& assets)
 
     material->prepare(assets);
     for (auto const& t : material->textures) {
-        if (t.texture) {
-            textureIDs.push_back(t.texture->textureID);
-        }
+        if (!t.texture) continue;
+        textureIDs.push_back(t.texture->textureID);
     }
 
     // materials
