@@ -50,6 +50,9 @@ void AssetsFile::loadAssets(
         else if (k == "glfw_swap_interval") {
             data.glfwSwapInterval = v.as<int>();
         }
+        else if (k == "gl_debug") {
+            data.glDebug = v.as<bool>();
+        }
         else if (k == "models_dir") {
             data.modelsDir = v.as<std::string>();
         }

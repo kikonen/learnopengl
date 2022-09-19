@@ -29,6 +29,23 @@ int Engine::init() {
     return window->create() ? 0 : -1;
 }
 
+int Engine::setup() {
+    GLenum keys[] = {
+        GL_CULL_FACE,
+        GL_FRONT_AND_BACK,
+        GL_BLEND,
+        GL_CLIP_DISTANCE0,
+        GL_CLIP_DISTANCE1,
+        GL_STENCIL_TEST,
+        GL_DEPTH_TEST,
+    };
+    for (auto key : keys) {
+        state.track(key, false);
+    }
+
+    return onSetup();
+}
+
 void Engine::run() {
     OpenGLInfo info = ki::GL::getInfo();
     KI_INFO_SB("ENGINE::RUN" << std::endl
@@ -38,9 +55,12 @@ void Engine::run() {
 
     KI_INFO("setup");
     ki::GL::startError();
-    ki::GL::startDebug();
 
-    int res = onSetup();
+    if (assets.glDebug) {
+        ki::GL::startDebug();
+    }
+
+    int res = setup();
     if (res) {
         window->close();
     }
@@ -97,6 +117,8 @@ void Engine::run() {
                 renderStart = std::chrono::system_clock::now();
 
                 close = onRender(clock);
+
+                shaders.validate();
 
                 renderEnd = std::chrono::system_clock::now();
                 renderDuration = renderEnd - renderStart;

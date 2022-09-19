@@ -11,6 +11,7 @@ Assets::Assets()
     glsl_version_str = "#version " + std::to_string(glsl_version[0]) + std::to_string(glsl_version[1]) + std::to_string(glsl_version[2]);
 
     glfwSwapInterval = 3;
+    glDebug = false;
 
     logFile = "log/development.log";
 

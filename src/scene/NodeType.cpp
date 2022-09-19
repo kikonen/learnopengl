@@ -96,8 +96,9 @@ Shader* NodeType::bind(
 {
     if (!mesh) return nullptr;
 
-    shader = shader ? shader : defaultShader.get();
+    if (!shader) shader = defaultShader.get();
     if (!shader) return nullptr;
+
     boundShader = shader;
 
     shader->bind();
@@ -112,7 +113,7 @@ Shader* NodeType::bind(
     }
 
     if (wireframe) {
-        ctx.state.polygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        ctx.state.polygonFrontAndBack(GL_LINE);
     }
 
     return shader;
@@ -120,5 +121,9 @@ Shader* NodeType::bind(
 
 void NodeType::unbind(const RenderContext& ctx)
 {
+    if (boundShader) {
+        boundShader->unbind();
+        boundShader = nullptr;
+    }
     ctx.bindGlobal();
 }

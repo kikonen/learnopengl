@@ -26,6 +26,7 @@ void ViewportRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
     for (auto& viewport : registry.viewports) {
         viewport->bind(ctx);
         viewport->draw(ctx);
+        viewport->unbind(ctx);
     }
     glBindVertexArray(0);
 }

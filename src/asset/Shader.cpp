@@ -45,12 +45,15 @@ Shader::~Shader()
 
 const void Shader::bind()
 {
+    m_bound++;
+    if (m_bound > 1) return;
     KI_GL_CALL(glUseProgram(programId));
 }
 
 const void Shader::unbind()
 {
-    glUseProgram(0);
+    m_bound--;
+    if (m_bound == 0) glUseProgram(0);
 }
 
 void Shader::load()

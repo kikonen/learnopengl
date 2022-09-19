@@ -34,6 +34,7 @@ public:
 
     void update(const RenderContext& ctx);
     void bind(const RenderContext& ctx);
+    void unbind(const RenderContext& ctx);
     void draw(const RenderContext& ctx);
 
 public:

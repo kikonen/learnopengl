@@ -21,6 +21,7 @@ public:
     ~Engine();
 
     int init();
+    int setup();
     void run();
 
 protected:

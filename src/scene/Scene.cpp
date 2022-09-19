@@ -193,6 +193,11 @@ void Scene::bind(RenderContext& ctx)
     ctx.bindUBOs();
 }
 
+
+void Scene::unbind(RenderContext& ctx)
+{
+}
+
 void Scene::draw(RenderContext& ctx)
 {
     // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing

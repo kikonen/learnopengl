@@ -15,6 +15,7 @@ public:
     std::string glsl_version_str;
 
     int glfwSwapInterval;
+    bool glDebug;
 
     std::string logFile;
 

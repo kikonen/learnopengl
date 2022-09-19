@@ -2,6 +2,7 @@ assets:
   log_file: log/development.log
 
   glfw_swap_interval: 3
+  gl_debug: false
 
   models_dir: 3d_model
   shaders_dir: shader/test6

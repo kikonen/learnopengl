@@ -59,6 +59,8 @@ public:
     const void bind();
     const void unbind();
 
+    int boundCount() { return m_bound; }
+
     void setInt(const std::string& name, int value);
 
     void setUBO(const std::string& name, unsigned int UBO, unsigned int expectedSize);
@@ -290,6 +292,7 @@ public:
 private:
     int res;
     bool prepared = false;
+    int m_bound = 0;
 
     const std::vector<std::string> defines;
 

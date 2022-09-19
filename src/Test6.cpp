@@ -74,6 +74,7 @@ int Test6::onRender(const RenderClock& clock) {
     currentScene->update(ctx);
     currentScene->bind(ctx);
     currentScene->draw(ctx);
+    currentScene->unbind(ctx);
 
     bool isCtrl = window->input->isModifierDown(Modifier::CONTROL);
     bool isShift = window->input->isModifierDown(Modifier::SHIFT);
