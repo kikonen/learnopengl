@@ -28,7 +28,7 @@ ModelMesh::ModelMesh(
 ModelMesh::ModelMesh(
     const std::string& modelName,
     const std::string& modelPath)
-    : modelName(modelName),
+    : Mesh(modelName),
     modelPath(modelPath)
 {
 }
@@ -117,6 +117,8 @@ void ModelMesh::prepare(const Assets& assets)
 
 void ModelMesh::prepareBuffers(MeshBuffers& curr)
 {
+    KI_DEBUG_SB("MODEL_MESH: model=" << modelName << " - VAO = " << curr.VAO << ", VBO = " << curr.VBO << ", EBO = " << curr.EBO);
+
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glBindVertexArray(curr.VAO);
 
@@ -161,7 +163,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
         glBindBuffer(GL_ARRAY_BUFFER, curr.VBO);
         KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, stride_size * vertices.size(), vboBuffer, GL_STATIC_DRAW));
 
-        delete vboBuffer;
+        delete[] vboBuffer;
 
         int offset = 0;
 
@@ -194,7 +196,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
     // EBO
     {
         int index_count = tris.size() * 3;
-        int* vertexEboBuffer = new int[index_count];
+        unsigned int* vertexEboBuffer = new unsigned int[index_count];
 
         for (int i = 0; i < tris.size(); i++) {
             const glm::uvec3& vi = tris[i];
@@ -207,7 +209,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curr.EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * index_count, vertexEboBuffer, GL_STATIC_DRAW);
 
-        delete vertexEboBuffer;
+        delete[] vertexEboBuffer;
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);

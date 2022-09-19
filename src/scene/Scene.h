@@ -40,6 +40,7 @@ public:
     void processEvents(RenderContext& ctx);
     void update(RenderContext& ctx);
     void bind(RenderContext& ctx);
+    void unbind(RenderContext& ctx);
 
     void draw(RenderContext& ctx);
 

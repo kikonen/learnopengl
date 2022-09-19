@@ -81,6 +81,8 @@ class SceneFile
         MaterialField materialModifierFields;
         std::shared_ptr<Material> materialModifiers;
 
+        int batchSize{ -1 };
+
         Repeat repeat;
     };
 

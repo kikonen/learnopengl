@@ -106,6 +106,7 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
 
             if (!shader) {
                 shader = t->bind(ctx, nullptr);
+                shader->bind();
                 batch.bind(ctx, shader);
             }
 
@@ -116,6 +117,7 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
         if (shader) {
             batch.flush(ctx, t);
             t->unbind(ctx);
+            shader->unbind();
         }
     }
 

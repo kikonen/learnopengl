@@ -14,3 +14,9 @@ imgui.ini
 vcpkg_installed/*
 
 .emacs*
+
+*.orig
+*_BASE_*
+*_BACKUP_*
+*_LOCAL_*
+*_REMOTE_*

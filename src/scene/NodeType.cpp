@@ -77,7 +77,11 @@ void NodeType::prepare(const Assets& assets)
         shader->skybox.set(assets.skyboxUnitIndex);
         shader->unbind();
     }
-    
+
+    if (batch.batchSize < 0) {
+        batch.batchSize = assets.batchSize;
+    }
+
     if (batchMode && batch.batchSize > 0) {
         batch.prepare(this);
     }
@@ -92,8 +96,9 @@ Shader* NodeType::bind(
 {
     if (!mesh) return nullptr;
 
-    shader = shader ? shader : defaultShader.get();
+    if (!shader) shader = defaultShader.get();
     if (!shader) return nullptr;
+
     boundShader = shader;
 
     shader->bind();
@@ -108,7 +113,7 @@ Shader* NodeType::bind(
     }
 
     if (wireframe) {
-        ctx.state.polygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        ctx.state.polygonFrontAndBack(GL_LINE);
     }
 
     return shader;
@@ -116,5 +121,9 @@ Shader* NodeType::bind(
 
 void NodeType::unbind(const RenderContext& ctx)
 {
+    if (boundShader) {
+        boundShader->unbind();
+        boundShader = nullptr;
+    }
     ctx.bindGlobal();
 }

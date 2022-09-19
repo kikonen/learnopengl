@@ -30,8 +30,8 @@ namespace {
 }
 
 
-QuadMesh::QuadMesh(const std::string& name)
-    : name(name)
+QuadMesh::QuadMesh(const std::string& modelName)
+    : Mesh(modelName)
 {
 }
 
@@ -130,7 +130,7 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
 
         glBindBuffer(GL_ARRAY_BUFFER, curr.VBO);
         KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, stride_size * 4, vboBuffer, GL_STATIC_DRAW));
-        delete vboBuffer;
+        delete[] vboBuffer;
 
         int offset = 0;
 

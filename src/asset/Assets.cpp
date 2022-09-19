@@ -11,6 +11,7 @@ Assets::Assets()
     glsl_version_str = "#version " + std::to_string(glsl_version[0]) + std::to_string(glsl_version[1]) + std::to_string(glsl_version[2]);
 
     glfwSwapInterval = 3;
+    glDebug = false;
 
     logFile = "log/development.log";
 
@@ -27,16 +28,16 @@ Assets::Assets()
 
     useIMGUI = false;
 
-    showNormals = true;
-    showMirrorView = true;
-    showShadowMapView = true;
-    showReflectionView = true;
-    showRefractionView = true;
-
+    showNormals = false;
+    showMirrorView = false;
+    showShadowMapView = false;
+    showReflectionView = false;
+    showRefractionView = false;
+        
     // NOTE KI no skipping of frames
     drawSkip = 0;
-    debugClearColor = true;
-    clearColor = true;
+    debugClearColor = false;
+    clearColor = false;
 
     waterTileSize = 100;
     // NOTE KI water tolerates less skip than shadow/cube
@@ -46,7 +47,7 @@ Assets::Assets()
     terrainVertexCount = 64;
     terrainTileSize = 400;
 
-    batchSize = 1000;
+    batchSize = 10;
 
     nearPlane = 0.1f;
     farPlane = 1000.0f;

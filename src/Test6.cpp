@@ -30,7 +30,9 @@ int Test6::onSetup() {
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    glfwSwapInterval(assets->glfwSwapInterval);
+    if (assets->glfwSwapInterval >= 0) {
+        glfwSwapInterval(assets->glfwSwapInterval);
+    }
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -72,6 +74,7 @@ int Test6::onRender(const RenderClock& clock) {
     currentScene->update(ctx);
     currentScene->bind(ctx);
     currentScene->draw(ctx);
+    currentScene->unbind(ctx);
 
     bool isCtrl = window->input->isModifierDown(Modifier::CONTROL);
     bool isShift = window->input->isModifierDown(Modifier::SHIFT);

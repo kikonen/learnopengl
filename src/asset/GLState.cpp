@@ -4,34 +4,68 @@ GLState::GLState()
 {
 }
 
-void GLState::reload() {
+//void GLState::reload() {
+//}
+
+void GLState::track(GLenum key, bool initial)
+{
+    tracked.insert(key);
+    if (initial) {
+        enable(key);
+    }
+    else {
+        disable(key);
+    }
 }
 
 void GLState::enable(GLenum key)
 {
-    //if (enabled.find(key) != enabled.end()) return;
+    if (tracked.find(key) == tracked.end()) {
+        glEnable(key);
+        return;
+    }
+
+    if (enabled.find(key) != enabled.end()) {
+        return;
+    }
     glEnable(key);
     enabled.insert(key);
 }
 
 void GLState::disable(GLenum key)
 {
-    //if (enabled.find(key) == enabled.end()) return;
+    if (tracked.find(key) == tracked.end()) {
+        glDisable(key);
+        return;
+    }
+
+    if (enabled.find(key) == enabled.end()) {
+        return;
+    }
     glDisable(key);
     enabled.erase(key);
 }
 
 void GLState::cullFace(GLenum mode)
 {
-    glCullFace(mode);
+    if (m_cullFace != mode) {
+        glCullFace(mode);
+        m_cullFace = mode;
+    }
 }
 
 void GLState::frontFace(GLenum mode)
 {
-    glFrontFace(mode); 
+    if (m_frontFace != mode) {
+        glFrontFace(mode);
+        m_frontFace = mode;
+    }
 }
 
-void GLState::polygonMode(GLenum face, GLenum mode)
+void GLState::polygonFrontAndBack(GLenum mode)
 {
-    glPolygonMode(face, mode);
+    if (m_polygonFrontAndBack != mode) {
+        glPolygonMode(GL_FRONT_AND_BACK, mode);
+        m_polygonFrontAndBack = mode;
+    }
 }

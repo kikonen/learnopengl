@@ -24,6 +24,8 @@ public:
         const std::string& name,
         const std::string& geometryType,
         const std::vector<std::string>& defines);
+
+    void validate();
 private:
     // name + geom
     std::map<std::string, std::shared_ptr<Shader>> shaders;

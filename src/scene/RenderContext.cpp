@@ -37,10 +37,10 @@ RenderContext::RenderContext(
 void RenderContext::bindGlobal() const
 {
     if (useWireframe) {
-        state.polygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        state.polygonFrontAndBack(GL_LINE);
     }
     else {
-        state.polygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        state.polygonFrontAndBack(GL_FILL);
     }
 }
 

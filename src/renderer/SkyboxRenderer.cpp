@@ -147,4 +147,6 @@ void SkyboxRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 
     KI_GL_UNBIND(glBindVertexArray(0));
     KI_GL_UNBIND(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
+
+    shader->unbind();
 }

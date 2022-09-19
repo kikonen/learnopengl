@@ -85,6 +85,11 @@ void Viewport::bind(const RenderContext& ctx)
     binder(*this);
 }
 
+void Viewport::unbind(const RenderContext& ctx)
+{
+    shader->unbind();
+}
+
 void Viewport::draw(const RenderContext& ctx)
 {
     if (textureID == -1) return;

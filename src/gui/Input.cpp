@@ -40,12 +40,12 @@ Input::Input(Window* window)
 Input::~Input()
 {
     for (auto& e : keyMappings) {
-        delete e.second;
+        delete[] e.second;
     }
     keyMappings.clear();
 
     for (auto& e : modifierMappings) {
-        delete e.second;
+        delete[] e.second;
     }
     modifierMappings.clear();
 

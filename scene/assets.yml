@@ -2,6 +2,7 @@ assets:
   log_file: log/development.log
 
   glfw_swap_interval: 3
+  gl_debug: false
 
   models_dir: 3d_model
   shaders_dir: shader/test6
@@ -18,8 +19,8 @@ assets:
   use_imgui: false
 
   show_normals: false
-  show_mirror_view: true
-  show_shadowMap_view: true
+  show_mirror_view: false
+  show_shadowMap_view: false
   show_reflection_view: true
   show_refraction_view: true
 
@@ -33,7 +34,7 @@ assets:
   terrain_vertex_count: 64
   terrain_tile_size: 400
 
-  batch_size: 1000
+  batch_size: 10
 
   near_plane: 0.1
   far_plane: 1000.0

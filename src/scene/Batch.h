@@ -10,6 +10,7 @@ class Batch final
 {
 public:
     Batch();
+    ~Batch();
 
     void add(const glm::mat4& model, const glm::mat3& normal, int objectID);
     void reserve(size_t count);
@@ -25,7 +26,7 @@ public:
 
 public:
     bool prepared = false;
-    unsigned int batchSize = 0;
+    int batchSize = -1;
 
     bool staticBuffer = false;
 
@@ -37,8 +38,8 @@ private:
     std::vector<glm::mat3> normalMatrices;
     std::vector<glm::vec4> objectIDs;
 
-    unsigned int modelBuffer = -1;
-    unsigned int normalBuffer = -1;
-    unsigned int objectIDBuffer = -1;
+    unsigned int modelBuffer = 0;
+    unsigned int normalBuffer = 0;
+    unsigned int objectIDBuffer = 0;
 };
 

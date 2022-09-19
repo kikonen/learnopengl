@@ -92,6 +92,7 @@ void ShadowMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
 void ShadowMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
 {
     auto shader = shadowShader.get();
+    shader->bind();
 
     for (auto& x : registry.nodes) {
         auto t = x.first;
@@ -108,4 +109,6 @@ void ShadowMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& regist
         batch.flush(ctx, t);
         t->unbind(ctx);
     }
+
+    shader->unbind();
 }
