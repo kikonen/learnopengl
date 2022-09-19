@@ -12,6 +12,7 @@ class Mesh
 {
 public:
     Mesh();
+    Mesh(const std::string& modelName);
     virtual ~Mesh();
 
     virtual bool hasReflection() = 0;
@@ -27,6 +28,8 @@ public:
     virtual void drawInstanced(const RenderContext& ctx, int instanceCount) = 0;
 
 public:
+    std::string modelName;
+
     MeshBuffers buffers;
 };
 

@@ -7,6 +7,13 @@ Batch::Batch()
 {
 }
 
+Batch:: ~Batch()
+{
+//    glDeleteBuffers(1, &modelBuffer);
+//    glDeleteBuffers(1, &normalBuffer);
+//    glDeleteBuffers(1, &objectIDBuffer);
+}
+
 void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
 {
     modelMatrices.push_back(model);
@@ -119,7 +126,10 @@ void Batch::prepare(NodeType* type)
         update(batchSize);
     }
 
+    KI_DEBUG_SB("BATCHL: type=" << type->typeID << ", model=" << type->mesh->modelName << " - VAO = " << type->mesh->buffers.VAO << ", model = " << modelBuffer << ", normal = " << normalBuffer << ", objectID = " << objectIDBuffer);
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void Batch::update(size_t count)
@@ -140,7 +150,7 @@ void Batch::update(size_t count)
         glNamedBufferSubData(normalBuffer, 0, count * sizeof(glm::mat3), &normalMatrices[0]);
     }
 
-    KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    //KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
 void Batch::bind(const RenderContext& ctx, Shader* shader)

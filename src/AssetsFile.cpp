@@ -81,7 +81,7 @@ void AssetsFile::loadAssets(
             data.showMirrorView = v.as<bool>();
         }
         else if (k == "show_shadowMap_view") {
-            data.showMirrorView = v.as<bool>();
+            data.showShadowMapView = v.as<bool>();
         }
         else if (k == "show_reflection_view") {
             data.showReflectionView = v.as<bool>();

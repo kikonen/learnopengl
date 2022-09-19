@@ -48,7 +48,6 @@ public:
     std::vector<std::shared_ptr<Material>> materials;
     std::vector<GLuint> textureIDs;
 
-    const std::string modelName;
     const std::string modelPath;
 
 private:

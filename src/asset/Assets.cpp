@@ -27,16 +27,16 @@ Assets::Assets()
 
     useIMGUI = false;
 
-    showNormals = true;
-    showMirrorView = true;
-    showShadowMapView = true;
-    showReflectionView = true;
-    showRefractionView = true;
-
+    showNormals = false;
+    showMirrorView = false;
+    showShadowMapView = false;
+    showReflectionView = false;
+    showRefractionView = false;
+        
     // NOTE KI no skipping of frames
     drawSkip = 0;
-    debugClearColor = true;
-    clearColor = true;
+    debugClearColor = false;
+    clearColor = false;
 
     waterTileSize = 100;
     // NOTE KI water tolerates less skip than shadow/cube

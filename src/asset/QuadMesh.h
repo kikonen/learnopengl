@@ -13,7 +13,7 @@
 class QuadMesh final : public Mesh
 {
 public:
-    QuadMesh(const std::string& name);
+    QuadMesh(const std::string& modelName);
     virtual ~QuadMesh();
 
     bool hasReflection() override;
@@ -29,7 +29,6 @@ public:
     void drawInstanced(const RenderContext& ctx, int instanceCount) override;
 
 public:
-    std::string name;
     std::shared_ptr<Material> material = nullptr;
     std::vector<GLuint> textureIDs;
 
