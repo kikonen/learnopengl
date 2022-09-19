@@ -77,7 +77,11 @@ void NodeType::prepare(const Assets& assets)
         shader->skybox.set(assets.skyboxUnitIndex);
         shader->unbind();
     }
-    
+
+    if (batch.batchSize < 0) {
+        batch.batchSize = assets.batchSize;
+    }
+
     if (batchMode && batch.batchSize > 0) {
         batch.prepare(this);
     }

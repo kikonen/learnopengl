@@ -88,7 +88,6 @@ void NodeRegistry::attachNodes()
 
     for (auto& x : newNodes) {
         auto t = x.first;
-        t->batch.batchSize = assets.batchSize;
         KI_GL_CALL(t->prepare(assets));
 
         for (auto& node : x.second) {

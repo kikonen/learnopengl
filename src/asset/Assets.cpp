@@ -46,7 +46,7 @@ Assets::Assets()
     terrainVertexCount = 64;
     terrainTileSize = 400;
 
-    batchSize = 1000;
+    batchSize = 10;
 
     nearPlane = 0.1f;
     farPlane = 1000.0f;

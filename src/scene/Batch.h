@@ -26,7 +26,7 @@ public:
 
 public:
     bool prepared = false;
-    unsigned int batchSize = 0;
+    int batchSize = -1;
 
     bool staticBuffer = false;
 

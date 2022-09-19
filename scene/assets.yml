@@ -18,7 +18,7 @@ assets:
   use_imgui: false
 
   show_normals: false
-  show_mirror_view: true
+  show_mirror_view: false
   show_shadowMap_view: false
   show_reflection_view: true
   show_refraction_view: true
@@ -33,7 +33,7 @@ assets:
   terrain_vertex_count: 64
   terrain_tile_size: 400
 
-  batch_size: 100
+  batch_size: 10
 
   near_plane: 0.1
   far_plane: 1000.0

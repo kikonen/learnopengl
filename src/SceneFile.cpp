@@ -86,6 +86,8 @@ void SceneFile::attachEntity(
 
         auto type = std::make_shared<NodeType>(data.typeId, asyncLoader->getShader(data.shaderName, data.shaderDefinitions));
 
+        type->batch.batchSize = data.batchSize;
+
         {
             auto e = data.renderFlags.find("blend");
             if (e != data.renderFlags.end()) {
@@ -329,6 +331,9 @@ void SceneFile::loadEntity(
         }
         else if (k == "override_material") {
             data.overrideMaterials = v.as<bool>();
+        }
+        else if (k == "batch_size") {
+            data.batchSize = v.as<int>();
         }
         else if (k == "load_textures") {
             data.loadTextures = v.as<bool>();
