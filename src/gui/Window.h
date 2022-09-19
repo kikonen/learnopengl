@@ -15,7 +15,7 @@ class Engine;
 class Window final
 {
 public:
-    Window(Engine& engine, const Assets& assets);
+    Window(Engine& engine, const std::shared_ptr<Assets> assets);
     ~Window();
 
     bool create();
@@ -38,7 +38,7 @@ private:
     void bindGLFWCallbacks();
 
 public:
-    const Assets& assets;
+    const std::shared_ptr<Assets> assets;
 
     GLFWwindow* glfwWindow{ nullptr };
     int width = 0;

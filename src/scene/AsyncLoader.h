@@ -13,8 +13,8 @@ class AsyncLoader
 {
 public:
     AsyncLoader(
-        ShaderRegistry& shaders,
-        const Assets& assets);
+        std::shared_ptr<ShaderRegistry> shaders,
+        const std::shared_ptr<Assets> assets);
 
     virtual void setup();
 
@@ -34,9 +34,9 @@ public:
     void waitForReady();
 
 public:
-    ShaderRegistry& shaders;
-    const Assets& assets;
-    std::shared_ptr<Scene> scene = nullptr;
+    std::shared_ptr<ShaderRegistry> shaders;
+    const std::shared_ptr<Assets> assets;
+    std::shared_ptr<Scene> scene;
 
 private:
     int startedCount = 0;

@@ -1,6 +1,6 @@
 #include "NodeController.h"
 
-NodeController::NodeController(const Assets& assets)
+NodeController::NodeController(const std::shared_ptr<Assets> assets)
     : assets(assets)
 {
 }

@@ -7,7 +7,7 @@ class MovingLightController : public NodeController
 {
 public:
     MovingLightController(
-        const Assets& assets, 
+        const std::shared_ptr<Assets> assets,
         const glm::vec3& center, 
         float radius, 
         float speed,

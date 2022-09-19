@@ -13,7 +13,7 @@ namespace {
 
 SceneFile::SceneFile(
     std::shared_ptr<AsyncLoader> asyncLoader,
-    const Assets& assets,
+    const std::shared_ptr<Assets> assets,
     const std::string& filename)
     : filename(filename),
     assets(assets),
@@ -59,8 +59,8 @@ void SceneFile::attachSkybox(
 {
     if (!skybox.valid()) return;
 
-    auto skybox = std::make_unique<SkyboxRenderer>(assets, data.shaderName, data.materialName);
-    skybox->prepare(asyncLoader->shaders);
+    auto skybox = std::make_unique<SkyboxRenderer>(*assets, data.shaderName, data.materialName);
+    skybox->prepare(*asyncLoader->shaders);
     scene->skyboxRenderer.reset(skybox.release());
 }
 
@@ -70,20 +70,23 @@ void SceneFile::attachEntity(
     std::map<const uuids::uuid, EntityData>& entities,
     std::vector<std::shared_ptr<Material>>& materials)
 {
-    asyncLoader->addLoader([this, scene, &data, &entities, &materials]() {
-        if (!data.enabled) {
-            return;
-        }
+    if (!data.enabled) {
+        return;
+    }
 
-        const EntityData* parent = nullptr;
-        if (!data.parentId.is_nil()) {
-            auto entry = entities.find(data.parentId);
-            if (entry != entities.end()) {
-                auto& e = entry->second;
-                parent = &e;
-            }
+    EntityData parent;
+    if (!data.parentId.is_nil()) {
+        auto entry = entities.find(data.parentId);
+        if (entry != entities.end()) {
+            auto& e = entry->second;
+            parent = e;
         }
+    }
 
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
+
+    asyncLoader->addLoader([scene, data, parent, assets, asyncLoader]() {
         auto type = std::make_shared<NodeType>(data.typeId, asyncLoader->getShader(data.shaderName, data.shaderDefinitions));
 
         {
@@ -137,7 +140,7 @@ void SceneFile::attachEntity(
         }
 
         {
-            MeshLoader meshLoader(assets, data.modelName, data.modelPath);
+            MeshLoader meshLoader(*assets, data.modelName, data.modelPath);
 
             if (data.defaultMaterial) {
                 meshLoader.defaultMaterial = data.defaultMaterial;
@@ -150,7 +153,7 @@ void SceneFile::attachEntity(
             type->mesh.reset(mesh.release());
         }
 
-        type->modifyMaterials([this, &data](Material& m) {
+        type->modifyMaterials([&asyncLoader, &data, &assets](Material& m) {
             if (data.materialModifierFields.reflection) {
                 m.reflection = data.materialModifiers->reflection;
             }
@@ -169,7 +172,7 @@ void SceneFile::attachEntity(
 
             // NOTE KI if textures were not loaded, then need to load them now
             if (!data.loadTextures) {
-                m.loadTextures(asyncLoader->assets);
+                m.loadTextures(*assets);
             }
          });
 
@@ -179,8 +182,10 @@ void SceneFile::attachEntity(
                 for (auto x = 0; x < repeat.xCount; x++) {
                     for (auto& p : data.positions) {
                         glm::vec3 pos = p;
-                        if (parent) {
-                            pos += parent->positions[0];
+                        // TODO KI let parent handling be problem of Scene Render logic
+                        //  => i.e. that is what in reality need to do anyway
+                        if (parent.valid) {
+                            pos += parent.positions[0];
                         }
                         pos += glm::vec3{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
@@ -188,7 +193,7 @@ void SceneFile::attachEntity(
                         node->id = data.id;
                         node->parentId = data.parentId;
 
-                        node->setPos(pos + assets.groundOffset);
+                        node->setPos(pos + assets->groundOffset);
                         node->setRotation(data.rotation);
                         node->setScale(data.scale);
 
@@ -237,6 +242,7 @@ void SceneFile::loadEntities(
         loadEntity(entry, materials, data);
         // NOTE KI ignore elements without ID
         if (data.id.is_nil()) continue;
+        data.valid = true;
         entities[data.id] = data;
     }
 }

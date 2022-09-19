@@ -9,7 +9,7 @@ class TestSceneSetup final
 public:
     TestSceneSetup(
         std::shared_ptr<AsyncLoader> asyncLoader,
-        const Assets& assets);
+        const std::shared_ptr<Assets> assets);
     ~TestSceneSetup();
 
     void setup(std::shared_ptr<Scene> scene);
@@ -74,10 +74,9 @@ private:
     void setupEffectExplosion();
 
     void setupViewport1();
-
 private:
     std::shared_ptr<AsyncLoader> asyncLoader;
-    const Assets& assets;
+    std::shared_ptr<Assets> assets;
 
-    std::shared_ptr<Scene> scene{ nullptr };
+    std::shared_ptr<Scene> scene;
 };

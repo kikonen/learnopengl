@@ -2,7 +2,7 @@
 
 #include "model/InstancedNode.h"
 
-InstancedController::InstancedController(const Assets& assets)
+InstancedController::InstancedController(const std::shared_ptr<Assets> assets)
     : NodeController(assets)
 {
 }

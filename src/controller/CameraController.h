@@ -5,7 +5,7 @@
 class CameraController : public NodeController
 {
 public:
-    CameraController(const Assets& assets);
+    CameraController(const std::shared_ptr<Assets> assets);
     ~CameraController();
 
     bool update(const RenderContext& ctx, Node& node) override;

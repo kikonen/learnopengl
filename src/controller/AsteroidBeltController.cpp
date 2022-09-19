@@ -2,7 +2,7 @@
 
 #include "model/InstancedNode.h"
 
-AsteroidBeltController::AsteroidBeltController(const Assets& assets, Node* planet)
+AsteroidBeltController::AsteroidBeltController(const std::shared_ptr<Assets> assets, Node* planet)
     : InstancedController(assets), 
     planet(planet)
 {

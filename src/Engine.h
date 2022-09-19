@@ -38,10 +38,10 @@ public:
 
     RenderClock startClock;
 
-    ShaderRegistry shaders;
+    std::shared_ptr<ShaderRegistry> shaders;
 
 protected:
-    Assets assets;
+    std::shared_ptr<Assets> assets;
 
     std::shared_ptr<AsyncLoader> asyncLoader;
 

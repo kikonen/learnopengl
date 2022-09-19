@@ -1,7 +1,7 @@
 #include "CameraController.h"
 
 
-CameraController::CameraController(const Assets& assets)
+CameraController::CameraController(const std::shared_ptr<Assets> assets)
     : NodeController(assets)
 {
 }

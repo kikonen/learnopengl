@@ -5,7 +5,7 @@
 class NodePathController : public NodeController
 {
 public:
-    NodePathController(const Assets& assets, int pathMode);
+    NodePathController(const std::shared_ptr<Assets> assets, int pathMode);
     ~NodePathController();
 
     bool update(const RenderContext& ctx, Node& node) override;

@@ -13,7 +13,9 @@
 
 
 Engine::Engine()
+    : assets(std::make_shared<Assets>())
 {
+    shaders = std::make_shared<ShaderRegistry>();
 }
 
 Engine::~Engine() {

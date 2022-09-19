@@ -33,7 +33,7 @@ namespace {
 
 TestSceneSetup::TestSceneSetup(
     std::shared_ptr<AsyncLoader> asyncLoader,
-    const Assets& assets)
+    const std::shared_ptr<Assets> assets)
     : assets(assets), asyncLoader(asyncLoader)
 {
 }
@@ -78,11 +78,11 @@ void TestSceneSetup::setupCamera()
     glm::vec3 front = glm::vec3(0, 0, -1);
     glm::vec3 up = glm::vec3(0, 1, 0);
 
-    glm::vec3 pos = glm::vec3(-10, 7, -20.f) + assets.groundOffset;
+    glm::vec3 pos = glm::vec3(-10, 7, -20.f) + assets->groundOffset;
     glm::vec3 rotation = glm::vec3(0, 180, 0.f);
 
     auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
-    MeshLoader loader(assets, "player");
+    MeshLoader loader(*assets, "player");
     type->mesh = loader.load();
 
     auto node = new Node(type);
@@ -99,7 +99,7 @@ void TestSceneSetup::setupCamera()
         node->controller = new CameraController(assets);
 
         ParticleDefinition pd;
-        node->particleGenerator = std::make_unique<ParticleGenerator>(assets, pd);
+        node->particleGenerator = std::make_unique<ParticleGenerator>(*assets, pd);
     }
 
     scene->registry.addNode(node);
@@ -107,12 +107,16 @@ void TestSceneSetup::setupCamera()
 
 void TestSceneSetup::setupLightDirectional()
 {
-    asyncLoader->addLoader([this]() {
+    auto scene = this->scene;
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
+
+    asyncLoader->addLoader([assets, scene, asyncLoader]() {
         // sun
         auto light = std::make_unique<Light>();
         {
-            light->setPos(glm::vec3(10, 40, 10) + assets.groundOffset);
-            light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
+            light->setPos(glm::vec3(10, 40, 10) + assets->groundOffset);
+            light->setTarget(glm::vec3(0.0f) + assets->groundOffset);
 
             light->directional = true;
 
@@ -125,7 +129,7 @@ void TestSceneSetup::setupLightDirectional()
         type->light = true;
         type->noShadow = true;
 
-        MeshLoader loader(assets, "light");
+        MeshLoader loader(*assets, "light");
         loader.defaultMaterial->kd = light->specular;
         loader.overrideMaterials = true;
         type->mesh = loader.load();
@@ -138,7 +142,7 @@ void TestSceneSetup::setupLightDirectional()
         {
             const float radius = 80.0f;
             const float speed = 20.f;
-            glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
+            glm::vec3 center = glm::vec3(0, 40, 0) + assets->groundOffset;
 
             auto planet = asyncLoader->waitNode(getPlanetID(), true);
             if (planet) {
@@ -154,7 +158,11 @@ void TestSceneSetup::setupLightDirectional()
 
 void TestSceneSetup::setupLightMoving()
 {
-    asyncLoader->addLoader([this]() {
+    auto scene = this->scene;
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
+
+    asyncLoader->addLoader([assets, scene, asyncLoader]() {
         //Light* active = nullptr;
         std::vector<std::unique_ptr<Light>> lights;
 
@@ -165,7 +173,7 @@ void TestSceneSetup::setupLightMoving()
                 auto light = new Light();
                 lights.push_back(std::unique_ptr<Light>(light));
 
-                glm::vec3 center = glm::vec3(0 + x * radius * 3, 7 + x + z, z * radius * 3) + assets.groundOffset;
+                glm::vec3 center = glm::vec3(0 + x * radius * 3, 7 + x + z, z * radius * 3) + assets->groundOffset;
                 //light->pos = glm::vec3(10, 5, 10) + assets.groundOffset;
                 light->setPos(center);
 
@@ -178,7 +186,7 @@ void TestSceneSetup::setupLightMoving()
                 light->cutoffAngle = 12.5f;
                 light->outerCutoffAngle = 25.f;
 
-                light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
+                light->setTarget(glm::vec3(0.0f) + assets->groundOffset);
 
                 light->ambient = { 0.4f, 0.4f, 0.2f, 1.f };
                 light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
@@ -191,7 +199,7 @@ void TestSceneSetup::setupLightMoving()
         type->noShadow = true;
         //type->wireframe = true;
 
-        MeshLoader loader(assets, "light");
+        MeshLoader loader(*assets, "light");
         //loader.overrideMaterials = true;
         type->mesh = loader.load();
 
@@ -213,11 +221,15 @@ void TestSceneSetup::setupLightMoving()
 
 void TestSceneSetup::setupNodeBrickwallBox()
 {
-    asyncLoader->addLoader([this]() {
+    auto scene = this->scene;
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
+
+    asyncLoader->addLoader([assets, scene, asyncLoader]() {
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
         type->renderBack = true;
 
-        MeshLoader loader(assets, "brickwall2");
+        MeshLoader loader(*assets, "brickwall2");
         type->mesh = loader.load();
 
         glm::vec3 pos[] = {
@@ -241,7 +253,7 @@ void TestSceneSetup::setupNodeBrickwallBox()
         float scale = 100;
         for (int i = 0; i < 1; i++) {
             auto node = new Node(type);
-            node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 95, 0) + assets.groundOffset);
+            node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 95, 0) + assets->groundOffset);
             node->setScale(scale);
             node->setRotation(rot[i]);
             //node->skipShadow = true;
@@ -252,21 +264,29 @@ void TestSceneSetup::setupNodeBrickwallBox()
 
 void TestSceneSetup::setupNodeActive()
 {
-    asyncLoader->addLoader([this]() {
+    auto scene = this->scene;
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
+
+    asyncLoader->addLoader([assets, scene, asyncLoader]() {
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
-        MeshLoader loader(assets, "texture_cube");
+        MeshLoader loader(*assets, "texture_cube");
         type->mesh = loader.load();
 
         auto active = new Node(type);
         active->controller = new NodePathController(assets, 0);
-        active->setPos(glm::vec3(0) + assets.groundOffset);
+        active->setPos(glm::vec3(0) + assets->groundOffset);
         scene->registry.addNode(active);
         });
 }
 
 void TestSceneSetup::setupNodePlanet()
 {
-    asyncLoader->addLoader([this]() {
+    auto scene = this->scene;
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
+
+    asyncLoader->addLoader([assets, scene, asyncLoader]() {
         auto planet = asyncLoader->waitNode(getPlanetID(), true);
 
         auto light = std::make_unique<Light>();
@@ -289,7 +309,7 @@ void TestSceneSetup::setupNodePlanet()
             type->light = true;
             type->noShadow = true;
 
-            MeshLoader loader(assets, "light");
+            MeshLoader loader(*assets, "light");
             loader.overrideMaterials = true;
             type->mesh = loader.load();
         }
@@ -311,11 +331,15 @@ void TestSceneSetup::setupNodePlanet()
 
 void TestSceneSetup::setupNodeAsteroidBelt()
 {
-    asyncLoader->addLoader([this]() {
+    auto scene = this->scene;
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
+
+    asyncLoader->addLoader([assets, scene, asyncLoader]() {
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
         type->batchMode = false;
 
-        MeshLoader loader(assets, "rock", "rock");
+        MeshLoader loader(*assets, "rock", "rock");
         type->mesh = loader.load();
 
         auto planet = asyncLoader->waitNode(getPlanetID(), true);
@@ -323,17 +347,21 @@ void TestSceneSetup::setupNodeAsteroidBelt()
         auto node = new InstancedNode(type, controller);
         //node->selected = true;
         //std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-        this->scene->registry.addNode(node);
+        scene->registry.addNode(node);
         });
 }
 
 void TestSceneSetup::setupSpriteSkeleton()
 {
-    asyncLoader->addLoader([this]() {
-        //auto type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "Skeleton_VH_normal.PNG");
-        auto type = Sprite::getNodeType(assets, asyncLoader->shaders, "Skeleton_VH.PNG", "");
+    auto scene = this->scene;
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
 
-        glm::vec3 pos = glm::vec3(0, 5, 20) + assets.groundOffset;
+    asyncLoader->addLoader([assets, scene, asyncLoader]() {
+        //auto type = Sprite::getNodeType(assets, "Skeleton_VH.PNG", "Skeleton_VH_normal.PNG");
+        auto type = Sprite::getNodeType(*assets, asyncLoader->shaders, "Skeleton_VH.PNG", "");
+
+        glm::vec3 pos = glm::vec3(0, 5, 20) + assets->groundOffset;
         for (int x = 0; x < 10; x++) {
             for (int z = 0; z < 101; z++) {
                 auto sprite = new Sprite(type, glm::vec2(1.5, 3));
@@ -347,7 +375,11 @@ void TestSceneSetup::setupSpriteSkeleton()
 
 void TestSceneSetup::setupTerrain()
 {
-    asyncLoader->addLoader([this]() {
+    auto scene = this->scene;
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
+
+    asyncLoader->addLoader([assets, scene, asyncLoader]() {
         std::shared_ptr<Material> material = std::make_shared<Material>();
         material->name = "terrain";
         material->type = MaterialType::texture;
@@ -357,16 +389,16 @@ void TestSceneSetup::setupTerrain()
         material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
         material->map_kd = "Grass Dark_VH.PNG";
         //material->map_kd = "singing_brushes.png";
-        material->loadTextures(assets);
+        material->loadTextures(*assets);
 
         auto shader = asyncLoader->getShader(TEX_TERRAIN);
 
-        TerrainGenerator generator(assets);
+        TerrainGenerator generator(*assets);
 
         auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
         //type->renderBack = true;
         type->noShadow = true;
-        type->mesh = generator.generateTerrain(assets, material);
+        type->mesh = generator.generateTerrain(*assets, material);
 
         for (int x = 0; x < 2; x++) {
             for (int z = 0; z < 2; z++) {
@@ -379,7 +411,11 @@ void TestSceneSetup::setupTerrain()
 
 void TestSceneSetup::setupWaterSurface()
 {
-    asyncLoader->addLoader([this]() {
+    auto scene = this->scene;
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
+
+    asyncLoader->addLoader([assets, scene, asyncLoader]() {
         std::shared_ptr<Material> material = std::make_shared<Material>();
         material->name = "water_surface";
         material->ns = 150;
@@ -392,19 +428,19 @@ void TestSceneSetup::setupWaterSurface()
         material->tiling = 2;
         material->textureSpec.mode = GL_REPEAT;
         //        material->pattern = 1;
-        material->loadTextures(assets);
+        material->loadTextures(*assets);
         std::shared_ptr<Shader> shader = asyncLoader->getShader(TEX_WATER);
 
-        TerrainGenerator generator(assets);
+        TerrainGenerator generator(*assets);
 
         auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
         type->renderBack = true;
         type->water = true;
         //        type->blend = true;
         type->noShadow = true;
-        type->mesh = generator.generateWater(assets, material);
+        type->mesh = generator.generateWater(*assets, material);
 
-        glm::vec3 pos = assets.groundOffset;
+        glm::vec3 pos = assets->groundOffset;
 
         auto water = new Water(type, pos.x, pos.y + 5, pos.z);
         water->setPos(pos + glm::vec3(0, 5, -10));
@@ -420,16 +456,20 @@ void TestSceneSetup::setupWaterSurface()
 
 void TestSceneSetup::setupEffectExplosion()
 {
-    asyncLoader->addLoader([this]() {
+    auto scene = this->scene;
+    auto asyncLoader = this->asyncLoader;
+    auto assets = this->assets;
+
+    asyncLoader->addLoader([assets, scene, asyncLoader]() {
         std::shared_ptr<Shader> shader = asyncLoader->getShader(TEX_EFFECT);
 
-        TerrainGenerator generator(assets);
+        TerrainGenerator generator(*assets);
 
         auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
         type->renderBack = true;
         type->noShadow = true;
 
-        glm::vec3 pos = assets.groundOffset;
+        glm::vec3 pos = assets->groundOffset;
 
         auto node = new Billboard(type);
         node->setPos(pos + glm::vec3(0, 3.5, -20));
@@ -444,7 +484,7 @@ void TestSceneSetup::setupViewport1()
     TextureSpec spec;
     // NOTE KI memory_leak
     auto texture = new PlainTexture("checkerboard", spec, 1, 1);
-    texture->prepare(assets);
+    texture->prepare(*assets);
 
     unsigned int color = 0x90ff2020;
     texture->setData(&color, sizeof(unsigned int));
@@ -454,7 +494,7 @@ void TestSceneSetup::setupViewport1()
         glm::vec3(0, 0, 0),
         glm::vec2(0.25f, 0.25f),
         texture->textureID,
-        asyncLoader->shaders.getShader(assets, TEX_VIEWPORT));
+        asyncLoader->getShader(TEX_VIEWPORT));
     viewport->prepare();
     scene->registry.addViewPort(viewport);
 }

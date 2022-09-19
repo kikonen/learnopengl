@@ -1,6 +1,8 @@
 #include "NodePathController.h"
 
-NodePathController::NodePathController(const Assets& assets, int pathMode)
+NodePathController::NodePathController(
+    const std::shared_ptr<Assets> assets,
+    int pathMode)
     : NodeController(assets),
     pathMode(pathMode)
 {
@@ -20,7 +22,7 @@ bool NodePathController::update(const RenderContext& ctx, Node& node)
         float posY = sin(elapsed * 1.1f) * radius / 3.0f + 15.f;
         float posZ = cos(elapsed) * radius / 2.0f;
 
-        node.setPos(glm::vec3(posX, posY, posZ) + assets.groundOffset);
+        node.setPos(glm::vec3(posX, posY, posZ) + assets->groundOffset);
     }
 
     if (true) {

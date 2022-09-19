@@ -50,6 +50,7 @@ class SceneFile
     struct EntityData {
         int typeId{ 0 };
         bool enabled{ false };
+        bool valid{ false };
 
         EntityType type { EntityType::node };
 
@@ -86,7 +87,7 @@ class SceneFile
 public:
     SceneFile(
         std::shared_ptr<AsyncLoader> asyncLoader,
-        const Assets& assets,
+        const std::shared_ptr<Assets> assets,
         const std::string& filename);
     ~SceneFile();
 
@@ -160,7 +161,7 @@ private:
 
 private:
     std::shared_ptr<AsyncLoader> asyncLoader;
-    const Assets& assets;
+    const std::shared_ptr<Assets> assets;
     const std::string filename;
 
     SkyboxData skybox;
