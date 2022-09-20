@@ -135,7 +135,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
                 const glm::vec3& p = vertex->pos;
                 const glm::vec3& n = vertex->normal;
                 const glm::vec3& tan = vertex->tangent;
-                const std::shared_ptr<Material>& m = vertex->material;
+                const std::shared_ptr<Material> m = Material::findID(vertex->materialID, materials);
                 const glm::vec2& t = vertex->texture;
 
                 vbo->pos.x = p.x;

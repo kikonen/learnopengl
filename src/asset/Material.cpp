@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iostream>
 #include <filesystem>
+#include <mutex>
 
 #include "ImageTexture.h"
 
@@ -15,6 +16,16 @@ namespace {
     constexpr int SPECULAR_IDX = 2;
     constexpr int NORMAL_MAP_IDX = 3;
     constexpr int DUDV_MAP_IDX = 4;
+
+    int typeIDbase = 0;
+
+    std::mutex type_id_lock;
+
+    int nextID()
+    {
+        std::lock_guard<std::mutex> lock(type_id_lock);
+        return ++typeIDbase;
+    }
 }
 
 std::shared_ptr<Material> createGoldMaterial() {
@@ -79,7 +90,19 @@ std::shared_ptr<Material> Material::find(
     return e != materials.end() ? *e : nullptr;
 }
 
+std::shared_ptr<Material> Material::findID(
+    const int objectID,
+    std::vector<std::shared_ptr<Material>>& materials)
+{
+    const auto& e = std::find_if(
+        materials.begin(),
+        materials.end(),
+        [objectID](std::shared_ptr<Material>& m) { return m->objectID == objectID; });
+    return e != materials.end() ? *e : nullptr;
+}
+
 Material::Material()
+    : objectID(nextID())
 {
 }
 

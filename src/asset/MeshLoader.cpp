@@ -260,7 +260,7 @@ size_t MeshLoader::resolveVertexIndex(
         textures.empty() ? EMPTY_TEX : textures[ti],
         normals.empty() ? EMPTY_NORMAL : normals[ni],
         tangents.empty() ? EMPTY_NORMAL : tangents[tangenti],
-        material);
+        material->objectID);
 
     if (old && *old == *v) {
         delete v;

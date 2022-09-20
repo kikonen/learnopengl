@@ -5,12 +5,12 @@ Vertex::Vertex(
     const glm::vec2& texture, 
     const glm::vec3& normal, 
     const glm::vec3& tangent,
-    const std::shared_ptr<Material> material)
+    const int materialID)
     : pos(pos),
     texture(texture),
     normal(normal),
     tangent(tangent),
-    material(material)
+    materialID(materialID)
 {
 }
 
@@ -20,7 +20,7 @@ bool Vertex::operator==(const Vertex& b) const
         texture == b.texture &&
         normal == b.normal &&
         tangent == b.tangent &&
-        material == b.material;
+        materialID == b.materialID;
 }
 
 bool Vertex::operator!=(const Vertex& b) const

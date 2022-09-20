@@ -92,6 +92,11 @@ public:
     static std::shared_ptr<Material> find(
         const std::string& name,
         std::vector<std::shared_ptr<Material>>& materials);
+
+    static std::shared_ptr<Material> findID(
+        const int objectID,
+        std::vector<std::shared_ptr<Material>>& materials);
+
 private:
     std::string resolveBaseDir(const Assets& assets);
 
@@ -102,6 +107,8 @@ private:
         const std::string& name);
 
 public:
+    const int objectID;
+
     std::string name;
     std::string path;
 
