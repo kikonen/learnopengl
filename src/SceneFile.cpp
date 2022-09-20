@@ -74,7 +74,7 @@ void SceneFile::attachEntity(
 
     EntityData parent;
     if (!data.parentId.is_nil()) {
-        auto entry = entities.find(data.parentId);
+        const auto& entry = entities.find(data.parentId);
         if (entry != entities.end()) {
             auto& e = entry->second;
             parent = e;
@@ -86,55 +86,57 @@ void SceneFile::attachEntity(
     asyncLoader->addLoader([scene, data, parent, asyncLoader]() {
         const Assets& assets = asyncLoader->assets;
 
-        auto type = std::make_shared<NodeType>(data.typeId, asyncLoader->getShader(data.shaderName, data.shaderDefinitions));
+        auto type = std::make_shared<NodeType>(
+            data.typeId,
+            asyncLoader->getShader(data.shaderName, data.shaderDefinitions));
 
         type->batch.batchSize = data.batchSize;
 
         {
-            auto e = data.renderFlags.find("blend");
+            const auto& e = data.renderFlags.find("blend");
             if (e != data.renderFlags.end()) {
                 type->blend = e->second;
             }
         }
         {
-            auto e = data.renderFlags.find("render_back");
+            const auto& e = data.renderFlags.find("render_back");
             if (e != data.renderFlags.end()) {
                 type->renderBack = e->second;
             }
         }
         {
-            auto e = data.renderFlags.find("no_shadow");
+            const auto& e = data.renderFlags.find("no_shadow");
             if (e != data.renderFlags.end()) {
                 type->noShadow = e->second;
             }
         }
         {
-            auto e = data.renderFlags.find("mirror");
+            const auto& e = data.renderFlags.find("mirror");
             if (e != data.renderFlags.end()) {
                 type->mirror = e->second;
                 type->mirrorPlane = data.mirrorPlane;
             }
         }
         {
-            auto e = data.renderFlags.find("water");
+            const auto& e = data.renderFlags.find("water");
             if (e != data.renderFlags.end()) {
                 type->water = e->second;
             }
         }
         {
-            auto e = data.renderFlags.find("light");
+            const auto& e = data.renderFlags.find("light");
             if (e != data.renderFlags.end()) {
                 type->light = e->second;
             }
         }
         {
-            auto e = data.renderFlags.find("batch_mode");
+            const auto& e = data.renderFlags.find("batch_mode");
             if (e != data.renderFlags.end()) {
                 type->batchMode = e->second;
             }
         }
         {
-            auto e = data.renderFlags.find("wireframe");
+            const auto& e = data.renderFlags.find("wireframe");
             if (e != data.renderFlags.end()) {
                 type->wireframe = e->second;
             }
@@ -181,7 +183,7 @@ void SceneFile::attachEntity(
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
-                    for (auto& p : data.positions) {
+                    for (const auto& p : data.positions) {
                         glm::vec3 pos = p;
                         // TODO KI let parent handling be problem of Scene Render logic
                         //  => i.e. that is what in reality need to do anyway
@@ -217,7 +219,7 @@ void SceneFile::loadSkybox(
 
     if (!node) return;
 
-    for (auto pair : node) {
+    for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 

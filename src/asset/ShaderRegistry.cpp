@@ -7,7 +7,7 @@ ShaderRegistry::ShaderRegistry()
 ShaderRegistry::~ShaderRegistry()
 {
     KI_INFO_SB("SHADER_REGISTRY: delete");
-    for (auto e : shaders) {
+    for (auto& e : shaders) {
         KI_INFO_SB("SHADER_REGISTRY: delete SHADER " << e.second->shaderName);
     }
     shaders.clear();
@@ -44,7 +44,7 @@ std::shared_ptr<Shader> ShaderRegistry::getShader(
 
     std::shared_ptr<Shader> shader = nullptr;
     {
-        auto e = shaders.find(key);
+        const auto& e = shaders.find(key);
         if (e != shaders.end()) {
             shader = e->second;
         }

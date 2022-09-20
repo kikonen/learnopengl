@@ -188,7 +188,7 @@ void MeshLoader::loadData(
         }
 
         {
-            for (auto const& material : loadedMaterials) {
+            for (const auto& material : loadedMaterials) {
                 if (!material->used) continue;
 
                 if (loadTextures) {

@@ -72,7 +72,7 @@ std::shared_ptr<Material> Material::find(
     const std::string& name,
     std::vector<std::shared_ptr<Material>>& materials)
 {
-    auto e = std::find_if(
+    const auto& e = std::find_if(
         materials.begin(),
         materials.end(),
         [&name](std::shared_ptr<Material>& m) { return m->name == name && !m->isDefault; });

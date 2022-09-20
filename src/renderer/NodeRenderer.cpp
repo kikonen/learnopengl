@@ -87,8 +87,8 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& regist
         glStencilMask(0x00);
     }
 
-    for (auto& x : registry.nodes) {
-        auto t = x.first;
+    for (const auto& x : registry.nodes) {
+        auto& t = x.first;
         Shader* shader = nullptr;
         Batch& batch = t->batch;
 
@@ -130,8 +130,8 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
     glStencilMask(0x00);
     ctx.state.disable(GL_DEPTH_TEST);
 
-    for (auto& x : registry.nodes) {
-        auto t = x.first;
+    for (const auto& x : registry.nodes) {
+        auto& t = x.first;
         Shader* shader = nullptr;
         Batch& batch = t->batch;
 
@@ -160,7 +160,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
     ctx.state.enable(GL_DEPTH_TEST);
 }
 
-void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nodes)
+void NodeRenderer::drawBlended(const RenderContext& ctx, const std::vector<Node*>& nodes)
 {
     if (nodes.empty()) {
         return;
@@ -173,7 +173,7 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, std::vector<Node*>& nod
 
     // TODO KI discards nodes if *same* distance
     std::map<float, Node*> sorted;
-    for (auto node : nodes) {
+    for (const auto& node : nodes) {
         float distance = glm::length(viewPos - node->getPos());
         sorted[distance] = node;
     }

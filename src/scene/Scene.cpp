@@ -94,7 +94,10 @@ void Scene::prepare(ShaderRegistry& shaders)
     }
 
     if (!mirrorBuffer && assets.showMirrorView) {
-        auto buffer = new TextureBuffer({ 640, 480, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+        auto buffer = new TextureBuffer({
+            640, 480,
+            { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+
         mirrorBuffer.reset(buffer);
         mirrorBuffer->prepare();
 
@@ -134,14 +137,14 @@ void Scene::update(RenderContext& ctx)
     if (dirLight) {
         dirLight->update(ctx);
     }
-    for (auto light : pointLights) {
+    for (auto& light : pointLights) {
         light->update(ctx);
     }
-    for (auto light : spotLights) {
+    for (auto& light : spotLights) {
         light->update(ctx);
     }
 
-    for (auto generator : particleGenerators) {
+    for (auto& generator : particleGenerators) {
         generator->update(ctx);
     }
 
@@ -431,7 +434,10 @@ int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double scree
 void Scene::updateMainViewport(RenderContext& ctx)
 {
     if (!mainBuffer) {
-        auto buffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+        auto buffer = new TextureBuffer({
+            ctx.width, ctx.height,
+            { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+
         mainBuffer.reset(buffer);
         mainBuffer->prepare();
         mainViewport->setTextureID(mainBuffer->spec.attachments[0].textureID);

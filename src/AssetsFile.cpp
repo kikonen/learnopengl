@@ -40,7 +40,7 @@ void AssetsFile::loadAssets(
 
     if (!node) return;
 
-    for (auto pair : node) {
+    for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 

@@ -86,7 +86,10 @@ void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
     if (idBuffer) return;
     // https://riptutorial.com/opengl/example/28872/using-pbos
 
-    auto buffer = new TextureBuffer({ ctx.width, ctx.height, { FrameBufferAttachment::getObjectId(), FrameBufferAttachment::getRBODepth() } });
+    auto buffer = new TextureBuffer({
+        ctx.width, ctx.height,
+        { FrameBufferAttachment::getObjectId(), FrameBufferAttachment::getRBODepth() } });
+
     idBuffer.reset(buffer);
     idBuffer->prepare();
     debugViewport->setTextureID(idBuffer->spec.attachments[0].textureID);
@@ -127,8 +130,8 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
 
     auto shader = idShader.get();
 
-    for (auto& x : registry.nodes) {
-        auto t = x.first;
+    for (const auto& x : registry.nodes) {
+        auto& t = x.first;
         t->bind(ctx, shader);
 
         Batch& batch = t->batch;

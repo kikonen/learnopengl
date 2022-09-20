@@ -56,7 +56,7 @@ void InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 
 void InstancedNode::draw(const RenderContext& ctx)
 {
-    auto shader = type->boundShader;
+    auto& shader = type->boundShader;
     if (shader->selection) {
         selectedBatch.flush(ctx, type.get());
     }

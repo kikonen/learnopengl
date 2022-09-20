@@ -37,7 +37,7 @@ ModelMesh::~ModelMesh()
 {
     KI_INFO_SB("MODEL_MESH: delete " << modelName);
 
-    for (auto v : vertices) {
+    for (auto& v : vertices) {
         delete v;
     }
     vertices.clear();
@@ -79,7 +79,7 @@ void ModelMesh::prepare(const Assets& assets)
         int materialIndex = 0;
         unsigned int unitIndex = 0;
 
-        for (auto const& material : materials) {
+        for (const auto& material : materials) {
             material->materialIndex = materialIndex++;
             assert(material->materialIndex < MATERIAL_COUNT);
 
@@ -104,9 +104,9 @@ void ModelMesh::prepare(const Assets& assets)
         int sz = sizeof(MaterialsUBO);
         materialsUboSize = sz;
 
-        MaterialsUBO materialsUbo;
+        MaterialsUBO materialsUbo{};
 
-        for (auto const& material : materials) {
+        for (const auto& material : materials) {
             materialsUbo.materials[material->materialIndex] = material->toUBO();
         }
 
@@ -226,7 +226,7 @@ void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 
     glBindVertexArray(buffers.VAO);
 
-    for (auto const& material : materials) {
+    for (const auto& material : materials) {
         material->bindArray(shader, material->materialIndex, false);
     }
 

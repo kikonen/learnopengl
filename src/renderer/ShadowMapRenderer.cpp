@@ -23,7 +23,10 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     shadowShader->prepare(assets);
     shadowDebugShader->prepare(assets);    
 
-    auto buffer = new ShadowBuffer({ assets.shadowMapSize, assets.shadowMapSize, { FrameBufferAttachment::getDepthTexture() } });
+    auto buffer = new ShadowBuffer({
+        assets.shadowMapSize, assets.shadowMapSize,
+        { FrameBufferAttachment::getDepthTexture() } });
+
     shadowBuffer.reset(buffer);
     shadowBuffer->prepare();
 
@@ -94,8 +97,8 @@ void ShadowMapRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& 
     auto shader = shadowShader.get();
     shader->bind();
 
-    for (auto& x : registry.nodes) {
-        auto t = x.first;
+    for (const auto& x : registry.nodes) {
+        auto& t = x.first;
         if (t->noShadow) continue;
         t->bind(ctx, shadowShader.get());
 

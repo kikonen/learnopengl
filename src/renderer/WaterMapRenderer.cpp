@@ -160,8 +160,8 @@ void WaterMapRenderer::drawNodes(
     ctx.bindClipPlanesUBO();
     ctx.state.enable(GL_CLIP_DISTANCE0);
 
-    for (auto& x : registry.nodes) {
-        auto t = x.first;
+    for (const auto& x : registry.nodes) {
+        auto& t = x.first;
         //if (t->water || t->light) continue;
         auto shader = t->bind(ctx, nullptr);
 

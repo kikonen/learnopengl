@@ -38,7 +38,7 @@ int Engine::setup() {
         GL_STENCIL_TEST,
         GL_DEPTH_TEST,
     };
-    for (auto key : keys) {
+    for (auto& key : keys) {
         state.track(key, false);
     }
 

@@ -112,8 +112,8 @@ void CubeMapRenderer::drawNodes(
     const NodeRegistry& registry,
     const Node* centerNode)
 {
-    for (auto& x : registry.nodes) {
-        auto t = x.first;
+    for (const auto& x : registry.nodes) {
+        auto& t = x.first;
         auto shader = t->bind(ctx, nullptr);
         //shader->hasReflectionMap.set(false);
 

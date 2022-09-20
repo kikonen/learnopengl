@@ -80,18 +80,18 @@ void NodeRegistry::attachNodes()
     std::map<NodeType*, std::vector<Node*>> newNodes;
 
     {
-        for (auto n : pendingNodes) {
+        for (const auto& n : pendingNodes) {
             newNodes[n->type.get()].push_back(n);
         }
         pendingNodes.clear();
     }
 
-    for (auto& x : newNodes) {
-        auto t = x.first;
-        KI_GL_CALL(t->prepare(assets));
+    for (const auto& x : newNodes) {
+        auto& t = x.first;
+        t->prepare(assets);
 
         for (auto& node : x.second) {
-            KI_GL_CALL(node->prepare(assets));
+            node->prepare(assets);
             nodes[node->type.get()].push_back(node);
             idToNode[node->objectID] = node;
 

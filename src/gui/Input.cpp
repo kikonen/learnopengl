@@ -30,7 +30,7 @@ Input::Input(Window* window)
     modifierMappings[Modifier::CONTROL] = new int[] { GLFW_KEY_LEFT_CONTROL, GLFW_KEY_RIGHT_CONTROL, 0 };
     modifierMappings[Modifier::ALT] = new int[] { GLFW_KEY_LEFT_ALT, GLFW_KEY_RIGHT_ALT, 0 };
 
-    for (auto mod : modifierKeys) {
+    for (auto& mod : modifierKeys) {
         modifierDown[mod] = false;
         modifierPressed[mod] = false;
         modifierReleased[mod] = false;
@@ -58,7 +58,7 @@ void Input::prepare()
 
 void Input::updateKeyStates()
 {
-    for (auto mod : modifierKeys) {
+    for (auto& mod : modifierKeys) {
         bool wasDown = modifierDown[mod];
         bool isDown = isModifierDown(mod);
         modifierDown[mod] = isDown;

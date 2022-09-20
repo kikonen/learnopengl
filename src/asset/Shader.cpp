@@ -91,7 +91,7 @@ int Shader::prepare(const Assets& assets)
 
 GLint Shader::getUniformLoc(const std::string& name)
 {
-    auto e = uniformLocations.find(name);
+    const auto& e = uniformLocations.find(name);
     if (e != uniformLocations.end()) {
         return e->second;
     }
