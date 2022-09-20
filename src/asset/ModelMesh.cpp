@@ -214,6 +214,11 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
+
+    // NOTE KI no need for thexe any longer (they are in buffers now)
+    triCount = tris.size();
+    vertices.clear();
+    tris.clear();
 }
 
 void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
@@ -233,10 +238,10 @@ void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 
 void ModelMesh::draw(const RenderContext& ctx)
 {
-    KI_GL_CALL(glDrawElements(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0));
+    KI_GL_CALL(glDrawElements(GL_TRIANGLES, triCount * 3, GL_UNSIGNED_INT, 0));
 }
 
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
-    KI_GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0, instanceCount));
+    KI_GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, triCount * 3, GL_UNSIGNED_INT, 0, instanceCount));
 }

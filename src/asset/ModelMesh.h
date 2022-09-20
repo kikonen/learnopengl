@@ -41,6 +41,7 @@ public:
 public:
     //std::shared_ptr<Material> defaultMaterial = nullptr;
 
+    int triCount = 0;
     std::vector<glm::uvec3> tris;
     std::vector<Vertex> vertices;
 
