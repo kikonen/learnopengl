@@ -1,19 +1,18 @@
 #include "ParticleRenderer.h"
 
-ParticleRenderer::ParticleRenderer(const Assets& assets)
-    : Renderer(assets)
+ParticleRenderer::ParticleRenderer()
 {
 }
 
-void ParticleRenderer::prepare(ShaderRegistry& shaders)
+void ParticleRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
-    Renderer::prepare(shaders);
+    Renderer::prepare(assets, shaders);
 
     particleShader = shaders.getShader(assets, TEX_PARTICLE);
-    particleShader->prepare();
+    particleShader->prepare(assets);
 }
 
-void ParticleRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
+void ParticleRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
 {
 }
 
@@ -21,6 +20,6 @@ void ParticleRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void ParticleRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
+void ParticleRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
 {
 }

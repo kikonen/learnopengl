@@ -55,11 +55,14 @@ class Shader final
 {
 public:
     void load();
-    int prepare();
+
+    int prepare(const Assets& assets);
+
     const void bind();
     const void unbind();
 
     int boundCount() { return m_bound; }
+    int prepared() { return m_prepared; }
 
     void setInt(const std::string& name, int value);
 
@@ -290,8 +293,8 @@ public:
     std::vector<Shader::Int> textures;
 
 private:
-    int res;
-    bool prepared = false;
+    int m_prepareResult = -1;
+    bool m_prepared = false;
     int m_bound = 0;
 
     const std::vector<std::string> defines;

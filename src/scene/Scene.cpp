@@ -13,19 +13,19 @@ Scene::Scene(const Assets& assets)
     : assets(assets),
     registry(*this)
 {
-    nodeRenderer = std::make_unique<NodeRenderer>(assets);
-    //terrainRenderer = std::make_unique<TerrainRenderer>(assets);
+    nodeRenderer = std::make_unique<NodeRenderer>();
+    //terrainRenderer = std::make_unique<TerrainRenderer>();
 
-    viewportRenderer = std::make_unique<ViewportRenderer>(assets);
+    viewportRenderer = std::make_unique<ViewportRenderer>();
 
-    waterMapRenderer = std::make_unique<WaterMapRenderer>(assets);
-    cubeMapRenderer = std::make_unique<CubeMapRenderer>(assets);
-    shadowMapRenderer = std::make_unique<ShadowMapRenderer>(assets);
+    waterMapRenderer = std::make_unique<WaterMapRenderer>();
+    cubeMapRenderer = std::make_unique<CubeMapRenderer>();
+    shadowMapRenderer = std::make_unique<ShadowMapRenderer>();
 
-    objectIdRenderer = std::make_unique<ObjectIdRenderer>(assets);
-    normalRenderer = std::make_unique<NormalRenderer>(assets);
+    objectIdRenderer = std::make_unique<ObjectIdRenderer>();
+    normalRenderer = std::make_unique<NormalRenderer>();
 
-    particleSystem = std::make_unique<ParticleSystem>(assets);
+    particleSystem = std::make_unique<ParticleSystem>();
 }
 
 Scene::~Scene()
@@ -41,36 +41,36 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (nodeRenderer) {
-        nodeRenderer->prepare(shaders);
+        nodeRenderer->prepare(assets, shaders);
     }
     //terrainRenderer->prepare(shaders);
 
     if (viewportRenderer) {
-        viewportRenderer->prepare(shaders);
+        viewportRenderer->prepare(assets, shaders);
     }
 
     if (waterMapRenderer) {
-        waterMapRenderer->prepare(shaders);
+        waterMapRenderer->prepare(assets, shaders);
     }
     if (cubeMapRenderer) {
-        cubeMapRenderer->prepare(shaders);
+        cubeMapRenderer->prepare(assets, shaders);
     }
     if (shadowMapRenderer) {
-        shadowMapRenderer->prepare(shaders);
+        shadowMapRenderer->prepare(assets, shaders);
     }
 
     if (objectIdRenderer) {
-        objectIdRenderer->prepare(shaders);
+        objectIdRenderer->prepare(assets, shaders);
     }
 
     if (assets.showNormals) {
         if (normalRenderer) {
-            normalRenderer->prepare(shaders);
+            normalRenderer->prepare(assets, shaders);
         }
     }
 
     if (particleSystem) {
-        particleSystem->prepare(shaders);
+        particleSystem->prepare(assets, shaders);
     }
 
     {
@@ -85,7 +85,7 @@ void Scene::prepare(ShaderRegistry& shaders)
 
         //mainViewport->effect = ViewportEffect::edge;
 
-        mainViewport->prepare();
+        mainViewport->prepare(assets);
         registry.addViewPort(mainViewport);
     }
 
@@ -105,7 +105,7 @@ void Scene::prepare(ShaderRegistry& shaders)
             mirrorBuffer->spec.attachments[0].textureID,
             shaders.getShader(assets, TEX_VIEWPORT));
 
-        mirrorViewport->prepare();
+        mirrorViewport->prepare(assets);
         registry.addViewPort(mirrorViewport);
     }
 

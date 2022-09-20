@@ -3,11 +3,10 @@
 #include "NodeController.h"
 
 
-class MovingLightController : public NodeController
+class MovingLightController final : public NodeController
 {
 public:
     MovingLightController(
-        const std::shared_ptr<Assets> assets,
         const glm::vec3& center, 
         float radius, 
         float speed,

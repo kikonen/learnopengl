@@ -1,15 +1,10 @@
 #include "NodeController.h"
 
-NodeController::NodeController(const std::shared_ptr<Assets> assets)
-    : assets(assets)
+NodeController::NodeController()
 {
 }
 
-NodeController::~NodeController()
-{
-}
-
-void NodeController::prepare(Node& node)
+void NodeController::prepare(const Assets& assets, Node& node)
 {
 }
 

@@ -2,25 +2,19 @@
 
 #include "model/InstancedNode.h"
 
-InstancedController::InstancedController(const std::shared_ptr<Assets> assets)
-    : NodeController(assets)
+InstancedController::InstancedController()
 {
 }
 
-InstancedController::~InstancedController()
-{
-}
-
-
-void InstancedController::prepare(Node& node) {
-    prepareInstanced(dynamic_cast<InstancedNode&>(node));
+void InstancedController::prepare(const Assets& assets, Node& node) {
+    prepareInstanced(assets, dynamic_cast<InstancedNode&>(node));
 }
 
 bool InstancedController::update(const RenderContext& ctx, Node& node) {
     return updateInstanced(ctx, dynamic_cast<InstancedNode&>(node));
 }
 
-void InstancedController::prepareInstanced(InstancedNode& node)
+void InstancedController::prepareInstanced(const Assets& assets, InstancedNode& node)
 {
 }
 

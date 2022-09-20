@@ -11,18 +11,17 @@ class SkyboxRenderer final : public Renderer
 {
 public:
     SkyboxRenderer(
-        const Assets& assets,
         const std::string& shaderName,
         const std::string& materialName);
     virtual ~SkyboxRenderer();
 
-    void prepare(ShaderRegistry& shaders) override;
+    void prepare(const Assets& assets, ShaderRegistry& shaders) override;
 
     void assign(std::shared_ptr<Shader> shader);
     void bindTexture(const RenderContext& ctx);
 
-    void update(const RenderContext& ctx, NodeRegistry& registry) override;
-    void render(const RenderContext& ctx, NodeRegistry& registry) override;
+    void update(const RenderContext& ctx, const NodeRegistry& registry) override;
+    void render(const RenderContext& ctx, const NodeRegistry& registry) override;
 
 public:
     unsigned int textureID;

@@ -6,20 +6,20 @@
 
 
 
-CubeMapRenderer::CubeMapRenderer(const Assets& assets)
-    : Renderer(assets)
+CubeMapRenderer::CubeMapRenderer()
 {
-    drawIndex = 0;
-    drawSkip = assets.cubeMapDrawSkip;
 }
 
 CubeMapRenderer::~CubeMapRenderer()
 {
 }
 
-void CubeMapRenderer::prepare(ShaderRegistry& shaders)
+void CubeMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
-    Renderer::prepare(shaders);
+    drawIndex = 0;
+    drawSkip = assets.cubeMapDrawSkip;
+
+    Renderer::prepare(assets, shaders);
 
     cubeMap = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
     cubeMap->prepare();
@@ -32,10 +32,10 @@ void CubeMapRenderer::bind(const RenderContext& ctx)
 void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 {
     if (!rendered) return;
-    cubeMap->bindTexture(ctx, assets.cubeMapUnitIndex);
+    cubeMap->bindTexture(ctx, ctx.assets.cubeMapUnitIndex);
 }
 
-void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registry, SkyboxRenderer* skybox)
+void CubeMapRenderer::render(const RenderContext& mainCtx, const NodeRegistry& registry, SkyboxRenderer* skybox)
 {
     if (!stepRender()) return;
 
@@ -75,8 +75,8 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registr
 
     for (int i = 0; i < 6; i++) {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubeMap->textureID, 0);
-        if (assets.clearColor) {
-            if (assets.debugClearColor) {
+        if (mainCtx.assets.clearColor) {
+            if (mainCtx.assets.debugClearColor) {
                 glClearColor(0.3f, 0.9f, 0.3f, 1.0f);
             }
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -109,8 +109,8 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, NodeRegistry& registr
 
 void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
-    NodeRegistry& registry,
-    Node* centerNode)
+    const NodeRegistry& registry,
+    const Node* centerNode)
 {
     for (auto& x : registry.nodes) {
         auto t = x.first;
@@ -132,7 +132,7 @@ void CubeMapRenderer::drawNodes(
     }
 }
 
-Node* CubeMapRenderer::findCenter(const RenderContext& ctx, NodeRegistry& registry)
+Node* CubeMapRenderer::findCenter(const RenderContext& ctx, const NodeRegistry& registry)
 {
     const glm::vec3& cameraPos = ctx.camera.getPos();
     const glm::vec3& cameraDir = ctx.camera.getViewFront();

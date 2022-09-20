@@ -33,7 +33,7 @@ void NodeRegistry::addNode(Node* node)
 Node* NodeRegistry::getNode(const uuids::uuid& id)
 {
     std::lock_guard<std::mutex> lock(load_lock);
-    auto entry = uuidToNode.find(id);
+    const auto& entry = uuidToNode.find(id);
     if (entry == uuidToNode.end()) return nullptr;
     return entry->second;
 }

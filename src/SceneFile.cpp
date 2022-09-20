@@ -12,8 +12,8 @@ namespace {
 }
 
 SceneFile::SceneFile(
-    std::shared_ptr<AsyncLoader> asyncLoader,
-    const std::shared_ptr<Assets> assets,
+    AsyncLoader* asyncLoader,
+    const Assets& assets,
     const std::string& filename)
     : filename(filename),
     assets(assets),
@@ -25,7 +25,7 @@ SceneFile::~SceneFile()
 {
 }
 
-std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
+void SceneFile::load(std::shared_ptr<Scene> scene)
 {
     std::ifstream fin(filename);
     YAML::Node doc = YAML::Load(fin);
@@ -35,8 +35,6 @@ std::shared_ptr<Scene> SceneFile::load(std::shared_ptr<Scene> scene)
     loadEntities(doc, entities, materials);
 
     attach(scene, skybox, entities, materials);
-
-    return scene;
 }
 
 void SceneFile::attach(
@@ -59,8 +57,8 @@ void SceneFile::attachSkybox(
 {
     if (!skybox.valid()) return;
 
-    auto skybox = std::make_unique<SkyboxRenderer>(*assets, data.shaderName, data.materialName);
-    skybox->prepare(*asyncLoader->shaders);
+    auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
+    skybox->prepare(assets, asyncLoader->shaders);
     scene->skyboxRenderer.reset(skybox.release());
 }
 
@@ -84,9 +82,10 @@ void SceneFile::attachEntity(
     }
 
     auto asyncLoader = this->asyncLoader;
-    auto assets = this->assets;
 
-    asyncLoader->addLoader([scene, data, parent, assets, asyncLoader]() {
+    asyncLoader->addLoader([scene, data, parent, asyncLoader]() {
+        const Assets& assets = asyncLoader->assets;
+
         auto type = std::make_shared<NodeType>(data.typeId, asyncLoader->getShader(data.shaderName, data.shaderDefinitions));
 
         type->batch.batchSize = data.batchSize;
@@ -142,7 +141,7 @@ void SceneFile::attachEntity(
         }
 
         {
-            MeshLoader meshLoader(*assets, data.modelName, data.modelPath);
+            MeshLoader meshLoader(assets, data.modelName, data.modelPath);
 
             if (data.defaultMaterial) {
                 meshLoader.defaultMaterial = data.defaultMaterial;
@@ -174,7 +173,7 @@ void SceneFile::attachEntity(
 
             // NOTE KI if textures were not loaded, then need to load them now
             if (!data.loadTextures) {
-                m.loadTextures(*assets);
+                m.loadTextures(assets);
             }
          });
 
@@ -195,7 +194,7 @@ void SceneFile::attachEntity(
                         node->id = data.id;
                         node->parentId = data.parentId;
 
-                        node->setPos(pos + assets->groundOffset);
+                        node->setPos(pos + assets.groundOffset);
                         node->setRotation(data.rotation);
                         node->setScale(data.scale);
 
@@ -375,7 +374,7 @@ void SceneFile::loadEntity(
 
     if (data.positions.empty()) {
         // NOTE KI *ENSURE* there is position
-        data.positions.emplace_back(0);
+        data.positions.emplace_back(glm::vec3(0));
     }
 }
 

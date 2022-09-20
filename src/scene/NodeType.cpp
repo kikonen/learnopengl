@@ -65,17 +65,19 @@ void NodeType::prepare(const Assets& assets)
 
     std::shared_ptr<Shader> shader = defaultShader;
     if (shader) {
-        shader->prepare();
+        shader->prepare(assets);
 
-        shader->bind();
-        shader->noiseTex.set(assets.noiseUnitIndex);
-        shader->reflectionTex.set(assets.waterReflectionMapUnitIndex);
-        shader->refractionTex.set(assets.waterRefractionMapUnitIndex);
+        if (false) {
+            shader->bind();
+            shader->noiseTex.set(assets.noiseUnitIndex);
+            shader->reflectionTex.set(assets.waterReflectionMapUnitIndex);
+            shader->refractionTex.set(assets.waterRefractionMapUnitIndex);
 
-        shader->cubeMap.set(assets.cubeMapUnitIndex);
-        shader->shadowMap.set(assets.shadowMapUnitIndex);
-        shader->skybox.set(assets.skyboxUnitIndex);
-        shader->unbind();
+            shader->cubeMap.set(assets.cubeMapUnitIndex);
+            shader->shadowMap.set(assets.shadowMapUnitIndex);
+            shader->skybox.set(assets.skyboxUnitIndex);
+            shader->unbind();
+        }
     }
 
     if (batch.batchSize < 0) {

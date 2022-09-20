@@ -2,13 +2,12 @@
 
 #include "model/InstancedNode.h"
 
-AsteroidBeltController::AsteroidBeltController(const std::shared_ptr<Assets> assets, Node* planet)
-    : InstancedController(assets), 
-    planet(planet)
+AsteroidBeltController::AsteroidBeltController(Node* planet)
+    : planet(planet)
 {
 }
 
-void AsteroidBeltController::prepareInstanced(InstancedNode& node)
+void AsteroidBeltController::prepareInstanced(const Assets& assets, InstancedNode& node)
 {
     glm::vec3 planetPos = planet ? planet->getPos() : glm::vec3(0.f, 40.f, 0.f);
 

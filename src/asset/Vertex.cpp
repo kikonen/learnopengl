@@ -14,10 +14,6 @@ Vertex::Vertex(
 {
 }
 
-Vertex::~Vertex()
-{
-}
-
 bool Vertex::operator==(const Vertex& b) const
 {
     return pos == b.pos &&

@@ -284,8 +284,8 @@ glm::vec3 MeshLoader::createNormal(
     glm::vec3 p2 = positions[pi[1]];
     glm::vec3 p3 = positions[pi[2]];
 
-    glm::vec3 a = p2 - p1;
-    glm::vec3 b = p3 - p1;
+    glm::vec3 a{ p2 - p1 };
+    glm::vec3 b{ p3 - p1 };
 
     glm::vec3 normal = glm::cross(a, b);
     normals.push_back(normal);
@@ -331,18 +331,19 @@ void MeshLoader::createTangents(
 
         const glm::vec3& n = normals[ni1];
 
-        const glm::vec3 edge1 = p2 - p1;
-        const glm::vec3 edge2 = p3 - p1;
+        const glm::vec3 edge1{ p2 - p1 };
+        const glm::vec3 edge2{ p3 - p1 };
 
-        const glm::vec2 deltaUV1 = uv2 - uv1;
-        const glm::vec2 deltaUV2 = uv3 - uv1;
+        const glm::vec2 deltaUV1{ uv2 - uv1 };
+        const glm::vec2 deltaUV2{ uv3 - uv1 };
 
         float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
     
-        glm::vec3 tangent;
-        tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
-        tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
-        tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+        glm::vec3 tangent{
+            f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x),
+            f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y),
+            f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z),
+        };
 
         glm::vec3 nt = glm::normalize(tangent);
 //        if (tangent != nt) KI_BREAK();

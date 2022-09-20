@@ -1,8 +1,8 @@
 #include "ObjectIdRenderer.h"
 
 
-ObjectIdRenderer::ObjectIdRenderer(const Assets& assets)
-    : Renderer(assets)
+ObjectIdRenderer::ObjectIdRenderer()
+    : Renderer()
 {
 }
 
@@ -63,12 +63,12 @@ int ObjectIdRenderer::getObjectId(const RenderContext& ctx, double screenPosX, d
     return objectID;
 }
 
-void ObjectIdRenderer::prepare(ShaderRegistry& shaders)
+void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
-    Renderer::prepare(shaders);
+    Renderer::prepare(assets, shaders);
 
     idShader = shaders.getShader(assets, TEX_OBJECT_ID);
-    idShader->prepare();
+    idShader->prepare(assets);
 
     debugViewport = std::make_shared<Viewport>(
         glm::vec3(-1.0, 1.0, 0),
@@ -78,10 +78,10 @@ void ObjectIdRenderer::prepare(ShaderRegistry& shaders)
         -1,
         shaders.getShader(assets, TEX_VIEWPORT));
 
-    debugViewport->prepare();
+    debugViewport->prepare(assets);
 }
 
-void ObjectIdRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
+void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
 {
     if (idBuffer) return;
     // https://riptutorial.com/opengl/example/28872/using-pbos
@@ -96,7 +96,7 @@ void ObjectIdRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void ObjectIdRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
+void ObjectIdRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
 {
     RenderContext idCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, ctx.camera, idBuffer->spec.width, idBuffer->spec.height);
     idCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
@@ -106,7 +106,7 @@ void ObjectIdRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
     idBuffer->unbind(ctx);
 }
 
-void ObjectIdRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry)
+void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& registry)
 {
     ctx.state.enable(GL_DEPTH_TEST);
 
@@ -115,8 +115,8 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
     ctx.state.cullFace(GL_BACK);
     ctx.state.frontFace(GL_CCW);
 
-    if (assets.clearColor) {
-        if (assets.debugClearColor) {
+    if (ctx.assets.clearColor) {
+        if (ctx.assets.debugClearColor) {
             glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -1,23 +1,22 @@
 #include "NodeRenderer.h"
 
 
-NodeRenderer::NodeRenderer(const Assets& assets)
-    : Renderer(assets)
+NodeRenderer::NodeRenderer()
 {
 }
 
-void NodeRenderer::prepare(ShaderRegistry& shaders)
+void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
-    Renderer::prepare(shaders);
+    Renderer::prepare(assets, shaders);
 
     selectionShader = shaders.getShader(assets, TEX_SELECTION);
     selectionShader->selection = true;
 
-    selectionShader->prepare();
+    selectionShader->prepare(assets);
 //    batch.prepare(1000);
 }
 
-void NodeRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
+void NodeRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
 {
     for (auto& x : registry.nodes) {
         for (auto& e : x.second) {
@@ -32,7 +31,7 @@ void NodeRenderer::bind(const RenderContext& ctx)
     blendedNodes.clear();
 }
 
-void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, NodeRegistry& registry)
+void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)
 {
     ctx.state.enable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -45,21 +44,21 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, NodeRegistry
     KI_GL_UNBIND(glBindVertexArray(0));
 }
 
-void NodeRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
+void NodeRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
 {
     drawNodes(ctx, registry, false);
 
     KI_GL_UNBIND(glBindVertexArray(0));
 }
 
-void NodeRenderer::renderBlended(const RenderContext& ctx, NodeRegistry& registry)
+void NodeRenderer::renderBlended(const RenderContext& ctx, const NodeRegistry& registry)
 {
     drawBlended(ctx, blendedNodes);
 
     KI_GL_UNBIND(glBindVertexArray(0));
 }
 
-void NodeRenderer::renderSelection(const RenderContext& ctx, NodeRegistry& registry)
+void NodeRenderer::renderSelection(const RenderContext& ctx, const NodeRegistry& registry)
 {
     ctx.state.enable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -76,7 +75,7 @@ void NodeRenderer::renderSelection(const RenderContext& ctx, NodeRegistry& regis
 
 
 // draw all non selected nodes
-int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bool selection)
+int NodeRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& registry, bool selection)
 {
     int renderCount = 0;
 
@@ -125,7 +124,7 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, bo
 }
 
 // draw all selected nodes with stencil
-void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, NodeRegistry& registry)
+void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)
 {
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilMask(0x00);

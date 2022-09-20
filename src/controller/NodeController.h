@@ -6,13 +6,9 @@
 class NodeController
 {
 public:
-    NodeController(const std::shared_ptr<Assets> assets);
-    ~NodeController();
+    NodeController();
 
-    virtual void prepare(Node& node);
+    virtual void prepare(const Assets& assets, Node& node);
     virtual bool update(const RenderContext& ctx, Node& node);
-
-protected:
-    const std::shared_ptr<Assets> assets;
 };
 

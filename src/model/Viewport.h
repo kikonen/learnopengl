@@ -30,7 +30,7 @@ public:
 
     void setTextureID(unsigned int textureID);
 
-    void prepare();
+    void prepare(const Assets& assets);
 
     void update(const RenderContext& ctx);
     void bind(const RenderContext& ctx);

@@ -10,20 +10,20 @@ class SkyboxRenderer;
 class CubeMapRenderer final : public Renderer
 {
 public:
-    CubeMapRenderer(const Assets& assets);
+    CubeMapRenderer();
     virtual ~CubeMapRenderer();
 
-    void prepare(ShaderRegistry& shaders) override;
+    void prepare(const Assets& assets, ShaderRegistry& shaders) override;
     void bind(const RenderContext& ctx);
     void bindTexture(const RenderContext& ctx);
-    void render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox);
+    void render(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox);
 
 private:
     void drawNodes(
         const RenderContext& ctx,
-        NodeRegistry& registry,
-        Node* centerNode);
-    Node* findCenter(const RenderContext& ctx, NodeRegistry& registry);
+        const NodeRegistry& registry,
+        const Node* centerNode);
+    Node* findCenter(const RenderContext& ctx, const NodeRegistry& registry);
 
 public:
     glm::vec3 center{ 0, 0, 0 };

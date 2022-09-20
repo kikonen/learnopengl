@@ -21,7 +21,7 @@ int Test6::onInit()
     title = "Test 6";
     //glfwWindowHint(GLFW_SAMPLES, 4);
 
-    *assets = loadAssets();
+    assets = loadAssets();
     return 0;
 }
 
@@ -30,15 +30,15 @@ int Test6::onSetup() {
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    if (assets->glfwSwapInterval >= 0) {
-        glfwSwapInterval(assets->glfwSwapInterval);
+    if (assets.glfwSwapInterval >= 0) {
+        glfwSwapInterval(assets.glfwSwapInterval);
     }
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //state.disable(GL_MULTISAMPLE);
 
-    if (assets->useIMGUI) {
+    if (assets.useIMGUI) {
         frameInit = std::make_unique<FrameInit>(*window);
         frame = std::make_unique<EditorFrame>(*window);
     }
@@ -54,7 +54,7 @@ int Test6::onRender(const RenderClock& clock) {
         return 0;
     }
 
-    RenderContext ctx(*assets, clock, state, currentScene, *camera, window->width, window->height);
+    RenderContext ctx(assets, clock, state, currentScene, *camera, window->width, window->height);
     //ctx.useWireframe = true;
     //ctx.useLight = false;
 
@@ -66,7 +66,7 @@ int Test6::onRender(const RenderClock& clock) {
     ctx.state.enable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    if (assets->useIMGUI) {
+    if (assets.useIMGUI) {
         frame->bind(ctx);
     }
 
@@ -80,7 +80,7 @@ int Test6::onRender(const RenderClock& clock) {
     bool isShift = window->input->isModifierDown(Modifier::SHIFT);
     int state = glfwGetMouseButton(window->glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
-    if ((isCtrl && state == GLFW_PRESS) && (!assets->useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+    if ((isCtrl && state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         int objectID = currentScene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
 
         currentScene->registry.selectNodeById(objectID, isShift);
@@ -88,7 +88,7 @@ int Test6::onRender(const RenderClock& clock) {
         KI_INFO_SB("selected: " << objectID);
     }
 
-    if (assets->useIMGUI) {
+    if (assets.useIMGUI) {
         //ImGui::ShowDemoWindow();
 
         frame->draw(ctx);
@@ -110,20 +110,20 @@ Assets Test6::loadAssets()
 
 std::shared_ptr<Scene> Test6::loadScene()
 {
-    auto scene = std::make_shared<Scene>(*assets);
+    auto scene = std::make_shared<Scene>(assets);
 
     asyncLoader->scene = scene;
 
-    file = std::make_shared<SceneFile>(asyncLoader, assets, "scene/scene_full.yml");
+    file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_full.yml");
     file->load(scene);
 
-    testSetup = std::make_shared<TestSceneSetup>(asyncLoader, assets);
+    testSetup = std::make_unique<TestSceneSetup>(asyncLoader.get(), assets);
     testSetup->setup(scene);
 
     //loader.scene->showNormals = true;
     //loader.scene->showMirrorView = true;
     //loader.load();
-    scene->prepare(*shaders);
+    scene->prepare(shaders);
 
     return scene;
 }

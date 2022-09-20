@@ -68,7 +68,14 @@ class Material final
 {
 public:
     Material();
+
+    Material(const Material&) = default;
+    Material(Material&&) = default;
+    Material& operator=(const Material&) = default;
+    Material& operator=(Material&&) = default;
+
     ~Material();
+
     void loadTextures(const Assets& assets);
 
     void prepare(const Assets& assets);

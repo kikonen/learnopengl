@@ -3,19 +3,19 @@
 #include "SkyboxRenderer.h"
 #include "WaterNoiseGenerator.h"
 
-WaterMapRenderer::WaterMapRenderer(const Assets& assets)
-    : Renderer(assets)
+WaterMapRenderer::WaterMapRenderer()
 {
-    drawIndex = 1;
 }
 
 WaterMapRenderer::~WaterMapRenderer()
 {
 }
 
-void WaterMapRenderer::prepare(ShaderRegistry& shaders)
+void WaterMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
-    Renderer::prepare(shaders);
+    drawIndex = 1;
+
+    Renderer::prepare(assets, shaders);
 
     drawSkip = assets.waterDrawSkip;
 
@@ -48,18 +48,18 @@ void WaterMapRenderer::prepare(ShaderRegistry& shaders)
         refractionBuffer->spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
 
-    reflectionDebugViewport->prepare();
-    refractionDebugViewport->prepare();
+    reflectionDebugViewport->prepare(assets);
+    refractionDebugViewport->prepare(assets);
 }
 
 void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 {
     if (!rendered) return;
 
-    reflectionBuffer->bindTexture(ctx, 0, assets.waterReflectionMapUnitIndex);
-    refractionBuffer->bindTexture(ctx, 0, assets.waterRefractionMapUnitIndex);
+    reflectionBuffer->bindTexture(ctx, 0, ctx.assets.waterReflectionMapUnitIndex);
+    refractionBuffer->bindTexture(ctx, 0, ctx.assets.waterRefractionMapUnitIndex);
     if (noiseTextureID != -1) {
-        glBindTextures(assets.noiseUnitIndex, 1, &noiseTextureID);
+        glBindTextures(ctx.assets.noiseUnitIndex, 1, &noiseTextureID);
     }
 }
 
@@ -67,7 +67,7 @@ void WaterMapRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
+void WaterMapRenderer::render(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox)
 {
     if (!stepRender()) return;
 
@@ -141,10 +141,14 @@ void WaterMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, 
     rendered = true;
 }
 
-void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox, Node* current)
+void WaterMapRenderer::drawNodes(
+    const RenderContext& ctx,
+    const NodeRegistry& registry,
+    SkyboxRenderer* skybox,
+    Node* current)
 {
-    if (assets.clearColor) {
-        if (assets.debugClearColor) {
+    if (ctx.assets.clearColor) {
+        if (ctx.assets.debugClearColor) {
             glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -180,7 +184,7 @@ void WaterMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registr
     }
 }
 
-Water* WaterMapRenderer::findClosest(const RenderContext& ctx, NodeRegistry& registry)
+Water* WaterMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistry& registry)
 {
     const glm::vec3& cameraPos = ctx.camera.getPos();
     const glm::vec3& cameraDir = ctx.camera.getViewFront();

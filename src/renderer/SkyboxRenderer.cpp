@@ -53,11 +53,9 @@ const float skyboxVertices[] = {
 };
 
 SkyboxRenderer::SkyboxRenderer(
-    const Assets& assets,
     const std::string& shaderName,
     const std::string& materialName)
-: Renderer(assets),
-    shaderName(shaderName),
+  : shaderName(shaderName),
     materialName(materialName)
 {
 }
@@ -66,16 +64,19 @@ SkyboxRenderer::~SkyboxRenderer()
 {
 }
 
-void SkyboxRenderer::prepare(ShaderRegistry& shaders)
+void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
-    Renderer::prepare(shaders);
+    Renderer::prepare(assets, shaders);
 
     shader = shaders.getShader(assets, shaderName);
 
-    shader->prepare();
-    shader->bind();
-    shader->skybox.set(assets.skyboxUnitIndex);
-    shader->unbind();
+    shader->prepare(assets);
+
+    if (false) {
+        shader->bind();
+        shader->skybox.set(assets.skyboxUnitIndex);
+        shader->unbind();
+    }
 
     {
         std::string basePath;
@@ -117,19 +118,19 @@ void SkyboxRenderer::prepare(ShaderRegistry& shaders)
 
 void SkyboxRenderer::assign(std::shared_ptr<Shader> shader)
 {
-    shader->skybox.set(assets.skyboxUnitIndex);
+//    shader->skybox.set(ctx.assets.skyboxUnitIndex);
 }
 
 void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 {
-    glBindTextures(assets.skyboxUnitIndex, 1, &textureID);
+    glBindTextures(ctx.assets.skyboxUnitIndex, 1, &textureID);
 }
 
-void SkyboxRenderer::update(const RenderContext& ctx, NodeRegistry& registry)
+void SkyboxRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
 {
 }
 
-void SkyboxRenderer::render(const RenderContext& ctx, NodeRegistry& registry)
+void SkyboxRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
 {
     shader->bind();
     bindTexture(ctx);

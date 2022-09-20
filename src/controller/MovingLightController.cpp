@@ -3,13 +3,11 @@
 #include "component/Light.h"
 
 MovingLightController::MovingLightController(
-    const std::shared_ptr<Assets> assets,
     const glm::vec3& center, 
     float radius,
     float speed,
     Node* node)
-    : NodeController(assets),
-    center(center),
+  : center(center),
     radius(radius),
     speed(speed),
     node(node)

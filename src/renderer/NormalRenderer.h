@@ -5,15 +5,15 @@
 class NormalRenderer final : public Renderer
 {
 public:
-    NormalRenderer(const Assets& assets);
+    NormalRenderer();
 
-    void prepare(ShaderRegistry& shaders) override;
+    void prepare(const Assets& assets, ShaderRegistry& shaders) override;
 
     void bind(const RenderContext& ctx) override;
-    void render(const RenderContext& ctx, NodeRegistry& registry) override;
+    void render(const RenderContext& ctx, const NodeRegistry& registry) override;
 
 private:
-    void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
+    void drawNodes(const RenderContext& ctx, const NodeRegistry& registry);
 
 private:
     std::shared_ptr<Shader> normalShader = nullptr;

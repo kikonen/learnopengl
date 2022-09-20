@@ -2,15 +2,13 @@
 
 #include "ki/GL.h"
 
-#include <iostream>
-
 #include "Engine.h"
 
 #include "gui/FrameInit.h"
 #include "gui/Frame.h"
 
-class SceneFile;
-class TestSceneSetup;
+#include "TestSceneSetup.h"
+#include "SceneFile.h"
 
 
 class Test6 final : public Engine {
@@ -32,6 +30,6 @@ private:
     std::unique_ptr<Frame> frame;
     std::unique_ptr<FrameInit> frameInit;
 
-    std::shared_ptr<SceneFile> file;
-    std::shared_ptr<TestSceneSetup> testSetup;
+    std::unique_ptr<SceneFile> file;
+    std::unique_ptr<TestSceneSetup> testSetup;
 };

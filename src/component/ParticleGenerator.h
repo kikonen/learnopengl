@@ -16,11 +16,10 @@ struct ParticleDefinition {
     std::shared_ptr<Material> material = nullptr;
 };
 
-class ParticleGenerator
+class ParticleGenerator final
 {
 public:
     ParticleGenerator(
-        const Assets& assets,
         const ParticleDefinition definition);
 
     virtual void update(const RenderContext& ctx);
@@ -29,7 +28,6 @@ public:
     ParticleSystem* system = nullptr;
 
 private:
-    const Assets& assets;
     const ParticleDefinition definition;
 
     float lastTs = -1;

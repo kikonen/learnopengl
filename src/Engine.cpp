@@ -13,16 +13,13 @@
 
 
 Engine::Engine()
-    : assets(std::make_shared<Assets>())
 {
-    shaders = std::make_shared<ShaderRegistry>();
 }
 
 Engine::~Engine() {
 }
 
 int Engine::init() {
-    debug = false;
 
     onInit();
     asyncLoader = std::make_shared<AsyncLoader>(shaders, assets);
@@ -58,7 +55,7 @@ void Engine::run() {
     KI_INFO("setup");
     ki::GL::startError();
 
-    if (assets->glDebug) {
+    if (assets.glDebug) {
         ki::GL::startDebug();
     }
 
@@ -120,7 +117,7 @@ void Engine::run() {
 
                 close = onRender(clock);
 
-                shaders->validate();
+                shaders.validate();
 
                 renderEnd = std::chrono::system_clock::now();
                 renderDuration = renderEnd - renderStart;

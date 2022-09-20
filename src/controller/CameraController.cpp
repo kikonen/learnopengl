@@ -1,12 +1,7 @@
 #include "CameraController.h"
 
 
-CameraController::CameraController(const std::shared_ptr<Assets> assets)
-    : NodeController(assets)
-{
-}
-
-CameraController::~CameraController()
+CameraController::CameraController()
 {
 }
 

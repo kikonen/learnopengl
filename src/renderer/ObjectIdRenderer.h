@@ -7,19 +7,19 @@
 class ObjectIdRenderer final : public Renderer
 {
 public:
-    ObjectIdRenderer(const Assets& assets);
+    ObjectIdRenderer();
     virtual ~ObjectIdRenderer();
 
     int getObjectId(const RenderContext& ctx, double screenPosX, double screenPosY, Viewport* mainViewport);
 
-    void prepare(ShaderRegistry& shaders) override;
+    void prepare(const Assets& assets, ShaderRegistry& shaders) override;
 
-    void update(const RenderContext& ctx, NodeRegistry& registry) override;
+    void update(const RenderContext& ctx, const NodeRegistry& registry) override;
     void bind(const RenderContext& ctx) override;
-    void render(const RenderContext& ctx, NodeRegistry& registry) override;
+    void render(const RenderContext& ctx, const NodeRegistry& registry) override;
 
 private:
-    void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
+    void drawNodes(const RenderContext& ctx, const NodeRegistry& registry);
 
 public:
     std::shared_ptr<Viewport> debugViewport;

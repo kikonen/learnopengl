@@ -18,7 +18,7 @@ class AsyncLoader;
 class Engine {
 public:
     Engine();
-    ~Engine();
+    virtual ~Engine();
 
     int init();
     int setup();
@@ -31,20 +31,20 @@ protected:
     virtual void onDestroy();
 
 public:
-    bool debug;
-
-    std::unique_ptr<Window> window;
-
-    std::shared_ptr<Scene> currentScene;
+    bool debug = false;
 
     RenderClock startClock;
 
-    std::shared_ptr<ShaderRegistry> shaders;
-
-protected:
-    std::shared_ptr<Assets> assets;
-
+    // NOTE KI MUST destroy async loaded *BEFORE* other registries
+    // => alloes change for graceful exit for loaders
     std::shared_ptr<AsyncLoader> asyncLoader;
+    ShaderRegistry shaders;
+
+    std::shared_ptr<Scene> currentScene;
+
+    std::unique_ptr<Window> window;
+protected:
+    Assets assets;
 
     std::string title;
 

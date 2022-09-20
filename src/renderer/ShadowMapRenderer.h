@@ -10,18 +10,18 @@
 class ShadowMapRenderer final : public Renderer
 {
 public:
-    ShadowMapRenderer(const Assets& assets);
+    ShadowMapRenderer();
     virtual ~ShadowMapRenderer();
 
-    void prepare(ShaderRegistry& shaders) override;
+    void prepare(const Assets& assets, ShaderRegistry& shaders) override;
 
     void bindTexture(const RenderContext& ctx);
 
     void bind(const RenderContext& ctx) override;
-    void render(const RenderContext& ctx, NodeRegistry& registry) override;
+    void render(const RenderContext& ctx, const NodeRegistry& registry) override;
 
 private:
-    void drawNodes(const RenderContext& ctx, NodeRegistry& registry);
+    void drawNodes(const RenderContext& ctx, const NodeRegistry& registry);
 
 public:
     std::unique_ptr<ShadowBuffer> shadowBuffer{ nullptr };

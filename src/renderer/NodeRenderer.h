@@ -7,24 +7,24 @@
 class NodeRenderer final : public Renderer
 {
 public:
-    NodeRenderer(const Assets& assets);
+    NodeRenderer();
 
-    void prepare(ShaderRegistry& shaders) override;
-    void update(const RenderContext& ctx, NodeRegistry& registry) override;
+    void prepare(const Assets& assets, ShaderRegistry& shaders) override;
+    void update(const RenderContext& ctx, const NodeRegistry& registry) override;
     void bind(const RenderContext& ctx) override;
 
-    void render(const RenderContext& ctx, NodeRegistry& registry) override;
+    void render(const RenderContext& ctx, const NodeRegistry& registry) override;
 
-    void renderSelectionStencil(const RenderContext& ctx, NodeRegistry& registry);
-    void renderSelection(const RenderContext& ctx, NodeRegistry& registry);
+    void renderSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry);
+    void renderSelection(const RenderContext& ctx, const NodeRegistry& registry);
 
-    void renderBlended(const RenderContext& ctx, NodeRegistry& registry);
+    void renderBlended(const RenderContext& ctx, const NodeRegistry& registry);
 
 private:
-    int drawNodes(const RenderContext& ctx, NodeRegistry& registry, bool selection);
+    int drawNodes(const RenderContext& ctx, const NodeRegistry& registry, bool selection);
     void drawBlended(const RenderContext& ctx, std::vector<Node*>& nodes);
 
-    void drawSelectionStencil(const RenderContext& ctx, NodeRegistry& registry);
+    void drawSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry);
 
 private:
     std::shared_ptr<Shader> selectionShader = nullptr;

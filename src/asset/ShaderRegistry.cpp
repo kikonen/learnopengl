@@ -62,6 +62,8 @@ std::shared_ptr<Shader> ShaderRegistry::getShader(
 void ShaderRegistry::validate()
 {
     for (auto& e : shaders) {
-        assert(e.second->boundCount() == 0);
+        auto& shader = e.second;
+        assert(shader->boundCount() == 0);
+        assert(shader->prepared());
     }
 }

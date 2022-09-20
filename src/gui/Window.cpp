@@ -6,9 +6,8 @@
 #include "scene/Scene.h"
 #include "Engine.h"
 
-Window::Window(Engine& engine, const std::shared_ptr<Assets> assets)
-    : engine(engine),
-    assets(assets)
+Window::Window(Engine& engine, const Assets& assets)
+    : engine(engine), assets(assets)
 {
     width = 800;
     height = 600;
@@ -52,8 +51,8 @@ void Window::createGLFWWindow()
     KI_INFO("START: GLFW INIT");
     glfwInit();
     KI_INFO("DONE: GLFW INIT");
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, assets->glsl_version[0]);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, assets->glsl_version[1]);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, assets.glsl_version[0]);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, assets.glsl_version[1]);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 //#ifdef __APPLE__
@@ -149,7 +148,7 @@ void Window::onMouseMove(double xpos, double ypos)
     bool isAlt = input->isModifierDown(Modifier::ALT);
     int state = glfwGetMouseButton(glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
-    if ((isAlt || state == GLFW_PRESS) && (!assets->useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+    if ((isAlt || state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         Camera* camera = engine.currentScene->getCamera();

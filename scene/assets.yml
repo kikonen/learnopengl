@@ -21,12 +21,12 @@ assets:
   show_normals: false
   show_mirror_view: false
   show_shadowMap_view: false
-  show_reflection_view: true
-  show_refraction_view: true
+  show_reflection_view: false
+  show_refraction_view: false
 
   draw_skip: 0
-  debug_clear_color: true
-  clear_color: true
+  debug_clear_color: false
+  clear_color: false
 
   water_tile_size: 100
   water_draw_skip: 1

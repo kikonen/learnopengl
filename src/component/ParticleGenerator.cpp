@@ -4,10 +4,8 @@
 #include "scene/ParticleSystem.h"
 
 ParticleGenerator::ParticleGenerator(
-    const Assets& assets,
-    ParticleDefinition definition)
-    : assets(assets),
-    definition(definition)
+    const ParticleDefinition definition)
+    : definition(definition)
 {
 }
 

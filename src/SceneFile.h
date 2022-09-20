@@ -4,7 +4,15 @@
 #include <map>
 
 #include <stduuid/uuid.h>
+
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#pragma warning(disable : 4275)
+
 #include <yaml-cpp/yaml.h>
+
+#pragma warning(pop)
+
 
 #include <scene/AsyncLoader.h>
 
@@ -54,14 +62,14 @@ class SceneFile
 
         EntityType type { EntityType::node };
 
-        std::string name{};
-        std::string desc{};
+        std::string name;
+        std::string desc;
 
         uuids::uuid id{};
         uuids::uuid parentId{};
 
-        std::string modelName{};
-        std::string modelPath{ "" };
+        std::string modelName;
+        std::string modelPath;
         std::string shaderName{ TEX_TEXTURE };
         std::vector<std::string> shaderDefinitions{};
         std::map<const std::string, bool> renderFlags{};
@@ -88,16 +96,14 @@ class SceneFile
 
 public:
     SceneFile(
-        std::shared_ptr<AsyncLoader> asyncLoader,
-        const std::shared_ptr<Assets> assets,
+        AsyncLoader* asyncLoader,
+        const Assets& assets,
         const std::string& filename);
     ~SceneFile();
 
-    std::shared_ptr<Scene> load(std::shared_ptr<Scene> scene);
+    void load(std::shared_ptr<Scene> scene);
 
 private:
-    void testYAML();
-
     void attach(
         std::shared_ptr<Scene> scene,
         SkyboxData& skybox,
@@ -162,8 +168,8 @@ private:
     const std::string resolveTexturePath(const std::string& line);
 
 private:
-    std::shared_ptr<AsyncLoader> asyncLoader;
-    const std::shared_ptr<Assets> assets;
+    AsyncLoader* asyncLoader;
+    const Assets& assets;
     const std::string filename;
 
     SkyboxData skybox;

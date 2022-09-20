@@ -2,11 +2,10 @@
 
 #include "NodeController.h"
 
-class NodePathController : public NodeController
+class NodePathController final : public NodeController
 {
 public:
-    NodePathController(const std::shared_ptr<Assets> assets, int pathMode);
-    ~NodePathController();
+    NodePathController(int pathMode);
 
     bool update(const RenderContext& ctx, Node& node) override;
 

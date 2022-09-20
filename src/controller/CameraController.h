@@ -2,11 +2,10 @@
 
 #include "NodeController.h"
 
-class CameraController : public NodeController
+class CameraController final : public NodeController
 {
 public:
-    CameraController(const std::shared_ptr<Assets> assets);
-    ~CameraController();
+    CameraController();
 
     bool update(const RenderContext& ctx, Node& node) override;
 };

@@ -13,7 +13,6 @@ public:
         const glm::vec3& normal,
         const glm::vec3& tangent,
         const std::shared_ptr<Material> material);
-    ~Vertex();
 
     bool operator==(const Vertex& b) const;
     bool operator!=(const Vertex& b) const;

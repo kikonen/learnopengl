@@ -2,9 +2,9 @@
 
 
 AsyncLoader::AsyncLoader(
-    std::shared_ptr<ShaderRegistry> shaders,
-    const std::shared_ptr<Assets> assets)
-    : shaders(shaders),
+    ShaderRegistry& shaders,
+    const Assets& assets)
+  : shaders(shaders),
     assets(assets)
 {
 }
@@ -68,10 +68,12 @@ void AsyncLoader::addLoader(std::function<void()> loader)
 
 std::shared_ptr<Shader> AsyncLoader::getShader(const std::string& name)
 {
-    return shaders->getShader(*assets, name);
+    return shaders.getShader(assets, name);
 }
 
-std::shared_ptr<Shader> AsyncLoader::getShader(const std::string& name, const std::vector<std::string>& defines)
+std::shared_ptr<Shader> AsyncLoader::getShader(
+    const std::string& name,
+    const std::vector<std::string>& defines)
 {
-    return shaders->getShader(*assets, name, "", defines);
+    return shaders.getShader(assets, name, "", defines);
 }

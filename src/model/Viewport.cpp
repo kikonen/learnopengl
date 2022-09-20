@@ -26,9 +26,9 @@ void Viewport::setTextureID(unsigned int textureID)
     this->textureID = textureID;
 }
 
-void Viewport::prepare()
+void Viewport::prepare(const Assets& assets)
 {
-    shader->prepare();
+    shader->prepare(assets);
 
     buffers.prepare(false);
 

@@ -10,7 +10,7 @@ class Sprite final : public Node
 public:
     static std::shared_ptr<NodeType> getNodeType(
         const Assets& assets,
-        std::shared_ptr<ShaderRegistry> shaders,
+        ShaderRegistry& shaders,
         const std::string& path,
         const std::string& normalMapPath);
 

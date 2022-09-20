@@ -63,19 +63,30 @@ void Shader::load()
     geometryShaderSource = loadSource(geometryShaderPath, geometryOptional);
 }
 
-int Shader::prepare()
+int Shader::prepare(const Assets& assets)
 {
-    if (prepared) {
-        return res;
-    }
-    prepared = true;
-    res = -1;
+    if (m_prepared) return m_prepareResult;
+    m_prepared = true;
 
     if (createProgram()) {
         return -1;
     }
-    res = 0;
-    return res;
+
+    {
+        bind();
+        noiseTex.set(assets.noiseUnitIndex);
+        reflectionTex.set(assets.waterReflectionMapUnitIndex);
+        refractionTex.set(assets.waterRefractionMapUnitIndex);
+
+        cubeMap.set(assets.cubeMapUnitIndex);
+        shadowMap.set(assets.shadowMapUnitIndex);
+        skybox.set(assets.skyboxUnitIndex);
+
+        unbind();
+    }
+
+    m_prepareResult = 0;
+    return m_prepareResult;
 }
 
 GLint Shader::getUniformLoc(const std::string& name)
@@ -234,7 +245,7 @@ int Shader::createProgram() {
 
 void Shader::appendDefines(std::vector<std::string>& lines)
 {
-    for (auto d : defines) {
+    for (auto& d : defines) {
         lines.push_back("#define " + d);
     }
 }
@@ -304,7 +315,7 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
 
     std::stringstream sb;
     
-    for (auto line : lines) {
+    for (auto& line : lines) {
         sb << line << std::endl;
     }
 
@@ -345,7 +356,7 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
                 appendDefines(lines);
                 lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
             } else if (k == "#include") {
-                for (auto l : processInclude(v1, lineNumber)) {
+                for (auto& l : processInclude(v1, lineNumber)) {
                     lines.push_back(l);
                 }
                 lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
@@ -386,7 +397,7 @@ std::vector<std::string> Shader::processInclude(const std::string& includePath, 
 
     std::vector<std::string> result;
     result.push_back("#line 1 " + std::to_string(lineNumber));
-    for (auto line : lines) {
+    for (auto& line : lines) {
         result.push_back(line);
     }
 

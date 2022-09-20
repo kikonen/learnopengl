@@ -49,13 +49,13 @@
 
 struct RenderClock {
     //     std::chrono::system_clock::time_point ts;
-    double ts;
-    float elapsedSecs;
+    double ts = 0;
+    float elapsedSecs = 0;
 };
 
 struct OpenGLInfo {
-    int maxVertexUniformComponents;
-    int maxVertexAttributes;
+    int maxVertexUniformComponents = 0;
+    int maxVertexAttributes = 0;
 };
 
 struct KI_RGB10_A2

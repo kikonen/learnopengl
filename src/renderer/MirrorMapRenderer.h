@@ -11,19 +11,19 @@ class SkyboxRenderer;
 class MirrorMapRenderer final : public Renderer
 {
 public:
-    MirrorMapRenderer(const Assets& assets);
+    MirrorMapRenderer();
     ~MirrorMapRenderer();
 
-    void prepare(ShaderRegistry& shaders) override;
+    void prepare(const Assets& assets, ShaderRegistry& shaders) override;
 
     void bindTexture(const RenderContext& ctx);
 
     void bind(const RenderContext& ctx);
-    void render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox);
+    void render(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox);
 
 private:
-    void drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox, Node* current);
-    Node* findClosest(const RenderContext& ctx, NodeRegistry& registry);
+    void drawNodes(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox, Node* current);
+    Node* findClosest(const RenderContext& ctx, const NodeRegistry& registry);
 
 public:
     std::shared_ptr<Viewport> debugViewport;

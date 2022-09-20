@@ -1,25 +1,24 @@
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(const Assets& assets)
-    : assets(assets)
+ParticleSystem::ParticleSystem()
 {
 }
 
-void ParticleSystem::prepare(ShaderRegistry& shaders)
+void ParticleSystem::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
     particleShader = shaders.getShader(assets, TEX_TEXTURE);
-    particleShader->prepare();
+    particleShader->prepare(assets);
 }
 
-void ParticleSystem::update(RenderContext& ctx)
+void ParticleSystem::update(const RenderContext& ctx)
 {
 }
 
-void ParticleSystem::bind(RenderContext& ctx)
+void ParticleSystem::bind(const RenderContext& ctx)
 {
 }
 
-void ParticleSystem::render(RenderContext& ctx)
+void ParticleSystem::render(const RenderContext& ctx)
 {
     ctx.state.enable(GL_BLEND);
     ctx.state.disable(GL_CULL_FACE);

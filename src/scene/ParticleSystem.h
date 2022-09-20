@@ -12,17 +12,14 @@
 class ParticleSystem final
 {
 public:
-    ParticleSystem(const Assets& assets);
+    ParticleSystem();
 
-    void prepare(ShaderRegistry& shaders);
-    void update(RenderContext& ctx);
-    void bind(RenderContext& ctx);
-    void render(RenderContext& ctx);
+    void prepare(const Assets& assets, ShaderRegistry& shaders);
+    void update(const RenderContext& ctx);
+    void bind(const RenderContext& ctx);
+    void render(const RenderContext& ctx);
 
     void addParticle(const Particle& particle);
-
-public:
-    const Assets& assets;
 
 private:
     std::vector<Particle> particles;

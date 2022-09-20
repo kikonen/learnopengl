@@ -2,8 +2,7 @@
 
 #include "SkyboxRenderer.h"
 
-MirrorMapRenderer::MirrorMapRenderer(const Assets& assets)
-    : Renderer(assets)
+MirrorMapRenderer::MirrorMapRenderer()
 {
 }
 
@@ -11,9 +10,9 @@ MirrorMapRenderer::~MirrorMapRenderer()
 {
 }
 
-void MirrorMapRenderer::prepare(ShaderRegistry& shaders)
+void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
-    Renderer::prepare(shaders);
+    Renderer::prepare(assets, shaders);
 
     FrameBufferSpecification spec = {
         assets.mirrorReflectionSize ,
@@ -32,22 +31,22 @@ void MirrorMapRenderer::prepare(ShaderRegistry& shaders)
         reflectionBuffer->spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
 
-    debugViewport->prepare();
-    debugViewport->prepare();
+    debugViewport->prepare(assets);
+    debugViewport->prepare(assets);
 }
 
 void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
 {
     if (!rendered) return;
 
-    reflectionBuffer->bindTexture(ctx, 0, assets.mirrorReflectionMapUnitIndex);
+    reflectionBuffer->bindTexture(ctx, 0, ctx.assets.mirrorReflectionMapUnitIndex);
 }
 
 void MirrorMapRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void MirrorMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox)
+void MirrorMapRenderer::render(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox)
 {
     if (!stepRender()) return;
 
@@ -95,10 +94,14 @@ void MirrorMapRenderer::render(const RenderContext& ctx, NodeRegistry& registry,
     rendered = true;
 }
 
-void MirrorMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& registry, SkyboxRenderer* skybox, Node* current)
+void MirrorMapRenderer::drawNodes(
+    const RenderContext& ctx,
+    const NodeRegistry& registry,
+    SkyboxRenderer* skybox,
+    Node* current)
 {
-    if (assets.clearColor) {
-        if (assets.debugClearColor) {
+    if (ctx.assets.clearColor) {
+        if (ctx.assets.debugClearColor) {
             glClearColor(0.9f, 0.0f, 0.9f, 1.0f);
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -133,7 +136,7 @@ void MirrorMapRenderer::drawNodes(const RenderContext& ctx, NodeRegistry& regist
     ctx.state.disable(GL_CLIP_DISTANCE0);
 }
 
-Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, NodeRegistry& registry)
+Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistry& registry)
 {
     const glm::vec3& cameraPos = ctx.camera.getPos();
     const glm::vec3& cameraDir = ctx.camera.getViewFront();

@@ -39,7 +39,7 @@ Node::~Node()
 void Node::prepare(const Assets& assets)
 {
     if (controller) {
-        controller->prepare(*this);
+        controller->prepare(assets, *this);
     }
 }
 
