@@ -42,7 +42,7 @@ public:
     //std::shared_ptr<Material> defaultMaterial = nullptr;
 
     std::vector<glm::uvec3> tris;
-    std::vector<Vertex*> vertices;
+    std::vector<Vertex> vertices;
 
     std::vector<std::shared_ptr<Material>> materials;
     std::vector<GLuint> textureIDs;

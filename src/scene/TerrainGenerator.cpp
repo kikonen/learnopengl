@@ -34,13 +34,13 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
             glm::vec2 texture{ tx, tz };
             glm::vec3 normal{ 0.f, 1.f, 0.f };
 
-            Vertex* v = new Vertex(
+            mesh->vertices.emplace_back(
                 pos,
                 texture,
                 normal,
                 glm::vec3(0.f),
-                material->objectID);
-            mesh->vertices.push_back(v);
+                material->objectID
+                );
         }
     }
 

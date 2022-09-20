@@ -36,10 +36,6 @@ ModelMesh::ModelMesh(
 ModelMesh::~ModelMesh()
 {
     KI_INFO_SB("MODEL_MESH: delete " << modelName);
-
-    for (auto& v : vertices) {
-        delete v;
-    }
     vertices.clear();
 }
 
@@ -131,12 +127,12 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
         {
             TexVBO* vbo = (TexVBO*)vboBuffer;
             for (int i = 0; i < vertices.size(); i++) {
-                const Vertex* vertex = vertices[i];
-                const glm::vec3& p = vertex->pos;
-                const glm::vec3& n = vertex->normal;
-                const glm::vec3& tan = vertex->tangent;
-                const std::shared_ptr<Material> m = Material::findID(vertex->materialID, materials);
-                const glm::vec2& t = vertex->texture;
+                const Vertex& vertex = vertices[i];
+                const glm::vec3& p = vertex.pos;
+                const glm::vec3& n = vertex.normal;
+                const glm::vec3& tan = vertex.tangent;
+                const std::shared_ptr<Material> m = Material::findID(vertex.materialID, materials);
+                const glm::vec2& t = vertex.texture;
 
                 vbo->pos.x = p.x;
                 vbo->pos.y = p.y;

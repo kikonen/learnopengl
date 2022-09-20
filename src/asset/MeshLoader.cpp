@@ -43,8 +43,8 @@ std::unique_ptr<ModelMesh> MeshLoader::load() {
 }
 
 void MeshLoader::loadData(
-    std::vector<glm::uvec3>&tris,
-    std::vector<Vertex*>&vertices,
+    std::vector<glm::uvec3>& tris,
+    std::vector<Vertex>& vertices,
     std::vector<std::shared_ptr<Material>>& materials)
 {
     ki::Timer t("loadData-" + modelName);
@@ -52,7 +52,7 @@ void MeshLoader::loadData(
     std::string name;
 
     std::vector<std::shared_ptr<Material>> loadedMaterials;
-    std::map<glm::vec3*, Vertex*> vertexMapping;
+    std::map<glm::vec3*, int> vertexMapping;
 
     std::vector<glm::vec3> positions;
     std::vector<glm::vec2> textures;
@@ -230,8 +230,8 @@ void MeshLoader::splitFragmentValue(const std::string& v, std::vector<std::strin
 }
 
 size_t MeshLoader::resolveVertexIndex(
-    std::map<glm::vec3*, Vertex*>& vertexMapping,
-    std::vector<Vertex*>& vertices,
+    std::map<glm::vec3*, int>& vertexMapping,
+    std::vector<Vertex>& vertices,
     std::vector<glm::vec3>& positions,
     std::vector<glm::vec2>& textures,
     std::vector<glm::vec3>& normals,
@@ -253,26 +253,28 @@ size_t MeshLoader::resolveVertexIndex(
 
     glm::vec3& pos = positions[pi];
 
-    Vertex* old = vertexMapping[&pos];
-
-    Vertex* v = new Vertex(
+    Vertex v(
         pos,
         textures.empty() ? EMPTY_TEX : textures[ti],
         normals.empty() ? EMPTY_NORMAL : normals[ni],
         tangents.empty() ? EMPTY_NORMAL : tangents[tangenti],
         material->objectID);
 
-    if (old && *old == *v) {
-        delete v;
-        return old->index;
+    {
+        auto oldEntry = vertexMapping.find(&pos);
+        if (oldEntry != vertexMapping.end()) {
+            auto old = vertices[oldEntry->second];
+            if (old == v) {
+                return old.index;
+            }
+        }
     }
 
-    vertices.push_back(v);
-    v->index = vertices.size() - 1;
+    v.index = vertices.size();
+    vertexMapping[&pos] = v.index;
+    vertices.push_back(std::move(v));
 
-    vertexMapping[&pos] = v;
-
-    return v->index;
+    return v.index;
 }
 
 glm::vec3 MeshLoader::createNormal(

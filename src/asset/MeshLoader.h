@@ -25,13 +25,9 @@ public:
 private:
     void loadData(
         std::vector<glm::uvec3>& tris,
-        std::vector<Vertex*>& vertices,
+        std::vector<Vertex>& vertices,
         std::vector<std::shared_ptr<Material>>& materials
     );
-
-    void prepareTextures(
-        Material& material,
-        unsigned int& unitIndex);
 
 public:
     const Assets& assets;
@@ -44,8 +40,8 @@ public:
 
 private:
     size_t resolveVertexIndex(
-        std::map<glm::vec3*, Vertex*>& vertexMapping,
-        std::vector<Vertex*>& vertices,
+        std::map<glm::vec3*, int>& vertexMapping,
+        std::vector<Vertex>& vertices,
         std::vector<glm::vec3>& positions,
         std::vector<glm::vec2>& textures,
         std::vector<glm::vec3>& normals,
