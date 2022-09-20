@@ -224,7 +224,6 @@
     <ClCompile Include="src\asset\Shader.cpp" />
     <ClCompile Include="vendor\stb_image\src\stb_image.cpp" />
     <ClCompile Include="src\asset\Texture.cpp" />
-    <ClCompile Include="src\asset\Tri.cpp" />
     <ClCompile Include="src\asset\Vertex.cpp" />
     <ClCompile Include="src\Test6.cpp" />
     <ClCompile Include="src\model\Terrain.cpp" />
@@ -300,7 +299,6 @@
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\asset\Shader.h" />
     <ClInclude Include="src\asset\Texture.h" />
-    <ClInclude Include="src\asset\Tri.h" />
     <ClInclude Include="src\asset\Vertex.h" />
     <ClInclude Include="src\Test6.h" />
     <ClInclude Include="src\asset\UBO.h" />

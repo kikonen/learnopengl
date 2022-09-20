@@ -117,9 +117,6 @@
     <ClCompile Include="src\asset\Vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\Tri.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\asset\MeshLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -342,9 +339,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\Vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\asset\Tri.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\MeshLoader.h">

@@ -9,7 +9,6 @@
 #include "Shader.h"
 #include "scene/RenderContext.h"
 
-#include "Tri.h"
 #include "Material.h"
 #include "Shader.h"
 #include "Vertex.h"
