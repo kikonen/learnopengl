@@ -66,14 +66,14 @@ void AsyncLoader::addLoader(std::function<void()> loader)
     th.detach();
 }
 
-std::shared_ptr<Shader> AsyncLoader::getShader(const std::string& name)
+Shader* AsyncLoader::getShader(const std::string& name)
 {
     return shaders.getShader(assets, name);
 }
 
-std::shared_ptr<Shader> AsyncLoader::getShader(
+Shader* AsyncLoader::getShader(
     const std::string& name,
     const std::vector<std::string>& defines)
 {
-    return shaders.getShader(assets, name, "", defines);
+    return shaders.getShader(assets, name, defines);
 }

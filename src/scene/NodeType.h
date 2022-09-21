@@ -11,7 +11,7 @@ public:
     static int nextID();
     static void setBaseID(int baseId);
 
-    NodeType(int typeID, std::shared_ptr<Shader> defaultShader = nullptr);
+    NodeType(int typeID, Shader* defaultShader = nullptr);
     ~NodeType();
 
     bool hasReflection();
@@ -39,7 +39,7 @@ public:
     glm::vec4 mirrorPlane{ 0 };
 
     std::unique_ptr<Mesh> mesh{ nullptr };
-    std::shared_ptr<Shader> defaultShader{ nullptr };
+    Shader* defaultShader{ nullptr };
     Shader* boundShader{ nullptr };
 
     Batch batch;

@@ -432,7 +432,8 @@ void TestSceneSetup::setupWaterSurface()
         material.textureSpec.mode = GL_REPEAT;
         //        material.pattern = 1;
         material.loadTextures(assets);
-        std::shared_ptr<Shader> shader = asyncLoader->getShader(TEX_WATER);
+
+        Shader* shader = asyncLoader->getShader(TEX_WATER);
 
         TerrainGenerator generator(assets);
 
@@ -464,7 +465,7 @@ void TestSceneSetup::setupEffectExplosion()
     auto assets = this->assets;
 
     asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        std::shared_ptr<Shader> shader = asyncLoader->getShader(TEX_EFFECT);
+        Shader* shader = asyncLoader->getShader(TEX_EFFECT);
 
         TerrainGenerator generator(assets);
 

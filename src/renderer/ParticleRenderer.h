@@ -13,6 +13,6 @@ public:
     virtual void render(const RenderContext& ctx, const NodeRegistry& registry);
 
 private:
-    std::shared_ptr<Shader> particleShader;
+    Shader* particleShader{ nullptr };
 };
 

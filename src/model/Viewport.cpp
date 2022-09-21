@@ -10,7 +10,7 @@ Viewport::Viewport(
     const glm::vec3& rotation, 
     const glm::vec2& size, 
     unsigned int textureID, 
-    std::shared_ptr<Shader> shader,
+    Shader* shader,
     std::function<void(Viewport&)> binder)
     : pos(pos), rotation(rotation), size(size), textureID(textureID), shader(shader), binder(binder)
 {

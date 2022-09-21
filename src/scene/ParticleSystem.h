@@ -26,6 +26,7 @@ private:
 
     Batch batch;
 
-    std::shared_ptr<Shader> particleShader = nullptr;
+    Shader* particleShader{ nullptr };
+
     NodeType* type;
 };

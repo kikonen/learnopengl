@@ -139,7 +139,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
             if (!e->selected) continue;
 
             if (!shader) {
-                shader = t->bind(ctx, selectionShader.get());
+                shader = t->bind(ctx, selectionShader);
                 batch.bind(ctx, shader);
             }
 

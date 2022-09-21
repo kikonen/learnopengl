@@ -29,7 +29,7 @@ public:
     std::shared_ptr<Viewport> debugViewport;
 
 private:
-    std::shared_ptr<Shader> shadowShader{ nullptr };
-    std::shared_ptr<Shader> shadowDebugShader{ nullptr };
+    Shader* shadowShader{ nullptr };
+    Shader* shadowDebugShader{ nullptr };
 };
 

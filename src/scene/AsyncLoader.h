@@ -20,10 +20,10 @@ public:
 
     void addLoader(std::function<void()> loader);
 
-    std::shared_ptr<Shader> getShader(
+    Shader* getShader(
         const std::string& name);
 
-    std::shared_ptr<Shader> getShader(
+    Shader* getShader(
         const std::string& name,
         const std::vector<std::string>& defines);
 

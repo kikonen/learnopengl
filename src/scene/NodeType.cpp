@@ -23,7 +23,7 @@ void NodeType::setBaseID(int baseId)
     typeIDbase = baseId;
 }
 
-NodeType::NodeType(int typeID, std::shared_ptr<Shader> defaultShader)
+NodeType::NodeType(int typeID, Shader* defaultShader)
     : typeID(typeID),
     defaultShader(defaultShader)
 {
@@ -63,7 +63,7 @@ void NodeType::prepare(const Assets& assets)
     if (!mesh) return;
     mesh->prepare(assets);
 
-    std::shared_ptr<Shader> shader = defaultShader;
+    Shader* shader = defaultShader;
     if (shader) {
         shader->prepare(assets);
 
@@ -98,7 +98,7 @@ Shader* NodeType::bind(
 {
     if (!mesh) return nullptr;
 
-    if (!shader) shader = defaultShader.get();
+    if (!shader) shader = defaultShader;
     if (!shader) return nullptr;
 
     boundShader = shader;

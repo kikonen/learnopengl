@@ -25,7 +25,7 @@ public:
     std::shared_ptr<Viewport> debugViewport;
 
 private:
-    std::shared_ptr<Shader> idShader;
+    Shader* idShader{ nullptr };
 
     std::unique_ptr<TextureBuffer> idBuffer{ nullptr };
 };

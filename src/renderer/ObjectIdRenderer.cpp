@@ -128,7 +128,8 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
         glClear(GL_DEPTH_BUFFER_BIT);
     }
 
-    auto shader = idShader.get();
+    auto shader = idShader;
+    shader->bind();
 
     for (const auto& x : registry.nodes) {
         auto& t = x.first;
@@ -145,4 +146,5 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
         batch.flush(ctx, t);
         batch.objectId = false;
     }
+    shader->unbind();
 }

@@ -27,7 +27,7 @@ private:
     void drawSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry);
 
 private:
-    std::shared_ptr<Shader> selectionShader = nullptr;
+    Shader* selectionShader{ nullptr };
 
     int selectedCount = 0;
     std::vector<Node*> blendedNodes;

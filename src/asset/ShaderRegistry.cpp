@@ -13,14 +13,14 @@ ShaderRegistry::~ShaderRegistry()
     shaders.clear();
 }
 
-std::shared_ptr<Shader> ShaderRegistry::getShader(
+Shader* ShaderRegistry::getShader(
     const Assets& assets,
     const std::string& name)
 {
     return getShader(assets, name, "", {});
 }
 
-std::shared_ptr<Shader> ShaderRegistry::getShader(
+Shader* ShaderRegistry::getShader(
     const Assets& assets,
     const std::string& name,
     const std::vector<std::string>& defines)
@@ -28,7 +28,7 @@ std::shared_ptr<Shader> ShaderRegistry::getShader(
     return getShader(assets, name, "", defines);
 }
 
-std::shared_ptr<Shader> ShaderRegistry::getShader(
+Shader* ShaderRegistry::getShader(
     const Assets& assets,
     const std::string& name,
     const std::string& geometryType,
@@ -42,17 +42,18 @@ std::shared_ptr<Shader> ShaderRegistry::getShader(
         key += "_" + x;
     }
 
-    std::shared_ptr<Shader> shader = nullptr;
+    Shader* shader = nullptr;
     {
         const auto& e = shaders.find(key);
         if (e != shaders.end()) {
-            shader = e->second;
+            shader = e->second.get();
         }
     }
 
     if (!shader) {
-        shader = std::make_shared<Shader>(assets, key, name, geometryType, defines);
-        shaders[key] = shader;
+        shaders[key] = std::make_unique<Shader>(assets, key, name, geometryType, defines);
+        const auto& e = shaders.find(key);
+        shader = e->second.get();
         shader->load();
     }
 

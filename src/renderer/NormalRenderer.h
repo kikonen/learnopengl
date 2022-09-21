@@ -16,6 +16,6 @@ private:
     void drawNodes(const RenderContext& ctx, const NodeRegistry& registry);
 
 private:
-    std::shared_ptr<Shader> normalShader = nullptr;
+    Shader* normalShader{ nullptr };
 };
 

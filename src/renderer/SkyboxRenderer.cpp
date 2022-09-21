@@ -116,7 +116,7 @@ void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     }
 }
 
-void SkyboxRenderer::assign(std::shared_ptr<Shader> shader)
+void SkyboxRenderer::assign(Shader* shader)
 {
 //    shader->skybox.set(ctx.assets.skyboxUnitIndex);
 }
