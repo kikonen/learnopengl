@@ -64,7 +64,6 @@ void MeshLoader::loadData(
     {
         defaultMaterial.isDefault = true;
         defaultMaterial.used = false;;
-        loadedMaterials.push_back(defaultMaterial);
     }
 
     std::filesystem::path filePath;
@@ -185,6 +184,13 @@ void MeshLoader::loadData(
         }
 
         {
+            if (defaultMaterial.used) {
+                if (loadTextures) {
+                    defaultMaterial.loadTextures(assets);
+                }
+                materials.push_back(defaultMaterial);
+            }
+
             for (auto& material : loadedMaterials) {
                 if (!material.used) continue;
 
