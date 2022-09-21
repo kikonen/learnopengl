@@ -18,7 +18,7 @@ public:
     virtual bool hasReflection() = 0;
     virtual bool hasRefraction() = 0;
 
-    virtual std::shared_ptr<Material> findMaterial(std::function<bool(Material&)> fn) = 0;
+    virtual Material* findMaterial(std::function<bool(const Material&)> fn) = 0;
     virtual void modifyMaterials(std::function<void(Material&)> fn) = 0;
 
     virtual void prepare(const Assets& assets) = 0;

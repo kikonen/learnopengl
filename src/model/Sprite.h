@@ -18,14 +18,14 @@ public:
     virtual ~Sprite();
 
 private:
-    static std::shared_ptr<Material> getMaterial(
+    static Material createMaterial(
         const Assets& assets, 
         const std::string& path,
         const std::string& normalMapPath);
 
     static Mesh* getMesh(
         const Assets& assets, 
-        std::shared_ptr<Material> material);
+        const Material& material);
 
 public:
     const glm::vec2 size;

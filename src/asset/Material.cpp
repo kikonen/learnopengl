@@ -28,47 +28,47 @@ namespace {
     }
 }
 
-std::shared_ptr<Material> createGoldMaterial() {
-    std::shared_ptr<Material> mat = std::make_shared<Material>();
-    mat->name = "<gold>";
-    mat->ns = 51.2f;
-    mat->ks = glm::vec4(0.6283f, 0.5559f, 0.3661f, 1.f);
-    mat->ka = glm::vec4(0.2473f, 0.1995f, 0.0745f, 1.f);
-    mat->kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
+Material createGoldMaterial() {
+    Material mat;
+    mat.name = "<gold>";
+    mat.ns = 51.2f;
+    mat.ks = glm::vec4(0.6283f, 0.5559f, 0.3661f, 1.f);
+    mat.ka = glm::vec4(0.2473f, 0.1995f, 0.0745f, 1.f);
+    mat.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
     return mat;
 }
 
-std::shared_ptr<Material> createSilverMaterial() {
-    std::shared_ptr<Material> mat = std::make_shared<Material>();
-    mat->name = "<silver>";
-    mat->ns = 51.2f;
-    mat->ks = glm::vec4(0.5083f, 0.5083f, 0.5083f, 1.f);
-    mat->ka = glm::vec4(0.1923f, 0.1923f, 0.1923f, 1.f);
-    mat->kd = glm::vec4(0.5075f, 0.5075f, 0.5075f, 1.f);
+Material createSilverMaterial() {
+    Material mat;
+    mat.name = "<silver>";
+    mat.ns = 51.2f;
+    mat.ks = glm::vec4(0.5083f, 0.5083f, 0.5083f, 1.f);
+    mat.ka = glm::vec4(0.1923f, 0.1923f, 0.1923f, 1.f);
+    mat.kd = glm::vec4(0.5075f, 0.5075f, 0.5075f, 1.f);
     return mat;
 }
 
-std::shared_ptr<Material> createBronzeMaterial() {
-    std::shared_ptr<Material> mat = std::make_shared<Material>();
-    mat->name = "<bronze>";
-    mat->ns = 25.6f;
-    mat->ks = glm::vec4(0.3936f, 0.2719f, 0.1667f, 1.f);
-    mat->ka = glm::vec4(0.2125f, 0.1275f, 0.0540f, 1.f);
-    mat->kd = glm::vec4(0.7140f, 0.4284f, 0.1814f, 1.f);
+Material createBronzeMaterial() {
+    Material mat;
+    mat.name = "<bronze>";
+    mat.ns = 25.6f;
+    mat.ks = glm::vec4(0.3936f, 0.2719f, 0.1667f, 1.f);
+    mat.ka = glm::vec4(0.2125f, 0.1275f, 0.0540f, 1.f);
+    mat.kd = glm::vec4(0.7140f, 0.4284f, 0.1814f, 1.f);
     return mat;
 }
 
-std::shared_ptr<Material> Material::createDefaultMaterial() {
-    std::shared_ptr<Material> mat = std::make_shared<Material>();
-    mat->name = "<default>";
-    mat->ns = 100.f;
-    mat->ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
-    mat->ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
-    mat->kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
+Material Material::createDefaultMaterial() {
+    Material mat;
+    mat.name = "<default>";
+    mat.ns = 100.f;
+    mat.ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
+    mat.ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
+    mat.kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
     return mat;
 }
 
-std::shared_ptr<Material> Material::createMaterial(BasicMaterial type)
+Material Material::createMaterial(BasicMaterial type)
 {
     switch (type) {
     case BasicMaterial::gold: return createGoldMaterial();
@@ -79,32 +79,38 @@ std::shared_ptr<Material> Material::createMaterial(BasicMaterial type)
     return createDefaultMaterial();
 }
 
-std::shared_ptr<Material> Material::find(
+Material* Material::find(
     const std::string& name,
-    std::vector<std::shared_ptr<Material>>& materials)
+    std::vector<Material>& materials)
 {
-    const auto& e = std::find_if(
+    const auto& it = std::find_if(
         materials.begin(),
         materials.end(),
-        [&name](std::shared_ptr<Material>& m) { return m->name == name && !m->isDefault; });
-    return e != materials.end() ? *e : nullptr;
+        [&name](Material& m) { return m.name == name && !m.isDefault; });
+    return it != materials.end() ? &(*it) : nullptr;
 }
 
-std::shared_ptr<Material> Material::findID(
+Material* Material::findID(
     const int objectID,
-    std::vector<std::shared_ptr<Material>>& materials)
+    std::vector<Material>& materials)
 {
-    const auto& e = std::find_if(
+    const auto& it = std::find_if(
         materials.begin(),
         materials.end(),
-        [objectID](std::shared_ptr<Material>& m) { return m->objectID == objectID; });
-    return e != materials.end() ? *e : nullptr;
+        [objectID](Material& m) { return m.objectID == objectID; });
+    return it != materials.end() ? &(*it) : nullptr;
 }
 
 Material::Material()
     : objectID(nextID())
 {
 }
+
+//Material& Meterial::operator=(const Material& m)
+//    : objectID(m.objectID)
+//{
+//    return *this;
+//}
 
 Material::~Material()
 {
@@ -195,7 +201,7 @@ void Material::bindArray(Shader* shader, int index, bool bindTextureIDs)
     }
 }
 
-MaterialUBO Material::toUBO()
+const MaterialUBO Material::toUBO()
 {
     return {
         ka,

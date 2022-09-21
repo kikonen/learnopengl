@@ -3,19 +3,19 @@
 #include "asset/QuadMesh.h"
 
 
-std::shared_ptr<Material> Sprite::getMaterial(
+Material Sprite::createMaterial(
     const Assets& assets, 
     const std::string& path,
     const std::string& normalMapPath)
 {
-    std::shared_ptr<Material> material = std::make_shared<Material>();
-    material->name = path;
-    material->type = MaterialType::sprite;
-    material->ns = 100;
-    material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
-    material->map_kd = path;
-    material->map_bump = normalMapPath;
-    material->loadTextures(assets);
+    Material material;
+    material.name = path;
+    material.type = MaterialType::sprite;
+    material.ns = 100;
+    material.ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
+    material.map_kd = path;
+    material.map_bump = normalMapPath;
+    material.loadTextures(assets);
 
     return material;
 }
@@ -33,7 +33,7 @@ std::shared_ptr<NodeType> Sprite::getNodeType(
     type->renderBack = true;
 
     auto quad = std::make_unique<QuadMesh>(path);
-    quad->material = Sprite::getMaterial(assets, path, normalMapPath);
+    quad->material = Sprite::createMaterial(assets, path, normalMapPath);
 
     type->mesh = std::unique_ptr<Mesh>(std::move(quad));
 

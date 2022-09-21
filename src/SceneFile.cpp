@@ -39,21 +39,21 @@ void SceneFile::load(std::shared_ptr<Scene> scene)
 
 void SceneFile::attach(
     std::shared_ptr<Scene> scene,
-    SkyboxData& skybox,
-    std::map<const uuids::uuid, EntityData>& entities,
-    std::vector<std::shared_ptr<Material>>& materials)
+    const SkyboxData& skybox,
+    const std::map<const uuids::uuid, EntityData>& entities,
+    std::vector<Material>& materials)
 {
     attachSkybox(scene, skybox, materials);
 
-    for (auto& entry : entities) {
+    for (const auto& entry : entities) {
         attachEntity(scene, entry.second, entities, materials);
     }
 }
 
 void SceneFile::attachSkybox(
     std::shared_ptr<Scene> scene,
-    SkyboxData& data,
-    std::vector<std::shared_ptr<Material>>& materials)
+    const SkyboxData& data,
+    std::vector<Material>& materials)
 {
     if (!skybox.valid()) return;
 
@@ -65,8 +65,8 @@ void SceneFile::attachSkybox(
 void SceneFile::attachEntity(
     std::shared_ptr<Scene> scene,
     const EntityData& data,
-    std::map<const uuids::uuid, EntityData>& entities,
-    std::vector<std::shared_ptr<Material>>& materials)
+    const std::map<const uuids::uuid, EntityData>& entities,
+    std::vector<Material>& materials)
 {
     if (!data.enabled) {
         return;
@@ -83,7 +83,7 @@ void SceneFile::attachEntity(
 
     auto asyncLoader = this->asyncLoader;
 
-    asyncLoader->addLoader([scene, data, parent, asyncLoader]() {
+    asyncLoader->addLoader([scene, &data, parent, asyncLoader]() {
         const Assets& assets = asyncLoader->assets;
 
         auto type = std::make_shared<NodeType>(
@@ -146,7 +146,7 @@ void SceneFile::attachEntity(
             MeshLoader meshLoader(assets, data.modelName, data.modelPath);
 
             if (data.defaultMaterial) {
-                meshLoader.defaultMaterial = data.defaultMaterial;
+                meshLoader.defaultMaterial = *data.defaultMaterial;
                 meshLoader.overrideMaterials = data.overrideMaterials;
             }
             meshLoader.loadTextures = data.loadTextures;
@@ -179,7 +179,7 @@ void SceneFile::attachEntity(
             }
          });
 
-        auto& repeat = data.repeat;
+        const auto& repeat = data.repeat;
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
@@ -213,7 +213,7 @@ void SceneFile::attachEntity(
 void SceneFile::loadSkybox(
     const YAML::Node& doc,
     SkyboxData& data,
-    std::vector<std::shared_ptr<Material>>& materials)
+    std::vector<Material>& materials)
 {
     auto& node = doc["skybox"];
 
@@ -238,9 +238,9 @@ void SceneFile::loadSkybox(
 void SceneFile::loadEntities(
     const YAML::Node& doc,
     std::map<const uuids::uuid, EntityData>& entities,
-    std::vector<std::shared_ptr<Material>>& materials)
+    std::vector<Material>& materials)
 {
-    for (auto& entry : doc["entities"]) {
+    for (const auto& entry : doc["entities"]) {
         EntityData data;
         loadEntity(entry, materials, data);
         // NOTE KI ignore elements without ID
@@ -252,10 +252,10 @@ void SceneFile::loadEntities(
 
 void SceneFile::loadEntity(
     const YAML::Node& node,
-    std::vector<std::shared_ptr<Material>>& materials,
+    std::vector<Material>& materials,
     EntityData& data)
 {
-    for (auto& pair : node) {
+    for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
@@ -306,14 +306,14 @@ void SceneFile::loadEntity(
         }
         else if (k == "shader_definitions") {
             if (v.Type() == YAML::NodeType::Sequence) {
-                for (auto& name : v) {
+                for (const auto& name : v) {
                     data.shaderDefinitions.push_back(name.as<std::string>());
                 }
             }
         }
         else if (k == "render_flags") {
             if (v.Type() == YAML::NodeType::Sequence) {
-                for (auto& name : v) {
+                for (const auto& name : v) {
                     auto flag = name.as<std::string>();
                     data.renderFlags[flag] = true;
                 }
@@ -324,13 +324,11 @@ void SceneFile::loadEntity(
         }
         else if (k == "default_material") {
             const std::string materialName = v.as<std::string>();
-            auto material = Material::find(materialName, materials);
+            const auto material = Material::find(materialName, materials);
             if (material) {
                 // NOTE KI need to create copy *IF* modifiers
                 // TODO KI should make copy *ALWAYS* for safety
-                data.defaultMaterial = data.materialModifierFields.any()
-                    ? std::make_shared<Material>(*material)
-                    : material;
+                data.defaultMaterial = material;
             }
         }
         else if (k == "material_modifier") {
@@ -350,7 +348,7 @@ void SceneFile::loadEntity(
         }
         else if (k == "positions") {
             data.positions.clear();
-            for (auto& p : v) {
+            for (const auto& p : v) {
                 data.positions.push_back(readVec3(p));
             }
         }
@@ -387,14 +385,14 @@ void SceneFile::loadMaterialModifiers(
     data.materialModifiers = std::make_shared<Material>();
     data.materialModifiers->name = "<modifier>";
 
-    loadMaterial(node, data.materialModifierFields, data.materialModifiers);
+    loadMaterial(node, data.materialModifierFields, *data.materialModifiers);
 }
 
 void SceneFile::loadRepeat(const YAML::Node& node, EntityData& data)
 {
     auto& repeat = data.repeat;
 
-    for (auto& pair : node) {
+    for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
@@ -424,118 +422,111 @@ void SceneFile::loadRepeat(const YAML::Node& node, EntityData& data)
 
 void SceneFile::loadMaterials(
     const YAML::Node& doc,
-    std::vector<std::shared_ptr<Material>>& materials) {
-    for (auto& entry : doc["materials"]) {
-        MaterialField fields;
-        std::shared_ptr<Material> material{ nullptr };
+    std::vector<Material>& materials) {
+    for (const auto& entry : doc["materials"]) {
 
+        MaterialField fields;
+        Material& material = materials.emplace_back();
         loadMaterial(entry, fields, material);
-        if (material) {
-            materials.push_back(material);
-        }
     }
 }
 
 void SceneFile::loadMaterial(
     const YAML::Node& node,
     MaterialField& fields,
-    std::shared_ptr<Material>& material)
+    Material& material)
 {
-    for (auto& pair : node) {
+    for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
         if (k == "name") {
-            const std::string& name = v.as<std::string>();
-            material = std::make_shared<Material>();
-            material->name = name;
+            material.name = v.as<std::string>();
         }
-        else if (material) {
-            if (k == "type") {
-                std::string type = v.as<std::string>();
-                if (type == "model") {
-                    material->type = MaterialType::model;
-                }
-                else if (type == "texture") {
-                    material->type = MaterialType::texture;
-                }
-                else if (type == "sprite") {
-                    material->type = MaterialType::sprite;
-                }
-                else {
-                    std::cout << "UNKNOWN MATERIAL_TYPE: " << k << "=" << v << "\n";
-                }
+        else if (k == "type") {
+            std::string type = v.as<std::string>();
+            if (type == "model") {
+                material.type = MaterialType::model;
             }
-            else if (k == "ns") {
-                material->ns = v.as<float>();
+            else if (type == "texture") {
+                material.type = MaterialType::texture;
             }
-            else if (k == "ka") {
-                material->ka = readRGBA(v);
-            }
-            else if (k == "kd") {
-                material->kd = readRGBA(v);
-            }
-            else if (k == "ks") {
-                material->ks = readRGBA(v);
-            }
-            else if (k == "ke") {
-                material->ke = readRGBA(v);
-            }
-            else if (k == "ni") {
-                material->ni = v.as<float>();
-            }
-            else if (k == "d") {
-                material->d = v.as<float>();
-            }
-            else if (k == "illum") {
-                material->d = v.as<float>();
-            }
-            else if (k == "map_kd") {
-                std::string line = v.as<std::string>();
-                material->map_kd = resolveTexturePath(line);
-            }
-            else if (k == "map_ke") {
-                std::string line = v.as<std::string>();
-                material->map_ke = resolveTexturePath(line);
-            }
-            else if (k == "map_ks") {
-                std::string line = v.as<std::string>();
-                material->map_ks = resolveTexturePath(line);
-            }
-            else if (k == "map_bump") {
-                std::string line = v.as<std::string>();
-                material->map_bump = resolveTexturePath(line);
-            }
-            else if (k == "bump") {
-                std::string line = v.as<std::string>();
-                material->map_bump = resolveTexturePath(line);
-            }
-            else if (k == "reflection") {
-                material->reflection = v.as<float>();
-                fields.reflection = true;
-            }
-            else if (k == "refraction") {
-                material->refraction = v.as<float>();
-                fields.refraction = true;
-            }
-            else if (k == "refraction_ratio") {
-                material->refractionRatio = readRefractionRatio(v);
-                fields.refractionRatio = true;
-            }
-            else if (k == "fog_ratio") {
-                material->fogRatio = v.as<float>();
-            }
-            else if (k == "tiling") {
-                material->tiling = v.as<float>();
-                fields.tiling = true;
-            }
-            else if (k == "texture_spec") {
-                loadTextureSpec(v, material->textureSpec);
-                fields.textureSpec = true;
+            else if (type == "sprite") {
+                material.type = MaterialType::sprite;
             }
             else {
-                std::cout << "UNKNOWN MATERIAL_ENTRY: " << k << "=" << v << "\n";
+                std::cout << "UNKNOWN MATERIAL_TYPE: " << k << "=" << v << "\n";
             }
+        }
+        else if (k == "ns") {
+            material.ns = v.as<float>();
+        }
+        else if (k == "ka") {
+            material.ka = readRGBA(v);
+        }
+        else if (k == "kd") {
+            material.kd = readRGBA(v);
+        }
+        else if (k == "ks") {
+            material.ks = readRGBA(v);
+        }
+        else if (k == "ke") {
+            material.ke = readRGBA(v);
+        }
+        else if (k == "ni") {
+            material.ni = v.as<float>();
+        }
+        else if (k == "d") {
+            material.d = v.as<float>();
+        }
+        else if (k == "illum") {
+            material.d = v.as<float>();
+        }
+        else if (k == "map_kd") {
+            std::string line = v.as<std::string>();
+            material.map_kd = resolveTexturePath(line);
+        }
+        else if (k == "map_ke") {
+            std::string line = v.as<std::string>();
+            material.map_ke = resolveTexturePath(line);
+        }
+        else if (k == "map_ks") {
+            std::string line = v.as<std::string>();
+            material.map_ks = resolveTexturePath(line);
+        }
+        else if (k == "map_bump") {
+            std::string line = v.as<std::string>();
+            material.map_bump = resolveTexturePath(line);
+        }
+        else if (k == "bump") {
+            std::string line = v.as<std::string>();
+            material.map_bump = resolveTexturePath(line);
+        }
+        else if (k == "reflection") {
+            material.reflection = v.as<float>();
+            fields.reflection = true;
+        }
+        else if (k == "refraction") {
+            material.refraction = v.as<float>();
+            fields.refraction = true;
+        }
+        else if (k == "refraction_ratio") {
+            material.refractionRatio = readRefractionRatio(v);
+            fields.refractionRatio = true;
+        }
+        else if (k == "fog_ratio") {
+            material.fogRatio = v.as<float>();
+        }
+        else if (k == "tiling") {
+            material.tiling = v.as<float>();
+            fields.tiling = true;
+        }
+        else if (k == "texture_spec") {
+            loadTextureSpec(v, material.textureSpec);
+            fields.textureSpec = true;
+        }
+        else {
+            std::cout << "UNKNOWN MATERIAL_ENTRY: " << k << "=" << v << "\n";
         }
     }
 }
@@ -544,7 +535,7 @@ void SceneFile::loadTextureSpec(
     const YAML::Node& node,
     TextureSpec& textureSpec)
 {
-    for (auto& pair : node) {
+    for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
@@ -561,7 +552,7 @@ void SceneFile::loadTextureSpec(
 
 glm::vec2 SceneFile::readVec2(const YAML::Node& node) {
     std::vector<float> a;
-    for (auto& e : node) {
+    for (const auto& e : node) {
         a.push_back(e.as<float>());
     }
     return glm::vec2{ a[0], a[1] };
@@ -569,7 +560,7 @@ glm::vec2 SceneFile::readVec2(const YAML::Node& node) {
 
 glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
     std::vector<double> a;
-    for (auto& e : node) {
+    for (const auto& e : node) {
         a.push_back(e.as<double>());
     }
     return glm::vec3{ a[0], a[1], a[2] };
@@ -577,7 +568,7 @@ glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
 
 glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
     std::vector<double> a;
-    for (auto& e : node) {
+    for (const auto& e : node) {
         a.push_back(e.as<double>());
     }
     return glm::vec4{ a[0], a[1], a[2], a[3] };
@@ -585,7 +576,7 @@ glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
 
 glm::vec4 SceneFile::readRGBA(const YAML::Node& node) {
     std::vector<double> a;
-    for (auto& e : node) {
+    for (const auto& e : node) {
         a.push_back(e.as<double>());
     }
     // NOTE KI check if alpha is missing
@@ -597,7 +588,7 @@ glm::vec4 SceneFile::readRGBA(const YAML::Node& node) {
 
 glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) {
     std::vector<float> a;
-    for (auto& e : node) {
+    for (const auto& e : node) {
         a.push_back(e.as<double>());
     }
     // NOTE KI check if just single number

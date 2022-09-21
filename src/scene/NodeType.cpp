@@ -46,7 +46,7 @@ bool NodeType::hasRefraction()
     return mesh->hasRefraction();
 }
 
-std::shared_ptr<Material> NodeType::findMaterial(std::function<bool(Material&)> fn)
+Material* NodeType::findMaterial(std::function<bool(const Material&)> fn)
 {
     if (!mesh) return nullptr;
     return mesh->findMaterial(fn);

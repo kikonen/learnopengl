@@ -13,7 +13,7 @@ struct ParticleDefinition {
     float size = 1.f;
     float sizeVariation = 1.f;
     float particlesPerSec = 1;
-    std::shared_ptr<Material> material = nullptr;
+    Material material;
 };
 
 class ParticleGenerator final

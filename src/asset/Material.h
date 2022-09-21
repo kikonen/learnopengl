@@ -64,7 +64,7 @@ d 1.000000
 illum 2
 map_Kd texture_cube.jpg
 */
-class Material final
+struct Material final
 {
 public:
     Material();
@@ -81,21 +81,21 @@ public:
     void prepare(const Assets& assets);
     void bindArray(Shader* shader, int index, bool bindTextureIDs);
 
-    MaterialUBO toUBO();
+    const MaterialUBO toUBO();
 
-    float getRefractionRatio() { return refractionRatio[1] != 0 ? refractionRatio[0] / refractionRatio[1] : refractionRatio[0]; }
+    const float getRefractionRatio() { return refractionRatio[1] != 0 ? refractionRatio[0] / refractionRatio[1] : refractionRatio[0]; }
 
-    static std::shared_ptr<Material> createDefaultMaterial();
+    static Material createDefaultMaterial();
 
-    static std::shared_ptr<Material> createMaterial(BasicMaterial type);
+    static Material createMaterial(BasicMaterial type);
 
-    static std::shared_ptr<Material> find(
+    static Material* find(
         const std::string& name,
-        std::vector<std::shared_ptr<Material>>& materials);
+        std::vector<Material>& materials);
 
-    static std::shared_ptr<Material> findID(
+    static Material* findID(
         const int objectID,
-        std::vector<std::shared_ptr<Material>>& materials);
+        std::vector<Material>& materials);
 
 private:
     std::string resolveBaseDir(const Assets& assets);
@@ -107,7 +107,7 @@ private:
         const std::string& name);
 
 public:
-    const int objectID;
+    int objectID;
 
     std::string name;
     std::string path;

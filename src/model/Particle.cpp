@@ -1,12 +1,13 @@
 #include "Particle.h"
 
 
-//std::shared_ptr<Material> Particle::getMaterial(
+//Material Particle::getMaterial(
 //    const Assets& assets,
 //    const std::string& path,
 //    const std::string& normalMapPath)
 //{
-//    std::shared_ptr<Material> material = new Material(path);
+//    Material material;
+//    material.name = path;
 //    material->ns = 100;
 //    material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
 //    material->map_kd = path;

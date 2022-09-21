@@ -11,14 +11,14 @@ struct Particle final
     float velocity = 0;
     float lifetime = 0;
 
-    std::shared_ptr<Material> material;
+    Material material;
 
-    //static std::shared_ptr<Material> getMaterial(
+    //Material getMaterial(
     //    const Assets& assets,
     //    const std::string& path,
     //    const std::string& normalMapPath);
 
     //static Mesh* getMesh(
     //    const Assets& assets,
-    //    std::shared_ptr<Material> material);
+    //    const Material& material);
 };

@@ -126,7 +126,7 @@ void TestSceneSetup::setupLightDirectional()
         type->noShadow = true;
 
         MeshLoader loader(assets, "light");
-        loader.defaultMaterial->kd = light->specular;
+        loader.defaultMaterial.kd = light->specular;
         loader.overrideMaterials = true;
         type->mesh = loader.load();
 
@@ -383,16 +383,16 @@ void TestSceneSetup::setupTerrain()
     auto assets = this->assets;
 
     asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        std::shared_ptr<Material> material = std::make_shared<Material>();
-        material->name = "terrain";
-        material->type = MaterialType::texture;
-        material->textureSpec.mode = GL_REPEAT;
-        material->tiling = 60;
-        material->ns = 50;
-        material->ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
-        material->map_kd = "Grass Dark_VH.PNG";
-        //material->map_kd = "singing_brushes.png";
-        material->loadTextures(assets);
+        Material material;
+        material.name = "terrain";
+        material.type = MaterialType::texture;
+        material.textureSpec.mode = GL_REPEAT;
+        material.tiling = 60;
+        material.ns = 50;
+        material.ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
+        material.map_kd = "Grass Dark_VH.PNG";
+        //material.map_kd = "singing_brushes.png";
+        material.loadTextures(assets);
 
         auto shader = asyncLoader->getShader(TEX_TERRAIN);
 
@@ -419,19 +419,19 @@ void TestSceneSetup::setupWaterSurface()
     auto assets = this->assets;
 
     asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        std::shared_ptr<Material> material = std::make_shared<Material>();
-        material->name = "water_surface";
-        material->ns = 150;
-        material->ks = glm::vec4(0.2f, 0.2f, 0.5f, 1.f);
-        material->kd = glm::vec4(0.0f, 0.1f, 0.8f, 1.f);
-        //material->map_kd = "CD3B_Water 1_HI.PNG";
-        //material->map_bump = "CD3B_Water 1_HI_normal_surface.PNG";
-        material->map_bump = "waterNormalMap.png";
-        material->map_dudv = "waterDUDV.png";
-        material->tiling = 2;
-        material->textureSpec.mode = GL_REPEAT;
-        //        material->pattern = 1;
-        material->loadTextures(assets);
+        Material material;
+        material.name = "water_surface";
+        material.ns = 150;
+        material.ks = glm::vec4(0.2f, 0.2f, 0.5f, 1.f);
+        material.kd = glm::vec4(0.0f, 0.1f, 0.8f, 1.f);
+        //material.map_kd = "CD3B_Water 1_HI.PNG";
+        //material.map_bump = "CD3B_Water 1_HI_normal_surface.PNG";
+        material.map_bump = "waterNormalMap.png";
+        material.map_dudv = "waterDUDV.png";
+        material.tiling = 2;
+        material.textureSpec.mode = GL_REPEAT;
+        //        material.pattern = 1;
+        material.loadTextures(assets);
         std::shared_ptr<Shader> shader = asyncLoader->getShader(TEX_WATER);
 
         TerrainGenerator generator(assets);

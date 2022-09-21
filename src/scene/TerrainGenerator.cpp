@@ -9,7 +9,7 @@ TerrainGenerator::TerrainGenerator(const Assets& assets)
 
 std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     const Assets& assets,
-    std::shared_ptr<Material> material)
+    const Material& material)
 {
     auto mesh = std::make_unique<ModelMesh>("terrain");
     mesh->materials.push_back(material);
@@ -39,7 +39,7 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
                 texture,
                 normal,
                 glm::vec3(0.f),
-                material->objectID
+                material.objectID
                 );
         }
     }
@@ -65,7 +65,7 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
 
 std::unique_ptr<QuadMesh> TerrainGenerator::generateWater(
     const Assets& assets,
-    std::shared_ptr<Material> material)
+    const Material& material)
 {
     auto mesh = std::make_unique<QuadMesh>("water");
     mesh->material = material;

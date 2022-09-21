@@ -49,10 +49,10 @@ bool ModelMesh::hasRefraction()
     return refraction;
 }
 
-std::shared_ptr<Material> ModelMesh::findMaterial(std::function<bool(Material&)> fn)
+Material* ModelMesh::findMaterial(std::function<bool(const Material&)> fn)
 {
     for (auto& material : materials) {
-        if (fn(*material)) return material;
+        if (fn(material)) return &material;
     }
     return nullptr;
 }
@@ -60,7 +60,7 @@ std::shared_ptr<Material> ModelMesh::findMaterial(std::function<bool(Material&)>
 void ModelMesh::modifyMaterials(std::function<void(Material&)> fn)
 {
     for (auto& material : materials) {
-        fn(*material);
+        fn(material);
     }
 }
 
@@ -75,16 +75,16 @@ void ModelMesh::prepare(const Assets& assets)
         int materialIndex = 0;
         unsigned int unitIndex = 0;
 
-        for (const auto& material : materials) {
-            material->materialIndex = materialIndex++;
-            assert(material->materialIndex < MATERIAL_COUNT);
+        for (auto& material : materials) {
+            material.materialIndex = materialIndex++;
+            assert(material.materialIndex < MATERIAL_COUNT);
 
-            reflection |= material->reflection > 0;
-            refraction |= material->refraction > 0;
+            reflection |= material.reflection > 0;
+            refraction |= material.refraction > 0;
 
-            material->prepare(assets);
+            material.prepare(assets);
 
-            for (auto& tex : material->textures) {
+            for (auto& tex : material.textures) {
                 if (!tex.texture) continue;
                 tex.unitIndex = unitIndex++;
                 textureIDs.push_back(tex.texture->textureID);
@@ -102,8 +102,8 @@ void ModelMesh::prepare(const Assets& assets)
 
         MaterialsUBO materialsUbo{};
 
-        for (const auto& material : materials) {
-            materialsUbo.materials[material->materialIndex] = material->toUBO();
+        for (auto& material : materials) {
+            materialsUbo.materials[material.materialIndex] = material.toUBO();
         }
 
         glCreateBuffers(1, &materialsUboId);
@@ -131,7 +131,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
                 const glm::vec3& p = vertex.pos;
                 const glm::vec3& n = vertex.normal;
                 const glm::vec3& tan = vertex.tangent;
-                const std::shared_ptr<Material> m = Material::findID(vertex.materialID, materials);
+                const Material* m = Material::findID(vertex.materialID, materials);
                 const glm::vec2& t = vertex.texture;
 
                 vbo->pos.x = p.x;
@@ -227,8 +227,8 @@ void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 
     glBindVertexArray(buffers.VAO);
 
-    for (const auto& material : materials) {
-        material->bindArray(shader, material->materialIndex, false);
+    for (auto& material : materials) {
+        material.bindArray(shader, material.materialIndex, false);
     }
 
     if (!textureIDs.empty()) {

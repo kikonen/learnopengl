@@ -29,7 +29,7 @@ public:
     bool hasReflection() override;
     bool hasRefraction() override;
 
-    std::shared_ptr<Material> findMaterial(std::function<bool(Material&)> fn) override;
+    Material* findMaterial(std::function<bool(const Material&)> fn) override;
     void modifyMaterials(std::function<void(Material&)> fn) override;
 
     void prepare(const Assets& assets) override;
@@ -39,13 +39,11 @@ public:
     void drawInstanced(const RenderContext& ctx, int instanceCount) override;
 
 public:
-    //std::shared_ptr<Material> defaultMaterial = nullptr;
-
     int triCount = 0;
     std::vector<glm::uvec3> tris;
     std::vector<Vertex> vertices;
 
-    std::vector<std::shared_ptr<Material>> materials;
+    std::vector<Material> materials;
     std::vector<GLuint> textureIDs;
 
     const std::string modelPath;

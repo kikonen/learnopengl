@@ -82,7 +82,7 @@ class SceneFile
         bool selected{ false };
 
         bool loadTextures{ true };
-        std::shared_ptr<Material> defaultMaterial;
+        Material* defaultMaterial{ nullptr };
         // NOTE KI overrides *ALL* materials with defaultMaterial
         bool overrideMaterials{ false };
 
@@ -106,34 +106,34 @@ public:
 private:
     void attach(
         std::shared_ptr<Scene> scene,
-        SkyboxData& skybox,
-        std::map<const uuids::uuid, EntityData>& entities,
-        std::vector<std::shared_ptr<Material>>& materials);
+        const SkyboxData& skybox,
+        const std::map<const uuids::uuid, EntityData>& entities,
+        std::vector<Material>& materials);
 
     void attachSkybox(
         std::shared_ptr<Scene> scene,
-        SkyboxData& data,
-        std::vector<std::shared_ptr<Material>>& materials);
+        const SkyboxData& data,
+        std::vector<Material>& materials);
 
     void attachEntity(
         std::shared_ptr<Scene> scene,
         const EntityData& data,
-        std::map<const uuids::uuid, EntityData>& entities,
-        std::vector<std::shared_ptr<Material>>& materials);
+        const std::map<const uuids::uuid, EntityData>& entities,
+        std::vector<Material>& materials);
 
     void loadSkybox(
         const YAML::Node& node,
         SkyboxData& data,
-        std::vector<std::shared_ptr<Material>>& materials);
+        std::vector<Material>& materials);
 
     void loadEntities(
         const YAML::Node& doc,
         std::map<const uuids::uuid, EntityData>& entities,
-        std::vector<std::shared_ptr<Material>>& materials);
+        std::vector<Material>& materials);
 
     void loadEntity(
         const YAML::Node& node,
-        std::vector<std::shared_ptr<Material>>& materials,
+        std::vector<Material>& materials,
         EntityData& data);
 
     void loadMaterialModifiers(
@@ -146,12 +146,12 @@ private:
 
     void loadMaterials(
         const YAML::Node& doc,
-        std::vector<std::shared_ptr<Material>>& materials);
+        std::vector<Material>& materials);
 
     void loadMaterial(
         const YAML::Node& node,
         MaterialField& fields,
-        std::shared_ptr<Material>& material);
+        Material& material);
 
     void loadTextureSpec(
         const YAML::Node& node,
@@ -174,5 +174,5 @@ private:
 
     SkyboxData skybox;
     std::map<const uuids::uuid, EntityData> entities;
-    std::vector<std::shared_ptr<Material>> materials;
+    std::vector<Material> materials;
 };

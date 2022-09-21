@@ -17,7 +17,7 @@ public:
     bool hasReflection();
     bool hasRefraction();
 
-    std::shared_ptr<Material> findMaterial(std::function<bool(Material&)> fn);
+    Material* findMaterial(std::function<bool(const Material&)> fn);
     void modifyMaterials(std::function<void(Material&)> fn);
 
     void prepare(const Assets& assets);
