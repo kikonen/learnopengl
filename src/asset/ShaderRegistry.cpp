@@ -64,6 +64,5 @@ void ShaderRegistry::validate()
     for (auto& e : shaders) {
         auto& shader = e.second;
         assert(shader->boundCount() == 0);
-        assert(shader->prepared());
     }
 }

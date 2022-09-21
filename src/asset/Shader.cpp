@@ -47,6 +47,7 @@ const void Shader::bind()
 {
     m_bound++;
     if (m_bound > 1) return;
+    assert(m_prepared);
     KI_GL_CALL(glUseProgram(programId));
 }
 

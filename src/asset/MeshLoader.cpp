@@ -183,7 +183,7 @@ void MeshLoader::loadData(
                 }
 
                 //Tri* tri = new Tri(v);
-                tris.push_back(v);
+                tris.push_back(std::move(v));
             }
         }
 
@@ -229,7 +229,7 @@ void MeshLoader::splitFragmentValue(const std::string& v, std::vector<std::strin
     }
 }
 
-size_t MeshLoader::resolveVertexIndex(
+unsigned int MeshLoader::resolveVertexIndex(
     std::map<glm::vec3*, int>& vertexMapping,
     std::vector<Vertex>& vertices,
     std::vector<glm::vec3>& positions,
@@ -261,20 +261,20 @@ size_t MeshLoader::resolveVertexIndex(
         material->objectID);
 
     {
-        auto oldEntry = vertexMapping.find(&pos);
+        const auto& oldEntry = vertexMapping.find(&pos);
         if (oldEntry != vertexMapping.end()) {
-            auto old = vertices[oldEntry->second];
+            const auto& old = vertices[oldEntry->second];
             if (old == v) {
-                return old.index;
+                return oldEntry->second;
             }
         }
     }
 
-    v.index = vertices.size();
-    vertexMapping[&pos] = v.index;
+    int index = vertices.size();
+    vertexMapping[&pos] = index;
     vertices.push_back(std::move(v));
 
-    return v.index;
+    return index;
 }
 
 glm::vec3 MeshLoader::createNormal(

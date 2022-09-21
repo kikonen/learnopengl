@@ -39,7 +39,7 @@ public:
     bool loadTextures = true;
 
 private:
-    size_t resolveVertexIndex(
+    unsigned int resolveVertexIndex(
         std::map<glm::vec3*, int>& vertexMapping,
         std::vector<Vertex>& vertices,
         std::vector<glm::vec3>& positions,

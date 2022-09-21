@@ -23,6 +23,4 @@ public:
     const glm::vec3 tangent;
 
     const int materialID;
-
-    size_t index = 0;
 };
