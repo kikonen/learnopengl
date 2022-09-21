@@ -30,7 +30,7 @@ std::shared_ptr<NodeType> Sprite::getNodeType(
         NodeType::nextID(),
         shaders.getShader(assets, TEX_TEXTURE, { DEF_USE_ALPHA }));
 
-    type->renderBack = true;
+    type->flags.renderBack = true;
 
     auto quad = std::make_unique<QuadMesh>(path);
     quad->material = Sprite::createMaterial(assets, path, normalMapPath);

@@ -84,7 +84,7 @@ void NodeType::prepare(const Assets& assets)
         batch.batchSize = assets.batchSize;
     }
 
-    if (batchMode && batch.batchSize > 0) {
+    if (flags.batchMode && batch.batchSize > 0) {
         batch.prepare(this);
     }
     else {
@@ -107,14 +107,14 @@ Shader* NodeType::bind(
     mesh->bind(ctx, shader);
     ctx.bind(shader);
 
-    if (renderBack) {
+    if (flags.renderBack) {
         ctx.state.disable(GL_CULL_FACE);
     }
     else {
         ctx.state.enable(GL_CULL_FACE);
     }
 
-    if (wireframe) {
+    if (flags.wireframe) {
         ctx.state.polygonFrontAndBack(GL_LINE);
     }
 

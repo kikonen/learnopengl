@@ -93,52 +93,55 @@ void SceneFile::attachEntity(
         type->batch.batchSize = data.batchSize;
 
         {
-            const auto& e = data.renderFlags.find("blend");
-            if (e != data.renderFlags.end()) {
-                type->blend = e->second;
+            NodeRenderFlags& flags = type->flags;
+            {
+                const auto& e = data.renderFlags.find("blend");
+                if (e != data.renderFlags.end()) {
+                    flags.blend = e->second;
+                }
             }
-        }
-        {
-            const auto& e = data.renderFlags.find("render_back");
-            if (e != data.renderFlags.end()) {
-                type->renderBack = e->second;
+            {
+                const auto& e = data.renderFlags.find("render_back");
+                if (e != data.renderFlags.end()) {
+                    flags.renderBack = e->second;
+                }
             }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_shadow");
-            if (e != data.renderFlags.end()) {
-                type->noShadow = e->second;
+            {
+                const auto& e = data.renderFlags.find("no_shadow");
+                if (e != data.renderFlags.end()) {
+                    flags.noShadow = e->second;
+                }
             }
-        }
-        {
-            const auto& e = data.renderFlags.find("mirror");
-            if (e != data.renderFlags.end()) {
-                type->mirror = e->second;
-                type->mirrorPlane = data.mirrorPlane;
+            {
+                const auto& e = data.renderFlags.find("mirror");
+                if (e != data.renderFlags.end()) {
+                    flags.mirror = e->second;
+                    type->mirrorPlane = data.mirrorPlane;
+                }
             }
-        }
-        {
-            const auto& e = data.renderFlags.find("water");
-            if (e != data.renderFlags.end()) {
-                type->water = e->second;
+            {
+                const auto& e = data.renderFlags.find("water");
+                if (e != data.renderFlags.end()) {
+                    flags.water = e->second;
+                }
             }
-        }
-        {
-            const auto& e = data.renderFlags.find("light");
-            if (e != data.renderFlags.end()) {
-                type->light = e->second;
+            {
+                const auto& e = data.renderFlags.find("light");
+                if (e != data.renderFlags.end()) {
+                    flags.light = e->second;
+                }
             }
-        }
-        {
-            const auto& e = data.renderFlags.find("batch_mode");
-            if (e != data.renderFlags.end()) {
-                type->batchMode = e->second;
+            {
+                const auto& e = data.renderFlags.find("batch_mode");
+                if (e != data.renderFlags.end()) {
+                    flags.batchMode = e->second;
+                }
             }
-        }
-        {
-            const auto& e = data.renderFlags.find("wireframe");
-            if (e != data.renderFlags.end()) {
-                type->wireframe = e->second;
+            {
+                const auto& e = data.renderFlags.find("wireframe");
+                if (e != data.renderFlags.end()) {
+                    flags.wireframe = e->second;
+                }
             }
         }
 

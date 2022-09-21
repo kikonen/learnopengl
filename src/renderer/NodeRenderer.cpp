@@ -98,7 +98,7 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& regist
             }
 
             // NOTE KI take selected blended node temporarily out of blending
-            if (t->blend && !e->selected) {
+            if (t->flags.blend && !e->selected) {
                 blendedNodes.push_back(e);
                 continue;
             }

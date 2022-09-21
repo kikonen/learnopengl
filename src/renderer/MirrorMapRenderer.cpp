@@ -143,7 +143,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistr
 
     std::map<float, Node*> sorted;
     for (auto& x : registry.nodes) {
-        if (!x.first->mirror) continue;
+        if (!x.first->flags.mirror) continue;
 
         for (auto& e : x.second) {
             glm::vec3 ray = e->getPos() - cameraPos;

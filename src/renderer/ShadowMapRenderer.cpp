@@ -99,7 +99,7 @@ void ShadowMapRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& 
 
     for (const auto& x : registry.nodes) {
         auto& t = x.first;
-        if (t->noShadow) continue;
+        if (t->flags.noShadow) continue;
         t->bind(ctx, shadowShader);
 
         Batch& batch = t->batch;

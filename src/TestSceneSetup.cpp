@@ -122,8 +122,8 @@ void TestSceneSetup::setupLightDirectional()
         }
 
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_LIGHT));
-        type->light = true;
-        type->noShadow = true;
+        type->flags.light = true;
+        type->flags.noShadow = true;
 
         MeshLoader loader(assets, "light");
         loader.defaultMaterial.kd = light->specular;
@@ -191,8 +191,8 @@ void TestSceneSetup::setupLightMoving()
         }
 
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_LIGHT));
-        type->light = true;
-        type->noShadow = true;
+        type->flags.light = true;
+        type->flags.noShadow = true;
         //type->wireframe = true;
 
         MeshLoader loader(assets, "light");
@@ -223,7 +223,7 @@ void TestSceneSetup::setupNodeBrickwallBox()
 
     asyncLoader->addLoader([assets, scene, asyncLoader]() {
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
-        type->renderBack = true;
+        type->flags.renderBack = true;
 
         MeshLoader loader(assets, "brickwall2");
         type->mesh = loader.load();
@@ -302,8 +302,8 @@ void TestSceneSetup::setupNodePlanet()
 
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_LIGHT));
         {
-            type->light = true;
-            type->noShadow = true;
+            type->flags.light = true;
+            type->flags.noShadow = true;
 
             MeshLoader loader(assets, "light");
             loader.overrideMaterials = true;
@@ -333,7 +333,7 @@ void TestSceneSetup::setupNodeAsteroidBelt()
 
     asyncLoader->addLoader([assets, scene, asyncLoader]() {
         auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
-        type->batchMode = false;
+        type->flags.batchMode = false;
 
         MeshLoader loader(assets, "rock", "rock");
         type->mesh = loader.load();
@@ -400,7 +400,7 @@ void TestSceneSetup::setupTerrain()
 
         auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
         //type->renderBack = true;
-        type->noShadow = true;
+        type->flags.noShadow = true;
         type->mesh = generator.generateTerrain(assets, material);
 
         for (int x = 0; x < 2; x++) {
@@ -438,10 +438,10 @@ void TestSceneSetup::setupWaterSurface()
         TerrainGenerator generator(assets);
 
         auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
-        type->renderBack = true;
-        type->water = true;
-        //        type->blend = true;
-        type->noShadow = true;
+        type->flags.renderBack = true;
+        type->flags.water = true;
+        //        type->flags.blend = true;
+        type->flags.noShadow = true;
         type->mesh = generator.generateWater(assets, material);
 
         glm::vec3 pos = assets.groundOffset;
@@ -470,8 +470,8 @@ void TestSceneSetup::setupEffectExplosion()
         TerrainGenerator generator(assets);
 
         auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
-        type->renderBack = true;
-        type->noShadow = true;
+        type->flags.renderBack = true;
+        type->flags.noShadow = true;
 
         glm::vec3 pos = assets.groundOffset;
 

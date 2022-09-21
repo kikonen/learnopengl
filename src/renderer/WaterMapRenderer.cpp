@@ -191,7 +191,7 @@ Water* WaterMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistr
 
     std::map<float, Node*> sorted;
     for (auto& x : registry.nodes) {
-        if (!x.first->water) continue;
+        if (!x.first->flags.water) continue;
 
         for (auto& e : x.second) {
             glm::vec3 ray = e->getPos() - cameraPos;
