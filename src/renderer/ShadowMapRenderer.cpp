@@ -47,8 +47,8 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
 {
-    Light* light = ctx.scene->getDirLight();
-    if (!light) return;
+    auto& node = ctx.scene->registry.dirLight;
+    if (!node) return;
 
     //glm::mat4 b = {
     //    {0.5f, 0.0f, 0.0f, 0.0f},
@@ -57,7 +57,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     //    {0.5f, 0.5f, 0.5f, 1.0f},
     //};
 
-    glm::mat4 lightView = glm::lookAt(light->getPos(), light->getTarget(), glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 lightView = glm::lookAt(node->light->getPos(), node->light->getTarget(), glm::vec3(0.0, 1.0, 0.0));
 
     glm::mat4 lightProjection = glm::ortho(
         -100.0f, 100.0f, -100.0f, 100.0f,

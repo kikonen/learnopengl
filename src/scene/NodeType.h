@@ -50,5 +50,3 @@ public:
     Batch batch;
 private:
 };
-
-

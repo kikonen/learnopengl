@@ -9,13 +9,26 @@
 #include "UBO.h"
 
 
+namespace {
+    int typeIDbase = 0;
+
+    std::mutex type_id_lock;
+
+    int nextID()
+    {
+        std::lock_guard<std::mutex> lock(type_id_lock);
+        return ++typeIDbase;
+    }
+}
+
 Shader::Shader(
     const Assets& assets,
     const std::string& key,
     const std::string& name,
     const std::string& geometryType,
     const std::vector<std::string>& defines)
-    : assets(assets),
+    : objectID(nextID()),
+    assets(assets),
     key(key),
     shaderName(name),
     geometryType(geometryType),

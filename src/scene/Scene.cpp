@@ -134,14 +134,14 @@ void Scene::processEvents(RenderContext& ctx)
 
 void Scene::update(RenderContext& ctx)
 {
-    if (dirLight) {
-        dirLight->update(ctx);
+    if (registry.dirLight) {
+        registry.dirLight->update(ctx);
     }
-    for (auto& light : pointLights) {
-        light->update(ctx);
+    for (auto& node : registry.pointLights) {
+        node->light->update(ctx);
     }
-    for (auto& light : spotLights) {
-        light->update(ctx);
+    for (auto& node : registry.spotLights) {
+        node->light->update(ctx);
     }
 
     for (auto& generator : particleGenerators) {
@@ -372,48 +372,11 @@ void Scene::drawScene(RenderContext& ctx)
 
 Camera* Scene::getCamera()
 {
-    return cameraNode ? cameraNode->camera.get() : nullptr;
-}
-
-Node* Scene::getCameraNode()
-{
-    return cameraNode;
-}
-
-Light* Scene::getDirLight()
-{
-    return dirLight;
-}
-
-std::vector<Light*>& Scene::getPointLights()
-{
-    return pointLights;
-}
-
-std::vector<Light*>& Scene::getSpotLights()
-{
-    return spotLights;
+    return registry.cameraNode ? registry.cameraNode->camera.get() : nullptr;
 }
 
 void Scene::bindComponents(Node* node)
 {
-    if (node->camera) {
-        cameraNode = node;
-    }
-
-    Light* light = node->light.get();
-    if (node->light) {
-        if (light->directional) {
-            dirLight = light;
-        }
-        else if (light->point) {
-            pointLights.push_back(light);
-        }
-        else if (light->spot) {
-            spotLights.push_back(light);
-        }
-    }
-
     if (node->particleGenerator) {
         if (particleSystem) {
             node->particleGenerator->system = particleSystem.get();

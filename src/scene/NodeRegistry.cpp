@@ -77,7 +77,7 @@ void NodeRegistry::attachNodes()
     std::lock_guard<std::mutex> lock(load_lock);
     if (pendingNodes.empty()) return;
 
-    std::map<NodeType*, std::vector<Node*>> newNodes;
+    NodeTypeMap newNodes;
 
     {
         for (const auto& n : pendingNodes) {
@@ -94,6 +94,23 @@ void NodeRegistry::attachNodes()
             node->prepare(assets);
             nodes[node->type.get()].push_back(node);
             idToNode[node->objectID] = node;
+
+            if (node->camera) {
+                cameraNode = node;
+            }
+
+            if (node->light) {
+                Light* light = node->light.get();
+                if (light->directional) {
+                    dirLight = node;
+                }
+                else if (light->point) {
+                    pointLights.push_back(node);
+                }
+                else if (light->spot) {
+                    spotLights.push_back(node);
+                }
+            }
 
             KI_INFO_SB("ATTACH_NODE: id=" << node->objectID << ", type=" << t->typeID);
 

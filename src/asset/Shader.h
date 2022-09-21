@@ -253,6 +253,8 @@ public:
     };
 
 public:
+    const int objectID;
+
     const std::string shaderName;
     const std::string key;
 

@@ -13,6 +13,12 @@
 
 class Sccene;
 
+using NodeVector = std::vector<Node*>;
+using NodeTypeMap = std::map<NodeType*, NodeVector>;
+using ShaderTypeMap = std::map<int, NodeTypeMap>;
+
+using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
+
 class NodeRegistry final
 {
 public:
@@ -34,7 +40,6 @@ public:
 
     void attachNodes();
 
-
 private:
 
 public:
@@ -43,19 +48,24 @@ public:
 
     std::map<int, Node*> idToNode;
     std::map<uuids::uuid, Node*> uuidToNode;
-    std::map<NodeType*, std::vector<Node*>> nodes;
 
-    std::vector<std::shared_ptr<Viewport>> viewports;
+    NodeTypeMap nodes;
+
+    ShaderTypeMap solidNodes;
+    ShaderTypeMap blendedNodes;
+
+    ViewportVector viewports;
+
+    Node* cameraNode = nullptr;
+    Node* dirLight = nullptr;
+
+    NodeVector pointLights;
+    NodeVector spotLights;
 
 private:
     std::mutex load_lock;
     std::condition_variable waitCondition;
 
-    std::vector<Node*> pendingNodes;
+    NodeVector pendingNodes;
 
-    Node* cameraNode = nullptr;
-
-    Light* dirLight = nullptr;
-    std::vector<Light*> pointLights;
-    std::vector<Light*> spotLights;
 };

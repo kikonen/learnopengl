@@ -81,28 +81,31 @@ void RenderContext::bindClipPlanesUBO() const
 void RenderContext::bindLightsUBO() const
 {
     LightsUBO lightsUbo;
-    if (scene->getDirLight() && useLight) {
-        lightsUbo.light = scene->getDirLight()->toDirLightUBO();
-        //lights.light.use = false;
-    }
-    else {
-        DirLightUBO none;
-        none.use = false;
-        lightsUbo.light = none;
+    {
+        auto& node = scene->registry.dirLight;
+        if (node && useLight) {
+            lightsUbo.light = node->light->toDirLightUBO();
+            //lights.light.use = false;
+        }
+        else {
+            DirLightUBO none;
+            none.use = false;
+            lightsUbo.light = none;
+        }
     }
 
     {
         int index = 0;
-        for (auto& light : scene->getPointLights()) {
+        for (auto& node : scene->registry.pointLights) {
             if (!useLight) continue;
             if (index >= LIGHT_COUNT) {
                 break;
             }
-            if (!light->use) {
+            if (!node->light->use) {
                 continue;
             }
 
-            lightsUbo.pointLights[index] = light->toPointightUBO();
+            lightsUbo.pointLights[index] = node->light->toPointightUBO();
             //lights.pointLights[index].use = false;
             index++;
         }
@@ -116,16 +119,16 @@ void RenderContext::bindLightsUBO() const
 
     {
         int index = 0;
-        for (auto& light : scene->getSpotLights()) {
+        for (auto& node : scene->registry.spotLights) {
             if (!useLight) continue;
             if (index >= LIGHT_COUNT) {
                 break;
             }
-            if (!light->use) {
+            if (!node->light->use) {
                 continue;
             }
 
-            lightsUbo.spotLights[index] = light->toSpotLightUBO();
+            lightsUbo.spotLights[index] = node->light->toSpotLightUBO();
             //lights.spotLights[index].use = false;
             index++;
         }

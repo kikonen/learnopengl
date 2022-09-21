@@ -51,11 +51,6 @@ public:
     void drawScene(RenderContext& ctx);
 
     Camera* getCamera();
-    Node* getCameraNode();
-
-    Light* getDirLight();
-    std::vector<Light*>& getPointLights();
-    std::vector<Light*>& getSpotLights();
 
     void bindComponents(Node* node);
     int getObjectID(const RenderContext& ctx, double posx, double posy);
@@ -75,11 +70,6 @@ public:
 protected:
 
 private:
-    Node* cameraNode = nullptr;
-
-    Light* dirLight = nullptr;
-    std::vector<Light*> pointLights;
-    std::vector<Light*> spotLights;
     std::vector<ParticleGenerator*> particleGenerators;
 
     std::unique_ptr<NodeRenderer> nodeRenderer{ nullptr };
