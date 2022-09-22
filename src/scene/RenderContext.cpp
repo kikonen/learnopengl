@@ -12,7 +12,7 @@ RenderContext::RenderContext(
     const Assets& assets,
     const RenderClock& clock,
     GLState& state,
-    std::shared_ptr<Scene> scene,
+    Scene* scene,
     Camera& camera,
     int width,
     int height)

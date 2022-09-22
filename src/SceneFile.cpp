@@ -231,7 +231,7 @@ std::unique_ptr<Camera> SceneFile::createCamera(
 {
     if (!data.enabled) return std::unique_ptr<Camera>();
 
-    auto pos = entity.positions[0] + data.pos;
+    auto pos = entity.positions[0] + data.pos + assets.groundOffset;
     auto camera = std::make_unique<Camera>(pos, data.front, data.up);
     camera->setRotation(data.rotation);
 

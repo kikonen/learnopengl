@@ -35,8 +35,6 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 
     this->scene = scene;
 
-   // setupCamera();
-
     if (true) {
         setupNodeActive();
 
@@ -58,35 +56,6 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
         setupLightDirectional();
         setupLightMoving();
     }
-}
-
-void TestSceneSetup::setupCamera()
-{
-    glm::vec3 front = glm::vec3(0, 0, -1);
-    glm::vec3 up = glm::vec3(0, 1, 0);
-
-    glm::vec3 pos = glm::vec3(-10, 7, -20.f) + assets.groundOffset;
-    glm::vec3 rotation = glm::vec3(0, 180, 0.f);
-
-    auto type = std::make_shared<NodeType>(NodeType::nextID(), asyncLoader->getShader(TEX_TEXTURE));
-    MeshLoader loader(assets, "player");
-    type->mesh = loader.load();
-
-    auto node = new Node(type);
-    {
-        node->allowNormals = false;
-
-        node->setPos(pos);
-        node->setRotation(rotation);
-        node->setScale(0.8f);
-
-        node->camera = std::make_unique<Camera>(pos, front, up);
-        node->camera->setRotation(rotation);
-
-        node->controller = std::make_unique<CameraController>();
-    }
-
-    scene->registry.addNode(node);
 }
 
 void TestSceneSetup::setupLightDirectional()

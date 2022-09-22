@@ -47,14 +47,18 @@ int Test6::onSetup() {
 }
 
 int Test6::onRender(const RenderClock& clock) {
-    currentScene->attachNodes();
+    auto* scene = currentScene.get();
+    Window* window = this->window.get();
 
-    Camera* camera = currentScene->getCamera();
-    if (!camera) {
-        return 0;
-    }
+    if (!scene) return 0;
 
-    RenderContext ctx(assets, clock, state, currentScene, *camera, window->width, window->height);
+    scene->attachNodes();
+
+    Camera* camera = scene->getCamera();
+    if (!camera) return 0;
+
+
+    RenderContext ctx(assets, clock, state, scene, *camera, window->width, window->height);
     //ctx.useWireframe = true;
     //ctx.useLight = false;
 
@@ -70,20 +74,20 @@ int Test6::onRender(const RenderClock& clock) {
         frame->bind(ctx);
     }
 
-    currentScene->processEvents(ctx);
-    currentScene->update(ctx);
-    currentScene->bind(ctx);
-    currentScene->draw(ctx);
-    currentScene->unbind(ctx);
+    scene->processEvents(ctx);
+    scene->update(ctx);
+    scene->bind(ctx);
+    scene->draw(ctx);
+    scene->unbind(ctx);
 
     bool isCtrl = window->input->isModifierDown(Modifier::CONTROL);
     bool isShift = window->input->isModifierDown(Modifier::SHIFT);
     int state = glfwGetMouseButton(window->glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
     if ((isCtrl && state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
-        int objectID = currentScene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
+        int objectID = scene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
 
-        currentScene->registry.selectNodeById(objectID, isShift);
+        scene->registry.selectNodeById(objectID, isShift);
 
         KI_INFO_SB("selected: " << objectID);
     }

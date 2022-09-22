@@ -17,7 +17,7 @@ public:
         const Assets& assets,
         const RenderClock& clock,
         GLState& state,
-        std::shared_ptr<Scene> scene,
+        Scene* scene,
         Camera& camera,
         int width,
         int height);
@@ -40,7 +40,7 @@ public:
     const int width;
     const int height;
 
-    std::shared_ptr<Scene> scene = nullptr;
+    Scene* scene{ nullptr };
     Camera& camera;
 
     glm::mat4 viewMatrix;
