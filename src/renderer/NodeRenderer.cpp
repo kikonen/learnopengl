@@ -88,11 +88,13 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& regist
     }
 
     auto renderTypes = [&ctx, &selection, &renderCount](const NodeTypeMap& typeMap) {
+        ShaderBind bound(typeMap.begin()->first->defaultShader);
+
         for (const auto& x : typeMap) {
             auto& type = x.first;
             Batch& batch = type->batch;
 
-            ShaderBind bound(type->defaultShader);
+            //ShaderBind bound(type->defaultShader);
 
             type->bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);

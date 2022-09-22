@@ -162,11 +162,13 @@ void WaterMapRenderer::drawNodes(
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [&ctx, &current](const NodeTypeMap& typeMap) {
+            ShaderBind bound(typeMap.begin()->first->defaultShader);
+
             for (const auto& x : typeMap) {
                 auto& type = x.first;
-                //if (t->water || t->light) continue;
+                if (type->flags.water) continue;
 
-                ShaderBind bound(type->defaultShader);
+                //ShaderBind bound(type->defaultShader);
 
                 Batch& batch = type->batch;
 

@@ -116,11 +116,13 @@ void MirrorMapRenderer::drawNodes(
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [&ctx, &current](const NodeTypeMap& typeMap) {
+            ShaderBind bound(typeMap.begin()->first->defaultShader);
+
             for (const auto& x : typeMap) {
                 auto& type = x.first;
                 if (type->flags.noShadow) continue;
 
-                ShaderBind bound(type->defaultShader);
+                //ShaderBind bound(type->defaultShader);
 
                 Batch& batch = type->batch;
 
