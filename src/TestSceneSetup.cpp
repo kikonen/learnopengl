@@ -93,9 +93,6 @@ void TestSceneSetup::setupCamera()
         node->camera->setRotation(rotation);
 
         node->controller = new CameraController();
-
-        ParticleDefinition pd;
-        node->particleGenerator = std::make_unique<ParticleGenerator>(pd);
     }
 
     scene->registry.addNode(node);

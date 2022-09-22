@@ -19,11 +19,6 @@
 
 class SceneFile
 {
-    enum class EntityType {
-        node,
-        sprite
-    };
-
     struct SkyboxData {
         std::string shaderName{ "skybox" };
         std::string materialName{};
@@ -55,10 +50,59 @@ class SceneFile
         double zStep{ 0 };
     };
 
+    enum class ControllerType {
+        none,
+        cemera,
+        path
+    };
+
+    struct ControllerData {
+        bool enabled{ false };
+        ControllerType type{ ControllerType::none };
+    };
+
+    struct CameraData {
+        bool enabled{ false };
+
+        glm::vec3 front{ 0, 0, -1 };
+        glm::vec3 up{ 0, 1, 0 };
+
+        // pos relative to owning node
+        glm::vec3 pos{ 0 };
+        glm::vec3 rotation{ 0 };
+    };
+
+    enum class LightType {
+        none,
+        directional,
+        point,
+        spot
+    };
+
+    struct LightData {
+        bool enabled{ false };
+        LightType type{ LightType::none };
+
+        // pos relative to owning node
+        glm::vec3 pos{ 0 };
+        glm::vec3 target{ 0 };
+
+        glm::vec3 ambient{ 0 };
+        glm::vec3 diffuse{ 0 };
+        glm::vec3 specular{ 0 };
+    };
+
+    enum class EntityType {
+        node,
+        sprite
+    };
+
+
     struct EntityData {
+        bool valid{ false };
+
         int typeId{ 0 };
         bool enabled{ false };
-        bool valid{ false };
 
         EntityType type { EntityType::node };
 
@@ -92,6 +136,10 @@ class SceneFile
         int batchSize{ -1 };
 
         Repeat repeat;
+
+        ControllerData controller;
+        CameraData camera;
+        LightData light;
     };
 
 public:
@@ -142,7 +190,19 @@ private:
 
     void loadRepeat(
         const YAML::Node& node,
-        EntityData& data);
+        Repeat& data);
+
+    void loadCamera(
+        const YAML::Node& node,
+        CameraData& data);
+
+    void loadLight(
+        const YAML::Node& node,
+        LightData& data);
+
+    void loadController(
+        const YAML::Node& node,
+        ControllerData& data);
 
     void loadMaterials(
         const YAML::Node& doc,

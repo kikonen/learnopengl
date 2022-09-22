@@ -362,7 +362,16 @@ void SceneFile::loadEntity(
             data.scale = v.as<double>();
         }
         else if (k == "repeat") {
-            loadRepeat(v, data);
+            loadRepeat(v, data.repeat);
+        }
+        else if (k == "camera") {
+            loadCamera(v, data.camera);
+        }
+        else if (k == "light") {
+            loadLight(v, data.light);
+        }
+        else if (k == "controller") {
+            loadController(v, data.controller);
         }
         else if (k == "selected") {
             data.selected = v.as<bool>();
@@ -391,34 +400,144 @@ void SceneFile::loadMaterialModifiers(
     loadMaterial(node, data.materialModifierFields, *data.materialModifiers);
 }
 
-void SceneFile::loadRepeat(const YAML::Node& node, EntityData& data)
+void SceneFile::loadRepeat(
+    const YAML::Node& node,
+    Repeat& data)
 {
-    auto& repeat = data.repeat;
-
     for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
         if (k == "x_count") {
-            repeat.xCount = v.as<int>();
+            data.xCount = v.as<int>();
         }
         else if (k == "y_count") {
-            repeat.yCount = v.as<int>();
+            data.yCount = v.as<int>();
         }
         else if (k == "z_count") {
-            repeat.zCount = v.as<int>();
+            data.zCount = v.as<int>();
         }
         else if (k == "x_step") {
-            repeat.xStep = v.as<double>();
+            data.xStep = v.as<double>();
         }
         else if (k == "y_step") {
-            repeat.yStep = v.as<double>();
+            data.yStep = v.as<double>();
         }
         else if (k == "z_step") {
-            repeat.zStep = v.as<double>();
+            data.zStep = v.as<double>();
         }
         else {
             std::cout << "UNKNOWN REPEAT_ENTRY: " << k << "=" << v << "\n";
+        }
+    }
+}
+
+void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
+{
+    for (const auto& pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "enabled") {
+            data.enabled = v.as<bool>();
+        }
+        else if (k == "front") {
+            data.front = readVec3(v);
+        }
+        else if (k == "up") {
+            data.up = readVec3(v);
+        }
+        else if (k == "pos") {
+            data.pos = readVec3(v);
+        }
+        else if (k == "rotation") {
+            data.rotation = readVec3(v);
+        }
+        else {
+            std::cout << "UNKNOWN CONTROLLER_ENTRY: " << k << "=" << v << "\n";
+        }
+    }
+}
+
+void SceneFile::loadLight(const YAML::Node& node, LightData& data)
+{
+    // pos relative to owning node
+    for (const auto& pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "enabled") {
+            data.enabled = v.as<bool>();
+        }
+        else if (k == "type") {
+            std::string type = v.as<std::string>();
+            if (type == "none") {
+                data.type = LightType::none;
+            }
+            else if (type == "directional") {
+                data.type = LightType::directional;
+            }
+            else if (type == "point") {
+                data.type = LightType::point;
+            }
+            else if (type == "spot") {
+                data.type = LightType::spot;
+            }
+            else {
+                std::cout << "UNKNOWN LIGHT_TYPE: " << k << "=" << v << "\n";
+            }
+        }
+        else if (k == "pos") {
+            data.pos = readVec3(v);
+        }
+        else if (k == "target") {
+            data.target = readVec3(v);
+        }
+        else if (k == "ambient") {
+            data.ambient = readVec3(v);
+        }
+        else if (k == "diffuse") {
+            data.diffuse = readVec3(v);
+        }
+        else if (k == "specular") {
+            data.specular = readVec3(v);
+        }
+        else {
+            std::cout << "UNKNOWN CONTROLLER_ENTRY: " << k << "=" << v << "\n";
+        }
+    }
+}
+
+void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
+{
+    // pos relative to owning node
+    for (const auto& pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "enabled") {
+            data.enabled = v.as<bool>();
+        }
+        else if (k == "type") {
+            std::string type = v.as<std::string>();
+            if (type == "none") {
+                data.type = ControllerType::none;
+            }
+            else if (type == "camera") {
+                data.type = ControllerType::cemera;
+            }
+            else if (type == "path") {
+                data.type = ControllerType::path;
+            }
+            else {
+                std::cout << "UNKNOWN CONTROLLER_TYPE: " << k << "=" << v << "\n";
+            }
+        }
+        else if (k == "pos") {
+    //        data.pos = readVec3(v);
+        }
+        else {
+            std::cout << "UNKNOWN CONTROLLER_ENTRY: " << k << "=" << v << "\n";
         }
     }
 }

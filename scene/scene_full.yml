@@ -6,6 +6,33 @@ skybox:
   material: skybox
 lights: {}
 entities:
+  - name: Player
+    id: db3e098e-9ed5-4741-b986-16cfc1b2fe9b
+    model: player
+    pos: [-10, 7, -20.0]
+    rotation: [0, 180, 0.0]
+    scale: 0.8
+    render_flags:
+      - --allow_normals
+    camera:
+      up: [0, 1, 0]
+      front: [0, 0, -1]
+      pos: [0, 0, 0]
+      rotation: [0, 180, 0.0]
+      enabled: true
+    particle_generator:
+      - "ParticleDefinition pd;"
+      - "node->particleGenerator = std::make_unique<ParticleGenerator>(pd);"
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: Directional light
+    light:
+      type: directional
+  - name: Moving point light
+    light:
+      type: point
   - name: EXAMPLE
     id: 68f300d2-34b0-4fb0-aa4e-6690e091d63c
     model: glass_ball
