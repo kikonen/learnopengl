@@ -26,7 +26,12 @@ RenderContext::RenderContext(
 {
     viewMatrix = camera.getView();
 
-    projectionMatrix = glm::perspective(glm::radians(camera.getZoom()), (float)width / (float)height, assets.nearPlane, assets.farPlane);
+    projectionMatrix = glm::perspective(
+        glm::radians((float)camera.getZoom()),
+        (float)width / (float)height,
+        assets.nearPlane,
+        assets.farPlane);
+
     projectedMatrix = projectionMatrix * viewMatrix;
 
     for (int i = 0; i < CLIP_PLANE_COUNT; i++) {

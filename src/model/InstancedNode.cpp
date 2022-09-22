@@ -1,9 +1,8 @@
 #include "InstancedNode.h"
 
-InstancedNode::InstancedNode(std::shared_ptr<NodeType> type, NodeController* controller)
+InstancedNode::InstancedNode(std::shared_ptr<NodeType> type)
     : Node(type)
 {
-    this->controller = controller;
 }
 
 InstancedNode::~InstancedNode()

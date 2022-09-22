@@ -52,7 +52,7 @@ class SceneFile
 
     enum class ControllerType {
         none,
-        cemera,
+        camera,
         path
     };
 
@@ -63,6 +63,8 @@ class SceneFile
 
     struct CameraData {
         bool enabled{ false };
+
+        float zoom{ 45 };
 
         glm::vec3 front{ 0, 0, -1 };
         glm::vec3 up{ 0, 1, 0 };
@@ -168,6 +170,18 @@ private:
         const EntityData& data,
         const std::map<const uuids::uuid, EntityData>& entities,
         std::vector<Material>& materials);
+
+    std::unique_ptr<Camera> createCamera(
+        const EntityData& entity,
+        const CameraData& data);
+
+    std::unique_ptr<Light> createLight(
+        const EntityData& entity,
+        const LightData& data);
+
+    std::unique_ptr<NodeController> createController(
+        const EntityData& entity,
+        const ControllerData& data);
 
     void loadSkybox(
         const YAML::Node& node,

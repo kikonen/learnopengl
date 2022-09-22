@@ -57,7 +57,7 @@ public:
     bool selected = false;
     bool allowNormals = true;
 
-    NodeController* controller{ nullptr };
+    std::unique_ptr <NodeController> controller{ nullptr };
 
     std::unique_ptr<Camera> camera{ nullptr };
     std::unique_ptr <Light> light{ nullptr };

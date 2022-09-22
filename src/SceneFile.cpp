@@ -5,6 +5,11 @@
 
 #include "asset/MeshLoader.h"
 
+#include "controller/AsteroidBeltController.h"
+#include "controller/CameraController.h"
+#include "controller/MovingLightController.h"
+#include "controller/NodePathController.h"
+
 #include "SceneFile.h"
 
 namespace {
@@ -81,9 +86,9 @@ void SceneFile::attachEntity(
         }
     }
 
-    auto asyncLoader = this->asyncLoader;
+    //auto asyncLoader = this->asyncLoader;
 
-    asyncLoader->addLoader([scene, &data, parent, asyncLoader]() {
+    asyncLoader->addLoader([this, scene, &data, parent]() {
         const Assets& assets = asyncLoader->assets;
 
         auto type = std::make_shared<NodeType>(
@@ -159,7 +164,7 @@ void SceneFile::attachEntity(
             type->mesh.reset(mesh.release());
         }
 
-        type->modifyMaterials([&asyncLoader, &data, &assets](Material& m) {
+        type->modifyMaterials([this, &data, &assets](Material& m) {
             if (data.materialModifierFields.reflection) {
                 m.reflection = data.materialModifiers->reflection;
             }
@@ -205,12 +210,71 @@ void SceneFile::attachEntity(
 
                         node->selected = data.selected;
 
+                        if (data.camera.enabled)    
+                            node->camera = createCamera(data, data.camera);
+                        if (data.light.enabled)
+                            node->light = createLight(data, data.light);
+                        if (data.controller.enabled)
+                            node->controller = createController(data, data.controller);
+
                         scene->registry.addNode(node);
                     }
                 }
             }
         }
         });
+}
+
+std::unique_ptr<Camera> SceneFile::createCamera(
+    const EntityData& entity,
+    const CameraData& data)
+{
+    if (!data.enabled) return std::unique_ptr<Camera>();
+
+    auto pos = entity.positions[0] + data.pos;
+    auto camera = std::make_unique<Camera>(pos, data.front, data.up);
+    camera->setRotation(data.rotation);
+
+    return camera;
+}
+
+std::unique_ptr<Light> SceneFile::createLight(
+    const EntityData& entity,
+    const LightData& data)
+{
+    if (!data.enabled) return std::unique_ptr<Light>();
+
+    switch (data.type) {
+    case LightType::directional:
+        //return std::unique_ptr<CameraController>();
+        return std::unique_ptr<Light>();
+    case LightType::point:
+        return std::unique_ptr<Light>();
+    case LightType::spot:
+        return std::unique_ptr<Light>();
+    }
+
+    return std::unique_ptr<Light>();
+}
+
+std::unique_ptr<NodeController> SceneFile::createController(
+    const EntityData& entity,
+    const ControllerData& data)
+{
+    if (!data.enabled) return std::unique_ptr<NodeController>();
+
+    switch (data.type) {
+        case ControllerType::camera: {
+            auto camera = std::make_unique<CameraController>();
+            return std::move(camera);
+        }
+        case ControllerType::path: {
+            auto path = std::make_unique<NodePathController>(1);
+            return path;
+        }
+    }
+
+//    return std::unique_ptr<NodeController>();
 }
 
 void SceneFile::loadSkybox(
@@ -441,6 +505,9 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
         if (k == "enabled") {
             data.enabled = v.as<bool>();
         }
+        else if (k == "zoom") {
+            data.zoom = v.as<float>();
+        }
         else if (k == "front") {
             data.front = readVec3(v);
         }
@@ -524,7 +591,7 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
                 data.type = ControllerType::none;
             }
             else if (type == "camera") {
-                data.type = ControllerType::cemera;
+                data.type = ControllerType::camera;
             }
             else if (type == "path") {
                 data.type = ControllerType::path;

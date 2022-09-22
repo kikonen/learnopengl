@@ -15,6 +15,7 @@ entities:
     render_flags:
       - --allow_normals
     camera:
+      zoom: 45
       up: [0, 1, 0]
       front: [0, 0, -1]
       pos: [0, 0, 0]

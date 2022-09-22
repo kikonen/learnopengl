@@ -19,16 +19,7 @@
 
 
 namespace {
-    uuids::uuid planetUUID;
-
-    const std::string PLANET_UUID{ "8712cec1-e1a3-4973-8889-533adfbbb196" };
-
-    const uuids::uuid getPlanetID() {
-        if (planetUUID.is_nil()) {
-            planetUUID = uuids::uuid::from_string(PLANET_UUID).value();
-        }
-        return planetUUID;
-    }
+    constexpr uuids::uuid PLANET_UUID = uuids::uuid::from_string("8712cec1-e1a3-4973-8889-533adfbbb196").value();
 }
 
 TestSceneSetup::TestSceneSetup(
@@ -44,7 +35,7 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 
     this->scene = scene;
 
-    setupCamera();
+   // setupCamera();
 
     if (true) {
         setupNodeActive();
@@ -92,7 +83,7 @@ void TestSceneSetup::setupCamera()
         node->camera = std::make_unique<Camera>(pos, front, up);
         node->camera->setRotation(rotation);
 
-        node->controller = new CameraController();
+        node->controller = std::make_unique<CameraController>();
     }
 
     scene->registry.addNode(node);
@@ -137,12 +128,12 @@ void TestSceneSetup::setupLightDirectional()
             const float speed = 20.f;
             glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
 
-            auto planet = asyncLoader->waitNode(getPlanetID(), true);
+            auto planet = asyncLoader->waitNode(PLANET_UUID, true);
             if (planet) {
                 center = planet->getPos();
             }
 
-            node->controller = new MovingLightController(center, radius, speed, node);
+            node->controller = std::make_unique<MovingLightController>(center, radius, speed, node);
         }
 
         scene->registry.addNode(node);
@@ -204,7 +195,7 @@ void TestSceneSetup::setupLightMoving()
 
             {
                 glm::vec3 center = node->getPos();
-                node->controller = new MovingLightController(center, 10.f, 2.f, node);
+                node->controller = std::make_unique<MovingLightController>(center, 10.f, 2.f, node);
             }
 
             scene->registry.addNode(node);
@@ -267,7 +258,7 @@ void TestSceneSetup::setupNodeActive()
         type->mesh = loader.load();
 
         auto active = new Node(type);
-        active->controller = new NodePathController(0);
+        active->controller = std::make_unique<NodePathController>(0);
         active->setPos(glm::vec3(0) + assets.groundOffset);
         scene->registry.addNode(active);
         });
@@ -280,7 +271,7 @@ void TestSceneSetup::setupNodePlanet()
     auto assets = this->assets;
 
     asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        auto planet = asyncLoader->waitNode(getPlanetID(), true);
+        auto planet = asyncLoader->waitNode(PLANET_UUID, true);
 
         auto light = std::make_unique<Light>();
         {
@@ -315,7 +306,7 @@ void TestSceneSetup::setupNodePlanet()
 
         {
             glm::vec3 center = node->getPos();
-            node->controller = new MovingLightController(center, 4.f, 2.f, node);
+            node->controller = std::make_unique<MovingLightController>(center, 4.f, 2.f, node);
         }
 
         scene->registry.addNode(node);
@@ -335,9 +326,9 @@ void TestSceneSetup::setupNodeAsteroidBelt()
         MeshLoader loader(assets, "rock", "rock");
         type->mesh = loader.load();
 
-        auto planet = asyncLoader->waitNode(getPlanetID(), true);
-        auto controller = new AsteroidBeltController(planet);
-        auto node = new InstancedNode(type, controller);
+        auto planet = asyncLoader->waitNode(PLANET_UUID, true);
+        auto node = new InstancedNode(type);
+        node->controller = std::make_unique<AsteroidBeltController>(planet);
         //node->selected = true;
         //std::this_thread::sleep_for(std::chrono::milliseconds(10000));
         scene->registry.addNode(node);

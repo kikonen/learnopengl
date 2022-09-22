@@ -7,7 +7,7 @@
 class InstancedNode final : public Node
 {
 public:
-    InstancedNode(std::shared_ptr<NodeType> type, NodeController* updater);
+    InstancedNode(std::shared_ptr<NodeType> type);
     virtual ~InstancedNode();
 
     void prepare(const Assets& assets) override;

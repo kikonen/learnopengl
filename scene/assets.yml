@@ -25,8 +25,8 @@ assets:
   show_refraction_view: false
 
   draw_skip: 0
-  debug_clear_color: false
-  clear_color: false
+  debug_clear_color: true
+  clear_color: true
 
   water_tile_size: 100
   water_draw_skip: 1

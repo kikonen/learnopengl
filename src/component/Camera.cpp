@@ -72,20 +72,21 @@ const glm::vec3& Camera::getUp()
     return up;
 }
 
-float Camera::getZoom()
+double Camera::getZoom()
 {
     return zoom;
 }
 
-void Camera::setZoom(double zoom)
+void Camera::setZoom(double aZoom)
 {
-    this->zoom = zoom;
-    dirty = true;
+    updateZoom(aZoom);
 }
 
 void Camera::setPos(const glm::vec3& pos) {
-    this->pos = pos;
-    dirty = true;
+    if (this->pos != pos) {
+        this->pos = pos;
+        dirty = true;
+    }
 }
 
 const glm::vec3& Camera::getPos() const {
@@ -94,9 +95,15 @@ const glm::vec3& Camera::getPos() const {
 
 void Camera::setRotation(const glm::vec3& rotation)
 {
-    yaw = rotation.y;
-    pitch = rotation.x;
-    roll = rotation.z;
+    if (yaw != rotation.y ||
+        pitch != rotation.x ||
+        roll != rotation.z)
+    {
+        yaw = rotation.y;
+        pitch = rotation.x;
+        roll = rotation.z;
+        dirty = true;
+    }
 }
 
 const glm::vec3 Camera::getRotation()
@@ -171,14 +178,17 @@ void Camera::onKey(Input* input, const RenderClock& clock)
 
 void Camera::onMouseMove(Input* input, double xoffset, double yoffset)
 {
+    bool changed = false;
     const float MAX_ANGLE = 89.f;
 
     if (true) {
         yaw -= mouseSensitivity * xoffset;
+        changed = true;
     }
 
     if (true) {
         pitch += mouseSensitivity * yoffset;
+        changed = true;
 
         if (pitch < -MAX_ANGLE) {
             pitch = -MAX_ANGLE;
@@ -188,7 +198,9 @@ void Camera::onMouseMove(Input* input, double xoffset, double yoffset)
         }
     }
 
-    dirty = true;
+    if (changed) {
+        dirty = true;
+    }
 }
 
 void Camera::onMouseScroll(Input* input, double xoffset, double yoffset)
@@ -215,6 +227,7 @@ void Camera::updateCamera()
     if (!dirty) {
         return;
     }
+    dirty = false;
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     rotateMat = glm::toMat4(glm::quat(glm::radians(glm::vec3(pitch, yaw, roll))));

@@ -86,7 +86,7 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, const NodeRegistry& r
         }
 
         Camera camera(center, cameraFront[i], cameraUp[i]);
-        camera.setZoom(90);
+        camera.setZoom(90.0);
         RenderContext ctx(mainCtx.assets, mainCtx.clock, mainCtx.state, mainCtx.scene, camera, cubeMap->size, cubeMap->size);
         ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
         ctx.bindMatricesUBO();
