@@ -3,6 +3,8 @@
 #include <mutex>
 
 #include "asset/Assets.h"
+#include "asset/ShaderBind.h"
+
 #include "RenderContext.h"
 
 namespace {
@@ -68,7 +70,7 @@ void NodeType::prepare(const Assets& assets)
         shader->prepare(assets);
 
         if (false) {
-            shader->bind();
+            ShaderBind bound(shader);
             shader->noiseTex.set(assets.noiseUnitIndex);
             shader->reflectionTex.set(assets.waterReflectionMapUnitIndex);
             shader->refractionTex.set(assets.waterRefractionMapUnitIndex);
@@ -76,7 +78,6 @@ void NodeType::prepare(const Assets& assets)
             shader->cubeMap.set(assets.cubeMapUnitIndex);
             shader->shadowMap.set(assets.shadowMapUnitIndex);
             shader->skybox.set(assets.skyboxUnitIndex);
-            shader->unbind();
         }
     }
 
@@ -92,20 +93,15 @@ void NodeType::prepare(const Assets& assets)
     }
 }
 
-Shader* NodeType::bind(
+void NodeType::bind(
     const RenderContext& ctx, 
     Shader* shader)
 {
-    if (!mesh) return nullptr;
-
-    if (!shader) shader = defaultShader;
-    if (!shader) return nullptr;
+    if (!mesh) return;
 
     boundShader = shader;
 
-    shader->bind();
     mesh->bind(ctx, shader);
-    ctx.bind(shader);
 
     if (flags.renderBack) {
         ctx.state.disable(GL_CULL_FACE);
@@ -117,15 +113,10 @@ Shader* NodeType::bind(
     if (flags.wireframe) {
         ctx.state.polygonFrontAndBack(GL_LINE);
     }
-
-    return shader;
 }
 
 void NodeType::unbind(const RenderContext& ctx)
 {
-    if (boundShader) {
-        boundShader->unbind();
-        boundShader = nullptr;
-    }
+    boundShader = nullptr;
     ctx.bindGlobal();
 }

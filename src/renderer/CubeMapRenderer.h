@@ -16,14 +16,22 @@ public:
     void prepare(const Assets& assets, ShaderRegistry& shaders) override;
     void bind(const RenderContext& ctx);
     void bindTexture(const RenderContext& ctx);
-    void render(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox);
+
+    void render(
+        const RenderContext& ctx,
+        const NodeRegistry& registry,
+        SkyboxRenderer* skybox);
 
 private:
     void drawNodes(
         const RenderContext& ctx,
         const NodeRegistry& registry,
+        SkyboxRenderer* skybox,
         const Node* centerNode);
-    Node* findCenter(const RenderContext& ctx, const NodeRegistry& registry);
+
+    Node* findCenter(
+        const RenderContext& ctx,
+        const NodeRegistry& registry);
 
 public:
     glm::vec3 center{ 0, 0, 0 };

@@ -1,5 +1,7 @@
 #include "NodeRenderer.h"
 
+#include "asset/ShaderBind.h"
+
 
 NodeRenderer::NodeRenderer()
 {
@@ -11,16 +13,16 @@ void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     selectionShader = shaders.getShader(assets, TEX_SELECTION);
     selectionShader->selection = true;
-
     selectionShader->prepare(assets);
-//    batch.prepare(1000);
 }
 
 void NodeRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    for (auto& x : registry.nodes) {
-        for (auto& e : x.second) {
-            e->update(ctx);
+    for (auto& all : registry.allNodes) {
+        for (auto& x : all.second) {
+            for (auto& node : x.second) {
+                node->update(ctx);
+            }
         }
     }
 }
@@ -28,7 +30,6 @@ void NodeRenderer::update(const RenderContext& ctx, const NodeRegistry& registry
 void NodeRenderer::bind(const RenderContext& ctx)
 {
     selectedCount = 0;
-    blendedNodes.clear();
 }
 
 void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)
@@ -53,23 +54,22 @@ void NodeRenderer::render(const RenderContext& ctx, const NodeRegistry& registry
 
 void NodeRenderer::renderBlended(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    drawBlended(ctx, blendedNodes);
+    drawBlended(ctx, registry);
 
     KI_GL_UNBIND(glBindVertexArray(0));
 }
 
 void NodeRenderer::renderSelection(const RenderContext& ctx, const NodeRegistry& registry)
 {
+    if (selectedCount == 0) return;
+
     ctx.state.enable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    if (selectedCount > 0) {
-        drawSelectionStencil(ctx, registry);
-    }
+    drawSelectionStencil(ctx, registry);
 
     ctx.state.disable(GL_STENCIL_TEST);
-
     KI_GL_UNBIND(glBindVertexArray(0));
 }
 
@@ -87,36 +87,35 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& regist
         glStencilMask(0x00);
     }
 
-    for (const auto& x : registry.nodes) {
-        auto& t = x.first;
-        Shader* shader = nullptr;
-        Batch& batch = t->batch;
+    auto renderTypes = [&ctx, &selection, &renderCount](const NodeTypeMap& typeMap) {
+        for (const auto& x : typeMap) {
+            auto& type = x.first;
+            Batch& batch = type->batch;
 
-        for (auto& e : x.second) {
-            if (selection ? !e->selected : e->selected) {
-                continue;
+            ShaderBind bound(type->defaultShader);
+
+            type->bind(ctx, bound.shader);
+            batch.bind(ctx, bound.shader);
+
+            for (auto& node : x.second) {
+                if (selection ? !node->selected : node->selected) continue;
+
+                batch.draw(ctx, node, bound.shader);
+                renderCount++;
             }
 
-            // NOTE KI take selected blended node temporarily out of blending
-            if (t->flags.blend && !e->selected) {
-                blendedNodes.push_back(e);
-                continue;
-            }
-
-            if (!shader) {
-                shader = t->bind(ctx, nullptr);
-                shader->bind();
-                batch.bind(ctx, shader);
-            }
-
-            batch.draw(ctx, e, shader);
-            renderCount++;
+            batch.flush(ctx, type);
+            type->unbind(ctx);
         }
+    };
 
-        if (shader) {
-            batch.flush(ctx, t);
-            t->unbind(ctx);
-            shader->unbind();
+    for (const auto& all : registry.solidNodes) {
+        renderTypes(all.second);
+    }
+
+    if (selection) {
+        for (const auto& all : registry.blendedNodes) {
+            renderTypes(all.second);
         }
     }
 
@@ -130,28 +129,37 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
     glStencilMask(0x00);
     ctx.state.disable(GL_DEPTH_TEST);
 
-    for (const auto& x : registry.nodes) {
-        auto& t = x.first;
-        Shader* shader = nullptr;
-        Batch& batch = t->batch;
+    {
+        ShaderBind bound(selectionShader);
 
-        for (auto& e : x.second) {
-            if (!e->selected) continue;
+        auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
+            for (const auto& x : typeMap) {
+                auto& type = x.first;
+                Batch& batch = type->batch;
 
-            if (!shader) {
-                shader = t->bind(ctx, selectionShader);
-                batch.bind(ctx, shader);
+                type->bind(ctx, bound.shader);
+                batch.bind(ctx, bound.shader);
+
+                for (auto& node : x.second) {
+                    if (!node->selected) continue;
+
+                    glm::vec3 scale = node->getScale();
+                    node->setScale(scale * 1.02f);
+                    batch.draw(ctx, node, bound.shader);
+                    node->setScale(scale);
+                }
+
+                batch.flush(ctx, type);
+                type->unbind(ctx);
             }
+        };
 
-            glm::vec3 scale = e->getScale();
-            e->setScale(scale * 1.02f);
-            batch.draw(ctx, e, shader);
-            e->setScale(scale);
+        for (const auto& all : registry.solidNodes) {
+            renderTypes(all.second);
         }
 
-        if (shader) {
-            batch.flush(ctx, t);
-            t->unbind(ctx);
+        for (const auto& all : registry.blendedNodes) {
+            renderTypes(all.second);
         }
     }
 
@@ -160,10 +168,18 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
     ctx.state.enable(GL_DEPTH_TEST);
 }
 
-void NodeRenderer::drawBlended(const RenderContext& ctx, const std::vector<Node*>& nodes)
+void NodeRenderer::drawBlended(
+    const RenderContext& ctx,
+    const NodeRegistry& registry)
 {
-    if (nodes.empty()) {
-        return;
+    std::vector<Node*> nodes;
+
+    for (const auto& all : registry.blendedNodes) {
+        for (const auto& map : all.second) {
+            for (const auto& node : map.second) {
+                nodes.push_back(node);
+            }
+        }
     }
 
     ctx.state.enable(GL_BLEND);
@@ -174,7 +190,7 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, const std::vector<Node*
     // TODO KI discards nodes if *same* distance
     std::map<float, Node*> sorted;
     for (const auto& node : nodes) {
-        float distance = glm::length(viewPos - node->getPos());
+        const float distance = glm::length(viewPos - node->getPos());
         sorted[distance] = node;
     }
 
@@ -182,6 +198,7 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, const std::vector<Node*
     Shader* shader = nullptr;
     Batch* batch = nullptr;
 
+    // NOTE KI blending is *NOT* optimal shader / nodetypw wise due to depth sorting
     for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
         Node* node = it->second;
 
@@ -190,11 +207,17 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, const std::vector<Node*
                 // NOTE KI Changing batch
                 batch->flush(ctx, type);
                 type->unbind(ctx);
+                if (shader) {
+                    shader->unbind();
+                }
             }
             type = node->type.get();
-            shader = type->bind(ctx, nullptr);
-
             batch = &type->batch;
+
+            shader = type->defaultShader;
+            shader->bind();
+
+            type->bind(ctx, shader);
             batch->bind(ctx, shader);
         }
 
@@ -204,9 +227,13 @@ void NodeRenderer::drawBlended(const RenderContext& ctx, const std::vector<Node*
     if (batch) {
         batch->flush(ctx, type);
         type->unbind(ctx);
+
+        if (shader) {
+            shader->unbind();
+            shader = nullptr;
+        }
     }
 
     ctx.state.enable(GL_CULL_FACE);
     ctx.state.disable(GL_BLEND);
 }
-

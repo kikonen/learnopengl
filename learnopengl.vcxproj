@@ -237,6 +237,7 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\asset\ShaderBind.h" />
     <ClInclude Include="src\AssetsFile.h" />
     <ClInclude Include="src\asset\ShaderRegistry.h" />
     <ClInclude Include="src\SceneFile.h" />

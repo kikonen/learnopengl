@@ -33,7 +33,7 @@ public:
     void modifyMaterials(std::function<void(Material&)> fn);
 
     void prepare(const Assets& assets);
-    Shader* bind(const RenderContext& ctx, Shader* shader);
+    void bind(const RenderContext& ctx, Shader* shader);
     void unbind(const RenderContext& ctx);
 
 public:

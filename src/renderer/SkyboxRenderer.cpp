@@ -2,6 +2,7 @@
 
 #include <filesystem>
 
+#include "asset/ShaderBind.h"
 #include "scene/CubeMap.h"
 
 const int ATTR_SKYBOX_POS = 0;
@@ -73,9 +74,8 @@ void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     shader->prepare(assets);
 
     if (false) {
-        shader->bind();
+        ShaderBind bound(shader);
         shader->skybox.set(assets.skyboxUnitIndex);
-        shader->unbind();
     }
 
     {
@@ -132,7 +132,7 @@ void SkyboxRenderer::update(const RenderContext& ctx, const NodeRegistry& regist
 
 void SkyboxRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    shader->bind();
+    ShaderBind bound(shader);
     bindTexture(ctx);
 
     // remove translation from the view matrix
@@ -148,6 +148,4 @@ void SkyboxRenderer::render(const RenderContext& ctx, const NodeRegistry& regist
 
     KI_GL_UNBIND(glBindVertexArray(0));
     KI_GL_UNBIND(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
-
-    shader->unbind();
 }

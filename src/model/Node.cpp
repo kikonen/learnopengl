@@ -116,7 +116,7 @@ void Node::setPos(const glm::vec3& pos) {
     dirtyTrans = true;
 }
 
-const glm::vec3&  Node::getPos() {
+const glm::vec3&  const Node::getPos() {
     return pos;
 }
 

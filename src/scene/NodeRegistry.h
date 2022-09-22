@@ -49,8 +49,7 @@ public:
     std::map<int, Node*> idToNode;
     std::map<uuids::uuid, Node*> uuidToNode;
 
-    NodeTypeMap nodes;
-
+    ShaderTypeMap allNodes;
     ShaderTypeMap solidNodes;
     ShaderTypeMap blendedNodes;
 

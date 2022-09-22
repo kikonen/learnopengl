@@ -8,6 +8,7 @@
 
 #include "UBO.h"
 
+#include "ShaderBind.h"
 
 namespace {
     int typeIDbase = 0;
@@ -67,6 +68,7 @@ const void Shader::bind()
 const void Shader::unbind()
 {
     m_bound--;
+    assert(m_bound >= 0);
     if (m_bound == 0) glUseProgram(0);
 }
 
@@ -87,7 +89,8 @@ int Shader::prepare(const Assets& assets)
     }
 
     {
-        bind();
+        ShaderBind bound(this);
+
         noiseTex.set(assets.noiseUnitIndex);
         reflectionTex.set(assets.waterReflectionMapUnitIndex);
         refractionTex.set(assets.waterRefractionMapUnitIndex);
@@ -95,8 +98,6 @@ int Shader::prepare(const Assets& assets)
         cubeMap.set(assets.cubeMapUnitIndex);
         shadowMap.set(assets.shadowMapUnitIndex);
         skybox.set(assets.skyboxUnitIndex);
-
-        unbind();
     }
 
     m_prepareResult = 0;

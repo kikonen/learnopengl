@@ -1,5 +1,6 @@
 #include "NormalRenderer.h"
 
+#include "asset/ShaderBind.h"
 
 NormalRenderer::NormalRenderer()
 {
@@ -24,21 +25,31 @@ void NormalRenderer::render(const RenderContext& ctx, const NodeRegistry& regist
 
 void NormalRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    auto shader = normalShader;
-    shader->bind();
-    for (const auto& x : registry.nodes) {
-        auto& t = x.first;
-        t->bind(ctx, shader);
+    ShaderBind bound(normalShader);
 
-        Batch& batch = t->batch;
-        batch.bind(ctx, shader);
+    auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
+        for (const auto& x : typeMap) {
+            auto& type = x.first;
+            Batch& batch = type->batch;
 
-        for (auto& e : x.second) {
-            if (!e->allowNormals) continue;
-            batch.draw(ctx, e, shader);
+            type->bind(ctx, bound.shader);
+            batch.bind(ctx, bound.shader);
+
+            for (auto& node : x.second) {
+                if (!node->allowNormals) continue;
+                batch.draw(ctx, node, bound.shader);
+            }
+
+            batch.flush(ctx, type);
+            type->unbind(ctx);
         }
+    };
 
-        batch.flush(ctx, t);
+    for (const auto& all : registry.solidNodes) {
+        renderTypes(all.second);
     }
-    shader->unbind();
+
+    for (const auto& all : registry.blendedNodes) {
+        renderTypes(all.second);
+    }
 }

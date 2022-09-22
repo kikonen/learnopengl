@@ -461,6 +461,9 @@
     <ClInclude Include="src\AssetsFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\asset\ShaderBind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

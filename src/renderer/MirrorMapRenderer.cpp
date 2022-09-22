@@ -1,6 +1,8 @@
 #include "MirrorMapRenderer.h"
 
+#include "asset/ShaderBind.h"
 #include "SkyboxRenderer.h"
+
 
 MirrorMapRenderer::MirrorMapRenderer()
 {
@@ -110,29 +112,43 @@ void MirrorMapRenderer::drawNodes(
         glClear(GL_DEPTH_BUFFER_BIT);
     }
 
-    if (skybox) {
-        skybox->render(ctx, registry);
-    }
-
     ctx.bindClipPlanesUBO();
     ctx.state.enable(GL_CLIP_DISTANCE0);
+    {
+        auto renderTypes = [&ctx, &current](const NodeTypeMap& typeMap) {
+            for (const auto& x : typeMap) {
+                auto& type = x.first;
+                if (type->flags.noShadow) continue;
 
-    for (const auto& x : registry.nodes) {
-        auto& t = x.first;
-        auto shader = t->bind(ctx, nullptr);
+                ShaderBind bound(type->defaultShader);
 
-        Batch& batch = t->batch;
-        batch.bind(ctx, shader);
+                Batch& batch = type->batch;
 
-        for (auto& e : x.second) {
-            if (e == current) continue;
-            batch.draw(ctx, e, shader);
+                type->bind(ctx, bound.shader);
+                batch.bind(ctx, bound.shader);
+
+                for (auto& node : x.second) {
+                    if (node == current) continue;
+                    batch.draw(ctx, node, bound.shader);
+                }
+
+                batch.flush(ctx, type);
+                type->unbind(ctx);
+            }
+        };
+
+        for (const auto& all : registry.solidNodes) {
+            renderTypes(all.second);
         }
 
-        batch.flush(ctx, t);
-        t->unbind(ctx);
-    }
+        if (skybox) {
+            skybox->render(ctx, registry);
+        }
 
+        for (const auto& all : registry.blendedNodes) {
+            renderTypes(all.second);
+        }
+    }
     ctx.state.disable(GL_CLIP_DISTANCE0);
 }
 
@@ -142,16 +158,20 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistr
     const glm::vec3& cameraDir = ctx.camera.getViewFront();
 
     std::map<float, Node*> sorted;
-    for (auto& x : registry.nodes) {
-        if (!x.first->flags.mirror) continue;
 
-        for (auto& e : x.second) {
-            glm::vec3 ray = e->getPos() - cameraPos;
-            float distance = glm::length(ray);
-            //glm::vec3 fromCamera = glm::normalize(ray);
-            //float dot = glm::dot(fromCamera, cameraDir);
-            //if (dot < 0) continue;
-            sorted[distance] = e;
+    for (const auto& all : registry.allNodes) {
+        for (const auto& x : all.second) {
+            const auto& type = x.first;
+            if (!type->flags.mirror) continue;
+
+            for (const auto& node : x.second) {
+                const glm::vec3 ray = node->getPos() - cameraPos;
+                const float distance = glm::length(ray);
+                //glm::vec3 fromCamera = glm::normalize(ray);
+                //float dot = glm::dot(fromCamera, cameraDir);
+                //if (dot < 0) continue;
+                sorted[distance] = node;
+            }
         }
     }
 

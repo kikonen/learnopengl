@@ -1,5 +1,6 @@
 #include "ObjectIdRenderer.h"
 
+#include "asset/ShaderBind.h"
 
 ObjectIdRenderer::ObjectIdRenderer()
     : Renderer()
@@ -52,7 +53,6 @@ int ObjectIdRenderer::getObjectId(const RenderContext& ctx, double screenPosX, d
 
         int x = 0;
         idBuffer->unbind(ctx);
-
     }
 
     int objectID =
@@ -128,23 +128,36 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
         glClear(GL_DEPTH_BUFFER_BIT);
     }
 
-    auto shader = idShader;
-    shader->bind();
+    {
+        ShaderBind bound(idShader);
 
-    for (const auto& x : registry.nodes) {
-        auto& t = x.first;
-        t->bind(ctx, shader);
+        auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
+            for (const auto& x : typeMap) {
+                auto& type = x.first;
+                if (type->flags.noShadow) continue;
 
-        Batch& batch = t->batch;
-        batch.objectId = true;
-        batch.bind(ctx, shader);
+                Batch& batch = type->batch;
+                batch.objectId = true;
 
-        for (auto& e : x.second) {
-            batch.draw(ctx, e, shader);
+                type->bind(ctx, bound.shader);
+                batch.bind(ctx, bound.shader);
+
+                for (auto& node : x.second) {
+                    batch.draw(ctx, node, bound.shader);
+                }
+
+                batch.flush(ctx, type);
+                type->unbind(ctx);
+                batch.objectId = false;
+            }
+        };
+
+        for (const auto& all : registry.solidNodes) {
+            renderTypes(all.second);
         }
 
-        batch.flush(ctx, t);
-        batch.objectId = false;
+        for (const auto& all : registry.blendedNodes) {
+            renderTypes(all.second);
+        }
     }
-    shader->unbind();
 }

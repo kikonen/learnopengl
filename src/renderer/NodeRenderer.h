@@ -21,8 +21,14 @@ public:
     void renderBlended(const RenderContext& ctx, const NodeRegistry& registry);
 
 private:
-    int drawNodes(const RenderContext& ctx, const NodeRegistry& registry, bool selection);
-    void drawBlended(const RenderContext& ctx, const std::vector<Node*>& nodes);
+    int drawNodes(
+        const RenderContext& ctx,
+        const NodeRegistry& registry,
+        bool selection);
+
+    void drawBlended(
+        const RenderContext& ctx,
+        const NodeRegistry& registry);
 
     void drawSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry);
 
@@ -30,5 +36,4 @@ private:
     Shader* selectionShader{ nullptr };
 
     int selectedCount = 0;
-    std::vector<Node*> blendedNodes;
 };

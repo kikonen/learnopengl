@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "asset/ShaderBind.h"
 #include "SkyboxRenderer.h"
 
 
@@ -35,7 +36,10 @@ void CubeMapRenderer::bindTexture(const RenderContext& ctx)
     cubeMap->bindTexture(ctx, ctx.assets.cubeMapUnitIndex);
 }
 
-void CubeMapRenderer::render(const RenderContext& mainCtx, const NodeRegistry& registry, SkyboxRenderer* skybox)
+void CubeMapRenderer::render(
+    const RenderContext& mainCtx,
+    const NodeRegistry& registry,
+    SkyboxRenderer* skybox)
 {
     if (!stepRender()) return;
 
@@ -54,7 +58,7 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, const NodeRegistry& r
     // -Y (bottom)
     // +Z (front) 
     // -Z (back)
-    glm::vec3 cameraFront[6] = {
+    const glm::vec3 cameraFront[6] = {
         {  1,  0,  0 },
         { -1,  0,  0 },
         {  0,  1,  0 },
@@ -62,7 +66,8 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, const NodeRegistry& r
         {  0,  0,  1 },
         {  0,  0, -1 },
     };
-    glm::vec3 cameraUp[6] = {
+
+    const glm::vec3 cameraUp[6] = {
         {  0, -1,  0 },
         {  0, -1,  0 },
         {  0,  0,  1 },
@@ -91,11 +96,7 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, const NodeRegistry& r
         ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
         ctx.bindMatricesUBO();
 
-        drawNodes(ctx, registry, centerNode);
-
-        if (skybox) {
-            skybox->render(ctx, registry);
-        }
+        drawNodes(ctx, registry, skybox, centerNode);
     }
 
 //    bindTexture(mainCtx);
@@ -110,25 +111,43 @@ void CubeMapRenderer::render(const RenderContext& mainCtx, const NodeRegistry& r
 void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
     const NodeRegistry& registry,
+    SkyboxRenderer* skybox,
     const Node* centerNode)
 {
-    for (const auto& x : registry.nodes) {
-        auto& t = x.first;
-        auto shader = t->bind(ctx, nullptr);
-        //shader->hasReflectionMap.set(false);
+    auto renderTypes = [&ctx, &centerNode](const NodeTypeMap& typeMap) {
+        for (const auto& x : typeMap) {
+            auto& type = x.first;
+            Batch& batch = type->batch;
 
-        Batch& batch = t->batch;
-        batch.bind(ctx, shader);
+            ShaderBind bound(type->defaultShader);
 
-        for (auto& e : x.second) {
-            // NOTE KI skip drawing center node itself (can produce odd results)
-            // => i.e. show garbage from old render round and such
-            if (e == centerNode) continue;
-            batch.draw(ctx, e, shader);
+            type->bind(ctx, bound.shader);
+            batch.bind(ctx, bound.shader);
+
+            for (auto& node : x.second) {
+                // NOTE KI skip drawing center node itself (can produce odd results)
+                // => i.e. show garbage from old render round and such
+                if (node == centerNode) continue;
+
+                batch.draw(ctx, node, bound.shader);
+            }
+
+            batch.flush(ctx, type);
+            type->unbind(ctx);
         }
+    };
 
-        batch.flush(ctx, t);
-        t->unbind(ctx);
+    for (const auto& all : registry.solidNodes) {
+        renderTypes(all.second);
+    }
+
+    // NOTE KI skybox MUST be rendered before blended nodes
+    if (skybox) {
+        skybox->render(ctx, registry);
+    }
+
+    for (const auto& all : registry.blendedNodes) {
+        renderTypes(all.second);
     }
 }
 
@@ -138,16 +157,21 @@ Node* CubeMapRenderer::findCenter(const RenderContext& ctx, const NodeRegistry& 
     const glm::vec3& cameraDir = ctx.camera.getViewFront();
 
     std::map<float, Node*> sorted;
-    for (auto& x : registry.nodes) {
-        if (!(x.first->hasReflection() || x.first->hasRefraction())) continue;
 
-        for (auto& e : x.second) {
-            glm::vec3 ray = e->getPos() - cameraPos;
-            float distance = glm::length(ray);
-            glm::vec3 fromCamera = glm::normalize(ray);
-            float dot = glm::dot(fromCamera, cameraDir);
-            if (dot < 0) continue;
-            sorted[-distance] = e;
+    for (const auto& all : registry.allNodes) {
+        for (const auto& x : all.second) {
+            const auto& type = x.first;
+            if (!(type->hasReflection() || type->hasRefraction())) continue;
+
+            for (const auto& node : x.second) {
+                const glm::vec3 ray = node->getPos() - cameraPos;
+                const float distance = glm::length(ray);
+                const glm::vec3 fromCamera = glm::normalize(ray);
+                const float dot = glm::dot(fromCamera, cameraDir);
+                if (dot < 0) continue;
+
+                sorted[-distance] = node;
+            }
         }
     }
 

@@ -27,7 +27,7 @@ public:
     virtual void draw(const RenderContext& ctx);
 
     void setPos(const glm::vec3& pos);
-    const glm::vec3& getPos();
+    const glm::vec3& const getPos();
 
     void setRotation(const glm::vec3& rotation);
     const glm::vec3& getRotation();

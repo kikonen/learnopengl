@@ -10,14 +10,35 @@ NodeRegistry::NodeRegistry(Scene& scene)
 
 NodeRegistry::~NodeRegistry()
 {
+    // NOTE KI forbid access into deleted nodes
+    {
+        std::lock_guard<std::mutex> lock(load_lock);
+        pendingNodes.clear();
+        idToNode.clear();
+        uuidToNode.clear();
+    }
+
+    {
+        solidNodes.clear();
+        blendedNodes.clear();
+
+        cameraNode = nullptr;
+
+        dirLight = nullptr;
+        pointLights.clear();
+        spotLights.clear();
+    }
+
     KI_INFO_SB("NODE_REGISTRY: delete");
-    for (auto& e : nodes) {
-        KI_INFO_SB("NODE_REGISTRY: delete " << e.first->typeID);
-        for (auto& n : e.second) {
-            delete n;
+    for (auto& byType : allNodes) {
+        for (auto& e : byType.second) {
+            KI_INFO_SB("NODE_REGISTRY: delete " << e.first->typeID);
+            for (auto& n : e.second) {
+                delete n;
+            }
         }
     }
-    nodes.clear();
+    allNodes.clear();
 }
 
 void NodeRegistry::addNode(Node* node)
@@ -90,9 +111,17 @@ void NodeRegistry::attachNodes()
         auto& t = x.first;
         t->prepare(assets);
 
+        auto* shader = t->defaultShader;
+
+        auto& map = t->flags.blend ? blendedNodes : solidNodes;
+        auto& typeMap = map[shader->objectID];
+        auto& allMap = allNodes[shader->objectID];
+
         for (auto& node : x.second) {
             node->prepare(assets);
-            nodes[node->type.get()].push_back(node);
+
+            allMap[t].push_back(node);
+            typeMap[t].push_back(node);
             idToNode[node->objectID] = node;
 
             if (node->camera) {
