@@ -78,7 +78,9 @@ void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
     shadowBuffer->bindTexture(ctx, 0, ctx.assets.shadowMapUnitIndex);
 }
 
-void ShadowMapRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
+void ShadowMapRenderer::render(
+    const RenderContext& ctx,
+    const NodeRegistry& registry)
 {
     if (!stepRender()) return;
 
@@ -95,7 +97,9 @@ void ShadowMapRenderer::render(const RenderContext& ctx, const NodeRegistry& reg
     rendered = true;
 }
 
-void ShadowMapRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& registry)
+void ShadowMapRenderer::drawNodes(
+    const RenderContext& ctx,
+    const NodeRegistry& registry)
 {
     auto renderTypes = [this, &ctx](const NodeTypeMap& typeMap, ShaderBind& bound) {
         for (const auto& x : typeMap) {
@@ -118,6 +122,11 @@ void ShadowMapRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& 
 
     for (const auto& all : registry.solidNodes) {
         ShaderBind bound(solidShadowShader);
+        renderTypes(all.second, bound);
+    }
+
+    for (const auto& all : registry.alphaNodes) {
+        ShaderBind bound(blendedShadowShader);
         renderTypes(all.second, bound);
     }
 

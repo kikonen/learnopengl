@@ -22,10 +22,6 @@ void Renderer::bind(const RenderContext& ctx)
 {
 }
 
-void Renderer::render(const RenderContext& ctx, const NodeRegistry& registry)
-{
-}
-
 bool Renderer::stepRender()
 {
     drawIndex++;

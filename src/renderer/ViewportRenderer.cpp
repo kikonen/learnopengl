@@ -20,7 +20,9 @@ void ViewportRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
     }
 }
 
-void ViewportRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
+void ViewportRenderer::render(
+    const RenderContext& ctx,
+    const NodeRegistry& registry)
 {
     for (auto& viewport : registry.viewports) {
         viewport->bind(ctx);

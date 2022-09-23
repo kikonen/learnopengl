@@ -48,7 +48,10 @@ void MirrorMapRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void MirrorMapRenderer::render(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox)
+void MirrorMapRenderer::render(
+    const RenderContext& ctx,
+    const NodeRegistry& registry,
+    SkyboxRenderer* skybox)
 {
     if (!stepRender()) return;
 
@@ -144,7 +147,11 @@ void MirrorMapRenderer::drawNodes(
         }
 
         if (skybox) {
-            skybox->render(ctx, registry);
+            skybox->render(ctx);
+        }
+
+        for (const auto& all : registry.alphaNodes) {
+            renderTypes(all.second);
         }
 
         for (const auto& all : registry.blendedNodes) {

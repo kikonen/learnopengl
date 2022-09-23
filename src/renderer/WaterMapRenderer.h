@@ -14,12 +14,16 @@ public:
     WaterMapRenderer();
     virtual ~WaterMapRenderer();
 
-    void prepare(const Assets& assets, ShaderRegistry& shaders) override;
+    virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
 
     void bindTexture(const RenderContext& ctx);
 
-    void bind(const RenderContext& ctx);
-    void render(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox);
+    virtual void bind(const RenderContext& ctx) override;
+
+    void render(
+        const RenderContext& ctx,
+        const NodeRegistry& registry,
+        SkyboxRenderer* skybox);
 
 private:
     void drawNodes(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox, Node* current);

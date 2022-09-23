@@ -15,13 +15,14 @@ public:
         const std::string& materialName);
     virtual ~SkyboxRenderer();
 
-    void prepare(const Assets& assets, ShaderRegistry& shaders) override;
+    virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
 
     void assign(Shader* shader);
     void bindTexture(const RenderContext& ctx);
 
-    void update(const RenderContext& ctx, const NodeRegistry& registry) override;
-    void render(const RenderContext& ctx, const NodeRegistry& registry) override;
+    virtual void update(const RenderContext& ctx, const NodeRegistry& registry) override;
+
+    void render(const RenderContext& ctx);
 
 public:
     unsigned int textureID;

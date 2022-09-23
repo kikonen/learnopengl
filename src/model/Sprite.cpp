@@ -30,9 +30,8 @@ std::shared_ptr<NodeType> Sprite::getNodeType(
         NodeType::nextID(),
         shaders.getShader(assets, TEX_TEXTURE, { DEF_USE_ALPHA }));
 
-    // TODO KI add "solid with holes" mode; sprite does not neat *BLEND*, but *ALPHA*
-    // => Two different things
-    type->flags.blend = true;
+    // TODO KI alpha, not blendd
+    type->flags.alpha = true;
     type->flags.renderBack = true;
 
     auto quad = std::make_unique<QuadMesh>(path);

@@ -7,6 +7,7 @@
 
 
 struct NodeRenderFlags {
+    bool alpha = false;
     bool blend = false;
     bool light = false;
     bool mirror = false;

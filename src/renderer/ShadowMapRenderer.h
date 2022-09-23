@@ -13,12 +13,15 @@ public:
     ShadowMapRenderer();
     virtual ~ShadowMapRenderer();
 
-    void prepare(const Assets& assets, ShaderRegistry& shaders) override;
+    virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
 
     void bindTexture(const RenderContext& ctx);
 
-    void bind(const RenderContext& ctx) override;
-    void render(const RenderContext& ctx, const NodeRegistry& registry) override;
+    virtual void bind(const RenderContext& ctx) override;
+
+    void render(
+        const RenderContext& ctx,
+        const NodeRegistry& registry);
 
 private:
     void drawNodes(const RenderContext& ctx, const NodeRegistry& registry);

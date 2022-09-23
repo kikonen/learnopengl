@@ -130,7 +130,7 @@ void SkyboxRenderer::update(const RenderContext& ctx, const NodeRegistry& regist
 {
 }
 
-void SkyboxRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
+void SkyboxRenderer::render(const RenderContext& ctx)
 {
     ShaderBind bound(shader);
     bindTexture(ctx);

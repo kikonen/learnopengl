@@ -68,7 +68,10 @@ void WaterMapRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void WaterMapRenderer::render(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox)
+void WaterMapRenderer::render(
+    const RenderContext& ctx,
+    const NodeRegistry& registry,
+    SkyboxRenderer* skybox)
 {
     if (!stepRender()) return;
 
@@ -190,7 +193,11 @@ void WaterMapRenderer::drawNodes(
         }
 
         if (skybox) {
-            skybox->render(ctx, registry);
+            skybox->render(ctx);
+        }
+
+        for (const auto& all : registry.alphaNodes) {
+            renderTypes(all.second);
         }
 
         for (const auto& all : registry.blendedNodes) {

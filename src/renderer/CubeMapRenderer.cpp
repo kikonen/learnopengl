@@ -145,7 +145,11 @@ void CubeMapRenderer::drawNodes(
 
     // NOTE KI skybox MUST be rendered before blended nodes
     if (skybox) {
-        skybox->render(ctx, registry);
+        skybox->render(ctx);
+    }
+
+    for (const auto& all : registry.alphaNodes) {
+        renderTypes(all.second);
     }
 
     for (const auto& all : registry.blendedNodes) {

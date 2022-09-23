@@ -99,7 +99,9 @@ void ObjectIdRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void ObjectIdRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
+void ObjectIdRenderer::render(
+    const RenderContext& ctx,
+    const NodeRegistry& registry)
 {
     RenderContext idCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, ctx.camera, idBuffer->spec.width, idBuffer->spec.height);
     idCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
@@ -153,6 +155,10 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
         };
 
         for (const auto& all : registry.solidNodes) {
+            renderTypes(all.second);
+        }
+
+        for (const auto& all : registry.alphaNodes) {
             renderTypes(all.second);
         }
 

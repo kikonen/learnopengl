@@ -113,8 +113,13 @@ void NodeRegistry::attachNodes()
 
         auto* shader = t->defaultShader;
 
-        auto& map = t->flags.blend ? blendedNodes : solidNodes;
-        auto& typeMap = map[shader->objectID];
+        auto* map = &solidNodes;
+        if (t->flags.alpha)
+            map = &alphaNodes;
+        if (t->flags.blend)
+            map = &blendedNodes;
+
+        auto& typeMap = (*map)[shader->objectID];
         auto& allMap = allNodes[shader->objectID];
 
         for (auto& node : x.second) {

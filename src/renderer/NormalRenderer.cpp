@@ -18,7 +18,9 @@ void NormalRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void NormalRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
+void NormalRenderer::render(
+    const RenderContext& ctx,
+    const NodeRegistry& registry)
 {
     drawNodes(ctx, registry);
 }
@@ -46,6 +48,10 @@ void NormalRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& reg
     };
 
     for (const auto& all : registry.solidNodes) {
+        renderTypes(all.second);
+    }
+
+    for (const auto& all : registry.alphaNodes) {
         renderTypes(all.second);
     }
 

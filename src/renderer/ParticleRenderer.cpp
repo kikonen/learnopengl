@@ -20,6 +20,8 @@ void ParticleRenderer::bind(const RenderContext& ctx)
 {
 }
 
-void ParticleRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
+void ParticleRenderer::render(
+    const RenderContext& ctx,
+    const NodeRegistry& registry)
 {
 }

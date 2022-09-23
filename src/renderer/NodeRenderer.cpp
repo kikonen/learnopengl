@@ -2,6 +2,8 @@
 
 #include "asset/ShaderBind.h"
 
+#include "SkyboxRenderer.h"
+
 
 NodeRenderer::NodeRenderer()
 {
@@ -38,23 +40,59 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRe
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    selectedCount = drawNodes(ctx, registry, true);
+    selectedCount = drawNodes(ctx, registry, nullptr, true);
 
     ctx.state.disable(GL_STENCIL_TEST);
 
     KI_GL_UNBIND(glBindVertexArray(0));
 }
 
-void NodeRenderer::render(const RenderContext& ctx, const NodeRegistry& registry)
+void NodeRenderer::render(
+    const RenderContext& ctx,
+    const NodeRegistry& registry,
+    SkyboxRenderer* skybox)
 {
-    drawNodes(ctx, registry, false);
+    //ctx.state.enable(GL_CLIP_DISTANCE0);
+    //ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
+    //clip.enabled = true;
+    //clip.plane = glm::vec4(0, -1, 0, 15);
+    //ctx.bindClipPlanesUBO();
 
-    KI_GL_UNBIND(glBindVertexArray(0));
-}
+    {
+        // NOTE KI multitarget *WAS* just to support ObjectID, which is now separate renderer
+        // => If shader needs it need to define some logic
+        int bufferCount = 1;
 
-void NodeRenderer::renderBlended(const RenderContext& ctx, const NodeRegistry& registry)
-{
-    drawBlended(ctx, registry);
+        GLenum buffers[] = {
+            GL_COLOR_ATTACHMENT0,
+            GL_COLOR_ATTACHMENT1,
+            GL_COLOR_ATTACHMENT2,
+            GL_COLOR_ATTACHMENT3,
+            GL_COLOR_ATTACHMENT4,
+        };
+        if (bufferCount > 1) {
+            glDrawBuffers(bufferCount, buffers);
+            {
+                // NOTE KI this was *ONLY* for ObjectID case
+                //glm::vec4 bg{ 0.f, 0.f, 0.f, 1.f };
+                //glClearBufferfv(GL_COLOR, 1, glm::value_ptr(bg));
+            }
+        }
+
+        renderSelectionStencil(ctx, registry);
+        drawNodes(ctx, registry, skybox, false);
+
+        drawBlended(ctx, registry);
+        renderSelection(ctx, registry);
+
+        if (bufferCount > 1) {
+            glDrawBuffers(1, buffers);
+        }
+    }
+
+    //clip.enabled = false;
+    //ctx.bindClipPlanesUBO();
+    //ctx.state.disable(GL_CLIP_DISTANCE0);
 
     KI_GL_UNBIND(glBindVertexArray(0));
 }
@@ -75,7 +113,11 @@ void NodeRenderer::renderSelection(const RenderContext& ctx, const NodeRegistry&
 
 
 // draw all non selected nodes
-int NodeRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& registry, bool selection)
+int NodeRenderer::drawNodes(
+    const RenderContext& ctx,
+    const NodeRegistry& registry,
+    SkyboxRenderer* skybox,
+    bool selection)
 {
     int renderCount = 0;
 
@@ -112,6 +154,16 @@ int NodeRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& regist
     };
 
     for (const auto& all : registry.solidNodes) {
+        renderTypes(all.second);
+    }
+
+    if (!selection) {
+        if (skybox) {
+            skybox->render(ctx);
+        }
+    }
+
+    for (const auto& all : registry.alphaNodes) {
         renderTypes(all.second);
     }
 
@@ -157,6 +209,10 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
         };
 
         for (const auto& all : registry.solidNodes) {
+            renderTypes(all.second);
+        }
+
+        for (const auto& all : registry.alphaNodes) {
             renderTypes(all.second);
         }
 

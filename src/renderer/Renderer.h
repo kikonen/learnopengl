@@ -5,6 +5,7 @@
 #include "scene/RenderContext.h"
 #include "scene/NodeRegistry.h"
 
+
 class Renderer
 {
 public:
@@ -14,7 +15,11 @@ public:
     virtual void prepare(const Assets& assets, ShaderRegistry& shaders);
     virtual void update(const RenderContext& ctx, const NodeRegistry& registry);
     virtual void bind(const RenderContext& ctx);
-    virtual void render(const RenderContext& ctx, const NodeRegistry& registry);
+
+    //virtual void render(
+    //    const RenderContext& ctx,
+    //    const NodeRegistry& registry,
+    //    SkyboxRenderer* skybox) = 0;
 
 protected:
     bool stepRender();

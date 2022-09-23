@@ -309,55 +309,9 @@ void Scene::drawScene(RenderContext& ctx)
         waterMapRenderer->bindTexture(ctx);
     }
 
-    //ctx.state.enable(GL_CLIP_DISTANCE0);
-    //ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
-    //clip.enabled = true;
-    //clip.plane = glm::vec4(0, -1, 0, 15);
-    //ctx.bindClipPlanesUBO();
-
-    {
-        // NOTE KI multitarget *WAS* just to support ObjectID, which is now separate renderer
-        // => If shader needs it need to define some logic
-        int bufferCount = 1;
-
-        GLenum buffers[] = {
-            GL_COLOR_ATTACHMENT0,
-            GL_COLOR_ATTACHMENT1,
-            GL_COLOR_ATTACHMENT2,
-            GL_COLOR_ATTACHMENT3,
-            GL_COLOR_ATTACHMENT4,
-        };
-        if (bufferCount > 1) {
-            glDrawBuffers(bufferCount, buffers);
-            {
-                // NOTE KI this was *ONLY* for ObjectID case
-                //glm::vec4 bg{ 0.f, 0.f, 0.f, 1.f };
-                //glClearBufferfv(GL_COLOR, 1, glm::value_ptr(bg));
-            }
-        }
-
-        if (nodeRenderer) {
-            nodeRenderer->renderSelectionStencil(ctx, registry);
-            nodeRenderer->render(ctx, registry);
-        }
-
-        if (skyboxRenderer) {
-            skyboxRenderer->render(ctx, registry);
-        }
-
-        if (nodeRenderer) {
-            nodeRenderer->renderBlended(ctx, registry);
-            nodeRenderer->renderSelection(ctx, registry);
-        }
-
-        if (bufferCount > 1) {
-            glDrawBuffers(1, buffers);
-        }
+    if (nodeRenderer) {
+        nodeRenderer->render(ctx, registry, skyboxRenderer.get());
     }
-
-    //clip.enabled = false;
-    //ctx.bindClipPlanesUBO();
-    //ctx.state.disable(GL_CLIP_DISTANCE0);
 
     if (particleSystem) {
         particleSystem->render(ctx);

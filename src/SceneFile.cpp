@@ -100,6 +100,12 @@ void SceneFile::attachEntity(
         {
             NodeRenderFlags& flags = type->flags;
             {
+                const auto& e = data.renderFlags.find("alpha");
+                if (e != data.renderFlags.end()) {
+                    flags.alpha = e->second;
+                }
+            }
+            {
                 const auto& e = data.renderFlags.find("blend");
                 if (e != data.renderFlags.end()) {
                     flags.blend = e->second;
