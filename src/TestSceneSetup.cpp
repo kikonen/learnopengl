@@ -318,12 +318,13 @@ void TestSceneSetup::setupSpriteSkeleton()
 
         int countX = 10;
         int countZ = 100;
+        int countZTop = 0;
 
         type->batch.batchSize = countX * countZ;
 
         for (int x = 0; x < countX; x++) {
             // NOTE KI *INTENTIONALLY* a bit more than single buffer can handle
-            for (int z = 0; z < countZ + 1; z++) {
+            for (int z = 0; z < countZ + countZTop; z++) {
                 auto sprite = new Sprite(type, glm::vec2(1.5, 3));
                 sprite->setPos(pos + glm::vec3(15 - x * 4, 1.5, 0.2 * z));
                 //sprite->setRotation(glm::vec3(0, 0, 180));

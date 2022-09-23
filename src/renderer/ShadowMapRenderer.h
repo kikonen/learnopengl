@@ -29,7 +29,8 @@ public:
     std::shared_ptr<Viewport> debugViewport;
 
 private:
-    Shader* shadowShader{ nullptr };
+    Shader* solidShadowShader{ nullptr };
+    Shader* blendedShadowShader{ nullptr };
     Shader* shadowDebugShader{ nullptr };
 };
 

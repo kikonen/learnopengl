@@ -34,7 +34,8 @@ void main()
     alpha = materials[matIdx].diffuse.a;
   }
 
-  if (alpha < 0.4)
+  // NOtE KI experimental value; depends from few aspects in blended windows
+  if (alpha < 0.7)
     discard;
 #endif
 

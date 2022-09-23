@@ -18,11 +18,13 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     drawSkip = assets.shadowDrawSkip;
 
-    shadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
+    solidShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
+    blendedShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH, { DEF_USE_ALPHA });
     shadowDebugShader = shaders.getShader(assets, TEX_DEBUG_DEPTH);
 
-    shadowShader->prepare(assets);
-    shadowDebugShader->prepare(assets);    
+    solidShadowShader->prepare(assets);
+    blendedShadowShader->prepare(assets);
+    shadowDebugShader->prepare(assets);
 
     auto buffer = new ShadowBuffer({
         assets.shadowMapSize, assets.shadowMapSize,
@@ -95,9 +97,7 @@ void ShadowMapRenderer::render(const RenderContext& ctx, const NodeRegistry& reg
 
 void ShadowMapRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    ShaderBind bound(shadowShader);
-
-    auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx](const NodeTypeMap& typeMap, ShaderBind& bound) {
         for (const auto& x : typeMap) {
             auto& type = x.first;
             if (type->flags.noShadow) continue;
@@ -117,10 +117,12 @@ void ShadowMapRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& 
     };
 
     for (const auto& all : registry.solidNodes) {
-        renderTypes(all.second);
+        ShaderBind bound(solidShadowShader);
+        renderTypes(all.second, bound);
     }
 
     for (const auto& all : registry.blendedNodes) {
-        renderTypes(all.second);
+        ShaderBind bound(blendedShadowShader);
+        renderTypes(all.second, bound);
     }
 }
