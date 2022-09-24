@@ -40,6 +40,7 @@ public:
 
     void attachNodes();
 
+    int countSelected() const;
 private:
 
 public:

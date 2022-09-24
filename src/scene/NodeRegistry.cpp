@@ -152,3 +152,16 @@ void NodeRegistry::attachNodes()
         }
     }
 }
+
+int NodeRegistry::countSelected() const
+{
+    int count = 0;
+    for (const auto& all : allNodes) {
+        for (const auto& x : all.second) {
+            for (auto& node : x.second) {
+                if (node->selected) count++;
+            }
+        }
+    }
+    return count;
+}

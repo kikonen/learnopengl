@@ -221,7 +221,7 @@ entities:
       refraction_ratio: [1.0, 1.52]
     render_flags:
       - render_back
-    selected: true
+    selected: false
     enabled: true
   - name: Cow
     id: 03804c4f-ec37-445f-9fbd-675c667a704a
@@ -234,7 +234,7 @@ entities:
       reflection: 0.5
     render_flags:
       - render_back
-    selected: true
+    selected: false
     enabled: true
   - name: Mountains
     id: 63ca20c5-dce1-4400-8968-6484cb4af8ca
@@ -352,7 +352,7 @@ entities:
     shader: texture
     pos: [-5.0, 20.0, 5.0]
     scale: 1
-    selected: true
+    selected: false
     enabled: true
   - name: Water bottom
     id: 0f93cffa-a1e9-4040-885f-3075bbcca722
@@ -404,6 +404,7 @@ entities:
     pos: [-400, 0, -400]
     rotation: [270.0, 0.0, 0.0]
     scale: 100
+    batch_size: 100
     render_flags:
       - no_shadow
       - --render_back

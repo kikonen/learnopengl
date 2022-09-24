@@ -25,7 +25,7 @@ private:
 
 //    void drawBlended(const RenderContext& ctx, const NodeRegistry& registry);
 
-    int drawNodes(
+    void drawNodes(
         const RenderContext& ctx,
         const NodeRegistry& registry,
         SkyboxRenderer* skybox,
@@ -40,5 +40,5 @@ private:
 private:
     Shader* selectionShader{ nullptr };
 
-    int selectedCount = 0;
+    int selectedCount{ 0 };
 };

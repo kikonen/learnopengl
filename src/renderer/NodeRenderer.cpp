@@ -31,20 +31,6 @@ void NodeRenderer::update(const RenderContext& ctx, const NodeRegistry& registry
 
 void NodeRenderer::bind(const RenderContext& ctx)
 {
-    selectedCount = 0;
-}
-
-void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)
-{
-    ctx.state.enable(GL_STENCIL_TEST);
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-    selectedCount = drawNodes(ctx, registry, nullptr, true);
-
-    ctx.state.disable(GL_STENCIL_TEST);
-
-    KI_GL_UNBIND(glBindVertexArray(0));
 }
 
 void NodeRenderer::render(
@@ -52,6 +38,8 @@ void NodeRenderer::render(
     const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
+    selectedCount = registry.countSelected();
+
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     //ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
     //clip.enabled = true;
@@ -81,7 +69,6 @@ void NodeRenderer::render(
 
         renderSelectionStencil(ctx, registry);
         drawNodes(ctx, registry, skybox, false);
-
         drawBlended(ctx, registry);
         renderSelection(ctx, registry);
 
@@ -93,6 +80,21 @@ void NodeRenderer::render(
     //clip.enabled = false;
     //ctx.bindClipPlanesUBO();
     //ctx.state.disable(GL_CLIP_DISTANCE0);
+
+    KI_GL_UNBIND(glBindVertexArray(0));
+}
+
+void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)
+{
+    if (selectedCount == 0) return;
+
+    ctx.state.enable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+    drawNodes(ctx, registry, nullptr, true);
+
+    ctx.state.disable(GL_STENCIL_TEST);
 
     KI_GL_UNBIND(glBindVertexArray(0));
 }
@@ -111,16 +113,13 @@ void NodeRenderer::renderSelection(const RenderContext& ctx, const NodeRegistry&
     KI_GL_UNBIND(glBindVertexArray(0));
 }
 
-
 // draw all non selected nodes
-int NodeRenderer::drawNodes(
+void NodeRenderer::drawNodes(
     const RenderContext& ctx,
     const NodeRegistry& registry,
     SkyboxRenderer* skybox,
     bool selection)
 {
-    int renderCount = 0;
-
     if (selection) {
         glStencilFunc(GL_ALWAYS, 1, 0xFF);
         glStencilMask(0xFF);
@@ -129,7 +128,7 @@ int NodeRenderer::drawNodes(
         glStencilMask(0x00);
     }
 
-    auto renderTypes = [&ctx, &selection, &renderCount](const NodeTypeMap& typeMap) {
+    auto renderTypes = [&ctx, &selection](const NodeTypeMap& typeMap) {
         ShaderBind bound(typeMap.begin()->first->defaultShader);
 
         for (const auto& x : typeMap) {
@@ -145,7 +144,6 @@ int NodeRenderer::drawNodes(
                 if (selection ? !node->selected : node->selected) continue;
 
                 batch.draw(ctx, node, bound.shader);
-                renderCount++;
             }
 
             batch.flush(ctx, type);
@@ -172,8 +170,6 @@ int NodeRenderer::drawNodes(
             renderTypes(all.second);
         }
     }
-
-    return renderCount;
 }
 
 // draw all selected nodes with stencil
