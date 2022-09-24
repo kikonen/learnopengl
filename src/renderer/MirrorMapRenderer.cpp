@@ -3,6 +3,12 @@
 #include "asset/ShaderBind.h"
 #include "SkyboxRenderer.h"
 
+namespace {
+    const glm::vec4 DEBUG_COLOR[6] = {
+        {  1,  0,  0, 1 },
+        {  0,  1,  0, 1 },
+    };
+}
 
 MirrorMapRenderer::MirrorMapRenderer()
 {
@@ -22,15 +28,17 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepth() }
     };
 
-    reflectionBuffer = std::make_unique<TextureBuffer>(spec);
+    prev = std::make_unique<TextureBuffer>(spec);
+    curr = std::make_unique<TextureBuffer>(spec);
 
-    reflectionBuffer->prepare(true, { 0, 0, 0, 1.0 });
+    prev->prepare(true, DEBUG_COLOR[0]);
+    curr->prepare(true, DEBUG_COLOR[1]);
 
     debugViewport = std::make_shared<Viewport>(
         glm::vec3(0.5, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        reflectionBuffer->spec.attachments[0].textureID,
+        prev->spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
 
     debugViewport->prepare(assets);
@@ -39,9 +47,7 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
 {
-    if (!rendered) return;
-
-    reflectionBuffer->bindTexture(ctx, 0, ctx.assets.mirrorReflectionMapUnitIndex);
+    prev->bindTexture(ctx, 0, ctx.assets.mirrorReflectionMapUnitIndex);
 }
 
 void MirrorMapRenderer::bind(const RenderContext& ctx)
@@ -53,6 +59,10 @@ void MirrorMapRenderer::render(
     const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
+    // TODO KI this is NOT used; whats going on?!?
+    // => mirrors are showing cubemap instead, which is incorrect
+    // => explains why mirrors don't seem to render correctly (?)
+
     if (!stepRender()) return;
 
     Node* closest = findClosest(ctx, registry);
@@ -77,7 +87,7 @@ void MirrorMapRenderer::render(
         camera.setZoom(ctx.camera.getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
+        RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, curr->spec.width, curr->spec.height);
         localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
@@ -86,13 +96,16 @@ void MirrorMapRenderer::render(
 
         localCtx.bindMatricesUBO();
 
-        reflectionBuffer->bind(localCtx);
+        curr->bind(localCtx);
 
-        drawNodes(localCtx, registry, skybox, closest);
+        bindTexture(localCtx);
+        //drawNodes(localCtx, registry, skybox, closest);
 
-        reflectionBuffer->unbind(ctx);
+        curr->unbind(ctx);
         ctx.bindClipPlanesUBO();
     }
+
+    //prev.swap(curr);
 
     ctx.bindMatricesUBO();
 

@@ -36,5 +36,6 @@ private:
     float nearPlane = 0.1f;
     float farPlane = 1000.0f;
 
-    std::unique_ptr<TextureBuffer> reflectionBuffer{ nullptr };
+    std::unique_ptr<TextureBuffer> prev{ nullptr };
+    std::unique_ptr<TextureBuffer> curr{ nullptr };
 };
