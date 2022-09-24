@@ -98,64 +98,7 @@ void SceneFile::attachEntity(
 
         type->batch.batchSize = data.batchSize;
 
-        {
-            NodeRenderFlags& flags = type->flags;
-            {
-                const auto& e = data.renderFlags.find("alpha");
-                if (e != data.renderFlags.end()) {
-                    flags.alpha = e->second;
-                }
-            }
-            {
-                const auto& e = data.renderFlags.find("blend");
-                if (e != data.renderFlags.end()) {
-                    flags.blend = e->second;
-                }
-            }
-            {
-                const auto& e = data.renderFlags.find("render_back");
-                if (e != data.renderFlags.end()) {
-                    flags.renderBack = e->second;
-                }
-            }
-            {
-                const auto& e = data.renderFlags.find("no_shadow");
-                if (e != data.renderFlags.end()) {
-                    flags.noShadow = e->second;
-                }
-            }
-            {
-                const auto& e = data.renderFlags.find("mirror");
-                if (e != data.renderFlags.end()) {
-                    flags.mirror = e->second;
-                    type->mirrorPlane = data.mirrorPlane;
-                }
-            }
-            {
-                const auto& e = data.renderFlags.find("water");
-                if (e != data.renderFlags.end()) {
-                    flags.water = e->second;
-                }
-            }
-            {
-                const auto& e = data.renderFlags.find("light");
-                if (e != data.renderFlags.end()) {
-                    flags.light = e->second;
-                }
-            }
-            {
-                const auto& e = data.renderFlags.find("batch_mode");
-                if (e != data.renderFlags.end()) {
-                    flags.batchMode = e->second;
-                }
-            }
-            {
-                const auto& e = data.renderFlags.find("wireframe");
-                if (e != data.renderFlags.end()) {
-                    flags.wireframe = e->second;
-                }
-            }
-        }
+        assignFlags(data, *type);
 
         // NOTE KI need to create copy *IF* modifiers
         // TODO KI should make copy *ALWAYS* for safety
@@ -254,6 +197,69 @@ void SceneFile::attachEntity(
             }
         }
      });
+}
+
+void SceneFile::assignFlags(
+    const EntityData& data,
+    NodeType& type)
+{
+    NodeRenderFlags& flags = type.flags;
+
+    {
+        const auto& e = data.renderFlags.find("alpha");
+        if (e != data.renderFlags.end()) {
+            flags.alpha = e->second;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("blend");
+        if (e != data.renderFlags.end()) {
+            flags.blend = e->second;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("render_back");
+        if (e != data.renderFlags.end()) {
+            flags.renderBack = e->second;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("no_shadow");
+        if (e != data.renderFlags.end()) {
+            flags.noShadow = e->second;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("mirror");
+        if (e != data.renderFlags.end()) {
+            flags.mirror = e->second;
+            type.mirrorPlane = data.mirrorPlane;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("water");
+        if (e != data.renderFlags.end()) {
+            flags.water = e->second;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("light");
+        if (e != data.renderFlags.end()) {
+            flags.light = e->second;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("batch_mode");
+        if (e != data.renderFlags.end()) {
+            flags.batchMode = e->second;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("wireframe");
+        if (e != data.renderFlags.end()) {
+            flags.wireframe = e->second;
+        }
+    }
 }
 
 std::unique_ptr<Camera> SceneFile::createCamera(
@@ -763,6 +769,8 @@ void SceneFile::loadTextureSpec(
         if (k == "mode") {
             if (v.as<std::string>() == "GL_REPEAT") {
                 textureSpec.mode = GL_REPEAT;
+            } else {
+                std::cout << "UNKNOWN MODE: " << k << "=" << v << "\n";
             }
         }
         else {

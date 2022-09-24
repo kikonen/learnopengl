@@ -368,6 +368,13 @@ entities:
       tiling: 8
     render_flags:
       - no_shadow
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
     enabled: true
   - name: Water surface
     id: 7207c9ea-868d-4fbf-b511-73407aacf31f
@@ -381,6 +388,13 @@ entities:
       - no_shadow
       - render_back
       - water
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
     enabled: true
   - name: Planet
     id: 8712cec1-e1a3-4973-8889-533adfbbb196
@@ -514,5 +528,5 @@ materials:
     map_dudv: waterDUDV.png
     tiling: 2
     texture_spec:
-      mode: GL_REPEAT;
+      mode: GL_REPEAT
       _pattern: 1

@@ -172,6 +172,10 @@ private:
         const std::map<const uuids::uuid, EntityData>& entities,
         std::vector<Material>& materials);
 
+    void assignFlags(
+        const EntityData& data,
+        NodeType& type);
+
     std::unique_ptr<Camera> createCamera(
         const EntityData& entity,
         const CameraData& data);
