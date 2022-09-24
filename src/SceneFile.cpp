@@ -131,6 +131,15 @@ void SceneFile::attachEntity(
             type->mesh.reset(mesh.release());
         }
         else if (data.type == EntityType::sprite) {
+            // NOTE KI sprite *shall* differ from quad later on
+            auto mesh = std::make_unique<QuadMesh>(data.name);
+            if (material) {
+                mesh->material = *material;
+                if (data.loadTextures) {
+                    mesh->material.loadTextures(assets);
+                }
+            }
+            type->mesh.reset(mesh.release());
         }
 
         if (!type->mesh) {
@@ -457,7 +466,7 @@ void SceneFile::loadEntity(
             data.rotation = readVec3(v);
         }
         else if (k == "scale") {
-            data.scale = v.as<double>();
+            data.scale = readScale(v);
         }
         else if (k == "repeat") {
             loadRepeat(v, data.repeat);
@@ -796,17 +805,34 @@ glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
 }
 
 glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
-    std::vector<double> a;
+    std::vector<float> a;
     for (const auto& e : node) {
-        a.push_back(e.as<double>());
+        a.push_back(e.as<float>());
     }
     return glm::vec4{ a[0], a[1], a[2], a[3] };
 }
 
+glm::vec3 SceneFile::readScale(const YAML::Node& node) {
+    std::vector<float> a;
+
+    if (node.IsSequence()) {
+        for (const auto& e : node) {
+            a.push_back(e.as<float>());
+        }
+        while (a.size() < 3) {
+            a.push_back(1.0);
+        }
+        return glm::vec3{ a[0], a[1], a[2] };
+    }
+
+    auto scale = node.as<float>();
+    return glm::vec3{ scale };
+}
+
 glm::vec4 SceneFile::readRGBA(const YAML::Node& node) {
-    std::vector<double> a;
+    std::vector<float> a;
     for (const auto& e : node) {
-        a.push_back(e.as<double>());
+        a.push_back(e.as<float>());
     }
     // NOTE KI check if alpha is missing
     if (a.size() < 4) {
@@ -818,7 +844,7 @@ glm::vec4 SceneFile::readRGBA(const YAML::Node& node) {
 glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) {
     std::vector<float> a;
     for (const auto& e : node) {
-        a.push_back(e.as<double>());
+        a.push_back(e.as<float>());
     }
     // NOTE KI check if just single number
     if (a.size() < 1) {

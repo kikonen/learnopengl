@@ -42,7 +42,7 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
         setupNodeAsteroidBelt();
     }
 
-    setupSpriteSkeleton();
+//    setupSpriteSkeleton();
 
     if (true) {
         //setupTerrain();

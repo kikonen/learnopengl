@@ -124,7 +124,7 @@ class SceneFile
         std::vector<glm::vec3> positions{};
         glm::vec3 rotation{ 0 };
         glm::vec4 mirrorPlane{ 0 };
-        double scale{ 1 };
+        glm::vec3 scale{ 1 };
 
         bool selected{ false };
 
@@ -240,6 +240,7 @@ private:
     glm::vec3 readVec3(const YAML::Node& node);
     glm::vec4 readVec4(const YAML::Node& node);
 
+    glm::vec3 readScale(const YAML::Node& node);
     glm::vec4 readRGBA(const YAML::Node& node);
     glm::vec2 readRefractionRatio(const YAML::Node& node);
 

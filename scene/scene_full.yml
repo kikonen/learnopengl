@@ -439,19 +439,21 @@ entities:
     id: fb7ba424-f219-4c12-a00f-703b9ecebbbf
     type: sprite
     shader: texture
-    pos: [15, 10.5, 2.0]
+    pos: [15, 6.5, 20.0]
     material: skeleton
+    batch_size: 1000
     shader_definitions:
       - USE_ALPHA
     render_flags:
+      - alpha
       - render_back
-    scale: 1
+    scale: [1.5, 3, 1]
     repeat:
       x_count: 10
       z_count: 101
       x_step: -4
       z_step: 0.2
-    enabled: false
+    enabled: true
 materials:
   - name: skybox
     type: skybox
@@ -538,7 +540,7 @@ materials:
     ns: 100
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: Skeleton_VH.PNG
-    map_bump: Skeleton_VH_normal.PNG
+    _map_bump: Skeleton_VH_normal.PNG
   - name: water_surface
     type: texture
     ns: 150
