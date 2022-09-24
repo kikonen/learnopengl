@@ -396,6 +396,26 @@ entities:
       y_step: 0
       z_step: 60
     enabled: true
+  - name: Terrain grass
+    id: 765f5288-21ec-4234-b7cd-6cdba4087e97
+    type: quad
+    material: terrain_grass
+    shader: terrain
+    pos: [-400, 0, -400]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 100
+    render_flags:
+      - no_shadow
+      - --render_back
+      - terrain
+    repeat:
+      x_count: 8
+      y_count: 1
+      z_count: 8
+      x_step: 200
+      y_step: 0
+      z_step: 200
+    enabled: true
   - name: Planet
     id: 8712cec1-e1a3-4973-8889-533adfbbb196
     model: [planet, planet]
@@ -530,3 +550,12 @@ materials:
     texture_spec:
       mode: GL_REPEAT
       _pattern: 1
+  - name: terrain_grass
+    type: texture
+    ns: 50
+    ks: [0.6, 0.6, 0.6, 1.0]
+    map_kd: Grass Dark_VH.PNG
+    map_bump: waterNormalMap.png
+    tiling: 2
+    texture_spec:
+      mode: GL_REPEAT

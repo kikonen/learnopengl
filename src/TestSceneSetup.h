@@ -14,8 +14,6 @@ public:
     void setup(std::shared_ptr<Scene> scene);
 
 private:
-    void setupCamera();
-
     void setupLightDirectional();
     void setupLightMoving();
 
@@ -29,10 +27,6 @@ private:
     void setupSpriteSkeleton();
 
     void setupTerrain();
-
-    void setupWaterSurface();
-
-    void setupSculpture1();
 
     void setupEffectExplosion();
 

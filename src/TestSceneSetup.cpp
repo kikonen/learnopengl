@@ -45,9 +45,7 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
     setupSpriteSkeleton();
 
     if (true) {
-        setupTerrain();
-
-        //setupWaterSurface();
+        //setupTerrain();
 
         //setupEffectExplosion();
 
@@ -367,52 +365,6 @@ void TestSceneSetup::setupTerrain()
                 scene->registry.addNode(terrain);
             }
         }
-        });
-}
-
-void TestSceneSetup::setupWaterSurface()
-{
-    auto scene = this->scene;
-    auto asyncLoader = this->asyncLoader;
-    auto assets = this->assets;
-
-    asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        Material material;
-        material.name = "water_surface";
-        material.ns = 150;
-        material.ks = glm::vec4(0.2f, 0.2f, 0.5f, 1.f);
-        material.kd = glm::vec4(0.0f, 0.1f, 0.8f, 1.f);
-        //material.map_kd = "CD3B_Water 1_HI.PNG";
-        //material.map_bump = "CD3B_Water 1_HI_normal_surface.PNG";
-        material.map_bump = "waterNormalMap.png";
-        material.map_dudv = "waterDUDV.png";
-        material.tiling = 2;
-        material.textureSpec.mode = GL_REPEAT;
-        //        material.pattern = 1;
-        material.loadTextures(assets);
-
-        Shader* shader = asyncLoader->getShader(TEX_WATER);
-
-        TerrainGenerator generator(assets);
-
-        auto type = std::make_shared<NodeType>(NodeType::nextID(), shader);
-        type->flags.renderBack = true;
-        type->flags.water = true;
-        //        type->flags.blend = true;
-        type->flags.noShadow = true;
-        type->mesh = generator.generateWater(assets, material);
-
-        glm::vec3 pos = assets.groundOffset;
-
-        auto water = new Water(type, pos.x, pos.y + 5, pos.z);
-        water->setPos(pos + glm::vec3(0, 5, -10));
-        water->setScale(30);
-        // TODO KI why rotate is 270?!?
-        // - due to normals ?!?
-        water->setRotation({ 270, 0, 0 });
-        //water->setRotation({ 90, 0, 0 });
-
-        scene->registry.addNode(water);
         });
 }
 
