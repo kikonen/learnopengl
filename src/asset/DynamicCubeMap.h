@@ -9,7 +9,9 @@ public:
     DynamicCubeMap(int size);
     ~DynamicCubeMap();
 
-    void prepare();
+    void prepare(
+        const bool clear,
+        const glm::vec4& clearColor);
 
     void bindTexture(const RenderContext& ctx, int unitIndex);
 
@@ -20,6 +22,8 @@ public:
     const int size;
 
     unsigned int textureID = -1;
+
+    bool valid = false;
 
 private:
     unsigned int FBO = -1;

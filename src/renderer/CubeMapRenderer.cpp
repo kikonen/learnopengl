@@ -5,6 +5,40 @@
 #include "asset/ShaderBind.h"
 #include "SkyboxRenderer.h"
 
+namespace {
+    // +X (right)
+    // -X (left)
+    // +Y (top)
+    // -Y (bottom)
+    // +Z (front) 
+    // -Z (back)
+    const glm::vec3 CAMERA_FRONT[6] = {
+        {  1,  0,  0 },
+        { -1,  0,  0 },
+        {  0,  1,  0 },
+        {  0, -1,  0 },
+        {  0,  0,  1 },
+        {  0,  0, -1 },
+    };
+
+    const glm::vec3 CAMERA_UP[6] = {
+        {  0, -1,  0 },
+        {  0, -1,  0 },
+        {  0,  0,  1 },
+        {  0,  0, -1 },
+        {  0, -1,  0 },
+        {  0, -1,  0 },
+    };
+
+    const glm::vec4 DEBUG_COLOR[6] = {
+        {  1,  0,  0, 1 },
+        {  0,  1,  0, 1 },
+        {  0,  0,  1, 1 },
+        {  1,  1,  0, 1 },
+        {  0,  1,  1, 1 },
+        {  1,  0,  1, 1 },
+    };
+}
 
 
 CubeMapRenderer::CubeMapRenderer()
@@ -22,8 +56,11 @@ void CubeMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     Renderer::prepare(assets, shaders);
 
-    cubeMap = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
-    cubeMap->prepare();
+    curr = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
+    curr->prepare(false, { 0, 0, 1, 1.0 });
+
+    prev = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
+    prev->prepare(false, { 0, 1, 0, 1.0 });
 }
 
 void CubeMapRenderer::bind(const RenderContext& ctx)
@@ -32,8 +69,8 @@ void CubeMapRenderer::bind(const RenderContext& ctx)
 
 void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 {
-    if (!rendered) return;
-    cubeMap->bindTexture(ctx, ctx.assets.cubeMapUnitIndex);
+    //if (!rendered) return;
+    prev->bindTexture(ctx, ctx.assets.cubeMapUnitIndex);
 }
 
 void CubeMapRenderer::render(
@@ -41,6 +78,12 @@ void CubeMapRenderer::render(
     const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
+    if (!cleared) {
+        clearCubeMap(mainCtx, *prev.get(), { 0, 0, 0, 1 }, false);
+        clearCubeMap(mainCtx, *curr.get(), { 0, 0, 0, 1 }, false);
+        cleared = true;
+    }
+
     if (!stepRender()) return;
 
     Node* centerNode = findCenter(mainCtx, registry);
@@ -50,39 +93,19 @@ void CubeMapRenderer::render(
     // https://eng.libretexts.org/Bookshelves/Computer_Science/Book%3A_Introduction_to_Computer_Graphics_(Eck)/07%3A_3D_Graphics_with_WebGL/7.04%3A_Framebuffers
     // view-source:math.hws.edu/eck/cs424/graphicsbook2018/source/webgl/cube-camera.html
 
-    cubeMap->bind(mainCtx);
-
-    // +X (right)
-    // -X (left)
-    // +Y (top)
-    // -Y (bottom)
-    // +Z (front) 
-    // -Z (back)
-    const glm::vec3 cameraFront[6] = {
-        {  1,  0,  0 },
-        { -1,  0,  0 },
-        {  0,  1,  0 },
-        {  0, -1,  0 },
-        {  0,  0,  1 },
-        {  0,  0, -1 },
-    };
-
-    const glm::vec3 cameraUp[6] = {
-        {  0, -1,  0 },
-        {  0, -1,  0 },
-        {  0,  0,  1 },
-        {  0,  0, -1 },
-        {  0, -1,  0 },
-        {  0, -1,  0 },
-    };
+    curr->bind(mainCtx);
 
     const glm::vec3& center = centerNode->getPos();
 
     for (int i = 0; i < 6; i++) {
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubeMap->textureID, 0);
+        glFramebufferTexture2D(
+            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, curr->textureID, 0);
+
         if (mainCtx.assets.clearColor) {
             if (mainCtx.assets.debugClearColor) {
-                glClearColor(0.3f, 0.9f, 0.3f, 1.0f);
+                auto color = DEBUG_COLOR[i];
+                glClearColor(color.r, color.g, color.b, color.a);
             }
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
@@ -90,22 +113,43 @@ void CubeMapRenderer::render(
             glClear(GL_DEPTH_BUFFER_BIT);
         }
 
-        Camera camera(center, cameraFront[i], cameraUp[i]);
+        Camera camera(center, CAMERA_FRONT[i], CAMERA_UP[i]);
         camera.setZoom(90.0);
-        RenderContext ctx(mainCtx.assets, mainCtx.clock, mainCtx.state, mainCtx.scene, camera, cubeMap->size, cubeMap->size);
+        RenderContext ctx(mainCtx.assets, mainCtx.clock, mainCtx.state, mainCtx.scene, camera, curr->size, curr->size);
+        bindTexture(ctx);
         ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
         ctx.bindMatricesUBO();
 
         drawNodes(ctx, registry, skybox, centerNode);
     }
 
-//    bindTexture(mainCtx);
-//    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+    curr->unbind(mainCtx);
 
-    cubeMap->unbind(mainCtx);
+    prev.swap(curr);
 
     rendered = true;
+}
 
+void CubeMapRenderer::clearCubeMap(
+    const RenderContext& ctx,
+    DynamicCubeMap& cube,
+    const glm::vec4& color,
+    bool debug)
+{
+    cube.bind(ctx);
+
+    for (int i = 0; i < 6; i++) {
+        glFramebufferTexture2D(
+            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cube.textureID, 0);
+
+        auto c = color;
+        if (debug) c = DEBUG_COLOR[i];
+        glClearColor(c.r, c.g, c.b, c.a);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    cube.unbind(ctx);
 }
 
 void CubeMapRenderer::drawNodes(
@@ -186,3 +230,4 @@ Node* CubeMapRenderer::findCenter(const RenderContext& ctx, const NodeRegistry& 
     }
     return nullptr;
 }
+

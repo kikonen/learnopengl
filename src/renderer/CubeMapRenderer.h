@@ -23,6 +23,12 @@ public:
         SkyboxRenderer* skybox);
 
 private:
+    void clearCubeMap(
+        const RenderContext& ctx,
+        DynamicCubeMap& cube,
+        const glm::vec4& color,
+        bool debug);
+
     void drawNodes(
         const RenderContext& ctx,
         const NodeRegistry& registry,
@@ -40,5 +46,8 @@ private:
     float nearPlane = 0.1f;
     float farPlane = 1000.0f;
 
-    std::unique_ptr<DynamicCubeMap> cubeMap;
+    bool cleared{ false };
+
+    std::unique_ptr<DynamicCubeMap> prev;
+    std::unique_ptr<DynamicCubeMap> curr;
 };

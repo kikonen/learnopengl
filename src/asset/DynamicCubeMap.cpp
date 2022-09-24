@@ -37,11 +37,16 @@ void DynamicCubeMap::unbind(const RenderContext& ctx)
     ctx.bindMatricesUBO();
 }
 
-void DynamicCubeMap::prepare()
+void DynamicCubeMap::prepare(
+    const bool clear,
+    const glm::vec4& clearColor)
 {
+    int clearMask = 0;
+
     {
         glGenFramebuffers(1, &FBO);
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+        clearMask |= GL_COLOR_BUFFER_BIT;
     }
 
     {
@@ -49,12 +54,22 @@ void DynamicCubeMap::prepare()
         glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, size, size);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+        clearMask |= GL_DEPTH_BUFFER_BIT;
     }
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         KI_ERROR("FRAMEBUFFER:: Framebuffer is not complete!");
+        return;
+    }
+
+    // NOTE KI clear buffer to avoid showing garbage
+    if (clear) {
+        glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+        glClear(clearMask);
+    }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     textureID = CubeMap::createEmpty(size);
+    valid = true;
 }
