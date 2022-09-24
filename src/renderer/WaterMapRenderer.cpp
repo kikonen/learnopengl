@@ -29,8 +29,8 @@ void WaterMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     reflectionBuffer = std::make_unique<TextureBuffer>(spec);
     refractionBuffer = std::make_unique<TextureBuffer>(spec);
 
-    reflectionBuffer->prepare();
-    refractionBuffer->prepare();
+    reflectionBuffer->prepare(true, { 0, 0, 0, 1.0 });
+    refractionBuffer->prepare(true, { 0, 0, 0, 1.0 });
 
     //WaterNoiseGenerator generator;
     //noiseTextureID = generator.generate();

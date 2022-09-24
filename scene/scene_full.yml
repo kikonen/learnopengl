@@ -41,7 +41,7 @@ entities:
     pos: [0.0, 0.0, 0.0]
     rotation: [0.0, 0.0, 0.0]
     scale: 1.0
-    default_material: glass_ball
+    material: glass_ball
     material_modifier:
       reflection: 0.1
       refraction: 0.9
@@ -214,7 +214,7 @@ entities:
     shader: texture
     pos: [-5.0, 20.0, -5.0]
     scale: 1.0
-    default_material: teapot
+    material: teapot
     material_modifier:
       reflection: 0.0
       refraction: 1.0
@@ -229,7 +229,7 @@ entities:
     shader: texture
     pos: [5.0, 20.0, -5.0]
     scale: 1.0
-    default_material: cow
+    material: cow
     material_modifier:
       reflection: 0.5
     render_flags:
@@ -289,7 +289,7 @@ entities:
     shader: texture
     pos: [5.0, 25.0, 5.0]
     scale: 1.3
-    default_material: default_ball
+    material: default_ball
     override_material: true
     material_modifier:
       reflection: 0.05
@@ -301,7 +301,7 @@ entities:
     pos: [5.0, 25.0, 10.0]
     scale: 1.3
     override_material: true
-    default_material: gold_ball
+    material: gold_ball
     material_modifier:
       reflection: 0.05
     enabled: true
@@ -312,7 +312,7 @@ entities:
     pos: [5.0, 25.0, 15.0]
     scale: 1.3
     override_material: true
-    default_material: silver_ball
+    material: silver_ball
     material_modifier:
       reflection: 0.05
     enabled: true
@@ -324,7 +324,7 @@ entities:
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
     override_material: true
-    default_material: bronze_ball
+    material: bronze_ball
     material_modifier:
       reflection: 0.05
     enabled: true
@@ -369,6 +369,19 @@ entities:
     render_flags:
       - no_shadow
     enabled: true
+  - name: Water surface
+    id: 7207c9ea-868d-4fbf-b511-73407aacf31f
+    type: quad
+    material: water_surface
+    shader: water
+    pos: [0, 5, -10]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 30
+    render_flags:
+      - no_shadow
+      - render_back
+      - water
+    enabled: true
   - name: Planet
     id: 8712cec1-e1a3-4973-8889-533adfbbb196
     model: [planet, planet]
@@ -393,7 +406,7 @@ entities:
     type: sprite
     shader: texture
     pos: [15, 10.5, 2.0]
-    default_material: skeleton
+    material: skeleton
     shader_definitions:
       - USE_ALPHA
     render_flags:
@@ -491,4 +504,15 @@ materials:
     ns: 100
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: Skeleton_VH.PNG
-    bump_map: Skeleton_VH_normal.PNG
+    map_bump: Skeleton_VH_normal.PNG
+  - name: water_surface
+    type: texture
+    ns: 150
+    ks: [0.2, 0.2, 0.5, 1.0]
+    kd: [0.0, 0.1, 0.8, 1.0]
+    map_bump: waterNormalMap.png
+    map_dudv: waterDUDV.png
+    tiling: 2
+    texture_spec:
+      mode: GL_REPEAT;
+      _pattern: 1

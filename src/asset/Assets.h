@@ -36,6 +36,7 @@ public:
     bool showShadowMapView;
     bool showReflectionView;
     bool showRefractionView;
+    bool showObjectIDView;
 
     int drawSkip;
     bool debugClearColor;

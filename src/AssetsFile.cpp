@@ -92,6 +92,9 @@ void AssetsFile::loadAssets(
         else if (k == "show_refraction_view") {
             data.showRefractionView = v.as<bool>();
         }
+        else if (k == "show_objectid_view") {
+            data.showObjectIDView = v.as<bool>();
+        }
         else if (k == "draw_skip") {
             data.drawSkip = v.as<int>();
         }

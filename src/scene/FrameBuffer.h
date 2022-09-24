@@ -148,7 +148,10 @@ public:
     FrameBuffer(const FrameBufferSpecification& spec);
     virtual ~FrameBuffer();
 
-    virtual void prepare();
+    virtual void prepare(
+        const bool clear,
+        const glm::vec4& clearColor);
+
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
 

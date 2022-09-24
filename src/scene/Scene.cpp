@@ -89,8 +89,10 @@ void Scene::prepare(ShaderRegistry& shaders)
         registry.addViewPort(mainViewport);
     }
 
-    if (objectIdRenderer) {
-        registry.addViewPort(objectIdRenderer->debugViewport);
+    if (assets.showObjectIDView) {
+        if (objectIdRenderer) {
+            registry.addViewPort(objectIdRenderer->debugViewport);
+        }
     }
 
     if (!mirrorBuffer && assets.showMirrorView) {
@@ -99,7 +101,7 @@ void Scene::prepare(ShaderRegistry& shaders)
             { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
 
         mirrorBuffer.reset(buffer);
-        mirrorBuffer->prepare();
+        mirrorBuffer->prepare(true, { 0, 0, 0, 1.0 });
 
         mirrorViewport = std::make_shared<Viewport>(
             glm::vec3(0.5, 1, 0),
@@ -356,7 +358,7 @@ void Scene::updateMainViewport(RenderContext& ctx)
             { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
 
         mainBuffer.reset(buffer);
-        mainBuffer->prepare();
+        mainBuffer->prepare(true, { 0, 0, 0, 1.0 });
         mainViewport->setTextureID(mainBuffer->spec.attachments[0].textureID);
     }
 }

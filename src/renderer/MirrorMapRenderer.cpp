@@ -24,7 +24,7 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     reflectionBuffer = std::make_unique<TextureBuffer>(spec);
 
-    reflectionBuffer->prepare();
+    reflectionBuffer->prepare(true, { 0, 0, 0, 1.0 });
 
     debugViewport = std::make_shared<Viewport>(
         glm::vec3(0.5, 0.5, 0),

@@ -31,7 +31,7 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         { FrameBufferAttachment::getDepthTexture() } });
 
     shadowBuffer.reset(buffer);
-    shadowBuffer->prepare();
+    shadowBuffer->prepare(true, { 0, 0, 0, 1.0 });
 
     debugViewport = std::make_shared<Viewport>(
         //glm::vec3(-1 + 0.01, 1 - 0.01, 0), 

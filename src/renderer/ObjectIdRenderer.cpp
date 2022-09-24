@@ -91,7 +91,8 @@ void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
         { FrameBufferAttachment::getObjectId(), FrameBufferAttachment::getRBODepth() } });
 
     idBuffer.reset(buffer);
-    idBuffer->prepare();
+    idBuffer->prepare(true, { 0, 0, 0, 0.5 });
+
     debugViewport->setTextureID(idBuffer->spec.attachments[0].textureID);
 }
 
@@ -107,6 +108,7 @@ void ObjectIdRenderer::render(
     idCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
     idBuffer->bind(idCtx);
+
     drawNodes(idCtx, registry);
     idBuffer->unbind(ctx);
 }

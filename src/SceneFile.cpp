@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "asset/MeshLoader.h"
+#include "asset/QuadMesh.h"
 
 #include "controller/AsteroidBeltController.h"
 #include "controller/CameraController.h"
@@ -156,18 +157,40 @@ void SceneFile::attachEntity(
             }
         }
 
-        {
+        // NOTE KI need to create copy *IF* modifiers
+        // TODO KI should make copy *ALWAYS* for safety
+        Material* material = nullptr;
+        if (!data.materialName.empty()) {
+            material = Material::find(data.materialName, this->materials);
+        }
+
+        if (data.type == EntityType::model) {
             MeshLoader meshLoader(assets, data.modelName, data.modelPath);
 
-            if (data.defaultMaterial) {
-                meshLoader.defaultMaterial = *data.defaultMaterial;
+            if (material) {
+                meshLoader.defaultMaterial = *material;
                 meshLoader.overrideMaterials = data.overrideMaterials;
             }
             meshLoader.loadTextures = data.loadTextures;
 
             auto mesh = meshLoader.load();
-            KI_INFO_SB("SCENE_FILE ATTACH: type=" << type->typeID << ", mesh=" << mesh->modelName);
+            KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << mesh->modelName);
             type->mesh.reset(mesh.release());
+        }
+        else if (data.type == EntityType::quad) {
+            auto mesh = std::make_unique<QuadMesh>(data.name);
+            if (material) {
+                mesh->material = *material;
+                mesh->material.loadTextures(assets);
+            }
+            type->mesh.reset(mesh.release());
+        }
+        else if (data.type == EntityType::sprite) {
+        }
+
+        if (!type->mesh) {
+            KI_WARN_SB("SCENE_FILEIGNORE: NO_MESH id=" << data.id << " (" << data.name << ")");
+            return;
         }
 
         type->modifyMaterials([this, &data, &assets](Material& m) {
@@ -228,7 +251,7 @@ void SceneFile::attachEntity(
                 }
             }
         }
-        });
+     });
 }
 
 std::unique_ptr<Camera> SceneFile::createCamera(
@@ -336,8 +359,11 @@ void SceneFile::loadEntity(
 
         if (k == "type") {
             std::string type = v.as<std::string>();
-            if (type == "node") {
-                data.type = EntityType::node;
+            if (type == "model") {
+                data.type = EntityType::model;
+            }
+            else if (type == "quad") {
+                data.type = EntityType::quad;
             }
             else if (type == "sprite") {
                 data.type = EntityType::sprite;
@@ -395,14 +421,8 @@ void SceneFile::loadEntity(
         else if (k == "mirror_plane") {
             data.mirrorPlane = readVec4(v);
         }
-        else if (k == "default_material") {
-            const std::string materialName = v.as<std::string>();
-            const auto material = Material::find(materialName, materials);
-            if (material) {
-                // NOTE KI need to create copy *IF* modifiers
-                // TODO KI should make copy *ALWAYS* for safety
-                data.defaultMaterial = material;
-            }
+        else if (k == "material") {
+            data.materialName = v.as<std::string>();
         }
         else if (k == "material_modifier") {
             loadMaterialModifiers(v, data);
@@ -696,6 +716,10 @@ void SceneFile::loadMaterial(
         else if (k == "bump") {
             std::string line = v.as<std::string>();
             material.map_bump = resolveTexturePath(line);
+        }
+        else if (k == "map_dudv") {
+            std::string line = v.as<std::string>();
+            material.map_dudv = resolveTexturePath(line);
         }
         else if (k == "reflection") {
             material.reflection = v.as<float>();

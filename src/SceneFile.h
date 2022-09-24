@@ -95,7 +95,8 @@ class SceneFile
     };
 
     enum class EntityType {
-        node,
+        model,
+        quad,
         sprite
     };
 
@@ -106,7 +107,7 @@ class SceneFile
         int typeId{ 0 };
         bool enabled{ false };
 
-        EntityType type { EntityType::node };
+        EntityType type { EntityType::model };
 
         std::string name;
         std::string desc;
@@ -128,7 +129,7 @@ class SceneFile
         bool selected{ false };
 
         bool loadTextures{ true };
-        Material* defaultMaterial{ nullptr };
+        std::string materialName;
         // NOTE KI overrides *ALL* materials with defaultMaterial
         bool overrideMaterials{ false };
 

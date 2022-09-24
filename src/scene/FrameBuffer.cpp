@@ -27,7 +27,9 @@ FrameBuffer::~FrameBuffer()
 
 }
 
-void FrameBuffer::prepare()
+void FrameBuffer::prepare(
+    const bool clear,
+    const glm::vec4& clearColor)
 {
     if (prepared) return;
     prepared = true;
@@ -36,6 +38,8 @@ void FrameBuffer::prepare()
         glGenFramebuffers(1, &FBO);
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
     }
+
+    int clearMask = 0;
 
     for (auto& att : spec.attachments) {
         if (att.type == FrameBufferAttachmentType::texture) {
@@ -54,6 +58,8 @@ void FrameBuffer::prepare()
 
             glFramebufferTexture2D(GL_FRAMEBUFFER, att.attachment, GL_TEXTURE_2D, att.textureID, 0);
             glBindTexture(GL_TEXTURE_2D, 0);
+
+            clearMask |= GL_COLOR_BUFFER_BIT;
         }
         else if (att.type == FrameBufferAttachmentType::rbo) {
             glGenRenderbuffers(1, &att.RBO);
@@ -62,6 +68,8 @@ void FrameBuffer::prepare()
 
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, att.attachment, GL_RENDERBUFFER, att.RBO);
             glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+            clearMask |= GL_COLOR_BUFFER_BIT;
         }
         else if (att.type == FrameBufferAttachmentType::depth_texture) {
             glGenTextures(1, &att.textureID);
@@ -88,12 +96,20 @@ void FrameBuffer::prepare()
                 glDrawBuffer(GL_NONE);
                 glReadBuffer(GL_NONE);
             }
+
+            clearMask |= GL_DEPTH_BUFFER_BIT;
         }
     }
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         KI_ERROR_SB("FRAMEBUFFER:: Framebuffer is not complete!");
         KI_BREAK();
+    }
+
+    // NOTE KI clear buffer to avoid showing garbage
+    if (clear) {
+        glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+        glClear(clearMask);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

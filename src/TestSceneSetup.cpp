@@ -47,7 +47,7 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
     if (true) {
         setupTerrain();
 
-        setupWaterSurface();
+        //setupWaterSurface();
 
         //setupEffectExplosion();
 

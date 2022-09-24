@@ -38,9 +38,11 @@ Shader* ShaderRegistry::getShader(
 
     std::string key = name + "_" + geometryType;
 
-    for (auto& x : defines) {
+    if (!geometryType.empty())
+        key += "_" + geometryType;
+
+    for (auto& x : defines)
         key += "_" + x;
-    }
 
     Shader* shader = nullptr;
     {
