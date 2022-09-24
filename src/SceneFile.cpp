@@ -181,7 +181,9 @@ void SceneFile::attachEntity(
             auto mesh = std::make_unique<QuadMesh>(data.name);
             if (material) {
                 mesh->material = *material;
-                mesh->material.loadTextures(assets);
+                if (data.loadTextures) {
+                    mesh->material.loadTextures(assets);
+                }
             }
             type->mesh.reset(mesh.release());
         }
@@ -817,14 +819,7 @@ glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) {
     return glm::vec2{ a[0], a[1] };
 }
 
-const std::string SceneFile::resolveTexturePath(const std::string& line)
+const std::string SceneFile::resolveTexturePath(const std::string& path)
 {
-    std::string k;
-    std::stringstream is2(line);
-    is2 >> k;
-    std::stringstream tmp;
-    tmp << is2.rdbuf();
-    std::string path = tmp.str();
-    path.erase(0, path.find_first_not_of(' '));
     return path;
 }
