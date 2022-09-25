@@ -72,7 +72,7 @@ void main() {
   if (material.dudvMapTex >= 0) {
     float moveFactor = (sin(time / 10.0) + 1.0) * 0.5;
 
-    vec2 distortedTexCoords = texture(textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg*0.1;
+    vec2 distortedTexCoords = texture(textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg * 0.1;
     distortedTexCoords = fs_in.texCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
     totalDistortion = (texture(textures[material.dudvMapTex], distortedTexCoords).rg * 2.0 - 1.0) * waveStrength;
   }
@@ -103,7 +103,9 @@ void main() {
   vec2 refractCoord = vec2(gp.x, gp.y) / (gp.w * 2.0) + 0.5 + totalDistortion;
   vec2 reflectCoord = vec2(gp.x, -gp.y) / (gp.w * 2.0) + 0.5 + totalDistortion;
 
-//  refractCoord = clamp(refractCoord, 0.001, 0.999);
+  refractCoord = clamp(refractCoord, 0., 1.0);
+  reflectCoord = clamp(reflectCoord, 0., 1.0);
+
 //  reflectCoord.x = clamp(reflectCoord.x, 0.001, 0.999);
 //  reflectCoord.y = clamp(reflectCoord.y, -0.999, -0.001);
 

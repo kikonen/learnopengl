@@ -59,7 +59,7 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 
     reflectionBuffer->bindTexture(ctx, 0, ctx.assets.waterReflectionMapUnitIndex);
     refractionBuffer->bindTexture(ctx, 0, ctx.assets.waterRefractionMapUnitIndex);
-    if (noiseTextureID != -1) {
+    if (noiseTextureID > 0) {
         glBindTextures(ctx.assets.noiseUnitIndex, 1, &noiseTextureID);
     }
 }
