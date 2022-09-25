@@ -34,6 +34,8 @@ private:
     glm::vec3 readVec3(const YAML::Node& node);
     glm::vec4 readVec4(const YAML::Node& node);
 
+    glm::vec2 readScale2(const YAML::Node& node);
+
 private:
     const std::string filename;
 };

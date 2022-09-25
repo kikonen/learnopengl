@@ -17,6 +17,8 @@ public:
     int glfwSwapInterval;
     bool glDebug;
 
+    glm::vec2 resolutionScale;
+
     std::string logFile;
 
     std::string modelsDir;

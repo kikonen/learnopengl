@@ -17,10 +17,10 @@ FrameBuffer::~FrameBuffer()
     glDeleteFramebuffers(1, &FBO);
 
     for (auto& att : spec.attachments) {
-        if (att.textureID != -1) {
+        if (att.textureID) {
             glDeleteTextures(1, &att.textureID);
         }
-        if (att.RBO != -1) {
+        if (att.RBO) {
             glDeleteRenderbuffers(1, &att.RBO);
         }
     }

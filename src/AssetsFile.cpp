@@ -50,6 +50,9 @@ void AssetsFile::loadAssets(
         else if (k == "glfw_swap_interval") {
             data.glfwSwapInterval = v.as<int>();
         }
+        else if (k == "resolution_scale") {
+            data.resolutionScale = readScale2(v);
+        }
         else if (k == "gl_debug") {
             data.glDebug = v.as<bool>();
         }
@@ -192,4 +195,21 @@ glm::vec4 AssetsFile::readVec4(const YAML::Node& node) {
         a.push_back(e.as<double>());
     }
     return glm::vec4{ a[0], a[1], a[2], a[3] };
+}
+
+glm::vec2 AssetsFile::readScale2(const YAML::Node& node) {
+    std::vector<float> a;
+
+    if (node.IsSequence()) {
+        for (const auto& e : node) {
+            a.push_back(e.as<float>());
+        }
+        while (a.size() < 2) {
+            a.push_back(1.0);
+        }
+        return glm::vec2{ a[0], a[1] };
+    }
+
+    auto scale = node.as<float>();
+    return glm::vec3{ scale };
 }

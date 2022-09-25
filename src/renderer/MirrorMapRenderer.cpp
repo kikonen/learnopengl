@@ -25,7 +25,7 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     FrameBufferSpecification spec = {
         assets.mirrorReflectionSize ,
         assets.mirrorReflectionSize,
-        { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepth() }
+        { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
     };
 
     prev = std::make_unique<TextureBuffer>(spec);

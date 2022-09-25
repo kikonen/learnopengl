@@ -13,6 +13,8 @@ Assets::Assets()
     glfwSwapInterval = 3;
     glDebug = false;
 
+    resolutionScale = { 0.5, 0.5 };
+
     logFile = "log/development.log";
 
     modelsDir = "3d_model";

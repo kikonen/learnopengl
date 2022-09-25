@@ -4,6 +4,8 @@ assets:
   glfw_swap_interval: 3
   gl_debug: false
 
+  resolution_scale: 0.5
+
   models_dir: 3d_model
   shaders_dir: shader/test6
   sprites_dir: sprites

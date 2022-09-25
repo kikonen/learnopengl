@@ -240,7 +240,7 @@ private:
     glm::vec3 readVec3(const YAML::Node& node);
     glm::vec4 readVec4(const YAML::Node& node);
 
-    glm::vec3 readScale(const YAML::Node& node);
+    glm::vec3 readScale3(const YAML::Node& node);
     glm::vec4 readRGBA(const YAML::Node& node);
     glm::vec2 readRefractionRatio(const YAML::Node& node);
 

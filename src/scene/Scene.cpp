@@ -98,7 +98,7 @@ void Scene::prepare(ShaderRegistry& shaders)
     if (!mirrorBuffer && assets.showMirrorView) {
         auto buffer = new TextureBuffer({
             640, 480,
-            { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepthStencil() } });
 
         mirrorBuffer.reset(buffer);
         mirrorBuffer->prepare(true, { 0, 0, 0, 1.0 });
@@ -352,10 +352,15 @@ int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double scree
 
 void Scene::updateMainViewport(RenderContext& ctx)
 {
-    if (!mainBuffer) {
+    int w = ctx.assets.resolutionScale.x * ctx.width;
+    int h = ctx.assets.resolutionScale.y * ctx.height;
+
+    if (!mainBuffer || w != mainBuffer->spec.width || h != mainBuffer->spec.height) {
+        KI_INFO_SB("BUFFER: create - w=" << w << ", h=" << h);
+
         auto buffer = new TextureBuffer({
-            ctx.width, ctx.height,
-            { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepthStencil() } });
+            w, h,
+            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepthStencil() } });
 
         mainBuffer.reset(buffer);
         mainBuffer->prepare(true, { 0, 0, 0, 1.0 });

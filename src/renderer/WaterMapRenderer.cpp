@@ -23,7 +23,7 @@ void WaterMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     FrameBufferSpecification spec = {
         assets.waterReflectionSize , 
         assets.waterReflectionSize, 
-        { FrameBufferAttachment::getTexture(), FrameBufferAttachment::getRBODepth() } 
+        { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() } 
     };
 
     reflectionBuffer = std::make_unique<TextureBuffer>(spec);

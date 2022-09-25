@@ -478,7 +478,7 @@ void SceneFile::loadEntity(
             data.rotation = readVec3(v);
         }
         else if (k == "scale") {
-            data.scale = readScale(v);
+            data.scale = readScale3(v);
         }
         else if (k == "repeat") {
             loadRepeat(v, data.repeat);
@@ -824,7 +824,7 @@ glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
     return glm::vec4{ a[0], a[1], a[2], a[3] };
 }
 
-glm::vec3 SceneFile::readScale(const YAML::Node& node) {
+glm::vec3 SceneFile::readScale3(const YAML::Node& node) {
     std::vector<float> a;
 
     if (node.IsSequence()) {

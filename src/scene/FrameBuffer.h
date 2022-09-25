@@ -30,15 +30,25 @@ struct FrameBufferAttachment {
 
     bool useMibMap = false;
 
-    unsigned int textureID = -1;
-    unsigned int RBO = -1;
+    unsigned int textureID = 0;
+    unsigned int RBO = 0;
 
-    static FrameBufferAttachment getTexture() {
+    static FrameBufferAttachment getTextureRGBA(GLenum attachment = GL_COLOR_ATTACHMENT0) {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
         spec.internalFormat = GL_RGBA8;
         spec.format = GL_RGBA;
-        spec.attachment = GL_COLOR_ATTACHMENT0;
+        spec.attachment = attachment;
+
+        return spec;
+    }
+
+    static FrameBufferAttachment getTextureRGB(GLenum attachment = GL_COLOR_ATTACHMENT0) {
+        FrameBufferAttachment spec;
+        spec.type = FrameBufferAttachmentType::texture;
+        spec.internalFormat = GL_RGB8;
+        spec.format = GL_RGB;
+        spec.attachment = attachment;
 
         return spec;
     }
@@ -160,7 +170,7 @@ public:
 public:
     FrameBufferSpecification spec;
 
-    unsigned int FBO = -1;
+    unsigned int FBO = 0;
 
 protected:
     bool prepared = false;
