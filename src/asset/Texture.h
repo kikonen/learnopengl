@@ -25,7 +25,7 @@ public:
     const std::string name;
     const TextureSpec spec;
 
-    unsigned int textureID = -1;
+    unsigned int textureID = 0;
 
 protected:
     bool prepared = false;

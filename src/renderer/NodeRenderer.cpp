@@ -247,8 +247,9 @@ void NodeRenderer::drawBlended(
         }
     }
 
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+    // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 
     ctx.state.enable(GL_BLEND);
     // NOTE KI GL_CULL_FACE is node type specific

@@ -11,7 +11,11 @@ ObjectIdRenderer::~ObjectIdRenderer()
 {
 }
 
-int ObjectIdRenderer::getObjectId(const RenderContext& ctx, double screenPosX, double screenPosY, Viewport* mainViewport)
+int ObjectIdRenderer::getObjectId(
+    const RenderContext& ctx,
+    double screenPosX,
+    double screenPosY,
+    Viewport* mainViewport)
 {
     // https://stackoverflow.com/questions/10123601/opengl-read-pixels-from-framebuffer-for-ing-rounded-up-to-255-0xff
     // https://stackoverflow.com/questions/748162/what-are-the-differences-between-a-frame-buffer-object-and-a-pixel-buffer-object
@@ -75,7 +79,7 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         //glm::vec3(0.5, -0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        -1,
+        0,
         shaders.getShader(assets, TEX_VIEWPORT));
 
     debugViewport->prepare(assets);
@@ -83,11 +87,15 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    if (idBuffer) return;
-    // https://riptutorial.com/opengl/example/28872/using-pbos
+    int w = ctx.assets.resolutionScale.x * ctx.width;
+    int h = ctx.assets.resolutionScale.y * ctx.height;
 
+    bool changed = !idBuffer || w != idBuffer->spec.width || h != idBuffer->spec.height;
+    if (!changed) return;
+
+    // https://riptutorial.com/opengl/example/28872/using-pbos
     auto buffer = new TextureBuffer({
-        ctx.width, ctx.height,
+        w, h,
         { FrameBufferAttachment::getObjectId(), FrameBufferAttachment::getRBODepth() } });
 
     idBuffer.reset(buffer);

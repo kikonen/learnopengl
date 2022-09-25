@@ -80,7 +80,7 @@ void Scene::prepare(ShaderRegistry& shaders)
             glm::vec3(0, 0, 0),
             //glm::vec2(1.5f, 1.5f),
             glm::vec2(2.f, 2.f),
-            -1,
+            0,
             shaders.getShader(assets, TEX_VIEWPORT));
 
         //mainViewport->effect = ViewportEffect::edge;
@@ -95,19 +95,12 @@ void Scene::prepare(ShaderRegistry& shaders)
         }
     }
 
-    if (!mirrorBuffer && assets.showMirrorView) {
-        auto buffer = new TextureBuffer({
-            640, 480,
-            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepthStencil() } });
-
-        mirrorBuffer.reset(buffer);
-        mirrorBuffer->prepare(true, { 0, 0, 0, 1.0 });
-
+    if (assets.showMirrorView) {
         mirrorViewport = std::make_shared<Viewport>(
             glm::vec3(0.5, 1, 0),
             glm::vec3(0, 0, 0),
             glm::vec2(0.5f, 0.5f),
-            mirrorBuffer->spec.attachments[0].textureID,
+            0,
             shaders.getShader(assets, TEX_VIEWPORT));
 
         mirrorViewport->prepare(assets);
@@ -355,9 +348,13 @@ void Scene::updateMainViewport(RenderContext& ctx)
     int w = ctx.assets.resolutionScale.x * ctx.width;
     int h = ctx.assets.resolutionScale.y * ctx.height;
 
-    if (!mainBuffer || w != mainBuffer->spec.width || h != mainBuffer->spec.height) {
-        KI_INFO_SB("BUFFER: create - w=" << w << ", h=" << h);
+    bool changed = !mainBuffer || w != mainBuffer->spec.width || h != mainBuffer->spec.height;
+    if (!changed) return;
 
+    KI_INFO_SB("BUFFER: create - w=" << w << ", h=" << h);
+
+    // MAIN
+    {
         // NOTE KI alpha NOT needed
         auto buffer = new TextureBuffer({
             w, h,
@@ -366,6 +363,24 @@ void Scene::updateMainViewport(RenderContext& ctx)
         mainBuffer.reset(buffer);
         mainBuffer->prepare(true, { 0, 0, 0, 1.0 });
         mainViewport->setTextureID(mainBuffer->spec.attachments[0].textureID);
+    }
+
+    // VMIRROR
+    {
+        int mirrorW = w * 0.5;
+        int mirrorH = h * 0.5;
+
+        if (!mirrorBuffer && assets.showMirrorView) {
+            // NOTE KI alpha NOT needed
+            auto buffer = new TextureBuffer({
+                mirrorW, mirrorH,
+                { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepthStencil() } });
+
+            mirrorBuffer.reset(buffer);
+            mirrorBuffer->prepare(true, { 0, 0, 0, 1.0 });
+
+            mirrorViewport->setTextureID(mirrorBuffer->spec.attachments[0].textureID);
+        }
     }
 }
 

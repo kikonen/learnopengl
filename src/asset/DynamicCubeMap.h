@@ -21,12 +21,12 @@ public:
 public:
     const int size;
 
-    unsigned int textureID = -1;
+    unsigned int textureID = 0;
 
     bool valid = false;
 
 private:
-    unsigned int FBO = -1;
-    unsigned int depthBuffer = -1;
+    unsigned int FBO = 0;
+    unsigned int depthBuffer = 0;
 };
 

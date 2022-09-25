@@ -34,6 +34,6 @@ public:
 
 private:
     MaterialsUBO materialsUbo;
-    unsigned int  materialsUboId = -1;
-    unsigned int materialsUboSize = -1;
+    unsigned int  materialsUboId = 0;
+    unsigned int materialsUboSize = 0;
 };

@@ -92,5 +92,5 @@ private:
     std::unique_ptr<TextureBuffer> mainBuffer{ nullptr };
     std::shared_ptr<Viewport> mainViewport;
 
-    unsigned int pbo = -1;
+    unsigned int pbo = 0;
 };
