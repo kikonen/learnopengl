@@ -38,6 +38,11 @@
       ]
     },
     {
+      "name": "luajit",
+      "platform": "windows & x64",
+      "version>=": "2022-08-11#1"
+    },
+    {
       "name": "spdlog",
       "platform": "windows & x64",
       "version>=": "1.10.0#1"
