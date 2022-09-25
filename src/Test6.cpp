@@ -34,8 +34,6 @@ int Test6::onSetup() {
         glfwSwapInterval(assets.glfwSwapInterval);
     }
 
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     //state.disable(GL_MULTISAMPLE);
 
     if (assets.useIMGUI) {

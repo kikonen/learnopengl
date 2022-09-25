@@ -235,6 +235,8 @@ void NodeRenderer::drawBlended(
     const RenderContext& ctx,
     const NodeRegistry& registry)
 {
+    if (registry.blendedNodes.empty()) return;
+
     std::vector<Node*> nodes;
 
     for (const auto& all : registry.blendedNodes) {
@@ -244,6 +246,9 @@ void NodeRenderer::drawBlended(
             }
         }
     }
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 
     ctx.state.enable(GL_BLEND);
     // NOTE KI GL_CULL_FACE is node type specific

@@ -358,6 +358,7 @@ void Scene::updateMainViewport(RenderContext& ctx)
     if (!mainBuffer || w != mainBuffer->spec.width || h != mainBuffer->spec.height) {
         KI_INFO_SB("BUFFER: create - w=" << w << ", h=" << h);
 
+        // NOTE KI alpha NOT needed
         auto buffer = new TextureBuffer({
             w, h,
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepthStencil() } });
