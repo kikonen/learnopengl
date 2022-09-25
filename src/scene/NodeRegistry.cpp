@@ -2,6 +2,10 @@
 
 #include "Scene.h"
 
+
+namespace {
+}
+
 NodeRegistry::NodeRegistry(Scene& scene)
     : scene(scene),
     assets(scene.assets)
@@ -108,26 +112,30 @@ void NodeRegistry::attachNodes()
     }
 
     for (const auto& x : newNodes) {
-        auto& t = x.first;
-        t->prepare(assets);
+        auto& type = x.first;
+        type->prepare(assets);
 
-        auto* shader = t->nodeShader;
+        auto* shader = type->nodeShader;
 
         auto* map = &solidNodes;
-        if (t->flags.alpha)
+        if (type->flags.alpha)
             map = &alphaNodes;
-        if (t->flags.blend)
+        if (type->flags.blend)
             map = &blendedNodes;
 
-        auto& typeMap = (*map)[shader->objectID];
-        auto& allMap = allNodes[shader->objectID];
+        // NOTE KI more optimal to not switch between culling mode (=> group by it)
+        const ShaderKey key(shader->objectID, type->flags.renderBack);
+
+        auto& vAll = allNodes[key][type];
+        auto& vTyped = (*map)[key][type];
 
         for (auto& node : x.second) {
             node->prepare(assets);
 
-            allMap[t].push_back(node);
-            typeMap[t].push_back(node);
             idToNode[node->objectID] = node;
+
+            vAll.push_back(node);
+            vTyped.push_back(node);
 
             if (node->camera) {
                 cameraNode = node;
@@ -146,7 +154,7 @@ void NodeRegistry::attachNodes()
                 }
             }
 
-            KI_INFO_SB("ATTACH_NODE: id=" << node->objectID << ", type=" << t->typeID);
+            KI_INFO_SB("ATTACH_NODE: id=" << node->objectID << ", uuid=" << node->id << ", type=" << type->typeID);
 
             scene.bindComponents(node);
         }

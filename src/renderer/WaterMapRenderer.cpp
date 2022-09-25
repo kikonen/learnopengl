@@ -192,12 +192,12 @@ void WaterMapRenderer::drawNodes(
             renderTypes(all.second);
         }
 
-        if (skybox) {
-            skybox->render(ctx);
-        }
-
         for (const auto& all : registry.alphaNodes) {
             renderTypes(all.second);
+        }
+
+        if (skybox) {
+            skybox->render(ctx);
         }
 
         for (const auto& all : registry.blendedNodes) {

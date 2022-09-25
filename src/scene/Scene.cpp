@@ -224,6 +224,9 @@ void Scene::draw(RenderContext& ctx)
     ctx.state.frontFace(GL_CCW);
 
     ctx.state.enable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    glUseProgram(0);
 
     {
         if (shadowMapRenderer) {
@@ -283,12 +286,9 @@ void Scene::drawMirror(RenderContext& ctx)
 
 void Scene::drawViewports(RenderContext& ctx)
 {
-    ctx.state.disable(GL_DEPTH_TEST);
-    ctx.state.enable(GL_BLEND);
     if (viewportRenderer) {
         viewportRenderer->render(ctx, registry);
     }
-    ctx.state.disable(GL_BLEND);
 }
 
 void Scene::drawScene(RenderContext& ctx)

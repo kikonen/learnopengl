@@ -220,11 +220,16 @@ public:
         }
 
         void set(const float value) {
-            if (locId != -1) {
+            if (locId != -1 && (unassigned || value != lastValue)) {
                 glUniform1f(locId, value);
+                lastValue = value;
+                unassigned = false;
             }
 
         }
+    private:
+        bool unassigned = true;
+        float lastValue;
     };
 
     class Int final : public Uniform {
@@ -233,11 +238,15 @@ public:
         }
 
         void set(const int value) {
-            if (locId != -1) {
+            if (locId != -1 && (unassigned || value != lastValue)) {
                 glUniform1i(locId, value);
+                lastValue = value;
+                unassigned = false;
             }
-
         }
+    private:
+        bool unassigned = true;
+        int lastValue;
     };
 
     class Bool final : public Uniform {
@@ -246,11 +255,15 @@ public:
         }
 
         void set(const bool value) {
-            if (locId != -1) {
+            if (locId != -1 && (unassigned || value != lastValue)) {
                 glUniform1i(locId, (int)value);
+                lastValue = value;
+                unassigned = false;
             }
-
         }
+    private:
+        bool unassigned = true;
+        float lastValue;
     };
 
 public:

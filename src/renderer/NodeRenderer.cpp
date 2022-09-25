@@ -128,12 +128,21 @@ void NodeRenderer::drawNodes(
         glStencilMask(0x00);
     }
 
+    //std::cout << '\n';
+
     auto renderTypes = [&ctx, &selection](const NodeTypeMap& typeMap) {
         ShaderBind bound(typeMap.begin()->first->nodeShader);
 
         for (const auto& x : typeMap) {
             auto& type = x.first;
             Batch& batch = type->batch;
+
+            //if (type->flags.renderBack) {
+            //    std::cout << 'C';
+            //}
+            //else {
+            //    std::cout << '.';
+            //}
 
             //ShaderBind bound(type->defaultShader);
 
@@ -155,14 +164,14 @@ void NodeRenderer::drawNodes(
         renderTypes(all.second);
     }
 
+    for (const auto& all : registry.alphaNodes) {
+        renderTypes(all.second);
+    }
+
     if (!selection) {
         if (skybox) {
             skybox->render(ctx);
         }
-    }
-
-    for (const auto& all : registry.alphaNodes) {
-        renderTypes(all.second);
     }
 
     if (selection) {
@@ -237,7 +246,8 @@ void NodeRenderer::drawBlended(
     }
 
     ctx.state.enable(GL_BLEND);
-    ctx.state.disable(GL_CULL_FACE);
+    // NOTE KI GL_CULL_FACE is node type specific
+    //ctx.state.disable(GL_CULL_FACE);
 
     const glm::vec3& viewPos = ctx.camera.getPos();
 
@@ -265,6 +275,7 @@ void NodeRenderer::drawBlended(
                     shader->unbind();
                 }
             }
+            //std::cout << 'B';
             type = node->type.get();
             batch = &type->batch;
 
@@ -288,6 +299,6 @@ void NodeRenderer::drawBlended(
         }
     }
 
-    ctx.state.enable(GL_CULL_FACE);
+    //ctx.state.enable(GL_CULL_FACE);
     ctx.state.disable(GL_BLEND);
 }

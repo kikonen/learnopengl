@@ -69,7 +69,8 @@ const void Shader::unbind()
 {
     m_bound--;
     assert(m_bound >= 0);
-    if (m_bound == 0) glUseProgram(0);
+    // NOTE KI not really need to unbind program
+    //if (m_bound == 0) glUseProgram(0);
 }
 
 void Shader::load()

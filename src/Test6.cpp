@@ -62,13 +62,13 @@ int Test6::onRender(const RenderClock& clock) {
     //ctx.useWireframe = true;
     //ctx.useLight = false;
 
-    // https://cmichel.io/understanding-front-faces-winding-order-and-normals
-    ctx.state.enable(GL_CULL_FACE);
-    ctx.state.cullFace(GL_BACK);
-    ctx.state.frontFace(GL_CCW);
+    //// https://cmichel.io/understanding-front-faces-winding-order-and-normals
+    //ctx.state.enable(GL_CULL_FACE);
+    //ctx.state.cullFace(GL_BACK);
+    //ctx.state.frontFace(GL_CCW);
 
-    ctx.state.enable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
+    //ctx.state.enable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LEQUAL);
 
     if (assets.useIMGUI) {
         frame->bind(ctx);

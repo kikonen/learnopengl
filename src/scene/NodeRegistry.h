@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <mutex>
+#include <tuple>
 
 #include <stduuid/uuid.h>
 
@@ -13,9 +14,19 @@
 
 class Sccene;
 
+struct ShaderKey {
+    ShaderKey(int shaderID, bool renderBack) : shaderID(shaderID), renderBack(renderBack) {};
+    int shaderID;
+    bool renderBack;
+
+    bool operator<(const ShaderKey& o)  const {
+        return std::tie(shaderID, renderBack) < std::tie(o.shaderID, o.renderBack);
+    }
+};
+
 using NodeVector = std::vector<Node*>;
 using NodeTypeMap = std::map<NodeType*, NodeVector>;
-using ShaderTypeMap = std::map<int, NodeTypeMap>;
+using ShaderTypeMap = std::map<const ShaderKey, NodeTypeMap>;
 
 using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
 
