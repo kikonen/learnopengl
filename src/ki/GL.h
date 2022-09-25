@@ -56,6 +56,8 @@ struct RenderClock {
 struct OpenGLInfo {
     int maxVertexUniformComponents = 0;
     int maxVertexAttributes = 0;
+
+    int preferredFormat = 0;
 };
 
 struct KI_RGB10_A2

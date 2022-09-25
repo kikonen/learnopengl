@@ -47,10 +47,13 @@ int Engine::setup() {
 
 void Engine::run() {
     OpenGLInfo info = ki::GL::getInfo();
+    // NOTE KI https://www.khronos.org/opengl/wiki/Common_Mistakes
+    // - preferredFormat is performnce topic
     KI_INFO_SB("ENGINE::RUN" << std::endl
-        << " VER=" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl
-        << " GL_MAX_VERTEX_UNIFORM_COMPONENTS=" << info.maxVertexUniformComponents << std::endl
-        << " GL_MAX_VERTEX_ATTRIBS=" << info.maxVertexAttributes);
+        << " VER: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << '\n'
+        << " GL_MAX_VERTEX_UNIFORM_COMPONENTS: " << info.maxVertexUniformComponents << '\n'
+        << " GL_MAX_VERTEX_ATTRIBS: " << info.maxVertexAttributes << '\n'
+        << " GL_PREFERRED_TEXTURE_FORMAT: 0x" << std::hex << info.preferredFormat);
 
     KI_INFO("setup");
     ki::GL::startError();
