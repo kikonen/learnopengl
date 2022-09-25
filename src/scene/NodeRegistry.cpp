@@ -111,7 +111,7 @@ void NodeRegistry::attachNodes()
         auto& t = x.first;
         t->prepare(assets);
 
-        auto* shader = t->defaultShader;
+        auto* shader = t->nodeShader;
 
         auto* map = &solidNodes;
         if (t->flags.alpha)

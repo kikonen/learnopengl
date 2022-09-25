@@ -129,7 +129,7 @@ void NodeRenderer::drawNodes(
     }
 
     auto renderTypes = [&ctx, &selection](const NodeTypeMap& typeMap) {
-        ShaderBind bound(typeMap.begin()->first->defaultShader);
+        ShaderBind bound(typeMap.begin()->first->nodeShader);
 
         for (const auto& x : typeMap) {
             auto& type = x.first;
@@ -268,7 +268,7 @@ void NodeRenderer::drawBlended(
             type = node->type.get();
             batch = &type->batch;
 
-            shader = type->defaultShader;
+            shader = type->nodeShader;
             shader->bind();
 
             type->bind(ctx, shader);

@@ -25,9 +25,8 @@ void NodeType::setBaseID(int baseId)
     typeIDbase = baseId;
 }
 
-NodeType::NodeType(int typeID, Shader* defaultShader)
-    : typeID(typeID),
-    defaultShader(defaultShader)
+NodeType::NodeType(int typeID)
+    : typeID(typeID)
 {
 }
 
@@ -65,7 +64,7 @@ void NodeType::prepare(const Assets& assets)
     if (!mesh) return;
     mesh->prepare(assets);
 
-    Shader* shader = defaultShader;
+    Shader* shader = nodeShader;
     if (shader) {
         shader->prepare(assets);
 

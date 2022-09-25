@@ -165,7 +165,7 @@ void WaterMapRenderer::drawNodes(
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [&ctx, &current](const NodeTypeMap& typeMap) {
-            ShaderBind bound(typeMap.begin()->first->defaultShader);
+            ShaderBind bound(typeMap.begin()->first->nodeShader);
 
             for (const auto& x : typeMap) {
                 auto& type = x.first;

@@ -3,44 +3,43 @@
 #include "asset/QuadMesh.h"
 
 
-Material Sprite::createMaterial(
-    const Assets& assets, 
-    const std::string& path,
-    const std::string& normalMapPath)
-{
-    Material material;
-    material.name = path;
-    material.type = MaterialType::sprite;
-    material.ns = 100;
-    material.ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
-    material.map_kd = path;
-    material.map_bump = normalMapPath;
-    material.loadTextures(assets);
-
-    return material;
-}
-
-std::shared_ptr<NodeType> Sprite::getNodeType(
-    const Assets& assets, 
-    ShaderRegistry& shaders,
-    const std::string& path,
-    const std::string& normalMapPath)
-{
-    auto type = std::make_shared<NodeType>(
-        NodeType::nextID(),
-        shaders.getShader(assets, TEX_TEXTURE, { DEF_USE_ALPHA }));
-
-    // TODO KI alpha, not blendd
-    type->flags.alpha = true;
-    type->flags.renderBack = true;
-
-    auto quad = std::make_unique<QuadMesh>(path);
-    quad->material = Sprite::createMaterial(assets, path, normalMapPath);
-
-    type->mesh = std::unique_ptr<Mesh>(std::move(quad));
-
-    return type;
-}
+//Material Sprite::createMaterial(
+//    const Assets& assets, 
+//    const std::string& path,
+//    const std::string& normalMapPath)
+//{
+//    Material material;
+//    material.name = path;
+//    material.type = MaterialType::sprite;
+//    material.ns = 100;
+//    material.ks = glm::vec4(0.6f, 0.6f, 0.6f, 1.f);
+//    material.map_kd = path;
+//    material.map_bump = normalMapPath;
+//    material.loadTextures(assets);
+//
+//    return material;
+//}
+//
+//std::shared_ptr<NodeType> Sprite::getNodeType(
+//    const Assets& assets, 
+//    ShaderRegistry& shaders,
+//    const std::string& path,
+//    const std::string& normalMapPath)
+//{
+//    auto type = std::make_shared<NodeType>(NodeType::nextID());
+//    type->nodeShader = shaders.getShader(assets, TEX_TEXTURE, { DEF_USE_ALPHA });
+//
+//    // TODO KI alpha, not blendd
+//    type->flags.alpha = true;
+//    type->flags.renderBack = true;
+//
+//    auto quad = std::make_unique<QuadMesh>(path);
+//    quad->material = Sprite::createMaterial(assets, path, normalMapPath);
+//
+//    type->mesh = std::unique_ptr<Mesh>(std::move(quad));
+//
+//    return type;
+//}
 
 Sprite::Sprite(std::shared_ptr<NodeType> type, glm::vec2 size)
     : Node(type),

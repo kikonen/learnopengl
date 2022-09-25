@@ -27,6 +27,7 @@ const std::string TEX_EFFECT{ "effect" };
 const std::string TEX_VIEWPORT{ "viewport" };
 
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
+const std::string DEF_USE_BLEND{ "USE_BLEND" };
 
 const int ATTR_POS = 0;
 const int ATTR_NORMAL = 1;

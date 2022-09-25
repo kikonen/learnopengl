@@ -92,13 +92,23 @@ void SceneFile::attachEntity(
     asyncLoader->addLoader([this, scene, &data, parent]() {
         const Assets& assets = asyncLoader->assets;
 
-        auto type = std::make_shared<NodeType>(
-            data.typeId,
-            asyncLoader->getShader(data.shaderName, data.shaderDefinitions));
-
-        type->batch.batchSize = data.batchSize;
-
+        auto type = std::make_shared<NodeType>(data.typeId);
         assignFlags(data, *type);
+        {
+            std::vector<std::string> definitions;
+            for (auto& v : data.shaderDefinitions) {
+                definitions.push_back(v);
+            }
+            if (type->flags.alpha) {
+                definitions.push_back(DEF_USE_ALPHA);
+            }
+            if (type->flags.blend) {
+                definitions.push_back(DEF_USE_BLEND);
+            }
+
+            type->nodeShader = asyncLoader->getShader(data.shaderName, definitions);
+        }
+        type->batch.batchSize = data.batchSize;
 
         // NOTE KI need to create copy *IF* modifiers
         // TODO KI should make copy *ALWAYS* for safety
@@ -224,6 +234,8 @@ void SceneFile::assignFlags(
         const auto& e = data.renderFlags.find("blend");
         if (e != data.renderFlags.end()) {
             flags.blend = e->second;
+            // NOTE KI alpha MUST BE true if blend
+            if (flags.blend) flags.alpha = true;
         }
     }
     {

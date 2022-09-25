@@ -123,7 +123,7 @@ void main() {
 
   texColor = calculateFog(material.fogRatio, texColor);
 
-#ifdef USE_ALPHA
+#ifdef USE_BLEND
   fragColor = texColor;
 #else
   fragColor = vec4(texColor.xyz, 1.0);

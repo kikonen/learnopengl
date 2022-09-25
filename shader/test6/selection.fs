@@ -32,7 +32,7 @@ void main() {
   }
 
 #ifdef USE_ALPHA
-  if (alpha < 0.4)
+  if (alpha < 0.6)
     discard;
 #endif
 

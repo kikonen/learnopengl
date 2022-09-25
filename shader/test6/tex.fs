@@ -82,6 +82,10 @@ void main() {
     discard;
 #endif
 
+#ifndef USE_BLEND
+  texColor = vec4(texColor.rgb, 1.0);
+#endif
+
   texColor = calculateFog(material.fogRatio, texColor);
 
   fragColor = texColor;

@@ -70,8 +70,6 @@ entities:
     shader: texture
     pos: [5.0, 10.0, -5.0]
     rotation: [0.0, 180.0, 0.0]
-    shader_definitions:
-      - USE_ALPHA
     render_flags:
       - blend
       - render_back
@@ -82,8 +80,6 @@ entities:
     shader: texture
     pos: [7.0, 10.0, -8.0]
     rotation: [0.0, 180.0, 0.0]
-    shader_definitions:
-      - USE_ALPHA
     render_flags:
       - blend
       - render_back
@@ -94,8 +90,6 @@ entities:
     shader: texture
     pos: [-10.0, 15.0, 10.0]
     rotation: [0.0, 180.0, 0.0]
-    shader_definitions:
-      - USE_ALPHA
     render_flags:
       - blend
       - render_back
@@ -443,8 +437,6 @@ entities:
     pos: [15, 6.5, 20.0]
     material: skeleton
     batch_size: 1000
-    shader_definitions:
-      - USE_ALPHA
     render_flags:
       - alpha
       - render_back
