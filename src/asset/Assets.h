@@ -84,5 +84,10 @@ public:
     unsigned int cubeMapUnitIndex;
     unsigned int shadowMapUnitIndex;
     unsigned int skyboxUnitIndex;
+
+
+    // NOTE KI TEMPORARY HACKS
+    // => provide logic for these via scenefile
+    int asteroidCount;
 };
 

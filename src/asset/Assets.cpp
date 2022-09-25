@@ -80,4 +80,8 @@ Assets::Assets()
     cubeMapUnitIndex = 29;
     shadowMapUnitIndex = 30;
     skyboxUnitIndex = 31;
+
+    /////////////////////////
+    // TEMPORARIES
+    asteroidCount = 1000;
 }

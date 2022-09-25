@@ -9,9 +9,9 @@ AsteroidBeltController::AsteroidBeltController(Node* planet)
 
 void AsteroidBeltController::prepareInstanced(const Assets& assets, InstancedNode& node)
 {
-    glm::vec3 planetPos = planet ? planet->getPos() : glm::vec3(0.f, 40.f, 0.f);
+    glm::vec3 planetPos = planet ? planet->getPos() : glm::vec3(0.f, 0.f, 0.f);
 
-    unsigned int amount = 1000;
+    unsigned int amount = assets.asteroidCount;
 
     Batch& modelBatch = node.modelBatch;
     Batch& selectedBatch = node.selectedBatch;

@@ -167,6 +167,9 @@ void AssetsFile::loadAssets(
         else if (k == "cube_map_draw_skip") {
             data.cubeMapDrawSkip = v.as<int>();
         }
+        else if (k == "asteroid_count") {
+            data.asteroidCount = v.as<int>();
+        }
         else {
             std::cout << "UNKNOWN ASSETS_ENTRY: " << k << "=" << v << "\n";
         }
