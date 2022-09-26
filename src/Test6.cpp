@@ -55,8 +55,12 @@ int Test6::onRender(const RenderClock& clock) {
     Camera* camera = scene->getCamera();
     if (!camera) return 0;
 
+    int w = window->width;
+    int h = window->height;
+    if (w < 1) w = 1;
+    if (h < 1) h = 1;
 
-    RenderContext ctx(assets, clock, state, scene, *camera, window->width, window->height);
+    RenderContext ctx(assets, clock, state, scene, *camera, w, h);
     //ctx.useWireframe = true;
     //ctx.useLight = false;
 

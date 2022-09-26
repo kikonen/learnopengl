@@ -89,6 +89,8 @@ void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
 {
     int w = ctx.assets.resolutionScale.x * ctx.width;
     int h = ctx.assets.resolutionScale.y * ctx.height;
+    if (w < 1) w = 1;
+    if (h < 1) h = 1;
 
     bool changed = !idBuffer || w != idBuffer->spec.width || h != idBuffer->spec.height;
     if (!changed) return;

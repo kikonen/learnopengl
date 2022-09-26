@@ -347,6 +347,8 @@ void Scene::updateMainViewport(RenderContext& ctx)
 {
     int w = ctx.assets.resolutionScale.x * ctx.width;
     int h = ctx.assets.resolutionScale.y * ctx.height;
+    if (w < 1) w = 1;
+    if (h < 1) h = 1;
 
     bool changed = !mainBuffer || w != mainBuffer->spec.width || h != mainBuffer->spec.height;
     if (!changed) return;
@@ -369,6 +371,9 @@ void Scene::updateMainViewport(RenderContext& ctx)
     {
         int mirrorW = w * 0.5;
         int mirrorH = h * 0.5;
+
+        if (mirrorW < 1) mirrorW = 1;
+        if (mirrorH < 1) mirrorH = 1;
 
         if (!mirrorBuffer && assets.showMirrorView) {
             // NOTE KI alpha NOT needed
