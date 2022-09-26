@@ -30,14 +30,13 @@ void NormalRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& reg
     ShaderBind bound(normalShader);
 
     auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
-        for (const auto& x : typeMap) {
-            auto& type = x.first;
+        for (const auto& [type, nodes] : typeMap) {
             Batch& batch = type->batch;
 
             type->bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
 
-            for (auto& node : x.second) {
+            for (auto& node : nodes) {
                 if (!node->allowNormals) continue;
                 batch.draw(ctx, node, bound.shader);
             }

@@ -102,8 +102,7 @@ void ShadowMapRenderer::drawNodes(
     const NodeRegistry& registry)
 {
     auto renderTypes = [this, &ctx](const NodeTypeMap& typeMap, ShaderBind& bound) {
-        for (const auto& x : typeMap) {
-            auto& type = x.first;
+        for (const auto& [type, nodes] : typeMap) {
             if (type->flags.noShadow) continue;
 
             Batch& batch = type->batch;
@@ -111,7 +110,7 @@ void ShadowMapRenderer::drawNodes(
             type->bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
 
-            for (auto& node : x.second) {
+            for (auto& node : nodes) {
                 batch.draw(ctx, node, bound.shader);
             }
 

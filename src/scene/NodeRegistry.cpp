@@ -34,10 +34,10 @@ NodeRegistry::~NodeRegistry()
     }
 
     KI_INFO_SB("NODE_REGISTRY: delete");
-    for (auto& byType : allNodes) {
-        for (auto& e : byType.second) {
-            KI_INFO_SB("NODE_REGISTRY: delete " << e.first->typeID);
-            for (auto& n : e.second) {
+    for (auto& all : allNodes) {
+        for (auto& [type, nodes] : all.second) {
+            KI_INFO_SB("NODE_REGISTRY: delete " << type->typeID);
+            for (auto& n : nodes) {
                 delete n;
             }
         }
@@ -111,8 +111,7 @@ void NodeRegistry::attachNodes()
         pendingNodes.clear();
     }
 
-    for (const auto& x : newNodes) {
-        auto& type = x.first;
+    for (const auto& [type, nodes] : newNodes) {
         type->prepare(assets);
 
         auto* shader = type->nodeShader;
@@ -129,7 +128,7 @@ void NodeRegistry::attachNodes()
         auto& vAll = allNodes[key][type];
         auto& vTyped = (*map)[key][type];
 
-        for (auto& node : x.second) {
+        for (auto& node : nodes) {
             node->prepare(assets);
 
             idToNode[node->objectID] = node;

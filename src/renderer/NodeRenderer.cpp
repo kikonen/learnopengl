@@ -133,8 +133,7 @@ void NodeRenderer::drawNodes(
     auto renderTypes = [&ctx, &selection](const NodeTypeMap& typeMap) {
         ShaderBind bound(typeMap.begin()->first->nodeShader);
 
-        for (const auto& x : typeMap) {
-            auto& type = x.first;
+        for (const auto& [type, nodes] : typeMap) {
             Batch& batch = type->batch;
 
             //if (type->flags.renderBack) {
@@ -149,7 +148,7 @@ void NodeRenderer::drawNodes(
             type->bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
 
-            for (auto& node : x.second) {
+            for (auto& node : nodes) {
                 if (selection ? !node->selected : node->selected) continue;
 
                 batch.draw(ctx, node, bound.shader);
@@ -192,14 +191,13 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
         ShaderBind bound(selectionShader);
 
         auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
-            for (const auto& x : typeMap) {
-                auto& type = x.first;
+            for (const auto& [type, nodes] : typeMap) {
                 Batch& batch = type->batch;
 
                 type->bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);
 
-                for (auto& node : x.second) {
+                for (auto& node : nodes) {
                     if (!node->selected) continue;
 
                     glm::vec3 scale = node->getScale();

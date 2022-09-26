@@ -144,8 +144,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
         ShaderBind bound(idShader);
 
         auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
-            for (const auto& x : typeMap) {
-                auto& type = x.first;
+            for (const auto& [type, nodes] : typeMap) {
                 if (type->flags.noShadow) continue;
 
                 Batch& batch = type->batch;
@@ -154,7 +153,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
                 type->bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);
 
-                for (auto& node : x.second) {
+                for (auto& node : nodes) {
                     batch.draw(ctx, node, bound.shader);
                 }
 
