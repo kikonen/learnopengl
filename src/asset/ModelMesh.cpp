@@ -208,12 +208,10 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
         delete[] vertexEboBuffer;
     }
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
     glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // NOTE KI no need for thexe any longer (they are in buffers now)
     triCount = tris.size();
