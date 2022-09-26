@@ -33,7 +33,6 @@ public:
     std::vector<GLuint> textureIDs;
 
 private:
-    MaterialsUBO materialsUbo;
-    unsigned int  materialsUboId = 0;
     unsigned int materialsUboSize = 0;
+    unsigned int materialsUboId = 0;
 };

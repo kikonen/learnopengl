@@ -138,6 +138,10 @@ struct MaterialsUBO {
     MaterialUBO materials[MATERIAL_COUNT];
 };
 
+struct MaterialsUBOSingle {
+    MaterialUBO materials[1];
+};
+
 // NOTE KI align 16
 struct ClipPlaneUBO {
     glm::vec4 plane;

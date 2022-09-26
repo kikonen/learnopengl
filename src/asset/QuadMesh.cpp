@@ -73,19 +73,12 @@ void QuadMesh::prepare(const Assets& assets)
 
     // materials
     {
-        glGenBuffers(1, &materialsUboId);
-        glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
-        int sz = sizeof(MaterialsUBO);
-        glBufferData(GL_UNIFORM_BUFFER, sz, NULL, GL_STATIC_DRAW);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, sz);
-        materialsUboSize = sz;
-
+        MaterialsUBOSingle materialsUbo{};
         materialsUbo.materials[0] = material.toUBO();
+        materialsUboSize = sizeof(materialsUbo);
 
-        glBindBuffer(GL_UNIFORM_BUFFER, materialsUboId);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, materialsUboSize, &materialsUbo);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        glCreateBuffers(1, &materialsUboId);
+        glNamedBufferStorage(materialsUboId, materialsUboSize, &materialsUbo, 0);
     }
 }
 
