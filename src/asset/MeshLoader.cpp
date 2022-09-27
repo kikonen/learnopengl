@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <filesystem>
+#include <algorithm>
 
 #include "ki/Timer.h"
 
@@ -38,16 +39,18 @@ MeshLoader::~MeshLoader()
 
 std::unique_ptr<ModelMesh> MeshLoader::load() {
     auto mesh = std::make_unique<ModelMesh>(modelName, modelPath);
-    loadData(mesh->tris, mesh->vertices, mesh->materials);
+    loadData(*mesh.get());
     return mesh;
 }
 
 void MeshLoader::loadData(
-    std::vector<glm::uvec3>& tris,
-    std::vector<Vertex>& vertices,
-    std::vector<Material>& materials)
+    ModelMesh& mesh)
 {
     ki::Timer t("loadData-" + modelName);
+
+    auto& tris = mesh.tris;
+    auto& vertices = mesh.vertices;
+    auto& materials = mesh.materials;
 
     std::string name;
 
@@ -183,6 +186,8 @@ void MeshLoader::loadData(
             }
         }
 
+        calculateSpherre(mesh);
+
         {
             if (defaultMaterial.used) {
                 if (loadTextures) {
@@ -221,6 +226,26 @@ void MeshLoader::loadData(
         << ", normals: " << normals.size()
         << ", vertices: " << vertices.size()
         << "\n--------\n");
+}
+
+void MeshLoader::calculateSpherre(ModelMesh& mesh) {
+    glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
+    glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+
+    for (auto&& vertex : mesh.vertices)
+    {
+        minAABB.x = std::min(minAABB.x, vertex.pos.x);
+        minAABB.y = std::min(minAABB.y, vertex.pos.y);
+        minAABB.z = std::min(minAABB.z, vertex.pos.z);
+
+        maxAABB.x = std::max(maxAABB.x, vertex.pos.x);
+        maxAABB.y = std::max(maxAABB.y, vertex.pos.y);
+        maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
+    }
+
+    mesh.volume = std::make_unique<Sphere>(
+        (maxAABB + minAABB) * 0.5f,
+        glm::length(minAABB - maxAABB));
 }
 
 // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g

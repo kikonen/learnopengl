@@ -2,6 +2,8 @@
 
 #include "ki/GL.h"
 
+#include "asset/Sphere.h"
+
 const float VERTICES[] = {
     // pos              // normal         // tangent        //mat // tex
     -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
@@ -33,6 +35,8 @@ namespace {
 QuadMesh::QuadMesh(const std::string& modelName)
     : Mesh(modelName)
 {
+    // NOTE KI sphere containing quad is not 1
+    volume = std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, sqrt(2));
 }
 
 QuadMesh::~QuadMesh()

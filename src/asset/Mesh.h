@@ -2,11 +2,14 @@
 
 #include <functional>
 
+#include "ki/GL.h"
+
 #include "MeshBuffers.h"
 #include "Assets.h"
 #include "Material.h"
+#include "Volume.h"
+
 #include "scene/RenderContext.h"
-#include "ki/GL.h"
 
 class Mesh
 {
@@ -31,5 +34,7 @@ public:
     std::string modelName;
 
     MeshBuffers buffers;
+
+    std::unique_ptr<Volume> volume;
 };
 

@@ -5,6 +5,7 @@
 #include "ModelMesh.h"
 #include "Assets.h"
 
+#include "Sphere.h"
 
 class MeshLoader final
 {
@@ -24,10 +25,10 @@ public:
 
 private:
     void loadData(
-        std::vector<glm::uvec3>& tris,
-        std::vector<Vertex>& vertices,
-        std::vector<Material>& materials
-    );
+        ModelMesh& mesh);
+
+    void calculateSpherre(
+        ModelMesh& mesh);
 
 public:
     const Assets& assets;

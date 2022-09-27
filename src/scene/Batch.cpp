@@ -166,6 +166,15 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 
 void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
 {
+    //std::cout << node->type->mesh->modelName << '\n';
+    const auto& volume = node->getVolume();
+    if (volume && !volume->isOnFrustum(ctx.frustum, node->getModelMatrix())) {
+        ctx.skipCount += 1;
+        return;
+    }
+
+    ctx.drawCount += 1;
+
     if (batchSize == 0) {
         node->bind(ctx, shader);
         node->draw(ctx);

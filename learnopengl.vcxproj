@@ -164,6 +164,8 @@
   <ItemGroup>
     <ClCompile Include="src\AssetsFile.cpp" />
     <ClCompile Include="src\asset\ShaderRegistry.cpp" />
+    <ClCompile Include="src\asset\Sphere.cpp" />
+    <ClCompile Include="src\asset\Volume.cpp" />
     <ClCompile Include="src\SceneFile.cpp" />
     <ClCompile Include="src\model\Billboard.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
@@ -237,6 +239,10 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\asset\Frustum.h" />
+    <ClInclude Include="src\asset\Sphere.h" />
+    <ClInclude Include="src\asset\Plane.h" />
+    <ClInclude Include="src\asset\Volume.h" />
     <ClInclude Include="src\asset\ShaderBind.h" />
     <ClInclude Include="src\AssetsFile.h" />
     <ClInclude Include="src\asset\ShaderRegistry.h" />

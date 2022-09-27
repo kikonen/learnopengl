@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "asset/Frustum.h"
+
 #include "ki/GL.h"
 #include "gui/Input.h"
 
@@ -19,6 +21,8 @@ public:
     const glm::vec3& getViewFront();
     const glm::vec3& getViewRight();
     const glm::vec3& getViewUp();
+
+    const Frustum& getFrustum();
 
     const glm::vec3& getFront();
     const glm::vec3& getRight();
@@ -40,31 +44,33 @@ public:
 private:
     void updateZoom(double aZoom);
     void updateCamera();
+    void updateFrustum();
 
 private:
-    double zoom = 45.0f;
+    double m_zoom = 45.0f;
 
-    float moveStep = 10.0f;
-    float rotateStep = 30.f;
-    float zoomStep = 20.0f;
-    float mouseSensitivity = 0.1f;
+    float m_moveStep = 10.0f;
+    float m_rotateStep = 30.f;
+    float m_zoomStep = 20.0f;
+    float m_mouseSensitivity = 0.1f;
 
-    glm::vec3 pos;
-    glm::vec3 front;
-    glm::vec3 right;
-    glm::vec3 up;
+    glm::vec3 m_pos;
+    glm::vec3 m_front;
+    glm::vec3 m_right;
+    glm::vec3 m_up;
 
-    glm::mat4 viewMat;
-    glm::mat4 rotateMat;
+    glm::mat4 m_viewMat;
+    glm::mat4 m_rotateMat;
 
-    glm::vec3 viewFront;
-    glm::vec3 viewRight;
-    glm::vec3 viewUp;
+    glm::vec3 m_viewFront;
+    glm::vec3 m_viewRight;
+    glm::vec3 m_viewUp;
 
-    float yaw = 0;
-    float pitch = 0;
-    float roll = 0;
+    float m_yaw = 0;
+    float m_pitch = 0;
+    float m_roll = 0;
 
-    bool dirty = true;
+    bool m_dirty = true;
+    bool m_dirtyFrustum = true;
 };
 

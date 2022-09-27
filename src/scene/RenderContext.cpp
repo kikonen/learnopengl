@@ -26,9 +26,10 @@ RenderContext::RenderContext(
 {
     viewMatrix = camera.getView();
 
+    aspectRatio = (float)width / (float)height;
     projectionMatrix = glm::perspective(
         glm::radians((float)camera.getZoom()),
-        (float)width / (float)height,
+        aspectRatio,
         assets.nearPlane,
         assets.farPlane);
 
@@ -37,6 +38,8 @@ RenderContext::RenderContext(
     for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
         clipPlanes.clipping[i].enabled = false;
     }
+
+    updateFrustum();
 }
 
 void RenderContext::bindGlobal() const
@@ -148,7 +151,46 @@ void RenderContext::bindLightsUBO() const
     glNamedBufferSubData(scene->ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);
 }
 
-void RenderContext::bind(Shader* shader) const
+void RenderContext::updateFrustum()
 {
+    // TODO KI https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
+    // https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/entity.h
 
+    const float fovY = glm::radians(camera.getZoom());
+    const glm::vec3& pos = camera.getPos();
+    const glm::vec3& front = camera.getViewFront();
+    const glm::vec3& up = camera.getViewUp();
+    const glm::vec3& right = camera.getViewRight();
+
+    const float halfVSide = assets.farPlane * tanf(fovY * .5f);
+    const float halfHSide = halfVSide * aspectRatio;
+    const glm::vec3 frontMultFar = assets.farPlane * front;
+
+    // NOTE KI near and far plane don't have camee pos as "point in plane"
+    // NOTE KI other side HAVE camra pos as "point in plane"
+
+    frustum.nearFace = {
+        pos + assets.nearPlane * front,
+        front };
+
+    frustum.farFace = {
+        pos + frontMultFar,
+        -front };
+
+    frustum.rightFace = {
+        pos,
+        glm::cross(up, frontMultFar + right * halfHSide) };
+
+    frustum.leftFace = {
+        pos,
+        glm::cross(frontMultFar - right * halfHSide, up) };
+
+    frustum.topFace = {
+        pos,
+        glm::cross(right, frontMultFar - up * halfVSide) };
+
+    frustum.bottomFace = {
+        pos,
+        glm::cross(frontMultFar + up * halfVSide, right) };
 }
+

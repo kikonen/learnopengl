@@ -11,6 +11,8 @@
 
 
 namespace {
+    const auto BASE_MAT_1 = glm::mat4(1.0f);
+
     int objectIDbase = 100;
 
     std::mutex object_id_lock;
@@ -58,90 +60,103 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch)
     if (type->flags.mirror) {
         int x = 0;
     }
-    batch.add(modelMat, normalMat, objectID);
+    batch.add(m_modelMat, m_normalMat, objectID);
 }
 
 void Node::draw(const RenderContext& ctx)
 {
     // NOTE KI shader side supports *ONLY* instanced rendering
-    singleBatch.batchSize = 1;
-    singleBatch.prepare(type.get());
+    m_singleBatch.batchSize = 1;
+    m_singleBatch.prepare(type.get());
 
-    singleBatch.draw(ctx, this, type->boundShader);
+    m_singleBatch.draw(ctx, this, type->boundShader);
     //type->mesh->draw(ctx);
 }
 
 void Node::updateModelMatrix() {
-    bool dirtyModel = dirtyRot || dirtyTrans || dirtyScale;
+    bool dirtyModel = m_dirtyRot || m_dirtyTrans || m_dirtyScale;
 
     if (!dirtyModel) {
         return;
     }
 
-
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    if (dirtyRot) {
-        rotMat = glm::toMat4(glm::quat(glm::radians(rotation)));
-        dirtyRot = false;
+    if (m_dirtyRot) {
+        m_rotMat = glm::toMat4(glm::quat(glm::radians(m_rotation)));
+        m_dirtyRot = false;
     }
 
-    if (dirtyTrans) {
-        transMat = glm::translate(
-            glm::mat4(1.0f),
-            pos
+    if (m_dirtyTrans) {
+        m_transMat = glm::translate(
+            BASE_MAT_1,
+            m_pos
         );
-        dirtyTrans = false;
+        m_dirtyTrans = false;
     }
 
-    if (dirtyScale) {
-        scaleMat = glm::scale(
-            glm::mat4(1.0f),
-            scale
+    if (m_dirtyScale) {
+        m_scaleMat = glm::scale(
+            BASE_MAT_1,
+            m_scale
         );
-        dirtyScale = false;
+        m_dirtyScale = false;
     }
 
     if (dirtyModel) {
-        modelMat = transMat * rotMat * scaleMat;
+        m_modelMat = m_transMat * m_rotMat * m_scaleMat;
 
         // https://learnopengl.com/Lighting/Basic-Lighting
         // http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
         // normal = mat3(transpose(inverse(model))) * aNormal;
-        normalMat = glm::transpose(glm::inverse(glm::mat3(modelMat)));
+        m_normalMat = glm::transpose(glm::inverse(glm::mat3(m_modelMat)));
     }
 }
 
 void Node::setPos(const glm::vec3& pos) {
-    this->pos = pos;
-    dirtyTrans = true;
+    m_pos = pos;
+    m_dirtyTrans = true;
+    m_dirtyVolume = true;
 }
 
 const glm::vec3&  const Node::getPos() {
-    return pos;
+    return m_pos;
 }
 
 void Node::setRotation(const glm::vec3& rotation) {
-    this->rotation = rotation;
-    dirtyRot = true;
+    m_rotation = rotation;
+    m_dirtyRot = true;
 }
 
 const glm::vec3&  Node::getRotation() {
-    return rotation;
+    return m_rotation;
 }
 
 void Node::setScale(float scale) {
-    this->scale.x = scale;
-    this->scale.y = scale;
-    this->scale.z = scale;
-    dirtyScale = true;
+    m_scale.x = scale;
+    m_scale.y = scale;
+    m_scale.z = scale;
+    m_dirtyScale = true;
+    m_dirtyVolume = true;
 }
 
 void Node::setScale(const glm::vec3& scale)
 {
-    this->scale = scale;
-    dirtyScale = true;
+    m_scale = scale;
+    m_dirtyScale = true;
+    m_dirtyVolume = true;
 }
 
 const glm::vec3& Node::getScale() {
-    return scale;
+    return m_scale;
+}
+
+const glm::mat4& Node::getModelMatrix()
+{
+    updateModelMatrix();
+    return m_modelMat;
+}
+
+const Volume* Node::getVolume()
+{
+    return type->mesh->volume.get();
 }

@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <stduuid/uuid.h>
 
+#include "asset/Sphere.h"
 #include "component/ParticleGenerator.h"
 #include "scene/NodeType.h"
 #include "scene/RenderContext.h"
@@ -36,6 +37,9 @@ public:
     void setScale(const glm::vec3& scale);
     const glm::vec3& getScale();
 
+    const glm::mat4& getModelMatrix();
+    const Volume* getVolume();
+
     static int nextID();
 
 protected:
@@ -64,22 +68,23 @@ public:
     std::unique_ptr<ParticleGenerator> particleGenerator{ nullptr };
 
 private:
-    glm::vec3 pos{ 0.0f, 0.0f, 0.0f };
-    glm::vec3 rotation{ 0.0f, 0.0f, 0.0f };
+    glm::vec3 m_pos{ 0.0f, 0.0f, 0.0f };
+    glm::vec3 m_rotation{ 0.0f, 0.0f, 0.0f };
 
-    glm::vec3 scale{ 1.f, 1.f, 1.f };
+    glm::vec3 m_scale{ 1.f, 1.f, 1.f };
 
-    glm::mat4 modelMat{ 1.0 };
-    glm::mat3 normalMat{ 1.0 };
+    glm::mat4 m_modelMat{ 1.0 };
+    glm::mat3 m_normalMat{ 1.0 };
 
-    glm::mat4 rotMat{ 0 };
-    glm::mat4 transMat{ 0 };
-    glm::mat4 scaleMat{ 0 };
+    glm::mat4 m_rotMat{ 0 };
+    glm::mat4 m_transMat{ 0 };
+    glm::mat4 m_scaleMat{ 0 };
 
-    bool dirtyRot = true;
-    bool dirtyTrans = true;
-    bool dirtyScale = true;
+    bool m_dirtyRot = true;
+    bool m_dirtyTrans = true;
+    bool m_dirtyScale = true;
+    bool m_dirtyVolume = true;
 
-    Batch singleBatch;
+    Batch m_singleBatch;
 };
 

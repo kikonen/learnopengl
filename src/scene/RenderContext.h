@@ -30,15 +30,24 @@ public:
     void bindLightsUBO() const;
 
     void bind(Shader* shader) const;
+
+private:
+    void updateFrustum();
+    void updateFrustumNOPE();
+
 public:
     const Assets& assets;
 
     const RenderClock& clock;
 
+    Frustum frustum;
+
     GLState& state;
 
     const int width;
     const int height;
+
+    float aspectRatio;
 
     Scene* scene{ nullptr };
     Camera& camera;
@@ -46,6 +55,9 @@ public:
     glm::mat4 viewMatrix;
     glm::mat4 projectionMatrix;
     glm::mat4 projectedMatrix;
+
+    mutable int drawCount = 0;
+    mutable int skipCount = 0;
 
     mutable glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 

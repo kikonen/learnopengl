@@ -10,16 +10,16 @@ const float MAX_ZOOM = 45.0f;
 
 Camera::Camera(const glm::vec3& aPos, const glm::vec3 aFront, const glm::vec3 aUp)
 {
-    pos = aPos;
+    m_pos = aPos;
 
     // Default: look to Z direction
-    front = glm::normalize(aFront);
-    up = glm::normalize(aUp);
-    right = glm::normalize(glm::cross(front, up));
+    m_front = glm::normalize(aFront);
+    m_up = glm::normalize(aUp);
+    m_right = glm::normalize(glm::cross(m_front, m_up));
 
-    rotateMat = glm::mat4(1.0f);
+    m_rotateMat = glm::mat4(1.0f);
 
-    dirty = true;
+    m_dirty = true;
 }
 
 Camera::~Camera()
@@ -28,94 +28,93 @@ Camera::~Camera()
 
 const glm::mat4& Camera::getView()
 {
-    if (!dirty) return viewMat;
+    if (!m_dirty) return m_viewMat;
 
     updateCamera();
-    viewMat = glm::lookAt(
-        pos,
-        pos + viewFront,
-        viewUp);
-    return viewMat;
+    m_viewMat = glm::lookAt(
+        m_pos,
+        m_pos + m_viewFront,
+        m_viewUp);
+    return m_viewMat;
 }
 
 const glm::vec3& Camera::getViewFront()
 {
-    if (dirty) updateCamera();
-    return viewFront;
+    if (m_dirty) updateCamera();
+    return m_viewFront;
 }
 
 const glm::vec3& Camera::getViewRight()
 {
-    if (dirty) updateCamera();
-    return viewRight;
+    if (m_dirty) updateCamera();
+    return m_viewRight;
 }
 
 const glm::vec3& Camera::getViewUp()
 {
-    if (dirty) updateCamera();
-    return viewUp;
+    if (m_dirty) updateCamera();
+    return m_viewUp;
 }
-
 
 const glm::vec3& Camera::getFront()
 {
-    return front;
+    return m_front;
 }
 
 const glm::vec3& Camera::getRight()
 {
-    return right;
+    return m_right;
 }
 
 const glm::vec3& Camera::getUp()
 {
-    return up;
+    return m_up;
 }
 
 double Camera::getZoom()
 {
-    return zoom;
+    return m_zoom;
 }
 
-void Camera::setZoom(double aZoom)
+void Camera::setZoom(double zoom)
 {
-    updateZoom(aZoom);
+    updateZoom(zoom);
 }
 
 void Camera::setPos(const glm::vec3& pos) {
-    if (this->pos != pos) {
-        this->pos = pos;
-        dirty = true;
+    if (m_pos != pos) {
+        m_pos = pos;
+        m_dirty = true;
     }
 }
 
 const glm::vec3& Camera::getPos() const {
-    return pos;
+    return m_pos;
 }
 
 void Camera::setRotation(const glm::vec3& rotation)
 {
-    if (yaw != rotation.y ||
-        pitch != rotation.x ||
-        roll != rotation.z)
+    if (m_yaw != rotation.y ||
+        m_pitch != rotation.x ||
+        m_roll != rotation.z)
     {
-        yaw = rotation.y;
-        pitch = rotation.x;
-        roll = rotation.z;
-        dirty = true;
+        m_yaw = rotation.y;
+        m_pitch = rotation.x;
+        m_roll = rotation.z;
+        m_dirty = true;
     }
 }
 
 const glm::vec3 Camera::getRotation()
 {
-    return glm::vec3(pitch, yaw, roll);
+    return glm::vec3(m_pitch, m_yaw, m_roll);
 }
 
 void Camera::onKey(Input* input, const RenderClock& clock)
 {
     float dt = clock.elapsedSecs;
-    float moveSize = moveStep;
-    float rotateSize = rotateStep;
+    float moveSize = m_moveStep;
+    float rotateSize = m_rotateStep;
     if (input->isModifierDown(Modifier::SHIFT)) {
         moveSize *= 2;
         rotateSize *= 2;
@@ -123,56 +122,56 @@ void Camera::onKey(Input* input, const RenderClock& clock)
 
     if (input->isKeyDown(Key::FORWARD)) {
         updateCamera();
-        this->pos += viewFront * dt * moveSize;
-        dirty = true;
+        m_pos += m_viewFront * dt * moveSize;
+        m_dirty = true;
     }
 
     if (input->isKeyDown(Key::BACKWARD)) {
         updateCamera();
-        this->pos -= viewFront * dt * moveSize;
-        dirty = true;
+        m_pos -= m_viewFront * dt * moveSize;
+        m_dirty = true;
     }
 
     if (input->isKeyDown(Key::LEFT)) {
         updateCamera();
-        this->pos -= viewRight * dt * moveSize;
-        dirty = true;
+        m_pos -= m_viewRight * dt * moveSize;
+        m_dirty = true;
     }
 
     if (input->isKeyDown(Key::RIGHT)) {
         updateCamera();
-        this->pos += viewRight * dt * moveSize;
-        dirty = true;
+        m_pos += m_viewRight * dt * moveSize;
+        m_dirty = true;
     }
 
     if (input->isKeyDown(Key::UP)) {
         updateCamera();
-        this->pos += viewUp * dt * moveSize;
-        dirty = true;
+        m_pos += m_viewUp * dt * moveSize;
+        m_dirty = true;
     }
 
     if (input->isKeyDown(Key::DOWN)) {
         updateCamera();
-        this->pos -= viewUp * dt * moveSize;
-        dirty = true;
+        m_pos -= m_viewUp * dt * moveSize;
+        m_dirty = true;
     }
 
     if (true) {
         if (input->isKeyDown(Key::ROTATE_LEFT)) {
-            yaw += rotateSize * dt;
-            dirty = true;
+            m_yaw += rotateSize * dt;
+            m_dirty = true;
         }
         if (input->isKeyDown(Key::ROTATE_RIGHT)) {
-            yaw -= rotateSize * dt;
-            dirty = true;
+            m_yaw -= rotateSize * dt;
+            m_dirty = true;
         }
     }
 
     if (input->isKeyDown(Key::ZOOM_IN)) {
-        updateZoom(zoom - zoomStep * dt);
+        updateZoom(m_zoom - m_zoomStep * dt);
     }
     if (input->isKeyDown(Key::ZOOM_OUT)) {
-        updateZoom(zoom + zoomStep * dt);
+        updateZoom(m_zoom + m_zoomStep * dt);
     }
 }
 
@@ -182,58 +181,56 @@ void Camera::onMouseMove(Input* input, double xoffset, double yoffset)
     const float MAX_ANGLE = 89.f;
 
     if (true) {
-        yaw -= mouseSensitivity * xoffset;
+        m_yaw -= m_mouseSensitivity * xoffset;
         changed = true;
     }
 
     if (true) {
-        pitch += mouseSensitivity * yoffset;
+        m_pitch += m_mouseSensitivity * yoffset;
         changed = true;
 
-        if (pitch < -MAX_ANGLE) {
-            pitch = -MAX_ANGLE;
+        if (m_pitch < -MAX_ANGLE) {
+            m_pitch = -MAX_ANGLE;
         }
-        if (pitch > MAX_ANGLE) {
-            pitch = MAX_ANGLE;
+        if (m_pitch > MAX_ANGLE) {
+            m_pitch = MAX_ANGLE;
         }
     }
 
     if (changed) {
-        dirty = true;
+        m_dirty = true;
     }
 }
 
 void Camera::onMouseScroll(Input* input, double xoffset, double yoffset)
 {
-    updateZoom(zoom - yoffset);
+    updateZoom(m_zoom - yoffset);
 }
 
-void Camera::updateZoom(double aZoom)
+void Camera::updateZoom(double zoom)
 {
-    if (aZoom < MIN_ZOOM) {
-        aZoom = MIN_ZOOM;
+    if (zoom < MIN_ZOOM) {
+        zoom = MIN_ZOOM;
     }
-    if (aZoom > MAX_ZOOM) {
-        aZoom = MAX_ZOOM;
+    if (zoom > MAX_ZOOM) {
+        zoom = MAX_ZOOM;
     }
-    if (aZoom != zoom) {
-        zoom = aZoom;
-        dirty = true;
+    if (m_zoom != zoom) {
+        m_zoom = zoom;
+        m_dirty = true;
     }
 }
 
 void Camera::updateCamera()
 {
-    if (!dirty) {
-        return;
-    }
-    dirty = false;
+    if (!m_dirty) return;
+    m_dirty = false;
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    rotateMat = glm::toMat4(glm::quat(glm::radians(glm::vec3(pitch, yaw, roll))));
+    m_rotateMat = glm::toMat4(glm::quat(glm::radians(glm::vec3(m_pitch, m_yaw, m_roll))));
 
     // NOTE KI glm::normalize for vec4 *IS* incorrect (4d len...)
-    viewFront = glm::normalize(glm::vec3(rotateMat * glm::vec4(front, 1.f)));
-    viewUp = glm::normalize(glm::vec3(rotateMat * glm::vec4(up, 1.f)));
-    viewRight = glm::normalize(glm::cross(viewFront, viewUp));
+    m_viewFront = glm::normalize(glm::vec3(m_rotateMat * glm::vec4(m_front, 1.f)));
+    m_viewUp = glm::normalize(glm::vec3(m_rotateMat * glm::vec4(m_up, 1.f)));
+    m_viewRight = glm::normalize(glm::cross(m_viewFront, m_viewUp));
 }
