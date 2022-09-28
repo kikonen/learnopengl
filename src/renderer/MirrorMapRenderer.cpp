@@ -87,7 +87,7 @@ void MirrorMapRenderer::render(
         camera.setZoom(ctx.camera.getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, curr->spec.width, curr->spec.height);
+        RenderContext localCtx("MIRROR", ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, curr->spec.width, curr->spec.height);
         localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];

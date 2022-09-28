@@ -107,6 +107,9 @@ void AssetsFile::loadAssets(
         else if (k == "clear_color") {
             data.clearColor = v.as<bool>();
         }
+        else if (k == "debug_frustum") {
+            data.debugFrustum = v.as<bool>();
+        }
         else if (k == "water_tile_size") {
             data.waterTileSize = v.as<int>();
         }

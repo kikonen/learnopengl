@@ -97,7 +97,7 @@ void WaterMapRenderer::render(
         camera.setZoom(ctx.camera.getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
+        RenderContext localCtx("WATER_REFLECT", ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
         localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
@@ -123,7 +123,7 @@ void WaterMapRenderer::render(
         camera.setZoom(ctx.camera.getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, refractionBuffer->spec.width, refractionBuffer->spec.height);
+        RenderContext localCtx("WATER_REFRACT", ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, refractionBuffer->spec.width, refractionBuffer->spec.height);
         localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];

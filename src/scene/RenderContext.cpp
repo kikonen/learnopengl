@@ -9,6 +9,7 @@
 
 
 RenderContext::RenderContext(
+    const std::string& name,
     const Assets& assets,
     const RenderClock& clock,
     GLState& state,
@@ -16,7 +17,8 @@ RenderContext::RenderContext(
     Camera& camera,
     int width,
     int height)
-    : assets(assets),
+    : name(name),
+    assets(assets),
     clock(clock),
     state(state),
     scene(scene),
@@ -40,6 +42,12 @@ RenderContext::RenderContext(
     }
 
     updateFrustum();
+}
+
+RenderContext::~RenderContext()
+{
+    if (assets.debugFrustum)
+        KI_INFO_SB(name << ": draw: " << drawCount << " skip: " << skipCount);
 }
 
 void RenderContext::bindGlobal() const

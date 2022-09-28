@@ -44,6 +44,8 @@ public:
     bool debugClearColor;
     int clearColor;
 
+    bool debugFrustum;
+
     int waterTileSize;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user

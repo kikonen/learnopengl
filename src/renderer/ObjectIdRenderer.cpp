@@ -114,7 +114,7 @@ void ObjectIdRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry)
 {
-    RenderContext idCtx(ctx.assets, ctx.clock, ctx.state, ctx.scene, ctx.camera, idBuffer->spec.width, idBuffer->spec.height);
+    RenderContext idCtx("OBJECT_ID", ctx.assets, ctx.clock, ctx.state, ctx.scene, ctx.camera, idBuffer->spec.width, idBuffer->spec.height);
     idCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
     idBuffer->bind(idCtx);

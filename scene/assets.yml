@@ -31,6 +31,8 @@ assets:
   debug_clear_color: true
   clear_color: true
 
+  debug_frustum: false
+
   water_tile_size: 100
   water_draw_skip: 1
 

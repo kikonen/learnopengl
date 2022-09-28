@@ -14,6 +14,7 @@ class RenderContext final
 {
 public:
     RenderContext(
+        const std::string& name,
         const Assets& assets,
         const RenderClock& clock,
         GLState& state,
@@ -21,6 +22,8 @@ public:
         Camera& camera,
         int width,
         int height);
+
+    ~RenderContext();
 
     void bindGlobal() const;
     void bindUBOs() const;
@@ -36,6 +39,8 @@ private:
     void updateFrustumNOPE();
 
 public:
+    const std::string name;
+
     const Assets& assets;
 
     const RenderClock& clock;
