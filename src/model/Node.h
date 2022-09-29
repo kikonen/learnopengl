@@ -46,7 +46,7 @@ protected:
     virtual void updateModelMatrix();
 
 public:
-    // *INTERNAL* locally unique ID in scene
+    // *INTERNAL* relatively unique ID in scene
     // used for object identity in shader
     const int objectID;
 

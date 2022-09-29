@@ -289,11 +289,11 @@ unsigned int MeshLoader::resolveVertexIndex(
         material->objectID);
 
     {
-        const auto& oldEntry = vertexMapping.find(&pos);
-        if (oldEntry != vertexMapping.end()) {
-            const auto& old = vertices[oldEntry->second];
+        const auto& it = vertexMapping.find(&pos);
+        if (it != vertexMapping.end()) {
+            const auto& old = vertices[it->second];
             if (old == v) {
-                return oldEntry->second;
+                return it->second;
             }
         }
     }

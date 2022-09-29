@@ -37,8 +37,8 @@ NodeRegistry::~NodeRegistry()
     for (auto& all : allNodes) {
         for (auto& [type, nodes] : all.second) {
             KI_INFO_SB("NODE_REGISTRY: delete " << type->typeID);
-            for (auto& n : nodes) {
-                delete n;
+            for (auto& node : nodes) {
+                delete node;
             }
         }
     }

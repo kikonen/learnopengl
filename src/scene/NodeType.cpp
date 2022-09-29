@@ -11,22 +11,17 @@ namespace {
     int typeIDbase = 0;
 
     std::mutex type_id_lock;
+
+    int nextID()
+    {
+        std::lock_guard<std::mutex> lock(type_id_lock);
+        return ++typeIDbase;
+    }
 }
 
-int NodeType::nextID()
-{
-    std::lock_guard<std::mutex> lock(type_id_lock);
-    return ++typeIDbase;
-}
 
-void NodeType::setBaseID(int baseId)
-{
-    std::lock_guard<std::mutex> lock(type_id_lock);
-    typeIDbase = baseId;
-}
-
-NodeType::NodeType(int typeID)
-    : typeID(typeID)
+NodeType::NodeType()
+    : typeID(nextID())
 {
 }
 

@@ -104,7 +104,6 @@ class SceneFile
     struct EntityData {
         bool valid{ false };
 
-        int typeId{ 0 };
         bool enabled{ false };
 
         EntityType type { EntityType::model };

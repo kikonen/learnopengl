@@ -43,6 +43,8 @@ int Batch::size()
 
 void Batch::prepare(NodeType* type)
 {
+    if (!type->mesh) return;
+
     if (staticBuffer) {
         batchSize = modelMatrices.size();
     }
@@ -166,6 +168,8 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 
 void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
 {
+    if (!node->type->mesh) return;
+
     //std::cout << node->type->mesh->modelName << '\n';
     const auto& volume = node->getVolume();
     if (volume && !volume->isOnFrustum(ctx.frustum, node->getModelMatrix())) {
@@ -190,8 +194,10 @@ void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
 
 void Batch::flush(const RenderContext& ctx, NodeType* type)
 {
+    if (!type->mesh) return;
+
     if (batchSize == 0 || modelMatrices.empty()) return;
-    
+
     if (!staticBuffer) {
         update(modelMatrices.size());
     }

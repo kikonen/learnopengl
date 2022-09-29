@@ -16,15 +16,13 @@ struct NodeRenderFlags {
     bool noShadow = false;
     bool batchMode = true;
     bool wireframe = false;
+    bool group = false;
 };
 
 class NodeType final
 {
 public:
-    static int nextID();
-    static void setBaseID(int baseId);
-
-    NodeType(int typeID);
+    NodeType();
     ~NodeType();
 
     bool hasReflection();
@@ -45,9 +43,11 @@ public:
     glm::vec4 mirrorPlane{ 0 };
 
     std::unique_ptr<Mesh> mesh{ nullptr };
+
     Shader* nodeShader{ nullptr };
     Shader* boundShader{ nullptr };
 
     Batch batch;
+
 private:
 };

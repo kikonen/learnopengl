@@ -4,7 +4,7 @@
 
 
 //Material Sprite::createMaterial(
-//    const Assets& assets, 
+//    const Assets& assets,
 //    const std::string& path,
 //    const std::string& normalMapPath)
 //{
@@ -21,7 +21,7 @@
 //}
 //
 //std::shared_ptr<NodeType> Sprite::getNodeType(
-//    const Assets& assets, 
+//    const Assets& assets,
 //    ShaderRegistry& shaders,
 //    const std::string& path,
 //    const std::string& normalMapPath)

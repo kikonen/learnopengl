@@ -51,8 +51,8 @@ void SceneFile::attach(
 {
     attachSkybox(scene, skybox, materials);
 
-    for (const auto& entry : entities) {
-        attachEntity(scene, entry.second, entities, materials);
+    for (const auto& it : entities) {
+        attachEntity(scene, it.second, entities, materials);
     }
 }
 
@@ -92,7 +92,7 @@ void SceneFile::attachEntity(
     asyncLoader->addLoader([this, scene, &data, parent]() {
         const Assets& assets = asyncLoader->assets;
 
-        auto type = std::make_shared<NodeType>(data.typeId);
+        auto type = std::make_shared<NodeType>();
         assignFlags(data, *type);
         {
             std::vector<std::string> definitions;
@@ -409,10 +409,6 @@ void SceneFile::loadEntity(
         }
         else if (k == "id") {
             data.id = uuids::uuid::from_string(v.as<std::string>()).value();
-        }
-        else if (k == "type_id") {
-            //data.typeId = v.as<int>();
-            data.typeId = NodeType::nextID();
         }
         else if (k == "parent_id") {
             data.parentId = uuids::uuid::from_string(v.as<std::string>()).value();

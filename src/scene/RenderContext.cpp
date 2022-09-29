@@ -5,7 +5,9 @@
 
 #include "ki/GL.h"
 #include "component/Light.h"
+
 #include "scene/Scene.h"
+#include "scene/NodeRegistry.h"
 
 
 RenderContext::RenderContext(
@@ -22,6 +24,7 @@ RenderContext::RenderContext(
     clock(clock),
     state(state),
     scene(scene),
+    registry(scene->registry),
     camera(camera),
     width(width),
     height(height)
@@ -114,12 +117,8 @@ void RenderContext::bindLightsUBO() const
         int index = 0;
         for (auto& node : scene->registry.pointLights) {
             if (!useLight) continue;
-            if (index >= LIGHT_COUNT) {
-                break;
-            }
-            if (!node->light->use) {
-                continue;
-            }
+            if (index >= LIGHT_COUNT) break;
+            if (!node->light->enabled) continue;
 
             lightsUbo.pointLights[index] = node->light->toPointightUBO();
             //lights.pointLights[index].use = false;
@@ -137,12 +136,8 @@ void RenderContext::bindLightsUBO() const
         int index = 0;
         for (auto& node : scene->registry.spotLights) {
             if (!useLight) continue;
-            if (index >= LIGHT_COUNT) {
-                break;
-            }
-            if (!node->light->use) {
-                continue;
-            }
+            if (index >= LIGHT_COUNT) break;
+            if (!node->light->enabled) continue;
 
             lightsUbo.spotLights[index] = node->light->toSpotLightUBO();
             //lights.spotLights[index].use = false;
