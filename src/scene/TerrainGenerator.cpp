@@ -11,8 +11,8 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     const Assets& assets,
     const Material& material)
 {
-    auto mesh = std::make_unique<ModelMesh>("terrain");
-    mesh->materials.push_back(material);
+    auto mesh = std::make_unique<ModelMesh>("Terrain", "terrain");
+    mesh->m_materials.push_back(material);
 
     Perlin perlin(-1);
 
@@ -20,7 +20,7 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
 
     const int VERTEX_COUNT = assets.terrainVertexCount;
 
-    mesh->vertices.reserve(VERTEX_COUNT * VERTEX_COUNT);
+    mesh->m_vertices.reserve(VERTEX_COUNT * VERTEX_COUNT);
     for (int z = 0; z < VERTEX_COUNT; z++) {
         float gz = (z / ((float)VERTEX_COUNT - 1)) * tileSize;
         float tz = (z / ((float)VERTEX_COUNT - 1));
@@ -34,7 +34,7 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
             glm::vec2 texture{ tx, tz };
             glm::vec3 normal{ 0.f, 1.f, 0.f };
 
-            mesh->vertices.emplace_back(
+            mesh->m_vertices.emplace_back(
                 pos,
                 texture,
                 normal,
@@ -44,7 +44,7 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
         }
     }
 
-    mesh->tris.reserve(VERTEX_COUNT * VERTEX_COUNT * 2);
+    mesh->m_tris.reserve(VERTEX_COUNT * VERTEX_COUNT * 2);
     for (int z = 0; z < VERTEX_COUNT - 1; z++) {
         for (int x = 0; x < VERTEX_COUNT - 1; x++) {
             int topLeft = (z * VERTEX_COUNT) + x;
@@ -55,8 +55,8 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
             //Tri* tri1 = new Tri(glm::uvec3(topLeft, bottomLeft, topRight));
             //Tri* tri2 = new Tri(glm::uvec3(topRight, bottomLeft, bottomRight));
 
-            mesh->tris.emplace_back(topLeft, bottomLeft, topRight);
-            mesh->tris.emplace_back(topRight, bottomLeft, bottomRight);
+            mesh->m_tris.emplace_back(topLeft, bottomLeft, topRight);
+            mesh->m_tris.emplace_back(topRight, bottomLeft, bottomRight);
         }
     }
 
@@ -67,8 +67,8 @@ std::unique_ptr<QuadMesh> TerrainGenerator::generateWater(
     const Assets& assets,
     const Material& material)
 {
-    auto mesh = std::make_unique<QuadMesh>("water");
-    mesh->material = material;
+    auto mesh = std::make_unique<QuadMesh>("Water");
+    mesh->m_material = material;
 
     return mesh;
 }

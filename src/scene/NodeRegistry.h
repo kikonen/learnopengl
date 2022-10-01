@@ -9,6 +9,7 @@
 
 #include "NodeType.h"
 
+#include "model/Group.h"
 #include "model/Node.h"
 #include "model/Viewport.h"
 
@@ -24,6 +25,8 @@ struct ShaderKey {
     }
 };
 
+using GroupVector = std::vector<Group*>;
+
 using NodeVector = std::vector<Node*>;
 using NodeTypeMap = std::map<NodeType*, NodeVector>;
 using ShaderTypeMap = std::map<const ShaderKey, NodeTypeMap>;
@@ -37,29 +40,38 @@ public:
 
     ~NodeRegistry();
 
+    void addGroup(Group* group);
+
     void addNode(Node* node);
 
     // @return node null if not found
-    Node* getNode(int objectID);
+    Node* const getNode(const int objectID);
 
     // @return node null if not found
-    Node* getNode(const uuids::uuid& id);
+    Node* const getNode(const uuids::uuid& id);
 
-    void selectNodeById(int objectID, bool append);
+    void const selectNodeByObjectId(int objectID, bool append);
 
     void addViewPort(std::shared_ptr<Viewport> viewport);
 
     void attachNodes();
 
-    int countSelected() const;
+    int const countSelected() const;
+
+    Node* const getParent(const Node& node);
+    NodeVector* const getChildren(const Node& node);
+
 private:
+    void bindNode(Node* node);
+    bool bindParent(Node* child);
+    void bindChildren(Node* parent);
 
 public:
     const Assets& assets;
     Scene& scene;
 
-    std::map<int, Node*> idToNode;
-    std::map<uuids::uuid, Node*> uuidToNode;
+    std::map<int, Node*> objectIdToNode;
+    std::map<uuids::uuid, Node*> idToNode;
 
     ShaderTypeMap allNodes;
     ShaderTypeMap solidNodes;
@@ -74,9 +86,16 @@ public:
     NodeVector pointLights;
     NodeVector spotLights;
 
+    GroupVector groups;
+
 private:
     std::mutex load_lock;
     std::condition_variable waitCondition;
+
+    std::map<uuids::uuid, NodeVector> pendingChildren;
+
+    std::map<int, Node*> childToParent;
+    std::map<int, NodeVector> parentToChildren;
 
     NodeVector pendingNodes;
 

@@ -6,6 +6,9 @@ ParticleSystem::ParticleSystem()
 
 void ParticleSystem::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     particleShader = shaders.getShader(assets, TEX_TEXTURE);
     particleShader->prepare(assets);
 }

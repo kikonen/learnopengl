@@ -32,57 +32,65 @@ namespace {
 }
 
 
-QuadMesh::QuadMesh(const std::string& modelName)
-    : Mesh(modelName)
+QuadMesh::QuadMesh(const std::string& name)
+    : Mesh(name)
 {
     // NOTE KI sphere containing quad is not 1
-    volume = std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, sqrt(2));
+    m_volume = std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, sqrt(2));
 }
 
 QuadMesh::~QuadMesh()
 {
 }
 
+std::string QuadMesh::str()
+{
+    return "<QUAD_MESH: " + m_name + ">";
+}
+
 bool QuadMesh::hasReflection()
 {
-    return material.reflection;
+    return m_material.reflection;
 }
 
 bool QuadMesh::hasRefraction()
 {
-    return material.refraction;
+    return m_material.refraction;
 }
 
 Material* QuadMesh::findMaterial(std::function<bool(const Material&)> fn)
 {
-    if (fn(material)) return &material;
+    if (fn(m_material)) return &m_material;
     return nullptr;
 }
 
 void QuadMesh::modifyMaterials(std::function<void(Material&)> fn)
 {
-    fn(material);
+    fn(m_material);
 }
 
 void QuadMesh::prepare(const Assets& assets)
 {
-    buffers.prepare(false);
-    prepareBuffers(buffers);
+    if (m_prepared) return;
+    m_prepared = true;
 
-    material.prepare(assets);
-    for (const auto& t : material.textures) {
+    m_buffers.prepare(false);
+    prepareBuffers(m_buffers);
+
+    m_material.prepare(assets);
+    for (const auto& t : m_material.textures) {
         if (!t.texture) continue;
-        textureIDs.push_back(t.texture->textureID);
+        m_textureIDs.push_back(t.texture->textureID);
     }
 
     // materials
     {
         MaterialsUBOSingle materialsUbo{};
-        materialsUbo.materials[0] = material.toUBO();
-        materialsUboSize = sizeof(materialsUbo);
+        materialsUbo.materials[0] = m_material.toUBO();
+        m_materialsUboSize = sizeof(materialsUbo);
 
-        glCreateBuffers(1, &materialsUboId);
-        glNamedBufferStorage(materialsUboId, materialsUboSize, &materialsUbo, 0);
+        glCreateBuffers(1, &m_materialsUboId);
+        glNamedBufferStorage(m_materialsUboId, m_materialsUboSize, &materialsUbo, 0);
     }
 }
 
@@ -169,14 +177,14 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
 
 void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
 {
-    glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize);
+    glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
 
-    glBindVertexArray(buffers.VAO);
+    glBindVertexArray(m_buffers.VAO);
 
-    material.bindArray(shader, 0, false);
+    m_material.bindArray(shader, 0, false);
 
-    if (!textureIDs.empty()) {
-        glBindTextures(0, textureIDs.size(), &textureIDs[0]);
+    if (!m_textureIDs.empty()) {
+        glBindTextures(0, m_textureIDs.size(), &m_textureIDs[0]);
     }
 }
 

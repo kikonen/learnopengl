@@ -78,19 +78,12 @@ void SceneFile::attachEntity(
         return;
     }
 
-    EntityData parent;
-    if (!data.parentId.is_nil()) {
-        const auto& entry = entities.find(data.parentId);
-        if (entry != entities.end()) {
-            auto& e = entry->second;
-            parent = e;
-        }
-    }
-
-    //auto asyncLoader = this->asyncLoader;
-
-    asyncLoader->addLoader([this, scene, &data, parent]() {
+    asyncLoader->addLoader([this, scene, &data]() {
         const Assets& assets = asyncLoader->assets;
+
+        // NOTE KI if repeated then create transparent owner node for children
+        const auto& repeat = data.repeat;
+        const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1 || data.positions.size() > 1;
 
         auto type = std::make_shared<NodeType>();
         assignFlags(data, *type);
@@ -118,7 +111,7 @@ void SceneFile::attachEntity(
         }
 
         if (data.type == EntityType::model) {
-            MeshLoader meshLoader(assets, data.modelName, data.modelPath);
+            MeshLoader meshLoader(assets, data.name, data.meshName, data.meshPath);
 
             if (material) {
                 meshLoader.defaultMaterial = *material;
@@ -127,15 +120,15 @@ void SceneFile::attachEntity(
             meshLoader.loadTextures = data.loadTextures;
 
             auto mesh = meshLoader.load();
-            KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << mesh->modelName);
+            KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << mesh->str());
             type->mesh.reset(mesh.release());
         }
         else if (data.type == EntityType::quad) {
             auto mesh = std::make_unique<QuadMesh>(data.name);
             if (material) {
-                mesh->material = *material;
+                mesh->m_material = *material;
                 if (data.loadTextures) {
-                    mesh->material.loadTextures(assets);
+                    mesh->m_material.loadTextures(assets);
                 }
             }
             type->mesh.reset(mesh.release());
@@ -144,9 +137,9 @@ void SceneFile::attachEntity(
             // NOTE KI sprite *shall* differ from quad later on
             auto mesh = std::make_unique<QuadMesh>(data.name);
             if (material) {
-                mesh->material = *material;
+                mesh->m_material = *material;
                 if (data.loadTextures) {
-                    mesh->material.loadTextures(assets);
+                    mesh->m_material.loadTextures(assets);
                 }
             }
             type->mesh.reset(mesh.release());
@@ -180,42 +173,65 @@ void SceneFile::attachEntity(
             }
          });
 
-        const auto& repeat = data.repeat;
+        Group* group = nullptr;
+        if (grouped) {
+            group = new Group();
+            group->id = data.id;
+            scene->registry.addGroup(group);
+        }
+
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
-                    for (const auto& p : data.positions) {
-                        glm::vec3 pos = p;
-                        // TODO KI let parent handling be problem of Scene Render logic
-                        //  => i.e. that is what in reality need to do anyway
-                        if (parent.valid) {
-                            pos += parent.positions[0];
-                        }
-                        pos += glm::vec3{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
-
-                        auto node = new Node(type);
-                        node->id = data.id;
-                        node->parentId = data.parentId;
-
-                        node->setPos(pos + assets.groundOffset);
-                        node->setRotation(data.rotation);
-                        node->setScale(data.scale);
-
-                        node->selected = data.selected;
-
-                        if (data.camera.enabled)    
-                            node->camera = createCamera(data, data.camera);
-                        if (data.light.enabled)
-                            node->light = createLight(data, data.light);
-                        if (data.controller.enabled)
-                            node->controller = createController(data, data.controller);
-
+                    for (const auto& initialPos : data.positions) {
+                        const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
+                        auto node = createNode(group, data, type, initialPos, posAdjustment);
                         scene->registry.addNode(node);
                     }
                 }
             }
         }
      });
+}
+
+Node* SceneFile::createNode(
+    const Group* group,
+    const EntityData& data,
+    const std::shared_ptr<NodeType>& type,
+    const glm::vec3& initialPos,
+    const glm::vec3& posAdjustment)
+{
+    auto node = new Node(type);
+
+    glm::vec3 pos = initialPos + posAdjustment;
+
+    if (group) {
+        node->groupId = group->id;
+    } else {
+        node->id = data.id;
+    }
+
+    if (data.parentId.is_nil()) {
+        pos += assets.groundOffset;
+    }
+    else {
+        node->parentId = data.parentId;
+    }
+
+    node->setPos(pos);
+    node->setRotation(data.rotation);
+    node->setScale(data.scale);
+
+    node->selected = data.selected;
+
+    if (data.camera.enabled)
+        node->camera = createCamera(data, data.camera);
+    if (data.light.enabled)
+        node->light = createLight(data, data.light);
+    if (data.controller.enabled)
+        node->controller = createController(data, data.controller);
+
+    return node;
 }
 
 void SceneFile::assignFlags(
@@ -301,18 +317,30 @@ std::unique_ptr<Light> SceneFile::createLight(
     const LightData& data)
 {
     if (!data.enabled) return std::unique_ptr<Light>();
+    //return std::unique_ptr<Light>();
+
+    std::unique_ptr<Light> light = std::unique_ptr<Light>();
+
+    light->setPos(data.pos);
+    light->setWorldTarget(data.worldTarget + assets.groundOffset);
+
+    light->ambient = data.ambient;
+    light->diffuse = data.diffuse;
+    light->specular = data.specular;
 
     switch (data.type) {
     case LightType::directional:
-        //return std::unique_ptr<CameraController>();
-        return std::unique_ptr<Light>();
+        light->directional = true;
+        break;
     case LightType::point:
-        return std::unique_ptr<Light>();
+        light->point= true;
+        break;
     case LightType::spot:
-        return std::unique_ptr<Light>();
+        light->spot = true;
+        break;
     }
 
-    return std::unique_ptr<Light>();
+    return light;
 }
 
 std::unique_ptr<NodeController> SceneFile::createController(
@@ -329,6 +357,10 @@ std::unique_ptr<NodeController> SceneFile::createController(
         case ControllerType::path: {
             auto path = std::make_unique<NodePathController>(1);
             return path;
+        }
+        case ControllerType::moving_light: {
+            auto light = std::make_unique<MovingLightController>(data.center, data.radius, data.speed);
+            return light;
         }
     }
 
@@ -408,18 +440,20 @@ void SceneFile::loadEntity(
             data.desc = v.as<std::string>();
         }
         else if (k == "id") {
-            data.id = uuids::uuid::from_string(v.as<std::string>()).value();
+            data.id_str = v.as<std::string>();
+            data.id = KI_UUID(data.id_str);
         }
         else if (k == "parent_id") {
-            data.parentId = uuids::uuid::from_string(v.as<std::string>()).value();
+            data.parentId_str = v.as<std::string>();
+            data.parentId = uuids::uuid::from_string(data.parentId_str).value();
         }
         else if (k == "model") {
             if (v.Type() == YAML::NodeType::Sequence) {
-                data.modelName = v[0].as<std::string>();
-                data.modelPath = v[1].as<std::string>();
+                data.meshName = v[0].as<std::string>();
+                data.meshPath = v[1].as<std::string>();
             }
             else {
-                data.modelName = v.as<std::string>();
+                data.meshName = v.as<std::string>();
             }
         }
         else if (k == "shader") {
@@ -608,17 +642,17 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
         else if (k == "pos") {
             data.pos = readVec3(v);
         }
-        else if (k == "target") {
-            data.target = readVec3(v);
+        else if (k == "world_target") {
+            data.worldTarget = readVec3(v);
         }
         else if (k == "ambient") {
-            data.ambient = readVec3(v);
+            data.ambient = readRGBA(v);
         }
         else if (k == "diffuse") {
-            data.diffuse = readVec3(v);
+            data.diffuse = readRGBA(v);
         }
         else if (k == "specular") {
-            data.specular = readVec3(v);
+            data.specular = readRGBA(v);
         }
         else {
             std::cout << "UNKNOWN CONTROLLER_ENTRY: " << k << "=" << v << "\n";

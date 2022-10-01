@@ -21,7 +21,7 @@ private:
 
     void setupNodeActive();
 
-    void setupNodePlanet();
+    void setupRockLight();
     void setupNodeAsteroidBelt();
 
     void setupSpriteSkeleton();

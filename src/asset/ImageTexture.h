@@ -15,13 +15,12 @@ public:
 
     void prepare(const Assets& assets) override;
 
-    bool isValid() { return valid; }
+    bool isValid() { return m_valid; }
 private:
     void load();
 
 private:
-    bool valid = false;
-    bool prepared = false;
+    bool m_valid = false;
 
     std::unique_ptr<Image> image;
 };

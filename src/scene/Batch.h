@@ -34,12 +34,14 @@ public:
     bool objectId = false;
 
 private:
-    std::vector<glm::mat4> modelMatrices;
-    std::vector<glm::mat3> normalMatrices;
-    std::vector<glm::vec4> objectIDs;
+    bool m_prepared = false;
 
-    unsigned int modelBuffer = 0;
-    unsigned int normalBuffer = 0;
-    unsigned int objectIDBuffer = 0;
+    std::vector<glm::mat4> m_modelMatrices;
+    std::vector<glm::mat3> m_normalMatrices;
+    std::vector<glm::vec4> m_objectIDs;
+
+    unsigned int m_modelBufferId = 0;
+    unsigned int m_normalBufferId = 0;
+    unsigned int m_objectIDBufferId = 0;
 };
 

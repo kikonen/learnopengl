@@ -173,6 +173,6 @@ public:
     unsigned int FBO = 0;
 
 protected:
-    bool prepared = false;
+    bool m_prepared = false;
 };
 

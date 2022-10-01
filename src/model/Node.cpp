@@ -9,6 +9,8 @@
 
 #include "controller/NodeController.h"
 
+#include "scene/NodeRegistry.h"
+
 
 namespace {
     const auto BASE_MAT_1 = glm::mat4(1.0f);
@@ -38,29 +40,50 @@ Node::~Node()
 
 void Node::prepare(const Assets& assets)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     if (controller) {
         controller->prepare(assets, *this);
     }
 }
 
-bool Node::update(const RenderContext& ctx)
+void Node::update(
+    const RenderContext& ctx,
+    Node* parent)
 {
-    if (!controller) return false;
-    return controller->update(ctx, *this);
+    //if (id == KI_UUID("7c90bc35-1a05-4755-b52a-1f8eea0bacfa")) KI_BREAK();
+
+    if (parent && parent->id == KI_UUID("7c90bc35-1a05-4755-b52a-1f8eea0bacfa"))
+        int x = 0;
+
+    updateModelMatrix(parent);
+
+    bool changed = true;
+    if (controller) {
+        changed = controller->update(ctx, *this, parent);
+    }
+
+    if (changed) 
+        updateModelMatrix(parent);
+
+    if (light) light->update(ctx, *this);
+
+    NodeVector* children = ctx.registry.getChildren(*this);
+    if (children) {
+        for (auto& child : *children) {
+            child->update(ctx, this);
+        }
+    }
 }
 
 void Node::bind(const RenderContext& ctx, Shader* shader)
 {
-    updateModelMatrix();
 }
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch)
 {
-    updateModelMatrix();
-    if (type->flags.mirror) {
-        int x = 0;
-    }
-    batch.add(m_modelMat, m_normalMat, objectID);
+    batch.add(m_worldModelMatrix, m_worldModelMatrix, objectID);
 }
 
 void Node::draw(const RenderContext& ctx)
@@ -73,29 +96,25 @@ void Node::draw(const RenderContext& ctx)
     //type->mesh->draw(ctx);
 }
 
-void Node::updateModelMatrix() {
-    bool dirtyModel = m_dirtyRot || m_dirtyTrans || m_dirtyScale;
-
-    if (!dirtyModel) {
-        return;
-    }
+void Node::updateModelMatrix(Node* parent) {
+    bool dirtyModel = m_dirtyRotation || m_dirtyTranslate || m_dirtyScale;
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    if (m_dirtyRot) {
-        m_rotMat = glm::toMat4(glm::quat(glm::radians(m_rotation)));
-        m_dirtyRot = false;
+    if (m_dirtyRotation) {
+        m_rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
+        m_dirtyRotation = false;
     }
 
-    if (m_dirtyTrans) {
-        m_transMat = glm::translate(
+    if (m_dirtyTranslate) {
+        m_translateMatrix = glm::translate(
             BASE_MAT_1,
             m_pos
         );
-        m_dirtyTrans = false;
+        m_dirtyTranslate = false;
     }
 
     if (m_dirtyScale) {
-        m_scaleMat = glm::scale(
+        m_scaleMatrix = glm::scale(
             BASE_MAT_1,
             m_scale
         );
@@ -103,19 +122,40 @@ void Node::updateModelMatrix() {
     }
 
     if (dirtyModel) {
-        m_modelMat = m_transMat * m_rotMat * m_scaleMat;
+        m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
 
         // https://learnopengl.com/Lighting/Basic-Lighting
         // http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
         // normal = mat3(transpose(inverse(model))) * aNormal;
-        m_normalMat = glm::transpose(glm::inverse(glm::mat3(m_modelMat)));
+        m_normalMatrix = glm::transpose(glm::inverse(glm::mat3(m_modelMatrix)));
+
+        m_modelMatrixNoScale = m_translateMatrix * m_rotationMatrix;
+        m_normalMatrixNoScale = glm::transpose(glm::inverse(glm::mat3(m_modelMatrixNoScale)));
     }
-}
+
+    // NOTE KI *NOT* knowing if parent is changed
+    // => thus have to ALWAYS recalculate
+    if (parent) {
+        m_worldModelMatrix = parent->m_worldModelMatrixNoScale * m_modelMatrix;
+        m_worldNormalMatrix = parent->m_worldNormalMatrixNoScale * m_normalMatrix;
+
+        m_worldModelMatrixNoScale = parent->m_worldModelMatrixNoScale * m_modelMatrixNoScale;
+        m_worldNormalMatrixNoScale = parent->m_worldNormalMatrixNoScale * m_normalMatrixNoScale;
+    }
+    else {
+        if (dirtyModel) {
+            m_worldModelMatrix = m_modelMatrix;
+            m_worldNormalMatrix = m_normalMatrix;
+
+            m_worldModelMatrixNoScale = m_modelMatrixNoScale;
+            m_worldNormalMatrixNoScale = m_normalMatrixNoScale;
+        }
+    }
+ }
 
 void Node::setPos(const glm::vec3& pos) {
     m_pos = pos;
-    m_dirtyTrans = true;
-    m_dirtyVolume = true;
+    m_dirtyTranslate = true;
 }
 
 const glm::vec3&  const Node::getPos() {
@@ -124,7 +164,7 @@ const glm::vec3&  const Node::getPos() {
 
 void Node::setRotation(const glm::vec3& rotation) {
     m_rotation = rotation;
-    m_dirtyRot = true;
+    m_dirtyRotation = true;
 }
 
 const glm::vec3&  Node::getRotation() {
@@ -136,14 +176,12 @@ void Node::setScale(float scale) {
     m_scale.y = scale;
     m_scale.z = scale;
     m_dirtyScale = true;
-    m_dirtyVolume = true;
 }
 
 void Node::setScale(const glm::vec3& scale)
 {
     m_scale = scale;
     m_dirtyScale = true;
-    m_dirtyVolume = true;
 }
 
 const glm::vec3& Node::getScale() {
@@ -152,11 +190,28 @@ const glm::vec3& Node::getScale() {
 
 const glm::mat4& Node::getModelMatrix()
 {
-    updateModelMatrix();
-    return m_modelMat;
+    return m_modelMatrix;
 }
+
+const glm::mat4& Node::getWorldModelMatrix() {
+    return m_worldModelMatrix;
+}
+
+const glm::mat3& Node::getWorldNormalMatrix() {
+    return m_worldNormalMatrix;
+}
+
+const glm::mat4& Node::getWorldModelMatrixNoScale()
+{
+    return m_worldModelMatrixNoScale;
+}
+
+const glm::vec3& const Node::getWorldPos() {
+    return m_worldModelMatrix[3];
+}
+
 
 const Volume* Node::getVolume()
 {
-    return type->mesh->volume.get();
+    return type->mesh ? type->mesh->m_volume.get() : nullptr;
 }

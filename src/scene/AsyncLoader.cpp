@@ -13,27 +13,6 @@ void AsyncLoader::setup()
 {
 }
 
-Node* AsyncLoader::waitNode(const uuids::uuid& id, bool async)
-{
-    std::unique_lock<std::mutex> lock(load_lock);
-
-    if (async) asyncWaiterCount++;
-
-    // TODO KI this will stuck *FOREVER* if waiter is async
-    auto node = scene->registry.getNode(id);
-    bool done = loadedCount == startedCount - asyncWaiterCount;
-
-    while (!done && !node) {
-        waitCondition.wait(lock);
-        done = loadedCount == startedCount - asyncWaiterCount;
-        node = scene->registry.getNode(id);
-    }
-
-    if (async) asyncWaiterCount--;
-
-    return node;
-}
-
 void AsyncLoader::waitForReady()
 {
     std::unique_lock<std::mutex> lock(load_lock);

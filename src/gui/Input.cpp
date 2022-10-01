@@ -53,6 +53,9 @@ Input::~Input()
 
 void Input::prepare()
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     updateKeyStates();
 }
 

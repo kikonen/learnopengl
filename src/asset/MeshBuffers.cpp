@@ -9,7 +9,7 @@ MeshBuffers::MeshBuffers()
 
 MeshBuffers::~MeshBuffers()
 {
-    if (prepared) {
+    if (m_prepared) {
         //glDeleteBuffers(EBO);
         //glDeleteBuffers(VAO);
         //glDeleteBuffers(VBO);
@@ -18,8 +18,8 @@ MeshBuffers::~MeshBuffers()
 
 void MeshBuffers::prepare(bool useIndeces)
 {
-    if (prepared) return;
-    prepared = true;
+    if (m_prepared) return;
+    m_prepared = true;
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

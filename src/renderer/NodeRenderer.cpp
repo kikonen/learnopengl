@@ -11,6 +11,9 @@ NodeRenderer::NodeRenderer()
 
 void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     Renderer::prepare(assets, shaders);
 
     selectionShader = shaders.getShader(assets, TEX_SELECTION);
@@ -20,13 +23,6 @@ void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void NodeRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    for (auto& all : registry.allNodes) {
-        for (auto& x : all.second) {
-            for (auto& node : x.second) {
-                node->update(ctx);
-            }
-        }
-    }
 }
 
 void NodeRenderer::bind(const RenderContext& ctx)
@@ -151,6 +147,8 @@ void NodeRenderer::drawNodes(
             for (auto& node : nodes) {
                 if (selection ? !node->selected : node->selected) continue;
 
+                //if (node->id == KI_UUID("7c90bc35-1a05-4755-b52a-1f8eea0bacfa")) KI_BREAK();
+
                 batch.draw(ctx, node, bound.shader);
             }
 
@@ -258,7 +256,7 @@ void NodeRenderer::drawBlended(
     // TODO KI discards nodes if *same* distance
     std::map<float, Node*> sorted;
     for (const auto& node : nodes) {
-        const float distance = glm::length(viewPos - node->getPos());
+        const float distance = glm::length(viewPos - node->getWorldPos());
         sorted[distance] = node;
     }
 

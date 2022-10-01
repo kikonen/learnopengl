@@ -2,14 +2,18 @@
 
 #include "model/InstancedNode.h"
 
-AsteroidBeltController::AsteroidBeltController(Node* planet)
-    : planet(planet)
+AsteroidBeltController::AsteroidBeltController()
 {
 }
 
-void AsteroidBeltController::prepareInstanced(const Assets& assets, InstancedNode& node)
+void AsteroidBeltController::prepareInstanced(
+    const Assets& assets,
+    InstancedNode& node)
 {
-    glm::vec3 planetPos = planet ? planet->getPos() : glm::vec3(0.f, 0.f, 0.f);
+    const uuids::uuid& planetId = node.parentId;
+
+    Node* planet = nullptr;
+    const glm::vec3 planetPos = planet ? planet->getWorldPos() : glm::vec3(0.f, 0.f, 0.f);
 
     unsigned int amount = assets.asteroidCount;
 
@@ -60,7 +64,10 @@ void AsteroidBeltController::prepareInstanced(const Assets& assets, InstancedNod
     }
 }
 
-bool AsteroidBeltController::updateInstanced(const RenderContext& ctx, InstancedNode& node)
+bool AsteroidBeltController::updateInstanced(
+    const RenderContext& ctx,
+    InstancedNode& node,
+    Node* parent)
 {
     //if (false) {
     //    node.instanceMatrices.clear();

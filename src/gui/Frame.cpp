@@ -11,6 +11,8 @@ Frame::~Frame()
 
 void Frame::prepare()
 {
+    if (m_prepared) return;
+    m_prepared = true;
 }
 
 void Frame::bind(const RenderContext& ctx)

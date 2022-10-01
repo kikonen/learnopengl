@@ -4,12 +4,17 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(const std::string& modelName)
-    : modelName(modelName)
+Mesh::Mesh(const std::string& name)
+    : m_name(name)
 {
 
 }
 Mesh::~Mesh()
 {
-    KI_INFO_SB("MESH: delete");
+    KI_INFO_SB("MESH: delete " + str());
+}
+
+std::string Mesh::str()
+{
+    return "<" + m_name + ">";
 }

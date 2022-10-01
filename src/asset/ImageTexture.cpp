@@ -38,10 +38,10 @@ ImageTexture::~ImageTexture()
 
 void ImageTexture::prepare(const Assets& assets)
 {
-    if (prepared) return;
-    prepared = true;
+    if (m_prepared) return;
+    m_prepared = true;
 
-    if (!valid) return;
+    if (!m_valid) return;
 
     if (image->channels == 3) {
         format = GL_RGB;
@@ -51,7 +51,7 @@ void ImageTexture::prepare(const Assets& assets)
         internalFormat = GL_RGBA8;
     } else {
         KI_WARN_SB("IMAGE: unsupported channels " << image->channels);
-        valid = false;
+        m_valid = false;
         image.reset();
         return;
     }
@@ -92,5 +92,5 @@ void ImageTexture::load() {
         return;
     }
 
-    valid = true;
+    m_valid = true;
 }

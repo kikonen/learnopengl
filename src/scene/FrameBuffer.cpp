@@ -12,7 +12,7 @@ FrameBuffer::FrameBuffer(const FrameBufferSpecification& spec)
 
 FrameBuffer::~FrameBuffer()
 {
-    if (!prepared) return;
+    if (!m_prepared) return;
 
     glDeleteFramebuffers(1, &FBO);
 
@@ -31,8 +31,8 @@ void FrameBuffer::prepare(
     const bool clear,
     const glm::vec4& clearColor)
 {
-    if (prepared) return;
-    prepared = true;
+    if (m_prepared) return;
+    m_prepared = true;
 
     {
         glGenFramebuffers(1, &FBO);

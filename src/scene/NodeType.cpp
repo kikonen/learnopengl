@@ -30,6 +30,14 @@ NodeType::~NodeType()
     KI_INFO_SB("NODE_TYPE: delete " << typeID);
 }
 
+std::string NodeType::str()
+{
+    std::stringstream sb;
+    sb << "<NODE_TYPE: " << typeID << ", " << (mesh ? mesh->str() : "N/A") << ">";
+    return sb.str();
+}
+
+
 bool NodeType::hasReflection()
 {
     if (!mesh) return false;
@@ -56,6 +64,9 @@ void NodeType::modifyMaterials(std::function<void(Material&)> fn)
 
 void NodeType::prepare(const Assets& assets)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     if (!mesh) return;
     mesh->prepare(assets);
 

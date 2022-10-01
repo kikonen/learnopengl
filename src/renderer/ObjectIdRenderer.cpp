@@ -69,6 +69,9 @@ int ObjectIdRenderer::getObjectId(
 
 void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     Renderer::prepare(assets, shaders);
 
     idShader = shaders.getShader(assets, TEX_OBJECT_ID);

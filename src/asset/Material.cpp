@@ -180,6 +180,9 @@ void Material::loadTexture(
 
 void Material::prepare(const Assets& assets)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     // MOTE KI this loop is for "non ModelMesh" case (like sprite)
     unsigned int unitIndex = 0;
     for (auto& tex : textures) {
@@ -193,7 +196,7 @@ void Material::bindArray(Shader* shader, int index, bool bindTextureIDs)
 {
     for (auto& tex : textures) {
         if (!tex.texture) continue;
-        assert(tex.unitIndex >= 0);
+        assert(tex.unitIndex >= 0 && tex.unitIndex < TEXTURE_COUNT);
         shader->textures[tex.unitIndex].set(tex.unitIndex);
         if (bindTextureIDs) {
             tex.bind();
@@ -203,6 +206,11 @@ void Material::bindArray(Shader* shader, int index, bool bindTextureIDs)
 
 const MaterialUBO Material::toUBO()
 {
+    for (auto& tex : textures) {
+        if (!tex.texture) continue;
+        assert(tex.unitIndex >= 0 && tex.unitIndex < TEXTURE_COUNT);
+    }
+
     return {
         ka,
         kd,

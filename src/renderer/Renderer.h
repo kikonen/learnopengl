@@ -25,6 +25,8 @@ protected:
     bool stepRender();
 
 protected:
+    bool m_prepared = false;
+
     int drawIndex = 0;
     int drawSkip = 0;
 

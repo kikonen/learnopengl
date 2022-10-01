@@ -15,8 +15,10 @@ class Mesh
 {
 public:
     Mesh();
-    Mesh(const std::string& modelName);
+    Mesh(const std::string& name);
     virtual ~Mesh();
+
+    virtual std::string str();
 
     virtual bool hasReflection() = 0;
     virtual bool hasRefraction() = 0;
@@ -30,11 +32,12 @@ public:
     virtual void draw(const RenderContext& ctx) = 0;
     virtual void drawInstanced(const RenderContext& ctx, int instanceCount) = 0;
 
+
 public:
-    std::string modelName;
+    std::string m_name;
 
-    MeshBuffers buffers;
+    MeshBuffers m_buffers;
 
-    std::unique_ptr<Volume> volume;
+    std::unique_ptr<Volume> m_volume;
 };
 

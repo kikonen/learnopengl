@@ -12,12 +12,14 @@ class MeshLoader final
 public:
     MeshLoader(
         const Assets& assets,
-        const std::string& modelName);
+        const std::string& name,
+        const std::string& meshName);
 
     MeshLoader(
         const Assets& assets,
-        const std::string& modelName,
-        const std::string& modelPath);
+        const std::string& name,
+        const std::string& meshName,
+        const std::string& meshPath);
 
     ~MeshLoader();
 
@@ -32,8 +34,9 @@ private:
 
 public:
     const Assets& assets;
-    const std::string modelName;
-    const std::string modelPath;
+    const std::string m_name;
+    const std::string m_meshName;
+    const std::string m_meshPath;
 
     Material defaultMaterial;
     bool overrideMaterials = false;

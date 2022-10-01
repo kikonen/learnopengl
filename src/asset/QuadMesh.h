@@ -13,8 +13,10 @@
 class QuadMesh final : public Mesh
 {
 public:
-    QuadMesh(const std::string& modelName);
+    QuadMesh(const std::string& name);
     virtual ~QuadMesh();
+
+    virtual std::string str() override;
 
     bool hasReflection() override;
     bool hasRefraction() override;
@@ -29,10 +31,12 @@ public:
     void drawInstanced(const RenderContext& ctx, int instanceCount) override;
 
 public:
-    Material material;
-    std::vector<GLuint> textureIDs;
+    Material m_material;
+    std::vector<GLuint> m_textureIDs;
 
 private:
-    unsigned int materialsUboSize = 0;
-    unsigned int materialsUboId = 0;
+    bool m_prepared = false;
+
+    unsigned int m_materialsUboSize = 0;
+    unsigned int m_materialsUboId = 0;
 };

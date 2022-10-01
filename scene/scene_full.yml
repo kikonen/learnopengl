@@ -29,11 +29,33 @@ entities:
       enabled: true
     enabled: true
   - name: Directional light
+    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    pos: [10, 40, 10]
+    scale: 1.5
+    shader: light
+    render_flags:
+      - light
+      - no_shadow
+    override_material: true
+    material_modifiers:
+      kd: [0.0, 0.7, 0.0, 1.0]
     light:
       type: directional
+      pos: [0, 0, 0]
+      ambient: [0.4, 0.4, 0.4, 1.0]
+      diffuse: [0.4, 0.4, 0.4, 1.0]
+      specular: [0.0, 0.7, 0.0, 1.0]
+      world_target: [0, 0, 0]
+    controller:
+      type: moving_light
+      center: [10, 40, 10]
+      speed: 20.0
+      radius: 80.0
+    enabled: true
   - name: Moving point light
     light:
       type: point
+    enabled: true
   - name: EXAMPLE
     id: 68f300d2-34b0-4fb0-aa4e-6690e091d63c
     model: glass_ball
@@ -426,7 +448,7 @@ entities:
     model: [rock, rock]
     shader: texture
     pos: [0.0, -50.0, 0.0]
-    scale: 1
+    scale: 1.5
     material_modifier:
       reflection: 0.7
     enabled: true
@@ -447,6 +469,18 @@ entities:
       x_step: -4
       z_step: 0.2
     enabled: true
+  - name: Skeleton single
+    xid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
+    type: sprite
+    shader: texture
+    pos: [15, 6.5, 20.0]
+    material: skeleton
+    batch_size: 1000
+    render_flags:
+      - alpha
+      - render_back
+    scale: [1.5, 3, 1]
+    enabled: false
 materials:
   - name: skybox
     type: skybox

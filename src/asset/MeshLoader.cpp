@@ -15,18 +15,21 @@ const glm::vec3 EMPTY_NORMAL{ 0, 0, 0 };
 
 MeshLoader::MeshLoader(
     const Assets& assets,
-    const std::string& modelName)
-    : MeshLoader(assets, modelName, "")
+    const std::string& name,
+    const std::string& meshName)
+    : MeshLoader(assets, name, meshName, "")
 {
 }
 
 MeshLoader::MeshLoader(
     const Assets& assets,
-    const std::string& modelName,
-    const std::string& modelPath)
+    const std::string& name,
+    const std::string& meshName,
+    const std::string& meshPath)
     : assets(assets),
-    modelName(modelName),
-    modelPath(modelPath)
+    m_name(name),
+    m_meshName(meshName),
+    m_meshPath(meshPath)
 {
     // TODO KI *undesired*; this is modified externally
     defaultMaterial = Material::createDefaultMaterial();
@@ -34,11 +37,11 @@ MeshLoader::MeshLoader(
 
 MeshLoader::~MeshLoader()
 {
-    KI_INFO_SB("MESH_LOADER: deleted: " << modelName);
+    KI_INFO_SB("MESH_LOADER: deleted: name=" << m_name << ", mesh=" << m_meshPath << "/" << m_meshName);
 }
 
 std::unique_ptr<ModelMesh> MeshLoader::load() {
-    auto mesh = std::make_unique<ModelMesh>(modelName, modelPath);
+    auto mesh = std::make_unique<ModelMesh>(m_name, m_meshName, m_meshPath);
     loadData(*mesh.get());
     return mesh;
 }
@@ -46,11 +49,11 @@ std::unique_ptr<ModelMesh> MeshLoader::load() {
 void MeshLoader::loadData(
     ModelMesh& mesh)
 {
-    ki::Timer t("loadData-" + modelName);
+    ki::Timer t("loadData-" + m_name + ", mesh=" + m_meshPath + "/" + m_meshName);
 
-    auto& tris = mesh.tris;
-    auto& vertices = mesh.vertices;
-    auto& materials = mesh.materials;
+    auto& tris = mesh.m_tris;
+    auto& vertices = mesh.m_vertices;
+    auto& materials = mesh.m_materials;
 
     std::string name;
 
@@ -71,8 +74,8 @@ void MeshLoader::loadData(
 
     std::filesystem::path filePath;
     filePath /= assets.modelsDir;
-    filePath /= modelPath;
-    filePath /= modelName + ".obj";
+    filePath /= m_meshPath;
+    filePath /= m_meshName + ".obj";
 
     //const std::string modelPath = assets.modelsDir + path + modelName + ".obj";
     KI_INFO_SB("LOAD_MODEL: path=" << filePath);
@@ -216,10 +219,10 @@ void MeshLoader::loadData(
         KI_INFO_SB("Duration: " << loadTime << " ms");
     }
     catch (std::ifstream::failure e) {
-        KI_ERROR_SB("MODEL::FILE_NOT_SUCCESFULLY_READ: " << modelPath << std::endl << e.what());
+        KI_ERROR_SB("MODEL::FILE_NOT_SUCCESFULLY_READ: " << filePath << std::endl << e.what());
     }
 
-    KI_INFO_SB("== " << modelName << " ===\n"
+    KI_INFO_SB("== " << m_name << " - " << m_meshPath << "/" << m_meshName << " ===\n"
         << "tris: " << tris.size()
         << ", positions: " << positions.size()
         << ", textures: " << textures.size()
@@ -232,7 +235,7 @@ void MeshLoader::calculateSpherre(ModelMesh& mesh) {
     glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
     glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
 
-    for (auto&& vertex : mesh.vertices)
+    for (auto&& vertex : mesh.m_vertices)
     {
         minAABB.x = std::min(minAABB.x, vertex.pos.x);
         minAABB.y = std::min(minAABB.y, vertex.pos.y);
@@ -243,7 +246,7 @@ void MeshLoader::calculateSpherre(ModelMesh& mesh) {
         maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
     }
 
-    mesh.volume = std::make_unique<Sphere>(
+    mesh.m_volume = std::make_unique<Sphere>(
         (maxAABB + minAABB) * 0.5f,
         glm::length(minAABB - maxAABB));
 }
@@ -396,7 +399,7 @@ void MeshLoader::loadMaterials(
 
     std::filesystem::path filePath;
     filePath /= assets.modelsDir;
-    filePath /= modelPath;
+    filePath /= m_meshPath;
     filePath /= libraryName;
 
     //std::string materialPath = assets.modelsDir + path + libraryName;
@@ -421,7 +424,7 @@ void MeshLoader::loadMaterials(
             if (k == "newmtl") {
                 material = &materials.emplace_back();
                 material->name = v1;
-                material->path = modelPath;
+                material->path = m_meshPath;
             }
             else if (k == "Ns") {
                 material->ns = stof(v1);
@@ -467,7 +470,7 @@ void MeshLoader::loadMaterials(
         KI_ERROR_SB("TEXTURE::FILE_NOT_SUCCESFULLY_READ: " << filePath << std::endl << e.what());
     }
 
-    KI_INFO_SB("== " << modelName << " - " << libraryName << " ===\n" << "materials: " << materials.size());
+    KI_INFO_SB("== " << m_name << " - " << m_meshPath << "/" << m_meshName << " - " << libraryName << " ===\n" << "materials: " << materials.size());
 }
 
 std::string MeshLoader::resolveTexturePath(const std::string& line)

@@ -45,6 +45,8 @@ public:
     const glm::vec2 size;
 
 private:
+    bool m_prepared = false;
+
     MeshBuffers buffers;
 
     unsigned int textureID;

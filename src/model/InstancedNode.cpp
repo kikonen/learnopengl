@@ -25,20 +25,20 @@ void InstancedNode::prepare(const Assets& assets)
 void InstancedNode::updateBuffers(const RenderContext& ctx)
 {
     int size = modelBatch.size();
+    if (size == 0) return;
+
     modelBatch.update(size);
     selectedBatch.update(size);
 
     buffersDirty = false;
 }
 
-bool InstancedNode::update(const RenderContext& ctx)
+void InstancedNode::update(const RenderContext& ctx, Node* parent)
 {
-    bool updated = Node::update(ctx);
-    buffersDirty = buffersDirty || updated;
+    Node::update(ctx, parent);
     if (buffersDirty) {
         updateBuffers(ctx);
     }
-    return updated;
 }
 
 void InstancedNode::bind(const RenderContext& ctx, Shader* shader)

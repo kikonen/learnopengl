@@ -41,6 +41,9 @@ void DynamicCubeMap::prepare(
     const bool clear,
     const glm::vec4& clearColor)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     int clearMask = 0;
 
     {

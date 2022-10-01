@@ -25,10 +25,10 @@ public:
     const std::string name;
     const TextureSpec spec;
 
-    unsigned int textureID = 0;
+    GLuint textureID = 0;
 
 protected:
-    bool prepared = false;
+    bool m_prepared = false;
 
     int width = 0;
     int height = 0;

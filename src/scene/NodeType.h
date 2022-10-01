@@ -16,7 +16,6 @@ struct NodeRenderFlags {
     bool noShadow = false;
     bool batchMode = true;
     bool wireframe = false;
-    bool group = false;
 };
 
 class NodeType final
@@ -24,6 +23,8 @@ class NodeType final
 public:
     NodeType();
     ~NodeType();
+
+    std::string str();
 
     bool hasReflection();
     bool hasRefraction();
@@ -50,4 +51,5 @@ public:
     Batch batch;
 
 private:
+    bool m_prepared = false;
 };

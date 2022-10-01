@@ -16,56 +16,59 @@ Batch:: ~Batch()
 
 void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
 {
-    modelMatrices.push_back(model);
+    m_modelMatrices.push_back(model);
 
     if (objectId) {
         int r = (objectID & 0x000000FF) >> 0;
         int g = (objectID & 0x0000FF00) >> 8;
         int b = (objectID & 0x00FF0000) >> 16;
 
-        objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+        m_objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
     } else {
-        normalMatrices.push_back(normal);
+        m_normalMatrices.push_back(normal);
     }
 }
 
 void Batch::reserve(size_t count)
 {
-    modelMatrices.reserve(count);
-    normalMatrices.reserve(count);
-    objectIDs.reserve(count);
+    m_modelMatrices.reserve(count);
+    m_normalMatrices.reserve(count);
+    m_objectIDs.reserve(count);
 }
 
 int Batch::size()
 {
-    return modelMatrices.size();
+    return m_modelMatrices.size();
 }
 
 void Batch::prepare(NodeType* type)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     if (!type->mesh) return;
 
     if (staticBuffer) {
-        batchSize = modelMatrices.size();
+        batchSize = m_modelMatrices.size();
     }
 
     if (batchSize == 0) return;
     if (prepared) return;
     prepared = true;
 
-    KI_GL_CALL(glBindVertexArray(type->mesh->buffers.VAO));
+    KI_GL_CALL(glBindVertexArray(type->mesh->m_buffers.VAO));
 
     // model
     {
-        modelMatrices.reserve(batchSize);
+        m_modelMatrices.reserve(batchSize);
 
-        glCreateBuffers(1, &modelBuffer);
-        glNamedBufferStorage(modelBuffer, batchSize * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glCreateBuffers(1, &m_modelBufferId);
+        glNamedBufferStorage(m_modelBufferId, batchSize * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
         // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
         GLsizei vecSize = sizeof(glm::vec4);
 
-        glBindBuffer(GL_ARRAY_BUFFER, modelBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_modelBufferId);
 
         glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_1, 4, GL_FLOAT, GL_FALSE, 4 * vecSize, (void*)0);
         glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_2, 4, GL_FLOAT, GL_FALSE, 4 * vecSize, (void*)(1 * vecSize));
@@ -85,15 +88,15 @@ void Batch::prepare(NodeType* type)
 
     // normal
     {
-        normalMatrices.reserve(batchSize);
+        m_normalMatrices.reserve(batchSize);
 
-        glCreateBuffers(1, &normalBuffer);
-        glNamedBufferStorage(normalBuffer, batchSize * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glCreateBuffers(1, &m_normalBufferId);
+        glNamedBufferStorage(m_normalBufferId, batchSize * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
         // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
         GLsizei vecSize = sizeof(glm::vec3);
 
-        glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferId);
 
         glVertexAttribPointer(ATTR_INSTANCE_NORMAL_MATRIX_1, 3, GL_FLOAT, GL_FALSE, 3 * vecSize, (void*)0);
         glVertexAttribPointer(ATTR_INSTANCE_NORMAL_MATRIX_2, 3, GL_FLOAT, GL_FALSE, 3 * vecSize, (void*)(1 * vecSize));
@@ -110,12 +113,12 @@ void Batch::prepare(NodeType* type)
 
     // objectIDs
     {
-        objectIDs.reserve(batchSize);
+        m_objectIDs.reserve(batchSize);
 
-        glCreateBuffers(1, &objectIDBuffer);
-        glNamedBufferStorage(objectIDBuffer, batchSize * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glCreateBuffers(1, &m_objectIDBufferId);
+        glNamedBufferStorage(m_objectIDBufferId, batchSize * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
-        glBindBuffer(GL_ARRAY_BUFFER, objectIDBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_objectIDBufferId);
 
         glVertexAttribPointer(ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
 
@@ -128,7 +131,7 @@ void Batch::prepare(NodeType* type)
         update(batchSize);
     }
 
-    KI_DEBUG_SB("BATCHL: type=" << type->typeID << ", model=" << type->mesh->modelName << " - VAO = " << type->mesh->buffers.VAO << ", model = " << modelBuffer << ", normal = " << normalBuffer << ", objectID = " << objectIDBuffer);
+    KI_DEBUG_SB("BATCHL: " << type->str() << " - model = " << m_modelBufferId << ", normal = " << m_normalBufferId << ", objectID = " << m_objectIDBufferId);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -143,13 +146,13 @@ void Batch::update(size_t count)
         count = batchSize;
     }
 
-    glNamedBufferSubData(modelBuffer, 0, count * sizeof(glm::mat4), &modelMatrices[0]);
+    glNamedBufferSubData(m_modelBufferId, 0, count * sizeof(glm::mat4), &m_modelMatrices[0]);
 
     if (objectId) {
-        glNamedBufferSubData(objectIDBuffer, 0, count * sizeof(glm::vec4), &objectIDs[0]);
+        glNamedBufferSubData(m_objectIDBufferId, 0, count * sizeof(glm::vec4), &m_objectIDs[0]);
     }
     else {
-        glNamedBufferSubData(normalBuffer, 0, count * sizeof(glm::mat3), &normalMatrices[0]);
+        glNamedBufferSubData(m_normalBufferId, 0, count * sizeof(glm::mat3), &m_normalMatrices[0]);
     }
 
     //KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
@@ -160,19 +163,27 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
     if (batchSize == 0) return;
 
     if (!staticBuffer) {
-        modelMatrices.clear();
-        normalMatrices.clear();
-        objectIDs.clear();
+        m_modelMatrices.clear();
+        m_normalMatrices.clear();
+        m_objectIDs.clear();
     }
 }
 
-void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
+void Batch::draw(
+    const RenderContext& ctx,
+    Node* node,
+    Shader* shader)
 {
-    if (!node->type->mesh) return;
+    auto type = node->type.get();
+
+    if (!type->mesh) return;
 
     //std::cout << node->type->mesh->modelName << '\n';
+    if (node->groupId == KI_UUID("765f5288-21ec-4234-b7cd-6cdba4087e97"))
+        int x = 0;
+
     const auto& volume = node->getVolume();
-    if (volume && !volume->isOnFrustum(ctx.frustum, node->getModelMatrix())) {
+    if (false && volume && !volume->isOnFrustum(ctx.frustum, node->getWorldModelMatrixNoScale())) {
         ctx.skipCount += 1;
         return;
     }
@@ -187,26 +198,26 @@ void Batch::draw(const RenderContext& ctx, Node* node, Shader* shader)
 
     node->bindBatch(ctx, *this);
 
-    if (modelMatrices.size() < batchSize) return;
+    if (m_modelMatrices.size() < batchSize) return;
 
-    flush(ctx, node->type.get());
+    flush(ctx, type);
 }
 
 void Batch::flush(const RenderContext& ctx, NodeType* type)
 {
     if (!type->mesh) return;
 
-    if (batchSize == 0 || modelMatrices.empty()) return;
+    if (batchSize == 0 || m_modelMatrices.empty()) return;
 
     if (!staticBuffer) {
-        update(modelMatrices.size());
+        update(m_modelMatrices.size());
     }
 
-    type->mesh->drawInstanced(ctx, modelMatrices.size());
+    type->mesh->drawInstanced(ctx, m_modelMatrices.size());
 
     if (!staticBuffer) {
-        modelMatrices.clear();
-        normalMatrices.clear();
-        objectIDs.clear();
+        m_modelMatrices.clear();
+        m_normalMatrices.clear();
+        m_objectIDs.clear();
     }
 }

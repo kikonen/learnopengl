@@ -89,7 +89,7 @@ int Test6::onRender(const RenderClock& clock) {
     if ((isCtrl && state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         int objectID = scene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
 
-        scene->registry.selectNodeById(objectID, isShift);
+        scene->registry.selectNodeByObjectId(objectID, isShift);
 
         KI_INFO_SB("selected: " << objectID);
     }

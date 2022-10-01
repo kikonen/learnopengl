@@ -55,6 +55,8 @@ public:
     Window* window;
 
 private:
+    bool m_prepared = false;
+
     std::map<Key, int*> keyMappings;
 
     std::map<Modifier, int*> modifierMappings;

@@ -53,12 +53,17 @@ class SceneFile
     enum class ControllerType {
         none,
         camera,
-        path
+        path,
+        moving_light,
     };
 
     struct ControllerData {
         bool enabled{ false };
         ControllerType type{ ControllerType::none };
+
+        glm::vec3 center{ 0 };
+        float speed{ 0 };
+        float radius{ 0 };
     };
 
     struct CameraData {
@@ -87,11 +92,11 @@ class SceneFile
 
         // pos relative to owning node
         glm::vec3 pos{ 0 };
-        glm::vec3 target{ 0 };
+        glm::vec3 worldTarget{ 0 };
 
-        glm::vec3 ambient{ 0 };
-        glm::vec3 diffuse{ 0 };
-        glm::vec3 specular{ 0 };
+        glm::vec4 ambient{ 0 };
+        glm::vec4 diffuse{ 0 };
+        glm::vec4 specular{ 0 };
     };
 
     enum class EntityType {
@@ -111,11 +116,15 @@ class SceneFile
         std::string name;
         std::string desc;
 
+        std::string id_str;
+        std::string parentId_str;
+
         uuids::uuid id{};
         uuids::uuid parentId{};
 
-        std::string modelName;
-        std::string modelPath;
+        std::string meshName;
+        std::string meshPath;
+
         std::string shaderName{ TEX_TEXTURE };
         std::vector<std::string> shaderDefinitions{};
         std::map<const std::string, bool> renderFlags{};
@@ -174,6 +183,13 @@ private:
     void assignFlags(
         const EntityData& data,
         NodeType& type);
+
+    Node* createNode(
+        const Group* group,
+        const EntityData& data,
+        const std::shared_ptr<NodeType>& type,
+        const glm::vec3& initialPos,
+        const glm::vec3& posAdjustment);
 
     std::unique_ptr<Camera> createCamera(
         const EntityData& entity,

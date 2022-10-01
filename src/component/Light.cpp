@@ -3,70 +3,67 @@
 #include <string>
 #include <cstdio>
 
+#include "model/Node.h"
 #include "scene/RenderContext.h"
+
 
 Light::Light()
 {
 }
 
-Light::~Light()
+void Light::update(const RenderContext& ctx, Node& node)
 {
-}
+    // NOTE KI not possible to truly know if some parent matrix has changed
+    //if (!dirty) return;
+    if (!enabled) return;
 
-void Light::update(const RenderContext& ctx)
-{
-    if (!dirty) return;
-
-    dir = glm::normalize(target - pos);
+    m_worldPos = node.getWorldModelMatrixNoScale() * glm::vec4(m_pos, 1.f);
+    // TODO KI SHOULD have local vs. world dir logic; or separate logic for "spot" light
+    // => for spot light dir should be *NOT* calculated but set by initializer logic
+    m_worldDir = glm::normalize(m_worldTarget - m_worldPos);
 
     if (!directional) {
-        float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
+        const float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
         radius = (-linear + std::sqrtf(linear * linear - 4 * quadratic * (constant - (256.0 / 5.0) * lightMax))) / (2 * quadratic);
     }
 }
 
 const glm::vec3& Light::getPos()
 {
-    return pos;
+    return m_pos;
 }
 
 void Light::setPos(const glm::vec3& pos)
 {
-    this->pos = pos;
+    m_pos = pos;
     dirty = true;
 }
 
-const glm::vec3& Light::getDir()
+const glm::vec3& Light::getWorldTarget()
 {
-    return dir;
+    return m_worldTarget;
 }
 
-void Light::setDir(const glm::vec3& pos)
+void Light::setWorldTarget(const glm::vec3& target)
 {
-    this->dir = dir;
+    m_worldTarget = target;
     dirty = true;
 }
 
-const glm::vec3& Light::getTarget()
+const glm::vec3& Light::getWorldPos()
 {
-    return target;
-}
-
-void Light::setTarget(const glm::vec3& target)
-{
-    this->target = target;
-    dirty = true;
+    return m_worldPos;
 }
 
 DirLightUBO Light::toDirLightUBO() {
-    return { pos, use, dir, 0, ambient, diffuse, specular };
+    return { m_worldPos, enabled, m_worldDir, 0, ambient, diffuse, specular };
 }
 
 PointLightUBO Light::toPointightUBO()
 {
     return {
-        pos,
-        use,
+        m_worldPos,
+        enabled,
 
         ambient,
         diffuse,
@@ -82,9 +79,9 @@ PointLightUBO Light::toPointightUBO()
 SpotLightUBO Light::toSpotLightUBO()
 {
     return {
-        pos,
-        use,
-        dir,
+        m_worldPos,
+        enabled,
+        m_worldDir,
         0,
         ambient,
         diffuse,

@@ -29,7 +29,7 @@ public:
 
     // wait for loading of node
     // @return node null if not found
-    Node* waitNode(const uuids::uuid& id, bool async);
+    //Node* waitNode(const uuids::uuid& id, bool async);
 
     void waitForReady();
 

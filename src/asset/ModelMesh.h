@@ -18,13 +18,17 @@
 class ModelMesh final : public Mesh {
 public:
     ModelMesh(
-        const std::string& modelName);
+        const std::string& name,
+        const std::string& meshName);
 
     ModelMesh(
-        const std::string& modelName,
-        const std::string& modelPath);
+        const std::string& name,
+        const std::string& meshName,
+        const std::string& meshPath);
 
     virtual ~ModelMesh();
+
+    virtual std::string str() override;
 
     bool hasReflection() override;
     bool hasRefraction() override;
@@ -39,19 +43,22 @@ public:
     void drawInstanced(const RenderContext& ctx, int instanceCount) override;
 
 public:
-    int triCount = 0;
-    std::vector<glm::uvec3> tris;
-    std::vector<Vertex> vertices;
+    int m_triCount = 0;
+    std::vector<glm::uvec3> m_tris;
+    std::vector<Vertex> m_vertices;
 
-    std::vector<Material> materials;
-    std::vector<GLuint> textureIDs;
+    std::vector<Material> m_materials;
+    std::vector<GLuint> m_textureIDs;
 
-    const std::string modelPath;
+    const std::string m_meshName;
+    const std::string m_meshPath;
 
 private:
-    bool refraction = false;
-    bool reflection = false;
+    bool m_prepared = false;
 
-    unsigned int  materialsUboId = 0;
-    unsigned int materialsUboSize = 0;
+    bool m_refraction = false;
+    bool m_reflection = false;
+
+    unsigned int m_materialsUboId = 0;
+    unsigned int m_materialsUboSize = 0;
 };

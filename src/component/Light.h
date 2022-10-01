@@ -5,32 +5,33 @@
 #include "asset/Shader.h"
 #include "asset/UBO.h"
 
+
+class Node;
 class RenderContext;
+
 
 class Light final
 {
 public:
     Light();
-    ~Light();
+    ~Light() = default;
 
-    void update(const RenderContext& ctx);
+    void update(const RenderContext& ctx, Node& node);
+
+    const glm::vec3& getWorldTarget();
+    void setWorldTarget(const glm::vec3& target);
+
+    const glm::vec3& getWorldPos();
 
     const glm::vec3& getPos();
     void setPos(const glm::vec3& pos);
-
-    const glm::vec3& getDir();
-    void setDir(const glm::vec3& pos);
-
-    const glm::vec3& getTarget();
-    void setTarget(const glm::vec3& target);
 
     DirLightUBO toDirLightUBO();
     PointLightUBO toPointightUBO();
     SpotLightUBO toSpotLightUBO();
 
 public:
-    bool dirty = true;
-    bool use = true;
+    bool enabled = true;
     bool directional = false;
     bool point = false;
     bool spot = false;
@@ -52,9 +53,12 @@ public:
     glm::vec4 specular{ 1.0f, 1.0f, 1.0f, 1.f };
 
 private:
-    glm::vec3 pos{ 0.0f, 3.0f, 0.f };
-    // dir = FROM pos to TARGET
-    glm::vec3 dir{ 0.0f, 0.0f, 0.f };
-    glm::vec3 target{ 0.f, 0.f, 0.f };
-};
+    bool dirty = true;
 
+    // dir = FROM pos to TARGET
+    glm::vec3 m_worldDir{ 0.0f };
+    glm::vec3 m_worldPos{ 0.0f };
+    glm::vec3 m_worldTarget{ 0.f };
+
+    glm::vec3 m_pos{ 0.0f };
+};

@@ -9,17 +9,17 @@ public:
     MovingLightController(
         const glm::vec3& center, 
         float radius, 
-        float speed,
-        Node* node);
+        float speed);
 
-    bool update(const RenderContext& ctx, Node& node) override;
+    bool update(
+        const RenderContext& ctx,
+        Node& node,
+        Node* parent) override;
 
 private:
-    const glm::vec3 center;
-    const float radius;
-    const float speed;
-
-    Node* node;
+    const glm::vec3 m_center;
+    const float m_radius;
+    const float m_speed;
 };
 
 

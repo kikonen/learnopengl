@@ -51,6 +51,9 @@ CubeMapRenderer::~CubeMapRenderer()
 
 void CubeMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     drawIndex = 0;
     drawSkip = assets.cubeMapDrawSkip;
 
@@ -95,7 +98,7 @@ void CubeMapRenderer::render(
 
     curr->bind(mainCtx);
 
-    const glm::vec3& center = centerNode->getPos();
+    const glm::vec3& center = centerNode->getWorldPos();
 
     for (int i = 0; i < 6; i++) {
         glFramebufferTexture2D(
@@ -212,7 +215,7 @@ Node* CubeMapRenderer::findCenter(const RenderContext& ctx, const NodeRegistry& 
             if (!(type->hasReflection() || type->hasRefraction())) continue;
 
             for (const auto& node : nodes) {
-                const glm::vec3 ray = node->getPos() - cameraPos;
+                const glm::vec3 ray = node->getWorldPos() - cameraPos;
                 const float distance = glm::length(ray);
                 const glm::vec3 fromCamera = glm::normalize(ray);
                 const float dot = glm::dot(fromCamera, cameraDir);

@@ -19,7 +19,7 @@
 
 
 namespace {
-    constexpr uuids::uuid PLANET_UUID = uuids::uuid::from_string("8712cec1-e1a3-4973-8889-533adfbbb196").value();
+    constexpr auto PLANET_UUID = KI_UUID("8712cec1-e1a3-4973-8889-533adfbbb196");
 }
 
 TestSceneSetup::TestSceneSetup(
@@ -36,20 +36,16 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
     if (true) {
         setupNodeActive();
 
-        setupNodePlanet();
+        setupRockLight();
         setupNodeAsteroidBelt();
     }
 
-//    setupSpriteSkeleton();
-
     if (true) {
-        //setupTerrain();
-
         //setupEffectExplosion();
 
         //setupViewport1();
 
-        setupLightDirectional();
+        //setupLightDirectional();
         setupLightMoving();
     }
 }
@@ -64,10 +60,8 @@ void TestSceneSetup::setupLightDirectional()
         // sun
         auto light = std::make_unique<Light>();
         {
-            light->setPos(glm::vec3(10, 40, 10) + assets.groundOffset);
-            light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
-
             light->directional = true;
+            light->setWorldTarget(glm::vec3(0.0f) + assets.groundOffset);
 
             light->ambient = { 0.4f, 0.4f, 0.4f, 1.f };
             light->diffuse = { 0.4f, 0.4f, 0.4f, 1.f };
@@ -79,27 +73,23 @@ void TestSceneSetup::setupLightDirectional()
         type->flags.light = true;
         type->flags.noShadow = true;
 
-        MeshLoader loader(assets, "light");
+        MeshLoader loader(assets, "Directional light", "light");
         loader.defaultMaterial.kd = light->specular;
         loader.overrideMaterials = true;
         type->mesh = loader.load();
 
         auto node = new Node(type);
-        node->setPos(light->getPos());
+        node->parentId = PLANET_UUID;
+        node->setPos(glm::vec3(10, 40, 10));
         node->setScale(1.5f);
         node->light.reset(light.release());
 
         {
             const float radius = 80.0f;
             const float speed = 20.f;
-            glm::vec3 center = glm::vec3(0, 40, 0) + assets.groundOffset;
+            const glm::vec3 center{ 0 };
 
-            auto planet = asyncLoader->waitNode(PLANET_UUID, true);
-            if (planet) {
-                center = planet->getPos();
-            }
-
-            node->controller = std::make_unique<MovingLightController>(center, radius, speed, node);
+            node->controller = std::make_unique<MovingLightController>(center, radius, speed);
         }
 
         scene->registry.addNode(node);
@@ -123,9 +113,8 @@ void TestSceneSetup::setupLightMoving()
                 auto light = new Light();
                 lights.push_back(std::unique_ptr<Light>(light));
 
-                glm::vec3 center = glm::vec3(0 + x * radius * 3, 7 + x + z, z * radius * 3) + assets.groundOffset;
-                //light->pos = glm::vec3(10, 5, 10) + assets.groundOffset;
-                light->setPos(center);
+                const glm::vec3 center = glm::vec3(0 + x * radius * 3, 7 + x + z, z * radius * 3);
+                light->setPos(center + assets.groundOffset);
 
                 // 160
                 light->point = true;
@@ -136,7 +125,7 @@ void TestSceneSetup::setupLightMoving()
                 light->cutoffAngle = 12.5f;
                 light->outerCutoffAngle = 25.f;
 
-                light->setTarget(glm::vec3(0.0f) + assets.groundOffset);
+                light->setWorldTarget(glm::vec3(0.0f) + assets.groundOffset);
 
                 light->ambient = { 0.4f, 0.4f, 0.2f, 1.f };
                 light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
@@ -150,7 +139,7 @@ void TestSceneSetup::setupLightMoving()
         type->flags.noShadow = true;
         //type->wireframe = true;
 
-        MeshLoader loader(assets, "light");
+        MeshLoader loader(assets, "Moving lights", "light");
         //loader.overrideMaterials = true;
         type->mesh = loader.load();
 
@@ -161,8 +150,9 @@ void TestSceneSetup::setupLightMoving()
             node->light.reset(light.release());
 
             {
-                glm::vec3 center = node->getPos();
-                node->controller = std::make_unique<MovingLightController>(center, 10.f, 2.f, node);
+                glm::vec3 center{ 0 };
+                center += assets.groundOffset;
+                node->controller = std::make_unique<MovingLightController>(center, 10.f, 2.f);
             }
 
             scene->registry.addNode(node);
@@ -181,7 +171,7 @@ void TestSceneSetup::setupNodeBrickwallBox()
         type->nodeShader = asyncLoader->getShader(TEX_TEXTURE);
         type->flags.renderBack = true;
 
-        MeshLoader loader(assets, "brickwall2");
+        MeshLoader loader(assets, "Brickbox", "brickwall2");
         type->mesh = loader.load();
 
         glm::vec3 pos[] = {
@@ -209,6 +199,7 @@ void TestSceneSetup::setupNodeBrickwallBox()
             node->setScale(scale);
             node->setRotation(rot[i]);
             //node->skipShadow = true;
+
             scene->registry.addNode(node);
         }
         });
@@ -224,30 +215,27 @@ void TestSceneSetup::setupNodeActive()
         auto type = std::make_shared<NodeType>();
         type->nodeShader = asyncLoader->getShader(TEX_TEXTURE);
 
-        MeshLoader loader(assets, "texture_cube");
+        MeshLoader loader(assets, "Active cube", "texture_cube");
         type->mesh = loader.load();
 
-        auto active = new Node(type);
-        active->controller = std::make_unique<NodePathController>(0);
-        active->setPos(glm::vec3(0) + assets.groundOffset);
-        scene->registry.addNode(active);
-        });
+        auto node = new Node(type);
+        
+        node->setPos(glm::vec3{ 0, 0, 0 } + assets.groundOffset);
+        node->controller = std::make_unique<NodePathController>(0);
+
+        scene->registry.addNode(node);
+     });
 }
 
-void TestSceneSetup::setupNodePlanet()
+void TestSceneSetup::setupRockLight()
 {
     auto scene = this->scene;
     auto asyncLoader = this->asyncLoader;
     auto assets = this->assets;
 
     asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        auto planet = asyncLoader->waitNode(PLANET_UUID, true);
-
         auto light = std::make_unique<Light>();
         {
-            glm::vec3 pos = planet ? planet->getPos() - glm::vec3(0, 40, 0) : glm::vec3(0, 40, 0);
-            light->setPos(pos);
-
             // 325 = 0.014    0.0007
             light->point = true;
             light->linear = 0.014f;
@@ -264,20 +252,20 @@ void TestSceneSetup::setupNodePlanet()
             type->flags.light = true;
             type->flags.noShadow = true;
 
-            MeshLoader loader(assets, "light");
+            MeshLoader loader(assets, "Planet light", "light");
             loader.overrideMaterials = true;
             type->mesh = loader.load();
         }
 
         auto node = new Node(type);
-        node->setPos(light->getPos());
+        node->parentId = KI_UUID("7c90bc35-1a05-4755-b52a-1f8eea0bacfa");
         node->setScale(0.5f);
 
         node->light.reset(light.release());
 
         {
-            glm::vec3 center = node->getPos();
-            node->controller = std::make_unique<MovingLightController>(center, 4.f, 2.f, node);
+            glm::vec3 center{ 0, 10, 0 };
+            node->controller = std::make_unique<MovingLightController>(center, 10.f, 3.f);
         }
 
         scene->registry.addNode(node);
@@ -298,11 +286,9 @@ void TestSceneSetup::setupNodeAsteroidBelt()
         MeshLoader loader(assets, "rock", "rock");
         type->mesh = loader.load();
 
-        auto planet = asyncLoader->waitNode(PLANET_UUID, true);
         auto node = new InstancedNode(type);
-        node->controller = std::make_unique<AsteroidBeltController>(planet);
-        //node->selected = true;
-        //std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+        node->parentId = PLANET_UUID;
+        node->controller = std::make_unique<AsteroidBeltController>();
         scene->registry.addNode(node);
         });
 }
@@ -323,10 +309,8 @@ void TestSceneSetup::setupEffectExplosion()
         type->flags.renderBack = true;
         type->flags.noShadow = true;
 
-        glm::vec3 pos = assets.groundOffset;
-
         auto node = new Billboard(type);
-        node->setPos(pos + glm::vec3(0, 3.5, -20));
+        node->setPos(glm::vec3{ 0, 3.5, -20 } + assets.groundOffset);
         node->setScale(2);
 
         scene->registry.addNode(node);

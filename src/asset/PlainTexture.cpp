@@ -22,8 +22,8 @@ PlainTexture::~PlainTexture()
 
 void PlainTexture::prepare(const Assets& assets)
 {
-    if (prepared) return;
-    prepared = true;
+    if (m_prepared) return;
+    m_prepared = true;
 
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);

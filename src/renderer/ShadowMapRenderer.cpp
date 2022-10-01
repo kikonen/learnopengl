@@ -14,6 +14,9 @@ ShadowMapRenderer::~ShadowMapRenderer()
 
 void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     Renderer::prepare(assets, shaders);
 
     drawSkip = assets.shadowDrawSkip;
@@ -60,9 +63,12 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     //    {0.5f, 0.5f, 0.5f, 1.0f},
     //};
 
-    glm::mat4 lightView = glm::lookAt(node->light->getPos(), node->light->getTarget(), glm::vec3(0.0, 1.0, 0.0));
+    const glm::vec3 up{ 0.0, 1.0, 0.0 };
+    const glm::mat4 lightView = glm::lookAt(
+        node->light->getWorldPos(),
+        node->light->getWorldTarget(), up);
 
-    glm::mat4 lightProjection = glm::ortho(
+    const glm::mat4 lightProjection = glm::ortho(
         -100.0f, 100.0f, -100.0f, 100.0f,
         ctx.assets.shadowNearPlane,
         ctx.assets.shadowFarPlane);

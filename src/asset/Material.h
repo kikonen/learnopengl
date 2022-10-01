@@ -20,7 +20,7 @@ struct BoundTexture {
     void bind()
     {
         if (!texture) return;
-        assert(unitIndex >= 0);
+        assert(unitIndex >= 0 && unitIndex < TEXTURE_COUNT);
         //glActiveTexture(GL_TEXTURE0 + unitIndex);
         //glBindTexture(GL_TEXTURE_2D, texture->textureID);
         glBindTextures(unitIndex, 1, &texture->textureID);
@@ -183,6 +183,8 @@ public:
 
     std::string map_dudv;
 private:
+    bool m_prepared = false;
+
     bool loaded = false;
 };
 

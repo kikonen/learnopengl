@@ -5,7 +5,10 @@ CameraController::CameraController()
 {
 }
 
-bool CameraController::update(const RenderContext& ctx, Node& node)
+bool CameraController::update(
+    const RenderContext& ctx,
+    Node& node,
+    Node* parent)
 {
     Camera* camera = node.camera.get();
     if (!camera) return false;
@@ -20,5 +23,5 @@ bool CameraController::update(const RenderContext& ctx, Node& node)
     node.setPos(nodePos);
     node.setRotation({-rot.x, 90 + rot.y, rot.z});
 
-    return false;
+    return true;
 }

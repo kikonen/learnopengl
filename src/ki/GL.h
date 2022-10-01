@@ -6,6 +6,8 @@
 
 #include <glad/glad.h>
 
+#include <stduuid/uuid.h>
+
 // https://www.glfw.org/docs/3.3.2/build.html
 //#define GLFW_INCLUDE_GLCOREARB
 #define GLFW_INCLUDE_NONE 
@@ -21,7 +23,7 @@
 //#define KI_GL_DEBUG_BIND
 
 #ifdef KI_GL_DEBUG_BREAK
-    #define KI_BREAK() Log::flush(); __debugbreak();
+    #define KI_BREAK() {Log::flush(); __debugbreak();}
 #else
     #define KI_BREAK()
 #endif
@@ -45,6 +47,8 @@
 #else
     #define KI_GL_UNBIND(x)
 #endif
+
+#define KI_UUID(x) uuids::uuid::from_string(x).value()
 
 
 struct RenderClock {

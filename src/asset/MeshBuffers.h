@@ -13,5 +13,5 @@ public:
     unsigned int EBO = 0;
 
 private:
-    bool prepared = false;
+    bool m_prepared = false;
 };

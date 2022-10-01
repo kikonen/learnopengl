@@ -20,6 +20,9 @@ MirrorMapRenderer::~MirrorMapRenderer()
 
 void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     Renderer::prepare(assets, shaders);
 
     FrameBufferSpecification spec = {
@@ -71,7 +74,7 @@ void MirrorMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    glm::vec3 planePos = closest->getPos();
+    glm::vec3 planePos = closest->getWorldPos();
 
     // https://prideout.net/clip-planes
     // reflection map
@@ -185,7 +188,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistr
             if (!type->flags.mirror) continue;
 
             for (const auto& node : nodes) {
-                const glm::vec3 ray = node->getPos() - cameraPos;
+                const glm::vec3 ray = node->getWorldPos() - cameraPos;
                 const float distance = glm::length(ray);
                 //glm::vec3 fromCamera = glm::normalize(ray);
                 //float dot = glm::dot(fromCamera, cameraDir);

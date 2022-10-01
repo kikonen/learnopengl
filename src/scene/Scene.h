@@ -70,6 +70,8 @@ public:
 protected:
 
 private:
+    bool m_prepared = false;
+
     std::vector<ParticleGenerator*> particleGenerators;
 
     std::unique_ptr<NodeRenderer> nodeRenderer{ nullptr };

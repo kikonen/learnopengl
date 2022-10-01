@@ -21,6 +21,8 @@ public:
     virtual void render(const RenderContext& ctx);
 
 private:
+    bool m_prepared = false;
+
     Window& window;
 };
 

@@ -14,7 +14,7 @@ public:
 
     void updateBuffers(const RenderContext& ctx);
 
-    bool update(const RenderContext& ctx) override;
+    void update(const RenderContext& ctx, Node* parent) override;
     void bind(const RenderContext& ctx, Shader* shader) override;
     void draw(const RenderContext& ctx) override;
 

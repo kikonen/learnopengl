@@ -22,6 +22,8 @@ public:
     void addParticle(const Particle& particle);
 
 private:
+    bool m_prepared = false;
+
     std::vector<Particle> particles;
 
     Batch batch;

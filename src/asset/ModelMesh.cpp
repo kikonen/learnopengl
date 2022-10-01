@@ -20,38 +20,53 @@ namespace {
 }
 
 ModelMesh::ModelMesh(
-    const std::string& modelName)
-    : ModelMesh(modelName, "")
+    const std::string& name,
+    const std::string& meshName)
+    : ModelMesh(name, meshName, "")
 {
 }
 
 ModelMesh::ModelMesh(
-    const std::string& modelName,
-    const std::string& modelPath)
-    : Mesh(modelName),
-    modelPath(modelPath)
+    const std::string& name,
+    const std::string& meshName,
+    const std::string& meshPath)
+    : Mesh(name),
+    m_meshName(meshName),
+    m_meshPath(meshPath)
 {
 }
 
 ModelMesh::~ModelMesh()
 {
-    KI_INFO_SB("MODEL_MESH: delete " << modelName);
-    vertices.clear();
+    KI_INFO_SB("MODEL_MESH: delete " << str());
+    m_vertices.clear();
+}
+
+std::string ModelMesh::str()
+{
+    std::stringstream sb;
+ 
+    sb << "<MODEL_MESH: "
+       << m_name << ", " << m_meshPath + "/" << m_meshName
+       << " - VAO=" << m_buffers.VAO << ", VBO=" << m_buffers.VBO << ", EBO = " << m_buffers.EBO
+       << ">";
+
+    return sb.str();
 }
 
 bool ModelMesh::hasReflection()
 {
-    return reflection;
+    return m_reflection;
 }
 
 bool ModelMesh::hasRefraction()
 {
-    return refraction;
+    return m_refraction;
 }
 
 Material* ModelMesh::findMaterial(std::function<bool(const Material&)> fn)
 {
-    for (auto& material : materials) {
+    for (auto& material : m_materials) {
         if (fn(material)) return &material;
     }
     return nullptr;
@@ -59,61 +74,64 @@ Material* ModelMesh::findMaterial(std::function<bool(const Material&)> fn)
 
 void ModelMesh::modifyMaterials(std::function<void(Material&)> fn)
 {
-    for (auto& material : materials) {
+    for (auto& material : m_materials) {
         fn(material);
     }
 }
 
 void ModelMesh::prepare(const Assets& assets)
 {
-    buffers.prepare(true);
+    if (m_prepared) return;
+    m_prepared = true;
 
-    reflection = false;
-    refraction = false;
+    m_buffers.prepare(true);
+
+    m_reflection = false;
+    m_refraction = false;
 
     {
         int materialIndex = 0;
         unsigned int unitIndex = 0;
 
-        for (auto& material : materials) {
+        for (auto& material : m_materials) {
             material.materialIndex = materialIndex++;
             assert(material.materialIndex < MATERIAL_COUNT);
 
-            reflection |= material.reflection > 0;
-            refraction |= material.refraction > 0;
+            m_reflection |= material.reflection > 0;
+            m_refraction |= material.refraction > 0;
 
             material.prepare(assets);
 
             for (auto& tex : material.textures) {
                 if (!tex.texture) continue;
                 tex.unitIndex = unitIndex++;
-                textureIDs.push_back(tex.texture->textureID);
+                m_textureIDs.push_back(tex.texture->textureID);
             }
         }
     }
 
-    prepareBuffers(buffers);
+    prepareBuffers(m_buffers);
 
     // materials
     {
         int sz_single = sizeof(MaterialUBO);
         int sz = sizeof(MaterialsUBO);
-        materialsUboSize = sz;
+        m_materialsUboSize = sz;
 
         MaterialsUBO materialsUbo{};
 
-        for (auto& material : materials) {
+        for (auto& material : m_materials) {
             materialsUbo.materials[material.materialIndex] = material.toUBO();
         }
 
-        glCreateBuffers(1, &materialsUboId);
-        glNamedBufferStorage(materialsUboId, sz, &materialsUbo, 0);
+        glCreateBuffers(1, &m_materialsUboId);
+        glNamedBufferStorage(m_materialsUboId, sz, &materialsUbo, 0);
     }
 }
 
 void ModelMesh::prepareBuffers(MeshBuffers& curr)
 {
-    KI_DEBUG_SB("MODEL_MESH: model=" << modelName << " - VAO = " << curr.VAO << ", VBO = " << curr.VBO << ", EBO = " << curr.EBO);
+    KI_DEBUG_SB(str() + " - VAO = " << curr.VAO << ", VBO = " << curr.VBO << ", EBO = " << curr.EBO);
 
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glBindVertexArray(curr.VAO);
@@ -122,16 +140,16 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
     {
         // https://paroj.github.io/gltut/Basic%20Optimization.html
         const int stride_size = sizeof(TexVBO);
-        void* vboBuffer = new unsigned char[stride_size * vertices.size()];
+        void* vboBuffer = new unsigned char[stride_size * m_vertices.size()];
 
         {
             TexVBO* vbo = (TexVBO*)vboBuffer;
-            for (int i = 0; i < vertices.size(); i++) {
-                const Vertex& vertex = vertices[i];
+            for (int i = 0; i < m_vertices.size(); i++) {
+                const Vertex& vertex = m_vertices[i];
                 const glm::vec3& p = vertex.pos;
                 const glm::vec3& n = vertex.normal;
                 const glm::vec3& tan = vertex.tangent;
-                const Material* m = Material::findID(vertex.materialID, materials);
+                const Material* m = Material::findID(vertex.materialID, m_materials);
                 const glm::vec2& t = vertex.texture;
 
                 vbo->pos.x = p.x;
@@ -157,7 +175,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, curr.VBO);
-        KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, stride_size * vertices.size(), vboBuffer, GL_STATIC_DRAW));
+        KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, stride_size * m_vertices.size(), vboBuffer, GL_STATIC_DRAW));
 
         delete[] vboBuffer;
 
@@ -191,11 +209,11 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 
     // EBO
     {
-        int index_count = tris.size() * 3;
+        int index_count = m_tris.size() * 3;
         unsigned int* vertexEboBuffer = new unsigned int[index_count];
 
-        for (int i = 0; i < tris.size(); i++) {
-            const glm::uvec3& vi = tris[i];
+        for (int i = 0; i < m_tris.size(); i++) {
+            const glm::uvec3& vi = m_tris[i];
             const int base = i * 3;
             vertexEboBuffer[base + 0] = vi[0];
             vertexEboBuffer[base + 1] = vi[1];
@@ -214,32 +232,32 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // NOTE KI no need for thexe any longer (they are in buffers now)
-    triCount = tris.size();
-    vertices.clear();
-    tris.clear();
+    m_triCount = m_tris.size();
+    m_vertices.clear();
+    m_tris.clear();
 }
 
 void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
 {
-    glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, materialsUboId, 0, materialsUboSize);
+    glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
 
-    glBindVertexArray(buffers.VAO);
+    glBindVertexArray(m_buffers.VAO);
 
-    for (auto& material : materials) {
+    for (auto& material : m_materials) {
         material.bindArray(shader, material.materialIndex, false);
     }
 
-    if (!textureIDs.empty()) {
-        glBindTextures(0, textureIDs.size(), &textureIDs[0]);
+    if (!m_textureIDs.empty()) {
+        glBindTextures(0, m_textureIDs.size(), &m_textureIDs[0]);
     }
 }
 
 void ModelMesh::draw(const RenderContext& ctx)
 {
-    KI_GL_CALL(glDrawElements(GL_TRIANGLES, triCount * 3, GL_UNSIGNED_INT, 0));
+    KI_GL_CALL(glDrawElements(GL_TRIANGLES, m_triCount * 3, GL_UNSIGNED_INT, 0));
 }
 
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
-    KI_GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, triCount * 3, GL_UNSIGNED_INT, 0, instanceCount));
+    KI_GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, m_triCount * 3, GL_UNSIGNED_INT, 0, instanceCount));
 }

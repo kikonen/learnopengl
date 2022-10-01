@@ -6,7 +6,7 @@ NodePathController::NodePathController(
 {
 }
 
-bool NodePathController::update(const RenderContext& ctx, Node& node)
+bool NodePathController::update(const RenderContext& ctx, Node& node, Node* parent)
 {
     float elapsed = ctx.clock.ts;
 
@@ -16,7 +16,10 @@ bool NodePathController::update(const RenderContext& ctx, Node& node)
         float posY = sin(elapsed * 1.1f) * radius / 3.0f + 15.f;
         float posZ = cos(elapsed) * radius / 2.0f;
 
-        node.setPos(glm::vec3(posX, posY, posZ) + ctx.assets.groundOffset);
+        auto pos = glm::vec3(posX, posY, posZ);
+        if (!parent) pos += ctx.assets.groundOffset;
+
+        node.setPos(pos);
     }
 
     if (true) {

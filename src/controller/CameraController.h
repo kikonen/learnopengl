@@ -7,5 +7,8 @@ class CameraController final : public NodeController
 public:
     CameraController();
 
-    bool update(const RenderContext& ctx, Node& node) override;
+    bool update(
+        const RenderContext& ctx,
+        Node& node,
+        Node* parent) override;
 };

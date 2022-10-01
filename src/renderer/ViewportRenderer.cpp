@@ -6,6 +6,9 @@ ViewportRenderer::ViewportRenderer()
 
 void ViewportRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     Renderer::prepare(assets, shaders);
 }
 

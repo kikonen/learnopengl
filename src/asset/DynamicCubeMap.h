@@ -26,6 +26,8 @@ public:
     bool valid = false;
 
 private:
+    bool m_prepared = false;
+
     unsigned int FBO = 0;
     unsigned int depthBuffer = 0;
 };

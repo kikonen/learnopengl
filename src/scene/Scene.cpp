@@ -37,6 +37,9 @@ Scene::~Scene()
 
 void Scene::prepare(ShaderRegistry& shaders)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
     prepareUBOs();
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
@@ -129,14 +132,13 @@ void Scene::processEvents(RenderContext& ctx)
 
 void Scene::update(RenderContext& ctx)
 {
-    if (registry.dirLight) {
-        registry.dirLight->update(ctx);
-    }
-    for (auto& node : registry.pointLights) {
-        node->light->update(ctx);
-    }
-    for (auto& node : registry.spotLights) {
-        node->light->update(ctx);
+    for (const auto& all : registry.allNodes) {
+        for (const auto& [type, nodes] : all.second) {
+            for (auto& node : nodes) {
+                if (!node->parentId.is_nil()) continue;
+                node->update(ctx, nullptr);
+            }
+        }
     }
 
     for (auto& generator : particleGenerators) {
