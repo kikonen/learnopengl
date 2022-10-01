@@ -75,9 +75,9 @@ entities:
       x_count: 2
       y_count: 1
       z_count: 2
-      x_step: 2
-      y_step: 2
-      z_step: 2
+      x_step: 3
+      y_step: 0
+      z_step: 3
     enabled: true
   - name: ZERO
     id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
