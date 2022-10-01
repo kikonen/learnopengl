@@ -49,7 +49,7 @@ RenderContext::RenderContext(
 
 RenderContext::~RenderContext()
 {
-    if (assets.debugFrustum)
+    if (assets.frustumDebug)
         KI_INFO_SB(name << ": draw: " << drawCount << " skip: " << skipCount);
 }
 

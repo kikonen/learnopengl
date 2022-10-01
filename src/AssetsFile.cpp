@@ -107,8 +107,11 @@ void AssetsFile::loadAssets(
         else if (k == "clear_color") {
             data.clearColor = v.as<bool>();
         }
-        else if (k == "debug_frustum") {
-            data.debugFrustum = v.as<bool>();
+        else if (k == "frustum_enabledd") {
+            data.frustumEnabled = v.as<bool>();
+        }
+        else if (k == "frustum_debug") {
+            data.frustumDebug = v.as<bool>();
         }
         else if (k == "water_tile_size") {
             data.waterTileSize = v.as<int>();

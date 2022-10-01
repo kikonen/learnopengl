@@ -41,7 +41,8 @@ Assets::Assets()
     debugClearColor = false;
     clearColor = false;
 
-    debugFrustum = false;
+    frustumEnabled = true;
+    frustumDebug = false;
 
     waterTileSize = 100;
     // NOTE KI water tolerates less skip than shadow/cube

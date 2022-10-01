@@ -6,6 +6,13 @@ skybox:
   material: skybox
 lights: {}
 entities:
+  - name: ZERO
+    id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    model: water_ball
+    shader: texture
+    pos: [0.0, 0.0, 0.0]
+    scale: 0.3
+    enabled: true
   - name: Player
     id: db3e098e-9ed5-4741-b986-16cfc1b2fe9b
     model: player
@@ -60,7 +67,7 @@ entities:
     id: 68f300d2-34b0-4fb0-aa4e-6690e091d63c
     model: glass_ball
     shader: texture
-    pos: [0.0, 0.0, 0.0]
+    pos: [-1.5, 0.0, -1.5]
     rotation: [0.0, 0.0, 0.0]
     scale: 1.0
     material: glass_ball
@@ -78,13 +85,6 @@ entities:
       x_step: 3
       y_step: 0
       z_step: 3
-    enabled: true
-  - name: ZERO
-    id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
-    model: water_ball
-    shader: texture
-    pos: [0.0, 0.0, 0.0]
-    scale: 0.3
     enabled: true
   - name: Window 1
     id: 348ec505-240a-4d86-9d97-2a62eb0eefaf

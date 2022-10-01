@@ -224,12 +224,18 @@ Node* SceneFile::createNode(
 
     node->selected = data.selected;
 
-    if (data.camera.enabled)
+    if (data.camera.enabled) {
         node->camera = createCamera(data, data.camera);
-    if (data.light.enabled)
+    }
+
+    if (data.light.enabled) {
         node->light = createLight(data, data.light);
-    if (data.controller.enabled)
+        type->flags.light = true;
+    }
+
+    if (data.controller.enabled) {
         node->controller = createController(data, data.controller);
+    }
 
     return node;
 }

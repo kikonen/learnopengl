@@ -44,7 +44,8 @@ public:
     bool debugClearColor;
     int clearColor;
 
-    bool debugFrustum;
+    bool frustumEnabled;
+    bool frustumDebug;
 
     int waterTileSize;
     // NOTE KI water tolerates less skip than shadow/cube
