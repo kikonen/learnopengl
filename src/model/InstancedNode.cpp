@@ -19,7 +19,7 @@ void InstancedNode::prepare(const Assets& assets)
     modelBatch.prepare(type.get());
     selectedBatch.prepare(type.get());
 
-    buffersDirty = false;
+    m_buffersDirty = false;
 }
 
 void InstancedNode::updateBuffers(const RenderContext& ctx)
@@ -30,13 +30,15 @@ void InstancedNode::updateBuffers(const RenderContext& ctx)
     modelBatch.update(size);
     selectedBatch.update(size);
 
-    buffersDirty = false;
+    m_buffersDirty = false;
 }
 
-void InstancedNode::update(const RenderContext& ctx, Node* parent)
+void InstancedNode::update(
+    const RenderContext& ctx,
+    Node* parent)
 {
     Node::update(ctx, parent);
-    if (buffersDirty) {
+    if (m_buffersDirty) {
         updateBuffers(ctx);
     }
 }

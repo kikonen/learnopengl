@@ -16,6 +16,7 @@ struct NodeRenderFlags {
     bool noShadow = false;
     bool batchMode = true;
     bool wireframe = false;
+    bool instanced = false;
 };
 
 class NodeType final

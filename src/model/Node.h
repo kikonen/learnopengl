@@ -32,6 +32,7 @@ public:
     const glm::mat3& getWorldNormalMatrix();
 
     const glm::mat4& getWorldModelMatrixNoScale();
+    const glm::mat3& getWorldNormalMatrixNoScale();
 
     void setPos(const glm::vec3& pos);
     const glm::vec3& const getPos();

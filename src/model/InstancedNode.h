@@ -24,9 +24,11 @@ public:
     Batch modelBatch;
     Batch selectedBatch;
 
+protected:
+    bool m_buffersDirty = true;
+
 private:
     MeshBuffers selectedBuffers;
 
-    bool buffersDirty = true;
 };
 

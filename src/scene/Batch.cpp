@@ -41,6 +41,13 @@ int Batch::size()
     return m_modelMatrices.size();
 }
 
+void Batch::clear()
+{
+    m_modelMatrices.clear();
+    m_normalMatrices.clear();
+    m_objectIDs.clear();
+}
+
 void Batch::prepare(NodeType* type)
 {
     if (m_prepared) return;

@@ -277,12 +277,16 @@ void TestSceneSetup::setupNodeAsteroidBelt()
         type->nodeShader = asyncLoader->getShader(TEX_TEXTURE);
         type->flags.batchMode = false;
 
-        MeshLoader loader(assets, "rock", "rock");
+        MeshLoader loader(assets, "Asteroids", "rock", "rock");
         type->mesh = loader.load();
 
         auto node = new InstancedNode(type);
         node->parentId = PLANET_UUID;
-        node->controller = std::make_unique<AsteroidBeltController>();
+        node->id = KI_UUID("4a935562-0fcb-4dfd-b41e-6c09976f2d2a");
+
+        const int count = assets.asteroidCount;
+
+        node->controller = std::make_unique<AsteroidBeltController>(count);
         scene->registry.addNode(node);
         });
 }

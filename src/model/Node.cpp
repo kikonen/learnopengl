@@ -206,6 +206,11 @@ const glm::mat4& Node::getWorldModelMatrixNoScale()
     return m_worldModelMatrixNoScale;
 }
 
+const glm::mat3& Node::getWorldNormalMatrixNoScale()
+{
+    return m_worldNormalMatrixNoScale;
+}
+
 const glm::vec3& const Node::getWorldPos() {
     return m_worldModelMatrix[3];
 }

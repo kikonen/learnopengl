@@ -16,6 +16,8 @@ public:
     void reserve(size_t count);
     int size();
 
+    void clear();
+
     void prepare(NodeType* type);
 
     void update(size_t count);
