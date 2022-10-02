@@ -20,16 +20,16 @@ public:
 
     void prepare(NodeType* type);
 
-    void update(size_t count);
+    void update(int count);
     void bind(const RenderContext& ctx, Shader* shader);
     void draw(const RenderContext& ctx, Node* node, Shader* shader);
 
     void flush(const RenderContext& ctx, NodeType* type);
 
 public:
-    bool prepared = false;
     int batchSize = -1;
 
+    int staticSize = 0;
     bool staticBuffer = false;
 
     bool dirty = false;
@@ -37,6 +37,7 @@ public:
 
 private:
     bool m_prepared = false;
+    int preparedBufferSize = -1;
 
     std::vector<glm::mat4> m_modelMatrices;
     std::vector<glm::mat3> m_normalMatrices;

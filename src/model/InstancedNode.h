@@ -18,6 +18,8 @@ public:
     void bind(const RenderContext& ctx, Shader* shader) override;
     void draw(const RenderContext& ctx) override;
 
+    void markBuffersDirty();
+
 private:
 
 public:

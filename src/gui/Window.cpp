@@ -50,6 +50,13 @@ void Window::createGLFWWindow()
     // ------------------------------
     KI_INFO("START: GLFW INIT");
     glfwInit();
+
+    if (assets.glDebug) {
+        // NOTE KI MUST be after glfwInit BUT before glfwWindow creat4e
+        // https://learnopengl.com/in-practice/debugging
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+    }
+
     KI_INFO("DONE: GLFW INIT");
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, assets.glsl_version[0]);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, assets.glsl_version[1]);

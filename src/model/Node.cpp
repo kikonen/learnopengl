@@ -59,7 +59,7 @@ void Node::update(
 
     updateModelMatrix(parent);
 
-    bool changed = true;
+    bool changed = false;
     if (controller) {
         changed = controller->update(ctx, *this, parent);
     }

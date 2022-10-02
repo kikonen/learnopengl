@@ -245,7 +245,10 @@ bool NodeRegistry::bindParent(Node* child)
             << parent->id << "(" << parent->objectID << ") => "
             << child->id << "(" << child->objectID << "), type="
             << child->type->str());
+
         childToParent[child->objectID] = parent;
+        parentToChildren[parent->objectID].push_back(child);
+
         return true;
     }
 
@@ -261,6 +264,8 @@ void NodeRegistry::bindChildren(Node* parent)
     for (auto& child : it->second) {
         KI_INFO_SB("BIND_CHILD: " << parent->id << " => " << child->id << ", type=" << child->type->str());
         bindNode(child);
+
+        childToParent[child->objectID] = parent;
         parentToChildren[parent->objectID].push_back(child);
     }
 

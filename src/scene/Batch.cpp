@@ -54,26 +54,21 @@ void Batch::prepare(NodeType* type)
     m_prepared = true;
 
     if (!type->mesh) return;
-
-    if (staticBuffer) {
-        batchSize = m_modelMatrices.size();
-    }
-
     if (batchSize == 0) return;
-    if (prepared) return;
-    prepared = true;
 
     KI_GL_CALL(glBindVertexArray(type->mesh->m_buffers.VAO));
 
+    preparedBufferSize = batchSize;
+
     // model
     {
-        m_modelMatrices.reserve(batchSize);
+        m_modelMatrices.reserve(preparedBufferSize);
 
         glCreateBuffers(1, &m_modelBufferId);
-        glNamedBufferStorage(m_modelBufferId, batchSize * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glNamedBufferStorage(m_modelBufferId, preparedBufferSize * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
         // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
-        GLsizei vecSize = sizeof(glm::vec4);
+        constexpr GLsizei vecSize = sizeof(glm::vec4);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_modelBufferId);
 
@@ -95,13 +90,13 @@ void Batch::prepare(NodeType* type)
 
     // normal
     {
-        m_normalMatrices.reserve(batchSize);
+        m_normalMatrices.reserve(preparedBufferSize);
 
         glCreateBuffers(1, &m_normalBufferId);
-        glNamedBufferStorage(m_normalBufferId, batchSize * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glNamedBufferStorage(m_normalBufferId, preparedBufferSize * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
         // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
-        GLsizei vecSize = sizeof(glm::vec3);
+        constexpr GLsizei vecSize = sizeof(glm::vec3);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferId);
 
@@ -120,10 +115,10 @@ void Batch::prepare(NodeType* type)
 
     // objectIDs
     {
-        m_objectIDs.reserve(batchSize);
+        m_objectIDs.reserve(preparedBufferSize);
 
         glCreateBuffers(1, &m_objectIDBufferId);
-        glNamedBufferStorage(m_objectIDBufferId, batchSize * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glNamedBufferStorage(m_objectIDBufferId, preparedBufferSize * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_objectIDBufferId);
 
@@ -134,31 +129,36 @@ void Batch::prepare(NodeType* type)
         glEnableVertexAttribArray(ATTR_INSTANCE_OBJECT_ID);
     }
 
-    if (staticBuffer) {
-        update(batchSize);
-    }
-
     KI_DEBUG_SB("BATCHL: " << type->str() << " - model = " << m_modelBufferId << ", normal = " << m_normalBufferId << ", objectID = " << m_objectIDBufferId);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
 
-void Batch::update(size_t count)
+void Batch::update(int count)
 {
-    if (batchSize == 0) return;
+    if (batchSize <= 0) return;
+    if (count <= 0) return;
 
     if (count > batchSize) {
         KI_WARN_SB("BATCH::CUT_OFF_BUFFER: count=" << count << " batchSize=" << batchSize);
         count = batchSize;
     }
 
+    assert(m_modelMatrices.size() >= count);
+    assert(count <= preparedBufferSize);
+
+    assert(m_modelBufferId > 0);
     glNamedBufferSubData(m_modelBufferId, 0, count * sizeof(glm::mat4), &m_modelMatrices[0]);
 
     if (objectId) {
+        assert(m_objectIDBufferId > 0);
+        assert(m_objectIDs.size() >= count);
         glNamedBufferSubData(m_objectIDBufferId, 0, count * sizeof(glm::vec4), &m_objectIDs[0]);
     }
     else {
+        assert(m_normalBufferId > 0);
+        assert(m_normalMatrices.size() >= count);
         glNamedBufferSubData(m_normalBufferId, 0, count * sizeof(glm::mat3), &m_normalMatrices[0]);
     }
 
@@ -216,11 +216,17 @@ void Batch::flush(const RenderContext& ctx, NodeType* type)
 
     if (batchSize == 0 || m_modelMatrices.empty()) return;
 
+    int count = staticBuffer ? staticSize : m_modelMatrices.size();
+
     if (!staticBuffer) {
-        update(m_modelMatrices.size());
+        update(count);
     }
 
-    type->mesh->drawInstanced(ctx, m_modelMatrices.size());
+    assert(count > 0);
+    assert(count <= m_modelMatrices.size());
+    assert(count <= preparedBufferSize);
+
+    type->mesh->drawInstanced(ctx, count);
 
     if (!staticBuffer) {
         m_modelMatrices.clear();

@@ -23,7 +23,7 @@ int Engine::init() {
 
     onInit();
     asyncLoader = std::make_shared<AsyncLoader>(shaders, assets);
-
+    
     window = std::make_unique<Window>(*this, assets);
     return window->create() ? 0 : -1;
 }
@@ -59,6 +59,7 @@ void Engine::run() {
     ki::GL::startError();
 
     if (assets.glDebug) {
+        // NOTE KI MUST AFTER glfwWindow create
         ki::GL::startDebug();
     }
 

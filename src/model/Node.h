@@ -80,9 +80,10 @@ public:
     std::unique_ptr <Light> light{ nullptr };
     std::unique_ptr<ParticleGenerator> particleGenerator{ nullptr };
 
-private:
+protected:
     bool m_prepared = false;
 
+private:
     glm::mat4 m_worldModelMatrix{ 1.f };
     glm::mat3 m_worldNormalMatrix{ 1.f };
 

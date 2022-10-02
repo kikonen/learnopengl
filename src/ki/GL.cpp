@@ -93,6 +93,8 @@ namespace ki {
 
     void GL::startDebug()
     {
+        std::cout << "OPENGL: DEBUG=true\n";
+
         // https://bcmpinc.wordpress.com/2015/08/21/debugging-since-opengl-4-3/
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -105,10 +107,17 @@ namespace ki {
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, NULL, GL_TRUE);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH, 0, NULL, GL_TRUE);
 
+        // 
         //// https://gitter.im/mosra/magnum/archives/2018/05/16?at=5afbda8fd245fe2eb7b459cf
         ///* Disable rather spammy "Buffer detailed info" debug messages on NVidia drivers */
         //GL::DebugOutput::setEnabled(
         //    GL::DebugOutput::Source::Api, GL::DebugOutput::Type::Other, { 131185 }, false);
+
+        int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+        if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+        {
+            std::cout << "GLFW: GL_CONTEXT_FLAG_DEBUG_BIT=true\n";
+        }
 
         checkErrors("init");
     }

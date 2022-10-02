@@ -11,6 +11,8 @@ InstancedNode::~InstancedNode()
 
 void InstancedNode::prepare(const Assets& assets)
 {
+    if (m_prepared) return;
+
     Node::prepare(assets);
 
     modelBatch.staticBuffer = true;
@@ -24,11 +26,8 @@ void InstancedNode::prepare(const Assets& assets)
 
 void InstancedNode::updateBuffers(const RenderContext& ctx)
 {
-    int size = modelBatch.size();
-    if (size == 0) return;
-
-    modelBatch.update(size);
-    selectedBatch.update(size);
+    modelBatch.update(modelBatch.staticSize);
+    selectedBatch.update(selectedBatch.staticSize);
 
     m_buffersDirty = false;
 }
@@ -64,4 +63,9 @@ void InstancedNode::draw(const RenderContext& ctx)
     else {
         modelBatch.flush(ctx, type.get());
     }
+}
+
+void InstancedNode::markBuffersDirty()
+{
+    m_buffersDirty = true;
 }
