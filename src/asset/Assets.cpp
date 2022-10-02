@@ -15,6 +15,9 @@ Assets::Assets()
 
     resolutionScale = { 0.5, 0.5 };
 
+    asyncLoaderEnabled = true;
+    asyncLoaderDelay = 1000;
+
     logFile = "log/development.log";
 
     modelsDir = "3d_model";

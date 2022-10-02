@@ -14,10 +14,14 @@ public:
     int glsl_version[3];
     std::string glsl_version_str;
 
+
     int glfwSwapInterval;
     bool glDebug;
 
     glm::vec2 resolutionScale;
+
+    bool asyncLoaderEnabled;
+    int asyncLoaderDelay;
 
     std::string logFile;
 

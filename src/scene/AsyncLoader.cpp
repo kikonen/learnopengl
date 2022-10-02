@@ -27,6 +27,11 @@ void AsyncLoader::waitForReady()
 
 void AsyncLoader::addLoader(std::function<void()> loader)
 {
+    if (!assets.asyncLoaderEnabled) {
+        loader();
+        return;
+    }
+
     std::lock_guard<std::mutex> lock(load_lock);
     startedCount++;
 
@@ -34,7 +39,8 @@ void AsyncLoader::addLoader(std::function<void()> loader)
     // https://stackoverflow.com/questions/21531096/can-i-use-stdasync-without-waiting-for-the-future-limitation
     auto th = std::thread{
         [this, loader]() {
-            std::this_thread::sleep_for(std::chrono::milliseconds((int)(2 * 1000.f)));
+            if (assets.asyncLoaderDelay > 0)
+                std::this_thread::sleep_for(std::chrono::milliseconds(assets.asyncLoaderDelay));
 
             loader();
             std::unique_lock<std::mutex> lock(load_lock);

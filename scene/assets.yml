@@ -6,6 +6,9 @@ assets:
 
   resolution_scale: 0.5
 
+  async_loader_enabled: true
+  async_loader_delay: 100
+
   models_dir: 3d_model
   shaders_dir: shader/test6
   sprites_dir: sprites

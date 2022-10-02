@@ -56,6 +56,12 @@ void AssetsFile::loadAssets(
         else if (k == "gl_debug") {
             data.glDebug = v.as<bool>();
         }
+        else if (k == "async_loader_enabled") {
+            data.asyncLoaderEnabled = v.as<bool>();
+        }
+        else if (k == "async_loader_delay") {
+            data.asyncLoaderDelay = v.as<int>();
+        }
         else if (k == "models_dir") {
             data.modelsDir = v.as<std::string>();
         }
