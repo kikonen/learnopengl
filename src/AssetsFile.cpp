@@ -113,7 +113,7 @@ void AssetsFile::loadAssets(
         else if (k == "clear_color") {
             data.clearColor = v.as<bool>();
         }
-        else if (k == "frustum_enabledd") {
+        else if (k == "frustum_enabled") {
             data.frustumEnabled = v.as<bool>();
         }
         else if (k == "frustum_debug") {
