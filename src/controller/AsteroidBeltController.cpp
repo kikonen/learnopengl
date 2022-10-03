@@ -63,7 +63,7 @@ void AsteroidBeltController::updateAsteroids(
     InstancedNode& node,
     Node* parent)
 {
-    std::cout << fmt::format("update asteroids: {}\n", m_asteroids.size());
+    //std::cout << fmt::format("update asteroids: {}\n", m_asteroids.size());
 
     Batch& modelBatch = node.modelBatch;
     Batch& selectedBatch = node.selectedBatch;
