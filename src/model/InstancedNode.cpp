@@ -26,8 +26,11 @@ void InstancedNode::prepare(const Assets& assets)
 
 void InstancedNode::updateBuffers(const RenderContext& ctx)
 {
-    modelBatch.update(modelBatch.staticSize);
-    selectedBatch.update(selectedBatch.staticSize);
+    int size = modelBatch.size();
+    if (size == 0) return;
+    
+    modelBatch.update(size);
+    selectedBatch.update(size);
 
     m_buffersDirty = false;
 }

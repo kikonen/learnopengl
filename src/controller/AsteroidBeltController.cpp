@@ -2,7 +2,11 @@
 
 #include "model/InstancedNode.h"
 
-AsteroidBeltController::AsteroidBeltController()
+AsteroidBeltController::AsteroidBeltController(int asteroidCount)
+    : m_asteroidCount(asteroidCount),
+    m_radius(70.0),
+    m_offset(20.5f),
+    m_updateStep(3)
 {
 }
 
