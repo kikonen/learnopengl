@@ -27,13 +27,13 @@ public:
     void flush(const RenderContext& ctx, NodeType* type);
 
 public:
-    bool prepared = false;
     int batchSize = -1;
 
     bool staticBuffer = false;
+    int staticDrawCount = 0;
 
     bool dirty = false;
-    bool objectId = false;
+    bool objectIDBuffer = false;
 
 private:
     bool m_prepared = false;

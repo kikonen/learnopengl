@@ -18,7 +18,7 @@ void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
 {
     m_modelMatrices.push_back(model);
 
-    if (objectId) {
+    if (objectIDBuffer) {
         int r = (objectID & 0x000000FF) >> 0;
         int g = (objectID & 0x0000FF00) >> 8;
         int b = (objectID & 0x00FF0000) >> 16;
@@ -61,8 +61,6 @@ void Batch::prepare(NodeType* type)
     }
 
     if (batchSize == 0) return;
-    if (prepared) return;
-    prepared = true;
 
     KI_GL_CALL(glBindVertexArray(type->mesh->m_buffers.VAO));
 
@@ -156,7 +154,7 @@ void Batch::update(size_t count)
 
     glNamedBufferSubData(m_modelBufferId, 0, count * sizeof(glm::mat4), &m_modelMatrices[0]);
 
-    if (objectId) {
+    if (objectIDBuffer) {
         glNamedBufferSubData(m_objectIDBufferId, 0, count * sizeof(glm::vec4), &m_objectIDs[0]);
     }
     else {
@@ -215,13 +213,18 @@ void Batch::flush(const RenderContext& ctx, NodeType* type)
 {
     if (!type->mesh) return;
 
-    if (batchSize == 0 || m_modelMatrices.empty()) return;
+    int drawCount = m_modelMatrices.size();
+    if (staticBuffer) {
+        drawCount = staticDrawCount;
+    }
+
+    if (batchSize == 0 || drawCount == 0) return;
 
     if (!staticBuffer) {
         update(m_modelMatrices.size());
     }
 
-    type->mesh->drawInstanced(ctx, m_modelMatrices.size());
+    type->mesh->drawInstanced(ctx, drawCount);
 
     if (!staticBuffer) {
         m_modelMatrices.clear();

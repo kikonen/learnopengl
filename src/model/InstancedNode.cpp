@@ -19,7 +19,10 @@ void InstancedNode::prepare(const Assets& assets)
     selectedBatch.staticBuffer = true;
 
     modelBatch.prepare(type.get());
-    selectedBatch.prepare(type.get());
+    // TODO KI selectedBatch has been broken for a long time
+    // => buffer conflict with modelBatch (overrides IT!!)
+    // => corrupting rendering! (rendering from non-initialized buffer) 
+    //selectedBatch.prepare(type.get());
 
     m_buffersDirty = false;
 }
@@ -28,9 +31,12 @@ void InstancedNode::updateBuffers(const RenderContext& ctx)
 {
     int size = modelBatch.size();
     if (size == 0) return;
-    
-    modelBatch.update(size);
-    selectedBatch.update(size);
+
+    if (modelBatch.staticDrawCount > 0)
+        modelBatch.update(modelBatch.staticDrawCount);
+
+    if (selectedBatch.staticDrawCount > 0)
+        selectedBatch.update(selectedBatch.staticDrawCount);
 
     m_buffersDirty = false;
 }

@@ -10,7 +10,7 @@ class AsteroidBeltController final : public InstancedController
 {
     struct Asteroid {
         int m_asteroidID;
-        glm::vec3  m_position;
+        glm::vec3 m_position;
         float m_rotationAngle;
         float m_scale;
         float m_speed;
@@ -34,6 +34,11 @@ private:
         const RenderContext& ctx,
         InstancedNode& node,
         Node* parent);
+
+    void calculateAsteroids(
+        const Assets& assets,
+        InstancedNode& node,
+        std::vector<Asteroid>& asteroids);
 
 private:
     const int m_asteroidCount;

@@ -153,7 +153,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
                 if (type->flags.noShadow) continue;
 
                 Batch& batch = type->batch;
-                batch.objectId = true;
+                batch.objectIDBuffer = true;
 
                 type->bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);
@@ -164,7 +164,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
 
                 batch.flush(ctx, type);
                 type->unbind(ctx);
-                batch.objectId = false;
+                batch.objectIDBuffer = false;
             }
         };
 
