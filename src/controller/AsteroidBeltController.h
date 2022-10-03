@@ -35,8 +35,13 @@ private:
         InstancedNode& node,
         Node* parent);
 
-    void calculateAsteroids(
+    void initAsteroids(
         const Assets& assets,
+        InstancedNode& node,
+        std::vector<Asteroid>& asteroids);
+
+    void rotateAsteroids(
+        const RenderContext& ctx,
         InstancedNode& node,
         std::vector<Asteroid>& asteroids);
 

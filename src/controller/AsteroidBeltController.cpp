@@ -2,6 +2,9 @@
 
 #include <fmt/format.h>
 
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 #include "model/InstancedNode.h"
 
 AsteroidBeltController::AsteroidBeltController(int asteroidCount)
@@ -34,6 +37,8 @@ void AsteroidBeltController::prepareInstanced(
         modelBatch.add(MODEL_0, NORMAL_0, 0);
         selectedBatch.add(MODEL_0, NORMAL_0, 0);
     }
+
+    initAsteroids(assets, node, m_asteroids);
 }
 
 bool AsteroidBeltController::updateInstanced(
@@ -41,8 +46,8 @@ bool AsteroidBeltController::updateInstanced(
     InstancedNode& node,
     Node* parent)
 {
-    //const bool changed = m_updateIndex % m_updateStep == 0;
-    const bool changed = m_updateIndex == 0;
+    const bool changed = m_updateIndex % m_updateStep == 0;
+    //const bool changed = m_updateIndex == 0;
     //return false;
     if (changed) {
         updateAsteroids(ctx, node, parent);
@@ -70,7 +75,7 @@ void AsteroidBeltController::updateAsteroids(
     modelBatch.clear();
     selectedBatch.clear();
 
-    calculateAsteroids(ctx.assets, node, m_asteroids);
+    rotateAsteroids(ctx, node, m_asteroids);
 
     for (const auto& asteroid : m_asteroids)
     {
@@ -90,7 +95,7 @@ void AsteroidBeltController::updateAsteroids(
     selectedBatch.staticDrawCount = 0;// m_asteroids.size();
 }
 
-void AsteroidBeltController::calculateAsteroids(
+void AsteroidBeltController::initAsteroids(
     const Assets& assets,
     InstancedNode& node,
     std::vector<Asteroid>& asteroids)
@@ -138,8 +143,28 @@ void AsteroidBeltController::calculateAsteroids(
 
         {
             // 3. make asteroids to rotate slowly
-            float speed = (rand() % 20) / 1000.0f + 0.005f;
+            float speed = (rand() % 200) / 20000.0f + 0.0005f;
             asteroid.m_speed = speed;
         }
+    }
+}
+
+void AsteroidBeltController::rotateAsteroids(
+    const RenderContext& ctx,
+    InstancedNode& node,
+    std::vector<Asteroid>& asteroids)
+{
+    const float elapsed = ctx.clock.elapsedSecs;
+    const int count = asteroids.size();
+
+    for (size_t i = 0; i < count; i++)
+    {
+        Asteroid& asteroid = asteroids[i];
+
+        glm::mat4 modelMat{ 1.f };
+        float angle = asteroid.m_speed * elapsed;
+
+        auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
+        asteroid.m_position = mat * glm::vec4(asteroid.m_position, 0.f);
     }
 }
