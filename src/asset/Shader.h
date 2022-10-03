@@ -263,7 +263,7 @@ public:
         }
     private:
         bool unassigned = true;
-        float lastValue;
+        bool lastValue;
     };
 
 public:
