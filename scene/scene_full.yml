@@ -120,6 +120,28 @@ entities:
       radius: 10.0
       enabled: true
     enabled: true
+  - name: Active node
+    id: f2acb506-0b39-4749-a930-051c319e03d4
+    parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    model: texture_cube
+    shader: texture
+    pos: [0, 15, 0]
+    controller:
+      type: path
+      mode: 1
+      enabled: true
+    enabled: true
+  - name: Active node around rock
+    id: 15b9cbc9-c044-415c-8349-bfa1d90fc0be
+    parent_id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
+    model: texture_cube
+    shader: texture
+    pos: [0, 5, 0]
+    controller:
+      type: path
+      mode: 1
+      enabled: true
+    enabled: true
   - name: EXAMPLE
     id: 68f300d2-34b0-4fb0-aa4e-6690e091d63c
     model: glass_ball

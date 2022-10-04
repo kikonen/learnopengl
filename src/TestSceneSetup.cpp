@@ -34,9 +34,6 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
     this->scene = scene;
 
     if (true) {
-        setupNodeActive();
-
-        //setupRockLight();
         setupNodeAsteroidBelt();
     }
 
@@ -44,67 +41,7 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
         //setupEffectExplosion();
 
         //setupViewport1();
-
-        //setupLightMoving();
     }
-}
-
-void TestSceneSetup::setupLightMoving()
-{
-    auto scene = this->scene;
-    auto asyncLoader = this->asyncLoader;
-    auto assets = this->assets;
-
-    asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        auto type = std::make_shared<NodeType>();
-        type->nodeShader = asyncLoader->getShader(TEX_LIGHT);
-        type->flags.light = true;
-        type->flags.noShadow = true;
-
-        MeshLoader loader(assets, "Moving light", "light");
-        type->mesh = loader.load();
-
-        const float radius = 10.f;
-
-        for (int x = 0; x < 2; x++) {
-            for (int z = 0; z < 2; z++) {
-                auto light = new Light();
-                {
-                    // 160
-                    if (true) {
-                        light->point = true;
-                        light->linear = 0.14f;
-                        light->quadratic = 0.07f;
-                    }
-
-                    if (false) {
-                        light->spot = true;
-                        light->cutoffAngle = 12.5f;
-                        light->outerCutoffAngle = 25.f;
-                        light->setWorldTarget(glm::vec3(0.0f) + assets.groundOffset);
-                    }
-
-                    light->ambient = { 0.4f, 0.4f, 0.2f, 1.f };
-                    light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
-                    light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
-                }
-
-                auto node = new Node(type);
-                {
-                    node->parentId = KI_UUID("65ce67c8-3efe-4b04-aaf9-fe384152c547");
-                    node->setScale(0.5f);
-
-                    node->light.reset(light);
-
-                    {
-                        const auto center = glm::vec3(0 + x * radius * 3, 7 + x + z, z * radius * 3);
-                        node->controller = std::make_unique<MovingLightController>(center, 10.f, 2.f);
-                    }
-                }
-                scene->registry.addNode(node);
-            }
-        }
-     });
 }
 
 void TestSceneSetup::setupNodeBrickwallBox()
@@ -149,73 +86,6 @@ void TestSceneSetup::setupNodeBrickwallBox()
 
             scene->registry.addNode(node);
         }
-        });
-}
-
-void TestSceneSetup::setupNodeActive()
-{
-    auto scene = this->scene;
-    auto asyncLoader = this->asyncLoader;
-    auto assets = this->assets;
-
-    asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        auto type = std::make_shared<NodeType>();
-        type->nodeShader = asyncLoader->getShader(TEX_TEXTURE);
-
-        MeshLoader loader(assets, "Active cube", "texture_cube");
-        type->mesh = loader.load();
-
-        auto node = new Node(type);
-        
-        node->setPos(glm::vec3{ 0, 0, 0 } + assets.groundOffset);
-        node->controller = std::make_unique<NodePathController>(0);
-
-        scene->registry.addNode(node);
-     });
-}
-
-void TestSceneSetup::setupRockLight()
-{
-    auto scene = this->scene;
-    auto asyncLoader = this->asyncLoader;
-    auto assets = this->assets;
-
-    asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        auto light = std::make_unique<Light>();
-        {
-            // 325 = 0.014    0.0007
-            light->point = true;
-            light->linear = 0.014f;
-            light->quadratic = 0.0007f;
-
-            light->ambient = { 0.4f, 0.4f, 0.2f, 1.f };
-            light->diffuse = { 0.8f, 0.8f, 0.7f, 1.f };
-            light->specular = { 1.0f, 1.0f, 0.9f, 1.f };
-        }
-
-        auto type = std::make_shared<NodeType>();
-        type->nodeShader = asyncLoader->getShader(TEX_LIGHT);
-        {
-            type->flags.light = true;
-            type->flags.noShadow = true;
-
-            MeshLoader loader(assets, "Planet light", "light");
-            loader.forceDefaultMaterial = true;
-            type->mesh = loader.load();
-        }
-
-        auto node = new Node(type);
-        node->parentId = KI_UUID("7c90bc35-1a05-4755-b52a-1f8eea0bacfa");
-        node->setScale(0.5f);
-
-        node->light.reset(light.release());
-
-        {
-            glm::vec3 center{ 0, 10, 0 };
-            node->controller = std::make_unique<MovingLightController>(center, 10.f, 3.f);
-        }
-
-        scene->registry.addNode(node);
         });
 }
 

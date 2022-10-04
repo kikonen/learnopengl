@@ -5,7 +5,9 @@
 class NodePathController final : public NodeController
 {
 public:
-    NodePathController(int pathMode);
+    NodePathController(
+        const glm::vec3& center,
+        int pathMode);
 
     bool update(
         const RenderContext& ctx,
@@ -13,6 +15,7 @@ public:
         Node* parent) override;
 
 private:
+    const glm::vec3 center;
     const int pathMode;
 
 };

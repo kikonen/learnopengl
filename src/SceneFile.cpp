@@ -394,7 +394,7 @@ std::unique_ptr<NodeController> SceneFile::createController(
             break;
         }
         case ControllerType::path: {
-            controller = std::make_unique<NodePathController>(1);
+            controller = std::make_unique<NodePathController>(center, data.mode);
             break;
         }
         case ControllerType::moving_light: {
@@ -747,6 +747,9 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
         else if (k == "radius") {
             data.radius = v.as<float>();
         }
+        else if (k == "mode") {
+            data.mode = v.as<int>();
+        }
         else if (k == "pos") {
             //data.pos = readVec3(v);
         }
@@ -858,6 +861,10 @@ void SceneFile::loadMaterial(
             std::string line = v.as<std::string>();
             material.map_dudv = resolveTexturePath(line);
             fields.map_dudv = true;
+        }
+        else if (k == "pattern") {
+            material.pattern = v.as<int>();
+            fields.pattern = true;
         }
         else if (k == "reflection") {
             material.reflection = v.as<float>();

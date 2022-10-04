@@ -85,6 +85,8 @@ class SceneFile
         //glm::vec3 center{ 0 };
         float speed{ 0 };
         float radius{ 0 };
+
+        int mode{ 0 };
     };
 
     struct CameraData {

@@ -114,6 +114,8 @@ void Node::updateModelMatrix(Node* parent) {
     }
 
     if (m_dirtyScale) {
+        assert(m_scale.x >= 0 && m_scale.y >= 0 && m_scale.z >= 0);
+
         m_scaleMatrix = glm::scale(
             BASE_MAT_1,
             m_scale
@@ -172,6 +174,7 @@ const glm::vec3&  Node::getRotation() {
 }
 
 void Node::setScale(float scale) {
+    assert(scale >= 0);
     m_scale.x = scale;
     m_scale.y = scale;
     m_scale.z = scale;
@@ -181,6 +184,7 @@ void Node::setScale(float scale) {
 void Node::setScale(const glm::vec3& scale)
 {
     m_scale = scale;
+    assert(m_scale.x >= 0 && m_scale.y >= 0 && m_scale.z >= 0);
     m_dirtyScale = true;
 }
 
