@@ -45,55 +45,8 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 
         //setupViewport1();
 
-        setupLightDirectional();
         setupLightMoving();
     }
-}
-
-void TestSceneSetup::setupLightDirectional()
-{
-    auto scene = this->scene;
-    auto asyncLoader = this->asyncLoader;
-    auto assets = this->assets;
-
-    asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        // sun
-        auto light = std::make_unique<Light>();
-        {
-            light->directional = true;
-            light->setWorldTarget(glm::vec3(0.0f) + assets.groundOffset);
-
-            light->ambient = { 0.4f, 0.4f, 0.4f, 1.f };
-            light->diffuse = { 0.4f, 0.4f, 0.4f, 1.f };
-            light->specular = { 0.0f, 0.7f, 0.0f, 1.f };
-        }
-
-        auto type = std::make_shared<NodeType>();
-        type->nodeShader = asyncLoader->getShader(TEX_LIGHT);
-        type->flags.light = true;
-        type->flags.noShadow = true;
-
-        MeshLoader loader(assets, "Directional light", "light");
-        loader.defaultMaterial.kd = light->specular;
-        loader.overrideMaterials = true;
-        type->mesh = loader.load();
-
-        auto node = new Node(type);
-        node->parentId = PLANET_UUID;
-        node->setPos(glm::vec3(10, 40, 10));
-        node->setScale(1.5f);
-        node->light.reset(light.release());
-
-        {
-            const float radius = 80.0f;
-            const float speed = 20.f;
-            const glm::vec3 center{ 0 };
-
-            node->controller = std::make_unique<MovingLightController>(center, radius, speed);
-        }
-
-        scene->registry.addNode(node);
-        });
 }
 
 void TestSceneSetup::setupLightMoving()
@@ -247,7 +200,7 @@ void TestSceneSetup::setupRockLight()
             type->flags.noShadow = true;
 
             MeshLoader loader(assets, "Planet light", "light");
-            loader.overrideMaterials = true;
+            loader.forceDefaultMaterial = true;
             type->mesh = loader.load();
         }
 

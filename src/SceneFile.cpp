@@ -115,8 +115,8 @@ void SceneFile::attachEntity(
 
             if (material) {
                 meshLoader.defaultMaterial = *material;
-                meshLoader.overrideMaterials = data.overrideMaterials;
             }
+            meshLoader.forceDefaultMaterial = data.forceMaterial;
             meshLoader.loadTextures = data.loadTextures;
 
             auto mesh = meshLoader.load();
@@ -151,21 +151,7 @@ void SceneFile::attachEntity(
         }
 
         type->modifyMaterials([this, &data, &assets](Material& m) {
-            if (data.materialModifierFields.reflection) {
-                m.reflection = data.materialModifiers->reflection;
-            }
-            if (data.materialModifierFields.refraction) {
-                m.refraction = data.materialModifiers->refraction;
-            }
-            if (data.materialModifierFields.refractionRatio) {
-                m.refractionRatio = data.materialModifiers->refractionRatio;
-            }
-            if (data.materialModifierFields.tiling) {
-                m.tiling = data.materialModifiers->tiling;
-            }
-            if (data.materialModifierFields.textureSpec) {
-                m.textureSpec = data.materialModifiers->textureSpec;
-            }
+            modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
 
             // NOTE KI if textures were not loaded, then need to load them now
             if (!data.loadTextures) {
@@ -305,6 +291,43 @@ void SceneFile::assignFlags(
     }
 }
 
+void SceneFile::modifyMaterial(
+    Material& m,
+    const MaterialField& f,
+    const Material& mod)
+{
+    if (f.type) m.type = mod.type;
+
+    if (f.textureSpec) m.textureSpec = mod.textureSpec;
+
+    if (f.pattern) m.pattern = mod.pattern;
+    if (f.reflection) m.reflection = mod.reflection;
+    if (f.refraction) m.refraction = mod.refraction;
+    if (f.refractionRatio) m.refractionRatio = mod.refractionRatio;
+
+    if (f.fogRatio) m.fogRatio = mod.fogRatio;
+
+    if (f.tiling) m.tiling = mod.tiling;
+
+    if (f.ns) m.ns = mod.ns;
+
+    if (f.ka) m.ka = mod.ka;
+
+    if (f.kd) m.kd = mod.kd;
+    if (f.map_kd) m.map_kd = mod.map_kd;
+
+    if (f.ks) m.ks = mod.ks;
+    if (f.map_ks) m.map_ks = mod.map_ks;
+    if (f.ke) m.ke = mod.ke;
+    if (f.map_ke) m.map_ke = mod.map_ke;
+    if (f.map_bump) m.map_bump = mod.map_bump;
+    if (f.ni) m.ni = mod.ni;
+    if (f.d) m.d = mod.d;
+    if (f.illum) m.illum = mod.illum;
+
+    if (f.map_dudv) m.map_dudv = mod. map_dudv;
+}
+
 std::unique_ptr<Camera> SceneFile::createCamera(
     const EntityData& entity,
     const CameraData& data)
@@ -323,9 +346,8 @@ std::unique_ptr<Light> SceneFile::createLight(
     const LightData& data)
 {
     if (!data.enabled) return std::unique_ptr<Light>();
-    //return std::unique_ptr<Light>();
 
-    std::unique_ptr<Light> light = std::unique_ptr<Light>();
+    auto light = std::make_unique<Light>();
 
     light->setPos(data.pos);
     light->setWorldTarget(data.worldTarget + assets.groundOffset);
@@ -339,7 +361,7 @@ std::unique_ptr<Light> SceneFile::createLight(
         light->directional = true;
         break;
     case LightType::point:
-        light->point= true;
+        light->point = true;
         break;
     case LightType::spot:
         light->spot = true;
@@ -353,24 +375,26 @@ std::unique_ptr<NodeController> SceneFile::createController(
     const EntityData& entity,
     const ControllerData& data)
 {
-    if (!data.enabled) return std::unique_ptr<NodeController>();
+    std::unique_ptr<NodeController> controller;
+
+    if (!data.enabled) return controller;
 
     switch (data.type) {
         case ControllerType::camera: {
-            auto camera = std::make_unique<CameraController>();
-            return std::move(camera);
+            controller = std::make_unique<CameraController>();
+            break;
         }
         case ControllerType::path: {
-            auto path = std::make_unique<NodePathController>(1);
-            return path;
+            controller = std::make_unique<NodePathController>(1);
+            break;
         }
         case ControllerType::moving_light: {
-            auto light = std::make_unique<MovingLightController>(data.center, data.radius, data.speed);
-            return light;
+            controller = std::make_unique<MovingLightController>(data.center, data.radius, data.speed);
+            break;
         }
     }
 
-//    return std::unique_ptr<NodeController>();
+    return controller;
 }
 
 void SceneFile::loadSkybox(
@@ -492,8 +516,8 @@ void SceneFile::loadEntity(
         else if (k == "material_modifier") {
             loadMaterialModifiers(v, data);
         }
-        else if (k == "override_material") {
-            data.overrideMaterials = v.as<bool>();
+        else if (k == "force_material") {
+            data.forceMaterial = v.as<bool>();
         }
         else if (k == "batch_size") {
             data.batchSize = v.as<int>();
@@ -549,10 +573,9 @@ void SceneFile::loadMaterialModifiers(
     const YAML::Node& node,
     EntityData& data)
 {
-    data.materialModifiers = std::make_shared<Material>();
-    data.materialModifiers->name = "<modifier>";
+    data.materialModifiers.name = "<modifier>";
 
-    loadMaterial(node, data.materialModifierFields, *data.materialModifiers);
+    loadMaterial(node, data.materialModifierFields, data.materialModifiers);
 }
 
 void SceneFile::loadRepeat(
@@ -687,12 +710,24 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
             else if (type == "path") {
                 data.type = ControllerType::path;
             }
+            else if (type == "moving_light") {
+                data.type = ControllerType::moving_light;                
+            }
             else {
                 std::cout << "UNKNOWN CONTROLLER_TYPE: " << k << "=" << v << "\n";
             }
         }
+        else if (k == "center") {
+            data.center = readVec3(v);
+        }
+        else if (k == "speed") {
+            data.speed = v.as<float>();
+        }
+        else if (k == "radius") {
+            data.radius = v.as<float>();
+        }
         else if (k == "pos") {
-    //        data.pos = readVec3(v);
+            //data.pos = readVec3(v);
         }
         else {
             std::cout << "UNKNOWN CONTROLLER_ENTRY: " << k << "=" << v << "\n";
@@ -727,12 +762,15 @@ void SceneFile::loadMaterial(
             std::string type = v.as<std::string>();
             if (type == "model") {
                 material.type = MaterialType::model;
+                fields.type = true;
             }
             else if (type == "texture") {
                 material.type = MaterialType::texture;
+                fields.type = true;
             }
             else if (type == "sprite") {
                 material.type = MaterialType::sprite;
+                fields.type = true;
             }
             else {
                 std::cout << "UNKNOWN MATERIAL_TYPE: " << k << "=" << v << "\n";
@@ -740,51 +778,65 @@ void SceneFile::loadMaterial(
         }
         else if (k == "ns") {
             material.ns = v.as<float>();
+            fields.ns = true;
         }
         else if (k == "ka") {
             material.ka = readRGBA(v);
+            fields.ka = true;
         }
         else if (k == "kd") {
             material.kd = readRGBA(v);
+            fields.kd = true;
         }
         else if (k == "ks") {
             material.ks = readRGBA(v);
+            fields.ks = true;
         }
         else if (k == "ke") {
             material.ke = readRGBA(v);
+            fields.ke = true;
         }
         else if (k == "ni") {
             material.ni = v.as<float>();
+            fields.ni = true;
         }
         else if (k == "d") {
             material.d = v.as<float>();
+            fields.d = true;
         }
         else if (k == "illum") {
             material.d = v.as<float>();
+            fields.illum = true;
         }
         else if (k == "map_kd") {
             std::string line = v.as<std::string>();
             material.map_kd = resolveTexturePath(line);
+            fields.map_kd = true;
         }
         else if (k == "map_ke") {
             std::string line = v.as<std::string>();
             material.map_ke = resolveTexturePath(line);
+            fields.map_ke = true;
         }
         else if (k == "map_ks") {
             std::string line = v.as<std::string>();
             material.map_ks = resolveTexturePath(line);
+            fields.map_ks = true;
         }
         else if (k == "map_bump") {
             std::string line = v.as<std::string>();
             material.map_bump = resolveTexturePath(line);
+            fields.map_bump = true;
         }
         else if (k == "bump") {
             std::string line = v.as<std::string>();
             material.map_bump = resolveTexturePath(line);
+            fields.map_bump = true;
         }
         else if (k == "map_dudv") {
             std::string line = v.as<std::string>();
             material.map_dudv = resolveTexturePath(line);
+            fields.map_dudv = true;
         }
         else if (k == "reflection") {
             material.reflection = v.as<float>();
@@ -800,6 +852,7 @@ void SceneFile::loadMaterial(
         }
         else if (k == "fog_ratio") {
             material.fogRatio = v.as<float>();
+            fields.fogRatio = true;
         }
         else if (k == "tiling") {
             material.tiling = v.as<float>();

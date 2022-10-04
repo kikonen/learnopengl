@@ -29,15 +29,36 @@ class SceneFile
     };
 
     struct MaterialField {
+        bool type = false;
+
+        bool textureSpec = false;
+
+        bool pattern = false;
         bool reflection = false;
         bool refraction = false;
         bool refractionRatio = false;
-        bool textureSpec = false;
+
+        bool fogRatio = false;
+
         bool tiling = false;
 
-        bool any() {
-            return reflection || refraction || refractionRatio || textureSpec || tiling;
-        }
+        bool ns = false;
+
+        bool ka = false;
+
+        bool kd = false;
+        bool map_kd = false;
+
+        bool ks = false;
+        bool map_ks = false;
+        bool ke = false;
+        bool map_ke = false;
+        bool map_bump = false;
+        bool ni = false;
+        bool d = false;
+        bool illum = false;
+
+        bool map_dudv = false;
     };
 
     struct Repeat {
@@ -139,10 +160,10 @@ class SceneFile
         bool loadTextures{ true };
         std::string materialName;
         // NOTE KI overrides *ALL* materials with defaultMaterial
-        bool overrideMaterials{ false };
+        bool forceMaterial{ false };
 
         MaterialField materialModifierFields;
-        std::shared_ptr<Material> materialModifiers;
+        Material materialModifiers;
 
         int batchSize{ -1 };
 
@@ -183,6 +204,11 @@ private:
     void assignFlags(
         const EntityData& data,
         NodeType& type);
+
+    void modifyMaterial(
+        Material& m,
+        const MaterialField& f,
+        const Material& mod);
 
     Node* createNode(
         const Group* group,

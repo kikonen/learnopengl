@@ -36,15 +36,17 @@ entities:
       enabled: true
     enabled: true
   - name: Directional light
+    id: 2d976205-70de-4fad-8209-7cf1fd2febd9
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
     pos: [10, 40, 10]
     scale: 1.5
+    model: light
     shader: light
     render_flags:
       - light
       - no_shadow
-    override_material: true
-    material_modifiers:
+    force_material: true
+    material_modifier:
       kd: [0.0, 0.7, 0.0, 1.0]
     light:
       type: directional
@@ -53,11 +55,13 @@ entities:
       diffuse: [0.4, 0.4, 0.4, 1.0]
       specular: [0.0, 0.7, 0.0, 1.0]
       world_target: [0, 0, 0]
+      enabled: true
     controller:
       type: moving_light
-      center: [10, 40, 10]
+      center: [0, 0, 0]
       speed: 20.0
       radius: 80.0
+      enabled: true
     enabled: true
   - name: Moving point light
     light:
@@ -306,7 +310,7 @@ entities:
     pos: [5.0, 25.0, 5.0]
     scale: 1.3
     material: default_ball
-    override_material: true
+    force_material: true
     material_modifier:
       reflection: 0.05
     enabled: true
@@ -316,7 +320,7 @@ entities:
     shader: texture
     pos: [5.0, 25.0, 10.0]
     scale: 1.3
-    override_material: true
+    force_material: true
     material: gold_ball
     material_modifier:
       reflection: 0.05
@@ -327,7 +331,7 @@ entities:
     shader: texture
     pos: [5.0, 25.0, 15.0]
     scale: 1.3
-    override_material: true
+    force_material: true
     material: silver_ball
     material_modifier:
       reflection: 0.05
@@ -339,7 +343,7 @@ entities:
     shader: texture
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
-    override_material: true
+    force_material: true
     material: bronze_ball
     material_modifier:
       reflection: 0.05

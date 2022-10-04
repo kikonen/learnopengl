@@ -39,7 +39,7 @@ public:
     const std::string m_meshPath;
 
     Material defaultMaterial;
-    bool overrideMaterials = false;
+    bool forceDefaultMaterial = false;
     bool loadTextures = true;
 
 private:

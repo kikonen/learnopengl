@@ -276,7 +276,7 @@ unsigned int MeshLoader::resolveVertexIndex(
     // TODO KI actually do sharing of vertices
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
 
-    if (overrideMaterials || !material) {
+    if (forceDefaultMaterial || !material) {
         material = &defaultMaterial;
     }
     // TODO KI danger with shared default material

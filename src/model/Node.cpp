@@ -83,7 +83,7 @@ void Node::bind(const RenderContext& ctx, Shader* shader)
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch)
 {
-    batch.add(m_worldModelMatrix, m_worldModelMatrix, objectID);
+    batch.add(m_worldModelMatrix, m_worldNormalMatrix, objectID);
 }
 
 void Node::draw(const RenderContext& ctx)

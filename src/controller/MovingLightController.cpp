@@ -17,6 +17,7 @@ bool MovingLightController::update(
     Node& node,
     Node* parent)
 {
+    assert(m_speed > 0);
     const float elapsed = ctx.clock.ts / m_speed;
 
     const float posX = sin(elapsed) * m_radius;
