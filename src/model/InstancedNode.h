@@ -18,6 +18,8 @@ public:
     void bind(const RenderContext& ctx, Shader* shader) override;
     void draw(const RenderContext& ctx) override;
 
+    virtual const Volume* getVolume();
+
     void markBuffersDirty();
 
 private:
@@ -28,6 +30,8 @@ public:
 
 protected:
     bool m_buffersDirty = true;
+
+    std::unique_ptr<Volume> m_volume;
 
 private:
     MeshBuffers selectedBuffers;

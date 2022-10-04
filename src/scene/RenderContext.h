@@ -16,6 +16,14 @@ class RenderContext final
 public:
     RenderContext(
         const std::string& name,
+        const RenderContext* parent,
+        Camera& camera,
+        int width,
+        int height);
+
+    RenderContext(
+        const std::string& name,
+        const RenderContext* parent,
         const Assets& assets,
         const RenderClock& clock,
         GLState& state,
@@ -41,6 +49,7 @@ private:
 
 public:
     const std::string name;
+    const RenderContext* const parent;
 
     const Assets& assets;
 

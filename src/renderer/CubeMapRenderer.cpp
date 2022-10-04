@@ -118,7 +118,7 @@ void CubeMapRenderer::render(
 
         Camera camera(center, CAMERA_FRONT[i], CAMERA_UP[i]);
         camera.setZoom(90.0);
-        RenderContext ctx("CUBE", mainCtx.assets, mainCtx.clock, mainCtx.state, mainCtx.scene, camera, curr->size, curr->size);
+        RenderContext ctx("CUBE", &mainCtx, camera, curr->size, curr->size);
         bindTexture(ctx);
         ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
         ctx.bindMatricesUBO();

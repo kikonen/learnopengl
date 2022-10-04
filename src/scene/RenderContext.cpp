@@ -12,6 +12,25 @@
 
 RenderContext::RenderContext(
     const std::string& name,
+    const RenderContext* parent,
+    Camera& camera,
+    int width,
+    int height)
+    : RenderContext(
+        name,
+        parent,
+        parent->assets,
+        parent->clock,
+        parent->state,
+        parent->scene,
+        camera,
+        width,
+        height)
+{}
+
+RenderContext::RenderContext(
+    const std::string& name,
+    const RenderContext* parent,
     const Assets& assets,
     const RenderClock& clock,
     GLState& state,
@@ -20,6 +39,7 @@ RenderContext::RenderContext(
     int width,
     int height)
     : name(name),
+    parent(parent),
     assets(assets),
     clock(clock),
     state(state),
@@ -49,8 +69,12 @@ RenderContext::RenderContext(
 
 RenderContext::~RenderContext()
 {
-    if (assets.frustumDebug)
-        KI_INFO_SB(name << ": draw: " << drawCount << " skip: " << skipCount);
+    if (parent) {
+        parent->drawCount += drawCount;
+        parent->skipCount += skipCount;
+    }
+    //if (assets.frustumDebug)
+    //    KI_INFO_SB(name << ": draw: " << drawCount << " skip: " << skipCount);
 }
 
 void RenderContext::bindGlobal() const

@@ -246,7 +246,7 @@ void Scene::draw(RenderContext& ctx)
 
 void Scene::drawMain(RenderContext& ctx)
 {
-    RenderContext mainCtx("MAIN", ctx.assets, ctx.clock, ctx.state, ctx.scene, ctx.camera, mainBuffer->spec.width, mainBuffer->spec.height);
+    RenderContext mainCtx("MAIN", &ctx, ctx.camera, mainBuffer->spec.width, mainBuffer->spec.height);
     mainCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
     mainBuffer->bind(mainCtx);
@@ -267,7 +267,7 @@ void Scene::drawMirror(RenderContext& ctx)
     rot.y += 180;
     camera.setRotation(-rot);
 
-    RenderContext mirrorCtx("BACK", ctx.assets, ctx.clock, ctx.state, ctx.scene, camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
+    RenderContext mirrorCtx("BACK", &ctx, camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
     mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
     mirrorCtx.bindMatricesUBO();
 

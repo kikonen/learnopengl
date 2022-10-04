@@ -45,7 +45,7 @@ public:
     const glm::vec3& getScale();
 
     const glm::mat4& getModelMatrix();
-    const Volume* getVolume();
+    virtual const Volume* getVolume();
 
     static int nextID();
 

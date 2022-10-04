@@ -60,7 +60,7 @@ int Test6::onRender(const RenderClock& clock) {
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    RenderContext ctx("TOP", assets, clock, state, scene, *camera, w, h);
+    RenderContext ctx("TOP", nullptr, assets, clock, state, scene, *camera, w, h);
     //ctx.useWireframe = true;
     //ctx.useLight = false;
 
@@ -100,6 +100,9 @@ int Test6::onRender(const RenderClock& clock) {
         frame->draw(ctx);
         frame->render(ctx);
     }
+
+    if (assets.frustumDebug)
+        KI_INFO_SB(ctx.name << ": draw: " << ctx.drawCount << " skip: " << ctx.skipCount);
 
     return 0;
 }

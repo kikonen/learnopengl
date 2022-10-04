@@ -74,7 +74,13 @@ void InstancedNode::draw(const RenderContext& ctx)
     }
 }
 
+const Volume* InstancedNode::getVolume()
+{
+    return m_volume.get();
+}
+
 void InstancedNode::markBuffersDirty()
 {
     m_buffersDirty = true;
 }
+
