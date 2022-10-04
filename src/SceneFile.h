@@ -82,7 +82,7 @@ class SceneFile
         bool enabled{ false };
         ControllerType type{ ControllerType::none };
 
-        glm::vec3 center{ 0 };
+        //glm::vec3 center{ 0 };
         float speed{ 0 };
         float radius{ 0 };
     };
@@ -114,6 +114,12 @@ class SceneFile
         // pos relative to owning node
         glm::vec3 pos{ 0 };
         glm::vec3 worldTarget{ 0 };
+
+        float linear{ 0 };
+        float quadratic{ 0 };
+
+        float cutoffAngle{ 0 };
+        float outerCutoffAngle{ 0 };
 
         glm::vec4 ambient{ 0 };
         glm::vec4 diffuse{ 0 };
@@ -227,7 +233,8 @@ private:
 
     std::unique_ptr<NodeController> createController(
         const EntityData& entity,
-        const ControllerData& data);
+        const ControllerData& data,
+        Node* node);
 
     void loadSkybox(
         const YAML::Node& node,

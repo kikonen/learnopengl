@@ -38,7 +38,7 @@ entities:
   - name: Directional light
     id: 2d976205-70de-4fad-8209-7cf1fd2febd9
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
-    pos: [10, 40, 10]
+    pos: [0, 0, 0]
     scale: 1.5
     model: light
     shader: light
@@ -50,22 +50,50 @@ entities:
       kd: [0.0, 0.7, 0.0, 1.0]
     light:
       type: directional
-      pos: [0, 0, 0]
+      world_target: [0, 0, 0]
       ambient: [0.4, 0.4, 0.4, 1.0]
       diffuse: [0.4, 0.4, 0.4, 1.0]
       specular: [0.0, 0.7, 0.0, 1.0]
-      world_target: [0, 0, 0]
       enabled: true
     controller:
       type: moving_light
-      center: [0, 0, 0]
       speed: 20.0
       radius: 80.0
       enabled: true
     enabled: true
   - name: Moving point light
+    id: e47f86da-1fe9-4770-af30-be555f9328a7
+    parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    pos: [0, 9, 0]
+    scale: 0.5
+    model: light
+    shader: light
+    render_flags:
+      - light
+      - no_shadow
     light:
       type: point
+      linear: 0.14
+      quadratic: 0.07
+      cutoff_angle: 12.5
+      outer_cutoff_angle: 25.0
+      world_target: [0, 0, 0]
+      ambient: [0.4, 0.4, 0.2, 1.0]
+      diffuse: [0.8, 0.8, 0.7, 1.0]
+      specular: [1.0, 1.0, 0.9, 1.0]
+      enabled: true
+    controller:
+      type: moving_light
+      speed: 2.0
+      radius: 10.0
+      enabled: true
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 30
+      y_step: 0
+      z_step: 30
     enabled: true
   - name: EXAMPLE
     id: 68f300d2-34b0-4fb0-aa4e-6690e091d63c

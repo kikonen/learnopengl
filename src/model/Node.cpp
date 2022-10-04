@@ -13,8 +13,6 @@
 
 
 namespace {
-    const auto BASE_MAT_1 = glm::mat4(1.0f);
-
     int objectIDbase = 100;
 
     std::mutex object_id_lock;
@@ -104,6 +102,8 @@ void Node::updateModelMatrix(Node* parent) {
         m_rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
         m_dirtyRotation = false;
     }
+
+    const auto BASE_MAT_1 = glm::mat4(1.0f);
 
     if (m_dirtyTranslate) {
         m_translateMatrix = glm::translate(

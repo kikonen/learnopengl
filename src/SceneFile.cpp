@@ -220,7 +220,7 @@ Node* SceneFile::createNode(
     }
 
     if (data.controller.enabled) {
-        node->controller = createController(data, data.controller);
+        node->controller = createController(data, data.controller, node);
     }
 
     return node;
@@ -352,6 +352,12 @@ std::unique_ptr<Light> SceneFile::createLight(
     light->setPos(data.pos);
     light->setWorldTarget(data.worldTarget + assets.groundOffset);
 
+    light->linear = data.linear;
+    light->quadratic = data.quadratic;
+
+    light->cutoffAngle = data.cutoffAngle;
+    light->outerCutoffAngle = data.outerCutoffAngle;
+
     light->ambient = data.ambient;
     light->diffuse = data.diffuse;
     light->specular = data.specular;
@@ -373,11 +379,14 @@ std::unique_ptr<Light> SceneFile::createLight(
 
 std::unique_ptr<NodeController> SceneFile::createController(
     const EntityData& entity,
-    const ControllerData& data)
+    const ControllerData& data,
+    Node* node)
 {
     std::unique_ptr<NodeController> controller;
 
     if (!data.enabled) return controller;
+
+    const auto center = node->getPos();
 
     switch (data.type) {
         case ControllerType::camera: {
@@ -389,7 +398,7 @@ std::unique_ptr<NodeController> SceneFile::createController(
             break;
         }
         case ControllerType::moving_light: {
-            controller = std::make_unique<MovingLightController>(data.center, data.radius, data.speed);
+            controller = std::make_unique<MovingLightController>(center, data.radius, data.speed);
             break;
         }
     }
@@ -674,6 +683,18 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
         else if (k == "world_target") {
             data.worldTarget = readVec3(v);
         }
+        else if (k == "linear") {
+            data.linear = v.as<float>();
+        }
+        else if (k == "quadratic") {
+            data.quadratic = v.as<float>();
+        }
+        else if (k == "cutoff_angle") {
+            data.cutoffAngle = v.as<float>();
+        }
+        else if (k == "outer_cutoff_angle") {
+            data.outerCutoffAngle = v.as<float>();
+        }
         else if (k == "ambient") {
             data.ambient = readRGBA(v);
         }
@@ -717,9 +738,9 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
                 std::cout << "UNKNOWN CONTROLLER_TYPE: " << k << "=" << v << "\n";
             }
         }
-        else if (k == "center") {
-            data.center = readVec3(v);
-        }
+        //else if (k == "center") {
+        //    data.center = readVec3(v);
+        //}
         else if (k == "speed") {
             data.speed = v.as<float>();
         }

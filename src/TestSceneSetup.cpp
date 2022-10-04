@@ -45,7 +45,7 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 
         //setupViewport1();
 
-        setupLightMoving();
+        //setupLightMoving();
     }
 }
 
