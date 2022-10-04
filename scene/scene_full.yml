@@ -95,6 +95,31 @@ entities:
       y_step: 0
       z_step: 30
     enabled: true
+  - name: Rock light
+    id: 68e5b71d-e625-4493-8898-4f1bdde74b4d
+    parent_id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
+    pos: [0, 10, 0]
+    scale: 0.5
+    model: light
+    shader: light
+    render_flags:
+      - light
+      - no_shadow
+    light:
+      type: point
+      linear: 0.014
+      quadratic: 0.0007
+      world_target: [0, 0, 0]
+      ambient: [0.4, 0.4, 0.2, 1.0]
+      diffuse: [0.8, 0.8, 0.7, 1.0]
+      specular: [1.0, 1.0, 0.9, 1.0]
+      enabled: true
+    controller:
+      type: moving_light
+      speed: 3.0
+      radius: 10.0
+      enabled: true
+    enabled: true
   - name: EXAMPLE
     id: 68f300d2-34b0-4fb0-aa4e-6690e091d63c
     model: glass_ball

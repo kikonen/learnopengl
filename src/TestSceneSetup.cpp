@@ -36,7 +36,7 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
     if (true) {
         setupNodeActive();
 
-        setupRockLight();
+        //setupRockLight();
         setupNodeAsteroidBelt();
     }
 
