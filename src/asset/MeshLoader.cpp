@@ -189,7 +189,7 @@ void MeshLoader::loadData(
             }
         }
 
-        calculateSpherre(mesh);
+        calculateVolume(mesh);
 
         {
             if (defaultMaterial.used) {
@@ -231,7 +231,7 @@ void MeshLoader::loadData(
         << "\n--------\n");
 }
 
-void MeshLoader::calculateSpherre(ModelMesh& mesh) {
+void MeshLoader::calculateVolume(ModelMesh& mesh) {
     glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
     glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
 

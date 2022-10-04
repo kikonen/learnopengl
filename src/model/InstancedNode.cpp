@@ -70,6 +70,7 @@ void InstancedNode::draw(const RenderContext& ctx)
         selectedBatch.flush(ctx, type.get());
     }
     else {
+        //std::cout << ctx.name << " - DRAW: " << type->str() << "\n";
         modelBatch.flush(ctx, type.get());
     }
 }
@@ -77,6 +78,11 @@ void InstancedNode::draw(const RenderContext& ctx)
 const Volume* InstancedNode::getVolume()
 {
     return m_volume.get();
+}
+
+void InstancedNode::setVolume(std::unique_ptr<Volume> volume)
+{
+    m_volume = std::move(volume);
 }
 
 void InstancedNode::markBuffersDirty()

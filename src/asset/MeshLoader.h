@@ -29,7 +29,7 @@ private:
     void loadData(
         ModelMesh& mesh);
 
-    void calculateSpherre(
+    void calculateVolume(
         ModelMesh& mesh);
 
 public:

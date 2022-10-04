@@ -1,5 +1,6 @@
 #include "AsteroidBeltController.h"
 
+#include <algorithm>
 #include <fmt/format.h>
 
 #include <glm/gtc/quaternion.hpp>
@@ -39,6 +40,7 @@ void AsteroidBeltController::prepareInstanced(
     }
 
     initAsteroids(assets, node, m_asteroids);
+    calculateVolume(node, m_asteroids);
 }
 
 bool AsteroidBeltController::updateInstanced(
@@ -167,4 +169,30 @@ void AsteroidBeltController::rotateAsteroids(
         auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
         asteroid.m_position = mat * glm::vec4(asteroid.m_position, 0.f);
     }
+}
+
+void AsteroidBeltController::calculateVolume(
+    InstancedNode& node,
+    std::vector<Asteroid> asteroids)
+{
+    glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
+    glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+
+    for (auto&& asteroid : asteroids)
+    {
+        auto& pos = asteroid.m_position;
+
+        minAABB.x = std::min(minAABB.x, pos.x);
+        minAABB.y = std::min(minAABB.y, pos.y);
+        minAABB.z = std::min(minAABB.z, pos.z);
+
+        maxAABB.x = std::max(maxAABB.x, pos.x);
+        maxAABB.y = std::max(maxAABB.y, pos.y);
+        maxAABB.z = std::max(maxAABB.z, pos.z);
+    }
+
+    auto volume = std::make_unique<Sphere>(
+        (maxAABB + minAABB) * 0.5f,
+        glm::length(minAABB - maxAABB));
+    node.setVolume(std::move(volume));
 }

@@ -18,7 +18,8 @@ public:
     void bind(const RenderContext& ctx, Shader* shader) override;
     void draw(const RenderContext& ctx) override;
 
-    virtual const Volume* getVolume();
+    virtual const Volume* getVolume() override;
+    void setVolume(std::unique_ptr<Volume> volume);
 
     void markBuffersDirty();
 

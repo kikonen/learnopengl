@@ -45,6 +45,10 @@ private:
         InstancedNode& node,
         std::vector<Asteroid>& asteroids);
 
+    void calculateVolume(
+        InstancedNode& node,
+        std::vector<Asteroid> asteroids);
+
 private:
     const int m_asteroidCount;
     const int m_radius;
