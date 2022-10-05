@@ -38,6 +38,8 @@
       "version>=": "1.81#2",
       "default-features": false,
       "features": [
+        "docking-experimental",
+        "freetype",
         "glfw-binding",
         "opengl3-binding"
       ]
@@ -46,6 +48,11 @@
       "name": "luajit",
       "platform": "windows & x64",
       "version>=": "2022-08-11#1"
+    },
+    {
+      "name": "sol2",
+      "platform": "windows & x64",
+      "version>=": "3.3.0"
     },
     {
       "name": "spdlog",

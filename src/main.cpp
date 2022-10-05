@@ -2,9 +2,13 @@
 #include <fstream>
 #include <exception>
 
+#include <fmt/format.h>
+
 #include <entt/entt.hpp>
 
-#include <luajit/lua.hpp>
+//include <luajit/lua.hpp>
+
+#include <sol/sol.hpp>
 
 #include "Engine.h"
 #include "Test6.h"
@@ -30,6 +34,16 @@ void testLua() {
     lua_close(state);
 }
 
+void testSol2() {
+    sol::state lua;
+    int x = 0;
+    lua.set_function("beep", [&x] { ++x; });
+    lua.script("beep()");
+    assert(x == 1);
+
+    std::cout << fmt::format("SOL: x={}\n", x);
+}
+
 int runEngine() {
     auto engine = std::make_unique<Test6>();
 
@@ -50,6 +64,7 @@ int main()
     KI_INFO("START");
 
     testLua();
+    testSol2();
     runEngine();
 
     KI_INFO("DONE");
