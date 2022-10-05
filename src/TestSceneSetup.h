@@ -14,19 +14,7 @@ public:
     void setup(std::shared_ptr<Scene> scene);
 
 private:
-    void setupLightDirectional();
-    void setupLightMoving();
-
     void setupNodeBrickwallBox();
-
-    void setupNodeActive();
-
-    void setupRockLight();
-    void setupNodeAsteroidBelt();
-
-    void setupSpriteSkeleton();
-
-    void setupTerrain();
 
     void setupEffectExplosion();
 

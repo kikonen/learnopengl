@@ -75,6 +75,7 @@ class SceneFile
         none,
         camera,
         path,
+        asteroid_belt,
         moving_light,
     };
 
@@ -87,6 +88,7 @@ class SceneFile
         float radius{ 0 };
 
         int mode{ 0 };
+        int count{ 0 };
     };
 
     struct CameraData {
@@ -164,6 +166,7 @@ class SceneFile
         glm::vec3 scale{ 1 };
 
         bool selected{ false };
+        bool instanced{ false };
 
         bool loadTextures{ true };
         std::string materialName;

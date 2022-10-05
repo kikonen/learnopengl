@@ -34,10 +34,6 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
     this->scene = scene;
 
     if (true) {
-        setupNodeAsteroidBelt();
-    }
-
-    if (true) {
         //setupEffectExplosion();
 
         //setupViewport1();
@@ -86,31 +82,6 @@ void TestSceneSetup::setupNodeBrickwallBox()
 
             scene->registry.addNode(node);
         }
-        });
-}
-
-void TestSceneSetup::setupNodeAsteroidBelt()
-{
-    auto scene = this->scene;
-    auto asyncLoader = this->asyncLoader;
-    auto assets = this->assets;
-
-    asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        auto type = std::make_shared<NodeType>();
-        type->nodeShader = asyncLoader->getShader(TEX_TEXTURE);
-        type->flags.batchMode = false;
-
-        MeshLoader loader(assets, "Asteroids", "rock", "rock");
-        type->mesh = loader.load();
-
-        auto node = new InstancedNode(type);
-        node->parentId = PLANET_UUID;
-        node->id = KI_UUID("4a935562-0fcb-4dfd-b41e-6c09976f2d2a");
-
-        const int count = assets.asteroidCount;
-
-        node->controller = std::make_unique<AsteroidBeltController>(count);
-        scene->registry.addNode(node);
         });
 }
 

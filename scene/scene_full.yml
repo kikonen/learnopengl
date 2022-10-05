@@ -531,6 +531,18 @@ entities:
     material_modifier:
       reflection: 0.7
     enabled: true
+  - name: Asteroid belt
+    id: 4a935562-0fcb-4dfd-b41e-6c09976f2d2a
+    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    model: [rock, rock]
+    instanced: true
+    shader: texture
+    pos: [0, 0, 0]
+    controller:
+      type: asteroid_belt
+      count: 1000
+      enabled: true
+    enabled: true
   - name: Skeleton army
     id: fb7ba424-f219-4c12-a00f-703b9ecebbbf
     type: sprite

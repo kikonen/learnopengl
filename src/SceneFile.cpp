@@ -6,6 +6,8 @@
 #include "asset/MeshLoader.h"
 #include "asset/QuadMesh.h"
 
+#include "model/InstancedNode.h"
+
 #include "controller/AsteroidBeltController.h"
 #include "controller/CameraController.h"
 #include "controller/MovingLightController.h"
@@ -187,7 +189,14 @@ Node* SceneFile::createNode(
     const glm::vec3& initialPos,
     const glm::vec3& posAdjustment)
 {
-    auto node = new Node(type);
+    auto node = data.instanced
+        ? new InstancedNode(type)
+        : new Node(type);
+
+    if (data.instanced) {
+        type->flags.instanced = true;
+        type->flags.batchMode = false;
+    }
 
     glm::vec3 pos = initialPos + posAdjustment;
 
@@ -397,6 +406,10 @@ std::unique_ptr<NodeController> SceneFile::createController(
             controller = std::make_unique<NodePathController>(center, data.mode);
             break;
         }
+        case ControllerType::asteroid_belt: {
+            controller = std::make_unique<AsteroidBeltController>(data.count);
+            break;
+        }
         case ControllerType::moving_light: {
             controller = std::make_unique<MovingLightController>(center, data.radius, data.speed);
             break;
@@ -560,6 +573,9 @@ void SceneFile::loadEntity(
         }
         else if (k == "controller") {
             loadController(v, data.controller);
+        }
+        else if (k == "instanced") {
+            data.instanced = v.as<bool>();
         }
         else if (k == "selected") {
             data.selected = v.as<bool>();
@@ -731,6 +747,9 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
             else if (type == "path") {
                 data.type = ControllerType::path;
             }
+            else if (type == "asteroid_belt") {
+                data.type = ControllerType::asteroid_belt;
+            }
             else if (type == "moving_light") {
                 data.type = ControllerType::moving_light;                
             }
@@ -749,6 +768,9 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
         }
         else if (k == "mode") {
             data.mode = v.as<int>();
+        }
+        else if (k == "count") {
+            data.count = v.as<int>();
         }
         else if (k == "pos") {
             //data.pos = readVec3(v);
