@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <map>
 
 #include <stduuid/uuid.h>
@@ -136,8 +137,7 @@ class SceneFile
         sprite
     };
 
-
-    struct EntityData {
+    struct EntityCloneData {
         bool valid{ false };
 
         bool enabled{ false };
@@ -147,7 +147,9 @@ class SceneFile
         std::string name;
         std::string desc;
 
+        // NOTE KI debug only
         std::string id_str;
+        // NOTE KI debug only
         std::string parentId_str;
 
         uuids::uuid id{};
@@ -159,14 +161,15 @@ class SceneFile
         std::string shaderName{ TEX_TEXTURE };
         std::vector<std::string> shaderDefinitions{};
         std::map<const std::string, bool> renderFlags{};
-        //glm::vec3 pos{ 0 };
-        std::vector<glm::vec3> positions{};
+        glm::vec3 position{ 0 };
         glm::vec3 rotation{ 0 };
         glm::vec4 mirrorPlane{ 0 };
         glm::vec3 scale{ 1 };
 
         bool selected{ false };
         bool instanced{ false };
+
+        glm::vec3 clonePosition{ 0 };
 
         bool loadTextures{ true };
         std::string materialName;
@@ -185,6 +188,11 @@ class SceneFile
         LightData light;
     };
 
+    struct EntityData {
+        EntityCloneData base;
+        std::vector<EntityCloneData> clones;
+    };
+
 public:
     SceneFile(
         AsyncLoader* asyncLoader,
@@ -198,7 +206,7 @@ private:
     void attach(
         std::shared_ptr<Scene> scene,
         const SkyboxData& skybox,
-        const std::map<const uuids::uuid, EntityData>& entities,
+        const std::vector<EntityData>& entities,
         std::vector<Material>& materials);
 
     void attachSkybox(
@@ -209,11 +217,17 @@ private:
     void attachEntity(
         std::shared_ptr<Scene> scene,
         const EntityData& data,
-        const std::map<const uuids::uuid, EntityData>& entities,
+        std::vector<Material>& materials);
+
+    void attachEntityClone(
+        std::shared_ptr<Scene> scene,
+        const EntityData& entity,
+        const EntityCloneData& data,
+        bool cloned,
         std::vector<Material>& materials);
 
     void assignFlags(
-        const EntityData& data,
+        const EntityCloneData& data,
         NodeType& type);
 
     void modifyMaterial(
@@ -223,21 +237,22 @@ private:
 
     Node* createNode(
         const Group* group,
-        const EntityData& data,
+        const EntityCloneData& data,
         const std::shared_ptr<NodeType>& type,
-        const glm::vec3& initialPos,
-        const glm::vec3& posAdjustment);
+        const glm::vec3& rootPos,
+        const glm::vec3& posAdjustment,
+        bool instanced);
 
     std::unique_ptr<Camera> createCamera(
-        const EntityData& entity,
+        const EntityCloneData& entity,
         const CameraData& data);
 
     std::unique_ptr<Light> createLight(
-        const EntityData& entity,
+        const EntityCloneData& entity,
         const LightData& data);
 
     std::unique_ptr<NodeController> createController(
-        const EntityData& entity,
+        const EntityCloneData& entity,
         const ControllerData& data,
         Node* node);
 
@@ -248,7 +263,7 @@ private:
 
     void loadEntities(
         const YAML::Node& doc,
-        std::map<const uuids::uuid, EntityData>& entities,
+        std::vector<EntityData>& entities,
         std::vector<Material>& materials);
 
     void loadEntity(
@@ -256,9 +271,16 @@ private:
         std::vector<Material>& materials,
         EntityData& data);
 
+    void loadEntityClone(
+        const YAML::Node& node,
+        std::vector<Material>& materials,
+        EntityCloneData& data,
+        std::vector<EntityCloneData>& clones,
+        bool recurse);
+
     void loadMaterialModifiers(
         const YAML::Node& node,
-        EntityData& data);
+        EntityCloneData& data);
 
     void loadRepeat(
         const YAML::Node& node,
@@ -306,6 +328,6 @@ private:
     const std::string filename;
 
     SkyboxData skybox;
-    std::map<const uuids::uuid, EntityData> entities;
+    std::vector<EntityData> entities;
     std::vector<Material> materials;
 };

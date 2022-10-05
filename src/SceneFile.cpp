@@ -48,13 +48,13 @@ void SceneFile::load(std::shared_ptr<Scene> scene)
 void SceneFile::attach(
     std::shared_ptr<Scene> scene,
     const SkyboxData& skybox,
-    const std::map<const uuids::uuid, EntityData>& entities,
+    const std::vector<EntityData>& entities,
     std::vector<Material>& materials)
 {
     attachSkybox(scene, skybox, materials);
 
-    for (const auto& it : entities) {
-        attachEntity(scene, it.second, entities, materials);
+    for (const auto& entity : entities) {
+        attachEntity(scene, entity, materials);
     }
 }
 
@@ -73,19 +73,41 @@ void SceneFile::attachSkybox(
 void SceneFile::attachEntity(
     std::shared_ptr<Scene> scene,
     const EntityData& data,
-    const std::map<const uuids::uuid, EntityData>& entities,
+    std::vector<Material>& materials)
+{
+    if (!data.base.enabled) {
+        return;
+    }
+
+    asyncLoader->addLoader([this, scene, &data, &materials]() {
+        if (data.clones.empty()) {
+            attachEntityClone(scene, data, data.base, false, materials);
+        }
+        else {
+            for (auto& cloneData : data.clones) {
+                attachEntityClone(scene, data, cloneData, true, materials);
+            }
+        }
+    });
+}
+
+void SceneFile::attachEntityClone(
+    std::shared_ptr<Scene> scene,
+    const EntityData& entity,
+    const EntityCloneData& data,
+    bool cloned,
     std::vector<Material>& materials)
 {
     if (!data.enabled) {
         return;
     }
 
-    asyncLoader->addLoader([this, scene, &data]() {
+    asyncLoader->addLoader([this, scene, &entity, &data, cloned]() {
         const Assets& assets = asyncLoader->assets;
 
         // NOTE KI if repeated then create transparent owner node for children
         const auto& repeat = data.repeat;
-        const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1 || data.positions.size() > 1;
+        const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
 
         auto type = std::make_shared<NodeType>();
         assignFlags(data, *type);
@@ -159,7 +181,7 @@ void SceneFile::attachEntity(
             if (!data.loadTextures) {
                 m.loadTextures(assets);
             }
-         });
+            });
 
         Group* group = nullptr;
         if (grouped) {
@@ -171,23 +193,24 @@ void SceneFile::attachEntity(
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
-                    for (const auto& initialPos : data.positions) {
-                        const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
-                        auto node = createNode(group, data, type, initialPos, posAdjustment);
-                        scene->registry.addNode(node);
-                    }
+                    const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
+                    if (data.id == KI_UUID("d07de319-10ce-4bae-8aa2-db574fc9b839"))
+                        int x = 0;
+                    auto node = createNode(group, data, type, data.clonePosition, posAdjustment, cloned);
+                    scene->registry.addNode(node);
                 }
             }
         }
-     });
+        });
 }
 
 Node* SceneFile::createNode(
     const Group* group,
-    const EntityData& data,
+    const EntityCloneData& data,
     const std::shared_ptr<NodeType>& type,
-    const glm::vec3& initialPos,
-    const glm::vec3& posAdjustment)
+    const glm::vec3& clonePosition,
+    const glm::vec3& posAdjustment,
+    bool cloned)
 {
     auto node = data.instanced
         ? new InstancedNode(type)
@@ -198,12 +221,14 @@ Node* SceneFile::createNode(
         type->flags.batchMode = false;
     }
 
-    glm::vec3 pos = initialPos + posAdjustment;
+    glm::vec3 pos = data.position + clonePosition + posAdjustment;
 
     if (group) {
         node->groupId = group->id;
     } else {
-        node->id = data.id;
+        // NOTE KI no id for clones; would duplicate base id => conflicts
+        if (!cloned)
+            node->id = data.id;
     }
 
     if (data.parentId.is_nil()) {
@@ -236,7 +261,7 @@ Node* SceneFile::createNode(
 }
 
 void SceneFile::assignFlags(
-    const EntityData& data,
+    const EntityCloneData& data,
     NodeType& type)
 {
     NodeRenderFlags& flags = type.flags;
@@ -338,12 +363,12 @@ void SceneFile::modifyMaterial(
 }
 
 std::unique_ptr<Camera> SceneFile::createCamera(
-    const EntityData& entity,
+    const EntityCloneData& entity,
     const CameraData& data)
 {
     if (!data.enabled) return std::unique_ptr<Camera>();
 
-    auto pos = entity.positions[0] + data.pos + assets.groundOffset;
+    auto pos = entity.position + data.pos + assets.groundOffset;
     auto camera = std::make_unique<Camera>(pos, data.front, data.up);
     camera->setRotation(data.rotation);
 
@@ -351,7 +376,7 @@ std::unique_ptr<Camera> SceneFile::createCamera(
 }
 
 std::unique_ptr<Light> SceneFile::createLight(
-    const EntityData& entity,
+    const EntityCloneData& entity,
     const LightData& data)
 {
     if (!data.enabled) return std::unique_ptr<Light>();
@@ -387,7 +412,7 @@ std::unique_ptr<Light> SceneFile::createLight(
 }
 
 std::unique_ptr<NodeController> SceneFile::createController(
-    const EntityData& entity,
+    const EntityCloneData& entity,
     const ControllerData& data,
     Node* node)
 {
@@ -446,16 +471,13 @@ void SceneFile::loadSkybox(
 
 void SceneFile::loadEntities(
     const YAML::Node& doc,
-    std::map<const uuids::uuid, EntityData>& entities,
+    std::vector<EntityData>& entities,
     std::vector<Material>& materials)
 {
     for (const auto& entry : doc["entities"]) {
         EntityData data;
         loadEntity(entry, materials, data);
-        // NOTE KI ignore elements without ID
-        if (data.id.is_nil()) continue;
-        data.valid = true;
-        entities[data.id] = data;
+        entities.push_back(data);
     }
 }
 
@@ -464,6 +486,18 @@ void SceneFile::loadEntity(
     std::vector<Material>& materials,
     EntityData& data)
 {
+    loadEntityClone(node, materials, data.base, data.clones, true);
+}
+
+void SceneFile::loadEntityClone(
+    const YAML::Node& node,
+    std::vector<Material>& materials,
+    EntityCloneData& data,
+    std::vector<EntityCloneData>& clones,
+    bool recurse)
+{
+    const YAML::Node* clonesNode = nullptr;
+
     for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
@@ -547,16 +581,10 @@ void SceneFile::loadEntity(
         else if (k == "load_textures") {
             data.loadTextures = v.as<bool>();
         }
-        else if (k == "pos") {
-            data.positions.push_back(readVec3(v));
+        else if (k == "position" || k == "pos") {
+            data.position = readVec3(v);
         }
-        else if (k == "positions") {
-            data.positions.clear();
-            for (const auto& p : v) {
-                data.positions.push_back(readVec3(p));
-            }
-        }
-        else if (k == "rotation") {
+        else if (k == "rotation" || k == "rot") {
             data.rotation = readVec3(v);
         }
         else if (k == "scale") {
@@ -583,20 +611,32 @@ void SceneFile::loadEntity(
         else if (k == "enabled") {
             data.enabled = v.as<bool>();
         }
+        else if (k == "clone_position") {
+            data.clonePosition = readVec3(v);
+        }
+        else if (k == "clones") {
+            if (recurse)
+                clonesNode = &v;
+        }
         else {
             std::cout << "UNKNOWN ENTITY_ENTRY: " << k << "=" << v << "\n";
         }
     }
 
-    if (data.positions.empty()) {
-        // NOTE KI *ENSURE* there is position
-        data.positions.emplace_back(glm::vec3(0));
+    if (clonesNode) {
+        for (const auto& node : *clonesNode) {
+            // NOTE KI intialize with current data
+            EntityCloneData clone = data;
+            std::vector<EntityCloneData> dummy{};
+            loadEntityClone(node, materials, clone, dummy, false);
+            clones.push_back(clone);
+        }
     }
 }
 
 void SceneFile::loadMaterialModifiers(
     const YAML::Node& node,
-    EntityData& data)
+    EntityCloneData& data)
 {
     data.materialModifiers.name = "<modifier>";
 

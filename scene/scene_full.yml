@@ -434,13 +434,13 @@ entities:
     id: 6c4675b6-3716-4c9e-bb4b-32e49de7349c
     model: texture_cube_3
     shader: texture
-    positions:
-      - [-5.0, 15.0, -5.0]
-      - [5.0, 15.0, -5.0]
-      - [-5.0, 15.0, 5.0]
-      - [5.0, 15.0, 5.0]
     scale: 1
     enabled: true
+    clones:
+      - pos: [-5.0, 15.0, -5.0]
+      - pos: [5.0, 15.0, -5.0]
+      - pos: [-5.0, 15.0, 5.0]
+      - pos: [5.0, 15.0, 5.0]
   - name: Cube 4
     id: c732f488-903e-40d0-8b24-389374d89a63
     model: texture_cube_4
@@ -572,6 +572,29 @@ entities:
       - render_back
     scale: [1.5, 3, 1]
     enabled: false
+  - name: Giant wooden box
+    id: d07de319-10ce-4bae-8aa2-db574fc9b839
+    model: woodwall
+    shader: texture
+    clone_position: [0, 40, 0]
+    render_flags:
+      - render_back
+      - no_shadow
+    scale: [100, 100, 100]
+    enabled: true
+    clones:
+      - pos: [0.0, 100.0, 0.0]
+        rot: [270, 0, 0]
+      - pos: [0.0, -100.0, .0]
+        rot: [90, 0, 0]
+      - pos: [100.0, 0.0, 0.0]
+        rot: [0, 90, 0]
+      - pos: [-100.0, 0.0, 0.0]
+        rot: [0, 270, 0]
+      - pos: [0.0, 0.0, 100.0]
+        rot: [0, 0, 0]
+      - pos: [0.0, 0.0, -100.0]
+        rot: [0, 180, 0]
 materials:
   - name: skybox
     type: skybox

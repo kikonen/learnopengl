@@ -34,6 +34,8 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
     this->scene = scene;
 
     if (true) {
+        //setupNodeBrickwallBox();
+
         //setupEffectExplosion();
 
         //setupViewport1();
@@ -51,33 +53,34 @@ void TestSceneSetup::setupNodeBrickwallBox()
         type->nodeShader = asyncLoader->getShader(TEX_TEXTURE);
         type->flags.renderBack = true;
 
-        MeshLoader loader(assets, "Brickbox", "brickwall2");
+        MeshLoader loader(assets, "Huge woodbox", "woodwall");
         type->mesh = loader.load();
 
-        glm::vec3 pos[] = {
-            //        {0.0, 1.0, 0.0},
-                    {0.0, -1.0, .0},
-                    //        {1.0, 0.0, 0.0},
-                    //        {-1.0, 0.0, 0.0},
-                    //        {0.0, 0.0, 1.0},
-                    //        {0.0, 0.0, -1.0},
+        glm::vec3 positions[] = {
+            {0.0, 1.0, 0.0},
+            {0.0, -1.0, .0},
+            {1.0, 0.0, 0.0},
+            {-1.0, 0.0, 0.0},
+            {0.0, 0.0, 1.0},
+            {0.0, 0.0, -1.0},
         };
 
-        glm::vec3 rot[] = {
-            //        {270, 0, 0},
-                    {90, 0, 0},
-                    //        {0, 90, 0},
-                    //        {0, 270, 0},
-                    //        {0, 0, 0},
-                    //        {0, 180, 0},
+        glm::vec3 rotations[] = {
+            {270, 0, 0},
+            {90, 0, 0},
+            {0, 90, 0},
+            {0, 270, 0},
+            {0, 0, 0},
+            {0, 180, 0},
         };
 
         float scale = 100;
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 6; i++) {
             auto node = new Node(type);
-            node->setPos(pos[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 95, 0) + assets.groundOffset);
+            auto pos = positions[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 70, 0) + assets.groundOffset;
+            node->setPos(pos);
             node->setScale(scale);
-            node->setRotation(rot[i]);
+            node->setRotation(rotations[i]);
             //node->skipShadow = true;
 
             scene->registry.addNode(node);
