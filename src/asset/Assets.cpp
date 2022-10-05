@@ -38,7 +38,7 @@ Assets::Assets()
     showShadowMapView = false;
     showReflectionView = false;
     showRefractionView = false;
-        
+
     // NOTE KI no skipping of frames
     drawSkip = 0;
     debugClearColor = false;
@@ -89,5 +89,4 @@ Assets::Assets()
 
     /////////////////////////
     // TEMPORARIES
-    asteroidCount = 1000;
 }

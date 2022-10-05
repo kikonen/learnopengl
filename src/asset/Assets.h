@@ -10,7 +10,7 @@ class Assets final
 public:
     Assets();
 
-public: 
+public:
     int glsl_version[3];
     std::string glsl_version_str;
 
@@ -95,6 +95,4 @@ public:
 
     // NOTE KI TEMPORARY HACKS
     // => provide logic for these via scenefile
-    int asteroidCount;
 };
-

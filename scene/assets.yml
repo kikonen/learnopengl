@@ -65,5 +65,3 @@ assets:
 
   cube_map_size: 1000
   cube_map_draw_skip: 2
-
-  asteroid_count: 1000
