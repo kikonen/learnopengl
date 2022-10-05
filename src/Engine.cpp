@@ -107,6 +107,7 @@ void Engine::run() {
             loopTime = std::chrono::system_clock::now();
             elapsedDuration = loopTime - prevLoopTime;
 
+            clock.frameCount += 1;
             clock.ts = glfwGetTime();
             clock.elapsedSecs = elapsedDuration.count();
 

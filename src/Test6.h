@@ -32,4 +32,8 @@ private:
 
     std::unique_ptr<SceneFile> file;
     std::unique_ptr<TestSceneSetup> testSetup;
+
+    unsigned long drawCount = 0;
+    unsigned long skipCount = 0;
+    float frustumElapsedSecs = 0;
 };

@@ -183,7 +183,11 @@ void RenderContext::updateFrustum()
     // TODO KI https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
     // https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/entity.h
 
-    const float fovY = glm::radians(camera.getZoom());
+    // NOTE KI use 90 angle for culling; smaller does cut-off too early
+    // => 90 angle neither working correctly always for terrain tiles
+    // => TODO KI WHAT is failing
+    //const float fovY = glm::radians(camera.getZoom());
+    const float fovY = glm::radians(90.f);
     const glm::vec3& pos = camera.getPos();
     const glm::vec3& front = camera.getViewFront();
     const glm::vec3& up = camera.getViewUp();

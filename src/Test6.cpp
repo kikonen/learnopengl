@@ -1,5 +1,7 @@
 #include "Test6.h"
 
+#include <fmt/format.h>
+
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
@@ -101,8 +103,20 @@ int Test6::onRender(const RenderClock& clock) {
         frame->render(ctx);
     }
 
-    if (assets.frustumDebug)
-        KI_INFO_SB(ctx.name << ": draw: " << ctx.drawCount << " skip: " << ctx.skipCount);
+    drawCount += ctx.drawCount;
+    skipCount += ctx.skipCount;
+
+    if (assets.frustumEnabled && assets.frustumDebug) {
+        frustumElapsedSecs += clock.elapsedSecs;
+        if (frustumElapsedSecs >= 10) {
+            frustumElapsedSecs -= 10;
+            auto ratio = (float)skipCount / (float)drawCount;
+            auto frameDraw = (float)drawCount / (float)clock.frameCount;
+            auto frameSkip = (float)skipCount / (float)clock.frameCount;
+            KI_INFO_SB(fmt::format("{} : total-frames: {}, total-draw: {}, total-skip: {}, ratio: {}", ctx.name, clock.frameCount, drawCount, skipCount, ratio));
+            KI_INFO_SB(fmt::format("{} : frame-draw: {}, frame-skip: {}", ctx.name, frameDraw, frameSkip));
+        }
+    }
 
     return 0;
 }
