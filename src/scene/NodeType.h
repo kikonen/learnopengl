@@ -46,6 +46,9 @@ public:
 
     std::unique_ptr<Mesh> mesh{ nullptr };
 
+    std::string initScript;
+    std::string runScript;
+
     Shader* nodeShader{ nullptr };
     Shader* boundShader{ nullptr };
 

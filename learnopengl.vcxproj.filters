@@ -240,6 +240,9 @@
     <ClCompile Include="src\asset\Sphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\command\Command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -489,6 +492,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\uuid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\Command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\MoveNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
