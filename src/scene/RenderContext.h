@@ -55,6 +55,7 @@ public:
 
     const RenderClock& clock;
 
+    mutable bool useFrustum = true;
     Frustum frustum;
 
     GLState& state;

@@ -96,7 +96,10 @@ void ShadowMapRenderer::render(
         // NOTE KI *NO* color in shadowmap
         glClear(GL_DEPTH_BUFFER_BIT);
 
+        ctx.useFrustum = false;
         drawNodes(ctx, registry);
+        ctx.useFrustum = true;
+
         shadowBuffer->unbind(ctx);
     }
 
