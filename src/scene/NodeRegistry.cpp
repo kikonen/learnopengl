@@ -32,11 +32,13 @@ NodeRegistry::~NodeRegistry()
         solidNodes.clear();
         blendedNodes.clear();
 
-        cameraNode = nullptr;
+        m_cameraNodes.clear();
+    
+        m_dirLight = nullptr;
+        m_pointLights.clear();
+        m_spotLights.clear();
 
-        dirLight = nullptr;
-        pointLights.clear();
-        spotLights.clear();
+        m_root = nullptr;
     }
 
     KI_INFO_SB("NODE_REGISTRY: delete");
@@ -69,7 +71,9 @@ void NodeRegistry::addGroup(Group* group)
     groups.push_back(group);
 }
 
-void NodeRegistry::addNode(Node* node)
+void NodeRegistry::addNode(
+    NodeType* type,
+    Node* node)
 {
     std::lock_guard<std::mutex> lock(load_lock);
     KI_INFO_SB("ADD_NODE: id=" << node->objectID << ", type=" << node->type->str());
@@ -186,8 +190,6 @@ void NodeRegistry::bindNode(Node* node)
     assert(shader);
     if (!shader) return;
 
-    //if (node->id == KI_UUID("7c90bc35-1a05-4755-b52a-1f8eea0bacfa")) KI_BREAK();
-
     type->prepare(assets);
 
     auto* map = &solidNodes;
@@ -213,21 +215,25 @@ void NodeRegistry::bindNode(Node* node)
     vTyped.push_back(node);
 
     if (node->camera) {
-        cameraNode = node;
+        m_cameraNodes.push_back(node);
     }
 
     if (node->light) {
         Light* light = node->light.get();
 
         if (light->directional) {
-            dirLight = node;
+            m_dirLight = node;
         }
         else if (light->point) {
-            pointLights.push_back(node);
+            m_pointLights.push_back(node);
         }
         else if (light->spot) {
-            spotLights.push_back(node);
+            m_spotLights.push_back(node);
         }
+    }
+
+    if (type->flags.root) {
+        m_root = node;
     }
 
     scene.bindComponents(node);

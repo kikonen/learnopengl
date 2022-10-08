@@ -18,5 +18,8 @@ private:
     const glm::vec3 center;
     const int pathMode;
 
+    bool m_translate;
+    bool m_rotate;
+    bool m_scale;
 };
 

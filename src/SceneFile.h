@@ -24,7 +24,7 @@ class SceneFile
         std::string shaderName{ "skybox" };
         std::string materialName{};
 
-        bool valid() {
+        bool const valid() {
             return !materialName.empty();
         }
     };
@@ -132,6 +132,7 @@ class SceneFile
     };
 
     enum class EntityType {
+        origo,
         model,
         quad,
         sprite
@@ -192,6 +193,7 @@ class SceneFile
     };
 
     struct EntityData {
+        bool isRoot{ false };
         EntityCloneData base;
         std::vector<EntityCloneData> clones;
     };
@@ -208,22 +210,25 @@ public:
 private:
     void attach(
         std::shared_ptr<Scene> scene,
-        const SkyboxData& skybox,
+        SkyboxData& skybox,
+        const EntityData& root,
         const std::vector<EntityData>& entities,
         std::vector<Material>& materials);
 
     void attachSkybox(
         std::shared_ptr<Scene> scene,
-        const SkyboxData& data,
+        SkyboxData& data,
         std::vector<Material>& materials);
 
     void attachEntity(
         std::shared_ptr<Scene> scene,
+        const EntityData& root,
         const EntityData& data,
         std::vector<Material>& materials);
 
     void attachEntityClone(
         std::shared_ptr<Scene> scene,
+        const EntityData& root,
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
@@ -240,10 +245,12 @@ private:
 
     Node* createNode(
         const Group* group,
+        const EntityData& root,
         const EntityCloneData& data,
         const std::shared_ptr<NodeType>& type,
         const glm::vec3& rootPos,
         const glm::vec3& posAdjustment,
+        bool isRoot,
         bool instanced);
 
     void runInitScript(
@@ -265,22 +272,22 @@ private:
 
     void loadSkybox(
         const YAML::Node& node,
-        SkyboxData& data,
-        std::vector<Material>& materials);
+        SkyboxData& data);
+
+    void loadRoot(
+        const YAML::Node& doc,
+        EntityData& root);
 
     void loadEntities(
         const YAML::Node& doc,
-        std::vector<EntityData>& entities,
-        std::vector<Material>& materials);
+        std::vector<EntityData>& entities);
 
     void loadEntity(
         const YAML::Node& node,
-        std::vector<Material>& materials,
         EntityData& data);
 
     void loadEntityClone(
         const YAML::Node& node,
-        std::vector<Material>& materials,
         EntityCloneData& data,
         std::vector<EntityCloneData>& clones,
         bool recurse);
@@ -330,11 +337,13 @@ private:
     const std::string resolveTexturePath(const std::string& line);
 
 private:
-    AsyncLoader* asyncLoader;
-    const Assets& assets;
-    const std::string filename;
+    AsyncLoader* m_asyncLoader;
+    const Assets& m_assets;
+    const std::string m_filename;
 
-    SkyboxData skybox;
-    std::vector<EntityData> entities;
-    std::vector<Material> materials;
+    SkyboxData m_skybox;
+
+    EntityData m_root;
+    std::vector<EntityData> m_entities;
+    std::vector<Material> m_materials;
 };

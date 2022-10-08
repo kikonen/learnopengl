@@ -26,9 +26,9 @@ SceneFile::SceneFile(
     AsyncLoader* asyncLoader,
     const Assets& assets,
     const std::string& filename)
-    : filename(filename),
-    assets(assets),
-    asyncLoader(asyncLoader)
+    : m_filename(filename),
+    m_assets(assets),
+    m_asyncLoader(asyncLoader)
 {
 }
 
@@ -38,43 +38,49 @@ SceneFile::~SceneFile()
 
 void SceneFile::load(std::shared_ptr<Scene> scene)
 {
-    std::ifstream fin(filename);
+    std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);
 
-    loadSkybox(doc, skybox, materials);
-    loadMaterials(doc, materials);
-    loadEntities(doc, entities, materials);
+    loadSkybox(doc, m_skybox);
+    loadMaterials(doc, m_materials);
 
-    attach(scene, skybox, entities, materials);
+    loadRoot(doc, m_root);
+    loadEntities(doc, m_entities);
+
+    attach(scene, m_skybox, m_root, m_entities, m_materials);
 }
 
 void SceneFile::attach(
     std::shared_ptr<Scene> scene,
-    const SkyboxData& skybox,
+    SkyboxData& skybox,
+    const EntityData& root,
     const std::vector<EntityData>& entities,
     std::vector<Material>& materials)
 {
     attachSkybox(scene, skybox, materials);
 
+    attachEntity(scene, root, root, materials);
+
     for (const auto& entity : entities) {
-        attachEntity(scene, entity, materials);
+        attachEntity(scene, root, entity, materials);
     }
 }
 
 void SceneFile::attachSkybox(
     std::shared_ptr<Scene> scene,
-    const SkyboxData& data,
+    SkyboxData& data,
     std::vector<Material>& materials)
 {
-    if (!skybox.valid()) return;
+    if (!data.valid()) return;
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
-    skybox->prepare(assets, asyncLoader->shaders);
+    skybox->prepare(m_assets, m_asyncLoader->shaders);
     scene->skyboxRenderer.reset(skybox.release());
 }
 
 void SceneFile::attachEntity(
     std::shared_ptr<Scene> scene,
+    const EntityData& root,
     const EntityData& data,
     std::vector<Material>& materials)
 {
@@ -82,13 +88,13 @@ void SceneFile::attachEntity(
         return;
     }
 
-    asyncLoader->addLoader([this, scene, &data, &materials]() {
+    m_asyncLoader->addLoader([this, scene, &root, &data, &materials]() {
         if (data.clones.empty()) {
-            attachEntityClone(scene, data, data.base, false, materials);
+            attachEntityClone(scene, root, data, data.base, false, materials);
         }
         else {
             for (auto& cloneData : data.clones) {
-                attachEntityClone(scene, data, cloneData, true, materials);
+                attachEntityClone(scene, root, data, cloneData, true, materials);
             }
         }
     });
@@ -96,6 +102,7 @@ void SceneFile::attachEntity(
 
 void SceneFile::attachEntityClone(
     std::shared_ptr<Scene> scene,
+    const EntityData& root,
     const EntityData& entity,
     const EntityCloneData& data,
     bool cloned,
@@ -105,73 +112,77 @@ void SceneFile::attachEntityClone(
         return;
     }
 
-    asyncLoader->addLoader([this, scene, &entity, &data, cloned]() {
-        const Assets& assets = asyncLoader->assets;
+    const Assets& assets = m_assets;
 
-        // NOTE KI if repeated then create transparent owner node for children
-        const auto& repeat = data.repeat;
-        const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
+    // NOTE KI if repeated then create transparent owner node for children
+    const auto& repeat = data.repeat;
+    const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
 
-        auto type = std::make_shared<NodeType>();
-        assignFlags(data, *type);
-        {
-            std::vector<std::string> definitions;
-            for (auto& v : data.shaderDefinitions) {
-                definitions.push_back(v);
-            }
-            if (type->flags.alpha) {
-                definitions.push_back(DEF_USE_ALPHA);
-            }
-            if (type->flags.blend) {
-                definitions.push_back(DEF_USE_BLEND);
-            }
-
-            type->nodeShader = asyncLoader->getShader(data.shaderName, definitions);
+    auto type = std::make_shared<NodeType>();
+    assignFlags(data, *type);
+    {
+        std::vector<std::string> definitions;
+        for (auto& v : data.shaderDefinitions) {
+            definitions.push_back(v);
         }
-        type->batch.batchSize = data.batchSize;
-
-        // NOTE KI need to create copy *IF* modifiers
-        // TODO KI should make copy *ALWAYS* for safety
-        Material* material = nullptr;
-        if (!data.materialName.empty()) {
-            material = Material::find(data.materialName, this->materials);
+        if (type->flags.alpha) {
+            definitions.push_back(DEF_USE_ALPHA);
+        }
+        if (type->flags.blend) {
+            definitions.push_back(DEF_USE_BLEND);
         }
 
-        if (data.type == EntityType::model) {
-            MeshLoader meshLoader(assets, data.name, data.meshName, data.meshPath);
+        type->nodeShader = m_asyncLoader->getShader(data.shaderName, definitions);
+    }
+    type->batch.batchSize = data.batchSize;
+    type->flags.root = entity.isRoot;
 
-            if (material) {
-                meshLoader.defaultMaterial = *material;
-            }
-            meshLoader.forceDefaultMaterial = data.forceMaterial;
-            meshLoader.loadTextures = data.loadTextures;
+    // NOTE KI need to create copy *IF* modifiers
+    // TODO KI should make copy *ALWAYS* for safety
+    Material* material = nullptr;
+    if (!data.materialName.empty()) {
+        material = Material::find(data.materialName, materials);
+    }
 
-            auto mesh = meshLoader.load();
-            KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << mesh->str());
-            type->mesh.reset(mesh.release());
-        }
-        else if (data.type == EntityType::quad) {
-            auto mesh = std::make_unique<QuadMesh>(data.name);
-            if (material) {
-                mesh->m_material = *material;
-                if (data.loadTextures) {
-                    mesh->m_material.loadTextures(assets);
-                }
-            }
-            type->mesh.reset(mesh.release());
-        }
-        else if (data.type == EntityType::sprite) {
-            // NOTE KI sprite *shall* differ from quad later on
-            auto mesh = std::make_unique<QuadMesh>(data.name);
-            if (material) {
-                mesh->m_material = *material;
-                if (data.loadTextures) {
-                    mesh->m_material.loadTextures(assets);
-                }
-            }
-            type->mesh.reset(mesh.release());
-        }
+    if (data.type == EntityType::model) {
+        MeshLoader meshLoader(assets, data.name, data.meshName, data.meshPath);
 
+        if (material) {
+            meshLoader.defaultMaterial = *material;
+        }
+        meshLoader.forceDefaultMaterial = data.forceMaterial;
+        meshLoader.loadTextures = data.loadTextures;
+
+        auto mesh = meshLoader.load();
+        KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << mesh->str());
+        type->mesh.reset(mesh.release());
+    }
+    else if (data.type == EntityType::quad) {
+        auto mesh = std::make_unique<QuadMesh>(data.name);
+        if (material) {
+            mesh->m_material = *material;
+            if (data.loadTextures) {
+                mesh->m_material.loadTextures(assets);
+            }
+        }
+        type->mesh.reset(mesh.release());
+    }
+    else if (data.type == EntityType::sprite) {
+        // NOTE KI sprite *shall* differ from quad later on
+        auto mesh = std::make_unique<QuadMesh>(data.name);
+        if (material) {
+            mesh->m_material = *material;
+            if (data.loadTextures) {
+                mesh->m_material.loadTextures(assets);
+            }
+        }
+        type->mesh.reset(mesh.release());
+    }
+    else if (data.type == EntityType::origo) {
+        // NOTE KI nothing to do
+    }
+
+    if (data.type != EntityType::origo) {
         if (!type->mesh) {
             KI_WARN_SB("SCENE_FILEIGNORE: NO_MESH id=" << data.id << " (" << data.name << ")");
             return;
@@ -185,34 +196,34 @@ void SceneFile::attachEntityClone(
                 m.loadTextures(assets);
             }
             });
+    }
 
-        Group* group = nullptr;
-        if (grouped) {
-            group = new Group();
-            group->id = data.id;
-            scene->registry.addGroup(group);
-        }
+    Group* group = nullptr;
+    if (grouped) {
+        group = new Group();
+        group->id = data.id;
+        scene->registry.addGroup(group);
+    }
 
-        for (auto z = 0; z < repeat.zCount; z++) {
-            for (auto y = 0; y < repeat.yCount; y++) {
-                for (auto x = 0; x < repeat.xCount; x++) {
-                    const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
-                    if (data.id == KI_UUID("d07de319-10ce-4bae-8aa2-db574fc9b839"))
-                        int x = 0;
-                    auto node = createNode(group, data, type, data.clonePosition, posAdjustment, cloned);
-                    scene->registry.addNode(node);
-                }
+    for (auto z = 0; z < repeat.zCount; z++) {
+        for (auto y = 0; y < repeat.yCount; y++) {
+            for (auto x = 0; x < repeat.xCount; x++) {
+                const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
+                auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, entity.isRoot, cloned);
+                scene->registry.addNode(type.get(), node);
             }
         }
-        });
+    }
 }
 
 Node* SceneFile::createNode(
     const Group* group,
+    const EntityData& root,
     const EntityCloneData& data,
     const std::shared_ptr<NodeType>& type,
     const glm::vec3& clonePosition,
     const glm::vec3& posAdjustment,
+    bool isRoot,
     bool cloned)
 {
     auto node = data.instanced
@@ -234,11 +245,13 @@ Node* SceneFile::createNode(
             node->id = data.id;
     }
 
-    if (data.parentId.is_nil()) {
-        pos += assets.groundOffset;
-    }
-    else {
-        node->parentId = data.parentId;
+    if (!isRoot) {
+        if (data.parentId.is_nil()) {
+            node->parentId = root.base.id;
+        }
+        else {
+            node->parentId = data.parentId;
+        }
     }
 
     node->setPos(pos);
@@ -399,7 +412,7 @@ std::unique_ptr<Camera> SceneFile::createCamera(
 {
     if (!data.enabled) return std::unique_ptr<Camera>();
 
-    auto pos = entity.position + data.pos + assets.groundOffset;
+    auto pos = entity.position + data.pos;// +assets.groundOffset;
     auto camera = std::make_unique<Camera>(pos, data.front, data.up);
     camera->setRotation(data.rotation);
 
@@ -415,7 +428,7 @@ std::unique_ptr<Light> SceneFile::createLight(
     auto light = std::make_unique<Light>();
 
     light->setPos(data.pos);
-    light->setWorldTarget(data.worldTarget + assets.groundOffset);
+    light->setWorldTarget(data.worldTarget);// +assets.groundOffset);
 
     light->linear = data.linear;
     light->quadratic = data.quadratic;
@@ -477,8 +490,7 @@ std::unique_ptr<NodeController> SceneFile::createController(
 
 void SceneFile::loadSkybox(
     const YAML::Node& doc,
-    SkyboxData& data,
-    std::vector<Material>& materials)
+    SkyboxData& data)
 {
     auto& node = doc["skybox"];
 
@@ -500,29 +512,37 @@ void SceneFile::loadSkybox(
     }
 }
 
+void SceneFile::loadRoot(
+    const YAML::Node& doc,
+    EntityData& root)
+{
+    auto& node = doc["root"];
+    loadEntity(node, root);
+
+    root.base.enabled = true;
+    root.isRoot = true;
+}
+
 void SceneFile::loadEntities(
     const YAML::Node& doc,
-    std::vector<EntityData>& entities,
-    std::vector<Material>& materials)
+    std::vector<EntityData>& entities)
 {
     for (const auto& entry : doc["entities"]) {
         EntityData data;
-        loadEntity(entry, materials, data);
+        loadEntity(entry, data);
         entities.push_back(data);
     }
 }
 
 void SceneFile::loadEntity(
     const YAML::Node& node,
-    std::vector<Material>& materials,
     EntityData& data)
 {
-    loadEntityClone(node, materials, data.base, data.clones, true);
+    loadEntityClone(node, data.base, data.clones, true);
 }
 
 void SceneFile::loadEntityClone(
     const YAML::Node& node,
-    std::vector<Material>& materials,
     EntityCloneData& data,
     std::vector<EntityCloneData>& clones,
     bool recurse)
@@ -537,7 +557,10 @@ void SceneFile::loadEntityClone(
 
         if (k == "type") {
             std::string type = v.as<std::string>();
-            if (type == "model") {
+            if (type == "origo") {
+                data.type = EntityType::origo;
+            }
+            else if (type == "model") {
                 data.type = EntityType::model;
             }
             else if (type == "quad") {
@@ -665,7 +688,7 @@ void SceneFile::loadEntityClone(
             // NOTE KI intialize with current data
             EntityCloneData clone = data;
             std::vector<EntityCloneData> dummy{};
-            loadEntityClone(node, materials, clone, dummy, false);
+            loadEntityClone(node, clone, dummy, false);
             clones.push_back(clone);
         }
     }

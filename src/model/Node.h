@@ -33,9 +33,6 @@ public:
     const glm::mat4& getWorldModelMatrix();
     const glm::mat3& getWorldNormalMatrix();
 
-    const glm::mat4& getWorldModelMatrixNoScale();
-    const glm::mat3& getWorldNormalMatrixNoScale();
-
     std::array<float, 3> l_getPos();
     void l_setPos(float x, float y, float z);
 
@@ -92,9 +89,6 @@ private:
     glm::mat4 m_worldModelMatrix{ 1.f };
     glm::mat3 m_worldNormalMatrix{ 1.f };
 
-    glm::mat4 m_worldModelMatrixNoScale{ 1.f };
-    glm::mat3 m_worldNormalMatrixNoScale{ 1.f };
-
     glm::vec3 m_pos{ 0.f };
     glm::vec3 m_rotation{ 0.f };
 
@@ -102,9 +96,6 @@ private:
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::mat3 m_normalMatrix{ 1.f };
-
-    glm::mat4 m_modelMatrixNoScale{ 1.f };
-    glm::mat3 m_normalMatrixNoScale{ 1.f };
 
     glm::mat4 m_rotationMatrix{ 0.f };
     glm::mat4 m_translateMatrix{ 0.f };

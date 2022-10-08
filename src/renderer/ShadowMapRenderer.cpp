@@ -53,7 +53,7 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
 {
-    auto& node = ctx.scene->registry.dirLight;
+    auto& node = ctx.scene->registry.m_dirLight;
     if (!node) return;
 
     //glm::mat4 b = {

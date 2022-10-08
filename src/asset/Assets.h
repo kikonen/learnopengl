@@ -33,7 +33,7 @@ public:
     bool placeholderTextureAlways;
     std::string placeholderTexture;
 
-    glm::vec3 groundOffset;
+    //glm::vec3 groundOffset;
 
     bool useIMGUI;
 

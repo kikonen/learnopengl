@@ -17,7 +17,7 @@ void Light::update(const RenderContext& ctx, Node& node)
     //if (!dirty) return;
     if (!enabled) return;
 
-    m_worldPos = node.getWorldModelMatrixNoScale() * glm::vec4(m_pos, 1.f);
+    m_worldPos = node.getWorldModelMatrix() * glm::vec4(m_pos, 1.f);
     // TODO KI SHOULD have local vs. world dir logic; or separate logic for "spot" light
     // => for spot light dir should be *NOT* calculated but set by initializer logic
     m_worldDir = glm::normalize(m_worldTarget - m_worldPos);

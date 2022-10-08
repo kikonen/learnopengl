@@ -42,7 +42,9 @@ public:
 
     void addGroup(Group* group);
 
-    void addNode(Node* node);
+    void addNode(
+        NodeType* type,
+        Node* node);
 
     // @return node null if not found
     Node* const getNode(const int objectID);
@@ -80,11 +82,12 @@ public:
 
     ViewportVector viewports;
 
-    Node* cameraNode = nullptr;
-    Node* dirLight = nullptr;
+    Node* m_root = nullptr;
+    NodeVector m_cameraNodes;
+    Node* m_dirLight = nullptr;
 
-    NodeVector pointLights;
-    NodeVector spotLights;
+    NodeVector m_pointLights;
+    NodeVector m_spotLights;
 
     GroupVector groups;
 

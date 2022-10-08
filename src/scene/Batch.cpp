@@ -226,10 +226,13 @@ void Batch::flush(const RenderContext& ctx, const NodeType& type)
     }
     else {
         drawCount = m_modelMatrices.size();
-        update(m_modelMatrices.size());
     }
 
     if (drawCount == 0) return;
+
+    if (!staticBuffer) {
+        update(drawCount);
+    }
 
     type.mesh->drawInstanced(ctx, drawCount);
 

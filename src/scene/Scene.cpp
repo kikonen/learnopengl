@@ -132,13 +132,16 @@ void Scene::processEvents(RenderContext& ctx)
 
 void Scene::update(RenderContext& ctx)
 {
-    for (const auto& all : registry.allNodes) {
-        for (const auto& it : all.second) {
-            for (auto& node : it.second) {
-                if (!node->parentId.is_nil()) continue;
-                node->update(ctx, nullptr);
-            }
-        }
+    //for (const auto& all : registry.allNodes) {
+    //    for (const auto& it : all.second) {
+    //        for (auto& node : it.second) {
+    //            if (!node->parentId.is_nil()) continue;
+    //            node->update(ctx, nullptr);
+    //        }
+    //    }
+    //}
+    if (registry.m_root) {
+        registry.m_root->update(ctx, nullptr);
     }
 
     for (auto& generator : particleGenerators) {
@@ -323,7 +326,7 @@ void Scene::drawScene(RenderContext& ctx)
 
 Camera* Scene::getCamera()
 {
-    return registry.cameraNode ? registry.cameraNode->camera.get() : nullptr;
+    return !registry.m_cameraNodes.empty() ? registry.m_cameraNodes[0]->camera.get() : nullptr;
 }
 
 void Scene::bindComponents(Node* node)

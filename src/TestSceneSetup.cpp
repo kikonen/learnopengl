@@ -34,58 +34,10 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
     this->scene = scene;
 
     if (true) {
-        //setupNodeBrickwallBox();
-
         //setupEffectExplosion();
 
         //setupViewport1();
     }
-}
-
-void TestSceneSetup::setupNodeBrickwallBox()
-{
-    auto scene = this->scene;
-    auto asyncLoader = this->asyncLoader;
-    auto assets = this->assets;
-
-    asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        auto type = std::make_shared<NodeType>();
-        type->nodeShader = asyncLoader->getShader(TEX_TEXTURE);
-        type->flags.renderBack = true;
-
-        MeshLoader loader(assets, "Huge woodbox", "woodwall");
-        type->mesh = loader.load();
-
-        glm::vec3 positions[] = {
-            {0.0, 1.0, 0.0},
-            {0.0, -1.0, .0},
-            {1.0, 0.0, 0.0},
-            {-1.0, 0.0, 0.0},
-            {0.0, 0.0, 1.0},
-            {0.0, 0.0, -1.0},
-        };
-
-        glm::vec3 rotations[] = {
-            {270, 0, 0},
-            {90, 0, 0},
-            {0, 90, 0},
-            {0, 270, 0},
-            {0, 0, 0},
-            {0, 180, 0},
-        };
-
-        float scale = 100;
-        for (int i = 0; i < 6; i++) {
-            auto node = new Node(type);
-            auto pos = positions[i] * glm::vec3(scale, scale, scale) + glm::vec3(0, 70, 0) + assets.groundOffset;
-            node->setPos(pos);
-            node->setScale(scale);
-            node->setRotation(rotations[i]);
-            //node->skipShadow = true;
-
-            scene->registry.addNode(node);
-        }
-        });
 }
 
 void TestSceneSetup::setupEffectExplosion()
@@ -105,10 +57,10 @@ void TestSceneSetup::setupEffectExplosion()
         type->flags.noShadow = true;
 
         auto node = new Billboard(type);
-        node->setPos(glm::vec3{ 0, 3.5, -20 } + assets.groundOffset);
+        //node->setPos(glm::vec3{ 0, 3.5, -20 } + assets.groundOffset);
         node->setScale(2);
 
-        scene->registry.addNode(node);
+        scene->registry.addNode(type.get(), node);
         });
 }
 

@@ -48,7 +48,7 @@ bool AsteroidBeltController::updateInstanced(
     InstancedNode& node,
     Node* parent)
 {
-    const bool changed = m_updateIndex % m_updateStep == 0;
+    const bool changed = true;// m_updateIndex% m_updateStep == 0;
     //const bool changed = m_updateIndex == 0;
     //return false;
     if (changed) {
@@ -70,9 +70,9 @@ void AsteroidBeltController::updateAsteroids(
     Batch& modelBatch = node.modelBatch;
     Batch& selectedBatch = node.selectedBatch;
 
-    glm::vec3 parentPos{ 0 };
-    if (parent)
-        parentPos = parent->getWorldPos();
+    //glm::vec3 parentPos{ 0 };
+    //if (parent)
+    //    parentPos = parent->getWorldPos();
 
     modelBatch.clear();
     selectedBatch.clear();
@@ -83,14 +83,18 @@ void AsteroidBeltController::updateAsteroids(
     {
         glm::mat4 modelMat{ 1.f };
         {
-            modelMat = glm::translate(modelMat, asteroid.m_position + parentPos);
+            //modelMat = glm::translate(modelMat, asteroid.m_position + parentPos);
+            modelMat = glm::translate(modelMat, asteroid.m_position);
             modelMat = glm::scale(modelMat, glm::vec3(asteroid.m_scale));
             modelMat = glm::rotate(modelMat, asteroid.m_rotationAngle, glm::vec3(0.4f, 0.6f, 0.8f));
         }
 
         glm::mat3 normalMat = glm::transpose(glm::inverse(glm::mat3(modelMat)));
 
-        modelBatch.add(modelMat, normalMat, node.objectID);
+        auto worldMat = parent->getWorldModelMatrix() * modelMat;
+        glm::mat3 worldNormalMat = glm::transpose(glm::inverse(glm::mat3(worldMat)));
+
+        modelBatch.add(worldMat, worldNormalMat, node.objectID);
     }
 
     modelBatch.staticDrawCount = m_asteroids.size();

@@ -132,27 +132,18 @@ void Node::updateModelMatrix(Node* parent) {
         // http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
         // normal = mat3(transpose(inverse(model))) * aNormal;
         m_normalMatrix = glm::transpose(glm::inverse(glm::mat3(m_modelMatrix)));
-
-        m_modelMatrixNoScale = m_translateMatrix * m_rotationMatrix;
-        m_normalMatrixNoScale = glm::transpose(glm::inverse(glm::mat3(m_modelMatrixNoScale)));
     }
 
     // NOTE KI *NOT* knowing if parent is changed
     // => thus have to ALWAYS recalculate
     if (parent) {
-        m_worldModelMatrix = parent->m_worldModelMatrixNoScale * m_modelMatrix;
-        m_worldNormalMatrix = parent->m_worldNormalMatrixNoScale * m_normalMatrix;
-
-        m_worldModelMatrixNoScale = parent->m_worldModelMatrixNoScale * m_modelMatrixNoScale;
-        m_worldNormalMatrixNoScale = parent->m_worldNormalMatrixNoScale * m_normalMatrixNoScale;
+        m_worldModelMatrix = parent->m_worldModelMatrix * m_modelMatrix;
+        m_worldNormalMatrix = parent->m_worldNormalMatrix * m_normalMatrix;
     }
     else {
         if (dirtyModel) {
             m_worldModelMatrix = m_modelMatrix;
             m_worldNormalMatrix = m_normalMatrix;
-
-            m_worldModelMatrixNoScale = m_modelMatrixNoScale;
-            m_worldNormalMatrixNoScale = m_normalMatrixNoScale;
         }
     }
  }
@@ -218,16 +209,6 @@ const glm::mat4& Node::getWorldModelMatrix() {
 
 const glm::mat3& Node::getWorldNormalMatrix() {
     return m_worldNormalMatrix;
-}
-
-const glm::mat4& Node::getWorldModelMatrixNoScale()
-{
-    return m_worldModelMatrixNoScale;
-}
-
-const glm::mat3& Node::getWorldNormalMatrixNoScale()
-{
-    return m_worldNormalMatrixNoScale;
 }
 
 const glm::vec3& const Node::getWorldPos() {

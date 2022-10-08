@@ -80,9 +80,9 @@ void AssetsFile::loadAssets(
         else if (k == "placeholder_texture") {
             data.placeholderTexture = v.as<std::string>();
         }
-        else if (k == "ground_offset") {
-            data.groundOffset = readVec3(v);
-        }
+        //else if (k == "ground_offset") {
+        //    data.groundOffset = readVec3(v);
+        //}
         else if (k == "use_imgui") {
             data.useIMGUI = v.as<bool>();
         }
