@@ -1,5 +1,7 @@
 #include "Batch.h"
 
+#include <fmt\format.h>
+
 #include "ki/uuid.h"
 
 #include "model/Node.h"
@@ -51,12 +53,12 @@ void Batch::clear()
     m_objectIDs.clear();
 }
 
-void Batch::prepare(NodeType* type)
+void Batch::prepare(const NodeType& type)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    if (!type->mesh) return;
+    if (!type.mesh) return;
 
     if (staticBuffer) {
         batchSize = m_modelMatrices.size();
@@ -64,7 +66,7 @@ void Batch::prepare(NodeType* type)
 
     if (batchSize == 0) return;
 
-    KI_GL_CALL(glBindVertexArray(type->mesh->m_buffers.VAO));
+    KI_GL_CALL(glBindVertexArray(type.mesh->m_buffers.VAO));
 
     // model
     {
@@ -139,7 +141,9 @@ void Batch::prepare(NodeType* type)
         update(batchSize);
     }
 
-    KI_DEBUG_SB("BATCHL: " << type->str() << " - model = " << m_modelBufferId << ", normal = " << m_normalBufferId << ", objectID = " << m_objectIDBufferId);
+    KI_DEBUG_SB(
+        "BATCHL: {} - model={}, normal={}, objectID={}",
+        type.str(), m_modelBufferId, m_normalBufferId, m_objectIDBufferId);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -179,19 +183,19 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 
 void Batch::draw(
     const RenderContext& ctx,
-    Node* node,
+    Node& node,
     Shader* shader)
 {
-    auto type = node->type.get();
+    const auto& type = *node.type.get();
 
-    if (!type->mesh) return;
+    if (!type.mesh) return;
 
     //std::cout << node->type->mesh->modelName << '\n';
-    if (node->groupId == KI_UUID("765f5288-21ec-4234-b7cd-6cdba4087e97"))
+    if (node.groupId == KI_UUID("765f5288-21ec-4234-b7cd-6cdba4087e97"))
         int x = 0;
 
-    const auto& volume = node->getVolume();
-    if (ctx.assets.frustumEnabled && volume && !volume->isOnFrustum(ctx.frustum, node->getWorldModelMatrix())) {
+    const auto& volume = node.getVolume();
+    if (ctx.assets.frustumEnabled && volume && !volume->isOnFrustum(ctx.frustum, node.getWorldModelMatrix())) {
         ctx.skipCount += 1;
         return;
     }
@@ -199,34 +203,35 @@ void Batch::draw(
     ctx.drawCount += 1;
 
     if (batchSize == 0) {
-        node->bind(ctx, shader);
-        node->draw(ctx);
+        node.bind(ctx, shader);
+        node.draw(ctx);
         return;
     }
 
-    node->bindBatch(ctx, *this);
+    node.bindBatch(ctx, *this);
 
     if (m_modelMatrices.size() < batchSize) return;
 
     flush(ctx, type);
 }
 
-void Batch::flush(const RenderContext& ctx, NodeType* type)
+void Batch::flush(const RenderContext& ctx, const NodeType& type)
 {
-    if (!type->mesh) return;
+    if (!type.mesh) return;
+    if (batchSize == 0) return;
 
-    int drawCount = m_modelMatrices.size();
+    int drawCount;
     if (staticBuffer) {
         drawCount = staticDrawCount;
     }
-
-    if (batchSize == 0 || drawCount == 0) return;
-
-    if (!staticBuffer) {
+    else {
+        drawCount = m_modelMatrices.size();
         update(m_modelMatrices.size());
     }
 
-    type->mesh->drawInstanced(ctx, drawCount);
+    if (drawCount == 0) return;
+
+    type.mesh->drawInstanced(ctx, drawCount);
 
     if (!staticBuffer) {
         m_modelMatrices.clear();

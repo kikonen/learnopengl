@@ -39,7 +39,6 @@ public:
     void prepare(const Assets& assets) override;
     void prepareBuffers(MeshBuffers& curr) override;
     void bind(const RenderContext& ctx, Shader* shader) override;
-    void draw(const RenderContext& ctx) override;
     void drawInstanced(const RenderContext& ctx, int instanceCount) override;
 
 public:

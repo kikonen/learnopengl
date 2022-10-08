@@ -149,21 +149,23 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
         ShaderBind bound(idShader);
 
         auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
-            for (const auto& [type, nodes] : typeMap) {
-                if (type->flags.noShadow) continue;
+            for (const auto& it : typeMap) {
+                auto& type = *it.first;
 
-                Batch& batch = type->batch;
+                if (type.flags.noShadow) continue;
+
+                Batch& batch = type.batch;
                 batch.objectIDBuffer = true;
 
-                type->bind(ctx, bound.shader);
+                type.bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);
 
-                for (auto& node : nodes) {
-                    batch.draw(ctx, node, bound.shader);
+                for (auto& node : it.second) {
+                    batch.draw(ctx, *node, bound.shader);
                 }
 
                 batch.flush(ctx, type);
-                type->unbind(ctx);
+                type.unbind(ctx);
                 batch.objectIDBuffer = false;
             }
         };

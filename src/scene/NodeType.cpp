@@ -90,7 +90,7 @@ void NodeType::prepare(const Assets& assets)
     }
 
     if (flags.batchMode && batch.batchSize > 0) {
-        batch.prepare(this);
+        batch.prepare(*this);
     }
     else {
         batch.batchSize = 0;

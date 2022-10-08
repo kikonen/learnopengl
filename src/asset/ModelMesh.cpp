@@ -248,11 +248,6 @@ void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
     }
 }
 
-void ModelMesh::draw(const RenderContext& ctx)
-{
-    KI_GL_CALL(glDrawElements(GL_TRIANGLES, m_triCount * 3, GL_UNSIGNED_INT, 0));
-}
-
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
 {
     KI_GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, m_triCount * 3, GL_UNSIGNED_INT, 0, instanceCount));

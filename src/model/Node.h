@@ -113,6 +113,4 @@ private:
     bool m_dirtyRotation = true;
     bool m_dirtyTranslate = true;
     bool m_dirtyScale = true;
-
-    Batch m_singleBatch;
 };

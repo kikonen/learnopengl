@@ -18,13 +18,13 @@ public:
 
     void clear();
 
-    void prepare(NodeType* type);
+    void prepare(const NodeType& type);
 
     void update(size_t count);
     void bind(const RenderContext& ctx, Shader* shader);
-    void draw(const RenderContext& ctx, Node* node, Shader* shader);
+    void draw(const RenderContext& ctx, Node& node, Shader* shader);
 
-    void flush(const RenderContext& ctx, NodeType* type);
+    void flush(const RenderContext& ctx, const NodeType& type);
 
 public:
     int batchSize = -1;

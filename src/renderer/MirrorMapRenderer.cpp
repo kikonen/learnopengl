@@ -137,23 +137,25 @@ void MirrorMapRenderer::drawNodes(
         auto renderTypes = [&ctx, &current](const NodeTypeMap& typeMap) {
             ShaderBind bound(typeMap.begin()->first->nodeShader);
 
-            for (const auto& [type, nodes] : typeMap) {
-                if (type->flags.noShadow) continue;
+            for (const auto& it : typeMap) {
+                auto& type = *it.first;
+
+                if (type.flags.noShadow) continue;
 
                 //ShaderBind bound(type->defaultShader);
 
-                Batch& batch = type->batch;
+                Batch& batch = type.batch;
 
-                type->bind(ctx, bound.shader);
+                type.bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);
 
-                for (auto& node : nodes) {
+                for (auto& node : it.second) {
                     if (node == current) continue;
-                    batch.draw(ctx, node, bound.shader);
+                    batch.draw(ctx, *node, bound.shader);
                 }
 
                 batch.flush(ctx, type);
-                type->unbind(ctx);
+                type.unbind(ctx);
             }
         };
 

@@ -133,8 +133,8 @@ void Scene::processEvents(RenderContext& ctx)
 void Scene::update(RenderContext& ctx)
 {
     for (const auto& all : registry.allNodes) {
-        for (const auto& [type, nodes] : all.second) {
-            for (auto& node : nodes) {
+        for (const auto& it : all.second) {
+            for (auto& node : it.second) {
                 if (!node->parentId.is_nil()) continue;
                 node->update(ctx, nullptr);
             }

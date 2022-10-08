@@ -33,19 +33,21 @@ void NormalRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& reg
     ShaderBind bound(normalShader);
 
     auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
-        for (const auto& [type, nodes] : typeMap) {
-            Batch& batch = type->batch;
+        for (const auto& it : typeMap) {
+            auto& type = *it.first;
 
-            type->bind(ctx, bound.shader);
+            Batch& batch = type.batch;
+
+            type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
 
-            for (auto& node : nodes) {
+            for (auto& node : it.second) {
                 if (!node->allowNormals) continue;
-                batch.draw(ctx, node, bound.shader);
+                batch.draw(ctx, *node, bound.shader);
             }
 
             batch.flush(ctx, type);
-            type->unbind(ctx);
+            type.unbind(ctx);
         }
     };
 

@@ -129,8 +129,10 @@ void NodeRenderer::drawNodes(
     auto renderTypes = [&ctx, &selection](const NodeTypeMap& typeMap) {
         ShaderBind bound(typeMap.begin()->first->nodeShader);
 
-        for (const auto& [type, nodes] : typeMap) {
-            Batch& batch = type->batch;
+        for (const auto& it : typeMap) {
+            auto& type = *it.first;
+
+            Batch& batch = type.batch;
 
             //if (type->flags.renderBack) {
             //    std::cout << 'C';
@@ -141,19 +143,19 @@ void NodeRenderer::drawNodes(
 
             //ShaderBind bound(type->defaultShader);
 
-            type->bind(ctx, bound.shader);
+            type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
 
-            for (auto& node : nodes) {
+            for (auto& node : it.second) {
                 if (selection ? !node->selected : node->selected) continue;
 
                 //if (node->id == KI_UUID("7c90bc35-1a05-4755-b52a-1f8eea0bacfa")) KI_BREAK();
 
-                batch.draw(ctx, node, bound.shader);
+                batch.draw(ctx, *node, bound.shader);
             }
 
             batch.flush(ctx, type);
-            type->unbind(ctx);
+            type.unbind(ctx);
         }
     };
 
@@ -189,10 +191,13 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
         ShaderBind bound(selectionShader);
 
         auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
-            for (const auto& [type, nodes] : typeMap) {
-                Batch& batch = type->batch;
+            for (const auto& it : typeMap) {
+                auto& type = *it.first;
+                auto& nodes = it.second;
 
-                type->bind(ctx, bound.shader);
+                Batch& batch = type.batch;
+
+                type.bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);
 
                 for (auto& node : nodes) {
@@ -200,12 +205,12 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
 
                     glm::vec3 scale = node->getScale();
                     node->setScale(scale * 1.02f);
-                    batch.draw(ctx, node, bound.shader);
+                    batch.draw(ctx, *node, bound.shader);
                     node->setScale(scale);
                 }
 
                 batch.flush(ctx, type);
-                type->unbind(ctx);
+                type.unbind(ctx);
             }
         };
 
@@ -271,7 +276,7 @@ void NodeRenderer::drawBlended(
         if (type != node->type.get()) {
             if (batch) {
                 // NOTE KI Changing batch
-                batch->flush(ctx, type);
+                batch->flush(ctx, *type);
                 type->unbind(ctx);
                 if (shader) {
                     shader->unbind();
@@ -288,11 +293,11 @@ void NodeRenderer::drawBlended(
             batch->bind(ctx, shader);
         }
 
-        batch->draw(ctx, node, shader);
+        batch->draw(ctx, *node, shader);
     }
 
     if (batch) {
-        batch->flush(ctx, type);
+        batch->flush(ctx, *type);
         type->unbind(ctx);
 
         if (shader) {
