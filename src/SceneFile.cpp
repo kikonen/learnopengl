@@ -3,6 +3,9 @@
 #include <vector>
 #include <fstream>
 
+#include <fmt/format.h>
+#include <sol/sol.hpp>
+
 #include "asset/MeshLoader.h"
 #include "asset/QuadMesh.h"
 
@@ -257,7 +260,35 @@ Node* SceneFile::createNode(
         node->controller = createController(data, data.controller, node);
     }
 
+    if (!data.initScript.empty()) {
+        runInitScript(node, data.initScript);
+    }
+
     return node;
+}
+
+void SceneFile::runInitScript(
+    Node* node,
+    std::string script)
+{
+    sol::state lua;
+    lua.open_libraries(sol::lib::base);
+
+    auto p = node->getPos();
+    std::cout << fmt::format("BEFORE: SOL: {} - pos=({}, {}, {})\n", node->str(), p.x, p.y, p.z);
+
+    lua.set_function("getPos", &Node::l_getPos);
+    lua.set_function("setPos", &Node::l_setPos);
+
+    //lua.set_function("setPos", [&node](float x, float y, float z) {
+    //    node->setPos(x, y, z);
+    //});
+    lua.set("node", node);
+    lua.script(script);
+
+    p = node->getPos();
+    std::cout << fmt::format("BEFORE: SOL: {} - pos=({}, {}, {})\n", node->str(), p.x, p.y, p.z);
+
 }
 
 void SceneFile::assignFlags(
@@ -617,6 +648,12 @@ void SceneFile::loadEntityClone(
         else if (k == "clones") {
             if (recurse)
                 clonesNode = &v;
+        }
+        else if (k == "init_script") {
+            data.initScript = v.as<std::string>();
+        }
+        else if (k == "run_script") {
+            data.runScript = v.as<std::string>();
         }
         else {
             std::cout << "UNKNOWN ENTITY_ENTRY: " << k << "=" << v << "\n";

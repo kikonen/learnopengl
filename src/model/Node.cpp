@@ -163,6 +163,19 @@ void Node::updateModelMatrix(Node* parent) {
     }
  }
 
+std::array<float, 3> Node::l_getPos()
+{
+    return { m_pos.x, m_pos.y, m_pos.z };
+}
+
+void Node::l_setPos(float x, float y, float z)
+{
+    m_pos.x = x;
+    m_pos.y = y;
+    m_pos.z = z;
+    m_dirtyTranslate = true;
+}
+
 void Node::setPos(const glm::vec3& pos) {
     m_pos = pos;
     m_dirtyTranslate = true;

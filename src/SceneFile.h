@@ -183,6 +183,9 @@ class SceneFile
 
         Repeat repeat;
 
+        std::string initScript;
+        std::string runScript;
+
         ControllerData controller;
         CameraData camera;
         LightData light;
@@ -242,6 +245,10 @@ private:
         const glm::vec3& rootPos,
         const glm::vec3& posAdjustment,
         bool instanced);
+
+    void runInitScript(
+        Node* node,
+        std::string script);
 
     std::unique_ptr<Camera> createCamera(
         const EntityCloneData& entity,

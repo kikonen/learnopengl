@@ -13,6 +13,13 @@ entities:
     pos: [0.0, 0.0, 0.0]
     scale: 0.3
     enabled: true
+    init_script: |
+      function updateNode(node)
+        local pos = getPos(node)
+        print(pos)
+        setPos(node, pos[1] + 40, pos[2] + 0, pos[3] + 0)
+      end
+      updateNode(node)
   - name: Player
     id: db3e098e-9ed5-4741-b986-16cfc1b2fe9b
     model: player

@@ -36,6 +36,9 @@ public:
     const glm::mat4& getWorldModelMatrixNoScale();
     const glm::mat3& getWorldNormalMatrixNoScale();
 
+    std::array<float, 3> l_getPos();
+    void l_setPos(float x, float y, float z);
+
     void setPos(const glm::vec3& pos);
     const glm::vec3& const getPos();
 
