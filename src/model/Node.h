@@ -30,14 +30,15 @@ public:
     virtual void draw(const RenderContext& ctx);
 
     const glm::vec3& getWorldPos();
+    const int getMatrixLevel();
     const glm::mat4& getWorldModelMatrix();
     const glm::mat3& getWorldNormalMatrix();
 
-    std::array<float, 3> l_getPos();
+    const std::array<float, 3> l_getPos();
     void l_setPos(float x, float y, float z);
 
     void setPos(const glm::vec3& pos);
-    const glm::vec3& const getPos();
+    const glm::vec3& getPos();
 
     void setRotation(const glm::vec3& rotation);
     const glm::vec3& getRotation();
@@ -86,6 +87,10 @@ protected:
     bool m_prepared = false;
 
 private:
+    int m_matrixLevel = 0;
+    int m_parentMatrixLevel = 0;
+
+    glm::vec3 m_worldPos{ 0.f };
     glm::mat4 m_worldModelMatrix{ 1.f };
     glm::mat3 m_worldNormalMatrix{ 1.f };
 

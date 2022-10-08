@@ -18,7 +18,7 @@ public:
 
     void clear();
 
-    void prepare(const NodeType& type);
+    void prepare(NodeType& type);
 
     void update(size_t count);
     void bind(const RenderContext& ctx, Shader* shader);

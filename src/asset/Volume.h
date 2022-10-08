@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "asset/Frustum.h";
+#include "asset/Frustum.h"
 
 
 // https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling

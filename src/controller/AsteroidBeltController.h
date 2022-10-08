@@ -55,6 +55,7 @@ private:
     const int m_offset;
     const int m_updateStep;
 
+    int m_nodeMatrixLevel = 0;
     int m_updateIndex = 0;
 
     std::vector<Asteroid> m_asteroids;

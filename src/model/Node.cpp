@@ -137,18 +137,25 @@ void Node::updateModelMatrix(Node* parent) {
     // NOTE KI *NOT* knowing if parent is changed
     // => thus have to ALWAYS recalculate
     if (parent) {
-        m_worldModelMatrix = parent->m_worldModelMatrix * m_modelMatrix;
-        m_worldNormalMatrix = parent->m_worldNormalMatrix * m_normalMatrix;
+        if (dirtyModel || m_parentMatrixLevel != parent->m_matrixLevel) {
+            m_worldModelMatrix = parent->m_worldModelMatrix * m_modelMatrix;
+            m_worldNormalMatrix = parent->m_worldNormalMatrix * m_normalMatrix;
+            m_parentMatrixLevel = parent->m_matrixLevel;
+            m_worldPos = m_worldModelMatrix[3];
+            m_matrixLevel++;
+        }
     }
     else {
         if (dirtyModel) {
             m_worldModelMatrix = m_modelMatrix;
             m_worldNormalMatrix = m_normalMatrix;
+            m_worldPos = m_worldModelMatrix[3];
+            m_matrixLevel++;
         }
     }
- }
+}
 
-std::array<float, 3> Node::l_getPos()
+const std::array<float, 3> Node::l_getPos()
 {
     return { m_pos.x, m_pos.y, m_pos.z };
 }
@@ -166,7 +173,7 @@ void Node::setPos(const glm::vec3& pos) {
     m_dirtyTranslate = true;
 }
 
-const glm::vec3&  const Node::getPos() {
+const glm::vec3& Node::getPos() {
     return m_pos;
 }
 
@@ -203,6 +210,10 @@ const glm::mat4& Node::getModelMatrix()
     return m_modelMatrix;
 }
 
+const int const Node::getMatrixLevel() {
+    return m_matrixLevel;
+}
+
 const glm::mat4& Node::getWorldModelMatrix() {
     return m_worldModelMatrix;
 }
@@ -211,10 +222,9 @@ const glm::mat3& Node::getWorldNormalMatrix() {
     return m_worldNormalMatrix;
 }
 
-const glm::vec3& const Node::getWorldPos() {
-    return m_worldModelMatrix[3];
+const glm::vec3& Node::getWorldPos() {
+    return m_worldPos;
 }
-
 
 const Volume* Node::getVolume()
 {

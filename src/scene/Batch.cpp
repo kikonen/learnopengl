@@ -1,6 +1,6 @@
 #include "Batch.h"
 
-#include <fmt\format.h>
+#include <fmt/format.h>
 
 #include "ki/uuid.h"
 
@@ -53,7 +53,7 @@ void Batch::clear()
     m_objectIDs.clear();
 }
 
-void Batch::prepare(const NodeType& type)
+void Batch::prepare(NodeType& type)
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -141,9 +141,9 @@ void Batch::prepare(const NodeType& type)
         update(batchSize);
     }
 
-    KI_DEBUG_SB(
+    KI_DEBUG(fmt::format(
         "BATCHL: {} - model={}, normal={}, objectID={}",
-        type.str(), m_modelBufferId, m_normalBufferId, m_objectIDBufferId);
+        type.str(), m_modelBufferId, m_normalBufferId, m_objectIDBufferId));
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

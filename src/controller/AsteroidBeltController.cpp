@@ -48,14 +48,15 @@ bool AsteroidBeltController::updateInstanced(
     InstancedNode& node,
     Node* parent)
 {
-    const bool changed = true;// m_updateIndex% m_updateStep == 0;
-    //const bool changed = m_updateIndex == 0;
-    //return false;
+    const bool changed = m_updateIndex% m_updateStep == 0 || node.getMatrixLevel() != m_nodeMatrixLevel;
+
     if (changed) {
         updateAsteroids(ctx, node, parent);
         node.markBuffersDirty();
     }
+
     m_updateIndex++;
+    m_nodeMatrixLevel = node.getMatrixLevel();
 
     return changed;
 }

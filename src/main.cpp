@@ -55,6 +55,7 @@ int runEngine() {
     KI_INFO("DONE: ENGINE INIT");
 
     engine->run();
+    return 0;
 }
 
 int main()
