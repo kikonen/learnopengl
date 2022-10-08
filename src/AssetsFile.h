@@ -3,7 +3,7 @@
 #include <string>
 #include <map>
 
-#include <stduuid/uuid.h>
+#include <ki/uuid.h>
 
 #pragma warning(push)
 #pragma warning(disable : 4251)

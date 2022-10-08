@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include <string>
+#include <fmt/format.h>
 
 #include "ki/GL.h"
 
@@ -44,14 +45,9 @@ ModelMesh::~ModelMesh()
 
 std::string ModelMesh::str()
 {
-    std::stringstream sb;
- 
-    sb << "<MODEL_MESH: "
-       << m_name << ", " << m_meshPath + "/" << m_meshName
-       << " - VAO=" << m_buffers.VAO << ", VBO=" << m_buffers.VBO << ", EBO = " << m_buffers.EBO
-       << ">";
-
-    return sb.str();
+    return fmt::format(
+        "<MODEL: {} - mesh={}/{}, vao={}, vbo={}, ebo={}>",
+        m_name, m_meshPath, m_meshName, m_buffers.VAO, m_buffers.VBO, m_buffers.EBO);
 }
 
 bool ModelMesh::hasReflection()

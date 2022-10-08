@@ -1,6 +1,7 @@
 #include "Node.h"
 
 #include <mutex>
+#include <fmt/format.h>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -33,7 +34,14 @@ Node::Node(std::shared_ptr<NodeType> type)
 
 Node::~Node()
 {
-    KI_INFO_SB("NODE: delete type=" << type->typeID << " objectId=" << objectID);
+    KI_INFO_SB("NODE: delete " << str());
+}
+
+std::string Node::str()
+{
+    return fmt::format(
+        "<NODEL: {} / {} - type={}>",
+        objectID, KI_UUID_STR(id), type->str());
 }
 
 void Node::prepare(const Assets& assets)

@@ -1,5 +1,7 @@
 #include "Batch.h"
 
+#include "ki/uuid.h"
+
 #include "model/Node.h"
 #include "NodeType.h"
 

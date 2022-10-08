@@ -5,7 +5,7 @@
 #include <mutex>
 #include <tuple>
 
-#include <stduuid/uuid.h>
+#include <ki/uuid.h>
 
 #include "NodeType.h"
 

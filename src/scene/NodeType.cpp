@@ -1,6 +1,7 @@
 #include "NodeType.h"
 
 #include <mutex>
+#include <fmt/format.h>
 
 #include "asset/Assets.h"
 #include "asset/ShaderBind.h"
@@ -32,9 +33,7 @@ NodeType::~NodeType()
 
 std::string NodeType::str()
 {
-    std::stringstream sb;
-    sb << "<NODE_TYPE: " << typeID << ", " << (mesh ? mesh->str() : "N/A") << ">";
-    return sb.str();
+    return fmt::format("<NODE_TYPE: id={}, mesh={}>", typeID, mesh ? mesh->str() : "N/A");
 }
 
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <stduuid/uuid.h>
+#include <ki/uuid.h>
 
 #include "asset/Sphere.h"
 #include "component/ParticleGenerator.h"
@@ -19,6 +19,8 @@ class Node
 public:
     Node(std::shared_ptr<NodeType> type);
     virtual ~Node();
+
+    std::string str();
 
     virtual void prepare(const Assets& assets);
 

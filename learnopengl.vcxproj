@@ -248,6 +248,7 @@
     <ClInclude Include="src\asset\ShaderBind.h" />
     <ClInclude Include="src\AssetsFile.h" />
     <ClInclude Include="src\asset\ShaderRegistry.h" />
+    <ClInclude Include="src\ki\uuid.h" />
     <ClInclude Include="src\model\Group.h" />
     <ClInclude Include="src\SceneFile.h" />
     <ClInclude Include="src\model\Billboard.h" />

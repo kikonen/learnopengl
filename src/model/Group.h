@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stduuid/uuid.h>
+#include <ki/uuid.h>
 
 class Group {
 public:
