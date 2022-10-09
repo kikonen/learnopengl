@@ -226,8 +226,9 @@ private:
         const EntityData& data,
         std::vector<Material>& materials);
 
-    void attachEntityClone(
+    std::shared_ptr<NodeType> attachEntityClone(
         std::shared_ptr<Scene> scene,
+        std::shared_ptr<NodeType>& type,
         const EntityData& root,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -242,6 +243,11 @@ private:
         Material& m,
         const MaterialField& f,
         const Material& mod);
+
+    std::shared_ptr<NodeType> createType(
+        const EntityData& entity,
+        const EntityCloneData& data,
+        std::vector<Material>& materials);
 
     Node* createNode(
         const Group* group,

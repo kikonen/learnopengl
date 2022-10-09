@@ -569,6 +569,7 @@ entities:
     scale: [1.5, 3, 1]
     enabled: false
   - name: Giant wooden box
+    id: e264f27f-d949-4504-b862-583213484d7c
     model: woodwall
     shader: texture
     clone_position: [0, 40, 0]
@@ -580,6 +581,7 @@ entities:
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [270, 0, 0]
+        id: 9da42971-4809-480b-98b6-ed238b978ed2
       - pos: [0.0, -100.0, .0]
         rot: [90, 0, 0]
       - pos: [100.0, 0.0, 0.0]

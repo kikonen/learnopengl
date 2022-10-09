@@ -89,18 +89,21 @@ void SceneFile::attachEntity(
 
     m_asyncLoader->addLoader([this, scene, &root, &data, &materials]() {
         if (data.clones.empty()) {
-            attachEntityClone(scene, root, data, data.base, false, materials);
+            std::shared_ptr<NodeType> type;
+            attachEntityClone(scene, type, root, data, data.base, false, materials);
         }
         else {
+            std::shared_ptr<NodeType> type;
             for (auto& cloneData : data.clones) {
-                attachEntityClone(scene, root, data, cloneData, true, materials);
+                type = attachEntityClone(scene, type, root, data, cloneData, true, materials);
             }
         }
     });
 }
 
-void SceneFile::attachEntityClone(
+std::shared_ptr<NodeType> SceneFile::attachEntityClone(
     std::shared_ptr<Scene> scene,
+    std::shared_ptr<NodeType>& type,
     const EntityData& root,
     const EntityData& entity,
     const EntityCloneData& data,
@@ -108,9 +111,46 @@ void SceneFile::attachEntityClone(
     std::vector<Material>& materials)
 {
     if (!data.enabled) {
-        return;
+        return type;
     }
 
+    if (!type) {
+        type = createType(
+            entity,
+            data,
+            materials);
+        if (!type) return type;
+    }
+
+    // NOTE KI if repeated then create transparent owner node for children
+    const auto& repeat = data.repeat;
+    const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
+
+    Group* group = nullptr;
+    if (grouped) {
+        group = new Group();
+        group->id = data.id;
+        scene->registry.addGroup(group);
+    }
+
+    for (auto z = 0; z < repeat.zCount; z++) {
+        for (auto y = 0; y < repeat.yCount; y++) {
+            for (auto x = 0; x < repeat.xCount; x++) {
+                const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
+                auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, entity.isRoot, cloned);
+                scene->registry.addNode(type.get(), node);
+            }
+        }
+    }
+
+    return type;
+}
+
+std::shared_ptr<NodeType> SceneFile::createType(
+    const EntityData& entity,
+    const EntityCloneData& data,
+    std::vector<Material>& materials)
+{
     const Assets& assets = m_assets;
 
     // NOTE KI if repeated then create transparent owner node for children
@@ -137,6 +177,10 @@ void SceneFile::attachEntityClone(
     type->runScript = data.runScript;
     type->batch.batchSize = data.batchSize;
     type->flags.root = entity.isRoot;
+
+    if (data.instanced) {
+        type->flags.instanced = true;
+    }
 
     // NOTE KI need to create copy *IF* modifiers
     // TODO KI should make copy *ALWAYS* for safety
@@ -187,7 +231,7 @@ void SceneFile::attachEntityClone(
     if (data.type != EntityType::origo) {
         if (!type->mesh) {
             KI_WARN_SB("SCENE_FILEIGNORE: NO_MESH id=" << data.id << " (" << data.name << ")");
-            return;
+            return nullptr;
         }
 
         type->modifyMaterials([this, &data, &assets](Material& m) {
@@ -200,22 +244,7 @@ void SceneFile::attachEntityClone(
             });
     }
 
-    Group* group = nullptr;
-    if (grouped) {
-        group = new Group();
-        group->id = data.id;
-        scene->registry.addGroup(group);
-    }
-
-    for (auto z = 0; z < repeat.zCount; z++) {
-        for (auto y = 0; y < repeat.yCount; y++) {
-            for (auto x = 0; x < repeat.xCount; x++) {
-                const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
-                auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, entity.isRoot, cloned);
-                scene->registry.addNode(type.get(), node);
-            }
-        }
-    }
+    return type;
 }
 
 Node* SceneFile::createNode(
@@ -232,18 +261,13 @@ Node* SceneFile::createNode(
         ? new InstancedNode(type)
         : new Node(type);
 
-    if (data.instanced) {
-        type->flags.instanced = true;
-        type->flags.batchMode = false;
-    }
-
     glm::vec3 pos = data.position + clonePosition + posAdjustment;
 
     if (group) {
         node->groupId = group->id;
     } else {
         // NOTE KI no id for clones; would duplicate base id => conflicts
-        if (!cloned)
+        if (root.base.id != data.id || isRoot)
             node->id = data.id;
     }
 
@@ -273,7 +297,6 @@ Node* SceneFile::createNode(
 
     if (data.light.enabled) {
         node->light = createLight(data, data.light);
-        type->flags.light = true;
     }
 
     if (data.controller.enabled) {
@@ -326,18 +349,6 @@ void SceneFile::assignFlags(
         const auto& e = data.renderFlags.find("water");
         if (e != data.renderFlags.end()) {
             flags.water = e->second;
-        }
-    }
-    {
-        const auto& e = data.renderFlags.find("light");
-        if (e != data.renderFlags.end()) {
-            flags.light = e->second;
-        }
-    }
-    {
-        const auto& e = data.renderFlags.find("batch_mode");
-        if (e != data.renderFlags.end()) {
-            flags.batchMode = e->second;
         }
     }
     {

@@ -9,12 +9,10 @@
 struct NodeRenderFlags {
     bool alpha = false;
     bool blend = false;
-    bool light = false;
     bool mirror = false;
     bool water = false;
     bool renderBack = false;
     bool noShadow = false;
-    bool batchMode = true;
     bool wireframe = false;
     bool instanced = false;
     bool root = false;

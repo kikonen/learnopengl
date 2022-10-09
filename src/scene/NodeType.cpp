@@ -88,13 +88,12 @@ void NodeType::prepare(const Assets& assets)
     if (batch.batchSize < 0) {
         batch.batchSize = assets.batchSize;
     }
-
-    if (flags.batchMode && batch.batchSize > 0) {
-        batch.prepare(*this);
-    }
-    else {
+    if (flags.instanced) {
         batch.batchSize = 0;
     }
+
+    if (batch.batchSize > 0)
+        batch.prepare(*this);
 }
 
 void NodeType::bind(
