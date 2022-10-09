@@ -3,7 +3,7 @@
 //#include <fmt/format.h>
 #include <stduuid/uuid.h>
 
-#define KI_UUID(x) uuids::uuid::from_string(x).value()
+#define KI_UUID(x) (uuids::uuid::from_string(x).value())
 #define KI_UUID_STR(x) (x.is_nil() ? "NULL" : uuids::to_string(x))
 
 //// @see https://fmt.dev/latest/api.html#udt

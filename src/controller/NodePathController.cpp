@@ -24,8 +24,6 @@ bool NodePathController::update(const RenderContext& ctx, Node& node, Node* pare
         auto pos = center + glm::vec3(posX, posY, posZ);
         //if (!parent) pos += ctx.assets.groundOffset,
 
-        if (node.id == KI_UUID("c5c1d3e7-7d86-42d3-95e6-eed4ab54c58b"))
-            int x = 0;
         node.setPos(pos);
     }
 

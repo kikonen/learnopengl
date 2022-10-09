@@ -228,9 +228,6 @@ Node* SceneFile::createNode(
     bool isRoot,
     bool cloned)
 {
-    if (data.id == KI_UUID("91874c8a-643c-4ae9-b90a-9712cb68f95d"))
-        int x = 0;
-
     auto node = data.instanced
         ? new InstancedNode(type)
         : new Node(type);

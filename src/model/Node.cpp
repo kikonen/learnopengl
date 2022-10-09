@@ -58,11 +58,6 @@ void Node::update(
     const RenderContext& ctx,
     Node* parent)
 {
-    //if (id == KI_UUID("7c90bc35-1a05-4755-b52a-1f8eea0bacfa")) KI_BREAK();
-
-    if (parent && parent->id == KI_UUID("7c90bc35-1a05-4755-b52a-1f8eea0bacfa"))
-        int x = 0;
-
     updateModelMatrix(parent);
 
     bool changed = false;

@@ -19,7 +19,7 @@
 
 
 namespace {
-    constexpr auto PLANET_UUID = KI_UUID("8712cec1-e1a3-4973-8889-533adfbbb196");
+    //constexpr auto PLANET_UUID = KI_UUID("8712cec1-e1a3-4973-8889-533adfbbb196");
 }
 
 TestSceneSetup::TestSceneSetup(

@@ -192,10 +192,6 @@ void Batch::draw(
     if (type.flags.root) return;
     if (type.flags.origo) return;
 
-    //std::cout << node->type->mesh->modelName << '\n';
-    if (node.groupId == KI_UUID("765f5288-21ec-4234-b7cd-6cdba4087e97"))
-        int x = 0;
-
     const auto& volume = node.getVolume();
     if (ctx.useFrustum && ctx.assets.frustumEnabled && volume && !volume->isOnFrustum(ctx.frustum, node.getWorldModelMatrix())) {
         ctx.skipCount += 1;

@@ -124,8 +124,6 @@ void NodeRenderer::drawNodes(
         glStencilMask(0x00);
     }
 
-    //std::cout << '\n';
-
     auto renderTypes = [&ctx, &selection](const NodeTypeMap& typeMap) {
         ShaderBind bound(typeMap.begin()->first->nodeShader);
 
@@ -134,22 +132,11 @@ void NodeRenderer::drawNodes(
 
             Batch& batch = type.batch;
 
-            //if (type->flags.renderBack) {
-            //    std::cout << 'C';
-            //}
-            //else {
-            //    std::cout << '.';
-            //}
-
-            //ShaderBind bound(type->defaultShader);
-
             type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
 
             for (auto& node : it.second) {
                 if (selection ? !node->selected : node->selected) continue;
-
-                //if (node->id == KI_UUID("7c90bc35-1a05-4755-b52a-1f8eea0bacfa")) KI_BREAK();
 
                 batch.draw(ctx, *node, bound.shader);
             }
