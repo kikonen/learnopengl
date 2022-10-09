@@ -7,6 +7,7 @@ skybox:
 lights: {}
 root:
   id: 50733c80-df4e-47ab-9596-ccfadb1805d8
+  type: origo
   pos: [200, 0, 200]
   rotation: [0, 0, 0]
   enabled: true
@@ -152,7 +153,7 @@ entities:
     parent_id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
     model: texture_cube
     shader: texture
-    pos: [0, 5, 0]
+    pos: [0, -5, 0]
     controller:
       type: path
       mode: 1

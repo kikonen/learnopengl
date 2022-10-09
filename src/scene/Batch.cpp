@@ -189,6 +189,8 @@ void Batch::draw(
     const auto& type = *node.type.get();
 
     if (!type.mesh) return;
+    if (type.flags.root) return;
+    if (type.flags.origo) return;
 
     //std::cout << node->type->mesh->modelName << '\n';
     if (node.groupId == KI_UUID("765f5288-21ec-4234-b7cd-6cdba4087e97"))
@@ -202,11 +204,12 @@ void Batch::draw(
 
     ctx.drawCount += 1;
 
-    if (batchSize == 0) {
+    if (type.flags.instanced) {
         node.bind(ctx, shader);
         node.draw(ctx);
         return;
     }
+    if (batchSize == 0) return;
 
     node.bindBatch(ctx, *this);
 
@@ -218,6 +221,9 @@ void Batch::draw(
 void Batch::flush(const RenderContext& ctx, const NodeType& type)
 {
     if (!type.mesh) return;
+    if (type.flags.root) return;
+    if (type.flags.origo) return;
+
     if (batchSize == 0) return;
 
     int drawCount;

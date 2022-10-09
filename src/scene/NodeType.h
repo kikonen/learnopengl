@@ -18,6 +18,7 @@ struct NodeRenderFlags {
     bool wireframe = false;
     bool instanced = false;
     bool root = false;
+    bool origo = false;
 };
 
 class NodeType final

@@ -180,6 +180,7 @@ void SceneFile::attachEntityClone(
     }
     else if (data.type == EntityType::origo) {
         // NOTE KI nothing to do
+        type->flags.origo = true;
     }
 
     if (data.type != EntityType::origo) {
@@ -519,8 +520,9 @@ void SceneFile::loadRoot(
     auto& node = doc["root"];
     loadEntity(node, root);
 
-    root.base.enabled = true;
+    root.base.type == EntityType::origo;
     root.isRoot = true;
+    root.base.enabled = true;
 }
 
 void SceneFile::loadEntities(
