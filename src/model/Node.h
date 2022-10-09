@@ -20,7 +20,7 @@ public:
     Node(std::shared_ptr<NodeType> type);
     virtual ~Node();
 
-    std::string str();
+    const std::string str() const;
 
     virtual void prepare(const Assets& assets);
 
@@ -29,28 +29,29 @@ public:
     void bindBatch(const RenderContext& ctx, Batch& batch);
     virtual void draw(const RenderContext& ctx);
 
-    const glm::vec3& getWorldPos();
-    const int getMatrixLevel();
-    const glm::mat4& getWorldModelMatrix();
-    const glm::mat3& getWorldNormalMatrix();
-
-    const std::array<float, 3> l_getPos();
-    void l_setPos(float x, float y, float z);
+    const glm::vec3& getWorldPos() const;
+    const int getMatrixLevel() const;
+    const glm::mat4& getWorldModelMatrix() const;
+    const glm::mat3& getWorldNormalMatrix() const;
 
     void setPos(const glm::vec3& pos);
-    const glm::vec3& getPos();
+    const glm::vec3& getPos() const;
 
     void setRotation(const glm::vec3& rotation);
-    const glm::vec3& getRotation();
+    const glm::vec3& getRotation() const;
 
     void setScale(float scale);
     void setScale(const glm::vec3& scale);
-    const glm::vec3& getScale();
+    const glm::vec3& getScale() const;
 
-    const glm::mat4& getModelMatrix();
+    const glm::mat4& getModelMatrix() const;
     virtual const Volume* getVolume();
 
     static int nextID();
+
+public:
+    const std::array<float, 3> lua_getPos() const;
+    void lua_setPos(float x, float y, float z);
 
 protected:
     virtual void updateModelMatrix(Node* parent);

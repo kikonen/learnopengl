@@ -4,7 +4,6 @@
 #include <fstream>
 
 #include <fmt/format.h>
-#include <sol/sol.hpp>
 
 #include "asset/MeshLoader.h"
 #include "asset/QuadMesh.h"
@@ -134,6 +133,8 @@ void SceneFile::attachEntityClone(
 
         type->nodeShader = m_asyncLoader->getShader(data.shaderName, definitions);
     }
+    type->initScript = data.initScript;
+    type->runScript = data.runScript;
     type->batch.batchSize = data.batchSize;
     type->flags.root = entity.isRoot;
 
@@ -227,6 +228,9 @@ Node* SceneFile::createNode(
     bool isRoot,
     bool cloned)
 {
+    if (data.id == KI_UUID("91874c8a-643c-4ae9-b90a-9712cb68f95d"))
+        int x = 0;
+
     auto node = data.instanced
         ? new InstancedNode(type)
         : new Node(type);
@@ -274,35 +278,7 @@ Node* SceneFile::createNode(
         node->controller = createController(data, data.controller, node);
     }
 
-    if (!data.initScript.empty()) {
-        runInitScript(node, data.initScript);
-    }
-
     return node;
-}
-
-void SceneFile::runInitScript(
-    Node* node,
-    std::string script)
-{
-    sol::state lua;
-    lua.open_libraries(sol::lib::base);
-
-    auto p = node->getPos();
-    std::cout << fmt::format("BEFORE: SOL: {} - pos=({}, {}, {})\n", node->str(), p.x, p.y, p.z);
-
-    lua.set_function("getPos", &Node::l_getPos);
-    lua.set_function("setPos", &Node::l_setPos);
-
-    //lua.set_function("setPos", [&node](float x, float y, float z) {
-    //    node->setPos(x, y, z);
-    //});
-    lua.set("node", node);
-    lua.script(script);
-
-    p = node->getPos();
-    std::cout << fmt::format("BEFORE: SOL: {} - pos=({}, {}, {})\n", node->str(), p.x, p.y, p.z);
-
 }
 
 void SceneFile::assignFlags(

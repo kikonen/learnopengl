@@ -329,14 +329,16 @@ Camera* Scene::getCamera()
     return !registry.m_cameraNodes.empty() ? registry.m_cameraNodes[0]->camera.get() : nullptr;
 }
 
-void Scene::bindComponents(Node* node)
+void Scene::bindComponents(Node& node)
 {
-    if (node->particleGenerator) {
+    if (node.particleGenerator) {
         if (particleSystem) {
-            node->particleGenerator->system = particleSystem.get();
-            particleGenerators.push_back(node->particleGenerator.get());
+            node.particleGenerator->system = particleSystem.get();
+            particleGenerators.push_back(node.particleGenerator.get());
         }
     }
+
+    scriptEngine.runScript(node, node.type->initScript, "initNode");
 }
 
 int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double screenPosY)

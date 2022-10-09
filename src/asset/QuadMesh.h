@@ -16,10 +16,10 @@ public:
     QuadMesh(const std::string& name);
     virtual ~QuadMesh();
 
-    virtual std::string str() override;
+    virtual const std::string str() const override;
 
-    bool hasReflection() override;
-    bool hasRefraction() override;
+    bool hasReflection() const override;
+    bool hasRefraction() const override;
 
     Material* findMaterial(std::function<bool(const Material&)> fn) override;
     void modifyMaterials(std::function<void(Material&)> fn) override;

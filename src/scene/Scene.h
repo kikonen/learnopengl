@@ -10,6 +10,8 @@
 #include "NodeRegistry.h"
 #include "RenderContext.h"
 
+#include "command/ScriptEngine.h"
+
 #include "renderer/NodeRenderer.h"
 //#include "renderer/TerrainRenderer.h"
 #include "renderer/ViewportRenderer.h"
@@ -52,8 +54,10 @@ public:
 
     Camera* getCamera();
 
-    void bindComponents(Node* node);
+    void bindComponents(Node& node);
     int getObjectID(const RenderContext& ctx, double posx, double posy);
+
+    void bindPendingChildren();
 
 private:
     void updateMainViewport(RenderContext& ctx);
@@ -66,6 +70,7 @@ public:
     UBO ubo;
 
     NodeRegistry registry;
+    ScriptEngine scriptEngine;
 
 protected:
 

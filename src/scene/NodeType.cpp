@@ -31,7 +31,7 @@ NodeType::~NodeType()
     KI_INFO_SB("NODE_TYPE: delete " << typeID);
 }
 
-std::string NodeType::str()
+const std::string NodeType::str() const
 {
     return fmt::format("<NODE_TYPE: id={}, mesh={}>", typeID, mesh ? mesh->str() : "N/A");
 }

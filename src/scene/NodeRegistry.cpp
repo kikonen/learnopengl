@@ -1,5 +1,7 @@
 #include "NodeRegistry.h"
 
+#include <fmt/format.h>
+
 #include "Scene.h"
 
 
@@ -19,13 +21,13 @@ NodeRegistry::~NodeRegistry()
 {
     // NOTE KI forbid access into deleted nodes
     {
-        std::lock_guard<std::mutex> lock(load_lock);
-        pendingNodes.clear();
+        std::lock_guard<std::mutex> lock(m_load_lock);
+        m_pendingNodes.clear();
         objectIdToNode.clear();
         idToNode.clear();
 
-        childToParent.clear();
-        parentToChildren.clear();
+        m_childToParent.clear();
+        m_parentToChildren.clear();
     }
 
     {
@@ -41,10 +43,10 @@ NodeRegistry::~NodeRegistry()
         m_root = nullptr;
     }
 
-    KI_INFO_SB("NODE_REGISTRY: delete");
+    KI_INFO("NODE_REGISTRY: delete");
     for (auto& all : allNodes) {
         for (auto& [type, nodes] : all.second) {
-            KI_INFO_SB("NODE_REGISTRY: delete " << type->typeID);
+            KI_INFO(fmt::format("NODE_REGISTRY: delete {}", type->str()));
             for (auto& node : nodes) {
                 delete node;
             }
@@ -52,12 +54,12 @@ NodeRegistry::~NodeRegistry()
     }
     allNodes.clear();
 
-    for (auto& [parentId, nodes] : pendingChildren) {
+    for (auto& [parentId, nodes] : m_pendingChildren) {
         for (auto& node : nodes) {
             delete node;
         }
     }
-    pendingChildren.clear();
+    m_pendingChildren.clear();
 
     for (auto& group : groups) {
         delete group;
@@ -67,7 +69,7 @@ NodeRegistry::~NodeRegistry()
 
 void NodeRegistry::addGroup(Group* group)
 {
-    std::lock_guard<std::mutex> lock(load_lock);
+    std::lock_guard<std::mutex> lock(m_load_lock);
     groups.push_back(group);
 }
 
@@ -75,11 +77,11 @@ void NodeRegistry::addNode(
     NodeType* type,
     Node* node)
 {
-    std::lock_guard<std::mutex> lock(load_lock);
-    KI_INFO_SB("ADD_NODE: id=" << node->objectID << ", type=" << node->type->str());
-    pendingNodes.push_back(node);
+    std::lock_guard<std::mutex> lock(m_load_lock);
+    KI_INFO(fmt::format("ADD_NODE: {}", node->str()));
+    m_pendingNodes.push_back(node);
 
-    waitCondition.notify_all();
+    m_waitCondition.notify_all();
 }
 
 Node* const NodeRegistry::getNode(const uuids::uuid& id)
@@ -96,7 +98,6 @@ Node* const NodeRegistry::getNode(const int objectID)
     const auto& it = objectIdToNode.find(objectID);
     return it != objectIdToNode.end() ? it->second : nullptr;
 }
-
 
 void const NodeRegistry::selectNodeByObjectId(int objectID, bool append)
 {
@@ -121,30 +122,25 @@ void const NodeRegistry::selectNodeByObjectId(int objectID, bool append)
 
 void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport)
 {
-    std::lock_guard<std::mutex> lock(load_lock);
+    std::lock_guard<std::mutex> lock(m_load_lock);
     viewports.push_back(viewport);
 }
 
 void NodeRegistry::attachNodes()
 {
-    std::lock_guard<std::mutex> lock(load_lock);
-    if (pendingNodes.empty()) return;
-
     NodeTypeMap newNodes;
-
     {
-        for (const auto& n : pendingNodes) {
+        std::lock_guard<std::mutex> lock(m_load_lock);
+        if (m_pendingNodes.empty()) return;
+
+        for (const auto& n : m_pendingNodes) {
             newNodes[n->type.get()].push_back(n);
         }
-        pendingNodes.clear();
+        m_pendingNodes.clear();
     }
 
     for (const auto& [type, nodes] : newNodes) {
         for (auto& node : nodes) {
-            //if (node->groupId == KI_UUID("fb7ba424-f219-4c12-a00f-703b9ecebbbf")) {
-            //    KI_BREAK();
-            //}
-
             // NOTE KI ignore children without parent; until parent is found
             if (!bindParent(node)) continue;
 
@@ -155,6 +151,8 @@ void NodeRegistry::attachNodes()
             bindChildren(node);
         }
     }
+
+    bindPendingChildren();
 }
 
 int const NodeRegistry::countSelected() const
@@ -172,18 +170,20 @@ int const NodeRegistry::countSelected() const
 
 Node* const NodeRegistry::getParent(const Node& child)
 {
-    const auto& it = childToParent.find(child.objectID);
-    return it != childToParent.end() ? it->second : nullptr;
+    const auto& it = m_childToParent.find(child.objectID);
+    return it != m_childToParent.end() ? it->second : nullptr;
 }
 
 NodeVector* const NodeRegistry::getChildren(const Node& parent)
 {
-    const auto& it = parentToChildren.find(parent.objectID);
-    return it != parentToChildren.end() ? &it->second : nullptr;
+    const auto& it = m_parentToChildren.find(parent.objectID);
+    return it != m_parentToChildren.end() ? &it->second : nullptr;
 }
 
 void NodeRegistry::bindNode(Node* node)
 {
+    KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
+
     const auto& type = node->type.get();
     auto* shader = type->nodeShader;
 
@@ -236,44 +236,72 @@ void NodeRegistry::bindNode(Node* node)
         m_root = node;
     }
 
-    scene.bindComponents(node);
+    scene.bindComponents(*node);
 
     KI_INFO_SB("ATTACH_NODE: id=" << node->objectID << ", uuid=" << node->id << ", type=" << type->str());
 }
+
+void NodeRegistry::bindPendingChildren()
+{
+    if (m_pendingChildren.empty()) return;
+
+    std::vector<uuids::uuid> boundIds;
+
+    for (const auto& [parentId, children] : m_pendingChildren) {
+        const auto& parentIt = idToNode.find(parentId);
+        if (parentIt == idToNode.end()) continue;
+
+        boundIds.push_back(parentId);
+
+        auto& parent = parentIt->second;
+        for (auto& child : children) {
+            KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
+            bindNode(child);
+
+            m_childToParent[child->objectID] = parent;
+            m_parentToChildren[parent->objectID].push_back(child);
+        }
+    }
+
+    for (auto& parentId : boundIds) {
+        m_pendingChildren.erase(parentId);
+    }
+}
+
 
 bool NodeRegistry::bindParent(Node* child)
 {
     if (child->parentId.is_nil()) return true;
 
-    auto parent = getNode(child->parentId);
-    if (parent) {
-        KI_INFO_SB("BIND_PARENT: "
-            << parent->id << "(" << parent->objectID << ") => "
-            << child->id << "(" << child->objectID << "), type="
-            << child->type->str());
+    const auto& parentIt = idToNode.find(child->parentId);
+    if (parentIt == idToNode.end()) {
+        KI_INFO(fmt::format("PENDING_CHILD: node={}", child->str()));
 
-        childToParent[child->objectID] = parent;
-        parentToChildren[parent->objectID].push_back(child);
-
-        return true;
+        m_pendingChildren[child->parentId].push_back(child);
+        return false;
     }
 
-    pendingChildren[child->parentId].push_back(child);
-    return false;
+    auto& parent = parentIt->second;
+    KI_INFO(fmt::format("BIND_PARENT: parent={}, child={}", parent->str(), child->str()));
+
+    m_childToParent[child->objectID] = parent;
+    m_parentToChildren[parent->objectID].push_back(child);
+
+    return true;
 }
 
 void NodeRegistry::bindChildren(Node* parent)
 {
-    const auto& it = pendingChildren.find(parent->id);
-    if (it == pendingChildren.end()) return;
+    const auto& it = m_pendingChildren.find(parent->id);
+    if (it == m_pendingChildren.end()) return;
 
     for (auto& child : it->second) {
-        KI_INFO_SB("BIND_CHILD: " << parent->id << " => " << child->id << ", type=" << child->type->str());
+        KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
         bindNode(child);
 
-        childToParent[child->objectID] = parent;
-        parentToChildren[parent->objectID].push_back(child);
+        m_childToParent[child->objectID] = parent;
+        m_parentToChildren[parent->objectID].push_back(child);
     }
 
-    pendingChildren.erase(parent->id);
+    m_pendingChildren.erase(parent->id);
 }

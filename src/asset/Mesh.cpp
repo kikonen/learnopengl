@@ -14,7 +14,7 @@ Mesh::~Mesh()
     KI_INFO_SB("MESH: delete " + str());
 }
 
-std::string Mesh::str()
+const std::string Mesh::str() const
 {
     return "<" + m_name + ">";
 }

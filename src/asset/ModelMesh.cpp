@@ -43,19 +43,19 @@ ModelMesh::~ModelMesh()
     m_vertices.clear();
 }
 
-std::string ModelMesh::str()
+const std::string ModelMesh::str() const
 {
     return fmt::format(
         "<MODEL: {} - mesh={}/{}, vao={}, vbo={}, ebo={}>",
         m_name, m_meshPath, m_meshName, m_buffers.VAO, m_buffers.VBO, m_buffers.EBO);
 }
 
-bool ModelMesh::hasReflection()
+bool ModelMesh::hasReflection() const
 {
     return m_reflection;
 }
 
-bool ModelMesh::hasRefraction()
+bool ModelMesh::hasRefraction() const
 {
     return m_refraction;
 }

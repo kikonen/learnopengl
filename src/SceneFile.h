@@ -253,10 +253,6 @@ private:
         bool isRoot,
         bool instanced);
 
-    void runInitScript(
-        Node* node,
-        std::string script);
-
     std::unique_ptr<Camera> createCamera(
         const EntityCloneData& entity,
         const CameraData& data);

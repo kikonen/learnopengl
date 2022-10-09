@@ -27,7 +27,7 @@ public:
     NodeType();
     ~NodeType();
 
-    std::string str();
+    const std::string str() const;
 
     bool hasReflection();
     bool hasRefraction();

@@ -64,6 +64,7 @@ public:
     NodeVector* const getChildren(const Node& node);
 
 private:
+    void bindPendingChildren();
     void bindNode(Node* node);
     bool bindParent(Node* child);
     void bindChildren(Node* parent);
@@ -92,14 +93,14 @@ public:
     GroupVector groups;
 
 private:
-    std::mutex load_lock;
-    std::condition_variable waitCondition;
+    std::mutex m_load_lock;
+    std::condition_variable m_waitCondition;
 
-    std::map<uuids::uuid, NodeVector> pendingChildren;
+    std::map<uuids::uuid, NodeVector> m_pendingChildren;
 
-    std::map<int, Node*> childToParent;
-    std::map<int, NodeVector> parentToChildren;
+    std::map<int, Node*> m_childToParent;
+    std::map<int, NodeVector> m_parentToChildren;
 
-    NodeVector pendingNodes;
+    NodeVector m_pendingNodes;
 
 };

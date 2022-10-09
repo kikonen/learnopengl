@@ -29,12 +29,10 @@ entities:
     scale: 0.3
     enabled: true
     init_script: |
-      function updateNode(node)
-        local pos = getPos(node)
-        print(pos)
-        setPos(node, pos[1] + 40, pos[2] + 0, pos[3] + 0)
+      function initNode(node)
+        local pos = node:getPos()
+        node:setPos(pos[1] + 40, pos[2] + 0, pos[3] + 0)
       end
-      updateNode(node)
   - name: Player
     model: player
     pos: [-10, 7, -20.0]
@@ -524,6 +522,7 @@ entities:
     pos: [0.0, -50.0, 0.0]
     enabled: true
   - name: Rock
+    id: 91874c8a-643c-4ae9-b90a-9712cb68f95d
     parent_id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
     model: [rock, rock]
     shader: texture

@@ -37,7 +37,7 @@ Node::~Node()
     KI_INFO_SB("NODE: delete " << str());
 }
 
-std::string Node::str()
+const std::string Node::str() const
 {
     return fmt::format(
         "<NODEL: {} / {} - type={}>",
@@ -155,25 +155,12 @@ void Node::updateModelMatrix(Node* parent) {
     }
 }
 
-const std::array<float, 3> Node::l_getPos()
-{
-    return { m_pos.x, m_pos.y, m_pos.z };
-}
-
-void Node::l_setPos(float x, float y, float z)
-{
-    m_pos.x = x;
-    m_pos.y = y;
-    m_pos.z = z;
-    m_dirtyTranslate = true;
-}
-
 void Node::setPos(const glm::vec3& pos) {
     m_pos = pos;
     m_dirtyTranslate = true;
 }
 
-const glm::vec3& Node::getPos() {
+const glm::vec3& Node::getPos() const {
     return m_pos;
 }
 
@@ -182,7 +169,7 @@ void Node::setRotation(const glm::vec3& rotation) {
     m_dirtyRotation = true;
 }
 
-const glm::vec3&  Node::getRotation() {
+const glm::vec3&  Node::getRotation() const {
     return m_rotation;
 }
 
@@ -201,32 +188,45 @@ void Node::setScale(const glm::vec3& scale)
     m_dirtyScale = true;
 }
 
-const glm::vec3& Node::getScale() {
+const glm::vec3& Node::getScale() const {
     return m_scale;
 }
 
-const glm::mat4& Node::getModelMatrix()
+const glm::mat4& Node::getModelMatrix() const
 {
     return m_modelMatrix;
 }
 
-const int const Node::getMatrixLevel() {
+const int const Node::getMatrixLevel() const {
     return m_matrixLevel;
 }
 
-const glm::mat4& Node::getWorldModelMatrix() {
+const glm::mat4& Node::getWorldModelMatrix() const {
     return m_worldModelMatrix;
 }
 
-const glm::mat3& Node::getWorldNormalMatrix() {
+const glm::mat3& Node::getWorldNormalMatrix() const  {
     return m_worldNormalMatrix;
 }
 
-const glm::vec3& Node::getWorldPos() {
+const glm::vec3& Node::getWorldPos() const  {
     return m_worldPos;
 }
 
-const Volume* Node::getVolume()
+const Volume* Node::getVolume() 
 {
     return type->mesh ? type->mesh->m_volume.get() : nullptr;
+}
+
+const std::array<float, 3> Node::lua_getPos() const
+{
+    return { m_pos.x, m_pos.y, m_pos.z };
+}
+
+void Node::lua_setPos(float x, float y, float z)
+{
+    m_pos.x = x;
+    m_pos.y = y;
+    m_pos.z = z;
+    m_dirtyTranslate = true;
 }

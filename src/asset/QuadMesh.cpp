@@ -43,17 +43,17 @@ QuadMesh::~QuadMesh()
 {
 }
 
-std::string QuadMesh::str()
+const std::string QuadMesh::str() const
 {
     return "<QUAD_MESH: " + m_name + ">";
 }
 
-bool QuadMesh::hasReflection()
+bool QuadMesh::hasReflection() const
 {
     return m_material.reflection;
 }
 
-bool QuadMesh::hasRefraction()
+bool QuadMesh::hasRefraction() const
 {
     return m_material.refraction;
 }
