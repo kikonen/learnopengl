@@ -193,7 +193,11 @@ void Batch::draw(
     if (type.flags.origo) return;
 
     const auto& volume = node.getVolume();
-    if (ctx.useFrustum && ctx.assets.frustumEnabled && volume && !volume->isOnFrustum(ctx.frustum, node.getWorldModelMatrix())) {
+    if (ctx.useFrustum &&
+        ctx.assets.frustumEnabled &&
+        volume &&
+        !volume->isOnFrustum(ctx.frustum, node.getMatrixLevel(), node.getWorldModelMatrix()))
+    {
         ctx.skipCount += 1;
         return;
     }

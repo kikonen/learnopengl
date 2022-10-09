@@ -31,12 +31,14 @@ public:
     virtual void bind(const RenderContext& ctx, Shader* shader) = 0;
     virtual void drawInstanced(const RenderContext& ctx, int instanceCount) = 0;
 
+    void setVolume(std::unique_ptr<Volume> volume);
+    const Volume* getVolume() const;
 
 public:
     std::string m_name;
 
     MeshBuffers m_buffers;
 
+private:
     std::unique_ptr<Volume> m_volume;
 };
-

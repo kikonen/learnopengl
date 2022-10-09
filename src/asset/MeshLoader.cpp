@@ -246,9 +246,9 @@ void MeshLoader::calculateVolume(ModelMesh& mesh) {
         maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
     }
 
-    mesh.m_volume = std::make_unique<Sphere>(
+    mesh.setVolume(std::make_unique<Sphere>(
         (maxAABB + minAABB) * 0.5f,
-        glm::length(minAABB - maxAABB));
+        glm::length(minAABB - maxAABB)));
 }
 
 // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g

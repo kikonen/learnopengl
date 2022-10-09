@@ -18,3 +18,13 @@ const std::string Mesh::str() const
 {
     return "<" + m_name + ">";
 }
+
+void Mesh::setVolume(std::unique_ptr<Volume> volume)
+{
+    m_volume = std::move(volume);
+}
+
+const Volume* Mesh::getVolume() const
+{
+    return m_volume.get();
+}

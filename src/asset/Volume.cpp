@@ -1,9 +1,7 @@
-
 #include "Volume.h"
 
 bool Volume::isOnFrustum(
-    const Frustum& frustum,
-    const glm::mat4& modelMatrix) const
+    const Frustum& frustum) const
 {
     return isOnOrForwardPlane(frustum.leftFace) &&
         isOnOrForwardPlane(frustum.rightFace) &&

@@ -45,7 +45,9 @@ public:
     const glm::vec3& getScale() const;
 
     const glm::mat4& getModelMatrix() const;
-    virtual const Volume* getVolume();
+
+    const Volume* getVolume() const;
+    void setVolume(std::unique_ptr<Volume> volume);
 
     static int nextID();
 
@@ -86,6 +88,8 @@ public:
 
 protected:
     bool m_prepared = false;
+
+    std::unique_ptr<Volume> m_volume;
 
 private:
     int m_matrixLevel = 0;

@@ -208,9 +208,14 @@ const glm::vec3& Node::getWorldPos() const  {
     return m_worldPos;
 }
 
-const Volume* Node::getVolume() 
+const Volume* Node::getVolume() const
 {
-    return type->mesh ? type->mesh->m_volume.get() : nullptr;
+    return m_volume.get();
+}
+
+void Node::setVolume(std::unique_ptr<Volume> volume)
+{
+    m_volume = std::move(volume);
 }
 
 const std::array<float, 3> Node::lua_getPos() const

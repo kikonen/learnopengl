@@ -260,6 +260,11 @@ Node* SceneFile::createNode(
     node->setRotation(data.rotation);
     node->setScale(data.scale);
 
+    if (type->mesh) {
+        auto volume = type->mesh->getVolume();
+        node->setVolume(volume->clone());
+    }
+
     node->selected = data.selected;
 
     if (data.camera.enabled) {

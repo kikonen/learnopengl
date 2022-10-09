@@ -69,16 +69,6 @@ void InstancedNode::draw(const RenderContext& ctx)
     modelBatch.flush(ctx, *type.get());
 }
 
-const Volume* InstancedNode::getVolume()
-{
-    return m_volume.get();
-}
-
-void InstancedNode::setVolume(std::unique_ptr<Volume> volume)
-{
-    m_volume = std::move(volume);
-}
-
 void InstancedNode::markBuffersDirty()
 {
     m_buffersDirty = true;

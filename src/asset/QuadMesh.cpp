@@ -36,7 +36,7 @@ QuadMesh::QuadMesh(const std::string& name)
     : Mesh(name)
 {
     // NOTE KI sphere containing quad is not 1
-    m_volume = std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, sqrt(2));
+    setVolume(std::make_unique<Sphere>(glm::vec3{0, 0, 0}, 2));
 }
 
 QuadMesh::~QuadMesh()
