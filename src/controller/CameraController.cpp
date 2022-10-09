@@ -19,6 +19,7 @@ bool CameraController::update(
     glm::vec3 rot = camera->getRotation();
 
     auto nodePos = pos - viewUp * 2.8f + viewFront * 9.f;
+    nodePos -= parent->getWorldPos();
 
     node.setPos(nodePos);
     node.setRotation({-rot.x, 90 + rot.y, rot.z});
