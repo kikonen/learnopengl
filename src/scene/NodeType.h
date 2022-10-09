@@ -21,6 +21,11 @@ struct NodeRenderFlags {
     bool origo = false;
 };
 
+enum class NodeScriptId {
+    init,
+    run
+};
+
 class NodeType final
 {
 public:

@@ -338,7 +338,10 @@ void Scene::bindComponents(Node& node)
         }
     }
 
-    scriptEngine.runScript(node, node.type->initScript, "initNode");
+    scriptEngine.registerScript(node, NodeScriptId::init, node.type->initScript);
+    scriptEngine.registerScript(node, NodeScriptId::run, node.type->runScript);
+
+    scriptEngine.runScript(node, NodeScriptId::init);
 }
 
 int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double screenPosY)

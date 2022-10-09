@@ -1,8 +1,10 @@
 #pragma once
 
+#include <map>
+
 #include <sol/sol.hpp>
 
-class Node;
+#include "model/Node.h"
 
 class ScriptEngine
 {
@@ -11,12 +13,19 @@ public:
 
     void runScript(
         Node& node,
-        const std::string& script,
-        const std::string& functionName);
+        const NodeScriptId scriptId);
+
+    void registerScript(
+        Node& node,
+        const NodeScriptId scriptId,
+        const std::string& script);
 
 private:
     void registerTypes();
 
+
 private:
     sol::state m_lua;
+
+    std::map<int, std::map<NodeScriptId, std::string>> nodeScripts;
 };

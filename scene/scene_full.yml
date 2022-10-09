@@ -29,10 +29,8 @@ entities:
     scale: 0.3
     enabled: true
     init_script: |
-      function initNode(node)
-        local pos = node:getPos()
-        node:setPos(pos[1] + 40, pos[2] + 0, pos[3] + 0)
-      end
+      local pos = node:getPos()
+      node:setPos(pos[1] + 40, pos[2] + 0, pos[3] + 0)
   - name: Player
     model: player
     pos: [-10, 7, -20.0]

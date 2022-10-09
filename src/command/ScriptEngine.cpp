@@ -4,6 +4,17 @@
 
 #include "model/Node.h"
 
+namespace {
+    std::string scriptIdToString(NodeScriptId scriptId) {
+        switch (scriptId) {
+        case NodeScriptId::init:
+            return "init";
+        case NodeScriptId::run:
+            return "init";
+        }
+        return "WTF";
+    }
+}
 
 ScriptEngine::ScriptEngine()
 {
@@ -22,19 +33,33 @@ void ScriptEngine::registerTypes()
 
 void ScriptEngine::runScript(
     Node& node,
-    const std::string& script,
-    const std::string& functionName)
+    const NodeScriptId scriptId)
+{
+    const auto& nodeIt = nodeScripts.find(node.objectID);
+    if (nodeIt == nodeScripts.end()) return;
+    const auto& fnIt = nodeIt->second.find(scriptId);
+    if (fnIt == nodeIt->second.end()) return;
+
+    const auto& nodeFnName = fnIt->second;
+    sol::function fn = m_lua[nodeFnName];
+    fn(node);
+}
+
+void ScriptEngine::registerScript(
+    Node& node,
+    const NodeScriptId scriptId,
+    const std::string& script)
 {
     if (script.empty()) return;
 
-    auto p = node.getPos();
-    std::cout << fmt::format("BEFORE: SOL: {} - pos=({}, {}, {})\n", node.str(), p.x, p.y, p.z);
+    // NOTE KI unique wrapperFn for node
+    const std::string nodeFnName = fmt::format("fn_{}_{}", scriptIdToString(scriptId), node.objectID);
+    const auto scriptlet = fmt::format(R"(
+function {}(node)
+{}
+end)", nodeFnName, script);
 
-    m_lua.script(script);
-    sol::function fn = m_lua[functionName];
-    fn(node);
+    m_lua.script(scriptlet);
 
-    p = node.getPos();
-    fmt::format("BEFORE: SOL: {} - pos=({}, {}, {})\n", node.str(), p.x, p.y, p.z);
-
+    nodeScripts[node.objectID][scriptId] = nodeFnName;
 }
