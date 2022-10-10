@@ -169,6 +169,8 @@
     <ClCompile Include="src\asset\Volume.cpp" />
     <ClCompile Include="src\command\Command.cpp" />
     <ClCompile Include="src\command\ScriptEngine.cpp" />
+    <ClCompile Include="src\command\CommandEngine.cpp" />
+    <ClCompile Include="src\command\MoveNode.cpp" />
     <ClCompile Include="src\SceneFile.cpp" />
     <ClCompile Include="src\model\Billboard.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
@@ -251,6 +253,7 @@
     <ClInclude Include="src\AssetsFile.h" />
     <ClInclude Include="src\asset\ShaderRegistry.h" />
     <ClInclude Include="src\command\Command.h" />
+    <ClInclude Include="src\command\CommandEngine.h" />
     <ClInclude Include="src\command\ScriptEngine.h" />
     <ClInclude Include="src\command\MoveNode.h" />
     <ClInclude Include="src\ki\uuid.h" />

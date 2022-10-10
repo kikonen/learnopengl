@@ -84,7 +84,7 @@ void NodeRegistry::addNode(
     m_waitCondition.notify_all();
 }
 
-Node* const NodeRegistry::getNode(const uuids::uuid& id)
+Node* NodeRegistry::getNode(const uuids::uuid& id) const
 {
     if (id.is_nil()) return nullptr;
 
@@ -93,13 +93,13 @@ Node* const NodeRegistry::getNode(const uuids::uuid& id)
     return it != idToNode.end() ? it->second : nullptr;
 }
 
-Node* const NodeRegistry::getNode(const int objectID)
+Node* NodeRegistry::getNode(const int objectID) const
 {
     const auto& it = objectIdToNode.find(objectID);
     return it != objectIdToNode.end() ? it->second : nullptr;
 }
 
-void const NodeRegistry::selectNodeByObjectId(int objectID, bool append)
+void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const
 {
     if (!append) {
         for (auto& x : objectIdToNode) {
@@ -155,7 +155,7 @@ void NodeRegistry::attachNodes()
     bindPendingChildren();
 }
 
-int const NodeRegistry::countSelected() const
+int NodeRegistry::countSelected() const
 {
     int count = 0;
     for (const auto& all : allNodes) {
@@ -168,13 +168,13 @@ int const NodeRegistry::countSelected() const
     return count;
 }
 
-Node* const NodeRegistry::getParent(const Node& child)
+Node* NodeRegistry::getParent(const Node& child) const
 {
     const auto& it = m_childToParent.find(child.objectID);
     return it != m_childToParent.end() ? it->second : nullptr;
 }
 
-NodeVector* const NodeRegistry::getChildren(const Node& parent)
+const NodeVector* NodeRegistry::getChildren(const Node& parent) const
 {
     const auto& it = m_parentToChildren.find(parent.objectID);
     return it != m_parentToChildren.end() ? &it->second : nullptr;

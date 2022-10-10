@@ -47,21 +47,21 @@ public:
         Node* node);
 
     // @return node null if not found
-    Node* const getNode(const int objectID);
+    Node* getNode(const int objectID) const;
 
     // @return node null if not found
-    Node* const getNode(const uuids::uuid& id);
+    Node* getNode(const uuids::uuid& id) const;
 
-    void const selectNodeByObjectId(int objectID, bool append);
+    void selectNodeByObjectId(int objectID, bool append) const;
 
     void addViewPort(std::shared_ptr<Viewport> viewport);
 
     void attachNodes();
 
-    int const countSelected() const;
+    int countSelected() const;
 
-    Node* const getParent(const Node& node);
-    NodeVector* const getChildren(const Node& node);
+    Node* getParent(const Node& node) const;
+    const NodeVector* getChildren(const Node& node) const;
 
 private:
     void bindPendingChildren();

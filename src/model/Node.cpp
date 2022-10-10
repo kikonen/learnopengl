@@ -70,7 +70,7 @@ void Node::update(
 
     if (light) light->update(ctx, *this);
 
-    NodeVector* children = ctx.registry.getChildren(*this);
+    const NodeVector* children = ctx.registry.getChildren(*this);
     if (children) {
         for (auto& child : *children) {
             child->update(ctx, this);
