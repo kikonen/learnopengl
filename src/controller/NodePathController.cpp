@@ -24,7 +24,7 @@ bool NodePathController::update(const RenderContext& ctx, Node& node, Node* pare
         auto pos = center + glm::vec3(posX, posY, posZ);
         //if (!parent) pos += ctx.assets.groundOffset,
 
-        node.setPos(pos);
+        node.setPosition(pos);
     }
 
     if (m_rotate) {

@@ -65,8 +65,8 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 
     const glm::vec3 up{ 0.0, 1.0, 0.0 };
     const glm::mat4 lightView = glm::lookAt(
-        node->light->getWorldPos(),
-        node->light->getWorldTarget(), up);
+        node->m_light->getWorldPos(),
+        node->m_light->getWorldTarget(), up);
 
     const glm::mat4 lightProjection = glm::ortho(
         -100.0f, 100.0f, -100.0f, 100.0f,
@@ -114,9 +114,9 @@ void ShadowMapRenderer::drawNodes(
         for (const auto& it : typeMap) {
             auto& type = *it.first;
 
-            if (type.flags.noShadow) continue;
+            if (type.m_flags.noShadow) continue;
 
-            Batch& batch = type.batch;
+            Batch& batch = type.m_batch;
 
             type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);

@@ -135,16 +135,16 @@ void MirrorMapRenderer::drawNodes(
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [&ctx, &current](const NodeTypeMap& typeMap) {
-            ShaderBind bound(typeMap.begin()->first->nodeShader);
+            ShaderBind bound(typeMap.begin()->first->m_nodeShader);
 
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
 
-                if (type.flags.noShadow) continue;
+                if (type.m_flags.noShadow) continue;
 
                 //ShaderBind bound(type->defaultShader);
 
-                Batch& batch = type.batch;
+                Batch& batch = type.m_batch;
 
                 type.bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);
@@ -187,7 +187,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistr
 
     for (const auto& all : registry.allNodes) {
         for (const auto& [type, nodes] : all.second) {
-            if (!type->flags.mirror) continue;
+            if (!type->m_flags.mirror) continue;
 
             for (const auto& node : nodes) {
                 const glm::vec3 ray = node->getWorldPos() - cameraPos;

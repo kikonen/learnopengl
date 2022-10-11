@@ -26,7 +26,7 @@ bool MovingLightController::update(
 
     const glm::vec3 pos = m_center + glm::vec3(posX, posY, posZ);
 
-    node.setPos(pos);
+    node.setPosition(pos);
 
     return true;
 }

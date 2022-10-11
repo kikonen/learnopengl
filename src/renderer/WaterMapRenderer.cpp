@@ -168,16 +168,16 @@ void WaterMapRenderer::drawNodes(
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [&ctx, &current](const NodeTypeMap& typeMap) {
-            ShaderBind bound(typeMap.begin()->first->nodeShader);
+            ShaderBind bound(typeMap.begin()->first->m_nodeShader);
 
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
 
-                if (type.flags.water) continue;
+                if (type.m_flags.water) continue;
 
                 //ShaderBind bound(type->defaultShader);
 
-                Batch& batch = type.batch;
+                Batch& batch = type.m_batch;
 
                 type.bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);
@@ -222,7 +222,7 @@ Water* WaterMapRenderer::findClosest(
 
     for (const auto& all : registry.allNodes) {
         for (const auto& [type, nodes] : all.second) {
-            if (!type->flags.water) continue;
+            if (!type->m_flags.water) continue;
 
             for (const auto& node : nodes) {
                 const glm::vec3 ray = node->getWorldPos() - cameraPos;

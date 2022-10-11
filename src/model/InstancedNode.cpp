@@ -18,7 +18,7 @@ void InstancedNode::prepare(const Assets& assets)
     modelBatch.staticBuffer = true;
     selectedBatch.staticBuffer = true;
 
-    modelBatch.prepare(*type.get());
+    modelBatch.prepare(*m_type.get());
     // TODO KI selectedBatch has been broken for a long time
     // => buffer conflict with modelBatch (overrides IT!!)
     // => corrupting rendering! (rendering from non-initialized buffer) 
@@ -65,8 +65,8 @@ void InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 
 void InstancedNode::draw(const RenderContext& ctx)
 {
-    auto& shader = type->boundShader;
-    modelBatch.flush(ctx, *type.get());
+    auto& shader = m_type->m_boundShader;
+    modelBatch.flush(ctx, *m_type.get());
 }
 
 void InstancedNode::markBuffersDirty()

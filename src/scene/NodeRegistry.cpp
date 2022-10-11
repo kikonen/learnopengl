@@ -103,19 +103,19 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const
 {
     if (!append) {
         for (auto& x : objectIdToNode) {
-            x.second->selected = false;
+            x.second->m_selected = false;
         }
     }
 
     Node* node = getNode(objectID);
     if (node) {
-        if (append && node->selected) {
+        if (append && node->m_selected) {
             KI_INFO_SB("DESELECT: objectID: " << objectID)
-                node->selected = false;
+                node->m_selected = false;
         }
         else {
             KI_INFO_SB("SELECT: objectID: " << objectID)
-                node->selected = true;
+                node->m_selected = true;
         }
     }
 }
@@ -133,8 +133,8 @@ void NodeRegistry::attachNodes()
         std::lock_guard<std::mutex> lock(m_load_lock);
         if (m_pendingNodes.empty()) return;
 
-        for (const auto& n : m_pendingNodes) {
-            newNodes[n->type.get()].push_back(n);
+        for (const auto& node : m_pendingNodes) {
+            newNodes[node->m_type.get()].push_back(node);
         }
         m_pendingNodes.clear();
     }
@@ -161,7 +161,7 @@ int NodeRegistry::countSelected() const
     for (const auto& all : allNodes) {
         for (const auto& x : all.second) {
             for (auto& node : x.second) {
-                if (node->selected) count++;
+                if (node->m_selected) count++;
             }
         }
     }
@@ -170,13 +170,13 @@ int NodeRegistry::countSelected() const
 
 Node* NodeRegistry::getParent(const Node& child) const
 {
-    const auto& it = m_childToParent.find(child.objectID);
+    const auto& it = m_childToParent.find(child.m_objectID);
     return it != m_childToParent.end() ? it->second : nullptr;
 }
 
 const NodeVector* NodeRegistry::getChildren(const Node& parent) const
 {
-    const auto& it = m_parentToChildren.find(parent.objectID);
+    const auto& it = m_parentToChildren.find(parent.m_objectID);
     return it != m_parentToChildren.end() ? &it->second : nullptr;
 }
 
@@ -184,8 +184,8 @@ void NodeRegistry::bindNode(Node* node)
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    const auto& type = node->type.get();
-    auto* shader = type->nodeShader;
+    const auto& type = node->m_type.get();
+    auto* shader = type->m_nodeShader;
 
     assert(shader);
     if (!shader) return;
@@ -194,32 +194,32 @@ void NodeRegistry::bindNode(Node* node)
 
     auto* map = &solidNodes;
 
-    if (type->flags.alpha)
+    if (type->m_flags.alpha)
         map = &alphaNodes;
 
-    if (type->flags.blend)
+    if (type->m_flags.blend)
         map = &blendedNodes;
 
     // NOTE KI more optimal to not switch between culling mode (=> group by it)
-    const ShaderKey key(shader ? shader->objectID : NULL_SHADER_ID, type->flags.renderBack);
+    const ShaderKey key(shader ? shader->objectID : NULL_SHADER_ID, type->m_flags.renderBack);
 
     auto& vAll = allNodes[key][type];
     auto& vTyped = (*map)[key][type];
 
     node->prepare(assets);
 
-    objectIdToNode[node->objectID] = node;
-    if (!node->id.is_nil()) idToNode[node->id] = node;
+    objectIdToNode[node->m_objectID] = node;
+    if (!node->m_id.is_nil()) idToNode[node->m_id] = node;
 
     vAll.push_back(node);
     vTyped.push_back(node);
 
-    if (node->camera) {
+    if (node->m_camera) {
         m_cameraNodes.push_back(node);
     }
 
-    if (node->light) {
-        Light* light = node->light.get();
+    if (node->m_light) {
+        Light* light = node->m_light.get();
 
         if (light->directional) {
             m_dirLight = node;
@@ -232,13 +232,13 @@ void NodeRegistry::bindNode(Node* node)
         }
     }
 
-    if (type->flags.root) {
+    if (type->m_flags.root) {
         m_root = node;
     }
 
     scene.bindComponents(*node);
 
-    KI_INFO_SB("ATTACH_NODE: id=" << node->objectID << ", uuid=" << node->id << ", type=" << type->str());
+    KI_INFO_SB("ATTACH_NODE: id=" << node->str());
 }
 
 void NodeRegistry::bindPendingChildren()
@@ -258,8 +258,8 @@ void NodeRegistry::bindPendingChildren()
             KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
             bindNode(child);
 
-            m_childToParent[child->objectID] = parent;
-            m_parentToChildren[parent->objectID].push_back(child);
+            m_childToParent[child->m_objectID] = parent;
+            m_parentToChildren[parent->m_objectID].push_back(child);
         }
     }
 
@@ -271,37 +271,37 @@ void NodeRegistry::bindPendingChildren()
 
 bool NodeRegistry::bindParent(Node* child)
 {
-    if (child->parentId.is_nil()) return true;
+    if (child->m_parentId.is_nil()) return true;
 
-    const auto& parentIt = idToNode.find(child->parentId);
+    const auto& parentIt = idToNode.find(child->m_parentId);
     if (parentIt == idToNode.end()) {
         KI_INFO(fmt::format("PENDING_CHILD: node={}", child->str()));
 
-        m_pendingChildren[child->parentId].push_back(child);
+        m_pendingChildren[child->m_parentId].push_back(child);
         return false;
     }
 
     auto& parent = parentIt->second;
     KI_INFO(fmt::format("BIND_PARENT: parent={}, child={}", parent->str(), child->str()));
 
-    m_childToParent[child->objectID] = parent;
-    m_parentToChildren[parent->objectID].push_back(child);
+    m_childToParent[child->m_objectID] = parent;
+    m_parentToChildren[parent->m_objectID].push_back(child);
 
     return true;
 }
 
 void NodeRegistry::bindChildren(Node* parent)
 {
-    const auto& it = m_pendingChildren.find(parent->id);
+    const auto& it = m_pendingChildren.find(parent->m_id);
     if (it == m_pendingChildren.end()) return;
 
     for (auto& child : it->second) {
         KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
         bindNode(child);
 
-        m_childToParent[child->objectID] = parent;
-        m_parentToChildren[parent->objectID].push_back(child);
+        m_childToParent[child->m_objectID] = parent;
+        m_parentToChildren[parent->m_objectID].push_back(child);
     }
 
-    m_pendingChildren.erase(parent->id);
+    m_pendingChildren.erase(parent->m_id);
 }

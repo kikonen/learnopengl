@@ -33,32 +33,32 @@ NodeType::~NodeType()
 
 const std::string NodeType::str() const
 {
-    return fmt::format("<NODE_TYPE: id={}, mesh={}>", typeID, mesh ? mesh->str() : "N/A");
+    return fmt::format("<NODE_TYPE: id={}, mesh={}>", typeID, m_mesh ? m_mesh->str() : "N/A");
 }
 
 
 bool NodeType::hasReflection()
 {
-    if (!mesh) return false;
-    return mesh->hasReflection();
+    if (!m_mesh) return false;
+    return m_mesh->hasReflection();
 }
 
 bool NodeType::hasRefraction()
 {
-    if (!mesh) return false;
-    return mesh->hasRefraction();
+    if (!m_mesh) return false;
+    return m_mesh->hasRefraction();
 }
 
 Material* NodeType::findMaterial(std::function<bool(const Material&)> fn)
 {
-    if (!mesh) return nullptr;
-    return mesh->findMaterial(fn);
+    if (!m_mesh) return nullptr;
+    return m_mesh->findMaterial(fn);
 }
 
 void NodeType::modifyMaterials(std::function<void(Material&)> fn)
 {
-    if (!mesh) return;
-    mesh->modifyMaterials(fn);
+    if (!m_mesh) return;
+    m_mesh->modifyMaterials(fn);
 }
 
 void NodeType::prepare(const Assets& assets)
@@ -66,10 +66,10 @@ void NodeType::prepare(const Assets& assets)
     if (m_prepared) return;
     m_prepared = true;
 
-    if (!mesh) return;
-    mesh->prepare(assets);
+    if (!m_mesh) return;
+    m_mesh->prepare(assets);
 
-    Shader* shader = nodeShader;
+    Shader* shader = m_nodeShader;
     if (shader) {
         shader->prepare(assets);
 
@@ -85,41 +85,41 @@ void NodeType::prepare(const Assets& assets)
         }
     }
 
-    if (batch.batchSize < 0) {
-        batch.batchSize = assets.batchSize;
+    if (m_batch.batchSize < 0) {
+        m_batch.batchSize = assets.batchSize;
     }
-    if (flags.instanced) {
-        batch.batchSize = 0;
+    if (m_flags.instanced) {
+        m_batch.batchSize = 0;
     }
 
-    if (batch.batchSize > 0)
-        batch.prepare(*this);
+    if (m_batch.batchSize > 0)
+        m_batch.prepare(*this);
 }
 
 void NodeType::bind(
     const RenderContext& ctx, 
     Shader* shader)
 {
-    if (!mesh) return;
+    if (!m_mesh) return;
 
-    boundShader = shader;
+    m_boundShader = shader;
 
-    mesh->bind(ctx, shader);
+    m_mesh->bind(ctx, shader);
 
-    if (flags.renderBack) {
+    if (m_flags.renderBack) {
         ctx.state.disable(GL_CULL_FACE);
     }
     else {
         ctx.state.enable(GL_CULL_FACE);
     }
 
-    if (flags.wireframe) {
+    if (m_flags.wireframe) {
         ctx.state.polygonFrontAndBack(GL_LINE);
     }
 }
 
 void NodeType::unbind(const RenderContext& ctx)
 {
-    boundShader = nullptr;
+    m_boundShader = nullptr;
     ctx.bindGlobal();
 }

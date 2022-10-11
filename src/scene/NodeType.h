@@ -45,19 +45,19 @@ public:
 public:
     const int typeID;
 
-    NodeRenderFlags flags;
+    NodeRenderFlags m_flags;
 
-    glm::vec4 mirrorPlane{ 0 };
+    glm::vec4 m_mirrorPlane{ 0 };
 
-    std::unique_ptr<Mesh> mesh{ nullptr };
+    std::unique_ptr<Mesh> m_mesh{ nullptr };
 
-    std::string initScript;
-    std::string runScript;
+    std::string m_initScript;
+    std::string m_runScript;
 
-    Shader* nodeShader{ nullptr };
-    Shader* boundShader{ nullptr };
+    Shader* m_nodeShader{ nullptr };
+    Shader* m_boundShader{ nullptr };
 
-    Batch batch;
+    Batch m_batch;
 
 private:
     bool m_prepared = false;

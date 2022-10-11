@@ -162,12 +162,12 @@ void CubeMapRenderer::drawNodes(
     const Node* centerNode)
 {
     auto renderTypes = [&ctx, &centerNode](const NodeTypeMap& typeMap) {
-        ShaderBind bound(typeMap.begin()->first->nodeShader);
+        ShaderBind bound(typeMap.begin()->first->m_nodeShader);
 
         for (const auto& it : typeMap) {
             auto& type = *it.first;
 
-            Batch& batch = type.batch;
+            Batch& batch = type.m_batch;
 
             //ShaderBind bound(type->defaultShader);
 

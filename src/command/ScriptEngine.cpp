@@ -35,7 +35,7 @@ void ScriptEngine::runScript(
     Node& node,
     const NodeScriptId scriptId)
 {
-    const auto& nodeIt = nodeScripts.find(node.objectID);
+    const auto& nodeIt = nodeScripts.find(node.m_objectID);
     if (nodeIt == nodeScripts.end()) return;
     const auto& fnIt = nodeIt->second.find(scriptId);
     if (fnIt == nodeIt->second.end()) return;
@@ -53,7 +53,7 @@ void ScriptEngine::registerScript(
     if (script.empty()) return;
 
     // NOTE KI unique wrapperFn for node
-    const std::string nodeFnName = fmt::format("fn_{}_{}", scriptIdToString(scriptId), node.objectID);
+    const std::string nodeFnName = fmt::format("fn_{}_{}", scriptIdToString(scriptId), node.m_objectID);
     const auto scriptlet = fmt::format(R"(
 function {}(node)
 {}
@@ -61,5 +61,5 @@ end)", nodeFnName, script);
 
     m_lua.script(scriptlet);
 
-    nodeScripts[node.objectID][scriptId] = nodeFnName;
+    nodeScripts[node.m_objectID][scriptId] = nodeFnName;
 }

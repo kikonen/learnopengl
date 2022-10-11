@@ -58,7 +58,7 @@ void Batch::prepare(NodeType& type)
     if (m_prepared) return;
     m_prepared = true;
 
-    if (!type.mesh) return;
+    if (!type.m_mesh) return;
 
     if (staticBuffer) {
         batchSize = m_modelMatrices.size();
@@ -66,7 +66,7 @@ void Batch::prepare(NodeType& type)
 
     if (batchSize == 0) return;
 
-    KI_GL_CALL(glBindVertexArray(type.mesh->m_buffers.VAO));
+    KI_GL_CALL(glBindVertexArray(type.m_mesh->m_buffers.VAO));
 
     // model
     {
@@ -186,11 +186,11 @@ void Batch::draw(
     Node& node,
     Shader* shader)
 {
-    const auto& type = *node.type.get();
+    const auto& type = *node.m_type.get();
 
-    if (!type.mesh) return;
-    if (type.flags.root) return;
-    if (type.flags.origo) return;
+    if (!type.m_mesh) return;
+    if (type.m_flags.root) return;
+    if (type.m_flags.origo) return;
 
     const auto& volume = node.getVolume();
     if (ctx.useFrustum &&
@@ -204,7 +204,7 @@ void Batch::draw(
 
     ctx.drawCount += 1;
 
-    if (type.flags.instanced) {
+    if (type.m_flags.instanced) {
         node.bind(ctx, shader);
         node.draw(ctx);
         return;
@@ -220,9 +220,9 @@ void Batch::draw(
 
 void Batch::flush(const RenderContext& ctx, const NodeType& type)
 {
-    if (!type.mesh) return;
-    if (type.flags.root) return;
-    if (type.flags.origo) return;
+    if (!type.m_mesh) return;
+    if (type.m_flags.root) return;
+    if (type.m_flags.origo) return;
 
     if (batchSize == 0) return;
 
@@ -240,7 +240,7 @@ void Batch::flush(const RenderContext& ctx, const NodeType& type)
         update(drawCount);
     }
 
-    type.mesh->drawInstanced(ctx, drawCount);
+    type.m_mesh->drawInstanced(ctx, drawCount);
 
     if (!staticBuffer) {
         m_modelMatrices.clear();

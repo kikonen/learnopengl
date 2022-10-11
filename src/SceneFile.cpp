@@ -164,22 +164,22 @@ std::shared_ptr<NodeType> SceneFile::createType(
         for (auto& v : data.shaderDefinitions) {
             definitions.push_back(v);
         }
-        if (type->flags.alpha) {
+        if (type->m_flags.alpha) {
             definitions.push_back(DEF_USE_ALPHA);
         }
-        if (type->flags.blend) {
+        if (type->m_flags.blend) {
             definitions.push_back(DEF_USE_BLEND);
         }
 
-        type->nodeShader = m_asyncLoader->getShader(data.shaderName, definitions);
+        type->m_nodeShader = m_asyncLoader->getShader(data.shaderName, definitions);
     }
-    type->initScript = data.initScript;
-    type->runScript = data.runScript;
-    type->batch.batchSize = data.batchSize;
-    type->flags.root = entity.isRoot;
+    type->m_initScript = data.initScript;
+    type->m_runScript = data.runScript;
+    type->m_batch.batchSize = data.batchSize;
+    type->m_flags.root = entity.isRoot;
 
     if (data.instanced) {
-        type->flags.instanced = true;
+        type->m_flags.instanced = true;
     }
 
     // NOTE KI need to create copy *IF* modifiers
@@ -200,7 +200,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
 
         auto mesh = meshLoader.load();
         KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << mesh->str());
-        type->mesh.reset(mesh.release());
+        type->m_mesh.reset(mesh.release());
     }
     else if (data.type == EntityType::quad) {
         auto mesh = std::make_unique<QuadMesh>(data.name);
@@ -210,7 +210,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
                 mesh->m_material.loadTextures(assets);
             }
         }
-        type->mesh.reset(mesh.release());
+        type->m_mesh.reset(mesh.release());
     }
     else if (data.type == EntityType::sprite) {
         // NOTE KI sprite *shall* differ from quad later on
@@ -221,15 +221,15 @@ std::shared_ptr<NodeType> SceneFile::createType(
                 mesh->m_material.loadTextures(assets);
             }
         }
-        type->mesh.reset(mesh.release());
+        type->m_mesh.reset(mesh.release());
     }
     else if (data.type == EntityType::origo) {
         // NOTE KI nothing to do
-        type->flags.origo = true;
+        type->m_flags.origo = true;
     }
 
     if (data.type != EntityType::origo) {
-        if (!type->mesh) {
+        if (!type->m_mesh) {
             KI_WARN_SB("SCENE_FILEIGNORE: NO_MESH id=" << data.id << " (" << data.name << ")");
             return nullptr;
         }
@@ -264,43 +264,43 @@ Node* SceneFile::createNode(
     glm::vec3 pos = data.position + clonePosition + posAdjustment;
 
     if (group) {
-        node->groupId = group->id;
+        node->m_groupId = group->id;
     } else {
         // NOTE KI no id for clones; would duplicate base id => conflicts
         if (root.base.id != data.id || isRoot)
-            node->id = data.id;
+            node->m_id = data.id;
     }
 
     if (!isRoot) {
         if (data.parentId.is_nil()) {
-            node->parentId = root.base.id;
+            node->m_parentId = root.base.id;
         }
         else {
-            node->parentId = data.parentId;
+            node->m_parentId = data.parentId;
         }
     }
 
-    node->setPos(pos);
+    node->setPosition(pos);
     node->setRotation(data.rotation);
     node->setScale(data.scale);
 
-    if (type->mesh) {
-        auto volume = type->mesh->getVolume();
+    if (type->m_mesh) {
+        auto volume = type->m_mesh->getVolume();
         node->setVolume(volume->clone());
     }
 
-    node->selected = data.selected;
+    node->m_selected = data.selected;
 
     if (data.camera.enabled) {
-        node->camera = createCamera(data, data.camera);
+        node->m_camera = createCamera(data, data.camera);
     }
 
     if (data.light.enabled) {
-        node->light = createLight(data, data.light);
+        node->m_light = createLight(data, data.light);
     }
 
     if (data.controller.enabled) {
-        node->controller = createController(data, data.controller, node);
+        node->m_controller = createController(data, data.controller, node);
     }
 
     return node;
@@ -310,7 +310,7 @@ void SceneFile::assignFlags(
     const EntityCloneData& data,
     NodeType& type)
 {
-    NodeRenderFlags& flags = type.flags;
+    NodeRenderFlags& flags = type.m_flags;
 
     {
         const auto& e = data.renderFlags.find("alpha");
@@ -342,7 +342,7 @@ void SceneFile::assignFlags(
         const auto& e = data.renderFlags.find("mirror");
         if (e != data.renderFlags.end()) {
             flags.mirror = e->second;
-            type.mirrorPlane = data.mirrorPlane;
+            type.m_mirrorPlane = data.mirrorPlane;
         }
     }
     {
@@ -454,7 +454,7 @@ std::unique_ptr<NodeController> SceneFile::createController(
 
     if (!data.enabled) return controller;
 
-    const auto center = node->getPos();
+    const auto center = node->getPosition();
 
     switch (data.type) {
         case ControllerType::camera: {

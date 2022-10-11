@@ -10,7 +10,7 @@ bool CameraController::update(
     Node& node,
     Node* parent)
 {
-    Camera* camera = node.camera.get();
+    Camera* camera = node.m_camera.get();
     if (!camera) return false;
 
     glm::vec3 viewFront = camera->getViewFront();
@@ -21,7 +21,7 @@ bool CameraController::update(
     auto nodePos = pos - viewUp * 2.8f + viewFront * 9.f;
     nodePos -= parent->getWorldPos();
 
-    node.setPos(nodePos);
+    node.setPosition(nodePos);
     node.setRotation({-rot.x, 90 + rot.y, rot.z});
 
     return true;

@@ -14,6 +14,6 @@ Terrain::~Terrain()
 
 void Terrain::prepare(const Assets& assets)
 {
-    setPos({ worldX * assets.terrainTileSize, worldY, worldZ * assets.terrainTileSize });
+    setPosition({ worldX * assets.terrainTileSize, worldY, worldZ * assets.terrainTileSize });
     Node::prepare(assets);
 }

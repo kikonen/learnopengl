@@ -95,7 +95,7 @@ void AsteroidBeltController::updateAsteroids(
         auto worldMat = parent->getWorldModelMatrix() * modelMat;
         glm::mat3 worldNormalMat = glm::transpose(glm::inverse(glm::mat3(worldMat)));
 
-        modelBatch.add(worldMat, worldNormalMat, node.objectID);
+        modelBatch.add(worldMat, worldNormalMat, node.m_objectID);
     }
 
     modelBatch.staticDrawCount = m_asteroids.size();

@@ -127,7 +127,7 @@ void RenderContext::bindLightsUBO() const
     {
         auto& node = scene->registry.m_dirLight;
         if (node && useLight) {
-            lightsUbo.light = node->light->toDirLightUBO();
+            lightsUbo.light = node->m_light->toDirLightUBO();
             //lights.light.use = false;
         }
         else {
@@ -142,9 +142,9 @@ void RenderContext::bindLightsUBO() const
         for (auto& node : scene->registry.m_pointLights) {
             if (!useLight) continue;
             if (index >= LIGHT_COUNT) break;
-            if (!node->light->enabled) continue;
+            if (!node->m_light->enabled) continue;
 
-            lightsUbo.pointLights[index] = node->light->toPointightUBO();
+            lightsUbo.pointLights[index] = node->m_light->toPointightUBO();
             //lights.pointLights[index].use = false;
             index++;
         }
@@ -161,9 +161,9 @@ void RenderContext::bindLightsUBO() const
         for (auto& node : scene->registry.m_spotLights) {
             if (!useLight) continue;
             if (index >= LIGHT_COUNT) break;
-            if (!node->light->enabled) continue;
+            if (!node->m_light->enabled) continue;
 
-            lightsUbo.spotLights[index] = node->light->toSpotLightUBO();
+            lightsUbo.spotLights[index] = node->m_light->toSpotLightUBO();
             //lights.spotLights[index].use = false;
             index++;
         }

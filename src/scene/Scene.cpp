@@ -326,20 +326,20 @@ void Scene::drawScene(RenderContext& ctx)
 
 Camera* Scene::getCamera()
 {
-    return !registry.m_cameraNodes.empty() ? registry.m_cameraNodes[0]->camera.get() : nullptr;
+    return !registry.m_cameraNodes.empty() ? registry.m_cameraNodes[0]->m_camera.get() : nullptr;
 }
 
 void Scene::bindComponents(Node& node)
 {
-    if (node.particleGenerator) {
+    if (node.m_particleGenerator) {
         if (particleSystem) {
-            node.particleGenerator->system = particleSystem.get();
-            particleGenerators.push_back(node.particleGenerator.get());
+            node.m_particleGenerator->system = particleSystem.get();
+            particleGenerators.push_back(node.m_particleGenerator.get());
         }
     }
 
-    scriptEngine.registerScript(node, NodeScriptId::init, node.type->initScript);
-    scriptEngine.registerScript(node, NodeScriptId::run, node.type->runScript);
+    scriptEngine.registerScript(node, NodeScriptId::init, node.m_type->m_initScript);
+    scriptEngine.registerScript(node, NodeScriptId::run, node.m_type->m_runScript);
 
     scriptEngine.runScript(node, NodeScriptId::init);
 }

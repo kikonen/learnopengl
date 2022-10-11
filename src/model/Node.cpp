@@ -27,8 +27,8 @@ int Node::nextID()
 }
 
 Node::Node(std::shared_ptr<NodeType> type)
-    : type(type),
-    objectID(nextID())
+    : m_type(type),
+    m_objectID(nextID())
 {
 }
 
@@ -41,7 +41,7 @@ const std::string Node::str() const
 {
     return fmt::format(
         "<NODEL: {} / {} - type={}>",
-        objectID, KI_UUID_STR(id), type->str());
+        m_objectID, KI_UUID_STR(m_id), m_type->str());
 }
 
 void Node::prepare(const Assets& assets)
@@ -49,8 +49,8 @@ void Node::prepare(const Assets& assets)
     if (m_prepared) return;
     m_prepared = true;
 
-    if (controller) {
-        controller->prepare(assets, *this);
+    if (m_controller) {
+        m_controller->prepare(assets, *this);
     }
 }
 
@@ -61,14 +61,14 @@ void Node::update(
     updateModelMatrix(parent);
 
     bool changed = false;
-    if (controller) {
-        changed = controller->update(ctx, *this, parent);
+    if (m_controller) {
+        changed = m_controller->update(ctx, *this, parent);
     }
 
     if (changed) 
         updateModelMatrix(parent);
 
-    if (light) light->update(ctx, *this);
+    if (m_light) m_light->update(ctx, *this);
 
     const NodeVector* children = ctx.registry.getChildren(*this);
     if (children) {
@@ -84,7 +84,7 @@ void Node::bind(const RenderContext& ctx, Shader* shader)
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch)
 {
-    batch.add(m_worldModelMatrix, m_worldNormalMatrix, objectID);
+    batch.add(m_worldModelMatrix, m_worldNormalMatrix, m_objectID);
 }
 
 void Node::draw(const RenderContext& ctx)
@@ -105,7 +105,7 @@ void Node::updateModelMatrix(Node* parent) {
     if (m_dirtyTranslate) {
         m_translateMatrix = glm::translate(
             BASE_MAT_1,
-            m_pos
+            m_position
         );
         m_dirtyTranslate = false;
     }
@@ -150,13 +150,13 @@ void Node::updateModelMatrix(Node* parent) {
     }
 }
 
-void Node::setPos(const glm::vec3& pos) {
-    m_pos = pos;
+void Node::setPosition(const glm::vec3& pos) {
+    m_position = pos;
     m_dirtyTranslate = true;
 }
 
-const glm::vec3& Node::getPos() const {
-    return m_pos;
+const glm::vec3& Node::getPosition() const {
+    return m_position;
 }
 
 void Node::setRotation(const glm::vec3& rotation) {
@@ -218,15 +218,20 @@ void Node::setVolume(std::unique_ptr<Volume> volume)
     m_volume = std::move(volume);
 }
 
+int Node::lua_getId() const
+{
+    return m_objectID;
+}
+
 const std::array<float, 3> Node::lua_getPos() const
 {
-    return { m_pos.x, m_pos.y, m_pos.z };
+    return { m_position.x, m_position.y, m_position.z };
 }
 
 void Node::lua_setPos(float x, float y, float z)
 {
-    m_pos.x = x;
-    m_pos.y = y;
-    m_pos.z = z;
+    m_position.x = x;
+    m_position.y = y;
+    m_position.z = z;
     m_dirtyTranslate = true;
 }

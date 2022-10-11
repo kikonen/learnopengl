@@ -125,18 +125,18 @@ void NodeRenderer::drawNodes(
     }
 
     auto renderTypes = [&ctx, &selection](const NodeTypeMap& typeMap) {
-        ShaderBind bound(typeMap.begin()->first->nodeShader);
+        ShaderBind bound(typeMap.begin()->first->m_nodeShader);
 
         for (const auto& it : typeMap) {
             auto& type = *it.first;
 
-            Batch& batch = type.batch;
+            Batch& batch = type.m_batch;
 
             type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
 
             for (auto& node : it.second) {
-                if (selection ? !node->selected : node->selected) continue;
+                if (selection ? !node->m_selected : node->m_selected) continue;
 
                 batch.draw(ctx, *node, bound.shader);
             }
@@ -182,13 +182,13 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
                 auto& type = *it.first;
                 auto& nodes = it.second;
 
-                Batch& batch = type.batch;
+                Batch& batch = type.m_batch;
 
                 type.bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);
 
                 for (auto& node : nodes) {
-                    if (!node->selected) continue;
+                    if (!node->m_selected) continue;
 
                     glm::vec3 scale = node->getScale();
                     node->setScale(scale * 1.02f);
@@ -260,7 +260,7 @@ void NodeRenderer::drawBlended(
     for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
         Node* node = it->second;
 
-        if (type != node->type.get()) {
+        if (type != node->m_type.get()) {
             if (batch) {
                 // NOTE KI Changing batch
                 batch->flush(ctx, *type);
@@ -270,10 +270,10 @@ void NodeRenderer::drawBlended(
                 }
             }
             //std::cout << 'B';
-            type = node->type.get();
-            batch = &type->batch;
+            type = node->m_type.get();
+            batch = &type->m_batch;
 
-            shader = type->nodeShader;
+            shader = type->m_nodeShader;
             shader->bind();
 
             type->bind(ctx, shader);

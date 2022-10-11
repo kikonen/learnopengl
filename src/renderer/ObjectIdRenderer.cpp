@@ -152,9 +152,9 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
 
-                if (type.flags.noShadow) continue;
+                if (type.m_flags.noShadow) continue;
 
-                Batch& batch = type.batch;
+                Batch& batch = type.m_batch;
                 batch.objectIDBuffer = true;
 
                 type.bind(ctx, bound.shader);

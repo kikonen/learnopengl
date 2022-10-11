@@ -52,9 +52,9 @@ void TestSceneSetup::setupEffectExplosion()
         TerrainGenerator generator(assets);
 
         auto type = std::make_shared<NodeType>();
-        type->boundShader = shader;
-        type->flags.renderBack = true;
-        type->flags.noShadow = true;
+        type->m_boundShader = shader;
+        type->m_flags.renderBack = true;
+        type->m_flags.noShadow = true;
 
         auto node = new Billboard(type);
         //node->setPos(glm::vec3{ 0, 3.5, -20 } + assets.groundOffset);
