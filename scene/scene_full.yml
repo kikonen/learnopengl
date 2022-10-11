@@ -17,7 +17,7 @@ root:
     enabled: false
   init_script: |
     local id = node:getId()
-    cmd:rotateTo(id, 10, 5, 0.0, 2 * 360.0, 0.0)
+    cmd:rotateTo(id, 5, 2, 0.0, 360.0, 0.0)
 entities:
   - name: zero origo
     id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
@@ -28,6 +28,7 @@ entities:
       local id = node:getId()
       local pos = node:getPos()
       cmd:moveTo(id, 5, 20, pos[1] - 20, pos[2] + 50, pos[3] + 0)
+      cmd:moveTo(id, 80, 20, pos[1] + 0, pos[2] + 10, pos[3] + 0)
   - name: ZERO
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     model: water_ball
@@ -41,6 +42,8 @@ entities:
       --cmd:moveTo(id, 20, pos[1] - 20, pos[2] + 50, pos[3] + 0)
       cmd:scaleTo(id, 5, 40, 4.0, 6.0, 0.2)
       cmd:rotateTo(id, 30, 10, 0.0, 720.0, 0.0)
+      cmd:rotateTo(id, 80, 10, 0.0, 720.0, 0.0)
+      cmd:scaleTo(id, 80, 20, 1.2, 1.2, 0.2)
   - name: Player
     model: player
     pos: [-10, 7, -20.0]
@@ -439,9 +442,17 @@ entities:
     enabled: true
     clones:
       - pos: [-5.0, 15.0, -5.0]
+        init_script: |
+          cmd:rotateTo(node:getId(), 10, 120, 0.0, 360.0, 0.0)
       - pos: [5.0, 15.0, -5.0]
+        init_script: |
+          cmd:rotateTo(node:getId(), 10, 120, 0.0, 2 * 360.0, 0.0)
       - pos: [-5.0, 15.0, 5.0]
+        init_script: |
+          cmd:rotateTo(node:getId(), 10, 120, 0.0, 3 * 360.0, 0.0)
       - pos: [5.0, 15.0, 5.0]
+        init_script: |
+          cmd:rotateTo(node:getId(), 10, 120, 0.0, 4 * 360.0, 0.0)
   - name: Cube 4
     model: texture_cube_4
     shader: texture
