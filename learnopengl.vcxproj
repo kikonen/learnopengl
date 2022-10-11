@@ -168,6 +168,8 @@
     <ClCompile Include="src\asset\Sphere.cpp" />
     <ClCompile Include="src\asset\Volume.cpp" />
     <ClCompile Include="src\command\Command.cpp" />
+    <ClCompile Include="src\command\RotateNode.cpp" />
+    <ClCompile Include="src\command\ScaleNode.cpp" />
     <ClCompile Include="src\command\ScriptEngine.cpp" />
     <ClCompile Include="src\command\CommandEngine.cpp" />
     <ClCompile Include="src\command\MoveNode.cpp" />
@@ -254,6 +256,8 @@
     <ClInclude Include="src\asset\ShaderRegistry.h" />
     <ClInclude Include="src\command\Command.h" />
     <ClInclude Include="src\command\CommandEngine.h" />
+    <ClInclude Include="src\command\RotateNode.h" />
+    <ClInclude Include="src\command\ScaleNode.h" />
     <ClInclude Include="src\command\ScriptEngine.h" />
     <ClInclude Include="src\command\MoveNode.h" />
     <ClInclude Include="src\ki\uuid.h" />

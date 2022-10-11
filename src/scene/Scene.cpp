@@ -42,6 +42,9 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     prepareUBOs();
 
+    commandEngine.prepare(assets);
+    scriptEngine.prepare(assets, commandEngine);
+
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (nodeRenderer) {
         nodeRenderer->prepare(assets, shaders);
@@ -132,14 +135,10 @@ void Scene::processEvents(RenderContext& ctx)
 
 void Scene::update(RenderContext& ctx)
 {
-    //for (const auto& all : registry.allNodes) {
-    //    for (const auto& it : all.second) {
-    //        for (auto& node : it.second) {
-    //            if (!node->parentId.is_nil()) continue;
-    //            node->update(ctx, nullptr);
-    //        }
-    //    }
-    //}
+    if (ctx.clock.frameCount > 120) {
+        commandEngine.update(ctx);
+    }
+
     if (registry.m_root) {
         registry.m_root->update(ctx, nullptr);
     }

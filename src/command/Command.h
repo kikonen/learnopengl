@@ -13,14 +13,20 @@ class Command
 public:
     Command(
         int objectID,
-        float secs,
-        const glm::vec3& pos);
+        float finishTime);
 
-    // @return true if completed
-    virtual bool execute(const RenderContext& ctx, Node& node) = 0;
+    virtual void bind(const RenderContext& ctx, Node* node);
+
+    // NOTE KI set m_finished to stop
+    virtual void execute(const RenderContext& ctx) = 0;
 
 public:
     const int m_objectID;
-    const float m_secs;
-    const glm::vec3 m_pos;
+    const float m_finishTime;
+
+    bool m_finished = false;
+    Node* m_node;
+
+protected:
+    float m_elapsedTime = 0;
 };

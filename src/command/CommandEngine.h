@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+#include "asset/Assets.h"
+
 #include "command/Command.h"
 
 class RenderContext;
@@ -15,14 +17,28 @@ public:
     CommandEngine();
     ~CommandEngine() = default;
 
-    void executeCommands(const RenderContext& ctx);
+    void prepare(
+        const Assets& assets);
+
+    void update(const RenderContext& ctx);
 
 public:
     void lua_moveTo(
         int objectID,
         float secs,
-        std::array<float, 3> pos);
+        float x, float y, float z);
+
+    void lua_rotateTo(
+        int objectID,
+        float secs,
+        float x, float y, float z);
+
+    void lua_scaleTo(
+        int objectID,
+        float secs,
+        float x, float y, float z);
 
 private:
-    std::vector<std::unique_ptr<Command>> m_commands;
+    std::vector<std::unique_ptr<Command>> m_active;
+    std::vector<std::unique_ptr<Command>> m_pending;
 };

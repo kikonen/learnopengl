@@ -9,6 +9,9 @@
 #include "component/Camera.h"
 
 class Scene;
+
+class CommandEngine;
+class ScriptEngine;
 class NodeRegistry;
 
 class RenderContext final
@@ -66,7 +69,11 @@ public:
     float aspectRatio;
 
     Scene* scene{ nullptr };
+
     NodeRegistry& registry;
+    CommandEngine& commandEngine;
+    ScriptEngine& scriptEngine;
+
     Camera& camera;
 
     glm::mat4 viewMatrix;

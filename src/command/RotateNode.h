@@ -5,13 +5,13 @@
 #include "command/Command.h"
 
 
-class MoveNode final : public Command
+class RotateNode final : public Command
 {
 public:
-    MoveNode(
+    RotateNode(
         int objectID,
         float finishTime,
-        const glm::vec3& position);
+        const glm::vec3& rotation);
 
     virtual void bind(
         const RenderContext& ctx,

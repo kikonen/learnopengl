@@ -4,6 +4,8 @@
 
 #include "model/Node.h"
 
+#include "command/CommandEngine.h"
+
 namespace {
     std::string scriptIdToString(NodeScriptId scriptId) {
         switch (scriptId) {
@@ -18,17 +20,39 @@ namespace {
 
 ScriptEngine::ScriptEngine()
 {
+}
+
+void ScriptEngine::prepare(
+    const Assets& assets,
+    CommandEngine& commandEngine)
+{
     m_lua.open_libraries(sol::lib::base);
     registerTypes();
+
+    m_lua.set("cmd", &commandEngine);
 }
 
 void ScriptEngine::registerTypes()
 {
-    m_lua.new_usertype<Node>("Node");
+    // CommandEngine
+    {
+        m_lua.new_usertype<CommandEngine>("CommandEngine");
 
-    const auto& ut = m_lua["Node"];
-    ut["getPos"] = &Node::lua_getPos;
-    ut["setPos"] = &Node::lua_setPos;
+        const auto& ut = m_lua["CommandEngine"];
+        ut["moveTo"] = &CommandEngine::lua_moveTo;
+        ut["rotateTo"] = &CommandEngine::lua_rotateTo;
+        ut["scaleTo"] = &CommandEngine::lua_scaleTo;
+    }
+
+    // Node
+    {
+        m_lua.new_usertype<Node>("Node");
+
+        const auto& ut = m_lua["Node"];
+        ut["getId"] = &Node::lua_getId;
+        ut["getPos"] = &Node::lua_getPos;
+        ut["setPos"] = &Node::lua_setPos;
+    }
 }
 
 void ScriptEngine::runScript(

@@ -6,6 +6,9 @@
 #include "ki/GL.h"
 #include "component/Light.h"
 
+#include "command/CommandEngine.h"
+#include "command/ScriptEngine.h"
+
 #include "scene/Scene.h"
 #include "scene/NodeRegistry.h"
 
@@ -45,6 +48,8 @@ RenderContext::RenderContext(
     state(state),
     scene(scene),
     registry(scene->registry),
+    commandEngine(scene->commandEngine),
+    scriptEngine(scene->scriptEngine),
     camera(camera),
     width(width),
     height(height)

@@ -4,12 +4,20 @@
 
 #include <sol/sol.hpp>
 
+#include "asset/Assets.h"
+
 #include "model/Node.h"
+
+class CommandEngine;
 
 class ScriptEngine
 {
 public:
     ScriptEngine();
+
+    void prepare(
+        const Assets& assets,
+        CommandEngine& commandEngine);
 
     void runScript(
         Node& node,

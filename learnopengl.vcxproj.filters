@@ -252,6 +252,12 @@
     <ClCompile Include="src\command\MoveNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\command\ScaleNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\command\RotateNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -513,6 +519,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\command\CommandEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\RotateNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\ScaleNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

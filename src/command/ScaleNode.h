@@ -5,13 +5,13 @@
 #include "command/Command.h"
 
 
-class MoveNode final : public Command
+class ScaleNode final : public Command
 {
 public:
-    MoveNode(
+    ScaleNode(
         int objectID,
         float finishTime,
-        const glm::vec3& position);
+        const glm::vec3& scale);
 
     virtual void bind(
         const RenderContext& ctx,

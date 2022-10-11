@@ -10,6 +10,7 @@
 #include "NodeRegistry.h"
 #include "RenderContext.h"
 
+#include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
 
 #include "renderer/NodeRenderer.h"
@@ -70,6 +71,7 @@ public:
     UBO ubo;
 
     NodeRegistry registry;
+    CommandEngine commandEngine;
     ScriptEngine scriptEngine;
 
 protected:
