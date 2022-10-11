@@ -10,6 +10,7 @@ class MoveNode final : public Command
 public:
     MoveNode(
         int objectID,
+        float initialDelay,
         float finishTime,
         const glm::vec3& position);
 

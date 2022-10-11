@@ -10,6 +10,7 @@ class ScaleNode final : public Command
 public:
     ScaleNode(
         int objectID,
+        float initialDelay,
         float finishTime,
         const glm::vec3& scale);
 

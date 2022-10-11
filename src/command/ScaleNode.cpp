@@ -3,9 +3,10 @@
 
 ScaleNode::ScaleNode(
     int objectID,
+    float initialDelay,
     float finishTime,
     const glm::vec3& scale)
-    : Command(objectID, finishTime),
+    : Command(objectID, initialDelay, finishTime),
     m_end(scale)
 {
 }

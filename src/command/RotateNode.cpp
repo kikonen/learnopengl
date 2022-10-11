@@ -3,9 +3,10 @@
 
 RotateNode::RotateNode(
     int objectID,
+    float initialDelay,
     float finishTime,
     const glm::vec3& rotation)
-    : Command(objectID, finishTime),
+    : Command(objectID, initialDelay, finishTime),
     m_end(rotation)
 {
 }

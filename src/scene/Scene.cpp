@@ -135,7 +135,8 @@ void Scene::processEvents(RenderContext& ctx)
 
 void Scene::update(RenderContext& ctx)
 {
-    if (ctx.clock.frameCount > 120) {
+    //if (ctx.clock.frameCount > 120) {
+    if (getCamera()) {
         commandEngine.update(ctx);
     }
 

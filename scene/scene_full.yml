@@ -24,7 +24,7 @@ entities:
     init_script: |
       local id = node:getId()
       local pos = node:getPos()
-      cmd:moveTo(id, 5, pos[1] - 20, pos[2] + 50, pos[3] + 0)
+      cmd:moveTo(id, 5, 20, pos[1] - 20, pos[2] + 50, pos[3] + 0)
   - name: ZERO
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     model: water_ball
@@ -36,7 +36,8 @@ entities:
       local id = node:getId()
       --local pos = node:getPos()
       --cmd:moveTo(id, 20, pos[1] - 20, pos[2] + 50, pos[3] + 0)
-      cmd:scaleTo(id, 40, 4.0, 6.0, 0.2)
+      cmd:scaleTo(id, 5, 40, 4.0, 6.0, 0.2)
+      cmd:rotateTo(id, 30, 10, 0.0, 720.0, 0.0)
   - name: Player
     model: player
     pos: [-10, 7, -20.0]
@@ -519,6 +520,9 @@ entities:
     material_modifier:
       fog_ratio: 0
     enabled: true
+    init_script: |
+      local id = node:getId()
+      cmd:rotateTo(id, 5, 3600, 0.0, 720.0, 0.0)
   - name: Rock origo
     id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
