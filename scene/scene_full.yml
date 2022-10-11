@@ -15,6 +15,9 @@ root:
     type: path
     mode: 1
     enabled: false
+  init_script: |
+    local id = node:getId()
+    cmd:rotateTo(id, 10, 5, 0.0, 2 * 360.0, 0.0)
 entities:
   - name: zero origo
     id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
