@@ -42,6 +42,8 @@ void ScriptEngine::registerTypes()
         m_lua.new_usertype<CommandEngine>("CommandEngine");
 
         const auto& ut = m_lua["CommandEngine"];
+
+        ut["cancel"] = &CommandEngine::lua_cancel;
         ut["moveTo"] = &CommandEngine::lua_moveTo;
         ut["rotateTo"] = &CommandEngine::lua_rotateTo;
         ut["scaleTo"] = &CommandEngine::lua_scaleTo;

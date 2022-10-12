@@ -22,20 +22,28 @@ public:
 
     void update(const RenderContext& ctx);
 
+    bool isCanceled(int commandId);
+    void cancel(int commandId);
+
 public:
-    void lua_moveTo(
+    int lua_cancel(
+        float initialDelay,
+        float secs,
+        int commandId);
+
+    int lua_moveTo(
         int objectID,
         float initialDelay,
         float secs,
         float x, float y, float z);
 
-    void lua_rotateTo(
+    int lua_rotateTo(
         int objectID,
         float initialDelay,
         float secs,
         float x, float y, float z);
 
-    void lua_scaleTo(
+    int lua_scaleTo(
         int objectID,
         float initialDelay,
         float secs,
@@ -45,4 +53,6 @@ private:
     std::vector<std::unique_ptr<Command>> m_active;
     std::vector<std::unique_ptr<Command>> m_waiting;
     std::vector<std::unique_ptr<Command>> m_pending;
+
+    std::vector<int> m_canceled;
 };

@@ -2,10 +2,10 @@
 
 #include <glm/glm.hpp>
 
-#include "command/Command.h"
+#include "command/NodeCommand.h"
 
 
-class MoveNode final : public Command
+class MoveNode final : public NodeCommand
 {
 public:
     MoveNode(

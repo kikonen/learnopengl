@@ -6,14 +6,14 @@ MoveNode::MoveNode(
     float initialDelay,
     float finishTime,
     const glm::vec3& position)
-    : Command(objectID, initialDelay, finishTime),
+    : NodeCommand(objectID, initialDelay, finishTime),
     m_end(position)
 {
 }
 
 void MoveNode::bind(const RenderContext& ctx, Node* node)
 {
-    Command::bind(ctx, node);
+    NodeCommand::bind(ctx, node);
     m_begin = node->getPosition();
 }
 

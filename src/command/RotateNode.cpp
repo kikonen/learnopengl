@@ -6,14 +6,14 @@ RotateNode::RotateNode(
     float initialDelay,
     float finishTime,
     const glm::vec3& rotation)
-    : Command(objectID, initialDelay, finishTime),
+    : NodeCommand(objectID, initialDelay, finishTime),
     m_end(rotation)
 {
 }
 
 void RotateNode::bind(const RenderContext& ctx, Node* node)
 {
-    Command::bind(ctx, node);
+    NodeCommand::bind(ctx, node);
     m_begin = node->getRotation();
 }
 

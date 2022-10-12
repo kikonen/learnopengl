@@ -2,9 +2,6 @@
 
 #include <string>
 
-#include <glm/glm.hpp>
-
-#include "model/Node.h"
 #include "scene/RenderContext.h"
 
 
@@ -12,11 +9,12 @@ class Command
 {
 public:
     Command(
-        int objectID,
         float initialDelay,
         float finishTime);
 
-    virtual void bind(const RenderContext& ctx, Node* node);
+    virtual bool isNode() { return false; }
+
+    virtual void bind(const RenderContext& ctx);
 
     void wait(const RenderContext& ctx);
 
@@ -24,13 +22,13 @@ public:
     virtual void execute(const RenderContext& ctx) = 0;
 
 public:
-    const int m_objectID;
+    const int m_id;
     const float m_initialDelay;
     const float m_finishTime;
 
+    bool m_canceled = false;
     bool m_ready = false;
     bool m_finished = false;
-    Node* m_node;
 
 protected:
     float m_elapsedTime = 0.f;

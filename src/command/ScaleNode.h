@@ -2,10 +2,9 @@
 
 #include <glm/glm.hpp>
 
-#include "command/Command.h"
+#include "command/NodeCommand.h"
 
-
-class ScaleNode final : public Command
+class ScaleNode final : public NodeCommand
 {
 public:
     ScaleNode(

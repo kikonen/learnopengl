@@ -2,10 +2,9 @@
 
 #include <glm/glm.hpp>
 
-#include "command/Command.h"
+#include "command/NodeCommand.h"
 
-
-class RotateNode final : public Command
+class RotateNode final : public NodeCommand
 {
 public:
     RotateNode(

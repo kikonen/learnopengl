@@ -15,7 +15,7 @@ root:
     type: path
     mode: 1
     enabled: false
-  init_script: |
+  xinit_script: |
     local id = node:getId()
     cmd:rotateTo(id, 5, 2, 0.0, 360.0, 0.0)
 entities:
@@ -38,8 +38,6 @@ entities:
     enabled: true
     init_script: |
       local id = node:getId()
-      --local pos = node:getPos()
-      --cmd:moveTo(id, 20, pos[1] - 20, pos[2] + 50, pos[3] + 0)
       cmd:scaleTo(id, 5, 40, 4.0, 6.0, 0.2)
       cmd:rotateTo(id, 30, 10, 0.0, 720.0, 0.0)
       cmd:rotateTo(id, 80, 10, 0.0, 720.0, 0.0)
@@ -583,8 +581,13 @@ entities:
     init_script: |
       local id = node:getId()
       local pos = node:getPos()
-      cmd:moveTo(id, 5, 10, pos[1] + 25 - math.random(100), pos[2], pos[3] + 25 - math.random(100))
-      cmd:moveTo(id, 15, 10, pos[1] + 25 - math.random(100), pos[2], pos[3] + 25 - math.random(100))
+
+      cid = cmd:moveTo(id, 5, 10, pos[1] + 25 - math.random(100), pos[2], pos[3] + 25 - math.random(100))
+      cmd:cancel(7, 0, cid)
+
+      cid = cmd:moveTo(id, 15, 10, pos[1] + 25 - math.random(100), pos[2], pos[3] + 25 - math.random(100))
+      cmd:cancel(0, 0, cid)
+
       cmd:moveTo(id, 25, 5, pos[1] + 25 - math.random(50), pos[2], pos[3] + 25 - math.random(50))
       cmd:moveTo(id, 30, 5, pos[1] + 10 - math.random(20), pos[2], pos[3] + 10 - math.random(20))
       cmd:moveTo(id, 35, 3, pos[1] + 5 - math.random(10), pos[2], pos[3] + 5 - math.random(10))

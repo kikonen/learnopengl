@@ -6,14 +6,14 @@ ScaleNode::ScaleNode(
     float initialDelay,
     float finishTime,
     const glm::vec3& scale)
-    : Command(objectID, initialDelay, finishTime),
+    : NodeCommand(objectID, initialDelay, finishTime),
     m_end(scale)
 {
 }
 
 void ScaleNode::bind(const RenderContext& ctx, Node* node)
 {
-    Command::bind(ctx, node);
+    NodeCommand::bind(ctx, node);
     m_begin = node->getScale();
 }
 
