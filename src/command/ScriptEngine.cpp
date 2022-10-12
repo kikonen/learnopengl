@@ -27,6 +27,9 @@ void ScriptEngine::prepare(
     CommandEngine& commandEngine)
 {
     m_lua.open_libraries(sol::lib::base);
+    m_lua.open_libraries(sol::lib::math);
+    m_lua.open_libraries(sol::lib::os);
+
     registerTypes();
 
     m_lua.set("cmd", &commandEngine);

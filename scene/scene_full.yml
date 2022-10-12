@@ -580,6 +580,15 @@ entities:
       x_step: -4
       z_step: 0.2
     enabled: true
+    init_script: |
+      local id = node:getId()
+      local pos = node:getPos()
+      cmd:moveTo(id, 5, 10, pos[1] + 25 - math.random(100), pos[2], pos[3] + 25 - math.random(100))
+      cmd:moveTo(id, 15, 10, pos[1] + 25 - math.random(100), pos[2], pos[3] + 25 - math.random(100))
+      cmd:moveTo(id, 25, 5, pos[1] + 25 - math.random(50), pos[2], pos[3] + 25 - math.random(50))
+      cmd:moveTo(id, 30, 5, pos[1] + 10 - math.random(20), pos[2], pos[3] + 10 - math.random(20))
+      cmd:moveTo(id, 35, 3, pos[1] + 5 - math.random(10), pos[2], pos[3] + 5 - math.random(10))
+      cmd:moveTo(id, 38, 2, pos[1], pos[2], pos[3])
   - name: Skeleton single
     xid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
     type: sprite
