@@ -7,6 +7,7 @@ class CancelCommand final : public Command
 {
 public:
     CancelCommand(
+        int afterCommandId,
         float initialDelay,
         float finishTime,
         int commandId);

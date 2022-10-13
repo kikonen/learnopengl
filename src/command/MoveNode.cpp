@@ -2,11 +2,12 @@
 
 
 MoveNode::MoveNode(
+    int afterCommandId,
     int objectID,
     float initialDelay,
     float finishTime,
     const glm::vec3& position)
-    : NodeCommand(objectID, initialDelay, finishTime),
+    : NodeCommand(afterCommandId, objectID, initialDelay, finishTime),
     m_end(position)
 {
 }

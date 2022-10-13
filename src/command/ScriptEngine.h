@@ -10,7 +10,7 @@
 
 class CommandEngine;
 
-class ScriptEngine
+class ScriptEngine final
 {
 public:
     ScriptEngine();

@@ -16,9 +16,11 @@ namespace {
 
 
 Command::Command(
+    int afterCommandId,
     float initialDelay,
     float finishTime)
     : m_id(nextID()),
+    m_afterCommandId(afterCommandId),
     m_initialDelay(initialDelay),
     m_finishTime(finishTime),
     m_ready(initialDelay <= 0.f)

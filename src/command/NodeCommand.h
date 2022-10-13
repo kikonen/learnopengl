@@ -9,6 +9,7 @@ class NodeCommand : public Command
 {
 public:
     NodeCommand(
+        int afterCommandId,
         int objectID,
         float initialDelay,
         float finishTime);

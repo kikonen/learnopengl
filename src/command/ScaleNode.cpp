@@ -2,11 +2,12 @@
 
 
 ScaleNode::ScaleNode(
+    int afterCommandId,
     int objectID,
     float initialDelay,
     float finishTime,
     const glm::vec3& scale)
-    : NodeCommand(objectID, initialDelay, finishTime),
+    : NodeCommand(afterCommandId, objectID, initialDelay, finishTime),
     m_end(scale)
 {
 }

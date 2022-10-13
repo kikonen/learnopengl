@@ -3,10 +3,11 @@
 #include "command/CommandEngine.h"
 
 CancelCommand::CancelCommand(
+    int afterCommandId,
     float initialDelay,
     float finishTime,
     int commandId)
-    : Command(initialDelay, finishTime),
+    : Command(afterCommandId, initialDelay, finishTime),
     m_commandId(commandId)
 {
 }

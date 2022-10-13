@@ -8,6 +8,7 @@ class ScaleNode final : public NodeCommand
 {
 public:
     ScaleNode(
+        int afterCommandId,
         int objectID,
         float initialDelay,
         float finishTime,

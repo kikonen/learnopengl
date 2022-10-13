@@ -8,6 +8,7 @@ class RotateNode final : public NodeCommand
 {
 public:
     RotateNode(
+        int afterCommandId,
         int objectID,
         float initialDelay,
         float finishTime,

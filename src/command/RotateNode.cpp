@@ -2,11 +2,12 @@
 
 
 RotateNode::RotateNode(
+    int afterCommandId,
     int objectID,
     float initialDelay,
     float finishTime,
     const glm::vec3& rotation)
-    : NodeCommand(objectID, initialDelay, finishTime),
+    : NodeCommand(afterCommandId, objectID, initialDelay, finishTime),
     m_end(rotation)
 {
 }

@@ -9,6 +9,7 @@ class MoveNode final : public NodeCommand
 {
 public:
     MoveNode(
+        int afterCommandId,
         int objectID,
         float initialDelay,
         float finishTime,

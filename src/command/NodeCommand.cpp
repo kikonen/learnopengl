@@ -2,10 +2,11 @@
 #include "command/NodeCommand.h"
 
 NodeCommand::NodeCommand(
+    int afterCommandId,
     int objectID,
     float initialDelay,
     float finishTime)
-    : Command(initialDelay, finishTime),
+    : Command(afterCommandId, initialDelay, finishTime),
     m_objectID(objectID)
 {
 }
