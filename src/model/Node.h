@@ -46,6 +46,8 @@ public:
 
     const glm::mat4& getModelMatrix() const;
 
+    virtual void updateModelMatrix(Node* parent);
+
     const Volume* getVolume() const;
     void setVolume(std::unique_ptr<Volume> volume);
 
@@ -58,7 +60,6 @@ public:
     void lua_setPos(float x, float y, float z);
 
 protected:
-    virtual void updateModelMatrix(Node* parent);
 
 public:
     // *INTERNAL* LUID in scene

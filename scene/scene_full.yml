@@ -17,7 +17,7 @@ root:
     enabled: false
   xinit_script: |
     local id = node:getId()
-    cmd:rotateTo(0, id, 5, 2, 0.0, 360.0, 0.0)
+    cmd:rotateTo(0, id, 5, 2, 0.0, true, 360.0, 0.0)
 entities:
   - name: zero origo
     id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
@@ -26,9 +26,8 @@ entities:
     enabled: true
     init_script: |
       local id = node:getId()
-      local pos = node:getPos()
-      cid = cmd:moveTo(-1, id, 5, 20, pos[1] - 20, pos[2] + 50, pos[3] + 0)
-      cmd:moveTo(cid, id, 60, 20, pos[1] + 0, pos[2] + 10, pos[3] + 0)
+      cid = cmd:moveTo(-1, id, 5, 20, true, -20, 50, 0)
+      cmd:moveTo(cid, id, 60, 20, true, 20, -40, 0)
   - name: ZERO
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     model: water_ball
@@ -38,10 +37,10 @@ entities:
     enabled: true
     init_script: |
       local id = node:getId()
-      cmd:scaleTo(-1, id, 5, 40, 4.0, 6.0, 0.2)
-      cid = cmd:rotateTo(-1, id, 30, 10, 0.0, 720.0, 0.0)
-      cmd:rotateTo(cid, id, 30, 10, 0.0, 720.0, 0.0)
-      cmd:scaleTo(cid, id, 30, 20, 1.2, 1.2, 0.2)
+      cmd:scaleTo(-1, id, 5, 40, true, 4.0, 6.0, 0.2)
+      cid = cmd:rotateTo(-1, id, 30, 10, true, 0.0, 720.0, 0.0)
+      cmd:rotateTo(cid, id, 30, 10, true, 0.0, 720.0, 0.0)
+      cmd:scaleTo(cid, id, 30, 20, false, 1.2, 1.2, 0.2)
   - name: Player
     model: player
     pos: [-10, 7, -20.0]
@@ -441,16 +440,16 @@ entities:
     clones:
       - pos: [-5.0, 15.0, -5.0]
         init_script: |
-          cmd:rotateTo(-1, node:getId(), 10, 120, 0.0, 360.0, 0.0)
+          cmd:rotateTo(-1, node:getId(), 10, 120, false, 0.0, -360.0, 0.0)
       - pos: [5.0, 15.0, -5.0]
         init_script: |
-          cmd:rotateTo(-1, node:getId(), 10, 120, 0.0, 2 * 360.0, 0.0)
+          cmd:rotateTo(-1, node:getId(), 10, 120, false, 0.0, 2 * 360.0, 0.0)
       - pos: [-5.0, 15.0, 5.0]
         init_script: |
-          cmd:rotateTo(-1, node:getId(), 10, 120, 0.0, 3 * 360.0, 0.0)
+          cmd:rotateTo(-1, node:getId(), 10, 120, false, 0.0, -3 * 360.0, 0.0)
       - pos: [5.0, 15.0, 5.0]
         init_script: |
-          cmd:rotateTo(-1, node:getId(), 10, 120, 0.0, 4 * 360.0, 0.0)
+          cmd:rotateTo(-1, node:getId(), 10, 120, false, 0.0, 4 * 360.0, 0.0)
   - name: Cube 4
     model: texture_cube_4
     shader: texture
@@ -534,7 +533,7 @@ entities:
     enabled: true
     init_script: |
       local id = node:getId()
-      cmd:rotateTo(-1, id, 5, 3600, 0.0, 720.0, 0.0)
+      cmd:rotateTo(-1, id, 5, 3600, true, 0.0, 720.0, 0.0)
   - name: Rock origo
     id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
@@ -581,16 +580,22 @@ entities:
     init_script: |
       local id = node:getId()
       local pos = node:getPos()
+      local rnd = math.random
+      local x = pos[1]
+      local y = pos[2]
+      local z = pos[3]
+      local cid = -1
 
-      cid = cmd:moveTo(-1, id, 5, 10, pos[1] + 25 - math.random(100), pos[2], pos[3] + 25 - math.random(100))
+      cid = cmd:moveTo(-1, id, 5, 10, true, 25 - rnd(100), 0, 25 - rnd(100))
       cmd:cancel(-1, 7, 0, cid)
 
-      cid = cmd:moveTo(cid, id, 0, 10, pos[1] + 25 - math.random(100), pos[2], pos[3] + 25 - math.random(100))
+      cid = cmd:moveTo(cid, id, 0, 10, true, 25 - rnd(100), 0, 25 - rnd(100))
       cmd:cancel(-1, 0, 0, cid)
-      cid = cmd:moveTo(cid, id, 0, 5, pos[1] + 25 - math.random(50), pos[2], pos[3] + 25 - math.random(50))
-      cid = cmd:moveTo(cid, id, 0, 5, pos[1] + 10 - math.random(20), pos[2], pos[3] + 10 - math.random(20))
-      cid = cmd:moveTo(cid, id, 0, 3, pos[1] + 5 - math.random(10), pos[2], pos[3] + 5 - math.random(10))
-      cid = cmd:moveTo(cid, id, 0, 2, pos[1], pos[2], pos[3])
+
+      cid = cmd:moveTo(cid, id, 0, 5, true, 25 - rnd(50), 0, 25 - rnd(50))
+      cid = cmd:moveTo(cid, id, 0, 5, true, 10 - rnd(20), 0, 10 - rnd(20))
+      cid = cmd:moveTo(cid, id, 0, 3, true, 5 - rnd(10), 0, 5 - rnd(10))
+      cid = cmd:moveTo(cid, id, 0, 2, false, x, y, z)
   - name: Skeleton single
     xid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
     type: sprite

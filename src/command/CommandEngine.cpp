@@ -256,6 +256,7 @@ int CommandEngine::lua_moveTo(
     int objectID,
     float initialDelay,
     float secs,
+    bool relative,
     float x, float y, float z)
 {
     auto& cmd = m_pending.emplace_back(
@@ -264,6 +265,7 @@ int CommandEngine::lua_moveTo(
             objectID,
             initialDelay,
             secs,
+            relative,
             glm::vec3{ x, y, z }));
     return cmd->m_id;
 }
@@ -273,6 +275,7 @@ int CommandEngine::lua_rotateTo(
     int objectID,
     float initialDelay,
     float secs,
+    bool relative,
     float x, float y, float z)
 {
     auto& cmd = m_pending.emplace_back(
@@ -281,6 +284,7 @@ int CommandEngine::lua_rotateTo(
             objectID,
             initialDelay,
             secs,
+            relative,
             glm::vec3{ x, y, z }));
     return cmd->m_id;
 }
@@ -290,6 +294,7 @@ int CommandEngine::lua_scaleTo(
     int objectID,
     float initialDelay,
     float secs,
+    bool relative,
     float x, float y, float z)
 {
     auto& cmd = m_pending.emplace_back(
@@ -298,6 +303,7 @@ int CommandEngine::lua_scaleTo(
             objectID,
             initialDelay,
             secs,
+            relative,
             glm::vec3{ x, y, z }));
     return cmd->m_id;
 }

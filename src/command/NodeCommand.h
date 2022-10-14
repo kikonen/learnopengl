@@ -12,7 +12,8 @@ public:
         int afterCommandId,
         int objectID,
         float initialDelay,
-        float finishTime);
+        float finishTime,
+        bool relative);
 
     virtual bool isNode() override final { return true; };
 
@@ -20,5 +21,7 @@ public:
 
 public:
     const int m_objectID;
+    const bool m_relative;
+
     Node* m_node;
 };

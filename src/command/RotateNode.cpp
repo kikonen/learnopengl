@@ -6,8 +6,9 @@ RotateNode::RotateNode(
     int objectID,
     float initialDelay,
     float finishTime,
+    bool relative,
     const glm::vec3& rotation)
-    : NodeCommand(afterCommandId, objectID, initialDelay, finishTime),
+    : NodeCommand(afterCommandId, objectID, initialDelay, finishTime, relative),
     m_end(rotation)
 {
 }
@@ -22,10 +23,16 @@ void RotateNode::execute(
     const RenderContext& ctx)
 {
     m_elapsedTime += ctx.clock.elapsedSecs;
-    glm::vec3 rotation = (m_end - m_begin) * (m_elapsedTime / m_finishTime) + m_begin;
+    glm::vec3 rotation = m_relative
+        ? (m_end) * (m_elapsedTime / m_finishTime)
+        : (m_end - m_begin) * (m_elapsedTime / m_finishTime) + m_begin;
 
     m_finished = m_elapsedTime >= m_finishTime;
     if (m_finished) rotation = m_end;
+
+    if (m_relative) {
+        rotation += m_begin;
+    }
 
     m_node->setRotation(rotation);
 }

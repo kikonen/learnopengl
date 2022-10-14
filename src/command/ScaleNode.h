@@ -12,6 +12,7 @@ public:
         int objectID,
         float initialDelay,
         float finishTime,
+        bool relative,
         const glm::vec3& scale);
 
     virtual void bind(

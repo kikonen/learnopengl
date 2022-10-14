@@ -6,8 +6,9 @@ MoveNode::MoveNode(
     int objectID,
     float initialDelay,
     float finishTime,
+    bool relative,
     const glm::vec3& position)
-    : NodeCommand(afterCommandId, objectID, initialDelay, finishTime),
+    : NodeCommand(afterCommandId, objectID, initialDelay, finishTime, relative),
     m_end(position)
 {
 }
@@ -22,10 +23,16 @@ void MoveNode::execute(
     const RenderContext& ctx)
 {
     m_elapsedTime += ctx.clock.elapsedSecs;
-    glm::vec3 position = (m_end - m_begin) * (m_elapsedTime / m_finishTime) + m_begin;
+    glm::vec3 position = m_relative
+        ? (m_end) * (m_elapsedTime / m_finishTime)
+        : (m_end - m_begin) * (m_elapsedTime / m_finishTime) + m_begin;
 
     m_finished = m_elapsedTime >= m_finishTime;
     if (m_finished) position = m_end;
+
+    if (m_relative) {
+        position += m_begin;
+    }
 
     m_node->setPosition(position);
 }

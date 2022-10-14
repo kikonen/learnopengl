@@ -13,6 +13,7 @@ public:
         int objectID,
         float initialDelay,
         float finishTime,
+        bool relative,
         const glm::vec3& position);
 
     virtual void bind(

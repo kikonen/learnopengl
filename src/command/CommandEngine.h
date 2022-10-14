@@ -47,6 +47,7 @@ public:
         int objectID,
         float initialDelay,
         float secs,
+        bool relative,
         float x, float y, float z);
 
     int lua_rotateTo(
@@ -54,6 +55,7 @@ public:
         int objectID,
         float initialDelay,
         float secs,
+        bool relative,
         float x, float y, float z);
 
     int lua_scaleTo(
@@ -61,6 +63,7 @@ public:
         int objectID,
         float initialDelay,
         float secs,
+        bool relative,
         float x, float y, float z);
 
 private:
