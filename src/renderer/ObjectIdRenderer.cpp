@@ -27,17 +27,19 @@ int ObjectIdRenderer::getObjectId(
     unsigned char data[4];
     memset(data, 100, sizeof(data));
 
+    constexpr float GL_SCREEN_SIZE = 2.f;
+
     int screenW = ctx.width;
     int screenH = ctx.height;
 
-    float w = screenW * (mainViewport->size.x / 2.f);
-    float h = screenH * (mainViewport->size.y / 2.f);
+    float w = screenW * (mainViewport->size.x / GL_SCREEN_SIZE);
+    float h = screenH * (mainViewport->size.y / GL_SCREEN_SIZE);
 
     float ratioX = idBuffer->spec.width / w;
     float ratioY = idBuffer->spec.height / h;
 
-    float offsetX = screenW * (mainViewport->pos.x + 1.f) / 2.f;
-    float offsetY = screenH * (1.f - (mainViewport->pos.y + 1.f) / 2.f);
+    float offsetX = screenW * (mainViewport->pos.x + 1.f) / GL_SCREEN_SIZE;
+    float offsetY = screenH * (1.f - (mainViewport->pos.y + 1.f) / GL_SCREEN_SIZE);
 
     float posx = (screenPosX - offsetX) * ratioX;
     float posy = (screenPosY - offsetY) * ratioY;

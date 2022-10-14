@@ -91,8 +91,6 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRe
     drawNodes(ctx, registry, nullptr, true);
 
     ctx.state.disable(GL_STENCIL_TEST);
-
-    KI_GL_UNBIND(glBindVertexArray(0));
 }
 
 void NodeRenderer::renderSelection(const RenderContext& ctx, const NodeRegistry& registry)
@@ -100,13 +98,19 @@ void NodeRenderer::renderSelection(const RenderContext& ctx, const NodeRegistry&
     if (selectedCount == 0) return;
 
     ctx.state.enable(GL_STENCIL_TEST);
+    ctx.state.disable(GL_DEPTH_TEST);
+
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilMask(0x00);
 
     drawSelectionStencil(ctx, registry);
 
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 0, 0xFF);
+
+    ctx.state.enable(GL_DEPTH_TEST);
     ctx.state.disable(GL_STENCIL_TEST);
-    KI_GL_UNBIND(glBindVertexArray(0));
 }
 
 // draw all non selected nodes
@@ -124,7 +128,8 @@ void NodeRenderer::drawNodes(
         glStencilMask(0x00);
     }
 
-    auto renderTypes = [&ctx, &selection](const NodeTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, &selection](const NodeTypeMap& typeMap) {
+        //ShaderBind bound(selection ? selectionShader : typeMap.begin()->first->m_nodeShader);
         ShaderBind bound(typeMap.begin()->first->m_nodeShader);
 
         for (const auto& it : typeMap) {
@@ -170,53 +175,48 @@ void NodeRenderer::drawNodes(
 // draw all selected nodes with stencil
 void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilMask(0x00);
-    ctx.state.disable(GL_DEPTH_TEST);
+    ShaderBind bound(selectionShader);
 
-    {
-        ShaderBind bound(selectionShader);
+    auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
+        for (const auto& it : typeMap) {
+            auto& type = *it.first;
+            auto& nodes = it.second;
 
-        auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
-            for (const auto& it : typeMap) {
-                auto& type = *it.first;
-                auto& nodes = it.second;
+            Batch& batch = type.m_batch;
 
-                Batch& batch = type.m_batch;
+            type.bind(ctx, bound.shader);
+            batch.bind(ctx, bound.shader);
 
-                type.bind(ctx, bound.shader);
-                batch.bind(ctx, bound.shader);
+            for (auto& node : nodes) {
+                if (!node->m_selected) continue;
 
-                for (auto& node : nodes) {
-                    if (!node->m_selected) continue;
+                auto parent = ctx.registry.getParent(*node);
+                glm::vec3 scale = node->getScale();
+                node->setScale(scale * 1.02f);
+                node->updateModelMatrix(parent);
 
-                    glm::vec3 scale = node->getScale();
-                    node->setScale(scale * 1.02f);
-                    batch.draw(ctx, *node, bound.shader);
-                    node->setScale(scale);
-                }
+                batch.draw(ctx, *node, bound.shader);
 
-                batch.flush(ctx, type);
-                type.unbind(ctx);
+                node->updateModelMatrix(parent);
+                node->setScale(scale);
             }
-        };
 
-        for (const auto& all : registry.solidNodes) {
-            renderTypes(all.second);
+            batch.flush(ctx, type);
+            type.unbind(ctx);
         }
+    };
 
-        for (const auto& all : registry.alphaNodes) {
-            renderTypes(all.second);
-        }
-
-        for (const auto& all : registry.blendedNodes) {
-            renderTypes(all.second);
-        }
+    for (const auto& all : registry.solidNodes) {
+        renderTypes(all.second);
     }
 
-    glStencilMask(0xFF);
-    glStencilFunc(GL_ALWAYS, 0, 0xFF);
-    ctx.state.enable(GL_DEPTH_TEST);
+    for (const auto& all : registry.alphaNodes) {
+        renderTypes(all.second);
+    }
+
+    for (const auto& all : registry.blendedNodes) {
+        renderTypes(all.second);
+    }
 }
 
 void NodeRenderer::drawBlended(
