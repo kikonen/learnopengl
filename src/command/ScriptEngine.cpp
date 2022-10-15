@@ -79,7 +79,7 @@ void ScriptEngine::runScript(
 
     const auto& nodeFnName = fnIt->second;
     sol::function fn = m_lua[nodeFnName];
-    fn(node);
+    fn(node, node.m_objectID);
 }
 
 void ScriptEngine::registerScript(
@@ -92,7 +92,7 @@ void ScriptEngine::registerScript(
     // NOTE KI unique wrapperFn for node
     const std::string nodeFnName = fmt::format("fn_{}_{}", scriptIdToString(scriptId), node.m_objectID);
     const auto scriptlet = fmt::format(R"(
-function {}(node)
+function {}(node, id)
 {}
 end)", nodeFnName, script);
 
