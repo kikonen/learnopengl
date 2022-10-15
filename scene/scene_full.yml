@@ -581,29 +581,28 @@ entities:
       local id = node:getId()
 
       local function main()
-        print("started")
-        --while true do
-        --end
+        --print(string.format("START: %d", id))
+
+        local pos = node:getPos()
+        local rnd = math.random
+        local x = pos[1]
+        local y = pos[2]
+        local z = pos[3]
+        local cid = -1
+
+        cid = cmd:moveTo(-1, id, 5, 10, true, 25 - rnd(100), 0, 25 - rnd(100))
+        cmd:cancel(-1, 7, 0, cid)
+
+        cid = cmd:moveTo(cid, id, 0, 10, true, 25 - rnd(100), 0, 25 - rnd(100))
+        cmd:cancel(-1, 0, 0, cid)
+
+        cid = cmd:moveTo(cid, id, 0, 5, true, 25 - rnd(50), 0, 25 - rnd(50))
+        cid = cmd:moveTo(cid, id, 0, 5, true, 10 - rnd(20), 0, 10 - rnd(20))
+        cid = cmd:moveSplineTo(cid, id, 0, 3, true, 20, 0, 5, 5 - rnd(10), 0, 5 - rnd(10))
+        cid = cmd:moveTo(cid, id, 0, 2, false, x, y, z)
       end
 
-      local pos = node:getPos()
-      local rnd = math.random
-      local x = pos[1]
-      local y = pos[2]
-      local z = pos[3]
-      local cid = -1
-
       cmd:start(-1, id, 0, main)
-      cid = cmd:moveTo(-1, id, 5, 10, true, 25 - rnd(100), 0, 25 - rnd(100))
-      cmd:cancel(-1, 7, 0, cid)
-
-      cid = cmd:moveTo(cid, id, 0, 10, true, 25 - rnd(100), 0, 25 - rnd(100))
-      cmd:cancel(-1, 0, 0, cid)
-
-      cid = cmd:moveTo(cid, id, 0, 5, true, 25 - rnd(50), 0, 25 - rnd(50))
-      cid = cmd:moveTo(cid, id, 0, 5, true, 10 - rnd(20), 0, 10 - rnd(20))
-      cid = cmd:moveSplineTo(cid, id, 0, 3, true, 20, 0, 5, 5 - rnd(10), 0, 5 - rnd(10))
-      cid = cmd:moveTo(cid, id, 0, 2, false, x, y, z)
   - name: Skeleton single
     xid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
     type: sprite

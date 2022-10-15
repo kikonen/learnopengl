@@ -34,6 +34,7 @@ void ScriptEngine::prepare(
     m_lua.open_libraries(sol::lib::math);
     m_lua.open_libraries(sol::lib::os);
     m_lua.open_libraries(sol::lib::coroutine);
+    m_lua.open_libraries(sol::lib::string);
 
     registerTypes();
 
