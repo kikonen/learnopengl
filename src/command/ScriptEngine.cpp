@@ -45,6 +45,7 @@ void ScriptEngine::registerTypes()
 
         ut["cancel"] = &CommandEngine::lua_cancel;
         ut["moveTo"] = &CommandEngine::lua_moveTo;
+        ut["moveSplineTo"] = &CommandEngine::lua_moveSplineTo;
         ut["rotateTo"] = &CommandEngine::lua_rotateTo;
         ut["scaleTo"] = &CommandEngine::lua_scaleTo;
     }

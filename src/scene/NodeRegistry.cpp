@@ -108,15 +108,15 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const
     }
 
     Node* node = getNode(objectID);
-    if (node) {
-        if (append && node->m_selected) {
-            KI_INFO_SB("DESELECT: objectID: " << objectID)
-                node->m_selected = false;
-        }
-        else {
-            KI_INFO_SB("SELECT: objectID: " << objectID)
-                node->m_selected = true;
-        }
+    if (!node) return;
+
+    if (append && node->m_selected) {
+        KI_INFO_SB("DESELECT: objectID: " << objectID);
+        node->m_selected = false;
+    }
+    else {
+        KI_INFO_SB("SELECT: objectID: " << objectID);
+        node->m_selected = true;
     }
 }
 

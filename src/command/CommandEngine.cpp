@@ -6,6 +6,7 @@
 
 #include "command/NodeCommand.h"
 #include "command/MoveNode.h"
+#include "command/MoveSplineNode.h"
 #include "command/RotateNode.h"
 #include "command/ScaleNode.h"
 
@@ -266,6 +267,27 @@ int CommandEngine::lua_moveTo(
             initialDelay,
             secs,
             relative,
+            glm::vec3{ x, y, z }));
+    return cmd->m_id;
+}
+
+int CommandEngine::lua_moveSplineTo(
+    int afterCommandId,
+    int objectID,
+    float initialDelay,
+    float secs,
+    bool relative,
+    float px, float py, float pz,
+    float x, float y, float z)
+{
+    auto& cmd = m_pending.emplace_back(
+        std::make_unique<MoveSplineNode>(
+            afterCommandId,
+            objectID,
+            initialDelay,
+            secs,
+            relative,
+            glm::vec3{ px, py, pz },
             glm::vec3{ x, y, z }));
     return cmd->m_id;
 }

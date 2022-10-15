@@ -169,6 +169,7 @@
     <ClCompile Include="src\asset\Volume.cpp" />
     <ClCompile Include="src\command\CancelCommand.cpp" />
     <ClCompile Include="src\command\Command.cpp" />
+    <ClCompile Include="src\command\MoveSplineNode.cpp" />
     <ClCompile Include="src\command\NodeCommand.cpp" />
     <ClCompile Include="src\command\RotateNode.cpp" />
     <ClCompile Include="src\command\ScaleNode.cpp" />
@@ -259,6 +260,7 @@
     <ClInclude Include="src\command\CancelCommand.h" />
     <ClInclude Include="src\command\Command.h" />
     <ClInclude Include="src\command\CommandEngine.h" />
+    <ClInclude Include="src\command\MoveSplineNode.h" />
     <ClInclude Include="src\command\NodeCommand.h" />
     <ClInclude Include="src\command\RotateNode.h" />
     <ClInclude Include="src\command\ScaleNode.h" />

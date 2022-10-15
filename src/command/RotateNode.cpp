@@ -23,9 +23,16 @@ void RotateNode::execute(
     const RenderContext& ctx)
 {
     m_elapsedTime += ctx.clock.elapsedSecs;
-    glm::vec3 rotation = m_relative
-        ? (m_end) * (m_elapsedTime / m_finishTime)
-        : (m_end - m_begin) * (m_elapsedTime / m_finishTime) + m_begin;
+
+    const auto t = (m_elapsedTime / m_finishTime);
+    glm::vec3 p0{ 0.f };
+    const auto p1 = m_end;
+
+    if (!m_relative) {
+        p0 += m_begin;
+    }
+
+    glm::vec3 rotation = (1 - t) * p0 + t * p1;
 
     m_finished = m_elapsedTime >= m_finishTime;
     if (m_finished) rotation = m_end;

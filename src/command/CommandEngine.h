@@ -34,7 +34,7 @@ private:
     void processBlocked(const RenderContext& ctx);
     void processWaiting(const RenderContext& ctx);
     void processActive(const RenderContext& ctx);
-    
+
 public:
     int lua_cancel(
         int afterCommandId,
@@ -48,6 +48,15 @@ public:
         float initialDelay,
         float secs,
         bool relative,
+        float x, float y, float z);
+
+    int lua_moveSplineTo(
+        int afterCommandId,
+        int objectID,
+        float initialDelay,
+        float secs,
+        bool relative,
+        float px, float py, float pz,
         float x, float y, float z);
 
     int lua_rotateTo(

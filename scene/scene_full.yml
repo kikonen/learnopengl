@@ -26,8 +26,8 @@ entities:
     enabled: true
     init_script: |
       local id = node:getId()
-      cid = cmd:moveTo(-1, id, 5, 20, true, -20, 50, 0)
-      cmd:moveTo(cid, id, 60, 20, true, 20, -40, 0)
+      cid = cmd:moveSplineTo(-1, id, 5, 20, true, -50, 50, 0, -20, 50, 0)
+      cmd:moveSplineTo(cid, id, 60, 20, true, 50, -40, 0, 20, -40, 0)
   - name: ZERO
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     model: water_ball
@@ -594,7 +594,7 @@ entities:
 
       cid = cmd:moveTo(cid, id, 0, 5, true, 25 - rnd(50), 0, 25 - rnd(50))
       cid = cmd:moveTo(cid, id, 0, 5, true, 10 - rnd(20), 0, 10 - rnd(20))
-      cid = cmd:moveTo(cid, id, 0, 3, true, 5 - rnd(10), 0, 5 - rnd(10))
+      cid = cmd:moveSplineTo(cid, id, 0, 3, true, 20, 0, 5, 5 - rnd(10), 0, 5 - rnd(10))
       cid = cmd:moveTo(cid, id, 0, 2, false, x, y, z)
   - name: Skeleton single
     xid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
