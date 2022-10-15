@@ -11,8 +11,11 @@
 #include "command/StartNode.h"
 
 
-CommandAPI::CommandAPI(CommandEngine& commandEngine)
-  : m_commandEngine(commandEngine)
+CommandAPI::CommandAPI(
+    CommandEngine& commandEngine,
+    sol::thread& runner)
+  : m_commandEngine(commandEngine),
+    m_runner(runner)
 {}
 
 int CommandAPI::lua_cancel(
@@ -107,12 +110,17 @@ int CommandAPI::lua_start(
     int afterCommandId,
     int objectID,
     float initialDelay,
-    sol::function fn)
+    sol::function fn,
+    sol::variadic_args va)
 {
+    auto task = std::make_unique<sol::coroutine>(m_runner.state(), fn);
+    //auto r = (*task)(va);
+
     return m_commandEngine.addCommand(
         std::make_unique<StartNode>(
             afterCommandId,
             objectID,
             initialDelay,
-            fn));
+            std::move(task),
+            va));
 }

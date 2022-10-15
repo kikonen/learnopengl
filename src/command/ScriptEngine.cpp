@@ -27,11 +27,13 @@ void ScriptEngine::prepare(
     const Assets& assets,
     CommandEngine& commandEngine)
 {
-    m_commandAPI = std::make_unique<CommandAPI>(commandEngine);
+    m_runner = sol::thread::create(m_lua);
+    m_commandAPI = std::make_unique<CommandAPI>(commandEngine, m_runner);
 
     m_lua.open_libraries(sol::lib::base);
     m_lua.open_libraries(sol::lib::math);
     m_lua.open_libraries(sol::lib::os);
+    m_lua.open_libraries(sol::lib::coroutine);
 
     registerTypes();
 

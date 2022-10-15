@@ -7,7 +7,9 @@ class CommandEngine;
 class CommandAPI final
 {
 public:
-    CommandAPI(CommandEngine& commandEngine);
+    CommandAPI(
+        CommandEngine& commandEngine,
+        sol::thread& m_runner);
     ~CommandAPI() = default;
 
 public:
@@ -54,8 +56,10 @@ public:
         int afterCommandId,
         int objectID,
         float initialDelay,
-        sol::function fn);
+        sol::function fn,
+        sol::variadic_args va);
 
 private:
    CommandEngine& m_commandEngine;
+   sol::thread& m_runner;
 };

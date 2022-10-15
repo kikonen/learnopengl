@@ -11,7 +11,8 @@ public:
         int afterCommandId,
         int objectID,
         float initialDelay,
-        sol::function& fn);
+        std::unique_ptr<sol::coroutine> coroutine,
+        sol::variadic_args va);
 
     virtual void bind(
         const RenderContext& ctx,
@@ -21,5 +22,6 @@ public:
         const RenderContext& ctx) override;
 
 private:
-    sol::function& m_fn;
+    std::unique_ptr<sol::coroutine> m_coroutine;
+    sol::variadic_args m_va;
 };

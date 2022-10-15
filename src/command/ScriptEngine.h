@@ -37,6 +37,7 @@ private:
 
 private:
     sol::state m_lua;
+    sol::thread m_runner;
 
     std::unique_ptr<CommandAPI> m_commandAPI;
 
