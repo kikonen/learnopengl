@@ -2,13 +2,7 @@
 
 #include "model/Node.h"
 
-#include "command/CancelCommand.h"
-
 #include "command/NodeCommand.h"
-#include "command/MoveNode.h"
-#include "command/MoveSplineNode.h"
-#include "command/RotateNode.h"
-#include "command/ScaleNode.h"
 
 #include "scene/RenderContext.h"
 #include "scene/NodeRegistry.h"
@@ -28,6 +22,12 @@ void CommandEngine::update(const RenderContext& ctx)
     processBlocked(ctx);
     processWaiting(ctx);
     processActive(ctx);
+}
+
+int CommandEngine::addCommand(std::unique_ptr<Command> pcmd)
+{
+    auto& cmd = m_pending.emplace_back(std::move(pcmd));
+    return cmd->m_id;
 }
 
 bool CommandEngine::isCanceled(int commandId)
@@ -235,97 +235,4 @@ void CommandEngine::processActive(const RenderContext& ctx)
             });
         m_active.erase(it, m_active.end());
     }
-}
-
-int CommandEngine::lua_cancel(
-    int afterCommandId,
-    float initialDelay,
-    float secs,
-    int commandId)
-{
-    auto& cmd = m_pending.emplace_back(
-        std::make_unique<CancelCommand>(
-            afterCommandId,
-            initialDelay,
-            secs,
-            commandId));
-    return cmd->m_id;
-}
-
-int CommandEngine::lua_moveTo(
-    int afterCommandId,
-    int objectID,
-    float initialDelay,
-    float secs,
-    bool relative,
-    float x, float y, float z)
-{
-    auto& cmd = m_pending.emplace_back(
-        std::make_unique<MoveNode>(
-            afterCommandId,
-            objectID,
-            initialDelay,
-            secs,
-            relative,
-            glm::vec3{ x, y, z }));
-    return cmd->m_id;
-}
-
-int CommandEngine::lua_moveSplineTo(
-    int afterCommandId,
-    int objectID,
-    float initialDelay,
-    float secs,
-    bool relative,
-    float px, float py, float pz,
-    float x, float y, float z)
-{
-    auto& cmd = m_pending.emplace_back(
-        std::make_unique<MoveSplineNode>(
-            afterCommandId,
-            objectID,
-            initialDelay,
-            secs,
-            relative,
-            glm::vec3{ px, py, pz },
-            glm::vec3{ x, y, z }));
-    return cmd->m_id;
-}
-
-int CommandEngine::lua_rotateTo(
-    int afterCommandId,
-    int objectID,
-    float initialDelay,
-    float secs,
-    bool relative,
-    float x, float y, float z)
-{
-    auto& cmd = m_pending.emplace_back(
-        std::make_unique<RotateNode>(
-            afterCommandId,
-            objectID,
-            initialDelay,
-            secs,
-            relative,
-            glm::vec3{ x, y, z }));
-    return cmd->m_id;
-}
-
-int CommandEngine::lua_scaleTo(
-    int afterCommandId,
-    int objectID,
-    float initialDelay,
-    float secs,
-    bool relative,
-    float x, float y, float z)
-{
-    auto& cmd = m_pending.emplace_back(
-        std::make_unique<ScaleNode>(
-            afterCommandId,
-            objectID,
-            initialDelay,
-            secs,
-            relative,
-            glm::vec3{ x, y, z }));
-    return cmd->m_id;
 }

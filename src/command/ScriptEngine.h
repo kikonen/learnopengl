@@ -1,12 +1,15 @@
 #pragma once
 
 #include <map>
+#include <memory>
 
 #include <sol/sol.hpp>
 
 #include "asset/Assets.h"
 
 #include "model/Node.h"
+
+#include "command/CommandAPI.h"
 
 class CommandEngine;
 
@@ -35,5 +38,7 @@ private:
 private:
     sol::state m_lua;
 
-    std::map<int, std::map<NodeScriptId, std::string>> nodeScripts;
+    std::unique_ptr<CommandAPI> m_commandAPI;
+
+    std::map<int, std::map<NodeScriptId, std::string>> m_nodeScripts;
 };

@@ -4,8 +4,6 @@
 #include <map>
 #include <memory>
 
-#include <glm/glm.hpp>
-
 #include "asset/Assets.h"
 
 #include "command/Command.h"
@@ -23,6 +21,7 @@ public:
 
     void update(const RenderContext& ctx);
 
+    int addCommand(std::unique_ptr<Command> cmd);
     void cancel(int commandId);
 
 private:
@@ -34,46 +33,6 @@ private:
     void processBlocked(const RenderContext& ctx);
     void processWaiting(const RenderContext& ctx);
     void processActive(const RenderContext& ctx);
-
-public:
-    int lua_cancel(
-        int afterCommandId,
-        float initialDelay,
-        float secs,
-        int commandId);
-
-    int lua_moveTo(
-        int afterCommandId,
-        int objectID,
-        float initialDelay,
-        float secs,
-        bool relative,
-        float x, float y, float z);
-
-    int lua_moveSplineTo(
-        int afterCommandId,
-        int objectID,
-        float initialDelay,
-        float secs,
-        bool relative,
-        float px, float py, float pz,
-        float x, float y, float z);
-
-    int lua_rotateTo(
-        int afterCommandId,
-        int objectID,
-        float initialDelay,
-        float secs,
-        bool relative,
-        float x, float y, float z);
-
-    int lua_scaleTo(
-        int afterCommandId,
-        int objectID,
-        float initialDelay,
-        float secs,
-        bool relative,
-        float x, float y, float z);
 
 private:
     std::vector<std::unique_ptr<Command>> m_pending;

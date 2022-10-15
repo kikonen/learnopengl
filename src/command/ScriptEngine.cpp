@@ -5,6 +5,7 @@
 #include "model/Node.h"
 
 #include "command/CommandEngine.h"
+#include "command/CommandAPI.h"
 
 namespace {
     std::string scriptIdToString(NodeScriptId scriptId) {
@@ -26,28 +27,31 @@ void ScriptEngine::prepare(
     const Assets& assets,
     CommandEngine& commandEngine)
 {
+    m_commandAPI = std::make_unique<CommandAPI>(commandEngine);
+
     m_lua.open_libraries(sol::lib::base);
     m_lua.open_libraries(sol::lib::math);
     m_lua.open_libraries(sol::lib::os);
 
     registerTypes();
 
-    m_lua.set("cmd", &commandEngine);
+    m_lua.set("cmd", m_commandAPI.get());
 }
 
 void ScriptEngine::registerTypes()
 {
-    // CommandEngine
+    // CommandAPI
     {
-        m_lua.new_usertype<CommandEngine>("CommandEngine");
+        m_lua.new_usertype<CommandAPI>("CommandAPI");
 
-        const auto& ut = m_lua["CommandEngine"];
+        const auto& ut = m_lua["CommandAPI"];
 
-        ut["cancel"] = &CommandEngine::lua_cancel;
-        ut["moveTo"] = &CommandEngine::lua_moveTo;
-        ut["moveSplineTo"] = &CommandEngine::lua_moveSplineTo;
-        ut["rotateTo"] = &CommandEngine::lua_rotateTo;
-        ut["scaleTo"] = &CommandEngine::lua_scaleTo;
+        ut["cancel"] = &CommandAPI::lua_cancel;
+        ut["moveTo"] = &CommandAPI::lua_moveTo;
+        ut["moveSplineTo"] = &CommandAPI::lua_moveSplineTo;
+        ut["rotateTo"] = &CommandAPI::lua_rotateTo;
+        ut["scaleTo"] = &CommandAPI::lua_scaleTo;
+        ut["start"] = &CommandAPI::lua_start;
     }
 
     // Node
@@ -65,8 +69,8 @@ void ScriptEngine::runScript(
     Node& node,
     const NodeScriptId scriptId)
 {
-    const auto& nodeIt = nodeScripts.find(node.m_objectID);
-    if (nodeIt == nodeScripts.end()) return;
+    const auto& nodeIt = m_nodeScripts.find(node.m_objectID);
+    if (nodeIt == m_nodeScripts.end()) return;
     const auto& fnIt = nodeIt->second.find(scriptId);
     if (fnIt == nodeIt->second.end()) return;
 
@@ -91,5 +95,5 @@ end)", nodeFnName, script);
 
     m_lua.script(scriptlet);
 
-    nodeScripts[node.m_objectID][scriptId] = nodeFnName;
+    m_nodeScripts[node.m_objectID][scriptId] = nodeFnName;
 }

@@ -169,6 +169,7 @@
     <ClCompile Include="src\asset\Volume.cpp" />
     <ClCompile Include="src\command\CancelCommand.cpp" />
     <ClCompile Include="src\command\Command.cpp" />
+    <ClCompile Include="src\command\CommandAPI.cpp" />
     <ClCompile Include="src\command\MoveSplineNode.cpp" />
     <ClCompile Include="src\command\NodeCommand.cpp" />
     <ClCompile Include="src\command\RotateNode.cpp" />
@@ -176,6 +177,7 @@
     <ClCompile Include="src\command\ScriptEngine.cpp" />
     <ClCompile Include="src\command\CommandEngine.cpp" />
     <ClCompile Include="src\command\MoveNode.cpp" />
+    <ClCompile Include="src\command\StartNode.cpp" />
     <ClCompile Include="src\SceneFile.cpp" />
     <ClCompile Include="src\model\Billboard.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
@@ -259,6 +261,7 @@
     <ClInclude Include="src\asset\ShaderRegistry.h" />
     <ClInclude Include="src\command\CancelCommand.h" />
     <ClInclude Include="src\command\Command.h" />
+    <ClInclude Include="src\command\CommandAPI.h" />
     <ClInclude Include="src\command\CommandEngine.h" />
     <ClInclude Include="src\command\MoveSplineNode.h" />
     <ClInclude Include="src\command\NodeCommand.h" />
@@ -266,6 +269,7 @@
     <ClInclude Include="src\command\ScaleNode.h" />
     <ClInclude Include="src\command\ScriptEngine.h" />
     <ClInclude Include="src\command\MoveNode.h" />
+    <ClInclude Include="src\command\StartNode.h" />
     <ClInclude Include="src\ki\uuid.h" />
     <ClInclude Include="src\model\Group.h" />
     <ClInclude Include="src\SceneFile.h" />
