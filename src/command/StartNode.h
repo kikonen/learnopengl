@@ -12,7 +12,7 @@ public:
         int objectID,
         float initialDelay,
         std::unique_ptr<sol::coroutine> coroutine,
-        sol::variadic_args va);
+        sol::variadic_args vargs);
 
     virtual void bind(
         const RenderContext& ctx,
@@ -23,5 +23,5 @@ public:
 
 private:
     std::unique_ptr<sol::coroutine> m_coroutine;
-    sol::variadic_args m_va;
+    sol::variadic_args m_vargs;
 };

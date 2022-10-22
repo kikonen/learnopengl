@@ -6,10 +6,10 @@ StartNode::StartNode(
     int objectID,
     float initialDelay,
     std::unique_ptr<sol::coroutine> coroutine,
-    sol::variadic_args va)
+    sol::variadic_args vargs)
     : NodeCommand(afterCommandId, objectID, initialDelay, 0, false),
     m_coroutine(std::move(coroutine)),
-    m_va(va)
+    m_vargs(vargs)
 {
 }
 
@@ -26,6 +26,6 @@ void StartNode::execute(
     m_finished = m_elapsedTime >= m_finishTime;
     if (m_finished) {
         // TODO KI start...
-        (*m_coroutine)(m_va);
+        (*m_coroutine)(m_vargs);
     }
 }
