@@ -184,7 +184,7 @@ void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
     m_material.bindArray(shader, 0, false);
 
     if (!m_textureIDs.empty()) {
-        glBindTextures(0, m_textureIDs.size(), &m_textureIDs[0]);
+        glBindTextures(m_unitIndexFirst, m_textureIDs.size(), &m_textureIDs[0]);
     }
 }
 

@@ -32,6 +32,7 @@ public:
 public:
     Material m_material;
     std::vector<GLuint> m_textureIDs;
+    unsigned int m_unitIndexFirst = 0;
 
 private:
     bool m_prepared = false;
