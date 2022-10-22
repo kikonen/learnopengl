@@ -150,7 +150,15 @@ void Engine::run() {
 
             prevLoopTime = loopTime;
 
-            sprintf_s(titleSB, 256, "%s - FPS: %3.2f - RENDER: %3.2fms FRAME: (%3.2f fps)", title.c_str(), 1.0f / clock.elapsedSecs, renderSecs * 1000.f, 1.0f / frameSecs);
+            sprintf_s(
+                titleSB,
+                256,
+                "%s - FPS: %-5.2f - RENDER: %-5.2fms FRAME: (%-5.2f fps)",
+                title.c_str(),
+                1.0f / clock.elapsedSecs,
+                renderSecs * 1000.f,
+                1.0f / frameSecs);
+
             window->setTitle(titleSB);
             //KI_DEBUG_SB(titleSB);
         }

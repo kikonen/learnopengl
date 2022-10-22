@@ -89,7 +89,4 @@ void GLState::bindTexture(
         glBindTextures(unitIndex, 1, &textureID);
         textureUnits[unitIndex] = textureID;
     }
-    else {
-        int x = 0;
-    }
 }
