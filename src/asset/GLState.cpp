@@ -74,12 +74,22 @@ void GLState::bindTextures(
     const GLuint unitIndexFirst,
     const std::vector<GLuint>& textureIDs)
 {
-    glBindTextures(unitIndexFirst, textureIDs.size(), &textureIDs[0]);
+    //glBindTextures(unitIndexFirst, textureIDs.size(), &textureIDs[0]);
+    GLuint unitIndex = unitIndexFirst;
+    for (auto textureID : textureIDs) {
+        bindTexture(unitIndex++, textureID);
+    }
 }
 
 void GLState::bindTexture(
     const GLuint unitIndex,
     const GLuint textureID)
 {
-    glBindTextures(unitIndex, 1, &textureID);
+    if (textureUnits[unitIndex] != textureID) {
+        glBindTextures(unitIndex, 1, &textureID);
+        textureUnits[unitIndex] = textureID;
+    }
+    else {
+        int x = 0;
+    }
 }

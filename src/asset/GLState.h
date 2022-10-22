@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <map>
 #include <vector>
 
 #include "ki/GL.h"
@@ -33,6 +34,8 @@ public:
 private:
     std::set<GLenum> enabled;
     std::set<GLenum> tracked;
+
+    std::map<GLuint, GLuint> textureUnits;
 
     int m_cullFace = -1;
     int m_frontFace = -1;
