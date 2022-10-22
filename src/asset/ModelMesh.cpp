@@ -87,7 +87,7 @@ void ModelMesh::prepare(const Assets& assets)
 
     {
         int materialIndex = 0;
-        unsigned int unitIndex = 0;
+        unsigned int texCount = 0;
 
         for (auto& material : m_materials) {
             material.materialIndex = materialIndex++;
@@ -100,8 +100,18 @@ void ModelMesh::prepare(const Assets& assets)
 
             for (auto& tex : material.textures) {
                 if (!tex.texture) continue;
-                tex.unitIndex = unitIndex++;
+                tex.texIndex = texCount++;
                 m_textureIDs.push_back(tex.texture->textureID);
+            }
+        }
+
+        // NOTE KI second iteration to set unitIndex after texCount
+        m_unitIndexFirst = Texture::getUnitIndexBase(texCount);
+        int unitIndex = m_unitIndexFirst;
+        for (auto& material : m_materials) {
+            for (auto& tex : material.textures) {
+                if (!tex.texture) continue;
+                tex.unitIndex = unitIndex++;
             }
         }
     }

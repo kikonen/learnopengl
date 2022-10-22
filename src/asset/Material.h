@@ -11,6 +11,7 @@
 
 struct BoundTexture {
     Texture* texture = nullptr;
+    int texIndex = -1;
     int unitIndex = -1;
 
     bool valid() {
@@ -75,6 +76,8 @@ public:
     ~Material();
 
     void loadTextures(const Assets& assets);
+
+    int getActiveTextureCount();
 
     void prepare(const Assets& assets);
 

@@ -21,6 +21,11 @@ public:
 
     virtual void prepare(const Assets& assets) = 0;
 
+    // Reserve textureCount indexes which are consequetive from baseIndex
+    // (possibly overlapping with old assignments)
+    // @return Base index
+    static GLuint getUnitIndexBase(int textureCount);
+
 public:
     const std::string name;
     const TextureSpec spec;

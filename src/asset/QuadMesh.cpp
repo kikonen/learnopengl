@@ -77,10 +77,27 @@ void QuadMesh::prepare(const Assets& assets)
     m_buffers.prepare(false);
     prepareBuffers(m_buffers);
 
-    m_material.prepare(assets);
-    for (const auto& t : m_material.textures) {
-        if (!t.texture) continue;
-        m_textureIDs.push_back(t.texture->textureID);
+    {
+        Material& material = m_material;
+
+        unsigned int texCount = 0;
+        material.materialIndex = 0;
+
+        material.prepare(assets);
+
+        for (auto& tex : material.textures) {
+            if (!tex.texture) continue;
+            tex.texIndex = texCount++;
+            m_textureIDs.push_back(tex.texture->textureID);
+        }
+
+        // NOTE KI second iteration to set unitIndex after texCount
+        m_unitIndexFirst = Texture::getUnitIndexBase(texCount);
+        int unitIndex = m_unitIndexFirst;
+        for (auto& tex : material.textures) {
+            if (!tex.texture) continue;
+            tex.unitIndex = unitIndex++;
+        }
     }
 
     // materials

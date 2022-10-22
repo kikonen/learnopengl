@@ -178,16 +178,23 @@ void Material::loadTexture(
     }
 }
 
+int Material::getActiveTextureCount()
+{
+    int texCount = 0;
+    for (auto& tex : textures) {
+        if (!tex.texture) continue;
+        texCount++;
+    }
+    return texCount;
+}
+
 void Material::prepare(const Assets& assets)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    // MOTE KI this loop is for "non ModelMesh" case (like sprite)
-    unsigned int unitIndex = 0;
     for (auto& tex : textures) {
         if (!tex.texture) continue;
-        tex.unitIndex = unitIndex++;
         tex.texture->prepare(assets);
     }
 }
@@ -200,8 +207,9 @@ void Material::bindArray(
 {
     for (auto& tex : textures) {
         if (!tex.texture) continue;
+        ASSERT_TEX_INDEX(tex.texIndex);
         ASSERT_TEX_UNIT(tex.unitIndex);
-        shader->textures[tex.unitIndex].set(tex.unitIndex);
+        shader->textures[tex.texIndex].set(tex.unitIndex);
         if (bindTextureIDs) {
             tex.bind(ctx);
         }
@@ -212,6 +220,7 @@ const MaterialUBO Material::toUBO()
 {
     for (auto& tex : textures) {
         if (!tex.texture) continue;
+        ASSERT_TEX_INDEX(tex.texIndex);
         ASSERT_TEX_UNIT(tex.unitIndex);
     }
 
@@ -222,11 +231,11 @@ const MaterialUBO Material::toUBO()
         ks,
         ns,
 
-        textures[DIFFUSE_IDX].unitIndex,
-        textures[EMISSION_IDX].unitIndex,
-        textures[SPECULAR_IDX].unitIndex,
-        textures[NORMAL_MAP_IDX].unitIndex,
-        textures[DUDV_MAP_IDX].unitIndex,
+        textures[DIFFUSE_IDX].texIndex,
+        textures[EMISSION_IDX].texIndex,
+        textures[SPECULAR_IDX].texIndex,
+        textures[NORMAL_MAP_IDX].texIndex,
+        textures[DUDV_MAP_IDX].texIndex,
 
         pattern,
 

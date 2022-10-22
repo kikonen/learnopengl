@@ -44,6 +44,23 @@ namespace {
     //};
 }
 
+GLuint Texture::getUnitIndexBase(int textureCount)
+{
+    static int baseIdx = FIRST_TEXTURE_UNIT - 1;
+
+    int idx = baseIdx + 1;
+
+    if (idx + textureCount - 1 > LAST_TEXTURE_UNIT) {
+        idx = FIRST_TEXTURE_UNIT;
+        baseIdx = FIRST_TEXTURE_UNIT - 1;
+    }
+    else {
+        baseIdx += textureCount;
+    }
+
+    return idx;
+}
+
 Texture::Texture(const std::string& name, const TextureSpec& spec)
     : name(name),
     spec(spec)
