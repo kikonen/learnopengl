@@ -17,17 +17,24 @@ struct UBO {
     unsigned int lightsSize;
 };
 
-const unsigned int UBO_MATRICES = 0;
-const unsigned int UBO_DATA = 1;
-const unsigned int UBO_CLIP_PLANES = 2;
-const unsigned int UBO_LIGHTS = 3;
-const unsigned int UBO_MATERIALS = 4;
-const unsigned int UBO_MATERIAL = 5;
+constexpr unsigned int UBO_MATRICES = 0;
+constexpr unsigned int UBO_DATA = 1;
+constexpr unsigned int UBO_CLIP_PLANES = 2;
+constexpr unsigned int UBO_LIGHTS = 3;
+constexpr unsigned int UBO_MATERIALS = 4;
+constexpr unsigned int UBO_MATERIAL = 5;
 
-const unsigned int MATERIAL_COUNT = 8;
-const unsigned int LIGHT_COUNT = 8;
-const unsigned int TEXTURE_COUNT = 8;
-const unsigned int CLIP_PLANE_COUNT = 2;
+constexpr unsigned int MATERIAL_COUNT = 8;
+constexpr unsigned int LIGHT_COUNT = 8;
+// MAX textures used in shader
+constexpr unsigned int TEXTURE_COUNT = 8;
+constexpr unsigned int CLIP_PLANE_COUNT = 2;
+
+constexpr unsigned int TEXTURE_UNIT_COUNT = 16;
+constexpr unsigned int FIRST_TEXTURE_UNIT = 0;
+constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_UNIT_COUNT - 1;
+
+#define ASSERT_TEX_UNIT(unitIndex) assert(unitIndex >= FIRST_TEXTURE_UNIT && unitIndex < LAST_TEXTURE_UNIT)
 
 
 // NOTE KI align 16

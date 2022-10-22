@@ -69,3 +69,17 @@ void GLState::polygonFrontAndBack(GLenum mode)
         m_polygonFrontAndBack = mode;
     }
 }
+
+void GLState::bindTextures(
+    const GLuint unitIndexFirst,
+    const std::vector<GLuint>& textureIDs)
+{
+    glBindTextures(unitIndexFirst, textureIDs.size(), &textureIDs[0]);
+}
+
+void GLState::bindTexture(
+    const GLuint unitIndex,
+    const GLuint textureID)
+{
+    glBindTextures(unitIndex, 1, &textureID);
+}

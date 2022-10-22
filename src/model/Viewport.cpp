@@ -76,9 +76,10 @@ void Viewport::bind(const RenderContext& ctx)
 
     shader->bind();
 
+    // TODO KI this is bogus; reserve some high-up unit index
     const int unitIndex = 0;
 
-    glBindTextures(unitIndex, 1, &textureID);
+    ctx.state.bindTexture(unitIndex, textureID);
     shader->viewportTexture.set(unitIndex);
 
     shader->effect.set((int)effect);

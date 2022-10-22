@@ -240,11 +240,11 @@ void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
     glBindVertexArray(m_buffers.VAO);
 
     for (auto& material : m_materials) {
-        material.bindArray(shader, material.materialIndex, false);
+        material.bindArray(ctx, shader, material.materialIndex, false);
     }
 
     if (!m_textureIDs.empty()) {
-        glBindTextures(m_unitIndexFirst, m_textureIDs.size(), &m_textureIDs[0]);
+        ctx.state.bindTextures(m_unitIndexFirst, m_textureIDs);
     }
 }
 

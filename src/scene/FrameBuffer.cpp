@@ -130,5 +130,5 @@ void FrameBuffer::unbind(const RenderContext& ctx)
 
 void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex)
 {
-    glBindTextures(unitIndex, 1, &spec.attachments[attachmentIndex].textureID);
+    ctx.state.bindTexture(unitIndex, spec.attachments[attachmentIndex].textureID);
 }

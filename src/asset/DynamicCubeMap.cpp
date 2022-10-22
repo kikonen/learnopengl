@@ -16,9 +16,7 @@ DynamicCubeMap::~DynamicCubeMap()
 
 void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
 {
-    //glActiveTexture(GL_TEXTURE0 + unitIndex);
-    //glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-    glBindTextures(unitIndex, 1, &textureID);
+    ctx.state.bindTexture(unitIndex, textureID);
 }
 
 void DynamicCubeMap::bind(const RenderContext& ctx)

@@ -181,10 +181,10 @@ void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
 
     glBindVertexArray(m_buffers.VAO);
 
-    m_material.bindArray(shader, 0, false);
+    m_material.bindArray(ctx, shader, 0, false);
 
     if (!m_textureIDs.empty()) {
-        glBindTextures(m_unitIndexFirst, m_textureIDs.size(), &m_textureIDs[0]);
+        ctx.state.bindTextures(m_unitIndexFirst, m_textureIDs);
     }
 }
 

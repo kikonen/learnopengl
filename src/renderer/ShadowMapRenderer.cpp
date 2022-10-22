@@ -130,18 +130,23 @@ void ShadowMapRenderer::drawNodes(
         }
     };
 
-    for (const auto& all : registry.solidNodes) {
+    {
         ShaderBind bound(solidShadowShader);
-        renderTypes(all.second, bound);
+
+        for (const auto& all : registry.solidNodes) {
+            renderTypes(all.second, bound);
+        }
     }
 
-    for (const auto& all : registry.alphaNodes) {
+    {
         ShaderBind bound(blendedShadowShader);
-        renderTypes(all.second, bound);
-    }
 
-    for (const auto& all : registry.blendedNodes) {
-        ShaderBind bound(blendedShadowShader);
-        renderTypes(all.second, bound);
+        for (const auto& all : registry.alphaNodes) {
+            renderTypes(all.second, bound);
+        }
+
+        for (const auto& all : registry.blendedNodes) {
+            renderTypes(all.second, bound);
+        }
     }
 }

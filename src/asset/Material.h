@@ -17,13 +17,11 @@ struct BoundTexture {
         return texture;
     }
 
-    void bind()
+    void bind(const RenderContext& ctx)
     {
         if (!texture) return;
-        assert(unitIndex >= 0 && unitIndex < TEXTURE_COUNT);
-        //glActiveTexture(GL_TEXTURE0 + unitIndex);
-        //glBindTexture(GL_TEXTURE_2D, texture->textureID);
-        glBindTextures(unitIndex, 1, &texture->textureID);
+        ASSERT_TEX_UNIT(unitIndex);
+        ctx.state.bindTexture(unitIndex, texture->textureID);
     }
 
     void unbind()
@@ -79,7 +77,12 @@ public:
     void loadTextures(const Assets& assets);
 
     void prepare(const Assets& assets);
-    void bindArray(Shader* shader, int index, bool bindTextureIDs);
+
+    void bindArray(
+        const RenderContext& ctx,
+        Shader* shader,
+        int index,
+        bool bindTextureIDs);
 
     const MaterialUBO toUBO();
 

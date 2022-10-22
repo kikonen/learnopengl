@@ -192,14 +192,18 @@ void Material::prepare(const Assets& assets)
     }
 }
 
-void Material::bindArray(Shader* shader, int index, bool bindTextureIDs)
+void Material::bindArray(
+    const RenderContext& ctx,
+    Shader* shader,
+    int index,
+    bool bindTextureIDs)
 {
     for (auto& tex : textures) {
         if (!tex.texture) continue;
-        assert(tex.unitIndex >= 0 && tex.unitIndex < TEXTURE_COUNT);
+        ASSERT_TEX_UNIT(tex.unitIndex);
         shader->textures[tex.unitIndex].set(tex.unitIndex);
         if (bindTextureIDs) {
-            tex.bind();
+            tex.bind(ctx);
         }
     }
 }
@@ -208,7 +212,7 @@ const MaterialUBO Material::toUBO()
 {
     for (auto& tex : textures) {
         if (!tex.texture) continue;
-        assert(tex.unitIndex >= 0 && tex.unitIndex < TEXTURE_COUNT);
+        ASSERT_TEX_UNIT(tex.unitIndex);
     }
 
     return {

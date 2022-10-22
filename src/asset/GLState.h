@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <vector>
 
 #include "ki/GL.h"
 
@@ -20,6 +21,14 @@ public:
     void frontFace(GLenum mode);
 
     void polygonFrontAndBack(GLenum mode);
+
+    void bindTextures(
+        const GLuint unitIndexFirst,
+        const std::vector<GLuint>& textureIDs);
+
+    void bindTexture(
+        const GLuint unitIndex,
+        const GLuint textureID);
 
 private:
     std::set<GLenum> enabled;
