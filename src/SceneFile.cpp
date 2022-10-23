@@ -357,6 +357,13 @@ void SceneFile::assignFlags(
             flags.wireframe = e->second;
         }
     }
+
+    {
+        const auto& e = data.renderFlags.find("cube_map");
+        if (e != data.renderFlags.end()) {
+            flags.cubeMap = e->second;
+        }
+    }
 }
 
 void SceneFile::modifyMaterial(
