@@ -8,7 +8,6 @@ TerrainGenerator::TerrainGenerator(const Assets& assets)
 }
 
 std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
-    const Assets& assets,
     const Material& material)
 {
     auto mesh = std::make_unique<ModelMesh>("Terrain", "terrain");
@@ -55,16 +54,17 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
             //Tri* tri1 = new Tri(glm::uvec3(topLeft, bottomLeft, topRight));
             //Tri* tri2 = new Tri(glm::uvec3(topRight, bottomLeft, bottomRight));
 
-            mesh->m_tris.emplace_back(topLeft, bottomLeft, topRight);
             mesh->m_tris.emplace_back(topRight, bottomLeft, bottomRight);
+            mesh->m_tris.emplace_back(topLeft, bottomLeft, topRight);
         }
     }
+
+    mesh->calculateVolume();
 
     return mesh;
 }
 
 std::unique_ptr<QuadMesh> TerrainGenerator::generateWater(
-    const Assets& assets,
     const Material& material)
 {
     auto mesh = std::make_unique<QuadMesh>("Water");

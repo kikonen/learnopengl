@@ -135,7 +135,8 @@ class SceneFile
         origo,
         model,
         quad,
-        sprite
+        sprite,
+        terrain
     };
 
     struct EntityCloneData {

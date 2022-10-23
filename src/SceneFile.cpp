@@ -15,6 +15,8 @@
 #include "controller/MovingLightController.h"
 #include "controller/NodePathController.h"
 
+#include "scene/TerrainGenerator.h"
+
 #include "SceneFile.h"
 
 namespace {
@@ -204,6 +206,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
     }
     else if (data.type == EntityType::quad) {
         auto mesh = std::make_unique<QuadMesh>(data.name);
+        mesh->calculateVolume();
         if (material) {
             mesh->m_material = *material;
             if (data.loadTextures) {
@@ -215,6 +218,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
     else if (data.type == EntityType::sprite) {
         // NOTE KI sprite *shall* differ from quad later on
         auto mesh = std::make_unique<QuadMesh>(data.name);
+        mesh->calculateVolume();
         if (material) {
             mesh->m_material = *material;
             if (data.loadTextures) {
@@ -222,6 +226,17 @@ std::shared_ptr<NodeType> SceneFile::createType(
             }
         }
         type->m_mesh.reset(mesh.release());
+    }
+    else if (data.type == EntityType::terrain) {
+        TerrainGenerator generator(assets);
+        auto mesh = generator.generateTerrain(*material);
+        if (material) {
+            mesh->modifyMaterials([&assets](auto& material) {
+                material.loadTextures(assets);
+            });
+        }
+        type->m_mesh.reset(mesh.release());
+        type->m_flags.terrain = true;
     }
     else if (data.type == EntityType::origo) {
         // NOTE KI nothing to do
@@ -349,6 +364,12 @@ void SceneFile::assignFlags(
         const auto& e = data.renderFlags.find("water");
         if (e != data.renderFlags.end()) {
             flags.water = e->second;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("terrain");
+        if (e != data.renderFlags.end()) {
+            flags.terrain = e->second;
         }
     }
     {
@@ -566,6 +587,9 @@ void SceneFile::loadEntityClone(
             }
             else if (type == "sprite") {
                 data.type = EntityType::sprite;
+            }
+            else if (type == "terrain") {
+                data.type = EntityType::terrain;
             }
             else {
                 std::cout << "UNKNOWN ENTITY_TYPE: " << k << "=" << v << "\n";

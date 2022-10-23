@@ -24,6 +24,8 @@ public:
     Material* findMaterial(std::function<bool(const Material&)> fn) override;
     void modifyMaterials(std::function<void(Material&)> fn) override;
 
+    virtual void calculateVolume() override;
+
     void prepare(const Assets& assets) override;
     void prepareBuffers(MeshBuffers& curr) override;
     void bind(

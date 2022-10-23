@@ -11,6 +11,7 @@ struct NodeRenderFlags {
     bool blend = false;
     bool mirror = false;
     bool water = false;
+    bool terrain = false;
     bool renderBack = false;
     bool noShadow = false;
     bool wireframe = false;

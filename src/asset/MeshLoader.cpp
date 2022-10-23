@@ -5,7 +5,6 @@
 #include <sstream>
 #include <iostream>
 #include <filesystem>
-#include <algorithm>
 
 #include "ki/Timer.h"
 
@@ -189,7 +188,7 @@ void MeshLoader::loadData(
             }
         }
 
-        calculateVolume(mesh);
+        mesh.calculateVolume();
 
         {
             if (defaultMaterial.used) {
@@ -229,26 +228,6 @@ void MeshLoader::loadData(
         << ", normals: " << normals.size()
         << ", vertices: " << vertices.size()
         << "\n--------\n");
-}
-
-void MeshLoader::calculateVolume(ModelMesh& mesh) {
-    glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
-    glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
-
-    for (auto&& vertex : mesh.m_vertices)
-    {
-        minAABB.x = std::min(minAABB.x, vertex.pos.x);
-        minAABB.y = std::min(minAABB.y, vertex.pos.y);
-        minAABB.z = std::min(minAABB.z, vertex.pos.z);
-
-        maxAABB.x = std::max(maxAABB.x, vertex.pos.x);
-        maxAABB.y = std::max(maxAABB.y, vertex.pos.y);
-        maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
-    }
-
-    mesh.setVolume(std::make_unique<Sphere>(
-        (maxAABB + minAABB) * 0.5f,
-        glm::length(minAABB - maxAABB)));
 }
 
 // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g

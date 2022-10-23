@@ -35,8 +35,6 @@ namespace {
 QuadMesh::QuadMesh(const std::string& name)
     : Mesh(name)
 {
-    // NOTE KI sphere containing quad is not 1
-    setVolume(std::make_unique<Sphere>(glm::vec3{0, 0, 0}, 2));
 }
 
 QuadMesh::~QuadMesh()
@@ -67,6 +65,11 @@ Material* QuadMesh::findMaterial(std::function<bool(const Material&)> fn)
 void QuadMesh::modifyMaterials(std::function<void(Material&)> fn)
 {
     fn(m_material);
+}
+
+void QuadMesh::calculateVolume() {
+    // NOTE KI sphere containing quad is not 1
+    setVolume(std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, 2));
 }
 
 void QuadMesh::prepare(const Assets& assets)

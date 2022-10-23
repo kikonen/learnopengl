@@ -29,9 +29,6 @@ private:
     void loadData(
         ModelMesh& mesh);
 
-    void calculateVolume(
-        ModelMesh& mesh);
-
 public:
     const Assets& assets;
     const std::string m_name;

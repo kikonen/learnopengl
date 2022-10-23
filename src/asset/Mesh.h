@@ -26,6 +26,8 @@ public:
     virtual Material* findMaterial(std::function<bool(const Material&)> fn) = 0;
     virtual void modifyMaterials(std::function<void(Material&)> fn) = 0;
 
+    virtual void calculateVolume() = 0;
+
     virtual void prepare(const Assets& assets) = 0;
     virtual void prepareBuffers(MeshBuffers& curr) = 0;
     virtual void bind(

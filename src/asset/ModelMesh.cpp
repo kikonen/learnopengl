@@ -4,9 +4,13 @@
 #include <glm/glm.hpp>
 
 #include <string>
+#include <algorithm>
+
 #include <fmt/format.h>
 
 #include "ki/GL.h"
+
+#include "asset/Sphere.h"
 
 namespace {
 #pragma pack(push, 1)
@@ -73,6 +77,26 @@ void ModelMesh::modifyMaterials(std::function<void(Material&)> fn)
     for (auto& material : m_materials) {
         fn(material);
     }
+}
+
+void ModelMesh::calculateVolume() {
+    glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
+    glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+
+    for (auto&& vertex : m_vertices)
+    {
+        minAABB.x = std::min(minAABB.x, vertex.pos.x);
+        minAABB.y = std::min(minAABB.y, vertex.pos.y);
+        minAABB.z = std::min(minAABB.z, vertex.pos.z);
+
+        maxAABB.x = std::max(maxAABB.x, vertex.pos.x);
+        maxAABB.y = std::max(maxAABB.y, vertex.pos.y);
+        maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
+    }
+
+    setVolume(std::make_unique<Sphere>(
+        (maxAABB + minAABB) * 0.5f,
+        glm::length(minAABB - maxAABB)));
 }
 
 void ModelMesh::prepare(const Assets& assets)
