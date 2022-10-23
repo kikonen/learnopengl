@@ -82,9 +82,16 @@ public:
     ~Shader();
 
 private:
-    int createProgram();
+    // @return shaderId
+    int compileSource(
+        GLenum shaderType,
+        const std::string& shaderPath,
+        const std::string& source);
 
-     void appendDefines(std::vector<std::string>& lines);
+    int createProgram();
+    int initProgram();
+
+    void appendDefines(std::vector<std::string>& lines);
 
     std::string loadSource(const std::string& filename, bool optional);
     std::vector<std::string> loadSourceLines(const std::string& path, bool optional);
@@ -274,7 +281,6 @@ public:
 
     const Assets& assets;
     const std::string geometryType;
-    const bool geometryOptional;
 
     bool bindTexture = false;
     bool selection = false;
@@ -315,13 +321,9 @@ private:
 
     const std::vector<std::string> defines;
 
-    std::string vertexShaderPath;
-    std::string fragmentShaderPath;
-    std::string geometryShaderPath;
-
-    std::string vertexShaderSource;
-    std::string fragmentShaderSource;
-    std::string geometryShaderSource;
+    std::map<GLenum, std::string> paths;
+    std::map<GLenum, bool> required;
+    std::map<GLenum, std::string> sources;
 
     std::map<const std::string, GLint> uniformLocations;
 };

@@ -20,6 +20,12 @@ namespace {
         std::lock_guard<std::mutex> lock(type_id_lock);
         return ++typeIDbase;
     }
+
+    bool fileExists(std::string filepath)
+    {
+        std::ifstream f(filepath.c_str());
+        return f.good();
+    }
 }
 
 Shader::Shader(
@@ -33,7 +39,6 @@ Shader::Shader(
     key(key),
     shaderName(name),
     geometryType(geometryType),
-    geometryOptional(geometryType.empty()),
     defines(defines)
 {
     std::string basePath;
@@ -44,9 +49,18 @@ Shader::Shader(
         basePath = fp.string();
     }
 
-    vertexShaderPath = basePath + ".vs";
-    fragmentShaderPath = basePath + ".fs";
-    geometryShaderPath = basePath + geometryType + ".gs";
+    paths[GL_VERTEX_SHADER] = basePath + ".vs";
+    paths[GL_FRAGMENT_SHADER] = basePath + ".fs";
+    paths[GL_GEOMETRY_SHADER] = basePath + geometryType + ".gs.glsl";
+
+    //paths[GL_TESS_CONTROL_SHADER] = basePath + ".tcs.glsl";
+    //paths[GL_TESS_EVALUATION_SHADER] = basePath + ".tes.glsl";
+
+    required[GL_VERTEX_SHADER] = true;
+    required[GL_FRAGMENT_SHADER] = true;
+    required[GL_GEOMETRY_SHADER] = !geometryType.empty();
+    required[GL_TESS_CONTROL_SHADER] = false;
+    required[GL_TESS_EVALUATION_SHADER] = false;
 
     bindTexture = true;
 }
@@ -75,9 +89,9 @@ const void Shader::unbind()
 
 void Shader::load()
 {
-    vertexShaderSource = loadSource(vertexShaderPath, false);
-    fragmentShaderSource = loadSource(fragmentShaderPath, false);
-    geometryShaderSource = loadSource(geometryShaderPath, geometryOptional);
+    for (auto& [type, path] : paths) {
+        sources[type] = loadSource(path, !required[type]);
+    }
 }
 
 int Shader::prepare(const Assets& assets)
@@ -120,102 +134,101 @@ GLint Shader::getUniformLoc(const std::string& name)
     return vi;
 }
 
-int Shader::createProgram() {
-    int success;
-    char infoLog[512];
+int Shader::compileSource(
+    GLenum shaderType,
+    const std::string& shaderPath,
+    const std::string& source)
+{
+    if (source.empty()) return -1;
 
-    if (vertexShaderSource.empty() || fragmentShaderSource.empty()) {
-        KI_ERROR_SB("SHADER::FILE_EMPTY " << shaderName);
-        KI_BREAK();
-        return -1;
+    const char* src = source.c_str();
+
+    int shaderId = glCreateShader(shaderType);
+    glShaderSource(shaderId, 1, &src, NULL);
+    glCompileShader(shaderId);
+
+    // check for shader compile errors
+    {
+        int success;
+        glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            char infoLog[512];
+            glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
+            KI_ERROR_SB("SHADER::GEOMETRY::COMPILATION_FAILED " << shaderName << " frag=" << shaderPath << "\n" << infoLog);
+            KI_BREAK();
+
+            glDeleteShader(shaderId);
+            shaderId = -1;
+        }
     }
 
+    return shaderId;
+}
+
+int Shader::createProgram() {
     // build and compile our shader program
     // ------------------------------------
-    // vertex shader
-    int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    {
-        const char* src = vertexShaderSource.c_str();
-
-        glShaderSource(vertexShader, 1, &src, NULL);
-        glCompileShader(vertexShader);
-        // check for shader compile errors
-        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
-            glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-            KI_ERROR_SB("SHADER::VERTEX::COMPILATION_FAILED " << shaderName << " vert=" << vertexShaderPath << "\n" << infoLog);
-            KI_BREAK();
-        }
-    }
-
-    // fragment shader
-    int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    {
-        const char* src = fragmentShaderSource.c_str();
-
-        glShaderSource(fragmentShader, 1, &src, NULL);
-        glCompileShader(fragmentShader);
-        // check for shader compile errors
-        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
-            glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-            KI_ERROR_SB("SHADER::FRAGMENT::COMPILATION_FAILED " << shaderName << " frag=" << fragmentShaderPath << "\n" << infoLog);
-            KI_BREAK();
-        }
-    }
-
-    // geoemtry shader
-    int geometryShader = -1;
-    if (!geometryShaderSource.empty()) {
-        geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-
-        const char* src = geometryShaderSource.c_str();
-
-        glShaderSource(geometryShader, 1, &src, NULL);
-        glCompileShader(geometryShader);
-        // check for shader compile errors
-        glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
-            glGetShaderInfoLog(geometryShader, 512, NULL, infoLog);
-            KI_ERROR_SB("SHADER::GEOMETRY::COMPILATION_FAILED " << shaderName << " frag=" << geometryShaderPath << "\n" << infoLog);
-            KI_BREAK();
-        }
+    std::map<GLenum, GLuint> shaderIds;
+    for (auto& [type, source] : sources) {
+        shaderIds[type] = compileSource(type, paths[type], source);
     }
 
     // link shaders
-    programId = glCreateProgram();
+    {
+        programId = glCreateProgram();
 
-    glAttachShader(programId, vertexShader);
-    glAttachShader(programId, fragmentShader);
-    if (geometryShader != -1) {
-        glAttachShader(programId, geometryShader);
+        for (auto& [type, shaderId] : shaderIds) {
+            if (shaderId == -1) continue;
+            glAttachShader(programId, shaderId);
+        }
+
+        glLinkProgram(programId);
+
+        // check for linking errors
+        {
+            int success;
+            glGetProgramiv(programId, GL_LINK_STATUS, &success);
+            if (!success) {
+                char infoLog[512];
+                glGetProgramInfoLog(programId, 512, NULL, infoLog);
+                KI_ERROR_SB("SHADER::PROGRAM::LINKING_FAILED " << shaderName << "\n" << infoLog);
+                KI_BREAK();
+
+                glDeleteProgram(programId);
+                programId = -1;
+            }
+        }
+
+        for (auto& [type, shaderId] : shaderIds) {
+            if (shaderId == -1) continue;
+            glDeleteShader(shaderId);
+        }
+
+        if (programId != -1) {
+            glValidateProgram(programId);
+
+            int success;
+            glGetProgramiv(programId, GL_VALIDATE_STATUS, &success);
+            if (!success) {
+                char infoLog[1024];
+                glGetProgramInfoLog(programId, 512, NULL, infoLog);
+                KI_ERROR_SB("SHADER::PROGRAM::VALIDATE_FAILED " << shaderName << "\n" << infoLog);
+                //KI_BREAK();
+
+                //glDeleteProgram(programId);
+                //programId = -1;
+            }
+        }
     }
 
-    glLinkProgram(programId);
+    if (programId == -1) return -1;
 
-    // check for linking errors
-    glGetProgramiv(programId, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(programId, 512, NULL, infoLog);
-        KI_ERROR_SB("SHADER::PROGRAM::LINKING_FAILED " << shaderName << "\n" << infoLog);
-        KI_BREAK();
-    }
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    if (geometryShader != -1) {
-        glDeleteShader(geometryShader);
-    }
+    initProgram();
+    return 0;
+}
 
-    glValidateProgram(programId);
-    if (!success) {
-        glGetProgramInfoLog(programId, 512, NULL, infoLog);
-        KI_ERROR_SB("SHADER::PROGRAM::VALIDATE_FAILED " << shaderName << "\n" << infoLog);
-        KI_BREAK();
-    }
-
+int Shader::initProgram() {
     // NOTE KI set UBOs only once for shader
     setUBO("Matrices", UBO_MATRICES, sizeof(MatricesUBO));
     setUBO("Data", UBO_DATA, sizeof(DataUBO));
@@ -252,9 +265,7 @@ int Shader::createProgram() {
     //prepareTextureUniform();
     prepareTextureUniforms();
 
-    vertexShaderSource = "";
-    fragmentShaderSource = "";
-    geometryShaderSource = "";
+    sources.clear();
 
     return 0;
 }
@@ -345,14 +356,12 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
 * Load shader file
 */
 std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool optional) {
-    std::ifstream file;
+    bool exists = fileExists(path);
+    if (!exists && optional) return {};
 
     std::vector<std::string> lines;
-
-    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try {
         std::ifstream file;
-        //    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         file.exceptions(std::ifstream::badbit);
         file.open(path);
 
@@ -391,7 +400,7 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
             KI_BREAK();
         }
         else {
-            KI_INFO_SB("SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path);
+            KI_DEBUG_SB("SHADER::FILE_NOT_SUCCESFULLY_READ " << shaderName << " path=" << path);
         }
     }
     KI_INFO_SB("FILE: " << path);
