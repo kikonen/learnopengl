@@ -27,6 +27,30 @@ RenderContext::RenderContext(
         parent->state,
         parent->scene,
         camera,
+        parent->nearPlane,
+        parent->farPlane,
+        width,
+        height)
+{}
+
+RenderContext::RenderContext(
+    const std::string& name,
+    const RenderContext* parent,
+    Camera& camera,
+    float nearPlane,
+    float farPlane,
+    int width,
+    int height)
+    : RenderContext(
+        name,
+        parent,
+        parent->assets,
+        parent->clock,
+        parent->state,
+        parent->scene,
+        camera,
+        nearPlane,
+        farPlane,
         width,
         height)
 {}
@@ -39,6 +63,8 @@ RenderContext::RenderContext(
     GLState& state,
     Scene* scene,
     Camera& camera,
+    float nearPlane,
+    float farPlane,
     int width,
     int height)
     : name(name),
@@ -51,17 +77,19 @@ RenderContext::RenderContext(
     commandEngine(scene->commandEngine),
     scriptEngine(scene->scriptEngine),
     camera(camera),
+    nearPlane(nearPlane),
+    farPlane(farPlane),
     width(width),
-    height(height)
+    height(height),
+    aspectRatio((float)width / (float)height)
 {
     viewMatrix = camera.getView();
 
-    aspectRatio = (float)width / (float)height;
     projectionMatrix = glm::perspective(
         glm::radians((float)camera.getZoom()),
         aspectRatio,
-        assets.nearPlane,
-        assets.farPlane);
+        nearPlane,
+        farPlane);
 
     projectedMatrix = projectionMatrix * viewMatrix;
 
@@ -198,15 +226,15 @@ void RenderContext::updateFrustum()
     const glm::vec3& up = camera.getViewUp();
     const glm::vec3& right = camera.getViewRight();
 
-    const float halfVSide = assets.farPlane * tanf(fovY * .5f);
+    const float halfVSide = farPlane * tanf(fovY * .5f);
     const float halfHSide = halfVSide * aspectRatio;
-    const glm::vec3 frontMultFar = assets.farPlane * front;
+    const glm::vec3 frontMultFar = farPlane * front;
 
     // NOTE KI near and far plane don't have camee pos as "point in plane"
     // NOTE KI other side HAVE camra pos as "point in plane"
 
     frustum.nearFace = {
-        pos + assets.nearPlane * front,
+        pos + nearPlane * front,
         front };
 
     frustum.farFace = {

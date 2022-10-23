@@ -15,6 +15,11 @@ std::unique_ptr<Volume> Sphere::clone() const
     return std::make_unique<Sphere>(m_center, m_radius);
 }
 
+float Sphere::getRadius() const 
+{
+    return m_radius;
+}
+
 bool Sphere::isOnOrForwardPlane(const Plane& plane) const 
 {
     return plane.getSignedDistanceToPlane(m_center) > -m_radius;

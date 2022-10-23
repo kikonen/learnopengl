@@ -78,6 +78,9 @@ Assets::Assets()
     cubeMapSize = 1000;
     cubeMapDrawSkip = 2;
 
+    cubeMapNearPlane = 0.5;
+    cubeMapFarPlane = 200;
+
     noiseUnitIndex = 24;
     mirrorRefractionMapUnitIndex = 25;
     mirrorReflectionMapUnitIndex = 26;

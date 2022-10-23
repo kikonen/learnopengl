@@ -116,9 +116,14 @@ void CubeMapRenderer::render(
             glClear(GL_DEPTH_BUFFER_BIT);
         }
 
+        float nearPlane = centerNode->getVolume()->getRadius();
+
         Camera camera(center, CAMERA_FRONT[i], CAMERA_UP[i]);
         camera.setZoom(90.0);
-        RenderContext ctx("CUBE", &mainCtx, camera, curr->size, curr->size);
+        RenderContext ctx("CUBE",
+            &mainCtx, camera,
+            nearPlane, mainCtx.assets.cubeMapFarPlane,
+            curr->size, curr->size);
         bindTexture(ctx);
         ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
         ctx.bindMatricesUBO();

@@ -27,11 +27,22 @@ public:
     RenderContext(
         const std::string& name,
         const RenderContext* parent,
+        Camera& camera,
+        float nearPlane,
+        float farPlane,
+        int width,
+        int height);
+
+    RenderContext(
+        const std::string& name,
+        const RenderContext* parent,
         const Assets& assets,
         const RenderClock& clock,
         GLState& state,
         Scene* scene,
         Camera& camera,
+        float nearPlane,
+        float farPlane,
         int width,
         int height);
 
@@ -68,7 +79,10 @@ public:
     const int width;
     const int height;
 
-    float aspectRatio;
+    const float nearPlane;
+    const float farPlane;
+
+    const float aspectRatio;
 
     Scene* scene{ nullptr };
 

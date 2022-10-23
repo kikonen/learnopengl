@@ -14,6 +14,8 @@ struct Volume {
 
     virtual std::unique_ptr<Volume> clone() const = 0;
 
+    virtual float getRadius() const = 0;
+
     bool isOnFrustum(const Frustum& frustum) const;
 
     virtual bool isOnFrustum(
