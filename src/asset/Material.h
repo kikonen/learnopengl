@@ -12,7 +12,6 @@
 struct BoundTexture {
     Texture* texture = nullptr;
     int texIndex = -1;
-    int unitIndex = -1;
 
     bool valid() {
         return texture;
@@ -21,8 +20,8 @@ struct BoundTexture {
     void bind(const RenderContext& ctx)
     {
         if (!texture) return;
-        ASSERT_TEX_UNIT(unitIndex);
-        ctx.state.bindTexture(unitIndex, texture->textureID);
+        ASSERT_TEX_UNIT(texture->unitIndex);
+        ctx.state.bindTexture(texture->unitIndex, texture->textureID);
     }
 
     void unbind()

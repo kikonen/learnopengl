@@ -42,23 +42,30 @@ namespace {
     //    // NOTE KI 31 == skybox
     //    GL_TEXTURE31,
     //};
+
+    static int baseIdx = FIRST_TEXTURE_UNIT;
 }
 
 GLuint Texture::getUnitIndexBase(int textureCount)
 {
-    static int baseIdx = FIRST_TEXTURE_UNIT - 1;
-
-    int idx = baseIdx + 1;
+    int idx = baseIdx;
 
     if (idx + textureCount - 1 > LAST_TEXTURE_UNIT) {
         idx = FIRST_TEXTURE_UNIT;
-        baseIdx = FIRST_TEXTURE_UNIT - 1;
+        baseIdx = FIRST_TEXTURE_UNIT;
     }
     else {
         baseIdx += textureCount;
     }
 
     return idx;
+}
+
+GLuint Texture::nextUnitIndex()
+{
+    if (baseIdx > LAST_TEXTURE_UNIT)
+        baseIdx = FIRST_TEXTURE_UNIT;
+    return baseIdx++ ;
 }
 
 Texture::Texture(const std::string& name, const TextureSpec& spec)

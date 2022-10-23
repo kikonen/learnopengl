@@ -92,11 +92,10 @@ void QuadMesh::prepare(const Assets& assets)
         }
 
         // NOTE KI second iteration to set unitIndex after texCount
-        m_unitIndexFirst = Texture::getUnitIndexBase(texCount);
-        int unitIndex = m_unitIndexFirst;
         for (auto& tex : material.textures) {
             if (!tex.texture) continue;
-            tex.unitIndex = unitIndex++;
+            if (tex.texture->unitIndex >= 0) continue;
+            tex.texture->unitIndex = Texture::nextUnitIndex();
         }
     }
 
@@ -198,11 +197,11 @@ void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
 
     glBindVertexArray(m_buffers.VAO);
 
-    m_material.bindArray(ctx, shader, 0, false);
+    m_material.bindArray(ctx, shader, 0, true);
 
-    if (!m_textureIDs.empty()) {
-        ctx.state.bindTextures(m_unitIndexFirst, m_textureIDs);
-    }
+    //if (!m_textureIDs.empty()) {
+    //    ctx.state.bindTextures(m_unitIndexFirst, m_textureIDs);
+    //}
 }
 
 void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount)

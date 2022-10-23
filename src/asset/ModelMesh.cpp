@@ -106,12 +106,11 @@ void ModelMesh::prepare(const Assets& assets)
         }
 
         // NOTE KI second iteration to set unitIndex after texCount
-        m_unitIndexFirst = Texture::getUnitIndexBase(texCount);
-        int unitIndex = m_unitIndexFirst;
         for (auto& material : m_materials) {
             for (auto& tex : material.textures) {
                 if (!tex.texture) continue;
-                tex.unitIndex = unitIndex++;
+                if (tex.texture->unitIndex >= 0) continue;
+                tex.texture->unitIndex = Texture::nextUnitIndex();
             }
         }
     }
@@ -250,12 +249,13 @@ void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
     glBindVertexArray(m_buffers.VAO);
 
     for (auto& material : m_materials) {
-        material.bindArray(ctx, shader, material.materialIndex, false);
+        material.bindArray(ctx, shader, material.materialIndex, true);
     }
 
-    if (!m_textureIDs.empty()) {
-        ctx.state.bindTextures(m_unitIndexFirst, m_textureIDs);
-    }
+    //if (!m_textureIDs.empty()) {
+    //    std::cout << '[' << m_unitIndexFirst << '-' << m_textureIDs.size() << ']';
+    //    ctx.state.bindTextures(m_unitIndexFirst, m_textureIDs);
+    //}
 }
 
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)

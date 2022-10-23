@@ -26,11 +26,14 @@ public:
     // @return Base index
     static GLuint getUnitIndexBase(int textureCount);
 
+    static GLuint nextUnitIndex();
+
 public:
     const std::string name;
     const TextureSpec spec;
 
     GLuint textureID = 0;
+    int unitIndex = -1;
 
 protected:
     bool m_prepared = false;
@@ -40,4 +43,3 @@ protected:
     int format = 0;
     int internalFormat = 0;
 };
-

@@ -208,8 +208,8 @@ void Material::bindArray(
     for (auto& tex : textures) {
         if (!tex.texture) continue;
         ASSERT_TEX_INDEX(tex.texIndex);
-        ASSERT_TEX_UNIT(tex.unitIndex);
-        shader->textures[tex.texIndex].set(tex.unitIndex);
+        ASSERT_TEX_UNIT(tex.texture->unitIndex);
+        shader->textures[tex.texIndex].set(tex.texture->unitIndex);
         if (bindTextureIDs) {
             tex.bind(ctx);
         }
@@ -221,7 +221,6 @@ const MaterialUBO Material::toUBO()
     for (auto& tex : textures) {
         if (!tex.texture) continue;
         ASSERT_TEX_INDEX(tex.texIndex);
-        ASSERT_TEX_UNIT(tex.unitIndex);
     }
 
     return {
