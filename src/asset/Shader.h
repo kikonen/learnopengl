@@ -81,6 +81,8 @@ public:
     // public due to shared_ptr
     ~Shader();
 
+    void validateProgram();
+
 private:
     // @return shaderId
     int compileSource(

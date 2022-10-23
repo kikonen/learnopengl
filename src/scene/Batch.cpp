@@ -240,6 +240,9 @@ void Batch::flush(const RenderContext& ctx, const NodeType& type)
         update(drawCount);
     }
 
+    if (ctx.assets.glDebug) {
+        type.m_boundShader->validateProgram();
+    }
     type.m_mesh->drawInstanced(ctx, drawCount);
 
     if (!staticBuffer) {

@@ -204,28 +204,27 @@ int Shader::createProgram() {
             if (shaderId == -1) continue;
             glDeleteShader(shaderId);
         }
-
-        if (programId != -1) {
-            glValidateProgram(programId);
-
-            int success;
-            glGetProgramiv(programId, GL_VALIDATE_STATUS, &success);
-            if (!success) {
-                char infoLog[1024];
-                glGetProgramInfoLog(programId, 512, NULL, infoLog);
-                KI_ERROR_SB("SHADER::PROGRAM::VALIDATE_FAILED " << shaderName << "\n" << infoLog);
-                //KI_BREAK();
-
-                //glDeleteProgram(programId);
-                //programId = -1;
-            }
-        }
     }
 
     if (programId == -1) return -1;
 
     initProgram();
     return 0;
+}
+
+// https://community.khronos.org/t/samplers-of-different-types-use-the-same-textur/66329/4
+void Shader::validateProgram() {
+    if (programId == -1) return;
+    glValidateProgram(programId);
+
+    int success;
+    glGetProgramiv(programId, GL_VALIDATE_STATUS, &success);
+    if (!success) {
+        char infoLog[1024];
+        glGetProgramInfoLog(programId, 512, NULL, infoLog);
+        KI_ERROR_SB("SHADER::PROGRAM::VALIDATE_FAILED " << shaderName << "\n" << infoLog);
+        KI_BREAK();
+    }
 }
 
 int Shader::initProgram() {
