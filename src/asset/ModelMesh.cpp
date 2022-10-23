@@ -106,11 +106,25 @@ void ModelMesh::prepare(const Assets& assets)
         }
 
         // NOTE KI second iteration to set unitIndex after texCount
+        std::map<GLuint, bool> assignedUnits;
+        std::map<GLuint, bool> assignedTextures;
+        int unitIndex = 0;
         for (auto& material : m_materials) {
             for (auto& tex : material.textures) {
                 if (!tex.texture) continue;
-                if (tex.texture->unitIndex >= 0) continue;
-                tex.texture->unitIndex = Texture::nextUnitIndex();
+                if (tex.texture->unitIndex < 0) {
+                    tex.texture->unitIndex = Texture::nextUnitIndex();
+                }
+                tex.unitIndex = tex.texture->unitIndex;
+
+                if (assignedTextures[tex.texture->textureID]) continue;
+
+                // NOTE KI conflict resolution if random conflict happens
+                while (assignedUnits[tex.unitIndex] == true) {
+                    tex.unitIndex = unitIndex++;
+                }
+                assignedUnits[tex.unitIndex] = true;
+                assignedTextures[tex.texture->textureID] = true;
             }
         }
     }
