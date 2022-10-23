@@ -256,14 +256,21 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
     m_tris.clear();
 }
 
-void ModelMesh::bind(const RenderContext& ctx, Shader* shader)
+void ModelMesh::bind(
+    const RenderContext& ctx,
+    Shader* shader,
+    bool bindMaterials)
 {
-    glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
+    if (bindMaterials) {
+        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
+    }
 
     glBindVertexArray(m_buffers.VAO);
 
-    for (auto& material : m_materials) {
-        material.bindArray(ctx, shader, material.materialIndex, true);
+    if (bindMaterials) {
+        for (auto& material : m_materials) {
+            material.bindArray(ctx, shader, material.materialIndex, true);
+        }
     }
 
     //if (!m_textureIDs.empty()) {

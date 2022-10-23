@@ -97,8 +97,10 @@ void ShadowMapRenderer::render(
         glClear(GL_DEPTH_BUFFER_BIT);
 
         ctx.useFrustum = false;
+        ctx.shadow = true;
         drawNodes(ctx, registry);
         ctx.useFrustum = true;
+        ctx.shadow = false;
 
         shadowBuffer->unbind(ctx);
     }

@@ -28,7 +28,10 @@ public:
 
     virtual void prepare(const Assets& assets) = 0;
     virtual void prepareBuffers(MeshBuffers& curr) = 0;
-    virtual void bind(const RenderContext& ctx, Shader* shader) = 0;
+    virtual void bind(
+        const RenderContext& ctx,
+        Shader* shader,
+        bool bindMaterials) = 0;
     virtual void drawInstanced(const RenderContext& ctx, int instanceCount) = 0;
 
     void setVolume(std::unique_ptr<Volume> volume);

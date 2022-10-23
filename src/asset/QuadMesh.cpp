@@ -205,13 +205,20 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void QuadMesh::bind(const RenderContext& ctx, Shader* shader)
+void QuadMesh::bind(
+    const RenderContext& ctx,
+    Shader* shader,
+    bool bindMaterials)
 {
-    glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
+    if (bindMaterials) {
+        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
+    }
 
     glBindVertexArray(m_buffers.VAO);
 
-    m_material.bindArray(ctx, shader, 0, true);
+    if (bindMaterials) {
+        m_material.bindArray(ctx, shader, 0, true);
+    }
 
     //if (!m_textureIDs.empty()) {
     //    ctx.state.bindTextures(m_unitIndexFirst, m_textureIDs);

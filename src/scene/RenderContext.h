@@ -58,6 +58,8 @@ public:
 
     const RenderClock& clock;
 
+    mutable bool shadow = false;
+
     mutable bool useFrustum = true;
     Frustum frustum;
 
