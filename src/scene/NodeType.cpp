@@ -72,17 +72,6 @@ void NodeType::prepare(const Assets& assets)
     Shader* shader = m_nodeShader;
     if (shader) {
         shader->prepare(assets);
-
-        if (false) {
-            ShaderBind bound(shader);
-            shader->noiseTex.set(assets.noiseUnitIndex);
-            shader->reflectionTex.set(assets.waterReflectionMapUnitIndex);
-            shader->refractionTex.set(assets.waterRefractionMapUnitIndex);
-
-            shader->cubeMap.set(assets.cubeMapUnitIndex);
-            shader->shadowMap.set(assets.shadowMapUnitIndex);
-            shader->skybox.set(assets.skyboxUnitIndex);
-        }
     }
 
     if (m_batch.batchSize < 0) {
@@ -117,6 +106,15 @@ void NodeType::bind(
 
     if (m_flags.wireframe) {
         ctx.state.polygonFrontAndBack(GL_LINE);
+    }
+
+    // NOTE KI reflection map varies depending of the rendered entity
+    if (m_flags.water) {
+        m_boundShader->noiseTex.set(ctx.assets.noiseUnitIndex);
+        m_boundShader->reflectionTex.set(ctx.assets.waterReflectionMapUnitIndex);
+        m_boundShader->refractionTex.set(ctx.assets.waterRefractionMapUnitIndex);
+    } else if (m_flags.mirror) {
+        m_boundShader->reflectionTex.set(ctx.assets.mirrorReflectionMapUnitIndex);
     }
 }
 

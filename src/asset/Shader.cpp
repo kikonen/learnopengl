@@ -68,7 +68,9 @@ Shader::Shader(
 Shader::~Shader()
 {
     KI_INFO_SB("DELETE: shader " << shaderName);
-    glDeleteProgram(programId);
+    if (programId != -1) {
+        glDeleteProgram(programId);
+    }
 }
 
 const void Shader::bind()
@@ -105,10 +107,6 @@ int Shader::prepare(const Assets& assets)
 
     {
         ShaderBind bound(this);
-
-        noiseTex.set(assets.noiseUnitIndex);
-        reflectionTex.set(assets.waterReflectionMapUnitIndex);
-        refractionTex.set(assets.waterRefractionMapUnitIndex);
 
         cubeMap.set(assets.cubeMapUnitIndex);
         shadowMap.set(assets.shadowMapUnitIndex);

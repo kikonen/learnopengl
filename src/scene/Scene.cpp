@@ -19,6 +19,7 @@ Scene::Scene(const Assets& assets)
     viewportRenderer = std::make_unique<ViewportRenderer>();
 
     waterMapRenderer = std::make_unique<WaterMapRenderer>();
+    //mirrorMapRenderer = std::make_unique<MirrorMapRenderer>();
     cubeMapRenderer = std::make_unique<CubeMapRenderer>();
     shadowMapRenderer = std::make_unique<ShadowMapRenderer>();
 
@@ -57,6 +58,9 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     if (waterMapRenderer) {
         waterMapRenderer->prepare(assets, shaders);
+    }
+    if (mirrorMapRenderer) {
+        mirrorMapRenderer->prepare(assets, shaders);
     }
     if (cubeMapRenderer) {
         cubeMapRenderer->prepare(assets, shaders);
@@ -114,13 +118,22 @@ void Scene::prepare(ShaderRegistry& shaders)
     }
 
     if (assets.showShadowMapView) {
-        registry.addViewPort(shadowMapRenderer->debugViewport);
+        if (shadowMapRenderer) {
+            registry.addViewPort(shadowMapRenderer->debugViewport);
+        }
     }
     if (assets.showReflectionView) {
-        registry.addViewPort(waterMapRenderer->reflectionDebugViewport);
+        if (waterMapRenderer) {
+            registry.addViewPort(waterMapRenderer->reflectionDebugViewport);
+        }
+        if (mirrorMapRenderer) {
+            registry.addViewPort(mirrorMapRenderer->debugViewport);
+        }
     }
     if (assets.showRefractionView) {
-        registry.addViewPort(waterMapRenderer->refractionDebugViewport);
+        if (waterMapRenderer) {
+            registry.addViewPort(waterMapRenderer->refractionDebugViewport);
+        }
     }
 }
 
@@ -185,6 +198,9 @@ void Scene::bind(RenderContext& ctx)
     if (waterMapRenderer) {
         waterMapRenderer->bind(ctx);
     }
+    if (mirrorMapRenderer) {
+        mirrorMapRenderer->bind(ctx);
+    }
     if (cubeMapRenderer) {
         cubeMapRenderer->bind(ctx);
     }
@@ -237,6 +253,9 @@ void Scene::draw(RenderContext& ctx)
         }
         if (waterMapRenderer) {
             waterMapRenderer->render(ctx, registry, skyboxRenderer.get());
+        }
+        if (mirrorMapRenderer) {
+            mirrorMapRenderer->render(ctx, registry, skyboxRenderer.get());
         }
     }
 
@@ -307,6 +326,9 @@ void Scene::drawScene(RenderContext& ctx)
     }
     if (waterMapRenderer) {
         waterMapRenderer->bindTexture(ctx);
+    }
+    if (mirrorMapRenderer) {
+        mirrorMapRenderer->bindTexture(ctx);
     }
 
     if (nodeRenderer) {

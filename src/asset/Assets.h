@@ -87,7 +87,6 @@ public:
     float cubeMapFarPlane;
 
     unsigned int noiseUnitIndex;
-    unsigned int mirrorRefractionMapUnitIndex;
     unsigned int mirrorReflectionMapUnitIndex;
     unsigned int waterRefractionMapUnitIndex;
     unsigned int waterReflectionMapUnitIndex;

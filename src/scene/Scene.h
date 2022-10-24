@@ -18,6 +18,7 @@
 #include "renderer/ViewportRenderer.h"
 
 #include "renderer/WaterMapRenderer.h"
+#include "renderer/MirrorMapRenderer.h"
 #include "renderer/CubeMapRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
 
@@ -87,6 +88,7 @@ private:
     std::unique_ptr<ViewportRenderer> viewportRenderer{ nullptr };
 
     std::unique_ptr<WaterMapRenderer> waterMapRenderer{ nullptr };
+    std::unique_ptr<MirrorMapRenderer> mirrorMapRenderer{ nullptr };
     std::unique_ptr<CubeMapRenderer> cubeMapRenderer{ nullptr };
     std::unique_ptr<ShadowMapRenderer> shadowMapRenderer{ nullptr };
 

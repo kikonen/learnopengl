@@ -38,7 +38,7 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     curr->prepare(true, DEBUG_COLOR[1]);
 
     debugViewport = std::make_shared<Viewport>(
-        glm::vec3(0.5, 0.5, 0),
+        glm::vec3(-0.5, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
         prev->spec.attachments[0].textureID,

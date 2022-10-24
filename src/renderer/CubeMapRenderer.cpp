@@ -116,7 +116,8 @@ void CubeMapRenderer::render(
             glClear(GL_DEPTH_BUFFER_BIT);
         }
 
-        float nearPlane = centerNode->getVolume()->getRadius();
+        float nearPlane = mainCtx.assets.cubeMapNearPlane;
+        // centerNode->getVolume()->getRadius();
 
         Camera camera(center, CAMERA_FRONT[i], CAMERA_UP[i]);
         camera.setZoom(90.0);

@@ -81,8 +81,7 @@ Assets::Assets()
     cubeMapNearPlane = 0.5;
     cubeMapFarPlane = 200;
 
-    noiseUnitIndex = 24;
-    mirrorRefractionMapUnitIndex = 25;
+    noiseUnitIndex = 25;
     mirrorReflectionMapUnitIndex = 26;
     waterRefractionMapUnitIndex = 27;
     waterReflectionMapUnitIndex = 28;
