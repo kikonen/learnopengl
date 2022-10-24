@@ -83,6 +83,8 @@ public:
     bool m_selected = false;
     bool m_allowNormals = true;
 
+    glm::vec3 m_mirrorPlane{ 0 };
+
     std::unique_ptr <NodeController> m_controller{ nullptr };
 
     std::unique_ptr<Camera> m_camera{ nullptr };

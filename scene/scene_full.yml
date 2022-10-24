@@ -243,10 +243,10 @@ entities:
       x_step: 4
     enabled: true
   - name: Big mirror 1
-    model: woodwall
-    shader: texture
+    model: mirror
+    shader: mirror
     pos: [-65.0, 20.0, -10.0]
-    rotation: [0.0, 45.0, 0.0]
+    rotation: [0.0, 225.0, 0.0]
     scale: 15.0
     material_modifier:
       reflection: 0.9
@@ -255,13 +255,15 @@ entities:
     render_flags:
       - render_back
       - mirror
-    mirror_plane: [0.0, 1.0, 0.0, -1.0]
+    mirror_plane: [0.0, 0.0, -1.0]
     enabled: true
+    init_script: |
+      cmd:rotateTo(-1, id, 5, 3600, true, 0.0, -7200.0, 0.0)
   - name: Big mirror 2
-    model: woodwall
-    shader: texture
+    model: mirror
+    shader: mirror
     pos: [65.0, 20.0, -10.0]
-    rotation: [0.0, -45.0, 0.0]
+    rotation: [0.0, 135.0, 0.0]
     scale: 15.0
     material_modifier:
       reflection: 0.9
@@ -270,8 +272,10 @@ entities:
     render_flags:
       - render_back
       - mirror
-    mirror_plane: [0.0, 1.0, 0.0, -1.0]
+    mirror_plane: [0.0, 0.0, -1.0]
     enabled: true
+    init_script: |
+      cmd:rotateTo(-1, id, 5, 3600, true, 0.0, 7200.0, 0.0)
   - name: Spyro
     model: spyro2
     shader: texture

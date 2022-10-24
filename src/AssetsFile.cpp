@@ -162,7 +162,7 @@ void AssetsFile::loadAssets(
             data.shadowDrawSkip = v.as<int>();
         }
         else if (k == "mirror_reflection_size") {
-            data.mirrorReflectionMapUnitIndex = v.as<int>();
+            data.mirrorReflectionSize = v.as<int>();
         }
         else if (k == "mirror_rdRefraction_size") {
             data.mirrorRefractionSize = v.as<int>();

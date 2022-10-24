@@ -38,7 +38,7 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     curr->prepare(true, DEBUG_COLOR[1]);
 
     debugViewport = std::make_shared<Viewport>(
-        glm::vec3(-0.5, 0.5, 0),
+        glm::vec3(-1.0, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
         prev->spec.attachments[0].textureID,
@@ -62,10 +62,6 @@ void MirrorMapRenderer::render(
     const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
-    // TODO KI this is NOT used; whats going on?!?
-    // => mirrors are showing cubemap instead, which is incorrect
-    // => explains why mirrors don't seem to render correctly (?)
-
     if (!stepRender()) return;
 
     Node* closest = findClosest(ctx, registry);
@@ -74,41 +70,53 @@ void MirrorMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    glm::vec3 planePos = closest->getWorldPos();
+    const glm::vec3& planePos = closest->getWorldPos();
 
     // https://prideout.net/clip-planes
+    // https://stackoverflow.com/questions/48613493/reflecting-scene-by-plane-mirror-in-opengl
     // reflection map
     {
-        glm::vec3 pos = ctx.camera.getPos();
-        const float dist = pos.y - planePos.y;
-        pos.y -= dist * 2;
+        const auto mirrorSize = closest->getVolume()->getRadius() * 2;
+        const auto& eyePos = ctx.camera.getPos();
+        const auto mirrorNormal = glm::normalize(
+            glm::vec3(
+                glm::vec4(closest->m_mirrorPlane, 0.f) * closest->getWorldModelMatrix()));
 
-        glm::vec3 rot = ctx.camera.getRotation();
-        rot.x = -rot.x;
+        const auto eyeV = planePos - eyePos;
+        const auto dist = glm::length(eyeV);
+        const auto eyeN = glm::normalize(eyeV);
 
-        Camera camera(pos, ctx.camera.getFront(), ctx.camera.getUp());
-        camera.setZoom(ctx.camera.getZoom());
-        camera.setRotation(rot);
+        const auto reflectFront = glm::reflect(eyeN, mirrorNormal);
+        const auto mirrorEyePos = planePos - (reflectFront * dist);
 
-        RenderContext localCtx("MIRROR", &ctx, camera, curr->spec.width, curr->spec.height);
+        //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
+        const float fovAngle = 90.f;
+
+        Camera camera(mirrorEyePos, reflectFront, ctx.camera.getUp());
+        camera.setZoom(fovAngle);
+
+        RenderContext localCtx("MIRROR",
+            &ctx, camera,
+            dist, ctx.assets.farPlane,
+            curr->spec.width, curr->spec.height);
         localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
-        clip.enabled = true;
-        clip.plane = glm::vec4(0, 1, 0, -planePos.y);
+        //clip.enabled = true;
+        clip.plane = glm::vec4(planePos, 0);
 
         localCtx.bindMatricesUBO();
 
         curr->bind(localCtx);
 
         bindTexture(localCtx);
-        //drawNodes(localCtx, registry, skybox, closest);
+        drawNodes(localCtx, registry, skybox, closest);
 
         curr->unbind(ctx);
         ctx.bindClipPlanesUBO();
     }
 
-    //prev.swap(curr);
+    prev.swap(curr);
 
     ctx.bindMatricesUBO();
 
@@ -132,17 +140,13 @@ void MirrorMapRenderer::drawNodes(
     }
 
     ctx.bindClipPlanesUBO();
-    ctx.state.enable(GL_CLIP_DISTANCE0);
+    //ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [&ctx, &current](const NodeTypeMap& typeMap) {
             ShaderBind bound(typeMap.begin()->first->m_nodeShader);
 
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
-
-                if (type.m_flags.noShadow) continue;
-
-                //ShaderBind bound(type->defaultShader);
 
                 Batch& batch = type.m_batch;
 
@@ -175,7 +179,7 @@ void MirrorMapRenderer::drawNodes(
             renderTypes(all.second);
         }
     }
-    ctx.state.disable(GL_CLIP_DISTANCE0);
+    //ctx.state.disable(GL_CLIP_DISTANCE0);
 }
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistry& registry)

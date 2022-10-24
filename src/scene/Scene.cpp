@@ -19,7 +19,7 @@ Scene::Scene(const Assets& assets)
     viewportRenderer = std::make_unique<ViewportRenderer>();
 
     waterMapRenderer = std::make_unique<WaterMapRenderer>();
-    //mirrorMapRenderer = std::make_unique<MirrorMapRenderer>();
+    mirrorMapRenderer = std::make_unique<MirrorMapRenderer>();
     cubeMapRenderer = std::make_unique<CubeMapRenderer>();
     shadowMapRenderer = std::make_unique<ShadowMapRenderer>();
 

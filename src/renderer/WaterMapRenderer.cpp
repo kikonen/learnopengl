@@ -84,7 +84,7 @@ void WaterMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    glm::vec3 planePos = closest->getWorldPos();
+    const glm::vec3& planePos = closest->getWorldPos();
 
     // https://prideout.net/clip-planes
     // reflection map

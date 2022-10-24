@@ -86,7 +86,7 @@ void GLState::bindTexture(
     const GLuint textureID)
 {
     if (textureUnits[unitIndex] != textureID) {
-        glBindTextures(unitIndex, 1, &textureID);
+        KI_GL_CALL(glBindTextures(unitIndex, 1, &textureID));
         textureUnits[unitIndex] = textureID;
     }
 }

@@ -49,8 +49,6 @@ public:
 
     NodeRenderFlags m_flags;
 
-    glm::vec4 m_mirrorPlane{ 0 };
-
     std::unique_ptr<Mesh> m_mesh{ nullptr };
 
     std::string m_initScript;

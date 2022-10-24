@@ -299,6 +299,8 @@ Node* SceneFile::createNode(
     node->setRotation(data.rotation);
     node->setScale(data.scale);
 
+    node->m_mirrorPlane = data.mirrorPlane;
+
     if (type->m_mesh) {
         auto volume = type->m_mesh->getVolume();
         node->setVolume(volume->clone());
@@ -357,7 +359,6 @@ void SceneFile::assignFlags(
         const auto& e = data.renderFlags.find("mirror");
         if (e != data.renderFlags.end()) {
             flags.mirror = e->second;
-            type.m_mirrorPlane = data.mirrorPlane;
         }
     }
     {
@@ -640,7 +641,7 @@ void SceneFile::loadEntityClone(
             }
         }
         else if (k == "mirror_plane") {
-            data.mirrorPlane = readVec4(v);
+            data.mirrorPlane = readVec3(v);
         }
         else if (k == "material") {
             data.materialName = v.as<std::string>();
