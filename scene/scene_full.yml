@@ -504,7 +504,7 @@ entities:
     material: terrain_grass
     shader: terrain
     pos: [-400, 0, -400]
-    scale: [100, 1, 100]
+    xscale: [100, 1, 100]
     batch_size: 100
     render_flags:
       - no_shadow
@@ -741,6 +741,6 @@ materials:
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: Grass Dark_VH.PNG
     map_bump: waterNormalMap.png
-    tiling: 200
+    tiling: 100
     texture_spec:
       mode: GL_REPEAT
