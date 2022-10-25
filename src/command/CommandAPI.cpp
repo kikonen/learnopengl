@@ -4,6 +4,7 @@
 #include "command/CommandEngine.h"
 
 #include "command/CancelCommand.h"
+#include "command/WaitCommand.h"
 #include "command/MoveNode.h"
 #include "command/MoveSplineNode.h"
 #include "command/RotateNode.h"
@@ -20,22 +21,29 @@ CommandAPI::CommandAPI(
 
 int CommandAPI::lua_cancel(
     int afterCommandId,
-    float initialDelay,
     float secs,
     int commandId)
 {
     return m_commandEngine.addCommand(
         std::make_unique<CancelCommand>(
             afterCommandId,
-            initialDelay,
             secs,
             commandId));
+}
+
+int CommandAPI::lua_wait(
+    int afterCommandId,
+    float secs)
+{
+    return m_commandEngine.addCommand(
+        std::make_unique<WaitCommand>(
+            afterCommandId,
+            secs));
 }
 
 int CommandAPI::lua_moveTo(
     int afterCommandId,
     int objectID,
-    float initialDelay,
     float secs,
     bool relative,
     float x, float y, float z)
@@ -44,7 +52,6 @@ int CommandAPI::lua_moveTo(
         std::make_unique<MoveNode>(
             afterCommandId,
             objectID,
-            initialDelay,
             secs,
             relative,
             glm::vec3{ x, y, z }));
@@ -53,7 +60,6 @@ int CommandAPI::lua_moveTo(
 int CommandAPI::lua_moveSplineTo(
     int afterCommandId,
     int objectID,
-    float initialDelay,
     float secs,
     bool relative,
     float px, float py, float pz,
@@ -63,7 +69,6 @@ int CommandAPI::lua_moveSplineTo(
         std::make_unique<MoveSplineNode>(
             afterCommandId,
             objectID,
-            initialDelay,
             secs,
             relative,
             glm::vec3{ px, py, pz },
@@ -73,7 +78,6 @@ int CommandAPI::lua_moveSplineTo(
 int CommandAPI::lua_rotateTo(
     int afterCommandId,
     int objectID,
-    float initialDelay,
     float secs,
     bool relative,
     float x, float y, float z)
@@ -82,7 +86,6 @@ int CommandAPI::lua_rotateTo(
         std::make_unique<RotateNode>(
             afterCommandId,
             objectID,
-            initialDelay,
             secs,
             relative,
             glm::vec3{ x, y, z }));
@@ -91,7 +94,6 @@ int CommandAPI::lua_rotateTo(
 int CommandAPI::lua_scaleTo(
     int afterCommandId,
     int objectID,
-    float initialDelay,
     float secs,
     bool relative,
     float x, float y, float z)
@@ -100,7 +102,6 @@ int CommandAPI::lua_scaleTo(
         std::make_unique<ScaleNode>(
             afterCommandId,
             objectID,
-            initialDelay,
             secs,
             relative,
             glm::vec3{ x, y, z }));
@@ -109,7 +110,6 @@ int CommandAPI::lua_scaleTo(
 int CommandAPI::lua_start(
     int afterCommandId,
     int objectID,
-    float initialDelay,
     sol::function fn,
     sol::variadic_args va)
 {
@@ -120,7 +120,6 @@ int CommandAPI::lua_start(
         std::make_unique<StartNode>(
             afterCommandId,
             objectID,
-            initialDelay,
             std::move(task),
             va));
 }

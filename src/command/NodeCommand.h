@@ -11,7 +11,6 @@ public:
     NodeCommand(
         int afterCommandId,
         int objectID,
-        float initialDelay,
         float finishTime,
         bool relative);
 

@@ -4,12 +4,11 @@
 MoveSplineNode::MoveSplineNode(
     int afterCommandId,
     int objectID,
-    float initialDelay,
     float finishTime,
     bool relative,
     const glm::vec3& controlPoint,
     const glm::vec3& position)
-    : NodeCommand(afterCommandId, objectID, initialDelay, finishTime, relative),
+    : NodeCommand(afterCommandId, objectID, finishTime, relative),
     m_controlPoint(controlPoint),
     m_end(position)
 {

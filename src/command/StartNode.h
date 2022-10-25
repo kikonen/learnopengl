@@ -10,7 +10,6 @@ public:
     StartNode(
         int afterCommandId,
         int objectID,
-        float initialDelay,
         std::unique_ptr<sol::coroutine> coroutine,
         sol::variadic_args vargs);
 

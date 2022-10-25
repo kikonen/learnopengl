@@ -17,20 +17,11 @@ namespace {
 
 Command::Command(
     int afterCommandId,
-    float initialDelay,
     float finishTime)
     : m_id(nextID()),
     m_afterCommandId(afterCommandId),
-    m_initialDelay(initialDelay),
-    m_finishTime(finishTime),
-    m_ready(initialDelay <= 0.f)
+    m_finishTime(finishTime)
 {
-}
-
-void Command::wait(const RenderContext& ctx)
-{
-    m_elapsedTime += ctx.clock.elapsedSecs;
-    m_ready = m_elapsedTime >= m_initialDelay;
 }
 
 void Command::bind(const RenderContext& ctx)

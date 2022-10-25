@@ -4,10 +4,9 @@
 
 CancelCommand::CancelCommand(
     int afterCommandId,
-    float initialDelay,
     float finishTime,
     int commandId)
-    : Command(afterCommandId, initialDelay, finishTime),
+    : Command(afterCommandId, finishTime),
     m_commandId(commandId)
 {
 }

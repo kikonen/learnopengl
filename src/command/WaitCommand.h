@@ -3,17 +3,15 @@
 #include "command/Command.h"
 
 
-class CancelCommand final : public Command
+class WaitCommand final : public Command
 {
 public:
-    CancelCommand(
+    WaitCommand(
         int afterCommandId,
-        float finishTime,
-        int commandId);
+        float finishTime);
 
     virtual void execute(
         const RenderContext& ctx) override;
 
 private:
-    const int m_commandId;
 };

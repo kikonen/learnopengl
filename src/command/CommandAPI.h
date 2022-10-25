@@ -15,14 +15,16 @@ public:
 public:
     int lua_cancel(
         int afterCommandId,
-        float initialDelay,
         float secs,
         int commandId);
+
+    int lua_wait(
+        int afterCommandId,
+        float secs);
 
     int lua_moveTo(
         int afterCommandId,
         int objectID,
-        float initialDelay,
         float secs,
         bool relative,
         float x, float y, float z);
@@ -30,7 +32,6 @@ public:
     int lua_moveSplineTo(
         int afterCommandId,
         int objectID,
-        float initialDelay,
         float secs,
         bool relative,
         float px, float py, float pz,
@@ -39,7 +40,6 @@ public:
     int lua_rotateTo(
         int afterCommandId,
         int objectID,
-        float initialDelay,
         float secs,
         bool relative,
         float x, float y, float z);
@@ -47,7 +47,6 @@ public:
     int lua_scaleTo(
         int afterCommandId,
         int objectID,
-        float initialDelay,
         float secs,
         bool relative,
         float x, float y, float z);
@@ -55,7 +54,6 @@ public:
     int lua_start(
         int afterCommandId,
         int objectID,
-        float initialDelay,
         sol::function fn,
         sol::variadic_args va);
 

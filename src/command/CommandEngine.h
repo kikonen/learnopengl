@@ -31,13 +31,11 @@ private:
     void processCanceled(const RenderContext& ctx);
     void processPending(const RenderContext& ctx);
     void processBlocked(const RenderContext& ctx);
-    void processWaiting(const RenderContext& ctx);
     void processActive(const RenderContext& ctx);
 
 private:
     std::vector<std::unique_ptr<Command>> m_pending;
     std::vector<std::unique_ptr<Command>> m_blocked;
-    std::vector<std::unique_ptr<Command>> m_waiting;
     std::vector<std::unique_ptr<Command>> m_active;
 
     std::map<int, Command*> m_commands;

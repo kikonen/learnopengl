@@ -10,7 +10,6 @@ public:
     RotateNode(
         int afterCommandId,
         int objectID,
-        float initialDelay,
         float finishTime,
         bool relative,
         const glm::vec3& rotation);

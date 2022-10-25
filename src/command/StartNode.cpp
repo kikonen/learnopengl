@@ -4,10 +4,9 @@
 StartNode::StartNode(
     int afterCommandId,
     int objectID,
-    float initialDelay,
     std::unique_ptr<sol::coroutine> coroutine,
     sol::variadic_args vargs)
-    : NodeCommand(afterCommandId, objectID, initialDelay, 0, false),
+    : NodeCommand(afterCommandId, objectID, 0, false),
     m_coroutine(std::move(coroutine)),
     m_vargs(vargs)
 {

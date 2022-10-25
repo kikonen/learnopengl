@@ -12,7 +12,6 @@ class Command
 public:
     Command(
         int afterCommandId,
-        float initialDelay,
         float finishTime);
 
     virtual bool isNode() { return false; }
@@ -27,11 +26,9 @@ public:
 public:
     const int m_id;
     const int m_afterCommandId;
-    const float m_initialDelay;
     const float m_finishTime;
 
     bool m_canceled = false;
-    bool m_execute = false;
     bool m_ready = false;
     bool m_finished = false;
 

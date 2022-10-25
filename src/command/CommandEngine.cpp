@@ -20,7 +20,6 @@ void CommandEngine::update(const RenderContext& ctx)
     processCanceled(ctx);
     processPending(ctx);
     processBlocked(ctx);
-    processWaiting(ctx);
     processActive(ctx);
 }
 
@@ -58,11 +57,6 @@ void CommandEngine::processCanceled(const RenderContext& ctx)
         cmd->m_canceled = true;
     }
 
-    for (auto& cmd : m_waiting) {
-        if (!isCanceled(cmd->m_id)) continue;
-        cmd->m_canceled = true;
-    }
-
     for (auto& cmd : m_active) {
         if (!isCanceled(cmd->m_id)) continue;
         cmd->m_canceled = true;
@@ -93,7 +87,7 @@ void CommandEngine::processPending(const RenderContext& ctx)
         }
         else {
             // NOTE KI either no prev or prev already executed and discarded
-            m_waiting.emplace_back(std::move(cmd));
+            m_active.emplace_back(std::move(cmd));
         }
     }
     m_pending.clear();
@@ -121,14 +115,28 @@ void CommandEngine::processBlocked(const RenderContext& ctx)
         auto prev = m_commands[cmd->m_afterCommandId];
         if (!prev) {
             // NOTE KI *ODD* prev disappeared
-            cmd->m_execute = true;
+            cmd->m_ready = true;
         }
 
         // NOTE KI execute flag can be set only when previous is finished
-        if (!cmd->m_execute) continue;
+        if (!cmd->m_ready) continue;
 
         cleanup = true;
-        m_waiting.emplace_back(std::move(cmd));
+
+        if (cmd->isNode()) {
+            auto nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
+            const auto & node = ctx.registry.getNode(nodeCmd->m_objectID);
+            if (!node) {
+                cmd->m_canceled = true;
+                continue;
+            }
+            nodeCmd->bind(ctx, node);
+        }
+        else {
+            cmd->bind(ctx);
+        }
+
+        m_active.emplace_back(std::move(cmd));
     }
 
     if (cleanup) {
@@ -141,54 +149,6 @@ void CommandEngine::processBlocked(const RenderContext& ctx)
                 return !cmd || cmd->m_canceled;
             });
         m_blocked.erase(it, m_blocked.end());
-    }
-}
-
-void CommandEngine::processWaiting(const RenderContext& ctx)
-{
-    if (m_waiting.empty()) return;
-
-    bool cleanup = false;
-    for (auto& cmd : m_waiting) {
-        // canceled; discard
-        if (cmd->m_canceled) {
-            cleanup = true;
-            continue;
-        }
-
-        // => Discard node; it has disappeared
-        if (!isValid(ctx, cmd.get())) {
-            cmd->m_canceled = true;
-            cleanup = true;
-            continue;
-        }
-
-        cmd->wait(ctx);
-        if (!cmd->m_ready) continue;
-
-        cleanup = true;
-
-        if (cmd->isNode()) {
-            auto nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
-            const auto& node = ctx.registry.getNode(nodeCmd->m_objectID);
-            nodeCmd->bind(ctx, node);
-        }
-        else {
-            cmd->bind(ctx);
-        }
-        m_active.emplace_back(std::move(cmd));
-    }
-
-    if (cleanup) {
-        // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
-        const auto& it = std::remove_if(
-            m_waiting.begin(),
-            m_waiting.end(),
-            [this](auto& cmd) {
-                if (cmd && cmd->m_canceled) m_commands.erase(cmd->m_id);
-                return !cmd || cmd->m_ready || cmd->m_canceled;
-            });
-        m_waiting.erase(it, m_waiting.end());
     }
 }
 
@@ -217,7 +177,7 @@ void CommandEngine::processActive(const RenderContext& ctx)
             for (auto nextId : cmd->m_next) {
                 auto cmd = m_commands[nextId];
                 if (!cmd) continue;
-                cmd->m_execute = true;
+                cmd->m_ready = true;
             }
             cleanup = true;
             //cmd->m_callback(cmd->m_node);

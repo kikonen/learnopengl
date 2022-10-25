@@ -4,10 +4,9 @@
 NodeCommand::NodeCommand(
     int afterCommandId,
     int objectID,
-    float initialDelay,
     float finishTime,
     bool relative)
-    : Command(afterCommandId, initialDelay, finishTime),
+    : Command(afterCommandId, finishTime),
     m_objectID(objectID),
     m_relative(relative)
 {

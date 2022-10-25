@@ -50,6 +50,7 @@ void ScriptEngine::registerTypes()
         const auto& ut = m_lua["CommandAPI"];
 
         ut["cancel"] = &CommandAPI::lua_cancel;
+        ut["wait"] = &CommandAPI::lua_wait;
         ut["moveTo"] = &CommandAPI::lua_moveTo;
         ut["moveSplineTo"] = &CommandAPI::lua_moveSplineTo;
         ut["rotateTo"] = &CommandAPI::lua_rotateTo;
