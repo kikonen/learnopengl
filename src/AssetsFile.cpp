@@ -119,6 +119,9 @@ void AssetsFile::loadAssets(
         else if (k == "frustum_debug") {
             data.frustumDebug = v.as<bool>();
         }
+        else if (k == "mirror_draw_skip") {
+            data.mirrorDrawSkip = v.as<int>();
+        }
         else if (k == "water_tile_size") {
             data.waterTileSize = v.as<int>();
         }

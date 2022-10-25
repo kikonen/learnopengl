@@ -47,6 +47,9 @@ Assets::Assets()
     frustumEnabled = true;
     frustumDebug = false;
 
+    // NOTE KI mirror does not tolerate much skip
+    mirrorDrawSkip = 1;
+
     waterTileSize = 100;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user

@@ -37,6 +37,8 @@ assets:
   frustum_debug: true
   frustum_enabled: true
 
+  mirror_draw_skip: 1
+
   water_tile_size: 100
   water_draw_skip: 1
 

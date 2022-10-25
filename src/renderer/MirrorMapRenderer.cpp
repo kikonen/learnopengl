@@ -23,7 +23,11 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     if (m_prepared) return;
     m_prepared = true;
 
+    drawIndex = 1;
+
     Renderer::prepare(assets, shaders);
+
+    drawSkip = assets.mirrorDrawSkip;
 
     FrameBufferSpecification spec = {
         assets.mirrorReflectionSize ,
@@ -190,6 +194,7 @@ void MirrorMapRenderer::drawNodes(
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistry& registry)
 {
     const glm::vec3& cameraPos = ctx.camera.getPos();
+    const glm::vec3& cameraFront = ctx.camera.getViewFront();
 
     std::map<float, Node*> sorted;
 
@@ -198,15 +203,15 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistr
             if (!type->m_flags.mirror) continue;
 
             for (const auto& node : nodes) {
-                const auto eyeV = node->getWorldPos() - cameraPos;
                 const auto& planeNormal = node->getWorldPlaneNormal();
 
-                const auto dot = glm::dot(planeNormal, -glm::normalize(eyeV));
+                const auto dot = glm::dot(planeNormal, -cameraFront);
                 if (dot <= 0) {
                     // NOTE KI backside; ignore
                     continue;
                 }
 
+                const auto eyeV = node->getWorldPos() - cameraPos;
                 sorted[glm::length(eyeV)] = node;
             }
         }

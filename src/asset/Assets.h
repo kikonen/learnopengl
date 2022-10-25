@@ -51,6 +51,9 @@ public:
     bool frustumEnabled;
     bool frustumDebug;
 
+    // NOTE KI mirror does not tolerate much skip
+    int mirrorDrawSkip;
+
     int waterTileSize;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
