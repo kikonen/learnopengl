@@ -30,5 +30,7 @@ protected:
     float m_renderFrequency = 0.f;
     float m_elapsedTime = 0.f;
 
+    unsigned long m_lastHitFrame = 0;
+
     bool rendered = false;
 };
