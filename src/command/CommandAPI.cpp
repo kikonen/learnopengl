@@ -45,124 +45,142 @@ int CommandAPI::lua_moveTo(
     int afterCommandId,
     int objectID,
     float secs,
-    float x, float y, float z)
+    sol::table lua_pos)
 {
+    auto pos = glm::vec3{ lua_pos.get<float>(1) , lua_pos.get<float>(2) , lua_pos.get<float>(3) };
+
     return m_commandEngine.addCommand(
         std::make_unique<MoveNode>(
             afterCommandId,
             objectID,
             secs,
             false,
-            glm::vec3{ x, y, z }));
+            pos));
 }
 
 int CommandAPI::lua_moveRelative(
     int afterCommandId,
     int objectID,
     float secs,
-    float x, float y, float z)
+    sol::table lua_pos)
 {
+    auto pos = glm::vec3{ lua_pos.get<float>(1) , lua_pos.get<float>(2) , lua_pos.get<float>(3) };
+
     return m_commandEngine.addCommand(
         std::make_unique<MoveNode>(
             afterCommandId,
             objectID,
             secs,
             true,
-            glm::vec3{ x, y, z }));
+            pos));
 }
 
 int CommandAPI::lua_moveSplineTo(
     int afterCommandId,
     int objectID,
     float secs,
-    float px, float py, float pz,
-    float x, float y, float z)
+    sol::table lua_p,
+    sol::table lua_pos)
 {
+    auto p = glm::vec3{ lua_p.get<float>(1) , lua_p.get<float>(2) , lua_p.get<float>(3) };
+    auto pos = glm::vec3{ lua_pos.get<float>(1) , lua_pos.get<float>(2) , lua_pos.get<float>(3) };
+
     return m_commandEngine.addCommand(
         std::make_unique<MoveSplineNode>(
             afterCommandId,
             objectID,
             secs,
             false,
-            glm::vec3{ px, py, pz },
-            glm::vec3{ x, y, z }));
+            p,
+            pos));
 }
 
 int CommandAPI::lua_moveSplineRelative(
     int afterCommandId,
     int objectID,
     float secs,
-    float px, float py, float pz,
-    float x, float y, float z)
+    sol::table lua_p,
+    sol::table lua_pos)
 {
+    auto p = glm::vec3{ lua_p.get<float>(1) , lua_p.get<float>(2) , lua_p.get<float>(3) };
+    auto pos = glm::vec3{ lua_pos.get<float>(1) , lua_pos.get<float>(2) , lua_pos.get<float>(3) };
+
     return m_commandEngine.addCommand(
         std::make_unique<MoveSplineNode>(
             afterCommandId,
             objectID,
             secs,
             true,
-            glm::vec3{ px, py, pz },
-            glm::vec3{ x, y, z }));
+            p,
+            pos));
 }
 
 int CommandAPI::lua_rotateTo(
     int afterCommandId,
     int objectID,
     float secs,
-    float x, float y, float z)
+    sol::table lua_rot)
 {
+    auto rot = glm::vec3{ lua_rot.get<float>(1) , lua_rot.get<float>(2) , lua_rot.get<float>(3) };
+
     return m_commandEngine.addCommand(
         std::make_unique<RotateNode>(
             afterCommandId,
             objectID,
             secs,
             false,
-            glm::vec3{ x, y, z }));
+            rot));
 }
 
 int CommandAPI::lua_rotateRelative(
     int afterCommandId,
     int objectID,
     float secs,
-    float x, float y, float z)
+    sol::table lua_rot)
 {
+    auto rot = glm::vec3{ lua_rot.get<float>(1) , lua_rot.get<float>(2) , lua_rot.get<float>(3) };
+
     return m_commandEngine.addCommand(
         std::make_unique<RotateNode>(
             afterCommandId,
             objectID,
             secs,
             true,
-            glm::vec3{ x, y, z }));
+            rot));
 }
 
 int CommandAPI::lua_scaleTo(
     int afterCommandId,
     int objectID,
     float secs,
-    float x, float y, float z)
+    sol::table lua_scale)
 {
+    auto scale = glm::vec3{ lua_scale.get<float>(1) , lua_scale.get<float>(2) , lua_scale.get<float>(3) };
+
     return m_commandEngine.addCommand(
         std::make_unique<ScaleNode>(
             afterCommandId,
             objectID,
             secs,
             false,
-            glm::vec3{ x, y, z }));
+            scale));
 }
 
 int CommandAPI::lua_scaleRelative(
     int afterCommandId,
     int objectID,
     float secs,
-    float x, float y, float z)
+    sol::table lua_scale)
 {
+    auto scale = glm::vec3{ lua_scale.get<float>(1) , lua_scale.get<float>(2) , lua_scale.get<float>(3) };
+
     return m_commandEngine.addCommand(
         std::make_unique<ScaleNode>(
             afterCommandId,
             objectID,
             secs,
             true,
-            glm::vec3{ x, y, z }));
+            scale));
 }
 
 int CommandAPI::lua_start(
