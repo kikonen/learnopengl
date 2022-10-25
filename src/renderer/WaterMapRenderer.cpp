@@ -17,11 +17,9 @@ void WaterMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     if (m_prepared) return;
     m_prepared = true;
 
-    drawIndex = 1;
-
     Renderer::prepare(assets, shaders);
 
-    drawSkip = assets.waterDrawSkip;
+    m_renderFrequency = assets.waterRenderFrequency;
 
     FrameBufferSpecification spec = {
         assets.waterReflectionSize , 
@@ -76,7 +74,7 @@ void WaterMapRenderer::render(
     const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
-    if (!stepRender()) return;
+    if (!needRender(ctx)) return;
 
     Water* closest = findClosest(ctx, registry);
     if (!closest) return;

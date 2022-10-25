@@ -30,17 +30,17 @@ assets:
   show_refraction_view: false
   show_objectid_view: false
 
-  draw_skip: 0
+  render_frequency: 0.0
   debug_clear_color: true
   clear_color: true
 
   frustum_debug: true
   frustum_enabled: true
 
-  mirror_draw_skip: 1
+  mirror_render_frequency: 0.08
 
   water_tile_size: 100
-  water_draw_skip: 1
+  water_render_frequency: 0.05
 
   terrain_vertex_count: 64
   terrain_tile_size: 400
@@ -57,7 +57,7 @@ assets:
   shadow_near_plane: 0.1
   shadow_far_plane: 1000.0
   shadow_map_size: 1024
-  shadow_draw_skip: 2
+  shadow_render_frequency: 0.3
 
   mirror_reflection_size: 1000
   mirror_rdRefraction_size: 1000
@@ -66,4 +66,4 @@ assets:
   water_refraction_size: 1000
 
   cube_map_size: 1000
-  cube_map_draw_skip: 2
+  cube_map_render_frequency: 0.25

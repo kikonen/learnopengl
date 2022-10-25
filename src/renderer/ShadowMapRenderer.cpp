@@ -5,7 +5,6 @@
 
 ShadowMapRenderer::ShadowMapRenderer()
 {
-    drawIndex = 1;
 }
 
 ShadowMapRenderer::~ShadowMapRenderer()
@@ -19,7 +18,7 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     Renderer::prepare(assets, shaders);
 
-    drawSkip = assets.shadowDrawSkip;
+    m_renderFrequency = assets.shadowRenderFrequency;
 
     solidShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
     blendedShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH, { DEF_USE_ALPHA });
@@ -88,7 +87,7 @@ void ShadowMapRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry)
 {
-    if (!stepRender()) return;
+    if (!needRender(ctx)) return;
 
     {
         shadowBuffer->bind(ctx);

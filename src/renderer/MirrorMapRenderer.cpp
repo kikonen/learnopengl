@@ -23,11 +23,9 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     if (m_prepared) return;
     m_prepared = true;
 
-    drawIndex = 1;
-
     Renderer::prepare(assets, shaders);
 
-    drawSkip = assets.mirrorDrawSkip;
+    m_renderFrequency = assets.mirrorRenderFrequency;
 
     FrameBufferSpecification spec = {
         assets.mirrorReflectionSize ,
@@ -66,7 +64,7 @@ void MirrorMapRenderer::render(
     const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
-    if (!stepRender()) return;
+    if (!needRender(ctx)) return;
 
     Node* closest = findClosest(ctx, registry);
     if (!closest) return;

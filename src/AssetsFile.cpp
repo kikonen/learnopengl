@@ -104,8 +104,8 @@ void AssetsFile::loadAssets(
         else if (k == "show_objectid_view") {
             data.showObjectIDView = v.as<bool>();
         }
-        else if (k == "draw_skip") {
-            data.drawSkip = v.as<int>();
+        else if (k == "render_frequency") {
+            data.renderFrequency = v.as<float>();
         }
         else if (k == "debug_clear_color") {
             data.debugClearColor = v.as<bool>();
@@ -119,14 +119,14 @@ void AssetsFile::loadAssets(
         else if (k == "frustum_debug") {
             data.frustumDebug = v.as<bool>();
         }
-        else if (k == "mirror_draw_skip") {
-            data.mirrorDrawSkip = v.as<int>();
+        else if (k == "mirror_render_frequency") {
+            data.mirrorRenderFrequency = v.as<float>();
         }
         else if (k == "water_tile_size") {
             data.waterTileSize = v.as<int>();
         }
-        else if (k == "water_draw_skip") {
-            data.waterDrawSkip = v.as<int>();
+        else if (k == "water_render_frequency") {
+            data.waterRenderFrequency = v.as<float>();
         }
         else if (k == "terrain_vertex_count") {
             data.terrainVertexCount = v.as<int>();
@@ -161,8 +161,8 @@ void AssetsFile::loadAssets(
         else if (k == "shadow_map_size") {
             data.shadowMapSize = v.as<int>();
         }
-        else if (k == "shadow_draw_skip") {
-            data.shadowDrawSkip = v.as<int>();
+        else if (k == "shadow_render_frequency") {
+            data.shadowRenderFrequency = v.as<float>();
         }
         else if (k == "mirror_reflection_size") {
             data.mirrorReflectionSize = v.as<int>();
@@ -179,8 +179,8 @@ void AssetsFile::loadAssets(
         else if (k == "cube_map_size") {
             data.cubeMapSize = v.as<int>();
         }
-        else if (k == "cube_map_draw_skip") {
-            data.cubeMapDrawSkip = v.as<int>();
+        else if (k == "cube_map_render_frequency") {
+            data.cubeMapRenderFrequency = v.as<float>();
         }
         else {
             std::cout << "UNKNOWN ASSETS_ENTRY: " << k << "=" << v << "\n";

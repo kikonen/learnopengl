@@ -54,8 +54,7 @@ void CubeMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     if (m_prepared) return;
     m_prepared = true;
 
-    drawIndex = 0;
-    drawSkip = assets.cubeMapDrawSkip;
+    m_renderFrequency = assets.cubeMapRenderFrequency;
 
     Renderer::prepare(assets, shaders);
 
@@ -87,7 +86,7 @@ void CubeMapRenderer::render(
         cleared = true;
     }
 
-    if (!stepRender()) return;
+    if (!needRender(mainCtx)) return;
 
     Node* centerNode = findCenter(mainCtx, registry);
     if (!centerNode) return;

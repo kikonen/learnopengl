@@ -44,7 +44,7 @@ public:
     bool showRefractionView;
     bool showObjectIDView;
 
-    int drawSkip;
+    float renderFrequency;
     bool debugClearColor;
     int clearColor;
 
@@ -52,12 +52,12 @@ public:
     bool frustumDebug;
 
     // NOTE KI mirror does not tolerate much skip
-    int mirrorDrawSkip;
+    float mirrorRenderFrequency;
 
     int waterTileSize;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
-    int waterDrawSkip;
+    float waterRenderFrequency;
 
     int terrainVertexCount;
     int terrainTileSize;
@@ -75,7 +75,7 @@ public:
     float shadowNearPlane;
     float shadowFarPlane;
     int shadowMapSize;
-    int shadowDrawSkip;
+    float shadowRenderFrequency;
 
     int mirrorReflectionSize;
     int mirrorRefractionSize;
@@ -84,7 +84,7 @@ public:
     int waterRefractionSize;
 
     int cubeMapSize;
-    int cubeMapDrawSkip;
+    float cubeMapRenderFrequency;
 
     float cubeMapNearPlane;
     float cubeMapFarPlane;

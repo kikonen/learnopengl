@@ -22,13 +22,13 @@ public:
     //    SkyboxRenderer* skybox) = 0;
 
 protected:
-    bool stepRender();
+    bool needRender(const RenderContext& ctx);
 
 protected:
     bool m_prepared = false;
 
-    int drawIndex = 0;
-    int drawSkip = 0;
+    float m_renderFrequency = 0.f;
+    float m_elapsedTime = 0.f;
 
     bool rendered = false;
 };

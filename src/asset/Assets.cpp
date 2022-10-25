@@ -40,7 +40,7 @@ Assets::Assets()
     showRefractionView = false;
 
     // NOTE KI no skipping of frames
-    drawSkip = 0;
+    renderFrequency = 0.f;
     debugClearColor = false;
     clearColor = false;
 
@@ -48,12 +48,12 @@ Assets::Assets()
     frustumDebug = false;
 
     // NOTE KI mirror does not tolerate much skip
-    mirrorDrawSkip = 1;
+    mirrorRenderFrequency = 0.1f;
 
     waterTileSize = 100;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
-    waterDrawSkip = 1;
+    waterRenderFrequency = 0.1f;
 
     terrainVertexCount = 64;
     terrainTileSize = 400;
@@ -70,7 +70,7 @@ Assets::Assets()
     shadowNearPlane = 0.1f;
     shadowFarPlane = 1000.0f;
     shadowMapSize = 1024;
-    shadowDrawSkip = 2;
+    shadowRenderFrequency = 0.2f;
 
     mirrorReflectionSize = 1000;
     mirrorRefractionSize = 1000;
@@ -79,7 +79,7 @@ Assets::Assets()
     waterRefractionSize = 1000;
 
     cubeMapSize = 1000;
-    cubeMapDrawSkip = 2;
+    cubeMapRenderFrequency = 0.2f;
 
     cubeMapNearPlane = 0.5;
     cubeMapFarPlane = 200;
