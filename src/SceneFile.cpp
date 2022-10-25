@@ -299,7 +299,7 @@ Node* SceneFile::createNode(
     node->setRotation(data.rotation);
     node->setScale(data.scale);
 
-    node->m_mirrorPlane = data.mirrorPlane;
+    node->setPlaneNormal(data.planeNormal);
 
     if (type->m_mesh) {
         auto volume = type->m_mesh->getVolume();
@@ -640,8 +640,8 @@ void SceneFile::loadEntityClone(
                 }
             }
         }
-        else if (k == "mirror_plane") {
-            data.mirrorPlane = readVec3(v);
+        else if (k == "plane_normal") {
+            data.planeNormal = readVec3(v);
         }
         else if (k == "material") {
             data.materialName = v.as<std::string>();

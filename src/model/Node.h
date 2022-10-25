@@ -30,9 +30,14 @@ public:
     virtual void draw(const RenderContext& ctx);
 
     const glm::vec3& getWorldPos() const;
+    const glm::vec3& getWorldPlaneNormal() const;
+
     const int getMatrixLevel() const;
     const glm::mat4& getWorldModelMatrix() const;
     const glm::mat3& getWorldNormalMatrix() const;
+
+    void setPlaneNormal(const glm::vec3& planeNormal);
+    const glm::vec3& getPlaneNormal() const;
 
     void setPosition(const glm::vec3& pos);
     const glm::vec3& getPosition() const;
@@ -83,8 +88,6 @@ public:
     bool m_selected = false;
     bool m_allowNormals = true;
 
-    glm::vec3 m_mirrorPlane{ 0 };
-
     std::unique_ptr <NodeController> m_controller{ nullptr };
 
     std::unique_ptr<Camera> m_camera{ nullptr };
@@ -101,8 +104,12 @@ private:
     int m_parentMatrixLevel = 0;
 
     glm::vec3 m_worldPos{ 0.f };
+    glm::vec3 m_worldPlaneNormal{ 0.f };
+
     glm::mat4 m_worldModelMatrix{ 1.f };
     glm::mat3 m_worldNormalMatrix{ 1.f };
+
+    glm::vec3 m_planeNormal{ 0 };
 
     glm::vec3 m_position{ 0.f };
     glm::vec3 m_rotation{ 0.f };

@@ -54,19 +54,20 @@ void main() {
 
   vec3 toView = normalize(viewPos - fs_in.fragPos);
 
-  vec4 gp = fs_in.glp;
-  vec2 reflectCoord = vec2(gp.x, gp.y) / (gp.w * 2.0) + 0.5;
+  if (gl_FrontFacing) {
+    vec4 gp = fs_in.glp;
+    vec2 reflectCoord = vec2(-gp.x, gp.y) / (gp.w * 2.0) + 0.5;
 
-  vec4 reflectColor = texture(reflectionTex, reflectCoord);
+    vec4 reflectColor = texture(reflectionTex, reflectCoord);
 
-  vec4 mixColor = reflectColor;
+    vec4 mixColor = reflectColor;
 
-  vec4 origDiffuse = material.diffuse;
-  material.diffuse = mix(material.diffuse, mixColor, 0.9);
+    vec4 origDiffuse = material.diffuse;
+    material.diffuse = mix(material.diffuse, mixColor, 0.9);
+  }
 
   vec4 shaded = calculateLight(normal, toView, material);
   vec4 texColor = shaded;
-
   texColor = calculateFog(material.fogRatio, texColor);
 
   fragColor = vec4(texColor.xyz, 1.0);

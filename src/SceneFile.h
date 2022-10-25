@@ -165,7 +165,7 @@ class SceneFile
         std::map<const std::string, bool> renderFlags{};
         glm::vec3 position{ 0 };
         glm::vec3 rotation{ 0 };
-        glm::vec3 mirrorPlane{ 0 };
+        glm::vec3 planeNormal{ 0 };
         glm::vec3 scale{ 1 };
 
         bool selected{ false };

@@ -78,21 +78,26 @@ void MirrorMapRenderer::render(
     {
         const auto mirrorSize = closest->getVolume()->getRadius() * 2;
         const auto& eyePos = ctx.camera.getPos();
-        const auto mirrorNormal = glm::normalize(
-            glm::vec3(
-                glm::vec4(closest->m_mirrorPlane, 0.f) * closest->getWorldModelMatrix()));
+        const auto& planeNormal = closest->getWorldPlaneNormal();
 
         const auto eyeV = planePos - eyePos;
         const auto dist = glm::length(eyeV);
         const auto eyeN = glm::normalize(eyeV);
 
-        const auto reflectFront = glm::reflect(eyeN, mirrorNormal);
+        const auto dot = glm::dot(planeNormal, -eyeN);
+        if (dot < 0) {
+            // NOTE KI backside; ignore
+            // => should not happen; finding closest already does this!
+            return;
+        }
+
+        const auto reflectFront = glm::reflect(eyeN, planeNormal);
         const auto mirrorEyePos = planePos - (reflectFront * dist);
 
         //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
         const float fovAngle = 90.f;
 
-        Camera camera(mirrorEyePos, reflectFront, ctx.camera.getUp());
+        Camera camera(mirrorEyePos, reflectFront, ctx.camera.getViewUp());
         camera.setZoom(fovAngle);
 
         RenderContext localCtx("MIRROR",
@@ -185,7 +190,6 @@ void MirrorMapRenderer::drawNodes(
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistry& registry)
 {
     const glm::vec3& cameraPos = ctx.camera.getPos();
-    const glm::vec3& cameraDir = ctx.camera.getViewFront();
 
     std::map<float, Node*> sorted;
 
@@ -194,12 +198,16 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistr
             if (!type->m_flags.mirror) continue;
 
             for (const auto& node : nodes) {
-                const glm::vec3 ray = node->getWorldPos() - cameraPos;
-                const float distance = glm::length(ray);
-                //glm::vec3 fromCamera = glm::normalize(ray);
-                //float dot = glm::dot(fromCamera, cameraDir);
-                //if (dot < 0) continue;
-                sorted[distance] = node;
+                const auto eyeV = node->getWorldPos() - cameraPos;
+                const auto& planeNormal = node->getWorldPlaneNormal();
+
+                const auto dot = glm::dot(planeNormal, -glm::normalize(eyeV));
+                if (dot <= 0) {
+                    // NOTE KI backside; ignore
+                    continue;
+                }
+
+                sorted[glm::length(eyeV)] = node;
             }
         }
     }

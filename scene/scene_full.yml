@@ -255,7 +255,7 @@ entities:
     render_flags:
       - render_back
       - mirror
-    mirror_plane: [0.0, 0.0, -1.0]
+    plane_normal: [0.0, 0.0, -1.0]
     enabled: true
     init_script: |
       cmd:rotateTo(-1, id, 5, 3600, true, 0.0, -7200.0, 0.0)
@@ -272,7 +272,7 @@ entities:
     render_flags:
       - render_back
       - mirror
-    mirror_plane: [0.0, 0.0, -1.0]
+    plane_normal: [0.0, 0.0, -1.0]
     enabled: true
     init_script: |
       cmd:rotateTo(-1, id, 5, 3600, true, 0.0, 7200.0, 0.0)

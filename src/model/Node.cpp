@@ -136,7 +136,10 @@ void Node::updateModelMatrix(Node* parent) {
             m_worldModelMatrix = parent->m_worldModelMatrix * m_modelMatrix;
             m_worldNormalMatrix = parent->m_worldNormalMatrix * m_normalMatrix;
             m_parentMatrixLevel = parent->m_matrixLevel;
+
             m_worldPos = m_worldModelMatrix[3];
+            m_worldPlaneNormal = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_planeNormal, 1.0)));
+
             m_matrixLevel++;
         }
     }
@@ -144,10 +147,22 @@ void Node::updateModelMatrix(Node* parent) {
         if (dirtyModel) {
             m_worldModelMatrix = m_modelMatrix;
             m_worldNormalMatrix = m_normalMatrix;
+
             m_worldPos = m_worldModelMatrix[3];
+            m_worldPlaneNormal = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_planeNormal, 1.0)));
+
             m_matrixLevel++;
         }
     }
+}
+
+void Node::setPlaneNormal(const glm::vec3& planeNormal) {
+    m_planeNormal = planeNormal;
+    m_dirtyRotation = true;
+}
+
+const glm::vec3& Node::getPlaneNormal() const {
+    return m_planeNormal;
 }
 
 void Node::setPosition(const glm::vec3& pos) {
@@ -206,6 +221,10 @@ const glm::mat3& Node::getWorldNormalMatrix() const  {
 
 const glm::vec3& Node::getWorldPos() const  {
     return m_worldPos;
+}
+
+const glm::vec3& Node::getWorldPlaneNormal() const {
+    return m_worldPlaneNormal;
 }
 
 const Volume* Node::getVolume() const
