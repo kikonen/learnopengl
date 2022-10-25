@@ -20,7 +20,7 @@ root:
     local cid = -1
 
     wid = cmd:wait(0, 5)
-    cmd:rotateTo(wid, id, 2, true, 0.0, 360.0, 0.0)
+    cmd:rotateRelative(wid, id, 2, 0.0, 360.0, 0.0)
 entities:
   - name: zero origo
     id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
@@ -32,9 +32,9 @@ entities:
       local cid = -1
 
       wid = cmd:wait(0, 5)
-      cid = cmd:moveSplineTo(wid, id, 20, true, -50, 50, 0, -20, 50, 0)
+      cid = cmd:moveSplineRelative(wid, id, 20, -50, 50, 0, -20, 50, 0)
       wid = cmd:wait(cid, 60)
-      cmd:moveSplineTo(wid, id, 20, true, 50, -40, 0, 20, -40, 0)
+      cmd:moveSplineRelative(wid, id, 20, 50, -40, 0, 20, -40, 0)
   - name: ZERO
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     model: water_ball
@@ -47,12 +47,12 @@ entities:
       local cid = -1
 
       wid = cmd:wait(0, 5)
-      cmd:scaleTo(wid, id, 40, true, 4.0, 6.0, 0.2)
+      cmd:scaleRelative(wid, id, 40, 4.0, 6.0, 0.2)
       wid = cmd:wait(0, 30)
-      cid = cmd:rotateTo(wid, id, 10, true, 0.0, 720.0, 0.0)
+      cid = cmd:rotateRelative(wid, id, 10, 0.0, 720.0, 0.0)
       wid = cmd:wait(cid, 30)
-      cmd:rotateTo(wid, id, 10, true, 0.0, 720.0, 0.0)
-      cmd:scaleTo(wid, id, 20, false, 1.2, 1.2, 0.2)
+      cmd:rotateRelative(wid, id, 10, 0.0, 720.0, 0.0)
+      cmd:scaleTo(wid, id, 20, 1.2, 1.2, 0.2)
   - name: Player
     model: player
     pos: [-10, 7, -20.0]
@@ -277,7 +277,7 @@ entities:
       local cid = -1
 
       wid = cmd:wait(0, 5)
-      cmd:rotateTo(wid, id, 3600, true, 0.0, -7200.0, 0.0)
+      cmd:rotateRelative(wid, id, 3600, 0.0, -7200.0, 0.0)
   - name: Big mirror 2
     model: mirror
     shader: mirror
@@ -298,7 +298,7 @@ entities:
       local cid = -1
 
       wid = cmd:wait(0, 5)
-      cmd:rotateTo(wid, id, 3600, true, 0.0, 7200.0, 0.0)
+      cmd:rotateRelative(wid, id, 3600, 0.0, 7200.0, 0.0)
   - name: Spyro
     model: spyro2
     shader: texture
@@ -480,28 +480,28 @@ entities:
           local cid = -1
 
           wid = cmd:wait(0, 10)
-          cmd:rotateTo(wid, id, 120, false, 0.0, -360.0, 0.0)
+          cmd:rotateTo(wid, id, 120, 0.0, -360.0, 0.0)
       - pos: [5.0, 15.0, -5.0]
         init_script: |
           local wid = -1
           local cid = -1
 
           wid = cmd:wait(0, 10)
-          cmd:rotateTo(wid, id, 120, false, 0.0, 2 * 360.0, 0.0)
+          cmd:rotateTo(wid, id, 120, 0.0, 2 * 360.0, 0.0)
       - pos: [-5.0, 15.0, 5.0]
         init_script: |
           local wid = -1
           local cid = -1
 
           wid = cmd:wait(0, 10)
-          cmd:rotateTo(wid, id, 120, false, 0.0, -3 * 360.0, 0.0)
+          cmd:rotateTo(wid, id, 120, 0.0, -3 * 360.0, 0.0)
       - pos: [5.0, 15.0, 5.0]
         init_script: |
           local wid = -1
           local cid = -1
 
           wid = cmd:wait(0, 10)
-          cmd:rotateTo(wid, id, 120, false, 0.0, 4 * 360.0, 0.0)
+          cmd:rotateTo(wid, id, 120, 0.0, 4 * 360.0, 0.0)
   - name: Cube 4
     model: texture_cube_4
     shader: texture
@@ -585,7 +585,7 @@ entities:
       local cid = -1
 
       wid = cmd:wait(0, 5)
-      cmd:rotateTo(wid, id, 3600, true, 0.0, 720.0, 0.0)
+      cmd:rotateRelative(wid, id, 3600, 0.0, 720.0, 0.0)
   - name: Rock origo
     id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
@@ -644,18 +644,18 @@ entities:
         local cid = -1
 
         wid = cmd:wait(0, 5)
-        cid = cmd:moveTo(wid, id, 10, true, 25 - rnd(100), 0, 25 - rnd(100))
+        cid = cmd:moveRelative(wid, id, 10, 25 - rnd(100), 0, 25 - rnd(100))
 
         wid = cmd:wait(0, 7)
         cmd:cancel(wid, 0, cid)
 
-        cid = cmd:moveTo(cid, id, 10, true, 25 - rnd(100), 0, 25 - rnd(100))
+        cid = cmd:moveRelative(cid, id, 10, 25 - rnd(100), 0, 25 - rnd(100))
         cmd:cancel(-1, 0, cid)
 
-        cid = cmd:moveTo(cid, id, 5, true, 25 - rnd(50), 0, 25 - rnd(50))
-        cid = cmd:moveTo(cid, id, 5, true, 10 - rnd(20), 0, 10 - rnd(20))
-        cid = cmd:moveSplineTo(cid, id, 3, true, 20, 0, 5, 5 - rnd(10), 0, 5 - rnd(10))
-        cid = cmd:moveTo(cid, id, 2, false, x, y, z)
+        cid = cmd:moveRelative(cid, id, 5, 25 - rnd(50), 0, 25 - rnd(50))
+        cid = cmd:moveRelative(cid, id, 5, 10 - rnd(20), 0, 10 - rnd(20))
+        cid = cmd:moveSplineRelative(cid, id, 3, 20, 0, 5, 5 - rnd(10), 0, 5 - rnd(10))
+        cid = cmd:moveTo(cid, id, 2, x, y, z)
       end
 
       cmd:start(-1, id, main)

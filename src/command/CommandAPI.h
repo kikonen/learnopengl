@@ -26,14 +26,25 @@ public:
         int afterCommandId,
         int objectID,
         float secs,
-        bool relative,
+        float x, float y, float z);
+
+    int lua_moveRelative(
+        int afterCommandId,
+        int objectID,
+        float secs,
         float x, float y, float z);
 
     int lua_moveSplineTo(
         int afterCommandId,
         int objectID,
         float secs,
-        bool relative,
+        float px, float py, float pz,
+        float x, float y, float z);
+
+    int lua_moveSplineRelative(
+        int afterCommandId,
+        int objectID,
+        float secs,
         float px, float py, float pz,
         float x, float y, float z);
 
@@ -41,14 +52,24 @@ public:
         int afterCommandId,
         int objectID,
         float secs,
-        bool relative,
+        float x, float y, float z);
+
+    int lua_rotateRelative(
+        int afterCommandId,
+        int objectID,
+        float secs,
         float x, float y, float z);
 
     int lua_scaleTo(
         int afterCommandId,
         int objectID,
         float secs,
-        bool relative,
+        float x, float y, float z);
+
+    int lua_scaleRelative(
+        int afterCommandId,
+        int objectID,
+        float secs,
         float x, float y, float z);
 
     int lua_start(

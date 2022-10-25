@@ -45,7 +45,6 @@ int CommandAPI::lua_moveTo(
     int afterCommandId,
     int objectID,
     float secs,
-    bool relative,
     float x, float y, float z)
 {
     return m_commandEngine.addCommand(
@@ -53,7 +52,22 @@ int CommandAPI::lua_moveTo(
             afterCommandId,
             objectID,
             secs,
-            relative,
+            false,
+            glm::vec3{ x, y, z }));
+}
+
+int CommandAPI::lua_moveRelative(
+    int afterCommandId,
+    int objectID,
+    float secs,
+    float x, float y, float z)
+{
+    return m_commandEngine.addCommand(
+        std::make_unique<MoveNode>(
+            afterCommandId,
+            objectID,
+            secs,
+            true,
             glm::vec3{ x, y, z }));
 }
 
@@ -61,7 +75,6 @@ int CommandAPI::lua_moveSplineTo(
     int afterCommandId,
     int objectID,
     float secs,
-    bool relative,
     float px, float py, float pz,
     float x, float y, float z)
 {
@@ -70,7 +83,24 @@ int CommandAPI::lua_moveSplineTo(
             afterCommandId,
             objectID,
             secs,
-            relative,
+            false,
+            glm::vec3{ px, py, pz },
+            glm::vec3{ x, y, z }));
+}
+
+int CommandAPI::lua_moveSplineRelative(
+    int afterCommandId,
+    int objectID,
+    float secs,
+    float px, float py, float pz,
+    float x, float y, float z)
+{
+    return m_commandEngine.addCommand(
+        std::make_unique<MoveSplineNode>(
+            afterCommandId,
+            objectID,
+            secs,
+            true,
             glm::vec3{ px, py, pz },
             glm::vec3{ x, y, z }));
 }
@@ -79,7 +109,6 @@ int CommandAPI::lua_rotateTo(
     int afterCommandId,
     int objectID,
     float secs,
-    bool relative,
     float x, float y, float z)
 {
     return m_commandEngine.addCommand(
@@ -87,7 +116,22 @@ int CommandAPI::lua_rotateTo(
             afterCommandId,
             objectID,
             secs,
-            relative,
+            false,
+            glm::vec3{ x, y, z }));
+}
+
+int CommandAPI::lua_rotateRelative(
+    int afterCommandId,
+    int objectID,
+    float secs,
+    float x, float y, float z)
+{
+    return m_commandEngine.addCommand(
+        std::make_unique<RotateNode>(
+            afterCommandId,
+            objectID,
+            secs,
+            true,
             glm::vec3{ x, y, z }));
 }
 
@@ -95,7 +139,6 @@ int CommandAPI::lua_scaleTo(
     int afterCommandId,
     int objectID,
     float secs,
-    bool relative,
     float x, float y, float z)
 {
     return m_commandEngine.addCommand(
@@ -103,7 +146,22 @@ int CommandAPI::lua_scaleTo(
             afterCommandId,
             objectID,
             secs,
-            relative,
+            false,
+            glm::vec3{ x, y, z }));
+}
+
+int CommandAPI::lua_scaleRelative(
+    int afterCommandId,
+    int objectID,
+    float secs,
+    float x, float y, float z)
+{
+    return m_commandEngine.addCommand(
+        std::make_unique<ScaleNode>(
+            afterCommandId,
+            objectID,
+            secs,
+            true,
             glm::vec3{ x, y, z }));
 }
 

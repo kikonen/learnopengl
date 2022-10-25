@@ -51,10 +51,16 @@ void ScriptEngine::registerTypes()
 
         ut["cancel"] = &CommandAPI::lua_cancel;
         ut["wait"] = &CommandAPI::lua_wait;
+
         ut["moveTo"] = &CommandAPI::lua_moveTo;
+        ut["moveRelative"] = &CommandAPI::lua_moveRelative;
         ut["moveSplineTo"] = &CommandAPI::lua_moveSplineTo;
+        ut["moveSplineRelative"] = &CommandAPI::lua_moveSplineRelative;
         ut["rotateTo"] = &CommandAPI::lua_rotateTo;
+        ut["rotateRelative"] = &CommandAPI::lua_rotateRelative;
         ut["scaleTo"] = &CommandAPI::lua_scaleTo;
+        ut["scaleRelative"] = &CommandAPI::lua_scaleRelative;
+
         ut["start"] = &CommandAPI::lua_start;
     }
 
