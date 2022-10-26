@@ -168,6 +168,34 @@ int NodeRegistry::countSelected() const
     return count;
 }
 
+void NodeRegistry::changeParent(
+    Node* node,
+    uuids::uuid parentId)
+{
+    Node* parent = getNode(parentId);
+    if (!parent) return;
+
+    {
+        Node* oldParent = getNode(node->m_parentId);
+        if (oldParent == parent) return;
+
+        auto& oldChildren = m_parentToChildren[oldParent->m_objectID];
+        const auto& it = std::remove_if(
+            oldChildren.begin(),
+            oldChildren.end(),
+            [&node](auto& n) {
+                return n->m_objectID == node->m_objectID;
+            });
+        oldChildren.erase(it, oldChildren.end());
+    }
+
+    auto& children = m_parentToChildren[parent->m_objectID];
+
+    children.push_back(node);
+    m_childToParent[node->m_objectID] = parent;
+    node->m_parentId = parent->m_id;
+}
+
 Node* NodeRegistry::getParent(const Node& child) const
 {
     const auto& it = m_childToParent.find(child.m_objectID);

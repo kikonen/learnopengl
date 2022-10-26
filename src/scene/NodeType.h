@@ -18,6 +18,7 @@ struct NodeRenderFlags {
     bool instanced = false;
     bool root = false;
     bool origo = false;
+    bool noFrustum = false;
     bool cubeMap = false;
 };
 

@@ -195,6 +195,7 @@ void Batch::draw(
     const auto& volume = node.getVolume();
     if (ctx.useFrustum &&
         ctx.assets.frustumEnabled &&
+        !type.m_flags.noFrustum &&
         volume &&
         !volume->isOnFrustum(ctx.frustum, node.getMatrixLevel(), node.getWorldModelMatrix()))
     {

@@ -91,6 +91,8 @@ void SceneFile::attachVolume(
     type->m_mesh.reset(mesh.release());
     type->m_flags.wireframe = true;
     type->m_flags.renderBack = true;
+    type->m_flags.noShadow = true;
+    type->m_flags.noFrustum = true;
     type->m_nodeShader = m_asyncLoader->getShader(TEX_TEXTURE);
 
     auto node = new Node(type);

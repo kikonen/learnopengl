@@ -60,6 +60,8 @@ public:
 
     int countSelected() const;
 
+    void changeParent(Node* node, uuids::uuid parentId);
+
     Node* getParent(const Node& node) const;
     const NodeVector* getChildren(const Node& node) const;
 

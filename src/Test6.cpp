@@ -157,10 +157,13 @@ void Test6::selectNode(
                 glm::length(modelWorldMatrix[1]),
                 glm::length(modelWorldMatrix[2]) };
 
+            //const glm::vec3 pos{ modelWorldMatrix * glm::vec4(volume->getCenter(), 1.f)};
+            const auto volumePos = node->getPosition() + volume->getCenter();
             const auto maxScale = std::max(std::max(worldScale.x, worldScale.y), worldScale.z);
             const auto volumeScale = volume->getRadius() * maxScale * 1.01f;
 
-            volumeNode->setPosition(nodePos + volume->getCenter());
+            registry.changeParent(volumeNode, node->m_parentId);
+            volumeNode->setPosition(volumePos);
             volumeNode->setScale(volumeScale);
         }
 
