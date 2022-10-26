@@ -90,24 +90,7 @@ int Test6::onRender(const RenderClock& clock) {
     int state = glfwGetMouseButton(window->glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
     if ((isCtrl && state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
-        int objectID = scene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
-
-        Node* volumeNode = scene->registry.getNode(ctx.assets.volumeUUID);
-        if (!volumeNode || volumeNode->m_objectID != objectID) {
-            scene->registry.selectNodeByObjectId(objectID, isShift);
-
-            Node* node = scene->registry.getNode(objectID);
-            if (volumeNode && node) {
-                auto radius = volumeNode->getVolume()->getRadius();
-
-                auto volume = node->getVolume();
-                volumeNode->setPosition(node->getPosition() + volume->getCenter());
-                volumeNode->setScale(volume->getRadius() * 1.007f);
-                volumeNode->setScale(node->getScale() * 1.01f);
-            }
-
-            KI_INFO_SB("selected: " << objectID);
-        }
+        selectNode(ctx, isShift, isCtrl);
     }
 
     if (assets.useIMGUI) {
@@ -137,6 +120,52 @@ int Test6::onRender(const RenderClock& clock) {
 
 void Test6::onDestroy()
 {
+}
+
+void Test6::selectNode(
+    const RenderContext& ctx,
+    bool isShift,
+    bool isCtrl)
+{
+    auto& registry = ctx.scene->registry;
+    int objectID = ctx.scene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
+
+    auto* volumeNode = registry.getNode(ctx.assets.volumeUUID);
+    auto* node = registry.getNode(objectID);
+
+    if (false && node && node->m_selected) {
+        node->m_selected = false;
+
+        volumeNode->setPosition({0, 0, 0});
+        volumeNode->setScale(1.f);
+
+        return;
+    }
+
+    if (!volumeNode || volumeNode->m_objectID != objectID) {
+        registry.selectNodeByObjectId(objectID, isShift);
+
+        if (volumeNode && node) {
+            auto radius = volumeNode->getVolume()->getRadius();
+
+            const auto& nodePos = node->getPosition();
+            const auto& volume = node->getVolume();
+
+            const auto& modelWorldMatrix = node->getWorldModelMatrix();
+            const glm::vec3 worldScale = {
+                glm::length(modelWorldMatrix[0]),
+                glm::length(modelWorldMatrix[1]),
+                glm::length(modelWorldMatrix[2]) };
+
+            const auto maxScale = std::max(std::max(worldScale.x, worldScale.y), worldScale.z);
+            const auto volumeScale = volume->getRadius() * maxScale * 1.01f;
+
+            volumeNode->setPosition(nodePos + volume->getCenter());
+            volumeNode->setScale(volumeScale);
+        }
+
+        KI_INFO_SB("selected: " << objectID);
+    }
 }
 
 Assets Test6::loadAssets()

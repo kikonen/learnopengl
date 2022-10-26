@@ -23,6 +23,11 @@ protected:
     void onDestroy() override;
 
 private:
+    void selectNode(
+        const RenderContext& ctx,
+        bool isShift,
+        bool isCtrl);
+
     Assets loadAssets();
     std::shared_ptr<Scene> loadScene();
 
