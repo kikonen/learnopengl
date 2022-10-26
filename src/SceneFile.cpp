@@ -14,6 +14,7 @@
 #include "controller/CameraController.h"
 #include "controller/MovingLightController.h"
 #include "controller/NodePathController.h"
+#include "controller/VolumeController.h"
 
 #include "scene/TerrainGenerator.h"
 
@@ -93,7 +94,7 @@ void SceneFile::attachVolume(
     type->m_flags.renderBack = true;
     type->m_flags.noShadow = true;
     type->m_flags.noFrustum = true;
-    type->m_nodeShader = m_asyncLoader->getShader(TEX_TEXTURE);
+    type->m_nodeShader = m_asyncLoader->getShader(TEX_VOLUME);
 
     auto node = new Node(type);
     node->m_id = m_asyncLoader->assets.volumeUUID;
@@ -103,6 +104,8 @@ void SceneFile::attachVolume(
     type->m_mesh->calculateVolume();
     auto volume = type->m_mesh->getVolume();
     node->setVolume(volume->clone());
+
+    node->m_controller = std::make_unique<VolumeController>();
 
     scene->registry.addNode(type.get(), node);
 }

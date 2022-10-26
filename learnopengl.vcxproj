@@ -179,6 +179,7 @@
     <ClCompile Include="src\command\MoveNode.cpp" />
     <ClCompile Include="src\command\StartNode.cpp" />
     <ClCompile Include="src\command\WaitCommand.cpp" />
+    <ClCompile Include="src\controller\VolumeController.cpp" />
     <ClCompile Include="src\SceneFile.cpp" />
     <ClCompile Include="src\model\Billboard.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="src\command\MoveNode.h" />
     <ClInclude Include="src\command\StartNode.h" />
     <ClInclude Include="src\command\WaitCommand.h" />
+    <ClInclude Include="src\controller\VolumeController.h" />
     <ClInclude Include="src\ki\uuid.h" />
     <ClInclude Include="src\model\Group.h" />
     <ClInclude Include="src\SceneFile.h" />

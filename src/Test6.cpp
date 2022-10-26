@@ -13,6 +13,8 @@
 #include "AssetsFile.h"
 #include "SceneFile.h"
 
+#include "controller/VolumeController.h"
+
 
 Test6::Test6()
 {
@@ -146,25 +148,8 @@ void Test6::selectNode(
         registry.selectNodeByObjectId(objectID, isShift);
 
         if (volumeNode && node) {
-            auto radius = volumeNode->getVolume()->getRadius();
-
-            const auto& nodePos = node->getPosition();
-            const auto& volume = node->getVolume();
-
-            const auto& modelWorldMatrix = node->getWorldModelMatrix();
-            const glm::vec3 worldScale = {
-                glm::length(modelWorldMatrix[0]),
-                glm::length(modelWorldMatrix[1]),
-                glm::length(modelWorldMatrix[2]) };
-
-            //const glm::vec3 pos{ modelWorldMatrix * glm::vec4(volume->getCenter(), 1.f)};
-            const auto volumePos = node->getPosition() + volume->getCenter();
-            const auto maxScale = std::max(std::max(worldScale.x, worldScale.y), worldScale.z);
-            const auto volumeScale = volume->getRadius() * maxScale * 1.01f;
-
-            registry.changeParent(volumeNode, node->m_parentId);
-            volumeNode->setPosition(volumePos);
-            volumeNode->setScale(volumeScale);
+            auto controller = dynamic_cast<VolumeController*>(volumeNode->m_controller.get());
+            controller->setTarget(node->m_objectID);
         }
 
         KI_INFO_SB("selected: " << objectID);
