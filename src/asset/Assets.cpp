@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include "ki/uuid.h"
+
 Assets::Assets()
 {
     glsl_version[0] = 4;
@@ -91,6 +93,8 @@ Assets::Assets()
     cubeMapUnitIndex = 29;
     shadowMapUnitIndex = 30;
     skyboxUnitIndex = 31;
+
+    volumeUUID = KI_UUID("9d409e0d-2716-48dd-a205-3a54bdfa5097");
 
     /////////////////////////
     // TEMPORARIES

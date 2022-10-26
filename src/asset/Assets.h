@@ -3,6 +3,8 @@
 #include <string>
 
 #include "glm/glm.hpp"
+#include <stduuid/uuid.h>
+
 
 // configure assets locations
 class Assets final
@@ -97,6 +99,7 @@ public:
     unsigned int shadowMapUnitIndex;
     unsigned int skyboxUnitIndex;
 
+    uuids::uuid volumeUUID;
 
     // NOTE KI TEMPORARY HACKS
     // => provide logic for these via scenefile

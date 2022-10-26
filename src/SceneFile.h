@@ -221,6 +221,10 @@ private:
         SkyboxData& data,
         std::vector<Material>& materials);
 
+    void attachVolume(
+        std::shared_ptr<Scene> scene,
+        const EntityData& root);
+
     void attachEntity(
         std::shared_ptr<Scene> scene,
         const EntityData& root,

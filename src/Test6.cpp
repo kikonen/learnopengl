@@ -92,9 +92,22 @@ int Test6::onRender(const RenderClock& clock) {
     if ((isCtrl && state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         int objectID = scene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
 
-        scene->registry.selectNodeByObjectId(objectID, isShift);
+        Node* volumeNode = scene->registry.getNode(ctx.assets.volumeUUID);
+        if (!volumeNode || volumeNode->m_objectID != objectID) {
+            scene->registry.selectNodeByObjectId(objectID, isShift);
 
-        KI_INFO_SB("selected: " << objectID);
+            Node* node = scene->registry.getNode(objectID);
+            if (volumeNode && node) {
+                auto radius = volumeNode->getVolume()->getRadius();
+
+                auto volume = node->getVolume();
+                volumeNode->setPosition(node->getPosition() + volume->getCenter());
+                volumeNode->setScale(volume->getRadius() * 1.007f);
+                volumeNode->setScale(node->getScale() * 1.01f);
+            }
+
+            KI_INFO_SB("selected: " << objectID);
+        }
     }
 
     if (assets.useIMGUI) {

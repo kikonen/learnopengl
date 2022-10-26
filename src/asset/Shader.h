@@ -25,6 +25,7 @@ const std::string TEX_SIMPLE_DEPTH{ "simple_depth" };
 const std::string TEX_DEBUG_DEPTH{ "debug_depth" };
 const std::string TEX_EFFECT{ "effect" };
 const std::string TEX_VIEWPORT{ "viewport" };
+const std::string TEX_VOLUME{ "volume" };
 
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };

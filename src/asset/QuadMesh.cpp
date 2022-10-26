@@ -68,8 +68,9 @@ void QuadMesh::modifyMaterials(std::function<void(Material&)> fn)
 }
 
 void QuadMesh::calculateVolume() {
-    // NOTE KI sphere containing quad is not 1
-    setVolume(std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, 2));
+    // NOTE KI calculate in 3D
+    auto diam = std::sqrt(2 * 2 + 2 * 2 + 2 * 2);
+    setVolume(std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, diam / 2.f));
 }
 
 void QuadMesh::prepare(const Assets& assets)

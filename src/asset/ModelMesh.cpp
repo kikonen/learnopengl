@@ -96,7 +96,8 @@ void ModelMesh::calculateVolume() {
 
     setVolume(std::make_unique<Sphere>(
         (maxAABB + minAABB) * 0.5f,
-        glm::length(minAABB - maxAABB)));
+        // NOTE KI *radius* not diam needed
+        glm::length(minAABB - maxAABB) * 0.5f));
 }
 
 void ModelMesh::prepare(const Assets& assets)

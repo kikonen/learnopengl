@@ -15,6 +15,11 @@ std::unique_ptr<Volume> Sphere::clone() const
     return std::make_unique<Sphere>(m_center, m_radius);
 }
 
+const glm::vec3& Sphere::getCenter() const
+{
+    return m_center;
+}
+
 float Sphere::getRadius() const 
 {
     return m_radius;

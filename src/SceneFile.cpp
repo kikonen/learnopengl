@@ -61,6 +61,7 @@ void SceneFile::attach(
     attachSkybox(scene, skybox, materials);
 
     attachEntity(scene, root, root, materials);
+    attachVolume(scene, root);
 
     for (const auto& entity : entities) {
         attachEntity(scene, root, entity, materials);
@@ -77,6 +78,31 @@ void SceneFile::attachSkybox(
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
     skybox->prepare(m_assets, m_asyncLoader->shaders);
     scene->skyboxRenderer.reset(skybox.release());
+}
+
+void SceneFile::attachVolume(
+    std::shared_ptr<Scene> scene,
+    const EntityData& root)
+{
+    auto type = std::make_shared<NodeType>();
+
+    MeshLoader meshLoader(m_asyncLoader->assets, "Volume", "volume");
+    auto mesh = meshLoader.load();
+    type->m_mesh.reset(mesh.release());
+    type->m_flags.wireframe = true;
+    type->m_flags.renderBack = true;
+    type->m_nodeShader = m_asyncLoader->getShader(TEX_TEXTURE);
+
+    auto node = new Node(type);
+    node->m_id = m_asyncLoader->assets.volumeUUID;
+    node->m_parentId = root.base.id;
+
+    // NOTE KI m_radius = 1.73205078
+    type->m_mesh->calculateVolume();
+    auto volume = type->m_mesh->getVolume();
+    node->setVolume(volume->clone());
+
+    scene->registry.addNode(type.get(), node);
 }
 
 void SceneFile::attachEntity(

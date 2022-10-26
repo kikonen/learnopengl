@@ -14,6 +14,7 @@ struct Sphere final : public Volume
 
     virtual std::unique_ptr<Volume> clone() const override final;
 
+    virtual const glm::vec3& getCenter() const override final;
     virtual float getRadius() const override final;
 
     bool isOnOrForwardPlane(const Plane& plan) const final;
