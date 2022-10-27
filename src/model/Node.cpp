@@ -207,7 +207,7 @@ const glm::mat4& Node::getModelMatrix() const
     return m_modelMatrix;
 }
 
-const int const Node::getMatrixLevel() const {
+int Node::getMatrixLevel() const {
     return m_matrixLevel;
 }
 

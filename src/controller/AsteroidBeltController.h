@@ -51,8 +51,8 @@ private:
 
 private:
     const int m_asteroidCount;
-    const int m_radius;
-    const int m_offset;
+    const float m_radius;
+    const float m_offset;
     const int m_updateStep;
 
     int m_nodeMatrixLevel = 0;

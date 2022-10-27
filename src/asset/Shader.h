@@ -30,23 +30,23 @@ const std::string TEX_VOLUME{ "volume" };
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };
 
-const int ATTR_POS = 0;
-const int ATTR_NORMAL = 1;
-const int ATTR_TANGENT = 2;
-//const int ATTR_BITANGENT = 3;
-const int ATTR_MATERIAL_INDEX = 4;
-const int ATTR_TEX = 5;
+constexpr int ATTR_POS = 0;
+constexpr int ATTR_NORMAL = 1;
+constexpr int ATTR_TANGENT = 2;
+//constexpr int ATTR_BITANGENT = 3;
+constexpr int ATTR_MATERIAL_INDEX = 4;
+constexpr int ATTR_TEX = 5;
 
-const int ATTR_INSTANCE_MODEL_MATRIX_1 = 6;
-const int ATTR_INSTANCE_MODEL_MATRIX_2 = 7;
-const int ATTR_INSTANCE_MODEL_MATRIX_3 = 8;
-const int ATTR_INSTANCE_MODEL_MATRIX_4 = 9;
+constexpr int ATTR_INSTANCE_MODEL_MATRIX_1 = 6;
+constexpr int ATTR_INSTANCE_MODEL_MATRIX_2 = 7;
+constexpr int ATTR_INSTANCE_MODEL_MATRIX_3 = 8;
+constexpr int ATTR_INSTANCE_MODEL_MATRIX_4 = 9;
 
-const int ATTR_INSTANCE_NORMAL_MATRIX_1 = 10;
-const int ATTR_INSTANCE_NORMAL_MATRIX_2 = 11;
-const int ATTR_INSTANCE_NORMAL_MATRIX_3 = 12;
+constexpr int ATTR_INSTANCE_NORMAL_MATRIX_1 = 10;
+constexpr int ATTR_INSTANCE_NORMAL_MATRIX_2 = 11;
+constexpr int ATTR_INSTANCE_NORMAL_MATRIX_3 = 12;
 
-const int ATTR_INSTANCE_OBJECT_ID = 13;
+constexpr int ATTR_INSTANCE_OBJECT_ID = 13;
 
 const std::string GEOM_NONE{ "" };
 

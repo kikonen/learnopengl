@@ -32,7 +32,7 @@ public:
     const glm::vec3& getWorldPos() const;
     const glm::vec3& getWorldPlaneNormal() const;
 
-    const int getMatrixLevel() const;
+    int getMatrixLevel() const;
     const glm::mat4& getWorldModelMatrix() const;
     const glm::mat3& getWorldNormalMatrix() const;
 
