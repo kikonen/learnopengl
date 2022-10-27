@@ -37,12 +37,17 @@ float iTime;
 #include fn_calculate_spot_light.glsl
 #include fn_calculate_light.glsl
 
-vec3 textureLod(int textureIndex, vec2 texCoords, float dummy)
-{
-  return texture(textures[textureIndex], texCoords);
-}
+//vec3 textureLod(int textureIndex, vec2 texCoords, float dummy)
+//{
+//  return texture(textures[textureIndex], texCoords);
+//}
 
-#include effect_plasma.glsl
+#ifdef EFFECT_SUN
+  #include effect_sun.glsl
+#endif
+#ifdef EFFECT_PLASMA
+  #include effect_sun.glsl
+#endif
 
 void main() {
   #include var_tex_material.glsl
@@ -57,5 +62,8 @@ void main() {
   if (fragColor.r < 0.1 && fragColor.g < 0.1 && fragColor.b < 0.1) {
     fragColor = vec4(fragColor.rgb, 0.0);
   }
+
+#ifdef USE_BLEND
   fragColor = vec4(fragColor.rgb, 0.2);
+#endif
 }

@@ -79,7 +79,9 @@ entities:
     pos: [0, 0, 0]
     scale: 1.5
     model: light
-    shader: light
+    shader: ball_effect
+    shader_definitions:
+      - EFFECT_SUN
     render_flags:
       - light
       - no_shadow
@@ -466,7 +468,9 @@ entities:
     model: ball_volume
     material: plasma_ball
     force_material: true
-    shader: ball
+    shader: ball_effect
+    shader_definitions:
+      - EFFECT_PLASMA
     pos: [-5.0, 20.0, 5.0]
     scale: 3
     render_flags:
