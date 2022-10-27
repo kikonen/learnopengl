@@ -154,6 +154,7 @@ int Shader::compileSource(
             char infoLog[512];
             glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
             KI_ERROR_SB("SHADER::GEOMETRY::COMPILATION_FAILED " << shaderName << " frag=" << shaderPath << "\n" << infoLog);
+            KI_ERROR_SB(source);
             KI_BREAK();
 
             glDeleteShader(shaderId);

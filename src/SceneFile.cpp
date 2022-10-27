@@ -87,7 +87,7 @@ void SceneFile::attachVolume(
 {
     auto type = std::make_shared<NodeType>();
 
-    MeshLoader meshLoader(m_asyncLoader->assets, "Volume", "volume");
+    MeshLoader meshLoader(m_asyncLoader->assets, "Volume", "ball_volume");
     auto mesh = meshLoader.load();
     type->m_mesh.reset(mesh.release());
     type->m_flags.wireframe = true;
@@ -569,7 +569,7 @@ void SceneFile::loadRoot(
     auto& node = doc["root"];
     loadEntity(node, root);
 
-    root.base.type == EntityType::origo;
+    root.base.type = EntityType::origo;
     root.isRoot = true;
     root.base.enabled = true;
 }
