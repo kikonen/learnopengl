@@ -137,15 +137,8 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
     ctx.state.cullFace(GL_BACK);
     ctx.state.frontFace(GL_CCW);
 
-    if (ctx.assets.clearColor) {
-        if (ctx.assets.debugClearColor) {
-            glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-        }
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-    else {
-        glClear(GL_DEPTH_BUFFER_BIT);
-    }
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     {
         ShaderBind bound(idShader);
@@ -153,8 +146,6 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
         auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
-
-                if (type.m_flags.noShadow) continue;
 
                 Batch& batch = type.m_batch;
                 batch.objectIDBuffer = true;
