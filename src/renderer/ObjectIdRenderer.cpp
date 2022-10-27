@@ -146,6 +146,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
         auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
+                if (type.m_flags.noSelect) continue;
 
                 Batch& batch = type.m_batch;
                 batch.objectIDBuffer = true;

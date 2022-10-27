@@ -14,6 +14,7 @@ struct NodeRenderFlags {
     bool terrain = false;
     bool renderBack = false;
     bool noShadow = false;
+    bool noSelect = false;
     bool wireframe = false;
     bool instanced = false;
     bool root = false;

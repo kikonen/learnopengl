@@ -471,6 +471,7 @@ entities:
     scale: 3
     render_flags:
       - blend
+      - no_select
     enabled: true
   - name: Brickcube
     model: texture_cube

@@ -387,6 +387,12 @@ void SceneFile::assignFlags(
         }
     }
     {
+        const auto& e = data.renderFlags.find("no_select");
+        if (e != data.renderFlags.end()) {
+            flags.noSelect = e->second;
+        }
+    }
+    {
         const auto& e = data.renderFlags.find("mirror");
         if (e != data.renderFlags.end()) {
             flags.mirror = e->second;
