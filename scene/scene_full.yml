@@ -462,6 +462,16 @@ entities:
     material_modifier:
       reflection: 0.05
     enabled: true
+  - name: Plasma ball
+    model: ball_volume
+    material: plasma_ball
+    force_material: true
+    shader: ball
+    pos: [-5.0, 20.0, 5.0]
+    scale: 3
+    render_flags:
+      - blend
+    enabled: true
   - name: Brickcube
     model: texture_cube
     shader: texture
@@ -802,3 +812,6 @@ materials:
     tiling: 100
     texture_spec:
       mode: GL_REPEAT
+  - name: plasma_ball
+    ks: [0.6, 0.6, 0.6, 1.0]
+    map_kd: noise.png

@@ -6,17 +6,27 @@
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_lights.glsl
+#include uniform_materials.glsl
 
 in VS_OUT {
   vec3 fragPos;
   vec3 normal;
+  vec2 texCoords;
+
+  flat int materialIndex;
 
   vec4 fragPosLightSpace;
 } fs_in;
 
 layout (location = 0) out vec4 fragColor;
 
+uniform sampler2D textures[TEX_COUNT];
 uniform sampler2DShadow shadowMap;
+
+int iChannel0;
+vec2 iMouse;
+vec2 iResolution;
+float iTime;
 
 ////////////////////////////////////////////////////////////
 //
@@ -27,16 +37,25 @@ uniform sampler2DShadow shadowMap;
 #include fn_calculate_spot_light.glsl
 #include fn_calculate_light.glsl
 
+vec3 textureLod(int textureIndex, vec2 texCoords, float dummy)
+{
+  return texture(textures[textureIndex], texCoords);
+}
+
+#include effect_plasma.glsl
+
 void main() {
-  Material material;
+  #include var_tex_material.glsl
 
-  float r = 1.0;//(sin(time) + 1.0) / 2;
-  material.diffuse = vec4(r, 1.0, 0.0, 0.25);
+  iMouse = vec2(50.0, 50.0);
+  iResolution = vec2(100.0, 100.0);
+  iTime = time;
+  iChannel0 = material.diffuseTex;
 
-  vec3 normal = fs_in.normal;
+  mainImage(fragColor, gl_FragCoord.xy);
 
-  vec3 toView = normalize(viewPos - fs_in.fragPos);
-  vec4 shaded = calculateLight(normal, toView, material);
-
-  fragColor = shaded;
+  if (fragColor.r < 0.1 && fragColor.g < 0.1 && fragColor.b < 0.1) {
+    fragColor = vec4(fragColor.rgb, 0.0);
+  }
+  fragColor = vec4(fragColor.rgb, 0.2);
 }
