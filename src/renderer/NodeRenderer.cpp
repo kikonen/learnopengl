@@ -171,6 +171,7 @@ void NodeRenderer::drawNodes(
     }
 
     if (selection) {
+        // NOTE KI do not try blend here; end result is worse than not doing blend at all (due to stencil)
         for (const auto& all : registry.blendedNodes) {
             renderTypes(all.second);
         }
@@ -191,16 +192,16 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
 
             ShaderBind bound(type.m_flags.alpha ? selectionShaderAlpha : selectionShader);
 
+
             type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
 
+            if (type.m_flags.blend) {
+                ctx.state.enable(GL_BLEND);
+            }
+
             for (auto& node : nodes) {
                 if (!node->m_selected) continue;
-
-                if (type.m_flags.blend) {
-                    ctx.state.enable(GL_BLEND);
-
-                }
 
                 auto parent = ctx.registry.getParent(*node);
                 glm::vec3 scale = node->getScale();
@@ -212,10 +213,10 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
                 node->updateModelMatrix(parent);
                 node->setScale(scale);
 
-                if (type.m_flags.blend) {
-                    ctx.state.disable(GL_BLEND);
-                }
+            }
 
+            if (type.m_flags.blend) {
+                ctx.state.disable(GL_BLEND);
             }
 
             batch.flush(ctx, type);

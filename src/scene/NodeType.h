@@ -15,6 +15,8 @@ struct NodeRenderFlags {
     bool renderBack = false;
     bool noShadow = false;
     bool noSelect = false;
+    bool noReflect = false;
+    bool noRefract = false;
     bool wireframe = false;
     bool instanced = false;
     bool root = false;

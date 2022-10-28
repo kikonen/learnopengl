@@ -94,6 +94,8 @@ void SceneFile::attachVolume(
     type->m_flags.renderBack = true;
     type->m_flags.noShadow = true;
     type->m_flags.noFrustum = true;
+    type->m_flags.noReflect = true;
+    type->m_flags.noRefract = true;
     type->m_nodeShader = m_asyncLoader->getShader(TEX_VOLUME);
 
     auto node = new Node(type);
@@ -390,6 +392,18 @@ void SceneFile::assignFlags(
         const auto& e = data.renderFlags.find("no_select");
         if (e != data.renderFlags.end()) {
             flags.noSelect = e->second;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("no_reflect");
+        if (e != data.renderFlags.end()) {
+            flags.noReflect = e->second;
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("no_refract");
+        if (e != data.renderFlags.end()) {
+            flags.noRefract = e->second;
         }
     }
     {

@@ -109,7 +109,7 @@ void WaterMapRenderer::render(
 
         reflectionBuffer->bind(localCtx);
 
-        drawNodes(localCtx, registry, skybox, closest);
+        drawNodes(localCtx, registry, skybox, closest, true);
 
         reflectionBuffer->unbind(ctx);
         ctx.bindClipPlanesUBO();
@@ -135,7 +135,7 @@ void WaterMapRenderer::render(
 
         refractionBuffer->bind(localCtx);
 
-        drawNodes(localCtx, registry, skybox, closest);
+        drawNodes(localCtx, registry, skybox, closest, false);
 
         refractionBuffer->unbind(ctx);
         ctx.bindClipPlanesUBO();
@@ -150,7 +150,8 @@ void WaterMapRenderer::drawNodes(
     const RenderContext& ctx,
     const NodeRegistry& registry,
     SkyboxRenderer* skybox,
-    Node* current)
+    Node* current,
+    bool reflect)
 {
     if (ctx.assets.clearColor) {
         if (ctx.assets.debugClearColor) {
@@ -165,13 +166,15 @@ void WaterMapRenderer::drawNodes(
     ctx.bindClipPlanesUBO();
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
-        auto renderTypes = [&ctx, &current](const NodeTypeMap& typeMap) {
+        auto renderTypes = [reflect, &ctx, &current](const NodeTypeMap& typeMap) {
             ShaderBind bound(typeMap.begin()->first->m_nodeShader);
 
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
 
                 if (type.m_flags.water) continue;
+                if (reflect && type.m_flags.noReflect) continue;
+                if (!reflect && type.m_flags.noRefract) continue;
 
                 //ShaderBind bound(type->defaultShader);
 

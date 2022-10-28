@@ -155,6 +155,8 @@ void MirrorMapRenderer::drawNodes(
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
 
+                if (type.m_flags.noReflect) continue;
+
                 Batch& batch = type.m_batch;
 
                 type.bind(ctx, bound.shader);
