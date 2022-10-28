@@ -30,6 +30,9 @@ const std::string TEX_VOLUME{ "volume" };
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };
 
+const std::string DEF_EFFECT_SUN{ "EFFECT_SUN" };
+const std::string DEF_EFFECT_PLASMA{ "EFFECT_PLASMA" };
+
 constexpr int ATTR_POS = 0;
 constexpr int ATTR_NORMAL = 1;
 constexpr int ATTR_TANGENT = 2;

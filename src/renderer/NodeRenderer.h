@@ -39,6 +39,7 @@ private:
 
 private:
     Shader* selectionShader{ nullptr };
+    Shader* selectionShaderAlpha{ nullptr };
 
     int selectedCount{ 0 };
 };

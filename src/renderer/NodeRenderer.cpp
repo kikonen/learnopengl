@@ -19,6 +19,11 @@ void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     selectionShader = shaders.getShader(assets, TEX_SELECTION);
     selectionShader->selection = true;
     selectionShader->prepare(assets);
+
+    selectionShaderAlpha = shaders.getShader(assets, TEX_SELECTION, { DEF_USE_ALPHA });
+    selectionShaderAlpha->selection = true;
+    selectionShaderAlpha->prepare(assets);
+
 }
 
 void NodeRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
@@ -175,20 +180,27 @@ void NodeRenderer::drawNodes(
 // draw all selected nodes with stencil
 void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    ShaderBind bound(selectionShader);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 
-    auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx](const NodeTypeMap& typeMap) {
         for (const auto& it : typeMap) {
             auto& type = *it.first;
             auto& nodes = it.second;
 
             Batch& batch = type.m_batch;
 
+            ShaderBind bound(type.m_flags.alpha ? selectionShaderAlpha : selectionShader);
+
             type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
 
             for (auto& node : nodes) {
                 if (!node->m_selected) continue;
+
+                if (type.m_flags.blend) {
+                    ctx.state.enable(GL_BLEND);
+
+                }
 
                 auto parent = ctx.registry.getParent(*node);
                 glm::vec3 scale = node->getScale();
@@ -199,6 +211,11 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
 
                 node->updateModelMatrix(parent);
                 node->setScale(scale);
+
+                if (type.m_flags.blend) {
+                    ctx.state.disable(GL_BLEND);
+                }
+
             }
 
             batch.flush(ctx, type);
