@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <algorithm>
+#include <string>
 
 #include <fmt/format.h>
 
@@ -22,6 +24,16 @@
 
 namespace {
     const double DEF_ALPHA = 1.0;
+
+    const std::string& toupper(std::string& str) {
+        std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+        return str;
+    }
+
+    const std::string& tolower(std::string& str) {
+        std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+        return str;
+    }
 }
 
 SceneFile::SceneFile(
@@ -678,16 +690,16 @@ void SceneFile::loadEntityClone(
         }
         else if (k == "shader_definitions") {
             for (const auto& defNode : v) {
-                const std::string& defName = defNode.first.as<std::string>();
-                const std::string& defValue = defNode.second.as<std::string>();
-                data.shaderDefinitions[defName] = defValue;
+                auto defName = defNode.first.as<std::string>();
+                const auto& defValue = defNode.second.as<std::string>();
+                data.shaderDefinitions[toupper(defName)] = defValue;
             }
         }
         else if (k == "render_flags") {
             for (const auto& flagNode : v) {
-                const std::string& flagName = flagNode.first.as<std::string>();
-                const bool flagValue = flagNode.second.as<bool>();
-                data.renderFlags[flagName] = flagValue;
+                auto flagName = flagNode.first.as<std::string>();
+                const auto flagValue = flagNode.second.as<bool>();
+                data.renderFlags[tolower(flagName)] = flagValue;
             }
         }
         else if (k == "plane_normal") {
