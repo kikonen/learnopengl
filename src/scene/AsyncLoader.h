@@ -25,7 +25,7 @@ public:
 
     Shader* getShader(
         const std::string& name,
-        const std::vector<std::string>& defines);
+        const std::map<std::string, std::string>& defines);
 
     // wait for loading of node
     // @return node null if not found

@@ -1,4 +1,7 @@
 #version 450 core
+
+#include constants.glsl
+
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 

@@ -1,5 +1,7 @@
 #version 450 core
 
+#include constants.glsl
+
 #include struct_material.glsl
 #include uniform_data.glsl
 #include uniform_materials.glsl

@@ -1,5 +1,7 @@
 #version 450 core
 
+#include constants.glsl
+
 #include uniform_matrices.glsl
 
 in VS_OUT {

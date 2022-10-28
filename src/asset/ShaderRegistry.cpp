@@ -23,7 +23,7 @@ Shader* ShaderRegistry::getShader(
 Shader* ShaderRegistry::getShader(
     const Assets& assets,
     const std::string& name,
-    const std::vector<std::string>& defines)
+    const std::map<std::string, std::string>& defines)
 {
     return getShader(assets, name, "", defines);
 }
@@ -32,7 +32,7 @@ Shader* ShaderRegistry::getShader(
     const Assets& assets,
     const std::string& name,
     const std::string& geometryType,
-    const std::vector<std::string>& defines)
+    const std::map<std::string, std::string>& defines)
 {
     std::lock_guard<std::mutex> lock(shaders_lock);
 
@@ -41,8 +41,8 @@ Shader* ShaderRegistry::getShader(
     if (!geometryType.empty())
         key += "_" + geometryType;
 
-    for (auto& x : defines)
-        key += "_" + x;
+    for (const auto& [k, v] : defines)
+        key += "_" + k + "=" + v; 
 
     Shader* shader = nullptr;
     {

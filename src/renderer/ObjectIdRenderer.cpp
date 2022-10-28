@@ -79,7 +79,7 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     idShader = shaders.getShader(assets, TEX_OBJECT_ID);
     idShader->prepare(assets);
 
-    idShaderAlpha = shaders.getShader(assets, TEX_OBJECT_ID, { DEF_USE_ALPHA });
+    idShaderAlpha = shaders.getShader(assets, TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     idShaderAlpha->prepare(assets);
 
     debugViewport = std::make_shared<Viewport>(

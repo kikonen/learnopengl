@@ -1,4 +1,7 @@
 #version 450 core
+
+#include constants.glsl
+
 layout (location = 0) in vec3 aPos;
 #ifdef USE_ALPHA
 layout (location = 4) in int aMaterialIndex;

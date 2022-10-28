@@ -1,5 +1,7 @@
 #version 450 core
 
+#include constants.glsl
+
 #include uniform_data.glsl
 
 #ifndef USE_ALPHA

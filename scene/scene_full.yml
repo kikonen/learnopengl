@@ -59,7 +59,7 @@ entities:
     rotation: [0, 180, 0.0]
     scale: 0.8
     render_flags:
-      - --allow_normals
+      allow_normals: false
     camera:
       zoom: 45
       up: [0, 1, 0]
@@ -81,10 +81,10 @@ entities:
     model: light
     shader: ball_effect
     shader_definitions:
-      - EFFECT_SUN
+      EFFECT_SUN: 1
     render_flags:
-      - light
-      - no_shadow
+      light: true
+      no_shadow: true
     force_material: true
     material_modifier:
       kd: [0.0, 0.7, 0.0, 1.0]
@@ -108,8 +108,8 @@ entities:
     model: light
     shader: light
     render_flags:
-      - light
-      - no_shadow
+      light: true
+      no_shadow: true
     light:
       type: point
       linear: 0.14
@@ -141,8 +141,8 @@ entities:
     model: light
     shader: light
     render_flags:
-      - light
-      - no_shadow
+      light: true
+      no_shadow: true
     light:
       type: point
       linear: 0.014
@@ -183,7 +183,7 @@ entities:
     type: origo
     pos: [0.0, -3.0, 0.0]
     render_flags:
-      - cube_map
+      cube_map: true
     enabled: true
   - name: EXAMPLE
     model: glass_ball
@@ -197,8 +197,8 @@ entities:
       refraction: 0.9
       refraction_ratio: [1.0, 1.52]
     render_flags:
-      - blend
-      - render_back
+      blend: true
+      render_back: true
     repeat:
       x_count: 2
       y_count: 1
@@ -213,8 +213,8 @@ entities:
     pos: [5.0, 10.0, -5.0]
     rotation: [0.0, 180.0, 0.0]
     render_flags:
-      - blend
-      - render_back
+      blend: true
+      render_back: true
     enabled: true
   - name: Window 2
     model: window2
@@ -222,8 +222,8 @@ entities:
     pos: [7.0, 10.0, -8.0]
     rotation: [0.0, 180.0, 0.0]
     render_flags:
-      - blend
-      - render_back
+      blend: true
+      render_back: true
     enabled: true
   - name: Stained windows
     model: window2
@@ -231,8 +231,8 @@ entities:
     pos: [-10.0, 15.0, 10.0]
     rotation: [0.0, 180.0, 0.0]
     render_flags:
-      - blend
-      - render_back
+      blend: true
+      render_back: true
     repeat:
       x_count: 10
       x_step: 2
@@ -242,7 +242,7 @@ entities:
     shader: texture
     pos: [-5.0, 6.5, 14.0]
     render_flags:
-      - render_back
+      render_back: true
     repeat:
       x_count: 3
       x_step: 4
@@ -254,7 +254,7 @@ entities:
     material_modifier:
       reflection: 0.3
     render_flags:
-      - render_back
+      render_back: true
     repeat:
       x_count: 2
       x_step: 4
@@ -270,8 +270,8 @@ entities:
       refraction: 0.1
       refraction_ratio: [1.0, 1.52]
     render_flags:
-      - render_back
-      - mirror
+      render_back: true
+      mirror: true
     plane_normal: [0.0, 0.0, -1.0]
     enabled: true
     init_script: |
@@ -291,8 +291,8 @@ entities:
       refraction: 0.1
       refraction_ratio: [1.0, 1.52]
     render_flags:
-      - render_back
-      - mirror
+      render_back: true
+      mirror: true
     plane_normal: [0.0, 0.0, -1.0]
     enabled: true
     init_script: |
@@ -322,7 +322,7 @@ entities:
     material_modifier:
       reflection: 0.9
     render_flags:
-      - render_back
+      render_back: true
     enabled: false
   - name: Dragon
     model: dragon
@@ -330,7 +330,7 @@ entities:
     pos: [-15.0, 15.0, 0.0]
     scale: 30.0
     render_flags:
-      - render_back
+      render_back: true
     enabled: false
   - name: Shuttle
     model: [shuttle, opengl_book/NasaShuttle]
@@ -355,7 +355,7 @@ entities:
       refraction: 1.0
       refraction_ratio: [1.0, 1.52]
     render_flags:
-      - render_back
+      render_back: true
     selected: false
     enabled: true
   - name: Cow
@@ -367,7 +367,7 @@ entities:
     material_modifier:
       reflection: 0.5
     render_flags:
-      - render_back
+      render_back: true
     selected: false
     enabled: true
   - name: Mountains
@@ -386,7 +386,7 @@ entities:
     type: origo
     pos: [0.0, 20.0, 5.0]
     render_flags:
-      - cube_map
+      cube_map: true
     enabled: true
   - name: Glass ball
     model: glass_ball
@@ -470,12 +470,12 @@ entities:
     force_material: true
     shader: ball_effect
     shader_definitions:
-      - EFFECT_PLASMA
+      EFFECT_PLASMA: 1
     pos: [-5.0, 20.0, 5.0]
     scale: 3
     render_flags:
-      - blend
-      - no_select
+      blend: true
+      no_select: true
     enabled: true
   - name: Brickcube
     model: texture_cube
@@ -536,7 +536,7 @@ entities:
         mode: GL_REPEAT
       tiling: 8
     render_flags:
-      - no_shadow
+      no_shadow: true
     repeat:
       x_count: 2
       y_count: 1
@@ -553,9 +553,9 @@ entities:
     rotation: [270.0, 0.0, 0.0]
     scale: 30
     render_flags:
-      - no_shadow
-      - render_back
-      - water
+      no_shadow: true
+      render_back: true
+      water: true
     repeat:
       x_count: 2
       y_count: 1
@@ -572,7 +572,7 @@ entities:
     xscale: [100, 1, 100]
     batch_size: 100
     render_flags:
-      - no_shadow
+      no_shadow: true
     repeat:
       x_count: 8
       y_count: 1
@@ -607,7 +607,7 @@ entities:
     type: origo
     pos: [0.0, -50.0, 0.0]
     render_flags:
-      - cube_map
+      cube_map: true
     enabled: true
   - name: Rock
     id: 91874c8a-643c-4ae9-b90a-9712cb68f95d
@@ -637,8 +637,8 @@ entities:
     material: skeleton
     batch_size: 1000
     render_flags:
-      - alpha
-      - render_back
+      alpha: true
+      render_back: true
     scale: [1.5, 3, 1]
     repeat:
       x_count: 10
@@ -682,8 +682,8 @@ entities:
     material: skeleton
     batch_size: 1000
     render_flags:
-      - alpha
-      - render_back
+      alpha: true
+      render_back: true
     scale: [1.5, 3, 1]
     enabled: false
   - name: Giant wooden box
@@ -692,8 +692,8 @@ entities:
     shader: texture
     clone_position: [0, 40, 0]
     render_flags:
-      - render_back
-      - no_shadow
+      render_back: true
+      no_shadow: true
     scale: [100, 100, 100]
     enabled: true
     clones:

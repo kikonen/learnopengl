@@ -161,7 +161,7 @@ class SceneFile
         std::string meshPath;
 
         std::string shaderName{ TEX_TEXTURE };
-        std::vector<std::string> shaderDefinitions{};
+        std::map<std::string, std::string> shaderDefinitions{};
         std::map<const std::string, bool> renderFlags{};
         glm::vec3 position{ 0 };
         glm::vec3 rotation{ 0 };

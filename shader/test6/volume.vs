@@ -1,4 +1,7 @@
 #version 450 core
+
+#include constants.glsl
+
 layout (location = 0) in vec3 aPos;
 layout (location = 6) in mat4 aModelMatrix;
 

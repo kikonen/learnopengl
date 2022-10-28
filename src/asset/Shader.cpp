@@ -6,6 +6,8 @@
 #include <mutex>
 #include <filesystem>
 
+#include <fmt/format.h>
+
 #include "UBO.h"
 
 #include "ShaderBind.h"
@@ -33,7 +35,7 @@ Shader::Shader(
     const std::string& key,
     const std::string& name,
     const std::string& geometryType,
-    const std::vector<std::string>& defines)
+    const std::map<std::string, std::string>& defines)
     : objectID(nextID()),
     assets(assets),
     key(key),
@@ -270,8 +272,8 @@ int Shader::initProgram() {
 
 void Shader::appendDefines(std::vector<std::string>& lines)
 {
-    for (auto& d : defines) {
-        lines.push_back("#define " + d);
+    for (const auto& [key, value] : defines) {
+        lines.push_back(fmt::format("#define {} {}, ",key, value));
     }
 }
 

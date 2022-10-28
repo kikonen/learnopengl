@@ -195,15 +195,15 @@ std::shared_ptr<NodeType> SceneFile::createType(
     auto type = std::make_shared<NodeType>();
     assignFlags(data, *type);
     {
-        std::vector<std::string> definitions;
-        for (auto& v : data.shaderDefinitions) {
-            definitions.push_back(v);
+        std::map<std::string, std::string> definitions;
+        for (const auto& [k, v] : data.shaderDefinitions) {
+            definitions[k] = v;
         }
         if (type->m_flags.alpha) {
-            definitions.push_back(DEF_USE_ALPHA);
+            definitions[DEF_USE_ALPHA] = "1";
         }
         if (type->m_flags.blend) {
-            definitions.push_back(DEF_USE_BLEND);
+            definitions[DEF_USE_BLEND] = "1";
         }
 
         type->m_nodeShader = m_asyncLoader->getShader(data.shaderName, definitions);
@@ -677,18 +677,17 @@ void SceneFile::loadEntityClone(
             }
         }
         else if (k == "shader_definitions") {
-            if (v.Type() == YAML::NodeType::Sequence) {
-                for (const auto& name : v) {
-                    data.shaderDefinitions.push_back(name.as<std::string>());
-                }
+            for (const auto& defNode : v) {
+                const std::string& defName = defNode.first.as<std::string>();
+                const std::string& defValue = defNode.second.as<std::string>();
+                data.shaderDefinitions[defName] = defValue;
             }
         }
         else if (k == "render_flags") {
-            if (v.Type() == YAML::NodeType::Sequence) {
-                for (const auto& name : v) {
-                    auto flag = name.as<std::string>();
-                    data.renderFlags[flag] = true;
-                }
+            for (const auto& flagNode : v) {
+                const std::string& flagName = flagNode.first.as<std::string>();
+                const bool flagValue = flagNode.second.as<bool>();
+                data.renderFlags[flagName] = flagValue;
             }
         }
         else if (k == "plane_normal") {

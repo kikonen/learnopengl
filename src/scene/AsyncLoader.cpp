@@ -58,7 +58,7 @@ Shader* AsyncLoader::getShader(const std::string& name)
 
 Shader* AsyncLoader::getShader(
     const std::string& name,
-    const std::vector<std::string>& defines)
+    const std::map<std::string, std::string>& defines)
 {
     return shaders.getShader(assets, name, defines);
 }

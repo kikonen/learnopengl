@@ -71,7 +71,10 @@ public:
 
     void setInt(const std::string& name, int value);
 
-    void setUBO(const std::string& name, unsigned int UBO, unsigned int expectedSize);
+    void setUBO(
+        const std::string& name,
+        unsigned int UBO,
+        unsigned int expectedSize);
 
 public:
     // public due to shared_ptr
@@ -80,7 +83,7 @@ public:
         const std::string& key,
         const std::string& name,
         const std::string& geometryType,
-        const std::vector<std::string>& defines);
+        const std::map<std::string, std::string>& defines);
 
     // public due to shared_ptr
     ~Shader();
@@ -325,7 +328,7 @@ private:
     bool m_prepared = false;
     int m_bound = 0;
 
-    const std::vector<std::string> defines;
+    const std::map<std::string, std::string> defines;
 
     std::map<GLenum, std::string> paths;
     std::map<GLenum, bool> required;

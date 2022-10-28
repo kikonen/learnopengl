@@ -1,5 +1,7 @@
 #version 450 core
 
+#include constants.glsl
+
 #ifdef USE_ALPHA
 #include struct_material.glsl
 
