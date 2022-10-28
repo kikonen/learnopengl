@@ -42,6 +42,7 @@ MeshLoader::~MeshLoader()
 std::unique_ptr<ModelMesh> MeshLoader::load() {
     auto mesh = std::make_unique<ModelMesh>(m_name, m_meshName, m_meshPath);
     loadData(*mesh.get());
+    if (mesh->m_tris.empty()) return {};
     return mesh;
 }
 
