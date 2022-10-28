@@ -206,20 +206,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
 
     auto type = std::make_shared<NodeType>();
     assignFlags(data, *type);
-    {
-        std::map<std::string, std::string> definitions;
-        for (const auto& [k, v] : data.shaderDefinitions) {
-            definitions[k] = v;
-        }
-        if (type->m_flags.alpha) {
-            definitions[DEF_USE_ALPHA] = "1";
-        }
-        if (type->m_flags.blend) {
-            definitions[DEF_USE_BLEND] = "1";
-        }
 
-        type->m_nodeShader = m_asyncLoader->getShader(data.shaderName, definitions);
-    }
     type->m_initScript = data.initScript;
     type->m_runScript = data.runScript;
     type->m_batch.batchSize = data.batchSize;
@@ -302,6 +289,44 @@ std::shared_ptr<NodeType> SceneFile::createType(
                 m.loadTextures(assets);
             }
             });
+    }
+
+    {
+        int materialCount = 0;
+        int textureCount = 0;
+        if (type->m_mesh) {
+            type->m_mesh->modifyMaterials([&materialCount, &textureCount](auto& mat) {
+                materialCount++;
+                textureCount += mat.getActiveTextureCount();
+                });
+        }
+        if (materialCount == 0) {
+            // NOTE KI TEX_TEXTURE requires at least 1
+            if (data.shaderName == TEX_TEXTURE) {
+                materialCount = 1;
+            }
+        }
+        if (textureCount == 0) {
+            textureCount = 1;
+        }
+
+        std::map<std::string, std::string> definitions;
+        for (const auto& [k, v] : data.shaderDefinitions) {
+            definitions[k] = v;
+        }
+        if (type->m_flags.alpha) {
+            definitions[DEF_USE_ALPHA] = "1";
+        }
+        if (type->m_flags.blend) {
+            definitions[DEF_USE_BLEND] = "1";
+        }
+
+        //definitions[DEF_MAT_COUNT] = std::to_string(materialCount);
+        definitions[DEF_TEX_COUNT] = std::to_string(textureCount);
+
+        if (!data.shaderName.empty()) {
+            type->m_nodeShader = m_asyncLoader->getShader(data.shaderName, materialCount, definitions);
+        }
     }
 
     return type;

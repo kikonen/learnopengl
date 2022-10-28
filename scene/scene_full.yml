@@ -58,6 +58,7 @@ entities:
     pos: [-10, 7, -20.0]
     rotation: [0, 180, 0.0]
     scale: 0.8
+    shader: texture
     render_flags:
       allow_normals: false
     camera:

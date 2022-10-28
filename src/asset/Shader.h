@@ -12,6 +12,8 @@
 #include "ki/GL.h"
 #include "Assets.h"
 
+const std::string INC_GLOBALS{ "globals.glsl" };
+
 const std::string TEX_TEXTURE{ "tex" };
 const std::string TEX_SPRITE{ "sprite" };
 const std::string TEX_SELECTION{ "selection" };
@@ -29,6 +31,11 @@ const std::string TEX_VOLUME{ "volume" };
 
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };
+
+const std::string DEF_MAT_COUNT{ "MAT_COUNT" };
+const std::string DEF_TEX_COUNT{ "TEX_COUNT" };
+const std::string DEF_LIGHT_COUNT{ "LIGHT_COUNT" };
+const std::string DEF_CLIP_COUNT{ "CLIP_COUNT" };
 
 const std::string DEF_EFFECT_SUN{ "EFFECT_SUN" };
 const std::string DEF_EFFECT_PLASMA{ "EFFECT_PLASMA" };
@@ -83,6 +90,7 @@ public:
         const std::string& key,
         const std::string& name,
         const std::string& geometryType,
+        const int materialCount,
         const std::map<std::string, std::string>& defines);
 
     // public due to shared_ptr
@@ -283,18 +291,19 @@ public:
     };
 
 public:
-    const int objectID;
+    const int m_objectID;
 
-    const std::string shaderName;
-    const std::string key;
+    const std::string m_shaderName;
+    const std::string m_key;
 
     const Assets& assets;
-    const std::string geometryType;
+    const std::string m_geometryType;
+    const int m_materialCount;
 
-    bool bindTexture = false;
-    bool selection = false;
+    //bool m_bindTexture = false;
+    bool m_selection = false;
 
-    int programId = -1;
+    int m_programId = -1;
 
     Shader::Mat4 projectionMatrix{ "projectionMatrix" };
     Shader::Mat4 viewMatrix{ "viewMatrix" };
@@ -328,11 +337,11 @@ private:
     bool m_prepared = false;
     int m_bound = 0;
 
-    const std::map<std::string, std::string> defines;
+    mutable std::map<std::string, std::string> m_defines;
 
-    std::map<GLenum, std::string> paths;
-    std::map<GLenum, bool> required;
-    std::map<GLenum, std::string> sources;
+    std::map<GLenum, std::string> m_paths;
+    std::map<GLenum, bool> m_required;
+    std::map<GLenum, std::string> m_sources;
 
-    std::map<const std::string, GLint> uniformLocations;
+    std::map<const std::string, GLint> m_uniformLocations;
 };

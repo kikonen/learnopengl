@@ -215,8 +215,10 @@ void NodeRegistry::bindNode(Node* node)
     const auto& type = node->m_type.get();
     auto* shader = type->m_nodeShader;
 
-    assert(shader);
-    if (!shader) return;
+    if (!type->m_flags.root && !type->m_flags.origo) {
+        assert(shader);
+        if (!shader) return;
+    }
 
     type->prepare(assets);
 
@@ -229,7 +231,7 @@ void NodeRegistry::bindNode(Node* node)
         map = &blendedNodes;
 
     // NOTE KI more optimal to not switch between culling mode (=> group by it)
-    const ShaderKey key(shader ? shader->objectID : NULL_SHADER_ID, type->m_flags.renderBack);
+    const ShaderKey key(shader ? shader->m_objectID : NULL_SHADER_ID, type->m_flags.renderBack);
 
     auto& vAll = allNodes[key][type];
     auto& vTyped = (*map)[key][type];

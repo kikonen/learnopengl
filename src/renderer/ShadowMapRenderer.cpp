@@ -21,7 +21,7 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_renderFrequency = assets.shadowRenderFrequency;
 
     solidShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
-    blendedShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    blendedShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
     shadowDebugShader = shaders.getShader(assets, TEX_DEBUG_DEPTH);
 
     solidShadowShader->prepare(assets);

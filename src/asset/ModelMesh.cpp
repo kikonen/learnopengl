@@ -159,8 +159,8 @@ void ModelMesh::prepare(const Assets& assets)
     // materials
     {
         int sz_single = sizeof(MaterialUBO);
-        int sz = sizeof(MaterialsUBO);
-        m_materialsUboSize = sz;
+        //int sz = sizeof(MaterialUBO);
+        m_materialsUboSize = sz_single * m_materials.size();
 
         MaterialsUBO materialsUbo{};
 
@@ -169,7 +169,7 @@ void ModelMesh::prepare(const Assets& assets)
         }
 
         glCreateBuffers(1, &m_materialsUboId);
-        glNamedBufferStorage(m_materialsUboId, sz, &materialsUbo, 0);
+        glNamedBufferStorage(m_materialsUboId, m_materialsUboSize, &materialsUbo, 0);
     }
 }
 

@@ -119,9 +119,12 @@ void QuadMesh::prepare(const Assets& assets)
 
     // materials
     {
+        int sz_single = sizeof(MaterialUBO);
+        m_materialsUboSize = sz_single * 1;
+
         MaterialsUBOSingle materialsUbo{};
+
         materialsUbo.materials[0] = m_material.toUBO();
-        m_materialsUboSize = sizeof(materialsUbo);
 
         glCreateBuffers(1, &m_materialsUboId);
         glNamedBufferStorage(m_materialsUboId, m_materialsUboSize, &materialsUbo, 0);

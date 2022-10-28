@@ -20,11 +20,11 @@ public:
 
     void addLoader(std::function<void()> loader);
 
-    Shader* getShader(
-        const std::string& name);
+    Shader* getShader(const std::string& name);
 
     Shader* getShader(
         const std::string& name,
+        const int materialCount,
         const std::map<std::string, std::string>& defines);
 
     // wait for loading of node

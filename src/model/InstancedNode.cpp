@@ -55,7 +55,7 @@ void InstancedNode::bind(const RenderContext& ctx, Shader* shader)
 {
     Node::bind(ctx, shader);
 
-    if (shader->selection) {
+    if (shader->m_selection) {
         selectedBatch.bind(ctx, shader);
     }
     else {

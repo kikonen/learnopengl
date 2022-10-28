@@ -17,11 +17,11 @@ void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     Renderer::prepare(assets, shaders);
 
     selectionShader = shaders.getShader(assets, TEX_SELECTION);
-    selectionShader->selection = true;
+    selectionShader->m_selection = true;
     selectionShader->prepare(assets);
 
-    selectionShaderAlpha = shaders.getShader(assets, TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
-    selectionShaderAlpha->selection = true;
+    selectionShaderAlpha = shaders.getShader(assets, TEX_SELECTION, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
+    selectionShaderAlpha->m_selection = true;
     selectionShaderAlpha->prepare(assets);
 
 }
