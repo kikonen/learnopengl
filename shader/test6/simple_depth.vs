@@ -1,7 +1,9 @@
 #version 450 core
 layout (location = 0) in vec3 aPos;
+#ifdef USE_ALPHA
 layout (location = 4) in int aMaterialIndex;
 layout (location = 5) in vec2 aTexCoords;
+#endif
 layout (location = 6) in mat4 aModelMatrix;
 
 #include uniform_matrices.glsl

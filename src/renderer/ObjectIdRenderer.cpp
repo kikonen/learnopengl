@@ -79,6 +79,9 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     idShader = shaders.getShader(assets, TEX_OBJECT_ID);
     idShader->prepare(assets);
 
+    idShaderAlpha = shaders.getShader(assets, TEX_OBJECT_ID, { DEF_USE_ALPHA });
+    idShaderAlpha->prepare(assets);
+
     debugViewport = std::make_shared<Viewport>(
         glm::vec3(-1.0, 1.0, 0),
         //glm::vec3(0.5, -0.5, 0),
@@ -141,12 +144,12 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     {
-        ShaderBind bound(idShader);
-
-        auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
+        auto renderTypes = [this, &ctx](const NodeTypeMap& typeMap) {
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
                 if (type.m_flags.noSelect) continue;
+
+                ShaderBind bound(type.m_flags.alpha ? idShaderAlpha : idShader);
 
                 Batch& batch = type.m_batch;
                 batch.objectIDBuffer = true;

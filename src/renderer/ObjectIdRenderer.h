@@ -29,6 +29,7 @@ public:
 
 private:
     Shader* idShader{ nullptr };
+    Shader* idShaderAlpha{ nullptr };
 
     std::unique_ptr<TextureBuffer> idBuffer{ nullptr };
 };
