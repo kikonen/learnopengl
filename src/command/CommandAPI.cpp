@@ -12,6 +12,40 @@
 #include "command/StartNode.h"
 
 
+namespace {
+    struct CommandOptions {
+        int afterId = 0;
+        int time = 0;
+        bool relative = false;
+        bool repeat = false;
+    };
+
+    CommandOptions readOptions(sol::table lua_opt) {
+        CommandOptions opt;
+        lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
+            const auto& k = key.as<std::string>();
+            if (k == "after") {
+                opt.afterId = value.as<int>();
+            }
+            else if (k == "time") {
+                opt.time = value.as<int>();
+            }
+            else if (k == "relative") {
+                opt.relative = value.as<bool>();
+            }
+            else if (k == "loop") {
+                opt.repeat = value.as<bool>();
+            }
+            });
+        return opt;
+    }
+
+    glm::vec3 readVec3(sol::table v) {
+        return glm::vec3{ v.get<float>(1), v.get<float>(2), v.get<float>(3) };
+    }
+}
+
+
 CommandAPI::CommandAPI(
     CommandEngine& commandEngine,
     sol::thread& runner)
@@ -41,145 +75,78 @@ int CommandAPI::lua_wait(
             secs));
 }
 
-int CommandAPI::lua_moveTo(
-    int afterCommandId,
+int CommandAPI::lua_move(
     int objectID,
-    float secs,
+    sol::table lua_opt,
     sol::table lua_pos)
 {
-    auto pos = glm::vec3{ lua_pos.get<float>(1) , lua_pos.get<float>(2) , lua_pos.get<float>(3) };
+    const auto opt = readOptions(lua_opt);
+    const auto pos = readVec3(lua_pos);
 
     return m_commandEngine.addCommand(
         std::make_unique<MoveNode>(
-            afterCommandId,
+            opt.afterId,
             objectID,
-            secs,
-            false,
+            opt.time,
+            opt.relative,
+            opt.repeat,
             pos));
 }
 
-int CommandAPI::lua_moveRelative(
-    int afterCommandId,
+int CommandAPI::lua_moveSpline(
     int objectID,
-    float secs,
-    sol::table lua_pos)
-{
-    auto pos = glm::vec3{ lua_pos.get<float>(1) , lua_pos.get<float>(2) , lua_pos.get<float>(3) };
-
-    return m_commandEngine.addCommand(
-        std::make_unique<MoveNode>(
-            afterCommandId,
-            objectID,
-            secs,
-            true,
-            pos));
-}
-
-int CommandAPI::lua_moveSplineTo(
-    int afterCommandId,
-    int objectID,
-    float secs,
+    sol::table lua_opt,
     sol::table lua_p,
     sol::table lua_pos)
 {
-    auto p = glm::vec3{ lua_p.get<float>(1) , lua_p.get<float>(2) , lua_p.get<float>(3) };
-    auto pos = glm::vec3{ lua_pos.get<float>(1) , lua_pos.get<float>(2) , lua_pos.get<float>(3) };
+    const auto opt = readOptions(lua_opt);
+    const auto p = readVec3(lua_p);
+    const auto pos = readVec3(lua_pos);
 
     return m_commandEngine.addCommand(
         std::make_unique<MoveSplineNode>(
-            afterCommandId,
+            opt.afterId,
             objectID,
-            secs,
-            false,
+            opt.time,
+            opt.relative,
+            opt.repeat,
             p,
             pos));
 }
 
-int CommandAPI::lua_moveSplineRelative(
-    int afterCommandId,
+int CommandAPI::lua_rotate(
     int objectID,
-    float secs,
-    sol::table lua_p,
-    sol::table lua_pos)
-{
-    auto p = glm::vec3{ lua_p.get<float>(1) , lua_p.get<float>(2) , lua_p.get<float>(3) };
-    auto pos = glm::vec3{ lua_pos.get<float>(1) , lua_pos.get<float>(2) , lua_pos.get<float>(3) };
-
-    return m_commandEngine.addCommand(
-        std::make_unique<MoveSplineNode>(
-            afterCommandId,
-            objectID,
-            secs,
-            true,
-            p,
-            pos));
-}
-
-int CommandAPI::lua_rotateTo(
-    int afterCommandId,
-    int objectID,
-    float secs,
+    sol::table lua_opt,
     sol::table lua_rot)
 {
-    auto rot = glm::vec3{ lua_rot.get<float>(1) , lua_rot.get<float>(2) , lua_rot.get<float>(3) };
+    const auto opt = readOptions(lua_opt);
+    const auto rot = readVec3(lua_rot);
 
     return m_commandEngine.addCommand(
         std::make_unique<RotateNode>(
-            afterCommandId,
+            opt.afterId,
             objectID,
-            secs,
-            false,
+            opt.time,
+            opt.relative,
+            opt.repeat,
             rot));
 }
 
-int CommandAPI::lua_rotateRelative(
-    int afterCommandId,
+int CommandAPI::lua_scale(
     int objectID,
-    float secs,
-    sol::table lua_rot)
-{
-    auto rot = glm::vec3{ lua_rot.get<float>(1) , lua_rot.get<float>(2) , lua_rot.get<float>(3) };
-
-    return m_commandEngine.addCommand(
-        std::make_unique<RotateNode>(
-            afterCommandId,
-            objectID,
-            secs,
-            true,
-            rot));
-}
-
-int CommandAPI::lua_scaleTo(
-    int afterCommandId,
-    int objectID,
-    float secs,
+    sol::table lua_opt,
     sol::table lua_scale)
 {
-    auto scale = glm::vec3{ lua_scale.get<float>(1) , lua_scale.get<float>(2) , lua_scale.get<float>(3) };
+    const auto opt = readOptions(lua_opt);
+    const auto scale = readVec3(lua_scale);
 
     return m_commandEngine.addCommand(
         std::make_unique<ScaleNode>(
-            afterCommandId,
+            opt.afterId,
             objectID,
-            secs,
-            false,
-            scale));
-}
-
-int CommandAPI::lua_scaleRelative(
-    int afterCommandId,
-    int objectID,
-    float secs,
-    sol::table lua_scale)
-{
-    auto scale = glm::vec3{ lua_scale.get<float>(1) , lua_scale.get<float>(2) , lua_scale.get<float>(3) };
-
-    return m_commandEngine.addCommand(
-        std::make_unique<ScaleNode>(
-            afterCommandId,
-            objectID,
-            secs,
-            true,
+            opt.time,
+            opt.relative,
+            opt.repeat,
             scale));
 }
 

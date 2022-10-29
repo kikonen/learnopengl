@@ -13,6 +13,7 @@ public:
         int objectID,
         float finishTime,
         bool relative,
+        bool repeat,
         const glm::vec3& controlPoint,
         const glm::vec3& position);
 

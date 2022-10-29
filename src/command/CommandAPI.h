@@ -22,59 +22,30 @@ public:
         int afterCommandId,
         float secs);
 
-    int lua_moveTo(
-        int afterCommandId,
+    int lua_move(
         int objectID,
-        float secs,
+        sol::table opt,
         sol::table pos);
 
-    int lua_moveRelative(
-        int afterCommandId,
+    int lua_moveSpline(
         int objectID,
-        float secs,
-        sol::table pos);
-
-    int lua_moveSplineTo(
-        int afterCommandId,
-        int objectID,
-        float secs,
+        sol::table opt,
         sol::table p,
         sol::table pos);
 
-    int lua_moveSplineRelative(
-        int afterCommandId,
+    int lua_rotate(
         int objectID,
-        float secs,
-        sol::table p,
-        sol::table pos);
-
-    int lua_rotateTo(
-        int afterCommandId,
-        int objectID,
-        float secs,
+        sol::table opt,
         sol::table rot);
 
-    int lua_rotateRelative(
-        int afterCommandId,
+    int lua_scale(
         int objectID,
-        float secs,
-        sol::table rot);
-
-    int lua_scaleTo(
-        int afterCommandId,
-        int objectID,
-        float secs,
-        sol::table scale);
-
-    int lua_scaleRelative(
-        int afterCommandId,
-        int objectID,
-        float secs,
+        sol::table opt,
         sol::table scale);
 
     int lua_start(
-        int afterCommandId,
         int objectID,
+        int afterCommandId,
         sol::function fn,
         sol::variadic_args va);
 
