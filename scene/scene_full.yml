@@ -75,9 +75,17 @@ entities:
       type: camera
       enabled: true
     enabled: true
-  - name: Directional light
+  - name: Directional light origo
+    id: 910be8c1-2060-455f-9b43-179a4814732f
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
-    pos: [0, 0, 0]
+    type: origo
+    pos: [0.0, 0.0, 0.0]
+    enabled: true
+    init_script: |
+      cmd:rotateRelative(0, id, 3600, { 0.0, 7200.0, 0.0 })
+  - name: Directional light
+    parent_id: 910be8c1-2060-455f-9b43-179a4814732f
+    pos: [0, 0, -80]
     scale: 1.5
     model: light
     shader: ball_effect
@@ -95,11 +103,6 @@ entities:
       ambient: [0.4, 0.4, 0.4, 1.0]
       diffuse: [0.4, 0.4, 0.4, 1.0]
       specular: [0.0, 0.7, 0.0, 1.0]
-      enabled: true
-    controller:
-      type: moving_light
-      speed: 20.0
-      radius: 80.0
       enabled: true
     enabled: true
   - name: Moving point light
@@ -135,9 +138,17 @@ entities:
       y_step: 0
       z_step: 30
     enabled: true
-  - name: Rock light
+  - name: Rock light origo
+    id: b2e6b0e4-7e29-4697-9bca-f387d740ba6c
     parent_id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
-    pos: [0, 10, 0]
+    type: origo
+    pos: [0.0, 10.0, 0.0]
+    enabled: true
+    init_script: |
+      cmd:rotateRelative(0, id, 900, { 0.0, 7200.0, 0.0 })
+  - name: Rock light
+    parent_id: b2e6b0e4-7e29-4697-9bca-f387d740ba6c
+    pos: [-10, 0, 0]
     scale: 0.5
     model: light
     shader: light
@@ -152,11 +163,6 @@ entities:
       ambient: [0.4, 0.4, 0.2, 1.0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
       specular: [1.0, 1.0, 0.9, 1.0]
-      enabled: true
-    controller:
-      type: moving_light
-      speed: 3.0
-      radius: 10.0
       enabled: true
     enabled: true
   - name: Active node
