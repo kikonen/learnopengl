@@ -24,24 +24,24 @@ public:
 
     int lua_move(
         int objectID,
-        sol::table opt,
-        sol::table pos);
+        const sol::table& opt,
+        const sol::table& pos);
 
     int lua_moveSpline(
         int objectID,
-        sol::table opt,
-        sol::table p,
-        sol::table pos);
+        const sol::table& opt,
+        const sol::table& p,
+        const sol::table& pos);
 
     int lua_rotate(
         int objectID,
-        sol::table opt,
-        sol::table rot);
+        const sol::table& opt,
+        const sol::table& rot);
 
     int lua_scale(
         int objectID,
-        sol::table opt,
-        sol::table scale);
+        const sol::table& opt,
+        const sol::table& scale);
 
     int lua_start(
         int objectID,

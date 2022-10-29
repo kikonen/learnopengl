@@ -20,7 +20,7 @@ namespace {
         bool repeat = false;
     };
 
-    CommandOptions readOptions(sol::table lua_opt) {
+    CommandOptions readOptions(const sol::table& lua_opt) {
         CommandOptions opt;
         lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
             const auto& k = key.as<std::string>();
@@ -40,7 +40,7 @@ namespace {
         return opt;
     }
 
-    glm::vec3 readVec3(sol::table v) {
+    glm::vec3 readVec3(const sol::table& v) {
         return glm::vec3{ v.get<float>(1), v.get<float>(2), v.get<float>(3) };
     }
 }
@@ -77,8 +77,8 @@ int CommandAPI::lua_wait(
 
 int CommandAPI::lua_move(
     int objectID,
-    sol::table lua_opt,
-    sol::table lua_pos)
+    const sol::table& lua_opt,
+    const sol::table& lua_pos)
 {
     const auto opt = readOptions(lua_opt);
     const auto pos = readVec3(lua_pos);
@@ -89,15 +89,14 @@ int CommandAPI::lua_move(
             objectID,
             opt.time,
             opt.relative,
-            opt.repeat,
             pos));
 }
 
 int CommandAPI::lua_moveSpline(
     int objectID,
-    sol::table lua_opt,
-    sol::table lua_p,
-    sol::table lua_pos)
+    const sol::table& lua_opt,
+    const sol::table& lua_p,
+    const sol::table& lua_pos)
 {
     const auto opt = readOptions(lua_opt);
     const auto p = readVec3(lua_p);
@@ -109,15 +108,14 @@ int CommandAPI::lua_moveSpline(
             objectID,
             opt.time,
             opt.relative,
-            opt.repeat,
             p,
             pos));
 }
 
 int CommandAPI::lua_rotate(
     int objectID,
-    sol::table lua_opt,
-    sol::table lua_rot)
+    const sol::table& lua_opt,
+    const sol::table& lua_rot)
 {
     const auto opt = readOptions(lua_opt);
     const auto rot = readVec3(lua_rot);
@@ -128,14 +126,13 @@ int CommandAPI::lua_rotate(
             objectID,
             opt.time,
             opt.relative,
-            opt.repeat,
             rot));
 }
 
 int CommandAPI::lua_scale(
     int objectID,
-    sol::table lua_opt,
-    sol::table lua_scale)
+    const sol::table& lua_opt,
+    const sol::table& lua_scale)
 {
     const auto opt = readOptions(lua_opt);
     const auto scale = readVec3(lua_scale);
@@ -146,7 +143,6 @@ int CommandAPI::lua_scale(
             objectID,
             opt.time,
             opt.relative,
-            opt.repeat,
             scale));
 }
 

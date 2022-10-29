@@ -34,7 +34,7 @@ entities:
       wid = cmd:wait(0, 5)
       cid = cmd:moveSpline(id, { after=wid, time=20, relative=false }, { -50, 50, 0 }, { -20, 50, 0 })
       wid = cmd:wait(cid, 60)
-      cmd:moveSpline(id, { after=wid, time=20, relative=false }, { 50, -40, 0 }, { 20, -40, 0 })
+      cmd:moveSpline(id, { after=wid, time=20, relative=true }, { 50, -40, 0 }, { 20, -40, 0 })
   - name: ZERO
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     model: water_ball
@@ -109,28 +109,36 @@ entities:
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     type: origo
     pos: [0, 9, 0]
-    controller:
-      type: moving_light
-      speed: 2.0
-      radius: 10.0
-      enabled: true
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 30
-      y_step: 0
-      z_step: 30
+    clones:
+      - pos: [0.0, 9.0, 0.0]
+        id: 6eced5e5-f691-4137-abc1-8055f8ece410
+      - pos: [30.0, 9.0, 0.0]
+        id: 24c9652c-0bd6-41ab-8a8c-dadf82e2aa24
+      - pos: [0.0, 9.0, 30.0]
+        id: 117b6b3f-6c40-4cb6-b138-856a95888ceb
+      - pos: [30.0, 9.0, 30.0]
+        id: e5514669-a024-41ee-b2df-89db0bb3f361
+    init_script: |
+      cmd:rotate(id, { time=600, relative=true }, { 0.0, 7200.0, 0.0 })
     enabled: true
   - name: Moving point light
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
-    pos: [0, 9, 0]
+    pos: [0, 0, 0]
     scale: 0.5
     model: light
     shader: light
     render_flags:
       light: true
       no_shadow: true
+    clones:
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: 6eced5e5-f691-4137-abc1-8055f8ece410
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: 24c9652c-0bd6-41ab-8a8c-dadf82e2aa24
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: 117b6b3f-6c40-4cb6-b138-856a95888ceb
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: e5514669-a024-41ee-b2df-89db0bb3f361
     light:
       type: point
       linear: 0.14
@@ -142,18 +150,6 @@ entities:
       diffuse: [0.8, 0.8, 0.7, 1.0]
       specular: [1.0, 1.0, 0.9, 1.0]
       enabled: true
-    controller:
-      type: moving_light
-      speed: 2.0
-      radius: 10.0
-      enabled: true
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 30
-      y_step: 0
-      z_step: 30
     enabled: true
   - name: Rock light origo
     id: b2e6b0e4-7e29-4697-9bca-f387d740ba6c

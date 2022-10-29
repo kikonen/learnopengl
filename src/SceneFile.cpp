@@ -352,6 +352,7 @@ Node* SceneFile::createNode(
         node->m_groupId = group->id;
     } else {
         // NOTE KI no id for clones; would duplicate base id => conflicts
+        // => except if clone defines own ID
         if (root.base.id != data.id || isRoot)
             node->m_id = data.id;
     }
@@ -655,7 +656,7 @@ void SceneFile::loadEntityClone(
     std::vector<EntityCloneData>& clones,
     bool recurse)
 {
-    const YAML::Node* clonesNode = nullptr;
+    bool hasClones = false;
 
     for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
@@ -780,7 +781,7 @@ void SceneFile::loadEntityClone(
         }
         else if (k == "clones") {
             if (recurse)
-                clonesNode = &v;
+                hasClones = true;
         }
         else if (k == "init_script") {
             data.initScript = v.as<std::string>();
@@ -793,13 +794,20 @@ void SceneFile::loadEntityClone(
         }
     }
 
-    if (clonesNode) {
-        for (const auto& node : *clonesNode) {
-            // NOTE KI intialize with current data
-            EntityCloneData clone = data;
-            std::vector<EntityCloneData> dummy{};
-            loadEntityClone(node, clone, dummy, false);
-            clones.push_back(clone);
+    if (hasClones) {
+        for (const auto& pair : node) {
+            const std::string& k = pair.first.as<std::string>();
+            const YAML::Node& v = pair.second;
+
+            if (k == "clones") {
+                for (const auto& node : v) {
+                    // NOTE KI intialize with current data
+                    EntityCloneData clone = data;
+                    std::vector<EntityCloneData> dummy{};
+                    loadEntityClone(node, clone, dummy, false);
+                    clones.push_back(clone);
+                }
+            }
         }
     }
 }
