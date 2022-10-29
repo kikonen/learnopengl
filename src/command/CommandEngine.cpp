@@ -83,12 +83,9 @@ void CommandEngine::processPending(const RenderContext& ctx)
         auto prev = cmd->m_afterCommandId > 0 ? m_commands[cmd->m_afterCommandId] : nullptr;
         if (prev) {
             prev->m_next.push_back(cmd->m_id);
-            m_blocked.emplace_back(std::move(cmd));
         }
-        else {
-            // NOTE KI either no prev or prev already executed and discarded
-            m_active.emplace_back(std::move(cmd));
-        }
+
+        m_blocked.emplace_back(std::move(cmd));
     }
     m_pending.clear();
 }
@@ -114,7 +111,7 @@ void CommandEngine::processBlocked(const RenderContext& ctx)
 
         auto prev = m_commands[cmd->m_afterCommandId];
         if (!prev) {
-            // NOTE KI *ODD* prev disappeared
+            // NOTE KI if command without prev; then ready
             cmd->m_ready = true;
         }
 
