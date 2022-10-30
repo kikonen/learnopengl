@@ -38,13 +38,13 @@ layout (location = 0) out vec4 fragObjectID;
 void main() {
 #ifdef USE_ALPHA
   int matIdx = fs_in.materialIndex;
-  int diffuseTexIdx = materials[matIdx].diffuseTex;
+  int diffuseTexIdx = u_materials[matIdx].diffuseTex;
 
   float alpha;
   if (diffuseTexIdx >= 0) {
     alpha = texture(u_textures[diffuseTexIdx], fs_in.texCoords).a;
   } else {
-    alpha = materials[matIdx].diffuse.a;
+    alpha = u_materials[matIdx].diffuse.a;
   }
 
   // NOtE KI experimental value; depends from few aspects in blended windows

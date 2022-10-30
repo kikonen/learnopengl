@@ -12,26 +12,26 @@ vec4 calculateLight(
   vec4 pointShaded = vec4(0);
   vec4 spotShaded = vec4(0);
 
-  if (light.use) {
-    dirShaded = calculateDirLight(light, normal, toView, fs_in.fragPosLightSpace, material);
+  if (u_light.use) {
+    dirShaded = calculateDirLight(u_light, normal, toView, fs_in.fragPosLightSpace, material);
     hasLight = true;
   }
 
   for (int i = 0; i < LIGHT_COUNT; i++) {
-    if (pointLights[i].use) {
-      float dist = length(pointLights[i].pos - fs_in.fragPos);
-      if (dist < pointLights[i].radius) {
-        pointShaded += calculatePointLight(pointLights[i], normal, toView, fs_in.fragPos, material);
+    if (u_pointLights[i].use) {
+      float dist = length(u_pointLights[i].pos - fs_in.fragPos);
+      if (dist < u_pointLights[i].radius) {
+        pointShaded += calculatePointLight(u_pointLights[i], normal, toView, fs_in.fragPos, material);
         hasLight = true;
       }
     }
   }
 
   for (int i = 0; i < LIGHT_COUNT; i++) {
-    if (spotLights[i].use) {
-      float dist = length(spotLights[i].pos - fs_in.fragPos);
-      if (dist < spotLights[i].radius) {
-        spotShaded += calculateSpotLight(spotLights[i], normal, toView, fs_in.fragPos, material);
+    if (u_spotLights[i].use) {
+      float dist = length(u_spotLights[i].pos - fs_in.fragPos);
+      if (dist < u_spotLights[i].radius) {
+        spotShaded += calculateSpotLight(u_spotLights[i], normal, toView, fs_in.fragPos, material);
         hasLight = true;
       }
     }

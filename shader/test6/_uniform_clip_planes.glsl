@@ -1,3 +1,3 @@
 layout (std140) uniform ClipPlanes {
-  ClipPlane clipping[CLIP_COUNT];
+  ClipPlane u_clipping[CLIP_COUNT];
 };

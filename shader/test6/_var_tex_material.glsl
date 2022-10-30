@@ -1,5 +1,4 @@
-int matIdx = fs_in.materialIndex;
-Material material = materials[matIdx];
+Material material = u_materials[fs_in.materialIndex];
 {
   if (material.diffuseTex >= 0) {
     material.diffuse = texture(u_textures[material.diffuseTex], fs_in.texCoords).rgba;

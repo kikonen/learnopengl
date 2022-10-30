@@ -54,7 +54,7 @@ void main() {
   gl_Position = u_projectedMatrix * a_modelMatrix * vec4(a_pos, 1.0);
 
   vs_out.materialIndex = a_materialIndex;
-  vs_out.texCoords = a_texCoords * materials[a_materialIndex].tiling;
+  vs_out.texCoords = a_texCoords * u_materials[a_materialIndex].tiling;
 
   vs_out.fragPos = (a_modelMatrix * vec4(a_pos, 1.0)).xyz;
   vs_out.vertexPos = a_pos;
@@ -67,7 +67,7 @@ void main() {
   vs_out.fragPosLightSpace = b * u_lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 
 #ifdef USE_NORMAL_TEX
-  if (materials[a_materialIndex].normalMapTex >= 0) {
+  if (u_materials[a_materialIndex].normalMapTex >= 0) {
     vec3 N = vs_out.normal;
     vec3 T = normalize(a_normalMatrix * a_tangent);
     T = normalize(T - dot(T, N) * N);

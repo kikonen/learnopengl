@@ -1,3 +1,3 @@
 layout (std140) uniform Materials {
-  Material materials[MAT_COUNT];
+  Material u_materials[MAT_COUNT];
 };

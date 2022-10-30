@@ -30,13 +30,13 @@ precision lowp float;
 void main() {
 #ifdef USE_ALPHA
   int matIdx = fs_in.materialIndex;
-  int diffuseTexIdx = materials[matIdx].diffuseTex;
+  int diffuseTexIdx = u_materials[matIdx].diffuseTex;
 
   float alpha;
   if (diffuseTexIdx >= 0) {
     alpha = texture(u_textures[diffuseTexIdx], fs_in.texCoords).a;
   } else {
-    alpha = materials[matIdx].diffuse.a;
+    alpha = u_materials[matIdx].diffuse.a;
   }
 
   if (alpha < 0.6)

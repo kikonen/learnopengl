@@ -23,7 +23,7 @@ layout (location = 0) out vec4 fragColor;
 precision lowp float;
 
 void main() {
-  Material material = materials[fs_in.materialIndex];
+  Material material = u_materials[fs_in.materialIndex];
 
   // combined
   vec4 texColor = material.diffuse;
