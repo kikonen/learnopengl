@@ -294,10 +294,14 @@ std::shared_ptr<NodeType> SceneFile::createType(
     {
         int materialCount = 0;
         int textureCount = 0;
+        bool normalTex = false;
+        bool normalPattern = false;
         if (type->m_mesh) {
-            type->m_mesh->modifyMaterials([&materialCount, &textureCount](auto& mat) {
+            type->m_mesh->modifyMaterials([&](auto& mat) {
                 materialCount++;
                 textureCount += mat.getActiveTextureCount();
+                normalTex |= mat.hasNormalTex();
+                normalPattern |= mat.pattern > 0;
                 });
         }
         // NOTE KI reduce variants to 2
@@ -326,6 +330,15 @@ std::shared_ptr<NodeType> SceneFile::createType(
         }
         if (type->m_flags.blend) {
             definitions[DEF_USE_BLEND] = "1";
+        }
+        if (type->m_flags.renderBack) {
+            definitions[DEF_USE_RENDER_BACK] = "1";
+        }
+        if (normalPattern) {
+            definitions[DEF_USE_NORMAL_PATTERN] = "1";
+        }
+        if (normalTex) {
+            definitions[DEF_USE_NORMAL_TEX] = "1";
         }
 
         //definitions[DEF_MAT_COUNT] = std::to_string(materialCount);

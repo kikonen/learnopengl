@@ -52,13 +52,18 @@ void main() {
 
   vec3 normal = fs_in.normal;
 
+#ifdef USE_RENDER_BACK
   if (!gl_FrontFacing) {
     normal = -normal;
   }
+#endif
 
   vec3 toView = normalize(u_viewPos - fs_in.fragPos);
 
-  if (gl_FrontFacing) {
+#ifdef USE_RENDER_BACK
+  if (gl_FrontFacing)
+#endif
+  {
     vec4 gp = fs_in.glp;
     vec2 reflectCoord = vec2(-gp.x, gp.y) / (gp.w * 2.0) + 0.5;
 

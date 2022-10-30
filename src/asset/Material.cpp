@@ -188,6 +188,12 @@ int Material::getActiveTextureCount()
     return texCount;
 }
 
+bool Material::hasNormalTex()
+{
+    const auto& tex = textures[NORMAL_MAP_IDX];
+    return tex.texture != nullptr;
+}
+
 void Material::prepare(const Assets& assets)
 {
     if (m_prepared) return;

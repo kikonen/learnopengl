@@ -26,8 +26,9 @@ in VS_OUT {
   flat int materialIndex;
 
   vec4 fragPosLightSpace;
-
+#ifdef USE_NORMAL_TEX
   flat mat3 TBN;
+#endif
 } fs_in;
 
 uniform sampler2D u_textures[TEX_COUNT];
@@ -57,21 +58,25 @@ void main() {
     discard;
 #endif
 
-  vec3 normal;
-  if (material.normalMapTex >= 0) {
-    normal = texture(u_textures[material.normalMapTex], fs_in.texCoords).rgb;
-    normal = normal * 2.0 - 1.0;
-    normal = normalize(fs_in.TBN * normal);
-  } else {
-    normal = fs_in.normal;
-  }
+#ifdef USE_NORMAL_TEX
+  vec3 normal = texture(u_textures[material.normalMapTex], fs_in.texCoords).rgb;
+  normal = normal * 2.0 - 1.0;
+  normal = normalize(fs_in.TBN * normal);
+#else
+  vec3 normal = fs_in.normal;
+#endif
 
+#ifdef USE_NORMAL_PATTERN
   if (material.pattern == 1) {
     normal = calculateNormalPattern(normal);
   }
+#endif
+
+#ifdef USE_RENDER_BACK
   if (!gl_FrontFacing) {
     normal = -normal;
   }
+#endif
 
   vec3 toView = normalize(u_viewPos - fs_in.fragPos);
 

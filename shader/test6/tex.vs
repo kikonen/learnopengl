@@ -30,7 +30,9 @@ out VS_OUT {
 
   vec4 fragPosLightSpace;
 
+#ifdef USE_NORMAL_TEX
   flat mat3 TBN;
+#endif
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -64,6 +66,7 @@ void main() {
 
   vs_out.fragPosLightSpace = b * u_lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 
+#ifdef USE_NORMAL_TEX
   if (materials[aMaterialIndex].normalMapTex >= 0) {
     vec3 N = vs_out.normal;
     vec3 T = normalize(aNormalMatrix * aTangent);
@@ -72,4 +75,5 @@ void main() {
 
     vs_out.TBN = mat3(T, B, N);
   }
+#endif
 }

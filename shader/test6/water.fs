@@ -23,7 +23,9 @@ in VS_OUT {
 
   vec4 fragPosLightSpace;
 
+#ifdef USE_NORMAL_TEX
   mat3 TBN;
+#endif
 } fs_in;
 
 uniform sampler2D u_textures[TEX_COUNT];
@@ -81,14 +83,13 @@ void main() {
     totalDistortion = (texture(u_textures[material.dudvMapTex], distortedTexCoords).rg * 2.0 - 1.0) * waveStrength;
   }
 
-  vec3 normal;
-  if (material.normalMapTex >= 0) {
-    normal = texture(u_textures[material.normalMapTex], distortedTexCoords).rgb;
-    normal = normal * 2.0 - 1.0;
-    normal = normalize(fs_in.TBN * normal);
-  } else {
-    normal = fs_in.normal;
-  }
+#ifdef USE_NORMAL_TEX
+  vec3 normal = texture(u_textures[material.normalMapTex], distortedTexCoords).rgb;
+  normal = normal * 2.0 - 1.0;
+  normal = normalize(fs_in.TBN * normal);
+#else
+  vec3 normal = fs_in.normal;
+#endif
 
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex.
