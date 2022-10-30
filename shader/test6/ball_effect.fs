@@ -34,6 +34,8 @@ float iTime;
 //
 ////////////////////////////////////////////////////////////
 
+precision lowp float;
+
 #include fn_calculate_dir_light.glsl
 #include fn_calculate_point_light.glsl
 #include fn_calculate_spot_light.glsl

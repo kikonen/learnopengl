@@ -23,6 +23,8 @@ in VS_OUT {
 uniform sampler2D u_textures[TEX_COUNT];
 #endif
 
+precision lowp float;
+
 void main()
 {
 #ifdef USE_ALPHA

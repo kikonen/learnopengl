@@ -15,6 +15,7 @@ uniform int u_effect;
 
 const float offset = 1.0 / 300.0;
 
+precision lowp float;
 
 void main()
 {

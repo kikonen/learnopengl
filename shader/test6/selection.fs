@@ -25,6 +25,8 @@ uniform sampler2D u_textures[TEX_COUNT];
 
 out vec4 fragColor;
 
+precision lowp float;
+
 void main() {
 #ifdef USE_ALPHA
   int matIdx = fs_in.materialIndex;

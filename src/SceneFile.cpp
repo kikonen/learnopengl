@@ -300,15 +300,22 @@ std::shared_ptr<NodeType> SceneFile::createType(
                 textureCount += mat.getActiveTextureCount();
                 });
         }
-        if (materialCount == 0) {
+        // NOTE KI reduce variants to 2
+        if (materialCount < MATERIAL_COUNT / 2) {
             // NOTE KI TEX_TEXTURE requires at least 1
-            if (data.shaderName == TEX_TEXTURE) {
-                materialCount = 1;
-            }
+            materialCount = MATERIAL_COUNT / 2;
         }
-        if (textureCount == 0) {
-            textureCount = 1;
+        else {
+            materialCount = MATERIAL_COUNT;
         }
+
+        if (textureCount < TEXTURE_COUNT / 2) {
+            textureCount = TEXTURE_COUNT / 2;
+        }
+        else {
+            textureCount = TEXTURE_COUNT;
+        }
+
 
         std::map<std::string, std::string> definitions;
         for (const auto& [k, v] : data.shaderDefinitions) {
