@@ -2,8 +2,8 @@
 
 #include constants.glsl
 
-layout (location = 0) in vec3 aPos;
-layout (location = 6) in mat4 aModelMatrix;
+layout (location = 0) in vec3 a_pos;
+layout (location = 6) in mat4 a_modelMatrix;
 
 #include uniform_matrices.glsl
 
@@ -16,6 +16,6 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
-  gl_Position = u_projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
-  vs_out.fragPos = (aModelMatrix * vec4(aPos, 1.0)).xyz;
+  gl_Position = u_projectedMatrix * a_modelMatrix * vec4(a_pos, 1.0);
+  vs_out.fragPos = (a_modelMatrix * vec4(a_pos, 1.0)).xyz;
 }
