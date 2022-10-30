@@ -123,9 +123,11 @@ void FrameBuffer::bind(const RenderContext& ctx)
 
 void FrameBuffer::unbind(const RenderContext& ctx)
 {
+    const auto& res = ctx.resolution;
+
     // NOTE KI 0 stands for "default"
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, ctx.width, ctx.height);
+    glViewport(0, 0, res.x, res.y);
 }
 
 void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex)

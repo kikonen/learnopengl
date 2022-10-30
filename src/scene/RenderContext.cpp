@@ -79,12 +79,10 @@ RenderContext::RenderContext(
     camera(camera),
     nearPlane(nearPlane),
     farPlane(farPlane),
-    width(width),
-    height(height),
-    aspectRatio((float)width / (float)height)
+    resolution{ width, height },
+    aspectRatio((float)width / (float)height),
+    viewMatrix(camera.getView())
 {
-    viewMatrix = camera.getView();
-
     projectionMatrix = glm::perspective(
         glm::radians((float)camera.getZoom()),
         aspectRatio,
@@ -141,6 +139,9 @@ void RenderContext::bindDataUBO() const
     DataUBO dataUbo{
         camera.getPos(),
         (float)clock.ts,
+        resolution,
+        0,
+        0,
         assets.fogColor,
         assets.fogStart,
         assets.fogEnd,

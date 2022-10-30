@@ -51,15 +51,19 @@ struct MatricesUBO {
 
 // NOTE KI align 16
 struct DataUBO {
-    glm::vec3 viewPos;
-    float time;
+    glm::vec3 iViewPos;
+    float iTime;
 
-    glm::vec4 fogColor;
-    float fogStart;
-    float fogEnd;
-
+    glm::vec2 iResolution;
     int pad1;
     int pad2;
+
+    glm::vec4 iFogColor;
+    float iFogStart;
+    float iFogEnd;
+
+    int pad3;
+    int pad4;
 };
 
 // NOTE KI align 16

@@ -27,11 +27,13 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)
 {
+    const auto& res = ctx.resolution;
+
     KI_GL_UNBIND(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
 
     // Reset viewport back
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, ctx.width, ctx.height);
+    glViewport(0, 0, res.x, res.y);
     ctx.bindMatricesUBO();
 }
 

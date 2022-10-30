@@ -1,8 +1,10 @@
 layout(std140) uniform Data {
-  vec3 viewPos;
-  float time;
+  vec3 iViewPos;
+  float iTime;
 
-  vec4 fogColor;
-  float fogStart;
-  float fogEnd;
+  vec2 iResolution;
+
+  vec4 iFogColor;
+  float iFogStart;
+  float iFogEnd;
 };

@@ -338,7 +338,7 @@ void Shader::setUBO(
     } 
     glUniformBlockBinding(m_programId, blockIndex, UBO);
 
-    GLint  blockSize;
+    GLint blockSize;
     glGetActiveUniformBlockiv(m_programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
 
     KI_INFO_SB("SHADER::UBO_SIZE " << m_shaderName << " UBO=" << name << " size=" << blockSize << " expected_size=" << expectedSize);
@@ -346,9 +346,10 @@ void Shader::setUBO(
         for (const auto& [k, v] : m_defines) {
             KI_ERROR_SB(k << "=" << v);
         }
-        KI_ERROR_SB("materialCount=" << m_materialCount);
-        KI_ERROR_SB("sizeof(MaterialUBO)=" << sizeof(MaterialUBO));
-        KI_CRITICAL_SB("SHADER::UBO_SIZE " << m_shaderName << " UBO=" << name << " size=" << blockSize << " expected_size=" << expectedSize);
+        KI_ERROR_SB(fmt::format("materialCount={}, sizeof(MaterialUBO)=", m_materialCount, sizeof(MaterialUBO)));
+        KI_CRITICAL_SB(fmt::format(
+            "SHADER::UBO_SIZE shader={}. UBO={}. size={}. expected_size={}",
+            m_shaderName, name, blockSize, expectedSize));
         __debugbreak();
     }
 }

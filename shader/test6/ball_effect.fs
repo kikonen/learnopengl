@@ -27,8 +27,6 @@ uniform sampler2DShadow shadowMap;
 
 int iChannel0;
 vec2 iMouse;
-vec2 iResolution;
-float iTime;
 
 ////////////////////////////////////////////////////////////
 //
@@ -54,9 +52,7 @@ float iTime;
 void main() {
   #include var_tex_material.glsl
 
-  iMouse = vec2(50.0, 50.0);
-  iResolution = vec2(100.0, 100.0);
-  iTime = time;
+  iMouse = iResolution * 0.5;
   iChannel0 = material.diffuseTex;
 
   mainImage(fragColor, gl_FragCoord.xy);

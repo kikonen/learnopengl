@@ -72,7 +72,7 @@ void main() {
     normal = -normal;
   }
 
-  vec3 toView = normalize(viewPos - fs_in.fragPos);
+  vec3 toView = normalize(iViewPos - fs_in.fragPos);
 
   #include var_calculate_diffuse.glsl
 

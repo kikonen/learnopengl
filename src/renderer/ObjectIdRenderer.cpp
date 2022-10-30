@@ -29,8 +29,10 @@ int ObjectIdRenderer::getObjectId(
 
     constexpr float GL_SCREEN_SIZE = 2.f;
 
-    int screenW = ctx.width;
-    int screenH = ctx.height;
+    const auto& res = ctx.resolution;
+
+    int screenW = res.x;
+    int screenH = res.y;
 
     float w = screenW * (mainViewport->size.x / GL_SCREEN_SIZE);
     float h = screenH * (mainViewport->size.y / GL_SCREEN_SIZE);
@@ -95,8 +97,9 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    int w = ctx.assets.resolutionScale.x * ctx.width;
-    int h = ctx.assets.resolutionScale.y * ctx.height;
+    const auto& res = ctx.resolution;
+    int w = ctx.assets.resolutionScale.x * res.x;
+    int h = ctx.assets.resolutionScale.y * res.y;
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 

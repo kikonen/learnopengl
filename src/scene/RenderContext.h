@@ -76,8 +76,7 @@ public:
 
     GLState& state;
 
-    const int width;
-    const int height;
+    const glm::vec2 resolution;
 
     const float nearPlane;
     const float farPlane;
@@ -92,7 +91,7 @@ public:
 
     Camera& camera;
 
-    glm::mat4 viewMatrix;
+    const glm::mat4 viewMatrix;
     glm::mat4 projectionMatrix;
     glm::mat4 projectedMatrix;
 

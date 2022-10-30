@@ -54,7 +54,7 @@ void main() {
     normal = -normal;
   }
 
-  vec3 toView = normalize(viewPos - fs_in.fragPos);
+  vec3 toView = normalize(iViewPos - fs_in.fragPos);
 
   if (gl_FrontFacing) {
     vec4 gp = fs_in.glp;

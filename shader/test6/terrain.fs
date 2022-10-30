@@ -42,7 +42,7 @@ void main() {
   #include var_tex_material.glsl
 
   vec3 normal = fs_in.normal;
-  vec3 toView = normalize(viewPos - fs_in.fragPos);
+  vec3 toView = normalize(iViewPos - fs_in.fragPos);
 
   vec4 texColor = calculateLight(normal, toView, material);
   texColor = calculateFog(material.fogRatio, texColor);

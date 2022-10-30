@@ -72,7 +72,7 @@ void main() {
   vec2 totalDistortion = vec2(0);
 
   if (material.dudvMapTex >= 0) {
-    float moveFactor = (sin(time / 10.0) + 1.0) * 0.5;
+    float moveFactor = (sin(iTime / 10.0) + 1.0) * 0.5;
 
     vec2 distortedTexCoords = texture(textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg * 0.1;
     distortedTexCoords = fs_in.texCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
@@ -97,7 +97,7 @@ void main() {
     normal = -normal;
   }
 
-  vec3 toView = normalize(viewPos - fs_in.fragPos);
+  vec3 toView = normalize(iViewPos - fs_in.fragPos);
 
 //  #include var_calculate_diffuse.glsl
 
