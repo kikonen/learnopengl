@@ -30,10 +30,9 @@ in VS_OUT {
   flat mat3 TBN;
 } fs_in;
 
-uniform sampler2D textures[TEX_COUNT];
-uniform samplerCube mirrorTex;
-uniform samplerCube cubeMap;
-uniform sampler2DShadow shadowMap;
+uniform sampler2D u_textures[TEX_COUNT];
+uniform samplerCube u_cubeMap;
+uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 fragColor;
 
@@ -58,7 +57,7 @@ void main() {
 
   vec3 normal;
   if (material.normalMapTex >= 0) {
-    normal = texture(textures[material.normalMapTex], fs_in.texCoords).rgb;
+    normal = texture(u_textures[material.normalMapTex], fs_in.texCoords).rgb;
     normal = normal * 2.0 - 1.0;
     normal = normalize(fs_in.TBN * normal);
   } else {
@@ -72,7 +71,7 @@ void main() {
     normal = -normal;
   }
 
-  vec3 toView = normalize(iViewPos - fs_in.fragPos);
+  vec3 toView = normalize(u_viewPos - fs_in.fragPos);
 
   #include var_calculate_diffuse.glsl
 

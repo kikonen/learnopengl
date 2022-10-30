@@ -30,7 +30,7 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
-  gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
+  gl_Position = u_projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
 
   vs_out.objectID = aObjectID;
 

@@ -20,7 +20,7 @@ in VS_OUT {
   flat int materialIndex;
 } fs_in;
 
-uniform sampler2D textures[TEX_COUNT];
+uniform sampler2D u_textures[TEX_COUNT];
 #endif
 
 void main()
@@ -31,7 +31,7 @@ void main()
 
   float alpha;
   if (diffuseTexIdx >= 0) {
-    alpha = texture(textures[diffuseTexIdx], fs_in.texCoords).a;
+    alpha = texture(u_textures[diffuseTexIdx], fs_in.texCoords).a;
   } else {
     alpha = materials[matIdx].diffuse.a;
   }

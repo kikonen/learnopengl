@@ -13,6 +13,6 @@ flat out vec4 color;
 
 void main()
 {
-  gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
+  gl_Position = u_projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
   color = aColor;
 }

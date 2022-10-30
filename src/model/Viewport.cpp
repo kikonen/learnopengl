@@ -80,7 +80,7 @@ void Viewport::bind(const RenderContext& ctx)
     const int unitIndex = 0;
 
     ctx.state.bindTexture(unitIndex, textureID);
-    shader->viewportTexture.set(unitIndex);
+    shader->viewportTex.set(unitIndex);
 
     shader->effect.set((int)effect);
 

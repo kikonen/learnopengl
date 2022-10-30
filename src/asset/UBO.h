@@ -43,24 +43,24 @@ constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_UNIT_COU
 
 // NOTE KI align 16
 struct MatricesUBO {
-    glm::mat4 projected;
-    glm::mat4 projection;
-    glm::mat4 view;
-    glm::mat4 lightSpace;
+    glm::mat4 u_projected;
+    glm::mat4 u_projection;
+    glm::mat4 u_view;
+    glm::mat4 u_lightSpace;
 };
 
 // NOTE KI align 16
 struct DataUBO {
-    glm::vec3 iViewPos;
-    float iTime;
+    glm::vec3 u_viewPos;
+    float u_time;
 
-    glm::vec2 iResolution;
+    glm::vec2 u_resolution;
     int pad1;
     int pad2;
 
-    glm::vec4 iFogColor;
-    float iFogStart;
-    float iFogEnd;
+    glm::vec4 u_fogColor;
+    float u_fogStart;
+    float u_fogEnd;
 
     int pad3;
     int pad4;

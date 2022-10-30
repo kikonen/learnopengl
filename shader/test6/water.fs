@@ -26,13 +26,13 @@ in VS_OUT {
   mat3 TBN;
 } fs_in;
 
-uniform sampler2D textures[TEX_COUNT];
+uniform sampler2D u_textures[TEX_COUNT];
 
-uniform sampler2D reflectionTex;
-uniform sampler2D refractionTex;
-uniform sampler3D noiseTex;
+uniform sampler2D u_reflectionTex;
+uniform sampler2D u_refractionTex;
+uniform sampler3D u_noiseTex;
 
-uniform sampler2DShadow shadowMap;
+uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 fragColor;
 
@@ -51,9 +51,9 @@ vec3 estimateWaveNormal(float offset, float mapScale, float hScale) {
   vec2 tc = fs_in.texCoords;
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex
-  float h1 = (texture(noiseTex, vec3(((tc.s))*mapScale, 0.5, ((tc.t)+offset)*mapScale))).r * hScale;
-  float h2 = (texture(noiseTex, vec3(((tc.s)-offset)*mapScale, 0.5, ((tc.t)-offset)*mapScale))).r * hScale;
-  float h3 = (texture(noiseTex, vec3(((tc.s)+offset)*mapScale, 0.5, ((tc.t)-offset)*mapScale))).r * hScale;
+  float h1 = (texture(u_noiseTex, vec3(((tc.s))*mapScale, 0.5, ((tc.t)+offset)*mapScale))).r * hScale;
+  float h2 = (texture(u_noiseTex, vec3(((tc.s)-offset)*mapScale, 0.5, ((tc.t)-offset)*mapScale))).r * hScale;
+  float h3 = (texture(u_noiseTex, vec3(((tc.s)+offset)*mapScale, 0.5, ((tc.t)-offset)*mapScale))).r * hScale;
   vec3 v1 = vec3(0, h1, -1);
   vec3 v2 = vec3(-1, h2, 1);
   vec3 v3 = vec3(1, h3, 1);
@@ -72,16 +72,16 @@ void main() {
   vec2 totalDistortion = vec2(0);
 
   if (material.dudvMapTex >= 0) {
-    float moveFactor = (sin(iTime / 10.0) + 1.0) * 0.5;
+    float moveFactor = (sin(u_time / 10.0) + 1.0) * 0.5;
 
-    vec2 distortedTexCoords = texture(textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg * 0.1;
+    vec2 distortedTexCoords = texture(u_textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg * 0.1;
     distortedTexCoords = fs_in.texCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
-    totalDistortion = (texture(textures[material.dudvMapTex], distortedTexCoords).rg * 2.0 - 1.0) * waveStrength;
+    totalDistortion = (texture(u_textures[material.dudvMapTex], distortedTexCoords).rg * 2.0 - 1.0) * waveStrength;
   }
 
   vec3 normal;
   if (material.normalMapTex >= 0) {
-    normal = texture(textures[material.normalMapTex], distortedTexCoords).rgb;
+    normal = texture(u_textures[material.normalMapTex], distortedTexCoords).rgb;
     normal = normal * 2.0 - 1.0;
     normal = normalize(fs_in.TBN * normal);
   } else {
@@ -97,7 +97,7 @@ void main() {
     normal = -normal;
   }
 
-  vec3 toView = normalize(iViewPos - fs_in.fragPos);
+  vec3 toView = normalize(u_viewPos - fs_in.fragPos);
 
 //  #include var_calculate_diffuse.glsl
 
@@ -111,8 +111,8 @@ void main() {
 //  reflectCoord.x = clamp(reflectCoord.x, 0.001, 0.999);
 //  reflectCoord.y = clamp(reflectCoord.y, -0.999, -0.001);
 
-  vec4 refractColor = texture(refractionTex, refractCoord);
-  vec4 reflectColor = texture(reflectionTex, reflectCoord);
+  vec4 refractColor = texture(u_refractionTex, refractCoord);
+  vec4 reflectColor = texture(u_reflectionTex, reflectCoord);
 
   float refractiveFactor = dot(toView, normal);
   refractiveFactor = pow(refractiveFactor, 4);

@@ -26,11 +26,11 @@ in VS_OUT {
   mat3 TBN;
 } fs_in;
 
-uniform sampler2D textures[TEX_COUNT];
+uniform sampler2D u_textures[TEX_COUNT];
 
-uniform sampler2D reflectionTex;
+uniform sampler2D u_reflectionTex;
 
-uniform sampler2DShadow shadowMap;
+uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 fragColor;
 
@@ -54,13 +54,13 @@ void main() {
     normal = -normal;
   }
 
-  vec3 toView = normalize(iViewPos - fs_in.fragPos);
+  vec3 toView = normalize(u_viewPos - fs_in.fragPos);
 
   if (gl_FrontFacing) {
     vec4 gp = fs_in.glp;
     vec2 reflectCoord = vec2(-gp.x, gp.y) / (gp.w * 2.0) + 0.5;
 
-    vec4 reflectColor = texture(reflectionTex, reflectCoord);
+    vec4 reflectColor = texture(u_reflectionTex, reflectCoord);
 
     vec4 mixColor = reflectColor;
 

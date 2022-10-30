@@ -47,7 +47,7 @@ const mat4 b = {
 };
 
 void main() {
-  vs_out.glp = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
+  vs_out.glp = u_projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
   gl_Position = vs_out.glp;
 
   vs_out.materialIndex = aMaterialIndex;
@@ -55,11 +55,11 @@ void main() {
 
   vs_out.fragPos = (aModelMatrix * vec4(aPos, 1.0)).xyz;
   vs_out.vertexPos = aPos;
-  vs_out.viewVertexPos = (viewMatrix * aModelMatrix * vec4(aPos, 1.0)).xyz;
+  vs_out.viewVertexPos = (u_viewMatrix * aModelMatrix * vec4(aPos, 1.0)).xyz;
 
   vs_out.normal = normalize(aNormalMatrix * aNormal);
 
-  vs_out.fragPosLightSpace = b * lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
+  vs_out.fragPosLightSpace = b * u_lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 
   if (materials[aMaterialIndex].normalMapTex >= 0) {
     vec3 N = vs_out.normal;

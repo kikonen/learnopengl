@@ -14,7 +14,7 @@ out VS_OUT {
 } vs_out;
 
 void main() {
-  gl_Position = viewMatrix * aModelMatrix * vec4(aPos, 1.0);
+  gl_Position = u_viewMatrix * aModelMatrix * vec4(aPos, 1.0);
 
-  vs_out.normal = normalize(mat3(viewMatrix) * aNormalMatrix * aNormal);
+  vs_out.normal = normalize(mat3(u_viewMatrix) * aNormalMatrix * aNormal);
 }

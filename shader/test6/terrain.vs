@@ -48,18 +48,18 @@ const mat4 b = {
 };
 
 void main() {
-  gl_Position = projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
+  gl_Position = u_projectedMatrix * aModelMatrix * vec4(aPos, 1.0);
 
   vs_out.materialIndex = aMaterialIndex;
   vs_out.texCoords = aTexCoords * materials[aMaterialIndex].tiling;
 
   vs_out.fragPos = (aModelMatrix * vec4(aPos, 1.0)).xyz;
   vs_out.vertexPos = aPos;
-  vs_out.viewVertexPos = (viewMatrix * aModelMatrix * vec4(aPos, 1.0)).xyz;
+  vs_out.viewVertexPos = (u_viewMatrix * aModelMatrix * vec4(aPos, 1.0)).xyz;
 
   vs_out.normal = normalize(aNormalMatrix * aNormal);
 
   calculateClipping(aModelMatrix * vec4(aPos, 1.0));
 
-  vs_out.fragPosLightSpace = b * lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
+  vs_out.fragPosLightSpace = b * u_lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 }

@@ -22,9 +22,9 @@ in VS_OUT {
   vec4 fragPosLightSpace;
 } fs_in;
 
-uniform sampler2DShadow shadowMap;
+uniform sampler2DShadow u_shadowMap;
 
-uniform sampler2D textures[TEX_COUNT];
+uniform sampler2D u_textures[TEX_COUNT];
 
 layout (location = 0) out vec4 fragColor;
 
@@ -42,7 +42,7 @@ void main() {
   #include var_tex_material.glsl
 
   vec3 normal = fs_in.normal;
-  vec3 toView = normalize(iViewPos - fs_in.fragPos);
+  vec3 toView = normalize(u_viewPos - fs_in.fragPos);
 
   vec4 texColor = calculateLight(normal, toView, material);
   texColor = calculateFog(material.fogRatio, texColor);

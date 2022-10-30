@@ -305,30 +305,28 @@ public:
 
     int m_programId = -1;
 
-    Shader::Mat4 projectionMatrix{ "projectionMatrix" };
-    Shader::Mat4 viewMatrix{ "viewMatrix" };
-    //Shader::Mat4 modelMatrix{ "modelMatrix" };
-    //Shader::Mat3 normalMatrix{ "normalMatrix" };
+    Shader::Mat4 projectionMatrix{ "u_projectionMatrix" };
+    Shader::Mat4 viewMatrix{ "u_viewMatrix" };
+    //Shader::Mat4 modelMatrix{ "u_modelMatrix" };
+    //Shader::Mat3 normalMatrix{ "u_normalMatrix" };
 
-    Shader::Int noiseTex{ "noiseTex" };
-    Shader::Int reflectionTex{ "reflectionTex" };
-    Shader::Int refractionTex{ "refractionTex" };
+    Shader::Int noiseTex{ "u_noiseTex" };
+    Shader::Int reflectionTex{ "u_reflectionTex" };
+    Shader::Int refractionTex{ "u_refractionTex" };
 
-    Shader::Int cubeMap{ "cubeMap" };
+    Shader::Int cubeMap{ "u_cubeMap" };
 
-    Shader::Int shadowMap{ "shadowMap" };
-    Shader::Int normalMap{ "normalMap" };
+    Shader::Int shadowMap{ "u_shadowMap" };
+    //Shader::Int normalMap{ "u_normalMap" };
 
-    //Shader::Bool drawInstanced{ "drawInstanced" };
+    Shader::Int effect{ "u_effect" };
 
-    Shader::Int effect{ "effect" };
+    Shader::Float nearPlane{ "u_nearPlane" };
+    Shader::Float farPlane{ "u_farPlane" };
 
-    Shader::Float nearPlane{ "nearPlane" };
-    Shader::Float farPlane{ "farPlane" };
+    Shader::Int skybox{ "u_skybox" };
 
-    Shader::Int skybox{ "skybox" };
-
-    Shader::Int viewportTexture{ "viewportTexture" };
+    Shader::Int viewportTex{ "u_viewportTex" };
 
     std::vector<Shader::Int> textures;
 

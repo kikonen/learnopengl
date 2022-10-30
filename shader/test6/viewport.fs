@@ -10,22 +10,22 @@ out vec4 fragColor;
 
 in vec2 texCoords;
 
-uniform sampler2D viewportTexture;
-uniform int effect;
+uniform sampler2D u_viewportTex;
+uniform int u_effect;
 
 const float offset = 1.0 / 300.0;
 
 
 void main()
 {
-  vec4 color = texture(viewportTexture, texCoords).rgba;
+  vec4 color = texture(u_viewportTex, texCoords).rgba;
 
-  if (effect == EFF_INVERT) {
+  if (u_effect == EFF_INVERT) {
     color = vec4(vec3(1.0 - color), color.a);
-  } else if (effect == EFF_GRAY_SCALE) {
+  } else if (u_effect == EFF_GRAY_SCALE) {
     float avg = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
     color = vec4(avg, avg, avg, color.a);
-  } else if (effect == EFF_SHARPEN) {
+  } else if (u_effect == EFF_SHARPEN) {
     vec2 offsets[9] = vec2[]
       (
        vec2(-offset,  offset), // top-left
@@ -47,7 +47,7 @@ void main()
        );
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(texture(viewportTexture, texCoords.st + offsets[i]));
+      sampleTex[i] = vec3(texture(u_viewportTex, texCoords.st + offsets[i]));
     }
 
     vec3 col = vec3(0.0);
@@ -55,7 +55,7 @@ void main()
       col += sampleTex[i] * kernel[i];
     }
     color = vec4(col, 1.0);
-  } else if (effect == EFF_BLUR) {
+  } else if (u_effect == EFF_BLUR) {
     vec2 offsets[9] = vec2[]
       (
        vec2(-offset,  offset), // top-left
@@ -78,7 +78,7 @@ void main()
 
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(texture(viewportTexture, texCoords.st + offsets[i]));
+      sampleTex[i] = vec3(texture(u_viewportTex, texCoords.st + offsets[i]));
     }
 
     vec3 col = vec3(0.0);
@@ -86,7 +86,7 @@ void main()
       col += sampleTex[i] * kernel[i];
     }
     color = vec4(col, 1.0);
-  } else if (effect == EFF_EDGE) {
+  } else if (u_effect == EFF_EDGE) {
     vec2 offsets[9] = vec2[]
       (
        vec2(-offset,  offset), // top-left
@@ -109,7 +109,7 @@ void main()
 
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(texture(viewportTexture, texCoords.st + offsets[i]));
+      sampleTex[i] = vec3(texture(u_viewportTex, texCoords.st + offsets[i]));
     }
 
     vec3 col = vec3(0.0);

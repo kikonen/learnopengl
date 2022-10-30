@@ -22,11 +22,13 @@ in VS_OUT {
 
 layout (location = 0) out vec4 fragColor;
 
-uniform sampler2D textures[TEX_COUNT];
-uniform sampler2DShadow shadowMap;
+uniform sampler2D u_textures[TEX_COUNT];
+uniform sampler2DShadow u_shadowMap;
 
 int iChannel0;
 vec2 iMouse;
+vec2 iResolution;
+float iTime;
 
 ////////////////////////////////////////////////////////////
 //
@@ -39,7 +41,7 @@ vec2 iMouse;
 
 //vec3 textureLod(int textureIndex, vec2 texCoords, float dummy)
 //{
-//  return texture(textures[textureIndex], texCoords);
+//  return texture(u_textures[textureIndex], texCoords);
 //}
 
 #ifdef EFFECT_SUN
@@ -52,7 +54,9 @@ vec2 iMouse;
 void main() {
   #include var_tex_material.glsl
 
-  iMouse = iResolution * 0.5;
+  iTime = u_time;
+  iResolution = u_resolution;
+  iMouse = u_resolution * 0.5;
   iChannel0 = material.diffuseTex;
 
   mainImage(fragColor, gl_FragCoord.xy);

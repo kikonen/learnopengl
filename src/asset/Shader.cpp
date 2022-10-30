@@ -260,7 +260,7 @@ int Shader::initProgram() {
     cubeMap.init(this);
 
     shadowMap.init(this);
-    normalMap.init(this); 
+    //normalMap.init(this); 
 
     //drawInstanced.init(*this);
 
@@ -271,7 +271,7 @@ int Shader::initProgram() {
 
     skybox.init(this);
 
-    viewportTexture.init(this);
+    viewportTex.init(this);
 
     //prepareTextureUniform();
     prepareTextureUniforms();
@@ -310,9 +310,8 @@ void Shader::prepareTextureUniforms()
 {
     textures.reserve(TEXTURE_COUNT);
 
-    char name[16];
     for (int i = 0; i < TEXTURE_COUNT; i++) {
-        sprintf_s(name, "textures[%i]", i);
+        auto name = fmt::format("u_textures[{}]", i);
         Shader::Int& v = textures.emplace_back(name);
         v.init(this);
     }

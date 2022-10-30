@@ -1,6 +1,6 @@
 float lookup(vec4 pos, float x, float y, float bias)
 {
-  float t = textureProj(shadowMap,
+  float t = textureProj(u_shadowMap,
                         pos + vec4(x * 0.001 * pos.w,
                                    y * 0.001 * pos.w,
                                    -0.01, 0.0),
@@ -31,7 +31,7 @@ float calcShadow(vec4 pos, vec3 normal, vec3 toLight)
 float calcShadow2(vec4 pos, vec3 normal, vec3 toLight)
 {
   float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
-  return textureProj(shadowMap, pos, bias);
+  return textureProj(u_shadowMap, pos, bias);
 }
 
 vec4 calculateDirLight(
