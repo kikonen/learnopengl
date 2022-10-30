@@ -21,8 +21,8 @@ struct FrameBufferAttachment {
     int internalFormat = GL_RGBA8;
     int format = GL_RGBA;
 
-    GLint minFilter = GL_LINEAR;
-    GLint magFilter = GL_LINEAR;
+    GLint minFilter = GL_NEAREST;
+    GLint magFilter = GL_NEAREST;
 
     int textureWrap = GL_CLAMP_TO_EDGE;
 
@@ -113,8 +113,8 @@ struct FrameBufferAttachment {
         spec.internalFormat = GL_DEPTH_COMPONENT16;
         spec.format = GL_RGBA;
         spec.attachment = GL_DEPTH_ATTACHMENT;
-        spec.minFilter = GL_LINEAR;
-        spec.magFilter = GL_LINEAR;
+        spec.minFilter = GL_NEAREST;
+        spec.magFilter = GL_NEAREST;
         spec.textureWrap = GL_CLAMP_TO_BORDER;
 
         return spec;
