@@ -4,7 +4,6 @@
 
 layout (location = 0) in vec3 a_pos;
 layout (location = 1) in vec3 a_normal;
-layout (location = 2) in vec3 a_tangent;
 layout (location = 4) in int a_materialIndex;
 layout (location = 5) in vec2 a_texCoords;
 layout (location = 6) in mat4 a_modelMatrix;
