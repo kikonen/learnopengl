@@ -131,7 +131,7 @@ public:
         }
     protected:
         const std::string name;
-        GLuint locId = -1;
+        GLint locId = -1;
     };
 
     class Mat4 final : public Uniform {
