@@ -233,7 +233,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
         meshLoader.loadTextures = data.loadTextures;
 
         auto mesh = meshLoader.load();
-        KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << mesh->str());
+        KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << (mesh ? mesh->str() : "n/A"));
         type->m_mesh.reset(mesh.release());
     }
     else if (data.type == EntityType::quad) {

@@ -329,9 +329,9 @@ entities:
     enabled: true
   - name: Backback
     desc: TODO not showing up
-    model: [backback, backback]
+    model: [backpack, backpack]
     shader: texture
-    pos: [0.0, 5.0, 5.0]
+    pos: [10.0, 10.0, 5.0]
     scale: 1.5
     enabled: false
   - name: Bunny
