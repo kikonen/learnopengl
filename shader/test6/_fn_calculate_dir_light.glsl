@@ -1,14 +1,14 @@
-float lookup(vec4 pos, float x, float y, float bias)
+float lookup(vec4 fragPosLightSpace, float x, float y, float bias)
 {
   float t = textureProj(u_shadowMap,
-                        pos + vec4(x * 0.001 * pos.w,
-                                   y * 0.001 * pos.w,
-                                   -0.01, 0.0),
+                        fragPosLightSpace + vec4(x * 0.001 * fragPosLightSpace.w,
+                                                 y * 0.001 * fragPosLightSpace.w,
+                                                 -0.01, 0.0),
                         bias);
   return t;
 }
 
-float calcShadow(vec4 pos, vec3 normal, vec3 toLight)
+float calcShadow(vec4 fragPosLightSpace, vec3 normal, vec3 toLight)
 {
   float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
 
@@ -19,19 +19,19 @@ float calcShadow(vec4 pos, vec3 normal, vec3 toLight)
   float d2 = 1.5 * swidth;
 
   float shadowFactor = 0.0;
-  shadowFactor += lookup(pos, -d2 + o.x,  d2 - o.y, bias);
-  shadowFactor += lookup(pos, -d2 + o.x, -d1 - o.y, bias);
-  shadowFactor += lookup(pos,  d1 + o.x,  d2 - o.y, bias);
-  shadowFactor += lookup(pos,  d1 + o.x, -d1 - o.y, bias);
+  shadowFactor += lookup(fragPosLightSpace, -d2 + o.x,  d2 - o.y, bias);
+  shadowFactor += lookup(fragPosLightSpace, -d2 + o.x, -d1 - o.y, bias);
+  shadowFactor += lookup(fragPosLightSpace,  d1 + o.x,  d2 - o.y, bias);
+  shadowFactor += lookup(fragPosLightSpace,  d1 + o.x, -d1 - o.y, bias);
   shadowFactor = shadowFactor / 4.0;
 
   return shadowFactor;
 }
 
-float calcShadow2(vec4 pos, vec3 normal, vec3 toLight)
+float calcShadow2(vec4 fragPosLightSpace, vec3 normal, vec3 toLight)
 {
   float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
-  return textureProj(u_shadowMap, pos, bias);
+  return textureProj(u_shadowMap, fragPosLightSpace, bias);
 }
 
 vec4 calculateDirLight(
