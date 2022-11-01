@@ -61,7 +61,7 @@ void main() {
 
   calculateClipping(worldPos);
 
-  vs_out.fragPosLightSpace = u_shadowMatrix * vec4(vs_out.fragPos, 1.0);
+  vs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[a_materialIndex].normalMapTex >= 0) {
