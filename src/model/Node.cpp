@@ -125,8 +125,9 @@ void Node::updateModelMatrix(Node* parent) {
 
         // https://learnopengl.com/Lighting/Basic-Lighting
         // http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
+        // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
         // normal = mat3(transpose(inverse(model))) * aNormal;
-        m_normalMatrix = glm::transpose(glm::inverse(glm::mat3(m_modelMatrix)));
+        m_normalMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
     }
 
     // NOTE KI *NOT* knowing if parent is changed

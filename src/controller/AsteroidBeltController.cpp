@@ -90,12 +90,11 @@ void AsteroidBeltController::updateAsteroids(
             modelMat = glm::rotate(modelMat, asteroid.m_rotationAngle, glm::vec3(0.4f, 0.6f, 0.8f));
         }
 
-        glm::mat3 normalMat = glm::transpose(glm::inverse(glm::mat3(modelMat)));
+        const auto worldModelMat = parent->getWorldModelMatrix() * modelMat;
+        // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+        const auto worldNormalMat = glm::inverseTranspose(glm::mat3(worldModelMat));
 
-        auto worldMat = parent->getWorldModelMatrix() * modelMat;
-        glm::mat3 worldNormalMat = glm::transpose(glm::inverse(glm::mat3(worldMat)));
-
-        modelBatch.add(worldMat, worldNormalMat, node.m_objectID);
+        modelBatch.add(worldModelMat, worldNormalMat, node.m_objectID);
     }
 
     modelBatch.staticDrawCount = m_asteroids.size();
