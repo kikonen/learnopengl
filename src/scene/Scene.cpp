@@ -242,21 +242,24 @@ void Scene::draw(RenderContext& ctx)
 
     glUseProgram(0);
 
-    {
-        if (shadowMapRenderer) {
-            shadowMapRenderer->render(ctx, registry);
-            shadowMapRenderer->bindTexture(ctx);
-        }
+    if (shadowMapRenderer) {
+        shadowMapRenderer->render(ctx, registry);
+        shadowMapRenderer->bindTexture(ctx);
+    }
 
-        if (cubeMapRenderer) {
-            cubeMapRenderer->render(ctx, registry, skyboxRenderer.get());
-        }
-        if (waterMapRenderer) {
-            waterMapRenderer->render(ctx, registry, skyboxRenderer.get());
-        }
-        if (mirrorMapRenderer) {
-            mirrorMapRenderer->render(ctx, registry, skyboxRenderer.get());
-        }
+    // OpenGL Programming Guide, 8th Edition, page 404
+    // Enable polygon offset to resolve depth-fighting isuses
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(2.0f, 4.0f);
+
+    if (cubeMapRenderer) {
+        cubeMapRenderer->render(ctx, registry, skyboxRenderer.get());
+    }
+    if (waterMapRenderer) {
+        waterMapRenderer->render(ctx, registry, skyboxRenderer.get());
+    }
+    if (mirrorMapRenderer) {
+        mirrorMapRenderer->render(ctx, registry, skyboxRenderer.get());
     }
 
     {
@@ -264,6 +267,8 @@ void Scene::draw(RenderContext& ctx)
         drawMirror(ctx);
         drawViewports(ctx);
     }
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
 void Scene::drawMain(RenderContext& ctx)
