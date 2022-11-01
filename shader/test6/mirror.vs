@@ -38,14 +38,6 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
-// @see Computer Graphics Programmming in OpenGL Using C++, Second Edition
-const mat4 b = {
-  {0.5f, 0.0f, 0.0f, 0.0f},
-  {0.0f, 0.5f, 0.0f, 0.0f},
-  {0.0f, 0.0f, 0.5f, 0.0f},
-  {0.5f, 0.5f, 0.5f, 1.0f},
-};
-
 void main() {
   vs_out.glp = u_projectedMatrix * a_modelMatrix * vec4(a_pos, 1.0);
   gl_Position = vs_out.glp;
@@ -59,6 +51,5 @@ void main() {
 
   vs_out.normal = normalize(a_normalMatrix * a_normal);
 
-  vs_out.fragPosLightSpace = b * u_lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
-
+  vs_out.fragPosLightSpace = u_shadowMatrix * vec4(vs_out.fragPos, 1.0);
 }

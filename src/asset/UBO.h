@@ -47,6 +47,7 @@ struct MatricesUBO {
     glm::mat4 u_projection;
     glm::mat4 u_view;
     glm::mat4 u_lightSpace;
+    glm::mat4 u_shadow;
 };
 
 // NOTE KI align 16

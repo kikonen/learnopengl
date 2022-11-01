@@ -99,6 +99,7 @@ public:
     mutable int skipCount = 0;
 
     mutable glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
+    mutable glm::mat4 shadowMatrix = glm::mat4(1.0f);
 
     mutable ClipPlanesUBO clipPlanes;
 

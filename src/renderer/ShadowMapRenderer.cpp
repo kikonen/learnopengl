@@ -3,6 +3,19 @@
 #include "asset/ShaderBind.h"
 #include "scene/Scene.h"
 
+namespace {
+    // @see Computer Graphics Programmming in OpenGL Using C++, Second Edition
+    // @see OpenGL Programming Guide, 8th Edition
+    // The scale and bias matrix maps depth values in projection space
+    // (which lie between ?1.0 and +1.0) into the range 0.0 to 1.0.
+    const glm::mat4 scaleBiasMatrix = {
+      {0.5f, 0.0f, 0.0f, 0.0f},
+      {0.0f, 0.5f, 0.0f, 0.0f},
+      {0.0f, 0.0f, 0.5f, 0.0f},
+      {0.5f, 0.5f, 0.5f, 1.0f},
+    };
+}
+
 ShadowMapRenderer::ShadowMapRenderer()
 {
 }
@@ -55,26 +68,20 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     auto& node = ctx.scene->registry.m_dirLight;
     if (!node) return;
 
-    //glm::mat4 b = {
-    //    {0.5f, 0.0f, 0.0f, 0.0f},
-    //    {0.0f, 0.5f, 0.0f, 0.0f},
-    //    {0.0f, 0.0f, 0.5f, 0.0f},
-    //    {0.5f, 0.5f, 0.5f, 1.0f},
-    //};
-
     const glm::vec3 up{ 0.0, 1.0, 0.0 };
-    const glm::mat4 lightView = glm::lookAt(
+    const glm::mat4 lightViewMatrix = glm::lookAt(
         node->m_light->getWorldPos(),
         node->m_light->getWorldTarget(), up);
 
-    const glm::mat4 lightProjection = glm::ortho(
+    const glm::mat4 lightProjectionMatrix = glm::ortho(
         -100.0f, 100.0f, -100.0f, 100.0f,
         ctx.assets.shadowNearPlane,
         ctx.assets.shadowFarPlane);
 
     //lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
 
-    ctx.lightSpaceMatrix = lightProjection * lightView;
+    ctx.lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
+    ctx.shadowMatrix = scaleBiasMatrix *ctx.lightSpaceMatrix;
 }
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)

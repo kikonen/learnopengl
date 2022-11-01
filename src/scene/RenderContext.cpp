@@ -129,7 +129,13 @@ void RenderContext::bindUBOs() const
 
 void RenderContext::bindMatricesUBO() const
 {
-    MatricesUBO matricesUbo = { projectedMatrix, projectionMatrix, viewMatrix, lightSpaceMatrix };
+    MatricesUBO matricesUbo = {
+        projectedMatrix,
+        projectionMatrix,
+        viewMatrix,
+        lightSpaceMatrix,
+        shadowMatrix,
+    };
 
     glNamedBufferSubData(scene->ubo.matrices, 0, sizeof(MatricesUBO), &matricesUbo);
 }
