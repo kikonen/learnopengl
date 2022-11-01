@@ -58,6 +58,8 @@ private:
     // dir = FROM pos to TARGET
     glm::vec3 m_worldDir{ 0.0f };
     glm::vec3 m_worldPos{ 0.0f };
+    glm::vec3 m_worldTargetPos{ 0.0f };
+
     glm::vec3 m_worldTarget{ 0.f };
 
     glm::vec3 m_pos{ 0.0f };

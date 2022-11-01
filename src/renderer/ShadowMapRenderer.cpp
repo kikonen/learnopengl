@@ -5,7 +5,7 @@
 
 namespace {
     // @see Computer Graphics Programmming in OpenGL Using C++, Second Edition
-    // @see OpenGL Programming Guide, 8th Edition
+    // @see OpenGL Programming Guide, 8th Edition, page 406
     // The scale and bias matrix maps depth values in projection space
     // (which lie between -1.0 and +1.0) into the range 0.0 to 1.0.
     const glm::mat4 scaleBiasMatrix = {

@@ -5,6 +5,7 @@
 
 #include "model/Node.h"
 #include "scene/RenderContext.h"
+#include "scene/NodeRegistry.h"
 
 
 Light::Light()
@@ -17,10 +18,13 @@ void Light::update(const RenderContext& ctx, Node& node)
     //if (!dirty) return;
     if (!enabled) return;
 
+    // worldTarget is relative to *ROOT*
+    m_worldTargetPos = ctx.registry.m_root->getWorldModelMatrix() * glm::vec4(m_worldTarget, 1.0);
+
     m_worldPos = node.getWorldModelMatrix() * glm::vec4(m_pos, 1.f);
     // TODO KI SHOULD have local vs. world dir logic; or separate logic for "spot" light
     // => for spot light dir should be *NOT* calculated but set by initializer logic
-    m_worldDir = glm::normalize(m_worldTarget - m_worldPos);
+    m_worldDir = glm::normalize(m_worldTargetPos - m_worldPos);
 
     if (!directional) {
         const float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
