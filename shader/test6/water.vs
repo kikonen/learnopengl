@@ -43,6 +43,7 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
+// @see Computer Graphics Programmming in OpenGL Using C++, Second Edition
 const mat4 b = {
   {0.5f, 0.0f, 0.0f, 0.0f},
   {0.0f, 0.5f, 0.0f, 0.0f},

@@ -45,6 +45,7 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 #include fn_calculate_clipping.glsl
 
+// @see Computer Graphics Programmming in OpenGL Using C++, Second Edition
 const mat4 b = {
   {0.5f, 0.0f, 0.0f, 0.0f},
   {0.0f, 0.5f, 0.0f, 0.0f},
