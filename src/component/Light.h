@@ -18,6 +18,8 @@ public:
 
     void update(const RenderContext& ctx, Node& node);
 
+    void markDirty();
+
     const glm::vec3& getWorldTarget();
     void setWorldTarget(const glm::vec3& target);
 
@@ -53,7 +55,7 @@ public:
     glm::vec4 specular{ 1.0f, 1.0f, 1.0f, 1.f };
 
 private:
-    bool dirty = true;
+    bool m_dirty = true;
 
     // dir = FROM pos to TARGET
     glm::vec3 m_worldDir{ 0.0f };
@@ -63,4 +65,7 @@ private:
     glm::vec3 m_worldTarget{ 0.f };
 
     glm::vec3 m_pos{ 0.0f };
+
+    int m_rootMatrixLevel = -1;
+    int m_nodeMatrixLevel = -1;
 };
