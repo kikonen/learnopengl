@@ -30,12 +30,14 @@ out float gl_ClipDistance[CLIP_COUNT];
 #include fn_calculate_clipping.glsl
 
 void main() {
-  gl_Position = u_projectedMatrix * a_modelMatrix * vec4(a_pos, 1.0);
+  vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
+
+  gl_Position = u_projectedMatrix * worldPos;
 
 #ifdef USE_ALPHA
   vs_out.materialIndex = a_materialIndex;
   vs_out.texCoords = a_texCoords;
 #endif
 
-  calculateClipping(a_modelMatrix * vec4(a_pos, 1.0));
+  calculateClipping(worldPos);
 }

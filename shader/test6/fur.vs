@@ -28,11 +28,13 @@ out float gl_ClipDistance[CLIP_COUNT];
 #include fn_calculate_clipping.glsl
 
 void main() {
+  vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
+
   mat4 vmMat = u_viewMatrix * a_modelMatrix;
 
   gl_Position = vmMat * vec4(a_pos, 1.0);
 
   vs_out.normal = normalize(a_normalMatrix * a_normal);
 
-  calculateClipping(a_modelMatrix * vec4(a_pos, 1.0));
+  calculateClipping(worldPos);
 }

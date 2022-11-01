@@ -20,7 +20,9 @@ out VS_OUT {
 
 void main()
 {
-  gl_Position = u_lightSpaceMatrix * a_modelMatrix * vec4(a_pos, 1.0);
+  vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
+
+  gl_Position = u_lightSpaceMatrix * worldPos;
 
 #ifdef USE_ALPHA
   vs_out.materialIndex = a_materialIndex;

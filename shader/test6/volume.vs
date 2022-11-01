@@ -16,6 +16,8 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
-  gl_Position = u_projectedMatrix * a_modelMatrix * vec4(a_pos, 1.0);
-  vs_out.fragPos = (a_modelMatrix * vec4(a_pos, 1.0)).xyz;
+  vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
+
+  gl_Position = u_projectedMatrix * worldPos;
+  vs_out.fragPos = worldPos.xyz;
 }

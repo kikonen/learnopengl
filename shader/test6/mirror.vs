@@ -39,15 +39,17 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
-  vs_out.glp = u_projectedMatrix * a_modelMatrix * vec4(a_pos, 1.0);
+  vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
+
+  vs_out.glp = u_projectedMatrix * worldPos;
   gl_Position = vs_out.glp;
 
   vs_out.materialIndex = a_materialIndex;
   vs_out.texCoords = a_texCoords;
 
-  vs_out.fragPos = (a_modelMatrix * vec4(a_pos, 1.0)).xyz;
+  vs_out.fragPos = worldPos.xyz;
   vs_out.vertexPos = a_pos;
-  vs_out.viewVertexPos = (u_viewMatrix * a_modelMatrix * vec4(a_pos, 1.0)).xyz;
+  vs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
 
   vs_out.normal = normalize(a_normalMatrix * a_normal);
 

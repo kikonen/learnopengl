@@ -46,18 +46,20 @@ out float gl_ClipDistance[CLIP_COUNT];
 #include fn_calculate_clipping.glsl
 
 void main() {
-  gl_Position = u_projectedMatrix * a_modelMatrix * vec4(a_pos, 1.0);
+  vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
+
+  gl_Position = u_projectedMatrix * worldPos;
 
   vs_out.materialIndex = a_materialIndex;
   vs_out.texCoords = a_texCoords * u_materials[a_materialIndex].tiling;
 
-  vs_out.fragPos = (a_modelMatrix * vec4(a_pos, 1.0)).xyz;
+  vs_out.fragPos = worldPos.xyz;
   vs_out.vertexPos = a_pos;
-  vs_out.viewVertexPos = (u_viewMatrix * a_modelMatrix * vec4(a_pos, 1.0)).xyz;
+  vs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
 
   vs_out.normal = normalize(a_normalMatrix * a_normal);
 
-  calculateClipping(a_modelMatrix * vec4(a_pos, 1.0));
+  calculateClipping(worldPos);
 
   vs_out.fragPosLightSpace = u_shadowMatrix * vec4(vs_out.fragPos, 1.0);
 
