@@ -17,21 +17,21 @@ public:
     ~CommandEngine() = default;
 
     void prepare(
-        const Assets& assets);
+        const Assets& assets) noexcept;
 
-    void update(const RenderContext& ctx);
+    void update(const RenderContext& ctx) noexcept;
 
-    int addCommand(std::unique_ptr<Command> cmd);
-    void cancel(int commandId);
+    int addCommand(std::unique_ptr<Command> cmd) noexcept;
+    void cancel(int commandId) noexcept;
 
 private:
-    bool isCanceled(int commandId);
-    bool isValid(const RenderContext& ctx, Command* cmd);
+    bool isCanceled(int commandId) noexcept;
+    bool isValid(const RenderContext& ctx, Command* cmd) noexcept;
 
-    void processCanceled(const RenderContext& ctx);
-    void processPending(const RenderContext& ctx);
-    void processBlocked(const RenderContext& ctx);
-    void processActive(const RenderContext& ctx);
+    void processCanceled(const RenderContext& ctx) noexcept;
+    void processPending(const RenderContext& ctx) noexcept;
+    void processBlocked(const RenderContext& ctx) noexcept;
+    void processActive(const RenderContext& ctx) noexcept;
 
 private:
     std::vector<std::unique_ptr<Command>> m_pending;

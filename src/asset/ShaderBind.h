@@ -5,11 +5,13 @@
 class ShaderBind final
 {
 public:
-    ShaderBind(Shader* shader) : shader(shader) {
+    ShaderBind(Shader* shader) noexcept
+        : shader(shader)
+    {
         if (shader) shader->bind();
     };
 
-    ~ShaderBind() {
+    ~ShaderBind() noexcept {
         if (shader) shader->unbind();
     }
 

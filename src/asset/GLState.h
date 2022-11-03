@@ -13,23 +13,23 @@ public:
 
     //void reload();
 
-    void track(GLenum key, bool initial);
+    void track(GLenum key, bool initial) noexcept;
 
-    inline void enable(GLenum key);
-    inline void disable(GLenum key);
+    inline void enable(GLenum key) noexcept;
+    inline void disable(GLenum key) noexcept;
 
-    void cullFace(GLenum mode);
-    void frontFace(GLenum mode);
+    void cullFace(GLenum mode) noexcept;
+    void frontFace(GLenum mode) noexcept;
 
-    void polygonFrontAndBack(GLenum mode);
+    void polygonFrontAndBack(GLenum mode) noexcept;
 
     void bindTextures(
         const GLuint unitIndexFirst,
-        const std::vector<GLuint>& textureIDs);
+        const std::vector<GLuint>& textureIDs) noexcept;
 
     void bindTexture(
         const GLuint unitIndex,
-        const GLuint textureID);
+        const GLuint textureID) noexcept;
 
 private:
     std::set<GLenum> enabled;

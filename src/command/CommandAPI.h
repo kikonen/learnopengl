@@ -16,38 +16,38 @@ public:
     int lua_cancel(
         int afterCommandId,
         float secs,
-        int commandId);
+        int commandId) noexcept;
 
     int lua_wait(
         int afterCommandId,
-        float secs);
+        float secs) noexcept;
 
     int lua_move(
         int objectID,
         const sol::table& opt,
-        const sol::table& pos);
+        const sol::table& pos) noexcept;
 
     int lua_moveSpline(
         int objectID,
         const sol::table& opt,
         const sol::table& p,
-        const sol::table& pos);
+        const sol::table& pos) noexcept;
 
     int lua_rotate(
         int objectID,
         const sol::table& opt,
-        const sol::table& rot);
+        const sol::table& rot) noexcept;
 
     int lua_scale(
         int objectID,
         const sol::table& opt,
-        const sol::table& scale);
+        const sol::table& scale) noexcept;
 
     int lua_start(
         int objectID,
         int afterCommandId,
         sol::function fn,
-        sol::variadic_args va);
+        sol::variadic_args va) noexcept;
 
 private:
    CommandEngine& m_commandEngine;

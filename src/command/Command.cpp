@@ -17,14 +17,14 @@ namespace {
 
 Command::Command(
     int afterCommandId,
-    float finishTime)
+    float finishTime) noexcept
     : m_id(nextID()),
     m_afterCommandId(afterCommandId),
     m_finishTime(finishTime)
 {
 }
 
-void Command::bind(const RenderContext& ctx)
+void Command::bind(const RenderContext& ctx) noexcept
 {
     m_elapsedTime = 0.f;
 }

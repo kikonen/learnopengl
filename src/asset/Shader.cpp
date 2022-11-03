@@ -79,7 +79,7 @@ Shader::~Shader()
     }
 }
 
-const void Shader::bind()
+const void Shader::bind() noexcept
 {
     m_bound++;
     if (m_bound > 1) return;
@@ -87,7 +87,7 @@ const void Shader::bind()
     KI_GL_CALL(glUseProgram(m_programId));
 }
 
-const void Shader::unbind()
+const void Shader::unbind() noexcept
 {
     m_bound--;
     assert(m_bound >= 0);
@@ -102,7 +102,7 @@ void Shader::load()
     }
 }
 
-int Shader::prepare(const Assets& assets)
+int Shader::prepare(const Assets& assets) noexcept
 {
     if (m_shaderName == TEX_TEXTURE && m_materialCount == 0)
         KI_BREAK();
@@ -318,7 +318,7 @@ void Shader::prepareTextureUniforms()
     }
 }
 
-void Shader::setInt(const std::string& name, int value)
+void Shader::setInt(const std::string& name, int value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
@@ -329,7 +329,7 @@ void Shader::setInt(const std::string& name, int value)
 void Shader::setUBO(
     const std::string& name,
     unsigned int UBO,
-    unsigned int expectedSize)
+    unsigned int expectedSize) noexcept
 {
     unsigned int blockIndex = glGetUniformBlockIndex(m_programId, name.c_str());
     if (blockIndex == GL_INVALID_INDEX) {

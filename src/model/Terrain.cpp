@@ -12,7 +12,7 @@ Terrain::~Terrain()
 {
 }
 
-void Terrain::prepare(const Assets& assets)
+void Terrain::prepare(const Assets& assets) noexcept
 {
     setPosition({ worldX * assets.terrainTileSize, worldY, worldZ * assets.terrainTileSize });
     Node::prepare(assets);

@@ -14,14 +14,14 @@ public:
         float finishTime,
         bool relative,
         const glm::vec3& controlPoint,
-        const glm::vec3& position);
+        const glm::vec3& position) noexcept;
 
     virtual void bind(
         const RenderContext& ctx,
-        Node* node) override;
+        Node* node) noexcept override;
 
     virtual void execute(
-        const RenderContext& ctx) override;
+        const RenderContext& ctx) noexcept override;
 
 private:
     const glm::vec3 m_controlPoint;

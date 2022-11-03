@@ -12,19 +12,19 @@ public:
     Batch();
     ~Batch();
 
-    void add(const glm::mat4& model, const glm::mat3& normal, int objectID);
-    void reserve(size_t count);
-    int size();
+    void add(const glm::mat4& model, const glm::mat3& normal, int objectID) noexcept;
+    void reserve(size_t count) noexcept;
+    int size() noexcept;
 
-    void clear();
+    void clear() noexcept;
 
-    void prepare(NodeType& type);
+    void prepare(NodeType& type) noexcept;
 
-    void update(size_t count);
-    void bind(const RenderContext& ctx, Shader* shader);
-    void draw(const RenderContext& ctx, Node& node, Shader* shader);
+    void update(size_t count) noexcept;
+    void bind(const RenderContext& ctx, Shader* shader) noexcept;
+    void draw(const RenderContext& ctx, Node& node, Shader* shader) noexcept;
 
-    void flush(const RenderContext& ctx, const NodeType& type);
+    void flush(const RenderContext& ctx, const NodeType& type) noexcept;
 
 public:
     int batchSize = -1;

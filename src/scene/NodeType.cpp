@@ -31,37 +31,37 @@ NodeType::~NodeType()
     KI_INFO_SB("NODE_TYPE: delete " << typeID);
 }
 
-const std::string NodeType::str() const
+const std::string NodeType::str() const noexcept
 {
     return fmt::format("<NODE_TYPE: id={}, mesh={}>", typeID, m_mesh ? m_mesh->str() : "N/A");
 }
 
 
-bool NodeType::hasReflection()
+bool NodeType::hasReflection() noexcept
 {
     if (!m_mesh) return false;
     return m_mesh->hasReflection();
 }
 
-bool NodeType::hasRefraction()
+bool NodeType::hasRefraction() noexcept
 {
     if (!m_mesh) return false;
     return m_mesh->hasRefraction();
 }
 
-Material* NodeType::findMaterial(std::function<bool(const Material&)> fn)
+Material* NodeType::findMaterial(std::function<bool(const Material&)> fn) noexcept
 {
     if (!m_mesh) return nullptr;
     return m_mesh->findMaterial(fn);
 }
 
-void NodeType::modifyMaterials(std::function<void(Material&)> fn)
+void NodeType::modifyMaterials(std::function<void(Material&)> fn) noexcept
 {
     if (!m_mesh) return;
     m_mesh->modifyMaterials(fn);
 }
 
-void NodeType::prepare(const Assets& assets)
+void NodeType::prepare(const Assets& assets) noexcept
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -87,7 +87,7 @@ void NodeType::prepare(const Assets& assets)
 
 void NodeType::bind(
     const RenderContext& ctx, 
-    Shader* shader)
+    Shader* shader) noexcept
 {
     if (!m_mesh) return;
 
@@ -118,7 +118,7 @@ void NodeType::bind(
     }
 }
 
-void NodeType::unbind(const RenderContext& ctx)
+void NodeType::unbind(const RenderContext& ctx) noexcept
 {
     m_boundShader = nullptr;
     ctx.bindGlobal();

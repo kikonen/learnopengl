@@ -6,20 +6,20 @@ RotateNode::RotateNode(
     int objectID,
     float finishTime,
     bool relative,
-    const glm::vec3& rotation)
+    const glm::vec3& rotation) noexcept
     : NodeCommand(afterCommandId, objectID, finishTime, relative),
     m_end(rotation)
 {
 }
 
-void RotateNode::bind(const RenderContext& ctx, Node* node)
+void RotateNode::bind(const RenderContext& ctx, Node* node) noexcept
 {
     NodeCommand::bind(ctx, node);
     m_begin = node->getRotation();
 }
 
 void RotateNode::execute(
-    const RenderContext& ctx)
+    const RenderContext& ctx) noexcept
 {
     m_elapsedTime += ctx.clock.elapsedSecs;
 

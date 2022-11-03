@@ -71,20 +71,20 @@ class Shader final
 public:
     void load();
 
-    int prepare(const Assets& assets);
+    int prepare(const Assets& assets) noexcept;
 
-    const void bind();
-    const void unbind();
+    const void bind() noexcept;
+    const void unbind() noexcept;
 
-    int boundCount() { return m_bound; }
-    int prepared() { return m_prepared; }
+    int boundCount() noexcept { return m_bound; }
+    int prepared() noexcept { return m_prepared; }
 
-    void setInt(const std::string& name, int value);
+    void setInt(const std::string& name, int value) noexcept;
 
     void setUBO(
         const std::string& name,
         unsigned int UBO,
-        unsigned int expectedSize);
+        unsigned int expectedSize) noexcept;
 
 public:
     // public due to shared_ptr
@@ -142,7 +142,7 @@ public:
         Mat4(const std::string& name) : Uniform(name) {
         }
 
-        void set(const glm::mat4& value) {
+        void set(const glm::mat4& value) noexcept {
             if (locId != -1) {
                 glUniformMatrix4fv(locId, 1, GL_FALSE, glm::value_ptr(value));
             }
@@ -155,7 +155,7 @@ public:
         Mat3(const std::string& name) : Uniform(name) {
         }
 
-        void set(const glm::mat3& value) {
+        void set(const glm::mat3& value) noexcept {
             if (locId != -1) {
                 glUniformMatrix3fv(locId, 1, GL_FALSE, glm::value_ptr(value));
             }
@@ -168,7 +168,7 @@ public:
         Mat2(const std::string& name) : Uniform(name) {
         }
 
-        void set(const glm::mat2& value) {
+        void set(const glm::mat2& value) noexcept {
             if (locId != -1) {
                 glUniformMatrix3fv(locId, 1, GL_FALSE, glm::value_ptr(value));
             }
@@ -181,7 +181,7 @@ public:
         Vec4(const std::string& name) : Uniform(name) {
         }
 
-        void set(const glm::vec4& value) {
+        void set(const glm::vec4& value) noexcept {
             if (locId != -1) {
                 glUniform1fv(locId, 4, glm::value_ptr(value));
             }
@@ -194,7 +194,7 @@ public:
         Vec3(const std::string& name) : Uniform(name) {
         }
 
-        void set(const glm::vec3& value) {
+        void set(const glm::vec3& value) noexcept {
             if (locId != -1) {
                 glUniform1fv(locId, 3, glm::value_ptr(value));
             }
@@ -207,7 +207,7 @@ public:
         Vec2(const std::string& name) : Uniform(name) {
         }
 
-        void set(const glm::vec2& value) {
+        void set(const glm::vec2& value) noexcept {
             if (locId != -1) {
                 glUniform1fv(locId, 2, glm::value_ptr(value));
             }
@@ -220,7 +220,7 @@ public:
         FloatArray(const std::string& name) : Uniform(name) {
         }
 
-        void set(int count, const float* values) {
+        void set(int count, const float* values) noexcept {
             if (locId != -1) {
                 glUniform1fv(locId, count, values);
             }
@@ -233,7 +233,7 @@ public:
         IntArray(const std::string& name) : Uniform(name) {
         }
 
-        void set(int count, const GLint* values) {
+        void set(int count, const GLint* values) noexcept {
             if (locId != -1) {
                 glUniform1iv(locId, count, values);
             }
@@ -246,7 +246,7 @@ public:
         Float(const std::string& name) : Uniform(name) {
         }
 
-        void set(const float value) {
+        void set(const float value) noexcept {
             if (locId != -1 && (unassigned || value != lastValue)) {
                 glUniform1f(locId, value);
                 lastValue = value;
@@ -264,7 +264,7 @@ public:
         Int(const std::string& name) : Uniform(name) {
         }
 
-        void set(const int value) {
+        void set(const int value) noexcept {
             if (locId != -1 && (unassigned || value != lastValue)) {
                 glUniform1i(locId, value);
                 lastValue = value;
@@ -281,7 +281,7 @@ public:
         Bool(const std::string& name) : Uniform(name) {
         }
 
-        void set(const bool value) {
+        void set(const bool value) noexcept {
             if (locId != -1 && (unassigned || value != lastValue)) {
                 glUniform1i(locId, (int)value);
                 lastValue = value;

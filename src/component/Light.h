@@ -16,21 +16,21 @@ public:
     Light();
     ~Light() = default;
 
-    void update(const RenderContext& ctx, Node& node);
+    void update(const RenderContext& ctx, Node& node) noexcept;
 
-    void markDirty();
+    void markDirty() noexcept;
 
-    const glm::vec3& getWorldTarget();
-    void setWorldTarget(const glm::vec3& target);
+    const glm::vec3& getWorldTarget() noexcept;
+    void setWorldTarget(const glm::vec3& target) noexcept;
 
-    const glm::vec3& getWorldPos();
+    const glm::vec3& getWorldPos() noexcept;
 
-    const glm::vec3& getPos();
-    void setPos(const glm::vec3& pos);
+    const glm::vec3& getPos() noexcept;
+    void setPos(const glm::vec3& pos) noexcept;
 
-    DirLightUBO toDirLightUBO();
-    PointLightUBO toPointightUBO();
-    SpotLightUBO toSpotLightUBO();
+    DirLightUBO toDirLightUBO() noexcept;
+    PointLightUBO toPointightUBO() noexcept;
+    SpotLightUBO toSpotLightUBO() noexcept;
 
 public:
     bool enabled = true;

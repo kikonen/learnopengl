@@ -16,13 +16,16 @@
 class Sccene;
 
 struct ShaderKey {
-    ShaderKey(int shaderID, bool renderBack) : shaderID(shaderID), renderBack(renderBack) {};
+    ShaderKey(int shaderID, bool renderBack) noexcept
+        : shaderID(shaderID),
+        renderBack(renderBack) {};
     int shaderID;
     bool renderBack;
 
-    bool operator<(const ShaderKey& o)  const {
+    bool operator<(const ShaderKey& o)  const noexcept {
         return std::tie(shaderID, renderBack) < std::tie(o.shaderID, o.renderBack);
     }
+
 };
 
 using GroupVector = std::vector<Group*>;
@@ -40,36 +43,36 @@ public:
 
     ~NodeRegistry();
 
-    void addGroup(Group* group);
+    void addGroup(Group* group) noexcept;
 
     void addNode(
         NodeType* type,
-        Node* node);
+        Node* node) noexcept;
 
     // @return node null if not found
-    Node* getNode(const int objectID) const;
+    Node* getNode(const int objectID) const noexcept;
 
     // @return node null if not found
-    Node* getNode(const uuids::uuid& id) const;
+    Node* getNode(const uuids::uuid& id) const noexcept;
 
-    void selectNodeByObjectId(int objectID, bool append) const;
+    void selectNodeByObjectId(int objectID, bool append) const noexcept;
 
-    void addViewPort(std::shared_ptr<Viewport> viewport);
+    void addViewPort(std::shared_ptr<Viewport> viewport) noexcept;
 
-    void attachNodes();
+    void attachNodes() noexcept;
 
-    int countSelected() const;
+    int countSelected() const noexcept;
 
-    void changeParent(Node* node, uuids::uuid parentId);
+    void changeParent(Node* node, uuids::uuid parentId) noexcept;
 
-    Node* getParent(const Node& node) const;
-    const NodeVector* getChildren(const Node& node) const;
+    Node* getParent(const Node& node) const noexcept;
+    const NodeVector* getChildren(const Node& node) const noexcept;
 
 private:
-    void bindPendingChildren();
-    void bindNode(Node* node);
-    bool bindParent(Node* child);
-    void bindChildren(Node* parent);
+    void bindPendingChildren() noexcept;
+    void bindNode(Node* node) noexcept;
+    bool bindParent(Node* child) noexcept;
+    void bindChildren(Node* parent) noexcept;
 
 public:
     const Assets& assets;

@@ -25,7 +25,7 @@ assets:
 
   show_normals: false
   show_mirror_view: false
-  show_shadowMap_view: true
+  show_shadowMap_view: false
   show_reflection_view: false
   show_refraction_view: false
   show_objectid_view: false

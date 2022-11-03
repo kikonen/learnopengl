@@ -8,10 +8,10 @@ class WaitCommand final : public Command
 public:
     WaitCommand(
         int afterCommandId,
-        float finishTime);
+        float finishTime) noexcept;
 
     virtual void execute(
-        const RenderContext& ctx) override;
+        const RenderContext& ctx) noexcept override;
 
 private:
 };

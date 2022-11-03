@@ -12,16 +12,16 @@ class Command
 public:
     Command(
         int afterCommandId,
-        float finishTime);
+        float finishTime) noexcept;
 
-    virtual bool isNode() { return false; }
+    virtual bool isNode() noexcept { return false; }
 
-    virtual void bind(const RenderContext& ctx);
+    virtual void bind(const RenderContext& ctx) noexcept;
 
-    void wait(const RenderContext& ctx);
+    void wait(const RenderContext& ctx) noexcept;
 
     // NOTE KI set m_finished to stop
-    virtual void execute(const RenderContext& ctx) = 0;
+    virtual void execute(const RenderContext& ctx) noexcept = 0;
 
 public:
     const int m_id;

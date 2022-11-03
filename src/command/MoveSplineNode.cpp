@@ -7,21 +7,21 @@ MoveSplineNode::MoveSplineNode(
     float finishTime,
     bool relative,
     const glm::vec3& controlPoint,
-    const glm::vec3& position)
+    const glm::vec3& position) noexcept
     : NodeCommand(afterCommandId, objectID, finishTime, relative),
     m_controlPoint(controlPoint),
     m_end(position)
 {
 }
 
-void MoveSplineNode::bind(const RenderContext& ctx, Node* node)
+void MoveSplineNode::bind(const RenderContext& ctx, Node* node) noexcept
 {
     NodeCommand::bind(ctx, node);
     m_begin = node->getPosition();
 }
 
 void MoveSplineNode::execute(
-    const RenderContext& ctx)
+    const RenderContext& ctx) noexcept
 {
     m_elapsedTime += ctx.clock.elapsedSecs;
 

@@ -7,7 +7,8 @@
 namespace ki {
     // https://gist.github.com/liam-middlebrook/c52b069e4be2d87a6d2f
 
-    std::string formatSource(GLenum source) {
+    std::string formatSource(GLenum source) noexcept
+    {
         switch (source) {
         case GL_DEBUG_SOURCE_API: "API";
         case GL_DEBUG_SOURCE_WINDOW_SYSTEM: "WINDOW";
@@ -23,7 +24,8 @@ namespace ki {
     }
 
 
-    std::string formatType(GLenum type) {
+    std::string formatType(GLenum type) noexcept
+    {
         switch (type) {
         case GL_DEBUG_TYPE_ERROR: "ERROR";
         case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: "DEPRECATED";
@@ -38,7 +40,8 @@ namespace ki {
         return ss.str();
     }
 
-    std::string formatSeverity(GLenum severity) {
+    std::string formatSeverity(GLenum severity) noexcept
+    {
         switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH: "HIGH";
         case GL_DEBUG_SEVERITY_MEDIUM: return "MEDIUM";
@@ -50,7 +53,7 @@ namespace ki {
         return ss.str();
     }
 
-    void glfwErrorCallback(int, const char* message) 
+    void glfwErrorCallback(int, const char* message) noexcept
     {
         KI_ERROR_SB(message);
     }
@@ -62,7 +65,7 @@ namespace ki {
         GLenum severity, 
         GLsizei length,
         const GLchar* message, 
-        const void* userParam) 
+        const void* userParam) noexcept 
     {
         std::stringstream ss;
         ss << formatSource(source)
@@ -134,7 +137,7 @@ namespace ki {
     }
     */
 
-    void GL::checkErrors(const std::string& loc) {
+    void GL::checkErrors(const std::string& loc) noexcept {
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR)
         {

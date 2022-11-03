@@ -5,14 +5,14 @@
 CancelCommand::CancelCommand(
     int afterCommandId,
     float finishTime,
-    int commandId)
+    int commandId) noexcept
     : Command(afterCommandId, finishTime),
     m_commandId(commandId)
 {
 }
 
 void CancelCommand::execute(
-    const RenderContext& ctx)
+    const RenderContext& ctx) noexcept
 {
     m_elapsedTime += ctx.clock.elapsedSecs;
 

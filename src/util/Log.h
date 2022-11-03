@@ -25,14 +25,14 @@ class Log
 {
 public:
     static void init();
-    static void flush();
+    static void flush() noexcept;
 
-    static void critical(const std::string& msg);
-    static void error(const std::string& msg);
-    static void warn(const std::string& msg);
-    static void info(const std::string& msg);
-    static void debug(const std::string& msg);
-    static void trace(const std::string& msg);
+    static void critical(const std::string& msg) noexcept;
+    static void error(const std::string& msg) noexcept;
+    static void warn(const std::string& msg) noexcept;
+    static void info(const std::string& msg) noexcept;
+    static void debug(const std::string& msg) noexcept;
+    static void trace(const std::string& msg) noexcept;
 
 private:
 };

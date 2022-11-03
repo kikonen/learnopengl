@@ -14,7 +14,7 @@ public:
     bool update(
         const RenderContext& ctx,
         Node& node,
-        Node* parent) override;
+        Node* parent) noexcept override;
 
 private:
     const glm::vec3 m_center;

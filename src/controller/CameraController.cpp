@@ -8,7 +8,7 @@ CameraController::CameraController()
 bool CameraController::update(
     const RenderContext& ctx,
     Node& node,
-    Node* parent)
+    Node* parent) noexcept
 {
     Camera* camera = node.m_camera.get();
     if (!camera) return false;

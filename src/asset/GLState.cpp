@@ -7,7 +7,7 @@ GLState::GLState()
 //void GLState::reload() {
 //}
 
-void GLState::track(GLenum key, bool initial)
+void GLState::track(GLenum key, bool initial) noexcept
 {
     tracked.insert(key);
     if (initial) {
@@ -18,7 +18,7 @@ void GLState::track(GLenum key, bool initial)
     }
 }
 
-void GLState::enable(GLenum key)
+void GLState::enable(GLenum key) noexcept
 {
     if (tracked.find(key) == tracked.end()) {
         glEnable(key);
@@ -32,7 +32,7 @@ void GLState::enable(GLenum key)
     enabled.insert(key);
 }
 
-void GLState::disable(GLenum key)
+void GLState::disable(GLenum key) noexcept
 {
     if (tracked.find(key) == tracked.end()) {
         glDisable(key);
@@ -46,7 +46,7 @@ void GLState::disable(GLenum key)
     enabled.erase(key);
 }
 
-void GLState::cullFace(GLenum mode)
+void GLState::cullFace(GLenum mode) noexcept
 {
     if (m_cullFace != mode) {
         glCullFace(mode);
@@ -54,7 +54,7 @@ void GLState::cullFace(GLenum mode)
     }
 }
 
-void GLState::frontFace(GLenum mode)
+void GLState::frontFace(GLenum mode) noexcept
 {
     if (m_frontFace != mode) {
         glFrontFace(mode);
@@ -62,7 +62,7 @@ void GLState::frontFace(GLenum mode)
     }
 }
 
-void GLState::polygonFrontAndBack(GLenum mode)
+void GLState::polygonFrontAndBack(GLenum mode) noexcept
 {
     if (m_polygonFrontAndBack != mode) {
         glPolygonMode(GL_FRONT_AND_BACK, mode);
@@ -72,7 +72,7 @@ void GLState::polygonFrontAndBack(GLenum mode)
 
 void GLState::bindTextures(
     const GLuint unitIndexFirst,
-    const std::vector<GLuint>& textureIDs)
+    const std::vector<GLuint>& textureIDs) noexcept
 {
     //glBindTextures(unitIndexFirst, textureIDs.size(), &textureIDs[0]);
     GLuint unitIndex = unitIndexFirst;
@@ -83,7 +83,7 @@ void GLState::bindTextures(
 
 void GLState::bindTexture(
     const GLuint unitIndex,
-    const GLuint textureID)
+    const GLuint textureID) noexcept
 {
     if (textureUnits[unitIndex] != textureID) {
         KI_GL_CALL(glBindTextures(unitIndex, 1, &textureID));

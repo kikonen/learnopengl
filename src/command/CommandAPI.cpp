@@ -20,7 +20,7 @@ namespace {
         bool repeat = false;
     };
 
-    CommandOptions readOptions(const sol::table& lua_opt) {
+    CommandOptions readOptions(const sol::table& lua_opt) noexcept {
         CommandOptions opt;
         lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
             const auto& k = key.as<std::string>();
@@ -40,7 +40,7 @@ namespace {
         return opt;
     }
 
-    glm::vec3 readVec3(const sol::table& v) {
+    glm::vec3 readVec3(const sol::table& v) noexcept {
         return glm::vec3{ v.get<float>(1), v.get<float>(2), v.get<float>(3) };
     }
 }
@@ -56,7 +56,7 @@ CommandAPI::CommandAPI(
 int CommandAPI::lua_cancel(
     int afterCommandId,
     float secs,
-    int commandId)
+    int commandId) noexcept
 {
     return m_commandEngine.addCommand(
         std::make_unique<CancelCommand>(
@@ -67,7 +67,7 @@ int CommandAPI::lua_cancel(
 
 int CommandAPI::lua_wait(
     int afterCommandId,
-    float secs)
+    float secs) noexcept
 {
     return m_commandEngine.addCommand(
         std::make_unique<WaitCommand>(
@@ -78,7 +78,7 @@ int CommandAPI::lua_wait(
 int CommandAPI::lua_move(
     int objectID,
     const sol::table& lua_opt,
-    const sol::table& lua_pos)
+    const sol::table& lua_pos) noexcept
 {
     const auto opt = readOptions(lua_opt);
     const auto pos = readVec3(lua_pos);
@@ -96,7 +96,7 @@ int CommandAPI::lua_moveSpline(
     int objectID,
     const sol::table& lua_opt,
     const sol::table& lua_p,
-    const sol::table& lua_pos)
+    const sol::table& lua_pos) noexcept
 {
     const auto opt = readOptions(lua_opt);
     const auto p = readVec3(lua_p);
@@ -115,7 +115,7 @@ int CommandAPI::lua_moveSpline(
 int CommandAPI::lua_rotate(
     int objectID,
     const sol::table& lua_opt,
-    const sol::table& lua_rot)
+    const sol::table& lua_rot) noexcept
 {
     const auto opt = readOptions(lua_opt);
     const auto rot = readVec3(lua_rot);
@@ -132,7 +132,7 @@ int CommandAPI::lua_rotate(
 int CommandAPI::lua_scale(
     int objectID,
     const sol::table& lua_opt,
-    const sol::table& lua_scale)
+    const sol::table& lua_scale) noexcept
 {
     const auto opt = readOptions(lua_opt);
     const auto scale = readVec3(lua_scale);
@@ -150,7 +150,7 @@ int CommandAPI::lua_start(
     int afterCommandId,
     int objectID,
     sol::function fn,
-    sol::variadic_args va)
+    sol::variadic_args va) noexcept
 {
     auto task = std::make_unique<sol::coroutine>(m_runner.state(), fn);
     //auto r = (*task)(va);

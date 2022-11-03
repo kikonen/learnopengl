@@ -9,20 +9,20 @@
 
 // https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
 struct Volume {
-    Volume() = default;
-    virtual ~Volume() = default;
+    Volume() noexcept = default;
+    virtual ~Volume() noexcept = default;
 
-    virtual std::unique_ptr<Volume> clone() const = 0;
+    virtual std::unique_ptr<Volume> clone() const noexcept = 0;
 
-    virtual const glm::vec3& getCenter() const = 0;
-    virtual float getRadius() const = 0;
+    virtual const glm::vec3& getCenter() const noexcept = 0;
+    virtual float getRadius() const noexcept = 0;
 
-    bool isOnFrustum(const Frustum& frustum) const;
+    bool isOnFrustum(const Frustum& frustum) const noexcept;
 
     virtual bool isOnFrustum(
         const Frustum& camFrustum,
         const int modelMatrixLevel,
-        const glm::mat4& modelWorldMatrix) const = 0;
+        const glm::mat4& modelWorldMatrix) const noexcept = 0;
 
-    virtual bool isOnOrForwardPlane(const Plane& plan) const = 0;
+    virtual bool isOnOrForwardPlane(const Plane& plan) const noexcept = 0;
 };

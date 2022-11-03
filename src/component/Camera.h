@@ -17,34 +17,34 @@ public:
     Camera(const glm::vec3& pos, const glm::vec3 front, const glm::vec3 aUp);
     ~Camera();
 
-    const glm::mat4& getView();
-    const glm::vec3& getViewFront();
-    const glm::vec3& getViewRight();
-    const glm::vec3& getViewUp();
+    const glm::mat4& getView() noexcept;
+    const glm::vec3& getViewFront() noexcept;
+    const glm::vec3& getViewRight() noexcept;
+    const glm::vec3& getViewUp() noexcept;
 
-    const Frustum& getFrustum();
+    const Frustum& getFrustum() noexcept;
 
-    const glm::vec3& getFront();
-    const glm::vec3& getRight();
-    const glm::vec3& getUp();
+    const glm::vec3& getFront() noexcept;
+    const glm::vec3& getRight() noexcept;
+    const glm::vec3& getUp() noexcept;
 
-    double getZoom();
-    void setZoom(double zoom);
+    double getZoom() noexcept;
+    void setZoom(double zoom) noexcept;
 
-    void setPos(const glm::vec3& pos);
-    const glm::vec3& getPos() const;
+    void setPos(const glm::vec3& pos) noexcept;
+    const glm::vec3& getPos() const noexcept;
 
-    void setRotation(const glm::vec3& rotation);
-    const glm::vec3 getRotation();
+    void setRotation(const glm::vec3& rotation) noexcept;
+    const glm::vec3 getRotation() noexcept;
 
-    void onKey(Input* input, const RenderClock& clock);
-    void onMouseMove(Input* input, double xoffset, double yoffset);
-    void onMouseScroll(Input* input, double xoffset, double yoffset);
+    void onKey(Input* input, const RenderClock& clock) noexcept;
+    void onMouseMove(Input* input, double xoffset, double yoffset) noexcept;
+    void onMouseScroll(Input* input, double xoffset, double yoffset) noexcept;
 
 private:
-    void updateZoom(double aZoom);
-    void updateCamera();
-    void updateFrustum();
+    void updateZoom(double aZoom) noexcept;
+    void updateCamera() noexcept;
+    void updateFrustum() noexcept;
 
 private:
     double m_zoom = 45.0f;

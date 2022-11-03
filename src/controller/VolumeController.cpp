@@ -12,7 +12,7 @@ VolumeController::VolumeController()
 bool VolumeController::update(
     const RenderContext& ctx,
     Node& volumeNode,
-    Node* parent)
+    Node* parent) noexcept
 {
     Node* targetNode = ctx.registry.getNode(m_targetID);
     if (!targetNode) return false;

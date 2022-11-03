@@ -8,12 +8,12 @@ class NodeController
 public:
     NodeController();
 
-    virtual void prepare(const Assets& assets, Node& node);
+    virtual void prepare(const Assets& assets, Node& node) ;
 
     virtual bool update(
         const RenderContext& ctx,
         Node& node,
-        Node* parent);
+        Node* parent) noexcept;
 
 protected:
     bool m_prepared = false;

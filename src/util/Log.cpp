@@ -41,37 +41,37 @@ void Log::init()
     }
 }
 
-void Log::flush()
+void Log::flush() noexcept
 {
     g_logger->flush();
 }
 
-void Log::critical(const std::string& msg)
+void Log::critical(const std::string& msg) noexcept
 {
     g_logger->critical(msg);
 }
 
-void Log::error(const std::string& msg)
+void Log::error(const std::string& msg) noexcept
 {
     g_logger->error(msg);
 }
 
-void Log::warn(const std::string& msg)
+void Log::warn(const std::string& msg) noexcept
 {
     g_logger->warn(msg);
 }
 
-void Log::info(const std::string& msg)
+void Log::info(const std::string& msg) noexcept
 {
     g_logger->info(msg);
 }
 
-void Log::debug(const std::string& msg)
+void Log::debug(const std::string& msg) noexcept
 {
     g_logger->debug(msg);
 }
 
-void Log::trace(const std::string& msg)
+void Log::trace(const std::string& msg) noexcept
 {
     g_logger->trace(msg);
 }

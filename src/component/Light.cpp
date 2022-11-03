@@ -12,7 +12,7 @@ Light::Light()
 {
 }
 
-void Light::update(const RenderContext& ctx, Node& node)
+void Light::update(const RenderContext& ctx, Node& node) noexcept
 {
     if (!enabled) return;
 
@@ -45,43 +45,44 @@ void Light::update(const RenderContext& ctx, Node& node)
     m_dirty = false;
 }
 
-void Light::markDirty()
+void Light::markDirty() noexcept
 {
     m_dirty = true;
 }
 
-const glm::vec3& Light::getPos()
+const glm::vec3& Light::getPos() noexcept
 {
     return m_pos;
 }
 
-void Light::setPos(const glm::vec3& pos)
+void Light::setPos(const glm::vec3& pos) noexcept
 {
     m_pos = pos;
     m_dirty = true;
 }
 
-const glm::vec3& Light::getWorldTarget()
+const glm::vec3& Light::getWorldTarget() noexcept
 {
     return m_worldTarget;
 }
 
-void Light::setWorldTarget(const glm::vec3& target)
+void Light::setWorldTarget(const glm::vec3& target) noexcept
 {
     m_worldTarget = target;
     m_dirty = true;
 }
 
-const glm::vec3& Light::getWorldPos()
+const glm::vec3& Light::getWorldPos() noexcept
 {
     return m_worldPos;
 }
 
-DirLightUBO Light::toDirLightUBO() {
+DirLightUBO Light::toDirLightUBO() noexcept
+{
     return { m_worldPos, enabled, m_worldDir, 0, ambient, diffuse, specular };
 }
 
-PointLightUBO Light::toPointightUBO()
+PointLightUBO Light::toPointightUBO() noexcept
 {
     return {
         m_worldPos,
@@ -98,7 +99,7 @@ PointLightUBO Light::toPointightUBO()
     };
 }
 
-SpotLightUBO Light::toSpotLightUBO()
+SpotLightUBO Light::toSpotLightUBO() noexcept
 {
     return {
         m_worldPos,

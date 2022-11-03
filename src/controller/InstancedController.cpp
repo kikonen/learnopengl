@@ -16,7 +16,7 @@ void InstancedController::prepare(const Assets& assets, Node& node) {
 bool InstancedController::update(
     const RenderContext& ctx,
     Node& node,
-    Node* parent)
+    Node* parent) noexcept
 {
     return updateInstanced(ctx, dynamic_cast<InstancedNode&>(node), parent);
 }

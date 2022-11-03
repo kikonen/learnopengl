@@ -1,7 +1,7 @@
 #include "Volume.h"
 
 bool Volume::isOnFrustum(
-    const Frustum& frustum) const
+    const Frustum& frustum) const noexcept
 {
     return isOnOrForwardPlane(frustum.leftFace) &&
         isOnOrForwardPlane(frustum.rightFace) &&

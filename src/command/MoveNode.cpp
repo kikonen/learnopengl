@@ -6,20 +6,20 @@ MoveNode::MoveNode(
     int objectID,
     float finishTime,
     bool relative,
-    const glm::vec3& position)
+    const glm::vec3& position) noexcept
     : NodeCommand(afterCommandId, objectID, finishTime, relative),
     m_end(position)
 {
 }
 
-void MoveNode::bind(const RenderContext& ctx, Node* node)
+void MoveNode::bind(const RenderContext& ctx, Node* node) noexcept
 {
     NodeCommand::bind(ctx, node);
     m_begin = node->getPosition();
 }
 
 void MoveNode::execute(
-    const RenderContext& ctx)
+    const RenderContext& ctx) noexcept
 {
     m_elapsedTime += ctx.clock.elapsedSecs;
 

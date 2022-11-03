@@ -14,7 +14,7 @@ public:
     virtual bool update(
         const RenderContext& ctx,
         Node& node,
-        Node* parent) override;
+        Node* parent) noexcept override;
 
 protected:
     virtual void prepareInstanced(

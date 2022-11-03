@@ -13,7 +13,7 @@ void NodeController::prepare(const Assets& assets, Node& node)
 bool NodeController::update(
     const RenderContext& ctx,
     Node& node,
-    Node* parent)
+    Node* parent) noexcept
 {
     return false;
 }

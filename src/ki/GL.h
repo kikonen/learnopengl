@@ -96,7 +96,7 @@ namespace ki {
         static void startError();
         static void startDebug();
 
-        static void checkErrors(const std::string& loc);
+        static void checkErrors(const std::string& loc) noexcept;
         static void unbindFBO();
 
         static OpenGLInfo getInfo();

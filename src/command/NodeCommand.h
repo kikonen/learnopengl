@@ -12,11 +12,11 @@ public:
         int afterCommandId,
         int objectID,
         float finishTime,
-        bool relative);
+        bool relative) noexcept;
 
-    virtual bool isNode() override final { return true; };
+    virtual bool isNode() noexcept override final { return true; };
 
-    virtual void bind(const RenderContext& ctx, Node* node);
+    virtual void bind(const RenderContext& ctx, Node* node) noexcept;
 
 public:
     const int m_objectID;

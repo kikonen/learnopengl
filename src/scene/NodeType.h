@@ -36,17 +36,17 @@ public:
     NodeType();
     ~NodeType();
 
-    const std::string str() const;
+    const std::string str() const noexcept;
 
-    bool hasReflection();
-    bool hasRefraction();
+    bool hasReflection() noexcept;
+    bool hasRefraction() noexcept;
 
-    Material* findMaterial(std::function<bool(const Material&)> fn);
-    void modifyMaterials(std::function<void(Material&)> fn);
+    Material* findMaterial(std::function<bool(const Material&)> fn) noexcept;
+    void modifyMaterials(std::function<void(Material&)> fn) noexcept;
 
-    void prepare(const Assets& assets);
-    void bind(const RenderContext& ctx, Shader* shader);
-    void unbind(const RenderContext& ctx);
+    void prepare(const Assets& assets) noexcept;
+    void bind(const RenderContext& ctx, Shader* shader) noexcept;
+    void unbind(const RenderContext& ctx) noexcept;
 
 public:
     const int typeID;

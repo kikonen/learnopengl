@@ -15,7 +15,7 @@ MovingLightController::MovingLightController(
 bool MovingLightController::update(
     const RenderContext& ctx,
     Node& node,
-    Node* parent)
+    Node* parent) noexcept
 {
     assert(m_speed > 0);
     const float elapsed = ctx.clock.ts / m_speed;

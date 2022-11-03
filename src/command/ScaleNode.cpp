@@ -6,20 +6,20 @@ ScaleNode::ScaleNode(
     int objectID,
     float finishTime,
     bool relative,
-    const glm::vec3& scale)
+    const glm::vec3& scale) noexcept
     : NodeCommand(afterCommandId, objectID, finishTime, relative),
     m_end(scale)
 {
 }
 
-void ScaleNode::bind(const RenderContext& ctx, Node* node)
+void ScaleNode::bind(const RenderContext& ctx, Node* node) noexcept
 {
     NodeCommand::bind(ctx, node);
     m_begin = node->getScale();
 }
 
 void ScaleNode::execute(
-    const RenderContext& ctx)
+    const RenderContext& ctx) noexcept
 {
     m_elapsedTime += ctx.clock.elapsedSecs;
 

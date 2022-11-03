@@ -11,7 +11,10 @@ NodePathController::NodePathController(
     m_scale = pathMode == 1 || pathMode == 4;
 }
 
-bool NodePathController::update(const RenderContext& ctx, Node& node, Node* parent)
+bool NodePathController::update(
+    const RenderContext& ctx,
+    Node& node,
+    Node* parent) noexcept
 {
     float elapsed = ctx.clock.ts;
 

@@ -9,7 +9,7 @@ InstancedNode::~InstancedNode()
 {
 }
 
-void InstancedNode::prepare(const Assets& assets)
+void InstancedNode::prepare(const Assets& assets) noexcept
 {
     if (m_prepared) return;
 
@@ -27,7 +27,7 @@ void InstancedNode::prepare(const Assets& assets)
     m_buffersDirty = false;
 }
 
-void InstancedNode::updateBuffers(const RenderContext& ctx)
+void InstancedNode::updateBuffers(const RenderContext& ctx) noexcept
 {
     int size = modelBatch.size();
     if (size == 0) return;
@@ -43,7 +43,7 @@ void InstancedNode::updateBuffers(const RenderContext& ctx)
 
 void InstancedNode::update(
     const RenderContext& ctx,
-    Node* parent)
+    Node* parent) noexcept
 {
     Node::update(ctx, parent);
     if (m_buffersDirty) {
@@ -51,7 +51,7 @@ void InstancedNode::update(
     }
 }
 
-void InstancedNode::bind(const RenderContext& ctx, Shader* shader)
+void InstancedNode::bind(const RenderContext& ctx, Shader* shader) noexcept
 {
     Node::bind(ctx, shader);
 
@@ -63,13 +63,13 @@ void InstancedNode::bind(const RenderContext& ctx, Shader* shader)
     }
 }
 
-void InstancedNode::draw(const RenderContext& ctx)
+void InstancedNode::draw(const RenderContext& ctx) noexcept
 {
     auto& shader = m_type->m_boundShader;
     modelBatch.flush(ctx, *m_type.get());
 }
 
-void InstancedNode::markBuffersDirty()
+void InstancedNode::markBuffersDirty() noexcept
 {
     m_buffersDirty = true;
 }

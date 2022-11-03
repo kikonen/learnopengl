@@ -10,7 +10,7 @@ public:
     Terrain(std::shared_ptr<NodeType> type, int worldX, int worldY, int worldZ);
     virtual ~Terrain();
 
-    void prepare(const Assets& assets) override;
+    void prepare(const Assets& assets) noexcept override;
 public:
     const int worldX;
     const int worldY;

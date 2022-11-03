@@ -9,10 +9,10 @@ public:
     CancelCommand(
         int afterCommandId,
         float finishTime,
-        int commandId);
+        int commandId) noexcept;
 
     virtual void execute(
-        const RenderContext& ctx) override;
+        const RenderContext& ctx) noexcept override;
 
 private:
     const int m_commandId;

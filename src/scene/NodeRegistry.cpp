@@ -67,7 +67,7 @@ NodeRegistry::~NodeRegistry()
     groups.clear();
 }
 
-void NodeRegistry::addGroup(Group* group)
+void NodeRegistry::addGroup(Group* group) noexcept
 {
     std::lock_guard<std::mutex> lock(m_load_lock);
     groups.push_back(group);
@@ -75,7 +75,7 @@ void NodeRegistry::addGroup(Group* group)
 
 void NodeRegistry::addNode(
     NodeType* type,
-    Node* node)
+    Node* node) noexcept
 {
     std::lock_guard<std::mutex> lock(m_load_lock);
     KI_INFO(fmt::format("ADD_NODE: {}", node->str()));
@@ -84,7 +84,7 @@ void NodeRegistry::addNode(
     m_waitCondition.notify_all();
 }
 
-Node* NodeRegistry::getNode(const uuids::uuid& id) const
+Node* NodeRegistry::getNode(const uuids::uuid& id) const noexcept
 {
     if (id.is_nil()) return nullptr;
 
@@ -93,13 +93,13 @@ Node* NodeRegistry::getNode(const uuids::uuid& id) const
     return it != idToNode.end() ? it->second : nullptr;
 }
 
-Node* NodeRegistry::getNode(const int objectID) const
+Node* NodeRegistry::getNode(const int objectID) const noexcept
 {
     const auto& it = objectIdToNode.find(objectID);
     return it != objectIdToNode.end() ? it->second : nullptr;
 }
 
-void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const
+void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcept
 {
     if (!append) {
         for (auto& x : objectIdToNode) {
@@ -120,13 +120,13 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const
     }
 }
 
-void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport)
+void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport) noexcept
 {
     std::lock_guard<std::mutex> lock(m_load_lock);
     viewports.push_back(viewport);
 }
 
-void NodeRegistry::attachNodes()
+void NodeRegistry::attachNodes() noexcept
 {
     NodeTypeMap newNodes;
     {
@@ -155,7 +155,7 @@ void NodeRegistry::attachNodes()
     bindPendingChildren();
 }
 
-int NodeRegistry::countSelected() const
+int NodeRegistry::countSelected() const noexcept
 {
     int count = 0;
     for (const auto& all : allNodes) {
@@ -170,7 +170,7 @@ int NodeRegistry::countSelected() const
 
 void NodeRegistry::changeParent(
     Node* node,
-    uuids::uuid parentId)
+    uuids::uuid parentId) noexcept
 {
     Node* parent = getNode(parentId);
     if (!parent) return;
@@ -196,19 +196,19 @@ void NodeRegistry::changeParent(
     node->m_parentId = parent->m_id;
 }
 
-Node* NodeRegistry::getParent(const Node& child) const
+Node* NodeRegistry::getParent(const Node& child) const noexcept
 {
     const auto& it = m_childToParent.find(child.m_objectID);
     return it != m_childToParent.end() ? it->second : nullptr;
 }
 
-const NodeVector* NodeRegistry::getChildren(const Node& parent) const
+const NodeVector* NodeRegistry::getChildren(const Node& parent) const noexcept
 {
     const auto& it = m_parentToChildren.find(parent.m_objectID);
     return it != m_parentToChildren.end() ? &it->second : nullptr;
 }
 
-void NodeRegistry::bindNode(Node* node)
+void NodeRegistry::bindNode(Node* node) noexcept
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
@@ -271,7 +271,7 @@ void NodeRegistry::bindNode(Node* node)
     KI_INFO_SB("ATTACH_NODE: id=" << node->str());
 }
 
-void NodeRegistry::bindPendingChildren()
+void NodeRegistry::bindPendingChildren() noexcept
 {
     if (m_pendingChildren.empty()) return;
 
@@ -299,7 +299,7 @@ void NodeRegistry::bindPendingChildren()
 }
 
 
-bool NodeRegistry::bindParent(Node* child)
+bool NodeRegistry::bindParent(Node* child) noexcept
 {
     if (child->m_parentId.is_nil()) return true;
 
@@ -320,7 +320,7 @@ bool NodeRegistry::bindParent(Node* child)
     return true;
 }
 
-void NodeRegistry::bindChildren(Node* parent)
+void NodeRegistry::bindChildren(Node* parent) noexcept
 {
     const auto& it = m_pendingChildren.find(parent->m_id);
     if (it == m_pendingChildren.end()) return;

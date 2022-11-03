@@ -11,11 +11,11 @@ CommandEngine::CommandEngine()
 {}
 
 void CommandEngine::prepare(
-    const Assets& assets)
+    const Assets& assets) noexcept
 {
 }
 
-void CommandEngine::update(const RenderContext& ctx)
+void CommandEngine::update(const RenderContext& ctx) noexcept
 {
     processCanceled(ctx);
     processPending(ctx);
@@ -23,18 +23,18 @@ void CommandEngine::update(const RenderContext& ctx)
     processActive(ctx);
 }
 
-int CommandEngine::addCommand(std::unique_ptr<Command> pcmd)
+int CommandEngine::addCommand(std::unique_ptr<Command> pcmd) noexcept
 {
     auto& cmd = m_pending.emplace_back(std::move(pcmd));
     return cmd->m_id;
 }
 
-bool CommandEngine::isCanceled(int commandId)
+bool CommandEngine::isCanceled(int commandId) noexcept
 {
     return std::find(m_canceled.begin(), m_canceled.end(), commandId) != m_canceled.end();
 }
 
-bool CommandEngine::isValid(const RenderContext& ctx, Command* cmd)
+bool CommandEngine::isValid(const RenderContext& ctx, Command* cmd) noexcept
 {
     if (!cmd->isNode()) return true;
 
@@ -42,12 +42,12 @@ bool CommandEngine::isValid(const RenderContext& ctx, Command* cmd)
     return ctx.registry.getNode(objectID);
 }
 
-void CommandEngine::cancel(int commandId)
+void CommandEngine::cancel(int commandId) noexcept
 {
     m_canceled.push_back(commandId);
 }
 
-void CommandEngine::processCanceled(const RenderContext& ctx)
+void CommandEngine::processCanceled(const RenderContext& ctx) noexcept
 {
     // NOTE KI can cancel only *EXISTING* commands not future commands
     if (m_canceled.empty()) return;
@@ -65,7 +65,7 @@ void CommandEngine::processCanceled(const RenderContext& ctx)
     m_canceled.clear();
 }
 
-void CommandEngine::processPending(const RenderContext& ctx)
+void CommandEngine::processPending(const RenderContext& ctx) noexcept
 {
     // NOTE KI scripts cannot exist before node is in registry
     // => thus it MUST exist
@@ -90,7 +90,7 @@ void CommandEngine::processPending(const RenderContext& ctx)
     m_pending.clear();
 }
 
-void CommandEngine::processBlocked(const RenderContext& ctx)
+void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
 {
     if (m_blocked.empty()) return;
 
@@ -149,7 +149,7 @@ void CommandEngine::processBlocked(const RenderContext& ctx)
     }
 }
 
-void CommandEngine::processActive(const RenderContext& ctx)
+void CommandEngine::processActive(const RenderContext& ctx) noexcept
 {
     if (m_active.empty()) return;
 

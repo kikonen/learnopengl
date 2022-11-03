@@ -26,7 +26,7 @@ Camera::~Camera()
 {
 }
 
-const glm::mat4& Camera::getView()
+const glm::mat4& Camera::getView() noexcept
 {
     if (!m_dirty) return m_viewMat;
 
@@ -38,61 +38,63 @@ const glm::mat4& Camera::getView()
     return m_viewMat;
 }
 
-const glm::vec3& Camera::getViewFront()
+const glm::vec3& Camera::getViewFront() noexcept
 {
     if (m_dirty) updateCamera();
     return m_viewFront;
 }
 
-const glm::vec3& Camera::getViewRight()
+const glm::vec3& Camera::getViewRight() noexcept
 {
     if (m_dirty) updateCamera();
     return m_viewRight;
 }
 
-const glm::vec3& Camera::getViewUp()
+const glm::vec3& Camera::getViewUp() noexcept
 {
     if (m_dirty) updateCamera();
     return m_viewUp;
 }
 
-const glm::vec3& Camera::getFront()
+const glm::vec3& Camera::getFront() noexcept
 {
     return m_front;
 }
 
-const glm::vec3& Camera::getRight()
+const glm::vec3& Camera::getRight() noexcept
 {
     return m_right;
 }
 
-const glm::vec3& Camera::getUp()
+const glm::vec3& Camera::getUp() noexcept
 {
     return m_up;
 }
 
-double Camera::getZoom()
+double Camera::getZoom() noexcept
 {
     return m_zoom;
 }
 
-void Camera::setZoom(double zoom)
+void Camera::setZoom(double zoom) noexcept
 {
     updateZoom(zoom);
 }
 
-void Camera::setPos(const glm::vec3& pos) {
+void Camera::setPos(const glm::vec3& pos) noexcept
+{
     if (m_pos != pos) {
         m_pos = pos;
         m_dirty = true;
     }
 }
 
-const glm::vec3& Camera::getPos() const {
+const glm::vec3& Camera::getPos() const noexcept
+{
     return m_pos;
 }
 
-void Camera::setRotation(const glm::vec3& rotation)
+void Camera::setRotation(const glm::vec3& rotation) noexcept
 {
     if (m_yaw != rotation.y ||
         m_pitch != rotation.x ||
@@ -105,12 +107,12 @@ void Camera::setRotation(const glm::vec3& rotation)
     }
 }
 
-const glm::vec3 Camera::getRotation()
+const glm::vec3 Camera::getRotation() noexcept
 {
     return glm::vec3(m_pitch, m_yaw, m_roll);
 }
 
-void Camera::onKey(Input* input, const RenderClock& clock)
+void Camera::onKey(Input* input, const RenderClock& clock) noexcept
 {
     float dt = clock.elapsedSecs;
     float moveSize = m_moveStep;
@@ -175,7 +177,7 @@ void Camera::onKey(Input* input, const RenderClock& clock)
     }
 }
 
-void Camera::onMouseMove(Input* input, double xoffset, double yoffset)
+void Camera::onMouseMove(Input* input, double xoffset, double yoffset) noexcept
 {
     bool changed = false;
     const float MAX_ANGLE = 89.f;
@@ -202,12 +204,12 @@ void Camera::onMouseMove(Input* input, double xoffset, double yoffset)
     }
 }
 
-void Camera::onMouseScroll(Input* input, double xoffset, double yoffset)
+void Camera::onMouseScroll(Input* input, double xoffset, double yoffset) noexcept
 {
     updateZoom(m_zoom - yoffset);
 }
 
-void Camera::updateZoom(double zoom)
+void Camera::updateZoom(double zoom) noexcept
 {
     if (zoom < MIN_ZOOM) {
         zoom = MIN_ZOOM;
@@ -221,7 +223,7 @@ void Camera::updateZoom(double zoom)
     }
 }
 
-void Camera::updateCamera()
+void Camera::updateCamera() noexcept
 {
     if (!m_dirty) return;
     m_dirty = false;

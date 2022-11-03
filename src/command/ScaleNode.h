@@ -12,14 +12,14 @@ public:
         int objectID,
         float finishTime,
         bool relative,
-        const glm::vec3& scale);
+        const glm::vec3& scale) noexcept;
 
     virtual void bind(
         const RenderContext& ctx,
-        Node* node) override;
+        Node* node) noexcept override;
 
     virtual void execute(
-        const RenderContext& ctx) override;
+        const RenderContext& ctx) noexcept override;
 
 private:
     const glm::vec3 m_end;

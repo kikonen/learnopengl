@@ -9,7 +9,7 @@ public:
     Water(std::shared_ptr<NodeType> type, int worldX, int worldY, int worldZ);
     virtual ~Water();
 
-    void prepare(const Assets& assets) override;
+    void prepare(const Assets& assets) noexcept override;
 public:
     const int worldX;
     const int worldY;

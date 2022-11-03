@@ -20,49 +20,49 @@ public:
     Node(std::shared_ptr<NodeType> type);
     virtual ~Node();
 
-    const std::string str() const;
+    const std::string str() const noexcept;
 
-    virtual void prepare(const Assets& assets);
+    virtual void prepare(const Assets& assets) noexcept;
 
-    virtual void update(const RenderContext& ctx, Node* parent);
-    virtual void bind(const RenderContext& ctx, Shader* shader);
-    void bindBatch(const RenderContext& ctx, Batch& batch);
-    virtual void draw(const RenderContext& ctx);
+    virtual void update(const RenderContext& ctx, Node* parent) noexcept;
+    virtual void bind(const RenderContext& ctx, Shader* shader) noexcept;
+    void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
+    virtual void draw(const RenderContext& ctx) noexcept;
 
-    const glm::vec3& getWorldPos() const;
-    const glm::vec3& getWorldPlaneNormal() const;
+    const glm::vec3& getWorldPos() const noexcept;
+    const glm::vec3& getWorldPlaneNormal() const noexcept;
 
-    int getMatrixLevel() const;
-    const glm::mat4& getWorldModelMatrix() const;
-    const glm::mat3& getWorldNormalMatrix() const;
+    int getMatrixLevel() const noexcept;
+    const glm::mat4& getWorldModelMatrix() const noexcept;
+    const glm::mat3& getWorldNormalMatrix() const noexcept;
 
-    void setPlaneNormal(const glm::vec3& planeNormal);
-    const glm::vec3& getPlaneNormal() const;
+    void setPlaneNormal(const glm::vec3& planeNormal) noexcept;
+    const glm::vec3& getPlaneNormal() const noexcept;
 
-    void setPosition(const glm::vec3& pos);
-    const glm::vec3& getPosition() const;
+    void setPosition(const glm::vec3& pos) noexcept;
+    const glm::vec3& getPosition() const noexcept;
 
-    void setRotation(const glm::vec3& rotation);
-    const glm::vec3& getRotation() const;
+    void setRotation(const glm::vec3& rotation) noexcept;
+    const glm::vec3& getRotation() const noexcept;
 
-    void setScale(float scale);
-    void setScale(const glm::vec3& scale);
-    const glm::vec3& getScale() const;
+    void setScale(float scale) noexcept;
+    void setScale(const glm::vec3& scale) noexcept;
+    const glm::vec3& getScale() const noexcept;
 
-    const glm::mat4& getModelMatrix() const;
+    const glm::mat4& getModelMatrix() const noexcept;
 
-    virtual void updateModelMatrix(Node* parent);
+    virtual void updateModelMatrix(Node* parent) noexcept;
 
-    const Volume* getVolume() const;
-    void setVolume(std::unique_ptr<Volume> volume);
+    const Volume* getVolume() const noexcept;
+    void setVolume(std::unique_ptr<Volume> volume) noexcept;
 
-    static int nextID();
+    static int nextID() noexcept;
 
 public:
-    int lua_getId() const;
+    int lua_getId() const noexcept;
 
-    const std::array<float, 3> lua_getPos() const;
-    void lua_setPos(float x, float y, float z);
+    const std::array<float, 3> lua_getPos() const noexcept;
+    void lua_setPos(float x, float y, float z) noexcept;
 
 protected:
 

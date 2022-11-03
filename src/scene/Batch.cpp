@@ -18,7 +18,7 @@ Batch:: ~Batch()
     //    glDeleteBuffers(1, &objectIDBuffer);
 }
 
-void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
+void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID) noexcept
 {
     m_modelMatrices.push_back(model);
 
@@ -34,26 +34,26 @@ void Batch::add(const glm::mat4& model, const glm::mat3& normal, int objectID)
     }
 }
 
-void Batch::reserve(size_t count)
+void Batch::reserve(size_t count) noexcept
 {
     m_modelMatrices.reserve(count);
     m_normalMatrices.reserve(count);
     m_objectIDs.reserve(count);
 }
 
-int Batch::size()
+int Batch::size() noexcept
 {
     return m_modelMatrices.size();
 }
 
-void Batch::clear()
+void Batch::clear() noexcept
 {
     m_modelMatrices.clear();
     m_normalMatrices.clear();
     m_objectIDs.clear();
 }
 
-void Batch::prepare(NodeType& type)
+void Batch::prepare(NodeType& type) noexcept
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -149,7 +149,7 @@ void Batch::prepare(NodeType& type)
     glBindVertexArray(0);
 }
 
-void Batch::update(size_t count)
+void Batch::update(size_t count) noexcept
 {
     if (batchSize == 0) return;
 
@@ -170,7 +170,7 @@ void Batch::update(size_t count)
     //KI_GL_UNBIND(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
-void Batch::bind(const RenderContext& ctx, Shader* shader)
+void Batch::bind(const RenderContext& ctx, Shader* shader) noexcept
 {
     if (batchSize == 0) return;
 
@@ -184,7 +184,7 @@ void Batch::bind(const RenderContext& ctx, Shader* shader)
 void Batch::draw(
     const RenderContext& ctx,
     Node& node,
-    Shader* shader)
+    Shader* shader) noexcept
 {
     const auto& type = *node.m_type.get();
 
@@ -219,7 +219,7 @@ void Batch::draw(
     flush(ctx, type);
 }
 
-void Batch::flush(const RenderContext& ctx, const NodeType& type)
+void Batch::flush(const RenderContext& ctx, const NodeType& type) noexcept
 {
     if (!type.m_mesh) return;
     if (type.m_flags.root) return;

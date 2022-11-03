@@ -20,7 +20,7 @@ namespace {
 }
 
 
-int Node::nextID()
+int Node::nextID() noexcept
 {
     std::lock_guard<std::mutex> lock(object_id_lock);
     return ++objectIDbase;
@@ -32,19 +32,19 @@ Node::Node(std::shared_ptr<NodeType> type)
 {
 }
 
-Node::~Node()
+Node::~Node() 
 {
     KI_INFO_SB("NODE: delete " << str());
 }
 
-const std::string Node::str() const
+const std::string Node::str() const noexcept
 {
     return fmt::format(
         "<NODEL: {} / {} - type={}>",
         m_objectID, KI_UUID_STR(m_id), m_type->str());
 }
 
-void Node::prepare(const Assets& assets)
+void Node::prepare(const Assets& assets) noexcept
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -56,7 +56,7 @@ void Node::prepare(const Assets& assets)
 
 void Node::update(
     const RenderContext& ctx,
-    Node* parent)
+    Node* parent) noexcept
 {
     updateModelMatrix(parent);
 
@@ -78,20 +78,21 @@ void Node::update(
     }
 }
 
-void Node::bind(const RenderContext& ctx, Shader* shader)
+void Node::bind(const RenderContext& ctx, Shader* shader) noexcept
 {
 }
 
-void Node::bindBatch(const RenderContext& ctx, Batch& batch)
+void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
     batch.add(m_worldModelMatrix, m_worldNormalMatrix, m_objectID);
 }
 
-void Node::draw(const RenderContext& ctx)
+void Node::draw(const RenderContext& ctx) noexcept
 {
 }
 
-void Node::updateModelMatrix(Node* parent) {
+void Node::updateModelMatrix(Node* parent) noexcept
+{
     bool dirtyModel = m_dirtyRotation || m_dirtyTranslate || m_dirtyScale;
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
@@ -157,34 +158,41 @@ void Node::updateModelMatrix(Node* parent) {
     }
 }
 
-void Node::setPlaneNormal(const glm::vec3& planeNormal) {
+void Node::setPlaneNormal(const glm::vec3& planeNormal) noexcept
+{
     m_planeNormal = planeNormal;
     m_dirtyRotation = true;
 }
 
-const glm::vec3& Node::getPlaneNormal() const {
+const glm::vec3& Node::getPlaneNormal() const noexcept
+{
     return m_planeNormal;
 }
 
-void Node::setPosition(const glm::vec3& pos) {
+void Node::setPosition(const glm::vec3& pos) noexcept
+{
     m_position = pos;
     m_dirtyTranslate = true;
 }
 
-const glm::vec3& Node::getPosition() const {
+const glm::vec3& Node::getPosition() const noexcept
+{
     return m_position;
 }
 
-void Node::setRotation(const glm::vec3& rotation) {
+void Node::setRotation(const glm::vec3& rotation) noexcept
+{
     m_rotation = rotation;
     m_dirtyRotation = true;
 }
 
-const glm::vec3&  Node::getRotation() const {
+const glm::vec3&  Node::getRotation() const noexcept
+{
     return m_rotation;
 }
 
-void Node::setScale(float scale) {
+void Node::setScale(float scale) noexcept
+{
     assert(scale >= 0);
     m_scale.x = scale;
     m_scale.y = scale;
@@ -192,63 +200,69 @@ void Node::setScale(float scale) {
     m_dirtyScale = true;
 }
 
-void Node::setScale(const glm::vec3& scale)
+void Node::setScale(const glm::vec3& scale) noexcept
 {
     m_scale = scale;
     assert(m_scale.x >= 0 && m_scale.y >= 0 && m_scale.z >= 0);
     m_dirtyScale = true;
 }
 
-const glm::vec3& Node::getScale() const {
+const glm::vec3& Node::getScale() const noexcept
+{
     return m_scale;
 }
 
-const glm::mat4& Node::getModelMatrix() const
+const glm::mat4& Node::getModelMatrix() const noexcept
 {
     return m_modelMatrix;
 }
 
-int Node::getMatrixLevel() const {
+int Node::getMatrixLevel() const noexcept
+{
     return m_matrixLevel;
 }
 
-const glm::mat4& Node::getWorldModelMatrix() const {
+const glm::mat4& Node::getWorldModelMatrix() const noexcept
+{
     return m_worldModelMatrix;
 }
 
-const glm::mat3& Node::getWorldNormalMatrix() const  {
+const glm::mat3& Node::getWorldNormalMatrix() const noexcept
+{
     return m_worldNormalMatrix;
 }
 
-const glm::vec3& Node::getWorldPos() const  {
+const glm::vec3& Node::getWorldPos() const noexcept
+{
     return m_worldPos;
 }
 
-const glm::vec3& Node::getWorldPlaneNormal() const {
+const glm::vec3& Node::getWorldPlaneNormal() const noexcept
+{
     return m_worldPlaneNormal;
 }
 
-const Volume* Node::getVolume() const
+const Volume* Node::getVolume() const noexcept
 {
     return m_volume.get();
 }
 
-void Node::setVolume(std::unique_ptr<Volume> volume)
+void Node::setVolume(std::unique_ptr<Volume> volume) noexcept
 {
     m_volume = std::move(volume);
 }
 
-int Node::lua_getId() const
+int Node::lua_getId() const noexcept
 {
     return m_objectID;
 }
 
-const std::array<float, 3> Node::lua_getPos() const
+const std::array<float, 3> Node::lua_getPos() const noexcept
 {
     return { m_position.x, m_position.y, m_position.z };
 }
 
-void Node::lua_setPos(float x, float y, float z)
+void Node::lua_setPos(float x, float y, float z) noexcept
 {
     m_position.x = x;
     m_position.y = y;

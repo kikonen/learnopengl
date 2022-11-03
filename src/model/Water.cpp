@@ -9,7 +9,7 @@ Water::~Water()
 {
 }
 
-void Water::prepare(const Assets& assets)
+void Water::prepare(const Assets& assets) noexcept
 {
 //    setPos({ worldX * assets.waterTileSize, worldY, worldZ * assets.waterTileSize });
 //    setRotation({ 0, 0, 90 });

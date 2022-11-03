@@ -4,28 +4,28 @@
 
 #include "Sphere.h"
 
-Sphere::Sphere(const glm::vec3& center, float radius)
+Sphere::Sphere(const glm::vec3& center, float radius) noexcept
     : Volume{},
     m_center{ center },
     m_radius{ radius }
 {}
 
-std::unique_ptr<Volume> Sphere::clone() const
+std::unique_ptr<Volume> Sphere::clone() const noexcept
 {
     return std::make_unique<Sphere>(m_center, m_radius);
 }
 
-const glm::vec3& Sphere::getCenter() const
+const glm::vec3& Sphere::getCenter() const noexcept
 {
     return m_center;
 }
 
-float Sphere::getRadius() const 
+float Sphere::getRadius() const noexcept
 {
     return m_radius;
 }
 
-bool Sphere::isOnOrForwardPlane(const Plane& plane) const 
+bool Sphere::isOnOrForwardPlane(const Plane& plane) const noexcept
 {
     return plane.getSignedDistanceToPlane(m_center) > -m_radius;
 }
@@ -33,7 +33,7 @@ bool Sphere::isOnOrForwardPlane(const Plane& plane) const
 bool Sphere::isOnFrustum(
     const Frustum& frustum,
     const int modelMatrixLevel,
-    const glm::mat4& modelWorödMatrix) const
+    const glm::mat4& modelWorödMatrix) const noexcept
 {
     updateWorldSphere(modelMatrixLevel, modelWorödMatrix);
 
@@ -57,7 +57,7 @@ bool Sphere::isOnFrustum(
 
 void Sphere::updateWorldSphere(
     const int modelMatrixLevel,
-    const glm::mat4& modelWorldMatrix) const
+    const glm::mat4& modelWorldMatrix) const noexcept
 {
     if (m_modelMatrixLevel == modelMatrixLevel) {
         return;
