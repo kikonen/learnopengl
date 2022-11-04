@@ -50,6 +50,12 @@ constexpr int ATTR_TANGENT = 2;
 constexpr int ATTR_MATERIAL_INDEX = 4;
 constexpr int ATTR_TEX = 5;
 
+// https://www.reddit.com/r/opengl/comments/lz72tk/understanding_dsa_functions_and_buffer_binding/
+constexpr int VBO_VERTEX_BINDING = 0;
+constexpr int VBO_MODEL_MATRIX_BINDING = 1;
+constexpr int VBO_NORMAL_MATRIX_BINDING = 2;
+constexpr int VBO_OBJECT_ID_BINDING = 3;
+
 constexpr int ATTR_INSTANCE_MODEL_MATRIX_1 = 6;
 constexpr int ATTR_INSTANCE_MODEL_MATRIX_2 = 7;
 constexpr int ATTR_INSTANCE_MODEL_MATRIX_3 = 8;
@@ -81,7 +87,7 @@ public:
 
     void setInt(const std::string& name, int value) noexcept;
 
-    void setUBO(
+    void setupUBO(
         const std::string& name,
         unsigned int UBO,
         unsigned int expectedSize) noexcept;

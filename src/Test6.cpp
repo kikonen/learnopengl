@@ -168,7 +168,9 @@ std::shared_ptr<Scene> Test6::loadScene()
 
     asyncLoader->scene = scene;
 
-    file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_full.yml");
+    //file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_full.yml");
+    file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_player.yml");
+    //file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_origo.yml");
     file->load(scene);
 
     testSetup = std::make_unique<TestSceneSetup>(asyncLoader.get(), assets);

@@ -56,11 +56,23 @@ void ImageTexture::prepare(const Assets& assets)
         return;
     }
 
+    // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
+    /*
+    GLuint textureHandle;
+    glCreateTextures(GL_TEXTURE_2D, 1, &textureHandle);
+    glTextureStorage2D(textureHandle, 1, GL_RGBA8, imageW, imageH);
+    glTextureSubImage2D(textureHandle, 0, 0, 0, imageW, imageH, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+    glTextureParameteri(textureHandle, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glBindTextureUnit(0, textureHandle);
+    */
+
     glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
 
     glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, spec.mode);
     glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, spec.mode);
 
+    // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
+    // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
     glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 

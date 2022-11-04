@@ -106,17 +106,16 @@ void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         buffers.prepare(false);
 
         const int vao = buffers.VAO;
-        glBindVertexArray(vao);
 
-        glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+        glNamedBufferStorage(buffers.VBO, sizeof(skyboxVertices), &skyboxVertices, 0);
 
-        glVertexAttribPointer(ATTR_SKYBOX_POS, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, buffers.VBO, 0, sizeof(glm::vec3));
 
         glEnableVertexArrayAttrib(vao, ATTR_SKYBOX_POS);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        glVertexArrayAttribFormat(vao, ATTR_SKYBOX_POS, 3, GL_FLOAT, GL_FALSE, 0);
+
+        glVertexArrayAttribBinding(vao, ATTR_SKYBOX_POS, VBO_VERTEX_BINDING);
     }
 }
 
@@ -150,5 +149,5 @@ void SkyboxRenderer::render(const RenderContext& ctx)
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthFunc(GL_LESS);
 
-    KI_GL_UNBIND(glBindVertexArray(0));
+    //KI_GL_UNBIND(glBindVertexArray(0));
 }

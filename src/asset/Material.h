@@ -83,9 +83,7 @@ public:
 
     void bindArray(
         const RenderContext& ctx,
-        Shader* shader,
-        int index,
-        bool bindTextureIDs);
+        Shader* shader);
 
     const MaterialUBO toUBO();
 

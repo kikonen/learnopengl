@@ -67,7 +67,6 @@ void Batch::prepare(NodeType& type) noexcept
     if (batchSize == 0) return;
 
     const int vao = type.m_mesh->m_buffers.VAO;
-    KI_GL_CALL(glBindVertexArray(vao));
 
     // model
     {
@@ -76,25 +75,20 @@ void Batch::prepare(NodeType& type) noexcept
         glCreateBuffers(1, &m_modelBufferId);
         glNamedBufferStorage(m_modelBufferId, batchSize * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
-        // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
-        GLsizei vecSize = sizeof(glm::vec4);
-
+        glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_modelBufferId, 0, sizeof(glm::mat4));
         glBindBuffer(GL_ARRAY_BUFFER, m_modelBufferId);
 
-        glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_1, 4, GL_FLOAT, GL_FALSE, 4 * vecSize, (void*)0);
-        glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_2, 4, GL_FLOAT, GL_FALSE, 4 * vecSize, (void*)(1 * vecSize));
-        glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_3, 4, GL_FLOAT, GL_FALSE, 4 * vecSize, (void*)(2 * vecSize));
-        glVertexAttribPointer(ATTR_INSTANCE_MODEL_MATRIX_4, 4, GL_FLOAT, GL_FALSE, 4 * vecSize, (void*)(3 * vecSize));
+        // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
+        constexpr GLsizei vecSize = sizeof(glm::vec4);
 
-        glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_1, 1);
-        glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_2, 1);
-        glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_3, 1);
-        glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_4, 1);
+        for (int i = 0; i < 4; i++) {
+            glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i);
+            glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, 4, GL_FLOAT, GL_FALSE, i * vecSize);
+            glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, VBO_MODEL_MATRIX_BINDING);
+        }
 
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_1);
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_2);
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_3);
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_4);
+        // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
+        glVertexArrayBindingDivisor(vao, VBO_MODEL_MATRIX_BINDING, 1);
     }
 
     // normal
@@ -104,22 +98,20 @@ void Batch::prepare(NodeType& type) noexcept
         glCreateBuffers(1, &m_normalBufferId);
         glNamedBufferStorage(m_normalBufferId, batchSize * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
-        // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
-        GLsizei vecSize = sizeof(glm::vec3);
-
+        glVertexArrayVertexBuffer(vao, VBO_NORMAL_MATRIX_BINDING, m_normalBufferId, 0, sizeof(glm::mat3));
         glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferId);
 
-        glVertexAttribPointer(ATTR_INSTANCE_NORMAL_MATRIX_1, 3, GL_FLOAT, GL_FALSE, 3 * vecSize, (void*)0);
-        glVertexAttribPointer(ATTR_INSTANCE_NORMAL_MATRIX_2, 3, GL_FLOAT, GL_FALSE, 3 * vecSize, (void*)(1 * vecSize));
-        glVertexAttribPointer(ATTR_INSTANCE_NORMAL_MATRIX_3, 3, GL_FLOAT, GL_FALSE, 3 * vecSize, (void*)(2 * vecSize));
+        // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
+        constexpr GLsizei vecSize = sizeof(glm::vec3);
 
-        glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_1, 1);
-        glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_2, 1);
-        glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_3, 1);
+        for (int i = 0; i < 3; i++) {
+            glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i);
+            glVertexArrayAttribFormat(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, 3, GL_FLOAT, GL_FALSE, i * vecSize);
+            glVertexArrayAttribBinding(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, VBO_NORMAL_MATRIX_BINDING);
+        }
 
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_1);
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_2);
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_3);
+        // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
+        glVertexArrayBindingDivisor(vao, VBO_NORMAL_MATRIX_BINDING, 1);
     }
 
     // objectIDs
@@ -129,13 +121,18 @@ void Batch::prepare(NodeType& type) noexcept
         glCreateBuffers(1, &m_objectIDBufferId);
         glNamedBufferStorage(m_objectIDBufferId, batchSize * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT);
 
+        glVertexArrayVertexBuffer(vao, VBO_OBJECT_ID_BINDING, m_objectIDBufferId, 0, sizeof(glm::vec4));
         glBindBuffer(GL_ARRAY_BUFFER, m_objectIDBufferId);
 
-        glVertexAttribPointer(ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
-
-        glVertexAttribDivisor(ATTR_INSTANCE_OBJECT_ID, 1);
-
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
+
+        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, 0);
+
+        // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
+        // https://www.g-truc.net/post-0363.html
+        glVertexArrayBindingDivisor(vao, VBO_OBJECT_ID_BINDING, 1);
+
+        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_OBJECT_ID, VBO_OBJECT_ID_BINDING);
     }
 
     if (staticBuffer) {
@@ -145,9 +142,6 @@ void Batch::prepare(NodeType& type) noexcept
     KI_DEBUG(fmt::format(
         "BATCHL: {} - model={}, normal={}, objectID={}",
         type.str(), m_modelBufferId, m_normalBufferId, m_objectIDBufferId));
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 }
 
 void Batch::update(size_t count) noexcept

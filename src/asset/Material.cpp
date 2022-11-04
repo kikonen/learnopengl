@@ -207,18 +207,14 @@ void Material::prepare(const Assets& assets)
 
 void Material::bindArray(
     const RenderContext& ctx,
-    Shader* shader,
-    int index,
-    bool bindTextureIDs)
+    Shader* shader)
 {
     for (auto& tex : textures) {
         if (!tex.texture) continue;
         ASSERT_TEX_INDEX(tex.texIndex);
         ASSERT_TEX_UNIT(tex.unitIndex);
         shader->textures[tex.texIndex].set(tex.unitIndex);
-        if (bindTextureIDs) {
-            tex.bind(ctx);
-        }
+        tex.bind(ctx);
     }
 }
 

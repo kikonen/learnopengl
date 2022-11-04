@@ -20,7 +20,7 @@ namespace {
         KI_VEC10 tangent;
         unsigned char material;
         KI_UV16 texCoords;
-    };    
+    };
 #pragma pack(pop)
 }
 
@@ -179,7 +179,6 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     const int vao = curr.VAO;
-    glBindVertexArray(vao);
 
     // VBO
     {
@@ -204,10 +203,12 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
                 vbo->normal.x = (int)(n.x * SCALE_VEC10);
                 vbo->normal.y = (int)(n.y * SCALE_VEC10);
                 vbo->normal.z = (int)(n.z * SCALE_VEC10);
+                vbo->normal.not_used = 0;
 
                 vbo->tangent.x = (int)(tan.x * SCALE_VEC10);
                 vbo->tangent.y = (int)(tan.y * SCALE_VEC10);
                 vbo->tangent.z = (int)(tan.z * SCALE_VEC10);
+                vbo->tangent.not_used = 0;
 
                 // TODO KI should use noticeable value for missing
                 vbo->material = m ? m->materialIndex : 0;
@@ -219,42 +220,44 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
             }
         }
 
-        glBindBuffer(GL_ARRAY_BUFFER, curr.VBO);
-        KI_GL_CALL(glBufferData(GL_ARRAY_BUFFER, stride_size * m_vertices.size(), vboBuffer, GL_STATIC_DRAW));
-
+        glNamedBufferStorage(curr.VBO, stride_size * m_vertices.size(), vboBuffer, 0);
         delete[] vboBuffer;
 
-        int offset = 0;
-
-        // vertex attr
-        KI_GL_CALL(glVertexAttribPointer(ATTR_POS, 3, GL_FLOAT, GL_FALSE, stride_size, (void*)offset));
-        offset += sizeof(glm::vec3);
-
-        // normal attr
-        KI_GL_CALL(glVertexAttribPointer(ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, stride_size, (void*)offset));
-        offset += sizeof(KI_VEC10);
-
-        // tangent attr
-        KI_GL_CALL(glVertexAttribPointer(ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, stride_size, (void*)offset));
-        offset += sizeof(KI_VEC10);
-
-        // materialID attr
-        KI_GL_CALL(glVertexAttribIPointer(ATTR_MATERIAL_INDEX, 1, GL_UNSIGNED_BYTE, stride_size, (void*)offset));
-        offset += sizeof(unsigned char);
-
-        // texture attr
-        KI_GL_CALL(glVertexAttribPointer(ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, stride_size, (void*)offset));
+        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
 
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
         glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
         glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
         glEnableVertexArrayAttrib(vao, ATTR_TEX);
+
+        // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
+    
+        // vertex attr
+        glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(TexVBO, pos));
+
+        // normal attr
+        glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, normal));
+
+        // tangent attr
+        glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, tangent));
+
+        // materialID attr
+        glVertexArrayAttribIFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_UNSIGNED_BYTE, offsetof(TexVBO, material));
+        
+        // texture attr
+        glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TexVBO, texCoords));
+
+        glVertexArrayAttribBinding(vao, ATTR_POS, VBO_VERTEX_BINDING);
+        glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_VERTEX_BINDING);
+        glVertexArrayAttribBinding(vao, ATTR_TANGENT, VBO_VERTEX_BINDING);
+        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_VERTEX_BINDING);
+        glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_VERTEX_BINDING);
     }
 
-    // EBO
+    // EBO == IBO ?!?
     {
-        int index_count = m_tris.size() * 3;
+        const int index_count = m_tris.size() * 3;
         unsigned int* vertexEboBuffer = new unsigned int[index_count];
 
         for (int i = 0; i < m_tris.size(); i++) {
@@ -265,16 +268,11 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
             vertexEboBuffer[base + 2] = vi[2];
         }
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curr.EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * index_count, vertexEboBuffer, GL_STATIC_DRAW);
-
+        glNamedBufferStorage(curr.EBO, sizeof(unsigned int) * index_count, vertexEboBuffer, 0);
         delete[] vertexEboBuffer;
-    }
 
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glVertexArrayElementBuffer(vao, curr.EBO);
+    }
 
     // NOTE KI no need for thexe any longer (they are in buffers now)
     m_triCount = m_tris.size();
@@ -289,20 +287,13 @@ void ModelMesh::bind(
 {
     if (bindMaterials) {
         glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
-    }
 
-    glBindVertexArray(m_buffers.VAO);
-
-    if (bindMaterials) {
         for (auto& material : m_materials) {
-            material.bindArray(ctx, shader, material.materialIndex, true);
+            material.bindArray(ctx, shader);
         }
     }
 
-    //if (!m_textureIDs.empty()) {
-    //    std::cout << '[' << m_unitIndexFirst << '-' << m_textureIDs.size() << ']';
-    //    ctx.state.bindTextures(m_unitIndexFirst, m_textureIDs);
-    //}
+    glBindVertexArray(m_buffers.VAO);
 }
 
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)

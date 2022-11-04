@@ -82,7 +82,7 @@ void NodeRenderer::render(
     //ctx.bindClipPlanesUBO();
     //ctx.state.disable(GL_CLIP_DISTANCE0);
 
-    KI_GL_UNBIND(glBindVertexArray(0));
+    //KI_GL_UNBIND(glBindVertexArray(0));
 }
 
 void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)

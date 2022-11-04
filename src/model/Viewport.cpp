@@ -51,20 +51,21 @@ void Viewport::prepare(const Assets& assets)
 
     // setup plane VAO
     const int vao = buffers.VAO;
-    glBindVertexArray(vao);
     {
-        glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+        glNamedBufferStorage(buffers.VBO, sizeof(vertices), &vertices, 0);
 
-        glVertexAttribPointer(ATTR_VIEW_POS, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glVertexAttribPointer(ATTR_VIEW_TEX, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        constexpr int stride_size = 5 * sizeof(float);
+        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, buffers.VBO, 0, stride_size);
 
         glEnableVertexArrayAttrib(vao, ATTR_VIEW_POS);
         glEnableVertexArrayAttrib(vao, ATTR_VIEW_TEX);
-    }
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+        glVertexArrayAttribFormat(vao, ATTR_VIEW_POS, 3, GL_FLOAT, GL_FALSE, 0);
+        glVertexArrayAttribFormat(vao, ATTR_VIEW_TEX, 2, GL_FLOAT, GL_TRUE, 3 * sizeof(float));
+
+        glVertexArrayAttribBinding(vao, ATTR_VIEW_POS, VBO_VERTEX_BINDING);
+        glVertexArrayAttribBinding(vao, ATTR_VIEW_TEX, VBO_VERTEX_BINDING);
+    }
 }
 
 void Viewport::update(const RenderContext& ctx)

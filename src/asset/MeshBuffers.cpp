@@ -21,9 +21,9 @@ void MeshBuffers::prepare(bool useIndeces)
     if (m_prepared) return;
     m_prepared = true;
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+    glCreateVertexArrays(1, &VAO);
+    glCreateBuffers(1, &VBO);
     if (useIndeces) {
-        glGenBuffers(1, &EBO);
+        glCreateBuffers(1, &EBO);
     }
 }

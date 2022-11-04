@@ -240,13 +240,13 @@ int Shader::initProgram() {
     std::cout << "[SHADER - " << m_key << "]\n";
 
     // NOTE KI set UBOs only once for shader
-    setUBO("Matrices", UBO_MATRICES, sizeof(MatricesUBO));
-    setUBO("Data", UBO_DATA, sizeof(DataUBO));
-    setUBO("Lights", UBO_LIGHTS, sizeof(LightsUBO));
+    setupUBO("Matrices", UBO_MATRICES, sizeof(MatricesUBO));
+    setupUBO("Data", UBO_DATA, sizeof(DataUBO));
+    setupUBO("Lights", UBO_LIGHTS, sizeof(LightsUBO));
     if (m_materialCount > 0) {
-        setUBO("Materials", UBO_MATERIALS, m_materialCount * sizeof(MaterialUBO));
+        setupUBO("Materials", UBO_MATERIALS, m_materialCount * sizeof(MaterialUBO));
     }
-    setUBO("ClipPlanes", UBO_CLIP_PLANES, sizeof(ClipPlanesUBO));
+    setupUBO("ClipPlanes", UBO_CLIP_PLANES, sizeof(ClipPlanesUBO));
 
 
     projectionMatrix.init(this);
@@ -326,7 +326,7 @@ void Shader::setInt(const std::string& name, int value) noexcept
     }
 }
 
-void Shader::setUBO(
+void Shader::setupUBO(
     const std::string& name,
     unsigned int UBO,
     unsigned int expectedSize) noexcept
