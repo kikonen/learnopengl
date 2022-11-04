@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include "ki/GL.h"
+
 #include "asset/Image.h"
 
 // 
@@ -18,19 +20,16 @@
 unsigned int CubeMap::createEmpty(int size)
 {
     unsigned int textureID;
-    glGenTextures(1, &textureID);
 
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureID);
 
-    glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, GL_RGBA8, size, size);
+    glTextureStorage2D(textureID, 1, GL_RGBA8, size, size);
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     return textureID;
 }
@@ -47,8 +46,8 @@ unsigned int CubeMap::createEmpty(int size)
 unsigned int CubeMap::createFromImages(std::vector<std::string> faces)
 {
     unsigned int textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureID);
 
     int w = 0, h = 0;
 
@@ -63,26 +62,26 @@ unsigned int CubeMap::createFromImages(std::vector<std::string> faces)
         h = image->height;
     }
 
-    glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, GL_RGBA8, w, h);
+    glTextureStorage2D(textureID, 1, GL_RGBA8, w, h);
 
+    // https://github.com/fendevel/Guide-to-Modern-OpenGL-Functions
     for (unsigned int i = 0; i < 6; i++)
     {
         Image* image = images[i];
         if (!image->data) continue;
-        glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, image->width, image->height, GL_RGB, GL_UNSIGNED_BYTE, image->data);
+
+        KI_GL_CALL(glTextureSubImage3D(textureID, 0, 0, 0, i, image->width, image->height, 1, GL_RGB, GL_UNSIGNED_BYTE, image->data));
     }
 
     for (unsigned int i = 0; i < 6; i++) {
         delete images[i];
     }
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     return textureID;
 }

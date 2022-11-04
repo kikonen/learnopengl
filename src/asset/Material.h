@@ -28,7 +28,6 @@ struct BoundTexture {
     void unbind()
     {
         if (!texture) return;
-        KI_GL_UNBIND(glBindTexture(GL_TEXTURE_2D, 0));
     }
 };
 

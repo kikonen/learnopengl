@@ -56,24 +56,18 @@ void ImageTexture::prepare(const Assets& assets)
         return;
     }
 
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, spec.mode);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, spec.mode);
+    glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, spec.mode);
+    glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, spec.mode);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    //    float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-    //    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+    glTextureStorage2D(textureID, MIP_MAP_LEVELS, internalFormat, image->width, image->height);
+    glTextureSubImage2D(textureID, 0, 0, 0, image->width, image->height, format, GL_UNSIGNED_BYTE, image->data);
 
-    //glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image->width, image->height, 0, format, GL_UNSIGNED_BYTE, image->data);
-
-    glTexStorage2D(GL_TEXTURE_2D, MIP_MAP_LEVELS, internalFormat, image->width, image->height);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image->width, image->height, format, GL_UNSIGNED_BYTE, image->data);
-
-    glGenerateMipmap(GL_TEXTURE_2D);
+    glGenerateTextureMipmap(textureID);
 
     image.reset();
 }

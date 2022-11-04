@@ -25,26 +25,21 @@ void PlainTexture::prepare(const Assets& assets)
     if (m_prepared) return;
     m_prepared = true;
 
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
 
-    KI_GL_CALL(glad_glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, width, height));
+    KI_GL_CALL(glad_glTextureStorage2D(textureID, 1, internalFormat, width, height));
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, spec.mode);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, spec.mode);
+    glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, spec.mode);
+    glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, spec.mode);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glGenerateTextureMipmap(textureID);
 }
 
 void PlainTexture::setData(void* data, int size)
 {
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, data);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glTextureSubImage2D(textureID, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, data);
 }
 

@@ -50,7 +50,8 @@ void Viewport::prepare(const Assets& assets)
     };
 
     // setup plane VAO
-    glBindVertexArray(buffers.VAO);
+    const int vao = buffers.VAO;
+    glBindVertexArray(vao);
     {
         glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
@@ -58,8 +59,8 @@ void Viewport::prepare(const Assets& assets)
         glVertexAttribPointer(ATTR_VIEW_POS, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
         glVertexAttribPointer(ATTR_VIEW_TEX, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
-        KI_GL_CALL(glEnableVertexAttribArray(ATTR_VIEW_POS));
-        KI_GL_CALL(glEnableVertexAttribArray(ATTR_VIEW_TEX));
+        glEnableVertexArrayAttrib(vao, ATTR_VIEW_POS);
+        glEnableVertexArrayAttrib(vao, ATTR_VIEW_TEX);
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);

@@ -40,13 +40,23 @@ bool Sphere::isOnFrustum(
     const auto& worldSphere = *m_worldSphere.get();
 
     // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
-    //const bool left = worldSphere.isOnOrForwardPlane(frustum.leftFace);
-    //const bool right = worldSphere.isOnOrForwardPlane(frustum.rightFace);
-    //const bool far = worldSphere.isOnOrForwardPlane(frustum.farFace);
-    //const bool near = worldSphere.isOnOrForwardPlane(frustum.nearFace);
-    //const bool top = worldSphere.isOnOrForwardPlane(frustum.topFace);
-    //const bool bottom = worldSphere.isOnOrForwardPlane(frustum.bottomFace);
+    const bool left = worldSphere.isOnOrForwardPlane(frustum.leftFace);
+    const bool right = worldSphere.isOnOrForwardPlane(frustum.rightFace);
+    const bool far = worldSphere.isOnOrForwardPlane(frustum.farFace);
+    const bool near = worldSphere.isOnOrForwardPlane(frustum.nearFace);
+    const bool top = worldSphere.isOnOrForwardPlane(frustum.topFace);
+    const bool bottom = worldSphere.isOnOrForwardPlane(frustum.bottomFace);
 
+    bool nope = worldSphere.isOnOrForwardPlane(frustum.leftFace) &&
+        worldSphere.isOnOrForwardPlane(frustum.rightFace) &&
+        worldSphere.isOnOrForwardPlane(frustum.topFace) &&
+        worldSphere.isOnOrForwardPlane(frustum.bottomFace) &&
+        worldSphere.isOnOrForwardPlane(frustum.farFace) &&
+        worldSphere.isOnOrForwardPlane(frustum.nearFace);
+    if (!nope) {
+        int x = 0;
+        updateWorldSphere(modelMatrixLevel, modelWorödMatrix);
+    }
     return worldSphere.isOnOrForwardPlane(frustum.leftFace) &&
         worldSphere.isOnOrForwardPlane(frustum.rightFace) &&
         worldSphere.isOnOrForwardPlane(frustum.topFace) &&

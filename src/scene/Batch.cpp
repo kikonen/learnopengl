@@ -66,7 +66,8 @@ void Batch::prepare(NodeType& type) noexcept
 
     if (batchSize == 0) return;
 
-    KI_GL_CALL(glBindVertexArray(type.m_mesh->m_buffers.VAO));
+    const int vao = type.m_mesh->m_buffers.VAO;
+    KI_GL_CALL(glBindVertexArray(vao));
 
     // model
     {
@@ -90,10 +91,10 @@ void Batch::prepare(NodeType& type) noexcept
         glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_3, 1);
         glVertexAttribDivisor(ATTR_INSTANCE_MODEL_MATRIX_4, 1);
 
-        glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_1);
-        glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_2);
-        glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_3);
-        glEnableVertexAttribArray(ATTR_INSTANCE_MODEL_MATRIX_4);
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_1);
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_2);
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_3);
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_4);
     }
 
     // normal
@@ -116,9 +117,9 @@ void Batch::prepare(NodeType& type) noexcept
         glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_2, 1);
         glVertexAttribDivisor(ATTR_INSTANCE_NORMAL_MATRIX_3, 1);
 
-        glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_1);
-        glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_2);
-        glEnableVertexAttribArray(ATTR_INSTANCE_NORMAL_MATRIX_3);
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_1);
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_2);
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_3);
     }
 
     // objectIDs
@@ -134,7 +135,7 @@ void Batch::prepare(NodeType& type) noexcept
 
         glVertexAttribDivisor(ATTR_INSTANCE_OBJECT_ID, 1);
 
-        glEnableVertexAttribArray(ATTR_INSTANCE_OBJECT_ID);
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
     }
 
     if (staticBuffer) {

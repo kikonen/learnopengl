@@ -134,7 +134,8 @@ void QuadMesh::prepare(const Assets& assets)
 void QuadMesh::prepareBuffers(MeshBuffers& curr)
 {
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(curr.VAO);
+    const int vao = curr.VAO;
+    glBindVertexArray(vao);
 
     // VBO
     {
@@ -195,11 +196,11 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
         // texture attr
         KI_GL_CALL(glVertexAttribPointer(ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, stride_size, (void*)offset));
 
-        glEnableVertexAttribArray(ATTR_POS);
-        glEnableVertexAttribArray(ATTR_NORMAL);
-        glEnableVertexAttribArray(ATTR_TANGENT);
-        glEnableVertexAttribArray(ATTR_MATERIAL_INDEX);
-        glEnableVertexAttribArray(ATTR_TEX);
+        glEnableVertexArrayAttrib(vao, ATTR_POS);
+        glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
+        glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
+        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
+        glEnableVertexArrayAttrib(vao, ATTR_TEX);
     }
 
     // EBO

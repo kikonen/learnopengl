@@ -43,21 +43,19 @@ void FrameBuffer::prepare(
 
     for (auto& att : spec.attachments) {
         if (att.type == FrameBufferAttachmentType::texture) {
-            glGenTextures(1, &att.textureID);
-            glBindTexture(GL_TEXTURE_2D, att.textureID);
+            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, att.minFilter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, att.magFilter);
+            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
+            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, att.textureWrap);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, att.textureWrap);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrap);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrap);
 
-            glTexStorage2D(GL_TEXTURE_2D, 1, att.internalFormat, spec.width, spec.height);
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, spec.width, spec.height);
 
-            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
+            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
 
             glFramebufferTexture2D(GL_FRAMEBUFFER, att.attachment, GL_TEXTURE_2D, att.textureID, 0);
-            glBindTexture(GL_TEXTURE_2D, 0);
 
             clearMask |= GL_COLOR_BUFFER_BIT;
         }
@@ -72,24 +70,21 @@ void FrameBuffer::prepare(
             clearMask |= GL_COLOR_BUFFER_BIT;
         }
         else if (att.type == FrameBufferAttachmentType::depth_texture) {
-            glGenTextures(1, &att.textureID);
-            glBindTexture(GL_TEXTURE_2D, att.textureID);
+            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
 
-            glTexStorage2D(GL_TEXTURE_2D, 1, att.internalFormat, spec.width, spec.height);
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, spec.width, spec.height);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, att.minFilter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, att.magFilter);
+            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
+            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+            glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+            glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, att.textureWrap);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, att.textureWrap);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrap);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrap);
 
             glm::vec4 borderColor{ 1.0f, 1.0f, 1.0f, 1.0f };
-            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(borderColor));
-
-            glBindTexture(GL_TEXTURE_2D, 0);
+            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(borderColor));
 
             {
                 glFramebufferTexture2D(GL_FRAMEBUFFER, att.attachment, GL_TEXTURE_2D, att.textureID, 0);
