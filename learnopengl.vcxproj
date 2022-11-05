@@ -167,6 +167,7 @@
     <ClCompile Include="src\asset\ShaderRegistry.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
     <ClCompile Include="src\asset\Volume.cpp" />
+    <ClCompile Include="src\backend\RenderSystem.cpp" />
     <ClCompile Include="src\command\CancelCommand.cpp" />
     <ClCompile Include="src\command\Command.cpp" />
     <ClCompile Include="src\command\CommandAPI.cpp" />
@@ -261,6 +262,9 @@
     <ClInclude Include="src\asset\ShaderBind.h" />
     <ClInclude Include="src\AssetsFile.h" />
     <ClInclude Include="src\asset\ShaderRegistry.h" />
+    <ClInclude Include="src\backend\Command.h" />
+    <ClInclude Include="src\backend\DrawCommands.h" />
+    <ClInclude Include="src\backend\RenderSystem.h" />
     <ClInclude Include="src\command\CancelCommand.h" />
     <ClInclude Include="src\command\Command.h" />
     <ClInclude Include="src\command\CommandAPI.h" />

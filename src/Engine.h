@@ -7,6 +7,8 @@
 #include "asset/Assets.h"
 #include "asset/ShaderRegistry.h"
 
+#include "backend/RenderSystem.h"
+
 #include "gui/Window.h"
 
 class Scene;
@@ -49,4 +51,6 @@ protected:
     std::string title;
 
     GLState state;
+
+    std::unique_ptr<backend::RenderSystem> m_backend;
 };
