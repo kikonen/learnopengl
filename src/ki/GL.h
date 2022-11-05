@@ -76,7 +76,7 @@ struct KI_VEC10
     int x : 10;
     int y : 10;
     int z : 10;
-    int not_used : 2;
+    unsigned int not_used : 2;
 };
 const int SCALE_VEC10 = (1 << 9) - 1;
 

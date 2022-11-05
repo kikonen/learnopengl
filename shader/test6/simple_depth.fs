@@ -17,7 +17,7 @@ layout(early_fragment_tests) in;
 #ifdef USE_ALPHA
 in VS_OUT {
   vec2 texCoords;
-  flat int materialIndex;
+  flat uint materialIndex;
 } fs_in;
 
 uniform sampler2D u_textures[TEX_COUNT];
@@ -28,7 +28,7 @@ precision lowp float;
 void main()
 {
 #ifdef USE_ALPHA
-  int matIdx = fs_in.materialIndex;
+  uint matIdx = fs_in.materialIndex;
   int diffuseTexIdx = u_materials[matIdx].diffuseTex;
 
   float alpha;

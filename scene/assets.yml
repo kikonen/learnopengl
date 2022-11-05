@@ -2,7 +2,7 @@ assets:
   log_file: log/development.log
 
   glfw_swap_interval: 3
-  gl_debug: true
+  gl_debug: false
 
   resolution_scale: 0.5
 

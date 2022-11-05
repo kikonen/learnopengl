@@ -15,7 +15,7 @@ in VS_OUT {
   vec3 normal;
   vec2 texCoords;
 
-  flat int materialIndex;
+  flat uint materialIndex;
 
   vec4 fragPosLightSpace;
 } fs_in;

@@ -24,11 +24,22 @@ constexpr unsigned int UBO_LIGHTS = 3;
 constexpr unsigned int UBO_MATERIALS = 4;
 constexpr unsigned int UBO_MATERIAL = 5;
 
-constexpr unsigned int MATERIAL_COUNT = 8;
-constexpr unsigned int LIGHT_COUNT = 8;
+constexpr unsigned int MIN_MATERIAL_COUNT = 8;
+constexpr unsigned int MAX_MATERIAL_COUNT = 8;
+constexpr unsigned int MATERIAL_COUNT = MAX_MATERIAL_COUNT;
+
+constexpr unsigned int MIN_LIGHT_COUNT = 8;
+constexpr unsigned int MAX_LIGHT_COUNT = 8;
+constexpr unsigned int LIGHT_COUNT = MAX_LIGHT_COUNT;
+
 // MAX textures used in shader
-constexpr unsigned int TEXTURE_COUNT = 8;
-constexpr unsigned int CLIP_PLANE_COUNT = 2;
+constexpr unsigned int MIN_TEXTURE_COUNT = 8;
+constexpr unsigned int MAX_TEXTURE_COUNT = 8;
+constexpr unsigned int TEXTURE_COUNT = MAX_TEXTURE_COUNT;
+
+constexpr unsigned int MIN_CLIP_PLANE_COUNT = 2;
+constexpr unsigned int MAX_CLIP_PLANE_COUNT = 2;
+constexpr unsigned int CLIP_PLANE_COUNT = MAX_CLIP_PLANE_COUNT;
 
 constexpr unsigned int PARTICLE_MATERIAL_COUNT = 1;
 

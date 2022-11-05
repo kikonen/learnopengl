@@ -22,10 +22,13 @@ const float VERTICES[] = {
 namespace {
 #pragma pack(push, 1)
     struct TexVBO {
+        // TODO KI *BROKEN* if material is anything else than first
+        // => completely broken with DSA
+        // = *COULD* be related old "disappearing" materials issues?!?
+        unsigned int material;
         glm::vec3 pos;
         KI_VEC10 normal;
         KI_VEC10 tangent;
-        unsigned char material;
         KI_UV16 texCoords;
     };
 #pragma pack(pop)
@@ -79,8 +82,12 @@ void QuadMesh::prepare(const Assets& assets)
     m_prepared = true;
 
     m_buffers.prepare(false);
+    prepareMaterials(assets);
     prepareBuffers(m_buffers);
+}
 
+void QuadMesh::prepareMaterials(const Assets& assets)
+{
     {
         Material& material = m_material;
 
@@ -133,50 +140,53 @@ void QuadMesh::prepare(const Assets& assets)
 
 void QuadMesh::prepareBuffers(MeshBuffers& curr)
 {
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    prepareVBO(curr);
+}
+
+void QuadMesh::prepareVBO(MeshBuffers& curr)
+{
     const int vao = curr.VAO;
 
-    // VBO
+    // https://paroj.github.io/gltut/Basic%20Optimization.html
+    constexpr int stride_size = sizeof(TexVBO);
+    void* vboBuffer = new unsigned char[stride_size * 4];
+
     {
-        int row_size = 12;// sizeof(VERTICES) / 4;
+        constexpr int row_size = 12;// sizeof(VERTICES) / 4;
 
-        // https://paroj.github.io/gltut/Basic%20Optimization.html
-        const int stride_size = sizeof(TexVBO);
-        void* vboBuffer = new unsigned char[stride_size * 4];
+        TexVBO* vbo = (TexVBO*)vboBuffer;
+        for (int i = 0; i < 4; i++) {
+            int base = i * row_size;
 
-        {
-            TexVBO* vbo = (TexVBO*)vboBuffer;
-            for (int i = 0; i < 4; i++) {
-                int base = i * row_size;
+            vbo->pos.x = VERTICES[base++];
+            vbo->pos.y = VERTICES[base++];
+            vbo->pos.z = VERTICES[base++];
 
-                vbo->pos.x = VERTICES[base++];
-                vbo->pos.y = VERTICES[base++];
-                vbo->pos.z = VERTICES[base++];
+            vbo->normal.x = (int)(VERTICES[base++] * SCALE_VEC10);
+            vbo->normal.y = (int)(VERTICES[base++] * SCALE_VEC10);
+            vbo->normal.z = (int)(VERTICES[base++] * SCALE_VEC10);
+            vbo->normal.not_used = 0;
 
-                vbo->normal.x = (int)(VERTICES[base++] * SCALE_VEC10);
-                vbo->normal.y = (int)(VERTICES[base++] * SCALE_VEC10);
-                vbo->normal.z = (int)(VERTICES[base++] * SCALE_VEC10);
-                vbo->normal.not_used = 0;
+            vbo->tangent.x = (int)(VERTICES[base++] * SCALE_VEC10);
+            vbo->tangent.y = (int)(VERTICES[base++] * SCALE_VEC10);
+            vbo->tangent.z = (int)(VERTICES[base++] * SCALE_VEC10);
+            vbo->tangent.not_used = 0;
 
-                vbo->tangent.x = (int)(VERTICES[base++] * SCALE_VEC10);
-                vbo->tangent.y = (int)(VERTICES[base++] * SCALE_VEC10);
-                vbo->tangent.z = (int)(VERTICES[base++] * SCALE_VEC10);
-                vbo->tangent.not_used = 0;
+            // NOTE KI hardcoded single material
+            vbo->material = VERTICES[base++];
 
-                vbo->material = VERTICES[base++];
+            vbo->texCoords.u = (int)(VERTICES[base++] * SCALE_UV16);
+            vbo->texCoords.v = (int)(VERTICES[base++] * SCALE_UV16);
 
-                vbo->texCoords.u = (int)(VERTICES[base++] * SCALE_UV16);
-                vbo->texCoords.v = (int)(VERTICES[base++] * SCALE_UV16);
-
-                vbo++;
-            }
+            vbo++;
         }
+    }
 
-        glNamedBufferStorage(curr.VBO, stride_size * 4, vboBuffer, 0);
-        delete[] vboBuffer;
+    glNamedBufferStorage(curr.VBO, stride_size * 4, vboBuffer, 0);
+    delete[] vboBuffer;
 
-        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
-
+    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
+    {
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
         glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
@@ -193,7 +203,7 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
         glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, tangent));
 
         // materialID attr
-        glVertexArrayAttribIFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_UNSIGNED_BYTE, offsetof(TexVBO, material));
+        glVertexArrayAttribIFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_UNSIGNED_INT, offsetof(TexVBO, material));
 
         // texture attr
         glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TexVBO, texCoords));
@@ -209,7 +219,7 @@ void QuadMesh::prepareBuffers(MeshBuffers& curr)
 void QuadMesh::bind(
     const RenderContext& ctx,
     Shader* shader,
-    bool bindMaterials)
+    bool bindMaterials) noexcept
 {
     if (bindMaterials) {
         glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
@@ -220,7 +230,7 @@ void QuadMesh::bind(
     glBindVertexArray(m_buffers.VAO);
 }
 
-void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
+void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount) noexcept
 {
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount);
     //glDrawElementsInstanced(GL_TRIANGLES, VERTEX_COUNT, GL_UNSIGNED_INT, 0, instanceCount);

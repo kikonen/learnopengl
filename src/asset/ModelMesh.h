@@ -39,12 +39,17 @@ public:
     virtual void calculateVolume() override;
 
     void prepare(const Assets& assets) override;
-    void prepareBuffers(MeshBuffers& curr) override;
     void bind(
         const RenderContext& ctx,
         Shader* shader,
-        bool bindMaterials) override;
-    void drawInstanced(const RenderContext& ctx, int instanceCount) override;
+        bool bindMaterials) noexcept override;
+    void drawInstanced(const RenderContext& ctx, int instanceCount) noexcept override;
+
+private:
+    void prepareMaterials(const Assets& assets);
+    void prepareBuffers(MeshBuffers& curr);
+    void prepareVBO(MeshBuffers& curr);
+    void prepareEBO(MeshBuffers& curr);
 
 public:
     int m_triCount = 0;

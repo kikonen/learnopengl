@@ -4,7 +4,7 @@
 
 layout (location = 0) in vec3 a_pos;
 #ifdef USE_ALPHA
-layout (location = 4) in int a_materialIndex;
+layout (location = 4) in uint a_materialIndex;
 layout (location = 5) in vec2 a_texCoords;
 #endif
 layout (location = 6) in mat4 a_modelMatrix;
@@ -17,7 +17,7 @@ layout (location = 6) in mat4 a_modelMatrix;
 #ifdef USE_ALPHA
 out VS_OUT {
   vec2 texCoords;
-  flat int materialIndex;
+  flat uint materialIndex;
 } vs_out;
 #endif
 

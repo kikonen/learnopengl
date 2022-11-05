@@ -4,7 +4,7 @@
 
 layout (location = 0) in vec3 a_pos;
 layout (location = 1) in vec4 aColor;
-layout (location = 2) in int a_materialIndex;
+layout (location = 2) in uint a_materialIndex;
 layout (location = 3) in vec2 a_texCoords;
 layout (location = 4) in vec3 a_normal;
 layout (location = 6) in mat4 a_modelMatrix;
@@ -17,7 +17,7 @@ layout (location = 10) in mat3 a_normalMatrix;
 
 out VS_OUT {
   vec4 color;
-  flat int materialIndex;
+  flat uint materialIndex;
   vec2 texCoords;
   vec3 fragPos;
   vec3 normal;

@@ -67,13 +67,14 @@ void Batch::prepare(NodeType& type) noexcept
     if (batchSize == 0) return;
 
     const int vao = type.m_mesh->m_buffers.VAO;
+    constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT;
 
     // model
     {
         m_modelMatrices.reserve(batchSize);
 
         glCreateBuffers(1, &m_modelBufferId);
-        glNamedBufferStorage(m_modelBufferId, batchSize * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glNamedBufferStorage(m_modelBufferId, batchSize * sizeof(glm::mat4), nullptr, bufferFlags);
 
         glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_modelBufferId, 0, sizeof(glm::mat4));
         glBindBuffer(GL_ARRAY_BUFFER, m_modelBufferId);
@@ -88,6 +89,7 @@ void Batch::prepare(NodeType& type) noexcept
         }
 
         // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
+        // https://www.khronos.org/opengl/wiki/Vertex_Specification
         glVertexArrayBindingDivisor(vao, VBO_MODEL_MATRIX_BINDING, 1);
     }
 
@@ -96,7 +98,7 @@ void Batch::prepare(NodeType& type) noexcept
         m_normalMatrices.reserve(batchSize);
 
         glCreateBuffers(1, &m_normalBufferId);
-        glNamedBufferStorage(m_normalBufferId, batchSize * sizeof(glm::mat3), nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glNamedBufferStorage(m_normalBufferId, batchSize * sizeof(glm::mat3), nullptr, bufferFlags);
 
         glVertexArrayVertexBuffer(vao, VBO_NORMAL_MATRIX_BINDING, m_normalBufferId, 0, sizeof(glm::mat3));
         glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferId);
@@ -111,6 +113,7 @@ void Batch::prepare(NodeType& type) noexcept
         }
 
         // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
+        // https://www.khronos.org/opengl/wiki/Vertex_Specification
         glVertexArrayBindingDivisor(vao, VBO_NORMAL_MATRIX_BINDING, 1);
     }
 
@@ -119,7 +122,7 @@ void Batch::prepare(NodeType& type) noexcept
         m_objectIDs.reserve(batchSize);
 
         glCreateBuffers(1, &m_objectIDBufferId);
-        glNamedBufferStorage(m_objectIDBufferId, batchSize * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glNamedBufferStorage(m_objectIDBufferId, batchSize * sizeof(glm::vec4), nullptr, bufferFlags);
 
         glVertexArrayVertexBuffer(vao, VBO_OBJECT_ID_BINDING, m_objectIDBufferId, 0, sizeof(glm::vec4));
         glBindBuffer(GL_ARRAY_BUFFER, m_objectIDBufferId);
@@ -130,6 +133,7 @@ void Batch::prepare(NodeType& type) noexcept
 
         // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
         // https://www.g-truc.net/post-0363.html
+        // https://www.khronos.org/opengl/wiki/Vertex_Specification
         glVertexArrayBindingDivisor(vao, VBO_OBJECT_ID_BINDING, 1);
 
         glVertexArrayAttribBinding(vao, ATTR_INSTANCE_OBJECT_ID, VBO_OBJECT_ID_BINDING);
@@ -152,6 +156,9 @@ void Batch::update(size_t count) noexcept
         KI_WARN_SB("BATCH::CUT_OFF_BUFFER: count=" << count << " batchSize=" << batchSize);
         count = batchSize;
     }
+
+    // TODO KI Map COHERRENT + PERSISTENT
+    // => can be MUCH faster
 
     glNamedBufferSubData(m_modelBufferId, 0, count * sizeof(glm::mat4), &m_modelMatrices[0]);
 

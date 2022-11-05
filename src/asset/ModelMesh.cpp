@@ -15,10 +15,13 @@
 namespace {
 #pragma pack(push, 1)
     struct TexVBO {
+        // TODO KI *BROKEN* if material is anything else than first
+        // => completely broken with DSA
+        // = *COULD* be related old "disappearing" materials issues?!?
+        unsigned int material;
         glm::vec3 pos;
         KI_VEC10 normal;
         KI_VEC10 tangent;
-        unsigned char material;
         KI_UV16 texCoords;
     };
 #pragma pack(pop)
@@ -106,7 +109,12 @@ void ModelMesh::prepare(const Assets& assets)
     m_prepared = true;
 
     m_buffers.prepare(true);
+    prepareMaterials(assets);
+    prepareBuffers(m_buffers);
+}
 
+void ModelMesh::prepareMaterials(const Assets& assets)
+{
     m_reflection = false;
     m_refraction = false;
 
@@ -154,8 +162,6 @@ void ModelMesh::prepare(const Assets& assets)
         }
     }
 
-    prepareBuffers(m_buffers);
-
     // materials
     {
         int sz_single = sizeof(MaterialUBO);
@@ -177,54 +183,63 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 {
     KI_DEBUG_SB(str() + " - VAO = " << curr.VAO << ", VBO = " << curr.VBO << ", EBO = " << curr.EBO);
 
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    prepareVBO(curr);
+    prepareEBO(curr);
+
+    // NOTE KI no need for thexe any longer (they are in buffers now)
+    m_triCount = m_tris.size();
+    m_vertices.clear();
+    m_tris.clear();
+}
+
+void ModelMesh::prepareVBO(MeshBuffers& curr)
+{
     const int vao = curr.VAO;
 
-    // VBO
+    // https://paroj.github.io/gltut/Basic%20Optimization.html
+    constexpr int stride_size = sizeof(TexVBO);
+    void* vboBuffer = new unsigned char[stride_size * m_vertices.size()];
+
     {
-        // https://paroj.github.io/gltut/Basic%20Optimization.html
-        const int stride_size = sizeof(TexVBO);
-        void* vboBuffer = new unsigned char[stride_size * m_vertices.size()];
+        TexVBO* vbo = (TexVBO*)vboBuffer;
+        for (int i = 0; i < m_vertices.size(); i++) {
+            const Vertex& vertex = m_vertices[i];
+            const glm::vec3& p = vertex.pos;
+            const glm::vec3& n = vertex.normal;
+            const glm::vec3& tan = vertex.tangent;
+            const Material* m = Material::findID(vertex.materialID, m_materials);
+            const glm::vec2& t = vertex.texture;
 
-        {
-            TexVBO* vbo = (TexVBO*)vboBuffer;
-            for (int i = 0; i < m_vertices.size(); i++) {
-                const Vertex& vertex = m_vertices[i];
-                const glm::vec3& p = vertex.pos;
-                const glm::vec3& n = vertex.normal;
-                const glm::vec3& tan = vertex.tangent;
-                const Material* m = Material::findID(vertex.materialID, m_materials);
-                const glm::vec2& t = vertex.texture;
+            vbo->pos.x = p.x;
+            vbo->pos.y = p.y;
+            vbo->pos.z = p.z;
 
-                vbo->pos.x = p.x;
-                vbo->pos.y = p.y;
-                vbo->pos.z = p.z;
+            vbo->normal.x = (int)(n.x * SCALE_VEC10);
+            vbo->normal.y = (int)(n.y * SCALE_VEC10);
+            vbo->normal.z = (int)(n.z * SCALE_VEC10);
+            vbo->normal.not_used = 0;
 
-                vbo->normal.x = (int)(n.x * SCALE_VEC10);
-                vbo->normal.y = (int)(n.y * SCALE_VEC10);
-                vbo->normal.z = (int)(n.z * SCALE_VEC10);
-                vbo->normal.not_used = 0;
+            vbo->tangent.x = (int)(tan.x * SCALE_VEC10);
+            vbo->tangent.y = (int)(tan.y * SCALE_VEC10);
+            vbo->tangent.z = (int)(tan.z * SCALE_VEC10);
+            vbo->tangent.not_used = 0;
 
-                vbo->tangent.x = (int)(tan.x * SCALE_VEC10);
-                vbo->tangent.y = (int)(tan.y * SCALE_VEC10);
-                vbo->tangent.z = (int)(tan.z * SCALE_VEC10);
-                vbo->tangent.not_used = 0;
+            // TODO KI should use noticeable value for missing
+            // => would trigger undefined array access in render side
+            vbo->material = m ? m->materialIndex : 0;
 
-                // TODO KI should use noticeable value for missing
-                vbo->material = m ? m->materialIndex : 0;
+            vbo->texCoords.u = (int)(t.x * SCALE_UV16);
+            vbo->texCoords.v = (int)(t.y * SCALE_UV16);
 
-                vbo->texCoords.u = (int)(t.x * SCALE_UV16);
-                vbo->texCoords.v = (int)(t.y * SCALE_UV16);
-
-                vbo++;
-            }
+            vbo++;
         }
+    }
 
-        glNamedBufferStorage(curr.VBO, stride_size * m_vertices.size(), vboBuffer, 0);
-        delete[] vboBuffer;
+    glNamedBufferStorage(curr.VBO, stride_size * m_vertices.size(), vboBuffer, 0);
+    delete[] vboBuffer;
 
-        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
-
+    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
+    {
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
         glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
@@ -232,7 +247,8 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
         glEnableVertexArrayAttrib(vao, ATTR_TEX);
 
         // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
-    
+        // https://www.khronos.org/opengl/wiki/Vertex_Specification
+        // 
         // vertex attr
         glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(TexVBO, pos));
 
@@ -243,8 +259,8 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
         glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, tangent));
 
         // materialID attr
-        glVertexArrayAttribIFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_UNSIGNED_BYTE, offsetof(TexVBO, material));
-        
+        glVertexArrayAttribIFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_UNSIGNED_INT, offsetof(TexVBO, material));
+
         // texture attr
         glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TexVBO, texCoords));
 
@@ -253,37 +269,39 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
         glVertexArrayAttribBinding(vao, ATTR_TANGENT, VBO_VERTEX_BINDING);
         glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_VERTEX_BINDING);
         glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_VERTEX_BINDING);
+
+        // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
+        // https://www.khronos.org/opengl/wiki/Vertex_Specification
+        glVertexArrayBindingDivisor(vao, VBO_VERTEX_BINDING, 0);
     }
+}
+
+void ModelMesh::prepareEBO(MeshBuffers& curr)
+{
+    const int vao = curr.VAO;
 
     // EBO == IBO ?!?
-    {
-        const int index_count = m_tris.size() * 3;
-        unsigned int* vertexEboBuffer = new unsigned int[index_count];
+    const int index_count = m_tris.size() * 3;
+    unsigned int* vertexEboBuffer = new unsigned int[index_count];
 
-        for (int i = 0; i < m_tris.size(); i++) {
-            const glm::uvec3& vi = m_tris[i];
-            const int base = i * 3;
-            vertexEboBuffer[base + 0] = vi[0];
-            vertexEboBuffer[base + 1] = vi[1];
-            vertexEboBuffer[base + 2] = vi[2];
-        }
-
-        glNamedBufferStorage(curr.EBO, sizeof(unsigned int) * index_count, vertexEboBuffer, 0);
-        delete[] vertexEboBuffer;
-
-        glVertexArrayElementBuffer(vao, curr.EBO);
+    for (int i = 0; i < m_tris.size(); i++) {
+        const glm::uvec3& vi = m_tris[i];
+        const int base = i * 3;
+        vertexEboBuffer[base + 0] = vi[0];
+        vertexEboBuffer[base + 1] = vi[1];
+        vertexEboBuffer[base + 2] = vi[2];
     }
 
-    // NOTE KI no need for thexe any longer (they are in buffers now)
-    m_triCount = m_tris.size();
-    m_vertices.clear();
-    m_tris.clear();
+    glNamedBufferStorage(curr.EBO, sizeof(unsigned int) * index_count, vertexEboBuffer, 0);
+    delete[] vertexEboBuffer;
+
+    glVertexArrayElementBuffer(vao, curr.EBO);
 }
 
 void ModelMesh::bind(
     const RenderContext& ctx,
     Shader* shader,
-    bool bindMaterials)
+    bool bindMaterials) noexcept
 {
     if (bindMaterials) {
         glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
@@ -296,7 +314,7 @@ void ModelMesh::bind(
     glBindVertexArray(m_buffers.VAO);
 }
 
-void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount)
+void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount) noexcept
 {
     KI_GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, m_triCount * 3, GL_UNSIGNED_INT, 0, instanceCount));
 }

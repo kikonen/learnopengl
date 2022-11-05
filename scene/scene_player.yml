@@ -1,0 +1,51 @@
+---
+name: Full
+viewports:
+skybox:
+  shader: skybox
+  material: skybox
+lights: {}
+root:
+  id: 50733c80-df4e-47ab-9596-ccfadb1805d8
+  type: origo
+  pos: [200, 0, 200]
+  rotation: [0, 0, 0]
+  enabled: true
+  controller:
+    type: path
+    mode: 1
+    enabled: false
+entities:
+  - name: Player
+    model: texture_cube
+    pos: [-10, 7, -20.0]
+    rotation: [0, 180, 0.0]
+    scale: 0.8
+    shader: texture
+    render_flags:
+      allow_normals: false
+    camera:
+      zoom: 45
+      up: [0, 1, 0]
+      front: [0, 0, -1]
+      pos: [200, 0, 200]
+      rotation: [0, 180, 0.0]
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: Four cubes
+    model: texture_cube_3
+    shader: texture
+    scale: 1
+    enabled: true
+    clones:
+      - pos: [-5.0, 15.0, -5.0]
+      - pos: [5.0, 15.0, -5.0]
+      - pos: [-5.0, 15.0, 5.0]
+      - pos: [5.0, 15.0, 5.0]
+materials:
+  - name: skybox
+    type: skybox
+    asset: skybox

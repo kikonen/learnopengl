@@ -11,7 +11,7 @@ in VS_OUT {
   vec2 texCoords;
   vec3 vertexPos;
 
-  flat int materialIndex;
+  flat uint materialIndex;
 
   vec3 fragPos;
   vec3 normal;
@@ -25,7 +25,7 @@ out VS_OUT {
   vec2 texCoords;
   vec3 vertexPos;
 
-  flat int materialIndex;
+  flat uint materialIndex;
 
   vec3 fragPos;
   vec3 normal;

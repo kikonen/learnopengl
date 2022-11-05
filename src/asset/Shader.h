@@ -51,6 +51,7 @@ constexpr int ATTR_MATERIAL_INDEX = 4;
 constexpr int ATTR_TEX = 5;
 
 // https://www.reddit.com/r/opengl/comments/lz72tk/understanding_dsa_functions_and_buffer_binding/
+// https://www.khronos.org/opengl/wiki/Vertex_Specification
 constexpr int VBO_VERTEX_BINDING = 0;
 constexpr int VBO_MODEL_MATRIX_BINDING = 1;
 constexpr int VBO_NORMAL_MATRIX_BINDING = 2;

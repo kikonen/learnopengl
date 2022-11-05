@@ -305,16 +305,16 @@ std::shared_ptr<NodeType> SceneFile::createType(
                 });
         }
         // NOTE KI reduce variants to 2
-        if (materialCount < MATERIAL_COUNT / 2) {
+        if (materialCount < MIN_MATERIAL_COUNT) {
             // NOTE KI TEX_TEXTURE requires at least 1
-            materialCount = MATERIAL_COUNT / 2;
+            materialCount = MIN_MATERIAL_COUNT;
         }
         else {
             materialCount = MATERIAL_COUNT;
         }
 
-        if (textureCount < TEXTURE_COUNT / 2) {
-            textureCount = TEXTURE_COUNT / 2;
+        if (textureCount < MIN_TEXTURE_COUNT) {
+            textureCount = MIN_TEXTURE_COUNT;
         }
         else {
             textureCount = TEXTURE_COUNT;

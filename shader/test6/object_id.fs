@@ -17,7 +17,7 @@ layout(early_fragment_tests) in;
 #ifdef USE_ALPHA
 in VS_OUT {
   vec2 texCoords;
-  flat int materialIndex;
+  flat uint materialIndex;
   flat vec4 objectID;
 } fs_in;
 
@@ -37,7 +37,7 @@ layout (location = 0) out vec4 fragObjectID;
 
 void main() {
 #ifdef USE_ALPHA
-  int matIdx = fs_in.materialIndex;
+  uint matIdx = fs_in.materialIndex;
   int diffuseTexIdx = u_materials[matIdx].diffuseTex;
 
   float alpha;

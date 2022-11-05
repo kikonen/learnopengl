@@ -8,7 +8,7 @@
 
 in VS_OUT {
   vec4 color;
-  flat int materialIndex;
+  flat uint materialIndex;
   vec2 texCoords;
   vec3 fragPos;
   vec3 normal;

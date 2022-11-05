@@ -1,0 +1,11 @@
+---
+name: One
+viewports:
+entities:
+  - name: Mountains
+    id: 63ca20c5-dce1-4400-8968-6484cb4af8ca
+    model: texture_mountains
+    shader: texture
+    pos: [100.0, 0.0, -100.0]
+    scale: 1.0
+    enabled: true

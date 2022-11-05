@@ -19,7 +19,7 @@ in VS_OUT {
   vec3 vertexPos;
   vec3 viewVertexPos;
 
-  flat int materialIndex;
+  flat uint materialIndex;
 
   vec4 fragPosLightSpace;
 
