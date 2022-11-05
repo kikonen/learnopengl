@@ -1,5 +1,9 @@
 layout(std140) uniform Lights {
-  DirLight u_light;
+  uint u_dirLightCount;
+  uint u_pointLightCount;
+  uint u_spotLightCount;
+
+  DirLight u_dirLights[1];
   PointLight u_pointLights[LIGHT_COUNT];
   SpotLight u_spotLights[LIGHT_COUNT];
 };

@@ -79,14 +79,14 @@ const glm::vec3& Light::getWorldPos() noexcept
 
 DirLightUBO Light::toDirLightUBO() noexcept
 {
-    return { m_worldPos, enabled, m_worldDir, 0, ambient, diffuse, specular };
+    return { m_worldPos, 0, m_worldDir, 0, ambient, diffuse, specular };
 }
 
 PointLightUBO Light::toPointightUBO() noexcept
 {
     return {
         m_worldPos,
-        enabled,
+        0,
 
         ambient,
         diffuse,
@@ -103,7 +103,7 @@ SpotLightUBO Light::toSpotLightUBO() noexcept
 {
     return {
         m_worldPos,
-        enabled,
+        0,
         m_worldDir,
         0,
         ambient,

@@ -164,55 +164,45 @@ void RenderContext::bindClipPlanesUBO() const
 void RenderContext::bindLightsUBO() const
 {
     LightsUBO lightsUbo;
-    {
+    if (!useLight) {
+        lightsUbo.dirCount = 0;
+        lightsUbo.pointCount = 0;
+        lightsUbo.spotCount = 0;
+    }
+
+    if (useLight) {
         auto& node = scene->registry.m_dirLight;
-        if (node && useLight) {
-            lightsUbo.light = node->m_light->toDirLightUBO();
-            //lights.light.use = false;
+        if (node) {
+            lightsUbo.dir[0] = node->m_light->toDirLightUBO();
+            lightsUbo.dirCount = 1;
         }
         else {
-            DirLightUBO none;
-            none.use = false;
-            lightsUbo.light = none;
+            lightsUbo.dirCount = 0;
         }
     }
 
-    {
-        int index = 0;
+    if (useLight) {
+        int count = 0;
         for (auto& node : scene->registry.m_pointLights) {
-            if (!useLight) continue;
-            if (index >= LIGHT_COUNT) break;
+            if (count >= LIGHT_COUNT) break;
             if (!node->m_light->enabled) continue;
 
-            lightsUbo.pointLights[index] = node->m_light->toPointightUBO();
-            //lights.pointLights[index].use = false;
-            index++;
+            lightsUbo.pointLights[count] = node->m_light->toPointightUBO();
+            count++;
         }
-        PointLightUBO none;
-        none.use = false;
-        while (index < LIGHT_COUNT) {
-            lightsUbo.pointLights[index] = none;
-            index++;
-        }
+        lightsUbo.pointCount = count;
     }
 
-    {
-        int index = 0;
+    if (useLight) {
+        int count = 0;
         for (auto& node : scene->registry.m_spotLights) {
-            if (!useLight) continue;
-            if (index >= LIGHT_COUNT) break;
+            if (count>= LIGHT_COUNT) break;
             if (!node->m_light->enabled) continue;
 
-            lightsUbo.spotLights[index] = node->m_light->toSpotLightUBO();
-            //lights.spotLights[index].use = false;
-            index++;
+            lightsUbo.spotLights[count] = node->m_light->toSpotLightUBO();
+            count++;
         }
-        SpotLightUBO none;
-        none.use = false;
-        while (index < LIGHT_COUNT) {
-            lightsUbo.spotLights[index] = none;
-            index++;
-        }
+        lightsUbo.spotCount = count;
     }
 
     glNamedBufferSubData(scene->ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);

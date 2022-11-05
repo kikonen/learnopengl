@@ -1,6 +1,5 @@
 struct DirLight {
   vec3 pos;
-  bool use;
 
   vec3 dir;
 
@@ -10,7 +9,6 @@ struct DirLight {
 };
 struct PointLight {
   vec3 pos;
-  bool use;
 
   vec4 ambient;
   vec4 diffuse;
@@ -23,7 +21,6 @@ struct PointLight {
 };
 struct SpotLight {
   vec3 pos;
-  bool use;
 
   vec3 dir;
 
