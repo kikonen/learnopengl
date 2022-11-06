@@ -8,7 +8,7 @@ const int EFF_EDGE = 5;
 
 out vec4 fragColor;
 
-in vec2 texCoords;
+in vec2 texCoord;
 
 uniform sampler2D u_viewportTex;
 uniform int u_effect;
@@ -19,7 +19,7 @@ precision lowp float;
 
 void main()
 {
-  vec4 color = texture(u_viewportTex, texCoords).rgba;
+  vec4 color = texture(u_viewportTex, texCoord).rgba;
 
   if (u_effect == EFF_INVERT) {
     color = vec4(vec3(1.0 - color), color.a);
@@ -48,7 +48,7 @@ void main()
        );
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(texture(u_viewportTex, texCoords.st + offsets[i]));
+      sampleTex[i] = vec3(texture(u_viewportTex, texCoord.st + offsets[i]));
     }
 
     vec3 col = vec3(0.0);
@@ -79,7 +79,7 @@ void main()
 
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(texture(u_viewportTex, texCoords.st + offsets[i]));
+      sampleTex[i] = vec3(texture(u_viewportTex, texCoord.st + offsets[i]));
     }
 
     vec3 col = vec3(0.0);
@@ -110,7 +110,7 @@ void main()
 
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(texture(u_viewportTex, texCoords.st + offsets[i]));
+      sampleTex[i] = vec3(texture(u_viewportTex, texCoord.st + offsets[i]));
     }
 
     vec3 col = vec3(0.0);

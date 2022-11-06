@@ -63,3 +63,12 @@ Shader* AsyncLoader::getShader(
 {
     return shaders.getShader(assets, name, materialCount, defines);
 }
+
+Shader* AsyncLoader::getShader(
+    const std::string& name,
+    const std::string& geometryType,
+    const int materialCount,
+    const std::map<std::string, std::string>& defines)
+{
+    return shaders.getShader(assets, name, geometryType, materialCount, defines);
+}

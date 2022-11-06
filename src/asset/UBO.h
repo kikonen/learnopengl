@@ -188,4 +188,9 @@ struct ClipPlaneUBO {
 // NOTE KI align 16
 struct ClipPlanesUBO {
     ClipPlaneUBO clipping[CLIP_PLANE_COUNT];
+    int clipCount;
+
+    int pad1;
+    int pad2;
+    int pad3;
 };

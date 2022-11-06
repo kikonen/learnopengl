@@ -12,7 +12,7 @@ layout(early_fragment_tests) in;
 
 in VS_OUT {
   vec4 color;
-  vec2 texCoords;
+  vec2 texCoord;
   vec3 fragPos;
   vec3 normal;
 } fs_in;

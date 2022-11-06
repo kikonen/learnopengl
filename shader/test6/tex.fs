@@ -19,7 +19,7 @@ layout(early_fragment_tests) in;
 in VS_OUT {
   vec3 fragPos;
   vec3 normal;
-  vec2 texCoords;
+  vec2 texCoord;
   vec3 vertexPos;
   vec3 viewVertexPos;
 
@@ -59,7 +59,7 @@ void main() {
 #endif
 
 #ifdef USE_NORMAL_TEX
-  vec3 normal = texture(u_textures[material.normalMapTex], fs_in.texCoords).rgb;
+  vec3 normal = texture(u_textures[material.normalMapTex], fs_in.texCoord).rgb;
   normal = normal * 2.0 - 1.0;
   normal = normalize(fs_in.TBN * normal);
 #else

@@ -161,6 +161,8 @@ class SceneFile
         std::string meshPath;
 
         std::string shaderName{};
+        std::string geometryType;
+
         std::map<std::string, std::string> shaderDefinitions{};
         std::map<const std::string, bool> renderFlags{};
         glm::vec3 position{ 0 };

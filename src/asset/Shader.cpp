@@ -13,6 +13,8 @@
 #include "ShaderBind.h"
 
 namespace {
+    constexpr int LOG_SIZE = 4096;
+
     int typeIDbase = 0;
 
     std::mutex type_id_lock;
@@ -57,7 +59,7 @@ Shader::Shader(
 
     m_paths[GL_VERTEX_SHADER] = basePath + ".vs";
     m_paths[GL_FRAGMENT_SHADER] = basePath + ".fs";
-    m_paths[GL_GEOMETRY_SHADER] = basePath + geometryType + ".gs.glsl";
+    m_paths[GL_GEOMETRY_SHADER] = basePath + "_" + geometryType + ".gs.glsl";
 
     //paths[GL_TESS_CONTROL_SHADER] = basePath + ".tcs.glsl";
     //paths[GL_TESS_EVALUATION_SHADER] = basePath + ".tes.glsl";
@@ -161,10 +163,14 @@ int Shader::compileSource(
         glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
         if (!success)
         {
-            char infoLog[512];
-            glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
-            KI_ERROR_SB("SHADER::GEOMETRY::COMPILATION_FAILED " << m_shaderName << " frag=" << shaderPath << "\n" << infoLog);
-            KI_ERROR_SB(source);
+            char infoLog[LOG_SIZE];
+            glGetShaderInfoLog(shaderId, LOG_SIZE, NULL, infoLog);
+            KI_ERROR_SB(fmt::format(
+                "SHADER:::COMPILE_FAILED[{:#04x}] shader={} path={}\n{}",
+                shaderType, m_shaderName, shaderPath, infoLog));
+            KI_ERROR_SB(fmt::format(
+                "FAILED_SOURCE:\n-------------------\n{}\n-------------------",
+                source));
             KI_BREAK();
 
             glDeleteShader(shaderId);
@@ -199,8 +205,8 @@ int Shader::createProgram() {
             int success;
             glGetProgramiv(m_programId, GL_LINK_STATUS, &success);
             if (!success) {
-                char infoLog[512];
-                glGetProgramInfoLog(m_programId, 512, NULL, infoLog);
+                char infoLog[LOG_SIZE];
+                glGetProgramInfoLog(m_programId, LOG_SIZE, NULL, infoLog);
                 KI_ERROR_SB("SHADER::PROGRAM::LINKING_FAILED " << m_shaderName << "\n" << infoLog);
                 KI_BREAK();
 
@@ -229,8 +235,8 @@ void Shader::validateProgram() {
     int success;
     glGetProgramiv(m_programId, GL_VALIDATE_STATUS, &success);
     if (!success) {
-        char infoLog[1024];
-        glGetProgramInfoLog(m_programId, 512, NULL, infoLog);
+        char infoLog[LOG_SIZE];
+        glGetProgramInfoLog(m_programId, LOG_SIZE, NULL, infoLog);
         KI_ERROR_SB("SHADER::PROGRAM::VALIDATE_FAILED " << m_shaderName << "\n" << infoLog);
         KI_BREAK();
     }
@@ -406,7 +412,7 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
             } else if (k == "#include") {
                 for (auto& l : processInclude(v1, lineNumber)) {
                     lines.push_back(l);
-                    }
+                }
                 lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
             }
             else {

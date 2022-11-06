@@ -158,6 +158,13 @@ void RenderContext::bindDataUBO() const
 
 void RenderContext::bindClipPlanesUBO() const
 {
+    int count = 0;
+    for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
+        if (!clipPlanes.clipping[i].enabled) continue;
+        count++;
+    }
+
+    clipPlanes.clipCount = count;
     glNamedBufferSubData(scene->ubo.clipPlanes, 0, sizeof(ClipPlanesUBO), &clipPlanes);
 }
 

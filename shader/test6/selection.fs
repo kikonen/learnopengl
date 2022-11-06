@@ -16,7 +16,7 @@ layout(early_fragment_tests) in;
 
 #ifdef USE_ALPHA
 in VS_OUT {
-  vec2 texCoords;
+  vec2 texCoord;
   flat uint materialIndex;
 } fs_in;
 
@@ -34,7 +34,7 @@ void main() {
 
   float alpha;
   if (diffuseTexIdx >= 0) {
-    alpha = texture(u_textures[diffuseTexIdx], fs_in.texCoords).a;
+    alpha = texture(u_textures[diffuseTexIdx], fs_in.texCoord).a;
   } else {
     alpha = u_materials[matIdx].diffuse.a;
   }

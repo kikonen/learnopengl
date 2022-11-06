@@ -8,7 +8,7 @@ layout (triangle_strip, max_vertices = 3) out;
 #include uniform_data.glsl
 
 in VS_OUT {
-  vec2 texCoords;
+  vec2 texCoord;
   vec3 vertexPos;
 
   flat uint materialIndex;
@@ -22,7 +22,7 @@ in VS_OUT {
 } vs_in[];
 
 out VS_OUT {
-  vec2 texCoords;
+  vec2 texCoord;
   vec3 vertexPos;
 
   flat uint materialIndex;
@@ -52,7 +52,7 @@ vec4 explode(vec4 pos, vec3 normal)
 
 void sendVertex(int i, vec4 pos) {
   gl_Position = pos;
-  gs_out.texCoords = vs_in[i].texCoords;
+  gs_out.texCoord = vs_in[i].texCoord;
   gs_out.vertexPos = vs_in[i].vertexPos;
   gs_out.materialIndex = vs_in[i].materialIndex;
   gs_out.fragPos = vs_in[i].fragPos;

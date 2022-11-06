@@ -15,7 +15,7 @@ in VS_OUT {
 
   vec3 fragPos;
   vec3 normal;
-  vec2 texCoords;
+  vec2 texCoord;
   vec3 vertexPos;
   vec3 viewVertexPos;
 
@@ -52,7 +52,7 @@ precision lowp float;
 #include fn_calculate_fog.glsl
 
 vec3 estimateWaveNormal(float offset, float mapScale, float hScale) {
-  vec2 tc = fs_in.texCoords;
+  vec2 tc = fs_in.texCoord;
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex
   float h1 = (texture(u_noiseTex, vec3(((tc.s))*mapScale, 0.5, ((tc.t)+offset)*mapScale))).r * hScale;
@@ -72,19 +72,19 @@ const float waveStrength = 0.01;
 void main() {
   #include var_tex_material.glsl
 
-  vec2 distortedTexCoords = fs_in.texCoords;
+  vec2 distortedTexCoord = fs_in.texCoord;
   vec2 totalDistortion = vec2(0);
 
   if (material.dudvMapTex >= 0) {
     float moveFactor = (sin(u_time / 10.0) + 1.0) * 0.5;
 
-    vec2 distortedTexCoords = texture(u_textures[material.dudvMapTex], vec2(fs_in.texCoords.x + moveFactor, fs_in.texCoords.y)).rg * 0.1;
-    distortedTexCoords = fs_in.texCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
-    totalDistortion = (texture(u_textures[material.dudvMapTex], distortedTexCoords).rg * 2.0 - 1.0) * waveStrength;
+    vec2 distortedTexCoord = texture(u_textures[material.dudvMapTex], vec2(fs_in.texCoord.x + moveFactor, fs_in.texCoord.y)).rg * 0.1;
+    distortedTexCoord = fs_in.texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
+    totalDistortion = (texture(u_textures[material.dudvMapTex], distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
   }
 
 #ifdef USE_NORMAL_TEX
-  vec3 normal = texture(u_textures[material.normalMapTex], distortedTexCoords).rgb;
+  vec3 normal = texture(u_textures[material.normalMapTex], distortedTexCoord).rgb;
   normal = normal * 2.0 - 1.0;
   normal = normalize(fs_in.TBN * normal);
 #else

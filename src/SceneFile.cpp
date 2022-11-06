@@ -345,7 +345,11 @@ std::shared_ptr<NodeType> SceneFile::createType(
         definitions[DEF_TEX_COUNT] = std::to_string(textureCount);
 
         if (!data.shaderName.empty()) {
-            type->m_nodeShader = m_asyncLoader->getShader(data.shaderName, materialCount, definitions);
+            type->m_nodeShader = m_asyncLoader->getShader(
+                data.shaderName,
+                data.geometryType,
+                materialCount,
+                definitions);
         }
     }
 
@@ -733,6 +737,9 @@ void SceneFile::loadEntityClone(
             if (data.shaderName == "texture") {
                 data.shaderName = TEX_TEXTURE;
             }
+        }
+        else if (k == "geometry_type") {
+            data.geometryType = v.as<std::string>();
         }
         else if (k == "shader_definitions") {
             for (const auto& defNode : v) {

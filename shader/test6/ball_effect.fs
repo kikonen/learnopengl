@@ -13,7 +13,7 @@
 in VS_OUT {
   vec3 fragPos;
   vec3 normal;
-  vec2 texCoords;
+  vec2 texCoord;
 
   flat uint materialIndex;
 
@@ -41,9 +41,9 @@ precision lowp float;
 #include fn_calculate_spot_light.glsl
 #include fn_calculate_light.glsl
 
-//vec3 textureLod(int textureIndex, vec2 texCoords, float dummy)
+//vec3 textureLod(int textureIndex, vec2 texCoord, float dummy)
 //{
-//  return texture(u_textures[textureIndex], texCoords);
+//  return texture(u_textures[textureIndex], texCoord);
 //}
 
 #ifdef EFFECT_SUN

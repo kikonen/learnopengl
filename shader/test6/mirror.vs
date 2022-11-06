@@ -5,7 +5,7 @@
 layout (location = 0) in vec3 a_pos;
 layout (location = 1) in vec3 a_normal;
 layout (location = 4) in uint a_materialIndex;
-layout (location = 5) in vec2 a_texCoords;
+layout (location = 5) in vec2 a_texCoord;
 layout (location = 6) in mat4 a_modelMatrix;
 layout (location = 10) in mat3 a_normalMatrix;
 
@@ -22,7 +22,7 @@ out VS_OUT {
 
   vec3 fragPos;
   vec3 normal;
-  vec2 texCoords;
+  vec2 texCoord;
   vec3 vertexPos;
   vec3 viewVertexPos;
 
@@ -45,7 +45,7 @@ void main() {
   gl_Position = vs_out.glp;
 
   vs_out.materialIndex = a_materialIndex;
-  vs_out.texCoords = a_texCoords;
+  vs_out.texCoord = a_texCoord;
 
   vs_out.fragPos = worldPos.xyz;
   vs_out.vertexPos = a_pos;

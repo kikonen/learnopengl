@@ -46,9 +46,6 @@ Shader* ShaderRegistry::getShader(
 
     key += "_MAT_COUNT=" + std::to_string(materialCount);
 
-    if (!geometryType.empty())
-        key += "_" + geometryType;
-
     for (const auto& [k, v] : defines)
         key += "_" + k + "=" + v; 
 

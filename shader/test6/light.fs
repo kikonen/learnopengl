@@ -8,7 +8,7 @@
 
 in VS_OUT {
   flat uint materialIndex;
-  vec2 texCoords;
+  vec2 texCoord;
   vec3 fragPos;
   vec3 normal;
 } fs_in;

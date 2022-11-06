@@ -15,7 +15,7 @@ in VS_OUT {
 
   vec3 fragPos;
   vec3 normal;
-  vec2 texCoords;
+  vec2 texCoord;
   vec3 vertexPos;
   vec3 viewVertexPos;
 
