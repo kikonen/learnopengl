@@ -20,6 +20,8 @@ in VS_OUT {
 
   vec4 fragPosLightSpace;
 
+  vec3 scale;
+
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
 #endif
@@ -61,6 +63,7 @@ void generateSprite(const int index)
 {
   // https://ogldev.org/www/tutorial27/tutorial27.html
   vec3 pos = gl_in[0].gl_Position.xyz;
+  vec3 scale = gs_in[index].scale;
   vec3 toView = normalize(u_viewPos - pos);
   vec3 up = vec3(0, 1, 0);
   vec3 right = cross(toView, up);
@@ -68,7 +71,7 @@ void generateSprite(const int index)
   vec4 worldPos;
 
   fillVertex(index);
-  pos -= (right * 0.5);
+  pos -= (right * 0.5) * scale;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.fragPos = pos;
@@ -78,7 +81,7 @@ void generateSprite(const int index)
   EmitVertex();
 
   fillVertex(index);
-  pos.y += 1.0;
+  pos.y += 1.0 * scale.y;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.fragPos = pos;
@@ -88,8 +91,8 @@ void generateSprite(const int index)
   EmitVertex();
 
   fillVertex(index);
-  pos.y -= 1.0;
-  pos += right;
+  pos.y -= 1.0 * scale.y;
+  pos += right * scale;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.fragPos = pos;
@@ -99,7 +102,7 @@ void generateSprite(const int index)
   EmitVertex();
 
   fillVertex(index);
-  pos.y += 1.0;
+  pos.y += 1.0 * scale.y;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.fragPos = pos;

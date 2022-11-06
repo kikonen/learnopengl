@@ -23,6 +23,8 @@ out VS_OUT {
 
   vec4 fragPosLightSpace;
 
+  vec3 scale;
+
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
 #endif
@@ -58,6 +60,12 @@ void main() {
 //  calculateClipping(worldPos);
 
   vs_out.fragPosLightSpace = worldPos;
+
+  vs_out.scale = vec3(1.5, 3, 1);
+
+  // vs_out.scale = vec3(length(u_modelMatrix[0]),
+  //                     length(u_modelMatrix[1]),
+  //                     length(u_modelMatrix[2]));
 
 #ifdef USE_NORMAL_TEX
   {
