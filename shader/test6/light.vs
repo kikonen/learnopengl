@@ -3,10 +3,9 @@
 #include constants.glsl
 
 layout (location = 0) in vec3 a_pos;
-layout (location = 1) in vec4 aColor;
-layout (location = 2) in uint a_materialIndex;
-layout (location = 3) in vec2 a_texCoords;
-layout (location = 4) in vec3 a_normal;
+layout (location = 1) in vec3 a_normal;
+layout (location = 4) in uint a_materialIndex;
+layout (location = 5) in vec2 a_texCoords;
 layout (location = 6) in mat4 a_modelMatrix;
 layout (location = 10) in mat3 a_normalMatrix;
 
@@ -16,7 +15,6 @@ layout (location = 10) in mat3 a_normalMatrix;
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
-  vec4 color;
   flat uint materialIndex;
   vec2 texCoords;
   vec3 fragPos;
@@ -37,8 +35,6 @@ void main() {
   gl_Position = u_projectedMatrix * worldPos;
 
   calculateClipping(worldPos);
-
-  vs_out.color = aColor;
 
   vs_out.materialIndex = a_materialIndex;
   vs_out.texCoords = a_texCoords;

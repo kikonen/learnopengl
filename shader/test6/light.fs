@@ -7,7 +7,6 @@
 #include uniform_materials.glsl
 
 in VS_OUT {
-  vec4 color;
   flat uint materialIndex;
   vec2 texCoords;
   vec3 fragPos;
