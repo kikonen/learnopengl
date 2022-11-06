@@ -29,6 +29,8 @@ const std::string TEX_EFFECT{ "effect" };
 const std::string TEX_VIEWPORT{ "viewport" };
 const std::string TEX_VOLUME{ "volume" };
 
+const std::string GS_SPRITE{ "sprite" };
+
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };
 const std::string DEF_USE_RENDER_BACK{ "USE_RENDER_BACK" };

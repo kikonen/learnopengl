@@ -652,7 +652,7 @@ entities:
     enabled: true
   - name: Skeleton army
     type: sprite
-    shader: texture
+    shader: sprite
     pos: [15, 6.5, 20.0]
     material: skeleton
     batch_size: 1000
@@ -664,7 +664,7 @@ entities:
       x_count: 10
       z_count: 101
       x_step: -4
-      z_step: 0.2
+      z_step: 1.5
     enabled: true
     init_script: |
       local function main()

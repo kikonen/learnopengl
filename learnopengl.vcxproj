@@ -166,6 +166,7 @@
     <ClCompile Include="src\AssetsFile.cpp" />
     <ClCompile Include="src\asset\ShaderRegistry.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
+    <ClCompile Include="src\asset\SpriteMesh.cpp" />
     <ClCompile Include="src\asset\Volume.cpp" />
     <ClCompile Include="src\backend\RenderSystem.cpp" />
     <ClCompile Include="src\command\CancelCommand.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\Sphere.h" />
     <ClInclude Include="src\asset\Plane.h" />
+    <ClInclude Include="src\asset\SpriteMesh.h" />
     <ClInclude Include="src\asset\Volume.h" />
     <ClInclude Include="src\asset\ShaderBind.h" />
     <ClInclude Include="src\AssetsFile.h" />

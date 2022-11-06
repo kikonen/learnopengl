@@ -9,6 +9,7 @@
 
 #include "asset/MeshLoader.h"
 #include "asset/QuadMesh.h"
+#include "asset/SpriteMesh.h"
 
 #include "model/InstancedNode.h"
 
@@ -249,7 +250,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
     }
     else if (data.type == EntityType::sprite) {
         // NOTE KI sprite *shall* differ from quad later on
-        auto mesh = std::make_unique<QuadMesh>(data.name);
+        auto mesh = std::make_unique<SpriteMesh>(data.name);
         mesh->calculateVolume();
         if (material) {
             mesh->m_material = *material;

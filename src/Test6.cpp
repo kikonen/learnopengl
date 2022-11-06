@@ -77,6 +77,9 @@ int Test6::onRender(const RenderClock& clock) {
     //ctx.state.enable(GL_DEPTH_TEST);
     //glDepthFunc(GL_LEQUAL);
 
+    ctx.state.enable(GL_PROGRAM_POINT_SIZE);
+    glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
+
     if (assets.useIMGUI) {
         frame->bind(ctx);
     }
