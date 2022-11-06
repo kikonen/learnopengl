@@ -6,11 +6,11 @@ layout (location = 4) in uint a_materialIndex;
 layout (location = 6) in mat4 a_modelMatrix;
 layout (location = 10) in mat3 a_normalMatrix;
 
-#include struct_clip_plane.glsl
+//#include struct_clip_plane.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_clip_planes.glsl
+//#include uniform_clip_planes.glsl
 
 out VS_OUT {
   vec3 fragPos;
@@ -28,13 +28,13 @@ out VS_OUT {
 #endif
 } vs_out;
 
-out float gl_ClipDistance[CLIP_COUNT];
+//out float gl_ClipDistance[CLIP_COUNT];
 
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
 
-#include fn_calculate_clipping.glsl
+//#include fn_calculate_clipping.glsl
 
 void main() {
   vec2 texCoord = vec2(0.0, 0.0);
@@ -51,13 +51,13 @@ void main() {
 
   vs_out.fragPos = worldPos.xyz;
   vs_out.vertexPos = pos;
-  vs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
+  vs_out.viewVertexPos = worldPos.xyz;
 
   vs_out.normal = normalize(a_normalMatrix * normal);
 
-  calculateClipping(worldPos);
+//  calculateClipping(worldPos);
 
-  vs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+  vs_out.fragPosLightSpace = worldPos;
 
 #ifdef USE_NORMAL_TEX
   {

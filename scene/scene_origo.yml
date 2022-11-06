@@ -50,6 +50,22 @@ entities:
       - pos: [5.0, 15.0, -5.0]
       - pos: [-5.0, 15.0, 5.0]
       - pos: [5.0, 15.0, 5.0]
+  - name: Skeleton army
+    type: sprite
+    shader: sprite
+    pos: [15, 6.5, 20.0]
+    material: skeleton
+    batch_size: 1000
+    render_flags:
+      alpha: true
+      render_back: true
+    scale: [1.5, 3, 1]
+    repeat:
+      x_count: 10
+      z_count: 101
+      x_step: -4
+      z_step: 1.5
+    enabled: true
 materials:
   - name: skybox
     type: skybox
@@ -60,3 +76,9 @@ materials:
     _kd: [0.5075, 0.5075, 0.5075, 1.0]
     kd: [1, 1, 0, 1.0]
     ks: [0.5083, 0.5083, 0.5083, 1.0]
+  - name: skeleton
+    type: sprite
+    ns: 100
+    ks: [0.6, 0.6, 0.6, 1.0]
+    map_kd: Skeleton_VH.PNG
+    _map_bump: Skeleton_VH_normal.PNG

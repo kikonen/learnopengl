@@ -16,7 +16,7 @@
 layout(early_fragment_tests) in;
 #endif
 
-in VS_OUT {
+in GS_OUT {
   vec3 fragPos;
   vec3 normal;
   vec2 texCoord;
@@ -54,8 +54,8 @@ void main() {
   #include var_tex_material.glsl
 
 #ifdef USE_ALPHA
-  //if (material.diffuse.a < 0.01)
-  //  discard;
+  if (material.diffuse.a < 0.01)
+    discard;
 #endif
 
 #ifdef USE_NORMAL_TEX
@@ -74,8 +74,8 @@ void main() {
   vec4 texColor = shaded;
 
 #ifdef USE_ALPHA
- // if (texColor.a < 0.1)
- //   discard;
+  if (texColor.a < 0.1)
+    discard;
 #endif
 
 #ifndef USE_BLEND
@@ -83,6 +83,5 @@ void main() {
 #endif
 
   texColor = calculateFog(material.fogRatio, texColor);
-  texColor = vec4(1, 0, 0, 1);
   fragColor = texColor;
 }

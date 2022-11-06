@@ -59,7 +59,12 @@ Shader::Shader(
 
     m_paths[GL_VERTEX_SHADER] = basePath + ".vs";
     m_paths[GL_FRAGMENT_SHADER] = basePath + ".fs";
-    m_paths[GL_GEOMETRY_SHADER] = basePath + "_" + geometryType + ".gs.glsl";
+    if (geometryType.empty()) {
+        m_paths[GL_GEOMETRY_SHADER] = basePath + ".gs.glsl";
+    }
+    else {
+        m_paths[GL_GEOMETRY_SHADER] = basePath + "_" + geometryType + ".gs.glsl";
+    }
 
     //paths[GL_TESS_CONTROL_SHADER] = basePath + ".tcs.glsl";
     //paths[GL_TESS_EVALUATION_SHADER] = basePath + ".tes.glsl";
@@ -383,7 +388,10 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
 */
 std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool optional) {
     bool exists = fileExists(path);
-    if (!exists && optional) return {};
+    if (!exists && optional) {
+        KI_INFO_SB("FILE_NOT_EXIST: " << path);
+        return {};
+    }
 
     std::vector<std::string> lines;
     try {
@@ -421,6 +429,8 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
             lineNumber++;
         }
 
+        KI_INFO_SB("FILE_LOADED: " << path);
+
         file.close();
     }
     catch (std::ifstream::failure e) {
@@ -432,7 +442,6 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
             KI_DEBUG_SB("SHADER::FILE_NOT_SUCCESFULLY_READ " << m_shaderName << " path=" << path);
         }
     }
-    KI_INFO_SB("FILE: " << path);
 
     return lines;
 }

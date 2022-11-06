@@ -37,7 +37,7 @@ void ViewportRenderer::render(
         viewport->draw(ctx);
         viewport->unbind(ctx);
     }
-    glBindVertexArray(0);
+    //glBindVertexArray(0);
 
     ctx.state.disable(GL_BLEND);
     ctx.state.enable(GL_DEPTH_TEST);
