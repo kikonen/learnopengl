@@ -33,9 +33,9 @@ bool Sphere::isOnOrForwardPlane(const Plane& plane) const noexcept
 bool Sphere::isOnFrustum(
     const Frustum& frustum,
     const int modelMatrixLevel,
-    const glm::mat4& modelWorödMatrix) const noexcept
+    const glm::mat4& modelWorldMatrix) const noexcept
 {
-    updateWorldSphere(modelMatrixLevel, modelWorödMatrix);
+    updateWorldSphere(modelMatrixLevel, modelWorldMatrix);
 
     const auto& worldSphere = *m_worldSphere.get();
 
@@ -55,7 +55,7 @@ bool Sphere::isOnFrustum(
         worldSphere.isOnOrForwardPlane(frustum.nearFace);
     if (!nope) {
         int x = 0;
-        updateWorldSphere(modelMatrixLevel, modelWorödMatrix);
+        updateWorldSphere(modelMatrixLevel, modelWorldMatrix);
     }
     return worldSphere.isOnOrForwardPlane(frustum.leftFace) &&
         worldSphere.isOnOrForwardPlane(frustum.rightFace) &&

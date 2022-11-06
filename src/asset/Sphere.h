@@ -33,7 +33,7 @@ private:
     glm::vec3 m_center{ 0.f, 0.f, 0.f };
     float m_radius{ 0.f };
 
-    mutable int m_modelMatrixLevel = 0;
+    mutable int m_modelMatrixLevel = -1;
     mutable std::unique_ptr<Sphere> m_worldSphere;
 };
 
