@@ -217,8 +217,8 @@ entities:
       refraction: 0.9
       refraction_ratio: [1.0, 1.52]
     render_flags:
-      blend: true
-      render_back: true
+      xblend: true
+      xrender_back: true
     repeat:
       x_count: 2
       y_count: 1

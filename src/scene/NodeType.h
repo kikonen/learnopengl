@@ -12,6 +12,7 @@ struct NodeRenderFlags {
     bool mirror = false;
     bool water = false;
     bool terrain = false;
+    bool sprite = false;
     bool renderBack = false;
     bool noShadow = false;
     bool noSelect = false;

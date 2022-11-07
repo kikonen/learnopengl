@@ -27,6 +27,11 @@ out VS_OUT {
 #endif
 } vs_out;
 
+const vec2 texCoord = vec2(0.0, 0.0);
+// TODO KI y = -1.0 fixes sprite.gs, but why?!?
+const vec3 pos = vec3(0.0, -1.0, 0.0);
+const vec3 normal = vec3(0.0, 0.0, 1.0);
+
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
@@ -34,11 +39,6 @@ out VS_OUT {
 precision lowp float;
 
 void main() {
-  vec2 texCoord = vec2(0.0, 0.0);
-  // TODO KI y = -1.0 fixes sprite.gs, but why?!?
-  vec3 pos = vec3(0.0, -1.0, 0.0);
-  vec3 normal = vec3(0.0, 0.0, 1.0);
-
   vec4 worldPos = a_modelMatrix * vec4(pos, 1.0);
 
   gl_Position =  worldPos;

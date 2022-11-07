@@ -22,6 +22,7 @@ const std::string TEX_WATER{ "water" };
 const std::string TEX_PARTICLE{ "particle" };
 const std::string TEX_NORMAL{ "normal" };
 const std::string TEX_OBJECT_ID{ "object_id" };
+const std::string TEX_OBJECT_ID_SPRITE{ "object_id_sprite" };
 const std::string TEX_LIGHT{ "light" };
 const std::string TEX_SIMPLE_DEPTH{ "simple_depth" };
 const std::string TEX_DEBUG_DEPTH{ "debug_depth" };
@@ -104,6 +105,8 @@ public:
         const std::string& geometryType,
         const int materialCount,
         const std::map<std::string, std::string>& defines);
+
+    Shader(const Shader&) = delete;
 
     // public due to shared_ptr
     ~Shader();

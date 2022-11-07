@@ -84,6 +84,9 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     idShaderAlpha = shaders.getShader(assets, TEX_OBJECT_ID, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1"} });
     idShaderAlpha->prepare(assets);
 
+    idShaderSprite = shaders.getShader(assets, TEX_OBJECT_ID_SPRITE, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1"} });
+    idShaderSprite->prepare(assets);
+
     debugViewport = std::make_shared<Viewport>(
         glm::vec3(-1.0, 1.0, 0),
         //glm::vec3(0.5, -0.5, 0),
@@ -152,7 +155,12 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
                 auto& type = *it.first;
                 if (type.m_flags.noSelect) continue;
 
-                ShaderBind bound(type.m_flags.alpha ? idShaderAlpha : idShader);
+                auto shader = type.m_flags.alpha ? idShaderAlpha : idShader;
+                if (type.m_flags.sprite) {
+                    shader = idShaderSprite;
+                }
+
+                ShaderBind bound(shader);
 
                 Batch& batch = type.m_batch;
                 batch.objectIDBuffer = true;

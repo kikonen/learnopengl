@@ -261,6 +261,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
             }
         }
         type->m_mesh.reset(mesh.release());
+        type->m_flags.sprite = true;
     }
     else if (data.type == EntityType::terrain) {
         TerrainGenerator generator(assets);
