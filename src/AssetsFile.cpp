@@ -104,6 +104,9 @@ void AssetsFile::loadAssets(
         else if (k == "show_objectid_view") {
             data.showObjectIDView = v.as<bool>();
         }
+        else if (k == "show_volume") {
+            data.showVolume = v.as<bool>();
+        }
         else if (k == "render_frequency") {
             data.renderFrequency = v.as<float>();
         }
