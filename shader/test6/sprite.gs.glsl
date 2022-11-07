@@ -6,8 +6,11 @@ layout(points) in;
 layout(triangle_strip) out;
 layout(max_vertices = 4) out;
 
+#include struct_clip_plane.glsl
+
 #include uniform_data.glsl
 #include uniform_matrices.glsl
+#include uniform_clip_planes.glsl
 
 in VS_OUT {
   vec3 fragPos;
@@ -43,11 +46,13 @@ out GS_OUT {
 } gs_out;
 
 
-//in float gl_ClipDistance[CLIP_COUNT];
+out float gl_ClipDistance[CLIP_COUNT];
 
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
+
+#include fn_calculate_clipping.glsl
 
 void fillVertex(const int i)
 {
@@ -78,6 +83,8 @@ void generateSprite(const int index)
   gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(0.0, 0.0);
   gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+
+  calculateClipping(worldPos);
   EmitVertex();
 
   fillVertex(index);
@@ -88,6 +95,8 @@ void generateSprite(const int index)
   gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(0.0, 1.0);
   gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+
+  calculateClipping(worldPos);
   EmitVertex();
 
   fillVertex(index);
@@ -99,6 +108,8 @@ void generateSprite(const int index)
   gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(1.0, 0.0);
   gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+
+  calculateClipping(worldPos);
   EmitVertex();
 
   fillVertex(index);
@@ -109,6 +120,8 @@ void generateSprite(const int index)
   gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(1.0, 1.0);
   gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+
+  calculateClipping(worldPos);
   EmitVertex();
 
   EndPrimitive();
