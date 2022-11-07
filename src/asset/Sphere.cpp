@@ -77,16 +77,17 @@ void Sphere::updateWorldSphere(
         m_worldSphere = std::make_unique<Sphere>();
 
     // Get world scale thanks to our transform
+    // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/
     const glm::vec3 worldScale = {
-        glm::length(modelWorldMatrix[0]),
-        glm::length(modelWorldMatrix[1]),
-        glm::length(modelWorldMatrix[2]) };
+        modelWorldMatrix[0][0],
+        modelWorldMatrix[1][1],
+        modelWorldMatrix[2][2]
+    };
+    // To wrap correctly our shape, we need the maximum scale scalar.
+    const float maxScale = std::max(std::max(worldScale.x, worldScale.y), worldScale.z);
 
     // Get our world center with process it with the world model matrix of our transform
     const glm::vec3 worldCenter{ modelWorldMatrix * glm::vec4(m_center, 1.f) };
-
-    // To wrap correctly our shape, we need the maximum scale scalar.
-    const float maxScale = std::max(std::max(worldScale.x, worldScale.y), worldScale.z);
 
     // Max scale is assuming for the diameter. So, we need the half to apply it to our radius
     m_worldSphere->m_center = worldCenter;

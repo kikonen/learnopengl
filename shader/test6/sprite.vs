@@ -31,9 +31,12 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
+precision lowp float;
+
 void main() {
   vec2 texCoord = vec2(0.0, 0.0);
-  vec3 pos = vec3(0.0, 0.0, 0.0);
+  // TODO KI y = -1.0 fixes sprite.gs, but why?!?
+  vec3 pos = vec3(0.0, -1.0, 0.0);
   vec3 normal = vec3(0.0, 0.0, 1.0);
 
   vec4 worldPos = a_modelMatrix * vec4(pos, 1.0);
@@ -52,11 +55,9 @@ void main() {
 
   vs_out.fragPosLightSpace = worldPos;
 
-  vs_out.scale = vec3(1.5, 3, 1);
-
-  // vs_out.scale = vec3(length(u_modelMatrix[0]),
-  //                     length(u_modelMatrix[1]),
-  //                     length(u_modelMatrix[2]));
+  vs_out.scale = vec3(a_modelMatrix[0][0],
+                      a_modelMatrix[1][1],
+                      a_modelMatrix[2][2]);
 
 #ifdef USE_NORMAL_TEX
   {

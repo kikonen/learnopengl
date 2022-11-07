@@ -52,6 +52,8 @@ out float gl_ClipDistance[CLIP_COUNT];
 //
 ////////////////////////////////////////////////////////////
 
+precision lowp float;
+
 #include fn_calculate_clipping.glsl
 
 void fillVertex(const int i)
@@ -68,15 +70,19 @@ void generateSprite(const int index)
 {
   // https://ogldev.org/www/tutorial27/tutorial27.html
   vec3 pos = gl_in[0].gl_Position.xyz;
-  vec3 scale = gs_in[index].scale;
+  vec3 scale = gs_in[index].scale * 2.0;
   vec3 toView = normalize(u_viewPos - pos);
   vec3 up = vec3(0, 1, 0);
   vec3 right = cross(toView, up);
 
+  vec3 scaledRight = right * scale;
+  float scaledY = 1.0 * scale.y;
+
   vec4 worldPos;
 
+  // bottom-left
   fillVertex(index);
-  pos -= (right * 0.5) * scale;
+  pos -= (scaledRight * 0.5);
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.fragPos = pos;
@@ -87,8 +93,9 @@ void generateSprite(const int index)
   calculateClipping(worldPos);
   EmitVertex();
 
+  // top-left
   fillVertex(index);
-  pos.y += 1.0 * scale.y;
+  pos.y += scaledY;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.fragPos = pos;
@@ -99,9 +106,10 @@ void generateSprite(const int index)
   calculateClipping(worldPos);
   EmitVertex();
 
+  // bottom-right
   fillVertex(index);
-  pos.y -= 1.0 * scale.y;
-  pos += right * scale;
+  pos.y -= scaledY;
+  pos += scaledRight;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.fragPos = pos;
@@ -112,8 +120,9 @@ void generateSprite(const int index)
   calculateClipping(worldPos);
   EmitVertex();
 
+  // top-right
   fillVertex(index);
-  pos.y += 1.0 * scale.y;
+  pos.y += scaledY;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.fragPos = pos;

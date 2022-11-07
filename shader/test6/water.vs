@@ -43,6 +43,8 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
+precision lowp float;
+
 void main() {
   vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
 

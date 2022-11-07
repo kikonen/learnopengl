@@ -650,6 +650,29 @@ entities:
       count: 1000
       enabled: true
     enabled: true
+  - name: Scale 1
+    model: brickwall
+    shader: texture
+    pos: [15, 6.5, 20.0]
+    render_flags:
+      render_back: true
+    enabled: false
+  - name: Scale 2
+    model: brickwall
+    shader: texture
+    scale: 2
+    pos: [10, 6.5, 20.0]
+    render_flags:
+      render_back: true
+    enabled: false
+  - name: Scale 3
+    model: brickwall
+    shader: texture
+    scale: 3
+    pos: [5, 6.5, 20.0]
+    render_flags:
+      render_back: true
+    enabled: false
   - name: Skeleton army
     type: sprite
     shader: sprite
@@ -663,8 +686,8 @@ entities:
     repeat:
       x_count: 10
       z_count: 101
-      x_step: -4
-      z_step: 1.5
+      x_step: -3
+      z_step: 2
     enabled: true
     init_script: |
       local function main()
