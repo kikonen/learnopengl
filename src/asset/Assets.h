@@ -46,6 +46,8 @@ public:
     bool showRefractionView;
     bool showObjectIDView;
 
+    bool showVolume;
+
     float renderFrequency;
     bool debugClearColor;
     int clearColor;

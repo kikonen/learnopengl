@@ -41,6 +41,8 @@ Assets::Assets()
     showReflectionView = false;
     showRefractionView = false;
 
+    showVolume = false;
+
     // NOTE KI no skipping of frames
     renderFrequency = 0.f;
     debugClearColor = false;

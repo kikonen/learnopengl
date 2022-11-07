@@ -98,6 +98,8 @@ void SceneFile::attachVolume(
     std::shared_ptr<Scene> scene,
     const EntityData& root)
 {
+    if (!m_assets.showVolume) return;
+
     auto type = std::make_shared<NodeType>();
 
     MeshLoader meshLoader(m_asyncLoader->assets, "Volume", "ball_volume");
