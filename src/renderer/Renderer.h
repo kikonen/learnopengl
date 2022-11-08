@@ -14,7 +14,6 @@ public:
 
     virtual void prepare(const Assets& assets, ShaderRegistry& shaders);
     virtual void update(const RenderContext& ctx, const NodeRegistry& registry);
-    virtual void bind(const RenderContext& ctx);
 
     //virtual void render(
     //    const RenderContext& ctx,

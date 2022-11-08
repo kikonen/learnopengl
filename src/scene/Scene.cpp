@@ -186,24 +186,23 @@ void Scene::update(RenderContext& ctx)
 
 void Scene::bind(RenderContext& ctx)
 {
-    if (nodeRenderer) {
-        nodeRenderer->bind(ctx);
-    }
+    //if (nodeRenderer) {
+    //    nodeRenderer->bind(ctx);
+    //}
     //terrainRenderer->bind(ctx);
 
-    if (viewportRenderer) {
-        viewportRenderer->bind(ctx);
-    }
-
-    if (waterMapRenderer) {
-        waterMapRenderer->bind(ctx);
-    }
-    if (mirrorMapRenderer) {
-        mirrorMapRenderer->bind(ctx);
-    }
-    if (cubeMapRenderer) {
-        cubeMapRenderer->bind(ctx);
-    }
+    //if (viewportRenderer) {
+    //    viewportRenderer->bind(ctx);
+    //}
+    //if (waterMapRenderer) {
+    //    waterMapRenderer->bind(ctx);
+    //}
+    //if (mirrorMapRenderer) {
+    //    mirrorMapRenderer->bind(ctx);
+    //}
+    //if (cubeMapRenderer) {
+    //    cubeMapRenderer->bind(ctx);
+    //}
     if (shadowMapRenderer) {
         shadowMapRenderer->bind(ctx);
     }
@@ -274,7 +273,7 @@ void Scene::draw(RenderContext& ctx)
 void Scene::drawMain(RenderContext& ctx)
 {
     RenderContext mainCtx("MAIN", &ctx, ctx.camera, mainBuffer->spec.width, mainBuffer->spec.height);
-    mainCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
+    mainCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
     mainBuffer->bind(mainCtx);
     drawScene(mainCtx);
@@ -295,7 +294,7 @@ void Scene::drawMirror(RenderContext& ctx)
     camera.setRotation(-rot);
 
     RenderContext mirrorCtx("BACK", &ctx, camera, mirrorBuffer->spec.width, mirrorBuffer->spec.height);
-    mirrorCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
+    mirrorCtx.matrices.lightProjected = ctx.matrices.lightProjected;
     mirrorCtx.bindMatricesUBO();
 
     mirrorBuffer->bind(mirrorCtx);

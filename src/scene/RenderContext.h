@@ -91,15 +91,11 @@ public:
 
     Camera& camera;
 
-    const glm::mat4 viewMatrix;
-    glm::mat4 projectionMatrix;
-    glm::mat4 projectedMatrix;
+    mutable MatricesUBO matrices;
 
     mutable int drawCount = 0;
     mutable int skipCount = 0;
 
-    mutable glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
-    mutable glm::mat4 shadowMatrix = glm::mat4(1.0f);
 
     mutable ClipPlanesUBO clipPlanes;
 

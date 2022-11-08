@@ -18,8 +18,6 @@ public:
 
     void bindTexture(const RenderContext& ctx);
 
-    virtual void bind(const RenderContext& ctx) override;
-
     void render(
         const RenderContext& ctx,
         const NodeRegistry& registry,

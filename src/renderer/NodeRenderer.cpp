@@ -33,10 +33,6 @@ void NodeRenderer::update(const RenderContext& ctx, const NodeRegistry& registry
 {
 }
 
-void NodeRenderer::bind(const RenderContext& ctx)
-{
-}
-
 void NodeRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry,

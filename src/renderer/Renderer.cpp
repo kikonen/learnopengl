@@ -18,10 +18,6 @@ void Renderer::update(const RenderContext& ctx, const NodeRegistry& registry)
 {
 }
 
-void Renderer::bind(const RenderContext& ctx)
-{
-}
-
 bool Renderer::needRender(const RenderContext& ctx)
 {
     if (m_renderFrequency <= 0.f) return true;

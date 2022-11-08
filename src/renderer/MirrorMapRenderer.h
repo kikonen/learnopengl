@@ -18,8 +18,6 @@ public:
 
     void bindTexture(const RenderContext& ctx);
 
-    void bind(const RenderContext& ctx);
-
     void render(
         const RenderContext& ctx,
         const NodeRegistry& registry,

@@ -80,16 +80,17 @@ RenderContext::RenderContext(
     nearPlane(nearPlane),
     farPlane(farPlane),
     resolution{ width, height },
-    aspectRatio((float)width / (float)height),
-    viewMatrix(camera.getView())
+    aspectRatio((float)width / (float)height)
 {
-    projectionMatrix = glm::perspective(
+    matrices.view = camera.getView();
+
+    matrices.projection = glm::perspective(
         glm::radians((float)camera.getZoom()),
         aspectRatio,
         nearPlane,
         farPlane);
 
-    projectedMatrix = projectionMatrix * viewMatrix;
+    matrices.projected = matrices.projection * matrices.view;
 
     for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
         clipPlanes.clipping[i].enabled = false;
@@ -129,15 +130,15 @@ void RenderContext::bindUBOs() const
 
 void RenderContext::bindMatricesUBO() const
 {
-    MatricesUBO matricesUbo = {
-        projectedMatrix,
-        projectionMatrix,
-        viewMatrix,
-        lightSpaceMatrix,
-        shadowMatrix,
-    };
+    //MatricesUBO matricesUbo = {
+    //    projectedMatrix,
+    //    projectionMatrix,
+    //    viewMatrix,
+    //    lightProjectedMatrix,
+    //    shadowMatrix,
+    //};
 
-    glNamedBufferSubData(scene->ubo.matrices, 0, sizeof(MatricesUBO), &matricesUbo);
+    glNamedBufferSubData(scene->ubo.matrices, 0, sizeof(MatricesUBO), &matrices);
 }
 
 void RenderContext::bindDataUBO() const

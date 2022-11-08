@@ -55,10 +55,6 @@ void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
     prev->bindTexture(ctx, 0, ctx.assets.mirrorReflectionMapUnitIndex);
 }
 
-void MirrorMapRenderer::bind(const RenderContext& ctx)
-{
-}
-
 void MirrorMapRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry,
@@ -106,7 +102,7 @@ void MirrorMapRenderer::render(
             &ctx, camera,
             dist, ctx.assets.farPlane,
             curr->spec.width, curr->spec.height);
-        localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
+        localCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
         //clip.enabled = true;

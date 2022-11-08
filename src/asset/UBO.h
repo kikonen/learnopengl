@@ -54,11 +54,11 @@ constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_UNIT_COU
 
 // NOTE KI align 16
 struct MatricesUBO {
-    glm::mat4 u_projected;
-    glm::mat4 u_projection;
-    glm::mat4 u_view;
-    glm::mat4 u_lightSpace;
-    glm::mat4 u_shadow;
+    glm::mat4 projected;
+    glm::mat4 projection;
+    glm::mat4 view;
+    glm::mat4 lightProjected;
+    glm::mat4 shadow;
 };
 
 // NOTE KI align 16

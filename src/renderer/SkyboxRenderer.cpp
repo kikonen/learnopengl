@@ -139,10 +139,10 @@ void SkyboxRenderer::render(const RenderContext& ctx)
     bindTexture(ctx);
 
     // remove translation from the view matrix
-    glm::mat4 viewMatrix = glm::mat4(glm::mat3(ctx.viewMatrix));
+    glm::mat4 viewMatrix = glm::mat4(glm::mat3(ctx.matrices.view));
 
     shader->viewMatrix.set(viewMatrix);
-    shader->projectionMatrix.set(ctx.projectionMatrix);
+    shader->projectionMatrix.set(ctx.matrices.projection);
 
     glDepthFunc(GL_LEQUAL);
     glBindVertexArray(buffers.VAO);

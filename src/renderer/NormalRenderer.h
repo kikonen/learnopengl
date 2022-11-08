@@ -9,8 +9,6 @@ public:
 
     virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
 
-    void bind(const RenderContext& ctx) override;
-
     void render(
         const RenderContext& ctx,
         const NodeRegistry& registry);

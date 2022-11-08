@@ -120,16 +120,11 @@ void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
     debugViewport->setTextureID(m_idBuffer->spec.attachments[0].textureID);
 }
 
-void ObjectIdRenderer::bind(const RenderContext& ctx)
-{
-}
-
 void ObjectIdRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry)
 {
     RenderContext idCtx("OBJECT_ID", &ctx, ctx.camera, m_idBuffer->spec.width, m_idBuffer->spec.height);
-    idCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
     m_idBuffer->bind(idCtx);
 

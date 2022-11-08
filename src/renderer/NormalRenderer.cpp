@@ -17,10 +17,6 @@ void NormalRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     normalShader->prepare(assets);
 }
 
-void NormalRenderer::bind(const RenderContext& ctx)
-{
-}
-
 void NormalRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry)

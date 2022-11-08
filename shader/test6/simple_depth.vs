@@ -22,7 +22,7 @@ void main()
 {
   vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
 
-  gl_Position = u_lightSpaceMatrix * worldPos;
+  gl_Position = u_lightProjectedMatrix * worldPos;
 
 #ifdef USE_ALPHA
   vs_out.materialIndex = a_materialIndex;

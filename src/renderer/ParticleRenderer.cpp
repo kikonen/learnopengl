@@ -19,10 +19,6 @@ void ParticleRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
 {
 }
 
-void ParticleRenderer::bind(const RenderContext& ctx)
-{
-}
-
 void ParticleRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry)

@@ -65,10 +65,6 @@ void CubeMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     prev->prepare(false, { 0, 1, 0, 1.0 });
 }
 
-void CubeMapRenderer::bind(const RenderContext& ctx)
-{
-}
-
 void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 {
     //if (!rendered) return;
@@ -125,7 +121,7 @@ void CubeMapRenderer::render(
             nearPlane, mainCtx.assets.cubeMapFarPlane,
             curr->size, curr->size);
         bindTexture(ctx);
-        ctx.lightSpaceMatrix = mainCtx.lightSpaceMatrix;
+        ctx.matrices.lightProjected = mainCtx.matrices.lightProjected;
         ctx.bindMatricesUBO();
 
         drawNodes(ctx, registry, skybox, centerNode);

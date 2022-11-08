@@ -65,10 +65,6 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
     }
 }
 
-void WaterMapRenderer::bind(const RenderContext& ctx)
-{
-}
-
 void WaterMapRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry,
@@ -99,7 +95,7 @@ void WaterMapRenderer::render(
         camera.setRotation(rot);
 
         RenderContext localCtx("WATER_REFLECT", &ctx, camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
-        localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
+        localCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
         clip.enabled = true;
@@ -125,7 +121,7 @@ void WaterMapRenderer::render(
         camera.setRotation(rot);
 
         RenderContext localCtx("WATER_REFRACT", &ctx, camera, refractionBuffer->spec.width, refractionBuffer->spec.height);
-        localCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
+        localCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
         clip.enabled = true;

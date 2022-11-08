@@ -14,7 +14,6 @@ public:
     virtual ~CubeMapRenderer();
 
     void prepare(const Assets& assets, ShaderRegistry& shaders) override;
-    void bind(const RenderContext& ctx);
     void bindTexture(const RenderContext& ctx);
 
     void render(

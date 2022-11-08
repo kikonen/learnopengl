@@ -80,8 +80,8 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 
     //lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
 
-    ctx.lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
-    ctx.shadowMatrix = scaleBiasMatrix *ctx.lightSpaceMatrix;
+    ctx.matrices.lightProjected = lightProjectionMatrix * lightViewMatrix;
+    ctx.matrices.shadow = scaleBiasMatrix * ctx.matrices.lightProjected;
 }
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
