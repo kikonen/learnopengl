@@ -46,6 +46,7 @@ public:
     bool showRefractionView;
     bool showObjectIDView;
 
+    bool showSelectionWireframe;
     bool showVolume;
 
     float renderFrequency;

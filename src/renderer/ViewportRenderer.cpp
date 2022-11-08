@@ -28,13 +28,19 @@ void ViewportRenderer::render(
     ctx.state.disable(GL_DEPTH_TEST);
     ctx.state.enable(GL_BLEND);
 
+    bool useWireframe = ctx.useWireframe;
+    ctx.useWireframe = false;
+    ctx.bindGlobal();
+
     for (auto& viewport : registry.viewports) {
         viewport->bind(ctx);
         viewport->draw(ctx);
         viewport->unbind(ctx);
     }
-    //glBindVertexArray(0);
 
     ctx.state.disable(GL_BLEND);
     ctx.state.enable(GL_DEPTH_TEST);
+
+    ctx.useWireframe = useWireframe;
+    ctx.bindGlobal();
 }

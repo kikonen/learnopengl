@@ -23,5 +23,7 @@ namespace backend {
 
         bool wireframe;
         bool renderBack;
+        bool mirror;
+        bool water;
     };
 }

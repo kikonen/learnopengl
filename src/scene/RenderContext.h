@@ -99,6 +99,6 @@ public:
 
     mutable ClipPlanesUBO clipPlanes;
 
-    bool useWireframe = false;
-    bool useLight = true;
+    mutable bool useWireframe = false;
+    mutable bool useLight = true;
 };

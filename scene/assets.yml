@@ -30,6 +30,7 @@ assets:
   show_refraction_view: false
   show_objectid_view: false
 
+  show_selection_wireframe: true
   show_volume: true
 
   render_frequency: 0.0

@@ -82,6 +82,10 @@ RenderContext::RenderContext(
     resolution{ width, height },
     aspectRatio((float)width / (float)height)
 {
+    if (parent) {
+        useWireframe = parent->useWireframe;
+    }
+
     matrices.view = camera.getView();
 
     matrices.projection = glm::perspective(

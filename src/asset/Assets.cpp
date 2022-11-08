@@ -41,6 +41,7 @@ Assets::Assets()
     showReflectionView = false;
     showRefractionView = false;
 
+    showSelectionWireframe = false;
     showVolume = false;
 
     // NOTE KI no skipping of frames
