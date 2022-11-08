@@ -38,8 +38,9 @@ private:
     void drawSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry);
 
 private:
-    Shader* selectionShader{ nullptr };
-    Shader* selectionShaderAlpha{ nullptr };
+    Shader* m_selectionShader{ nullptr };
+    Shader* m_selectionShaderAlpha{ nullptr };
+    Shader* m_selectionShaderSprite{ nullptr };
 
-    int selectedCount{ 0 };
+    int m_selectedCount{ 0 };
 };

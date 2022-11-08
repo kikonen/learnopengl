@@ -16,14 +16,17 @@ void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     Renderer::prepare(assets, shaders);
 
-    selectionShader = shaders.getShader(assets, TEX_SELECTION);
-    selectionShader->m_selection = true;
-    selectionShader->prepare(assets);
+    m_selectionShader = shaders.getShader(assets, TEX_SELECTION);
+    m_selectionShader->m_selection = true;
+    m_selectionShader->prepare(assets);
 
-    selectionShaderAlpha = shaders.getShader(assets, TEX_SELECTION, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
-    selectionShaderAlpha->m_selection = true;
-    selectionShaderAlpha->prepare(assets);
+    m_selectionShaderAlpha = shaders.getShader(assets, TEX_SELECTION, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
+    m_selectionShaderAlpha->m_selection = true;
+    m_selectionShaderAlpha->prepare(assets);
 
+    m_selectionShaderSprite = shaders.getShader(assets, TEX_SELECTION_SPRITE, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
+    m_selectionShaderSprite->m_selection = true;
+    m_selectionShaderSprite->prepare(assets);
 }
 
 void NodeRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
@@ -39,7 +42,7 @@ void NodeRenderer::render(
     const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
-    selectedCount = registry.countSelected();
+    m_selectedCount = registry.countSelected();
 
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     //ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
@@ -87,7 +90,7 @@ void NodeRenderer::render(
 
 void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    if (selectedCount == 0) return;
+    if (m_selectedCount == 0) return;
 
     ctx.state.enable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -100,7 +103,7 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRe
 
 void NodeRenderer::renderSelection(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    if (selectedCount == 0) return;
+    if (m_selectedCount == 0) return;
 
     ctx.state.enable(GL_STENCIL_TEST);
     ctx.state.disable(GL_DEPTH_TEST);
@@ -190,8 +193,12 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
 
             Batch& batch = type.m_batch;
 
-            ShaderBind bound(type.m_flags.alpha ? selectionShaderAlpha : selectionShader);
+            auto shader = type.m_flags.alpha ? m_selectionShaderAlpha : m_selectionShader;
+            if (type.m_flags.sprite) {
+                shader = m_selectionShaderSprite;
+            }
 
+            ShaderBind bound(shader);
 
             type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);

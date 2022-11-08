@@ -13,33 +13,14 @@ layout(max_vertices = 4) out;
 #include uniform_clip_planes.glsl
 
 in VS_OUT {
-  vec3 normal;
-  vec3 vertexPos;
-
-  flat uint materialIndex;
-
   vec3 scale;
-
-#ifdef USE_NORMAL_TEX
-  flat mat3 TBN;
-#endif
+  flat uint materialIndex;
 } gs_in[];
 
 out GS_OUT {
-  vec3 fragPos;
-  vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
-  vec3 viewVertexPos;
-
   flat uint materialIndex;
-
-  vec4 fragPosLightSpace;
-#ifdef USE_NORMAL_TEX
-  flat mat3 TBN;
-#endif
 } gs_out;
-
 
 out float gl_ClipDistance[CLIP_COUNT];
 
@@ -53,12 +34,7 @@ precision lowp float;
 
 void fillVertex(const int i)
 {
-  gs_out.normal = gs_in[i].normal;
-  gs_out.vertexPos = gs_in[i].vertexPos;
   gs_out.materialIndex = gs_in[i].materialIndex;
-#ifdef USE_NORMAL_TEX
-  gs_out.TBN = gs_in[i].TBN;
-#endif
 }
 
 void generateQuad(const int index)
@@ -80,10 +56,7 @@ void generateQuad(const int index)
   pos -= (scaledRight * 0.5);
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
-  gs_out.fragPos = pos;
-  gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(0.0, 0.0);
-  gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();
@@ -93,10 +66,7 @@ void generateQuad(const int index)
   pos.y += scaledY;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
-  gs_out.fragPos = pos;
-  gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(0.0, 1.0);
-  gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();
@@ -107,10 +77,7 @@ void generateQuad(const int index)
   pos += scaledRight;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
-  gs_out.fragPos = pos;
-  gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(1.0, 0.0);
-  gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();
@@ -120,10 +87,7 @@ void generateQuad(const int index)
   pos.y += scaledY;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
-  gs_out.fragPos = pos;
-  gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(1.0, 1.0);
-  gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();

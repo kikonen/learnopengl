@@ -37,8 +37,8 @@ int ObjectIdRenderer::getObjectId(
     float w = screenW * (mainViewport->size.x / GL_SCREEN_SIZE);
     float h = screenH * (mainViewport->size.y / GL_SCREEN_SIZE);
 
-    float ratioX = idBuffer->spec.width / w;
-    float ratioY = idBuffer->spec.height / h;
+    float ratioX = m_idBuffer->spec.width / w;
+    float ratioY = m_idBuffer->spec.height / h;
 
     float offsetX = screenW * (mainViewport->pos.x + 1.f) / GL_SCREEN_SIZE;
     float offsetY = screenH * (1.f - (mainViewport->pos.y + 1.f) / GL_SCREEN_SIZE);
@@ -50,17 +50,17 @@ int ObjectIdRenderer::getObjectId(
 
 
     {
-        idBuffer->bind(ctx);
+        m_idBuffer->bind(ctx);
 
         glReadBuffer(GL_COLOR_ATTACHMENT0);
 
         int readFormat;
         glGetFramebufferParameteriv(GL_FRAMEBUFFER, GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
 
-        glReadPixels(posx, idBuffer->spec.height - posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glReadPixels(posx, m_idBuffer->spec.height - posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
         int x = 0;
-        idBuffer->unbind(ctx);
+        m_idBuffer->unbind(ctx);
     }
 
     int objectID =
@@ -78,14 +78,14 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     Renderer::prepare(assets, shaders);
 
-    idShader = shaders.getShader(assets, TEX_OBJECT_ID);
-    idShader->prepare(assets);
+    m_idShader = shaders.getShader(assets, TEX_OBJECT_ID);
+    m_idShader->prepare(assets);
 
-    idShaderAlpha = shaders.getShader(assets, TEX_OBJECT_ID, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1"} });
-    idShaderAlpha->prepare(assets);
+    m_idShaderAlpha = shaders.getShader(assets, TEX_OBJECT_ID, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1"} });
+    m_idShaderAlpha->prepare(assets);
 
-    idShaderSprite = shaders.getShader(assets, TEX_OBJECT_ID_SPRITE, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1"} });
-    idShaderSprite->prepare(assets);
+    m_idShaderSprite = shaders.getShader(assets, TEX_OBJECT_ID_SPRITE, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1"} });
+    m_idShaderSprite->prepare(assets);
 
     debugViewport = std::make_shared<Viewport>(
         glm::vec3(-1.0, 1.0, 0),
@@ -106,7 +106,7 @@ void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    bool changed = !idBuffer || w != idBuffer->spec.width || h != idBuffer->spec.height;
+    bool changed = !m_idBuffer || w != m_idBuffer->spec.width || h != m_idBuffer->spec.height;
     if (!changed) return;
 
     // https://riptutorial.com/opengl/example/28872/using-pbos
@@ -114,10 +114,10 @@ void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
         w, h,
         { FrameBufferAttachment::getObjectId(), FrameBufferAttachment::getRBODepth() } });
 
-    idBuffer.reset(buffer);
-    idBuffer->prepare(true, { 0, 0, 0, 0.5 });
+    m_idBuffer.reset(buffer);
+    m_idBuffer->prepare(true, { 0, 0, 0, 0.5 });
 
-    debugViewport->setTextureID(idBuffer->spec.attachments[0].textureID);
+    debugViewport->setTextureID(m_idBuffer->spec.attachments[0].textureID);
 }
 
 void ObjectIdRenderer::bind(const RenderContext& ctx)
@@ -128,13 +128,13 @@ void ObjectIdRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry)
 {
-    RenderContext idCtx("OBJECT_ID", &ctx, ctx.camera, idBuffer->spec.width, idBuffer->spec.height);
+    RenderContext idCtx("OBJECT_ID", &ctx, ctx.camera, m_idBuffer->spec.width, m_idBuffer->spec.height);
     idCtx.lightSpaceMatrix = ctx.lightSpaceMatrix;
 
-    idBuffer->bind(idCtx);
+    m_idBuffer->bind(idCtx);
 
     drawNodes(idCtx, registry);
-    idBuffer->unbind(ctx);
+    m_idBuffer->unbind(ctx);
 }
 
 void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& registry)
@@ -155,9 +155,9 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
                 auto& type = *it.first;
                 if (type.m_flags.noSelect) continue;
 
-                auto shader = type.m_flags.alpha ? idShaderAlpha : idShader;
+                auto shader = type.m_flags.alpha ? m_idShaderAlpha : m_idShader;
                 if (type.m_flags.sprite) {
-                    shader = idShaderSprite;
+                    shader = m_idShaderSprite;
                 }
 
                 ShaderBind bound(shader);

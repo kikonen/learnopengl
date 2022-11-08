@@ -2,7 +2,6 @@
 
 #include constants.glsl
 
-#ifdef USE_ALPHA
 #include struct_material.glsl
 #include uniform_materials.glsl
 
@@ -15,17 +14,6 @@ in GS_OUT {
 
 uniform sampler2D u_textures[TEX_COUNT];
 
-#else
-
-// https://www.khronos.org/opengl/wiki/Early_Fragment_Test
-// https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
-layout(early_fragment_tests) in;
-
-in GS_OUT {
-  flat vec4 objectID;
-} fs_in;
-#endif
-
 layout (location = 0) out vec4 fragObjectID;
 
 ////////////////////////////////////////////////////////////
@@ -33,7 +21,6 @@ layout (location = 0) out vec4 fragObjectID;
 ////////////////////////////////////////////////////////////
 
 void main() {
-#ifdef USE_ALPHA
   uint matIdx = fs_in.materialIndex;
   int diffuseTexIdx = u_materials[matIdx].diffuseTex;
 
@@ -47,7 +34,6 @@ void main() {
   // NOtE KI experimental value; depends from few aspects in blended windows
   if (alpha < 0.4)
     discard;
-#endif
 
   fragObjectID = fs_in.objectID;
 }

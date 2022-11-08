@@ -9,7 +9,6 @@ layout(max_vertices = 4) out;
 #include uniform_data.glsl
 #include uniform_matrices.glsl
 
-#ifdef USE_ALPHA
 in VS_OUT {
   flat vec4 objectID;
 
@@ -24,19 +23,6 @@ out GS_OUT {
   flat uint materialIndex;
 } gs_out;
 
-#else
-in VS_OUT {
-  flat vec4 objectID;
-
-  vec3 scale;
-} gs_in[];
-
-out GS_OUT {
-  flat vec4 objectID;
-} gs_out;
-
-#endif
-
 
 ////////////////////////////////////////////////////////////
 //
@@ -49,7 +35,7 @@ void fillVertex(const int i)
 }
 
 
-void generateSprite(const int index)
+void generateQuad(const int index)
 {
   // https://ogldev.org/www/tutorial27/tutorial27.html
   vec3 pos = gl_in[0].gl_Position.xyz;
@@ -105,6 +91,6 @@ void generateSprite(const int index)
 
 void main() {
   for (int i = 0; i < gs_in.length(); i++) {
-    generateSprite(i);
+    generateQuad(i);
   }
 }

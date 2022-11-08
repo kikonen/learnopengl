@@ -4,15 +4,12 @@
 
 layout (location = 4) in uint a_materialIndex;
 layout (location = 6) in mat4 a_modelMatrix;
-layout (location = 13) in vec4 a_objectID;
 
 #include uniform_matrices.glsl
-#include uniform_data.glsl
 
 out VS_OUT {
-  flat vec4 objectID;
-
   vec3 scale;
+
   flat uint materialIndex;
 } vs_out;
 
@@ -26,9 +23,7 @@ const vec3 pos = vec3(0.0, -1.0, 0.0);
 void main() {
   vec4 worldPos = a_modelMatrix * vec4(pos, 1.0);
 
-  gl_Position =  worldPos;
-
-  vs_out.objectID = a_objectID;
+  gl_Position = worldPos;
 
   vs_out.materialIndex = a_materialIndex;
 

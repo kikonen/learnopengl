@@ -17,6 +17,7 @@ const std::string INC_GLOBALS{ "globals.glsl" };
 const std::string TEX_TEXTURE{ "tex" };
 const std::string TEX_SPRITE{ "sprite" };
 const std::string TEX_SELECTION{ "selection" };
+const std::string TEX_SELECTION_SPRITE{ "selection_sprite" };
 const std::string TEX_TERRAIN{ "terrain" };
 const std::string TEX_WATER{ "water" };
 const std::string TEX_PARTICLE{ "particle" };
@@ -106,7 +107,9 @@ public:
         const int materialCount,
         const std::map<std::string, std::string>& defines);
 
+    // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
     Shader(const Shader&) = delete;
+    Shader& operator=(const Shader&) = delete;
 
     // public due to shared_ptr
     ~Shader();

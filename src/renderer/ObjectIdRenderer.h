@@ -28,10 +28,10 @@ public:
     std::shared_ptr<Viewport> debugViewport;
 
 private:
-    Shader* idShader{ nullptr };
-    Shader* idShaderAlpha{ nullptr };
-    Shader* idShaderSprite{ nullptr };
+    Shader* m_idShader{ nullptr };
+    Shader* m_idShaderAlpha{ nullptr };
+    Shader* m_idShaderSprite{ nullptr };
 
-    std::unique_ptr<TextureBuffer> idBuffer{ nullptr };
+    std::unique_ptr<TextureBuffer> m_idBuffer{ nullptr };
 };
 
