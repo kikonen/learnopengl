@@ -89,10 +89,10 @@ void AssetsFile::loadAssets(
         else if (k == "show_normals") {
             data.showNormals = v.as<bool>();
         }
-        else if (k == "show_mirror_view") {
-            data.showMirrorView = v.as<bool>();
+        else if (k == "show_rear_view") {
+            data.showRearView = v.as<bool>();
         }
-        else if (k == "show_shadowMap_view") {
+        else if (k == "show_shadow_map_view") {
             data.showShadowMapView = v.as<bool>();
         }
         else if (k == "show_reflection_view") {

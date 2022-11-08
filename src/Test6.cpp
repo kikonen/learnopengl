@@ -179,9 +179,6 @@ std::shared_ptr<Scene> Test6::loadScene()
     testSetup = std::make_unique<TestSceneSetup>(asyncLoader.get(), assets);
     testSetup->setup(scene);
 
-    //loader.scene->showNormals = true;
-    //loader.scene->showMirrorView = true;
-    //loader.load();
     scene->prepare(shaders);
 
     return scene;

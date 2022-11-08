@@ -40,7 +40,7 @@ public:
     bool useIMGUI;
 
     bool showNormals;
-    bool showMirrorView;
+    bool showRearView;
     bool showShadowMapView;
     bool showReflectionView;
     bool showRefractionView;

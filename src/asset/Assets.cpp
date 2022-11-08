@@ -36,7 +36,7 @@ Assets::Assets()
     useIMGUI = false;
 
     showNormals = false;
-    showMirrorView = false;
+    showRearView = false;
     showShadowMapView = false;
     showReflectionView = false;
     showRefractionView = false;

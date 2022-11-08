@@ -49,7 +49,7 @@ public:
     void draw(RenderContext& ctx);
 
     void drawMain(RenderContext& ctx);
-    void drawMirror(RenderContext& ctx);
+    void drawRear(RenderContext& ctx);
     void drawViewports(RenderContext& ctx);
 
     void drawScene(RenderContext& ctx);
@@ -97,8 +97,8 @@ private:
 
     std::unique_ptr<ParticleSystem> particleSystem{ nullptr };
 
-    std::unique_ptr<TextureBuffer> mirrorBuffer{ nullptr };
-    std::shared_ptr<Viewport> mirrorViewport;
+    std::unique_ptr<TextureBuffer> m_readBuffer{ nullptr };
+    std::shared_ptr<Viewport> m_rearViewport;
 
     std::unique_ptr<TextureBuffer> mainBuffer{ nullptr };
     std::shared_ptr<Viewport> mainViewport;
