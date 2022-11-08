@@ -180,7 +180,7 @@ void RenderContext::bindLightsUBO() const
 
     if (useLight) {
         auto& node = scene->registry.m_dirLight;
-        if (node) {
+        if (node && node->m_light->enabled) {
             lightsUbo.dir[0] = node->m_light->toDirLightUBO();
             lightsUbo.dirCount = 1;
         }
