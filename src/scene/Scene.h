@@ -69,12 +69,12 @@ private:
 public:
     const Assets& assets;
 
-    std::unique_ptr<SkyboxRenderer> skyboxRenderer{ nullptr };
-    UBO ubo;
+    std::unique_ptr<SkyboxRenderer> m_skyboxRenderer{ nullptr };
+    UBO m_ubo;
 
-    NodeRegistry registry;
-    CommandEngine commandEngine;
-    ScriptEngine scriptEngine;
+    NodeRegistry m_registry;
+    CommandEngine m_commandEngine;
+    ScriptEngine m_scriptEngine;
 
     Batch m_batch;
 
@@ -85,26 +85,26 @@ private:
 
     std::vector<ParticleGenerator*> particleGenerators;
 
-    std::unique_ptr<NodeRenderer> nodeRenderer{ nullptr };
+    std::unique_ptr<NodeRenderer> m_nodeRenderer{ nullptr };
 
     //std::unique_ptr<TerrainRenderer> terrainRenderer{ nullptr };
-    std::unique_ptr<ViewportRenderer> viewportRenderer{ nullptr };
+    std::unique_ptr<ViewportRenderer> m_viewportRenderer{ nullptr };
 
-    std::unique_ptr<WaterMapRenderer> waterMapRenderer{ nullptr };
-    std::unique_ptr<MirrorMapRenderer> mirrorMapRenderer{ nullptr };
-    std::unique_ptr<CubeMapRenderer> cubeMapRenderer{ nullptr };
-    std::unique_ptr<ShadowMapRenderer> shadowMapRenderer{ nullptr };
+    std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
+    std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
+    std::unique_ptr<CubeMapRenderer> m_cubeMapRenderer{ nullptr };
+    std::unique_ptr<ShadowMapRenderer> m_shadowMapRenderer{ nullptr };
 
-    std::unique_ptr<ObjectIdRenderer> objectIdRenderer{ nullptr };
-    std::unique_ptr<NormalRenderer> normalRenderer{ nullptr };
+    std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };
+    std::unique_ptr<NormalRenderer> m_normalRenderer{ nullptr };
 
     std::unique_ptr<ParticleSystem> particleSystem{ nullptr };
 
     std::unique_ptr<TextureBuffer> m_readBuffer{ nullptr };
     std::shared_ptr<Viewport> m_rearViewport;
 
-    std::unique_ptr<TextureBuffer> mainBuffer{ nullptr };
-    std::shared_ptr<Viewport> mainViewport;
+    std::unique_ptr<TextureBuffer> m_mainBuffer{ nullptr };
+    std::shared_ptr<Viewport> m_mainViewport;
 
-    unsigned int pbo = 0;
+    unsigned int m_pbo = 0;
 };

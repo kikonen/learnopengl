@@ -133,7 +133,7 @@ void Test6::selectNode(
     bool isShift,
     bool isCtrl)
 {
-    auto& registry = ctx.scene->registry;
+    auto& registry = ctx.scene->m_registry;
     int objectID = ctx.scene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
 
     auto* volumeNode = registry.getNode(ctx.assets.volumeUUID);

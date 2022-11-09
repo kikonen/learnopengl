@@ -65,7 +65,7 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
 {
-    auto& node = ctx.scene->registry.m_dirLight;
+    auto& node = ctx.scene->m_registry.m_dirLight;
     if (!node) return;
 
     const glm::vec3 up{ 0.0, 1.0, 0.0 };

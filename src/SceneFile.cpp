@@ -91,7 +91,7 @@ void SceneFile::attachSkybox(
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
     skybox->prepare(m_assets, m_asyncLoader->shaders);
-    scene->skyboxRenderer.reset(skybox.release());
+    scene->m_skyboxRenderer.reset(skybox.release());
 }
 
 void SceneFile::attachVolume(
@@ -124,7 +124,7 @@ void SceneFile::attachVolume(
 
     node->m_controller = std::make_unique<VolumeController>();
 
-    scene->registry.addNode(type.get(), node);
+    scene->m_registry.addNode(type.get(), node);
 }
 
 void SceneFile::attachEntity(
@@ -180,7 +180,7 @@ std::shared_ptr<NodeType> SceneFile::attachEntityClone(
     if (grouped) {
         group = new Group();
         group->id = data.id;
-        scene->registry.addGroup(group);
+        scene->m_registry.addGroup(group);
     }
 
     for (auto z = 0; z < repeat.zCount; z++) {
@@ -188,7 +188,7 @@ std::shared_ptr<NodeType> SceneFile::attachEntityClone(
             for (auto x = 0; x < repeat.xCount; x++) {
                 const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
                 auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, entity.isRoot, cloned);
-                scene->registry.addNode(type.get(), node);
+                scene->m_registry.addNode(type.get(), node);
             }
         }
     }

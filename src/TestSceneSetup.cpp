@@ -60,7 +60,7 @@ void TestSceneSetup::setupEffectExplosion()
         //node->setPos(glm::vec3{ 0, 3.5, -20 } + assets.groundOffset);
         node->setScale(2);
 
-        scene->registry.addNode(type.get(), node);
+        scene->m_registry.addNode(type.get(), node);
         });
 }
 
@@ -81,5 +81,5 @@ void TestSceneSetup::setupViewport1()
         texture->textureID,
         asyncLoader->getShader(TEX_VIEWPORT));
     viewport->prepare(assets);
-    scene->registry.addViewPort(viewport);
+    scene->m_registry.addViewPort(viewport);
 }

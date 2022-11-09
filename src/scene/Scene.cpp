@@ -11,20 +11,20 @@
 
 Scene::Scene(const Assets& assets)
     : assets(assets),
-    registry(*this)
+    m_registry(*this)
 {
-    nodeRenderer = std::make_unique<NodeRenderer>();
+    m_nodeRenderer = std::make_unique<NodeRenderer>();
     //terrainRenderer = std::make_unique<TerrainRenderer>();
 
-    viewportRenderer = std::make_unique<ViewportRenderer>();
+    m_viewportRenderer = std::make_unique<ViewportRenderer>();
 
-    waterMapRenderer = std::make_unique<WaterMapRenderer>();
-    mirrorMapRenderer = std::make_unique<MirrorMapRenderer>();
-    cubeMapRenderer = std::make_unique<CubeMapRenderer>();
-    shadowMapRenderer = std::make_unique<ShadowMapRenderer>();
+    m_waterMapRenderer = std::make_unique<WaterMapRenderer>();
+    m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>();
+    m_cubeMapRenderer = std::make_unique<CubeMapRenderer>();
+    m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>();
 
-    objectIdRenderer = std::make_unique<ObjectIdRenderer>();
-    normalRenderer = std::make_unique<NormalRenderer>();
+    m_objectIdRenderer = std::make_unique<ObjectIdRenderer>();
+    m_normalRenderer = std::make_unique<NormalRenderer>();
 
     particleSystem = std::make_unique<ParticleSystem>();
 }
@@ -43,41 +43,41 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     prepareUBOs();
 
-    commandEngine.prepare(assets);
-    scriptEngine.prepare(assets, commandEngine);
+    m_commandEngine.prepare(assets);
+    m_scriptEngine.prepare(assets, m_commandEngine);
 
     m_batch.prepare(assets, assets.batchSize);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
-    if (nodeRenderer) {
-        nodeRenderer->prepare(assets, shaders);
+    if (m_nodeRenderer) {
+        m_nodeRenderer->prepare(assets, shaders);
     }
     //terrainRenderer->prepare(shaders);
 
-    if (viewportRenderer) {
-        viewportRenderer->prepare(assets, shaders);
+    if (m_viewportRenderer) {
+        m_viewportRenderer->prepare(assets, shaders);
     }
 
-    if (waterMapRenderer) {
-        waterMapRenderer->prepare(assets, shaders);
+    if (m_waterMapRenderer) {
+        m_waterMapRenderer->prepare(assets, shaders);
     }
-    if (mirrorMapRenderer) {
-        mirrorMapRenderer->prepare(assets, shaders);
+    if (m_mirrorMapRenderer) {
+        m_mirrorMapRenderer->prepare(assets, shaders);
     }
-    if (cubeMapRenderer) {
-        cubeMapRenderer->prepare(assets, shaders);
+    if (m_cubeMapRenderer) {
+        m_cubeMapRenderer->prepare(assets, shaders);
     }
-    if (shadowMapRenderer) {
-        shadowMapRenderer->prepare(assets, shaders);
+    if (m_shadowMapRenderer) {
+        m_shadowMapRenderer->prepare(assets, shaders);
     }
 
-    if (objectIdRenderer) {
-        objectIdRenderer->prepare(assets, shaders);
+    if (m_objectIdRenderer) {
+        m_objectIdRenderer->prepare(assets, shaders);
     }
 
     if (assets.showNormals) {
-        if (normalRenderer) {
-            normalRenderer->prepare(assets, shaders);
+        if (m_normalRenderer) {
+            m_normalRenderer->prepare(assets, shaders);
         }
     }
 
@@ -86,7 +86,7 @@ void Scene::prepare(ShaderRegistry& shaders)
     }
 
     {
-        mainViewport = std::make_shared<Viewport>(
+        m_mainViewport = std::make_shared<Viewport>(
             //glm::vec3(-0.75, 0.75, 0),
             glm::vec3(-1.0f, 1.f, 0),
             glm::vec3(0, 0, 0),
@@ -97,13 +97,13 @@ void Scene::prepare(ShaderRegistry& shaders)
 
         //mainViewport->effect = ViewportEffect::edge;
 
-        mainViewport->prepare(assets);
-        registry.addViewPort(mainViewport);
+        m_mainViewport->prepare(assets);
+        m_registry.addViewPort(m_mainViewport);
     }
 
     if (assets.showObjectIDView) {
-        if (objectIdRenderer) {
-            registry.addViewPort(objectIdRenderer->debugViewport);
+        if (m_objectIdRenderer) {
+            m_registry.addViewPort(m_objectIdRenderer->debugViewport);
         }
     }
 
@@ -116,32 +116,32 @@ void Scene::prepare(ShaderRegistry& shaders)
             shaders.getShader(assets, TEX_VIEWPORT));
 
         m_rearViewport->prepare(assets);
-        registry.addViewPort(m_rearViewport);
+        m_registry.addViewPort(m_rearViewport);
     }
 
     if (assets.showShadowMapView) {
-        if (shadowMapRenderer) {
-            registry.addViewPort(shadowMapRenderer->debugViewport);
+        if (m_shadowMapRenderer) {
+            m_registry.addViewPort(m_shadowMapRenderer->debugViewport);
         }
     }
     if (assets.showReflectionView) {
-        if (waterMapRenderer) {
-            registry.addViewPort(waterMapRenderer->reflectionDebugViewport);
+        if (m_waterMapRenderer) {
+            m_registry.addViewPort(m_waterMapRenderer->reflectionDebugViewport);
         }
-        if (mirrorMapRenderer) {
-            registry.addViewPort(mirrorMapRenderer->debugViewport);
+        if (m_mirrorMapRenderer) {
+            m_registry.addViewPort(m_mirrorMapRenderer->debugViewport);
         }
     }
     if (assets.showRefractionView) {
-        if (waterMapRenderer) {
-            registry.addViewPort(waterMapRenderer->refractionDebugViewport);
+        if (m_waterMapRenderer) {
+            m_registry.addViewPort(m_waterMapRenderer->refractionDebugViewport);
         }
     }
 }
 
 void Scene::attachNodes()
 {
-    registry.attachNodes();
+    m_registry.attachNodes();
 }
 
 void Scene::processEvents(RenderContext& ctx)
@@ -152,31 +152,31 @@ void Scene::update(RenderContext& ctx)
 {
     //if (ctx.clock.frameCount > 120) {
     if (getCamera()) {
-        commandEngine.update(ctx);
+        m_commandEngine.update(ctx);
     }
 
-    if (registry.m_root) {
-        registry.m_root->update(ctx, nullptr);
+    if (m_registry.m_root) {
+        m_registry.m_root->update(ctx, nullptr);
     }
 
     for (auto& generator : particleGenerators) {
         generator->update(ctx);
     }
 
-    if (skyboxRenderer) {
-        skyboxRenderer->update(ctx, registry);
+    if (m_skyboxRenderer) {
+        m_skyboxRenderer->update(ctx, m_registry);
     }
 
-    if (nodeRenderer) {
-        nodeRenderer->update(ctx, registry);
+    if (m_nodeRenderer) {
+        m_nodeRenderer->update(ctx, m_registry);
     }
 
-    if (objectIdRenderer) {
-        objectIdRenderer->update(ctx, registry);
+    if (m_objectIdRenderer) {
+        m_objectIdRenderer->update(ctx, m_registry);
     }
 
-    if (viewportRenderer) {
-        viewportRenderer->update(ctx, registry);
+    if (m_viewportRenderer) {
+        m_viewportRenderer->update(ctx, m_registry);
     }
 
     if (particleSystem) {
@@ -205,8 +205,8 @@ void Scene::bind(RenderContext& ctx)
     //if (cubeMapRenderer) {
     //    cubeMapRenderer->bind(ctx);
     //}
-    if (shadowMapRenderer) {
-        shadowMapRenderer->bind(ctx);
+    if (m_shadowMapRenderer) {
+        m_shadowMapRenderer->bind(ctx);
     }
 
     ctx.bindGlobal();
@@ -243,9 +243,9 @@ void Scene::draw(RenderContext& ctx)
 
     glUseProgram(0);
 
-    if (shadowMapRenderer) {
-        shadowMapRenderer->render(ctx, registry);
-        shadowMapRenderer->bindTexture(ctx);
+    if (m_shadowMapRenderer) {
+        m_shadowMapRenderer->render(ctx, m_registry);
+        m_shadowMapRenderer->bindTexture(ctx);
     }
 
     // OpenGL Programming Guide, 8th Edition, page 404
@@ -253,14 +253,14 @@ void Scene::draw(RenderContext& ctx)
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(2.0f, 4.0f);
 
-    if (cubeMapRenderer) {
-        cubeMapRenderer->render(ctx, registry, skyboxRenderer.get());
+    if (m_cubeMapRenderer) {
+        m_cubeMapRenderer->render(ctx, m_registry, m_skyboxRenderer.get());
     }
-    if (waterMapRenderer) {
-        waterMapRenderer->render(ctx, registry, skyboxRenderer.get());
+    if (m_waterMapRenderer) {
+        m_waterMapRenderer->render(ctx, m_registry, m_skyboxRenderer.get());
     }
-    if (mirrorMapRenderer) {
-        mirrorMapRenderer->render(ctx, registry, skyboxRenderer.get());
+    if (m_mirrorMapRenderer) {
+        m_mirrorMapRenderer->render(ctx, m_registry, m_skyboxRenderer.get());
     }
 
     {
@@ -274,12 +274,12 @@ void Scene::draw(RenderContext& ctx)
 
 void Scene::drawMain(RenderContext& ctx)
 {
-    RenderContext mainCtx("MAIN", &ctx, ctx.camera, mainBuffer->spec.width, mainBuffer->spec.height);
+    RenderContext mainCtx("MAIN", &ctx, ctx.camera, m_mainBuffer->spec.width, m_mainBuffer->spec.height);
     mainCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
-    mainBuffer->bind(mainCtx);
+    m_mainBuffer->bind(mainCtx);
     drawScene(mainCtx);
-    mainBuffer->unbind(ctx);
+    m_mainBuffer->unbind(ctx);
 }
 
 // "back mirror" viewport
@@ -309,8 +309,8 @@ void Scene::drawRear(RenderContext& ctx)
 
 void Scene::drawViewports(RenderContext& ctx)
 {
-    if (viewportRenderer) {
-        viewportRenderer->render(ctx, registry);
+    if (m_viewportRenderer) {
+        m_viewportRenderer->render(ctx, m_registry);
     }
 }
 
@@ -327,18 +327,18 @@ void Scene::drawScene(RenderContext& ctx)
         glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-    if (cubeMapRenderer) {
-        cubeMapRenderer->bindTexture(ctx);
+    if (m_cubeMapRenderer) {
+        m_cubeMapRenderer->bindTexture(ctx);
     }
-    if (waterMapRenderer) {
-        waterMapRenderer->bindTexture(ctx);
+    if (m_waterMapRenderer) {
+        m_waterMapRenderer->bindTexture(ctx);
     }
-    if (mirrorMapRenderer) {
-        mirrorMapRenderer->bindTexture(ctx);
+    if (m_mirrorMapRenderer) {
+        m_mirrorMapRenderer->bindTexture(ctx);
     }
 
-    if (nodeRenderer) {
-        nodeRenderer->render(ctx, registry, skyboxRenderer.get());
+    if (m_nodeRenderer) {
+        m_nodeRenderer->render(ctx, m_registry, m_skyboxRenderer.get());
     }
 
     if (particleSystem) {
@@ -346,15 +346,15 @@ void Scene::drawScene(RenderContext& ctx)
     }
 
     if (assets.showNormals) {
-        if (normalRenderer) {
-            normalRenderer->render(ctx, registry);
+        if (m_normalRenderer) {
+            m_normalRenderer->render(ctx, m_registry);
         }
     }
 }
 
 Camera* Scene::getCamera()
 {
-    return !registry.m_cameraNodes.empty() ? registry.m_cameraNodes[0]->m_camera.get() : nullptr;
+    return !m_registry.m_cameraNodes.empty() ? m_registry.m_cameraNodes[0]->m_camera.get() : nullptr;
 }
 
 void Scene::bindComponents(Node& node)
@@ -368,17 +368,17 @@ void Scene::bindComponents(Node& node)
         }
     }
 
-    scriptEngine.registerScript(node, NodeScriptId::init, node.m_type->m_initScript);
-    scriptEngine.registerScript(node, NodeScriptId::run, node.m_type->m_runScript);
+    m_scriptEngine.registerScript(node, NodeScriptId::init, node.m_type->m_initScript);
+    m_scriptEngine.registerScript(node, NodeScriptId::run, node.m_type->m_runScript);
 
-    scriptEngine.runScript(node, NodeScriptId::init);
+    m_scriptEngine.runScript(node, NodeScriptId::init);
 }
 
 int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double screenPosY)
 {
-    if (objectIdRenderer) {
-        objectIdRenderer->render(ctx, registry);
-        return objectIdRenderer->getObjectId(ctx, screenPosX, screenPosY, mainViewport.get());
+    if (m_objectIdRenderer) {
+        m_objectIdRenderer->render(ctx, m_registry);
+        return m_objectIdRenderer->getObjectId(ctx, screenPosX, screenPosY, m_mainViewport.get());
     }
     return 0;
 }
@@ -391,7 +391,7 @@ void Scene::updateMainViewport(RenderContext& ctx)
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    bool changed = !mainBuffer || w != mainBuffer->spec.width || h != mainBuffer->spec.height;
+    bool changed = !m_mainBuffer || w != m_mainBuffer->spec.width || h != m_mainBuffer->spec.height;
     if (!changed) return;
 
     KI_INFO_SB("BUFFER: create - w=" << w << ", h=" << h);
@@ -403,9 +403,9 @@ void Scene::updateMainViewport(RenderContext& ctx)
             w, h,
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepthStencil() } });
 
-        mainBuffer.reset(buffer);
-        mainBuffer->prepare(true, { 0, 0, 0, 1.0 });
-        mainViewport->setTextureID(mainBuffer->spec.attachments[0].textureID);
+        m_mainBuffer.reset(buffer);
+        m_mainBuffer->prepare(true, { 0, 0, 0, 1.0 });
+        m_mainViewport->setTextureID(m_mainBuffer->spec.attachments[0].textureID);
     }
 
     // VMIRROR
@@ -436,40 +436,40 @@ void Scene::prepareUBOs()
     {
         int sz = sizeof(MatricesUBO);
 
-        glCreateBuffers(1, &ubo.matrices);
-        glNamedBufferStorage(ubo.matrices, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glCreateBuffers(1, &m_ubo.matrices);
+        glNamedBufferStorage(m_ubo.matrices, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATRICES, ubo.matrices, 0, sz);
-        ubo.matricesSize = sz;
+        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATRICES, m_ubo.matrices, 0, sz);
+        m_ubo.matricesSize = sz;
     }
     // Data
     {
         int sz = sizeof(DataUBO);
 
-        glCreateBuffers(1, &ubo.data);
-        glNamedBufferStorage(ubo.data, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glCreateBuffers(1, &m_ubo.data);
+        glNamedBufferStorage(m_ubo.data, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, ubo.data, 0, sz);
-        ubo.dataSize = sz;
+        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, m_ubo.data, 0, sz);
+        m_ubo.dataSize = sz;
     }
     // Clipping
     {
         int sz = sizeof(ClipPlanesUBO);
 
-        glCreateBuffers(1, &ubo.clipPlanes);
-        glNamedBufferStorage(ubo.clipPlanes, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glCreateBuffers(1, &m_ubo.clipPlanes);
+        glNamedBufferStorage(m_ubo.clipPlanes, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_CLIP_PLANES, ubo.clipPlanes, 0, sz);
-        ubo.clipPlanesSize = sz;
+        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_CLIP_PLANES, m_ubo.clipPlanes, 0, sz);
+        m_ubo.clipPlanesSize = sz;
     }
     // Lights
     {
         int sz = sizeof(LightsUBO);
 
-        glCreateBuffers(1, &ubo.lights);
-        glNamedBufferStorage(ubo.lights, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glCreateBuffers(1, &m_ubo.lights);
+        glNamedBufferStorage(m_ubo.lights, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, ubo.lights, 0, sz);
-        ubo.lightsSize = sz;
+        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, m_ubo.lights, 0, sz);
+        m_ubo.lightsSize = sz;
     }
 }

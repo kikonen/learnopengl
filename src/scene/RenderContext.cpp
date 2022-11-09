@@ -79,9 +79,9 @@ RenderContext::RenderContext(
     state(state),
     scene(scene),
     m_batch(scene->m_batch),
-    registry(scene->registry),
-    commandEngine(scene->commandEngine),
-    scriptEngine(scene->scriptEngine),
+    registry(scene->m_registry),
+    commandEngine(scene->m_commandEngine),
+    scriptEngine(scene->m_scriptEngine),
     camera(camera),
     m_backend(backend),
     nearPlane(nearPlane),
@@ -149,7 +149,7 @@ void RenderContext::bindMatricesUBO() const
     //    shadowMatrix,
     //};
 
-    glNamedBufferSubData(scene->ubo.matrices, 0, sizeof(MatricesUBO), &matrices);
+    glNamedBufferSubData(scene->m_ubo.matrices, 0, sizeof(MatricesUBO), &matrices);
 }
 
 void RenderContext::bindDataUBO() const
@@ -165,7 +165,7 @@ void RenderContext::bindDataUBO() const
         assets.fogEnd,
     };
 
-    glNamedBufferSubData(scene->ubo.data, 0, sizeof(DataUBO), &dataUbo);
+    glNamedBufferSubData(scene->m_ubo.data, 0, sizeof(DataUBO), &dataUbo);
 }
 
 void RenderContext::bindClipPlanesUBO() const
@@ -177,7 +177,7 @@ void RenderContext::bindClipPlanesUBO() const
     }
 
     clipPlanes.clipCount = count;
-    glNamedBufferSubData(scene->ubo.clipPlanes, 0, sizeof(ClipPlanesUBO), &clipPlanes);
+    glNamedBufferSubData(scene->m_ubo.clipPlanes, 0, sizeof(ClipPlanesUBO), &clipPlanes);
 }
 
 void RenderContext::bindLightsUBO() const
@@ -190,7 +190,7 @@ void RenderContext::bindLightsUBO() const
     }
 
     if (useLight) {
-        auto& node = scene->registry.m_dirLight;
+        auto& node = scene->m_registry.m_dirLight;
         if (node && node->m_light->enabled) {
             lightsUbo.dir[0] = node->m_light->toDirLightUBO();
             lightsUbo.dirCount = 1;
@@ -202,7 +202,7 @@ void RenderContext::bindLightsUBO() const
 
     if (useLight) {
         int count = 0;
-        for (auto& node : scene->registry.m_pointLights) {
+        for (auto& node : scene->m_registry.m_pointLights) {
             if (count >= LIGHT_COUNT) break;
             if (!node->m_light->enabled) continue;
 
@@ -214,7 +214,7 @@ void RenderContext::bindLightsUBO() const
 
     if (useLight) {
         int count = 0;
-        for (auto& node : scene->registry.m_spotLights) {
+        for (auto& node : scene->m_registry.m_spotLights) {
             if (count>= LIGHT_COUNT) break;
             if (!node->m_light->enabled) continue;
 
@@ -224,7 +224,7 @@ void RenderContext::bindLightsUBO() const
         lightsUbo.spotCount = count;
     }
 
-    glNamedBufferSubData(scene->ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);
+    glNamedBufferSubData(scene->m_ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);
 }
 
 void RenderContext::updateFrustum()
