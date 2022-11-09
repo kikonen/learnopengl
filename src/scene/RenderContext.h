@@ -8,6 +8,12 @@
 #include "asset/Shader.h"
 #include "component/Camera.h"
 
+#include "Batch.h"
+
+namespace backend {
+    class RenderSystem;
+}
+
 class Scene;
 
 class CommandEngine;
@@ -41,6 +47,7 @@ public:
         GLState& state,
         Scene* scene,
         Camera& camera,
+        backend::RenderSystem* backend,
         float nearPlane,
         float farPlane,
         int width,
@@ -64,6 +71,9 @@ private:
 public:
     const std::string name;
     const RenderContext* const parent;
+
+    backend::RenderSystem* m_backend;
+    Batch& m_batch;
 
     const Assets& assets;
 

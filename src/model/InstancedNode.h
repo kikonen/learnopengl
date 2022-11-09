@@ -18,19 +18,16 @@ public:
     void bind(const RenderContext& ctx, Shader* shader) noexcept override;
     void draw(const RenderContext& ctx) noexcept override;
 
-    void markBuffersDirty() noexcept;
+    void clear();
+
+    void add(
+        const glm::mat4& model,
+        const glm::mat3& normal,
+        int objectID) noexcept;
 
 private:
-
-public:
-    Batch modelBatch;
-    Batch selectedBatch;
-
-protected:
-    bool m_buffersDirty = true;
-
-private:
-    MeshBuffers selectedBuffers;
-
+    std::vector<glm::mat4> m_modelMatrices;
+    std::vector<glm::mat3> m_normalMatrices;
+    std::vector<int> m_objectIDs;
 };
 

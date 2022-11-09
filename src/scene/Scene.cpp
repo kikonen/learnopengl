@@ -46,6 +46,8 @@ void Scene::prepare(ShaderRegistry& shaders)
     commandEngine.prepare(assets);
     scriptEngine.prepare(assets, commandEngine);
 
+    m_batch.prepare(assets, assets.batchSize);
+
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (nodeRenderer) {
         nodeRenderer->prepare(assets, shaders);
@@ -357,6 +359,8 @@ Camera* Scene::getCamera()
 
 void Scene::bindComponents(Node& node)
 {
+    node.m_type->prepareBatch(m_batch);
+
     if (node.m_particleGenerator) {
         if (particleSystem) {
             node.m_particleGenerator->system = particleSystem.get();

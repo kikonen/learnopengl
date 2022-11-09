@@ -139,7 +139,7 @@ void NodeRenderer::drawNodes(
         for (const auto& it : typeMap) {
             auto& type = *it.first;
 
-            Batch& batch = type.m_batch;
+            auto& batch = ctx.m_batch;
 
             type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
@@ -187,7 +187,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
             auto& type = *it.first;
             auto& nodes = it.second;
 
-            Batch& batch = type.m_batch;
+            auto& batch = ctx.m_batch;
 
             auto shader = type.m_flags.alpha ? m_selectionShaderAlpha : m_selectionShader;
             if (type.m_flags.sprite) {
@@ -292,7 +292,8 @@ void NodeRenderer::drawBlended(
             }
             //std::cout << 'B';
             type = node->m_type.get();
-            batch = &type->m_batch;
+
+            batch = &ctx.m_batch;
 
             shader = type->m_nodeShader;
             shader->bind();

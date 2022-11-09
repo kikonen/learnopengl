@@ -46,6 +46,8 @@ public:
     void modifyMaterials(std::function<void(Material&)> fn) noexcept;
 
     void prepare(const Assets& assets) noexcept;
+    void prepareBatch(Batch& batch) noexcept;
+
     void bind(const RenderContext& ctx, Shader* shader) noexcept;
     void unbind(const RenderContext& ctx) noexcept;
 
@@ -62,8 +64,7 @@ public:
     Shader* m_nodeShader{ nullptr };
     Shader* m_boundShader{ nullptr };
 
-    Batch m_batch;
-
 private:
     bool m_prepared = false;
+    bool m_preparedBatch = false;
 };

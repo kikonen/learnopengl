@@ -16,6 +16,8 @@ namespace backend {
         void render();
         void addCommand(const backend::Command& command);
 
+    public:
+
     private:
         const Assets& m_assets;
         std::vector<backend::Command> m_pending;

@@ -124,7 +124,7 @@ void ShadowMapRenderer::drawNodes(
 
             if (type.m_flags.noShadow) continue;
 
-            Batch& batch = type.m_batch;
+            auto& batch = ctx.m_batch;
 
             type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);

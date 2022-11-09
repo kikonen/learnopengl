@@ -9,14 +9,14 @@
 #include "RenderContext.h"
 
 namespace {
-    int typeIDbase = 0;
+    int idBase = 0;
 
     std::mutex type_id_lock;
 
     int nextID()
     {
         std::lock_guard<std::mutex> lock(type_id_lock);
-        return ++typeIDbase;
+        return ++idBase;
     }
 }
 
@@ -63,26 +63,27 @@ void NodeType::modifyMaterials(std::function<void(Material&)> fn) noexcept
 
 void NodeType::prepare(const Assets& assets) noexcept
 {
+    if (!m_mesh) return;
+
     if (m_prepared) return;
     m_prepared = true;
 
-    if (!m_mesh) return;
     m_mesh->prepare(assets);
 
     Shader* shader = m_nodeShader;
     if (shader) {
         shader->prepare(assets);
     }
+}
 
-    if (m_batch.batchSize < 0) {
-        m_batch.batchSize = assets.batchSize;
-    }
-    if (m_flags.instanced) {
-        m_batch.batchSize = 0;
-    }
+void NodeType::prepareBatch(Batch& batch) noexcept
+{
+    if (!m_mesh) return;
 
-    if (m_batch.batchSize > 0)
-        m_batch.prepare(*this);
+    if (m_preparedBatch) return;
+    m_preparedBatch = true;
+
+    batch.prepareType(*this);
 }
 
 void NodeType::bind(

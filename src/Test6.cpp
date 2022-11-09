@@ -65,7 +65,8 @@ int Test6::onRender(const RenderClock& clock) {
     if (h < 1) h = 1;
 
     RenderContext ctx("TOP", nullptr,
-        assets, clock, state, scene, *camera, assets.nearPlane, assets.farPlane, w, h);
+        assets, clock, state, scene, *camera, m_backend.get(),
+        assets.nearPlane, assets.farPlane, w, h);
     //ctx.useWireframe = true;
     //ctx.useLight = false;
 

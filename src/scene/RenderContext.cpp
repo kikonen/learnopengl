@@ -9,6 +9,8 @@
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
 
+#include "backend/RenderSystem.h"
+
 #include "scene/Scene.h"
 #include "scene/NodeRegistry.h"
 
@@ -27,6 +29,7 @@ RenderContext::RenderContext(
         parent->state,
         parent->scene,
         camera,
+        parent->m_backend,
         parent->nearPlane,
         parent->farPlane,
         width,
@@ -49,6 +52,7 @@ RenderContext::RenderContext(
         parent->state,
         parent->scene,
         camera,
+        parent->m_backend,
         nearPlane,
         farPlane,
         width,
@@ -63,6 +67,7 @@ RenderContext::RenderContext(
     GLState& state,
     Scene* scene,
     Camera& camera,
+    backend::RenderSystem* backend,
     float nearPlane,
     float farPlane,
     int width,
@@ -73,10 +78,12 @@ RenderContext::RenderContext(
     clock(clock),
     state(state),
     scene(scene),
+    m_batch(scene->m_batch),
     registry(scene->registry),
     commandEngine(scene->commandEngine),
     scriptEngine(scene->scriptEngine),
     camera(camera),
+    m_backend(backend),
     nearPlane(nearPlane),
     farPlane(farPlane),
     resolution{ width, height },

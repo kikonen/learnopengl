@@ -174,7 +174,7 @@ void WaterMapRenderer::drawNodes(
 
                 //ShaderBind bound(type->defaultShader);
 
-                Batch& batch = type.m_batch;
+                auto& batch = ctx.m_batch;
 
                 type.bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);

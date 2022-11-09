@@ -212,7 +212,6 @@ std::shared_ptr<NodeType> SceneFile::createType(
 
     type->m_initScript = data.initScript;
     type->m_runScript = data.runScript;
-    type->m_batch.batchSize = data.batchSize;
     type->m_flags.root = entity.isRoot;
 
     if (data.instanced) {

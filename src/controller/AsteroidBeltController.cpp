@@ -22,21 +22,9 @@ void AsteroidBeltController::prepareInstanced(
 {
     const int count = m_asteroidCount;
 
-    Batch& modelBatch = node.modelBatch;
-    Batch& selectedBatch = node.selectedBatch;
-
-    modelBatch.reserve(count);
-    selectedBatch.reserve(count);
-
-    const glm::mat4 MODEL_0{ 0 };
-    const glm::mat3 NORMAL_0{ 0 };
-
     for (size_t i = 0; i < count; i++)
     {
         m_asteroids.emplace_back();
-
-        modelBatch.add(MODEL_0, NORMAL_0, 0);
-        selectedBatch.add(MODEL_0, NORMAL_0, 0);
     }
 
     initAsteroids(assets, node, m_asteroids);
@@ -52,7 +40,6 @@ bool AsteroidBeltController::updateInstanced(
 
     if (changed) {
         updateAsteroids(ctx, node, parent);
-        node.markBuffersDirty();
     }
 
     m_updateIndex++;
@@ -66,18 +53,7 @@ void AsteroidBeltController::updateAsteroids(
     InstancedNode& node,
     Node* parent)
 {
-    //std::cout << fmt::format("update asteroids: {}\n", m_asteroids.size());
-
-    Batch& modelBatch = node.modelBatch;
-    Batch& selectedBatch = node.selectedBatch;
-
-    //glm::vec3 parentPos{ 0 };
-    //if (parent)
-    //    parentPos = parent->getWorldPos();
-
-    modelBatch.clear();
-    selectedBatch.clear();
-
+    node.clear();
     rotateAsteroids(ctx, node, m_asteroids);
 
     for (const auto& asteroid : m_asteroids)
@@ -94,11 +70,8 @@ void AsteroidBeltController::updateAsteroids(
         // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
         const auto worldNormalMat = glm::inverseTranspose(glm::mat3(worldModelMat));
 
-        modelBatch.add(worldModelMat, worldNormalMat, node.m_objectID);
+        node.add(worldModelMat, worldNormalMat, node.m_objectID);
     }
-
-    modelBatch.staticDrawCount = m_asteroids.size();
-    selectedBatch.staticDrawCount = 0;// m_asteroids.size();
 }
 
 void AsteroidBeltController::initAsteroids(

@@ -9,6 +9,7 @@
 #include "component/Light.h"
 #include "NodeRegistry.h"
 #include "RenderContext.h"
+#include "Batch.h"
 
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
@@ -74,6 +75,8 @@ public:
     NodeRegistry registry;
     CommandEngine commandEngine;
     ScriptEngine scriptEngine;
+
+    Batch m_batch;
 
 protected:
 

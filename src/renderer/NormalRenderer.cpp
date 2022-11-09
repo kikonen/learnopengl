@@ -32,7 +32,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& reg
         for (const auto& it : typeMap) {
             auto& type = *it.first;
 
-            Batch& batch = type.m_batch;
+            auto& batch = ctx.m_batch;
 
             type.bind(ctx, bound.shader);
             batch.bind(ctx, bound.shader);
