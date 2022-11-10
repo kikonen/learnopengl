@@ -119,7 +119,6 @@ void Batch::prepareType(
     // model
     {
         glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_modelBufferId, 0, sizeof(glm::mat4));
-        glBindBuffer(GL_ARRAY_BUFFER, m_modelBufferId);
 
         // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
         constexpr GLsizei vecSize = sizeof(glm::vec4);
@@ -138,7 +137,6 @@ void Batch::prepareType(
     // normal
     {
         glVertexArrayVertexBuffer(vao, VBO_NORMAL_MATRIX_BINDING, m_normalBufferId, 0, sizeof(glm::mat3));
-        glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferId);
 
         // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
         constexpr GLsizei vecSize = sizeof(glm::vec3);
@@ -157,7 +155,6 @@ void Batch::prepareType(
     // objectIDs
     {
         glVertexArrayVertexBuffer(vao, VBO_OBJECT_ID_BINDING, m_objectIDBufferId, 0, sizeof(glm::vec4));
-        glBindBuffer(GL_ARRAY_BUFFER, m_objectIDBufferId);
 
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
 
