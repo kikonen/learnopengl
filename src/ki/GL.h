@@ -2,13 +2,14 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <chrono>
 
 #include <glad/glad.h>
 
 // https://www.glfw.org/docs/3.3.2/build.html
 //#define GLFW_INCLUDE_GLCOREARB
-#define GLFW_INCLUDE_NONE 
+#define GLFW_INCLUDE_NONE
 #define GL_GLEXT_PROTOTYPES
 #include <GLFW/glfw3.h>
 
@@ -100,5 +101,6 @@ namespace ki {
         static void unbindFBO();
 
         static OpenGLInfo getInfo();
+        static std::vector<std::string> getExtensions();
     };
 }

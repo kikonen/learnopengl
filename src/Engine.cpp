@@ -23,7 +23,7 @@ int Engine::init() {
 
     onInit();
     asyncLoader = std::make_shared<AsyncLoader>(shaders, assets);
-    
+
     window = std::make_unique<Window>(*this, assets);
     return window->create() ? 0 : -1;
 }
@@ -47,6 +47,7 @@ int Engine::setup() {
 
 void Engine::run() {
     OpenGLInfo info = ki::GL::getInfo();
+    auto extensions = ki::GL::getExtensions();
     // NOTE KI https://www.khronos.org/opengl/wiki/Common_Mistakes
     // - preferredFormat is performnce topic
     KI_INFO_SB("ENGINE::RUN" << std::endl
@@ -54,6 +55,11 @@ void Engine::run() {
         << " GL_MAX_VERTEX_UNIFORM_COMPONENTS: " << info.maxVertexUniformComponents << '\n'
         << " GL_MAX_VERTEX_ATTRIBS: " << info.maxVertexAttributes << '\n'
         << " GL_PREFERRED_TEXTURE_FORMAT: 0x" << std::hex << info.preferredFormat);
+
+    KI_INFO_SB("[EXTENSIONS]");
+    for (auto& ext : extensions) {
+        KI_INFO_SB(ext);
+    }
 
     KI_INFO("setup");
     ki::GL::startError();

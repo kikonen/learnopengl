@@ -171,4 +171,18 @@ namespace ki {
         return info;
     }
 
+    std::vector<std::string> GL::getExtensions()
+    {
+        std::vector<std::string> result;
+
+        OpenGLInfo info;
+        GLint n = 0;
+        glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+
+        for (GLint i = 0; i < n; i++) {
+            const char* extension = (const char*)glGetStringi(GL_EXTENSIONS, i);
+            result.push_back(extension);
+        }
+        return result;
+    }
 }
