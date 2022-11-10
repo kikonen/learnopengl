@@ -74,7 +74,7 @@ void ImageTexture::prepare(const Assets& assets)
     // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
     // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
     glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTextureStorage2D(textureID, MIP_MAP_LEVELS, internalFormat, image->width, image->height);
     glTextureSubImage2D(textureID, 0, 0, 0, image->width, image->height, format, GL_UNSIGNED_BYTE, image->data);
