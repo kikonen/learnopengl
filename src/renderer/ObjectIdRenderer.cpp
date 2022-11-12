@@ -88,6 +88,7 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_idShaderSprite->prepare(assets);
 
     m_debugViewport = std::make_shared<Viewport>(
+        "ObjectID",
         glm::vec3(-1.0, 1.0, 0),
         //glm::vec3(0.5, -0.5, 0),
         glm::vec3(0, 0, 0),

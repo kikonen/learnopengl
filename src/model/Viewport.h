@@ -19,6 +19,7 @@ class Viewport final
 {
 public:
     Viewport(
+        const std::string_view& name,
         const glm::vec3& pos,
         const glm::vec3& rotation,
         const glm::vec2& size,
@@ -38,11 +39,13 @@ public:
     void draw(const RenderContext& ctx);
 
 public:
-    ViewportEffect m_effect = ViewportEffect::none;
+    const std::string m_name;
 
     const glm::vec3 m_pos;
     const glm::vec3 m_rotation;
     const glm::vec2 m_size;
+
+    ViewportEffect m_effect = ViewportEffect::none;
 
 private:
     bool m_prepared = false;

@@ -6,13 +6,15 @@ const int ATTR_VIEW_POS = 0;
 const int ATTR_VIEW_TEX = 1;
 
 Viewport::Viewport(
+    const std::string_view& name,
     const glm::vec3& pos,
     const glm::vec3& rotation,
     const glm::vec2& size,
     unsigned int textureID,
     Shader* shader,
     std::function<void(Viewport&)> binder)
-    : m_pos(pos),
+    : m_name(name),
+    m_pos(pos),
     m_rotation(rotation),
     m_size(size),
     m_textureID(textureID),

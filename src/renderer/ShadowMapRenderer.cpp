@@ -49,6 +49,7 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_shadowBuffer->prepare(true, { 0, 0, 0, 1.0 });
 
     m_debugViewport = std::make_shared<Viewport>(
+        "ShadowMap",
         //glm::vec3(-1 + 0.01, 1 - 0.01, 0),
         glm::vec3(0.5, -0.5, 0),
         glm::vec3(0, 0, 0),

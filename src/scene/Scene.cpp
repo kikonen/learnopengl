@@ -87,6 +87,7 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     {
         m_mainViewport = std::make_shared<Viewport>(
+            "Main",
             //glm::vec3(-0.75, 0.75, 0),
             glm::vec3(-1.0f, 1.f, 0),
             glm::vec3(0, 0, 0),
@@ -109,6 +110,7 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     if (assets.showRearView) {
         m_rearViewport = std::make_shared<Viewport>(
+            "Rear",
             glm::vec3(0.5, 1, 0),
             glm::vec3(0, 0, 0),
             glm::vec2(0.5f, 0.5f),
