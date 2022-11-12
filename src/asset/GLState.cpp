@@ -70,22 +70,26 @@ void GLState::polygonFrontAndBack(GLenum mode) noexcept
     }
 }
 
-void GLState::bindTextures(
-    const GLuint unitIndexFirst,
-    const std::vector<GLuint>& textureIDs) noexcept
-{
-    //glBindTextures(unitIndexFirst, textureIDs.size(), &textureIDs[0]);
-    GLuint unitIndex = unitIndexFirst;
-    for (auto textureID : textureIDs) {
-        bindTexture(unitIndex++, textureID);
-    }
-}
+//void GLState::bindTextures(
+//    const GLuint unitIndexFirst,
+//    const std::vector<GLuint>& textureIDs) noexcept
+//{
+//    //glBindTextures(unitIndexFirst, textureIDs.size(), &textureIDs[0]);
+//    GLuint unitIndex = unitIndexFirst;
+//    for (auto textureID : textureIDs) {
+//        bindTexture(unitIndex++, textureID, false);
+//    }
+//}
 
 void GLState::bindTexture(
     const GLuint unitIndex,
-    const GLuint textureID) noexcept
+    const GLuint textureID,
+    bool force) noexcept
 {
-    if (m_textureUnits[unitIndex] != textureID) {
+    // NOTE KI logic failing when new texture generated, but its' ID does not change
+    // (i.e. IDs are apparently reused after texture delete)
+    // => caused viewport diappear after resising main viewport
+    if (force || m_textureUnits[unitIndex] != textureID) {
         // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
         //KI_GL_CALL(glBindTextures(unitIndex, 1, &textureID));
         glBindTextureUnit(unitIndex, textureID);

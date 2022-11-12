@@ -396,7 +396,7 @@ void Scene::updateMainViewport(RenderContext& ctx)
     bool changed = !m_mainBuffer || w != m_mainBuffer->m_spec.width || h != m_mainBuffer->m_spec.height;
     if (!changed) return;
 
-    if (m_mainBuffer) return;
+    //if (m_mainBuffer) return;
     KI_INFO_SB("BUFFER: create - w=" << w << ", h=" << h);
 
     // MAIN

@@ -126,5 +126,5 @@ void FrameBuffer::unbind(const RenderContext& ctx)
 
 void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex)
 {
-    ctx.state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID);
+    ctx.state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID, false);
 }

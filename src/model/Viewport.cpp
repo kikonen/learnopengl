@@ -87,7 +87,7 @@ void Viewport::bind(const RenderContext& ctx)
 
     const int unitIndex = ctx.assets.viewportUnitIndex;
 
-    ctx.state.bindTexture(unitIndex, m_textureID);
+    ctx.state.bindTexture(unitIndex, m_textureID, true);
     m_shader->viewportTex.set(unitIndex);
 
     m_shader->effect.set((int)m_effect);

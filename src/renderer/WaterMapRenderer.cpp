@@ -63,7 +63,7 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
     m_reflectionBuffer->bindTexture(ctx, 0, ctx.assets.waterReflectionMapUnitIndex);
     m_refractionBuffer->bindTexture(ctx, 0, ctx.assets.waterRefractionMapUnitIndex);
     if (m_noiseTextureID > 0) {
-        ctx.state.bindTexture(ctx.assets.noiseUnitIndex, m_noiseTextureID);
+        ctx.state.bindTexture(ctx.assets.noiseUnitIndex, m_noiseTextureID, false);
     }
 }
 

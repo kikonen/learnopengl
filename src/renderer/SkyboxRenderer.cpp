@@ -126,7 +126,7 @@ void SkyboxRenderer::assign(Shader* shader)
 
 void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 {
-    ctx.state.bindTexture(ctx.assets.skyboxUnitIndex, textureID);
+    ctx.state.bindTexture(ctx.assets.skyboxUnitIndex, textureID, false);
 }
 
 void SkyboxRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)

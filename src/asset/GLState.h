@@ -23,13 +23,14 @@ public:
 
     void polygonFrontAndBack(GLenum mode) noexcept;
 
-    void bindTextures(
-        const GLuint unitIndexFirst,
-        const std::vector<GLuint>& textureIDs) noexcept;
+    //void bindTextures(
+    //    const GLuint unitIndexFirst,
+    //    const std::vector<GLuint>& textureIDs) noexcept;
 
     void bindTexture(
         const GLuint unitIndex,
-        const GLuint textureID) noexcept;
+        const GLuint textureID,
+        bool force) noexcept;
 
 private:
     std::set<GLenum> m_enabled;

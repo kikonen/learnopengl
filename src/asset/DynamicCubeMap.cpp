@@ -16,7 +16,7 @@ DynamicCubeMap::~DynamicCubeMap()
 
 void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
 {
-    ctx.state.bindTexture(unitIndex, m_textureID);
+    ctx.state.bindTexture(unitIndex, m_textureID, false);
 }
 
 void DynamicCubeMap::bind(const RenderContext& ctx)
