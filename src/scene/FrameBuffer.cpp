@@ -13,7 +13,7 @@ FrameBuffer::~FrameBuffer()
 {
     if (!m_prepared) return;
 
-    glDeleteFramebuffers(1, &FBO);
+    glDeleteFramebuffers(1, &m_fbo);
 
     for (auto& att : spec.attachments) {
         if (att.textureID) {
@@ -34,8 +34,8 @@ void FrameBuffer::prepare(
     m_prepared = true;
 
     {
-        glGenFramebuffers(1, &FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+        glGenFramebuffers(1, &m_fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     }
 
     int clearMask = 0;
@@ -111,7 +111,7 @@ void FrameBuffer::prepare(
 
 void FrameBuffer::bind(const RenderContext& ctx)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     glViewport(0, 0, spec.width, spec.height);
 }
 

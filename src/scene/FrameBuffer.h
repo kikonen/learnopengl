@@ -140,9 +140,9 @@ struct FrameBufferAttachment {
 };
 
 struct FrameBufferSpecification {
-    FrameBufferSpecification(int width, int height, std::initializer_list<FrameBufferAttachment>&& attachments) 
-        : width(width), 
-        height(height), 
+    FrameBufferSpecification(int width, int height, std::initializer_list<FrameBufferAttachment>&& attachments)
+        : width(width),
+        height(height),
         attachments(attachments) {
     }
 
@@ -170,7 +170,7 @@ public:
 public:
     FrameBufferSpecification spec;
 
-    unsigned int FBO = 0;
+    unsigned int m_fbo = 0;
 
 protected:
     bool m_prepared = false;
