@@ -391,6 +391,7 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
 
             if (k == "#version") {
                 lines.push_back(line);
+                lines.push_back("#extension GL_ARB_bindless_texture : require");
                 appendDefines(lines);
                 for (auto& l : processInclude(INC_GLOBALS, lineNumber)) {
                     lines.push_back(l);

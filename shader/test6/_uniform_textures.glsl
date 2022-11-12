@@ -2,7 +2,7 @@
 // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
 
 // Enable bindless textures
-#extension GL_ARB_bindless_texture : require
+//#extension GL_ARB_bindless_texture : require
 
 layout (binding = 6, std140) uniform Textures
 {
