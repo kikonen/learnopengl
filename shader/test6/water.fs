@@ -92,7 +92,7 @@ void main() {
     // }
   }
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_NORMAL_TEX_XX
   vec3 normal = texture(u_textures[material.normalMapTex], distortedTexCoord).rgb;
   // vec3 normal;
   // {
