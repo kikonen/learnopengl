@@ -95,6 +95,7 @@ Assets::Assets()
     cubeMapUnitIndex = 68;
     shadowMapUnitIndex = 69;
     skyboxUnitIndex = 70;
+    viewportUnitIndex = 71;
 
     volumeUUID = KI_UUID("9d409e0d-2716-48dd-a205-3a54bdfa5097");
 

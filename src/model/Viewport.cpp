@@ -83,8 +83,7 @@ void Viewport::bind(const RenderContext& ctx)
 
     m_shader->bind();
 
-    // TODO KI this is bogus; reserve some high-up unit index
-    const int unitIndex = 0;
+    const int unitIndex = ctx.assets.viewportUnitIndex;
 
     ctx.state.bindTexture(unitIndex, m_textureID);
     m_shader->viewportTex.set(unitIndex);

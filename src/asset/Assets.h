@@ -101,6 +101,7 @@ public:
     unsigned int cubeMapUnitIndex;
     unsigned int shadowMapUnitIndex;
     unsigned int skyboxUnitIndex;
+    unsigned int viewportUnitIndex;
 
     uuids::uuid volumeUUID;
 
