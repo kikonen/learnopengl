@@ -19,10 +19,10 @@ class Viewport final
 {
 public:
     Viewport(
-        const glm::vec3& pos, 
-        const glm::vec3& rotation, 
-        const glm::vec2& size, 
-        unsigned int textureID, 
+        const glm::vec3& pos,
+        const glm::vec3& rotation,
+        const glm::vec2& size,
+        unsigned int textureID,
         Shader* shader,
         std::function<void(Viewport&)> binder = [](Viewport&) {});
 
@@ -38,20 +38,20 @@ public:
     void draw(const RenderContext& ctx);
 
 public:
-    ViewportEffect effect = ViewportEffect::none;
+    ViewportEffect m_effect = ViewportEffect::none;
 
-    const glm::vec3 pos;
-    const glm::vec3 rotation;
-    const glm::vec2 size;
+    const glm::vec3 m_pos;
+    const glm::vec3 m_rotation;
+    const glm::vec2 m_size;
 
 private:
     bool m_prepared = false;
 
-    MeshBuffers buffers;
+    MeshBuffers m_buffers;
 
-    unsigned int textureID;
+    unsigned int m_textureID;
 
-    Shader* shader{ nullptr };
-    std::function<void(Viewport&)> binder;
+    Shader* m_shader{ nullptr };
+    std::function<void(Viewport&)> m_binder;
 };
 

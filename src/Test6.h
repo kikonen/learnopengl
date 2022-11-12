@@ -32,13 +32,13 @@ private:
     std::shared_ptr<Scene> loadScene();
 
 private:
-    std::unique_ptr<Frame> frame;
-    std::unique_ptr<FrameInit> frameInit;
+    std::unique_ptr<Frame> m_frame;
+    std::unique_ptr<FrameInit> m_frameInit;
 
-    std::unique_ptr<SceneFile> file;
-    std::unique_ptr<TestSceneSetup> testSetup;
+    std::unique_ptr<SceneFile> m_file;
+    std::unique_ptr<TestSceneSetup> m_testSetup;
 
-    unsigned long drawCount = 0;
-    unsigned long skipCount = 0;
-    float frustumElapsedSecs = 0;
+    unsigned long m_drawCount = 0;
+    unsigned long m_skipCount = 0;
+    float m_frustumElapsedSecs = 0;
 };

@@ -30,7 +30,7 @@ namespace {
 
 Material createGoldMaterial() {
     Material mat;
-    mat.name = "<gold>";
+    mat.m_name = "<gold>";
     mat.ns = 51.2f;
     mat.ks = glm::vec4(0.6283f, 0.5559f, 0.3661f, 1.f);
     mat.ka = glm::vec4(0.2473f, 0.1995f, 0.0745f, 1.f);
@@ -40,7 +40,7 @@ Material createGoldMaterial() {
 
 Material createSilverMaterial() {
     Material mat;
-    mat.name = "<silver>";
+    mat.m_name = "<silver>";
     mat.ns = 51.2f;
     mat.ks = glm::vec4(0.5083f, 0.5083f, 0.5083f, 1.f);
     mat.ka = glm::vec4(0.1923f, 0.1923f, 0.1923f, 1.f);
@@ -50,7 +50,7 @@ Material createSilverMaterial() {
 
 Material createBronzeMaterial() {
     Material mat;
-    mat.name = "<bronze>";
+    mat.m_name = "<bronze>";
     mat.ns = 25.6f;
     mat.ks = glm::vec4(0.3936f, 0.2719f, 0.1667f, 1.f);
     mat.ka = glm::vec4(0.2125f, 0.1275f, 0.0540f, 1.f);
@@ -60,7 +60,7 @@ Material createBronzeMaterial() {
 
 Material Material::createDefaultMaterial() {
     Material mat;
-    mat.name = "<default>";
+    mat.m_name = "<default>";
     mat.ns = 100.f;
     mat.ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
     mat.ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
@@ -86,7 +86,7 @@ Material* Material::find(
     const auto& it = std::find_if(
         materials.begin(),
         materials.end(),
-        [&name](Material& m) { return m.name == name && !m.isDefault; });
+        [&name](Material& m) { return m.m_name == name && !m.m_default; });
     return it != materials.end() ? &(*it) : nullptr;
 }
 
@@ -97,12 +97,12 @@ Material* Material::findID(
     const auto& it = std::find_if(
         materials.begin(),
         materials.end(),
-        [objectID](Material& m) { return m.objectID == objectID; });
+        [objectID](Material& m) { return m.m_objectID == objectID; });
     return it != materials.end() ? &(*it) : nullptr;
 }
 
 Material::Material()
-    : objectID(nextID())
+    : m_objectID(nextID())
 {
 }
 
@@ -114,14 +114,14 @@ Material::Material()
 
 Material::~Material()
 {
-    KI_INFO_SB("MATERIAL: " << name << " delete");
-    materialIndex = -1;
+    KI_INFO_SB("MATERIAL: " << m_name << " delete");
+    m_index = -1;
 }
 
 void Material::loadTextures(const Assets& assets)
 {
-    if (loaded) return;
-    loaded = true;
+    if (m_loaded) return;
+    m_loaded = true;
 
     auto baseDir = resolveBaseDir(assets);
 
@@ -135,7 +135,7 @@ void Material::loadTextures(const Assets& assets)
 std::string Material::resolveBaseDir(const Assets& assets)
 {
     std::string baseDir;
-    switch (type) {
+    switch (m_type) {
     case MaterialType::model:
         return assets.modelsDir;
     case MaterialType::texture:
@@ -158,7 +158,7 @@ void Material::loadTexture(
     {
         std::filesystem::path fp;
         fp /= baseDir;
-        fp /= path;
+        fp /= m_path;
         fp /= textureName;
         texturePath = fp.string();
     }
@@ -174,14 +174,14 @@ void Material::loadTexture(
     }
     assert(texture->isValid());
     if (texture->isValid()) {
-        textures[idx].texture = texture;
+        m_textures[idx].texture = texture;
     }
 }
 
 int Material::getActiveTextureCount()
 {
     int texCount = 0;
-    for (auto& tex : textures) {
+    for (auto& tex : m_textures) {
         if (!tex.texture) continue;
         texCount++;
     }
@@ -190,7 +190,7 @@ int Material::getActiveTextureCount()
 
 bool Material::hasNormalTex()
 {
-    const auto& tex = textures[NORMAL_MAP_IDX];
+    const auto& tex = m_textures[NORMAL_MAP_IDX];
     return tex.texture != nullptr;
 }
 
@@ -199,7 +199,7 @@ void Material::prepare(const Assets& assets)
     if (m_prepared) return;
     m_prepared = true;
 
-    for (auto& tex : textures) {
+    for (auto& tex : m_textures) {
         if (!tex.texture) continue;
         tex.texture->prepare(assets);
     }
@@ -209,7 +209,7 @@ void Material::bindArray(
     const RenderContext& ctx,
     Shader* shader)
 {
-    for (auto& tex : textures) {
+    for (auto& tex : m_textures) {
         if (!tex.texture) continue;
         ASSERT_TEX_INDEX(tex.m_texIndex);
         tex.bind(ctx);
@@ -218,7 +218,7 @@ void Material::bindArray(
 
 const MaterialUBO Material::toUBO()
 {
-    for (auto& tex : textures) {
+    for (auto& tex : m_textures) {
         if (!tex.texture) continue;
         ASSERT_TEX_INDEX(tex.m_texIndex);
     }
@@ -230,11 +230,11 @@ const MaterialUBO Material::toUBO()
         ks,
         ns,
 
-        textures[DIFFUSE_IDX].m_texIndex,
-        textures[EMISSION_IDX].m_texIndex,
-        textures[SPECULAR_IDX].m_texIndex,
-        textures[NORMAL_MAP_IDX].m_texIndex,
-        textures[DUDV_MAP_IDX].m_texIndex,
+        m_textures[DIFFUSE_IDX].m_texIndex,
+        m_textures[EMISSION_IDX].m_texIndex,
+        m_textures[SPECULAR_IDX].m_texIndex,
+        m_textures[NORMAL_MAP_IDX].m_texIndex,
+        m_textures[DUDV_MAP_IDX].m_texIndex,
 
         pattern,
 

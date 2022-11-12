@@ -38,7 +38,7 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
                 texture,
                 normal,
                 glm::vec3(0.f),
-                material.objectID
+                material.m_objectID
                 );
         }
     }

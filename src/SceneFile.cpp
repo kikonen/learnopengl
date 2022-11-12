@@ -509,7 +509,7 @@ void SceneFile::modifyMaterial(
     const MaterialField& f,
     const Material& mod)
 {
-    if (f.type) m.type = mod.type;
+    if (f.type) m.m_type = mod.m_type;
 
     if (f.textureSpec) m.textureSpec = mod.textureSpec;
 
@@ -846,7 +846,7 @@ void SceneFile::loadMaterialModifiers(
     const YAML::Node& node,
     EntityCloneData& data)
 {
-    data.materialModifiers.name = "<modifier>";
+    data.materialModifiers.m_name = "<modifier>";
 
     loadMaterial(node, data.materialModifierFields, data.materialModifiers);
 }
@@ -999,7 +999,7 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
                 data.type = ControllerType::asteroid_belt;
             }
             else if (type == "moving_light") {
-                data.type = ControllerType::moving_light;                
+                data.type = ControllerType::moving_light;
             }
             else {
                 std::cout << "UNKNOWN CONTROLLER_TYPE: " << k << "=" << v << "\n";
@@ -1050,20 +1050,20 @@ void SceneFile::loadMaterial(
         const YAML::Node& v = pair.second;
 
         if (k == "name") {
-            material.name = v.as<std::string>();
+            material.m_name = v.as<std::string>();
         }
         else if (k == "type") {
             std::string type = v.as<std::string>();
             if (type == "model") {
-                material.type = MaterialType::model;
+                material.m_type = MaterialType::model;
                 fields.type = true;
             }
             else if (type == "texture") {
-                material.type = MaterialType::texture;
+                material.m_type = MaterialType::texture;
                 fields.type = true;
             }
             else if (type == "sprite") {
-                material.type = MaterialType::sprite;
+                material.m_type = MaterialType::sprite;
                 fields.type = true;
             }
             else {

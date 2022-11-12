@@ -43,7 +43,7 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         glm::vec3(-1.0, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        prev->spec.attachments[0].textureID,
+        prev->m_spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
 
     debugViewport->prepare(assets);
@@ -101,7 +101,7 @@ void MirrorMapRenderer::render(
         RenderContext localCtx("MIRROR",
             &ctx, camera,
             dist, ctx.assets.farPlane,
-            curr->spec.width, curr->spec.height);
+            curr->m_spec.width, curr->m_spec.height);
         localCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];

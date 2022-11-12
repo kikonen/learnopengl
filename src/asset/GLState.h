@@ -32,10 +32,10 @@ public:
         const GLuint textureID) noexcept;
 
 private:
-    std::set<GLenum> enabled;
-    std::set<GLenum> tracked;
+    std::set<GLenum> m_enabled;
+    std::set<GLenum> m_tracked;
 
-    std::map<GLuint, GLuint> textureUnits;
+    std::map<GLuint, GLuint> m_textureUnits;
 
     int m_cullFace = -1;
     int m_frontFace = -1;

@@ -7,13 +7,13 @@
 #include "Engine.h"
 
 Window::Window(Engine& engine, const Assets& assets)
-    : engine(engine), assets(assets)
+    : m_engine(engine), assets(assets)
 {
-    width = 800;
-    height = 600;
-    title = "GL test";
+    m_width = 800;
+    m_height = 600;
+    m_title = "GL test";
 
-    input = std::make_unique<Input>(this);
+    m_input = std::make_unique<Input>(this);
 }
 
 Window::~Window()
@@ -24,24 +24,24 @@ Window::~Window()
 bool Window::create()
 {
     createGLFWWindow();
-    input->prepare();
-    return glfwWindow != nullptr;
+    m_input->prepare();
+    return m_glfwWindow != nullptr;
 }
 
 void Window::setTitle(const std::string& title)
 {
-    this->title = title;
-    glfwSetWindowTitle(glfwWindow, title.c_str());
+    m_title = title;
+    glfwSetWindowTitle(m_glfwWindow, title.c_str());
 }
 
 void Window::close()
 {
-    glfwSetWindowShouldClose(glfwWindow, true);
+    glfwSetWindowShouldClose(m_glfwWindow, true);
 }
 
 bool Window::isClosed()
 {
-    return glfwWindowShouldClose(glfwWindow);
+    return glfwWindowShouldClose(m_glfwWindow);
 }
 
 void Window::createGLFWWindow()
@@ -67,22 +67,22 @@ void Window::createGLFWWindow()
 //#endif
 
     KI_INFO("START: WDINDOW CREATE");
-    glfwWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
-    if (glfwWindow == nullptr)
+    m_glfwWindow = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+    if (m_glfwWindow == nullptr)
     {
         KI_ERROR_SB("Failed to create GLFW window");
         glfwTerminate();
         return;
     }
 
-    glfwSetWindowUserPointer(glfwWindow, this);
-    glfwMakeContextCurrent(glfwWindow);
+    glfwSetWindowUserPointer(m_glfwWindow, this);
+    glfwMakeContextCurrent(m_glfwWindow);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-            glfwTerminate();
+        glfwTerminate();
         KI_ERROR_SB("Failed to initialize GLAD");
         return;
     }
@@ -102,25 +102,25 @@ void Window::bindGLFWCallbacks()
     // https://stackoverflow.com/questions/31581200/glfw-call-to-non-static-class-function-in-static-key-callback
 
     glfwSetFramebufferSizeCallback(
-        glfwWindow,
+        m_glfwWindow,
         [](GLFWwindow* gw, int width, int height) {
         static_cast<Window*>(glfwGetWindowUserPointer(gw))->onWindowResize(width, height);
     });
 
     glfwSetCursorPosCallback(
-        glfwWindow,
+        m_glfwWindow,
         [](GLFWwindow* gw, double xpos, double ypos) {
             static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseMove(xpos, ypos);
         });
 
     glfwSetMouseButtonCallback(
-        glfwWindow,
+        m_glfwWindow,
         [](GLFWwindow* gw, int button, int action, int modifiers) {
             static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseButton(button, action, modifiers);
         });
 
     glfwSetScrollCallback(
-        glfwWindow,
+        m_glfwWindow,
         [](GLFWwindow* gw, double xoffset, double yoffset) {
             static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseWheel(xoffset, yoffset);
         });
@@ -128,55 +128,55 @@ void Window::bindGLFWCallbacks()
 
 void Window::processInput(const ki::RenderClock& clock)
 {
-    input->updateKeyStates();
+    m_input->updateKeyStates();
 
-    if (input->isKeyDown(Key::EXIT)) {
+    if (m_input->isKeyDown(Key::EXIT)) {
         close();
         return;
     }
 
-    Camera* camera = engine.currentScene->getCamera();
+    Camera* camera = m_engine.m_currentScene->getCamera();
     if (camera) {
-        camera->onKey(input.get(), clock);
+        camera->onKey(m_input.get(), clock);
     }
 }
 
 void Window::onWindowResize(int width, int height)
 {
     glViewport(0, 0, width, height);
-    this->width = width;
-    this->height = height;
+    m_width = width;
+    m_height = height;
 }
 
 void Window::onMouseMove(double xpos, double ypos)
 {
-    input->onMouseMove(xpos, ypos);
+    m_input->onMouseMove(xpos, ypos);
 
-    bool isAlt = input->isModifierDown(Modifier::ALT);
-    int state = glfwGetMouseButton(glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
+    bool isAlt = m_input->isModifierDown(Modifier::ALT);
+    int state = glfwGetMouseButton(m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
     if ((isAlt || state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
-        glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-        Camera* camera = engine.currentScene->getCamera();
+        Camera* camera = m_engine.m_currentScene->getCamera();
         if (camera) {
-            camera->onMouseMove(input.get(), input->mouseXoffset, input->mouseYoffset);
+            camera->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
         }
     }
     else {
-        glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 }
 
 void Window::onMouseButton(int button, int action, int modifiers)
 {
-    input->onMouseButton(button, action, modifiers);
+    m_input->onMouseButton(button, action, modifiers);
 }
 
 void Window::onMouseWheel(double xoffset, double yoffset)
 {
-    Camera* camera = engine.currentScene->getCamera();
+    Camera* camera = m_engine.m_currentScene->getCamera();
     if (camera) {
-        camera->onMouseScroll(input.get(), xoffset, yoffset);
+        camera->onMouseScroll(m_input.get(), xoffset, yoffset);
     }
 }

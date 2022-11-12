@@ -63,16 +63,16 @@ void ImageTexture::prepare(const Assets& assets)
 
     if (!m_valid) return;
 
-    if (image->channels == 3) {
-        format = GL_RGB;
-        internalFormat = GL_RGB8;
-    } else if (image->channels == 4) {
-        format = GL_RGBA;
-        internalFormat = GL_RGBA8;
+    if (m_image->channels == 3) {
+        m_format = GL_RGB;
+        m_internalFormat = GL_RGB8;
+    } else if (m_image->channels == 4) {
+        m_format = GL_RGBA;
+        m_internalFormat = GL_RGBA8;
     } else {
-        KI_WARN_SB("IMAGE: unsupported channels " << image->channels);
+        KI_WARN_SB("IMAGE: unsupported channels " << m_image->channels);
         m_valid = false;
-        image.reset();
+        m_image.reset();
         return;
     }
 
@@ -86,45 +86,45 @@ void ImageTexture::prepare(const Assets& assets)
     glBindTextureUnit(0, textureHandle);
     */
 
-    glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
+    glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
 
-    glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, spec.mode);
-    glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, spec.mode);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.mode);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.mode);
 
     // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
     // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
-    glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTextureStorage2D(textureID, MIP_MAP_LEVELS, internalFormat, image->width, image->height);
-    glTextureSubImage2D(textureID, 0, 0, 0, image->width, image->height, format, GL_UNSIGNED_BYTE, image->data);
+    glTextureStorage2D(m_textureID, MIP_MAP_LEVELS, m_internalFormat, m_image->width, m_image->height);
+    glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->width, m_image->height, m_format, GL_UNSIGNED_BYTE, m_image->data);
 
-    glGenerateTextureMipmap(textureID);
+    glGenerateTextureMipmap(m_textureID);
 
     // OpenGL Superbible, 7th Edition, page 552
     // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
 
-    m_handle = glGetTextureHandleARB(textureID);
+    m_handle = glGetTextureHandleARB(m_textureID);
     glMakeTextureHandleResidentARB(m_handle);
 
     m_texIndex = Texture::nextIndex();
 
     preparedTexturesReady = false;
 
-    image.reset();
+    m_image.reset();
 }
 
 void ImageTexture::load() {
-    image = std::make_unique<Image>(name);
-    int res = image->load(true);
+    m_image = std::make_unique<Image>(m_name);
+    int res = m_image->load(true);
     if (res) {
-        image.reset();
+        m_image.reset();
         return;
     }
 
-    if (image->channels != 3 && image->channels != 4) {
-        KI_WARN_SB("IMAGE: unsupported channels " << image->channels);
-        image.reset();
+    if (m_image->channels != 3 && m_image->channels != 4) {
+        KI_WARN_SB("IMAGE: unsupported channels " << m_image->channels);
+        m_image.reset();
         return;
     }
 

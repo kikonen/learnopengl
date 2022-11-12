@@ -274,7 +274,7 @@ void Scene::draw(RenderContext& ctx)
 
 void Scene::drawMain(RenderContext& ctx)
 {
-    RenderContext mainCtx("MAIN", &ctx, ctx.camera, m_mainBuffer->spec.width, m_mainBuffer->spec.height);
+    RenderContext mainCtx("MAIN", &ctx, ctx.camera, m_mainBuffer->m_spec.width, m_mainBuffer->m_spec.height);
     mainCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
     m_mainBuffer->bind(mainCtx);
@@ -295,7 +295,7 @@ void Scene::drawRear(RenderContext& ctx)
     rot.y += 180;
     camera.setRotation(-rot);
 
-    RenderContext mirrorCtx("BACK", &ctx, camera, m_readBuffer->spec.width, m_readBuffer->spec.height);
+    RenderContext mirrorCtx("BACK", &ctx, camera, m_readBuffer->m_spec.width, m_readBuffer->m_spec.height);
     mirrorCtx.matrices.lightProjected = ctx.matrices.lightProjected;
     mirrorCtx.bindMatricesUBO();
 
@@ -391,9 +391,10 @@ void Scene::updateMainViewport(RenderContext& ctx)
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    bool changed = !m_mainBuffer || w != m_mainBuffer->spec.width || h != m_mainBuffer->spec.height;
+    bool changed = !m_mainBuffer || w != m_mainBuffer->m_spec.width || h != m_mainBuffer->m_spec.height;
     if (!changed) return;
 
+    if (m_mainBuffer) return;
     KI_INFO_SB("BUFFER: create - w=" << w << ", h=" << h);
 
     // MAIN
@@ -405,7 +406,7 @@ void Scene::updateMainViewport(RenderContext& ctx)
 
         m_mainBuffer.reset(buffer);
         m_mainBuffer->prepare(true, { 0, 0, 0, 1.0 });
-        m_mainViewport->setTextureID(m_mainBuffer->spec.attachments[0].textureID);
+        m_mainViewport->setTextureID(m_mainBuffer->m_spec.attachments[0].textureID);
     }
 
     // VMIRROR
@@ -425,7 +426,7 @@ void Scene::updateMainViewport(RenderContext& ctx)
             m_readBuffer.reset(buffer);
             m_readBuffer->prepare(true, { 0, 0, 0, 1.0 });
 
-            m_rearViewport->setTextureID(m_readBuffer->spec.attachments[0].textureID);
+            m_rearViewport->setTextureID(m_readBuffer->m_spec.attachments[0].textureID);
         }
     }
 }

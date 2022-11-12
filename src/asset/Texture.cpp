@@ -76,8 +76,8 @@ GLuint Texture::nextUnitIndex()
 }
 
 Texture::Texture(const std::string& name, const TextureSpec& spec)
-    : name(name),
-    spec(spec)
+    : m_name(name),
+    m_spec(spec)
 {
 }
 

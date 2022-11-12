@@ -121,18 +121,18 @@ void ModelMesh::prepareMaterials(const Assets& assets)
         int materialIndex = 0;
 
         for (auto& material : m_materials) {
-            material.materialIndex = materialIndex++;
-            assert(material.materialIndex < MATERIAL_COUNT);
+            material.m_index = materialIndex++;
+            assert(material.m_index < MATERIAL_COUNT);
 
             m_reflection |= material.reflection > 0;
             m_refraction |= material.refraction > 0;
 
             material.prepare(assets);
 
-            for (auto& tex : material.textures) {
+            for (auto& tex : material.m_textures) {
                 if (!tex.texture) continue;
                 tex.m_texIndex = tex.texture->m_texIndex;
-                m_textureIDs.push_back(tex.texture->textureID);
+                m_textureIDs.push_back(tex.texture->m_textureID);
             }
         }
     }
@@ -146,7 +146,7 @@ void ModelMesh::prepareMaterials(const Assets& assets)
         MaterialsUBO materialsUbo{};
 
         for (auto& material : m_materials) {
-            materialsUbo.materials[material.materialIndex] = material.toUBO();
+            materialsUbo.materials[material.m_index] = material.toUBO();
         }
 
         glCreateBuffers(1, &m_materialsUboId);
@@ -200,7 +200,7 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
 
             // TODO KI should use noticeable value for missing
             // => would trigger undefined array access in render side
-            vbo->material = m ? m->materialIndex : 0;
+            vbo->material = m ? m->m_index : 0;
 
             vbo->texCoords.u = (int)(t.x * ki::SCALE_UV16);
             vbo->texCoords.v = (int)(t.y * ki::SCALE_UV16);

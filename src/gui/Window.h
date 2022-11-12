@@ -40,15 +40,15 @@ private:
 public:
     const Assets& assets;
 
-    GLFWwindow* glfwWindow{ nullptr };
-    int width = 0;
-    int height = 0;
+    GLFWwindow* m_glfwWindow{ nullptr };
+    int m_width = 0;
+    int m_height = 0;
 
-    std::unique_ptr<Input> input{ nullptr };
+    std::unique_ptr<Input> m_input{ nullptr };
 
 protected:
-    Engine& engine;
+    Engine& m_engine;
 
-    std::string title;
+    std::string m_title;
 };
 

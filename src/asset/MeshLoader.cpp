@@ -68,8 +68,8 @@ void MeshLoader::loadData(
     positions.reserve(10000);
 
     {
-        defaultMaterial.isDefault = true;
-        defaultMaterial.used = false;;
+        defaultMaterial.m_default = true;
+        defaultMaterial.m_used = false;;
     }
 
     std::filesystem::path filePath;
@@ -127,7 +127,7 @@ void MeshLoader::loadData(
                 // Smooth shading can be disabled as well.
                 // s off
                 int smoothing = v1 == "off" ? 0 : stoi(v1);
-            } 
+            }
             else if (k == "g") {
                 // group
                 int group = stoi(v1);
@@ -172,14 +172,14 @@ void MeshLoader::loadData(
                 for (int i = 0; i < 3; i++) {
                     v[i] = resolveVertexIndex(
                         vertexMapping,
-                        vertices, 
-                        positions, 
-                        textures, 
-                        normals, 
+                        vertices,
+                        positions,
+                        textures,
+                        normals,
                         tangents,
-                        material, 
-                        pi[i], 
-                        ti[i], 
+                        material,
+                        pi[i],
+                        ti[i],
                         ni[i],
                         tangenti[i]);
                 }
@@ -192,7 +192,7 @@ void MeshLoader::loadData(
         mesh.calculateVolume();
 
         {
-            if (defaultMaterial.used) {
+            if (defaultMaterial.m_used) {
                 if (loadTextures) {
                     defaultMaterial.loadTextures(assets);
                 }
@@ -200,7 +200,7 @@ void MeshLoader::loadData(
             }
 
             for (auto& material : loadedMaterials) {
-                if (!material.used) continue;
+                if (!material.m_used) continue;
 
                 if (loadTextures) {
                     material.loadTextures(assets);
@@ -260,7 +260,7 @@ unsigned int MeshLoader::resolveVertexIndex(
         material = &defaultMaterial;
     }
     // TODO KI danger with shared default material
-    material->used = true;
+    material->m_used = true;
 
     glm::vec3& pos = positions[pi];
 
@@ -269,7 +269,7 @@ unsigned int MeshLoader::resolveVertexIndex(
         textures.empty() ? EMPTY_TEX : textures[ti],
         normals.empty() ? EMPTY_NORMAL : normals[ni],
         tangents.empty() ? EMPTY_NORMAL : tangents[tangenti],
-        material->objectID);
+        material->m_objectID);
 
     {
         const auto& it = vertexMapping.find(&pos);
@@ -289,8 +289,8 @@ unsigned int MeshLoader::resolveVertexIndex(
 }
 
 glm::vec3 MeshLoader::createNormal(
-    std::vector<glm::vec3>& positions, 
-    std::vector<glm::vec3>& normals, 
+    std::vector<glm::vec3>& positions,
+    std::vector<glm::vec3>& normals,
     glm::uvec3 pi)
 {
     glm::vec3 p1 = positions[pi[0]];
@@ -351,7 +351,7 @@ void MeshLoader::createTangents(
         const glm::vec2 deltaUV2{ uv3 - uv1 };
 
         float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
-    
+
         glm::vec3 tangent{
             f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x),
             f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y),
@@ -403,8 +403,8 @@ void MeshLoader::loadMaterials(
 
             if (k == "newmtl") {
                 material = &materials.emplace_back();
-                material->name = v1;
-                material->path = m_meshPath;
+                material->m_name = v1;
+                material->m_path = m_meshPath;
             }
             else if (k == "Ns") {
                 material->ns = stof(v1);

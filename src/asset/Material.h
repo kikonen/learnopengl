@@ -106,19 +106,19 @@ private:
         const std::string& name);
 
 public:
-    int objectID;
+    int m_objectID;
 
-    std::string name;
-    std::string path;
+    std::string m_name;
+    std::string m_path;
 
-    MaterialType type{ MaterialType::model };
+    MaterialType m_type{ MaterialType::model };
 
-    int materialIndex = -1;
+    int m_index = -1;
 
-    bool isDefault = false;
-    bool used = false;
+    bool m_default = false;
+    bool m_used = false;
 
-    std::string materialDir;
+    std::string m_materialDir;
 
     TextureSpec textureSpec;
 
@@ -131,7 +131,7 @@ public:
 
     float tiling = 1.0f;
 
-    std::array<BoundTexture, 5> textures;
+    std::array<BoundTexture, 5> m_textures;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     // ranges between 0 and 1000
@@ -184,6 +184,6 @@ public:
 private:
     bool m_prepared = false;
 
-    bool loaded = false;
+    bool m_loaded = false;
 };
 

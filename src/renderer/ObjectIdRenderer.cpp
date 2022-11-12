@@ -34,14 +34,14 @@ int ObjectIdRenderer::getObjectId(
     int screenW = res.x;
     int screenH = res.y;
 
-    float w = screenW * (mainViewport->size.x / GL_SCREEN_SIZE);
-    float h = screenH * (mainViewport->size.y / GL_SCREEN_SIZE);
+    float w = screenW * (mainViewport->m_size.x / GL_SCREEN_SIZE);
+    float h = screenH * (mainViewport->m_size.y / GL_SCREEN_SIZE);
 
-    float ratioX = m_idBuffer->spec.width / w;
-    float ratioY = m_idBuffer->spec.height / h;
+    float ratioX = m_idBuffer->m_spec.width / w;
+    float ratioY = m_idBuffer->m_spec.height / h;
 
-    float offsetX = screenW * (mainViewport->pos.x + 1.f) / GL_SCREEN_SIZE;
-    float offsetY = screenH * (1.f - (mainViewport->pos.y + 1.f) / GL_SCREEN_SIZE);
+    float offsetX = screenW * (mainViewport->m_pos.x + 1.f) / GL_SCREEN_SIZE;
+    float offsetY = screenH * (1.f - (mainViewport->m_pos.y + 1.f) / GL_SCREEN_SIZE);
 
     float posx = (screenPosX - offsetX) * ratioX;
     float posy = (screenPosY - offsetY) * ratioY;
@@ -57,7 +57,7 @@ int ObjectIdRenderer::getObjectId(
         int readFormat;
         glGetFramebufferParameteriv(GL_FRAMEBUFFER, GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
 
-        glReadPixels(posx, m_idBuffer->spec.height - posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glReadPixels(posx, m_idBuffer->m_spec.height - posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
         int x = 0;
         m_idBuffer->unbind(ctx);
@@ -106,7 +106,7 @@ void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    bool changed = !m_idBuffer || w != m_idBuffer->spec.width || h != m_idBuffer->spec.height;
+    bool changed = !m_idBuffer || w != m_idBuffer->m_spec.width || h != m_idBuffer->m_spec.height;
     if (!changed) return;
 
     // https://riptutorial.com/opengl/example/28872/using-pbos
@@ -117,14 +117,14 @@ void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
     m_idBuffer.reset(buffer);
     m_idBuffer->prepare(true, { 0, 0, 0, 0.5 });
 
-    debugViewport->setTextureID(m_idBuffer->spec.attachments[0].textureID);
+    debugViewport->setTextureID(m_idBuffer->m_spec.attachments[0].textureID);
 }
 
 void ObjectIdRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry)
 {
-    RenderContext idCtx("OBJECT_ID", &ctx, ctx.camera, m_idBuffer->spec.width, m_idBuffer->spec.height);
+    RenderContext idCtx("OBJECT_ID", &ctx, ctx.camera, m_idBuffer->m_spec.width, m_idBuffer->m_spec.height);
 
     m_idBuffer->bind(idCtx);
 

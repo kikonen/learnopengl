@@ -91,14 +91,14 @@ void QuadMesh::prepareMaterials(const Assets& assets)
     {
         Material& material = m_material;
 
-        material.materialIndex = 0;
+        material.m_index = 0;
 
         material.prepare(assets);
 
-        for (auto& tex : material.textures) {
+        for (auto& tex : material.m_textures) {
             if (!tex.texture) continue;
             tex.m_texIndex = tex.texture->m_texIndex;
-            m_textureIDs.push_back(tex.texture->textureID);
+            m_textureIDs.push_back(tex.texture->m_textureID);
         }
     }
 

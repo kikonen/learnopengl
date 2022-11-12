@@ -168,7 +168,7 @@ public:
     void bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex);
 
 public:
-    FrameBufferSpecification spec;
+    FrameBufferSpecification m_spec;
 
     unsigned int m_fbo = 0;
 

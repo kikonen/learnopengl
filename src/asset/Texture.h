@@ -29,18 +29,18 @@ public:
     static GLuint nextUnitIndex();
 
 public:
-    const std::string name;
-    const TextureSpec spec;
+    const std::string m_name;
+    const TextureSpec m_spec;
 
-    GLuint textureID = 0;
+    GLuint m_textureID = 0;
     int m_texIndex = -1;
     GLuint64 m_handle = 0;
 
 protected:
     bool m_prepared = false;
 
-    int width = 0;
-    int height = 0;
-    int format = 0;
-    int internalFormat = 0;
+    int m_width = 0;
+    int m_height = 0;
+    int m_format = 0;
+    int m_internalFormat = 0;
 };

@@ -24,6 +24,6 @@ private:
 private:
     bool m_valid = false;
 
-    std::unique_ptr<Image> image;
+    std::unique_ptr<Image> m_image;
 };
 

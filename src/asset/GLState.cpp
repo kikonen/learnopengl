@@ -9,7 +9,7 @@ GLState::GLState()
 
 void GLState::track(GLenum key, bool initial) noexcept
 {
-    tracked.insert(key);
+    m_tracked.insert(key);
     if (initial) {
         enable(key);
     }
@@ -20,30 +20,30 @@ void GLState::track(GLenum key, bool initial) noexcept
 
 void GLState::enable(GLenum key) noexcept
 {
-    if (tracked.find(key) == tracked.end()) {
+    if (m_tracked.find(key) == m_tracked.end()) {
         glEnable(key);
         return;
     }
 
-    if (enabled.find(key) != enabled.end()) {
+    if (m_enabled.find(key) != m_enabled.end()) {
         return;
     }
     glEnable(key);
-    enabled.insert(key);
+    m_enabled.insert(key);
 }
 
 void GLState::disable(GLenum key) noexcept
 {
-    if (tracked.find(key) == tracked.end()) {
+    if (m_tracked.find(key) == m_tracked.end()) {
         glDisable(key);
         return;
     }
 
-    if (enabled.find(key) == enabled.end()) {
+    if (m_enabled.find(key) == m_enabled.end()) {
         return;
     }
     glDisable(key);
-    enabled.erase(key);
+    m_enabled.erase(key);
 }
 
 void GLState::cullFace(GLenum mode) noexcept
@@ -85,10 +85,10 @@ void GLState::bindTexture(
     const GLuint unitIndex,
     const GLuint textureID) noexcept
 {
-    if (textureUnits[unitIndex] != textureID) {
+    if (m_textureUnits[unitIndex] != textureID) {
         // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
         //KI_GL_CALL(glBindTextures(unitIndex, 1, &textureID));
         glBindTextureUnit(unitIndex, textureID);
-        textureUnits[unitIndex] = textureID;
+        m_textureUnits[unitIndex] = textureID;
     }
 }

@@ -78,7 +78,7 @@ void TestSceneSetup::setupViewport1()
         glm::vec3(-1, -0.75, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.25f, 0.25f),
-        texture->textureID,
+        texture->m_textureID,
         asyncLoader->getShader(TEX_VIEWPORT));
     viewport->prepare(assets);
     scene->m_registry.addViewPort(viewport);

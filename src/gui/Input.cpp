@@ -10,7 +10,7 @@ namespace {
     };
 }
 
-Input::Input(Window* window) 
+Input::Input(Window* window)
     : window(window)
 {
     keyMappings[Key::EXIT] = new int[] { GLFW_KEY_ESCAPE, 0 };
@@ -75,7 +75,7 @@ bool Input::isKeyDown(Key key)
     int* code = keyMappings[key];
     if (code) {
         while (*code) {
-            if (glfwGetKey(window->glfwWindow, *code) == GLFW_PRESS) {
+            if (glfwGetKey(window->m_glfwWindow, *code) == GLFW_PRESS) {
                 return true;
             }
             *code++;
@@ -88,7 +88,7 @@ bool Input::isModifierDown(Modifier modifier) {
     int* code = modifierMappings[modifier];
     if (code) {
         while (*code) {
-            if (glfwGetKey(window->glfwWindow, *code) == GLFW_PRESS) {
+            if (glfwGetKey(window->m_glfwWindow, *code) == GLFW_PRESS) {
                 return true;
             }
             *code++;

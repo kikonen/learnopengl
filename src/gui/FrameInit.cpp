@@ -14,7 +14,7 @@ FrameInit::FrameInit(Window& window)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(window.glfwWindow, true);
+    ImGui_ImplGlfw_InitForOpenGL(window.m_glfwWindow, true);
     ImGui_ImplOpenGL3_Init(window.assets.glsl_version_str.c_str());
     // Setup Dear ImGui style
     ImGui::StyleColorsLight();

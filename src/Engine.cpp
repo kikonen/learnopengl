@@ -22,10 +22,10 @@ Engine::~Engine() {
 int Engine::init() {
 
     onInit();
-    asyncLoader = std::make_shared<AsyncLoader>(shaders, assets);
+    m_asyncLoader = std::make_shared<AsyncLoader>(m_shaders, m_assets);
 
-    window = std::make_unique<Window>(*this, assets);
-    return window->create() ? 0 : -1;
+    m_window = std::make_unique<Window>(*this, m_assets);
+    return m_window->create() ? 0 : -1;
 }
 
 int Engine::setup() {
@@ -39,7 +39,7 @@ int Engine::setup() {
         GL_DEPTH_TEST,
     };
     for (auto& key : keys) {
-        state.track(key, false);
+        m_state.track(key, false);
     }
 
     return onSetup();
@@ -64,14 +64,14 @@ void Engine::run() {
     KI_INFO("setup");
     ki::GL::startError();
 
-    if (assets.glDebug) {
+    if (m_assets.glDebug) {
         // NOTE KI MUST AFTER glfwWindow create
         ki::GL::startDebug();
     }
 
     int res = setup();
     if (res) {
-        window->close();
+        m_window->close();
     }
 
     auto prevLoopTime = std::chrono::system_clock::now();
@@ -97,7 +97,7 @@ void Engine::run() {
 
     // render loop
     // -----------
-    while (!window->isClosed())
+    while (!m_window->isClosed())
     {
         int close = 0;
 
@@ -119,7 +119,7 @@ void Engine::run() {
 
             // input
             // -----
-            window->processInput(clock);
+            m_window->processInput(clock);
 
             // render
             // ------
@@ -128,7 +128,7 @@ void Engine::run() {
 
                 close = onRender(clock);
 
-                shaders.validate();
+                m_shaders.validate();
 
                 renderEnd = std::chrono::system_clock::now();
                 renderDuration = renderEnd - renderStart;
@@ -136,7 +136,7 @@ void Engine::run() {
             }
 
             if (close) {
-                window->close();
+                m_window->close();
             }
         }
 
@@ -144,7 +144,7 @@ void Engine::run() {
         if (!close) {
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
-            glfwSwapBuffers(window->glfwWindow);
+            glfwSwapBuffers(m_window->m_glfwWindow);
             glfwPollEvents();
             //glFinish();
         }
@@ -160,12 +160,12 @@ void Engine::run() {
                 titleSB,
                 256,
                 "%s - FPS: %-5.2f - RENDER: %-5.2fms FRAME: (%-5.2f fps)",
-                title.c_str(),
+                m_title.c_str(),
                 1.0f / clock.elapsedSecs,
                 renderSecs * 1000.f,
                 1.0f / frameSecs);
 
-            window->setTitle(titleSB);
+            m_window->setTitle(titleSB);
             //KI_DEBUG_SB(titleSB);
         }
 

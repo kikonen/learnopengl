@@ -33,24 +33,24 @@ protected:
     virtual void onDestroy();
 
 public:
-    bool debug = false;
+    bool m_debug = false;
 
-    ki::RenderClock startClock;
+    ki::RenderClock m_startClock;
 
     // NOTE KI MUST destroy async loaded *BEFORE* other registries
     // => alloes change for graceful exit for loaders
-    std::shared_ptr<AsyncLoader> asyncLoader;
-    ShaderRegistry shaders;
+    std::shared_ptr<AsyncLoader> m_asyncLoader;
+    ShaderRegistry m_shaders;
 
-    std::shared_ptr<Scene> currentScene;
+    std::shared_ptr<Scene> m_currentScene;
 
-    std::unique_ptr<Window> window;
+    std::unique_ptr<Window> m_window;
 protected:
-    Assets assets;
+    Assets m_assets;
 
-    std::string title;
+    std::string m_title;
 
-    GLState state;
+    GLState m_state;
 
     std::unique_ptr<backend::RenderSystem> m_backend;
 };

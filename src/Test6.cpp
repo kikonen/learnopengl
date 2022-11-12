@@ -22,35 +22,35 @@ Test6::Test6()
 
 int Test6::onInit()
 {
-    title = "Test 6";
+    m_title = "Test 6";
     //glfwWindowHint(GLFW_SAMPLES, 4);
 
-    assets = loadAssets();
+    m_assets = loadAssets();
     return 0;
 }
 
 int Test6::onSetup() {
-    currentScene = loadScene();
+    m_currentScene = loadScene();
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    if (assets.glfwSwapInterval >= 0) {
-        glfwSwapInterval(assets.glfwSwapInterval);
+    if (m_assets.glfwSwapInterval >= 0) {
+        glfwSwapInterval(m_assets.glfwSwapInterval);
     }
 
     //state.disable(GL_MULTISAMPLE);
 
-    if (assets.useIMGUI) {
-        frameInit = std::make_unique<FrameInit>(*window);
-        frame = std::make_unique<EditorFrame>(*window);
+    if (m_assets.useIMGUI) {
+        m_frameInit = std::make_unique<FrameInit>(*m_window);
+        m_frame = std::make_unique<EditorFrame>(*m_window);
     }
 
     return 0;
 }
 
 int Test6::onRender(const ki::RenderClock& clock) {
-    auto* scene = currentScene.get();
-    Window* window = this->window.get();
+    auto* scene = m_currentScene.get();
+    Window* window = m_window.get();
 
     if (!scene) return 0;
 
@@ -59,14 +59,14 @@ int Test6::onRender(const ki::RenderClock& clock) {
     Camera* camera = scene->getCamera();
     if (!camera) return 0;
 
-    int w = window->width;
-    int h = window->height;
+    int w = window->m_width;
+    int h = window->m_height;
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
     RenderContext ctx("TOP", nullptr,
-        assets, clock, state, scene, *camera, m_backend.get(),
-        assets.nearPlane, assets.farPlane, w, h);
+        m_assets, clock, m_state, scene, *camera, m_backend.get(),
+        m_assets.nearPlane, m_assets.farPlane, w, h);
     //ctx.useWireframe = true;
     //ctx.useLight = false;
 
@@ -84,8 +84,8 @@ int Test6::onRender(const ki::RenderClock& clock) {
     ctx.state.enable(GL_PROGRAM_POINT_SIZE);
     glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
 
-    if (assets.useIMGUI) {
-        frame->bind(ctx);
+    if (m_assets.useIMGUI) {
+        m_frame->bind(ctx);
     }
 
     scene->processEvents(ctx);
@@ -94,32 +94,32 @@ int Test6::onRender(const ki::RenderClock& clock) {
     scene->draw(ctx);
     scene->unbind(ctx);
 
-    bool isCtrl = window->input->isModifierDown(Modifier::CONTROL);
-    bool isShift = window->input->isModifierDown(Modifier::SHIFT);
-    int state = glfwGetMouseButton(window->glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
+    bool isCtrl = window->m_input->isModifierDown(Modifier::CONTROL);
+    bool isShift = window->m_input->isModifierDown(Modifier::SHIFT);
+    int state = glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
-    if ((isCtrl && state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+    if ((isCtrl && state == GLFW_PRESS) && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         selectNode(ctx, isShift, isCtrl);
     }
 
-    if (assets.useIMGUI) {
+    if (m_assets.useIMGUI) {
         //ImGui::ShowDemoWindow();
 
-        frame->draw(ctx);
-        frame->render(ctx);
+        m_frame->draw(ctx);
+        m_frame->render(ctx);
     }
 
-    drawCount += ctx.drawCount;
-    skipCount += ctx.skipCount;
+    m_drawCount += ctx.drawCount;
+    m_skipCount += ctx.skipCount;
 
-    if (assets.frustumEnabled && assets.frustumDebug) {
-        frustumElapsedSecs += clock.elapsedSecs;
-        if (frustumElapsedSecs >= 10) {
-            frustumElapsedSecs -= 10;
-            auto ratio = (float)skipCount / (float)drawCount;
-            auto frameDraw = (float)drawCount / (float)clock.frameCount;
-            auto frameSkip = (float)skipCount / (float)clock.frameCount;
-            KI_INFO_SB(fmt::format("{} : total-frames: {}, total-draw: {}, total-skip: {}, ratio: {}", ctx.name, clock.frameCount, drawCount, skipCount, ratio));
+    if (m_assets.frustumEnabled && m_assets.frustumDebug) {
+        m_frustumElapsedSecs += clock.elapsedSecs;
+        if (m_frustumElapsedSecs >= 10) {
+            m_frustumElapsedSecs -= 10;
+            auto ratio = (float)m_skipCount / (float)m_drawCount;
+            auto frameDraw = (float)m_drawCount / (float)clock.frameCount;
+            auto frameSkip = (float)m_skipCount / (float)clock.frameCount;
+            KI_INFO_SB(fmt::format("{} : total-frames: {}, total-draw: {}, total-skip: {}, ratio: {}", ctx.name, clock.frameCount, m_drawCount, m_skipCount, ratio));
             KI_INFO_SB(fmt::format("{} : frame-draw: {}, frame-skip: {}", ctx.name, frameDraw, frameSkip));
         }
     }
@@ -137,7 +137,7 @@ void Test6::selectNode(
     bool isCtrl)
 {
     auto& registry = ctx.scene->m_registry;
-    int objectID = ctx.scene->getObjectID(ctx, window->input->mouseX, window->input->mouseY);
+    int objectID = ctx.scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
 
     auto* volumeNode = registry.getNode(ctx.assets.volumeUUID);
     auto* node = registry.getNode(objectID);
@@ -171,19 +171,19 @@ Assets Test6::loadAssets()
 
 std::shared_ptr<Scene> Test6::loadScene()
 {
-    auto scene = std::make_shared<Scene>(assets);
+    auto scene = std::make_shared<Scene>(m_assets);
 
-    asyncLoader->scene = scene;
+    m_asyncLoader->scene = scene;
 
-    file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_full.yml");
+    m_file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_full.yml");
     //file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_player.yml");
     //file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_origo.yml");
-    file->load(scene);
+    m_file->load(scene);
 
-    testSetup = std::make_unique<TestSceneSetup>(asyncLoader.get(), assets);
-    testSetup->setup(scene);
+    m_testSetup = std::make_unique<TestSceneSetup>(m_asyncLoader.get(), m_assets);
+    m_testSetup->setup(scene);
 
-    scene->prepare(shaders);
+    scene->prepare(m_shaders);
 
     return scene;
 }

@@ -22,9 +22,9 @@ void WaterMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_renderFrequency = assets.waterRenderFrequency;
 
     FrameBufferSpecification spec = {
-        assets.waterReflectionSize , 
-        assets.waterReflectionSize, 
-        { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() } 
+        assets.waterReflectionSize ,
+        assets.waterReflectionSize,
+        { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
     };
 
     reflectionBuffer = std::make_unique<TextureBuffer>(spec);
@@ -40,14 +40,14 @@ void WaterMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         glm::vec3(0.5, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        reflectionBuffer->spec.attachments[0].textureID,
+        reflectionBuffer->m_spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
 
     refractionDebugViewport = std::make_shared<Viewport>(
         glm::vec3(0.5, 0.0, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        refractionBuffer->spec.attachments[0].textureID,
+        refractionBuffer->m_spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
 
     reflectionDebugViewport->prepare(assets);
@@ -94,7 +94,7 @@ void WaterMapRenderer::render(
         camera.setZoom(ctx.camera.getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx("WATER_REFLECT", &ctx, camera, reflectionBuffer->spec.width, reflectionBuffer->spec.height);
+        RenderContext localCtx("WATER_REFLECT", &ctx, camera, reflectionBuffer->m_spec.width, reflectionBuffer->m_spec.height);
         localCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
@@ -120,7 +120,7 @@ void WaterMapRenderer::render(
         camera.setZoom(ctx.camera.getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx("WATER_REFRACT", &ctx, camera, refractionBuffer->spec.width, refractionBuffer->spec.height);
+        RenderContext localCtx("WATER_REFRACT", &ctx, camera, refractionBuffer->m_spec.width, refractionBuffer->m_spec.height);
         localCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];

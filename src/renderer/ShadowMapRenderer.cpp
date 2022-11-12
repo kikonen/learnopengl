@@ -49,12 +49,12 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     shadowBuffer->prepare(true, { 0, 0, 0, 1.0 });
 
     debugViewport = std::make_shared<Viewport>(
-        //glm::vec3(-1 + 0.01, 1 - 0.01, 0), 
+        //glm::vec3(-1 + 0.01, 1 - 0.01, 0),
         glm::vec3(0.5, -0.5, 0),
         glm::vec3(0, 0, 0),
-        glm::vec2(0.5f, 0.5f), 
-        shadowBuffer->spec.attachments[0].textureID, 
-        shadowDebugShader, 
+        glm::vec2(0.5f, 0.5f),
+        shadowBuffer->m_spec.attachments[0].textureID,
+        shadowDebugShader,
         [this, &assets](Viewport& vp) {
             shadowDebugShader->nearPlane.set(assets.shadowNearPlane);
             shadowDebugShader->farPlane.set(assets.shadowFarPlane);

@@ -5,7 +5,7 @@
 #include "glm/glm.hpp"
 
 FrameBuffer::FrameBuffer(const FrameBufferSpecification& spec)
-    : spec(spec)
+    : m_spec(spec)
 {
 }
 
@@ -15,7 +15,7 @@ FrameBuffer::~FrameBuffer()
 
     glDeleteFramebuffers(1, &m_fbo);
 
-    for (auto& att : spec.attachments) {
+    for (auto& att : m_spec.attachments) {
         if (att.textureID) {
             glDeleteTextures(1, &att.textureID);
         }
@@ -40,7 +40,7 @@ void FrameBuffer::prepare(
 
     int clearMask = 0;
 
-    for (auto& att : spec.attachments) {
+    for (auto& att : m_spec.attachments) {
         if (att.type == FrameBufferAttachmentType::texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
 
@@ -50,7 +50,7 @@ void FrameBuffer::prepare(
             glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrap);
             glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrap);
 
-            glTextureStorage2D(att.textureID, 1, att.internalFormat, spec.width, spec.height);
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
 
             glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
 
@@ -61,7 +61,7 @@ void FrameBuffer::prepare(
         else if (att.type == FrameBufferAttachmentType::rbo) {
             glGenRenderbuffers(1, &att.RBO);
             glBindRenderbuffer(GL_RENDERBUFFER, att.RBO);
-            glRenderbufferStorage(GL_RENDERBUFFER, att.internalFormat, spec.width, spec.height);
+            glRenderbufferStorage(GL_RENDERBUFFER, att.internalFormat, m_spec.width, m_spec.height);
 
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, att.attachment, GL_RENDERBUFFER, att.RBO);
             glBindRenderbuffer(GL_RENDERBUFFER, 0);
@@ -71,7 +71,7 @@ void FrameBuffer::prepare(
         else if (att.type == FrameBufferAttachmentType::depth_texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
 
-            glTextureStorage2D(att.textureID, 1, att.internalFormat, spec.width, spec.height);
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
 
             glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
             glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
@@ -112,7 +112,7 @@ void FrameBuffer::prepare(
 void FrameBuffer::bind(const RenderContext& ctx)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-    glViewport(0, 0, spec.width, spec.height);
+    glViewport(0, 0, m_spec.width, m_spec.height);
 }
 
 void FrameBuffer::unbind(const RenderContext& ctx)
@@ -126,5 +126,5 @@ void FrameBuffer::unbind(const RenderContext& ctx)
 
 void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex)
 {
-    ctx.state.bindTexture(unitIndex, spec.attachments[attachmentIndex].textureID);
+    ctx.state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID);
 }
