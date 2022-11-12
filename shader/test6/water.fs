@@ -77,29 +77,31 @@ void main() {
   if (material.dudvMapTex >= 0) {
     float moveFactor = (sin(u_time / 10.0) + 1.0) * 0.5;
 
-    //vec2 distortedTexCoord = texture(u_textures[material.dudvMapTex], vec2(fs_in.texCoord.x + moveFactor, fs_in.texCoord.y)).rg * 0.1;
-    //distortedTexCoord = fs_in.texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
-    //totalDistortion = (texture(u_textures[material.dudvMapTex], distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
+    distortedTexCoord = texture(u_textures[material.dudvMapTex], vec2(fs_in.texCoord.x + moveFactor, fs_in.texCoord.y)).rg * 0.1;
+    distortedTexCoord = fs_in.texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
+    distortedTexCoord = clamp(distortedTexCoord, 0.0, 1.0);
 
-    vec2 distortedTexCoord;
-    {
-      sampler2D sampler = sampler2D(u_texture_handles[material.dudvMapTex]);
-      distortedTexCoord = texture(sampler, vec2(fs_in.texCoord.x + moveFactor, fs_in.texCoord.y)).rg * 0.1;
-      distortedTexCoord = fs_in.texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
-      totalDistortion = (texture(sampler, distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
-    }
+    totalDistortion = (texture(u_textures[material.dudvMapTex], distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
+
+    // vec2 distortedTexCoord;
+    // {
+    //   sampler2D sampler = sampler2D(u_texture_handles[material.dudvMapTex]);
+    //   distortedTexCoord = texture(sampler, vec2(fs_in.texCoord.x + moveFactor, fs_in.texCoord.y)).rg * 0.1;
+    //   distortedTexCoord = fs_in.texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
+    //   totalDistortion = (texture(sampler, distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
+    // }
   }
 
 #ifdef USE_NORMAL_TEX
-  //vec3 normal = texture(u_textures[material.normalMapTex], distortedTexCoord).rgb;
-  vec3 normal;
-  {
-    sampler2D sampler = sampler2D(u_texture_handles[material.normalMapTex]);
-    normal = texture(sampler, distortedTexCoord).rgb;
+  vec3 normal = texture(u_textures[material.normalMapTex], distortedTexCoord).rgb;
+  // vec3 normal;
+  // {
+  //   sampler2D sampler = sampler2D(u_texture_handles[material.normalMapTex]);
+  //   normal = texture(sampler, distortedTexCoord).rgb;
 
-    normal = normal * 2.0 - 1.0;
-    normal = normalize(fs_in.TBN * normal);
-  }
+  //   normal = normal * 2.0 - 1.0;
+  //   normal = normalize(fs_in.TBN * normal);
+  // }
 #else
   vec3 normal = fs_in.normal;
 #endif

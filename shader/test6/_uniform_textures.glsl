@@ -6,5 +6,6 @@
 
 layout (binding = 6, std140) uniform Textures
 {
-  uvec2 u_texture_handles[TEX_COUNT];
+//  uvec2 u_texture_handles[TEX_COUNT];
+  sampler2D u_textures[TEX_COUNT];
 };
