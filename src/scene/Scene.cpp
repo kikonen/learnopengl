@@ -474,6 +474,9 @@ void Scene::prepareUBOs()
     }
     // Textures
     {
+        // OpenGL Superbible, 7th Edition, page 552
+        // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
+
         // https://www.geeks3d.com/20140704/tutorial-introduction-to-opengl-4-3-shader-storage-buffers-objects-ssbo-demo/        //glGenBuffers(1, &ssbo);
         //glGenBuffers(1, &m_ubo.textures);
         //glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ubo.textures);
@@ -483,9 +486,17 @@ void Scene::prepareUBOs()
         int sz = sizeof(TexturesUBO);
 
         glCreateBuffers(1, &m_ubo.textures);
-        glNamedBufferStorage(m_ubo.textures, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glNamedBufferStorage(m_ubo.textures, sz, nullptr, GL_MAP_WRITE_BIT);
 
         glBindBufferRange(GL_UNIFORM_BUFFER, UBO_TEXTURES, m_ubo.textures, 0, sz);
         m_ubo.texturesSize = sz;
+
+        m_textureHandles = (TextureUBO*)glMapNamedBufferRange(
+            m_ubo.textures,
+            0,
+            sz,
+            GL_MAP_WRITE_BIT |
+            GL_MAP_FLUSH_EXPLICIT_BIT |
+            GL_MAP_INVALIDATE_RANGE_BIT);
     }
 }

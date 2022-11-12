@@ -77,7 +77,9 @@ public:
     ScriptEngine m_scriptEngine;
 
     Batch m_batch;
-    TexturesUBO m_textures;
+    //TexturesUBO m_textures;
+    TextureUBO* m_textureHandles = nullptr;
+    int m_texturesLevel = -1;
 
 protected:
 

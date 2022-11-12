@@ -27,8 +27,6 @@ in VS_OUT {
   mat3 TBN;
 } fs_in;
 
-//uniform sampler2D u_textures[TEX_COUNT];
-
 uniform sampler2D u_reflectionTex;
 
 uniform sampler2DShadow u_shadowMap;

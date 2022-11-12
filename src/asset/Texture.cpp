@@ -49,6 +49,7 @@ namespace {
 
 GLuint Texture::nextIndex()
 {
+    assert(indexBase - 1 < MAX_TEXTURE_COUNT);
     return indexBase++;
 }
 

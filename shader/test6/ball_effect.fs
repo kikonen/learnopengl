@@ -23,7 +23,6 @@ in VS_OUT {
 
 layout (location = 0) out vec4 fragColor;
 
-//uniform sampler2D u_textures[TEX_COUNT];
 uniform sampler2DShadow u_shadowMap;
 
 int iChannel0;
@@ -41,11 +40,6 @@ precision lowp float;
 #include fn_calculate_point_light.glsl
 #include fn_calculate_spot_light.glsl
 #include fn_calculate_light.glsl
-
-//vec3 textureLod(int textureIndex, vec2 texCoord, float dummy)
-//{
-//  return texture(u_textures[textureIndex], texCoord);
-//}
 
 #ifdef EFFECT_SUN
   #include effect_sun.glsl

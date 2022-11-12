@@ -318,7 +318,7 @@ void Shader::setInt(const std::string& name, int value) noexcept
 
 void Shader::setupUBO(
     const std::string& name,
-    unsigned int UBO,
+    unsigned int ubo,
     unsigned int expectedSize) noexcept
 {
     unsigned int blockIndex = glGetUniformBlockIndex(m_programId, name.c_str());
@@ -326,7 +326,7 @@ void Shader::setupUBO(
         KI_WARN_SB("SHADER::MISSING_UBO " << m_shaderName << " UBO=" << name);
         return;
     }
-    glUniformBlockBinding(m_programId, blockIndex, UBO);
+    glUniformBlockBinding(m_programId, blockIndex, ubo);
 
     GLint blockSize;
     glGetActiveUniformBlockiv(m_programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
@@ -391,7 +391,6 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
 
             if (k == "#version") {
                 lines.push_back(line);
-                //lines.push_back("#extension GL_ARB_bindless_texture : require");
                 appendDefines(lines);
                 for (auto& l : processInclude(INC_GLOBALS, lineNumber)) {
                     lines.push_back(l);

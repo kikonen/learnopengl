@@ -32,8 +32,6 @@ in VS_OUT {
 #endif
 } fs_in;
 
-//uniform sampler2D u_textures[TEX_COUNT];
-
 uniform samplerCube u_cubeMap;
 uniform sampler2DShadow u_shadowMap;
 
@@ -60,13 +58,7 @@ void main() {
     discard;
 #endif
 
-#ifdef USE_NORMAL_TEX
-  vec3 normal = texture(u_textures[material.normalMapTex], fs_in.texCoord).rgb;
-  normal = normal * 2.0 - 1.0;
-  normal = normalize(fs_in.TBN * normal);
-#else
-  vec3 normal = fs_in.normal;
-#endif
+  #include var_tex_material_normal.glsl
 
 #ifdef USE_NORMAL_PATTERN
   if (material.pattern == 1) {

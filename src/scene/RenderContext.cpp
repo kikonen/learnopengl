@@ -232,19 +232,38 @@ void RenderContext::bindLightsUBO() const
 
 void RenderContext::bindTexturesUBO() const
 {
-    TexturesUBO texturesUbo;
-    memset(&texturesUbo.textures, 0, sizeof(texturesUbo.textures));
+    if (false) {
+        //TexturesUBO texturesUbo;
+        //memset(&texturesUbo.textures, 0, sizeof(texturesUbo.textures));
 
-    for (const auto& texture : ImageTexture::getPreparedTextures()) {
-        texturesUbo.textures[texture->m_texIndex * 2] = texture->m_handle;
+        //for (const auto& texture : ImageTexture::getPreparedTextures()) {
+        //    texturesUbo.textures[texture->m_texIndex * 2] = texture->m_handle;
+        //}
+
+        ////glBindBuffer(GL_SHADER_STORAGE_BUFFER, scene->m_ubo.textures);
+        ////GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+        ////memcpy(p, &scene->m_textures, sizeof(TexturesUBO));
+        ////glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+        //glNamedBufferSubData(scene->m_ubo.textures, 0, sizeof(TexturesUBO), &texturesUbo);
     }
+    else {
+        // OpenGL Superbible, 7th Edition, page 552
+        // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
+        auto [level, textures] = ImageTexture::getPreparedTextures();
+        if (level != scene->m_texturesLevel && !textures.empty()) {
+            scene->m_texturesLevel = level;
 
-    //glBindBuffer(GL_SHADER_STORAGE_BUFFER, scene->m_ubo.textures);
-    //GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-    //memcpy(p, &scene->m_textures, sizeof(TexturesUBO));
-    //glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+            int maxIndex = 0;
+            for (const auto& texture : textures) {
+                int idx = texture->m_texIndex;
+                scene->m_textureHandles[idx].handle = texture->m_handle;
+                if (idx > maxIndex) maxIndex = idx;
+            }
 
-    glNamedBufferSubData(scene->m_ubo.textures, 0, sizeof(TexturesUBO), &texturesUbo);
+            glFlushMappedNamedBufferRange(scene->m_ubo.textures, 0, (maxIndex + 1) * sizeof(TextureUBO));
+        }
+    }
 }
 
 void RenderContext::updateFrustum()

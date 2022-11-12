@@ -25,8 +25,6 @@ in VS_OUT {
 
 uniform sampler2DShadow u_shadowMap;
 
-//uniform sampler2D u_textures[TEX_COUNT];
-
 layout (location = 0) out vec4 fragColor;
 
 ////////////////////////////////////////////////////////////

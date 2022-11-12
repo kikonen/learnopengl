@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "ki/GL.h"
+
 // https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
 
 
@@ -36,8 +38,8 @@ constexpr unsigned int MAX_LIGHT_COUNT = 8;
 constexpr unsigned int LIGHT_COUNT = MAX_LIGHT_COUNT;
 
 // MAX textures used in shader
-constexpr unsigned int MIN_TEXTURE_COUNT = 32;
-constexpr unsigned int MAX_TEXTURE_COUNT = 32;
+constexpr unsigned int MIN_TEXTURE_COUNT = 256;
+constexpr unsigned int MAX_TEXTURE_COUNT = 256;
 constexpr unsigned int TEXTURE_COUNT = MAX_TEXTURE_COUNT;
 
 constexpr unsigned int MIN_CLIP_PLANE_COUNT = 2;
@@ -55,7 +57,7 @@ constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_UNIT_COU
 #define ASSERT_TEX_UNIT(unitIndex) assert(unitIndex >= FIRST_TEXTURE_UNIT && unitIndex <= LAST_TEXTURE_UNIT)
 
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
 struct MatricesUBO {
     glm::mat4 projected;
     glm::mat4 projection;
@@ -64,7 +66,7 @@ struct MatricesUBO {
     glm::mat4 shadow;
 };
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
 struct DataUBO {
     glm::vec3 u_viewPos;
     float u_time;
@@ -81,7 +83,7 @@ struct DataUBO {
     int pad4;
 };
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
 struct DirLightUBO {
     glm::vec3 pos;
     int pad1;
@@ -92,7 +94,7 @@ struct DirLightUBO {
     glm::vec4 specular;
 };
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
 struct PointLightUBO {
     glm::vec3 pos;
     int pad1;
@@ -107,7 +109,7 @@ struct PointLightUBO {
     float radius;
 };
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
 struct SpotLightUBO {
     glm::vec3 pos;
     int pad1;
@@ -129,7 +131,7 @@ struct SpotLightUBO {
     int pad4;
 };
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
 struct LightsUBO {
     unsigned int dirCount;
     unsigned int pointCount;
@@ -137,11 +139,13 @@ struct LightsUBO {
     int pad1;
 
     DirLightUBO dir[1];
+    // NOTE KI align 16 for UBO array entries
     PointLightUBO pointLights[LIGHT_COUNT];
+    // NOTE KI align 16 for UBO array entries
     SpotLightUBO spotLights[LIGHT_COUNT];
 };
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
 struct MaterialUBO {
     glm::vec4 ambient;
     glm::vec4 diffuse;
@@ -169,16 +173,18 @@ struct MaterialUBO {
     //int pad1;
 };
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
 struct MaterialsUBO {
+    // NOTE KI align 16 for UBO array entries
     MaterialUBO materials[MATERIAL_COUNT];
 };
 
 struct MaterialsUBOSingle {
+    // NOTE KI align 16 for UBO array entries
     MaterialUBO materials[1];
 };
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
 struct ClipPlaneUBO {
     glm::vec4 plane;
     bool enabled;
@@ -188,8 +194,9 @@ struct ClipPlaneUBO {
     int pad3;
 };
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
 struct ClipPlanesUBO {
+    // NOTE KI align 16 for UBO array entries
     ClipPlaneUBO clipping[CLIP_PLANE_COUNT];
     int clipCount;
 
@@ -198,7 +205,15 @@ struct ClipPlanesUBO {
     int pad3;
 };
 
-// NOTE KI align 16
+// NOTE KI align 16 for UBO struct
+struct TextureUBO {
+    GLuint64 handle;
+    int pad1;
+    int pad2;
+};
+
+// NOTE KI align 16 for UBO struct
 struct TexturesUBO {
-    unsigned __int64 textures[TEXTURE_COUNT * 2];
+    // NOTE KI align 16 for array entries
+    TextureUBO textures[TEXTURE_COUNT];
 };

@@ -22,7 +22,6 @@ namespace {
         ki::VEC10 normal;
         ki::VEC10 tangent;
         ki::UV16 texCoords;
-        unsigned int pad1;
     };
 #pragma pack(pop)
 }
