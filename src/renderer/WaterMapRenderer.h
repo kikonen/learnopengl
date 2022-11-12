@@ -34,15 +34,15 @@ private:
     Water* findClosest(const RenderContext& ctx, const NodeRegistry& registry);
 
 public:
-    std::shared_ptr<Viewport> reflectionDebugViewport;
-    std::shared_ptr<Viewport> refractionDebugViewport;
+    std::shared_ptr<Viewport> m_reflectionDebugViewport;
+    std::shared_ptr<Viewport> m_refractionDebugViewport;
 
 private:
-    float nearPlane{ 0.1f };
-    float farPlane{ 1000.0f };
+    float m_nearPlane{ 0.1f };
+    float m_farPlane{ 1000.0f };
 
-    std::unique_ptr<TextureBuffer> reflectionBuffer{ nullptr };
-    std::unique_ptr<TextureBuffer> refractionBuffer{ nullptr };
+    std::unique_ptr<TextureBuffer> m_reflectionBuffer{ nullptr };
+    std::unique_ptr<TextureBuffer> m_refractionBuffer{ nullptr };
 
-    unsigned int noiseTextureID{ 0 };
+    unsigned int m_noiseTextureID{ 0 };
 };

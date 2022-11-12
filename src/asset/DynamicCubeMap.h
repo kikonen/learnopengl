@@ -19,16 +19,16 @@ public:
     void unbind(const RenderContext& ctx);
 
 public:
-    const int size;
+    const int m_size;
 
-    unsigned int textureID = 0;
+    unsigned int m_textureID = 0;
 
-    bool valid = false;
+    bool m_valid = false;
 
 private:
     bool m_prepared = false;
 
-    unsigned int FBO = 0;
-    unsigned int depthBuffer = 0;
+    unsigned int m_fbo = 0;
+    unsigned int m_depthBuffer = 0;
 };
 

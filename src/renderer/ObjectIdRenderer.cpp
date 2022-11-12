@@ -87,7 +87,7 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_idShaderSprite = shaders.getShader(assets, TEX_OBJECT_ID_SPRITE, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1"} });
     m_idShaderSprite->prepare(assets);
 
-    debugViewport = std::make_shared<Viewport>(
+    m_debugViewport = std::make_shared<Viewport>(
         glm::vec3(-1.0, 1.0, 0),
         //glm::vec3(0.5, -0.5, 0),
         glm::vec3(0, 0, 0),
@@ -95,7 +95,7 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         0,
         shaders.getShader(assets, TEX_VIEWPORT));
 
-    debugViewport->prepare(assets);
+    m_debugViewport->prepare(assets);
 }
 
 void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
@@ -117,7 +117,7 @@ void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
     m_idBuffer.reset(buffer);
     m_idBuffer->prepare(true, { 0, 0, 0, 0.5 });
 
-    debugViewport->setTextureID(m_idBuffer->m_spec.attachments[0].textureID);
+    m_debugViewport->setTextureID(m_idBuffer->m_spec.attachments[0].textureID);
 }
 
 void ObjectIdRenderer::render(

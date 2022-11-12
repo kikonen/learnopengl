@@ -24,7 +24,7 @@ private:
     void drawNodes(const RenderContext& ctx, const NodeRegistry& registry);
 
 public:
-    std::shared_ptr<Viewport> debugViewport;
+    std::shared_ptr<Viewport> m_debugViewport;
 
 private:
     Shader* m_idShader{ nullptr };

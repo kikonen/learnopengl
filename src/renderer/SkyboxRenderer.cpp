@@ -9,7 +9,7 @@ const int ATTR_SKYBOX_POS = 0;
 
 
 const float skyboxVertices[] = {
-    // positions          
+    // positions
     -1.0f,  1.0f, -1.0f,
     -1.0f, -1.0f, -1.0f,
      1.0f, -1.0f, -1.0f,

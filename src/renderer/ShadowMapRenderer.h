@@ -27,13 +27,13 @@ private:
     void drawNodes(const RenderContext& ctx, const NodeRegistry& registry);
 
 public:
-    std::unique_ptr<ShadowBuffer> shadowBuffer{ nullptr };
+    std::unique_ptr<ShadowBuffer> m_shadowBuffer{ nullptr };
 
-    std::shared_ptr<Viewport> debugViewport;
+    std::shared_ptr<Viewport> m_debugViewport;
 
 private:
-    Shader* solidShadowShader{ nullptr };
-    Shader* blendedShadowShader{ nullptr };
-    Shader* shadowDebugShader{ nullptr };
+    Shader* m_solidShadowShader{ nullptr };
+    Shader* m_blendedShadowShader{ nullptr };
+    Shader* m_shadowDebugShader{ nullptr };
 };
 

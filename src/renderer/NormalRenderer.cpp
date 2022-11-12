@@ -13,8 +13,8 @@ void NormalRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     Renderer::prepare(assets, shaders);
 
-    normalShader = shaders.getShader(assets, TEX_NORMAL);
-    normalShader->prepare(assets);
+    m_normalShader = shaders.getShader(assets, TEX_NORMAL);
+    m_normalShader->prepare(assets);
 }
 
 void NormalRenderer::render(
@@ -26,7 +26,7 @@ void NormalRenderer::render(
 
 void NormalRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    ShaderBind bound(normalShader);
+    ShaderBind bound(m_normalShader);
 
     auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
         for (const auto& it : typeMap) {

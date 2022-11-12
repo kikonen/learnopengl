@@ -28,12 +28,12 @@ private:
     Node* findClosest(const RenderContext& ctx, const NodeRegistry& registry);
 
 public:
-    std::shared_ptr<Viewport> debugViewport;
+    std::shared_ptr<Viewport> m_debugViewport;
 
 private:
-    float nearPlane = 0.1f;
-    float farPlane = 1000.0f;
+    float m_nearPlane = 0.1f;
+    float m_farPlane = 1000.0f;
 
-    std::unique_ptr<TextureBuffer> prev{ nullptr };
-    std::unique_ptr<TextureBuffer> curr{ nullptr };
+    std::unique_ptr<TextureBuffer> m_prev{ nullptr };
+    std::unique_ptr<TextureBuffer> m_curr{ nullptr };
 };

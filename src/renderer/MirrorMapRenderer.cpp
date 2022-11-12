@@ -33,26 +33,26 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
     };
 
-    prev = std::make_unique<TextureBuffer>(spec);
-    curr = std::make_unique<TextureBuffer>(spec);
+    m_prev = std::make_unique<TextureBuffer>(spec);
+    m_curr = std::make_unique<TextureBuffer>(spec);
 
-    prev->prepare(true, DEBUG_COLOR[0]);
-    curr->prepare(true, DEBUG_COLOR[1]);
+    m_prev->prepare(true, DEBUG_COLOR[0]);
+    m_curr->prepare(true, DEBUG_COLOR[1]);
 
-    debugViewport = std::make_shared<Viewport>(
+    m_debugViewport = std::make_shared<Viewport>(
         glm::vec3(-1.0, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        prev->m_spec.attachments[0].textureID,
+        m_prev->m_spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
 
-    debugViewport->prepare(assets);
-    debugViewport->prepare(assets);
+    m_debugViewport->prepare(assets);
+    m_debugViewport->prepare(assets);
 }
 
 void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
 {
-    prev->bindTexture(ctx, 0, ctx.assets.mirrorReflectionMapUnitIndex);
+    m_prev->bindTexture(ctx, 0, ctx.assets.mirrorReflectionMapUnitIndex);
 }
 
 void MirrorMapRenderer::render(
@@ -101,7 +101,7 @@ void MirrorMapRenderer::render(
         RenderContext localCtx("MIRROR",
             &ctx, camera,
             dist, ctx.assets.farPlane,
-            curr->m_spec.width, curr->m_spec.height);
+            m_curr->m_spec.width, m_curr->m_spec.height);
         localCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
@@ -110,16 +110,16 @@ void MirrorMapRenderer::render(
 
         localCtx.bindMatricesUBO();
 
-        curr->bind(localCtx);
+        m_curr->bind(localCtx);
 
         bindTexture(localCtx);
         drawNodes(localCtx, registry, skybox, closest);
 
-        curr->unbind(ctx);
+        m_curr->unbind(ctx);
         ctx.bindClipPlanesUBO();
     }
 
-    prev.swap(curr);
+    m_prev.swap(m_curr);
 
     ctx.bindMatricesUBO();
 

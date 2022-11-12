@@ -4,25 +4,25 @@
 
 
 DynamicCubeMap::DynamicCubeMap(int size)
-    : size(size)
+    : m_size(size)
 {
 }
 
 DynamicCubeMap::~DynamicCubeMap()
 {
-    glDeleteRenderbuffers(1, &depthBuffer);
-    glDeleteFramebuffers(1, &FBO);
+    glDeleteRenderbuffers(1, &m_depthBuffer);
+    glDeleteFramebuffers(1, &m_fbo);
 }
 
 void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
 {
-    ctx.state.bindTexture(unitIndex, textureID);
+    ctx.state.bindTexture(unitIndex, m_textureID);
 }
 
 void DynamicCubeMap::bind(const RenderContext& ctx)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-    glViewport(0, 0, size, size);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+    glViewport(0, 0, m_size, m_size);
 }
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)
@@ -45,16 +45,16 @@ void DynamicCubeMap::prepare(
     int clearMask = 0;
 
     {
-        glGenFramebuffers(1, &FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+        glGenFramebuffers(1, &m_fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
         clearMask |= GL_COLOR_BUFFER_BIT;
     }
 
     {
-        glGenRenderbuffers(1, &depthBuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, size, size);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+        glGenRenderbuffers(1, &m_depthBuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_size, m_size);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
         clearMask |= GL_DEPTH_BUFFER_BIT;
     }
 
@@ -71,6 +71,6 @@ void DynamicCubeMap::prepare(
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    textureID = CubeMap::createEmpty(size);
-    valid = true;
+    m_textureID = CubeMap::createEmpty(m_size);
+    m_valid = true;
 }

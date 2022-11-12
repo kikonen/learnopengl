@@ -27,41 +27,41 @@ void WaterMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
     };
 
-    reflectionBuffer = std::make_unique<TextureBuffer>(spec);
-    refractionBuffer = std::make_unique<TextureBuffer>(spec);
+    m_reflectionBuffer = std::make_unique<TextureBuffer>(spec);
+    m_refractionBuffer = std::make_unique<TextureBuffer>(spec);
 
-    reflectionBuffer->prepare(true, { 0, 0, 0, 1.0 });
-    refractionBuffer->prepare(true, { 0, 0, 0, 1.0 });
+    m_reflectionBuffer->prepare(true, { 0, 0, 0, 1.0 });
+    m_refractionBuffer->prepare(true, { 0, 0, 0, 1.0 });
 
     //WaterNoiseGenerator generator;
     //noiseTextureID = generator.generate();
 
-    reflectionDebugViewport = std::make_shared<Viewport>(
+    m_reflectionDebugViewport = std::make_shared<Viewport>(
         glm::vec3(0.5, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        reflectionBuffer->m_spec.attachments[0].textureID,
+        m_reflectionBuffer->m_spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
 
-    refractionDebugViewport = std::make_shared<Viewport>(
+    m_refractionDebugViewport = std::make_shared<Viewport>(
         glm::vec3(0.5, 0.0, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        refractionBuffer->m_spec.attachments[0].textureID,
+        m_refractionBuffer->m_spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
 
-    reflectionDebugViewport->prepare(assets);
-    refractionDebugViewport->prepare(assets);
+    m_reflectionDebugViewport->prepare(assets);
+    m_refractionDebugViewport->prepare(assets);
 }
 
 void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 {
     if (!rendered) return;
 
-    reflectionBuffer->bindTexture(ctx, 0, ctx.assets.waterReflectionMapUnitIndex);
-    refractionBuffer->bindTexture(ctx, 0, ctx.assets.waterRefractionMapUnitIndex);
-    if (noiseTextureID > 0) {
-        ctx.state.bindTexture(ctx.assets.noiseUnitIndex, noiseTextureID);
+    m_reflectionBuffer->bindTexture(ctx, 0, ctx.assets.waterReflectionMapUnitIndex);
+    m_refractionBuffer->bindTexture(ctx, 0, ctx.assets.waterRefractionMapUnitIndex);
+    if (m_noiseTextureID > 0) {
+        ctx.state.bindTexture(ctx.assets.noiseUnitIndex, m_noiseTextureID);
     }
 }
 
@@ -94,7 +94,7 @@ void WaterMapRenderer::render(
         camera.setZoom(ctx.camera.getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx("WATER_REFLECT", &ctx, camera, reflectionBuffer->m_spec.width, reflectionBuffer->m_spec.height);
+        RenderContext localCtx("WATER_REFLECT", &ctx, camera, m_reflectionBuffer->m_spec.width, m_reflectionBuffer->m_spec.height);
         localCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
@@ -103,11 +103,11 @@ void WaterMapRenderer::render(
 
         localCtx.bindMatricesUBO();
 
-        reflectionBuffer->bind(localCtx);
+        m_reflectionBuffer->bind(localCtx);
 
         drawNodes(localCtx, registry, skybox, closest, true);
 
-        reflectionBuffer->unbind(ctx);
+        m_reflectionBuffer->unbind(ctx);
         ctx.bindClipPlanesUBO();
     }
 
@@ -120,7 +120,7 @@ void WaterMapRenderer::render(
         camera.setZoom(ctx.camera.getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx("WATER_REFRACT", &ctx, camera, refractionBuffer->m_spec.width, refractionBuffer->m_spec.height);
+        RenderContext localCtx("WATER_REFRACT", &ctx, camera, m_refractionBuffer->m_spec.width, m_refractionBuffer->m_spec.height);
         localCtx.matrices.lightProjected = ctx.matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
@@ -129,11 +129,11 @@ void WaterMapRenderer::render(
 
         localCtx.bindMatricesUBO();
 
-        refractionBuffer->bind(localCtx);
+        m_refractionBuffer->bind(localCtx);
 
         drawNodes(localCtx, registry, skybox, closest, false);
 
-        refractionBuffer->unbind(ctx);
+        m_refractionBuffer->unbind(ctx);
         ctx.bindClipPlanesUBO();
     }
 

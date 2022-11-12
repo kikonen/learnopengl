@@ -33,34 +33,34 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     m_renderFrequency = assets.shadowRenderFrequency;
 
-    solidShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
-    blendedShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
-    shadowDebugShader = shaders.getShader(assets, TEX_DEBUG_DEPTH);
+    m_solidShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
+    m_blendedShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
+    m_shadowDebugShader = shaders.getShader(assets, TEX_DEBUG_DEPTH);
 
-    solidShadowShader->prepare(assets);
-    blendedShadowShader->prepare(assets);
-    shadowDebugShader->prepare(assets);
+    m_solidShadowShader->prepare(assets);
+    m_blendedShadowShader->prepare(assets);
+    m_shadowDebugShader->prepare(assets);
 
     auto buffer = new ShadowBuffer({
         assets.shadowMapSize, assets.shadowMapSize,
         { FrameBufferAttachment::getDepthTexture() } });
 
-    shadowBuffer.reset(buffer);
-    shadowBuffer->prepare(true, { 0, 0, 0, 1.0 });
+    m_shadowBuffer.reset(buffer);
+    m_shadowBuffer->prepare(true, { 0, 0, 0, 1.0 });
 
-    debugViewport = std::make_shared<Viewport>(
+    m_debugViewport = std::make_shared<Viewport>(
         //glm::vec3(-1 + 0.01, 1 - 0.01, 0),
         glm::vec3(0.5, -0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        shadowBuffer->m_spec.attachments[0].textureID,
-        shadowDebugShader,
+        m_shadowBuffer->m_spec.attachments[0].textureID,
+        m_shadowDebugShader,
         [this, &assets](Viewport& vp) {
-            shadowDebugShader->nearPlane.set(assets.shadowNearPlane);
-            shadowDebugShader->farPlane.set(assets.shadowFarPlane);
+            m_shadowDebugShader->nearPlane.set(assets.shadowNearPlane);
+            m_shadowDebugShader->farPlane.set(assets.shadowFarPlane);
         });
 
-    debugViewport->prepare(assets);
+    m_debugViewport->prepare(assets);
 }
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
@@ -87,7 +87,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 {
     if (!rendered) return;
-    shadowBuffer->bindTexture(ctx, 0, ctx.assets.shadowMapUnitIndex);
+    m_shadowBuffer->bindTexture(ctx, 0, ctx.assets.shadowMapUnitIndex);
 }
 
 void ShadowMapRenderer::render(
@@ -97,7 +97,7 @@ void ShadowMapRenderer::render(
     if (!needRender(ctx)) return;
 
     {
-        shadowBuffer->bind(ctx);
+        m_shadowBuffer->bind(ctx);
 
         // NOTE KI *NO* color in shadowmap
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -108,7 +108,7 @@ void ShadowMapRenderer::render(
         ctx.useFrustum = true;
         ctx.shadow = false;
 
-        shadowBuffer->unbind(ctx);
+        m_shadowBuffer->unbind(ctx);
     }
 
     rendered = true;
@@ -139,7 +139,7 @@ void ShadowMapRenderer::drawNodes(
     };
 
     {
-        ShaderBind bound(solidShadowShader);
+        ShaderBind bound(m_solidShadowShader);
 
         for (const auto& all : registry.solidNodes) {
             renderTypes(all.second, bound);
@@ -147,7 +147,7 @@ void ShadowMapRenderer::drawNodes(
     }
 
     {
-        ShaderBind bound(blendedShadowShader);
+        ShaderBind bound(m_blendedShadowShader);
 
         for (const auto& all : registry.alphaNodes) {
             renderTypes(all.second, bound);

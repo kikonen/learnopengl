@@ -103,7 +103,7 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     if (assets.showObjectIDView) {
         if (m_objectIdRenderer) {
-            m_registry.addViewPort(m_objectIdRenderer->debugViewport);
+            m_registry.addViewPort(m_objectIdRenderer->m_debugViewport);
         }
     }
 
@@ -121,20 +121,20 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     if (assets.showShadowMapView) {
         if (m_shadowMapRenderer) {
-            m_registry.addViewPort(m_shadowMapRenderer->debugViewport);
+            m_registry.addViewPort(m_shadowMapRenderer->m_debugViewport);
         }
     }
     if (assets.showReflectionView) {
         if (m_waterMapRenderer) {
-            m_registry.addViewPort(m_waterMapRenderer->reflectionDebugViewport);
+            m_registry.addViewPort(m_waterMapRenderer->m_reflectionDebugViewport);
         }
         if (m_mirrorMapRenderer) {
-            m_registry.addViewPort(m_mirrorMapRenderer->debugViewport);
+            m_registry.addViewPort(m_mirrorMapRenderer->m_debugViewport);
         }
     }
     if (assets.showRefractionView) {
         if (m_waterMapRenderer) {
-            m_registry.addViewPort(m_waterMapRenderer->refractionDebugViewport);
+            m_registry.addViewPort(m_waterMapRenderer->m_refractionDebugViewport);
         }
     }
 }

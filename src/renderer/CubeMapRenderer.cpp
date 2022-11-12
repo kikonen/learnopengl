@@ -10,7 +10,7 @@ namespace {
     // -X (left)
     // +Y (top)
     // -Y (bottom)
-    // +Z (front) 
+    // +Z (front)
     // -Z (back)
     const glm::vec3 CAMERA_FRONT[6] = {
         {  1,  0,  0 },
@@ -98,7 +98,7 @@ void CubeMapRenderer::render(
     for (int i = 0; i < 6; i++) {
         glFramebufferTexture2D(
             GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, curr->textureID, 0);
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, curr->m_textureID, 0);
 
         if (mainCtx.assets.clearColor) {
             if (mainCtx.assets.debugClearColor) {
@@ -119,7 +119,7 @@ void CubeMapRenderer::render(
         RenderContext ctx("CUBE",
             &mainCtx, camera,
             nearPlane, mainCtx.assets.cubeMapFarPlane,
-            curr->size, curr->size);
+            curr->m_size, curr->m_size);
         bindTexture(ctx);
         ctx.matrices.lightProjected = mainCtx.matrices.lightProjected;
         ctx.bindMatricesUBO();
@@ -145,7 +145,7 @@ void CubeMapRenderer::clearCubeMap(
     for (int i = 0; i < 6; i++) {
         glFramebufferTexture2D(
             GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cube.textureID, 0);
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cube.m_textureID, 0);
 
         auto c = color;
         if (debug) c = DEBUG_COLOR[i];
