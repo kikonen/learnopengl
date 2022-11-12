@@ -27,9 +27,9 @@ namespace {
         // = *COULD* be related old "disappearing" materials issues?!?
         unsigned int material;
         glm::vec3 pos;
-        KI_VEC10 normal;
-        KI_VEC10 tangent;
-        KI_UV16 texCoords;
+        ki::VEC10 normal;
+        ki::VEC10 tangent;
+        ki::UV16 texCoords;
     };
 #pragma pack(pop)
 }
@@ -91,36 +91,14 @@ void QuadMesh::prepareMaterials(const Assets& assets)
     {
         Material& material = m_material;
 
-        unsigned int texCount = 0;
         material.materialIndex = 0;
 
         material.prepare(assets);
 
         for (auto& tex : material.textures) {
             if (!tex.texture) continue;
-            tex.texIndex = texCount++;
+            tex.m_texIndex = tex.texture->m_texIndex;
             m_textureIDs.push_back(tex.texture->textureID);
-        }
-
-        // NOTE KI second iteration to set unitIndex after texCount
-        std::map<GLuint, bool> assignedUnits;
-        std::map<GLuint, bool> assignedTextures;
-        int unitIndex = 0;
-        for (auto& tex : material.textures) {
-            if (!tex.texture) continue;
-            if (tex.texture->unitIndex < 0) {
-                tex.texture->unitIndex = Texture::nextUnitIndex();
-            }
-            tex.unitIndex = tex.texture->unitIndex;
-
-            if (assignedTextures[tex.texture->textureID]) continue;
-
-            // NOTE KI conflict resolution if random conflict happens
-            while (assignedUnits[tex.unitIndex] == true) {
-                tex.unitIndex = unitIndex++;
-            }
-            assignedUnits[tex.unitIndex] = true;
-            assignedTextures[tex.texture->textureID] = true;
         }
     }
 
@@ -150,6 +128,7 @@ void QuadMesh::prepareVBO(MeshBuffers& curr)
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     constexpr int stride_size = sizeof(TexVBO);
     void* vboBuffer = new unsigned char[stride_size * 4];
+    memset(vboBuffer, 0, stride_size * 4);
 
     {
         constexpr int row_size = 12;// sizeof(VERTICES) / 4;
@@ -162,21 +141,21 @@ void QuadMesh::prepareVBO(MeshBuffers& curr)
             vbo->pos.y = VERTICES[base++];
             vbo->pos.z = VERTICES[base++];
 
-            vbo->normal.x = (int)(VERTICES[base++] * SCALE_VEC10);
-            vbo->normal.y = (int)(VERTICES[base++] * SCALE_VEC10);
-            vbo->normal.z = (int)(VERTICES[base++] * SCALE_VEC10);
+            vbo->normal.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+            vbo->normal.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+            vbo->normal.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
             vbo->normal.not_used = 0;
 
-            vbo->tangent.x = (int)(VERTICES[base++] * SCALE_VEC10);
-            vbo->tangent.y = (int)(VERTICES[base++] * SCALE_VEC10);
-            vbo->tangent.z = (int)(VERTICES[base++] * SCALE_VEC10);
+            vbo->tangent.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+            vbo->tangent.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+            vbo->tangent.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
             vbo->tangent.not_used = 0;
 
             // NOTE KI hardcoded single material
             vbo->material = VERTICES[base++];
 
-            vbo->texCoords.u = (int)(VERTICES[base++] * SCALE_UV16);
-            vbo->texCoords.v = (int)(VERTICES[base++] * SCALE_UV16);
+            vbo->texCoords.u = (int)(VERTICES[base++] * ki::SCALE_UV16);
+            vbo->texCoords.v = (int)(VERTICES[base++] * ki::SCALE_UV16);
 
             vbo++;
         }

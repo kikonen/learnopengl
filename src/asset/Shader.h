@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glad/glad.h>
-
 #include <map>
 #include <vector>
 #include <string>
@@ -74,8 +72,6 @@ constexpr int ATTR_INSTANCE_OBJECT_ID = 13;
 
 const std::string GEOM_NONE{ "" };
 
-struct TextureInfo;
-
 
 class Shader final
 {
@@ -133,7 +129,7 @@ private:
     std::vector<std::string> processInclude(const std::string& includePath, int lineNumber);
 
     //void prepareTextureUniform();
-    void prepareTextureUniforms();
+    //void prepareTextureUniforms();
 
     GLint getUniformLoc(const std::string& name);
 
@@ -346,7 +342,7 @@ public:
 
     Shader::Int viewportTex{ "u_viewportTex" };
 
-    std::vector<Shader::Int> textures;
+    //std::vector<Shader::Int> textures;
 
 private:
     int m_prepareResult = -1;

@@ -85,6 +85,22 @@
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgUseStatic>false</VcpkgUseStatic>
+    <VcpkgTriplet>
+    </VcpkgTriplet>
+    <VcpkgHostTriplet>
+    </VcpkgHostTriplet>
+    <VcpkgAdditionalInstallOptions> --overlay-triplets=$(ProjectDir)triplets</VcpkgAdditionalInstallOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgUseStatic>false</VcpkgUseStatic>
+    <VcpkgTriplet>
+    </VcpkgTriplet>
+    <VcpkgHostTriplet>
+    </VcpkgHostTriplet>
+    <VcpkgAdditionalInstallOptions> --overlay-triplets=$(ProjectDir)triplets</VcpkgAdditionalInstallOptions>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -131,6 +147,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>del $(TargetDir)main.obj</Command>
@@ -240,6 +257,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\asset\Material.cpp" />
     <ClCompile Include="src\asset\Shader.cpp" />
+    <ClCompile Include="vendor\glad\src\glad.c" />
     <ClCompile Include="vendor\stb_image\src\stb_image.cpp" />
     <ClCompile Include="src\asset\Texture.cpp" />
     <ClCompile Include="src\asset\Vertex.cpp" />
@@ -335,6 +353,8 @@
     <ClInclude Include="src\model\Node.h" />
     <ClInclude Include="src\component\Light.h" />
     <ClInclude Include="src\component\Camera.h" />
+    <ClInclude Include="vendor\glad\include\glad\glad.h" />
+    <ClInclude Include="vendor\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="vendor\stb_image\src\stb_image.h" />
     <ClInclude Include="src\asset\ModelMesh.h" />
     <ClInclude Include="src\asset\Material.h" />

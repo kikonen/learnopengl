@@ -79,10 +79,10 @@ void Window::createGLFWWindow()
     glfwMakeContextCurrent(glfwWindow);
 
     // glad: load all OpenGL function pointers
-// ---------------------------------------
+    // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        glfwTerminate();
+            glfwTerminate();
         KI_ERROR_SB("Failed to initialize GLAD");
         return;
     }
@@ -102,7 +102,7 @@ void Window::bindGLFWCallbacks()
     // https://stackoverflow.com/questions/31581200/glfw-call-to-non-static-class-function-in-static-key-callback
 
     glfwSetFramebufferSizeCallback(
-        glfwWindow, 
+        glfwWindow,
         [](GLFWwindow* gw, int width, int height) {
         static_cast<Window*>(glfwGetWindowUserPointer(gw))->onWindowResize(width, height);
     });
@@ -126,7 +126,7 @@ void Window::bindGLFWCallbacks()
         });
 }
 
-void Window::processInput(const RenderClock& clock)
+void Window::processInput(const ki::RenderClock& clock)
 {
     input->updateKeyStates();
 

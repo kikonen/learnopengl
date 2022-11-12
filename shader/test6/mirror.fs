@@ -9,6 +9,7 @@
 #include uniform_data.glsl
 #include uniform_lights.glsl
 #include uniform_materials.glsl
+#include uniform_textures.glsl
 
 in VS_OUT {
   vec4 glp;
@@ -26,7 +27,7 @@ in VS_OUT {
   mat3 TBN;
 } fs_in;
 
-uniform sampler2D u_textures[TEX_COUNT];
+//uniform sampler2D u_textures[TEX_COUNT];
 
 uniform sampler2D u_reflectionTex;
 

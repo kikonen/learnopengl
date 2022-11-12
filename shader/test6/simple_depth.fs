@@ -6,6 +6,7 @@
 #include struct_material.glsl
 
 #include uniform_materials.glsl
+#include uniform_textures.glsl
 #endif
 
 #ifndef USE_ALPHA
@@ -20,7 +21,7 @@ in VS_OUT {
   flat uint materialIndex;
 } fs_in;
 
-uniform sampler2D u_textures[TEX_COUNT];
+//uniform sampler2D u_textures[TEX_COUNT];
 #endif
 
 precision lowp float;

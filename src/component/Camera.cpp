@@ -112,7 +112,7 @@ const glm::vec3 Camera::getRotation() noexcept
     return glm::vec3(m_pitch, m_yaw, m_roll);
 }
 
-void Camera::onKey(Input* input, const RenderClock& clock) noexcept
+void Camera::onKey(Input* input, const ki::RenderClock& clock) noexcept
 {
     float dt = clock.elapsedSecs;
     float moveSize = m_moveStep;

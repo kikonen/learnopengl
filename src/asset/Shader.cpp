@@ -258,11 +258,11 @@ int Shader::initProgram() {
         setupUBO("Materials", UBO_MATERIALS, m_materialCount * sizeof(MaterialUBO));
     }
     setupUBO("ClipPlanes", UBO_CLIP_PLANES, sizeof(ClipPlanesUBO));
-
+    setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
 
     projectionMatrix.init(this);
     viewMatrix.init(this);
-    //modelMatrix.init(this); 
+    //modelMatrix.init(this);
     //normalMatrix.init(this);
 
     noiseTex.init(this);
@@ -272,21 +272,18 @@ int Shader::initProgram() {
     cubeMap.init(this);
 
     shadowMap.init(this);
-    //normalMap.init(this); 
+    //normalMap.init(this);
 
     //drawInstanced.init(*this);
 
     effect.init(this);
 
-    nearPlane.init(this); 
+    nearPlane.init(this);
     farPlane.init(this);
 
     skybox.init(this);
 
     viewportTex.init(this);
-
-    //prepareTextureUniform();
-    prepareTextureUniforms();
 
     m_sources.clear();
 
@@ -300,34 +297,16 @@ void Shader::appendDefines(std::vector<std::string>& lines)
     }
 }
 
-//void Shader::prepareTextureUniform()
+//void Shader::prepareTextureUniforms()
 //{
-//    TextureInfo* info = new TextureInfo();
-//    info->diffuseTex = new Shader::Int("diffuse");
-//    info->diffuseTex->init(this);
+//    textures.reserve(TEXTURE_COUNT);
 //
-//    info->emissionTex = new Shader::Int("emission");
-//    info->emissionTex->init(this);
-//
-//    info->specularTex = new Shader::Int("specular");
-//    info->specularTex->init(this);
-//
-//    info->normalMap = new Shader::Int("normalMap");
-//    info->normalMap->init(this);
-//
-//    texture = info;
+//    for (int i = 0; i < TEXTURE_COUNT; i++) {
+//        auto name = fmt::format("u_textures[{}]", i);
+//        Shader::Int& v = textures.emplace_back(name);
+//        v.init(this);
+//    }
 //}
-
-void Shader::prepareTextureUniforms()
-{
-    textures.reserve(TEXTURE_COUNT);
-
-    for (int i = 0; i < TEXTURE_COUNT; i++) {
-        auto name = fmt::format("u_textures[{}]", i);
-        Shader::Int& v = textures.emplace_back(name);
-        v.init(this);
-    }
-}
 
 void Shader::setInt(const std::string& name, int value) noexcept
 {
@@ -346,7 +325,7 @@ void Shader::setupUBO(
     if (blockIndex == GL_INVALID_INDEX) {
         KI_WARN_SB("SHADER::MISSING_UBO " << m_shaderName << " UBO=" << name);
         return;
-    } 
+    }
     glUniformBlockBinding(m_programId, blockIndex, UBO);
 
     GLint blockSize;
@@ -372,7 +351,7 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
     std::vector<std::string> lines = loadSourceLines(path, optional);
 
     std::stringstream sb;
-    
+
     for (auto& line : lines) {
         sb << line << std::endl;
     }
@@ -412,6 +391,7 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
 
             if (k == "#version") {
                 lines.push_back(line);
+                //lines.push_back("#extension GL_ARB_bindless_texture : require");
                 appendDefines(lines);
                 for (auto& l : processInclude(INC_GLOBALS, lineNumber)) {
                     lines.push_back(l);
@@ -446,7 +426,7 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
     return lines;
 }
 
-std::vector<std::string> Shader::processInclude(const std::string& includePath, int lineNumber) 
+std::vector<std::string> Shader::processInclude(const std::string& includePath, int lineNumber)
 {
     std::string path;
     {

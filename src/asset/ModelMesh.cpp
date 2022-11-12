@@ -1,6 +1,5 @@
 #include "ModelMesh.h"
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 
 #include <string>
@@ -20,9 +19,10 @@ namespace {
         // = *COULD* be related old "disappearing" materials issues?!?
         unsigned int material;
         glm::vec3 pos;
-        KI_VEC10 normal;
-        KI_VEC10 tangent;
-        KI_UV16 texCoords;
+        ki::VEC10 normal;
+        ki::VEC10 tangent;
+        ki::UV16 texCoords;
+        unsigned int pad1;
     };
 #pragma pack(pop)
 }
@@ -120,7 +120,6 @@ void ModelMesh::prepareMaterials(const Assets& assets)
 
     {
         int materialIndex = 0;
-        unsigned int texCount = 0;
 
         for (auto& material : m_materials) {
             material.materialIndex = materialIndex++;
@@ -133,31 +132,8 @@ void ModelMesh::prepareMaterials(const Assets& assets)
 
             for (auto& tex : material.textures) {
                 if (!tex.texture) continue;
-                tex.texIndex = texCount++;
+                tex.m_texIndex = tex.texture->m_texIndex;
                 m_textureIDs.push_back(tex.texture->textureID);
-            }
-        }
-
-        // NOTE KI second iteration to set unitIndex after texCount
-        std::map<GLuint, bool> assignedUnits;
-        std::map<GLuint, bool> assignedTextures;
-        int unitIndex = 0;
-        for (auto& material : m_materials) {
-            for (auto& tex : material.textures) {
-                if (!tex.texture) continue;
-                if (tex.texture->unitIndex < 0) {
-                    tex.texture->unitIndex = Texture::nextUnitIndex();
-                }
-                tex.unitIndex = tex.texture->unitIndex;
-
-                if (assignedTextures[tex.texture->textureID]) continue;
-
-                // NOTE KI conflict resolution if random conflict happens
-                while (assignedUnits[tex.unitIndex] == true) {
-                    tex.unitIndex = unitIndex++;
-                }
-                assignedUnits[tex.unitIndex] = true;
-                assignedTextures[tex.texture->textureID] = true;
             }
         }
     }
@@ -199,6 +175,7 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     constexpr int stride_size = sizeof(TexVBO);
     void* vboBuffer = new unsigned char[stride_size * m_vertices.size()];
+    memset(vboBuffer, 0, stride_size * m_vertices.size());
 
     {
         TexVBO* vbo = (TexVBO*)vboBuffer;
@@ -214,22 +191,20 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
             vbo->pos.y = p.y;
             vbo->pos.z = p.z;
 
-            vbo->normal.x = (int)(n.x * SCALE_VEC10);
-            vbo->normal.y = (int)(n.y * SCALE_VEC10);
-            vbo->normal.z = (int)(n.z * SCALE_VEC10);
-            vbo->normal.not_used = 0;
+            vbo->normal.x = (int)(n.x * ki::SCALE_VEC10);
+            vbo->normal.y = (int)(n.y * ki::SCALE_VEC10);
+            vbo->normal.z = (int)(n.z * ki::SCALE_VEC10);
 
-            vbo->tangent.x = (int)(tan.x * SCALE_VEC10);
-            vbo->tangent.y = (int)(tan.y * SCALE_VEC10);
-            vbo->tangent.z = (int)(tan.z * SCALE_VEC10);
-            vbo->tangent.not_used = 0;
+            vbo->tangent.x = (int)(tan.x * ki::SCALE_VEC10);
+            vbo->tangent.y = (int)(tan.y * ki::SCALE_VEC10);
+            vbo->tangent.z = (int)(tan.z * ki::SCALE_VEC10);
 
             // TODO KI should use noticeable value for missing
             // => would trigger undefined array access in render side
             vbo->material = m ? m->materialIndex : 0;
 
-            vbo->texCoords.u = (int)(t.x * SCALE_UV16);
-            vbo->texCoords.v = (int)(t.y * SCALE_UV16);
+            vbo->texCoords.u = (int)(t.x * ki::SCALE_UV16);
+            vbo->texCoords.v = (int)(t.y * ki::SCALE_UV16);
 
             vbo++;
         }
@@ -248,7 +223,7 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
 
         // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
-        // 
+        //
         // vertex attr
         glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(TexVBO, pos));
 

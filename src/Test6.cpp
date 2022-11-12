@@ -48,7 +48,7 @@ int Test6::onSetup() {
     return 0;
 }
 
-int Test6::onRender(const RenderClock& clock) {
+int Test6::onRender(const ki::RenderClock& clock) {
     auto* scene = currentScene.get();
     Window* window = this->window.get();
 
@@ -77,6 +77,9 @@ int Test6::onRender(const RenderClock& clock) {
 
     //ctx.state.enable(GL_DEPTH_TEST);
     //glDepthFunc(GL_LEQUAL);
+
+    // https://paroj.github.io/gltut/apas04.html
+    //glEnable(GL_RASTERIZER_DISCARD);
 
     ctx.state.enable(GL_PROGRAM_POINT_SIZE);
     glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
@@ -172,9 +175,9 @@ std::shared_ptr<Scene> Test6::loadScene()
 
     asyncLoader->scene = scene;
 
-    file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_full.yml");
+    //file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_full.yml");
     //file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_player.yml");
-    //file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_origo.yml");
+    file = std::make_unique<SceneFile>(asyncLoader.get(), assets, "scene/scene_origo.yml");
     file->load(scene);
 
     testSetup = std::make_unique<TestSceneSetup>(asyncLoader.get(), assets);

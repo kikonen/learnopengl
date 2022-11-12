@@ -7,7 +7,7 @@
 // NOTE KI TEX_COUNT == texture index != texture unit index
 // => i.e. unit index is not 1:1 mapping to texture index
 #ifndef TEX_COUNT
-  #define TEX_COUNT 8
+  #define TEX_COUNT 32
 #endif
 
 #ifndef CLIP_COUNT

@@ -25,7 +25,7 @@ public:
 
     void setTitle(const std::string& title);
 
-    void processInput(const RenderClock& clock);
+    void processInput(const ki::RenderClock& clock);
 
     void onWindowResize(int width, int height);
     void onMouseMove(double xpos, double ypos);

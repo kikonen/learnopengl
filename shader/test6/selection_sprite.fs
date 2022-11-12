@@ -5,13 +5,14 @@
 #include struct_material.glsl
 
 #include uniform_materials.glsl
+#include uniform_textures.glsl
 
 in GS_OUT {
   vec2 texCoord;
   flat uint materialIndex;
 } fs_in;
 
-uniform sampler2D u_textures[TEX_COUNT];
+//uniform sampler2D u_textures[TEX_COUNT];
 
 layout (location = 0) out vec4 fragColor;
 

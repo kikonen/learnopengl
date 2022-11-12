@@ -43,7 +43,7 @@ public:
         const std::string& name,
         const RenderContext* parent,
         const Assets& assets,
-        const RenderClock& clock,
+        const ki::RenderClock& clock,
         GLState& state,
         Scene* scene,
         Camera& camera,
@@ -61,6 +61,7 @@ public:
     void bindDataUBO() const;
     void bindClipPlanesUBO() const;
     void bindLightsUBO() const;
+    void bindTexturesUBO() const;
 
     void bind(Shader* shader) const;
 
@@ -77,7 +78,7 @@ public:
 
     const Assets& assets;
 
-    const RenderClock& clock;
+    const ki::RenderClock& clock;
 
     mutable bool shadow = false;
 

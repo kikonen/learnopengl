@@ -6,6 +6,8 @@
 #include "ki/GL.h"
 #include "component/Light.h"
 
+#include "asset/ImageTexture.h"
+
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
 
@@ -63,7 +65,7 @@ RenderContext::RenderContext(
     const std::string& name,
     const RenderContext* parent,
     const Assets& assets,
-    const RenderClock& clock,
+    const ki::RenderClock& clock,
     GLState& state,
     Scene* scene,
     Camera& camera,
@@ -137,6 +139,7 @@ void RenderContext::bindUBOs() const
     bindDataUBO();
     bindClipPlanesUBO();
     bindLightsUBO();
+    bindTexturesUBO();
 }
 
 void RenderContext::bindMatricesUBO() const
@@ -225,6 +228,23 @@ void RenderContext::bindLightsUBO() const
     }
 
     glNamedBufferSubData(scene->m_ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);
+}
+
+void RenderContext::bindTexturesUBO() const
+{
+    TexturesUBO texturesUbo;
+    memset(&texturesUbo.textures, 0, sizeof(texturesUbo.textures));
+
+    for (const auto& texture : ImageTexture::getPreparedTextures()) {
+        texturesUbo.textures[texture->m_texIndex * 2] = texture->m_handle;
+    }
+
+    //glBindBuffer(GL_SHADER_STORAGE_BUFFER, scene->m_ubo.textures);
+    //GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+    //memcpy(p, &scene->m_textures, sizeof(TexturesUBO));
+    //glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+    glNamedBufferSubData(scene->m_ubo.textures, 0, sizeof(TexturesUBO), &texturesUbo);
 }
 
 void RenderContext::updateFrustum()

@@ -1,12 +1,10 @@
 #include "CubeMap.h"
 
-#include <glad/glad.h>
-
 #include "ki/GL.h"
 
 #include "asset/Image.h"
 
-// 
+//
 // EMPTY cube map
 //
 // order:
@@ -14,7 +12,7 @@
 // -X (left)
 // +Y (top)
 // -Y (bottom)
-// +Z (front) 
+// +Z (front)
 // -Z (back)
 // -------------------------------------------------------
 unsigned int CubeMap::createEmpty(int size)
@@ -40,7 +38,7 @@ unsigned int CubeMap::createEmpty(int size)
 // -X (left)
 // +Y (top)
 // -Y (bottom)
-// +Z (front) 
+// +Z (front)
 // -Z (back)
 // -------------------------------------------------------
 unsigned int CubeMap::createFromImages(std::vector<std::string> faces)

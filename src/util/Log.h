@@ -3,8 +3,6 @@
 #include <string>
 #include <sstream>
 
-#include <glad/glad.h>
-
 #define KI_FLUSH() Log::flush()
 
 #define KI_CRITICAL(msg) Log::critical(msg)

@@ -29,13 +29,13 @@ public:
 protected:
     virtual int onInit() = 0;
     virtual int onSetup() = 0;
-    virtual int onRender(const RenderClock& clock) = 0;
+    virtual int onRender(const ki::RenderClock& clock) = 0;
     virtual void onDestroy();
 
 public:
     bool debug = false;
 
-    RenderClock startClock;
+    ki::RenderClock startClock;
 
     // NOTE KI MUST destroy async loaded *BEFORE* other registries
     // => alloes change for graceful exit for loaders

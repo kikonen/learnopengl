@@ -1,7 +1,5 @@
 #include "Assets.h"
 
-#include <glad/glad.h>
-
 #include "ki/uuid.h"
 
 Assets::Assets()

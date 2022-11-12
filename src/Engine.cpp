@@ -46,8 +46,8 @@ int Engine::setup() {
 }
 
 void Engine::run() {
-    OpenGLInfo info = ki::GL::getInfo();
-    auto extensions = ki::GL::getExtensions();
+    const auto& info = ki::GL::getInfo();
+    const auto& extensions = ki::GL::getExtensions();
     // NOTE KI https://www.khronos.org/opengl/wiki/Common_Mistakes
     // - preferredFormat is performnce topic
     KI_INFO_SB("ENGINE::RUN" << std::endl
@@ -57,7 +57,7 @@ void Engine::run() {
         << " GL_PREFERRED_TEXTURE_FORMAT: 0x" << std::hex << info.preferredFormat);
 
     KI_INFO_SB("[EXTENSIONS]");
-    for (auto& ext : extensions) {
+    for (const auto& ext : extensions) {
         KI_INFO_SB(ext);
     }
 
@@ -86,7 +86,7 @@ void Engine::run() {
     std::chrono::duration<float> renderDuration;
     std::chrono::duration<float> frameDuration;
 
-    RenderClock clock;
+    ki::RenderClock clock;
 
     float renderSecs = 0;
     float frameSecs = 0;

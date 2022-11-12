@@ -7,6 +7,7 @@
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_materials.glsl
+#include uniform_textures.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -18,7 +19,7 @@ in VS_OUT {
   flat uint materialIndex;
 } fs_in;
 
-uniform sampler2D u_textures[TEX_COUNT];
+//uniform sampler2D u_textures[TEX_COUNT];
 
 layout (location = 0) out vec4 fragColor;
 

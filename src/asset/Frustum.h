@@ -4,6 +4,8 @@
 
 // https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
 struct Frustum {
+    Frustum() {};
+
     Plane topFace;
     Plane bottomFace;
 

@@ -1,7 +1,6 @@
 #include "MeshBuffers.h"
 
-#include "glad/glad.h"
-
+#include "ki/GL.h"
 
 MeshBuffers::MeshBuffers()
 {

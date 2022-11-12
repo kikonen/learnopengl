@@ -137,7 +137,7 @@ std::string Material::resolveBaseDir(const Assets& assets)
     std::string baseDir;
     switch (type) {
     case MaterialType::model:
-        return assets.modelsDir;    
+        return assets.modelsDir;
     case MaterialType::texture:
         return assets.texturesDir;
     case MaterialType::sprite:
@@ -211,9 +211,7 @@ void Material::bindArray(
 {
     for (auto& tex : textures) {
         if (!tex.texture) continue;
-        ASSERT_TEX_INDEX(tex.texIndex);
-        ASSERT_TEX_UNIT(tex.unitIndex);
-        shader->textures[tex.texIndex].set(tex.unitIndex);
+        ASSERT_TEX_INDEX(tex.m_texIndex);
         tex.bind(ctx);
     }
 }
@@ -222,7 +220,7 @@ const MaterialUBO Material::toUBO()
 {
     for (auto& tex : textures) {
         if (!tex.texture) continue;
-        ASSERT_TEX_INDEX(tex.texIndex);
+        ASSERT_TEX_INDEX(tex.m_texIndex);
     }
 
     return {
@@ -232,11 +230,11 @@ const MaterialUBO Material::toUBO()
         ks,
         ns,
 
-        textures[DIFFUSE_IDX].texIndex,
-        textures[EMISSION_IDX].texIndex,
-        textures[SPECULAR_IDX].texIndex,
-        textures[NORMAL_MAP_IDX].texIndex,
-        textures[DUDV_MAP_IDX].texIndex,
+        textures[DIFFUSE_IDX].m_texIndex,
+        textures[EMISSION_IDX].m_texIndex,
+        textures[SPECULAR_IDX].m_texIndex,
+        textures[NORMAL_MAP_IDX].m_texIndex,
+        textures[DUDV_MAP_IDX].m_texIndex,
 
         pattern,
 

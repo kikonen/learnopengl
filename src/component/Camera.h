@@ -37,7 +37,7 @@ public:
     void setRotation(const glm::vec3& rotation) noexcept;
     const glm::vec3 getRotation() noexcept;
 
-    void onKey(Input* input, const RenderClock& clock) noexcept;
+    void onKey(Input* input, const ki::RenderClock& clock) noexcept;
     void onMouseMove(Input* input, double xoffset, double yoffset) noexcept;
     void onMouseScroll(Input* input, double xoffset, double yoffset) noexcept;
 

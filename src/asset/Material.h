@@ -11,8 +11,7 @@
 
 struct BoundTexture {
     Texture* texture = nullptr;
-    int texIndex = -1;
-    int unitIndex = -1;
+    int m_texIndex = -1;
 
     bool valid() {
         return texture;
@@ -20,14 +19,10 @@ struct BoundTexture {
 
     void bind(const RenderContext& ctx)
     {
-        if (!texture) return;
-        ASSERT_TEX_UNIT(unitIndex);
-        ctx.state.bindTexture(unitIndex, texture->textureID);
     }
 
     void unbind()
     {
-        if (!texture) return;
     }
 };
 
@@ -47,7 +42,7 @@ enum class MaterialType {
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
 * http://paulbourke.net/dataformats/obj/
-* 
+*
 # Blender MTL File : 'texture_cube.blend'
 # Material Count : 1
 
@@ -142,7 +137,7 @@ public:
     // ranges between 0 and 1000
     float ns = 0.0f;
 
-    // The ambient color of the material is declared using Ka. 
+    // The ambient color of the material is declared using Ka.
     glm::vec4 ka { 0.f, 0.f, 0.f, 1.f };
 
     // Similarly, the diffuse color is declared using Kd.
@@ -165,9 +160,9 @@ public:
     // A material can also have an optical density for its surface. This is also known as index of refraction.
     float ni = 0.0f;
 
-    // Materials can be transparent. This is referred to as being dissolved. Unlike real transparency, 
-    // the result does not depend upon the thickness of the object. 
-    // A value of 1.0 for "d" is the default and means fully opaque, as does a value of 0.0 for "Tr". 
+    // Materials can be transparent. This is referred to as being dissolved. Unlike real transparency,
+    // the result does not depend upon the thickness of the object.
+    // A value of 1.0 for "d" is the default and means fully opaque, as does a value of 0.0 for "Tr".
     // Dissolve works on all illumination models.
     float d = 1.0f;
 

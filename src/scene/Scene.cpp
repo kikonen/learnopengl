@@ -472,4 +472,20 @@ void Scene::prepareUBOs()
         glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, m_ubo.lights, 0, sz);
         m_ubo.lightsSize = sz;
     }
+    // Textures
+    {
+        // https://www.geeks3d.com/20140704/tutorial-introduction-to-opengl-4-3-shader-storage-buffers-objects-ssbo-demo/        //glGenBuffers(1, &ssbo);
+        //glGenBuffers(1, &m_ubo.textures);
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ubo.textures);
+        //glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(TexturesUBO), &m_textures, GL_DYNAMIC_COPY);
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+        int sz = sizeof(TexturesUBO);
+
+        glCreateBuffers(1, &m_ubo.textures);
+        glNamedBufferStorage(m_ubo.textures, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+
+        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_TEXTURES, m_ubo.textures, 0, sz);
+        m_ubo.texturesSize = sz;
+    }
 }

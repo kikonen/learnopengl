@@ -10,11 +10,13 @@ struct UBO {
     unsigned int data;
     unsigned int clipPlanes;
     unsigned int lights;
+    unsigned int textures;
 
     unsigned int matricesSize;
     unsigned int dataSize;
     unsigned int clipPlanesSize;
     unsigned int lightsSize;
+    unsigned int texturesSize;
 };
 
 constexpr unsigned int UBO_MATRICES = 0;
@@ -23,6 +25,7 @@ constexpr unsigned int UBO_CLIP_PLANES = 2;
 constexpr unsigned int UBO_LIGHTS = 3;
 constexpr unsigned int UBO_MATERIALS = 4;
 constexpr unsigned int UBO_MATERIAL = 5;
+constexpr unsigned int UBO_TEXTURES = 6;
 
 constexpr unsigned int MIN_MATERIAL_COUNT = 8;
 constexpr unsigned int MAX_MATERIAL_COUNT = 8;
@@ -33,8 +36,8 @@ constexpr unsigned int MAX_LIGHT_COUNT = 8;
 constexpr unsigned int LIGHT_COUNT = MAX_LIGHT_COUNT;
 
 // MAX textures used in shader
-constexpr unsigned int MIN_TEXTURE_COUNT = 8;
-constexpr unsigned int MAX_TEXTURE_COUNT = 8;
+constexpr unsigned int MIN_TEXTURE_COUNT = 32;
+constexpr unsigned int MAX_TEXTURE_COUNT = 32;
 constexpr unsigned int TEXTURE_COUNT = MAX_TEXTURE_COUNT;
 
 constexpr unsigned int MIN_CLIP_PLANE_COUNT = 2;
@@ -193,4 +196,9 @@ struct ClipPlanesUBO {
     int pad1;
     int pad2;
     int pad3;
+};
+
+// NOTE KI align 16
+struct TexturesUBO {
+    unsigned __int64 textures[TEXTURE_COUNT * 2];
 };

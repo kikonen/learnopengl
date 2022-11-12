@@ -77,6 +77,7 @@ public:
     ScriptEngine m_scriptEngine;
 
     Batch m_batch;
+    TexturesUBO m_textures;
 
 protected:
 

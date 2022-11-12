@@ -3,11 +3,15 @@
 #include <map>
 #include <mutex>
 
+#include "ki/GL.h"
 
 namespace {
     const int MIP_MAP_LEVELS = 3;
 
     std::map<const std::string, std::unique_ptr<ImageTexture>> textures;
+
+    bool preparedTexturesReady = false;
+    std::vector<const ImageTexture*> preparedTextures;
 
     std::mutex textures_lock;
 }
@@ -25,6 +29,19 @@ ImageTexture* ImageTexture::getTexture(const std::string& path, const TextureSpe
         e->second->load();
     }
     return e->second.get();
+}
+
+const std::vector<const ImageTexture*>& ImageTexture::getPreparedTextures()
+{
+    if (!preparedTexturesReady) {
+        preparedTexturesReady = true;
+        preparedTextures.clear();
+        for (const auto& [name, texture] : textures) {
+            if (texture->m_handle == 0) continue;
+            preparedTextures.emplace_back(texture.get());
+        }
+    }
+    return preparedTextures;
 }
 
 ImageTexture::ImageTexture(const std::string& path, const TextureSpec& spec)
@@ -80,6 +97,13 @@ void ImageTexture::prepare(const Assets& assets)
     glTextureSubImage2D(textureID, 0, 0, 0, image->width, image->height, format, GL_UNSIGNED_BYTE, image->data);
 
     glGenerateTextureMipmap(textureID);
+
+    m_handle = glGetTextureHandleARB(textureID);
+    glMakeTextureHandleResidentARB(m_handle);
+
+    m_texIndex = Texture::nextIndex();
+
+    preparedTexturesReady = false;
 
     image.reset();
 }

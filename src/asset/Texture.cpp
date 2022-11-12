@@ -1,7 +1,6 @@
 #include "Texture.h"
 
 #include <mutex>
-#include <glad/glad.h>
 
 #include "Shader.h"
 
@@ -43,19 +42,26 @@ namespace {
     //    GL_TEXTURE31,
     //};
 
-    static int baseIdx = FIRST_TEXTURE_UNIT;
+    static GLuint unitBase = FIRST_TEXTURE_UNIT;
+
+    static GLuint indexBase = 0;
+}
+
+GLuint Texture::nextIndex()
+{
+    return indexBase++;
 }
 
 GLuint Texture::getUnitIndexBase(int textureCount)
 {
-    int idx = baseIdx;
+    GLuint idx = unitBase;
 
     if (idx + textureCount - 1 > LAST_TEXTURE_UNIT) {
         idx = FIRST_TEXTURE_UNIT;
-        baseIdx = FIRST_TEXTURE_UNIT;
+        unitBase = FIRST_TEXTURE_UNIT;
     }
     else {
-        baseIdx += textureCount;
+        unitBase += textureCount;
     }
 
     return idx;
@@ -63,9 +69,9 @@ GLuint Texture::getUnitIndexBase(int textureCount)
 
 GLuint Texture::nextUnitIndex()
 {
-    if (baseIdx > LAST_TEXTURE_UNIT)
-        baseIdx = FIRST_TEXTURE_UNIT;
-    return baseIdx++ ;
+    if (unitBase > LAST_TEXTURE_UNIT)
+        unitBase = FIRST_TEXTURE_UNIT;
+    return unitBase++ ;
 }
 
 Texture::Texture(const std::string& name, const TextureSpec& spec)

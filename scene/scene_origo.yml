@@ -65,7 +65,7 @@ entities:
       z_count: 101
       x_step: -4
       z_step: 1.5
-    enabled: true
+    enabled: false
 materials:
   - name: skybox
     type: skybox

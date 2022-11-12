@@ -19,7 +19,7 @@ protected:
     int onInit() override;
     int onSetup() override;
 
-    int onRender(const RenderClock& clock) override;
+    int onRender(const ki::RenderClock& clock) override;
     void onDestroy() override;
 
 private:

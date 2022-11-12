@@ -9,6 +9,7 @@
 #include uniform_data.glsl
 #include uniform_lights.glsl
 #include uniform_materials.glsl
+#include uniform_textures.glsl
 
 in VS_OUT {
   vec3 fragPos;
@@ -22,7 +23,7 @@ in VS_OUT {
 
 layout (location = 0) out vec4 fragColor;
 
-uniform sampler2D u_textures[TEX_COUNT];
+//uniform sampler2D u_textures[TEX_COUNT];
 uniform sampler2DShadow u_shadowMap;
 
 int iChannel0;

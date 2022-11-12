@@ -9,6 +9,7 @@
 #include uniform_data.glsl
 #include uniform_lights.glsl
 #include uniform_materials.glsl
+#include uniform_textures.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -31,7 +32,8 @@ in VS_OUT {
 #endif
 } fs_in;
 
-uniform sampler2D u_textures[TEX_COUNT];
+//uniform sampler2D u_textures[TEX_COUNT];
+
 uniform samplerCube u_cubeMap;
 uniform sampler2DShadow u_shadowMap;
 

@@ -72,36 +72,14 @@ void SpriteMesh::prepareMaterials(const Assets& assets)
     {
         Material& material = m_material;
 
-        unsigned int texCount = 0;
         material.materialIndex = 0;
 
         material.prepare(assets);
 
         for (auto& tex : material.textures) {
             if (!tex.texture) continue;
-            tex.texIndex = texCount++;
+            tex.m_texIndex = tex.texture->m_texIndex;
             m_textureIDs.push_back(tex.texture->textureID);
-        }
-
-        // NOTE KI second iteration to set unitIndex after texCount
-        std::map<GLuint, bool> assignedUnits;
-        std::map<GLuint, bool> assignedTextures;
-        int unitIndex = 0;
-        for (auto& tex : material.textures) {
-            if (!tex.texture) continue;
-            if (tex.texture->unitIndex < 0) {
-                tex.texture->unitIndex = Texture::nextUnitIndex();
-            }
-            tex.unitIndex = tex.texture->unitIndex;
-
-            if (assignedTextures[tex.texture->textureID]) continue;
-
-            // NOTE KI conflict resolution if random conflict happens
-            while (assignedUnits[tex.unitIndex] == true) {
-                tex.unitIndex = unitIndex++;
-            }
-            assignedUnits[tex.unitIndex] = true;
-            assignedTextures[tex.texture->textureID] = true;
         }
     }
 

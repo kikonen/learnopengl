@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include <glad/glad.h>
-
 #include "scene/RenderContext.h"
 
 struct TextureSpec {
@@ -13,13 +11,15 @@ struct TextureSpec {
 /*
 * https://learnopengl.com/Getting-started/Textures
 */
-class Texture 
+class Texture
 {
 public:
     Texture(const std::string& name, const TextureSpec& spec);
     virtual ~Texture();
 
     virtual void prepare(const Assets& assets) = 0;
+
+    static GLuint nextIndex();
 
     // Reserve textureCount indexes which are consequetive from baseIndex
     // (possibly overlapping with old assignments)
@@ -33,7 +33,8 @@ public:
     const TextureSpec spec;
 
     GLuint textureID = 0;
-    int unitIndex = -1;
+    int m_texIndex = -1;
+    GLuint64 m_handle = 0;
 
 protected:
     bool m_prepared = false;
