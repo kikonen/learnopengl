@@ -60,12 +60,12 @@ bool Sphere::isOnFrustum(
     //}
 
     // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
-    return worldSphere.isOnOrForwardPlane(frustum.leftFace) &&
-        worldSphere.isOnOrForwardPlane(frustum.rightFace) &&
+    return worldSphere.isOnOrForwardPlane(frustum.nearFace) &&
         worldSphere.isOnOrForwardPlane(frustum.topFace) &&
         worldSphere.isOnOrForwardPlane(frustum.bottomFace) &&
-        worldSphere.isOnOrForwardPlane(frustum.farFace) &&
-        worldSphere.isOnOrForwardPlane(frustum.nearFace);
+        worldSphere.isOnOrForwardPlane(frustum.leftFace) &&
+        worldSphere.isOnOrForwardPlane(frustum.rightFace) &&
+        worldSphere.isOnOrForwardPlane(frustum.farFace);
 };
 
 void Sphere::updateWorldSphere(

@@ -212,7 +212,7 @@ void Batch::draw(
         ctx.assets.frustumEnabled &&
         !type.m_flags.noFrustum &&
         volume &&
-        !volume->isOnFrustum(ctx.frustum, node.getMatrixLevel(), node.getWorldModelMatrix()))
+        !volume->isOnFrustum(*ctx.getFrustum(), node.getMatrixLevel(), node.getWorldModelMatrix()))
     {
         ctx.skipCount += 1;
         return;

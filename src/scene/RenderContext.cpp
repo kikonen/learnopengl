@@ -108,8 +108,6 @@ RenderContext::RenderContext(
     for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
         clipPlanes.clipping[i].enabled = false;
     }
-
-    updateFrustum();
 }
 
 RenderContext::~RenderContext()
@@ -268,8 +266,18 @@ void RenderContext::bindTexturesUBO() const
     }
 }
 
-void RenderContext::updateFrustum()
+const Frustum* RenderContext::getFrustum() const
 {
+    if (assets.frustumEnabled && useFrustum && !m_frustum) {
+        updateFrustum();
+    }
+    return m_frustum.get();
+}
+
+void RenderContext::updateFrustum() const
+{
+    m_frustum = std::make_unique<Frustum>();
+
     // TODO KI https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
     // https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/entity.h
 
@@ -290,27 +298,27 @@ void RenderContext::updateFrustum()
     // NOTE KI near and far plane don't have camee pos as "point in plane"
     // NOTE KI other side HAVE camra pos as "point in plane"
 
-    frustum.nearFace = {
+    m_frustum->nearFace = {
         pos + nearPlane * front,
         front };
 
-    frustum.farFace = {
+    m_frustum->farFace = {
         pos + frontMultFar,
         -front };
 
-    frustum.rightFace = {
+    m_frustum->rightFace = {
         pos,
         glm::cross(up, frontMultFar + right * halfHSide) };
 
-    frustum.leftFace = {
+    m_frustum->leftFace = {
         pos,
         glm::cross(frontMultFar - right * halfHSide, up) };
 
-    frustum.topFace = {
+    m_frustum->topFace = {
         pos,
         glm::cross(right, frontMultFar - up * halfVSide) };
 
-    frustum.bottomFace = {
+    m_frustum->bottomFace = {
         pos,
         glm::cross(frontMultFar + up * halfVSide, right) };
 }

@@ -65,8 +65,10 @@ public:
 
     void bind(Shader* shader) const;
 
+    const Frustum* getFrustum() const;
+
 private:
-    void updateFrustum();
+    void updateFrustum() const;
     void updateFrustumNOPE();
 
 public:
@@ -83,7 +85,6 @@ public:
     mutable bool shadow = false;
 
     mutable bool useFrustum = true;
-    Frustum frustum;
 
     GLState& state;
 
@@ -112,4 +113,7 @@ public:
 
     mutable bool useWireframe = false;
     mutable bool useLight = true;
+
+private:
+    mutable std::unique_ptr<Frustum> m_frustum;
 };
