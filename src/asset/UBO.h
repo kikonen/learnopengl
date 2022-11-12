@@ -206,6 +206,9 @@ struct ClipPlanesUBO {
 };
 
 // NOTE KI align 16 for UBO struct
+// OpenGL Superbible, 7th Edition, page 552
+// https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
+// https://www.khronos.org/opengl/wiki/Bindless_Texture
 struct TextureUBO {
     GLuint64 handle;
     int pad1;

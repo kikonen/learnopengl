@@ -89,7 +89,7 @@ public:
     void setInt(const std::string& name, int value) noexcept;
 
     void setupUBO(
-        const std::string& name,
+        const char* name,
         unsigned int UBO,
         unsigned int expectedSize) noexcept;
 
@@ -136,7 +136,7 @@ private:
 public:
     class Uniform {
     protected:
-        Uniform(const std::string& name) : name(name) {
+        Uniform(const std::string_view& name) : name(name) {
         }
 
     public:
@@ -150,7 +150,7 @@ public:
 
     class Mat4 final : public Uniform {
     public:
-        Mat4(const std::string& name) : Uniform(name) {
+        Mat4(const std::string_view& name) : Uniform(name) {
         }
 
         void set(const glm::mat4& value) noexcept {
@@ -163,7 +163,7 @@ public:
 
     class Mat3 final : public Uniform {
     public:
-        Mat3(const std::string& name) : Uniform(name) {
+        Mat3(const std::string_view& name) : Uniform(name) {
         }
 
         void set(const glm::mat3& value) noexcept {
@@ -176,7 +176,7 @@ public:
 
     class Mat2 final : public Uniform {
     public:
-        Mat2(const std::string& name) : Uniform(name) {
+        Mat2(const std::string_view& name) : Uniform(name) {
         }
 
         void set(const glm::mat2& value) noexcept {
@@ -189,7 +189,7 @@ public:
 
     class Vec4 final : public Uniform {
     public:
-        Vec4(const std::string& name) : Uniform(name) {
+        Vec4(const std::string_view& name) : Uniform(name) {
         }
 
         void set(const glm::vec4& value) noexcept {
@@ -202,7 +202,7 @@ public:
 
     class Vec3 final : public Uniform {
     public:
-        Vec3(const std::string& name) : Uniform(name) {
+        Vec3(const std::string_view& name) : Uniform(name) {
         }
 
         void set(const glm::vec3& value) noexcept {
@@ -215,7 +215,7 @@ public:
 
     class Vec2 final : public Uniform {
     public:
-        Vec2(const std::string& name) : Uniform(name) {
+        Vec2(const std::string_view& name) : Uniform(name) {
         }
 
         void set(const glm::vec2& value) noexcept {
@@ -228,7 +228,7 @@ public:
 
     class FloatArray final : public Uniform {
     public:
-        FloatArray(const std::string& name) : Uniform(name) {
+        FloatArray(const std::string_view& name) : Uniform(name) {
         }
 
         void set(int count, const float* values) noexcept {
@@ -241,7 +241,7 @@ public:
 
     class IntArray final : public Uniform {
     public:
-        IntArray(const std::string& name) : Uniform(name) {
+        IntArray(const std::string_view& name) : Uniform(name) {
         }
 
         void set(int count, const GLint* values) noexcept {
@@ -254,7 +254,7 @@ public:
 
     class Float final : public Uniform {
     public:
-        Float(const std::string& name) : Uniform(name) {
+        Float(const std::string_view& name) : Uniform(name) {
         }
 
         void set(const float value) noexcept {
@@ -272,7 +272,7 @@ public:
 
     class Int final : public Uniform {
     public:
-        Int(const std::string& name) : Uniform(name) {
+        Int(const std::string_view& name) : Uniform(name) {
         }
 
         void set(const int value) noexcept {
@@ -289,7 +289,7 @@ public:
 
     class Bool final : public Uniform {
     public:
-        Bool(const std::string& name) : Uniform(name) {
+        Bool(const std::string_view& name) : Uniform(name) {
         }
 
         void set(const bool value) noexcept {

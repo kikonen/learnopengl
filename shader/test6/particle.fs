@@ -32,9 +32,9 @@ void main() {
 
   vec2 pos = gl_PointCoord;
 
-  vec4 texColor = texture(u_textures[material.diffuseTex], vec2(pos.x, 1.0 - pos.y));
-  //sampler2D sampler = sampler2D(u_texture_handles[material.diffuseTex]);
-  //vec4 texColor = texture(sampler, vec2(pos.x, 1.0 - pos.y)).rgba;
+  //vec4 texColor = texture(u_textures[material.diffuseTex], vec2(pos.x, 1.0 - pos.y));
+  sampler2D sampler = sampler2D(u_texture_handles[material.diffuseTex]);
+  vec4 texColor = texture(sampler, vec2(pos.x, 1.0 - pos.y)).rgba;
 
 #ifdef USE_ALPHA
   if (texColor.a < 0.1)

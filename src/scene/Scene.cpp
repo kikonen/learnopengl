@@ -476,6 +476,7 @@ void Scene::prepareUBOs()
     {
         // OpenGL Superbible, 7th Edition, page 552
         // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
+        // https://www.khronos.org/opengl/wiki/Bindless_Texture
 
         // https://www.geeks3d.com/20140704/tutorial-introduction-to-opengl-4-3-shader-storage-buffers-objects-ssbo-demo/        //glGenBuffers(1, &ssbo);
         //glGenBuffers(1, &m_ubo.textures);

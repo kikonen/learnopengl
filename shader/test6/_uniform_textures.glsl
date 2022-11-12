@@ -1,11 +1,12 @@
 // OpenGL Superbible, 7th Edition, page 552
 // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
+// https://www.khronos.org/opengl/wiki/Bindless_Texture
 
 // Enable bindless textures
+// NOTE KI MUST BE inserted just after #version
 //#extension GL_ARB_bindless_texture : require
 
 layout (binding = 6, std140) uniform Textures
 {
-//  uvec2 u_texture_handles[TEX_COUNT];
-  sampler2D u_textures[TEX_COUNT];
+  uvec2 u_texture_handles[TEX_COUNT];
 };

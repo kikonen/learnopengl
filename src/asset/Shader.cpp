@@ -317,11 +317,11 @@ void Shader::setInt(const std::string& name, int value) noexcept
 }
 
 void Shader::setupUBO(
-    const std::string& name,
+    const char* name,
     unsigned int ubo,
     unsigned int expectedSize) noexcept
 {
-    unsigned int blockIndex = glGetUniformBlockIndex(m_programId, name.c_str());
+    unsigned int blockIndex = glGetUniformBlockIndex(m_programId, name);
     if (blockIndex == GL_INVALID_INDEX) {
         KI_WARN_SB("SHADER::MISSING_UBO " << m_shaderName << " UBO=" << name);
         return;
@@ -347,7 +347,10 @@ void Shader::setupUBO(
 /**
 * Load shader file
 */
-std::string Shader::loadSource(const std::string& path, bool optional) {
+std::string Shader::loadSource(
+    const std::string& path,
+    bool optional)
+{
     std::vector<std::string> lines = loadSourceLines(path, optional);
 
     std::stringstream sb;
@@ -365,7 +368,10 @@ std::string Shader::loadSource(const std::string& path, bool optional) {
 /**
 * Load shader file
 */
-std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool optional) {
+std::vector<std::string> Shader::loadSourceLines(
+    const std::string& path,
+    bool optional)
+{
     bool exists = fileExists(path);
     if (!exists && optional) {
         KI_INFO_SB("FILE_NOT_EXIST: " << path);
@@ -426,7 +432,9 @@ std::vector<std::string> Shader::loadSourceLines(const std::string& path, bool o
     return lines;
 }
 
-std::vector<std::string> Shader::processInclude(const std::string& includePath, int lineNumber)
+std::vector<std::string> Shader::processInclude(
+    const std::string& includePath,
+    int lineNumber)
 {
     std::string path;
     {
