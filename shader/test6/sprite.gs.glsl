@@ -14,7 +14,7 @@ layout(max_vertices = 4) out;
 
 in VS_OUT {
   vec3 normal;
-  vec3 vertexPos;
+  vec4 vertexPos;
 
   flat uint materialIndex;
 
@@ -29,7 +29,7 @@ out GS_OUT {
   vec3 fragPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
+  vec4 vertexPos;
   vec3 viewVertexPos;
 
   flat uint materialIndex;

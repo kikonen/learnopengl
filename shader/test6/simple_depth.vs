@@ -2,7 +2,7 @@
 
 #include constants.glsl
 
-layout (location = 0) in vec3 a_pos;
+layout (location = 0) in vec4 a_pos;
 #ifdef USE_ALPHA
 layout (location = 4) in uint a_materialIndex;
 layout (location = 5) in vec2 a_texCoord;
@@ -20,7 +20,7 @@ out VS_OUT {
 
 void main()
 {
-  vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
+  vec4 worldPos = a_modelMatrix * a_pos;
 
   gl_Position = u_lightProjectedMatrix * worldPos;
 

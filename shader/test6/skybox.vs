@@ -1,5 +1,5 @@
 #version 450 core
-layout (location = 0) in vec3 a_pos;
+layout (location = 0) in vec4 a_pos;
 
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_viewMatrix;
@@ -13,8 +13,8 @@ out float gl_ClipDistance[2];
 ////////////////////////////////////////////////////////////
 
 void main() {
-  texCoord = a_pos;
-  vec4 pos = u_projectionMatrix * u_viewMatrix * vec4(a_pos, 1.0);
+  texCoord = a_pos.xyz;
+  vec4 pos = u_projectionMatrix * u_viewMatrix * a_pos;
   gl_Position = pos.xyww;
 
   gl_ClipDistance[0] = 1;

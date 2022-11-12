@@ -2,7 +2,7 @@
 
 #include constants.glsl
 
-layout (location = 0) in vec3 a_pos;
+layout (location = 0) in vec4 a_pos;
 layout (location = 1) in vec3 a_normal;
 #ifdef USE_NORMAL_TEX
 layout (location = 2) in vec3 a_tangent;
@@ -26,7 +26,7 @@ out VS_OUT {
   vec3 fragPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
+  vec4 vertexPos;
   vec3 viewVertexPos;
 
   flat uint materialIndex;
@@ -46,7 +46,7 @@ out VS_OUT {
 precision lowp float;
 
 void main() {
-  vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
+  vec4 worldPos = a_modelMatrix * a_pos;
 
   vs_out.glp = u_projectedMatrix * worldPos;
   gl_Position = vs_out.glp;

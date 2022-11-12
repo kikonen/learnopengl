@@ -11,7 +11,7 @@ layout (location = 10) in mat3 a_normalMatrix;
 
 out VS_OUT {
   vec3 normal;
-  vec3 vertexPos;
+  vec4 vertexPos;
 
   flat uint materialIndex;
 
@@ -23,7 +23,7 @@ out VS_OUT {
 } vs_out;
 
 // TODO KI y = -1.0 fixes sprite.gs, but why?!?
-const vec3 pos = vec3(0.0, -1.0, 0.0);
+const vec4 pos = vec4(0.0, -1.0, 0.0, 1.0);
 const vec3 normal = vec3(0.0, 0.0, 1.0);
 
 ////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ const vec3 normal = vec3(0.0, 0.0, 1.0);
 precision lowp float;
 
 void main() {
-  vec4 worldPos = a_modelMatrix * vec4(pos, 1.0);
+  vec4 worldPos = a_modelMatrix * pos;
 
   gl_Position = worldPos;
 

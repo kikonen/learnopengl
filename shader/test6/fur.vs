@@ -2,7 +2,7 @@
 
 #include constants.glsl
 
-layout (location = 0) in vec3 a_pos;
+layout (location = 0) in vec4 a_pos;
 layout (location = 1) in vec3 a_normal;
 layout (location = 4) in uint a_materialIndex;
 layout (location = 5) in vec2 a_texCoord;
@@ -28,11 +28,11 @@ out float gl_ClipDistance[CLIP_COUNT];
 #include fn_calculate_clipping.glsl
 
 void main() {
-  vec4 worldPos = a_modelMatrix * vec4(a_pos, 1.0);
+  vec4 worldPos = a_modelMatrix * a_pos;
 
   mat4 vmMat = u_viewMatrix * a_modelMatrix;
 
-  gl_Position = vmMat * vec4(a_pos, 1.0);
+  gl_Position = vmMat * a_pos;
 
   vs_out.normal = normalize(a_normalMatrix * a_normal);
 
