@@ -241,7 +241,7 @@ void Scene::draw(RenderContext& ctx)
     ctx.state.enable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    glUseProgram(0);
+    //glUseProgram(0);
 
     if (m_shadowMapRenderer) {
         m_shadowMapRenderer->render(ctx, m_registry);

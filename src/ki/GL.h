@@ -33,13 +33,13 @@
 #endif
 
 #ifdef KI_GL_DEBUG_CALL
-    #define KI_GL_CALL(x) x; ki::GL::checkErrors(std::string(#x" - ") + __FILE__ + ":" + std::to_string(__LINE__))
+#define KI_GL_CALL(x) x; ki::GL::checkErrors(#x, __FILE__, __LINE__)
 #else
     #define KI_GL_CALL(x) x
 #endif
 
 #ifdef KI_GL_DEBUG_CHECK
-    #define KI_GL_CHECK(msg) ki::GL::checkErrors(std::string(#msg" - ") + __FILE__ + ":" + std::to_string(__LINE__))
+#define KI_GL_CHECK(x) ki::GL::checkErrors(#x, __FILE__, __LINE__)
 #else
     #define KI_GL_CHECK(msg)
 #endif
@@ -100,7 +100,7 @@ namespace ki {
         static void startError();
         static void startDebug();
 
-        static void checkErrors(const std::string& loc) noexcept;
+        static void checkErrors(const char* code, const char* file, int lineNumber) noexcept;
         static void unbindFBO();
 
         static OpenGLInfo getInfo();

@@ -75,14 +75,13 @@ void CommandEngine::processPending(const RenderContext& ctx) noexcept
         // canceled; discard
         if (cmd->m_canceled) continue;
 
-        // => Discard node; it has disappeared
-        if (!isValid(ctx, cmd.get())) continue;
-
         m_commands[cmd->m_id] = cmd.get();
 
-        auto prev = cmd->m_afterCommandId > 0 ? m_commands[cmd->m_afterCommandId] : nullptr;
-        if (prev) {
-            prev->m_next.push_back(cmd->m_id);
+        if (cmd->m_afterCommandId > 0) {
+            auto prev = m_commands[cmd->m_afterCommandId];
+            if (prev) {
+                prev->m_next.push_back(cmd->m_id);
+            }
         }
 
         m_blocked.emplace_back(std::move(cmd));
@@ -98,13 +97,6 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
     for (auto& cmd : m_blocked) {
         // canceled; discard
         if (cmd->m_canceled) {
-            cleanup = true;
-            continue;
-        }
-
-        // => Discard node; it has disappeared
-        if (!isValid(ctx, cmd.get())) {
-            cmd->m_canceled = true;
             cleanup = true;
             continue;
         }
@@ -161,12 +153,12 @@ void CommandEngine::processActive(const RenderContext& ctx) noexcept
             continue;
         }
 
-        // => Discard node; it has disappeared
-        if (!isValid(ctx, cmd.get())) {
-            cmd->m_canceled = true;
-            cleanup = true;
-            continue;
-        }
+        //// => Discard node; it has disappeared
+        //if (!isValid(ctx, cmd.get())) {
+        //    cmd->m_canceled = true;
+        //    cleanup = true;
+        //    continue;
+        //}
 
         cmd->execute(ctx);
 

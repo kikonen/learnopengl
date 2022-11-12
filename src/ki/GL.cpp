@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "fmt/format.h"
 
 namespace ki {
     // https://gist.github.com/liam-middlebrook/c52b069e4be2d87a6d2f
@@ -59,13 +60,13 @@ namespace ki {
     }
 
     void glMessageCallback(
-        GLenum source, 
-        GLenum type, 
-        GLuint id, 
-        GLenum severity, 
+        GLenum source,
+        GLenum type,
+        GLuint id,
+        GLenum severity,
         GLsizei length,
-        const GLchar* message, 
-        const void* userParam) noexcept 
+        const GLchar* message,
+        const void* userParam) noexcept
     {
         std::stringstream ss;
         ss << formatSource(source)
@@ -110,7 +111,7 @@ namespace ki {
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, NULL, GL_TRUE);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH, 0, NULL, GL_TRUE);
 
-        // 
+        //
         //// https://gitter.im/mosra/magnum/archives/2018/05/16?at=5afbda8fd245fe2eb7b459cf
         ///* Disable rather spammy "Buffer detailed info" debug messages on NVidia drivers */
         //GL::DebugOutput::setEnabled(
@@ -122,32 +123,24 @@ namespace ki {
             std::cout << "GLFW: GL_CONTEXT_FLAG_DEBUG_BIT=true\n";
         }
 
-        checkErrors("init");
+        checkErrors("init", __FILE__, __LINE__);
     }
 
-    /*
-    void KIGL::checkErrors()
+    void GL::checkErrors(const char* code, const char* file, int lineNumber) noexcept
     {
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR)
         {
-            // https://www.khronos.org/opengl/wiki/OpenGL_Error
-            KI_ERROR_SB("0x" << std::hex << err << std::dec << " (" << err << ")");
-        }
-    }
-    */
+            auto info = fmt::format("{} - {}:{}", code, file, lineNumber);
 
-    void GL::checkErrors(const std::string& loc) noexcept {
-        GLenum err;
-        while ((err = glGetError()) != GL_NO_ERROR)
-        {
             // https://www.khronos.org/opengl/wiki/OpenGL_Error
-            KI_ERROR_SB(loc << ": " << "0x" << std::hex << err << std::dec << " (" << err << ")");
+            KI_ERROR_SB(info << ": " << "0x" << std::hex << err << std::dec << " (" << err << ")");
             KI_BREAK();
         }
     }
 
-    void GL::unbindFBO() {
+    void GL::unbindFBO()
+    {
         GLint drawFboId = 0, readFboId = 0, plainFboId = 0;
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, &plainFboId);
         glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
