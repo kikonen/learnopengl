@@ -14,13 +14,12 @@
 namespace {
 #pragma pack(push, 1)
     struct TexVBO {
-        // TODO KI *BROKEN* if material is anything else than first
-        // => completely broken with DSA
-        // = *COULD* be related old "disappearing" materials issues?!?
-        unsigned int material;
         glm::vec3 pos;
         ki::VEC10 normal;
         ki::VEC10 tangent;
+        // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
+        // => use float
+        float material;
         ki::UV16 texCoords;
     };
 #pragma pack(pop)
@@ -173,11 +172,13 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
 
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     constexpr int stride_size = sizeof(TexVBO);
-    void* vboBuffer = new unsigned char[stride_size * m_vertices.size()];
-    memset(vboBuffer, 0, stride_size * m_vertices.size());
+    const int sz = stride_size * m_vertices.size();
+
+    TexVBO* vboBuffer = (TexVBO*)new unsigned char[sz];
+    memset(vboBuffer, 0, sz);
 
     {
-        TexVBO* vbo = (TexVBO*)vboBuffer;
+        TexVBO* vbo = vboBuffer;
         for (int i = 0; i < m_vertices.size(); i++) {
             const Vertex& vertex = m_vertices[i];
             const glm::vec3& p = vertex.pos;
@@ -198,18 +199,31 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
             vbo->tangent.y = (int)(tan.y * ki::SCALE_VEC10);
             vbo->tangent.z = (int)(tan.z * ki::SCALE_VEC10);
 
+            //vbo->normal.x = n.x;
+            //vbo->normal.y = n.y;
+            //vbo->normal.z = n.z;
+
+            //vbo->tangent.x = tan.x;
+            //vbo->tangent.y = tan.y;
+            //vbo->tangent.z = tan.z;
+
             // TODO KI should use noticeable value for missing
             // => would trigger undefined array access in render side
             vbo->material = m ? m->m_index : 0;
 
             vbo->texCoords.u = (int)(t.x * ki::SCALE_UV16);
             vbo->texCoords.v = (int)(t.y * ki::SCALE_UV16);
+            //vbo->texCoords.x = t.x;
+            //vbo->texCoords.y = t.y;
+
+            assert(vbo->material >= 0 && vbo->material < MAX_MATERIAL_COUNT);
 
             vbo++;
         }
     }
 
-    glNamedBufferStorage(curr.VBO, stride_size * m_vertices.size(), vboBuffer, 0);
+    assert(vboBuffer->material >= 0 && vboBuffer->material < MAX_MATERIAL_COUNT);
+    glNamedBufferStorage(curr.VBO, sz, vboBuffer, 0);
     delete[] vboBuffer;
 
     glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
@@ -233,7 +247,7 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
         glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, tangent));
 
         // materialID attr
-        glVertexArrayAttribIFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_UNSIGNED_INT, offsetof(TexVBO, material));
+        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(TexVBO, material));
 
         // texture attr
         glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TexVBO, texCoords));

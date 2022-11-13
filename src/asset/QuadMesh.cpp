@@ -4,31 +4,26 @@
 
 #include "asset/Sphere.h"
 
-const float VERTICES[] = {
-    // pos              // normal         // tangent        //mat // tex
-    -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-     1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-     1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-};
-
-//const int INDECES[] = {
-//    0, 1, 2,
-//    2, 1, 3,
-//};
-
-//const int VERTEX_COUNT = 6;
-
 namespace {
+    const float VERTICES[] = {
+        // pos              // normal         // tangent        //mat // tex
+        -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+         1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+         1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+    };
+
+    constexpr int ROW_SIZE = 12;
+    constexpr int VERTEX_COUNT = 4;
+
 #pragma pack(push, 1)
     struct TexVBO {
-        // TODO KI *BROKEN* if material is anything else than first
-        // => completely broken with DSA
-        // = *COULD* be related old "disappearing" materials issues?!?
-        unsigned int material;
         glm::vec3 pos;
         ki::VEC10 normal;
         ki::VEC10 tangent;
+        // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
+        // => use float
+        float material;
         ki::UV16 texCoords;
     };
 #pragma pack(pop)
@@ -127,14 +122,16 @@ void QuadMesh::prepareVBO(MeshBuffers& curr)
 
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     constexpr int stride_size = sizeof(TexVBO);
-    void* vboBuffer = new unsigned char[stride_size * 4];
-    memset(vboBuffer, 0, stride_size * 4);
+    const int sz = stride_size * VERTEX_COUNT;
+
+    TexVBO* vboBuffer = (TexVBO*)new unsigned char[sz];
+    memset(vboBuffer, 0, sz);
 
     {
-        constexpr int row_size = 12;// sizeof(VERTICES) / 4;
+        constexpr int row_size = ROW_SIZE;
 
-        TexVBO* vbo = (TexVBO*)vboBuffer;
-        for (int i = 0; i < 4; i++) {
+        TexVBO* vbo = vboBuffer;
+        for (int i = 0; i < VERTEX_COUNT; i++) {
             int base = i * row_size;
 
             vbo->pos.x = VERTICES[base++];
@@ -144,12 +141,10 @@ void QuadMesh::prepareVBO(MeshBuffers& curr)
             vbo->normal.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
             vbo->normal.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
             vbo->normal.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-            vbo->normal.not_used = 0;
 
             vbo->tangent.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
             vbo->tangent.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
             vbo->tangent.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-            vbo->tangent.not_used = 0;
 
             // NOTE KI hardcoded single material
             vbo->material = VERTICES[base++];
@@ -157,11 +152,13 @@ void QuadMesh::prepareVBO(MeshBuffers& curr)
             vbo->texCoords.u = (int)(VERTICES[base++] * ki::SCALE_UV16);
             vbo->texCoords.v = (int)(VERTICES[base++] * ki::SCALE_UV16);
 
+            assert(vbo->material >= 0 && vbo->material < MAX_MATERIAL_COUNT);
+
             vbo++;
         }
     }
 
-    glNamedBufferStorage(curr.VBO, stride_size * 4, vboBuffer, 0);
+    glNamedBufferStorage(curr.VBO, sz, vboBuffer, 0);
     delete[] vboBuffer;
 
     glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
@@ -182,7 +179,7 @@ void QuadMesh::prepareVBO(MeshBuffers& curr)
         glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, tangent));
 
         // materialID attr
-        glVertexArrayAttribIFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_UNSIGNED_INT, offsetof(TexVBO, material));
+        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(TexVBO, material));
 
         // texture attr
         glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TexVBO, texCoords));

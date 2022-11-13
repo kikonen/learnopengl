@@ -7,10 +7,9 @@
 namespace {
 #pragma pack(push, 1)
     struct TexVBO {
-        // TODO KI *BROKEN* if material is anything else than first
-        // => completely broken with DSA
-        // = *COULD* be related old "disappearing" materials issues?!?
-        unsigned int material;
+        // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
+        // => use float
+        float material;
     };
 #pragma pack(pop)
 }
@@ -118,7 +117,7 @@ void SpriteMesh::prepareVBO(MeshBuffers& curr)
     {
         glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
 
-        glVertexArrayAttribIFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_UNSIGNED_INT, offsetof(TexVBO, material));
+        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(TexVBO, material));
 
         glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_VERTEX_BINDING);
     }

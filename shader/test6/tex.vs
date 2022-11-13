@@ -7,7 +7,7 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 #ifdef USE_NORMAL_TEX
 layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #endif
-layout (location = ATTR_MATERIAL_INDEX) in uint a_materialIndex;
+layout (location = ATTR_MATERIAL_INDEX) in float a_materialIndex;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
 layout (location = ATTR_INSTANCE_NORMAL_MATRIX_1) in mat3 a_normalMatrix;
@@ -48,13 +48,14 @@ precision lowp float;
 #include fn_calculate_clipping.glsl
 
 void main() {
+  int materialIndex = int(a_materialIndex);
   vec4 worldPos = a_modelMatrix * a_pos;
 
   gl_Position = u_projectedMatrix * worldPos;
 
-  vs_out.materialIndex = a_materialIndex;
+  vs_out.materialIndex = materialIndex;
 
-  vs_out.texCoord = a_texCoord * u_materials[a_materialIndex].tiling;
+  vs_out.texCoord = a_texCoord * u_materials[materialIndex].tiling;
 
   vs_out.fragPos = worldPos.xyz;
   vs_out.vertexPos = a_pos;
@@ -67,7 +68,7 @@ void main() {
   vs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
 
 #ifdef USE_NORMAL_TEX
-  if (u_materials[a_materialIndex].normalMapTex >= 0) {
+  if (u_materials[materialIndex].normalMapTex >= 0) {
     vec3 N = vs_out.normal;
     vec3 T = normalize(a_normalMatrix * a_tangent);
     T = normalize(T - dot(T, N) * N);
