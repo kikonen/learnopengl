@@ -131,7 +131,7 @@ void CubeMapRenderer::render(
 
     prev.swap(curr);
 
-    rendered = true;
+    m_rendered = true;
 }
 
 void CubeMapRenderer::clearCubeMap(

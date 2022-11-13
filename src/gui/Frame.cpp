@@ -1,7 +1,7 @@
 #include "Frame.h"
 
 Frame::Frame(Window& window)
-    : window(window)
+    : m_window(window)
 {
 }
 

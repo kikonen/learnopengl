@@ -4,7 +4,7 @@
 AsyncLoader::AsyncLoader(
     ShaderRegistry& shaders,
     const Assets& assets)
-  : shaders(shaders),
+  : m_shaders(shaders),
     assets(assets)
 {
 }
@@ -15,13 +15,13 @@ void AsyncLoader::setup()
 
 void AsyncLoader::waitForReady()
 {
-    std::unique_lock<std::mutex> lock(load_lock);
+    std::unique_lock<std::mutex> lock(m_load_lock);
 
-    bool done = loadedCount == startedCount;
+    bool done = m_loadedCount == m_startedCount;
 
     while (!done) {
-        waitCondition.wait(lock);
-        done = loadedCount == startedCount;
+        m_waitCondition.wait(lock);
+        done = m_loadedCount == m_startedCount;
     }
 }
 
@@ -32,8 +32,8 @@ void AsyncLoader::addLoader(std::function<void()> loader)
         return;
     }
 
-    std::lock_guard<std::mutex> lock(load_lock);
-    startedCount++;
+    std::lock_guard<std::mutex> lock(m_load_lock);
+    m_startedCount++;
 
     // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic
     // https://stackoverflow.com/questions/21531096/can-i-use-stdasync-without-waiting-for-the-future-limitation
@@ -43,9 +43,9 @@ void AsyncLoader::addLoader(std::function<void()> loader)
                 std::this_thread::sleep_for(std::chrono::milliseconds(assets.asyncLoaderDelay));
 
             loader();
-            std::unique_lock<std::mutex> lock(load_lock);
-            loadedCount++;
-            waitCondition.notify_all();
+            std::unique_lock<std::mutex> lock(m_load_lock);
+            m_loadedCount++;
+            m_waitCondition.notify_all();
         }
     };
     th.detach();
@@ -53,7 +53,7 @@ void AsyncLoader::addLoader(std::function<void()> loader)
 
 Shader* AsyncLoader::getShader(const std::string& name)
 {
-    return shaders.getShader(assets, name);
+    return m_shaders.getShader(assets, name);
 }
 
 Shader* AsyncLoader::getShader(
@@ -61,7 +61,7 @@ Shader* AsyncLoader::getShader(
     const int materialCount,
     const std::map<std::string, std::string>& defines)
 {
-    return shaders.getShader(assets, name, materialCount, defines);
+    return m_shaders.getShader(assets, name, materialCount, defines);
 }
 
 Shader* AsyncLoader::getShader(
@@ -70,5 +70,5 @@ Shader* AsyncLoader::getShader(
     const int materialCount,
     const std::map<std::string, std::string>& defines)
 {
-    return shaders.getShader(assets, name, geometryType, materialCount, defines);
+    return m_shaders.getShader(assets, name, geometryType, materialCount, defines);
 }

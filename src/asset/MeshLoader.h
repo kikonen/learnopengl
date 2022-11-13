@@ -35,9 +35,9 @@ public:
     const std::string m_meshName;
     const std::string m_meshPath;
 
-    Material defaultMaterial;
-    bool forceDefaultMaterial = false;
-    bool loadTextures = true;
+    Material m_defaultMaterial;
+    bool m_forceDefaultMaterial = false;
+    bool m_loadTextures = true;
 
 private:
     unsigned int resolveVertexIndex(

@@ -56,8 +56,8 @@ const float skyboxVertices[] = {
 SkyboxRenderer::SkyboxRenderer(
     const std::string& shaderName,
     const std::string& materialName)
-  : shaderName(shaderName),
-    materialName(materialName)
+  : m_shaderName(shaderName),
+    m_materialName(materialName)
 {
 }
 
@@ -72,13 +72,13 @@ void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     Renderer::prepare(assets, shaders);
 
-    shader = shaders.getShader(assets, shaderName);
+    m_shader = shaders.getShader(assets, m_shaderName);
 
-    shader->prepare(assets);
+    m_shader->prepare(assets);
 
     if (false) {
-        ShaderBind bound(shader);
-        shader->skybox.set(assets.skyboxUnitIndex);
+        ShaderBind bound(m_shader);
+        m_shader->skybox.set(assets.skyboxUnitIndex);
     }
 
     {
@@ -86,7 +86,7 @@ void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         {
             std::filesystem::path fp;
             fp /= assets.modelsDir;
-            fp /= materialName;
+            fp /= m_materialName;
             basePath = fp.string();
         }
 
@@ -99,17 +99,17 @@ void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
             basePath + "/back.jpg"
         };
 
-        textureID = CubeMap::createFromImages(faces);
+        m_textureID = CubeMap::createFromImages(faces);
     }
 
     {
-        buffers.prepare(false);
+        m_buffers.prepare(false);
 
-        const int vao = buffers.VAO;
+        const int vao = m_buffers.VAO;
 
-        glNamedBufferStorage(buffers.VBO, sizeof(skyboxVertices), &skyboxVertices, 0);
+        glNamedBufferStorage(m_buffers.VBO, sizeof(skyboxVertices), &skyboxVertices, 0);
 
-        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, buffers.VBO, 0, sizeof(glm::vec3));
+        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_buffers.VBO, 0, sizeof(glm::vec3));
 
         glEnableVertexArrayAttrib(vao, ATTR_SKYBOX_POS);
 
@@ -126,7 +126,7 @@ void SkyboxRenderer::assign(Shader* shader)
 
 void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 {
-    ctx.state.bindTexture(ctx.assets.skyboxUnitIndex, textureID, false);
+    ctx.state.bindTexture(ctx.assets.skyboxUnitIndex, m_textureID, false);
 }
 
 void SkyboxRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
@@ -135,17 +135,17 @@ void SkyboxRenderer::update(const RenderContext& ctx, const NodeRegistry& regist
 
 void SkyboxRenderer::render(const RenderContext& ctx)
 {
-    ShaderBind bound(shader);
+    ShaderBind bound(m_shader);
     bindTexture(ctx);
 
     // remove translation from the view matrix
     glm::mat4 viewMatrix = glm::mat4(glm::mat3(ctx.matrices.view));
 
-    shader->viewMatrix.set(viewMatrix);
-    shader->projectionMatrix.set(ctx.matrices.projection);
+    m_shader->viewMatrix.set(viewMatrix);
+    m_shader->projectionMatrix.set(ctx.matrices.projection);
 
     glDepthFunc(GL_LEQUAL);
-    glBindVertexArray(buffers.VAO);
+    glBindVertexArray(m_buffers.VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthFunc(GL_LESS);
 

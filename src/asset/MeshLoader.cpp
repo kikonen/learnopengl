@@ -31,7 +31,7 @@ MeshLoader::MeshLoader(
     m_meshPath(meshPath)
 {
     // TODO KI *undesired*; this is modified externally
-    defaultMaterial = Material::createDefaultMaterial();
+    m_defaultMaterial = Material::createDefaultMaterial();
 }
 
 MeshLoader::~MeshLoader()
@@ -68,8 +68,8 @@ void MeshLoader::loadData(
     positions.reserve(10000);
 
     {
-        defaultMaterial.m_default = true;
-        defaultMaterial.m_used = false;;
+        m_defaultMaterial.m_default = true;
+        m_defaultMaterial.m_used = false;;
     }
 
     std::filesystem::path filePath;
@@ -192,17 +192,17 @@ void MeshLoader::loadData(
         mesh.calculateVolume();
 
         {
-            if (defaultMaterial.m_used) {
-                if (loadTextures) {
-                    defaultMaterial.loadTextures(assets);
+            if (m_defaultMaterial.m_used) {
+                if (m_loadTextures) {
+                    m_defaultMaterial.loadTextures(assets);
                 }
-                materials.push_back(defaultMaterial);
+                materials.push_back(m_defaultMaterial);
             }
 
             for (auto& material : loadedMaterials) {
                 if (!material.m_used) continue;
 
-                if (loadTextures) {
+                if (m_loadTextures) {
                     material.loadTextures(assets);
                 }
 
@@ -256,8 +256,8 @@ unsigned int MeshLoader::resolveVertexIndex(
     // TODO KI actually do sharing of vertices
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
 
-    if (forceDefaultMaterial || !material) {
-        material = &defaultMaterial;
+    if (m_forceDefaultMaterial || !material) {
+        material = &m_defaultMaterial;
     }
     // TODO KI danger with shared default material
     material->m_used = true;

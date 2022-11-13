@@ -31,5 +31,5 @@ protected:
 
     unsigned long m_lastHitFrame = 0;
 
-    bool rendered = false;
+    bool m_rendered = false;
 };

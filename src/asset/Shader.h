@@ -136,16 +136,19 @@ private:
 public:
     class Uniform {
     protected:
-        Uniform(const std::string_view& name) : name(name) {
+        // NOTE KI "location=N" is not really feasible due to limitations
+        // https ://www.khronos.org/opengl/wiki/Layout_Qualifier_(GLSL)
+        Uniform(const std::string_view& name)
+            : m_name(name) {
         }
 
     public:
         void init(Shader* shader) {
-            locId = shader->getUniformLoc(name);
+            m_locId = shader->getUniformLoc(m_name);
         }
     protected:
-        const std::string name;
-        GLint locId = -1;
+        const std::string m_name;
+        GLint m_locId = -1;
     };
 
     class Mat4 final : public Uniform {
@@ -154,8 +157,8 @@ public:
         }
 
         void set(const glm::mat4& value) noexcept {
-            if (locId != -1) {
-                glUniformMatrix4fv(locId, 1, GL_FALSE, glm::value_ptr(value));
+            if (m_locId != -1) {
+                glUniformMatrix4fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
 
         }
@@ -167,8 +170,8 @@ public:
         }
 
         void set(const glm::mat3& value) noexcept {
-            if (locId != -1) {
-                glUniformMatrix3fv(locId, 1, GL_FALSE, glm::value_ptr(value));
+            if (m_locId != -1) {
+                glUniformMatrix3fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
 
         }
@@ -180,8 +183,8 @@ public:
         }
 
         void set(const glm::mat2& value) noexcept {
-            if (locId != -1) {
-                glUniformMatrix3fv(locId, 1, GL_FALSE, glm::value_ptr(value));
+            if (m_locId != -1) {
+                glUniformMatrix3fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
 
         }
@@ -193,8 +196,8 @@ public:
         }
 
         void set(const glm::vec4& value) noexcept {
-            if (locId != -1) {
-                glUniform1fv(locId, 4, glm::value_ptr(value));
+            if (m_locId != -1) {
+                glUniform1fv(m_locId, 4, glm::value_ptr(value));
             }
 
         }
@@ -206,8 +209,8 @@ public:
         }
 
         void set(const glm::vec3& value) noexcept {
-            if (locId != -1) {
-                glUniform1fv(locId, 3, glm::value_ptr(value));
+            if (m_locId != -1) {
+                glUniform1fv(m_locId, 3, glm::value_ptr(value));
             }
 
         }
@@ -219,8 +222,8 @@ public:
         }
 
         void set(const glm::vec2& value) noexcept {
-            if (locId != -1) {
-                glUniform1fv(locId, 2, glm::value_ptr(value));
+            if (m_locId != -1) {
+                glUniform1fv(m_locId, 2, glm::value_ptr(value));
             }
 
         }
@@ -232,8 +235,8 @@ public:
         }
 
         void set(int count, const float* values) noexcept {
-            if (locId != -1) {
-                glUniform1fv(locId, count, values);
+            if (m_locId != -1) {
+                glUniform1fv(m_locId, count, values);
             }
 
         }
@@ -245,8 +248,8 @@ public:
         }
 
         void set(int count, const GLint* values) noexcept {
-            if (locId != -1) {
-                glUniform1iv(locId, count, values);
+            if (m_locId != -1) {
+                glUniform1iv(m_locId, count, values);
             }
 
         }
@@ -258,16 +261,16 @@ public:
         }
 
         void set(const float value) noexcept {
-            if (locId != -1 && (unassigned || value != lastValue)) {
-                glUniform1f(locId, value);
-                lastValue = value;
-                unassigned = false;
+            if (m_locId != -1 && (m_unassigned || value != m_lastValue)) {
+                glUniform1f(m_locId, value);
+                m_lastValue = value;
+                m_unassigned = false;
             }
 
         }
     private:
-        bool unassigned = true;
-        float lastValue;
+        bool m_unassigned = true;
+        float m_lastValue;
     };
 
     class Int final : public Uniform {
@@ -276,15 +279,15 @@ public:
         }
 
         void set(const int value) noexcept {
-            if (locId != -1 && (unassigned || value != lastValue)) {
-                glUniform1i(locId, value);
-                lastValue = value;
-                unassigned = false;
+            if (m_locId != -1 && (m_unassigned || value != m_lastValue)) {
+                glUniform1i(m_locId, value);
+                m_lastValue = value;
+                m_unassigned = false;
             }
         }
     private:
-        bool unassigned = true;
-        int lastValue;
+        bool m_unassigned = true;
+        int m_lastValue;
     };
 
     class Bool final : public Uniform {
@@ -293,15 +296,15 @@ public:
         }
 
         void set(const bool value) noexcept {
-            if (locId != -1 && (unassigned || value != lastValue)) {
-                glUniform1i(locId, (int)value);
-                lastValue = value;
-                unassigned = false;
+            if (m_locId != -1 && (m_unassigned || value != m_lastValue)) {
+                glUniform1i(m_locId, (int)value);
+                m_lastValue = value;
+                m_unassigned = false;
             }
         }
     private:
-        bool unassigned = true;
-        bool lastValue;
+        bool m_unassigned = true;
+        bool m_lastValue;
     };
 
 public:

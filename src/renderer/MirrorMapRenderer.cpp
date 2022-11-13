@@ -124,7 +124,7 @@ void MirrorMapRenderer::render(
 
     ctx.bindMatricesUBO();
 
-    rendered = true;
+    m_rendered = true;
 }
 
 void MirrorMapRenderer::drawNodes(

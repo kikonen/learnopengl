@@ -25,14 +25,14 @@ public:
     void render(const RenderContext& ctx);
 
 public:
-    unsigned int textureID;
+    unsigned int m_textureID;
 
 private:
-    const std::string shaderName;
-    const std::string materialName;
+    const std::string m_shaderName;
+    const std::string m_materialName;
 
-    MeshBuffers buffers;
+    MeshBuffers m_buffers;
 
-    Shader* shader{ nullptr };
+    Shader* m_shader{ nullptr };
 };
 

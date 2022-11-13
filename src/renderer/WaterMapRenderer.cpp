@@ -58,7 +58,7 @@ void WaterMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 {
-    if (!rendered) return;
+    if (!m_rendered) return;
 
     m_reflectionBuffer->bindTexture(ctx, 0, ctx.assets.waterReflectionMapUnitIndex);
     m_refractionBuffer->bindTexture(ctx, 0, ctx.assets.waterRefractionMapUnitIndex);
@@ -141,7 +141,7 @@ void WaterMapRenderer::render(
 
     ctx.bindMatricesUBO();
 
-    rendered = true;
+    m_rendered = true;
 }
 
 void WaterMapRenderer::drawNodes(

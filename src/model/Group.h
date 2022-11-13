@@ -4,5 +4,5 @@
 
 class Group {
 public:
-    uuids::uuid id;
+    uuids::uuid m_id;
 };

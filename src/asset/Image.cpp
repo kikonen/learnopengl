@@ -40,14 +40,14 @@ Image* Image::getImage(const std::string& path)
 
 
 Image::Image(const std::string& path)
-    :path(path)
+    :m_path(path)
 {
 }
 
 Image::~Image()
 {
-    stbi_image_free(data);
-    data = nullptr;
+    stbi_image_free(m_data);
+    m_data = nullptr;
 }
 
 // NOTE KI *NOT* thread safe
@@ -55,32 +55,32 @@ Image::~Image()
 int Image::load(bool flip) {
     std::lock_guard<std::mutex> lock(load_lock);
 
-    if (loaded) {
-        return res;
+    if (m_loaded) {
+        return m_res;
     }
-    loaded = true;
+    m_loaded = true;
 
-    flipped = flip;
+    m_flipped = flip;
     stbi_set_flip_vertically_on_load(flip);
 
-    data = stbi_load(
-        path.c_str(),
-        &width,
-        &height,
-        &channels,
+    m_data = stbi_load(
+        m_path.c_str(),
+        &m_width,
+        &m_height,
+        &m_channels,
         STBI_default);
 
-    if (data) {
-        KI_INFO_SB("IMAGE::LOADED " << path
-            + " flipped=" << std::to_string(flipped)
-            + " channels=" << std::to_string(channels)
-            + " width=" << std::to_string(width)
-            + " height=" << std::to_string(height));
+    if (m_data) {
+        KI_INFO_SB("IMAGE::LOADED " << m_path
+            + " flipped=" << std::to_string(m_flipped)
+            + " channels=" << std::to_string(m_channels)
+            + " width=" << std::to_string(m_width)
+            + " height=" << std::to_string(m_height));
     }
     else {
-        KI_ERROR_SB("IMAGE::LOAD_FAILED " << path);
+        KI_ERROR_SB("IMAGE::LOAD_FAILED " << m_path);
     }
 
-    res = data ? 0 : -1;
-    return res;
+    m_res = m_data ? 0 : -1;
+    return m_res;
 }

@@ -56,8 +56,8 @@ unsigned int CubeMap::createFromImages(std::vector<std::string> faces)
         Image* image = new Image(faces[i]);
         images[i] = image;
         if (image->load(false)) continue;
-        w = image->width;
-        h = image->height;
+        w = image->m_width;
+        h = image->m_height;
     }
 
     glTextureStorage2D(textureID, 1, GL_RGBA8, w, h);
@@ -66,9 +66,9 @@ unsigned int CubeMap::createFromImages(std::vector<std::string> faces)
     for (unsigned int i = 0; i < 6; i++)
     {
         Image* image = images[i];
-        if (!image->data) continue;
+        if (!image->m_data) continue;
 
-        KI_GL_CALL(glTextureSubImage3D(textureID, 0, 0, 0, i, image->width, image->height, 1, GL_RGB, GL_UNSIGNED_BYTE, image->data));
+        KI_GL_CALL(glTextureSubImage3D(textureID, 0, 0, 0, i, image->m_width, image->m_height, 1, GL_RGB, GL_UNSIGNED_BYTE, image->m_data));
     }
 
     for (unsigned int i = 0; i < 6; i++) {

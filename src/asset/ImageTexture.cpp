@@ -63,14 +63,14 @@ void ImageTexture::prepare(const Assets& assets)
 
     if (!m_valid) return;
 
-    if (m_image->channels == 3) {
+    if (m_image->m_channels == 3) {
         m_format = GL_RGB;
         m_internalFormat = GL_RGB8;
-    } else if (m_image->channels == 4) {
+    } else if (m_image->m_channels == 4) {
         m_format = GL_RGBA;
         m_internalFormat = GL_RGBA8;
     } else {
-        KI_WARN_SB("IMAGE: unsupported channels " << m_image->channels);
+        KI_WARN_SB("IMAGE: unsupported channels " << m_image->m_channels);
         m_valid = false;
         m_image.reset();
         return;
@@ -96,8 +96,8 @@ void ImageTexture::prepare(const Assets& assets)
     glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTextureStorage2D(m_textureID, MIP_MAP_LEVELS, m_internalFormat, m_image->width, m_image->height);
-    glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->width, m_image->height, m_format, GL_UNSIGNED_BYTE, m_image->data);
+    glTextureStorage2D(m_textureID, MIP_MAP_LEVELS, m_internalFormat, m_image->m_width, m_image->m_height);
+    glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, GL_UNSIGNED_BYTE, m_image->m_data);
 
     glGenerateTextureMipmap(m_textureID);
 
@@ -122,8 +122,8 @@ void ImageTexture::load() {
         return;
     }
 
-    if (m_image->channels != 3 && m_image->channels != 4) {
-        KI_WARN_SB("IMAGE: unsupported channels " << m_image->channels);
+    if (m_image->m_channels != 3 && m_image->m_channels != 4) {
+        KI_WARN_SB("IMAGE: unsupported channels " << m_image->m_channels);
         m_image.reset();
         return;
     }

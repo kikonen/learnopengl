@@ -10,20 +10,20 @@ public:
     ~Image();
 
     int load(bool flip);
-        
+
     static Image* getImage(const std::string& path);
 public:
-    const std::string path;
+    const std::string m_path;
 
-    int width = 0;
-    int height = 0;
-    int channels = 0;
+    int m_width = 0;
+    int m_height = 0;
+    int m_channels = 0;
 
-    bool flipped = false;
-    unsigned char* data = nullptr;
+    bool m_flipped = false;
+    unsigned char* m_data = nullptr;
 
 private:
-    bool loaded = false;
-    int res = 0;
+    bool m_loaded = false;
+    int m_res = 0;
 };
 

@@ -23,6 +23,6 @@ public:
 private:
     bool m_prepared = false;
 
-    Window& window;
+    Window& m_window;
 };
 

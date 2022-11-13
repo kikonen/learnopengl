@@ -41,17 +41,17 @@ public:
 
 public:
     const Assets& assets;
-    ShaderRegistry& shaders;
+    ShaderRegistry& m_shaders;
 
-    std::shared_ptr<Scene> scene;
+    std::shared_ptr<Scene> m_scene;
 
 private:
-    int startedCount = 0;
-    int loadedCount = 0;
+    int m_startedCount = 0;
+    int m_loadedCount = 0;
 
-    int asyncWaiterCount = 0;
+    int m_asyncWaiterCount = 0;
 
-    std::condition_variable waitCondition;
+    std::condition_variable m_waitCondition;
 
-    std::mutex load_lock;
+    std::mutex m_load_lock;
 };

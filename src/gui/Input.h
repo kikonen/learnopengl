@@ -57,15 +57,15 @@ public:
 private:
     bool m_prepared = false;
 
-    std::map<Key, int*> keyMappings;
+    std::map<Key, int*> m_keyMappings;
 
-    std::map<Modifier, int*> modifierMappings;
+    std::map<Modifier, int*> m_modifierMappings;
 
-    std::map<Modifier, bool> modifierDown;
-    std::map<Modifier, bool> modifierPressed;
-    std::map<Modifier, bool> modifierReleased;
+    std::map<Modifier, bool> m_modifierDown;
+    std::map<Modifier, bool> m_modifierPressed;
+    std::map<Modifier, bool> m_modifierReleased;
 
-    bool firstMouse = true;
+    bool m_firstMouse = true;
 
 };
 

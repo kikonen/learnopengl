@@ -143,7 +143,7 @@ GLint Shader::getUniformLoc(const std::string& name)
     GLint vi = glGetUniformLocation(m_programId, name.c_str());
     m_uniformLocations[name] = vi;
     if (vi < 0) {
-        KI_WARN_SB("SHADER::MISSING_UNIFORM: " << m_shaderName << " uniform=" << name);
+        KI_DEBUG_SB("SHADER::MISSING_UNIFORM: " << m_shaderName << " uniform=" << name);
         vi = -1;
     }
     return vi;

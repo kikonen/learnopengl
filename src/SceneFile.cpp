@@ -90,7 +90,7 @@ void SceneFile::attachSkybox(
     if (!data.valid()) return;
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
-    skybox->prepare(m_assets, m_asyncLoader->shaders);
+    skybox->prepare(m_assets, m_asyncLoader->m_shaders);
     scene->m_skyboxRenderer.reset(skybox.release());
 }
 
@@ -179,7 +179,7 @@ std::shared_ptr<NodeType> SceneFile::attachEntityClone(
     Group* group = nullptr;
     if (grouped) {
         group = new Group();
-        group->id = data.id;
+        group->m_id = data.id;
         scene->m_registry.addGroup(group);
     }
 
@@ -229,10 +229,10 @@ std::shared_ptr<NodeType> SceneFile::createType(
         MeshLoader meshLoader(assets, data.name, data.meshName, data.meshPath);
 
         if (material) {
-            meshLoader.defaultMaterial = *material;
+            meshLoader.m_defaultMaterial = *material;
         }
-        meshLoader.forceDefaultMaterial = data.forceMaterial;
-        meshLoader.loadTextures = data.loadTextures;
+        meshLoader.m_forceDefaultMaterial = data.forceMaterial;
+        meshLoader.m_loadTextures = data.loadTextures;
 
         auto mesh = meshLoader.load();
         KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << (mesh ? mesh->str() : "n/A"));
@@ -376,7 +376,7 @@ Node* SceneFile::createNode(
     glm::vec3 pos = data.position + clonePosition + posAdjustment;
 
     if (group) {
-        node->m_groupId = group->id;
+        node->m_groupId = group->m_id;
     } else {
         // NOTE KI no id for clones; would duplicate base id => conflicts
         // => except if clone defines own ID
