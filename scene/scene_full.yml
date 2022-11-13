@@ -55,7 +55,7 @@ entities:
       cmd:scale(id, { after=wid, time=20, relative=false }, { 1.2, 1.2, 0.2 })
   - name: Player
     model: player
-    pos: [-10, 7, -20.0]
+    pos: [-10, 8.5, -20.0]
     rotation: [0, 180, 0.0]
     scale: 0.8
     shader: texture
@@ -260,7 +260,7 @@ entities:
   - name: Brick wall
     model: brickwall
     shader: texture
-    pos: [-5.0, 6.5, 14.0]
+    pos: [-5.0, 8.5, 14.0]
     render_flags:
       render_back: true
     repeat:
@@ -270,7 +270,7 @@ entities:
   - name: Wood wall
     model: woodwall
     shader: texture
-    pos: [-3.0, 6.5, 14.0]
+    pos: [-3.0, 8.5, 14.0]
     material_modifier:
       reflection: 0.3
     render_flags:
@@ -569,7 +569,7 @@ entities:
     type: quad
     material: water_surface
     shader: water
-    pos: [0, 5, -10]
+    pos: [0, 7, -10]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
     render_flags:
