@@ -2,12 +2,12 @@
 
 #include constants.glsl
 
-layout (location = 0) in vec4 a_pos;
-layout (location = 1) in vec3 a_normal;
-layout (location = 4) in uint a_materialIndex;
-layout (location = 5) in vec2 a_texCoord;
-layout (location = 6) in mat4 a_modelMatrix;
-layout (location = 10) in mat3 a_normalMatrix;
+layout (location = ATTR_POS) in vec4 a_pos;
+layout (location = ATTR_NORMAL) in vec3 a_normal;
+layout (location = ATTR_MATERIAL_INDEX) in uint a_materialIndex;
+layout (location = ATTR_TEX) in vec2 a_texCoord;
+layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
+layout (location = ATTR_INSTANCE_NORMAL_MATRIX_1) in mat3 a_normalMatrix;
 
 #include struct_material.glsl
 #include struct_texture.glsl

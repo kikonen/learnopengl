@@ -2,8 +2,8 @@
 
 #include constants.glsl
 
-layout (location = 4) in uint a_materialIndex;
-layout (location = 6) in mat4 a_modelMatrix;
+layout (location = ATTR_MATERIAL_INDEX) in uint a_materialIndex;
+layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
 
 #include uniform_matrices.glsl
 

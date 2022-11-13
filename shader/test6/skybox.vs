@@ -1,5 +1,8 @@
 #version 450 core
-layout (location = 0) in vec4 a_pos;
+
+#include constants.glsl
+
+layout (location = ATTR_POS) in vec4 a_pos;
 
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_viewMatrix;

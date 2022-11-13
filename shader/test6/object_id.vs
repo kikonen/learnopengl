@@ -2,13 +2,13 @@
 
 #include constants.glsl
 
-layout (location = 0) in vec4 a_pos;
+layout (location = ATTR_POS) in vec4 a_pos;
 #ifdef USE_ALPHA
-layout (location = 4) in uint a_materialIndex;
-layout (location = 5) in vec2 a_texCoord;
+layout (location = ATTR_MATERIAL_INDEX) in uint a_materialIndex;
+layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
-layout (location = 6) in mat4 a_modelMatrix;
-layout (location = 13) in vec4 a_objectID;
+layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
+layout (location = ATTR_INSTANCE_OBJECT_ID) in vec4 a_objectID;
 
 #include uniform_matrices.glsl
 

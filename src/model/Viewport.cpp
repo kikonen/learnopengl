@@ -2,9 +2,6 @@
 
 #include <functional>
 
-const int ATTR_VIEW_POS = 0;
-const int ATTR_VIEW_TEX = 1;
-
 Viewport::Viewport(
     const std::string_view& name,
     const glm::vec3& pos,
@@ -64,14 +61,14 @@ void Viewport::prepare(const Assets& assets)
         constexpr int stride_size = 5 * sizeof(float);
         glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_buffers.VBO, 0, stride_size);
 
-        glEnableVertexArrayAttrib(vao, ATTR_VIEW_POS);
-        glEnableVertexArrayAttrib(vao, ATTR_VIEW_TEX);
+        glEnableVertexArrayAttrib(vao, ATTR_POS);
+        glEnableVertexArrayAttrib(vao, ATTR_TEX);
 
-        glVertexArrayAttribFormat(vao, ATTR_VIEW_POS, 3, GL_FLOAT, GL_FALSE, 0);
-        glVertexArrayAttribFormat(vao, ATTR_VIEW_TEX, 2, GL_FLOAT, GL_TRUE, 3 * sizeof(float));
+        glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, 0);
+        glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_FLOAT, GL_TRUE, 3 * sizeof(float));
 
-        glVertexArrayAttribBinding(vao, ATTR_VIEW_POS, VBO_VERTEX_BINDING);
-        glVertexArrayAttribBinding(vao, ATTR_VIEW_TEX, VBO_VERTEX_BINDING);
+        glVertexArrayAttribBinding(vao, ATTR_POS, VBO_VERTEX_BINDING);
+        glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_VERTEX_BINDING);
     }
 }
 
