@@ -32,8 +32,8 @@ in GS_OUT {
 #endif
 } fs_in;
 
-uniform samplerCube u_cubeMap;
-uniform sampler2DShadow u_shadowMap;
+layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
+layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 fragColor;
 

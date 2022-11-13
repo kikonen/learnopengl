@@ -94,15 +94,6 @@ public:
     float cubeMapNearPlane;
     float cubeMapFarPlane;
 
-    unsigned int noiseUnitIndex;
-    unsigned int mirrorReflectionMapUnitIndex;
-    unsigned int waterRefractionMapUnitIndex;
-    unsigned int waterReflectionMapUnitIndex;
-    unsigned int cubeMapUnitIndex;
-    unsigned int shadowMapUnitIndex;
-    unsigned int skyboxUnitIndex;
-    unsigned int viewportUnitIndex;
-
     uuids::uuid volumeUUID;
 
     // NOTE KI TEMPORARY HACKS

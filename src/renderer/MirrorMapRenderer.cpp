@@ -53,7 +53,7 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
 {
-    m_prev->bindTexture(ctx, 0, ctx.assets.mirrorReflectionMapUnitIndex);
+    m_prev->bindTexture(ctx, 0, UNIT_MIRROR_REFLECTION);
 }
 
 void MirrorMapRenderer::render(

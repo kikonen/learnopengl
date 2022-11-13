@@ -23,7 +23,7 @@ in VS_OUT {
 
 layout (location = 0) out vec4 fragColor;
 
-uniform sampler2DShadow u_shadowMap;
+layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 int iChannel0;
 vec2 iMouse;

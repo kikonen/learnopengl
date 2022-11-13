@@ -5,7 +5,8 @@ in vec2 texCoord;
 
 uniform float u_nearPlane;
 uniform float u_farPlane;
-uniform sampler2D u_viewportTex;
+
+layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 
 // required when using a perspective projection matrix
 float LinearizeDepth(float depth)

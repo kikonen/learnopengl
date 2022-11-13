@@ -87,16 +87,6 @@ Assets::Assets()
     cubeMapNearPlane = 0.5;
     cubeMapFarPlane = 200;
 
-    // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
-    noiseUnitIndex = 64;
-    mirrorReflectionMapUnitIndex = 65;
-    waterRefractionMapUnitIndex = 66;
-    waterReflectionMapUnitIndex = 67;
-    cubeMapUnitIndex = 68;
-    shadowMapUnitIndex = 69;
-    skyboxUnitIndex = 70;
-    viewportUnitIndex = 71;
-
     volumeUUID = KI_UUID("9d409e0d-2716-48dd-a205-3a54bdfa5097");
 
     /////////////////////////

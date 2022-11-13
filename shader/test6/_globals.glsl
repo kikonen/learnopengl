@@ -1,3 +1,21 @@
+#define UBO_MATRICES 0
+#define UBO_DATA 1
+#define UBO_CLIP_PLANES 2
+#define UBO_LIGHTS 3
+#define UBO_MATERIALS 4
+#define UBO_MATERIAL 5
+#define UBO_TEXTURES 6
+
+#define UNIT_WATER_NOISE 64
+#define UNIT_WATER_REFLECTION 65
+#define UNIT_WATER_REFRACTION 66
+#define UNIT_MIRROR_REFLECTION 67
+//#define UNIT_MIRROR_RERACTION 68
+#define UNIT_CUBE_MAP 69
+#define UNIT_SHADOW_MAP 70
+#define UNIT_SKYBOX 71
+#define UNIT_VIEWPORT 72
+
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 // => defined by c++ side (more optimal)
 #ifndef MAT_COUNT

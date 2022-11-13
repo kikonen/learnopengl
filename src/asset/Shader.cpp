@@ -123,10 +123,6 @@ int Shader::prepare(const Assets& assets) noexcept
 
     {
         ShaderBind bound(this);
-
-        cubeMap.set(assets.cubeMapUnitIndex);
-        shadowMap.set(assets.shadowMapUnitIndex);
-        skybox.set(assets.skyboxUnitIndex);
     }
 
     m_prepareResult = 0;
@@ -267,13 +263,13 @@ int Shader::initProgram() {
     //modelMatrix.init(this);
     //normalMatrix.init(this);
 
-    noiseTex.init(this);
-    reflectionTex.init(this);
-    refractionTex.init(this);
+    //noiseTex.init(this);
+    //reflectionTex.init(this);
+    //refractionTex.init(this);
 
-    cubeMap.init(this);
+    //cubeMap.init(this);
 
-    shadowMap.init(this);
+    //shadowMap.init(this);
     //normalMap.init(this);
 
     //drawInstanced.init(*this);
@@ -283,9 +279,9 @@ int Shader::initProgram() {
     nearPlane.init(this);
     farPlane.init(this);
 
-    skybox.init(this);
+    //skybox.init(this);
 
-    viewportTex.init(this);
+    //viewportTex.init(this);
 
     m_sources.clear();
 

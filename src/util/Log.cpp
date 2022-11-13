@@ -12,6 +12,12 @@
 
 namespace {
     std::shared_ptr<spdlog::logger> g_logger = nullptr;
+
+#ifdef _DEBUG
+    const std::string LOG_FILE = "log/development.log";
+#else
+    const std::string LOG_FILE = "log/production.log";
+#endif
 }
 
 void Log::init()
@@ -24,7 +30,7 @@ void Log::init()
         console_sink->set_level(spdlog::level::err);
         console_sink->set_pattern("[%^%l%$] %v");
 
-        auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("log/development.log", true);
+        auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(LOG_FILE, true);
         file_sink->set_level(spdlog::level::trace);
 
         std::vector<spdlog::sink_ptr> sinks{ console_sink, file_sink };

@@ -68,7 +68,7 @@ void CubeMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 {
     //if (!rendered) return;
-    prev->bindTexture(ctx, ctx.assets.cubeMapUnitIndex);
+    prev->bindTexture(ctx, UNIT_CUBE_MAP);
 }
 
 void CubeMapRenderer::render(

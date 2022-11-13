@@ -23,7 +23,7 @@ in VS_OUT {
   vec4 fragPosLightSpace;
 } fs_in;
 
-uniform sampler2DShadow u_shadowMap;
+layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 fragColor;
 

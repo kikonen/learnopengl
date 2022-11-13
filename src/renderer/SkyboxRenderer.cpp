@@ -76,10 +76,10 @@ void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     m_shader->prepare(assets);
 
-    if (false) {
-        ShaderBind bound(m_shader);
-        m_shader->skybox.set(assets.skyboxUnitIndex);
-    }
+    //if (false) {
+    //    ShaderBind bound(m_shader);
+    //    m_shader->skybox.set(UNIT_SKYBOX);
+    //}
 
     {
         std::string basePath;
@@ -126,7 +126,7 @@ void SkyboxRenderer::assign(Shader* shader)
 
 void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 {
-    ctx.state.bindTexture(ctx.assets.skyboxUnitIndex, m_textureID, false);
+    ctx.state.bindTexture(UNIT_SKYBOX, m_textureID, false);
 }
 
 void SkyboxRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)

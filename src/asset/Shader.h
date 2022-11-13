@@ -72,6 +72,17 @@ constexpr int ATTR_INSTANCE_OBJECT_ID = 13;
 
 const std::string GEOM_NONE{ "" };
 
+// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
+constexpr int UNIT_WATER_NOISE = 64;
+constexpr int UNIT_WATER_REFLECTION = 65;
+constexpr int UNIT_WATER_REFRACTION = 66;
+constexpr int UNIT_MIRROR_REFLECTION = 67;
+//constexpr int UNIT_MIRROR_RERACTION = 68;
+constexpr int UNIT_CUBE_MAP = 69;
+constexpr int UNIT_SHADOW_MAP = 70;
+constexpr int UNIT_SKYBOX = 71;
+constexpr int UNIT_VIEWPORT = 72;
+
 
 class Shader final
 {
@@ -327,13 +338,13 @@ public:
     //Shader::Mat4 modelMatrix{ "u_modelMatrix" };
     //Shader::Mat3 normalMatrix{ "u_normalMatrix" };
 
-    Shader::Int noiseTex{ "u_noiseTex" };
-    Shader::Int reflectionTex{ "u_reflectionTex" };
-    Shader::Int refractionTex{ "u_refractionTex" };
+    //Shader::Int noiseTex{ "u_noiseTex" };
+    //Shader::Int reflectionTex{ "u_reflectionTex" };
+    //Shader::Int refractionTex{ "u_refractionTex" };
 
-    Shader::Int cubeMap{ "u_cubeMap" };
+    //Shader::Int cubeMap{ "u_cubeMap" };
 
-    Shader::Int shadowMap{ "u_shadowMap" };
+    //Shader::Int shadowMap{ "u_shadowMap" };
     //Shader::Int normalMap{ "u_normalMap" };
 
     Shader::Int effect{ "u_effect" };
@@ -341,9 +352,9 @@ public:
     Shader::Float nearPlane{ "u_nearPlane" };
     Shader::Float farPlane{ "u_farPlane" };
 
-    Shader::Int skybox{ "u_skybox" };
+    //Shader::Int skybox{ "u_skybox" };
 
-    Shader::Int viewportTex{ "u_viewportTex" };
+    //Shader::Int viewportTex{ "u_viewportTex" };
 
     //std::vector<Shader::Int> textures;
 

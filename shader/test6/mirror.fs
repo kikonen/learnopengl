@@ -27,9 +27,9 @@ in VS_OUT {
   mat3 TBN;
 } fs_in;
 
-uniform sampler2D u_reflectionTex;
+layout(binding = UNIT_MIRROR_REFLECTION) uniform sampler2D u_reflectionTex;
 
-uniform sampler2DShadow u_shadowMap;
+layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 fragColor;
 

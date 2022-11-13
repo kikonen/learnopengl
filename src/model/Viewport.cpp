@@ -85,10 +85,8 @@ void Viewport::bind(const RenderContext& ctx)
 
     m_shader->bind();
 
-    const int unitIndex = ctx.assets.viewportUnitIndex;
-
-    ctx.state.bindTexture(unitIndex, m_textureID, true);
-    m_shader->viewportTex.set(unitIndex);
+    //m_shader->viewportTex.set(UNIT_VIEWPORT);
+    ctx.state.bindTexture(UNIT_VIEWPORT, m_textureID, true);
 
     m_shader->effect.set((int)m_effect);
 

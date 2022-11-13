@@ -1,7 +1,7 @@
 #version 450 core
 in vec3 texCoord;
 
-uniform samplerCube u_skybox;
+layout(binding = UNIT_SKYBOX) uniform samplerCube u_skybox;
 
 out vec4 fragColor;
 

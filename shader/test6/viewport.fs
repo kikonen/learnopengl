@@ -10,7 +10,8 @@ out vec4 fragColor;
 
 in vec2 texCoord;
 
-uniform sampler2D u_viewportTex;
+layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
+
 uniform int u_effect;
 
 const float offset = 1.0 / 300.0;

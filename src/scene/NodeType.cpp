@@ -87,7 +87,7 @@ void NodeType::prepareBatch(Batch& batch) noexcept
 }
 
 void NodeType::bind(
-    const RenderContext& ctx, 
+    const RenderContext& ctx,
     Shader* shader) noexcept
 {
     if (!m_mesh) return;
@@ -107,15 +107,6 @@ void NodeType::bind(
 
     if (m_flags.wireframe) {
         ctx.state.polygonFrontAndBack(GL_LINE);
-    }
-
-    // NOTE KI reflection map varies depending of the rendered entity
-    if (m_flags.water) {
-        m_boundShader->noiseTex.set(ctx.assets.noiseUnitIndex);
-        m_boundShader->reflectionTex.set(ctx.assets.waterReflectionMapUnitIndex);
-        m_boundShader->refractionTex.set(ctx.assets.waterRefractionMapUnitIndex);
-    } else if (m_flags.mirror) {
-        m_boundShader->reflectionTex.set(ctx.assets.mirrorReflectionMapUnitIndex);
     }
 }
 
