@@ -83,4 +83,10 @@ Texture::Texture(const std::string& name, const TextureSpec& spec)
 
 Texture::~Texture()
 {
+    if (m_textureID != 0) {
+        glDeleteTextures(1, &m_textureID);
+    }
+    if (m_handle != 0) {
+        glMakeImageHandleNonResidentARB(m_handle);
+    }
 }
