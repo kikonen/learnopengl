@@ -19,7 +19,7 @@ precision lowp float;
 
 void main()
 {
-  vec4 color = texture(u_viewportTex, texCoord).rgba;
+  vec4 color = texture(u_viewportTex, texCoord);
 
   if (u_effect == EFF_INVERT) {
     color = vec4(vec3(1.0 - color), color.a);

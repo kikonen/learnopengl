@@ -250,6 +250,7 @@ void Shader::validateProgram() {
 int Shader::initProgram() {
     std::cout << "[SHADER - " << m_key << "]\n";
 
+#ifdef _DEBUG
     // NOTE KI set UBOs only once for shader
     setupUBO("Matrices", UBO_MATRICES, sizeof(MatricesUBO));
     setupUBO("Data", UBO_DATA, sizeof(DataUBO));
@@ -259,6 +260,7 @@ int Shader::initProgram() {
     }
     setupUBO("ClipPlanes", UBO_CLIP_PLANES, sizeof(ClipPlanesUBO));
     setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
+#endif
 
     projectionMatrix.init(this);
     viewMatrix.init(this);
@@ -321,12 +323,15 @@ void Shader::setupUBO(
     unsigned int ubo,
     unsigned int expectedSize) noexcept
 {
+    // NOTE KI no setup really; just validation
+    // => validation required to avoid serious memory corruption issues
+
     unsigned int blockIndex = glGetUniformBlockIndex(m_programId, name);
     if (blockIndex == GL_INVALID_INDEX) {
         KI_WARN_SB("SHADER::MISSING_UBO " << m_shaderName << " UBO=" << name);
         return;
     }
-    glUniformBlockBinding(m_programId, blockIndex, ubo);
+    //glUniformBlockBinding(m_programId, blockIndex, ubo);
 
     GLint blockSize;
     glGetActiveUniformBlockiv(m_programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);

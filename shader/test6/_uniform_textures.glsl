@@ -6,7 +6,7 @@
 // NOTE KI MUST BE inserted just after #version
 //#extension GL_ARB_bindless_texture : require
 
-layout (binding = 6, std140) uniform Textures
+layout (std140, binding = 6) uniform Textures
 {
   uvec2 u_texture_handles[TEX_COUNT];
 };

@@ -130,7 +130,8 @@ void SpriteMesh::bind(
     bool bindMaterials) noexcept
 {
     if (bindMaterials) {
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
+        //glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
+        glBindBufferBase(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId);
 
         m_material.bindArray(ctx, shader);
     }

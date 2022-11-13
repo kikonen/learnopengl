@@ -1,4 +1,4 @@
-layout(std140) uniform Data {
+layout(std140, binding = 1) uniform Data {
   vec3 u_viewPos;
   float u_time;
 

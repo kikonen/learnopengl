@@ -1,4 +1,4 @@
-layout (std140) uniform Matrices {
+layout (std140, binding = 0) uniform Matrices {
   mat4 u_projectedMatrix;
   mat4 u_projectionMatrix;
   mat4 u_viewMatrix;

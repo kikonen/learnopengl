@@ -1,4 +1,4 @@
-layout(std140) uniform Lights {
+layout(std140, binding = 3) uniform Lights {
   uint u_dirLightCount;
   uint u_pointLightCount;
   uint u_spotLightCount;
