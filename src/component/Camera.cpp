@@ -3,6 +3,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include <glm/ext.hpp>
+
 
 const float MIN_ZOOM = 1.0f;
 const float MAX_ZOOM = 45.0f;
@@ -26,16 +28,58 @@ Camera::~Camera()
 {
 }
 
+void Camera::setupProjection(
+    float aspectRatio,
+    float nearPlane,
+    float farPlane)
+{
+    if (m_aspectRatio == aspectRatio &&
+        m_nearPlane == nearPlane &&
+        m_farPlane == farPlane &&
+        m_zoomProjection == m_zoom) return;
+
+    std::cout << 'x';
+
+    m_aspectRatio = aspectRatio;
+    m_nearPlane = nearPlane;
+    m_farPlane = farPlane;
+    m_zoomProjection = m_zoom;
+
+    m_projectionMatrix = glm::perspective(
+        glm::radians(m_zoomProjection),
+        m_aspectRatio,
+        m_nearPlane,
+        m_farPlane);
+
+    m_projectionLevel++;
+    m_dirtyProjected = true;
+}
+
+const glm::mat4& Camera::getProjection() const noexcept
+{
+    return m_projectionMatrix;
+}
+
+const glm::mat4& Camera::getProjected() noexcept
+{
+    if (!m_dirtyProjected) return m_projectedMatrix;
+    std::cout << 'O';
+    m_projectedMatrix = m_projectionMatrix * getView();
+    m_dirtyProjected = false;
+    m_projectedLevel++;
+    return m_projectedMatrix;
+}
+
 const glm::mat4& Camera::getView() noexcept
 {
-    if (!m_dirty) return m_viewMat;
+    if (!m_dirty) return m_viewMatrix;
 
     updateCamera();
-    m_viewMat = glm::lookAt(
+    m_viewMatrix = glm::lookAt(
         m_pos,
         m_pos + m_viewFront,
         m_viewUp);
-    return m_viewMat;
+    return m_viewMatrix;
 }
 
 const glm::vec3& Camera::getViewFront() noexcept
@@ -71,12 +115,12 @@ const glm::vec3& Camera::getUp() noexcept
     return m_up;
 }
 
-double Camera::getZoom() noexcept
+float Camera::getZoom() noexcept
 {
     return m_zoom;
 }
 
-void Camera::setZoom(double zoom) noexcept
+void Camera::setZoom(float zoom) noexcept
 {
     updateZoom(zoom);
 }
@@ -209,7 +253,7 @@ void Camera::onMouseScroll(Input* input, double xoffset, double yoffset) noexcep
     updateZoom(m_zoom - yoffset);
 }
 
-void Camera::updateZoom(double zoom) noexcept
+void Camera::updateZoom(float zoom) noexcept
 {
     if (zoom < MIN_ZOOM) {
         zoom = MIN_ZOOM;
@@ -235,4 +279,7 @@ void Camera::updateCamera() noexcept
     m_viewFront = glm::normalize(glm::vec3(m_rotateMat * glm::vec4(m_front, 1.f)));
     m_viewUp = glm::normalize(glm::vec3(m_rotateMat * glm::vec4(m_up, 1.f)));
     m_viewRight = glm::normalize(glm::cross(m_viewFront, m_viewUp));
+
+    m_dirtyProjected = true;
+    m_viewLevel++;
 }

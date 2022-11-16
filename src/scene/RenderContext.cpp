@@ -1,7 +1,7 @@
 #include "RenderContext.h"
 
 #include <glm/glm.hpp>
-#include <glm/ext.hpp>
+//#include <glm/ext.hpp>
 
 #include "ki/GL.h"
 #include "component/Light.h"
@@ -92,18 +92,17 @@ RenderContext::RenderContext(
     m_aspectRatio((float)width / (float)height)
 {
     if (parent) {
-        m_useWireframe = parent->m_useWireframe;
+        m_useWireframe = m_parent->m_useWireframe;
     }
 
-    m_matrices.view = camera.getView();
-
-    m_matrices.projection = glm::perspective(
-        glm::radians((float)camera.getZoom()),
+    m_camera.setupProjection(
         m_aspectRatio,
-        nearPlane,
-        farPlane);
+        m_nearPlane,
+        m_farPlane);
 
-    m_matrices.projected = m_matrices.projection * m_matrices.view;
+    m_matrices.view = m_camera.getView();
+    m_matrices.projection = m_camera.getProjection();
+    m_matrices.projected = m_camera.getProjected();
 
     for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
         m_clipPlanes.clipping[i].enabled = false;
