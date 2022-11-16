@@ -39,14 +39,17 @@ private:
         const NodeRegistry& registry);
 
 public:
-    glm::vec3 center{ 0, 0, 0 };
 
 private:
-    float nearPlane = 0.1f;
-    float farPlane = 1000.0f;
+    //glm::vec3 center{ 0, 0, 0 };
 
-    bool cleared{ false };
+    float m_nearPlane = 0.1f;
+    float m_farPlane = 1000.0f;
 
-    std::unique_ptr<DynamicCubeMap> prev;
-    std::unique_ptr<DynamicCubeMap> curr;
+    bool m_cleared{ false };
+
+    std::unique_ptr<DynamicCubeMap> m_prev;
+    std::unique_ptr<DynamicCubeMap> m_curr;
+
+    std::vector<Camera> m_cameras;
 };

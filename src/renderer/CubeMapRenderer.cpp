@@ -56,19 +56,28 @@ void CubeMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     m_renderFrequency = assets.cubeMapRenderFrequency;
 
+    m_nearPlane = assets.cubeMapNearPlane;
+    m_farPlane = assets.cubeMapFarPlane;
+
     Renderer::prepare(assets, shaders);
 
-    curr = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
-    curr->prepare(false, { 0, 0, 1, 1.0 });
+    m_curr = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
+    m_curr->prepare(false, { 0, 0, 1, 1.0 });
 
-    prev = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
-    prev->prepare(false, { 0, 1, 0, 1.0 });
+    m_prev = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
+    m_prev->prepare(false, { 0, 1, 0, 1.0 });
+
+    glm::vec3 origo(0);
+    for (int i = 0; i < 6; i++) {
+        auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[i], CAMERA_UP[i]);
+        camera.setZoom(90.0);
+    }
 }
 
 void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 {
     //if (!rendered) return;
-    prev->bindTexture(ctx, UNIT_CUBE_MAP);
+    m_prev->bindTexture(ctx, UNIT_CUBE_MAP);
 }
 
 void CubeMapRenderer::render(
@@ -76,10 +85,10 @@ void CubeMapRenderer::render(
     const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
-    if (!cleared) {
-        clearCubeMap(mainCtx, *prev.get(), { 0, 0, 0, 1 }, false);
-        clearCubeMap(mainCtx, *curr.get(), { 0, 0, 0, 1 }, false);
-        cleared = true;
+    if (!m_cleared) {
+        clearCubeMap(mainCtx, *m_prev.get(), { 0, 0, 0, 1 }, false);
+        clearCubeMap(mainCtx, *m_curr.get(), { 0, 0, 0, 1 }, false);
+        m_cleared = true;
     }
 
     if (!needRender(mainCtx)) return;
@@ -91,14 +100,17 @@ void CubeMapRenderer::render(
     // https://eng.libretexts.org/Bookshelves/Computer_Science/Book%3A_Introduction_to_Computer_Graphics_(Eck)/07%3A_3D_Graphics_with_WebGL/7.04%3A_Framebuffers
     // view-source:math.hws.edu/eck/cs424/graphicsbook2018/source/webgl/cube-camera.html
 
-    curr->bind(mainCtx);
+    m_curr->bind(mainCtx);
 
     const glm::vec3& center = centerNode->getWorldPos();
 
     for (int i = 0; i < 6; i++) {
         glFramebufferTexture2D(
-            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, curr->m_textureID, 0);
+            GL_FRAMEBUFFER,
+            GL_COLOR_ATTACHMENT0,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+            m_curr->m_textureID,
+            0);
 
         if (mainCtx.assets.clearColor) {
             if (mainCtx.assets.debugClearColor) {
@@ -111,15 +123,16 @@ void CubeMapRenderer::render(
             glClear(GL_DEPTH_BUFFER_BIT);
         }
 
-        float nearPlane = mainCtx.assets.cubeMapNearPlane;
         // centerNode->getVolume()->getRadius();
 
-        Camera camera(center, CAMERA_FRONT[i], CAMERA_UP[i]);
-        camera.setZoom(90.0);
+        auto& camera = m_cameras[i];
+        camera.setPos(center);
+
         RenderContext ctx("CUBE",
             &mainCtx, camera,
-            nearPlane, mainCtx.assets.cubeMapFarPlane,
-            curr->m_size, curr->m_size);
+            m_nearPlane,
+            m_farPlane,
+            m_curr->m_size, m_curr->m_size);
         bindTexture(ctx);
         ctx.matrices.lightProjected = mainCtx.matrices.lightProjected;
         ctx.bindMatricesUBO();
@@ -127,9 +140,9 @@ void CubeMapRenderer::render(
         drawNodes(ctx, registry, skybox, centerNode);
     }
 
-    curr->unbind(mainCtx);
+    m_curr->unbind(mainCtx);
 
-    prev.swap(curr);
+    m_prev.swap(m_curr);
 
     m_rendered = true;
 }
