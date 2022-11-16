@@ -33,6 +33,9 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     m_renderFrequency = assets.shadowRenderFrequency;
 
+    m_nearPlane = assets.shadowNearPlane;
+    m_farPlane = assets.shadowFarPlane;
+
     m_solidShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
     m_blendedShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
     m_shadowDebugShader = shaders.getShader(assets, TEX_DEBUG_DEPTH);
@@ -57,8 +60,8 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         m_shadowBuffer->m_spec.attachments[0].textureID,
         m_shadowDebugShader,
         [this, &assets](Viewport& vp) {
-            m_shadowDebugShader->nearPlane.set(assets.shadowNearPlane);
-            m_shadowDebugShader->farPlane.set(assets.shadowFarPlane);
+            m_shadowDebugShader->nearPlane.set(m_nearPlane);
+            m_shadowDebugShader->farPlane.set(m_farPlane);
         });
 
     m_debugViewport->prepare(assets);
@@ -76,8 +79,8 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 
     const glm::mat4 lightProjectionMatrix = glm::ortho(
         -100.0f, 100.0f, -100.0f, 100.0f,
-        ctx.assets.shadowNearPlane,
-        ctx.assets.shadowFarPlane);
+        m_nearPlane,
+        m_farPlane);
 
     //lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
 

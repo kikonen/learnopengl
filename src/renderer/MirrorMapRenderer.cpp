@@ -101,7 +101,8 @@ void MirrorMapRenderer::render(
 
         RenderContext localCtx("MIRROR",
             &ctx, camera,
-            dist, ctx.assets.farPlane,
+            dist,
+            ctx.assets.farPlane,
             m_curr->m_spec.width, m_curr->m_spec.height);
         localCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
 

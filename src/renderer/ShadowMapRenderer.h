@@ -32,6 +32,9 @@ public:
     std::shared_ptr<Viewport> m_debugViewport;
 
 private:
+    float m_nearPlane = 0.1f;
+    float m_farPlane = 1000.0f;
+
     Shader* m_solidShadowShader{ nullptr };
     Shader* m_blendedShadowShader{ nullptr };
     Shader* m_shadowDebugShader{ nullptr };
