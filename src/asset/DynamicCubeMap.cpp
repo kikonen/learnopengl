@@ -27,7 +27,7 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)
 {
-    const auto& res = ctx.resolution;
+    const auto& res = ctx.m_resolution;
 
     // Reset viewport back
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

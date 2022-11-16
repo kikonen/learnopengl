@@ -16,7 +16,7 @@ bool NodePathController::update(
     Node& node,
     Node* parent) noexcept
 {
-    float elapsed = ctx.clock.ts;
+    float elapsed = ctx.m_clock.ts;
 
     if (m_translate) {
         const float radius = 8.0f;

@@ -21,7 +21,7 @@ void ScaleNode::bind(const RenderContext& ctx, Node* node) noexcept
 void ScaleNode::execute(
     const RenderContext& ctx) noexcept
 {
-    m_elapsedTime += ctx.clock.elapsedSecs;
+    m_elapsedTime += ctx.m_clock.elapsedSecs;
 
     const auto t = (m_elapsedTime / m_finishTime);
     glm::vec3 p0{ 0.f };

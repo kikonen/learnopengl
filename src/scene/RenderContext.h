@@ -72,47 +72,47 @@ private:
     void updateFrustumNOPE();
 
 public:
-    const std::string name;
-    const RenderContext* const parent;
+    const std::string m_name;
+    const RenderContext* const m_parent;
 
     backend::RenderSystem* m_backend;
     Batch& m_batch;
 
     const Assets& assets;
 
-    const ki::RenderClock& clock;
+    const ki::RenderClock& m_clock;
 
-    mutable bool shadow = false;
+    mutable bool m_shadow = false;
 
-    mutable bool useFrustum = true;
+    mutable bool m_useFrustum = true;
 
     GLState& state;
 
-    const glm::vec2 resolution;
+    const glm::vec2 m_resolution;
 
-    const float nearPlane;
-    const float farPlane;
+    const float m_nearPlane;
+    const float m_farPlane;
 
-    const float aspectRatio;
+    const float m_aspectRatio;
 
-    Scene* scene{ nullptr };
+    Scene* m_scene{ nullptr };
 
     NodeRegistry& registry;
     CommandEngine& commandEngine;
     ScriptEngine& scriptEngine;
 
-    Camera& camera;
+    Camera& m_camera;
 
-    mutable MatricesUBO matrices;
+    mutable MatricesUBO m_matrices;
 
-    mutable int drawCount = 0;
-    mutable int skipCount = 0;
+    mutable int m_drawCount = 0;
+    mutable int m_skipCount = 0;
 
 
-    mutable ClipPlanesUBO clipPlanes;
+    mutable ClipPlanesUBO m_clipPlanes;
 
-    mutable bool useWireframe = false;
-    mutable bool useLight = true;
+    mutable bool m_useWireframe = false;
+    mutable bool m_useLight = true;
 
 private:
     mutable std::unique_ptr<Frustum> m_frustum;

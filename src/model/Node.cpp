@@ -32,7 +32,7 @@ Node::Node(std::shared_ptr<NodeType> type)
 {
 }
 
-Node::~Node() 
+Node::~Node()
 {
     KI_INFO_SB("NODE: delete " << str());
 }
@@ -65,7 +65,7 @@ void Node::update(
         changed = m_controller->update(ctx, *this, parent);
     }
 
-    if (changed) 
+    if (changed)
         updateModelMatrix(parent);
 
     if (m_light) m_light->update(ctx, *this);

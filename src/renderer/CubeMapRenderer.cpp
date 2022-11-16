@@ -134,7 +134,7 @@ void CubeMapRenderer::render(
             m_farPlane,
             m_curr->m_size, m_curr->m_size);
         bindTexture(ctx);
-        ctx.matrices.lightProjected = mainCtx.matrices.lightProjected;
+        ctx.m_matrices.lightProjected = mainCtx.m_matrices.lightProjected;
         ctx.bindMatricesUBO();
 
         drawNodes(ctx, registry, skybox, centerNode);
@@ -221,8 +221,8 @@ void CubeMapRenderer::drawNodes(
 
 Node* CubeMapRenderer::findCenter(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    const glm::vec3& cameraPos = ctx.camera.getPos();
-    const glm::vec3& cameraDir = ctx.camera.getViewFront();
+    const glm::vec3& cameraPos = ctx.m_camera.getPos();
+    const glm::vec3& cameraDir = ctx.m_camera.getViewFront();
 
     std::map<float, Node*> sorted;
 

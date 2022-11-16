@@ -264,7 +264,7 @@ void NodeRenderer::drawBlended(
     // NOTE KI GL_CULL_FACE is node type specific
     //ctx.state.disable(GL_CULL_FACE);
 
-    const glm::vec3& viewPos = ctx.camera.getPos();
+    const glm::vec3& viewPos = ctx.m_camera.getPos();
 
     // TODO KI discards nodes if *same* distance
     std::map<float, Node*> sorted;

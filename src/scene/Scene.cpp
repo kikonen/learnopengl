@@ -276,8 +276,8 @@ void Scene::draw(RenderContext& ctx)
 
 void Scene::drawMain(RenderContext& ctx)
 {
-    RenderContext mainCtx("MAIN", &ctx, ctx.camera, m_mainBuffer->m_spec.width, m_mainBuffer->m_spec.height);
-    mainCtx.matrices.lightProjected = ctx.matrices.lightProjected;
+    RenderContext mainCtx("MAIN", &ctx, ctx.m_camera, m_mainBuffer->m_spec.width, m_mainBuffer->m_spec.height);
+    mainCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
 
     m_mainBuffer->bind(mainCtx);
     drawScene(mainCtx);
@@ -289,16 +289,16 @@ void Scene::drawRear(RenderContext& ctx)
 {
     if (!assets.showRearView) return;
 
-    Camera camera(ctx.camera.getPos(), ctx.camera.getFront(), ctx.camera.getUp());
-    camera.setZoom(ctx.camera.getZoom());
+    Camera camera(ctx.m_camera.getPos(), ctx.m_camera.getFront(), ctx.m_camera.getUp());
+    camera.setZoom(ctx.m_camera.getZoom());
 
-    glm::vec3 rot = ctx.camera.getRotation();
+    glm::vec3 rot = ctx.m_camera.getRotation();
     //rot.y += 180;
     rot.y += 180;
     camera.setRotation(-rot);
 
     RenderContext mirrorCtx("BACK", &ctx, camera, m_readBuffer->m_spec.width, m_readBuffer->m_spec.height);
-    mirrorCtx.matrices.lightProjected = ctx.matrices.lightProjected;
+    mirrorCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
     mirrorCtx.bindMatricesUBO();
 
     m_readBuffer->bind(mirrorCtx);
@@ -387,7 +387,7 @@ int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double scree
 
 void Scene::updateMainViewport(RenderContext& ctx)
 {
-    const auto& res = ctx.resolution;
+    const auto& res = ctx.m_resolution;
     int w = ctx.assets.resolutionScale.x * res.x;
     int h = ctx.assets.resolutionScale.y * res.y;
     if (w < 1) w = 1;

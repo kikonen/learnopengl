@@ -109,8 +109,8 @@ int Test6::onRender(const ki::RenderClock& clock) {
         m_frame->render(ctx);
     }
 
-    m_drawCount += ctx.drawCount;
-    m_skipCount += ctx.skipCount;
+    m_drawCount += ctx.m_drawCount;
+    m_skipCount += ctx.m_skipCount;
 
     if (m_assets.frustumEnabled && m_assets.frustumDebug) {
         m_frustumElapsedSecs += clock.elapsedSecs;
@@ -119,8 +119,8 @@ int Test6::onRender(const ki::RenderClock& clock) {
             auto ratio = (float)m_skipCount / (float)m_drawCount;
             auto frameDraw = (float)m_drawCount / (float)clock.frameCount;
             auto frameSkip = (float)m_skipCount / (float)clock.frameCount;
-            KI_INFO_SB(fmt::format("{} : total-frames: {}, total-draw: {}, total-skip: {}, ratio: {}", ctx.name, clock.frameCount, m_drawCount, m_skipCount, ratio));
-            KI_INFO_SB(fmt::format("{} : frame-draw: {}, frame-skip: {}", ctx.name, frameDraw, frameSkip));
+            KI_INFO_SB(fmt::format("{} : total-frames: {}, total-draw: {}, total-skip: {}, ratio: {}", ctx.m_name, clock.frameCount, m_drawCount, m_skipCount, ratio));
+            KI_INFO_SB(fmt::format("{} : frame-draw: {}, frame-skip: {}", ctx.m_name, frameDraw, frameSkip));
         }
     }
 
@@ -136,8 +136,8 @@ void Test6::selectNode(
     bool isShift,
     bool isCtrl)
 {
-    auto& registry = ctx.scene->m_registry;
-    int objectID = ctx.scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
+    auto& registry = ctx.m_scene->m_registry;
+    int objectID = ctx.m_scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
 
     auto* volumeNode = registry.getNode(ctx.assets.volumeUUID);
     auto* node = registry.getNode(objectID);

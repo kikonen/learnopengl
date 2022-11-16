@@ -14,7 +14,7 @@ CancelCommand::CancelCommand(
 void CancelCommand::execute(
     const RenderContext& ctx) noexcept
 {
-    m_elapsedTime += ctx.clock.elapsedSecs;
+    m_elapsedTime += ctx.m_clock.elapsedSecs;
 
     m_finished = m_elapsedTime >= m_finishTime;
     if (m_finished) {

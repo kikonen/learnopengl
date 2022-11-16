@@ -117,7 +117,7 @@ void FrameBuffer::bind(const RenderContext& ctx)
 
 void FrameBuffer::unbind(const RenderContext& ctx)
 {
-    const auto& res = ctx.resolution;
+    const auto& res = ctx.m_resolution;
 
     // NOTE KI 0 stands for "default"
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

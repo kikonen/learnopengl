@@ -29,7 +29,7 @@ int ObjectIdRenderer::getObjectId(
 
     constexpr float GL_SCREEN_SIZE = 2.f;
 
-    const auto& res = ctx.resolution;
+    const auto& res = ctx.m_resolution;
 
     int screenW = res.x;
     int screenH = res.y;
@@ -101,7 +101,7 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    const auto& res = ctx.resolution;
+    const auto& res = ctx.m_resolution;
     int w = ctx.assets.resolutionScale.x * res.x;
     int h = ctx.assets.resolutionScale.y * res.y;
     if (w < 1) w = 1;
@@ -125,7 +125,7 @@ void ObjectIdRenderer::render(
     const RenderContext& ctx,
     const NodeRegistry& registry)
 {
-    RenderContext idCtx("OBJECT_ID", &ctx, ctx.camera, m_idBuffer->m_spec.width, m_idBuffer->m_spec.height);
+    RenderContext idCtx("OBJECT_ID", &ctx, ctx.m_camera, m_idBuffer->m_spec.width, m_idBuffer->m_spec.height);
 
     m_idBuffer->bind(idCtx);
 

@@ -76,7 +76,7 @@ void MirrorMapRenderer::render(
     // reflection map
     {
         const auto mirrorSize = closest->getVolume()->getRadius() * 2;
-        const auto& eyePos = ctx.camera.getPos();
+        const auto& eyePos = ctx.m_camera.getPos();
         const auto& planeNormal = closest->getWorldPlaneNormal();
 
         const auto eyeV = planePos - eyePos;
@@ -96,16 +96,16 @@ void MirrorMapRenderer::render(
         //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
         const float fovAngle = 90.f;
 
-        Camera camera(mirrorEyePos, reflectFront, ctx.camera.getViewUp());
+        Camera camera(mirrorEyePos, reflectFront, ctx.m_camera.getViewUp());
         camera.setZoom(fovAngle);
 
         RenderContext localCtx("MIRROR",
             &ctx, camera,
             dist, ctx.assets.farPlane,
             m_curr->m_spec.width, m_curr->m_spec.height);
-        localCtx.matrices.lightProjected = ctx.matrices.lightProjected;
+        localCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
 
-        ClipPlaneUBO& clip = localCtx.clipPlanes.clipping[0];
+        ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         //clip.enabled = true;
         clip.plane = glm::vec4(planePos, 0);
 
@@ -190,8 +190,8 @@ void MirrorMapRenderer::drawNodes(
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistry& registry)
 {
-    const glm::vec3& cameraPos = ctx.camera.getPos();
-    const glm::vec3& cameraFront = ctx.camera.getViewFront();
+    const glm::vec3& cameraPos = ctx.m_camera.getPos();
+    const glm::vec3& cameraFront = ctx.m_camera.getViewFront();
 
     std::map<float, Node*> sorted;
 

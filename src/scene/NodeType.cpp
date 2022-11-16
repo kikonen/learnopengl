@@ -95,7 +95,7 @@ void NodeType::bind(
     m_boundShader = shader;
 
     // NOTE KI material needed for alpha shadows
-    bool bindMaterials = !ctx.shadow || m_flags.alpha;
+    bool bindMaterials = !ctx.m_shadow || m_flags.alpha;
     m_mesh->bind(ctx, shader, bindMaterials);
 
     if (m_flags.renderBack) {

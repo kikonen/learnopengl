@@ -27,13 +27,13 @@ RenderContext::RenderContext(
         name,
         parent,
         parent->assets,
-        parent->clock,
+        parent->m_clock,
         parent->state,
-        parent->scene,
+        parent->m_scene,
         camera,
         parent->m_backend,
-        parent->nearPlane,
-        parent->farPlane,
+        parent->m_nearPlane,
+        parent->m_farPlane,
         width,
         height)
 {}
@@ -50,9 +50,9 @@ RenderContext::RenderContext(
         name,
         parent,
         parent->assets,
-        parent->clock,
+        parent->m_clock,
         parent->state,
-        parent->scene,
+        parent->m_scene,
         camera,
         parent->m_backend,
         nearPlane,
@@ -74,47 +74,47 @@ RenderContext::RenderContext(
     float farPlane,
     int width,
     int height)
-    : name(name),
-    parent(parent),
+    : m_name(name),
+    m_parent(parent),
     assets(assets),
-    clock(clock),
+    m_clock(clock),
     state(state),
-    scene(scene),
+    m_scene(scene),
     m_batch(scene->m_batch),
     registry(scene->m_registry),
     commandEngine(scene->m_commandEngine),
     scriptEngine(scene->m_scriptEngine),
-    camera(camera),
+    m_camera(camera),
     m_backend(backend),
-    nearPlane(nearPlane),
-    farPlane(farPlane),
-    resolution{ width, height },
-    aspectRatio((float)width / (float)height)
+    m_nearPlane(nearPlane),
+    m_farPlane(farPlane),
+    m_resolution{ width, height },
+    m_aspectRatio((float)width / (float)height)
 {
     if (parent) {
-        useWireframe = parent->useWireframe;
+        m_useWireframe = parent->m_useWireframe;
     }
 
-    matrices.view = camera.getView();
+    m_matrices.view = camera.getView();
 
-    matrices.projection = glm::perspective(
+    m_matrices.projection = glm::perspective(
         glm::radians((float)camera.getZoom()),
-        aspectRatio,
+        m_aspectRatio,
         nearPlane,
         farPlane);
 
-    matrices.projected = matrices.projection * matrices.view;
+    m_matrices.projected = m_matrices.projection * m_matrices.view;
 
     for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
-        clipPlanes.clipping[i].enabled = false;
+        m_clipPlanes.clipping[i].enabled = false;
     }
 }
 
 RenderContext::~RenderContext()
 {
-    if (parent) {
-        parent->drawCount += drawCount;
-        parent->skipCount += skipCount;
+    if (m_parent) {
+        m_parent->m_drawCount += m_drawCount;
+        m_parent->m_skipCount += m_skipCount;
     }
     //if (assets.frustumDebug)
     //    KI_INFO_SB(name << ": draw: " << drawCount << " skip: " << skipCount);
@@ -122,7 +122,7 @@ RenderContext::~RenderContext()
 
 void RenderContext::bindGlobal() const
 {
-    if (useWireframe) {
+    if (m_useWireframe) {
         state.polygonFrontAndBack(GL_LINE);
     }
     else {
@@ -150,15 +150,15 @@ void RenderContext::bindMatricesUBO() const
     //    shadowMatrix,
     //};
 
-    glNamedBufferSubData(scene->m_ubo.matrices, 0, sizeof(MatricesUBO), &matrices);
+    glNamedBufferSubData(m_scene->m_ubo.matrices, 0, sizeof(MatricesUBO), &m_matrices);
 }
 
 void RenderContext::bindDataUBO() const
 {
     DataUBO dataUbo{
-        camera.getPos(),
-        (float)clock.ts,
-        resolution,
+        m_camera.getPos(),
+        (float)m_clock.ts,
+        m_resolution,
         0,
         0,
         assets.fogColor,
@@ -166,32 +166,32 @@ void RenderContext::bindDataUBO() const
         assets.fogEnd,
     };
 
-    glNamedBufferSubData(scene->m_ubo.data, 0, sizeof(DataUBO), &dataUbo);
+    glNamedBufferSubData(m_scene->m_ubo.data, 0, sizeof(DataUBO), &dataUbo);
 }
 
 void RenderContext::bindClipPlanesUBO() const
 {
     int count = 0;
     for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
-        if (!clipPlanes.clipping[i].enabled) continue;
+        if (!m_clipPlanes.clipping[i].enabled) continue;
         count++;
     }
 
-    clipPlanes.clipCount = count;
-    glNamedBufferSubData(scene->m_ubo.clipPlanes, 0, sizeof(ClipPlanesUBO), &clipPlanes);
+    m_clipPlanes.clipCount = count;
+    glNamedBufferSubData(m_scene->m_ubo.clipPlanes, 0, sizeof(ClipPlanesUBO), &m_clipPlanes);
 }
 
 void RenderContext::bindLightsUBO() const
 {
     LightsUBO lightsUbo;
-    if (!useLight) {
+    if (!m_useLight) {
         lightsUbo.dirCount = 0;
         lightsUbo.pointCount = 0;
         lightsUbo.spotCount = 0;
     }
 
-    if (useLight) {
-        auto& node = scene->m_registry.m_dirLight;
+    if (m_useLight) {
+        auto& node = m_scene->m_registry.m_dirLight;
         if (node && node->m_light->enabled) {
             lightsUbo.dir[0] = node->m_light->toDirLightUBO();
             lightsUbo.dirCount = 1;
@@ -201,9 +201,9 @@ void RenderContext::bindLightsUBO() const
         }
     }
 
-    if (useLight) {
+    if (m_useLight) {
         int count = 0;
-        for (auto& node : scene->m_registry.m_pointLights) {
+        for (auto& node : m_scene->m_registry.m_pointLights) {
             if (count >= LIGHT_COUNT) break;
             if (!node->m_light->enabled) continue;
 
@@ -213,9 +213,9 @@ void RenderContext::bindLightsUBO() const
         lightsUbo.pointCount = count;
     }
 
-    if (useLight) {
+    if (m_useLight) {
         int count = 0;
-        for (auto& node : scene->m_registry.m_spotLights) {
+        for (auto& node : m_scene->m_registry.m_spotLights) {
             if (count>= LIGHT_COUNT) break;
             if (!node->m_light->enabled) continue;
 
@@ -225,7 +225,7 @@ void RenderContext::bindLightsUBO() const
         lightsUbo.spotCount = count;
     }
 
-    glNamedBufferSubData(scene->m_ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);
+    glNamedBufferSubData(m_scene->m_ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);
 }
 
 void RenderContext::bindTexturesUBO() const
@@ -251,24 +251,24 @@ void RenderContext::bindTexturesUBO() const
         // https://www.khronos.org/opengl/wiki/Bindless_Texture
 
         auto [level, textures] = ImageTexture::getPreparedTextures();
-        if (level != scene->m_texturesLevel && !textures.empty()) {
-            scene->m_texturesLevel = level;
+        if (level != m_scene->m_texturesLevel && !textures.empty()) {
+            m_scene->m_texturesLevel = level;
 
             int maxIndex = 0;
             for (const auto& texture : textures) {
                 int idx = texture->m_texIndex;
-                scene->m_textureHandles[idx].handle = texture->m_handle;
+                m_scene->m_textureHandles[idx].handle = texture->m_handle;
                 if (idx > maxIndex) maxIndex = idx;
             }
 
-            glFlushMappedNamedBufferRange(scene->m_ubo.textures, 0, (maxIndex + 1) * sizeof(TextureUBO));
+            glFlushMappedNamedBufferRange(m_scene->m_ubo.textures, 0, (maxIndex + 1) * sizeof(TextureUBO));
         }
     }
 }
 
 const Frustum* RenderContext::getFrustum() const
 {
-    if (assets.frustumEnabled && useFrustum && !m_frustum) {
+    if (assets.frustumEnabled && m_useFrustum && !m_frustum) {
         updateFrustum();
     }
     return m_frustum.get();
@@ -284,22 +284,22 @@ void RenderContext::updateFrustum() const
     // NOTE KI use 90 angle for culling; smaller does cut-off too early
     // => 90 angle neither working correctly always for terrain tiles
     // => TODO KI WHAT is failing
-    const float fovY = glm::radians(camera.getZoom());
+    const float fovY = glm::radians(m_camera.getZoom());
     //const float fovY = glm::radians(90.f);
-    const glm::vec3& pos = camera.getPos();
-    const glm::vec3& front = camera.getViewFront();
-    const glm::vec3& up = camera.getViewUp();
-    const glm::vec3& right = camera.getViewRight();
+    const glm::vec3& pos = m_camera.getPos();
+    const glm::vec3& front = m_camera.getViewFront();
+    const glm::vec3& up = m_camera.getViewUp();
+    const glm::vec3& right = m_camera.getViewRight();
 
-    const float halfVSide = farPlane * tanf(fovY * .5f);
-    const float halfHSide = halfVSide * aspectRatio;
-    const glm::vec3 frontMultFar = farPlane * front;
+    const float halfVSide = m_farPlane * tanf(fovY * .5f);
+    const float halfHSide = halfVSide * m_aspectRatio;
+    const glm::vec3 frontMultFar = m_farPlane * front;
 
     // NOTE KI near and far plane don't have camee pos as "point in plane"
     // NOTE KI other side HAVE camra pos as "point in plane"
 
     m_frustum->nearFace = {
-        pos + nearPlane * front,
+        pos + m_nearPlane * front,
         front };
 
     m_frustum->farFace = {

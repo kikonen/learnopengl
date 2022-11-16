@@ -208,17 +208,17 @@ void Batch::draw(
     if (type.m_flags.origo) return;
 
     const auto& volume = node.getVolume();
-    if (ctx.useFrustum &&
+    if (ctx.m_useFrustum &&
         ctx.assets.frustumEnabled &&
         !type.m_flags.noFrustum &&
         volume &&
         !volume->isOnFrustum(*ctx.getFrustum(), node.getMatrixLevel(), node.getWorldModelMatrix()))
     {
-        ctx.skipCount += 1;
+        ctx.m_skipCount += 1;
         return;
     }
 
-    ctx.drawCount += 1;
+    ctx.m_drawCount += 1;
 
     if (type.m_flags.instanced) {
         node.bind(ctx, shader);

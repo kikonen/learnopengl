@@ -66,7 +66,7 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
 {
-    auto& node = ctx.scene->m_registry.m_dirLight;
+    auto& node = ctx.m_scene->m_registry.m_dirLight;
     if (!node) return;
 
     const glm::vec3 up{ 0.0, 1.0, 0.0 };
@@ -81,8 +81,8 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 
     //lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
 
-    ctx.matrices.lightProjected = lightProjectionMatrix * lightViewMatrix;
-    ctx.matrices.shadow = scaleBiasMatrix * ctx.matrices.lightProjected;
+    ctx.m_matrices.lightProjected = lightProjectionMatrix * lightViewMatrix;
+    ctx.m_matrices.shadow = scaleBiasMatrix * ctx.m_matrices.lightProjected;
 }
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
@@ -103,11 +103,11 @@ void ShadowMapRenderer::render(
         // NOTE KI *NO* color in shadowmap
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        ctx.useFrustum = false;
-        ctx.shadow = true;
+        ctx.m_useFrustum = false;
+        ctx.m_shadow = true;
         drawNodes(ctx, registry);
-        ctx.useFrustum = true;
-        ctx.shadow = false;
+        ctx.m_useFrustum = true;
+        ctx.m_shadow = false;
 
         m_shadowBuffer->unbind(ctx);
     }

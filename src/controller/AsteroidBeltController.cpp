@@ -133,7 +133,7 @@ void AsteroidBeltController::rotateAsteroids(
     InstancedNode& node,
     std::vector<Asteroid>& asteroids)
 {
-    const float elapsed = ctx.clock.elapsedSecs;
+    const float elapsed = ctx.m_clock.elapsedSecs;
     const int count = asteroids.size();
 
     for (size_t i = 0; i < count; i++)

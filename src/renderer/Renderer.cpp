@@ -22,10 +22,10 @@ bool Renderer::needRender(const RenderContext& ctx)
 {
     if (m_renderFrequency <= 0.f) return true;
 
-    m_elapsedTime += ctx.clock.elapsedSecs;
+    m_elapsedTime += ctx.m_clock.elapsedSecs;
 
     bool hit = m_elapsedTime >= m_renderFrequency
-        && m_lastHitFrame + 1 != ctx.clock.frameCount;
+        && m_lastHitFrame + 1 != ctx.m_clock.frameCount;
 
     if (hit) {
         while (m_elapsedTime > 0) {
@@ -35,7 +35,7 @@ bool Renderer::needRender(const RenderContext& ctx)
             m_elapsedTime += m_renderFrequency;
         }
 
-        m_lastHitFrame = ctx.clock.frameCount;
+        m_lastHitFrame = ctx.m_clock.frameCount;
     }
 
     return hit;

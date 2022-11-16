@@ -11,7 +11,7 @@ ParticleGenerator::ParticleGenerator(
 
 void ParticleGenerator::update(const RenderContext& ctx)
 {
-    definition.particlesPerSec * ctx.clock.elapsedSecs;
+    definition.particlesPerSec * ctx.m_clock.elapsedSecs;
 
     //if ()
 //    definition.
