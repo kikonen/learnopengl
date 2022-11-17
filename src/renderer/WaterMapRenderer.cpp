@@ -4,6 +4,18 @@
 #include "SkyboxRenderer.h"
 #include "WaterNoiseGenerator.h"
 
+namespace {
+    const glm::vec3 CAMERA_FRONT[6] = {
+        {  1,  0,  0 },
+        {  1,  0,  0 },
+    };
+
+    const glm::vec3 CAMERA_UP[6] = {
+        {  0,  1,  0 },
+        {  0,  1,  0 },
+    };
+}
+
 WaterMapRenderer::WaterMapRenderer()
 {
 }
@@ -32,6 +44,12 @@ void WaterMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     m_reflectionBuffer->prepare(true, { 0, 0, 0, 1.0 });
     m_refractionBuffer->prepare(true, { 0, 0, 0, 1.0 });
+
+    glm::vec3 origo(0);
+    for (int i = 0; i < 2; i++) {
+        auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[i], CAMERA_UP[i]);
+        camera.setZoom(90.0);
+    }
 
     //WaterNoiseGenerator generator;
     //noiseTextureID = generator.generate();
@@ -80,19 +98,22 @@ void WaterMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    const glm::vec3& planePos = closest->getWorldPos();
+    const auto& planePos = closest->getWorldPos();
 
     // https://prideout.net/clip-planes
     // reflection map
     {
-        glm::vec3 pos = ctx.m_camera.getPos();
+        auto pos = ctx.m_camera.getPos();
         const float dist = pos.y - planePos.y;
         pos.y -= dist * 2;
 
-        glm::vec3 rot = ctx.m_camera.getRotation();
+        auto rot = ctx.m_camera.getRotation();
         rot.x = -rot.x;
 
-        Camera camera(pos, ctx.m_camera.getFront(), ctx.m_camera.getUp());
+        auto& camera = m_cameras[0];
+        camera.setPos(pos);
+        camera.setFront(ctx.m_camera.getFront());
+        camera.setUp(ctx.m_camera.getUp());
         camera.setZoom(ctx.m_camera.getZoom());
         camera.setRotation(rot);
 
@@ -115,10 +136,13 @@ void WaterMapRenderer::render(
 
     // refraction map
     {
-        glm::vec3 rot = ctx.m_camera.getRotation();
-        glm::vec3 pos = ctx.m_camera.getPos();
+        const auto& rot = ctx.m_camera.getRotation();
+        const auto& pos = ctx.m_camera.getPos();
 
-        Camera camera(pos, ctx.m_camera.getFront(), ctx.m_camera.getUp());
+        auto& camera = m_cameras[1];
+        camera.setPos(pos);
+        camera.setFront(ctx.m_camera.getFront());
+        camera.setUp(ctx.m_camera.getUp());
         camera.setZoom(ctx.m_camera.getZoom());
         camera.setRotation(rot);
 

@@ -41,6 +41,8 @@ private:
     float m_nearPlane{ 0.1f };
     float m_farPlane{ 1000.0f };
 
+    std::vector<Camera> m_cameras;
+
     std::unique_ptr<TextureBuffer> m_reflectionBuffer{ nullptr };
     std::unique_ptr<TextureBuffer> m_refractionBuffer{ nullptr };
 

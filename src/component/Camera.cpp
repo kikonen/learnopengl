@@ -100,6 +100,14 @@ const glm::vec3& Camera::getViewUp() noexcept
     return m_viewUp;
 }
 
+void Camera::setFront(const glm::vec3& front) noexcept
+{
+    if (m_front != front) {
+        m_dirty = true;
+        m_front = front;
+    }
+}
+
 const glm::vec3& Camera::getFront() noexcept
 {
     return m_front;
@@ -108,6 +116,14 @@ const glm::vec3& Camera::getFront() noexcept
 const glm::vec3& Camera::getRight() noexcept
 {
     return m_right;
+}
+
+void Camera::setUp(const glm::vec3& up) noexcept
+{
+    if (m_up != up) {
+        m_dirty = true;
+        m_up = up;
+    }
 }
 
 const glm::vec3& Camera::getUp() noexcept

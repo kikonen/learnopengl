@@ -4,6 +4,18 @@
 #include "SkyboxRenderer.h"
 
 namespace {
+    namespace {
+        const glm::vec3 CAMERA_FRONT[6] = {
+            {  1,  0,  0 },
+            {  1,  0,  0 },
+        };
+
+        const glm::vec3 CAMERA_UP[6] = {
+            {  0,  1,  0 },
+            {  0,  1,  0 },
+        };
+    }
+
     const glm::vec4 DEBUG_COLOR[6] = {
         {  1,  0,  0, 1 },
         {  0,  1,  0, 1 },
@@ -38,6 +50,12 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     m_prev->prepare(true, DEBUG_COLOR[0]);
     m_curr->prepare(true, DEBUG_COLOR[1]);
+
+    glm::vec3 origo(0);
+    for (int i = 0; i < 1; i++) {
+        auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[i], CAMERA_UP[i]);
+        camera.setZoom(90.0);
+    }
 
     m_debugViewport = std::make_shared<Viewport>(
         "MirrorReflect",
@@ -96,7 +114,11 @@ void MirrorMapRenderer::render(
         //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
         const float fovAngle = 90.f;
 
-        Camera camera(mirrorEyePos, reflectFront, ctx.m_camera.getViewUp());
+        auto& camera = m_cameras[0];
+        camera.setPos(mirrorEyePos);
+        camera.setFront(reflectFront);
+        camera.setUp(ctx.m_camera.getViewUp());
+        camera.setZoom(ctx.m_camera.getZoom());
         camera.setZoom(fovAngle);
 
         RenderContext localCtx("MIRROR",

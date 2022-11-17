@@ -41,8 +41,12 @@ public:
 
     const Frustum& getFrustum() noexcept;
 
+    void setFront(const glm::vec3& front) noexcept;
     const glm::vec3& getFront() noexcept;
+
     const glm::vec3& getRight() noexcept;
+
+    void setUp(const glm::vec3& up) noexcept;
     const glm::vec3& getUp() noexcept;
 
     float getZoom() noexcept;
