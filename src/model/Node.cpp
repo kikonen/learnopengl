@@ -17,8 +17,8 @@ namespace {
     int objectIDbase = 100;
 
     std::mutex object_id_lock;
-}
 
+}
 
 int Node::nextID() noexcept
 {
@@ -84,7 +84,7 @@ void Node::bind(const RenderContext& ctx, Shader* shader) noexcept
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
-    batch.add(m_worldModelMatrix, m_worldNormalMatrix, m_objectID);
+    batch.add(m_modelMatrix, m_normalMatrix, m_objectID);
 }
 
 void Node::draw(const RenderContext& ctx) noexcept
@@ -93,7 +93,12 @@ void Node::draw(const RenderContext& ctx) noexcept
 
 void Node::updateModelMatrix(Node* parent) noexcept
 {
-    bool dirtyModel = m_dirtyRotation || m_dirtyTranslate || m_dirtyScale;
+    int parentMatrixLevel = parent ? parent->m_matrixLevel : -1;
+    bool dirtyModel = m_dirtyRotation
+        || m_dirtyTranslate
+        || m_dirtyScale
+        || m_parentMatrixLevel != parentMatrixLevel;
+    if (!dirtyModel) return;
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     if (m_dirtyRotation) {
@@ -121,41 +126,24 @@ void Node::updateModelMatrix(Node* parent) noexcept
         m_dirtyScale = false;
     }
 
-    if (dirtyModel) {
-        m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
+    // https://learnopengl.com/Lighting/Basic-Lighting
+    // http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
+    // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+    // normal = mat3(transpose(inverse(model))) * aNormal;
 
-        // https://learnopengl.com/Lighting/Basic-Lighting
-        // http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
-        // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
-        // normal = mat3(transpose(inverse(model))) * aNormal;
+    if (parent) {
+        m_modelMatrix = parent->m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
+        m_normalMatrix = parent->m_normalMatrix * glm::inverseTranspose(glm::mat3(m_modelMatrix));
+        m_parentMatrixLevel = parentMatrixLevel;
+    }
+    else {
+        m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
         m_normalMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
     }
 
-    // NOTE KI *NOT* knowing if parent is changed
-    // => thus have to ALWAYS recalculate
-    if (parent) {
-        if (dirtyModel || m_parentMatrixLevel != parent->m_matrixLevel) {
-            m_worldModelMatrix = parent->m_worldModelMatrix * m_modelMatrix;
-            m_worldNormalMatrix = parent->m_worldNormalMatrix * m_normalMatrix;
-            m_parentMatrixLevel = parent->m_matrixLevel;
+    m_worldPlaneNormal = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_planeNormal, 1.0)));
 
-            m_worldPos = m_worldModelMatrix[3];
-            m_worldPlaneNormal = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_planeNormal, 1.0)));
-
-            m_matrixLevel++;
-        }
-    }
-    else {
-        if (dirtyModel) {
-            m_worldModelMatrix = m_modelMatrix;
-            m_worldNormalMatrix = m_normalMatrix;
-
-            m_worldPos = m_worldModelMatrix[3];
-            m_worldPlaneNormal = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_planeNormal, 1.0)));
-
-            m_matrixLevel++;
-        }
-    }
+    m_matrixLevel++;
 }
 
 void Node::setPlaneNormal(const glm::vec3& planeNormal) noexcept
@@ -224,17 +212,17 @@ int Node::getMatrixLevel() const noexcept
 
 const glm::mat4& Node::getWorldModelMatrix() const noexcept
 {
-    return m_worldModelMatrix;
+    return m_modelMatrix;
 }
 
 const glm::mat3& Node::getWorldNormalMatrix() const noexcept
 {
-    return m_worldNormalMatrix;
+    return m_normalMatrix;
 }
 
 const glm::vec3& Node::getWorldPos() const noexcept
 {
-    return m_worldPos;
+    return m_modelMatrix[3];
 }
 
 const glm::vec3& Node::getWorldPlaneNormal() const noexcept

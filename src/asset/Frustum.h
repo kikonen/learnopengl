@@ -4,7 +4,7 @@
 
 // https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
 struct Frustum {
-    Frustum() {};
+    Frustum() noexcept = default;
 
     Plane topFace;
     Plane bottomFace;

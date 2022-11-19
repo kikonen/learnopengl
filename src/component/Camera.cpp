@@ -38,8 +38,6 @@ void Camera::setupProjection(
         m_farPlane == farPlane &&
         m_zoomProjection == m_zoom) return;
 
-    std::cout << 'x';
-
     m_aspectRatio = aspectRatio;
     m_nearPlane = nearPlane;
     m_farPlane = farPlane;
@@ -63,7 +61,6 @@ const glm::mat4& Camera::getProjection() const noexcept
 const glm::mat4& Camera::getProjected() noexcept
 {
     if (!m_dirtyProjected) return m_projectedMatrix;
-    std::cout << 'O';
     m_projectedMatrix = m_projectionMatrix * getView();
     m_dirtyProjected = false;
     m_projectedLevel++;

@@ -100,14 +100,10 @@ protected:
     std::unique_ptr<Volume> m_volume;
 
 private:
-    int m_matrixLevel = 0;
-    int m_parentMatrixLevel = 0;
+    int m_matrixLevel = -1;
+    int m_parentMatrixLevel = -1;
 
-    glm::vec3 m_worldPos{ 0.f };
     glm::vec3 m_worldPlaneNormal{ 0.f };
-
-    glm::mat4 m_worldModelMatrix{ 1.f };
-    glm::mat3 m_worldNormalMatrix{ 1.f };
 
     glm::vec3 m_planeNormal{ 0 };
 
