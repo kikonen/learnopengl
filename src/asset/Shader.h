@@ -143,8 +143,30 @@ private:
     //void prepareTextureUniforms();
 
     GLint getUniformLoc(const std::string& name);
+    GLuint getSubroutineIndex(const std::string& name, GLenum shadertype);
 
 public:
+    class SubroutineIndex final {
+    protected:
+        SubroutineIndex(const std::string_view& name, GLenum shaderType)
+            : m_name(name),
+            m_shaderType(shaderType)
+        {
+        }
+
+    public:
+        void init(Shader* shader) {
+            m_index = shader->getSubroutineIndex(m_name, m_shaderType);
+        }
+
+    public:
+        const GLenum m_shaderType;
+        GLuint m_index = -1;
+
+    protected:
+        const std::string m_name;
+    };
+
     class Uniform {
     protected:
         // NOTE KI "location=N" is not really feasible due to limitations
@@ -157,10 +179,33 @@ public:
         void init(Shader* shader) {
             m_locId = shader->getUniformLoc(m_name);
         }
+
     protected:
         const std::string m_name;
         GLint m_locId = -1;
+
+        bool m_unassigned = true;
     };
+
+    class Subroutine final : public Uniform {
+    public:
+        Subroutine(const std::string_view& name)
+            : Uniform(name)
+        {
+        }
+
+        void set(const SubroutineIndex& value) noexcept {
+            if (m_locId != -1 && (m_unassigned || value.m_index != m_lastValue)) {
+                glUniformSubroutinesuiv(value.m_shaderType, m_locId, &value.m_index);
+                m_lastValue = value.m_index;
+                m_unassigned = false;
+            }
+        }
+
+    private:
+        GLuint m_lastValue;
+    };
+
 
     class Mat4 final : public Uniform {
     public:
@@ -171,7 +216,6 @@ public:
             if (m_locId != -1) {
                 glUniformMatrix4fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
-
         }
     };
 
@@ -184,7 +228,6 @@ public:
             if (m_locId != -1) {
                 glUniformMatrix3fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
-
         }
     };
 
@@ -197,7 +240,6 @@ public:
             if (m_locId != -1) {
                 glUniformMatrix3fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
-
         }
     };
 
@@ -210,7 +252,6 @@ public:
             if (m_locId != -1) {
                 glUniform1fv(m_locId, 4, glm::value_ptr(value));
             }
-
         }
     };
 
@@ -223,7 +264,6 @@ public:
             if (m_locId != -1) {
                 glUniform1fv(m_locId, 3, glm::value_ptr(value));
             }
-
         }
     };
 
@@ -236,7 +276,6 @@ public:
             if (m_locId != -1) {
                 glUniform1fv(m_locId, 2, glm::value_ptr(value));
             }
-
         }
     };
 
@@ -249,7 +288,6 @@ public:
             if (m_locId != -1) {
                 glUniform1fv(m_locId, count, values);
             }
-
         }
     };
 
@@ -262,7 +300,6 @@ public:
             if (m_locId != -1) {
                 glUniform1iv(m_locId, count, values);
             }
-
         }
     };
 
@@ -277,10 +314,9 @@ public:
                 m_lastValue = value;
                 m_unassigned = false;
             }
-
         }
+
     private:
-        bool m_unassigned = true;
         float m_lastValue;
     };
 
@@ -296,8 +332,8 @@ public:
                 m_unassigned = false;
             }
         }
+
     private:
-        bool m_unassigned = true;
         int m_lastValue;
     };
 
@@ -313,8 +349,8 @@ public:
                 m_unassigned = false;
             }
         }
+
     private:
-        bool m_unassigned = true;
         bool m_lastValue;
     };
 
@@ -370,4 +406,5 @@ private:
     std::map<GLenum, std::string> m_sources;
 
     std::map<const std::string, GLint> m_uniformLocations;
+    std::map<GLenum, std::map<const std::string, GLuint>> m_subroutineIndeces;
 };
