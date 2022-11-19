@@ -189,7 +189,7 @@ void MeshLoader::loadData(
             }
         }
 
-        mesh.calculateVolume();
+        mesh.prepareVolume();
 
         {
             if (m_defaultMaterial.m_used) {

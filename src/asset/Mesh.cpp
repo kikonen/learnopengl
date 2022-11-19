@@ -28,3 +28,13 @@ const Volume* Mesh::getVolume() const
 {
     return m_volume.get();
 }
+
+void Mesh::setAABB(const AABB& aabb)
+{
+    m_aabb = aabb;
+}
+
+const AABB& Mesh::getAABB() const
+{
+    return m_aabb;
+}

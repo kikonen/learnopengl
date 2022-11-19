@@ -50,10 +50,18 @@ void SpriteMesh::modifyMaterials(std::function<void(Material&)> fn)
     fn(m_material);
 }
 
-void SpriteMesh::calculateVolume() {
-    // NOTE KI calculate in 3D
-    auto diam = std::sqrt(2 * 2 + 2 * 2 + 2 * 2);
-    setVolume(std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, diam / 2.f));
+void SpriteMesh::prepareVolume() {
+    const auto& aabb = calculateAABB();
+    setAABB(aabb);
+    setVolume(std::make_unique<Sphere>(
+        (aabb.m_max + aabb.m_min) * 0.5f,
+        // NOTE KI *radius* not diam needed
+        glm::length(aabb.m_min - aabb.m_max) * 0.5f));
+}
+
+const AABB& SpriteMesh::calculateAABB() const
+{
+    return { glm::vec3{-1.f, -1.f, 0.f}, glm::vec3{1.f, 1.f, 0.f} };
 }
 
 void SpriteMesh::prepare(const Assets& assets)

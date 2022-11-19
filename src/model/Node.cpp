@@ -240,6 +240,16 @@ void Node::setVolume(std::unique_ptr<Volume> volume) noexcept
     m_volume = std::move(volume);
 }
 
+void Node::setAABB(const AABB& aabb)
+{
+    m_aabb = aabb;
+}
+
+const AABB& Node::getAABB() const
+{
+    return m_aabb;
+}
+
 int Node::lua_getId() const noexcept
 {
     return m_objectID;

@@ -80,7 +80,17 @@ void ModelMesh::modifyMaterials(std::function<void(Material&)> fn)
     }
 }
 
-void ModelMesh::calculateVolume() {
+void ModelMesh::prepareVolume() {
+    const auto& aabb = calculateAABB();
+    setAABB(aabb);
+
+    setVolume(std::make_unique<Sphere>(
+        (aabb.m_max + aabb.m_min) * 0.5f,
+        // NOTE KI *radius* not diam needed
+        glm::length(aabb.m_min - aabb.m_max) * 0.5f));
+}
+
+const AABB& ModelMesh::calculateAABB() const {
     glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
     glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
 
@@ -95,10 +105,7 @@ void ModelMesh::calculateVolume() {
         maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
     }
 
-    setVolume(std::make_unique<Sphere>(
-        (maxAABB + minAABB) * 0.5f,
-        // NOTE KI *radius* not diam needed
-        glm::length(minAABB - maxAABB) * 0.5f));
+    return { minAABB, maxAABB };
 }
 
 void ModelMesh::prepare(const Assets& assets)

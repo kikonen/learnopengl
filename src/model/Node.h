@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <ki/uuid.h>
 
+#include "asset/AABB.h"
 #include "asset/Sphere.h"
 #include "component/ParticleGenerator.h"
 #include "scene/NodeType.h"
@@ -56,6 +57,9 @@ public:
     const Volume* getVolume() const noexcept;
     void setVolume(std::unique_ptr<Volume> volume) noexcept;
 
+    void setAABB(const AABB& aabb);
+    const AABB& getAABB() const;
+
     static int nextID() noexcept;
 
 public:
@@ -98,6 +102,7 @@ protected:
     bool m_prepared = false;
 
     std::unique_ptr<Volume> m_volume;
+    AABB m_aabb;
 
 private:
     int m_matrixLevel = -1;

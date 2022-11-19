@@ -118,9 +118,11 @@ void SceneFile::attachVolume(
     node->m_parentId = root.base.id;
 
     // NOTE KI m_radius = 1.73205078
-    type->m_mesh->calculateVolume();
+    type->m_mesh->prepareVolume();
     auto volume = type->m_mesh->getVolume();
     node->setVolume(volume->clone());
+
+    node->setAABB(type->m_mesh->getAABB());
 
     node->m_controller = std::make_unique<VolumeController>();
 
@@ -240,7 +242,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
     }
     else if (data.type == EntityType::quad) {
         auto mesh = std::make_unique<QuadMesh>(data.name);
-        mesh->calculateVolume();
+        mesh->prepareVolume();
         if (material) {
             mesh->m_material = *material;
             if (data.loadTextures) {
@@ -252,7 +254,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
     else if (data.type == EntityType::sprite) {
         // NOTE KI sprite *shall* differ from quad later on
         auto mesh = std::make_unique<SpriteMesh>(data.name);
-        mesh->calculateVolume();
+        mesh->prepareVolume();
         if (material) {
             mesh->m_material = *material;
             if (data.loadTextures) {
@@ -402,6 +404,7 @@ Node* SceneFile::createNode(
     if (type->m_mesh) {
         auto volume = type->m_mesh->getVolume();
         node->setVolume(volume->clone());
+        node->setAABB(type->m_mesh->getAABB());
     }
 
     node->m_selected = data.selected;
