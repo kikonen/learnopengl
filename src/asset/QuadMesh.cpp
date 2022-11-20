@@ -77,7 +77,7 @@ void QuadMesh::prepareVolume() {
 
 const AABB& QuadMesh::calculateAABB() const
 {
-    return { glm::vec3{-1.f, -1.f, 0.f}, glm::vec3{1.f, 1.f, 0.f} };
+    return { glm::vec3{-1.f, -1.f, 0.f}, glm::vec3{1.f, 1.f, 0.f}, true };
 }
 
 void QuadMesh::prepare(const Assets& assets)

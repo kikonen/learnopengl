@@ -105,7 +105,7 @@ const AABB& ModelMesh::calculateAABB() const {
         maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
     }
 
-    return { minAABB, maxAABB };
+    return { minAABB, maxAABB, false };
 }
 
 void ModelMesh::prepare(const Assets& assets)
