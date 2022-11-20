@@ -110,9 +110,6 @@ void ModelMesh::prepare(const Assets& assets)
 
 void ModelMesh::prepareMaterials(const Assets& assets)
 {
-    m_reflection = false;
-    m_refraction = false;
-
     {
         int materialIndex = 0;
 
@@ -120,15 +117,11 @@ void ModelMesh::prepareMaterials(const Assets& assets)
             material.m_index = materialIndex++;
             assert(material.m_index < MATERIAL_COUNT);
 
-            m_reflection |= material.reflection > 0;
-            m_refraction |= material.refraction > 0;
-
             material.prepare(assets);
 
             for (auto& tex : material.m_textures) {
                 if (!tex.texture) continue;
                 tex.m_texIndex = tex.texture->m_texIndex;
-                m_textureIDs.push_back(tex.texture->m_textureID);
             }
         }
     }

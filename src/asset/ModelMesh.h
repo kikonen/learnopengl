@@ -55,8 +55,6 @@ public:
     std::vector<Vertex> m_vertices;
 
     std::vector<Material> m_materials;
-    std::vector<GLuint> m_textureIDs;
-    unsigned int m_unitIndexFirst = 0;
 
     const std::string m_meshName;
     const std::string m_meshPath;

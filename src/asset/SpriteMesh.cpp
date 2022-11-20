@@ -76,7 +76,6 @@ void SpriteMesh::prepareMaterials(const Assets& assets)
         for (auto& tex : material.m_textures) {
             if (!tex.texture) continue;
             tex.m_texIndex = tex.texture->m_texIndex;
-            m_textureIDs.push_back(tex.texture->m_textureID);
         }
     }
 
