@@ -243,11 +243,17 @@ void Node::setVolume(std::unique_ptr<Volume> volume) noexcept
 void Node::setAABB(const AABB& aabb)
 {
     m_aabb = aabb;
+    m_obb = { aabb };
 }
 
 const AABB& Node::getAABB() const
 {
     return m_aabb;
+}
+
+OBB& Node::getOBB()
+{
+    return m_obb;
 }
 
 int Node::lua_getId() const noexcept

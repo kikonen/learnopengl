@@ -6,6 +6,8 @@
 #include "asset/GLState.h"
 #include "asset/Assets.h"
 #include "asset/Shader.h"
+#include "asset/FrustumNew.h"
+
 #include "component/Camera.h"
 
 #include "Batch.h"
@@ -66,10 +68,16 @@ public:
     void bind(Shader* shader) const;
 
     const Frustum* getFrustum() const;
+    const FrustumNew& getFrustumNew() const;
 
 private:
     void updateFrustum() const;
     void updateFrustumNOPE();
+
+    void updateFrustumNew(
+        FrustumNew& frustum,
+        const glm::mat4& mat,
+        bool normalize) const;
 
 public:
     const std::string m_name;
@@ -116,4 +124,7 @@ public:
 
 private:
     mutable std::unique_ptr<Frustum> m_frustum;
+
+    mutable FrustumNew m_frustumNew;
+    mutable bool m_frustumNewPrepared = false;
 };

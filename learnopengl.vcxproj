@@ -182,7 +182,9 @@
   <ItemGroup>
     <ClCompile Include="src\AssetsFile.cpp" />
     <ClCompile Include="src\asset\AABB.cpp" />
+    <ClCompile Include="src\asset\OBB.cpp" />
     <ClCompile Include="src\asset\ShaderRegistry.cpp" />
+    <ClCompile Include="src\asset\FrustumNew.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
     <ClCompile Include="src\asset\SpriteMesh.cpp" />
     <ClCompile Include="src\asset\Volume.cpp" />
@@ -277,6 +279,8 @@
     <ClInclude Include="Group.h" />
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\Frustum.h" />
+    <ClInclude Include="src\asset\FrustumNew.h" />
+    <ClInclude Include="src\asset\OBB.h" />
     <ClInclude Include="src\asset\Sphere.h" />
     <ClInclude Include="src\asset\Plane.h" />
     <ClInclude Include="src\asset\SpriteMesh.h" />

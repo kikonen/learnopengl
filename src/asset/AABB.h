@@ -6,7 +6,7 @@
 
 #include "Sphere.h"
 
-
+// https://bruop.github.io/frustum_culling/
 struct AABB final
 {
     AABB() noexcept = default;

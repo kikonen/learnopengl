@@ -207,13 +207,25 @@ void Batch::draw(
     if (type.m_flags.root) return;
     if (type.m_flags.origo) return;
 
+    auto& obb = node.getOBB();
+    //const auto mvp = ctx.m_matrices.projected * node.getModelMatrix();
+
     const auto& volume = node.getVolume();
     if (ctx.m_useFrustum &&
         ctx.assets.frustumEnabled &&
         !type.m_flags.noFrustum &&
-        volume &&
-        !volume->isOnFrustum(*ctx.getFrustum(), node.getMatrixLevel(), node.getWorldModelMatrix()))
+        !obb.inFrustum(
+            ctx.m_camera.getProjectedLevel(),
+            ctx.m_camera.getProjected(),
+            node.getMatrixLevel(),
+            node.getWorldModelMatrix()))
     {
+        //volume &&
+        //!volume->isOnFrustum(
+        //    *ctx.getFrustum(),
+        //    node.getMatrixLevel(),
+        //    node.getWorldModelMatrix()))
+        //!volume->isOnFrustum(*ctx.getFrustum(), node.getMatrixLevel(), node.getWorldModelMatrix()))
         ctx.m_skipCount += 1;
         return;
     }

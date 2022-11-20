@@ -4,6 +4,8 @@
 #include <ki/uuid.h>
 
 #include "asset/AABB.h"
+#include "asset/OBB.h"
+
 #include "asset/Sphere.h"
 #include "component/ParticleGenerator.h"
 #include "scene/NodeType.h"
@@ -60,6 +62,8 @@ public:
     void setAABB(const AABB& aabb);
     const AABB& getAABB() const;
 
+    OBB& getOBB();
+
     static int nextID() noexcept;
 
 public:
@@ -103,6 +107,7 @@ protected:
 
     std::unique_ptr<Volume> m_volume;
     AABB m_aabb;
+    OBB m_obb;
 
 private:
     int m_matrixLevel = -1;
