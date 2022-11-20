@@ -30,9 +30,6 @@ public:
 
     virtual const std::string str() const override;
 
-    bool hasReflection() const override;
-    bool hasRefraction() const override;
-
     Material* findMaterial(std::function<bool(const Material&)> fn) override;
     void modifyMaterials(std::function<void(Material&)> fn) override;
 
@@ -66,9 +63,6 @@ public:
 
 private:
     bool m_prepared = false;
-
-    bool m_refraction = false;
-    bool m_reflection = false;
 
     unsigned int m_materialsUboId = 0;
     unsigned int m_materialsUboSize = 0;

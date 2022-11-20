@@ -55,16 +55,6 @@ const std::string ModelMesh::str() const
         m_name, m_meshPath, m_meshName, m_buffers.VAO, m_buffers.VBO, m_buffers.EBO);
 }
 
-bool ModelMesh::hasReflection() const
-{
-    return m_reflection;
-}
-
-bool ModelMesh::hasRefraction() const
-{
-    return m_refraction;
-}
-
 Material* ModelMesh::findMaterial(std::function<bool(const Material&)> fn)
 {
     for (auto& material : m_materials) {

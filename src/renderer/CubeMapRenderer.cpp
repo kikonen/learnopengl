@@ -228,7 +228,6 @@ Node* CubeMapRenderer::findCenter(const RenderContext& ctx, const NodeRegistry& 
 
     for (const auto& all : registry.allNodes) {
         for (const auto& [type, nodes] : all.second) {
-            //if (!(type->hasReflection() || type->hasRefraction())) continue;
             if (!type->m_flags.cubeMap) continue;
 
             for (const auto& node : nodes) {

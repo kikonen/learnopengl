@@ -18,9 +18,6 @@ public:
 
     virtual const std::string str() const override;
 
-    bool hasReflection() const override;
-    bool hasRefraction() const override;
-
     Material* findMaterial(std::function<bool(const Material&)> fn) override;
     void modifyMaterials(std::function<void(Material&)> fn) override;
 

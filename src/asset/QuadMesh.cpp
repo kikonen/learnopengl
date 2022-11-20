@@ -44,16 +44,6 @@ const std::string QuadMesh::str() const
     return "<QUAD_MESH: " + m_name + ">";
 }
 
-bool QuadMesh::hasReflection() const
-{
-    return m_material.reflection;
-}
-
-bool QuadMesh::hasRefraction() const
-{
-    return m_material.refraction;
-}
-
 Material* QuadMesh::findMaterial(std::function<bool(const Material&)> fn)
 {
     if (fn(m_material)) return &m_material;

@@ -36,19 +36,6 @@ const std::string NodeType::str() const noexcept
     return fmt::format("<NODE_TYPE: id={}, mesh={}>", typeID, m_mesh ? m_mesh->str() : "N/A");
 }
 
-
-bool NodeType::hasReflection() noexcept
-{
-    if (!m_mesh) return false;
-    return m_mesh->hasReflection();
-}
-
-bool NodeType::hasRefraction() noexcept
-{
-    if (!m_mesh) return false;
-    return m_mesh->hasRefraction();
-}
-
 Material* NodeType::findMaterial(std::function<bool(const Material&)> fn) noexcept
 {
     if (!m_mesh) return nullptr;

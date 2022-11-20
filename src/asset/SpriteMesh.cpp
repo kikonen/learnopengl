@@ -29,16 +29,6 @@ const std::string SpriteMesh::str() const
     return "<SPRITE_MESH: " + m_name + ">";
 }
 
-bool SpriteMesh::hasReflection() const
-{
-    return m_material.reflection;
-}
-
-bool SpriteMesh::hasRefraction() const
-{
-    return m_material.refraction;
-}
-
 Material* SpriteMesh::findMaterial(std::function<bool(const Material&)> fn)
 {
     if (fn(m_material)) return &m_material;

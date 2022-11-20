@@ -39,9 +39,6 @@ public:
 
     const std::string str() const noexcept;
 
-    bool hasReflection() noexcept;
-    bool hasRefraction() noexcept;
-
     Material* findMaterial(std::function<bool(const Material&)> fn) noexcept;
     void modifyMaterials(std::function<void(Material&)> fn) noexcept;
 

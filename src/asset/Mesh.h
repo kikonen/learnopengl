@@ -21,9 +21,6 @@ public:
 
     virtual const std::string str() const;
 
-    virtual bool hasReflection() const = 0;
-    virtual bool hasRefraction() const = 0;
-
     virtual Material* findMaterial(std::function<bool(const Material&)> fn) = 0;
     virtual void modifyMaterials(std::function<void(Material&)> fn) = 0;
 
