@@ -37,7 +37,6 @@ public:
 
     Material m_defaultMaterial;
     bool m_forceDefaultMaterial = false;
-    bool m_loadTextures = true;
 
 private:
     unsigned int resolveVertexIndex(

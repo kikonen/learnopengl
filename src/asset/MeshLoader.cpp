@@ -189,23 +189,13 @@ void MeshLoader::loadData(
             }
         }
 
-        mesh.prepareVolume();
-
         {
             if (m_defaultMaterial.m_used) {
-                if (m_loadTextures) {
-                    m_defaultMaterial.loadTextures(assets);
-                }
                 materials.push_back(m_defaultMaterial);
             }
 
             for (auto& material : loadedMaterials) {
                 if (!material.m_used) continue;
-
-                if (m_loadTextures) {
-                    material.loadTextures(assets);
-                }
-
                 materials.push_back(material);
             }
         }

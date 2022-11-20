@@ -59,8 +59,6 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
         }
     }
 
-    mesh->prepareVolume();
-
     return mesh;
 }
 

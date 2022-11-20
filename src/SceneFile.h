@@ -182,6 +182,7 @@ class SceneFile
 
         MaterialField materialModifierFields;
         Material materialModifiers;
+        bool materialModifiers_enabled = false;
 
         int batchSize{ -1 };
 

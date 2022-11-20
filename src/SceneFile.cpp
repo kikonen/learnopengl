@@ -234,7 +234,6 @@ std::shared_ptr<NodeType> SceneFile::createType(
             meshLoader.m_defaultMaterial = *material;
         }
         meshLoader.m_forceDefaultMaterial = data.forceMaterial;
-        meshLoader.m_loadTextures = data.loadTextures;
 
         auto mesh = meshLoader.load();
         KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << (mesh ? mesh->str() : "n/A"));
@@ -242,24 +241,16 @@ std::shared_ptr<NodeType> SceneFile::createType(
     }
     else if (data.type == EntityType::quad) {
         auto mesh = std::make_unique<QuadMesh>(data.name);
-        mesh->prepareVolume();
         if (material) {
             mesh->m_material = *material;
-            if (data.loadTextures) {
-                mesh->m_material.loadTextures(assets);
-            }
         }
         type->m_mesh.reset(mesh.release());
     }
     else if (data.type == EntityType::sprite) {
         // NOTE KI sprite *shall* differ from quad later on
         auto mesh = std::make_unique<SpriteMesh>(data.name);
-        mesh->prepareVolume();
         if (material) {
             mesh->m_material = *material;
-            if (data.loadTextures) {
-                mesh->m_material.loadTextures(assets);
-            }
         }
         type->m_mesh.reset(mesh.release());
         type->m_flags.sprite = true;
@@ -267,11 +258,6 @@ std::shared_ptr<NodeType> SceneFile::createType(
     else if (data.type == EntityType::terrain) {
         TerrainGenerator generator(assets);
         auto mesh = generator.generateTerrain(*material);
-        if (material) {
-            mesh->modifyMaterials([&assets](auto& material) {
-                material.loadTextures(assets);
-            });
-        }
         type->m_mesh.reset(mesh.release());
         type->m_flags.terrain = true;
     }
@@ -286,14 +272,17 @@ std::shared_ptr<NodeType> SceneFile::createType(
             return nullptr;
         }
 
-        type->modifyMaterials([this, &data, &assets](Material& m) {
-            modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
+        type->m_mesh->prepareVolume();
 
-            // NOTE KI if textures were not loaded, then need to load them now
-            if (!data.loadTextures) {
-                m.loadTextures(assets);
-            }
+        if (data.materialModifiers_enabled) {
+            type->modifyMaterials([this, &data, &assets](Material& m) {
+                modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
             });
+        }
+
+        type->modifyMaterials([this, &data, &assets](Material& m) {
+            m.loadTextures(assets);
+        });
     }
 
     {
@@ -309,6 +298,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
                 normalPattern |= mat.pattern > 0;
                 });
         }
+
         // NOTE KI reduce variants to 2
         if (materialCount < MIN_MATERIAL_COUNT) {
             // NOTE KI TEX_TEXTURE requires at least 1
@@ -849,6 +839,7 @@ void SceneFile::loadMaterialModifiers(
     const YAML::Node& node,
     EntityCloneData& data)
 {
+    data.materialModifiers_enabled = true;
     data.materialModifiers.m_name = "<modifier>";
 
     loadMaterial(node, data.materialModifierFields, data.materialModifiers);
