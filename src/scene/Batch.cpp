@@ -214,12 +214,18 @@ void Batch::draw(
     if (ctx.m_useFrustum &&
         ctx.assets.frustumEnabled &&
         !type.m_flags.noFrustum &&
-        !obb.inFrustum(
-            ctx.m_camera.getProjectedLevel(),
-            ctx.m_camera.getProjected(),
+        volume &&
+        !volume->isOnFrustum(
+            ctx.m_camera.getFrustum(),
             node.getMatrixLevel(),
             node.getWorldModelMatrix()))
-    {
+        {
+    //!obb.inFrustum(
+    //    ctx.m_camera.getProjectedLevel(),
+    //    ctx.m_camera.getProjected(),
+    //    node.getMatrixLevel(),
+    //    node.getWorldModelMatrix()))
+
         //volume &&
         //!volume->isOnFrustum(
         //    *ctx.getFrustum(),

@@ -172,4 +172,7 @@ void AsteroidBeltController::calculateVolume(
         (maxAABB + minAABB) * 0.5f,
         glm::length(minAABB - maxAABB));
     node.setVolume(std::move(volume));
+
+    AABB aabb{ minAABB, maxAABB, false };
+    node.setAABB(aabb);
 }

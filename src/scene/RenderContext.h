@@ -67,13 +67,9 @@ public:
 
     void bind(Shader* shader) const;
 
-    const Frustum* getFrustum() const;
     const FrustumNew& getFrustumNew() const;
 
 private:
-    void updateFrustum() const;
-    void updateFrustumNOPE();
-
     void updateFrustumNew(
         FrustumNew& frustum,
         const glm::mat4& mat,
@@ -123,8 +119,6 @@ public:
     mutable bool m_useLight = true;
 
 private:
-    mutable std::unique_ptr<Frustum> m_frustum;
-
     mutable FrustumNew m_frustumNew;
     mutable bool m_frustumNewPrepared = false;
 };

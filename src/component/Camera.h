@@ -91,6 +91,8 @@ private:
     glm::mat4 m_viewMatrix;
     glm::mat4 m_rotateMat;
 
+    Frustum m_frustum;
+
     int m_projectionLevel = -1;
     int m_projectedLevel = -1;
     int m_viewLevel = -1;

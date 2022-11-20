@@ -51,6 +51,7 @@ void Camera::setupProjection(
 
     m_projectionLevel++;
     m_dirtyProjected = true;
+    m_dirtyFrustum = true;
 }
 
 const glm::mat4& Camera::getProjection() const noexcept
@@ -95,6 +96,12 @@ const glm::vec3& Camera::getViewUp() noexcept
 {
     if (m_dirty) updateCamera();
     return m_viewUp;
+}
+
+const Frustum& Camera::getFrustum() noexcept
+{
+    if (m_dirtyFrustum) updateFrustum();
+    return m_frustum;
 }
 
 void Camera::setFront(const glm::vec3& front) noexcept
@@ -294,5 +301,55 @@ void Camera::updateCamera() noexcept
     m_viewRight = glm::normalize(glm::cross(m_viewFront, m_viewUp));
 
     m_dirtyProjected = true;
+    m_dirtyFrustum = true;
     m_viewLevel++;
+}
+
+void Camera::updateFrustum() noexcept
+{
+    // TODO KI https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
+    // https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/entity.h
+
+    // NOTE KI use 90 angle for culling; smaller does cut-off too early
+    // => 90 angle neither working correctly always for terrain tiles
+    // => TODO KI WHAT is failing
+    const float fovY = glm::radians(getZoom());
+    //const float fovY = glm::radians(90.f);
+    const glm::vec3& pos = getPos();
+    const glm::vec3& front = getViewFront();
+    const glm::vec3& up = getViewUp();
+    const glm::vec3& right = getViewRight();
+
+    const float halfVSide = m_farPlane * tanf(fovY * .5f);
+    const float halfHSide = halfVSide * m_aspectRatio;
+    const glm::vec3 frontMultFar = m_farPlane * front;
+
+    // NOTE KI near and far plane don't have camee pos as "point in plane"
+    // NOTE KI other side HAVE camra pos as "point in plane"
+
+    m_frustum.nearFace = {
+        pos + m_nearPlane * front,
+        front };
+
+    m_frustum.farFace = {
+        pos + frontMultFar,
+        -front };
+
+    m_frustum.rightFace = {
+        pos,
+        glm::cross(up, frontMultFar + right * halfHSide) };
+
+    m_frustum.leftFace = {
+        pos,
+        glm::cross(frontMultFar - right * halfHSide, up) };
+
+    m_frustum.topFace = {
+        pos,
+        glm::cross(right, frontMultFar - up * halfVSide) };
+
+    m_frustum.bottomFace = {
+        pos,
+        glm::cross(frontMultFar + up * halfVSide, right) };
+
+    m_dirtyFrustum = false;
 }
