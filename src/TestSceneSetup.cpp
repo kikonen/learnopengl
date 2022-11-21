@@ -3,10 +3,6 @@
 #include "asset/MeshLoader.h"
 #include "asset/PlainTexture.h"
 
-#include "model/Sprite.h"
-#include "model/Terrain.h"
-#include "model/Billboard.h"
-#include "model/Water.h"
 #include "model/InstancedNode.h"
 
 #include "controller/CameraController.h"
@@ -14,7 +10,8 @@
 #include "controller/MovingLightController.h"
 #include "controller/NodePathController.h"
 
-#include "scene/NodeType.h"
+#include "registry/NodeType.h"
+
 #include "scene/TerrainGenerator.h"
 
 
@@ -56,7 +53,7 @@ void TestSceneSetup::setupEffectExplosion()
         type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;
 
-        auto node = new Billboard(type);
+        auto node = new Node(type);
         //node->setPos(glm::vec3{ 0, 3.5, -20 } + assets.groundOffset);
         node->setScale(2);
 

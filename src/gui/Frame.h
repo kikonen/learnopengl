@@ -4,9 +4,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "scene/RenderContext.h"
+#include "gui/Window.h"'
 
-#include "gui/Window.h"
+class RenderContext;
 
 class Frame
 {

@@ -1,5 +1,6 @@
 #include "Renderer.h"
 
+#include "scene/RenderContext.h"
 
 Renderer::Renderer()
 {
@@ -14,7 +15,7 @@ void Renderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_renderFrequency = assets.renderFrequency;
 }
 
-void Renderer::update(const RenderContext& ctx, const NodeRegistry& registry)
+void Renderer::update(const RenderContext& ctx)
 {
 }
 

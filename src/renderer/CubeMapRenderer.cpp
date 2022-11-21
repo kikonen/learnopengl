@@ -82,7 +82,6 @@ void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 
 void CubeMapRenderer::render(
     const RenderContext& mainCtx,
-    const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
     if (!m_cleared) {
@@ -93,7 +92,7 @@ void CubeMapRenderer::render(
 
     if (!needRender(mainCtx)) return;
 
-    Node* centerNode = findCenter(mainCtx, registry);
+    Node* centerNode = findCenter(mainCtx);
     if (!centerNode) return;
 
     // https://www.youtube.com/watch?v=lW_iqrtJORc
@@ -137,7 +136,7 @@ void CubeMapRenderer::render(
         ctx.m_matrices.lightProjected = mainCtx.m_matrices.lightProjected;
         ctx.bindMatricesUBO();
 
-        drawNodes(ctx, registry, skybox, centerNode);
+        drawNodes(ctx, skybox, centerNode);
     }
 
     m_curr->unbind(mainCtx);
@@ -171,7 +170,6 @@ void CubeMapRenderer::clearCubeMap(
 
 void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
-    const NodeRegistry& registry,
     SkyboxRenderer* skybox,
     const Node* centerNode)
 {
@@ -201,11 +199,11 @@ void CubeMapRenderer::drawNodes(
         }
     };
 
-    for (const auto& all : registry.solidNodes) {
+    for (const auto& all : ctx.registry.solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : registry.alphaNodes) {
+    for (const auto& all : ctx.registry.alphaNodes) {
         renderTypes(all.second);
     }
 
@@ -214,19 +212,19 @@ void CubeMapRenderer::drawNodes(
         skybox->render(ctx);
     }
 
-    for (const auto& all : registry.blendedNodes) {
+    for (const auto& all : ctx.registry.blendedNodes) {
         renderTypes(all.second);
     }
 }
 
-Node* CubeMapRenderer::findCenter(const RenderContext& ctx, const NodeRegistry& registry)
+Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
 {
     const glm::vec3& cameraPos = ctx.m_camera.getPos();
     const glm::vec3& cameraDir = ctx.m_camera.getViewFront();
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : registry.allNodes) {
+    for (const auto& all : ctx.registry.allNodes) {
         for (const auto& [type, nodes] : all.second) {
             if (!type->m_flags.cubeMap) continue;
 

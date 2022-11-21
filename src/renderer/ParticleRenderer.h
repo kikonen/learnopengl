@@ -8,11 +8,10 @@ public:
     ParticleRenderer();
 
     virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
-    virtual void update(const RenderContext& ctx, const NodeRegistry& registry);
+    virtual void update(const RenderContext& ctx);
 
     void render(
-        const RenderContext& ctx,
-        const NodeRegistry& registry);
+        const RenderContext& ctx);
 
 private:
     Shader* particleShader{ nullptr };

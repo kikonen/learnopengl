@@ -11,6 +11,8 @@
 
 #include "asset/Sphere.h"
 
+#include "scene/RenderContext.h"
+
 namespace {
 #pragma pack(push, 1)
     struct TexVBO {
@@ -98,17 +100,21 @@ const AABB& ModelMesh::calculateAABB() const {
     return { minAABB, maxAABB, false };
 }
 
-void ModelMesh::prepare(const Assets& assets)
+void ModelMesh::prepare(
+    const Assets& assets,
+    NodeRegistry& registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
     m_buffers.prepare(true);
-    prepareMaterials(assets);
+    prepareMaterials(assets, registry);
     prepareBuffers(m_buffers);
 }
 
-void ModelMesh::prepareMaterials(const Assets& assets)
+void ModelMesh::prepareMaterials(
+    const Assets& assets,
+    NodeRegistry& registry)
 {
     {
         int materialIndex = 0;

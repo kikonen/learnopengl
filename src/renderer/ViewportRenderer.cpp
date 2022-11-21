@@ -12,18 +12,17 @@ void ViewportRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     Renderer::prepare(assets, shaders);
 }
 
-void ViewportRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
+void ViewportRenderer::update(const RenderContext& ctx)
 {
-    for (auto& viewport : registry.viewports) {
+    for (auto& viewport : ctx.registry.viewports) {
         viewport->update(ctx);
     }
 }
 
 void ViewportRenderer::render(
-    const RenderContext& ctx,
-    const NodeRegistry& registry)
+    const RenderContext& ctx)
 {
-    if (registry.viewports.empty()) return;
+    if (ctx.registry.viewports.empty()) return;
 
     ctx.state.disable(GL_DEPTH_TEST);
     ctx.state.enable(GL_BLEND);
@@ -32,7 +31,7 @@ void ViewportRenderer::render(
     ctx.m_useWireframe = false;
     ctx.bindGlobal();
 
-    for (auto& viewport : registry.viewports) {
+    for (auto& viewport : ctx.registry.viewports) {
         viewport->bind(ctx);
         viewport->draw(ctx);
         viewport->unbind(ctx);

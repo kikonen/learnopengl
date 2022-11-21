@@ -5,7 +5,7 @@
 
 #include "model/Node.h"
 #include "scene/RenderContext.h"
-#include "scene/NodeRegistry.h"
+#include "registry/NodeRegistry.h"
 
 
 Light::Light()

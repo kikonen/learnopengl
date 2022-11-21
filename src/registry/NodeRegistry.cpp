@@ -2,7 +2,7 @@
 
 #include <fmt/format.h>
 
-#include "Scene.h"
+#include "ki/GL.h"
 
 
 namespace {
@@ -11,9 +11,8 @@ namespace {
     const int NULL_SHADER_ID = 0;
 }
 
-NodeRegistry::NodeRegistry(Scene& scene)
-    : scene(scene),
-    assets(scene.assets)
+NodeRegistry::NodeRegistry(const Assets& assets)
+    : assets(assets)
 {
 }
 
@@ -35,7 +34,7 @@ NodeRegistry::~NodeRegistry()
         blendedNodes.clear();
 
         m_cameraNodes.clear();
-    
+
         m_dirLight = nullptr;
         m_pointLights.clear();
         m_spotLights.clear();
@@ -65,6 +64,11 @@ NodeRegistry::~NodeRegistry()
         delete group;
     }
     groups.clear();
+}
+
+void NodeRegistry::addListener(NodeListener& listener)
+{
+    m_listeners.push_back(listener);
 }
 
 void NodeRegistry::addGroup(Group* group) noexcept
@@ -220,7 +224,7 @@ void NodeRegistry::bindNode(Node* node) noexcept
         if (!shader) return;
     }
 
-    type->prepare(assets);
+    type->prepare(assets, *this);
 
     auto* map = &solidNodes;
 
@@ -266,7 +270,7 @@ void NodeRegistry::bindNode(Node* node) noexcept
         m_root = node;
     }
 
-    scene.bindComponents(*node);
+    notifyListeners(node, NodeOperation::ADDED);
 
     KI_INFO_SB("ATTACH_NODE: id=" << node->str());
 }
@@ -334,4 +338,11 @@ void NodeRegistry::bindChildren(Node* parent) noexcept
     }
 
     m_pendingChildren.erase(parent->m_id);
+}
+
+void NodeRegistry::notifyListeners(Node* node, NodeOperation operation)
+{
+    for (auto& listener : m_listeners) {
+        listener(node, operation);
+    }
 }

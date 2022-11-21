@@ -10,7 +10,9 @@
 #include "Volume.h"
 #include "AABB.h"
 
-#include "scene/RenderContext.h"
+#include "registry/NodeRegistry.h"
+
+class RenderContext;
 
 class Mesh
 {
@@ -27,11 +29,15 @@ public:
     virtual void prepareVolume() = 0;
     virtual const AABB& calculateAABB() const = 0;
 
-    virtual void prepare(const Assets& assets) = 0;
+    virtual void prepare(
+        const Assets& assets,
+        NodeRegistry& registry) = 0;
+
     virtual void bind(
         const RenderContext& ctx,
         Shader* shader,
         bool bindMaterials) noexcept  = 0;
+
     virtual void drawInstanced(const RenderContext& ctx, int instanceCount) noexcept  = 0;
 
     void setVolume(std::unique_ptr<Volume> volume);

@@ -6,7 +6,9 @@
 #include "asset/Assets.h"
 #include "asset/ShaderBind.h"
 
-#include "RenderContext.h"
+#include "scene/RenderContext.h"
+
+#include "NodeRegistry.h"
 
 namespace {
     int idBase = 0;
@@ -48,14 +50,16 @@ void NodeType::modifyMaterials(std::function<void(Material&)> fn) noexcept
     m_mesh->modifyMaterials(fn);
 }
 
-void NodeType::prepare(const Assets& assets) noexcept
+void NodeType::prepare(
+    const Assets& assets,
+    NodeRegistry& registry) noexcept
 {
     if (!m_mesh) return;
 
     if (m_prepared) return;
     m_prepared = true;
 
-    m_mesh->prepare(assets);
+    m_mesh->prepare(assets, registry);
 
     Shader* shader = m_nodeShader;
     if (shader) {

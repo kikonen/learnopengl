@@ -25,6 +25,7 @@ protected:
 private:
     void selectNode(
         const RenderContext& ctx,
+        Scene* scene,
         bool isShift,
         bool isCtrl);
 

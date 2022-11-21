@@ -99,7 +99,7 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_debugViewport->prepare(assets);
 }
 
-void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
+void ObjectIdRenderer::update(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
     int w = ctx.assets.resolutionScale.x * res.x;
@@ -122,18 +122,17 @@ void ObjectIdRenderer::update(const RenderContext& ctx, const NodeRegistry& regi
 }
 
 void ObjectIdRenderer::render(
-    const RenderContext& ctx,
-    const NodeRegistry& registry)
+    const RenderContext& ctx)
 {
     RenderContext idCtx("OBJECT_ID", &ctx, ctx.m_camera, m_idBuffer->m_spec.width, m_idBuffer->m_spec.height);
 
     m_idBuffer->bind(idCtx);
 
-    drawNodes(idCtx, registry);
+    drawNodes(idCtx);
     m_idBuffer->unbind(ctx);
 }
 
-void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& registry)
+void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
 {
     ctx.state.enable(GL_DEPTH_TEST);
 
@@ -174,15 +173,15 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& r
             }
         };
 
-        for (const auto& all : registry.solidNodes) {
+        for (const auto& all : ctx.registry.solidNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : registry.alphaNodes) {
+        for (const auto& all : ctx.registry.alphaNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : registry.blendedNodes) {
+        for (const auto& all : ctx.registry.blendedNodes) {
             renderTypes(all.second);
         }
     }

@@ -99,7 +99,7 @@ int Test6::onRender(const ki::RenderClock& clock) {
     int state = glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
     if ((isCtrl && state == GLFW_PRESS) && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
-        selectNode(ctx, isShift, isCtrl);
+        selectNode(ctx, scene, isShift, isCtrl);
     }
 
     if (m_assets.useIMGUI) {
@@ -133,11 +133,12 @@ void Test6::onDestroy()
 
 void Test6::selectNode(
     const RenderContext& ctx,
+    Scene* scene,
     bool isShift,
     bool isCtrl)
 {
-    auto& registry = ctx.m_scene->m_registry;
-    int objectID = ctx.m_scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
+    auto& registry = scene->m_registry;
+    int objectID = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
 
     auto* volumeNode = registry.getNode(ctx.assets.volumeUUID);
     auto* node = registry.getNode(objectID);

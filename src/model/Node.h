@@ -8,14 +8,16 @@
 
 #include "asset/Sphere.h"
 #include "component/ParticleGenerator.h"
-#include "scene/NodeType.h"
-#include "scene/RenderContext.h"
+
+#include "registry/NodeType.h"
+
 #include "scene/Batch.h"
 
 #include "component/Light.h"
 
 class NodeController;
 class Camera;
+class RenderContext;
 
 class Node
 {

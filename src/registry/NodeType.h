@@ -2,7 +2,7 @@
 
 #include "asset/Mesh.h"
 #include "asset/Shader.h"
-#include "scene/RenderContext.h"
+
 #include "scene/Batch.h"
 
 
@@ -31,6 +31,10 @@ enum class NodeScriptId {
     run
 };
 
+class RenderContext;
+class NodeRegistry;
+class Mesh;
+
 class NodeType final
 {
 public:
@@ -42,7 +46,10 @@ public:
     Material* findMaterial(std::function<bool(const Material&)> fn) noexcept;
     void modifyMaterials(std::function<void(Material&)> fn) noexcept;
 
-    void prepare(const Assets& assets) noexcept;
+    void prepare(
+        const Assets& assets,
+        NodeRegistry& registry) noexcept;
+
     void prepareBatch(Batch& batch) noexcept;
 
     void bind(const RenderContext& ctx, Shader* shader) noexcept;

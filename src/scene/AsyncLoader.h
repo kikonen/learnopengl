@@ -4,7 +4,7 @@
 #include <mutex>
 
 #include "asset/Assets.h"
-#include "asset/ShaderRegistry.h"
+#include "registry/ShaderRegistry.h"
 
 #include "Scene.h"
 

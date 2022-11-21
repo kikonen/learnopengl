@@ -18,13 +18,12 @@ void NormalRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 }
 
 void NormalRenderer::render(
-    const RenderContext& ctx,
-    const NodeRegistry& registry)
+    const RenderContext& ctx)
 {
-    drawNodes(ctx, registry);
+    drawNodes(ctx);
 }
 
-void NormalRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& registry)
+void NormalRenderer::drawNodes(const RenderContext& ctx)
 {
     ShaderBind bound(m_normalShader);
 
@@ -47,15 +46,15 @@ void NormalRenderer::drawNodes(const RenderContext& ctx, const NodeRegistry& reg
         }
     };
 
-    for (const auto& all : registry.solidNodes) {
+    for (const auto& all : ctx.registry.solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : registry.alphaNodes) {
+    for (const auto& all : ctx.registry.alphaNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : registry.blendedNodes) {
+    for (const auto& all : ctx.registry.blendedNodes) {
         renderTypes(all.second);
     }
 }

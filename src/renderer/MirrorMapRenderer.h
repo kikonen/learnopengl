@@ -20,12 +20,11 @@ public:
 
     void render(
         const RenderContext& ctx,
-        const NodeRegistry& registry,
         SkyboxRenderer* skybox);
 
 private:
-    void drawNodes(const RenderContext& ctx, const NodeRegistry& registry, SkyboxRenderer* skybox, Node* current);
-    Node* findClosest(const RenderContext& ctx, const NodeRegistry& registry);
+    void drawNodes(const RenderContext& ctx, SkyboxRenderer* skybox, Node* current);
+    Node* findClosest(const RenderContext& ctx);
 
 public:
     std::shared_ptr<Viewport> m_debugViewport;

@@ -4,6 +4,9 @@
 
 #include "asset/Sphere.h"
 
+#include "scene/RenderContext.h"
+
+
 namespace {
 #pragma pack(push, 1)
     struct TexVBO {
@@ -54,17 +57,21 @@ const AABB& SpriteMesh::calculateAABB() const
     return { glm::vec3{-1.f, -1.f, 0.f}, glm::vec3{1.f, 1.f, 0.f}, true };
 }
 
-void SpriteMesh::prepare(const Assets& assets)
+void SpriteMesh::prepare(
+    const Assets& assets,
+    NodeRegistry& registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
     m_buffers.prepare(false);
-    prepareMaterials(assets);
+    prepareMaterials(assets, registry);
     prepareBuffers(m_buffers);
 }
 
-void SpriteMesh::prepareMaterials(const Assets& assets)
+void SpriteMesh::prepareMaterials(
+    const Assets& assets,
+    NodeRegistry& registry)
 {
     {
         Material& material = m_material;

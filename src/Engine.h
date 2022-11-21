@@ -5,7 +5,7 @@
 #include "asset/GLState.h"
 
 #include "asset/Assets.h"
-#include "asset/ShaderRegistry.h"
+#include "registry/ShaderRegistry.h"
 
 #include "backend/RenderSystem.h"
 

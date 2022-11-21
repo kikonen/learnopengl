@@ -29,16 +29,15 @@ void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_selectionShaderSprite->prepare(assets);
 }
 
-void NodeRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
+void NodeRenderer::update(const RenderContext& ctx)
 {
 }
 
 void NodeRenderer::render(
     const RenderContext& ctx,
-    const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
-    m_selectedCount = registry.countSelected();
+    m_selectedCount = ctx.registry.countSelected();
 
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     //ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
@@ -67,10 +66,10 @@ void NodeRenderer::render(
             }
         }
 
-        renderSelectionStencil(ctx, registry);
-        drawNodes(ctx, registry, skybox, false);
-        drawBlended(ctx, registry);
-        renderSelection(ctx, registry);
+        renderSelectionStencil(ctx);
+        drawNodes(ctx, skybox, false);
+        drawBlended(ctx);
+        renderSelection(ctx);
 
         if (bufferCount > 1) {
             glDrawBuffers(1, buffers);
@@ -84,7 +83,7 @@ void NodeRenderer::render(
     //KI_GL_UNBIND(glBindVertexArray(0));
 }
 
-void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)
+void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
 {
     if (m_selectedCount == 0) return;
 
@@ -92,12 +91,12 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx, const NodeRe
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    drawNodes(ctx, registry, nullptr, true);
+    drawNodes(ctx, nullptr, true);
 
     ctx.state.disable(GL_STENCIL_TEST);
 }
 
-void NodeRenderer::renderSelection(const RenderContext& ctx, const NodeRegistry& registry)
+void NodeRenderer::renderSelection(const RenderContext& ctx)
 {
     if (m_selectedCount == 0) return;
 
@@ -108,7 +107,7 @@ void NodeRenderer::renderSelection(const RenderContext& ctx, const NodeRegistry&
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     glStencilMask(0x00);
 
-    drawSelectionStencil(ctx, registry);
+    drawSelectionStencil(ctx);
 
     glStencilMask(0xFF);
     glStencilFunc(GL_ALWAYS, 0, 0xFF);
@@ -120,7 +119,6 @@ void NodeRenderer::renderSelection(const RenderContext& ctx, const NodeRegistry&
 // draw all non selected nodes
 void NodeRenderer::drawNodes(
     const RenderContext& ctx,
-    const NodeRegistry& registry,
     SkyboxRenderer* skybox,
     bool selection)
 {
@@ -155,11 +153,11 @@ void NodeRenderer::drawNodes(
         }
     };
 
-    for (const auto& all : registry.solidNodes) {
+    for (const auto& all : ctx.registry.solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : registry.alphaNodes) {
+    for (const auto& all : ctx.registry.alphaNodes) {
         renderTypes(all.second);
     }
 
@@ -171,14 +169,14 @@ void NodeRenderer::drawNodes(
 
     if (selection) {
         // NOTE KI do not try blend here; end result is worse than not doing blend at all (due to stencil)
-        for (const auto& all : registry.blendedNodes) {
+        for (const auto& all : ctx.registry.blendedNodes) {
             renderTypes(all.second);
         }
     }
 }
 
 // draw all selected nodes with stencil
-void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry)
+void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
 {
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 
@@ -227,28 +225,27 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx, const NodeRegi
         }
     };
 
-    for (const auto& all : registry.solidNodes) {
+    for (const auto& all : ctx.registry.solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : registry.alphaNodes) {
+    for (const auto& all : ctx.registry.alphaNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : registry.blendedNodes) {
+    for (const auto& all : ctx.registry.blendedNodes) {
         renderTypes(all.second);
     }
 }
 
 void NodeRenderer::drawBlended(
-    const RenderContext& ctx,
-    const NodeRegistry& registry)
+    const RenderContext& ctx)
 {
-    if (registry.blendedNodes.empty()) return;
+    if (ctx.registry.blendedNodes.empty()) return;
 
     std::vector<Node*> nodes;
 
-    for (const auto& all : registry.blendedNodes) {
+    for (const auto& all : ctx.registry.blendedNodes) {
         for (const auto& map : all.second) {
             for (const auto& node : map.second) {
                 nodes.push_back(node);

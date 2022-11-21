@@ -1,10 +1,11 @@
 #pragma once
 
 #include "asset/Assets.h"
-#include "asset/ShaderRegistry.h"
-#include "scene/RenderContext.h"
-#include "scene/NodeRegistry.h"
 
+#include "registry/ShaderRegistry.h"
+#include "registry/NodeRegistry.h"
+
+class RenderContext;
 
 class Renderer
 {
@@ -13,11 +14,10 @@ public:
     virtual ~Renderer();
 
     virtual void prepare(const Assets& assets, ShaderRegistry& shaders);
-    virtual void update(const RenderContext& ctx, const NodeRegistry& registry);
+    virtual void update(const RenderContext& ctx);
 
     //virtual void render(
     //    const RenderContext& ctx,
-    //    const NodeRegistry& registry,
     //    SkyboxRenderer* skybox) = 0;
 
 protected:

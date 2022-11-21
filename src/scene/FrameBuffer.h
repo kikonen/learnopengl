@@ -3,9 +3,9 @@
 #include <vector>
 #include <initializer_list>
 
-#include "ki/GL.h"
+#include <glm/glm.hpp>
 
-#include "scene/RenderContext.h"
+#include "ki/GL.h"
 
 enum class FrameBufferAttachmentType {
     texture,
@@ -151,6 +151,8 @@ struct FrameBufferSpecification {
 
     std::vector<FrameBufferAttachment> attachments;
 };
+
+class RenderContext;
 
 class FrameBuffer
 {

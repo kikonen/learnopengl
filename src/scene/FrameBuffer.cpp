@@ -4,6 +4,8 @@
 
 #include "glm/glm.hpp"
 
+#include "scene/RenderContext.h"
+
 FrameBuffer::FrameBuffer(const FrameBufferSpecification& spec)
     : m_spec(spec)
 {

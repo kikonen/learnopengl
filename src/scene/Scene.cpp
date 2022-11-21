@@ -11,8 +11,14 @@
 
 Scene::Scene(const Assets& assets)
     : assets(assets),
-    m_registry(*this)
+    m_registry(assets),
+    m_materialRegistry(assets)
 {
+    NodeListener listener = [this](Node* node, NodeOperation operation) {
+        bindComponents(*node);
+    };
+    m_registry.addListener(listener);
+
     m_nodeRenderer = std::make_unique<NodeRenderer>();
     //terrainRenderer = std::make_unique<TerrainRenderer>();
 
@@ -166,19 +172,19 @@ void Scene::update(RenderContext& ctx)
     }
 
     if (m_skyboxRenderer) {
-        m_skyboxRenderer->update(ctx, m_registry);
+        m_skyboxRenderer->update(ctx);
     }
 
     if (m_nodeRenderer) {
-        m_nodeRenderer->update(ctx, m_registry);
+        m_nodeRenderer->update(ctx);
     }
 
     if (m_objectIdRenderer) {
-        m_objectIdRenderer->update(ctx, m_registry);
+        m_objectIdRenderer->update(ctx);
     }
 
     if (m_viewportRenderer) {
-        m_viewportRenderer->update(ctx, m_registry);
+        m_viewportRenderer->update(ctx);
     }
 
     if (particleSystem) {
@@ -246,7 +252,7 @@ void Scene::draw(RenderContext& ctx)
     //glUseProgram(0);
 
     if (m_shadowMapRenderer) {
-        m_shadowMapRenderer->render(ctx, m_registry);
+        m_shadowMapRenderer->render(ctx);
         m_shadowMapRenderer->bindTexture(ctx);
     }
 
@@ -256,13 +262,13 @@ void Scene::draw(RenderContext& ctx)
     glPolygonOffset(2.0f, 4.0f);
 
     if (m_cubeMapRenderer) {
-        m_cubeMapRenderer->render(ctx, m_registry, m_skyboxRenderer.get());
+        m_cubeMapRenderer->render(ctx, m_skyboxRenderer.get());
     }
     if (m_waterMapRenderer) {
-        m_waterMapRenderer->render(ctx, m_registry, m_skyboxRenderer.get());
+        m_waterMapRenderer->render(ctx, m_skyboxRenderer.get());
     }
     if (m_mirrorMapRenderer) {
-        m_mirrorMapRenderer->render(ctx, m_registry, m_skyboxRenderer.get());
+        m_mirrorMapRenderer->render(ctx, m_skyboxRenderer.get());
     }
 
     {
@@ -312,7 +318,7 @@ void Scene::drawRear(RenderContext& ctx)
 void Scene::drawViewports(RenderContext& ctx)
 {
     if (m_viewportRenderer) {
-        m_viewportRenderer->render(ctx, m_registry);
+        m_viewportRenderer->render(ctx);
     }
 }
 
@@ -340,7 +346,7 @@ void Scene::drawScene(RenderContext& ctx)
     }
 
     if (m_nodeRenderer) {
-        m_nodeRenderer->render(ctx, m_registry, m_skyboxRenderer.get());
+        m_nodeRenderer->render(ctx, m_skyboxRenderer.get());
     }
 
     if (particleSystem) {
@@ -349,7 +355,7 @@ void Scene::drawScene(RenderContext& ctx)
 
     if (assets.showNormals) {
         if (m_normalRenderer) {
-            m_normalRenderer->render(ctx, m_registry);
+            m_normalRenderer->render(ctx);
         }
     }
 }
@@ -379,7 +385,7 @@ void Scene::bindComponents(Node& node)
 int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double screenPosY)
 {
     if (m_objectIdRenderer) {
-        m_objectIdRenderer->render(ctx, m_registry);
+        m_objectIdRenderer->render(ctx);
         return m_objectIdRenderer->getObjectId(ctx, screenPosX, screenPosY, m_mainViewport.get());
     }
     return 0;

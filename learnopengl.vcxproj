@@ -182,8 +182,10 @@
   <ItemGroup>
     <ClCompile Include="src\AssetsFile.cpp" />
     <ClCompile Include="src\asset\AABB.cpp" />
+    <ClCompile Include="src\registry\ImageRegistry.cpp" />
+    <ClCompile Include="src\registry\MaterialRegistry.cpp" />
     <ClCompile Include="src\asset\OBB.cpp" />
-    <ClCompile Include="src\asset\ShaderRegistry.cpp" />
+    <ClCompile Include="src\registry\ShaderRegistry.cpp" />
     <ClCompile Include="src\asset\FrustumNew.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
     <ClCompile Include="src\asset\SpriteMesh.cpp" />
@@ -203,7 +205,6 @@
     <ClCompile Include="src\command\WaitCommand.cpp" />
     <ClCompile Include="src\controller\VolumeController.cpp" />
     <ClCompile Include="src\SceneFile.cpp" />
-    <ClCompile Include="src\model\Billboard.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
     <ClCompile Include="src\renderer\MirrorMapRenderer.cpp" />
     <ClCompile Include="src\asset\GLState.cpp" />
@@ -214,7 +215,7 @@
     <ClCompile Include="src\scene\Raycast.cpp" />
     <ClCompile Include="src\scene\TextureBuffer.cpp" />
     <ClCompile Include="src\scene\ShadowBuffer.cpp" />
-    <ClCompile Include="src\scene\NodeRegistry.cpp" />
+    <ClCompile Include="src\registry\NodeRegistry.cpp" />
     <ClCompile Include="src\controller\CameraController.cpp" />
     <ClCompile Include="src\scene\CubeMap.cpp" />
     <ClCompile Include="src\scene\AsyncLoader.cpp" />
@@ -229,7 +230,7 @@
     <ClCompile Include="src\asset\QuadMesh.cpp" />
     <ClCompile Include="src\scene\Batch.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
-    <ClCompile Include="src\scene\NodeType.cpp" />
+    <ClCompile Include="src\registry\NodeType.cpp" />
     <ClCompile Include="src\controller\NodePathController.cpp" />
     <ClCompile Include="src\controller\InstancedController.cpp" />
     <ClCompile Include="src\controller\MovingLightController.cpp" />
@@ -245,7 +246,6 @@
     <ClCompile Include="src\ki\GL.cpp" />
     <ClCompile Include="src\TestSceneSetup.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
-    <ClCompile Include="src\model\Sprite.cpp" />
     <ClCompile Include="src\asset\Assets.cpp" />
     <ClCompile Include="src\renderer\SkyboxRenderer.cpp" />
     <ClCompile Include="src\asset\Image.cpp" />
@@ -265,11 +265,9 @@
     <ClCompile Include="src\asset\Texture.cpp" />
     <ClCompile Include="src\asset\Vertex.cpp" />
     <ClCompile Include="src\Test6.cpp" />
-    <ClCompile Include="src\model\Terrain.cpp" />
     <ClCompile Include="src\model\Viewport.cpp" />
     <ClCompile Include="src\renderer\ViewportRenderer.cpp" />
     <ClCompile Include="src\scene\TerrainGenerator.cpp" />
-    <ClCompile Include="src\model\Water.cpp" />
     <ClCompile Include="src\renderer\WaterMapRenderer.cpp" />
     <ClCompile Include="src\gui\Frame.cpp" />
     <ClCompile Include="src\gui\Window.cpp" />
@@ -280,6 +278,8 @@
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\FrustumNew.h" />
+    <ClInclude Include="src\registry\ImageRegistry.h" />
+    <ClInclude Include="src\registry\MaterialRegistry.h" />
     <ClInclude Include="src\asset\OBB.h" />
     <ClInclude Include="src\asset\Sphere.h" />
     <ClInclude Include="src\asset\Plane.h" />
@@ -287,7 +287,7 @@
     <ClInclude Include="src\asset\Volume.h" />
     <ClInclude Include="src\asset\ShaderBind.h" />
     <ClInclude Include="src\AssetsFile.h" />
-    <ClInclude Include="src\asset\ShaderRegistry.h" />
+    <ClInclude Include="src\registry\ShaderRegistry.h" />
     <ClInclude Include="src\backend\Command.h" />
     <ClInclude Include="src\backend\DrawCommands.h" />
     <ClInclude Include="src\backend\RenderSystem.h" />
@@ -307,7 +307,6 @@
     <ClInclude Include="src\ki\uuid.h" />
     <ClInclude Include="src\model\Group.h" />
     <ClInclude Include="src\SceneFile.h" />
-    <ClInclude Include="src\model\Billboard.h" />
     <ClInclude Include="src\renderer\ObjectIdRenderer.h" />
     <ClInclude Include="src\renderer\MirrorMapRenderer.h" />
     <ClInclude Include="src\asset\GLState.h" />
@@ -318,7 +317,7 @@
     <ClInclude Include="src\scene\Raycast.h" />
     <ClInclude Include="src\scene\TextureBuffer.h" />
     <ClInclude Include="src\scene\ShadowBuffer.h" />
-    <ClInclude Include="src\scene\NodeRegistry.h" />
+    <ClInclude Include="src\registry\NodeRegistry.h" />
     <ClInclude Include="src\controller\CameraController.h" />
     <ClInclude Include="src\scene\CubeMap.h" />
     <ClInclude Include="src\scene\AsyncLoader.h" />
@@ -333,7 +332,7 @@
     <ClInclude Include="src\asset\QuadMesh.h" />
     <ClInclude Include="src\scene\Batch.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
-    <ClInclude Include="src\scene\NodeType.h" />
+    <ClInclude Include="src\registry\NodeType.h" />
     <ClInclude Include="src\controller\NodePathController.h" />
     <ClInclude Include="src\controller\InstancedController.h" />
     <ClInclude Include="src\controller\MovingLightController.h" />
@@ -349,7 +348,6 @@
     <ClInclude Include="src\ki\GL.h" />
     <ClInclude Include="src\TestSceneSetup.h" />
     <ClInclude Include="src\scene\Scene.h" />
-    <ClInclude Include="src\model\Sprite.h" />
     <ClInclude Include="src\asset\Assets.h" />
     <ClInclude Include="src\renderer\SkyboxRenderer.h" />
     <ClInclude Include="src\asset\Image.h" />
@@ -371,11 +369,9 @@
     <ClInclude Include="src\asset\Vertex.h" />
     <ClInclude Include="src\Test6.h" />
     <ClInclude Include="src\asset\UBO.h" />
-    <ClInclude Include="src\model\Terrain.h" />
     <ClInclude Include="src\model\Viewport.h" />
     <ClInclude Include="src\renderer\ViewportRenderer.h" />
     <ClInclude Include="src\scene\TerrainGenerator.h" />
-    <ClInclude Include="src\model\Water.h" />
     <ClInclude Include="src\renderer\WaterMapRenderer.h" />
     <ClInclude Include="src\gui\Frame.h" />
     <ClInclude Include="src\ki\Timer.h" />

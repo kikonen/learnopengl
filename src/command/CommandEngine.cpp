@@ -4,8 +4,9 @@
 
 #include "command/NodeCommand.h"
 
-#include "scene/RenderContext.h"
-#include "scene/NodeRegistry.h"
+#include "registry/NodeRegistry.h"
+
+class RenderContext;
 
 CommandEngine::CommandEngine()
 {}

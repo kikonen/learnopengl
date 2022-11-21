@@ -11,7 +11,6 @@ public:
 
     int load(bool flip);
 
-    static Image* getImage(const std::string& path);
 public:
     const std::string m_path;
 

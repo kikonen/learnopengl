@@ -4,6 +4,8 @@
 
 #include "Shader.h"
 
+#include "UBO.h"
+
 namespace {
     //const int UNIT_IDS[] = {
     //    GL_TEXTURE0,

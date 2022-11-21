@@ -11,30 +11,27 @@ public:
     NodeRenderer();
 
     void prepare(const Assets& assets, ShaderRegistry& shaders) override;
-    void update(const RenderContext& ctx, const NodeRegistry& registry) override;
+    void update(const RenderContext& ctx) override;
 
     void render(
         const RenderContext& ctx,
-        const NodeRegistry& registry,
         SkyboxRenderer* skybox);
 
 private:
-    void renderSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry);
-    void renderSelection(const RenderContext& ctx, const NodeRegistry& registry);
+    void renderSelectionStencil(const RenderContext& ctx);
+    void renderSelection(const RenderContext& ctx);
 
-//    void drawBlended(const RenderContext& ctx, const NodeRegistry& registry);
+//    void drawBlended(const RenderContext& ctx);
 
     void drawNodes(
         const RenderContext& ctx,
-        const NodeRegistry& registry,
         SkyboxRenderer* skybox,
         bool selection);
 
     void drawBlended(
-        const RenderContext& ctx,
-        const NodeRegistry& registry);
+        const RenderContext& ctx);
 
-    void drawSelectionStencil(const RenderContext& ctx, const NodeRegistry& registry);
+    void drawSelectionStencil(const RenderContext& ctx);
 
 private:
     Shader* m_selectionShader{ nullptr };

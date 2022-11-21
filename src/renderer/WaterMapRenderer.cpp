@@ -87,12 +87,11 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 
 void WaterMapRenderer::render(
     const RenderContext& ctx,
-    const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
     if (!needRender(ctx)) return;
 
-    Water* closest = findClosest(ctx, registry);
+    Node* closest = findClosest(ctx);
     if (!closest) return;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
@@ -128,7 +127,7 @@ void WaterMapRenderer::render(
 
         m_reflectionBuffer->bind(localCtx);
 
-        drawNodes(localCtx, registry, skybox, closest, true);
+        drawNodes(localCtx, skybox, closest, true);
 
         m_reflectionBuffer->unbind(ctx);
         ctx.bindClipPlanesUBO();
@@ -157,7 +156,7 @@ void WaterMapRenderer::render(
 
         m_refractionBuffer->bind(localCtx);
 
-        drawNodes(localCtx, registry, skybox, closest, false);
+        drawNodes(localCtx, skybox, closest, false);
 
         m_refractionBuffer->unbind(ctx);
         ctx.bindClipPlanesUBO();
@@ -170,7 +169,6 @@ void WaterMapRenderer::render(
 
 void WaterMapRenderer::drawNodes(
     const RenderContext& ctx,
-    const NodeRegistry& registry,
     SkyboxRenderer* skybox,
     Node* current,
     bool reflect)
@@ -215,11 +213,11 @@ void WaterMapRenderer::drawNodes(
             }
         };
 
-        for (const auto& all : registry.solidNodes) {
+        for (const auto& all : ctx.registry.solidNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : registry.alphaNodes) {
+        for (const auto& all : ctx.registry.alphaNodes) {
             renderTypes(all.second);
         }
 
@@ -227,23 +225,22 @@ void WaterMapRenderer::drawNodes(
             skybox->render(ctx);
         }
 
-        for (const auto& all : registry.blendedNodes) {
+        for (const auto& all : ctx.registry.blendedNodes) {
             renderTypes(all.second);
         }
     }
     ctx.state.disable(GL_CLIP_DISTANCE0);
 }
 
-Water* WaterMapRenderer::findClosest(
-    const RenderContext& ctx,
-    const NodeRegistry& registry)
+Node* WaterMapRenderer::findClosest(
+    const RenderContext& ctx)
 {
     const glm::vec3& cameraPos = ctx.m_camera.getPos();
     const glm::vec3& cameraDir = ctx.m_camera.getViewFront();
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : registry.allNodes) {
+    for (const auto& all : ctx.registry.allNodes) {
         for (const auto& [type, nodes] : all.second) {
             if (!type->m_flags.water) continue;
 
@@ -259,7 +256,7 @@ Water* WaterMapRenderer::findClosest(
     }
 
     for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
-        return (Water*)it->second;
+        return it->second;
     }
 
     return nullptr;

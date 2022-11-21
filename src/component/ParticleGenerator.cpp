@@ -3,6 +3,8 @@
 #include "asset/Assets.h"
 #include "scene/ParticleSystem.h"
 
+#include "scene/RenderContext.h"
+
 ParticleGenerator::ParticleGenerator(
     const ParticleDefinition definition)
     : definition(definition)

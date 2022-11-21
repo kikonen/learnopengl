@@ -1,5 +1,7 @@
 #include "Frame.h"
 
+#include "scene/RenderContext.h"
+
 Frame::Frame(Window& window)
     : m_window(window)
 {

@@ -10,11 +10,10 @@ public:
     virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
 
     void render(
-        const RenderContext& ctx,
-        const NodeRegistry& registry);
+        const RenderContext& ctx);
 
 private:
-    void drawNodes(const RenderContext& ctx, const NodeRegistry& registry);
+    void drawNodes(const RenderContext& ctx);
 
 private:
     Shader* m_normalShader{ nullptr };

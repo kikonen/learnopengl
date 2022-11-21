@@ -18,26 +18,8 @@
 #include "util/Log.h"
 
 namespace {
-    std::map<const std::string, std::unique_ptr<Image>> images;
-
-    std::mutex images_lock;
     std::mutex load_lock;
 }
-
-Image* Image::getImage(const std::string& path)
-{
-    std::lock_guard<std::mutex> lock(images_lock);
-
-    const std::string cacheKey = path;
-
-    auto e = images.find(cacheKey);
-    if (e == images.end()) {
-        images[cacheKey] = std::make_unique<Image>(path);
-        e = images.find(cacheKey);
-    }
-    return e->second.get();
-}
-
 
 Image::Image(const std::string& path)
     :m_path(path)

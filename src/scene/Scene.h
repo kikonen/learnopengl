@@ -7,9 +7,11 @@
 
 #include "model/Node.h"
 #include "component/Light.h"
-#include "NodeRegistry.h"
 #include "RenderContext.h"
 #include "Batch.h"
+
+#include "registry/MaterialRegistry.h"
+#include "registry/NodeRegistry.h"
 
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
@@ -73,6 +75,8 @@ public:
     UBO m_ubo;
 
     NodeRegistry m_registry;
+    MaterialRegistry m_materialRegistry;
+
     CommandEngine m_commandEngine;
     ScriptEngine m_scriptEngine;
 

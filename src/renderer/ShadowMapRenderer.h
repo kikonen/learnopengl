@@ -20,11 +20,10 @@ public:
     void bind(const RenderContext& ctx);
 
     void render(
-        const RenderContext& ctx,
-        const NodeRegistry& registry);
+        const RenderContext& ctx);
 
 private:
-    void drawNodes(const RenderContext& ctx, const NodeRegistry& registry);
+    void drawNodes(const RenderContext& ctx);
 
 public:
     std::unique_ptr<ShadowBuffer> m_shadowBuffer{ nullptr };

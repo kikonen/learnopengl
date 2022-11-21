@@ -4,8 +4,7 @@
 
 #include <string>
 
-#include "scene/RenderContext.h"
-
+class RenderContext;
 
 class Command
 {

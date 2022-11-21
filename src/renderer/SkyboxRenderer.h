@@ -20,8 +20,6 @@ public:
     void assign(Shader* shader);
     void bindTexture(const RenderContext& ctx);
 
-    virtual void update(const RenderContext& ctx, const NodeRegistry& registry) override;
-
     void render(const RenderContext& ctx);
 
 public:

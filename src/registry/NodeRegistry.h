@@ -7,13 +7,12 @@
 
 #include <ki/uuid.h>
 
-#include "NodeType.h"
-
 #include "model/Group.h"
 #include "model/Node.h"
 #include "model/Viewport.h"
 
-class Sccene;
+#include "NodeType.h"
+
 
 struct ShaderKey {
     ShaderKey(int shaderID, bool renderBack) noexcept
@@ -28,6 +27,10 @@ struct ShaderKey {
 
 };
 
+enum class NodeOperation {
+    ADDED
+};
+
 using GroupVector = std::vector<Group*>;
 
 using NodeVector = std::vector<Node*>;
@@ -36,12 +39,16 @@ using ShaderTypeMap = std::map<const ShaderKey, NodeTypeMap>;
 
 using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
 
+using NodeListener = std::function<void(Node*, NodeOperation)>;
+
 class NodeRegistry final
 {
 public:
-    NodeRegistry(Scene& scene);
+    NodeRegistry(const Assets& assets);
 
     ~NodeRegistry();
+
+    void addListener(NodeListener& listener);
 
     void addGroup(Group* group) noexcept;
 
@@ -74,10 +81,9 @@ private:
     bool bindParent(Node* child) noexcept;
     void bindChildren(Node* parent) noexcept;
 
-public:
-    const Assets& assets;
-    Scene& scene;
+    void notifyListeners(Node* node, NodeOperation operation);
 
+public:
     std::map<int, Node*> objectIdToNode;
     std::map<uuids::uuid, Node*> idToNode;
 
@@ -98,6 +104,8 @@ public:
     GroupVector groups;
 
 private:
+    const Assets& assets;
+
     std::mutex m_load_lock;
     std::condition_variable m_waitCondition;
 
@@ -107,5 +115,7 @@ private:
     std::map<int, NodeVector> m_parentToChildren;
 
     NodeVector m_pendingNodes;
+
+    std::vector<NodeListener> m_listeners;
 
 };

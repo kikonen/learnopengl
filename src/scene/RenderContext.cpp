@@ -13,8 +13,9 @@
 
 #include "backend/RenderSystem.h"
 
+#include "registry/NodeRegistry.h"
+
 #include "scene/Scene.h"
-#include "scene/NodeRegistry.h"
 
 
 RenderContext::RenderContext(
@@ -268,7 +269,7 @@ void RenderContext::bindTexturesUBO() const
 const FrustumNew& RenderContext::getFrustumNew() const
 {
     if (assets.frustumEnabled && m_useFrustum && !m_frustumNewPrepared) {
-        updateFrustumNew(m_frustumNew, m_matrices.projection, true);
+        updateFrustumNew(m_frustumNew, m_matrices.view, true);
         m_frustumNewPrepared = true;
     }
     return m_frustumNew;

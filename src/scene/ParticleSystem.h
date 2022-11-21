@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "asset/ShaderRegistry.h"
+#include "registry/ShaderRegistry.h"
 
 #include "model/Particle.h"
 #include "RenderContext.h"

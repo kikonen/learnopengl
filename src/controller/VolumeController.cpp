@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 
 #include "scene/RenderContext.h"
-#include "scene/NodeRegistry.h"
+#include "registry/NodeRegistry.h"
 
 VolumeController::VolumeController()
 {

@@ -2,7 +2,6 @@
 
 #include "Renderer.h"
 #include "scene/TextureBuffer.h"
-#include "model/Water.h"
 
 #include "model/Viewport.h"
 
@@ -20,18 +19,16 @@ public:
 
     void render(
         const RenderContext& ctx,
-        const NodeRegistry& registry,
         SkyboxRenderer* skybox);
 
 private:
     void drawNodes(
         const RenderContext& ctx,
-        const NodeRegistry& registry,
         SkyboxRenderer* skybox,
         Node* current,
         bool reflect);
 
-    Water* findClosest(const RenderContext& ctx, const NodeRegistry& registry);
+    Node* findClosest(const RenderContext& ctx);
 
 public:
     std::shared_ptr<Viewport> m_reflectionDebugViewport;

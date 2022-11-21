@@ -8,8 +8,6 @@
 #include "Material.h"
 #include "Mesh.h"
 
-#include "scene/RenderContext.h"
-
 class QuadMesh final : public Mesh
 {
 public:
@@ -24,15 +22,22 @@ public:
     virtual void prepareVolume() override;
     virtual const AABB& calculateAABB() const override;
 
-    void prepare(const Assets& assets) override;
+    void prepare(
+        const Assets& assets,
+        NodeRegistry& registry) override;
+
     void bind(
         const RenderContext& ctx,
         Shader* shader,
         bool bindMaterials) noexcept override;
+
     void drawInstanced(const RenderContext& ctx, int instanceCount) noexcept override;
 
 private:
-    void prepareMaterials(const Assets& assets);
+    void prepareMaterials(
+        const Assets& assets,
+        NodeRegistry& registry);
+
     void prepareBuffers(MeshBuffers& curr);
     void prepareVBO(MeshBuffers& curr);
 

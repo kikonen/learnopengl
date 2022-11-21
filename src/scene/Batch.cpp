@@ -5,7 +5,7 @@
 #include "ki/uuid.h"
 
 #include "model/Node.h"
-#include "NodeType.h"
+#include "registry/NodeType.h"
 
 #include "scene/RenderContext.h"
 

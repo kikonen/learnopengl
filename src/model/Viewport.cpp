@@ -2,6 +2,8 @@
 
 #include <functional>
 
+#include "scene/RenderContext.h"
+
 Viewport::Viewport(
     const std::string_view& name,
     const glm::vec3& pos,

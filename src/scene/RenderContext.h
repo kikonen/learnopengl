@@ -99,8 +99,6 @@ public:
 
     const float m_aspectRatio;
 
-    Scene* m_scene{ nullptr };
-
     NodeRegistry& registry;
     CommandEngine& commandEngine;
     ScriptEngine& scriptEngine;
@@ -119,6 +117,8 @@ public:
     mutable bool m_useLight = true;
 
 private:
+    Scene* m_scene{ nullptr };
+
     mutable FrustumNew m_frustumNew;
     mutable bool m_frustumNewPrepared = false;
 };

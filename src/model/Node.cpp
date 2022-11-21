@@ -10,8 +10,9 @@
 
 #include "controller/NodeController.h"
 
-#include "scene/NodeRegistry.h"
+#include "registry/NodeRegistry.h"
 
+#include "scene/RenderContext.h"
 
 namespace {
     int objectIDbase = 100;

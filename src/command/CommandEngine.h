@@ -8,6 +8,8 @@
 
 #include "command/Command.h"
 
+#include "scene/RenderContext.h"
+
 class RenderContext;
 
 class CommandEngine final

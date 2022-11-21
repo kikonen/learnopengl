@@ -69,7 +69,7 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
 {
-    auto& node = ctx.m_scene->m_registry.m_dirLight;
+    auto& node = ctx.registry.m_dirLight;
     if (!node) return;
 
     const glm::vec3 up{ 0.0, 1.0, 0.0 };
@@ -95,8 +95,7 @@ void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 }
 
 void ShadowMapRenderer::render(
-    const RenderContext& ctx,
-    const NodeRegistry& registry)
+    const RenderContext& ctx)
 {
     if (!needRender(ctx)) return;
 
@@ -108,7 +107,7 @@ void ShadowMapRenderer::render(
 
         ctx.m_useFrustum = false;
         ctx.m_shadow = true;
-        drawNodes(ctx, registry);
+        drawNodes(ctx);
         ctx.m_useFrustum = true;
         ctx.m_shadow = false;
 
@@ -119,8 +118,7 @@ void ShadowMapRenderer::render(
 }
 
 void ShadowMapRenderer::drawNodes(
-    const RenderContext& ctx,
-    const NodeRegistry& registry)
+    const RenderContext& ctx)
 {
     auto renderTypes = [this, &ctx](const NodeTypeMap& typeMap, ShaderBind& bound) {
         for (const auto& it : typeMap) {
@@ -145,7 +143,7 @@ void ShadowMapRenderer::drawNodes(
     {
         ShaderBind bound(m_solidShadowShader);
 
-        for (const auto& all : registry.solidNodes) {
+        for (const auto& all : ctx.registry.solidNodes) {
             renderTypes(all.second, bound);
         }
     }
@@ -153,11 +151,11 @@ void ShadowMapRenderer::drawNodes(
     {
         ShaderBind bound(m_blendedShadowShader);
 
-        for (const auto& all : registry.alphaNodes) {
+        for (const auto& all : ctx.registry.alphaNodes) {
             renderTypes(all.second, bound);
         }
 
-        for (const auto& all : registry.blendedNodes) {
+        for (const auto& all : ctx.registry.blendedNodes) {
             renderTypes(all.second, bound);
         }
     }

@@ -15,12 +15,11 @@ void ParticleRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     particleShader->prepare(assets);
 }
 
-void ParticleRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
+void ParticleRenderer::update(const RenderContext& ctx)
 {
 }
 
 void ParticleRenderer::render(
-    const RenderContext& ctx,
-    const NodeRegistry& registry)
+    const RenderContext& ctx)
 {
 }

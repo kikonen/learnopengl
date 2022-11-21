@@ -2,6 +2,8 @@
 
 #include <mutex>
 
+#include "scene/RenderContext.h"
+
 namespace {
     int idBase = 0;
 

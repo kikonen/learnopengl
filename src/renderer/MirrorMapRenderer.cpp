@@ -76,12 +76,11 @@ void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
 
 void MirrorMapRenderer::render(
     const RenderContext& ctx,
-    const NodeRegistry& registry,
     SkyboxRenderer* skybox)
 {
     if (!needRender(ctx)) return;
 
-    Node* closest = findClosest(ctx, registry);
+    Node* closest = findClosest(ctx);
     if (!closest) return;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
@@ -137,7 +136,7 @@ void MirrorMapRenderer::render(
         m_curr->bind(localCtx);
 
         bindTexture(localCtx);
-        drawNodes(localCtx, registry, skybox, closest);
+        drawNodes(localCtx, skybox, closest);
 
         m_curr->unbind(ctx);
         ctx.bindClipPlanesUBO();
@@ -152,7 +151,6 @@ void MirrorMapRenderer::render(
 
 void MirrorMapRenderer::drawNodes(
     const RenderContext& ctx,
-    const NodeRegistry& registry,
     SkyboxRenderer* skybox,
     Node* current)
 {
@@ -192,11 +190,11 @@ void MirrorMapRenderer::drawNodes(
             }
         };
 
-        for (const auto& all : registry.solidNodes) {
+        for (const auto& all : ctx.registry.solidNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : registry.alphaNodes) {
+        for (const auto& all : ctx.registry.alphaNodes) {
             renderTypes(all.second);
         }
 
@@ -204,21 +202,21 @@ void MirrorMapRenderer::drawNodes(
             skybox->render(ctx);
         }
 
-        for (const auto& all : registry.blendedNodes) {
+        for (const auto& all : ctx.registry.blendedNodes) {
             renderTypes(all.second);
         }
     }
     //ctx.state.disable(GL_CLIP_DISTANCE0);
 }
 
-Node* MirrorMapRenderer::findClosest(const RenderContext& ctx, const NodeRegistry& registry)
+Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
     const glm::vec3& cameraPos = ctx.m_camera.getPos();
     const glm::vec3& cameraFront = ctx.m_camera.getViewFront();
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : registry.allNodes) {
+    for (const auto& all : ctx.registry.allNodes) {
         for (const auto& [type, nodes] : all.second) {
             if (!type->m_flags.mirror) continue;
 

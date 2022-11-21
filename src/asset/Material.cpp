@@ -10,6 +10,8 @@
 
 #include "ImageTexture.h"
 
+#include "scene/RenderContext.h"
+
 namespace {
     constexpr int DIFFUSE_IDX = 0;
     constexpr int EMISSION_IDX = 1;

@@ -1,9 +1,10 @@
 #pragma once
 #include <functional>
 
-#include "asset/MeshBuffers.h"
+#include <glm/glm.hpp>
 
-#include "scene/RenderContext.h"
+#include "asset/MeshBuffers.h"
+#include "asset/Shader.h"
 
 enum class ViewportEffect {
     none = 0,
@@ -14,6 +15,7 @@ enum class ViewportEffect {
     edge = 5,
 };
 
+class RenderContext;
 
 class Viewport final
 {

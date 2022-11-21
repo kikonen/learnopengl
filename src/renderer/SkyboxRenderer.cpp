@@ -129,10 +129,6 @@ void SkyboxRenderer::bindTexture(const RenderContext& ctx)
     ctx.state.bindTexture(UNIT_SKYBOX, m_textureID, false);
 }
 
-void SkyboxRenderer::update(const RenderContext& ctx, const NodeRegistry& registry)
-{
-}
-
 void SkyboxRenderer::render(const RenderContext& ctx)
 {
     ShaderBind bound(m_shader);

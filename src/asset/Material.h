@@ -9,6 +9,8 @@
 #include "Shader.h"
 #include "UBO.h"
 
+class RenderContext;
+
 struct BoundTexture {
     Texture* texture = nullptr;
     int m_texIndex = -1;

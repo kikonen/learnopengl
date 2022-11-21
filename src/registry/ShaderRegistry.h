@@ -2,7 +2,7 @@
 
 #include <mutex>
 
-#include "Shader.h"
+#include "asset/Shader.h"
 
 class ShaderRegistry final
 {

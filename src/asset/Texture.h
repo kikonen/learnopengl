@@ -2,7 +2,10 @@
 
 #include <string>
 
-#include "scene/RenderContext.h"
+#include "asset/Assets.h"
+
+#include "ki/GL.h"
+
 
 struct TextureSpec {
     int mode = GL_CLAMP_TO_EDGE;

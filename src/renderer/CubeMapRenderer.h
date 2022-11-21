@@ -18,7 +18,6 @@ public:
 
     void render(
         const RenderContext& ctx,
-        const NodeRegistry& registry,
         SkyboxRenderer* skybox);
 
 private:
@@ -30,13 +29,11 @@ private:
 
     void drawNodes(
         const RenderContext& ctx,
-        const NodeRegistry& registry,
         SkyboxRenderer* skybox,
         const Node* centerNode);
 
     Node* findCenter(
-        const RenderContext& ctx,
-        const NodeRegistry& registry);
+        const RenderContext& ctx);
 
 public:
 
