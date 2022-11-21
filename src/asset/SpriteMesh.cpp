@@ -113,7 +113,7 @@ void SpriteMesh::prepareVBO(MeshBuffers& curr)
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     constexpr int stride_size = sizeof(TexVBO);
     TexVBO vbo;
-    vbo.material = 0;
+    vbo.material = 0 + m_materialsBaseIndex;
 
     glNamedBufferStorage(curr.VBO, stride_size, &vbo, 0);
 

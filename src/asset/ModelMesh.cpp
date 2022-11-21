@@ -195,24 +195,12 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
             vbo->tangent.y = (int)(tan.y * ki::SCALE_VEC10);
             vbo->tangent.z = (int)(tan.z * ki::SCALE_VEC10);
 
-            //vbo->normal.x = n.x;
-            //vbo->normal.y = n.y;
-            //vbo->normal.z = n.z;
-
-            //vbo->tangent.x = tan.x;
-            //vbo->tangent.y = tan.y;
-            //vbo->tangent.z = tan.z;
-
             // TODO KI should use noticeable value for missing
             // => would trigger undefined array access in render side
-            vbo->material = m ? m->m_index : 0;
+            vbo->material = m ? (m->m_index + m_materialsBaseIndex) : 0;
 
             vbo->texCoords.u = (int)(t.x * ki::SCALE_UV16);
             vbo->texCoords.v = (int)(t.y * ki::SCALE_UV16);
-            //vbo->texCoords.x = t.x;
-            //vbo->texCoords.y = t.y;
-
-            assert(vbo->material >= 0 && vbo->material < MAX_MATERIAL_COUNT);
 
             vbo++;
         }

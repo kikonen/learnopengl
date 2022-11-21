@@ -18,8 +18,14 @@ public:
     Material* findID(
         const int objectID);
 
+    void prepareMaterials();
+
 private:
     const Assets& assets;
 
     std::vector<Material> m_materials;
+    //std::vector<MaterialSBO> m_materialsSBO;
+
+    GLuint m_materialsUboId = 0;
+    unsigned int m_materialsUboSize = 0;
 };

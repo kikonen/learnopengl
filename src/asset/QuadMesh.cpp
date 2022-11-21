@@ -151,7 +151,7 @@ void QuadMesh::prepareVBO(MeshBuffers& curr)
             vbo->tangent.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
 
             // NOTE KI hardcoded single material
-            vbo->material = VERTICES[base++];
+            vbo->material = VERTICES[base++] + m_materialsBaseIndex;
 
             vbo->texCoords.u = (int)(VERTICES[base++] * ki::SCALE_UV16);
             vbo->texCoords.v = (int)(VERTICES[base++] * ki::SCALE_UV16);
