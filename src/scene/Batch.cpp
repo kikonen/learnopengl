@@ -179,13 +179,13 @@ void Batch::update(size_t count) noexcept
     // TODO KI Map COHERRENT + PERSISTENT
     // => can be MUCH faster
 
-    glNamedBufferSubData(m_modelBufferId, 0, count * sizeof(glm::mat4), &m_modelMatrices[0]);
+    glNamedBufferSubData(m_modelBufferId, 0, count * sizeof(glm::mat4), m_modelMatrices.data());
 
     if (m_objectIDBuffer) {
-        glNamedBufferSubData(m_objectIDBufferId, 0, count * sizeof(glm::vec4), &m_objectIDs[0]);
+        glNamedBufferSubData(m_objectIDBufferId, 0, count * sizeof(glm::vec4), m_objectIDs.data());
     }
     else {
-        glNamedBufferSubData(m_normalBufferId, 0, count * sizeof(glm::mat3), &m_normalMatrices[0]);
+        glNamedBufferSubData(m_normalBufferId, 0, count * sizeof(glm::mat3), m_normalMatrices.data());
     }
 }
 
