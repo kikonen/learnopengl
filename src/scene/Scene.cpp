@@ -54,6 +54,8 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     m_batch.prepare(assets, assets.batchSize);
 
+    m_materialRegistry.prepare();
+
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {
         m_nodeRenderer->prepare(assets, shaders);
@@ -149,7 +151,7 @@ void Scene::prepare(ShaderRegistry& shaders)
 
 void Scene::attachNodes()
 {
-    m_registry.attachNodes();
+    m_registry.attachNodes(m_materialRegistry);
 }
 
 void Scene::processEvents(RenderContext& ctx)
@@ -190,6 +192,8 @@ void Scene::update(RenderContext& ctx)
     if (particleSystem) {
         particleSystem->update(ctx);
     }
+
+    m_materialRegistry.update(ctx);
 
     updateMainViewport(ctx);
 }
@@ -335,6 +339,8 @@ void Scene::drawScene(RenderContext& ctx)
         glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
+    m_materialRegistry.bind(ctx);
+
     if (m_cubeMapRenderer) {
         m_cubeMapRenderer->bindTexture(ctx);
     }
@@ -367,7 +373,9 @@ Camera* Scene::getCamera()
 
 void Scene::bindComponents(Node& node)
 {
-    node.m_type->prepareBatch(m_batch);
+    auto& type = node.m_type;
+
+    type->prepareBatch(m_batch);
 
     if (node.m_particleGenerator) {
         if (particleSystem) {
@@ -376,8 +384,8 @@ void Scene::bindComponents(Node& node)
         }
     }
 
-    m_scriptEngine.registerScript(node, NodeScriptId::init, node.m_type->m_initScript);
-    m_scriptEngine.registerScript(node, NodeScriptId::run, node.m_type->m_runScript);
+    m_scriptEngine.registerScript(node, NodeScriptId::init, type->m_initScript);
+    m_scriptEngine.registerScript(node, NodeScriptId::run, type->m_runScript);
 
     m_scriptEngine.runScript(node, NodeScriptId::init);
 }

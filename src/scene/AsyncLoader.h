@@ -24,13 +24,11 @@ public:
 
     Shader* getShader(
         const std::string& name,
-        const int materialCount,
         const std::map<std::string, std::string>& defines);
 
     Shader* getShader(
         const std::string& name,
         const std::string& geometryType,
-        const int materialCount,
         const std::map<std::string, std::string>& defines);
 
     // wait for loading of node

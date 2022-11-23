@@ -17,14 +17,12 @@ public:
     Shader* getShader(
         const Assets& assets,
         const std::string& name,
-        const int materialCount,
         const std::map<std::string, std::string>& defines);
 
     Shader* getShader(
         const Assets& assets,
         const std::string& name,
         const std::string& geometryType,
-        const int materialCount,
         const std::map<std::string, std::string>& defines);
 
     void validate();

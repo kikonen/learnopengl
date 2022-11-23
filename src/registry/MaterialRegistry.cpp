@@ -5,10 +5,14 @@ MaterialRegistry::MaterialRegistry(const Assets& assets)
 {
 }
 
-int MaterialRegistry::add(const Material& material)
+MaterialRegistry::~MaterialRegistry() {
+}
+
+void MaterialRegistry::add(const Material& material)
 {
+    if (material.m_registeredIndex >= 0) return;
+    material.m_registeredIndex = m_materials.size();
     m_materials.emplace_back(material);
-    return m_materials.size() - 1;
 }
 
 Material* MaterialRegistry::find(
@@ -31,14 +35,14 @@ Material* MaterialRegistry::findID(
     return it != m_materials.end() ? &(*it) : nullptr;
 }
 
-void MaterialRegistry::prepareMaterials()
+void MaterialRegistry::update(const RenderContext& ctx)
 {
-    {
-        int materialIndex = 0;
+    if (m_updatedSize == m_materials.size()) return;
+    if (m_materials.size() == 0) return;
 
-        for (auto& material : m_materials) {
-            material.m_index = materialIndex++;
-            assert(material.m_index < MATERIAL_COUNT);
+    {
+        for (int i = m_updatedSize; i < m_materials.size(); i++) {
+            auto& material = m_materials[i];
 
             material.prepare(assets);
 
@@ -49,19 +53,26 @@ void MaterialRegistry::prepareMaterials()
         }
     }
 
-    // materials
     {
-        int sz_single = sizeof(MaterialUBO);
-        //int sz = sizeof(MaterialUBO);
-        m_materialsUboSize = sz_single * m_materials.size();
-
-        MaterialsUBO materialsUbo{};
-
-        for (auto& material : m_materials) {
-            materialsUbo.materials[material.m_index] = material.toUBO();
+        for (int i = m_updatedSize; i < m_materials.size(); i++) {
+            auto& material = m_materials[i];
+            m_materialsUbo.materials[material.m_registeredIndex] = material.toUBO();
         }
 
-        glCreateBuffers(1, &m_materialsUboId);
-        glNamedBufferStorage(m_materialsUboId, m_materialsUboSize, &materialsUbo, 0);
+        m_buffer.update(0, sizeof(MaterialsUBO), &m_materialsUbo);
     }
+
+    m_updatedSize = m_materials.size();
+}
+
+void MaterialRegistry::prepare()
+{
+    m_buffer.create();
+    m_buffer.initEmpty(sizeof(MaterialsUBO), GL_DYNAMIC_STORAGE_BIT);
+}
+
+void MaterialRegistry::bind(
+    const RenderContext& ctx)
+{
+    m_buffer.bindUniform(UBO_MATERIALS);
 }

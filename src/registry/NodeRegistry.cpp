@@ -4,6 +4,7 @@
 
 #include "ki/GL.h"
 
+#include "MaterialRegistry.h"
 
 namespace {
     const NodeVector EMPTY_NODE_LIST;
@@ -130,7 +131,8 @@ void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport) noexcept
     viewports.push_back(viewport);
 }
 
-void NodeRegistry::attachNodes() noexcept
+void NodeRegistry::attachNodes(
+    MaterialRegistry& materialRegistry)
 {
     NodeTypeMap newNodes;
     {
@@ -146,17 +148,17 @@ void NodeRegistry::attachNodes() noexcept
     for (const auto& [type, nodes] : newNodes) {
         for (auto& node : nodes) {
             // NOTE KI ignore children without parent; until parent is found
-            if (!bindParent(node)) continue;
+            if (!bindParent(node, materialRegistry)) continue;
 
-            bindNode(node);
+            bindNode(node, materialRegistry);
         }
 
         for (auto& node : nodes) {
-            bindChildren(node);
+            bindChildren(node, materialRegistry);
         }
     }
 
-    bindPendingChildren();
+    bindPendingChildren(materialRegistry);
 }
 
 int NodeRegistry::countSelected() const noexcept
@@ -212,7 +214,9 @@ const NodeVector* NodeRegistry::getChildren(const Node& parent) const noexcept
     return it != m_parentToChildren.end() ? &it->second : nullptr;
 }
 
-void NodeRegistry::bindNode(Node* node) noexcept
+void NodeRegistry::bindNode(
+    Node* node,
+    MaterialRegistry& materialRegistry)
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
@@ -222,6 +226,12 @@ void NodeRegistry::bindNode(Node* node) noexcept
     if (!type->m_flags.root && !type->m_flags.origo) {
         assert(shader);
         if (!shader) return;
+    }
+
+    {
+        type->modifyMaterials([&materialRegistry](Material& m) {
+            materialRegistry.add(m);
+        });
     }
 
     type->prepare(assets, *this);
@@ -275,7 +285,8 @@ void NodeRegistry::bindNode(Node* node) noexcept
     KI_INFO_SB("ATTACH_NODE: id=" << node->str());
 }
 
-void NodeRegistry::bindPendingChildren() noexcept
+void NodeRegistry::bindPendingChildren(
+    MaterialRegistry& materialRegistry)
 {
     if (m_pendingChildren.empty()) return;
 
@@ -290,7 +301,7 @@ void NodeRegistry::bindPendingChildren() noexcept
         auto& parent = parentIt->second;
         for (auto& child : children) {
             KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
-            bindNode(child);
+            bindNode(child, materialRegistry);
 
             m_childToParent[child->m_objectID] = parent;
             m_parentToChildren[parent->m_objectID].push_back(child);
@@ -303,7 +314,9 @@ void NodeRegistry::bindPendingChildren() noexcept
 }
 
 
-bool NodeRegistry::bindParent(Node* child) noexcept
+bool NodeRegistry::bindParent(
+    Node* child,
+    MaterialRegistry& materialRegistry)
 {
     if (child->m_parentId.is_nil()) return true;
 
@@ -324,14 +337,16 @@ bool NodeRegistry::bindParent(Node* child) noexcept
     return true;
 }
 
-void NodeRegistry::bindChildren(Node* parent) noexcept
+void NodeRegistry::bindChildren(
+    Node* parent,
+    MaterialRegistry& materialRegistry)
 {
     const auto& it = m_pendingChildren.find(parent->m_id);
     if (it == m_pendingChildren.end()) return;
 
     for (auto& child : it->second) {
         KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
-        bindNode(child);
+        bindNode(child, materialRegistry);
 
         m_childToParent[child->m_objectID] = parent;
         m_parentToChildren[parent->m_objectID].push_back(child);

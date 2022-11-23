@@ -41,15 +41,10 @@ public:
 
     void bind(
         const RenderContext& ctx,
-        Shader* shader,
-        bool bindMaterials) noexcept override;
+        Shader* shader) noexcept override;
     void drawInstanced(const RenderContext& ctx, int instanceCount) noexcept override;
 
 private:
-    void prepareMaterials(
-        const Assets& assets,
-        NodeRegistry& registry);
-
     void prepareBuffers(MeshBuffers& curr);
     void prepareVBO(MeshBuffers& curr);
     void prepareEBO(MeshBuffers& curr);
@@ -66,7 +61,4 @@ public:
 
 private:
     bool m_prepared = false;
-
-    unsigned int m_materialsUboId = 0;
-    unsigned int m_materialsUboSize = 0;
 };

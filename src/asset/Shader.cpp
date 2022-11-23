@@ -37,18 +37,14 @@ Shader::Shader(
     const std::string& key,
     const std::string& name,
     const std::string& geometryType,
-    const int materialCount,
     const std::map<std::string, std::string>& defines)
     : m_objectID(nextID()),
     assets(assets),
     m_key(key),
     m_shaderName(name),
     m_geometryType(geometryType),
-    m_materialCount(materialCount),
     m_defines(defines)
 {
-    m_defines[DEF_MAT_COUNT] = std::to_string(materialCount);
-
     std::string basePath;
     {
         std::filesystem::path fp;
@@ -111,8 +107,6 @@ void Shader::load()
 
 int Shader::prepare(const Assets& assets) noexcept
 {
-    if (m_shaderName == TEX_TEXTURE && m_materialCount == 0)
-        KI_BREAK();
     if (m_prepared) return m_prepareResult;
     m_prepared = true;
 
@@ -272,9 +266,7 @@ int Shader::initProgram() {
     setupUBO("Matrices", UBO_MATRICES, sizeof(MatricesUBO));
     setupUBO("Data", UBO_DATA, sizeof(DataUBO));
     setupUBO("Lights", UBO_LIGHTS, sizeof(LightsUBO));
-    if (m_materialCount > 0) {
-        setupUBO("Materials", UBO_MATERIALS, m_materialCount * sizeof(MaterialUBO));
-    }
+    setupUBO("Materials", UBO_MATERIALS, sizeof(MaterialsUBO));
     setupUBO("ClipPlanes", UBO_CLIP_PLANES, sizeof(ClipPlanesUBO));
     setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
 #endif
@@ -358,7 +350,6 @@ void Shader::setupUBO(
         for (const auto& [k, v] : m_defines) {
             KI_ERROR_SB(k << "=" << v);
         }
-        KI_ERROR_SB(fmt::format("materialCount={}, sizeof(MaterialUBO)=", m_materialCount, sizeof(MaterialUBO)));
         KI_CRITICAL_SB(fmt::format(
             "SHADER::UBO_SIZE shader={}. UBO={}. size={}. expected_size={}",
             m_shaderName, name, blockSize, expectedSize));

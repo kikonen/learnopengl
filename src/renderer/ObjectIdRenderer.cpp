@@ -81,10 +81,10 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_idShader = shaders.getShader(assets, TEX_OBJECT_ID);
     m_idShader->prepare(assets);
 
-    m_idShaderAlpha = shaders.getShader(assets, TEX_OBJECT_ID, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1"} });
+    m_idShaderAlpha = shaders.getShader(assets, TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idShaderAlpha->prepare(assets);
 
-    m_idShaderSprite = shaders.getShader(assets, TEX_OBJECT_ID_SPRITE, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1"} });
+    m_idShaderSprite = shaders.getShader(assets, TEX_OBJECT_ID_SPRITE, { { DEF_USE_ALPHA, "1"} });
     m_idShaderSprite->prepare(assets);
 
     m_debugViewport = std::make_shared<Viewport>(

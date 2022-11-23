@@ -65,39 +65,7 @@ void SpriteMesh::prepare(
     m_prepared = true;
 
     m_buffers.prepare(false);
-    prepareMaterials(assets, registry);
     prepareBuffers(m_buffers);
-}
-
-void SpriteMesh::prepareMaterials(
-    const Assets& assets,
-    NodeRegistry& registry)
-{
-    {
-        Material& material = m_material;
-
-        material.m_index = 0;
-
-        material.prepare(assets);
-
-        for (auto& tex : material.m_textures) {
-            if (!tex.texture) continue;
-            tex.m_texIndex = tex.texture->m_texIndex;
-        }
-    }
-
-    // materials
-    {
-        int sz_single = sizeof(MaterialUBO);
-        m_materialsUboSize = sz_single * 1;
-
-        MaterialsUBOSingle materialsUbo{};
-
-        materialsUbo.materials[0] = m_material.toUBO();
-
-        glCreateBuffers(1, &m_materialsUboId);
-        glNamedBufferStorage(m_materialsUboId, m_materialsUboSize, &materialsUbo, 0);
-    }
 }
 
 void SpriteMesh::prepareBuffers(MeshBuffers& curr)
@@ -113,7 +81,7 @@ void SpriteMesh::prepareVBO(MeshBuffers& curr)
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     constexpr int stride_size = sizeof(TexVBO);
     TexVBO vbo;
-    vbo.material = 0 + m_materialsBaseIndex;
+    vbo.material = m_material.m_registeredIndex;
 
     glNamedBufferStorage(curr.VBO, stride_size, &vbo, 0);
 
@@ -129,16 +97,8 @@ void SpriteMesh::prepareVBO(MeshBuffers& curr)
 
 void SpriteMesh::bind(
     const RenderContext& ctx,
-    Shader* shader,
-    bool bindMaterials) noexcept
+    Shader* shader) noexcept
 {
-    if (bindMaterials) {
-        //glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
-        glBindBufferBase(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId);
-
-        m_material.bindArray(ctx, shader);
-    }
-
     glBindVertexArray(m_buffers.VAO);
 }
 

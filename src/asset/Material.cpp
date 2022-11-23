@@ -117,7 +117,6 @@ Material::Material()
 Material::~Material()
 {
     KI_INFO_SB("MATERIAL: " << m_name << " delete");
-    m_index = -1;
 }
 
 void Material::loadTextures(const Assets& assets)

@@ -29,8 +29,8 @@ constexpr unsigned int UBO_MATERIALS = 4;
 constexpr unsigned int UBO_MATERIAL = 5;
 constexpr unsigned int UBO_TEXTURES = 6;
 
-constexpr unsigned int MIN_MATERIAL_COUNT = 8;
-constexpr unsigned int MAX_MATERIAL_COUNT = 8;
+constexpr unsigned int MIN_MATERIAL_COUNT = 200;
+constexpr unsigned int MAX_MATERIAL_COUNT = 200;
 constexpr unsigned int MATERIAL_COUNT = MAX_MATERIAL_COUNT;
 
 constexpr unsigned int MIN_LIGHT_COUNT = 8;
@@ -45,8 +45,6 @@ constexpr unsigned int TEXTURE_COUNT = MAX_TEXTURE_COUNT;
 constexpr unsigned int MIN_CLIP_PLANE_COUNT = 2;
 constexpr unsigned int MAX_CLIP_PLANE_COUNT = 2;
 constexpr unsigned int CLIP_PLANE_COUNT = MAX_CLIP_PLANE_COUNT;
-
-constexpr unsigned int PARTICLE_MATERIAL_COUNT = 1;
 
 constexpr unsigned int TEXTURE_UNIT_COUNT = 64;
 constexpr unsigned int FIRST_TEXTURE_UNIT = 0;
@@ -177,11 +175,6 @@ struct MaterialUBO {
 struct MaterialsUBO {
     // NOTE KI align 16 for UBO array entries
     MaterialUBO materials[MATERIAL_COUNT];
-};
-
-struct MaterialsUBOSingle {
-    // NOTE KI align 16 for UBO array entries
-    MaterialUBO materials[1];
 };
 
 // NOTE KI align 16 for UBO struct

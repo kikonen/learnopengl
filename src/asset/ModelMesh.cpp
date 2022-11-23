@@ -108,45 +108,7 @@ void ModelMesh::prepare(
     m_prepared = true;
 
     m_buffers.prepare(true);
-    prepareMaterials(assets, registry);
     prepareBuffers(m_buffers);
-}
-
-void ModelMesh::prepareMaterials(
-    const Assets& assets,
-    NodeRegistry& registry)
-{
-    {
-        int materialIndex = 0;
-
-        for (auto& material : m_materials) {
-            material.m_index = materialIndex++;
-            assert(material.m_index < MATERIAL_COUNT);
-
-            material.prepare(assets);
-
-            for (auto& tex : material.m_textures) {
-                if (!tex.texture) continue;
-                tex.m_texIndex = tex.texture->m_texIndex;
-            }
-        }
-    }
-
-    // materials
-    {
-        int sz_single = sizeof(MaterialUBO);
-        //int sz = sizeof(MaterialUBO);
-        m_materialsUboSize = sz_single * m_materials.size();
-
-        MaterialsUBO materialsUbo{};
-
-        for (auto& material : m_materials) {
-            materialsUbo.materials[material.m_index] = material.toUBO();
-        }
-
-        glCreateBuffers(1, &m_materialsUboId);
-        glNamedBufferStorage(m_materialsUboId, m_materialsUboSize, &materialsUbo, 0);
-    }
 }
 
 void ModelMesh::prepareBuffers(MeshBuffers& curr)
@@ -197,7 +159,7 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
 
             // TODO KI should use noticeable value for missing
             // => would trigger undefined array access in render side
-            vbo->material = m ? (m->m_index + m_materialsBaseIndex) : 0;
+            vbo->material = m ? (m->m_registeredIndex) : 0;
 
             vbo->texCoords.u = (int)(t.x * ki::SCALE_UV16);
             vbo->texCoords.v = (int)(t.y * ki::SCALE_UV16);
@@ -272,19 +234,8 @@ void ModelMesh::prepareEBO(MeshBuffers& curr)
 
 void ModelMesh::bind(
     const RenderContext& ctx,
-    Shader* shader,
-    bool bindMaterials) noexcept
+    Shader* shader) noexcept
 {
-    if (bindMaterials) {
-        //glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId, 0, m_materialsUboSize);
-         glBindBufferBase(GL_UNIFORM_BUFFER, UBO_MATERIALS, m_materialsUboId);
-
-
-        for (auto& material : m_materials) {
-            material.bindArray(ctx, shader);
-        }
-    }
-
     glBindVertexArray(m_buffers.VAO);
 }
 

@@ -17,23 +17,21 @@ Shader* ShaderRegistry::getShader(
     const Assets& assets,
     const std::string& name)
 {
-    return getShader(assets, name, "", 0, {});
+    return getShader(assets, name, "", {});
 }
 
 Shader* ShaderRegistry::getShader(
     const Assets& assets,
     const std::string& name,
-    const int materialCount,
     const std::map<std::string, std::string>& defines)
 {
-    return getShader(assets, name, "", materialCount, defines);
+    return getShader(assets, name, "", defines);
 }
 
 Shader* ShaderRegistry::getShader(
     const Assets& assets,
     const std::string& name,
     const std::string& geometryType,
-    const int materialCount,
     const std::map<std::string, std::string>& defines)
 {
     std::lock_guard<std::mutex> lock(m_shaders_lock);
@@ -44,10 +42,8 @@ Shader* ShaderRegistry::getShader(
         key += "_" + geometryType;
     }
 
-    key += "_MAT_COUNT=" + std::to_string(materialCount);
-
     for (const auto& [k, v] : defines)
-        key += "_" + k + "=" + v; 
+        key += "_" + k + "=" + v;
 
     Shader* shader = nullptr;
     {
@@ -63,7 +59,6 @@ Shader* ShaderRegistry::getShader(
             key,
             name,
             geometryType,
-            materialCount,
             defines);
         const auto& e = m_shaders.find(key);
         shader = e->second.get();

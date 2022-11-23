@@ -20,11 +20,11 @@ void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_selectionShader->m_selection = true;
     m_selectionShader->prepare(assets);
 
-    m_selectionShaderAlpha = shaders.getShader(assets, TEX_SELECTION, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
+    m_selectionShaderAlpha = shaders.getShader(assets, TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
     m_selectionShaderAlpha->m_selection = true;
     m_selectionShaderAlpha->prepare(assets);
 
-    m_selectionShaderSprite = shaders.getShader(assets, TEX_SELECTION_SPRITE, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
+    m_selectionShaderSprite = shaders.getShader(assets, TEX_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
     m_selectionShaderSprite->m_selection = true;
     m_selectionShaderSprite->prepare(assets);
 }

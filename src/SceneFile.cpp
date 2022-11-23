@@ -286,35 +286,13 @@ std::shared_ptr<NodeType> SceneFile::createType(
     }
 
     {
-        int materialCount = 0;
-        int textureCount = 0;
         bool normalTex = false;
         bool normalPattern = false;
-        if (type->m_mesh) {
-            type->m_mesh->modifyMaterials([&](auto& mat) {
-                materialCount++;
-                textureCount += mat.getActiveTextureCount();
-                normalTex |= mat.hasNormalTex();
-                normalPattern |= mat.pattern > 0;
-                });
-        }
 
-        // NOTE KI reduce variants to 2
-        if (materialCount < MIN_MATERIAL_COUNT) {
-            // NOTE KI TEX_TEXTURE requires at least 1
-            materialCount = MIN_MATERIAL_COUNT;
-        }
-        else {
-            materialCount = MATERIAL_COUNT;
-        }
-
-        if (textureCount < MIN_TEXTURE_COUNT) {
-            textureCount = MIN_TEXTURE_COUNT;
-        }
-        else {
-            textureCount = TEXTURE_COUNT;
-        }
-
+        type->modifyMaterials([&](auto& mat) {
+            normalTex |= mat.hasNormalTex();
+            normalPattern |= mat.pattern > 0;
+        });
 
         std::map<std::string, std::string> definitions;
         for (const auto& [k, v] : data.shaderDefinitions) {
@@ -336,14 +314,10 @@ std::shared_ptr<NodeType> SceneFile::createType(
             definitions[DEF_USE_NORMAL_TEX] = "1";
         }
 
-        //definitions[DEF_MAT_COUNT] = std::to_string(materialCount);
-        definitions[DEF_TEX_COUNT] = std::to_string(textureCount);
-
         if (!data.shaderName.empty()) {
             type->m_nodeShader = m_asyncLoader->getShader(
                 data.shaderName,
                 data.geometryType,
-                materialCount,
                 definitions);
         }
     }

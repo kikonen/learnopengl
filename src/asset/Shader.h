@@ -111,7 +111,6 @@ public:
         const std::string& key,
         const std::string& name,
         const std::string& geometryType,
-        const int materialCount,
         const std::map<std::string, std::string>& defines);
 
     // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
@@ -362,7 +361,6 @@ public:
 
     const Assets& assets;
     const std::string m_geometryType;
-    const int m_materialCount;
 
     //bool m_bindTexture = false;
     bool m_selection = false;

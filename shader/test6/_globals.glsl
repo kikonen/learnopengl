@@ -37,7 +37,7 @@
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 // => defined by c++ side (more optimal)
 #ifndef MAT_COUNT
-  #define MAT_COUNT 8
+  #define MAT_COUNT 200
 #endif
 
 // NOTE KI TEX_COUNT == texture index != texture unit index

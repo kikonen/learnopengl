@@ -4,13 +4,17 @@
 
 #include "asset/Assets.h"
 #include "asset/Material.h"
+#include "asset/GLBuffer.h"
 
 class MaterialRegistry {
 public:
     MaterialRegistry(const Assets& assets);
+    ~MaterialRegistry();
 
-    // @return index of material
-    int add(const Material& material);
+    // Updates m_registeredIndex of Material
+    void add(const Material& material);
+
+    int getBaseIndex() { return m_materials.size(); }
 
     Material* find(
         const std::string& name);
@@ -18,14 +22,21 @@ public:
     Material* findID(
         const int objectID);
 
-    void prepareMaterials();
+    void prepare();
+
+    void update(const RenderContext& ctx);
+
+    void bind(
+        const RenderContext& ctx);
 
 private:
     const Assets& assets;
 
     std::vector<Material> m_materials;
-    //std::vector<MaterialSBO> m_materialsSBO;
 
-    GLuint m_materialsUboId = 0;
-    unsigned int m_materialsUboSize = 0;
+    MaterialsUBO m_materialsUbo;
+
+    int m_updatedSize = 0;
+
+    GLBuffer m_buffer;
 };

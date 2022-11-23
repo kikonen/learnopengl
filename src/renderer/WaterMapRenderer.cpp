@@ -4,6 +4,7 @@
 #include "SkyboxRenderer.h"
 #include "WaterNoiseGenerator.h"
 
+
 namespace {
     const glm::vec3 CAMERA_FRONT[6] = {
         {  1,  0,  0 },
@@ -91,7 +92,7 @@ void WaterMapRenderer::render(
 {
     if (!needRender(ctx)) return;
 
-    Node* closest = findClosest(ctx);
+    auto closest = findClosest(ctx);
     if (!closest) return;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7

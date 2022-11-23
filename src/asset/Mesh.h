@@ -26,9 +26,6 @@ public:
     virtual Material* findMaterial(std::function<bool(const Material&)> fn) = 0;
     virtual void modifyMaterials(std::function<void(Material&)> fn) = 0;
 
-    int getMaterialsBaseIndex() { return m_materialsBaseIndex; }
-    void setMaterialsBaseIndex(int index) { m_materialsBaseIndex = index; }
-
     virtual void prepareVolume() = 0;
     virtual const AABB& calculateAABB() const = 0;
 
@@ -38,8 +35,7 @@ public:
 
     virtual void bind(
         const RenderContext& ctx,
-        Shader* shader,
-        bool bindMaterials) noexcept  = 0;
+        Shader* shader) noexcept  = 0;
 
     virtual void drawInstanced(const RenderContext& ctx, int instanceCount) noexcept  = 0;
 
@@ -53,9 +49,6 @@ public:
     std::string m_name;
 
     MeshBuffers m_buffers;
-
-protected:
-    unsigned int m_materialsBaseIndex = 0;
 
 private:
     AABB m_aabb;

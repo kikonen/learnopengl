@@ -37,7 +37,7 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_farPlane = assets.shadowFarPlane;
 
     m_solidShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
-    m_blendedShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH, MATERIAL_COUNT, { { DEF_USE_ALPHA, "1" } });
+    m_blendedShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
     m_shadowDebugShader = shaders.getShader(assets, TEX_DEBUG_DEPTH);
 
     m_solidShadowShader->prepare(assets);

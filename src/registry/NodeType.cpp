@@ -85,9 +85,7 @@ void NodeType::bind(
 
     m_boundShader = shader;
 
-    // NOTE KI material needed for alpha shadows
-    bool bindMaterials = !ctx.m_shadow || m_flags.alpha;
-    m_mesh->bind(ctx, shader, bindMaterials);
+    m_mesh->bind(ctx, shader);
 
     if (m_flags.renderBack) {
         ctx.state.disable(GL_CULL_FACE);

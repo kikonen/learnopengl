@@ -115,10 +115,9 @@ public:
 
     MaterialType m_type{ MaterialType::model };
 
-    int m_index = -1;
-
     bool m_default = false;
     bool m_used = false;
+    mutable int m_registeredIndex = -1;
 
     std::string m_materialDir;
 

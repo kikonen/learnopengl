@@ -13,6 +13,7 @@
 
 #include "NodeType.h"
 
+class MaterialRegistry;
 
 struct ShaderKey {
     ShaderKey(int shaderID, bool renderBack) noexcept
@@ -24,7 +25,6 @@ struct ShaderKey {
     bool operator<(const ShaderKey& o)  const noexcept {
         return std::tie(shaderID, renderBack) < std::tie(o.shaderID, o.renderBack);
     }
-
 };
 
 enum class NodeOperation {
@@ -66,7 +66,8 @@ public:
 
     void addViewPort(std::shared_ptr<Viewport> viewport) noexcept;
 
-    void attachNodes() noexcept;
+    void attachNodes(
+        MaterialRegistry& materialRegistry);
 
     int countSelected() const noexcept;
 
@@ -76,10 +77,20 @@ public:
     const NodeVector* getChildren(const Node& node) const noexcept;
 
 private:
-    void bindPendingChildren() noexcept;
-    void bindNode(Node* node) noexcept;
-    bool bindParent(Node* child) noexcept;
-    void bindChildren(Node* parent) noexcept;
+    void bindPendingChildren(
+        MaterialRegistry& materialRegistry);
+
+    void bindNode(
+        Node* node,
+        MaterialRegistry& materialRegistry);
+
+    bool bindParent(
+        Node* child,
+        MaterialRegistry& materialRegistry);
+
+    void bindChildren(
+        Node* parent,
+        MaterialRegistry& materialRegistry);
 
     void notifyListeners(Node* node, NodeOperation operation);
 
