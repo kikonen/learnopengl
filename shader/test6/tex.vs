@@ -68,7 +68,8 @@ void main() {
   vs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
 
 #ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex >= 0) {
+  //if (u_materials[materialIndex].normalMapTex >= 0)
+  {
     vec3 N = vs_out.normal;
     vec3 T = normalize(a_normalMatrix * a_tangent);
     T = normalize(T - dot(T, N) * N);
