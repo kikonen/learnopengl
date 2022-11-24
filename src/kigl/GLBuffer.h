@@ -32,5 +32,10 @@ struct GLBuffer {
         glBindBufferBase(GL_UNIFORM_BUFFER, ubo, id);
     }
 
+    void bindSSBO(GLuint ssbo) {
+        if (id == -1) return;
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, ssbo, id);
+    }
+
     GLuint id = -1;
 };

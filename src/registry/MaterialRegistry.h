@@ -36,7 +36,10 @@ private:
 
     MaterialsUBO m_materialsUbo;
 
+    std::vector<MaterialSSBO> m_materialsSSBO;
+
     int m_updatedSize = 0;
 
-    GLBuffer m_buffer;
+    GLBuffer m_ubo;
+    GLBuffer m_ssbo;
 };

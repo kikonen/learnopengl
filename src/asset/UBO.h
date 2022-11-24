@@ -23,13 +23,12 @@ struct UBO {
     unsigned int texturesSize;
 };
 
-constexpr unsigned int UBO_MATRICES = 0;
-constexpr unsigned int UBO_DATA = 1;
-constexpr unsigned int UBO_CLIP_PLANES = 2;
-constexpr unsigned int UBO_LIGHTS = 3;
-constexpr unsigned int UBO_MATERIALS = 4;
-constexpr unsigned int UBO_MATERIAL = 5;
-constexpr unsigned int UBO_TEXTURES = 6;
+constexpr GLuint UBO_MATRICES = 0;
+constexpr GLuint UBO_DATA = 1;
+constexpr GLuint UBO_CLIP_PLANES = 2;
+constexpr GLuint UBO_LIGHTS = 3;
+constexpr GLuint UBO_MATERIALS = 4;
+constexpr GLuint UBO_TEXTURES = 5;
 
 constexpr unsigned int MIN_MATERIAL_COUNT = 200;
 constexpr unsigned int MAX_MATERIAL_COUNT = 200;

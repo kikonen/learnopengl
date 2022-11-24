@@ -278,6 +278,7 @@
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\FrustumNew.h" />
+    <ClInclude Include="src\asset\SSBO.h" />
     <ClInclude Include="src\kigl\GLBuffer.h" />
     <ClInclude Include="src\kigl\GLVertexArray.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />

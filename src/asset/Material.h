@@ -8,6 +8,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "UBO.h"
+#include "SSBO.h"
 
 class RenderContext;
 
@@ -83,6 +84,7 @@ public:
         Shader* shader);
 
     const MaterialUBO toUBO();
+    const MaterialSSBO toSSBO();
 
     const float getRefractionRatio() { return refractionRatio[1] != 0 ? refractionRatio[0] / refractionRatio[1] : refractionRatio[0]; }
 

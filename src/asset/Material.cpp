@@ -247,3 +247,34 @@ const MaterialUBO Material::toUBO()
         tiling,
     };
 }
+
+const MaterialSSBO Material::toSSBO()
+{
+    for (auto& tex : m_textures) {
+        if (!tex.texture) continue;
+        ASSERT_TEX_INDEX(tex.m_texIndex);
+    }
+
+    return {
+        ka,
+        kd,
+        glm::vec4(0),
+        ks,
+        ns,
+
+        m_textures[DIFFUSE_IDX].m_texIndex,
+        m_textures[EMISSION_IDX].m_texIndex,
+        m_textures[SPECULAR_IDX].m_texIndex,
+        m_textures[NORMAL_MAP_IDX].m_texIndex,
+        m_textures[DUDV_MAP_IDX].m_texIndex,
+
+        pattern,
+
+        reflection,
+        refraction,
+        getRefractionRatio(),
+
+        fogRatio,
+        tiling,
+    };
+}
