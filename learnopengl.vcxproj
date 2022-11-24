@@ -207,7 +207,7 @@
     <ClCompile Include="src\SceneFile.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
     <ClCompile Include="src\renderer\MirrorMapRenderer.cpp" />
-    <ClCompile Include="src\asset\GLState.cpp" />
+    <ClCompile Include="src\kigl\GLState.cpp" />
     <ClCompile Include="src\asset\DynamicCubeMap.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
     <ClCompile Include="src\asset\ImageTexture.cpp" />
@@ -278,7 +278,8 @@
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\FrustumNew.h" />
-    <ClInclude Include="src\asset\GLBuffer.h" />
+    <ClInclude Include="src\kigl\GLBuffer.h" />
+    <ClInclude Include="src\kigl\GLVertexArray.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />
     <ClInclude Include="src\registry\MaterialRegistry.h" />
     <ClInclude Include="src\asset\OBB.h" />
@@ -310,7 +311,7 @@
     <ClInclude Include="src\SceneFile.h" />
     <ClInclude Include="src\renderer\ObjectIdRenderer.h" />
     <ClInclude Include="src\renderer\MirrorMapRenderer.h" />
-    <ClInclude Include="src\asset\GLState.h" />
+    <ClInclude Include="src\kigl\GLState.h" />
     <ClInclude Include="src\asset\DynamicCubeMap.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\asset\ImageTexture.h" />

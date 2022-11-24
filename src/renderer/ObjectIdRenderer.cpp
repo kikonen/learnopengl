@@ -158,7 +158,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
                 ShaderBind bound(shader);
 
                 auto& batch = ctx.m_batch;
-                batch.m_objectIDBuffer = true;
+                batch.m_useObjectIDBuffer = true;
 
                 type.bind(ctx, bound.shader);
                 batch.bind(ctx, bound.shader);
@@ -169,7 +169,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
 
                 batch.flush(ctx, type);
                 type.unbind(ctx);
-                batch.m_objectIDBuffer = false;
+                batch.m_useObjectIDBuffer = false;
             }
         };
 

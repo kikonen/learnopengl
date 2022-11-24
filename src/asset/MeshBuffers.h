@@ -1,5 +1,8 @@
 #pragma once
 
+#include "kigl/GLBuffer.h"
+#include "kigl/GLVertexArray.h"
+
 class MeshBuffers final
 {
 public:
@@ -7,10 +10,11 @@ public:
     ~MeshBuffers();
 
     void prepare(bool useIndeces);
+
 public:
-    unsigned int VBO = 0;
-    unsigned int VAO = 0;
-    unsigned int EBO = 0;
+    GLVertexArray VAO;
+    GLBuffer VBO;
+    GLBuffer EBO;
 
 private:
     bool m_prepared = false;

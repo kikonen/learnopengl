@@ -453,8 +453,8 @@ void Scene::prepareUBOs()
     {
         int sz = sizeof(MatricesUBO);
 
-        glCreateBuffers(1, &m_ubo.matrices);
-        glNamedBufferStorage(m_ubo.matrices, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+        m_ubo.matrices.create();
+        m_ubo.matrices.initEmpty(sz, GL_DYNAMIC_STORAGE_BIT);
 
         glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATRICES, m_ubo.matrices, 0, sz);
         m_ubo.matricesSize = sz;
@@ -463,8 +463,8 @@ void Scene::prepareUBOs()
     {
         int sz = sizeof(DataUBO);
 
-        glCreateBuffers(1, &m_ubo.data);
-        glNamedBufferStorage(m_ubo.data, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+        m_ubo.data.create();
+        m_ubo.data.initEmpty(sz, GL_DYNAMIC_STORAGE_BIT);
 
         glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, m_ubo.data, 0, sz);
         m_ubo.dataSize = sz;
@@ -473,8 +473,8 @@ void Scene::prepareUBOs()
     {
         int sz = sizeof(ClipPlanesUBO);
 
-        glCreateBuffers(1, &m_ubo.clipPlanes);
-        glNamedBufferStorage(m_ubo.clipPlanes, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+        m_ubo.clipPlanes.create();
+        m_ubo.clipPlanes.initEmpty(sz, GL_DYNAMIC_STORAGE_BIT);
 
         glBindBufferRange(GL_UNIFORM_BUFFER, UBO_CLIP_PLANES, m_ubo.clipPlanes, 0, sz);
         m_ubo.clipPlanesSize = sz;
@@ -483,8 +483,8 @@ void Scene::prepareUBOs()
     {
         int sz = sizeof(LightsUBO);
 
-        glCreateBuffers(1, &m_ubo.lights);
-        glNamedBufferStorage(m_ubo.lights, sz, nullptr, GL_DYNAMIC_STORAGE_BIT);
+        m_ubo.lights.create();
+        m_ubo.lights.initEmpty(sz, GL_DYNAMIC_STORAGE_BIT);
 
         glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, m_ubo.lights, 0, sz);
         m_ubo.lightsSize = sz;
@@ -503,8 +503,8 @@ void Scene::prepareUBOs()
 
         int sz = sizeof(TexturesUBO);
 
-        glCreateBuffers(1, &m_ubo.textures);
-        glNamedBufferStorage(m_ubo.textures, sz, nullptr, GL_MAP_WRITE_BIT);
+        m_ubo.textures.create();
+        m_ubo.textures.initEmpty(sz, GL_MAP_WRITE_BIT);
 
         glBindBufferRange(GL_UNIFORM_BUFFER, UBO_TEXTURES, m_ubo.textures, 0, sz);
         m_ubo.texturesSize = sz;

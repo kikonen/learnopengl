@@ -4,7 +4,7 @@
 
 #include "asset/Assets.h"
 #include "asset/Material.h"
-#include "asset/GLBuffer.h"
+#include "kigl/GLBuffer.h"
 
 class MaterialRegistry {
 public:

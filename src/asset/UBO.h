@@ -4,15 +4,17 @@
 
 #include "ki/GL.h"
 
+#include "kigl/GLBuffer.h"
+
 // https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
 
 
 struct UBO {
-    unsigned int matrices;
-    unsigned int data;
-    unsigned int clipPlanes;
-    unsigned int lights;
-    unsigned int textures;
+    GLBuffer matrices;
+    GLBuffer data;
+    GLBuffer clipPlanes;
+    GLBuffer lights;
+    GLBuffer textures;
 
     unsigned int matricesSize;
     unsigned int dataSize;

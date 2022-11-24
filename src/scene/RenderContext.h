@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 
 #include "asset/UBO.h"
-#include "asset/GLState.h"
+#include "kigl/GLState.h"
 #include "asset/Assets.h"
 #include "asset/Shader.h"
 #include "asset/FrustumNew.h"

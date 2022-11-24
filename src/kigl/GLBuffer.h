@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ki/GL.h"
+
 struct GLBuffer {
     GLBuffer() {
     }
@@ -10,7 +12,10 @@ struct GLBuffer {
         }
     }
 
+    operator int() const { return id; }
+
     void create() {
+        if (id != -1) return;
         glCreateBuffers(1, &id);
     }
 

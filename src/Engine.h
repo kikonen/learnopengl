@@ -2,7 +2,7 @@
 
 #include "ki/GL.h"
 
-#include "asset/GLState.h"
+#include "kigl/GLState.h"
 
 #include "asset/Assets.h"
 #include "registry/ShaderRegistry.h"
