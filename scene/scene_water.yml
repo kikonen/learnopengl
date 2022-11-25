@@ -1,0 +1,66 @@
+---
+name: Full
+viewports:
+skybox:
+  shader: skybox
+  material: skybox
+lights: {}
+root:
+  id: 50733c80-df4e-47ab-9596-ccfadb1805d8
+  type: origo
+  pos: [200, 0, 200]
+  rotation: [0, 0, 0]
+  enabled: true
+  controller:
+    type: path
+    mode: 1
+    enabled: false
+entities:
+  - name: Origo
+    type: origo
+    pos: [0, 0, -5]
+    camera:
+      zoom: 45
+      up: [0, 1, 0]
+      front: [0, 0, -1]
+      pos: [200, 0, 190]
+      rotation: [0, 180, 0.0]
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: Water surface
+    type: quad
+    material: water_surface
+    shader: water
+    pos: [0, -4, -10]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 30
+    render_flags:
+      no_shadow: true
+      render_back: true
+      water: true
+    repeat:
+      x_count: 1
+      y_count: 1
+      z_count: 1
+      x_step: 60
+      y_step: 0
+      z_step: 60
+    enabled: true
+materials:
+  - name: skybox
+    type: skybox
+    asset: skybox
+  - name: water_surface
+    type: texture
+    ns: 150
+    ks: [0.2, 0.2, 0.5, 1.0]
+    kd: [0.0, 0.1, 0.8, 1.0]
+    map_bump: waterNormalMap.png
+    map_dudv: waterDUDV.png
+    tiling: 2
+    texture_spec:
+      mode: GL_REPEAT
+      _pattern: 1
