@@ -63,10 +63,11 @@ void MaterialRegistry::update(const RenderContext& ctx)
         }
 
         //m_ubo.update(0, sizeof(MaterialsUBO), &m_materialsUbo);
+        const int sz = sizeof(MaterialSSBO);
         m_ssbo.update(
-            m_updatedSize * sizeof(MaterialSSBO),
-            (m_materialsSSBO.size() - m_updatedSize) * sizeof(MaterialSSBO),
-            m_materialsSSBO.data());
+            m_updatedSize * sz,
+            (m_materialsSSBO.size() - m_updatedSize) * sz,
+            &m_materialsSSBO[m_updatedSize]);
     }
 
     m_updatedSize = m_materials.size();
