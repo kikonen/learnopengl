@@ -74,7 +74,7 @@ void NodeType::prepareBatch(Batch& batch) noexcept
     if (m_preparedBatch) return;
     m_preparedBatch = true;
 
-    batch.prepareType(*this);
+    batch.prepareMesh(m_mesh->m_buffers.VAO);
 }
 
 void NodeType::bind(

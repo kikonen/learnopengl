@@ -16,6 +16,8 @@ namespace {
         float material;
     };
 #pragma pack(pop)
+
+    const AABB QUAD_AABB = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
 }
 
 
@@ -56,7 +58,7 @@ void QuadMesh::prepareVolume() {
 
 const AABB& QuadMesh::calculateAABB() const
 {
-    return { glm::vec3{-1.f, -1.f, 0.f}, glm::vec3{1.f, 1.f, 0.f}, true };
+    return QUAD_AABB;
 }
 
 void QuadMesh::prepare(

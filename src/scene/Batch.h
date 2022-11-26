@@ -3,6 +3,7 @@
 #include "asset/Shader.h"
 
 #include "kigl/GLBuffer.h"
+#include "kigl/GLVertexArray.h"
 
 class RenderContext;
 class NodeType;
@@ -34,8 +35,7 @@ public:
         const Assets& assets,
         int bufferSize) noexcept;
 
-    void prepareType(
-        NodeType& type) noexcept;
+    void prepareMesh(GLVertexArray& vao);
 
     void update(size_t count) noexcept;
     void bind(const RenderContext& ctx, Shader* shader) noexcept;

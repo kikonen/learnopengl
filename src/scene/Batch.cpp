@@ -111,11 +111,8 @@ void Batch::prepare(
         m_bufferSize, m_modelBuffer, m_normalBuffer, m_objectIDBuffer));
 }
 
-void Batch::prepareType(
-    NodeType& type) noexcept
+void Batch::prepareMesh(GLVertexArray& vao)
 {
-    const int vao = type.m_mesh->m_buffers.VAO;
-
     // model
     {
         glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_modelBuffer, 0, sizeof(glm::mat4));
