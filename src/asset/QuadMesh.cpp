@@ -87,29 +87,10 @@ void QuadMesh::prepareMaterialVBO(MeshBuffers& curr)
         // https://paroj.github.io/gltut/Basic%20Optimization.html
         constexpr int stride_size = sizeof(MaterialVBO);
         {
-            const int sz = stride_size * VERTEX_COUNT;
+            MaterialVBO buffer;
+            buffer.material = m_material.m_registeredIndex;
 
-            MaterialVBO* buffer = (MaterialVBO*)new unsigned char[sz];
-            memset(buffer, 0, sz);
-
-            // NOTE KI hardcoded single material
-            constexpr int row_size = 1;
-
-            MaterialVBO* vbo = buffer;
-            for (int i = 0; i < VERTEX_COUNT; i++) {
-                int base = i * row_size;
-
-                // NOTE KI hardcoded single material
-                base++;
-                vbo->material = m_material.m_registeredIndex;
-
-                assert(vbo->material >= 0 && vbo->material < MAX_MATERIAL_COUNT);
-
-                vbo++;
-            }
-
-            glNamedBufferStorage(curr.VBO_MATERIAL, sz, buffer, 0);
-            delete[] buffer;
+            glNamedBufferStorage(curr.VBO_MATERIAL, stride_size, &buffer, 0);
         }
 
         glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, curr.VBO_MATERIAL, 0, stride_size);
@@ -120,6 +101,11 @@ void QuadMesh::prepareMaterialVBO(MeshBuffers& curr)
             glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialVBO, material));
 
             glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
+
+            // TODO KI not 100% sure *HOW*
+            // => ROW_SIZE * VERTEX_COUNT == 44
+            // => Same material for all verteces
+            glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, 44);
         }
     }
 }

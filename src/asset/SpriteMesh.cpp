@@ -9,7 +9,7 @@
 
 namespace {
 #pragma pack(push, 1)
-    struct TexVBO {
+    struct MaterialVBO {
         // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
         // => use float
         float material;
@@ -64,7 +64,7 @@ void SpriteMesh::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(true, false, false);
+    m_buffers.prepare(false, true, false);
     prepareBuffers(m_buffers);
 }
 
@@ -79,19 +79,19 @@ void SpriteMesh::prepareVBO(MeshBuffers& curr)
     const int vao = curr.VAO;
 
     // https://paroj.github.io/gltut/Basic%20Optimization.html
-    constexpr int stride_size = sizeof(TexVBO);
-    TexVBO vbo;
+    constexpr int stride_size = sizeof(MaterialVBO);
+    MaterialVBO vbo;
     vbo.material = m_material.m_registeredIndex;
 
-    glNamedBufferStorage(curr.VBO, stride_size, &vbo, 0);
+    glNamedBufferStorage(curr.VBO_MATERIAL, stride_size, &vbo, 0);
 
-    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
+    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, curr.VBO_MATERIAL, 0, stride_size);
     {
         glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
 
-        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(TexVBO, material));
+        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialVBO, material));
 
-        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_VERTEX_BINDING);
+        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
     }
 }
 
