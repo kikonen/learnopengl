@@ -67,6 +67,11 @@ NodeRegistry::~NodeRegistry()
     groups.clear();
 }
 
+void NodeRegistry::prepare()
+{
+    m_quad.prepare();
+}
+
 void NodeRegistry::addListener(NodeListener& listener)
 {
     m_listeners.push_back(listener);

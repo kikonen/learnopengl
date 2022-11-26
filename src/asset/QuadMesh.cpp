@@ -67,12 +67,14 @@ void QuadMesh::prepare(
     m_prepared = true;
 
     m_buffers.prepare(false, true, false);
+
+    registry.m_quad.prepareMesh(m_buffers.VAO);
+
     prepareBuffers(m_buffers);
 }
 
 void QuadMesh::prepareBuffers(MeshBuffers& curr)
 {
-    m_vertexVBO.prepare(curr.VAO);
     prepareVBO(curr);
 }
 

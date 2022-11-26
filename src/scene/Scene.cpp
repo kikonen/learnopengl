@@ -49,6 +49,8 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     prepareUBOs();
 
+    m_registry.prepare();
+
     m_commandEngine.prepare(assets);
     m_scriptEngine.prepare(assets, m_commandEngine);
 

@@ -7,11 +7,14 @@
 
 #include <ki/uuid.h>
 
+#include "asset/QuadVBO.h"
+
 #include "model/Group.h"
 #include "model/Node.h"
 #include "model/Viewport.h"
 
 #include "NodeType.h"
+
 
 class MaterialRegistry;
 
@@ -47,6 +50,8 @@ public:
     NodeRegistry(const Assets& assets);
 
     ~NodeRegistry();
+
+    void prepare();
 
     void addListener(NodeListener& listener);
 
@@ -113,6 +118,8 @@ public:
     NodeVector m_spotLights;
 
     GroupVector groups;
+
+    QuadVBO m_quad;
 
 private:
     const Assets& assets;
