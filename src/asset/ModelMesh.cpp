@@ -19,10 +19,13 @@ namespace {
         glm::vec3 pos;
         ki::VEC10 normal;
         ki::VEC10 tangent;
+        ki::UV16 texCoords;
+    };
+
+    struct MaterialVBO {
         // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
         // => use float
         float material;
-        ki::UV16 texCoords;
     };
 #pragma pack(pop)
 }
@@ -53,8 +56,8 @@ ModelMesh::~ModelMesh()
 const std::string ModelMesh::str() const
 {
     return fmt::format(
-        "<MODEL: {} - mesh={}/{}, vao={}, vbo={}, ebo={}>",
-        m_name, m_meshPath, m_meshName, m_buffers.VAO, m_buffers.VBO, m_buffers.EBO);
+        "<MODEL: {} - mesh={}/{}, {}>",
+        m_name, m_meshPath, m_meshName, m_buffers.str());
 }
 
 Material* ModelMesh::findMaterial(std::function<bool(const Material&)> fn)
@@ -107,15 +110,16 @@ void ModelMesh::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(true, false, true);
+    m_buffers.prepare(true, true, true);
     prepareBuffers(m_buffers);
 }
 
 void ModelMesh::prepareBuffers(MeshBuffers& curr)
 {
-    KI_DEBUG_SB(str() + " - VAO = " << curr.VAO << ", VBO = " << curr.VBO << ", EBO = " << curr.EBO);
+    KI_DEBUG_SB(fmt::format("{} - curr={}", str(), curr.str()));
 
-    prepareVBO(curr);
+    prepareVertexVBO(curr);
+    prepareMaterialVBO(curr);
     prepareEBO(curr);
 
     // NOTE KI no need for thexe any longer (they are in buffers now)
@@ -124,7 +128,7 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
     m_tris.clear();
 }
 
-void ModelMesh::prepareVBO(MeshBuffers& curr)
+void ModelMesh::prepareVertexVBO(MeshBuffers& curr)
 {
     const int vao = curr.VAO;
 
@@ -132,17 +136,16 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
     constexpr int stride_size = sizeof(TexVBO);
     const int sz = stride_size * m_vertices.size();
 
-    TexVBO* vboBuffer = (TexVBO*)new unsigned char[sz];
-    memset(vboBuffer, 0, sz);
+    TexVBO* buffer = (TexVBO*)new unsigned char[sz];
+    memset(buffer, 0, sz);
 
     {
-        TexVBO* vbo = vboBuffer;
+        TexVBO* vbo = buffer;
         for (int i = 0; i < m_vertices.size(); i++) {
             const auto& vertex = m_vertices[i];
             const auto& p = vertex.pos;
             const auto& n = vertex.normal;
             const auto& tan = vertex.tangent;
-            const auto& m = Material::findID(vertex.materialID, m_materials);
             const auto& t = vertex.texture;
 
             vbo->pos.x = p.x;
@@ -157,10 +160,6 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
             vbo->tangent.y = (int)(tan.y * ki::SCALE_VEC10);
             vbo->tangent.z = (int)(tan.z * ki::SCALE_VEC10);
 
-            // TODO KI should use noticeable value for missing
-            // => would trigger undefined array access in render side
-            vbo->material = m ? (m->m_registeredIndex) : 0;
-
             vbo->texCoords.u = (int)(t.x * ki::SCALE_UV16);
             vbo->texCoords.v = (int)(t.y * ki::SCALE_UV16);
 
@@ -168,16 +167,14 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
         }
     }
 
-    assert(vboBuffer->material >= 0 && vboBuffer->material < MAX_MATERIAL_COUNT);
-    glNamedBufferStorage(curr.VBO, sz, vboBuffer, 0);
-    delete[] vboBuffer;
+    glNamedBufferStorage(curr.VBO, sz, buffer, 0);
+    delete[] buffer;
 
     glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
     {
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
         glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
-        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
         glEnableVertexArrayAttrib(vao, ATTR_TEX);
 
         // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
@@ -192,21 +189,61 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
         // tangent attr
         glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, tangent));
 
-        // materialID attr
-        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(TexVBO, material));
-
         // texture attr
         glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TexVBO, texCoords));
 
         glVertexArrayAttribBinding(vao, ATTR_POS, VBO_VERTEX_BINDING);
         glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_VERTEX_BINDING);
         glVertexArrayAttribBinding(vao, ATTR_TANGENT, VBO_VERTEX_BINDING);
-        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_VERTEX_BINDING);
         glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_VERTEX_BINDING);
 
         // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
         glVertexArrayBindingDivisor(vao, VBO_VERTEX_BINDING, 0);
+    }
+}
+
+void ModelMesh::prepareMaterialVBO(MeshBuffers& curr)
+{
+    const int vao = curr.VAO;
+
+    // https://paroj.github.io/gltut/Basic%20Optimization.html
+    constexpr int stride_size = sizeof(MaterialVBO);
+    const int sz = stride_size * m_vertices.size();
+
+    MaterialVBO* buffer = (MaterialVBO*)new unsigned char[sz];
+    memset(buffer, 0, sz);
+
+    {
+        MaterialVBO* vbo = buffer;
+        for (int i = 0; i < m_vertices.size(); i++) {
+            const auto& vertex = m_vertices[i];
+            const auto& m = Material::findID(vertex.materialID, m_materials);
+
+            // TODO KI should use noticeable value for missing
+            // => would trigger undefined array access in render side
+            vbo->material = m ? (m->m_registeredIndex) : 0;
+
+            vbo++;
+        }
+    }
+
+    assert(buffer->material >= 0 && buffer->material < MAX_MATERIAL_COUNT);
+    glNamedBufferStorage(curr.VBO_MATERIAL, sz, buffer, 0);
+    delete[] buffer;
+
+    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, curr.VBO_MATERIAL, 0, stride_size);
+    {
+        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
+
+        // materialID attr
+        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialVBO, material));
+
+        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
+
+        // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
+        // https://www.khronos.org/opengl/wiki/Vertex_Specification
+        glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, 0);
     }
 }
 

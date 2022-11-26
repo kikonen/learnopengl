@@ -9,6 +9,8 @@ public:
     MeshBuffers();
     ~MeshBuffers();
 
+    const std::string str() const;
+
     void prepare(bool useVertex, bool useMaterial, bool useIndeces);
 
 public:

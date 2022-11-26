@@ -46,7 +46,8 @@ public:
 
 private:
     void prepareBuffers(MeshBuffers& curr);
-    void prepareVBO(MeshBuffers& curr);
+    void prepareVertexVBO(MeshBuffers& curr);
+    void prepareMaterialVBO(MeshBuffers& curr);
     void prepareEBO(MeshBuffers& curr);
 
 public:

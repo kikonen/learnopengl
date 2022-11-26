@@ -34,7 +34,7 @@ public:
 
 private:
     void prepareBuffers(MeshBuffers& curr);
-    void prepareVBO(MeshBuffers& curr);
+    void prepareMaterialVBO(MeshBuffers& curr);
 
 public:
     Material m_material;

@@ -75,10 +75,10 @@ void QuadMesh::prepare(
 
 void QuadMesh::prepareBuffers(MeshBuffers& curr)
 {
-    prepareVBO(curr);
+    prepareMaterialVBO(curr);
 }
 
-void QuadMesh::prepareVBO(MeshBuffers& curr)
+void QuadMesh::prepareMaterialVBO(MeshBuffers& curr)
 {
     const int vao = curr.VAO;
 
