@@ -8,10 +8,9 @@ class QuadVBO {
 public:
     void prepare();
 
-    void prepareMesh(GLVertexArray& vao);
+    void prepareVAO(GLVertexArray& vao);
 
 private:
-    void prepareVAO(GLVertexArray& vao);
     void prepareVBO();
 
 private:
@@ -20,4 +19,3 @@ private:
     GLBuffer m_vbo;
 
 };
-

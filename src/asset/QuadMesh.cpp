@@ -70,7 +70,7 @@ void QuadMesh::prepare(
 
     m_buffers.prepare(false, true, false);
 
-    registry.m_quad.prepareMesh(m_buffers.VAO);
+    registry.m_quad.prepareVAO(m_buffers.VAO);
 
     prepareBuffers(m_buffers);
 }

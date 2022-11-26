@@ -14,6 +14,8 @@
 #include "Assets.h"
 #include "Mesh.h"
 
+#include "ModelMeshVBO.h"
+
 class ModelMesh final : public Mesh {
 public:
     ModelMesh(
@@ -62,4 +64,6 @@ public:
 
 private:
     bool m_prepared = false;
+
+    ModelMeshVBO m_vertex;
 };

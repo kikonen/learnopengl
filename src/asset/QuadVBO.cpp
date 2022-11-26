@@ -36,11 +36,6 @@ void QuadVBO::prepare()
     prepareVBO();
 }
 
-void QuadVBO::prepareMesh(GLVertexArray& vao)
-{
-    prepareVAO(vao);
-}
-
 void QuadVBO::prepareVAO(GLVertexArray& vao)
 {
     glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(TexVBO));
