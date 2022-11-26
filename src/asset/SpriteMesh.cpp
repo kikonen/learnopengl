@@ -64,7 +64,7 @@ void SpriteMesh::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(false, false);
+    m_buffers.prepare(true, false, false);
     prepareBuffers(m_buffers);
 }
 

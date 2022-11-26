@@ -39,8 +39,13 @@ void Viewport::prepare(const Assets& assets)
 
     m_shader->prepare(assets);
 
-    m_buffers.prepare(false, false);
+    m_buffers.prepare(true, false, false);
 
+    prepareVBO(m_buffers);
+}
+
+void Viewport::prepareVBO(MeshBuffers& curr)
+{
     const float x = m_pos.x;
     const float y = m_pos.y;
     const float z = m_pos.z;
@@ -56,12 +61,12 @@ void Viewport::prepare(const Assets& assets)
     };
 
     // setup plane VAO
-    const int vao = m_buffers.VAO;
+    const int vao = curr.VAO;
     {
-        glNamedBufferStorage(m_buffers.VBO, sizeof(vertices), &vertices, 0);
+        glNamedBufferStorage(curr.VBO, sizeof(vertices), &vertices, 0);
 
         constexpr int stride_size = 5 * sizeof(float);
-        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_buffers.VBO, 0, stride_size);
+        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
 
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_TEX);

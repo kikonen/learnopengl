@@ -9,7 +9,7 @@ public:
     MeshBuffers();
     ~MeshBuffers();
 
-    void prepare(bool useMaterial, bool useIndeces);
+    void prepare(bool useVertex, bool useMaterial, bool useIndeces);
 
 public:
     GLVertexArray VAO;

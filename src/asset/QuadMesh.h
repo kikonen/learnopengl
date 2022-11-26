@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "QuadVBO.h"
 
 class QuadMesh final : public Mesh
 {
@@ -41,4 +42,6 @@ public:
 
 private:
     bool m_prepared = false;
+
+    QuadVBO m_vertexVBO;
 };

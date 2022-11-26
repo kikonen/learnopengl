@@ -103,7 +103,7 @@ void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     }
 
     {
-        m_buffers.prepare(false, false);
+        m_buffers.prepare(true, false, false);
 
         const int vao = m_buffers.VAO;
 

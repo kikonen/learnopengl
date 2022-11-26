@@ -40,6 +40,9 @@ public:
     void unbind(const RenderContext& ctx);
     void draw(const RenderContext& ctx);
 
+private:
+    void prepareVBO(MeshBuffers& curr);
+
 public:
     const std::string m_name;
 
