@@ -731,7 +731,9 @@ entities:
     enabled: false
   - name: Giant wooden box
     id: e264f27f-d949-4504-b862-583213484d7c
-    model: woodwall
+    type: quad
+    xmodel: woodwall
+    material: giant_woodbox
     shader: texture
     clone_position: [0, 40, 0]
     render_flags:
@@ -823,8 +825,9 @@ materials:
     reflection: 0.1
     refraction: 0.9
     refraction_ratio: [1.0, 1.52]
-  - name: wood_wall_todo
+  - name: woodwall
     ns: 225.000000
+    type: model
     ka: [1.000000, 1.000000, 1.000000, 1.0]
     kd: [0.800000, 0.800000, 0.800000, 1.0]
     ks: [0.500000, 0.500000, 0.500000, 1.0]
@@ -834,6 +837,18 @@ materials:
     illum: 2
     map_kd: wood.png
     reflection: 0.3
+  - name: giant_woodbox
+    ns: 225.000000
+    type: model
+    ka: [1.000000, 1.000000, 1.000000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: wood.png
+    reflection: 0.1
   - name: skeleton
     type: sprite
     ns: 100
