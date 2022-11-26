@@ -39,16 +39,16 @@ void Viewport::prepare(const Assets& assets)
 
     m_shader->prepare(assets);
 
-    m_buffers.prepare(false);
+    m_buffers.prepare(false, false);
 
-    float x = m_pos.x;
-    float y = m_pos.y;
-    float z = m_pos.z;
+    const float x = m_pos.x;
+    const float y = m_pos.y;
+    const float z = m_pos.z;
 
-    float w = m_size.x;
-    float h = m_size.y;
+    const float w = m_size.x;
+    const float h = m_size.y;
 
-    float vertices[] = {
+    const float vertices[] = {
         x,     y,     z, 0.0f, 1.0f,
         x,     y - h, z, 0.0f, 0.0f,
         x + w, y,     z, 1.0f, 1.0f,

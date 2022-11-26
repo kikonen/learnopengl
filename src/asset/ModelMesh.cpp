@@ -107,7 +107,7 @@ void ModelMesh::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(true);
+    m_buffers.prepare(false, true);
     prepareBuffers(m_buffers);
 }
 
@@ -138,12 +138,12 @@ void ModelMesh::prepareVBO(MeshBuffers& curr)
     {
         TexVBO* vbo = vboBuffer;
         for (int i = 0; i < m_vertices.size(); i++) {
-            const Vertex& vertex = m_vertices[i];
-            const glm::vec3& p = vertex.pos;
-            const glm::vec3& n = vertex.normal;
-            const glm::vec3& tan = vertex.tangent;
-            const Material* m = Material::findID(vertex.materialID, m_materials);
-            const glm::vec2& t = vertex.texture;
+            const auto& vertex = m_vertices[i];
+            const auto& p = vertex.pos;
+            const auto& n = vertex.normal;
+            const auto& tan = vertex.tangent;
+            const auto& m = Material::findID(vertex.materialID, m_materials);
+            const auto& t = vertex.texture;
 
             vbo->pos.x = p.x;
             vbo->pos.y = p.y;
@@ -219,7 +219,7 @@ void ModelMesh::prepareEBO(MeshBuffers& curr)
     unsigned int* vertexEboBuffer = new unsigned int[index_count];
 
     for (int i = 0; i < m_tris.size(); i++) {
-        const glm::uvec3& vi = m_tris[i];
+        const auto& vi = m_tris[i];
         const int base = i * 3;
         vertexEboBuffer[base + 0] = vi[0];
         vertexEboBuffer[base + 1] = vi[1];

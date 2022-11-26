@@ -8,14 +8,14 @@
 
 namespace {
     const float VERTICES[] = {
-        // pos              // normal         // tangent        //mat // tex
-        -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-         1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-         1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        // pos              // normal         // tangent        // tex
+        -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+         1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+         1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
     };
 
-    constexpr int ROW_SIZE = 12;
+    constexpr int ROW_SIZE = 11;
     constexpr int VERTEX_COUNT = 4;
 
 #pragma pack(push, 1)
@@ -23,10 +23,13 @@ namespace {
         glm::vec3 pos;
         ki::VEC10 normal;
         ki::VEC10 tangent;
+        ki::UV16 texCoords;
+    };
+
+    struct MaterialVBO {
         // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
         // => use float
         float material;
-        ki::UV16 texCoords;
     };
 #pragma pack(pop)
 }
@@ -79,7 +82,7 @@ void QuadMesh::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(false);
+    m_buffers.prepare(true, false);
     prepareBuffers(m_buffers);
 }
 
@@ -92,76 +95,109 @@ void QuadMesh::prepareVBO(MeshBuffers& curr)
 {
     const int vao = curr.VAO;
 
-    // https://paroj.github.io/gltut/Basic%20Optimization.html
-    constexpr int stride_size = sizeof(TexVBO);
-    const int sz = stride_size * VERTEX_COUNT;
-
-    TexVBO* vboBuffer = (TexVBO*)new unsigned char[sz];
-    memset(vboBuffer, 0, sz);
-
+    // TexVBO
     {
-        constexpr int row_size = ROW_SIZE;
+        // https://paroj.github.io/gltut/Basic%20Optimization.html
+        constexpr int stride_size = sizeof(TexVBO);
+        {
+            const int sz = stride_size * VERTEX_COUNT;
 
-        TexVBO* vbo = vboBuffer;
-        for (int i = 0; i < VERTEX_COUNT; i++) {
-            int base = i * row_size;
+            TexVBO* buffer = (TexVBO*)new unsigned char[sz];
+            memset(buffer, 0, sz);
 
-            vbo->pos.x = VERTICES[base++];
-            vbo->pos.y = VERTICES[base++];
-            vbo->pos.z = VERTICES[base++];
+            constexpr int row_size = ROW_SIZE;
 
-            vbo->normal.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-            vbo->normal.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-            vbo->normal.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+            TexVBO* vbo = buffer;
+            for (int i = 0; i < VERTEX_COUNT; i++) {
+                int base = i * row_size;
 
-            vbo->tangent.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-            vbo->tangent.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-            vbo->tangent.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+                vbo->pos.x = VERTICES[base++];
+                vbo->pos.y = VERTICES[base++];
+                vbo->pos.z = VERTICES[base++];
 
-            // NOTE KI hardcoded single material
-            base++;
-            vbo->material = m_material.m_registeredIndex;
+                vbo->normal.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+                vbo->normal.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+                vbo->normal.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
 
-            vbo->texCoords.u = (int)(VERTICES[base++] * ki::SCALE_UV16);
-            vbo->texCoords.v = (int)(VERTICES[base++] * ki::SCALE_UV16);
+                vbo->tangent.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+                vbo->tangent.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+                vbo->tangent.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
 
-            assert(vbo->material >= 0 && vbo->material < MAX_MATERIAL_COUNT);
+                vbo->texCoords.u = (int)(VERTICES[base++] * ki::SCALE_UV16);
+                vbo->texCoords.v = (int)(VERTICES[base++] * ki::SCALE_UV16);
 
-            vbo++;
+                vbo++;
+            }
+
+            glNamedBufferStorage(curr.VBO, sz, buffer, 0);
+            delete[] buffer;
+        }
+
+        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
+        {
+            glEnableVertexArrayAttrib(vao, ATTR_POS);
+            glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
+            glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
+            glEnableVertexArrayAttrib(vao, ATTR_TEX);
+
+            // vertex attr
+            glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(TexVBO, pos));
+
+            // normal attr
+            glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, normal));
+
+            // tangent attr
+            glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, tangent));
+
+            // texture attr
+            glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TexVBO, texCoords));
+
+            glVertexArrayAttribBinding(vao, ATTR_POS, VBO_VERTEX_BINDING);
+            glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_VERTEX_BINDING);
+            glVertexArrayAttribBinding(vao, ATTR_TANGENT, VBO_VERTEX_BINDING);
+            glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_VERTEX_BINDING);
         }
     }
 
-    glNamedBufferStorage(curr.VBO, sz, vboBuffer, 0);
-    delete[] vboBuffer;
-
-    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, curr.VBO, 0, stride_size);
+    // MaterialVBO
     {
-        glEnableVertexArrayAttrib(vao, ATTR_POS);
-        glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
-        glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
-        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
-        glEnableVertexArrayAttrib(vao, ATTR_TEX);
+        // https://paroj.github.io/gltut/Basic%20Optimization.html
+        constexpr int stride_size = sizeof(MaterialVBO);
+        {
+            const int sz = stride_size * VERTEX_COUNT;
 
-        // vertex attr
-        glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(TexVBO, pos));
+            MaterialVBO* buffer = (MaterialVBO*)new unsigned char[sz];
+            memset(buffer, 0, sz);
 
-        // normal attr
-        glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, normal));
+            // NOTE KI hardcoded single material
+            constexpr int row_size = 1;
 
-        // tangent attr
-        glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, tangent));
+            MaterialVBO* vbo = buffer;
+            for (int i = 0; i < VERTEX_COUNT; i++) {
+                int base = i * row_size;
 
-        // materialID attr
-        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(TexVBO, material));
+                // NOTE KI hardcoded single material
+                base++;
+                vbo->material = m_material.m_registeredIndex;
 
-        // texture attr
-        glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TexVBO, texCoords));
+                assert(vbo->material >= 0 && vbo->material < MAX_MATERIAL_COUNT);
 
-        glVertexArrayAttribBinding(vao, ATTR_POS, VBO_VERTEX_BINDING);
-        glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_VERTEX_BINDING);
-        glVertexArrayAttribBinding(vao, ATTR_TANGENT, VBO_VERTEX_BINDING);
-        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_VERTEX_BINDING);
-        glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_VERTEX_BINDING);
+                vbo++;
+            }
+
+            glNamedBufferStorage(curr.VBO_MATERIAL, sz, buffer, 0);
+            delete[] buffer;
+        }
+
+        glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, curr.VBO_MATERIAL, 0, stride_size);
+        {
+            glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
+
+            // materialID attr
+            glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialVBO, material));
+
+            glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
+        }
     }
 }
 

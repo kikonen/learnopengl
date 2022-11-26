@@ -58,6 +58,7 @@ constexpr int VBO_VERTEX_BINDING = 0;
 constexpr int VBO_MODEL_MATRIX_BINDING = 1;
 constexpr int VBO_NORMAL_MATRIX_BINDING = 2;
 constexpr int VBO_OBJECT_ID_BINDING = 3;
+constexpr int VBO_MATERIAL_BINDING = 4;
 
 constexpr int ATTR_INSTANCE_MODEL_MATRIX_1 = 6;
 constexpr int ATTR_INSTANCE_MODEL_MATRIX_2 = 7;

@@ -9,11 +9,12 @@ public:
     MeshBuffers();
     ~MeshBuffers();
 
-    void prepare(bool useIndeces);
+    void prepare(bool useMaterial, bool useIndeces);
 
 public:
     GLVertexArray VAO;
     GLBuffer VBO;
+    GLBuffer VBO_MATERIAL;
     GLBuffer EBO;
 
 private:
