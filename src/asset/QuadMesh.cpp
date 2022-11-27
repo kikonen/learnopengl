@@ -10,7 +10,7 @@ namespace {
     constexpr int VERTEX_COUNT = 4;
 
 #pragma pack(push, 1)
-    struct MaterialVBO {
+    struct MaterialEntry {
         // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
         // => use float
         float material;
@@ -87,9 +87,9 @@ void QuadMesh::prepareMaterialVBO(MeshBuffers& curr)
     // MaterialVBO
     {
         // https://paroj.github.io/gltut/Basic%20Optimization.html
-        constexpr int stride_size = sizeof(MaterialVBO);
+        constexpr int stride_size = sizeof(MaterialEntry);
         {
-            MaterialVBO buffer;
+            MaterialEntry buffer;
             buffer.material = m_material.m_registeredIndex;
 
             glNamedBufferStorage(curr.VBO_MATERIAL, stride_size, &buffer, 0);
@@ -100,7 +100,7 @@ void QuadMesh::prepareMaterialVBO(MeshBuffers& curr)
             glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
 
             // materialID attr
-            glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialVBO, material));
+            glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material));
 
             glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
 
