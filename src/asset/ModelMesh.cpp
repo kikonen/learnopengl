@@ -103,7 +103,7 @@ void ModelMesh::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(true, true, true);
+    m_buffers.prepare(false, true, true);
     prepareBuffers(m_buffers);
 }
 
