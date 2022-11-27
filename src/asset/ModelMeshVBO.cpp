@@ -7,17 +7,11 @@
 
 namespace {
 #pragma pack(push, 1)
-    struct TexVBO {
+    struct VertexEntry {
         glm::vec3 pos;
         ki::VEC10 normal;
         ki::VEC10 tangent;
         ki::UV16 texCoords;
-    };
-
-    struct MaterialVBO {
-        // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
-        // => use float
-        float material;
     };
 #pragma pack(pop)
 }
@@ -36,7 +30,7 @@ void ModelMeshVBO::prepare(ModelMesh& mesh)
 
 void ModelMeshVBO::prepareVAO(GLVertexArray& vao)
 {
-    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(TexVBO));
+    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(VertexEntry));
     {
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
@@ -47,16 +41,16 @@ void ModelMeshVBO::prepareVAO(GLVertexArray& vao)
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
         //
         // vertex attr
-        glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(TexVBO, pos));
+        glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, pos));
 
         // normal attr
-        glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, normal));
+        glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, normal));
 
         // tangent attr
-        glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TexVBO, tangent));
+        glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, tangent));
 
         // texture attr
-        glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TexVBO, texCoords));
+        glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoords));
 
         glVertexArrayAttribBinding(vao, ATTR_POS, VBO_VERTEX_BINDING);
         glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_VERTEX_BINDING);
@@ -78,14 +72,14 @@ void ModelMeshVBO::prepareVBO(ModelMesh& mesh)
     auto vertices = mesh.m_vertices;
 
     // https://paroj.github.io/gltut/Basic%20Optimization.html
-    constexpr int stride_size = sizeof(TexVBO);
+    constexpr int stride_size = sizeof(VertexEntry);
     const int sz = stride_size * vertices.size();
 
-    TexVBO* buffer = (TexVBO*)new unsigned char[sz];
+    VertexEntry* buffer = (VertexEntry*)new unsigned char[sz];
     memset(buffer, 0, sz);
 
     {
-        TexVBO* vbo = buffer;
+        VertexEntry* vbo = buffer;
         for (int i = 0; i < vertices.size(); i++) {
             const auto& vertex = vertices[i];
             const auto& p = vertex.pos;
@@ -135,4 +129,3 @@ void ModelMeshVBO::prepareEBO(ModelMesh& mesh)
     glNamedBufferStorage(m_ebo, sizeof(unsigned int) * index_count, buffer, 0);
     delete[] buffer;
 }
-

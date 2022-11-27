@@ -14,13 +14,6 @@
 #include "scene/RenderContext.h"
 
 namespace {
-#pragma pack(push, 1)
-    struct MaterialVBO {
-        // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
-        // => use float
-        float material;
-    };
-#pragma pack(pop)
 }
 
 ModelMesh::ModelMesh(
@@ -103,7 +96,7 @@ void ModelMesh::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(false, true, false);
+    m_buffers.prepare(false, false, false);
     prepareBuffers(m_buffers);
 }
 
@@ -111,63 +104,16 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 {
     KI_DEBUG_SB(fmt::format("{} - curr={}", str(), curr.str()));
 
-    prepareVertexVBO(curr);
-    prepareMaterialVBO(curr);
+    m_vertexVBO.prepare(*this);
+    m_vertexVBO.prepareVAO(curr.VAO);
+
+    m_materialVBO.prepare(*this);
+    m_materialVBO.prepareVAO(curr.VAO);
 
     // NOTE KI no need for thexe any longer (they are in buffers now)
     m_triCount = m_tris.size();
     m_vertices.clear();
     m_tris.clear();
-}
-
-void ModelMesh::prepareVertexVBO(MeshBuffers& curr)
-{
-    m_vertex.prepare(*this);
-    m_vertex.prepareVAO(curr.VAO);
-}
-
-void ModelMesh::prepareMaterialVBO(MeshBuffers& curr)
-{
-    const int vao = curr.VAO;
-
-    // https://paroj.github.io/gltut/Basic%20Optimization.html
-    constexpr int stride_size = sizeof(MaterialVBO);
-    const int sz = stride_size * m_vertices.size();
-
-    MaterialVBO* buffer = (MaterialVBO*)new unsigned char[sz];
-    memset(buffer, 0, sz);
-
-    {
-        MaterialVBO* vbo = buffer;
-        for (int i = 0; i < m_vertices.size(); i++) {
-            const auto& vertex = m_vertices[i];
-            const auto& m = Material::findID(vertex.materialID, m_materials);
-
-            // TODO KI should use noticeable value for missing
-            // => would trigger undefined array access in render side
-            vbo->material = m ? (m->m_registeredIndex) : 0;
-
-            vbo++;
-        }
-    }
-
-    assert(buffer->material >= 0 && buffer->material < MAX_MATERIAL_COUNT);
-    glNamedBufferStorage(curr.VBO_MATERIAL, sz, buffer, 0);
-    delete[] buffer;
-
-    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, curr.VBO_MATERIAL, 0, stride_size);
-    {
-        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
-
-        // materialID attr
-        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialVBO, material));
-
-        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
-
-        // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
-        // https://www.khronos.org/opengl/wiki/Vertex_Specification
-        glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, 0);
-    }
 }
 
 void ModelMesh::bind(

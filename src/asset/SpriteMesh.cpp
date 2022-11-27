@@ -72,10 +72,10 @@ void SpriteMesh::prepare(
 
 void SpriteMesh::prepareBuffers(MeshBuffers& curr)
 {
-    prepareVBO(curr);
+    prepareMaterialVBO(curr);
 }
 
-void SpriteMesh::prepareVBO(MeshBuffers& curr)
+void SpriteMesh::prepareMaterialVBO(MeshBuffers& curr)
 {
     //return;
     const int vao = curr.VAO;

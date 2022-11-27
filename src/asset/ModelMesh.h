@@ -15,6 +15,7 @@
 #include "Mesh.h"
 
 #include "ModelMeshVBO.h"
+#include "MaterialVBO.h"
 
 class ModelMesh final : public Mesh {
 public:
@@ -48,8 +49,6 @@ public:
 
 private:
     void prepareBuffers(MeshBuffers& curr);
-    void prepareVertexVBO(MeshBuffers& curr);
-    void prepareMaterialVBO(MeshBuffers& curr);
 
 public:
     int m_triCount = 0;
@@ -64,5 +63,6 @@ public:
 private:
     bool m_prepared = false;
 
-    ModelMeshVBO m_vertex;
+    ModelMeshVBO m_vertexVBO;
+    MaterialVBO m_materialVBO;
 };
