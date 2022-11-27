@@ -50,7 +50,6 @@ private:
     void prepareBuffers(MeshBuffers& curr);
     void prepareVertexVBO(MeshBuffers& curr);
     void prepareMaterialVBO(MeshBuffers& curr);
-    void prepareEBO(MeshBuffers& curr);
 
 public:
     int m_triCount = 0;

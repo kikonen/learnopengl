@@ -28,8 +28,10 @@ void ModelMeshVBO::prepare(ModelMesh& mesh)
     m_prepared = true;
 
     m_vbo.create();
+    m_ebo.create();
 
     prepareVBO(mesh);
+    prepareEBO(mesh);
 }
 
 void ModelMeshVBO::prepareVAO(GLVertexArray& vao)
@@ -64,6 +66,10 @@ void ModelMeshVBO::prepareVAO(GLVertexArray& vao)
         // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
         glVertexArrayBindingDivisor(vao, VBO_VERTEX_BINDING, 0);
+    }
+
+    {
+        glVertexArrayElementBuffer(vao, m_ebo);
     }
 }
 
@@ -109,3 +115,24 @@ void ModelMeshVBO::prepareVBO(ModelMesh& mesh)
     glNamedBufferStorage(m_vbo, sz, buffer, 0);
     delete[] buffer;
 }
+
+void ModelMeshVBO::prepareEBO(ModelMesh& mesh)
+{
+    auto& tris = mesh.m_tris;
+
+    // EBO == IBO ?!?
+    const int index_count = tris.size() * 3;
+    unsigned int* buffer = new unsigned int[index_count];
+
+    for (int i = 0; i < tris.size(); i++) {
+        const auto& vi = tris[i];
+        const int base = i * 3;
+        buffer[base + 0] = vi[0];
+        buffer[base + 1] = vi[1];
+        buffer[base + 2] = vi[2];
+    }
+
+    glNamedBufferStorage(m_ebo, sizeof(unsigned int) * index_count, buffer, 0);
+    delete[] buffer;
+}
+

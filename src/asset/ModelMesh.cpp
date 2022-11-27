@@ -103,7 +103,7 @@ void ModelMesh::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(false, true, true);
+    m_buffers.prepare(false, true, false);
     prepareBuffers(m_buffers);
 }
 
@@ -113,7 +113,6 @@ void ModelMesh::prepareBuffers(MeshBuffers& curr)
 
     prepareVertexVBO(curr);
     prepareMaterialVBO(curr);
-    prepareEBO(curr);
 
     // NOTE KI no need for thexe any longer (they are in buffers now)
     m_triCount = m_tris.size();
@@ -169,28 +168,6 @@ void ModelMesh::prepareMaterialVBO(MeshBuffers& curr)
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
         glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, 0);
     }
-}
-
-void ModelMesh::prepareEBO(MeshBuffers& curr)
-{
-    const int vao = curr.VAO;
-
-    // EBO == IBO ?!?
-    const int index_count = m_tris.size() * 3;
-    unsigned int* vertexEboBuffer = new unsigned int[index_count];
-
-    for (int i = 0; i < m_tris.size(); i++) {
-        const auto& vi = m_tris[i];
-        const int base = i * 3;
-        vertexEboBuffer[base + 0] = vi[0];
-        vertexEboBuffer[base + 1] = vi[1];
-        vertexEboBuffer[base + 2] = vi[2];
-    }
-
-    glNamedBufferStorage(curr.EBO, sizeof(unsigned int) * index_count, vertexEboBuffer, 0);
-    delete[] vertexEboBuffer;
-
-    glVertexArrayElementBuffer(vao, curr.EBO);
 }
 
 void ModelMesh::bind(
