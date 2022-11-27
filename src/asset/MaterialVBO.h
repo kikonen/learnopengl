@@ -16,16 +16,11 @@ public:
         GLVertexArray& vao);
 
 private:
-    void prepareListVBO(
-        ModelMesh& mesh);
-
-    void prepareSingleVBO(
+    void prepareVBO(
         ModelMesh& mesh);
 
 private:
     bool m_prepared = false;
-    bool m_single = false;
-    int m_vertexCount = 0;
 
     GLBuffer m_vbo;
 };

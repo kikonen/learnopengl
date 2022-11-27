@@ -20,15 +20,7 @@ void MaterialVBO::prepare(ModelMesh& mesh)
 
     m_vbo.create();
 
-    m_single = mesh.m_materials.size() == 1;
-    m_vertexCount = mesh.m_vertices.size();
-
-    if (m_single) {
-        prepareSingleVBO(mesh);
-    }
-    else {
-        prepareListVBO(mesh);
-    }
+    prepareVBO(mesh);
 }
 
 void MaterialVBO::prepareVAO(GLVertexArray& vao)
@@ -44,11 +36,13 @@ void MaterialVBO::prepareVAO(GLVertexArray& vao)
 
         // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
-        glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, m_single ? m_vertexCount : 0);
+        // NOTE KI single entry for lal DOES NOT work due to logic how intanced rendering
+        // and glVertexArrayBindingDivisor work (MUST seemingly match instanced count)
+        glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, 0);
     }
 }
 
-void MaterialVBO::prepareListVBO(ModelMesh& mesh)
+void MaterialVBO::prepareVBO(ModelMesh& mesh)
 {
     auto& vertices = mesh.m_vertices;
     auto& materials = mesh.m_materials;
@@ -77,18 +71,4 @@ void MaterialVBO::prepareListVBO(ModelMesh& mesh)
     assert(buffer->material >= 0 && buffer->material < MAX_MATERIAL_COUNT);
     glNamedBufferStorage(m_vbo, sz, buffer, 0);
     delete[] buffer;
-}
-
-void MaterialVBO::prepareSingleVBO(ModelMesh& mesh)
-{
-    auto& material = mesh.m_materials[0];
-
-    // https://paroj.github.io/gltut/Basic%20Optimization.html
-    constexpr int stride_size = sizeof(MaterialVBO);
-    {
-        MaterialEntry buffer;
-        buffer.material = material.m_registeredIndex;
-
-        glNamedBufferStorage(m_vbo, stride_size, &buffer, 0);
-    }
 }

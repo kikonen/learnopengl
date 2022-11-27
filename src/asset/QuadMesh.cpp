@@ -85,30 +85,44 @@ void QuadMesh::prepareMaterialVBO(MeshBuffers& curr)
     const int vao = curr.VAO;
 
     // MaterialVBO
+    // https://paroj.github.io/gltut/Basic%20Optimization.html
+    constexpr int stride_size = sizeof(MaterialEntry);
+    // NOTE KI single DOES NOT work due to logic how intanced rendering
+    // and glVertexArrayBindingDivisor work (MUST seemingly match instanced count)
     {
-        // https://paroj.github.io/gltut/Basic%20Optimization.html
-        constexpr int stride_size = sizeof(MaterialEntry);
-        {
-            MaterialEntry buffer;
-            buffer.material = m_material.m_registeredIndex;
+        const int sz = stride_size * VERTEX_COUNT;
 
-            glNamedBufferStorage(curr.VBO_MATERIAL, stride_size, &buffer, 0);
+        MaterialEntry* buffer = (MaterialEntry*)new unsigned char[sz];
+        memset(buffer, 0, sz);
+
+        // NOTE KI hardcoded single material
+        constexpr int row_size = 1;
+
+        MaterialEntry* vbo = buffer;
+        for (int i = 0; i < VERTEX_COUNT; i++) {
+            int base = i * row_size;
+
+            // NOTE KI hardcoded single material
+            base++;
+            vbo->material = m_material.m_registeredIndex;
+
+            assert(vbo->material >= 0 && vbo->material < MAX_MATERIAL_COUNT);
+
+            vbo++;
         }
 
-        glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, curr.VBO_MATERIAL, 0, stride_size);
-        {
-            glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
+        glNamedBufferStorage(curr.VBO_MATERIAL, sz, buffer, 0);
+        delete[] buffer;
+    }
 
-            // materialID attr
-            glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material));
+    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, curr.VBO_MATERIAL, 0, stride_size);
+    {
+        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
 
-            glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
+        // materialID attr
+        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material));
 
-            // TODO KI not 100% sure *HOW*
-            // => ROW_SIZE * VERTEX_COUNT == 44
-            // => Same material for all verteces
-            glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, 44);
-        }
+        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
     }
 }
 
