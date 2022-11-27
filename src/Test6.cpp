@@ -67,8 +67,8 @@ int Test6::onRender(const ki::RenderClock& clock) {
     RenderContext ctx("TOP", nullptr,
         m_assets, clock, m_state, scene, *camera, m_backend.get(),
         m_assets.nearPlane, m_assets.farPlane, w, h);
-    //ctx.useWireframe = true;
-    //ctx.useLight = false;
+    //ctx.m_useWireframe = true;
+    //ctx.m_useLight = false;
 
     //// https://cmichel.io/understanding-front-faces-winding-order-and-normals
     //ctx.state.enable(GL_CULL_FACE);

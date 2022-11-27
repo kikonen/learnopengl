@@ -1,4 +1,5 @@
 #include "RenderContext.h"
+#include "RenderContext.h"
 
 #include <glm/glm.hpp>
 //#include <glm/ext.hpp>
@@ -94,6 +95,8 @@ RenderContext::RenderContext(
 {
     if (parent) {
         m_useWireframe = m_parent->m_useWireframe;
+        m_useLight = m_parent->m_useLight;
+        m_useFrustum = m_parent->m_useFrustum;
     }
 
     m_camera.setupProjection(
