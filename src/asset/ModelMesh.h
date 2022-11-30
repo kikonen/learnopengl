@@ -15,9 +15,13 @@
 #include "Mesh.h"
 
 #include "ModelMeshVBO.h"
-#include "MaterialVBO.h"
 
 class ModelMesh final : public Mesh {
+    friend class MeshLoader;
+    friend class TerrainGenerator;
+    friend class ModelMeshVBO;
+    friend class MaterialVBO;
+
 public:
     ModelMesh(
         const std::string& meshName);
@@ -30,39 +34,36 @@ public:
 
     virtual const std::string str() const override;
 
-    Material* findMaterial(std::function<bool(const Material&)> fn) override;
-    void modifyMaterials(std::function<void(Material&)> fn) override;
-
     virtual void prepareVolume() override;
     virtual const AABB& calculateAABB() const override;
 
-    void prepare(
-        const Assets& assets,
-        NodeRegistry& registry) override;
+    virtual const std::vector<Material>& getMaterials() const override;
 
-    void bind(
-        const RenderContext& ctx,
-        Shader* shader) noexcept override;
+    virtual void prepare(
+        const Assets& assets) override;
 
-private:
-    void prepareBuffers(MeshBuffers& curr);
+    virtual void prepareMaterials(
+        MaterialVBO& materialVBO) override;
+
+    virtual void prepareVAO(
+        GLVertexArray& vao,
+        MaterialVBO& materialVBO) override;
+
     void drawInstanced(const RenderContext& ctx, int instanceCount) const override;
 
 public:
-    bool m_loaded = false;
-    bool m_valid = false;
-
-    int m_triCount = 0;
-    std::vector<glm::uvec3> m_tris;
-    std::vector<Vertex> m_vertices;
-
-    std::vector<Material> m_materials;
-
     const std::string m_meshName;
     const std::string m_meshPath;
 
-private:
+    bool m_loaded = false;
+    bool m_valid = false;
 
+protected:
+    int m_triCount = 0;
+    std::vector<glm::uvec3> m_tris;
+    std::vector<Vertex> m_vertices;
+    std::vector<Material> m_materials;
+
+private:
     ModelMeshVBO m_vertexVBO;
-    MaterialVBO m_materialVBO;
 };

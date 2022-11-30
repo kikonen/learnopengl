@@ -19,14 +19,14 @@ namespace {
     constexpr int NORMAL_MAP_IDX = 3;
     constexpr int DUDV_MAP_IDX = 4;
 
-    int typeIDbase = 0;
+    int idBase = 0;
 
     std::mutex type_id_lock;
 
     int nextID()
     {
         std::lock_guard<std::mutex> lock(type_id_lock);
-        return ++typeIDbase;
+        return ++idBase;
     }
 }
 

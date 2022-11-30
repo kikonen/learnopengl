@@ -44,21 +44,6 @@ const std::string ModelMesh::str() const
         m_objectID, m_meshPath, m_meshName);
 }
 
-Material* ModelMesh::findMaterial(std::function<bool(const Material&)> fn)
-{
-    for (auto& material : m_materials) {
-        if (fn(material)) return &material;
-    }
-    return nullptr;
-}
-
-void ModelMesh::modifyMaterials(std::function<void(Material&)> fn)
-{
-    for (auto& material : m_materials) {
-        fn(material);
-    }
-}
-
 void ModelMesh::prepareVolume() {
     const auto& aabb = calculateAABB();
     setAABB(aabb);
@@ -87,38 +72,38 @@ const AABB& ModelMesh::calculateAABB() const {
     return { minAABB, maxAABB, false };
 }
 
+const std::vector<Material>& ModelMesh::getMaterials() const
+{
+    return m_materials;
+}
+
 void ModelMesh::prepare(
-    const Assets& assets,
-    NodeRegistry& registry)
+    const Assets& assets)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(false, false, false);
-    prepareBuffers(m_buffers);
-}
-
-void ModelMesh::prepareBuffers(MeshBuffers& curr)
-{
-    KI_DEBUG_SB(fmt::format("{} - curr={}", str(), curr.str()));
-
     m_vertexVBO.prepare(*this);
-    m_vertexVBO.prepareVAO(curr.VAO);
-
-    m_materialVBO.prepare(*this);
-    m_materialVBO.prepareVAO(curr.VAO);
 
     // NOTE KI no need for thexe any longer (they are in buffers now)
+    // NOTE KI CANNOT clear vertices due to mesh sharing via MeshRegistry
     m_triCount = m_tris.size();
-    m_vertices.clear();
     m_tris.clear();
+    //m_vertices.clear();
 }
 
-void ModelMesh::bind(
-    const RenderContext& ctx,
-    Shader* shader) noexcept
+void ModelMesh::prepareMaterials(
+    MaterialVBO& materialVBO)
 {
-    glBindVertexArray(m_buffers.VAO);
+    materialVBO.prepare(*this);
+}
+
+void ModelMesh::prepareVAO(
+    GLVertexArray& vao,
+    MaterialVBO& materialVBO)
+{
+    m_vertexVBO.prepareVAO(vao);
+    materialVBO.prepareVAO(vao);
 }
 
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const

@@ -12,7 +12,8 @@
 Scene::Scene(const Assets& assets)
     : assets(assets),
     m_registry(assets),
-    m_materialRegistry(assets)
+    m_materialRegistry(assets),
+    m_meshRegistry(assets)
 {
     NodeListener listener = [this](Node* node, NodeOperation operation) {
         bindComponents(*node);

@@ -36,17 +36,6 @@ const std::string SpriteMesh::str() const
     return fmt::format("<SPRITE: {}>", m_objectID);
 }
 
-Material* SpriteMesh::findMaterial(std::function<bool(const Material&)> fn)
-{
-    if (fn(m_material)) return &m_material;
-    return nullptr;
-}
-
-void SpriteMesh::modifyMaterials(std::function<void(Material&)> fn)
-{
-    fn(m_material);
-}
-
 void SpriteMesh::prepareVolume() {
     const auto& aabb = calculateAABB();
     setAABB(aabb);
@@ -61,49 +50,49 @@ const AABB& SpriteMesh::calculateAABB() const
     return SPRITE_AABB;
 }
 
+const std::vector<Material>& SpriteMesh::getMaterials() const
+{
+    return { m_material };
+}
+
 void SpriteMesh::prepare(
-    const Assets& assets,
-    NodeRegistry& registry)
+    const Assets& assets)
 {
     if (m_prepared) return;
     m_prepared = true;
-
-    m_buffers.prepare(false, true, false);
-    prepareBuffers(m_buffers);
 }
 
-void SpriteMesh::prepareBuffers(MeshBuffers& curr)
+void SpriteMesh::prepareMaterials(
+    MaterialVBO& materialVBO)
 {
-    prepareMaterialVBO(curr);
+    prepareMaterialVBO(materialVBO);
 }
 
-void SpriteMesh::prepareMaterialVBO(MeshBuffers& curr)
+void SpriteMesh::prepareVAO(
+    GLVertexArray& vao,
+    MaterialVBO& materialVBO)
 {
-    //return;
-    const int vao = curr.VAO;
+    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, materialVBO.m_vbo, 0, sizeof(MaterialEntry));
+    {
+        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
+
+        KI_GL_CALL(glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material)));
+
+        KI_GL_CALL(glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING));
+    }
+}
+
+void SpriteMesh::prepareMaterialVBO(
+    MaterialVBO& materialVBO)
+{
+    const auto& material = materialVBO.getMaterials()[0];
 
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     constexpr int stride_size = sizeof(MaterialEntry);
     MaterialEntry vbo;
-    vbo.material = m_material.m_registeredIndex;
+    vbo.material = material.m_registeredIndex;
 
-    glNamedBufferStorage(curr.VBO_MATERIAL, stride_size, &vbo, 0);
-
-    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, curr.VBO_MATERIAL, 0, stride_size);
-    {
-        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
-
-        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material));
-
-        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
-    }
-}
-
-void SpriteMesh::bind(
-    const RenderContext& ctx,
-    Shader* shader) noexcept
-{
-    glBindVertexArray(m_buffers.VAO);
+    glNamedBufferStorage(materialVBO.m_vbo, stride_size, &vbo, 0);
 }
 
 void SpriteMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const

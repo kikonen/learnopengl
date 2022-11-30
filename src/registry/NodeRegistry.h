@@ -119,8 +119,6 @@ public:
 
     GroupVector groups;
 
-    QuadVBO m_quad;
-
 private:
     const Assets& assets;
 

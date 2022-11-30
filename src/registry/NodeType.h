@@ -5,6 +5,8 @@
 
 #include "scene/Batch.h"
 
+#include "asset/MeshBuffers.h"
+
 
 struct NodeRenderFlags {
     bool alpha = false;
@@ -43,8 +45,11 @@ public:
 
     const std::string str() const noexcept;
 
-    Material* findMaterial(std::function<bool(const Material&)> fn) noexcept;
-    void modifyMaterials(std::function<void(Material&)> fn) noexcept;
+    void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
+    void setMesh(Mesh* mesh);
+    const Mesh* getMesh() const;
+
+    void modifyMaterials(std::function<void(Material&)> fn);
 
     void prepare(
         const Assets& assets,
@@ -61,15 +66,20 @@ public:
 
     NodeRenderFlags m_flags;
 
-    std::unique_ptr<Mesh> m_mesh{ nullptr };
-
     std::string m_initScript;
     std::string m_runScript;
 
     Shader* m_nodeShader{ nullptr };
     Shader* m_boundShader{ nullptr };
 
+    MaterialVBO m_materialVBO;
+
 private:
     bool m_prepared = false;
     bool m_preparedBatch = false;
+
+    Mesh* m_mesh{ nullptr };
+    std::unique_ptr<Mesh> m_deleter;
+
+    MeshBuffers m_buffers{};
 };

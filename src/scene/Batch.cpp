@@ -193,7 +193,7 @@ void Batch::draw(
 {
     const auto& type = *node.m_type.get();
 
-    if (!type.m_mesh) return;
+    if (!type.getMesh()) return;
     if (type.m_flags.root) return;
     if (type.m_flags.origo) return;
 
@@ -263,7 +263,9 @@ void Batch::flushIfNeeded(const RenderContext& ctx, const NodeType& type) noexce
 
 void Batch::flush(const RenderContext& ctx, const NodeType& type) noexcept
 {
-    if (!type.m_mesh) return;
+    const auto& mesh = type.getMesh();
+
+    if (!mesh) return;
     if (type.m_flags.root) return;
     if (type.m_flags.origo) return;
 
@@ -275,7 +277,7 @@ void Batch::flush(const RenderContext& ctx, const NodeType& type) noexcept
     if (ctx.assets.glDebug) {
         type.m_boundShader->validateProgram();
     }
-    type.m_mesh->drawInstanced(ctx, drawCount);
+    mesh->drawInstanced(ctx, drawCount);
 
     m_modelMatrices.clear();
     m_normalMatrices.clear();

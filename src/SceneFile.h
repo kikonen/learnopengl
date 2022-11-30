@@ -255,6 +255,7 @@ private:
     std::shared_ptr<NodeType> createType(
         const EntityData& entity,
         const EntityCloneData& data,
+        MeshRegistry& meshRegistry,
         std::vector<Material>& materials);
 
     Node* createNode(

@@ -1,0 +1,102 @@
+---
+name: Full
+viewports:
+skybox:
+  shader: skybox
+  material: skybox
+lights: {}
+root:
+  id: 50733c80-df4e-47ab-9596-ccfadb1805d8
+  type: origo
+  pos: [200, 0, 200]
+  rotation: [0, 0, 0]
+  enabled: true
+  controller:
+    type: path
+    mode: 1
+    enabled: false
+entities:
+  - name: Origo
+    type: origo
+    pos: [0, 0, -5]
+    camera:
+      zoom: 45
+      up: [0, 1, 0]
+      front: [0, 0, -1]
+      pos: [200, 0, 190]
+      rotation: [0, 180, 0.0]
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: Basic ball
+    model: water_ball
+    shader: texture
+    pos: [5.0, 25.0, 5.0]
+    scale: 1.3
+    material: default_ball
+    force_material: true
+    material_modifier:
+      reflection: 0.05
+    enabled: true
+  - name: Gold ball
+    model: water_ball
+    shader: texture
+    pos: [5.0, 25.0, 10.0]
+    scale: 1.3
+    force_material: true
+    material: gold_ball
+    material_modifier:
+      reflection: 0.05
+    enabled: true
+  - name: ball origo
+    type: origo
+    id: 82896a38-e5cf-4274-b4be-e79ac8325b65
+    pos: [5.0, 25.0, 15.0]
+    enabled: true
+  - name: Silver ball
+    model: water_ball
+    shader: texture
+    pos: [5.0, 25.0, 15.0]
+    scale: 1.3
+    force_material: true
+    material: silver_ball
+    material_modifier:
+      reflection: 0.05
+    enabled: true
+  - name: Bronze ball
+    parent_id: 82896a38-e5cf-4274-b4be-e79ac8325b65
+    model: water_ball
+    shader: texture
+    pos: [0.0, 0.0, 5.0]
+    scale: 1.3
+    force_material: true
+    material: bronze_ball
+    material_modifier:
+      reflection: 0.05
+    enabled: true
+materials:
+  - name: skybox
+    type: skybox
+    asset: skybox
+  - name: default_ball
+    ns: 100.0
+    ka: [0.3, 0.3, 0.0, 1.0]
+    kd: [0.8, 0.8, 0.0, 1.0]
+    ks: [0.9, 0.9, 0.0, 1.0]
+  - name: gold_ball
+    ns: 51.2
+    ka: [0.2473, 0.1995, 0.0745, 1.0]
+    kd: [0.7516, 0.6065, 0.2265, 1.0]
+    ks: [0.6283, 0.5559, 0.3661, 1.0]
+  - name: silver_ball
+    ns: 51.2
+    ka: [0.1923, 0.1923, 0.1923, 1.0]
+    kd: [0.5075, 0.5075, 0.5075, 1.0]
+    ks: [0.5083, 0.5083, 0.5083, 1.0]
+  - name: bronze_ball
+    ns: 25.6
+    ka: [0.2125, 0.1275, 0.0540, 1.0]
+    kd: [0.7140, 0.4284, 0.1814, 1.0]
+    ks: [0.3936, 0.2719, 0.1667, 1.0]

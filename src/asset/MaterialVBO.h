@@ -5,10 +5,20 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
+#include "Material.h"
+
+struct Vertex;
 class ModelMesh;
 
 class MaterialVBO {
+    friend class NodeType;
+
 public:
+    void setMaterials(const std::vector<Material>& materials);
+    const std::vector<Material>& getMaterials() const;
+
+    void create();
+
     void prepare(
         ModelMesh& mesh);
 
@@ -17,10 +27,18 @@ public:
 
 private:
     void prepareVBO(
-        ModelMesh& mesh);
+        std::vector<Vertex>& vertices);
+
+public:
+    Material m_defaultMaterial;
+    bool m_useDefaultMaterial = false;
+    bool m_forceDefaultMaterial = false;
+
+
+    GLBuffer m_vbo;
 
 private:
     bool m_prepared = false;
 
-    GLBuffer m_vbo;
+    std::vector<Material> m_materials;
 };

@@ -188,6 +188,7 @@
     <ClCompile Include="src\registry\ImageRegistry.cpp" />
     <ClCompile Include="src\registry\MaterialRegistry.cpp" />
     <ClCompile Include="src\asset\OBB.cpp" />
+    <ClCompile Include="src\registry\MeshRegistry.cpp" />
     <ClCompile Include="src\registry\ShaderRegistry.cpp" />
     <ClCompile Include="src\asset\FrustumNew.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="src\asset\Volume.h" />
     <ClInclude Include="src\asset\ShaderBind.h" />
     <ClInclude Include="src\AssetsFile.h" />
+    <ClInclude Include="src\registry\MeshRegistry.h" />
     <ClInclude Include="src\registry\ShaderRegistry.h" />
     <ClInclude Include="src\backend\Command.h" />
     <ClInclude Include="src\backend\DrawCommands.h" />

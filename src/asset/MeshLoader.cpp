@@ -13,25 +13,9 @@ const glm::vec3 EMPTY_NORMAL{ 0, 0, 0 };
 
 
 MeshLoader::MeshLoader(
-    const Assets& assets,
-    const std::string& name,
-    const std::string& meshName)
-    : MeshLoader(assets, name, meshName, "")
+    const Assets& assets)
+    : assets(assets)
 {
-}
-
-MeshLoader::MeshLoader(
-    const Assets& assets,
-    const std::string& name,
-    const std::string& meshName,
-    const std::string& meshPath)
-    : assets(assets),
-    m_name(name),
-    m_meshName(meshName),
-    m_meshPath(meshPath)
-{
-    // TODO KI *undesired*; this is modified externally
-    m_defaultMaterial = Material::createDefaultMaterial();
 }
 
 MeshLoader::~MeshLoader()
@@ -39,11 +23,27 @@ MeshLoader::~MeshLoader()
     //KI_INFO_SB("MESH_LOADER: deleted: mesh=" << m_meshPath << "/" << m_meshName);
 }
 
-std::unique_ptr<ModelMesh> MeshLoader::load() {
-    auto mesh = std::make_unique<ModelMesh>(m_name, m_meshName, m_meshPath);
-    loadData(*mesh.get());
-    if (mesh->m_tris.empty()) return {};
-    return mesh;
+ModelMesh* MeshLoader::load(
+    ModelMesh& mesh,
+    Material* defaultMaterial,
+    bool forceDefaultMaterial)
+{
+    if (defaultMaterial) {
+        m_defaultMaterial = *defaultMaterial;
+    }
+    else {
+        m_defaultMaterial = Material::createDefaultMaterial();
+    }
+
+    m_forceDefaultMaterial = forceDefaultMaterial;
+
+    if (!mesh.m_loaded) {
+        loadData(mesh);
+        mesh.m_loaded = true;
+        mesh.m_valid = !mesh.m_tris.empty();
+    }
+
+    return mesh.m_valid ? &mesh : nullptr;
 }
 
 void MeshLoader::loadData(
@@ -69,7 +69,8 @@ void MeshLoader::loadData(
 
     {
         m_defaultMaterial.m_default = true;
-        m_defaultMaterial.m_used = false;;
+        m_defaultMaterial.m_used = false;
+        m_defaultMaterial.m_objectID = Material::DEFAULT_ID;
     }
 
     std::filesystem::path filePath;

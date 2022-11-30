@@ -20,6 +20,8 @@ namespace {
 #pragma pack(pop)
 
     const AABB QUAD_AABB = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
+
+    QuadVBO m_quad;
 }
 
 
@@ -37,17 +39,6 @@ const std::string QuadMesh::str() const
     return fmt::format("<QUAD: {}>", m_objectID);
 }
 
-Material* QuadMesh::findMaterial(std::function<bool(const Material&)> fn)
-{
-    if (fn(m_material)) return &m_material;
-    return nullptr;
-}
-
-void QuadMesh::modifyMaterials(std::function<void(Material&)> fn)
-{
-    fn(m_material);
-}
-
 void QuadMesh::prepareVolume() {
     const auto& aabb = calculateAABB();
     setAABB(aabb);
@@ -63,28 +54,47 @@ const AABB& QuadMesh::calculateAABB() const
     return QUAD_AABB;
 }
 
+const std::vector<Material>& QuadMesh::getMaterials() const
+{
+    return { m_material };
+}
+
 void QuadMesh::prepare(
-    const Assets& assets,
-    NodeRegistry& registry)
+    const Assets& assets)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(false, true, false);
-
-    registry.m_quad.prepareVAO(m_buffers.VAO);
-
-    prepareBuffers(m_buffers);
+    m_quad.prepare();
 }
 
-void QuadMesh::prepareBuffers(MeshBuffers& curr)
+void QuadMesh::prepareMaterials(
+    MaterialVBO& materialVBO)
 {
-    prepareMaterialVBO(curr);
+    prepareMaterialVBO(materialVBO);
 }
 
-void QuadMesh::prepareMaterialVBO(MeshBuffers& curr)
+void QuadMesh::prepareVAO(
+    GLVertexArray& vao,
+    MaterialVBO& materialVBO)
 {
-    const int vao = curr.VAO;
+    m_quad.prepareVAO(vao);
+
+    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, materialVBO.m_vbo, 0, sizeof(MaterialEntry));
+    {
+        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
+
+        // materialID attr
+        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material));
+
+        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
+    }
+}
+
+void QuadMesh::prepareMaterialVBO(
+    MaterialVBO& materialVBO)
+{
+    const auto& material = materialVBO.getMaterials()[0];
 
     // MaterialVBO
     // https://paroj.github.io/gltut/Basic%20Optimization.html
@@ -106,33 +116,16 @@ void QuadMesh::prepareMaterialVBO(MeshBuffers& curr)
 
             // NOTE KI hardcoded single material
             base++;
-            vbo->material = m_material.m_registeredIndex;
+            vbo->material = material.m_registeredIndex;
 
             assert(vbo->material >= 0 && vbo->material < MAX_MATERIAL_COUNT);
 
             vbo++;
         }
 
-        glNamedBufferStorage(curr.VBO_MATERIAL, sz, buffer, 0);
+        glNamedBufferStorage(materialVBO.m_vbo, sz, buffer, 0);
         delete[] buffer;
     }
-
-    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, curr.VBO_MATERIAL, 0, stride_size);
-    {
-        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
-
-        // materialID attr
-        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material));
-
-        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
-    }
-}
-
-void QuadMesh::bind(
-    const RenderContext& ctx,
-    Shader* shader) noexcept
-{
-    glBindVertexArray(m_buffers.VAO);
 }
 
 void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const

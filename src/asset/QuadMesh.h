@@ -16,29 +16,28 @@ public:
 
     virtual const std::string str() const override;
 
-    Material* findMaterial(std::function<bool(const Material&)> fn) override;
-    void modifyMaterials(std::function<void(Material&)> fn) override;
-
     virtual void prepareVolume() override;
     virtual const AABB& calculateAABB() const override;
 
-    void prepare(
-        const Assets& assets,
-        NodeRegistry& registry) override;
+    const std::vector<Material>& getMaterials() const override;
 
-    void bind(
-        const RenderContext& ctx,
-        Shader* shader) noexcept override;
+    virtual void prepare(
+        const Assets& assets) override;
 
+    virtual void prepareMaterials(
+        MaterialVBO& materialVBO) override;
 
-private:
-    void prepareBuffers(MeshBuffers& curr);
-    void prepareMaterialVBO(MeshBuffers& curr);
+    virtual void prepareVAO(
+        GLVertexArray& vao,
+        MaterialVBO& materialVBO) override;
 
     void drawInstanced(const RenderContext& ctx, int instanceCount) const override;
-public:
-    Material m_material;
 
 private:
+    void prepareMaterialVBO(
+        MaterialVBO& materialVBO);
+
+protected:
+    Material m_material;
 
 };

@@ -41,16 +41,30 @@ const std::string NodeType::str() const noexcept
         typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_buffers.str());
 }
 
-Material* NodeType::findMaterial(std::function<bool(const Material&)> fn) noexcept
+void NodeType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
 {
-    if (!m_mesh) return nullptr;
-    return m_mesh->findMaterial(fn);
+    setMesh(mesh.get());
+    m_deleter = std::move(mesh);
 }
 
-void NodeType::modifyMaterials(std::function<void(Material&)> fn) noexcept
+void NodeType::setMesh(Mesh* mesh)
 {
+    m_mesh = mesh;
     if (!m_mesh) return;
-    m_mesh->modifyMaterials(fn);
+
+    m_materialVBO.setMaterials(m_mesh->getMaterials());
+}
+
+const Mesh* NodeType::getMesh() const
+{
+    return m_mesh;
+}
+
+void NodeType::modifyMaterials(std::function<void(Material&)> fn)
+{
+    for (auto& material : m_materialVBO.m_materials) {
+        fn(material);
+    }
 }
 
 void NodeType::prepare(
@@ -62,7 +76,12 @@ void NodeType::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_mesh->prepare(assets, registry);
+    m_buffers.prepare(false, false, false);
+    m_materialVBO.create();
+
+    m_mesh->prepare(assets);
+    m_mesh->prepareMaterials(m_materialVBO);
+    m_mesh->prepareVAO(m_buffers.VAO, m_materialVBO);
 
     Shader* shader = m_nodeShader;
     if (shader) {
@@ -77,7 +96,7 @@ void NodeType::prepareBatch(Batch& batch) noexcept
     if (m_preparedBatch) return;
     m_preparedBatch = true;
 
-    batch.prepareMesh(m_mesh->m_buffers.VAO);
+    batch.prepareMesh(m_buffers.VAO);
 }
 
 void NodeType::bind(
@@ -87,8 +106,6 @@ void NodeType::bind(
     if (!m_mesh) return;
 
     m_boundShader = shader;
-
-    m_mesh->bind(ctx, shader);
 
     if (m_flags.renderBack) {
         ctx.state.disable(GL_CULL_FACE);
@@ -100,6 +117,8 @@ void NodeType::bind(
     if (m_flags.wireframe) {
         ctx.state.polygonFrontAndBack(GL_LINE);
     }
+
+    glBindVertexArray(m_buffers.VAO);
 }
 
 void NodeType::unbind(const RenderContext& ctx) noexcept

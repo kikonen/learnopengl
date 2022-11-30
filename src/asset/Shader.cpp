@@ -15,14 +15,14 @@
 namespace {
     constexpr int LOG_SIZE = 4096;
 
-    int typeIDbase = 0;
+    int idBase = 0;
 
     std::mutex type_id_lock;
 
     int nextID()
     {
         std::lock_guard<std::mutex> lock(type_id_lock);
-        return ++typeIDbase;
+        return ++idBase;
     }
 
     bool fileExists(std::string filepath)

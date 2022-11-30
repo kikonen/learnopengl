@@ -69,7 +69,6 @@ NodeRegistry::~NodeRegistry()
 
 void NodeRegistry::prepare()
 {
-    m_quad.prepare();
 }
 
 void NodeRegistry::addListener(NodeListener& listener)
@@ -238,6 +237,9 @@ void NodeRegistry::bindNode(
             materialRegistry.add(m);
         });
     }
+
+    if (node->m_light)
+        int x = 0;
 
     type->prepare(assets, *this);
 

@@ -1,0 +1,63 @@
+---
+name: Full
+viewports:
+skybox:
+  shader: skybox
+  material: skybox
+lights: {}
+root:
+  id: 50733c80-df4e-47ab-9596-ccfadb1805d8
+  type: origo
+  pos: [200, 0, 200]
+  rotation: [0, 0, 0]
+  enabled: true
+  controller:
+    type: path
+    mode: 1
+    enabled: false
+entities:
+  - name: Origo
+    type: origo
+    pos: [0, 0, -5]
+    camera:
+      zoom: 45
+      up: [0, 1, 0]
+      front: [0, 0, -1]
+      pos: [200, 0, 190]
+      rotation: [0, 180, 0.0]
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: light origo
+    id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    parent_id: 50733c80-df4e-47ab-9596-ccfadb1805d8
+    type: origo
+    pos: [0, 0, 0]
+    enabled: true
+  - name: light
+    parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    pos: [0, 0, 0]
+    scale: 0.5
+    model: light
+    shader: light
+    render_flags:
+      light: true
+      no_shadow: true
+    light:
+      type: point
+      linear: 0.14
+      quadratic: 0.07
+      cutoff_angle: 12.5
+      outer_cutoff_angle: 25.0
+      world_target: [0, 0, 0]
+      ambient: [0.4, 0.4, 0.2, 1.0]
+      diffuse: [0.8, 0.8, 0.7, 1.0]
+      specular: [1.0, 1.0, 0.9, 1.0]
+      enabled: true
+    enabled: true
+materials:
+  - name: skybox
+    type: skybox
+    asset: skybox

@@ -7,7 +7,6 @@
 
 #include <fmt/format.h>
 
-#include "asset/MeshLoader.h"
 #include "asset/QuadMesh.h"
 #include "asset/SpriteMesh.h"
 
@@ -20,6 +19,8 @@
 #include "controller/VolumeController.h"
 
 #include "scene/TerrainGenerator.h"
+
+#include "registry/MeshRegistry.h"
 
 #include "SceneFile.h"
 
@@ -102,9 +103,10 @@ void SceneFile::attachVolume(
 
     auto type = std::make_shared<NodeType>("<volume>");
 
-    MeshLoader meshLoader(m_asyncLoader->assets, "Volume", "ball_volume");
-    auto mesh = meshLoader.load();
-    type->m_mesh.reset(mesh.release());
+    auto& meshRegistry = scene->m_meshRegistry;
+    auto mesh = meshRegistry.getMesh("ball_volume");
+    type->setMesh(mesh);
+
     type->m_flags.wireframe = true;
     type->m_flags.renderBack = true;
     type->m_flags.noShadow = true;
@@ -118,11 +120,11 @@ void SceneFile::attachVolume(
     node->m_parentId = root.base.id;
 
     // NOTE KI m_radius = 1.73205078
-    type->m_mesh->prepareVolume();
-    auto volume = type->m_mesh->getVolume();
+    mesh->prepareVolume();
+    auto volume = mesh->getVolume();
     node->setVolume(volume->clone());
 
-    node->setAABB(type->m_mesh->getAABB());
+    node->setAABB(mesh->getAABB());
 
     node->m_controller = std::make_unique<VolumeController>();
 
@@ -170,6 +172,7 @@ std::shared_ptr<NodeType> SceneFile::attachEntityClone(
         type = createType(
             entity,
             data,
+            scene->m_meshRegistry,
             materials);
         if (!type) return type;
     }
@@ -201,6 +204,7 @@ std::shared_ptr<NodeType> SceneFile::attachEntityClone(
 std::shared_ptr<NodeType> SceneFile::createType(
     const EntityData& entity,
     const EntityCloneData& data,
+    MeshRegistry& meshRegistry,
     std::vector<Material>& materials)
 {
     const Assets& assets = m_assets;
@@ -211,6 +215,8 @@ std::shared_ptr<NodeType> SceneFile::createType(
 
     auto type = std::make_shared<NodeType>(data.name);
     assignFlags(data, *type);
+
+    auto& materialVBO = type->m_materialVBO;
 
     type->m_initScript = data.initScript;
     type->m_runScript = data.runScript;
@@ -227,38 +233,39 @@ std::shared_ptr<NodeType> SceneFile::createType(
         material = Material::find(data.materialName, materials);
     }
 
+    if (material) {
+        materialVBO.m_defaultMaterial = *material;
+        materialVBO.m_useDefaultMaterial = true;
+        materialVBO.m_forceDefaultMaterial = data.forceMaterial;
+    }
+
     if (data.type == EntityType::model) {
-        MeshLoader meshLoader(assets, data.name, data.meshName, data.meshPath);
+        auto mesh = meshRegistry.getMesh(
+            data.meshName,
+            data.meshPath);
+        type->setMesh(mesh);
 
-        if (material) {
-            meshLoader.m_defaultMaterial = *material;
-        }
-        meshLoader.m_forceDefaultMaterial = data.forceMaterial;
-
-        auto mesh = meshLoader.load();
-        KI_INFO_SB("SCENE_FILE ATTACH: id=" << data.id << " type = " << type->typeID << ", mesh = " << (mesh ? mesh->str() : "n/A"));
-        type->m_mesh.reset(mesh.release());
+        KI_INFO_SB(fmt::format(
+            "SCENE_FILE ATTACH: id={}, type={}",
+            data.id_str, type->str()));
     }
     else if (data.type == EntityType::quad) {
-        auto mesh = std::make_unique<QuadMesh>(data.name);
-        if (material) {
-            mesh->m_material = *material;
-        }
-        type->m_mesh.reset(mesh.release());
+        auto mesh = std::make_unique<QuadMesh>();
+        mesh->prepareVolume();
+        type->setMesh(std::move(mesh), true);
     }
     else if (data.type == EntityType::sprite) {
         // NOTE KI sprite *shall* differ from quad later on
-        auto mesh = std::make_unique<SpriteMesh>(data.name);
-        if (material) {
-            mesh->m_material = *material;
-        }
-        type->m_mesh.reset(mesh.release());
+        auto mesh = std::make_unique<SpriteMesh>();
+        mesh->prepareVolume();
+        type->setMesh(std::move(mesh), true);
         type->m_flags.sprite = true;
     }
     else if (data.type == EntityType::terrain) {
         TerrainGenerator generator(assets);
-        auto mesh = generator.generateTerrain(*material);
-        type->m_mesh.reset(mesh.release());
+        auto mesh = generator.generateTerrain();
+        mesh->prepareVolume();
+        type->setMesh(std::move(mesh), true);
         type->m_flags.terrain = true;
     }
     else if (data.type == EntityType::origo) {
@@ -267,31 +274,22 @@ std::shared_ptr<NodeType> SceneFile::createType(
     }
 
     if (data.type != EntityType::origo) {
-        if (!type->m_mesh) {
+        if (!type->getMesh()) {
             KI_WARN_SB("SCENE_FILEIGNORE: NO_MESH id=" << data.id << " (" << data.name << ")");
             return nullptr;
         }
 
-        type->m_mesh->prepareVolume();
-
-        if (data.materialModifiers_enabled) {
-            type->modifyMaterials([this, &data, &assets](Material& m) {
-                modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
-            });
-        }
-
-        type->modifyMaterials([this, &data, &assets](Material& m) {
-            m.loadTextures(assets);
-        });
-    }
-
-    {
         bool normalTex = false;
         bool normalPattern = false;
 
-        type->modifyMaterials([&](auto& mat) {
-            normalTex |= mat.hasNormalTex();
-            normalPattern |= mat.pattern > 0;
+        type->modifyMaterials([this, &normalTex, &normalPattern, &data, &assets](Material& m) {
+            if (data.materialModifiers_enabled) {
+                modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
+            }
+            m.loadTextures(assets);
+
+            normalTex |= m.hasNormalTex();
+            normalPattern |= m.pattern > 0;
         });
 
         std::map<std::string, std::string> definitions;
@@ -365,10 +363,11 @@ Node* SceneFile::createNode(
 
     node->setPlaneNormal(data.planeNormal);
 
-    if (type->m_mesh) {
-        auto volume = type->m_mesh->getVolume();
+    auto mesh = type->getMesh();
+    if (mesh) {
+        auto volume = mesh->getVolume();
         node->setVolume(volume->clone());
-        node->setAABB(type->m_mesh->getAABB());
+        node->setAABB(mesh->getAABB());
     }
 
     node->m_selected = data.selected;

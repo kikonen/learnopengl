@@ -1,0 +1,65 @@
+---
+name: Full
+viewports:
+skybox:
+  shader: skybox
+  material: skybox
+lights: {}
+root:
+  id: 50733c80-df4e-47ab-9596-ccfadb1805d8
+  type: origo
+  pos: [200, 0, 200]
+  rotation: [0, 0, 0]
+  enabled: true
+  controller:
+    type: path
+    mode: 1
+    enabled: false
+entities:
+  - name: Origo
+    type: origo
+    pos: [0, 0, -5]
+    camera:
+      zoom: 45
+      up: [0, 1, 0]
+      front: [0, 0, -1]
+      pos: [200, 0, 190]
+      rotation: [0, 180, 0.0]
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: Terrain grass
+    type: terrain
+    material: terrain_grass
+    shader: terrain
+    pos: [-400, -4, -400]
+    xscale: [100, 1, 100]
+    batch_size: 100
+    render_flags:
+      no_shadow: true
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 200
+      y_step: 0
+      z_step: 200
+    enabled: true
+materials:
+  - name: skybox
+    type: skybox
+    asset: skybox
+  - name: terrain_grass
+    type: texture
+    ns: 50
+    ks: [0.6, 0.6, 0.6, 1.0]
+    map_kd: Grass Dark_VH.PNG
+    map_bump: waterNormalMap.png
+    tiling: 100
+    texture_spec:
+      mode: GL_REPEAT
+  - name: plasma_ball
+    ks: [0.6, 0.6, 0.6, 1.0]
+    map_kd: noise.png

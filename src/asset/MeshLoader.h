@@ -11,19 +11,15 @@ class MeshLoader final
 {
 public:
     MeshLoader(
-        const Assets& assets,
-        const std::string& name,
-        const std::string& meshName);
-
-    MeshLoader(
-        const Assets& assets,
-        const std::string& name,
-        const std::string& meshName,
-        const std::string& meshPath);
+        const Assets& assets);
 
     ~MeshLoader();
 
-    std::unique_ptr<ModelMesh> load();
+    // @return pointer to mesh if load was success
+    ModelMesh* load(
+        ModelMesh& mesh,
+        Material* defaultMaterial,
+        bool forceDefaultMaterial);
 
 private:
     void loadData(
@@ -31,12 +27,6 @@ private:
 
 public:
     const Assets& assets;
-    const std::string m_name;
-    const std::string m_meshName;
-    const std::string m_meshPath;
-
-    Material m_defaultMaterial;
-    bool m_forceDefaultMaterial = false;
 
 private:
     unsigned int resolveVertexIndex(
@@ -70,9 +60,15 @@ private:
     void splitFragmentValue(const std::string& v, std::vector<std::string>& vv);
 
     void loadMaterials(
+        const ModelMesh& mesh,
         std::vector<Material>& materials,
         const std::string& libraryName);
 
     std::string resolveTexturePath(const std::string& line);
+
+private:
+    Material m_defaultMaterial;
+    bool m_forceDefaultMaterial = false;
+
 };
 

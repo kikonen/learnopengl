@@ -186,6 +186,8 @@ public:
     int illum = 0;
 
     std::string map_dudv;
+
+    static const int DEFAULT_ID = 0;
 private:
     bool m_prepared = false;
 

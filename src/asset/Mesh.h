@@ -1,14 +1,18 @@
 #pragma once
 
+#include <vector>
 #include <functional>
 
 #include "ki/GL.h"
+
+#include "kigl/GLVertexArray.h"
 
 #include "MeshBuffers.h"
 #include "Assets.h"
 #include "Material.h"
 #include "Volume.h"
 #include "AABB.h"
+#include "MaterialVBO.h"
 
 #include "registry/NodeRegistry.h"
 
@@ -22,19 +26,20 @@ public:
 
     virtual const std::string str() const;
 
-    virtual Material* findMaterial(std::function<bool(const Material&)> fn) = 0;
-    virtual void modifyMaterials(std::function<void(Material&)> fn) = 0;
-
     virtual void prepareVolume() = 0;
     virtual const AABB& calculateAABB() const = 0;
 
-    virtual void prepare(
-        const Assets& assets,
-        NodeRegistry& registry) = 0;
+    virtual const std::vector<Material>& getMaterials() const = 0;
 
-    virtual void bind(
-        const RenderContext& ctx,
-        Shader* shader) noexcept  = 0;
+    virtual void prepare(
+        const Assets& assets) = 0;
+
+    virtual void prepareMaterials(
+        MaterialVBO& materialVBO) = 0;
+
+    virtual void prepareVAO(
+        GLVertexArray& vao,
+        MaterialVBO& materialVBO) = 0;
 
     virtual void drawInstanced(const RenderContext& ctx, int instanceCount) const  = 0;
 
@@ -49,7 +54,6 @@ public:
 
 protected:
     bool m_prepared = false;
-    MeshBuffers m_buffers;
 
 private:
     AABB m_aabb{};
