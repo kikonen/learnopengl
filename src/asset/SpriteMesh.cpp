@@ -1,5 +1,7 @@
 #include "SpriteMesh.h"
 
+#include <fmt/format.h>
+
 #include "ki/GL.h"
 
 #include "asset/Sphere.h"
@@ -20,8 +22,8 @@ namespace {
 }
 
 
-SpriteMesh::SpriteMesh(const std::string& name)
-    : Mesh(name)
+SpriteMesh::SpriteMesh()
+    : Mesh()
 {
 }
 
@@ -31,7 +33,7 @@ SpriteMesh::~SpriteMesh()
 
 const std::string SpriteMesh::str() const
 {
-    return "<SPRITE_MESH: " + m_name + ">";
+    return fmt::format("<SPRITE: {}>", m_objectID);
 }
 
 Material* SpriteMesh::findMaterial(std::function<bool(const Material&)> fn)
@@ -104,7 +106,7 @@ void SpriteMesh::bind(
     glBindVertexArray(m_buffers.VAO);
 }
 
-void SpriteMesh::drawInstanced(const RenderContext& ctx, int instanceCount) noexcept
+void SpriteMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
 {
-    glDrawArraysInstanced(GL_POINTS, 0, 1, instanceCount);
+    KI_GL_CALL(glDrawArraysInstanced(GL_POINTS, 0, 1, instanceCount));
 }

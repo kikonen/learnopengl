@@ -91,7 +91,7 @@ void SceneFile::attachSkybox(
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
     skybox->prepare(m_assets, m_asyncLoader->m_shaders);
-    scene->m_skyboxRenderer.reset(skybox.release());
+    scene->m_skyboxRenderer = std::move(skybox);
 }
 
 void SceneFile::attachVolume(
@@ -100,7 +100,7 @@ void SceneFile::attachVolume(
 {
     if (!m_assets.showVolume) return;
 
-    auto type = std::make_shared<NodeType>();
+    auto type = std::make_shared<NodeType>("<volume>");
 
     MeshLoader meshLoader(m_asyncLoader->assets, "Volume", "ball_volume");
     auto mesh = meshLoader.load();
@@ -209,7 +209,7 @@ std::shared_ptr<NodeType> SceneFile::createType(
     const auto& repeat = data.repeat;
     const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
 
-    auto type = std::make_shared<NodeType>();
+    auto type = std::make_shared<NodeType>(data.name);
     assignFlags(data, *type);
 
     type->m_initScript = data.initScript;

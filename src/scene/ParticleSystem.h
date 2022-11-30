@@ -26,8 +26,6 @@ private:
 
     std::vector<Particle> particles;
 
-    Batch batch;
-
     Shader* particleShader{ nullptr };
 
     NodeType* type;

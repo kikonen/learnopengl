@@ -26,13 +26,6 @@ Batch::Batch()
 {
 }
 
-Batch:: ~Batch()
-{
-    //    glDeleteBuffers(1, &modelBuffer);
-    //    glDeleteBuffers(1, &normalBuffer);
-    //    glDeleteBuffers(1, &objectIDBuffer);
-}
-
 void Batch::add(
     const glm::mat4& model,
     const glm::mat3& normal,
@@ -115,7 +108,7 @@ void Batch::prepareMesh(GLVertexArray& vao)
 {
     // model
     {
-        glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_modelBuffer, 0, sizeof(glm::mat4));
+        KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_modelBuffer, 0, sizeof(glm::mat4)));
 
         // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
         constexpr GLsizei vecSize = sizeof(glm::vec4);
@@ -133,7 +126,7 @@ void Batch::prepareMesh(GLVertexArray& vao)
 
     // normal
     {
-        glVertexArrayVertexBuffer(vao, VBO_NORMAL_MATRIX_BINDING, m_normalBuffer, 0, sizeof(glm::mat3));
+        KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_NORMAL_MATRIX_BINDING, m_normalBuffer, 0, sizeof(glm::mat3)));
 
         // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
         constexpr GLsizei vecSize = sizeof(glm::vec3);
@@ -151,7 +144,7 @@ void Batch::prepareMesh(GLVertexArray& vao)
 
     // objectIDs
     {
-        glVertexArrayVertexBuffer(vao, VBO_OBJECT_ID_BINDING, m_objectIDBuffer, 0, sizeof(glm::vec4));
+        KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_OBJECT_ID_BINDING, m_objectIDBuffer, 0, sizeof(glm::vec4)));
 
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
 

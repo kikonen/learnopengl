@@ -74,13 +74,14 @@ public:
     std::unique_ptr<SkyboxRenderer> m_skyboxRenderer{ nullptr };
     UBO m_ubo;
 
-    NodeRegistry m_registry;
     MaterialRegistry m_materialRegistry;
+    NodeRegistry m_registry;
 
     CommandEngine m_commandEngine;
     ScriptEngine m_scriptEngine;
 
     Batch m_batch;
+
     //TexturesUBO m_textures;
     TextureUBO* m_textureHandles = nullptr;
     int m_texturesLevel = -1;

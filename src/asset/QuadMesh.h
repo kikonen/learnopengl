@@ -11,7 +11,7 @@
 class QuadMesh final : public Mesh
 {
 public:
-    QuadMesh(const std::string& name);
+    QuadMesh();
     virtual ~QuadMesh();
 
     virtual const std::string str() const override;
@@ -30,16 +30,15 @@ public:
         const RenderContext& ctx,
         Shader* shader) noexcept override;
 
-    void drawInstanced(const RenderContext& ctx, int instanceCount) noexcept override;
 
 private:
     void prepareBuffers(MeshBuffers& curr);
     void prepareMaterialVBO(MeshBuffers& curr);
 
+    void drawInstanced(const RenderContext& ctx, int instanceCount) const override;
 public:
     Material m_material;
 
 private:
-    bool m_prepared = false;
 
 };

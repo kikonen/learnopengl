@@ -11,7 +11,7 @@
 class SpriteMesh final : public Mesh
 {
 public:
-    SpriteMesh(const std::string& name);
+    SpriteMesh();
     virtual ~SpriteMesh();
 
     virtual const std::string str() const override;
@@ -30,8 +30,8 @@ public:
         const RenderContext& ctx,
         Shader* shader) noexcept override;
 
-    void drawInstanced(const RenderContext& ctx, int instanceCount) noexcept override;
 
+    void drawInstanced(const RenderContext& ctx, int instanceCount) const override;
 private:
     void prepareBuffers(MeshBuffers& curr);
     void prepareMaterialVBO(MeshBuffers& curr);
@@ -40,5 +40,4 @@ public:
     Material m_material;
 
 private:
-    bool m_prepared = false;
 };

@@ -18,7 +18,6 @@ class Mesh
 {
 public:
     Mesh();
-    Mesh(const std::string& name);
     virtual ~Mesh();
 
     virtual const std::string str() const;
@@ -37,7 +36,7 @@ public:
         const RenderContext& ctx,
         Shader* shader) noexcept  = 0;
 
-    virtual void drawInstanced(const RenderContext& ctx, int instanceCount) noexcept  = 0;
+    virtual void drawInstanced(const RenderContext& ctx, int instanceCount) const  = 0;
 
     void setVolume(std::unique_ptr<Volume> volume);
     const Volume* getVolume() const;
@@ -46,12 +45,14 @@ public:
     const AABB& getAABB() const;
 
 public:
-    std::string m_name;
+    const int m_objectID;
 
+protected:
+    bool m_prepared = false;
     MeshBuffers m_buffers;
 
 private:
-    AABB m_aabb;
+    AABB m_aabb{};
     std::unique_ptr<Volume> m_volume;
 
 };

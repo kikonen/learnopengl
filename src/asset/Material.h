@@ -74,8 +74,8 @@ public:
 
     void loadTextures(const Assets& assets);
 
-    int getActiveTextureCount();
-    bool hasNormalTex();
+    int getActiveTextureCount() const;
+    bool hasNormalTex() const;
 
     void prepare(const Assets& assets);
 
@@ -83,10 +83,12 @@ public:
         const RenderContext& ctx,
         Shader* shader);
 
-    const MaterialUBO toUBO();
-    const MaterialSSBO toSSBO();
+    const MaterialUBO toUBO() const;
+    const MaterialSSBO toSSBO() const;
 
-    const float getRefractionRatio() { return refractionRatio[1] != 0 ? refractionRatio[0] / refractionRatio[1] : refractionRatio[0]; }
+    const float getRefractionRatio() const{
+        return refractionRatio[1] != 0 ? refractionRatio[0] / refractionRatio[1] : refractionRatio[0];
+    }
 
     static Material createDefaultMaterial();
 

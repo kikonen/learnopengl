@@ -23,8 +23,9 @@ namespace {
 }
 
 
-NodeType::NodeType()
-    : typeID(nextID())
+NodeType::NodeType(const std::string& name)
+    : typeID(nextID()),
+    m_name(name)
 {
 }
 
@@ -35,7 +36,9 @@ NodeType::~NodeType()
 
 const std::string NodeType::str() const noexcept
 {
-    return fmt::format("<NODE_TYPE: id={}, mesh={}>", typeID, m_mesh ? m_mesh->str() : "N/A");
+    return fmt::format(
+        "<NODE_TYPE: id={}, name={}, mesh={}, buffers={}>",
+        typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_buffers.str());
 }
 
 Material* NodeType::findMaterial(std::function<bool(const Material&)> fn) noexcept

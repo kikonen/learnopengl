@@ -36,7 +36,7 @@ MeshLoader::MeshLoader(
 
 MeshLoader::~MeshLoader()
 {
-    KI_INFO_SB("MESH_LOADER: deleted: name=" << m_name << ", mesh=" << m_meshPath << "/" << m_meshName);
+    //KI_INFO_SB("MESH_LOADER: deleted: mesh=" << m_meshPath << "/" << m_meshName);
 }
 
 std::unique_ptr<ModelMesh> MeshLoader::load() {
@@ -49,7 +49,7 @@ std::unique_ptr<ModelMesh> MeshLoader::load() {
 void MeshLoader::loadData(
     ModelMesh& mesh)
 {
-    ki::Timer t("loadData-" + m_name + ", mesh=" + m_meshPath + "/" + m_meshName);
+    ki::Timer t("loadData: mesh=" + mesh.str());
 
     auto& tris = mesh.m_tris;
     auto& vertices = mesh.m_vertices;
@@ -74,8 +74,8 @@ void MeshLoader::loadData(
 
     std::filesystem::path filePath;
     filePath /= assets.modelsDir;
-    filePath /= m_meshPath;
-    filePath /= m_meshName + ".obj";
+    filePath /= mesh.m_meshPath;
+    filePath /= mesh.m_meshName + ".obj";
 
     //const std::string modelPath = assets.modelsDir + path + modelName + ".obj";
     KI_INFO_SB("LOAD_MODEL: path=" << filePath);
@@ -101,7 +101,7 @@ void MeshLoader::loadData(
             ss >> v1 >> v2 >> v3;
 
             if (k == "mtllib") {
-                loadMaterials(loadedMaterials, v1);
+                loadMaterials(mesh, loadedMaterials, v1);
                 for (auto& material : loadedMaterials) {
                     if (!material.map_bump.empty()) {
                         tangents.reserve(positions.size());
@@ -212,7 +212,7 @@ void MeshLoader::loadData(
         KI_ERROR_SB("MODEL::FILE_NOT_SUCCESFULLY_READ: " << filePath << std::endl << e.what());
     }
 
-    KI_INFO_SB("== " << m_name << " - " << m_meshPath << "/" << m_meshName << " ===\n"
+    KI_INFO_SB("== " << mesh.str() << " ===\n"
         << "tris: " << tris.size()
         << ", positions: " << positions.size()
         << ", textures: " << textures.size()
@@ -362,6 +362,7 @@ void MeshLoader::createTangents(
 
 
 void MeshLoader::loadMaterials(
+    const ModelMesh& mesh,
     std::vector<Material>& materials,
     const std::string& libraryName)
 {
@@ -369,7 +370,7 @@ void MeshLoader::loadMaterials(
 
     std::filesystem::path filePath;
     filePath /= assets.modelsDir;
-    filePath /= m_meshPath;
+    filePath /= mesh.m_meshPath;
     filePath /= libraryName;
 
     //std::string materialPath = assets.modelsDir + path + libraryName;
@@ -394,7 +395,7 @@ void MeshLoader::loadMaterials(
             if (k == "newmtl") {
                 material = &materials.emplace_back();
                 material->m_name = v1;
-                material->m_path = m_meshPath;
+                material->m_path = mesh.m_meshPath;
             }
             else if (k == "Ns") {
                 material->ns = stof(v1);
@@ -440,7 +441,7 @@ void MeshLoader::loadMaterials(
         KI_ERROR_SB("TEXTURE::FILE_NOT_SUCCESFULLY_READ: " << filePath << std::endl << e.what());
     }
 
-    KI_INFO_SB("== " << m_name << " - " << m_meshPath << "/" << m_meshName << " - " << libraryName << " ===\n" << "materials: " << materials.size());
+    KI_INFO_SB("== " << mesh.str() << " - " << libraryName << " ===\n" << "materials: " << materials.size());
 }
 
 std::string MeshLoader::resolveTexturePath(const std::string& line)

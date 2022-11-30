@@ -1,5 +1,7 @@
 #include "QuadMesh.h"
 
+#include <fmt/format.h>
+
 #include "ki/GL.h"
 
 #include "asset/Sphere.h"
@@ -21,8 +23,8 @@ namespace {
 }
 
 
-QuadMesh::QuadMesh(const std::string& name)
-    : Mesh(name)
+QuadMesh::QuadMesh()
+    : Mesh()
 {
 }
 
@@ -32,7 +34,7 @@ QuadMesh::~QuadMesh()
 
 const std::string QuadMesh::str() const
 {
-    return "<QUAD_MESH: " + m_name + ">";
+    return fmt::format("<QUAD: {}>", m_objectID);
 }
 
 Material* QuadMesh::findMaterial(std::function<bool(const Material&)> fn)
@@ -133,8 +135,7 @@ void QuadMesh::bind(
     glBindVertexArray(m_buffers.VAO);
 }
 
-void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount) noexcept
+void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
 {
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount);
-    //glDrawElementsInstanced(GL_TRIANGLES, VERTEX_COUNT, GL_UNSIGNED_INT, 0, instanceCount);
+    KI_GL_CALL(glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount));
 }

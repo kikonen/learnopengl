@@ -12,8 +12,6 @@
 
 #include "registry/NodeType.h"
 
-#include "scene/TerrainGenerator.h"
-
 
 namespace {
     //constexpr auto PLANET_UUID = KI_UUID("8712cec1-e1a3-4973-8889-533adfbbb196");
@@ -46,9 +44,7 @@ void TestSceneSetup::setupEffectExplosion()
     asyncLoader->addLoader([assets, scene, asyncLoader]() {
         Shader* shader = asyncLoader->getShader(TEX_EFFECT);
 
-        TerrainGenerator generator(assets);
-
-        auto type = std::make_shared<NodeType>();
+        auto type = std::make_shared<NodeType>("<effect>");
         type->m_boundShader = shader;
         type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;

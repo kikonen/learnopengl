@@ -17,17 +17,15 @@ namespace {
 }
 
 ModelMesh::ModelMesh(
-    const std::string& name,
     const std::string& meshName)
-    : ModelMesh(name, meshName, "")
+    : ModelMesh(meshName, "")
 {
 }
 
 ModelMesh::ModelMesh(
-    const std::string& name,
     const std::string& meshName,
     const std::string& meshPath)
-    : Mesh(name),
+    : Mesh(),
     m_meshName(meshName),
     m_meshPath(meshPath)
 {
@@ -42,8 +40,8 @@ ModelMesh::~ModelMesh()
 const std::string ModelMesh::str() const
 {
     return fmt::format(
-        "<MODEL: {} - mesh={}/{}, {}>",
-        m_name, m_meshPath, m_meshName, m_buffers.str());
+        "<MODEL: {}, mesh={}/{}>",
+        m_objectID, m_meshPath, m_meshName);
 }
 
 Material* ModelMesh::findMaterial(std::function<bool(const Material&)> fn)
@@ -123,7 +121,7 @@ void ModelMesh::bind(
     glBindVertexArray(m_buffers.VAO);
 }
 
-void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount) noexcept
+void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
 {
     KI_GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, m_triCount * 3, GL_UNSIGNED_INT, 0, instanceCount));
 }

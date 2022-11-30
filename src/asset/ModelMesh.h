@@ -20,11 +20,9 @@
 class ModelMesh final : public Mesh {
 public:
     ModelMesh(
-        const std::string& name,
         const std::string& meshName);
 
     ModelMesh(
-        const std::string& name,
         const std::string& meshName,
         const std::string& meshPath);
 
@@ -45,12 +43,15 @@ public:
     void bind(
         const RenderContext& ctx,
         Shader* shader) noexcept override;
-    void drawInstanced(const RenderContext& ctx, int instanceCount) noexcept override;
 
 private:
     void prepareBuffers(MeshBuffers& curr);
+    void drawInstanced(const RenderContext& ctx, int instanceCount) const override;
 
 public:
+    bool m_loaded = false;
+    bool m_valid = false;
+
     int m_triCount = 0;
     std::vector<glm::uvec3> m_tris;
     std::vector<Vertex> m_vertices;
@@ -61,7 +62,6 @@ public:
     const std::string m_meshPath;
 
 private:
-    bool m_prepared = false;
 
     ModelMeshVBO m_vertexVBO;
     MaterialVBO m_materialVBO;

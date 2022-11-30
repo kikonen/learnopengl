@@ -19,7 +19,11 @@ class Batch final
 {
 public:
     Batch();
-    ~Batch();
+    ~Batch() = default;
+
+    // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
+    Batch(const Batch&) = delete;
+    Batch& operator=(const Batch&) = delete;
 
     void add(
         const glm::mat4& model,

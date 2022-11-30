@@ -129,12 +129,16 @@ namespace ki {
     void GL::checkErrors(const char* code, const char* file, int lineNumber) noexcept
     {
         GLenum err;
+        bool wasError = false;
         while ((err = glGetError()) != GL_NO_ERROR)
         {
+            wasError = true;
             auto info = fmt::format("{} - {}:{}", code, file, lineNumber);
 
             // https://www.khronos.org/opengl/wiki/OpenGL_Error
             KI_ERROR_SB(info << ": " << "0x" << std::hex << err << std::dec << " (" << err << ")");
+        }
+        if (wasError) {
             KI_BREAK();
         }
     }

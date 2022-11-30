@@ -179,7 +179,7 @@ void Material::loadTexture(
     }
 }
 
-int Material::getActiveTextureCount()
+int Material::getActiveTextureCount() const
 {
     int texCount = 0;
     for (auto& tex : m_textures) {
@@ -189,7 +189,7 @@ int Material::getActiveTextureCount()
     return texCount;
 }
 
-bool Material::hasNormalTex()
+bool Material::hasNormalTex() const
 {
     const auto& tex = m_textures[NORMAL_MAP_IDX];
     return tex.texture != nullptr;
@@ -217,7 +217,7 @@ void Material::bindArray(
     }
 }
 
-const MaterialUBO Material::toUBO()
+const MaterialUBO Material::toUBO() const
 {
     for (auto& tex : m_textures) {
         if (!tex.texture) continue;
@@ -248,7 +248,7 @@ const MaterialUBO Material::toUBO()
     };
 }
 
-const MaterialSSBO Material::toSSBO()
+const MaterialSSBO Material::toSSBO() const
 {
     for (auto& tex : m_textures) {
         if (!tex.texture) continue;

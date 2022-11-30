@@ -38,7 +38,7 @@ class Mesh;
 class NodeType final
 {
 public:
-    NodeType();
+    NodeType(const std::string& name);
     ~NodeType();
 
     const std::string str() const noexcept;
@@ -57,6 +57,7 @@ public:
 
 public:
     const int typeID;
+    std::string m_name;
 
     NodeRenderFlags m_flags;
 
