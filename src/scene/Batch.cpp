@@ -5,7 +5,7 @@
 #include "ki/uuid.h"
 
 #include "model/Node.h"
-#include "registry/NodeType.h"
+#include "registry/MeshType.h"
 
 #include "scene/RenderContext.h"
 
@@ -191,7 +191,7 @@ void Batch::draw(
     Node& node,
     Shader* shader) noexcept
 {
-    const auto& type = *node.m_type.get();
+    const auto& type = *node.m_type;
 
     if (!type.getMesh()) return;
     if (type.m_flags.root) return;
@@ -241,7 +241,7 @@ void Batch::draw(
 
 void Batch::drawAll(
     const RenderContext& ctx,
-    NodeType& type,
+    MeshType& type,
     const std::vector<glm::mat4>& modelMatrices,
     const std::vector<glm::mat3>& normalMatrices,
     const std::vector<int>& objectIDs) noexcept
@@ -255,13 +255,13 @@ void Batch::drawAll(
     flushIfNeeded(ctx, type);
 }
 
-void Batch::flushIfNeeded(const RenderContext& ctx, const NodeType& type) noexcept
+void Batch::flushIfNeeded(const RenderContext& ctx, const MeshType& type) noexcept
 {
     if (m_modelMatrices.size() < m_bufferSize) return;
     flush(ctx, type);
 }
 
-void Batch::flush(const RenderContext& ctx, const NodeType& type) noexcept
+void Batch::flush(const RenderContext& ctx, const MeshType& type) noexcept
 {
     const auto& mesh = type.getMesh();
 

@@ -130,7 +130,7 @@ void NodeRenderer::drawNodes(
         glStencilMask(0x00);
     }
 
-    auto renderTypes = [this, &ctx, &selection](const NodeTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, &selection](const MeshTypeMap& typeMap) {
         //ShaderBind bound(selection ? selectionShader : typeMap.begin()->first->m_nodeShader);
         ShaderBind bound(typeMap.begin()->first->m_nodeShader);
 
@@ -180,7 +180,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
 {
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 
-    auto renderTypes = [this, &ctx](const NodeTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
             auto& type = *it.first;
             auto& nodes = it.second;
@@ -270,7 +270,7 @@ void NodeRenderer::drawBlended(
         sorted[distance] = node;
     }
 
-    NodeType* type = nullptr;
+    MeshType* type = nullptr;
     Shader* shader = nullptr;
     Batch* batch = nullptr;
 
@@ -278,7 +278,7 @@ void NodeRenderer::drawBlended(
     for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
         Node* node = it->second;
 
-        if (type != node->m_type.get()) {
+        if (type != node->m_type) {
             if (batch) {
                 // NOTE KI Changing batch
                 batch->flush(ctx, *type);
@@ -288,7 +288,7 @@ void NodeRenderer::drawBlended(
                 }
             }
             //std::cout << 'B';
-            type = node->m_type.get();
+            type = node->m_type;
 
             batch = &ctx.m_batch;
 

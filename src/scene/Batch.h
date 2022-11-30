@@ -6,7 +6,7 @@
 #include "kigl/GLVertexArray.h"
 
 class RenderContext;
-class NodeType;
+class MeshType;
 class Node;
 
 // NOTE KI use single shared UBO buffer for rendering
@@ -47,13 +47,13 @@ public:
 
     void drawAll(
         const RenderContext& ctx,
-        NodeType& type,
+        MeshType& type,
         const std::vector<glm::mat4>& m_modelMatrices,
         const std::vector<glm::mat3>& m_normalMatrices,
         const std::vector<int>& m_objectIDs) noexcept;
 
-    void flushIfNeeded(const RenderContext& ctx, const NodeType& type) noexcept;
-    void flush(const RenderContext& ctx, const NodeType& type) noexcept;
+    void flushIfNeeded(const RenderContext& ctx, const MeshType& type) noexcept;
+    void flush(const RenderContext& ctx, const MeshType& type) noexcept;
 
 public:
     const int m_id;

@@ -13,7 +13,7 @@
 #include "model/Node.h"
 #include "model/Viewport.h"
 
-#include "NodeType.h"
+#include "registry/MeshType.h"
 
 
 class MaterialRegistry;
@@ -37,8 +37,8 @@ enum class NodeOperation {
 using GroupVector = std::vector<Group*>;
 
 using NodeVector = std::vector<Node*>;
-using NodeTypeMap = std::map<NodeType*, NodeVector>;
-using ShaderTypeMap = std::map<const ShaderKey, NodeTypeMap>;
+using MeshTypeMap = std::map<MeshType*, NodeVector>;
+using ShaderTypeMap = std::map<const ShaderKey, MeshTypeMap>;
 
 using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
 
@@ -58,7 +58,7 @@ public:
     void addGroup(Group* group) noexcept;
 
     void addNode(
-        NodeType* type,
+        MeshType* type,
         Node* node) noexcept;
 
     // @return node null if not found

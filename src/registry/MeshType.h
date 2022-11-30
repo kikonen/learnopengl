@@ -37,11 +37,13 @@ class RenderContext;
 class NodeRegistry;
 class Mesh;
 
-class NodeType final
+class MeshType final
 {
+    friend class MeshTypeRegistry;
+
 public:
-    NodeType(const std::string& name);
-    ~NodeType();
+    MeshType(const std::string& name);
+    ~MeshType();
 
     const std::string str() const noexcept;
 

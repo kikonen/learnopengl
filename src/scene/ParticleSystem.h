@@ -28,5 +28,5 @@ private:
 
     Shader* particleShader{ nullptr };
 
-    NodeType* type;
+    MeshType* type;
 };

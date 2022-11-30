@@ -27,7 +27,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
 {
     ShaderBind bound(m_normalShader);
 
-    auto renderTypes = [this, &ctx, &bound](const NodeTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, &bound](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
             auto& type = *it.first;
 

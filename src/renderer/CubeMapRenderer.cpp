@@ -173,7 +173,7 @@ void CubeMapRenderer::drawNodes(
     SkyboxRenderer* skybox,
     const Node* centerNode)
 {
-    auto renderTypes = [&ctx, &centerNode](const NodeTypeMap& typeMap) {
+    auto renderTypes = [&ctx, &centerNode](const MeshTypeMap& typeMap) {
         ShaderBind bound(typeMap.begin()->first->m_nodeShader);
 
         for (const auto& it : typeMap) {

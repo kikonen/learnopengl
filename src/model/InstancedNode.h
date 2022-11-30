@@ -7,7 +7,7 @@
 class InstancedNode final : public Node
 {
 public:
-    InstancedNode(std::shared_ptr<NodeType> type);
+    InstancedNode(MeshType* type);
     virtual ~InstancedNode();
 
     void prepare(const Assets& assets) noexcept override;

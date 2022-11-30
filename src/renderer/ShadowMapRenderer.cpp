@@ -120,7 +120,7 @@ void ShadowMapRenderer::render(
 void ShadowMapRenderer::drawNodes(
     const RenderContext& ctx)
 {
-    auto renderTypes = [this, &ctx](const NodeTypeMap& typeMap, ShaderBind& bound) {
+    auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap, ShaderBind& bound) {
         for (const auto& it : typeMap) {
             auto& type = *it.first;
 

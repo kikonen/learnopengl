@@ -288,7 +288,7 @@
     <ClCompile Include="src\registry\NodeRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\NodeType.cpp">
+    <ClCompile Include="src\registry\MeshType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\QuadVBO.cpp">
@@ -301,6 +301,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\registry\MeshRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\registry\MeshTypeRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -620,7 +623,7 @@
     <ClInclude Include="src\registry\NodeRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\NodeType.h">
+    <ClInclude Include="src\registry\MeshType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\QuadVBO.h">
@@ -633,6 +636,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\MeshRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\MeshTypeRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

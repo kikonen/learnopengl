@@ -83,7 +83,7 @@ void NodeRegistry::addGroup(Group* group) noexcept
 }
 
 void NodeRegistry::addNode(
-    NodeType* type,
+    MeshType* type,
     Node* node) noexcept
 {
     std::lock_guard<std::mutex> lock(m_load_lock);
@@ -138,13 +138,13 @@ void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport) noexcept
 void NodeRegistry::attachNodes(
     MaterialRegistry& materialRegistry)
 {
-    NodeTypeMap newNodes;
+    MeshTypeMap newNodes;
     {
         std::lock_guard<std::mutex> lock(m_load_lock);
         if (m_pendingNodes.empty()) return;
 
         for (const auto& node : m_pendingNodes) {
-            newNodes[node->m_type.get()].push_back(node);
+            newNodes[node->m_type].push_back(node);
         }
         m_pendingNodes.clear();
     }
@@ -224,7 +224,7 @@ void NodeRegistry::bindNode(
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    const auto& type = node->m_type.get();
+    const auto& type = node->m_type;
     auto* shader = type->m_nodeShader;
 
     if (!type->m_flags.root && !type->m_flags.origo) {

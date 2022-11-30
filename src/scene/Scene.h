@@ -12,6 +12,7 @@
 
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/MeshTypeRegistry.h"
 #include "registry/MeshRegistry.h"
 
 #include "command/CommandEngine.h"
@@ -76,6 +77,7 @@ public:
     UBO m_ubo;
 
     MaterialRegistry m_materialRegistry;
+    MeshTypeRegistry m_typeRegistry;
     MeshRegistry m_meshRegistry;
     NodeRegistry m_registry;
 

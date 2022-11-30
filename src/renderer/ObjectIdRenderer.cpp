@@ -145,7 +145,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     {
-        auto renderTypes = [this, &ctx](const NodeTypeMap& typeMap) {
+        auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
                 if (type.m_flags.noSelect) continue;

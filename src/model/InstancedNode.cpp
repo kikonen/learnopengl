@@ -1,6 +1,6 @@
 #include "InstancedNode.h"
 
-InstancedNode::InstancedNode(std::shared_ptr<NodeType> type)
+InstancedNode::InstancedNode(MeshType* type)
     : Node(type)
 {
 }

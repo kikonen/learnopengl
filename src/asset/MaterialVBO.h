@@ -11,7 +11,7 @@ struct Vertex;
 class ModelMesh;
 
 class MaterialVBO {
-    friend class NodeType;
+    friend class MeshType;
 
 public:
     void setMaterials(const std::vector<Material>& materials);

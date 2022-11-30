@@ -189,6 +189,7 @@
     <ClCompile Include="src\registry\MaterialRegistry.cpp" />
     <ClCompile Include="src\asset\OBB.cpp" />
     <ClCompile Include="src\registry\MeshRegistry.cpp" />
+    <ClCompile Include="src\registry\MeshTypeRegistry.cpp" />
     <ClCompile Include="src\registry\ShaderRegistry.cpp" />
     <ClCompile Include="src\asset\FrustumNew.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
@@ -234,7 +235,7 @@
     <ClCompile Include="src\asset\QuadMesh.cpp" />
     <ClCompile Include="src\scene\Batch.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
-    <ClCompile Include="src\registry\NodeType.cpp" />
+    <ClCompile Include="src\registry\MeshType.cpp" />
     <ClCompile Include="src\controller\NodePathController.cpp" />
     <ClCompile Include="src\controller\InstancedController.cpp" />
     <ClCompile Include="src\controller\MovingLightController.cpp" />
@@ -298,6 +299,7 @@
     <ClInclude Include="src\asset\ShaderBind.h" />
     <ClInclude Include="src\AssetsFile.h" />
     <ClInclude Include="src\registry\MeshRegistry.h" />
+    <ClInclude Include="src\registry\MeshTypeRegistry.h" />
     <ClInclude Include="src\registry\ShaderRegistry.h" />
     <ClInclude Include="src\backend\Command.h" />
     <ClInclude Include="src\backend\DrawCommands.h" />
@@ -343,7 +345,7 @@
     <ClInclude Include="src\asset\QuadMesh.h" />
     <ClInclude Include="src\scene\Batch.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
-    <ClInclude Include="src\registry\NodeType.h" />
+    <ClInclude Include="src\registry\MeshType.h" />
     <ClInclude Include="src\controller\NodePathController.h" />
     <ClInclude Include="src\controller\InstancedController.h" />
     <ClInclude Include="src\controller\MovingLightController.h" />

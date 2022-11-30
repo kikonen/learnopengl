@@ -1,4 +1,4 @@
-#include "NodeType.h"
+#include "registry/MeshType.h"
 
 #include <mutex>
 #include <fmt/format.h>
@@ -23,31 +23,31 @@ namespace {
 }
 
 
-NodeType::NodeType(const std::string& name)
+MeshType::MeshType(const std::string& name)
     : typeID(nextID()),
     m_name(name)
 {
 }
 
-NodeType::~NodeType()
+MeshType::~MeshType()
 {
     KI_INFO_SB("NODE_TYPE: delete " << typeID);
 }
 
-const std::string NodeType::str() const noexcept
+const std::string MeshType::str() const noexcept
 {
     return fmt::format(
         "<NODE_TYPE: id={}, name={}, mesh={}, buffers={}>",
         typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_buffers.str());
 }
 
-void NodeType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
+void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
 {
     setMesh(mesh.get());
     m_deleter = std::move(mesh);
 }
 
-void NodeType::setMesh(Mesh* mesh)
+void MeshType::setMesh(Mesh* mesh)
 {
     m_mesh = mesh;
     if (!m_mesh) return;
@@ -55,19 +55,19 @@ void NodeType::setMesh(Mesh* mesh)
     m_materialVBO.setMaterials(m_mesh->getMaterials());
 }
 
-const Mesh* NodeType::getMesh() const
+const Mesh* MeshType::getMesh() const
 {
     return m_mesh;
 }
 
-void NodeType::modifyMaterials(std::function<void(Material&)> fn)
+void MeshType::modifyMaterials(std::function<void(Material&)> fn)
 {
     for (auto& material : m_materialVBO.m_materials) {
         fn(material);
     }
 }
 
-void NodeType::prepare(
+void MeshType::prepare(
     const Assets& assets,
     NodeRegistry& registry) noexcept
 {
@@ -89,7 +89,7 @@ void NodeType::prepare(
     }
 }
 
-void NodeType::prepareBatch(Batch& batch) noexcept
+void MeshType::prepareBatch(Batch& batch) noexcept
 {
     if (!m_mesh) return;
 
@@ -99,7 +99,7 @@ void NodeType::prepareBatch(Batch& batch) noexcept
     batch.prepareMesh(m_buffers.VAO);
 }
 
-void NodeType::bind(
+void MeshType::bind(
     const RenderContext& ctx,
     Shader* shader) noexcept
 {
@@ -121,7 +121,7 @@ void NodeType::bind(
     glBindVertexArray(m_buffers.VAO);
 }
 
-void NodeType::unbind(const RenderContext& ctx) noexcept
+void MeshType::unbind(const RenderContext& ctx) noexcept
 {
     m_boundShader = nullptr;
     ctx.bindGlobal();

@@ -101,7 +101,7 @@ void SceneFile::attachVolume(
 {
     if (!m_assets.showVolume) return;
 
-    auto type = std::make_shared<NodeType>("<volume>");
+    auto type = scene->m_typeRegistry.getType("<volume>");
 
     auto& meshRegistry = scene->m_meshRegistry;
     auto mesh = meshRegistry.getMesh("ball_volume");
@@ -128,7 +128,7 @@ void SceneFile::attachVolume(
 
     node->m_controller = std::make_unique<VolumeController>();
 
-    scene->m_registry.addNode(type.get(), node);
+    scene->m_registry.addNode(type, node);
 }
 
 void SceneFile::attachEntity(
@@ -143,11 +143,11 @@ void SceneFile::attachEntity(
 
     m_asyncLoader->addLoader([this, scene, &root, &data, &materials]() {
         if (data.clones.empty()) {
-            std::shared_ptr<NodeType> type;
+            MeshType* type{ nullptr };
             attachEntityClone(scene, type, root, data, data.base, false, materials);
         }
         else {
-            std::shared_ptr<NodeType> type;
+            MeshType* type{ nullptr };
             for (auto& cloneData : data.clones) {
                 type = attachEntityClone(scene, type, root, data, cloneData, true, materials);
             }
@@ -155,9 +155,9 @@ void SceneFile::attachEntity(
     });
 }
 
-std::shared_ptr<NodeType> SceneFile::attachEntityClone(
+MeshType* SceneFile::attachEntityClone(
     std::shared_ptr<Scene> scene,
-    std::shared_ptr<NodeType>& type,
+    MeshType* type,
     const EntityData& root,
     const EntityData& entity,
     const EntityCloneData& data,
@@ -172,6 +172,7 @@ std::shared_ptr<NodeType> SceneFile::attachEntityClone(
         type = createType(
             entity,
             data,
+            scene->m_typeRegistry,
             scene->m_meshRegistry,
             materials);
         if (!type) return type;
@@ -193,7 +194,7 @@ std::shared_ptr<NodeType> SceneFile::attachEntityClone(
             for (auto x = 0; x < repeat.xCount; x++) {
                 const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
                 auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, entity.isRoot, cloned);
-                scene->m_registry.addNode(type.get(), node);
+                scene->m_registry.addNode(type, node);
             }
         }
     }
@@ -201,9 +202,10 @@ std::shared_ptr<NodeType> SceneFile::attachEntityClone(
     return type;
 }
 
-std::shared_ptr<NodeType> SceneFile::createType(
+MeshType* SceneFile::createType(
     const EntityData& entity,
     const EntityCloneData& data,
+    MeshTypeRegistry& typeRegistry,
     MeshRegistry& meshRegistry,
     std::vector<Material>& materials)
 {
@@ -213,8 +215,8 @@ std::shared_ptr<NodeType> SceneFile::createType(
     const auto& repeat = data.repeat;
     const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
 
-    auto type = std::make_shared<NodeType>(data.name);
-    assignFlags(data, *type);
+    auto type = typeRegistry.getType(data.name);
+    assignFlags(data, type);
 
     auto& materialVBO = type->m_materialVBO;
 
@@ -327,13 +329,13 @@ Node* SceneFile::createNode(
     const Group* group,
     const EntityData& root,
     const EntityCloneData& data,
-    const std::shared_ptr<NodeType>& type,
+    MeshType* type,
     const glm::vec3& clonePosition,
     const glm::vec3& posAdjustment,
     bool isRoot,
     bool cloned)
 {
-    auto node = data.instanced
+    Node* node = data.instanced
         ? new InstancedNode(type)
         : new Node(type);
 
@@ -389,9 +391,9 @@ Node* SceneFile::createNode(
 
 void SceneFile::assignFlags(
     const EntityCloneData& data,
-    NodeType& type)
+    MeshType* type)
 {
-    NodeRenderFlags& flags = type.m_flags;
+    NodeRenderFlags& flags = type->m_flags;
 
     {
         const auto& e = data.renderFlags.find("alpha");

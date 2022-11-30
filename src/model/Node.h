@@ -9,7 +9,7 @@
 #include "asset/Sphere.h"
 #include "component/ParticleGenerator.h"
 
-#include "registry/NodeType.h"
+#include "registry/MeshType.h"
 
 #include "scene/Batch.h"
 
@@ -18,11 +18,12 @@
 class NodeController;
 class Camera;
 class RenderContext;
+class MeshType;
 
 class Node
 {
 public:
-    Node(std::shared_ptr<NodeType> type);
+    Node(MeshType* type);
     virtual ~Node();
 
     const std::string str() const noexcept;
@@ -93,7 +94,7 @@ public:
     uuids::uuid m_groupId;
 
     // NOTE KI type needed with node for practicality reasons
-    std::shared_ptr<NodeType> m_type{ nullptr };
+    MeshType* m_type{ nullptr };
 
     bool m_selected = false;
     bool m_allowNormals = true;

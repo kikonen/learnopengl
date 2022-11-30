@@ -234,9 +234,9 @@ private:
         const EntityData& data,
         std::vector<Material>& materials);
 
-    std::shared_ptr<NodeType> attachEntityClone(
+    MeshType* attachEntityClone(
         std::shared_ptr<Scene> scene,
-        std::shared_ptr<NodeType>& type,
+        MeshType* type,
         const EntityData& root,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -245,16 +245,17 @@ private:
 
     void assignFlags(
         const EntityCloneData& data,
-        NodeType& type);
+        MeshType* type);
 
     void modifyMaterial(
         Material& m,
         const MaterialField& f,
         const Material& mod);
 
-    std::shared_ptr<NodeType> createType(
+    MeshType* createType(
         const EntityData& entity,
         const EntityCloneData& data,
+        MeshTypeRegistry& typeRegistry,
         MeshRegistry& meshRegistry,
         std::vector<Material>& materials);
 
@@ -262,7 +263,7 @@ private:
         const Group* group,
         const EntityData& root,
         const EntityCloneData& data,
-        const std::shared_ptr<NodeType>& type,
+        MeshType* type,
         const glm::vec3& rootPos,
         const glm::vec3& posAdjustment,
         bool isRoot,

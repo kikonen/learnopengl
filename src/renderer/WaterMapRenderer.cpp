@@ -187,7 +187,7 @@ void WaterMapRenderer::drawNodes(
     ctx.bindClipPlanesUBO();
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
-        auto renderTypes = [reflect, &ctx, &current](const NodeTypeMap& typeMap) {
+        auto renderTypes = [reflect, &ctx, &current](const MeshTypeMap& typeMap) {
             ShaderBind bound(typeMap.begin()->first->m_nodeShader);
 
             for (const auto& it : typeMap) {

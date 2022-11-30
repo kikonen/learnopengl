@@ -27,7 +27,7 @@ int Node::nextID() noexcept
     return ++objectIDbase;
 }
 
-Node::Node(std::shared_ptr<NodeType> type)
+Node::Node(MeshType* type)
     : m_type(type),
     m_objectID(nextID())
 {

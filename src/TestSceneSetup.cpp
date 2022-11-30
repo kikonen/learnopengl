@@ -10,7 +10,7 @@
 #include "controller/MovingLightController.h"
 #include "controller/NodePathController.h"
 
-#include "registry/NodeType.h"
+#include "registry/MeshType.h"
 
 
 namespace {
@@ -44,8 +44,8 @@ void TestSceneSetup::setupEffectExplosion()
     asyncLoader->addLoader([assets, scene, asyncLoader]() {
         Shader* shader = asyncLoader->getShader(TEX_EFFECT);
 
-        auto type = std::make_shared<NodeType>("<effect>");
-        type->m_boundShader = shader;
+        auto type = scene->m_typeRegistry.getType("<effect>");
+        type->m_nodeShader = shader;
         type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;
 
@@ -53,7 +53,7 @@ void TestSceneSetup::setupEffectExplosion()
         //node->setPos(glm::vec3{ 0, 3.5, -20 } + assets.groundOffset);
         node->setScale(2);
 
-        scene->m_registry.addNode(type.get(), node);
+        scene->m_registry.addNode(type, node);
         });
 }
 
