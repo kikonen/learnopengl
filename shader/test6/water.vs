@@ -43,7 +43,7 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
-precision lowp float;
+precision mediump float;
 
 void main() {
   int materialIndex = int(a_materialIndex);

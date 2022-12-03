@@ -29,7 +29,7 @@ layout (location = 0) out vec4 fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-precision lowp float;
+precision mediump float;
 
 void main() {
 #ifdef USE_ALPHA

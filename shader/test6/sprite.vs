@@ -30,7 +30,7 @@ const vec3 normal = vec3(0.0, 0.0, 1.0);
 //
 ////////////////////////////////////////////////////////////
 
-precision lowp float;
+precision mediump float;
 
 void main() {
   int materialIndex = int(a_materialIndex);

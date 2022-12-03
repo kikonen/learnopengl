@@ -23,7 +23,7 @@ in VS_OUT {
 
 #endif
 
-precision lowp float;
+precision mediump float;
 
 void main()
 {

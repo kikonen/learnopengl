@@ -41,7 +41,7 @@ layout (location = 0) out vec4 fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-precision lowp float;
+precision mediump float;
 
 #include fn_calculate_dir_light.glsl
 #include fn_calculate_point_light.glsl

@@ -5,7 +5,7 @@ out vec4 fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-precision lowp float;
+precision mediump float;
 
 void main()
 {
