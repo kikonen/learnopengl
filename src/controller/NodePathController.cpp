@@ -25,7 +25,6 @@ bool NodePathController::update(
         const float posZ = cos(elapsed) * radius / 2.0f;
 
         auto pos = center + glm::vec3(posX, posY, posZ);
-        //if (!parent) pos += ctx.assets.groundOffset,
 
         node.setPosition(pos);
     }

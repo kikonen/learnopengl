@@ -515,7 +515,7 @@ std::unique_ptr<Camera> SceneFile::createCamera(
 {
     if (!data.enabled) return std::unique_ptr<Camera>();
 
-    auto pos = entity.position + data.pos;// +assets.groundOffset;
+    auto pos = entity.position + data.pos;
     auto camera = std::make_unique<Camera>(pos, data.front, data.up);
     camera->setRotation(data.rotation);
 
@@ -531,7 +531,7 @@ std::unique_ptr<Light> SceneFile::createLight(
     auto light = std::make_unique<Light>();
 
     light->setPos(data.pos);
-    light->setWorldTarget(data.worldTarget);// +assets.groundOffset);
+    light->setWorldTarget(data.worldTarget);
 
     light->linear = data.linear;
     light->quadratic = data.quadratic;

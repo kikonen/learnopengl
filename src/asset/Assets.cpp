@@ -28,10 +28,9 @@ Assets::Assets()
     placeholderTextureAlways = false;
     placeholderTexture = "textures/tiles.png";
 
-    //groundOffset = { 0.f, 15.f, -40.f };
-    //groundOffset = { 200.f, 0.f, 200.f };
-
     useIMGUI = false;
+    useWrireframe = false;
+    rasterizerDiscard = false;
 
     showNormals = false;
     showRearView = false;
@@ -41,6 +40,8 @@ Assets::Assets()
 
     showSelectionWireframe = false;
     showVolume = false;
+
+    useLight = true;
 
     // NOTE KI no skipping of frames
     renderFrequency = 0.f;

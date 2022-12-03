@@ -2,7 +2,7 @@ assets:
   log_file: log/development.log
 
   glfw_swap_interval: 3
-  gl_debug: true
+  gl_debug: false
 
   resolution_scale: 0.5
 
@@ -22,6 +22,8 @@ assets:
   xxground_offset: [200, 0, 200]
 
   use_imgui: false
+  use_light: true
+  use_wireframe: false
 
   show_normals: false
   show_rear_view: false
@@ -32,6 +34,8 @@ assets:
 
   show_selection_wireframe: true
   show_volume: true
+
+  rasterizer_discard: false
 
   render_frequency: 0.0
   debug_clear_color: true

@@ -80,11 +80,14 @@ void AssetsFile::loadAssets(
         else if (k == "placeholder_texture") {
             data.placeholderTexture = v.as<std::string>();
         }
-        //else if (k == "ground_offset") {
-        //    data.groundOffset = readVec3(v);
-        //}
         else if (k == "use_imgui") {
             data.useIMGUI = v.as<bool>();
+        }
+        else if (k == "use_light") {
+            data.useLight = v.as<bool>();
+        }
+        else if (k == "use_wireframe") {
+            data.useWrireframe = v.as<bool>();
         }
         else if (k == "show_normals") {
             data.showNormals = v.as<bool>();
@@ -109,6 +112,9 @@ void AssetsFile::loadAssets(
         }
         else if (k == "show_volume") {
             data.showVolume = v.as<bool>();
+        }
+        else if (k == "rasterizer_discard") {
+            data.rasterizerDiscard = v.as<bool>();
         }
         else if (k == "render_frequency") {
             data.renderFrequency = v.as<float>();

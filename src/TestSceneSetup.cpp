@@ -50,7 +50,6 @@ void TestSceneSetup::setupEffectExplosion()
         type->m_flags.noShadow = true;
 
         auto node = new Node(type);
-        //node->setPos(glm::vec3{ 0, 3.5, -20 } + assets.groundOffset);
         node->setScale(2);
 
         scene->m_registry.addNode(type, node);

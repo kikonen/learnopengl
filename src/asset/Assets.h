@@ -35,9 +35,9 @@ public:
     bool placeholderTextureAlways;
     std::string placeholderTexture;
 
-    //glm::vec3 groundOffset;
-
     bool useIMGUI;
+    bool useWrireframe;
+    bool useLight;
 
     bool showNormals;
     bool showRearView;
@@ -48,6 +48,8 @@ public:
 
     bool showSelectionWireframe;
     bool showVolume;
+
+    bool rasterizerDiscard;
 
     float renderFrequency;
     bool debugClearColor;

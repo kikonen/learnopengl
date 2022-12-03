@@ -67,19 +67,18 @@ int Test6::onRender(const ki::RenderClock& clock) {
     RenderContext ctx("TOP", nullptr,
         m_assets, clock, m_state, scene, *camera, m_backend.get(),
         m_assets.nearPlane, m_assets.farPlane, w, h);
-    //ctx.m_useWireframe = true;
-    //ctx.m_useLight = false;
 
-    //// https://cmichel.io/understanding-front-faces-winding-order-and-normals
-    //ctx.state.enable(GL_CULL_FACE);
-    //ctx.state.cullFace(GL_BACK);
-    //ctx.state.frontFace(GL_CCW);
+    ctx.m_useWireframe = m_assets.useWrireframe;
+    ctx.m_useLight = m_assets.useLight;
+
+    // https://paroj.github.io/gltut/apas04.html
+    if (m_assets.rasterizerDiscard) {
+        //glEnable(GL_RASTERIZER_DISCARD);
+        ctx.state.enable(GL_RASTERIZER_DISCARD);
+    }
 
     //ctx.state.enable(GL_DEPTH_TEST);
     //glDepthFunc(GL_LEQUAL);
-
-    // https://paroj.github.io/gltut/apas04.html
-    //glEnable(GL_RASTERIZER_DISCARD);
 
     ctx.state.enable(GL_PROGRAM_POINT_SIZE);
     glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
