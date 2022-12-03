@@ -173,6 +173,7 @@ void MirrorMapRenderer::drawNodes(
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
 
+                if (!type.m_flags.render) continue;
                 if (type.m_flags.noReflect) continue;
 
                 auto& batch = ctx.m_batch;

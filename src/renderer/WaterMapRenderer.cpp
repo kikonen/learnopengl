@@ -194,6 +194,8 @@ void WaterMapRenderer::drawNodes(
                 auto& type = *it.first;
 
                 if (type.m_flags.water) continue;
+
+                if (!type.m_flags.render) continue;
                 if (reflect && type.m_flags.noReflect) continue;
                 if (!reflect && type.m_flags.noRefract) continue;
 

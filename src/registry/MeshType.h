@@ -26,6 +26,7 @@ struct NodeRenderFlags {
     bool origo = false;
     bool noFrustum = false;
     bool cubeMap = false;
+    bool render = false;
 };
 
 enum class NodeScriptId {
