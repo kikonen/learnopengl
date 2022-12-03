@@ -70,8 +70,10 @@ private:
     std::vector<glm::mat3> m_normalMatrices;
     std::vector<glm::vec4> m_objectIDs;
 
-    GLBuffer m_modelBuffer;
-    GLBuffer m_normalBuffer;
-    GLBuffer m_objectIDBuffer;
+    GLBuffer m_buffer;
+
+    int m_modelOffset = 0;
+    int m_normalOffset = 0;
+    int m_objectOffset = 0;
 };
 

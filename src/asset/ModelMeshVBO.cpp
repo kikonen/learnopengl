@@ -35,7 +35,7 @@ void ModelMeshVBO::prepare(ModelMesh& mesh)
 
 void ModelMeshVBO::prepareVAO(GLVertexArray& vao)
 {
-    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_buffer, 0, sizeof(VertexEntry));
+    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_buffer, m_vertexOffset, sizeof(VertexEntry));
     {
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
@@ -80,13 +80,13 @@ void ModelMeshVBO::prepareBuffers(
     const int sz = vertexSize + indexSize;
 
     unsigned char* data = new unsigned char[sz];
-    m_vertex_offset = 0;
-    m_index_offset = vertexSize;
+    m_vertexOffset = 0;
+    m_indexOffset = vertexSize;
 
     m_buffer.create();
 
-    prepareVertex(mesh, data, m_vertex_offset);
-    prepareIndex(mesh, data, m_index_offset);
+    prepareVertex(mesh, data, m_vertexOffset);
+    prepareIndex(mesh, data, m_indexOffset);
 
     m_buffer.init(sz, data, GL_DYNAMIC_STORAGE_BIT);
 

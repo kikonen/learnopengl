@@ -73,42 +73,48 @@ void Batch::prepare(
 
     m_bufferSize = bufferSize;
 
-    constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT;
+    {
+        const int modelSize = m_bufferSize * sizeof(glm::mat4);
+        const int normalSize = m_bufferSize * sizeof(glm::mat3);
+        const int objectSize = m_bufferSize * sizeof(glm::vec4);
+
+        const int sz = modelSize + normalSize + objectSize;
+
+        m_modelOffset = 0;
+        m_normalOffset = modelSize;
+        m_objectOffset = modelSize + normalSize;
+
+        constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT;
+
+        m_buffer.create();
+        m_buffer.initEmpty(sz, bufferFlags);
+    }
 
     // model
     {
         m_modelMatrices.reserve(m_bufferSize);
-
-        m_modelBuffer.create();
-        m_modelBuffer.initEmpty(m_bufferSize * sizeof(glm::mat4), bufferFlags);
     }
 
     // normal
     {
         m_normalMatrices.reserve(m_bufferSize);
-
-        m_normalBuffer.create();
-        m_normalBuffer.initEmpty(m_bufferSize * sizeof(glm::mat3), bufferFlags);
     }
 
     // objectIDs
     {
         m_objectIDs.reserve(m_bufferSize);
-
-        m_objectIDBuffer.create();
-        m_objectIDBuffer.initEmpty(m_bufferSize * sizeof(glm::vec4), bufferFlags);
     }
 
     KI_DEBUG(fmt::format(
-        "BATCHL: size={}, model={}, normal={}, objectID={}",
-        m_bufferSize, m_modelBuffer, m_normalBuffer, m_objectIDBuffer));
+        "BATCHL: size={}, buffer={}",
+        m_bufferSize, m_buffer));
 }
 
 void Batch::prepareMesh(GLVertexArray& vao)
 {
     // model
     {
-        KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_modelBuffer, 0, sizeof(glm::mat4)));
+        KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_buffer, m_modelOffset, sizeof(glm::mat4)));
 
         // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
         constexpr GLsizei vecSize = sizeof(glm::vec4);
@@ -126,7 +132,7 @@ void Batch::prepareMesh(GLVertexArray& vao)
 
     // normal
     {
-        KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_NORMAL_MATRIX_BINDING, m_normalBuffer, 0, sizeof(glm::mat3)));
+        KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_NORMAL_MATRIX_BINDING, m_buffer, m_normalOffset, sizeof(glm::mat3)));
 
         // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
         constexpr GLsizei vecSize = sizeof(glm::vec3);
@@ -144,7 +150,7 @@ void Batch::prepareMesh(GLVertexArray& vao)
 
     // objectIDs
     {
-        KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_OBJECT_ID_BINDING, m_objectIDBuffer, 0, sizeof(glm::vec4)));
+        KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_OBJECT_ID_BINDING, m_buffer, m_objectOffset, sizeof(glm::vec4)));
 
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
 
@@ -169,13 +175,13 @@ void Batch::update(size_t count) noexcept
     // TODO KI Map COHERRENT + PERSISTENT
     // => can be MUCH faster
 
-    m_modelBuffer.update(0, count * sizeof(glm::mat4), m_modelMatrices.data());
+    m_buffer.update(m_modelOffset, count * sizeof(glm::mat4), m_modelMatrices.data());
 
     if (m_useObjectIDBuffer) {
-        m_objectIDBuffer.update(0, count * sizeof(glm::vec4), m_objectIDs.data());
+        m_buffer.update(m_objectOffset, count * sizeof(glm::vec4), m_objectIDs.data());
     }
     else {
-        m_normalBuffer.update(0, count * sizeof(glm::mat3), m_normalMatrices.data());
+        m_buffer.update(m_normalOffset, count * sizeof(glm::mat3), m_normalMatrices.data());
     }
 }
 
