@@ -39,16 +39,6 @@ const std::string QuadMesh::str() const
     return fmt::format("<QUAD: {}>", m_objectID);
 }
 
-void QuadMesh::prepareVolume() {
-    const auto& aabb = calculateAABB();
-    setAABB(aabb);
-
-    setVolume(std::make_unique<Sphere>(
-        (aabb.m_max + aabb.m_min) * 0.5f,
-        // NOTE KI *radius* not diam needed
-        glm::length(aabb.m_min - aabb.m_max) * 0.5f));
-}
-
 const AABB& QuadMesh::calculateAABB() const
 {
     return QUAD_AABB;

@@ -26,7 +26,7 @@ public:
 
     virtual const std::string str() const;
 
-    virtual void prepareVolume() = 0;
+    virtual void prepareVolume();
     virtual const AABB& calculateAABB() const = 0;
 
     virtual const std::vector<Material>& getMaterials() const = 0;

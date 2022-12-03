@@ -44,16 +44,6 @@ const std::string ModelMesh::str() const
         m_objectID, m_meshPath, m_meshName);
 }
 
-void ModelMesh::prepareVolume() {
-    const auto& aabb = calculateAABB();
-    setAABB(aabb);
-
-    setVolume(std::make_unique<Sphere>(
-        (aabb.m_max + aabb.m_min) * 0.5f,
-        // NOTE KI *radius* not diam needed
-        glm::length(aabb.m_min - aabb.m_max) * 0.5f));
-}
-
 const AABB& ModelMesh::calculateAABB() const {
     glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
     glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());

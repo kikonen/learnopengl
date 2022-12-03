@@ -36,15 +36,6 @@ const std::string SpriteMesh::str() const
     return fmt::format("<SPRITE: {}>", m_objectID);
 }
 
-void SpriteMesh::prepareVolume() {
-    const auto& aabb = calculateAABB();
-    setAABB(aabb);
-    setVolume(std::make_unique<Sphere>(
-        (aabb.m_max + aabb.m_min) * 0.5f,
-        // NOTE KI *radius* not diam needed
-        glm::length(aabb.m_min - aabb.m_max) * 0.5f));
-}
-
 const AABB& SpriteMesh::calculateAABB() const
 {
     return SPRITE_AABB;
