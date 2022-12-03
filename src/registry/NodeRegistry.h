@@ -18,18 +18,6 @@
 
 class MaterialRegistry;
 
-struct ShaderKey {
-    ShaderKey(int shaderID, bool renderBack) noexcept
-        : shaderID(shaderID),
-        renderBack(renderBack) {};
-    int shaderID;
-    bool renderBack;
-
-    bool operator<(const ShaderKey& o)  const noexcept {
-        return std::tie(shaderID, renderBack) < std::tie(o.shaderID, o.renderBack);
-    }
-};
-
 enum class NodeOperation {
     ADDED
 };
@@ -38,7 +26,7 @@ using GroupVector = std::vector<Group*>;
 
 using NodeVector = std::vector<Node*>;
 using MeshTypeMap = std::map<MeshType*, NodeVector>;
-using ShaderTypeMap = std::map<const ShaderKey, MeshTypeMap>;
+using ShaderTypeMap = std::map<int, MeshTypeMap>;
 
 using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
 
