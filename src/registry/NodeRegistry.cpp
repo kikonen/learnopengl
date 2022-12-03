@@ -33,6 +33,7 @@ NodeRegistry::~NodeRegistry()
     {
         solidNodes.clear();
         blendedNodes.clear();
+        invisibleNodes.clear();
 
         m_cameraNodes.clear();
 
@@ -250,6 +251,9 @@ void NodeRegistry::bindNode(
 
     if (type->m_flags.blend)
         map = &blendedNodes;
+
+    if (type->m_flags.noRender)
+        map = &invisibleNodes;
 
     // NOTE KI more optimal to not switch between culling mode (=> group by it)
     const ShaderKey key(shader ? shader->m_objectID : NULL_SHADER_ID, type->m_flags.renderBack);

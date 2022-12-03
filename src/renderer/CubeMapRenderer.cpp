@@ -179,8 +179,6 @@ void CubeMapRenderer::drawNodes(
         for (const auto& it : typeMap) {
             auto& type = *it.first;
 
-            if (!type.m_flags.render) continue;
-
             auto& batch = ctx.m_batch;
 
             //ShaderBind bound(type->defaultShader);

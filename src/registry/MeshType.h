@@ -20,13 +20,13 @@ struct NodeRenderFlags {
     bool noSelect = false;
     bool noReflect = false;
     bool noRefract = false;
+    bool noRender = false;
     bool wireframe = false;
     bool instanced = false;
     bool root = false;
     bool origo = false;
     bool noFrustum = false;
     bool cubeMap = false;
-    bool render = false;
 };
 
 enum class NodeScriptId {

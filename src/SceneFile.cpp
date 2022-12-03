@@ -115,7 +115,6 @@ void SceneFile::attachVolume(
     flags.noFrustum = true;
     flags.noReflect = true;
     flags.noRefract = true;
-    flags.render = true;
 
     type->m_nodeShader = m_asyncLoader->getShader(TEX_VOLUME);
 
@@ -277,7 +276,7 @@ MeshType* SceneFile::createType(
     else if (data.type == EntityType::origo) {
         // NOTE KI nothing to do
         type->m_flags.origo = true;
-        type->m_flags.render = false;
+        type->m_flags.noRender = true;
     }
 
     if (data.type != EntityType::origo) {
@@ -285,8 +284,6 @@ MeshType* SceneFile::createType(
             KI_WARN_SB("SCENE_FILEIGNORE: NO_MESH id=" << data.id << " (" << data.name << ")");
             return nullptr;
         }
-
-        type->m_flags.render = true;
 
         bool normalTex = false;
         bool normalPattern = false;

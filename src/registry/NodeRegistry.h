@@ -107,6 +107,7 @@ public:
     ShaderTypeMap solidNodes;
     ShaderTypeMap alphaNodes;
     ShaderTypeMap blendedNodes;
+    ShaderTypeMap invisibleNodes;
 
     ViewportVector viewports;
 
