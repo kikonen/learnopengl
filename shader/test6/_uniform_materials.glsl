@@ -2,6 +2,6 @@
 //  Material u_materials[MAT_COUNT];
 //};
 
-layout (std430, binding = SSBO_MATERIALS) buffer Materials {
+layout (std430, binding = SSBO_MATERIALS) readonly buffer Materials {
   Material u_materials[];
 };
