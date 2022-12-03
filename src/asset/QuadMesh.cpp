@@ -120,5 +120,5 @@ void QuadMesh::prepareMaterialVBO(
 
 void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
 {
-    KI_GL_CALL(glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount));
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount);
 }

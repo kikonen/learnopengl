@@ -98,5 +98,5 @@ void ModelMesh::prepareVAO(
 
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
 {
-    KI_GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, m_triCount * 3, GL_UNSIGNED_INT, (void*)m_vertexVBO.m_indexOffset, instanceCount));
+    glDrawElementsInstanced(GL_TRIANGLES, m_triCount * 3, GL_UNSIGNED_INT, (void*)m_vertexVBO.m_indexOffset, instanceCount);
 }

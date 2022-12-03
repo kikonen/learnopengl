@@ -67,9 +67,9 @@ void SpriteMesh::prepareVAO(
     {
         glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
 
-        KI_GL_CALL(glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material)));
+        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material));
 
-        KI_GL_CALL(glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING));
+        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
     }
 }
 
@@ -88,5 +88,5 @@ void SpriteMesh::prepareMaterialVBO(
 
 void SpriteMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
 {
-    KI_GL_CALL(glDrawArraysInstanced(GL_POINTS, 0, 1, instanceCount));
+    glDrawArraysInstanced(GL_POINTS, 0, 1, instanceCount);
 }
