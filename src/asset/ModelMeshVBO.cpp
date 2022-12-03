@@ -16,21 +16,26 @@ namespace {
 #pragma pack(pop)
 }
 
+ModelMeshVBO::ModelMeshVBO()
+{
+
+}
+
+ModelMeshVBO::~ModelMeshVBO()
+{
+}
+
 void ModelMeshVBO::prepare(ModelMesh& mesh)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    m_vbo.create();
-    m_ebo.create();
-
-    prepareVBO(mesh);
-    prepareEBO(mesh);
+    prepareBuffers(mesh);
 }
 
 void ModelMeshVBO::prepareVAO(GLVertexArray& vao)
 {
-    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(VertexEntry));
+    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_buffer, 0, sizeof(VertexEntry));
     {
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
@@ -63,11 +68,36 @@ void ModelMeshVBO::prepareVAO(GLVertexArray& vao)
     }
 
     {
-        glVertexArrayElementBuffer(vao, m_ebo);
+        glVertexArrayElementBuffer(vao, m_buffer);
     }
 }
 
-void ModelMeshVBO::prepareVBO(ModelMesh& mesh)
+void ModelMeshVBO::prepareBuffers(
+    ModelMesh& mesh)
+{
+    const int vertexSize = sizeof(VertexEntry) * mesh.m_vertices.size();
+    const int indexSize = mesh.m_tris.size() * sizeof(int) * 3;
+    const int sz = vertexSize + indexSize;
+
+    unsigned char* data = new unsigned char[sz];
+    m_vertex_offset = 0;
+    m_index_offset = vertexSize;
+
+    m_buffer.create();
+
+    prepareVertex(mesh, data, m_vertex_offset);
+    prepareIndex(mesh, data, m_index_offset);
+
+    m_buffer.init(sz, data, GL_DYNAMIC_STORAGE_BIT);
+
+    delete[] data;
+}
+
+
+void ModelMeshVBO::prepareVertex(
+    ModelMesh& mesh,
+    unsigned char* data,
+    int offset)
 {
     auto vertices = mesh.m_vertices;
 
@@ -75,8 +105,7 @@ void ModelMeshVBO::prepareVBO(ModelMesh& mesh)
     constexpr int stride_size = sizeof(VertexEntry);
     const int sz = stride_size * vertices.size();
 
-    VertexEntry* buffer = (VertexEntry*)new unsigned char[sz];
-    memset(buffer, 0, sz);
+    VertexEntry* buffer = (VertexEntry*)(data + offset);
 
     {
         VertexEntry* vbo = buffer;
@@ -105,18 +134,20 @@ void ModelMeshVBO::prepareVBO(ModelMesh& mesh)
             vbo++;
         }
     }
-
-    glNamedBufferStorage(m_vbo, sz, buffer, 0);
-    delete[] buffer;
 }
 
-void ModelMeshVBO::prepareEBO(ModelMesh& mesh)
+void ModelMeshVBO::prepareIndex(
+    ModelMesh& mesh,
+    unsigned char* data,
+    int offset)
 {
     auto& tris = mesh.m_tris;
 
+    const int sz = mesh.m_tris.size() * 3;
+
     // EBO == IBO ?!?
     const int index_count = tris.size() * 3;
-    unsigned int* buffer = new unsigned int[index_count];
+    unsigned int* buffer = (unsigned int*)(data + offset);
 
     for (int i = 0; i < tris.size(); i++) {
         const auto& vi = tris[i];
@@ -125,7 +156,4 @@ void ModelMeshVBO::prepareEBO(ModelMesh& mesh)
         buffer[base + 1] = vi[1];
         buffer[base + 2] = vi[2];
     }
-
-    glNamedBufferStorage(m_ebo, sizeof(unsigned int) * index_count, buffer, 0);
-    delete[] buffer;
 }

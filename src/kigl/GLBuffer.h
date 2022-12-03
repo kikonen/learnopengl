@@ -23,6 +23,10 @@ struct GLBuffer {
         glNamedBufferStorage(id, size, nullptr, flags);
     }
 
+    void init(int size, void* data, int flags) {
+        glNamedBufferStorage(id, size, data, flags);
+    }
+
     void update(int offset, int size, void* data) {
         glNamedBufferSubData(id, offset, size, data);
     }

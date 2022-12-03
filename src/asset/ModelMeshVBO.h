@@ -5,8 +5,14 @@
 
 class ModelMesh;
 
+//
+// https://github.com/fendevel/Guide-to-Modern-OpenGL-Functions#storing-index-and-vertex-data-under-single-buffer
+//
 class ModelMeshVBO {
 public:
+    ModelMeshVBO();
+    ~ModelMeshVBO();
+
     void prepare(
         ModelMesh& mesh);
 
@@ -14,16 +20,25 @@ public:
         GLVertexArray& vao);
 
 private:
-    void prepareVBO(
+    void prepareBuffers(
         ModelMesh& mesh);
 
-    void prepareEBO(
-        ModelMesh& mesh);
+    void prepareVertex(
+        ModelMesh& mesh,
+        unsigned char* data,
+        int offset);
+
+    void prepareIndex(
+        ModelMesh& mesh,
+        unsigned char* data,
+        int offset);
+
+public:
+    int m_vertex_offset = 0;
+    int m_index_offset = 0;
 
 private:
     bool m_prepared = false;
 
-    GLBuffer m_vbo;
-    GLBuffer m_ebo;
-
+    GLBuffer m_buffer;
 };
