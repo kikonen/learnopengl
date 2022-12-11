@@ -74,3 +74,5 @@ assets:
 
   cube_map_size: 1000
   cube_map_render_frequency: 0.25
+
+  viewport_effect: edge

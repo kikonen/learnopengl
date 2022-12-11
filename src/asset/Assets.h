@@ -5,6 +5,14 @@
 #include "glm/glm.hpp"
 #include <stduuid/uuid.h>
 
+enum class ViewportEffect {
+    none = 0,
+    invert = 1,
+    grayScale = 2,
+    sharpen = 3,
+    blur = 4,
+    edge = 5,
+};
 
 // configure assets locations
 class Assets final
@@ -95,6 +103,8 @@ public:
 
     float cubeMapNearPlane;
     float cubeMapFarPlane;
+
+    ViewportEffect viewportEffect;
 
     uuids::uuid volumeUUID;
 

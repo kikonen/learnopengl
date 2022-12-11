@@ -179,7 +179,7 @@ void AssetsFile::loadAssets(
         else if (k == "mirror_reflection_size") {
             data.mirrorReflectionSize = v.as<int>();
         }
-        else if (k == "mirror_rdRefraction_size") {
+        else if (k == "mirror_reRefraction_size") {
             data.mirrorRefractionSize = v.as<int>();
         }
         else if (k == "water_reflection_size") {
@@ -193,6 +193,30 @@ void AssetsFile::loadAssets(
         }
         else if (k == "cube_map_render_frequency") {
             data.cubeMapRenderFrequency = v.as<float>();
+        }
+        else if (k == "viewport_effect") {
+            std::string effect = v.as<std::string>();
+            if (effect == "none") {
+                data.viewportEffect = ViewportEffect::none;
+            }
+            else if (effect == "blur") {
+                data.viewportEffect = ViewportEffect::blur;
+            }
+            else if (effect == "edge") {
+                data.viewportEffect = ViewportEffect::edge;
+            }
+            else if (effect == "gray_scale") {
+                data.viewportEffect = ViewportEffect::grayScale;
+            }
+            else if (effect == "invert") {
+                data.viewportEffect = ViewportEffect::invert;
+            }
+            else if (effect == "sharpen") {
+                data.viewportEffect = ViewportEffect::sharpen;
+            }
+            else {
+                std::cout << "UNKNOWN viewport_effect: " << k << "=" << v << "\n";
+            }
         }
         else {
             std::cout << "UNKNOWN ASSETS_ENTRY: " << k << "=" << v << "\n";

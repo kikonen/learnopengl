@@ -88,6 +88,8 @@ Assets::Assets()
     cubeMapNearPlane = 0.5;
     cubeMapFarPlane = 200;
 
+    viewportEffect = ViewportEffect::none;
+
     volumeUUID = KI_UUID("9d409e0d-2716-48dd-a205-3a54bdfa5097");
 
     /////////////////////////

@@ -146,26 +146,26 @@ private:
     GLuint getSubroutineIndex(const std::string& name, GLenum shadertype);
 
 public:
-    class SubroutineIndex final {
-    protected:
-        SubroutineIndex(const std::string_view& name, GLenum shaderType)
-            : m_name(name),
-            m_shaderType(shaderType)
-        {
-        }
+    //class SubroutineIndex final {
+    //protected:
+    //    SubroutineIndex(const std::string_view& name, GLenum shaderType)
+    //        : m_name(name),
+    //        m_shaderType(shaderType)
+    //    {
+    //    }
 
-    public:
-        void init(Shader* shader) {
-            m_index = shader->getSubroutineIndex(m_name, m_shaderType);
-        }
+    //public:
+    //    void init(Shader* shader) {
+    //        m_index = shader->getSubroutineIndex(m_name, m_shaderType);
+    //    }
 
-    public:
-        const GLenum m_shaderType;
-        GLuint m_index = -1;
+    //public:
+    //    const GLenum m_shaderType;
+    //    GLuint m_index = -1;
 
-    protected:
-        const std::string m_name;
-    };
+    //protected:
+    //    const std::string m_name;
+    //};
 
     class Uniform {
     protected:
@@ -194,16 +194,23 @@ public:
         {
         }
 
-        void set(const SubroutineIndex& value) noexcept {
-            if (m_locId != -1 && (m_unassigned || value.m_index != m_lastValue)) {
-                glUniformSubroutinesuiv(value.m_shaderType, m_locId, &value.m_index);
-                m_lastValue = value.m_index;
+        // @param shaderType
+        // - GL_VERTEX_SHADER
+        // - GL_FRAGMENT_SHADER
+        // - GL_GEOMETRY_SHADER
+        // - GL_TESS_CONTROL_SHADER
+        // - GL_TESS_EVALUATION_SHADER
+        // - GL_COMPUTE_SHADER
+        void set(const GLenum shaderType, GLuint index) noexcept {
+            if ((m_unassigned || index != m_lastValue)) {
+                glUniformSubroutinesuiv(shaderType, 1, &index);
+                m_lastValue = index;
                 m_unassigned = false;
             }
         }
 
     private:
-        GLuint m_lastValue;
+        GLuint m_lastValue = -1;
     };
 
 
@@ -382,7 +389,7 @@ public:
     //Shader::Int shadowMap{ "u_shadowMap" };
     //Shader::Int normalMap{ "u_normalMap" };
 
-    Shader::Int effect{ "u_effect" };
+    Shader::Subroutine effect{ "u_effect" };
 
     Shader::Float nearPlane{ "u_nearPlane" };
     Shader::Float farPlane{ "u_farPlane" };

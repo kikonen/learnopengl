@@ -108,7 +108,7 @@ void Scene::prepare(ShaderRegistry& shaders)
             0,
             shaders.getShader(assets, TEX_VIEWPORT));
 
-        //mainViewport->effect = ViewportEffect::edge;
+        m_mainViewport->m_effect = assets.viewportEffect;
 
         m_mainViewport->prepare(assets);
         m_registry.addViewPort(m_mainViewport);

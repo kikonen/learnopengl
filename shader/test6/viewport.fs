@@ -1,10 +1,11 @@
 #version 450 core
-const int EFF_NONE = 0;
-const int EFF_INVERT = 1;
-const int EFF_GRAY_SCALE = 2;
-const int EFF_SHARPEN = 3;
-const int EFF_BLUR = 4;
-const int EFF_EDGE = 5;
+
+#define EFF_NONE 0
+#define EFF_INVERT 1
+#define EFF_GRAY_SCALE 2
+#define EFF_SHARPEN 3
+#define EFF_BLUR 4
+#define EFF_EDGE 5
 
 out vec4 fragColor;
 
@@ -12,22 +13,44 @@ in vec2 texCoord;
 
 layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 
-uniform int u_effect;
+subroutine vec4 sub_effect(vec4 color);
+
+subroutine uniform sub_effect u_effect;
 
 const float offset = 1.0 / 300.0;
 
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
+
 precision mediump float;
 
-void main()
+layout (index = EFF_NONE)
+subroutine (sub_effect)
+vec4 effectNone(vec4 color)
 {
-  vec4 color = texture(u_viewportTex, texCoord);
+  return color;
+}
 
-  if (u_effect == EFF_INVERT) {
-    color = vec4(vec3(1.0 - color), color.a);
-  } else if (u_effect == EFF_GRAY_SCALE) {
+layout (index = EFF_INVERT)
+subroutine (sub_effect)
+vec4 effectInvert(vec4 color)
+{
+  return vec4(vec3(1.0 - color), color.a);
+}
+
+layout (index = EFF_GRAY_SCALE)
+subroutine (sub_effect)
+vec4 effectGrayScale(vec4 color)
+{
     float avg = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
-    color = vec4(avg, avg, avg, color.a);
-  } else if (u_effect == EFF_SHARPEN) {
+    return vec4(avg, avg, avg, color.a);
+}
+
+layout (index = EFF_SHARPEN)
+subroutine (sub_effect)
+vec4 effectSharpen(vec4 color)
+{
     vec2 offsets[9] = vec2[]
       (
        vec2(-offset,  offset), // top-left
@@ -56,8 +79,13 @@ void main()
     for(int i = 0; i < 9; i++) {
       col += sampleTex[i] * kernel[i];
     }
-    color = vec4(col, 1.0);
-  } else if (u_effect == EFF_BLUR) {
+    return vec4(col, 1.0);
+}
+
+layout (index = EFF_BLUR)
+subroutine (sub_effect)
+vec4 effectBlur(vec4 color)
+{
     vec2 offsets[9] = vec2[]
       (
        vec2(-offset,  offset), // top-left
@@ -87,8 +115,13 @@ void main()
     for(int i = 0; i < 9; i++) {
       col += sampleTex[i] * kernel[i];
     }
-    color = vec4(col, 1.0);
-  } else if (u_effect == EFF_EDGE) {
+    return vec4(col, 1.0);
+}
+
+layout (index = EFF_EDGE)
+subroutine (sub_effect)
+vec4 effectEdge(vec4 color)
+{
     vec2 offsets[9] = vec2[]
       (
        vec2(-offset,  offset), // top-left
@@ -118,8 +151,30 @@ void main()
     for(int i = 0; i < 9; i++) {
       col += sampleTex[i] * kernel[i];
     }
-    color = vec4(col, 1.0);
-  }
+    return vec4(col, 1.0);
+}
 
-  fragColor = color;
+/*
+subroutine (sub_effect)
+vec4 effectX(vec4 color)
+{
+  vec4 color;
+  if (u_effect == EFF_INVERT) {
+    color = effectInvert(color);
+  } else if (u_effect == EFF_GRAY_SCALE) {
+    color = effectGrayScale(color);
+  } else if (u_effect == EFF_SHARPEN) {
+    color = effectSharpen(color);
+  } else if (u_effect == EFF_BLUR) {
+    color = effectBlur(color);
+  } else if (u_effect == EFF_EDGE) {
+    color = effectEdge(color);
+  }
+  return color;
+}
+*/
+
+void main()
+{
+  fragColor = u_effect(texture(u_viewportTex, texCoord));
 }
