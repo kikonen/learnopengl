@@ -9,6 +9,7 @@
 #include "scene/RenderContext.h"
 
 #include "NodeRegistry.h"
+#include "MaterialRegistry.h"
 
 namespace {
     int idBase = 0;
@@ -69,7 +70,8 @@ void MeshType::modifyMaterials(std::function<void(Material&)> fn)
 
 void MeshType::prepare(
     const Assets& assets,
-    NodeRegistry& registry) noexcept
+    NodeRegistry& nodeRegistry,
+    MaterialRegistry& materialRegistry) noexcept
 {
     if (!m_mesh) return;
 
@@ -77,12 +79,12 @@ void MeshType::prepare(
     m_prepared = true;
 
     m_vao.create();
-    m_materialVBO.create();
 
     m_mesh->prepare(assets);
     m_mesh->prepareMaterials(m_materialVBO);
     m_mesh->prepareVAO(m_vao);
 
+    materialRegistry.registerMaterialVBO(m_materialVBO);
     m_materialVBO.prepareVAO(m_vao);
 
     Shader* shader = m_nodeShader;

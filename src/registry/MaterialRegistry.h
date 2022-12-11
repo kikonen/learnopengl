@@ -8,6 +8,7 @@
 
 #include "kigl/GLBuffer.h"
 
+class MaterialVBO;
 
 class MaterialRegistry {
 public:
@@ -16,6 +17,8 @@ public:
 
     // Updates m_registeredIndex of Material
     void add(const Material& material);
+
+    void registerMaterialVBO(MaterialVBO& materialVBO);
 
     int getBaseIndex() { return m_materials.size(); }
 
@@ -48,5 +51,5 @@ private:
     GLBuffer m_ubo;
     GLBuffer m_ssbo;
 
-    GLBuffer m_assignedVBO;
+    GLBuffer m_vbo;
 };

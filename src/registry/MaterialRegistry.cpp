@@ -1,5 +1,11 @@
 #include "MaterialRegistry.h"
 
+#include "asset/MaterialVBO.h"
+
+namespace {
+    constexpr int MAX_MATERIAL_ENTRY_COUNT = 1000000;
+}
+
 MaterialRegistry::MaterialRegistry(const Assets& assets)
     : assets(assets)
 {
@@ -15,6 +21,28 @@ void MaterialRegistry::add(const Material& material)
     if (material.m_registeredIndex >= 0) return;
     material.m_registeredIndex = m_materials.size();
     m_materials.emplace_back(material);
+}
+
+void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
+{
+    const int sz = sizeof(MaterialEntry);
+    const int index = m_assignedMaterials.size();
+
+    materialVBO.m_offset = index * sz;
+    materialVBO.m_vbo = &m_vbo;
+
+    for (auto& entry : materialVBO.m_entries) {
+        m_assignedMaterials.push_back(entry);
+    }
+
+    assert(m_assignedMaterials.size() <= MAX_MATERIAL_ENTRY_COUNT);
+
+    //m_ubo.update(0, sizeof(MaterialsUBO), &m_materialsUbo);
+    m_ssbo.update(
+        materialVBO.m_offset,
+        (m_assignedMaterials.size() - index) * sz,
+        &m_assignedMaterials[index]);
+
 }
 
 Material* MaterialRegistry::find(
@@ -82,7 +110,11 @@ void MaterialRegistry::prepare()
         const int sz = MAX_SSBO_MATERIALS * sizeof(MaterialSSBO);
         m_ssbo.create();
         m_ssbo.initEmpty(sz, GL_DYNAMIC_STORAGE_BIT);
+    }
 
+    {
+        m_vbo.create();
+        m_vbo.initEmpty(MAX_MATERIAL_ENTRY_COUNT * sizeof(MaterialEntry), GL_DYNAMIC_STORAGE_BIT);
     }
 }
 

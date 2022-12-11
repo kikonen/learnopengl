@@ -35,21 +35,12 @@ const std::vector<Material>& MaterialVBO::getMaterials() const
     return m_materials;
 }
 
-void MaterialVBO::create()
-{
-    if (m_vbo != -1) return;
-    m_vbo.create();
-}
-
 void MaterialVBO::prepareVAO(
     GLVertexArray& vao)
 {
-    {
-        const int sz = m_entries.size() * sizeof(MaterialEntry);
-        m_vbo.init(sz, m_entries.data(), 0);
-    }
+    if (!m_vbo) return;
 
-    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, m_vbo, m_offset, sizeof(MaterialEntry));
+    KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, *m_vbo, m_offset, sizeof(MaterialEntry)));
     {
         glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
 

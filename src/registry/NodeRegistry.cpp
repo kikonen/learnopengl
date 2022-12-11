@@ -242,7 +242,7 @@ void NodeRegistry::bindNode(
     if (node->m_light)
         int x = 0;
 
-    type->prepare(assets, *this);
+    type->prepare(assets, *this, materialRegistry);
 
     auto* map = &solidNodes;
 
