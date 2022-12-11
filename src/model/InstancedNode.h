@@ -1,7 +1,5 @@
 #pragma once
 
-#include "asset/MeshBuffers.h"
-
 #include "Node.h"
 
 class InstancedNode final : public Node

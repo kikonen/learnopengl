@@ -37,8 +37,8 @@ MeshType::~MeshType()
 const std::string MeshType::str() const noexcept
 {
     return fmt::format(
-        "<NODE_TYPE: id={}, name={}, mesh={}, buffers={}>",
-        typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_buffers.str());
+        "<NODE_TYPE: id={}, name={}, mesh={}, vao={}>",
+        typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao);
 }
 
 void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
@@ -76,12 +76,12 @@ void MeshType::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_buffers.prepare(false, false, false);
+    m_vao.create();
     m_materialVBO.create();
 
     m_mesh->prepare(assets);
     m_mesh->prepareMaterials(m_materialVBO);
-    m_mesh->prepareVAO(m_buffers.VAO, m_materialVBO);
+    m_mesh->prepareVAO(m_vao, m_materialVBO);
 
     Shader* shader = m_nodeShader;
     if (shader) {
@@ -96,7 +96,7 @@ void MeshType::prepareBatch(Batch& batch) noexcept
     if (m_preparedBatch) return;
     m_preparedBatch = true;
 
-    batch.prepareMesh(m_buffers.VAO);
+    batch.prepareMesh(m_vao);
 }
 
 void MeshType::bind(
@@ -116,7 +116,7 @@ void MeshType::bind(
         ctx.state.polygonFrontAndBack(GL_LINE);
     }
 
-    glBindVertexArray(m_buffers.VAO);
+    glBindVertexArray(m_vao);
 }
 
 void MeshType::unbind(const RenderContext& ctx) noexcept

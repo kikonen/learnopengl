@@ -3,7 +3,9 @@
 
 #include <glm/glm.hpp>
 
-#include "asset/MeshBuffers.h"
+#include "kigl/GLBuffer.h"
+#include "kigl/GLVertexArray.h"
+
 #include "asset/Shader.h"
 
 class RenderContext;
@@ -32,7 +34,7 @@ public:
     void draw(const RenderContext& ctx);
 
 private:
-    void prepareVBO(MeshBuffers& curr);
+    void prepareVBO();
 
 public:
     const std::string m_name;
@@ -46,7 +48,8 @@ public:
 private:
     bool m_prepared = false;
 
-    MeshBuffers m_buffers;
+    GLVertexArray m_vao;
+    GLBuffer m_vbo;
 
     unsigned int m_textureID;
 

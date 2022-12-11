@@ -7,7 +7,6 @@
 
 #include "kigl/GLVertexArray.h"
 
-#include "MeshBuffers.h"
 #include "Assets.h"
 #include "Material.h"
 #include "Volume.h"

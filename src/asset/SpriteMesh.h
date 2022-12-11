@@ -2,7 +2,6 @@
 
 #include <string>
 
-#include "MeshBuffers.h"
 #include "Assets.h"
 #include "Shader.h"
 #include "Material.h"

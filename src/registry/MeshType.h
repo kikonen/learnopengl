@@ -3,9 +3,9 @@
 #include "asset/Mesh.h"
 #include "asset/Shader.h"
 
-#include "scene/Batch.h"
+#include "kigl/GLVertexArray.h"
 
-#include "asset/MeshBuffers.h"
+#include "scene/Batch.h"
 
 
 struct NodeRenderFlags {
@@ -83,5 +83,5 @@ private:
     Mesh* m_mesh{ nullptr };
     std::unique_ptr<Mesh> m_deleter;
 
-    MeshBuffers m_buffers{};
+    GLVertexArray m_vao;
 };

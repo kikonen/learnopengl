@@ -103,13 +103,14 @@ void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     }
 
     {
-        m_buffers.prepare(true, false, false);
+        m_vao.create();
+        m_vbo.create();
 
-        const int vao = m_buffers.VAO;
+        const int vao = m_vao;
 
-        glNamedBufferStorage(m_buffers.VBO, sizeof(skyboxVertices), &skyboxVertices, 0);
+        glNamedBufferStorage(m_vbo, sizeof(skyboxVertices), &skyboxVertices, 0);
 
-        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_buffers.VBO, 0, sizeof(glm::vec3));
+        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(glm::vec3));
 
         glEnableVertexArrayAttrib(vao, ATTR_SKYBOX_POS);
 
@@ -141,7 +142,7 @@ void SkyboxRenderer::render(const RenderContext& ctx)
     m_shader->projectionMatrix.set(ctx.m_matrices.projection);
 
     glDepthFunc(GL_LEQUAL);
-    glBindVertexArray(m_buffers.VAO);
+    glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthFunc(GL_LESS);
 

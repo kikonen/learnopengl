@@ -3,9 +3,10 @@
 #include <string>
 #include <vector>
 
-#include "Renderer.h"
-#include "asset/MeshBuffers.h"
+#include "kigl/GLBuffer.h"
+#include "kigl/GLVertexArray.h"
 
+#include "Renderer.h"
 
 class SkyboxRenderer final : public Renderer
 {
@@ -29,7 +30,8 @@ private:
     const std::string m_shaderName;
     const std::string m_materialName;
 
-    MeshBuffers m_buffers;
+    GLVertexArray m_vao;
+    GLBuffer m_vbo;
 
     Shader* m_shader{ nullptr };
 };
