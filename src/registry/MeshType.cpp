@@ -105,8 +105,6 @@ void MeshType::bind(
 {
     if (!m_mesh) return;
 
-    m_boundShader = shader;
-
     if (m_flags.renderBack) {
         ctx.state.disable(GL_CULL_FACE);
     }
@@ -123,6 +121,5 @@ void MeshType::bind(
 
 void MeshType::unbind(const RenderContext& ctx) noexcept
 {
-    m_boundShader = nullptr;
     ctx.bindGlobal();
 }

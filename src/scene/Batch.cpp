@@ -187,6 +187,8 @@ void Batch::update(size_t count) noexcept
 
 void Batch::bind(const RenderContext& ctx, Shader* shader) noexcept
 {
+    m_boundShader = shader;
+
     m_modelMatrices.clear();
     m_normalMatrices.clear();
     m_objectIDs.clear();
@@ -281,7 +283,7 @@ void Batch::flush(const RenderContext& ctx, const MeshType& type) noexcept
     update(drawCount);
 
     if (ctx.assets.glDebug) {
-        type.m_boundShader->validateProgram();
+        m_boundShader->validateProgram();
     }
     mesh->drawInstanced(ctx, drawCount);
 

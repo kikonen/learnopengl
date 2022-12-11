@@ -65,7 +65,7 @@ public:
 
 public:
     const int typeID;
-    std::string m_name;
+    const std::string m_name;
 
     NodeRenderFlags m_flags;
 
@@ -73,7 +73,6 @@ public:
     std::string m_runScript;
 
     Shader* m_nodeShader{ nullptr };
-    Shader* m_boundShader{ nullptr };
 
     MaterialVBO m_materialVBO;
 

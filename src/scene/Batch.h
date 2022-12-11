@@ -66,6 +66,8 @@ private:
 
     int m_bufferSize = -1;
 
+    Shader* m_boundShader{ nullptr };
+
     std::vector<glm::mat4> m_modelMatrices;
     std::vector<glm::mat3> m_normalMatrices;
     std::vector<glm::vec4> m_objectIDs;
