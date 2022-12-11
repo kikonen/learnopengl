@@ -11,6 +11,7 @@ MaterialRegistry::MaterialRegistry(const Assets& assets)
     : assets(assets)
 {
     m_materials.reserve(MATERIAL_COUNT);
+    m_assignedMaterials.reserve(MAX_MATERIAL_ENTRIES);
     m_materialsSSBO.reserve(MAX_SSBO_MATERIALS);
 }
 
