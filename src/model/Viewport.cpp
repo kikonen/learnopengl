@@ -92,7 +92,7 @@ void Viewport::bind(const RenderContext& ctx)
     //m_shader->viewportTex.set(UNIT_VIEWPORT);
     ctx.state.bindTexture(UNIT_VIEWPORT, m_textureID, true);
 
-    m_shader->effect.set(GL_FRAGMENT_SHADER, (int)m_effect);
+    m_shader->effect.set((int)m_effect);
 
     glBindVertexArray(m_buffers.VAO);
 

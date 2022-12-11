@@ -136,7 +136,24 @@ GLint Shader::getUniformLoc(const std::string& name)
         KI_DEBUG_SB(fmt::format(
             "SHADER::MISSING_UNIFORM: {} - uniform={}",
             m_shaderName, name));
-        vi = -1;
+    }
+    return vi;
+}
+
+GLuint Shader::getUniformSubroutineLoc(const std::string& name, GLenum shaderType)
+{
+    auto& map = m_subroutineLocations[shaderType];
+    const auto& e = map.find(name);
+    if (e != map.end()) {
+        return e->second;
+    }
+
+    GLuint vi = glGetSubroutineUniformLocation(m_programId, shaderType, name.c_str());
+    map[name] = vi;
+    if (vi < 0) {
+        KI_DEBUG_SB(fmt::format(
+            "SHADER::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
+            m_shaderName, shaderType, name));
     }
     return vi;
 }
@@ -155,7 +172,6 @@ GLuint Shader::getSubroutineIndex(const std::string& name, GLenum shaderType)
         KI_DEBUG_SB(fmt::format(
             "SHADER::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
             m_shaderName, shaderType, name));
-        vi = -1;
     }
     return vi;
 }
