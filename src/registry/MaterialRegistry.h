@@ -6,6 +6,8 @@
 #include "asset/Material.h"
 #include "kigl/GLBuffer.h"
 
+#include "MaterialEntry.h"
+
 class MaterialRegistry {
 public:
     MaterialRegistry(const Assets& assets);
@@ -38,8 +40,12 @@ private:
 
     std::vector<MaterialSSBO> m_materialsSSBO;
 
+    std::vector<MaterialEntry> m_assignedMaterials;
+
     int m_updatedSize = 0;
 
     GLBuffer m_ubo;
     GLBuffer m_ssbo;
+
+    GLBuffer m_assignedVBO;
 };

@@ -291,6 +291,7 @@
     <ClInclude Include="src\asset\SSBO.h" />
     <ClInclude Include="src\kigl\GLBuffer.h" />
     <ClInclude Include="src\kigl\GLVertexArray.h" />
+    <ClInclude Include="src\registry\MaterialEntry.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />
     <ClInclude Include="src\registry\MaterialRegistry.h" />
     <ClInclude Include="src\asset\OBB.h" />

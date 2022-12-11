@@ -3,14 +3,9 @@
 #include "Shader.h"
 #include "ModelMesh.h"
 
+#include "registry/MaterialEntry.h"
+
 namespace {
-#pragma pack(push, 1)
-    struct MaterialEntry {
-        // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
-        // => use float
-        float material;
-    };
-#pragma pack(pop)
 }
 
 void MaterialVBO::setMaterials(const std::vector<Material>& materials)

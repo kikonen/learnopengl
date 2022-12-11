@@ -6,18 +6,12 @@
 
 #include "asset/Sphere.h"
 
+#include "registry/MaterialEntry.h"
+
 #include "scene/RenderContext.h"
 
 namespace {
     constexpr int VERTEX_COUNT = 4;
-
-#pragma pack(push, 1)
-    struct MaterialEntry {
-        // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
-        // => use float
-        float material;
-    };
-#pragma pack(pop)
 
     const AABB QUAD_AABB = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
 

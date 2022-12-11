@@ -11,6 +11,8 @@
 
 #include "asset/Sphere.h"
 
+#include "registry/MaterialEntry.h"
+
 #include "scene/RenderContext.h"
 
 namespace {

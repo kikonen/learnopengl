@@ -11,8 +11,10 @@
 #include "Material.h"
 #include "Volume.h"
 #include "AABB.h"
+
 #include "MaterialVBO.h"
 
+#include "registry/MaterialEntry.h"
 #include "registry/NodeRegistry.h"
 
 class RenderContext;
