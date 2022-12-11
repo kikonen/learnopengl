@@ -9,6 +9,8 @@
 
 class SpriteMesh final : public Mesh
 {
+    friend class SpriteMaterialInit;
+
 public:
     SpriteMesh();
     virtual ~SpriteMesh();
@@ -26,16 +28,11 @@ public:
         MaterialVBO& materialVBO) override;
 
     virtual void prepareVAO(
-        GLVertexArray& vao,
-        MaterialVBO& materialVBO) override;
+        GLVertexArray& vao) override;
 
     void drawInstanced(const RenderContext& ctx, int instanceCount) const override;
 
 protected:
     Material m_material;
-
-private:
-    void prepareMaterialVBO(
-        MaterialVBO& materialVBO);
 
 };

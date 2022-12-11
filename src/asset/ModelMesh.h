@@ -20,7 +20,7 @@ class ModelMesh final : public Mesh {
     friend class MeshLoader;
     friend class TerrainGenerator;
     friend class ModelMeshVBO;
-    friend class MaterialVBO;
+    friend class ModelMaterialInit;
 
 public:
     ModelMesh(
@@ -45,8 +45,7 @@ public:
         MaterialVBO& materialVBO) override;
 
     virtual void prepareVAO(
-        GLVertexArray& vao,
-        MaterialVBO& materialVBO) override;
+        GLVertexArray& vao) override;
 
     void drawInstanced(const RenderContext& ctx, int instanceCount) const override;
 

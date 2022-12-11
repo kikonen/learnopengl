@@ -9,6 +9,8 @@
 
 class QuadMesh final : public Mesh
 {
+    friend class QuadMaterialInit;
+
 public:
     QuadMesh();
     virtual ~QuadMesh();
@@ -26,14 +28,9 @@ public:
         MaterialVBO& materialVBO) override;
 
     virtual void prepareVAO(
-        GLVertexArray& vao,
-        MaterialVBO& materialVBO) override;
+        GLVertexArray& vao) override;
 
     void drawInstanced(const RenderContext& ctx, int instanceCount) const override;
-
-private:
-    void prepareMaterialVBO(
-        MaterialVBO& materialVBO);
 
 protected:
     Material m_material;

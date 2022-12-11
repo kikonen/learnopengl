@@ -2,6 +2,7 @@
 
 #include "asset/Mesh.h"
 #include "asset/Shader.h"
+#include "asset/MaterialVBO.h"
 
 #include "kigl/GLVertexArray.h"
 

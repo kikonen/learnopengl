@@ -5,10 +5,11 @@
 #include "ki/GL.h"
 
 #include "asset/Sphere.h"
+#include "asset/SpriteMaterialInit.h"
+#include "MaterialEntry.h"
 
 #include "scene/RenderContext.h"
 
-#include "registry/MaterialEntry.h"
 
 namespace {
 
@@ -51,34 +52,14 @@ void SpriteMesh::prepare(
 void SpriteMesh::prepareMaterials(
     MaterialVBO& materialVBO)
 {
-    prepareMaterialVBO(materialVBO);
+    SpriteMaterialInit init;
+    init.prepare(*this, materialVBO);
 }
 
 void SpriteMesh::prepareVAO(
-    GLVertexArray& vao,
-    MaterialVBO& materialVBO)
+    GLVertexArray& vao)
 {
-    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, materialVBO.m_vbo, 0, sizeof(MaterialEntry));
-    {
-        glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
-
-        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material));
-
-        glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
-    }
-}
-
-void SpriteMesh::prepareMaterialVBO(
-    MaterialVBO& materialVBO)
-{
-    const auto& material = materialVBO.getMaterials()[0];
-
-    // https://paroj.github.io/gltut/Basic%20Optimization.html
-    constexpr int stride_size = sizeof(MaterialEntry);
-    MaterialEntry vbo;
-    vbo.material = material.m_registeredIndex;
-
-    glNamedBufferStorage(materialVBO.m_vbo, stride_size, &vbo, 0);
+    // nothing
 }
 
 void SpriteMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const

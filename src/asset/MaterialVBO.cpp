@@ -2,8 +2,7 @@
 
 #include "Shader.h"
 #include "ModelMesh.h"
-
-#include "registry/MaterialEntry.h"
+#include "MaterialEntry.h"
 
 namespace {
 }
@@ -42,18 +41,15 @@ void MaterialVBO::create()
     m_vbo.create();
 }
 
-void MaterialVBO::prepare(
-    ModelMesh& mesh)
+void MaterialVBO::prepareVAO(
+    GLVertexArray& vao)
 {
-    if (m_prepared) return;
-    m_prepared = true;
+    {
+        const int sz = m_entries.size() * sizeof(MaterialEntry);
+        m_vbo.init(sz, m_entries.data(), 0);
+    }
 
-    prepareVBO(mesh.m_vertices);
-}
-
-void MaterialVBO::prepareVAO(GLVertexArray& vao)
-{
-    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, m_vbo, 0, sizeof(MaterialEntry));
+    glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, m_vbo, m_offset, sizeof(MaterialEntry));
     {
         glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
 
@@ -68,40 +64,4 @@ void MaterialVBO::prepareVAO(GLVertexArray& vao)
         // and glVertexArrayBindingDivisor work (MUST seemingly match instanced count)
         glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, 0);
     }
-}
-
-void MaterialVBO::prepareVBO(
-    std::vector<Vertex>& vertices)
-{
-    // https://paroj.github.io/gltut/Basic%20Optimization.html
-    constexpr int stride_size = sizeof(MaterialEntry);
-    const int sz = stride_size * vertices.size();
-
-    MaterialEntry* buffer = (MaterialEntry*)new unsigned char[sz];
-    memset(buffer, 0, sz);
-
-    {
-        MaterialEntry* vbo = buffer;
-        for (int i = 0; i < vertices.size(); i++) {
-            const auto& vertex = vertices[i];
-            auto* m = Material::findID(vertex.materialID, m_materials);
-
-            if (m_useDefaultMaterial) {
-                if (m_forceDefaultMaterial) {
-                    m = &m_materials[0];
-                }
-            }
-
-            // TODO KI should use noticeable value for missing
-            // => would trigger undefined array access in render side
-            vbo->material = m ? m->m_registeredIndex : Material::DEFAULT_ID;
-
-            assert(vbo->material >= 0 && vbo->material < MAX_MATERIAL_COUNT);
-
-            vbo++;
-        }
-    }
-
-    glNamedBufferStorage(m_vbo, sz, buffer, 0);
-    delete[] buffer;
 }

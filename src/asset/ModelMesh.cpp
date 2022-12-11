@@ -11,7 +11,8 @@
 
 #include "asset/Sphere.h"
 
-#include "registry/MaterialEntry.h"
+#include "asset/MaterialEntry.h"
+#include "asset/ModelMaterialInit.h"
 
 #include "scene/RenderContext.h"
 
@@ -87,15 +88,14 @@ void ModelMesh::prepare(
 void ModelMesh::prepareMaterials(
     MaterialVBO& materialVBO)
 {
-    materialVBO.prepare(*this);
+    ModelMaterialInit init;
+    init.prepare(*this, materialVBO);
 }
 
 void ModelMesh::prepareVAO(
-    GLVertexArray& vao,
-    MaterialVBO& materialVBO)
+    GLVertexArray& vao)
 {
     m_vertexVBO.prepareVAO(vao);
-    materialVBO.prepareVAO(vao);
 }
 
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const

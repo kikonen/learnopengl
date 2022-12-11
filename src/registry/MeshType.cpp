@@ -81,7 +81,9 @@ void MeshType::prepare(
 
     m_mesh->prepare(assets);
     m_mesh->prepareMaterials(m_materialVBO);
-    m_mesh->prepareVAO(m_vao, m_materialVBO);
+    m_mesh->prepareVAO(m_vao);
+
+    m_materialVBO.prepareVAO(m_vao);
 
     Shader* shader = m_nodeShader;
     if (shader) {

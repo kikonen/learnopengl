@@ -4,9 +4,10 @@
 
 #include "asset/Assets.h"
 #include "asset/Material.h"
+#include "asset/MaterialEntry.h"
+
 #include "kigl/GLBuffer.h"
 
-#include "MaterialEntry.h"
 
 class MaterialRegistry {
 public:

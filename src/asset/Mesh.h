@@ -9,12 +9,12 @@
 
 #include "Assets.h"
 #include "Material.h"
+#include "MaterialEntry.h"
 #include "Volume.h"
 #include "AABB.h"
 
 #include "MaterialVBO.h"
 
-#include "registry/MaterialEntry.h"
 #include "registry/NodeRegistry.h"
 
 class RenderContext;
@@ -39,8 +39,7 @@ public:
         MaterialVBO& materialVBO) = 0;
 
     virtual void prepareVAO(
-        GLVertexArray& vao,
-        MaterialVBO& materialVBO) = 0;
+        GLVertexArray& vao) = 0;
 
     virtual void drawInstanced(const RenderContext& ctx, int instanceCount) const  = 0;
 
