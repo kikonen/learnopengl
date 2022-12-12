@@ -202,8 +202,6 @@ void WaterMapRenderer::drawNodes(
                     if (node == current) continue;
                     batch.draw(ctx, *node, shader);
                 }
-
-                batch.flush(ctx);
             }
         };
 
@@ -223,6 +221,8 @@ void WaterMapRenderer::drawNodes(
             renderTypes(all.second);
         }
     }
+    ctx.m_batch.flush(ctx);
+
     ctx.state.disable(GL_CLIP_DISTANCE0);
 }
 

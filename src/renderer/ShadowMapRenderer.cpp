@@ -129,8 +129,6 @@ void ShadowMapRenderer::drawNodes(
             for (auto& node : it.second) {
                 batch.draw(ctx, *node, shader);
             }
-
-            batch.flush(ctx);
         }
     };
 
@@ -153,4 +151,6 @@ void ShadowMapRenderer::drawNodes(
             renderTypes(all.second, shader);
         }
     }
+
+    ctx.m_batch.flush(ctx);
 }

@@ -140,8 +140,6 @@ void NodeRenderer::drawNodes(
 
                 batch.draw(ctx, *node, shader);
             }
-
-            batch.flush(ctx);
         }
     };
 
@@ -165,6 +163,8 @@ void NodeRenderer::drawNodes(
             renderTypes(all.second);
         }
     }
+
+    ctx.m_batch.flush(ctx);
 }
 
 // draw all selected nodes with stencil
@@ -204,8 +204,6 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
             if (type.m_flags.blend) {
                 ctx.state.disable(GL_BLEND);
             }
-
-            batch.flush(ctx);
         }
     };
 
@@ -220,6 +218,8 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
     for (const auto& all : ctx.registry.blendedNodes) {
         renderTypes(all.second);
     }
+
+    ctx.m_batch.flush(ctx);
 }
 
 void NodeRenderer::drawBlended(

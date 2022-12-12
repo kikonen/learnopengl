@@ -35,8 +35,6 @@ void ParticleSystem::render(const RenderContext& ctx)
         //batch.bind(ctx, shader);
 
         //batch.draw(ctx, e, shader);
-
-        //batch.flush(ctx, t);
     }
 
     ctx.state.enable(GL_CULL_FACE);

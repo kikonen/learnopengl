@@ -160,7 +160,6 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
                     batch.draw(ctx, *node, shader);
                 }
 
-                batch.flush(ctx);
                 batch.m_useObjectIDBuffer = false;
             }
         };
@@ -176,5 +175,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
         for (const auto& all : ctx.registry.blendedNodes) {
             renderTypes(all.second);
         }
+
+        ctx.m_batch.flush(ctx);
     }
 }

@@ -35,8 +35,6 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
                 if (!node->m_allowNormals) continue;
                 batch.draw(ctx, *node, shader);
             }
-
-            batch.flush(ctx);
         }
     };
 
@@ -51,4 +49,6 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
     for (const auto& all : ctx.registry.blendedNodes) {
         renderTypes(all.second);
     }
+
+    ctx.m_batch.flush(ctx);
 }

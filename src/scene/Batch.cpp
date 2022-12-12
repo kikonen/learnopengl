@@ -220,6 +220,10 @@ void Batch::draw(
 {
     const auto& type = *node.m_type;
 
+    if (node.m_type != m_boundType) {
+        flush(ctx);
+    }
+
     if (!type.getMesh()) return;
     if (type.m_flags.root) return;
     if (type.m_flags.origo) return;

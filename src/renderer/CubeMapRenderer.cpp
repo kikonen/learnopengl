@@ -186,8 +186,6 @@ void CubeMapRenderer::drawNodes(
 
                 batch.draw(ctx, *node, shader);
             }
-
-            batch.flush(ctx);
         }
     };
 
@@ -207,6 +205,8 @@ void CubeMapRenderer::drawNodes(
     for (const auto& all : ctx.registry.blendedNodes) {
         renderTypes(all.second);
     }
+
+    ctx.m_batch.flush(ctx);
 }
 
 Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
