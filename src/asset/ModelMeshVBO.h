@@ -37,6 +37,8 @@ public:
     int m_vertexOffset = 0;
     int m_indexOffset = 0;
 
+    int m_baseVertex = 0;
+
 private:
     bool m_prepared = false;
 

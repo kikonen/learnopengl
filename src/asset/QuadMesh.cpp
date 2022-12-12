@@ -65,5 +65,14 @@ void QuadMesh::prepareVAO(
 
 void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
 {
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount);
+    //glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount);
+
+    int baseInstance = 0;
+
+    glDrawArraysInstancedBaseInstance(
+        GL_TRIANGLE_STRIP,
+        0,
+        4,
+        instanceCount,
+        baseInstance);
 }

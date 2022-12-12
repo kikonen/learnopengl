@@ -64,5 +64,14 @@ void SpriteMesh::prepareVAO(
 
 void SpriteMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
 {
-    glDrawArraysInstanced(GL_POINTS, 0, 1, instanceCount);
+    //glDrawArraysInstanced(GL_POINTS, 0, 1, instanceCount);
+
+    int baseInstance = 0;
+
+    glDrawArraysInstancedBaseInstance(
+        GL_POINTS,
+        0,
+        1,
+        instanceCount,
+        baseInstance);
 }
