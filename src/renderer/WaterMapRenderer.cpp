@@ -1,6 +1,5 @@
 #include "WaterMapRenderer.h"
 
-#include "asset/ShaderBind.h"
 #include "SkyboxRenderer.h"
 #include "WaterNoiseGenerator.h"
 
@@ -188,30 +187,23 @@ void WaterMapRenderer::drawNodes(
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [reflect, &ctx, &current](const MeshTypeMap& typeMap) {
-            ShaderBind bound(typeMap.begin()->first->m_nodeShader);
+            auto shader = typeMap.begin()->first->m_nodeShader;
 
             for (const auto& it : typeMap) {
                 auto& type = *it.first;
+                auto& batch = ctx.m_batch;
 
                 if (type.m_flags.water) continue;
 
                 if (reflect && type.m_flags.noReflect) continue;
                 if (!reflect && type.m_flags.noRefract) continue;
 
-                //ShaderBind bound(type->defaultShader);
-
-                auto& batch = ctx.m_batch;
-
-                type.bind(ctx, bound.shader);
-                batch.bind(ctx, bound.shader);
-
                 for (auto& node : it.second) {
                     if (node == current) continue;
-                    batch.draw(ctx, *node, bound.shader);
+                    batch.draw(ctx, *node, shader);
                 }
 
-                batch.flush(ctx, type);
-                type.unbind(ctx);
+                batch.flush(ctx);
             }
         };
 

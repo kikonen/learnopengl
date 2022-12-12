@@ -4,7 +4,6 @@
 #include <fmt/format.h>
 
 #include "asset/Assets.h"
-#include "asset/ShaderBind.h"
 
 #include "scene/RenderContext.h"
 
@@ -105,7 +104,7 @@ void MeshType::prepareBatch(Batch& batch) noexcept
 
 void MeshType::bind(
     const RenderContext& ctx,
-    Shader* shader) noexcept
+    Shader* shader) const
 {
     if (!m_mesh) return;
 
@@ -121,9 +120,11 @@ void MeshType::bind(
     }
 
     glBindVertexArray(m_vao);
+    m_bound = true;
 }
 
-void MeshType::unbind(const RenderContext& ctx) noexcept
+void MeshType::unbind(const RenderContext& ctx) const
 {
+    if (!m_bound) return;
     ctx.bindGlobal();
 }

@@ -4,10 +4,13 @@
 
 #include "ki/uuid.h"
 
+#include "asset/ShaderBind.h"
+
 #include "model/Node.h"
 #include "registry/MeshType.h"
 
 #include "scene/RenderContext.h"
+
 
 namespace {
     int idBase = 0;
@@ -185,9 +188,25 @@ void Batch::update(size_t count) noexcept
     }
 }
 
-void Batch::bind(const RenderContext& ctx, Shader* shader) noexcept
+void Batch::bind(
+    const RenderContext& ctx,
+    MeshType* type,
+    Shader* shader)
 {
+    if (m_boundType) return;
+
+    m_boundType = type;
     m_boundShader = shader;
+
+    m_modelMatrices.clear();
+    m_normalMatrices.clear();
+    m_objectIDs.clear();
+}
+
+void Batch::unbind()
+{
+    m_boundType = nullptr;
+    m_boundShader = nullptr;
 
     m_modelMatrices.clear();
     m_normalMatrices.clear();
@@ -197,7 +216,7 @@ void Batch::bind(const RenderContext& ctx, Shader* shader) noexcept
 void Batch::draw(
     const RenderContext& ctx,
     Node& node,
-    Shader* shader) noexcept
+    Shader* shader)
 {
     const auto& type = *node.m_type;
 
@@ -236,41 +255,53 @@ void Batch::draw(
 
     ctx.m_drawCount += 1;
 
+    bind(ctx, node.m_type, shader);
+
     if (type.m_flags.instanced) {
-        node.bind(ctx, shader);
+        ShaderBind bound(m_boundShader);
+        type.bind(ctx, bound.shader);
         node.draw(ctx);
+        type.unbind(ctx);
+
         return;
     }
 
     node.bindBatch(ctx, *this);
 
-    flushIfNeeded(ctx, type);
+    flushIfNeeded(ctx);
 }
 
 void Batch::drawAll(
     const RenderContext& ctx,
-    MeshType& type,
+    MeshType* type,
     const std::vector<glm::mat4>& modelMatrices,
     const std::vector<glm::mat3>& normalMatrices,
-    const std::vector<int>& objectIDs) noexcept
+    const std::vector<int>& objectIDs)
 {
     for (int i = 0; i < modelMatrices.size(); i++) {
         add(modelMatrices[i], normalMatrices[i], objectIDs[i]);
         if (m_modelMatrices.size() >= m_bufferSize) {
-            flush(ctx, type);
+            flush(ctx, false);
         }
     }
-    flushIfNeeded(ctx, type);
+    flushIfNeeded(ctx);
+    unbind();
 }
 
-void Batch::flushIfNeeded(const RenderContext& ctx, const MeshType& type) noexcept
+void Batch::flushIfNeeded(
+    const RenderContext& ctx)
 {
     if (m_modelMatrices.size() < m_bufferSize) return;
-    flush(ctx, type);
+    flush(ctx, false);
 }
 
-void Batch::flush(const RenderContext& ctx, const MeshType& type) noexcept
+void Batch::flush(
+    const RenderContext& ctx,
+    bool release)
 {
+    if (!m_boundType) return;
+
+    auto& type = *m_boundType;
     const auto& mesh = type.getMesh();
 
     if (!mesh) return;
@@ -285,9 +316,18 @@ void Batch::flush(const RenderContext& ctx, const MeshType& type) noexcept
     if (ctx.assets.glDebug) {
         m_boundShader->validateProgram();
     }
-    mesh->drawInstanced(ctx, drawCount);
+    {
+        ShaderBind bound(m_boundShader);
+        type.bind(ctx, bound.shader);
+        mesh->drawInstanced(ctx, drawCount);
+        type.unbind(ctx);
+    }
 
     m_modelMatrices.clear();
     m_normalMatrices.clear();
     m_objectIDs.clear();
+
+    if (release) {
+        unbind();
+    }
 }

@@ -79,10 +79,6 @@ void Node::update(
     }
 }
 
-void Node::bind(const RenderContext& ctx, Shader* shader) noexcept
-{
-}
-
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
     batch.add(m_modelMatrix, m_normalMatrix, m_objectID);

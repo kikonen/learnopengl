@@ -41,19 +41,32 @@ public:
 
     void prepareMesh(GLVertexArray& vao);
 
-    void update(size_t count) noexcept;
-    void bind(const RenderContext& ctx, Shader* shader) noexcept;
-    void draw(const RenderContext& ctx, Node& node, Shader* shader) noexcept;
+    void draw(
+        const RenderContext& ctx,
+        Node& node,
+        Shader* shader);
 
     void drawAll(
         const RenderContext& ctx,
-        MeshType& type,
+        MeshType* type,
         const std::vector<glm::mat4>& m_modelMatrices,
         const std::vector<glm::mat3>& m_normalMatrices,
-        const std::vector<int>& m_objectIDs) noexcept;
+        const std::vector<int>& m_objectIDs);
 
-    void flushIfNeeded(const RenderContext& ctx, const MeshType& type) noexcept;
-    void flush(const RenderContext& ctx, const MeshType& type) noexcept;
+    void flush(
+        const RenderContext& ctx,
+        bool release = true);
+
+private:
+    void update(size_t count) noexcept;
+
+    void bind(
+        const RenderContext& ctx,
+        MeshType* type,
+        Shader* shader);
+    void unbind();
+
+    void flushIfNeeded(const RenderContext& ctx);
 
 public:
     const int m_id;
@@ -67,6 +80,7 @@ private:
     int m_bufferSize = -1;
 
     Shader* m_boundShader{ nullptr };
+    MeshType* m_boundType{ nullptr };
 
     std::vector<glm::mat4> m_modelMatrices;
     std::vector<glm::mat3> m_normalMatrices;

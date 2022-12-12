@@ -1,6 +1,5 @@
 #include "NormalRenderer.h"
 
-#include "asset/ShaderBind.h"
 
 NormalRenderer::NormalRenderer()
 {
@@ -25,24 +24,19 @@ void NormalRenderer::render(
 
 void NormalRenderer::drawNodes(const RenderContext& ctx)
 {
-    ShaderBind bound(m_normalShader);
+    auto shader = m_normalShader;
 
-    auto renderTypes = [this, &ctx, &bound](const MeshTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, &shader](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
             auto& type = *it.first;
-
             auto& batch = ctx.m_batch;
-
-            type.bind(ctx, bound.shader);
-            batch.bind(ctx, bound.shader);
 
             for (auto& node : it.second) {
                 if (!node->m_allowNormals) continue;
-                batch.draw(ctx, *node, bound.shader);
+                batch.draw(ctx, *node, shader);
             }
 
-            batch.flush(ctx, type);
-            type.unbind(ctx);
+            batch.flush(ctx);
         }
     };
 

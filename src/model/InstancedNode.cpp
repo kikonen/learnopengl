@@ -27,14 +27,9 @@ void InstancedNode::update(
     Node::update(ctx, parent);
 }
 
-void InstancedNode::bind(const RenderContext& ctx, Shader* shader) noexcept
-{
-    Node::bind(ctx, shader);
-}
-
 void InstancedNode::draw(const RenderContext& ctx) noexcept
 {
-    ctx.m_batch.drawAll(ctx, *m_type, m_modelMatrices, m_normalMatrices, m_objectIDs);
+    ctx.m_batch.drawAll(ctx, m_type, m_modelMatrices, m_normalMatrices, m_objectIDs);
 }
 
 void InstancedNode::clear()

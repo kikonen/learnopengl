@@ -115,7 +115,8 @@ int Shader::prepare(const Assets& assets) noexcept
         return -1;
     }
 
-    {
+    if (assets.glDebug) {
+        // NOTE KI acts as "test" for shader
         ShaderBind bound(this);
     }
 

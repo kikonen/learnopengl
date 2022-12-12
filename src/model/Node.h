@@ -31,7 +31,6 @@ public:
     virtual void prepare(const Assets& assets) noexcept;
 
     virtual void update(const RenderContext& ctx, Node* parent) noexcept;
-    virtual void bind(const RenderContext& ctx, Shader* shader) noexcept;
     void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
     virtual void draw(const RenderContext& ctx) noexcept;
 

@@ -63,8 +63,8 @@ public:
 
     void prepareBatch(Batch& batch) noexcept;
 
-    void bind(const RenderContext& ctx, Shader* shader) noexcept;
-    void unbind(const RenderContext& ctx) noexcept;
+    void bind(const RenderContext& ctx, Shader* shader) const;
+    void unbind(const RenderContext& ctx) const;
 
 public:
     const int typeID;
@@ -87,4 +87,6 @@ private:
     std::unique_ptr<Mesh> m_deleter;
 
     GLVertexArray m_vao;
+
+    mutable bool m_bound = false;
 };

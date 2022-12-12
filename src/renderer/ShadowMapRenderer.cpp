@@ -1,6 +1,5 @@
 #include "ShadowMapRenderer.h"
 
-#include "asset/ShaderBind.h"
 #include "scene/Scene.h"
 
 namespace {
@@ -120,43 +119,38 @@ void ShadowMapRenderer::render(
 void ShadowMapRenderer::drawNodes(
     const RenderContext& ctx)
 {
-    auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap, ShaderBind& bound) {
+    auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap, Shader* shader) {
         for (const auto& it : typeMap) {
             auto& type = *it.first;
+            auto& batch = ctx.m_batch;
 
             if (type.m_flags.noShadow) continue;
 
-            auto& batch = ctx.m_batch;
-
-            type.bind(ctx, bound.shader);
-            batch.bind(ctx, bound.shader);
-
             for (auto& node : it.second) {
-                batch.draw(ctx, *node, bound.shader);
+                batch.draw(ctx, *node, shader);
             }
 
-            batch.flush(ctx, type);
-            type.unbind(ctx);
+            batch.flush(ctx);
         }
     };
 
     {
-        ShaderBind bound(m_solidShadowShader);
+        auto shader = m_solidShadowShader;
 
         for (const auto& all : ctx.registry.solidNodes) {
-            renderTypes(all.second, bound);
+            renderTypes(all.second, shader);
         }
     }
 
     {
-        ShaderBind bound(m_blendedShadowShader);
+        auto shader = m_blendedShadowShader;
 
         for (const auto& all : ctx.registry.alphaNodes) {
-            renderTypes(all.second, bound);
+            renderTypes(all.second, shader);
         }
 
         for (const auto& all : ctx.registry.blendedNodes) {
-            renderTypes(all.second, bound);
+            renderTypes(all.second, shader);
         }
     }
 }

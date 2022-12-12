@@ -1,7 +1,5 @@
 #include "NodeRenderer.h"
 
-#include "asset/ShaderBind.h"
-
 #include "SkyboxRenderer.h"
 
 
@@ -131,25 +129,19 @@ void NodeRenderer::drawNodes(
     }
 
     auto renderTypes = [this, &ctx, &selection](const MeshTypeMap& typeMap) {
-        //ShaderBind bound(selection ? selectionShader : typeMap.begin()->first->m_nodeShader);
-        ShaderBind bound(typeMap.begin()->first->m_nodeShader);
+        auto shader = typeMap.begin()->first->m_nodeShader;
 
         for (const auto& it : typeMap) {
             auto& type = *it.first;
-
             auto& batch = ctx.m_batch;
-
-            type.bind(ctx, bound.shader);
-            batch.bind(ctx, bound.shader);
 
             for (auto& node : it.second) {
                 if (selection ? !node->m_selected : node->m_selected) continue;
 
-                batch.draw(ctx, *node, bound.shader);
+                batch.draw(ctx, *node, shader);
             }
 
-            batch.flush(ctx, type);
-            type.unbind(ctx);
+            batch.flush(ctx);
         }
     };
 
@@ -183,8 +175,6 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
     auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
             auto& type = *it.first;
-            auto& nodes = it.second;
-
             auto& batch = ctx.m_batch;
 
             auto shader = type.m_flags.alpha ? m_selectionShaderAlpha : m_selectionShader;
@@ -192,16 +182,11 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
                 shader = m_selectionShaderSprite;
             }
 
-            ShaderBind bound(shader);
-
-            type.bind(ctx, bound.shader);
-            batch.bind(ctx, bound.shader);
-
             if (type.m_flags.blend) {
                 ctx.state.enable(GL_BLEND);
             }
 
-            for (auto& node : nodes) {
+            for (auto& node : it.second) {
                 if (!node->m_selected) continue;
 
                 auto parent = ctx.registry.getParent(*node);
@@ -209,7 +194,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
                 node->setScale(scale * 1.02f);
                 node->updateModelMatrix(parent);
 
-                batch.draw(ctx, *node, bound.shader);
+                batch.draw(ctx, *node, shader);
 
                 node->updateModelMatrix(parent);
                 node->setScale(scale);
@@ -220,8 +205,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
                 ctx.state.disable(GL_BLEND);
             }
 
-            batch.flush(ctx, type);
-            type.unbind(ctx);
+            batch.flush(ctx);
         }
     };
 
@@ -281,35 +265,18 @@ void NodeRenderer::drawBlended(
         if (type != node->m_type) {
             if (batch) {
                 // NOTE KI Changing batch
-                batch->flush(ctx, *type);
-                type->unbind(ctx);
-                if (shader) {
-                    shader->unbind();
-                }
+                batch->flush(ctx);
             }
-            //std::cout << 'B';
             type = node->m_type;
-
             batch = &ctx.m_batch;
-
             shader = type->m_nodeShader;
-            shader->bind();
-
-            type->bind(ctx, shader);
-            batch->bind(ctx, shader);
         }
 
         batch->draw(ctx, *node, shader);
     }
 
     if (batch) {
-        batch->flush(ctx, *type);
-        type->unbind(ctx);
-
-        if (shader) {
-            shader->unbind();
-            shader = nullptr;
-        }
+        batch->flush(ctx);
     }
 
     //ctx.state.enable(GL_CULL_FACE);

@@ -13,7 +13,6 @@ public:
     void updateBuffers(const RenderContext& ctx) noexcept;
 
     void update(const RenderContext& ctx, Node* parent) noexcept override;
-    void bind(const RenderContext& ctx, Shader* shader) noexcept override;
     void draw(const RenderContext& ctx) noexcept override;
 
     void clear();

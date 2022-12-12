@@ -76,11 +76,6 @@ void SkyboxRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     m_shader->prepare(assets);
 
-    //if (false) {
-    //    ShaderBind bound(m_shader);
-    //    m_shader->skybox.set(UNIT_SKYBOX);
-    //}
-
     {
         std::string basePath;
         {

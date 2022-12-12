@@ -1,7 +1,5 @@
 #include "ObjectIdRenderer.h"
 
-#include "asset/ShaderBind.h"
-
 ObjectIdRenderer::ObjectIdRenderer()
     : Renderer()
 {
@@ -155,20 +153,14 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
                     shader = m_idShaderSprite;
                 }
 
-                ShaderBind bound(shader);
-
                 auto& batch = ctx.m_batch;
                 batch.m_useObjectIDBuffer = true;
 
-                type.bind(ctx, bound.shader);
-                batch.bind(ctx, bound.shader);
-
                 for (auto& node : it.second) {
-                    batch.draw(ctx, *node, bound.shader);
+                    batch.draw(ctx, *node, shader);
                 }
 
-                batch.flush(ctx, type);
-                type.unbind(ctx);
+                batch.flush(ctx);
                 batch.m_useObjectIDBuffer = false;
             }
         };
