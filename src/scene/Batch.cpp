@@ -263,9 +263,9 @@ void Batch::draw(
 
     if (type.m_flags.instanced) {
         ShaderBind bound(m_boundShader);
-        type.bind(ctx, bound.shader);
+        ctx.bindGlobal();
+        type.bind(ctx);
         node.draw(ctx);
-        type.unbind(ctx);
 
         return;
     }
@@ -322,9 +322,9 @@ void Batch::flush(
     }
     {
         ShaderBind bound(m_boundShader);
-        type.bind(ctx, bound.shader);
+        ctx.bindGlobal();
+        type.bind(ctx);
         mesh->drawInstanced(ctx, drawCount);
-        type.unbind(ctx);
     }
 
     m_modelMatrices.clear();

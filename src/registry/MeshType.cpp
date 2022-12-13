@@ -103,16 +103,12 @@ void MeshType::prepareBatch(Batch& batch) noexcept
 }
 
 void MeshType::bind(
-    const RenderContext& ctx,
-    Shader* shader) const
+    const RenderContext& ctx) const
 {
     if (!m_mesh) return;
 
     if (m_flags.renderBack) {
         ctx.state.disable(GL_CULL_FACE);
-    }
-    else {
-        ctx.state.enable(GL_CULL_FACE);
     }
 
     if (m_flags.wireframe) {
@@ -120,11 +116,4 @@ void MeshType::bind(
     }
 
     glBindVertexArray(m_vao);
-    m_bound = true;
-}
-
-void MeshType::unbind(const RenderContext& ctx) const
-{
-    if (!m_bound) return;
-    ctx.bindGlobal();
 }

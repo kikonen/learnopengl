@@ -131,6 +131,13 @@ void RenderContext::bindGlobal() const
     else {
         state.polygonFrontAndBack(GL_FILL);
     }
+
+    // https://cmichel.io/understanding-front-faces-winding-order-and-normals
+    state.enable(GL_CULL_FACE);
+    state.cullFace(GL_BACK);
+    state.frontFace(GL_CCW);
+
+    state.disable(GL_BLEND);
 }
 
 void RenderContext::bindUBOs() const

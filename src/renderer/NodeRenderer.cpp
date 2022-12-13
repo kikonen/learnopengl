@@ -242,8 +242,6 @@ void NodeRenderer::drawBlended(
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 
     ctx.state.enable(GL_BLEND);
-    // NOTE KI GL_CULL_FACE is node type specific
-    //ctx.state.disable(GL_CULL_FACE);
 
     const glm::vec3& viewPos = ctx.m_camera.getPos();
 
@@ -279,6 +277,5 @@ void NodeRenderer::drawBlended(
         batch->flush(ctx);
     }
 
-    //ctx.state.enable(GL_CULL_FACE);
     ctx.state.disable(GL_BLEND);
 }

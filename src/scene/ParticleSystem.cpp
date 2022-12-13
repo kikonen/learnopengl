@@ -37,8 +37,7 @@ void ParticleSystem::render(const RenderContext& ctx)
         //batch.draw(ctx, e, shader);
     }
 
-    ctx.state.enable(GL_CULL_FACE);
-    ctx.state.disable(GL_BLEND);
+    ctx.bindGlobal();
 }
 
 void ParticleSystem::addParticle(const Particle& particle)

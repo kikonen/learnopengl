@@ -134,10 +134,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
 {
     ctx.state.enable(GL_DEPTH_TEST);
 
-    // https://cmichel.io/understanding-front-faces-winding-order-and-normals
-    ctx.state.enable(GL_CULL_FACE);
-    ctx.state.cullFace(GL_BACK);
-    ctx.state.frontFace(GL_CCW);
+    ctx.bindGlobal();
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
