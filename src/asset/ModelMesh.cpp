@@ -100,14 +100,21 @@ void ModelMesh::prepareVAO(
 
 void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
 {
-    int baseInstance = 0;
-
-    glDrawElementsInstancedBaseVertexBaseInstance(
+    glDrawElementsInstanced(
         GL_TRIANGLES,
         m_triCount * 3,
         GL_UNSIGNED_INT,
         (void*)m_vertexVBO.m_indexOffset,
-        instanceCount,
-        m_vertexVBO.m_baseVertex,
-        baseInstance);
+        instanceCount);
+
+    //int baseInstance = 0;
+
+    //glDrawElementsInstancedBaseVertexBaseInstance(
+    //    GL_TRIANGLES,
+    //    m_triCount * 3,
+    //    GL_UNSIGNED_INT,
+    //    (void*)m_vertexVBO.m_indexOffset,
+    //    instanceCount,
+    //    m_vertexVBO.m_baseVertex,
+    //    baseInstance);
 }

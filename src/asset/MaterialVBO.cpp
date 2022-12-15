@@ -1,10 +1,14 @@
 #include "MaterialVBO.h"
 
+#include <fmt/format.h>
+
 #include "Shader.h"
 #include "ModelMesh.h"
 #include "MaterialEntry.h"
 
 namespace {
+    int instancedCount = 0;
+    int vertecedCount = 0;
 }
 
 void MaterialVBO::setMaterials(const std::vector<Material>& materials)
@@ -53,5 +57,13 @@ void MaterialVBO::prepareVAO(
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
         // divisor == 0 per vertex material
         glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, m_instanceDivisor);
+
+        if (m_instanceDivisor > 0) {
+            instancedCount++;
+        }
+        else {
+            vertecedCount++;
+        }
+        //std::cout << fmt::format("count={}, divisor={}, instanced={}, verteced={}", m_materials.size(), m_instanceDivisor, instancedCount, vertecedCount) << "\n";
     }
 }

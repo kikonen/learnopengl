@@ -11,6 +11,8 @@
 #include "scene/RenderContext.h"
 
 namespace {
+    constexpr int INDEX_COUNT = 4;
+
     const AABB QUAD_AABB = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
 
     QuadVBO m_quad;
@@ -65,14 +67,14 @@ void QuadMesh::prepareVAO(
 
 void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
 {
-    //glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, instanceCount);
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, INDEX_COUNT, instanceCount);
 
-    int baseInstance = 0;
+    //int baseInstance = 0;
 
-    glDrawArraysInstancedBaseInstance(
-        GL_TRIANGLE_STRIP,
-        0,
-        4,
-        instanceCount,
-        baseInstance);
+    //glDrawArraysInstancedBaseInstance(
+    //    GL_TRIANGLE_STRIP,
+    //    0,
+    //    4,
+    //    instanceCount,
+    //    baseInstance);
 }
