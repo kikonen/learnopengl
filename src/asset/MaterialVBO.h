@@ -30,6 +30,7 @@ public:
 
     GLBuffer* m_vbo{ nullptr };
     int m_offset = 0;
+    int m_instanceDivisor = 0;
 
     std::vector<Material> m_materials;
     std::vector<MaterialEntry> m_entries;

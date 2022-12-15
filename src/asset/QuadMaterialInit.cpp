@@ -26,10 +26,11 @@ void QuadMaterialInit::prepareVertices(
     // NOTE KI single DOES NOT work due to logic how intanced rendering
     // and glVertexArrayBindingDivisor work (MUST seemingly match instanced count)
     {
+        const int count = 1; // VERTEX_COUNT;
         auto& entries = materialVBO.m_entries;
-        entries.reserve(VERTEX_COUNT);
+        entries.reserve(count);
 
-        for (int i = 0; i < VERTEX_COUNT; i++) {
+        for (int i = 0; i < count; i++) {
             MaterialEntry entry;
 
             // NOTE KI hardcoded single material
@@ -39,5 +40,7 @@ void QuadMaterialInit::prepareVertices(
 
             entries.push_back(entry);
         }
+
+        materialVBO.m_instanceDivisor = VERTEX_COUNT;
     }
 }

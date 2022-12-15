@@ -51,8 +51,7 @@ void MaterialVBO::prepareVAO(
 
         // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
-        // NOTE KI single entry for lal DOES NOT work due to logic how intanced rendering
-        // and glVertexArrayBindingDivisor work (MUST seemingly match instanced count)
-        glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, 0);
+        // divisor == 0 per vertex material
+        glVertexArrayBindingDivisor(vao, VBO_MATERIAL_BINDING, m_instanceDivisor);
     }
 }
