@@ -137,7 +137,8 @@ void RenderContext::bindGlobal() const
     state.cullFace(GL_BACK);
     state.frontFace(GL_CCW);
 
-    state.disable(GL_BLEND);
+    // NOTE KI touching blend here breaks blend renderer
+    //state.disable(GL_BLEND);
 }
 
 void RenderContext::bindUBOs() const
