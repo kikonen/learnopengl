@@ -288,6 +288,8 @@
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\FrustumNew.h" />
+    <ClInclude Include="src\asset\IndexEntry.h" />
+    <ClInclude Include="src\asset\VertexEntry.h" />
     <ClInclude Include="src\asset\MaterialVBO.h" />
     <ClInclude Include="src\asset\ModelMaterialInit.h" />
     <ClInclude Include="src\asset\ModelMeshVBO.h" />

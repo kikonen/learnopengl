@@ -38,6 +38,7 @@ enum class NodeScriptId {
 class RenderContext;
 class NodeRegistry;
 class MaterialRegistry;
+class MeshRegistry;
 class Mesh;
 
 class MeshType final
@@ -59,7 +60,8 @@ public:
     void prepare(
         const Assets& assets,
         NodeRegistry& nodeRegistry,
-        MaterialRegistry& materialRegistry) noexcept;
+        MaterialRegistry& materialRegistry,
+        MeshRegistry& meshRegistry);
 
     void prepareBatch(Batch& batch) noexcept;
 

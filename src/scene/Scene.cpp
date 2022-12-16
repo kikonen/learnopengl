@@ -59,6 +59,7 @@ void Scene::prepare(ShaderRegistry& shaders)
     m_batch.prepare(assets, assets.batchSize);
 
     m_materialRegistry.prepare();
+    m_meshRegistry.prepare();
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {
@@ -155,7 +156,7 @@ void Scene::prepare(ShaderRegistry& shaders)
 
 void Scene::attachNodes()
 {
-    m_registry.attachNodes(m_materialRegistry);
+    m_registry.attachNodes(m_materialRegistry, m_meshRegistry);
 }
 
 void Scene::processEvents(RenderContext& ctx)

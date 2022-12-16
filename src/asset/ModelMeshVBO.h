@@ -3,6 +3,9 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
+#include "VertexEntry.h"
+#include "IndexEntry.h"
+
 class ModelMesh;
 
 //
@@ -24,23 +27,22 @@ private:
         ModelMesh& mesh);
 
     void prepareVertex(
-        ModelMesh& mesh,
-        unsigned char* data,
-        int offset);
+        ModelMesh& mesh);
 
     void prepareIndex(
-        ModelMesh& mesh,
-        unsigned char* data,
-        int offset);
+        ModelMesh& mesh);
 
 public:
+    GLBuffer* m_vbo{ nullptr };
+
+    // NOTE KI absolute offset into vbo
     int m_vertexOffset = 0;
+    // NOTE KI absolute offset into vbo
     int m_indexOffset = 0;
 
-    int m_baseVertex = 0;
+    std::vector<VertexEntry> m_vertexEntries;
+    std::vector<IndexEntry> m_indexEntries;
 
 private:
     bool m_prepared = false;
-
-    GLBuffer m_buffer;
 };

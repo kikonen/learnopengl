@@ -44,7 +44,7 @@ private:
 
     std::vector<MaterialSSBO> m_materialsSSBO;
 
-    std::vector<MaterialEntry> m_assignedMaterials;
+    std::vector<MaterialEntry> m_materialEntries;
 
     int m_updatedSize = 0;
 

@@ -11,7 +11,7 @@ MaterialRegistry::MaterialRegistry(const Assets& assets)
     : assets(assets)
 {
     m_materials.reserve(MATERIAL_COUNT);
-    m_assignedMaterials.reserve(MAX_MATERIAL_ENTRIES);
+    m_materialEntries.reserve(MAX_MATERIAL_ENTRIES);
     m_materialsSSBO.reserve(MAX_SSBO_MATERIALS);
 }
 
@@ -30,23 +30,23 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
     if (materialVBO.m_entries.empty()) return;
 
     const int sz = sizeof(MaterialEntry);
-    const int index = m_assignedMaterials.size();
+    const int index = m_materialEntries.size();
 
     materialVBO.m_offset = index * sz;
     materialVBO.m_vbo = &m_vbo;
 
     for (auto& entry : materialVBO.m_entries) {
-        m_assignedMaterials.push_back(entry);
+        m_materialEntries.push_back(entry);
     }
 
-    assert(m_assignedMaterials.size() <= MAX_MATERIAL_ENTRIES);
+    assert(m_materialEntries.size() <= MAX_MATERIAL_ENTRIES);
 
-    KI_INFO_SB("material_entries: " << m_assignedMaterials.size());
+    KI_INFO_SB("material_entries: " << m_materialEntries.size());
 
     m_vbo.update(
         materialVBO.m_offset,
-        (m_assignedMaterials.size() - index) * sz,
-        &m_assignedMaterials[index]);
+        (m_materialEntries.size() - index) * sz,
+        &m_materialEntries[index]);
 }
 
 Material* MaterialRegistry::find(

@@ -5,6 +5,7 @@
 #include "ki/GL.h"
 
 #include "MaterialRegistry.h"
+#include "MeshRegistry.h"
 
 namespace {
     const NodeVector EMPTY_NODE_LIST;
@@ -137,7 +138,8 @@ void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport) noexcept
 }
 
 void NodeRegistry::attachNodes(
-    MaterialRegistry& materialRegistry)
+    MaterialRegistry& materialRegistry,
+    MeshRegistry& meshRegistry)
 {
     MeshTypeMap newNodes;
     {
@@ -153,17 +155,17 @@ void NodeRegistry::attachNodes(
     for (const auto& [type, nodes] : newNodes) {
         for (auto& node : nodes) {
             // NOTE KI ignore children without parent; until parent is found
-            if (!bindParent(node, materialRegistry)) continue;
+            if (!bindParent(node, materialRegistry, meshRegistry)) continue;
 
-            bindNode(node, materialRegistry);
+            bindNode(node, materialRegistry, meshRegistry);
         }
 
         for (auto& node : nodes) {
-            bindChildren(node, materialRegistry);
+            bindChildren(node, materialRegistry, meshRegistry);
         }
     }
 
-    bindPendingChildren(materialRegistry);
+    bindPendingChildren(materialRegistry, meshRegistry);
 }
 
 int NodeRegistry::countSelected() const noexcept
@@ -221,7 +223,8 @@ const NodeVector* NodeRegistry::getChildren(const Node& parent) const noexcept
 
 void NodeRegistry::bindNode(
     Node* node,
-    MaterialRegistry& materialRegistry)
+    MaterialRegistry& materialRegistry,
+    MeshRegistry& meshRegistry)
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
@@ -242,7 +245,7 @@ void NodeRegistry::bindNode(
     if (node->m_light)
         int x = 0;
 
-    type->prepare(assets, *this, materialRegistry);
+    type->prepare(assets, *this, materialRegistry, meshRegistry);
 
     auto* map = &solidNodes;
 
@@ -297,7 +300,8 @@ void NodeRegistry::bindNode(
 }
 
 void NodeRegistry::bindPendingChildren(
-    MaterialRegistry& materialRegistry)
+    MaterialRegistry& materialRegistry,
+    MeshRegistry& meshRegistry)
 {
     if (m_pendingChildren.empty()) return;
 
@@ -312,7 +316,7 @@ void NodeRegistry::bindPendingChildren(
         auto& parent = parentIt->second;
         for (auto& child : children) {
             KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
-            bindNode(child, materialRegistry);
+            bindNode(child, materialRegistry, meshRegistry);
 
             m_childToParent[child->m_objectID] = parent;
             m_parentToChildren[parent->m_objectID].push_back(child);
@@ -327,7 +331,8 @@ void NodeRegistry::bindPendingChildren(
 
 bool NodeRegistry::bindParent(
     Node* child,
-    MaterialRegistry& materialRegistry)
+    MaterialRegistry& materialRegistry,
+    MeshRegistry& meshRegistry)
 {
     if (child->m_parentId.is_nil()) return true;
 
@@ -350,14 +355,15 @@ bool NodeRegistry::bindParent(
 
 void NodeRegistry::bindChildren(
     Node* parent,
-    MaterialRegistry& materialRegistry)
+    MaterialRegistry& materialRegistry,
+    MeshRegistry& meshRegistry)
 {
     const auto& it = m_pendingChildren.find(parent->m_id);
     if (it == m_pendingChildren.end()) return;
 
     for (auto& child : it->second) {
         KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
-        bindNode(child, materialRegistry);
+        bindNode(child, materialRegistry, meshRegistry);
 
         m_childToParent[child->m_objectID] = parent;
         m_parentToChildren[parent->m_objectID].push_back(child);

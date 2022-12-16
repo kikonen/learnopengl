@@ -4,15 +4,23 @@
 #include <map>
 #include <mutex>
 
+#include "glm/glm.hpp"
+
+#include "kigl/GLBuffer.h"
+
 #include "asset/Assets.h"
 
 class Material;
 class ModelMesh;
+class ModelMeshVBO;
 
 class MeshRegistry {
 public:
     MeshRegistry(const Assets& assets);
     ~MeshRegistry();
+
+    void prepare();
+    void registerMeshVBO(ModelMeshVBO& meshVBO);
 
     ModelMesh* getMesh(
         const std::string& meshName);
@@ -32,4 +40,9 @@ private:
 private:
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;
+
+    unsigned char* m_buffer{ nullptr };
+    int m_bufferOffset = 0;
+
+    GLBuffer m_vbo;
 };

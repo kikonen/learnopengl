@@ -17,6 +17,7 @@
 
 
 class MaterialRegistry;
+class MeshRegistry;
 
 enum class NodeOperation {
     ADDED
@@ -60,7 +61,8 @@ public:
     void addViewPort(std::shared_ptr<Viewport> viewport) noexcept;
 
     void attachNodes(
-        MaterialRegistry& materialRegistry);
+        MaterialRegistry& materialRegistry,
+        MeshRegistry& meshRegistry);
 
     int countSelected() const noexcept;
 
@@ -71,19 +73,23 @@ public:
 
 private:
     void bindPendingChildren(
-        MaterialRegistry& materialRegistry);
+        MaterialRegistry& materialRegistry,
+        MeshRegistry& meshRegistry);
 
     void bindNode(
         Node* node,
-        MaterialRegistry& materialRegistry);
+        MaterialRegistry& materialRegistry,
+        MeshRegistry& meshRegistry);
 
     bool bindParent(
         Node* child,
-        MaterialRegistry& materialRegistry);
+        MaterialRegistry& materialRegistry,
+        MeshRegistry& meshRegistry);
 
     void bindChildren(
         Node* parent,
-        MaterialRegistry& materialRegistry);
+        MaterialRegistry& materialRegistry,
+        MeshRegistry& meshRegistry);
 
     void notifyListeners(Node* node, NodeOperation operation);
 

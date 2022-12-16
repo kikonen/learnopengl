@@ -44,7 +44,8 @@ const std::vector<Material>& QuadMesh::getMaterials() const
 }
 
 void QuadMesh::prepare(
-    const Assets& assets)
+    const Assets& assets,
+    MeshRegistry& meshRegistry)
 {
     if (m_prepared) return;
     m_prepared = true;

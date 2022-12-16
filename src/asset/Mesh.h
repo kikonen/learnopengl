@@ -18,6 +18,7 @@
 #include "registry/NodeRegistry.h"
 
 class RenderContext;
+class MeshRegistry;
 
 class Mesh
 {
@@ -33,7 +34,8 @@ public:
     virtual const std::vector<Material>& getMaterials() const = 0;
 
     virtual void prepare(
-        const Assets& assets) = 0;
+        const Assets& assets,
+        MeshRegistry& meshRegistry) = 0;
 
     virtual void prepareMaterials(
         MaterialVBO& materialVBO) = 0;

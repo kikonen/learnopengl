@@ -70,7 +70,8 @@ void MeshType::modifyMaterials(std::function<void(Material&)> fn)
 void MeshType::prepare(
     const Assets& assets,
     NodeRegistry& nodeRegistry,
-    MaterialRegistry& materialRegistry) noexcept
+    MaterialRegistry& materialRegistry,
+    MeshRegistry& meshRegistry)
 {
     if (!m_mesh) return;
 
@@ -79,8 +80,9 @@ void MeshType::prepare(
 
     m_vao.create();
 
-    m_mesh->prepare(assets);
+    m_mesh->prepare(assets, meshRegistry);
     m_mesh->prepareMaterials(m_materialVBO);
+
     m_mesh->prepareVAO(m_vao);
 
     materialRegistry.registerMaterialVBO(m_materialVBO);

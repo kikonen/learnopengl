@@ -5,16 +5,6 @@
 #include "Shader.h"
 #include "ModelMesh.h"
 
-namespace {
-#pragma pack(push, 1)
-    struct VertexEntry {
-        glm::vec3 pos;
-        ki::VEC10 normal;
-        ki::VEC10 tangent;
-        ki::UV16 texCoords;
-    };
-#pragma pack(pop)
-}
 
 ModelMeshVBO::ModelMeshVBO()
 {
@@ -35,7 +25,7 @@ void ModelMeshVBO::prepare(ModelMesh& mesh)
 
 void ModelMeshVBO::prepareVAO(GLVertexArray& vao)
 {
-    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_buffer, m_vertexOffset, sizeof(VertexEntry));
+    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, *m_vbo, m_vertexOffset, sizeof(VertexEntry));
     {
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
@@ -68,92 +58,58 @@ void ModelMeshVBO::prepareVAO(GLVertexArray& vao)
     }
 
     {
-        glVertexArrayElementBuffer(vao, m_buffer);
+        glVertexArrayElementBuffer(vao, *m_vbo);
     }
 }
 
 void ModelMeshVBO::prepareBuffers(
     ModelMesh& mesh)
 {
-    const int vertexSize = sizeof(VertexEntry) * mesh.m_vertices.size();
-    const int indexSize = mesh.m_tris.size() * sizeof(int) * 3;
-    const int sz = vertexSize + indexSize;
-
-    unsigned char* data = new unsigned char[sz];
-    m_vertexOffset = 0;
-    m_indexOffset = vertexSize;
-
-    m_buffer.create();
-
-    prepareVertex(mesh, data, m_vertexOffset);
-    prepareIndex(mesh, data, m_indexOffset);
-
-    m_buffer.init(sz, data, GL_DYNAMIC_STORAGE_BIT);
-
-    delete[] data;
+    prepareVertex(mesh);
+    prepareIndex(mesh);
 }
 
 
 void ModelMeshVBO::prepareVertex(
-    ModelMesh& mesh,
-    unsigned char* data,
-    int offset)
+    ModelMesh& mesh)
 {
-    auto vertices = mesh.m_vertices;
-
     // https://paroj.github.io/gltut/Basic%20Optimization.html
-    constexpr int stride_size = sizeof(VertexEntry);
-    const int sz = stride_size * vertices.size();
 
-    VertexEntry* buffer = (VertexEntry*)(data + offset);
+    m_vertexEntries.reserve(mesh.m_vertices.size());
 
-    {
-        VertexEntry* vbo = buffer;
-        for (int i = 0; i < vertices.size(); i++) {
-            const auto& vertex = vertices[i];
-            const auto& p = vertex.pos;
-            const auto& n = vertex.normal;
-            const auto& tan = vertex.tangent;
-            const auto& t = vertex.texture;
+    for (const auto& vertex : mesh.m_vertices) {
+        VertexEntry entry;
 
-            vbo->pos.x = p.x;
-            vbo->pos.y = p.y;
-            vbo->pos.z = p.z;
+        const auto& p = vertex.pos;
+        const auto& n = vertex.normal;
+        const auto& tan = vertex.tangent;
+        const auto& t = vertex.texture;
 
-            vbo->normal.x = (int)(n.x * ki::SCALE_VEC10);
-            vbo->normal.y = (int)(n.y * ki::SCALE_VEC10);
-            vbo->normal.z = (int)(n.z * ki::SCALE_VEC10);
+        entry.pos.x = p.x;
+        entry.pos.y = p.y;
+        entry.pos.z = p.z;
 
-            vbo->tangent.x = (int)(tan.x * ki::SCALE_VEC10);
-            vbo->tangent.y = (int)(tan.y * ki::SCALE_VEC10);
-            vbo->tangent.z = (int)(tan.z * ki::SCALE_VEC10);
+        entry.normal.x = (int)(n.x * ki::SCALE_VEC10);
+        entry.normal.y = (int)(n.y * ki::SCALE_VEC10);
+        entry.normal.z = (int)(n.z * ki::SCALE_VEC10);
 
-            vbo->texCoords.u = (int)(t.x * ki::SCALE_UV16);
-            vbo->texCoords.v = (int)(t.y * ki::SCALE_UV16);
+        entry.tangent.x = (int)(tan.x * ki::SCALE_VEC10);
+        entry.tangent.y = (int)(tan.y * ki::SCALE_VEC10);
+        entry.tangent.z = (int)(tan.z * ki::SCALE_VEC10);
 
-            vbo++;
-        }
+        entry.texCoords.u = (int)(t.x * ki::SCALE_UV16);
+        entry.texCoords.v = (int)(t.y * ki::SCALE_UV16);
+
+        m_vertexEntries.push_back(entry);
     }
 }
 
 void ModelMeshVBO::prepareIndex(
-    ModelMesh& mesh,
-    unsigned char* data,
-    int offset)
+    ModelMesh& mesh)
 {
-    auto& tris = mesh.m_tris;
+    m_indexEntries.reserve(mesh.m_tris.size());
 
-    const int sz = mesh.m_tris.size() * 3;
-
-    // EBO == IBO ?!?
-    const int index_count = tris.size() * 3;
-    unsigned int* buffer = (unsigned int*)(data + offset);
-
-    for (int i = 0; i < tris.size(); i++) {
-        const auto& vi = tris[i];
-        const int base = i * 3;
-        buffer[base + 0] = vi[0];
-        buffer[base + 1] = vi[1];
-        buffer[base + 2] = vi[2];
+    for (const auto& vi : mesh.m_tris) {
+        m_indexEntries.push_back(vi);
     }
 }

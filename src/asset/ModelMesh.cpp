@@ -14,6 +14,8 @@
 #include "asset/MaterialEntry.h"
 #include "asset/ModelMaterialInit.h"
 
+#include "registry/MeshRegistry.h"
+
 #include "scene/RenderContext.h"
 
 namespace {
@@ -71,7 +73,8 @@ const std::vector<Material>& ModelMesh::getMaterials() const
 }
 
 void ModelMesh::prepare(
-    const Assets& assets)
+    const Assets& assets,
+    MeshRegistry& meshRegistry)
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -83,6 +86,8 @@ void ModelMesh::prepare(
     m_triCount = m_tris.size();
     m_tris.clear();
     //m_vertices.clear();
+
+    meshRegistry.registerMeshVBO(m_vertexVBO);
 }
 
 void ModelMesh::prepareMaterials(

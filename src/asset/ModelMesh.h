@@ -39,7 +39,8 @@ public:
     virtual const std::vector<Material>& getMaterials() const override;
 
     virtual void prepare(
-        const Assets& assets) override;
+        const Assets& assets,
+        MeshRegistry& meshRegistry) override;
 
     virtual void prepareMaterials(
         MaterialVBO& materialVBO) override;

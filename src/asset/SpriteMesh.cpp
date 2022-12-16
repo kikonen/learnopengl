@@ -43,7 +43,8 @@ const std::vector<Material>& SpriteMesh::getMaterials() const
 }
 
 void SpriteMesh::prepare(
-    const Assets& assets)
+    const Assets& assets,
+    MeshRegistry& meshRegistry)
 {
     if (m_prepared) return;
     m_prepared = true;
