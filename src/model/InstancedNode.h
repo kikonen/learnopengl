@@ -12,8 +12,9 @@ public:
 
     void updateBuffers(const RenderContext& ctx) noexcept;
 
-    void update(const RenderContext& ctx, Node* parent) noexcept override;
-    void draw(const RenderContext& ctx) noexcept override;
+    virtual void update(const RenderContext& ctx, Node* parent) noexcept override;
+
+    virtual void bindBatch(const RenderContext& ctx, Batch& batch) noexcept override;
 
     void clear();
 

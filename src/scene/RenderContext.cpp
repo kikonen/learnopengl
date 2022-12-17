@@ -125,20 +125,38 @@ RenderContext::~RenderContext()
 
 void RenderContext::bindGlobal() const
 {
-    if (m_useWireframe) {
-        state.polygonFrontAndBack(GL_LINE);
-    }
-    else {
-        state.polygonFrontAndBack(GL_FILL);
-    }
-
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
     state.enable(GL_CULL_FACE);
     state.cullFace(GL_BACK);
     state.frontFace(GL_CCW);
 
     // NOTE KI touching blend here breaks blend renderer
-    //state.disable(GL_BLEND);
+
+    unbindDraw();
+}
+
+void RenderContext::bindDraw(
+    bool renderBack,
+    bool wireframe) const
+{
+    if (renderBack) {
+        state.disable(GL_CULL_FACE);
+    }
+    else {
+        state.enable(GL_CULL_FACE);
+    }
+
+    if (wireframe) {
+        state.polygonFrontAndBack(GL_LINE);
+    }
+    else {
+        state.polygonFrontAndBack(GL_FILL);
+    }
+}
+
+void RenderContext::unbindDraw() const
+{
+    bindDraw(false, m_useWireframe);
 }
 
 void RenderContext::bindUBOs() const

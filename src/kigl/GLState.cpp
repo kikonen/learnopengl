@@ -70,6 +70,23 @@ void GLState::polygonFrontAndBack(GLenum mode) noexcept
     }
 }
 
+void GLState::useProgram(GLuint programId) noexcept
+{
+    if (m_programId != programId) {
+        //KI_GL_CALL(glUseProgram(m_programId));
+        glUseProgram(programId);
+        m_programId = programId;
+    }
+}
+
+void GLState::useVAO(GLuint vaoId) noexcept
+{
+    if (m_vaoId != vaoId) {
+        glBindVertexArray(vaoId);
+        m_vaoId = vaoId;
+    }
+}
+
 //void GLState::bindTextures(
 //    const GLuint unitIndexFirst,
 //    const std::vector<GLuint>& textureIDs) noexcept

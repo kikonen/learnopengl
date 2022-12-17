@@ -88,7 +88,7 @@ void Viewport::bind(const RenderContext& ctx)
 {
     if (m_textureID == 0) return;
 
-    m_shader->bind();
+    m_shader->bind(ctx.state);
 
     //m_shader->viewportTex.set(UNIT_VIEWPORT);
     ctx.state.bindTexture(UNIT_VIEWPORT, m_textureID, true);
@@ -102,7 +102,7 @@ void Viewport::bind(const RenderContext& ctx)
 
 void Viewport::unbind(const RenderContext& ctx)
 {
-    m_shader->unbind();
+    //m_shader->unbind();
 }
 
 void Viewport::draw(const RenderContext& ctx)

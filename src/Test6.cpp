@@ -77,6 +77,9 @@ int Test6::onRender(const ki::RenderClock& clock) {
         ctx.state.enable(GL_RASTERIZER_DISCARD);
     }
 
+    ctx.state.useProgram(0);
+    ctx.state.useVAO(0);
+
     //ctx.state.enable(GL_DEPTH_TEST);
     //glDepthFunc(GL_LEQUAL);
 

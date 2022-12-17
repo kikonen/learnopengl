@@ -27,9 +27,9 @@ void InstancedNode::update(
     Node::update(ctx, parent);
 }
 
-void InstancedNode::draw(const RenderContext& ctx) noexcept
+void InstancedNode::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
-    ctx.m_batch.drawAll(ctx, m_type, m_modelMatrices, m_normalMatrices, m_objectIDs);
+    batch.addAll(ctx, m_modelMatrices, m_normalMatrices, m_objectIDs);
 }
 
 void InstancedNode::clear()
