@@ -82,20 +82,10 @@ Shader::~Shader()
     }
 }
 
-const void Shader::bind() noexcept
+const void Shader::bind(GLState& state) noexcept
 {
-    m_bound++;
-    if (m_bound > 1) return;
     assert(m_prepared);
-    KI_GL_CALL(glUseProgram(m_programId));
-}
-
-const void Shader::unbind() noexcept
-{
-    m_bound--;
-    assert(m_bound >= 0);
-    // NOTE KI not really need to unbind program
-    //if (m_bound == 0) glUseProgram(0);
+    state.useProgram(m_programId);
 }
 
 void Shader::load()
@@ -113,11 +103,6 @@ int Shader::prepare(const Assets& assets) noexcept
     if (createProgram()) {
         m_prepareResult = -1;
         return -1;
-    }
-
-    if (assets.glDebug) {
-        // NOTE KI acts as "test" for shader
-        ShaderBind bound(this);
     }
 
     m_prepareResult = 0;

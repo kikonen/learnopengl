@@ -15,6 +15,23 @@
 
 #include "registry/MeshType.h"
 
+//
+// NOTE KI shader key is REQUIRED for sorting "gull back face" draws
+// next to each other to avoid redundant state changes
+// => relies into fact that std::map is sorted by this
+//
+ struct ShaderKey {
+    ShaderKey(int shaderID, bool renderBack) noexcept
+        : shaderID(shaderID),
+        renderBack(renderBack) {};
+
+    int shaderID;
+    bool renderBack;
+    
+    bool operator<(const ShaderKey & o)  const noexcept {
+        return std::tie(shaderID, renderBack) < std::tie(o.shaderID, o.renderBack);
+    }
+};
 
 class MaterialRegistry;
 class MeshRegistry;
@@ -27,7 +44,7 @@ using GroupVector = std::vector<Group*>;
 
 using NodeVector = std::vector<Node*>;
 using MeshTypeMap = std::map<MeshType*, NodeVector>;
-using ShaderTypeMap = std::map<int, MeshTypeMap>;
+using ShaderTypeMap = std::map<ShaderKey, MeshTypeMap>;
 
 using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
 

@@ -23,6 +23,9 @@ public:
 
     void polygonFrontAndBack(GLenum mode) noexcept;
 
+    void useProgram(GLuint programId) noexcept;
+    void useVAO(GLuint vaoId) noexcept;
+
     //void bindTextures(
     //    const GLuint unitIndexFirst,
     //    const std::vector<GLuint>& textureIDs) noexcept;
@@ -41,5 +44,8 @@ private:
     int m_cullFace = -1;
     int m_frontFace = -1;
     int m_polygonFrontAndBack = -1;
+
+    int m_programId = -1;
+    int m_vaoId = -1;
 };
 

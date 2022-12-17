@@ -109,13 +109,6 @@ void MeshType::bind(
 {
     if (!m_mesh) return;
 
-    if (m_flags.renderBack) {
-        ctx.state.disable(GL_CULL_FACE);
-    }
-
-    if (m_flags.wireframe) {
-        ctx.state.polygonFrontAndBack(GL_LINE);
-    }
-
-    glBindVertexArray(m_vao);
+    ctx.bindDraw(m_flags.renderBack, m_flags.wireframe);
+    ctx.state.useVAO(m_vao);
 }

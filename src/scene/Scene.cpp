@@ -250,8 +250,6 @@ void Scene::draw(RenderContext& ctx)
         glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-    ctx.bindGlobal();
-
     glDepthFunc(GL_LEQUAL);
 
     //glUseProgram(0);

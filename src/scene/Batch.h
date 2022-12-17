@@ -26,9 +26,16 @@ public:
     Batch& operator=(const Batch&) = delete;
 
     void add(
+        const RenderContext& ctx,
         const glm::mat4& model,
         const glm::mat3& normal,
         int objectID) noexcept;
+
+    void addAll(
+        const RenderContext& ctx,
+        const std::vector<glm::mat4>& modelMatrices,
+        const std::vector<glm::mat3>& normalMatrices,
+        const std::vector<int>& objectIDs);
 
     void reserve(size_t count) noexcept;
     int size() noexcept;
@@ -45,13 +52,6 @@ public:
         const RenderContext& ctx,
         Node& node,
         Shader* shader);
-
-    void drawAll(
-        const RenderContext& ctx,
-        MeshType* type,
-        const std::vector<glm::mat4>& m_modelMatrices,
-        const std::vector<glm::mat3>& m_normalMatrices,
-        const std::vector<int>& m_objectIDs);
 
     void flush(
         const RenderContext& ctx,

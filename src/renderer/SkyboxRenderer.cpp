@@ -127,7 +127,7 @@ void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 
 void SkyboxRenderer::render(const RenderContext& ctx)
 {
-    ShaderBind bound(m_shader);
+    ShaderBind bound(m_shader, ctx.state);
     bindTexture(ctx);
 
     // remove translation from the view matrix

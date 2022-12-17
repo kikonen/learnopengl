@@ -67,6 +67,12 @@ public:
 
     void bind(Shader* shader) const;
 
+    void bindDraw(
+        bool renderBack,
+        bool wireframe) const;
+
+    void unbindDraw() const;
+
     const FrustumNew& getFrustumNew() const;
 
 private:

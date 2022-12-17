@@ -7,6 +7,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "kigl/GLState.h"
+
 #include "ki/GL.h"
 #include "Assets.h"
 
@@ -92,10 +94,8 @@ public:
 
     int prepare(const Assets& assets) noexcept;
 
-    const void bind() noexcept;
-    const void unbind() noexcept;
+    const void bind(GLState& state) noexcept;
 
-    int boundCount() noexcept { return m_bound; }
     int prepared() noexcept { return m_prepared; }
 
     void setInt(const std::string& name, int value) noexcept;
@@ -409,7 +409,6 @@ public:
 private:
     int m_prepareResult = -1;
     bool m_prepared = false;
-    int m_bound = 0;
 
     mutable std::map<std::string, std::string> m_defines;
 

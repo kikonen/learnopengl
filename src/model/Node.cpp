@@ -81,11 +81,7 @@ void Node::update(
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
-    batch.add(m_modelMatrix, m_normalMatrix, m_objectID);
-}
-
-void Node::draw(const RenderContext& ctx) noexcept
-{
+    batch.add(ctx, m_modelMatrix, m_normalMatrix, m_objectID);
 }
 
 void Node::updateModelMatrix(Node* parent) noexcept

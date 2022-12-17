@@ -31,8 +31,7 @@ public:
     virtual void prepare(const Assets& assets) noexcept;
 
     virtual void update(const RenderContext& ctx, Node* parent) noexcept;
-    void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
-    virtual void draw(const RenderContext& ctx) noexcept;
+    virtual void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
 
     const glm::vec3& getWorldPos() const noexcept;
     const glm::vec3& getWorldPlaneNormal() const noexcept;
