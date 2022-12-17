@@ -35,8 +35,6 @@ const std::string GS_SPRITE{ "sprite" };
 
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };
-const std::string DEF_USE_RENDER_BACK{ "USE_RENDER_BACK" };
-const std::string DEF_USE_NORMAL_PATTERN{ "USE_NORMAL_PATTERN" };
 const std::string DEF_USE_NORMAL_TEX{ "USE_NORMAL_TEX" };
 
 const std::string DEF_MAT_COUNT{ "MAT_COUNT" };

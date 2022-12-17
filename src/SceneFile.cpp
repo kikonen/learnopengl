@@ -286,16 +286,14 @@ MeshType* SceneFile::createType(
         }
 
         bool normalTex = false;
-        bool normalPattern = false;
 
-        type->modifyMaterials([this, &normalTex, &normalPattern, &data, &assets](Material& m) {
+        type->modifyMaterials([this, &normalTex, &data, &assets](Material& m) {
             if (data.materialModifiers_enabled) {
                 modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
             }
             m.loadTextures(assets);
 
             normalTex |= m.hasNormalTex();
-            normalPattern |= m.pattern > 0;
         });
 
         std::map<std::string, std::string> definitions;
@@ -307,12 +305,6 @@ MeshType* SceneFile::createType(
         }
         if (type->m_flags.blend) {
             definitions[DEF_USE_BLEND] = "1";
-        }
-        if (type->m_flags.renderBack) {
-            definitions[DEF_USE_RENDER_BACK] = "1";
-        }
-        if (normalPattern) {
-            definitions[DEF_USE_NORMAL_PATTERN] = "1";
         }
         if (normalTex) {
             definitions[DEF_USE_NORMAL_TEX] = "1";

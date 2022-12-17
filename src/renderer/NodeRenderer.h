@@ -35,7 +35,6 @@ private:
 
 private:
     Shader* m_selectionShader{ nullptr };
-    Shader* m_selectionShaderAlpha{ nullptr };
     Shader* m_selectionShaderSprite{ nullptr };
 
     int m_selectedCount{ 0 };

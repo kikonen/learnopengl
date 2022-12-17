@@ -14,13 +14,9 @@ void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     Renderer::prepare(assets, shaders);
 
-    m_selectionShader = shaders.getShader(assets, TEX_SELECTION);
+    m_selectionShader = shaders.getShader(assets, TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
     m_selectionShader->m_selection = true;
     m_selectionShader->prepare(assets);
-
-    m_selectionShaderAlpha = shaders.getShader(assets, TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
-    m_selectionShaderAlpha->m_selection = true;
-    m_selectionShaderAlpha->prepare(assets);
 
     m_selectionShaderSprite = shaders.getShader(assets, TEX_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
     m_selectionShaderSprite->m_selection = true;
@@ -177,7 +173,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
             auto& type = *it.first;
             auto& batch = ctx.m_batch;
 
-            auto shader = type.m_flags.alpha ? m_selectionShaderAlpha : m_selectionShader;
+            auto shader = m_selectionShader;
             if (type.m_flags.sprite) {
                 shader = m_selectionShaderSprite;
             }

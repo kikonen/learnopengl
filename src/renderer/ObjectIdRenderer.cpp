@@ -76,11 +76,8 @@ void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     Renderer::prepare(assets, shaders);
 
-    m_idShader = shaders.getShader(assets, TEX_OBJECT_ID);
+    m_idShader = shaders.getShader(assets, TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idShader->prepare(assets);
-
-    m_idShaderAlpha = shaders.getShader(assets, TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
-    m_idShaderAlpha->prepare(assets);
 
     m_idShaderSprite = shaders.getShader(assets, TEX_OBJECT_ID_SPRITE, { { DEF_USE_ALPHA, "1"} });
     m_idShaderSprite->prepare(assets);
@@ -145,7 +142,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
                 auto& type = *it.first;
                 if (type.m_flags.noSelect) continue;
 
-                auto shader = type.m_flags.alpha ? m_idShaderAlpha : m_idShader;
+                auto shader = m_idShader;
                 if (type.m_flags.sprite) {
                     shader = m_idShaderSprite;
                 }

@@ -60,17 +60,13 @@ void main() {
 
   #include var_tex_material_normal.glsl
 
-#ifdef USE_NORMAL_PATTERN
   if (material.pattern == 1) {
     normal = calculateNormalPattern(normal);
   }
-#endif
 
-#ifdef USE_RENDER_BACK
   if (!gl_FrontFacing) {
     normal = -normal;
   }
-#endif
 
   vec3 toView = normalize(u_viewPos - fs_in.fragPos);
 
