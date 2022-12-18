@@ -33,18 +33,22 @@ void Batch::add(
     const glm::mat3& normal,
     int objectID) noexcept
 {
-    m_modelMatrices.push_back(model);
+    BatchEntry entry;
+    entry.modelMatrix = model;
+    entry.normalMatrix = normal;
 
     if (m_useObjectIDBuffer) {
         int r = (objectID & 0x000000FF) >> 0;
         int g = (objectID & 0x0000FF00) >> 8;
         int b = (objectID & 0x00FF0000) >> 16;
 
-        m_objectIDs.emplace_back(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+        entry.objectID.r = r / 255.0f;
+        entry.objectID.g = g / 255.0f;
+        entry.objectID.b = b / 255.0f;
+        entry.objectID.a = 1.0f;
     }
-    else {
-        m_normalMatrices.push_back(normal);
-    }
+
+    m_entries.push_back(entry);
 
     flushIfNeeded(ctx);
 }
@@ -62,21 +66,17 @@ void Batch::addAll(
 
 void Batch::reserve(size_t count) noexcept
 {
-    m_modelMatrices.reserve(count);
-    m_normalMatrices.reserve(count);
-    m_objectIDs.reserve(count);
+    m_entries.reserve(count);
 }
 
 int Batch::size() noexcept
 {
-    return m_modelMatrices.size();
+    return m_entries.size();
 }
 
 void Batch::clear() noexcept
 {
-    m_modelMatrices.clear();
-    m_normalMatrices.clear();
-    m_objectIDs.clear();
+    m_entries.clear();
 }
 
 void Batch::prepare(
@@ -89,36 +89,16 @@ void Batch::prepare(
     m_bufferSize = bufferSize;
 
     {
-        const int modelSize = m_bufferSize * sizeof(glm::mat4);
-        const int normalSize = m_bufferSize * sizeof(glm::mat3);
-        const int objectSize = m_bufferSize * sizeof(glm::vec4);
+        m_offset = 0;
 
-        const int sz = modelSize + normalSize + objectSize;
-
-        m_modelOffset = 0;
-        m_normalOffset = modelSize;
-        m_objectOffset = modelSize + normalSize;
-
+        constexpr int sz = sizeof(BatchEntry);
         constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT;
 
         m_buffer.create();
-        m_buffer.initEmpty(sz, bufferFlags);
+        m_buffer.initEmpty(m_bufferSize * sz, bufferFlags);
     }
 
-    // model
-    {
-        m_modelMatrices.reserve(m_bufferSize);
-    }
-
-    // normal
-    {
-        m_normalMatrices.reserve(m_bufferSize);
-    }
-
-    // objectIDs
-    {
-        m_objectIDs.reserve(m_bufferSize);
-    }
+    m_entries.reserve(m_bufferSize);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
@@ -129,7 +109,7 @@ void Batch::prepareMesh(GLVertexArray& vao)
 {
     // model
     {
-        glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_buffer, m_modelOffset, sizeof(glm::mat4));
+        glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_buffer, offsetof(BatchEntry, modelMatrix), sizeof(BatchEntry));
 
         // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
         constexpr GLsizei vecSize = sizeof(glm::vec4);
@@ -147,7 +127,7 @@ void Batch::prepareMesh(GLVertexArray& vao)
 
     // normal
     {
-        glVertexArrayVertexBuffer(vao, VBO_NORMAL_MATRIX_BINDING, m_buffer, m_normalOffset, sizeof(glm::mat3));
+        glVertexArrayVertexBuffer(vao, VBO_NORMAL_MATRIX_BINDING, m_buffer, offsetof(BatchEntry, normalMatrix), sizeof(BatchEntry));
 
         // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
         constexpr GLsizei vecSize = sizeof(glm::vec3);
@@ -165,7 +145,7 @@ void Batch::prepareMesh(GLVertexArray& vao)
 
     // objectIDs
     {
-        glVertexArrayVertexBuffer(vao, VBO_OBJECT_ID_BINDING, m_buffer, m_objectOffset, sizeof(glm::vec4));
+        glVertexArrayVertexBuffer(vao, VBO_OBJECT_ID_BINDING, m_buffer, offsetof(BatchEntry, objectID), sizeof(BatchEntry));
 
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
 
@@ -189,15 +169,7 @@ void Batch::update(size_t count) noexcept
 
     // TODO KI Map COHERRENT + PERSISTENT
     // => can be MUCH faster
-
-    m_buffer.update(m_modelOffset, count * sizeof(glm::mat4), m_modelMatrices.data());
-
-    if (m_useObjectIDBuffer) {
-        m_buffer.update(m_objectOffset, count * sizeof(glm::vec4), m_objectIDs.data());
-    }
-    else {
-        m_buffer.update(m_normalOffset, count * sizeof(glm::mat3), m_normalMatrices.data());
-    }
+    m_buffer.update(m_offset, count * sizeof(BatchEntry), m_entries.data());
 }
 
 void Batch::bind(
@@ -210,9 +182,7 @@ void Batch::bind(
     m_boundType = type;
     m_boundShader = shader;
 
-    m_modelMatrices.clear();
-    m_normalMatrices.clear();
-    m_objectIDs.clear();
+    m_entries.clear();
 }
 
 void Batch::unbind()
@@ -220,9 +190,7 @@ void Batch::unbind()
     m_boundType = nullptr;
     m_boundShader = nullptr;
 
-    m_modelMatrices.clear();
-    m_normalMatrices.clear();
-    m_objectIDs.clear();
+    m_entries.clear();
 }
 
 void Batch::draw(
@@ -296,7 +264,7 @@ void Batch::draw(
 void Batch::flushIfNeeded(
     const RenderContext& ctx)
 {
-    if (m_modelMatrices.size() < m_bufferSize) return;
+    if (m_entries.size() < m_bufferSize) return;
     flush(ctx, false);
 }
 
@@ -313,7 +281,7 @@ void Batch::flush(
     if (type.m_flags.root) return;
     if (type.m_flags.origo) return;
 
-    int drawCount = m_modelMatrices.size();
+    int drawCount = m_entries.size();
     if (drawCount == 0) return;
 
     update(drawCount);
@@ -327,9 +295,7 @@ void Batch::flush(
         mesh->drawInstanced(ctx, drawCount);
     }
 
-    m_modelMatrices.clear();
-    m_normalMatrices.clear();
-    m_objectIDs.clear();
+    m_entries.clear();
 
     if (release) {
         unbind();

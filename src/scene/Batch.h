@@ -9,6 +9,14 @@ class RenderContext;
 class MeshType;
 class Node;
 
+#pragma pack(push, 1)
+struct BatchEntry {
+    glm::mat4 modelMatrix;
+    glm::mat3 normalMatrix;
+    glm::vec4 objectID;
+};
+#pragma pack(pop)
+
 // NOTE KI use single shared UBO buffer for rendering
 // => less resources needed
 //
@@ -82,14 +90,10 @@ private:
     Shader* m_boundShader{ nullptr };
     MeshType* m_boundType{ nullptr };
 
-    std::vector<glm::mat4> m_modelMatrices;
-    std::vector<glm::mat3> m_normalMatrices;
-    std::vector<glm::vec4> m_objectIDs;
+    std::vector<BatchEntry> m_entries;
 
     GLBuffer m_buffer;
 
-    int m_modelOffset = 0;
-    int m_normalOffset = 0;
-    int m_objectOffset = 0;
+    int m_offset = 0;
 };
 
