@@ -57,7 +57,7 @@ public:
 
     ~RenderContext();
 
-    void bindGlobal() const;
+    void bindDefaults() const;
     void bindUBOs() const;
     void bindMatricesUBO() const;
     void bindDataUBO() const;

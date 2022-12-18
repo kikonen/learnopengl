@@ -29,7 +29,7 @@ void ViewportRenderer::render(
 
     bool useWireframe = ctx.m_useWireframe;
     ctx.m_useWireframe = false;
-    ctx.bindGlobal();
+    ctx.bindDefaults();
 
     for (auto& viewport : ctx.registry.viewports) {
         viewport->bind(ctx);
@@ -41,5 +41,5 @@ void ViewportRenderer::render(
     ctx.state.enable(GL_DEPTH_TEST);
 
     ctx.m_useWireframe = useWireframe;
-    ctx.bindGlobal();
+    ctx.bindDefaults();
 }

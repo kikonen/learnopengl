@@ -127,6 +127,7 @@ void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 
 void SkyboxRenderer::render(const RenderContext& ctx)
 {
+    ctx.bindDefaults();
     ShaderBind bound(m_shader, ctx.state);
     bindTexture(ctx);
 

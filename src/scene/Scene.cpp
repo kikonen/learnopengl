@@ -226,7 +226,7 @@ void Scene::bind(RenderContext& ctx)
         m_shadowMapRenderer->bind(ctx);
     }
 
-    ctx.bindGlobal();
+    ctx.bindDefaults();
     ctx.bindUBOs();
 }
 

@@ -37,7 +37,7 @@ void ParticleSystem::render(const RenderContext& ctx)
         //batch.draw(ctx, e, shader);
     }
 
-    ctx.bindGlobal();
+    ctx.bindDefaults();
 }
 
 void ParticleSystem::addParticle(const Particle& particle)

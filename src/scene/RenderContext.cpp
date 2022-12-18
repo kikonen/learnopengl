@@ -123,16 +123,15 @@ RenderContext::~RenderContext()
     //    KI_INFO_SB(name << ": draw: " << drawCount << " skip: " << skipCount);
 }
 
-void RenderContext::bindGlobal() const
+void RenderContext::bindDefaults() const
 {
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
     state.enable(GL_CULL_FACE);
     state.cullFace(GL_BACK);
     state.frontFace(GL_CCW);
 
-    // NOTE KI touching blend here breaks blend renderer
-
-    unbindDraw();
+    state.polygonFrontAndBack(GL_FILL);
+    state.disable(GL_BLEND);
 }
 
 void RenderContext::bindDraw(
