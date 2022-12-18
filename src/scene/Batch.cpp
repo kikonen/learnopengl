@@ -212,12 +212,12 @@ void Batch::draw(
     Node& node,
     Shader* shader)
 {
-    const auto& type = *node.m_type;
-
     if (node.m_type != m_boundType) {
         flush(ctx);
         unbind();
     }
+
+    const auto& type = *node.m_type;
 
     if (!type.getMesh()) return;
     if (type.m_flags.root) return;
