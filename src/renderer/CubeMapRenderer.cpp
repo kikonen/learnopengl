@@ -179,6 +179,8 @@ void CubeMapRenderer::drawNodes(
             auto& type = *it.first;
             auto& batch = ctx.m_batch;
 
+            if (type.m_flags.noReflect) continue;
+
             for (auto& node : it.second) {
                 // NOTE KI skip drawing center node itself (can produce odd results)
                 // => i.e. show garbage from old render round and such

@@ -29,7 +29,7 @@ void MaterialRegistry::add(const Material& material)
 
 void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 {
-    if (materialVBO.m_entries.empty()) return;
+    assert(!materialVBO.m_entries.empty());
 
     const int sz = sizeof(MaterialEntry);
     const int index = m_materialEntries.size();

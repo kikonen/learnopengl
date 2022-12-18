@@ -106,10 +106,10 @@ void Batch::prepare(
         m_offset = 0;
 
         constexpr int sz = sizeof(BatchEntry);
-        constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT;
+        //constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT;// | GL_MAP_WRITE_BIT;
 
         m_buffer.create();
-        m_buffer.initEmpty(m_bufferSize * sz, bufferFlags);
+        m_buffer.initEmpty(m_bufferSize * sz, GL_DYNAMIC_STORAGE_BIT);
     }
 
     m_entries.reserve(m_bufferSize);
@@ -121,8 +121,7 @@ void Batch::prepare(
 
 void Batch::prepareMesh(GLVertexArray& vao)
 {
-    glVertexArrayVertexBuffer(vao, VBO_MODEL_MATRIX_BINDING, m_buffer, 0, sizeof(BatchEntry));
-    KI_GL_CHECK("1");
+    glVertexArrayVertexBuffer(vao, VBO_BATCH_BINDING, m_buffer, m_offset, sizeof(BatchEntry));
 
     // model
     {
@@ -132,12 +131,8 @@ void Batch::prepareMesh(GLVertexArray& vao)
         for (int i = 0; i < 4; i++) {
             glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i);
             glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, modelMatrix) + i * vecSize);
-            glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, VBO_MODEL_MATRIX_BINDING);
+            glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, VBO_BATCH_BINDING);
         }
-
-        // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
-        // https://www.khronos.org/opengl/wiki/Vertex_Specification
-        glVertexArrayBindingDivisor(vao, VBO_MODEL_MATRIX_BINDING, 1);
     }
 
     // normal
@@ -148,27 +143,25 @@ void Batch::prepareMesh(GLVertexArray& vao)
         for (int i = 0; i < 3; i++) {
             glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i);
             glVertexArrayAttribFormat(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, 3, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, normalMatrix) + i * vecSize);
-            glVertexArrayAttribBinding(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, VBO_NORMAL_MATRIX_BINDING);
+            glVertexArrayAttribBinding(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, VBO_BATCH_BINDING);
         }
-
-        // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
-        // https://www.khronos.org/opengl/wiki/Vertex_Specification
-        glVertexArrayBindingDivisor(vao, VBO_NORMAL_MATRIX_BINDING, 1);
     }
 
     // objectIDs
     {
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
-
         glVertexArrayAttribFormat(vao, ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, objectID));
+        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_OBJECT_ID, VBO_BATCH_BINDING);
 
+    }
+
+    {
         // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
         // https://www.g-truc.net/post-0363.html
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
-        glVertexArrayBindingDivisor(vao, VBO_OBJECT_ID_BINDING, 1);
-
-        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_OBJECT_ID, VBO_OBJECT_ID_BINDING);
+        glVertexArrayBindingDivisor(vao, VBO_BATCH_BINDING, 1);
     }
+
     KI_GL_CHECK("2");
 }
 
@@ -210,11 +203,6 @@ void Batch::draw(
     Node& node,
     Shader* shader)
 {
-    if (node.m_type != m_boundType) {
-        flush(ctx);
-        unbind();
-    }
-
     const auto& type = *node.m_type;
 
     if (!type.getMesh()) return;
@@ -252,6 +240,11 @@ void Batch::draw(
 
     ctx.m_drawCount += 1;
 
+    if (node.m_type != m_boundType) {
+        flush(ctx);
+        unbind();
+    }
+
     bind(ctx, node.m_type, shader);
     node.bindBatch(ctx, *this);
     flushIfNeeded(ctx);
@@ -270,15 +263,14 @@ void Batch::flush(
 {
     if (!m_boundType) return;
 
-    auto& type = *m_boundType;
-    const auto& mesh = type.getMesh();
-
-    if (!mesh) return;
-    if (type.m_flags.root) return;
-    if (type.m_flags.origo) return;
-
     int drawCount = m_entries.size();
-    if (drawCount == 0) return;
+
+    if (drawCount == 0) {
+        if (release) {
+            unbind();
+        }
+        return;
+    }
 
     update(drawCount);
 
@@ -287,6 +279,10 @@ void Batch::flush(
     }
     {
         m_boundShader->bind(ctx.state);
+
+        auto& type = *m_boundType;
+        const auto& mesh = type.getMesh();
+
         type.bind(ctx);
         mesh->drawInstanced(ctx, drawCount);
     }

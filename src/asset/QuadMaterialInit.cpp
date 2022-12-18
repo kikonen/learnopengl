@@ -6,8 +6,7 @@
 #include "QuadMesh.h"
 
 namespace {
-    constexpr int INDEX_COUNT = 4;
-    constexpr int VERTEX_COUNT = 6;
+    constexpr int VERTEX_COUNT = 4;
 }
 
 void QuadMaterialInit::prepare(
@@ -27,7 +26,7 @@ void QuadMaterialInit::prepareVertices(
     // NOTE KI single DOES NOT work due to logic how intanced rendering
     // and glVertexArrayBindingDivisor work (MUST seemingly match instanced count)
     {
-        const int count = 1; // INDEX_COUNT;
+        const int count = 1;// VERTEX_COUNT;
         auto& entries = materialVBO.m_entries;
         entries.reserve(count);
 

@@ -2,7 +2,7 @@
 #define UBO_DATA 1
 #define UBO_CLIP_PLANES 2
 #define UBO_LIGHTS 3
-#define UBO_MATERIALS 4
+//#define UBO_MATERIALS 4
 #define UBO_TEXTURES 5
 
 #define SSBO_MATERIALS 4

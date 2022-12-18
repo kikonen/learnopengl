@@ -26,14 +26,14 @@ MeshRegistry::~MeshRegistry() {
 
 void MeshRegistry::registerMeshVBO(ModelMeshVBO& meshVBO)
 {
-    if (meshVBO.m_vertexEntries.empty()) return;
+    assert(!meshVBO.m_vertexEntries.empty());
 
     {
-        const int vertexSize = sizeof(VertexEntry) * meshVBO.m_vertexEntries.size();
-        const int indexSize = sizeof(IndexEntry) * meshVBO.m_indexEntries.size();
-        const int sz = vertexSize + indexSize;
+        const size_t vertexSize = sizeof(VertexEntry) * meshVBO.m_vertexEntries.size();
+        const size_t indexSize = sizeof(IndexEntry) * meshVBO.m_indexEntries.size();
+        const size_t meshSize = vertexSize + indexSize;
 
-        assert(m_bufferOffset + sz <= BUFFER_SIZE);
+        assert(m_bufferOffset + meshSize <= BUFFER_SIZE);
 
         KI_INFO(fmt::format("MESH offset={}, BUFFER_SIZE={}", m_bufferOffset, BUFFER_SIZE));
 
@@ -59,11 +59,11 @@ void MeshRegistry::registerMeshVBO(ModelMeshVBO& meshVBO)
         }
 
         m_vbo.update(
-            m_bufferOffset,
-            sz,
+            meshVBO.m_vertexOffset,
+            meshSize,
             m_buffer + m_bufferOffset);
 
-        m_bufferOffset += sz;
+        m_bufferOffset += meshSize;
     }
 }
 
