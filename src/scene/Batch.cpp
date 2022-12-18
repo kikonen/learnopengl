@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+#include "glm/glm.hpp"
+
 #include "ki/uuid.h"
 
 #include "model/Node.h"
@@ -20,6 +22,10 @@ namespace {
         std::lock_guard<std::mutex> lock(type_id_lock);
         return ++idBase;
     }
+
+    const glm::mat4 BASE_MAT_1 = glm::mat4(1.0f);
+    const glm::vec3 SCALE{ 1.02f };
+    const glm::mat4 SELECTION_MAT = glm::scale(BASE_MAT_1, SCALE);
 }
 
 Batch::Batch()
@@ -31,11 +37,18 @@ void Batch::add(
     const RenderContext& ctx,
     const glm::mat4& model,
     const glm::mat3& normal,
-    int objectID) noexcept
+    int objectID,
+    bool selected) noexcept
 {
     BatchEntry entry;
-    entry.modelMatrix = model;
-    entry.normalMatrix = normal;
+
+    if (selected && m_selection) {
+        entry.modelMatrix = model * SELECTION_MAT;
+        entry.normalMatrix = normal;
+    } else {
+        entry.modelMatrix = model;
+        entry.normalMatrix = normal;
+    }
 
     if (m_useObjectIDBuffer) {
         int r = (objectID & 0x000000FF) >> 0;
@@ -57,10 +70,11 @@ void Batch::addAll(
     const RenderContext& ctx,
     const std::vector<glm::mat4>& modelMatrices,
     const std::vector<glm::mat3>& normalMatrices,
-    const std::vector<int>& objectIDs)
+    const std::vector<int>& objectIDs,
+    bool selected)
 {
     for (int i = 0; i < modelMatrices.size(); i++) {
-        add(ctx, modelMatrices[i], normalMatrices[i], objectIDs[i]);
+        add(ctx, modelMatrices[i], normalMatrices[i], objectIDs[i], selected);
     }
 }
 

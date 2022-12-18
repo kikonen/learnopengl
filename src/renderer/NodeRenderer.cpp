@@ -167,6 +167,7 @@ void NodeRenderer::drawNodes(
 void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
 {
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+    ctx.m_batch.m_selection = true;
 
     auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
@@ -184,22 +185,13 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
 
             for (auto& node : it.second) {
                 if (!node->m_selected) continue;
-
-                auto parent = ctx.registry.getParent(*node);
-                glm::vec3 scale = node->getScale();
-                node->setScale(scale * 1.02f);
-                node->updateModelMatrix(parent);
-
                 batch.draw(ctx, *node, shader);
-
-                node->updateModelMatrix(parent);
-                node->setScale(scale);
-
             }
 
             if (type.m_flags.blend) {
                 ctx.state.disable(GL_BLEND);
             }
+
         }
     };
 
@@ -216,6 +208,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
     }
 
     ctx.m_batch.flush(ctx);
+    ctx.m_batch.m_selection = false;
 }
 
 void NodeRenderer::drawBlended(

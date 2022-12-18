@@ -5,17 +5,11 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
+#include "BatchEntry.h"
+
 class RenderContext;
 class MeshType;
 class Node;
-
-#pragma pack(push, 1)
-struct BatchEntry {
-    glm::mat4 modelMatrix;
-    glm::mat3 normalMatrix;
-    glm::vec4 objectID;
-};
-#pragma pack(pop)
 
 // NOTE KI use single shared UBO buffer for rendering
 // => less resources needed
@@ -37,13 +31,15 @@ public:
         const RenderContext& ctx,
         const glm::mat4& model,
         const glm::mat3& normal,
-        int objectID) noexcept;
+        int objectID,
+        bool selected) noexcept;
 
     void addAll(
         const RenderContext& ctx,
         const std::vector<glm::mat4>& modelMatrices,
         const std::vector<glm::mat3>& normalMatrices,
-        const std::vector<int>& objectIDs);
+        const std::vector<int>& objectIDs,
+        bool selected);
 
     void reserve(size_t count) noexcept;
     int size() noexcept;
@@ -81,6 +77,7 @@ public:
 
     bool m_dirty = false;
     bool m_useObjectIDBuffer = false;
+    bool m_selection = false;
 
 private:
     bool m_prepared = false;

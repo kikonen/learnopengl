@@ -335,6 +335,7 @@
     <ClInclude Include="src\renderer\MirrorMapRenderer.h" />
     <ClInclude Include="src\kigl\GLState.h" />
     <ClInclude Include="src\asset\DynamicCubeMap.h" />
+    <ClInclude Include="src\scene\BatchEntry.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\asset\ImageTexture.h" />
     <ClInclude Include="src\asset\PlainTexture.h" />

@@ -29,7 +29,7 @@ void InstancedNode::update(
 
 void InstancedNode::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
-    batch.addAll(ctx, m_modelMatrices, m_normalMatrices, m_objectIDs);
+    batch.addAll(ctx, m_modelMatrices, m_normalMatrices, m_objectIDs, m_selected);
 }
 
 void InstancedNode::clear()
