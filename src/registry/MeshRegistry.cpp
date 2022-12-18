@@ -1,5 +1,7 @@
 #include "MeshRegistry.h"
 
+#include <fmt/format.h>
+
 #include "scene/RenderContext.h"
 #include "asset/ModelMesh.h"
 #include "asset/ModelMeshVBO.h"
@@ -32,6 +34,8 @@ void MeshRegistry::registerMeshVBO(ModelMeshVBO& meshVBO)
         const int sz = vertexSize + indexSize;
 
         assert(m_bufferOffset + sz <= BUFFER_SIZE);
+
+        KI_INFO(fmt::format("MESH offset={}, BUFFER_SIZE={}", m_bufferOffset, BUFFER_SIZE));
 
         meshVBO.m_vertexOffset = m_bufferOffset;
         meshVBO.m_indexOffset = m_bufferOffset + vertexSize;

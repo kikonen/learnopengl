@@ -1,10 +1,12 @@
 #include "MaterialRegistry.h"
 
+#include "fmt/format.h"
+
 #include "asset/MaterialVBO.h"
 
 namespace {
     // scene_full = 91 109
-    constexpr int MAX_MATERIAL_ENTRIES = 200000;
+    constexpr int MAX_MATERIAL_ENTRIES = 100000;
 }
 
 MaterialRegistry::MaterialRegistry(const Assets& assets)
@@ -41,7 +43,9 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 
     assert(m_materialEntries.size() <= MAX_MATERIAL_ENTRIES);
 
-    KI_INFO_SB("material_entries: " << m_materialEntries.size());
+    KI_INFO(fmt::format(
+        "MATERIAL: offset={}, mesh_entries={}, total_entries={}, BUFFER_SIZE={}",
+        materialVBO.m_offset, materialVBO.m_entries.size(), m_materialEntries.size(), MAX_MATERIAL_ENTRIES * sizeof(MaterialEntry)));
 
     m_vbo.update(
         materialVBO.m_offset,
