@@ -21,15 +21,17 @@
 // => relies into fact that std::map is sorted by this
 //
  struct ShaderKey {
-    ShaderKey(int shaderID, bool renderBack) noexcept
+    ShaderKey(int shaderID, bool renderBack, bool wireframe) noexcept
         : shaderID(shaderID),
-        renderBack(renderBack) {};
+        renderBack(renderBack),
+        wireframe(wireframe) {};
 
     int shaderID;
     bool renderBack;
-    
-    bool operator<(const ShaderKey & o)  const noexcept {
-        return std::tie(shaderID, renderBack) < std::tie(o.shaderID, o.renderBack);
+    bool wireframe;
+
+    bool operator<(const ShaderKey & o) const noexcept {
+        return std::tie(shaderID, renderBack, wireframe) < std::tie(o.shaderID, o.renderBack, wireframe);
     }
 };
 

@@ -103,12 +103,3 @@ void MeshType::prepareBatch(Batch& batch) noexcept
 
     batch.prepareMesh(m_vao);
 }
-
-void MeshType::bind(
-    const RenderContext& ctx) const
-{
-    if (!m_mesh) return;
-
-    ctx.bindDraw(m_flags.renderBack, m_flags.wireframe);
-    ctx.state.useVAO(m_vao);
-}

@@ -283,7 +283,9 @@ void Batch::flush(
         auto& type = *m_boundType;
         const auto& mesh = type.getMesh();
 
-        type.bind(ctx);
+        ctx.bindDraw(type.m_flags.renderBack, type.m_flags.wireframe);
+        ctx.state.useVAO(type.m_vao);
+
         mesh->drawInstanced(ctx, drawCount);
     }
 

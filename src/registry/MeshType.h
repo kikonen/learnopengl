@@ -65,8 +65,6 @@ public:
 
     void prepareBatch(Batch& batch) noexcept;
 
-    void bind(const RenderContext& ctx) const;
-
 public:
     const int typeID;
     const std::string m_name;
@@ -80,12 +78,12 @@ public:
 
     MaterialVBO m_materialVBO;
 
+    GLVertexArray m_vao;
+
 private:
     bool m_prepared = false;
     bool m_preparedBatch = false;
 
     Mesh* m_mesh{ nullptr };
     std::unique_ptr<Mesh> m_deleter;
-
-    GLVertexArray m_vao;
 };

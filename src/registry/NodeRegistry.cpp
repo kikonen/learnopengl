@@ -259,7 +259,10 @@ void NodeRegistry::bindNode(
         map = &invisibleNodes;
 
     // NOTE KI more optimal to not switch between culling mode (=> group by it)
-    const ShaderKey shaderKey(shader ? shader->m_objectID : NULL_SHADER_ID, type->m_flags.renderBack);
+    const ShaderKey shaderKey(
+        shader ? shader->m_objectID : NULL_SHADER_ID,
+        type->m_flags.renderBack,
+        type->m_flags.wireframe);
 
     auto& vAll = allNodes[shaderKey][type];
     auto& vTyped = (*map)[shaderKey][type];
