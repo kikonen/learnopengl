@@ -61,21 +61,13 @@ void QuadMesh::prepareMaterials(
 }
 
 void QuadMesh::prepareVAO(
-    GLVertexArray& vao)
+    GLVertexArray& vao,
+    backend::DrawOptions& drawOptions)
 {
     m_quad.prepareVAO(vao);
-}
 
-void QuadMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
-{
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, INDEX_COUNT, instanceCount);
-
-    //int baseInstance = 0;
-
-    //glDrawArraysInstancedBaseInstance(
-    //    GL_TRIANGLE_STRIP,
-    //    0,
-    //    4,
-    //    instanceCount,
-    //    baseInstance);
+    drawOptions.type = backend::DrawOptions::Type::arrays;
+    drawOptions.mode = GL_TRIANGLE_STRIP;
+    drawOptions.indexFirst = 0;
+    drawOptions.indexCount = INDEX_COUNT;
 }

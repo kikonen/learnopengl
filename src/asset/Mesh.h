@@ -7,6 +7,8 @@
 
 #include "kigl/GLVertexArray.h"
 
+#include "backend/DrawOptions.h"
+
 #include "Assets.h"
 #include "Material.h"
 #include "MaterialEntry.h"
@@ -41,9 +43,8 @@ public:
         MaterialVBO& materialVBO) = 0;
 
     virtual void prepareVAO(
-        GLVertexArray& vao) = 0;
-
-    virtual void drawInstanced(const RenderContext& ctx, int instanceCount) const  = 0;
+        GLVertexArray& vao,
+        backend::DrawOptions& drawOptions) = 0;
 
     void setVolume(std::unique_ptr<Volume> volume);
     const Volume* getVolume() const;

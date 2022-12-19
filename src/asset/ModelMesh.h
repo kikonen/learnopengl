@@ -46,9 +46,8 @@ public:
         MaterialVBO& materialVBO) override;
 
     virtual void prepareVAO(
-        GLVertexArray& vao) override;
-
-    void drawInstanced(const RenderContext& ctx, int instanceCount) const override;
+        GLVertexArray& vao,
+        backend::DrawOptions& drawOptions) override;
 
 public:
     const std::string m_meshName;

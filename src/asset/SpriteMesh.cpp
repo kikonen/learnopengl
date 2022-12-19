@@ -58,21 +58,12 @@ void SpriteMesh::prepareMaterials(
 }
 
 void SpriteMesh::prepareVAO(
-    GLVertexArray& vao)
+    GLVertexArray& vao,
+    backend::DrawOptions& drawOptions)
 {
-    // nothing
+    drawOptions.type = backend::DrawOptions::Type::arrays;
+    drawOptions.mode = GL_POINTS;
+    drawOptions.indexFirst = 0;
+    drawOptions.indexCount = 1;
 }
 
-void SpriteMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
-{
-    glDrawArraysInstanced(GL_POINTS, 0, 1, instanceCount);
-
-    //int baseInstance = 0;
-
-    //glDrawArraysInstancedBaseInstance(
-    //    GL_POINTS,
-    //    0,
-    //    1,
-    //    instanceCount,
-    //    baseInstance);
-}

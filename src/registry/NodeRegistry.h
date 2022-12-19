@@ -7,6 +7,8 @@
 
 #include <ki/uuid.h>
 
+#include "backend/DrawOptions.h"
+
 #include "asset/QuadVBO.h"
 
 #include "model/Group.h"
@@ -21,17 +23,16 @@
 // => relies into fact that std::map is sorted by this
 //
  struct ShaderKey {
-    ShaderKey(int shaderID, bool renderBack, bool wireframe) noexcept
+    ShaderKey(int shaderID, const backend::DrawOptions& drawOptions) noexcept
         : shaderID(shaderID),
-        renderBack(renderBack),
-        wireframe(wireframe) {};
+        drawOptions(drawOptions) {};
 
-    int shaderID;
-    bool renderBack;
-    bool wireframe;
+    const int shaderID;
+    const backend::DrawOptions drawOptions;
 
     bool operator<(const ShaderKey & o) const noexcept {
-        return std::tie(shaderID, renderBack, wireframe) < std::tie(o.shaderID, o.renderBack, wireframe);
+        return std::tie(shaderID, drawOptions.renderBack, drawOptions.wireframe) <
+            std::tie(o.shaderID, o.drawOptions.renderBack, drawOptions.wireframe);
     }
 };
 

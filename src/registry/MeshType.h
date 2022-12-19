@@ -6,6 +6,8 @@
 
 #include "kigl/GLVertexArray.h"
 
+#include "backend/DrawOptions.h"
+
 #include "scene/Batch.h"
 
 
@@ -77,6 +79,8 @@ public:
     Shader* m_nodeShader{ nullptr };
 
     MaterialVBO m_materialVBO;
+
+    backend::DrawOptions m_drawOptions;
 
     GLVertexArray m_vao;
 

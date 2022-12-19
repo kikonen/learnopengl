@@ -282,11 +282,50 @@ void Batch::flush(
 
         auto& type = *m_boundType;
         const auto& mesh = type.getMesh();
+        const auto& drawOptions = type.m_drawOptions;
 
-        ctx.bindDraw(type.m_flags.renderBack, type.m_flags.wireframe);
+        ctx.bindDraw(drawOptions.renderBack, drawOptions.wireframe);
         ctx.state.useVAO(type.m_vao);
 
-        mesh->drawInstanced(ctx, drawCount);
+        if (drawOptions.type == backend::DrawOptions::Type::elements) {
+            glDrawElementsInstanced(
+                drawOptions.mode,
+                drawOptions.indexCount,
+                GL_UNSIGNED_INT,
+                (void*)drawOptions.indexOffset,
+                drawCount);
+            //int baseInstance = 0;
+
+            //glDrawElementsInstancedBaseVertexBaseInstance(
+            //    GL_TRIANGLES,
+            //    m_triCount * 3,
+            //    GL_UNSIGNED_INT,
+            //    (void*)m_vertexVBO.m_indexOffset,
+            //    instanceCount,
+            //    m_vertexVBO.m_baseVertex,
+            //    baseInstance);
+        }
+        else if (drawOptions.type == backend::DrawOptions::Type::arrays)
+        {
+            glDrawArraysInstanced(
+                drawOptions.mode,
+                drawOptions.indexFirst,
+                drawOptions.indexCount,
+                drawCount);
+
+            //int baseInstance = 0;
+
+            //glDrawArraysInstancedBaseInstance(
+            //    GL_TRIANGLE_STRIP,
+            //    0,
+            //    4,
+            //    instanceCount,
+            //    baseInstance);
+        }
+        else {
+            // NOTE KI "none" no drawing
+            KI_INFO("no render");
+        }
     }
 
     m_entries.clear();

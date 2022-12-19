@@ -98,28 +98,14 @@ void ModelMesh::prepareMaterials(
 }
 
 void ModelMesh::prepareVAO(
-    GLVertexArray& vao)
+    GLVertexArray& vao,
+    backend::DrawOptions& drawOptions)
 {
     m_vertexVBO.prepareVAO(vao);
-}
 
-void ModelMesh::drawInstanced(const RenderContext& ctx, int instanceCount) const
-{
-    glDrawElementsInstanced(
-        GL_TRIANGLES,
-        m_triCount * 3,
-        GL_UNSIGNED_INT,
-        (void*)m_vertexVBO.m_indexOffset,
-        instanceCount);
-
-    //int baseInstance = 0;
-
-    //glDrawElementsInstancedBaseVertexBaseInstance(
-    //    GL_TRIANGLES,
-    //    m_triCount * 3,
-    //    GL_UNSIGNED_INT,
-    //    (void*)m_vertexVBO.m_indexOffset,
-    //    instanceCount,
-    //    m_vertexVBO.m_baseVertex,
-    //    baseInstance);
+    drawOptions.type = backend::DrawOptions::Type::elements;
+    drawOptions.mode = GL_TRIANGLES;
+    drawOptions.indexCount = m_triCount * 3;
+    drawOptions.vertexOFfset = m_vertexVBO.m_vertexOffset;
+    drawOptions.indexOffset = m_vertexVBO.m_indexOffset;
 }

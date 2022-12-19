@@ -242,59 +242,56 @@ void NodeRegistry::bindNode(
         });
     }
 
-    if (node->m_light)
-        int x = 0;
-
     type->prepare(assets, *this, materialRegistry, meshRegistry);
-
-    auto* map = &solidNodes;
-
-    if (type->m_flags.alpha)
-        map = &alphaNodes;
-
-    if (type->m_flags.blend)
-        map = &blendedNodes;
-
-    if (type->m_flags.noRender)
-        map = &invisibleNodes;
-
-    // NOTE KI more optimal to not switch between culling mode (=> group by it)
-    const ShaderKey shaderKey(
-        shader ? shader->m_objectID : NULL_SHADER_ID,
-        type->m_flags.renderBack,
-        type->m_flags.wireframe);
-
-    auto& vAll = allNodes[shaderKey][type];
-    auto& vTyped = (*map)[shaderKey][type];
-
     node->prepare(assets);
 
-    objectIdToNode[node->m_objectID] = node;
-    if (!node->m_id.is_nil()) idToNode[node->m_id] = node;
+    {
+        auto* map = &solidNodes;
 
-    vAll.push_back(node);
-    vTyped.push_back(node);
+        if (type->m_flags.alpha)
+            map = &alphaNodes;
 
-    if (node->m_camera) {
-        m_cameraNodes.push_back(node);
-    }
+        if (type->m_flags.blend)
+            map = &blendedNodes;
 
-    if (node->m_light) {
-        Light* light = node->m_light.get();
+        if (type->m_flags.noRender)
+            map = &invisibleNodes;
 
-        if (light->directional) {
-            m_dirLight = node;
+        // NOTE KI more optimal to not switch between culling mode (=> group by it)
+        const ShaderKey shaderKey(
+            shader ? shader->m_objectID : NULL_SHADER_ID,
+            type->m_drawOptions);
+
+        auto& vAll = allNodes[shaderKey][type];
+        auto& vTyped = (*map)[shaderKey][type];
+
+        objectIdToNode[node->m_objectID] = node;
+        if (!node->m_id.is_nil()) idToNode[node->m_id] = node;
+
+        vAll.push_back(node);
+        vTyped.push_back(node);
+
+        if (node->m_camera) {
+            m_cameraNodes.push_back(node);
         }
-        else if (light->point) {
-            m_pointLights.push_back(node);
-        }
-        else if (light->spot) {
-            m_spotLights.push_back(node);
-        }
-    }
 
-    if (type->m_flags.root) {
-        m_root = node;
+        if (node->m_light) {
+            Light* light = node->m_light.get();
+
+            if (light->directional) {
+                m_dirLight = node;
+            }
+            else if (light->point) {
+                m_pointLights.push_back(node);
+            }
+            else if (light->spot) {
+                m_spotLights.push_back(node);
+            }
+        }
+
+        if (type->m_flags.root) {
+            m_root = node;
+        }
     }
 
     notifyListeners(node, NodeOperation::ADDED);
