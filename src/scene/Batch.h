@@ -70,6 +70,10 @@ private:
         Shader* shader);
     void unbind();
 
+    void drawInstanced(
+        const RenderContext& ctx,
+        int drawCount);
+
     void flushIfNeeded(const RenderContext& ctx);
 
 public:
