@@ -98,6 +98,12 @@ void ShadowMapRenderer::render(
 {
     if (!needRender(ctx)) return;
 
+    // NOTE KI no shadows if no light
+    if (!ctx.assets.useLight) return;
+
+    auto& node = ctx.registry.m_dirLight;
+    if (!node) return;
+
     {
         m_shadowBuffer->bind(ctx);
 

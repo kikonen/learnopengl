@@ -9,6 +9,7 @@
 
 #include "NodeRegistry.h"
 #include "MaterialRegistry.h"
+#include "MeshRegistry.h"
 
 namespace {
     int idBase = 0;

@@ -300,6 +300,7 @@
     <ClInclude Include="src\backend\DrawOptions.h" />
     <ClInclude Include="src\backend\DrawElementsIndirectCommand.h" />
     <ClInclude Include="src\backend\DrawArraysIndirectCommand.h" />
+    <ClInclude Include="src\backend\DrawIndirectCommand.h" />
     <ClInclude Include="src\kigl\GLBuffer.h" />
     <ClInclude Include="src\kigl\GLVertexArray.h" />
     <ClInclude Include="src\asset\MaterialEntry.h" />

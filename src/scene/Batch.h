@@ -6,7 +6,7 @@
 #include "kigl/GLVertexArray.h"
 
 #include "backend/DrawElementsIndirectCommand.h"
-#include "backend/DrawArraysIndirectCommand.h"
+#include "backend/DrawIndirectCommand.h"
 
 #include "BatchEntry.h"
 
@@ -97,7 +97,7 @@ private:
 
     std::vector<BatchEntry> m_entries;
 
-    std::vector<DrawElementsIndirectCommand> m_commands;
+    std::vector<backend::DrawIndirectCommand> m_commands;
 
     GLBuffer m_commandBuffer;
 

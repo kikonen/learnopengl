@@ -116,7 +116,7 @@ void Batch::prepare(
 
     {
         m_commandBuffer.create();
-        m_commandBuffer.initEmpty(m_bufferSize * sizeof(DrawElementsIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
+        m_commandBuffer.initEmpty(m_bufferSize * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
     }
 
     m_entries.reserve(m_bufferSize);
@@ -187,7 +187,7 @@ void Batch::update(size_t count) noexcept
 
 void Batch::updateCommands() noexcept
 {
-    m_commandBuffer.update(0, m_commands.size() * sizeof(DrawElementsIndirectCommand), m_commands.data());
+    m_commandBuffer.update(0, m_commands.size() * sizeof(backend::DrawIndirectCommand), m_commands.data());
 }
 
 void Batch::bind(
@@ -320,14 +320,16 @@ void Batch::drawInstanced(
     ctx.state.useVAO(m_boundType->m_vao);
 
     if (drawOptions.type == backend::DrawOptions::Type::elements) {
-        DrawElementsIndirectCommand cmd;
+        backend::DrawIndirectCommand indirect;
+        backend::DrawElementsIndirectCommand& cmd = indirect.element;
+
         cmd.count = drawOptions.indexCount;
         cmd.instanceCount = drawCount;
         cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
-        cmd.baseVertex = 0;
+        cmd.baseVertex = drawOptions.vertexOFfset;
         cmd.baseInstance = 0;
 
-        m_commands.push_back(cmd);
+        m_commands.push_back(indirect);
         updateCommands();
         m_commandBuffer.bindDrawIndirect();
 
@@ -336,7 +338,7 @@ void Batch::drawInstanced(
             GL_UNSIGNED_INT,
             0,
             m_commands.size(),
-            sizeof(DrawElementsIndirectCommand));
+            sizeof(backend::DrawIndirectCommand));
 
         //glDrawElementsInstanced(
         //    drawOptions.mode,
@@ -347,20 +349,32 @@ void Batch::drawInstanced(
     }
     else if (drawOptions.type == backend::DrawOptions::Type::arrays)
     {
-        glDrawArraysInstanced(
-            drawOptions.mode,
-            drawOptions.indexFirst,
-            drawOptions.indexCount,
-            drawCount);
+        if (false) {
+            backend::DrawIndirectCommand indirect;
+            backend::DrawArraysIndirectCommand& cmd = indirect.array;
 
-        //int baseInstance = 0;
+            cmd.vertexCount = drawOptions.indexCount;
+            cmd.instanceCount = drawCount;
+            cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
+            cmd.baseInstance = 0;
 
-        //glDrawArraysInstancedBaseInstance(
-        //    GL_TRIANGLE_STRIP,
-        //    0,
-        //    4,
-        //    instanceCount,
-        //    baseInstance);
+            m_commands.push_back(indirect);
+            updateCommands();
+            m_commandBuffer.bindDrawIndirect();
+
+            glMultiDrawArraysIndirect(
+                drawOptions.mode,
+                0,
+                m_commands.size(),
+                sizeof(backend::DrawIndirectCommand));
+        }
+        else {
+            glDrawArraysInstanced(
+                drawOptions.mode,
+                drawOptions.indexFirst,
+                drawOptions.indexCount,
+                drawCount);
+        }
     }
     else {
         // NOTE KI "none" no drawing

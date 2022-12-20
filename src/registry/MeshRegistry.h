@@ -37,7 +37,6 @@ private:
 
     int m_updatedSize = 0;
 
-private:
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;
 
