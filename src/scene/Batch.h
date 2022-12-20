@@ -5,6 +5,9 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
+#include "backend/DrawElementsIndirectCommand.h"
+#include "backend/DrawArraysIndirectCommand.h"
+
 #include "BatchEntry.h"
 
 class RenderContext;
@@ -63,6 +66,7 @@ public:
 
 private:
     void update(size_t count) noexcept;
+    void updateCommands() noexcept;
 
     void bind(
         const RenderContext& ctx,
@@ -92,6 +96,10 @@ private:
     MeshType* m_boundType{ nullptr };
 
     std::vector<BatchEntry> m_entries;
+
+    std::vector<DrawElementsIndirectCommand> m_commands;
+
+    GLBuffer m_commandBuffer;
 
     GLBuffer m_buffer;
 

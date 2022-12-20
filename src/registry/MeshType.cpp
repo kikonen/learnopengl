@@ -78,22 +78,23 @@ void MeshType::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_drawOptions.renderBack = m_flags.renderBack;
-    m_drawOptions.wireframe = m_flags.wireframe;
-
     m_vao.create();
 
     m_mesh->prepare(assets, meshRegistry);
     m_mesh->prepareMaterials(m_materialVBO);
 
-    m_mesh->prepareVAO(m_vao, m_drawOptions);
-
     materialRegistry.registerMaterialVBO(m_materialVBO);
+
+    m_drawOptions.renderBack = m_flags.renderBack;
+    m_drawOptions.wireframe = m_flags.wireframe;
+    m_drawOptions.materialOffset = m_materialVBO.m_offset;
+    m_drawOptions.materialCount = m_materialVBO.m_entries.size();
+
+    m_mesh->prepareVAO(m_vao, m_drawOptions);
     m_materialVBO.prepareVAO(m_vao);
 
-    Shader* shader = m_nodeShader;
-    if (shader) {
-        shader->prepare(assets);
+    if (m_nodeShader) {
+        m_nodeShader->prepare(assets);
     }
 }
 

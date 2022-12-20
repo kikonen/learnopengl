@@ -41,5 +41,10 @@ struct GLBuffer {
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, ssbo, id);
     }
 
+    void bindDrawIndirect() {
+        if (id == -1) return;
+        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, id);
+    }
+
     GLuint id = -1;
 };

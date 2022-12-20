@@ -81,6 +81,7 @@ void Batch::addAll(
 void Batch::reserve(size_t count) noexcept
 {
     m_entries.reserve(count);
+    m_commands.reserve(count);
 }
 
 int Batch::size() noexcept
@@ -91,6 +92,7 @@ int Batch::size() noexcept
 void Batch::clear() noexcept
 {
     m_entries.clear();
+    m_commands.clear();
 }
 
 void Batch::prepare(
@@ -112,7 +114,13 @@ void Batch::prepare(
         m_buffer.initEmpty(m_bufferSize * sz, GL_DYNAMIC_STORAGE_BIT);
     }
 
+    {
+        m_commandBuffer.create();
+        m_commandBuffer.initEmpty(m_bufferSize * sizeof(DrawElementsIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
+    }
+
     m_entries.reserve(m_bufferSize);
+    m_commands.reserve(m_bufferSize);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
@@ -177,6 +185,11 @@ void Batch::update(size_t count) noexcept
     m_buffer.update(m_offset, count * sizeof(BatchEntry), m_entries.data());
 }
 
+void Batch::updateCommands() noexcept
+{
+    m_commandBuffer.update(0, m_commands.size() * sizeof(DrawElementsIndirectCommand), m_commands.data());
+}
+
 void Batch::bind(
     const RenderContext& ctx,
     MeshType* type,
@@ -188,6 +201,7 @@ void Batch::bind(
     m_boundShader = shader;
 
     m_entries.clear();
+    m_commands.clear();
 }
 
 void Batch::unbind()
@@ -196,6 +210,7 @@ void Batch::unbind()
     m_boundShader = nullptr;
 
     m_entries.clear();
+    m_commands.clear();
 }
 
 void Batch::draw(
@@ -203,11 +218,11 @@ void Batch::draw(
     Node& node,
     Shader* shader)
 {
-    const auto& type = *node.m_type;
+    const auto type = node.m_type;
 
-    if (!type.getMesh()) return;
-    if (type.m_flags.root) return;
-    if (type.m_flags.origo) return;
+    if (!type->getMesh()) return;
+    if (type->m_flags.root) return;
+    if (type->m_flags.origo) return;
 
     auto& obb = node.getOBB();
     //const auto mvp = ctx.m_matrices.projected * node.getModelMatrix();
@@ -215,7 +230,7 @@ void Batch::draw(
     const auto& volume = node.getVolume();
     if (ctx.m_useFrustum &&
         ctx.assets.frustumEnabled &&
-        !type.m_flags.noFrustum &&
+        !type->m_flags.noFrustum &&
         volume &&
         !volume->isOnFrustum(
             ctx.m_camera.getFrustum(),
@@ -240,12 +255,17 @@ void Batch::draw(
 
     ctx.m_drawCount += 1;
 
-    if (node.m_type != m_boundType) {
-        flush(ctx);
-        unbind();
+    if (m_boundType) {
+        if (shader != m_boundShader
+            || m_boundType->m_vao != type->m_vao
+            || !m_boundType->m_drawOptions.isCompatible(type->m_drawOptions))
+        {
+            flush(ctx);
+            unbind();
+        }
     }
 
-    bind(ctx, node.m_type, shader);
+    bind(ctx, type, shader);
     node.bindBatch(ctx, *this);
     flushIfNeeded(ctx);
 }
@@ -277,6 +297,7 @@ void Batch::flush(
     drawInstanced(ctx, drawCount);
 
     m_entries.clear();
+    m_commands.clear();
 
     if (release) {
         unbind();
@@ -293,29 +314,36 @@ void Batch::drawInstanced(
 
     m_boundShader->bind(ctx.state);
 
-    auto& type = *m_boundType;
-    const auto& drawOptions = type.m_drawOptions;
+    const auto& drawOptions = m_boundType->m_drawOptions;
 
     ctx.bindDraw(drawOptions.renderBack, drawOptions.wireframe);
-    ctx.state.useVAO(type.m_vao);
+    ctx.state.useVAO(m_boundType->m_vao);
 
     if (drawOptions.type == backend::DrawOptions::Type::elements) {
-        glDrawElementsInstanced(
-            drawOptions.mode,
-            drawOptions.indexCount,
-            GL_UNSIGNED_INT,
-            (void*)drawOptions.indexOffset,
-            drawCount);
-        //int baseInstance = 0;
+        DrawElementsIndirectCommand cmd;
+        cmd.count = drawOptions.indexCount;
+        cmd.instanceCount = drawCount;
+        cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
+        cmd.baseVertex = 0;
+        cmd.baseInstance = 0;
 
-        //glDrawElementsInstancedBaseVertexBaseInstance(
-        //    GL_TRIANGLES,
-        //    m_triCount * 3,
+        m_commands.push_back(cmd);
+        updateCommands();
+        m_commandBuffer.bindDrawIndirect();
+
+        glMultiDrawElementsIndirect(
+            drawOptions.mode,
+            GL_UNSIGNED_INT,
+            0,
+            m_commands.size(),
+            sizeof(DrawElementsIndirectCommand));
+
+        //glDrawElementsInstanced(
+        //    drawOptions.mode,
+        //    drawOptions.indexCount,
         //    GL_UNSIGNED_INT,
-        //    (void*)m_vertexVBO.m_indexOffset,
-        //    instanceCount,
-        //    m_vertexVBO.m_baseVertex,
-        //    baseInstance);
+        //    (void*)drawOptions.indexOffset,
+        //    drawCount);
     }
     else if (drawOptions.type == backend::DrawOptions::Type::arrays)
     {

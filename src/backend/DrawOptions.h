@@ -28,5 +28,16 @@ namespace backend {
 
         int vertexOFfset = 0;
         int indexOffset = 0;
+
+        int materialOffset = 0;
+        int materialCount = 0;
+
+        bool isCompatible(const DrawOptions& b) const {
+            return renderBack == b.renderBack &&
+                wireframe == b.wireframe &&
+                mode == b.mode &&
+                type == b.type &&
+                materialCount == b.materialCount;
+        }
     };
 }
