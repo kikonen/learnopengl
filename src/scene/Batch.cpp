@@ -74,6 +74,9 @@ void Batch::add(
 
     m_entries.push_back(entry);
 
+    if (m_entries.size() >= m_bufferSize)
+        int x = 0;
+
     flushIfNeeded(ctx);
 }
 
@@ -84,8 +87,14 @@ void Batch::addAll(
     const std::vector<int>& objectIDs,
     bool selected)
 {
+    BatchCommand save = m_batches.back();
+    save.m_drawCount = 0;
+
     for (int i = 0; i < modelMatrices.size(); i++) {
         add(ctx, modelMatrices[i], normalMatrices[i], objectIDs[i], selected);
+        if (m_batches.empty()) {
+            m_batches.push_back(save);
+        }
     }
 }
 
@@ -228,7 +237,7 @@ void Batch::bind(
     BatchCommand cmd;
     cmd.m_vao = type->m_vao;
     cmd.m_shader = shader;
-    cmd.m_drawOptions = type->m_drawOptions;
+    cmd.m_drawOptions = &type->m_drawOptions;
 
     m_batches.push_back(cmd);
 }
@@ -277,7 +286,7 @@ void Batch::draw(
     bool needBind = true;
     if (!m_batches.empty()) {
         auto& top = m_batches.back();
-        needBind = !top.m_drawOptions.isSameDrawCommand(type->m_drawOptions);
+        needBind = !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions);
     }
 
     if (needBind) {
@@ -324,9 +333,9 @@ void Batch::flush(
 void Batch::drawInstanced(
     const RenderContext& ctx)
 {
-    Shader* boundShader{ nullptr };
-    GLVertexArray* boundVAO{ nullptr };
-    backend::DrawOptions boundDrawOptions;
+    const Shader* boundShader{ nullptr };
+    const GLVertexArray* boundVAO{ nullptr };
+    const backend::DrawOptions* boundDrawOptions{ nullptr };
     int  baseInstance = 0;
 
     for (auto& curr : m_batches) {
@@ -336,10 +345,13 @@ void Batch::drawInstanced(
 
         bool sameDraw = boundShader == curr.m_shader &&
             boundVAO == curr.m_vao &&
-            boundDrawOptions.isSameMultiDraw(curr.m_drawOptions);
+            boundDrawOptions &&
+            boundDrawOptions->isSameMultiDraw(*curr.m_drawOptions);
 
         if (!sameDraw) {
-            drawPending(ctx, boundShader, boundVAO, boundDrawOptions);
+            if (boundShader) {
+                drawPending(ctx, boundShader, boundVAO, *boundDrawOptions);
+            }
 
             boundShader = curr.m_shader;
             boundVAO = curr.m_vao;
@@ -350,7 +362,7 @@ void Batch::drawInstanced(
         // https://community.khronos.org/t/vertex-buffer-management-with-indirect-drawing/77272
         // https://www.khronos.org/opengl/wiki/Vertex_Specification#Instanced_arrays
         //
-        auto& drawOptions = curr.m_drawOptions;
+        const auto& drawOptions = *curr.m_drawOptions;
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
             backend::DrawIndirectCommand indirect;
@@ -386,16 +398,18 @@ void Batch::drawInstanced(
         baseInstance += curr.m_drawCount;
     }
 
-    drawPending(ctx, boundShader, boundVAO, boundDrawOptions);
+    if (boundShader) {
+        drawPending(ctx, boundShader, boundVAO, *boundDrawOptions);
+    }
 
     m_batches.clear();
 }
 
 void Batch::drawPending(
     const RenderContext& ctx,
-    Shader* shader,
-    GLVertexArray* vao,
-    backend::DrawOptions drawOptions)
+    const Shader* shader,
+    const GLVertexArray* vao,
+    const backend::DrawOptions& drawOptions)
 {
     if (m_drawCommands.empty()) return;
 

@@ -94,7 +94,7 @@ public:
 
     int prepare(const Assets& assets) noexcept;
 
-    const void bind(GLState& state) noexcept;
+    void bind(GLState& state) const noexcept;
 
     int prepared() noexcept { return m_prepared; }
 
@@ -121,7 +121,7 @@ public:
     // public due to shared_ptr
     ~Shader();
 
-    void validateProgram();
+    void validateProgram() const;
 
 private:
     // @return shaderId

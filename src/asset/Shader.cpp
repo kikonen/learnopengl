@@ -82,7 +82,7 @@ Shader::~Shader()
     }
 }
 
-const void Shader::bind(GLState& state) noexcept
+void Shader::bind(GLState& state) const noexcept
 {
     assert(m_prepared);
     state.useProgram(m_programId);
@@ -246,7 +246,7 @@ int Shader::createProgram() {
 }
 
 // https://community.khronos.org/t/samplers-of-different-types-use-the-same-textur/66329/4
-void Shader::validateProgram() {
+void Shader::validateProgram() const {
     if (m_programId == -1) return;
     glValidateProgram(m_programId);
 

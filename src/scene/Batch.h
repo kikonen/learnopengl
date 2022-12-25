@@ -82,9 +82,9 @@ private:
 
     void drawPending(
         const RenderContext& ctx,
-        Shader* shader,
-        GLVertexArray* vao,
-        backend::DrawOptions drawOptions);
+        const Shader* shader,
+        const GLVertexArray* vao,
+        const backend::DrawOptions& drawOptions);
 
     void flushIfNeeded(const RenderContext& ctx);
 

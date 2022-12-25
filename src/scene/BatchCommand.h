@@ -12,13 +12,13 @@ class MaterialVBO;
 
 
 struct BatchCommand {
-    Shader* m_shader{ nullptr };
+    const Shader* m_shader{ nullptr };
     //MeshType* m_type{ nullptr };
 
-    GLVertexArray* m_vao{ nullptr };
-    backend::DrawOptions m_drawOptions;
+    const GLVertexArray* m_vao{ nullptr };
+    const backend::DrawOptions* m_drawOptions{ nullptr };
 
-    MaterialVBO* m_materialVBO{ nullptr };
+    const MaterialVBO* m_materialVBO{ nullptr };
 
     int m_drawCount = 0;
 };
