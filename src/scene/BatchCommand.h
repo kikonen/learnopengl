@@ -19,4 +19,6 @@ struct BatchCommand {
     backend::DrawOptions m_drawOptions;
 
     MaterialVBO* m_materialVBO{ nullptr };
+
+    int m_drawCount = 0;
 };

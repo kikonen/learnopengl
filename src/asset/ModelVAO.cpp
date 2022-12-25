@@ -52,6 +52,7 @@ GLVertexArray* ModelVAO::prepare(Batch& batch)
 
     prepareVAO(*m_vao, m_vbo, m_ebo);
     batch.prepareVAO(*m_vao, m_singleMaterial);
+    KI_GL_CHECK("2");
 }
 
 void ModelVAO::prepareVAO(

@@ -108,6 +108,6 @@ void ModelMesh::prepareVAO(
     drawOptions.type = backend::DrawOptions::Type::elements;
     drawOptions.mode = GL_TRIANGLES;
     drawOptions.indexCount = m_triCount * 3;
-    drawOptions.vertexOFfset = m_vertexVBO.m_vertexOffset;
+    drawOptions.vertexOffset = m_vertexVBO.m_vertexOffset;
     drawOptions.indexOffset = m_vertexVBO.m_indexOffset;
 }

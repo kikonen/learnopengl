@@ -77,14 +77,12 @@ private:
         MeshType* type,
         Shader* shader);
 
-    void clear();
-
     void drawInstanced(
-        const RenderContext& ctx,
-        int drawCount);
+        const RenderContext& ctx);
 
     void drawPending(
         const RenderContext& ctx,
+        Shader* shader,
         GLVertexArray* vao,
         backend::DrawOptions drawOptions);
 

@@ -29,8 +29,9 @@
     const backend::DrawOptions drawOptions;
 
     bool operator<(const ShaderKey & o) const noexcept {
-        return std::tie(shaderID, drawOptions.renderBack, drawOptions.wireframe) <
-            std::tie(o.shaderID, o.drawOptions.renderBack, drawOptions.wireframe);
+        const bool drawOrder = drawOptions < o.drawOptions;
+        return std::tie(shaderID, drawOrder) <
+            std::tie(o.shaderID, drawOrder);
     }
 };
 

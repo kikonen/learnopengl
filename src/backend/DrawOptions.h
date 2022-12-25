@@ -26,18 +26,29 @@ namespace backend {
         GLsizei indexCount = 0;
         GLsizei indexFirst = 0;
 
-        int vertexOFfset = 0;
+        int vertexOffset = 0;
         int indexOffset = 0;
 
         int materialOffset = 0;
         int materialCount = 0;
 
-        bool isCompatible(const DrawOptions& b) const {
+        bool isSameDrawCommand(const DrawOptions& b) const {
+            return isSameMultiDraw(b) &&
+                vertexOffset == b.vertexOffset &&
+                indexOffset == b.indexOffset &&
+                materialCount == b.materialCount;
+        }
+
+        bool isSameMultiDraw(const DrawOptions& b) const {
             return renderBack == b.renderBack &&
                 wireframe == b.wireframe &&
                 mode == b.mode &&
-                type == b.type; //&&
-                //materialCount == b.materialCount;
+                type == b.type;
+        }
+
+        bool operator<(const DrawOptions& o) const noexcept {
+            return std::tie(renderBack, wireframe, vertexOffset, indexOffset, materialOffset, materialCount) <
+                std::tie(o.renderBack, o.wireframe, o.vertexOffset, o.indexOffset, o.materialOffset, o.materialCount);
         }
     };
 }
