@@ -11,15 +11,15 @@ namespace backend {
             arrays,
         };
 
-        bool renderBack = false;
-        bool wireframe = false;
-
         Type type = Type::none;
 
         // - GL_TRIANGLES
         // - GL_TRIANGLE_STRIP
         // - GL_POINTS
         GLenum mode = GL_POINTS;
+
+        bool renderBack = false;
+        bool wireframe = false;
 
         // cont of indeces for indexed drawing
         // 0 for non indexed draw
@@ -47,8 +47,8 @@ namespace backend {
         }
 
         bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(renderBack, wireframe, vertexOffset, indexOffset, materialOffset, materialCount) <
-                std::tie(o.renderBack, o.wireframe, o.vertexOffset, o.indexOffset, o.materialOffset, o.materialCount);
+            return std::tie(type, mode, renderBack, wireframe, materialCount, vertexOffset, indexOffset, materialOffset) <
+                std::tie(o.type, o.mode, o.renderBack, o.wireframe, o.materialCount, o.vertexOffset, o.indexOffset, o.materialOffset);
         }
     };
 }
