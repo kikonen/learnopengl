@@ -127,7 +127,7 @@ void ShadowMapRenderer::drawNodes(
 {
     auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap, Shader* shader) {
         for (const auto& it : typeMap) {
-            auto& type = *it.first;
+            auto& type = *it.first.type;
             auto& batch = ctx.m_batch;
 
             if (type.m_flags.noShadow) continue;

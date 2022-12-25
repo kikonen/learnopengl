@@ -28,7 +28,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
 
     auto renderTypes = [this, &ctx, &shader](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
-            auto& type = *it.first;
+            auto& type = *it.first.type;
             auto& batch = ctx.m_batch;
 
             for (auto& node : it.second) {

@@ -139,7 +139,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
     {
         auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
             for (const auto& it : typeMap) {
-                auto& type = *it.first;
+                auto& type = *it.first.type;
                 if (type.m_flags.noSelect) continue;
 
                 auto shader = m_idShader;

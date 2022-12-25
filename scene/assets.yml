@@ -41,7 +41,7 @@ assets:
   debug_clear_color: true
   clear_color: true
 
-  frustum_enabled: true
+  frustum_enabled: false
   frustum_debug: true
 
   mirror_render_frequency: 0.08

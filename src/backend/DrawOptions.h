@@ -47,8 +47,8 @@ namespace backend {
         }
 
         bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(type, mode, renderBack, wireframe, materialCount, vertexOffset, indexOffset, materialOffset) <
-                std::tie(o.type, o.mode, o.renderBack, o.wireframe, o.materialCount, o.vertexOffset, o.indexOffset, o.materialOffset);
+            return std::tie(renderBack, wireframe, type, mode, materialCount, vertexOffset, indexOffset, materialOffset) <
+                std::tie(o.renderBack, o.wireframe, o.type, o.mode, o.materialCount, o.vertexOffset, o.indexOffset, o.materialOffset);
         }
     };
 }

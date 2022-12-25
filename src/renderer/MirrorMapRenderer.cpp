@@ -167,10 +167,10 @@ void MirrorMapRenderer::drawNodes(
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [&ctx, &current](const MeshTypeMap& typeMap) {
-            auto shader = typeMap.begin()->first->m_nodeShader;
+            auto shader = typeMap.begin()->first.type->m_nodeShader;
 
             for (const auto& it : typeMap) {
-                auto& type = *it.first;
+                auto& type = *it.first.type;
                 auto& batch = ctx.m_batch;
 
                 if (type.m_flags.noReflect) continue;
@@ -211,7 +211,9 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
     std::map<float, Node*> sorted;
 
     for (const auto& all : ctx.registry.allNodes) {
-        for (const auto& [type, nodes] : all.second) {
+        for (const auto& [key, nodes] : all.second) {
+            auto& type = key.type;
+
             if (!type->m_flags.mirror) continue;
 
             for (const auto& node : nodes) {

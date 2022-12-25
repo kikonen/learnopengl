@@ -51,6 +51,7 @@ public:
     void reserve(size_t count) noexcept;
     int size() noexcept;
 
+    void bind() noexcept;
     void clear() noexcept;
 
     void prepare(
@@ -72,7 +73,7 @@ private:
     void update(size_t count) noexcept;
     void updateCommands() noexcept;
 
-    void bind(
+    void addCommand(
         const RenderContext& ctx,
         MeshType* type,
         Shader* shader);

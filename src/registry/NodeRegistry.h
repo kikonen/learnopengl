@@ -23,21 +23,30 @@
  struct ShaderKey {
     ShaderKey(int shaderID, const backend::DrawOptions& drawOptions) noexcept
         : shaderID(shaderID),
-        drawOptions(drawOptions) {};
-
-    const int shaderID;
-    const backend::DrawOptions drawOptions;
+        renderBack(drawOptions.renderBack),
+        wireframe(drawOptions.wireframe)
+    {};
 
     bool operator<(const ShaderKey & o) const noexcept {
-        const bool drawOrder = drawOptions < o.drawOptions;
-        return std::tie(shaderID, drawOrder) <
-            std::tie(o.shaderID, drawOrder);
+        // NOTE KI renderBack & wireframe goes into separate render always due to GL state
+        // => reduce state changes via sorting
+        return std::tie(shaderID, renderBack, wireframe) <
+            std::tie(o.shaderID, o.renderBack, o.wireframe);
     }
+
+    const int shaderID;
+    const bool renderBack;
+    const bool wireframe;
 };
 
-class Batch;
-class MaterialRegistry;
-class ModelRegistry;
+// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
+struct MeshTypeKey {
+    MeshTypeKey(MeshType* type);
+
+    bool operator<(const MeshTypeKey& o) const;
+
+    const MeshType* type;
+};
 
 enum class NodeOperation {
     ADDED
@@ -46,12 +55,16 @@ enum class NodeOperation {
 using GroupVector = std::vector<Group*>;
 
 using NodeVector = std::vector<Node*>;
-using MeshTypeMap = std::map<MeshType*, NodeVector>;
+using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
 using ShaderTypeMap = std::map<ShaderKey, MeshTypeMap>;
 
 using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
 
 using NodeListener = std::function<void(Node*, NodeOperation)>;
+
+class Batch;
+class MaterialRegistry;
+class ModelRegistry;
 
 class NodeRegistry final
 {
@@ -93,6 +106,8 @@ public:
     const NodeVector* getChildren(const Node& node) const noexcept;
 
 private:
+    void insertNode(NodeVector& list, Node* node);
+
     void bindPendingChildren();
 
     void bindNode(

@@ -13,6 +13,21 @@ namespace {
     const int NULL_SHADER_ID = 0;
 }
 
+
+// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
+MeshTypeKey::MeshTypeKey(MeshType* type)
+    : type(type)
+{}
+
+bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
+    const auto& a = type;
+    const auto& b = o.type;
+    if (a->m_drawOptions < b->m_drawOptions) return true;
+    else if (b->m_drawOptions < a->m_drawOptions) return false;
+    return a->typeID < b->typeID;
+}
+
+
 NodeRegistry::NodeRegistry(const Assets& assets)
     : assets(assets)
 {
@@ -47,8 +62,8 @@ NodeRegistry::~NodeRegistry()
 
     KI_INFO("NODE_REGISTRY: delete");
     for (auto& all : allNodes) {
-        for (auto& [type, nodes] : all.second) {
-            KI_INFO(fmt::format("NODE_REGISTRY: delete {}", type->str()));
+        for (auto& [key, nodes] : all.second) {
+            KI_INFO(fmt::format("NODE_REGISTRY: delete {}", key.type->str()));
             for (auto& node : nodes) {
                 delete node;
             }
@@ -244,7 +259,7 @@ void NodeRegistry::bindNode(
         });
     }
 
-    type->prepare(assets, *m_batch, *this, *m_materialRegistry, *m_modelRegistry);
+        type->prepare(assets, *m_batch, *this, *m_materialRegistry, *m_modelRegistry);
     node->prepare(assets);
 
     {
@@ -264,14 +279,16 @@ void NodeRegistry::bindNode(
             shader ? shader->m_objectID : NULL_SHADER_ID,
             type->m_drawOptions);
 
-        auto& vAll = allNodes[shaderKey][type];
-        auto& vTyped = (*map)[shaderKey][type];
+        const MeshTypeKey typeKey(type);
+
+        auto& vAll = allNodes[shaderKey][typeKey];
+        auto& vTyped = (*map)[shaderKey][typeKey];
 
         objectIdToNode[node->m_objectID] = node;
         if (!node->m_id.is_nil()) idToNode[node->m_id] = node;
 
-        vAll.push_back(node);
-        vTyped.push_back(node);
+        insertNode(vAll, node);
+        insertNode(vTyped, node);
 
         if (node->m_camera) {
             m_cameraNodes.push_back(node);
@@ -299,6 +316,11 @@ void NodeRegistry::bindNode(
     notifyListeners(node, NodeOperation::ADDED);
 
     KI_INFO_SB("ATTACH_NODE: id=" << node->str());
+}
+
+void NodeRegistry::insertNode(NodeVector& list, Node* node)
+{
+    list.push_back(node);
 }
 
 void NodeRegistry::bindPendingChildren()

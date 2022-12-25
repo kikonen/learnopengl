@@ -109,6 +109,12 @@ int Batch::size() noexcept
     return m_entries.size();
 }
 
+void Batch::bind() noexcept
+{
+    clear();
+    m_drawBuffer.bindDrawIndirect();
+}
+
 void Batch::clear() noexcept
 {
     m_batches.clear();
@@ -229,7 +235,7 @@ void Batch::updateCommands() noexcept
     m_drawBuffer.update(0, m_drawCommands.size() * sizeof(backend::DrawIndirectCommand), m_drawCommands.data());
 }
 
-void Batch::bind(
+void Batch::addCommand(
     const RenderContext& ctx,
     MeshType* type,
     Shader* shader)
@@ -264,36 +270,39 @@ void Batch::draw(
             ctx.m_camera.getFrustum(),
             node.getMatrixLevel(),
             node.getWorldModelMatrix()))
-        {
-    //!obb.inFrustum(
-    //    ctx.m_camera.getProjectedLevel(),
-    //    ctx.m_camera.getProjected(),
-    //    node.getMatrixLevel(),
-    //    node.getWorldModelMatrix()))
-
-        //volume &&
-        //!volume->isOnFrustum(
-        //    *ctx.getFrustum(),
+    {
+        //!obb.inFrustum(
+        //    ctx.m_camera.getProjectedLevel(),
+        //    ctx.m_camera.getProjected(),
         //    node.getMatrixLevel(),
         //    node.getWorldModelMatrix()))
-        //!volume->isOnFrustum(*ctx.getFrustum(), node.getMatrixLevel(), node.getWorldModelMatrix()))
+
+            //volume &&
+            //!volume->isOnFrustum(
+            //    *ctx.getFrustum(),
+            //    node.getMatrixLevel(),
+            //    node.getWorldModelMatrix()))
+            //!volume->isOnFrustum(*ctx.getFrustum(), node.getMatrixLevel(), node.getWorldModelMatrix()))
         ctx.m_skipCount += 1;
         return;
     }
 
     ctx.m_drawCount += 1;
 
-    bool needBind = true;
-    if (!m_batches.empty()) {
-        auto& top = m_batches.back();
-        needBind = !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions);
-    }
+    {
+        bool needBind = true;
+        if (!m_batches.empty()) {
+            auto& top = m_batches.back();
+            needBind = !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions);
+        }
 
-    if (needBind) {
-        bind(ctx, type, shader);
+        if (needBind) {
+            addCommand(ctx, type, shader);
+        }
+
+        auto& top = m_batches.back();
+        top.m_materialVBO = &type->m_materialVBO;
     }
-    auto& top = m_batches.back();
-    top.m_materialVBO = &type->m_materialVBO;
 
     node.bindBatch(ctx, *this);
     flushIfNeeded(ctx);
@@ -414,7 +423,6 @@ void Batch::drawPending(
     if (m_drawCommands.empty()) return;
 
     updateCommands();
-    m_drawBuffer.bindDrawIndirect();
 
     ctx.bindDraw(drawOptions.renderBack, drawOptions.wireframe);
     shader->bind(ctx.state);

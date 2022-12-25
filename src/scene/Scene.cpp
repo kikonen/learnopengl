@@ -28,7 +28,7 @@ Scene::Scene(const Assets& assets)
 
     m_waterMapRenderer = std::make_unique<WaterMapRenderer>();
     m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>();
-    //m_cubeMapRenderer = std::make_unique<CubeMapRenderer>();
+    m_cubeMapRenderer = std::make_unique<CubeMapRenderer>();
     m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>();
 
     m_objectIdRenderer = std::make_unique<ObjectIdRenderer>();
@@ -231,6 +231,8 @@ void Scene::bind(RenderContext& ctx)
 
     ctx.bindDefaults();
     ctx.bindUBOs();
+
+    m_batch.bind();
 }
 
 

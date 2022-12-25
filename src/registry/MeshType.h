@@ -98,3 +98,12 @@ private:
 
     GLVertexArray m_privateVAO;
 };
+
+// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
+struct MeshTypeComparator {
+    bool operator()(const MeshType* a, const MeshType* b) const {
+        if (a->m_drawOptions < b->m_drawOptions) return true;
+        else if (b->m_drawOptions < a->m_drawOptions) return false;
+        return a->typeID < b->typeID;
+    }
+};

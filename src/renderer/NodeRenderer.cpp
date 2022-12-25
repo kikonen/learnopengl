@@ -125,10 +125,10 @@ void NodeRenderer::drawNodes(
     }
 
     auto renderTypes = [this, &ctx, &selection](const MeshTypeMap& typeMap) {
-        auto shader = typeMap.begin()->first->m_nodeShader;
+        auto shader = typeMap.begin()->first.type->m_nodeShader;
 
         for (const auto& it : typeMap) {
-            auto& type = *it.first;
+            auto& type = *it.first.type;
             auto& batch = ctx.m_batch;
 
             for (auto& node : it.second) {
@@ -171,7 +171,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
 
     auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
-            auto& type = *it.first;
+            auto& type = *it.first.type;
             auto& batch = ctx.m_batch;
 
             auto shader = m_selectionShader;
