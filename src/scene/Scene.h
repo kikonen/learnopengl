@@ -13,7 +13,7 @@
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MeshTypeRegistry.h"
-#include "registry/MeshRegistry.h"
+#include "registry/ModelRegistry.h"
 
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
@@ -78,7 +78,7 @@ public:
 
     MaterialRegistry m_materialRegistry;
     MeshTypeRegistry m_typeRegistry;
-    MeshRegistry m_meshRegistry;
+    ModelRegistry m_modelRegistry;
     NodeRegistry m_registry;
 
     CommandEngine m_commandEngine;

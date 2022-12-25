@@ -20,7 +20,7 @@
 
 #include "scene/TerrainGenerator.h"
 
-#include "registry/MeshRegistry.h"
+#include "registry/ModelRegistry.h"
 
 #include "SceneFile.h"
 
@@ -103,8 +103,8 @@ void SceneFile::attachVolume(
 
     auto type = scene->m_typeRegistry.getType("<volume>");
 
-    auto& meshRegistry = scene->m_meshRegistry;
-    auto mesh = meshRegistry.getMesh("ball_volume");
+    auto& modelRegistry = scene->m_modelRegistry;
+    auto mesh = modelRegistry.getMesh("ball_volume");
     type->setMesh(mesh);
 
     auto& flags = type->m_flags;
@@ -176,7 +176,7 @@ MeshType* SceneFile::attachEntityClone(
             entity,
             data,
             scene->m_typeRegistry,
-            scene->m_meshRegistry,
+            scene->m_modelRegistry,
             materials);
         if (!type) return type;
     }
@@ -209,7 +209,7 @@ MeshType* SceneFile::createType(
     const EntityData& entity,
     const EntityCloneData& data,
     MeshTypeRegistry& typeRegistry,
-    MeshRegistry& meshRegistry,
+    ModelRegistry& modelRegistry,
     std::vector<Material>& materials)
 {
     const Assets& assets = m_assets;
@@ -225,7 +225,12 @@ MeshType* SceneFile::createType(
 
     type->m_initScript = data.initScript;
     type->m_runScript = data.runScript;
-    type->m_flags.root = entity.isRoot;
+
+    if (entity.isRoot) {
+        type->m_flags.root = true;
+        type->m_flags.noRender = true;
+        type->m_entityType == EntityType::origo;
+    }
 
     if (data.instanced) {
         type->m_flags.instanced = true;
@@ -245,10 +250,11 @@ MeshType* SceneFile::createType(
     }
 
     if (data.type == EntityType::model) {
-        auto mesh = meshRegistry.getMesh(
+        auto mesh = modelRegistry.getMesh(
             data.meshName,
             data.meshPath);
         type->setMesh(mesh);
+        type->m_entityType = EntityType::model;
 
         KI_INFO_SB(fmt::format(
             "SCENE_FILE ATTACH: id={}, type={}",
@@ -258,24 +264,25 @@ MeshType* SceneFile::createType(
         auto mesh = std::make_unique<QuadMesh>();
         mesh->prepareVolume();
         type->setMesh(std::move(mesh), true);
+        type->m_entityType = EntityType::quad;
     }
     else if (data.type == EntityType::sprite) {
         // NOTE KI sprite *shall* differ from quad later on
         auto mesh = std::make_unique<SpriteMesh>();
         mesh->prepareVolume();
         type->setMesh(std::move(mesh), true);
-        type->m_flags.sprite = true;
+        type->m_entityType = EntityType::sprite;
     }
     else if (data.type == EntityType::terrain) {
         TerrainGenerator generator(assets);
         auto mesh = generator.generateTerrain();
         mesh->prepareVolume();
         type->setMesh(std::move(mesh), true);
-        type->m_flags.terrain = true;
+        type->m_entityType = EntityType::terrain;
     }
     else if (data.type == EntityType::origo) {
         // NOTE KI nothing to do
-        type->m_flags.origo = true;
+        type->m_entityType = EntityType::origo;
         type->m_flags.noRender = true;
     }
 
@@ -285,7 +292,7 @@ MeshType* SceneFile::createType(
             return nullptr;
         }
 
-        bool normalTex = false;
+        bool normalTex = true;
 
         type->modifyMaterials([this, &normalTex, &data, &assets](Material& m) {
             if (data.materialModifiers_enabled) {
@@ -448,18 +455,11 @@ void SceneFile::assignFlags(
         }
     }
     {
-        const auto& e = data.renderFlags.find("terrain");
-        if (e != data.renderFlags.end()) {
-            flags.terrain = e->second;
-        }
-    }
-    {
         const auto& e = data.renderFlags.find("wireframe");
         if (e != data.renderFlags.end()) {
             flags.wireframe = e->second;
         }
     }
-
     {
         const auto& e = data.renderFlags.find("cube_map");
         if (e != data.renderFlags.end()) {

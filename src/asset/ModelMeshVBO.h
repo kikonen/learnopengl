@@ -1,8 +1,5 @@
 #pragma once
 
-#include "kigl/GLBuffer.h"
-#include "kigl/GLVertexArray.h"
-
 #include "VertexEntry.h"
 #include "IndexEntry.h"
 
@@ -19,9 +16,6 @@ public:
     void prepare(
         ModelMesh& mesh);
 
-    void prepareVAO(
-        GLVertexArray& vao);
-
 private:
     void prepareBuffers(
         ModelMesh& mesh);
@@ -33,8 +27,6 @@ private:
         ModelMesh& mesh);
 
 public:
-    GLBuffer* m_vbo{ nullptr };
-
     // NOTE KI absolute offset into vbo
     int m_vertexOffset = 0;
     // NOTE KI absolute offset into vbo
@@ -42,6 +34,8 @@ public:
 
     std::vector<VertexEntry> m_vertexEntries;
     std::vector<IndexEntry> m_indexEntries;
+
+    bool m_single = false;
 
 private:
     bool m_prepared = false;

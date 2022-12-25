@@ -175,7 +175,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
             auto& batch = ctx.m_batch;
 
             auto shader = m_selectionShader;
-            if (type.m_flags.sprite) {
+            if (type.m_entityType == EntityType::sprite) {
                 shader = m_selectionShaderSprite;
             }
 

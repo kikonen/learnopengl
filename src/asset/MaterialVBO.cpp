@@ -43,13 +43,13 @@ void MaterialVBO::prepareVAO(
     GLVertexArray& vao)
 {
     if (!m_vbo) return;
-
+    return;
     KI_GL_CALL(glVertexArrayVertexBuffer(vao, VBO_MATERIAL_BINDING, *m_vbo, m_offset, sizeof(MaterialEntry)));
     {
         glEnableVertexArrayAttrib(vao, ATTR_MATERIAL_INDEX);
 
         // materialID attr
-        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, material));
+        glVertexArrayAttribFormat(vao, ATTR_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(MaterialEntry, materialIndex));
 
         glVertexArrayAttribBinding(vao, ATTR_MATERIAL_INDEX, VBO_MATERIAL_BINDING);
 

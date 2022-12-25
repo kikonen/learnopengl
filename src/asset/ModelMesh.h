@@ -38,9 +38,10 @@ public:
 
     virtual const std::vector<Material>& getMaterials() const override;
 
-    virtual void prepare(
+    virtual GLVertexArray* prepare(
         const Assets& assets,
-        MeshRegistry& meshRegistry) override;
+        Batch& batch,
+        ModelRegistry& modelRegistry) override;
 
     virtual void prepareMaterials(
         MaterialVBO& materialVBO) override;

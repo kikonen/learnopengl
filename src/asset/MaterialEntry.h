@@ -4,6 +4,6 @@
 struct MaterialEntry {
     // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
     // => use float
-    float material;
+    float materialIndex;
 };
 #pragma pack(pop)

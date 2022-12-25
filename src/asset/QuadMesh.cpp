@@ -7,6 +7,7 @@
 #include "asset/Sphere.h"
 #include "asset/MaterialEntry.h"
 #include "asset/QuadMaterialInit.h"
+#include "asset/QuadVAO.h"
 
 #include "scene/RenderContext.h"
 
@@ -15,7 +16,7 @@ namespace {
 
     const AABB QUAD_AABB = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
 
-    QuadVBO m_quad;
+    QuadVAO quadVAO;
 }
 
 
@@ -43,14 +44,16 @@ const std::vector<Material>& QuadMesh::getMaterials() const
     return { m_material };
 }
 
-void QuadMesh::prepare(
+GLVertexArray* QuadMesh::prepare(
     const Assets& assets,
-    MeshRegistry& meshRegistry)
+    Batch& batch,
+    ModelRegistry& modelRegistry)
 {
-    if (m_prepared) return;
+    if (m_prepared) return m_vao;
     m_prepared = true;
 
-    m_quad.prepare();
+    m_vao = quadVAO.prepare(batch);
+    return m_vao;
 }
 
 void QuadMesh::prepareMaterials(
@@ -64,8 +67,6 @@ void QuadMesh::prepareVAO(
     GLVertexArray& vao,
     backend::DrawOptions& drawOptions)
 {
-    m_quad.prepareVAO(vao);
-
     drawOptions.type = backend::DrawOptions::Type::arrays;
     drawOptions.mode = GL_TRIANGLE_STRIP;
     drawOptions.indexFirst = 0;

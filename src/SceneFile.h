@@ -131,14 +131,6 @@ class SceneFile
         glm::vec4 specular{ 0 };
     };
 
-    enum class EntityType {
-        origo,
-        model,
-        quad,
-        sprite,
-        terrain
-    };
-
     struct EntityCloneData {
         bool valid{ false };
 
@@ -256,7 +248,7 @@ private:
         const EntityData& entity,
         const EntityCloneData& data,
         MeshTypeRegistry& typeRegistry,
-        MeshRegistry& meshRegistry,
+        ModelRegistry& modelRegistry,
         std::vector<Material>& materials);
 
     Node* createNode(

@@ -6,6 +6,8 @@
 
 #include "asset/Sphere.h"
 #include "asset/SpriteMaterialInit.h"
+#include "asset/SpriteVAO.h"
+
 #include "MaterialEntry.h"
 
 #include "scene/RenderContext.h"
@@ -15,6 +17,7 @@ namespace {
 
     const AABB SPRITE_AABB = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
 
+    SpriteVAO spriteVAO;
 }
 
 
@@ -42,12 +45,16 @@ const std::vector<Material>& SpriteMesh::getMaterials() const
     return { m_material };
 }
 
-void SpriteMesh::prepare(
+GLVertexArray* SpriteMesh::prepare(
     const Assets& assets,
-    MeshRegistry& meshRegistry)
+    Batch& batch,
+    ModelRegistry& modelRegistry)
 {
-    if (m_prepared) return;
+    if (m_prepared) return m_vao;
     m_prepared = true;
+
+    m_vao = spriteVAO.prepare(batch);
+    return m_vao;
 }
 
 void SpriteMesh::prepareMaterials(
@@ -66,4 +73,3 @@ void SpriteMesh::prepareVAO(
     drawOptions.indexFirst = 0;
     drawOptions.indexCount = 1;
 }
-

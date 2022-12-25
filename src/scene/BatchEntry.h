@@ -7,5 +7,6 @@ struct BatchEntry {
     glm::mat4 modelMatrix;
     glm::mat3 normalMatrix;
     glm::vec4 objectID;
+    float materialIndex;
 };
 #pragma pack(pop)

@@ -5,7 +5,7 @@
 #include "ki/GL.h"
 
 #include "MaterialRegistry.h"
-#include "MeshRegistry.h"
+#include "ModelRegistry.h"
 
 namespace {
     const NodeVector EMPTY_NODE_LIST;
@@ -69,8 +69,14 @@ NodeRegistry::~NodeRegistry()
     groups.clear();
 }
 
-void NodeRegistry::prepare()
+void NodeRegistry::prepare(
+    Batch* batch,
+    MaterialRegistry* materialRegistry,
+    ModelRegistry* modelRegistry)
 {
+    m_batch = batch;
+    m_materialRegistry = materialRegistry;
+    m_modelRegistry = modelRegistry;
 }
 
 void NodeRegistry::addListener(NodeListener& listener)
@@ -137,9 +143,7 @@ void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport) noexcept
     viewports.push_back(viewport);
 }
 
-void NodeRegistry::attachNodes(
-    MaterialRegistry& materialRegistry,
-    MeshRegistry& meshRegistry)
+void NodeRegistry::attachNodes()
 {
     MeshTypeMap newNodes;
     {
@@ -155,17 +159,17 @@ void NodeRegistry::attachNodes(
     for (const auto& [type, nodes] : newNodes) {
         for (auto& node : nodes) {
             // NOTE KI ignore children without parent; until parent is found
-            if (!bindParent(node, materialRegistry, meshRegistry)) continue;
+            if (!bindParent(node)) continue;
 
-            bindNode(node, materialRegistry, meshRegistry);
+            bindNode(node);
         }
 
         for (auto& node : nodes) {
-            bindChildren(node, materialRegistry, meshRegistry);
+            bindChildren(node);
         }
     }
 
-    bindPendingChildren(materialRegistry, meshRegistry);
+    bindPendingChildren();
 }
 
 int NodeRegistry::countSelected() const noexcept
@@ -222,27 +226,25 @@ const NodeVector* NodeRegistry::getChildren(const Node& parent) const noexcept
 }
 
 void NodeRegistry::bindNode(
-    Node* node,
-    MaterialRegistry& materialRegistry,
-    MeshRegistry& meshRegistry)
+    Node* node)
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
     const auto& type = node->m_type;
     auto* shader = type->m_nodeShader;
 
-    if (!type->m_flags.root && !type->m_flags.origo) {
+    if (type->m_entityType != EntityType::origo) {
         assert(shader);
         if (!shader) return;
     }
 
     {
-        type->modifyMaterials([&materialRegistry](Material& m) {
-            materialRegistry.add(m);
+        type->modifyMaterials([this](Material& m) {
+            m_materialRegistry->add(m);
         });
     }
 
-    type->prepare(assets, *this, materialRegistry, meshRegistry);
+    type->prepare(assets, *m_batch, *this, *m_materialRegistry, *m_modelRegistry);
     node->prepare(assets);
 
     {
@@ -299,9 +301,7 @@ void NodeRegistry::bindNode(
     KI_INFO_SB("ATTACH_NODE: id=" << node->str());
 }
 
-void NodeRegistry::bindPendingChildren(
-    MaterialRegistry& materialRegistry,
-    MeshRegistry& meshRegistry)
+void NodeRegistry::bindPendingChildren()
 {
     if (m_pendingChildren.empty()) return;
 
@@ -316,7 +316,7 @@ void NodeRegistry::bindPendingChildren(
         auto& parent = parentIt->second;
         for (auto& child : children) {
             KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
-            bindNode(child, materialRegistry, meshRegistry);
+            bindNode(child);
 
             m_childToParent[child->m_objectID] = parent;
             m_parentToChildren[parent->m_objectID].push_back(child);
@@ -330,9 +330,7 @@ void NodeRegistry::bindPendingChildren(
 
 
 bool NodeRegistry::bindParent(
-    Node* child,
-    MaterialRegistry& materialRegistry,
-    MeshRegistry& meshRegistry)
+    Node* child)
 {
     if (child->m_parentId.is_nil()) return true;
 
@@ -354,16 +352,14 @@ bool NodeRegistry::bindParent(
 }
 
 void NodeRegistry::bindChildren(
-    Node* parent,
-    MaterialRegistry& materialRegistry,
-    MeshRegistry& meshRegistry)
+    Node* parent)
 {
     const auto& it = m_pendingChildren.find(parent->m_id);
     if (it == m_pendingChildren.end()) return;
 
     for (auto& child : it->second) {
         KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
-        bindNode(child, materialRegistry, meshRegistry);
+        bindNode(child);
 
         m_childToParent[child->m_objectID] = parent;
         m_parentToChildren[parent->m_objectID].push_back(child);

@@ -6,6 +6,8 @@
 
 #include "ki/uuid.h"
 
+#include "asset/VertexEntry.h"
+
 #include "model/Node.h"
 #include "registry/MeshType.h"
 
@@ -26,6 +28,9 @@ namespace {
     const glm::mat4 BASE_MAT_1 = glm::mat4(1.0f);
     const glm::vec3 SCALE{ 1.02f };
     const glm::mat4 SELECTION_MAT = glm::scale(BASE_MAT_1, SCALE);
+
+    // scene_full = 91 109
+    constexpr int MAX_MATERIAL_ENTRIES = 100000;
 }
 
 Batch::Batch()
@@ -49,6 +54,11 @@ void Batch::add(
         entry.modelMatrix = model;
         entry.normalMatrix = normal;
     }
+
+    auto& cmd = m_batches.back();
+
+    // NOTE KI handles "instance" material case; per vertex separately
+    entry.materialIndex = cmd.m_materialVBO->m_entries[0].materialIndex;
 
     if (m_useObjectIDBuffer) {
         int r = (objectID & 0x000000FF) >> 0;
@@ -81,7 +91,7 @@ void Batch::addAll(
 void Batch::reserve(size_t count) noexcept
 {
     m_entries.reserve(count);
-    m_commands.reserve(count);
+    m_drawCommands.reserve(count);
 }
 
 int Batch::size() noexcept
@@ -92,7 +102,7 @@ int Batch::size() noexcept
 void Batch::clear() noexcept
 {
     m_entries.clear();
-    m_commands.clear();
+    m_drawCommands.clear();
 }
 
 void Batch::prepare(
@@ -115,21 +125,29 @@ void Batch::prepare(
     }
 
     {
-        m_commandBuffer.create();
-        m_commandBuffer.initEmpty(m_bufferSize * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
+        m_drawBuffer.create();
+        m_drawBuffer.initEmpty(m_bufferSize * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
+    }
+    {
+        m_materialBuffer.create();
+        m_drawBuffer.initEmpty(m_bufferSize * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
     }
 
     m_entries.reserve(m_bufferSize);
-    m_commands.reserve(m_bufferSize);
+    m_drawCommands.reserve(m_bufferSize);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
         m_bufferSize, m_buffer));
 }
 
-void Batch::prepareMesh(GLVertexArray& vao)
+void Batch::prepareVAO(
+    GLVertexArray& vao,
+    bool singleMaterial)
 {
+    KI_GL_CHECK("1");
     glVertexArrayVertexBuffer(vao, VBO_BATCH_BINDING, m_buffer, m_offset, sizeof(BatchEntry));
+    KI_GL_CHECK("1.1");
 
     // model
     {
@@ -160,7 +178,13 @@ void Batch::prepareMesh(GLVertexArray& vao)
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
         glVertexArrayAttribFormat(vao, ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, objectID));
         glVertexArrayAttribBinding(vao, ATTR_INSTANCE_OBJECT_ID, VBO_BATCH_BINDING);
+    }
 
+    // material
+    {
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MATERIAL_INDEX);
+        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, materialIndex));
+        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MATERIAL_INDEX, VBO_BATCH_BINDING);
     }
 
     {
@@ -171,6 +195,10 @@ void Batch::prepareMesh(GLVertexArray& vao)
     }
 
     KI_GL_CHECK("2");
+
+    if (!singleMaterial) {
+        // TODO KI prepare material vbo separately
+    }
 }
 
 void Batch::update(size_t count) noexcept
@@ -187,7 +215,7 @@ void Batch::update(size_t count) noexcept
 
 void Batch::updateCommands() noexcept
 {
-    m_commandBuffer.update(0, m_commands.size() * sizeof(backend::DrawIndirectCommand), m_commands.data());
+    m_drawBuffer.update(0, m_drawCommands.size() * sizeof(backend::DrawIndirectCommand), m_drawCommands.data());
 }
 
 void Batch::bind(
@@ -195,22 +223,20 @@ void Batch::bind(
     MeshType* type,
     Shader* shader)
 {
-    if (m_boundType) return;
+    BatchCommand cmd;
+    cmd.m_vao = type->m_vao;
+    cmd.m_shader = shader;
+    cmd.m_drawOptions = type->m_drawOptions;
+    cmd.m_materialVBO = &type->m_materialVBO;
 
-    m_boundType = type;
-    m_boundShader = shader;
-
-    m_entries.clear();
-    m_commands.clear();
+    m_batches.push_back(cmd);
 }
 
-void Batch::unbind()
+void Batch::clear()
 {
-    m_boundType = nullptr;
-    m_boundShader = nullptr;
-
+    m_batches.clear();
     m_entries.clear();
-    m_commands.clear();
+    m_drawCommands.clear();
 }
 
 void Batch::draw(
@@ -221,8 +247,7 @@ void Batch::draw(
     const auto type = node.m_type;
 
     if (!type->getMesh()) return;
-    if (type->m_flags.root) return;
-    if (type->m_flags.origo) return;
+    if (type->m_flags.noRender) return;
 
     auto& obb = node.getOBB();
     //const auto mvp = ctx.m_matrices.projected * node.getModelMatrix();
@@ -255,17 +280,19 @@ void Batch::draw(
 
     ctx.m_drawCount += 1;
 
-    if (m_boundType) {
-        if (shader != m_boundShader
-            || m_boundType->m_vao != type->m_vao
-            || !m_boundType->m_drawOptions.isCompatible(type->m_drawOptions))
-        {
-            flush(ctx);
-            unbind();
-        }
+    bool needBind = true;
+    if (!m_batches.empty()) {
+        auto& top = m_batches.back();
+
+        needBind = top.m_shader != shader
+            || top.m_vao != type->m_vao
+            || !top.m_drawOptions.isCompatible(type->m_drawOptions);
     }
 
-    bind(ctx, type, shader);
+    if (needBind) {
+        bind(ctx, type, shader);
+    }
+
     node.bindBatch(ctx, *this);
     flushIfNeeded(ctx);
 }
@@ -281,13 +308,13 @@ void Batch::flush(
     const RenderContext& ctx,
     bool release)
 {
-    if (!m_boundType) return;
+    if (m_batches.empty()) return;
 
     int drawCount = m_entries.size();
 
     if (drawCount == 0) {
         if (release) {
-            unbind();
+            clear();
         }
         return;
     }
@@ -297,10 +324,10 @@ void Batch::flush(
     drawInstanced(ctx, drawCount);
 
     m_entries.clear();
-    m_commands.clear();
+    m_drawCommands.clear();
 
     if (release) {
-        unbind();
+        clear();
     }
 }
 
@@ -308,17 +335,38 @@ void Batch::drawInstanced(
     const RenderContext& ctx,
     int drawCount)
 {
-    if (ctx.assets.glDebug) {
-        m_boundShader->validateProgram();
+    Shader* shader{ nullptr };
+    backend::DrawOptions drawOptions;
+
+    backend::DrawIndirectCommand indirect;
+    backend::DrawElementsIndirectCommand& cmd = indirect.element;
+
+    for (auto& curr : m_batches) {
+        if (ctx.assets.glDebug) {
+            curr.m_shader->validateProgram();
+        }
+
+        bool keep = shader == curr.m_shader && drawOptions.isCompatible(curr.m_drawOptions);
+
+        if (!keep) {
+            drawPending();
+        }
+        if () {
+
+        }
     }
 
     m_boundShader->bind(ctx.state);
 
-    const auto& drawOptions = m_boundType->m_drawOptions;
+    const auto& drawOptions = m_boundDrawOptions;
 
     ctx.bindDraw(drawOptions.renderBack, drawOptions.wireframe);
-    ctx.state.useVAO(m_boundType->m_vao);
+    ctx.state.useVAO(*m_boundVAO);
 
+    // NOTE KI baseVertex usage
+    // https://community.khronos.org/t/vertex-buffer-management-with-indirect-drawing/77272
+    // https://www.khronos.org/opengl/wiki/Vertex_Specification#Instanced_arrays
+    //
     if (drawOptions.type == backend::DrawOptions::Type::elements) {
         backend::DrawIndirectCommand indirect;
         backend::DrawElementsIndirectCommand& cmd = indirect.element;
@@ -326,19 +374,25 @@ void Batch::drawInstanced(
         cmd.count = drawOptions.indexCount;
         cmd.instanceCount = drawCount;
         cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
-        cmd.baseVertex = drawOptions.vertexOFfset;
+        cmd.baseVertex = drawOptions.vertexOFfset / sizeof(VertexEntry);
+        //cmd.firstIndex = 0;
+        //cmd.baseVertex = drawOptions.indexOffset;
         cmd.baseInstance = 0;
 
-        m_commands.push_back(indirect);
+        m_drawCmmands.push_back(indirect);
         updateCommands();
-        m_commandBuffer.bindDrawIndirect();
+        m_drawBuffer.bindDrawIndirect();
+
+        KI_GL_CHECK("x1");
 
         glMultiDrawElementsIndirect(
             drawOptions.mode,
             GL_UNSIGNED_INT,
             0,
-            m_commands.size(),
+            m_drawCommands.size(),
             sizeof(backend::DrawIndirectCommand));
+
+        KI_GL_CHECK("x2");
 
         //glDrawElementsInstanced(
         //    drawOptions.mode,
@@ -349,35 +403,69 @@ void Batch::drawInstanced(
     }
     else if (drawOptions.type == backend::DrawOptions::Type::arrays)
     {
-        if (false) {
-            backend::DrawIndirectCommand indirect;
-            backend::DrawArraysIndirectCommand& cmd = indirect.array;
+        backend::DrawIndirectCommand indirect;
+        backend::DrawArraysIndirectCommand& cmd = indirect.array;
 
-            cmd.vertexCount = drawOptions.indexCount;
-            cmd.instanceCount = drawCount;
-            cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
-            cmd.baseInstance = 0;
+        cmd.vertexCount = drawOptions.indexCount;
+        cmd.instanceCount = drawCount;
+        cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
+        cmd.baseInstance = 0;
 
-            m_commands.push_back(indirect);
-            updateCommands();
-            m_commandBuffer.bindDrawIndirect();
+        m_drawCommands.push_back(indirect);
+        updateCommands();
+        m_drawBuffer.bindDrawIndirect();
 
-            glMultiDrawArraysIndirect(
-                drawOptions.mode,
-                0,
-                m_commands.size(),
-                sizeof(backend::DrawIndirectCommand));
-        }
-        else {
-            glDrawArraysInstanced(
-                drawOptions.mode,
-                drawOptions.indexFirst,
-                drawOptions.indexCount,
-                drawCount);
-        }
+        glMultiDrawArraysIndirect(
+            drawOptions.mode,
+            0,
+            m_drawCommands.size(),
+            sizeof(backend::DrawIndirectCommand));
+
+        //glDrawArraysInstanced(
+        //    drawOptions.mode,
+        //    drawOptions.indexFirst,
+        //    drawOptions.indexCount,
+        //    drawCount);
     }
     else {
         // NOTE KI "none" no drawing
         KI_INFO("no render");
     }
+}
+
+void Batch::drawPending(
+    const RenderContext& ctx,
+    GLVertexArray* vao,
+    backend::DrawOptions drawOptions)
+{
+    if (m_drawCommands.empty()) return;
+
+    updateCommands();
+    m_drawBuffer.bindDrawIndirect();
+
+    ctx.bindDraw(drawOptions.renderBack, drawOptions.wireframe);
+    ctx.state.useVAO(*vao);
+
+    if (drawOptions.type == backend::DrawOptions::Type::elements) {
+        glMultiDrawElementsIndirect(
+            drawOptions.mode,
+            GL_UNSIGNED_INT,
+            0,
+            m_drawCommands.size(),
+            sizeof(backend::DrawIndirectCommand));
+    }
+    else if (drawOptions.type == backend::DrawOptions::Type::arrays)
+    {
+        glMultiDrawArraysIndirect(
+            drawOptions.mode,
+            0,
+            m_drawCommands.size(),
+            sizeof(backend::DrawIndirectCommand));
+    }
+    else {
+        // NOTE KI "none" no drawing
+        KI_INFO("no render");
+    }
+
+    m_drawCommands.clear();
 }

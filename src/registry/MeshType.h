@@ -11,13 +11,19 @@
 #include "scene/Batch.h"
 
 
+enum class EntityType {
+    origo,
+    model,
+    quad,
+    sprite,
+    terrain,
+};
+
 struct NodeRenderFlags {
     bool alpha = false;
     bool blend = false;
     bool mirror = false;
     bool water = false;
-    bool terrain = false;
-    bool sprite = false;
     bool renderBack = false;
     bool noShadow = false;
     bool noSelect = false;
@@ -27,7 +33,6 @@ struct NodeRenderFlags {
     bool wireframe = false;
     bool instanced = false;
     bool root = false;
-    bool origo = false;
     bool noFrustum = false;
     bool cubeMap = false;
 };
@@ -40,7 +45,7 @@ enum class NodeScriptId {
 class RenderContext;
 class NodeRegistry;
 class MaterialRegistry;
-class MeshRegistry;
+class ModelRegistry;
 class Mesh;
 
 class MeshType final
@@ -61,16 +66,16 @@ public:
 
     void prepare(
         const Assets& assets,
+        Batch& batch,
         NodeRegistry& nodeRegistry,
         MaterialRegistry& materialRegistry,
-        MeshRegistry& meshRegistry);
-
-    void prepareBatch(Batch& batch) noexcept;
+        ModelRegistry& modelRegistry);
 
 public:
     const int typeID;
     const std::string m_name;
 
+    EntityType m_entityType;
     NodeRenderFlags m_flags;
 
     std::string m_initScript;
@@ -82,7 +87,7 @@ public:
 
     backend::DrawOptions m_drawOptions;
 
-    GLVertexArray m_vao;
+    GLVertexArray* m_vao{ nullptr };
 
 private:
     bool m_prepared = false;
@@ -90,4 +95,6 @@ private:
 
     Mesh* m_mesh{ nullptr };
     std::unique_ptr<Mesh> m_deleter;
+
+    GLVertexArray m_privateVAO;
 };

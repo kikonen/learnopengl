@@ -9,7 +9,7 @@
 
 #include "NodeRegistry.h"
 #include "MaterialRegistry.h"
-#include "MeshRegistry.h"
+#include "ModelRegistry.h"
 
 namespace {
     int idBase = 0;
@@ -39,7 +39,7 @@ const std::string MeshType::str() const noexcept
 {
     return fmt::format(
         "<NODE_TYPE: id={}, name={}, mesh={}, vao={}>",
-        typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao);
+        typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao ? *m_vao : -1);
 }
 
 void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
@@ -70,18 +70,19 @@ void MeshType::modifyMaterials(std::function<void(Material&)> fn)
 
 void MeshType::prepare(
     const Assets& assets,
+    Batch& batch,
     NodeRegistry& nodeRegistry,
     MaterialRegistry& materialRegistry,
-    MeshRegistry& meshRegistry)
+    ModelRegistry& modelRegistry)
 {
     if (!m_mesh) return;
 
     if (m_prepared) return;
     m_prepared = true;
 
-    m_vao.create();
+    //m_privateVAO.create();
 
-    m_mesh->prepare(assets, meshRegistry);
+    m_vao = m_mesh->prepare(assets, batch, modelRegistry);
     m_mesh->prepareMaterials(m_materialVBO);
 
     materialRegistry.registerMaterialVBO(m_materialVBO);
@@ -91,20 +92,10 @@ void MeshType::prepare(
     m_drawOptions.materialOffset = m_materialVBO.m_offset;
     m_drawOptions.materialCount = m_materialVBO.m_entries.size();
 
-    m_mesh->prepareVAO(m_vao, m_drawOptions);
-    m_materialVBO.prepareVAO(m_vao);
+    m_mesh->prepareVAO(*m_vao, m_drawOptions);
+    m_materialVBO.prepareVAO(*m_vao);
 
     if (m_nodeShader) {
         m_nodeShader->prepare(assets);
     }
-}
-
-void MeshType::prepareBatch(Batch& batch) noexcept
-{
-    if (!m_mesh) return;
-
-    if (m_preparedBatch) return;
-    m_preparedBatch = true;
-
-    batch.prepareMesh(m_vao);
 }

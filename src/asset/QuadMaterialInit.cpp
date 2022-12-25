@@ -34,9 +34,9 @@ void QuadMaterialInit::prepareVertices(
             MaterialEntry entry;
 
             // NOTE KI hardcoded single material
-            entry.material = material.m_registeredIndex;
+            entry.materialIndex = material.m_registeredIndex;
 
-            assert(entry.material >= 0 && entry.material < MAX_MATERIAL_COUNT);
+            assert(entry.materialIndex >= 0 && entry.materialIndex < MAX_MATERIAL_COUNT);
 
             entries.push_back(entry);
         }

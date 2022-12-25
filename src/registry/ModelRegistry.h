@@ -6,21 +6,25 @@
 
 #include "glm/glm.hpp"
 
-#include "kigl/GLBuffer.h"
+#include "kigl/GLVertexArray.h"
 
 #include "asset/Assets.h"
+#include "asset/ModelVAO.h"
 
+class Batch;
 class Material;
 class ModelMesh;
 class ModelMeshVBO;
 
-class MeshRegistry {
+class ModelRegistry {
 public:
-    MeshRegistry(const Assets& assets);
-    ~MeshRegistry();
+    ModelRegistry(const Assets& assets);
+    ~ModelRegistry();
 
-    void prepare();
-    void registerMeshVBO(ModelMeshVBO& meshVBO);
+    void prepare(Batch& batch);
+
+    // @return VAO for mesh
+    GLVertexArray* registerMeshVBO(ModelMeshVBO& meshVBO);
 
     ModelMesh* getMesh(
         const std::string& meshName);
@@ -35,13 +39,9 @@ private:
     std::mutex m_meshes_lock;
     std::map<std::string, std::unique_ptr<ModelMesh>> m_meshes;
 
-    int m_updatedSize = 0;
-
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;
 
-    unsigned char* m_buffer{ nullptr };
-    int m_bufferOffset = 0;
-
-    GLBuffer m_vbo;
+    ModelVAO m_singleVAO{ true };
+    ModelVAO m_multiVAO{ false };
 };

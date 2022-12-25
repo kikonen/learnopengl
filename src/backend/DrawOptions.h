@@ -36,8 +36,8 @@ namespace backend {
             return renderBack == b.renderBack &&
                 wireframe == b.wireframe &&
                 mode == b.mode &&
-                type == b.type &&
-                materialCount == b.materialCount;
+                type == b.type; //&&
+                //materialCount == b.materialCount;
         }
     };
 }

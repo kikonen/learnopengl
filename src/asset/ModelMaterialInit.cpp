@@ -20,7 +20,7 @@ void ModelMaterialInit::prepareVertices(
 {
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     {
-        const bool single = materialVBO.m_materials.size() == 1;
+        const bool single = true; // materialVBO.m_materials.size() == 1;
         const int count = single ? 1 : vertices.size();
         auto& entries = materialVBO.m_entries;
         entries.reserve(count);
@@ -39,9 +39,9 @@ void ModelMaterialInit::prepareVertices(
 
             // TODO KI should use noticeable value for missing
             // => would trigger undefined array access in render side
-            entry.material = m ? m->m_registeredIndex : Material::DEFAULT_ID;
+            entry.materialIndex = m ? m->m_registeredIndex : Material::DEFAULT_ID;
 
-            assert(entry.material >= 0 && entry.material < MAX_MATERIAL_COUNT);
+            assert(entry.materialIndex >= 0 && entry.materialIndex < MAX_MATERIAL_COUNT);
 
             entries.push_back(entry);
         }

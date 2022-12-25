@@ -6,8 +6,11 @@ layout (location = ATTR_MATERIAL_INDEX) in float a_materialIndex;
 layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
 layout (location = ATTR_INSTANCE_NORMAL_MATRIX_1) in mat3 a_normalMatrix;
 
+#include struct_material.glsl
+
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+#include uniform_materials.glsl
 
 out VS_OUT {
   vec3 normal;
@@ -49,8 +52,8 @@ void main() {
                       a_modelMatrix[2][2]);
 
 #ifdef USE_NORMAL_TEX
-  {
-    vec3 tangent = vec4(1.0, 0.0, 0.0);
+  if (u_materials[materialIndex].normalMapTex >= 0) {
+    vec3 tangent = vec3(1.0, 0.0, 0.0);
 
     vec3 N = vs_out.normal;
     vec3 T = normalize(a_normalMatrix * tangent);

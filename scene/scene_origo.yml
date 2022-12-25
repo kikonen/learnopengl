@@ -40,16 +40,24 @@ entities:
     material_modifier:
       reflection: 0.05
     enabled: true
-  - name: Four cubes
-    model: texture_cube_3
+  - name: Woodcube
+    model: texture_cube
     shader: texture
+    material: woodwall
+    force_material: true
+    pos: [5.0, 5.0, 5.0]
     scale: 1
     enabled: true
+  - name: Four cubes
+    model: texture_cube
+    shader: texture
+    scale: 1
+    enabled: false
     clones:
-      - pos: [-5.0, 15.0, -5.0]
-      - pos: [5.0, 15.0, -5.0]
-      - pos: [-5.0, 15.0, 5.0]
-      - pos: [5.0, 15.0, 5.0]
+      - pos: [-5.0, 0.0, -5.0]
+      - pos: [5.0, 0.0, -5.0]
+      - pos: [-5.0, 0.0, 5.0]
+      - pos: [5.0, 0.0, 5.0]
   - name: Skeleton army
     type: sprite
     shader: sprite
@@ -65,13 +73,13 @@ entities:
       z_count: 101
       x_step: -4
       z_step: 1.5
-    enabled: true
+    enabled: false
   - name: Cube map 1
     type: origo
     pos: [0.0, -3.0, 0.0]
     render_flags:
       cube_map: true
-    enabled: true
+    enabled: false
   - name: Glass ball
     model: glass_ball
     shader: texture
@@ -81,7 +89,55 @@ entities:
       reflection: 0.1
       refraction: 0.9
       refraction_ratio: [1.0, 1.52]
-    enabled: true
+    enabled: false
+  - name: Brick wall
+    type: quad
+    material: brickwall
+    shader: texture
+    pos: [-5.0, 8.5, 14.0]
+    render_flags:
+      render_back: true
+    repeat:
+      x_count: 3
+      x_step: 4
+    enabled: false
+  - name: Wood wall
+    type: quad
+    material: woodwall
+    shader: texture
+    pos: [-3.0, 8.5, 14.0]
+    render_flags:
+      render_back: true
+    repeat:
+      x_count: 2
+      x_step: 4
+    enabled: false
+  - name: Giant wooden box
+    id: e264f27f-d949-4504-b862-583213484d7c
+    type: quad
+    xmodel: woodwall
+    material: giant_woodbox
+    shader: texture
+    clone_position: [0, 40, 0]
+    render_flags:
+      render_back: true
+      no_shadow: true
+    scale: [100, 100, 100]
+    enabled: false
+    clones:
+      - pos: [0.0, 100.0, 0.0]
+        rot: [270, 0, 0]
+        id: 9da42971-4809-480b-98b6-ed238b978ed2
+      - pos: [0.0, -100.0, .0]
+        rot: [90, 0, 0]
+      - pos: [100.0, 0.0, 0.0]
+        rot: [0, 90, 0]
+      - pos: [-100.0, 0.0, 0.0]
+        rot: [0, 270, 0]
+      - pos: [0.0, 0.0, 100.0]
+        rot: [0, 0, 0]
+      - pos: [0.0, 0.0, -100.0]
+        rot: [0, 180, 0]
 materials:
   - name: skybox
     type: skybox
@@ -90,7 +146,7 @@ materials:
     ns: 51.2
     ka: [0.1923, 0.1923, 0.1923, 1.0]
     kd: [0.5075, 0.5075, 0.5075, 1.0]
-    kd: [1, 1, 0, 1.0]
+    xkd: [1, 1, 0, 1.0]
     ks: [0.5083, 0.5083, 0.5083, 1.0]
   - name: skeleton
     type: sprite
@@ -98,3 +154,40 @@ materials:
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: Skeleton_VH.PNG
     _map_bump: Skeleton_VH_normal.PNG
+  - name: brickwall
+    ns: 225.000000
+    type: model
+    ka: [1.000000, 1.000000, 1.000000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: brickwall.jpg
+    map_bump: brickwall_normal.jpg
+    reflection: 0.2
+  - name: woodwall
+    ns: 225.000000
+    type: model
+    ka: [1.000000, 1.000000, 1.000000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: wood.png
+    reflection: 0.4
+  - name: giant_woodbox
+    ns: 225.000000
+    type: model
+    ka: [1.000000, 1.000000, 1.000000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: wood.png
+    reflection: 0.1

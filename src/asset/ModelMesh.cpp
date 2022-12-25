@@ -14,7 +14,7 @@
 #include "asset/MaterialEntry.h"
 #include "asset/ModelMaterialInit.h"
 
-#include "registry/MeshRegistry.h"
+#include "registry/ModelRegistry.h"
 
 #include "scene/RenderContext.h"
 
@@ -72,22 +72,24 @@ const std::vector<Material>& ModelMesh::getMaterials() const
     return m_materials;
 }
 
-void ModelMesh::prepare(
+GLVertexArray* ModelMesh::prepare(
     const Assets& assets,
-    MeshRegistry& meshRegistry)
+    Batch& batch,
+    ModelRegistry& modelRegistry)
 {
-    if (m_prepared) return;
+    if (m_prepared) return m_vao;
     m_prepared = true;
 
     m_vertexVBO.prepare(*this);
 
     // NOTE KI no need for thexe any longer (they are in buffers now)
-    // NOTE KI CANNOT clear vertices due to mesh sharing via MeshRegistry
+    // NOTE KI CANNOT clear vertices due to mesh sharing via ModelRegistry
     m_triCount = m_tris.size();
     m_tris.clear();
     //m_vertices.clear();
 
-    meshRegistry.registerMeshVBO(m_vertexVBO);
+    m_vao = modelRegistry.registerMeshVBO(m_vertexVBO);
+    return m_vao;
 }
 
 void ModelMesh::prepareMaterials(
@@ -101,7 +103,7 @@ void ModelMesh::prepareVAO(
     GLVertexArray& vao,
     backend::DrawOptions& drawOptions)
 {
-    m_vertexVBO.prepareVAO(vao);
+    //m_vertexVBO.prepareVAO(vao);
 
     drawOptions.type = backend::DrawOptions::Type::elements;
     drawOptions.mode = GL_TRIANGLES;

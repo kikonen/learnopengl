@@ -139,7 +139,7 @@ namespace ki {
             KI_ERROR_SB(info << ": " << "0x" << std::hex << err << std::dec << " (" << err << ")");
         }
         if (wasError) {
-            KI_BREAK();
+            //KI_BREAK();
         }
     }
 

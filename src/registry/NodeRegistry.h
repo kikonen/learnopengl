@@ -9,8 +9,6 @@
 
 #include "backend/DrawOptions.h"
 
-#include "asset/QuadVBO.h"
-
 #include "model/Group.h"
 #include "model/Node.h"
 #include "model/Viewport.h"
@@ -36,8 +34,9 @@
     }
 };
 
+class Batch;
 class MaterialRegistry;
-class MeshRegistry;
+class ModelRegistry;
 
 enum class NodeOperation {
     ADDED
@@ -60,7 +59,10 @@ public:
 
     ~NodeRegistry();
 
-    void prepare();
+    void prepare(
+        Batch* batch,
+        MaterialRegistry * materialRegistry,
+        ModelRegistry* modelRegistry);
 
     void addListener(NodeListener& listener);
 
@@ -80,9 +82,7 @@ public:
 
     void addViewPort(std::shared_ptr<Viewport> viewport) noexcept;
 
-    void attachNodes(
-        MaterialRegistry& materialRegistry,
-        MeshRegistry& meshRegistry);
+    void attachNodes();
 
     int countSelected() const noexcept;
 
@@ -92,24 +92,16 @@ public:
     const NodeVector* getChildren(const Node& node) const noexcept;
 
 private:
-    void bindPendingChildren(
-        MaterialRegistry& materialRegistry,
-        MeshRegistry& meshRegistry);
+    void bindPendingChildren();
 
     void bindNode(
-        Node* node,
-        MaterialRegistry& materialRegistry,
-        MeshRegistry& meshRegistry);
+        Node* node);
 
     bool bindParent(
-        Node* child,
-        MaterialRegistry& materialRegistry,
-        MeshRegistry& meshRegistry);
+        Node* child);
 
     void bindChildren(
-        Node* parent,
-        MaterialRegistry& materialRegistry,
-        MeshRegistry& meshRegistry);
+        Node* parent);
 
     void notifyListeners(Node* node, NodeOperation operation);
 
@@ -136,6 +128,10 @@ public:
 
 private:
     const Assets& assets;
+
+    Batch* m_batch{ nullptr };
+    MaterialRegistry* m_materialRegistry{ nullptr };
+    ModelRegistry* m_modelRegistry{ nullptr };
 
     std::mutex m_load_lock;
     std::condition_variable m_waitCondition;

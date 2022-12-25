@@ -1,8 +1,10 @@
-#include "QuadVBO.h"
+#include "QuadVAO.h"
 
 #include "glm/glm.hpp"
 
 #include "Shader.h"
+
+#include "scene/Batch.h"
 
 namespace {
     const float VERTICES[] = {
@@ -26,19 +28,28 @@ namespace {
 #pragma pack(pop)
 }
 
-void QuadVBO::prepare()
+GLVertexArray* QuadVAO::prepare(Batch& batch)
 {
-    if (m_prepared) return;
+    if (m_prepared) return m_vao.get();
     m_prepared = true;
 
+    m_vao = std::make_unique<GLVertexArray>();
+    m_vao->create();
     m_vbo.create();
 
-    prepareVBO();
+    prepareVBO(m_vbo);
+    prepareVAO(*m_vao, m_vbo);
+
+    batch.prepareVAO(*m_vao, true);
+
+    return m_vao.get();
 }
 
-void QuadVBO::prepareVAO(GLVertexArray& vao)
+void QuadVAO::prepareVAO(
+    GLVertexArray& vao,
+    GLBuffer& vbo)
 {
-    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(VertexEntry));
+    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, vbo, 0, sizeof(VertexEntry));
     {
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
@@ -64,7 +75,7 @@ void QuadVBO::prepareVAO(GLVertexArray& vao)
     }
 }
 
-void QuadVBO::prepareVBO()
+void QuadVAO::prepareVBO(GLBuffer& vbo)
 {
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     constexpr int stride_size = sizeof(VertexEntry);
@@ -75,28 +86,28 @@ void QuadVBO::prepareVBO()
 
     constexpr int row_size = ROW_SIZE;
 
-    VertexEntry* vbo = buffer;
+    VertexEntry* entry = buffer;
     for (int i = 0; i < VERTEX_COUNT; i++) {
         int base = i * row_size;
 
-        vbo->pos.x = VERTICES[base++];
-        vbo->pos.y = VERTICES[base++];
-        vbo->pos.z = VERTICES[base++];
+        entry->pos.x = VERTICES[base++];
+        entry->pos.y = VERTICES[base++];
+        entry->pos.z = VERTICES[base++];
 
-        vbo->normal.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-        vbo->normal.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-        vbo->normal.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+        entry->normal.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+        entry->normal.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+        entry->normal.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
 
-        vbo->tangent.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-        vbo->tangent.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-        vbo->tangent.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+        entry->tangent.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+        entry->tangent.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
+        entry->tangent.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
 
-        vbo->texCoords.u = (int)(VERTICES[base++] * ki::SCALE_UV16);
-        vbo->texCoords.v = (int)(VERTICES[base++] * ki::SCALE_UV16);
+        entry->texCoords.u = (int)(VERTICES[base++] * ki::SCALE_UV16);
+        entry->texCoords.v = (int)(VERTICES[base++] * ki::SCALE_UV16);
 
-        vbo++;
+        entry++;
     }
 
-    glNamedBufferStorage(m_vbo, sz, buffer, 0);
+    glNamedBufferStorage(vbo, sz, buffer, 0);
     delete[] buffer;
 }

@@ -143,7 +143,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
                 if (type.m_flags.noSelect) continue;
 
                 auto shader = m_idShader;
-                if (type.m_flags.sprite) {
+                if (type.m_entityType == EntityType::sprite) {
                     shader = m_idShaderSprite;
                 }
 

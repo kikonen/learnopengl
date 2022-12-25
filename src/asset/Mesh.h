@@ -19,8 +19,9 @@
 
 #include "registry/NodeRegistry.h"
 
+class Batch;
 class RenderContext;
-class MeshRegistry;
+class ModelRegistry;
 
 class Mesh
 {
@@ -35,9 +36,11 @@ public:
 
     virtual const std::vector<Material>& getMaterials() const = 0;
 
-    virtual void prepare(
+    // @return VAO for mesh
+    virtual GLVertexArray* prepare(
         const Assets& assets,
-        MeshRegistry& meshRegistry) = 0;
+        Batch& batch,
+        ModelRegistry& modelRegistry) = 0;
 
     virtual void prepareMaterials(
         MaterialVBO& materialVBO) = 0;
@@ -58,8 +61,9 @@ public:
 protected:
     bool m_prepared = false;
 
+    GLVertexArray* m_vao{ nullptr };
+
 private:
     AABB m_aabb{};
     std::unique_ptr<Volume> m_volume;
-
 };

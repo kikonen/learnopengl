@@ -291,7 +291,7 @@
     <ClCompile Include="src\registry\MeshType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\QuadVBO.cpp">
+    <ClCompile Include="src\asset\QuadVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\ModelMeshVBO.cpp">
@@ -300,7 +300,7 @@
     <ClCompile Include="src\asset\MaterialVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\MeshRegistry.cpp">
+    <ClCompile Include="src\registry\ModelRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\registry\MeshTypeRegistry.cpp">
@@ -313,6 +313,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\SpriteMaterialInit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asset\SpriteVAO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asset\ModelVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -635,7 +641,7 @@
     <ClInclude Include="src\registry\MeshType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\QuadVBO.h">
+    <ClInclude Include="src\asset\QuadVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\ModelMeshVBO.h">
@@ -644,7 +650,7 @@
     <ClInclude Include="src\asset\MaterialVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\MeshRegistry.h">
+    <ClInclude Include="src\registry\ModelRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\MeshTypeRegistry.h">
@@ -669,6 +675,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\BatchEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\DrawOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\DrawElementsIndirectCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\DrawArraysIndirectCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\DrawIndirectCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\SpriteVAO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\ModelVAO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\BatchCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

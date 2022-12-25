@@ -7,12 +7,16 @@
 
 #include "backend/DrawElementsIndirectCommand.h"
 #include "backend/DrawIndirectCommand.h"
+#include "backend/DrawOptions.h"
 
+#include "BatchCommand.h"
 #include "BatchEntry.h"
+
 
 class RenderContext;
 class MeshType;
 class Node;
+class MaterialVBO;
 
 // NOTE KI use single shared UBO buffer for rendering
 // => less resources needed
@@ -53,7 +57,7 @@ public:
         const Assets& assets,
         int bufferSize) noexcept;
 
-    void prepareMesh(GLVertexArray& vao);
+    void prepareVAO(GLVertexArray& vao, bool singleMaterial);
 
     void draw(
         const RenderContext& ctx,
@@ -72,11 +76,17 @@ private:
         const RenderContext& ctx,
         MeshType* type,
         Shader* shader);
-    void unbind();
+
+    void clear();
 
     void drawInstanced(
         const RenderContext& ctx,
         int drawCount);
+
+    void drawPending(
+        const RenderContext& ctx,
+        GLVertexArray* vao,
+        backend::DrawOptions drawOptions);
 
     void flushIfNeeded(const RenderContext& ctx);
 
@@ -92,17 +102,18 @@ private:
 
     int m_bufferSize = -1;
 
-    Shader* m_boundShader{ nullptr };
-    MeshType* m_boundType{ nullptr };
+    RenderContext* m_currentRenderContext{ nullptr };
+    std::vector<BatchCommand> m_batches;
 
     std::vector<BatchEntry> m_entries;
 
-    std::vector<backend::DrawIndirectCommand> m_commands;
+    std::vector<backend::DrawIndirectCommand> m_drawCommands;
 
-    GLBuffer m_commandBuffer;
+    GLBuffer m_drawBuffer;
 
     GLBuffer m_buffer;
 
+    GLBuffer m_materialBuffer;
+
     int m_offset = 0;
 };
-
