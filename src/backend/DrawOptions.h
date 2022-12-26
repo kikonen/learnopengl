@@ -43,13 +43,14 @@ namespace backend {
         bool isSameMultiDraw(const DrawOptions& b) const {
             return renderBack == b.renderBack &&
                 wireframe == b.wireframe &&
+                blend == b.blend &&
                 mode == b.mode &&
                 type == b.type;
         }
 
         bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(renderBack, wireframe, type, mode, materialCount, vertexOffset, indexOffset, materialOffset) <
-                std::tie(o.renderBack, o.wireframe, o.type, o.mode, o.materialCount, o.vertexOffset, o.indexOffset, o.materialOffset);
+            return std::tie(renderBack, wireframe, blend, type, mode, materialCount, vertexOffset, indexOffset, materialOffset) <
+                std::tie(o.renderBack, o.wireframe, o.blend, o.type, o.mode, o.materialCount, o.vertexOffset, o.indexOffset, o.materialOffset);
         }
     };
 }

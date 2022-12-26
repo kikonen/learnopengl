@@ -5,6 +5,7 @@
 #include "kigl/GLState.h"
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
+#include "kigl/GLBufferRange.h"
 
 #include "DrawElementsIndirectCommand.h"
 #include "DrawIndirectCommand.h"
@@ -14,12 +15,6 @@ class Shader;
 
 namespace backend {
     constexpr int RANGE_COUNT = 3;
-
-    struct BufferRange {
-        int m_mappedBase = 0;
-        int m_offset = 0;
-        GLsync m_sync = 0;
-    };
 
     class DrawBuffer {
     public:
@@ -52,7 +47,7 @@ namespace backend {
         backend::DrawIndirectCommand* m_mapped;
         int m_size = 0;
 
-        int m_index = 0;
-        BufferRange m_ranges[RANGE_COUNT];
+        int m_range = 0;
+        GLBufferRange m_ranges[RANGE_COUNT];
     };
 }

@@ -27,8 +27,8 @@ namespace backend {
             GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
 
         for (int i = 0; i < RANGE_COUNT; i++) {
+            m_ranges[i].m_index = i * m_entryCount;
             m_ranges[i].m_offset = i * m_rangeSize;
-            m_ranges[i].m_mappedBase = i * m_entryCount;
         }
 
         KI_GL_CHECK("1.2");
@@ -47,14 +47,16 @@ namespace backend {
     {
         if (m_size == 0) return;
 
+        glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
 
         shader->bind(state);
         state.useVAO(*vao);
         bindOptions(state, drawOptions);
 
-        auto& range = m_ranges[m_index];
+        auto& range = m_ranges[m_range];
 
-        wait(m_index);
+        wait(m_range);
+
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
             glMultiDrawElementsIndirect(
                 drawOptions.mode,
@@ -71,16 +73,17 @@ namespace backend {
                 m_size,
                 sizeof(backend::DrawIndirectCommand));
         }
-        lock(m_index);
 
-        m_index = (m_index + 1) % RANGE_COUNT;
+        lock(m_range);
+
+        m_range = (m_range + 1) % RANGE_COUNT;
         m_size = 0;
     }
 
     void DrawBuffer::send(backend::DrawIndirectCommand& indirect)
     {
-        auto& range = m_ranges[m_index];
-        m_mapped[range.m_mappedBase + m_size] = indirect;
+        auto& range = m_ranges[m_range];
+        m_mapped[range.m_index + m_size] = indirect;
         m_size++;
     }
 
@@ -130,7 +133,7 @@ namespace backend {
         if (drawOptions.blend) {
             // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+             glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 
             state.enable(GL_BLEND);
         }
