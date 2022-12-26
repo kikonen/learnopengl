@@ -70,7 +70,7 @@ public:
         bool release = true);
 
 private:
-    void update(size_t count) noexcept;
+    void update() noexcept;
 
     void addCommand(
         const RenderContext& ctx,

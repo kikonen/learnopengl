@@ -7,56 +7,68 @@ struct GLBuffer {
     }
 
     ~GLBuffer() {
-        if (id != -1) {
-            glDeleteBuffers(1, &id);
+        if (m_id != -1) {
+            glDeleteBuffers(1, &m_id);
         }
     }
 
-    operator int() const { return id; }
+    operator int() const { return m_id; }
 
     void create() {
-        if (id != -1) return;
-        glCreateBuffers(1, &id);
+        if (m_id != -1) return;
+        glCreateBuffers(1, &m_id);
     }
 
     // For mapped buffer
     // flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
     void initEmpty(int size, int flags) {
-        glNamedBufferStorage(id, size, nullptr, flags);
+        m_size = size;
+        glNamedBufferStorage(m_id, size, nullptr, flags);
     }
 
     void init(int size, void* data, int flags) {
-        glNamedBufferStorage(id, size, data, flags);
+        m_size = size;
+        glNamedBufferStorage(m_id, size, data, flags);
     }
 
-    void update(int offset, int size, void* data) {
-        glNamedBufferSubData(id, offset, size, data);
+    void update(int offset, int length, void* data) {
+        glNamedBufferSubData(m_id, offset, length, data);
     }
 
     void bindUniform(GLuint ubo) {
-        if (id == -1) return;
-        glBindBufferBase(GL_UNIFORM_BUFFER, ubo, id);
+        if (m_id == -1) return;
+        glBindBufferBase(GL_UNIFORM_BUFFER, ubo, m_id);
     }
 
     void bindSSBO(GLuint ssbo) {
-        if (id == -1) return;
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, ssbo, id);
+        if (m_id == -1) return;
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, ssbo, m_id);
     }
 
     void bindDrawIndirect() {
-        if (id == -1) return;
-        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, id);
+        if (m_id == -1) return;
+        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_id);
     }
 
     // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
-    // flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-    void* map(int offset, int size, int flags) {
-        return glMapNamedBufferRange(id, offset, size, flags);
+    // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
+    void* map(int flags) {
+        return glMapNamedBuffer(m_id, flags);
+    }
+
+    void* mapRange(int offset, int length, int flags) {
+        return glMapNamedBufferRange(m_id, offset, length, flags);
+    }
+
+    void flushRange(int offset, int length) {
+        glFlushMappedNamedBufferRange(m_id, offset, length);
     }
 
     void unmap() {
-        glUnmapNamedBuffer(id);
+        glUnmapNamedBuffer(m_id);
     }
 
-    GLuint id = -1;
+    GLuint m_id = -1;
+
+    int m_size;
 };

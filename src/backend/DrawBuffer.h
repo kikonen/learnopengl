@@ -32,8 +32,8 @@ namespace backend {
             const DrawOptions& drawOptions);
 
     private:
-        void lock(int index);
-        void wait(int index);
+        void lock(GLBufferRange& range);
+        void wait(GLBufferRange& range);
 
         void bindOptions(
             GLState& state,
@@ -45,7 +45,7 @@ namespace backend {
 
         GLBuffer m_buffer;
         backend::DrawIndirectCommand* m_mapped;
-        int m_size = 0;
+        int m_count = 0;
 
         int m_range = 0;
         GLBufferRange m_ranges[RANGE_COUNT];

@@ -216,16 +216,9 @@ void Batch::prepareVAO(
     }
 }
 
-void Batch::update(size_t count) noexcept
+void Batch::update() noexcept
 {
-    if (count > m_entryCount) {
-        KI_WARN_SB("BATCH::CUT_OFF_BUFFER: count=" << count << " batchSize=" << m_entryCount);
-        count = m_entryCount;
-    }
-
-    // TODO KI Map COHERRENT + PERSISTENT
-    // => can be MUCH faster
-    m_vbo.update(m_offset, count * sizeof(BatchEntry), m_entries.data());
+    m_vbo.update(m_offset, m_entries.size() * sizeof(BatchEntry), m_entries.data());
 }
 
 void Batch::addCommand(
@@ -312,24 +305,16 @@ void Batch::flush(
     const RenderContext& ctx,
     bool release)
 {
-    int batchCount = m_batches.size();
-
-    if (batchCount == 0) {
-        if (release) {
-            clear();
-        }
+    if (m_entries.empty()) {
+        m_batches.clear();
         return;
     }
 
-    update(m_entries.size());
-
+    update();
     drawInstanced(ctx);
 
+    m_batches.clear();
     m_entries.clear();
-
-    if (release) {
-        clear();
-    }
 }
 
 void Batch::drawInstanced(

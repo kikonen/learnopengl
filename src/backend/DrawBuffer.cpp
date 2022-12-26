@@ -19,12 +19,13 @@ namespace backend {
 
         m_buffer.initEmpty(
             RANGE_COUNT * m_rangeSize,
-            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
+            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
-        m_mapped = (DrawIndirectCommand*)m_buffer.map(
+        // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
+        m_mapped = (DrawIndirectCommand*)m_buffer.mapRange(
             0,
             RANGE_COUNT * m_rangeSize,
-            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
+            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_INVALIDATE_RANGE_BIT | GL_MAP_FLUSH_EXPLICIT_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
 
         for (int i = 0; i < RANGE_COUNT; i++) {
             m_ranges[i].m_index = i * m_entryCount;
@@ -45,9 +46,9 @@ namespace backend {
         const GLVertexArray* vao,
         const DrawOptions& drawOptions)
     {
-        if (m_size == 0) return;
+        if (m_count == 0) return;
 
-        glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
+        //glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
 
         shader->bind(state);
         state.useVAO(*vao);
@@ -55,14 +56,14 @@ namespace backend {
 
         auto& range = m_ranges[m_range];
 
-        wait(m_range);
+        m_buffer.flushRange(range.m_offset, m_count * sizeof(backend::DrawIndirectCommand));
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
             glMultiDrawElementsIndirect(
                 drawOptions.mode,
                 GL_UNSIGNED_INT,
                 (void*)range.m_offset,
-                m_size,
+                m_count,
                 sizeof(backend::DrawIndirectCommand));
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
@@ -70,26 +71,27 @@ namespace backend {
             glMultiDrawArraysIndirect(
                 drawOptions.mode,
                 (void*)range.m_offset,
-                m_size,
+                m_count,
                 sizeof(backend::DrawIndirectCommand));
         }
 
-        lock(m_range);
+        lock(range);
 
         m_range = (m_range + 1) % RANGE_COUNT;
-        m_size = 0;
+        m_count = 0;
     }
 
     void DrawBuffer::send(backend::DrawIndirectCommand& indirect)
     {
         auto& range = m_ranges[m_range];
-        m_mapped[range.m_index + m_size] = indirect;
-        m_size++;
+        wait(range);
+
+        m_mapped[range.m_index + m_count] = indirect;
+        m_count++;
     }
 
-    void DrawBuffer::lock(int index)
+    void DrawBuffer::lock(GLBufferRange& range)
     {
-        auto& range = m_ranges[index];
         if (range.m_sync) {
             glDeleteSync(range.m_sync);
         }
@@ -97,9 +99,8 @@ namespace backend {
     }
 
     // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
-    void DrawBuffer::wait(int index)
+    void DrawBuffer::wait(GLBufferRange& range)
     {
-        auto& range = m_ranges[index];
         if (!range.m_sync) return;
 
         int count = 0;
