@@ -101,7 +101,6 @@ void Batch::addAll(
 void Batch::reserve(size_t count) noexcept
 {
     m_entries.reserve(count);
-    m_drawCommands.reserve(count);
 }
 
 int Batch::size() noexcept
@@ -119,7 +118,6 @@ void Batch::clear() noexcept
 {
     m_batches.clear();
     m_entries.clear();
-    m_drawCommands.clear();
 }
 
 void Batch::prepare(
@@ -131,6 +129,7 @@ void Batch::prepare(
 
     m_bufferSize = bufferSize;
 
+    KI_GL_CHECK("1.1");
     {
         m_offset = 0;
 
@@ -140,18 +139,20 @@ void Batch::prepare(
         m_buffer.create();
         m_buffer.initEmpty(m_bufferSize * sz, GL_DYNAMIC_STORAGE_BIT);
     }
-
+    KI_GL_CHECK("1.2");
     {
+        const int bufferSize = m_bufferSize * sizeof(backend::DrawIndirectCommand);
         m_drawBuffer.create();
-        m_drawBuffer.initEmpty(m_bufferSize * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
+        m_drawBuffer.initEmpty(bufferSize, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+        m_drawMapped = (backend::DrawIndirectCommand*)m_drawBuffer.map(0, bufferSize, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
     }
+    KI_GL_CHECK("1.3");
     {
         m_materialBuffer.create();
         m_materialBuffer.initEmpty(m_bufferSize * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
     }
-
+    KI_GL_CHECK("1.4");
     m_entries.reserve(m_bufferSize);
-    m_drawCommands.reserve(m_bufferSize);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
@@ -228,11 +229,6 @@ void Batch::update(size_t count) noexcept
     // TODO KI Map COHERRENT + PERSISTENT
     // => can be MUCH faster
     m_buffer.update(m_offset, count * sizeof(BatchEntry), m_entries.data());
-}
-
-void Batch::updateCommands() noexcept
-{
-    m_drawBuffer.update(0, m_drawCommands.size() * sizeof(backend::DrawIndirectCommand), m_drawCommands.data());
 }
 
 void Batch::addCommand(
@@ -342,6 +338,7 @@ void Batch::flush(
 void Batch::drawInstanced(
     const RenderContext& ctx)
 {
+    int index = 0;
     const Shader* boundShader{ nullptr };
     const GLVertexArray* boundVAO{ nullptr };
     const backend::DrawOptions* boundDrawOptions{ nullptr };
@@ -359,7 +356,7 @@ void Batch::drawInstanced(
 
         if (!sameDraw) {
             if (boundShader) {
-                drawPending(ctx, boundShader, boundVAO, *boundDrawOptions);
+                drawPending(ctx, index, boundShader, boundVAO, *boundDrawOptions);
             }
 
             boundShader = curr.m_shader;
@@ -385,7 +382,7 @@ void Batch::drawInstanced(
             //cmd.baseVertex = drawOptions.indexOffset;
             cmd.baseInstance = baseInstance;
 
-            m_drawCommands.push_back(indirect);
+            sendDraw(index, indirect);
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
@@ -397,7 +394,7 @@ void Batch::drawInstanced(
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseInstance = baseInstance;
 
-            m_drawCommands.push_back(indirect);
+            sendDraw(index, indirect);
         }
         else {
             // NOTE KI "none" no drawing
@@ -408,7 +405,7 @@ void Batch::drawInstanced(
     }
 
     if (boundShader) {
-        drawPending(ctx, boundShader, boundVAO, *boundDrawOptions);
+        drawPending(ctx, index, boundShader, boundVAO, *boundDrawOptions);
     }
 
     m_batches.clear();
@@ -416,13 +413,14 @@ void Batch::drawInstanced(
 
 void Batch::drawPending(
     const RenderContext& ctx,
+    int index,
     const Shader* shader,
     const GLVertexArray* vao,
     const backend::DrawOptions& drawOptions)
 {
-    if (m_drawCommands.empty()) return;
+    if (m_drawSize == 0) return;
 
-    updateCommands();
+    waitDraw(index);
 
     ctx.bindDraw(drawOptions.renderBack, drawOptions.wireframe);
     shader->bind(ctx.state);
@@ -433,7 +431,7 @@ void Batch::drawPending(
             drawOptions.mode,
             GL_UNSIGNED_INT,
             0,
-            m_drawCommands.size(),
+            m_drawSize,
             sizeof(backend::DrawIndirectCommand));
     }
     else if (drawOptions.type == backend::DrawOptions::Type::arrays)
@@ -441,9 +439,40 @@ void Batch::drawPending(
         glMultiDrawArraysIndirect(
             drawOptions.mode,
             0,
-            m_drawCommands.size(),
+            m_drawSize,
             sizeof(backend::DrawIndirectCommand));
     }
 
-    m_drawCommands.clear();
+    lockDraw(index);
+
+    m_drawSize = 0;
+}
+
+void Batch::sendDraw(int index, backend::DrawIndirectCommand& indirect)
+{
+    waitDraw(index);
+    m_drawMapped[m_drawSize++] = indirect;
+}
+
+void Batch::lockDraw(int index)
+{
+    if (m_drawSync) {
+        glDeleteSync(m_drawSync);
+    }
+    m_drawSync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+}
+
+// https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
+void Batch::waitDraw(int index)
+{
+    if (!m_drawSync) return;
+
+    int count = 0;
+    GLenum res = GL_UNSIGNALED;
+    while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
+    {
+        res = glClientWaitSync(m_drawSync, GL_SYNC_FLUSH_COMMANDS_BIT, 1);
+        count++;
+    }
+    //std::cout << "waitcount: " << count << '\n';
 }
