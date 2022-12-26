@@ -8,10 +8,10 @@
 #include "backend/DrawElementsIndirectCommand.h"
 #include "backend/DrawIndirectCommand.h"
 #include "backend/DrawOptions.h"
+#include "backend/DrawBuffer.h"
 
 #include "BatchCommand.h"
 #include "BatchEntry.h"
-
 
 class RenderContext;
 class MeshType;
@@ -80,18 +80,7 @@ private:
     void drawInstanced(
         const RenderContext& ctx);
 
-    void drawPending(
-        const RenderContext& ctx,
-        int index,
-        const Shader* shader,
-        const GLVertexArray* vao,
-        const backend::DrawOptions& drawOptions);
-
     void flushIfNeeded(const RenderContext& ctx);
-
-    void sendDraw(int index, backend::DrawIndirectCommand& cmd);
-    void lockDraw(int index);
-    void waitDraw(int index);
 
 public:
     const int m_id;
@@ -110,15 +99,11 @@ private:
 
     std::vector<BatchEntry> m_entries;
 
-    GLBuffer m_drawBuffer;
-
-    backend::DrawIndirectCommand* m_drawMapped;
-    int m_drawSize = 0;
-    GLsync m_drawSync = 0;
-
-    GLBuffer m_buffer;
+    GLBuffer m_vbo;
 
     GLBuffer m_materialBuffer;
+
+    backend::DrawBuffer m_draw;
 
     int m_offset = 0;
 };

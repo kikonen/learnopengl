@@ -111,7 +111,7 @@ int Batch::size() noexcept
 void Batch::bind() noexcept
 {
     clear();
-    m_drawBuffer.bindDrawIndirect();
+    m_draw.bind();
 }
 
 void Batch::clear() noexcept
@@ -136,16 +136,13 @@ void Batch::prepare(
         constexpr int sz = sizeof(BatchEntry);
         //constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT;// | GL_MAP_WRITE_BIT;
 
-        m_buffer.create();
-        m_buffer.initEmpty(m_bufferSize * sz, GL_DYNAMIC_STORAGE_BIT);
+        m_vbo.create();
+        m_vbo.initEmpty(m_bufferSize * sz, GL_DYNAMIC_STORAGE_BIT);
     }
     KI_GL_CHECK("1.2");
-    {
-        const int bufferSize = m_bufferSize * sizeof(backend::DrawIndirectCommand);
-        m_drawBuffer.create();
-        m_drawBuffer.initEmpty(bufferSize, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-        m_drawMapped = (backend::DrawIndirectCommand*)m_drawBuffer.map(0, bufferSize, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-    }
+
+    m_draw.prepare(bufferSize);
+
     KI_GL_CHECK("1.3");
     {
         m_materialBuffer.create();
@@ -156,7 +153,7 @@ void Batch::prepare(
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
-        m_bufferSize, m_buffer));
+        m_bufferSize, m_vbo));
 }
 
 void Batch::prepareVAO(
@@ -164,7 +161,7 @@ void Batch::prepareVAO(
     bool singleMaterial)
 {
     KI_GL_CHECK("1");
-    glVertexArrayVertexBuffer(vao, VBO_BATCH_BINDING, m_buffer, m_offset, sizeof(BatchEntry));
+    glVertexArrayVertexBuffer(vao, VBO_BATCH_BINDING, m_vbo, m_offset, sizeof(BatchEntry));
     KI_GL_CHECK("1.1");
 
     // model
@@ -228,7 +225,7 @@ void Batch::update(size_t count) noexcept
 
     // TODO KI Map COHERRENT + PERSISTENT
     // => can be MUCH faster
-    m_buffer.update(m_offset, count * sizeof(BatchEntry), m_entries.data());
+    m_vbo.update(m_offset, count * sizeof(BatchEntry), m_entries.data());
 }
 
 void Batch::addCommand(
@@ -338,7 +335,6 @@ void Batch::flush(
 void Batch::drawInstanced(
     const RenderContext& ctx)
 {
-    int index = 0;
     const Shader* boundShader{ nullptr };
     const GLVertexArray* boundVAO{ nullptr };
     const backend::DrawOptions* boundDrawOptions{ nullptr };
@@ -356,7 +352,7 @@ void Batch::drawInstanced(
 
         if (!sameDraw) {
             if (boundShader) {
-                drawPending(ctx, index, boundShader, boundVAO, *boundDrawOptions);
+                m_draw.draw(ctx.state, boundShader, boundVAO, *boundDrawOptions);
             }
 
             boundShader = curr.m_shader;
@@ -382,7 +378,7 @@ void Batch::drawInstanced(
             //cmd.baseVertex = drawOptions.indexOffset;
             cmd.baseInstance = baseInstance;
 
-            sendDraw(index, indirect);
+            m_draw.send(indirect);
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
@@ -394,7 +390,7 @@ void Batch::drawInstanced(
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseInstance = baseInstance;
 
-            sendDraw(index, indirect);
+            m_draw.send(indirect);
         }
         else {
             // NOTE KI "none" no drawing
@@ -405,74 +401,9 @@ void Batch::drawInstanced(
     }
 
     if (boundShader) {
-        drawPending(ctx, index, boundShader, boundVAO, *boundDrawOptions);
+        m_draw.draw(ctx.state, boundShader, boundVAO, *boundDrawOptions);
     }
 
     m_batches.clear();
 }
 
-void Batch::drawPending(
-    const RenderContext& ctx,
-    int index,
-    const Shader* shader,
-    const GLVertexArray* vao,
-    const backend::DrawOptions& drawOptions)
-{
-    if (m_drawSize == 0) return;
-
-    waitDraw(index);
-
-    ctx.bindDraw(drawOptions.renderBack, drawOptions.wireframe);
-    shader->bind(ctx.state);
-    ctx.state.useVAO(*vao);
-
-    if (drawOptions.type == backend::DrawOptions::Type::elements) {
-        glMultiDrawElementsIndirect(
-            drawOptions.mode,
-            GL_UNSIGNED_INT,
-            0,
-            m_drawSize,
-            sizeof(backend::DrawIndirectCommand));
-    }
-    else if (drawOptions.type == backend::DrawOptions::Type::arrays)
-    {
-        glMultiDrawArraysIndirect(
-            drawOptions.mode,
-            0,
-            m_drawSize,
-            sizeof(backend::DrawIndirectCommand));
-    }
-
-    lockDraw(index);
-
-    m_drawSize = 0;
-}
-
-void Batch::sendDraw(int index, backend::DrawIndirectCommand& indirect)
-{
-    waitDraw(index);
-    m_drawMapped[m_drawSize++] = indirect;
-}
-
-void Batch::lockDraw(int index)
-{
-    if (m_drawSync) {
-        glDeleteSync(m_drawSync);
-    }
-    m_drawSync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-}
-
-// https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
-void Batch::waitDraw(int index)
-{
-    if (!m_drawSync) return;
-
-    int count = 0;
-    GLenum res = GL_UNSIGNALED;
-    while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
-    {
-        res = glClientWaitSync(m_drawSync, GL_SYNC_FLUSH_COMMANDS_BIT, 1);
-        count++;
-    }
-    //std::cout << "waitcount: " << count << '\n';
-}
