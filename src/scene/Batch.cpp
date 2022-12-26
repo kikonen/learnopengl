@@ -74,7 +74,7 @@ void Batch::add(
 
     m_entries.push_back(entry);
 
-    if (m_entries.size() >= m_bufferSize)
+    if (m_entries.size() >= m_entryCount)
         int x = 0;
 
     flushIfNeeded(ctx);
@@ -122,12 +122,12 @@ void Batch::clear() noexcept
 
 void Batch::prepare(
     const Assets& assets,
-    int bufferSize) noexcept
+    int entryCount) noexcept
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    m_bufferSize = bufferSize;
+    m_entryCount = entryCount;
 
     KI_GL_CHECK("1.1");
     {
@@ -137,23 +137,23 @@ void Batch::prepare(
         //constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT;// | GL_MAP_WRITE_BIT;
 
         m_vbo.create();
-        m_vbo.initEmpty(m_bufferSize * sz, GL_DYNAMIC_STORAGE_BIT);
+        m_vbo.initEmpty(m_entryCount * sz, GL_DYNAMIC_STORAGE_BIT);
     }
     KI_GL_CHECK("1.2");
 
-    m_draw.prepare(bufferSize);
+    m_draw.prepare(m_entryCount);
 
     KI_GL_CHECK("1.3");
     {
         m_materialBuffer.create();
-        m_materialBuffer.initEmpty(m_bufferSize * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
+        m_materialBuffer.initEmpty(m_entryCount * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
     }
     KI_GL_CHECK("1.4");
-    m_entries.reserve(m_bufferSize);
+    m_entries.reserve(m_entryCount);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
-        m_bufferSize, m_vbo));
+        m_entryCount, m_vbo));
 }
 
 void Batch::prepareVAO(
@@ -218,9 +218,9 @@ void Batch::prepareVAO(
 
 void Batch::update(size_t count) noexcept
 {
-    if (count > m_bufferSize) {
-        KI_WARN_SB("BATCH::CUT_OFF_BUFFER: count=" << count << " batchSize=" << m_bufferSize);
-        count = m_bufferSize;
+    if (count > m_entryCount) {
+        KI_WARN_SB("BATCH::CUT_OFF_BUFFER: count=" << count << " batchSize=" << m_entryCount);
+        count = m_entryCount;
     }
 
     // TODO KI Map COHERRENT + PERSISTENT
@@ -304,7 +304,7 @@ void Batch::draw(
 void Batch::flushIfNeeded(
     const RenderContext& ctx)
 {
-    if (m_entries.size() < m_bufferSize) return;
+    if (m_entries.size() < m_entryCount) return;
     flush(ctx, false);
 }
 

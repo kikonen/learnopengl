@@ -56,7 +56,7 @@ public:
 
     void prepare(
         const Assets& assets,
-        int bufferSize) noexcept;
+        int entryCount) noexcept;
 
     void prepareVAO(GLVertexArray& vao, bool singleMaterial);
 
@@ -92,7 +92,7 @@ public:
 private:
     bool m_prepared = false;
 
-    int m_bufferSize = -1;
+    int m_entryCount = 0;
 
     RenderContext* m_currentRenderContext{ nullptr };
     std::vector<BatchCommand> m_batches;
