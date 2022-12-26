@@ -15,11 +15,16 @@ namespace backend {
         m_entryCount = entryCount;
         m_rangeSize = entryCount * sizeof(backend::DrawIndirectCommand);
 
-        constexpr int flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-
         m_buffer.create();
-        m_buffer.initEmpty(RANGE_COUNT * m_rangeSize, flags);
-        m_mapped = (DrawIndirectCommand*)m_buffer.map(0, RANGE_COUNT * m_rangeSize, flags);
+
+        m_buffer.initEmpty(
+            RANGE_COUNT * m_rangeSize,
+            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
+
+        m_mapped = (DrawIndirectCommand*)m_buffer.map(
+            0,
+            RANGE_COUNT * m_rangeSize,
+            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
 
         for (int i = 0; i < RANGE_COUNT; i++) {
             m_ranges[i].m_offset = i * m_rangeSize;
@@ -42,14 +47,14 @@ namespace backend {
     {
         if (m_size == 0) return;
 
-        wait(m_index);
 
-        updateState(state, drawOptions.renderBack, drawOptions.wireframe);
         shader->bind(state);
         state.useVAO(*vao);
+        bindOptions(state, drawOptions);
 
         auto& range = m_ranges[m_index];
 
+        wait(m_index);
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
             glMultiDrawElementsIndirect(
                 drawOptions.mode,
@@ -66,7 +71,6 @@ namespace backend {
                 m_size,
                 sizeof(backend::DrawIndirectCommand));
         }
-
         lock(m_index);
 
         m_index = (m_index + 1) % RANGE_COUNT;
@@ -99,29 +103,39 @@ namespace backend {
         GLenum res = GL_UNSIGNALED;
         while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
         {
-            res = glClientWaitSync(range.m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 1);
+            res = glClientWaitSync(range.m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 100000);
             count++;
         }
         //std::cout << "waitcount: " << count << '\n';
     }
 
-    void DrawBuffer::updateState(
+    void DrawBuffer::bindOptions(
         GLState& state,
-        bool renderBack,
-        bool wireframe) const
+        const DrawOptions& drawOptions) const
     {
-        if (renderBack) {
+        if (drawOptions.renderBack) {
             state.disable(GL_CULL_FACE);
         }
         else {
             state.enable(GL_CULL_FACE);
         }
 
-        if (wireframe) {
+        if (drawOptions.wireframe) {
             state.polygonFrontAndBack(GL_LINE);
         }
         else {
             state.polygonFrontAndBack(GL_FILL);
+        }
+
+        if (drawOptions.blend) {
+            // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
+            //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+
+            state.enable(GL_BLEND);
+        }
+        else {
+            state.disable(GL_BLEND);
         }
     }
 }

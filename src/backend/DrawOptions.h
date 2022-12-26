@@ -20,6 +20,7 @@ namespace backend {
 
         bool renderBack = false;
         bool wireframe = false;
+        bool blend = false;
 
         // cont of indeces for indexed drawing
         // 0 for non indexed draw

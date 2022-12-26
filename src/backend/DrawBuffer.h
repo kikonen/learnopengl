@@ -40,10 +40,9 @@ namespace backend {
         void lock(int index);
         void wait(int index);
 
-        void updateState(
+        void bindOptions(
             GLState& state,
-            bool renderBack,
-            bool wireframe) const;
+            const DrawOptions& drawOptions) const;
 
     private:
         int m_entryCount = 0;

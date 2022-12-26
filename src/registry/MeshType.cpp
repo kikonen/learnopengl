@@ -89,6 +89,7 @@ void MeshType::prepare(
 
     m_drawOptions.renderBack = m_flags.renderBack;
     m_drawOptions.wireframe = m_flags.wireframe;
+    m_drawOptions.blend = m_flags.blend;
     m_drawOptions.materialOffset = m_materialVBO.m_offset;
     m_drawOptions.materialCount = 1;// m_materialVBO.m_entries.size();
 

@@ -73,8 +73,6 @@ void NodeRenderer::render(
     //clip.enabled = false;
     //ctx.bindClipPlanesUBO();
     //ctx.state.disable(GL_CLIP_DISTANCE0);
-
-    //KI_GL_UNBIND(glBindVertexArray(0));
 }
 
 void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
@@ -166,7 +164,6 @@ void NodeRenderer::drawNodes(
 // draw all selected nodes with stencil
 void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
 {
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
     ctx.m_batch.m_selection = true;
 
     auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
@@ -179,19 +176,10 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
                 shader = m_selectionShaderSprite;
             }
 
-            if (type.m_flags.blend) {
-                ctx.state.enable(GL_BLEND);
-            }
-
             for (auto& node : it.second) {
                 if (!node->m_selected) continue;
                 batch.draw(ctx, *node, shader);
             }
-
-            if (type.m_flags.blend) {
-                ctx.state.disable(GL_BLEND);
-            }
-
         }
     };
 
@@ -226,12 +214,6 @@ void NodeRenderer::drawBlended(
         }
     }
 
-    // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
-
-    ctx.state.enable(GL_BLEND);
-
     const glm::vec3& viewPos = ctx.m_camera.getPos();
 
     // TODO KI discards nodes if *same* distance
@@ -265,6 +247,4 @@ void NodeRenderer::drawBlended(
     if (batch) {
         batch->flush(ctx);
     }
-
-    ctx.state.disable(GL_BLEND);
 }

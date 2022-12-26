@@ -340,6 +340,8 @@ void Batch::drawInstanced(
     const backend::DrawOptions* boundDrawOptions{ nullptr };
     int  baseInstance = 0;
 
+    backend::DrawIndirectCommand indirect;
+
     for (auto& curr : m_batches) {
         if (ctx.assets.glDebug) {
             curr.m_shader->validateProgram();
@@ -367,22 +369,18 @@ void Batch::drawInstanced(
         const auto& drawOptions = *curr.m_drawOptions;
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
-            backend::DrawIndirectCommand indirect;
             backend::DrawElementsIndirectCommand& cmd = indirect.element;
 
             cmd.count = drawOptions.indexCount;
             cmd.instanceCount = curr.m_drawCount;
             cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
-            //cmd.firstIndex = 0;
-            //cmd.baseVertex = drawOptions.indexOffset;
             cmd.baseInstance = baseInstance;
 
             m_draw.send(indirect);
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
-            backend::DrawIndirectCommand indirect;
             backend::DrawArraysIndirectCommand& cmd = indirect.array;
 
             cmd.vertexCount = drawOptions.indexCount;
