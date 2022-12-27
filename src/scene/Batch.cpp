@@ -141,7 +141,7 @@ void Batch::prepare(
     }
     KI_GL_CHECK("1.2");
 
-    m_draw.prepare(m_entryCount);
+    m_draw.prepare(10, 20);
 
     KI_GL_CHECK("1.3");
     {
@@ -339,7 +339,7 @@ void Batch::drawInstanced(
 
         if (!sameDraw) {
             if (boundShader) {
-                m_draw.draw(ctx.state, boundShader, boundVAO, *boundDrawOptions);
+                m_draw.flush(ctx.state, boundShader, boundVAO, *boundDrawOptions);
             }
 
             boundShader = curr.m_shader;
@@ -362,7 +362,7 @@ void Batch::drawInstanced(
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
             cmd.baseInstance = baseInstance;
 
-            m_draw.send(indirect);
+            m_draw.send(indirect, ctx.state, boundShader, boundVAO, *boundDrawOptions);
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
@@ -373,7 +373,7 @@ void Batch::drawInstanced(
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseInstance = baseInstance;
 
-            m_draw.send(indirect);
+            m_draw.send(indirect, ctx.state, boundShader, boundVAO, *boundDrawOptions);
         }
         else {
             // NOTE KI "none" no drawing
@@ -384,7 +384,7 @@ void Batch::drawInstanced(
     }
 
     if (boundShader) {
-        m_draw.draw(ctx.state, boundShader, boundVAO, *boundDrawOptions);
+        m_draw.flush(ctx.state, boundShader, boundVAO, *boundDrawOptions);
     }
 
     m_batches.clear();

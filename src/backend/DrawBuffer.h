@@ -14,26 +14,29 @@
 class Shader;
 
 namespace backend {
-    constexpr int RANGE_COUNT = 3;
-
     class DrawBuffer {
     public:
         DrawBuffer();
 
-        void prepare(int entryCount);
+        void prepare(int entryCount, int rangeCount);
         void bind();
 
-        void send(backend::DrawIndirectCommand& cmd);
+        void send(
+            backend::DrawIndirectCommand& cmd,
+            GLState& state,
+            const Shader* shader,
+            const GLVertexArray* vao,
+            const DrawOptions& drawOptions);
 
-        void draw(
+        void flush(
             GLState& state,
             const Shader* shader,
             const GLVertexArray* vao,
             const DrawOptions& drawOptions);
 
     private:
-        void lock(GLBufferRange& range);
-        void wait(GLBufferRange& range);
+        void lock(int index);
+        void wait(int index);
 
         void bindOptions(
             GLState& state,
@@ -41,13 +44,14 @@ namespace backend {
 
     private:
         int m_entryCount = 0;
+        int m_rangeCount = 0;
         int m_rangeSize = 0;
 
         GLBuffer m_buffer;
         backend::DrawIndirectCommand* m_mapped;
         int m_count = 0;
 
-        int m_range = 0;
-        GLBufferRange m_ranges[RANGE_COUNT];
+        int m_index = 0;
+        std::vector<GLBufferRange> m_ranges;
     };
 }
