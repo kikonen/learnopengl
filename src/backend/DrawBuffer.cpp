@@ -8,28 +8,30 @@ namespace backend {
     {
     }
 
-    void DrawBuffer::prepare(int entryCount)
+    void DrawBuffer::prepare(int entryCount, int rangeCount)
     {
         KI_GL_CHECK("1.1");
 
         m_entryCount = entryCount;
+        m_rangeCount = rangeCount;
         m_rangeSize = entryCount * sizeof(backend::DrawIndirectCommand);
 
         m_buffer.create();
 
         m_buffer.initEmpty(
-            RANGE_COUNT * m_rangeSize,
-            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+            m_rangeCount * m_rangeSize,
+            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
 
         // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
         m_mapped = (DrawIndirectCommand*)m_buffer.mapRange(
             0,
-            RANGE_COUNT * m_rangeSize,
-            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_INVALIDATE_RANGE_BIT | GL_MAP_FLUSH_EXPLICIT_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
+            m_rangeCount * m_rangeSize,
+            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
 
-        for (int i = 0; i < RANGE_COUNT; i++) {
-            m_ranges[i].m_index = i * m_entryCount;
-            m_ranges[i].m_offset = i * m_rangeSize;
+        for (int i = 0; i < m_rangeCount ; i++) {
+            auto& range = m_ranges.emplace_back();
+            range.m_index = i * m_entryCount;
+            range.m_offset = i * m_rangeSize;
         }
 
         KI_GL_CHECK("1.2");
@@ -40,7 +42,7 @@ namespace backend {
         m_buffer.bindDrawIndirect();
     }
 
-    void DrawBuffer::draw(
+    void DrawBuffer::flush(
         GLState& state,
         const Shader* shader,
         const GLVertexArray* vao,
@@ -48,13 +50,14 @@ namespace backend {
     {
         if (m_count == 0) return;
 
+        // NOTE KI try to wait before changing shader
         //glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
 
         shader->bind(state);
         state.useVAO(*vao);
         bindOptions(state, drawOptions);
 
-        auto& range = m_ranges[m_range];
+        auto& range = m_ranges[m_index];
 
         m_buffer.flushRange(range.m_offset, m_count * sizeof(backend::DrawIndirectCommand));
 
@@ -75,23 +78,40 @@ namespace backend {
                 sizeof(backend::DrawIndirectCommand));
         }
 
-        lock(range);
+        lock(m_index);
 
-        m_range = (m_range + 1) % RANGE_COUNT;
+        m_index = (m_index + 1) % m_ranges.size();
         m_count = 0;
     }
 
-    void DrawBuffer::send(backend::DrawIndirectCommand& indirect)
+    void DrawBuffer::send(
+        backend::DrawIndirectCommand& indirect,
+        GLState& state,
+        const Shader* shader,
+        const GLVertexArray* vao,
+        const DrawOptions& drawOptions)
     {
-        auto& range = m_ranges[m_range];
-        wait(range);
+        auto& range = m_ranges[m_index];
+        wait(m_index);
+
+        if (range.m_sync) {
+            glDeleteSync(range.m_sync);
+            range.m_sync = 0;
+        }
 
         m_mapped[range.m_index + m_count] = indirect;
         m_count++;
+
+        if (m_count == m_rangeCount) {
+            flush(state, shader, vao, drawOptions);
+        }
     }
 
-    void DrawBuffer::lock(GLBufferRange& range)
+    void DrawBuffer::lock(int index)
     {
+        if (index != m_rangeCount - 1) return;
+        auto& range = m_ranges[0];
+
         if (range.m_sync) {
             glDeleteSync(range.m_sync);
         }
@@ -99,18 +119,22 @@ namespace backend {
     }
 
     // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
-    void DrawBuffer::wait(GLBufferRange& range)
+    void DrawBuffer::wait(int index)
     {
+        //std::cout << '.';
+        if (index != 0) return;
+        auto& range = m_ranges[0];
+
         if (!range.m_sync) return;
 
         int count = 0;
         GLenum res = GL_UNSIGNALED;
         while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
         {
-            res = glClientWaitSync(range.m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 100000);
+            res = glClientWaitSync(range.m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 10000000);
             count++;
         }
-        //std::cout << "waitcount: " << count << '\n';
+        //std::cout << '-' << count;
     }
 
     void DrawBuffer::bindOptions(

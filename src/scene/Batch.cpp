@@ -141,7 +141,7 @@ void Batch::prepare(
     }
     KI_GL_CHECK("1.2");
 
-    m_draw.prepare(10, 20);
+    m_draw.prepare(10, 200);
 
     KI_GL_CHECK("1.3");
     {
