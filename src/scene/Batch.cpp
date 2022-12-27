@@ -269,10 +269,11 @@ void Batch::draw(
     ctx.m_drawCount += 1;
 
     {
+        const bool useBlend = ctx.m_useBlend;
         bool needBind = true;
         if (!m_batches.empty()) {
             auto& top = m_batches.back();
-            needBind = !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions);
+            needBind = !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions, useBlend);
         }
 
         if (needBind) {
@@ -313,6 +314,7 @@ void Batch::flush(
 void Batch::drawInstanced(
     const RenderContext& ctx)
 {
+    const bool useBlend = ctx.m_useBlend;
     const Shader* boundShader{ nullptr };
     const GLVertexArray* boundVAO{ nullptr };
     const backend::DrawOptions* boundDrawOptions{ nullptr };
@@ -328,11 +330,11 @@ void Batch::drawInstanced(
         bool sameDraw = boundShader == curr.m_shader &&
             boundVAO == curr.m_vao &&
             boundDrawOptions &&
-            boundDrawOptions->isSameMultiDraw(*curr.m_drawOptions);
+            boundDrawOptions->isSameMultiDraw(*curr.m_drawOptions, useBlend);
 
         if (!sameDraw) {
             if (boundShader) {
-                m_draw.flush(ctx.state, boundShader, boundVAO, *boundDrawOptions);
+                m_draw.flush(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
             }
 
             boundShader = curr.m_shader;
@@ -355,7 +357,7 @@ void Batch::drawInstanced(
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
             cmd.baseInstance = baseInstance;
 
-            m_draw.send(indirect, ctx.state, boundShader, boundVAO, *boundDrawOptions);
+            m_draw.send(indirect, ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
@@ -366,7 +368,7 @@ void Batch::drawInstanced(
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseInstance = baseInstance;
 
-            m_draw.send(indirect, ctx.state, boundShader, boundVAO, *boundDrawOptions);
+            m_draw.send(indirect, ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
         }
         else {
             // NOTE KI "none" no drawing
@@ -377,7 +379,7 @@ void Batch::drawInstanced(
     }
 
     if (boundShader) {
-        m_draw.flush(ctx.state, boundShader, boundVAO, *boundDrawOptions);
+        m_draw.flush(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
     }
 
     m_batches.clear();

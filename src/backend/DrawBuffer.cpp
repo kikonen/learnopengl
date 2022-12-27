@@ -41,7 +41,8 @@ namespace backend {
         GLState& state,
         const Shader* shader,
         const GLVertexArray* vao,
-        const DrawOptions& drawOptions)
+        const DrawOptions& drawOptions,
+        const bool useBlend)
     {
         if (m_count == 0) return;
 
@@ -50,7 +51,7 @@ namespace backend {
 
         shader->bind(state);
         state.useVAO(*vao);
-        bindOptions(state, drawOptions);
+        bindOptions(state, drawOptions, useBlend);
 
         auto& range = m_ranges[m_index];
 
@@ -82,7 +83,8 @@ namespace backend {
         GLState& state,
         const Shader* shader,
         const GLVertexArray* vao,
-        const DrawOptions& drawOptions)
+        const DrawOptions& drawOptions,
+        const bool useBlend)
     {
         auto& range = m_ranges[m_index];
 
@@ -90,13 +92,14 @@ namespace backend {
         m_count++;
 
         if (m_count == m_entryCount) {
-            flush(state, shader, vao, drawOptions);
+            flush(state, shader, vao, drawOptions, useBlend);
         }
     }
 
     void DrawBuffer::bindOptions(
         GLState& state,
-        const DrawOptions& drawOptions) const
+        const DrawOptions& drawOptions,
+        const bool useBlend) const
     {
         if (drawOptions.renderBack) {
             state.disable(GL_CULL_FACE);
@@ -112,7 +115,7 @@ namespace backend {
             state.polygonFrontAndBack(GL_FILL);
         }
 
-        if (drawOptions.blend) {
+        if (drawOptions.blend && useBlend) {
             // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
              glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);

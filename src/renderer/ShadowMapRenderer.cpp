@@ -112,9 +112,11 @@ void ShadowMapRenderer::render(
 
         ctx.m_useFrustum = false;
         ctx.m_shadow = true;
+        ctx.m_useBlend = false;
         drawNodes(ctx);
         ctx.m_useFrustum = true;
         ctx.m_shadow = false;
+        ctx.m_useBlend = true;
 
         m_shadowBuffer->unbind(ctx);
     }

@@ -120,6 +120,7 @@ void ObjectIdRenderer::render(
     const RenderContext& ctx)
 {
     RenderContext idCtx("OBJECT_ID", &ctx, ctx.m_camera, m_idBuffer->m_spec.width, m_idBuffer->m_spec.height);
+    idCtx.m_useBlend = false;
 
     m_idBuffer->bind(idCtx);
 

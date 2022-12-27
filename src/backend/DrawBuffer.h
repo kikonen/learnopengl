@@ -26,18 +26,21 @@ namespace backend {
             GLState& state,
             const Shader* shader,
             const GLVertexArray* vao,
-            const DrawOptions& drawOptions);
+            const DrawOptions& drawOptions,
+            const bool useBlend);
 
         void flush(
             GLState& state,
             const Shader* shader,
             const GLVertexArray* vao,
-            const DrawOptions& drawOptions);
+            const DrawOptions& drawOptions,
+            const bool useBlend);
 
     private:
         void bindOptions(
             GLState& state,
-            const DrawOptions& drawOptions) const;
+            const DrawOptions& drawOptions,
+            const bool useBlend) const;
 
     private:
         int m_entryCount = 0;

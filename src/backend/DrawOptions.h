@@ -33,17 +33,17 @@ namespace backend {
         int materialOffset = 0;
         int materialCount = 0;
 
-        bool isSameDrawCommand(const DrawOptions& b) const {
-            return isSameMultiDraw(b) &&
+        bool isSameDrawCommand(const DrawOptions& b, bool useBlend) const {
+            return isSameMultiDraw(b, useBlend) &&
                 vertexOffset == b.vertexOffset &&
                 indexOffset == b.indexOffset &&
                 materialCount == b.materialCount;
         }
 
-        bool isSameMultiDraw(const DrawOptions& b) const {
+        bool isSameMultiDraw(const DrawOptions& b, bool useBlend) const {
             return renderBack == b.renderBack &&
                 wireframe == b.wireframe &&
-                blend == b.blend &&
+                (useBlend ? blend == b.blend : true) &&
                 mode == b.mode &&
                 type == b.type;
         }

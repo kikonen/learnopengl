@@ -121,6 +121,7 @@ public:
 
     mutable bool m_useWireframe = false;
     mutable bool m_useLight = true;
+    mutable bool m_useBlend = true;
 
 private:
     Scene* m_scene{ nullptr };
