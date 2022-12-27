@@ -100,7 +100,7 @@ namespace backend {
         m_entries[range.m_index + m_count] = indirect;
         m_count++;
 
-        if (m_count == m_rangeCount) {
+        if (m_count == m_entryCount) {
             flush(state, shader, vao, drawOptions);
         }
     }
