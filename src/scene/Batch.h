@@ -4,6 +4,7 @@
 
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
+#include "kigl/GLBufferRange.h"
 
 #include "backend/DrawElementsIndirectCommand.h"
 #include "backend/DrawIndirectCommand.h"
@@ -17,6 +18,8 @@ class RenderContext;
 class MeshType;
 class Node;
 class MaterialVBO;
+
+constexpr int RANGE_COUNT = 3;
 
 // NOTE KI use single shared UBO buffer for rendering
 // => less resources needed
@@ -100,6 +103,11 @@ private:
     std::vector<BatchEntry> m_entries;
 
     GLBuffer m_vbo;
+    BatchEntry* m_mapped;
+    int m_size = 0;
+
+    int m_range = 0;
+    GLBufferRange m_ranges[RANGE_COUNT];
 
     GLBuffer m_materialBuffer;
 
