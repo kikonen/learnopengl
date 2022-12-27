@@ -129,7 +129,6 @@ void Batch::prepare(
 
     m_entryCount = entryCount;
 
-    KI_GL_CHECK("1.1");
     {
         m_offset = 0;
 
@@ -139,16 +138,14 @@ void Batch::prepare(
         m_vbo.create();
         m_vbo.initEmpty(m_entryCount * sz, GL_DYNAMIC_STORAGE_BIT);
     }
-    KI_GL_CHECK("1.2");
 
     m_draw.prepare(10, 200);
 
-    KI_GL_CHECK("1.3");
     {
         m_materialBuffer.create();
         m_materialBuffer.initEmpty(m_entryCount * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
     }
-    KI_GL_CHECK("1.4");
+
     m_entries.reserve(m_entryCount);
 
     KI_DEBUG(fmt::format(
@@ -160,9 +157,7 @@ void Batch::prepareVAO(
     GLVertexArray& vao,
     bool singleMaterial)
 {
-    KI_GL_CHECK("1");
     glVertexArrayVertexBuffer(vao, VBO_BATCH_BINDING, m_vbo, m_offset, sizeof(BatchEntry));
-    KI_GL_CHECK("1.1");
 
     // model
     {
@@ -208,8 +203,6 @@ void Batch::prepareVAO(
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
         glVertexArrayBindingDivisor(vao, VBO_BATCH_BINDING, 1);
     }
-
-    KI_GL_CHECK("2");
 
     if (!singleMaterial) {
         // TODO KI prepare material vbo separately

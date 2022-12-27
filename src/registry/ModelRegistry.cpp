@@ -24,10 +24,8 @@ GLVertexArray* ModelRegistry::registerMeshVBO(ModelMeshVBO& meshVBO)
 
 void ModelRegistry::prepare(Batch& batch)
 {
-    KI_GL_CHECK("1.1");
     m_singleVAO.prepare(batch);
     m_multiVAO.prepare(batch);
-    KI_GL_CHECK("1.2");
 }
 
 ModelMesh* ModelRegistry::getMesh(

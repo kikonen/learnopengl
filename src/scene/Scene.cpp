@@ -56,15 +56,10 @@ void Scene::prepare(ShaderRegistry& shaders)
     m_commandEngine.prepare(assets);
     m_scriptEngine.prepare(assets, m_commandEngine);
 
-    KI_GL_CHECK("1.1");
     m_batch.prepare(assets, assets.batchSize);
-    KI_GL_CHECK("1.2");
     m_materialRegistry.prepare();
-    KI_GL_CHECK("1.3");
     m_modelRegistry.prepare(m_batch);
-    KI_GL_CHECK("1.4");
     m_registry.prepare(&m_batch, &m_materialRegistry, &m_modelRegistry);
-    KI_GL_CHECK("1.5");
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {

@@ -25,34 +25,27 @@ GLVertexArray* ModelVAO::prepare(Batch& batch)
     if (m_prepared) return m_vao.get();
     m_prepared = true;
 
-    KI_GL_CHECK("1");
     {
         m_vao = std::make_unique<GLVertexArray>();
         m_vao->create();
     }
-    KI_GL_CHECK("1.2");
-
     {
         m_vbo.create();
         m_vbo.initEmpty(MAX_VERTEX_ENTRIES * sizeof(VertexEntry), GL_DYNAMIC_STORAGE_BIT);
 
         m_vertexEntries.reserve(MAX_VERTEX_ENTRIES);
     }
-    KI_GL_CHECK("1.3");
-
     {
         m_ebo.create();
         m_ebo.initEmpty(MAX_INDEX_ENTRIES * sizeof(IndexEntry), GL_DYNAMIC_STORAGE_BIT);
 
         m_indexEntries.reserve(MAX_INDEX_ENTRIES);
     }
-    KI_GL_CHECK("1.4");
 
     // NOTE KI VBO & EBO are just empty buffers here
 
     prepareVAO(*m_vao, m_vbo, m_ebo);
     batch.prepareVAO(*m_vao, m_singleMaterial);
-    KI_GL_CHECK("2");
 }
 
 void ModelVAO::prepareVAO(
@@ -60,9 +53,7 @@ void ModelVAO::prepareVAO(
     GLBuffer& vbo,
     GLBuffer& ebo)
 {
-    KI_GL_CHECK("1");
     glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, vbo, 0, sizeof(VertexEntry));
-    KI_GL_CHECK("1.2");
     {
         glEnableVertexArrayAttrib(vao, ATTR_POS);
         glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
@@ -93,13 +84,9 @@ void ModelVAO::prepareVAO(
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
         glVertexArrayBindingDivisor(vao, VBO_VERTEX_BINDING, 0);
     }
-    KI_GL_CHECK("1.3");
-
     {
         glVertexArrayElementBuffer(vao, ebo);
     }
-
-    KI_GL_CHECK("2");
 }
 
 GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
