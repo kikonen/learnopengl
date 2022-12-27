@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "component/Camera.h"
+#include "controller/NodeController.h"
 #include "scene/Scene.h"
 #include "Engine.h"
 
@@ -135,9 +135,9 @@ void Window::processInput(const ki::RenderClock& clock)
         return;
     }
 
-    Camera* camera = m_engine.m_currentScene->getCamera();
-    if (camera) {
-        camera->onKey(m_input.get(), clock);
+    auto* controller = m_engine.m_currentScene->getCameraController();
+    if (controller) {
+        controller->onKey(m_input.get(), clock);
     }
 }
 
@@ -158,9 +158,9 @@ void Window::onMouseMove(double xpos, double ypos)
     if ((isAlt || state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-        Camera* camera = m_engine.m_currentScene->getCamera();
-        if (camera) {
-            camera->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+        auto* controller = m_engine.m_currentScene->getCameraController();
+        if (controller) {
+            controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
         }
     }
     else {
@@ -175,8 +175,8 @@ void Window::onMouseButton(int button, int action, int modifiers)
 
 void Window::onMouseWheel(double xoffset, double yoffset)
 {
-    Camera* camera = m_engine.m_currentScene->getCamera();
-    if (camera) {
-        camera->onMouseScroll(m_input.get(), xoffset, yoffset);
+    auto* controller = m_engine.m_currentScene->getCameraController();
+    if (controller) {
+        controller->onMouseScroll(m_input.get(), xoffset, yoffset);
     }
 }

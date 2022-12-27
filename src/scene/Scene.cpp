@@ -8,6 +8,8 @@
 
 #include "asset/UBO.h"
 
+#include "controller/NodeController.h"
+
 
 Scene::Scene(const Assets& assets)
     : assets(assets),
@@ -370,9 +372,16 @@ void Scene::drawScene(RenderContext& ctx)
     }
 }
 
-Camera* Scene::getCamera()
+Camera* Scene::getCamera() const
 {
     return !m_registry.m_cameraNodes.empty() ? m_registry.m_cameraNodes[0]->m_camera.get() : nullptr;
+}
+
+NodeController* Scene::getCameraController() const
+{
+    if (m_registry.m_cameraNodes.empty()) return nullptr;
+    auto& node = m_registry.m_cameraNodes[0];
+    return node->m_controller.get();
 }
 
 void Scene::bindComponents(Node& node)

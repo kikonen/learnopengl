@@ -145,6 +145,11 @@ void Camera::setZoom(float zoom) noexcept
     updateZoom(zoom);
 }
 
+void Camera::adjustZoom(float adjustment) noexcept
+{
+    updateZoom(m_zoom - adjustment);
+}
+
 void Camera::setPos(const glm::vec3& pos) noexcept
 {
     if (m_pos != pos) {
@@ -174,103 +179,6 @@ void Camera::setRotation(const glm::vec3& rotation) noexcept
 const glm::vec3 Camera::getRotation() noexcept
 {
     return glm::vec3(m_pitch, m_yaw, m_roll);
-}
-
-void Camera::onKey(Input* input, const ki::RenderClock& clock) noexcept
-{
-    float dt = clock.elapsedSecs;
-    float moveSize = m_moveStep;
-    float rotateSize = m_rotateStep;
-    if (input->isModifierDown(Modifier::SHIFT)) {
-        moveSize *= 2;
-        rotateSize *= 2;
-    }
-
-    if (input->isKeyDown(Key::FORWARD)) {
-        updateCamera();
-        m_pos += m_viewFront * dt * moveSize;
-        m_dirty = true;
-    }
-
-    if (input->isKeyDown(Key::BACKWARD)) {
-        updateCamera();
-        m_pos -= m_viewFront * dt * moveSize;
-        m_dirty = true;
-    }
-
-    if (input->isKeyDown(Key::LEFT)) {
-        updateCamera();
-        m_pos -= m_viewRight * dt * moveSize;
-        m_dirty = true;
-    }
-
-    if (input->isKeyDown(Key::RIGHT)) {
-        updateCamera();
-        m_pos += m_viewRight * dt * moveSize;
-        m_dirty = true;
-    }
-
-    if (input->isKeyDown(Key::UP)) {
-        updateCamera();
-        m_pos += m_viewUp * dt * moveSize;
-        m_dirty = true;
-    }
-
-    if (input->isKeyDown(Key::DOWN)) {
-        updateCamera();
-        m_pos -= m_viewUp * dt * moveSize;
-        m_dirty = true;
-    }
-
-    if (true) {
-        if (input->isKeyDown(Key::ROTATE_LEFT)) {
-            m_yaw += rotateSize * dt;
-            m_dirty = true;
-        }
-        if (input->isKeyDown(Key::ROTATE_RIGHT)) {
-            m_yaw -= rotateSize * dt;
-            m_dirty = true;
-        }
-    }
-
-    if (input->isKeyDown(Key::ZOOM_IN)) {
-        updateZoom(m_zoom - m_zoomStep * dt);
-    }
-    if (input->isKeyDown(Key::ZOOM_OUT)) {
-        updateZoom(m_zoom + m_zoomStep * dt);
-    }
-}
-
-void Camera::onMouseMove(Input* input, double xoffset, double yoffset) noexcept
-{
-    bool changed = false;
-    const float MAX_ANGLE = 89.f;
-
-    if (true) {
-        m_yaw -= m_mouseSensitivity * xoffset;
-        changed = true;
-    }
-
-    if (true) {
-        m_pitch += m_mouseSensitivity * yoffset;
-        changed = true;
-
-        if (m_pitch < -MAX_ANGLE) {
-            m_pitch = -MAX_ANGLE;
-        }
-        if (m_pitch > MAX_ANGLE) {
-            m_pitch = MAX_ANGLE;
-        }
-    }
-
-    if (changed) {
-        m_dirty = true;
-    }
-}
-
-void Camera::onMouseScroll(Input* input, double xoffset, double yoffset) noexcept
-{
-    updateZoom(m_zoom - yoffset);
 }
 
 void Camera::updateZoom(float zoom) noexcept

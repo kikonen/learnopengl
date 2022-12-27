@@ -6,7 +6,6 @@
 #include "asset/Frustum.h"
 
 #include "ki/GL.h"
-#include "gui/Input.h"
 
 struct CameraProjection {
 };
@@ -51,6 +50,7 @@ public:
 
     float getZoom() noexcept;
     void setZoom(float zoom) noexcept;
+    void adjustZoom(float adjustement) noexcept;
 
     void setPos(const glm::vec3& pos) noexcept;
     const glm::vec3& getPos() const noexcept;
@@ -58,23 +58,15 @@ public:
     void setRotation(const glm::vec3& rotation) noexcept;
     const glm::vec3 getRotation() noexcept;
 
-    void onKey(Input* input, const ki::RenderClock& clock) noexcept;
-    void onMouseMove(Input* input, double xoffset, double yoffset) noexcept;
-    void onMouseScroll(Input* input, double xoffset, double yoffset) noexcept;
+    void updateCamera() noexcept;
 
 private:
     void updateZoom(float aZoom) noexcept;
-    void updateCamera() noexcept;
     void updateFrustum() noexcept;
 
 private:
     float m_zoom = 45.0f;
     float m_zoomProjection = -1.0f;
-
-    float m_moveStep = 10.0f;
-    float m_rotateStep = 30.f;
-    float m_zoomStep = 20.0f;
-    float m_mouseSensitivity = 0.1f;
 
     glm::vec3 m_pos;
     glm::vec3 m_front;

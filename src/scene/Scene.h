@@ -36,6 +36,9 @@
 
 #include "TextureBuffer.h"
 
+class Camera;
+class NodeController;
+
 class Scene final
 {
 public:
@@ -59,7 +62,8 @@ public:
 
     void drawScene(RenderContext& ctx);
 
-    Camera* getCamera();
+    Camera* getCamera() const;
+    NodeController* getCameraController() const;
 
     void bindComponents(Node& node);
     int getObjectID(const RenderContext& ctx, double posx, double posy);
