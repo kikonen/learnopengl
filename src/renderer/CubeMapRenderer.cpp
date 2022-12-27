@@ -110,15 +110,16 @@ void CubeMapRenderer::render(
             m_curr->m_textureID,
             0);
 
-        if (mainCtx.assets.clearColor) {
-            if (mainCtx.assets.debugClearColor) {
-                auto color = DEBUG_COLOR[i];
-                glClearColor(color.r, color.g, color.b, color.a);
+        {
+            int mask = GL_DEPTH_BUFFER_BIT;
+            if (mainCtx.assets.clearColor) {
+                if (mainCtx.assets.debugClearColor) {
+                    auto color = DEBUG_COLOR[i];
+                    glClearColor(color.r, color.g, color.b, color.a);
+                }
+                mask |= GL_COLOR_BUFFER_BIT;
             }
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        }
-        else {
-            glClear(GL_DEPTH_BUFFER_BIT);
+            glClear(mask);
         }
 
         // centerNode->getVolume()->getRadius();

@@ -241,15 +241,16 @@ void Scene::draw(RenderContext& ctx)
 {
     // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
     // => Stencil is not supposed to exist here
-    if (assets.clearColor) {
-        if (assets.debugClearColor) {
-            //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClearColor(0.9f, 0.9f, 0.0f, 1.0f);
+    {
+        int mask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+        if (assets.clearColor) {
+            if (assets.debugClearColor) {
+                //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                glClearColor(0.9f, 0.9f, 0.0f, 1.0f);
+            }
+            mask |= GL_COLOR_BUFFER_BIT;
         }
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    }
-    else {
-        glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(mask);
     }
 
     glDepthFunc(GL_LEQUAL);
@@ -330,14 +331,15 @@ void Scene::drawViewports(RenderContext& ctx)
 void Scene::drawScene(RenderContext& ctx)
 {
     // NOTE KI clear for current draw buffer buffer (main/mirror/etc.)
-    if (assets.clearColor) {
-        if (assets.debugClearColor) {
-            glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+    {
+        int mask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+        if (assets.clearColor) {
+            if (assets.debugClearColor) {
+                glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+            }
+            mask |= GL_COLOR_BUFFER_BIT;
         }
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    }
-    else {
-        glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(mask);
     }
 
     m_materialRegistry.bind(ctx);

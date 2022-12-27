@@ -153,14 +153,15 @@ void MirrorMapRenderer::drawNodes(
     SkyboxRenderer* skybox,
     Node* current)
 {
-    if (ctx.assets.clearColor) {
-        if (ctx.assets.debugClearColor) {
-            glClearColor(0.9f, 0.0f, 0.9f, 1.0f);
+    {
+        int mask = GL_DEPTH_BUFFER_BIT;
+        if (ctx.assets.clearColor) {
+            if (ctx.assets.debugClearColor) {
+                glClearColor(0.9f, 0.0f, 0.9f, 1.0f);
+            }
+            mask |= GL_COLOR_BUFFER_BIT;
         }
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-    else {
-        glClear(GL_DEPTH_BUFFER_BIT);
+        glClear(mask);
     }
 
     ctx.bindClipPlanesUBO();
