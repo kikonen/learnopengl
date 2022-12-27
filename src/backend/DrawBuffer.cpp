@@ -51,6 +51,7 @@ namespace backend {
 
         // NOTE KI try to wait before changing shader
         //glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
+        KI_GL_CHECK("1.1");
 
         shader->bind(state);
         state.useVAO(*vao);
@@ -58,7 +59,9 @@ namespace backend {
 
         auto& range = m_ranges[m_index];
 
+        KI_GL_CHECK("1.1");
         m_buffer.update(range.m_offset, m_count * sizeof(backend::DrawIndirectCommand), &m_entries[range.m_index]);
+        KI_GL_CHECK("1.2");
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
             glMultiDrawElementsIndirect(
@@ -67,6 +70,7 @@ namespace backend {
                 (void*)range.m_offset,
                 m_count,
                 sizeof(backend::DrawIndirectCommand));
+            KI_GL_CHECK("1.2.1");
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
@@ -75,7 +79,10 @@ namespace backend {
                 (void*)range.m_offset,
                 m_count,
                 sizeof(backend::DrawIndirectCommand));
+            KI_GL_CHECK("1.2.2");
         }
+
+        KI_GL_CHECK("1.3");
 
         m_index = (m_index + 1) % m_ranges.size();
         m_count = 0;
