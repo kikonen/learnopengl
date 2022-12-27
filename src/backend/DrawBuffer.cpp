@@ -19,14 +19,13 @@ namespace backend {
         m_buffer.create();
 
         m_buffer.initEmpty(
-            m_rangeCount * m_rangeSize,
-            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
+            m_rangeCount * m_rangeSize, GL_DYNAMIC_STORAGE_BIT);
 
-        // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
-        m_mapped = (DrawIndirectCommand*)m_buffer.mapRange(
-            0,
-            m_rangeCount * m_rangeSize,
-            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+        m_entries.reserve(m_rangeCount * m_entryCount);
+
+        for (int i = 0; i < m_rangeCount * m_entryCount; i++) {
+            m_entries.emplace_back();
+        }
 
         for (int i = 0; i < m_rangeCount ; i++) {
             auto& range = m_ranges.emplace_back();
@@ -59,7 +58,7 @@ namespace backend {
 
         auto& range = m_ranges[m_index];
 
-        m_buffer.flushRange(range.m_offset, m_count * sizeof(backend::DrawIndirectCommand));
+        m_buffer.update(range.m_offset, m_count * sizeof(backend::DrawIndirectCommand), &m_entries[range.m_index]);
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
             glMultiDrawElementsIndirect(
@@ -78,8 +77,6 @@ namespace backend {
                 sizeof(backend::DrawIndirectCommand));
         }
 
-        lock(m_index);
-
         m_index = (m_index + 1) % m_ranges.size();
         m_count = 0;
     }
@@ -92,49 +89,13 @@ namespace backend {
         const DrawOptions& drawOptions)
     {
         auto& range = m_ranges[m_index];
-        wait(m_index);
 
-        if (range.m_sync) {
-            glDeleteSync(range.m_sync);
-            range.m_sync = 0;
-        }
-
-        m_mapped[range.m_index + m_count] = indirect;
+        m_entries[range.m_index + m_count] = indirect;
         m_count++;
 
         if (m_count == m_rangeCount) {
             flush(state, shader, vao, drawOptions);
         }
-    }
-
-    void DrawBuffer::lock(int index)
-    {
-        if (index != m_rangeCount - 1) return;
-        auto& range = m_ranges[0];
-
-        if (range.m_sync) {
-            glDeleteSync(range.m_sync);
-        }
-        range.m_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-    }
-
-    // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
-    void DrawBuffer::wait(int index)
-    {
-        //std::cout << '.';
-        if (index != 0) return;
-        auto& range = m_ranges[0];
-
-        if (!range.m_sync) return;
-
-        int count = 0;
-        GLenum res = GL_UNSIGNALED;
-        while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
-        {
-            res = glClientWaitSync(range.m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 10000000);
-            count++;
-        }
-        //std::cout << '-' << count;
     }
 
     void DrawBuffer::bindOptions(

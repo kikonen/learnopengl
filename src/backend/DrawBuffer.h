@@ -35,9 +35,6 @@ namespace backend {
             const DrawOptions& drawOptions);
 
     private:
-        void lock(int index);
-        void wait(int index);
-
         void bindOptions(
             GLState& state,
             const DrawOptions& drawOptions) const;
@@ -48,7 +45,7 @@ namespace backend {
         int m_rangeSize = 0;
 
         GLBuffer m_buffer;
-        backend::DrawIndirectCommand* m_mapped;
+        std::vector<backend::DrawIndirectCommand> m_entries;
         int m_count = 0;
 
         int m_index = 0;
