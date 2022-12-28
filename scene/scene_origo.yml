@@ -138,6 +138,18 @@ entities:
         rot: [0, 0, 0]
       - pos: [0.0, 0.0, -100.0]
         rot: [0, 180, 0]
+  - name: Big mirror 1
+    type: quad
+    material: mirror
+    shader: mirror
+    pos: [-40.0, 10.0, 10.0]
+    rotation: [0.0, 90.0, 0.0]
+    scale: 15.0
+    render_flags:
+      render_back: true
+      mirror: true
+    plane_normal: [0.0, 0.0, 1.0]
+    enabled: true
 materials:
   - name: skybox
     type: skybox
@@ -191,3 +203,17 @@ materials:
     illum: 2
     map_kd: wood.png
     reflection: 0.1
+  - name: mirror
+    type: model
+    ns: 225.000000
+    ka: [1.000000, 1.000000, 1.000000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: Marble White_VH.PNG
+    reflection: 0.9
+    refraction: 0.1
+    refraction_ratio: [1.0, 1.52]

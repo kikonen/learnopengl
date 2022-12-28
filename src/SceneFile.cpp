@@ -514,6 +514,7 @@ std::unique_ptr<Camera> SceneFile::createCamera(
     auto pos = entity.position + data.pos;
     auto camera = std::make_unique<Camera>(pos, data.front, data.up);
     camera->setRotation(data.rotation);
+    camera->setZoom(data.zoom);
 
     return camera;
 }
@@ -850,6 +851,8 @@ void SceneFile::loadRepeat(
 
 void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
 {
+    data.zoom = m_assets.cameraFov;
+
     for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;

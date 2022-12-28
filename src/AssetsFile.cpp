@@ -131,8 +131,14 @@ void AssetsFile::loadAssets(
         else if (k == "frustum_debug") {
             data.frustumDebug = v.as<bool>();
         }
+        else if (k == "camera_fov") {
+            data.cameraFov = v.as<float>();
+        }
         else if (k == "mirror_render_frequency") {
             data.mirrorRenderFrequency = v.as<float>();
+        }
+        else if (k == "mirror_fov") {
+            data.mirrorFov = v.as<float>();
         }
         else if (k == "water_tile_size") {
             data.waterTileSize = v.as<int>();

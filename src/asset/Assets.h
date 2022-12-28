@@ -66,8 +66,11 @@ public:
     bool frustumEnabled;
     bool frustumDebug;
 
+    float cameraFov;
+
     // NOTE KI mirror does not tolerate much skip
     float mirrorRenderFrequency;
+    float mirrorFov;
 
     int waterTileSize;
     // NOTE KI water tolerates less skip than shadow/cube

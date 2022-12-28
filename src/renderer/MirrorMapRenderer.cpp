@@ -110,7 +110,7 @@ void MirrorMapRenderer::render(
         const auto mirrorEyePos = planePos - (reflectFront * dist);
 
         //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
-        const float fovAngle = 90.f;
+        const float fovAngle = ctx.assets.mirrorFov;
 
         auto& camera = m_cameras[0];
         camera.setPos(mirrorEyePos);

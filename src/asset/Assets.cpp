@@ -51,8 +51,11 @@ Assets::Assets()
     frustumEnabled = true;
     frustumDebug = false;
 
+    cameraFov = 45.f;
+
     // NOTE KI mirror does not tolerate much skip
     mirrorRenderFrequency = 0.1f;
+    mirrorFov = 40.f;
 
     waterTileSize = 100;
     // NOTE KI water tolerates less skip than shadow/cube

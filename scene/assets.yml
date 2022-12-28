@@ -44,7 +44,10 @@ assets:
   frustum_enabled: false
   frustum_debug: true
 
+  camera_fov: 45
+
   mirror_render_frequency: 0.08
+  mirror_fov: 30
 
   water_tile_size: 100
   water_render_frequency: 0.05
