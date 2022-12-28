@@ -95,7 +95,7 @@ void Viewport::bind(const RenderContext& ctx)
 
     m_shader->effect.set((int)m_effect);
 
-    glBindVertexArray(m_vao);
+    ctx.state.bindVAO(m_vao);
 
     m_binder(*this);
 }

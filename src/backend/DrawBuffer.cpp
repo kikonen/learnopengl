@@ -50,7 +50,7 @@ namespace backend {
         //glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
 
         shader->bind(state);
-        state.useVAO(*vao);
+        state.bindVAO(*vao);
         bindOptions(state, drawOptions, useBlend);
 
         auto& range = m_ranges[m_index];
@@ -116,10 +116,7 @@ namespace backend {
         }
 
         if (drawOptions.blend && useBlend) {
-            // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
-            //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-             glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
-
+            state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             state.enable(GL_BLEND);
         }
         else {

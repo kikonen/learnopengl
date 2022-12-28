@@ -138,9 +138,7 @@ void SkyboxRenderer::render(const RenderContext& ctx)
     m_shader->projectionMatrix.set(ctx.m_matrices.projection);
 
     glDepthFunc(GL_LEQUAL);
-    glBindVertexArray(m_vao);
+    ctx.state.bindVAO(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthFunc(GL_LESS);
-
-    //KI_GL_UNBIND(glBindVertexArray(0));
 }

@@ -79,7 +79,7 @@ void GLState::useProgram(GLuint programId) noexcept
     }
 }
 
-void GLState::useVAO(GLuint vaoId) noexcept
+void GLState::bindVAO(GLuint vaoId) noexcept
 {
     if (m_vaoId != vaoId) {
         glBindVertexArray(vaoId);
@@ -111,5 +111,15 @@ void GLState::bindTexture(
         //KI_GL_CALL(glBindTextures(unitIndex, 1, &textureID));
         glBindTextureUnit(unitIndex, textureID);
         m_textureUnits[unitIndex] = textureID;
+    }
+}
+
+void GLState::setBlendMode(const GLBlendMode& mode)
+{
+    if (m_blendMode != mode)
+    {
+        // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
     }
 }

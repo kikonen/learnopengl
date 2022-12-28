@@ -6,6 +6,8 @@
 
 #include "ki/GL.h"
 
+#include "kigl/GLBlendMode.h"
+
 class GLState final
 {
 public:
@@ -24,7 +26,7 @@ public:
     void polygonFrontAndBack(GLenum mode) noexcept;
 
     void useProgram(GLuint programId) noexcept;
-    void useVAO(GLuint vaoId) noexcept;
+    void bindVAO(GLuint vaoId) noexcept;
 
     //void bindTextures(
     //    const GLuint unitIndexFirst,
@@ -34,6 +36,8 @@ public:
         const GLuint unitIndex,
         const GLuint textureID,
         bool force) noexcept;
+
+    void setBlendMode(const GLBlendMode& mode);
 
 private:
     std::set<GLenum> m_enabled;
@@ -47,5 +51,7 @@ private:
 
     int m_programId = -1;
     int m_vaoId = -1;
+
+    GLBlendMode m_blendMode{ 0, 0, 0, 0 };
 };
 
