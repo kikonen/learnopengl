@@ -308,7 +308,7 @@ entities:
     material: mirror
     shader: mirror
     pos: [55.0, 20.0, 10.0]
-    rotation: [0.0, 270.0, 0.0]
+    rotation: [0.0, 180.0, 0.0]
     scale: 15.0
     render_flags:
       render_back: true
