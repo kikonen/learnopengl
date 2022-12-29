@@ -70,13 +70,16 @@ const glm::mat4& Camera::getProjected() noexcept
 
 const glm::mat4& Camera::getView() noexcept
 {
-    if (!m_dirty) return m_viewMatrix;
-
     updateCamera();
+    if (!m_dirtyView) return m_viewMatrix;
+
     m_viewMatrix = glm::lookAt(
         m_pos,
         m_pos + m_viewFront,
         m_viewUp);
+    m_dirtyView = false;
+    m_viewLevel++;
+
     return m_viewMatrix;
 }
 
@@ -204,9 +207,9 @@ void Camera::updateCamera() noexcept
     m_viewUp = glm::normalize(glm::vec3(m_rotateMat * glm::vec4(m_up, 1.f)));
     m_viewRight = glm::normalize(glm::cross(m_viewFront, m_viewUp));
 
+    m_dirtyView = true;
     m_dirtyProjected = true;
     m_dirtyFrustum = true;
-    m_viewLevel++;
 }
 
 void Camera::updateFrustum() noexcept

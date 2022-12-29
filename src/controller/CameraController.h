@@ -25,7 +25,7 @@ private:
     void updateCamera();
 
 private:
-    Camera* m_camera;
+    Camera* m_camera{ nullptr };
 
     float m_moveStep = 10.0f;
     float m_rotateStep = 30.f;

@@ -102,6 +102,7 @@ private:
     //float m_roll = 0;
 
     bool m_dirty = true;
+    bool m_dirtyView = true;
     bool m_dirtyProjected = true;
     bool m_dirtyFrustum = true;
 };
