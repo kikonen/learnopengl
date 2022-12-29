@@ -165,20 +165,16 @@ const glm::vec3& Camera::getPos() const noexcept
 
 void Camera::setRotation(const glm::vec3& rotation) noexcept
 {
-    if (m_yaw != rotation.y ||
-        m_pitch != rotation.x ||
-        m_roll != rotation.z)
+    if (m_rotation != rotation)
     {
-        m_yaw = rotation.y;
-        m_pitch = rotation.x;
-        m_roll = rotation.z;
+        m_rotation = rotation;
         m_dirty = true;
     }
 }
 
-const glm::vec3 Camera::getRotation() noexcept
+const glm::vec3& Camera::getRotation() noexcept
 {
-    return glm::vec3(m_pitch, m_yaw, m_roll);
+    return m_rotation;
 }
 
 void Camera::updateZoom(float zoom) noexcept
@@ -201,7 +197,7 @@ void Camera::updateCamera() noexcept
     m_dirty = false;
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    m_rotateMat = glm::toMat4(glm::quat(glm::radians(glm::vec3(m_pitch, m_yaw, m_roll))));
+    m_rotateMat = glm::toMat4(glm::quat(glm::radians(m_rotation)));
 
     // NOTE KI glm::normalize for vec4 *IS* incorrect (4d len...)
     m_viewFront = glm::normalize(glm::vec3(m_rotateMat * glm::vec4(m_front, 1.f)));

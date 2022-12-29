@@ -96,6 +96,7 @@ RenderContext::RenderContext(
     if (parent) {
         m_useWireframe = m_parent->m_useWireframe;
         m_useLight = m_parent->m_useLight;
+        m_useBlend = m_parent->m_useBlend;
         m_useFrustum = m_parent->m_useFrustum;
     }
 

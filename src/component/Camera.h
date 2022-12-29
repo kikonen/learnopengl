@@ -56,7 +56,7 @@ public:
     const glm::vec3& getPos() const noexcept;
 
     void setRotation(const glm::vec3& rotation) noexcept;
-    const glm::vec3 getRotation() noexcept;
+    const glm::vec3& getRotation() noexcept;
 
     void updateCamera() noexcept;
 
@@ -93,9 +93,13 @@ private:
     glm::vec3 m_viewRight;
     glm::vec3 m_viewUp;
 
-    float m_yaw = 0;
-    float m_pitch = 0;
-    float m_roll = 0;
+    //m_yaw = rotation.y;
+    //m_pitch = rotation.x;
+    //m_roll = rotation.z;
+    glm::vec3 m_rotation{ 0.f };
+    //float m_yaw = 0;
+    //float m_pitch = 0;
+    //float m_roll = 0;
 
     bool m_dirty = true;
     bool m_dirtyProjected = true;
