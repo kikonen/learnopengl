@@ -129,7 +129,8 @@ void WaterMapRenderer::render(
 
         drawNodes(localCtx, skybox, closest, true);
 
-        m_reflectionBuffer->unbind(ctx);
+        //m_reflectionBuffer->unbind(ctx);
+
         ctx.bindClipPlanesUBO();
     }
 
@@ -158,7 +159,8 @@ void WaterMapRenderer::render(
 
         drawNodes(localCtx, skybox, closest, false);
 
-        m_refractionBuffer->unbind(ctx);
+        //m_refractionBuffer->unbind(ctx);
+
         ctx.bindClipPlanesUBO();
     }
 

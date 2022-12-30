@@ -270,13 +270,15 @@ void Batch::draw(
 
     {
         const bool useBlend = ctx.m_useBlend;
-        bool needBind = true;
+        bool change = true;
         if (!m_batches.empty()) {
             auto& top = m_batches.back();
-            needBind = !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions, useBlend);
+            change = shader != top.m_shader ||
+                type->m_vao != top.m_vao ||
+                !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions, useBlend);
         }
 
-        if (needBind) {
+        if (change) {
             addCommand(ctx, type, shader);
         }
 

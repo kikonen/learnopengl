@@ -148,6 +148,8 @@ entities:
     render_flags:
       render_back: true
       mirror: true
+      no_reflect: true
+      no_refract: true
     plane_normal: [0.0, 0.0, 1.0]
     enabled: true
 materials:

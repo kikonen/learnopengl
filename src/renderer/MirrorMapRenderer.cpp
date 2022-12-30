@@ -100,19 +100,21 @@ void MirrorMapRenderer::render(
     // https://stackoverflow.com/questions/48613493/reflecting-scene-by-plane-mirror-in-opengl
     // reflection map
     {
-        const auto mirrorSize = closest->getVolume()->getRadius() * 2;
-        const auto& eyePos = ctx.m_camera.getPos();
+        auto& mainCamera = ctx.m_camera;
+        const auto& mirrorSize = closest->getVolume()->getRadius() * 2;
+        const auto& eyePos = mainCamera.getPos();
         const auto& planeNormal = closest->getWorldPlaneNormal();
 
         const auto eyeV = planePos - eyePos;
         const auto dist = glm::length(eyeV);
-        const auto eyeN = glm::normalize(eyeV);
+        auto eyeN = glm::normalize(eyeV);
 
-        const auto dot = glm::dot(planeNormal, eyeN);
+        const auto dot = glm::dot(planeNormal, mainCamera.getViewFront());
         if (dot > 0) {
             // NOTE KI backside; ignore
             // => should not happen; finding closest already does this!
-            return;
+            //return;
+            eyeN = -eyeN;
         }
 
         const auto reflectFront = glm::reflect(eyeN, planeNormal);
@@ -146,7 +148,8 @@ void MirrorMapRenderer::render(
         bindTexture(localCtx);
         drawNodes(localCtx, skybox, closest);
 
-        m_curr->unbind(ctx);
+        //m_curr->unbind(ctx);
+
         ctx.bindClipPlanesUBO();
 
         m_debugViewport->setTextureID(m_curr->m_spec.attachments[0].textureID);
@@ -231,19 +234,22 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
             for (const auto& node : nodes) {
                 const auto& planeNormal = node->getWorldPlaneNormal();
 
-                const auto dot = glm::dot(planeNormal, -cameraFront);
+                const auto eyeV = node->getWorldPos() - cameraPos;
+                const auto dist = glm::length(eyeV);
+                auto eyeN = glm::normalize(eyeV);
+
+                const auto dot = glm::dot(planeNormal, -eyeN);
                 if (dot <= 0) {
                     // NOTE KI backside; ignore
                     continue;
                 }
 
-                const auto eyeV = node->getWorldPos() - cameraPos;
                 sorted[glm::length(eyeV)] = node;
             }
         }
     }
 
-    for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
+    for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
         return (Node*)it->second;
     }
     return nullptr;
