@@ -254,7 +254,7 @@ Node* WaterMapRenderer::findClosest(
         }
     }
 
-    for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
+    for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
         return it->second;
     }
 
