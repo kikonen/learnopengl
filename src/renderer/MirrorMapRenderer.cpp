@@ -38,14 +38,24 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
 
     m_renderFrequency = assets.mirrorRenderFrequency;
 
-    FrameBufferSpecification spec = {
-        assets.mirrorReflectionSize ,
-        assets.mirrorReflectionSize,
-        { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
-    };
+    // NOTE KI *CANNOT* share same buffer spec
+    {
+        FrameBufferSpecification spec = {
+            assets.mirrorReflectionSize ,
+            assets.mirrorReflectionSize,
+            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
+        };
+        m_prev = std::make_unique<TextureBuffer>(spec);
+    }
+    {
 
-    m_prev = std::make_unique<TextureBuffer>(spec);
-    m_curr = std::make_unique<TextureBuffer>(spec);
+        FrameBufferSpecification spec = {
+            assets.mirrorReflectionSize ,
+            assets.mirrorReflectionSize,
+            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
+        };
+        m_curr = std::make_unique<TextureBuffer>(spec);
+    }
 
     m_prev->prepare(true, DEBUG_COLOR[0]);
     m_curr->prepare(true, DEBUG_COLOR[1]);
@@ -53,7 +63,7 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     glm::vec3 origo(0);
     for (int i = 0; i < 1; i++) {
         auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[i], CAMERA_UP[i]);
-        camera.setZoom(90.0);
+        camera.setZoom(assets.mirrorFov);
     }
 
     m_debugViewport = std::make_shared<Viewport>(
@@ -61,10 +71,9 @@ void MirrorMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         glm::vec3(-1.0, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        m_prev->m_spec.attachments[0].textureID,
+        -1,
         shaders.getShader(assets, TEX_VIEWPORT));
 
-    m_debugViewport->prepare(assets);
     m_debugViewport->prepare(assets);
 }
 
@@ -99,8 +108,8 @@ void MirrorMapRenderer::render(
         const auto dist = glm::length(eyeV);
         const auto eyeN = glm::normalize(eyeV);
 
-        const auto dot = glm::dot(planeNormal, -eyeN);
-        if (dot < 0) {
+        const auto dot = glm::dot(planeNormal, eyeN);
+        if (dot > 0) {
             // NOTE KI backside; ignore
             // => should not happen; finding closest already does this!
             return;
@@ -110,14 +119,14 @@ void MirrorMapRenderer::render(
         const auto mirrorEyePos = planePos - (reflectFront * dist);
 
         //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
-        const float fovAngle = ctx.assets.mirrorFov;
+        //const float fovAngle = ctx.assets.mirrorFov;
 
         auto& camera = m_cameras[0];
         camera.setPos(mirrorEyePos);
         camera.setFront(reflectFront);
         camera.setUp(ctx.m_camera.getViewUp());
-        camera.setZoom(ctx.m_camera.getZoom());
-        camera.setZoom(fovAngle);
+        //camera.setZoom(ctx.m_camera.getZoom());
+        //camera.setZoom(fovAngle);
 
         RenderContext localCtx("MIRROR",
             &ctx, camera,
@@ -139,6 +148,8 @@ void MirrorMapRenderer::render(
 
         m_curr->unbind(ctx);
         ctx.bindClipPlanesUBO();
+
+        m_debugViewport->setTextureID(m_curr->m_spec.attachments[0].textureID);
     }
 
     m_prev.swap(m_curr);

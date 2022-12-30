@@ -46,11 +46,11 @@ assets:
 
   camera_fov: 45
 
-  mirror_render_frequency: 0.08
+  mirror_render_frequency: 0.04
   mirror_fov: 30
 
   water_tile_size: 100
-  water_render_frequency: 0.05
+  water_render_frequency: 0.04
 
   terrain_vertex_count: 64
   terrain_tile_size: 400

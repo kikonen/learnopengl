@@ -103,6 +103,8 @@ void GLState::bindTexture(
     const GLuint textureID,
     bool force) noexcept
 {
+    force = true;
+
     // NOTE KI logic failing when new texture generated, but its' ID does not change
     // (i.e. IDs are apparently reused after texture delete)
     // => caused viewport diappear after resising main viewport

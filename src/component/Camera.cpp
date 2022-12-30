@@ -103,6 +103,7 @@ const glm::vec3& Camera::getViewUp() noexcept
 
 const Frustum& Camera::getFrustum() noexcept
 {
+    updateCamera();
     if (m_dirtyFrustum) updateFrustum();
     return m_frustum;
 }
