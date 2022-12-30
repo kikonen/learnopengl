@@ -76,6 +76,8 @@ assets:
   water_refraction_size: 1000
 
   cube_map_size: 1000
+  cube_map_near_plane: 0.5
+  cube_map_far_plane: 200
   cube_map_render_frequency: 0.25
 
   viewport_effect: none

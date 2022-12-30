@@ -197,6 +197,12 @@ void AssetsFile::loadAssets(
         else if (k == "cube_map_size") {
             data.cubeMapSize = v.as<int>();
         }
+        else if (k == "cube_map_near_plane") {
+            data.cubeMapNearPlane = v.as<float>();
+        }
+        else if (k == "cube_map_far_plane") {
+            data.cubeMapFarPlane = v.as<float>();
+        }
         else if (k == "cube_map_render_frequency") {
             data.cubeMapRenderFrequency = v.as<float>();
         }

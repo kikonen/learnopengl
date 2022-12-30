@@ -86,10 +86,9 @@ Assets::Assets()
     waterRefractionSize = 1000;
 
     cubeMapSize = 1000;
-    cubeMapRenderFrequency = 0.2f;
-
     cubeMapNearPlane = 0.5;
     cubeMapFarPlane = 200;
+    cubeMapRenderFrequency = 0.2f;
 
     viewportEffect = ViewportEffect::none;
 
