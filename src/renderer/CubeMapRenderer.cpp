@@ -100,8 +100,6 @@ void CubeMapRenderer::render(
 
     m_curr->bind(mainCtx);
 
-    const glm::vec3& center = centerNode->getWorldPos();
-
     for (int i = 0; i < 6; i++) {
         glFramebufferTexture2D(
             GL_FRAMEBUFFER,
@@ -124,6 +122,7 @@ void CubeMapRenderer::render(
 
         // centerNode->getVolume()->getRadius();
 
+        const auto& center = centerNode->getWorldPos();
         auto& camera = m_cameras[i];
         camera.setPos(center);
 
