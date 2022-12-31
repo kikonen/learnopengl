@@ -59,8 +59,8 @@ void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
         m_shadowBuffer->m_spec.attachments[0].textureID,
         m_shadowDebugShader,
         [this, &assets](Viewport& vp) {
-            m_shadowDebugShader->nearPlane.set(m_nearPlane);
-            m_shadowDebugShader->farPlane.set(m_farPlane);
+            m_shadowDebugShader->u_nearPlane.set(m_nearPlane);
+            m_shadowDebugShader->u_farPlane.set(m_farPlane);
         });
 
     m_debugViewport->prepare(assets);

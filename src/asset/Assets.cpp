@@ -40,6 +40,7 @@ Assets::Assets()
 
     showSelectionWireframe = false;
     showVolume = false;
+    showHighlight = false;
 
     useLight = true;
 

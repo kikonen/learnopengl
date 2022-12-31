@@ -2,6 +2,11 @@
 
 #include "SkyboxRenderer.h"
 
+namespace
+{
+    glm::vec4 HIGHLIGHT_COLOR{ 0.0, 0.0, 0.8, 1.0 };
+    glm::vec4 SELECTION_COLOR{ 0.8, 0.0, 0.0, 1.0 };
+}
 
 NodeRenderer::NodeRenderer()
 {
@@ -31,6 +36,7 @@ void NodeRenderer::render(
     const RenderContext& ctx,
     SkyboxRenderer* skybox)
 {
+    m_highlightedCount = ctx.registry.countHighlighted();
     m_selectedCount = ctx.registry.countSelected();
 
     //ctx.state.enable(GL_CLIP_DISTANCE0);
@@ -77,7 +83,7 @@ void NodeRenderer::render(
 
 void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
 {
-    if (m_selectedCount == 0) return;
+    if (m_highlightedCount == 0 && m_selectedCount == 0) return;
 
     ctx.state.enable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -90,7 +96,7 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
 
 void NodeRenderer::renderSelection(const RenderContext& ctx)
 {
-    if (m_selectedCount == 0) return;
+    if (m_highlightedCount == 0 && m_selectedCount == 0) return;
 
     ctx.state.enable(GL_STENCIL_TEST);
     ctx.state.disable(GL_DEPTH_TEST);
@@ -130,7 +136,14 @@ void NodeRenderer::drawNodes(
             auto& batch = ctx.m_batch;
 
             for (auto& node : it.second) {
-                if (selection ? !node->m_selected : node->m_selected) continue;
+                bool tagged = node->m_highlighted || node->m_selected;
+
+                if (selection) {
+                    if (!tagged) continue;
+                }
+                else {
+                    if (tagged) continue;
+                }
 
                 batch.draw(ctx, *node, shader);
             }
@@ -164,7 +177,7 @@ void NodeRenderer::drawNodes(
 // draw all selected nodes with stencil
 void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
 {
-    ctx.m_batch.m_selection = true;
+    ctx.m_batch.m_highlight = true;
 
     auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
@@ -177,7 +190,15 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
             }
 
             for (auto& node : it.second) {
-                if (!node->m_selected) continue;
+                if (!(node->m_highlighted || node->m_selected)) continue;
+
+                if (node->m_highlighted) {
+                    shader->u_highlightColor.set(HIGHLIGHT_COLOR);
+                }
+                else {
+                    shader->u_highlightColor.set(SELECTION_COLOR);
+                }
+
                 batch.draw(ctx, *node, shader);
             }
         }
@@ -196,7 +217,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
     }
 
     ctx.m_batch.flush(ctx);
-    ctx.m_batch.m_selection = false;
+    ctx.m_batch.m_highlight = false;
 }
 
 void NodeRenderer::drawBlended(

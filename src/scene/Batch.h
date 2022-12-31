@@ -90,7 +90,7 @@ public:
 
     bool m_dirty = false;
     bool m_useObjectIDBuffer = false;
-    bool m_selection = false;
+    bool m_highlight = false;
 
 private:
     bool m_prepared = false;

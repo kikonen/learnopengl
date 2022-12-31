@@ -26,8 +26,8 @@ namespace {
     }
 
     const glm::mat4 BASE_MAT_1 = glm::mat4(1.0f);
-    const glm::vec3 SCALE{ 1.02f };
-    const glm::mat4 SELECTION_MAT = glm::scale(BASE_MAT_1, SCALE);
+    const glm::vec3 HIGHLIGHT_SCALE{ 1.02f };
+    const glm::mat4 HIGHLIGHT_MAT = glm::scale(BASE_MAT_1, HIGHLIGHT_SCALE);
 
     // scene_full = 91 109
     constexpr int MAX_MATERIAL_ENTRIES = 100000;
@@ -43,12 +43,12 @@ void Batch::add(
     const glm::mat4& model,
     const glm::mat3& normal,
     int objectID,
-    bool selected) noexcept
+    bool highlight) noexcept
 {
     BatchEntry entry;
 
-    if (selected && m_selection) {
-        entry.modelMatrix = model * SELECTION_MAT;
+    if (highlight && m_highlight) {
+        entry.modelMatrix = model * HIGHLIGHT_MAT;
         entry.normalMatrix = normal;
     } else {
         entry.modelMatrix = model;

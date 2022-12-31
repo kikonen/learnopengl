@@ -187,6 +187,19 @@ void NodeRegistry::attachNodes()
     bindPendingChildren();
 }
 
+int NodeRegistry::countHighlighted() const noexcept
+{
+    int count = 0;
+    for (const auto& all : allNodes) {
+        for (const auto& x : all.second) {
+            for (auto& node : x.second) {
+                if (node->m_highlighted) count++;
+            }
+        }
+    }
+    return count;
+}
+
 int NodeRegistry::countSelected() const noexcept
 {
     int count = 0;

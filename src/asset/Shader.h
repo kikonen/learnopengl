@@ -381,30 +381,32 @@ public:
 
     int m_programId = -1;
 
-    Shader::Mat4 projectionMatrix{ "u_projectionMatrix" };
-    Shader::Mat4 viewMatrix{ "u_viewMatrix" };
-    //Shader::Mat4 modelMatrix{ "u_modelMatrix" };
-    //Shader::Mat3 normalMatrix{ "u_normalMatrix" };
+    Shader::Mat4 u_projectionMatrix{ "u_projectionMatrix" };
+    Shader::Mat4 u_viewMatrix{ "u_viewMatrix" };
+    //Shader::Mat4 u_modelMatrix{ "u_modelMatrix" };
+    //Shader::Mat3 u_normalMatrix{ "u_normalMatrix" };
 
-    //Shader::Int noiseTex{ "u_noiseTex" };
-    //Shader::Int reflectionTex{ "u_reflectionTex" };
-    //Shader::Int refractionTex{ "u_refractionTex" };
+    //Shader::Int u_noiseTex{ "u_noiseTex" };
+    //Shader::Int u_reflectionTex{ "u_reflectionTex" };
+    //Shader::Int u_refractionTex{ "u_refractionTex" };
 
-    //Shader::Int cubeMap{ "u_cubeMap" };
+    //Shader::Int u_cubeMap{ "u_cubeMap" };
 
-    //Shader::Int shadowMap{ "u_shadowMap" };
-    //Shader::Int normalMap{ "u_normalMap" };
+    //Shader::Int u_shadowMap{ "u_shadowMap" };
+    //Shader::Int u_normalMap{ "u_normalMap" };
 
-    Shader::Subroutine effect{ "u_effect", GL_FRAGMENT_SHADER };
+    Shader::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER };
 
-    Shader::Float nearPlane{ "u_nearPlane" };
-    Shader::Float farPlane{ "u_farPlane" };
+    Shader::Vec4 u_highlightColor{ "u_highlightColor" };
 
-    //Shader::Int skybox{ "u_skybox" };
+    Shader::Float u_nearPlane{ "u_nearPlane" };
+    Shader::Float u_farPlane{ "u_farPlane" };
 
-    //Shader::Int viewportTex{ "u_viewportTex" };
+    //Shader::Int u_skybox{ "u_skybox" };
 
-    //std::vector<Shader::Int> textures;
+    //Shader::Int u_viewportTex{ "u_viewportTex" };
+
+    //std::vector<Shader::Int> u_textures;
 
 private:
     int m_prepareResult = -1;

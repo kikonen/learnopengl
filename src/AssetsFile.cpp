@@ -113,6 +113,9 @@ void AssetsFile::loadAssets(
         else if (k == "show_volume") {
             data.showVolume = v.as<bool>();
         }
+        else if (k == "show_highlight") {
+            data.showHighlight = v.as<bool>();
+        }
         else if (k == "rasterizer_discard") {
             data.rasterizerDiscard = v.as<bool>();
         }

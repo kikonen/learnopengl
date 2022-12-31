@@ -56,6 +56,7 @@ public:
 
     bool showSelectionWireframe;
     bool showVolume;
+    bool showHighlight;
 
     bool rasterizerDiscard;
 

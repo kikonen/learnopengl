@@ -273,30 +273,32 @@ int Shader::initProgram() {
     setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
 #endif
 
-    projectionMatrix.init(this);
-    viewMatrix.init(this);
-    //modelMatrix.init(this);
-    //normalMatrix.init(this);
+    u_projectionMatrix.init(this);
+    u_viewMatrix.init(this);
+    //u_modelMatrix.init(this);
+    //u_normalMatrix.init(this);
 
-    //noiseTex.init(this);
-    //reflectionTex.init(this);
-    //refractionTex.init(this);
+    //u_noiseTex.init(this);
+    //u_reflectionTex.init(this);
+    //vrefractionTex.init(this);
 
-    //cubeMap.init(this);
+    //u_cubeMap.init(this);
 
-    //shadowMap.init(this);
-    //normalMap.init(this);
+    //u_shadowMap.init(this);
+    //u_normalMap.init(this);
 
-    //drawInstanced.init(*this);
+    //u_drawInstanced.init(*this);
 
-    effect.init(this);
+    u_effect.init(this);
 
-    nearPlane.init(this);
-    farPlane.init(this);
+    u_highlightColor.init(this);
 
-    //skybox.init(this);
+    u_nearPlane.init(this);
+    u_farPlane.init(this);
 
-    //viewportTex.init(this);
+    //u_skybox.init(this);
+
+    //u_viewportTex.init(this);
 
     m_sources.clear();
 

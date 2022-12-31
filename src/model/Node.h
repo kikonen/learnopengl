@@ -94,6 +94,7 @@ public:
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };
 
+    bool m_highlighted = false;
     bool m_selected = false;
     bool m_allowNormals = true;
 

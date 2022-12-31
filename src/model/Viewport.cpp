@@ -93,7 +93,7 @@ void Viewport::bind(const RenderContext& ctx)
     //m_shader->viewportTex.set(UNIT_VIEWPORT);
     ctx.state.bindTexture(UNIT_VIEWPORT, m_textureID, true);
 
-    m_shader->effect.set((int)m_effect);
+    m_shader->u_effect.set((int)m_effect);
 
     ctx.state.bindVAO(m_vao);
 
