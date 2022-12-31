@@ -47,4 +47,6 @@ private:
     std::unique_ptr<TextureBuffer> m_refractionBuffer{ nullptr };
 
     unsigned int m_noiseTextureID{ 0 };
+
+    Material m_tagMaterial;
 };
