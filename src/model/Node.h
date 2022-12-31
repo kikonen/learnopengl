@@ -65,6 +65,14 @@ public:
 
     OBB& getOBB();
 
+    // @return -1 if no highlight color
+    int getHighlightColor() const;
+
+    bool isHighlighted() { return m_tagMaterialIndex > -1 || m_selectionMaterialIndex > -1; }
+
+    bool isSelected() { return m_selectionMaterialIndex > -1; }
+    bool isTagged() { return m_tagMaterialIndex > -1; }
+
     static int nextID() noexcept;
 
 public:
@@ -94,8 +102,8 @@ public:
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };
 
-    bool m_highlighted = false;
-    bool m_selected = false;
+    int m_tagMaterialIndex = -1;
+    int m_selectionMaterialIndex = -1;
     bool m_allowNormals = true;
 
     std::unique_ptr <NodeController> m_controller{ nullptr };

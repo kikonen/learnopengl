@@ -9,8 +9,6 @@
 #include uniform_textures.glsl
 #endif
 
-uniform vec4 u_highlightColor;
-
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
@@ -21,8 +19,12 @@ layout(early_fragment_tests) in;
 in VS_OUT {
   vec2 texCoord;
   flat uint materialIndex;
+  flat uint highlightIndex;
 } fs_in;
-
+#else
+in VS_OUT {
+  flat uint highlightIndex;
+} fs_in;
 #endif
 
 layout (location = 0) out vec4 fragColor;
@@ -41,5 +43,7 @@ void main() {
     discard;
 #endif
 
-  fragColor = u_highlightColor;
+  Material highlightMaterial = u_materials[fs_in.highlightIndex];
+
+  fragColor = highlightMaterial.diffuse;
 }

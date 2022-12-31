@@ -37,19 +37,21 @@ public:
     Batch(const Batch&) = delete;
     Batch& operator=(const Batch&) = delete;
 
+    // @param highlightIndex -1 for no highlight
     void add(
         const RenderContext& ctx,
         const glm::mat4& model,
         const glm::mat3& normal,
         int objectID,
-        bool selected) noexcept;
+        int highlightIndex) noexcept;
 
+    // @param highlightIndex -1 for no highlight
     void addAll(
         const RenderContext& ctx,
         const std::vector<glm::mat4>& modelMatrices,
         const std::vector<glm::mat3>& normalMatrices,
         const std::vector<int>& objectIDs,
-        bool selected);
+        int highlightIndex);
 
     void reserve(size_t count) noexcept;
     int size() noexcept;

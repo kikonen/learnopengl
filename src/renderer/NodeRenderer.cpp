@@ -2,22 +2,25 @@
 
 #include "SkyboxRenderer.h"
 
+#include "registry/MaterialRegistry.h"
+
 namespace
 {
-    glm::vec4 HIGHLIGHT_COLOR{ 0.0, 0.0, 0.8, 1.0 };
-    glm::vec4 SELECTION_COLOR{ 0.8, 0.0, 0.0, 1.0 };
 }
 
 NodeRenderer::NodeRenderer()
 {
 }
 
-void NodeRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
+void NodeRenderer::prepare(
+    const Assets& assets,
+    ShaderRegistry& shaders,
+    MaterialRegistry& materialRegistry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders);
+    Renderer::prepare(assets, shaders, materialRegistry);
 
     m_selectionShader = shaders.getShader(assets, TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
     m_selectionShader->m_selection = true;
@@ -136,13 +139,13 @@ void NodeRenderer::drawNodes(
             auto& batch = ctx.m_batch;
 
             for (auto& node : it.second) {
-                bool tagged = node->m_highlighted || node->m_selected;
+                bool highlight = node->isHighlighted();
 
                 if (selection) {
-                    if (!tagged) continue;
+                    if (!highlight) continue;
                 }
                 else {
-                    if (tagged) continue;
+                    if (highlight) continue;
                 }
 
                 batch.draw(ctx, *node, shader);
@@ -190,14 +193,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
             }
 
             for (auto& node : it.second) {
-                if (!(node->m_highlighted || node->m_selected)) continue;
-
-                if (node->m_highlighted) {
-                    shader->u_highlightColor.set(HIGHLIGHT_COLOR);
-                }
-                else {
-                    shader->u_highlightColor.set(SELECTION_COLOR);
-                }
+                if (!(node->isHighlighted())) continue;
 
                 batch.draw(ctx, *node, shader);
             }

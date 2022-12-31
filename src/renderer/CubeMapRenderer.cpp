@@ -48,7 +48,10 @@ CubeMapRenderer::~CubeMapRenderer()
 {
 }
 
-void CubeMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
+void CubeMapRenderer::prepare(
+    const Assets& assets,
+    ShaderRegistry& shaders,
+    MaterialRegistry& materialRegistry)
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -58,7 +61,7 @@ void CubeMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
     m_nearPlane = assets.cubeMapNearPlane;
     m_farPlane = assets.cubeMapFarPlane;
 
-    Renderer::prepare(assets, shaders);
+    Renderer::prepare(assets, shaders, materialRegistry);
 
     m_curr = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
     m_curr->prepare(false, { 0, 0, 1, 1.0 });

@@ -291,8 +291,6 @@ int Shader::initProgram() {
 
     u_effect.init(this);
 
-    u_highlightColor.init(this);
-
     u_nearPlane.init(this);
     u_farPlane.init(this);
 

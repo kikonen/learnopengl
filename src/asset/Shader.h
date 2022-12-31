@@ -71,6 +71,7 @@ constexpr int ATTR_INSTANCE_NORMAL_MATRIX_2 = 11;
 constexpr int ATTR_INSTANCE_NORMAL_MATRIX_3 = 12;
 
 constexpr int ATTR_INSTANCE_OBJECT_ID = 13;
+constexpr int ATTR_INSTANCE_HIGHLIGHT_INDEX = 14;
 constexpr int ATTR_INSTANCE_MATERIAL_INDEX = 4;
 
 const std::string GEOM_NONE{ "" };
@@ -396,8 +397,6 @@ public:
     //Shader::Int u_normalMap{ "u_normalMap" };
 
     Shader::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER };
-
-    Shader::Vec4 u_highlightColor{ "u_highlightColor" };
 
     Shader::Float u_nearPlane{ "u_nearPlane" };
     Shader::Float u_farPlane{ "u_farPlane" };

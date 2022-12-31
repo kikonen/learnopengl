@@ -16,7 +16,10 @@ public:
         const std::string& materialName);
     virtual ~SkyboxRenderer();
 
-    virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
+    virtual void prepare(
+        const Assets& assets,
+        ShaderRegistry& shaders,
+        MaterialRegistry& materialRegistry) override;
 
     void assign(Shader* shader);
     void bindTexture(const RenderContext& ctx);

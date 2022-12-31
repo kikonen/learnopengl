@@ -4,12 +4,15 @@ ViewportRenderer::ViewportRenderer()
 {
 }
 
-void ViewportRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
+void ViewportRenderer::prepare(
+    const Assets& assets,
+    ShaderRegistry& shaders,
+    MaterialRegistry& materialRegistry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders);
+    Renderer::prepare(assets, shaders, materialRegistry);
 }
 
 void ViewportRenderer::update(const RenderContext& ctx)

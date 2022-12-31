@@ -36,6 +36,7 @@
 #define ATTR_INSTANCE_NORMAL_MATRIX_3 12
 
 #define ATTR_INSTANCE_OBJECT_ID 13
+#define ATTR_INSTANCE_HIGHLIGHT_INDEX 14
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 // => defined by c++ side (more optimal)

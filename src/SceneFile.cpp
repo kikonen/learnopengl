@@ -91,7 +91,7 @@ void SceneFile::attachSkybox(
     if (!data.valid()) return;
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
-    skybox->prepare(m_assets, m_asyncLoader->m_shaders);
+    skybox->prepare(m_assets, m_asyncLoader->m_shaders, scene->m_materialRegistry);
     scene->m_skyboxRenderer = std::move(skybox);
 }
 
@@ -197,6 +197,9 @@ MeshType* SceneFile::attachEntityClone(
             for (auto x = 0; x < repeat.xCount; x++) {
                 const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
                 auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, entity.isRoot, cloned);
+                if (data.selected) {
+                    node->m_selectionMaterialIndex = scene->m_registry.m_selectionMaterial.m_registeredIndex;
+                }
                 scene->m_registry.addNode(type, node);
             }
         }
@@ -374,8 +377,6 @@ Node* SceneFile::createNode(
         node->setVolume(volume->clone());
         node->setAABB(mesh->getAABB());
     }
-
-    node->m_selected = data.selected;
 
     if (data.camera.enabled) {
         node->m_camera = createCamera(data, data.camera);

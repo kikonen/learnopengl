@@ -13,7 +13,10 @@ public:
     ShadowMapRenderer();
     virtual ~ShadowMapRenderer();
 
-    virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
+    virtual void prepare(
+        const Assets& assets,
+        ShaderRegistry& shaders,
+        MaterialRegistry& materialRegistry) override;
 
     void bindTexture(const RenderContext& ctx);
 

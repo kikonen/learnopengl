@@ -81,7 +81,7 @@ void Node::update(
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
-    batch.add(ctx, m_modelMatrix, m_normalMatrix, m_objectID, m_highlighted || m_selected);
+    batch.add(ctx, m_modelMatrix, m_normalMatrix, m_objectID, getHighlightColor());
 }
 
 void Node::updateModelMatrix(Node* parent) noexcept
@@ -247,6 +247,13 @@ const AABB& Node::getAABB() const
 OBB& Node::getOBB()
 {
     return m_obb;
+}
+
+int Node::getHighlightColor() const
+{
+    if (m_tagMaterialIndex > -1) return m_tagMaterialIndex;
+    if (m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
+    return -1;
 }
 
 int Node::lua_getId() const noexcept

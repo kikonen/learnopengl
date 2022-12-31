@@ -15,11 +15,13 @@ layout(max_vertices = 4) out;
 in VS_OUT {
   vec3 scale;
   flat uint materialIndex;
+  flat uint highlightIndex;
 } gs_in[];
 
 out GS_OUT {
   vec2 texCoord;
   flat uint materialIndex;
+  flat uint highlightIndex;
 } gs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -35,6 +37,7 @@ precision mediump float;
 void fillVertex(const int i)
 {
   gs_out.materialIndex = gs_in[i].materialIndex;
+  gs_out.highlightIndex = gs_in[i].highlightIndex;
 }
 
 void generateQuad(const int index)

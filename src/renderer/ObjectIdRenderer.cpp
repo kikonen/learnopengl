@@ -69,12 +69,15 @@ int ObjectIdRenderer::getObjectId(
     return objectID;
 }
 
-void ObjectIdRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
+void ObjectIdRenderer::prepare(
+    const Assets& assets,
+    ShaderRegistry& shaders,
+    MaterialRegistry& materialRegistry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders);
+    Renderer::prepare(assets, shaders, materialRegistry);
 
     m_idShader = shaders.getShader(assets, TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idShader->prepare(assets);

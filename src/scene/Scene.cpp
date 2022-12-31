@@ -63,34 +63,34 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {
-        m_nodeRenderer->prepare(assets, shaders);
+        m_nodeRenderer->prepare(assets, shaders, m_materialRegistry);
     }
     //terrainRenderer->prepare(shaders);
 
     if (m_viewportRenderer) {
-        m_viewportRenderer->prepare(assets, shaders);
+        m_viewportRenderer->prepare(assets, shaders, m_materialRegistry);
     }
 
     if (m_waterMapRenderer) {
-        m_waterMapRenderer->prepare(assets, shaders);
+        m_waterMapRenderer->prepare(assets, shaders, m_materialRegistry);
     }
     if (m_mirrorMapRenderer) {
-        m_mirrorMapRenderer->prepare(assets, shaders);
+        m_mirrorMapRenderer->prepare(assets, shaders, m_materialRegistry);
     }
     if (m_cubeMapRenderer) {
-        m_cubeMapRenderer->prepare(assets, shaders);
+        m_cubeMapRenderer->prepare(assets, shaders, m_materialRegistry);
     }
     if (m_shadowMapRenderer) {
-        m_shadowMapRenderer->prepare(assets, shaders);
+        m_shadowMapRenderer->prepare(assets, shaders, m_materialRegistry);
     }
 
     if (m_objectIdRenderer) {
-        m_objectIdRenderer->prepare(assets, shaders);
+        m_objectIdRenderer->prepare(assets, shaders, m_materialRegistry);
     }
 
     if (assets.showNormals) {
         if (m_normalRenderer) {
-            m_normalRenderer->prepare(assets, shaders);
+            m_normalRenderer->prepare(assets, shaders, m_materialRegistry);
         }
     }
 

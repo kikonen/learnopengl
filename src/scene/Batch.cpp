@@ -43,11 +43,11 @@ void Batch::add(
     const glm::mat4& model,
     const glm::mat3& normal,
     int objectID,
-    bool highlight) noexcept
+    int highlightIndex) noexcept
 {
     BatchEntry entry;
 
-    if (highlight && m_highlight) {
+    if (highlightIndex > -1 && m_highlight) {
         entry.modelMatrix = model * HIGHLIGHT_MAT;
         entry.normalMatrix = normal;
     } else {
@@ -60,6 +60,7 @@ void Batch::add(
 
     // NOTE KI handles "instance" material case; per vertex separately
     entry.materialIndex = top.m_materialVBO->m_entries[0].materialIndex;
+    entry.highlightIndex = highlightIndex;
 
     if (m_useObjectIDBuffer) {
         int r = (objectID & 0x000000FF) >> 0;
@@ -85,13 +86,13 @@ void Batch::addAll(
     const std::vector<glm::mat4>& modelMatrices,
     const std::vector<glm::mat3>& normalMatrices,
     const std::vector<int>& objectIDs,
-    bool selected)
+    int highlightMaterialIndex)
 {
     BatchCommand save = m_batches.back();
     save.m_drawCount = 0;
 
     for (int i = 0; i < modelMatrices.size(); i++) {
-        add(ctx, modelMatrices[i], normalMatrices[i], objectIDs[i], selected);
+        add(ctx, modelMatrices[i], normalMatrices[i], objectIDs[i], highlightMaterialIndex);
         if (m_batches.empty()) {
             m_batches.push_back(save);
         }
@@ -195,6 +196,13 @@ void Batch::prepareVAO(
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MATERIAL_INDEX);
         glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, materialIndex));
         glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MATERIAL_INDEX, VBO_BATCH_BINDING);
+    }
+
+    // highlight
+    {
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX);
+        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, highlightIndex));
+        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, VBO_BATCH_BINDING);
     }
 
     {

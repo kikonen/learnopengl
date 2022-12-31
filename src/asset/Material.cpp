@@ -28,54 +28,87 @@ namespace {
         std::lock_guard<std::mutex> lock(type_id_lock);
         return ++idBase;
     }
-}
 
-Material createGoldMaterial() {
-    Material mat;
-    mat.m_name = "<gold>";
-    mat.ns = 51.2f;
-    mat.ks = glm::vec4(0.6283f, 0.5559f, 0.3661f, 1.f);
-    mat.ka = glm::vec4(0.2473f, 0.1995f, 0.0745f, 1.f);
-    mat.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
-    return mat;
-}
+    Material createDefaultMaterial() {
+        Material mat;
+        mat.m_name = "<default>";
+        mat.ns = 100.f;
+        mat.ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
+        mat.ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
+        mat.kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
+        return mat;
+    }
 
-Material createSilverMaterial() {
-    Material mat;
-    mat.m_name = "<silver>";
-    mat.ns = 51.2f;
-    mat.ks = glm::vec4(0.5083f, 0.5083f, 0.5083f, 1.f);
-    mat.ka = glm::vec4(0.1923f, 0.1923f, 0.1923f, 1.f);
-    mat.kd = glm::vec4(0.5075f, 0.5075f, 0.5075f, 1.f);
-    return mat;
-}
+    Material createBasicMaterial() {
+        Material mat;
+        mat.m_name = "<basic>";
+        mat.ns = 100.f;
+        mat.ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
+        mat.ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
+        mat.kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
+        return mat;
+    }
 
-Material createBronzeMaterial() {
-    Material mat;
-    mat.m_name = "<bronze>";
-    mat.ns = 25.6f;
-    mat.ks = glm::vec4(0.3936f, 0.2719f, 0.1667f, 1.f);
-    mat.ka = glm::vec4(0.2125f, 0.1275f, 0.0540f, 1.f);
-    mat.kd = glm::vec4(0.7140f, 0.4284f, 0.1814f, 1.f);
-    return mat;
-}
+    Material createGoldMaterial() {
+        Material mat;
+        mat.m_name = "<gold>";
+        mat.ns = 51.2f;
+        mat.ks = glm::vec4(0.6283f, 0.5559f, 0.3661f, 1.f);
+        mat.ka = glm::vec4(0.2473f, 0.1995f, 0.0745f, 1.f);
+        mat.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
+        return mat;
+    }
 
-Material Material::createDefaultMaterial() {
-    Material mat;
-    mat.m_name = "<default>";
-    mat.ns = 100.f;
-    mat.ks = glm::vec4(0.9f, 0.9f, 0.0f, 1.f);
-    mat.ka = glm::vec4(0.3f, 0.3f, 0.0f, 1.f);
-    mat.kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
-    return mat;
+    Material createSilverMaterial() {
+        Material mat;
+        mat.m_name = "<silver>";
+        mat.ns = 51.2f;
+        mat.ks = glm::vec4(0.5083f, 0.5083f, 0.5083f, 1.f);
+        mat.ka = glm::vec4(0.1923f, 0.1923f, 0.1923f, 1.f);
+        mat.kd = glm::vec4(0.5075f, 0.5075f, 0.5075f, 1.f);
+        return mat;
+    }
+
+    Material createBronzeMaterial() {
+        Material mat;
+        mat.m_name = "<bronze>";
+        mat.ns = 25.6f;
+        mat.ks = glm::vec4(0.3936f, 0.2719f, 0.1667f, 1.f);
+        mat.ka = glm::vec4(0.2125f, 0.1275f, 0.0540f, 1.f);
+        mat.kd = glm::vec4(0.7140f, 0.4284f, 0.1814f, 1.f);
+        return mat;
+    }
+
+    Material createHighlightMaterial() {
+        Material mat;
+        mat.m_name = "<highlight>";
+        mat.ns = 100.f;
+        mat.ks = glm::vec4(0.0f, 0.0f, 0.8f, 1.f);
+        mat.ka = glm::vec4(0.0f, 0.0f, 0.8f, 1.f);
+        mat.kd = glm::vec4(0.0f, 0.0f, 0.8f, 1.f);
+        return mat;
+    }
+
+    Material createSelectionMaterial() {
+        Material mat;
+        mat.m_name = "<selection>";
+        mat.ns = 100.f;
+        mat.ks = glm::vec4(0.8f, 0.0f, 0.0f, 1.f);
+        mat.ka = glm::vec4(0.8f, 0.0f, 0.0f, 1.f);
+        mat.kd = glm::vec4(0.8f, 0.0f, 0.0f, 1.f);
+        return mat;
+    }
 }
 
 Material Material::createMaterial(BasicMaterial type)
 {
     switch (type) {
+    case BasicMaterial::basic: return createGoldMaterial();
     case BasicMaterial::gold: return createGoldMaterial();
     case BasicMaterial::silver: return createSilverMaterial();
     case BasicMaterial::bronze: return createBronzeMaterial();
+    case BasicMaterial::highlight: return createHighlightMaterial();
+    case BasicMaterial::selection: return createSelectionMaterial();
     }
 
     return createDefaultMaterial();

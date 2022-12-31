@@ -12,7 +12,10 @@ public:
 
     int getObjectId(const RenderContext& ctx, double screenPosX, double screenPosY, Viewport* mainViewport);
 
-    virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
+    virtual void prepare(
+        const Assets& assets,
+        ShaderRegistry& shaders,
+        MaterialRegistry& materialRegistry) override;
 
     virtual void update(const RenderContext& ctx) override;
 

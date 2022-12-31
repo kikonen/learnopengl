@@ -143,6 +143,8 @@ public:
 
     GroupVector groups;
 
+    Material m_selectionMaterial;
+
 private:
     const Assets& assets;
 
@@ -161,5 +163,4 @@ private:
     NodeVector m_pendingNodes;
 
     std::vector<NodeListener> m_listeners;
-
 };

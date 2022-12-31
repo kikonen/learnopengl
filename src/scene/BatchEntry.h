@@ -8,5 +8,6 @@ struct BatchEntry {
     glm::mat3 normalMatrix;
     glm::vec4 objectID;
     float materialIndex;
+    float highlightIndex;
 };
 #pragma pack(pop)

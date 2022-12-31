@@ -32,7 +32,7 @@ ModelMesh* MeshLoader::load(
         m_defaultMaterial = *defaultMaterial;
     }
     else {
-        m_defaultMaterial = Material::createDefaultMaterial();
+        m_defaultMaterial = Material::createMaterial(BasicMaterial::basic);
     }
 
     m_forceDefaultMaterial = forceDefaultMaterial;

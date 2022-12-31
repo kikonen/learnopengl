@@ -8,6 +8,7 @@ layout (location = ATTR_MATERIAL_INDEX) in float a_materialIndex;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
 layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
+layout (location = ATTR_INSTANCE_HIGHLIGHT_INDEX) in float a_highlightIndex;
 
 #include struct_clip_plane.glsl
 
@@ -18,6 +19,11 @@ layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
 out VS_OUT {
   vec2 texCoord;
   flat uint materialIndex;
+  flat uint highlightIndex;
+} vs_out;
+#else
+out VS_OUT {
+  flat uint highlightIndex;
 } vs_out;
 #endif
 
@@ -41,6 +47,8 @@ void main() {
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord;
 #endif
+
+  vs_out.highlightIndex = int(a_highlightIndex);
 
   calculateClipping(worldPos);
 }

@@ -92,6 +92,9 @@ void NodeRegistry::prepare(
     m_batch = batch;
     m_materialRegistry = materialRegistry;
     m_modelRegistry = modelRegistry;
+
+    m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
+    materialRegistry->add(m_selectionMaterial);
 }
 
 void NodeRegistry::addListener(NodeListener& listener)
@@ -135,20 +138,20 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcep
 {
     if (!append) {
         for (auto& x : objectIdToNode) {
-            x.second->m_selected = false;
+            x.second->m_selectionMaterialIndex = -1;
         }
     }
 
     Node* node = getNode(objectID);
     if (!node) return;
 
-    if (append && node->m_selected) {
+    if (append && node->isSelected()) {
         KI_INFO_SB("DESELECT: objectID: " << objectID);
-        node->m_selected = false;
+        node->m_selectionMaterialIndex = -1;
     }
     else {
         KI_INFO_SB("SELECT: objectID: " << objectID);
-        node->m_selected = true;
+        node->m_selectionMaterialIndex = m_selectionMaterial.m_registeredIndex;
     }
 }
 
@@ -193,7 +196,7 @@ int NodeRegistry::countHighlighted() const noexcept
     for (const auto& all : allNodes) {
         for (const auto& x : all.second) {
             for (auto& node : x.second) {
-                if (node->m_highlighted) count++;
+                if (node->isHighlighted()) count++;
             }
         }
     }
@@ -206,7 +209,7 @@ int NodeRegistry::countSelected() const noexcept
     for (const auto& all : allNodes) {
         for (const auto& x : all.second) {
             for (auto& node : x.second) {
-                if (node->m_selected) count++;
+                if (node->isSelected()) count++;
             }
         }
     }

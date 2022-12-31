@@ -7,7 +7,10 @@ class NormalRenderer final : public Renderer
 public:
     NormalRenderer();
 
-    virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
+    virtual void prepare(
+        const Assets& assets,
+        ShaderRegistry& shaders,
+        MaterialRegistry& materialRegistry) override;
 
     void render(
         const RenderContext& ctx);

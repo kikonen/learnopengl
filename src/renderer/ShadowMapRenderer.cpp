@@ -23,12 +23,15 @@ ShadowMapRenderer::~ShadowMapRenderer()
 {
 }
 
-void ShadowMapRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
+void ShadowMapRenderer::prepare(
+    const Assets& assets,
+    ShaderRegistry& shaders,
+    MaterialRegistry& materialRegistry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders);
+    Renderer::prepare(assets, shaders, materialRegistry);
 
     m_renderFrequency = assets.shadowRenderFrequency;
 

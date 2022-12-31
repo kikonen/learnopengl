@@ -14,7 +14,10 @@ public:
     MirrorMapRenderer();
     ~MirrorMapRenderer();
 
-    virtual void prepare(const Assets& assets, ShaderRegistry& shaders) override;
+    virtual void prepare(
+        const Assets& assets,
+        ShaderRegistry& shaders,
+        MaterialRegistry& materialRegistry) override;
 
     void bindTexture(const RenderContext& ctx);
 
@@ -37,4 +40,6 @@ private:
 
     std::unique_ptr<TextureBuffer> m_prev{ nullptr };
     std::unique_ptr<TextureBuffer> m_curr{ nullptr };
+
+    Material m_tagMaterial;
 };

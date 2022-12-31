@@ -13,7 +13,11 @@ public:
     Renderer();
     virtual ~Renderer();
 
-    virtual void prepare(const Assets& assets, ShaderRegistry& shaders);
+    virtual void prepare(
+        const Assets& assets,
+        ShaderRegistry& shaders,
+        MaterialRegistry& materialRegistry);
+
     virtual void update(const RenderContext& ctx);
 
     //virtual void render(

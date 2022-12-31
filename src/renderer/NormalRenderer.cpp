@@ -5,12 +5,15 @@ NormalRenderer::NormalRenderer()
 {
 }
 
-void NormalRenderer::prepare(const Assets& assets, ShaderRegistry& shaders)
+void NormalRenderer::prepare(
+    const Assets& assets,
+    ShaderRegistry& shaders,
+    MaterialRegistry& materialRegistry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders);
+    Renderer::prepare(assets, shaders, materialRegistry);
 
     m_normalShader = shaders.getShader(assets, TEX_NORMAL);
     m_normalShader->prepare(assets);

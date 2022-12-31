@@ -7,11 +7,10 @@
 #include uniform_materials.glsl
 #include uniform_textures.glsl
 
-uniform vec4 u_highlightColor;
-
 in GS_OUT {
   vec2 texCoord;
   flat uint materialIndex;
+  flat uint highlightIndex;
 } fs_in;
 
 layout (location = 0) out vec4 fragColor;
@@ -28,5 +27,7 @@ void main() {
   if (alpha < 0.6)
     discard;
 
-  fragColor = u_highlightColor;
+  Material highlightMaterial = u_materials[fs_in.highlightIndex];
+
+  fragColor = highlightMaterial.diffuse;
 }

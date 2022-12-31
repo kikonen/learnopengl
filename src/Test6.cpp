@@ -145,8 +145,8 @@ void Test6::selectNode(
     auto* volumeNode = registry.getNode(ctx.assets.volumeUUID);
     auto* node = registry.getNode(objectID);
 
-    if (false && node && volumeNode && node->m_selected) {
-        node->m_selected = false;
+    if (false && node && volumeNode && node->isSelected()) {
+        node->m_selectionMaterialIndex = -1;
 
         volumeNode->setPosition({0, 0, 0});
         volumeNode->setScale(1.f);

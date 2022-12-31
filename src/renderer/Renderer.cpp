@@ -10,7 +10,10 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::prepare(const Assets& assets, ShaderRegistry& shaders)
+void Renderer::prepare(
+    const Assets& assets,
+    ShaderRegistry& shaders,
+    MaterialRegistry& materialRegistry)
 {
     m_renderFrequency = assets.renderFrequency;
 }

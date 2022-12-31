@@ -34,6 +34,8 @@ enum class BasicMaterial {
     gold,
     silver,
     bronze,
+    highlight,
+    selection
 };
 
 enum class MaterialType {
@@ -89,8 +91,6 @@ public:
     const float getRefractionRatio() const{
         return refractionRatio[1] != 0 ? refractionRatio[0] / refractionRatio[1] : refractionRatio[0];
     }
-
-    static Material createDefaultMaterial();
 
     static Material createMaterial(BasicMaterial type);
 
