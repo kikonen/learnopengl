@@ -42,6 +42,7 @@ void MirrorMapRenderer::prepare(
     Renderer::prepare(assets, shaders, materialRegistry);
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
+    m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
     materialRegistry.add(m_tagMaterial);
 
     m_renderFrequency = assets.mirrorRenderFrequency;
