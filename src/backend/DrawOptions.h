@@ -31,13 +31,13 @@ namespace backend {
         int indexOffset = 0;
 
         int materialOffset = 0;
-        int materialCount = 0;
+        bool singleMaterial = false;
 
         bool isSameDrawCommand(const DrawOptions& b, bool useBlend) const {
             return isSameMultiDraw(b, useBlend) &&
                 vertexOffset == b.vertexOffset &&
                 indexOffset == b.indexOffset &&
-                materialCount == b.materialCount;
+                singleMaterial == b.singleMaterial;
         }
 
         bool isSameMultiDraw(const DrawOptions& b, bool useBlend) const {
@@ -49,8 +49,8 @@ namespace backend {
         }
 
         bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(renderBack, wireframe, blend, type, mode, materialCount, vertexOffset, indexOffset, materialOffset) <
-                std::tie(o.renderBack, o.wireframe, o.blend, o.type, o.mode, o.materialCount, o.vertexOffset, o.indexOffset, o.materialOffset);
+            return std::tie(renderBack, wireframe, blend, type, mode, singleMaterial, vertexOffset, indexOffset, materialOffset) <
+                std::tie(o.renderBack, o.wireframe, o.blend, o.type, o.mode, o.singleMaterial, o.vertexOffset, o.indexOffset, o.materialOffset);
         }
     };
 }

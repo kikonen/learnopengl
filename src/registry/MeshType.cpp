@@ -90,11 +90,10 @@ void MeshType::prepare(
     m_drawOptions.renderBack = m_flags.renderBack;
     m_drawOptions.wireframe = m_flags.wireframe;
     m_drawOptions.blend = m_flags.blend;
-    m_drawOptions.materialOffset = m_materialVBO.m_offset;
-    m_drawOptions.materialCount = 1;// m_materialVBO.m_entries.size();
+    m_drawOptions.materialOffset = m_materialVBO.m_bufferIndex;
+    m_drawOptions.singleMaterial = m_materialVBO.m_singleMaterial;
 
     m_mesh->prepareVAO(*m_vao, m_drawOptions);
-    m_materialVBO.prepareVAO(*m_vao);
 
     if (m_nodeShader) {
         m_nodeShader->prepare(assets);

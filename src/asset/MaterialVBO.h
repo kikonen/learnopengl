@@ -20,17 +20,18 @@ public:
     void setMaterials(const std::vector<Material>& materials);
     const std::vector<Material>& getMaterials() const;
 
-    virtual void prepareVAO(
-        GLVertexArray& vao);
+    //virtual void prepareVAO(
+    //    GLVertexArray& vao);
 
 public:
     Material m_defaultMaterial;
     bool m_useDefaultMaterial = false;
     bool m_forceDefaultMaterial = false;
 
-    GLBuffer* m_vbo{ nullptr };
-    int m_offset = 0;
-    int m_instanceDivisor = 0;
+    bool m_singleMaterial = true;
+
+    GLBuffer* m_buffer{ nullptr };
+    int m_bufferIndex = 0;
 
     std::vector<Material> m_materials;
     std::vector<MaterialEntry> m_entries;

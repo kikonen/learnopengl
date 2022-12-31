@@ -58,9 +58,17 @@ void Batch::add(
     auto& top = m_batches.back();
     top.m_drawCount += 1;
 
-    // NOTE KI handles "instance" material case; per vertex separately
-    entry.materialIndex = top.m_materialVBO->m_entries[0].materialIndex;
     entry.highlightIndex = highlightIndex;
+
+    if (top.m_materialVBO->m_singleMaterial) {
+        // NOTE KI handles "instance" material case; per vertex separately
+        entry.materialIndex = top.m_materialVBO->m_entries[0].materialIndex;
+    }
+    else {
+        entry.materialIndex = -1;
+        int baseVertex = top.m_drawOptions->vertexOffset / sizeof(VertexEntry);
+        entry.materialOffset = top.m_materialVBO->m_bufferIndex - baseVertex;
+    }
 
     if (m_useObjectIDBuffer) {
         int r = (objectID & 0x000000FF) >> 0;
@@ -196,6 +204,11 @@ void Batch::prepareVAO(
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MATERIAL_INDEX);
         glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, materialIndex));
         glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MATERIAL_INDEX, VBO_BATCH_BINDING);
+    }
+    {
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MATERIAL_OFFSET);
+        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_OFFSET, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, materialOffset));
+        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MATERIAL_OFFSET, VBO_BATCH_BINDING);
     }
 
     // highlight

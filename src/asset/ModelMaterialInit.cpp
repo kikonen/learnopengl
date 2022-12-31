@@ -20,7 +20,7 @@ void ModelMaterialInit::prepareVertices(
 {
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     {
-        const bool single = true; // materialVBO.m_materials.size() == 1;
+        const bool single = materialVBO.m_materials.size() == 1;
         const int count = single ? 1 : vertices.size();
         auto& entries = materialVBO.m_entries;
         entries.reserve(count);
@@ -46,8 +46,6 @@ void ModelMaterialInit::prepareVertices(
             entries.push_back(entry);
         }
 
-        if (single) {
-            materialVBO.m_instanceDivisor = 100000000;
-        }
+        materialVBO.m_singleMaterial = single;
     }
 }

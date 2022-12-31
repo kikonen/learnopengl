@@ -49,7 +49,7 @@ constexpr int ATTR_POS = 0;
 constexpr int ATTR_NORMAL = 1;
 constexpr int ATTR_TANGENT = 2;
 //constexpr int ATTR_BITANGENT = 3;
-constexpr int ATTR_MATERIAL_INDEX = 14;
+constexpr int ATTR_MATERIAL_INDEX = 4;
 constexpr int ATTR_TEX = 5;
 
 // https://www.reddit.com/r/opengl/comments/lz72tk/understanding_dsa_functions_and_buffer_binding/
@@ -72,7 +72,8 @@ constexpr int ATTR_INSTANCE_NORMAL_MATRIX_3 = 12;
 
 constexpr int ATTR_INSTANCE_OBJECT_ID = 13;
 constexpr int ATTR_INSTANCE_HIGHLIGHT_INDEX = 14;
-constexpr int ATTR_INSTANCE_MATERIAL_INDEX = 4;
+constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
+constexpr int ATTR_INSTANCE_MATERIAL_OFFSET = 15;
 
 const std::string GEOM_NONE{ "" };
 

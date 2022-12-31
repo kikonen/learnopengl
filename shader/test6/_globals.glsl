@@ -7,7 +7,8 @@
 
 #define SSBO_MATERIALS 4
 #define SSBO_TEXTURES 5
-#define SSBO_INSTANCE_OBJECT_ID 6
+#define SSBO_MATERIAL_INDECES 6
+#define SSBO_INSTANCE_OBJECT_ID 7
 
 #define UNIT_WATER_NOISE 64
 #define UNIT_WATER_REFLECTION 65
@@ -24,7 +25,7 @@
 #define ATTR_TANGENT 2
 //#define ATTR_BITANGENT 3
 #define ATTR_MATERIAL_INDEX 4
-#define ATTR_INSTANCE_MATERIAL_INDEX 4
+#define ATTR_INSTANCE_MATERIAL_INDEX ATTR_MATERIAL_INDEX
 #define ATTR_TEX 5
 
 #define ATTR_INSTANCE_MODEL_MATRIX_1 6
@@ -38,6 +39,7 @@
 
 #define ATTR_INSTANCE_OBJECT_ID 13
 #define ATTR_INSTANCE_HIGHLIGHT_INDEX 14
+#define ATTR_INSTANCE_MATERIAL_OFFSET 15
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 // => defined by c++ side (more optimal)

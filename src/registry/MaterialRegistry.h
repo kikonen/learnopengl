@@ -51,5 +51,5 @@ private:
     GLBuffer m_ubo;
     GLBuffer m_ssbo;
 
-    GLBuffer m_vbo;
+    GLBuffer m_entryBuffer;
 };

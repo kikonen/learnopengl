@@ -40,7 +40,5 @@ void QuadMaterialInit::prepareVertices(
 
             entries.push_back(entry);
         }
-
-        materialVBO.m_instanceDivisor = 100000000;
     }
 }

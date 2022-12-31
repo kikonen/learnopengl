@@ -33,11 +33,12 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 
     const int count = materialVBO.m_entries.size();
     const int index = m_materialEntries.size();
+    const int offset = index * sizeof(MaterialEntry);
 
     assert(index + count < MAX_MATERIAL_ENTRIES);
 
-    materialVBO.m_offset = index * sizeof(MaterialEntry);
-    materialVBO.m_vbo = &m_vbo;
+    materialVBO.m_bufferIndex = index;
+    materialVBO.m_buffer = &m_entryBuffer;
 
     for (auto& entry : materialVBO.m_entries) {
         m_materialEntries.push_back(entry);
@@ -45,11 +46,10 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 
     KI_INFO(fmt::format(
         "MATERIAL: offset={}, mesh_entries={}, total_entries={}, BUFFER_SIZE={}",
-        materialVBO.m_offset, materialVBO.m_entries.size(), m_materialEntries.size(), MAX_MATERIAL_ENTRIES * sizeof(MaterialEntry)));
+        materialVBO.m_bufferIndex, materialVBO.m_entries.size(), m_materialEntries.size(), MAX_MATERIAL_ENTRIES * sizeof(MaterialEntry)));
 
-    return;
-    m_vbo.update(
-        materialVBO.m_offset,
+    m_entryBuffer.update(
+        offset,
         count * sizeof(MaterialEntry),
         &m_materialEntries[index]);
 }
@@ -121,8 +121,8 @@ void MaterialRegistry::prepare()
     }
 
     {
-        m_vbo.create();
-        m_vbo.initEmpty(MAX_MATERIAL_ENTRIES * sizeof(MaterialEntry), GL_DYNAMIC_STORAGE_BIT);
+        m_entryBuffer.create();
+        m_entryBuffer.initEmpty(MAX_MATERIAL_ENTRIES * sizeof(MaterialEntry), GL_DYNAMIC_STORAGE_BIT);
     }
 }
 
@@ -132,4 +132,5 @@ void MaterialRegistry::bind(
     //m_ubo.bindUniform(UBO_MATERIALS);
 
     m_ssbo.bindSSBO(SSBO_MATERIALS);
+    m_entryBuffer.bindSSBO(SSBO_MATERIAL_INDECES);
 }

@@ -9,5 +9,6 @@ struct BatchEntry {
     glm::vec4 objectID;
     float materialIndex;
     float highlightIndex;
+    float materialOffset;
 };
 #pragma pack(pop)

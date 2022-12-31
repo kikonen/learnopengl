@@ -11,6 +11,7 @@ layout (location = ATTR_MATERIAL_INDEX) in float a_materialIndex;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
 layout (location = ATTR_INSTANCE_NORMAL_MATRIX_1) in mat3 a_normalMatrix;
+layout (location = ATTR_INSTANCE_MATERIAL_OFFSET) in float a_materialOffset;
 
 #include struct_material.glsl
 #include struct_texture.glsl
@@ -20,6 +21,7 @@ layout (location = ATTR_INSTANCE_NORMAL_MATRIX_1) in mat3 a_normalMatrix;
 #include uniform_data.glsl
 #include uniform_materials.glsl
 #include uniform_clip_planes.glsl
+#include uniform_material_indeces.glsl
 
 out VS_OUT {
   vec3 fragPos;
@@ -49,6 +51,9 @@ precision mediump float;
 
 void main() {
   int materialIndex = int(a_materialIndex);
+  if (a_materialIndex < 0) {
+    materialIndex = int(u_materialIndeces[int(a_materialOffset) + gl_VertexID]);
+  }
   vec4 worldPos = a_modelMatrix * a_pos;
 
   gl_Position = u_projectedMatrix * worldPos;

@@ -19,7 +19,8 @@ ModelRegistry::~ModelRegistry() {
 
 GLVertexArray* ModelRegistry::registerMeshVBO(ModelMeshVBO& meshVBO)
 {
-    return m_singleVAO.registerModel(meshVBO);
+    auto& vao = meshVBO.m_single ? m_singleVAO : m_multiVAO;
+    return vao.registerModel(meshVBO);
 }
 
 void ModelRegistry::prepare(Batch& batch)

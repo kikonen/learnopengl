@@ -8,6 +8,8 @@
 
 constexpr GLuint SSBO_MATERIALS = 4;
 constexpr GLuint SSBO_TEXTURES = 5;
+constexpr GLuint SSBO_MATERIAL_INDECES = 6;
+constexpr GLuint SSBO_INSTANCE_OBJECT_ID = 7;
 
 //constexpr unsigned int MIN_MATERIAL_COUNT = 200;
 //constexpr unsigned int MAX_MATERIAL_COUNT = 200;

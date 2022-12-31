@@ -275,7 +275,7 @@ void NodeRegistry::bindNode(
         });
     }
 
-        type->prepare(assets, *m_batch, *this, *m_materialRegistry, *m_modelRegistry);
+    type->prepare(assets, *m_batch, *this, *m_materialRegistry, *m_modelRegistry);
     node->prepare(assets);
 
     {

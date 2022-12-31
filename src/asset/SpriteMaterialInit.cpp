@@ -28,7 +28,5 @@ void SpriteMaterialInit::prepareVertices(
         entry.materialIndex = material.m_registeredIndex;
 
         entries.push_back(entry);
-
-        materialVBO.m_instanceDivisor = 0;
     }
 }
