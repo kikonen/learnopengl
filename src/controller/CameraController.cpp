@@ -8,6 +8,11 @@ CameraController::CameraController()
 void CameraController::prepare(const Assets& assets, Node& node)
 {
     m_camera = node.m_camera.get();
+
+    m_moveStep = 2.5f;
+    m_rotateStep = 10.f;
+    m_zoomStep = 20.0f;
+    m_mouseSensitivity = 0.1f;
 }
 
 bool CameraController::update(
@@ -41,8 +46,8 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
     float moveSize = m_moveStep;
     float rotateSize = m_rotateStep;
     if (input->isModifierDown(Modifier::SHIFT)) {
-        moveSize *= 2;
-        rotateSize *= 2;
+        moveSize *= 3;
+        rotateSize *= 3;
     }
 
     const auto& viewFront = m_camera->getViewFront();
