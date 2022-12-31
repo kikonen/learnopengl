@@ -4,6 +4,8 @@
 
 #include "SkyboxRenderer.h"
 
+#include "registry/MaterialRegistry.h"
+
 namespace {
     // +X (right)
     // -X (left)
@@ -56,12 +58,17 @@ void CubeMapRenderer::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
+    Renderer::prepare(assets, shaders, materialRegistry);
+
+    m_tagID = assets.cubeMapUUID;
+    m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
+    m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
+    materialRegistry.add(m_tagMaterial);
+
     m_renderFrequency = assets.cubeMapRenderFrequency;
 
     m_nearPlane = assets.cubeMapNearPlane;
     m_farPlane = assets.cubeMapFarPlane;
-
-    Renderer::prepare(assets, shaders, materialRegistry);
 
     m_curr = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
     m_curr->prepare(false, { 0, 0, 1, 1.0 });
@@ -96,6 +103,18 @@ void CubeMapRenderer::render(
 
     Node* centerNode = findCenter(mainCtx);
     if (!centerNode) return;
+
+    if (mainCtx.assets.showCubeMap) {
+        Node* tagNode = getTagNode(mainCtx.registry);
+        if (tagNode) {
+            const auto& rootPos = mainCtx.registry.m_root->getPosition();
+            const auto& centerPos = centerNode->getWorldPos();
+            const auto tagPos = centerPos - rootPos;
+            tagNode->setPosition(tagPos);
+            tagNode->m_type->m_flags.noDisplay = false;
+            //tagNode->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;
+        }
+    }
 
     // https://www.youtube.com/watch?v=lW_iqrtJORc
     // https://eng.libretexts.org/Bookshelves/Computer_Science/Book%3A_Introduction_to_Computer_Graphics_(Eck)/07%3A_3D_Graphics_with_WebGL/7.04%3A_Framebuffers
@@ -229,12 +248,15 @@ Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
 
             for (const auto& node : nodes) {
                 const glm::vec3 ray = node->getWorldPos() - cameraPos;
-                const float distance = glm::length(ray);
-                const glm::vec3 fromCamera = glm::normalize(ray);
-                const float dot = glm::dot(fromCamera, cameraDir);
-                if (dot < 0) continue;
+                const float distance = std::abs(glm::length(ray));
 
-                sorted[-distance] = node;
+                if (false) {
+                    const glm::vec3 fromCamera = glm::normalize(ray);
+                    const float dot = glm::dot(fromCamera, cameraDir);
+                    if (dot < 0) continue;
+                }
+
+                sorted[distance] = node;
             }
         }
     }
@@ -245,3 +267,9 @@ Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
     return nullptr;
 }
 
+Node* CubeMapRenderer::getTagNode(NodeRegistry& registry)
+{
+    if (m_tagNode) return m_tagNode;
+    m_tagNode = registry.getNode(m_tagID);
+    return m_tagNode;
+}

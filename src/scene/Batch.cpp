@@ -244,6 +244,7 @@ void Batch::draw(
 
     if (!type->getMesh()) return;
     if (type->m_flags.noRender) return;
+    if (type->m_flags.noDisplay) return;
 
     auto& obb = node.getOBB();
     //const auto mvp = ctx.m_matrices.projected * node.getModelMatrix();

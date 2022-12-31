@@ -113,6 +113,9 @@ void AssetsFile::loadAssets(
         else if (k == "show_volume") {
             data.showVolume = v.as<bool>();
         }
+        else if (k == "show_cube_map") {
+            data.showCubeMap = v.as<bool>();
+        }
         else if (k == "show_highlight") {
             data.showHighlight = v.as<bool>();
         }

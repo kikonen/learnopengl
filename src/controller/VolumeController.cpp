@@ -39,6 +39,8 @@ bool VolumeController::update(
     volumeNode.setPosition(volumePos);
     volumeNode.setScale(volumeScale);
 
+    volumeNode.m_type->m_flags.noDisplay = false;
+
     return true;
 }
 

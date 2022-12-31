@@ -30,6 +30,7 @@ struct NodeRenderFlags {
     bool noReflect = false;
     bool noRefract = false;
     bool noRender = false;
+    bool noDisplay = false;
     bool wireframe = false;
     bool instanced = false;
     bool root = false;

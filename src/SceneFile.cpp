@@ -77,6 +77,7 @@ void SceneFile::attach(
 
     attachEntity(scene, root, root, materials);
     attachVolume(scene, root);
+    attachCubeMapCenter(scene, root);
 
     for (const auto& entity : entities) {
         attachEntity(scene, root, entity, materials);
@@ -107,6 +108,16 @@ void SceneFile::attachVolume(
     auto mesh = modelRegistry.getMesh("ball_volume");
     type->setMesh(mesh);
 
+    {
+        auto material = Material::createMaterial(BasicMaterial::highlight);
+        material.kd = glm::vec4(0.8f, 0.8f, 0.f, 1.f);
+
+        auto& materialVBO = type->m_materialVBO;
+        materialVBO.m_defaultMaterial = material;
+        materialVBO.m_useDefaultMaterial = true;
+        materialVBO.m_forceDefaultMaterial = true;
+    }
+
     auto& flags = type->m_flags;
 
     flags.wireframe = true;
@@ -115,6 +126,7 @@ void SceneFile::attachVolume(
     flags.noFrustum = true;
     flags.noReflect = true;
     flags.noRefract = true;
+    flags.noDisplay = true;
 
     type->m_nodeShader = m_asyncLoader->getShader(TEX_VOLUME);
 
@@ -130,6 +142,57 @@ void SceneFile::attachVolume(
     node->setAABB(mesh->getAABB());
 
     node->m_controller = std::make_unique<VolumeController>();
+
+    scene->m_registry.addNode(type, node);
+}
+
+void SceneFile::attachCubeMapCenter(
+    std::shared_ptr<Scene> scene,
+    const EntityData& root)
+{
+    if (!m_assets.showCubeMap) return;
+
+    auto type = scene->m_typeRegistry.getType("<cube_map>");
+
+    auto& modelRegistry = scene->m_modelRegistry;
+    auto mesh = modelRegistry.getMesh("ball_volume");
+    type->setMesh(mesh);
+
+    {
+        auto material = Material::createMaterial(BasicMaterial::highlight);
+        material.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
+
+        auto& materialVBO = type->m_materialVBO;
+        materialVBO.m_defaultMaterial = material;
+        materialVBO.m_useDefaultMaterial = true;
+        materialVBO.m_forceDefaultMaterial = true;
+    }
+
+    auto& flags = type->m_flags;
+
+    flags.wireframe = true;
+    flags.renderBack = true;
+    flags.noShadow = true;
+    flags.noFrustum = true;
+    flags.noReflect = true;
+    flags.noRefract = true;
+    flags.noDisplay = true;
+
+    type->m_nodeShader = m_asyncLoader->getShader(TEX_VOLUME);
+
+    auto node = new Node(type);
+    node->m_id = m_asyncLoader->assets.cubeMapUUID;
+    node->m_parentId = root.base.id;
+
+    //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
+    node->setScale(4.f);
+
+    // NOTE KI m_radius = 1.73205078
+    mesh->prepareVolume();
+    auto volume = mesh->getVolume();
+    node->setVolume(volume->clone());
+
+    node->setAABB(mesh->getAABB());
 
     scene->m_registry.addNode(type, node);
 }

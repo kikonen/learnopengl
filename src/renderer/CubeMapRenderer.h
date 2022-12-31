@@ -39,6 +39,8 @@ private:
     Node* findCenter(
         const RenderContext& ctx);
 
+    Node* getTagNode(NodeRegistry& registry);
+
 public:
 
 private:
@@ -53,4 +55,9 @@ private:
     std::unique_ptr<DynamicCubeMap> m_curr;
 
     std::vector<Camera> m_cameras;
+
+    Material m_tagMaterial;
+
+    uuids::uuid m_tagID;
+    Node* m_tagNode{ nullptr };
 };

@@ -220,6 +220,10 @@ private:
         std::shared_ptr<Scene> scene,
         const EntityData& root);
 
+    void attachCubeMapCenter(
+        std::shared_ptr<Scene> scene,
+        const EntityData& root);
+
     void attachEntity(
         std::shared_ptr<Scene> scene,
         const EntityData& root,

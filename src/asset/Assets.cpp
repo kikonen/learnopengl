@@ -40,6 +40,7 @@ Assets::Assets()
 
     showSelectionWireframe = false;
     showVolume = false;
+    showCubeMap = false;
     showHighlight = false;
 
     useLight = true;
@@ -94,6 +95,7 @@ Assets::Assets()
     viewportEffect = ViewportEffect::none;
 
     volumeUUID = KI_UUID("9d409e0d-2716-48dd-a205-3a54bdfa5097");
+    cubeMapUUID = KI_UUID("67a0f0f6-9e1a-4af3-97e9-a67eb11439d0");
 
     /////////////////////////
     // TEMPORARIES

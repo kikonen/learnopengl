@@ -56,6 +56,7 @@ public:
 
     bool showSelectionWireframe;
     bool showVolume;
+    bool showCubeMap;
     bool showHighlight;
 
     bool rasterizerDiscard;
@@ -111,6 +112,7 @@ public:
     ViewportEffect viewportEffect;
 
     uuids::uuid volumeUUID;
+    uuids::uuid cubeMapUUID;
 
     // NOTE KI TEMPORARY HACKS
     // => provide logic for these via scenefile
