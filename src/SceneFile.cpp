@@ -110,12 +110,14 @@ void SceneFile::attachVolume(
 
     {
         auto material = Material::createMaterial(BasicMaterial::highlight);
+        material.m_name = "volume";
         material.kd = glm::vec4(0.8f, 0.8f, 0.f, 1.f);
 
         auto& materialVBO = type->m_materialVBO;
         materialVBO.m_defaultMaterial = material;
         materialVBO.m_useDefaultMaterial = true;
         materialVBO.m_forceDefaultMaterial = true;
+        materialVBO.setMaterials({ material });
     }
 
     auto& flags = type->m_flags;
@@ -160,12 +162,15 @@ void SceneFile::attachCubeMapCenter(
 
     {
         auto material = Material::createMaterial(BasicMaterial::highlight);
-        material.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
+        material.m_name = "cube_map";
+        //material.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
+        material.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
 
         auto& materialVBO = type->m_materialVBO;
         materialVBO.m_defaultMaterial = material;
         materialVBO.m_useDefaultMaterial = true;
         materialVBO.m_forceDefaultMaterial = true;
+        materialVBO.setMaterials({ material });
     }
 
     auto& flags = type->m_flags;
