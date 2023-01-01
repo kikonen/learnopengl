@@ -35,7 +35,7 @@ assets:
 
   show_selection_wireframe: true
   show_volume: true
-  show_cube_map: true
+  show_cube_map_center: true
   show_highlight: true
 
   rasterizer_discard: false

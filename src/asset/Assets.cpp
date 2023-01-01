@@ -41,7 +41,7 @@ Assets::Assets()
 
     showSelectionWireframe = false;
     showVolume = false;
-    showCubeMap = false;
+    showCubeMapCenter = false;
     showHighlight = false;
 
     useLight = true;

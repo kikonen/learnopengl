@@ -104,7 +104,7 @@ void CubeMapRenderer::render(
     Node* centerNode = findCenter(mainCtx);
     if (!centerNode) return;
 
-    if (mainCtx.assets.showCubeMap) {
+    if (mainCtx.assets.showCubeMapCenter) {
         Node* tagNode = getTagNode(mainCtx.registry);
         if (tagNode) {
             const auto& rootPos = mainCtx.registry.m_root->getPosition();

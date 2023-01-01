@@ -63,7 +63,7 @@ public:
 
     bool showSelectionWireframe;
     bool showVolume;
-    bool showCubeMap;
+    bool showCubeMapCenter;
     bool showHighlight;
 
     bool rasterizerDiscard;

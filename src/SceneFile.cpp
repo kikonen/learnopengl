@@ -163,7 +163,7 @@ void SceneFile::attachCubeMapCenter(
     std::shared_ptr<Scene> scene,
     const EntityData& root)
 {
-    if (!m_assets.showCubeMap) return;
+    if (!m_assets.showCubeMapCenter) return;
 
     auto type = scene->m_typeRegistry.getType("<cube_map>");
 
