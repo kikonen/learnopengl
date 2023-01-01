@@ -1,14 +1,22 @@
 #include "Assets.h"
 
+#include <fmt/format.h>
+
+#include "ki/GL.h"
 #include "ki/uuid.h"
 
 Assets::Assets()
 {
     glsl_version[0] = 4;
-    glsl_version[1] = 5;
+    glsl_version[1] = 6;
     glsl_version[2] = 0;
 
-    glsl_version_str = "#version " + std::to_string(glsl_version[0]) + std::to_string(glsl_version[1]) + std::to_string(glsl_version[2]);
+    glsl_version_str = fmt::format(
+        "#version {}{}{}",
+        glsl_version[0], glsl_version[1], glsl_version[2]);
+
+    glPreferredTextureFormatRGBA = GL_RGBA8;
+    glPreferredTextureFormatRGB = GL_RGB8;
 
     glfwSwapInterval = 3;
     glDebug = false;

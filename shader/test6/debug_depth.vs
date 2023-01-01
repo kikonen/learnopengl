@@ -1,4 +1,4 @@
-#version 450 core
+#version 460 core
 
 layout (location = ATTR_POS) in vec4 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;

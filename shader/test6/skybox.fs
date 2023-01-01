@@ -1,4 +1,4 @@
-#version 450 core
+#version 460 core
 in vec3 texCoord;
 
 layout(binding = UNIT_SKYBOX) uniform samplerCube u_skybox;

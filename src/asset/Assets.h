@@ -24,6 +24,8 @@ public:
     int glsl_version[3];
     std::string glsl_version_str;
 
+    int glPreferredTextureFormatRGB;
+    int glPreferredTextureFormatRGBA;
 
     int glfwSwapInterval;
 

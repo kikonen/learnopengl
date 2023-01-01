@@ -163,7 +163,8 @@ namespace ki {
         glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &info.maxVertexUniformComponents);
         glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &info.maxVertexAttributes);
 
-        glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_FORMAT, 1, &info.preferredFormat);
+        glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_FORMAT, 1, &info.preferredFormatRGBA8);
+        glGetInternalformativ(GL_TEXTURE_2D, GL_RGB8, GL_TEXTURE_IMAGE_FORMAT, 1, &info.preferredFormatRGB8);
 
         return info;
     }

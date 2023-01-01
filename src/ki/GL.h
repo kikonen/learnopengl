@@ -64,7 +64,8 @@ namespace ki {
         int maxVertexUniformComponents = 0;
         int maxVertexAttributes = 0;
 
-        int preferredFormat = 0;
+        int preferredFormatRGBA8 = 0;
+        int preferredFormatRGB8 = 0;
     };
 
     struct RGB10_A2

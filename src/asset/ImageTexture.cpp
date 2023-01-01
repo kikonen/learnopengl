@@ -66,9 +66,11 @@ void ImageTexture::prepare(const Assets& assets)
     if (m_image->m_channels == 3) {
         m_format = GL_RGB;
         m_internalFormat = GL_RGB8;
+        //m_internalFormat = assets.glPreferredTextureFormatRGB;
     } else if (m_image->m_channels == 4) {
         m_format = GL_RGBA;
         m_internalFormat = GL_RGBA8;
+        //m_internalFormat = assets.glPreferredTextureFormatRGBA;
     } else {
         KI_WARN_SB("IMAGE: unsupported channels " << m_image->m_channels);
         m_valid = false;
