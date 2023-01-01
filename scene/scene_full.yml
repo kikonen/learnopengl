@@ -375,7 +375,7 @@ entities:
       refraction: 1.0
       refraction_ratio: [1.0, 1.52]
     render_flags:
-      render_back: true
+      render_back: false
     selected: false
     enabled: true
   - name: Cow
@@ -387,7 +387,7 @@ entities:
     material_modifier:
       reflection: 0.5
     render_flags:
-      render_back: true
+      render_back: false
     selected: false
     enabled: true
   - name: Mountains

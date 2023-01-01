@@ -148,7 +148,7 @@ void Batch::prepare(
         m_vbo.initEmpty(m_entryCount * sz, GL_DYNAMIC_STORAGE_BIT);
     }
 
-    m_draw.prepare(10, 200);
+    m_draw.prepare(20, 100);
 
     {
         m_materialBuffer.create();

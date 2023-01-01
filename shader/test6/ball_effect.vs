@@ -11,9 +11,11 @@ layout (location = ATTR_INSTANCE_NORMAL_MATRIX_1) in mat3 a_normalMatrix;
 
 #include struct_material.glsl
 #include struct_texture.glsl
-#include uniform_matrices.glsl
+#include struct_clip_plane.glsl
 
+#include uniform_matrices.glsl
 #include uniform_materials.glsl
+#include uniform_clip_planes.glsl
 
 out VS_OUT {
   vec3 fragPos;
@@ -25,9 +27,15 @@ out VS_OUT {
   vec4 fragPosLightSpace;
 } vs_out;
 
+out float gl_ClipDistance[CLIP_COUNT];
+
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
+
+precision mediump float;
+
+#include fn_calculate_clipping.glsl
 
 void main() {
   int materialIndex = int(a_materialIndex);
@@ -40,6 +48,8 @@ void main() {
 
   vs_out.fragPos = worldPos.xyz;
   vs_out.normal = normalize(a_normalMatrix * a_normal);
+
+  calculateClipping(worldPos);
 
   vs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
 }

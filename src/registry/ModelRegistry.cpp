@@ -19,8 +19,11 @@ ModelRegistry::~ModelRegistry() {
 
 GLVertexArray* ModelRegistry::registerMeshVBO(ModelMeshVBO& meshVBO)
 {
-    auto& vao = meshVBO.m_single ? m_singleVAO : m_multiVAO;
-    return vao.registerModel(meshVBO);
+    //auto& vao = meshVBO.m_single ? m_singleVAO : m_multiVAO;
+    //return vao.registerModel(meshVBO);
+    // 
+    // NOTE KI multi/single material *CAN* go in same indirect draw
+    return m_singleVAO.registerModel(meshVBO);
 }
 
 void ModelRegistry::prepare(Batch& batch)
