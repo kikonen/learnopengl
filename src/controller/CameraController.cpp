@@ -9,8 +9,8 @@ void CameraController::prepare(const Assets& assets, Node& node)
 {
     m_camera = node.m_camera.get();
 
-    m_moveStep = 2.5f;
-    m_rotateStep = 10.f;
+    m_moveStep = 4.5f;
+    m_rotateStep = 15.f;
     m_zoomStep = 20.0f;
     m_mouseSensitivity = 0.1f;
 }
