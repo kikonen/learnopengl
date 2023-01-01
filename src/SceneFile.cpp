@@ -42,9 +42,19 @@ SceneFile::SceneFile(
     AsyncLoader* asyncLoader,
     const Assets& assets,
     const std::string& filename)
+    : SceneFile(asyncLoader, assets, filename, { 0, 0, 0 })
+{
+}
+
+SceneFile::SceneFile(
+    AsyncLoader* asyncLoader,
+    const Assets& assets,
+    const std::string& filename,
+    const glm::vec3& rootOffset)
     : m_filename(filename),
     m_assets(assets),
-    m_asyncLoader(asyncLoader)
+    m_asyncLoader(asyncLoader),
+    m_rootOffset(rootOffset)
 {
 }
 
@@ -52,7 +62,8 @@ SceneFile::~SceneFile()
 {
 }
 
-void SceneFile::load(std::shared_ptr<Scene> scene)
+void SceneFile::load(
+    std::shared_ptr<Scene> scene)
 {
     std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);
@@ -688,6 +699,7 @@ void SceneFile::loadRoot(
     auto& node = doc["root"];
     loadEntity(node, root);
 
+    root.base.position += m_rootOffset;
     root.base.type = EntityType::origo;
     root.isRoot = true;
     root.base.enabled = true;

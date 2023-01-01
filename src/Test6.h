@@ -36,7 +36,7 @@ private:
     std::unique_ptr<Frame> m_frame;
     std::unique_ptr<FrameInit> m_frameInit;
 
-    std::unique_ptr<SceneFile> m_file;
+    std::vector<std::unique_ptr<SceneFile>> m_files;
     std::unique_ptr<TestSceneSetup> m_testSetup;
 
     unsigned long m_drawCount = 0;

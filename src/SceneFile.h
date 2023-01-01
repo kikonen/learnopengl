@@ -199,6 +199,13 @@ public:
         AsyncLoader* asyncLoader,
         const Assets& assets,
         const std::string& filename);
+
+    SceneFile(
+        AsyncLoader* asyncLoader,
+        const Assets& assets,
+        const std::string& filename,
+        const glm::vec3& rootOffset);
+
     ~SceneFile();
 
     void load(std::shared_ptr<Scene> scene);
@@ -348,6 +355,8 @@ private:
     AsyncLoader* m_asyncLoader;
     const Assets& m_assets;
     const std::string m_filename;
+
+    const glm::vec3 m_rootOffset;
 
     SkyboxData m_skybox;
 
