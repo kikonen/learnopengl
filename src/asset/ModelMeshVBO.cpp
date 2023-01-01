@@ -40,7 +40,7 @@ void ModelMeshVBO::prepareVertex(
     m_vertexEntries.reserve(mesh.m_vertices.size());
 
     for (const auto& vertex : mesh.m_vertices) {
-        VertexEntry entry;
+        auto& entry = m_vertexEntries.emplace_back();
 
         const auto& p = vertex.pos;
         const auto& n = vertex.normal;
@@ -61,8 +61,6 @@ void ModelMeshVBO::prepareVertex(
 
         entry.texCoords.u = (int)(t.x * ki::SCALE_UV16);
         entry.texCoords.v = (int)(t.y * ki::SCALE_UV16);
-
-        m_vertexEntries.push_back(entry);
     }
 }
 

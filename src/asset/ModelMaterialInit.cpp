@@ -26,7 +26,7 @@ void ModelMaterialInit::prepareVertices(
         entries.reserve(count);
 
         for (int i = 0; i < count; i++) {
-            MaterialEntry entry;
+            auto& entry = entries.emplace_back();
 
             const auto& vertex = vertices[i];
             auto* m = Material::findID(vertex.materialID, materialVBO.m_materials);
@@ -42,8 +42,6 @@ void ModelMaterialInit::prepareVertices(
             entry.materialIndex = m ? m->m_registeredIndex : Material::DEFAULT_ID;
 
             assert(entry.materialIndex >= 0 && entry.materialIndex < MAX_MATERIAL_COUNT);
-
-            entries.push_back(entry);
         }
 
         materialVBO.m_singleMaterial = single;

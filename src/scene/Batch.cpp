@@ -45,7 +45,7 @@ void Batch::add(
     int objectID,
     int highlightIndex) noexcept
 {
-    BatchEntry entry;
+    auto& entry = m_entries.emplace_back();
 
     if (highlightIndex > -1 && m_highlight) {
         entry.modelMatrix = model * HIGHLIGHT_MAT;
@@ -80,8 +80,6 @@ void Batch::add(
         entry.objectID.b = b / 255.0f;
         entry.objectID.a = 1.0f;
     }
-
-    m_entries.push_back(entry);
 
     if (m_entries.size() >= m_entryCount)
         int x = 0;
@@ -240,12 +238,11 @@ void Batch::addCommand(
     MeshType* type,
     Shader* shader)
 {
-    BatchCommand cmd;
+    auto& cmd = m_batches.emplace_back();
+
     cmd.m_vao = type->m_vao;
     cmd.m_shader = shader;
     cmd.m_drawOptions = &type->m_drawOptions;
-
-    m_batches.push_back(cmd);
 }
 
 void Batch::draw(

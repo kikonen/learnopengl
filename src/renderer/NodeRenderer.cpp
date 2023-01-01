@@ -221,23 +221,17 @@ void NodeRenderer::drawBlended(
 {
     if (ctx.registry.blendedNodes.empty()) return;
 
-    std::vector<Node*> nodes;
-
-    for (const auto& all : ctx.registry.blendedNodes) {
-        for (const auto& map : all.second) {
-            for (const auto& node : map.second) {
-                nodes.push_back(node);
-            }
-        }
-    }
-
     const glm::vec3& viewPos = ctx.m_camera.getPos();
 
     // TODO KI discards nodes if *same* distance
     std::map<float, Node*> sorted;
-    for (const auto& node : nodes) {
-        const float distance = glm::length(viewPos - node->getWorldPos());
-        sorted[distance] = node;
+    for (const auto& all : ctx.registry.blendedNodes) {
+        for (const auto& map : all.second) {
+            for (const auto& node : map.second) {
+                const float distance = glm::length(viewPos - node->getWorldPos());
+                sorted[distance] = node;
+            }
+        }
     }
 
     MeshType* type = nullptr;

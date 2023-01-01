@@ -24,9 +24,7 @@ void SpriteMaterialInit::prepareVertices(
     {
         auto& entries = materialVBO.m_entries;
 
-        MaterialEntry entry;
+        auto& entry = entries.emplace_back();
         entry.materialIndex = material.m_registeredIndex;
-
-        entries.push_back(entry);
     }
 }

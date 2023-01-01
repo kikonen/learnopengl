@@ -31,14 +31,12 @@ void QuadMaterialInit::prepareVertices(
         entries.reserve(count);
 
         for (int i = 0; i < count; i++) {
-            MaterialEntry entry;
+            auto& entry = entries.emplace_back();
 
             // NOTE KI hardcoded single material
             entry.materialIndex = material.m_registeredIndex;
 
             assert(entry.materialIndex >= 0 && entry.materialIndex < MAX_MATERIAL_COUNT);
-
-            entries.push_back(entry);
         }
     }
 }
