@@ -40,9 +40,10 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
     materialVBO.m_bufferIndex = index;
     materialVBO.m_buffer = &m_entryBuffer;
 
-    for (auto& entry : materialVBO.m_entries) {
-        m_materialEntries.push_back(entry);
-    }
+    m_materialEntries.insert(
+        m_materialEntries.end(),
+        materialVBO.m_entries.begin(),
+        materialVBO.m_entries.end());
 
     KI_INFO(fmt::format(
         "MATERIAL: offset={}, mesh_entries={}, total_entries={}, BUFFER_SIZE={}",

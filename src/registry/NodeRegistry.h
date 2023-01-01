@@ -161,6 +161,7 @@ private:
     std::map<int, NodeVector> m_parentToChildren;
 
     NodeVector m_pendingNodes;
+    NodeVector m_newNodes;
 
     std::vector<NodeListener> m_listeners;
 };

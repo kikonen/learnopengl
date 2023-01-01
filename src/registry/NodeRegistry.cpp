@@ -31,6 +31,8 @@ bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
 NodeRegistry::NodeRegistry(const Assets& assets)
     : assets(assets)
 {
+    m_pendingNodes.reserve(1000);
+    m_newNodes.reserve(1000);
 }
 
 NodeRegistry::~NodeRegistry()
@@ -163,31 +165,30 @@ void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport) noexcept
 
 void NodeRegistry::attachNodes()
 {
-    MeshTypeMap newNodes;
     {
         std::lock_guard<std::mutex> lock(m_load_lock);
+
         if (m_pendingNodes.empty()) return;
 
-        for (const auto& node : m_pendingNodes) {
-            newNodes[node->m_type].push_back(node);
-        }
+        m_newNodes.insert(
+            m_newNodes.end(),
+            m_pendingNodes.begin(),
+            m_pendingNodes.end());
+
         m_pendingNodes.clear();
     }
 
-    for (const auto& [type, nodes] : newNodes) {
-        for (auto& node : nodes) {
-            // NOTE KI ignore children without parent; until parent is found
-            if (!bindParent(node)) continue;
+    for (auto& node : m_newNodes) {
+        // NOTE KI ignore children without parent; until parent is found
+        if (!bindParent(node)) continue;
 
-            bindNode(node);
-        }
-
-        for (auto& node : nodes) {
-            bindChildren(node);
-        }
+        bindNode(node);
+        bindChildren(node);
     }
 
     bindPendingChildren();
+
+    m_newNodes.clear();
 }
 
 int NodeRegistry::countHighlighted() const noexcept
@@ -336,6 +337,7 @@ void NodeRegistry::bindNode(
 
 void NodeRegistry::insertNode(NodeVector& list, Node* node)
 {
+    list.reserve(100);
     list.push_back(node);
 }
 

@@ -105,9 +105,10 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
 
         meshVBO.m_vertexOffset = baseOffset;
 
-        for (const auto& entry : meshVBO.m_vertexEntries) {
-            m_vertexEntries.push_back(entry);
-        }
+        m_vertexEntries.insert(
+            m_vertexEntries.end(),
+            meshVBO.m_vertexEntries.begin(),
+            meshVBO.m_vertexEntries.end());
 
         m_vbo.update(
             baseOffset,
@@ -126,9 +127,10 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
 
         meshVBO.m_indexOffset = baseOffset;
 
-        for (const auto& entry : meshVBO.m_indexEntries) {
-            m_indexEntries.push_back(entry);
-        }
+        m_indexEntries.insert(
+            m_indexEntries.end(),
+            meshVBO.m_indexEntries.begin(),
+            meshVBO.m_indexEntries.end());
 
         m_ebo.update(
             baseOffset,

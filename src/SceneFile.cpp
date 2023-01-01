@@ -710,9 +710,8 @@ void SceneFile::loadEntities(
     std::vector<EntityData>& entities)
 {
     for (const auto& entry : doc["entities"]) {
-        EntityData data;
+        auto& data = entities.emplace_back();
         loadEntity(entry, data);
-        entities.push_back(data);
     }
 }
 
@@ -1238,6 +1237,8 @@ void SceneFile::loadTextureSpec(
 
 glm::vec2 SceneFile::readVec2(const YAML::Node& node) {
     std::vector<float> a;
+    a.reserve(2);
+
     for (const auto& e : node) {
         a.push_back(e.as<float>());
     }
@@ -1246,6 +1247,8 @@ glm::vec2 SceneFile::readVec2(const YAML::Node& node) {
 
 glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
     std::vector<double> a;
+    a.reserve(3);
+
     for (const auto& e : node) {
         a.push_back(e.as<double>());
     }
@@ -1254,6 +1257,8 @@ glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
 
 glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
     std::vector<float> a;
+    a.reserve(4);
+
     for (const auto& e : node) {
         a.push_back(e.as<float>());
     }
@@ -1261,9 +1266,10 @@ glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
 }
 
 glm::vec3 SceneFile::readScale3(const YAML::Node& node) {
-    std::vector<float> a;
-
     if (node.IsSequence()) {
+        std::vector<float> a;
+        a.reserve(3);
+
         for (const auto& e : node) {
             a.push_back(e.as<float>());
         }
@@ -1279,6 +1285,8 @@ glm::vec3 SceneFile::readScale3(const YAML::Node& node) {
 
 glm::vec4 SceneFile::readRGBA(const YAML::Node& node) {
     std::vector<float> a;
+    a.reserve(4);
+
     for (const auto& e : node) {
         a.push_back(e.as<float>());
     }
@@ -1291,6 +1299,8 @@ glm::vec4 SceneFile::readRGBA(const YAML::Node& node) {
 
 glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) {
     std::vector<float> a;
+    a.reserve(2);
+
     for (const auto& e : node) {
         a.push_back(e.as<float>());
     }
