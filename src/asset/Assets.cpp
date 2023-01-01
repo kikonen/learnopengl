@@ -12,6 +12,7 @@ Assets::Assets()
 
     glfwSwapInterval = 3;
     glDebug = false;
+    glNoError = false;
 
     resolutionScale = { 0.5, 0.5 };
 

@@ -56,6 +56,9 @@ void AssetsFile::loadAssets(
         else if (k == "gl_debug") {
             data.glDebug = v.as<bool>();
         }
+        else if (k == "gl_no_error") {
+            data.glNoError = v.as<bool>();
+        }
         else if (k == "async_loader_enabled") {
             data.asyncLoaderEnabled = v.as<bool>();
         }

@@ -50,6 +50,7 @@ void Window::createGLFWWindow()
     // ------------------------------
     KI_INFO("START: GLFW INIT");
     glfwInit();
+    KI_INFO("DONE: GLFW INIT");
 
     if (assets.glDebug) {
         // NOTE KI MUST be after glfwInit BUT before glfwWindow creat4e
@@ -57,10 +58,15 @@ void Window::createGLFWWindow()
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
     }
 
-    KI_INFO("DONE: GLFW INIT");
+    if (assets.glNoError) {
+        // https://www.khronos.org/opengl/wiki/OpenGL_Error#No_error_contexts
+        glfwWindowHint(GLFW_CONTEXT_NO_ERROR, GLFW_TRUE);
+    }
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, assets.glsl_version[0]);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, assets.glsl_version[1]);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 
 //#ifdef __APPLE__
 //    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);

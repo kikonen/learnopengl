@@ -3,6 +3,7 @@ assets:
 
   glfw_swap_interval: 3
   gl_debug: false
+  gl_no_error: false
 
   resolution_scale: 0.5
 

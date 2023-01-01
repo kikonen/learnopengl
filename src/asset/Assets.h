@@ -26,7 +26,14 @@ public:
 
 
     int glfwSwapInterval;
+
+    // https://www.glfw.org/docs/3.3/window_guide.html#window_hints
+
+    // https://learnopengl.com/in-practice/debugging
     bool glDebug;
+
+    // https://www.khronos.org/opengl/wiki/OpenGL_Error#No_error_contexts
+    bool glNoError;
 
     glm::vec2 resolutionScale;
 
