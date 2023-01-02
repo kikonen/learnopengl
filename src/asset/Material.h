@@ -60,7 +60,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd texture_cube.jpg
+map_Kd texture_cube_512.png
 */
 struct Material final
 {
@@ -193,4 +193,3 @@ private:
 
     bool m_loaded = false;
 };
-

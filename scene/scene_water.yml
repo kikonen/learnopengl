@@ -72,8 +72,8 @@ materials:
     ns: 150
     ks: [0.2, 0.2, 0.5, 1.0]
     kd: [0.0, 0.1, 0.8, 1.0]
-    map_bump: waterNormalMap.png
-    map_dudv: waterDUDV.png
+    map_bump: waterNormalMap_512.png
+    map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
       mode: GL_REPEAT
@@ -88,7 +88,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Marble White_VH.PNG
+    map_kd: Marble White_VH_512.PNG
     reflection: 0.9
     refraction: 0.1
     refraction_ratio: [1.0, 1.52]

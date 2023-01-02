@@ -10,8 +10,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump daisy_normal.png
-map_Kd daisy.png
+map_Bump daisy_1024_normal.png
+map_Kd daisy_1024.png
 
 newmtl kari
 Ns 225.000000
@@ -22,9 +22,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump kari_normal.png
-map_Kd kari.jpg
-map_Ke matrix.jpg
+map_Bump kari_512_normal.png
+map_Kd kari_512.png
+map_Ke matrix_512.png
 
 newmtl wood
 Ns 225.000000
@@ -35,5 +35,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd container2.png
-map_Ks container2_specular.png
+map_Kd container2_512.png
+map_Ks container2_512_specular.png

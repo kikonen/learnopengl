@@ -17,7 +17,7 @@ assets:
   ground_offset: [200, 0, 200]
 
   placeholder_texture_always: false
-  placeholder_texture: textures/tiles.png
+  placeholder_texture: textures/tiles_1024.png
 
   ground_offset_nope: [0.0, 15.0, -40.0]
   xxground_offset: [200, 0, 200]

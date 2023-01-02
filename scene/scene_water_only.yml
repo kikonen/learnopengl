@@ -102,7 +102,8 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Dirt_vh.png
+    map_kd: Dirt_vh_1024.png
+    map_bump: Dirt_vh_1024_normal.png
   - name: mirror_todo
     ns: 225.000000
     ka: [1.000000, 1.000000, 1.000000, 1.0]
@@ -112,7 +113,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood.png
+    map_kd: wood_1024.png
     reflection: 0.1
     refraction: 0.9
     refraction_ratio: [1.0, 1.52]
@@ -133,7 +134,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood.png
+    map_kd: wood_1024.png
     reflection: 0.3
   - name: skeleton
     type: sprite
@@ -146,8 +147,8 @@ materials:
     ns: 150
     ks: [0.2, 0.2, 0.5, 1.0]
     kd: [0.0, 0.1, 0.8, 1.0]
-    map_bump: waterNormalMap.png
-    map_dudv: waterDUDV.png
+    map_bump: waterNormalMap_512.png
+    map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
       mode: GL_REPEAT
@@ -156,11 +157,11 @@ materials:
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: Grass Dark_VH.PNG
-    map_bump: waterNormalMap.png
+    map_kd: Grass_Dark_VH_1024.PNG
+    map_bump: Grass_Dark_VH_1024_normal.PNG
     tiling: 100
     texture_spec:
       mode: GL_REPEAT
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: noise.png
+    map_kd: noise_256.png

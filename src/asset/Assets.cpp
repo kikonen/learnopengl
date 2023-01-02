@@ -35,7 +35,7 @@ Assets::Assets()
     texturesDir = "textures";
 
     placeholderTextureAlways = false;
-    placeholderTexture = "textures/tiles.png";
+    placeholderTexture = "textures/tiles_1024.png";
 
     useIMGUI = false;
     useWrireframe = false;

@@ -484,6 +484,17 @@ entities:
     material_modifier:
       reflection: 0.05
     enabled: true
+  - name: Copper ball
+    parent_id: 82896a38-e5cf-4274-b4be-e79ac8325b65
+    model: water_ball
+    shader: texture
+    pos: [0.0, 0.0, 10.0]
+    scale: 1.3
+    force_material: true
+    material: copper
+    material_modifier:
+      reflection: 0.05
+    enabled: true
   - name: Plasma ball
     model: ball_volume
     material: plasma_ball
@@ -802,7 +813,8 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Dirt_vh.png
+    map_kd: Dirt_vh_1024.png
+    map_bump: Dirt_vh_1024_normal.png
   - name: mirror
     type: model
     ns: 225.000000
@@ -813,7 +825,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Marble White_VH.PNG
+    map_kd: Marble White_VH_512.PNG
     reflection: 0.9
     refraction: 0.1
     refraction_ratio: [1.0, 1.52]
@@ -835,8 +847,8 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: brickwall.jpg
-    map_bump: brickwall_normal.jpg
+    map_kd: brickwall_1024.png
+    map_bump: brickwall_1024_normal.png
     reflection: 0.2
   - name: woodwall
     ns: 225.000000
@@ -848,7 +860,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood.png
+    map_kd: wood_1024.png
     reflection: 0.4
   - name: giant_woodbox
     ns: 225.000000
@@ -860,7 +872,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood.png
+    map_kd: wood_1024.png
     reflection: 0.1
   - name: window_1
     ns: 225.000000
@@ -895,8 +907,8 @@ materials:
     ns: 150
     ks: [0.2, 0.2, 0.5, 1.0]
     kd: [0.0, 0.1, 0.8, 1.0]
-    map_bump: waterNormalMap.png
-    map_dudv: waterDUDV.png
+    map_bump: waterNormalMap_512.png
+    map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
       mode: GL_REPEAT
@@ -911,7 +923,7 @@ materials:
     ni: 1.45
     d: 1.0
     illum: 2
-    map_kd: Marble White_VH.PNG
+    map_kd: Marble White_VH_512.PNG
     tiling: 8
     texture_spec:
       mode: GL_REPEAT
@@ -919,11 +931,11 @@ materials:
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: Grass Dark_VH.PNG
-    map_bump: waterNormalMap.png
+    map_kd: Grass_Dark_VH_1024.PNG
+    map_bump: Grass_Dark_VH_1024_normal.PNG
     tiling: 100
     texture_spec:
       mode: GL_REPEAT
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: noise.png
+    map_kd: noise_256.png

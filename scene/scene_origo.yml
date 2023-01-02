@@ -178,8 +178,8 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: brickwall.jpg
-    map_bump: brickwall_normal.jpg
+    map_kd: brickwall_512.png
+    map_bump: brickwall_512_normal.png
     reflection: 0.2
   - name: woodwall
     ns: 225.000000
@@ -191,7 +191,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood.png
+    map_kd: wood_1024.png
     reflection: 0.4
   - name: giant_woodbox
     ns: 225.000000
@@ -203,7 +203,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood.png
+    map_kd: wood_1024.png
     reflection: 0.1
   - name: mirror
     type: model
@@ -215,7 +215,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Marble White_VH.PNG
+    map_kd: Marble White_VH_512.PNG
     reflection: 0.9
     refraction: 0.1
     refraction_ratio: [1.0, 1.52]

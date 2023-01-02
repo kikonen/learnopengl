@@ -55,11 +55,11 @@ materials:
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: Grass Dark_VH.PNG
-    map_bump: waterNormalMap.png
+    map_kd: Grass_Dark_VH_1024.PNG
+    map_bump: Grass_Dark_VH_1024_normal.PNG
     tiling: 100
     texture_spec:
       mode: GL_REPEAT
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: noise.png
+    map_kd: noise_256.png
