@@ -50,7 +50,11 @@ precision mediump float;
 #include fn_calculate_normal_pattern.glsl
 #include fn_calculate_fog.glsl
 
-vec3 estimateWaveNormal(float offset, float mapScale, float hScale) {
+vec3 estimateWaveNormal(
+  in float offset,
+  in float mapScale,
+  in float hScale)
+{
   vec2 tc = fs_in.texCoord;
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex

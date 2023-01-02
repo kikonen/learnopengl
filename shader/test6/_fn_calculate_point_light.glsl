@@ -1,9 +1,9 @@
 vec4 calculatePointLight(
-  PointLight light,
-  vec3 normal,
-  vec3 toView,
-  vec3 fragPos,
-  Material material)
+  in PointLight light,
+  in vec3 normal,
+  in vec3 toView,
+  in vec3 fragPos,
+  in Material material)
 {
   vec3 toLight = normalize(light.pos - fragPos);
 

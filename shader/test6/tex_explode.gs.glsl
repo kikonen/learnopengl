@@ -42,7 +42,7 @@ vec3 getNormal()
     return normalize(cross(a, b));
 }
 
-vec4 explode(vec4 pos, vec3 normal)
+vec4 explode(in vec4 pos, in vec3 normal)
 {
   float magnitude = 2.0;
   float t = u_time;
@@ -50,7 +50,7 @@ vec4 explode(vec4 pos, vec3 normal)
   return pos + vec4(direction, 0.0);
 }
 
-void sendVertex(int i, vec4 pos) {
+void sendVertex(in int i, in vec4 pos) {
   gl_Position = pos;
   gs_out.texCoord = vs_in[i].texCoord;
   gs_out.vertexPos = vs_in[i].vertexPos;

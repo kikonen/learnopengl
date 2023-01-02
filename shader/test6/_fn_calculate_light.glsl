@@ -1,7 +1,7 @@
 vec4 calculateLight(
-  vec3 normal,
-  vec3 toView,
-  Material material)
+  in vec3 normal,
+  in vec3 toView,
+  in Material material)
 {
   vec4 emission = material.emission;
 

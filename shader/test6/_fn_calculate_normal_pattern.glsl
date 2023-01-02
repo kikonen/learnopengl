@@ -1,4 +1,4 @@
-vec3 calculateNormalPattern(vec3 normal)
+vec3 calculateNormalPattern(in vec3 normal)
 {
   float a = 0.25;
   float b = 50.0;

@@ -27,21 +27,21 @@ precision mediump float;
 
 layout (index = EFF_NONE)
 subroutine (sub_effect)
-vec4 effectNone(vec4 color)
+vec4 effectNone(in vec4 color)
 {
   return color;
 }
 
 layout (index = EFF_INVERT)
 subroutine (sub_effect)
-vec4 effectInvert(vec4 color)
+vec4 effectInvert(in vec4 color)
 {
   return vec4(vec3(1.0 - color), color.a);
 }
 
 layout (index = EFF_GRAY_SCALE)
 subroutine (sub_effect)
-vec4 effectGrayScale(vec4 color)
+vec4 effectGrayScale(in vec4 color)
 {
     float avg = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
     return vec4(avg, avg, avg, color.a);
@@ -49,7 +49,7 @@ vec4 effectGrayScale(vec4 color)
 
 layout (index = EFF_SHARPEN)
 subroutine (sub_effect)
-vec4 effectSharpen(vec4 color)
+vec4 effectSharpen(in vec4 color)
 {
     vec2 offsets[9] = vec2[]
       (
@@ -84,7 +84,7 @@ vec4 effectSharpen(vec4 color)
 
 layout (index = EFF_BLUR)
 subroutine (sub_effect)
-vec4 effectBlur(vec4 color)
+vec4 effectBlur(in vec4 color)
 {
     vec2 offsets[9] = vec2[]
       (
@@ -120,7 +120,7 @@ vec4 effectBlur(vec4 color)
 
 layout (index = EFF_EDGE)
 subroutine (sub_effect)
-vec4 effectEdge(vec4 color)
+vec4 effectEdge(in vec4 color)
 {
     vec2 offsets[9] = vec2[]
       (
@@ -156,7 +156,7 @@ vec4 effectEdge(vec4 color)
 
 /*
 subroutine (sub_effect)
-vec4 effectX(vec4 color)
+vec4 effectX(in vec4 color)
 {
   vec4 color;
   if (u_effect == EFF_INVERT) {

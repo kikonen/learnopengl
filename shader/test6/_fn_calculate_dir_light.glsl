@@ -1,4 +1,8 @@
-float lookup(vec4 fragPosLightSpace, float x, float y, float bias)
+float lookup(
+  in vec4 fragPosLightSpace,
+  in float x,
+  in float y,
+  in float bias)
 {
   float t = textureProj(u_shadowMap,
                         fragPosLightSpace + vec4(x * 0.001 * fragPosLightSpace.w,
@@ -8,7 +12,10 @@ float lookup(vec4 fragPosLightSpace, float x, float y, float bias)
   return t;
 }
 
-float calcShadow(vec4 fragPosLightSpace, vec3 normal, vec3 toLight)
+float calcShadow(
+  in vec4 fragPosLightSpace,
+  in vec3 normal,
+  in vec3 toLight)
 {
   float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
 
@@ -28,18 +35,21 @@ float calcShadow(vec4 fragPosLightSpace, vec3 normal, vec3 toLight)
   return shadowFactor;
 }
 
-float calcShadow2(vec4 fragPosLightSpace, vec3 normal, vec3 toLight)
+float calcShadow2(
+  in vec4 fragPosLightSpace,
+  in vec3 normal,
+  in vec3 toLight)
 {
   float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
   return textureProj(u_shadowMap, fragPosLightSpace, bias);
 }
 
 vec4 calculateDirLight(
-  DirLight light,
-  vec3 normal,
-  vec3 toView,
-  vec4 fragPosLightSpace,
-  Material material)
+  in DirLight light,
+  in vec3 normal,
+  in vec3 toView,
+  in vec4 fragPosLightSpace,
+  in Material material)
 {
   vec3 toLight = normalize(-light.dir);
 

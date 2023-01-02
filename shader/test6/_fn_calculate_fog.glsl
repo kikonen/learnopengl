@@ -1,4 +1,7 @@
-vec4 calculateFog(float fogRatio, vec4 color) {
+vec4 calculateFog(
+  in float fogRatio,
+  in vec4 color)
+{
   if (fogRatio == 0) return color;
 
   float dist = length(fs_in.viewVertexPos);
