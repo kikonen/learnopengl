@@ -52,7 +52,7 @@ precision mediump float;
 void main() {
   int materialIndex = int(a_materialIndex);
   if (a_materialIndex < 0) {
-    materialIndex = int(u_materialIndeces[int(a_materialOffset) + gl_VertexID]);
+    materialIndex = int(u_materialIndeces[int(a_materialOffset) + gl_VertexID - gl_BaseVertex]);
   }
   vec4 worldPos = a_modelMatrix * a_pos;
 

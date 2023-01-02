@@ -66,8 +66,7 @@ void Batch::add(
     }
     else {
         entry.materialIndex = -1;
-        int baseVertex = top.m_drawOptions->vertexOffset / sizeof(VertexEntry);
-        entry.materialOffset = top.m_materialVBO->m_bufferIndex - baseVertex;
+        entry.materialOffset = top.m_materialVBO->m_bufferIndex;
     }
 
     if (m_useObjectIDBuffer) {
