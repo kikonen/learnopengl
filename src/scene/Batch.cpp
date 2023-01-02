@@ -65,8 +65,7 @@ void Batch::add(
         entry.materialIndex = top.m_materialVBO->m_entries[0].materialIndex;
     }
     else {
-        entry.materialIndex = -1;
-        entry.materialOffset = top.m_materialVBO->m_bufferIndex;
+        entry.materialIndex = -top.m_materialVBO->m_bufferIndex;
     }
 
     if (m_useObjectIDBuffer) {
@@ -201,11 +200,6 @@ void Batch::prepareVAO(
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MATERIAL_INDEX);
         glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, materialIndex));
         glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MATERIAL_INDEX, VBO_BATCH_BINDING);
-    }
-    {
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MATERIAL_OFFSET);
-        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_OFFSET, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, materialOffset));
-        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MATERIAL_OFFSET, VBO_BATCH_BINDING);
     }
 
     // highlight
