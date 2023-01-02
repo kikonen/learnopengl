@@ -68,13 +68,13 @@ Assets::Assets()
     mirrorRenderFrequency = 0.1f;
     mirrorFov = 40.f;
 
-    waterTileSize = 100;
+    waterTileSize = 128;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
     waterRenderFrequency = 0.1f;
 
     terrainVertexCount = 64;
-    terrainTileSize = 400;
+    terrainTileSize = 512;
 
     batchSize = 10;
 
@@ -90,13 +90,13 @@ Assets::Assets()
     shadowMapSize = 1024;
     shadowRenderFrequency = 0.2f;
 
-    mirrorReflectionSize = 1000;
-    mirrorRefractionSize = 1000;
+    mirrorReflectionSize = 1024;
+    mirrorRefractionSize = 1024;
 
-    waterReflectionSize = 1000;
-    waterRefractionSize = 1000;
+    waterReflectionSize = 1024;
+    waterRefractionSize = 1024;
 
-    cubeMapSize = 1000;
+    cubeMapSize = 1024;
     cubeMapNearPlane = 0.5;
     cubeMapFarPlane = 200;
     cubeMapRenderFrequency = 0.2f;
