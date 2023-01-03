@@ -15,13 +15,15 @@
 // +Z (front)
 // -Z (back)
 // -------------------------------------------------------
-unsigned int CubeMap::createEmpty(int size)
+unsigned int CubeMap::createEmpty(
+    int size,
+    GLenum internalFormat)
 {
     unsigned int textureID;
 
     glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureID);
 
-    glTextureStorage2D(textureID, 1, GL_RGBA8, size, size);
+    glTextureStorage2D(textureID, 1, internalFormat, size, size);
 
     glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -41,7 +43,10 @@ unsigned int CubeMap::createEmpty(int size)
 // +Z (front)
 // -Z (back)
 // -------------------------------------------------------
-unsigned int CubeMap::createFromImages(std::vector<std::string> faces)
+unsigned int CubeMap::createFromImages(
+    std::vector<std::string> faces,
+    GLenum format,
+    GLenum internalFormat)
 {
     unsigned int textureID;
 
@@ -60,7 +65,7 @@ unsigned int CubeMap::createFromImages(std::vector<std::string> faces)
         h = image->m_height;
     }
 
-    glTextureStorage2D(textureID, 1, GL_RGBA8, w, h);
+    glTextureStorage2D(textureID, 1, internalFormat, w, h);
 
     // https://github.com/fendevel/Guide-to-Modern-OpenGL-Functions
     for (unsigned int i = 0; i < 6; i++)
@@ -68,7 +73,7 @@ unsigned int CubeMap::createFromImages(std::vector<std::string> faces)
         Image* image = images[i];
         if (!image->m_data) continue;
 
-        glTextureSubImage3D(textureID, 0, 0, 0, i, image->m_width, image->m_height, 1, GL_RGB, GL_UNSIGNED_BYTE, image->m_data);
+        glTextureSubImage3D(textureID, 0, 0, 0, i, image->m_width, image->m_height, 1, format, GL_UNSIGNED_BYTE, image->m_data);
     }
 
     for (unsigned int i = 0; i < 6; i++) {
