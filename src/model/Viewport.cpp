@@ -160,7 +160,7 @@ void Viewport::draw(const RenderContext& ctx)
             d1.x,
             d1.y,
             GL_COLOR_BUFFER_BIT,
-            GL_LINEAR);
+            GL_NEAREST);
     }
     else
     {
