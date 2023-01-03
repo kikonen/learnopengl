@@ -59,6 +59,7 @@ void ShadowMapRenderer::prepare(
         glm::vec3(0.5, -0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
+        false,
         m_shadowBuffer->m_spec.attachments[0].textureID,
         m_shadowDebugShader,
         [this, &assets](Viewport& vp) {

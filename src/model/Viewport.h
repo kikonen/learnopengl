@@ -8,7 +8,10 @@
 
 #include "asset/Shader.h"
 
+
+
 class RenderContext;
+class FrameBuffer;
 
 class Viewport final
 {
@@ -18,13 +21,17 @@ public:
         const glm::vec3& pos,
         const glm::vec3& rotation,
         const glm::vec2& size,
-        unsigned int textureID,
+        bool useFrameBuffer,
+        unsigned int textureId,
         Shader* shader,
         std::function<void(Viewport&)> binder = [](Viewport&) {});
 
     ~Viewport();
 
-    void setTextureID(unsigned int textureID);
+    void setSourceFrameBuffer(FrameBuffer* frameBuffer);
+    void setDestinationFrameBuffer(FrameBuffer* frameBuffer);
+
+    void setTextureId(GLuint textureId);
 
     void prepare(const Assets& assets);
 
@@ -43,6 +50,8 @@ public:
     const glm::vec3 m_rotation;
     const glm::vec2 m_size;
 
+    const bool m_useFrameBuffer;
+
     ViewportEffect m_effect = ViewportEffect::none;
 
 private:
@@ -51,7 +60,10 @@ private:
     GLVertexArray m_vao;
     GLBuffer m_vbo;
 
-    unsigned int m_textureID;
+    FrameBuffer* m_sourceBuffer{ nullptr };
+    FrameBuffer* m_destinationBuffer{ nullptr };
+
+    GLuint m_textureId;
 
     Shader* m_shader{ nullptr };
     std::function<void(Viewport&)> m_binder;

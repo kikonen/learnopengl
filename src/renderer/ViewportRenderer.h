@@ -15,6 +15,7 @@ public:
     virtual void update(const RenderContext& ctx) override;
 
     void render(
-        const RenderContext& ctx);
+        const RenderContext& ctx,
+        FrameBuffer* destinationBuffer);
 };
 

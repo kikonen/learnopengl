@@ -66,16 +66,22 @@ void WaterMapRenderer::prepare(
         glm::vec3(0.5, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
+        true,
         m_reflectionBuffer->m_spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
+
+    m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffer.get());
 
     m_refractionDebugViewport = std::make_shared<Viewport>(
         "WaterRefract",
         glm::vec3(0.5, 0.0, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
+        true,
         m_refractionBuffer->m_spec.attachments[0].textureID,
         shaders.getShader(assets, TEX_VIEWPORT));
+
+    m_refractionDebugViewport->setSourceFrameBuffer(m_refractionBuffer.get());
 
     m_reflectionDebugViewport->prepare(assets);
     m_refractionDebugViewport->prepare(assets);

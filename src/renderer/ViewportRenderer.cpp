@@ -23,7 +23,8 @@ void ViewportRenderer::update(const RenderContext& ctx)
 }
 
 void ViewportRenderer::render(
-    const RenderContext& ctx)
+    const RenderContext& ctx,
+    FrameBuffer* destinationBuffer)
 {
     if (ctx.registry.viewports.empty()) return;
 
@@ -35,6 +36,7 @@ void ViewportRenderer::render(
     ctx.bindDefaults();
 
     for (auto& viewport : ctx.registry.viewports) {
+        viewport->setDestinationFrameBuffer(destinationBuffer);
         viewport->bind(ctx);
         viewport->draw(ctx);
         viewport->unbind(ctx);

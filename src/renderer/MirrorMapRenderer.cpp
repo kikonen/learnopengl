@@ -80,7 +80,8 @@ void MirrorMapRenderer::prepare(
         glm::vec3(-1.0, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        -1,
+        true,
+        0,
         shaders.getShader(assets, TEX_VIEWPORT));
 
     m_debugViewport->prepare(assets);
@@ -163,7 +164,8 @@ void MirrorMapRenderer::render(
 
         ctx.bindClipPlanesUBO();
 
-        m_debugViewport->setTextureID(m_curr->m_spec.attachments[0].textureID);
+        m_debugViewport->setTextureId(m_curr->m_spec.attachments[0].textureID);
+        m_debugViewport->setSourceFrameBuffer(m_curr.get());
     }
 
     m_prev.swap(m_curr);

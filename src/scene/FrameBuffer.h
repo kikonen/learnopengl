@@ -164,7 +164,7 @@ public:
         const bool clear,
         const glm::vec4& clearColor);
 
-    void bind(const RenderContext& ctx);
+    virtual void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
 
     void bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex);
@@ -172,7 +172,7 @@ public:
 public:
     FrameBufferSpecification m_spec;
 
-    unsigned int m_fbo = 0;
+    GLuint m_fbo = 0;
 
 protected:
     bool m_prepared = false;

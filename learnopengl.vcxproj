@@ -222,6 +222,7 @@
     <ClCompile Include="src\renderer\MirrorMapRenderer.cpp" />
     <ClCompile Include="src\kigl\GLState.cpp" />
     <ClCompile Include="src\asset\DynamicCubeMap.cpp" />
+    <ClCompile Include="src\scene\WindowBuffer.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
     <ClCompile Include="src\asset\ImageTexture.cpp" />
     <ClCompile Include="src\asset\PlainTexture.cpp" />
@@ -349,6 +350,7 @@
     <ClInclude Include="src\asset\DynamicCubeMap.h" />
     <ClInclude Include="src\scene\BatchCommand.h" />
     <ClInclude Include="src\scene\BatchEntry.h" />
+    <ClInclude Include="src\scene\WindowBuffer.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\asset\ImageTexture.h" />
     <ClInclude Include="src\asset\PlainTexture.h" />

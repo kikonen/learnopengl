@@ -35,6 +35,7 @@
 #include "ParticleSystem.h"
 
 #include "TextureBuffer.h"
+#include "WindowBuffer.h"
 
 class Camera;
 class NodeController;
@@ -116,11 +117,13 @@ private:
 
     std::unique_ptr<ParticleSystem> particleSystem{ nullptr };
 
-    std::unique_ptr<TextureBuffer> m_readBuffer{ nullptr };
+    std::unique_ptr<TextureBuffer> m_rearBuffer{ nullptr };
     std::shared_ptr<Viewport> m_rearViewport;
 
     std::unique_ptr<TextureBuffer> m_mainBuffer{ nullptr };
     std::shared_ptr<Viewport> m_mainViewport;
+
+    std::unique_ptr<WindowBuffer> m_windowBuffer{ nullptr };
 
     unsigned int m_pbo = 0;
 };

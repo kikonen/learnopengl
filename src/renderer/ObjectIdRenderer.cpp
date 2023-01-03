@@ -91,6 +91,7 @@ void ObjectIdRenderer::prepare(
         //glm::vec3(0.5, -0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
+        true,
         0,
         shaders.getShader(assets, TEX_VIEWPORT));
 
@@ -116,7 +117,8 @@ void ObjectIdRenderer::update(const RenderContext& ctx)
     m_idBuffer.reset(buffer);
     m_idBuffer->prepare(true, { 0, 0, 0, 0.5 });
 
-    m_debugViewport->setTextureID(m_idBuffer->m_spec.attachments[0].textureID);
+    m_debugViewport->setTextureId(m_idBuffer->m_spec.attachments[0].textureID);
+    m_debugViewport->setSourceFrameBuffer(m_idBuffer.get());
 }
 
 void ObjectIdRenderer::render(

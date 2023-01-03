@@ -99,6 +99,10 @@ void Scene::prepare(ShaderRegistry& shaders)
     }
 
     {
+        m_windowBuffer = std::make_unique<WindowBuffer>();
+    }
+
+    {
         m_mainViewport = std::make_shared<Viewport>(
             "Main",
             //glm::vec3(-0.75, 0.75, 0),
@@ -106,6 +110,7 @@ void Scene::prepare(ShaderRegistry& shaders)
             glm::vec3(0, 0, 0),
             //glm::vec2(1.5f, 1.5f),
             glm::vec2(2.f, 2.f),
+            true,
             0,
             shaders.getShader(assets, TEX_VIEWPORT));
 
@@ -127,6 +132,7 @@ void Scene::prepare(ShaderRegistry& shaders)
             glm::vec3(0.5, 1, 0),
             glm::vec3(0, 0, 0),
             glm::vec2(0.5f, 0.5f),
+            true,
             0,
             shaders.getShader(assets, TEX_VIEWPORT));
 
@@ -309,22 +315,23 @@ void Scene::drawRear(RenderContext& ctx)
     rot.y += 180;
     camera.setRotation(-rot);
 
-    RenderContext mirrorCtx("BACK", &ctx, camera, m_readBuffer->m_spec.width, m_readBuffer->m_spec.height);
+    RenderContext mirrorCtx("BACK", &ctx, camera, m_rearBuffer->m_spec.width, m_rearBuffer->m_spec.height);
     mirrorCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
     mirrorCtx.bindMatricesUBO();
 
-    m_readBuffer->bind(mirrorCtx);
+    m_rearBuffer->bind(mirrorCtx);
 
     drawScene(mirrorCtx);
 
-    m_readBuffer->unbind(ctx);
+    m_rearBuffer->unbind(ctx);
     ctx.bindMatricesUBO();
 }
 
 void Scene::drawViewports(RenderContext& ctx)
 {
     if (m_viewportRenderer) {
-        m_viewportRenderer->render(ctx);
+        m_windowBuffer->bind(ctx);
+        m_viewportRenderer->render(ctx, m_windowBuffer.get());
     }
 }
 
@@ -430,7 +437,9 @@ void Scene::updateMainViewport(RenderContext& ctx)
 
         m_mainBuffer.reset(buffer);
         m_mainBuffer->prepare(true, { 0, 0, 0, 1.0 });
-        m_mainViewport->setTextureID(m_mainBuffer->m_spec.attachments[0].textureID);
+
+        m_mainViewport->setTextureId(m_mainBuffer->m_spec.attachments[0].textureID);
+        m_mainViewport->setSourceFrameBuffer(m_mainBuffer.get());
     }
 
     // VMIRROR
@@ -441,16 +450,17 @@ void Scene::updateMainViewport(RenderContext& ctx)
         if (mirrorW < 1) mirrorW = 1;
         if (mirrorH < 1) mirrorH = 1;
 
-        if (!m_readBuffer && assets.showRearView) {
+        if (!m_rearBuffer && assets.showRearView) {
             // NOTE KI alpha NOT needed
             auto buffer = new TextureBuffer({
                 mirrorW, mirrorH,
                 { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepthStencil() } });
 
-            m_readBuffer.reset(buffer);
-            m_readBuffer->prepare(true, { 0, 0, 0, 1.0 });
+            m_rearBuffer.reset(buffer);
+            m_rearBuffer->prepare(true, { 0, 0, 0, 1.0 });
 
-            m_rearViewport->setTextureID(m_readBuffer->m_spec.attachments[0].textureID);
+            m_rearViewport->setTextureId(m_rearBuffer->m_spec.attachments[0].textureID);
+            m_rearViewport->setSourceFrameBuffer(m_rearBuffer.get());
         }
     }
 }
