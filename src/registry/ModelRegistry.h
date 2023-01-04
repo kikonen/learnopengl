@@ -12,7 +12,7 @@
 #include "asset/ModelVAO.h"
 
 class Batch;
-class Material;
+struct Material;
 class ModelMesh;
 class ModelMeshVBO;
 

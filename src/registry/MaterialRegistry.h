@@ -20,7 +20,7 @@ public:
 
     void registerMaterialVBO(MaterialVBO& materialVBO);
 
-    int getBaseIndex() { return m_materials.size(); }
+    size_t getBaseIndex() { return m_materials.size(); }
 
     Material* find(
         const std::string& name);
