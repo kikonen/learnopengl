@@ -6,8 +6,6 @@
 #include "ki/GL.h"
 
 namespace {
-    const int MIP_MAP_LEVELS = 3;
-
     std::map<const std::string, std::unique_ptr<ImageTexture>> textures;
 
     bool preparedTexturesReady = false;
@@ -21,7 +19,7 @@ ImageTexture* ImageTexture::getTexture(const std::string& path, const TextureSpe
 {
     std::lock_guard<std::mutex> lock(textures_lock);
 
-    const std::string cacheKey = path + "_" + std::to_string(spec.mode);
+    const std::string cacheKey = path + "_" + std::to_string(spec.clamp);
 
     auto e = textures.find(cacheKey);
     if (e == textures.end()) {
@@ -79,26 +77,17 @@ void ImageTexture::prepare(const Assets& assets)
     }
 
     // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
-    /*
-    GLuint textureHandle;
-    glCreateTextures(GL_TEXTURE_2D, 1, &textureHandle);
-    glTextureStorage2D(textureHandle, 1, GL_RGBA8, imageW, imageH);
-    glTextureSubImage2D(textureHandle, 0, 0, 0, imageW, imageH, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
-    glTextureParameteri(textureHandle, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glBindTextureUnit(0, textureHandle);
-    */
-
     glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
 
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.mode);
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.mode);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.clamp);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.clamp);
 
     // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
     // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
-    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
+    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
 
-    glTextureStorage2D(m_textureID, MIP_MAP_LEVELS, m_internalFormat, m_image->m_width, m_image->m_height);
+    glTextureStorage2D(m_textureID, m_spec.mipMapLevels, m_internalFormat, m_image->m_width, m_image->m_height);
     glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, GL_UNSIGNED_BYTE, m_image->m_data);
 
     glGenerateTextureMipmap(m_textureID);

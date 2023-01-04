@@ -26,13 +26,14 @@ void PlainTexture::prepare(const Assets& assets)
 
     glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
 
-    KI_GL_CALL(glad_glTextureStorage2D(m_textureID, 1, m_internalFormat, m_width, m_height));
+    //KI_GL_CALL(glad_glTextureStorage2D(m_textureID, 1, m_internalFormat, m_width, m_height));
+    glTextureStorage2D(m_textureID, m_spec.mipMapLevels, m_internalFormat, m_width, m_height);
 
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.mode);
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.mode);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.clamp);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.clamp);
 
-    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
+    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
 
     glGenerateTextureMipmap(m_textureID);
 }

@@ -1222,9 +1222,9 @@ void SceneFile::loadTextureSpec(
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
-        if (k == "mode") {
+        if (k == "clamp") {
             if (v.as<std::string>() == "GL_REPEAT") {
-                textureSpec.mode = GL_REPEAT;
+                textureSpec.clamp = GL_REPEAT;
             } else {
                 std::cout << "UNKNOWN MODE: " << k << "=" << v << "\n";
             }

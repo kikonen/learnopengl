@@ -59,7 +59,7 @@ materials:
     map_bump: Grass_Dark_VH_1024_normal.PNG
     tiling: 100
     texture_spec:
-      mode: GL_REPEAT
+      clamp: GL_REPEAT
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: noise_256.png

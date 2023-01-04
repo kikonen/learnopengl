@@ -911,7 +911,7 @@ materials:
     map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
-      mode: GL_REPEAT
+      clamp: GL_REPEAT
       _pattern: 1
   - name: water_bottom
     type: model
@@ -926,7 +926,7 @@ materials:
     map_kd: Marble White_VH_512.PNG
     tiling: 8
     texture_spec:
-      mode: GL_REPEAT
+      clamp: GL_REPEAT
   - name: terrain_grass
     type: texture
     ns: 50
@@ -935,7 +935,7 @@ materials:
     map_bump: Grass_Dark_VH_1024_normal.PNG
     tiling: 100
     texture_spec:
-      mode: GL_REPEAT
+      clamp: GL_REPEAT
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: noise_256.png

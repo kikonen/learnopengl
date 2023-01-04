@@ -76,7 +76,7 @@ materials:
     map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
-      mode: GL_REPEAT
+      clamp: GL_REPEAT
       _pattern: 1
   - name: mirror
     type: model
