@@ -49,15 +49,14 @@ void DynamicCubeMap::prepare(
 
     // TODO KI glNamedFramebufferTexture2DEXT missing
     {
-        glGenFramebuffers(1, &m_fbo);
-        glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+        glCreateFramebuffers(1, &m_fbo);
         clearMask |= GL_COLOR_BUFFER_BIT;
     }
 
     {
         glCreateRenderbuffers(1, &m_depthBuffer);
         glNamedRenderbufferStorage(m_depthBuffer, GL_DEPTH_COMPONENT24, m_size, m_size);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
+        glNamedFramebufferRenderbuffer(m_fbo, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
         clearMask |= GL_DEPTH_BUFFER_BIT;
     }
 
@@ -68,11 +67,11 @@ void DynamicCubeMap::prepare(
 
     // NOTE KI clear buffer to avoid showing garbage
     if (clear) {
+        glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
         glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
         glClear(clearMask);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     m_textureID = CubeMap::createEmpty(m_size);
     m_valid = true;

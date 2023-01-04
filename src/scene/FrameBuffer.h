@@ -31,7 +31,7 @@ struct FrameBufferAttachment {
     bool useMibMap = false;
 
     unsigned int textureID = 0;
-    unsigned int RBO = 0;
+    unsigned int rbo = 0;
 
     static FrameBufferAttachment getTextureRGBA(GLenum attachment = GL_COLOR_ATTACHMENT0) {
         FrameBufferAttachment spec;

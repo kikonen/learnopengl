@@ -21,8 +21,8 @@ FrameBuffer::~FrameBuffer()
         if (att.textureID) {
             glDeleteTextures(1, &att.textureID);
         }
-        if (att.RBO) {
-            glDeleteRenderbuffers(1, &att.RBO);
+        if (att.rbo) {
+            glDeleteRenderbuffers(1, &att.rbo);
         }
     }
 
@@ -35,10 +35,8 @@ void FrameBuffer::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    // TODO KI glNamedFramebufferTexture2DEXT missing
     {
-        glGenFramebuffers(1, &m_fbo);
-        glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+        glCreateFramebuffers(1, &m_fbo);
     }
 
     int clearMask = 0;
@@ -57,14 +55,14 @@ void FrameBuffer::prepare(
 
             glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
 
-            glFramebufferTexture2D(GL_FRAMEBUFFER, att.attachment, GL_TEXTURE_2D, att.textureID, 0);
+            glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
             clearMask |= GL_COLOR_BUFFER_BIT;
         }
         else if (att.type == FrameBufferAttachmentType::rbo) {
-            glCreateRenderbuffers(1, &att.RBO);
-            glNamedRenderbufferStorage(att.RBO, att.internalFormat, m_spec.width, m_spec.height);
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, att.attachment, GL_RENDERBUFFER, att.RBO);
+            glCreateRenderbuffers(1, &att.rbo);
+            glNamedRenderbufferStorage(att.rbo, att.internalFormat, m_spec.width, m_spec.height);
+            glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, att.rbo);
 
             clearMask |= GL_COLOR_BUFFER_BIT;
         }
@@ -86,7 +84,7 @@ void FrameBuffer::prepare(
             glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(borderColor));
 
             {
-                glFramebufferTexture2D(GL_FRAMEBUFFER, att.attachment, GL_TEXTURE_2D, att.textureID, 0);
+                glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
                 glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
                 glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
             }
@@ -102,11 +100,11 @@ void FrameBuffer::prepare(
 
     // NOTE KI clear buffer to avoid showing garbage
     if (clear) {
+        glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
         glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
         glClear(clearMask);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void FrameBuffer::bind(const RenderContext& ctx)
