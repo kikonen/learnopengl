@@ -3,7 +3,7 @@ assets:
 
   glfw_swap_interval: 3
   gl_debug: false
-  gl_no_error: false
+  gl_no_error: true
 
   resolution_scale: 0.5
 
@@ -42,7 +42,7 @@ assets:
 
   render_frequency: 0.0
   debug_clear_color: true
-  clear_color: true
+  clear_color: false
 
   frustum_enabled: false
   frustum_debug: true

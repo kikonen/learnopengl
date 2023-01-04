@@ -247,23 +247,7 @@ void Scene::unbind(RenderContext& ctx)
 
 void Scene::draw(RenderContext& ctx)
 {
-    // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
-    // => Stencil is not supposed to exist here
-    {
-        int mask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
-        if (assets.clearColor) {
-            if (assets.debugClearColor) {
-                //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-                glClearColor(0.9f, 0.9f, 0.0f, 1.0f);
-            }
-            mask |= GL_COLOR_BUFFER_BIT;
-        }
-        glClear(mask);
-    }
-
     glDepthFunc(GL_LEQUAL);
-
-    //glUseProgram(0);
 
     if (m_shadowMapRenderer) {
         m_shadowMapRenderer->render(ctx);
@@ -331,8 +315,25 @@ void Scene::drawRear(RenderContext& ctx)
 
 void Scene::drawViewports(RenderContext& ctx)
 {
+    m_windowBuffer->bind(ctx);
+
+    // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
+    // => Stencil is not supposed to exist here
+    // => no need to clear this; ViewPort will do glBlitNamedFramebuffer
+    // => *BUT* if glDraw is used instead then clear *IS* needed for depth
+    if (false) {
+        int mask = GL_DEPTH_BUFFER_BIT;
+        if (assets.clearColor) {
+            if (assets.debugClearColor) {
+                //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                glClearColor(0.9f, 0.9f, 0.0f, 1.0f);
+            }
+            mask |= GL_COLOR_BUFFER_BIT;
+        }
+        glClear(mask);
+    }
+
     if (m_viewportRenderer) {
-        m_windowBuffer->bind(ctx);
         m_viewportRenderer->render(ctx, m_windowBuffer.get());
     }
 }
