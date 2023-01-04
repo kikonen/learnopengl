@@ -13,7 +13,7 @@ WindowBuffer::WindowBuffer()
     m_fbo = 0;
 }
 
-void WindowBuffer::bind(const RenderContext& ctx)
+void WindowBuffer::update(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
     int w = res.x;

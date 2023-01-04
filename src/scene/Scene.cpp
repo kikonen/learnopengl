@@ -207,6 +207,8 @@ void Scene::update(RenderContext& ctx)
     m_materialRegistry.update(ctx);
 
     updateMainViewport(ctx);
+
+    m_windowBuffer->update(ctx);
 }
 
 void Scene::bind(RenderContext& ctx)

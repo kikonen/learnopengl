@@ -27,11 +27,14 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)
 {
-    const auto& res = ctx.m_resolution;
+    if (false) {
+        const auto& res = ctx.m_resolution;
 
-    // Reset viewport back
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, res.x, res.y);
+        // Reset viewport back
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, res.x, res.y);
+    }
+
     ctx.bindMatricesUBO();
 }
 
@@ -44,6 +47,7 @@ void DynamicCubeMap::prepare(
 
     int clearMask = 0;
 
+    // TODO KI glNamedFramebufferTexture2DEXT missing
     {
         glGenFramebuffers(1, &m_fbo);
         glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
@@ -51,14 +55,13 @@ void DynamicCubeMap::prepare(
     }
 
     {
-        glGenRenderbuffers(1, &m_depthBuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_size, m_size);
+        glCreateRenderbuffers(1, &m_depthBuffer);
+        glNamedRenderbufferStorage(m_depthBuffer, GL_DEPTH_COMPONENT24, m_size, m_size);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
         clearMask |= GL_DEPTH_BUFFER_BIT;
     }
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    if (glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         KI_ERROR("FRAMEBUFFER:: Framebuffer is not complete!");
         return;
     }

@@ -35,6 +35,7 @@ void FrameBuffer::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
+    // TODO KI glNamedFramebufferTexture2DEXT missing
     {
         glGenFramebuffers(1, &m_fbo);
         glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
@@ -61,12 +62,9 @@ void FrameBuffer::prepare(
             clearMask |= GL_COLOR_BUFFER_BIT;
         }
         else if (att.type == FrameBufferAttachmentType::rbo) {
-            glGenRenderbuffers(1, &att.RBO);
-            glBindRenderbuffer(GL_RENDERBUFFER, att.RBO);
-            glRenderbufferStorage(GL_RENDERBUFFER, att.internalFormat, m_spec.width, m_spec.height);
-
+            glCreateRenderbuffers(1, &att.RBO);
+            glNamedRenderbufferStorage(att.RBO, att.internalFormat, m_spec.width, m_spec.height);
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, att.attachment, GL_RENDERBUFFER, att.RBO);
-            glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
             clearMask |= GL_COLOR_BUFFER_BIT;
         }
@@ -89,15 +87,15 @@ void FrameBuffer::prepare(
 
             {
                 glFramebufferTexture2D(GL_FRAMEBUFFER, att.attachment, GL_TEXTURE_2D, att.textureID, 0);
-                glDrawBuffer(GL_NONE);
-                glReadBuffer(GL_NONE);
+                glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
+                glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
             }
 
             clearMask |= GL_DEPTH_BUFFER_BIT;
         }
     }
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    if (glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         KI_ERROR_SB("FRAMEBUFFER:: Framebuffer is not complete!");
         KI_BREAK();
     }
@@ -119,11 +117,13 @@ void FrameBuffer::bind(const RenderContext& ctx)
 
 void FrameBuffer::unbind(const RenderContext& ctx)
 {
-    const auto& res = ctx.m_resolution;
+    // NOTE KI WindowBuffer.bind() is responsible for this now!
 
-    // NOTE KI 0 stands for "default"
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, res.x, res.y);
+    //const auto& res = ctx.m_resolution;
+
+    //// NOTE KI 0 stands for "default"
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //glViewport(0, 0, res.x, res.y);
 }
 
 void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex)

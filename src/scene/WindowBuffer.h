@@ -8,7 +8,7 @@ public:
     WindowBuffer();
     virtual ~WindowBuffer() override = default;
 
-    virtual void bind(const RenderContext& ctx) override;
+    void update(const RenderContext& ctx);
 
 private:
 };
