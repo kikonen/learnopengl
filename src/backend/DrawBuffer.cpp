@@ -17,18 +17,21 @@ namespace backend {
         m_buffer.create();
 
         m_buffer.initEmpty(
-            m_rangeCount * m_rangeSize, GL_DYNAMIC_STORAGE_BIT);
+            m_rangeCount * m_rangeSize,
+            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
-        m_entries.reserve(m_rangeCount * m_entryCount);
-
-        for (int i = 0; i < m_rangeCount * m_entryCount; i++) {
-            m_entries.emplace_back();
-        }
+        // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
+        m_mapped = (DrawIndirectCommand*)m_buffer.mapRange(
+            0,
+            m_rangeCount * m_rangeSize,
+            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
 
         for (int i = 0; i < m_rangeCount ; i++) {
             auto& range = m_ranges.emplace_back();
-            range.m_index = i * m_entryCount;
-            range.m_offset = i * m_rangeSize;
+            range.m_baseIndex = i * m_entryCount;
+            range.m_maxCount = m_entryCount;
+            range.m_count = 0;
+            range.m_baseOffset = i * m_rangeSize;
         }
     }
 
@@ -44,38 +47,34 @@ namespace backend {
         const DrawOptions& drawOptions,
         const bool useBlend)
     {
-        if (m_count == 0) return;
-
-        // NOTE KI try to wait before changing shader
-        //glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
+        auto& range = m_ranges[m_index];
+        if (range.m_count == 0) return;
 
         shader->bind(state);
         state.bindVAO(*vao);
         bindOptions(state, drawOptions, useBlend);
 
-        auto& range = m_ranges[m_index];
-
-        m_buffer.update(range.m_offset, m_count * sizeof(backend::DrawIndirectCommand), &m_entries[range.m_index]);
-
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
             glMultiDrawElementsIndirect(
                 drawOptions.mode,
                 GL_UNSIGNED_INT,
-                (void*)range.m_offset,
-                m_count,
+                (void*)range.m_baseOffset,
+                range.m_count,
                 sizeof(backend::DrawIndirectCommand));
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
             glMultiDrawArraysIndirect(
                 drawOptions.mode,
-                (void*)range.m_offset,
-                m_count,
+                (void*)range.m_baseOffset,
+                range.m_count,
                 sizeof(backend::DrawIndirectCommand));
         }
 
+        range.m_count = 0;
         m_index = (m_index + 1) % m_ranges.size();
-        m_count = 0;
+
+        if (m_index == 0) m_ranges[0].lock();
     }
 
     void DrawBuffer::send(
@@ -87,11 +86,11 @@ namespace backend {
         const bool useBlend)
     {
         auto& range = m_ranges[m_index];
+        if (m_index == 0) range.wait();
 
-        m_entries[range.m_index + m_count] = indirect;
-        m_count++;
+        m_mapped[range.next()] = indirect;
 
-        if (m_count == m_entryCount) {
+        if (range.isFull()) {
             flush(state, shader, vao, drawOptions, useBlend);
         }
     }

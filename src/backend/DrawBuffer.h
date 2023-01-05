@@ -48,8 +48,7 @@ namespace backend {
         int m_rangeSize = 0;
 
         GLBuffer m_buffer;
-        std::vector<backend::DrawIndirectCommand> m_entries;
-        int m_count = 0;
+        backend::DrawIndirectCommand* m_mapped;
 
         int m_index = 0;
         std::vector<GLBufferRange> m_ranges;
