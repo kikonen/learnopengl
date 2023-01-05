@@ -23,6 +23,12 @@ struct GLBuffer {
         m_created = true;
     }
 
+    void createEmpty(int size, int flags) {
+        create();
+        initEmpty(size, flags);
+    }
+
+
     // For mapped buffer
     // flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
     void initEmpty(int size, int flags) {

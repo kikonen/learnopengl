@@ -8,6 +8,8 @@
 
 #include "asset/UBO.h"
 
+#include "RenderData.h"
+
 #include "controller/NodeController.h"
 
 
@@ -37,6 +39,8 @@ Scene::Scene(const Assets& assets)
     m_normalRenderer = std::make_unique<NormalRenderer>();
 
     particleSystem = std::make_unique<ParticleSystem>();
+
+    m_renderData = std::make_unique<RenderData>();
 }
 
 Scene::~Scene()
@@ -51,7 +55,7 @@ void Scene::prepare(ShaderRegistry& shaders)
     if (m_prepared) return;
     m_prepared = true;
 
-    prepareUBOs();
+    m_renderData->prepare();
 
     m_commandEngine.prepare(assets);
     m_scriptEngine.prepare(assets, m_commandEngine);
@@ -209,6 +213,8 @@ void Scene::update(RenderContext& ctx)
     updateMainViewport(ctx);
 
     m_windowBuffer->update(ctx);
+
+    m_renderData->update();
 }
 
 void Scene::bind(RenderContext& ctx)
@@ -233,6 +239,8 @@ void Scene::bind(RenderContext& ctx)
     if (m_shadowMapRenderer) {
         m_shadowMapRenderer->bind(ctx);
     }
+
+    m_renderData->bind();
 
     ctx.bindDefaults();
     ctx.bindUBOs();
@@ -468,61 +476,3 @@ void Scene::updateMainViewport(RenderContext& ctx)
     }
 }
 
-void Scene::prepareUBOs()
-{
-    // Matrices
-    {
-        int sz = sizeof(MatricesUBO);
-
-        m_ubo.matrices.create();
-        m_ubo.matrices.initEmpty(sz, GL_DYNAMIC_STORAGE_BIT);
-
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_MATRICES, m_ubo.matrices, 0, sz);
-        m_ubo.matricesSize = sz;
-    }
-    // Data
-    {
-        int sz = sizeof(DataUBO);
-
-        m_ubo.data.create();
-        m_ubo.data.initEmpty(sz, GL_DYNAMIC_STORAGE_BIT);
-
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_DATA, m_ubo.data, 0, sz);
-        m_ubo.dataSize = sz;
-    }
-    // Clipping
-    {
-        int sz = sizeof(ClipPlanesUBO);
-
-        m_ubo.clipPlanes.create();
-        m_ubo.clipPlanes.initEmpty(sz, GL_DYNAMIC_STORAGE_BIT);
-
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_CLIP_PLANES, m_ubo.clipPlanes, 0, sz);
-        m_ubo.clipPlanesSize = sz;
-    }
-    // Lights
-    {
-        int sz = sizeof(LightsUBO);
-
-        m_ubo.lights.create();
-        m_ubo.lights.initEmpty(sz, GL_DYNAMIC_STORAGE_BIT);
-
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_LIGHTS, m_ubo.lights, 0, sz);
-        m_ubo.lightsSize = sz;
-    }
-    // Textures
-    {
-        // OpenGL Superbible, 7th Edition, page 552
-        // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
-        // https://www.khronos.org/opengl/wiki/Bindless_Texture
-
-        // https://www.geeks3d.com/20140704/tutorial-introduction-to-opengl-4-3-shader-storage-buffers-objects-ssbo-demo/        //glGenBuffers(1, &ssbo);
-        //glGenBuffers(1, &m_ubo.textures);
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ubo.textures);
-        //glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(TexturesUBO), &m_textures, GL_DYNAMIC_COPY);
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-        m_textureBuffer.prepare();
-        m_textureBuffer.m_buffer.bind(UBO_TEXTURES);
-    }
-}

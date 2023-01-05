@@ -39,8 +39,10 @@
 #include "TextureBuffer.h"
 #include "WindowBuffer.h"
 
+
 class Camera;
 class NodeController;
+class RenderData;
 
 class Scene final
 {
@@ -75,13 +77,12 @@ public:
 
 private:
     void updateMainViewport(RenderContext& ctx);
-    void prepareUBOs();
 
 public:
     const Assets& assets;
 
     std::unique_ptr<SkyboxRenderer> m_skyboxRenderer{ nullptr };
-    UBO m_ubo;
+    std::unique_ptr<RenderData> m_renderData;
 
     MaterialRegistry m_materialRegistry;
     MeshTypeRegistry m_typeRegistry;
@@ -92,9 +93,6 @@ public:
     ScriptEngine m_scriptEngine;
 
     Batch m_batch;
-
-    GLSyncQueue<TextureUBO> m_textureBuffer{ 1, TEXTURE_COUNT };
-    int m_textureLevel = -1;
 
 protected:
 

@@ -63,15 +63,8 @@ public:
     void bindDataUBO() const;
     void bindClipPlanesUBO() const;
     void bindLightsUBO() const;
-    void bindTexturesUBO() const;
 
     void bind(Shader* shader) const;
-
-    void bindDraw(
-        bool renderBack,
-        bool wireframe) const;
-
-    void unbindDraw() const;
 
     const FrustumNew& getFrustumNew() const;
 

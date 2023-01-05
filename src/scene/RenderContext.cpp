@@ -17,6 +17,7 @@
 #include "registry/NodeRegistry.h"
 
 #include "scene/Scene.h"
+#include "scene/RenderData.h"
 
 
 RenderContext::RenderContext(
@@ -135,29 +136,24 @@ void RenderContext::bindDefaults() const
     state.disable(GL_BLEND);
 }
 
-void RenderContext::bindDraw(
-    bool renderBack,
-    bool wireframe) const
-{
-    if (renderBack) {
-        state.disable(GL_CULL_FACE);
-    }
-    else {
-        state.enable(GL_CULL_FACE);
-    }
-
-    if (wireframe) {
-        state.polygonFrontAndBack(GL_LINE);
-    }
-    else {
-        state.polygonFrontAndBack(GL_FILL);
-    }
-}
-
-void RenderContext::unbindDraw() const
-{
-    bindDraw(false, m_useWireframe);
-}
+//void RenderContext::bindDraw(
+//    bool renderBack,
+//    bool wireframe) const
+//{
+//    if (renderBack) {
+//        state.disable(GL_CULL_FACE);
+//    }
+//    else {
+//        state.enable(GL_CULL_FACE);
+//    }
+//
+//    if (wireframe) {
+//        state.polygonFrontAndBack(GL_LINE);
+//    }
+//    else {
+//        state.polygonFrontAndBack(GL_FILL);
+//    }
+//}
 
 void RenderContext::bindUBOs() const
 {
@@ -166,20 +162,11 @@ void RenderContext::bindUBOs() const
     bindDataUBO();
     bindClipPlanesUBO();
     bindLightsUBO();
-    bindTexturesUBO();
 }
 
 void RenderContext::bindMatricesUBO() const
 {
-    //MatricesUBO matricesUbo = {
-    //    projectedMatrix,
-    //    projectionMatrix,
-    //    viewMatrix,
-    //    lightProjectedMatrix,
-    //    shadowMatrix,
-    //};
-
-    glNamedBufferSubData(m_scene->m_ubo.matrices, 0, sizeof(MatricesUBO), &m_matrices);
+    m_scene->m_renderData->updateMatrices(m_matrices);
 }
 
 void RenderContext::bindDataUBO() const
@@ -195,19 +182,12 @@ void RenderContext::bindDataUBO() const
         assets.fogEnd,
     };
 
-    glNamedBufferSubData(m_scene->m_ubo.data, 0, sizeof(DataUBO), &dataUbo);
+    m_scene->m_renderData->updateData(dataUbo);
 }
 
 void RenderContext::bindClipPlanesUBO() const
 {
-    int count = 0;
-    for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
-        if (!m_clipPlanes.clipping[i].enabled) continue;
-        count++;
-    }
-
-    m_clipPlanes.clipCount = count;
-    glNamedBufferSubData(m_scene->m_ubo.clipPlanes, 0, sizeof(ClipPlanesUBO), &m_clipPlanes);
+    m_scene->m_renderData->updateClipPlanes(m_clipPlanes);
 }
 
 void RenderContext::bindLightsUBO() const
@@ -254,44 +234,7 @@ void RenderContext::bindLightsUBO() const
         lightsUbo.spotCount = count;
     }
 
-    glNamedBufferSubData(m_scene->m_ubo.lights, 0, sizeof(LightsUBO), &lightsUbo);
-}
-
-void RenderContext::bindTexturesUBO() const
-{
-    if (false) {
-        //TexturesUBO texturesUbo;
-        //memset(&texturesUbo.textures, 0, sizeof(texturesUbo.textures));
-
-        //for (const auto& texture : ImageTexture::getPreparedTextures()) {
-        //    texturesUbo.textures[texture->m_texIndex * 2] = texture->m_handle;
-        //}
-
-        ////glBindBuffer(GL_SHADER_STORAGE_BUFFER, scene->m_ubo.textures);
-        ////GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-        ////memcpy(p, &scene->m_textures, sizeof(TexturesUBO));
-        ////glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-
-        //glNamedBufferSubData(scene->m_ubo.textures, 0, sizeof(TexturesUBO), &texturesUbo);
-    }
-    else {
-        // OpenGL Superbible, 7th Edition, page 552
-        // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
-        // https://www.khronos.org/opengl/wiki/Bindless_Texture
-
-        auto [level, textures] = ImageTexture::getPreparedTextures();
-        if (level != m_scene->m_textureLevel && !textures.empty()) {
-            m_scene->m_textureLevel = level;
-
-            TextureUBO entry;
-            for (const auto* texture : textures) {
-                if (texture->m_sent) continue;
-                entry.handle = texture->m_handle;
-                m_scene->m_textureBuffer.set(texture->m_texIndex, entry);
-                texture->m_sent = true;
-            }
-        }
-    }
+    m_scene->m_renderData->updateLights(lightsUbo);
 }
 
 const FrustumNew& RenderContext::getFrustumNew() const
