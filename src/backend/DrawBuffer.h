@@ -5,7 +5,8 @@
 #include "kigl/GLState.h"
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
-#include "kigl/GLBufferRange.h"
+
+#include "kigl/GLSyncQueue.h"
 
 #include "DrawElementsIndirectCommand.h"
 #include "DrawIndirectCommand.h"
@@ -13,7 +14,10 @@
 
 class Shader;
 
+
 namespace backend {
+    using GLDrawSyncQueue = GLSyncQueue<backend::DrawIndirectCommand>;
+
     class DrawBuffer {
     public:
         DrawBuffer();
@@ -43,14 +47,6 @@ namespace backend {
             const bool useBlend) const;
 
     private:
-        int m_entryCount = 0;
-        int m_rangeCount = 0;
-        int m_rangeSize = 0;
-
-        GLBuffer m_buffer;
-        backend::DrawIndirectCommand* m_mapped;
-
-        int m_index = 0;
-        std::vector<GLBufferRange> m_ranges;
+        std::unique_ptr<GLDrawSyncQueue> m_queue{ nullptr };
     };
 }

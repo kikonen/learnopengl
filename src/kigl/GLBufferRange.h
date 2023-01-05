@@ -17,7 +17,11 @@ struct GLBufferRange {
         return m_count == m_maxCount;
     }
 
-    void lock()
+    void clear() {
+        m_count = 0;
+    }
+
+    void setFence()
     {
         if (m_sync) {
             glDeleteSync(m_sync);
@@ -26,7 +30,7 @@ struct GLBufferRange {
     }
 
     // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
-    void wait()
+    void waitFence()
     {
         if (!m_sync) return;
 

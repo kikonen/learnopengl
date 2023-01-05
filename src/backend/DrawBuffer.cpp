@@ -10,34 +10,15 @@ namespace backend {
 
     void DrawBuffer::prepare(int entryCount, int rangeCount)
     {
-        m_entryCount = entryCount;
-        m_rangeCount = rangeCount;
-        m_rangeSize = entryCount * sizeof(backend::DrawIndirectCommand);
-
-        m_buffer.create();
-
-        m_buffer.initEmpty(
-            m_rangeCount * m_rangeSize,
-            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-
-        // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
-        m_mapped = (DrawIndirectCommand*)m_buffer.mapRange(
-            0,
-            m_rangeCount * m_rangeSize,
-            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
-
-        for (int i = 0; i < m_rangeCount ; i++) {
-            auto& range = m_ranges.emplace_back();
-            range.m_baseIndex = i * m_entryCount;
-            range.m_maxCount = m_entryCount;
-            range.m_count = 0;
-            range.m_baseOffset = i * m_rangeSize;
-        }
+        m_queue = std::make_unique<GLDrawSyncQueue>(
+            entryCount,
+            rangeCount);
+        m_queue->prepare();
     }
 
     void DrawBuffer::bind()
     {
-        m_buffer.bindDrawIndirect();
+        m_queue->m_buffer.bindDrawIndirect();
     }
 
     void DrawBuffer::flush(
@@ -47,7 +28,7 @@ namespace backend {
         const DrawOptions& drawOptions,
         const bool useBlend)
     {
-        auto& range = m_ranges[m_index];
+        auto& range = m_queue->current();
         if (range.m_count == 0) return;
 
         shader->bind(state);
@@ -71,10 +52,7 @@ namespace backend {
                 sizeof(backend::DrawIndirectCommand));
         }
 
-        range.m_count = 0;
-        m_index = (m_index + 1) % m_ranges.size();
-
-        if (m_index == 0) m_ranges[0].lock();
+        m_queue->next(true);
     }
 
     void DrawBuffer::send(
@@ -85,14 +63,7 @@ namespace backend {
         const DrawOptions& drawOptions,
         const bool useBlend)
     {
-        auto& range = m_ranges[m_index];
-        if (m_index == 0) range.wait();
-
-        m_mapped[range.next()] = indirect;
-
-        if (range.isFull()) {
-            flush(state, shader, vao, drawOptions, useBlend);
-        }
+        m_queue->send(indirect);
     }
 
     void DrawBuffer::bindOptions(
