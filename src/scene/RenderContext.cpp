@@ -280,17 +280,16 @@ void RenderContext::bindTexturesUBO() const
         // https://www.khronos.org/opengl/wiki/Bindless_Texture
 
         auto [level, textures] = ImageTexture::getPreparedTextures();
-        if (level != m_scene->m_texturesLevel && !textures.empty()) {
-            m_scene->m_texturesLevel = level;
+        if (level != m_scene->m_textureLevel && !textures.empty()) {
+            m_scene->m_textureLevel = level;
 
-            int maxIndex = 0;
-            for (const auto& texture : textures) {
-                int idx = texture->m_texIndex;
-                m_scene->m_textureHandles[idx].handle = texture->m_handle;
-                if (idx > maxIndex) maxIndex = idx;
+            TextureUBO entry;
+            for (const auto* texture : textures) {
+                if (texture->m_sent) continue;
+                entry.handle = texture->m_handle;
+                m_scene->m_textureBuffer.set(texture->m_texIndex, entry);
+                texture->m_sent = true;
             }
-
-            glFlushMappedNamedBufferRange(m_scene->m_ubo.textures, 0, (maxIndex + 1) * sizeof(TextureUBO));
         }
     }
 }

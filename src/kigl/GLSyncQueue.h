@@ -59,6 +59,18 @@ public:
         return range.isFull();
     }
 
+    //
+    // Set entry data, wait if needed for queue buffer
+    //
+    // NOTE KI with "set" it's upto caller to manage buffer full
+    //
+    void set(int idx, T& entry) {
+        auto& range = m_ranges[m_index];
+        if (m_index == 0) range.waitFence();
+
+        m_mapped[range.index(idx)] = entry;
+    }
+
     inline GLBufferRange& current() {
         return m_ranges[m_index];
     }

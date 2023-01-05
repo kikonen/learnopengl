@@ -14,13 +14,11 @@ struct UBO {
     GLBuffer data;
     GLBuffer clipPlanes;
     GLBuffer lights;
-    GLBuffer textures;
 
     unsigned int matricesSize;
     unsigned int dataSize;
     unsigned int clipPlanesSize;
     unsigned int lightsSize;
-    unsigned int texturesSize;
 };
 
 constexpr GLuint UBO_MATRICES = 0;

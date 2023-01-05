@@ -522,20 +522,7 @@ void Scene::prepareUBOs()
         //glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(TexturesUBO), &m_textures, GL_DYNAMIC_COPY);
         //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-        int sz = sizeof(TexturesUBO);
-
-        m_ubo.textures.create();
-        m_ubo.textures.initEmpty(sz, GL_MAP_WRITE_BIT);
-
-        glBindBufferRange(GL_UNIFORM_BUFFER, UBO_TEXTURES, m_ubo.textures, 0, sz);
-        m_ubo.texturesSize = sz;
-
-        m_textureHandles = (TextureUBO*)glMapNamedBufferRange(
-            m_ubo.textures,
-            0,
-            sz,
-            GL_MAP_WRITE_BIT |
-            GL_MAP_FLUSH_EXPLICIT_BIT |
-            GL_MAP_INVALIDATE_RANGE_BIT);
+        m_textureBuffer.prepare();
+        m_textureBuffer.m_buffer.bindUniform(UBO_TEXTURES);
     }
 }

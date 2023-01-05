@@ -45,6 +45,8 @@ public:
     int m_texIndex = -1;
     GLuint64 m_handle = 0;
 
+    mutable bool m_sent = false;
+
 protected:
     bool m_prepared = false;
 

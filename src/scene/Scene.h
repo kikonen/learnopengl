@@ -5,6 +5,8 @@
 #include <functional>
 #include <mutex>
 
+#include "kigl/GLSyncQueue.h"
+
 #include "model/Node.h"
 #include "component/Light.h"
 #include "RenderContext.h"
@@ -91,9 +93,8 @@ public:
 
     Batch m_batch;
 
-    //TexturesUBO m_textures;
-    TextureUBO* m_textureHandles = nullptr;
-    int m_texturesLevel = -1;
+    GLSyncQueue<TextureUBO> m_textureBuffer{ 1, TEXTURE_COUNT };
+    int m_textureLevel = -1;
 
 protected:
 
