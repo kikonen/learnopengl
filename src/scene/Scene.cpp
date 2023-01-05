@@ -523,6 +523,6 @@ void Scene::prepareUBOs()
         //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         m_textureBuffer.prepare();
-        m_textureBuffer.m_buffer.bindUniform(UBO_TEXTURES);
+        m_textureBuffer.m_buffer.bind(UBO_TEXTURES);
     }
 }

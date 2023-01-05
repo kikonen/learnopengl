@@ -29,7 +29,7 @@ public:
             GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
         // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
-        m_mapped = (T*)m_buffer.mapRange(
+        m_data = (T*)m_buffer.mapRange(
             0,
             m_rangeCount * m_rangeSize,
             GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
@@ -54,7 +54,7 @@ public:
         auto& range = m_ranges[m_index];
         if (m_index == 0) range.waitFence();
 
-        m_mapped[range.next()] = entry;
+        m_data[range.next()] = entry;
 
         return range.isFull();
     }
@@ -68,7 +68,7 @@ public:
         auto& range = m_ranges[m_index];
         if (m_index == 0) range.waitFence();
 
-        m_mapped[range.index(idx)] = entry;
+        m_data[range.index(idx)] = entry;
     }
 
     inline GLBufferRange& current() {
@@ -102,7 +102,7 @@ private:
     const int m_rangeCount;
     const int m_rangeSize;
 
-    T* m_mapped{ nullptr };
+    T* m_data{ nullptr };
 
     int m_index = 0;
     std::vector<GLBufferRange> m_ranges;
