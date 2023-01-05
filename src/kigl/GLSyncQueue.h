@@ -22,9 +22,7 @@ public:
     }
 
     void prepare() {
-        m_buffer.create();
-
-        m_buffer.initEmpty(
+        m_buffer.createEmpty(
             m_rangeCount * m_rangeSize,
             GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 

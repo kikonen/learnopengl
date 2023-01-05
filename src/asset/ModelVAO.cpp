@@ -30,14 +30,12 @@ GLVertexArray* ModelVAO::prepare(Batch& batch)
         m_vao->create();
     }
     {
-        m_vbo.create();
-        m_vbo.initEmpty(MAX_VERTEX_ENTRIES * sizeof(VertexEntry), GL_DYNAMIC_STORAGE_BIT);
+        m_vbo.createEmpty(MAX_VERTEX_ENTRIES * sizeof(VertexEntry), GL_DYNAMIC_STORAGE_BIT);
 
         m_vertexEntries.reserve(MAX_VERTEX_ENTRIES);
     }
     {
-        m_ebo.create();
-        m_ebo.initEmpty(MAX_INDEX_ENTRIES * sizeof(IndexEntry), GL_DYNAMIC_STORAGE_BIT);
+        m_ebo.createEmpty(MAX_INDEX_ENTRIES * sizeof(IndexEntry), GL_DYNAMIC_STORAGE_BIT);
 
         m_indexEntries.reserve(MAX_INDEX_ENTRIES);
     }

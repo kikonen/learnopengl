@@ -96,11 +96,9 @@ void MaterialRegistry::update(const RenderContext& ctx)
     {
         for (int i = m_updatedSize; i < m_materials.size(); i++) {
             auto& material = m_materials[i];
-            //m_materialsUbo.materials[i] = material.toUBO();
             m_materialsSSBO.emplace_back(material.toSSBO());
         }
 
-        //m_ubo.update(0, sizeof(MaterialsUBO), &m_materialsUbo);
         const int sz = sizeof(MaterialSSBO);
         m_ssbo.update(
             m_updatedSize * sz,
@@ -113,25 +111,13 @@ void MaterialRegistry::update(const RenderContext& ctx)
 
 void MaterialRegistry::prepare()
 {
-    //m_ubo.create();
-    //m_ubo.initEmpty(sizeof(MaterialsUBO), GL_DYNAMIC_STORAGE_BIT);
-
-    {
-        m_ssbo.create();
-        m_ssbo.initEmpty(MAX_SSBO_MATERIALS * sizeof(MaterialSSBO), GL_DYNAMIC_STORAGE_BIT);
-    }
-
-    {
-        m_entryBuffer.create();
-        m_entryBuffer.initEmpty(MAX_MATERIAL_ENTRIES * sizeof(MaterialEntry), GL_DYNAMIC_STORAGE_BIT);
-    }
+    m_ssbo.createEmpty(MAX_SSBO_MATERIALS * sizeof(MaterialSSBO), GL_DYNAMIC_STORAGE_BIT);
+    m_entryBuffer.createEmpty(MAX_MATERIAL_ENTRIES * sizeof(MaterialEntry), GL_DYNAMIC_STORAGE_BIT);
 }
 
 void MaterialRegistry::bind(
     const RenderContext& ctx)
 {
-    //m_ubo.bindUniform(UBO_MATERIALS);
-
     m_ssbo.bindSSBO(SSBO_MATERIALS);
     m_entryBuffer.bindSSBO(SSBO_MATERIAL_INDECES);
 }

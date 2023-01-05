@@ -140,15 +140,13 @@ void Batch::prepare(
         constexpr int sz = sizeof(BatchEntry);
         //constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT;// | GL_MAP_WRITE_BIT;
 
-        m_vbo.create();
-        m_vbo.initEmpty(m_entryCount * sz, GL_DYNAMIC_STORAGE_BIT);
+        m_vbo.createEmpty(m_entryCount * sz, GL_DYNAMIC_STORAGE_BIT);
     }
 
     m_draw.prepare(20, 100);
 
     {
-        m_materialBuffer.create();
-        m_materialBuffer.initEmpty(m_entryCount * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
+        m_materialBuffer.createEmpty(m_entryCount * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
     }
 
     m_entries.reserve(m_entryCount);
