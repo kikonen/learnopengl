@@ -6,6 +6,12 @@
 
 namespace
 {
+    constexpr int STENCIL_VALUE_NONE = 0x0;
+    constexpr int STENCIL_VALUE_SELECTION = 0x1;
+
+    constexpr int STENCIL_MASK_NONE = 0x00;
+    constexpr int STENCIL_FUNC_SELECTION = 0xFF;
+    constexpr int STENCIL_MASK_SELECTION = 0xFF;
 }
 
 NodeRenderer::NodeRenderer()
@@ -90,7 +96,7 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
     ctx.state.enable(GL_STENCIL_TEST);
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilFunc(GL_NOTEQUAL, STENCIL_VALUE_SELECTION, STENCIL_FUNC_SELECTION);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     drawNodes(ctx, nullptr, true);
@@ -106,14 +112,14 @@ void NodeRenderer::renderSelection(const RenderContext& ctx)
     ctx.state.enable(GL_STENCIL_TEST);
     ctx.state.disable(GL_DEPTH_TEST);
 
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilFunc(GL_NOTEQUAL, STENCIL_VALUE_SELECTION, STENCIL_FUNC_SELECTION);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    glStencilMask(0x00);
+    glStencilMask(STENCIL_MASK_NONE);
 
     drawSelectionStencil(ctx);
 
-    glStencilMask(0xFF);
-    glStencilFunc(GL_ALWAYS, 0, 0xFF);
+    glStencilMask(STENCIL_MASK_SELECTION);
+    glStencilFunc(GL_ALWAYS, STENCIL_VALUE_NONE, STENCIL_FUNC_SELECTION);
 
     ctx.state.enable(GL_DEPTH_TEST);
     ctx.state.disable(GL_STENCIL_TEST);
@@ -126,11 +132,11 @@ void NodeRenderer::drawNodes(
     bool selection)
 {
     if (selection) {
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, STENCIL_VALUE_SELECTION, STENCIL_FUNC_SELECTION);
+        glStencilMask(STENCIL_MASK_SELECTION);
     }
     else {
-        glStencilMask(0x00);
+        glStencilMask(STENCIL_MASK_NONE);
     }
 
     auto renderTypes = [this, &ctx, &selection](const MeshTypeMap& typeMap) {
