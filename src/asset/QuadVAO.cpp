@@ -108,6 +108,6 @@ void QuadVAO::prepareVBO(GLBuffer& vbo)
         entry++;
     }
 
-    glNamedBufferStorage(vbo, sz, buffer, 0);
+    vbo.init(sz, buffer, 0);
     delete[] buffer;
 }

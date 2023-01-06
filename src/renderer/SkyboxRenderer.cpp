@@ -106,7 +106,7 @@ void SkyboxRenderer::prepare(
 
         const int vao = m_vao;
 
-        glNamedBufferStorage(m_vbo, sizeof(skyboxVertices), &skyboxVertices, 0);
+        m_vbo.init(sizeof(skyboxVertices), (void*) & skyboxVertices, 0);
 
         glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(glm::vec3));
 

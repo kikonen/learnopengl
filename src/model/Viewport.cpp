@@ -82,7 +82,7 @@ void Viewport::prepareVBO()
     // setup plane VAO
     const int vao = m_vao;
     {
-        glNamedBufferStorage(m_vbo, sizeof(vertices), &vertices, 0);
+        m_vbo.init(sizeof(vertices), (void*) & vertices, 0);
 
         constexpr int stride_size = 5 * sizeof(float);
         glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_vbo, 0, stride_size);
