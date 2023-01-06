@@ -137,6 +137,7 @@ void Window::processInput(const ki::RenderClock& clock)
     m_input->updateKeyStates();
 
     if (m_input->isKeyDown(Key::EXIT)) {
+        KI_INFO("INPUT: USER EXIT via [ESCAPE]");
         close();
         return;
     }
