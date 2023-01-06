@@ -87,11 +87,11 @@ NodeRegistry::~NodeRegistry()
 }
 
 void NodeRegistry::prepare(
-    Batch* batch,
+    BatchRegistry* batchRegistry,
     MaterialRegistry* materialRegistry,
     ModelRegistry* modelRegistry)
 {
-    m_batch = batch;
+    m_batchRegistry = batchRegistry;
     m_materialRegistry = materialRegistry;
     m_modelRegistry = modelRegistry;
 
@@ -276,7 +276,7 @@ void NodeRegistry::bindNode(
         });
     }
 
-    type->prepare(assets, *m_batch, *this, *m_materialRegistry, *m_modelRegistry);
+    type->prepare(assets, *m_batchRegistry, *this, *m_materialRegistry, *m_modelRegistry);
     node->prepare(assets);
 
     {

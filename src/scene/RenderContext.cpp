@@ -83,7 +83,7 @@ RenderContext::RenderContext(
     m_clock(clock),
     state(state),
     m_scene(scene),
-    m_batch(scene->m_batch),
+    m_batch(scene->m_batchRegistry),
     registry(scene->m_registry),
     commandEngine(scene->m_commandEngine),
     scriptEngine(scene->m_scriptEngine),

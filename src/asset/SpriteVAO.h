@@ -3,11 +3,12 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-class Batch;
+class BatchRegistry;
 
 class SpriteVAO {
 public:
-    GLVertexArray* prepare(Batch& batch);
+    GLVertexArray* prepare(
+        BatchRegistry& batchRegistry);
 
 private:
     void prepareVAO(

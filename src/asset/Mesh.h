@@ -19,7 +19,7 @@
 
 #include "registry/NodeRegistry.h"
 
-class Batch;
+class BatchRegistry;
 class RenderContext;
 class ModelRegistry;
 
@@ -39,7 +39,7 @@ public:
     // @return VAO for mesh
     virtual GLVertexArray* prepare(
         const Assets& assets,
-        Batch& batch,
+        BatchRegistry& batchRegistry,
         ModelRegistry& modelRegistry) = 0;
 
     virtual void prepareMaterials(

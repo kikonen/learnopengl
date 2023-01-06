@@ -18,7 +18,8 @@ Scene::Scene(const Assets& assets)
     m_registry(assets),
     m_materialRegistry(assets),
     m_typeRegistry(assets),
-    m_modelRegistry(assets)
+    m_modelRegistry(assets),
+    m_batchRegistry(assets)
 {
     NodeListener listener = [this](Node* node, NodeOperation operation) {
         bindComponents(*node);
@@ -60,10 +61,9 @@ void Scene::prepare(ShaderRegistry& shaders)
     m_commandEngine.prepare(assets);
     m_scriptEngine.prepare(assets, m_commandEngine);
 
-    m_batch.prepare(assets, assets.batchSize);
     m_materialRegistry.prepare();
-    m_modelRegistry.prepare(m_batch);
-    m_registry.prepare(&m_batch, &m_materialRegistry, &m_modelRegistry);
+    m_modelRegistry.prepare(m_batchRegistry);
+    m_registry.prepare(&m_batchRegistry, &m_materialRegistry, &m_modelRegistry);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {
@@ -244,8 +244,6 @@ void Scene::bind(RenderContext& ctx)
 
     ctx.bindDefaults();
     ctx.bindUBOs();
-
-    m_batch.bind();
 }
 
 

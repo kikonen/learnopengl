@@ -74,7 +74,7 @@ const std::vector<Material>& ModelMesh::getMaterials() const
 
 GLVertexArray* ModelMesh::prepare(
     const Assets& assets,
-    Batch& batch,
+    BatchRegistry& batchRegistry,
     ModelRegistry& modelRegistry)
 {
     if (m_prepared) return m_vao;

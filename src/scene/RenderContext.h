@@ -10,7 +10,7 @@
 
 #include "component/Camera.h"
 
-#include "Batch.h"
+#include "BatchRegistry.h"
 
 namespace backend {
     class RenderSystem;
@@ -79,7 +79,7 @@ public:
     const RenderContext* const m_parent;
 
     backend::RenderSystem* m_backend;
-    Batch& m_batch;
+    BatchRegistry& m_batch;
 
     const Assets& assets;
 

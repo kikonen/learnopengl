@@ -47,13 +47,13 @@ const std::vector<Material>& SpriteMesh::getMaterials() const
 
 GLVertexArray* SpriteMesh::prepare(
     const Assets& assets,
-    Batch& batch,
+    BatchRegistry& batchRegistry,
     ModelRegistry& modelRegistry)
 {
     if (m_prepared) return m_vao;
     m_prepared = true;
 
-    m_vao = spriteVAO.prepare(batch);
+    m_vao = spriteVAO.prepare(batchRegistry);
     return m_vao;
 }
 

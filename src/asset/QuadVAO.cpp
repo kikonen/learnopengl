@@ -4,7 +4,7 @@
 
 #include "Shader.h"
 
-#include "scene/Batch.h"
+#include "scene/BatchRegistry.h"
 
 namespace {
     const float VERTICES[] = {
@@ -28,7 +28,7 @@ namespace {
 #pragma pack(pop)
 }
 
-GLVertexArray* QuadVAO::prepare(Batch& batch)
+GLVertexArray* QuadVAO::prepare(BatchRegistry& batchRegistry)
 {
     if (m_prepared) return m_vao.get();
     m_prepared = true;
@@ -40,7 +40,7 @@ GLVertexArray* QuadVAO::prepare(Batch& batch)
     prepareVBO(m_vbo);
     prepareVAO(*m_vao, m_vbo);
 
-    batch.prepareVAO(*m_vao, true);
+    batchRegistry.prepareVAO(*m_vao, true);
 
     return m_vao.get();
 }

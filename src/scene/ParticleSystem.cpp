@@ -27,14 +27,6 @@ void ParticleSystem::render(const RenderContext& ctx)
     ctx.state.disable(GL_CULL_FACE);
 
     for (auto& w : particles) {
-        //Shader* shader;// = t->bind(ctx, nullptr);
-        //if (!shader) continue;
-        //shader->shadowMap.set(assets.shadowMapUnitIndex);
-
-        //Batch& batch = t->batch;
-        //batch.bind(ctx, shader);
-
-        //batch.draw(ctx, e, shader);
     }
 
     ctx.bindDefaults();

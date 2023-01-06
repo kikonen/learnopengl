@@ -7,7 +7,7 @@
 #include "asset/ModelMeshVBO.h"
 #include "asset/MeshLoader.h"
 
-#include "scene/Batch.h"
+#include "scene/BatchRegistry.h"
 
 ModelRegistry::ModelRegistry(const Assets& assets)
     : assets(assets)
@@ -21,15 +21,15 @@ GLVertexArray* ModelRegistry::registerMeshVBO(ModelMeshVBO& meshVBO)
 {
     //auto& vao = meshVBO.m_single ? m_singleVAO : m_multiVAO;
     //return vao.registerModel(meshVBO);
-    // 
+    //
     // NOTE KI multi/single material *CAN* go in same indirect draw
     return m_singleVAO.registerModel(meshVBO);
 }
 
-void ModelRegistry::prepare(Batch& batch)
+void ModelRegistry::prepare(BatchRegistry& batchRegistry)
 {
-    m_singleVAO.prepare(batch);
-    m_multiVAO.prepare(batch);
+    m_singleVAO.prepare(batchRegistry);
+    m_multiVAO.prepare(batchRegistry);
 }
 
 ModelMesh* ModelRegistry::getMesh(

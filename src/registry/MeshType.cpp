@@ -6,6 +6,7 @@
 #include "asset/Assets.h"
 
 #include "scene/RenderContext.h"
+#include "scene/BatchRegistry.h"
 
 #include "NodeRegistry.h"
 #include "MaterialRegistry.h"
@@ -70,7 +71,7 @@ void MeshType::modifyMaterials(std::function<void(Material&)> fn)
 
 void MeshType::prepare(
     const Assets& assets,
-    Batch& batch,
+    BatchRegistry& batchRegistry,
     NodeRegistry& nodeRegistry,
     MaterialRegistry& materialRegistry,
     ModelRegistry& modelRegistry)
@@ -82,7 +83,7 @@ void MeshType::prepare(
 
     //m_privateVAO.create();
 
-    m_vao = m_mesh->prepare(assets, batch, modelRegistry);
+    m_vao = m_mesh->prepare(assets, batchRegistry, modelRegistry);
     m_mesh->prepareMaterials(m_materialVBO);
 
     materialRegistry.registerMaterialVBO(m_materialVBO);

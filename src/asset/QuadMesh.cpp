@@ -46,13 +46,13 @@ const std::vector<Material>& QuadMesh::getMaterials() const
 
 GLVertexArray* QuadMesh::prepare(
     const Assets& assets,
-    Batch& batch,
+    BatchRegistry& batchRegistry,
     ModelRegistry& modelRegistry)
 {
     if (m_prepared) return m_vao;
     m_prepared = true;
 
-    m_vao = quadVAO.prepare(batch);
+    m_vao = quadVAO.prepare(batchRegistry);
     return m_vao;
 }
 

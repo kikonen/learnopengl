@@ -240,7 +240,7 @@ void NodeRenderer::drawBlended(
 
     MeshType* type = nullptr;
     Shader* shader = nullptr;
-    Batch* batch = nullptr;
+    BatchRegistry* batch = nullptr;
 
     // NOTE KI blending is *NOT* optimal shader / nodetypw wise due to depth sorting
     // NOTE KI order = from furthest away to nearest

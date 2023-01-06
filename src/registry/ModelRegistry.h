@@ -11,7 +11,7 @@
 #include "asset/Assets.h"
 #include "asset/ModelVAO.h"
 
-class Batch;
+class BatchRegistry;
 struct Material;
 class ModelMesh;
 class ModelMeshVBO;
@@ -21,7 +21,7 @@ public:
     ModelRegistry(const Assets& assets);
     ~ModelRegistry();
 
-    void prepare(Batch& batch);
+    void prepare(BatchRegistry&);
 
     // @return VAO for mesh
     GLVertexArray* registerMeshVBO(ModelMeshVBO& meshVBO);

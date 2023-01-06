@@ -10,7 +10,7 @@
 #include "model/Node.h"
 #include "component/Light.h"
 #include "RenderContext.h"
-#include "Batch.h"
+#include "BatchRegistry.h"
 
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
@@ -92,7 +92,7 @@ public:
     CommandEngine m_commandEngine;
     ScriptEngine m_scriptEngine;
 
-    Batch m_batch;
+    BatchRegistry m_batchRegistry;
 
 protected:
 

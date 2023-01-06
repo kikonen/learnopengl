@@ -62,7 +62,7 @@ using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
 
 using NodeListener = std::function<void(Node*, NodeOperation)>;
 
-class Batch;
+class BatchRegistry;
 class MaterialRegistry;
 class ModelRegistry;
 
@@ -74,7 +74,7 @@ public:
     ~NodeRegistry();
 
     void prepare(
-        Batch* batch,
+        BatchRegistry* batchRegistry,
         MaterialRegistry * materialRegistry,
         ModelRegistry* modelRegistry);
 
@@ -148,7 +148,7 @@ public:
 private:
     const Assets& assets;
 
-    Batch* m_batch{ nullptr };
+    BatchRegistry* m_batchRegistry{ nullptr };
     MaterialRegistry* m_materialRegistry{ nullptr };
     ModelRegistry* m_modelRegistry{ nullptr };
 

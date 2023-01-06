@@ -8,9 +8,6 @@
 
 #include "backend/DrawOptions.h"
 
-#include "scene/Batch.h"
-
-
 enum class EntityType {
     origo,
     model,
@@ -48,6 +45,7 @@ class NodeRegistry;
 class MaterialRegistry;
 class ModelRegistry;
 class Mesh;
+class BatchRegistry;
 
 class MeshType final
 {
@@ -67,7 +65,7 @@ public:
 
     void prepare(
         const Assets& assets,
-        Batch& batch,
+        BatchRegistry& batchRegistry,
         NodeRegistry& nodeRegistry,
         MaterialRegistry& materialRegistry,
         ModelRegistry& modelRegistry);
