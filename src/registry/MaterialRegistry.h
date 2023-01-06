@@ -46,7 +46,7 @@ private:
 
     std::vector<MaterialEntry> m_materialEntries;
 
-    int m_updatedSize = 0;
+    size_t m_updatedSize = 0;
 
     GLBuffer m_ubo{ "materialsUBO" };
     GLBuffer m_ssbo{ "materialsSSBO" };

@@ -31,9 +31,9 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 {
     assert(!materialVBO.m_entries.empty());
 
-    const int count = materialVBO.m_entries.size();
-    const int index = m_materialEntries.size();
-    const int offset = index * sizeof(MaterialEntry);
+    const size_t count = materialVBO.m_entries.size();
+    const size_t index = m_materialEntries.size();
+    const size_t offset = index * sizeof(MaterialEntry);
 
     assert(index + count < MAX_MATERIAL_ENTRIES);
 
@@ -81,7 +81,7 @@ void MaterialRegistry::update(const RenderContext& ctx)
     if (m_materials.size() == 0) return;
 
     {
-        for (int i = m_updatedSize; i < m_materials.size(); i++) {
+        for (size_t i = m_updatedSize; i < m_materials.size(); i++) {
             auto& material = m_materials[i];
 
             material.prepare(assets);
@@ -94,12 +94,12 @@ void MaterialRegistry::update(const RenderContext& ctx)
     }
 
     {
-        for (int i = m_updatedSize; i < m_materials.size(); i++) {
+        for (size_t i = m_updatedSize; i < m_materials.size(); i++) {
             auto& material = m_materials[i];
             m_materialsSSBO.emplace_back(material.toSSBO());
         }
 
-        const int sz = sizeof(MaterialSSBO);
+        const size_t sz = sizeof(MaterialSSBO);
         m_ssbo.update(
             m_updatedSize * sz,
             (m_materialsSSBO.size() - m_updatedSize) * sz,

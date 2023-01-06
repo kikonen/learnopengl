@@ -359,7 +359,7 @@ void Shader::setupUBO(
 
     if (blockSize != expectedSize) {
         for (const auto& [k, v] : m_defines) {
-            KI_ERROR("DEFINE: {}={}", k, v);
+            KI_ERROR(fmt::format("DEFINE: {}={}", k, v));
         }
         KI_CRITICAL(fmt::format(
             "SHADER::UBO_SIZE shader={}. UBO={}. size={}. expected_size={}",

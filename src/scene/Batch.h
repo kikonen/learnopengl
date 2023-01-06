@@ -54,7 +54,7 @@ public:
         int highlightIndex);
 
     void reserve(size_t count) noexcept;
-    int size() noexcept;
+    size_t size() noexcept;
 
     void bind() noexcept;
     void clear() noexcept;

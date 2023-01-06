@@ -79,7 +79,7 @@ void AsteroidBeltController::initAsteroids(
     InstancedNode& node,
     std::vector<Asteroid>& asteroids)
 {
-    int count = asteroids.size();
+    size_t count = asteroids.size();
 
     // initialize random seed
     srand(glfwGetTime());
@@ -134,7 +134,7 @@ void AsteroidBeltController::rotateAsteroids(
     std::vector<Asteroid>& asteroids)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
-    const int count = asteroids.size();
+    const size_t count = asteroids.size();
 
     for (size_t i = 0; i < count; i++)
     {

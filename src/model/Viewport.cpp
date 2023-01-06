@@ -127,26 +127,26 @@ void Viewport::unbind(const RenderContext& ctx)
 void Viewport::draw(const RenderContext& ctx)
 {
     if (m_useFrameBuffer) {
-        float srcW = m_sourceBuffer->m_spec.width;
-        float srcH = m_sourceBuffer->m_spec.height;
+        const float srcW = m_sourceBuffer->m_spec.width;
+        const float srcH = m_sourceBuffer->m_spec.height;
 
-        float dstW = m_destinationBuffer->m_spec.width;
-        float dstH = m_destinationBuffer->m_spec.height;
+        const float dstW = m_destinationBuffer->m_spec.width;
+        const float dstH = m_destinationBuffer->m_spec.height;
 
-        glm::vec2 s0{ 0 };
-        glm::vec2 s1{ srcW, srcH };
+        const glm::vec2 s0{ 0 };
+        const glm::vec2 s1{ srcW, srcH };
 
-        float mx = dstW * 0.5f;
-        float my = dstH * 0.5f;
+        const float mx = dstW * 0.5f;
+        const float my = dstH * 0.5f;
 
-        float dx = mx - mx * -m_pos.x;
-        float dy = my - my * m_pos.y;
+        const float dx = mx - mx * -m_pos.x;
+        const float dy = my - my * m_pos.y;
 
-        float sx = mx * m_size.x;
-        float sy = my * m_size.y;
+        const float sx = mx * m_size.x;
+        const float sy = my * m_size.y;
 
-        glm::vec2 d0{ dx, dy };
-        glm::vec2 d1{ dx + sx, dy + sy };
+        const glm::vec2 d0{ dx, dy };
+        const glm::vec2 d1{ dx + sx, dy + sy };
 
         glBlitNamedFramebuffer(
             m_sourceBuffer->m_fbo,

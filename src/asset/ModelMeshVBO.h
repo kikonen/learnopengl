@@ -28,9 +28,9 @@ private:
 
 public:
     // NOTE KI absolute offset into vbo
-    int m_vertexOffset = 0;
+    size_t m_vertexOffset = 0;
     // NOTE KI absolute offset into vbo
-    int m_indexOffset = 0;
+    size_t m_indexOffset = 0;
 
     std::vector<VertexEntry> m_vertexEntries;
     std::vector<IndexEntry> m_indexEntries;

@@ -108,7 +108,7 @@ void Batch::reserve(size_t count) noexcept
     m_entries.reserve(count);
 }
 
-int Batch::size() noexcept
+size_t Batch::size() noexcept
 {
     return m_entries.size();
 }
