@@ -48,36 +48,27 @@ void Batch::add(
     auto& entry = m_entries.emplace_back();
 
     if (highlightIndex > -1 && m_highlight) {
-        entry.modelMatrix = model * HIGHLIGHT_MAT;
-        entry.normalMatrix = normal;
+        entry.m_modelMatrix = model * HIGHLIGHT_MAT;
+        entry.m_normalMatrix = normal;
     } else {
-        entry.modelMatrix = model;
-        entry.normalMatrix = normal;
+        entry.m_modelMatrix = model;
+        entry.m_normalMatrix = normal;
     }
 
     auto& top = m_batches.back();
     top.m_drawCount += 1;
 
-    entry.highlightIndex = highlightIndex;
+    entry.m_highlightIndex = highlightIndex;
 
     if (top.m_materialVBO->m_singleMaterial) {
         // NOTE KI handles "instance" material case; per vertex separately
-        entry.materialIndex = top.m_materialVBO->m_entries[0].materialIndex;
+        entry.m_materialIndex = top.m_materialVBO->m_entries[0].materialIndex;
     }
     else {
-        entry.materialIndex = -top.m_materialVBO->m_bufferIndex;
+        entry.m_materialIndex = -top.m_materialVBO->m_bufferIndex;
     }
 
-    if (m_useObjectIDBuffer) {
-        int r = (objectID & 0x000000FF) >> 0;
-        int g = (objectID & 0x0000FF00) >> 8;
-        int b = (objectID & 0x00FF0000) >> 16;
-
-        entry.objectID.r = r / 255.0f;
-        entry.objectID.g = g / 255.0f;
-        entry.objectID.b = b / 255.0f;
-        entry.objectID.a = 1.0f;
-    }
+    entry.setObjectID(objectID);
 
     if (m_entries.size() >= m_entryCount)
         int x = 0;
@@ -165,7 +156,7 @@ void Batch::prepareVAO(
 
         for (int i = 0; i < 4; i++) {
             glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i);
-            glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, modelMatrix) + i * vecSize);
+            glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_modelMatrix) + i * vecSize);
             glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, VBO_BATCH_BINDING);
         }
     }
@@ -177,7 +168,7 @@ void Batch::prepareVAO(
 
         for (int i = 0; i < 3; i++) {
             glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i);
-            glVertexArrayAttribFormat(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, 3, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, normalMatrix) + i * vecSize);
+            glVertexArrayAttribFormat(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, 3, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_normalMatrix) + i * vecSize);
             glVertexArrayAttribBinding(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, VBO_BATCH_BINDING);
         }
     }
@@ -185,21 +176,21 @@ void Batch::prepareVAO(
     // objectIDs
     {
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
-        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, objectID));
+        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_objectID));
         glVertexArrayAttribBinding(vao, ATTR_INSTANCE_OBJECT_ID, VBO_BATCH_BINDING);
     }
 
     // material
     {
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MATERIAL_INDEX);
-        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, materialIndex));
+        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_materialIndex));
         glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MATERIAL_INDEX, VBO_BATCH_BINDING);
     }
 
     // highlight
     {
         glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX);
-        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, highlightIndex));
+        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_highlightIndex));
         glVertexArrayAttribBinding(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, VBO_BATCH_BINDING);
     }
 
