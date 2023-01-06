@@ -6,16 +6,18 @@ struct GLBufferRange {
     int m_maxCount = 0;
     int m_count = 0;
 
-    int m_baseIndex = 0;
-    int m_baseOffset = 0;
+    int m_index = 0;
+    int m_offset = 0;
+    int m_length = 0;
+
     GLsync m_sync = 0;
 
     inline int next() {
-        return m_baseIndex + m_count++;
+        return m_index + m_count++;
     }
 
     inline int index(int idx) {
-        return m_baseIndex + idx;
+        return m_index + idx;
     }
 
     inline bool isFull() {

@@ -11,9 +11,9 @@ struct GLBuffer {
     }
 
     ~GLBuffer() {
-        KI_DEBUG(fmt::format(
-            "BUFFER: delete - name={}, id={}, binding={}, mapped={}, size={}",
-            m_name, m_id, m_binding, m_mapped, m_size));
+        //KI_DEBUG(fmt::format(
+        //    "BUFFER: delete - name={}, id={}, binding={}, mapped={}, size={}",
+        //    m_name, m_id, m_binding, m_mapped, m_size));
 
         if (m_mapped) {
             glUnmapNamedBuffer(m_id);

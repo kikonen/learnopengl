@@ -4,6 +4,8 @@
 
 #include "kigl/GLSyncQueue.h"
 
+constexpr int RENDER_DATA_QUEUE_SIZE = 8;
+
 class RenderData {
 public:
     RenderData() = default;
@@ -23,11 +25,11 @@ private:
 public:
 
 private:
-    GLBuffer m_matrices{ "matricesUBO" };
-    GLBuffer m_data{ "dataUBO" };
-    GLBuffer m_clipPlanes{ "clipPlanesUBO" };
-    GLBuffer m_lights{ "lightsUBO" };
+    GLSyncQueue<MatricesUBO> m_matrices{ "matrices", 1, RENDER_DATA_QUEUE_SIZE };
+    GLSyncQueue<DataUBO> m_data{ "data", 1, RENDER_DATA_QUEUE_SIZE };
+    GLSyncQueue<ClipPlanesUBO> m_clipPlanes{ "clipPlanes", 1, RENDER_DATA_QUEUE_SIZE };
+    GLSyncQueue<LightsUBO> m_lights{ "lights", 1, RENDER_DATA_QUEUE_SIZE };
 
-    GLSyncQueue<TextureUBO> m_textures{ 1, TEXTURE_COUNT };
+    GLSyncQueue<TextureUBO> m_textures{ "textures", 1, TEXTURE_COUNT };
     int m_textureLevel = -1;
 };

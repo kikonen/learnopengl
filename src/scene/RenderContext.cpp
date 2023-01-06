@@ -110,6 +110,17 @@ RenderContext::RenderContext(
     m_matrices.projection = m_camera.getProjection();
     m_matrices.projected = m_camera.getProjected();
 
+    m_data = {
+        m_camera.getPos(),
+        (float)m_clock.ts,
+        m_resolution,
+        0,
+        0,
+        assets.fogColor,
+        assets.fogStart,
+        assets.fogEnd,
+        };
+
     for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
         m_clipPlanes.clipping[i].enabled = false;
     }
@@ -175,18 +186,7 @@ void RenderContext::bindMatricesUBO() const
 
 void RenderContext::bindDataUBO() const
 {
-    DataUBO dataUbo{
-        m_camera.getPos(),
-        (float)m_clock.ts,
-        m_resolution,
-        0,
-        0,
-        assets.fogColor,
-        assets.fogStart,
-        assets.fogEnd,
-    };
-
-    m_scene->m_renderData->updateData(dataUbo);
+    m_scene->m_renderData->updateData(m_data);
 }
 
 void RenderContext::bindClipPlanesUBO() const
@@ -196,6 +196,8 @@ void RenderContext::bindClipPlanesUBO() const
 
 void RenderContext::bindLightsUBO() const
 {
+    auto& registry = m_scene->m_registry;
+
     LightsUBO lightsUbo;
     if (!m_useLight) {
         lightsUbo.dirCount = 0;
@@ -204,7 +206,7 @@ void RenderContext::bindLightsUBO() const
     }
 
     if (m_useLight) {
-        auto& node = m_scene->m_registry.m_dirLight;
+        auto& node = registry.m_dirLight;
         if (node && node->m_light->enabled) {
             lightsUbo.dir[0] = node->m_light->toDirLightUBO();
             lightsUbo.dirCount = 1;
@@ -216,7 +218,7 @@ void RenderContext::bindLightsUBO() const
 
     if (m_useLight) {
         int count = 0;
-        for (auto& node : m_scene->m_registry.m_pointLights) {
+        for (auto& node : registry.m_pointLights) {
             if (count >= LIGHT_COUNT) break;
             if (!node->m_light->enabled) continue;
 
@@ -228,7 +230,7 @@ void RenderContext::bindLightsUBO() const
 
     if (m_useLight) {
         int count = 0;
-        for (auto& node : m_scene->m_registry.m_spotLights) {
+        for (auto& node : registry.m_spotLights) {
             if (count>= LIGHT_COUNT) break;
             if (!node->m_light->enabled) continue;
 

@@ -5,10 +5,15 @@
 
 void RenderData::prepare()
 {
-    m_matrices.createEmpty(sizeof(MatricesUBO), GL_DYNAMIC_STORAGE_BIT);
-    m_data.createEmpty(sizeof(DataUBO), GL_DYNAMIC_STORAGE_BIT);
-    m_clipPlanes.createEmpty(sizeof(ClipPlanesUBO), GL_DYNAMIC_STORAGE_BIT);
-    m_lights.createEmpty(sizeof(LightsUBO), GL_DYNAMIC_STORAGE_BIT);
+    //m_matrices.createEmpty(sizeof(MatricesUBO), GL_DYNAMIC_STORAGE_BIT);
+    //m_data.createEmpty(sizeof(DataUBO), GL_DYNAMIC_STORAGE_BIT);
+    //m_clipPlanes.createEmpty(sizeof(ClipPlanesUBO), GL_DYNAMIC_STORAGE_BIT);
+    //m_lights.createEmpty(sizeof(LightsUBO), GL_DYNAMIC_STORAGE_BIT);
+
+    m_matrices.prepare();
+    m_data.prepare();
+    m_clipPlanes.prepare();
+    m_lights.prepare();
 
     // Textures
     // OpenGL Superbible, 7th Edition, page 552
@@ -37,22 +42,20 @@ void RenderData::update()
     updateTextures();
 }
 
-void RenderData::updateMatrices(MatricesUBO& matrices)
+void RenderData::updateMatrices(MatricesUBO& data)
 {
-    //MatricesUBO matricesUbo = {
-    //    projectedMatrix,
-    //    projectionMatrix,
-    //    viewMatrix,
-    //    lightProjectedMatrix,
-    //    shadowMatrix,
-    //};
-
-    m_matrices.update(0, sizeof(MatricesUBO), &matrices);
+    //m_matrices.update(0, sizeof(MatricesUBO), &data);
+    m_matrices.send(data);
+    m_matrices.bind(UBO_MATRICES);
+    m_matrices.next(true);
 }
 
 void RenderData::updateData(DataUBO& data)
 {
-    m_data.update(0, sizeof(DataUBO), & data);
+    //m_data.update(0, sizeof(DataUBO), & data);
+    m_data.send(data);
+    m_data.bind(UBO_DATA);
+    m_data.next(true);
 }
 
 void RenderData::updateClipPlanes(ClipPlanesUBO& data)
@@ -65,12 +68,18 @@ void RenderData::updateClipPlanes(ClipPlanesUBO& data)
 
     data.clipCount = count;
 
-    m_clipPlanes.update(0, sizeof(ClipPlanesUBO), & data);
+    //m_clipPlanes.update(0, sizeof(ClipPlanesUBO), & data);
+    m_clipPlanes.send(data);
+    m_clipPlanes.bind(UBO_CLIP_PLANES);
+    m_clipPlanes.next(true);
 }
 
 void RenderData::updateLights(LightsUBO& data)
 {
-    m_lights.update(0, sizeof(LightsUBO), &data);
+    //m_lights.update(0, sizeof(LightsUBO), &data);
+    m_lights.send(data);
+    m_lights.bind(UBO_LIGHTS);
+    m_lights.next(true);
 }
 
 void RenderData::updateTextures()

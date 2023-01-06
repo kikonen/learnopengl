@@ -105,6 +105,7 @@ public:
     Camera& m_camera;
 
     mutable MatricesUBO m_matrices;
+    mutable DataUBO m_data;
 
     mutable int m_drawCount = 0;
     mutable int m_skipCount = 0;

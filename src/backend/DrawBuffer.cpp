@@ -11,6 +11,7 @@ namespace backend {
     void DrawBuffer::prepare(int entryCount, int rangeCount)
     {
         m_queue = std::make_unique<GLDrawSyncQueue>(
+            "drawIndirect",
             entryCount,
             rangeCount);
         m_queue->prepare();
@@ -39,7 +40,7 @@ namespace backend {
             glMultiDrawElementsIndirect(
                 drawOptions.mode,
                 GL_UNSIGNED_INT,
-                (void*)range.m_baseOffset,
+                (void*)range.m_offset,
                 range.m_count,
                 sizeof(backend::DrawIndirectCommand));
         }
@@ -47,7 +48,7 @@ namespace backend {
         {
             glMultiDrawArraysIndirect(
                 drawOptions.mode,
-                (void*)range.m_baseOffset,
+                (void*)range.m_offset,
                 range.m_count,
                 sizeof(backend::DrawIndirectCommand));
         }
