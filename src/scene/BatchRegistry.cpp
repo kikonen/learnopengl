@@ -30,7 +30,13 @@ void BatchRegistry::draw(
     Node& node,
     Shader* shader)
 {
-    auto* vao = node.m_type->m_vao;
+    const auto type = node.m_type;
+
+    if (!type->getMesh()) return;
+    if (type->m_flags.noRender) return;
+    if (type->m_flags.noDisplay) return;
+
+    auto* vao = type->m_vao;
     if (!vao) return;
 
     auto* batch = getBatch(vao->id);
