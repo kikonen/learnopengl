@@ -14,12 +14,14 @@ layout (location = ATTR_INSTANCE_NORMAL_MATRIX_1) in mat3 a_normalMatrix;
 
 #include struct_material.glsl
 #include struct_clip_plane.glsl
+#include struct_mesh.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_materials.glsl
 #include uniform_clip_planes.glsl
 #include uniform_material_indeces.glsl
+#include uniform_meshes.glsl
 
 out VS_OUT {
   vec3 fragPos;

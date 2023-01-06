@@ -6,10 +6,10 @@
 
 #include "kigl/GLBuffer.h"
 
-constexpr GLuint SSBO_MATERIALS = 4;
-constexpr GLuint SSBO_TEXTURES = 5;
-constexpr GLuint SSBO_MATERIAL_INDECES = 6;
-constexpr GLuint SSBO_INSTANCE_OBJECT_ID = 7;
+constexpr GLuint SSBO_MATERIALS = 1;
+constexpr GLuint SSBO_TEXTURES = 2;
+constexpr GLuint SSBO_MESHES = 3;
+constexpr GLuint SSBO_MATERIAL_INDECES = 4;
 
 //constexpr unsigned int MIN_MATERIAL_COUNT = 200;
 //constexpr unsigned int MAX_MATERIAL_COUNT = 200;
