@@ -23,7 +23,10 @@ private:
 public:
 
 private:
-    UBO m_ubo;
+    GLBuffer m_matrices{ "matricesUBO" };
+    GLBuffer m_data{ "dataUBO" };
+    GLBuffer m_clipPlanes{ "clipPlanesUBO" };
+    GLBuffer m_lights{ "lightsUBO" };
 
     GLSyncQueue<TextureUBO> m_textures{ 1, TEXTURE_COUNT };
     int m_textureLevel = -1;

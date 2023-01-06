@@ -5,10 +5,10 @@
 
 void RenderData::prepare()
 {
-    m_ubo.matrices.createEmpty(sizeof(MatricesUBO), GL_DYNAMIC_STORAGE_BIT);
-    m_ubo.data.createEmpty(sizeof(DataUBO), GL_DYNAMIC_STORAGE_BIT);
-    m_ubo.clipPlanes.createEmpty(sizeof(ClipPlanesUBO), GL_DYNAMIC_STORAGE_BIT);
-    m_ubo.lights.createEmpty(sizeof(LightsUBO), GL_DYNAMIC_STORAGE_BIT);
+    m_matrices.createEmpty(sizeof(MatricesUBO), GL_DYNAMIC_STORAGE_BIT);
+    m_data.createEmpty(sizeof(DataUBO), GL_DYNAMIC_STORAGE_BIT);
+    m_clipPlanes.createEmpty(sizeof(ClipPlanesUBO), GL_DYNAMIC_STORAGE_BIT);
+    m_lights.createEmpty(sizeof(LightsUBO), GL_DYNAMIC_STORAGE_BIT);
 
     // Textures
     // OpenGL Superbible, 7th Edition, page 552
@@ -24,10 +24,10 @@ void RenderData::prepare()
 
 void RenderData::bind()
 {
-    m_ubo.matrices.bind(UBO_MATRICES);
-    m_ubo.data.bind(UBO_DATA);
-    m_ubo.clipPlanes.bind(UBO_CLIP_PLANES);
-    m_ubo.lights.bind(UBO_LIGHTS);
+    m_matrices.bind(UBO_MATRICES);
+    m_data.bind(UBO_DATA);
+    m_clipPlanes.bind(UBO_CLIP_PLANES);
+    m_lights.bind(UBO_LIGHTS);
 
     m_textures.m_buffer.bind(UBO_TEXTURES);
 }
@@ -47,12 +47,12 @@ void RenderData::updateMatrices(MatricesUBO& matrices)
     //    shadowMatrix,
     //};
 
-    m_ubo.matrices.update(0, sizeof(MatricesUBO), &matrices);
+    m_matrices.update(0, sizeof(MatricesUBO), &matrices);
 }
 
 void RenderData::updateData(DataUBO& data)
 {
-    m_ubo.data.update(0, sizeof(DataUBO), & data);
+    m_data.update(0, sizeof(DataUBO), & data);
 }
 
 void RenderData::updateClipPlanes(ClipPlanesUBO& data)
@@ -65,12 +65,12 @@ void RenderData::updateClipPlanes(ClipPlanesUBO& data)
 
     data.clipCount = count;
 
-    m_ubo.clipPlanes.update(0, sizeof(ClipPlanesUBO), & data);
+    m_clipPlanes.update(0, sizeof(ClipPlanesUBO), & data);
 }
 
 void RenderData::updateLights(LightsUBO& data)
 {
-    m_ubo.lights.update(0, sizeof(LightsUBO), &data);
+    m_lights.update(0, sizeof(LightsUBO), &data);
 }
 
 void RenderData::updateTextures()

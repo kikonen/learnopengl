@@ -9,13 +9,6 @@
 // https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
 
 
-struct UBO {
-    GLBuffer matrices{ "matricesUBO" };
-    GLBuffer data{ "dataUBO" };
-    GLBuffer clipPlanes{ "clipPlanesUBO" };
-    GLBuffer lights{ "lightsUBO" };
-};
-
 constexpr GLuint UBO_MATRICES = 0;
 constexpr GLuint UBO_DATA = 1;
 constexpr GLuint UBO_CLIP_PLANES = 2;
