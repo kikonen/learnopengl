@@ -12,6 +12,9 @@
 #define KI_DEBUG(msg) Log::debug(msg)
 #define KI_TRACE(msg) Log::trace(msg)
 
+#define KI_INFO_OUT(msg) { std::cout << msg << '\n'; Log::info(msg); }
+
+
 #define KI_CRITICAL_SB(msg) { std::stringstream sb; sb << msg; Log::critical(sb.str()); }
 #define KI_ERROR_SB(msg) { std::stringstream sb; sb << msg; Log::error(sb.str()); }
 #define KI_WARN_SB(msg) { std::stringstream sb; sb << msg; Log::warn(sb.str()); }

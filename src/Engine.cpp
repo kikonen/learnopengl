@@ -66,7 +66,9 @@ void Engine::run() {
     m_assets.glPreferredTextureFormatRGB = info.preferredFormatRGB8;
 
     KI_INFO("setup");
-    ki::GL::startError();
+    if (!m_assets.glNoError) {
+        ki::GL::startError();
+    }
 
     if (m_assets.glDebug) {
         // NOTE KI MUST AFTER glfwWindow create

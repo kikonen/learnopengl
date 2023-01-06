@@ -92,20 +92,20 @@ namespace ki {
 
     void GL::startError()
     {
-//        glfwSetErrorCallback(glfwErrorCallback);
+        glfwSetErrorCallback(glfwErrorCallback);
     }
 
     void GL::startDebug()
     {
-        std::cout << "OPENGL: DEBUG=true\n";
+        KI_INFO_OUT("OPENGL: DEBUG=true");
 
         // https://bcmpinc.wordpress.com/2015/08/21/debugging-since-opengl-4-3/
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
         glDebugMessageCallback(glMessageCallback, nullptr);
-        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
-        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
+        //glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, NULL, GL_TRUE);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_TRUE);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, NULL, GL_TRUE);
@@ -120,7 +120,7 @@ namespace ki {
         int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
         if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
         {
-            std::cout << "GLFW: GL_CONTEXT_FLAG_DEBUG_BIT=true\n";
+            KI_INFO_OUT("GLFW: GL_CONTEXT_FLAG_DEBUG_BIT=true");
         }
 
         checkErrors("init", __FILE__, __LINE__);
