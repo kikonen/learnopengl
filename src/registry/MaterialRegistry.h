@@ -48,8 +48,8 @@ private:
 
     int m_updatedSize = 0;
 
-    GLBuffer m_ubo;
-    GLBuffer m_ssbo;
+    GLBuffer m_ubo{ "materialUBO" };
+    GLBuffer m_ssbo{ "materialSSBO" };
 
-    GLBuffer m_entryBuffer;
+    GLBuffer m_entryBuffer{ "materialEntry" };
 };

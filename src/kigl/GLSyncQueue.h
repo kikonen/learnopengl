@@ -92,7 +92,7 @@ public:
     }
 
 public:
-    GLBuffer m_buffer;
+    GLBuffer m_buffer{ "syncQueue" };
 
 private:
     const int m_entryCount;

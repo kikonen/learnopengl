@@ -10,10 +10,10 @@
 
 
 struct UBO {
-    GLBuffer matrices;
-    GLBuffer data;
-    GLBuffer clipPlanes;
-    GLBuffer lights;
+    GLBuffer matrices{ "matricesUBO" };
+    GLBuffer data{ "dataUBO" };
+    GLBuffer clipPlanes{ "clipPlanesUBO" };
+    GLBuffer lights{ "lightsUBO" };
 };
 
 constexpr GLuint UBO_MATRICES = 0;

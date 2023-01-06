@@ -34,7 +34,7 @@ private:
     const std::string m_materialName;
 
     GLVertexArray m_vao;
-    GLBuffer m_vbo;
+    GLBuffer m_vbo{ "skyboxVBO" };
 
     Shader* m_shader{ nullptr };
 };

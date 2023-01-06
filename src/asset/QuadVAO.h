@@ -21,6 +21,6 @@ private:
     bool m_prepared = false;
 
     std::unique_ptr<GLVertexArray> m_vao;
-    GLBuffer m_vbo;
+    GLBuffer m_vbo{ "quadVBO" };
 
 };

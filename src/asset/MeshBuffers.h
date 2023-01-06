@@ -15,9 +15,9 @@ public:
 
 public:
     GLVertexArray VAO;
-    GLBuffer VBO;
-    GLBuffer VBO_MATERIAL;
-    GLBuffer EBO;
+    GLBuffer VBO{ "meshVBO" };
+    GLBuffer VBO_MATERIAL{ "meshMaterialVBO" };
+    GLBuffer EBO{ "meshEBO" };
 
 private:
     bool m_prepared = false;

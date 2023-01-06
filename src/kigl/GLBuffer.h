@@ -1,12 +1,20 @@
 #pragma once
 
+#include <fmt/format.h>
+
 #include "ki/GL.h"
 
 struct GLBuffer {
-    GLBuffer() {
+    GLBuffer(const std::string name)
+        : m_name(name)
+    {
     }
 
     ~GLBuffer() {
+        KI_DEBUG(fmt::format(
+            "BUFFER: delete - name={}, id={}, binding={}, mapped={}, size={}",
+            m_name, m_id, m_binding, m_mapped, m_size));
+
         if (m_mapped) {
             glUnmapNamedBuffer(m_id);
         }
@@ -20,6 +28,7 @@ struct GLBuffer {
     void create() {
         if (m_created) return;
         glCreateBuffers(1, &m_id);
+        KI_DEBUG(fmt::format("BUFFER: create - name={}, id={}", m_name, m_id));
         m_created = true;
     }
 
@@ -33,11 +42,21 @@ struct GLBuffer {
     // flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
     void initEmpty(int size, int flags) {
         m_size = size;
+
+        KI_DEBUG(fmt::format(
+            "BUFFER: initEmpty - name={}, id={}, size={}, flags={}",
+            m_name, m_id, m_size, flags));
+
         glNamedBufferStorage(m_id, size, nullptr, flags);
     }
 
     void init(int size, void* data, int flags) {
         m_size = size;
+
+        KI_DEBUG(fmt::format(
+            "BUFFER: init - name={}, id={}, size={}, flags={}",
+            m_name, m_id, m_size, flags));
+
         glNamedBufferStorage(m_id, size, data, flags);
     }
 
@@ -49,18 +68,36 @@ struct GLBuffer {
         bindRange(ubo, 0, m_size);
     }
 
-    void bindRange(GLuint ubo, int offset, int size) {
+    void bindRange(GLuint ubo, int offset, int length) {
         if (!m_created) return;
-        glBindBufferRange(GL_UNIFORM_BUFFER, ubo, m_id, offset, size);
+
+        if (m_binding != ubo) {
+            m_binding = ubo;
+
+            KI_DEBUG(fmt::format(
+                "BUFFER: bindRange - name={}, id={}, size={}, binding={}, offset={}, len={}",
+                m_name, m_id, m_size, m_binding, offset, length));
+        }
+
+        glBindBufferRange(GL_UNIFORM_BUFFER, ubo, m_id, offset, length);
     }
 
     void bindSSBO(GLuint ssbo) {
         bindSSBORange(ssbo, 0, m_size);
     }
 
-    void bindSSBORange(GLuint ssbo, int offset, int size) {
+    void bindSSBORange(GLuint ssbo, int offset, int length) {
         if (!m_created) return;
-        glBindBufferRange(GL_SHADER_STORAGE_BUFFER, ssbo, m_id, offset, size);
+
+        if (m_binding != ssbo) {
+            m_binding = ssbo;
+
+            KI_DEBUG(fmt::format(
+                "BUFFER: bindSSBORange - name={}, id={}, size={}, binding={}, offset={}, len={}",
+                m_name, m_id, m_size, m_binding, offset, length));
+        }
+
+        glBindBufferRange(GL_SHADER_STORAGE_BUFFER, ssbo, m_id, offset, length);
     }
 
     void bindDrawIndirect() {
@@ -76,6 +113,11 @@ struct GLBuffer {
 
     void* mapRange(int offset, int length, int flags) {
         if (!m_created || m_mapped) return m_data;
+
+        KI_DEBUG(fmt::format(
+            "BUFFER: mapRange - name={}, id={}, size={}, offset={}, len={}, flags={}",
+            m_name, m_id, m_size, offset, length, flags));
+
         m_data = glMapNamedBufferRange(m_id, offset, length, flags);
         m_mapped = true;
         return m_data;
@@ -92,8 +134,12 @@ struct GLBuffer {
         m_mapped = false;
     }
 
+    const std::string m_name;
+
     GLuint m_id = 0;
     int m_size = 0;
+
+    GLuint m_binding = 0;
 
     void* m_data{ nullptr };
 

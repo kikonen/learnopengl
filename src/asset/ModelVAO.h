@@ -31,8 +31,8 @@ private:
     bool m_prepared = false;
 
     std::unique_ptr<GLVertexArray> m_vao;
-    GLBuffer m_vbo;
-    GLBuffer m_ebo;
+    GLBuffer m_vbo{ "modelVBO" };
+    GLBuffer m_ebo{ "modelEBO" };
 
     std::vector<VertexEntry> m_vertexEntries;
     std::vector<IndexEntry> m_indexEntries;

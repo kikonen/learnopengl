@@ -58,7 +58,7 @@ private:
     bool m_prepared = false;
 
     GLVertexArray m_vao;
-    GLBuffer m_vbo;
+    GLBuffer m_vbo{ "viewportVBO" };
 
     FrameBuffer* m_sourceBuffer{ nullptr };
     FrameBuffer* m_destinationBuffer{ nullptr };

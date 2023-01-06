@@ -437,7 +437,7 @@ void Scene::updateMainViewport(RenderContext& ctx)
     if (!changed) return;
 
     //if (m_mainBuffer) return;
-    KI_INFO_SB("BUFFER: create - w=" << w << ", h=" << h);
+    KI_INFO(fmt::format("FRAME_BUFFER: update - w={}, h={}", w, h));
 
     // MAIN
     {
