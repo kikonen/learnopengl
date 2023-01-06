@@ -69,7 +69,8 @@ namespace ki {
         const void* userParam) noexcept
     {
         std::stringstream ss;
-        ss << formatSource(source)
+        ss << "OPENGL: "
+            << formatSource(source)
             << " (" << id << ")"
             << " " << formatType(type)
             << " " << formatSeverity(severity)
