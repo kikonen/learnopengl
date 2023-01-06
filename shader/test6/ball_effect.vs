@@ -10,7 +10,6 @@ layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
 layout (location = ATTR_INSTANCE_NORMAL_MATRIX_1) in mat3 a_normalMatrix;
 
 #include struct_material.glsl
-#include struct_texture.glsl
 #include struct_clip_plane.glsl
 
 #include uniform_matrices.glsl

@@ -11,7 +11,6 @@ layout (location = ATTR_INSTANCE_NORMAL_MATRIX_1) in mat3 a_normalMatrix;
 
 #include struct_lights.glsl
 #include struct_material.glsl
-#include struct_texture.glsl
 #include struct_clip_plane.glsl
 
 #include uniform_matrices.glsl

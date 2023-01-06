@@ -397,9 +397,13 @@ std::vector<std::string> Shader::loadSourceLines(
     bool optional)
 {
     bool exists = fileExists(path);
-    if (!exists && optional) {
-        KI_INFO(fmt::format("FILE_NOT_EXIST: {}", path));
-        return {};
+    if (!exists) {
+        std::string msg = fmt::format("FILE_NOT_EXIST: {}", path);
+        KI_INFO(msg);
+        if (optional) {
+            return {};
+        }
+        throw std::runtime_error{ msg };
     }
 
     std::vector<std::string> lines;
