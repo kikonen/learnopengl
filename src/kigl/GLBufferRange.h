@@ -6,18 +6,20 @@ struct GLBufferRange {
     size_t m_maxCount = 0;
     size_t m_count = 0;
 
+    size_t m_entrySize = 0;
     size_t m_index = 0;
     size_t m_offset = 0;
     size_t m_length = 0;
+    size_t m_paddedLength = 0;
 
     GLsync m_sync = 0;
 
-    inline size_t next() {
-        return m_index + m_count++;
+    inline size_t nextOffset() {
+        return m_offset + (m_entrySize * m_count++);
     }
 
-    inline size_t index(size_t idx) {
-        return m_index + idx;
+    inline size_t offset(size_t idx) {
+        return m_index + (m_entrySize * idx);
     }
 
     inline bool isFull() {

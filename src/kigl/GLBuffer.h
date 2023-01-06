@@ -111,14 +111,14 @@ struct GLBuffer {
         mapRange(0, m_size, flags);
     }
 
-    void* mapRange(size_t offset, size_t length, int flags) {
+    unsigned char* mapRange(size_t offset, size_t length, int flags) {
         if (!m_created || m_mapped) return m_data;
 
         KI_DEBUG(fmt::format(
             "BUFFER: mapRange - name={}, id={}, size={}, offset={}, len={}, flags={}",
             m_name, m_id, m_size, offset, length, flags));
 
-        m_data = glMapNamedBufferRange(m_id, offset, length, flags);
+        m_data = (unsigned char*)glMapNamedBufferRange(m_id, offset, length, flags);
         m_mapped = true;
         return m_data;
     }
@@ -141,7 +141,7 @@ struct GLBuffer {
 
     int m_binding = -1;
 
-    void* m_data{ nullptr };
+    unsigned char* m_data{ nullptr };
 
     bool m_created = false;
     bool m_mapped = false;

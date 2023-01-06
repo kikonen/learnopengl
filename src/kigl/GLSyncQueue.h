@@ -18,21 +18,29 @@ public:
         : m_rangeCount(rangeCount),
         m_entryCount(entryCount),
         m_entrySize(sizeof(T)),
-        m_rangeSize(entryCount* sizeof(T)),
         m_buffer{ "syncQueue_" + name}
     {
     }
 
-    void prepare() {
+    void prepare(int bindAlignment) {
+        m_bindAlignment = bindAlignment;
+        m_rangeLength = m_entryCount * m_entrySize;
+
+        m_paddedRangeLength = m_rangeLength;
+        int pad = m_rangeLength % m_bindAlignment;
+        if (pad > 0) {
+            m_paddedRangeLength += (m_bindAlignment - pad);
+        }
+
         m_buffer.createEmpty(
-            m_rangeCount * m_rangeSize,
+            m_rangeCount * m_paddedRangeLength,
             GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
         // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
         // https://stackoverflow.com/questions/44299324/how-to-use-gl-map-unsynchronized-bit-with-gl-map-persistent-bit
-        m_data = (T*)m_buffer.mapRange(
+        m_data = m_buffer.mapRange(
             0,
-            m_rangeCount * m_rangeSize,
+            m_rangeCount * m_paddedRangeLength,
             GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
         m_ranges.reserve(m_rangeCount);
@@ -41,9 +49,11 @@ public:
             auto& range = m_ranges.emplace_back();
             range.m_index = i * m_entryCount;
             range.m_maxCount = m_entryCount;
+            range.m_entrySize = m_entrySize;
             range.m_count = 0;
-            range.m_offset = i * m_rangeSize;
-            range.m_length = m_rangeSize;
+            range.m_offset = i * m_paddedRangeLength;
+            range.m_length = m_rangeLength;
+            range.m_paddedLength = m_paddedRangeLength;
         }
     }
 
@@ -56,7 +66,9 @@ public:
         auto& range = m_ranges[m_current];
         if (m_current == 0) range.waitFence();
 
-        m_data[range.next()] = entry;
+        //m_data[range.next()] = entry;
+        T* ptr = (T*)(m_data + range.nextOffset());
+        *ptr = entry;
 
         return range.isFull();
     }
@@ -70,7 +82,9 @@ public:
         auto& range = m_ranges[m_current];
         if (m_current == 0) range.waitFence();
 
-        m_data[range.index(idx)] = entry;
+        //m_data[range.index(idx)] = entry;
+        T* ptr = (T*)(m_data + range.offset(idx));
+        *ptr = entry;
     }
 
     inline GLBufferRange& current() {
@@ -107,9 +121,12 @@ private:
     const int m_entryCount;
     const int m_entrySize;
     const int m_rangeCount;
-    const int m_rangeSize;
 
-    T* m_data{ nullptr };
+    int m_bindAlignment = 0;
+    int m_rangeLength = 0;
+    int m_paddedRangeLength = 0;
+
+    unsigned char* m_data{ nullptr };
 
     int m_current = 0;
     std::vector<GLBufferRange> m_ranges;

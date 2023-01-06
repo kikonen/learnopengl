@@ -3,6 +3,10 @@
 #include "asset/ImageTexture.h"
 
 
+namespace {
+    constexpr size_t UNIFORM_BUFFER_OFFSET_ALIGNMENT = 256;
+}
+
 void RenderData::prepare()
 {
     //m_matrices.createEmpty(sizeof(MatricesUBO), GL_DYNAMIC_STORAGE_BIT);
@@ -10,10 +14,10 @@ void RenderData::prepare()
     //m_clipPlanes.createEmpty(sizeof(ClipPlanesUBO), GL_DYNAMIC_STORAGE_BIT);
     //m_lights.createEmpty(sizeof(LightsUBO), GL_DYNAMIC_STORAGE_BIT);
 
-    m_matrices.prepare();
-    m_data.prepare();
-    m_clipPlanes.prepare();
-    m_lights.prepare();
+    m_matrices.prepare(UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+    m_data.prepare(UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+    m_clipPlanes.prepare(UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+    m_lights.prepare(UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
     // Textures
     // OpenGL Superbible, 7th Edition, page 552
@@ -24,7 +28,7 @@ void RenderData::prepare()
     //glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ubo.textures);
     //glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(TexturesUBO), &m_textures, GL_DYNAMIC_COPY);
     //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    m_textures.prepare();
+    m_textures.prepare(1);
 }
 
 void RenderData::bind()

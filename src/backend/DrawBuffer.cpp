@@ -4,6 +4,8 @@
 
 
 namespace backend {
+    constexpr int BUFFER_ALIGNMENT = 64;
+
     DrawBuffer::DrawBuffer()
     {
     }
@@ -14,7 +16,7 @@ namespace backend {
             "drawIndirect",
             entryCount,
             rangeCount);
-        m_queue->prepare();
+        m_queue->prepare(BUFFER_ALIGNMENT);
     }
 
     void DrawBuffer::bind()
