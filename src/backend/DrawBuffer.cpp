@@ -4,7 +4,7 @@
 
 
 namespace backend {
-    constexpr int BUFFER_ALIGNMENT = 64;
+    constexpr int BUFFER_ALIGNMENT = 1;
 
     DrawBuffer::DrawBuffer()
     {
