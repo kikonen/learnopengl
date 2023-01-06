@@ -3,20 +3,20 @@
 #include "ki/GL.h"
 
 struct GLBufferRange {
-    int m_maxCount = 0;
-    int m_count = 0;
+    size_t m_maxCount = 0;
+    size_t m_count = 0;
 
-    int m_index = 0;
-    int m_offset = 0;
-    int m_length = 0;
+    size_t m_index = 0;
+    size_t m_offset = 0;
+    size_t m_length = 0;
 
     GLsync m_sync = 0;
 
-    inline int next() {
+    inline size_t next() {
         return m_index + m_count++;
     }
 
-    inline int index(int idx) {
+    inline size_t index(size_t idx) {
         return m_index + idx;
     }
 
@@ -41,7 +41,7 @@ struct GLBufferRange {
     {
         if (!m_sync) return;
 
-        int count = 0;
+        size_t count = 0;
         GLenum res = GL_UNSIGNALED;
         while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
         {

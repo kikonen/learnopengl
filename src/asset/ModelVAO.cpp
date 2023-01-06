@@ -44,6 +44,7 @@ GLVertexArray* ModelVAO::prepare(BatchRegistry& batchRegistry)
 
     prepareVAO(*m_vao, m_vbo, m_ebo);
     batchRegistry.prepareVAO(*m_vao, m_singleMaterial);
+    return m_vao.get();
 }
 
 void ModelVAO::prepareVAO(
@@ -93,9 +94,9 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
     assert(!meshVBO.m_indexEntries.empty());
 
     {
-        const int count = meshVBO.m_vertexEntries.size();
-        const int baseIndex = m_vertexEntries.size();
-        const int baseOffset = baseIndex * sizeof(VertexEntry);
+        const size_t count = meshVBO.m_vertexEntries.size();
+        const size_t baseIndex = m_vertexEntries.size();
+        const size_t baseOffset = baseIndex * sizeof(VertexEntry);
 
         assert(baseIndex + count <= MAX_VERTEX_ENTRIES);
 
@@ -115,9 +116,9 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
     }
 
     {
-        const int count = meshVBO.m_indexEntries.size();
-        const int baseIndex = m_indexEntries.size();
-        const int baseOffset = baseIndex * sizeof(IndexEntry);
+        const size_t count = meshVBO.m_indexEntries.size();
+        const size_t baseIndex = m_indexEntries.size();
+        const size_t baseOffset = baseIndex * sizeof(IndexEntry);
 
         assert(baseIndex + count <= MAX_INDEX_ENTRIES);
 

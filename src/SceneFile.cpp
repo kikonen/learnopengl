@@ -311,7 +311,7 @@ MeshType* SceneFile::createType(
     if (entity.isRoot) {
         type->m_flags.root = true;
         type->m_flags.noRender = true;
-        type->m_entityType == EntityType::origo;
+        type->m_entityType = EntityType::origo;
     }
 
     if (data.instanced) {

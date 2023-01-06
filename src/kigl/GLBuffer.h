@@ -60,7 +60,7 @@ struct GLBuffer {
         glNamedBufferStorage(m_id, size, data, flags);
     }
 
-    void update(int offset, int length, void* data) {
+    void update(size_t offset, size_t length, void* data) {
         glNamedBufferSubData(m_id, offset, length, data);
     }
 
@@ -68,7 +68,7 @@ struct GLBuffer {
         bindRange(ubo, 0, m_size);
     }
 
-    void bindRange(GLuint ubo, int offset, int length) {
+    void bindRange(GLuint ubo, size_t offset, size_t length) {
         if (!m_created) return;
 
         if (m_binding != ubo) {
@@ -86,7 +86,7 @@ struct GLBuffer {
         bindSSBORange(ssbo, 0, m_size);
     }
 
-    void bindSSBORange(GLuint ssbo, int offset, int length) {
+    void bindSSBORange(GLuint ssbo, size_t offset, size_t length) {
         if (!m_created) return;
 
         if (m_binding != ssbo) {
@@ -111,7 +111,7 @@ struct GLBuffer {
         mapRange(0, m_size, flags);
     }
 
-    void* mapRange(int offset, int length, int flags) {
+    void* mapRange(size_t offset, size_t length, int flags) {
         if (!m_created || m_mapped) return m_data;
 
         KI_DEBUG(fmt::format(
@@ -123,7 +123,7 @@ struct GLBuffer {
         return m_data;
     }
 
-    void flushRange(int offset, int length) {
+    void flushRange(size_t offset, size_t length) {
         if (!m_mapped) return;
         glFlushMappedNamedBufferRange(m_id, offset, length);
     }
@@ -137,7 +137,7 @@ struct GLBuffer {
     const std::string m_name;
 
     GLuint m_id = 0;
-    int m_size = 0;
+    size_t m_size = 0;
 
     int m_binding = -1;
 

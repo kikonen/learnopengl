@@ -211,12 +211,13 @@ void MeshLoader::loadData(
     catch (std::ifstream::failure e) {
         std::string what{ e.what() };
         KI_ERROR(fmt::format(
-            "MODEL::FILE_NOT_SUCCESFULLY_READ: {}\n{0}",
+            "MODEL::FILE_NOT_SUCCESFULLY_READ: {}\n{}",
             filePath.string(), what));
     }
 
-    KI_INFO("== {} ===\ntris={}, positions={}, textures={}, normals={}, vertices={}\n--------\n",
-        mesh.str(), tris.size(), positions.size(), textures.size(), normals.size(), vertices.size());
+    KI_INFO(fmt::format(
+        "== {} ===\ntris={}, positions={}, textures={}, normals={}, vertices={}\n--------\n",
+        mesh.str(), tris.size(), positions.size(), textures.size(), normals.size(), vertices.size()));
 }
 
 // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
@@ -269,7 +270,7 @@ unsigned int MeshLoader::resolveVertexIndex(
         }
     }
 
-    int index = vertices.size();
+    size_t index = vertices.size();
     vertexMapping[&pos] = index;
     vertices.push_back(std::move(v));
 

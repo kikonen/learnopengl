@@ -4,7 +4,7 @@
 
 #include "Batch.h"
 
-class GLVertexArray;
+struct GLVertexArray;
 class RenderContext;
 class Node;
 class Shader;
