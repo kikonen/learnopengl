@@ -39,8 +39,8 @@ void NodeRenderer::render(
     const RenderContext& ctx,
     SkyboxRenderer* skybox)
 {
-    m_highlightedCount = ctx.registry.countHighlighted();
-    m_selectedCount = ctx.registry.countSelected();
+    m_taggedCount = ctx.assets.showTagged ? ctx.registry.countTagged() : 0;
+    m_selectedCount = ctx.assets.showSelection ? ctx.registry.countSelected() : 0;
 
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     //ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
@@ -86,7 +86,8 @@ void NodeRenderer::render(
 
 void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
 {
-    if (m_highlightedCount == 0 && m_selectedCount == 0) return;
+    if (!ctx.assets.showHighlight) return;
+    if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
     ctx.state.enable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -99,7 +100,8 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
 
 void NodeRenderer::renderSelection(const RenderContext& ctx)
 {
-    if (m_highlightedCount == 0 && m_selectedCount == 0) return;
+    if (!ctx.assets.showHighlight) return;
+    if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
     ctx.state.enable(GL_STENCIL_TEST);
     ctx.state.disable(GL_DEPTH_TEST);
@@ -139,7 +141,9 @@ void NodeRenderer::drawNodes(
             auto& batch = ctx.m_batch;
 
             for (auto& node : it.second) {
-                bool highlight = node->isHighlighted();
+                bool tagged = ctx.assets.showTagged ? node->isTagged() : false;
+                bool selected = ctx.assets.showSelection ? node->isSelected() : false;
+                bool highlight = ctx.assets.showHighlight ? tagged || selected : false;
 
                 if (selection) {
                     if (!highlight) continue;

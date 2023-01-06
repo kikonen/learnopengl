@@ -98,7 +98,7 @@ public:
 
     void attachNodes();
 
-    int countHighlighted() const noexcept;
+    int countTagged() const noexcept;
     int countSelected() const noexcept;
 
     void changeParent(Node* node, uuids::uuid parentId) noexcept;

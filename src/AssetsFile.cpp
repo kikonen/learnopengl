@@ -5,6 +5,7 @@
 
 #include "asset/MeshLoader.h"
 
+
 #include "AssetsFile.h"
 
 namespace {
@@ -110,17 +111,23 @@ void AssetsFile::loadAssets(
         else if (k == "show_objectid_view") {
             data.showObjectIDView = v.as<bool>();
         }
-        else if (k == "show_selection_wireframe") {
-            data.showSelectionWireframe = v.as<bool>();
-        }
         else if (k == "show_volume") {
             data.showVolume = v.as<bool>();
+        }
+        else if (k == "show_selection_volume") {
+            data.showSelectionVolume = v.as<bool>();
+        }
+        else if (k == "show_highlight") {
+            data.showHighlight = v.as<bool>();
+        }
+        else if (k == "show_selection") {
+            data.showSelection = v.as<bool>();
         }
         else if (k == "show_cube_map_center") {
             data.showCubeMapCenter = v.as<bool>();
         }
-        else if (k == "show_highlight") {
-            data.showHighlight = v.as<bool>();
+        else if (k == "show_tagged") {
+            data.showTagged = v.as<bool>();
         }
         else if (k == "rasterizer_discard") {
             data.rasterizerDiscard = v.as<bool>();

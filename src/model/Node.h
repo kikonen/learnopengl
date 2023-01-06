@@ -66,7 +66,7 @@ public:
     OBB& getOBB();
 
     // @return -1 if no highlight color
-    int getHighlightColor() const;
+    int getHighlightColor(const RenderContext& ctx) const;
 
     bool isHighlighted() { return m_tagMaterialIndex > -1 || m_selectionMaterialIndex > -1; }
 

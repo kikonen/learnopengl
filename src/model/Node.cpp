@@ -81,7 +81,7 @@ void Node::update(
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
-    batch.add(ctx, m_modelMatrix, m_normalMatrix, m_objectID, getHighlightColor());
+    batch.add(ctx, m_modelMatrix, m_normalMatrix, m_objectID, getHighlightColor(ctx));
 }
 
 void Node::updateModelMatrix(Node* parent) noexcept
@@ -249,10 +249,12 @@ OBB& Node::getOBB()
     return m_obb;
 }
 
-int Node::getHighlightColor() const
+int Node::getHighlightColor(const RenderContext& ctx) const
 {
-    if (m_tagMaterialIndex > -1) return m_tagMaterialIndex;
-    if (m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
+    if (ctx.assets.showHighlight) {
+        if (ctx.assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
+        if (ctx.assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
+    }
     return -1;
 }
 

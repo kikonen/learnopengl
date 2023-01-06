@@ -63,10 +63,13 @@ public:
     bool showRefractionView;
     bool showObjectIDView;
 
-    bool showSelectionWireframe;
     bool showVolume;
-    bool showCubeMapCenter;
+    bool showSelectionVolume;
+
     bool showHighlight;
+    bool showSelection;
+    bool showCubeMapCenter;
+    bool showTagged;
 
     bool rasterizerDiscard;
 

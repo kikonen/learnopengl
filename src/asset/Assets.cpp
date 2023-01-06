@@ -47,10 +47,13 @@ Assets::Assets()
     showReflectionView = false;
     showRefractionView = false;
 
-    showSelectionWireframe = false;
     showVolume = false;
-    showCubeMapCenter = false;
+    showSelectionVolume = false;
+
     showHighlight = false;
+    showSelection = false;
+    showCubeMapCenter = false;
+    showTagged = false;
 
     useLight = true;
 

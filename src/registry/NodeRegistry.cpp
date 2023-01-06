@@ -191,13 +191,13 @@ void NodeRegistry::attachNodes()
     m_newNodes.clear();
 }
 
-int NodeRegistry::countHighlighted() const noexcept
+int NodeRegistry::countTagged() const noexcept
 {
     int count = 0;
     for (const auto& all : allNodes) {
         for (const auto& x : all.second) {
             for (auto& node : x.second) {
-                if (node->isHighlighted()) count++;
+                if (node->isTagged()) count++;
             }
         }
     }
