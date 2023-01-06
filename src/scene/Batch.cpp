@@ -24,13 +24,6 @@ namespace {
         std::lock_guard<std::mutex> lock(type_id_lock);
         return ++idBase;
     }
-
-    const glm::mat4 BASE_MAT_1 = glm::mat4(1.0f);
-    const glm::vec3 HIGHLIGHT_SCALE{ 1.02f };
-    const glm::mat4 HIGHLIGHT_MAT = glm::scale(BASE_MAT_1, HIGHLIGHT_SCALE);
-
-    // scene_full = 91 109
-    constexpr int MAX_MATERIAL_ENTRIES = 100000;
 }
 
 Batch::Batch()
@@ -47,13 +40,8 @@ void Batch::add(
 {
     auto& entry = m_entries.emplace_back();
 
-    if (highlightIndex > -1 && m_highlight) {
-        entry.m_modelMatrix = model * HIGHLIGHT_MAT;
-        entry.m_normalMatrix = normal;
-    } else {
-        entry.m_modelMatrix = model;
-        entry.m_normalMatrix = normal;
-    }
+    entry.m_modelMatrix = model;
+    entry.m_normalMatrix = normal;
 
     auto& top = m_batches.back();
     top.m_drawCount += 1;

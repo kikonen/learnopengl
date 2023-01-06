@@ -29,6 +29,11 @@ out VS_OUT {
 
 out float gl_ClipDistance[CLIP_COUNT];
 
+mat4 HIGHLIGHT_MAT = mat4(1.02, 0, 0, 0,
+                          0, 1.02, 0, 0,
+                          0, 0, 1.02, 0,
+                          0, 0, 0, 1);
+
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
@@ -38,7 +43,7 @@ precision mediump float;
 #include fn_calculate_clipping.glsl
 
 void main() {
-  vec4 worldPos = a_modelMatrix * a_pos;
+  vec4 worldPos = a_modelMatrix * HIGHLIGHT_MAT * a_pos;
 
   gl_Position = u_projectedMatrix * worldPos;
 
