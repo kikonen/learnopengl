@@ -15,12 +15,12 @@
 #define KI_INFO_OUT(msg) { std::cout << msg << '\n'; Log::info(msg); }
 
 
-#define KI_CRITICAL_SB(msg) { std::stringstream sb; sb << msg; Log::critical(sb.str()); }
-#define KI_ERROR_SB(msg) { std::stringstream sb; sb << msg; Log::error(sb.str()); }
-#define KI_WARN_SB(msg) { std::stringstream sb; sb << msg; Log::warn(sb.str()); }
-#define KI_INFO_SB(msg) { std::stringstream sb; sb << msg; Log::info(sb.str()); }
-#define KI_DEBUG_SB(msg) { std::stringstream sb; sb << msg; Log::debug(sb.str()); }
-#define KI_TRACE_SB(msg) { std::stringstream sb; sb << msg; Log::trace(sb.str()); }
+//#define KI_CRITICAL_SB(msg) { std::stringstream sb; sb << msg; Log::critical(sb.str()); }
+//#define KI_ERROR_SB(msg) { std::stringstream sb; sb << msg; Log::error(sb.str()); }
+//#define KI_WARN_SB(msg) { std::stringstream sb; sb << msg; Log::warn(sb.str()); }
+//#define KI_INFO_SB(msg) { std::stringstream sb; sb << msg; Log::info(sb.str()); }
+//#define KI_DEBUG_SB(msg) { std::stringstream sb; sb << msg; Log::debug(sb.str()); }
+//#define KI_TRACE_SB(msg) { std::stringstream sb; sb << msg; Log::trace(sb.str()); }
 
 class Log
 {

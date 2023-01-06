@@ -121,8 +121,8 @@ int Test6::onRender(const ki::RenderClock& clock) {
             auto ratio = (float)m_skipCount / (float)m_drawCount;
             auto frameDraw = (float)m_drawCount / (float)clock.frameCount;
             auto frameSkip = (float)m_skipCount / (float)clock.frameCount;
-            KI_INFO_SB(fmt::format("{} : total-frames: {}, total-draw: {}, total-skip: {}, ratio: {}", ctx.m_name, clock.frameCount, m_drawCount, m_skipCount, ratio));
-            KI_INFO_SB(fmt::format("{} : frame-draw: {}, frame-skip: {}", ctx.m_name, frameDraw, frameSkip));
+            KI_INFO(fmt::format("{} : total-frames: {}, total-draw: {}, total-skip: {}, ratio: {}", ctx.m_name, clock.frameCount, m_drawCount, m_skipCount, ratio));
+            KI_INFO(fmt::format("{} : frame-draw: {}, frame-skip: {}", ctx.m_name, frameDraw, frameSkip));
         }
     }
 
@@ -162,7 +162,7 @@ void Test6::selectNode(
             controller->setTarget(node->m_objectID);
         }
 
-        KI_INFO_SB("selected: " << objectID);
+        KI_INFO(fmt::format("selected: {}", objectID));
     }
 }
 

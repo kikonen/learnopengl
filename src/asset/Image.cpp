@@ -4,6 +4,8 @@
 #include <map>
 #include <mutex>
 
+#include "fmt/format.h"
+
 #include <codeanalysis/warnings.h>
 
 #pragma warning(push)
@@ -53,14 +55,12 @@ int Image::load(bool flip) {
         STBI_default);
 
     if (m_data) {
-        KI_INFO_SB("IMAGE::LOADED " << m_path
-            + " flipped=" << std::to_string(m_flipped)
-            + " channels=" << std::to_string(m_channels)
-            + " width=" << std::to_string(m_width)
-            + " height=" << std::to_string(m_height));
+        KI_INFO(fmt::format(
+            "IMAGE::LOADED {}, flipped={}, channels={}, width={}, height={}",
+            m_path, m_flipped, m_channels, m_width, m_height));
     }
     else {
-        KI_ERROR_SB("IMAGE::LOAD_FAILED " << m_path);
+        KI_ERROR(fmt::format("IMAGE::LOAD_FAILED {}", m_path));
     }
 
     m_res = m_data ? 0 : -1;

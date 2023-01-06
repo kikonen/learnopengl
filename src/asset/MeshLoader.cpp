@@ -20,7 +20,6 @@ MeshLoader::MeshLoader(
 
 MeshLoader::~MeshLoader()
 {
-    //KI_INFO_SB("MESH_LOADER: deleted: mesh=" << m_meshPath << "/" << m_meshName);
 }
 
 ModelMesh* MeshLoader::load(
@@ -79,7 +78,7 @@ void MeshLoader::loadData(
     filePath /= mesh.m_meshName + ".obj";
 
     //const std::string modelPath = assets.modelsDir + path + modelName + ".obj";
-    KI_INFO_SB("LOAD_MODEL: path=" << filePath);
+    KI_INFO(fmt::format("MESH_LOADER: path={}", filePath.string()));
 
     std::ifstream file;
     //    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -207,19 +206,17 @@ void MeshLoader::loadData(
         std::chrono::duration<float> ts = tp2 - tp1;
         float loadTime = ts.count() * 1000;
 
-        KI_INFO_SB("Duration: " << loadTime << " ms");
+        KI_INFO(fmt::format("MESH_LOADER: duration={}ms", loadTime));
     }
     catch (std::ifstream::failure e) {
-        KI_ERROR_SB("MODEL::FILE_NOT_SUCCESFULLY_READ: " << filePath << std::endl << e.what());
+        std::string what{ e.what() };
+        KI_ERROR(fmt::format(
+            "MODEL::FILE_NOT_SUCCESFULLY_READ: {}\n{0}",
+            filePath.string(), what));
     }
 
-    KI_INFO_SB("== " << mesh.str() << " ===\n"
-        << "tris: " << tris.size()
-        << ", positions: " << positions.size()
-        << ", textures: " << textures.size()
-        << ", normals: " << normals.size()
-        << ", vertices: " << vertices.size()
-        << "\n--------\n");
+    KI_INFO("== {} ===\ntris={}, positions={}, textures={}, normals={}, vertices={}\n--------\n",
+        mesh.str(), tris.size(), positions.size(), textures.size(), normals.size(), vertices.size());
 }
 
 // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
@@ -367,7 +364,8 @@ void MeshLoader::loadMaterials(
     std::vector<Material>& materials,
     const std::string& libraryName)
 {
-    KI_INFO_SB("LOADER::LOAD_MATERIAL_LIB: " << libraryName);
+    KI_INFO(fmt::format(
+        "LOADER::LOAD_MATERIAL_LIB: lib={}", libraryName));
 
     std::filesystem::path filePath;
     filePath /= assets.modelsDir;
@@ -439,10 +437,17 @@ void MeshLoader::loadMaterials(
         file.close();
     }
     catch (std::ifstream::failure e) {
-        KI_ERROR_SB("TEXTURE::FILE_NOT_SUCCESFULLY_READ: " << filePath << std::endl << e.what());
+        std::string what{ e.what() };
+        KI_ERROR(fmt::format(
+            "TEXTURE::FILE_NOT_SUCCESFULLY_READ: {}\n{}",
+            filePath.string(), what));
     }
 
-    KI_INFO_SB("== " << mesh.str() << " - " << libraryName << " ===\n" << "materials: " << materials.size());
+    KI_INFO(fmt::format(
+        "LOAD: materials - mesh={}, lib={}, materials={}",
+        mesh.str(),
+        libraryName,
+        materials.size()));
 }
 
 std::string MeshLoader::resolveTexturePath(const std::string& line)

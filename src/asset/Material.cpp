@@ -8,6 +8,8 @@
 #include <filesystem>
 #include <mutex>
 
+#include "fmt/format.h"
+
 #include "ImageTexture.h"
 
 #include "scene/RenderContext.h"
@@ -149,7 +151,9 @@ Material::Material()
 
 Material::~Material()
 {
-    KI_INFO_SB("MATERIAL: " << m_name << " delete");
+    KI_INFO(fmt::format(
+        "MATERIAL: delete - name={}, index={}",
+        m_name, m_registeredIndex));
 }
 
 void Material::loadTextures(const Assets& assets)
@@ -197,7 +201,7 @@ void Material::loadTexture(
         texturePath = fp.string();
     }
 
-    KI_INFO_SB("TEXTURE: " << texturePath);
+    KI_INFO(fmt::format("MATERIAL: name={}, texture={}", m_name, texturePath));
 
     std::string placeholderPath = assets.placeholderTexture;
     auto texture = ImageTexture::getTexture(

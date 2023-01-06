@@ -45,7 +45,7 @@ Scene::Scene(const Assets& assets)
 
 Scene::~Scene()
 {
-    KI_INFO_SB("SCENE: deleted");
+    KI_INFO("SCENE: deleted");
 
     particleGenerators.clear();
 }

@@ -76,7 +76,7 @@ void Window::createGLFWWindow()
     m_glfwWindow = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
     if (m_glfwWindow == nullptr)
     {
-        KI_ERROR_SB("Failed to create GLFW window");
+        KI_ERROR("Failed to create GLFW window");
         glfwTerminate();
         return;
     }
@@ -89,7 +89,7 @@ void Window::createGLFWWindow()
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         glfwTerminate();
-        KI_ERROR_SB("Failed to initialize GLAD");
+        KI_ERROR("Failed to initialize GLAD");
         return;
     }
 

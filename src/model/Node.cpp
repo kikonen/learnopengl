@@ -35,7 +35,7 @@ Node::Node(MeshType* type)
 
 Node::~Node()
 {
-    KI_INFO_SB("NODE: delete " << str());
+    KI_INFO(fmt::format("NODE: delete - {}", str()));
 }
 
 const std::string Node::str() const noexcept

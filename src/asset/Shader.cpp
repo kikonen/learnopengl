@@ -76,7 +76,7 @@ Shader::Shader(
 
 Shader::~Shader()
 {
-    KI_INFO_SB("DELETE: shader " << m_shaderName);
+    KI_INFO(fmt::format("DELETE: shader={}", m_key));
     if (m_programId != -1) {
         glDeleteProgram(m_programId);
     }
@@ -119,7 +119,7 @@ GLint Shader::getUniformLoc(const std::string& name)
     GLint vi = glGetUniformLocation(m_programId, name.c_str());
     m_uniformLocations[name] = vi;
     if (vi < 0) {
-        KI_DEBUG_SB(fmt::format(
+        KI_DEBUG(fmt::format(
             "SHADER::MISSING_UNIFORM: {} - uniform={}",
             m_shaderName, name));
     }
@@ -137,7 +137,7 @@ GLuint Shader::getUniformSubroutineLoc(const std::string& name, GLenum shaderTyp
     GLuint vi = glGetSubroutineUniformLocation(m_programId, shaderType, name.c_str());
     map[name] = vi;
     if (vi < 0) {
-        KI_DEBUG_SB(fmt::format(
+        KI_DEBUG(fmt::format(
             "SHADER::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
             m_shaderName, shaderType, name));
     }
@@ -155,7 +155,7 @@ GLuint Shader::getSubroutineIndex(const std::string& name, GLenum shaderType)
     GLuint vi = glGetSubroutineIndex(m_programId, shaderType, name.c_str());
     map[name] = vi;
     if (vi < 0) {
-        KI_DEBUG_SB(fmt::format(
+        KI_DEBUG(fmt::format(
             "SHADER::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
             m_shaderName, shaderType, name));
     }
@@ -183,10 +183,10 @@ int Shader::compileSource(
         {
             char infoLog[LOG_SIZE];
             glGetShaderInfoLog(shaderId, LOG_SIZE, NULL, infoLog);
-            KI_ERROR_SB(fmt::format(
+            KI_ERROR(fmt::format(
                 "SHADER:::COMPILE_FAILED[{:#04x}] shader={} path={}\n{}",
                 shaderType, m_shaderName, shaderPath, infoLog));
-            KI_ERROR_SB(fmt::format(
+            KI_ERROR(fmt::format(
                 "FAILED_SOURCE:\n-------------------\n{}\n-------------------",
                 source));
             KI_BREAK();
@@ -225,7 +225,9 @@ int Shader::createProgram() {
             if (!success) {
                 char infoLog[LOG_SIZE];
                 glGetProgramInfoLog(m_programId, LOG_SIZE, NULL, infoLog);
-                KI_ERROR_SB("SHADER::PROGRAM::LINKING_FAILED " << m_shaderName << "\n" << infoLog);
+                KI_ERROR(fmt::format(
+                    "SHADER::PROGRAM::LINKING_FAILED shader={}\n{}",
+                    m_shaderName, infoLog));
                 KI_BREAK();
 
                 glDeleteProgram(m_programId);
@@ -255,13 +257,15 @@ void Shader::validateProgram() const {
     if (!success) {
         char infoLog[LOG_SIZE];
         glGetProgramInfoLog(m_programId, LOG_SIZE, NULL, infoLog);
-        KI_ERROR_SB("SHADER::PROGRAM::VALIDATE_FAILED " << m_shaderName << "\n" << infoLog);
+        KI_ERROR(fmt::format(
+            "SHADER::PROGRAM::VALIDATE_FAILED shader={}\n{}",
+            m_shaderName, infoLog));
         KI_BREAK();
     }
 }
 
 int Shader::initProgram() {
-    std::cout << "[SHADER - " << m_key << "]\n";
+    KI_INFO_OUT(fmt::format("[SHADER - {}]", m_key));
 
 #ifdef _DEBUG
     // NOTE KI set UBOs only once for shader
@@ -339,7 +343,9 @@ void Shader::setupUBO(
 
     unsigned int blockIndex = glGetUniformBlockIndex(m_programId, name);
     if (blockIndex == GL_INVALID_INDEX) {
-        KI_WARN_SB("SHADER::MISSING_UBO " << m_shaderName << " UBO=" << name);
+        KI_WARN(fmt::format(
+            "SHADER::MISSING_UBO shader={}, UBO={}",
+            m_shaderName, name));
         return;
     }
     //glUniformBlockBinding(m_programId, blockIndex, ubo);
@@ -347,12 +353,15 @@ void Shader::setupUBO(
     GLint blockSize;
     glGetActiveUniformBlockiv(m_programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
 
-    KI_INFO_SB("SHADER::UBO_SIZE " << m_shaderName << " UBO=" << name << " size=" << blockSize << " expected_size=" << expectedSize);
+    KI_INFO(fmt::format(
+        "SHADER::UBO_SIZE shader={}, UBO={}, size={}, expected_size={}",
+        m_shaderName, name, blockSize, expectedSize));
+
     if (blockSize != expectedSize) {
         for (const auto& [k, v] : m_defines) {
-            KI_ERROR_SB(k << "=" << v);
+            KI_ERROR("DEFINE: {}={}", k, v);
         }
-        KI_CRITICAL_SB(fmt::format(
+        KI_CRITICAL(fmt::format(
             "SHADER::UBO_SIZE shader={}. UBO={}. size={}. expected_size={}",
             m_shaderName, name, blockSize, expectedSize));
         __debugbreak();
@@ -375,7 +384,7 @@ std::string Shader::loadSource(
     }
 
     std::string src = sb.str();
-    KI_TRACE_SB("== " << path << " ===\n" << src);
+    KI_TRACE(fmt::format("== {} ===\n{}", path, src));
 
     return src;
 }
@@ -389,7 +398,7 @@ std::vector<std::string> Shader::loadSourceLines(
 {
     bool exists = fileExists(path);
     if (!exists && optional) {
-        KI_INFO_SB("FILE_NOT_EXIST: " << path);
+        KI_INFO(fmt::format("FILE_NOT_EXIST: {}", path));
         return {};
     }
 
@@ -430,17 +439,21 @@ std::vector<std::string> Shader::loadSourceLines(
             lineNumber++;
         }
 
-        KI_INFO_SB("FILE_LOADED: " << path);
+        KI_INFO(fmt::format("FILE_LOADED: {}", path));
 
         file.close();
     }
     catch (std::ifstream::failure e) {
         if (!optional) {
-            KI_ERROR_SB("SHADER::FILE_NOT_SUCCESFULLY_READ " << m_shaderName << " path=" << path);
+            KI_ERROR(fmt::format(
+                "SHADER::FILE_NOT_SUCCESFULLY_READ shader={}, path={}",
+                m_shaderName, path));
             KI_BREAK();
         }
         else {
-            KI_DEBUG_SB("SHADER::FILE_NOT_SUCCESFULLY_READ " << m_shaderName << " path=" << path);
+            KI_DEBUG(fmt::format(
+                "SHADER::FILE_NOT_SUCCESFULLY_READ shader={}, path={}",
+                m_shaderName, path));
         }
     }
 

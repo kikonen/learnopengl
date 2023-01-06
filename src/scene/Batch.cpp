@@ -145,10 +145,6 @@ void Batch::prepare(
 
     m_draw.prepare(20, 100);
 
-    {
-        m_materialBuffer.createEmpty(m_entryCount * sizeof(backend::DrawIndirectCommand), GL_DYNAMIC_STORAGE_BIT);
-    }
-
     m_entries.reserve(m_entryCount);
 
     KI_DEBUG(fmt::format(

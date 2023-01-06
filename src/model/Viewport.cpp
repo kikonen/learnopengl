@@ -29,7 +29,7 @@ Viewport::Viewport(
 
 Viewport::~Viewport()
 {
-    KI_INFO_SB("VIEW_PORT: delete");
+    KI_INFO("VIEW_PORT: delete");
 }
 
 void Viewport::setSourceFrameBuffer(FrameBuffer* frameBuffer)

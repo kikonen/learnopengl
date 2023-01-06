@@ -111,8 +111,6 @@ private:
     int m_range = 0;
     GLBufferRange m_ranges[RANGE_COUNT];
 
-    GLBuffer m_materialBuffer{ "batchMaterialVBO" };
-
     backend::DrawBuffer m_draw;
 
     int m_offset = 0;

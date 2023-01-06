@@ -3,6 +3,8 @@
 #include <iostream>
 #include <chrono>
 
+#include "fmt/format.h"
+
 #include "util/Log.h"
 
 namespace ki {
@@ -22,7 +24,7 @@ namespace ki {
             duration = end - start;
 
             float ms = duration.count() * 1000.f;
-            KI_INFO_SB(label << ": " << ms << "ms");
+            KI_INFO(fmt::format("{}: {}ms", label, ms));
         }
     };
 }

@@ -1,14 +1,18 @@
 #include "ShaderRegistry.h"
 
+#include "fmt/format.h"
+
 ShaderRegistry::ShaderRegistry()
 {
 }
 
 ShaderRegistry::~ShaderRegistry()
 {
-    KI_INFO_SB("SHADER_REGISTRY: delete");
+    KI_INFO("SHADER_REGISTRY: delete");
     for (auto& e : m_shaders) {
-        KI_INFO_SB("SHADER_REGISTRY: delete SHADER " << e.second->m_key);
+        KI_INFO(fmt::format(
+            "SHADER_REGISTRY: delete SHADER {}",
+            e.second->m_key));
     }
     m_shaders.clear();
 }

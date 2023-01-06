@@ -3,6 +3,8 @@
 #include <map>
 #include <mutex>
 
+#include "fmt/format.h"
+
 #include "ki/GL.h"
 
 namespace {
@@ -70,7 +72,7 @@ void ImageTexture::prepare(const Assets& assets)
         m_internalFormat = GL_RGBA8;
         //m_internalFormat = assets.glPreferredTextureFormatRGBA;
     } else {
-        KI_WARN_SB("IMAGE: unsupported channels " << m_image->m_channels);
+        KI_WARN(fmt::format("IMAGE: unsupported channels {}", m_image->m_channels));
         m_valid = false;
         m_image.reset();
         return;
@@ -114,7 +116,7 @@ void ImageTexture::load() {
     }
 
     if (m_image->m_channels != 3 && m_image->m_channels != 4) {
-        KI_WARN_SB("IMAGE: unsupported channels " << m_image->m_channels);
+        KI_WARN(fmt::format("IMAGE: unsupported channels {}", m_image->m_channels));
         m_image.reset();
         return;
     }

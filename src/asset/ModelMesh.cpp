@@ -38,7 +38,7 @@ ModelMesh::ModelMesh(
 
 ModelMesh::~ModelMesh()
 {
-    KI_INFO_SB("MODEL_MESH: delete " << str());
+    KI_INFO(fmt::format("MODEL_MESH: delete - {}", str()));
     m_vertices.clear();
 }
 

@@ -32,7 +32,7 @@ MeshType::MeshType(const std::string& name)
 
 MeshType::~MeshType()
 {
-    KI_INFO_SB("NODE_TYPE: delete " << typeID);
+    KI_INFO(fmt::format("NODE_TYPE: delete iD={}", typeID));
 }
 
 const std::string MeshType::str() const noexcept

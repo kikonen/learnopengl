@@ -50,16 +50,21 @@ void Engine::run() {
     const auto& extensions = ki::GL::getExtensions();
     // NOTE KI https://www.khronos.org/opengl/wiki/Common_Mistakes
     // - preferredFormat is performnce topic
-    KI_INFO_SB("ENGINE::RUN" << '\n'
-        << " VER: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << '\n'
-        << " GL_MAX_VERTEX_UNIFORM_COMPONENTS: " << info.maxVertexUniformComponents << '\n'
-        << " GL_MAX_VERTEX_ATTRIBS: " << info.maxVertexAttributes << '\n'
-        << " GL_PREFERRED_TEXTURE_FORMAT_RGBA8: 0x" << std::hex << info.preferredFormatRGBA8 << '\n'
-        << " GL_PREFERRED_TEXTURE_FORMAT_RGB8: 0x" << std::hex << info.preferredFormatRGB8 << '\n');
+    std::string ver{ (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) };
+    KI_INFO_OUT(fmt::format(
+R"(
+ENGINE::RUN
+VER: {}
+GL_MAX_VERTEX_UNIFORM_COMPONENTS: {}
+GL_MAX_VERTEX_ATTRIBS: {}
+GL_PREFERRED_TEXTURE_FORMAT_RGBA8: 0x{:x}
+GL_PREFERRED_TEXTURE_FORMAT_RGB8: 0x{:x}
+)",
+        ver, info.maxVertexUniformComponents, info.maxVertexAttributes, info.preferredFormatRGBA8, info.preferredFormatRGB8));
 
-    KI_INFO_SB("[EXTENSIONS]");
+    KI_INFO("[EXTENSIONS]");
     for (const auto& ext : extensions) {
-        KI_INFO_SB(ext);
+        KI_INFO(ext);
     }
 
     m_assets.glPreferredTextureFormatRGBA = info.preferredFormatRGBA8;
@@ -172,7 +177,6 @@ void Engine::run() {
                 1.0f / frameSecs);
 
             m_window->setTitle(titleSB);
-            //KI_DEBUG_SB(titleSB);
         }
 
         KI_GL_CHECK("engine.loop");

@@ -46,7 +46,7 @@
 
 // NOTE KI *SKIP* unbind; not rquired, useful for debugging
 #ifdef KI_GL_DEBUG_BIND
-    //#define KI_GL_UNBIND(x) KI_DEBUG_SB(std::string("unbind: "#x" - ") + __FILE__ + ":" + std::to_string(__LINE__)); x
+    //#define KI_GL_UNBIND(x) KI_DEBUG(std::string("unbind: "#x" - ") + __FILE__ + ":" + std::to_string(__LINE__)); x
     #define KI_GL_UNBIND(x) x
 #else
     #define KI_GL_UNBIND(x)

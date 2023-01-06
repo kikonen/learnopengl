@@ -148,11 +148,11 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcep
     if (!node) return;
 
     if (append && node->isSelected()) {
-        KI_INFO_SB("DESELECT: objectID: " << objectID);
+        KI_INFO(fmt::format("DESELECT: objectID={}", objectID));
         node->m_selectionMaterialIndex = -1;
     }
     else {
-        KI_INFO_SB("SELECT: objectID: " << objectID);
+        KI_INFO(fmt::format("SELECT: objectID={}", objectID));
         node->m_selectionMaterialIndex = m_selectionMaterial.m_registeredIndex;
     }
 }
@@ -332,7 +332,7 @@ void NodeRegistry::bindNode(
 
     notifyListeners(node, NodeOperation::ADDED);
 
-    KI_INFO_SB("ATTACH_NODE: id=" << node->str());
+    KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
 }
 
 void NodeRegistry::insertNode(NodeVector& list, Node* node)

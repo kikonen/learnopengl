@@ -338,7 +338,7 @@ MeshType* SceneFile::createType(
         type->setMesh(mesh);
         type->m_entityType = EntityType::model;
 
-        KI_INFO_SB(fmt::format(
+        KI_INFO(fmt::format(
             "SCENE_FILE ATTACH: id={}, type={}",
             data.id_str, type->str()));
     }
@@ -370,7 +370,9 @@ MeshType* SceneFile::createType(
 
     if (data.type != EntityType::origo) {
         if (!type->getMesh()) {
-            KI_WARN_SB("SCENE_FILEIGNORE: NO_MESH id=" << data.id << " (" << data.name << ")");
+            KI_WARN(fmt::format(
+                "SCENE_FILEIGNORE: NO_MESH id={} ({})",
+                KI_UUID_STR(data.id), data.name));
             return nullptr;
         }
 

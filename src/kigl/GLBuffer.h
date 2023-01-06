@@ -139,7 +139,7 @@ struct GLBuffer {
     GLuint m_id = 0;
     int m_size = 0;
 
-    GLuint m_binding = 0;
+    int m_binding = -1;
 
     void* m_data{ nullptr };
 
