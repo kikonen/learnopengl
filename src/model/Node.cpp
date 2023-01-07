@@ -155,13 +155,13 @@ void Node::updateModelMatrix(Node* parent) noexcept
 
     if (parent) {
         m_modelMatrix = parent->m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
-        m_normalMatrix = parent->m_normalMatrix * glm::inverseTranspose(glm::mat3(m_modelMatrix));
+        //m_normalMatrix = parent->m_normalMatrix * glm::inverseTranspose(glm::mat3(m_modelMatrix));
         m_parentMatrixLevel = parentMatrixLevel;
     }
     else {
         m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
-        m_normalMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
     }
+    m_normalMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
 
     m_worldPlaneNormal = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_planeNormal, 1.0)));
 
