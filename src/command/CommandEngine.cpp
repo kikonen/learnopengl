@@ -40,7 +40,7 @@ bool CommandEngine::isValid(const RenderContext& ctx, Command* cmd) noexcept
     if (!cmd->isNode()) return true;
 
     auto objectID = (dynamic_cast<NodeCommand*>(cmd))->m_objectID;
-    return ctx.registry.getNode(objectID);
+    return ctx.m_nodeRegistry.getNode(objectID);
 }
 
 void CommandEngine::cancel(int commandId) noexcept
@@ -115,7 +115,7 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
 
         if (cmd->isNode()) {
             auto nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
-            const auto & node = ctx.registry.getNode(nodeCmd->m_objectID);
+            const auto & node = ctx.m_nodeRegistry.getNode(nodeCmd->m_objectID);
             if (!node) {
                 cmd->m_canceled = true;
                 continue;

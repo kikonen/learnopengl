@@ -105,9 +105,9 @@ void CubeMapRenderer::render(
     if (!centerNode) return;
 
     if (mainCtx.assets.showCubeMapCenter) {
-        Node* tagNode = getTagNode(mainCtx.registry);
+        Node* tagNode = getTagNode(mainCtx.m_nodeRegistry);
         if (tagNode) {
-            const auto& rootPos = mainCtx.registry.m_root->getPosition();
+            const auto& rootPos = mainCtx.m_nodeRegistry.m_root->getPosition();
             const auto& centerPos = centerNode->getWorldPos();
             const auto tagPos = centerPos - rootPos;
             tagNode->setPosition(tagPos);
@@ -213,11 +213,11 @@ void CubeMapRenderer::drawNodes(
         }
     };
 
-    for (const auto& all : ctx.registry.solidNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : ctx.registry.alphaNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
         renderTypes(all.second);
     }
 
@@ -226,7 +226,7 @@ void CubeMapRenderer::drawNodes(
         skybox->render(ctx);
     }
 
-    for (const auto& all : ctx.registry.blendedNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
         renderTypes(all.second);
     }
 
@@ -240,7 +240,7 @@ Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : ctx.registry.allNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.allNodes) {
         for (const auto& [key, nodes] : all.second) {
             auto& type = key.type;
 

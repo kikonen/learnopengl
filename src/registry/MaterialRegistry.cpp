@@ -99,7 +99,7 @@ void MaterialRegistry::update(const RenderContext& ctx)
             m_materialsSSBO.emplace_back(material.toSSBO());
         }
 
-        const size_t sz = sizeof(MaterialSSBO);
+        constexpr size_t sz = sizeof(MaterialSSBO);
         m_ssbo.update(
             m_updatedSize * sz,
             (m_materialsSSBO.size() - m_updatedSize) * sz,

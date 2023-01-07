@@ -164,15 +164,15 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
             }
         };
 
-        for (const auto& all : ctx.registry.solidNodes) {
+        for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : ctx.registry.alphaNodes) {
+        for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : ctx.registry.blendedNodes) {
+        for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
             renderTypes(all.second);
         }
 

@@ -18,7 +18,7 @@
 
 #include "scene/Scene.h"
 #include "scene/RenderData.h"
-
+#include "scene/Batch.h"
 
 RenderContext::RenderContext(
     const std::string& name,
@@ -84,7 +84,7 @@ RenderContext::RenderContext(
     state(state),
     m_scene(scene),
     m_batch(scene->m_batch),
-    registry(scene->m_registry),
+    m_nodeRegistry(scene->m_nodeRegistry),
     commandEngine(scene->m_commandEngine),
     scriptEngine(scene->m_scriptEngine),
     m_camera(camera),
@@ -196,7 +196,7 @@ void RenderContext::bindClipPlanesUBO() const
 
 void RenderContext::bindLightsUBO() const
 {
-    auto& registry = m_scene->m_registry;
+    auto& nodeRegistry = m_scene->m_nodeRegistry;
 
     LightsUBO lightsUbo;
     if (!m_useLight) {
@@ -206,7 +206,7 @@ void RenderContext::bindLightsUBO() const
     }
 
     if (m_useLight) {
-        auto& node = registry.m_dirLight;
+        auto& node = nodeRegistry.m_dirLight;
         if (node && node->m_light->enabled) {
             lightsUbo.dir[0] = node->m_light->toDirLightUBO();
             lightsUbo.dirCount = 1;
@@ -218,7 +218,7 @@ void RenderContext::bindLightsUBO() const
 
     if (m_useLight) {
         int count = 0;
-        for (auto& node : registry.m_pointLights) {
+        for (auto& node : nodeRegistry.m_pointLights) {
             if (count >= LIGHT_COUNT) break;
             if (!node->m_light->enabled) continue;
 
@@ -230,7 +230,7 @@ void RenderContext::bindLightsUBO() const
 
     if (m_useLight) {
         int count = 0;
-        for (auto& node : registry.m_spotLights) {
+        for (auto& node : nodeRegistry.m_spotLights) {
             if (count>= LIGHT_COUNT) break;
             if (!node->m_light->enabled) continue;
 

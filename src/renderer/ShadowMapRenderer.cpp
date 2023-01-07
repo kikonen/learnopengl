@@ -72,7 +72,7 @@ void ShadowMapRenderer::prepare(
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
 {
-    auto& node = ctx.registry.m_dirLight;
+    auto& node = ctx.m_nodeRegistry.m_dirLight;
     if (!node) return;
 
     const glm::vec3 up{ 0.0, 1.0, 0.0 };
@@ -105,7 +105,7 @@ void ShadowMapRenderer::render(
     // NOTE KI no shadows if no light
     if (!ctx.assets.useLight) return;
 
-    auto& node = ctx.registry.m_dirLight;
+    auto& node = ctx.m_nodeRegistry.m_dirLight;
     if (!node) return;
 
     {
@@ -147,7 +147,7 @@ void ShadowMapRenderer::drawNodes(
     {
         auto shader = m_solidShadowShader;
 
-        for (const auto& all : ctx.registry.solidNodes) {
+        for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
             renderTypes(all.second, shader);
         }
     }
@@ -155,11 +155,11 @@ void ShadowMapRenderer::drawNodes(
     {
         auto shader = m_blendedShadowShader;
 
-        for (const auto& all : ctx.registry.alphaNodes) {
+        for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
             renderTypes(all.second, shader);
         }
 
-        for (const auto& all : ctx.registry.blendedNodes) {
+        for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
             renderTypes(all.second, shader);
         }
     }

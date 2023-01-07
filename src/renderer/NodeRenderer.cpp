@@ -39,8 +39,8 @@ void NodeRenderer::render(
     const RenderContext& ctx,
     SkyboxRenderer* skybox)
 {
-    m_taggedCount = ctx.assets.showTagged ? ctx.registry.countTagged() : 0;
-    m_selectedCount = ctx.assets.showSelection ? ctx.registry.countSelected() : 0;
+    m_taggedCount = ctx.assets.showTagged ? ctx.m_nodeRegistry.countTagged() : 0;
+    m_selectedCount = ctx.assets.showSelection ? ctx.m_nodeRegistry.countSelected() : 0;
 
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     //ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
@@ -157,11 +157,11 @@ void NodeRenderer::drawNodes(
         }
     };
 
-    for (const auto& all : ctx.registry.solidNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : ctx.registry.alphaNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
         renderTypes(all.second);
     }
 
@@ -173,7 +173,7 @@ void NodeRenderer::drawNodes(
 
     if (selection) {
         // NOTE KI do not try blend here; end result is worse than not doing blend at all (due to stencil)
-        for (const auto& all : ctx.registry.blendedNodes) {
+        for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
             renderTypes(all.second);
         }
     }
@@ -204,15 +204,15 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
         }
     };
 
-    for (const auto& all : ctx.registry.solidNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : ctx.registry.alphaNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : ctx.registry.blendedNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
         renderTypes(all.second);
     }
 
@@ -223,13 +223,13 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
 void NodeRenderer::drawBlended(
     const RenderContext& ctx)
 {
-    if (ctx.registry.blendedNodes.empty()) return;
+    if (ctx.m_nodeRegistry.blendedNodes.empty()) return;
 
     const glm::vec3& viewPos = ctx.m_camera.getPos();
 
     // TODO KI discards nodes if *same* distance
     std::map<float, Node*> sorted;
-    for (const auto& all : ctx.registry.blendedNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
         for (const auto& map : all.second) {
             for (const auto& node : map.second) {
                 const float distance = glm::length(viewPos - node->getWorldPos());

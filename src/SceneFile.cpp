@@ -156,7 +156,7 @@ void SceneFile::attachVolume(
 
     node->m_controller = std::make_unique<VolumeController>();
 
-    scene->m_registry.addNode(type, node);
+    scene->m_nodeRegistry.addNode(type, node);
 }
 
 void SceneFile::attachCubeMapCenter(
@@ -210,7 +210,7 @@ void SceneFile::attachCubeMapCenter(
 
     node->setAABB(mesh->getAABB());
 
-    scene->m_registry.addNode(type, node);
+    scene->m_nodeRegistry.addNode(type, node);
 }
 
 void SceneFile::attachEntity(
@@ -268,7 +268,7 @@ MeshType* SceneFile::attachEntityClone(
     if (grouped) {
         group = new Group();
         group->m_id = data.id;
-        scene->m_registry.addGroup(group);
+        scene->m_nodeRegistry.addGroup(group);
     }
 
     for (auto z = 0; z < repeat.zCount; z++) {
@@ -277,9 +277,9 @@ MeshType* SceneFile::attachEntityClone(
                 const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
                 auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, entity.isRoot, cloned);
                 if (data.selected) {
-                    node->m_selectionMaterialIndex = scene->m_registry.m_selectionMaterial.m_registeredIndex;
+                    node->m_selectionMaterialIndex = scene->m_nodeRegistry.m_selectionMaterial.m_registeredIndex;
                 }
-                scene->m_registry.addNode(type, node);
+                scene->m_nodeRegistry.addNode(type, node);
             }
         }
     }

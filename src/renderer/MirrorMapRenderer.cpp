@@ -210,11 +210,11 @@ void MirrorMapRenderer::drawNodes(
             }
         };
 
-        for (const auto& all : ctx.registry.solidNodes) {
+        for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : ctx.registry.alphaNodes) {
+        for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
             renderTypes(all.second);
         }
 
@@ -222,7 +222,7 @@ void MirrorMapRenderer::drawNodes(
             skybox->render(ctx);
         }
 
-        for (const auto& all : ctx.registry.blendedNodes) {
+        for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
             renderTypes(all.second);
         }
     }
@@ -238,7 +238,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : ctx.registry.allNodes) {
+    for (const auto& all : ctx.m_nodeRegistry.allNodes) {
         for (const auto& [key, nodes] : all.second) {
             auto& type = key.type;
 

@@ -16,7 +16,7 @@ void Light::update(const RenderContext& ctx, Node& node) noexcept
 {
     if (!enabled) return;
 
-    bool worldChanged = m_rootMatrixLevel != ctx.registry.m_root->getMatrixLevel();
+    bool worldChanged = m_rootMatrixLevel != ctx.m_nodeRegistry.m_root->getMatrixLevel();
     bool nodeChanged = m_nodeMatrixLevel != node.getMatrixLevel();
     bool changed = m_dirty || worldChanged || nodeChanged;
 
@@ -24,7 +24,7 @@ void Light::update(const RenderContext& ctx, Node& node) noexcept
 
     // worldTarget is relative to *ROOT*
     if (m_dirty || worldChanged) {
-        m_worldTargetPos = ctx.registry.m_root->getWorldModelMatrix() * glm::vec4(m_worldTarget, 1.0);
+        m_worldTargetPos = ctx.m_nodeRegistry.m_root->getWorldModelMatrix() * glm::vec4(m_worldTarget, 1.0);
     }
 
     if (m_dirty || nodeChanged) {
@@ -40,7 +40,7 @@ void Light::update(const RenderContext& ctx, Node& node) noexcept
         radius = (-linear + std::sqrtf(linear * linear - 4 * quadratic * (constant - (256.0 / 5.0) * lightMax))) / (2 * quadratic);
     }
 
-    m_rootMatrixLevel = ctx.registry.m_root->getMatrixLevel();
+    m_rootMatrixLevel = ctx.m_nodeRegistry.m_root->getMatrixLevel();
     m_nodeMatrixLevel = node.getMatrixLevel();
     m_dirty = false;
 }

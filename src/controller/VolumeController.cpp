@@ -14,7 +14,7 @@ bool VolumeController::update(
     Node& volumeNode,
     Node* parent) noexcept
 {
-    Node* targetNode = ctx.registry.getNode(m_targetID);
+    Node* targetNode = ctx.m_nodeRegistry.getNode(m_targetID);
     if (!targetNode) return false;
 
     const auto& targetPos = targetNode->getWorldPos();
@@ -29,7 +29,7 @@ bool VolumeController::update(
         glm::length(modelWorldMatrix[1]),
         glm::length(modelWorldMatrix[2]) };
 
-    const auto& rootPos = ctx.registry.m_root->getWorldPos();
+    const auto& rootPos = ctx.m_nodeRegistry.m_root->getWorldPos();
 
     glm::vec3 volumePos{ modelWorldMatrix * glm::vec4(volume->getCenter(), 1.f) };
     volumePos -= rootPos;

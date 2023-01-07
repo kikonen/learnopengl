@@ -10,7 +10,6 @@
 
 #include "component/Camera.h"
 
-#include "Batch.h"
 
 namespace backend {
     class RenderSystem;
@@ -21,6 +20,7 @@ class Scene;
 class CommandEngine;
 class ScriptEngine;
 class NodeRegistry;
+class Batch;
 
 class RenderContext final
 {
@@ -98,7 +98,7 @@ public:
 
     const float m_aspectRatio;
 
-    NodeRegistry& registry;
+    NodeRegistry& m_nodeRegistry;
     CommandEngine& commandEngine;
     ScriptEngine& scriptEngine;
 

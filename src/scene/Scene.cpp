@@ -15,7 +15,7 @@
 
 Scene::Scene(const Assets& assets)
     : assets(assets),
-    m_registry(assets),
+    m_nodeRegistry(assets),
     m_materialRegistry(assets),
     m_typeRegistry(assets),
     m_modelRegistry(assets)
@@ -23,7 +23,7 @@ Scene::Scene(const Assets& assets)
     NodeListener listener = [this](Node* node, NodeOperation operation) {
         bindComponents(*node);
     };
-    m_registry.addListener(listener);
+    m_nodeRegistry.addListener(listener);
 
     m_nodeRenderer = std::make_unique<NodeRenderer>();
     //terrainRenderer = std::make_unique<TerrainRenderer>();
@@ -63,7 +63,11 @@ void Scene::prepare(ShaderRegistry& shaders)
     m_batch.prepare(assets, assets.batchSize);
     m_materialRegistry.prepare();
     m_modelRegistry.prepare(m_batch);
-    m_registry.prepare(&m_batch, &m_materialRegistry, &m_modelRegistry);
+
+    m_nodeRegistry.prepare(
+        &m_batch,
+        &m_materialRegistry,
+        &m_modelRegistry);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {
@@ -121,12 +125,12 @@ void Scene::prepare(ShaderRegistry& shaders)
         m_mainViewport->m_effect = assets.viewportEffect;
 
         m_mainViewport->prepare(assets);
-        m_registry.addViewPort(m_mainViewport);
+        m_nodeRegistry.addViewPort(m_mainViewport);
     }
 
     if (assets.showObjectIDView) {
         if (m_objectIdRenderer) {
-            m_registry.addViewPort(m_objectIdRenderer->m_debugViewport);
+            m_nodeRegistry.addViewPort(m_objectIdRenderer->m_debugViewport);
         }
     }
 
@@ -141,32 +145,32 @@ void Scene::prepare(ShaderRegistry& shaders)
             shaders.getShader(assets, TEX_VIEWPORT));
 
         m_rearViewport->prepare(assets);
-        m_registry.addViewPort(m_rearViewport);
+        m_nodeRegistry.addViewPort(m_rearViewport);
     }
 
     if (assets.showShadowMapView) {
         if (m_shadowMapRenderer) {
-            m_registry.addViewPort(m_shadowMapRenderer->m_debugViewport);
+            m_nodeRegistry.addViewPort(m_shadowMapRenderer->m_debugViewport);
         }
     }
     if (assets.showReflectionView) {
         if (m_waterMapRenderer) {
-            m_registry.addViewPort(m_waterMapRenderer->m_reflectionDebugViewport);
+            m_nodeRegistry.addViewPort(m_waterMapRenderer->m_reflectionDebugViewport);
         }
         if (m_mirrorMapRenderer) {
-            m_registry.addViewPort(m_mirrorMapRenderer->m_debugViewport);
+            m_nodeRegistry.addViewPort(m_mirrorMapRenderer->m_debugViewport);
         }
     }
     if (assets.showRefractionView) {
         if (m_waterMapRenderer) {
-            m_registry.addViewPort(m_waterMapRenderer->m_refractionDebugViewport);
+            m_nodeRegistry.addViewPort(m_waterMapRenderer->m_refractionDebugViewport);
         }
     }
 }
 
 void Scene::attachNodes()
 {
-    m_registry.attachNodes();
+    m_nodeRegistry.attachNodes();
 }
 
 void Scene::processEvents(RenderContext& ctx)
@@ -180,8 +184,8 @@ void Scene::update(RenderContext& ctx)
         m_commandEngine.update(ctx);
     }
 
-    if (m_registry.m_root) {
-        m_registry.m_root->update(ctx, nullptr);
+    if (m_nodeRegistry.m_root) {
+        m_nodeRegistry.m_root->update(ctx, nullptr);
     }
 
     for (auto& generator : particleGenerators) {
@@ -389,13 +393,13 @@ void Scene::drawScene(RenderContext& ctx)
 
 Camera* Scene::getCamera() const
 {
-    return !m_registry.m_cameraNodes.empty() ? m_registry.m_cameraNodes[0]->m_camera.get() : nullptr;
+    return !m_nodeRegistry.m_cameraNodes.empty() ? m_nodeRegistry.m_cameraNodes[0]->m_camera.get() : nullptr;
 }
 
 NodeController* Scene::getCameraController() const
 {
-    if (m_registry.m_cameraNodes.empty()) return nullptr;
-    auto& node = m_registry.m_cameraNodes[0];
+    if (m_nodeRegistry.m_cameraNodes.empty()) return nullptr;
+    auto& node = m_nodeRegistry.m_cameraNodes[0];
     return node->m_controller.get();
 }
 

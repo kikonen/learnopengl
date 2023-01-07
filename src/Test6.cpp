@@ -139,11 +139,11 @@ void Test6::selectNode(
     bool isShift,
     bool isCtrl)
 {
-    auto& registry = scene->m_registry;
+    auto& nodeRegistry = scene->m_nodeRegistry;
     int objectID = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
 
-    auto* volumeNode = registry.getNode(ctx.assets.volumeUUID);
-    auto* node = registry.getNode(objectID);
+    auto* volumeNode = nodeRegistry.getNode(ctx.assets.volumeUUID);
+    auto* node = nodeRegistry.getNode(objectID);
 
     if (false && node && volumeNode && node->isSelected()) {
         node->m_selectionMaterialIndex = -1;
@@ -155,7 +155,7 @@ void Test6::selectNode(
     }
 
     if (!volumeNode || volumeNode->m_objectID != objectID) {
-        registry.selectNodeByObjectId(objectID, isShift);
+        nodeRegistry.selectNodeByObjectId(objectID, isShift);
 
         if (volumeNode && node) {
             auto controller = dynamic_cast<VolumeController*>(volumeNode->m_controller.get());

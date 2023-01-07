@@ -87,7 +87,7 @@ public:
     MaterialRegistry m_materialRegistry;
     MeshTypeRegistry m_typeRegistry;
     ModelRegistry m_modelRegistry;
-    NodeRegistry m_registry;
+    NodeRegistry m_nodeRegistry;
 
     CommandEngine m_commandEngine;
     ScriptEngine m_scriptEngine;
