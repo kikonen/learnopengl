@@ -8,6 +8,9 @@
 
 #include "model/InstancedNode.h"
 
+#include "scene/RenderContext.h"
+#include "scene/Batch.h"
+
 AsteroidBeltController::AsteroidBeltController(int asteroidCount)
     : m_asteroidCount(asteroidCount),
     m_radius(70.0),

@@ -11,7 +11,6 @@
 
 #include "Assets.h"
 #include "Material.h"
-#include "MaterialEntry.h"
 #include "Volume.h"
 #include "AABB.h"
 
@@ -22,6 +21,7 @@
 class Batch;
 class RenderContext;
 class ModelRegistry;
+
 
 class Mesh
 {

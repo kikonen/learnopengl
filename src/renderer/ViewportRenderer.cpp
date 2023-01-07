@@ -1,5 +1,8 @@
 #include "ViewportRenderer.h"
 
+#include "scene/RenderContext.h"
+#include "scene/Batch.h"
+
 ViewportRenderer::ViewportRenderer()
 {
 }

@@ -44,7 +44,7 @@ void TestSceneSetup::setupEffectExplosion()
     asyncLoader->addLoader([assets, scene, asyncLoader]() {
         Shader* shader = asyncLoader->getShader(TEX_EFFECT);
 
-        auto type = scene->m_typeRegistry.getType("<effect>");
+        auto type = scene->m_typeRegistry->getType("<effect>");
         type->m_nodeShader = shader;
         type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;
@@ -52,7 +52,7 @@ void TestSceneSetup::setupEffectExplosion()
         auto node = new Node(type);
         node->setScale(2);
 
-        scene->m_nodeRegistry.addNode(type, node);
+        scene->m_nodeRegistry->addNode(type, node);
         });
 }
 
@@ -75,5 +75,5 @@ void TestSceneSetup::setupViewport1()
         texture->m_textureID,
         asyncLoader->getShader(TEX_VIEWPORT));
     viewport->prepare(assets);
-    scene->m_nodeRegistry.addViewPort(viewport);
+    scene->m_nodeRegistry->addViewPort(viewport);
 }

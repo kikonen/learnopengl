@@ -1,9 +1,9 @@
 #pragma once
 
 #pragma pack(push, 1)
-struct MaterialEntry {
+struct MaterialIndex {
     // NOTE KI uint DOES NOT work well in vertex attrs; data gets corrupted
     // => use float
-    float materialIndex;
+    float m_materialIndex;
 };
 #pragma pack(pop)

@@ -4,6 +4,8 @@
 #include "ModelMesh.h"
 #include "MaterialVBO.h"
 
+#include "asset/MaterialIndex.h"
+
 namespace {
 }
 
@@ -22,7 +24,7 @@ void ModelMaterialInit::prepareVertices(
     {
         const bool single = materialVBO.m_materials.size() == 1;
         const size_t count = single ? 1 : vertices.size();
-        auto& entries = materialVBO.m_entries;
+        auto& entries = materialVBO.m_indeces;
         entries.reserve(count);
 
         for (int i = 0; i < count; i++) {
@@ -39,9 +41,7 @@ void ModelMaterialInit::prepareVertices(
 
             // TODO KI should use noticeable value for missing
             // => would trigger undefined array access in render side
-            entry.materialIndex = m ? m->m_registeredIndex : Material::DEFAULT_ID;
-
-            assert(entry.materialIndex >= 0 && entry.materialIndex < MAX_MATERIAL_COUNT);
+            entry.m_materialIndex = m ? m->m_registeredIndex : Material::DEFAULT_ID;
         }
 
         materialVBO.m_singleMaterial = single;

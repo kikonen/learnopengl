@@ -1,5 +1,6 @@
 #include "Batch.h"
 
+#include <mutex>
 #include <fmt/format.h>
 
 #include "glm/glm.hpp"

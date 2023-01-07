@@ -8,8 +8,6 @@
 #include "asset/SpriteMaterialInit.h"
 #include "asset/SpriteVAO.h"
 
-#include "MaterialEntry.h"
-
 #include "scene/RenderContext.h"
 
 

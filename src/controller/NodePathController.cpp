@@ -1,5 +1,8 @@
 #include "NodePathController.h"
 
+#include "scene/RenderContext.h"
+
+
 NodePathController::NodePathController(
     const glm::vec3& center,
     int pathMode)

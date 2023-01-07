@@ -6,9 +6,9 @@
 #include "kigl/GLVertexArray.h"
 
 #include "Material.h"
-#include "MaterialEntry.h"
 
 class Mesh;
+struct MaterialIndex;
 
 class MaterialVBO {
     friend class MeshType;
@@ -34,7 +34,7 @@ public:
     int m_bufferIndex = 0;
 
     std::vector<Material> m_materials;
-    std::vector<MaterialEntry> m_entries;
+    std::vector<MaterialIndex> m_indeces;
 
 private:
     bool m_prepared = false;

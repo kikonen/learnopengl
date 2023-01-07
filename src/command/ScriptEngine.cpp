@@ -19,12 +19,12 @@ namespace {
     }
 }
 
-ScriptEngine::ScriptEngine()
+ScriptEngine::ScriptEngine(const Assets& assets)
+    : m_assets(assets)
 {
 }
 
 void ScriptEngine::prepare(
-    const Assets& assets,
     CommandEngine& commandEngine)
 {
     m_runner = sol::thread::create(m_lua);

@@ -1,5 +1,7 @@
 #include "command/RotateNode.h"
 
+#include "scene/RenderContext.h"
+
 
 RotateNode::RotateNode(
     int afterCommandId,

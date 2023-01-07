@@ -2,12 +2,14 @@
 
 #include <vector>
 
-#include "registry/ShaderRegistry.h"
-
 #include "model/Particle.h"
-#include "RenderContext.h"
-#include "Batch.h"
 
+class Assets;
+class RenderContext;
+class Batch;
+class ShaderRegistry;
+class MeshType;
+class Shader;
 
 class ParticleSystem final
 {

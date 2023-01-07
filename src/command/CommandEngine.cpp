@@ -8,11 +8,11 @@
 
 class RenderContext;
 
-CommandEngine::CommandEngine()
+CommandEngine::CommandEngine(const Assets& assets)
+    : m_assets(assets)
 {}
 
-void CommandEngine::prepare(
-    const Assets& assets) noexcept
+void CommandEngine::prepare()
 {
 }
 

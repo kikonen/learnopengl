@@ -1,5 +1,7 @@
 #include "InstancedNode.h"
 
+#include "scene/RenderContext.h"
+#include "scene/Batch.h"
 InstancedNode::InstancedNode(MeshType* type)
     : Node(type)
 {

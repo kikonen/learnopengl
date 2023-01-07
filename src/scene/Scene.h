@@ -10,7 +10,6 @@
 #include "model/Node.h"
 #include "component/Light.h"
 #include "RenderContext.h"
-#include "Batch.h"
 
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
@@ -43,6 +42,7 @@
 class Camera;
 class NodeController;
 class RenderData;
+class Batch;
 
 class Scene final
 {
@@ -73,7 +73,7 @@ public:
     void bindComponents(Node& node);
     int getObjectID(const RenderContext& ctx, double posx, double posy);
 
-    void bindPendingChildren();
+    //void bindPendingChildren();
 
 private:
     void updateMainViewport(RenderContext& ctx);
@@ -84,15 +84,15 @@ public:
     std::unique_ptr<SkyboxRenderer> m_skyboxRenderer{ nullptr };
     std::unique_ptr<RenderData> m_renderData;
 
-    MaterialRegistry m_materialRegistry;
-    MeshTypeRegistry m_typeRegistry;
-    ModelRegistry m_modelRegistry;
-    NodeRegistry m_nodeRegistry;
+    std::unique_ptr<MaterialRegistry> m_materialRegistry;
+    std::unique_ptr<MeshTypeRegistry> m_typeRegistry;
+    std::unique_ptr<ModelRegistry> m_modelRegistry;
+    std::unique_ptr<NodeRegistry> m_nodeRegistry;
 
-    CommandEngine m_commandEngine;
-    ScriptEngine m_scriptEngine;
+    std::unique_ptr<CommandEngine> m_commandEngine;
+    std::unique_ptr<ScriptEngine> m_scriptEngine;
 
-    Batch m_batch;
+    std::unique_ptr<Batch> m_batch;
 
 protected:
 

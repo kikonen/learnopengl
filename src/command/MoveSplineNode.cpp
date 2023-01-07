@@ -1,5 +1,7 @@
 #include "command/MoveSplineNode.h"
 
+#include "scene/RenderContext.h"
+
 
 MoveSplineNode::MoveSplineNode(
     int afterCommandId,

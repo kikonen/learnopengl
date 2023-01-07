@@ -4,6 +4,9 @@
 
 #include "SkyboxRenderer.h"
 
+#include "scene/RenderContext.h"
+#include "scene/Batch.h"
+
 #include "registry/MaterialRegistry.h"
 
 namespace {

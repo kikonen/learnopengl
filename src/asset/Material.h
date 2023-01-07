@@ -8,7 +8,8 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "UBO.h"
-#include "SSBO.h"
+
+#include "MaterialSSBO.h"
 
 class RenderContext;
 

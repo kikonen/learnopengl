@@ -11,14 +11,13 @@
 
 #include "registry/MeshType.h"
 
-#include "scene/Batch.h"
-
 #include "component/Light.h"
 
 class NodeController;
 class Camera;
 class RenderContext;
 class MeshType;
+class Batch;
 
 class Node
 {
@@ -65,8 +64,12 @@ public:
 
     OBB& getOBB();
 
+    bool isEntity();
+
     // @return -1 if no highlight color
-    int getHighlightColor(const RenderContext& ctx) const;
+    int getHighlightIndex(const RenderContext& ctx) const;
+
+    int getMaterialIndex() const;
 
     bool isHighlighted() { return m_tagMaterialIndex > -1 || m_selectionMaterialIndex > -1; }
 

@@ -15,11 +15,10 @@ class RenderContext;
 class CommandEngine final
 {
 public:
-    CommandEngine();
+    CommandEngine(const Assets& assets);
     ~CommandEngine() = default;
 
-    void prepare(
-        const Assets& assets) noexcept;
+    void prepare();
 
     void update(const RenderContext& ctx) noexcept;
 
@@ -36,6 +35,8 @@ private:
     void processActive(const RenderContext& ctx) noexcept;
 
 private:
+    const Assets& m_assets;
+
     std::vector<std::unique_ptr<Command>> m_pending;
     std::vector<std::unique_ptr<Command>> m_blocked;
     std::vector<std::unique_ptr<Command>> m_active;

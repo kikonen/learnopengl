@@ -1,5 +1,8 @@
 #include "CameraController.h"
 
+#include "scene/RenderContext.h"
+#include "component/Camera.h"
+
 
 CameraController::CameraController()
 {

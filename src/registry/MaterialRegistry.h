@@ -4,11 +4,14 @@
 
 #include "asset/Assets.h"
 #include "asset/Material.h"
-#include "asset/MaterialEntry.h"
 
 #include "kigl/GLBuffer.h"
 
 class MaterialVBO;
+
+struct MaterialIndex;
+struct MaterialSSBO;
+
 
 class MaterialRegistry {
 public:
@@ -40,16 +43,16 @@ private:
 
     std::vector<Material> m_materials;
 
-    MaterialsUBO m_materialsUbo;
+    //MaterialsUBO m_materialsUbo;
 
     std::vector<MaterialSSBO> m_materialsSSBO;
 
-    std::vector<MaterialEntry> m_materialEntries;
+    std::vector<MaterialIndex> m_materialIndeces;
 
     size_t m_updatedSize = 0;
 
-    GLBuffer m_ubo{ "materialsUBO" };
+    //GLBuffer m_ubo{ "materialsUBO" };
     GLBuffer m_ssbo{ "materialsSSBO" };
 
-    GLBuffer m_entryBuffer{ "materialIndex" };
+    GLBuffer m_indexBuffer{ "materialIndex" };
 };

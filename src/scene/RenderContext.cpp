@@ -83,10 +83,10 @@ RenderContext::RenderContext(
     m_clock(clock),
     state(state),
     m_scene(scene),
-    m_batch(scene->m_batch),
-    m_nodeRegistry(scene->m_nodeRegistry),
-    commandEngine(scene->m_commandEngine),
-    scriptEngine(scene->m_scriptEngine),
+    m_batch(*scene->m_batch),
+    m_nodeRegistry(*scene->m_nodeRegistry),
+    commandEngine(*scene->m_commandEngine),
+    scriptEngine(*scene->m_scriptEngine),
     m_camera(camera),
     m_backend(backend),
     m_nearPlane(nearPlane),
@@ -196,7 +196,7 @@ void RenderContext::bindClipPlanesUBO() const
 
 void RenderContext::bindLightsUBO() const
 {
-    auto& nodeRegistry = m_scene->m_nodeRegistry;
+    auto& nodeRegistry = m_nodeRegistry;
 
     LightsUBO lightsUbo;
     if (!m_useLight) {

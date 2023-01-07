@@ -1,5 +1,13 @@
 #include "ParticleSystem.h"
 
+#include "component/Camera.h"
+#include "scene/RenderContext.h"
+#include "scene/Batch.h"
+
+#include "registry/ShaderRegistry.h"
+
+#include "model/Particle.h"
+
 ParticleSystem::ParticleSystem()
 {
 }

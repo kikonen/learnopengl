@@ -5,6 +5,11 @@
 
 #include "registry/MaterialRegistry.h"
 
+#include "component/Camera.h"
+#include "scene/RenderContext.h"
+#include "scene/Batch.h"
+
+
 namespace {
     const glm::vec3 CAMERA_FRONT[6] = {
         {  1,  0,  0 },

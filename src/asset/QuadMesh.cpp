@@ -5,7 +5,6 @@
 #include "ki/GL.h"
 
 #include "asset/Sphere.h"
-#include "asset/MaterialEntry.h"
 #include "asset/QuadMaterialInit.h"
 #include "asset/QuadVAO.h"
 

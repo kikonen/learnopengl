@@ -1,5 +1,9 @@
 #include "ObjectIdRenderer.h"
 
+#include "component/Camera.h"
+#include "scene/RenderContext.h"
+#include "scene/Batch.h"
+
 ObjectIdRenderer::ObjectIdRenderer()
     : Renderer()
 {

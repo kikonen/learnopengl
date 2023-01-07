@@ -105,11 +105,11 @@ private:
     std::vector<BatchEntry> m_entries;
 
     GLBuffer m_vbo{ "batchVBO" };
-    BatchEntry* m_mapped;
-    int m_size = 0;
+    //BatchEntry* m_mapped;
+    //int m_size = 0;
 
-    int m_range = 0;
-    GLBufferRange m_ranges[RANGE_COUNT];
+    //int m_range = 0;
+    //GLBufferRange m_ranges[RANGE_COUNT];
 
     backend::DrawBuffer m_draw;
 

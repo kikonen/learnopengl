@@ -1,5 +1,7 @@
 #include "command/StartNode.h"
 
+#include "scene/RenderContext.h"
+
 
 StartNode::StartNode(
     int afterCommandId,

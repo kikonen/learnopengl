@@ -1,6 +1,7 @@
 #include "ShadowMapRenderer.h"
 
-#include "scene/Scene.h"
+#include "scene/RenderContext.h"
+#include "scene/Batch.h"
 
 namespace {
     // @see Computer Graphics Programmming in OpenGL Using C++, Second Edition

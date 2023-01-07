@@ -4,6 +4,8 @@
 #include <fmt/format.h>
 
 #include "asset/Assets.h"
+#include "asset/MaterialIndex.h"
+#include "asset/Mesh.h"
 
 #include "scene/RenderContext.h"
 

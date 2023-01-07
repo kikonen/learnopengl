@@ -2,18 +2,23 @@
 
 #include "fmt/format.h"
 
+#include "asset/SSBO.h"
 #include "asset/MaterialVBO.h"
+#include "asset/MaterialSSBO.h"
+#include "asset/MaterialIndex.h"
 
 namespace {
+    constexpr size_t MAX_SSBO_MATERIALS = 1000;
+
     // scene_full = 91 109
-    constexpr int MAX_MATERIAL_ENTRIES = 100000;
+    constexpr int MAX_MATERIAL_INDECES = 100000;
 }
 
 MaterialRegistry::MaterialRegistry(const Assets& assets)
     : assets(assets)
 {
     m_materials.reserve(MATERIAL_COUNT);
-    m_materialEntries.reserve(MAX_MATERIAL_ENTRIES);
+    m_materialIndeces.reserve(MAX_MATERIAL_INDECES);
     m_materialsSSBO.reserve(MAX_SSBO_MATERIALS);
 }
 
@@ -29,30 +34,30 @@ void MaterialRegistry::add(const Material& material)
 
 void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 {
-    assert(!materialVBO.m_entries.empty());
+    assert(!materialVBO.m_indeces.empty());
 
-    const size_t count = materialVBO.m_entries.size();
-    const size_t index = m_materialEntries.size();
-    const size_t offset = index * sizeof(MaterialEntry);
+    const size_t count = materialVBO.m_indeces.size();
+    const size_t index = m_materialIndeces.size();
+    const size_t offset = index * sizeof(MaterialIndex);
 
-    assert(index + count < MAX_MATERIAL_ENTRIES);
+    assert(index + count < MAX_MATERIAL_INDECES);
 
     materialVBO.m_bufferIndex = index;
-    materialVBO.m_buffer = &m_entryBuffer;
+    materialVBO.m_buffer = &m_indexBuffer;
 
-    m_materialEntries.insert(
-        m_materialEntries.end(),
-        materialVBO.m_entries.begin(),
-        materialVBO.m_entries.end());
+    m_materialIndeces.insert(
+        m_materialIndeces.end(),
+        materialVBO.m_indeces.begin(),
+        materialVBO.m_indeces.end());
 
     KI_INFO(fmt::format(
         "MATERIAL: offset={}, mesh_entries={}, total_entries={}, BUFFER_SIZE={}",
-        materialVBO.m_bufferIndex, materialVBO.m_entries.size(), m_materialEntries.size(), MAX_MATERIAL_ENTRIES * sizeof(MaterialEntry)));
+        materialVBO.m_bufferIndex, materialVBO.m_indeces.size(), m_materialIndeces.size(), MAX_MATERIAL_INDECES * sizeof(MaterialIndex)));
 
-    m_entryBuffer.update(
+    m_indexBuffer.update(
         offset,
-        count * sizeof(MaterialEntry),
-        &m_materialEntries[index]);
+        count * sizeof(MaterialIndex),
+        &m_materialIndeces[index]);
 }
 
 Material* MaterialRegistry::find(
@@ -112,12 +117,12 @@ void MaterialRegistry::update(const RenderContext& ctx)
 void MaterialRegistry::prepare()
 {
     m_ssbo.createEmpty(MAX_SSBO_MATERIALS * sizeof(MaterialSSBO), GL_DYNAMIC_STORAGE_BIT);
-    m_entryBuffer.createEmpty(MAX_MATERIAL_ENTRIES * sizeof(MaterialEntry), GL_DYNAMIC_STORAGE_BIT);
+    m_indexBuffer.createEmpty(MAX_MATERIAL_INDECES * sizeof(MaterialIndex), GL_DYNAMIC_STORAGE_BIT);
 }
 
 void MaterialRegistry::bind(
     const RenderContext& ctx)
 {
     m_ssbo.bindSSBO(SSBO_MATERIALS);
-    m_entryBuffer.bindSSBO(SSBO_MATERIAL_INDECES);
+    m_indexBuffer.bindSSBO(SSBO_MATERIAL_INDECES);
 }

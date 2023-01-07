@@ -139,7 +139,7 @@ void Test6::selectNode(
     bool isShift,
     bool isCtrl)
 {
-    auto& nodeRegistry = scene->m_nodeRegistry;
+    auto& nodeRegistry = ctx.m_nodeRegistry;
     int objectID = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
 
     auto* volumeNode = nodeRegistry.getNode(ctx.assets.volumeUUID);
@@ -179,13 +179,14 @@ std::shared_ptr<Scene> Test6::loadScene()
     m_asyncLoader->m_scene = scene;
 
     {
-        auto file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_full.yml");
-        //m_file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_player.yml");
-        //m_file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_origo.yml");
-        //m_file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_light.yml");
-        //m_file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_water.yml");
-        //m_file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_terrain.yml");
-        //m_file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_material_balls.yml");
+        std::unique_ptr<SceneFile> file;
+        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_full.yml");
+        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_player.yml");
+        file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_origo.yml");
+        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_light.yml");
+        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_water.yml");
+        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_terrain.yml");
+        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_material_balls.yml");
 
         m_files.push_back(std::move(file));
     }

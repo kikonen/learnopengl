@@ -16,10 +16,9 @@ class CommandEngine;
 class ScriptEngine final
 {
 public:
-    ScriptEngine();
+    ScriptEngine(const Assets& assets);
 
     void prepare(
-        const Assets& assets,
         CommandEngine& commandEngine);
 
     void runScript(
@@ -36,6 +35,8 @@ private:
 
 
 private:
+    const Assets& m_assets;
+
     sol::state m_lua;
     sol::thread m_runner;
 

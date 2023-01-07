@@ -1,5 +1,7 @@
 #include "command/ScaleNode.h"
 
+#include "scene/RenderContext.h"
+
 
 ScaleNode::ScaleNode(
     int afterCommandId,

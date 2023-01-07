@@ -1,5 +1,6 @@
 #include "command/MoveNode.h"
 
+#include "scene/RenderContext.h"
 
 MoveNode::MoveNode(
     int afterCommandId,

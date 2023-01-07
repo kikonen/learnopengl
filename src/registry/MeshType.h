@@ -1,14 +1,11 @@
 #pragma once
 
-#include "asset/Mesh.h"
 #include "asset/Shader.h"
 #include "asset/MaterialVBO.h"
 
 #include "kigl/GLVertexArray.h"
 
 #include "backend/DrawOptions.h"
-
-#include "scene/Batch.h"
 
 
 enum class EntityType {
@@ -48,6 +45,7 @@ class NodeRegistry;
 class MaterialRegistry;
 class ModelRegistry;
 class Mesh;
+class Batch;
 
 class MeshType final
 {

@@ -2,6 +2,8 @@
 
 #include "component/Light.h"
 
+#include "scene/RenderContext.h"
+
 MovingLightController::MovingLightController(
     const glm::vec3& center,
     float radius,

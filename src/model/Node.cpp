@@ -8,11 +8,14 @@
 
 #include "ki/GL.h"
 
+#include "asset/MaterialIndex.h"
+
 #include "controller/NodeController.h"
 
 #include "registry/NodeRegistry.h"
 
 #include "scene/RenderContext.h"
+#include "scene/Batch.h"
 
 namespace {
     int objectIDbase = 100;
@@ -71,7 +74,7 @@ void Node::update(
 
     if (m_light) m_light->update(ctx, *this);
 
-    const NodeVector* children = ctx.registry.getChildren(*this);
+    const NodeVector* children = ctx.m_nodeRegistry.getChildren(*this);
     if (children) {
         for (auto& child : *children) {
             child->update(ctx, this);
@@ -249,13 +252,28 @@ OBB& Node::getOBB()
     return m_obb;
 }
 
-int Node::getHighlightColor(const RenderContext& ctx) const
+bool Node::isEntity() {
+    return m_type->getMesh() &&
+        !m_type->m_flags.noRender;
+}
+
+int Node::getHighlightIndex(const RenderContext& ctx) const
 {
     if (ctx.assets.showHighlight) {
         if (ctx.assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
         if (ctx.assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
     }
     return -1;
+}
+
+int Node::getMaterialIndex() const
+{
+    auto& materialVBO = m_type->m_materialVBO;
+    if (materialVBO.m_singleMaterial) {
+        // NOTE KI handles "per instance" material case; per vertex separately
+        return materialVBO.m_indeces[0].m_materialIndex;
+    }
+    return -materialVBO.m_bufferIndex;
 }
 
 int Node::lua_getId() const noexcept

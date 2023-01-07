@@ -5,6 +5,8 @@
 #include "MaterialVBO.h"
 #include "SpriteMesh.h"
 
+#include "asset/MaterialIndex.h"
+
 namespace {
 }
 
@@ -22,9 +24,9 @@ void SpriteMaterialInit::prepareVertices(
 
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     {
-        auto& entries = materialVBO.m_entries;
+        auto& entries = materialVBO.m_indeces;
 
         auto& entry = entries.emplace_back();
-        entry.materialIndex = material.m_registeredIndex;
+        entry.m_materialIndex = material.m_registeredIndex;
     }
 }

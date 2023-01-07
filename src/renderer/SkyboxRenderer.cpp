@@ -5,6 +5,8 @@
 #include "asset/ShaderBind.h"
 #include "scene/CubeMap.h"
 
+#include "scene/RenderContext.h"
+
 const int ATTR_SKYBOX_POS = 0;
 
 

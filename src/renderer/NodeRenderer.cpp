@@ -4,6 +4,10 @@
 
 #include "registry/MaterialRegistry.h"
 
+#include "component/Camera.h"
+#include "scene/RenderContext.h"
+#include "scene/Batch.h"
+
 namespace
 {
 }

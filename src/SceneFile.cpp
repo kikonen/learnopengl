@@ -10,6 +10,7 @@
 #include "asset/QuadMesh.h"
 #include "asset/SpriteMesh.h"
 
+#include "model/Node.h"
 #include "model/InstancedNode.h"
 
 #include "controller/AsteroidBeltController.h"
@@ -103,7 +104,7 @@ void SceneFile::attachSkybox(
     if (!data.valid()) return;
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
-    skybox->prepare(m_assets, m_asyncLoader->m_shaders, scene->m_materialRegistry);
+    skybox->prepare(m_assets, m_asyncLoader->m_shaders, *scene->m_materialRegistry);
     scene->m_skyboxRenderer = std::move(skybox);
 }
 
@@ -113,10 +114,10 @@ void SceneFile::attachVolume(
 {
     if (!m_assets.showVolume) return;
 
-    auto type = scene->m_typeRegistry.getType("<volume>");
+    auto type = scene->m_typeRegistry->getType("<volume>");
 
     auto& modelRegistry = scene->m_modelRegistry;
-    auto mesh = modelRegistry.getMesh("ball_volume");
+    auto mesh = modelRegistry->getMesh("ball_volume");
     type->setMesh(mesh);
 
     {
@@ -156,7 +157,7 @@ void SceneFile::attachVolume(
 
     node->m_controller = std::make_unique<VolumeController>();
 
-    scene->m_nodeRegistry.addNode(type, node);
+    scene->m_nodeRegistry->addNode(type, node);
 }
 
 void SceneFile::attachCubeMapCenter(
@@ -165,10 +166,10 @@ void SceneFile::attachCubeMapCenter(
 {
     if (!m_assets.showCubeMapCenter) return;
 
-    auto type = scene->m_typeRegistry.getType("<cube_map>");
+    auto type = scene->m_typeRegistry->getType("<cube_map>");
 
     auto& modelRegistry = scene->m_modelRegistry;
-    auto mesh = modelRegistry.getMesh("ball_volume");
+    auto mesh = modelRegistry->getMesh("ball_volume");
     type->setMesh(mesh);
 
     {
@@ -210,7 +211,7 @@ void SceneFile::attachCubeMapCenter(
 
     node->setAABB(mesh->getAABB());
 
-    scene->m_nodeRegistry.addNode(type, node);
+    scene->m_nodeRegistry->addNode(type, node);
 }
 
 void SceneFile::attachEntity(
@@ -250,12 +251,14 @@ MeshType* SceneFile::attachEntityClone(
         return type;
     }
 
+    auto& nodeRegistry = *scene->m_nodeRegistry;
+
     if (!type) {
         type = createType(
             entity,
             data,
-            scene->m_typeRegistry,
-            scene->m_modelRegistry,
+            *scene->m_typeRegistry,
+            *scene->m_modelRegistry,
             materials);
         if (!type) return type;
     }
@@ -268,7 +271,7 @@ MeshType* SceneFile::attachEntityClone(
     if (grouped) {
         group = new Group();
         group->m_id = data.id;
-        scene->m_nodeRegistry.addGroup(group);
+        nodeRegistry.addGroup(group);
     }
 
     for (auto z = 0; z < repeat.zCount; z++) {
@@ -277,9 +280,9 @@ MeshType* SceneFile::attachEntityClone(
                 const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
                 auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, entity.isRoot, cloned);
                 if (data.selected) {
-                    node->m_selectionMaterialIndex = scene->m_nodeRegistry.m_selectionMaterial.m_registeredIndex;
+                    node->m_selectionMaterialIndex = nodeRegistry.m_selectionMaterial.m_registeredIndex;
                 }
-                scene->m_nodeRegistry.addNode(type, node);
+                nodeRegistry.addNode(type, node);
             }
         }
     }
