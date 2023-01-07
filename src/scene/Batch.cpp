@@ -347,7 +347,5 @@ void Batch::drawInstanced(
     if (boundShader) {
         m_draw.flush(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
     }
-
-    m_batches.clear();
 }
 
