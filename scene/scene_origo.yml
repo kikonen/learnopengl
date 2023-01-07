@@ -47,12 +47,12 @@ entities:
     force_material: true
     pos: [5.0, 5.0, 5.0]
     scale: 1
-    enabled: false
+    enabled: true
   - name: Four cubes
     model: texture_cube_3
     shader: texture
     scale: 1
-    enabled: true
+    enabled: false
     clones:
       - pos: [-5.0, 0.0, -5.0]
       - pos: [5.0, 0.0, -5.0]
@@ -73,23 +73,23 @@ entities:
       z_count: 101
       x_step: -4
       z_step: 1.5
-    enabled: false
+    enabled: true
   - name: Cube map 1
     type: origo
     pos: [0.0, -3.0, 0.0]
     render_flags:
       cube_map: true
-    enabled: false
+    enabled: true
   - name: Glass ball
     model: glass_ball
     shader: texture
-    pos: [5.0, 20.0, 0.0]
+    pos: [5.0, 3.0, 0.0]
     scale: 1.3
     material_modifier:
       reflection: 0.1
       refraction: 0.9
       refraction_ratio: [1.0, 1.52]
-    enabled: false
+    enabled: true
   - name: Brick wall
     type: quad
     material: brickwall

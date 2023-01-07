@@ -8,7 +8,9 @@ public:
     InstancedNode(MeshType* type);
     virtual ~InstancedNode();
 
-    void prepare(const Assets& assets) noexcept override;
+    void prepare(
+        const Assets& assets,
+        EntityRegistry& entityRegistry) override;
 
     void updateBuffers(const RenderContext& ctx) noexcept;
 
@@ -18,14 +20,8 @@ public:
 
     void clear();
 
-    void add(
-        const glm::mat4& model,
-        const glm::mat3& normal,
-        int objectID) noexcept;
+    void addEntity(int entityIndex) noexcept;
 
 private:
-    std::vector<glm::mat4> m_modelMatrices;
-    std::vector<glm::mat3> m_normalMatrices;
-    std::vector<int> m_objectIDs;
+    std::vector<int> m_entityIndeces;
 };
-

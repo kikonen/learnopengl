@@ -19,6 +19,7 @@ Scene::Scene(const Assets& assets)
     : assets(assets)
 {
     m_materialRegistry = std::make_unique<MaterialRegistry>(assets);
+    m_entityRegistry = std::make_unique<EntityRegistry>(assets);
     m_typeRegistry = std::make_unique<MeshTypeRegistry>(assets);
     m_modelRegistry = std::make_unique<ModelRegistry>(assets);
     m_nodeRegistry = std::make_unique<NodeRegistry>(assets);
@@ -69,11 +70,13 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     m_batch->prepare(assets, assets.batchSize);
     m_materialRegistry->prepare();
+    m_entityRegistry->prepare();
     m_modelRegistry->prepare(*m_batch);
 
     m_nodeRegistry->prepare(
         m_batch.get(),
         m_materialRegistry.get(),
+        m_entityRegistry.get(),
         m_modelRegistry.get());
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
@@ -225,6 +228,8 @@ void Scene::update(RenderContext& ctx)
 
     m_windowBuffer->update(ctx);
 
+    m_entityRegistry->update(ctx);
+
     m_renderData->update();
 }
 
@@ -372,6 +377,7 @@ void Scene::drawScene(RenderContext& ctx)
     }
 
     m_materialRegistry->bind(ctx);
+    m_entityRegistry->bind(ctx);
 
     if (m_cubeMapRenderer) {
         m_cubeMapRenderer->bindTexture(ctx);
@@ -486,4 +492,3 @@ void Scene::updateMainViewport(RenderContext& ctx)
         }
     }
 }
-

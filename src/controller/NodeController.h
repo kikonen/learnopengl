@@ -5,12 +5,17 @@
 
 #include "gui/Input.h"
 
+class EntityRegistry;
+
 class NodeController
 {
 public:
     NodeController();
 
-    virtual void prepare(const Assets& assets, Node& node) ;
+    virtual void prepare(
+        const Assets& assets,
+        EntityRegistry& entityRegistry,
+        Node& node);
 
     virtual bool update(
         const RenderContext& ctx,

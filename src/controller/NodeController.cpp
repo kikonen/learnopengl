@@ -4,7 +4,10 @@ NodeController::NodeController()
 {
 }
 
-void NodeController::prepare(const Assets& assets, Node& node)
+void NodeController::prepare(
+    const Assets& assets,
+    EntityRegistry& entityRegistry,
+    Node& node)
 {
     if (m_prepared) return;
     m_prepared = true;

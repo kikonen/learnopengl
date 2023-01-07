@@ -15,6 +15,7 @@
 #include "backend/RenderSystem.h"
 
 #include "registry/NodeRegistry.h"
+#include "registry/EntityRegistry.h"
 
 #include "scene/Scene.h"
 #include "scene/RenderData.h"
@@ -85,6 +86,7 @@ RenderContext::RenderContext(
     m_scene(scene),
     m_batch(*scene->m_batch),
     m_nodeRegistry(*scene->m_nodeRegistry),
+    m_entityRegistry(*scene->m_entityRegistry),
     commandEngine(*scene->m_commandEngine),
     scriptEngine(*scene->m_scriptEngine),
     m_camera(camera),

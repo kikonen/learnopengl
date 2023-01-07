@@ -72,6 +72,7 @@ constexpr int ATTR_INSTANCE_NORMAL_MATRIX_3 = 12;
 
 constexpr int ATTR_INSTANCE_OBJECT_ID = 13;
 constexpr int ATTR_INSTANCE_HIGHLIGHT_INDEX = 14;
+constexpr int ATTR_INSTANCE_ENTITY_INDEX = 15;
 constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
 
 const std::string GEOM_NONE{ "" };

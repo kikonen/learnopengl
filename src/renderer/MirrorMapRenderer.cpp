@@ -104,7 +104,7 @@ void MirrorMapRenderer::render(
     Node* closest = findClosest(ctx);
     if (!closest) return;
 
-    closest->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;
+    closest->setTagMaterialIndex(m_tagMaterial.m_registeredIndex);
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
@@ -250,7 +250,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
             for (const auto& node : nodes) {
                 const auto& planeNormal = node->getWorldPlaneNormal();
 
-                node->m_tagMaterialIndex = -1;
+                node->setTagMaterialIndex(-1);
 
                 const auto eyeV = node->getWorldPos() - cameraPos;
                 const auto dist = glm::length(eyeV);

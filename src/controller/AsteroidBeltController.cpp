@@ -11,6 +11,10 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+#include "registry/EntityRegistry.h"
+#include "registry/EntitySSBO.h"
+
+
 AsteroidBeltController::AsteroidBeltController(int asteroidCount)
     : m_asteroidCount(asteroidCount),
     m_radius(70.0),
@@ -21,17 +25,10 @@ AsteroidBeltController::AsteroidBeltController(int asteroidCount)
 
 void AsteroidBeltController::prepareInstanced(
     const Assets& assets,
+    EntityRegistry& entityRegistry,
     InstancedNode& node)
 {
-    const int count = m_asteroidCount;
-
-    for (size_t i = 0; i < count; i++)
-    {
-        m_asteroids.emplace_back();
-    }
-
-    initAsteroids(assets, node, m_asteroids);
-    calculateVolume(node, m_asteroids);
+    createAsteroids(assets, entityRegistry, node);
 }
 
 bool AsteroidBeltController::updateInstanced(
@@ -39,46 +36,78 @@ bool AsteroidBeltController::updateInstanced(
     InstancedNode& node,
     Node* parent)
 {
-    const bool changed = m_updateIndex% m_updateStep == 0 || node.getMatrixLevel() != m_nodeMatrixLevel;
+    const bool rotate = m_updateIndex% m_updateStep == 0 || node.getMatrixLevel() != m_nodeMatrixLevel;
 
-    if (changed) {
-        updateAsteroids(ctx, node, parent);
+    if (rotate) {
+        updateAsteroids(ctx, node, parent, rotate);
     }
 
     m_updateIndex++;
     m_nodeMatrixLevel = node.getMatrixLevel();
 
-    return changed;
+    return rotate;
 }
 
 void AsteroidBeltController::updateAsteroids(
     const RenderContext& ctx,
     InstancedNode& node,
-    Node* parent)
+    Node* parent,
+    bool rotate)
 {
-    node.clear();
-    rotateAsteroids(ctx, node, m_asteroids);
+    auto& entityRegistry = ctx.m_entityRegistry;
+
+    if (rotate) {
+        node.clear();
+        rotateAsteroids(ctx, node, m_asteroids);
+    }
 
     for (const auto& asteroid : m_asteroids)
     {
-        glm::mat4 modelMat{ 1.f };
-        {
-            //modelMat = glm::translate(modelMat, asteroid.m_position + parentPos);
-            modelMat = glm::translate(modelMat, asteroid.m_position);
-            modelMat = glm::scale(modelMat, glm::vec3(asteroid.m_scale));
-            modelMat = glm::rotate(modelMat, asteroid.m_rotationAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+        auto* entity = entityRegistry.get(asteroid.m_entityIndex);
+
+        if (rotate) {
+            glm::mat4 modelMat{ 1.f };
+            {
+                //modelMat = glm::translate(modelMat, asteroid.m_position + parentPos);
+                modelMat = glm::translate(modelMat, asteroid.m_position);
+                modelMat = glm::scale(modelMat, glm::vec3(asteroid.m_scale));
+                modelMat = glm::rotate(modelMat, asteroid.m_rotationAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+            }
+
+            entity->m_modelMatrix = parent->getWorldModelMatrix() * modelMat;
+            // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+            //entity->m_normalMatrix = glm::inverseTranspose(glm::mat3(entity->m_modelMatrix));
+
+            node.addEntity(asteroid.m_entityIndex);
         }
 
-        const auto worldModelMat = parent->getWorldModelMatrix() * modelMat;
-        // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
-        const auto worldNormalMat = glm::inverseTranspose(glm::mat3(worldModelMat));
+        entity->m_materialIndex = node.getMaterialIndex();
+        entity->m_highlightIndex = node.getHighlightIndex(ctx);
 
-        node.add(worldModelMat, worldNormalMat, node.m_objectID);
+        entityRegistry.markDirty(asteroid.m_entityIndex);
     }
+}
+
+void AsteroidBeltController::createAsteroids(
+    const Assets& assets,
+    EntityRegistry& entityRegistry,
+    InstancedNode& node)
+{
+    auto& type = node.m_type;
+
+    for (size_t i = 0; i < m_asteroidCount; i++)
+    {
+        auto& asteroid = m_asteroids.emplace_back();
+        asteroid.m_entityIndex = entityRegistry.add({});
+    }
+
+    initAsteroids(assets, entityRegistry, node, m_asteroids);
+    calculateVolume(node, m_asteroids);
 }
 
 void AsteroidBeltController::initAsteroids(
     const Assets& assets,
+    EntityRegistry& entityRegistry,
     InstancedNode& node,
     std::vector<Asteroid>& asteroids)
 {
@@ -128,6 +157,10 @@ void AsteroidBeltController::initAsteroids(
             float speed = (rand() % 200) / 20000.0f + 0.0005f;
             asteroid.m_speed = speed;
         }
+
+        auto* entity = entityRegistry.get(asteroid.m_entityIndex);
+        entity->setObjectID(node.m_objectID);
+        entity->m_materialIndex = node.getMaterialIndex();
     }
 }
 

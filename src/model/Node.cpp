@@ -13,6 +13,8 @@
 #include "controller/NodeController.h"
 
 #include "registry/NodeRegistry.h"
+#include "registry/EntityRegistry.h"
+#include "registry/EntitySSBO.h"
 
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
@@ -48,13 +50,23 @@ const std::string Node::str() const noexcept
         m_objectID, KI_UUID_STR(m_id), m_type->str());
 }
 
-void Node::prepare(const Assets& assets) noexcept
+void Node::prepare(
+    const Assets& assets,
+    EntityRegistry& entityRegistry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
+    if (isEntity() && !m_type->m_flags.instanced) {
+        m_entityIndex = entityRegistry.add({});
+
+        auto* entity = entityRegistry.get(m_entityIndex);
+        entity->m_materialIndex = getMaterialIndex();
+        entity->setObjectID(m_objectID);
+    }
+
     if (m_controller) {
-        m_controller->prepare(assets, *this);
+        m_controller->prepare(assets, entityRegistry, *this);
     }
 }
 
@@ -62,6 +74,7 @@ void Node::update(
     const RenderContext& ctx,
     Node* parent) noexcept
 {
+    int matrixLevel = m_matrixLevel;
     updateModelMatrix(parent);
 
     bool changed = false;
@@ -80,11 +93,24 @@ void Node::update(
             child->update(ctx, this);
         }
     }
+
+    if (m_dirtyEntity && isEntity() && !m_type->m_flags.instanced) {
+        auto* entity = ctx.m_entityRegistry.get(m_entityIndex);
+
+        entity->m_modelMatrix = m_modelMatrix;
+        //entity->m_normalMatrix = m_normalMatrix;
+        entity->m_materialIndex = getMaterialIndex();
+        entity->m_highlightIndex = getHighlightIndex(ctx);
+
+        ctx.m_entityRegistry.markDirty(m_entityIndex);
+
+        m_dirtyEntity = false;
+    }
 }
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
-    batch.add(ctx, m_modelMatrix, m_normalMatrix, m_objectID, getHighlightColor(ctx));
+    batch.add(ctx, m_entityIndex);
 }
 
 void Node::updateModelMatrix(Node* parent) noexcept
@@ -139,6 +165,7 @@ void Node::updateModelMatrix(Node* parent) noexcept
 
     m_worldPlaneNormal = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_planeNormal, 1.0)));
 
+    m_dirtyEntity = true;
     m_matrixLevel++;
 }
 
@@ -255,6 +282,22 @@ OBB& Node::getOBB()
 bool Node::isEntity() {
     return m_type->getMesh() &&
         !m_type->m_flags.noRender;
+}
+
+void Node::setTagMaterialIndex(int index)
+{
+    if (m_tagMaterialIndex != index) {
+        m_tagMaterialIndex = index;
+        m_dirtyEntity = true;
+    }
+}
+
+void Node::setSelectionMaterialIndex(int index)
+{
+    if (m_selectionMaterialIndex != index) {
+        m_selectionMaterialIndex = index;
+        m_dirtyEntity = true;
+    }
 }
 
 int Node::getHighlightIndex(const RenderContext& ctx) const

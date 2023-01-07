@@ -10,7 +10,10 @@ class CameraController final : public NodeController
 public:
     CameraController();
 
-    virtual void prepare(const Assets& assets, Node& node) override;
+    virtual void prepare(
+        const Assets& assets,
+        EntityRegistry& entityRegistry,
+        Node& node) override;
 
     bool update(
         const RenderContext& ctx,

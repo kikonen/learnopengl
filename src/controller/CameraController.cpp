@@ -8,7 +8,10 @@ CameraController::CameraController()
 {
 }
 
-void CameraController::prepare(const Assets& assets, Node& node)
+void CameraController::prepare(
+    const Assets& assets,
+    EntityRegistry& entityRegistry,
+    Node& node)
 {
     m_camera = node.m_camera.get();
 

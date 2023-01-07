@@ -17,7 +17,10 @@ class NodeController;
 class Camera;
 class RenderContext;
 class MeshType;
+class EntityRegistry;
 class Batch;
+
+struct EntitySSBO;
 
 class Node
 {
@@ -27,7 +30,9 @@ public:
 
     const std::string str() const noexcept;
 
-    virtual void prepare(const Assets& assets) noexcept;
+    virtual void prepare(
+        const Assets& assets,
+        EntityRegistry& entityRegistry);
 
     virtual void update(const RenderContext& ctx, Node* parent) noexcept;
     virtual void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
@@ -64,17 +69,23 @@ public:
 
     OBB& getOBB();
 
-    bool isEntity();
+    inline bool isEntity();
+
+    inline int getTagMaterialIndex() const { return m_tagMaterialIndex;  }
+    inline int getSelectionMaterialIndex() const { return m_selectionMaterialIndex;  }
+
+    void setTagMaterialIndex(int index);
+    void setSelectionMaterialIndex(int index);
 
     // @return -1 if no highlight color
     int getHighlightIndex(const RenderContext& ctx) const;
 
     int getMaterialIndex() const;
 
-    bool isHighlighted() { return m_tagMaterialIndex > -1 || m_selectionMaterialIndex > -1; }
+    inline bool isHighlighted() { return m_tagMaterialIndex > -1 || m_selectionMaterialIndex > -1; }
 
-    bool isSelected() { return m_selectionMaterialIndex > -1; }
-    bool isTagged() { return m_tagMaterialIndex > -1; }
+    inline bool isSelected() { return m_selectionMaterialIndex > -1; }
+    inline bool isTagged() { return m_tagMaterialIndex > -1; }
 
     static int nextID() noexcept;
 
@@ -105,8 +116,6 @@ public:
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };
 
-    int m_tagMaterialIndex = -1;
-    int m_selectionMaterialIndex = -1;
     bool m_allowNormals = true;
 
     std::unique_ptr <NodeController> m_controller{ nullptr };
@@ -117,6 +126,8 @@ public:
 
 protected:
     bool m_prepared = false;
+
+    int m_entityIndex = -1;
 
     std::unique_ptr<Volume> m_volume;
     AABB m_aabb;
@@ -142,7 +153,11 @@ private:
     glm::mat4 m_translateMatrix{ 0.f };
     glm::mat4 m_scaleMatrix{ 0.f };
 
+    int m_tagMaterialIndex = -1;
+    int m_selectionMaterialIndex = -1;
+
     bool m_dirtyRotation = true;
     bool m_dirtyTranslate = true;
     bool m_dirtyScale = true;
+    bool m_dirtyEntity = true;
 };

@@ -64,6 +64,7 @@ using NodeListener = std::function<void(Node*, NodeOperation)>;
 
 class Batch;
 class MaterialRegistry;
+class EntityRegistry;
 class ModelRegistry;
 
 class NodeRegistry final
@@ -76,6 +77,7 @@ public:
     void prepare(
         Batch* batch,
         MaterialRegistry * materialRegistry,
+        EntityRegistry* entityRegistry,
         ModelRegistry* modelRegistry);
 
     void addListener(NodeListener& listener);
@@ -150,6 +152,7 @@ private:
 
     Batch* m_batch{ nullptr };
     MaterialRegistry* m_materialRegistry{ nullptr };
+    EntityRegistry* m_entityRegistry{ nullptr };
     ModelRegistry* m_modelRegistry{ nullptr };
 
     std::mutex m_load_lock;

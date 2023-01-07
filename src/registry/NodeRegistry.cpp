@@ -5,6 +5,7 @@
 #include "ki/GL.h"
 
 #include "MaterialRegistry.h"
+#include "EntityRegistry.h"
 #include "ModelRegistry.h"
 
 namespace {
@@ -89,10 +90,12 @@ NodeRegistry::~NodeRegistry()
 void NodeRegistry::prepare(
     Batch* batch,
     MaterialRegistry* materialRegistry,
+    EntityRegistry* entityRegistry,
     ModelRegistry* modelRegistry)
 {
     m_batch = batch;
     m_materialRegistry = materialRegistry;
+    m_entityRegistry = entityRegistry;
     m_modelRegistry = modelRegistry;
 
     m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
@@ -140,7 +143,7 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcep
 {
     if (!append) {
         for (auto& x : objectIdToNode) {
-            x.second->m_selectionMaterialIndex = -1;
+            x.second->setSelectionMaterialIndex(-1);
         }
     }
 
@@ -149,11 +152,11 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcep
 
     if (append && node->isSelected()) {
         KI_INFO(fmt::format("DESELECT: objectID={}", objectID));
-        node->m_selectionMaterialIndex = -1;
+        node->setSelectionMaterialIndex(-1);
     }
     else {
         KI_INFO(fmt::format("SELECT: objectID={}", objectID));
-        node->m_selectionMaterialIndex = m_selectionMaterial.m_registeredIndex;
+        node->setSelectionMaterialIndex(m_selectionMaterial.m_registeredIndex);
     }
 }
 
@@ -277,7 +280,7 @@ void NodeRegistry::bindNode(
     }
 
     type->prepare(assets, *m_batch, *this, *m_materialRegistry, *m_modelRegistry);
-    node->prepare(assets);
+    node->prepare(assets, *m_entityRegistry);
 
     {
         auto* map = &solidNodes;

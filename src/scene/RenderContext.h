@@ -20,6 +20,7 @@ class Scene;
 class CommandEngine;
 class ScriptEngine;
 class NodeRegistry;
+class EntityRegistry;
 class Batch;
 
 class RenderContext final
@@ -99,6 +100,7 @@ public:
     const float m_aspectRatio;
 
     NodeRegistry& m_nodeRegistry;
+    EntityRegistry& m_entityRegistry;
     CommandEngine& commandEngine;
     ScriptEngine& scriptEngine;
 

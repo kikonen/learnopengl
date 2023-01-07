@@ -196,6 +196,7 @@
     <ClCompile Include="src\registry\ImageRegistry.cpp" />
     <ClCompile Include="src\registry\MaterialRegistry.cpp" />
     <ClCompile Include="src\asset\OBB.cpp" />
+    <ClCompile Include="src\registry\EntityReegistry.cpp" />
     <ClCompile Include="src\registry\ModelRegistry.cpp" />
     <ClCompile Include="src\registry\MeshTypeRegistry.cpp" />
     <ClCompile Include="src\registry\ShaderRegistry.cpp" />
@@ -294,6 +295,7 @@
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\FrustumNew.h" />
     <ClInclude Include="src\asset\IndexEntry.h" />
+    <ClInclude Include="src\asset\MaterialSSBO.h" />
     <ClInclude Include="src\asset\ModelVAO.h" />
     <ClInclude Include="src\asset\SpriteVAO.h" />
     <ClInclude Include="src\asset\VertexEntry.h" />
@@ -313,7 +315,7 @@
     <ClInclude Include="src\kigl\GLBuffer.h" />
     <ClInclude Include="src\kigl\GLBufferRange.h" />
     <ClInclude Include="src\kigl\GLVertexArray.h" />
-    <ClInclude Include="src\asset\MaterialEntry.h" />
+    <ClInclude Include="src\asset\MaterialIndex.h" />
     <ClInclude Include="src\kigl\GLBlendMode.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />
     <ClInclude Include="src\registry\MaterialRegistry.h" />
@@ -324,6 +326,8 @@
     <ClInclude Include="src\asset\Volume.h" />
     <ClInclude Include="src\asset\ShaderBind.h" />
     <ClInclude Include="src\AssetsFile.h" />
+    <ClInclude Include="src\registry\EntitySSBO.h" />
+    <ClInclude Include="src\registry\EntityRegistry.h" />
     <ClInclude Include="src\registry\ModelRegistry.h" />
     <ClInclude Include="src\registry\MeshTypeRegistry.h" />
     <ClInclude Include="src\registry\ShaderRegistry.h" />

@@ -146,7 +146,7 @@ void Test6::selectNode(
     auto* node = nodeRegistry.getNode(objectID);
 
     if (false && node && volumeNode && node->isSelected()) {
-        node->m_selectionMaterialIndex = -1;
+        node->setSelectionMaterialIndex(-1);
 
         volumeNode->setPosition({0, 0, 0});
         volumeNode->setScale(1.f);
@@ -180,9 +180,9 @@ std::shared_ptr<Scene> Test6::loadScene()
 
     {
         std::unique_ptr<SceneFile> file;
-        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_full.yml");
+        file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_full.yml");
         //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_player.yml");
-        file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_origo.yml");
+        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_origo.yml");
         //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_light.yml");
         //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_water.yml");
         //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_terrain.yml");

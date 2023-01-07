@@ -698,7 +698,7 @@ entities:
       z_count: 101
       x_step: -3
       z_step: 2
-    enabled: true
+    enabled: false
     init_script: |
       local function main()
         --print(string.format("START: %d", id))

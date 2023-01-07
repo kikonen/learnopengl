@@ -14,6 +14,7 @@ class AsteroidBeltController final : public InstancedController
         float m_rotationAngle;
         float m_scale;
         float m_speed;
+        int m_entityIndex;
     };
 
 public:
@@ -22,6 +23,7 @@ public:
 protected:
     void prepareInstanced(
         const Assets& assets,
+        EntityRegistry& entityRegistry,
         InstancedNode& node) override;
 
     bool updateInstanced(
@@ -33,10 +35,17 @@ private:
     void updateAsteroids(
         const RenderContext& ctx,
         InstancedNode& node,
-        Node* parent);
+        Node* parent,
+        bool rotate);
+
+    void createAsteroids(
+        const Assets& assets,
+        EntityRegistry& entityRegistry,
+        InstancedNode& node);
 
     void initAsteroids(
         const Assets& assets,
+        EntityRegistry& entityRegistry,
         InstancedNode& node,
         std::vector<Asteroid>& asteroids);
 

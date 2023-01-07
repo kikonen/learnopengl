@@ -34,52 +34,27 @@ Batch::Batch()
 
 void Batch::add(
     const RenderContext& ctx,
-    const glm::mat4& model,
-    const glm::mat3& normal,
-    int objectID,
-    int highlightIndex) noexcept
+    const int entityIndex) noexcept
 {
     auto& entry = m_entries.emplace_back();
-
-    entry.m_modelMatrix = model;
-    entry.m_normalMatrix = normal;
+    entry.m_entityIndex = entityIndex;
 
     auto& top = m_batches.back();
     top.m_drawCount += 1;
-
-    entry.m_highlightIndex = highlightIndex;
-
-    if (top.m_materialVBO->m_singleMaterial) {
-        // NOTE KI handles "instance" material case; per vertex separately
-        entry.m_materialIndex = top.m_materialVBO->m_entries[0].materialIndex;
-    }
-    else {
-        entry.m_materialIndex = -top.m_materialVBO->m_bufferIndex;
-    }
-
-    entry.setObjectID(objectID);
-
-    if (m_entries.size() >= m_entryCount)
-        int x = 0;
 
     flushIfNeeded(ctx);
 }
 
 void Batch::addAll(
     const RenderContext& ctx,
-    const std::vector<glm::mat4>& modelMatrices,
-    const std::vector<glm::mat3>& normalMatrices,
-    const std::vector<int>& objectIDs,
-    int highlightMaterialIndex)
+    const std::vector<int> entityIndeces
+)
 {
     BatchCommand save = m_batches.back();
     save.m_drawCount = 0;
 
-    for (int i = 0; i < modelMatrices.size(); i++) {
-        add(ctx, modelMatrices[i], normalMatrices[i], objectIDs[i], highlightMaterialIndex);
-        if (m_batches.empty()) {
-            m_batches.push_back(save);
-        }
+    for (const auto& entityIndex : entityIndeces) {
+        add(ctx, entityIndex);
     }
 }
 
@@ -138,49 +113,56 @@ void Batch::prepareVAO(
 {
     glVertexArrayVertexBuffer(vao, VBO_BATCH_BINDING, m_vbo, m_offset, sizeof(BatchEntry));
 
-    // model
+    //// model
+    //{
+    //    // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
+    //    constexpr GLsizei vecSize = sizeof(glm::vec4);
+
+    //    for (int i = 0; i < 4; i++) {
+    //        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i);
+    //        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_modelMatrix) + i * vecSize);
+    //        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, VBO_BATCH_BINDING);
+    //    }
+    //}
+
+    //// normal
+    //{
+    //    // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
+    //    constexpr GLsizei vecSize = sizeof(glm::vec3);
+
+    //    for (int i = 0; i < 3; i++) {
+    //        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i);
+    //        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, 3, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_normalMatrix) + i * vecSize);
+    //        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, VBO_BATCH_BINDING);
+    //    }
+    //}
+
+    //// objectIDs
+    //{
+    //    glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
+    //    glVertexArrayAttribFormat(vao, ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_objectID));
+    //    glVertexArrayAttribBinding(vao, ATTR_INSTANCE_OBJECT_ID, VBO_BATCH_BINDING);
+    //}
+
+    //// material
+    //{
+    //    glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MATERIAL_INDEX);
+    //    glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_materialIndex));
+    //    glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MATERIAL_INDEX, VBO_BATCH_BINDING);
+    //}
+
+    //// highlight
+    //{
+    //    glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX);
+    //    glVertexArrayAttribFormat(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_highlightIndex));
+    //    glVertexArrayAttribBinding(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, VBO_BATCH_BINDING);
+    //}
+
+    // entityIndex
     {
-        // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
-        constexpr GLsizei vecSize = sizeof(glm::vec4);
-
-        for (int i = 0; i < 4; i++) {
-            glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i);
-            glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_modelMatrix) + i * vecSize);
-            glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, VBO_BATCH_BINDING);
-        }
-    }
-
-    // normal
-    {
-        // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
-        constexpr GLsizei vecSize = sizeof(glm::vec3);
-
-        for (int i = 0; i < 3; i++) {
-            glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i);
-            glVertexArrayAttribFormat(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, 3, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_normalMatrix) + i * vecSize);
-            glVertexArrayAttribBinding(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, VBO_BATCH_BINDING);
-        }
-    }
-
-    // objectIDs
-    {
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
-        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_objectID));
-        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_OBJECT_ID, VBO_BATCH_BINDING);
-    }
-
-    // material
-    {
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MATERIAL_INDEX);
-        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_materialIndex));
-        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MATERIAL_INDEX, VBO_BATCH_BINDING);
-    }
-
-    // highlight
-    {
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX);
-        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_highlightIndex));
-        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, VBO_BATCH_BINDING);
+        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_ENTITY_INDEX);
+        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_ENTITY_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_entityIndex));
+        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_ENTITY_INDEX, VBO_BATCH_BINDING);
     }
 
     {
@@ -188,10 +170,6 @@ void Batch::prepareVAO(
         // https://www.g-truc.net/post-0363.html
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
         glVertexArrayBindingDivisor(vao, VBO_BATCH_BINDING, 1);
-    }
-
-    if (!singleMaterial) {
-        // TODO KI prepare material vbo separately
     }
 }
 

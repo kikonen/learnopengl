@@ -6,11 +6,18 @@ InstancedController::InstancedController()
 {
 }
 
-void InstancedController::prepare(const Assets& assets, Node& node) {
+void InstancedController::prepare(
+    const Assets& assets,
+    EntityRegistry& entityRegistry,
+    Node& node)
+{
     if (m_prepared) return;
     m_prepared = true;
 
-    prepareInstanced(assets, dynamic_cast<InstancedNode&>(node));
+    prepareInstanced(
+        assets,
+        entityRegistry,
+        dynamic_cast<InstancedNode&>(node));
 }
 
 bool InstancedController::update(
@@ -21,7 +28,10 @@ bool InstancedController::update(
     return updateInstanced(ctx, dynamic_cast<InstancedNode&>(node), parent);
 }
 
-void InstancedController::prepareInstanced(const Assets& assets, InstancedNode& node)
+void InstancedController::prepareInstanced(
+    const Assets & assets,
+    EntityRegistry& entityRegistry,
+    InstancedNode& node)
 {
 }
 

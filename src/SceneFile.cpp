@@ -280,7 +280,7 @@ MeshType* SceneFile::attachEntityClone(
                 const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
                 auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, entity.isRoot, cloned);
                 if (data.selected) {
-                    node->m_selectionMaterialIndex = nodeRegistry.m_selectionMaterial.m_registeredIndex;
+                    node->setSelectionMaterialIndex(nodeRegistry.m_selectionMaterial.m_registeredIndex);
                 }
                 nodeRegistry.addNode(type, node);
             }
