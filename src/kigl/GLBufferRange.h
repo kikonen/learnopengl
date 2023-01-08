@@ -26,6 +26,10 @@ struct GLBufferRange {
         return m_count == m_maxCount;
     }
 
+    inline bool isEmpty() {
+        return m_count == 0;
+    }
+
     void clear() {
         m_count = 0;
     }

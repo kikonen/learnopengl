@@ -5,6 +5,7 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 #include "kigl/GLBufferRange.h"
+#include "kigl/GLSyncQueue.h"
 
 #include "backend/DrawElementsIndirectCommand.h"
 #include "backend/DrawIndirectCommand.h"
@@ -19,7 +20,6 @@ class MeshType;
 class Node;
 class MaterialVBO;
 
-constexpr int RANGE_COUNT = 3;
 
 // NOTE KI use single shared UBO buffer for rendering
 // => less resources needed
@@ -45,11 +45,11 @@ public:
         const RenderContext& ctx,
         const std::vector<int> entityIndeces);
 
-    void reserve(size_t count) noexcept;
-    size_t size() noexcept;
+    //void reserve(size_t count) noexcept;
+    //size_t size() noexcept;
 
     void bind() noexcept;
-    void clear() noexcept;
+    //void clear() noexcept;
 
     void prepare(
         const Assets& assets,
@@ -94,16 +94,11 @@ private:
     RenderContext* m_currentRenderContext{ nullptr };
     std::vector<BatchCommand> m_batches;
 
-    std::vector<BatchEntry> m_entries;
+    //std::vector<BatchEntry> m_entries;
 
-    GLBuffer m_vbo{ "batchVBO" };
-    //BatchEntry* m_mapped;
-    //int m_size = 0;
-
-    //int m_range = 0;
-    //GLBufferRange m_ranges[RANGE_COUNT];
+    //GLBuffer m_vbo{ "batchVBO" };
 
     backend::DrawBuffer m_draw;
 
-    int m_offset = 0;
+    std::unique_ptr<GLSyncQueue<BatchEntry>> m_queue{ nullptr };
 };

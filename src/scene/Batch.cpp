@@ -16,6 +16,8 @@
 
 
 namespace {
+    constexpr int BATCH_RANGE_COUNT = 8;
+
     int idBase = 0;
 
     std::mutex type_id_lock;
@@ -38,8 +40,8 @@ void Batch::add(
 {
     if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
 
-    auto& entry = m_entries.emplace_back();
-    entry.m_entityIndex = entityIndex;
+    BatchEntry entry{ entityIndex };
+    m_queue->send(entry);
 
     auto& top = m_batches.back();
     top.m_drawCount += 1;
@@ -60,27 +62,26 @@ void Batch::addAll(
     }
 }
 
-void Batch::reserve(size_t count) noexcept
-{
-    m_entries.reserve(count);
-}
-
-size_t Batch::size() noexcept
-{
-    return m_entries.size();
-}
+//void Batch::reserve(size_t count) noexcept
+//{
+//    //m_entries.reserve(count);
+//}
+//
+//size_t Batch::size() noexcept
+//{
+//    return m_entries.size();
+//}
 
 void Batch::bind() noexcept
 {
-    clear();
     m_draw.bind();
 }
 
-void Batch::clear() noexcept
-{
-    m_batches.clear();
-    m_entries.clear();
-}
+//void Batch::clear() noexcept
+//{
+//    m_batches.clear();
+//    m_queue->clear();
+//}
 
 void Batch::prepare(
     const Assets& assets,
@@ -91,29 +92,32 @@ void Batch::prepare(
 
     m_entryCount = entryCount;
 
-    {
-        m_offset = 0;
+    m_queue = std::make_unique<GLSyncQueue<BatchEntry>>("batch", m_entryCount, BATCH_RANGE_COUNT);
+    m_queue->prepare(1);
+    //{
+    //    m_offset = 0;
 
-        constexpr int sz = sizeof(BatchEntry);
-        //constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT;// | GL_MAP_WRITE_BIT;
+    //    constexpr int sz = sizeof(BatchEntry);
+    //    //constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT;// | GL_MAP_WRITE_BIT;
 
-        m_vbo.createEmpty(m_entryCount * sz, GL_DYNAMIC_STORAGE_BIT);
-    }
+    //    m_vbo.createEmpty(m_entryCount * sz, GL_DYNAMIC_STORAGE_BIT);
+    //}
 
     m_draw.prepare(20, 100);
 
-    m_entries.reserve(m_entryCount);
+    //m_entries.reserve(m_entryCount);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
-        m_entryCount, m_vbo));
+        m_entryCount, -1));
 }
 
 void Batch::prepareVAO(
     GLVertexArray& vao,
     bool singleMaterial)
 {
-    glVertexArrayVertexBuffer(vao, VBO_BATCH_BINDING, m_vbo, m_offset, sizeof(BatchEntry));
+    //glVertexArrayVertexBuffer(vao, VBO_BATCH_BINDING, m_vbo, m_offset, sizeof(BatchEntry));
+    m_queue->m_buffer.bindVBO(vao, VBO_BATCH_BINDING, sizeof(BatchEntry));
 
     //// model
     //{
@@ -177,7 +181,7 @@ void Batch::prepareVAO(
 
 void Batch::update() noexcept
 {
-    m_vbo.update(m_offset, m_entries.size() * sizeof(BatchEntry), m_entries.data());
+    //m_vbo.update(m_offset, m_entries.size() * sizeof(BatchEntry), m_entries.data());
 }
 
 void Batch::addCommand(
@@ -259,7 +263,7 @@ void Batch::draw(
 void Batch::flushIfNeeded(
     const RenderContext& ctx)
 {
-    if (m_entries.size() < m_entryCount) return;
+    if (!m_queue->isFull()) return;
     flush(ctx, false);
 }
 
@@ -267,7 +271,7 @@ void Batch::flush(
     const RenderContext& ctx,
     bool release)
 {
-    if (m_entries.empty()) {
+    if (m_queue->isEmpty()) {
         m_batches.clear();
         return;
     }
@@ -276,17 +280,20 @@ void Batch::flush(
     drawInstanced(ctx);
 
     m_batches.clear();
-    m_entries.clear();
+    m_queue->next(true);
 }
 
 void Batch::drawInstanced(
     const RenderContext& ctx)
 {
+    const auto& range = m_queue->current();
+    if (range.m_count == 0) return;
+
     const bool useBlend = ctx.m_useBlend;
     const Shader* boundShader{ nullptr };
     const GLVertexArray* boundVAO{ nullptr };
     const backend::DrawOptions* boundDrawOptions{ nullptr };
-    int  baseInstance = 0;
+    int  baseInstance = range.m_index;
 
     backend::DrawIndirectCommand indirect;
 

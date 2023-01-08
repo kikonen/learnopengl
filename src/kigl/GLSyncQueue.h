@@ -98,6 +98,14 @@ public:
         return m_ranges[m_current].isFull();
     }
 
+    inline bool isEmpty() {
+        return m_ranges[m_current].isEmpty();
+    }
+
+    inline void clear() {
+        m_ranges[m_current].clear();
+    }
+
     //
     // Switch to next range
     //

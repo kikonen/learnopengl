@@ -105,6 +105,10 @@ struct GLBuffer {
         glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_id);
     }
 
+    void bindVBO(int vao, int binding, int strideSize) {
+        glVertexArrayVertexBuffer(vao, binding, m_id, 0, strideSize);
+    }
+
     // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
     // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
     void* map(int flags) {
