@@ -283,6 +283,7 @@ void Batch::flush(
 
     m_batches.clear();
     m_queue->next(true);
+    assert(m_queue->current().isEmpty());
 }
 
 void Batch::drawInstanced(

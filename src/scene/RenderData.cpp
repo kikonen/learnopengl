@@ -52,6 +52,7 @@ void RenderData::updateMatrices(MatricesUBO& data)
     m_matrices.send(data);
     m_matrices.bind(UBO_MATRICES);
     m_matrices.next(true);
+    assert(m_matrices.current().isEmpty());
 }
 
 void RenderData::updateData(DataUBO& data)
@@ -60,6 +61,7 @@ void RenderData::updateData(DataUBO& data)
     m_data.send(data);
     m_data.bind(UBO_DATA);
     m_data.next(true);
+    assert(m_data.current().isEmpty());
 }
 
 void RenderData::updateClipPlanes(ClipPlanesUBO& data)
@@ -76,6 +78,7 @@ void RenderData::updateClipPlanes(ClipPlanesUBO& data)
     m_clipPlanes.send(data);
     m_clipPlanes.bind(UBO_CLIP_PLANES);
     m_clipPlanes.next(true);
+    assert(m_clipPlanes.current().isEmpty());
 }
 
 void RenderData::updateLights(LightsUBO& data)
@@ -84,6 +87,7 @@ void RenderData::updateLights(LightsUBO& data)
     m_lights.send(data);
     m_lights.bind(UBO_LIGHTS);
     m_lights.next(true);
+    assert(m_lights.current().isEmpty());
 }
 
 void RenderData::updateTextures()

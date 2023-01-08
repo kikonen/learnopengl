@@ -56,6 +56,7 @@ namespace backend {
         }
 
         m_queue->next(true);
+        assert(m_queue->current().isEmpty());
     }
 
     void DrawBuffer::send(
