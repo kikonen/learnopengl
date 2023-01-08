@@ -27,6 +27,7 @@ namespace {
     //#define GL_TEXTURE_CUBE_MAP_POSITIVE_Z 0x8519
     //#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z 0x851A
 
+    // https://dsweeneyblog.wordpress.com/2016/10/03/dynamic-cube-mapping-in-opengl/
     // +X (right)
     // -X (left)
     // +Y (top)
@@ -96,9 +97,9 @@ void CubeMapRenderer::prepare(
     m_prev = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
     m_prev->prepare(false, { 0, 1, 0, 1.0 });
 
-    glm::vec3 origo(0);
-    for (int i = 0; i < 6; i++) {
-        auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[i], CAMERA_UP[i]);
+    glm::vec3 origo{ 0 };
+    for (int face = 0; face < 6; face++) {
+        auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[face], CAMERA_UP[face]);
         camera.setZoom(90.0);
     }
 }
@@ -142,11 +143,11 @@ void CubeMapRenderer::render(
 
     m_curr->bind(mainCtx);
 
-    for (int i = 0; i < 6; i++) {
+    for (int face = 0; face < 6; face++) {
         glFramebufferTexture2D(
             GL_FRAMEBUFFER,
             GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
             m_curr->m_textureID,
             0);
 
@@ -154,7 +155,7 @@ void CubeMapRenderer::render(
             int mask = GL_DEPTH_BUFFER_BIT;
             if (mainCtx.assets.clearColor) {
                 if (mainCtx.assets.debugClearColor) {
-                    auto color = DEBUG_COLOR[i];
+                    auto color = DEBUG_COLOR[face];
                     glClearColor(color.r, color.g, color.b, color.a);
                 }
                 mask |= GL_COLOR_BUFFER_BIT;
@@ -165,7 +166,7 @@ void CubeMapRenderer::render(
         // centerNode->getVolume()->getRadius();
 
         const auto& center = centerNode->getWorldPos();
-        auto& camera = m_cameras[i];
+        auto& camera = m_cameras[face];
         camera.setPos(center);
 
         RenderContext ctx("CUBE",
@@ -195,13 +196,13 @@ void CubeMapRenderer::clearCubeMap(
 {
     cube.bind(ctx);
 
-    for (int i = 0; i < 6; i++) {
+    for (int face = 0; face < 6; face++) {
         glFramebufferTexture2D(
             GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cube.m_textureID, 0);
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cube.m_textureID, 0);
 
         auto c = color;
-        if (debug) c = DEBUG_COLOR[i];
+        if (debug) c = DEBUG_COLOR[face];
         glClearColor(c.r, c.g, c.b, c.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }

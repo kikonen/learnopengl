@@ -7,7 +7,8 @@
 
 
 const float MIN_ZOOM = 1.0f;
-const float MAX_ZOOM = 45.0f;
+// NOTE KI 90 to allow cubemap & shadowmap wide angle
+const float MAX_ZOOM = 90.0f;
 
 
 Camera::Camera(const glm::vec3& aPos, const glm::vec3 aFront, const glm::vec3 aUp)
