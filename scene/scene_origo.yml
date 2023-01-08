@@ -86,8 +86,8 @@ entities:
     pos: [5.0, 3.0, 0.0]
     scale: 1.3
     material_modifier:
-      reflection: 0.1
-      refraction: 0.9
+      reflection: 0.8
+      refraction: 0.05
       refraction_ratio: [1.0, 1.52]
     enabled: true
   - name: Brick wall
