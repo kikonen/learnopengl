@@ -7,7 +7,7 @@
 #include "kigl/GLBuffer.h"
 
 constexpr GLuint SSBO_MATERIALS = 1;
-constexpr GLuint SSBO_TEXTURES = 2;
+//constexpr GLuint SSBO_TEXTURES = 2;
 constexpr GLuint SSBO_ENTITIES = 3;
 constexpr GLuint SSBO_MATERIAL_INDECES = 4;
 
@@ -19,7 +19,7 @@ constexpr GLuint SSBO_MATERIAL_INDECES = 4;
 //constexpr unsigned int MAX_TEXTURE_COUNT = 256;
 //constexpr unsigned int TEXTURE_COUNT = MAX_TEXTURE_COUNT;
 
-constexpr size_t MAX_SSBO_TEXTURES = 1000;
+//constexpr size_t MAX_SSBO_TEXTURES = 1000;
 
 // NOTE KI align 16 for UBO struct
 // OpenGL Superbible, 7th Edition, page 552

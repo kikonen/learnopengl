@@ -60,12 +60,7 @@ namespace backend {
     }
 
     void DrawBuffer::send(
-        backend::DrawIndirectCommand& indirect,
-        GLState& state,
-        const Shader* shader,
-        const GLVertexArray* vao,
-        const DrawOptions& drawOptions,
-        const bool useBlend)
+        const backend::DrawIndirectCommand& indirect)
     {
         m_queue->send(indirect);
     }

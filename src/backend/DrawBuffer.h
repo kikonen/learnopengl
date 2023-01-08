@@ -26,12 +26,7 @@ namespace backend {
         void bind();
 
         void send(
-            backend::DrawIndirectCommand& cmd,
-            GLState& state,
-            const Shader* shader,
-            const GLVertexArray* vao,
-            const DrawOptions& drawOptions,
-            const bool useBlend);
+            const backend::DrawIndirectCommand& cmd);
 
         void flush(
             GLState& state,

@@ -49,8 +49,11 @@ constexpr int ATTR_POS = 0;
 constexpr int ATTR_NORMAL = 1;
 constexpr int ATTR_TANGENT = 2;
 //constexpr int ATTR_BITANGENT = 3;
-constexpr int ATTR_MATERIAL_INDEX = 4;
-constexpr int ATTR_TEX = 5;
+//constexpr int ATTR_MATERIAL_INDEX = 4;
+constexpr int ATTR_TEX = 4;
+
+constexpr int ATTR_INSTANCE_ENTITY_INDEX = 5;
+
 
 // https://www.reddit.com/r/opengl/comments/lz72tk/understanding_dsa_functions_and_buffer_binding/
 // https://www.khronos.org/opengl/wiki/Vertex_Specification
@@ -59,21 +62,21 @@ constexpr int VBO_VERTEX_BINDING = 0;
 //constexpr int VBO_NORMAL_MATRIX_BINDING = 2;
 //constexpr int VBO_OBJECT_ID_BINDING = 3;
 constexpr int VBO_BATCH_BINDING = 1;
-constexpr int VBO_MATERIAL_BINDING = 4;
+//constexpr int VBO_MATERIAL_BINDING = 4;
 
-constexpr int ATTR_INSTANCE_MODEL_MATRIX_1 = 6;
-constexpr int ATTR_INSTANCE_MODEL_MATRIX_2 = 7;
-constexpr int ATTR_INSTANCE_MODEL_MATRIX_3 = 8;
-constexpr int ATTR_INSTANCE_MODEL_MATRIX_4 = 9;
-
-constexpr int ATTR_INSTANCE_NORMAL_MATRIX_1 = 10;
-constexpr int ATTR_INSTANCE_NORMAL_MATRIX_2 = 11;
-constexpr int ATTR_INSTANCE_NORMAL_MATRIX_3 = 12;
-
-constexpr int ATTR_INSTANCE_OBJECT_ID = 13;
-constexpr int ATTR_INSTANCE_HIGHLIGHT_INDEX = 14;
-constexpr int ATTR_INSTANCE_ENTITY_INDEX = 15;
-constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
+//constexpr int ATTR_INSTANCE_MODEL_MATRIX_1 = 6;
+//constexpr int ATTR_INSTANCE_MODEL_MATRIX_2 = 7;
+//constexpr int ATTR_INSTANCE_MODEL_MATRIX_3 = 8;
+//constexpr int ATTR_INSTANCE_MODEL_MATRIX_4 = 9;
+//
+//constexpr int ATTR_INSTANCE_NORMAL_MATRIX_1 = 10;
+//constexpr int ATTR_INSTANCE_NORMAL_MATRIX_2 = 11;
+//constexpr int ATTR_INSTANCE_NORMAL_MATRIX_3 = 12;
+//
+//constexpr int ATTR_INSTANCE_OBJECT_ID = 13;
+//constexpr int ATTR_INSTANCE_HIGHLIGHT_INDEX = 14;
+//constexpr int ATTR_INSTANCE_ENTITY_INDEX = 15;
+//constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
 
 const std::string GEOM_NONE{ "" };
 

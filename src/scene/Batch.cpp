@@ -302,9 +302,9 @@ void Batch::drawInstanced(
     for (auto& curr : m_batches) {
         if (curr.m_drawCount == 0) continue;
 
-        if (ctx.assets.glDebug) {
-            curr.m_shader->validateProgram();
-        }
+        //if (ctx.assets.glDebug) {
+        //    curr.m_shader->validateProgram();
+        //}
 
         bool sameDraw = boundShader == curr.m_shader &&
             boundVAO == curr.m_vao &&
@@ -336,7 +336,7 @@ void Batch::drawInstanced(
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
             cmd.baseInstance = baseInstance;
 
-            m_draw.send(indirect, ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+            m_draw.send(indirect);
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
@@ -347,7 +347,7 @@ void Batch::drawInstanced(
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseInstance = baseInstance;
 
-            m_draw.send(indirect, ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+            m_draw.send(indirect);
         }
         else {
             // NOTE KI "none" no drawing

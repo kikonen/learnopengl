@@ -62,7 +62,7 @@ public:
     //
     // @return true if current range is full (and ready to flush)
     //
-    bool send(T& entry) {
+    bool send(const T& entry) {
         auto& range = m_ranges[m_current];
         if (m_current == 0) range.waitFence();
 
