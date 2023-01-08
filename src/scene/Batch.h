@@ -45,11 +45,7 @@ public:
         const RenderContext& ctx,
         const std::vector<int> entityIndeces);
 
-    //void reserve(size_t count) noexcept;
-    //size_t size() noexcept;
-
     void bind() noexcept;
-    //void clear() noexcept;
 
     void prepare(
         const Assets& assets,
@@ -66,15 +62,10 @@ public:
         const RenderContext& ctx);
 
 private:
-    void update() noexcept;
-
     void addCommand(
         const RenderContext& ctx,
         MeshType* type,
         Shader* shader);
-
-    void drawInstanced(
-        const RenderContext& ctx);
 
     void flushIfNeeded(const RenderContext& ctx);
 
@@ -92,10 +83,6 @@ private:
 
     RenderContext* m_currentRenderContext{ nullptr };
     std::vector<BatchCommand> m_batches;
-
-    //std::vector<BatchEntry> m_entries;
-
-    //GLBuffer m_vbo{ "batchVBO" };
 
     backend::DrawBuffer m_draw;
 

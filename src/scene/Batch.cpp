@@ -96,18 +96,8 @@ void Batch::prepare(
 
     m_queue = std::make_unique<GLSyncQueue<BatchEntry>>("batch", m_entryCount, BATCH_RANGE_COUNT);
     m_queue->prepare(1);
-    //{
-    //    m_offset = 0;
-
-    //    constexpr int sz = sizeof(BatchEntry);
-    //    //constexpr int bufferFlags = GL_DYNAMIC_STORAGE_BIT;// | GL_MAP_WRITE_BIT;
-
-    //    m_vbo.createEmpty(m_entryCount * sz, GL_DYNAMIC_STORAGE_BIT);
-    //}
 
     m_draw.prepare(20, 100);
-
-    //m_entries.reserve(m_entryCount);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
@@ -118,53 +108,7 @@ void Batch::prepareVAO(
     GLVertexArray& vao,
     bool singleMaterial)
 {
-    //glVertexArrayVertexBuffer(vao, VBO_BATCH_BINDING, m_vbo, m_offset, sizeof(BatchEntry));
     m_queue->m_buffer.bindVBO(vao, VBO_BATCH_BINDING, sizeof(BatchEntry));
-
-    //// model
-    //{
-    //    // NOTE mat4 as vertex attributes *REQUIRES* hacky looking approach
-    //    constexpr GLsizei vecSize = sizeof(glm::vec4);
-
-    //    for (int i = 0; i < 4; i++) {
-    //        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i);
-    //        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_modelMatrix) + i * vecSize);
-    //        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MODEL_MATRIX_1 + i, VBO_BATCH_BINDING);
-    //    }
-    //}
-
-    //// normal
-    //{
-    //    // NOTE mat3 as vertex attributes *REQUIRES* hacky looking approach
-    //    constexpr GLsizei vecSize = sizeof(glm::vec3);
-
-    //    for (int i = 0; i < 3; i++) {
-    //        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i);
-    //        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, 3, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_normalMatrix) + i * vecSize);
-    //        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_NORMAL_MATRIX_1 + i, VBO_BATCH_BINDING);
-    //    }
-    //}
-
-    //// objectIDs
-    //{
-    //    glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_OBJECT_ID);
-    //    glVertexArrayAttribFormat(vao, ATTR_INSTANCE_OBJECT_ID, 4, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_objectID));
-    //    glVertexArrayAttribBinding(vao, ATTR_INSTANCE_OBJECT_ID, VBO_BATCH_BINDING);
-    //}
-
-    //// material
-    //{
-    //    glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_MATERIAL_INDEX);
-    //    glVertexArrayAttribFormat(vao, ATTR_INSTANCE_MATERIAL_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_materialIndex));
-    //    glVertexArrayAttribBinding(vao, ATTR_INSTANCE_MATERIAL_INDEX, VBO_BATCH_BINDING);
-    //}
-
-    //// highlight
-    //{
-    //    glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX);
-    //    glVertexArrayAttribFormat(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_highlightIndex));
-    //    glVertexArrayAttribBinding(vao, ATTR_INSTANCE_HIGHLIGHT_INDEX, VBO_BATCH_BINDING);
-    //}
 
     // entityIndex
     {
@@ -179,11 +123,6 @@ void Batch::prepareVAO(
         // https://www.khronos.org/opengl/wiki/Vertex_Specification
         glVertexArrayBindingDivisor(vao, VBO_BATCH_BINDING, 1);
     }
-}
-
-void Batch::update() noexcept
-{
-    //m_vbo.update(m_offset, m_entries.size() * sizeof(BatchEntry), m_entries.data());
 }
 
 void Batch::addCommand(
@@ -278,17 +217,6 @@ void Batch::flushIfNeeded(
 void Batch::flush(
     const RenderContext& ctx)
 {
-    update();
-    drawInstanced(ctx);
-
-    m_batches.clear();
-    m_queue->next(true);
-    assert(m_queue->current().isEmpty());
-}
-
-void Batch::drawInstanced(
-    const RenderContext& ctx)
-{
     const auto& range = m_queue->current();
 
     const bool useBlend = ctx.m_useBlend;
@@ -360,5 +288,8 @@ void Batch::drawInstanced(
     if (boundShader) {
         m_draw.flush(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
     }
-}
 
+    m_batches.clear();
+    m_queue->next(true);
+    assert(m_queue->current().isEmpty());
+}
