@@ -263,6 +263,12 @@ entities:
       x_count: 10
       x_step: 2
     enabled: true
+  - name: Cube map - brick_wood_wall
+    type: origo
+    pos: [-1.0, 8.5, 14.0]
+    render_flags:
+      cube_map: true
+    enabled: true
   - name: Brick wall
     type: quad
     material: brickwall
