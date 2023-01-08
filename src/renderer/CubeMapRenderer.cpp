@@ -9,7 +9,24 @@
 
 #include "registry/MaterialRegistry.h"
 
+// https://stackoverflow.com/questions/28845375/rendering-a-dynamic-cubemap-opengl
+// https://mbroecker.com/project_dynamic_cubemapping.html
+
 namespace {
+    //    basePath + "/right.jpg",
+    //    basePath + "/left.jpg",
+    //    basePath + "/top.jpg",
+    //    basePath + "/bottom.jpg",
+    //    basePath + "/front.jpg",
+    //    basePath + "/back.jpg"
+
+    //#define GL_TEXTURE_CUBE_MAP_POSITIVE_X 0x8515
+    //#define GL_TEXTURE_CUBE_MAP_NEGATIVE_X 0x8516
+    //#define GL_TEXTURE_CUBE_MAP_POSITIVE_Y 0x8517
+    //#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Y 0x8518
+    //#define GL_TEXTURE_CUBE_MAP_POSITIVE_Z 0x8519
+    //#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z 0x851A
+
     // +X (right)
     // -X (left)
     // +Y (top)
