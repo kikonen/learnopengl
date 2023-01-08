@@ -4,7 +4,7 @@
 
 #include "kigl/GLSyncQueue.h"
 
-constexpr int RENDER_DATA_QUEUE_SIZE = 8;
+constexpr int RENDER_DATA_QUEUE_SIZE = 16;
 
 class RenderData {
 public:
