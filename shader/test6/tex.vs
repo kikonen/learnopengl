@@ -70,7 +70,7 @@ void main() {
   vs_out.vertexPos = a_pos;
   vs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
 
-  vs_out.normal = normalize(mat3(normalMatrix) * a_normal);
+  vs_out.normal = normalize(normalMatrix * a_normal);
 
   calculateClipping(worldPos);
 
@@ -80,7 +80,7 @@ void main() {
   if (u_materials[materialIndex].normalMapTex >= 0)
   {
     vec3 N = vs_out.normal;
-    vec3 T = normalize(mat3(normalMatrix) * a_tangent);
+    vec3 T = normalize(normalMatrix * a_tangent);
     T = normalize(T - dot(T, N) * N);
     vec3 B = cross(N, T);
 
