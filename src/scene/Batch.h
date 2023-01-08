@@ -53,7 +53,7 @@ public:
 
     void prepare(
         const Assets& assets,
-        int entryCount) noexcept;
+        int entryCount = -1) noexcept;
 
     void prepareVAO(GLVertexArray& vao, bool singleMaterial);
 
@@ -63,8 +63,7 @@ public:
         Shader* shader);
 
     void flush(
-        const RenderContext& ctx,
-        bool release = true);
+        const RenderContext& ctx);
 
 private:
     void update() noexcept;

@@ -51,12 +51,8 @@ void Batch::add(
 
 void Batch::addAll(
     const RenderContext& ctx,
-    const std::vector<int> entityIndeces
-)
+    const std::vector<int> entityIndeces)
 {
-    BatchCommand save = m_batches.back();
-    save.m_drawCount = 0;
-
     for (const auto& entityIndex : entityIndeces) {
         add(ctx, entityIndex);
     }
@@ -90,6 +86,12 @@ void Batch::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
+    if (entryCount <= 0) {
+        entryCount = assets.batchSize;
+    }
+    if (entryCount <= 0) {
+        entryCount = 1;
+    }
     m_entryCount = entryCount;
 
     m_queue = std::make_unique<GLSyncQueue<BatchEntry>>("batch", m_entryCount, BATCH_RANGE_COUNT);
@@ -264,18 +266,18 @@ void Batch::flushIfNeeded(
     const RenderContext& ctx)
 {
     if (!m_queue->isFull()) return;
-    flush(ctx, false);
+
+    BatchCommand save = m_batches.back();
+    save.m_drawCount = 0;
+
+    flush(ctx);
+
+    m_batches.push_back(save);
 }
 
 void Batch::flush(
-    const RenderContext& ctx,
-    bool release)
+    const RenderContext& ctx)
 {
-    if (m_queue->isEmpty()) {
-        m_batches.clear();
-        return;
-    }
-
     update();
     drawInstanced(ctx);
 
@@ -287,7 +289,6 @@ void Batch::drawInstanced(
     const RenderContext& ctx)
 {
     const auto& range = m_queue->current();
-    if (range.m_count == 0) return;
 
     const bool useBlend = ctx.m_useBlend;
     const Shader* boundShader{ nullptr };
@@ -298,6 +299,8 @@ void Batch::drawInstanced(
     backend::DrawIndirectCommand indirect;
 
     for (auto& curr : m_batches) {
+        if (curr.m_drawCount == 0) continue;
+
         if (ctx.assets.glDebug) {
             curr.m_shader->validateProgram();
         }
