@@ -98,7 +98,7 @@ void AsteroidBeltController::createAsteroids(
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
         auto& asteroid = m_asteroids.emplace_back();
-        asteroid.m_entityIndex = entityRegistry.add({});
+        asteroid.m_entityIndex = entityRegistry.add();
     }
 
     initAsteroids(assets, entityRegistry, node, m_asteroids);

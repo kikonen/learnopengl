@@ -58,7 +58,7 @@ void Node::prepare(
     m_prepared = true;
 
     if (isEntity() && !m_type->m_flags.instanced) {
-        m_entityIndex = entityRegistry.add({});
+        m_entityIndex = entityRegistry.add();
 
         auto* entity = entityRegistry.get(m_entityIndex);
         entity->m_materialIndex = getMaterialIndex();

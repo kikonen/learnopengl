@@ -41,13 +41,14 @@ void EntityRegistry::bind(
     m_ssbo.bindSSBO(SSBO_ENTITIES);
 }
 
-int EntityRegistry::add(const EntitySSBO& entry)
+// const EntitySSBO& entry
+int EntityRegistry::add()
 {
     if (m_entries.size() == MAX_ENTITY_COUNT)
         throw std::runtime_error{ "MAX_ENTITY_COUNT" };
 
-    m_entries.push_back(entry);
-    m_dirty.push_back(true);
+    m_entries.emplace_back();
+    m_dirty.emplace_back(true);
 
     const auto index = m_entries.size() - 1;
     markDirty(index);

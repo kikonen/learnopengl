@@ -34,8 +34,10 @@ Batch::Batch()
 
 void Batch::add(
     const RenderContext& ctx,
-    const int entityIndex) noexcept
+    const int entityIndex)
 {
+    if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
+
     auto& entry = m_entries.emplace_back();
     entry.m_entityIndex = entityIndex;
 

@@ -39,7 +39,7 @@ public:
 
     void add(
         const RenderContext& ctx,
-        const int entityIndex) noexcept;
+        const int entityIndex);
 
     void addAll(
         const RenderContext& ctx,
