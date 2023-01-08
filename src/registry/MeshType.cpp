@@ -40,8 +40,8 @@ MeshType::~MeshType()
 const std::string MeshType::str() const noexcept
 {
     return fmt::format(
-        "<NODE_TYPE: id={}, name={}, mesh={}, vao={}>",
-        typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao ? *m_vao : -1);
+        "<NODE_TYPE: id={}, name={}, mesh={}, vao={}, materialIndex={}, materialCount={}>",
+        typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao ? *m_vao : -1, getMaterialIndex(), getMaterialCount());
 }
 
 void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
@@ -68,6 +68,21 @@ void MeshType::modifyMaterials(std::function<void(Material&)> fn)
     for (auto& material : m_materialVBO.m_materials) {
         fn(material);
     }
+}
+
+int MeshType::getMaterialIndex() const
+{
+    auto& materialVBO = m_materialVBO;
+    if (materialVBO.m_singleMaterial) {
+        // NOTE KI handles "per instance" material case; per vertex separately
+        return materialVBO.m_indeces.empty() ? -1 : materialVBO.m_indeces[0].m_materialIndex;
+    }
+    return -materialVBO.m_bufferIndex;
+}
+
+int MeshType::getMaterialCount() const
+{
+    return m_materialVBO.m_materials.size();
 }
 
 void MeshType::prepare(

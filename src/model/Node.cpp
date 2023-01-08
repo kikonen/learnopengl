@@ -46,8 +46,8 @@ Node::~Node()
 const std::string Node::str() const noexcept
 {
     return fmt::format(
-        "<NODEL: {} / {} - type={}>",
-        m_objectID, KI_UUID_STR(m_id), m_type->str());
+        "<NODE: {} / {} - entity={}, type={}>",
+        m_objectID, KI_UUID_STR(m_id), m_entityIndex, m_type->str());
 }
 
 void Node::prepare(
@@ -59,6 +59,8 @@ void Node::prepare(
 
     if (isEntity() && !m_type->m_flags.instanced) {
         m_entityIndex = entityRegistry.add();
+
+        KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
         auto* entity = entityRegistry.get(m_entityIndex);
         entity->m_materialIndex = getMaterialIndex();
@@ -311,12 +313,7 @@ int Node::getHighlightIndex(const RenderContext& ctx) const
 
 int Node::getMaterialIndex() const
 {
-    auto& materialVBO = m_type->m_materialVBO;
-    if (materialVBO.m_singleMaterial) {
-        // NOTE KI handles "per instance" material case; per vertex separately
-        return materialVBO.m_indeces[0].m_materialIndex;
-    }
-    return -materialVBO.m_bufferIndex;
+    return m_type->getMaterialIndex();
 }
 
 int Node::lua_getId() const noexcept

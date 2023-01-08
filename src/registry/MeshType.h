@@ -63,6 +63,9 @@ public:
 
     void modifyMaterials(std::function<void(Material&)> fn);
 
+    int getMaterialIndex() const;
+    int getMaterialCount() const;
+
     void prepare(
         const Assets& assets,
         Batch& batch,
