@@ -78,10 +78,10 @@ void Batch::prepare(
     }
     m_entryCount = entryCount;
 
-    m_queue = std::make_unique<GLSyncQueue<BatchEntry>>("batch", m_entryCount, BATCH_RANGE_COUNT);
+    m_queue = std::make_unique<GLSyncQueue<BatchEntry>>("batch", m_entryCount, BATCH_RANGE_COUNT, false);
     m_queue->prepare(1);
 
-    m_draw.prepare(20, 100);
+    m_draw.prepare(32, 64);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
@@ -214,6 +214,8 @@ void Batch::flush(
     }
 
     auto& range = m_queue->current();
+
+    m_queue->flush();
 
     const bool useBlend = ctx.m_useBlend;
     const Shader* boundShader{ nullptr };

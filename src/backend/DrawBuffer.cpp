@@ -15,7 +15,8 @@ namespace backend {
         m_queue = std::make_unique<GLDrawSyncQueue>(
             "drawIndirect",
             entryCount,
-            rangeCount);
+            rangeCount,
+            true);
         m_queue->prepare(BUFFER_ALIGNMENT);
     }
 
@@ -33,6 +34,8 @@ namespace backend {
     {
         auto& range = m_queue->current();
         if (range.m_count == 0) return;
+
+        m_queue->flush();
 
         shader->bind(state);
         state.bindVAO(*vao);

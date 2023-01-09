@@ -14,12 +14,20 @@ public:
     GLSyncQueue(
         std::string name,
         int entryCount,
-        int rangeCount)
+        int rangeCount,
+        bool mappedMode)
         : m_rangeCount(rangeCount),
         m_entryCount(entryCount),
         m_entrySize(sizeof(T)),
+        m_mappedMode(mappedMode),
         m_buffer{ "syncQueue_" + name}
     {
+    }
+
+    ~GLSyncQueue() {
+        if (!m_mappedMode) {
+            free(m_data);
+        }
     }
 
     void prepare(int bindAlignment) {
@@ -32,16 +40,23 @@ public:
             m_paddedRangeLength += (m_bindAlignment - pad);
         }
 
-        m_buffer.createEmpty(
-            m_rangeCount * m_paddedRangeLength,
-            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+        if (m_mappedMode) {
+            m_buffer.createEmpty(
+                m_rangeCount * m_paddedRangeLength,
+                GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
 
-        // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
-        // https://stackoverflow.com/questions/44299324/how-to-use-gl-map-unsynchronized-bit-with-gl-map-persistent-bit
-        m_data = m_buffer.mapRange(
-            0,
-            m_rangeCount * m_paddedRangeLength,
-            GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+            // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
+            // https://stackoverflow.com/questions/44299324/how-to-use-gl-map-unsynchronized-bit-with-gl-map-persistent-bit
+            m_data = m_buffer.map(
+                GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+        }
+        else {
+            m_buffer.createEmpty(
+                m_rangeCount * m_paddedRangeLength,
+                GL_DYNAMIC_STORAGE_BIT);
+            m_data = (unsigned char*)malloc(m_rangeCount * m_paddedRangeLength);
+            memset(m_data, 0, m_rangeCount * m_paddedRangeLength);
+        }
 
         m_ranges.reserve(m_rangeCount);
 
@@ -110,7 +125,12 @@ public:
 
     inline void flush() {
         const auto& range = m_ranges[m_current];
-        m_buffer.flushRange(range.m_baseOffset, range.getUsedSize());
+        if (m_mappedMode) {
+            m_buffer.flushRange(range.m_baseOffset, range.getUsedSize());
+        }
+        else {
+            m_buffer.update(range.m_baseOffset, range.getUsedSize(), m_data + range.m_baseOffset);
+        }
     }
 
     //
@@ -136,6 +156,7 @@ private:
     const int m_entryCount;
     const int m_entrySize;
     const int m_rangeCount;
+    const bool m_mappedMode;
 
     int m_bindAlignment = 0;
     int m_rangeLength = 0;

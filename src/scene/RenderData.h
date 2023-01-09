@@ -25,11 +25,11 @@ private:
 public:
 
 private:
-    GLSyncQueue<MatricesUBO> m_matrices{ "matrices", 1, RENDER_DATA_QUEUE_SIZE };
-    GLSyncQueue<DataUBO> m_data{ "data", 1, RENDER_DATA_QUEUE_SIZE };
-    GLSyncQueue<ClipPlanesUBO> m_clipPlanes{ "clipPlanes", 1, RENDER_DATA_QUEUE_SIZE };
-    GLSyncQueue<LightsUBO> m_lights{ "lights", 1, RENDER_DATA_QUEUE_SIZE };
+    GLSyncQueue<MatricesUBO> m_matrices{ "matrices", 1, RENDER_DATA_QUEUE_SIZE, true };
+    GLSyncQueue<DataUBO> m_data{ "data", 1, RENDER_DATA_QUEUE_SIZE, true };
+    GLSyncQueue<ClipPlanesUBO> m_clipPlanes{ "clipPlanes", 1, RENDER_DATA_QUEUE_SIZE, true };
+    GLSyncQueue<LightsUBO> m_lights{ "lights", 1, RENDER_DATA_QUEUE_SIZE, true };
 
-    GLSyncQueue<TextureUBO> m_textures{ "textures", 1, TEXTURE_COUNT };
+    GLSyncQueue<TextureUBO> m_textures{ "textures", 1, TEXTURE_COUNT, true };
     int m_textureLevel = -1;
 };
