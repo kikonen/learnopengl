@@ -49,7 +49,8 @@ public:
 
     void prepare(
         const Assets& assets,
-        int entryCount = -1) noexcept;
+        int entryCount = -1,
+        int bufferCount = -1) noexcept;
 
     void prepareVAO(GLVertexArray& vao, bool singleMaterial);
 
@@ -85,6 +86,4 @@ private:
     std::vector<BatchCommand> m_batches;
 
     backend::DrawBuffer m_draw;
-
-    std::unique_ptr<GLSyncQueue<BatchEntry>> m_queue{ nullptr };
 };

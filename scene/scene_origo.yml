@@ -39,7 +39,7 @@ entities:
     scale: 1.3
     material_modifier:
       reflection: 0.05
-    enabled: false
+    enabled: true
   - name: Woodcube
     model: texture_cube
     shader: texture
@@ -52,7 +52,7 @@ entities:
     model: texture_cube_3
     shader: texture
     scale: 1
-    enabled: false
+    enabled: true
     clones:
       - pos: [-5.0, 0.0, -5.0]
       - pos: [5.0, 0.0, -5.0]
@@ -100,7 +100,7 @@ entities:
     repeat:
       x_count: 3
       x_step: 4
-    enabled: false
+    enabled: true
   - name: Wood wall
     type: quad
     material: woodwall
@@ -111,7 +111,7 @@ entities:
     repeat:
       x_count: 2
       x_step: 4
-    enabled: false
+    enabled: true
   - name: Giant wooden box
     id: e264f27f-d949-4504-b862-583213484d7c
     type: quad
@@ -123,7 +123,7 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
-    enabled: false
+    enabled: true
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [270, 0, 0]
@@ -151,7 +151,7 @@ entities:
       no_reflect: true
       no_refract: true
     plane_normal: [0.0, 0.0, 1.0]
-    enabled: false
+    enabled: true
 materials:
   - name: skybox
     type: skybox
@@ -178,8 +178,8 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: brickwall_512.png
-    map_bump: brickwall_512_normal.png
+    map_kd: brickwall_1024.png
+    map_bump: brickwall_1024_normal.png
     reflection: 0.2
   - name: woodwall
     ns: 225.000000

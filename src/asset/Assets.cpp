@@ -28,6 +28,7 @@ Assets::Assets()
     asyncLoaderDelay = 1000;
 
     logFile = "log/development.log";
+    sceneFile = "scene/scene_full.yml";
 
     modelsDir = "3d_model";
     shadersDir = "shader";
@@ -79,7 +80,8 @@ Assets::Assets()
     terrainVertexCount = 64;
     terrainTileSize = 512;
 
-    batchSize = 10;
+    batchSize = 16;
+    batchBuffers = 3;
 
     nearPlane = 0.1f;
     farPlane = 1000.0f;

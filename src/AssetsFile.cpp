@@ -48,6 +48,9 @@ void AssetsFile::loadAssets(
         if (k == "log_file") {
             data.logFile = v.as<std::string>();
         }
+        else if (k == "scene_file") {
+            data.sceneFile = v.as<std::string>();
+        }
         else if (k == "glfw_swap_interval") {
             data.glfwSwapInterval = v.as<int>();
         }
@@ -170,6 +173,9 @@ void AssetsFile::loadAssets(
         }
         else if (k == "batch_size") {
             data.batchSize = v.as<int>();
+        }
+        else if (k == "batch_buffers") {
+            data.batchBuffers = v.as<int>();
         }
         else if (k == "near_plane") {
             data.nearPlane = v.as<float>();

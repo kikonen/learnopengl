@@ -9,15 +9,10 @@ namespace {
 
 void RenderData::prepare()
 {
-    //m_matrices.createEmpty(sizeof(MatricesUBO), GL_DYNAMIC_STORAGE_BIT);
-    //m_data.createEmpty(sizeof(DataUBO), GL_DYNAMIC_STORAGE_BIT);
-    //m_clipPlanes.createEmpty(sizeof(ClipPlanesUBO), GL_DYNAMIC_STORAGE_BIT);
-    //m_lights.createEmpty(sizeof(LightsUBO), GL_DYNAMIC_STORAGE_BIT);
-
-    m_matrices.prepare(UNIFORM_BUFFER_OFFSET_ALIGNMENT);
-    m_data.prepare(UNIFORM_BUFFER_OFFSET_ALIGNMENT);
-    m_clipPlanes.prepare(UNIFORM_BUFFER_OFFSET_ALIGNMENT);
-    m_lights.prepare(UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+    m_matrices.createEmpty(sizeof(MatricesUBO), GL_DYNAMIC_STORAGE_BIT);
+    m_data.createEmpty(sizeof(DataUBO), GL_DYNAMIC_STORAGE_BIT);
+    m_clipPlanes.createEmpty(sizeof(ClipPlanesUBO), GL_DYNAMIC_STORAGE_BIT);
+    m_lights.createEmpty(sizeof(LightsUBO), GL_DYNAMIC_STORAGE_BIT);
 
     // Textures
     // OpenGL Superbible, 7th Edition, page 552
@@ -49,19 +44,12 @@ void RenderData::update()
 void RenderData::updateMatrices(MatricesUBO& data)
 {
     //m_matrices.update(0, sizeof(MatricesUBO), &data);
-    m_matrices.send(data);
-    m_matrices.bind(UBO_MATRICES);
-    m_matrices.next(true);
-    assert(m_matrices.current().isEmpty());
+    m_matrices.update(0, sizeof(MatricesUBO), &data);
 }
 
 void RenderData::updateData(DataUBO& data)
 {
-    //m_data.update(0, sizeof(DataUBO), & data);
-    m_data.send(data);
-    m_data.bind(UBO_DATA);
-    m_data.next(true);
-    assert(m_data.current().isEmpty());
+    m_data.update(0, sizeof(DataUBO), &data);
 }
 
 void RenderData::updateClipPlanes(ClipPlanesUBO& data)
@@ -74,20 +62,12 @@ void RenderData::updateClipPlanes(ClipPlanesUBO& data)
 
     data.clipCount = count;
 
-    //m_clipPlanes.update(0, sizeof(ClipPlanesUBO), & data);
-    m_clipPlanes.send(data);
-    m_clipPlanes.bind(UBO_CLIP_PLANES);
-    m_clipPlanes.next(true);
-    assert(m_clipPlanes.current().isEmpty());
+    m_clipPlanes.update(0, sizeof(ClipPlanesUBO), &data);
 }
 
 void RenderData::updateLights(LightsUBO& data)
 {
-    //m_lights.update(0, sizeof(LightsUBO), &data);
-    m_lights.send(data);
-    m_lights.bind(UBO_LIGHTS);
-    m_lights.next(true);
-    assert(m_lights.current().isEmpty());
+    m_lights.update(0, sizeof(LightsUBO), &data);
 }
 
 void RenderData::updateTextures()
@@ -123,6 +103,8 @@ void RenderData::updateTextures()
                 m_textures.set(texture->m_texIndex, entry);
                 texture->m_sent = true;
             }
+
+            m_textures.flush();
         }
     }
 }

@@ -40,11 +40,9 @@ void Batch::add(
 {
     if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
 
-    BatchEntry entry{ entityIndex };
-    m_queue->send(entry);
 
     auto& top = m_batches.back();
-    top.m_drawCount += 1;
+    top.m_entityIndeces.push_back(entityIndex);
 
     flushIfNeeded(ctx);
 }
@@ -65,7 +63,8 @@ void Batch::bind() noexcept
 
 void Batch::prepare(
     const Assets& assets,
-    int entryCount) noexcept
+    int entryCount,
+    int bufferCount) noexcept
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -76,12 +75,15 @@ void Batch::prepare(
     if (entryCount <= 0) {
         entryCount = 1;
     }
+    if (bufferCount <= 0) {
+        bufferCount = assets.batchBuffers;
+    }
+    if (bufferCount <= 0) {
+        bufferCount = 1;
+    }
     m_entryCount = entryCount;
 
-    m_queue = std::make_unique<GLSyncQueue<BatchEntry>>("batch", m_entryCount, BATCH_RANGE_COUNT, false);
-    m_queue->prepare(1);
-
-    m_draw.prepare(32, 64);
+    m_draw.prepare(m_entryCount, bufferCount);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
@@ -92,21 +94,7 @@ void Batch::prepareVAO(
     GLVertexArray& vao,
     bool singleMaterial)
 {
-    m_queue->m_buffer.bindVBO(vao, VBO_BATCH_BINDING, sizeof(BatchEntry));
-
-    // entityIndex
-    {
-        glEnableVertexArrayAttrib(vao, ATTR_INSTANCE_ENTITY_INDEX);
-        glVertexArrayAttribFormat(vao, ATTR_INSTANCE_ENTITY_INDEX, 1, GL_FLOAT, GL_FALSE, offsetof(BatchEntry, m_entityIndex));
-        glVertexArrayAttribBinding(vao, ATTR_INSTANCE_ENTITY_INDEX, VBO_BATCH_BINDING);
-    }
-
-    {
-        // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
-        // https://www.g-truc.net/post-0363.html
-        // https://www.khronos.org/opengl/wiki/Vertex_Specification
-        glVertexArrayBindingDivisor(vao, VBO_BATCH_BINDING, 1);
-    }
+    // NOTE KI obsolete
 }
 
 void Batch::addCommand(
@@ -188,14 +176,7 @@ void Batch::draw(
 void Batch::flushIfNeeded(
     const RenderContext& ctx)
 {
-    if (!m_queue->isFull()) return;
-
-    BatchCommand save = m_batches.back();
-    save.m_drawCount = 0;
-
-    flush(ctx);
-
-    m_batches.push_back(save);
+    // NOTE KI obsolete
 }
 
 void Batch::flush(
@@ -206,27 +187,23 @@ void Batch::flush(
     // - "save back" entry without actual draw
     int pendingCount = 0;
     for (const auto& curr : m_batches) {
-        pendingCount += curr.m_drawCount;
+        pendingCount += curr.m_entityIndeces.size();
     }
     if (pendingCount == 0) {
         m_batches.clear();
         return;
     }
 
-    auto& range = m_queue->current();
-
-    m_queue->flush();
-
     const bool useBlend = ctx.m_useBlend;
     const Shader* boundShader{ nullptr };
     const GLVertexArray* boundVAO{ nullptr };
     const backend::DrawOptions* boundDrawOptions{ nullptr };
-    int  baseInstance = range.m_baseIndex;
+    //int  baseInstance = range.m_baseIndex;
 
     backend::DrawIndirectCommand indirect;
 
     for (auto& curr : m_batches) {
-        if (curr.m_drawCount == 0) continue;
+        if (curr.m_entityIndeces.empty()) continue;
 
         bool sameDraw = boundShader == curr.m_shader &&
             boundVAO == curr.m_vao &&
@@ -253,30 +230,33 @@ void Batch::flush(
             backend::DrawElementsIndirectCommand& cmd = indirect.element;
 
             cmd.count = drawOptions.indexCount;
-            cmd.instanceCount = curr.m_drawCount;
+            cmd.instanceCount = 1;
             cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
-            cmd.baseInstance = baseInstance;
 
-            m_draw.send(indirect);
+            for (int entityIndex : curr.m_entityIndeces) {
+                cmd.baseInstance = entityIndex;
+                m_draw.send(indirect);
+                m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+            }
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
             backend::DrawArraysIndirectCommand& cmd = indirect.array;
 
             cmd.vertexCount = drawOptions.indexCount;
-            cmd.instanceCount = curr.m_drawCount;
+            cmd.instanceCount = 1;
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
-            cmd.baseInstance = baseInstance;
-
-            m_draw.send(indirect);
+            for (int entityIndex : curr.m_entityIndeces) {
+                cmd.baseInstance = entityIndex;
+                m_draw.send(indirect);
+                m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+            }
         }
         else {
             // NOTE KI "none" no drawing
             KI_INFO("no render");
         }
-
-        baseInstance += curr.m_drawCount;
     }
 
     if (boundShader) {
@@ -284,6 +264,4 @@ void Batch::flush(
     }
 
     m_batches.clear();
-    m_queue->next(true);
-    assert(m_queue->current().isEmpty());
 }

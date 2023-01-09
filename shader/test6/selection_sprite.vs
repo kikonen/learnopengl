@@ -2,11 +2,6 @@
 
 #include constants.glsl
 
-//layout (location = ATTR_MATERIAL_INDEX) in float a_materialIndex;
-//layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
-//layout (location = ATTR_INSTANCE_NORMAL_MATRIX_1) in mat3 a_normalMatrix;
-layout (location = ATTR_INSTANCE_ENTITY_INDEX) in float a_entityIndex;
-
 #include struct_entity.glsl
 
 #include uniform_entities.glsl
@@ -26,7 +21,7 @@ const vec3 pos = vec3(0.0, -1.0, 0.0);
 ////////////////////////////////////////////////////////////
 
 void main() {
-  Entity entity = u_entities[int(a_entityIndex)];
+  Entity entity = u_entities[int(gl_BaseInstance)];
   int materialIndex = int(entity.materialIndex);
   vec4 worldPos = entity.modelMatrix * vec4(pos, 1.0);
 

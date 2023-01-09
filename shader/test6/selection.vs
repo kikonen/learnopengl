@@ -4,12 +4,8 @@
 
 layout (location = ATTR_POS) in vec4 a_pos;
 #ifdef USE_ALPHA
-//layout (location = ATTR_MATERIAL_INDEX) in float a_materialIndex;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
-//layout (location = ATTR_INSTANCE_MODEL_MATRIX_1) in mat4 a_modelMatrix;
-//layout (location = ATTR_INSTANCE_HIGHLIGHT_INDEX) in float a_highlightIndex;
-layout (location = ATTR_INSTANCE_ENTITY_INDEX) in float a_entityIndex;
 
 #include struct_clip_plane.glsl
 #include struct_entity.glsl
@@ -46,7 +42,7 @@ precision mediump float;
 #include fn_calculate_clipping.glsl
 
 void main() {
-  Entity entity = u_entities[int(a_entityIndex)];
+  Entity entity = u_entities[int(gl_BaseInstance)];
   vec4 worldPos = entity.modelMatrix * HIGHLIGHT_MAT * a_pos;
 
   gl_Position = u_projectedMatrix * worldPos;

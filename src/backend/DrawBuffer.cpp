@@ -25,6 +25,22 @@ namespace backend {
         m_queue->m_buffer.bindDrawIndirect();
     }
 
+    void DrawBuffer::flushIfNeeded(
+        GLState& state,
+        const Shader* shader,
+        const GLVertexArray* vao,
+        const DrawOptions& drawOptions,
+        const bool useBlend)
+    {
+        if (!m_queue->isFull()) return;
+        flush(
+            state,
+            shader,
+            vao,
+            drawOptions,
+            useBlend);
+    }
+
     void DrawBuffer::flush(
         GLState& state,
         const Shader* shader,

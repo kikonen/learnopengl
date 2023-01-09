@@ -24,23 +24,7 @@
 #define ATTR_NORMAL 1
 #define ATTR_TANGENT 2
 //#define ATTR_BITANGENT 3
-//#define ATTR_MATERIAL_INDEX 4
-//#define ATTR_INSTANCE_MATERIAL_INDEX ATTR_MATERIAL_INDEX
 #define ATTR_TEX 4
-
-#define ATTR_INSTANCE_ENTITY_INDEX 5
-
-// #define ATTR_INSTANCE_MODEL_MATRIX_1 6
-// #define ATTR_INSTANCE_MODEL_MATRIX_2 7
-// #define ATTR_INSTANCE_MODEL_MATRIX_3 8
-// #define ATTR_INSTANCE_MODEL_MATRIX_4 9
-
-// #define ATTR_INSTANCE_NORMAL_MATRIX_1 10
-// #define ATTR_INSTANCE_NORMAL_MATRIX_2 11
-// #define ATTR_INSTANCE_NORMAL_MATRIX_3 12
-
-// #define ATTR_INSTANCE_OBJECT_ID 13
-// #define ATTR_INSTANCE_HIGHLIGHT_INDEX 14
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 // => defined by c++ side (more optimal)

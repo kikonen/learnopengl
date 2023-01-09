@@ -351,10 +351,12 @@ private:
 
     const std::string resolveTexturePath(const std::string& line);
 
+public:
+    const std::string m_filename;
+
 private:
     AsyncLoader* m_asyncLoader;
     const Assets& m_assets;
-    const std::string m_filename;
 
     const glm::vec3 m_rootOffset;
 

@@ -43,6 +43,7 @@ public:
     int asyncLoaderDelay;
 
     std::string logFile;
+    std::string sceneFile;
 
     std::string modelsDir;
     std::string shadersDir;
@@ -95,6 +96,7 @@ public:
     int terrainTileSize;
 
     int batchSize;
+    int batchBuffers;
 
     float nearPlane;
     float farPlane;

@@ -20,5 +20,6 @@ struct BatchCommand {
 
     const MaterialVBO* m_materialVBO{ nullptr };
 
-    int m_drawCount = 0;
+    //int m_drawCount = 0;
+    std::vector<int> m_entityIndeces;
 };

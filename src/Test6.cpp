@@ -180,14 +180,19 @@ std::shared_ptr<Scene> Test6::loadScene()
 
     {
         std::unique_ptr<SceneFile> file;
-        file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_full.yml");
-        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_player.yml");
-        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_origo.yml");
-        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_light.yml");
-        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_water.yml");
-        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_terrain.yml");
-        //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_material_balls.yml");
+        if (!m_assets.sceneFile.empty()) {
+            file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, m_assets.sceneFile);
+        }
 
+        if (!file) {
+            file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_full.yml");
+            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_player.yml");
+            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_origo.yml");
+            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_light.yml");
+            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_water.yml");
+            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_terrain.yml");
+            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_material_balls.yml");
+        }
         m_files.push_back(std::move(file));
     }
 
@@ -197,6 +202,7 @@ std::shared_ptr<Scene> Test6::loadScene()
     }
 
     for (auto& file : m_files) {
+        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", file->m_filename));
         file->load(scene);
     }
 
