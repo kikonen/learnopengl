@@ -47,13 +47,15 @@ public:
 
         for (int i = 0; i < m_rangeCount; i++) {
             auto& range = m_ranges.emplace_back();
-            range.m_index = i * m_entryCount;
+            // static
+            range.m_baseIndex = i * m_entryCount;
             range.m_maxCount = m_entryCount;
             range.m_entrySize = m_entrySize;
-            range.m_count = 0;
-            range.m_offset = i * m_paddedRangeLength;
+            range.m_baseOffset = i * m_paddedRangeLength;
             range.m_length = m_rangeLength;
             range.m_paddedLength = m_paddedRangeLength;
+            // dynamic
+            range.m_count = 0;
         }
     }
 
@@ -106,6 +108,11 @@ public:
         m_ranges[m_current].clear();
     }
 
+    inline void flush() {
+        const auto& range = m_ranges[m_current];
+        m_buffer.flushRange(range.m_baseOffset, range.getUsedSize());
+    }
+
     //
     // Switch to next range
     //
@@ -119,7 +126,7 @@ public:
 
     inline void bind(GLuint ubo) {
         auto& range = m_ranges[m_current];
-        m_buffer.bindRange(ubo, range.m_offset, range.m_length);
+        m_buffer.bindRange(ubo, range.m_baseOffset, range.m_length);
     }
 
 public:

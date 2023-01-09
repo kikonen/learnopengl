@@ -58,26 +58,10 @@ void Batch::addAll(
     }
 }
 
-//void Batch::reserve(size_t count) noexcept
-//{
-//    //m_entries.reserve(count);
-//}
-//
-//size_t Batch::size() noexcept
-//{
-//    return m_entries.size();
-//}
-
 void Batch::bind() noexcept
 {
     m_draw.bind();
 }
-
-//void Batch::clear() noexcept
-//{
-//    m_batches.clear();
-//    m_queue->clear();
-//}
 
 void Batch::prepare(
     const Assets& assets,
@@ -217,22 +201,30 @@ void Batch::flushIfNeeded(
 void Batch::flush(
     const RenderContext& ctx)
 {
-    const auto& range = m_queue->current();
+    // NOTE KI two cases
+    // - empty batch
+    // - "save back" entry without actual draw
+    int pendingCount = 0;
+    for (const auto& curr : m_batches) {
+        pendingCount += curr.m_drawCount;
+    }
+    if (pendingCount == 0) {
+        m_batches.clear();
+        return;
+    }
+
+    auto& range = m_queue->current();
 
     const bool useBlend = ctx.m_useBlend;
     const Shader* boundShader{ nullptr };
     const GLVertexArray* boundVAO{ nullptr };
     const backend::DrawOptions* boundDrawOptions{ nullptr };
-    int  baseInstance = range.m_index;
+    int  baseInstance = range.m_baseIndex;
 
     backend::DrawIndirectCommand indirect;
 
     for (auto& curr : m_batches) {
         if (curr.m_drawCount == 0) continue;
-
-        //if (ctx.assets.glDebug) {
-        //    curr.m_shader->validateProgram();
-        //}
 
         bool sameDraw = boundShader == curr.m_shader &&
             boundVAO == curr.m_vao &&

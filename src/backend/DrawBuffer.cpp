@@ -42,7 +42,7 @@ namespace backend {
             glMultiDrawElementsIndirect(
                 drawOptions.mode,
                 GL_UNSIGNED_INT,
-                (void*)range.m_offset,
+                (void*)range.m_baseOffset,
                 range.m_count,
                 sizeof(backend::DrawIndirectCommand));
         }
@@ -50,7 +50,7 @@ namespace backend {
         {
             glMultiDrawArraysIndirect(
                 drawOptions.mode,
-                (void*)range.m_offset,
+                (void*)range.m_baseOffset,
                 range.m_count,
                 sizeof(backend::DrawIndirectCommand));
         }

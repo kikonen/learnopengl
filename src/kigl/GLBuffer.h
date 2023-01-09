@@ -111,8 +111,9 @@ struct GLBuffer {
 
     // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
     // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
-    void* map(int flags) {
-        mapRange(0, m_size, flags);
+    unsigned char* map(int flags) {
+        //return (unsigned char*)glMapNamedBuffer(m_id, flags);
+        return mapRange(0, m_size, flags);
     }
 
     unsigned char* mapRange(size_t offset, size_t length, int flags) {
