@@ -31,7 +31,7 @@ entities:
       enabled: true
     enabled: true
   - name: Directional light
-    pos: [0, 30, -30]
+    pos: [0, 25, -40]
     scale: 2.5
     model: light
     shader: light
