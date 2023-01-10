@@ -327,6 +327,12 @@
     <ClCompile Include="src\scene\WindowBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\registry\EntityReegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\RenderData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -671,9 +677,6 @@
     <ClInclude Include="src\asset\SpriteMaterialInit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\MaterialEntry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\asset\VertexEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -714,6 +717,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\WindowBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\MaterialSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kigl\GLSyncQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\MaterialIndex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\EntitySSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\EntityRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\RenderData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
