@@ -44,8 +44,8 @@ entities:
     light:
       type: directional
       target_pos: [0, 0, 0]
-      ambient: [0.6, 0.6, 0.6, 1.0]
-      diffuse: [0.8, 0.8, 0.6, 1.0]
+      ambient: [0.5, 0.5, 0.5, 1.0]
+      diffuse: [0.9, 0.9, 0.7, 1.0]
       specular: [0.7, 0.7, 0.6, 1.0]
       enabled: true
     enabled: true
@@ -145,18 +145,18 @@ entities:
     enabled: true
     clones:
       - pos: [0.0, 100.0, 0.0]
-        rot: [270, 0, 0]
+        rot: [90, 0, 0]
         id: 9da42971-4809-480b-98b6-ed238b978ed2
       - pos: [0.0, -100.0, .0]
-        rot: [90, 0, 0]
+        rot: [270, 0, 0]
       - pos: [100.0, 0.0, 0.0]
-        rot: [0, 90, 0]
-      - pos: [-100.0, 0.0, 0.0]
         rot: [0, 270, 0]
+      - pos: [-100.0, 0.0, 0.0]
+        rot: [0, 90, 0]
       - pos: [0.0, 0.0, 100.0]
-        rot: [0, 0, 0]
-      - pos: [0.0, 0.0, -100.0]
         rot: [0, 180, 0]
+      - pos: [0.0, 0.0, -100.0]
+        rot: [0, 0, 0]
   - name: Big mirror 1
     type: quad
     material: mirror

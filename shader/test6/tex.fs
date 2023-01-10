@@ -84,6 +84,12 @@ void main() {
   texColor = vec4(texColor.rgb, 1.0);
 #endif
 
+  if (!gl_FrontFacing) {
+    float alpha = texColor.a;
+    texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);
+    texColor.a = alpha;
+  }
+
   texColor = calculateFog(material.fogRatio, texColor);
 
   fragColor = texColor;
