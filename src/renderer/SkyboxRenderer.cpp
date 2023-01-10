@@ -6,6 +6,7 @@
 #include "scene/CubeMap.h"
 
 #include "scene/RenderContext.h"
+#include "scene/Batch.h"
 
 const int ATTR_SKYBOX_POS = 0;
 
@@ -132,6 +133,8 @@ void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 
 void SkyboxRenderer::render(const RenderContext& ctx)
 {
+    ctx.m_batch.flush(ctx);
+
     ctx.bindDefaults();
     ShaderBind bound(m_shader, ctx.state);
     bindTexture(ctx);
