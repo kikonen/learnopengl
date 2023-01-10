@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "ki/uuid.h"
+
 #include "asset/Shader.h"
 #include "asset/LightUBO.h"
 
@@ -20,8 +22,8 @@ public:
 
     void markDirty() noexcept;
 
-    const glm::vec3& getTargetPos() const noexcept;
-    void setTargetPos(const glm::vec3& target) noexcept;
+    const uuids::uuid& getTargetId() const noexcept;
+    void setTargetId(const uuids::uuid& targetId) noexcept;
 
     const glm::vec3& getWorldPos() const noexcept;
     const glm::vec3& getWorldTargetPos() const noexcept;
@@ -56,8 +58,6 @@ public:
     glm::vec4 specular{ 1.0f, 1.0f, 1.0f, 1.f };
 
 private:
-    bool m_dirty = true;
-
     // dir = FROM pos to TARGET
     glm::vec3 m_worldDir{ 0.0f };
     glm::vec3 m_worldPos{ 0.0f };
@@ -66,9 +66,8 @@ private:
     // pos relative to owning node
     glm::vec3 m_pos{ 0.0f };
 
-    // targetPos is relative to *root*
-    glm::vec3 m_targetPos{ 0.f };
+    uuids::uuid m_targetId;
 
-    int m_rootMatrixLevel = -1;
     int m_nodeMatrixLevel = -1;
+    int m_targetMatrixLevel = -1;
 };

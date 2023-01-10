@@ -117,7 +117,11 @@ class SceneFile
         LightType type{ LightType::none };
 
         glm::vec3 pos{ 0 };
-        glm::vec3 targetPos{ 0 };
+
+        // NOTE KI debug only
+        std::string targetId_str;
+
+        uuids::uuid targetId{};
 
         float linear{ 0 };
         float quadratic{ 0 };

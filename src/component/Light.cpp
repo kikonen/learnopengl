@@ -18,38 +18,48 @@ void Light::update(const RenderContext& ctx, Node& node) noexcept
 {
     if (!enabled) return;
 
-    bool worldChanged = m_rootMatrixLevel != ctx.m_nodeRegistry.m_root->getMatrixLevel();
-    bool nodeChanged = m_nodeMatrixLevel != node.getMatrixLevel();
-    bool changed = m_dirty || worldChanged || nodeChanged;
+    const bool nodeChanged = m_nodeMatrixLevel != node.getMatrixLevel();
 
-    if (!changed) return;
-
-    // worldTarget is relative to *ROOT*
-    if (m_dirty || worldChanged) {
-        m_worldTargetPos = ctx.m_nodeRegistry.m_root->getModelMatrix() * glm::vec4(m_targetPos, 1.0);
-    }
-
-    if (m_dirty || nodeChanged) {
+    if (nodeChanged) {
         m_worldPos = node.getModelMatrix() * glm::vec4(m_pos, 1.f);
     }
 
-    // TODO KI SHOULD have local vs. world dir logic; or separate logic for "spot" light
-    // => for spot light dir should be *NOT* calculated but set by initializer logic
-    m_worldDir = glm::normalize(m_worldTargetPos - m_worldPos);
+    if (spot || directional) {
+        const Node* targetNode = ctx.m_nodeRegistry.getNode(m_targetId);
+        if (!targetNode) return;
+
+        const bool targetChanged = m_targetMatrixLevel != targetNode->getMatrixLevel();
+        const bool changed = targetChanged || nodeChanged;
+        if (!changed) return;
+
+        // worldTarget is relative to *ROOT*
+        if (targetChanged) {
+            m_worldTargetPos = targetNode->getWorldPos();
+        }
+
+        // TODO KI SHOULD have local vs. world dir logic; or separate logic for "spot" light
+        // => for spot light dir should be *NOT* calculated but set by initializer logic
+        m_worldDir = glm::normalize(m_worldTargetPos - m_worldPos);
+
+        m_targetMatrixLevel = targetNode->getMatrixLevel();
+    }
+    else {
+        const bool changed = nodeChanged;
+        if (!changed) return;
+    }
 
     if (!directional) {
         const float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
         radius = (-linear + std::sqrtf(linear * linear - 4 * quadratic * (constant - (256.0 / 5.0) * lightMax))) / (2 * quadratic);
     }
 
-    m_rootMatrixLevel = ctx.m_nodeRegistry.m_root->getMatrixLevel();
     m_nodeMatrixLevel = node.getMatrixLevel();
-    m_dirty = false;
 }
 
 void Light::markDirty() noexcept
 {
-    m_dirty = true;
+    m_nodeMatrixLevel = -1;
+    m_targetMatrixLevel = -1;
 }
 
 const glm::vec3& Light::getPos() const noexcept
@@ -60,18 +70,18 @@ const glm::vec3& Light::getPos() const noexcept
 void Light::setPos(const glm::vec3& pos) noexcept
 {
     m_pos = pos;
-    m_dirty = true;
+    m_nodeMatrixLevel = -1;
 }
 
-const glm::vec3& Light::getTargetPos() const noexcept
+const uuids::uuid& Light::getTargetId() const noexcept
 {
-    return m_targetPos;
+    return m_targetId;
 }
 
-void Light::setTargetPos(const glm::vec3& target) noexcept
+void Light::setTargetId(const uuids::uuid& targetId) noexcept
 {
-    m_targetPos = target;
-    m_dirty = true;
+    m_targetId = targetId;
+    m_targetMatrixLevel = -1;
 }
 
 const glm::vec3& Light::getWorldPos() const noexcept

@@ -613,7 +613,7 @@ std::unique_ptr<Light> SceneFile::createLight(
     auto light = std::make_unique<Light>();
 
     light->setPos(data.pos);
-    light->setTargetPos(data.targetPos);
+    light->setTargetId(data.targetId);
 
     light->linear = data.linear;
     light->quadratic = data.quadratic;
@@ -649,7 +649,7 @@ std::unique_ptr<NodeController> SceneFile::createController(
 
     if (!data.enabled) return controller;
 
-    const auto center = node->getPosition();
+    const auto& center = node->getPosition();
 
     switch (data.type) {
         case ControllerType::camera: {
@@ -997,8 +997,9 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
         else if (k == "pos") {
             data.pos = readVec3(v);
         }
-        else if (k == "target_pos") {
-            data.targetPos = readVec3(v);
+        else if (k == "target_id") {
+            data.targetId_str = v.as<std::string>();
+            data.targetId = KI_UUID(data.targetId_str);
         }
         else if (k == "linear") {
             data.linear = v.as<float>();

@@ -99,7 +99,7 @@ entities:
       kd: [0.0, 0.7, 0.0, 1.0]
     light:
       type: directional
-      target_pos: [0, 0, 0]
+      target_id: fe3d4648-e0ee-4a84-8864-a8eda9a281f9
       ambient: [0.4, 0.4, 0.4, 1.0]
       diffuse: [0.4, 0.4, 0.4, 1.0]
       specular: [0.0, 0.7, 0.0, 1.0]
@@ -371,6 +371,8 @@ entities:
     scale: 1.0
     enabled: true
   - name: Teapot
+    desc: Dir light target
+    id: fe3d4648-e0ee-4a84-8864-a8eda9a281f9
     model: smooth_teapot
     shader: texture
     pos: [-5.0, 20.0, -5.0]
