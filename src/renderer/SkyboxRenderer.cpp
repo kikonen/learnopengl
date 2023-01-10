@@ -145,8 +145,9 @@ void SkyboxRenderer::render(const RenderContext& ctx)
     m_shader->u_viewMatrix.set(viewMatrix);
     m_shader->u_projectionMatrix.set(ctx.m_matrices.projection);
 
+    // NOTE KI skybox needs "equal", since drawing "at inifinity"
     glDepthFunc(GL_LEQUAL);
     ctx.state.bindVAO(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(ctx.m_depthFunc);
 }

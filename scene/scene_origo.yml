@@ -123,7 +123,7 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
-    enabled: true
+    enabled: false
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [270, 0, 0]

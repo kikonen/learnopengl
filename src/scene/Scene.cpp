@@ -271,7 +271,7 @@ void Scene::unbind(RenderContext& ctx)
 
 void Scene::draw(RenderContext& ctx)
 {
-    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(ctx.m_depthFunc);
 
     if (m_shadowMapRenderer) {
         m_shadowMapRenderer->render(ctx);

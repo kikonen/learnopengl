@@ -79,6 +79,8 @@ public:
     const std::string m_name;
     const RenderContext* const m_parent;
 
+    GLenum m_depthFunc = GL_LESS;
+
     backend::RenderSystem* m_backend;
     Batch& m_batch;
 
