@@ -59,6 +59,13 @@ public:
         Node& node,
         Shader* shader);
 
+    void sendDraw(
+        const RenderContext& ctx,
+        const backend::DrawIndirectCommand& indirect,
+        const Shader* shader,
+        const GLVertexArray* vao,
+        const backend::DrawOptions& drawOptions);
+
     void flush(
         const RenderContext& ctx);
 
@@ -67,8 +74,6 @@ private:
         const RenderContext& ctx,
         MeshType* type,
         Shader* shader);
-
-    void flushIfNeeded(const RenderContext& ctx);
 
 public:
     const int m_id;
@@ -84,6 +89,8 @@ private:
 
     RenderContext* m_currentRenderContext{ nullptr };
     std::vector<BatchCommand> m_batches;
+
+    std::vector<int> m_entityIndeces;
 
     backend::DrawBuffer m_draw;
 };
