@@ -30,6 +30,25 @@ entities:
       type: camera
       enabled: true
     enabled: true
+  - name: Directional light
+    pos: [0, 30, -30]
+    scale: 2.5
+    model: light
+    shader: light
+    render_flags:
+      light: true
+      no_shadow: true
+    force_material: true
+    material_modifier:
+      kd: [0.8, 0.8, 0.6, 1.0]
+    light:
+      type: directional
+      target_pos: [0, 0, 0]
+      ambient: [0.6, 0.6, 0.6, 1.0]
+      diffuse: [0.8, 0.8, 0.6, 1.0]
+      specular: [0.7, 0.7, 0.6, 1.0]
+      enabled: true
+    enabled: true
   - name: Silver ball
     model: water_ball
     material: silver_ball
@@ -123,7 +142,7 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
-    enabled: false
+    enabled: true
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [270, 0, 0]

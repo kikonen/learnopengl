@@ -135,7 +135,7 @@ void Batch::draw(
         !volume->isOnFrustum(
             ctx.m_camera.getFrustum(),
             node.getMatrixLevel(),
-            node.getWorldModelMatrix()))
+            node.getModelMatrix()))
     {
         //!obb.inFrustum(
         //    ctx.m_camera.getProjectedLevel(),

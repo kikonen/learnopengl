@@ -1,10 +1,17 @@
 #pragma once
 
 #include "asset/UBO.h"
+#include "asset/TextureUBO.h"
 
 #include "kigl/GLSyncQueue.h"
 
 constexpr int RENDER_DATA_QUEUE_SIZE = 16;
+
+struct MatricesUBO;
+struct DataUBO;
+struct ClipPlanesUBO;
+struct LightsUBO;
+struct TesturUBO;
 
 class RenderData {
 public:

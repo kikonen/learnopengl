@@ -3,6 +3,8 @@
 #include <string>
 #include <cstdio>
 
+#include "asset/LightUBO.h"
+
 #include "model/Node.h"
 #include "scene/RenderContext.h"
 #include "registry/NodeRegistry.h"
@@ -24,11 +26,11 @@ void Light::update(const RenderContext& ctx, Node& node) noexcept
 
     // worldTarget is relative to *ROOT*
     if (m_dirty || worldChanged) {
-        m_worldTargetPos = ctx.m_nodeRegistry.m_root->getWorldModelMatrix() * glm::vec4(m_worldTarget, 1.0);
+        m_worldTargetPos = ctx.m_nodeRegistry.m_root->getModelMatrix() * glm::vec4(m_targetPos, 1.0);
     }
 
     if (m_dirty || nodeChanged) {
-        m_worldPos = node.getWorldModelMatrix() * glm::vec4(m_pos, 1.f);
+        m_worldPos = node.getModelMatrix() * glm::vec4(m_pos, 1.f);
     }
 
     // TODO KI SHOULD have local vs. world dir logic; or separate logic for "spot" light
@@ -50,7 +52,7 @@ void Light::markDirty() noexcept
     m_dirty = true;
 }
 
-const glm::vec3& Light::getPos() noexcept
+const glm::vec3& Light::getPos() const noexcept
 {
     return m_pos;
 }
@@ -61,28 +63,33 @@ void Light::setPos(const glm::vec3& pos) noexcept
     m_dirty = true;
 }
 
-const glm::vec3& Light::getWorldTarget() noexcept
+const glm::vec3& Light::getTargetPos() const noexcept
 {
-    return m_worldTarget;
+    return m_targetPos;
 }
 
-void Light::setWorldTarget(const glm::vec3& target) noexcept
+void Light::setTargetPos(const glm::vec3& target) noexcept
 {
-    m_worldTarget = target;
+    m_targetPos = target;
     m_dirty = true;
 }
 
-const glm::vec3& Light::getWorldPos() noexcept
+const glm::vec3& Light::getWorldPos() const noexcept
 {
     return m_worldPos;
 }
 
-DirLightUBO Light::toDirLightUBO() noexcept
+const glm::vec3& Light::getWorldTargetPos() const noexcept
+{
+    return m_worldTargetPos;
+}
+
+DirLightUBO Light::toDirLightUBO() const noexcept
 {
     return { m_worldPos, 0, m_worldDir, 0, ambient, diffuse, specular };
 }
 
-PointLightUBO Light::toPointightUBO() noexcept
+PointLightUBO Light::toPointightUBO() const noexcept
 {
     return {
         m_worldPos,
@@ -99,7 +106,7 @@ PointLightUBO Light::toPointightUBO() noexcept
     };
 }
 
-SpotLightUBO Light::toSpotLightUBO() noexcept
+SpotLightUBO Light::toSpotLightUBO() const noexcept
 {
     return {
         m_worldPos,

@@ -79,7 +79,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     const glm::vec3 up{ 0.0, 1.0, 0.0 };
     const glm::mat4 lightViewMatrix = glm::lookAt(
         node->m_light->getWorldPos(),
-        node->m_light->getWorldTarget(), up);
+        node->m_light->getWorldTargetPos(), up);
 
     const glm::mat4 lightProjectionMatrix = glm::ortho(
         -100.0f, 100.0f, -100.0f, 100.0f,

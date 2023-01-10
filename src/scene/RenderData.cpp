@@ -2,6 +2,12 @@
 
 #include "asset/ImageTexture.h"
 
+#include "asset/MatricesUBO.h"
+#include "asset/DataUBO.h"
+#include "asset/ClipPlaneUBO.h"
+#include "asset/LightUBO.h"
+#include "asset/TextureUBO.h"
+
 
 namespace {
     constexpr size_t UNIFORM_BUFFER_OFFSET_ALIGNMENT = 256;

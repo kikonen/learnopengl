@@ -10,6 +10,12 @@
 
 #include "UBO.h"
 
+#include "asset/MatricesUBO.h"
+#include "asset/DataUBO.h"
+#include "asset/ClipPlaneUBO.h"
+#include "asset/LightUBO.h"
+#include "asset/TextureUBO.h"
+
 #include "ShaderBind.h"
 
 namespace {
@@ -272,7 +278,7 @@ int Shader::initProgram() {
     setupUBO("Matrices", UBO_MATRICES, sizeof(MatricesUBO));
     setupUBO("Data", UBO_DATA, sizeof(DataUBO));
     setupUBO("Lights", UBO_LIGHTS, sizeof(LightsUBO));
-    setupUBO("Materials", UBO_MATERIALS, sizeof(MaterialsUBO));
+    //setupUBO("Materials", UBO_MATERIALS, sizeof(MaterialsUBO));
     setupUBO("ClipPlanes", UBO_CLIP_PLANES, sizeof(ClipPlanesUBO));
     setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
 #endif

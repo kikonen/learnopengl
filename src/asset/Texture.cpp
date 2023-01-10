@@ -4,7 +4,8 @@
 
 #include "Shader.h"
 
-#include "UBO.h"
+#include "TextureUBO.h"
+
 
 namespace {
     //const int UNIT_IDS[] = {

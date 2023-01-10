@@ -74,7 +74,7 @@ void AsteroidBeltController::updateAsteroids(
                 modelMat = glm::rotate(modelMat, asteroid.m_rotationAngle, glm::vec3(0.4f, 0.6f, 0.8f));
             }
 
-            entity->m_modelMatrix = parent->getWorldModelMatrix() * modelMat;
+            entity->m_modelMatrix = parent->getModelMatrix() * modelMat;
             // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
             //entity->m_normalMatrix = glm::inverseTranspose(glm::mat3(entity->m_modelMatrix));
 

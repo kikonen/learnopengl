@@ -235,16 +235,6 @@ int Node::getMatrixLevel() const noexcept
     return m_matrixLevel;
 }
 
-const glm::mat4& Node::getWorldModelMatrix() const noexcept
-{
-    return m_modelMatrix;
-}
-
-const glm::mat3& Node::getWorldNormalMatrix() const noexcept
-{
-    return m_normalMatrix;
-}
-
 const glm::vec3& Node::getWorldPos() const noexcept
 {
     return m_modelMatrix[3];

@@ -292,12 +292,18 @@
   <ItemGroup>
     <ClInclude Include="Group.h" />
     <ClInclude Include="src\asset\AABB.h" />
+    <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\FrustumNew.h" />
+    <ClInclude Include="src\asset\DataUBO.h" />
     <ClInclude Include="src\asset\IndexEntry.h" />
+    <ClInclude Include="src\asset\LightUBO.h" />
     <ClInclude Include="src\asset\MaterialSSBO.h" />
+    <ClInclude Include="src\asset\MaterialUBO.h" />
+    <ClInclude Include="src\asset\MatricesUBO.h" />
     <ClInclude Include="src\asset\ModelVAO.h" />
     <ClInclude Include="src\asset\SpriteVAO.h" />
+    <ClInclude Include="src\asset\TextureUBO.h" />
     <ClInclude Include="src\asset\VertexEntry.h" />
     <ClInclude Include="src\asset\MaterialVBO.h" />
     <ClInclude Include="src\asset\ModelMaterialInit.h" />

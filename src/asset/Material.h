@@ -7,11 +7,11 @@
 
 #include "Texture.h"
 #include "Shader.h"
-#include "UBO.h"
 
 #include "MaterialSSBO.h"
 
 class RenderContext;
+
 
 struct BoundTexture {
     Texture* texture = nullptr;
@@ -82,11 +82,6 @@ public:
 
     void prepare(const Assets& assets);
 
-    void bindArray(
-        const RenderContext& ctx,
-        Shader* shader);
-
-    const MaterialUBO toUBO() const;
     const MaterialSSBO toSSBO() const;
 
     const float getRefractionRatio() const{

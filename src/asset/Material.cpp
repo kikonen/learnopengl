@@ -12,6 +12,8 @@
 
 #include "ImageTexture.h"
 
+#include "TextureUBO.h"
+
 #include "scene/RenderContext.h"
 
 namespace {
@@ -143,12 +145,6 @@ Material::Material()
 {
 }
 
-//Material& Meterial::operator=(const Material& m)
-//    : objectID(m.objectID)
-//{
-//    return *this;
-//}
-
 Material::~Material()
 {
     KI_INFO(fmt::format(
@@ -241,48 +237,6 @@ void Material::prepare(const Assets& assets)
         if (!tex.texture) continue;
         tex.texture->prepare(assets);
     }
-}
-
-void Material::bindArray(
-    const RenderContext& ctx,
-    Shader* shader)
-{
-    for (auto& tex : m_textures) {
-        if (!tex.texture) continue;
-        ASSERT_TEX_INDEX(tex.m_texIndex);
-        tex.bind(ctx);
-    }
-}
-
-const MaterialUBO Material::toUBO() const
-{
-    for (auto& tex : m_textures) {
-        if (!tex.texture) continue;
-        ASSERT_TEX_INDEX(tex.m_texIndex);
-    }
-
-    return {
-        ka,
-        kd,
-        glm::vec4(0),
-        ks,
-        ns,
-
-        m_textures[DIFFUSE_IDX].m_texIndex,
-        m_textures[EMISSION_IDX].m_texIndex,
-        m_textures[SPECULAR_IDX].m_texIndex,
-        m_textures[NORMAL_MAP_IDX].m_texIndex,
-        m_textures[DUDV_MAP_IDX].m_texIndex,
-
-        pattern,
-
-        reflection,
-        refraction,
-        getRefractionRatio(),
-
-        fogRatio,
-        tiling,
-    };
 }
 
 const MaterialSSBO Material::toSSBO() const

@@ -3,6 +3,11 @@
 #include <glm/glm.hpp>
 
 #include "asset/UBO.h"
+#include "asset/MatricesUBO.h"
+#include "asset/DataUBO.h"
+#include "asset/ClipPlaneUBO.h"
+#include "asset/LightUBO.h"
+
 #include "kigl/GLState.h"
 #include "asset/Assets.h"
 #include "asset/Shader.h"

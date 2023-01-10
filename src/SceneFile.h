@@ -116,9 +116,8 @@ class SceneFile
         bool enabled{ false };
         LightType type{ LightType::none };
 
-        // pos relative to owning node
         glm::vec3 pos{ 0 };
-        glm::vec3 worldTarget{ 0 };
+        glm::vec3 targetPos{ 0 };
 
         float linear{ 0 };
         float quadratic{ 0 };

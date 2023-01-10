@@ -41,8 +41,6 @@ public:
     const glm::vec3& getWorldPlaneNormal() const noexcept;
 
     int getMatrixLevel() const noexcept;
-    const glm::mat4& getWorldModelMatrix() const noexcept;
-    const glm::mat3& getWorldNormalMatrix() const noexcept;
 
     void setPlaneNormal(const glm::vec3& planeNormal) noexcept;
     const glm::vec3& getPlaneNormal() const noexcept;
@@ -58,7 +56,6 @@ public:
     const glm::vec3& getScale() const noexcept;
 
     const glm::mat4& getModelMatrix() const noexcept;
-
     virtual void updateModelMatrix(Node* parent) noexcept;
 
     const Volume* getVolume() const noexcept;

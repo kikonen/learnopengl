@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 
 #include "asset/Shader.h"
-#include "asset/UBO.h"
+#include "asset/LightUBO.h"
 
 
 class Node;
@@ -20,17 +20,18 @@ public:
 
     void markDirty() noexcept;
 
-    const glm::vec3& getWorldTarget() noexcept;
-    void setWorldTarget(const glm::vec3& target) noexcept;
+    const glm::vec3& getTargetPos() const noexcept;
+    void setTargetPos(const glm::vec3& target) noexcept;
 
-    const glm::vec3& getWorldPos() noexcept;
+    const glm::vec3& getWorldPos() const noexcept;
+    const glm::vec3& getWorldTargetPos() const noexcept;
 
-    const glm::vec3& getPos() noexcept;
+    const glm::vec3& getPos() const noexcept;
     void setPos(const glm::vec3& pos) noexcept;
 
-    DirLightUBO toDirLightUBO() noexcept;
-    PointLightUBO toPointightUBO() noexcept;
-    SpotLightUBO toSpotLightUBO() noexcept;
+    DirLightUBO toDirLightUBO() const noexcept;
+    PointLightUBO toPointightUBO() const noexcept;
+    SpotLightUBO toSpotLightUBO() const noexcept;
 
 public:
     bool enabled = true;
@@ -62,9 +63,11 @@ private:
     glm::vec3 m_worldPos{ 0.0f };
     glm::vec3 m_worldTargetPos{ 0.0f };
 
-    glm::vec3 m_worldTarget{ 0.f };
-
+    // pos relative to owning node
     glm::vec3 m_pos{ 0.0f };
+
+    // targetPos is relative to *root*
+    glm::vec3 m_targetPos{ 0.f };
 
     int m_rootMatrixLevel = -1;
     int m_nodeMatrixLevel = -1;

@@ -613,7 +613,7 @@ std::unique_ptr<Light> SceneFile::createLight(
     auto light = std::make_unique<Light>();
 
     light->setPos(data.pos);
-    light->setWorldTarget(data.worldTarget);
+    light->setTargetPos(data.targetPos);
 
     light->linear = data.linear;
     light->quadratic = data.quadratic;
@@ -997,8 +997,8 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
         else if (k == "pos") {
             data.pos = readVec3(v);
         }
-        else if (k == "world_target") {
-            data.worldTarget = readVec3(v);
+        else if (k == "target_pos") {
+            data.targetPos = readVec3(v);
         }
         else if (k == "linear") {
             data.linear = v.as<float>();

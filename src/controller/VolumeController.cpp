@@ -23,15 +23,15 @@ bool VolumeController::update(
 
     const auto& volume = targetNode->getVolume();
 
-    const auto& modelWorldMatrix = targetNode->getWorldModelMatrix();
+    const auto& modelMatrix = targetNode->getModelMatrix();
     const glm::vec3 worldScale = {
-        glm::length(modelWorldMatrix[0]),
-        glm::length(modelWorldMatrix[1]),
-        glm::length(modelWorldMatrix[2]) };
+        glm::length(modelMatrix[0]),
+        glm::length(modelMatrix[1]),
+        glm::length(modelMatrix[2]) };
 
     const auto& rootPos = ctx.m_nodeRegistry.m_root->getWorldPos();
 
-    glm::vec3 volumePos{ modelWorldMatrix * glm::vec4(volume->getCenter(), 1.f) };
+    glm::vec3 volumePos{ modelMatrix * glm::vec4(volume->getCenter(), 1.f) };
     volumePos -= rootPos;
     const auto maxScale = std::max(std::max(worldScale.x, worldScale.y), worldScale.z);
     const auto volumeScale = volume->getRadius() * maxScale * 1.01f;

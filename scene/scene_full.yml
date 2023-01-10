@@ -99,7 +99,7 @@ entities:
       kd: [0.0, 0.7, 0.0, 1.0]
     light:
       type: directional
-      world_target: [0, 0, 0]
+      target_pos: [0, 0, 0]
       ambient: [0.4, 0.4, 0.4, 1.0]
       diffuse: [0.4, 0.4, 0.4, 1.0]
       specular: [0.0, 0.7, 0.0, 1.0]
@@ -145,7 +145,7 @@ entities:
       quadratic: 0.07
       cutoff_angle: 12.5
       outer_cutoff_angle: 25.0
-      world_target: [0, 0, 0]
+      target_pos: [0, 0, 0]
       ambient: [0.4, 0.4, 0.2, 1.0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
       specular: [1.0, 1.0, 0.9, 1.0]
@@ -172,7 +172,7 @@ entities:
       type: point
       linear: 0.014
       quadratic: 0.0007
-      world_target: [0, 0, 0]
+      target_pos: [0, 0, 0]
       ambient: [0.4, 0.4, 0.2, 1.0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
       specular: [1.0, 1.0, 0.9, 1.0]
