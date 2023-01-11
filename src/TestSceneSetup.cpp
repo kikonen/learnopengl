@@ -11,6 +11,14 @@
 #include "controller/NodePathController.h"
 
 #include "registry/MeshType.h"
+#include "registry/MeshTypeRegistry.h"
+#include "registry/NodeRegistry.h"
+#include "registry/ModelRegistry.h"
+#include "registry/MaterialRegistry.h"
+
+#include "renderer/SkyboxRenderer.h"
+
+#include "scene/AsyncLoader.h"
 
 
 namespace {
@@ -18,15 +26,25 @@ namespace {
 }
 
 TestSceneSetup::TestSceneSetup(
-    AsyncLoader* asyncLoader,
-    const Assets& assets)
-    : assets(assets), asyncLoader(asyncLoader)
+    const Assets& assets,
+    AsyncLoader* asyncLoader)
+    : m_assets(assets),
+    m_asyncLoader(asyncLoader)
 {
 }
 
-void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
+void TestSceneSetup::setup(
+    ShaderRegistry* shaderRegistry,
+    NodeRegistry* nodeRegistry,
+    MeshTypeRegistry* typeRegistry,
+    MaterialRegistry* materialRegistry,
+    ModelRegistry* modelRegistry)
 {
-    this->scene = scene;
+    m_shaderRegistry = shaderRegistry;
+    m_nodeRegistry = nodeRegistry;
+    m_typeRegistry = typeRegistry;
+    m_materialRegistry = materialRegistry;
+    m_modelRegistry = modelRegistry;
 
     if (true) {
         //setupEffectExplosion();
@@ -37,14 +55,10 @@ void TestSceneSetup::setup(std::shared_ptr<Scene> scene)
 
 void TestSceneSetup::setupEffectExplosion()
 {
-    auto scene = this->scene;
-    auto asyncLoader = this->asyncLoader;
-    auto assets = this->assets;
+    m_asyncLoader->addLoader([this]() {
+        Shader* shader = m_shaderRegistry->getShader(TEX_EFFECT);
 
-    asyncLoader->addLoader([assets, scene, asyncLoader]() {
-        Shader* shader = asyncLoader->getShader(TEX_EFFECT);
-
-        auto type = scene->m_typeRegistry->getType("<effect>");
+        auto type = m_typeRegistry->getType("<effect>");
         type->m_nodeShader = shader;
         type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;
@@ -52,8 +66,8 @@ void TestSceneSetup::setupEffectExplosion()
         auto node = new Node(type);
         node->setScale(2);
 
-        scene->m_nodeRegistry->addNode(type, node);
-        });
+        m_nodeRegistry->addNode(type, node);
+     });
 }
 
 void TestSceneSetup::setupViewport1()
@@ -61,7 +75,7 @@ void TestSceneSetup::setupViewport1()
     TextureSpec spec;
     // NOTE KI memory_leak
     auto texture = new PlainTexture("checkerboard", spec, 1, 1);
-    texture->prepare(assets);
+    texture->prepare(m_assets);
 
     unsigned int color = 0x90ff2020;
     texture->setData(&color, sizeof(unsigned int));
@@ -73,7 +87,7 @@ void TestSceneSetup::setupViewport1()
         glm::vec2(0.25f, 0.25f),
         false,
         texture->m_textureID,
-        asyncLoader->getShader(TEX_VIEWPORT));
-    viewport->prepare(assets);
-    scene->m_nodeRegistry->addViewPort(viewport);
+        m_shaderRegistry->getShader(TEX_VIEWPORT));
+    viewport->prepare(m_assets);
+    m_nodeRegistry->addViewPort(viewport);
 }

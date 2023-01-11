@@ -36,10 +36,10 @@ public:
     SpotLightUBO toSpotLightUBO() const noexcept;
 
 public:
-    bool enabled = true;
-    bool directional = false;
-    bool point = false;
-    bool spot = false;
+    bool m_enabled = true;
+    bool m_directional = false;
+    bool m_point = false;
+    bool m_spot = false;
 
     // http://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
     float constant = 1.f;

@@ -7,10 +7,6 @@
 
 #include "kigl/GLSyncQueue.h"
 
-#include "model/Node.h"
-#include "component/Light.h"
-#include "RenderContext.h"
-
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MeshTypeRegistry.h"
@@ -19,17 +15,6 @@
 
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
-
-#include "renderer/NodeRenderer.h"
-//#include "renderer/TerrainRenderer.h"
-#include "renderer/ViewportRenderer.h"
-
-#include "renderer/WaterMapRenderer.h"
-#include "renderer/MirrorMapRenderer.h"
-#include "renderer/CubeMapRenderer.h"
-#include "renderer/ShadowMapRenderer.h"
-
-#include "renderer/SkyboxRenderer.h"
 
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
@@ -41,9 +26,24 @@
 
 
 class Camera;
+class Light;
+class ParticleGenerator;
+class Node;
 class NodeController;
 class RenderData;
 class Batch;
+class RenderContext;
+
+class NodeRenderer;
+//class TerrainRenderer
+class ViewportRenderer;
+
+class WaterMapRenderer;
+class MirrorMapRenderer;
+class CubeMapRenderer;
+class ShadowMapRenderer;
+class SkyboxRenderer;
+
 
 class Scene final
 {
@@ -82,7 +82,6 @@ private:
 public:
     const Assets& assets;
 
-    std::unique_ptr<SkyboxRenderer> m_skyboxRenderer{ nullptr };
     std::unique_ptr<RenderData> m_renderData;
 
     std::unique_ptr<MaterialRegistry> m_materialRegistry;

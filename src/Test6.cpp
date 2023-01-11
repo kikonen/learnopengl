@@ -8,12 +8,21 @@
 #include "ki/GL.h"
 #include "editor/EditorFrame.h"
 
+#include "controller/VolumeController.h"
+
+#include "registry/MeshType.h"
+#include "registry/MeshTypeRegistry.h"
+#include "registry/NodeRegistry.h"
+#include "registry/ModelRegistry.h"
+#include "registry/MaterialRegistry.h"
+
 #include "TestSceneSetup.h"
 
 #include "AssetsFile.h"
 #include "SceneFile.h"
 
-#include "controller/VolumeController.h"
+#include "scene/Scene.h"
+
 
 
 Test6::Test6()
@@ -176,8 +185,6 @@ std::shared_ptr<Scene> Test6::loadScene()
 {
     auto scene = std::make_shared<Scene>(m_assets);
 
-    m_asyncLoader->m_scene = scene;
-
     {
         std::unique_ptr<SceneFile> file;
         if (!m_assets.sceneFile.empty()) {
@@ -203,13 +210,28 @@ std::shared_ptr<Scene> Test6::loadScene()
 
     for (auto& file : m_files) {
         KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", file->m_filename));
-        file->load(scene);
+        file->load(
+            m_shaderRegistry.get(),
+            scene->m_nodeRegistry.get(),
+            scene->m_typeRegistry.get(),
+            scene->m_materialRegistry.get(),
+            scene->m_modelRegistry.get()
+        );
     }
 
-    m_testSetup = std::make_unique<TestSceneSetup>(m_asyncLoader.get(), m_assets);
-    m_testSetup->setup(scene);
+    m_testSetup = std::make_unique<TestSceneSetup>(
+        m_assets,
+        m_asyncLoader.get());
 
-    scene->prepare(m_shaders);
+    m_testSetup->setup(
+        m_shaderRegistry.get(),
+        scene->m_nodeRegistry.get(),
+        scene->m_typeRegistry.get(),
+        scene->m_materialRegistry.get(),
+        scene->m_modelRegistry.get()
+    );
+
+    scene->prepare(*m_shaderRegistry);
 
     return scene;
 }

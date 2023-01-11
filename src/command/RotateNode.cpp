@@ -1,5 +1,7 @@
 #include "command/RotateNode.h"
 
+#include "model/Node.h"
+
 #include "scene/RenderContext.h"
 
 

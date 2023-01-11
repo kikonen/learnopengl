@@ -2,10 +2,11 @@
 
 #include <fmt/format.h>
 
-#include "model/Node.h"
 
 #include "command/CommandEngine.h"
 #include "command/CommandAPI.h"
+
+#include "model/Node.h"
 
 namespace {
     std::string scriptIdToString(NodeScriptId scriptId) {

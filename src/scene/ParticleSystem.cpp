@@ -17,7 +17,7 @@ void ParticleSystem::prepare(const Assets& assets, ShaderRegistry& shaders)
     if (m_prepared) return;
     m_prepared = true;
 
-    particleShader = shaders.getShader(assets, TEX_PARTICLE, {});
+    particleShader = shaders.getShader(TEX_PARTICLE, {});
     particleShader->prepare(assets);
 }
 

@@ -10,6 +10,10 @@
 
 #include "asset/MaterialIndex.h"
 
+#include "component/Light.h"
+#include "component/Camera.h"
+#include "component/ParticleGenerator.h"
+
 #include "controller/NodeController.h"
 
 #include "registry/NodeRegistry.h"

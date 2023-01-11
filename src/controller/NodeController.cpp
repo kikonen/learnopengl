@@ -1,5 +1,7 @@
 #include "NodeController.h"
 
+#include "model/Node.h"
+
 NodeController::NodeController()
 {
 }

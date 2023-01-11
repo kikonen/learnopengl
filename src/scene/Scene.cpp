@@ -8,11 +8,31 @@
 
 #include "asset/UBO.h"
 
+#include "component/ParticleGenerator.h"
+
 #include "controller/NodeController.h"
+
+#include "renderer/NodeRenderer.h"
+//#include "renderer/TerrainRenderer.h"
+#include "renderer/ViewportRenderer.h"
+
+#include "renderer/WaterMapRenderer.h"
+#include "renderer/MirrorMapRenderer.h"
+#include "renderer/CubeMapRenderer.h"
+#include "renderer/ShadowMapRenderer.h"
+
+#include "renderer/SkyboxRenderer.h"
+
+#include "registry/MaterialRegistry.h"
+#include "registry/NodeRegistry.h"
+#include "registry/MeshTypeRegistry.h"
+#include "registry/ModelRegistry.h"
+#include "registry/EntityRegistry.h"
 
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
-#include "RenderData.h"
+#include "scene/RenderContext.h"
+#include "scene/RenderData.h"
 
 
 Scene::Scene(const Assets& assets)
@@ -130,7 +150,7 @@ void Scene::prepare(ShaderRegistry& shaders)
             glm::vec2(2.f, 2.f),
             true,
             0,
-            shaders.getShader(assets, TEX_VIEWPORT));
+            shaders.getShader(TEX_VIEWPORT));
 
         m_mainViewport->m_effect = assets.viewportEffect;
 
@@ -152,7 +172,7 @@ void Scene::prepare(ShaderRegistry& shaders)
             glm::vec2(0.5f, 0.5f),
             true,
             0,
-            shaders.getShader(assets, TEX_VIEWPORT));
+            shaders.getShader(TEX_VIEWPORT));
 
         m_rearViewport->prepare(assets);
         m_nodeRegistry->addViewPort(m_rearViewport);
@@ -202,8 +222,8 @@ void Scene::update(RenderContext& ctx)
         generator->update(ctx);
     }
 
-    if (m_skyboxRenderer) {
-        m_skyboxRenderer->update(ctx);
+    if (m_nodeRegistry->m_skybox) {
+        m_nodeRegistry->m_skybox->update(ctx);
     }
 
     if (m_nodeRenderer) {
@@ -284,13 +304,13 @@ void Scene::draw(RenderContext& ctx)
     glPolygonOffset(2.0f, 4.0f);
 
     if (m_cubeMapRenderer) {
-        m_cubeMapRenderer->render(ctx, m_skyboxRenderer.get());
+        m_cubeMapRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
     }
     if (m_waterMapRenderer) {
-        m_waterMapRenderer->render(ctx, m_skyboxRenderer.get());
+        m_waterMapRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
     }
     if (m_mirrorMapRenderer) {
-        m_mirrorMapRenderer->render(ctx, m_skyboxRenderer.get());
+        m_mirrorMapRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
     }
 
     {
@@ -390,7 +410,7 @@ void Scene::drawScene(RenderContext& ctx)
     }
 
     if (m_nodeRenderer) {
-        m_nodeRenderer->render(ctx, m_skyboxRenderer.get());
+        m_nodeRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
     }
 
     if (particleSystem) {

@@ -7,14 +7,8 @@
 
 #include "backend/DrawOptions.h"
 
+#include "EntityType.h"
 
-enum class EntityType {
-    origo,
-    model,
-    quad,
-    sprite,
-    terrain,
-};
 
 struct NodeRenderFlags {
     bool alpha = false;

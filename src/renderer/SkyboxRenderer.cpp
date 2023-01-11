@@ -78,7 +78,7 @@ void SkyboxRenderer::prepare(
 
     Renderer::prepare(assets, shaders, materialRegistry);
 
-    m_shader = shaders.getShader(assets, m_shaderName);
+    m_shader = shaders.getShader(m_shaderName);
 
     m_shader->prepare(assets);
 

@@ -8,10 +8,11 @@
 #include "asset/ClipPlaneUBO.h"
 #include "asset/LightUBO.h"
 
-#include "kigl/GLState.h"
 #include "asset/Assets.h"
 #include "asset/Shader.h"
 #include "asset/FrustumNew.h"
+
+#include "kigl/GLState.h"
 
 #include "component/Camera.h"
 

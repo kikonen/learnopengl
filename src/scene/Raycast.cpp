@@ -1,5 +1,7 @@
 #include "Raycast.h"
 
+#include "scene/RenderContext.h"
+
 Raycast::Raycast()
 {
 }

@@ -1,5 +1,7 @@
 #include "NodePathController.h"
 
+#include "model/Node.h"
+
 #include "scene/RenderContext.h"
 
 

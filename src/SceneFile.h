@@ -14,9 +14,25 @@
 
 #pragma warning(pop)
 
+#include "asset/Material.h"
+#include "registry/EntityType.h"
 
-#include <scene/AsyncLoader.h>
+struct Material;
+class Light;
+class Camera;
 
+class ShaderRegistry;
+class NodeRegistry;
+class MeshTypeRegistry;
+class ModelRegistry;
+class MaterialRegistry;
+
+class MeshType;
+class Node;
+class Group;
+class NodeController;
+
+class AsyncLoader;
 
 class SceneFile
 {
@@ -211,37 +227,36 @@ public:
 
     ~SceneFile();
 
-    void load(std::shared_ptr<Scene> scene);
+    void load(
+        ShaderRegistry* shaderRegistry,
+        NodeRegistry* nodeRegistry,
+        MeshTypeRegistry* typeRegistry,
+        MaterialRegistry* materialRegistry,
+        ModelRegistry* modelRegistry);
 
 private:
     void attach(
-        std::shared_ptr<Scene> scene,
         SkyboxData& skybox,
         const EntityData& root,
         const std::vector<EntityData>& entities,
         std::vector<Material>& materials);
 
     void attachSkybox(
-        std::shared_ptr<Scene> scene,
         SkyboxData& data,
         std::vector<Material>& materials);
 
     void attachVolume(
-        std::shared_ptr<Scene> scene,
         const EntityData& root);
 
     void attachCubeMapCenter(
-        std::shared_ptr<Scene> scene,
         const EntityData& root);
 
     void attachEntity(
-        std::shared_ptr<Scene> scene,
         const EntityData& root,
         const EntityData& data,
         std::vector<Material>& materials);
 
     MeshType* attachEntityClone(
-        std::shared_ptr<Scene> scene,
         MeshType* type,
         const EntityData& root,
         const EntityData& entity,
@@ -261,8 +276,6 @@ private:
     MeshType* createType(
         const EntityData& entity,
         const EntityCloneData& data,
-        MeshTypeRegistry& typeRegistry,
-        ModelRegistry& modelRegistry,
         std::vector<Material>& materials);
 
     Node* createNode(
@@ -358,10 +371,16 @@ public:
     const std::string m_filename;
 
 private:
-    AsyncLoader* m_asyncLoader;
     const Assets& m_assets;
-
     const glm::vec3 m_rootOffset;
+
+    AsyncLoader* m_asyncLoader;
+
+    ShaderRegistry* m_shaderRegistry{ nullptr };
+    NodeRegistry* m_nodeRegistry{ nullptr };
+    MeshTypeRegistry* m_typeRegistry{ nullptr };
+    MaterialRegistry* m_materialRegistry{ nullptr };
+    ModelRegistry* m_modelRegistry{ nullptr };
 
     SkyboxData m_skybox;
 

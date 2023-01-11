@@ -7,17 +7,18 @@
 #include "asset/OBB.h"
 
 #include "asset/Sphere.h"
-#include "component/ParticleGenerator.h"
 
 #include "registry/MeshType.h"
 
-#include "component/Light.h"
 
 class NodeController;
 class Camera;
+class Light;
+class ParticleGenerator;
 class RenderContext;
 class MeshType;
 class EntityRegistry;
+class ParticleGenrator;
 class Batch;
 
 struct EntitySSBO;
@@ -118,7 +119,7 @@ public:
     std::unique_ptr <NodeController> m_controller{ nullptr };
 
     std::unique_ptr<Camera> m_camera{ nullptr };
-    std::unique_ptr <Light> m_light{ nullptr };
+    std::unique_ptr<Light> m_light{ nullptr };
     std::unique_ptr<ParticleGenerator> m_particleGenerator{ nullptr };
 
 protected:

@@ -209,7 +209,7 @@ void RenderContext::bindLightsUBO() const
 
     if (m_useLight) {
         auto& node = nodeRegistry.m_dirLight;
-        if (node && node->m_light->enabled) {
+        if (node && node->m_light->m_enabled) {
             lightsUbo.dir[0] = node->m_light->toDirLightUBO();
             lightsUbo.dirCount = 1;
         }
@@ -222,7 +222,7 @@ void RenderContext::bindLightsUBO() const
         int count = 0;
         for (auto& node : nodeRegistry.m_pointLights) {
             if (count >= LIGHT_COUNT) break;
-            if (!node->m_light->enabled) continue;
+            if (!node->m_light->m_enabled) continue;
 
             lightsUbo.pointLights[count] = node->m_light->toPointightUBO();
             count++;
@@ -234,7 +234,7 @@ void RenderContext::bindLightsUBO() const
         int count = 0;
         for (auto& node : nodeRegistry.m_spotLights) {
             if (count>= LIGHT_COUNT) break;
-            if (!node->m_light->enabled) continue;
+            if (!node->m_light->m_enabled) continue;
 
             lightsUbo.spotLights[count] = node->m_light->toSpotLightUBO();
             count++;

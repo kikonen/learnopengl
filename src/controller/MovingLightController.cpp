@@ -2,6 +2,8 @@
 
 #include "component/Light.h"
 
+#include "model/Node.h"
+
 #include "scene/RenderContext.h"
 
 MovingLightController::MovingLightController(

@@ -24,6 +24,8 @@ public:
     ParticleGenerator(
         const ParticleDefinition definition);
 
+    ~ParticleGenerator() = default;
+
     virtual void update(const RenderContext& ctx);
 
 public:

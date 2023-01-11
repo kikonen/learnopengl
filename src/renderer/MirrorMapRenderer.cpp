@@ -2,8 +2,12 @@
 
 #include "SkyboxRenderer.h"
 
+#include "model/Node.h"
+#include "model/Viewport.h"
+
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
+#include "scene/TextureBuffer.h"
 
 #include "registry/MaterialRegistry.h"
 
@@ -85,7 +89,7 @@ void MirrorMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         0,
-        shaders.getShader(assets, TEX_VIEWPORT));
+        shaders.getShader(TEX_VIEWPORT));
 
     m_debugViewport->prepare(assets);
 }

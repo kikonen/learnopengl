@@ -35,7 +35,8 @@ public:
 
 private:
     float m_nearPlane = 0.1f;
-    float m_farPlane = 1000.0f;
+    float m_farPlane = 1000.f;
+    float m_frustumSize = 100.f;
 
     Shader* m_solidShadowShader{ nullptr };
     Shader* m_blendedShadowShader{ nullptr };

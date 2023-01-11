@@ -16,7 +16,7 @@ Light::Light()
 
 void Light::update(const RenderContext& ctx, Node& node) noexcept
 {
-    if (!enabled) return;
+    if (!m_enabled) return;
 
     const bool nodeChanged = m_nodeMatrixLevel != node.getMatrixLevel();
 
@@ -24,7 +24,7 @@ void Light::update(const RenderContext& ctx, Node& node) noexcept
         m_worldPos = node.getModelMatrix() * glm::vec4(m_pos, 1.f);
     }
 
-    if (spot || directional) {
+    if (m_spot || m_directional) {
         const Node* targetNode = ctx.m_nodeRegistry.getNode(m_targetId);
         if (!targetNode) return;
 
@@ -48,7 +48,7 @@ void Light::update(const RenderContext& ctx, Node& node) noexcept
         if (!changed) return;
     }
 
-    if (!directional) {
+    if (!m_directional) {
         const float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
         radius = (-linear + std::sqrtf(linear * linear - 4 * quadratic * (constant - (256.0 / 5.0) * lightMax))) / (2 * quadratic);
     }

@@ -26,11 +26,11 @@ void NodeRenderer::prepare(
 
     Renderer::prepare(assets, shaders, materialRegistry);
 
-    m_selectionShader = shaders.getShader(assets, TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
+    m_selectionShader = shaders.getShader(TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
     m_selectionShader->m_selection = true;
     m_selectionShader->prepare(assets);
 
-    m_selectionShaderSprite = shaders.getShader(assets, TEX_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
+    m_selectionShaderSprite = shaders.getShader(TEX_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
     m_selectionShaderSprite->m_selection = true;
     m_selectionShaderSprite->prepare(assets);
 }

@@ -1,13 +1,17 @@
 #include "WaterMapRenderer.h"
 
-#include "SkyboxRenderer.h"
-#include "WaterNoiseGenerator.h"
+#include "component/Camera.h"
+
+#include "model/Viewport.h"
 
 #include "registry/MaterialRegistry.h"
 
-#include "component/Camera.h"
+#include "scene/TextureBuffer.h"
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
+
+#include "SkyboxRenderer.h"
+#include "WaterNoiseGenerator.h"
 
 
 namespace {
@@ -73,7 +77,7 @@ void WaterMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         m_reflectionBuffer->m_spec.attachments[0].textureID,
-        shaders.getShader(assets, TEX_VIEWPORT));
+        shaders.getShader(TEX_VIEWPORT));
 
     m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffer.get());
 
@@ -84,7 +88,7 @@ void WaterMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         m_refractionBuffer->m_spec.attachments[0].textureID,
-        shaders.getShader(assets, TEX_VIEWPORT));
+        shaders.getShader(TEX_VIEWPORT));
 
     m_refractionDebugViewport->setSourceFrameBuffer(m_refractionBuffer.get());
 
@@ -122,11 +126,11 @@ void WaterMapRenderer::render(
     // https://prideout.net/clip-planes
     // reflection map
     {
-        auto pos = ctx.m_camera.getPos();
+        glm::vec3 pos = ctx.m_camera.getPos();
         const float dist = pos.y - planePos.y;
         pos.y -= dist * 2;
 
-        auto rot = ctx.m_camera.getRotation();
+        glm::vec3 rot = ctx.m_camera.getRotation();
         rot.x = -rot.x;
 
         auto& camera = m_cameras[0];

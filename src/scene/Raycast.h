@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RenderContext.h"
+class RenderContext;
 
 class Raycast final
 {

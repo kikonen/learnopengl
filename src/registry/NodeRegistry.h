@@ -67,6 +67,9 @@ class MaterialRegistry;
 class EntityRegistry;
 class ModelRegistry;
 
+class SkyboxRenderer;
+
+
 class NodeRegistry final
 {
 public:
@@ -135,6 +138,8 @@ public:
     ShaderTypeMap invisibleNodes;
 
     ViewportVector viewports;
+
+    std::unique_ptr<SkyboxRenderer> m_skybox;
 
     Node* m_root = nullptr;
     NodeVector m_cameraNodes;

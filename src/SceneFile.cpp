@@ -7,9 +7,15 @@
 
 #include <fmt/format.h>
 
+#include "asset/Material.h"
 #include "asset/QuadMesh.h"
 #include "asset/SpriteMesh.h"
 
+#include "component/Light.h"
+#include "component/Camera.h"
+#include "component/ParticleGenerator.h"
+
+#include "model/Group.h"
 #include "model/Node.h"
 #include "model/InstancedNode.h"
 
@@ -19,11 +25,22 @@
 #include "controller/NodePathController.h"
 #include "controller/VolumeController.h"
 
+#include "registry/MeshType.h"
+#include "registry/MeshTypeRegistry.h"
+#include "registry/NodeRegistry.h"
+#include "registry/ModelRegistry.h"
+#include "registry/MaterialRegistry.h"
+
+#include "renderer/SkyboxRenderer.h"
+
+
 #include "scene/TerrainGenerator.h"
 
-#include "registry/ModelRegistry.h"
 
 #include "SceneFile.h"
+
+#include <scene/AsyncLoader.h>
+
 
 namespace {
     const double DEF_ALPHA = 1.0;
@@ -64,8 +81,18 @@ SceneFile::~SceneFile()
 }
 
 void SceneFile::load(
-    std::shared_ptr<Scene> scene)
+    ShaderRegistry* shaderRegistry,
+    NodeRegistry* nodeRegistry,
+    MeshTypeRegistry* typeRegistry,
+    MaterialRegistry* materialRegistry,
+    ModelRegistry* modelRegistry)
 {
+    m_shaderRegistry = shaderRegistry;
+    m_nodeRegistry = nodeRegistry;
+    m_typeRegistry = typeRegistry;
+    m_materialRegistry = materialRegistry;
+    m_modelRegistry = modelRegistry;
+
     std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);
 
@@ -75,49 +102,45 @@ void SceneFile::load(
     loadRoot(doc, m_root);
     loadEntities(doc, m_entities);
 
-    attach(scene, m_skybox, m_root, m_entities, m_materials);
+    attach(m_skybox, m_root, m_entities, m_materials);
 }
 
 void SceneFile::attach(
-    std::shared_ptr<Scene> scene,
     SkyboxData& skybox,
     const EntityData& root,
     const std::vector<EntityData>& entities,
     std::vector<Material>& materials)
 {
-    attachSkybox(scene, skybox, materials);
+    attachSkybox(skybox, materials);
 
-    attachEntity(scene, root, root, materials);
-    attachVolume(scene, root);
-    attachCubeMapCenter(scene, root);
+    attachEntity(root, root, materials);
+    attachVolume(root);
+    attachCubeMapCenter(root);
 
     for (const auto& entity : entities) {
-        attachEntity(scene, root, entity, materials);
+        attachEntity(root, entity, materials);
     }
 }
 
 void SceneFile::attachSkybox(
-    std::shared_ptr<Scene> scene,
     SkyboxData& data,
     std::vector<Material>& materials)
 {
     if (!data.valid()) return;
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
-    skybox->prepare(m_assets, m_asyncLoader->m_shaders, *scene->m_materialRegistry);
-    scene->m_skyboxRenderer = std::move(skybox);
+    skybox->prepare(m_assets, *m_shaderRegistry, *m_materialRegistry);
+    m_nodeRegistry->m_skybox = std::move(skybox);
 }
 
 void SceneFile::attachVolume(
-    std::shared_ptr<Scene> scene,
     const EntityData& root)
 {
     if (!m_assets.showVolume) return;
 
-    auto type = scene->m_typeRegistry->getType("<volume>");
+    auto type = m_typeRegistry->getType("<volume>");
 
-    auto& modelRegistry = scene->m_modelRegistry;
-    auto mesh = modelRegistry->getMesh("ball_volume");
+    auto mesh = m_modelRegistry->getMesh("ball_volume");
     type->setMesh(mesh);
 
     {
@@ -142,10 +165,10 @@ void SceneFile::attachVolume(
     flags.noRefract = true;
     flags.noDisplay = true;
 
-    type->m_nodeShader = m_asyncLoader->getShader(TEX_VOLUME);
+    type->m_nodeShader = m_shaderRegistry->getShader(TEX_VOLUME);
 
     auto node = new Node(type);
-    node->m_id = m_asyncLoader->assets.volumeUUID;
+    node->m_id = m_assets.volumeUUID;
     node->m_parentId = root.base.id;
 
     // NOTE KI m_radius = 1.73205078
@@ -157,19 +180,16 @@ void SceneFile::attachVolume(
 
     node->m_controller = std::make_unique<VolumeController>();
 
-    scene->m_nodeRegistry->addNode(type, node);
+    m_nodeRegistry->addNode(type, node);
 }
 
 void SceneFile::attachCubeMapCenter(
-    std::shared_ptr<Scene> scene,
     const EntityData& root)
 {
     if (!m_assets.showCubeMapCenter) return;
 
-    auto type = scene->m_typeRegistry->getType("<cube_map>");
-
-    auto& modelRegistry = scene->m_modelRegistry;
-    auto mesh = modelRegistry->getMesh("ball_volume");
+    auto type = m_typeRegistry->getType("<cube_map>");
+    auto mesh = m_modelRegistry->getMesh("ball_volume");
     type->setMesh(mesh);
 
     {
@@ -195,10 +215,10 @@ void SceneFile::attachCubeMapCenter(
     flags.noRefract = true;
     flags.noDisplay = true;
 
-    type->m_nodeShader = m_asyncLoader->getShader(TEX_VOLUME);
+    type->m_nodeShader = m_shaderRegistry->getShader(TEX_VOLUME);
 
     auto node = new Node(type);
-    node->m_id = m_asyncLoader->assets.cubeMapUUID;
+    node->m_id = m_assets.cubeMapUUID;
     node->m_parentId = root.base.id;
 
     //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
@@ -211,11 +231,10 @@ void SceneFile::attachCubeMapCenter(
 
     node->setAABB(mesh->getAABB());
 
-    scene->m_nodeRegistry->addNode(type, node);
+    m_nodeRegistry->addNode(type, node);
 }
 
 void SceneFile::attachEntity(
-    std::shared_ptr<Scene> scene,
     const EntityData& root,
     const EntityData& data,
     std::vector<Material>& materials)
@@ -224,22 +243,21 @@ void SceneFile::attachEntity(
         return;
     }
 
-    m_asyncLoader->addLoader([this, scene, &root, &data, &materials]() {
+    m_asyncLoader->addLoader([this, &root, &data, &materials]() {
         if (data.clones.empty()) {
             MeshType* type{ nullptr };
-            attachEntityClone(scene, type, root, data, data.base, false, materials);
+            attachEntityClone(type, root, data, data.base, false, materials);
         }
         else {
             MeshType* type{ nullptr };
             for (auto& cloneData : data.clones) {
-                type = attachEntityClone(scene, type, root, data, cloneData, true, materials);
+                type = attachEntityClone(type, root, data, cloneData, true, materials);
             }
         }
     });
 }
 
 MeshType* SceneFile::attachEntityClone(
-    std::shared_ptr<Scene> scene,
     MeshType* type,
     const EntityData& root,
     const EntityData& entity,
@@ -251,14 +269,12 @@ MeshType* SceneFile::attachEntityClone(
         return type;
     }
 
-    auto& nodeRegistry = *scene->m_nodeRegistry;
+    auto& nodeRegistry = *m_nodeRegistry;
 
     if (!type) {
         type = createType(
             entity,
             data,
-            *scene->m_typeRegistry,
-            *scene->m_modelRegistry,
             materials);
         if (!type) return type;
     }
@@ -293,8 +309,6 @@ MeshType* SceneFile::attachEntityClone(
 MeshType* SceneFile::createType(
     const EntityData& entity,
     const EntityCloneData& data,
-    MeshTypeRegistry& typeRegistry,
-    ModelRegistry& modelRegistry,
     std::vector<Material>& materials)
 {
     const Assets& assets = m_assets;
@@ -303,7 +317,7 @@ MeshType* SceneFile::createType(
     const auto& repeat = data.repeat;
     const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
 
-    auto type = typeRegistry.getType(data.name);
+    auto type = m_typeRegistry->getType(data.name);
     assignFlags(data, type);
 
     auto& materialVBO = type->m_materialVBO;
@@ -335,7 +349,7 @@ MeshType* SceneFile::createType(
     }
 
     if (data.type == EntityType::model) {
-        auto mesh = modelRegistry.getMesh(
+        auto mesh = m_modelRegistry->getMesh(
             data.meshName,
             data.meshPath);
         type->setMesh(mesh);
@@ -405,7 +419,7 @@ MeshType* SceneFile::createType(
         }
 
         if (!data.shaderName.empty()) {
-            type->m_nodeShader = m_asyncLoader->getShader(
+            type->m_nodeShader = m_shaderRegistry->getShader(
                 data.shaderName,
                 data.geometryType,
                 definitions);
@@ -627,13 +641,13 @@ std::unique_ptr<Light> SceneFile::createLight(
 
     switch (data.type) {
     case LightType::directional:
-        light->directional = true;
+        light->m_directional = true;
         break;
     case LightType::point:
-        light->point = true;
+        light->m_point = true;
         break;
     case LightType::spot:
-        light->spot = true;
+        light->m_spot = true;
         break;
     }
 

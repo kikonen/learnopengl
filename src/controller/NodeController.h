@@ -1,11 +1,14 @@
 #pragma once
 
 #include "asset/Assets.h"
-#include "model/Node.h"
+
+#include "ki/GL.h"
 
 #include "gui/Input.h"
 
+class Node;
 class EntityRegistry;
+class RenderContext;
 
 class NodeController
 {

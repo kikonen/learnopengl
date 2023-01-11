@@ -1,11 +1,11 @@
 #include "AsyncLoader.h"
 
+#include "util/Log.h"
+#include "ki/GL.h"
 
 AsyncLoader::AsyncLoader(
-    ShaderRegistry& shaders,
     const Assets& assets)
-  : m_shaders(shaders),
-    assets(assets)
+  : m_assets(assets)
 {
 }
 
@@ -27,7 +27,7 @@ void AsyncLoader::waitForReady()
 
 void AsyncLoader::addLoader(std::function<void()> loader)
 {
-    if (!assets.asyncLoaderEnabled) {
+    if (!m_assets.asyncLoaderEnabled) {
         loader();
         return;
     }
@@ -40,8 +40,8 @@ void AsyncLoader::addLoader(std::function<void()> loader)
     auto th = std::thread{
         [this, loader]() {
             try {
-                if (assets.asyncLoaderDelay > 0)
-                    std::this_thread::sleep_for(std::chrono::milliseconds(assets.asyncLoaderDelay));
+                if (m_assets.asyncLoaderDelay > 0)
+                    std::this_thread::sleep_for(std::chrono::milliseconds(m_assets.asyncLoaderDelay));
 
                 loader();
                 std::unique_lock<std::mutex> lock(m_load_lock);
@@ -54,24 +54,4 @@ void AsyncLoader::addLoader(std::function<void()> loader)
         }
     };
     th.detach();
-}
-
-Shader* AsyncLoader::getShader(const std::string& name)
-{
-    return m_shaders.getShader(assets, name);
-}
-
-Shader* AsyncLoader::getShader(
-    const std::string& name,
-    const std::map<std::string, std::string>& defines)
-{
-    return m_shaders.getShader(assets, name, defines);
-}
-
-Shader* AsyncLoader::getShader(
-    const std::string& name,
-    const std::string& geometryType,
-    const std::map<std::string, std::string>& defines)
-{
-    return m_shaders.getShader(assets, name, geometryType, defines);
 }

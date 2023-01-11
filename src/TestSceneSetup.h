@@ -2,26 +2,42 @@
 
 #include "glm/glm.hpp"
 
-#include "scene/AsyncLoader.h"
+#include "asset/Assets.h"
+
+class AsyncLoader;
+
+class ShaderRegistry;
+class NodeRegistry;
+class MeshTypeRegistry;
+class ModelRegistry;
+class MaterialRegistry;
 
 class TestSceneSetup final
 {
 public:
     TestSceneSetup(
-        AsyncLoader* asyncLoader,
-        const Assets& assets);
+        const Assets& assets,
+        AsyncLoader* asyncLoader);
 
-    void setup(std::shared_ptr<Scene> scene);
+    void setup(
+        ShaderRegistry* shaderRegistry,
+        NodeRegistry* nodeRegistry,
+        MeshTypeRegistry* typeRegistry,
+        MaterialRegistry* materialRegistry,
+        ModelRegistry* modelRegistry);
 
 private:
-    void setupNodeBrickwallBox();
-
     void setupEffectExplosion();
 
     void setupViewport1();
 private:
-    const Assets& assets;
-    AsyncLoader* asyncLoader;
+    const Assets& m_assets;
 
-    std::shared_ptr<Scene> scene;
+    AsyncLoader* m_asyncLoader;
+
+    ShaderRegistry* m_shaderRegistry{ nullptr };
+    NodeRegistry* m_nodeRegistry{ nullptr };
+    MeshTypeRegistry* m_typeRegistry{ nullptr };
+    MaterialRegistry* m_materialRegistry{ nullptr };
+    ModelRegistry* m_modelRegistry{ nullptr };
 };

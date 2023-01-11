@@ -4,9 +4,15 @@
 
 #include "ki/GL.h"
 
+#include "component/Light.h"
+#include "component/Camera.h"
+#include "component/ParticleGenerator.h"
+
 #include "MaterialRegistry.h"
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
+
+#include "renderer/SkyboxRenderer.h"
 
 namespace {
     const NodeVector EMPTY_NODE_LIST;
@@ -317,13 +323,13 @@ void NodeRegistry::bindNode(
         if (node->m_light) {
             Light* light = node->m_light.get();
 
-            if (light->directional) {
+            if (light->m_directional) {
                 m_dirLight = node;
             }
-            else if (light->point) {
+            else if (light->m_point) {
                 m_pointLights.push_back(node);
             }
-            else if (light->spot) {
+            else if (light->m_spot) {
                 m_spotLights.push_back(node);
             }
         }

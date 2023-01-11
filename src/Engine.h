@@ -40,7 +40,7 @@ public:
     // NOTE KI MUST destroy async loaded *BEFORE* other registries
     // => alloes change for graceful exit for loaders
     std::shared_ptr<AsyncLoader> m_asyncLoader;
-    ShaderRegistry m_shaders;
+    std::unique_ptr<ShaderRegistry> m_shaderRegistry;
 
     std::shared_ptr<Scene> m_currentScene;
 

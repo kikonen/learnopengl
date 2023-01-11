@@ -323,6 +323,7 @@
     <ClInclude Include="src\kigl\GLVertexArray.h" />
     <ClInclude Include="src\asset\MaterialIndex.h" />
     <ClInclude Include="src\kigl\GLBlendMode.h" />
+    <ClInclude Include="src\registry\EntityType.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />
     <ClInclude Include="src\registry\MaterialRegistry.h" />
     <ClInclude Include="src\asset\OBB.h" />

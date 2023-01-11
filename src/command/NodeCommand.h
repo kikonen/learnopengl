@@ -2,9 +2,7 @@
 
 #include "command/Command.h"
 
-#include "model/Node.h"
-
-
+class Node;
 
 class NodeCommand : public Command
 {

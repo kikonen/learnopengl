@@ -1,7 +1,10 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "ki/GL.h"
-#include "scene/RenderContext.h"
+
+class RenderContext;
 
 class DynamicCubeMap
 {

@@ -18,7 +18,7 @@ void NormalRenderer::prepare(
 
     Renderer::prepare(assets, shaders, materialRegistry);
 
-    m_normalShader = shaders.getShader(assets, TEX_NORMAL);
+    m_normalShader = shaders.getShader(TEX_NORMAL);
     m_normalShader->prepare(assets);
 }
 

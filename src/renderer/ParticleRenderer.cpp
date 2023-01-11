@@ -14,7 +14,7 @@ void ParticleRenderer::prepare(
 
     Renderer::prepare(assets, shaders, materialRegistry);
 
-    particleShader = shaders.getShader(assets, TEX_PARTICLE);
+    particleShader = shaders.getShader(TEX_PARTICLE);
     particleShader->prepare(assets);
 }
 

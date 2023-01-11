@@ -1,5 +1,7 @@
 #include "CameraController.h"
 
+#include "model/Node.h"
+
 #include "scene/RenderContext.h"
 #include "component/Camera.h"
 

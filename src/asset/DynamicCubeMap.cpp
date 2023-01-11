@@ -1,6 +1,7 @@
 #include "DynamicCubeMap.h"
 
 #include "scene/CubeMap.h"
+#include "scene/RenderContext.h"
 
 
 DynamicCubeMap::DynamicCubeMap(int size)

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Renderer.h"
-#include "scene/TextureBuffer.h"
 
-#include "model/Viewport.h"
-
+class Node;
 class SkyboxRenderer;
+class TextureBuffer;
+class Viewport;
 
 class WaterMapRenderer final : public Renderer
 {

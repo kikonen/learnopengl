@@ -7,16 +7,17 @@
 
 #include "asset/Assets.h"
 
-#include "model/Node.h"
-
 #include "command/CommandAPI.h"
 
 class CommandEngine;
+class Node;
+enum class NodeScriptId;
 
 class ScriptEngine final
 {
 public:
     ScriptEngine(const Assets& assets);
+    ~ScriptEngine()= default;
 
     void prepare(
         CommandEngine& commandEngine);

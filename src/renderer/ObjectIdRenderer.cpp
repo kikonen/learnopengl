@@ -83,10 +83,10 @@ void ObjectIdRenderer::prepare(
 
     Renderer::prepare(assets, shaders, materialRegistry);
 
-    m_idShader = shaders.getShader(assets, TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
+    m_idShader = shaders.getShader(TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idShader->prepare(assets);
 
-    m_idShaderSprite = shaders.getShader(assets, TEX_OBJECT_ID_SPRITE, { { DEF_USE_ALPHA, "1"} });
+    m_idShaderSprite = shaders.getShader(TEX_OBJECT_ID_SPRITE, { { DEF_USE_ALPHA, "1"} });
     m_idShaderSprite->prepare(assets);
 
     m_debugViewport = std::make_shared<Viewport>(
@@ -97,7 +97,7 @@ void ObjectIdRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         0,
-        shaders.getShader(assets, TEX_VIEWPORT));
+        shaders.getShader(TEX_VIEWPORT));
 
     m_debugViewport->prepare(assets);
 }

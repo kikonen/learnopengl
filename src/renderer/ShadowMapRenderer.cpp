@@ -1,5 +1,7 @@
 #include "ShadowMapRenderer.h"
 
+#include "component/Light.h"
+
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
@@ -39,9 +41,9 @@ void ShadowMapRenderer::prepare(
     m_nearPlane = assets.shadowNearPlane;
     m_farPlane = assets.shadowFarPlane;
 
-    m_solidShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH);
-    m_blendedShadowShader = shaders.getShader(assets, TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
-    m_shadowDebugShader = shaders.getShader(assets, TEX_DEBUG_DEPTH);
+    m_solidShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH);
+    m_blendedShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    m_shadowDebugShader = shaders.getShader(TEX_DEBUG_DEPTH);
 
     m_solidShadowShader->prepare(assets);
     m_blendedShadowShader->prepare(assets);

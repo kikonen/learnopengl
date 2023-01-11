@@ -1,12 +1,11 @@
 #pragma once
 
 #include "Renderer.h"
-#include "scene/TextureBuffer.h"
-#include "model/Node.h"
 
-#include "model/Viewport.h"
-
+class Node;
 class SkyboxRenderer;
+class TextureBuffer;
+class Viewport;
 
 class MirrorMapRenderer final : public Renderer
 {

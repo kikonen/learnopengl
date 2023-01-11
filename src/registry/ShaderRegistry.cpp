@@ -2,7 +2,8 @@
 
 #include "fmt/format.h"
 
-ShaderRegistry::ShaderRegistry()
+ShaderRegistry::ShaderRegistry(const Assets& assets)
+    : m_assets(assets)
 {
 }
 
@@ -18,22 +19,19 @@ ShaderRegistry::~ShaderRegistry()
 }
 
 Shader* ShaderRegistry::getShader(
-    const Assets& assets,
     const std::string& name)
 {
-    return getShader(assets, name, "", {});
+    return getShader(name, "", {});
 }
 
 Shader* ShaderRegistry::getShader(
-    const Assets& assets,
     const std::string& name,
     const std::map<std::string, std::string>& defines)
 {
-    return getShader(assets, name, "", defines);
+    return getShader(name, "", defines);
 }
 
 Shader* ShaderRegistry::getShader(
-    const Assets& assets,
     const std::string& name,
     const std::string& geometryType,
     const std::map<std::string, std::string>& defines)
@@ -59,7 +57,7 @@ Shader* ShaderRegistry::getShader(
 
     if (!shader) {
         m_shaders[key] = std::make_unique<Shader>(
-            assets,
+            m_assets,
             key,
             name,
             geometryType,
