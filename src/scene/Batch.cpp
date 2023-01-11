@@ -206,7 +206,7 @@ void Batch::flush(
     const backend::DrawOptions* boundDrawOptions{ nullptr };
     //int  baseInstance = range.m_baseIndex;
 
-    backend::DrawIndirectCommand indirect;
+    backend::DrawIndirectCommand indirect{};
 
     for (auto& curr : m_batches) {
         if (curr.m_drawCount == 0) continue;
@@ -240,10 +240,19 @@ void Batch::flush(
             cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
 
-            for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
-                cmd.baseInstance = m_entityIndeces[i];
+            if (drawOptions.instanced) {
+                cmd.instanceCount = curr.m_drawCount;
+                // NOTE KI *SAME* e
+                cmd.baseInstance = m_entityIndeces[curr.m_index];
                 m_draw.send(indirect);
                 m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+            }
+            else {
+                for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
+                    cmd.baseInstance = m_entityIndeces[i];
+                    m_draw.send(indirect);
+                    m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+                }
             }
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
@@ -254,10 +263,18 @@ void Batch::flush(
             cmd.instanceCount = 1;
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
 
-            for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
-                cmd.baseInstance = m_entityIndeces[i];
+            if (drawOptions.instanced) {
+                cmd.instanceCount = curr.m_drawCount;
+                cmd.baseInstance = m_entityIndeces[curr.m_index];
                 m_draw.send(indirect);
                 m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+            }
+            else {
+                for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
+                    cmd.baseInstance = m_entityIndeces[i];
+                    m_draw.send(indirect);
+                    m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+                }
             }
         }
         else {

@@ -21,6 +21,7 @@ namespace backend {
         bool renderBack = false;
         bool wireframe = false;
         bool blend = false;
+        bool instanced = false;
 
         // cont of indeces for indexed drawing
         // 0 for non indexed draw
@@ -33,14 +34,16 @@ namespace backend {
         int materialOffset = 0;
         bool singleMaterial = false;
 
-        bool isSameDrawCommand(const DrawOptions& b, bool useBlend) const {
+
+        inline bool isSameDrawCommand(const DrawOptions& b, bool useBlend) const {
             // NOTE KI multi/single material *CAN* go in same indirect draw
             return isSameMultiDraw(b, useBlend) &&
                 vertexOffset == b.vertexOffset &&
-                indexOffset == b.indexOffset;
+                indexOffset == b.indexOffset &&
+                instanced == b.instanced;
         }
 
-        bool isSameMultiDraw(const DrawOptions& b, bool useBlend) const {
+        inline bool isSameMultiDraw(const DrawOptions& b, bool useBlend) const {
             return renderBack == b.renderBack &&
                 wireframe == b.wireframe &&
                 (useBlend ? blend == b.blend : true) &&
@@ -48,7 +51,7 @@ namespace backend {
                 type == b.type;
         }
 
-        bool operator<(const DrawOptions& o) const noexcept {
+        inline bool operator<(const DrawOptions& o) const noexcept {
             return std::tie(blend, renderBack, wireframe, type, mode, singleMaterial, vertexOffset, indexOffset, materialOffset) <
                 std::tie(o.blend, o.renderBack, o.wireframe, o.type, o.mode, o.singleMaterial, o.vertexOffset, o.indexOffset, o.materialOffset);
         }
