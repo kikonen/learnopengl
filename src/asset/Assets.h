@@ -108,6 +108,7 @@ public:
     // NOTE KI MUST match lookup() in light shadow shader
     float shadowNearPlane;
     float shadowFarPlane;
+    float shadowFrustumSize;
     int shadowMapSize;
     float shadowRenderFrequency;
 

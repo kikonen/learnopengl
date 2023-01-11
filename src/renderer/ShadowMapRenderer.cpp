@@ -40,6 +40,7 @@ void ShadowMapRenderer::prepare(
 
     m_nearPlane = assets.shadowNearPlane;
     m_farPlane = assets.shadowFarPlane;
+    m_frustumSize = assets.shadowFrustumSize;
 
     m_solidShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH);
     m_blendedShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
@@ -84,7 +85,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
         node->m_light->getWorldTargetPos(), up);
 
     const glm::mat4 lightProjectionMatrix = glm::ortho(
-        -100.0f, 100.0f, -100.0f, 100.0f,
+        -m_frustumSize, m_frustumSize, -m_frustumSize, m_frustumSize,
         m_nearPlane,
         m_farPlane);
 

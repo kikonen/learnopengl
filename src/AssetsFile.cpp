@@ -198,6 +198,9 @@ void AssetsFile::loadAssets(
         else if (k == "shadow_far_plane") {
             data.shadowFarPlane = v.as<float>();
         }
+        else if (k == "shadow_frustum_size") {
+            data.shadowFrustumSize = v.as<float>();
+        }
         else if (k == "shadow_map_size") {
             data.shadowMapSize = v.as<int>();
         }

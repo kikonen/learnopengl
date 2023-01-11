@@ -92,6 +92,7 @@ Assets::Assets()
 
     shadowNearPlane = 0.1f;
     shadowFarPlane = 1000.0f;
+    shadowFrustumSize = 100.0f;
     shadowMapSize = 1024;
     shadowRenderFrequency = 0.2f;
 
