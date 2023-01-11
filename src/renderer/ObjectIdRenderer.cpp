@@ -33,20 +33,20 @@ int ObjectIdRenderer::getObjectId(
 
     const auto& res = ctx.m_resolution;
 
-    int screenW = res.x;
-    int screenH = res.y;
+    const int screenW = res.x;
+    const int screenH = res.y;
 
-    float w = screenW * (mainViewport->m_size.x / GL_SCREEN_SIZE);
-    float h = screenH * (mainViewport->m_size.y / GL_SCREEN_SIZE);
+    const float w = screenW * (mainViewport->m_size.x / GL_SCREEN_SIZE);
+    const float h = screenH * (mainViewport->m_size.y / GL_SCREEN_SIZE);
 
-    float ratioX = m_idBuffer->m_spec.width / w;
-    float ratioY = m_idBuffer->m_spec.height / h;
+    const float ratioX = m_idBuffer->m_spec.width / w;
+    const float ratioY = m_idBuffer->m_spec.height / h;
 
-    float offsetX = screenW * (mainViewport->m_pos.x + 1.f) / GL_SCREEN_SIZE;
-    float offsetY = screenH * (1.f - (mainViewport->m_pos.y + 1.f) / GL_SCREEN_SIZE);
+    const float offsetX = screenW * (mainViewport->m_pos.x + 1.f) / GL_SCREEN_SIZE;
+    const float offsetY = screenH * (1.f - (mainViewport->m_pos.y + 1.f) / GL_SCREEN_SIZE);
 
-    float posx = (screenPosX - offsetX) * ratioX;
-    float posy = (screenPosY - offsetY) * ratioY;
+    const float posx = (screenPosX - offsetX) * ratioX;
+    const float posy = (screenPosY - offsetY) * ratioY;
 
     if (posx < 0 || posx > w || posy < 0 || posy > h) return -1;
 
@@ -65,7 +65,7 @@ int ObjectIdRenderer::getObjectId(
         m_idBuffer->unbind(ctx);
     }
 
-    int objectID =
+    const int objectID =
         data[0] +
         data[1] * 256 +
         data[2] * 256 * 256;

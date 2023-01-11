@@ -40,7 +40,7 @@ const AABB& SpriteMesh::calculateAABB() const
 
 const std::vector<Material>& SpriteMesh::getMaterials() const
 {
-    return { m_material };
+    return m_material;
 }
 
 GLVertexArray* SpriteMesh::prepare(

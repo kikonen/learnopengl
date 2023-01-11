@@ -34,6 +34,6 @@ public:
         backend::DrawOptions& drawOptions) override;
 
 protected:
-    Material m_material;
+    std::vector<Material> m_material;
 
 };

@@ -40,7 +40,7 @@ const AABB& QuadMesh::calculateAABB() const
 
 const std::vector<Material>& QuadMesh::getMaterials() const
 {
-    return { m_material };
+    return m_material;
 }
 
 GLVertexArray* QuadMesh::prepare(
