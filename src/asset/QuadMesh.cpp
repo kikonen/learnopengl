@@ -33,7 +33,7 @@ const std::string QuadMesh::str() const
     return fmt::format("<QUAD: {}>", m_objectID);
 }
 
-const AABB& QuadMesh::calculateAABB() const
+const AABB QuadMesh::calculateAABB() const
 {
     return QUAD_AABB;
 }

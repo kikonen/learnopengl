@@ -50,8 +50,8 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain()
     }
 
     tris.reserve(vertexCount * vertexCount * 2);
-    for (int z = 0; z < vertexCount - 1; z++) {
-        for (int x = 0; x < vertexCount - 1; x++) {
+    for (size_t z = 0; z < vertexCount - 1; z++) {
+        for (size_t x = 0; x < vertexCount - 1; x++) {
             int topLeft = (z * vertexCount) + x;
             int topRight = (z * vertexCount) + x + 1;
             int bottomLeft = ((z + 1) * vertexCount) + x;

@@ -173,7 +173,7 @@ void SceneFile::attachVolume(
 
     // NOTE KI m_radius = 1.73205078
     mesh->prepareVolume();
-    auto volume = mesh->getVolume();
+    const auto* volume = mesh->getVolume();
     node->setVolume(volume->clone());
 
     node->setAABB(mesh->getAABB());

@@ -4,7 +4,6 @@
 #include <ki/uuid.h>
 
 #include "asset/AABB.h"
-#include "asset/OBB.h"
 
 #include "asset/Sphere.h"
 
@@ -68,8 +67,6 @@ public:
     void setAABB(const AABB& aabb);
     const AABB& getAABB() const;
 
-    OBB& getOBB();
-
     inline bool isEntity();
 
     inline int getTagMaterialIndex() const { return m_tagMaterialIndex;  }
@@ -132,7 +129,6 @@ protected:
 
     std::unique_ptr<Volume> m_volume;
     AABB m_aabb;
-    OBB m_obb;
 
 private:
     int m_matrixLevel = -1;

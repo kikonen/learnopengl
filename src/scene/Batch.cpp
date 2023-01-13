@@ -124,12 +124,12 @@ void Batch::draw(
     if (type->m_flags.noRender) return;
     if (type->m_flags.noDisplay) return;
 
-    auto& obb = node.getOBB();
+    //auto& obb = node.getOBB();
     //const auto mvp = ctx.m_matrices.projected * node.getModelMatrix();
 
     const auto& projectedMatrix = ctx.m_matrices.projected;
 
-    const auto& volume = node.getVolume();
+    const auto* volume = node.getVolume();
     if (ctx.m_useFrustum &&
         ctx.assets.frustumEnabled &&
         !type->m_flags.noFrustum &&

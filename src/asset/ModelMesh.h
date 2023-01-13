@@ -34,7 +34,7 @@ public:
 
     virtual const std::string str() const override;
 
-    virtual const AABB& calculateAABB() const override;
+    virtual const AABB calculateAABB() const override;
 
     virtual const std::vector<Material>& getMaterials() const override;
 

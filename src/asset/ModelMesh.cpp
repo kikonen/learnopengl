@@ -48,7 +48,7 @@ const std::string ModelMesh::str() const
         m_objectID, m_meshPath, m_meshName);
 }
 
-const AABB& ModelMesh::calculateAABB() const {
+const AABB ModelMesh::calculateAABB() const {
     glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
     glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
 

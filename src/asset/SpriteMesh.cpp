@@ -33,7 +33,7 @@ const std::string SpriteMesh::str() const
     return fmt::format("<SPRITE: {}>", m_objectID);
 }
 
-const AABB& SpriteMesh::calculateAABB() const
+const AABB SpriteMesh::calculateAABB() const
 {
     return SPRITE_AABB;
 }
