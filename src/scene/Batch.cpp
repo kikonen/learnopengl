@@ -17,7 +17,7 @@
 
 namespace {
     constexpr int BATCH_COUNT = 100;
-    constexpr int ENTITY_COUNT = 100000;
+    constexpr int ENTITY_COUNT = 500000;
     constexpr int BATCH_RANGE_COUNT = 8;
 
     int idBase = 0;

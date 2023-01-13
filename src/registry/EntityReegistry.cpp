@@ -5,7 +5,7 @@
 
 namespace {
     // scene_full = 91 109
-    constexpr int MAX_ENTITY_COUNT = 100000;
+    constexpr int MAX_ENTITY_COUNT = 500000;
 }
 
 EntityRegistry::EntityRegistry(const Assets& assets)
