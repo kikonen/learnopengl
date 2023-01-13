@@ -127,16 +127,44 @@ void Batch::draw(
     auto& obb = node.getOBB();
     //const auto mvp = ctx.m_matrices.projected * node.getModelMatrix();
 
+    const auto& projectedMatrix = ctx.m_matrices.projected;
+
     const auto& volume = node.getVolume();
     if (ctx.m_useFrustum &&
         ctx.assets.frustumEnabled &&
         !type->m_flags.noFrustum &&
-        volume &&
-        !volume->isOnFrustum(
-            ctx.m_camera.getFrustum(),
-            node.getMatrixLevel(),
-            node.getModelMatrix()))
+        volume)
     {
+        bool hit = true;
+        if (false) {
+            hit = volume->isOnFrustum(
+                ctx.m_camera.getFrustum(),
+                node.getMatrixLevel(),
+                node.getModelMatrix());
+        }
+
+        //https://en.wikibooks.org/wiki/OpenGL_Programming/Glescraft_5
+        auto pos = glm::vec4(node.getWorldPos(), 1.0);
+        glm::vec4 coords = projectedMatrix * pos;
+        coords.x /= coords.w;
+        coords.y /= coords.w;
+
+        hit = true;
+        if (coords.x < -1 || coords.x > 1 || coords.y < -1 || coords.y > 1 || coords.z < 0) {
+            float diameter = node.getVolumeRadius();
+
+            if (coords.z < -diameter) {
+                hit = false;
+            }
+
+            if (hit) {
+                diameter /= fabsf(coords.w);
+                if (fabsf(coords.x) > 1 + diameter || fabsf(coords.y > 1 + diameter)) {
+                    hit = false;
+                }
+            }
+        }
+        //hit = true;
         //!obb.inFrustum(
         //    ctx.m_camera.getProjectedLevel(),
         //    ctx.m_camera.getProjected(),
@@ -149,8 +177,10 @@ void Batch::draw(
             //    node.getMatrixLevel(),
             //    node.getWorldModelMatrix()))
             //!volume->isOnFrustum(*ctx.getFrustum(), node.getMatrixLevel(), node.getWorldModelMatrix()))
-        ctx.m_skipCount += 1;
-        return;
+        if (!hit) {
+            ctx.m_skipCount += 1;
+            return;
+        }
     }
 
     ctx.m_drawCount += 1;

@@ -128,6 +128,8 @@ void Node::updateModelMatrix(Node* parent) noexcept
         || m_parentMatrixLevel != parentMatrixLevel;
     if (!dirtyModel) return;
 
+    const bool needRadius = m_dirtyScale;
+
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     if (m_dirtyRotation) {
         m_rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
@@ -171,12 +173,11 @@ void Node::updateModelMatrix(Node* parent) noexcept
 
     m_worldPlaneNormal = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_planeNormal, 1.0)));
 
-    {
-        float sx = m_modelMatrix[0][0];
-        float sy = m_modelMatrix[1][1];
-        float sz = m_modelMatrix[2][2];
-
-        m_worldMaxScale = std::max(std::max(sx, sy), sz);
+    if (needRadius) {
+        const glm::vec3& min = m_scaleMatrix * glm::vec4(m_aabb.m_min, 1.0);
+        const glm::vec3& max = m_scaleMatrix * glm::vec4(m_aabb.m_max, 1.0);
+        m_volumeRadius = glm::length(min - max) * 0.5f;
+        m_volumeCenter = (max + min) * 0.5f;
     }
 
     m_dirtyEntity = true;
@@ -257,9 +258,14 @@ const glm::vec3& Node::getWorldPlaneNormal() const noexcept
     return m_worldPlaneNormal;
 }
 
-float Node::getWorldMaxScale() const noexcept
+float Node::getVolumeRadius() const noexcept
 {
-    return m_worldMaxScale;
+    return m_volumeRadius;
+}
+
+const glm::vec3& Node::getVolumeCenter() const noexcept
+{
+    return m_volumeCenter;
 }
 
 const Volume* Node::getVolume() const noexcept

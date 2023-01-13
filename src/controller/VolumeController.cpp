@@ -19,22 +19,24 @@ bool VolumeController::update(
 
     const auto& targetPos = targetNode->getWorldPos();
 
-    auto radius = volumeNode.getVolume()->getRadius();
+    //auto radius = volumeNode.getVolume()->getRadius();
 
-    const auto& volume = targetNode->getVolume();
+    //const auto& volume = targetNode->getVolume();
 
     const auto& modelMatrix = targetNode->getModelMatrix();
-    const glm::vec3 worldScale = {
-        glm::length(modelMatrix[0]),
-        glm::length(modelMatrix[1]),
-        glm::length(modelMatrix[2]) };
+    //const glm::vec3 worldScale = {
+    //    glm::length(modelMatrix[0]),
+    //    glm::length(modelMatrix[1]),
+    //    glm::length(modelMatrix[2]) };
 
-    const auto& rootPos = ctx.m_nodeRegistry.m_root->getWorldPos();
+    const auto& rootPos = ctx.m_nodeRegistry.m_root->getPosition();
 
-    glm::vec3 volumePos{ modelMatrix * glm::vec4(volume->getCenter(), 1.f) };
+    glm::vec3 volumePos{ modelMatrix * glm::vec4(targetNode->getVolumeCenter(), 1.f)};
+    //glm::vec3 volumePos = targetNode->getWorldPos();
     volumePos -= rootPos;
-    const auto maxScale = std::max(std::max(worldScale.x, worldScale.y), worldScale.z);
-    const auto volumeScale = volume->getRadius() * maxScale * 1.01f;
+    //const auto maxScale = std::max(std::max(worldScale.x, worldScale.y), worldScale.z);
+    //const auto volumeScale = volume->getRadius() * maxScale * 1.01f;
+    const auto volumeScale = targetNode->getVolumeRadius();
 
     volumeNode.setPosition(volumePos);
     volumeNode.setScale(volumeScale);
