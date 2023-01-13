@@ -51,17 +51,28 @@ void Engine::run() {
     const auto& extensions = ki::GL::getExtensions();
     // NOTE KI https://www.khronos.org/opengl/wiki/Common_Mistakes
     // - preferredFormat is performnce topic
-    std::string ver{ (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) };
     KI_INFO_OUT(fmt::format(
 R"(
 ENGINE::RUN
-VER: {}
+-------------
+vendor:   {}
+renderer: {}
+version:  {}
+glsl:     {}
+-------------
 GL_MAX_VERTEX_UNIFORM_COMPONENTS: {}
 GL_MAX_VERTEX_ATTRIBS: {}
 GL_PREFERRED_TEXTURE_FORMAT_RGBA8: 0x{:x}
-GL_PREFERRED_TEXTURE_FORMAT_RGB8: 0x{:x}
+GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 )",
-        ver, info.maxVertexUniformComponents, info.maxVertexAttributes, info.preferredFormatRGBA8, info.preferredFormatRGB8));
+        info.vendor,
+        info.renderer,
+        info.version,
+        info.glslVersion,
+        info.maxVertexUniformComponents,
+        info.maxVertexAttributes,
+        info.preferredFormatRGBA8,
+        info.preferredFormatRGB8));
 
     KI_INFO("[EXTENSIONS]");
     for (const auto& ext : extensions) {

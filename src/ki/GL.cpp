@@ -163,6 +163,11 @@ namespace ki {
     {
         OpenGLInfo info;
 
+        info.vendor = (char*)glGetString(GL_VENDOR);
+        info.renderer = (char*)glGetString(GL_RENDERER);
+        info.version = (char*)glGetString(GL_VERSION);
+        info.glslVersion = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+
         glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &info.maxVertexUniformComponents);
         glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &info.maxVertexAttributes);
 

@@ -7,6 +7,8 @@
 #include "asset/MaterialIndex.h"
 #include "asset/Mesh.h"
 
+#include "backend/DrawOptions.h"
+
 #include "scene/RenderContext.h"
 
 #include "NodeRegistry.h"

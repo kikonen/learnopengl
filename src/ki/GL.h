@@ -61,6 +61,11 @@ namespace ki {
     };
 
     struct OpenGLInfo {
+        std::string vendor;
+        std::string renderer;
+        std::string version;
+        std::string glslVersion;
+
         int maxVertexUniformComponents = 0;
         int maxVertexAttributes = 0;
 

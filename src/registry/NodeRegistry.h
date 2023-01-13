@@ -15,6 +15,13 @@
 
 #include "registry/MeshType.h"
 
+class Batch;
+class MaterialRegistry;
+class EntityRegistry;
+class ModelRegistry;
+
+class SkyboxRenderer;
+
 //
 // NOTE KI shader key is REQUIRED for sorting "gull back face" draws
 // next to each other to avoid redundant state changes
@@ -61,13 +68,6 @@ using ShaderTypeMap = std::map<ShaderKey, MeshTypeMap>;
 using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
 
 using NodeListener = std::function<void(Node*, NodeOperation)>;
-
-class Batch;
-class MaterialRegistry;
-class EntityRegistry;
-class ModelRegistry;
-
-class SkyboxRenderer;
 
 
 class NodeRegistry final

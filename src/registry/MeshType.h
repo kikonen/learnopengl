@@ -3,9 +3,9 @@
 #include "asset/Shader.h"
 #include "asset/MaterialVBO.h"
 
-#include "kigl/GLVertexArray.h"
-
 #include "backend/DrawOptions.h"
+
+#include "kigl/GLVertexArray.h"
 
 #include "EntityType.h"
 
