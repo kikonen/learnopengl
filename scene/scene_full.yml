@@ -610,8 +610,7 @@ entities:
     material: terrain_grass
     shader: terrain
     pos: [-400, 0, -400]
-    xscale: [100, 1, 100]
-    batch_size: 100
+    scale: [100, 1, 100]
     render_flags:
       no_shadow: true
     repeat:
@@ -702,7 +701,6 @@ entities:
     shader: sprite
     pos: [15, 6.5, 20.0]
     material: skeleton
-    batch_size: 1000
     render_flags:
       alpha: true
       render_back: true
@@ -747,7 +745,6 @@ entities:
     shader: texture
     pos: [15, 6.5, 20.0]
     material: skeleton
-    batch_size: 1000
     render_flags:
       alpha: true
       render_back: true

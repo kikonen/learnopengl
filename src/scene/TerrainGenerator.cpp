@@ -17,21 +17,30 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain()
 
     const int VERTEX_COUNT = assets.terrainVertexCount;
 
-    mesh->m_vertices.reserve(VERTEX_COUNT * VERTEX_COUNT);
+    auto& vertices = mesh->m_vertices;
+    auto& tris = mesh->m_tris;
+
+    vertices.reserve(VERTEX_COUNT * VERTEX_COUNT);
     for (int z = 0; z < VERTEX_COUNT; z++) {
-        float gz = (z / ((float)VERTEX_COUNT - 1)) * tileSize;
+        float gz = (z / ((float)VERTEX_COUNT - 1));// *tileSize;
         float tz = (z / ((float)VERTEX_COUNT - 1));
 
+        gz = gz * 2.f - 1.f;
+
         for (int x = 0; x < VERTEX_COUNT; x++) {
-            float gx = (x / ((float)VERTEX_COUNT - 1)) * tileSize;
+            float gx = (x / ((float)VERTEX_COUNT - 1));// *tileSize;
             float tx = (x / ((float)VERTEX_COUNT - 1));
 
-            float gy = perlin.perlin(gx, 0, gz) * 5;
+            gx = gx * 2.f - 1.f;
+
+            float gy = perlin.perlin(gx * tileSize, 0, gz * tileSize);
+            gy = std::clamp(gy, -4.f, 4.f);
+
             glm::vec3 pos{ gx, gy, gz };
             glm::vec2 texture{ tx, tz };
             glm::vec3 normal{ 0.f, 1.f, 0.f };
 
-            mesh->m_vertices.emplace_back(
+            vertices.emplace_back(
                 pos,
                 texture,
                 normal,
@@ -41,7 +50,7 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain()
         }
     }
 
-    mesh->m_tris.reserve(VERTEX_COUNT * VERTEX_COUNT * 2);
+    tris.reserve(VERTEX_COUNT * VERTEX_COUNT * 2);
     for (int z = 0; z < VERTEX_COUNT - 1; z++) {
         for (int x = 0; x < VERTEX_COUNT - 1; x++) {
             int topLeft = (z * VERTEX_COUNT) + x;
@@ -52,8 +61,8 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain()
             //Tri* tri1 = new Tri(glm::uvec3(topLeft, bottomLeft, topRight));
             //Tri* tri2 = new Tri(glm::uvec3(topRight, bottomLeft, bottomRight));
 
-            mesh->m_tris.emplace_back(topRight, bottomLeft, bottomRight);
-            mesh->m_tris.emplace_back(topLeft, bottomLeft, topRight);
+            tris.emplace_back(topRight, bottomLeft, bottomRight);
+            tris.emplace_back(topLeft, bottomLeft, topRight);
         }
     }
 

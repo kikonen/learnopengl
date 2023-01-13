@@ -34,9 +34,8 @@ entities:
     type: terrain
     material: terrain_grass
     shader: terrain
-    pos: [-400, -4, -400]
-    xscale: [100, 1, 100]
-    batch_size: 100
+    pos: [-100, -4, -100]
+    scale: [100, 1, 100]
     render_flags:
       no_shadow: true
     repeat:
