@@ -41,6 +41,8 @@ public:
     const glm::vec3& getWorldPos() const noexcept;
     const glm::vec3& getWorldPlaneNormal() const noexcept;
 
+    float getWorldMaxScale() const noexcept;
+
     int getMatrixLevel() const noexcept;
 
     void setPlaneNormal(const glm::vec3& planeNormal) noexcept;
@@ -135,6 +137,7 @@ private:
     int m_matrixLevel = -1;
     int m_parentMatrixLevel = -1;
 
+    float m_worldMaxScale{ 0.f };
     glm::vec3 m_worldPlaneNormal{ 0.f };
 
     glm::vec3 m_planeNormal{ 0 };

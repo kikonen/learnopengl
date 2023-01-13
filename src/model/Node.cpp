@@ -171,6 +171,14 @@ void Node::updateModelMatrix(Node* parent) noexcept
 
     m_worldPlaneNormal = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_planeNormal, 1.0)));
 
+    {
+        float sx = m_modelMatrix[0][0];
+        float sy = m_modelMatrix[1][1];
+        float sz = m_modelMatrix[2][2];
+
+        m_worldMaxScale = std::max(std::max(sx, sy), sz);
+    }
+
     m_dirtyEntity = true;
     m_matrixLevel++;
 }
@@ -247,6 +255,11 @@ const glm::vec3& Node::getWorldPos() const noexcept
 const glm::vec3& Node::getWorldPlaneNormal() const noexcept
 {
     return m_worldPlaneNormal;
+}
+
+float Node::getWorldMaxScale() const noexcept
+{
+    return m_worldMaxScale;
 }
 
 const Volume* Node::getVolume() const noexcept
