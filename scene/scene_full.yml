@@ -669,6 +669,7 @@ entities:
     controller:
       type: asteroid_belt
       count: 1000
+      update_frequency: 0.2
       enabled: true
     enabled: true
   - name: Scale 1

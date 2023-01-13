@@ -62,10 +62,6 @@ private:
     const int m_asteroidCount;
     const float m_radius;
     const float m_offset;
-    const int m_updateStep;
-
-    int m_nodeMatrixLevel = 0;
-    int m_updateIndex = 0;
 
     std::vector<Asteroid> m_asteroids;
 };

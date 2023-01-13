@@ -18,8 +18,7 @@
 AsteroidBeltController::AsteroidBeltController(int asteroidCount)
     : m_asteroidCount(asteroidCount),
     m_radius(70.0),
-    m_offset(20.5f),
-    m_updateStep(3)
+    m_offset(20.5f)
 {
 }
 
@@ -28,6 +27,7 @@ void AsteroidBeltController::prepareInstanced(
     EntityRegistry& entityRegistry,
     InstancedNode& node)
 {
+    m_updateFrequency = 0.4f;
     createAsteroids(assets, entityRegistry, node);
 }
 
@@ -36,14 +36,10 @@ bool AsteroidBeltController::updateInstanced(
     InstancedNode& node,
     Node* parent)
 {
-    const bool rotate = m_updateIndex% m_updateStep == 0 || node.getMatrixLevel() != m_nodeMatrixLevel;
+    if (!needUpdate(ctx)) return false;
 
-    if (rotate) {
-        updateAsteroids(ctx, node, parent, rotate);
-    }
-
-    m_updateIndex++;
-    m_nodeMatrixLevel = node.getMatrixLevel();
+    bool rotate = true;
+    updateAsteroids(ctx, node, parent, rotate);
 
     return rotate;
 }
@@ -169,7 +165,8 @@ void AsteroidBeltController::rotateAsteroids(
     InstancedNode& node,
     std::vector<Asteroid>& asteroids)
 {
-    const float elapsed = ctx.m_clock.elapsedSecs;
+    //const float elapsed = ctx.m_clock.elapsedSecs;
+    const float elapsed = m_elapsedTime;
     const size_t count = asteroids.size();
 
     for (size_t i = 0; i < count; i++)

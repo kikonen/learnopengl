@@ -29,7 +29,18 @@ public:
     virtual void onMouseMove(Input* input, double xoffset, double yoffset) {};
     virtual void onMouseScroll(Input* input, double xoffset, double yoffset) {};
 
+    void setUpdateFrequency(float frequency);
+
+protected:
+    bool needUpdate(const RenderContext& ctx);
+
 protected:
     bool m_prepared = false;
+
+    float m_updateFrequency;
+    float m_elapsedTime = 0.f;
+
+    unsigned long m_lastHitFrame = 0;
+
 };
 

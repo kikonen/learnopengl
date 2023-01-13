@@ -103,6 +103,7 @@ class SceneFile
         //glm::vec3 center{ 0 };
         float speed{ 0 };
         float radius{ 0 };
+        float updateFrequecny{ 0 };
 
         int mode{ 0 };
         int count{ 0 };

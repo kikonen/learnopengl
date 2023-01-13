@@ -684,6 +684,8 @@ std::unique_ptr<NodeController> SceneFile::createController(
         }
     }
 
+    controller->setUpdateFrequency(data.updateFrequecny);
+
     return controller;
 }
 
@@ -1084,6 +1086,9 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
         }
         else if (k == "mode") {
             data.mode = v.as<int>();
+        }
+        else if (k == "update_frequency") {
+            data.updateFrequecny = v.as<float>();
         }
         else if (k == "count") {
             data.count = v.as<int>();
