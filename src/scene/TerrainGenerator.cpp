@@ -13,23 +13,22 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain()
 
     Perlin perlin(-1);
 
-    const int tileSize = assets.terrainTileSize;
-
-    const int VERTEX_COUNT = assets.terrainVertexCount;
+    const size_t tileSize = assets.terrainTileSize;
+    const size_t vertexCount = assets.terrainVertexCount;
 
     auto& vertices = mesh->m_vertices;
     auto& tris = mesh->m_tris;
 
-    vertices.reserve(VERTEX_COUNT * VERTEX_COUNT);
-    for (int z = 0; z < VERTEX_COUNT; z++) {
-        float gz = (z / ((float)VERTEX_COUNT - 1));// *tileSize;
-        float tz = (z / ((float)VERTEX_COUNT - 1));
+    vertices.reserve(vertexCount * vertexCount);
+    for (int z = 0; z < vertexCount; z++) {
+        float gz = (z / ((float)vertexCount - 1));// *tileSize;
+        float tz = (z / ((float)vertexCount - 1));
 
         gz = gz * 2.f - 1.f;
 
-        for (int x = 0; x < VERTEX_COUNT; x++) {
-            float gx = (x / ((float)VERTEX_COUNT - 1));// *tileSize;
-            float tx = (x / ((float)VERTEX_COUNT - 1));
+        for (int x = 0; x < vertexCount; x++) {
+            float gx = (x / ((float)vertexCount - 1));// *tileSize;
+            float tx = (x / ((float)vertexCount - 1));
 
             gx = gx * 2.f - 1.f;
 
@@ -50,13 +49,13 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain()
         }
     }
 
-    tris.reserve(VERTEX_COUNT * VERTEX_COUNT * 2);
-    for (int z = 0; z < VERTEX_COUNT - 1; z++) {
-        for (int x = 0; x < VERTEX_COUNT - 1; x++) {
-            int topLeft = (z * VERTEX_COUNT) + x;
-            int topRight = (z * VERTEX_COUNT) + x + 1;
-            int bottomLeft = ((z + 1) * VERTEX_COUNT) + x;
-            int bottomRight = ((z + 1) * VERTEX_COUNT) + x + 1;
+    tris.reserve(vertexCount * vertexCount * 2);
+    for (int z = 0; z < vertexCount - 1; z++) {
+        for (int x = 0; x < vertexCount - 1; x++) {
+            int topLeft = (z * vertexCount) + x;
+            int topRight = (z * vertexCount) + x + 1;
+            int bottomLeft = ((z + 1) * vertexCount) + x;
+            int bottomRight = ((z + 1) * vertexCount) + x + 1;
 
             //Tri* tri1 = new Tri(glm::uvec3(topLeft, bottomLeft, topRight));
             //Tri* tri2 = new Tri(glm::uvec3(topRight, bottomLeft, bottomRight));
