@@ -47,7 +47,8 @@ void WaterMapRenderer::prepare(
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     materialRegistry.add(m_tagMaterial);
 
-    m_renderFrequency = assets.waterRenderFrequency;
+    m_renderFrameStart = assets.waterRenderFrameStart;
+    m_renderFrameStep = assets.waterRenderFrameStep;
 
     FrameBufferSpecification spec = {
         assets.waterReflectionSize ,

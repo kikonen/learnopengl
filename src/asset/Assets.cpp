@@ -58,8 +58,6 @@ Assets::Assets()
 
     useLight = true;
 
-    // NOTE KI no skipping of frames
-    renderFrequency = 0.f;
     debugClearColor = false;
     clearColor = false;
 
@@ -68,14 +66,22 @@ Assets::Assets()
 
     cameraFov = 45.f;
 
+    // NOTE KI no skipping of frames
+    renderFrameStart = 0;
+    renderFrameStep = 0;
+
+    nodeRenderFrameStart = 0;
+    nodeRenderFrameStep = 0;
+
     // NOTE KI mirror does not tolerate much skip
-    mirrorRenderFrequency = 0.1f;
-    mirrorFov = 40.f;
+    mirrorRenderFrameStart = 0;
+    mirrorRenderFrameStep = 2;
 
     waterTileSize = 128;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
-    waterRenderFrequency = 0.1f;
+    waterRenderFrameStart = 0;
+    waterRenderFrameStep = 2;
 
     terrainVertexCount = 64;
     terrainTileSize = 512;
@@ -94,7 +100,9 @@ Assets::Assets()
     shadowFarPlane = 1000.0f;
     shadowFrustumSize = 100.0f;
     shadowMapSize = 1024;
-    shadowRenderFrequency = 0.2f;
+
+    shadowRenderFrameStart = 0;
+    shadowRenderFrameStep = 2;
 
     mirrorReflectionSize = 1024;
     mirrorRefractionSize = 1024;
@@ -105,7 +113,9 @@ Assets::Assets()
     cubeMapSize = 1024;
     cubeMapNearPlane = 0.5;
     cubeMapFarPlane = 200;
-    cubeMapRenderFrequency = 0.2f;
+
+    cubeMapRenderFrameStart = 1;
+    cubeMapRenderFrameStep = 2;
 
     viewportEffect = ViewportEffect::none;
 

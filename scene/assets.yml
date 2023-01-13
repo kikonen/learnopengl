@@ -43,7 +43,6 @@ assets:
 
   rasterizer_discard: false
 
-  render_frequency: 0.0
   debug_clear_color: true
   clear_color: true
 
@@ -52,11 +51,17 @@ assets:
 
   camera_fov: 45
 
-  mirror_render_frequency: 0.04
+  render_frame_start: 1
+  render_frame_step: 1
+
+  mirror_render_frame_start: 0
+  mirror_render_frame_step: 2
+
   mirror_fov: 30
 
   water_tile_size: 100
-  water_render_frequency: 0.04
+  water_render_frame_start: 0
+  water_render_frame_step: 2
 
   terrain_vertex_count: 64
   terrain_tile_size: 400
@@ -75,7 +80,8 @@ assets:
   shadow_far_plane: 1000.0
   shadow_frustum_size: 200
   shadow_map_size: 1024
-  shadow_render_frequency: 0.06
+  shadow_render_frame_start: 0
+  shadow_render_frame_step: 2
 
   mirror_reflection_size: 1000
   mirror_rdRefraction_size: 1000
@@ -86,6 +92,7 @@ assets:
   cube_map_size: 1000
   cube_map_near_plane: 0.5
   cube_map_far_plane: 200
-  cube_map_render_frequency: 0.25
+  cube_map_render_frame_start: 1
+  cube_map_render_frame_step: 2
 
   viewport_effect: none

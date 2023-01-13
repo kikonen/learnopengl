@@ -26,6 +26,9 @@ void NodeRenderer::prepare(
 
     Renderer::prepare(assets, shaders, materialRegistry);
 
+    m_renderFrameStart = assets.nodeRenderFrameStart;
+    m_renderFrameStep = assets.nodeRenderFrameStep;
+
     m_selectionShader = shaders.getShader(TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
     m_selectionShader->m_selection = true;
     m_selectionShader->prepare(assets);

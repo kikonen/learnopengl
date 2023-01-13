@@ -135,8 +135,17 @@ void AssetsFile::loadAssets(
         else if (k == "rasterizer_discard") {
             data.rasterizerDiscard = v.as<bool>();
         }
-        else if (k == "render_frequency") {
-            data.renderFrequency = v.as<float>();
+        else if (k == "render_frame_start") {
+            data.renderFrameStart = v.as<float>();
+        }
+        else if (k == "render_frame_step") {
+            data.renderFrameStep = v.as<float>();
+        }
+        else if (k == "node_render_frame_start") {
+            data.nodeRenderFrameStart = v.as<float>();
+        }
+        else if (k == "node_render_frame_step") {
+            data.nodeRenderFrameStep = v.as<float>();
         }
         else if (k == "debug_clear_color") {
             data.debugClearColor = v.as<bool>();
@@ -153,8 +162,11 @@ void AssetsFile::loadAssets(
         else if (k == "camera_fov") {
             data.cameraFov = v.as<float>();
         }
-        else if (k == "mirror_render_frequency") {
-            data.mirrorRenderFrequency = v.as<float>();
+        else if (k == "mirror_render_frame_start") {
+            data.mirrorRenderFrameStart = v.as<float>();
+        }
+        else if (k == "mirror_render_frame_step") {
+            data.mirrorRenderFrameStep = v.as<float>();
         }
         else if (k == "mirror_fov") {
             data.mirrorFov = v.as<float>();
@@ -162,8 +174,11 @@ void AssetsFile::loadAssets(
         else if (k == "water_tile_size") {
             data.waterTileSize = v.as<int>();
         }
-        else if (k == "water_render_frequency") {
-            data.waterRenderFrequency = v.as<float>();
+        else if (k == "water_render_frame_start") {
+            data.waterRenderFrameStart = v.as<float>();
+        }
+        else if (k == "water_render_frame_step") {
+            data.waterRenderFrameStep = v.as<float>();
         }
         else if (k == "terrain_vertex_count") {
             data.terrainVertexCount = v.as<int>();
@@ -204,8 +219,11 @@ void AssetsFile::loadAssets(
         else if (k == "shadow_map_size") {
             data.shadowMapSize = v.as<int>();
         }
-        else if (k == "shadow_render_frequency") {
-            data.shadowRenderFrequency = v.as<float>();
+        else if (k == "shadow_render_frame_start") {
+            data.shadowRenderFrameStart = v.as<float>();
+        }
+        else if (k == "shadow_render_frame_step") {
+            data.shadowRenderFrameStep = v.as<float>();
         }
         else if (k == "mirror_reflection_size") {
             data.mirrorReflectionSize = v.as<int>();
@@ -228,8 +246,11 @@ void AssetsFile::loadAssets(
         else if (k == "cube_map_far_plane") {
             data.cubeMapFarPlane = v.as<float>();
         }
-        else if (k == "cube_map_render_frequency") {
-            data.cubeMapRenderFrequency = v.as<float>();
+        else if (k == "cube_map_render_frame_start") {
+            data.cubeMapRenderFrameStart = v.as<float>();
+        }
+        else if (k == "cube_map_render_frame_step") {
+            data.cubeMapRenderFrameStep = v.as<float>();
         }
         else if (k == "viewport_effect") {
             std::string effect = v.as<std::string>();

@@ -52,7 +52,8 @@ void MirrorMapRenderer::prepare(
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
     materialRegistry.add(m_tagMaterial);
 
-    m_renderFrequency = assets.mirrorRenderFrequency;
+    m_renderFrameStart = assets.mirrorRenderFrameStart;
+    m_renderFrameStep = assets.mirrorRenderFrameStep;
 
     // NOTE KI *CANNOT* share same buffer spec
     {

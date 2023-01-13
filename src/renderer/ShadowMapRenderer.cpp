@@ -36,7 +36,8 @@ void ShadowMapRenderer::prepare(
 
     Renderer::prepare(assets, shaders, materialRegistry);
 
-    m_renderFrequency = assets.shadowRenderFrequency;
+    m_renderFrameStart = assets.shadowRenderFrameStart;
+    m_renderFrameStep = assets.shadowRenderFrameStep;
 
     m_nearPlane = assets.shadowNearPlane;
     m_farPlane = assets.shadowFarPlane;

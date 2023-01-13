@@ -81,12 +81,13 @@ void CubeMapRenderer::prepare(
 
     Renderer::prepare(assets, shaders, materialRegistry);
 
+    m_renderFrameStart = assets.cubeMapRenderFrameStart;
+    m_renderFrameStep = assets.cubeMapRenderFrameStep;
+
     m_tagID = assets.cubeMapUUID;
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
     materialRegistry.add(m_tagMaterial);
-
-    m_renderFrequency = assets.cubeMapRenderFrequency;
 
     m_nearPlane = assets.cubeMapNearPlane;
     m_farPlane = assets.cubeMapFarPlane;

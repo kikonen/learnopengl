@@ -74,7 +74,6 @@ public:
 
     bool rasterizerDiscard;
 
-    float renderFrequency;
     bool debugClearColor;
     int clearColor;
 
@@ -83,14 +82,22 @@ public:
 
     float cameraFov;
 
+    float renderFrameStart;
+    float renderFrameStep;
+
+    float nodeRenderFrameStart;
+    float nodeRenderFrameStep;
+
     // NOTE KI mirror does not tolerate much skip
-    float mirrorRenderFrequency;
+    float mirrorRenderFrameStart;
+    float mirrorRenderFrameStep;
     float mirrorFov;
 
     int waterTileSize;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
-    float waterRenderFrequency;
+    float waterRenderFrameStart;
+    float waterRenderFrameStep;
 
     int terrainVertexCount;
     int terrainTileSize;
@@ -110,7 +117,8 @@ public:
     float shadowFarPlane;
     float shadowFrustumSize;
     int shadowMapSize;
-    float shadowRenderFrequency;
+    float shadowRenderFrameStart;
+    float shadowRenderFrameStep;
 
     int mirrorReflectionSize;
     int mirrorRefractionSize;
@@ -119,7 +127,8 @@ public:
     int waterRefractionSize;
 
     int cubeMapSize;
-    float cubeMapRenderFrequency;
+    float cubeMapRenderFrameStart;
+    float cubeMapRenderFrameStep;
 
     float cubeMapNearPlane;
     float cubeMapFarPlane;

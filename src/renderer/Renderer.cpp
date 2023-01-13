@@ -15,7 +15,8 @@ void Renderer::prepare(
     ShaderRegistry& shaders,
     MaterialRegistry& materialRegistry)
 {
-    m_renderFrequency = assets.renderFrequency;
+    m_renderFrameStart = assets.renderFrameStart;
+    m_renderFrameStep = assets.renderFrameStep;
 }
 
 void Renderer::update(const RenderContext& ctx)
@@ -24,21 +25,13 @@ void Renderer::update(const RenderContext& ctx)
 
 bool Renderer::needRender(const RenderContext& ctx)
 {
-    if (m_renderFrequency <= 0.f) return true;
+    if (m_renderFrameStep <= 0) return true;
 
-    m_elapsedTime += ctx.m_clock.elapsedSecs;
-
-    bool hit = m_elapsedTime >= m_renderFrequency
-        && m_lastHitFrame + 1 != ctx.m_clock.frameCount;
+    bool hit = ((ctx.m_clock.frameCount + m_renderFrameStart) % m_renderFrameStep) == 0;
 
     if (hit) {
-        while (m_elapsedTime > 0) {
-            m_elapsedTime -= m_renderFrequency;
-        }
-        if (m_elapsedTime < 0) {
-            m_elapsedTime += m_renderFrequency;
-        }
-
+        m_elapsedSecs = m_elapsedSecs == -1 ? 0 : m_lastHitTime - ctx.m_clock.ts;
+        m_lastHitTime = ctx.m_clock.ts;
         m_lastHitFrame = ctx.m_clock.frameCount;
     }
 
