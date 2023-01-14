@@ -26,6 +26,9 @@
 namespace {
     int objectIDbase = 100;
 
+    const auto BASE_MAT_1 = glm::mat4(1.0f);
+
+
     std::mutex object_id_lock;
 
 }
@@ -121,22 +124,22 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 
 void Node::updateModelMatrix(Node* parent) noexcept
 {
-    int parentMatrixLevel = parent ? parent->m_matrixLevel : -1;
-    bool dirtyModel = m_dirtyRotation
+    const int parentMatrixLevel = parent ? parent->m_matrixLevel : -1;
+    const bool dirtyParent = m_parentMatrixLevel != parentMatrixLevel;
+    const bool dirtyModel = m_dirtyRotation
         || m_dirtyTranslate
         || m_dirtyScale
-        || m_parentMatrixLevel != parentMatrixLevel;
+        || dirtyParent;
     if (!dirtyModel) return;
 
-    const bool needRadius = m_dirtyScale;
+    const bool needRadius = m_dirtyScale || dirtyParent;
+    const bool needPlaneNormal = m_dirtyRotation || dirtyParent;
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     if (m_dirtyRotation) {
         m_rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
         m_dirtyRotation = false;
     }
-
-    const auto BASE_MAT_1 = glm::mat4(1.0f);
 
     if (m_dirtyTranslate) {
         m_translateMatrix = glm::translate(
@@ -171,11 +174,15 @@ void Node::updateModelMatrix(Node* parent) noexcept
     }
     m_normalMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
 
-    m_worldPlaneNormal = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_planeNormal, 1.0)));
+    if (needPlaneNormal) {
+        // NOTE KI normal may change only if parent or model itself rotates
+        m_worldPlaneNormal = glm::normalize(glm::vec3(m_modelMatrix * glm::vec4(m_planeNormal, 1.0)));
+    }
 
     if (needRadius) {
-        const glm::vec3& min = m_scaleMatrix * glm::vec4(m_aabb.m_min, 1.0);
-        const glm::vec3& max = m_scaleMatrix * glm::vec4(m_aabb.m_max, 1.0);
+        // NOTE KI radius can change if scale of node or parent changes
+        const auto& min = m_scaleMatrix * glm::vec4(m_aabb.m_min, 1.0);
+        const auto& max = m_scaleMatrix * glm::vec4(m_aabb.m_max, 1.0);
         m_volumeRadius = glm::length(min - max) * 0.5f;
         m_volumeCenter = (max + min) * 0.5f;
     }
@@ -186,8 +193,10 @@ void Node::updateModelMatrix(Node* parent) noexcept
 
 void Node::setPlaneNormal(const glm::vec3& planeNormal) noexcept
 {
-    m_planeNormal = planeNormal;
-    m_dirtyRotation = true;
+    if (m_planeNormal != planeNormal) {
+        m_planeNormal = planeNormal;
+        m_dirtyRotation = true;
+    }
 }
 
 const glm::vec3& Node::getPlaneNormal() const noexcept
@@ -197,8 +206,10 @@ const glm::vec3& Node::getPlaneNormal() const noexcept
 
 void Node::setPosition(const glm::vec3& pos) noexcept
 {
-    m_position = pos;
-    m_dirtyTranslate = true;
+    if (m_position != pos) {
+        m_position = pos;
+        m_dirtyTranslate = true;
+    }
 }
 
 const glm::vec3& Node::getPosition() const noexcept
@@ -208,8 +219,10 @@ const glm::vec3& Node::getPosition() const noexcept
 
 void Node::setRotation(const glm::vec3& rotation) noexcept
 {
-    m_rotation = rotation;
-    m_dirtyRotation = true;
+    if (m_rotation != rotation) {
+        m_rotation = rotation;
+        m_dirtyRotation = true;
+    }
 }
 
 const glm::vec3&  Node::getRotation() const noexcept
@@ -220,17 +233,24 @@ const glm::vec3&  Node::getRotation() const noexcept
 void Node::setScale(float scale) noexcept
 {
     assert(scale >= 0);
-    m_scale.x = scale;
-    m_scale.y = scale;
-    m_scale.z = scale;
-    m_dirtyScale = true;
+    if (m_scale.x != scale ||
+        m_scale.y != scale ||
+        m_scale.z != scale)
+    {
+        m_scale.x = scale;
+        m_scale.y = scale;
+        m_scale.z = scale;
+        m_dirtyScale = true;
+    }
 }
 
 void Node::setScale(const glm::vec3& scale) noexcept
 {
-    m_scale = scale;
-    assert(m_scale.x >= 0 && m_scale.y >= 0 && m_scale.z >= 0);
-    m_dirtyScale = true;
+    if (m_scale != scale) {
+        assert(scale.x >= 0 && scale.y >= 0 && scale.z >= 0);
+        m_scale = scale;
+        m_dirtyScale = true;
+    }
 }
 
 const glm::vec3& Node::getScale() const noexcept

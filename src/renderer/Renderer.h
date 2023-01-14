@@ -26,6 +26,7 @@ public:
 
 protected:
     bool needRender(const RenderContext& ctx);
+    void setClosest(Node* closest, int tagIndex);
 
 protected:
     bool m_prepared = false;
@@ -39,4 +40,6 @@ protected:
     unsigned long m_lastHitFrame = 0;
 
     bool m_rendered = false;
+
+    Node* m_lastClosest{ nullptr };
 };

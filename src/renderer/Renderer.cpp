@@ -23,6 +23,18 @@ void Renderer::update(const RenderContext& ctx)
 {
 }
 
+void Renderer::setClosest(Node* closest, int tagIndex)
+{
+    if (m_lastClosest == closest) return;
+    if (m_lastClosest && tagIndex != -1) {
+        m_lastClosest->setTagMaterialIndex(-1);
+    }
+    if (closest && tagIndex != -1) {
+        closest->setTagMaterialIndex(tagIndex);
+    }
+    m_lastClosest = closest;
+}
+
 bool Renderer::needRender(const RenderContext& ctx)
 {
     if (m_renderFrameStep <= 0) return true;

@@ -117,7 +117,7 @@ void WaterMapRenderer::render(
     auto closest = findClosest(ctx);
     if (!closest) return;
 
-    closest->setTagMaterialIndex(m_tagMaterial.m_registeredIndex);
+    setClosest(closest, m_tagMaterial.m_registeredIndex);
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
@@ -269,8 +269,6 @@ Node* WaterMapRenderer::findClosest(
             if (!type->m_flags.water) continue;
 
             for (const auto& node : nodes) {
-                node->setTagMaterialIndex(-1);
-
                 const glm::vec3 ray = node->getWorldPos() - cameraPos;
                 const float distance = glm::length(ray);
                 //glm::vec3 fromCamera = glm::normalize(ray);
