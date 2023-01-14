@@ -133,7 +133,7 @@ void Node::updateModelMatrix(Node* parent) noexcept
     if (!dirtyModel) return;
 
     const bool needRadius = m_dirtyScale || dirtyParent;
-    const bool needPlaneNormal = m_dirtyRotation || dirtyParent;
+    const bool needPlaneNormal = m_type->m_flags.mirror && (m_dirtyRotation || dirtyParent);
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     if (m_dirtyRotation) {
@@ -176,7 +176,7 @@ void Node::updateModelMatrix(Node* parent) noexcept
 
     if (needPlaneNormal) {
         // NOTE KI normal may change only if parent or model itself rotates
-        m_worldPlaneNormal = glm::normalize(glm::vec3(m_modelMatrix * glm::vec4(m_planeNormal, 1.0)));
+        m_worldPlaneNormal = glm::normalize(m_normalMatrix * m_planeNormal);
     }
 
     if (needRadius) {
