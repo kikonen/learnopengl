@@ -6,6 +6,8 @@
 #include <iostream>
 #include <filesystem>
 
+#include "util/Util.h"
+
 #include "ki/Timer.h"
 
 const glm::vec2 EMPTY_TEX{ 0, 0 };
@@ -392,30 +394,32 @@ void MeshLoader::loadMaterials(
             ss >> k;
             ss >> v1 >> v2 >> v3;
 
+            k = util::toLower(k);
+
             if (k == "newmtl") {
                 material = &materials.emplace_back();
                 material->m_name = v1;
                 material->m_path = mesh.m_meshPath;
             }
-            else if (k == "Ns") {
+            else if (k == "ns") {
                 material->ns = stof(v1);
             }
-            else if (k == "Ka") {
+            else if (k == "ka") {
                 glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };
                 material->ka = v;
-            } else if (k == "Kd") {
+            } else if (k == "kd") {
                 glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };
                 material->kd = v;
             }
-            else if (k == "Ks") {
+            else if (k == "ks") {
                 glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };
                 material->ks = v;
             }
-            else if (k == "Ke") {
+            else if (k == "ke") {
                 glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };
                 material->ke = v;
             }
-            else if (k == "Ni") {
+            else if (k == "ni") {
                 material->ni = stof(v1);
             }
             else if (k == "d") {
@@ -423,13 +427,13 @@ void MeshLoader::loadMaterials(
             }
             else if (k == "illum") {
                 material->d = stof(v1);
-            } else if (k == "map_Kd") {
+            } else if (k == "map_kd") {
                 material->map_kd = resolveTexturePath(line);
-            } else if (k == "map_Ke") {
+            } else if (k == "map_ke") {
                 material->map_ke = resolveTexturePath(line);
-            } else if (k == "map_Ks") {
+            } else if (k == "map_ks") {
                 material->map_ks = resolveTexturePath(line);
-            } else if (k == "map_Bump") {
+            } else if (k == "map_bump") {
                 material->map_bump = resolveTexturePath(line);
             } else if (k == "bump") {
                 material->map_bump = resolveTexturePath(line);

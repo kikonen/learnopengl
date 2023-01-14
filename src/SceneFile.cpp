@@ -7,6 +7,8 @@
 
 #include <fmt/format.h>
 
+#include "util/Util.h"
+
 #include "asset/Material.h"
 #include "asset/QuadMesh.h"
 #include "asset/SpriteMesh.h"
@@ -44,16 +46,6 @@
 
 namespace {
     const double DEF_ALPHA = 1.0;
-
-    const std::string& toupper(std::string& str) {
-        std::transform(str.begin(), str.end(), str.begin(), ::toupper);
-        return str;
-    }
-
-    const std::string& tolower(std::string& str) {
-        std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-        return str;
-    }
 }
 
 
@@ -804,14 +796,14 @@ void SceneFile::loadEntityClone(
             for (const auto& defNode : v) {
                 auto defName = defNode.first.as<std::string>();
                 const auto& defValue = defNode.second.as<std::string>();
-                data.shaderDefinitions[toupper(defName)] = defValue;
+                data.shaderDefinitions[util::toUpper(defName)] = defValue;
             }
         }
         else if (k == "render_flags") {
             for (const auto& flagNode : v) {
                 auto flagName = flagNode.first.as<std::string>();
                 const auto flagValue = flagNode.second.as<bool>();
-                data.renderFlags[tolower(flagName)] = flagValue;
+                data.renderFlags[util::toLower(flagName)] = flagValue;
             }
         }
         else if (k == "plane_normal") {
@@ -974,6 +966,10 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
 
 void SceneFile::loadLight(const YAML::Node& node, LightData& data)
 {
+    // Default to center
+    data.targetId_str = KI_UUID_STR(m_assets.rootUUID);
+    data.targetId = m_assets.rootUUID;
+
     // pos relative to owning node
     for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();

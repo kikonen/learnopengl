@@ -31,7 +31,7 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
-  Entity entity = u_entities[int(gl_BaseInstance)];
+  Entity entity = u_entities[int(gl_BaseInstance) + gl_InstanceID];
   vec4 worldPos = entity.modelMatrix * a_pos;
 
   gl_Position = u_projectedMatrix * worldPos;
