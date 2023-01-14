@@ -2,19 +2,25 @@
 name: Full
 skybox:
   material: skybox
-lights: {}
 entities:
+  - name: Camera
+    type: origo
+    pos: [0, 0, 0]
+    camera:
+      rotation: [0, 180, 0.0]
+      enabled: true
+    enabled: true
+    controller:
+      type: camera
+      enabled: true
   - name: Window 1
-    type_id: 3
     model: window1
     shader: texture
-    pos: [5.0, 10.0, -5.0]
-    rotation: [0.0, 180.0, 0.0]
-    shader_definitions:
-      - USE_ALPHA
+    pos: [0.0, 0.0, 8.0]
     render_flags:
-      - blend
-      - render_back
+      blend: true
+      render_back: true
+    enabled: true
 materials:
   - name: skybox
     type: skybox

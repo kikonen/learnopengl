@@ -5,16 +5,10 @@ skybox:
   shader: skybox
   material: skybox
 lights: {}
+cube_maps: {}
 root:
-  id: 50733c80-df4e-47ab-9596-ccfadb1805d8
   type: origo
   pos: [200, 0, 200]
-  rotation: [0, 0, 0]
-  enabled: true
-  controller:
-    type: path
-    mode: 1
-    enabled: false
 entities:
   - name: Origo
     type: origo
@@ -39,9 +33,9 @@ entities:
     render_flags:
       no_shadow: true
     repeat:
-      x_count: 2
+      x_count: 1
       y_count: 1
-      z_count: 2
+      z_count: 1
       x_step: 200
       y_step: 0
       z_step: 200

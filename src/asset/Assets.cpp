@@ -119,8 +119,9 @@ Assets::Assets()
 
     viewportEffect = ViewportEffect::none;
 
-    volumeUUID = KI_UUID("9d409e0d-2716-48dd-a205-3a54bdfa5097");
-    cubeMapUUID = KI_UUID("67a0f0f6-9e1a-4af3-97e9-a67eb11439d0");
+    rootUUID =    KI_UUID("11111111-1111-1111-1111-111111111111");
+    volumeUUID =  KI_UUID("11111111-1111-1111-1111-222222222222");
+    cubeMapUUID = KI_UUID("11111111-1111-1111-1111-333333333333");
 
     /////////////////////////
     // TEMPORARIES

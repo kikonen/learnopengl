@@ -219,12 +219,6 @@ public:
         const Assets& assets,
         const std::string& filename);
 
-    SceneFile(
-        AsyncLoader* asyncLoader,
-        const Assets& assets,
-        const std::string& filename,
-        const glm::vec3& rootOffset);
-
     ~SceneFile();
 
     void load(
@@ -372,7 +366,6 @@ public:
 
 private:
     const Assets& m_assets;
-    const glm::vec3 m_rootOffset;
 
     AsyncLoader* m_asyncLoader;
 

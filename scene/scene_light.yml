@@ -6,15 +6,8 @@ skybox:
   material: skybox
 lights: {}
 root:
-  id: 50733c80-df4e-47ab-9596-ccfadb1805d8
   type: origo
   pos: [200, 0, 200]
-  rotation: [0, 0, 0]
-  enabled: true
-  controller:
-    type: path
-    mode: 1
-    enabled: false
 entities:
   - name: Origo
     type: origo
@@ -32,7 +25,7 @@ entities:
     enabled: true
   - name: light origo
     id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
-    parent_id: 50733c80-df4e-47ab-9596-ccfadb1805d8
+    parent_id: 11111111-1111-1111-1111-111111111111
     type: origo
     pos: [0, 0, 0]
     enabled: true

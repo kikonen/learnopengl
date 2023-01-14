@@ -135,6 +135,7 @@ public:
 
     ViewportEffect viewportEffect;
 
+    uuids::uuid rootUUID;
     uuids::uuid volumeUUID;
     uuids::uuid cubeMapUUID;
 
