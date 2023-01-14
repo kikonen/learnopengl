@@ -13,12 +13,22 @@ entities:
     controller:
       type: camera
       enabled: true
-  - name: Window 1
-    model: window1
-    shader: texture
-    pos: [0.0, 0.0, 8.0]
+  - name: Cube map 1
+    type: origo
+    pos: [0.0, -3.0, 0.0]
     render_flags:
-      blend: true
+      cube_map: true
+    enabled: true
+  - name: Bunny
+    model: bunny
+    shader: texture
+    pos: [0.0, 0.0, 10.0]
+    scale: 30.0
+    material_modifier:
+      reflection: 0.01
+      refraction: 0.95
+      refraction_ratio: [1.0, 1.52]
+    render_flags:
       render_back: true
     enabled: true
   - name: Directional light

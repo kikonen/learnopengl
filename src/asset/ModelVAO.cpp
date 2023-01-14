@@ -10,8 +10,8 @@
 #include "scene/Batch.h"
 
 namespace {
-    constexpr int MAX_VERTEX_ENTRIES = 100000;
-    constexpr int MAX_INDEX_ENTRIES = 100000;
+    constexpr int MAX_VERTEX_ENTRIES = 1000000;
+    constexpr int MAX_INDEX_ENTRIES = 1000000;
 }
 
 ModelVAO::ModelVAO(bool singleMaterial)

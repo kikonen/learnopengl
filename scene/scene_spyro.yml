@@ -13,31 +13,11 @@ entities:
     controller:
       type: camera
       enabled: true
-  - name: Window 1
-    model: window1
+  - name: Spyro
+    model: spyro2
     shader: texture
-    pos: [0.0, 0.0, 8.0]
-    render_flags:
-      blend: true
-      render_back: true
-    enabled: true
-  - name: Directional light
-    pos: [0, 25, -40]
-    scale: 2.5
-    model: light
-    shader: light
-    render_flags:
-      light: true
-      no_shadow: true
-    force_material: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
-    light:
-      type: directional
-      ambient: [0.5, 0.5, 0.5, 1.0]
-      diffuse: [0.9, 0.9, 0.7, 1.0]
-      specular: [0.7, 0.7, 0.6, 1.0]
-      enabled: true
+    pos: [0.0, 0.0, 30.0]
+    scale: 0.06
     enabled: true
 materials:
   - name: skybox

@@ -151,7 +151,7 @@ void Batch::draw(
 
         hit = true;
         if (coords.x < -1 || coords.x > 1 || coords.y < -1 || coords.y > 1 || coords.z < 0) {
-            float diameter = node.getVolumeRadius();
+            float diameter = node.getVolumeRadius() * 1.5;
 
             if (coords.z < -diameter) {
                 hit = false;
