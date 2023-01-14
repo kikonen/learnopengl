@@ -1,6 +1,6 @@
 assets:
   log_file: log/development.log
-  scene_file: scene/scene_full.yml
+  scene_file: scene/scene_lucy.yml
 
   glfw_swap_interval: 3
   gl_debug: true
@@ -46,7 +46,7 @@ assets:
   debug_clear_color: true
   clear_color: true
 
-  frustum_enabled: false
+  frustum_enabled: true
   frustum_debug: true
 
   camera_fov: 45
