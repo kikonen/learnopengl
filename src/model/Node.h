@@ -37,7 +37,7 @@ public:
     virtual void update(const RenderContext& ctx, Node* parent) noexcept;
     virtual void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
 
-    const glm::vec3& getWorldPos() const noexcept;
+    const glm::vec3& getWorldPosition() const noexcept;
     const glm::vec3& getWorldPlaneNormal() const noexcept;
 
     float getVolumeRadius() const noexcept;
@@ -136,6 +136,8 @@ private:
 
     float m_volumeRadius{ 0.f };
     glm::vec3 m_volumeCenter{ 0.f };
+
+    glm::vec3 m_worldPosition{ 0.f };
 
     glm::vec3 m_worldPlaneNormal{ 0.f };
 

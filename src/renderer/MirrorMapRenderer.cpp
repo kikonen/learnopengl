@@ -114,7 +114,7 @@ void MirrorMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    const glm::vec3& planePos = closest->getWorldPos();
+    const glm::vec3& planePos = closest->getWorldPosition();
 
     // https://prideout.net/clip-planes
     // https://stackoverflow.com/questions/48613493/reflecting-scene-by-plane-mirror-in-opengl
@@ -255,7 +255,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
             for (const auto& node : nodes) {
                 const auto& planeNormal = node->getWorldPlaneNormal();
 
-                const auto eyeV = node->getWorldPos() - cameraPos;
+                const auto eyeV = node->getWorldPosition() - cameraPos;
                 const auto dist = glm::length(eyeV);
                 auto eyeN = glm::normalize(eyeV);
 

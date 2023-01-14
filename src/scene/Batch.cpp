@@ -144,7 +144,7 @@ void Batch::draw(
         }
 
         //https://en.wikibooks.org/wiki/OpenGL_Programming/Glescraft_5
-        auto pos = glm::vec4(node.getWorldPos(), 1.0);
+        auto pos = glm::vec4(node.getWorldPosition(), 1.0);
         glm::vec4 coords = projectedMatrix * pos;
         coords.x /= coords.w;
         coords.y /= coords.w;

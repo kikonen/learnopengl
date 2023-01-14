@@ -239,7 +239,7 @@ void NodeRenderer::drawBlended(
     for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
         for (const auto& map : all.second) {
             for (const auto& node : map.second) {
-                const float distance = glm::length(viewPos - node->getWorldPos());
+                const float distance = glm::length(viewPos - node->getWorldPosition());
                 sorted[distance] = node;
             }
         }

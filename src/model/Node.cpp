@@ -174,6 +174,8 @@ void Node::updateModelMatrix(Node* parent) noexcept
     }
     m_normalMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
 
+    m_worldPosition = m_modelMatrix[3];
+
     if (needPlaneNormal) {
         // NOTE KI normal may change only if parent or model itself rotates
         m_worldPlaneNormal = glm::normalize(m_normalMatrix * m_planeNormal);
@@ -268,9 +270,9 @@ int Node::getMatrixLevel() const noexcept
     return m_matrixLevel;
 }
 
-const glm::vec3& Node::getWorldPos() const noexcept
+const glm::vec3& Node::getWorldPosition() const noexcept
 {
-    return m_modelMatrix[3];
+    return m_worldPosition;
 }
 
 const glm::vec3& Node::getWorldPlaneNormal() const noexcept

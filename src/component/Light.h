@@ -25,11 +25,11 @@ public:
     const uuids::uuid& getTargetId() const noexcept;
     void setTargetId(const uuids::uuid& targetId) noexcept;
 
-    const glm::vec3& getWorldPos() const noexcept;
-    const glm::vec3& getWorldTargetPos() const noexcept;
+    const glm::vec3& getWorldPosition() const noexcept;
+    const glm::vec3& getWorldTargetPosition() const noexcept;
 
-    const glm::vec3& getPos() const noexcept;
-    void setPos(const glm::vec3& pos) noexcept;
+    const glm::vec3& getPosition() const noexcept;
+    void setPosition(const glm::vec3& pos) noexcept;
 
     DirLightUBO toDirLightUBO() const noexcept;
     PointLightUBO toPointightUBO() const noexcept;
@@ -60,11 +60,11 @@ public:
 private:
     // dir = FROM pos to TARGET
     glm::vec3 m_worldDir{ 0.0f };
-    glm::vec3 m_worldPos{ 0.0f };
-    glm::vec3 m_worldTargetPos{ 0.0f };
+    glm::vec3 m_worldPosition{ 0.0f };
+    glm::vec3 m_worldTargetPosition{ 0.0f };
 
     // pos relative to owning node
-    glm::vec3 m_pos{ 0.0f };
+    glm::vec3 m_position{ 0.0f };
 
     uuids::uuid m_targetId;
 

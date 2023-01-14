@@ -17,7 +17,7 @@ Viewport::Viewport(
     Shader* shader,
     std::function<void(Viewport&)> binder)
     : m_name(name),
-    m_pos(pos),
+    m_position(pos),
     m_rotation(rotation),
     m_size(size),
     m_useFrameBuffer(useFrameBuffer),
@@ -65,9 +65,9 @@ void Viewport::prepareVBO()
     m_vao.create();
     m_vbo.create();
 
-    const float x = m_pos.x;
-    const float y = m_pos.y;
-    const float z = m_pos.z;
+    const float x = m_position.x;
+    const float y = m_position.y;
+    const float z = m_position.z;
 
     const float w = m_size.x;
     const float h = m_size.y;
@@ -139,8 +139,8 @@ void Viewport::draw(const RenderContext& ctx)
         const float mx = dstW * 0.5f;
         const float my = dstH * 0.5f;
 
-        const float dx = mx - mx * -m_pos.x;
-        const float dy = my - my * m_pos.y;
+        const float dx = mx - mx * -m_position.x;
+        const float dy = my - my * m_position.y;
 
         const float sx = mx * m_size.x;
         const float sy = my * m_size.y;

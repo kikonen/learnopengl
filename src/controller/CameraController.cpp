@@ -38,7 +38,7 @@ bool CameraController::update(
     const auto& rot = camera->getRotation();
 
     auto nodePos = pos - viewUp * 2.8f + viewFront * 9.f;
-    nodePos -= parent->getWorldPos();
+    nodePos -= parent->getWorldPosition();
 
     node.setPosition(nodePos);
     node.setRotation({-rot.x, 90 + rot.y, rot.z});

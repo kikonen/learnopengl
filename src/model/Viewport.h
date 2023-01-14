@@ -46,7 +46,7 @@ private:
 public:
     const std::string m_name;
 
-    const glm::vec3 m_pos;
+    const glm::vec3 m_position;
     const glm::vec3 m_rotation;
     const glm::vec2 m_size;
 

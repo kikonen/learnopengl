@@ -130,7 +130,7 @@ void CubeMapRenderer::render(
         Node* tagNode = getTagNode(mainCtx.m_nodeRegistry);
         if (tagNode) {
             const auto& rootPos = mainCtx.m_nodeRegistry.m_root->getPosition();
-            const auto& centerPos = centerNode->getWorldPos();
+            const auto& centerPos = centerNode->getWorldPosition();
             const auto tagPos = centerPos - rootPos;
             tagNode->setPosition(tagPos);
             tagNode->m_type->m_flags.noDisplay = false;
@@ -166,7 +166,7 @@ void CubeMapRenderer::render(
 
         // centerNode->getVolume()->getRadius();
 
-        const auto& center = centerNode->getWorldPos();
+        const auto& center = centerNode->getWorldPosition();
         auto& camera = m_cameras[face];
         camera.setPos(center);
 
@@ -269,7 +269,7 @@ Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
             if (!type->m_flags.cubeMap) continue;
 
             for (const auto& node : nodes) {
-                const glm::vec3 ray = node->getWorldPos() - cameraPos;
+                const glm::vec3 ray = node->getWorldPosition() - cameraPos;
                 const float distance = std::abs(glm::length(ray));
 
                 if (false) {

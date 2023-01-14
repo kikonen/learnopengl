@@ -42,8 +42,8 @@ int ObjectIdRenderer::getObjectId(
     const float ratioX = m_idBuffer->m_spec.width / w;
     const float ratioY = m_idBuffer->m_spec.height / h;
 
-    const float offsetX = screenW * (mainViewport->m_pos.x + 1.f) / GL_SCREEN_SIZE;
-    const float offsetY = screenH * (1.f - (mainViewport->m_pos.y + 1.f) / GL_SCREEN_SIZE);
+    const float offsetX = screenW * (mainViewport->m_position.x + 1.f) / GL_SCREEN_SIZE;
+    const float offsetY = screenH * (1.f - (mainViewport->m_position.y + 1.f) / GL_SCREEN_SIZE);
 
     const float posx = (screenPosX - offsetX) * ratioX;
     const float posy = (screenPosY - offsetY) * ratioY;

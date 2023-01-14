@@ -122,7 +122,7 @@ void WaterMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    const auto& planePos = closest->getWorldPos();
+    const auto& planePos = closest->getWorldPosition();
 
     // https://prideout.net/clip-planes
     // reflection map
@@ -269,7 +269,7 @@ Node* WaterMapRenderer::findClosest(
             if (!type->m_flags.water) continue;
 
             for (const auto& node : nodes) {
-                const glm::vec3 ray = node->getWorldPos() - cameraPos;
+                const glm::vec3 ray = node->getWorldPosition() - cameraPos;
                 const float distance = glm::length(ray);
                 //glm::vec3 fromCamera = glm::normalize(ray);
                 //float dot = glm::dot(fromCamera, cameraDir);
