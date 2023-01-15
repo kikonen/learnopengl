@@ -396,13 +396,14 @@ entities:
     selected: false
     enabled: true
   - name: Cow
-    model: texture_cow
+    model: cow
     shader: texture
     pos: [5.0, 20.0, -5.0]
-    scale: 1.0
+    rotation: [0, 180, 0]
+    scale: 0.8
     material: cow
     material_modifier:
-      reflection: 0.5
+      reflection: 0.4
     render_flags:
       render_back: false
     selected: false
