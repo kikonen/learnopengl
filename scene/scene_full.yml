@@ -73,6 +73,17 @@ entities:
       type: camera
       enabled: true
     enabled: true
+  - name: Cube map 1
+    type: origo
+    pos: [-200, 20, -200]
+    render_flags:
+      cube_map: true
+    repeat:
+      x_count: 16
+      z_count: 16
+      x_step: 50
+      z_step: 50
+    enabled: true
   - name: Directional light origo
     id: 910be8c1-2060-455f-9b43-179a4814732f
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
