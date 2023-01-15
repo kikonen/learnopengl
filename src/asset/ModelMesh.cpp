@@ -109,4 +109,5 @@ void ModelMesh::prepareVAO(
     drawOptions.indexCount = m_triCount * 3;
     drawOptions.vertexOffset = m_vertexVBO.m_vertexOffset;
     drawOptions.indexOffset = m_vertexVBO.m_indexOffset;
+    drawOptions.volumeRadiusFlex = 1.4f;
 }

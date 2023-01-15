@@ -30,7 +30,7 @@ void EntityRegistry::update(const RenderContext& ctx)
     constexpr size_t sz = sizeof(EntitySSBO);
     const int maxCount = (m_maxDirty + 1) - m_minDirty;
 
-    KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, min={}, max={}, maxCount={}", ctx.m_clock.frameCount, m_minDirty, m_maxDirty, maxCount));
+    //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, min={}, max={}, maxCount={}", ctx.m_clock.frameCount, m_minDirty, m_maxDirty, maxCount));
 
     int idx = m_minDirty;
     int from = -1;
@@ -50,7 +50,7 @@ void EntityRegistry::update(const RenderContext& ctx)
         if (from != -1 && (skip >= MAX_SKIP || idx == m_maxDirty)) {
             int to = idx;
             const int count = (to + 1) - from;
-            KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
+            //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
             m_ssbo.update(
                 from * sz,
                 (to + 1 - from) * sz,
@@ -63,7 +63,7 @@ void EntityRegistry::update(const RenderContext& ctx)
         idx++;
     }
 
-    KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, updated={}", ctx.m_clock.frameCount, updatedCount));
+    //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, updated={}", ctx.m_clock.frameCount, updatedCount));
 
     for (int i = m_minDirty; i < m_maxDirty; i++) {
         m_dirty[i] = false;

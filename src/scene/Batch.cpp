@@ -143,7 +143,7 @@ void Batch::draw(
                 node.getModelMatrix());
         }
 
-        hit = node.inFrustum(ctx, 1.55f);
+        hit = node.inFrustum(ctx, type->m_drawOptions.volumeRadiusFlex);
 
         //hit = true;
         //!obb.inFrustum(

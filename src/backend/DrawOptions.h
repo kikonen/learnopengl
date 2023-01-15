@@ -37,6 +37,7 @@ namespace backend {
         int materialOffset = 0;
         bool singleMaterial = false;
 
+        float volumeRadiusFlex = 1.f;
 
         inline bool isSameDrawCommand(const DrawOptions& b, bool useBlend) const {
             // NOTE KI multi/single material *CAN* go in same indirect draw
