@@ -15,11 +15,11 @@ struct Plane {
 
     Plane(const glm::vec3& p1, const glm::vec3& normal) noexcept
         : m_normal(glm::normalize(normal)),
-        m_distance(glm::dot(m_normal, p1)) 
+        m_distance(glm::dot(m_normal, p1))
     {}
 
     float getSignedDistanceToPlane(const glm::vec3& point) const noexcept
     {
         return glm::dot(m_normal, point) - m_distance;
-    }
+        }
 };

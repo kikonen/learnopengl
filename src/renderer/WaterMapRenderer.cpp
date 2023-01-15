@@ -115,9 +115,8 @@ void WaterMapRenderer::render(
     if (!needRender(ctx)) return;
 
     auto closest = findClosest(ctx);
-    if (!closest) return;
-
     setClosest(closest, m_tagMaterial.m_registeredIndex);
+    if (!closest) return;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf

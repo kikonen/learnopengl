@@ -43,6 +43,8 @@ public:
     float getVolumeRadius() const noexcept;
     const glm::vec3& getVolumeCenter() const noexcept;
 
+    bool inFrustum(const RenderContext& ctx, float radiusFlex) const;
+
     int getMatrixLevel() const noexcept;
 
     void setPlaneNormal(const glm::vec3& planeNormal) noexcept;

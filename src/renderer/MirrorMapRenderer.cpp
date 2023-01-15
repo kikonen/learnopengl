@@ -107,9 +107,8 @@ void MirrorMapRenderer::render(
     if (!needRender(ctx)) return;
 
     Node* closest = findClosest(ctx);
-    if (!closest) return;
-
     setClosest(closest, m_tagMaterial.m_registeredIndex);
+    if (!closest) return;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
@@ -123,6 +122,7 @@ void MirrorMapRenderer::render(
         auto& mainCamera = ctx.m_camera;
         const auto& mirrorSize = closest->getVolume()->getRadius() * 2;
         const auto& eyePos = mainCamera.getPos();
+
         const auto& planeNormal = closest->getWorldPlaneNormal();
 
         const auto eyeV = planePos - eyePos;
@@ -241,31 +241,51 @@ void MirrorMapRenderer::drawNodes(
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
-    const glm::vec3& cameraPos = ctx.m_camera.getPos();
-    const glm::vec3& cameraFront = ctx.m_camera.getViewFront();
+    const auto& cameraPos = ctx.m_camera.getPos();
+    const auto& cameraFront = ctx.m_camera.getViewFront();
 
     std::map<float, Node*> sorted;
 
     for (const auto& all : ctx.m_nodeRegistry.allNodes) {
         for (const auto& [key, nodes] : all.second) {
-            auto& type = key.type;
+            const auto& type = key.type;
 
             if (!type->m_flags.mirror) continue;
 
             for (const auto& node : nodes) {
                 const auto& planeNormal = node->getWorldPlaneNormal();
+                const auto dot = glm::dot(planeNormal, cameraFront);
 
-                const auto eyeV = node->getWorldPosition() - cameraPos;
-                const auto dist = glm::length(eyeV);
-                auto eyeN = glm::normalize(eyeV);
-
-                const auto dot = glm::dot(planeNormal, -eyeN);
-                if (dot <= 0) {
-                    // NOTE KI backside; ignore
+                if (dot > 0) {
+                    // NOTE KI not facing mirror; ignore
                     continue;
                 }
 
-                sorted[glm::length(eyeV)] = node;
+                {
+                    // https://stackoverflow.com/questions/59534787/signed-distance-function-3d-plane
+                    //const auto eyeV = node->getWorldPosition() - cameraPos;
+                    //const auto eyeN = glm::normalize(eyeV);
+                    const auto planeDist = glm::dot(planeNormal, node->getWorldPosition());
+                    const auto planeDot = glm::dot(planeNormal, cameraPos);
+                    const auto dist = planeDot - planeDist;
+
+                    if (dist <= 0) {
+                        // NOTE KI behind mirror; ignore
+                        continue;
+                    }
+                }
+
+                if (!node->inFrustum(ctx, 1.2f)) {
+                    // NOTE KI not in frustum; ignore
+                    continue;
+                }
+
+                {
+                    const auto eyeV = node->getWorldPosition() - cameraPos;
+                    const auto dist = glm::length(eyeV);
+
+                    sorted[dist] = node;
+                }
             }
         }
     }

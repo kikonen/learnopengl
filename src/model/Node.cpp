@@ -178,9 +178,7 @@ void Node::updateModelMatrix(Node* parent) noexcept
     m_worldPosition = m_modelMatrix[3];
 
     if (needPlaneNormal) {
-        // NOTE KI normal may change only if parent or model itself rotates
-        //m_worldPlaneNormal = glm::normalize(m_normalMatrix * m_planeNormal);
-        m_worldPlaneNormal = glm::normalize(m_modelMatrix * glm::vec4(m_planeNormal, 0.0));
+        m_worldPlaneNormal = glm::normalize(glm::vec3(m_modelMatrix * glm::vec4(m_planeNormal, 0.f)));
     }
 
     if (needRadius) {
@@ -291,6 +289,32 @@ const glm::vec3& Node::getVolumeCenter() const noexcept
 {
     return m_volumeCenter;
 }
+
+bool Node::inFrustum(const RenderContext& ctx, float radiusFlex) const
+{
+    //https://en.wikibooks.org/wiki/OpenGL_Programming/Glescraft_5
+    auto coords = ctx.m_matrices.projected * glm::vec4(m_worldPosition, 1.0);
+    coords.x /= coords.w;
+    coords.y /= coords.w;
+
+    bool hit = true;
+    if (coords.x < -1 || coords.x > 1 || coords.y < -1 || coords.y > 1 || coords.z < 0) {
+        float diameter = m_volumeRadius * radiusFlex;
+
+        if (coords.z < -diameter) {
+            hit = false;
+        }
+
+        if (hit) {
+            diameter /= fabsf(coords.w);
+            if (fabsf(coords.x) > 1 + diameter || fabsf(coords.y > 1 + diameter)) {
+                hit = false;
+            }
+        }
+    }
+    return hit;
+}
+
 
 const Volume* Node::getVolume() const noexcept
 {

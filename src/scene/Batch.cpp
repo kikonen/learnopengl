@@ -143,27 +143,8 @@ void Batch::draw(
                 node.getModelMatrix());
         }
 
-        //https://en.wikibooks.org/wiki/OpenGL_Programming/Glescraft_5
-        auto pos = glm::vec4(node.getWorldPosition(), 1.0);
-        glm::vec4 coords = projectedMatrix * pos;
-        coords.x /= coords.w;
-        coords.y /= coords.w;
+        hit = node.inFrustum(ctx, 1.55f);
 
-        hit = true;
-        if (coords.x < -1 || coords.x > 1 || coords.y < -1 || coords.y > 1 || coords.z < 0) {
-            float diameter = node.getVolumeRadius() * 1.5;
-
-            if (coords.z < -diameter) {
-                hit = false;
-            }
-
-            if (hit) {
-                diameter /= fabsf(coords.w);
-                if (fabsf(coords.x) > 1 + diameter || fabsf(coords.y > 1 + diameter)) {
-                    hit = false;
-                }
-            }
-        }
         //hit = true;
         //!obb.inFrustum(
         //    ctx.m_camera.getProjectedLevel(),
