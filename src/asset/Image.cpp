@@ -37,7 +37,7 @@ Image::~Image()
 // NOTE KI *NOT* thread safe
 // https://github.com/nothings/stb/issues/309
 int Image::load(bool flip) {
-    std::lock_guard<std::mutex> lock(load_lock);
+    //std::lock_guard<std::mutex> lock(load_lock);
 
     if (m_loaded) {
         return m_res;
@@ -45,7 +45,8 @@ int Image::load(bool flip) {
     m_loaded = true;
 
     m_flipped = flip;
-    stbi_set_flip_vertically_on_load(flip);
+    stbi_set_flip_vertically_on_load_thread(flip);
+    //stbi_set_flip_vertically_on_load(flip);
 
     m_data = stbi_load(
         m_path.c_str(),
