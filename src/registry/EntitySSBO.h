@@ -23,7 +23,7 @@ struct EntitySSBO {
     // NOTE KI must align struct to 16 byte boundary
     // matrix is just N * vec4, thus vec4 is *largest*
     glm::mat4 m_modelMatrix{ 1.f }; // 4 * 4 * 4 = 64
-    glm::mat4 m_normalMatrix{ 1.f }; // 4 *  3 * 4 = 48
+    //glm::mat4 m_normalMatrix{ 1.f }; // 4 *  3 * 4 = 48
     glm::vec4 m_objectID{ 0.f }; // 4 * 1 * 4 = 16
 
     float m_materialIndex{ 0 }; // 1 * 4 = 4

@@ -35,9 +35,9 @@ precision mediump float;
 
 void main() {
   Entity entity = u_entities[int(gl_BaseInstance)];
-  mat3 normalMatrix = mat3(entity.normalMatrix);
   int materialIndex = int(entity.materialIndex);
   vec4 worldPos = entity.modelMatrix * pos;
+  mat3 normalMatrix = transpose(inverse(mat3(u_viewMatrix * entity.modelMatrix)));
 
   gl_Position = worldPos;
 

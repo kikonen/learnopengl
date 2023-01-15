@@ -63,6 +63,7 @@ entities:
       zoom: 45
       up: [0, 1, 0]
       front: [0, 0, -1]
+      offset: [0, 0, 0]
       pos: [200, 0, 200]
       rotation: [0, 180, 0.0]
       enabled: true
@@ -771,7 +772,7 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
-    enabled: true
+    enabled: false
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [90, 0, 0]

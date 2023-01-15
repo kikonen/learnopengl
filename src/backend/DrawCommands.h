@@ -17,7 +17,7 @@ namespace backend {
         Shader* m_shader;
 
         glm::mat4& m_modelMatrix;
-        glm::mat3& m_normalMatrix;
+        //glm::mat3& m_normalMatrix;
 
         int m_objectID;
 

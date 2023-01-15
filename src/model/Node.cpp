@@ -172,13 +172,15 @@ void Node::updateModelMatrix(Node* parent) noexcept
     else {
         m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
     }
-    m_normalMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
+    // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+    //m_normalMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
 
     m_worldPosition = m_modelMatrix[3];
 
     if (needPlaneNormal) {
         // NOTE KI normal may change only if parent or model itself rotates
-        m_worldPlaneNormal = glm::normalize(m_normalMatrix * m_planeNormal);
+        //m_worldPlaneNormal = glm::normalize(m_normalMatrix * m_planeNormal);
+        m_worldPlaneNormal = glm::normalize(m_modelMatrix * glm::vec4(m_planeNormal, 0.0));
     }
 
     if (needRadius) {

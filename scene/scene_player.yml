@@ -6,15 +6,12 @@ skybox:
   material: skybox
 lights: {}
 cube_maps: {}
-root:
-  type: origo
-  pos: [200, 0, 200]
 entities:
   - name: Player
     model: texture_cube
-    pos: [-10, 7, -20.0]
+    pos: [0, 0, 0.0]
     rotation: [0, 180, 0.0]
-    scale: 0.8
+    scale: 1.0
     shader: texture
     render_flags:
       allow_normals: false
@@ -22,7 +19,7 @@ entities:
       zoom: 45
       up: [0, 1, 0]
       front: [0, 0, -1]
-      pos: [200, 0, 200]
+      pos: [0, 0, -5]
       rotation: [0, 180, 0.0]
       enabled: true
     controller:
@@ -35,10 +32,10 @@ entities:
     scale: 1
     enabled: true
     clones:
-      - pos: [-5.0, 15.0, -5.0]
-      - pos: [5.0, 15.0, -5.0]
-      - pos: [-5.0, 15.0, 5.0]
-      - pos: [5.0, 15.0, 5.0]
+      - pos: [-5.0, 0.0, -5.0]
+      - pos: [5.0, 0.0, -5.0]
+      - pos: [-5.0, 0.0, 5.0]
+      - pos: [5.0, 0.0, 5.0]
 materials:
   - name: skybox
     type: skybox
