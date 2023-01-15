@@ -8,28 +8,67 @@
 #include "ki/GL.h"
 
 namespace {
-    std::map<const std::string, std::unique_ptr<ImageTexture>> textures;
+    std::map<const std::string, std::shared_future<ImageTexture*>> textures;
 
     bool preparedTexturesReady = false;
     int preparedTexturesLevel = 0;
     std::vector<const ImageTexture*> preparedTextures;
 
     std::mutex textures_lock;
+
+    std::shared_future<ImageTexture*> startLoad(ImageTexture* texture)
+    {
+        /*
+std::future<int> spawn_async_task(){
+std::promise<int> p;
+std::thread t([p=std::move(p)](){ p.set_value(find_the_answer());});
+t.detach();
+return f;
+}        */
+        std::promise<ImageTexture*> promise;
+        auto future = promise.get_future().share();
+
+        // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic
+        // https://stackoverflow.com/questions/21531096/can-i-use-stdasync-without-waiting-for-the-future-limitation
+        auto th = std::thread{
+            [texture, p = std::move(promise)]() mutable {
+                try {
+                   texture->load();
+                }
+                catch (const std::exception& ex) {
+                    KI_CRITICAL(ex.what());
+                    KI_BREAK();
+                }
+                p.set_value(texture);
+                //p.set_value(nullptr);
+            }
+        };
+        th.detach();
+
+        return future;
+    }
 }
 
-ImageTexture* ImageTexture::getTexture(const std::string& path, const TextureSpec& spec)
+std::shared_future<ImageTexture*> ImageTexture::getTexture(
+    const std::string& path,
+    const TextureSpec& spec)
 {
-    std::lock_guard<std::mutex> lock(textures_lock);
+    std::shared_future<ImageTexture*> future;
+    {
+        std::lock_guard<std::mutex> lock(textures_lock);
 
-    const std::string cacheKey = path + "_" + std::to_string(spec.clamp);
+        const std::string cacheKey = path + "_" + std::to_string(spec.clamp);
 
-    auto e = textures.find(cacheKey);
-    if (e == textures.end()) {
-        textures[cacheKey] = std::make_unique<ImageTexture>(path, spec);
-        e = textures.find(cacheKey);
-        e->second->load();
+        auto e = textures.find(cacheKey);
+        if (e == textures.end()) {
+            textures[cacheKey] = startLoad(new ImageTexture(path, spec));
+            e = textures.find(cacheKey);
+        }
+
+        future = e->second;
     }
-    return e->second.get();
+
+    return future;
 }
 
 const std::pair<int, const std::vector<const ImageTexture*>&> ImageTexture::getPreparedTextures()
@@ -39,9 +78,10 @@ const std::pair<int, const std::vector<const ImageTexture*>&> ImageTexture::getP
         preparedTexturesLevel++;
         preparedTextures.clear();
 
-        for (const auto& [name, texture] : textures) {
-            if (texture->m_handle == 0) continue;
-            preparedTextures.emplace_back(texture.get());
+        for (const auto& [name, future] : textures) {
+            auto* texture = future.get();
+            if (!texture || !texture->m_handle) continue;
+            preparedTextures.emplace_back(texture);
         }
     }
     return { preparedTexturesLevel, preparedTextures };

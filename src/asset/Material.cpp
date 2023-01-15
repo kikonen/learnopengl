@@ -200,14 +200,26 @@ void Material::loadTexture(
     KI_INFO(fmt::format("MATERIAL: name={}, texture={}", m_name, texturePath));
 
     std::string placeholderPath = assets.placeholderTexture;
-    auto texture = ImageTexture::getTexture(
+    auto future = ImageTexture::getTexture(
         assets.placeholderTextureAlways ? placeholderPath : texturePath,
         textureSpec);
-    if (!texture->isValid()) {
-        texture = ImageTexture::getTexture(placeholderPath, textureSpec);
+
+    future.wait();
+
+    ImageTexture* texture = { nullptr };
+    if (future.valid()) {
+        texture = future.get();
     }
-    assert(texture->isValid());
-    if (texture->isValid()) {
+
+    if (!texture->isValid()) {
+        future = ImageTexture::getTexture(placeholderPath, textureSpec);
+        future.wait();
+        if (future.valid()) {
+            texture = future.get();
+        }
+    }
+
+    if (texture && texture->isValid()) {
         m_textures[idx].texture = texture;
     }
 }

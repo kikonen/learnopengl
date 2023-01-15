@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <future>
 
 #include "Texture.h"
 #include "Image.h"
@@ -9,7 +10,7 @@
 class ImageTexture final : public Texture
 {
 public:
-    static ImageTexture* getTexture(const std::string& path, const TextureSpec& spec);
+    static std::shared_future<ImageTexture*> getTexture(const std::string& path, const TextureSpec& spec);
     static const std::pair<int, const std::vector<const ImageTexture*>&> getPreparedTextures();
 
     ImageTexture(const std::string& path, const TextureSpec& spec);
@@ -18,8 +19,10 @@ public:
     void prepare(const Assets& assets) override;
 
     bool isValid() { return m_valid; }
-private:
+
     void load();
+
+private:
 
 private:
     bool m_valid = false;
