@@ -34,13 +34,14 @@ return f;
             [texture, p = std::move(promise)]() mutable {
                 try {
                    texture->load();
+                   p.set_value(texture);
                 }
                 catch (const std::exception& ex) {
                     KI_CRITICAL(ex.what());
-                    KI_BREAK();
+                    p.set_exception(std::make_exception_ptr(ex));
+                } catch (...) {
+                    p.set_exception(std::make_exception_ptr(std::current_exception()));
                 }
-                p.set_value(texture);
-                //p.set_value(nullptr);
             }
         };
         th.detach();
