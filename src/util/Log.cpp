@@ -28,10 +28,14 @@ void Log::init()
 
         auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
         console_sink->set_level(spdlog::level::err);
-        console_sink->set_pattern("[%^%l%$] %v");
+        //console_sink->set_pattern("[%^%l%$] [thread %t] %v");
+        // [%n]
+        console_sink->set_pattern("%L [%H:%M:%S] [tid %5t] %v");
 
         auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(LOG_FILE, true);
         file_sink->set_level(spdlog::level::trace);
+        // [%n]
+        file_sink->set_pattern("%L [%Y-%m-%d %H:%M:%S] [tid %5t] %v");
 
         std::vector<spdlog::sink_ptr> sinks{ console_sink, file_sink };
 
