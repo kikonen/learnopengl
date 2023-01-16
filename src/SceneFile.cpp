@@ -123,7 +123,9 @@ void SceneFile::attachVolume(
 
     auto type = m_typeRegistry->getType("<volume>");
 
-    auto mesh = m_modelRegistry->getMesh("ball_volume");
+    auto future = m_modelRegistry->getMesh("ball_volume");
+    auto* mesh = future.get();
+
     type->setMesh(mesh);
 
     {
@@ -172,7 +174,9 @@ void SceneFile::attachCubeMapCenter(
     if (!m_assets.showCubeMapCenter) return;
 
     auto type = m_typeRegistry->getType("<cube_map>");
-    auto mesh = m_modelRegistry->getMesh("ball_volume");
+    auto future = m_modelRegistry->getMesh("ball_volume");
+    auto& mesh = future.get();
+
     type->setMesh(mesh);
 
     {
@@ -332,9 +336,10 @@ MeshType* SceneFile::createType(
     }
 
     if (data.type == EntityType::model) {
-        auto mesh = m_modelRegistry->getMesh(
+        auto future = m_modelRegistry->getMesh(
             data.meshName,
             data.meshPath);
+        auto* mesh = future.get();
         type->setMesh(mesh);
         type->m_entityType = EntityType::model;
 

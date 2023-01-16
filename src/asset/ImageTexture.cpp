@@ -54,21 +54,17 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
     const std::string& path,
     const TextureSpec& spec)
 {
-    std::shared_future<ImageTexture*> future;
+    std::lock_guard<std::mutex> lock(textures_lock);
+
+    const std::string cacheKey = path + "_" + std::to_string(spec.clamp);
+
     {
-        std::lock_guard<std::mutex> lock(textures_lock);
-
-        const std::string cacheKey = path + "_" + std::to_string(spec.clamp);
-
-        auto e = textures.find(cacheKey);
-        if (e == textures.end()) {
-            textures[cacheKey] = startLoad(new ImageTexture(path, spec));
-            e = textures.find(cacheKey);
-        }
-
-        future = e->second;
+        const auto& e = textures.find(cacheKey);
+        if (e != textures.end()) return e->second;
     }
 
+    auto future = startLoad(new ImageTexture(path, spec));
+    textures[cacheKey] = future;
     return future;
 }
 

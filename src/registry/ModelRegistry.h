@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <mutex>
+#include <future>
 
 #include "glm/glm.hpp"
 
@@ -26,18 +27,21 @@ public:
     // @return VAO for mesh
     GLVertexArray* registerMeshVBO(ModelMeshVBO& meshVBO);
 
-    ModelMesh* getMesh(
+    std::shared_future<ModelMesh*> getMesh(
         const std::string& meshName);
 
-    ModelMesh* getMesh(
+    std::shared_future<ModelMesh*> getMesh(
         const std::string& meshName,
         const std::string& meshPath);
+
+private:
+    std::shared_future<ModelMesh*> startLoad(ModelMesh* mesh);
 
 private:
     const Assets& assets;
 
     std::mutex m_meshes_lock;
-    std::map<std::string, std::unique_ptr<ModelMesh>> m_meshes;
+    std::map<const std::string, std::shared_future<ModelMesh*>> m_meshes;
 
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;
