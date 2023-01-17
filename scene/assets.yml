@@ -55,13 +55,13 @@ assets:
   render_frame_step: 1
 
   mirror_render_frame_start: 0
-  mirror_render_frame_step: 2
+  mirror_render_frame_step: 3
 
   mirror_fov: 30
 
   water_tile_size: 100
   water_render_frame_start: 0
-  water_render_frame_step: 2
+  water_render_frame_step: 3
 
   terrain_vertex_count: 32
   terrain_tile_size: 400
@@ -93,6 +93,6 @@ assets:
   cube_map_near_plane: 0.5
   cube_map_far_plane: 200
   cube_map_render_frame_start: 1
-  cube_map_render_frame_step: 2
+  cube_map_render_frame_step: 5
 
   viewport_effect: none
