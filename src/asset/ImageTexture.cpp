@@ -60,7 +60,8 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
 
     {
         const auto& e = textures.find(cacheKey);
-        if (e != textures.end()) return e->second;
+        if (e != textures.end())
+            return e->second;
     }
 
     auto future = startLoad(new ImageTexture(path, spec));

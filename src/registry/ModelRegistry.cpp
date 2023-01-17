@@ -51,7 +51,8 @@ std::shared_future<ModelMesh*> ModelRegistry::getMesh(
 
     {
         auto e = m_meshes.find(key);
-        if (e != m_meshes.end()) return e->second;
+        if (e != m_meshes.end())
+            return e->second;
     }
 
     auto mesh = new ModelMesh(

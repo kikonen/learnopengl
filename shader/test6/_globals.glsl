@@ -26,6 +26,8 @@
 //#define ATTR_BITANGENT 3
 #define ATTR_TEX 4
 
+#define ENTITY_FLAG_BILLBOARD 1
+
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 // => defined by c++ side (more optimal)
 // #ifndef MAT_COUNT

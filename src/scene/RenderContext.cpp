@@ -112,8 +112,30 @@ RenderContext::RenderContext(
     m_matrices.projection = m_camera.getProjection();
     m_matrices.projected = m_camera.getProjected();
 
+    if (false) {
+        const auto& view = m_matrices.view;
+
+        glm::mat4 inverse = glm::inverse(view);
+        glm::mat4 transpose = glm::transpose(view);
+
+        glm::vec3 right{ view[0][0], view[1][0], view[2][0] };
+        glm::vec3 up{ view[0][1], view[1][1], view[2][1] };
+        glm::vec3 pos{ inverse[3] };
+
+        const auto& cameraUp = m_camera.getViewUp();
+        const auto& cameraRight = m_camera.getViewRight();
+        const auto& cameraPos = m_camera.getPos();
+        int x = 0;
+    }
+
     m_data = {
         m_camera.getPos(),
+        0,
+        m_camera.getFront(),
+        0,
+        m_camera.getViewUp(),
+        0,
+        m_camera.getViewRight(),
         (float)m_clock.ts,
         m_resolution,
         0,

@@ -72,7 +72,6 @@ entities:
     shader: sprite
     pos: [15, 6.5, 20.0]
     material: skeleton
-    batch_size: 1000
     render_flags:
       alpha: true
       render_back: true

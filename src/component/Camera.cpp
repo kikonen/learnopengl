@@ -69,6 +69,25 @@ const glm::mat4& Camera::getProjected() noexcept
     return m_projectedMatrix;
 }
 
+//
+// NOTE KI - view right/up *CAN* be deduced from matrix
+//
+// - getViewRight() ==
+//   glm::vec3 right{ view[0][0], view[1][0], view[2][0] };
+//
+// - getViewUp() ==
+//   glm::vec3 up{ view[0][1], view[1][1], view[2][1] };
+//
+// - getPos() ==
+//   glm::vec3 pos{ glm::inverse(ViewMatrix)[3] };
+//
+// @see https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
+// This is the only interesting part of the tutorial.
+// This is equivalent to mlutiplying (1,0,0) and (0,1,0) by inverse(ViewMatrix).
+// ViewMatrix is orthogonal (it was made this way),
+// so its inverse is also its transpose,
+// and transposing a matrix is "free" (inversing is slooow)
+//
 const glm::mat4& Camera::getView() noexcept
 {
     updateCamera();

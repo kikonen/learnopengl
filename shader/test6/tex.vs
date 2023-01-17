@@ -56,6 +56,20 @@ void main() {
     materialIndex = int(u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex]);
   }
 
+  if (entity.flags == ENTITY_FLAG_BILLBOARD) {
+    // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
+    // - "ogl" approach
+    vec3 entityPos = vec3(entity.modelMatrix[3]);
+    vec3 entityScale = vec3(entity.modelMatrix[0][0],
+                            entity.modelMatrix[1][1],
+                            entity.modelMatrix[2][2]);
+
+    worldPos = vec4(entityPos
+                    + u_viewRight * a_pos.x * entityScale.x
+                    + u_viewUp * a_pos.y * entityScale.y,
+                    1.0);
+  }
+
   gl_Position = u_projectedMatrix * worldPos;
 
   vs_out.materialIndex = materialIndex;

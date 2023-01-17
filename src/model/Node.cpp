@@ -71,6 +71,9 @@ void Node::prepare(
 
         auto* entity = entityRegistry.get(m_entityIndex);
         entity->m_materialIndex = getMaterialIndex();
+        if (m_type->m_entityType == EntityType::billboard) {
+            entity->m_flags = ENTITY_FLAG_BILLBOARD;
+        }
         entity->setObjectID(m_objectID);
     }
 

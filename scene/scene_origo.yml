@@ -76,11 +76,10 @@ entities:
       - pos: [-5.0, 0.0, 5.0]
       - pos: [5.0, 0.0, 5.0]
   - name: Skeleton army
-    type: sprite
-    shader: sprite
+    type: billboard
+    shader: texture
     pos: [15, 6.5, 20.0]
     material: skeleton
-    batch_size: 1000
     render_flags:
       alpha: true
       render_back: true
@@ -140,7 +139,7 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
-    enabled: true
+    enabled: false
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [90, 0, 0]

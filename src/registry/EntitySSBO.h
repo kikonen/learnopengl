@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+constexpr int ENTITY_FLAG_BILLBOARD = 1;
+
 // SSBO entry
 //
 // NOTE KI SSBO array alignment
@@ -26,13 +28,15 @@ struct EntitySSBO {
     //glm::mat4 m_normalMatrix{ 1.f }; // 4 *  3 * 4 = 48
     glm::vec4 m_objectID{ 0.f }; // 4 * 1 * 4 = 16
 
-    float m_materialIndex{ 0 }; // 1 * 4 = 4
-    float m_highlightIndex{ 0 }; // 1 * 4 = 4
+    int m_materialIndex{ 0 }; // 1 * 4 = 4
+    int m_highlightIndex{ 0 }; // 1 * 4 = 4
+
+    int m_flags{ 0 }; // 1 * 4 = 4
 
     // TOTAL: 136
 
     int pad1;
-    int pad2;
+    //int pad2;
 
     inline void setObjectID(int objectID) {
         int r = (objectID & 0x000000FF) >> 0;

@@ -708,8 +708,8 @@ entities:
       render_back: true
     enabled: false
   - name: Skeleton army
-    type: sprite
-    shader: sprite
+    type: billboard
+    shader: texture
     pos: [15, 6.5, 20.0]
     material: skeleton
     render_flags:

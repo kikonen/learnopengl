@@ -353,6 +353,12 @@ MeshType* SceneFile::createType(
         type->setMesh(std::move(mesh), true);
         type->m_entityType = EntityType::quad;
     }
+    else if (data.type == EntityType::billboard) {
+        auto mesh = std::make_unique<QuadMesh>();
+        mesh->prepareVolume();
+        type->setMesh(std::move(mesh), true);
+        type->m_entityType = EntityType::billboard;
+    }
     else if (data.type == EntityType::sprite) {
         // NOTE KI sprite *shall* differ from quad later on
         auto mesh = std::make_unique<SpriteMesh>();
@@ -754,6 +760,9 @@ void SceneFile::loadEntityClone(
             }
             else if (type == "quad") {
                 data.type = EntityType::quad;
+            }
+            else if (type == "billboard") {
+                data.type = EntityType::billboard;
             }
             else if (type == "sprite") {
                 data.type = EntityType::sprite;

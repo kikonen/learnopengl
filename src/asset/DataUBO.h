@@ -5,6 +5,16 @@
 // NOTE KI align 16 for UBO struct
 struct DataUBO {
     glm::vec3 u_viewPos;
+    int pad5;
+
+    glm::vec3 u_viewFront;
+    int pad6;
+
+    glm::vec3 u_viewUp;
+    int pad7;
+
+    glm::vec3 u_viewRight;
+
     float u_time;
 
     glm::vec2 u_resolution;
@@ -17,4 +27,5 @@ struct DataUBO {
 
     int pad3;
     int pad4;
+
 };
