@@ -33,6 +33,7 @@ namespace backend {
         const bool useBlend)
     {
         if (!m_queue->isFull()) return;
+        //std::cout << "-F-";
         flush(
             state,
             shader,
@@ -58,6 +59,7 @@ namespace backend {
         bindOptions(state, drawOptions, useBlend);
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
+            //std::cout << "[e" << range.m_count << "]";
             glMultiDrawElementsIndirect(
                 drawOptions.mode,
                 GL_UNSIGNED_INT,
@@ -67,6 +69,7 @@ namespace backend {
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
+            //std::cout << "[a" << range.m_count << "]";
             glMultiDrawArraysIndirect(
                 drawOptions.mode,
                 (void*)range.m_baseOffset,
