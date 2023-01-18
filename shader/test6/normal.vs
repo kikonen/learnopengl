@@ -22,10 +22,10 @@ out VS_OUT {
 precision mediump float;
 
 void main() {
-  Entity entity = u_entities[int(gl_BaseInstance)];
-  int materialIndex = int(entity.materialIndex);
-  vec4 worldPos = entity.modelMatrix * a_pos;
-  mat3 normalMatrix = transpose(inverse(mat3(u_viewMatrix * entity.modelMatrix)));
+  const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const int materialIndex = entity.materialIndex;
+  const vec4 worldPos = entity.modelMatrix * a_pos;
+  const mat3 normalMatrix = transpose(inverse(mat3(u_viewMatrix * entity.modelMatrix)));
 
   gl_Position = u_viewMatrix * worldPos;
 

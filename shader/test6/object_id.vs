@@ -31,15 +31,15 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
-  Entity entity = u_entities[int(gl_BaseInstance) + gl_InstanceID];
-  vec4 worldPos = entity.modelMatrix * a_pos;
+  const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const vec4 worldPos = entity.modelMatrix * a_pos;
 
   gl_Position = u_projectedMatrix * worldPos;
 
   vs_out.objectID = entity.objectID;
 
 #ifdef USE_ALPHA
-  int materialIndex = int(entity.materialIndex);
+  const int materialIndex = entity.materialIndex;
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord;
 #endif

@@ -34,10 +34,10 @@ const vec3 normal = vec3(0.0, 0.0, 1.0);
 precision mediump float;
 
 void main() {
-  Entity entity = u_entities[int(gl_BaseInstance)];
-  int materialIndex = int(entity.materialIndex);
-  vec4 worldPos = entity.modelMatrix * pos;
-  mat3 normalMatrix = transpose(inverse(mat3(u_viewMatrix * entity.modelMatrix)));
+  const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const int materialIndex = entity.materialIndex;
+  const vec4 worldPos = entity.modelMatrix * pos;
+  const mat3 normalMatrix = transpose(inverse(mat3(u_viewMatrix * entity.modelMatrix)));
 
   gl_Position = worldPos;
 
@@ -53,12 +53,12 @@ void main() {
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0) {
-    vec3 tangent = vec3(1.0, 0.0, 0.0);
+    const vec3 tangent = vec3(1.0, 0.0, 0.0);
 
-    vec3 N = vs_out.normal;
-    vec3 T = normalize(normalMatrix * tangent);
+    const vec3 N = vs_out.normal;
+    const vec3 T = normalize(normalMatrix * tangent);
     T = normalize(T - dot(T, N) * N);
-    vec3 B = cross(N, T);
+    const vec3 B = cross(N, T);
 
     vs_out.TBN = mat3(T, B, N);
   }

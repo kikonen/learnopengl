@@ -20,11 +20,12 @@ const vec3 normal = vec3(0.0, 0.0, 1.0);
 ////////////////////////////////////////////////////////////
 
 void main() {
-  Entity entity = u_entities[int(gl_BaseInstance)];
-  int materialIndex = int(entity.materialIndex);
-  vec4 worldPos = entity.modelMatrix * pos;
+  const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const int materialIndex = entity.materialIndex;
+  const vec4 worldPos = entity.modelMatrix * pos;
+  const mat3 normalMatrix = transpose(inverse(mat3(u_viewMatrix * entity.modelMatrix)));
 
-  vec4 pos = u_projectedMatrix * worldPos;
+  const vec4 pos = u_projectedMatrix * worldPos;
 
   vs_out.materialIndex = materialIndex;
   gl_PointSize = 64;//(1.0 - pos.z / pos.w) * 64.0;

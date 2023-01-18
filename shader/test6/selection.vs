@@ -42,18 +42,18 @@ precision mediump float;
 #include fn_calculate_clipping.glsl
 
 void main() {
-  Entity entity = u_entities[int(gl_BaseInstance)];
-  vec4 worldPos = entity.modelMatrix * HIGHLIGHT_MAT * a_pos;
+  const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const vec4 worldPos = entity.modelMatrix * HIGHLIGHT_MAT * a_pos;
 
   gl_Position = u_projectedMatrix * worldPos;
 
 #ifdef USE_ALPHA
-  int materialIndex = int(entity.materialIndex);
+  const int materialIndex = entity.materialIndex;
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord;
 #endif
 
-  vs_out.highlightIndex = int(entity.highlightIndex);
+  vs_out.highlightIndex = entity.highlightIndex;
 
   calculateClipping(worldPos);
 }

@@ -23,9 +23,9 @@ const vec4 pos = vec4(0.0, -1.0, 0.0, 1.0);
 ////////////////////////////////////////////////////////////
 
 void main() {
-  Entity entity = u_entities[int(gl_BaseInstance)];
-  int materialIndex = int(entity.materialIndex);
-  vec4 worldPos = entity.modelMatrix * pos;
+  const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const int materialIndex = entity.materialIndex;
+  const vec4 worldPos = entity.modelMatrix * pos;
 
   gl_Position =  worldPos;
 
