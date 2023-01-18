@@ -8,24 +8,22 @@
 //
 // SyncQueue, which is split into multiple ranges, which can be fence synced
 //
-template <class T>
+template <class T, bool mappedMode>
 class GLSyncQueue {
 public:
     GLSyncQueue(
         std::string name,
         int entryCount,
-        int rangeCount,
-        bool mappedMode)
+        int rangeCount)
         : m_rangeCount(rangeCount),
         m_entryCount(entryCount),
         m_entrySize(sizeof(T)),
-        m_mappedMode(mappedMode),
         m_buffer{ "syncQueue_" + name}
     {
     }
 
     ~GLSyncQueue() {
-        if (!m_mappedMode) {
+        if constexpr (!mappedMode) {
             free(m_data);
         }
     }
@@ -40,10 +38,12 @@ public:
             m_paddedRangeLength += (m_bindAlignment - pad);
         }
 
-        if (m_mappedMode) {
+        if constexpr (mappedMode) {
+            // https://cpp-rendering.io/indirect-rendering/
+            // - based into slides, use GL_DYNAMIC_STORAGE_BIT for create of mapped buffer
             m_buffer.createEmpty(
                 m_rangeCount * m_paddedRangeLength,
-                GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
+                GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
 
             // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
             // https://stackoverflow.com/questions/44299324/how-to-use-gl-map-unsynchronized-bit-with-gl-map-persistent-bit
@@ -60,7 +60,7 @@ public:
 
         m_ranges.reserve(m_rangeCount);
 
-        for (int i = 0; i < m_rangeCount; i++) {
+        for (size_t i = 0; i < m_rangeCount; i++) {
             auto& range = m_ranges.emplace_back();
             // static
             range.m_baseIndex = i * m_entryCount;
@@ -125,7 +125,7 @@ public:
 
     inline void flush() {
         const auto& range = m_ranges[m_current];
-        if (m_mappedMode) {
+        if (mappedMode) {
             m_buffer.flushRange(range.m_baseOffset, range.getUsedSize());
         }
         else {
@@ -156,7 +156,6 @@ private:
     const int m_entryCount;
     const int m_entrySize;
     const int m_rangeCount;
-    const bool m_mappedMode;
 
     int m_bindAlignment = 0;
     int m_rangeLength = 0;

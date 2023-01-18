@@ -15,8 +15,7 @@ namespace backend {
         m_queue = std::make_unique<GLDrawSyncQueue>(
             "drawIndirect",
             entryCount,
-            rangeCount,
-            true);
+            rangeCount);
         m_queue->prepare(BUFFER_ALIGNMENT);
     }
 

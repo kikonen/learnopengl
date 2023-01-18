@@ -222,7 +222,7 @@ void RenderContext::bindLightsUBO() const
 {
     auto& nodeRegistry = m_nodeRegistry;
 
-    LightsUBO lightsUbo;
+    LightsUBO lightsUbo{};
     if (!m_useLight) {
         lightsUbo.dirCount = 0;
         lightsUbo.pointCount = 0;

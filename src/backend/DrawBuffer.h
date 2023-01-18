@@ -16,7 +16,7 @@ class Shader;
 
 
 namespace backend {
-    using GLDrawSyncQueue = GLSyncQueue<backend::DrawIndirectCommand>;
+    using GLDrawSyncQueue = GLSyncQueue<backend::DrawIndirectCommand, true>;
 
     class DrawBuffer {
     public:
