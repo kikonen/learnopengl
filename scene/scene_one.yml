@@ -1,11 +1,23 @@
 ---
 name: One
 viewports:
+skybox:
+  material: skybox
 entities:
+  - name: Camera
+    type: origo
+    pos: [0, 30, 0]
+    camera:
+      rotation: [0, 180, 0.0]
+      enabled: true
+    enabled: true
+    controller:
+      type: camera
+      enabled: true
   - name: Mountains
     id: 63ca20c5-dce1-4400-8968-6484cb4af8ca
     model: texture_mountains
     shader: texture
-    pos: [100.0, 0.0, -100.0]
+    pos: [0.0, 0.0, 0.0]
     scale: 1.0
     enabled: true
