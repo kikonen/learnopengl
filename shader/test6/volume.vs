@@ -1,7 +1,5 @@
 #version 460 core
 
-#include constants.glsl
-
 layout (location = ATTR_POS) in vec4 a_pos;
 
 #include struct_entity.glsl

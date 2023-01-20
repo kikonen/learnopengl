@@ -1,7 +1,5 @@
 #version 460 core
 
-#include constants.glsl
-
 layout (location = ATTR_POS) in vec4 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 #ifdef USE_NORMAL_TEX

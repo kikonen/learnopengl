@@ -1,7 +1,5 @@
 #version 460 core
 
-#include constants.glsl
-
 layout(points) in;
 layout(triangle_strip) out;
 layout(max_vertices = 4) out;

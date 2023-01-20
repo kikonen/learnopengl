@@ -1,7 +1,5 @@
 #version 460 core
 
-#include constants.glsl
-
 #include struct_lights.glsl
 #include struct_material.glsl
 

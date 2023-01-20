@@ -1,7 +1,5 @@
 #version 460 core
 
-#include constants.glsl
-
 layout (location = ATTR_POS) in vec4 a_pos;
 #ifdef USE_ALPHA
 layout (location = ATTR_TEX) in vec2 a_texCoord;

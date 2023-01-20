@@ -1,7 +1,5 @@
 #version 460 core
 
-#include constants.glsl
-
 #include struct_material.glsl
 
 #include uniform_materials.glsl
