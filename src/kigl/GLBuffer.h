@@ -60,8 +60,27 @@ struct GLBuffer {
         glNamedBufferStorage(m_id, size, data, flags);
     }
 
+    void clear() {
+        glClearNamedBufferSubData(
+            m_id,
+            GL_R32UI,
+            0,
+            m_size,
+            GL_RED_INTEGER,
+            GL_UNSIGNED_INT,
+            nullptr);
+    }
+
     void update(size_t offset, size_t length, void* data) {
         glNamedBufferSubData(m_id, offset, length, data);
+    }
+
+    void get(void* data) {
+        glGetNamedBufferSubData(m_id, 0, m_size, data);
+    }
+
+    void getRange(size_t offset, size_t length, void* data) {
+        glGetNamedBufferSubData(m_id, offset, length, data);
     }
 
     void bind(GLuint ubo) {
@@ -69,17 +88,7 @@ struct GLBuffer {
     }
 
     void bindRange(GLuint ubo, size_t offset, size_t length) {
-        if (!m_created) return;
-
-        if (m_binding != ubo) {
-            m_binding = ubo;
-
-            KI_DEBUG(fmt::format(
-                "BUFFER: bindRange - name={}, id={}, size={}, binding={}, offset={}, len={}",
-                m_name, m_id, m_size, m_binding, offset, length));
-        }
-
-        glBindBufferRange(GL_UNIFORM_BUFFER, ubo, m_id, offset, length);
+        bindBufferRange(GL_UNIFORM_BUFFER, ubo, offset, length);
     }
 
     void bindSSBO(GLuint ssbo) {
@@ -87,17 +96,30 @@ struct GLBuffer {
     }
 
     void bindSSBORange(GLuint ssbo, size_t offset, size_t length) {
+        bindBufferRange(GL_SHADER_STORAGE_BUFFER, ssbo, offset, length);
+    }
+
+    void bindAtomicCounter(GLuint atomic) {
+        bindBufferRange(GL_ATOMIC_COUNTER_BUFFER, atomic, 0, m_size);
+    }
+
+    void bindBufferRange(GLenum target, GLuint binding, size_t offset, size_t length) {
         if (!m_created) return;
 
-        if (m_binding != ssbo) {
-            m_binding = ssbo;
+        if (m_binding != binding) {
+            m_binding = binding;
 
             KI_DEBUG(fmt::format(
-                "BUFFER: bindSSBORange - name={}, id={}, size={}, binding={}, offset={}, len={}",
+                "BUFFER: bindBufferRange - name={}, id={}, size={}, binding={}, offset={}, len={}",
                 m_name, m_id, m_size, m_binding, offset, length));
         }
 
-        glBindBufferRange(GL_SHADER_STORAGE_BUFFER, ssbo, m_id, offset, length);
+        glBindBufferRange(target, binding, m_id, offset, length);
+    }
+
+    void bindParameter() {
+        if (!m_created) return;
+        glBindBuffer(GL_PARAMETER_BUFFER, m_id);
     }
 
     void bindDrawIndirect() {

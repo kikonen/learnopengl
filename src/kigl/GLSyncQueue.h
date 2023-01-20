@@ -149,6 +149,11 @@ public:
         m_buffer.bindRange(ubo, range.m_baseOffset, range.m_length);
     }
 
+    inline void bindSSBO(GLuint ssbo) {
+        auto& range = m_ranges[m_current];
+        m_buffer.bindSSBORange(ssbo, range.m_baseOffset, range.m_length);
+    }
+
 public:
     GLBuffer m_buffer;
 
