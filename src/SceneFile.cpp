@@ -415,6 +415,7 @@ MeshType* SceneFile::createType(
         if (!data.shaderName.empty()) {
             type->m_nodeShader = m_shaderRegistry->getShader(
                 data.shaderName,
+                false,
                 data.geometryType,
                 definitions);
         }

@@ -17,8 +17,12 @@ public:
         const std::string& name,
         const std::map<std::string, std::string>& defines);
 
+    Shader* getComputeShader(
+        const std::string& name);
+
     Shader* getShader(
         const std::string& name,
+        const bool compute,
         const std::string& geometryType,
         const std::map<std::string, std::string>& defines);
 

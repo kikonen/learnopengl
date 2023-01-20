@@ -123,6 +123,7 @@ public:
         const Assets& assets,
         const std::string& key,
         const std::string& name,
+        const bool compute,
         const std::string& geometryType,
         const std::map<std::string, std::string>& defines);
 
@@ -384,6 +385,8 @@ public:
 
     const std::string m_shaderName;
     const std::string m_key;
+
+    const bool m_compute;
 
     const Assets& assets;
     const std::string m_geometryType;

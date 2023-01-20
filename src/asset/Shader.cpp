@@ -42,12 +42,14 @@ Shader::Shader(
     const Assets& assets,
     const std::string& key,
     const std::string& name,
+    const bool compute,
     const std::string& geometryType,
     const std::map<std::string, std::string>& defines)
     : m_objectID(nextID()),
     assets(assets),
     m_key(key),
     m_shaderName(name),
+    m_compute(compute),
     m_geometryType(geometryType),
     m_defines(defines)
 {
@@ -59,25 +61,31 @@ Shader::Shader(
         basePath = fp.string();
     }
 
-    m_paths[GL_VERTEX_SHADER] = basePath + ".vs";
-    m_paths[GL_FRAGMENT_SHADER] = basePath + ".fs";
-    if (geometryType.empty()) {
-        m_paths[GL_GEOMETRY_SHADER] = basePath + ".gs.glsl";
+    if (m_compute) {
+        m_paths[GL_COMPUTE_SHADER] = basePath + ".cs.glsl";
+        m_required[GL_COMPUTE_SHADER] = true;
     }
     else {
-        m_paths[GL_GEOMETRY_SHADER] = basePath + "_" + geometryType + ".gs.glsl";
+        m_paths[GL_VERTEX_SHADER] = basePath + ".vs";
+        m_paths[GL_FRAGMENT_SHADER] = basePath + ".fs";
+        if (geometryType.empty()) {
+            m_paths[GL_GEOMETRY_SHADER] = basePath + ".gs.glsl";
+        }
+        else {
+            m_paths[GL_GEOMETRY_SHADER] = basePath + "_" + geometryType + ".gs.glsl";
+        }
+
+        //paths[GL_TESS_CONTROL_SHADER] = basePath + ".tcs.glsl";
+        //paths[GL_TESS_EVALUATION_SHADER] = basePath + ".tes.glsl";
+
+        m_required[GL_VERTEX_SHADER] = true;
+        m_required[GL_FRAGMENT_SHADER] = true;
+        m_required[GL_GEOMETRY_SHADER] = !geometryType.empty();
+        m_required[GL_TESS_CONTROL_SHADER] = false;
+        m_required[GL_TESS_EVALUATION_SHADER] = false;
+
+        //m_bindTexture = true;
     }
-
-    //paths[GL_TESS_CONTROL_SHADER] = basePath + ".tcs.glsl";
-    //paths[GL_TESS_EVALUATION_SHADER] = basePath + ".tes.glsl";
-
-    m_required[GL_VERTEX_SHADER] = true;
-    m_required[GL_FRAGMENT_SHADER] = true;
-    m_required[GL_GEOMETRY_SHADER] = !geometryType.empty();
-    m_required[GL_TESS_CONTROL_SHADER] = false;
-    m_required[GL_TESS_EVALUATION_SHADER] = false;
-
-    //m_bindTexture = true;
 }
 
 Shader::~Shader()
@@ -190,7 +198,7 @@ int Shader::compileSource(
             char infoLog[LOG_SIZE];
             glGetShaderInfoLog(shaderId, LOG_SIZE, NULL, infoLog);
             KI_ERROR(fmt::format(
-                "SHADER:::COMPILE_FAILED[{:#04x}] shader={} path={}\n{}",
+                "SHADER:::COMPILE_FAILED[{:#04x}] SHADER={}\nPATH={}\n{}",
                 shaderType, m_shaderName, shaderPath, infoLog));
             KI_ERROR(fmt::format(
                 "FAILED_SOURCE:\n-------------------\n{}\n-------------------",

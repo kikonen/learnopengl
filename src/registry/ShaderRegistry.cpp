@@ -21,24 +21,35 @@ ShaderRegistry::~ShaderRegistry()
 Shader* ShaderRegistry::getShader(
     const std::string& name)
 {
-    return getShader(name, "", {});
+    return getShader(name, false, "", {});
 }
 
 Shader* ShaderRegistry::getShader(
     const std::string& name,
     const std::map<std::string, std::string>& defines)
 {
-    return getShader(name, "", defines);
+    return getShader(name, false, "", defines);
+}
+
+Shader* ShaderRegistry::getComputeShader(
+    const std::string& name)
+{
+    return getShader(name, true, "", {});
 }
 
 Shader* ShaderRegistry::getShader(
     const std::string& name,
+    const bool compute,
     const std::string& geometryType,
     const std::map<std::string, std::string>& defines)
 {
     std::lock_guard<std::mutex> lock(m_shaders_lock);
 
     std::string key = name;
+
+    if (compute) {
+        key += "_CS_";
+    }
 
     if (!geometryType.empty()) {
         key += "_" + geometryType;
@@ -60,6 +71,7 @@ Shader* ShaderRegistry::getShader(
             m_assets,
             key,
             name,
+            compute,
             geometryType,
             defines);
         const auto& e = m_shaders.find(key);
