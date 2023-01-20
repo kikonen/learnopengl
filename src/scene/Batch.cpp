@@ -9,11 +9,12 @@
 
 #include "asset/VertexEntry.h"
 
+#include "backend/CandidateDraw.h"
+
 #include "model/Node.h"
 #include "registry/MeshType.h"
 
 #include "scene/RenderContext.h"
-
 
 namespace {
     constexpr int BATCH_COUNT = 100;
@@ -63,6 +64,7 @@ void Batch::bind() noexcept
 
 void Batch::prepare(
     const Assets& assets,
+    ShaderRegistry& shaders,
     int entryCount,
     int bufferCount) noexcept
 {
@@ -86,7 +88,7 @@ void Batch::prepare(
     m_batches.reserve(BATCH_COUNT);
     m_entityIndeces.reserve(ENTITY_COUNT);
 
-    m_draw.prepare(m_entryCount, bufferCount);
+    m_draw.prepare(assets, shaders, m_entryCount, bufferCount);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
@@ -189,7 +191,7 @@ void Batch::draw(
 
 void Batch::sendDraw(
     const RenderContext& ctx,
-    const backend::DrawIndirectCommand& indirect,
+    const backend::CandidateDraw& indirect,
     const Shader* shader,
     const GLVertexArray* vao,
     const backend::DrawOptions& drawOptions)
@@ -217,7 +219,7 @@ void Batch::flush(
     const backend::DrawOptions* boundDrawOptions{ nullptr };
     //int  baseInstance = range.m_baseIndex;
 
-    backend::DrawIndirectCommand indirect{};
+    backend::CandidateDraw candidate{};
 
     for (auto& curr : m_batches) {
         if (curr.m_drawCount == 0) continue;
@@ -244,46 +246,48 @@ void Batch::flush(
         const auto& drawOptions = *curr.m_drawOptions;
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
-            backend::DrawElementsIndirectCommand& cmd = indirect.element;
+            backend::DrawElementsIndirectCommand& cmd = candidate.element;
 
             cmd.count = drawOptions.indexCount;
             cmd.instanceCount = 1;
             cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
 
-            if (drawOptions.instanced) {
+            if (false && drawOptions.instanced) {
                 cmd.instanceCount = curr.m_drawCount;
                 // NOTE KI *SAME* e
                 cmd.baseInstance = m_entityIndeces[curr.m_index];
-                m_draw.send(indirect);
+                m_draw.send(candidate);
                 m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
             }
             else {
                 for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
+                    candidate.baseInstance = m_entityIndeces[i];
                     cmd.baseInstance = m_entityIndeces[i];
-                    m_draw.send(indirect);
+                    m_draw.send(candidate);
                     m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
                 }
             }
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
-            backend::DrawArraysIndirectCommand& cmd = indirect.array;
+            backend::DrawArraysIndirectCommand& cmd = candidate.array;
 
             cmd.vertexCount = drawOptions.indexCount;
             cmd.instanceCount = 1;
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
 
-            if (drawOptions.instanced) {
+            if (false && drawOptions.instanced) {
                 cmd.instanceCount = curr.m_drawCount;
                 cmd.baseInstance = m_entityIndeces[curr.m_index];
-                m_draw.send(indirect);
+                m_draw.send(candidate);
                 m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
             }
             else {
                 for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
+                    candidate.baseInstance = m_entityIndeces[i];
                     cmd.baseInstance = m_entityIndeces[i];
-                    m_draw.send(indirect);
+                    m_draw.send(candidate);
                     m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
                 }
             }

@@ -114,6 +114,9 @@ void Node::update(
         entity->m_materialIndex = getMaterialIndex();
         entity->m_highlightIndex = getHighlightIndex(ctx);
 
+        entity->m_volumeRadius = m_volumeRadius;
+        entity->m_volumeCenter = m_volumeCenter;
+
         ctx.m_entityRegistry.markDirty(m_entityIndex);
 
         m_dirtyEntity = false;
@@ -188,6 +191,7 @@ void Node::updateModelMatrix(Node* parent) noexcept
         // NOTE KI radius can change if scale of node or parent changes
         const auto& min = m_scaleMatrix * glm::vec4(m_aabb.m_min, 1.0);
         const auto& max = m_scaleMatrix * glm::vec4(m_aabb.m_max, 1.0);
+
         m_volumeRadius = glm::length(min - max) * 0.5f;
         m_volumeCenter = (max + min) * 0.5f;
     }

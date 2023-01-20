@@ -10,6 +10,9 @@ constexpr GLuint SSBO_MATERIALS = 1;
 //constexpr GLuint SSBO_TEXTURES = 2;
 constexpr GLuint SSBO_ENTITIES = 3;
 constexpr GLuint SSBO_MATERIAL_INDECES = 4;
+constexpr GLuint SSBO_CANDIDATE_DRAWS = 5;
+constexpr GLuint SSBO_DRAW_COMMANDS = 6;
+constexpr GLuint SSBO_DRAW_COMMAND_COUNTER = 7;
 
 //constexpr unsigned int MIN_MATERIAL_COUNT = 200;
 //constexpr unsigned int MAX_MATERIAL_COUNT = 200;

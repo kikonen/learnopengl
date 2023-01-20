@@ -2,7 +2,13 @@ struct Entity {
   mat4 modelMatrix;
   //mat4 normalMatrix;
   vec4 objectID;
+
+  vec3 volumeCenter;
+  float volumeRadius;
+
   int materialIndex;
-  int highlightIndex;
-  int flags;
+  uint highlightIndex;
+  uint flags;
+
+  uint drawType;
 };

@@ -31,6 +31,8 @@ const std::string TEX_EFFECT{ "effect" };
 const std::string TEX_VIEWPORT{ "viewport" };
 const std::string TEX_VOLUME{ "volume" };
 
+const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
+
 const std::string GS_SPRITE{ "sprite" };
 
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };

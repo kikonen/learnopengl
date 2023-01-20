@@ -2,6 +2,9 @@
 
 #include <glm/glm.hpp>
 
+constexpr int ENTITY_DRAW_ELEMENT = 1;
+constexpr int ENTITY_DRAW_ARRAY = 2;
+
 constexpr int ENTITY_FLAG_BILLBOARD = 1;
 
 // SSBO entry
@@ -28,14 +31,20 @@ struct EntitySSBO {
     //glm::mat4 m_normalMatrix{ 1.f }; // 4 *  3 * 4 = 48
     glm::vec4 m_objectID{ 0.f }; // 4 * 1 * 4 = 16
 
-    int m_materialIndex{ 0 }; // 1 * 4 = 4
-    int m_highlightIndex{ 0 }; // 1 * 4 = 4
+    glm::vec3 m_volumeCenter{ 0.f }; // 3 * 1 * 4 = 12 => 16
 
-    int m_flags{ 0 }; // 1 * 4 = 4
+    GLfloat m_volumeRadius{ 0.f }; // 1 * 1 * 4 = 4
+
+    GLint m_materialIndex{ 0 }; // 1 * 4 = 4
+    GLuint m_highlightIndex{ 0 }; // 1 * 4 = 4
+
+    GLuint m_flags{ 0 }; // 1 * 4 = 4
+
+    GLuint m_drawType = { ENTITY_DRAW_ELEMENT };
 
     // TOTAL: 136
 
-    int pad1;
+    //int pad1;
     //int pad2;
 
     inline void setObjectID(int objectID) {

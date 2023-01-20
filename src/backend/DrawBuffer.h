@@ -8,25 +8,33 @@
 
 #include "kigl/GLSyncQueue.h"
 
-#include "DrawElementsIndirectCommand.h"
+#include "CandidateDraw.h"
 #include "DrawIndirectCommand.h"
 #include "DrawOptions.h"
 
+class Assets;
 class Shader;
-
+class ShaderRegistry;
 
 namespace backend {
-    using GLDrawSyncQueue = GLSyncQueue<backend::DrawIndirectCommand, true>;
+    using GLCandidateQueue = GLSyncQueue<backend::CandidateDraw, true>;
+    // NOTE KI updated by compute shader, just need to sync with candidate draw swaps
+    using GLCommandQueue = GLSyncQueue<backend::DrawIndirectCommand, false>;
 
     class DrawBuffer {
     public:
         DrawBuffer();
 
-        void prepare(int entryCount, int rangeCount);
+        void prepare(
+            const Assets& assets,
+            ShaderRegistry& shaders,
+            int batchCount,
+            int rangeCount);
+
         void bind();
 
         void send(
-            const backend::DrawIndirectCommand& cmd);
+            const backend::CandidateDraw& cmd);
 
         void flushIfNeeded(
             GLState& state,
@@ -49,6 +57,14 @@ namespace backend {
             const bool useBlend) const;
 
     private:
-        std::unique_ptr<GLDrawSyncQueue> m_queue{ nullptr };
+        int m_batchCount = 0;
+
+        Shader* m_candidateShader{ nullptr };
+
+        std::unique_ptr<GLCandidateQueue> m_candidates{ nullptr };
+
+        std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
+
+        GLBuffer m_commandCounter{ "drawCommandCounter" };
     };
 }

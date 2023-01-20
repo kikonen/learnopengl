@@ -313,6 +313,7 @@
     <ClInclude Include="src\asset\QuadVAO.h" />
     <ClInclude Include="src\asset\SpriteMaterialInit.h" />
     <ClInclude Include="src\asset\SSBO.h" />
+    <ClInclude Include="src\backend\CandidateDraw.h" />
     <ClInclude Include="src\backend\DrawBuffer.h" />
     <ClInclude Include="src\backend\DrawOptions.h" />
     <ClInclude Include="src\backend\DrawElementsIndirectCommand.h" />

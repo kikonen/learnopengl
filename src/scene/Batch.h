@@ -7,18 +7,19 @@
 #include "kigl/GLBufferRange.h"
 #include "kigl/GLSyncQueue.h"
 
-#include "backend/DrawElementsIndirectCommand.h"
-#include "backend/DrawIndirectCommand.h"
 #include "backend/DrawOptions.h"
 #include "backend/DrawBuffer.h"
 
 #include "BatchCommand.h"
 #include "BatchEntry.h"
 
+struct backend::CandidateDraw;
+
 class RenderContext;
 class MeshType;
 class Node;
 class MaterialVBO;
+class ShaderRegistry;
 
 
 // NOTE KI use single shared UBO buffer for rendering
@@ -49,6 +50,7 @@ public:
 
     void prepare(
         const Assets& assets,
+        ShaderRegistry& shaders,
         int entryCount = -1,
         int bufferCount = -1) noexcept;
 
@@ -61,7 +63,7 @@ public:
 
     void sendDraw(
         const RenderContext& ctx,
-        const backend::DrawIndirectCommand& indirect,
+        const backend::CandidateDraw& indirect,
         const Shader* shader,
         const GLVertexArray* vao,
         const backend::DrawOptions& drawOptions);

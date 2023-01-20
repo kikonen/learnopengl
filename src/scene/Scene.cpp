@@ -88,7 +88,7 @@ void Scene::prepare(ShaderRegistry& shaders)
     m_commandEngine->prepare();
     m_scriptEngine->prepare(*m_commandEngine);
 
-    m_batch->prepare(assets);
+    m_batch->prepare(assets, shaders);
     m_materialRegistry->prepare();
     m_entityRegistry->prepare();
     m_modelRegistry->prepare(*m_batch);

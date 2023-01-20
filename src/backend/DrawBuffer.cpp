@@ -1,7 +1,12 @@
 #include "DrawBuffer.h"
 
+#include "asset/Assets.h"
 #include "asset/Shader.h"
+#include "asset/SSBO.h"
 
+#include "util/Util.h"
+
+#include "registry/ShaderRegistry.h"
 
 namespace backend {
     constexpr int BUFFER_ALIGNMENT = 1;
@@ -10,18 +15,46 @@ namespace backend {
     {
     }
 
-    void DrawBuffer::prepare(int entryCount, int rangeCount)
+    void DrawBuffer::prepare(
+        const Assets& assets,
+        ShaderRegistry& shaders,
+        int batchCount,
+        int rangeCount)
     {
-        m_queue = std::make_unique<GLDrawSyncQueue>(
-            "drawIndirect",
-            entryCount,
-            rangeCount);
-        m_queue->prepare(BUFFER_ALIGNMENT);
+        m_batchCount = batchCount;
+        //rangeCount = 1;
+
+        int candidateBatchCount = batchCount * rangeCount;
+        int commandBatchCount = batchCount * rangeCount;
+
+        int candidateRangeCount = 1;
+        int commandRangeCount = 1;
+
+        m_candidateShader = shaders.getComputeShader(CS_FRUSTUM_CULLING);
+        m_candidateShader->prepare(assets);
+
+        m_candidates = std::make_unique<GLCandidateQueue>(
+            "drawCandidate",
+            candidateBatchCount,
+            candidateRangeCount);
+        m_candidates->prepare(BUFFER_ALIGNMENT);
+
+        m_commandCounter.createEmpty(sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
+
+        m_commands = std::make_unique<GLCommandQueue>(
+            "drawCommand",
+            commandBatchCount,
+            commandRangeCount);
+        m_commands->prepare(BUFFER_ALIGNMENT);
     }
 
     void DrawBuffer::bind()
     {
-        m_queue->m_buffer.bindDrawIndirect();
+        m_commandCounter.bindParameter();
+        m_commands->m_buffer.bindDrawIndirect();
+
+        //m_commandCounter.bindAtomicCounter(SSBO_DRAW_COMMAND_COUNTER);
+        m_commandCounter.bindSSBO(SSBO_DRAW_COMMAND_COUNTER);
     }
 
     void DrawBuffer::flushIfNeeded(
@@ -31,7 +64,7 @@ namespace backend {
         const DrawOptions& drawOptions,
         const bool useBlend)
     {
-        if (!m_queue->isFull()) return;
+        if (!m_candidates->isFull()) return;
         //std::cout << "-F-";
         flush(
             state,
@@ -48,10 +81,39 @@ namespace backend {
         const DrawOptions& drawOptions,
         const bool useBlend)
     {
-        auto& range = m_queue->current();
+        auto& range = m_candidates->current();
         if (range.m_count == 0) return;
 
-        m_queue->flush();
+        m_candidates->flush();
+
+        // TODO KI
+        // - bind CS shader
+        // - execute CS shader
+        // - glMemoryBarrier
+        // - bind draw shader
+        // - execute draw shader
+
+        GLuint count = 0;
+        {
+            m_candidateShader->bind(state);
+
+            m_commandCounter.update(0, sizeof(GLuint), &count);
+
+            m_candidates->bindSSBO(SSBO_CANDIDATE_DRAWS);
+            m_commands->bindSSBO(SSBO_DRAW_COMMANDS);
+
+            glDispatchCompute(range.m_count, 1, 1);
+
+            glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
+        }
+
+        m_commandCounter.get(&count);
+        if (false) {
+            //std::cout << "[draw=" << count<< "]";
+            KI_DEBUG(fmt::format(
+                "DRAW: type={}, range={}, count={}",
+                util::as_integer(drawOptions.type), range.m_count, count));
+        }
 
         shader->bind(state);
         state.bindVAO(*vao);
@@ -63,8 +125,16 @@ namespace backend {
                 drawOptions.mode,
                 GL_UNSIGNED_INT,
                 (void*)range.m_baseOffset,
-                range.m_count,
+                count, //range.m_count,
                 sizeof(backend::DrawIndirectCommand));
+
+            //glMultiDrawElementsIndirectCount(
+            //    drawOptions.mode,
+            //    GL_UNSIGNED_INT,
+            //    (void*)range.m_baseOffset,
+            //    0,
+            //    range.m_count,
+            //    sizeof(backend::DrawIndirectCommand));
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
@@ -72,18 +142,28 @@ namespace backend {
             glMultiDrawArraysIndirect(
                 drawOptions.mode,
                 (void*)range.m_baseOffset,
-                range.m_count,
+                count, //range.m_count,
                 sizeof(backend::DrawIndirectCommand));
+
+            //glMultiDrawArraysIndirectCount(
+            //    drawOptions.mode,
+            //    (void*)range.m_baseOffset,
+            //    0,
+            //    range.m_count,
+            //    sizeof(backend::DrawIndirectCommand));
         }
 
-        m_queue->next(true);
-        assert(m_queue->current().isEmpty());
+        m_candidates->next(true);
+        m_commands->next(true);
+
+        assert(m_candidates->current().isEmpty());
+        assert(m_commands->current().isEmpty());
     }
 
     void DrawBuffer::send(
-        const backend::DrawIndirectCommand& indirect)
+        const backend::CandidateDraw& cmd)
     {
-        m_queue->send(indirect);
+        m_candidates->send(cmd);
     }
 
     void DrawBuffer::bindOptions(
