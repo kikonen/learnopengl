@@ -43,12 +43,14 @@ void ShadowMapRenderer::prepare(
     m_farPlane = assets.shadowFarPlane;
     m_frustumSize = assets.shadowFrustumSize;
 
-    m_solidShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH);
-    m_blendedShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    m_shadowShader = shaders.getShader(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    //m_solidShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH);
+    //m_blendedShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
     m_shadowDebugShader = shaders.getShader(TEX_DEBUG_DEPTH);
 
-    m_solidShadowShader->prepare(assets);
-    m_blendedShadowShader->prepare(assets);
+    m_shadowShader->prepare(assets);
+    //m_solidShadowShader->prepare(assets);
+    //m_blendedShadowShader->prepare(assets);
     m_shadowDebugShader->prepare(assets);
 
     auto buffer = new ShadowBuffer({
@@ -149,24 +151,32 @@ void ShadowMapRenderer::drawNodes(
         }
     };
 
-    {
-        auto shader = m_solidShadowShader;
+    if (false) {
+        //{
+        //    auto shader = m_solidShadowShader;
 
-        for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
-            renderTypes(all.second, shader);
-        }
+        //    for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
+        //        renderTypes(all.second, shader);
+        //    }
+        //}
+
+        //{
+        //    auto shader = m_blendedShadowShader;
+
+        //    for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
+        //        renderTypes(all.second, shader);
+        //    }
+
+        //    for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
+        //        renderTypes(all.second, shader);
+        //    }
+        //}
     }
-
-    {
-        auto shader = m_blendedShadowShader;
-
-        for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
-            renderTypes(all.second, shader);
+    else {
+        for (const auto& all : ctx.m_nodeRegistry.allNodes) {
+            renderTypes(all.second, m_shadowShader);
         }
 
-        for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
-            renderTypes(all.second, shader);
-        }
     }
 
     ctx.m_batch.flush(ctx);
