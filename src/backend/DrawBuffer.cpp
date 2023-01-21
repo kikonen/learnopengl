@@ -109,10 +109,10 @@ namespace backend {
 
         m_commandCounter.get(&count);
         if (false) {
-            //std::cout << "[draw=" << count<< "]";
-            KI_DEBUG(fmt::format(
-                "DRAW: type={}, range={}, count={}",
-                util::as_integer(drawOptions.type), range.m_count, count));
+            std::cout << "[draw=" << count<< "]";
+            //KI_DEBUG(fmt::format(
+            //    "DRAW: type={}, range={}, count={}",
+            //    util::as_integer(drawOptions.type), range.m_count, count));
         }
 
         shader->bind(state);
@@ -121,36 +121,41 @@ namespace backend {
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
             //std::cout << "[e" << range.m_count << "]";
-            glMultiDrawElementsIndirect(
-                drawOptions.mode,
-                GL_UNSIGNED_INT,
-                (void*)range.m_baseOffset,
-                count, //range.m_count,
-                sizeof(backend::DrawIndirectCommand));
-
-            //glMultiDrawElementsIndirectCount(
-            //    drawOptions.mode,
-            //    GL_UNSIGNED_INT,
-            //    (void*)range.m_baseOffset,
-            //    0,
-            //    range.m_count,
-            //    sizeof(backend::DrawIndirectCommand));
+            if (false) {
+                glMultiDrawElementsIndirect(
+                    drawOptions.mode,
+                    GL_UNSIGNED_INT,
+                    (void*)range.m_baseOffset,
+                    count, //range.m_count,
+                    sizeof(backend::DrawIndirectCommand));
+            }
+            else {
+                glMultiDrawElementsIndirectCount(
+                    drawOptions.mode,
+                    GL_UNSIGNED_INT,
+                    (void*)range.m_baseOffset,
+                    0,
+                    range.m_count,
+                    sizeof(backend::DrawIndirectCommand));
+            }
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
             //std::cout << "[a" << range.m_count << "]";
-            glMultiDrawArraysIndirect(
-                drawOptions.mode,
-                (void*)range.m_baseOffset,
-                count, //range.m_count,
-                sizeof(backend::DrawIndirectCommand));
-
-            //glMultiDrawArraysIndirectCount(
-            //    drawOptions.mode,
-            //    (void*)range.m_baseOffset,
-            //    0,
-            //    range.m_count,
-            //    sizeof(backend::DrawIndirectCommand));
+            if (false) {
+                glMultiDrawArraysIndirect(
+                    drawOptions.mode,
+                    (void*)range.m_baseOffset,
+                    count, //range.m_count,
+                    sizeof(backend::DrawIndirectCommand));
+            } else {
+                glMultiDrawArraysIndirectCount(
+                    drawOptions.mode,
+                    (void*)range.m_baseOffset,
+                    0,
+                    range.m_count,
+                    sizeof(backend::DrawIndirectCommand));
+            }
         }
 
         m_candidates->next(true);

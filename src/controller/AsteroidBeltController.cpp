@@ -188,6 +188,7 @@ void AsteroidBeltController::calculateVolume(
     InstancedNode& node,
     std::vector<Asteroid> asteroids)
 {
+    return;
     glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
     glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
 
