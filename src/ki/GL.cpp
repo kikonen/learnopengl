@@ -142,7 +142,7 @@ namespace ki {
                 info, err, err));
         }
         if (wasError) {
-            //KI_BREAK();
+            int x = 0;
         }
     }
 

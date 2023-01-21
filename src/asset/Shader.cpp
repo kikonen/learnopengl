@@ -203,7 +203,6 @@ int Shader::compileSource(
             KI_ERROR(fmt::format(
                 "FAILED_SOURCE:\n-------------------\n{}\n-------------------",
                 source));
-            KI_BREAK();
 
             glDeleteShader(shaderId);
             shaderId = -1;
@@ -248,7 +247,6 @@ int Shader::createProgram() {
                     "SHADER::PROGRAM::LINKING_FAILED shader={}\n{}",
                     m_shaderName, infoLog);
                 KI_ERROR(msg);
-                KI_BREAK();
 
                 glDeleteProgram(m_programId);
                 m_programId = -1;
@@ -285,7 +283,6 @@ void Shader::validateProgram() const {
             m_shaderName, infoLog);
 
         KI_ERROR(msg);
-        KI_BREAK();
 
         throw std::runtime_error{ msg };
     }
@@ -484,13 +481,13 @@ std::vector<std::string> Shader::loadSourceLines(
             KI_ERROR(fmt::format(
                 "SHADER::FILE_NOT_SUCCESFULLY_READ shader={}, path={}",
                 m_shaderName, path));
-            KI_BREAK();
         }
         else {
             KI_DEBUG(fmt::format(
                 "SHADER::FILE_NOT_SUCCESFULLY_READ shader={}, path={}",
                 m_shaderName, path));
         }
+        throw;
     }
 
     return lines;

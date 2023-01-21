@@ -95,7 +95,7 @@ void FrameBuffer::prepare(
 
     if (glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         KI_ERROR("FRAMEBUFFER:: Framebuffer is not complete!");
-        KI_BREAK();
+        throw std::runtime_error{ "FRAMEBUFFER:: Framebuffer is not complete!" };
     }
 
     // NOTE KI clear buffer to avoid showing garbage

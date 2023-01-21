@@ -24,10 +24,12 @@ int runEngine() {
     }
     catch (const std::exception& ex) {
         KI_CRITICAL(ex.what());
-        KI_BREAK();
+        int x = 0;
     }
     catch (...) {
-        KI_BREAK();
+        KI_CRITICAL("UNKNOWN_ERROR");
+        int x = 0;
+        throw;
     }
 
     // HACK KI wait for a bit for pending worker threads to die

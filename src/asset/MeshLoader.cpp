@@ -356,7 +356,6 @@ void MeshLoader::createTangents(
         };
 
         glm::vec3 nt = glm::normalize(tangent);
-//        if (tangent != nt) KI_BREAK();
 
         tangents.push_back(nt);
 

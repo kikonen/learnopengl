@@ -55,7 +55,7 @@ void AsyncLoader::addLoader(
                 m_waitCondition.notify_all();
             } catch (const std::runtime_error& ex) {
                 KI_CRITICAL(ex.what());
-                KI_BREAK();
+                int x = 0;
             }
         }
     };
