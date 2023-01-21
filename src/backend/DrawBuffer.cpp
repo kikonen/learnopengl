@@ -108,9 +108,14 @@ namespace backend {
             glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
         }
 
-        //m_commandCounter.get(&count);
         if (false) {
-            std::cout << "[draw=" << count<< "]";
+            m_commandCounter.get(&count);
+
+            //std::cout << " [draw=" << count << "]";
+
+            size_t skip = range.m_count - count;
+            if (skip > 0) std::cout << " [SKIP=" << skip << "]";
+
             //KI_DEBUG(fmt::format(
             //    "DRAW: type={}, range={}, count={}",
             //    util::as_integer(drawOptions.type), range.m_count, count));

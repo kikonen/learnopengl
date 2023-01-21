@@ -59,7 +59,7 @@ layout (binding = SSBO_DRAW_COMMAND_COUNTER) buffer CommandCounterSSBO
   uint u_commandCounter;
 };
 
-const float EXPAND_X = 2.0;
+const float EXPAND_X = 1.0;
 const float EXPAND_Y = 1.0;
 
 void main(void) {
@@ -70,8 +70,14 @@ void main(void) {
     entity.modelMatrix *
     vec4(entity.volumeCenter, 1.0);
 
-  if ((abs(pos.x) - entity.volumeRadius) < (pos.w * EXPAND_X) &&
-      (abs(pos.y) - entity.volumeRadius) < (pos.w * EXPAND_Y))
+  const vec4 surfacePos = u_projectedMatrix *
+    entity.modelMatrix *
+    vec4(vec3(entity.volumeRadius, entity.volumeRadius, entity.volumeRadius) - entity.volumeCenter, 1.0);
+
+  const float radius = length(surfacePos - pos);
+
+  if ((abs(pos.x) - radius) < (pos.w * EXPAND_X) &&
+      (abs(pos.y) - radius) < (pos.w * EXPAND_Y))
     {
       //const uint idx = atomicCounterIncrement(u_commandCounter);
       uint idx = atomicAdd(u_commandCounter, 1);
