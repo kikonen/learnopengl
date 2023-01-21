@@ -53,7 +53,6 @@ layout (binding = SSBO_DRAW_COMMANDS, std430) writeonly buffer DrawCommandSSBO
   DrawIndirectCommand u_commands[];
 };
 
-//layout (binding = SSBO_DRAW_COMMAND_COUNTER, offset = 0) uniform atomic_uint u_commandCounter;
 layout (binding = SSBO_DRAW_COMMAND_COUNTER) buffer CommandCounterSSBO
 {
   uint u_commandCounter;
@@ -70,16 +69,15 @@ void main(void) {
     entity.modelMatrix *
     vec4(entity.volumeCenter, 1.0);
 
-  const vec4 surfacePos = u_projectedMatrix *
-    entity.modelMatrix *
-    vec4(vec3(entity.volumeRadius, entity.volumeRadius, entity.volumeRadius) - entity.volumeCenter, 1.0);
+const vec4 radiusPos = u_projectedMatrix *
+  entity.modelMatrix *
+  vec4(entity.volumeCenter + vec3(entity.volumeRadius, .0, .0), 1.0);
 
-  const float radius = length(surfacePos - pos);
+  const float radius = length(vec3(radiusPos) - vec3(pos));
 
   if ((abs(pos.x) - radius) < (pos.w * EXPAND_X) &&
       (abs(pos.y) - radius) < (pos.w * EXPAND_Y))
     {
-      //const uint idx = atomicCounterIncrement(u_commandCounter);
       uint idx = atomicAdd(u_commandCounter, 1);
 
       u_commands[idx].vertexCount = draw.vertexCount;

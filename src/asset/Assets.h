@@ -78,6 +78,8 @@ public:
     int clearColor;
 
     bool frustumEnabled;
+    bool frustumCPU;
+    bool frustumGPU;
     bool frustumDebug;
 
     float cameraFov;

@@ -156,6 +156,12 @@ void AssetsFile::loadAssets(
         else if (k == "frustum_enabled") {
             data.frustumEnabled = v.as<bool>();
         }
+        else if (k == "frustum_cpu") {
+            data.frustumCPU = v.as<bool>();
+        }
+        else if (k == "frustum_gpu") {
+            data.frustumGPU = v.as<bool>();
+        }
         else if (k == "frustum_debug") {
             data.frustumDebug = v.as<bool>();
         }

@@ -21,6 +21,9 @@ namespace backend {
         int batchCount,
         int rangeCount)
     {
+        const auto info = ki::GL::getInfo();
+        m_useIndirectCount = info.vendor != "Intel";
+
         m_batchCount = batchCount;
         //rangeCount = 1;
 
@@ -108,13 +111,15 @@ namespace backend {
             glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
         }
 
-        if (false) {
-            m_commandCounter.get(&count);
+        m_commandCounter.get(&count);
 
-            //std::cout << " [draw=" << count << "]";
+        size_t skip = range.m_count - count;
+        m_drawCount += count;
+        m_skipCount += skip;
 
-            size_t skip = range.m_count - count;
-            if (skip > 0) std::cout << " [SKIP=" << skip << "]";
+        if (true) {
+            if (count > 0) std::cout << " [draw: " << count << "]";
+            if (skip > 0) std::cout << " [skip: " << skip << "]";
 
             //KI_DEBUG(fmt::format(
             //    "DRAW: type={}, range={}, count={}",
@@ -129,7 +134,7 @@ namespace backend {
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
             //std::cout << "[e" << range.m_count << "]";
-            if (false) {
+            if (!m_useIndirectCount) {
                 glMultiDrawElementsIndirect(
                     drawOptions.mode,
                     GL_UNSIGNED_INT,
@@ -150,7 +155,7 @@ namespace backend {
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
             //std::cout << "[a" << range.m_count << "]";
-            if (false) {
+            if (!m_useIndirectCount) {
                 glMultiDrawArraysIndirect(
                     drawOptions.mode,
                     (void*)range.m_baseOffset,

@@ -269,7 +269,7 @@ void RenderContext::bindLightsUBO() const
 
 const FrustumNew& RenderContext::getFrustumNew() const
 {
-    if (assets.frustumEnabled && m_useFrustum && !m_frustumNewPrepared) {
+    if (assets.frustumEnabled && assets.frustumCPU && m_useFrustum && !m_frustumNewPrepared) {
         updateFrustumNew(m_frustumNew, m_matrices.view, true);
         m_frustumNewPrepared = true;
     }

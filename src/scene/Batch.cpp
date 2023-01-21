@@ -134,6 +134,7 @@ void Batch::draw(
     const auto* volume = node.getVolume();
     if (ctx.m_useFrustum &&
         ctx.assets.frustumEnabled &&
+        ctx.assets.frustumCPU &&
         !type->m_flags.noFrustum &&
         volume)
     {
@@ -166,7 +167,10 @@ void Batch::draw(
         }
     }
 
-    ctx.m_drawCount += 1;
+    // NOTE KI GPU count comes from draw buffer
+    if (ctx.assets.frustumEnabled && ctx.assets.frustumCPU) {
+        ctx.m_drawCount += 1;
+    }
 
     {
         const bool useBlend = ctx.m_useBlend;
@@ -304,4 +308,10 @@ void Batch::flush(
 
     m_batches.clear();
     m_entityIndeces.clear();
+
+    ctx.m_drawCount += m_draw.m_drawCount;
+    ctx.m_skipCount += m_draw.m_skipCount;
+
+    m_draw.m_drawCount = 0;
+    m_draw.m_skipCount = 0;
 }

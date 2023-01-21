@@ -56,8 +56,14 @@ namespace backend {
             const DrawOptions& drawOptions,
             const bool useBlend) const;
 
+    public:
+        long m_drawCount = 0;
+        long m_skipCount = 0;
+
     private:
         int m_batchCount = 0;
+
+        bool m_useIndirectCount;
 
         Shader* m_candidateShader{ nullptr };
 

@@ -62,6 +62,8 @@ Assets::Assets()
     clearColor = false;
 
     frustumEnabled = true;
+    frustumCPU = false;
+    frustumCPU = true;
     frustumDebug = false;
 
     cameraFov = 45.f;
