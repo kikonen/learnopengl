@@ -33,9 +33,9 @@ entities:
     render_flags:
       no_shadow: true
     repeat:
-      x_count: 2
+      x_count: 1
       y_count: 1
-      z_count: 2
+      z_count: 1
       x_step: 200
       y_step: 0
       z_step: 200

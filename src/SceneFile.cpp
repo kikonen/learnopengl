@@ -384,7 +384,6 @@ MeshType* SceneFile::createType(
     else if (data.type == EntityType::terrain) {
         TerrainGenerator generator(assets);
         auto mesh = generator.generateTerrain();
-        mesh->prepareVolume();
         type->setMesh(std::move(mesh), true);
         type->m_entityType = EntityType::terrain;
     }

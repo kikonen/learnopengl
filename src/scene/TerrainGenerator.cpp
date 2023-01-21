@@ -2,6 +2,14 @@
 
 #include "util/Perlin.h"
 
+namespace {
+    // NOTE KI terrain is primarily flat
+    // perlin noise creates -4/+4 peaks in mesh, which are scaled down
+    // when terrain tile is scaled by factor x200 x/z wise
+    const AABB TERRAIN_AABB = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
+
+}
+
 TerrainGenerator::TerrainGenerator(const Assets& assets)
     : assets(assets)
 {
@@ -64,6 +72,13 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain()
             tris.emplace_back(topLeft, bottomLeft, topRight);
         }
     }
+
+    const auto& aabb = TERRAIN_AABB;
+    mesh->setAABB(aabb);
+    mesh->setVolume(std::make_unique<Sphere>(
+        (aabb.m_max + aabb.m_min) * 0.5f,
+        // NOTE KI *radius* not diam needed
+        glm::length(aabb.m_min - aabb.m_max) * 0.5f));
 
     return mesh;
 }
