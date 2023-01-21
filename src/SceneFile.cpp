@@ -332,9 +332,14 @@ MeshType* SceneFile::createType(
 
     // NOTE KI need to create copy *IF* modifiers
     // TODO KI should make copy *ALWAYS* for safety
+    Material basicMaterial = Material::createMaterial(BasicMaterial::basic);
     Material* material = nullptr;
     if (!data.materialName.empty()) {
         material = Material::find(data.materialName, materials);
+    }
+
+    if (!material) {
+        material = &basicMaterial;
     }
 
     if (material) {
