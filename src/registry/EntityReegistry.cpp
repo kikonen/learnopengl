@@ -7,7 +7,7 @@
 
 namespace {
     // scene_full = 91 109
-    constexpr int MAX_ENTITY_COUNT = 500000;
+    constexpr int MAX_ENTITY_COUNT = 1000000;
 
     constexpr int MAX_SKIP = 10;
 }
@@ -20,7 +20,8 @@ EntityRegistry::EntityRegistry(const Assets& assets)
 
 void EntityRegistry::prepare()
 {
-    m_ssbo.createEmpty(MAX_ENTITY_COUNT * sizeof(EntitySSBO), GL_DYNAMIC_STORAGE_BIT);
+    m_ssbo.createEmpty(MAX_ENTITY_COUNT * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
+    m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
 }
 
 void EntityRegistry::update(const RenderContext& ctx)
@@ -49,12 +50,14 @@ void EntityRegistry::update(const RenderContext& ctx)
 
         if (from != -1 && (skip >= MAX_SKIP || idx == m_maxDirty)) {
             int to = idx;
-            const int count = (to + 1) - from;
+            const int count = to + 1 - from;
             //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
-            m_ssbo.update(
-                from * sz,
-                (to + 1 - from) * sz,
-                &m_entries[from]);
+            memcpy(m_ssbo.m_data + from * sz, &m_entries[from], count * sz);
+            //m_ssbo.update(
+            //    from * sz,
+            //    count * sz,
+            //    &m_entries[from]);
+            m_ssbo.flushRange(from * sz, count * sz);
 
             skip = 0;
             from = -1;
@@ -62,6 +65,8 @@ void EntityRegistry::update(const RenderContext& ctx)
         }
         idx++;
     }
+
+    //glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
     //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, updated={}", ctx.m_clock.frameCount, updatedCount));
 
