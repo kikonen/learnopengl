@@ -152,6 +152,7 @@ void SceneFile::attachVolume(
     flags.noReflect = true;
     flags.noRefract = true;
     flags.noDisplay = true;
+    flags.noSelect = true;
 
     type->m_nodeShader = m_shaderRegistry->getShader(TEX_VOLUME);
 
@@ -204,6 +205,7 @@ void SceneFile::attachCubeMapCenter(
     flags.noReflect = true;
     flags.noRefract = true;
     flags.noDisplay = true;
+    flags.noSelect = true;
 
     type->m_nodeShader = m_shaderRegistry->getShader(TEX_VOLUME);
 
