@@ -1,6 +1,6 @@
 assets:
   log_file: log/development.log
-  scene_file: scene/scene_forest.yml
+  scene_file: scene/scene_full.yml
 
   glfw_swap_interval: 3
   gl_debug: true
@@ -32,7 +32,7 @@ assets:
   show_shadow_map_view: false
   show_reflection_view: false
   show_refraction_view: false
-  show_objectid_view: true
+  show_objectid_view: false
 
   show_volume: true
   show_selection_volume: true

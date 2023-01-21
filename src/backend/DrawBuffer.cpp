@@ -117,7 +117,7 @@ namespace backend {
         m_drawCount += count;
         m_skipCount += skip;
 
-        if (true) {
+        if (false) {
             if (count > 0) std::cout << " [draw: " << count << "]";
             if (skip > 0) std::cout << " *skip: " << skip << "*";
 

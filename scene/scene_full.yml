@@ -680,7 +680,7 @@ entities:
     pos: [0, 0, 0]
     controller:
       type: asteroid_belt
-      count: 2000
+      count: 1000
       enabled: true
     enabled: true
   - name: Scale 1
