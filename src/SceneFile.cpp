@@ -50,10 +50,12 @@ namespace {
 
 
 SceneFile::SceneFile(
-    AsyncLoader* asyncLoader,
     const Assets& assets,
+    std::shared_ptr<std::atomic<bool>> alive,
+    AsyncLoader* asyncLoader,
     const std::string& filename)
     : m_filename(filename),
+    m_alive(alive),
     m_assets(assets),
     m_asyncLoader(asyncLoader)
 {
@@ -230,7 +232,7 @@ void SceneFile::attachEntity(
         return;
     }
 
-    m_asyncLoader->addLoader([this, &root, &data, &materials]() {
+    m_asyncLoader->addLoader(m_alive, [this, &root, &data, &materials]() {
         if (data.clones.empty()) {
             MeshType* type{ nullptr };
             attachEntityClone(type, root, data, data.base, false, materials);

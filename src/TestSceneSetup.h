@@ -17,6 +17,7 @@ class TestSceneSetup final
 public:
     TestSceneSetup(
         const Assets& assets,
+        std::shared_ptr<std::atomic<bool>> alive,
         AsyncLoader* asyncLoader);
 
     void setup(
@@ -32,6 +33,8 @@ private:
     void setupViewport1();
 private:
     const Assets& m_assets;
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     AsyncLoader* m_asyncLoader;
 

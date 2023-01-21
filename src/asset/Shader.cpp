@@ -109,7 +109,7 @@ void Shader::load()
     }
 }
 
-int Shader::prepare(const Assets& assets) noexcept
+int Shader::prepare(const Assets& assets)
 {
     if (m_prepared) return m_prepareResult;
     m_prepared = true;
@@ -207,6 +207,11 @@ int Shader::compileSource(
 
             glDeleteShader(shaderId);
             shaderId = -1;
+
+            const auto msg = fmt::format(
+                "SHADER:::COMPILE_FAILED[{:#04x}] SHADER={}, PATH={}",
+                shaderType, m_shaderName, shaderPath);
+            throw std::runtime_error{ msg };
         }
     }
 
@@ -239,13 +244,16 @@ int Shader::createProgram() {
             if (!success) {
                 char infoLog[LOG_SIZE];
                 glGetProgramInfoLog(m_programId, LOG_SIZE, NULL, infoLog);
-                KI_ERROR(fmt::format(
+                const auto msg = fmt::format(
                     "SHADER::PROGRAM::LINKING_FAILED shader={}\n{}",
-                    m_shaderName, infoLog));
+                    m_shaderName, infoLog);
+                KI_ERROR(msg);
                 KI_BREAK();
 
                 glDeleteProgram(m_programId);
                 m_programId = -1;
+
+                throw std::runtime_error{ msg };
             }
         }
 
@@ -271,10 +279,15 @@ void Shader::validateProgram() const {
     if (!success) {
         char infoLog[LOG_SIZE];
         glGetProgramInfoLog(m_programId, LOG_SIZE, NULL, infoLog);
-        KI_ERROR(fmt::format(
+
+        const auto msg = fmt::format(
             "SHADER::PROGRAM::VALIDATE_FAILED shader={}\n{}",
-            m_shaderName, infoLog));
+            m_shaderName, infoLog);
+
+        KI_ERROR(msg);
         KI_BREAK();
+
+        throw std::runtime_error{ msg };
     }
 }
 
@@ -375,10 +388,15 @@ void Shader::setupUBO(
         for (const auto& [k, v] : m_defines) {
             KI_ERROR(fmt::format("DEFINE: {}={}", k, v));
         }
-        KI_CRITICAL(fmt::format(
+
+        const auto msg = fmt::format(
             "SHADER::UBO_SIZE shader={}. UBO={}. size={}. expected_size={}",
-            m_shaderName, name, blockSize, expectedSize));
+            m_shaderName, name, blockSize, expectedSize);
+
+        KI_CRITICAL(msg);
         __debugbreak();
+
+        throw std::runtime_error{ msg };
     }
 }
 

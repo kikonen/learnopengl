@@ -27,8 +27,10 @@ namespace {
 
 TestSceneSetup::TestSceneSetup(
     const Assets& assets,
+    std::shared_ptr<std::atomic<bool>> alive,
     AsyncLoader* asyncLoader)
     : m_assets(assets),
+    m_alive(alive),
     m_asyncLoader(asyncLoader)
 {
 }
@@ -55,7 +57,7 @@ void TestSceneSetup::setup(
 
 void TestSceneSetup::setupEffectExplosion()
 {
-    m_asyncLoader->addLoader([this]() {
+    m_asyncLoader->addLoader(m_alive, [this]() {
         Shader* shader = m_shaderRegistry->getShader(TEX_EFFECT);
 
         auto type = m_typeRegistry->getType("<effect>");

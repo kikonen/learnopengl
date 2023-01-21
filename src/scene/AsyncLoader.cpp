@@ -25,7 +25,9 @@ void AsyncLoader::waitForReady()
     }
 }
 
-void AsyncLoader::addLoader(std::function<void()> loader)
+void AsyncLoader::addLoader(
+    std::shared_ptr<std::atomic<bool>> alive,
+    std::function<void()> loader)
 {
     if (!m_assets.asyncLoaderEnabled) {
         loader();
@@ -38,12 +40,14 @@ void AsyncLoader::addLoader(std::function<void()> loader)
     // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic
     // https://stackoverflow.com/questions/21531096/can-i-use-stdasync-without-waiting-for-the-future-limitation
     auto th = std::thread{
-        [this, loader]() {
+        [this, loader, alive]() {
             try {
                 if (m_assets.asyncLoaderDelay > 0)
                     std::this_thread::sleep_for(std::chrono::milliseconds(m_assets.asyncLoaderDelay));
 
-                loader();
+                if (*alive) {
+                    loader();
+                }
                 std::unique_lock<std::mutex> lock(m_load_lock);
                 m_loadedCount++;
                 m_waitCondition.notify_all();

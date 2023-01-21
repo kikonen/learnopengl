@@ -52,7 +52,7 @@ public:
         const Assets& assets,
         ShaderRegistry& shaders,
         int entryCount = -1,
-        int bufferCount = -1) noexcept;
+        int bufferCount = -1);
 
     void prepareVAO(GLVertexArray& vao, bool singleMaterial);
 

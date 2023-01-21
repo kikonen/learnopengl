@@ -4,6 +4,7 @@
 #include <string>
 #include <functional>
 #include <mutex>
+#include <atomic>
 
 #include "kigl/GLSyncQueue.h"
 
@@ -48,7 +49,8 @@ class SkyboxRenderer;
 class Scene final
 {
 public:
-    Scene(const Assets& assets);
+    Scene(
+        const Assets& assets);
     ~Scene();
 
     void prepare(ShaderRegistry& shaders);
@@ -80,7 +82,9 @@ private:
     void updateMainViewport(RenderContext& ctx);
 
 public:
-    const Assets& assets;
+    const Assets& m_assets;
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::unique_ptr<RenderData> m_renderData;
 
@@ -100,7 +104,8 @@ protected:
 private:
     bool m_prepared = false;
 
-    std::vector<ParticleGenerator*> particleGenerators;
+
+    std::vector<ParticleGenerator*> m_particleGenerators;
 
     std::unique_ptr<NodeRenderer> m_nodeRenderer{ nullptr };
 
@@ -115,7 +120,7 @@ private:
     std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };
     std::unique_ptr<NormalRenderer> m_normalRenderer{ nullptr };
 
-    std::unique_ptr<ParticleSystem> particleSystem{ nullptr };
+    std::unique_ptr<ParticleSystem> m_particleSystem{ nullptr };
 
     std::unique_ptr<TextureBuffer> m_rearBuffer{ nullptr };
     std::shared_ptr<Viewport> m_rearViewport;

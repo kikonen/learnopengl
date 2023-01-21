@@ -13,7 +13,9 @@ public:
 
     virtual void setup();
 
-    void addLoader(std::function<void()> loader);
+    void addLoader(
+        std::shared_ptr<std::atomic<bool>> alive,
+        std::function<void()> loader);
 
     // wait for loading of node
     // @return node null if not found

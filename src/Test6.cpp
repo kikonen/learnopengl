@@ -185,27 +185,13 @@ std::shared_ptr<Scene> Test6::loadScene()
 {
     auto scene = std::make_shared<Scene>(m_assets);
 
+    auto& alive = scene->m_alive;
+
     {
-        std::unique_ptr<SceneFile> file;
         if (!m_assets.sceneFile.empty()) {
-            file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, m_assets.sceneFile);
+            std::unique_ptr<SceneFile> file = std::make_unique<SceneFile>(m_assets, alive, m_asyncLoader.get(), m_assets.sceneFile);
+            m_files.push_back(std::move(file));
         }
-
-        if (!file) {
-            file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_full.yml");
-            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_player.yml");
-            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_origo.yml");
-            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_light.yml");
-            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_water.yml");
-            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_terrain.yml");
-            //file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_material_balls.yml");
-        }
-        m_files.push_back(std::move(file));
-    }
-
-    {
-        //auto file = std::make_unique<SceneFile>(m_asyncLoader.get(), m_assets, "scene/scene_full.yml", glm::vec3{ 0, 0, -100 });
-        //m_files.push_back(std::move(file));
     }
 
     for (auto& file : m_files) {
@@ -221,6 +207,7 @@ std::shared_ptr<Scene> Test6::loadScene()
 
     m_testSetup = std::make_unique<TestSceneSetup>(
         m_assets,
+        alive,
         m_asyncLoader.get());
 
     m_testSetup->setup(

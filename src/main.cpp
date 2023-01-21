@@ -27,11 +27,20 @@ int main()
 {
     entt::registry registry;
     Log::init();
-    KI_INFO("START");
+    KI_INFO_OUT("START");
 
-    runEngine();
+    try {
+        runEngine();
+    }
+    catch (const std::exception& ex) {
+        KI_CRITICAL(ex.what());
+        KI_BREAK();
+    }
+    catch (...) {
+        KI_BREAK();
+    }
 
-    KI_INFO("DONE");
+    KI_INFO_OUT("DONE");
 
     if (false) {
         std::cout << "PRESS [ENTER] TO CLOSE";

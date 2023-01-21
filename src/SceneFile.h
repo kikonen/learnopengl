@@ -215,8 +215,9 @@ class SceneFile
 
 public:
     SceneFile(
-        AsyncLoader* asyncLoader,
         const Assets& assets,
+        std::shared_ptr<std::atomic<bool>> alive,
+        AsyncLoader* asyncLoader,
         const std::string& filename);
 
     ~SceneFile();
@@ -366,6 +367,8 @@ public:
 
 private:
     const Assets& m_assets;
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     AsyncLoader* m_asyncLoader;
 

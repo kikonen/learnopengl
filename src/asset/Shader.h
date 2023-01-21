@@ -106,7 +106,7 @@ class Shader final
 public:
     void load();
 
-    int prepare(const Assets& assets) noexcept;
+    int prepare(const Assets& assets);
 
     void bind(GLState& state) const noexcept;
 

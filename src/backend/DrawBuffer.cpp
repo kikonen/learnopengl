@@ -97,7 +97,8 @@ namespace backend {
         {
             m_candidateShader->bind(state);
 
-            m_commandCounter.update(0, sizeof(GLuint), &count);
+            //m_commandCounter.update(0, sizeof(GLuint), &count);
+            m_commandCounter.clear();
 
             m_candidates->bindSSBO(SSBO_CANDIDATE_DRAWS);
             m_commands->bindSSBO(SSBO_DRAW_COMMANDS);
@@ -107,13 +108,15 @@ namespace backend {
             glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
         }
 
-        m_commandCounter.get(&count);
+        //m_commandCounter.get(&count);
         if (false) {
             std::cout << "[draw=" << count<< "]";
             //KI_DEBUG(fmt::format(
             //    "DRAW: type={}, range={}, count={}",
             //    util::as_integer(drawOptions.type), range.m_count, count));
         }
+
+        //if (count == 0) return;
 
         shader->bind(state);
         state.bindVAO(*vao);

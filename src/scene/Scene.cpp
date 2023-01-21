@@ -35,8 +35,10 @@
 #include "scene/RenderData.h"
 
 
-Scene::Scene(const Assets& assets)
-    : assets(assets)
+Scene::Scene(
+    const Assets& assets)
+    : m_assets(assets),
+    m_alive(std::make_shared<std::atomic<bool>>())
 {
     m_materialRegistry = std::make_unique<MaterialRegistry>(assets);
     m_entityRegistry = std::make_unique<EntityRegistry>(assets);
@@ -65,7 +67,7 @@ Scene::Scene(const Assets& assets)
     m_objectIdRenderer = std::make_unique<ObjectIdRenderer>();
     m_normalRenderer = std::make_unique<NormalRenderer>();
 
-    particleSystem = std::make_unique<ParticleSystem>();
+    m_particleSystem = std::make_unique<ParticleSystem>();
 
     m_batch = std::make_unique<Batch>();
     m_renderData = std::make_unique<RenderData>();
@@ -75,7 +77,9 @@ Scene::~Scene()
 {
     KI_INFO("SCENE: deleted");
 
-    particleGenerators.clear();
+    m_particleGenerators.clear();
+
+    *m_alive = false;
 }
 
 void Scene::prepare(ShaderRegistry& shaders)
@@ -88,7 +92,7 @@ void Scene::prepare(ShaderRegistry& shaders)
     m_commandEngine->prepare();
     m_scriptEngine->prepare(*m_commandEngine);
 
-    m_batch->prepare(assets, shaders);
+    m_batch->prepare(m_assets, shaders);
     m_materialRegistry->prepare();
     m_entityRegistry->prepare();
     m_modelRegistry->prepare(*m_batch);
@@ -101,39 +105,39 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {
-        m_nodeRenderer->prepare(assets, shaders, *m_materialRegistry);
+        m_nodeRenderer->prepare(m_assets, shaders, *m_materialRegistry);
     }
     //terrainRenderer->prepare(shaders);
 
     if (m_viewportRenderer) {
-        m_viewportRenderer->prepare(assets, shaders, *m_materialRegistry);
+        m_viewportRenderer->prepare(m_assets, shaders, *m_materialRegistry);
     }
 
     if (m_waterMapRenderer) {
-        m_waterMapRenderer->prepare(assets, shaders, *m_materialRegistry);
+        m_waterMapRenderer->prepare(m_assets, shaders, *m_materialRegistry);
     }
     if (m_mirrorMapRenderer) {
-        m_mirrorMapRenderer->prepare(assets, shaders, *m_materialRegistry);
+        m_mirrorMapRenderer->prepare(m_assets, shaders, *m_materialRegistry);
     }
     if (m_cubeMapRenderer) {
-        m_cubeMapRenderer->prepare(assets, shaders, *m_materialRegistry);
+        m_cubeMapRenderer->prepare(m_assets, shaders, *m_materialRegistry);
     }
     if (m_shadowMapRenderer) {
-        m_shadowMapRenderer->prepare(assets, shaders, *m_materialRegistry);
+        m_shadowMapRenderer->prepare(m_assets, shaders, *m_materialRegistry);
     }
 
     if (m_objectIdRenderer) {
-        m_objectIdRenderer->prepare(assets, shaders, *m_materialRegistry);
+        m_objectIdRenderer->prepare(m_assets, shaders, *m_materialRegistry);
     }
 
-    if (assets.showNormals) {
+    if (m_assets.showNormals) {
         if (m_normalRenderer) {
-            m_normalRenderer->prepare(assets, shaders, *m_materialRegistry);
+            m_normalRenderer->prepare(m_assets, shaders, *m_materialRegistry);
         }
     }
 
-    if (particleSystem) {
-        particleSystem->prepare(assets, shaders);
+    if (m_particleSystem) {
+        m_particleSystem->prepare(m_assets, shaders);
     }
 
     {
@@ -152,19 +156,19 @@ void Scene::prepare(ShaderRegistry& shaders)
             0,
             shaders.getShader(TEX_VIEWPORT));
 
-        m_mainViewport->m_effect = assets.viewportEffect;
+        m_mainViewport->m_effect = m_assets.viewportEffect;
 
-        m_mainViewport->prepare(assets);
+        m_mainViewport->prepare(m_assets);
         m_nodeRegistry->addViewPort(m_mainViewport);
     }
 
-    if (assets.showObjectIDView) {
+    if (m_assets.showObjectIDView) {
         if (m_objectIdRenderer) {
             m_nodeRegistry->addViewPort(m_objectIdRenderer->m_debugViewport);
         }
     }
 
-    if (assets.showRearView) {
+    if (m_assets.showRearView) {
         m_rearViewport = std::make_shared<Viewport>(
             "Rear",
             glm::vec3(0.5, 1, 0),
@@ -174,16 +178,16 @@ void Scene::prepare(ShaderRegistry& shaders)
             0,
             shaders.getShader(TEX_VIEWPORT));
 
-        m_rearViewport->prepare(assets);
+        m_rearViewport->prepare(m_assets);
         m_nodeRegistry->addViewPort(m_rearViewport);
     }
 
-    if (assets.showShadowMapView) {
+    if (m_assets.showShadowMapView) {
         if (m_shadowMapRenderer) {
             m_nodeRegistry->addViewPort(m_shadowMapRenderer->m_debugViewport);
         }
     }
-    if (assets.showReflectionView) {
+    if (m_assets.showReflectionView) {
         if (m_waterMapRenderer) {
             m_nodeRegistry->addViewPort(m_waterMapRenderer->m_reflectionDebugViewport);
         }
@@ -191,7 +195,7 @@ void Scene::prepare(ShaderRegistry& shaders)
             m_nodeRegistry->addViewPort(m_mirrorMapRenderer->m_debugViewport);
         }
     }
-    if (assets.showRefractionView) {
+    if (m_assets.showRefractionView) {
         if (m_waterMapRenderer) {
             m_nodeRegistry->addViewPort(m_waterMapRenderer->m_refractionDebugViewport);
         }
@@ -218,7 +222,7 @@ void Scene::update(RenderContext& ctx)
         m_nodeRegistry->m_root->update(ctx, nullptr);
     }
 
-    for (auto& generator : particleGenerators) {
+    for (auto& generator : m_particleGenerators) {
         generator->update(ctx);
     }
 
@@ -238,8 +242,8 @@ void Scene::update(RenderContext& ctx)
         m_viewportRenderer->update(ctx);
     }
 
-    if (particleSystem) {
-        particleSystem->update(ctx);
+    if (m_particleSystem) {
+        m_particleSystem->update(ctx);
     }
 
     m_materialRegistry->update(ctx);
@@ -335,7 +339,7 @@ void Scene::drawMain(RenderContext& ctx)
 // "back mirror" viewport
 void Scene::drawRear(RenderContext& ctx)
 {
-    if (!assets.showRearView) return;
+    if (!m_assets.showRearView) return;
 
     Camera camera(ctx.m_camera.getPos(), ctx.m_camera.getFront(), ctx.m_camera.getUp());
     camera.setZoom(ctx.m_camera.getZoom());
@@ -367,8 +371,8 @@ void Scene::drawViewports(RenderContext& ctx)
     // => *BUT* if glDraw is used instead then clear *IS* needed for depth
     if (false) {
         int mask = GL_DEPTH_BUFFER_BIT;
-        if (assets.clearColor) {
-            if (assets.debugClearColor) {
+        if (m_assets.clearColor) {
+            if (m_assets.debugClearColor) {
                 //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 glClearColor(0.9f, 0.9f, 0.0f, 1.0f);
             }
@@ -387,8 +391,8 @@ void Scene::drawScene(RenderContext& ctx)
     // NOTE KI clear for current draw buffer buffer (main/mirror/etc.)
     {
         int mask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
-        if (assets.clearColor) {
-            if (assets.debugClearColor) {
+        if (m_assets.clearColor) {
+            if (m_assets.debugClearColor) {
                 glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
             }
             mask |= GL_COLOR_BUFFER_BIT;
@@ -413,11 +417,11 @@ void Scene::drawScene(RenderContext& ctx)
         m_nodeRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
     }
 
-    if (particleSystem) {
-        particleSystem->render(ctx);
+    if (m_particleSystem) {
+        m_particleSystem->render(ctx);
     }
 
-    if (assets.showNormals) {
+    if (m_assets.showNormals) {
         if (m_normalRenderer) {
             m_normalRenderer->render(ctx);
         }
@@ -441,9 +445,9 @@ void Scene::bindComponents(Node& node)
     auto& type = node.m_type;
 
     if (node.m_particleGenerator) {
-        if (particleSystem) {
-            node.m_particleGenerator->system = particleSystem.get();
-            particleGenerators.push_back(node.m_particleGenerator.get());
+        if (m_particleSystem) {
+            node.m_particleGenerator->system = m_particleSystem.get();
+            m_particleGenerators.push_back(node.m_particleGenerator.get());
         }
     }
 
@@ -498,7 +502,7 @@ void Scene::updateMainViewport(RenderContext& ctx)
         if (mirrorW < 1) mirrorW = 1;
         if (mirrorH < 1) mirrorH = 1;
 
-        if (!m_rearBuffer && assets.showRearView) {
+        if (!m_rearBuffer && m_assets.showRearView) {
             // NOTE KI alpha NOT needed
             auto buffer = new TextureBuffer({
                 mirrorW, mirrorH,
