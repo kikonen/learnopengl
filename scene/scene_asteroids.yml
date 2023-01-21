@@ -15,10 +15,18 @@ entities:
     controller:
       type: camera
       enabled: true
+  - name: Cube map 1
+    type: origo
+    pos: [0.0, 0.0, 0.0]
+    render_flags:
+      cube_map: true
+    enabled: true
   - name: Asteroid belt
     model: [rock, rock]
     instanced: true
     shader: texture
+    material_modifier:
+      reflection: 0.7
     pos: [0, 0, 0]
     controller:
       type: asteroid_belt
