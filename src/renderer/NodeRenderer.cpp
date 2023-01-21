@@ -100,6 +100,7 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
+    // draw entity data mask
     drawNodes(ctx, nullptr, true);
 
     ctx.state.disable(GL_STENCIL_TEST);
@@ -117,6 +118,7 @@ void NodeRenderer::renderSelection(const RenderContext& ctx)
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     glStencilMask(0x00);
 
+    // draw selection color (scaled a bit bigger)
     drawSelectionStencil(ctx);
 
     glStencilMask(0xFF);

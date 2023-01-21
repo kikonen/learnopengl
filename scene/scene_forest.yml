@@ -5,7 +5,7 @@ skybox:
 entities:
   - name: Camera
     type: origo
-    pos: [0, 0, 0]
+    pos: [0, 8, -22]
     camera:
       rotation: [0, 180, 0.0]
       enabled: true
@@ -40,8 +40,8 @@ entities:
       alpha: true
     scale: [7, 10, 1]
     repeat:
-      x_count: 5
-      z_count: 5
+      x_count: 2
+      z_count: 1
       x_step: -20
       z_step: 20
     enabled: true

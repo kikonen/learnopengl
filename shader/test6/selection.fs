@@ -1,11 +1,12 @@
 #version 460 core
 
-#ifdef USE_ALPHA
 #include struct_material.glsl
 
-#include uniform_materials.glsl
+#ifdef USE_ALPHA
 #include uniform_textures.glsl
 #endif
+
+#include uniform_materials.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test

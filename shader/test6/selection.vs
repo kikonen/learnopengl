@@ -10,6 +10,8 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
+#include uniform_data.glsl
+#include uniform_material_indeces.glsl
 #include uniform_clip_planes.glsl
 
 #ifdef USE_ALPHA
@@ -26,10 +28,11 @@ out VS_OUT {
 
 out float gl_ClipDistance[CLIP_COUNT];
 
-mat4 HIGHLIGHT_MAT = mat4(1.02, 0, 0, 0,
-                          0, 1.02, 0, 0,
-                          0, 0, 1.02, 0,
-                          0, 0, 0, 1);
+const float SCALE = 1.024;
+const mat4 HIGHLIGHT_MAT = mat4(SCALE, 0, 0, 0,
+                                0, SCALE, 0, 0,
+                                0, 0, SCALE, 0,
+                                0, 0,     0, 1);
 
 ////////////////////////////////////////////////////////////
 //
@@ -41,12 +44,32 @@ precision mediump float;
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
-  const vec4 worldPos = entity.modelMatrix * HIGHLIGHT_MAT * a_pos;
+
+  vec4 worldPos;
+  if (entity.flags == ENTITY_FLAG_BILLBOARD) {
+    // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
+    // - "ogl" approach
+    vec3 entityPos = vec3(entity.modelMatrix[3]);
+    vec3 entityScale = vec3(entity.modelMatrix[0][0] * SCALE,
+                            entity.modelMatrix[1][1] * SCALE,
+                            entity.modelMatrix[2][2] * SCALE);
+
+    worldPos = vec4(entityPos
+                    + u_viewRight * a_pos.x * entityScale.x
+                    + u_viewUp * a_pos.y * entityScale.y,
+                    1.0);
+  } else {
+    worldPos = entity.modelMatrix * HIGHLIGHT_MAT * a_pos;
+  }
 
   gl_Position = u_projectedMatrix * worldPos;
 
 #ifdef USE_ALPHA
-  const int materialIndex = entity.materialIndex;
+  int materialIndex = entity.materialIndex;
+  if (materialIndex < 0) {
+    materialIndex = int(u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex]);
+  }
+
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord;
 #endif
