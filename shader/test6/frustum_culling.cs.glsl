@@ -71,7 +71,7 @@ void main(void) {
 
 const vec4 radiusPos = u_projectedMatrix *
   entity.modelMatrix *
-  vec4(entity.volumeCenter + vec3(entity.volumeRadius, .0, .0), 1.0);
+  vec4(entity.volumeCenter + vec3(entity.volumeRadius, entity.volumeRadius, entity.volumeRadius), 1.0);
 
   const float radius = length(vec3(radiusPos) - vec3(pos));
 

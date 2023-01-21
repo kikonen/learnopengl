@@ -119,7 +119,7 @@ namespace backend {
 
         if (true) {
             if (count > 0) std::cout << " [draw: " << count << "]";
-            if (skip > 0) std::cout << " [skip: " << skip << "]";
+            if (skip > 0) std::cout << " *skip: " << skip << "*";
 
             //KI_DEBUG(fmt::format(
             //    "DRAW: type={}, range={}, count={}",
