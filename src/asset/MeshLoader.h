@@ -11,7 +11,8 @@ class MeshLoader final
 {
 public:
     MeshLoader(
-        const Assets& assets);
+        const Assets& assets,
+        std::shared_ptr<std::atomic<bool>> alive);
 
     ~MeshLoader();
 
@@ -70,5 +71,6 @@ private:
     Material m_defaultMaterial;
     bool m_forceDefaultMaterial = false;
 
+    std::shared_ptr<std::atomic<bool>> m_alive;
 };
 

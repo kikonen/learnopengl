@@ -12,8 +12,11 @@
 namespace {
 }
 
-ModelRegistry::ModelRegistry(const Assets& assets)
-    : assets(assets)
+ModelRegistry::ModelRegistry(
+    const Assets& assets,
+    std::shared_ptr<std::atomic<bool>> alive)
+    : m_assets(assets),
+    m_alive(alive)
 {
 }
 
@@ -45,6 +48,8 @@ std::shared_future<ModelMesh*> ModelRegistry::getMesh(
     const std::string& meshName,
     const std::string& meshPath)
 {
+    if (!*m_alive) return {};
+
     std::lock_guard<std::mutex> lock(m_meshes_lock);
 
     const std::string key = meshPath + "/" + meshName;
@@ -77,7 +82,7 @@ std::shared_future<ModelMesh*> ModelRegistry::startLoad(ModelMesh* mesh)
             try {
                 KI_DEBUG(fmt::format("START_LOADER: {}", mesh->str()));
 
-                MeshLoader loader(assets);
+                MeshLoader loader(m_assets, m_alive);
                 auto loaded = loader.load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
 
                 if (loaded) {

@@ -86,13 +86,14 @@ public:
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
-    std::unique_ptr<RenderData> m_renderData;
 
-    std::unique_ptr<MaterialRegistry> m_materialRegistry;
+    std::shared_ptr<MaterialRegistry> m_materialRegistry;
+    std::shared_ptr<MeshTypeRegistry> m_typeRegistry;
+    std::shared_ptr<ModelRegistry> m_modelRegistry;
+    std::shared_ptr<NodeRegistry> m_nodeRegistry;
+
+    std::unique_ptr<RenderData> m_renderData;
     std::unique_ptr<EntityRegistry> m_entityRegistry;
-    std::unique_ptr<MeshTypeRegistry> m_typeRegistry;
-    std::unique_ptr<ModelRegistry> m_modelRegistry;
-    std::unique_ptr<NodeRegistry> m_nodeRegistry;
 
     std::unique_ptr<CommandEngine> m_commandEngine;
     std::unique_ptr<ScriptEngine> m_scriptEngine;

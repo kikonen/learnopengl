@@ -7,7 +7,10 @@
 class ShaderRegistry final
 {
 public:
-    ShaderRegistry(const Assets& assets);
+    ShaderRegistry(
+        const Assets& assets,
+        std::shared_ptr<std::atomic<bool>> alive);
+
     ~ShaderRegistry();
 
     Shader* getShader(
@@ -30,6 +33,8 @@ public:
 
 private:
     const Assets& m_assets;
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     // name + geom
     std::map<std::string, std::unique_ptr<Shader>> m_shaders;

@@ -13,17 +13,19 @@
 
 
 Engine::Engine()
+    : m_alive(std::make_shared<std::atomic<bool>>(true))
 {
 }
 
 Engine::~Engine() {
+    *m_alive = false;
 }
 
 int Engine::init() {
 
     onInit();
-    m_shaderRegistry = std::make_unique<ShaderRegistry>(m_assets);
-    m_asyncLoader = std::make_shared<AsyncLoader>(m_assets);
+    m_shaderRegistry = std::make_unique<ShaderRegistry>(m_assets, m_alive);
+    m_asyncLoader = std::make_shared<AsyncLoader>(m_assets, m_alive);
 
     m_window = std::make_unique<Window>(*this, m_assets);
     return m_window->create() ? 0 : -1;

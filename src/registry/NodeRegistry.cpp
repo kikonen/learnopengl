@@ -35,8 +35,11 @@ bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
 }
 
 
-NodeRegistry::NodeRegistry(const Assets& assets)
-    : assets(assets)
+NodeRegistry::NodeRegistry(
+    const Assets& assets,
+    std::shared_ptr<std::atomic<bool>> alive)
+    : m_assets(assets),
+    m_alive(alive)
 {
     m_pendingNodes.reserve(1000);
     m_newNodes.reserve(1000);
@@ -115,6 +118,8 @@ void NodeRegistry::addListener(NodeListener& listener)
 
 void NodeRegistry::addGroup(Group* group) noexcept
 {
+    if (!*m_alive) return;
+
     std::lock_guard<std::mutex> lock(m_load_lock);
     groups.push_back(group);
 }
@@ -123,6 +128,8 @@ void NodeRegistry::addNode(
     MeshType* type,
     Node* node) noexcept
 {
+    if (!*m_alive) return;
+
     std::lock_guard<std::mutex> lock(m_load_lock);
     KI_INFO(fmt::format("ADD_NODE: {}", node->str()));
     m_pendingNodes.push_back(node);
@@ -285,8 +292,8 @@ void NodeRegistry::bindNode(
         });
     }
 
-    type->prepare(assets, *m_batch, *this, *m_materialRegistry, *m_modelRegistry);
-    node->prepare(assets, *m_entityRegistry);
+    type->prepare(m_assets, *m_batch, *this, *m_materialRegistry, *m_modelRegistry);
+    node->prepare(m_assets, *m_entityRegistry);
 
     {
         auto* map = &solidNodes;

@@ -19,7 +19,10 @@ class ModelMeshVBO;
 
 class ModelRegistry {
 public:
-    ModelRegistry(const Assets& assets);
+    ModelRegistry(
+        const Assets& assets,
+        std::shared_ptr<std::atomic<bool>> alive);
+
     ~ModelRegistry();
 
     void prepare(Batch& batch);
@@ -38,7 +41,9 @@ private:
     std::shared_future<ModelMesh*> startLoad(ModelMesh* mesh);
 
 private:
-    const Assets& assets;
+    const Assets& m_assets;
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::mutex m_meshes_lock;
     std::map<const std::string, std::shared_future<ModelMesh*>> m_meshes;

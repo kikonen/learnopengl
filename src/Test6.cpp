@@ -189,7 +189,7 @@ std::shared_ptr<Scene> Test6::loadScene()
 
     {
         if (!m_assets.sceneFile.empty()) {
-            std::unique_ptr<SceneFile> file = std::make_unique<SceneFile>(m_assets, alive, m_asyncLoader.get(), m_assets.sceneFile);
+            std::unique_ptr<SceneFile> file = std::make_unique<SceneFile>(m_assets, alive, m_asyncLoader, m_assets.sceneFile);
             m_files.push_back(std::move(file));
         }
     }
@@ -197,25 +197,25 @@ std::shared_ptr<Scene> Test6::loadScene()
     for (auto& file : m_files) {
         KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", file->m_filename));
         file->load(
-            m_shaderRegistry.get(),
-            scene->m_nodeRegistry.get(),
-            scene->m_typeRegistry.get(),
-            scene->m_materialRegistry.get(),
-            scene->m_modelRegistry.get()
+            m_shaderRegistry,
+            scene->m_nodeRegistry,
+            scene->m_typeRegistry,
+            scene->m_materialRegistry,
+            scene->m_modelRegistry
         );
     }
 
     m_testSetup = std::make_unique<TestSceneSetup>(
         m_assets,
         alive,
-        m_asyncLoader.get());
+        m_asyncLoader);
 
     m_testSetup->setup(
-        m_shaderRegistry.get(),
-        scene->m_nodeRegistry.get(),
-        scene->m_typeRegistry.get(),
-        scene->m_materialRegistry.get(),
-        scene->m_modelRegistry.get()
+        m_shaderRegistry,
+        scene->m_nodeRegistry,
+        scene->m_typeRegistry,
+        scene->m_materialRegistry,
+        scene->m_modelRegistry
     );
 
     scene->prepare(*m_shaderRegistry);

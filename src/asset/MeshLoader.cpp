@@ -15,8 +15,10 @@ const glm::vec3 EMPTY_NORMAL{ 0, 0, 0 };
 
 
 MeshLoader::MeshLoader(
-    const Assets& assets)
-    : assets(assets)
+    const Assets& assets,
+    std::shared_ptr<std::atomic<bool>> alive)
+    : assets(assets),
+    m_alive(alive)
 {
 }
 
@@ -50,6 +52,8 @@ ModelMesh* MeshLoader::load(
 void MeshLoader::loadData(
     ModelMesh& mesh)
 {
+    if (!*m_alive) return;
+
     ki::Timer t("loadData: mesh=" + mesh.str());
 
     auto& tris = mesh.m_tris;
@@ -94,6 +98,8 @@ void MeshLoader::loadData(
         Material* material{ nullptr };
         std::string line;
         while (std::getline(file, line)) {
+            if (!*m_alive) return;
+
             std::stringstream ss(line);
             std::string k;
             std::string v1;

@@ -2,8 +2,11 @@
 
 #include "fmt/format.h"
 
-ShaderRegistry::ShaderRegistry(const Assets& assets)
-    : m_assets(assets)
+ShaderRegistry::ShaderRegistry(
+    const Assets& assets,
+    std::shared_ptr<std::atomic<bool>> alive)
+    : m_assets(assets),
+    m_alive(alive)
 {
 }
 
@@ -43,6 +46,8 @@ Shader* ShaderRegistry::getShader(
     const std::string& geometryType,
     const std::map<std::string, std::string>& defines)
 {
+    if (!*m_alive) return nullptr;
+
     std::lock_guard<std::mutex> lock(m_shaders_lock);
 
     std::string key = name;

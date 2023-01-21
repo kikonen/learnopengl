@@ -9,12 +9,13 @@ class AsyncLoader
 {
 public:
     AsyncLoader(
-        const Assets& assets);
+        const Assets& assets,
+        std::shared_ptr<std::atomic<bool>> alive);
 
     virtual void setup();
 
     void addLoader(
-        std::shared_ptr<std::atomic<bool>> alive,
+        std::shared_ptr<std::atomic<bool>> sceneAlive,
         std::function<void()> loader);
 
     // wait for loading of node
@@ -25,6 +26,8 @@ public:
 
 private:
     const Assets& m_assets;
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     int m_startedCount = 0;
     int m_loadedCount = 0;

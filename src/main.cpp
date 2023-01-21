@@ -12,14 +12,27 @@
 int runEngine() {
     auto engine = std::make_unique<Test6>();
 
-    KI_INFO("START: ENGINE INIT");
-    if (engine->init()) {
-        KI_INFO("FAIL: ENGINE INIT");
-        return -1;
-    }
-    KI_INFO("DONE: ENGINE INIT");
+    try {
+        KI_INFO("START: ENGINE INIT");
+        if (engine->init()) {
+            KI_INFO("FAIL: ENGINE INIT");
+            return -1;
+        }
+        KI_INFO("DONE: ENGINE INIT");
 
-    engine->run();
+        engine->run();
+    }
+    catch (const std::exception& ex) {
+        KI_CRITICAL(ex.what());
+        KI_BREAK();
+    }
+    catch (...) {
+        KI_BREAK();
+    }
+
+    // HACK KI wait for a bit for pending worker threads to die
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
     return 0;
 }
 
@@ -29,16 +42,7 @@ int main()
     Log::init();
     KI_INFO_OUT("START");
 
-    try {
-        runEngine();
-    }
-    catch (const std::exception& ex) {
-        KI_CRITICAL(ex.what());
-        KI_BREAK();
-    }
-    catch (...) {
-        KI_BREAK();
-    }
+    runEngine();
 
     KI_INFO_OUT("DONE");
 

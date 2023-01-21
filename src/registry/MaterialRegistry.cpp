@@ -15,8 +15,11 @@ namespace {
     constexpr int MAX_MATERIAL_INDECES = 100000;
 }
 
-MaterialRegistry::MaterialRegistry(const Assets& assets)
-    : assets(assets)
+MaterialRegistry::MaterialRegistry(
+    const Assets& assets,
+    std::shared_ptr<std::atomic<bool>> alive)
+    : m_assets(assets),
+    m_alive(alive)
 {
     m_materials.reserve(MATERIAL_COUNT);
     m_materialIndeces.reserve(MAX_MATERIAL_INDECES);
@@ -90,7 +93,7 @@ void MaterialRegistry::update(const RenderContext& ctx)
         for (size_t i = m_updatedSize; i < m_materials.size(); i++) {
             auto& material = m_materials[i];
 
-            material.prepare(assets);
+            material.prepare(m_assets);
 
             for (auto& tex : material.m_textures) {
                 if (!tex.texture) continue;

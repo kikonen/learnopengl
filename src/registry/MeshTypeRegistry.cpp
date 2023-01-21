@@ -1,8 +1,11 @@
 #include "MeshTypeRegistry.h"
 
 
-MeshTypeRegistry::MeshTypeRegistry(const Assets& assets)
-    : assets(assets)
+MeshTypeRegistry::MeshTypeRegistry(
+    const Assets& assets,
+    std::shared_ptr<std::atomic<bool>> alive)
+    : m_assets(assets),
+    m_alive(alive)
 {
 }
 

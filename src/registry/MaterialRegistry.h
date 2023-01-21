@@ -15,7 +15,10 @@ struct MaterialSSBO;
 
 class MaterialRegistry {
 public:
-    MaterialRegistry(const Assets& assets);
+    MaterialRegistry(
+        const Assets& assets,
+        std::shared_ptr<std::atomic<bool>> alive);
+
     ~MaterialRegistry();
 
     // Updates m_registeredIndex of Material
@@ -39,7 +42,9 @@ public:
         const RenderContext& ctx);
 
 private:
-    const Assets& assets;
+    const Assets& m_assets;
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::vector<Material> m_materials;
 

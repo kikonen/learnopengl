@@ -73,7 +73,9 @@ using NodeListener = std::function<void(Node*, NodeOperation)>;
 class NodeRegistry final
 {
 public:
-    NodeRegistry(const Assets& assets);
+    NodeRegistry(
+        const Assets& assets,
+        std::shared_ptr<std::atomic<bool>> alive);
 
     ~NodeRegistry();
 
@@ -153,7 +155,9 @@ public:
     Material m_selectionMaterial;
 
 private:
-    const Assets& assets;
+    const Assets& m_assets;
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     Batch* m_batch{ nullptr };
     MaterialRegistry* m_materialRegistry{ nullptr };

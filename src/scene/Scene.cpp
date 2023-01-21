@@ -38,13 +38,14 @@
 Scene::Scene(
     const Assets& assets)
     : m_assets(assets),
-    m_alive(std::make_shared<std::atomic<bool>>())
+    m_alive(std::make_shared<std::atomic<bool>>(true))
 {
-    m_materialRegistry = std::make_unique<MaterialRegistry>(assets);
+    m_materialRegistry = std::make_shared<MaterialRegistry>(assets, m_alive);
+    m_typeRegistry = std::make_shared<MeshTypeRegistry>(assets, m_alive);
+    m_modelRegistry = std::make_shared<ModelRegistry>(assets, m_alive);
+    m_nodeRegistry = std::make_shared<NodeRegistry>(assets, m_alive);
+
     m_entityRegistry = std::make_unique<EntityRegistry>(assets);
-    m_typeRegistry = std::make_unique<MeshTypeRegistry>(assets);
-    m_modelRegistry = std::make_unique<ModelRegistry>(assets);
-    m_nodeRegistry = std::make_unique<NodeRegistry>(assets);
 
     m_commandEngine = std::make_unique<CommandEngine>(assets);
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
@@ -75,11 +76,10 @@ Scene::Scene(
 
 Scene::~Scene()
 {
-    KI_INFO("SCENE: deleted");
-
+    *m_alive = false;
     m_particleGenerators.clear();
 
-    *m_alive = false;
+    KI_INFO("SCENE: deleted");
 }
 
 void Scene::prepare(ShaderRegistry& shaders)

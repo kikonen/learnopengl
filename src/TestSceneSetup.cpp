@@ -28,7 +28,7 @@ namespace {
 TestSceneSetup::TestSceneSetup(
     const Assets& assets,
     std::shared_ptr<std::atomic<bool>> alive,
-    AsyncLoader* asyncLoader)
+    std::shared_ptr<AsyncLoader> asyncLoader)
     : m_assets(assets),
     m_alive(alive),
     m_asyncLoader(asyncLoader)
@@ -36,11 +36,11 @@ TestSceneSetup::TestSceneSetup(
 }
 
 void TestSceneSetup::setup(
-    ShaderRegistry* shaderRegistry,
-    NodeRegistry* nodeRegistry,
-    MeshTypeRegistry* typeRegistry,
-    MaterialRegistry* materialRegistry,
-    ModelRegistry* modelRegistry)
+    std::shared_ptr<ShaderRegistry> shaderRegistry,
+    std::shared_ptr<NodeRegistry> nodeRegistry,
+    std::shared_ptr<MeshTypeRegistry> typeRegistry,
+    std::shared_ptr<MaterialRegistry> materialRegistry,
+    std::shared_ptr<ModelRegistry> modelRegistry)
 {
     m_shaderRegistry = shaderRegistry;
     m_nodeRegistry = nodeRegistry;

@@ -52,7 +52,7 @@ namespace {
 SceneFile::SceneFile(
     const Assets& assets,
     std::shared_ptr<std::atomic<bool>> alive,
-    AsyncLoader* asyncLoader,
+    std::shared_ptr<AsyncLoader> asyncLoader,
     const std::string& filename)
     : m_filename(filename),
     m_alive(alive),
@@ -63,14 +63,15 @@ SceneFile::SceneFile(
 
 SceneFile::~SceneFile()
 {
+    KI_INFO(fmt::format("SCENE_FILE: delete - file={}", m_filename));
 }
 
 void SceneFile::load(
-    ShaderRegistry* shaderRegistry,
-    NodeRegistry* nodeRegistry,
-    MeshTypeRegistry* typeRegistry,
-    MaterialRegistry* materialRegistry,
-    ModelRegistry* modelRegistry)
+    std::shared_ptr<ShaderRegistry> shaderRegistry,
+    std::shared_ptr<NodeRegistry> nodeRegistry,
+    std::shared_ptr<MeshTypeRegistry> typeRegistry,
+    std::shared_ptr<MaterialRegistry> materialRegistry,
+    std::shared_ptr<ModelRegistry> modelRegistry)
 {
     m_shaderRegistry = shaderRegistry;
     m_nodeRegistry = nodeRegistry;
@@ -240,6 +241,7 @@ void SceneFile::attachEntity(
         else {
             MeshType* type{ nullptr };
             for (auto& cloneData : data.clones) {
+                if (!*m_alive) return;
                 type = attachEntityClone(type, root, data, cloneData, true, materials);
             }
         }
@@ -254,6 +256,8 @@ MeshType* SceneFile::attachEntityClone(
     bool cloned,
     std::vector<Material>& materials)
 {
+    if (!*m_alive) return type;
+
     if (!data.enabled) {
         return type;
     }
@@ -282,6 +286,8 @@ MeshType* SceneFile::attachEntityClone(
     for (auto z = 0; z < repeat.zCount; z++) {
         for (auto y = 0; y < repeat.yCount; y++) {
             for (auto x = 0; x < repeat.xCount; x++) {
+                if (!*m_alive) return type;
+
                 const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
                 auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, entity.isRoot, cloned);
                 if (data.selected) {
