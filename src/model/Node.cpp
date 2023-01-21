@@ -189,8 +189,8 @@ void Node::updateModelMatrix(Node* parent) noexcept
 
     if (needRadius) {
         // NOTE KI radius can change if scale of node or parent changes
-        const auto& min = m_scaleMatrix * glm::vec4(m_aabb.m_min, 1.0);
-        const auto& max = m_scaleMatrix * glm::vec4(m_aabb.m_max, 1.0);
+        const auto& min = m_aabb.m_min;
+        const auto& max = m_aabb.m_max;
 
         m_volumeRadius = glm::length(min - max) * 0.5f;
         m_volumeCenter = (max + min) * 0.5f;

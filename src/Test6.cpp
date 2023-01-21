@@ -166,9 +166,9 @@ void Test6::selectNode(
     if (!volumeNode || volumeNode->m_objectID != objectID) {
         nodeRegistry.selectNodeByObjectId(objectID, isShift);
 
-        if (volumeNode && node) {
+        if (volumeNode) {
             auto controller = dynamic_cast<VolumeController*>(volumeNode->m_controller.get());
-            controller->setTarget(node->m_objectID);
+            controller->setTarget(node ? node->m_objectID : -1);
         }
 
         KI_INFO(fmt::format("selected: {}", objectID));

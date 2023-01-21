@@ -2,9 +2,12 @@
 #include <fstream>
 #include <exception>
 
+#include "asset/AABB.h"
+
 #include <fmt/format.h>
 
 #include <entt/entt.hpp>
+
 
 #include "Engine.h"
 #include "Test6.h"
@@ -40,6 +43,25 @@ int runEngine() {
 
 int main()
 {
+    {
+        const AABB quad = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
+        const auto& min = quad.m_min;
+        const auto& max = quad.m_max;
+        auto radius = glm::length(min - max) * 0.5f;
+        auto center = (max + min) * 0.5f;
+
+        std::cout << "QUAD: center={" << center.x << "," << center.x << "," << center.x << "}, radius=" << radius << "\n";
+    }
+    {
+        const AABB quad = { glm::vec3{ -1.f, -1.f, -1.f }, glm::vec3{ 1.f, 1.f, 1.f }, true };
+        const auto& min = quad.m_min;
+        const auto& max = quad.m_max;
+        auto radius = glm::length(min - max) * 0.5f;
+        auto center = (max + min) * 0.5f;
+
+        std::cout << "CUBE: center={" << center.x << "," << center.x << "," << center.x << "}, radius=" << radius << "\n";
+    }
+
     entt::registry registry;
     Log::init();
     KI_INFO_OUT("START");
