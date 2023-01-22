@@ -52,7 +52,18 @@ namespace backend {
             candidateRangeCount);
         m_candidates->prepare(BUFFER_ALIGNMENT);
 
-        m_commandCounter.createEmpty(rangeCount * sizeof(DrawIndirectParameters), GL_DYNAMIC_STORAGE_BIT);
+        {
+            int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;
+            int mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT;
+
+            if (!m_useIndirectCount) {
+                storageFlags |= GL_MAP_READ_BIT;
+                mapFlags |= GL_MAP_READ_BIT;
+            }
+
+            m_commandCounter.createEmpty(rangeCount * sizeof(DrawIndirectParameters), storageFlags);
+            m_commandCounter.map(mapFlags);
+        }
 
         m_commands = std::make_unique<GLCommandQueue>(
             "drawCommand",
@@ -117,27 +128,32 @@ namespace backend {
 
         const size_t paramsSz = sizeof(DrawIndirectParameters);
         const size_t paramsOffset = candidateRange.m_index * paramsSz;
-        DrawIndirectParameters param{ 0, cmdRange.m_baseIndex };
         {
-            m_commandCounter.update(paramsOffset, paramsSz, &param);
-
+            DrawIndirectParameters* data = (DrawIndirectParameters*)m_commandCounter.m_data;
+            data += candidateRange.m_index;
+            data->u_counter = 0;
+            data->u_BaseIndex = cmdRange.m_baseIndex;
+            m_commandCounter.flushRange(paramsOffset, paramsSz);
+        }
+        {
             m_candidateShader->bind(state);
 
             m_candidateShader->u_drawParametersIndex.set(candidateRange.m_index);
 
             glDispatchCompute(drawCount, 1, 1);
-            glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
         }
 
         size_t count = 1;
         size_t skip = 1;
 
         if (!m_useIndirectCount) {
-            //candidateRange.setFence();
-            //candidateRange.waitFence();
-            m_commandCounter.getRange(paramsOffset, paramsSz, &param);
+            candidateRange.setFence();
+            candidateRange.waitFence();
 
-            count = param.u_counter;
+            DrawIndirectParameters* data = (DrawIndirectParameters*)m_commandCounter.m_data;
+            data += candidateRange.m_index;
+
+            count = data->u_counter;
             if (count == -1) count = 0;
 
             skip = drawCount - count;
@@ -155,6 +171,11 @@ namespace backend {
         }
 
         if (count > 0) {
+            if (m_useIndirectCount) {
+                // NOTE KI for "non count" version sync for getting count has done this
+                glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
+            }
+
             shader->bind(state);
             state.bindVAO(*vao);
             bindOptions(state, drawOptions, useBlend);
