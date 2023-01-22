@@ -301,8 +301,8 @@ int Shader::initProgram() {
     setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
 #endif
 
-    u_projectionMatrix.init(this);
-    u_viewMatrix.init(this);
+    //u_projectionMatrix.init(this);
+    //u_viewMatrix.init(this);
     //u_modelMatrix.init(this);
     //u_normalMatrix.init(this);
 
@@ -317,14 +317,15 @@ int Shader::initProgram() {
 
     //u_drawInstanced.init(*this);
 
-    u_effect.init(this);
-
-    u_nearPlane.init(this);
-    u_farPlane.init(this);
+    //u_nearPlane.init(this);
+    //u_farPlane.init(this);
 
     //u_skybox.init(this);
 
     //u_viewportTex.init(this);
+
+    //u_effect.init(this);
+
 
     m_sources.clear();
 

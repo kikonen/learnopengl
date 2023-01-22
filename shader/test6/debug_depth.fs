@@ -3,8 +3,8 @@ out vec4 oFragColor;
 
 in vec2 texCoord;
 
-uniform float u_nearPlane;
-uniform float u_farPlane;
+layout(location = UNIFORM_NEAR_PLANE) uniform float u_nearPlane;
+layout(location = UNIFORM_FAR_PLANE) uniform float u_farPlane;
 
 layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 

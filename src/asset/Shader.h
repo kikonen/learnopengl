@@ -81,6 +81,12 @@ constexpr int VBO_VERTEX_BINDING = 0;
 
 const std::string GEOM_NONE{ "" };
 
+constexpr int UNIFORM_PROJECTION_MATRIX = 1;
+constexpr int UNIFORM_VIEW_MATRIX = 2;
+constexpr int UNIFORM_NEAR_PLANE = 3;
+constexpr int UNIFORM_FAR_PLANE = 4;
+constexpr int UNIFORM_EFFECT = 5;
+
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
 constexpr int UNIT_WATER_NOISE = 64;
 constexpr int UNIT_WATER_REFLECTION = 65;
@@ -194,7 +200,7 @@ public:
 
     public:
         void init(Shader* shader) {
-            if (m_locId != -1) {
+            if (m_locId == -1) {
                 m_locId = shader->getUniformLoc(m_name);
             }
         }
@@ -208,14 +214,16 @@ public:
 
     class Subroutine final : public Uniform {
     public:
-        Subroutine(const std::string_view& name, GLenum shaderType)
-            : Uniform(name, -1),
+        Subroutine(const std::string_view& name, GLenum shaderType, GLuint locId = -1)
+            : Uniform(name, locId),
             m_shaderType(shaderType)
         {
         }
 
         void init(Shader* shader) {
-            m_locId = shader->getUniformSubroutineLoc(m_name, m_shaderType);
+            if (m_locId == -1) {
+                m_locId = shader->getUniformSubroutineLoc(m_name, m_shaderType);
+            }
         }
 
         // @param shaderType
@@ -418,30 +426,13 @@ public:
 
     int m_programId = -1;
 
-    Shader::Mat4 u_projectionMatrix{ "u_projectionMatrix" };
-    Shader::Mat4 u_viewMatrix{ "u_viewMatrix" };
-    //Shader::Mat4 u_modelMatrix{ "u_modelMatrix" };
-    //Shader::Mat3 u_normalMatrix{ "u_normalMatrix" };
+    Shader::Mat4 u_projectionMatrix{ "u_projectionMatrix", UNIFORM_PROJECTION_MATRIX };
+    Shader::Mat4 u_viewMatrix{ "u_viewMatrix", UNIFORM_VIEW_MATRIX };
 
-    //Shader::Int u_noiseTex{ "u_noiseTex" };
-    //Shader::Int u_reflectionTex{ "u_reflectionTex" };
-    //Shader::Int u_refractionTex{ "u_refractionTex" };
+    Shader::Float u_nearPlane{ "u_nearPlane", UNIFORM_NEAR_PLANE };
+    Shader::Float u_farPlane{ "u_farPlane", UNIFORM_FAR_PLANE };
 
-    //Shader::Int u_cubeMap{ "u_cubeMap" };
-
-    //Shader::Int u_shadowMap{ "u_shadowMap" };
-    //Shader::Int u_normalMap{ "u_normalMap" };
-
-    Shader::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER };
-
-    Shader::Float u_nearPlane{ "u_nearPlane" };
-    Shader::Float u_farPlane{ "u_farPlane" };
-
-    //Shader::Int u_skybox{ "u_skybox" };
-
-    //Shader::Int u_viewportTex{ "u_viewportTex" };
-
-    //std::vector<Shader::Int> u_textures;
+    Shader::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER, UNIFORM_EFFECT };
 
 private:
     int m_prepareResult = -1;

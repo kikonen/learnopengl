@@ -43,7 +43,7 @@ precision mediump float;
   #include effect_sun.glsl
 #endif
 #ifdef EFFECT_PLASMA
-  #include effect_sun.glsl
+  #include effect_plasma.glsl
 #endif
 
 void main() {

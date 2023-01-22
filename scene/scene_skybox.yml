@@ -1,0 +1,15 @@
+---
+name: Full
+skybox:
+  material: skybox
+entities:
+  - name: Camera
+    type: origo
+    pos: [0, 0, 0]
+    camera:
+      rotation: [0, 180, 0.0]
+      enabled: true
+    enabled: true
+    controller:
+      type: camera
+      enabled: true
