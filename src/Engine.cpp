@@ -184,14 +184,22 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
             prevLoopTime = loopTime;
 
+            //sprintf_s(
+            //    titleSB,
+            //    256,
+            //    "%s - FPS: %-5.2f - RENDER: %-5.2fms FRAME: (%-5.2f fps)",
+            //    m_title.c_str(),
+            //    1.0f / clock.elapsedSecs,
+            //    renderSecs * 1000.f,
+            //    1.0f / frameSecs);
+
             sprintf_s(
                 titleSB,
                 256,
-                "%s - FPS: %-5.2f - RENDER: %-5.2fms FRAME: (%-5.2f fps)",
+                "%s - FPS: %-5.2f - RENDER: %-5.2fms",
                 m_title.c_str(),
                 1.0f / clock.elapsedSecs,
-                renderSecs * 1000.f,
-                1.0f / frameSecs);
+                renderSecs * 1000.f);
 
             m_window->setTitle(titleSB);
         }
