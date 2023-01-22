@@ -6,6 +6,7 @@ struct GLBufferRange {
     size_t m_maxCount = 0;
     size_t m_count = 0;
 
+    size_t m_index = 0;
     size_t m_entrySize = 0;
     size_t m_baseIndex = 0;
     size_t m_baseOffset = 0;

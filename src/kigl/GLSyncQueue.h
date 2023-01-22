@@ -63,6 +63,7 @@ public:
         for (size_t i = 0; i < m_rangeCount; i++) {
             auto& range = m_ranges.emplace_back();
             // static
+            range.m_index = i;
             range.m_baseIndex = i * m_entryCount;
             range.m_maxCount = m_entryCount;
             range.m_entrySize = m_entrySize;
