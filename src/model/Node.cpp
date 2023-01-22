@@ -99,7 +99,7 @@ void Node::update(
 
     if (m_light) m_light->update(ctx, *this);
 
-    const NodeVector* children = ctx.m_nodeRegistry.getChildren(*this);
+    const auto* children = ctx.m_nodeRegistry.getChildren(*this);
     if (children) {
         for (auto& child : *children) {
             child->update(ctx, this);
@@ -208,11 +208,6 @@ void Node::setPlaneNormal(const glm::vec3& planeNormal) noexcept
     }
 }
 
-const glm::vec3& Node::getPlaneNormal() const noexcept
-{
-    return m_planeNormal;
-}
-
 void Node::setPosition(const glm::vec3& pos) noexcept
 {
     if (m_position != pos) {
@@ -221,22 +216,12 @@ void Node::setPosition(const glm::vec3& pos) noexcept
     }
 }
 
-const glm::vec3& Node::getPosition() const noexcept
-{
-    return m_position;
-}
-
 void Node::setRotation(const glm::vec3& rotation) noexcept
 {
     if (m_rotation != rotation) {
         m_rotation = rotation;
         m_dirtyRotation = true;
     }
-}
-
-const glm::vec3&  Node::getRotation() const noexcept
-{
-    return m_rotation;
 }
 
 void Node::setScale(float scale) noexcept
@@ -260,41 +245,6 @@ void Node::setScale(const glm::vec3& scale) noexcept
         m_scale = scale;
         m_dirtyScale = true;
     }
-}
-
-const glm::vec3& Node::getScale() const noexcept
-{
-    return m_scale;
-}
-
-const glm::mat4& Node::getModelMatrix() const noexcept
-{
-    return m_modelMatrix;
-}
-
-int Node::getMatrixLevel() const noexcept
-{
-    return m_matrixLevel;
-}
-
-const glm::vec3& Node::getWorldPosition() const noexcept
-{
-    return m_worldPosition;
-}
-
-const glm::vec3& Node::getWorldPlaneNormal() const noexcept
-{
-    return m_worldPlaneNormal;
-}
-
-float Node::getVolumeRadius() const noexcept
-{
-    return m_volumeRadius;
-}
-
-const glm::vec3& Node::getVolumeCenter() const noexcept
-{
-    return m_volumeCenter;
 }
 
 bool Node::inFrustum(const RenderContext& ctx, float radiusFlex) const
@@ -322,12 +272,6 @@ bool Node::inFrustum(const RenderContext& ctx, float radiusFlex) const
     return hit;
 }
 
-
-const Volume* Node::getVolume() const noexcept
-{
-    return m_volume.get();
-}
-
 void Node::setVolume(std::unique_ptr<Volume> volume) noexcept
 {
     m_volume = std::move(volume);
@@ -336,16 +280,6 @@ void Node::setVolume(std::unique_ptr<Volume> volume) noexcept
 void Node::setAABB(const AABB& aabb)
 {
     m_aabb = aabb;
-}
-
-const AABB& Node::getAABB() const
-{
-    return m_aabb;
-}
-
-bool Node::isEntity() {
-    return m_type->getMesh() &&
-        !m_type->m_flags.noRender;
 }
 
 void Node::setTagMaterialIndex(int index)
@@ -371,11 +305,6 @@ int Node::getHighlightIndex(const RenderContext& ctx) const
         if (ctx.assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
     }
     return -1;
-}
-
-int Node::getMaterialIndex() const
-{
-    return m_type->getMaterialIndex();
 }
 
 int Node::lua_getId() const noexcept

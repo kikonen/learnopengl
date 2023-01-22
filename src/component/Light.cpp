@@ -62,36 +62,16 @@ void Light::markDirty() noexcept
     m_targetMatrixLevel = -1;
 }
 
-const glm::vec3& Light::getPosition() const noexcept
-{
-    return m_position;
-}
-
 void Light::setPosition(const glm::vec3& pos) noexcept
 {
     m_position = pos;
     m_nodeMatrixLevel = -1;
 }
 
-const uuids::uuid& Light::getTargetId() const noexcept
-{
-    return m_targetId;
-}
-
 void Light::setTargetId(const uuids::uuid& targetId) noexcept
 {
     m_targetId = targetId;
     m_targetMatrixLevel = -1;
-}
-
-const glm::vec3& Light::getWorldPosition() const noexcept
-{
-    return m_worldPosition;
-}
-
-const glm::vec3& Light::getWorldTargetPosition() const noexcept
-{
-    return m_worldTargetPosition;
 }
 
 DirLightUBO Light::toDirLightUBO() const noexcept

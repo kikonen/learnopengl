@@ -37,39 +37,76 @@ public:
     virtual void update(const RenderContext& ctx, Node* parent) noexcept;
     virtual void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
 
-    const glm::vec3& getWorldPosition() const noexcept;
-    const glm::vec3& getWorldPlaneNormal() const noexcept;
+    inline const glm::vec3& getWorldPosition() const noexcept {
+        return m_worldPosition;
+    }
 
-    float getVolumeRadius() const noexcept;
-    const glm::vec3& getVolumeCenter() const noexcept;
+    inline const glm::vec3& getWorldPlaneNormal() const noexcept {
+        return m_worldPlaneNormal;
+    }
+
+    inline float getVolumeRadius() const noexcept {
+        return m_volumeRadius;
+    }
+
+    inline const glm::vec3& getVolumeCenter() const noexcept {
+        return m_volumeCenter;
+    }
 
     bool inFrustum(const RenderContext& ctx, float radiusFlex) const;
 
-    int getMatrixLevel() const noexcept;
+    inline int getMatrixLevel() const noexcept {
+        return m_matrixLevel;
+    }
 
     void setPlaneNormal(const glm::vec3& planeNormal) noexcept;
-    const glm::vec3& getPlaneNormal() const noexcept;
+
+    inline const glm::vec3& getPlaneNormal() const noexcept {
+        return m_planeNormal;
+    }
 
     void setPosition(const glm::vec3& pos) noexcept;
-    const glm::vec3& getPosition() const noexcept;
+
+    inline const glm::vec3& getPosition() const noexcept {
+        return m_position;
+    }
 
     void setRotation(const glm::vec3& rotation) noexcept;
-    const glm::vec3& getRotation() const noexcept;
+
+    inline const glm::vec3& getRotation() const noexcept {
+        return m_rotation;
+    }
 
     void setScale(float scale) noexcept;
     void setScale(const glm::vec3& scale) noexcept;
-    const glm::vec3& getScale() const noexcept;
 
-    const glm::mat4& getModelMatrix() const noexcept;
-    virtual void updateModelMatrix(Node* parent) noexcept;
+    inline const glm::vec3& getScale() const noexcept {
+        return m_scale;
+    }
 
-    const Volume* getVolume() const noexcept;
+
+    inline const glm::mat4& getModelMatrix() const noexcept {
+        return m_modelMatrix;
+    }
+
+    void updateModelMatrix(Node* parent) noexcept;
+
+    const Volume* getVolume() const noexcept {
+        return m_volume.get();
+    }
+
     void setVolume(std::unique_ptr<Volume> volume) noexcept;
 
     void setAABB(const AABB& aabb);
-    const AABB& getAABB() const;
 
-    inline bool isEntity();
+    const AABB& getAABB() const {
+        return m_aabb;
+    }
+
+    inline bool isEntity() {
+        return m_type->getMesh() &&
+            !m_type->m_flags.noRender;
+    }
 
     inline int getTagMaterialIndex() const { return m_tagMaterialIndex;  }
     inline int getSelectionMaterialIndex() const { return m_selectionMaterialIndex;  }
@@ -80,7 +117,9 @@ public:
     // @return -1 if no highlight color
     int getHighlightIndex(const RenderContext& ctx) const;
 
-    int getMaterialIndex() const;
+    inline int getMaterialIndex() const {
+        return m_type->getMaterialIndex();
+    }
 
     inline bool isHighlighted() { return m_tagMaterialIndex > -1 || m_selectionMaterialIndex > -1; }
 

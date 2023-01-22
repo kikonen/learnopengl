@@ -53,7 +53,10 @@ public:
 
     void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
     void setMesh(Mesh* mesh);
-    const Mesh* getMesh() const;
+
+    const Mesh* getMesh() const {
+        return m_mesh;
+    }
 
     void modifyMaterials(std::function<void(Material&)> fn);
 

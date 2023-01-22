@@ -41,22 +41,36 @@ public:
     const Frustum& getFrustum() noexcept;
 
     void setFront(const glm::vec3& front) noexcept;
-    const glm::vec3& getFront() noexcept;
 
-    const glm::vec3& getRight() noexcept;
+    const glm::vec3& getFront() noexcept {
+        return m_front;
+    }
+
+    const glm::vec3& getRight() noexcept {
+        return m_right;
+    }
 
     void setUp(const glm::vec3& up) noexcept;
-    const glm::vec3& getUp() noexcept;
+    const glm::vec3& getUp() noexcept {
+        return m_up;
+    }
 
-    float getZoom() noexcept;
+    float getZoom() noexcept {
+        return m_zoom;
+    }
+
     void setZoom(float zoom) noexcept;
     void adjustZoom(float adjustement) noexcept;
 
     void setPos(const glm::vec3& pos) noexcept;
-    const glm::vec3& getPos() const noexcept;
+    const glm::vec3& getPos() const noexcept {
+        return m_pos;
+    }
 
     void setRotation(const glm::vec3& rotation) noexcept;
-    const glm::vec3& getRotation() noexcept;
+    const glm::vec3& getRotation() noexcept {
+        return m_rotation;
+    }
 
     void updateCamera() noexcept;
 

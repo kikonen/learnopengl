@@ -60,11 +60,6 @@ void MeshType::setMesh(Mesh* mesh)
     m_materialVBO.setMaterials(m_mesh->getMaterials());
 }
 
-const Mesh* MeshType::getMesh() const
-{
-    return m_mesh;
-}
-
 void MeshType::modifyMaterials(std::function<void(Material&)> fn)
 {
     for (auto& material : m_materialVBO.m_materials) {

@@ -21,13 +21,24 @@ public:
 
     void markDirty() noexcept;
 
-    const uuids::uuid& getTargetId() const noexcept;
     void setTargetId(const uuids::uuid& targetId) noexcept;
 
-    const glm::vec3& getWorldPosition() const noexcept;
-    const glm::vec3& getWorldTargetPosition() const noexcept;
+    const uuids::uuid& getTargetId() const noexcept {
+        return m_targetId;
+    }
 
-    const glm::vec3& getPosition() const noexcept;
+    const glm::vec3& getWorldPosition() const noexcept {
+        return m_worldPosition;
+    }
+
+    const glm::vec3& getWorldTargetPosition() const noexcept {
+        return m_worldTargetPosition;
+    }
+
+    const glm::vec3& getPosition() const noexcept {
+        return m_position;
+    }
+
     void setPosition(const glm::vec3& pos) noexcept;
 
     DirLightUBO toDirLightUBO() const noexcept;

@@ -136,32 +136,12 @@ void Camera::setFront(const glm::vec3& front) noexcept
     }
 }
 
-const glm::vec3& Camera::getFront() noexcept
-{
-    return m_front;
-}
-
-const glm::vec3& Camera::getRight() noexcept
-{
-    return m_right;
-}
-
 void Camera::setUp(const glm::vec3& up) noexcept
 {
     if (m_up != up) {
         m_dirty = true;
         m_up = up;
     }
-}
-
-const glm::vec3& Camera::getUp() noexcept
-{
-    return m_up;
-}
-
-float Camera::getZoom() noexcept
-{
-    return m_zoom;
 }
 
 void Camera::setZoom(float zoom) noexcept
@@ -182,11 +162,6 @@ void Camera::setPos(const glm::vec3& pos) noexcept
     }
 }
 
-const glm::vec3& Camera::getPos() const noexcept
-{
-    return m_pos;
-}
-
 void Camera::setRotation(const glm::vec3& rotation) noexcept
 {
     if (m_rotation != rotation)
@@ -194,11 +169,6 @@ void Camera::setRotation(const glm::vec3& rotation) noexcept
         m_rotation = rotation;
         m_dirty = true;
     }
-}
-
-const glm::vec3& Camera::getRotation() noexcept
-{
-    return m_rotation;
 }
 
 void Camera::updateZoom(float zoom) noexcept

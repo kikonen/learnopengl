@@ -49,11 +49,21 @@ public:
         GLVertexArray& vao,
         backend::DrawOptions& drawOptions) = 0;
 
-    void setVolume(std::unique_ptr<Volume> volume);
-    const Volume* getVolume() const;
+    void setVolume(std::unique_ptr<Volume> volume) {
+        m_volume = std::move(volume);
+    }
 
-    void setAABB(const AABB& aabb);
-    const AABB& getAABB() const;
+    const Volume* getVolume() const {
+        return m_volume.get();
+    }
+
+    void setAABB(const AABB& aabb) {
+        m_aabb = aabb;
+    }
+
+    const AABB& getAABB() const {
+        return m_aabb;
+    }
 
 public:
     const int m_objectID;
