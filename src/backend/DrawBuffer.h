@@ -62,6 +62,7 @@ namespace backend {
 
     private:
         int m_batchCount = 0;
+        int m_rangeCount = 0;
 
         bool m_useIndirectCount;
 

@@ -24,14 +24,27 @@ namespace backend {
         const auto info = ki::GL::getInfo();
         m_useIndirectCount = info.vendor != "Intel";
 
+        KI_INFO_OUT(fmt::format("USE_DRAW_INDIRECT_COUNT={}", m_useIndirectCount));
+
         m_batchCount = batchCount;
-        //rangeCount = 1;
+        m_rangeCount = rangeCount;
 
-        int candidateBatchCount = batchCount * rangeCount;
-        int commandBatchCount = batchCount * rangeCount;
+        int batchMultiplier = 1;
 
-        int candidateRangeCount = 1;
-        int commandRangeCount = 1;
+        batchMultiplier = rangeCount;
+        rangeCount = 1;
+
+        int candidateBatchCount = batchCount;
+        int commandBatchCount = batchCount;
+
+        int candidateRangeCount = rangeCount;
+        int commandRangeCount = rangeCount;
+
+        candidateBatchCount = batchCount* batchMultiplier;
+        commandBatchCount = batchCount * batchMultiplier;
+
+        candidateRangeCount = rangeCount;
+        commandRangeCount = rangeCount;
 
         m_candidateShader = shaders.getComputeShader(CS_FRUSTUM_CULLING);
         m_candidateShader->prepare(assets);
