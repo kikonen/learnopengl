@@ -187,13 +187,16 @@ public:
     protected:
         // NOTE KI "location=N" is not really feasible due to limitations
         // https ://www.khronos.org/opengl/wiki/Layout_Qualifier_(GLSL)
-        Uniform(const std::string_view& name)
-            : m_name(name) {
-        }
+        Uniform(const std::string_view& name, GLint locId = -1)
+            : m_name(name),
+            m_locId(locId)
+        {}
 
     public:
         void init(Shader* shader) {
-            m_locId = shader->getUniformLoc(m_name);
+            if (m_locId != -1) {
+                m_locId = shader->getUniformLoc(m_name);
+            }
         }
 
     protected:
@@ -206,7 +209,7 @@ public:
     class Subroutine final : public Uniform {
     public:
         Subroutine(const std::string_view& name, GLenum shaderType)
-            : Uniform(name),
+            : Uniform(name, -1),
             m_shaderType(shaderType)
         {
         }
@@ -237,7 +240,7 @@ public:
 
     class Mat4 final : public Uniform {
     public:
-        Mat4(const std::string_view& name) : Uniform(name) {
+        Mat4(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const glm::mat4& value) noexcept {
@@ -249,7 +252,7 @@ public:
 
     class Mat3 final : public Uniform {
     public:
-        Mat3(const std::string_view& name) : Uniform(name) {
+        Mat3(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const glm::mat3& value) noexcept {
@@ -261,7 +264,7 @@ public:
 
     class Mat2 final : public Uniform {
     public:
-        Mat2(const std::string_view& name) : Uniform(name) {
+        Mat2(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const glm::mat2& value) noexcept {
@@ -273,7 +276,7 @@ public:
 
     class Vec4 final : public Uniform {
     public:
-        Vec4(const std::string_view& name) : Uniform(name) {
+        Vec4(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const glm::vec4& value) noexcept {
@@ -285,7 +288,7 @@ public:
 
     class Vec3 final : public Uniform {
     public:
-        Vec3(const std::string_view& name) : Uniform(name) {
+        Vec3(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const glm::vec3& value) noexcept {
@@ -297,7 +300,7 @@ public:
 
     class Vec2 final : public Uniform {
     public:
-        Vec2(const std::string_view& name) : Uniform(name) {
+        Vec2(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const glm::vec2& value) noexcept {
@@ -309,7 +312,7 @@ public:
 
     class FloatArray final : public Uniform {
     public:
-        FloatArray(const std::string_view& name) : Uniform(name) {
+        FloatArray(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(int count, const float* values) noexcept {
@@ -321,7 +324,7 @@ public:
 
     class IntArray final : public Uniform {
     public:
-        IntArray(const std::string_view& name) : Uniform(name) {
+        IntArray(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(int count, const GLint* values) noexcept {
@@ -333,7 +336,7 @@ public:
 
     class Float final : public Uniform {
     public:
-        Float(const std::string_view& name) : Uniform(name) {
+        Float(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const float value) noexcept {
@@ -350,10 +353,10 @@ public:
 
     class Int final : public Uniform {
     public:
-        Int(const std::string_view& name) : Uniform(name) {
+        Int(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const int value) noexcept {
+        void set(const GLint value) noexcept {
             if (m_locId != -1 && (m_unassigned || value != m_lastValue)) {
                 glUniform1i(m_locId, value);
                 m_lastValue = value;
@@ -362,12 +365,29 @@ public:
         }
 
     private:
-        int m_lastValue;
+        GLint m_lastValue;
+    };
+
+    class UInt final : public Uniform {
+    public:
+        UInt(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
+        }
+
+        void set(const GLuint value) noexcept {
+            if (m_locId != -1 && (m_unassigned || value != m_lastValue)) {
+                glUniform1i(m_locId, value);
+                m_lastValue = value;
+                m_unassigned = false;
+            }
+        }
+
+    private:
+        GLuint m_lastValue;
     };
 
     class Bool final : public Uniform {
     public:
-        Bool(const std::string_view& name) : Uniform(name) {
+        Bool(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const bool value) noexcept {
