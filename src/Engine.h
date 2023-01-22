@@ -11,6 +11,8 @@
 
 #include "gui/Window.h"
 
+#include "ki/RenderClock.h"
+
 class Scene;
 class AsyncLoader;
 

@@ -3,7 +3,8 @@
 #include <iostream>
 #include <sstream>
 
-#include "fmt/format.h"
+#include <fmt/format.h>
+
 
 namespace ki {
     // https://gist.github.com/liam-middlebrook/c52b069e4be2d87a6d2f
@@ -171,8 +172,14 @@ namespace ki {
         glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &info.maxVertexUniformComponents);
         glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &info.maxVertexAttributes);
 
+        for (int i = 0; i < 3; i++) {
+            glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, i, &info.maxComputeWorkGroupCount[i]);
+        }
+
         glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_FORMAT, 1, &info.preferredFormatRGBA8);
         glGetInternalformativ(GL_TEXTURE_2D, GL_RGB8, GL_TEXTURE_IMAGE_FORMAT, 1, &info.preferredFormatRGB8);
+
+        KI_GL_CHECK("get_info");
 
         return info;
     }

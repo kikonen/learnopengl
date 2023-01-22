@@ -12,6 +12,7 @@
 #include "asset/Shader.h"
 #include "asset/FrustumNew.h"
 
+#include "ki/RenderClock.h"
 #include "kigl/GLState.h"
 
 #include "component/Camera.h"
@@ -28,6 +29,7 @@ class ScriptEngine;
 class NodeRegistry;
 class EntityRegistry;
 class Batch;
+
 
 class RenderContext final
 {

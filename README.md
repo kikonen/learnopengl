@@ -34,10 +34,11 @@ https://glad.dav1d.de
   * applied for "quad" billboard
 - https://www.flipcode.com/archives/Billboarding-Excerpt_From_iReal-Time_Renderingi_2E.shtml
 
-## GPU frustum culling
+## GPU frustum/occlusion culling
 - https://cpp-rendering.io/indirect-rendering/
 - https://registry.khronos.org/OpenGL/extensions/ARB/ARB_indirect_parameters.txt
-
+- https://forum.unity.com/threads/gpu-frustum-culling-tips.1102627/
+- https://bazhenovc.github.io/blog/post/gpu-driven-occlusion-culling-slides-lif/
 
 # References
 

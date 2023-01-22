@@ -4,6 +4,7 @@
 #include <string>
 
 #include "ki/GL.h"
+#include "ki/RenderClock.h"
 
 #include "imgui.h"
 

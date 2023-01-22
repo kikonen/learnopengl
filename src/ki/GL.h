@@ -18,6 +18,8 @@
 
 #include "util/Log.h"
 
+#include "ki/OpenGLInfo.h"
+
 
 #ifdef _DEBUG
   #define KI_GL_DEBUG_BREAK
@@ -52,27 +54,8 @@
     #define KI_GL_UNBIND(x)
 #endif
 
+
 namespace ki {
-    struct RenderClock {
-        unsigned long frameCount = 0;
-        //     std::chrono::system_clock::time_point ts;
-        double ts = 0.0;
-        float elapsedSecs = 0.0;
-    };
-
-    struct OpenGLInfo {
-        std::string vendor;
-        std::string renderer;
-        std::string version;
-        std::string glslVersion;
-
-        int maxVertexUniformComponents = 0;
-        int maxVertexAttributes = 0;
-
-        int preferredFormatRGBA8 = 0;
-        int preferredFormatRGB8 = 0;
-    };
-
     struct RGB10_A2
     {
         unsigned int red : 10;

@@ -8,6 +8,7 @@
 
 #include "ki/GL.h"
 #include "ki/Timer.h"
+#include "ki/OpenGLInfo.h"
 
 #include "scene/AsyncLoader.h"
 
@@ -62,8 +63,9 @@ renderer: {}
 version:  {}
 glsl:     {}
 -------------
-GL_MAX_VERTEX_UNIFORM_COMPONENTS: {}
-GL_MAX_VERTEX_ATTRIBS: {}
+GL_MAX_VERTEX_UNIFORM_COMPONENTS:  {}
+GL_MAX_VERTEX_ATTRIBS:             {}
+GL_MAX_COMPUTE_WORK_GROUP_COUNT:   {}
 GL_PREFERRED_TEXTURE_FORMAT_RGBA8: 0x{:x}
 GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 )",
@@ -73,6 +75,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
         info.glslVersion,
         info.maxVertexUniformComponents,
         info.maxVertexAttributes,
+        info.formatMaxComputeWorkGroupCount(),
         info.preferredFormatRGBA8,
         info.preferredFormatRGB8));
 
@@ -193,7 +196,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             m_window->setTitle(titleSB);
         }
 
-        KI_GL_CHECK("engine.loop");
+        //KI_GL_CHECK("engine.loop");
     }
 
     onDestroy();
