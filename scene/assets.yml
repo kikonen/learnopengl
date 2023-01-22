@@ -81,17 +81,17 @@ assets:
   shadow_near_plane: 0.1
   shadow_far_plane: 1000.0
   shadow_frustum_size: 200
-  shadow_map_size: 1024
+  shadow_map_size: 2048
   shadow_render_frame_start: 0
   shadow_render_frame_step: 2
 
-  mirror_reflection_size: 1000
-  mirror_rdRefraction_size: 1000
+  mirror_reflection_size: 1024
+  mirror_rdRefraction_size: 1024
 
-  water_reflection_size: 1000
-  water_refraction_size: 1000
+  water_reflection_size: 1024
+  water_refraction_size: 1024
 
-  cube_map_size: 1000
+  cube_map_size: 1024
   cube_map_near_plane: 0.5
   cube_map_far_plane: 200
   cube_map_render_frame_start: 1
