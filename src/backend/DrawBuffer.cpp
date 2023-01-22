@@ -4,6 +4,8 @@
 #include "asset/Shader.h"
 #include "asset/SSBO.h"
 
+#include "backend/DrawIndirectParameters.h"
+
 #include "util/Util.h"
 
 #include "registry/ShaderRegistry.h"
@@ -23,6 +25,7 @@ namespace backend {
     {
         const auto info = ki::GL::getInfo();
         m_useIndirectCount = info.vendor != "Intel";
+        m_useIndirectCount = false;
 
         KI_INFO_OUT(fmt::format("USE_DRAW_INDIRECT_COUNT={}", m_useIndirectCount));
 
@@ -31,8 +34,8 @@ namespace backend {
 
         int batchMultiplier = 1;
 
-        batchMultiplier = rangeCount;
-        rangeCount = 1;
+        //batchMultiplier = rangeCount;
+        //rangeCount = 1;
 
         int candidateBatchCount = batchCount;
         int commandBatchCount = batchCount;
@@ -55,7 +58,7 @@ namespace backend {
             candidateRangeCount);
         m_candidates->prepare(BUFFER_ALIGNMENT);
 
-        m_commandCounter.createEmpty(sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
+        m_commandCounter.createEmpty(rangeCount * sizeof(DrawIndirectParameters), GL_DYNAMIC_STORAGE_BIT);
 
         m_commands = std::make_unique<GLCommandQueue>(
             "drawCommand",
@@ -69,8 +72,10 @@ namespace backend {
         m_commandCounter.bindParameter();
         m_commands->m_buffer.bindDrawIndirect();
 
-        //m_commandCounter.bindAtomicCounter(SSBO_DRAW_COMMAND_COUNTER);
         m_commandCounter.bindSSBO(SSBO_DRAW_COMMAND_COUNTER);
+
+        m_candidates->m_buffer.bindSSBO(SSBO_CANDIDATE_DRAWS);
+        m_commands->m_buffer.bindSSBO(SSBO_DRAW_COMMANDS);
     }
 
     void DrawBuffer::flushIfNeeded(
@@ -97,8 +102,12 @@ namespace backend {
         const DrawOptions& drawOptions,
         const bool useBlend)
     {
-        auto& range = m_candidates->current();
-        if (range.m_count == 0) return;
+        const auto& candidateRange = m_candidates->current();
+        const int drawCount = candidateRange.m_count;
+
+        if (drawCount == 0) return;
+
+        const auto& cmdRange = m_commands->current();
 
         m_candidates->flush();
 
@@ -109,28 +118,32 @@ namespace backend {
         // - bind draw shader
         // - execute draw shader
 
-        GLuint count = 0;
+        const int paramsSz = sizeof(DrawIndirectParameters);
+        const int paramsOffset = candidateRange.m_index * paramsSz;
+        DrawIndirectParameters param{ 0, cmdRange.m_baseIndex };
         {
+            m_commandCounter.update(paramsOffset, paramsSz, &param);
+
             m_candidateShader->bind(state);
 
-            //m_commandCounter.update(0, sizeof(GLuint), &count);
-            m_commandCounter.clear();
+            m_candidateShader->u_drawParametersIndex.set(candidateRange.m_index);
 
-            m_candidates->bindSSBO(SSBO_CANDIDATE_DRAWS);
-            m_commands->bindSSBO(SSBO_DRAW_COMMANDS);
-
-            glDispatchCompute(range.m_count, 1, 1);
-
+            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+            glDispatchCompute(drawCount, 1, 1);
             glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
+            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
         }
 
-        m_commandCounter.get(&count);
+        param.u_counter = -1;
+        m_commandCounter.getRange(paramsOffset, paramsSz, &param);
 
-        size_t skip = range.m_count - count;
+        int count = param.u_counter;
+        if (count == -1) count = 0;
+        size_t skip = drawCount - count;
         m_drawCount += count;
         m_skipCount += skip;
 
-        if (false) {
+        if (true) {
             if (count > 0) std::cout << " [draw: " << count << "]";
             if (skip > 0) std::cout << " *skip: " << skip << "*";
 
@@ -139,56 +152,54 @@ namespace backend {
             //    util::as_integer(drawOptions.type), range.m_count, count));
         }
 
-        //if (count == 0) return;
+        if (count > 0) {
+            shader->bind(state);
+            state.bindVAO(*vao);
+            bindOptions(state, drawOptions, useBlend);
 
-        shader->bind(state);
-        state.bindVAO(*vao);
-        bindOptions(state, drawOptions, useBlend);
-
-        if (drawOptions.type == backend::DrawOptions::Type::elements) {
-            //std::cout << "[e" << range.m_count << "]";
-            if (!m_useIndirectCount) {
-                glMultiDrawElementsIndirect(
-                    drawOptions.mode,
-                    GL_UNSIGNED_INT,
-                    (void*)range.m_baseOffset,
-                    count, //range.m_count,
-                    sizeof(backend::DrawIndirectCommand));
+            if (drawOptions.type == backend::DrawOptions::Type::elements) {
+                //std::cout << "[e" << range.m_count << "]";
+                if (!m_useIndirectCount) {
+                    glMultiDrawElementsIndirect(
+                        drawOptions.mode,
+                        GL_UNSIGNED_INT,
+                        (void*)cmdRange.m_baseOffset,
+                        count, //range.m_count,
+                        sizeof(backend::DrawIndirectCommand));
+                }
+                else {
+                    glMultiDrawElementsIndirectCount(
+                        drawOptions.mode,
+                        GL_UNSIGNED_INT,
+                        (void*)cmdRange.m_baseOffset,
+                        paramsOffset,
+                        drawCount,
+                        sizeof(backend::DrawIndirectCommand));
+                }
             }
-            else {
-                glMultiDrawElementsIndirectCount(
-                    drawOptions.mode,
-                    GL_UNSIGNED_INT,
-                    (void*)range.m_baseOffset,
-                    0,
-                    range.m_count,
-                    sizeof(backend::DrawIndirectCommand));
-            }
-        }
-        else if (drawOptions.type == backend::DrawOptions::Type::arrays)
-        {
-            //std::cout << "[a" << range.m_count << "]";
-            if (!m_useIndirectCount) {
-                glMultiDrawArraysIndirect(
-                    drawOptions.mode,
-                    (void*)range.m_baseOffset,
-                    count, //range.m_count,
-                    sizeof(backend::DrawIndirectCommand));
-            } else {
-                glMultiDrawArraysIndirectCount(
-                    drawOptions.mode,
-                    (void*)range.m_baseOffset,
-                    0,
-                    range.m_count,
-                    sizeof(backend::DrawIndirectCommand));
+            else if (drawOptions.type == backend::DrawOptions::Type::arrays)
+            {
+                //std::cout << "[a" << range.m_count << "]";
+                if (!m_useIndirectCount) {
+                    glMultiDrawArraysIndirect(
+                        drawOptions.mode,
+                        (void*)cmdRange.m_baseOffset,
+                        count, //range.m_count,
+                        sizeof(backend::DrawIndirectCommand));
+                }
+                else {
+                    glMultiDrawArraysIndirectCount(
+                        drawOptions.mode,
+                        (void*)cmdRange.m_baseOffset,
+                        paramsOffset,
+                        drawCount,
+                        sizeof(backend::DrawIndirectCommand));
+                }
             }
         }
 
         m_candidates->next(true);
         m_commands->next(true);
-
-        assert(m_candidates->current().isEmpty());
-        assert(m_commands->current().isEmpty());
     }
 
     void DrawBuffer::send(

@@ -44,7 +44,14 @@ struct DrawIndirectCommand
   uint baseInstance_or_pad;
 };
 
-layout (std430, binding = SSBO_CANDIDATE_DRAWS) readonly buffer CandidateDrawSSBO {
+struct DrawParameters {
+  uint u_counter;
+  uint u_baseIndex;
+};
+
+layout(location = UNIFORM_DRAW_PARAMETERS_INDEX) uniform uint u_drawParametersIndex;
+
+layout (binding = SSBO_CANDIDATE_DRAWS, std430) readonly buffer CandidateDrawSSBO {
   CandidateDraw u_candidates[];
 };
 
@@ -53,16 +60,17 @@ layout (binding = SSBO_DRAW_COMMANDS, std430) writeonly buffer DrawCommandSSBO
   DrawIndirectCommand u_commands[];
 };
 
-layout (binding = SSBO_DRAW_COMMAND_COUNTER) buffer CommandCounterSSBO
+layout (binding = SSBO_DRAW_COMMAND_COUNTER, std430) buffer DrawParametersSSBO
 {
-  uint u_commandCounter;
+  DrawParameters u_counters[];
 };
 
 const float EXPAND_X = 1.0;
 const float EXPAND_Y = 1.0;
 
 void main(void) {
-  const CandidateDraw draw = u_candidates[gl_GlobalInvocationID.x];
+  const uint baseIndex = u_counters[u_drawParametersIndex].u_baseIndex;
+  const CandidateDraw draw = u_candidates[baseIndex + gl_GlobalInvocationID.x];
   const Entity entity = u_entities[draw.baseInstance];
 
   const vec4 pos = u_projectedMatrix *
@@ -78,12 +86,12 @@ const vec4 radiusPos = u_projectedMatrix *
   if ((abs(pos.x) - radius) < (pos.w * EXPAND_X) &&
       (abs(pos.y) - radius) < (pos.w * EXPAND_Y))
     {
-      uint idx = atomicAdd(u_commandCounter, 1);
+      uint idx = atomicAdd(u_counters[u_drawParametersIndex].u_counter, 1);
 
-      u_commands[idx].vertexCount = draw.vertexCount;
-      u_commands[idx].instanceCount = draw.instanceCount;
-      u_commands[idx].firstVertex = draw.firstVertex;
-      u_commands[idx].baseVertex_or_baseInstance = draw.baseVertex_or_baseInstance;
-      u_commands[idx].baseInstance_or_pad = draw.baseInstance_or_pad;
+      u_commands[baseIndex + idx].vertexCount = draw.vertexCount;
+      u_commands[baseIndex + idx].instanceCount = draw.instanceCount;
+      u_commands[baseIndex + idx].firstVertex = draw.firstVertex;
+      u_commands[baseIndex + idx].baseVertex_or_baseInstance = draw.baseVertex_or_baseInstance;
+      u_commands[baseIndex + idx].baseInstance_or_pad = draw.baseInstance_or_pad;
     }
 }

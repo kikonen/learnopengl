@@ -40,6 +40,9 @@ https://glad.dav1d.de
 - https://forum.unity.com/threads/gpu-frustum-culling-tips.1102627/
 - https://bazhenovc.github.io/blog/post/gpu-driven-occlusion-culling-slides-lif/
 
+## Compute shader
+- https://computergraphics.stackexchange.com/questions/400/synchronizing-successive-opengl-compute-shader-invocations
+
 # References
 
 - https://learnopengl.com

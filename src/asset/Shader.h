@@ -86,6 +86,7 @@ constexpr int UNIFORM_VIEW_MATRIX = 2;
 constexpr int UNIFORM_NEAR_PLANE = 3;
 constexpr int UNIFORM_FAR_PLANE = 4;
 constexpr int UNIFORM_EFFECT = 5;
+constexpr int UNIFORM_DRAW_PARAMETERS_INDEX = 6;
 
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
 constexpr int UNIT_WATER_NOISE = 64;
@@ -428,6 +429,8 @@ public:
 
     Shader::Mat4 u_projectionMatrix{ "u_projectionMatrix", UNIFORM_PROJECTION_MATRIX };
     Shader::Mat4 u_viewMatrix{ "u_viewMatrix", UNIFORM_VIEW_MATRIX };
+
+    Shader::UInt u_drawParametersIndex{ "u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX };
 
     Shader::Float u_nearPlane{ "u_nearPlane", UNIFORM_NEAR_PLANE };
     Shader::Float u_farPlane{ "u_farPlane", UNIFORM_FAR_PLANE };

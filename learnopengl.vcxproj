@@ -319,6 +319,7 @@
     <ClInclude Include="src\backend\DrawElementsIndirectCommand.h" />
     <ClInclude Include="src\backend\DrawArraysIndirectCommand.h" />
     <ClInclude Include="src\backend\DrawIndirectCommand.h" />
+    <ClInclude Include="src\backend\DrawIndirectParameters.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.h" />
     <ClInclude Include="src\kigl\GLBuffer.h" />
     <ClInclude Include="src\kigl\GLBufferRange.h" />

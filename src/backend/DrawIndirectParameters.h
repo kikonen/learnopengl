@@ -3,10 +3,10 @@
 #include "ki/GL.h"
 
 namespace backend {
-    struct DrawParameters
+    struct DrawIndirectParameters
     {
         // NOTE KI counter *MUST* be first due to GL_PARAMETER_BUFFER 
         GLuint u_counter;
-        GLuint u_offset;
+        GLuint u_BaseIndex;
     };
 }
