@@ -25,7 +25,7 @@ namespace backend {
     {
         const auto info = ki::GL::getInfo();
         m_useIndirectCount = info.vendor != "Intel";
-        m_useIndirectCount = false;
+        //m_useIndirectCount = false;
 
         KI_INFO_OUT(fmt::format("USE_DRAW_INDIRECT_COUNT={}", m_useIndirectCount));
 
@@ -37,17 +37,11 @@ namespace backend {
         //batchMultiplier = rangeCount;
         //rangeCount = 1;
 
-        int candidateBatchCount = batchCount;
-        int commandBatchCount = batchCount;
+        int candidateBatchCount = batchCount * batchMultiplier;
+        int commandBatchCount = batchCount * batchMultiplier;
 
         int candidateRangeCount = rangeCount;
         int commandRangeCount = rangeCount;
-
-        candidateBatchCount = batchCount* batchMultiplier;
-        commandBatchCount = batchCount * batchMultiplier;
-
-        candidateRangeCount = rangeCount;
-        commandRangeCount = rangeCount;
 
         m_candidateShader = shaders.getComputeShader(CS_FRUSTUM_CULLING);
         m_candidateShader->prepare(assets);
@@ -69,6 +63,9 @@ namespace backend {
 
     void DrawBuffer::bind()
     {
+        if (m_bound) return;
+        m_bound = true;
+
         m_commandCounter.bindParameter();
         m_commands->m_buffer.bindDrawIndirect();
 
@@ -102,8 +99,8 @@ namespace backend {
         const DrawOptions& drawOptions,
         const bool useBlend)
     {
-        const auto& candidateRange = m_candidates->current();
-        const int drawCount = candidateRange.m_count;
+        auto& candidateRange = m_candidates->current();
+        const size_t drawCount = candidateRange.m_count;
 
         if (drawCount == 0) return;
 
@@ -118,8 +115,8 @@ namespace backend {
         // - bind draw shader
         // - execute draw shader
 
-        const int paramsSz = sizeof(DrawIndirectParameters);
-        const int paramsOffset = candidateRange.m_index * paramsSz;
+        const size_t paramsSz = sizeof(DrawIndirectParameters);
+        const size_t paramsOffset = candidateRange.m_index * paramsSz;
         DrawIndirectParameters param{ 0, cmdRange.m_baseIndex };
         {
             m_commandCounter.update(paramsOffset, paramsSz, &param);
@@ -128,22 +125,27 @@ namespace backend {
 
             m_candidateShader->u_drawParametersIndex.set(candidateRange.m_index);
 
-            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
             glDispatchCompute(drawCount, 1, 1);
             glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
-            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
         }
 
-        param.u_counter = -1;
-        m_commandCounter.getRange(paramsOffset, paramsSz, &param);
+        size_t count = 1;
+        size_t skip = 1;
 
-        int count = param.u_counter;
-        if (count == -1) count = 0;
-        size_t skip = drawCount - count;
-        m_drawCount += count;
-        m_skipCount += skip;
+        if (!m_useIndirectCount) {
+            //candidateRange.setFence();
+            //candidateRange.waitFence();
+            m_commandCounter.getRange(paramsOffset, paramsSz, &param);
 
-        if (true) {
+            count = param.u_counter;
+            if (count == -1) count = 0;
+
+            skip = drawCount - count;
+            m_drawCount += count;
+            m_skipCount += skip;
+        }
+
+        if (false) {
             if (count > 0) std::cout << " [draw: " << count << "]";
             if (skip > 0) std::cout << " *skip: " << skip << "*";
 

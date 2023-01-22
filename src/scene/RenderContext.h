@@ -119,9 +119,8 @@ public:
     mutable MatricesUBO m_matrices;
     mutable DataUBO m_data;
 
-    mutable int m_drawCount = 0;
-    mutable int m_skipCount = 0;
-
+    mutable size_t m_drawCount = 0;
+    mutable size_t m_skipCount = 0;
 
     mutable ClipPlanesUBO m_clipPlanes;
 

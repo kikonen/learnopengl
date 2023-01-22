@@ -39,7 +39,8 @@ private:
     std::vector<std::unique_ptr<SceneFile>> m_files;
     std::unique_ptr<TestSceneSetup> m_testSetup;
 
-    unsigned long m_drawCount = 0;
-    unsigned long m_skipCount = 0;
+    size_t m_drawCount = 0;
+    size_t m_skipCount = 0;
+
     float m_frustumElapsedSecs = 0;
 };

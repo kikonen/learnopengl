@@ -57,12 +57,14 @@ namespace backend {
             const bool useBlend) const;
 
     public:
-        long m_drawCount = 0;
-        long m_skipCount = 0;
+        size_t m_drawCount = 0;
+        size_t m_skipCount = 0;
 
     private:
         int m_batchCount = 0;
         int m_rangeCount = 0;
+
+        bool m_bound = false;
 
         bool m_useIndirectCount;
 
