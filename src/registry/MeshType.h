@@ -1,6 +1,5 @@
 #pragma once
 
-#include "asset/Shader.h"
 #include "asset/MaterialVBO.h"
 
 #include "backend/DrawOptions.h"
@@ -34,6 +33,7 @@ enum class NodeScriptId {
     run
 };
 
+class Shader;
 class RenderContext;
 class NodeRegistry;
 class MaterialRegistry;

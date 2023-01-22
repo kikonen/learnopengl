@@ -1,5 +1,7 @@
 #include "ParticleRenderer.h"
 
+#include "asset/Shader.h"
+
 ParticleRenderer::ParticleRenderer()
 {
 }

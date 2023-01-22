@@ -1,5 +1,7 @@
 #include "ShadowMapRenderer.h"
 
+#include "asset/Shader.h"
+
 #include "component/Light.h"
 
 #include "scene/RenderContext.h"

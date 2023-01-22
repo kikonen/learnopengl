@@ -1,5 +1,7 @@
 #include "ObjectIdRenderer.h"
 
+#include "asset/Shader.h"
+
 #include "component/Camera.h"
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"

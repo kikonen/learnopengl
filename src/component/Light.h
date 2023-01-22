@@ -4,7 +4,6 @@
 
 #include "ki/uuid.h"
 
-#include "asset/Shader.h"
 #include "asset/LightUBO.h"
 
 

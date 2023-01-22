@@ -8,6 +8,7 @@
 #include "ki/uuid.h"
 
 #include "asset/VertexEntry.h"
+#include "asset/Shader.h"
 
 #include "backend/CandidateDraw.h"
 

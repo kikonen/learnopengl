@@ -2,6 +2,8 @@
 
 #include "fmt/format.h"
 
+#include "asset/Shader.h"
+
 ShaderRegistry::ShaderRegistry(
     const Assets& assets,
     std::shared_ptr<std::atomic<bool>> alive)

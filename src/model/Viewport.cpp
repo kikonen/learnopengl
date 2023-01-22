@@ -2,6 +2,8 @@
 
 #include <functional>
 
+#include "asset/Shader.h"
+
 #include "scene/FrameBuffer.h"
 
 #include "scene/RenderContext.h"

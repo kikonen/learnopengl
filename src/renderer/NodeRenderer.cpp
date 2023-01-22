@@ -1,5 +1,7 @@
 #include "NodeRenderer.h"
 
+#include "asset/Shader.h"
+
 #include "SkyboxRenderer.h"
 
 #include "registry/MaterialRegistry.h"

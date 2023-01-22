@@ -3,7 +3,6 @@
 #include <string>
 
 #include "Assets.h"
-#include "Shader.h"
 #include "Material.h"
 #include "Mesh.h"
 

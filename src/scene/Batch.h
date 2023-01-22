@@ -1,6 +1,5 @@
 #pragma once
 
-#include "asset/Shader.h"
 
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
@@ -15,6 +14,7 @@
 
 struct backend::CandidateDraw;
 
+class Shader;
 class RenderContext;
 class MeshType;
 class Node;

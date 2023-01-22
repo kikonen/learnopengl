@@ -3,13 +3,12 @@
 
 #include <glm/glm.hpp>
 
+#include "asset/Assets.h"
+
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-#include "asset/Shader.h"
-
-
-
+class Shader;
 class RenderContext;
 class FrameBuffer;
 

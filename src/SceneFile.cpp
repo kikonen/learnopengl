@@ -12,6 +12,7 @@
 #include "asset/Material.h"
 #include "asset/QuadMesh.h"
 #include "asset/SpriteMesh.h"
+#include "asset/Shader.h"
 
 #include "component/Light.h"
 #include "component/Camera.h"

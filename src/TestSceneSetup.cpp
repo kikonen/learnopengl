@@ -2,6 +2,7 @@
 
 #include "asset/MeshLoader.h"
 #include "asset/PlainTexture.h"
+#include "asset/Shader.h"
 
 #include "model/InstancedNode.h"
 

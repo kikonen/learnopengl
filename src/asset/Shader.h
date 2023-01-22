@@ -227,14 +227,14 @@ public:
         void set(GLuint index) noexcept {
             if (m_locId != -1 && (m_unassigned || index != m_lastValue)) {
                 glUniformSubroutinesuiv(m_shaderType, 1, &index);
-                //m_lastValue = index;
+                m_lastValue = index;
                 //m_unassigned = false;
             }
         }
 
     private:
         const GLenum m_shaderType;
-        GLuint m_lastValue = -1;
+        GLuint m_lastValue = 0;
     };
 
 
@@ -348,7 +348,7 @@ public:
         }
 
     private:
-        float m_lastValue;
+        float m_lastValue = 0.f;
     };
 
     class Int final : public Uniform {
@@ -365,7 +365,7 @@ public:
         }
 
     private:
-        GLint m_lastValue;
+        GLint m_lastValue = 0;
     };
 
     class UInt final : public Uniform {
@@ -375,14 +375,14 @@ public:
 
         void set(const GLuint value) noexcept {
             if (m_locId != -1 && (m_unassigned || value != m_lastValue)) {
-                glUniform1i(m_locId, value);
+                glUniform1ui(m_locId, value);
                 m_lastValue = value;
                 m_unassigned = false;
             }
         }
 
     private:
-        GLuint m_lastValue;
+        GLuint m_lastValue = 0;
     };
 
     class Bool final : public Uniform {
@@ -399,7 +399,7 @@ public:
         }
 
     private:
-        bool m_lastValue;
+        bool m_lastValue = false;
     };
 
 public:

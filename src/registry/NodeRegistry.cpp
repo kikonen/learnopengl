@@ -4,6 +4,8 @@
 
 #include "ki/GL.h"
 
+#include "asset/Shader.h"
+
 #include "component/Light.h"
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"

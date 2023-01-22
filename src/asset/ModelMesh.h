@@ -6,10 +6,8 @@
 #include <map>
 
 #include "Assets.h"
-#include "Shader.h"
 
 #include "Material.h"
-#include "Shader.h"
 #include "Vertex.h"
 #include "Assets.h"
 #include "Mesh.h"
