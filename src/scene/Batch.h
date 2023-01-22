@@ -4,7 +4,6 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 #include "kigl/GLBufferRange.h"
-#include "kigl/GLSyncQueue.h"
 
 #include "backend/DrawOptions.h"
 #include "backend/DrawBuffer.h"
@@ -94,5 +93,5 @@ private:
 
     std::vector<int> m_entityIndeces;
 
-    backend::DrawBuffer m_draw;
+    std::unique_ptr<backend::DrawBuffer> m_draw;
 };

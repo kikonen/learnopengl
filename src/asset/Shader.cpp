@@ -361,7 +361,7 @@ void Shader::setInt(const std::string& name, int value) noexcept
 void Shader::setupUBO(
     const char* name,
     unsigned int ubo,
-    unsigned int expectedSize) noexcept
+    unsigned int expectedSize)
 {
     // NOTE KI no setup really; just validation
     // => validation required to avoid serious memory corruption issues

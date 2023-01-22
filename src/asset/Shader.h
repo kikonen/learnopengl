@@ -124,7 +124,7 @@ public:
     void setupUBO(
         const char* name,
         unsigned int UBO,
-        unsigned int expectedSize) noexcept;
+        unsigned int expectedSize);
 
 public:
     // public due to shared_ptr

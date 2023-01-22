@@ -8,7 +8,7 @@
 //
 // SyncQueue, which is split into multiple ranges, which can be fence synced
 //
-template <class T, bool mappedMode>
+template <class T, bool mappedMode, bool useFence>
 class GLSyncQueue {
 public:
     GLSyncQueue(
@@ -71,7 +71,7 @@ public:
             range.m_length = m_rangeLength;
             range.m_paddedLength = m_paddedRangeLength;
             // dynamic
-            range.m_count = 0;
+            range.m_usedCount = 0;
         }
     }
 
@@ -82,7 +82,9 @@ public:
     //
     bool send(const T& entry) {
         auto& range = m_ranges[m_current];
-        if (m_current == 0) range.waitFence();
+
+        if constexpr (useFence)
+            if (m_current == 0) range.waitFence();
 
         //m_data[range.next()] = entry;
         T* ptr = (T*)(m_data + range.nextOffset());
@@ -98,7 +100,9 @@ public:
     //
     void set(int idx, T& entry) {
         auto& range = m_ranges[m_current];
-        if (m_current == 0) range.waitFence();
+
+        if constexpr (useFence)
+            if (m_current == 0) range.waitFence();
 
         //m_data[range.index(idx)] = entry;
         T* ptr = (T*)(m_data + range.offset(idx));
@@ -127,10 +131,10 @@ public:
     inline void flush() {
         const auto& range = m_ranges[m_current];
         if (mappedMode) {
-            m_buffer.flushRange(range.m_baseOffset, range.getUsedSize());
+            m_buffer.flushRange(range.m_baseOffset, range.getUsedLength());
         }
         else {
-            m_buffer.update(range.m_baseOffset, range.getUsedSize(), m_data + range.m_baseOffset);
+            m_buffer.update(range.m_baseOffset, range.getUsedLength(), m_data + range.m_baseOffset);
         }
     }
 
@@ -142,17 +146,21 @@ public:
             m_ranges[m_current].clear();
         }
         m_current = (m_current + 1) % m_ranges.size();
-        if (m_current == 0) m_ranges[0].setFence();
+
+        if constexpr (useFence)
+            if (m_current == 0) m_ranges[0].setFence();
     }
 
-    inline void bind(GLuint ubo) {
+    inline void bind(GLuint ubo, bool used, int count) {
         auto& range = m_ranges[m_current];
-        m_buffer.bindRange(ubo, range.m_baseOffset, range.m_length);
+        count = used ? range.m_usedCount : count;
+        m_buffer.bindRange(ubo, range.m_baseOffset, range.getLengthFor(count));
     }
 
-    inline void bindSSBO(GLuint ssbo) {
+    inline void bindSSBO(GLuint ssbo, bool used, int count) {
         auto& range = m_ranges[m_current];
-        m_buffer.bindSSBORange(ssbo, range.m_baseOffset, range.m_length);
+        count = used ? range.m_usedCount : count;
+        m_buffer.bindSSBORange(ssbo, range.m_baseOffset, range.getLengthFor(count));
     }
 
 public:

@@ -111,7 +111,7 @@ namespace backend {
         const bool useBlend)
     {
         auto& candidateRange = m_candidates->current();
-        const size_t drawCount = candidateRange.m_count;
+        const size_t drawCount = candidateRange.m_usedCount;
 
         if (drawCount == 0) return;
 

@@ -11,6 +11,7 @@
 #include "asset/Shader.h"
 
 #include "backend/CandidateDraw.h"
+#include "backend/DrawBuffer.h"
 
 #include "model/Node.h"
 #include "registry/MeshType.h"
@@ -60,7 +61,7 @@ void Batch::addAll(
 
 void Batch::bind() noexcept
 {
-    m_draw.bind();
+    m_draw->bind();
 }
 
 void Batch::prepare(
@@ -89,7 +90,8 @@ void Batch::prepare(
     m_batches.reserve(BATCH_COUNT);
     m_entityIndeces.reserve(ENTITY_COUNT);
 
-    m_draw.prepare(assets, shaders, m_entryCount, bufferCount);
+    m_draw = std::make_unique<backend::DrawBuffer>();
+    m_draw->prepare(assets, shaders, m_entryCount, bufferCount);
 
     KI_DEBUG(fmt::format(
         "BATCHL: size={}, buffer={}",
@@ -201,8 +203,8 @@ void Batch::sendDraw(
     const GLVertexArray* vao,
     const backend::DrawOptions& drawOptions)
 {
-    m_draw.send(indirect);
-    m_draw.flushIfNeeded(ctx.state, shader, vao, drawOptions, ctx.m_useBlend);
+    m_draw->send(indirect);
+    m_draw->flushIfNeeded(ctx.state, shader, vao, drawOptions, ctx.m_useBlend);
 }
 
 void Batch::flush(
@@ -236,7 +238,7 @@ void Batch::flush(
 
         if (!sameDraw) {
             if (boundShader) {
-                m_draw.flush(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+                m_draw->flush(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
             }
 
             boundShader = curr.m_shader;
@@ -262,15 +264,15 @@ void Batch::flush(
                 cmd.instanceCount = curr.m_drawCount;
                 // NOTE KI *SAME* e
                 cmd.baseInstance = m_entityIndeces[curr.m_index];
-                m_draw.send(candidate);
-                m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+                m_draw->send(candidate);
+                m_draw->flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
             }
             else {
                 for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
                     candidate.baseInstance = m_entityIndeces[i];
                     cmd.baseInstance = m_entityIndeces[i];
-                    m_draw.send(candidate);
-                    m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+                    m_draw->send(candidate);
+                    m_draw->flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
                 }
             }
         }
@@ -285,15 +287,15 @@ void Batch::flush(
             if (false && drawOptions.instanced) {
                 cmd.instanceCount = curr.m_drawCount;
                 cmd.baseInstance = m_entityIndeces[curr.m_index];
-                m_draw.send(candidate);
-                m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+                m_draw->send(candidate);
+                m_draw->flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
             }
             else {
                 for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
                     candidate.baseInstance = m_entityIndeces[i];
                     cmd.baseInstance = m_entityIndeces[i];
-                    m_draw.send(candidate);
-                    m_draw.flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+                    m_draw->send(candidate);
+                    m_draw->flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
                 }
             }
         }
@@ -304,15 +306,15 @@ void Batch::flush(
     }
 
     if (boundShader) {
-        m_draw.flush(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+        m_draw->flush(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
     }
 
     m_batches.clear();
     m_entityIndeces.clear();
 
-    ctx.m_drawCount += m_draw.m_drawCount;
-    ctx.m_skipCount += m_draw.m_skipCount;
+    ctx.m_drawCount += m_draw->m_drawCount;
+    ctx.m_skipCount += m_draw->m_skipCount;
 
-    m_draw.m_drawCount = 0;
-    m_draw.m_skipCount = 0;
+    m_draw->m_drawCount = 0;
+    m_draw->m_skipCount = 0;
 }

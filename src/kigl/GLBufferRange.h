@@ -4,7 +4,7 @@
 
 struct GLBufferRange {
     size_t m_maxCount = 0;
-    size_t m_count = 0;
+    size_t m_usedCount = 0;
 
     size_t m_index = 0;
     size_t m_entrySize = 0;
@@ -16,7 +16,7 @@ struct GLBufferRange {
     GLsync m_sync = 0;
 
     inline size_t nextOffset() {
-        return m_baseOffset + (m_entrySize * m_count++);
+        return m_baseOffset + (m_entrySize * m_usedCount++);
     }
 
     inline size_t offset(size_t idx) const {
@@ -24,19 +24,23 @@ struct GLBufferRange {
     }
 
     inline bool isFull() const {
-        return m_count == m_maxCount;
+        return m_usedCount == m_maxCount;
     }
 
     inline bool isEmpty() const {
-        return m_count == 0;
+        return m_usedCount == 0;
     }
 
-    inline size_t getUsedSize() const {
-        return m_entrySize * m_count;
+    inline size_t getUsedLength() const {
+        return m_entrySize * m_usedCount;
+    }
+
+    inline size_t getLengthFor(int count) const {
+        return m_entrySize * count;
     }
 
     void clear() {
-        m_count = 0;
+        m_usedCount = 0;
     }
 
     void setFence()

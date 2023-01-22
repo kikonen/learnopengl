@@ -17,9 +17,9 @@ class Shader;
 class ShaderRegistry;
 
 namespace backend {
-    using GLCandidateQueue = GLSyncQueue<backend::CandidateDraw, true>;
+    using GLCandidateQueue = GLSyncQueue<backend::CandidateDraw, true, true>;
     // NOTE KI updated by compute shader, just need to sync with candidate draw swaps
-    using GLCommandQueue = GLSyncQueue<backend::DrawIndirectCommand, false>;
+    using GLCommandQueue = GLSyncQueue<backend::DrawIndirectCommand, false, false>;
 
     class DrawBuffer {
     public:
