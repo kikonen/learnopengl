@@ -5,7 +5,11 @@
 class FrameBuffer;
 class Shader;
 
+struct GLVertexArray;
+
 namespace backend {
+    struct DrawOptions;
+
     struct Flush {
     };
 
@@ -13,17 +17,10 @@ namespace backend {
         FrameBuffer* buffer;
     };
 
-    struct Draw {
-        Shader* m_shader;
-
-        glm::mat4& m_modelMatrix;
-        //glm::mat3& m_normalMatrix;
-
-        int m_objectID;
-
-        bool wireframe;
-        bool renderBack;
-        bool mirror;
-        bool water;
+    struct DrawEntity {
+        Shader* shader;
+        GLVertexArray* vao;
+        DrawOptions* drawOptions;
+        bool useBlend;
     };
 }

@@ -301,32 +301,6 @@ int Shader::initProgram() {
     setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
 #endif
 
-    //u_projectionMatrix.init(this);
-    //u_viewMatrix.init(this);
-    //u_modelMatrix.init(this);
-    //u_normalMatrix.init(this);
-
-    //u_noiseTex.init(this);
-    //u_reflectionTex.init(this);
-    //vrefractionTex.init(this);
-
-    //u_cubeMap.init(this);
-
-    //u_shadowMap.init(this);
-    //u_normalMap.init(this);
-
-    //u_drawInstanced.init(*this);
-
-    //u_nearPlane.init(this);
-    //u_farPlane.init(this);
-
-    //u_skybox.init(this);
-
-    //u_viewportTex.init(this);
-
-    //u_effect.init(this);
-
-
     m_sources.clear();
 
     return 0;
@@ -338,17 +312,6 @@ void Shader::appendDefines(std::vector<std::string>& lines)
         lines.push_back(fmt::format("#define {} {}",key, value));
     }
 }
-
-//void Shader::prepareTextureUniforms()
-//{
-//    textures.reserve(TEXTURE_COUNT);
-//
-//    for (int i = 0; i < TEXTURE_COUNT; i++) {
-//        auto name = fmt::format("u_textures[{}]", i);
-//        Shader::Int& v = textures.emplace_back(name);
-//        v.init(this);
-//    }
-//}
 
 void Shader::setInt(const std::string& name, int value) noexcept
 {

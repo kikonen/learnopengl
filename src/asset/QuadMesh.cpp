@@ -70,5 +70,4 @@ void QuadMesh::prepareVAO(
     drawOptions.mode = GL_TRIANGLE_STRIP;
     drawOptions.indexFirst = 0;
     drawOptions.indexCount = INDEX_COUNT;
-    drawOptions.volumeRadiusFlex = 1.65f;
 }

@@ -25,8 +25,12 @@ public:
     void update(const RenderContext& ctx);
     void bind(const RenderContext& ctx);
 
-    // const EntitySSBO& entry
+    // index of entity
     int add();
+
+    // @return first index of range
+    int addRange(const int count);
+
     EntitySSBO* get(int index);
 
     void markDirty(int index);

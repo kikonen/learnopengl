@@ -3,9 +3,10 @@
 #include "DrawElementsIndirectCommand.h"
 #include "DrawArraysIndirectCommand.h"
 
-namespace backend {
-    struct DrawIndirectCommand
+namespace backend::gl {
+    struct CandidateDraw
     {
+        GLuint baseInstance;
         union {
             DrawElementsIndirectCommand element;
             DrawArraysIndirectCommand array;

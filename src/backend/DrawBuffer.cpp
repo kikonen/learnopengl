@@ -4,7 +4,7 @@
 #include "asset/Shader.h"
 #include "asset/SSBO.h"
 
-#include "backend/DrawIndirectParameters.h"
+#include "backend/gl/DrawIndirectParameters.h"
 
 #include "util/Util.h"
 
@@ -61,7 +61,7 @@ namespace backend {
                 mapFlags |= GL_MAP_READ_BIT;
             }
 
-            m_commandCounter.createEmpty(rangeCount * sizeof(DrawIndirectParameters), storageFlags);
+            m_commandCounter.createEmpty(rangeCount * sizeof(gl::DrawIndirectParameters), storageFlags);
             m_commandCounter.map(mapFlags);
         }
 
@@ -126,10 +126,10 @@ namespace backend {
         // - bind draw shader
         // - execute draw shader
 
-        const size_t paramsSz = sizeof(DrawIndirectParameters);
+        const size_t paramsSz = sizeof(gl::DrawIndirectParameters);
         const size_t paramsOffset = candidateRange.m_index * paramsSz;
         {
-            DrawIndirectParameters* data = (DrawIndirectParameters*)m_commandCounter.m_data;
+            auto* data = (gl::DrawIndirectParameters*)m_commandCounter.m_data;
             data += candidateRange.m_index;
             data->u_counter = 0;
             data->u_BaseIndex = cmdRange.m_baseIndex;
@@ -150,7 +150,7 @@ namespace backend {
             candidateRange.setFence();
             candidateRange.waitFence();
 
-            DrawIndirectParameters* data = (DrawIndirectParameters*)m_commandCounter.m_data;
+            auto* data = (gl::DrawIndirectParameters*)m_commandCounter.m_data;
             data += candidateRange.m_index;
 
             count = data->u_counter;
@@ -188,7 +188,7 @@ namespace backend {
                         GL_UNSIGNED_INT,
                         (void*)cmdRange.m_baseOffset,
                         count, //range.m_count,
-                        sizeof(backend::DrawIndirectCommand));
+                        sizeof(backend::gl::DrawIndirectCommand));
                 }
                 else {
                     glMultiDrawElementsIndirectCount(
@@ -197,7 +197,7 @@ namespace backend {
                         (void*)cmdRange.m_baseOffset,
                         paramsOffset,
                         drawCount,
-                        sizeof(backend::DrawIndirectCommand));
+                        sizeof(backend::gl::DrawIndirectCommand));
                 }
             }
             else if (drawOptions.type == backend::DrawOptions::Type::arrays)
@@ -208,7 +208,7 @@ namespace backend {
                         drawOptions.mode,
                         (void*)cmdRange.m_baseOffset,
                         count, //range.m_count,
-                        sizeof(backend::DrawIndirectCommand));
+                        sizeof(backend::gl::DrawIndirectCommand));
                 }
                 else {
                     glMultiDrawArraysIndirectCount(
@@ -216,7 +216,7 @@ namespace backend {
                         (void*)cmdRange.m_baseOffset,
                         paramsOffset,
                         drawCount,
-                        sizeof(backend::DrawIndirectCommand));
+                        sizeof(backend::gl::DrawIndirectCommand));
                 }
             }
         }
@@ -226,7 +226,7 @@ namespace backend {
     }
 
     void DrawBuffer::send(
-        const backend::CandidateDraw& cmd)
+        const backend::gl::CandidateDraw& cmd)
     {
         m_candidates->send(cmd);
     }

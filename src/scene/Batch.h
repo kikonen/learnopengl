@@ -11,8 +11,6 @@
 #include "BatchCommand.h"
 #include "BatchEntry.h"
 
-struct backend::CandidateDraw;
-
 class Shader;
 class RenderContext;
 class MeshType;
@@ -45,6 +43,11 @@ public:
         const RenderContext& ctx,
         const std::vector<int> entityIndeces);
 
+    void addInstanced(
+        const RenderContext& ctx,
+        int firstIndex,
+        int count);
+
     void bind() noexcept;
 
     void prepare(
@@ -59,13 +62,6 @@ public:
         const RenderContext& ctx,
         Node& node,
         Shader* shader);
-
-    void sendDraw(
-        const RenderContext& ctx,
-        const backend::CandidateDraw& indirect,
-        const Shader* shader,
-        const GLVertexArray* vao,
-        const backend::DrawOptions& drawOptions);
 
     void flush(
         const RenderContext& ctx);

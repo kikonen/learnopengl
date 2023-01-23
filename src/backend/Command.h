@@ -17,7 +17,7 @@ namespace backend {
         union {
             Flush m_flush;
             ChangeBuffer m_changeBuffer;
-            Draw m_draw;
+            DrawEntity m_draw;
         };
     };
 }

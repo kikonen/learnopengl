@@ -57,7 +57,6 @@ void AsteroidBeltController::updateAsteroids(
     auto& entityRegistry = ctx.m_entityRegistry;
 
     if (rotate) {
-        node.clear();
         rotateAsteroids(ctx, node, m_asteroids);
     }
 
@@ -77,8 +76,6 @@ void AsteroidBeltController::updateAsteroids(
             entity->m_modelMatrix = parent->getModelMatrix() * modelMat;
             // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
             //entity->m_normalMatrix = glm::inverseTranspose(glm::mat3(entity->m_modelMatrix));
-
-            node.addEntity(asteroid.m_entityIndex);
         }
 
         entity->m_materialIndex = node.getMaterialIndex();
@@ -86,6 +83,8 @@ void AsteroidBeltController::updateAsteroids(
 
         entityRegistry.markDirty(asteroid.m_entityIndex);
     }
+
+    node.setEntityRange(m_firstEntityIndex, m_asteroidCount);
 }
 
 void AsteroidBeltController::createAsteroids(
@@ -95,10 +94,12 @@ void AsteroidBeltController::createAsteroids(
 {
     auto& type = node.m_type;
 
+    m_firstEntityIndex = entityRegistry.addRange(m_asteroidCount);
+
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
         auto& asteroid = m_asteroids.emplace_back();
-        asteroid.m_entityIndex = entityRegistry.add();
+        asteroid.m_entityIndex = m_firstEntityIndex + i;
     }
 
     initAsteroids(assets, entityRegistry, node, m_asteroids);

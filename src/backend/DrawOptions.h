@@ -34,12 +34,7 @@ namespace backend {
         int vertexOffset = 0;
         int indexOffset = 0;
 
-        int materialOffset = 0;
-        bool singleMaterial = false;
-
-        float volumeRadiusFlex = 1.f;
-
-        inline bool isSameDrawCommand(const DrawOptions& b, bool useBlend) const {
+        inline bool isSameDrawCommand(const DrawOptions& b, bool useBlend) const noexcept {
             // NOTE KI multi/single material *CAN* go in same indirect draw
             return isSameMultiDraw(b, useBlend) &&
                 vertexOffset == b.vertexOffset &&
@@ -47,7 +42,7 @@ namespace backend {
                 instanced == b.instanced;
         }
 
-        inline bool isSameMultiDraw(const DrawOptions& b, bool useBlend) const {
+        inline bool isSameMultiDraw(const DrawOptions& b, bool useBlend) const noexcept {
             return renderBack == b.renderBack &&
                 wireframe == b.wireframe &&
                 (useBlend ? blend == b.blend : true) &&
@@ -56,8 +51,8 @@ namespace backend {
         }
 
         inline bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(blend, renderBack, wireframe, type, mode, singleMaterial, vertexOffset, indexOffset, materialOffset) <
-                std::tie(o.blend, o.renderBack, o.wireframe, o.type, o.mode, o.singleMaterial, o.vertexOffset, o.indexOffset, o.materialOffset);
+            return std::tie(blend, renderBack, wireframe, type, mode, vertexOffset, indexOffset) <
+                std::tie(o.blend, o.renderBack, o.wireframe, o.type, o.mode, o.vertexOffset, o.indexOffset);
         }
     };
 }

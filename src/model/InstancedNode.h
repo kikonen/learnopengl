@@ -18,10 +18,9 @@ public:
 
     virtual void bindBatch(const RenderContext& ctx, Batch& batch) noexcept override;
 
-    void clear();
-
-    void addEntity(int entityIndex) noexcept;
+    void setEntityRange(int firstIndex, int count) noexcept;
 
 private:
-    std::vector<int> m_entityIndeces;
+    int m_firstIndex = -1;
+    int m_count = 0;
 };

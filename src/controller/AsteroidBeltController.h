@@ -67,6 +67,8 @@ private:
     int m_nodeMatrixLevel = 0;
     int m_updateIndex = 0;
 
+    int m_firstEntityIndex;
+
     std::vector<Asteroid> m_asteroids;
 };
 

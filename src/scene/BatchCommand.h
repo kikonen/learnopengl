@@ -22,4 +22,5 @@ struct BatchCommand {
 
     int m_index = 0;
     int m_drawCount = 0;
+    int m_instancedCount = 1;
 };

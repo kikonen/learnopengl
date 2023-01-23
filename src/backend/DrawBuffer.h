@@ -8,8 +8,9 @@
 
 #include "kigl/GLSyncQueue.h"
 
-#include "CandidateDraw.h"
-#include "DrawIndirectCommand.h"
+#include "gl/CandidateDraw.h"
+#include "gl/DrawIndirectCommand.h"
+
 #include "DrawOptions.h"
 
 class Assets;
@@ -17,9 +18,9 @@ class Shader;
 class ShaderRegistry;
 
 namespace backend {
-    using GLCandidateQueue = GLSyncQueue<backend::CandidateDraw, true, true>;
+    using GLCandidateQueue = GLSyncQueue<backend::gl::CandidateDraw, true, true>;
     // NOTE KI updated by compute shader, just need to sync with candidate draw swaps
-    using GLCommandQueue = GLSyncQueue<backend::DrawIndirectCommand, false, false>;
+    using GLCommandQueue = GLSyncQueue<backend::gl::DrawIndirectCommand, false, false>;
 
     class DrawBuffer {
     public:
@@ -34,7 +35,7 @@ namespace backend {
         void bind();
 
         void send(
-            const backend::CandidateDraw& cmd);
+            const backend::gl::CandidateDraw& cmd);
 
         void flushIfNeeded(
             GLState& state,

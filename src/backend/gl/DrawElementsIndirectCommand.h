@@ -2,7 +2,7 @@
 
 #include "ki/GL.h"
 
-namespace backend {
+namespace backend::gl {
     struct DrawElementsIndirectCommand
     {
         GLuint count;
