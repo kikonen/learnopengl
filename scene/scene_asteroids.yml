@@ -7,7 +7,7 @@ cube_maps: {}
 entities:
   - name: Camera
     type: origo
-    pos: [0, 0, 0]
+    pos: [0, 0, -10]
     camera:
       rotation: [0, 180, 0.0]
       enabled: true
@@ -21,7 +21,29 @@ entities:
     render_flags:
       cube_map: true
     enabled: true
+  - name: Planet origo
+    id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    type: origo
+    pos: [0.0, 0.0, 0.0]
+    enabled: true
+    init_script: |
+      local wid = -1
+      local cid = -1
+
+      wid = cmd:wait(0, 2)
+      cmd:rotate(id, { after=wid, time=360, relative=true }, { 0.0, 180.0, 0.0 })
+      cmd:rotate(id, { after=wid, time=180, relative=true }, { 360.0, 0, 0.0 })
+  - name: Planet
+    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    model: [planet, planet]
+    shader: texture
+    pos: [0, 0, 0]
+    scale: 1
+    material_modifier:
+      fog_ratio: 0
+    enabled: true
   - name: Asteroid belt
+    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
     model: [rock, rock]
     instanced: true
     shader: texture
