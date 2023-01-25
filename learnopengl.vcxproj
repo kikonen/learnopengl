@@ -314,13 +314,13 @@
     <ClInclude Include="src\asset\QuadVAO.h" />
     <ClInclude Include="src\asset\SpriteMaterialInit.h" />
     <ClInclude Include="src\asset\SSBO.h" />
-    <ClInclude Include="src\backend\gl\CandidateDraw.h" />
     <ClInclude Include="src\backend\DrawBuffer.h" />
     <ClInclude Include="src\backend\DrawOptions.h" />
     <ClInclude Include="src\backend\gl\DrawElementsIndirectCommand.h" />
     <ClInclude Include="src\backend\gl\DrawArraysIndirectCommand.h" />
     <ClInclude Include="src\backend\gl\DrawIndirectCommand.h" />
     <ClInclude Include="src\backend\gl\DrawIndirectParameters.h" />
+    <ClInclude Include="src\backend\DrawRange.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.h" />
     <ClInclude Include="src\kigl\GLBuffer.h" />
     <ClInclude Include="src\kigl\GLBufferRange.h" />

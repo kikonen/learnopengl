@@ -10,7 +10,9 @@
 #include "asset/VertexEntry.h"
 #include "asset/Shader.h"
 
-#include "backend/gl/CandidateDraw.h"
+#include "backend/gl/DrawIndirectCommand.h"
+
+#include "backend/DrawRange.h"
 #include "backend/DrawBuffer.h"
 
 #include "model/Node.h"
@@ -227,9 +229,10 @@ void Batch::flush(
     const Shader* boundShader{ nullptr };
     const GLVertexArray* boundVAO{ nullptr };
     const backend::DrawOptions* boundDrawOptions{ nullptr };
-    //int  baseInstance = range.m_baseIndex;
 
-    backend::gl::CandidateDraw candidate{};
+    backend::gl::DrawIndirectCommand indirect{};
+
+    backend::DrawRange drawRange;
 
     for (auto& curr : m_batches) {
         if (curr.m_drawCount == 0) continue;
@@ -241,8 +244,16 @@ void Batch::flush(
 
         if (!sameDraw) {
             if (boundShader) {
-                m_draw->flush(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+                m_draw->flush(drawRange);
             }
+
+            drawRange = {
+                &ctx.state,
+                curr.m_shader,
+                curr.m_vao,
+                curr.m_drawOptions,
+                useBlend
+            };
 
             boundShader = curr.m_shader;
             boundVAO = curr.m_vao;
@@ -256,55 +267,34 @@ void Batch::flush(
         const auto& drawOptions = *curr.m_drawOptions;
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
-            backend::gl::DrawElementsIndirectCommand& cmd = candidate.element;
+            backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
 
             cmd.count = drawOptions.indexCount;
-            cmd.instanceCount = 1;
+            cmd.instanceCount = 0;
             cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
 
-            if (false && drawOptions.instanced) {
-                cmd.instanceCount = curr.m_instancedCount;
-                // NOTE KI *SAME* e
-                cmd.baseInstance = m_entityIndeces[curr.m_index];
-                m_draw->send(candidate);
-                m_draw->flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
-            }
-            else {
-                for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
-                    for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
-                        int entityIndex = m_entityIndeces[i] + instanceIndex;
-                        candidate.baseInstance = entityIndex;
-                        cmd.baseInstance = entityIndex;
-                        m_draw->send(candidate);
-                        m_draw->flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
-                    }
+            for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
+                for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
+                    int entityIndex = m_entityIndeces[i] + instanceIndex;
+                    cmd.baseInstance = entityIndex;
+                    m_draw->send(drawRange, indirect);
                 }
             }
         }
         else if (drawOptions.type == backend::DrawOptions::Type::arrays)
         {
-            backend::gl::DrawArraysIndirectCommand& cmd = candidate.array;
+            backend::gl::DrawArraysIndirectCommand& cmd = indirect.array;
 
             cmd.vertexCount = drawOptions.indexCount;
-            cmd.instanceCount = 1;
+            cmd.instanceCount = 0;
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
 
-            if (false && drawOptions.instanced) {
-                cmd.instanceCount = curr.m_drawCount;
-                cmd.baseInstance = m_entityIndeces[curr.m_index];
-                m_draw->send(candidate);
-                m_draw->flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
-            }
-            else {
-                for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
-                    for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
-                        int entityIndex = m_entityIndeces[i] + instanceIndex;
-                        candidate.baseInstance = entityIndex;
-                        cmd.baseInstance = entityIndex;
-                        m_draw->send(candidate);
-                        m_draw->flushIfNeeded(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
-                    }
+            for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
+                for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
+                    int entityIndex = m_entityIndeces[i] + instanceIndex;
+                    cmd.baseInstance = entityIndex;
+                    m_draw->send(drawRange, indirect);
                 }
             }
         }
@@ -315,7 +305,7 @@ void Batch::flush(
     }
 
     if (boundShader) {
-        m_draw->flush(ctx.state, boundShader, boundVAO, *boundDrawOptions, useBlend);
+        m_draw->flush(drawRange);
     }
 
     m_batches.clear();

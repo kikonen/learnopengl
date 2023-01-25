@@ -8,9 +8,9 @@
 
 #include "kigl/GLSyncQueue.h"
 
-#include "gl/CandidateDraw.h"
 #include "gl/DrawIndirectCommand.h"
 
+#include "DrawRange.h"
 #include "DrawOptions.h"
 
 class Assets;
@@ -18,9 +18,7 @@ class Shader;
 class ShaderRegistry;
 
 namespace backend {
-    using GLCandidateQueue = GLSyncQueue<backend::gl::CandidateDraw, true, true>;
-    // NOTE KI updated by compute shader, just need to sync with candidate draw swaps
-    using GLCommandQueue = GLSyncQueue<backend::gl::DrawIndirectCommand, false, false>;
+    using GLCommandQueue = GLSyncQueue<backend::gl::DrawIndirectCommand, true, true>;
 
     class DrawBuffer {
     public:
@@ -35,27 +33,18 @@ namespace backend {
         void bind();
 
         void send(
-            const backend::gl::CandidateDraw& cmd);
+            const backend::DrawRange& drawRange,
+            const backend::gl::DrawIndirectCommand& cmd);
 
         void flushIfNeeded(
-            GLState& state,
-            const Shader* shader,
-            const GLVertexArray* vao,
-            const DrawOptions& drawOptions,
-            const bool useBlend);
+            const backend::DrawRange& drawRange);
 
         void flush(
-            GLState& state,
-            const Shader* shader,
-            const GLVertexArray* vao,
-            const DrawOptions& drawOptions,
-            const bool useBlend);
+            const backend::DrawRange& drawRange);
 
     private:
-        void bindOptions(
-            GLState& state,
-            const DrawOptions& drawOptions,
-            const bool useBlend) const;
+        void bindDrawRange(
+            const backend::DrawRange& drawRange) const;
 
     public:
         size_t m_drawCount = 0;
@@ -67,14 +56,10 @@ namespace backend {
 
         bool m_bound = false;
 
-        bool m_useIndirectCount;
-
-        Shader* m_candidateShader{ nullptr };
-
-        std::unique_ptr<GLCandidateQueue> m_candidates{ nullptr };
+        Shader* m_cullingCompute{ nullptr };
 
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
 
-        GLBuffer m_commandCounter{ "drawCommandCounter" };
+        GLBuffer m_drawParameters{ "drawCommandCounter" };
     };
 }

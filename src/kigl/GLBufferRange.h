@@ -23,11 +23,11 @@ struct GLBufferRange {
         return m_baseIndex + (m_entrySize * idx);
     }
 
-    inline bool isFull() const {
+    inline bool full() const {
         return m_usedCount == m_maxCount;
     }
 
-    inline bool isEmpty() const {
+    inline bool empty() const {
         return m_usedCount == 0;
     }
 

@@ -92,7 +92,7 @@ public:
         //*ptr = entry;
         memcpy(ptr, &entry, sizeof(T));
 
-        return range.isFull();
+        return range.full();
     }
 
     //
@@ -121,12 +121,12 @@ public:
     //
     // @return true if current range is full
     //
-    inline bool isFull() {
-        return m_ranges[m_current].isFull();
+    inline bool full() {
+        return m_ranges[m_current].full();
     }
 
-    inline bool isEmpty() {
-        return m_ranges[m_current].isEmpty();
+    inline bool empty() {
+        return m_ranges[m_current].empty();
     }
 
     inline void clear() {
