@@ -51,12 +51,10 @@ void EntityRegistry::update(const RenderContext& ctx)
         if (from != -1 && (skip >= MAX_SKIP || idx == m_maxDirty)) {
             int to = idx;
             const int count = to + 1 - from;
+
             //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
             memcpy(m_ssbo.m_data + from * sz, &m_entries[from], count * sz);
-            //m_ssbo.update(
-            //    from * sz,
-            //    count * sz,
-            //    &m_entries[from]);
+
             m_ssbo.flushRange(from * sz, count * sz);
 
             skip = 0;
@@ -65,8 +63,6 @@ void EntityRegistry::update(const RenderContext& ctx)
         }
         idx++;
     }
-
-    //glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
     //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, updated={}", ctx.m_clock.frameCount, updatedCount));
 

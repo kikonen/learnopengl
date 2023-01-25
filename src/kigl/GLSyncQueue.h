@@ -86,9 +86,11 @@ public:
         if constexpr (useFence)
             if (m_current == 0) range.waitFence();
 
-        //m_data[range.next()] = entry;
         T* ptr = (T*)(m_data + range.nextOffset());
-        *ptr = entry;
+
+        // NOTE KI memcpy is *likely* faster than assingment operator
+        //*ptr = entry;
+        memcpy(ptr, &entry, sizeof(T));
 
         return range.isFull();
     }
@@ -105,8 +107,11 @@ public:
             if (m_current == 0) range.waitFence();
 
         //m_data[range.index(idx)] = entry;
+
         T* ptr = (T*)(m_data + range.offset(idx));
-        *ptr = entry;
+        // NOTE KI memcpy is *likely* faster than assingment operator
+        //*ptr = entry;
+        memcpy(ptr, &entry, sizeof(T));
     }
 
     inline GLBufferRange& current() {

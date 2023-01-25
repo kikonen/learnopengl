@@ -129,10 +129,15 @@ namespace backend {
         const size_t paramsSz = sizeof(gl::DrawIndirectParameters);
         const size_t paramsOffset = candidateRange.m_index * paramsSz;
         {
+            gl::DrawIndirectParameters params;
+            params.u_counter = 0;
+            params.u_BaseIndex = cmdRange.m_baseIndex;
+
             auto* data = (gl::DrawIndirectParameters*)m_commandCounter.m_data;
             data += candidateRange.m_index;
-            data->u_counter = 0;
-            data->u_BaseIndex = cmdRange.m_baseIndex;
+            // NOTE KI memcpy is *likely* faster than assingment operator
+            memcpy(data, &params, paramsSz);
+
             m_commandCounter.flushRange(paramsOffset, paramsSz);
         }
         {
