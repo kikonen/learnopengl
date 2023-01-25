@@ -57,7 +57,7 @@ void main() {
 #ifdef USE_ALPHA
   int materialIndex = entity.materialIndex;
   if (materialIndex < 0) {
-    materialIndex = int(u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex]);
+    materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
   }
 
   vs_out.materialIndex = materialIndex;

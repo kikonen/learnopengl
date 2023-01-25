@@ -50,7 +50,7 @@ void main() {
   const mat3 normalMatrix = transpose(inverse(mat3(u_viewMatrix * entity.modelMatrix)));
 
   if (materialIndex < 0) {
-    materialIndex = int(u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex]);
+    materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
   }
 
   vec4 worldPos;
