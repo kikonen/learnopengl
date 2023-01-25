@@ -126,7 +126,7 @@ namespace backend {
         }
 
         // NOTE KI for "non count" version sync for getting count has done this
-        //glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
+        glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
 
         bindDrawRange(drawRange);
 

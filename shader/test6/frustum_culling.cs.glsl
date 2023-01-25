@@ -41,7 +41,7 @@ struct DrawParameters {
 
 layout(location = UNIFORM_DRAW_PARAMETERS_INDEX) uniform uint u_drawParametersIndex;
 
-layout (binding = SSBO_DRAW_COMMANDS, std430) writeonly buffer DrawCommandSSBO
+layout (binding = SSBO_DRAW_COMMANDS, std430) buffer DrawCommandSSBO
 {
   DrawIndirectCommand u_commands[];
 };
