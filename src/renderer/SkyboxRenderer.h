@@ -37,5 +37,7 @@ private:
     GLBuffer m_vbo{ "skyboxVBO" };
 
     Shader* m_shader{ nullptr };
+
+    bool m_boundTexture = false;
 };
 

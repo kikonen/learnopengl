@@ -128,7 +128,10 @@ void SkyboxRenderer::assign(Shader* shader)
 
 void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 {
-    ctx.state.bindTexture(UNIT_SKYBOX, m_textureID, false);
+    if (!m_boundTexture) {
+        m_boundTexture = true;
+        ctx.state.bindTexture(UNIT_SKYBOX, m_textureID, false);
+    }
 }
 
 void SkyboxRenderer::render(const RenderContext& ctx)
@@ -138,12 +141,13 @@ void SkyboxRenderer::render(const RenderContext& ctx)
     ctx.m_batch.flush(ctx);
 
     ctx.bindDefaults();
+    ctx.state.bindVAO(m_vao);
+
     ShaderBind bound(m_shader, ctx.state);
     bindTexture(ctx);
 
     // NOTE KI skybox needs "equal", since drawing "at inifinity"
     glDepthFunc(GL_LEQUAL);
-    ctx.state.bindVAO(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthFunc(ctx.m_depthFunc);
 }
