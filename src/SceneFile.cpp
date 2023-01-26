@@ -116,7 +116,6 @@ void SceneFile::attachSkybox(
     if (!data.valid()) return;
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
-    skybox->prepare(m_assets, *m_shaderRegistry, *m_materialRegistry);
     m_nodeRegistry->m_skybox = std::move(skybox);
 }
 

@@ -427,8 +427,8 @@ public:
 
     int m_programId = -1;
 
-    Shader::Mat4 u_projectionMatrix{ "u_projectionMatrix", UNIFORM_PROJECTION_MATRIX };
-    Shader::Mat4 u_viewMatrix{ "u_viewMatrix", UNIFORM_VIEW_MATRIX };
+    //Shader::Mat4 u_projectionMatrix{ "u_projectionMatrix", UNIFORM_PROJECTION_MATRIX };
+    //Shader::Mat4 u_viewMatrix{ "u_viewMatrix", UNIFORM_VIEW_MATRIX };
 
     Shader::UInt u_drawParametersIndex{ "u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX };
 

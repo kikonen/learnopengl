@@ -133,17 +133,13 @@ void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 
 void SkyboxRenderer::render(const RenderContext& ctx)
 {
+    if (!m_prepared) return;
+
     ctx.m_batch.flush(ctx);
 
     ctx.bindDefaults();
     ShaderBind bound(m_shader, ctx.state);
     bindTexture(ctx);
-
-    // remove translation from the view matrix
-    glm::mat4 viewMatrix = glm::mat4(glm::mat3(ctx.m_matrices.view));
-
-    m_shader->u_viewMatrix.set(viewMatrix);
-    m_shader->u_projectionMatrix.set(ctx.m_matrices.projection);
 
     // NOTE KI skybox needs "equal", since drawing "at inifinity"
     glDepthFunc(GL_LEQUAL);

@@ -19,6 +19,7 @@ class Batch;
 class MaterialRegistry;
 class EntityRegistry;
 class ModelRegistry;
+class ShaderRegistry;
 
 class SkyboxRenderer;
 
@@ -81,6 +82,7 @@ public:
 
     void prepare(
         Batch* batch,
+        ShaderRegistry* shaderRegistry,
         MaterialRegistry * materialRegistry,
         EntityRegistry* entityRegistry,
         ModelRegistry* modelRegistry);
@@ -167,7 +169,11 @@ private:
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
+    bool m_skyboxPrepared = false;
+
     Batch* m_batch{ nullptr };
+
+    ShaderRegistry* m_shaderRegistry{ nullptr };
     MaterialRegistry* m_materialRegistry{ nullptr };
     EntityRegistry* m_entityRegistry{ nullptr };
     ModelRegistry* m_modelRegistry{ nullptr };

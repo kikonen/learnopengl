@@ -109,6 +109,8 @@ RenderContext::RenderContext(
         m_farPlane);
 
     m_matrices.view = m_camera.getView();
+    // NOTE KI remove translation from the view matrix for skybox
+    m_matrices.viewSkybox = glm::mat4(glm::mat3(m_matrices.view));
     m_matrices.projection = m_camera.getProjection();
     m_matrices.projected = m_camera.getProjected();
 

@@ -100,11 +100,13 @@ NodeRegistry::~NodeRegistry()
 
 void NodeRegistry::prepare(
     Batch* batch,
+    ShaderRegistry* shaderRegistry,
     MaterialRegistry* materialRegistry,
     EntityRegistry* entityRegistry,
     ModelRegistry* modelRegistry)
 {
     m_batch = batch;
+    m_shaderRegistry = shaderRegistry;
     m_materialRegistry = materialRegistry;
     m_entityRegistry = entityRegistry;
     m_modelRegistry = modelRegistry;
@@ -205,6 +207,14 @@ void NodeRegistry::attachNodes()
     }
 
     bindPendingChildren();
+
+    if (m_skybox && !m_skyboxPrepared) {
+        m_skyboxPrepared = true;
+        m_skybox->prepare(
+            m_assets,
+            *m_shaderRegistry,
+            *m_materialRegistry);
+    }
 
     m_newNodes.clear();
 }

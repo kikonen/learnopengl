@@ -99,6 +99,7 @@ void Scene::prepare(ShaderRegistry& shaders)
 
     m_nodeRegistry->prepare(
         m_batch.get(),
+        &shaders,
         m_materialRegistry.get(),
         m_entityRegistry.get(),
         m_modelRegistry.get());
