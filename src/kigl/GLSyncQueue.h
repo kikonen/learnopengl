@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <functional>
 
 #include "GLBuffer.h"
 #include "GLBufferRange.h"
@@ -144,9 +145,30 @@ public:
     }
 
     //
-    // Switch to next range
+    // Process starting from oldest upto current
     //
-    inline void next(bool clear) {
+    inline void processPending(
+        std::function<void(GLBufferRange&)> handle,
+        bool processCurrent,
+        bool clear)
+    {
+        const int untilCount = processCurrent ? m_rangeCount : m_rangeCount - 1;
+
+        for (int i = 1; i <= untilCount; i++) {
+            int rangeIndex = (m_current + i) % m_rangeCount;
+            auto& range = m_ranges[rangeIndex];
+            if (range.empty()) continue;
+            if (rangeIndex == m_current) flush();
+            handle(range);
+            if (clear) range.clear();
+        }
+    }
+
+    //
+    // Switch to next range
+    // @return next buffer
+    //
+    inline GLBufferRange& next(bool clear) {
         if (clear) {
             m_ranges[m_current].clear();
         }
@@ -154,6 +176,8 @@ public:
 
         if constexpr (useFence)
             if (m_current == 0) m_ranges[0].setFence();
+
+        return m_ranges[m_current];
     }
 
     inline void bind(GLuint ubo, bool used, int count) {

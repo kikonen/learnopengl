@@ -68,8 +68,8 @@ assets:
   terrain_vertex_count: 32
   terrain_tile_size: 400
 
-  batch_size: 65536
-  batch_buffers: 8
+  batch_size: 4096
+  batch_buffers: 100
 
   near_plane: 0.1
   far_plane: 1000.0

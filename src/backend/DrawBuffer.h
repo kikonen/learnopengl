@@ -33,14 +33,16 @@ namespace backend {
         void bind();
 
         void send(
-            const backend::DrawRange& drawRange,
+            const backend::DrawRange& sendRange,
             const backend::gl::DrawIndirectCommand& cmd);
 
-        void flushIfNeeded(
-            const backend::DrawRange& drawRange);
+        void flushIfNeeded();
+        void flush();
 
-        void flush(
-            const backend::DrawRange& drawRange);
+        void flushIfNotSame(
+            const backend::DrawRange& sendRange);
+
+        void drawPending(bool drawCurrent);
 
     private:
         void bindDrawRange(
@@ -59,6 +61,8 @@ namespace backend {
         Shader* m_cullingCompute{ nullptr };
 
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
+
+        std::vector<backend::DrawRange> m_drawRanges;
 
         GLBuffer m_drawParameters{ "drawCommandCounter" };
     };

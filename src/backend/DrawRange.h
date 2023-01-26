@@ -9,10 +9,10 @@ struct GLVertexArray;
 namespace backend {
     struct DrawRange
     {
-        GLState* state{ nullptr };
-        const Shader* shader{ nullptr };
-        const GLVertexArray* vao{ nullptr };
-        const DrawOptions* drawOptions{ nullptr };
-        bool useBlend = false;
+        GLState* m_state{ nullptr };
+        const Shader* m_shader{ nullptr };
+        const GLVertexArray* m_vao{ nullptr };
+        const DrawOptions* m_drawOptions{ nullptr };
+        bool m_useBlend = false;
     };
 }

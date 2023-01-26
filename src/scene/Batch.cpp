@@ -225,45 +225,24 @@ void Batch::flush(
         return;
     }
 
-    const bool useBlend = ctx.m_useBlend;
-    const Shader* boundShader{ nullptr };
-    const GLVertexArray* boundVAO{ nullptr };
-    const backend::DrawOptions* boundDrawOptions{ nullptr };
-
     backend::gl::DrawIndirectCommand indirect{};
 
-    backend::DrawRange drawRange;
+    // NOTE KI baseVertex usage
+    // https://community.khronos.org/t/vertex-buffer-management-with-indirect-drawing/77272
+    // https://www.khronos.org/opengl/wiki/Vertex_Specification#Instanced_arrays
+    //
 
     for (auto& curr : m_batches) {
         if (curr.m_drawCount == 0) continue;
 
-        bool sameDraw = boundShader == curr.m_shader &&
-            boundVAO == curr.m_vao &&
-            boundDrawOptions &&
-            boundDrawOptions->isSameMultiDraw(*curr.m_drawOptions, useBlend);
+        backend::DrawRange drawRange = {
+            &ctx.state,
+            curr.m_shader,
+            curr.m_vao,
+            curr.m_drawOptions,
+            ctx.m_useBlend
+        };
 
-        if (!sameDraw) {
-            if (boundShader) {
-                m_draw->flush(drawRange);
-            }
-
-            drawRange = {
-                &ctx.state,
-                curr.m_shader,
-                curr.m_vao,
-                curr.m_drawOptions,
-                useBlend
-            };
-
-            boundShader = curr.m_shader;
-            boundVAO = curr.m_vao;
-            boundDrawOptions = curr.m_drawOptions;
-        }
-
-        // NOTE KI baseVertex usage
-        // https://community.khronos.org/t/vertex-buffer-management-with-indirect-drawing/77272
-        // https://www.khronos.org/opengl/wiki/Vertex_Specification#Instanced_arrays
-        //
         const auto& drawOptions = *curr.m_drawOptions;
 
         if (drawOptions.type == backend::DrawOptions::Type::elements) {
@@ -304,9 +283,8 @@ void Batch::flush(
         }
     }
 
-    if (boundShader) {
-        m_draw->flush(drawRange);
-    }
+    m_draw->flush();
+    m_draw->drawPending(false);
 
     m_batches.clear();
     m_entityIndeces.clear();

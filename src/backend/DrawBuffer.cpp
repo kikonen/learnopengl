@@ -63,6 +63,11 @@ namespace backend {
             commandBatchCount,
             commandRangeCount);
         m_commands->prepare(BUFFER_ALIGNMENT);
+
+        m_drawRanges.reserve(rangeCount);
+        for (int i = 0; i < rangeCount; i++) {
+            m_drawRanges.emplace_back();
+        }
     }
 
     void DrawBuffer::bind()
@@ -78,25 +83,23 @@ namespace backend {
         m_commands->m_buffer.bindSSBO(SSBO_DRAW_COMMANDS);
     }
 
-    void DrawBuffer::flushIfNeeded(
-        const backend::DrawRange& drawRange)
+    void DrawBuffer::flushIfNeeded()
     {
         if (!m_commands->full()) return;
-        //std::cout << "-F-";
-        flush(drawRange);
+        flush();
     }
 
-    void DrawBuffer::flush(
-        const backend::DrawRange& drawRange)
+    void DrawBuffer::flush()
     {
         const auto& cmdRange = m_commands->current();
+        const auto& drawRange = m_drawRanges[cmdRange.m_index];
         const size_t drawCount = cmdRange.m_usedCount;
 
         if (drawCount == 0) return;
 
         m_commands->flush();
 
-        // TODO KI
+        // NOTE KI
         // - bind CS shader
         // - execute CS shader
         // - glMemoryBarrier
@@ -108,7 +111,7 @@ namespace backend {
         {
             gl::DrawIndirectParameters params{
                 cmdRange.m_baseIndex,
-                util::as_integer(drawRange.drawOptions->type)
+                util::as_integer(drawRange.m_drawOptions->type)
             };
 
             auto* data = (gl::DrawIndirectParameters*)m_drawParameters.m_data;
@@ -119,53 +122,97 @@ namespace backend {
             m_drawParameters.flushRange(paramsOffset, PARAMS_SZ);
         }
         {
-            m_cullingCompute->bind(*drawRange.state);
+            m_cullingCompute->bind(*drawRange.m_state);
             m_cullingCompute->u_drawParametersIndex.set(cmdRange.m_index);
 
             glDispatchCompute(drawCount, 1, 1);
         }
 
-        // NOTE KI for "non count" version sync for getting count has done this
-        glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
-
-        bindDrawRange(drawRange);
-
-        if (drawRange.drawOptions->type == backend::DrawOptions::Type::elements) {
-            glMultiDrawElementsIndirect(
-                drawRange.drawOptions->mode,
-                GL_UNSIGNED_INT,
-                (void*)cmdRange.m_baseOffset,
-                drawCount,
-                sizeof(backend::gl::DrawIndirectCommand));
+        const auto& next = m_commands->next(false);
+        if (!next.empty()) {
+            // NOTE KI trigger draw pending if out of buffers
+            drawPending(true);
         }
-        else if (drawRange.drawOptions->type == backend::DrawOptions::Type::arrays)
-        {
-            glMultiDrawArraysIndirect(
-                drawRange.drawOptions->mode,
-                (void*)cmdRange.m_baseOffset,
-                drawCount,
-                sizeof(backend::gl::DrawIndirectCommand));
+    }
+
+    void DrawBuffer::flushIfNotSame(
+        const backend::DrawRange& sendRange)
+    {
+        const auto& cmdRange = m_commands->current();
+        auto& curr = m_drawRanges[cmdRange.m_index];
+
+        bool sameDraw = true;
+        if (!cmdRange.empty()) {
+            sameDraw = curr.m_shader == sendRange.m_shader &&
+                curr.m_vao == sendRange.m_vao &&
+                curr.m_drawOptions->isSameMultiDraw(*sendRange.m_drawOptions, curr.m_useBlend);
         }
 
-        m_commands->next(true);
+        if (!sameDraw) {
+            flush();
+        }
     }
 
     void DrawBuffer::send(
-        const backend::DrawRange& drawRange,
+        const backend::DrawRange& sendRange,
         const backend::gl::DrawIndirectCommand& cmd)
     {
-        m_commands->send(cmd);
-        flushIfNeeded(drawRange);
+        flushIfNotSame(sendRange);
+
+        const auto& cmdRange = m_commands->current();
+        auto& curr = m_drawRanges[cmdRange.m_index];
+
+        if (cmdRange.empty()) {
+            // starting new range
+            curr = sendRange;
+        }
+
+        if (m_commands->send(cmd)) {
+            flush();
+        }
+    }
+
+    void DrawBuffer::drawPending(bool drawCurrent)
+    {
+        // NOTE KI for "non count" version sync for getting count has done this
+        glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
+
+        auto handler = [this](GLBufferRange& cmdRange) {
+            auto& drawRange = m_drawRanges[cmdRange.m_index];
+            auto drawOptions = *drawRange.m_drawOptions;
+            const size_t drawCount = cmdRange.m_usedCount;
+
+            bindDrawRange(drawRange);
+
+            if (drawOptions.type == backend::DrawOptions::Type::elements) {
+                glMultiDrawElementsIndirect(
+                    drawOptions.mode,
+                    GL_UNSIGNED_INT,
+                    (void*)cmdRange.m_baseOffset,
+                    drawCount,
+                    sizeof(backend::gl::DrawIndirectCommand));
+            }
+            else if (drawOptions.type == backend::DrawOptions::Type::arrays)
+            {
+                glMultiDrawArraysIndirect(
+                    drawOptions.mode,
+                    (void*)cmdRange.m_baseOffset,
+                    drawCount,
+                    sizeof(backend::gl::DrawIndirectCommand));
+            }
+        };
+
+        m_commands->processPending(handler, drawCurrent, true);
     }
 
     void DrawBuffer::bindDrawRange(
         const backend::DrawRange& drawRange) const
     {
-        auto& drawOptions = *drawRange.drawOptions;
-        auto& state = *drawRange.state;
+        auto& drawOptions = *drawRange.m_drawOptions;
+        auto& state = *drawRange.m_state;
 
-        drawRange.shader->bind(state);
-        state.bindVAO(*drawRange.vao);
+        drawRange.m_shader->bind(state);
+        state.bindVAO(*drawRange.m_vao);
 
         if (drawOptions.renderBack) {
             state.disable(GL_CULL_FACE);
@@ -181,7 +228,7 @@ namespace backend {
             state.polygonFrontAndBack(GL_FILL);
         }
 
-        if (drawOptions.blend && drawRange.useBlend) {
+        if (drawOptions.blend && drawRange.m_useBlend) {
             state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             state.enable(GL_BLEND);
         }
