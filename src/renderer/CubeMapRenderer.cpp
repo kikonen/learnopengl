@@ -202,7 +202,7 @@ void CubeMapRenderer::clearCubeMap(
             GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
             GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cube.m_textureID, 0);
 
-        auto c = color;
+        glm::vec4 c = color;
         if (debug) c = DEBUG_COLOR[face];
         glClearColor(c.r, c.g, c.b, c.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

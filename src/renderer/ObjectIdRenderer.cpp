@@ -160,13 +160,10 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
                 }
 
                 auto& batch = ctx.m_batch;
-                batch.m_useObjectIDBuffer = true;
 
                 for (auto& node : it.second) {
                     batch.draw(ctx, *node, shader);
                 }
-
-                batch.m_useObjectIDBuffer = false;
             }
         };
 

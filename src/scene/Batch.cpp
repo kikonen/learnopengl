@@ -37,7 +37,6 @@ namespace {
 }
 
 Batch::Batch()
-    : m_id(nextID())
 {
 }
 
@@ -101,17 +100,12 @@ void Batch::prepare(
     if (bufferCount <= 0) {
         bufferCount = 1;
     }
-    m_entryCount = entryCount;
 
     m_batches.reserve(BATCH_COUNT);
     m_entityIndeces.reserve(ENTITY_COUNT);
 
     m_draw = std::make_unique<backend::DrawBuffer>();
-    m_draw->prepare(assets, shaders, m_entryCount, bufferCount);
-
-    KI_DEBUG(fmt::format(
-        "BATCHL: size={}, buffer={}",
-        m_entryCount, -1));
+    m_draw->prepare(assets, shaders, entryCount, bufferCount);
 }
 
 void Batch::prepareVAO(
@@ -144,52 +138,6 @@ void Batch::draw(
     if (!type->getMesh()) return;
     if (type->m_flags.noRender) return;
     if (type->m_flags.noDisplay) return;
-
-    //auto& obb = node.getOBB();
-    //const auto mvp = ctx.m_matrices.projected * node.getModelMatrix();
-
-    const auto& projectedMatrix = ctx.m_matrices.projected;
-
-    const auto* volume = node.getVolume();
-    if (ctx.m_useFrustum &&
-        ctx.assets.frustumEnabled &&
-        ctx.assets.frustumCPU &&
-        !type->m_flags.noFrustum &&
-        volume)
-    {
-        bool hit = true;
-        if (false) {
-            hit = volume->isOnFrustum(
-                ctx.m_camera.getFrustum(),
-                node.getMatrixLevel(),
-                node.getModelMatrix());
-        }
-
-        hit = node.inFrustum(ctx, 1.2f);
-
-        //hit = true;
-        //!obb.inFrustum(
-        //    ctx.m_camera.getProjectedLevel(),
-        //    ctx.m_camera.getProjected(),
-        //    node.getMatrixLevel(),
-        //    node.getWorldModelMatrix()))
-
-            //volume &&
-            //!volume->isOnFrustum(
-            //    *ctx.getFrustum(),
-            //    node.getMatrixLevel(),
-            //    node.getWorldModelMatrix()))
-            //!volume->isOnFrustum(*ctx.getFrustum(), node.getMatrixLevel(), node.getWorldModelMatrix()))
-        if (!hit) {
-            ctx.m_skipCount += 1;
-            return;
-        }
-    }
-
-    // NOTE KI GPU count comes from draw buffer
-    if (ctx.assets.frustumEnabled && ctx.assets.frustumCPU) {
-        ctx.m_drawCount += 1;
-    }
 
     {
         const bool useBlend = ctx.m_useBlend;

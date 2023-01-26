@@ -195,8 +195,6 @@ void NodeRenderer::drawNodes(
 // draw all selected nodes with stencil
 void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
 {
-    ctx.m_batch.m_highlight = true;
-
     auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
             auto& type = *it.first.type;
@@ -228,7 +226,6 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
     }
 
     ctx.m_batch.flush(ctx);
-    ctx.m_batch.m_highlight = false;
 }
 
 void NodeRenderer::drawBlended(
@@ -257,6 +254,4 @@ void NodeRenderer::drawBlended(
 
         ctx.m_batch.draw(ctx, *node, shader);
     }
-
-    ctx.m_batch.flush(ctx);
 }

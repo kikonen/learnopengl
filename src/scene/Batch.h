@@ -72,17 +72,8 @@ private:
         MeshType* type,
         Shader* shader);
 
-public:
-    const int m_id;
-
-    bool m_dirty = false;
-    bool m_useObjectIDBuffer = false;
-    bool m_highlight = false;
-
 private:
     bool m_prepared = false;
-
-    int m_entryCount = 0;
 
     RenderContext* m_currentRenderContext{ nullptr };
     std::vector<BatchCommand> m_batches;
