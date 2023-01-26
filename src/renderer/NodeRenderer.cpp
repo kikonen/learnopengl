@@ -249,29 +249,14 @@ void NodeRenderer::drawBlended(
         }
     }
 
-    MeshType* type = nullptr;
-    Shader* shader = nullptr;
-    Batch* batch = nullptr;
-
     // NOTE KI blending is *NOT* optimal shader / nodetypw wise due to depth sorting
     // NOTE KI order = from furthest away to nearest
     for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
-        Node* node = it->second;
+        auto* node = it->second;
+        auto* shader = node->m_type->m_nodeShader;
 
-        if (type != node->m_type) {
-            if (batch) {
-                // NOTE KI Changing batch
-                batch->flush(ctx);
-            }
-            type = node->m_type;
-            batch = &ctx.m_batch;
-            shader = type->m_nodeShader;
-        }
-
-        batch->draw(ctx, *node, shader);
+        ctx.m_batch.draw(ctx, *node, shader);
     }
 
-    if (batch) {
-        batch->flush(ctx);
-    }
+    ctx.m_batch.flush(ctx);
 }
