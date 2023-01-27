@@ -8,6 +8,8 @@
 #include "ki/GL.h"
 #include "editor/EditorFrame.h"
 
+#include "backend/gl/PerformanceCounters.h"
+
 #include "controller/VolumeController.h"
 
 #include "registry/MeshType.h"
@@ -22,7 +24,6 @@
 #include "SceneFile.h"
 
 #include "scene/Scene.h"
-
 
 
 Test6::Test6()
@@ -120,16 +121,19 @@ int Test6::onRender(const ki::RenderClock& clock) {
         m_frame->render(ctx);
     }
 
-    m_drawCount += ctx.m_drawCount;
-    m_skipCount += ctx.m_skipCount;
-
     if (m_assets.frustumEnabled && m_assets.frustumDebug) {
         m_frustumElapsedSecs += clock.elapsedSecs;
         if (m_frustumElapsedSecs >= 10) {
             m_frustumElapsedSecs -= 10;
+
+            auto counters = scene->getCounters(true);
+            m_drawCount += counters.u_drawCount;
+            m_skipCount += counters.u_skipCount;
+
             auto ratio = (float)m_skipCount / (float)m_drawCount;
             auto frameDraw = (float)m_drawCount / (float)clock.frameCount;
             auto frameSkip = (float)m_skipCount / (float)clock.frameCount;
+
             KI_INFO(fmt::format("{} : total-frames: {}, total-draw: {}, total-skip: {}, ratio: {}", ctx.m_name, clock.frameCount, m_drawCount, m_skipCount, ratio));
             KI_INFO(fmt::format("{} : frame-draw: {}, frame-skip: {}", ctx.m_name, frameDraw, frameSkip));
         }

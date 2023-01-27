@@ -5,6 +5,8 @@
 #include "kigl/GLVertexArray.h"
 #include "kigl/GLBufferRange.h"
 
+#include "backend/gl/PerformanceCounters.h"
+
 #include "backend/DrawOptions.h"
 #include "backend/DrawBuffer.h"
 
@@ -65,6 +67,8 @@ public:
 
     void flush(
         const RenderContext& ctx);
+
+    backend::gl::PerformanceCounters getCounters(bool clear);
 
 private:
     void addCommand(

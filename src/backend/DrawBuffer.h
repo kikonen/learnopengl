@@ -9,6 +9,7 @@
 #include "kigl/GLSyncQueue.h"
 
 #include "gl/DrawIndirectCommand.h"
+#include "gl/PerformanceCounters.h"
 
 #include "DrawRange.h"
 #include "DrawOptions.h"
@@ -44,13 +45,11 @@ namespace backend {
 
         void drawPending(bool drawCurrent);
 
+        gl::PerformanceCounters getCounters(bool clear);
+
     private:
         void bindDrawRange(
             const backend::DrawRange& drawRange) const;
-
-    public:
-        size_t m_drawCount = 0;
-        size_t m_skipCount = 0;
 
     private:
         int m_batchCount = 0;
@@ -66,5 +65,7 @@ namespace backend {
 
         GLBuffer m_drawParameters{ "drawParameters" };
         GLBuffer m_performanceCounters{ "performanceCounters" };
+
+        unsigned long m_drawCounter = 0;
     };
 }

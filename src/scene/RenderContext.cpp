@@ -154,16 +154,6 @@ RenderContext::RenderContext(
 
 RenderContext::~RenderContext()
 {
-    if (m_parent) {
-        m_parent->m_drawCount += m_drawCount;
-        m_parent->m_skipCount += m_skipCount;
-    }
-
-    if (false && assets.frustumDebug) {
-        KI_INFO(fmt::format(
-            "CTX: name={}, draw=, skip={}",
-            m_name, m_drawCount, m_skipCount));
-    }
 }
 
 void RenderContext::bindDefaults() const

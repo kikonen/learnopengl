@@ -236,10 +236,9 @@ void Batch::flush(
 
     m_batches.clear();
     m_entityIndeces.clear();
+}
 
-    ctx.m_drawCount += m_draw->m_drawCount;
-    ctx.m_skipCount += m_draw->m_skipCount;
-
-    m_draw->m_drawCount = 0;
-    m_draw->m_skipCount = 0;
+backend::gl::PerformanceCounters Batch::getCounters(bool clear)
+{
+    return m_draw->getCounters(clear);
 }

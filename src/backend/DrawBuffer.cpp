@@ -1,5 +1,7 @@
 #include "DrawBuffer.h"
 
+#include <fmt/format.h>
+
 #include "asset/Assets.h"
 #include "asset/Shader.h"
 #include "asset/SSBO.h"
@@ -60,14 +62,9 @@ namespace backend {
         }
 
         {
-            int storageFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;
-            int mapFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT;
-
-            m_performanceCounters.createEmpty(sizeof(gl::PerformanceCounters), storageFlags);
-            m_performanceCounters.map(mapFlags);
-            auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
-            *data = { 0, 0 };
-            m_performanceCounters.flushRange(0, sizeof(gl::PerformanceCounters));
+            m_performanceCounters.createEmpty(sizeof(gl::PerformanceCounters), GL_DYNAMIC_STORAGE_BIT);
+            gl::PerformanceCounters data{ 0, 0 };
+            m_performanceCounters.update(0, sizeof(gl::PerformanceCounters), &data);
         }
 
         m_commands = std::make_unique<GLCommandQueue>(
@@ -140,6 +137,8 @@ namespace backend {
 
             glDispatchCompute(drawCount, 1, 1);
         }
+
+        m_drawCounter += drawCount;
 
         const auto& next = m_commands->next(false);
         if (!next.empty()) {
@@ -216,12 +215,19 @@ namespace backend {
         };
 
         m_commands->processPending(handler, drawCurrent, true);
+    }
 
-        m_commands->current().setFence();
-        m_commands->current().waitFence();
-        auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
-        *data = { 0, 0 };
-        std::cout << "draw=" << data->u_drawCount << ", skip=" << data->u_skipCount << '\n';
+    gl::PerformanceCounters DrawBuffer::getCounters(bool clear)
+    {
+        gl::PerformanceCounters counters;
+        m_performanceCounters.get(&counters);
+
+        if (clear) {
+            gl::PerformanceCounters counters;
+            m_performanceCounters.clear();
+        }
+
+        return counters;
     }
 
     void DrawBuffer::bindDrawRange(

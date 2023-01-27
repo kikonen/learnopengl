@@ -6,6 +6,8 @@
 #include <mutex>
 #include <atomic>
 
+#include "backend/gl/PerformanceCounters.h"
+
 #include "kigl/GLSyncQueue.h"
 
 #include "registry/MaterialRegistry.h"
@@ -61,6 +63,8 @@ public:
     void update(RenderContext& ctx);
     void bind(RenderContext& ctx);
     void unbind(RenderContext& ctx);
+
+    backend::gl::PerformanceCounters getCounters(bool clear);
 
     void draw(RenderContext& ctx);
 

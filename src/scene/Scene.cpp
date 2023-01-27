@@ -294,6 +294,12 @@ void Scene::unbind(RenderContext& ctx)
 {
 }
 
+backend::gl::PerformanceCounters Scene::getCounters(bool clear)
+{
+    return m_batch->getCounters(clear);
+}
+
+
 void Scene::draw(RenderContext& ctx)
 {
     glDepthFunc(ctx.m_depthFunc);

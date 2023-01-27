@@ -119,9 +119,6 @@ public:
     mutable MatricesUBO m_matrices;
     mutable DataUBO m_data;
 
-    mutable size_t m_drawCount = 0;
-    mutable size_t m_skipCount = 0;
-
     mutable ClipPlanesUBO m_clipPlanes;
 
     mutable bool m_useWireframe = false;
