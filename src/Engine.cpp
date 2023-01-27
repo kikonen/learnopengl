@@ -116,12 +116,19 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
     ki::RenderClock clock;
 
-    float renderSecs = 0;
     float frameSecs = 0;
 
     char titleSB[256];
 
-    float sleepSecs = 0;
+    // NOTE KI moving avg of render time and fps
+    constexpr int FPS_FRAMES = 3;
+    int avgIndex = 0;
+    std::array<float, FPS_FRAMES> fpsSecs;
+    std::array<float, FPS_FRAMES> renderSecs;
+    for (int i = 0; i < FPS_FRAMES; i++) {
+        fpsSecs[i] = 0;
+        renderSecs[i] = 0;
+    }
 
     // render loop
     // -----------
@@ -160,7 +167,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
                 renderEnd = std::chrono::system_clock::now();
                 renderDuration = renderEnd - renderStart;
-                renderSecs = renderDuration.count();
+                renderSecs[avgIndex] = renderDuration.count();
             }
 
             if (close) {
@@ -193,15 +200,33 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             //    renderSecs * 1000.f,
             //    1.0f / frameSecs);
 
-            sprintf_s(
-                titleSB,
-                256,
-                "%s - FPS: %-5.2f - RENDER: %-5.2fms",
-                m_title.c_str(),
-                1.0f / clock.elapsedSecs,
-                renderSecs * 1000.f);
+            fpsSecs[avgIndex] = clock.elapsedSecs;
 
-            m_window->setTitle(titleSB);
+            avgIndex = (avgIndex + 1) % FPS_FRAMES;
+
+            // update title when wraparound
+            if (avgIndex == 0)
+            {
+                float fpsTotal = 0.f;
+                float renderTotal = 0.f;
+                for (int i = 0; i < FPS_FRAMES; i++) {
+                    fpsTotal += fpsSecs[i];
+                    renderTotal += renderSecs[i];
+                }
+
+                float fpsAvg = (float)FPS_FRAMES / fpsTotal;
+                float renderAvg = renderTotal * 1000.f / (float)FPS_FRAMES;
+
+                sprintf_s(
+                    titleSB,
+                    256,
+                    "%s - FPS: %-5.2f - RENDER: %-5.2fms",
+                    m_title.c_str(),
+                    fpsAvg,
+                    renderAvg);
+
+                m_window->setTitle(titleSB);
+            }
         }
 
         //KI_GL_CHECK("engine.loop");
