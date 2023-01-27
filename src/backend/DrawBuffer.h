@@ -64,6 +64,7 @@ namespace backend {
 
         std::vector<backend::DrawRange> m_drawRanges;
 
-        GLBuffer m_drawParameters{ "drawCommandCounter" };
+        GLBuffer m_drawParameters{ "drawParameters" };
+        GLBuffer m_performanceCounters{ "performanceCounters" };
     };
 }

@@ -9,6 +9,7 @@
 #include "registry/ShaderRegistry.h"
 
 #include "backend/gl/DrawIndirectParameters.h"
+#include "backend/gl/PerformanceCounters.h"
 #include "DrawOptions.h"
 
 
@@ -58,6 +59,17 @@ namespace backend {
             m_drawParameters.map(mapFlags);
         }
 
+        {
+            int storageFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;
+            int mapFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT;
+
+            m_performanceCounters.createEmpty(sizeof(gl::PerformanceCounters), storageFlags);
+            m_performanceCounters.map(mapFlags);
+            auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
+            *data = { 0, 0 };
+            m_performanceCounters.flushRange(0, sizeof(gl::PerformanceCounters));
+        }
+
         m_commands = std::make_unique<GLCommandQueue>(
             "drawCommand",
             commandBatchCount,
@@ -79,6 +91,7 @@ namespace backend {
         m_commands->m_buffer.bindDrawIndirect();
 
         m_drawParameters.bindSSBO(SSBO_DRAW_PARAMETERS);
+        m_performanceCounters.bindSSBO(SSBO_PERFORMANCE_COUNTERS);
 
         m_commands->m_buffer.bindSSBO(SSBO_DRAW_COMMANDS);
     }
@@ -203,6 +216,12 @@ namespace backend {
         };
 
         m_commands->processPending(handler, drawCurrent, true);
+
+        m_commands->current().setFence();
+        m_commands->current().waitFence();
+        auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
+        *data = { 0, 0 };
+        std::cout << "draw=" << data->u_drawCount << ", skip=" << data->u_skipCount << '\n';
     }
 
     void DrawBuffer::bindDrawRange(

@@ -35,8 +35,13 @@ struct DrawIndirectCommand
 };
 
 struct DrawParameters {
-  uint u_baseIndex;
-  uint u_drawType;
+  uint baseIndex;
+  uint drawType;
+};
+
+struct PerformanceCounters {
+  uint drawCount;
+  uint skipCount;
 };
 
 layout(location = UNIFORM_DRAW_PARAMETERS_INDEX) uniform uint u_drawParametersIndex;
@@ -51,14 +56,20 @@ layout (binding = SSBO_DRAW_PARAMETERS, std430) buffer DrawParametersSSBO
   DrawParameters u_params[];
 };
 
+layout (binding = SSBO_PERFORMANCE_COUNTERS, std430) buffer PerformanceCountersSSBO
+{
+  PerformanceCounters u_counters;
+};
+
+
 const float EXPAND_X = 1.0;
 const float EXPAND_Y = 1.0;
 
 void main(void) {
   const DrawParameters param = u_params[u_drawParametersIndex];
-  const uint baseIndex = param.u_baseIndex;
+  const uint baseIndex = param.baseIndex;
   const DrawIndirectCommand cmd = u_commands[baseIndex + gl_GlobalInvocationID.x];
-  const uint baseInstance = param.u_drawType == DRAW_TYPE_ELEMENTS ? cmd.baseInstance_or_pad : cmd.baseVertex_or_baseInstance;
+  const uint baseInstance = param.drawType == DRAW_TYPE_ELEMENTS ? cmd.baseInstance_or_pad : cmd.baseVertex_or_baseInstance;
   const Entity entity = u_entities[baseInstance];
 
   const vec4 pos = u_projectedMatrix *
@@ -72,8 +83,10 @@ void main(void) {
   const float radius = length(vec3(radiusPos) - vec3(pos));
 
   if ((abs(pos.x) - radius) < (pos.w * EXPAND_X) &&
-      (abs(pos.y) - radius) < (pos.w * EXPAND_Y))
-    {
-      u_commands[baseIndex + gl_GlobalInvocationID.x].instanceCount = 1;
-    }
+      (abs(pos.y) - radius) < (pos.w * EXPAND_Y)) {
+    atomicAdd(u_counters.drawCount, 1);
+    u_commands[baseIndex + gl_GlobalInvocationID.x].instanceCount = 1;
+  } else {
+    atomicAdd(u_counters.skipCount, 1);
+  }
 }

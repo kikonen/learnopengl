@@ -692,15 +692,6 @@
     <ClInclude Include="src\backend\DrawOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\DrawElementsIndirectCommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\DrawArraysIndirectCommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\DrawIndirectCommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\asset\SpriteVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -764,16 +755,28 @@
     <ClInclude Include="src\util\Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\CandidateDraw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\DrawIndirectParameters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ki\OpenGLInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\RenderClock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\gl\DrawElementsIndirectCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\gl\DrawArraysIndirectCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\gl\DrawIndirectCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\gl\DrawIndirectParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\DrawRange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\gl\PerformanceCounters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
