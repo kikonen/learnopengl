@@ -62,9 +62,14 @@ namespace backend {
         }
 
         {
-            m_performanceCounters.createEmpty(sizeof(gl::PerformanceCounters), GL_DYNAMIC_STORAGE_BIT);
-            gl::PerformanceCounters data{ 0, 0 };
-            m_performanceCounters.update(0, sizeof(gl::PerformanceCounters), &data);
+            int storageFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+            int mapFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+
+            m_performanceCounters.createEmpty(rangeCount * sizeof(gl::PerformanceCounters), storageFlags);
+            m_performanceCounters.map(mapFlags);
+
+            auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
+            *data = { 0, 0 };
         }
 
         m_commands = std::make_unique<GLCommandQueue>(
@@ -186,7 +191,6 @@ namespace backend {
 
     void DrawBuffer::drawPending(bool drawCurrent)
     {
-        // NOTE KI for "non count" version sync for getting count has done this
         glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
 
         auto handler = [this](GLBufferRange& cmdRange) {
@@ -220,11 +224,12 @@ namespace backend {
     gl::PerformanceCounters DrawBuffer::getCounters(bool clear)
     {
         gl::PerformanceCounters counters;
-        m_performanceCounters.get(&counters);
+
+        auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
+        counters = *data;
 
         if (clear) {
-            gl::PerformanceCounters counters;
-            m_performanceCounters.clear();
+            *data = { 0, 0 };
         }
 
         return counters;
