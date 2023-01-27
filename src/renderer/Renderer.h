@@ -24,8 +24,9 @@ public:
     //    const RenderContext& ctx,
     //    SkyboxRenderer* skybox) = 0;
 
-protected:
     bool needRender(const RenderContext& ctx);
+
+protected:
     void setClosest(Node* closest, int tagIndex);
 
 protected:

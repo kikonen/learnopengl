@@ -312,33 +312,44 @@ void Scene::draw(RenderContext& ctx)
 {
     glDepthFunc(ctx.m_depthFunc);
 
-    if (m_shadowMapRenderer) {
+    bool wasCubeMap = false;
+    int renderCount = 0;
+
+    if (m_shadowMapRenderer && m_shadowMapRenderer->needRender(ctx)) {
+        renderCount++;
         m_shadowMapRenderer->render(ctx);
         m_shadowMapRenderer->bindTexture(ctx);
     }
 
     // OpenGL Programming Guide, 8th Edition, page 404
     // Enable polygon offset to resolve depth-fighting isuses
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonOffset(2.0f, 4.0f);
+    //glEnable(GL_POLYGON_OFFSET_FILL);
+    //glPolygonOffset(0.2f, 0.2f);
 
-    if (m_cubeMapRenderer) {
+    if (m_cubeMapRenderer && m_cubeMapRenderer->needRender(ctx)) {
+        renderCount++;
+        wasCubeMap = true;
         m_cubeMapRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
     }
-    if (m_waterMapRenderer) {
+
+    if (!wasCubeMap && m_waterMapRenderer && m_waterMapRenderer->needRender(ctx)) {
+        renderCount++;
         m_waterMapRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
     }
-    if (m_mirrorMapRenderer) {
+
+    if (!wasCubeMap && m_mirrorMapRenderer && m_mirrorMapRenderer->needRender(ctx)) {
+        renderCount++;
         m_mirrorMapRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
     }
 
-    {
+    // NOTE KI skip main render if special update cycle
+    if (!wasCubeMap && renderCount <= 2) {
         drawMain(ctx);
         drawRear(ctx);
-        drawViewports(ctx);
     }
+    drawViewports(ctx);
 
-    glDisable(GL_POLYGON_OFFSET_FILL);
+    //glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
 void Scene::drawMain(RenderContext& ctx)
