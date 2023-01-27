@@ -54,16 +54,16 @@ namespace backend {
         m_commands->prepare(BUFFER_ALIGNMENT);
 
         {
-            int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;
-            int mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT;
+            constexpr int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT | GL_MAP_COHERENT_BIT;
+            constexpr int mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 
             m_drawParameters.createEmpty(rangeCount * sizeof(gl::DrawIndirectParameters), storageFlags);
             m_drawParameters.map(mapFlags);
         }
 
         {
-            int storageFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-            int mapFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+            constexpr int storageFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+            constexpr int mapFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 
             m_performanceCounters.createEmpty(rangeCount * sizeof(gl::PerformanceCounters), storageFlags);
             m_performanceCounters.map(mapFlags);
@@ -133,13 +133,13 @@ namespace backend {
             data += cmdRange.m_index;
             // NOTE KI memcpy is *likely* faster than assignment operator
             memcpy(data, &params, PARAMS_SZ);
-
-            m_drawParameters.flushRange(paramsOffset, PARAMS_SZ);
         }
+
         {
             m_cullingCompute->bind(*drawRange.m_state);
             m_cullingCompute->u_drawParametersIndex.set(cmdRange.m_index);
 
+            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
             glDispatchCompute(drawCount, 1, 1);
         }
 
