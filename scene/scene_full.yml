@@ -730,7 +730,7 @@ entities:
     material: skeleton
     render_flags:
       alpha: true
-      render_back: true
+      render_back: false
     scale: [1.5, 3, 1]
     repeat:
       x_count: 20
@@ -768,13 +768,13 @@ entities:
       cmd:start(-1, id, main)
   - name: Skeleton single
     xid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
-    type: sprite
+    type: quad
     shader: texture
     pos: [15, 6.5, 20.0]
     material: skeleton
     render_flags:
       alpha: true
-      render_back: true
+      render_back: false
     scale: [1.5, 3, 1]
     enabled: false
   - name: Giant wooden box
