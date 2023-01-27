@@ -60,10 +60,18 @@ Scene::Scene(
 
     m_viewportRenderer = std::make_unique<ViewportRenderer>();
 
-    m_waterMapRenderer = std::make_unique<WaterMapRenderer>();
-    m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>();
-    m_cubeMapRenderer = std::make_unique<CubeMapRenderer>();
-    m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>();
+    if (m_assets.renderWaterMap) {
+        m_waterMapRenderer = std::make_unique<WaterMapRenderer>();
+    }
+    if (m_assets.renderMirrorMap) {
+        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>();
+    }
+    if (m_assets.renderCubeMap) {
+        m_cubeMapRenderer = std::make_unique<CubeMapRenderer>();
+    }
+    if (m_assets.renderShadowMap) {
+        m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>();
+    }
 
     m_objectIdRenderer = std::make_unique<ObjectIdRenderer>();
     m_normalRenderer = std::make_unique<NormalRenderer>();

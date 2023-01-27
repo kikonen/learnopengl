@@ -57,6 +57,11 @@ public:
     bool useWrireframe;
     bool useLight;
 
+    bool renderCubeMap;
+    bool renderShadowMap;
+    bool renderMirrorMap;
+    bool renderWaterMap;
+
     bool showNormals;
     bool showRearView;
     bool showShadowMapView;

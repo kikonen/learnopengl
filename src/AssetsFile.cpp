@@ -96,6 +96,18 @@ void AssetsFile::loadAssets(
         else if (k == "use_wireframe") {
             data.useWrireframe = v.as<bool>();
         }
+        else if (k == "render_cube_map") {
+            data.renderCubeMap = v.as<bool>();
+        }
+        else if (k == "render_shadow_map") {
+            data.renderShadowMap = v.as<bool>();
+        }
+        else if (k == "render_mirror_map") {
+            data.renderMirrorMap = v.as<bool>();
+        }
+        else if (k == "render_water_map") {
+            data.renderWaterMap= v.as<bool>();
+        }
         else if (k == "show_normals") {
             data.showNormals = v.as<bool>();
         }

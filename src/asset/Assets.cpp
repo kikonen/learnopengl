@@ -42,6 +42,11 @@ Assets::Assets()
     useWrireframe = false;
     rasterizerDiscard = false;
 
+    renderCubeMap = true;
+    renderShadowMap = true;
+    renderMirrorMap = true;
+    renderWaterMap = true;
+
     showNormals = false;
     showRearView = false;
     showShadowMapView = false;

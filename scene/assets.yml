@@ -27,6 +27,11 @@ assets:
   use_light: true
   use_wireframe: false
 
+  render_cube_map: true
+  render_shadow_map: true
+  render_mirror_map: true
+  render_water_map: true
+
   show_normals: false
   show_rear_view: false
   show_shadow_map_view: false
