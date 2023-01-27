@@ -254,4 +254,7 @@ void NodeRenderer::drawBlended(
 
         ctx.m_batch.draw(ctx, *node, shader);
     }
+
+    // TODO KI if no flush here then render order of blended nodes is incorrect
+    ctx.m_batch.flush(ctx);
 }
