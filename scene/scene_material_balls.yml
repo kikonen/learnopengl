@@ -19,6 +19,7 @@ entities:
       front: [0, 0, -1]
       pos: [200, 0, 190]
       rotation: [0, 180, 0.0]
+      default: true
       enabled: true
     controller:
       type: camera

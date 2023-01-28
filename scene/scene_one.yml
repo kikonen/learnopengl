@@ -9,6 +9,7 @@ entities:
     pos: [0, 30, 0]
     camera:
       rotation: [0, 180, 0.0]
+      default: true
       enabled: true
     enabled: true
     controller:

@@ -16,6 +16,7 @@ entities:
       front: [0, 0, -1]
       pos: [0, 0, -10]
       xrotation: [0, 180, 0.0]
+      default: true
       enabled: true
     controller:
       type: camera

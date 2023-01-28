@@ -14,6 +14,7 @@ entities:
     enabled: true
     controller:
       type: camera
+      default: true
       enabled: true
   - name: Cube map 1
     type: origo

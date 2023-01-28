@@ -18,12 +18,13 @@ entities:
     type: origo
     pos: [0, 0, -5]
     camera:
-      default: true
       pos: [0, 0, 9]
       rotation: [0, 180, 0.0]
+      default: true
       enabled: true
     controller:
       type: camera
+      default: true
       enabled: true
     enabled: true
   - name: Directional light

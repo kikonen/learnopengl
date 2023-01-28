@@ -17,10 +17,9 @@ entities:
       allow_normals: false
     camera:
       zoom: 45
-      up: [0, 1, 0]
-      front: [0, 0, -1]
       pos: [0, 0, -5]
       rotation: [0, 180, 0.0]
+      default: true
       enabled: true
     controller:
       type: camera

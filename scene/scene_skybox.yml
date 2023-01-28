@@ -12,4 +12,5 @@ entities:
     enabled: true
     controller:
       type: camera
+      default: true
       enabled: true

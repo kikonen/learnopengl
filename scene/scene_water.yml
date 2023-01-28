@@ -14,14 +14,12 @@ entities:
     type: origo
     pos: [0, 0, -5]
     camera:
-      zoom: 45
-      up: [0, 1, 0]
-      front: [0, 0, -1]
       pos: [200, 0, 190]
       rotation: [0, 180, 0.0]
       enabled: true
     controller:
       type: camera
+      default: true
       enabled: true
     enabled: true
   - name: Water surface
