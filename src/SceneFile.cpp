@@ -47,6 +47,8 @@
 
 namespace {
     const double DEF_ALPHA = 1.0;
+
+    const std::string QUAD_MESH_NAME{ "quad" };
 }
 
 
@@ -369,9 +371,10 @@ MeshType* SceneFile::createType(
         type->m_entityType = EntityType::quad;
     }
     else if (data.type == EntityType::billboard) {
-        auto mesh = std::make_unique<QuadMesh>();
-        mesh->prepareVolume();
-        type->setMesh(std::move(mesh), true);
+        auto future = m_modelRegistry->getMesh(
+            QUAD_MESH_NAME);
+        auto* mesh = future.get();
+        type->setMesh(mesh);
         type->m_entityType = EntityType::billboard;
     }
     else if (data.type == EntityType::sprite) {
