@@ -544,6 +544,16 @@ entities:
     model: texture_cube_3
     shader: texture
     scale: 1
+    camera:
+      zoom: 80
+      up: [0, 1, 0]
+      front: [0, 0, -1]
+      offset: [0, 0, 0]
+      pos: [0, 1, 0]
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
     enabled: true
     clones:
       - pos: [-5.0, 15.0, -5.0]

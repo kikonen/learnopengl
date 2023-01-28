@@ -29,7 +29,7 @@ Camera::Camera(
     m_up = glm::normalize(up);
     m_right = glm::normalize(glm::cross(m_front, m_up));
 
-    m_rotateMat = glm::mat4(1.0f);
+    m_rotateMatrix = glm::mat4(1.0f);
 
     m_dirty = true;
 }
@@ -45,8 +45,8 @@ void Camera::update(const RenderContext& ctx, Node& node)
     const bool nodeChanged = m_nodeMatrixLevel != node.getMatrixLevel();
     if (!nodeChanged) return;
 
-    //m_viewPosition = node.getModelMatrix() * glm::vec4(m_position, 1.f);
-    m_viewPosition = node.getWorldPosition() + m_position;
+    m_viewPosition = node.getModelMatrix() * glm::vec4(m_position, 1.f);
+    //m_viewPosition = node.getWorldPosition() + m_position;
 
     m_dirty = true;
     m_dirtyView = true;
@@ -220,11 +220,11 @@ void Camera::updateCamera() const noexcept
     m_dirty = false;
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    m_rotateMat = glm::toMat4(glm::quat(glm::radians(m_rotation)));
+    m_rotateMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
 
     // NOTE KI glm::normalize for vec4 *IS* incorrect (4d len...)
-    m_viewFront = glm::normalize(glm::vec3(m_rotateMat * glm::vec4(m_front, 1.f)));
-    m_viewUp = glm::normalize(glm::vec3(m_rotateMat * glm::vec4(m_up, 1.f)));
+    m_viewFront = glm::normalize(glm::vec3(m_rotateMatrix * glm::vec4(m_front, 1.f)));
+    m_viewUp = glm::normalize(glm::vec3(m_rotateMatrix * glm::vec4(m_up, 1.f)));
     m_viewRight = glm::normalize(glm::cross(m_viewFront, m_viewUp));
 
     m_dirtyView = true;

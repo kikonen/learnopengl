@@ -457,7 +457,7 @@ void Scene::drawScene(RenderContext& ctx)
 
 Node* Scene::getActiveCamera() const
 {
-    return m_nodeRegistry->m_activeCamera;
+    return m_nodeRegistry->getActiveCamera();
 }
 
 NodeController* Scene::getActiveCameraController() const

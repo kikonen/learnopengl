@@ -117,7 +117,7 @@ private:
     mutable glm::mat4 m_projectedMatrix;
 
     mutable glm::mat4 m_viewMatrix;
-    mutable glm::mat4 m_rotateMat;
+    mutable glm::mat4 m_rotateMatrix;
 
     mutable Frustum m_frustum;
 

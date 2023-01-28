@@ -122,6 +122,10 @@ public:
         return it != m_parentToChildren.end() ? &it->second : nullptr;
     }
 
+    Node* getActiveCamera() const { return m_activeCamera; }
+    void setActiveCamera(Node* node);
+
+    Node* findDefaultCamera() const;
 
 private:
     void insertNode(NodeVector& list, Node* node);
@@ -156,7 +160,6 @@ public:
     Node* m_root{ nullptr };
     Node* m_dirLight{ nullptr };
 
-    Node* m_activeCamera{ nullptr };
     NodeVector m_cameras;
 
     NodeVector m_pointLights;
@@ -190,6 +193,8 @@ private:
 
     NodeVector m_pendingNodes;
     NodeVector m_newNodes;
+
+    Node* m_activeCamera{ nullptr };
 
     std::vector<NodeListener> m_listeners;
 };

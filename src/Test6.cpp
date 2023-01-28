@@ -177,6 +177,13 @@ void Test6::selectNode(
 
         KI_INFO(fmt::format("selected: {}", objectID));
     }
+
+    if (node) {
+        nodeRegistry.setActiveCamera(node);
+    }
+    else {
+        nodeRegistry.setActiveCamera(nodeRegistry.findDefaultCamera());
+    }
 }
 
 Assets Test6::loadAssets()

@@ -434,3 +434,20 @@ void NodeRegistry::notifyListeners(Node* node, NodeOperation operation)
         listener(node, operation);
     }
 }
+
+void NodeRegistry::setActiveCamera(Node* node)
+{
+    if (!node) return;
+    if (!node->m_camera) return;
+
+    m_activeCamera = node;
+}
+
+Node* NodeRegistry::findDefaultCamera() const
+{
+    const auto& it = std::find_if(
+        m_cameras.begin(),
+        m_cameras.end(),
+        [](Node* node) { return node->m_camera->isDefault(); });
+    return it != m_cameras.end() ? *it : nullptr;
+}
