@@ -233,7 +233,7 @@ void NodeRenderer::drawBlended(
 {
     if (ctx.m_nodeRegistry.blendedNodes.empty()) return;
 
-    const glm::vec3& viewPos = ctx.m_camera.getPos();
+    const glm::vec3& viewPos = ctx.m_camera->getViewPosition();
 
     // TODO KI discards nodes if *same* distance
     std::map<float, Node*> sorted;

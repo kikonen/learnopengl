@@ -74,8 +74,8 @@ public:
 
     void drawScene(RenderContext& ctx);
 
-    Camera* getCamera() const;
-    NodeController* getCameraController() const;
+    Node* getActiveCamera() const;
+    NodeController* getActiveCameraController() const;
 
     void bindComponents(Node& node);
     int getObjectID(const RenderContext& ctx, double posx, double posy);

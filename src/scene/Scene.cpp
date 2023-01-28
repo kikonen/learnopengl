@@ -223,7 +223,7 @@ void Scene::processEvents(RenderContext& ctx)
 void Scene::update(RenderContext& ctx)
 {
     //if (ctx.clock.frameCount > 120) {
-    if (getCamera()) {
+    if (getActiveCamera()) {
         m_commandEngine->update(ctx);
     }
 
@@ -367,15 +367,16 @@ void Scene::drawRear(RenderContext& ctx)
 {
     if (!m_assets.showRearView) return;
 
-    Camera camera(ctx.m_camera.getPos(), ctx.m_camera.getFront(), ctx.m_camera.getUp());
-    camera.setZoom(ctx.m_camera.getZoom());
+    auto* mainCamera = ctx.m_camera;
 
-    glm::vec3 rot = ctx.m_camera.getRotation();
-    //rot.y += 180;
+    Camera camera(mainCamera->getViewPosition(), mainCamera->getFront(), mainCamera->getUp());
+    camera.setZoom(mainCamera->getZoom());
+
+    glm::vec3 rot = mainCamera->getRotation();
     rot.y += 180;
     camera.setRotation(-rot);
 
-    RenderContext mirrorCtx("BACK", &ctx, camera, m_rearBuffer->m_spec.width, m_rearBuffer->m_spec.height);
+    RenderContext mirrorCtx("BACK", &ctx, &camera, m_rearBuffer->m_spec.width, m_rearBuffer->m_spec.height);
     mirrorCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
     mirrorCtx.bindMatricesUBO();
 
@@ -454,16 +455,15 @@ void Scene::drawScene(RenderContext& ctx)
     }
 }
 
-Camera* Scene::getCamera() const
+Node* Scene::getActiveCamera() const
 {
-    return !m_nodeRegistry->m_cameraNodes.empty() ? m_nodeRegistry->m_cameraNodes[0]->m_camera.get() : nullptr;
+    return m_nodeRegistry->m_activeCamera;
 }
 
-NodeController* Scene::getCameraController() const
+NodeController* Scene::getActiveCameraController() const
 {
-    if (m_nodeRegistry->m_cameraNodes.empty()) return nullptr;
-    auto& node = m_nodeRegistry->m_cameraNodes[0];
-    return node->m_controller.get();
+    auto* node = getActiveCamera();
+    return node ? node->m_controller.get() : nullptr;
 }
 
 void Scene::bindComponents(Node& node)

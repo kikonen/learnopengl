@@ -97,6 +97,7 @@ void Node::update(
     if (changed)
         updateModelMatrix(parent);
 
+    if (m_camera) m_camera->update(ctx, *this);
     if (m_light) m_light->update(ctx, *this);
 
     const auto* children = ctx.m_nodeRegistry.getChildren(*this);

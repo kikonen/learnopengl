@@ -65,7 +65,8 @@ NodeRegistry::~NodeRegistry()
         blendedNodes.clear();
         invisibleNodes.clear();
 
-        m_cameraNodes.clear();
+        m_activeCamera = nullptr;
+        m_cameras.clear();
 
         m_dirLight = nullptr;
         m_pointLights.clear();
@@ -324,7 +325,10 @@ void NodeRegistry::bindNode(
         insertNode(vTyped, node);
 
         if (node->m_camera) {
-            m_cameraNodes.push_back(node);
+            m_cameras.push_back(node);
+            if (!m_activeCamera && node->m_camera->isDefault()) {
+                m_activeCamera = node;
+            }
         }
 
         if (node->m_light) {

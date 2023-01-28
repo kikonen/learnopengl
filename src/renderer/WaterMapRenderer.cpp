@@ -126,21 +126,22 @@ void WaterMapRenderer::render(
     // https://prideout.net/clip-planes
     // reflection map
     {
-        glm::vec3 pos = ctx.m_camera.getPos();
+        const auto* mainCamera = ctx.m_camera;
+        glm::vec3 pos = mainCamera->getViewPosition();
         const float dist = pos.y - planePos.y;
         pos.y -= dist * 2;
 
-        glm::vec3 rot = ctx.m_camera.getRotation();
+        glm::vec3 rot = ctx.m_camera->getRotation();
         rot.x = -rot.x;
 
         auto& camera = m_cameras[0];
-        camera.setPos(pos);
-        camera.setFront(ctx.m_camera.getFront());
-        camera.setUp(ctx.m_camera.getUp());
-        camera.setZoom(ctx.m_camera.getZoom());
+        camera.setPosition(pos);
+        camera.setFront(mainCamera->getFront());
+        camera.setUp(mainCamera->getUp());
+        camera.setZoom(mainCamera->getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx("WATER_REFLECT", &ctx, camera, m_reflectionBuffer->m_spec.width, m_reflectionBuffer->m_spec.height);
+        RenderContext localCtx("WATER_REFLECT", &ctx, &camera, m_reflectionBuffer->m_spec.width, m_reflectionBuffer->m_spec.height);
         localCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
@@ -160,17 +161,18 @@ void WaterMapRenderer::render(
 
     // refraction map
     {
-        const auto& rot = ctx.m_camera.getRotation();
-        const auto& pos = ctx.m_camera.getPos();
+        const auto* mainCamera = ctx.m_camera;
+        const auto& rot = mainCamera->getRotation();
+        const auto& pos = mainCamera->getViewPosition();
 
         auto& camera = m_cameras[1];
-        camera.setPos(pos);
-        camera.setFront(ctx.m_camera.getFront());
-        camera.setUp(ctx.m_camera.getUp());
-        camera.setZoom(ctx.m_camera.getZoom());
+        camera.setPosition(pos);
+        camera.setFront(mainCamera->getFront());
+        camera.setUp(mainCamera->getUp());
+        camera.setZoom(mainCamera->getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx("WATER_REFRACT", &ctx, camera, m_refractionBuffer->m_spec.width, m_refractionBuffer->m_spec.height);
+        RenderContext localCtx("WATER_REFRACT", &ctx, &camera, m_refractionBuffer->m_spec.width, m_refractionBuffer->m_spec.height);
         localCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
 
         ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
@@ -256,8 +258,8 @@ void WaterMapRenderer::drawNodes(
 Node* WaterMapRenderer::findClosest(
     const RenderContext& ctx)
 {
-    const glm::vec3& cameraPos = ctx.m_camera.getPos();
-    const glm::vec3& cameraDir = ctx.m_camera.getViewFront();
+    const glm::vec3& cameraPos = ctx.m_camera->getViewPosition();
+    const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;
 

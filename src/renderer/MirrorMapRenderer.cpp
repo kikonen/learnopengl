@@ -119,9 +119,9 @@ void MirrorMapRenderer::render(
     // https://stackoverflow.com/questions/48613493/reflecting-scene-by-plane-mirror-in-opengl
     // reflection map
     {
-        auto& mainCamera = ctx.m_camera;
+        const auto* mainCamera = ctx.m_camera;
         const auto& mirrorSize = closest->getVolume()->getRadius() * 2;
-        const auto& eyePos = mainCamera.getPos();
+        const auto& eyePos = mainCamera->getViewPosition();
 
         const auto& planeNormal = closest->getWorldPlaneNormal();
 
@@ -129,7 +129,7 @@ void MirrorMapRenderer::render(
         const auto dist = glm::length(eyeV);
         auto eyeN = glm::normalize(eyeV);
 
-        const auto dot = glm::dot(planeNormal, mainCamera.getViewFront());
+        const auto dot = glm::dot(planeNormal, mainCamera->getViewFront());
         if (dot > 0) {
             // NOTE KI backside; ignore
             // => should not happen; finding closest already does this!
@@ -144,14 +144,15 @@ void MirrorMapRenderer::render(
         //const float fovAngle = ctx.assets.mirrorFov;
 
         auto& camera = m_cameras[0];
-        camera.setPos(mirrorEyePos);
+        camera.setPosition(mirrorEyePos);
         camera.setFront(reflectFront);
-        camera.setUp(ctx.m_camera.getViewUp());
+        camera.setUp(mainCamera->getViewUp());
         //camera.setZoom(ctx.m_camera.getZoom());
         //camera.setZoom(fovAngle);
 
         RenderContext localCtx("MIRROR",
-            &ctx, camera,
+            &ctx,
+            &camera,
             dist,
             ctx.assets.farPlane,
             m_curr->m_spec.width, m_curr->m_spec.height);
@@ -241,8 +242,8 @@ void MirrorMapRenderer::drawNodes(
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
-    const auto& cameraPos = ctx.m_camera.getPos();
-    const auto& cameraFront = ctx.m_camera.getViewFront();
+    const auto& cameraPos = ctx.m_camera->getViewPosition();
+    const auto& cameraFront = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;
 

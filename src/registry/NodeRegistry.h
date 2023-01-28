@@ -153,9 +153,11 @@ public:
 
     std::unique_ptr<SkyboxRenderer> m_skybox;
 
-    Node* m_root = nullptr;
-    NodeVector m_cameraNodes;
-    Node* m_dirLight = nullptr;
+    Node* m_root{ nullptr };
+    Node* m_dirLight{ nullptr };
+
+    Node* m_activeCamera{ nullptr };
+    NodeVector m_cameras;
 
     NodeVector m_pointLights;
     NodeVector m_spotLights;

@@ -168,10 +168,11 @@ void CubeMapRenderer::render(
 
         const auto& center = centerNode->getWorldPosition();
         auto& camera = m_cameras[face];
-        camera.setPos(center);
+        camera.setPosition(center);
 
         RenderContext ctx("CUBE",
-            &mainCtx, camera,
+            &mainCtx,
+            &camera,
             m_nearPlane,
             m_farPlane,
             m_curr->m_size, m_curr->m_size);
@@ -257,8 +258,8 @@ void CubeMapRenderer::drawNodes(
 
 Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
 {
-    const glm::vec3& cameraPos = ctx.m_camera.getPos();
-    const glm::vec3& cameraDir = ctx.m_camera.getViewFront();
+    const glm::vec3& cameraPos = ctx.m_camera->getViewPosition();
+    const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;
 

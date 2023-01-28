@@ -15,7 +15,9 @@ void CameraController::prepare(
     EntityRegistry& entityRegistry,
     Node& node)
 {
-    m_camera = node.m_camera.get();
+    if (!node.m_camera) return;
+
+    m_node = &node;
 
     m_moveStep = 4.5f;
     m_rotateStep = 15.f;
@@ -28,19 +30,18 @@ bool CameraController::update(
     Node& node,
     Node* parent) noexcept
 {
-    if (!m_camera) return false;
-
-    auto& camera = m_camera;
+    if (!m_node) return false;
+    auto* camera = m_node->m_camera.get();
 
     const auto& viewFront = camera->getViewFront();
     const auto& viewUp = camera->getViewUp();
-    const auto& pos = camera->getPos();// +(front * 0.1f);
+    //const auto& pos = camera->getPos();// +(front * 0.1f);
     const auto& rot = camera->getRotation();
 
-    auto nodePos = pos - viewUp * 2.8f + viewFront * 9.f;
-    nodePos -= parent->getWorldPosition();
+    //auto nodePos = pos - viewUp * 2.8f + viewFront * 9.f;
+    //nodePos -= parent->getWorldPosition();
 
-    node.setPosition(nodePos);
+    //node.setPosition(nodePos);
     node.setRotation({-rot.x, 90 + rot.y, rot.z});
 
     return true;
@@ -48,7 +49,8 @@ bool CameraController::update(
 
 void CameraController::onKey(Input* input, const ki::RenderClock& clock)
 {
-    if (!m_camera) return;
+    if (!m_node) return;
+    auto* camera = m_node->m_camera.get();
 
     const float dt = clock.elapsedSecs;
     float moveSize = m_moveStep;
@@ -58,11 +60,11 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
         rotateSize *= 3;
     }
 
-    const auto& viewFront = m_camera->getViewFront();
-    const auto& viewRight = m_camera->getViewRight();
-    const auto& viewUp = m_camera->getViewUp();
+    const auto& viewFront = camera->getViewFront();
+    const auto& viewRight = camera->getViewRight();
+    const auto& viewUp = camera->getViewUp();
 
-    glm::vec3 pos = m_camera->getPos();
+    glm::vec3 pos = m_node->getPosition();
 
     if (input->isKeyDown(Key::FORWARD)) {
         pos += viewFront * dt * moveSize;
@@ -88,10 +90,10 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
         pos -= viewUp * dt * moveSize;
     }
 
-    m_camera->setPos(pos);
+    m_node->setPosition(pos);
 
     if (true) {
-        glm::vec3 rotation = m_camera->getRotation();
+        glm::vec3 rotation = camera->getRotation();
 
         if (input->isKeyDown(Key::ROTATE_LEFT)) {
             rotation.y  += rotateSize * dt;
@@ -100,26 +102,27 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
             rotation.y -= rotateSize * dt;
         }
 
-        m_camera->setRotation(rotation);
+        camera->setRotation(rotation);
     }
 
 
     if (input->isKeyDown(Key::ZOOM_IN)) {
-        m_camera->adjustZoom(-m_zoomStep * dt);
+        camera->adjustZoom(-m_zoomStep * dt);
     }
     if (input->isKeyDown(Key::ZOOM_OUT)) {
-        m_camera->adjustZoom(m_zoomStep * dt);
+        camera->adjustZoom(m_zoomStep * dt);
     }
 }
 
 void CameraController::onMouseMove(Input* input, double xoffset, double yoffset)
 {
-    if (!m_camera) return;
+    if (!m_node) return;
+    auto* camera = m_node->m_camera.get();
 
     bool changed = false;
     const float MAX_ANGLE = 89.f;
 
-    glm::vec3 rotation = m_camera->getRotation();
+    glm::vec3 rotation = camera->getRotation();
 
     if (xoffset != 0) {
         auto yaw = rotation.y - m_mouseSensitivity * xoffset;
@@ -143,17 +146,14 @@ void CameraController::onMouseMove(Input* input, double xoffset, double yoffset)
     }
 
     if (changed) {
-        m_camera->setRotation(rotation);
+        camera->setRotation(rotation);
     }
 }
 
 void CameraController::onMouseScroll(Input* input, double xoffset, double yoffset)
 {
-    if (!m_camera) return;
-    m_camera->adjustZoom(-yoffset);
-}
+    if (!m_node) return;
+    auto* camera = m_node->m_camera.get();
 
-void CameraController::updateCamera()
-{
-    m_camera->updateCamera();
+    camera->adjustZoom(-yoffset);
 }

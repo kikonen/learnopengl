@@ -7,6 +7,9 @@
 
 #include "ki/GL.h"
 
+class RenderContext;
+class Node;
+
 struct CameraProjection {
 };
 
@@ -16,8 +19,20 @@ struct CameraProjection {
 class Camera final
 {
 public:
-    Camera(const glm::vec3& pos, const glm::vec3 front, const glm::vec3 aUp);
+    Camera(
+        const glm::vec3& pos,
+        const glm::vec3 front,
+        const glm::vec3 up,
+        bool nodeCamera = false);
     ~Camera();
+
+    void update(const RenderContext& ctx, Node& node);
+
+    inline void setDefault(bool value) { m_default = value; }
+    inline bool isDefault() const { return m_default; }
+
+    inline void setEnabled(bool value) { m_enabled = value; }
+    inline bool isEnabled() const { return m_enabled; }
 
     // Setup projection
     // updates projection and projected matrices as needed
@@ -34,55 +49,62 @@ public:
     const int getProjectedLevel() const noexcept { return m_projectedLevel; }
     const int getViewLevel() const noexcept { return m_viewLevel; }
 
-    const glm::vec3& getViewFront() noexcept;
-    const glm::vec3& getViewRight() noexcept;
-    const glm::vec3& getViewUp() noexcept;
+    const glm::vec3& getViewPosition() const noexcept { return m_viewPosition;  }
+    const glm::vec3& getViewFront() const noexcept;
+    const glm::vec3& getViewRight() const noexcept;
+    const glm::vec3& getViewUp() const noexcept;
 
-    const Frustum& getFrustum() noexcept;
+    const Frustum& getFrustum() const noexcept;
 
     void setFront(const glm::vec3& front) noexcept;
 
-    const glm::vec3& getFront() noexcept {
+    const glm::vec3& getFront() const noexcept {
         return m_front;
     }
 
-    const glm::vec3& getRight() noexcept {
+    const glm::vec3& getRight() const noexcept {
         return m_right;
     }
 
     void setUp(const glm::vec3& up) noexcept;
-    const glm::vec3& getUp() noexcept {
+    const glm::vec3& getUp() const noexcept {
         return m_up;
     }
 
-    float getZoom() noexcept {
+    float getZoom() const noexcept {
         return m_zoom;
     }
 
     void setZoom(float zoom) noexcept;
     void adjustZoom(float adjustement) noexcept;
 
-    void setPos(const glm::vec3& pos) noexcept;
-    const glm::vec3& getPos() const noexcept {
-        return m_pos;
+    void setPosition(const glm::vec3& pos) noexcept;
+    const glm::vec3& getPosition() const noexcept {
+        return m_position;
     }
 
     void setRotation(const glm::vec3& rotation) noexcept;
-    const glm::vec3& getRotation() noexcept {
+    const glm::vec3& getRotation() const noexcept {
         return m_rotation;
     }
 
-    void updateCamera() noexcept;
+    void updateCamera() const noexcept;
 
 private:
     void updateZoom(float aZoom) noexcept;
-    void updateFrustum() noexcept;
+    void updateFrustum() const noexcept;
 
 private:
+    bool m_enabled = false;
+    bool m_default = false;
+
+    bool m_nodeCamera = false;
+    int m_nodeMatrixLevel = -1;
+
     float m_zoom = 45.0f;
     float m_zoomProjection = -1.0f;
 
-    glm::vec3 m_pos;
+    glm::vec3 m_position;
     glm::vec3 m_front;
     glm::vec3 m_right;
     glm::vec3 m_up;
@@ -94,18 +116,19 @@ private:
     glm::mat4 m_projectionMatrix;
     mutable glm::mat4 m_projectedMatrix;
 
-    glm::mat4 m_viewMatrix;
-    glm::mat4 m_rotateMat;
+    mutable glm::mat4 m_viewMatrix;
+    mutable glm::mat4 m_rotateMat;
 
-    Frustum m_frustum;
+    mutable Frustum m_frustum;
 
     int m_projectionLevel = -1;
     int m_projectedLevel = -1;
     int m_viewLevel = -1;
 
-    glm::vec3 m_viewFront;
-    glm::vec3 m_viewRight;
-    glm::vec3 m_viewUp;
+    glm::vec3 m_viewPosition{ 0.f };
+    mutable glm::vec3 m_viewFront{ 0.f };
+    mutable glm::vec3 m_viewRight{ 0.f };
+    mutable glm::vec3 m_viewUp{ 0.f };
 
     //m_yaw = rotation.y;
     //m_pitch = rotation.x;
@@ -115,9 +138,9 @@ private:
     //float m_pitch = 0;
     //float m_roll = 0;
 
-    bool m_dirty = true;
-    bool m_dirtyView = true;
-    bool m_dirtyProjected = true;
-    bool m_dirtyFrustum = true;
+    mutable bool m_dirty = true;
+    mutable bool m_dirtyView = true;
+    mutable bool m_dirtyProjected = true;
+    mutable bool m_dirtyFrustum = true;
 };
 

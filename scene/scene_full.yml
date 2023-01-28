@@ -64,8 +64,9 @@ entities:
       up: [0, 1, 0]
       front: [0, 0, -1]
       offset: [0, 0, 0]
-      pos: [200, 0, 200]
+      pos: [0, 0, -9]
       rotation: [0, 180, 0.0]
+      default: true
       enabled: true
     particle_generator:
       - "ParticleDefinition pd;"

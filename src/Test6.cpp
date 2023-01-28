@@ -66,8 +66,8 @@ int Test6::onRender(const ki::RenderClock& clock) {
 
     scene->attachNodes();
 
-    Camera* camera = scene->getCamera();
-    if (!camera) return 0;
+    Node* cameraNode = scene->getActiveCamera();
+    if (!cameraNode) return 0;
 
     int w = window->m_width;
     int h = window->m_height;
@@ -75,7 +75,7 @@ int Test6::onRender(const ki::RenderClock& clock) {
     if (h < 1) h = 1;
 
     RenderContext ctx("TOP", nullptr,
-        m_assets, clock, m_state, scene, *camera, m_backend.get(),
+        m_assets, clock, m_state, scene, cameraNode->m_camera.get(), m_backend.get(),
         m_assets.nearPlane, m_assets.farPlane, w, h);
 
     ctx.m_useWireframe = m_assets.useWrireframe;

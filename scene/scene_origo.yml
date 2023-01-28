@@ -8,7 +8,7 @@ lights: {}
 cube_maps: {}
 root:
   type: origo
-  pos: [200, 0, 200]
+  pos: [0, 0, 0]
 entities:
   - name: Light target
     id: fe3d4648-e0ee-4a84-8864-a8eda9a281f9
@@ -18,10 +18,8 @@ entities:
     type: origo
     pos: [0, 0, -5]
     camera:
-      zoom: 45
-      up: [0, 1, 0]
-      front: [0, 0, -1]
-      pos: [200, 0, 190]
+      default: true
+      pos: [0, 0, 9]
       rotation: [0, 180, 0.0]
       enabled: true
     controller:
@@ -45,6 +43,13 @@ entities:
       ambient: [0.5, 0.5, 0.5, 1.0]
       diffuse: [0.9, 0.9, 0.7, 1.0]
       specular: [0.7, 0.7, 0.6, 1.0]
+      enabled: true
+    camera:
+      zoom: 45
+      up: [0, 1, 0]
+      front: [0, 0, -1]
+      pos: [0, 0, 0]
+      rotation: [0, 180, 0.0]
       enabled: true
     enabled: false
   - name: Silver ball

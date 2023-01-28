@@ -37,14 +37,14 @@ public:
     RenderContext(
         const std::string& name,
         const RenderContext* parent,
-        Camera& camera,
+        Camera* camera,
         int width,
         int height);
 
     RenderContext(
         const std::string& name,
         const RenderContext* parent,
-        Camera& camera,
+        Camera* camera,
         float nearPlane,
         float farPlane,
         int width,
@@ -57,7 +57,7 @@ public:
         const ki::RenderClock& clock,
         GLState& state,
         Scene* scene,
-        Camera& camera,
+        Camera* camera,
         backend::RenderSystem* backend,
         float nearPlane,
         float farPlane,
@@ -114,7 +114,7 @@ public:
     CommandEngine& commandEngine;
     ScriptEngine& scriptEngine;
 
-    Camera& m_camera;
+    Camera* m_camera;
 
     mutable MatricesUBO m_matrices;
     mutable DataUBO m_data;

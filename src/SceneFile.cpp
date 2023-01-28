@@ -619,10 +619,13 @@ std::unique_ptr<Camera> SceneFile::createCamera(
 {
     if (!data.enabled) return std::unique_ptr<Camera>();
 
-    auto pos = entity.position + data.pos;
-    auto camera = std::make_unique<Camera>(pos, data.front, data.up);
+    // NOTE only node cameras in scenefile for now
+    auto camera = std::make_unique<Camera>(data.pos, data.front, data.up, true);
     camera->setRotation(data.rotation);
     camera->setZoom(data.zoom);
+
+    camera->setEnabled(data.enabled);
+    camera->setDefault(data.isDefault);
 
     return camera;
 }
@@ -971,6 +974,9 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
 
         if (k == "enabled") {
             data.enabled = v.as<bool>();
+        }
+        else if (k == "default") {
+            data.isDefault = v.as<bool>();
         }
         else if (k == "zoom") {
             data.zoom = v.as<float>();

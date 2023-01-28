@@ -24,7 +24,7 @@
 RenderContext::RenderContext(
     const std::string& name,
     const RenderContext* parent,
-    Camera& camera,
+    Camera* camera,
     int width,
     int height)
     : RenderContext(
@@ -45,7 +45,7 @@ RenderContext::RenderContext(
 RenderContext::RenderContext(
     const std::string& name,
     const RenderContext* parent,
-    Camera& camera,
+    Camera* camera,
     float nearPlane,
     float farPlane,
     int width,
@@ -72,7 +72,7 @@ RenderContext::RenderContext(
     const ki::RenderClock& clock,
     GLState& state,
     Scene* scene,
-    Camera& camera,
+    Camera* camera,
     backend::RenderSystem* backend,
     float nearPlane,
     float farPlane,
@@ -103,16 +103,16 @@ RenderContext::RenderContext(
         m_useFrustum = m_parent->m_useFrustum;
     }
 
-    m_camera.setupProjection(
+    m_camera->setupProjection(
         m_aspectRatio,
         m_nearPlane,
         m_farPlane);
 
-    m_matrices.view = m_camera.getView();
+    m_matrices.view = m_camera->getView();
     // NOTE KI remove translation from the view matrix for skybox
     m_matrices.viewSkybox = glm::mat4(glm::mat3(m_matrices.view));
-    m_matrices.projection = m_camera.getProjection();
-    m_matrices.projected = m_camera.getProjected();
+    m_matrices.projection = m_camera->getProjection();
+    m_matrices.projected = m_camera->getProjected();
 
     if (false) {
         const auto& view = m_matrices.view;
@@ -124,20 +124,20 @@ RenderContext::RenderContext(
         glm::vec3 up{ view[0][1], view[1][1], view[2][1] };
         glm::vec3 pos{ inverse[3] };
 
-        const auto& cameraUp = m_camera.getViewUp();
-        const auto& cameraRight = m_camera.getViewRight();
-        const auto& cameraPos = m_camera.getPos();
+        const auto& cameraUp = m_camera->getViewUp();
+        const auto& cameraRight = m_camera->getViewRight();
+        const auto& cameraPos = m_camera->getViewPosition();
         int x = 0;
     }
 
     m_data = {
-        m_camera.getPos(),
+        m_camera->getViewPosition(),
         0,
-        m_camera.getFront(),
+        m_camera->getViewFront(),
         0,
-        m_camera.getViewUp(),
+        m_camera->getViewUp(),
         0,
-        m_camera.getViewRight(),
+        m_camera->getViewRight(),
         (float)m_clock.ts,
         m_resolution,
         0,

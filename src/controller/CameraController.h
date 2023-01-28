@@ -25,10 +25,7 @@ public:
     virtual void onMouseScroll(Input* input, double xoffset, double yoffset) override;
 
 private:
-    void updateCamera();
-
-private:
-    Camera* m_camera{ nullptr };
+    Node* m_node{ nullptr };
 
     float m_moveStep = 10.0f;
     float m_rotateStep = 30.f;

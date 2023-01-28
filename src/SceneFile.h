@@ -101,8 +101,8 @@ class SceneFile
         ControllerType type{ ControllerType::none };
 
         //glm::vec3 center{ 0 };
-        float speed{ 0 };
-        float radius{ 0 };
+        float speed{ 0.f };
+        float radius{ 0.f };
 
         int mode{ 0 };
         int count{ 0 };
@@ -111,14 +111,16 @@ class SceneFile
     struct CameraData {
         bool enabled{ false };
 
-        float zoom{ 45 };
+        bool isDefault { false };
 
-        glm::vec3 front{ 0, 0, -1 };
-        glm::vec3 up{ 0, 1, 0 };
+        float zoom{ 45.f };
+
+        glm::vec3 front{ 0.f, 0.f, -1.f };
+        glm::vec3 up{ 0.f, 1.f, 0.f };
 
         // pos relative to owning node
-        glm::vec3 pos{ 0 };
-        glm::vec3 rotation{ 0 };
+        glm::vec3 pos{ 0.f };
+        glm::vec3 rotation{ 0.f };
     };
 
     enum class LightType {

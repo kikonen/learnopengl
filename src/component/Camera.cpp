@@ -5,19 +5,28 @@
 
 #include <glm/ext.hpp>
 
+#include "model/Node.h"
+#include "scene/RenderContext.h"
 
-const float MIN_ZOOM = 1.0f;
+const float MIN_ZOOM = 10.0f;
 // NOTE KI 90 to allow cubemap & shadowmap wide angle
 const float MAX_ZOOM = 90.0f;
 
 
-Camera::Camera(const glm::vec3& aPos, const glm::vec3 aFront, const glm::vec3 aUp)
+Camera::Camera(
+    const glm::vec3& pos,
+    const glm::vec3 front,
+    const glm::vec3 up,
+    bool nodeCamera)
 {
-    m_pos = aPos;
+    m_nodeCamera = nodeCamera;
+
+    m_position = pos;
+    m_viewPosition = pos;
 
     // Default: look to Z direction
-    m_front = glm::normalize(aFront);
-    m_up = glm::normalize(aUp);
+    m_front = glm::normalize(front);
+    m_up = glm::normalize(up);
     m_right = glm::normalize(glm::cross(m_front, m_up));
 
     m_rotateMat = glm::mat4(1.0f);
@@ -27,6 +36,23 @@ Camera::Camera(const glm::vec3& aPos, const glm::vec3 aFront, const glm::vec3 aU
 
 Camera::~Camera()
 {
+}
+
+void Camera::update(const RenderContext& ctx, Node& node)
+{
+    if (!m_enabled) return;
+
+    const bool nodeChanged = m_nodeMatrixLevel != node.getMatrixLevel();
+    if (!nodeChanged) return;
+
+    //m_viewPosition = node.getModelMatrix() * glm::vec4(m_position, 1.f);
+    m_viewPosition = node.getWorldPosition() + m_position;
+
+    m_dirty = true;
+    m_dirtyView = true;
+    m_dirtyFrustum = true;
+
+    m_nodeMatrixLevel = node.getMatrixLevel();
 }
 
 void Camera::setupProjection(
@@ -94,8 +120,8 @@ const glm::mat4& Camera::getView() noexcept
     if (!m_dirtyView) return m_viewMatrix;
 
     m_viewMatrix = glm::lookAt(
-        m_pos,
-        m_pos + m_viewFront,
+        m_viewPosition,
+        m_viewPosition + m_viewFront,
         m_viewUp);
     m_dirtyView = false;
     m_viewLevel++;
@@ -103,25 +129,25 @@ const glm::mat4& Camera::getView() noexcept
     return m_viewMatrix;
 }
 
-const glm::vec3& Camera::getViewFront() noexcept
+const glm::vec3& Camera::getViewFront() const noexcept
 {
     if (m_dirty) updateCamera();
     return m_viewFront;
 }
 
-const glm::vec3& Camera::getViewRight() noexcept
+const glm::vec3& Camera::getViewRight() const noexcept
 {
     if (m_dirty) updateCamera();
     return m_viewRight;
 }
 
-const glm::vec3& Camera::getViewUp() noexcept
+const glm::vec3& Camera::getViewUp() const noexcept
 {
     if (m_dirty) updateCamera();
     return m_viewUp;
 }
 
-const Frustum& Camera::getFrustum() noexcept
+const Frustum& Camera::getFrustum() const noexcept
 {
     updateCamera();
     if (m_dirtyFrustum) updateFrustum();
@@ -154,10 +180,13 @@ void Camera::adjustZoom(float adjustment) noexcept
     updateZoom(m_zoom - adjustment);
 }
 
-void Camera::setPos(const glm::vec3& pos) noexcept
+void Camera::setPosition(const glm::vec3& pos) noexcept
 {
-    if (m_pos != pos) {
-        m_pos = pos;
+    if (m_position != pos) {
+        m_position = pos;
+        if (!m_nodeCamera) {
+            m_viewPosition = pos;
+        }
         m_dirty = true;
     }
 }
@@ -185,7 +214,7 @@ void Camera::updateZoom(float zoom) noexcept
     }
 }
 
-void Camera::updateCamera() noexcept
+void Camera::updateCamera() const noexcept
 {
     if (!m_dirty) return;
     m_dirty = false;
@@ -203,7 +232,7 @@ void Camera::updateCamera() noexcept
     m_dirtyFrustum = true;
 }
 
-void Camera::updateFrustum() noexcept
+void Camera::updateFrustum() const noexcept
 {
     // TODO KI https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
     // https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/entity.h
@@ -213,7 +242,7 @@ void Camera::updateFrustum() noexcept
     // => TODO KI WHAT is failing
     const float fovY = glm::radians(getZoom());
     //const float fovY = glm::radians(90.f);
-    const glm::vec3& pos = getPos();
+    const glm::vec3& pos = getViewPosition();
     const glm::vec3& front = getViewFront();
     const glm::vec3& up = getViewUp();
     const glm::vec3& right = getViewRight();
