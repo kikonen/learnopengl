@@ -137,7 +137,7 @@ entities:
     pos: [0, 0, 0]
     scale: 0.5
     model: light
-    shader: light
+    shader: texture
     render_flags:
       light: true
       no_shadow: true
@@ -175,7 +175,7 @@ entities:
     pos: [-10, 0, 0]
     scale: 0.5
     model: light
-    shader: light
+    shader: texture
     render_flags:
       light: true
       no_shadow: true
@@ -630,7 +630,7 @@ entities:
   - name: Terrain grass
     type: terrain
     material: terrain_grass
-    shader: terrain
+    shader: texture
     pos: [-400, 0, -400]
     scale: [100, 1, 100]
     render_flags:
