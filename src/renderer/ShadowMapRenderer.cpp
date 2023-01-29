@@ -148,38 +148,14 @@ void ShadowMapRenderer::drawNodes(
             if (type.m_flags.noShadow) continue;
 
             for (auto& node : it.second) {
-                batch.draw(ctx, *node, shader);
+                batch->draw(ctx, *node, shader);
             }
         }
     };
 
-    if (false) {
-        //{
-        //    auto shader = m_solidShadowShader;
-
-        //    for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
-        //        renderTypes(all.second, shader);
-        //    }
-        //}
-
-        //{
-        //    auto shader = m_blendedShadowShader;
-
-        //    for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
-        //        renderTypes(all.second, shader);
-        //    }
-
-        //    for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
-        //        renderTypes(all.second, shader);
-        //    }
-        //}
-    }
-    else {
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
-            renderTypes(all.second, m_shadowShader);
-        }
-
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
+        renderTypes(all.second, m_shadowShader);
     }
 
-    ctx.m_batch.flush(ctx);
+    ctx.m_batch->flush(ctx);
 }

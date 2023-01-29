@@ -23,14 +23,13 @@ public:
     void prepare();
 
 public:
-    std::shared_ptr<MaterialRegistry> m_materialRegistry;
-    std::shared_ptr<MeshTypeRegistry> m_typeRegistry;
-    std::shared_ptr<ModelRegistry> m_modelRegistry;
-    std::shared_ptr<NodeRegistry> m_nodeRegistry;
-
-    std::unique_ptr<EntityRegistry> m_entityRegistry;
-
     std::unique_ptr<ShaderRegistry> m_shaderRegistry;
+
+    std::unique_ptr<MaterialRegistry> m_materialRegistry;
+    std::unique_ptr<MeshTypeRegistry> m_typeRegistry;
+    std::unique_ptr<ModelRegistry> m_modelRegistry;
+    std::unique_ptr<NodeRegistry> m_nodeRegistry;
+    std::unique_ptr<EntityRegistry> m_entityRegistry;
 
 private:
     const Assets& m_assets;

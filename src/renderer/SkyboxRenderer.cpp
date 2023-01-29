@@ -140,7 +140,7 @@ void SkyboxRenderer::render(const RenderContext& ctx)
 {
     if (!m_prepared) return;
 
-    ctx.m_batch.flush(ctx);
+    ctx.m_batch->flush(ctx);
 
     ctx.bindDefaults();
     ctx.state.bindVAO(m_vao);

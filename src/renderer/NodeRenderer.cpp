@@ -164,7 +164,7 @@ void NodeRenderer::drawNodes(
                     if (highlight) continue;
                 }
 
-                batch.draw(ctx, *node, shader);
+                batch->draw(ctx, *node, shader);
             }
         }
     };
@@ -190,7 +190,7 @@ void NodeRenderer::drawNodes(
         }
     }
 
-    ctx.m_batch.flush(ctx);
+    ctx.m_batch->flush(ctx);
 }
 
 // draw all selected nodes with stencil
@@ -209,7 +209,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
             for (auto& node : it.second) {
                 if (!(node->isHighlighted())) continue;
 
-                batch.draw(ctx, *node, shader);
+                batch->draw(ctx, *node, shader);
             }
         }
     };
@@ -226,7 +226,7 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
         renderTypes(all.second);
     }
 
-    ctx.m_batch.flush(ctx);
+    ctx.m_batch->flush(ctx);
 }
 
 void NodeRenderer::drawBlended(
@@ -253,9 +253,9 @@ void NodeRenderer::drawBlended(
         auto* node = it->second;
         auto* shader = node->m_type->m_nodeShader;
 
-        ctx.m_batch.draw(ctx, *node, shader);
+        ctx.m_batch->draw(ctx, *node, shader);
     }
 
     // TODO KI if no flush here then render order of blended nodes is incorrect
-    ctx.m_batch.flush(ctx);
+    ctx.m_batch->flush(ctx);
 }

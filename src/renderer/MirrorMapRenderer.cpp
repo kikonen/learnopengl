@@ -215,7 +215,7 @@ void MirrorMapRenderer::drawNodes(
 
                 for (auto& node : it.second) {
                     if (node == current) continue;
-                    batch.draw(ctx, *node, shader);
+                    batch->draw(ctx, *node, shader);
                 }
             }
         };
@@ -238,7 +238,7 @@ void MirrorMapRenderer::drawNodes(
     }
     //ctx.state.disable(GL_CLIP_DISTANCE0);
 
-    ctx.m_batch.flush(ctx);
+    ctx.m_batch->flush(ctx);
 }
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)

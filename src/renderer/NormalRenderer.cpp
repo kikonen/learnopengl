@@ -40,7 +40,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
 
             for (auto& node : it.second) {
                 if (!node->m_allowNormals) continue;
-                batch.draw(ctx, *node, shader);
+                batch->draw(ctx, *node, shader);
             }
         }
     };
@@ -57,5 +57,5 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
         renderTypes(all.second);
     }
 
-    ctx.m_batch.flush(ctx);
+    ctx.m_batch->flush(ctx);
 }

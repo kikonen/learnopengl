@@ -64,26 +64,24 @@ public:
     ~RenderContext();
 
     void bindDefaults() const;
+
     void updateUBOs() const;
     void updateMatricesUBO() const;
     void updateDataUBO() const;
     void updateClipPlanesUBO() const;
     void updateLightsUBO() const;
 
-    void bind(Shader* shader) const;
-
 public:
     const std::string m_name;
+    const Assets& assets;
     const RenderContext* const m_parent;
+    const ki::RenderClock& m_clock;
+
+    Batch* const m_batch;
+    backend::RenderSystem* const m_backend;
 
     GLenum m_depthFunc = GL_LESS;
 
-    backend::RenderSystem* m_backend;
-    Batch& m_batch;
-
-    const Assets& assets;
-
-    const ki::RenderClock& m_clock;
 
     mutable bool m_shadow = false;
 
@@ -96,12 +94,12 @@ public:
 
     const float m_aspectRatio;
 
-    Registry* m_registry;
+    Registry* const m_registry;
 
-    CommandEngine& commandEngine;
-    ScriptEngine& scriptEngine;
+    CommandEngine* const m_commandEngine;
+    ScriptEngine* const m_scriptEngine;
 
-    Camera* m_camera;
+    Camera* const m_camera;
 
     mutable MatricesUBO m_matrices;
     mutable DataUBO m_data;

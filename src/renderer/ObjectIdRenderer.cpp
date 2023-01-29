@@ -164,7 +164,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
                 auto& batch = ctx.m_batch;
 
                 for (auto& node : it.second) {
-                    batch.draw(ctx, *node, shader);
+                    batch->draw(ctx, *node, shader);
                 }
             }
         };
@@ -181,6 +181,6 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
             renderTypes(all.second);
         }
 
-        ctx.m_batch.flush(ctx);
+        ctx.m_batch->flush(ctx);
     }
 }

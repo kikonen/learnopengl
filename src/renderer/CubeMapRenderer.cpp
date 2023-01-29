@@ -232,7 +232,7 @@ void CubeMapRenderer::drawNodes(
                 // => i.e. show garbage from old render round and such
                 if (node == centerNode) continue;
 
-                batch.draw(ctx, *node, shader);
+                batch->draw(ctx, *node, shader);
             }
         }
     };
@@ -254,7 +254,7 @@ void CubeMapRenderer::drawNodes(
         renderTypes(all.second);
     }
 
-    ctx.m_batch.flush(ctx);
+    ctx.m_batch->flush(ctx);
 }
 
 Node* CubeMapRenderer::findCenter(const RenderContext& ctx)

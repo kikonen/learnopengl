@@ -8,10 +8,10 @@ Registry::Registry(
     m_alive(alive)
 {
     m_shaderRegistry = std::make_unique<ShaderRegistry>(assets, m_alive);
-    m_materialRegistry = std::make_shared<MaterialRegistry>(assets, m_alive);
-    m_typeRegistry = std::make_shared<MeshTypeRegistry>(assets, m_alive);
-    m_modelRegistry = std::make_shared<ModelRegistry>(assets, m_alive);
-    m_nodeRegistry = std::make_shared<NodeRegistry>(assets, m_alive);
+    m_materialRegistry = std::make_unique<MaterialRegistry>(assets, m_alive);
+    m_typeRegistry = std::make_unique<MeshTypeRegistry>(assets, m_alive);
+    m_modelRegistry = std::make_unique<ModelRegistry>(assets, m_alive);
+    m_nodeRegistry = std::make_unique<NodeRegistry>(assets, m_alive);
     m_entityRegistry = std::make_unique<EntityRegistry>(assets);
 }
 

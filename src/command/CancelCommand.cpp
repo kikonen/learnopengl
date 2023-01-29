@@ -18,6 +18,6 @@ void CancelCommand::execute(
 
     m_finished = m_elapsedTime >= m_finishTime;
     if (m_finished) {
-        ctx.commandEngine.cancel(m_commandId);
+        ctx.m_commandEngine->cancel(m_commandId);
     }
 }
