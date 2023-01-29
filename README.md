@@ -40,6 +40,15 @@ https://glad.dav1d.de
 - https://forum.unity.com/threads/gpu-frustum-culling-tips.1102627/
 - https://bazhenovc.github.io/blog/post/gpu-driven-occlusion-culling-slides-lif/
 
+## CPU frustum culling
+ - Fast Extraction of Viewing Frustum Planes from the World- View-Projection Matrix
+- http://gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
+- https://www.reddit.com/r/gamedev/comments/5zatbm/frustum_culling_in_opengl_glew_c/
+- https://donw.io/post/frustum-point-extraction/
+- https://iquilezles.org/articles/frustum/
+- https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
+- https://stackoverflow.com/questions/8115352/glmperspective-explanation
+
 ## Compute shader
 - https://computergraphics.stackexchange.com/questions/400/synchronizing-successive-opengl-compute-shader-invocations
 
