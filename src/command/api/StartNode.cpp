@@ -1,4 +1,4 @@
-#include "command/StartNode.h"
+#include "StartNode.h"
 
 #include "scene/RenderContext.h"
 

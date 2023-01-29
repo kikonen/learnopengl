@@ -1,6 +1,6 @@
 #pragma once
 
-#include "command/Command.h"
+#include "Command.h"
 
 class Node;
 

@@ -2,7 +2,7 @@
 
 #include <sol/sol.hpp>
 
-#include "command/NodeCommand.h"
+#include "NodeCommand.h"
 
 class StartNode final : public NodeCommand
 {

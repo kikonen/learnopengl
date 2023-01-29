@@ -3,13 +3,13 @@
 
 #include "command/CommandEngine.h"
 
-#include "command/CancelCommand.h"
-#include "command/WaitCommand.h"
-#include "command/MoveNode.h"
-#include "command/MoveSplineNode.h"
-#include "command/RotateNode.h"
-#include "command/ScaleNode.h"
-#include "command/StartNode.h"
+#include "api/CancelCommand.h"
+#include "api/Wait.h"
+#include "api/MoveNode.h"
+#include "api/MoveSplineNode.h"
+#include "api/RotateNode.h"
+#include "api/ScaleNode.h"
+#include "api/StartNode.h"
 
 
 namespace {
@@ -70,7 +70,7 @@ int CommandAPI::lua_wait(
     float secs) noexcept
 {
     return m_commandEngine.addCommand(
-        std::make_unique<WaitCommand>(
+        std::make_unique<Wait>(
             afterCommandId,
             secs));
 }

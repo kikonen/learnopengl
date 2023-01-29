@@ -2,7 +2,7 @@
 
 #include "model/Node.h"
 
-#include "command/NodeCommand.h"
+#include "api/NodeCommand.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"

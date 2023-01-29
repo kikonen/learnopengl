@@ -1,15 +1,15 @@
-#include "command/WaitCommand.h"
+#include "Wait.h"
 
 #include "command/CommandEngine.h"
 
-WaitCommand::WaitCommand(
+Wait::Wait(
     int afterCommandId,
     float finishTime) noexcept
     : Command(afterCommandId, finishTime)
 {
 }
 
-void WaitCommand::execute(
+void Wait::execute(
     const RenderContext& ctx) noexcept
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;

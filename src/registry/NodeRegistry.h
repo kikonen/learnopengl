@@ -87,6 +87,12 @@ public:
         MeshType* type,
         Node* node) noexcept;
 
+    inline bool containsNode(const int objectID) const noexcept
+    {
+        const auto& it = objectIdToNode.find(objectID);
+        return it != objectIdToNode.end();
+    }
+
     // @return node null if not found
     Node* getNode(const int objectID) const noexcept;
 

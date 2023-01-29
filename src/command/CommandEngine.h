@@ -6,7 +6,7 @@
 
 #include "asset/Assets.h"
 
-#include "command/Command.h"
+#include "api/Command.h"
 
 #include "scene/RenderContext.h"
 

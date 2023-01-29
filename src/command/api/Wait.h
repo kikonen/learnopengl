@@ -1,12 +1,12 @@
 #pragma once
 
-#include "command/Command.h"
+#include "Command.h"
 
 
-class WaitCommand final : public Command
+class Wait final : public Command
 {
 public:
-    WaitCommand(
+    Wait(
         int afterCommandId,
         float finishTime) noexcept;
 

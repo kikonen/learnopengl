@@ -13,11 +13,11 @@ public:
         int afterCommandId,
         float finishTime) noexcept;
 
+    virtual ~Command() {}
+
     virtual bool isNode() noexcept { return false; }
 
     virtual void bind(const RenderContext& ctx) noexcept;
-
-    void wait(const RenderContext& ctx) noexcept;
 
     // NOTE KI set m_finished to stop
     virtual void execute(const RenderContext& ctx) noexcept = 0;

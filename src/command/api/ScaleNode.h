@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "command/NodeCommand.h"
+#include "NodeCommand.h"
 
 class ScaleNode final : public NodeCommand
 {

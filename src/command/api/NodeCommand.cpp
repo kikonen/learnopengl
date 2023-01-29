@@ -1,5 +1,4 @@
-
-#include "command/NodeCommand.h"
+#include "NodeCommand.h"
 
 NodeCommand::NodeCommand(
     int afterCommandId,

@@ -2,17 +2,18 @@
 
 #include <glm/glm.hpp>
 
-#include "command/NodeCommand.h"
+#include "NodeCommand.h"
 
 
-class MoveNode final : public NodeCommand
+class MoveSplineNode final : public NodeCommand
 {
 public:
-    MoveNode(
+    MoveSplineNode(
         int afterCommandId,
         int objectID,
         float finishTime,
         bool relative,
+        const glm::vec3& controlPoint,
         const glm::vec3& position) noexcept;
 
     virtual void bind(
@@ -23,6 +24,7 @@ public:
         const RenderContext& ctx) noexcept override;
 
 private:
+    const glm::vec3 m_controlPoint;
     const glm::vec3 m_end;
     glm::vec3 m_begin;
 };

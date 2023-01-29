@@ -1,4 +1,4 @@
-#include "command/RotateNode.h"
+#include "RotateNode.h"
 
 #include "model/Node.h"
 

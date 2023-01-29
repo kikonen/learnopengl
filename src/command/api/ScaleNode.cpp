@@ -1,4 +1,4 @@
-#include "command/ScaleNode.h"
+#include "ScaleNode.h"
 
 #include "model/Node.h"
 

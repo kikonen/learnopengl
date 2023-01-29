@@ -216,7 +216,7 @@
     <ClCompile Include="src\asset\Sphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\command\Command.cpp">
+    <ClCompile Include="src\command\api\Command.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\command\ScriptEngine.cpp">
@@ -225,31 +225,28 @@
     <ClCompile Include="src\command\CommandEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\command\MoveNode.cpp">
+    <ClCompile Include="src\command\api\MoveNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\command\ScaleNode.cpp">
+    <ClCompile Include="src\command\api\ScaleNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\command\RotateNode.cpp">
+    <ClCompile Include="src\command\api\RotateNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\command\CancelCommand.cpp">
+    <ClCompile Include="src\command\api\CancelCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\command\NodeCommand.cpp">
+    <ClCompile Include="src\command\api\NodeCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\command\MoveSplineNode.cpp">
+    <ClCompile Include="src\command\api\MoveSplineNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\command\CommandAPI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\command\StartNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\command\WaitCommand.cpp">
+    <ClCompile Include="src\command\api\StartNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\controller\VolumeController.cpp">
@@ -334,6 +331,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\util\Util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\registry\Registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\command\CommandVariant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\command\api\Wait.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -563,10 +569,10 @@
     <ClInclude Include="src\ki\uuid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\command\Command.h">
+    <ClInclude Include="src\command\api\Command.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\command\MoveNode.h">
+    <ClInclude Include="src\command\api\MoveNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\command\ScriptEngine.h">
@@ -575,28 +581,28 @@
     <ClInclude Include="src\command\CommandEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\command\RotateNode.h">
+    <ClInclude Include="src\command\api\RotateNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\command\ScaleNode.h">
+    <ClInclude Include="src\command\api\ScaleNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\command\CancelCommand.h">
+    <ClInclude Include="src\command\api\CancelCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\command\NodeCommand.h">
+    <ClInclude Include="src\command\api\NodeCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\command\MoveSplineNode.h">
+    <ClInclude Include="src\command\api\MoveSplineNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\command\CommandAPI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\command\StartNode.h">
+    <ClInclude Include="src\command\api\StartNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\command\WaitCommand.h">
+    <ClInclude Include="src\command\api\Wait.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\VolumeController.h">
@@ -777,6 +783,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\backend\gl\PerformanceCounters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\Registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\CommandVariant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
