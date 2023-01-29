@@ -170,25 +170,29 @@ void Test6::selectNode(
     auto* volumeNode = nodeRegistry.getNode(ctx.assets.volumeUUID);
     auto* node = nodeRegistry.getNode(objectID);
 
-    if (false && node && volumeNode && node->isSelected()) {
+    // deselect
+    if (node && node->isSelected()) {
         node->setSelectionMaterialIndex(-1);
 
-        volumeNode->setPosition({0, 0, 0});
-        volumeNode->setScale(1.f);
+        if (volumeNode) {
+            auto controller = dynamic_cast<VolumeController*>(volumeNode->m_controller.get());
+            if (controller->getTarget() == node->m_objectID) {
+                controller->setTarget(-1);
+            }
+        }
 
         return;
     }
 
-    if (!volumeNode || volumeNode->m_objectID != objectID) {
-        nodeRegistry.selectNodeByObjectId(objectID, inputState.shift);
+    // select
+    nodeRegistry.selectNodeByObjectId(objectID, inputState.shift);
 
-        if (volumeNode) {
-            auto controller = dynamic_cast<VolumeController*>(volumeNode->m_controller.get());
-            controller->setTarget(node ? node->m_objectID : -1);
-        }
-
-        KI_INFO(fmt::format("selected: {}", objectID));
+    if (volumeNode) {
+        auto controller = dynamic_cast<VolumeController*>(volumeNode->m_controller.get());
+        controller->setTarget(node ? node->m_objectID : -1);
     }
+
+    KI_INFO(fmt::format("selected: {}", objectID));
 
     if (node) {
         nodeRegistry.setActiveCamera(node);
