@@ -336,9 +336,6 @@
     <ClCompile Include="src\registry\Registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\command\CommandVariant.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\command\api\Wait.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -786,9 +783,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\Registry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\command\CommandVariant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
