@@ -123,13 +123,11 @@ void ShadowMapRenderer::render(
         // NOTE KI *NO* color in shadowmap
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        ctx.m_useFrustum = false;
         ctx.m_shadow = true;
-        ctx.m_useBlend = false;
+        ctx.m_allowBlend = false;
         drawNodes(ctx);
-        ctx.m_useFrustum = true;
         ctx.m_shadow = false;
-        ctx.m_useBlend = true;
+        ctx.m_allowBlend = true;
 
         m_shadowBuffer->unbind(ctx);
     }

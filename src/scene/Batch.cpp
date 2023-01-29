@@ -140,13 +140,13 @@ void Batch::draw(
     if (type->m_flags.noDisplay) return;
 
     {
-        const bool useBlend = ctx.m_useBlend;
+        const bool allowBlend = ctx.m_allowBlend;
         bool change = true;
         if (!m_batches.empty()) {
             auto& top = m_batches.back();
             change = shader != top.m_shader ||
                 type->m_vao != top.m_vao ||
-                !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions, useBlend);
+                !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions, allowBlend);
         }
 
         if (change) {
@@ -188,7 +188,8 @@ void Batch::flush(
             curr.m_shader,
             curr.m_vao,
             curr.m_drawOptions,
-            ctx.m_useBlend
+            ctx.m_allowBlend,
+            ctx.m_forceWireframe
         };
 
         const auto& drawOptions = *curr.m_drawOptions;

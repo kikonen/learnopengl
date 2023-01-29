@@ -97,10 +97,9 @@ RenderContext::RenderContext(
     m_aspectRatio((float)width / (float)height)
 {
     if (parent) {
-        m_useWireframe = m_parent->m_useWireframe;
+        m_forceWireframe = m_parent->m_forceWireframe;
         m_useLight = m_parent->m_useLight;
-        m_useBlend = m_parent->m_useBlend;
-        m_useFrustum = m_parent->m_useFrustum;
+        m_allowBlend = m_parent->m_allowBlend;
     }
 
     m_camera->setupProjection(
@@ -257,49 +256,4 @@ void RenderContext::bindLightsUBO() const
     }
 
     m_scene->m_renderData->updateLights(lightsUbo);
-}
-
-const FrustumNew& RenderContext::getFrustumNew() const
-{
-    if (assets.frustumEnabled && assets.frustumCPU && m_useFrustum && !m_frustumNewPrepared) {
-        updateFrustumNew(m_frustumNew, m_matrices.view, true);
-        m_frustumNewPrepared = true;
-    }
-    return m_frustumNew;
-}
-
-
-// Fast Extraction of Viewing Frustum Planes from the World- View-Projection Matrix
-// http://gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
-// https://www.reddit.com/r/gamedev/comments/5zatbm/frustum_culling_in_opengl_glew_c/
-// https://donw.io/post/frustum-point-extraction/
-// https://iquilezles.org/articles/frustum/
-// https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
-// https://stackoverflow.com/questions/8115352/glmperspective-explanation
-void RenderContext::updateFrustumNew(
-    FrustumNew& frustum,
-    const glm::mat4& mat,
-    bool normalize) const
-{
-    // Left clipping plane
-    frustum.m_planes[0] = mat[3] + mat[0];
-
-    // Right clipping plane
-    frustum.m_planes[1] = mat[3] - mat[0];
-
-    // Top clipping plane
-    frustum.m_planes[2] = mat[3] - mat[1];
-
-    // Bottom clipping plane
-    frustum.m_planes[3] = mat[3] + mat[1];
-
-    // Near clipping plane
-    frustum.m_planes[4] = mat[3] + mat[2];
-
-    // Far clipping plane
-    frustum.m_planes[5] = mat[3] - mat[2];
-
-    if (normalize) {
-        frustum.normalize();
-    }
 }

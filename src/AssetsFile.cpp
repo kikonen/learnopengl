@@ -93,8 +93,8 @@ void AssetsFile::loadAssets(
         else if (k == "use_light") {
             data.useLight = v.as<bool>();
         }
-        else if (k == "use_wireframe") {
-            data.useWrireframe = v.as<bool>();
+        else if (k == "force_wireframe") {
+            data.forceWireframe = v.as<bool>();
         }
         else if (k == "render_cube_map") {
             data.renderCubeMap = v.as<bool>();

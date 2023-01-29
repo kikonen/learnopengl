@@ -78,7 +78,7 @@ int Test6::onRender(const ki::RenderClock& clock) {
         m_assets, clock, m_state, scene, cameraNode->m_camera.get(), m_backend.get(),
         m_assets.nearPlane, m_assets.farPlane, w, h);
 
-    ctx.m_useWireframe = m_assets.useWrireframe;
+    ctx.m_forceWireframe = m_assets.forceWireframe;
     ctx.m_useLight = m_assets.useLight;
 
     // https://paroj.github.io/gltut/apas04.html

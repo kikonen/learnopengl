@@ -162,7 +162,7 @@ namespace backend {
         if (!cmdRange.empty()) {
             sameDraw = curr.m_shader == sendRange.m_shader &&
                 curr.m_vao == sendRange.m_vao &&
-                curr.m_drawOptions->isSameMultiDraw(*sendRange.m_drawOptions, curr.m_useBlend);
+                curr.m_drawOptions->isSameMultiDraw(*sendRange.m_drawOptions, curr.m_allowBlend);
         }
 
         if (!sameDraw) {
@@ -251,14 +251,14 @@ namespace backend {
             state.enable(GL_CULL_FACE);
         }
 
-        if (drawOptions.wireframe) {
+        if (drawOptions.wireframe || drawRange.m_forceWireframe) {
             state.polygonFrontAndBack(GL_LINE);
         }
         else {
             state.polygonFrontAndBack(GL_FILL);
         }
 
-        if (drawOptions.blend && drawRange.m_useBlend) {
+        if (drawOptions.blend && drawRange.m_allowBlend) {
             state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             state.enable(GL_BLEND);
         }

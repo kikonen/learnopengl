@@ -98,8 +98,6 @@ public:
 
     mutable bool m_shadow = false;
 
-    mutable bool m_useFrustum = true;
-
     GLState& state;
 
     const glm::vec2 m_resolution;
@@ -121,13 +119,10 @@ public:
 
     mutable ClipPlanesUBO m_clipPlanes;
 
-    mutable bool m_useWireframe = false;
     mutable bool m_useLight = true;
-    mutable bool m_useBlend = true;
+    mutable bool m_forceWireframe = false;
+    mutable bool m_allowBlend = true;
 
 private:
     Scene* m_scene{ nullptr };
-
-    mutable FrustumNew m_frustumNew;
-    mutable bool m_frustumNewPrepared = false;
 };

@@ -21,6 +21,6 @@ namespace backend {
         Shader* shader;
         GLVertexArray* vao;
         DrawOptions* drawOptions;
-        bool useBlend;
+        bool allowBlend;
     };
 }

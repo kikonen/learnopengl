@@ -34,8 +34,8 @@ void ViewportRenderer::render(
     ctx.state.disable(GL_DEPTH_TEST);
     ctx.state.enable(GL_BLEND);
 
-    bool useWireframe = ctx.m_useWireframe;
-    ctx.m_useWireframe = false;
+    bool forceWireframe = ctx.m_forceWireframe;
+    ctx.m_forceWireframe = false;
     ctx.bindDefaults();
 
     for (auto& viewport : ctx.m_nodeRegistry.viewports) {
@@ -48,6 +48,6 @@ void ViewportRenderer::render(
     ctx.state.disable(GL_BLEND);
     ctx.state.enable(GL_DEPTH_TEST);
 
-    ctx.m_useWireframe = useWireframe;
+    ctx.m_forceWireframe = forceWireframe;
     ctx.bindDefaults();
 }

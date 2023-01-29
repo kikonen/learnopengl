@@ -54,8 +54,9 @@ public:
     std::string placeholderTexture;
 
     bool useIMGUI;
-    bool useWrireframe;
+
     bool useLight;
+    bool forceWireframe;
 
     bool renderCubeMap;
     bool renderShadowMap;

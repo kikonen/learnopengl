@@ -39,7 +39,10 @@ Assets::Assets()
     placeholderTexture = "textures/tiles_1024.png";
 
     useIMGUI = false;
-    useWrireframe = false;
+
+    useLight = true;
+    forceWireframe = false;
+
     rasterizerDiscard = false;
 
     renderCubeMap = true;
@@ -60,8 +63,6 @@ Assets::Assets()
     showSelection = false;
     showCubeMapCenter = false;
     showTagged = false;
-
-    useLight = true;
 
     debugClearColor = false;
     clearColor = false;

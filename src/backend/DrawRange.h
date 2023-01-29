@@ -13,6 +13,7 @@ namespace backend {
         const Shader* m_shader{ nullptr };
         const GLVertexArray* m_vao{ nullptr };
         const DrawOptions* m_drawOptions{ nullptr };
-        bool m_useBlend = false;
+        bool m_allowBlend = false;
+        bool m_forceWireframe = false;
     };
 }
