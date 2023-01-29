@@ -360,10 +360,17 @@ MeshType* SceneFile::createType(
         type->m_entityType = EntityType::quad;
     }
     else if (data.type == EntityType::billboard) {
-        auto future = m_registry->m_modelRegistry->getMesh(
-            QUAD_MESH_NAME);
-        auto* mesh = future.get();
-        type->setMesh(mesh);
+        if(false) {
+            auto future = m_registry->m_modelRegistry->getMesh(
+                QUAD_MESH_NAME);
+            auto* mesh = future.get();
+            type->setMesh(mesh);
+        }
+        else {
+            auto mesh = std::make_unique<QuadMesh>();
+            mesh->prepareVolume();
+            type->setMesh(std::move(mesh), true);
+        }
         type->m_entityType = EntityType::billboard;
     }
     else if (data.type == EntityType::sprite) {

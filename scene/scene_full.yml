@@ -239,7 +239,7 @@ entities:
       z_step: 3
     enabled: true
   - name: Window 1
-    model: quad
+    type: quad
     material: window_1
     shader: texture
     pos: [5.0, 10.0, -5.0]
@@ -250,7 +250,7 @@ entities:
       render_back: true
     enabled: true
   - name: Window 2
-    model: quad
+    type: quad
     material: window_2
     shader: texture
     pos: [7.0, 10.0, -8.0]
@@ -261,7 +261,7 @@ entities:
       render_back: true
     enabled: true
   - name: Stained windows
-    model: quad
+    type: quad
     material: window_2
     shader: texture
     pos: [-10.0, 15.0, 10.0]
@@ -281,7 +281,7 @@ entities:
       cube_map: true
     enabled: true
   - name: Brick wall
-    model: quad
+    type: quad
     material: brickwall
     shader: texture
     pos: [-5.0, 8.5, 14.0]
@@ -292,7 +292,7 @@ entities:
       x_step: 4
     enabled: true
   - name: Wood wall
-    model: quad
+    type: quad
     material: woodwall
     shader: texture
     pos: [-3.0, 8.5, 14.0]
@@ -303,7 +303,7 @@ entities:
       x_step: 4
     enabled: true
   - name: Big mirror 1
-    model: quad
+    type: quad
     material: mirror
     shader: mirror
     pos: [-55.0, 20.0, 10.0]
@@ -321,7 +321,7 @@ entities:
       wid = cmd:wait(0, 5)
       cmd:rotate(id, { after=wid, time=3600, relative=true }, { 0.0, -7200.0, 0.0 })
   - name: Big mirror 2
-    model: quad
+    type: quad
     material: mirror
     shader: mirror
     pos: [55.0, 20.0, 10.0]
@@ -592,7 +592,7 @@ entities:
     selected: false
     enabled: true
   - name: Water bottom
-    model: quad
+    type: quad
     material: water_bottom
     shader: texture
     pos: [0.0, 3.2, -10.0]
@@ -695,7 +695,7 @@ entities:
       enabled: true
     enabled: true
   - name: Scale 1
-    model: quad
+    type: quad
     material: brickwall
     shader: texture
     pos: [15, 6.5, 20.0]
@@ -703,7 +703,7 @@ entities:
       render_back: true
     enabled: false
   - name: Scale 2
-    model: quad
+    type: quad
     material: brickwall
     shader: texture
     scale: 2
@@ -712,7 +712,7 @@ entities:
       render_back: true
     enabled: false
   - name: Scale 3
-    model: quad
+    type: quad
     material: brickwall
     shader: texture
     scale: 3
@@ -779,7 +779,7 @@ entities:
       cmd:start(-1, id, main)
   - name: Skeleton single
     xid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
-    model: quad
+    type: quad
     shader: texture
     pos: [15, 6.5, 20.0]
     material: skeleton
@@ -790,7 +790,7 @@ entities:
     enabled: false
   - name: Giant wooden box
     id: e264f27f-d949-4504-b862-583213484d7c
-    model: quad
+    type: quad
     xmodel: woodwall
     material: giant_woodbox
     shader: texture
