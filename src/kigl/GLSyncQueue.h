@@ -85,7 +85,7 @@ public:
         auto& range = m_ranges[m_current];
 
         if constexpr (useFence)
-            if (m_current == 0) range.waitFence();
+            range.waitFence();
 
         T* ptr = (T*)(m_data + range.nextOffset());
 
@@ -105,7 +105,7 @@ public:
         auto& range = m_ranges[m_current];
 
         if constexpr (useFence)
-            if (m_current == 0) range.waitFence();
+            range.waitFence();
 
         //m_data[range.index(idx)] = entry;
 
@@ -172,10 +172,11 @@ public:
         if (clear) {
             m_ranges[m_current].clear();
         }
-        m_current = (m_current + 1) % m_ranges.size();
 
         if constexpr (useFence)
-            if (m_current == 0) m_ranges[0].setFence();
+            m_ranges[m_current].setFence();
+
+        m_current = (m_current + 1) % m_ranges.size();
 
         return m_ranges[m_current];
     }

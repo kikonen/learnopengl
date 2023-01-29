@@ -2,7 +2,7 @@ assets:
   log_file: log/development.log
   scene_file: scene/scene_full.yml
 
-  glfw_swap_interval: 3
+  glfw_swap_interval: 2
   gl_debug: true
   gl_no_error: false
 
@@ -74,7 +74,7 @@ assets:
   terrain_tile_size: 400
 
   batch_size: 4096
-  batch_buffers: 100
+  batch_buffers: 30
 
   near_plane: 0.1
   far_plane: 1000.0
