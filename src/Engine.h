@@ -16,6 +16,13 @@
 class Scene;
 class AsyncLoader;
 
+struct InputState {
+    int ctrl = 0;
+    int shift = 0;
+    int mouseLeft = 0;
+    int mouseRight = 0;
+};
+
 /**
  * Base engine
  */
@@ -56,6 +63,8 @@ protected:
     std::string m_title;
 
     GLState m_state;
+
+    InputState m_lastInputState;
 
     std::unique_ptr<backend::RenderSystem> m_backend;
 };

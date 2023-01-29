@@ -106,12 +106,24 @@ int Test6::onRender(const ki::RenderClock& clock) {
     scene->draw(ctx);
     scene->unbind(ctx);
 
-    bool isCtrl = window->m_input->isModifierDown(Modifier::CONTROL);
-    bool isShift = window->m_input->isModifierDown(Modifier::SHIFT);
-    int state = glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
+    {
+        InputState state{
+            window->m_input->isModifierDown(Modifier::CONTROL),
+            window->m_input->isModifierDown(Modifier::SHIFT),
+            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT),
+            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT),
+        };
 
-    if ((isCtrl && state == GLFW_PRESS) && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
-        selectNode(ctx, scene, isShift, isCtrl);
+        if (state.mouseLeft != m_lastInputState.mouseLeft &&
+            state.mouseLeft == GLFW_PRESS &&
+            state.ctrl)
+        {
+            if (state.ctrl && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+                selectNode(ctx, scene, state, m_lastInputState);
+            }
+        }
+
+        m_lastInputState = state;
     }
 
     if (m_assets.useIMGUI) {
@@ -149,8 +161,8 @@ void Test6::onDestroy()
 void Test6::selectNode(
     const RenderContext& ctx,
     Scene* scene,
-    bool isShift,
-    bool isCtrl)
+    const InputState& inputState,
+    const InputState& lastInputState)
 {
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
     int objectID = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
@@ -168,7 +180,7 @@ void Test6::selectNode(
     }
 
     if (!volumeNode || volumeNode->m_objectID != objectID) {
-        nodeRegistry.selectNodeByObjectId(objectID, isShift);
+        nodeRegistry.selectNodeByObjectId(objectID, inputState.shift);
 
         if (volumeNode) {
             auto controller = dynamic_cast<VolumeController*>(volumeNode->m_controller.get());

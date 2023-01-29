@@ -26,8 +26,8 @@ private:
     void selectNode(
         const RenderContext& ctx,
         Scene* scene,
-        bool isShift,
-        bool isCtrl);
+        const InputState& inputState,
+        const InputState& lastInputState);
 
     Assets loadAssets();
     std::shared_ptr<Scene> loadScene();
