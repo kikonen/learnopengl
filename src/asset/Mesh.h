@@ -47,14 +47,6 @@ public:
         GLVertexArray& vao,
         backend::DrawOptions& drawOptions) = 0;
 
-    void setVolume(std::unique_ptr<Volume> volume) {
-        m_volume = std::move(volume);
-    }
-
-    const Volume* getVolume() const {
-        return m_volume.get();
-    }
-
     void setAABB(const AABB& aabb) {
         m_aabb = aabb;
     }

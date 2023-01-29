@@ -75,10 +75,6 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain()
 
     const auto& aabb = TERRAIN_AABB;
     mesh->setAABB(aabb);
-    mesh->setVolume(std::make_unique<Sphere>(
-        (aabb.m_max + aabb.m_min) * 0.5f,
-        // NOTE KI *radius* not diam needed
-        glm::length(aabb.m_min - aabb.m_max) * 0.5f));
 
     return mesh;
 }

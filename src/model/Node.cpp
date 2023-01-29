@@ -274,11 +274,6 @@ bool Node::inFrustum(const RenderContext& ctx, float radiusFlex) const
     return hit;
 }
 
-void Node::setVolume(std::unique_ptr<Volume> volume) noexcept
-{
-    m_volume = std::move(volume);
-}
-
 void Node::setAABB(const AABB& aabb)
 {
     m_aabb = aabb;

@@ -3,8 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "asset/Frustum.h"
-
 #include "ki/GL.h"
 
 class RenderContext;
@@ -54,8 +52,6 @@ public:
     const glm::vec3& getViewRight() const noexcept;
     const glm::vec3& getViewUp() const noexcept;
 
-    const Frustum& getFrustum() const noexcept;
-
     void setFront(const glm::vec3& front) noexcept;
 
     const glm::vec3& getFront() const noexcept {
@@ -92,7 +88,6 @@ public:
 
 private:
     void updateZoom(float aZoom) noexcept;
-    void updateFrustum() const noexcept;
 
 private:
     bool m_enabled = false;
@@ -119,8 +114,6 @@ private:
     mutable glm::mat4 m_viewMatrix;
     mutable glm::mat4 m_rotateMatrix;
 
-    mutable Frustum m_frustum;
-
     int m_projectionLevel = -1;
     int m_projectedLevel = -1;
     int m_viewLevel = -1;
@@ -141,6 +134,5 @@ private:
     mutable bool m_dirty = true;
     mutable bool m_dirtyView = true;
     mutable bool m_dirtyProjected = true;
-    mutable bool m_dirtyFrustum = true;
 };
 

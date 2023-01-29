@@ -5,8 +5,6 @@
 
 #include "asset/AABB.h"
 
-#include "asset/Sphere.h"
-
 #include "registry/MeshType.h"
 
 
@@ -91,12 +89,6 @@ public:
 
     void updateModelMatrix(Node* parent) noexcept;
 
-    const Volume* getVolume() const noexcept {
-        return m_volume.get();
-    }
-
-    void setVolume(std::unique_ptr<Volume> volume) noexcept;
-
     void setAABB(const AABB& aabb);
 
     const AABB& getAABB() const {
@@ -168,7 +160,6 @@ protected:
 
     int m_entityIndex = -1;
 
-    std::unique_ptr<Volume> m_volume;
     AABB m_aabb;
 
 private:
