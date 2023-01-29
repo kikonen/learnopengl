@@ -200,6 +200,7 @@
     <ClCompile Include="src\registry\EntityReegistry.cpp" />
     <ClCompile Include="src\registry\ModelRegistry.cpp" />
     <ClCompile Include="src\registry\MeshTypeRegistry.cpp" />
+    <ClCompile Include="src\registry\Registry.cpp" />
     <ClCompile Include="src\registry\ShaderRegistry.cpp" />
     <ClCompile Include="src\asset\FrustumNew.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
@@ -331,6 +332,7 @@
     <ClInclude Include="src\ki\OpenGLInfo.h" />
     <ClInclude Include="src\ki\RenderClock.h" />
     <ClInclude Include="src\registry\EntityType.h" />
+    <ClInclude Include="src\registry\Registry.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />
     <ClInclude Include="src\registry\MaterialRegistry.h" />
     <ClInclude Include="src\asset\OBB.h" />

@@ -7,7 +7,7 @@ class Batch;
 
 class QuadVAO {
 public:
-    GLVertexArray* prepare(Batch& batch);
+    GLVertexArray* prepare();
 
 private:
     void prepareVAO(

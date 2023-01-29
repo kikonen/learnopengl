@@ -5,6 +5,7 @@
 #include "InstancedController.h"
 
 
+class Registry;
 
 class AsteroidBeltController final : public InstancedController
 {
@@ -23,7 +24,7 @@ public:
 protected:
     void prepareInstanced(
         const Assets& assets,
-        EntityRegistry& entityRegistry,
+        Registry* registry,
         InstancedNode& node) override;
 
     bool updateInstanced(
@@ -40,12 +41,12 @@ private:
 
     void createAsteroids(
         const Assets& assets,
-        EntityRegistry& entityRegistry,
+        Registry* registry,
         InstancedNode& node);
 
     void initAsteroids(
         const Assets& assets,
-        EntityRegistry& entityRegistry,
+        Registry* registry,
         InstancedNode& node,
         std::vector<Asteroid>& asteroids);
 

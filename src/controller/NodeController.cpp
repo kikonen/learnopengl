@@ -8,7 +8,7 @@ NodeController::NodeController()
 
 void NodeController::prepare(
     const Assets& assets,
-    EntityRegistry& entityRegistry,
+    Registry* registry,
     Node& node)
 {
     if (m_prepared) return;

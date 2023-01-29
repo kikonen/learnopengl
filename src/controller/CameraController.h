@@ -12,7 +12,7 @@ public:
 
     virtual void prepare(
         const Assets& assets,
-        EntityRegistry& entityRegistry,
+        Registry* registry,
         Node& node) override;
 
     bool update(

@@ -12,8 +12,7 @@ public:
 
     void prepare(
         const Assets& assets,
-        ShaderRegistry& shaders,
-        MaterialRegistry& materialRegistry) override;
+        Registry* registry) override;
 
     void update(const RenderContext& ctx) override;
 

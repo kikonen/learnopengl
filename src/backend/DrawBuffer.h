@@ -16,7 +16,7 @@
 
 class Assets;
 class Shader;
-class ShaderRegistry;
+class Registry;
 
 namespace backend {
     using GLCommandQueue = GLSyncQueue<backend::gl::DrawIndirectCommand, true, true>;
@@ -27,7 +27,7 @@ namespace backend {
 
         void prepare(
             const Assets& assets,
-            ShaderRegistry& shaders,
+            Registry* registry,
             int batchCount,
             int rangeCount);
 

@@ -7,6 +7,8 @@
 
 #include "model/Node.h"
 #include "scene/RenderContext.h"
+
+#include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
 
@@ -25,7 +27,7 @@ void Light::update(const RenderContext& ctx, Node& node) noexcept
     }
 
     if (m_spot || m_directional) {
-        const Node* targetNode = ctx.m_nodeRegistry.getNode(m_targetId);
+        const Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetId);
         if (!targetNode) return;
 
         const bool targetChanged = m_targetMatrixLevel != targetNode->getMatrixLevel();

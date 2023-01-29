@@ -12,7 +12,6 @@
 #include "asset/Assets.h"
 #include "asset/ModelVAO.h"
 
-class Batch;
 struct Material;
 class ModelMesh;
 class ModelMeshVBO;
@@ -25,7 +24,7 @@ public:
 
     ~ModelRegistry();
 
-    void prepare(Batch& batch);
+    void prepare();
 
     // @return VAO for mesh
     GLVertexArray* registerMeshVBO(ModelMeshVBO& meshVBO);
@@ -51,6 +50,5 @@ private:
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;
 
-    ModelVAO m_singleVAO{ true };
-    ModelVAO m_multiVAO{ false };
+    ModelVAO m_vao{ true };
 };

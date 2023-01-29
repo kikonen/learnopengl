@@ -11,6 +11,7 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+#include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/EntitySSBO.h"
 
@@ -25,10 +26,10 @@ AsteroidBeltController::AsteroidBeltController(int asteroidCount)
 
 void AsteroidBeltController::prepareInstanced(
     const Assets& assets,
-    EntityRegistry& entityRegistry,
+    Registry* registry,
     InstancedNode& node)
 {
-    createAsteroids(assets, entityRegistry, node);
+    createAsteroids(assets, registry, node);
 }
 
 bool AsteroidBeltController::updateInstanced(
@@ -54,7 +55,7 @@ void AsteroidBeltController::updateAsteroids(
     Node* parent,
     bool rotate)
 {
-    auto& entityRegistry = ctx.m_entityRegistry;
+    auto* registry = ctx.m_registry;
 
     if (rotate) {
         rotateAsteroids(ctx, node, m_asteroids);
@@ -62,7 +63,7 @@ void AsteroidBeltController::updateAsteroids(
 
     for (const auto& asteroid : m_asteroids)
     {
-        auto* entity = entityRegistry.get(asteroid.m_entityIndex);
+        auto* entity = registry->m_entityRegistry->get(asteroid.m_entityIndex);
 
         if (rotate) {
             glm::mat4 modelMat{ 1.f };
@@ -81,7 +82,7 @@ void AsteroidBeltController::updateAsteroids(
         entity->m_materialIndex = node.getMaterialIndex();
         entity->m_highlightIndex = node.getHighlightIndex(ctx);
 
-        entityRegistry.markDirty(asteroid.m_entityIndex);
+        registry->m_entityRegistry->markDirty(asteroid.m_entityIndex);
     }
 
     node.setEntityRange(m_firstEntityIndex, m_asteroidCount);
@@ -89,12 +90,12 @@ void AsteroidBeltController::updateAsteroids(
 
 void AsteroidBeltController::createAsteroids(
     const Assets& assets,
-    EntityRegistry& entityRegistry,
+    Registry* registry,
     InstancedNode& node)
 {
     auto& type = node.m_type;
 
-    m_firstEntityIndex = entityRegistry.addRange(m_asteroidCount);
+    m_firstEntityIndex = registry->m_entityRegistry->addRange(m_asteroidCount);
 
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
@@ -102,13 +103,13 @@ void AsteroidBeltController::createAsteroids(
         asteroid.m_entityIndex = m_firstEntityIndex + i;
     }
 
-    initAsteroids(assets, entityRegistry, node, m_asteroids);
+    initAsteroids(assets, registry, node, m_asteroids);
     calculateVolume(node, m_asteroids);
 }
 
 void AsteroidBeltController::initAsteroids(
     const Assets& assets,
-    EntityRegistry& entityRegistry,
+    Registry* registry,
     InstancedNode& node,
     std::vector<Asteroid>& asteroids)
 {
@@ -159,7 +160,7 @@ void AsteroidBeltController::initAsteroids(
             asteroid.m_speed = speed;
         }
 
-        auto* entity = entityRegistry.get(asteroid.m_entityIndex);
+        auto* entity = registry->m_entityRegistry->get(asteroid.m_entityIndex);
         entity->setObjectID(node.m_objectID);
         entity->m_materialIndex = node.getMaterialIndex();
     }
@@ -205,11 +206,6 @@ void AsteroidBeltController::calculateVolume(
         maxAABB.y = std::max(maxAABB.y, pos.y);
         maxAABB.z = std::max(maxAABB.z, pos.z);
     }
-
-    auto volume = std::make_unique<Sphere>(
-        (maxAABB + minAABB) * 0.5f,
-        glm::length(minAABB - maxAABB));
-    node.setVolume(std::move(volume));
 
     AABB aabb{ minAABB, maxAABB, false };
     node.setAABB(aabb);

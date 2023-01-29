@@ -6,8 +6,7 @@
 
 class Assets;
 class RenderContext;
-class Batch;
-class ShaderRegistry;
+class Registry;
 class MeshType;
 class Shader;
 
@@ -16,7 +15,7 @@ class ParticleSystem final
 public:
     ParticleSystem();
 
-    void prepare(const Assets& assets, ShaderRegistry& shaders);
+    void prepare(const Assets& assets, Registry* registry);
     void update(const RenderContext& ctx);
     void bind(const RenderContext& ctx);
     void render(const RenderContext& ctx);

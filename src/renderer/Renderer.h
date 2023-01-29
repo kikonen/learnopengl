@@ -2,10 +2,11 @@
 
 #include "asset/Assets.h"
 
-#include "registry/ShaderRegistry.h"
-#include "registry/NodeRegistry.h"
 
+class Shader;
+class Registry;
 class RenderContext;
+class Node;
 
 class Renderer
 {
@@ -15,14 +16,9 @@ public:
 
     virtual void prepare(
         const Assets& assets,
-        ShaderRegistry& shaders,
-        MaterialRegistry& materialRegistry);
+        Registry* registry);
 
     virtual void update(const RenderContext& ctx);
-
-    //virtual void render(
-    //    const RenderContext& ctx,
-    //    SkyboxRenderer* skybox) = 0;
 
     bool needRender(const RenderContext& ctx);
 
@@ -31,6 +27,8 @@ protected:
 
 protected:
     bool m_prepared = false;
+
+    Registry* m_registry{ nullptr };
 
     int m_renderFrameStart = 0;
     int m_renderFrameStep = 0;

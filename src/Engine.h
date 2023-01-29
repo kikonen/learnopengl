@@ -5,7 +5,7 @@
 #include "kigl/GLState.h"
 
 #include "asset/Assets.h"
-#include "registry/ShaderRegistry.h"
+#include "registry/Registry.h"
 
 #include "backend/RenderSystem.h"
 
@@ -42,7 +42,8 @@ public:
     // NOTE KI MUST destroy async loaded *BEFORE* other registries
     // => alloes change for graceful exit for loaders
     std::shared_ptr<AsyncLoader> m_asyncLoader;
-    std::shared_ptr<ShaderRegistry> m_shaderRegistry;
+
+    std::shared_ptr<Registry> m_registry;
 
     std::shared_ptr<Scene> m_currentScene;
 

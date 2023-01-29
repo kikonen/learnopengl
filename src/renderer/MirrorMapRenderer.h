@@ -2,6 +2,12 @@
 
 #include "Renderer.h"
 
+#include "asset/Material.h"
+
+#include "component/Camera.h"
+
+#include "model/Viewport.h"
+
 class Node;
 class SkyboxRenderer;
 class TextureBuffer;
@@ -15,8 +21,7 @@ public:
 
     virtual void prepare(
         const Assets& assets,
-        ShaderRegistry& shaders,
-        MaterialRegistry& materialRegistry) override;
+        Registry* registry) override;
 
     void bindTexture(const RenderContext& ctx);
 

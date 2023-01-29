@@ -28,6 +28,7 @@
 #include "controller/NodePathController.h"
 #include "controller/VolumeController.h"
 
+#include "registry/Registry.h"
 #include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/NodeRegistry.h"
@@ -70,17 +71,9 @@ SceneFile::~SceneFile()
 }
 
 void SceneFile::load(
-    std::shared_ptr<ShaderRegistry> shaderRegistry,
-    std::shared_ptr<NodeRegistry> nodeRegistry,
-    std::shared_ptr<MeshTypeRegistry> typeRegistry,
-    std::shared_ptr<MaterialRegistry> materialRegistry,
-    std::shared_ptr<ModelRegistry> modelRegistry)
+    std::shared_ptr<Registry> registry)
 {
-    m_shaderRegistry = shaderRegistry;
-    m_nodeRegistry = nodeRegistry;
-    m_typeRegistry = typeRegistry;
-    m_materialRegistry = materialRegistry;
-    m_modelRegistry = modelRegistry;
+    m_registry = registry;
 
     std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);
@@ -118,7 +111,7 @@ void SceneFile::attachSkybox(
     if (!data.valid()) return;
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
-    m_nodeRegistry->m_skybox = std::move(skybox);
+    m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
 }
 
 void SceneFile::attachVolume(
@@ -126,9 +119,9 @@ void SceneFile::attachVolume(
 {
     if (!m_assets.showVolume) return;
 
-    auto type = m_typeRegistry->getType("<volume>");
+    auto type = m_registry->m_typeRegistry->getType("<volume>");
 
-    auto future = m_modelRegistry->getMesh("ball_volume");
+    auto future = m_registry->m_modelRegistry->getMesh("ball_volume");
     auto* mesh = future.get();
 
     type->setMesh(mesh);
@@ -156,7 +149,7 @@ void SceneFile::attachVolume(
     flags.noDisplay = true;
     flags.noSelect = true;
 
-    type->m_nodeShader = m_shaderRegistry->getShader(TEX_VOLUME);
+    type->m_nodeShader = m_registry->m_shaderRegistry->getShader(TEX_VOLUME);
 
     auto node = new Node(type);
     node->m_id = m_assets.volumeUUID;
@@ -164,14 +157,12 @@ void SceneFile::attachVolume(
 
     // NOTE KI m_radius = 1.73205078
     mesh->prepareVolume();
-    const auto* volume = mesh->getVolume();
-    node->setVolume(volume->clone());
 
     node->setAABB(mesh->getAABB());
 
     node->m_controller = std::make_unique<VolumeController>();
 
-    m_nodeRegistry->addNode(type, node);
+    m_registry->m_nodeRegistry->addNode(type, node);
 }
 
 void SceneFile::attachCubeMapCenter(
@@ -179,8 +170,8 @@ void SceneFile::attachCubeMapCenter(
 {
     if (!m_assets.showCubeMapCenter) return;
 
-    auto type = m_typeRegistry->getType("<cube_map>");
-    auto future = m_modelRegistry->getMesh("ball_volume");
+    auto type = m_registry->m_typeRegistry->getType("<cube_map>");
+    auto future = m_registry->m_modelRegistry->getMesh("ball_volume");
     auto& mesh = future.get();
 
     type->setMesh(mesh);
@@ -209,7 +200,7 @@ void SceneFile::attachCubeMapCenter(
     flags.noDisplay = true;
     flags.noSelect = true;
 
-    type->m_nodeShader = m_shaderRegistry->getShader(TEX_VOLUME);
+    type->m_nodeShader = m_registry->m_shaderRegistry->getShader(TEX_VOLUME);
 
     auto node = new Node(type);
     node->m_id = m_assets.cubeMapUUID;
@@ -220,12 +211,10 @@ void SceneFile::attachCubeMapCenter(
 
     // NOTE KI m_radius = 1.73205078
     mesh->prepareVolume();
-    auto volume = mesh->getVolume();
-    node->setVolume(volume->clone());
 
     node->setAABB(mesh->getAABB());
 
-    m_nodeRegistry->addNode(type, node);
+    m_registry->m_nodeRegistry->addNode(type, node);
 }
 
 void SceneFile::attachEntity(
@@ -266,7 +255,7 @@ MeshType* SceneFile::attachEntityClone(
         return type;
     }
 
-    auto& nodeRegistry = *m_nodeRegistry;
+    auto& nodeRegistry = *m_registry->m_nodeRegistry;
 
     if (!type) {
         type = createType(
@@ -316,7 +305,7 @@ MeshType* SceneFile::createType(
     const auto& repeat = data.repeat;
     const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
 
-    auto type = m_typeRegistry->getType(data.name);
+    auto type = m_registry->m_typeRegistry->getType(data.name);
     assignFlags(data, type);
 
     auto& materialVBO = type->m_materialVBO;
@@ -353,7 +342,7 @@ MeshType* SceneFile::createType(
     }
 
     if (data.type == EntityType::model) {
-        auto future = m_modelRegistry->getMesh(
+        auto future = m_registry->m_modelRegistry->getMesh(
             data.meshName,
             data.meshPath);
         auto* mesh = future.get();
@@ -371,7 +360,7 @@ MeshType* SceneFile::createType(
         type->m_entityType = EntityType::quad;
     }
     else if (data.type == EntityType::billboard) {
-        auto future = m_modelRegistry->getMesh(
+        auto future = m_registry->m_modelRegistry->getMesh(
             QUAD_MESH_NAME);
         auto* mesh = future.get();
         type->setMesh(mesh);
@@ -430,7 +419,7 @@ MeshType* SceneFile::createType(
         }
 
         if (!data.shaderName.empty()) {
-            type->m_nodeShader = m_shaderRegistry->getShader(
+            type->m_nodeShader = m_registry->m_shaderRegistry->getShader(
                 data.shaderName,
                 false,
                 data.geometryType,
@@ -483,8 +472,6 @@ Node* SceneFile::createNode(
 
     auto mesh = type->getMesh();
     if (mesh) {
-        auto volume = mesh->getVolume();
-        node->setVolume(volume->clone());
         node->setAABB(mesh->getAABB());
     }
 

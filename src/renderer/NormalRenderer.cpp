@@ -3,6 +3,8 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
 
 NormalRenderer::NormalRenderer()
 {
@@ -10,15 +12,14 @@ NormalRenderer::NormalRenderer()
 
 void NormalRenderer::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
-    MaterialRegistry& materialRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders, materialRegistry);
+    Renderer::prepare(assets, registry);
 
-    m_normalShader = shaders.getShader(TEX_NORMAL);
+    m_normalShader = m_registry->m_shaderRegistry->getShader(TEX_NORMAL);
     m_normalShader->prepare(assets);
 }
 
@@ -44,15 +45,15 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
         }
     };
 
-    for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
         renderTypes(all.second);
     }
 

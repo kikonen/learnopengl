@@ -11,7 +11,7 @@ public:
 
     virtual void prepare(
         const Assets& assets,
-        EntityRegistry& entityRegistry,
+        Registry* registry,
         Node& node) override;
 
     virtual bool update(
@@ -22,7 +22,7 @@ public:
 protected:
     virtual void prepareInstanced(
         const Assets& assets,
-        EntityRegistry& entityRegistry,
+        Registry* registry,
         InstancedNode& node);
 
     virtual bool updateInstanced(

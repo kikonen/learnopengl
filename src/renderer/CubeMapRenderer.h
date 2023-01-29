@@ -2,8 +2,13 @@
 
 #include "Renderer.h"
 
+#include "asset/Material.h"
 #include "asset/DynamicCubeMap.h"
+
+#include "component/Camera.h"
+
 #include "scene/TextureBuffer.h"
+
 
 class SkyboxRenderer;
 
@@ -15,8 +20,7 @@ public:
 
     virtual void prepare(
         const Assets& assets,
-        ShaderRegistry& shaders,
-        MaterialRegistry& materialRegistry) override;
+        Registry* registry) override;
 
     void bindTexture(const RenderContext& ctx);
 
@@ -39,7 +43,7 @@ private:
     Node* findCenter(
         const RenderContext& ctx);
 
-    Node* getTagNode(NodeRegistry& registry);
+    Node* getTagNode();
 
 public:
 

@@ -8,6 +8,7 @@
 
 #include "util/Util.h"
 
+#include "registry/Registry.h"
 #include "registry/ShaderRegistry.h"
 
 #include "backend/gl/DrawIndirectParameters.h"
@@ -24,7 +25,7 @@ namespace backend {
 
     void DrawBuffer::prepare(
         const Assets& assets,
-        ShaderRegistry& shaders,
+        Registry* registry,
         int batchCount,
         int rangeCount)
     {
@@ -44,7 +45,7 @@ namespace backend {
         int candidateRangeCount = rangeCount;
         int commandRangeCount = rangeCount;
 
-        m_cullingCompute = shaders.getComputeShader(CS_FRUSTUM_CULLING);
+        m_cullingCompute = registry->m_shaderRegistry->getComputeShader(CS_FRUSTUM_CULLING);
         m_cullingCompute->prepare(assets);
 
         m_commands = std::make_unique<GLCommandQueue>(

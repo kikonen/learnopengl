@@ -8,6 +8,11 @@
 #include "asset/LightUBO.h"
 #include "asset/TextureUBO.h"
 
+#include "model/Node.h"
+#include "component/Light.h"
+
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
 
 namespace {
     constexpr size_t UNIFORM_BUFFER_OFFSET_ALIGNMENT = 256;
@@ -71,9 +76,51 @@ void RenderData::updateClipPlanes(ClipPlanesUBO& data)
     m_clipPlanes.update(0, sizeof(ClipPlanesUBO), &data);
 }
 
-void RenderData::updateLights(LightsUBO& data)
+void RenderData::updateLights(Registry* registry, bool useLight)
 {
-    m_lights.update(0, sizeof(LightsUBO), &data);
+    LightsUBO lightsUbo{};
+    if (!useLight) {
+        lightsUbo.dirCount = 0;
+        lightsUbo.pointCount = 0;
+        lightsUbo.spotCount = 0;
+    }
+
+    if (useLight) {
+        auto* node = registry->m_nodeRegistry->m_dirLight;
+        if (node && node->m_light->m_enabled) {
+            lightsUbo.dir[0] = node->m_light->toDirLightUBO();
+            lightsUbo.dirCount = 1;
+        }
+        else {
+            lightsUbo.dirCount = 0;
+        }
+    }
+
+    if (useLight) {
+        int count = 0;
+        for (auto* node : registry->m_nodeRegistry->m_pointLights) {
+            if (count >= LIGHT_COUNT) break;
+            if (!node->m_light->m_enabled) continue;
+
+            lightsUbo.pointLights[count] = node->m_light->toPointightUBO();
+            count++;
+        }
+        lightsUbo.pointCount = count;
+    }
+
+    if (useLight) {
+        int count = 0;
+        for (auto* node : registry->m_nodeRegistry->m_spotLights) {
+            if (count >= LIGHT_COUNT) break;
+            if (!node->m_light->m_enabled) continue;
+
+            lightsUbo.spotLights[count] = node->m_light->toSpotLightUBO();
+            count++;
+        }
+        lightsUbo.spotCount = count;
+    }
+
+    m_lights.update(0, sizeof(LightsUBO), &lightsUbo);
 }
 
 void RenderData::updateTextures()

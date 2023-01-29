@@ -9,8 +9,7 @@ public:
 
     virtual void prepare(
         const Assets& assets,
-        ShaderRegistry& shaders,
-        MaterialRegistry& materialRegistry) override;
+        Registry* registry) override;
 
     void render(
         const RenderContext& ctx);

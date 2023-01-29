@@ -7,8 +7,6 @@
 
 #include "asset/ModelMeshVBO.h"
 
-#include "scene/Batch.h"
-
 namespace {
     constexpr int MAX_VERTEX_ENTRIES = 1000000;
     constexpr int MAX_INDEX_ENTRIES = 1000000;
@@ -20,7 +18,7 @@ ModelVAO::ModelVAO(bool singleMaterial)
 }
 
 
-GLVertexArray* ModelVAO::prepare(Batch& batch)
+GLVertexArray* ModelVAO::prepare()
 {
     if (m_prepared) return m_vao.get();
     m_prepared = true;
@@ -43,7 +41,6 @@ GLVertexArray* ModelVAO::prepare(Batch& batch)
     // NOTE KI VBO & EBO are just empty buffers here
 
     prepareVAO(*m_vao, m_vbo, m_ebo);
-    batch.prepareVAO(*m_vao, m_singleMaterial);
     return m_vao.get();
 }
 

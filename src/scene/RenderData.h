@@ -7,11 +7,14 @@
 
 constexpr int RENDER_DATA_QUEUE_SIZE = 16;
 
+class Registry;
+
 struct MatricesUBO;
 struct DataUBO;
 struct ClipPlanesUBO;
 struct LightsUBO;
 struct TesturUBO;
+
 
 class RenderData {
 public:
@@ -24,7 +27,7 @@ public:
     void updateMatrices(MatricesUBO& data);
     void updateData(DataUBO& data);
     void updateClipPlanes(ClipPlanesUBO& data);
-    void updateLights(LightsUBO& data);
+    void updateLights(Registry* registry, bool useLight);
 
 private:
     void updateTextures();

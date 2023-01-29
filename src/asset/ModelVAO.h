@@ -14,7 +14,7 @@ class ModelVAO {
 public:
     ModelVAO(bool singleMaterial);
 
-    GLVertexArray* prepare(Batch& batch);
+    GLVertexArray* prepare();
 
     // @return VAO for mesh
     GLVertexArray* registerModel(ModelMeshVBO& meshVBO);

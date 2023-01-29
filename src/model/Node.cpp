@@ -16,6 +16,7 @@
 
 #include "controller/NodeController.h"
 
+#include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/EntitySSBO.h"
@@ -59,17 +60,17 @@ const std::string Node::str() const noexcept
 
 void Node::prepare(
     const Assets& assets,
-    EntityRegistry& entityRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
     if (isEntity() && !m_type->m_flags.instanced) {
-        m_entityIndex = entityRegistry.add();
+        m_entityIndex = registry->m_entityRegistry->add();
 
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
-        auto* entity = entityRegistry.get(m_entityIndex);
+        auto* entity = registry->m_entityRegistry->get(m_entityIndex);
         entity->m_materialIndex = getMaterialIndex();
         if (m_type->m_entityType == EntityType::billboard) {
             entity->m_flags = ENTITY_FLAG_BILLBOARD;
@@ -78,7 +79,7 @@ void Node::prepare(
     }
 
     if (m_controller) {
-        m_controller->prepare(assets, entityRegistry, *this);
+        m_controller->prepare(assets, registry, *this);
     }
 }
 
@@ -100,7 +101,7 @@ void Node::update(
     if (m_camera) m_camera->update(ctx, *this);
     if (m_light) m_light->update(ctx, *this);
 
-    const auto* children = ctx.m_nodeRegistry.getChildren(*this);
+    const auto* children = ctx.m_registry->m_nodeRegistry->getChildren(*this);
     if (children) {
         for (auto& child : *children) {
             child->update(ctx, this);
@@ -108,7 +109,7 @@ void Node::update(
     }
 
     if (m_dirtyEntity && isEntity() && !m_type->m_flags.instanced) {
-        auto* entity = ctx.m_entityRegistry.get(m_entityIndex);
+        auto* entity = ctx.m_registry->m_entityRegistry->get(m_entityIndex);
 
         entity->m_modelMatrix = m_modelMatrix;
         //entity->m_normalMatrix = m_normalMatrix;
@@ -118,7 +119,7 @@ void Node::update(
         entity->m_volumeRadius = m_volumeRadius;
         entity->m_volumeCenter = m_volumeCenter;
 
-        ctx.m_entityRegistry.markDirty(m_entityIndex);
+        ctx.m_registry->m_entityRegistry->markDirty(m_entityIndex);
 
         m_dirtyEntity = false;
     }

@@ -10,13 +10,11 @@
 
 #include "asset/Assets.h"
 #include "asset/Shader.h"
-#include "asset/FrustumNew.h"
 
 #include "ki/RenderClock.h"
 #include "kigl/GLState.h"
 
 #include "component/Camera.h"
-
 
 namespace backend {
     class RenderSystem;
@@ -26,8 +24,7 @@ class Scene;
 
 class CommandEngine;
 class ScriptEngine;
-class NodeRegistry;
-class EntityRegistry;
+class Registry;
 class Batch;
 
 
@@ -67,21 +64,13 @@ public:
     ~RenderContext();
 
     void bindDefaults() const;
-    void bindUBOs() const;
-    void bindMatricesUBO() const;
-    void bindDataUBO() const;
-    void bindClipPlanesUBO() const;
-    void bindLightsUBO() const;
+    void updateUBOs() const;
+    void updateMatricesUBO() const;
+    void updateDataUBO() const;
+    void updateClipPlanesUBO() const;
+    void updateLightsUBO() const;
 
     void bind(Shader* shader) const;
-
-    const FrustumNew& getFrustumNew() const;
-
-private:
-    void updateFrustumNew(
-        FrustumNew& frustum,
-        const glm::mat4& mat,
-        bool normalize) const;
 
 public:
     const std::string m_name;
@@ -107,8 +96,8 @@ public:
 
     const float m_aspectRatio;
 
-    NodeRegistry& m_nodeRegistry;
-    EntityRegistry& m_entityRegistry;
+    Registry* m_registry;
+
     CommandEngine& commandEngine;
     ScriptEngine& scriptEngine;
 

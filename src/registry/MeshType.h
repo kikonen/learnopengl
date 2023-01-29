@@ -35,9 +35,7 @@ enum class NodeScriptId {
 
 class Shader;
 class RenderContext;
-class NodeRegistry;
-class MaterialRegistry;
-class ModelRegistry;
+class Registry;
 class Mesh;
 class Batch;
 
@@ -65,10 +63,7 @@ public:
 
     void prepare(
         const Assets& assets,
-        Batch& batch,
-        NodeRegistry& nodeRegistry,
-        MaterialRegistry& materialRegistry,
-        ModelRegistry& modelRegistry);
+        Registry* registry);
 
 public:
     const int typeID;

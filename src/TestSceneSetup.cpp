@@ -37,17 +37,9 @@ TestSceneSetup::TestSceneSetup(
 }
 
 void TestSceneSetup::setup(
-    std::shared_ptr<ShaderRegistry> shaderRegistry,
-    std::shared_ptr<NodeRegistry> nodeRegistry,
-    std::shared_ptr<MeshTypeRegistry> typeRegistry,
-    std::shared_ptr<MaterialRegistry> materialRegistry,
-    std::shared_ptr<ModelRegistry> modelRegistry)
+    std::shared_ptr<Registry> registry)
 {
-    m_shaderRegistry = shaderRegistry;
-    m_nodeRegistry = nodeRegistry;
-    m_typeRegistry = typeRegistry;
-    m_materialRegistry = materialRegistry;
-    m_modelRegistry = modelRegistry;
+    m_registry = registry;
 
     if (true) {
         //setupEffectExplosion();
@@ -59,9 +51,9 @@ void TestSceneSetup::setup(
 void TestSceneSetup::setupEffectExplosion()
 {
     m_asyncLoader->addLoader(m_alive, [this]() {
-        Shader* shader = m_shaderRegistry->getShader(TEX_EFFECT);
+        Shader* shader = m_registry->m_shaderRegistry->getShader(TEX_EFFECT);
 
-        auto type = m_typeRegistry->getType("<effect>");
+        auto type = m_registry->m_typeRegistry->getType("<effect>");
         type->m_nodeShader = shader;
         type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;
@@ -69,7 +61,7 @@ void TestSceneSetup::setupEffectExplosion()
         auto node = new Node(type);
         node->setScale(2);
 
-        m_nodeRegistry->addNode(type, node);
+        m_registry->m_nodeRegistry->addNode(type, node);
      });
 }
 
@@ -90,7 +82,7 @@ void TestSceneSetup::setupViewport1()
         glm::vec2(0.25f, 0.25f),
         false,
         texture->m_textureID,
-        m_shaderRegistry->getShader(TEX_VIEWPORT));
+        m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
     viewport->prepare(m_assets);
-    m_nodeRegistry->addViewPort(viewport);
+    m_registry->m_nodeRegistry->addViewPort(viewport);
 }

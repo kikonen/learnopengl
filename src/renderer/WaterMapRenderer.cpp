@@ -4,6 +4,9 @@
 
 #include "model/Viewport.h"
 
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
+#include "registry/ShaderRegistry.h"
 #include "registry/MaterialRegistry.h"
 
 #include "scene/TextureBuffer.h"
@@ -36,16 +39,15 @@ WaterMapRenderer::~WaterMapRenderer()
 
 void WaterMapRenderer::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
-    MaterialRegistry& materialRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders, materialRegistry);
+    Renderer::prepare(assets, registry);
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-    materialRegistry.add(m_tagMaterial);
+    m_registry->m_materialRegistry->add(m_tagMaterial);
 
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
@@ -78,7 +80,7 @@ void WaterMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         m_reflectionBuffer->m_spec.attachments[0].textureID,
-        shaders.getShader(TEX_VIEWPORT));
+        m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
 
     m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffer.get());
 
@@ -89,7 +91,7 @@ void WaterMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         m_refractionBuffer->m_spec.attachments[0].textureID,
-        shaders.getShader(TEX_VIEWPORT));
+        m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
 
     m_refractionDebugViewport->setSourceFrameBuffer(m_refractionBuffer.get());
 
@@ -148,7 +150,7 @@ void WaterMapRenderer::render(
         clip.enabled = true;
         clip.plane = glm::vec4(0, 1, 0, -planePos.y);
 
-        localCtx.bindMatricesUBO();
+        localCtx.updateMatricesUBO();
 
         m_reflectionBuffer->bind(localCtx);
 
@@ -156,7 +158,7 @@ void WaterMapRenderer::render(
 
         //m_reflectionBuffer->unbind(ctx);
 
-        ctx.bindClipPlanesUBO();
+        ctx.updateClipPlanesUBO();
     }
 
     // refraction map
@@ -179,7 +181,7 @@ void WaterMapRenderer::render(
         clip.enabled = true;
         clip.plane = glm::vec4(0, -1, 0, planePos.y);
 
-        localCtx.bindMatricesUBO();
+        localCtx.updateMatricesUBO();
 
         m_refractionBuffer->bind(localCtx);
 
@@ -187,10 +189,10 @@ void WaterMapRenderer::render(
 
         //m_refractionBuffer->unbind(ctx);
 
-        ctx.bindClipPlanesUBO();
+        ctx.updateClipPlanesUBO();
     }
 
-    ctx.bindMatricesUBO();
+    ctx.updateMatricesUBO();
 
     m_rendered = true;
 }
@@ -212,7 +214,7 @@ void WaterMapRenderer::drawNodes(
         glClear(mask);
     }
 
-    ctx.bindClipPlanesUBO();
+    ctx.updateClipPlanesUBO();
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [reflect, &ctx, &current](const MeshTypeMap& typeMap) {
@@ -234,11 +236,11 @@ void WaterMapRenderer::drawNodes(
             }
         };
 
-        for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
             renderTypes(all.second);
         }
 
@@ -246,7 +248,7 @@ void WaterMapRenderer::drawNodes(
             skybox->render(ctx);
         }
 
-        for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
             renderTypes(all.second);
         }
     }
@@ -263,7 +265,7 @@ Node* WaterMapRenderer::findClosest(
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : ctx.m_nodeRegistry.allNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
         for (const auto& [key, nodes] : all.second) {
             auto& type = key.type;
 

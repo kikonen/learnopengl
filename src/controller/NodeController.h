@@ -8,7 +8,7 @@
 #include "gui/Input.h"
 
 class Node;
-class EntityRegistry;
+class Registry;
 class RenderContext;
 
 class NodeController
@@ -18,7 +18,7 @@ public:
 
     virtual void prepare(
         const Assets& assets,
-        EntityRegistry& entityRegistry,
+        Registry* registry,
         Node& node);
 
     virtual bool update(

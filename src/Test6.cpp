@@ -152,7 +152,7 @@ void Test6::selectNode(
     bool isShift,
     bool isCtrl)
 {
-    auto& nodeRegistry = ctx.m_nodeRegistry;
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
     int objectID = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
 
     auto* volumeNode = nodeRegistry.getNode(ctx.assets.volumeUUID);
@@ -194,7 +194,7 @@ Assets Test6::loadAssets()
 
 std::shared_ptr<Scene> Test6::loadScene()
 {
-    auto scene = std::make_shared<Scene>(m_assets);
+    auto scene = std::make_shared<Scene>(m_assets, m_registry);
 
     auto& alive = scene->m_alive;
 
@@ -207,13 +207,7 @@ std::shared_ptr<Scene> Test6::loadScene()
 
     for (auto& file : m_files) {
         KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", file->m_filename));
-        file->load(
-            m_shaderRegistry,
-            scene->m_nodeRegistry,
-            scene->m_typeRegistry,
-            scene->m_materialRegistry,
-            scene->m_modelRegistry
-        );
+        file->load(m_registry);
     }
 
     m_testSetup = std::make_unique<TestSceneSetup>(
@@ -222,14 +216,10 @@ std::shared_ptr<Scene> Test6::loadScene()
         m_asyncLoader);
 
     m_testSetup->setup(
-        m_shaderRegistry,
-        scene->m_nodeRegistry,
-        scene->m_typeRegistry,
-        scene->m_materialRegistry,
-        scene->m_modelRegistry
+        scene->m_registry
     );
 
-    scene->prepare(*m_shaderRegistry);
+    scene->prepare();
 
     return scene;
 }

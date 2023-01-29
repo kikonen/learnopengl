@@ -10,11 +10,7 @@
 
 #include "kigl/GLSyncQueue.h"
 
-#include "registry/MaterialRegistry.h"
-#include "registry/NodeRegistry.h"
-#include "registry/MeshTypeRegistry.h"
-#include "registry/ModelRegistry.h"
-#include "registry/EntityRegistry.h"
+#include "registry/Registry.h"
 
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
@@ -52,10 +48,11 @@ class Scene final
 {
 public:
     Scene(
-        const Assets& assets);
+        const Assets& assets,
+        std::shared_ptr<Registry> registry);
     ~Scene();
 
-    void prepare(ShaderRegistry& shaders);
+    void prepare();
 
     void attachNodes();
 
@@ -90,14 +87,9 @@ public:
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
-
-    std::shared_ptr<MaterialRegistry> m_materialRegistry;
-    std::shared_ptr<MeshTypeRegistry> m_typeRegistry;
-    std::shared_ptr<ModelRegistry> m_modelRegistry;
-    std::shared_ptr<NodeRegistry> m_nodeRegistry;
-
     std::unique_ptr<RenderData> m_renderData;
-    std::unique_ptr<EntityRegistry> m_entityRegistry;
+
+    std::shared_ptr<Registry> m_registry;
 
     std::unique_ptr<CommandEngine> m_commandEngine;
     std::unique_ptr<ScriptEngine> m_scriptEngine;

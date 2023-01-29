@@ -4,20 +4,24 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+#include "registry/Registry.h"
 #include "registry/ShaderRegistry.h"
 
 #include "model/Particle.h"
+
 
 ParticleSystem::ParticleSystem()
 {
 }
 
-void ParticleSystem::prepare(const Assets& assets, ShaderRegistry& shaders)
+void ParticleSystem::prepare(
+    const Assets& assets,
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    particleShader = shaders.getShader(TEX_PARTICLE, {});
+    particleShader = registry->m_shaderRegistry->getShader(TEX_PARTICLE, {});
     particleShader->prepare(assets);
 }
 

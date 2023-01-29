@@ -10,7 +10,7 @@ public:
 
     void prepare(
         const Assets& assets,
-        EntityRegistry& entityRegistry) override;
+        Registry* registry) override;
 
     void updateBuffers(const RenderContext& ctx) noexcept;
 

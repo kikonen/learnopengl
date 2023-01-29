@@ -16,11 +16,10 @@
 
 #include "MaterialVBO.h"
 
-#include "registry/NodeRegistry.h"
+#include "registry/Registry.h"
 
-class Batch;
 class RenderContext;
-class ModelRegistry;
+class Registry;
 
 
 class Mesh
@@ -39,8 +38,7 @@ public:
     // @return VAO for mesh
     virtual GLVertexArray* prepare(
         const Assets& assets,
-        Batch& batch,
-        ModelRegistry& modelRegistry) = 0;
+        Registry* registry) = 0;
 
     virtual void prepareMaterials(
         MaterialVBO& materialVBO) = 0;

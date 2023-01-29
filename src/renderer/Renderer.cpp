@@ -2,6 +2,8 @@
 
 #include "scene/RenderContext.h"
 
+#include "registry/Registry.h"
+
 Renderer::Renderer()
 {
 }
@@ -12,9 +14,10 @@ Renderer::~Renderer()
 
 void Renderer::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
-    MaterialRegistry& materialRegistry)
+    Registry* registry)
 {
+    m_registry = registry;
+
     m_renderFrameStart = assets.renderFrameStart;
     m_renderFrameStep = assets.renderFrameStep;
 }

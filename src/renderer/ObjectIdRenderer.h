@@ -4,18 +4,23 @@
 
 #include "scene/TextureBuffer.h"
 
+#include "model/Viewport.h"
+
 class ObjectIdRenderer final : public Renderer
 {
 public:
     ObjectIdRenderer();
     virtual ~ObjectIdRenderer();
 
-    int getObjectId(const RenderContext& ctx, double screenPosX, double screenPosY, Viewport* mainViewport);
+    int getObjectId(
+        const RenderContext& ctx,
+        double screenPosX,
+        double screenPosY,
+        Viewport* mainViewport);
 
     virtual void prepare(
         const Assets& assets,
-        ShaderRegistry& shaders,
-        MaterialRegistry& materialRegistry) override;
+        Registry* registry) override;
 
     virtual void update(const RenderContext& ctx) override;
 

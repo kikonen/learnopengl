@@ -22,8 +22,7 @@ public:
 
     virtual GLVertexArray* prepare(
         const Assets& assets,
-        Batch& batch,
-        ModelRegistry& modelRegistry) override;
+        Registry* registry) override;
 
     virtual void prepareMaterials(
         MaterialVBO& materialVBO) override;

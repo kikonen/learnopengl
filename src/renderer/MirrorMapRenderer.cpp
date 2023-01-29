@@ -9,6 +9,8 @@
 #include "scene/Batch.h"
 #include "scene/TextureBuffer.h"
 
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 
 namespace {
@@ -40,17 +42,16 @@ MirrorMapRenderer::~MirrorMapRenderer()
 
 void MirrorMapRenderer::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
-    MaterialRegistry& materialRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders, materialRegistry);
+    Renderer::prepare(assets, registry);
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
-    materialRegistry.add(m_tagMaterial);
+    m_registry->m_materialRegistry->add(m_tagMaterial);
 
     m_renderFrameStart = assets.mirrorRenderFrameStart;
     m_renderFrameStep = assets.mirrorRenderFrameStep;
@@ -90,7 +91,7 @@ void MirrorMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         0,
-        shaders.getShader(TEX_VIEWPORT));
+        m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
 
     m_debugViewport->prepare(assets);
 }
@@ -120,7 +121,7 @@ void MirrorMapRenderer::render(
     // reflection map
     {
         const auto* mainCamera = ctx.m_camera;
-        const auto& mirrorSize = closest->getVolume()->getRadius() * 2;
+        const auto& mirrorSize = closest->getVolumeRadius();
         const auto& eyePos = mainCamera->getViewPosition();
 
         const auto& planeNormal = closest->getWorldPlaneNormal();
@@ -162,7 +163,7 @@ void MirrorMapRenderer::render(
         //clip.enabled = true;
         clip.plane = glm::vec4(planePos, 0);
 
-        localCtx.bindMatricesUBO();
+        localCtx.updateMatricesUBO();
 
         m_curr->bind(localCtx);
 
@@ -171,7 +172,7 @@ void MirrorMapRenderer::render(
 
         //m_curr->unbind(ctx);
 
-        ctx.bindClipPlanesUBO();
+        ctx.updateClipPlanesUBO();
 
         m_debugViewport->setTextureId(m_curr->m_spec.attachments[0].textureID);
         m_debugViewport->setSourceFrameBuffer(m_curr.get());
@@ -179,7 +180,7 @@ void MirrorMapRenderer::render(
 
     m_prev.swap(m_curr);
 
-    ctx.bindMatricesUBO();
+    ctx.updateMatricesUBO();
 
     m_rendered = true;
 }
@@ -200,7 +201,7 @@ void MirrorMapRenderer::drawNodes(
         glClear(mask);
     }
 
-    ctx.bindClipPlanesUBO();
+    ctx.updateClipPlanesUBO();
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [&ctx, &current](const MeshTypeMap& typeMap) {
@@ -219,11 +220,11 @@ void MirrorMapRenderer::drawNodes(
             }
         };
 
-        for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
             renderTypes(all.second);
         }
 
@@ -231,7 +232,7 @@ void MirrorMapRenderer::drawNodes(
             skybox->render(ctx);
         }
 
-        for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
             renderTypes(all.second);
         }
     }
@@ -247,7 +248,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : ctx.m_nodeRegistry.allNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
         for (const auto& [key, nodes] : all.second) {
             const auto& type = key.type;
 

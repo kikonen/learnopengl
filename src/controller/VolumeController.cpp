@@ -3,6 +3,8 @@
 #include "glm/glm.hpp"
 
 #include "scene/RenderContext.h"
+
+#include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
 VolumeController::VolumeController()
@@ -14,7 +16,7 @@ bool VolumeController::update(
     Node& volumeNode,
     Node* parent) noexcept
 {
-    Node* targetNode = ctx.m_nodeRegistry.getNode(m_targetID);
+    Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetID);
 
     if (!targetNode) {
         volumeNode.m_type->m_flags.noDisplay = true;
@@ -33,7 +35,7 @@ bool VolumeController::update(
         glm::length(modelMatrix[1]),
         glm::length(modelMatrix[2]) };
 
-    const auto& rootPos = ctx.m_nodeRegistry.m_root->getPosition();
+    const auto& rootPos = ctx.m_registry->m_nodeRegistry->m_root->getPosition();
     const auto& volumeCenter = targetNode->getVolumeCenter();
     const auto volumeRadius = targetNode->getVolumeRadius();
 

@@ -2,21 +2,23 @@
 
 #include "asset/Shader.h"
 
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
+
 ParticleRenderer::ParticleRenderer()
 {
 }
 
 void ParticleRenderer::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
-    MaterialRegistry& materialRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders, materialRegistry);
+    Renderer::prepare(assets, registry);
 
-    particleShader = shaders.getShader(TEX_PARTICLE);
+    particleShader = m_registry->m_shaderRegistry->getShader(TEX_PARTICLE);
     particleShader->prepare(assets);
 }
 

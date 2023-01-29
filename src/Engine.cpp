@@ -25,7 +25,8 @@ Engine::~Engine() {
 int Engine::init() {
 
     onInit();
-    m_shaderRegistry = std::make_unique<ShaderRegistry>(m_assets, m_alive);
+
+    m_registry = std::make_shared<Registry>(m_assets, m_alive);
     m_asyncLoader = std::make_shared<AsyncLoader>(m_assets, m_alive);
 
     m_window = std::make_unique<Window>(*this, m_assets);
@@ -163,7 +164,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
                 close = onRender(clock);
 
-                m_shaderRegistry->validate();
+                m_registry->m_shaderRegistry->validate();
 
                 renderEnd = std::chrono::system_clock::now();
                 renderDuration = renderEnd - renderStart;

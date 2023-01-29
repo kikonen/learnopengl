@@ -36,24 +36,19 @@
 
 
 Scene::Scene(
-    const Assets& assets)
+    const Assets& assets,
+    std::shared_ptr<Registry> registry)
     : m_assets(assets),
-    m_alive(std::make_shared<std::atomic<bool>>(true))
+    m_alive(std::make_shared<std::atomic<bool>>(true)),
+    m_registry(registry)
 {
-    m_materialRegistry = std::make_shared<MaterialRegistry>(assets, m_alive);
-    m_typeRegistry = std::make_shared<MeshTypeRegistry>(assets, m_alive);
-    m_modelRegistry = std::make_shared<ModelRegistry>(assets, m_alive);
-    m_nodeRegistry = std::make_shared<NodeRegistry>(assets, m_alive);
-
-    m_entityRegistry = std::make_unique<EntityRegistry>(assets);
-
     m_commandEngine = std::make_unique<CommandEngine>(assets);
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
 
     NodeListener listener = [this](Node* node, NodeOperation operation) {
         bindComponents(*node);
     };
-    m_nodeRegistry->addListener(listener);
+    m_registry->m_nodeRegistry->addListener(listener);
 
     m_nodeRenderer = std::make_unique<NodeRenderer>();
     //terrainRenderer = std::make_unique<TerrainRenderer>();
@@ -90,7 +85,7 @@ Scene::~Scene()
     KI_INFO("SCENE: deleted");
 }
 
-void Scene::prepare(ShaderRegistry& shaders)
+void Scene::prepare()
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -100,53 +95,43 @@ void Scene::prepare(ShaderRegistry& shaders)
     m_commandEngine->prepare();
     m_scriptEngine->prepare(*m_commandEngine);
 
-    m_batch->prepare(m_assets, shaders);
-    m_materialRegistry->prepare();
-    m_entityRegistry->prepare();
-    m_modelRegistry->prepare(*m_batch);
-
-    m_nodeRegistry->prepare(
-        m_batch.get(),
-        &shaders,
-        m_materialRegistry.get(),
-        m_entityRegistry.get(),
-        m_modelRegistry.get());
+    m_batch->prepare(m_assets, m_registry.get());
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {
-        m_nodeRenderer->prepare(m_assets, shaders, *m_materialRegistry);
+        m_nodeRenderer->prepare(m_assets, m_registry.get());
     }
     //terrainRenderer->prepare(shaders);
 
     if (m_viewportRenderer) {
-        m_viewportRenderer->prepare(m_assets, shaders, *m_materialRegistry);
+        m_viewportRenderer->prepare(m_assets, m_registry.get());
     }
 
     if (m_waterMapRenderer) {
-        m_waterMapRenderer->prepare(m_assets, shaders, *m_materialRegistry);
+        m_waterMapRenderer->prepare(m_assets, m_registry.get());
     }
     if (m_mirrorMapRenderer) {
-        m_mirrorMapRenderer->prepare(m_assets, shaders, *m_materialRegistry);
+        m_mirrorMapRenderer->prepare(m_assets, m_registry.get());
     }
     if (m_cubeMapRenderer) {
-        m_cubeMapRenderer->prepare(m_assets, shaders, *m_materialRegistry);
+        m_cubeMapRenderer->prepare(m_assets, m_registry.get());
     }
     if (m_shadowMapRenderer) {
-        m_shadowMapRenderer->prepare(m_assets, shaders, *m_materialRegistry);
+        m_shadowMapRenderer->prepare(m_assets, m_registry.get());
     }
 
     if (m_objectIdRenderer) {
-        m_objectIdRenderer->prepare(m_assets, shaders, *m_materialRegistry);
+        m_objectIdRenderer->prepare(m_assets, m_registry.get());
     }
 
     if (m_assets.showNormals) {
         if (m_normalRenderer) {
-            m_normalRenderer->prepare(m_assets, shaders, *m_materialRegistry);
+            m_normalRenderer->prepare(m_assets, m_registry.get());
         }
     }
 
     if (m_particleSystem) {
-        m_particleSystem->prepare(m_assets, shaders);
+        m_particleSystem->prepare(m_assets, m_registry.get());
     }
 
     {
@@ -163,17 +148,17 @@ void Scene::prepare(ShaderRegistry& shaders)
             glm::vec2(2.f, 2.f),
             true,
             0,
-            shaders.getShader(TEX_VIEWPORT));
+            m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
 
         m_mainViewport->m_effect = m_assets.viewportEffect;
 
         m_mainViewport->prepare(m_assets);
-        m_nodeRegistry->addViewPort(m_mainViewport);
+        m_registry->m_nodeRegistry->addViewPort(m_mainViewport);
     }
 
     if (m_assets.showObjectIDView) {
         if (m_objectIdRenderer) {
-            m_nodeRegistry->addViewPort(m_objectIdRenderer->m_debugViewport);
+            m_registry->m_nodeRegistry->addViewPort(m_objectIdRenderer->m_debugViewport);
         }
     }
 
@@ -185,35 +170,35 @@ void Scene::prepare(ShaderRegistry& shaders)
             glm::vec2(0.5f, 0.5f),
             true,
             0,
-            shaders.getShader(TEX_VIEWPORT));
+            m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
 
         m_rearViewport->prepare(m_assets);
-        m_nodeRegistry->addViewPort(m_rearViewport);
+        m_registry->m_nodeRegistry->addViewPort(m_rearViewport);
     }
 
     if (m_assets.showShadowMapView) {
         if (m_shadowMapRenderer) {
-            m_nodeRegistry->addViewPort(m_shadowMapRenderer->m_debugViewport);
+            m_registry->m_nodeRegistry->addViewPort(m_shadowMapRenderer->m_debugViewport);
         }
     }
     if (m_assets.showReflectionView) {
         if (m_waterMapRenderer) {
-            m_nodeRegistry->addViewPort(m_waterMapRenderer->m_reflectionDebugViewport);
+            m_registry->m_nodeRegistry->addViewPort(m_waterMapRenderer->m_reflectionDebugViewport);
         }
         if (m_mirrorMapRenderer) {
-            m_nodeRegistry->addViewPort(m_mirrorMapRenderer->m_debugViewport);
+            m_registry->m_nodeRegistry->addViewPort(m_mirrorMapRenderer->m_debugViewport);
         }
     }
     if (m_assets.showRefractionView) {
         if (m_waterMapRenderer) {
-            m_nodeRegistry->addViewPort(m_waterMapRenderer->m_refractionDebugViewport);
+            m_registry->m_nodeRegistry->addViewPort(m_waterMapRenderer->m_refractionDebugViewport);
         }
     }
 }
 
 void Scene::attachNodes()
 {
-    m_nodeRegistry->attachNodes();
+    m_registry->m_nodeRegistry->attachNodes();
 }
 
 void Scene::processEvents(RenderContext& ctx)
@@ -227,16 +212,16 @@ void Scene::update(RenderContext& ctx)
         m_commandEngine->update(ctx);
     }
 
-    if (m_nodeRegistry->m_root) {
-        m_nodeRegistry->m_root->update(ctx, nullptr);
+    if (m_registry->m_nodeRegistry->m_root) {
+        m_registry->m_nodeRegistry->m_root->update(ctx, nullptr);
     }
 
     for (auto& generator : m_particleGenerators) {
         generator->update(ctx);
     }
 
-    if (m_nodeRegistry->m_skybox) {
-        m_nodeRegistry->m_skybox->update(ctx);
+    if (m_registry->m_nodeRegistry->m_skybox) {
+        m_registry->m_nodeRegistry->m_skybox->update(ctx);
     }
 
     if (m_nodeRenderer) {
@@ -255,13 +240,12 @@ void Scene::update(RenderContext& ctx)
         m_particleSystem->update(ctx);
     }
 
-    m_materialRegistry->update(ctx);
+    m_registry->m_materialRegistry->update(ctx);
+    m_registry->m_entityRegistry->update(ctx);
 
     updateMainViewport(ctx);
 
     m_windowBuffer->update(ctx);
-
-    m_entityRegistry->update(ctx);
 
     m_renderData->update();
 }
@@ -292,7 +276,7 @@ void Scene::bind(RenderContext& ctx)
     m_renderData->bind();
 
     ctx.bindDefaults();
-    ctx.bindUBOs();
+    ctx.updateUBOs();
 
     m_batch->bind();
 }
@@ -329,17 +313,17 @@ void Scene::draw(RenderContext& ctx)
     if (m_cubeMapRenderer && m_cubeMapRenderer->needRender(ctx)) {
         renderCount++;
         wasCubeMap = true;
-        m_cubeMapRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
+        m_cubeMapRenderer->render(ctx, m_registry->m_nodeRegistry->m_skybox.get());
     }
 
     if (!wasCubeMap && m_waterMapRenderer && m_waterMapRenderer->needRender(ctx)) {
         renderCount++;
-        m_waterMapRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
+        m_waterMapRenderer->render(ctx, m_registry->m_nodeRegistry->m_skybox.get());
     }
 
     if (!wasCubeMap && m_mirrorMapRenderer && m_mirrorMapRenderer->needRender(ctx)) {
         renderCount++;
-        m_mirrorMapRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
+        m_mirrorMapRenderer->render(ctx, m_registry->m_nodeRegistry->m_skybox.get());
     }
 
     // NOTE KI skip main render if special update cycle
@@ -378,14 +362,14 @@ void Scene::drawRear(RenderContext& ctx)
 
     RenderContext mirrorCtx("BACK", &ctx, &camera, m_rearBuffer->m_spec.width, m_rearBuffer->m_spec.height);
     mirrorCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
-    mirrorCtx.bindMatricesUBO();
+    mirrorCtx.updateMatricesUBO();
 
     m_rearBuffer->bind(mirrorCtx);
 
     drawScene(mirrorCtx);
 
     m_rearBuffer->unbind(ctx);
-    ctx.bindMatricesUBO();
+    ctx.updateMatricesUBO();
 }
 
 void Scene::drawViewports(RenderContext& ctx)
@@ -427,8 +411,8 @@ void Scene::drawScene(RenderContext& ctx)
         glClear(mask);
     }
 
-    m_materialRegistry->bind(ctx);
-    m_entityRegistry->bind(ctx);
+    m_registry->m_materialRegistry->bind(ctx);
+    m_registry->m_entityRegistry->bind(ctx);
 
     if (m_cubeMapRenderer) {
         m_cubeMapRenderer->bindTexture(ctx);
@@ -441,7 +425,7 @@ void Scene::drawScene(RenderContext& ctx)
     }
 
     if (m_nodeRenderer) {
-        m_nodeRenderer->render(ctx, m_nodeRegistry->m_skybox.get());
+        m_nodeRenderer->render(ctx, m_registry->m_nodeRegistry->m_skybox.get());
     }
 
     if (m_particleSystem) {
@@ -457,7 +441,7 @@ void Scene::drawScene(RenderContext& ctx)
 
 Node* Scene::getActiveCamera() const
 {
-    return m_nodeRegistry->getActiveCamera();
+    return m_registry->m_nodeRegistry->getActiveCamera();
 }
 
 NodeController* Scene::getActiveCameraController() const

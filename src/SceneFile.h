@@ -21,11 +21,7 @@ struct Material;
 class Light;
 class Camera;
 
-class ShaderRegistry;
-class NodeRegistry;
-class MeshTypeRegistry;
-class ModelRegistry;
-class MaterialRegistry;
+class Registry;
 
 class MeshType;
 class Node;
@@ -225,11 +221,7 @@ public:
     ~SceneFile();
 
     void load(
-        std::shared_ptr<ShaderRegistry> shaderRegistry,
-        std::shared_ptr<NodeRegistry> nodeRegistry,
-        std::shared_ptr<MeshTypeRegistry> typeRegistry,
-        std::shared_ptr<MaterialRegistry> materialRegistry,
-        std::shared_ptr<ModelRegistry> modelRegistry);
+        std::shared_ptr<Registry> registry);
 
 private:
     void attach(
@@ -374,12 +366,7 @@ private:
 
     std::shared_ptr<AsyncLoader> m_asyncLoader;
 
-    std::shared_ptr<ShaderRegistry> m_shaderRegistry{ nullptr };
-
-    std::shared_ptr<MaterialRegistry> m_materialRegistry;
-    std::shared_ptr<MeshTypeRegistry> m_typeRegistry;
-    std::shared_ptr<ModelRegistry> m_modelRegistry;
-    std::shared_ptr<NodeRegistry> m_nodeRegistry;
+    std::shared_ptr<Registry> m_registry;
 
     SkyboxData m_skybox;
 

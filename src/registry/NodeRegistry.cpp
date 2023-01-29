@@ -10,6 +10,7 @@
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
+#include "Registry.h"
 #include "MaterialRegistry.h"
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
@@ -100,20 +101,12 @@ NodeRegistry::~NodeRegistry()
 }
 
 void NodeRegistry::prepare(
-    Batch* batch,
-    ShaderRegistry* shaderRegistry,
-    MaterialRegistry* materialRegistry,
-    EntityRegistry* entityRegistry,
-    ModelRegistry* modelRegistry)
+    Registry* registry)
 {
-    m_batch = batch;
-    m_shaderRegistry = shaderRegistry;
-    m_materialRegistry = materialRegistry;
-    m_entityRegistry = entityRegistry;
-    m_modelRegistry = modelRegistry;
+    m_registry = registry;
 
     m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
-    materialRegistry->add(m_selectionMaterial);
+    registry->m_materialRegistry->add(m_selectionMaterial);
 }
 
 void NodeRegistry::addListener(NodeListener& listener)
@@ -213,8 +206,7 @@ void NodeRegistry::attachNodes()
         m_skyboxPrepared = true;
         m_skybox->prepare(
             m_assets,
-            *m_shaderRegistry,
-            *m_materialRegistry);
+            m_registry);
     }
 
     m_newNodes.clear();
@@ -289,12 +281,12 @@ void NodeRegistry::bindNode(
 
     {
         type->modifyMaterials([this](Material& m) {
-            m_materialRegistry->add(m);
+            m_registry->m_materialRegistry->add(m);
         });
     }
 
-    type->prepare(m_assets, *m_batch, *this, *m_materialRegistry, *m_modelRegistry);
-    node->prepare(m_assets, *m_entityRegistry);
+    type->prepare(m_assets, m_registry);
+    node->prepare(m_assets, m_registry);
 
     {
         auto* map = &solidNodes;

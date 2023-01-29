@@ -14,11 +14,11 @@ InstancedNode::~InstancedNode()
 
 void InstancedNode::prepare(
     const Assets& assets,
-    EntityRegistry& entityRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
 
-    Node::prepare(assets, entityRegistry);
+    Node::prepare(assets, registry);
 }
 
 void InstancedNode::updateBuffers(const RenderContext& ctx) noexcept

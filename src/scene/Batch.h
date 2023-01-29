@@ -18,7 +18,7 @@ class RenderContext;
 class MeshType;
 class Node;
 class MaterialVBO;
-class ShaderRegistry;
+class Registry;
 
 
 // NOTE KI use single shared UBO buffer for rendering
@@ -54,11 +54,9 @@ public:
 
     void prepare(
         const Assets& assets,
-        ShaderRegistry& shaders,
+        Registry* registry,
         int entryCount = -1,
         int bufferCount = -1);
-
-    void prepareVAO(GLVertexArray& vao, bool singleMaterial);
 
     void draw(
         const RenderContext& ctx,

@@ -32,7 +32,7 @@ public:
 
     virtual void prepare(
         const Assets& assets,
-        EntityRegistry& entityRegistry);
+        Registry* registry);
 
     virtual void update(const RenderContext& ctx, Node* parent) noexcept;
     virtual void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;

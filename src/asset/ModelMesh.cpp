@@ -73,8 +73,7 @@ const std::vector<Material>& ModelMesh::getMaterials() const
 
 GLVertexArray* ModelMesh::prepare(
     const Assets& assets,
-    Batch& batch,
-    ModelRegistry& modelRegistry)
+    Registry* registry)
 {
     if (m_prepared) return m_vao;
     m_prepared = true;
@@ -87,7 +86,7 @@ GLVertexArray* ModelMesh::prepare(
     m_tris.clear();
     //m_vertices.clear();
 
-    m_vao = modelRegistry.registerMeshVBO(m_vertexVBO);
+    m_vao = registry->m_modelRegistry->registerMeshVBO(m_vertexVBO);
     return m_vao;
 }
 

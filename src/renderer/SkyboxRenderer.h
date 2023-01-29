@@ -18,8 +18,7 @@ public:
 
     virtual void prepare(
         const Assets& assets,
-        ShaderRegistry& shaders,
-        MaterialRegistry& materialRegistry) override;
+        Registry* registry) override;
 
     void assign(Shader* shader);
     void bindTexture(const RenderContext& ctx);

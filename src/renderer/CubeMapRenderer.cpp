@@ -7,6 +7,8 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 
 // https://stackoverflow.com/questions/28845375/rendering-a-dynamic-cubemap-opengl
@@ -73,13 +75,12 @@ CubeMapRenderer::~CubeMapRenderer()
 
 void CubeMapRenderer::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
-    MaterialRegistry& materialRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders, materialRegistry);
+    Renderer::prepare(assets, registry);
 
     m_renderFrameStart = assets.cubeMapRenderFrameStart;
     m_renderFrameStep = assets.cubeMapRenderFrameStep;
@@ -87,7 +88,7 @@ void CubeMapRenderer::prepare(
     m_tagID = assets.cubeMapUUID;
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
-    materialRegistry.add(m_tagMaterial);
+    m_registry->m_materialRegistry->add(m_tagMaterial);
 
     m_nearPlane = assets.cubeMapNearPlane;
     m_farPlane = assets.cubeMapFarPlane;
@@ -127,9 +128,9 @@ void CubeMapRenderer::render(
     if (!centerNode) return;
 
     if (mainCtx.assets.showCubeMapCenter) {
-        Node* tagNode = getTagNode(mainCtx.m_nodeRegistry);
+        Node* tagNode = getTagNode();
         if (tagNode) {
-            const auto& rootPos = mainCtx.m_nodeRegistry.m_root->getPosition();
+            const auto& rootPos = mainCtx.m_registry->m_nodeRegistry->m_root->getPosition();
             const auto& centerPos = centerNode->getWorldPosition();
             const auto tagPos = centerPos - rootPos;
             tagNode->setPosition(tagPos);
@@ -178,7 +179,7 @@ void CubeMapRenderer::render(
             m_curr->m_size, m_curr->m_size);
         bindTexture(ctx);
         ctx.m_matrices.lightProjected = mainCtx.m_matrices.lightProjected;
-        ctx.bindMatricesUBO();
+        ctx.updateMatricesUBO();
 
         drawNodes(ctx, skybox, centerNode);
     }
@@ -236,11 +237,11 @@ void CubeMapRenderer::drawNodes(
         }
     };
 
-    for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
         renderTypes(all.second);
     }
 
@@ -249,7 +250,7 @@ void CubeMapRenderer::drawNodes(
         skybox->render(ctx);
     }
 
-    for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
         renderTypes(all.second);
     }
 
@@ -263,7 +264,7 @@ Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : ctx.m_nodeRegistry.allNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
         for (const auto& [key, nodes] : all.second) {
             auto& type = key.type;
 
@@ -290,9 +291,9 @@ Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
     return nullptr;
 }
 
-Node* CubeMapRenderer::getTagNode(NodeRegistry& registry)
+Node* CubeMapRenderer::getTagNode()
 {
     if (m_tagNode) return m_tagNode;
-    m_tagNode = registry.getNode(m_tagID);
+    m_tagNode = m_registry->m_nodeRegistry->getNode(m_tagID);
     return m_tagNode;
 }

@@ -81,7 +81,7 @@ void Batch::bind() noexcept
 
 void Batch::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
+    Registry* registry,
     int entryCount,
     int bufferCount)
 {
@@ -105,14 +105,7 @@ void Batch::prepare(
     m_entityIndeces.reserve(ENTITY_COUNT);
 
     m_draw = std::make_unique<backend::DrawBuffer>();
-    m_draw->prepare(assets, shaders, entryCount, bufferCount);
-}
-
-void Batch::prepareVAO(
-    GLVertexArray& vao,
-    bool singleMaterial)
-{
-    // NOTE KI obsolete
+    m_draw->prepare(assets, registry, entryCount, bufferCount);
 }
 
 void Batch::addCommand(

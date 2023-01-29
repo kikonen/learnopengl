@@ -8,6 +8,9 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
+
 const int ATTR_SKYBOX_POS = 0;
 
 
@@ -70,15 +73,14 @@ SkyboxRenderer::~SkyboxRenderer()
 
 void SkyboxRenderer::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
-    MaterialRegistry& materialRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders, materialRegistry);
+    Renderer::prepare(assets, registry);
 
-    m_shader = shaders.getShader(m_shaderName);
+    m_shader = m_registry->m_shaderRegistry->getShader(m_shaderName);
 
     m_shader->prepare(assets);
 

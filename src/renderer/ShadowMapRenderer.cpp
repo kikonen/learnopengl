@@ -7,6 +7,9 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
+
 namespace {
     // @see Computer Graphics Programmming in OpenGL Using C++, Second Edition
     // @see OpenGL Programming Guide, 8th Edition, page 406
@@ -30,13 +33,12 @@ ShadowMapRenderer::~ShadowMapRenderer()
 
 void ShadowMapRenderer::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
-    MaterialRegistry& materialRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders, materialRegistry);
+    Renderer::prepare(assets, registry);
 
     m_renderFrameStart = assets.shadowRenderFrameStart;
     m_renderFrameStep = assets.shadowRenderFrameStep;
@@ -45,10 +47,10 @@ void ShadowMapRenderer::prepare(
     m_farPlane = assets.shadowFarPlane;
     m_frustumSize = assets.shadowFrustumSize;
 
-    m_shadowShader = shaders.getShader(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    m_shadowShader = m_registry->m_shaderRegistry->getShader(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
     //m_solidShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH);
     //m_blendedShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
-    m_shadowDebugShader = shaders.getShader(TEX_DEBUG_DEPTH);
+    m_shadowDebugShader = m_registry->m_shaderRegistry->getShader(TEX_DEBUG_DEPTH);
 
     m_shadowShader->prepare(assets);
     //m_solidShadowShader->prepare(assets);
@@ -81,7 +83,7 @@ void ShadowMapRenderer::prepare(
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
 {
-    auto& node = ctx.m_nodeRegistry.m_dirLight;
+    auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
     if (!node) return;
 
     const glm::vec3 up{ 0.0, 1.0, 0.0 };
@@ -114,7 +116,7 @@ void ShadowMapRenderer::render(
     // NOTE KI no shadows if no light
     if (!ctx.assets.useLight) return;
 
-    auto& node = ctx.m_nodeRegistry.m_dirLight;
+    auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
     if (!node) return;
 
     {
@@ -173,7 +175,7 @@ void ShadowMapRenderer::drawNodes(
         //}
     }
     else {
-        for (const auto& all : ctx.m_nodeRegistry.allNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
             renderTypes(all.second, m_shadowShader);
         }
 

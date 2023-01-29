@@ -8,7 +8,7 @@ InstancedController::InstancedController()
 
 void InstancedController::prepare(
     const Assets& assets,
-    EntityRegistry& entityRegistry,
+    Registry* registry,
     Node& node)
 {
     if (m_prepared) return;
@@ -16,7 +16,7 @@ void InstancedController::prepare(
 
     prepareInstanced(
         assets,
-        entityRegistry,
+        registry,
         dynamic_cast<InstancedNode&>(node));
 }
 
@@ -30,7 +30,7 @@ bool InstancedController::update(
 
 void InstancedController::prepareInstanced(
     const Assets & assets,
-    EntityRegistry& entityRegistry,
+    Registry* registry,
     InstancedNode& node)
 {
 }

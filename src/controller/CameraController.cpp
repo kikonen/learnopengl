@@ -12,7 +12,7 @@ CameraController::CameraController()
 
 void CameraController::prepare(
     const Assets& assets,
-    EntityRegistry& entityRegistry,
+    Registry* registry,
     Node& node)
 {
     if (!node.m_camera) return;

@@ -84,10 +84,7 @@ int MeshType::getMaterialCount() const
 
 void MeshType::prepare(
     const Assets& assets,
-    Batch& batch,
-    NodeRegistry& nodeRegistry,
-    MaterialRegistry& materialRegistry,
-    ModelRegistry& modelRegistry)
+    Registry* registry)
 {
     if (!m_mesh) return;
 
@@ -96,10 +93,10 @@ void MeshType::prepare(
 
     //m_privateVAO.create();
 
-    m_vao = m_mesh->prepare(assets, batch, modelRegistry);
+    m_vao = m_mesh->prepare(assets, registry);
     m_mesh->prepareMaterials(m_materialVBO);
 
-    materialRegistry.registerMaterialVBO(m_materialVBO);
+    registry->m_materialRegistry->registerMaterialVBO(m_materialVBO);
 
     m_drawOptions.renderBack = m_flags.renderBack;
     m_drawOptions.wireframe = m_flags.wireframe;

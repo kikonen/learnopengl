@@ -15,11 +15,7 @@
 
 #include "registry/MeshType.h"
 
-class Batch;
-class MaterialRegistry;
-class EntityRegistry;
-class ModelRegistry;
-class ShaderRegistry;
+class Registry;
 
 class SkyboxRenderer;
 
@@ -81,11 +77,7 @@ public:
     ~NodeRegistry();
 
     void prepare(
-        Batch* batch,
-        ShaderRegistry* shaderRegistry,
-        MaterialRegistry * materialRegistry,
-        EntityRegistry* entityRegistry,
-        ModelRegistry* modelRegistry);
+        Registry* registry);
 
     void addListener(NodeListener& listener);
 
@@ -178,10 +170,7 @@ private:
 
     Batch* m_batch{ nullptr };
 
-    ShaderRegistry* m_shaderRegistry{ nullptr };
-    MaterialRegistry* m_materialRegistry{ nullptr };
-    EntityRegistry* m_entityRegistry{ nullptr };
-    ModelRegistry* m_modelRegistry{ nullptr };
+    Registry* m_registry{ nullptr };
 
     std::mutex m_load_lock;
     std::condition_variable m_waitCondition;

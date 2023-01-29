@@ -4,6 +4,8 @@
 
 #include "SkyboxRenderer.h"
 
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 
 #include "component/Camera.h"
@@ -20,22 +22,21 @@ NodeRenderer::NodeRenderer()
 
 void NodeRenderer::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
-    MaterialRegistry& materialRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders, materialRegistry);
+    Renderer::prepare(assets, registry);
 
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
 
-    m_selectionShader = shaders.getShader(TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
+    m_selectionShader = m_registry->m_shaderRegistry->getShader(TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
     m_selectionShader->m_selection = true;
     m_selectionShader->prepare(assets);
 
-    m_selectionShaderSprite = shaders.getShader(TEX_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
+    m_selectionShaderSprite = m_registry->m_shaderRegistry->getShader(TEX_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
     m_selectionShaderSprite->m_selection = true;
     m_selectionShaderSprite->prepare(assets);
 }
@@ -48,8 +49,8 @@ void NodeRenderer::render(
     const RenderContext& ctx,
     SkyboxRenderer* skybox)
 {
-    m_taggedCount = ctx.assets.showTagged ? ctx.m_nodeRegistry.countTagged() : 0;
-    m_selectedCount = ctx.assets.showSelection ? ctx.m_nodeRegistry.countSelected() : 0;
+    m_taggedCount = ctx.assets.showTagged ? ctx.m_registry->m_nodeRegistry->countTagged() : 0;
+    m_selectedCount = ctx.assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
 
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     //ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
@@ -168,11 +169,11 @@ void NodeRenderer::drawNodes(
         }
     };
 
-    for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
         renderTypes(all.second);
     }
 
@@ -184,7 +185,7 @@ void NodeRenderer::drawNodes(
 
     if (selection) {
         // NOTE KI do not try blend here; end result is worse than not doing blend at all (due to stencil)
-        for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
             renderTypes(all.second);
         }
     }
@@ -213,15 +214,15 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
         }
     };
 
-    for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
         renderTypes(all.second);
     }
 
-    for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
         renderTypes(all.second);
     }
 
@@ -231,13 +232,13 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
 void NodeRenderer::drawBlended(
     const RenderContext& ctx)
 {
-    if (ctx.m_nodeRegistry.blendedNodes.empty()) return;
+    if (ctx.m_registry->m_nodeRegistry->blendedNodes.empty()) return;
 
     const glm::vec3& viewPos = ctx.m_camera->getViewPosition();
 
     // TODO KI discards nodes if *same* distance
     std::map<float, Node*> sorted;
-    for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
         for (const auto& map : all.second) {
             for (const auto& node : map.second) {
                 const float distance = glm::length(viewPos - node->getWorldPosition());

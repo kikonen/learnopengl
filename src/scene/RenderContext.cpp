@@ -85,8 +85,7 @@ RenderContext::RenderContext(
     state(state),
     m_scene(scene),
     m_batch(*scene->m_batch),
-    m_nodeRegistry(*scene->m_nodeRegistry),
-    m_entityRegistry(*scene->m_entityRegistry),
+    m_registry(scene->m_registry.get()),
     commandEngine(*scene->m_commandEngine),
     scriptEngine(*scene->m_scriptEngine),
     m_camera(camera),
@@ -112,22 +111,6 @@ RenderContext::RenderContext(
     m_matrices.viewSkybox = glm::mat4(glm::mat3(m_matrices.view));
     m_matrices.projection = m_camera->getProjection();
     m_matrices.projected = m_camera->getProjected();
-
-    if (false) {
-        const auto& view = m_matrices.view;
-
-        glm::mat4 inverse = glm::inverse(view);
-        glm::mat4 transpose = glm::transpose(view);
-
-        glm::vec3 right{ view[0][0], view[1][0], view[2][0] };
-        glm::vec3 up{ view[0][1], view[1][1], view[2][1] };
-        glm::vec3 pos{ inverse[3] };
-
-        const auto& cameraUp = m_camera->getViewUp();
-        const auto& cameraRight = m_camera->getViewRight();
-        const auto& cameraPos = m_camera->getViewPosition();
-        int x = 0;
-    }
 
     m_data = {
         m_camera->getViewPosition(),
@@ -166,94 +149,31 @@ void RenderContext::bindDefaults() const
     state.disable(GL_BLEND);
 }
 
-//void RenderContext::bindDraw(
-//    bool renderBack,
-//    bool wireframe) const
-//{
-//    if (renderBack) {
-//        state.disable(GL_CULL_FACE);
-//    }
-//    else {
-//        state.enable(GL_CULL_FACE);
-//    }
-//
-//    if (wireframe) {
-//        state.polygonFrontAndBack(GL_LINE);
-//    }
-//    else {
-//        state.polygonFrontAndBack(GL_FILL);
-//    }
-//}
-
-void RenderContext::bindUBOs() const
+void RenderContext::updateUBOs() const
 {
     // https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
-    bindMatricesUBO();
-    bindDataUBO();
-    bindClipPlanesUBO();
-    bindLightsUBO();
+    updateMatricesUBO();
+    updateDataUBO();
+    updateClipPlanesUBO();
+    updateLightsUBO();
 }
 
-void RenderContext::bindMatricesUBO() const
+void RenderContext::updateMatricesUBO() const
 {
     m_scene->m_renderData->updateMatrices(m_matrices);
 }
 
-void RenderContext::bindDataUBO() const
+void RenderContext::updateDataUBO() const
 {
     m_scene->m_renderData->updateData(m_data);
 }
 
-void RenderContext::bindClipPlanesUBO() const
+void RenderContext::updateClipPlanesUBO() const
 {
     m_scene->m_renderData->updateClipPlanes(m_clipPlanes);
 }
 
-void RenderContext::bindLightsUBO() const
+void RenderContext::updateLightsUBO() const
 {
-    auto& nodeRegistry = m_nodeRegistry;
-
-    LightsUBO lightsUbo{};
-    if (!m_useLight) {
-        lightsUbo.dirCount = 0;
-        lightsUbo.pointCount = 0;
-        lightsUbo.spotCount = 0;
-    }
-
-    if (m_useLight) {
-        auto& node = nodeRegistry.m_dirLight;
-        if (node && node->m_light->m_enabled) {
-            lightsUbo.dir[0] = node->m_light->toDirLightUBO();
-            lightsUbo.dirCount = 1;
-        }
-        else {
-            lightsUbo.dirCount = 0;
-        }
-    }
-
-    if (m_useLight) {
-        int count = 0;
-        for (auto& node : nodeRegistry.m_pointLights) {
-            if (count >= LIGHT_COUNT) break;
-            if (!node->m_light->m_enabled) continue;
-
-            lightsUbo.pointLights[count] = node->m_light->toPointightUBO();
-            count++;
-        }
-        lightsUbo.pointCount = count;
-    }
-
-    if (m_useLight) {
-        int count = 0;
-        for (auto& node : nodeRegistry.m_spotLights) {
-            if (count>= LIGHT_COUNT) break;
-            if (!node->m_light->m_enabled) continue;
-
-            lightsUbo.spotLights[count] = node->m_light->toSpotLightUBO();
-            count++;
-        }
-        lightsUbo.spotCount = count;
-    }
-
-    m_scene->m_renderData->updateLights(lightsUbo);
+    m_scene->m_renderData->updateLights(m_registry, m_useLight);
 }

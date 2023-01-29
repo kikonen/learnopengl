@@ -6,6 +6,9 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
+
 ObjectIdRenderer::ObjectIdRenderer()
     : Renderer()
 {
@@ -77,18 +80,17 @@ int ObjectIdRenderer::getObjectId(
 
 void ObjectIdRenderer::prepare(
     const Assets& assets,
-    ShaderRegistry& shaders,
-    MaterialRegistry& materialRegistry)
+    Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, shaders, materialRegistry);
+    Renderer::prepare(assets, registry);
 
-    m_idShader = shaders.getShader(TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
+    m_idShader = m_registry->m_shaderRegistry->getShader(TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idShader->prepare(assets);
 
-    m_idShaderSprite = shaders.getShader(TEX_OBJECT_ID_SPRITE, { { DEF_USE_ALPHA, "1"} });
+    m_idShaderSprite = m_registry->m_shaderRegistry->getShader(TEX_OBJECT_ID_SPRITE, { { DEF_USE_ALPHA, "1"} });
     m_idShaderSprite->prepare(assets);
 
     m_debugViewport = std::make_shared<Viewport>(
@@ -99,7 +101,7 @@ void ObjectIdRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         0,
-        shaders.getShader(TEX_VIEWPORT));
+        m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
 
     m_debugViewport->prepare(assets);
 }
@@ -167,15 +169,15 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
             }
         };
 
-        for (const auto& all : ctx.m_nodeRegistry.solidNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : ctx.m_nodeRegistry.alphaNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
             renderTypes(all.second);
         }
 
-        for (const auto& all : ctx.m_nodeRegistry.blendedNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
             renderTypes(all.second);
         }
 
