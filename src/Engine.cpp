@@ -47,6 +47,8 @@ int Engine::setup() {
         m_state.track(key, false);
     }
 
+    m_registry->prepare();
+
     return onSetup();
 }
 
