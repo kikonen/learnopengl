@@ -101,15 +101,15 @@ void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
     m_prev->bindTexture(ctx, 0, UNIT_MIRROR_REFLECTION);
 }
 
-void MirrorMapRenderer::render(
+bool MirrorMapRenderer::render(
     const RenderContext& ctx,
     SkyboxRenderer* skybox)
 {
-    if (!needRender(ctx)) return;
+    if (!needRender(ctx)) return false;
 
     Node* closest = findClosest(ctx);
     setClosest(closest, m_tagMaterial.m_registeredIndex);
-    if (!closest) return;
+    if (!closest) return false;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
@@ -183,6 +183,7 @@ void MirrorMapRenderer::render(
     ctx.updateMatricesUBO();
 
     m_rendered = true;
+    return true;
 }
 
 void MirrorMapRenderer::drawNodes(

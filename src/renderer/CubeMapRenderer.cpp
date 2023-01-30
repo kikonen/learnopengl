@@ -112,7 +112,7 @@ void CubeMapRenderer::bindTexture(const RenderContext& ctx)
     m_prev->bindTexture(ctx, UNIT_CUBE_MAP);
 }
 
-void CubeMapRenderer::render(
+bool CubeMapRenderer::render(
     const RenderContext& mainCtx,
     SkyboxRenderer* skybox)
 {
@@ -122,10 +122,10 @@ void CubeMapRenderer::render(
         m_cleared = true;
     }
 
-    if (!needRender(mainCtx)) return;
+    if (!needRender(mainCtx)) return false;
 
     Node* centerNode = findCenter(mainCtx);
-    if (!centerNode) return;
+    if (!centerNode) return false;
 
     if (mainCtx.assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
@@ -189,6 +189,7 @@ void CubeMapRenderer::render(
     m_prev.swap(m_curr);
 
     m_rendered = true;
+    return true;
 }
 
 void CubeMapRenderer::clearCubeMap(

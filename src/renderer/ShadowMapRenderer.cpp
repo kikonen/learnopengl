@@ -108,16 +108,16 @@ void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
     m_shadowBuffer->bindTexture(ctx, 0, UNIT_SHADOW_MAP);
 }
 
-void ShadowMapRenderer::render(
+bool ShadowMapRenderer::render(
     const RenderContext& ctx)
 {
-    if (!needRender(ctx)) return;
+    if (!needRender(ctx)) return false;
 
     // NOTE KI no shadows if no light
-    if (!ctx.assets.useLight) return;
+    if (!ctx.assets.useLight) return false;
 
     auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
-    if (!node) return;
+    if (!node) return false;
 
     {
         m_shadowBuffer->bind(ctx);
@@ -135,6 +135,7 @@ void ShadowMapRenderer::render(
     }
 
     m_rendered = true;
+    return true;
 }
 
 void ShadowMapRenderer::drawNodes(

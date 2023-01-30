@@ -24,7 +24,7 @@ public:
 
     void bindTexture(const RenderContext& ctx);
 
-    void render(
+    bool render(
         const RenderContext& ctx,
         SkyboxRenderer* skybox);
 

@@ -21,7 +21,7 @@ public:
 
     void bind(const RenderContext& ctx);
 
-    void render(
+    bool render(
         const RenderContext& ctx);
 
 private:

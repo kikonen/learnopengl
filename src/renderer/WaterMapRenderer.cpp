@@ -110,15 +110,15 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
     }
 }
 
-void WaterMapRenderer::render(
+bool WaterMapRenderer::render(
     const RenderContext& ctx,
     SkyboxRenderer* skybox)
 {
-    if (!needRender(ctx)) return;
+    if (!needRender(ctx)) return false;
 
     auto closest = findClosest(ctx);
     setClosest(closest, m_tagMaterial.m_registeredIndex);
-    if (!closest) return;
+    if (!closest) return false;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
@@ -195,6 +195,8 @@ void WaterMapRenderer::render(
     ctx.updateMatricesUBO();
 
     m_rendered = true;
+
+    return true;
 }
 
 void WaterMapRenderer::drawNodes(
