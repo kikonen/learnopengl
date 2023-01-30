@@ -197,7 +197,8 @@ namespace backend {
     {
         glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
 
-        auto handler = [this](GLBufferRange& cmdRange) {
+        int count = 0;
+        auto handler = [this, &count](GLBufferRange& cmdRange) {
             auto& drawRange = m_drawRanges[cmdRange.m_index];
             auto drawOptions = *drawRange.m_drawOptions;
             const size_t drawCount = cmdRange.m_usedCount;
@@ -220,12 +221,15 @@ namespace backend {
                     drawCount,
                     sizeof(backend::gl::DrawIndirectCommand));
             }
+            count += drawCount;
 
             // NOTE KI need to wait finishing of draw commands
             cmdRange.setFence();
         };
 
         m_commands->processPending(handler, drawCurrent, true);
+
+        //std::cout << '=' << count << '=';
     }
 
     gl::PerformanceCounters DrawBuffer::getCounters(bool clear)
