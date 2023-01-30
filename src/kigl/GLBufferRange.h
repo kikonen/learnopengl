@@ -51,15 +51,6 @@ struct GLBufferRange {
         m_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
     }
 
-    void wait()
-    {
-        if (m_sync) {
-            glWaitSync(m_sync, 0, GL_TIMEOUT_IGNORED);
-            glDeleteSync(m_sync);
-            m_sync = 0;
-        }
-    }
-
     // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
     void waitFence()
     {
@@ -77,5 +68,13 @@ struct GLBufferRange {
         //    std::cout << '[' << count << ']';
         glDeleteSync(m_sync);
         m_sync = 0;
+    }
+
+    void waitFenceOnServer()
+    {
+        if (m_sync) {
+            // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glWaitSync.xhtml
+            glWaitSync(m_sync, 0, GL_TIMEOUT_IGNORED);
+        }
     }
 };
