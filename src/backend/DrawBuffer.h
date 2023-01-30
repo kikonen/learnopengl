@@ -55,6 +55,8 @@ namespace backend {
         int m_batchCount = 0;
         int m_rangeCount = 0;
 
+        bool m_frustumEnabled = true;
+
         bool m_bound = false;
 
         Shader* m_cullingCompute{ nullptr };

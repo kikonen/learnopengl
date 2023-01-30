@@ -191,7 +191,7 @@ void Batch::flush(
             backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
 
             cmd.count = drawOptions.indexCount;
-            cmd.instanceCount = 0;
+            cmd.instanceCount = ctx.assets.frustumEnabled ? 0 : 1;
             cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
 
@@ -208,7 +208,7 @@ void Batch::flush(
             backend::gl::DrawArraysIndirectCommand& cmd = indirect.array;
 
             cmd.vertexCount = drawOptions.indexCount;
-            cmd.instanceCount = 0;
+            cmd.instanceCount = ctx.assets.frustumEnabled ? 0 : 1;
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
 
             for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {

@@ -14,8 +14,8 @@ class GLSyncQueue {
 public:
     GLSyncQueue(
         std::string name,
-        int entryCount,
-        int rangeCount)
+        size_t entryCount,
+        size_t rangeCount)
         : m_rangeCount(rangeCount),
         m_entryCount(entryCount),
         m_entrySize(sizeof(T)),
@@ -34,7 +34,7 @@ public:
         m_rangeLength = m_entryCount * m_entrySize;
 
         m_paddedRangeLength = m_rangeLength;
-        int pad = m_rangeLength % m_bindAlignment;
+        size_t pad = m_rangeLength % m_bindAlignment;
         if (pad > 0) {
             m_paddedRangeLength += (m_bindAlignment - pad);
         }
@@ -168,13 +168,14 @@ public:
     // Switch to next range
     // @return next buffer
     //
-    inline GLBufferRange& next(bool clear) {
+    inline GLBufferRange& next(bool clear, bool fence) {
         if (clear) {
             m_ranges[m_current].clear();
         }
 
         if constexpr (useFence)
-            m_ranges[m_current].setFence();
+            if (fence)
+                m_ranges[m_current].setFence();
 
         m_current = (m_current + 1) % m_ranges.size();
 
@@ -197,17 +198,17 @@ public:
     GLBuffer m_buffer;
 
 private:
-    const int m_entryCount;
-    const int m_entrySize;
-    const int m_rangeCount;
+    const size_t m_entryCount;
+    const size_t m_entrySize;
+    const size_t m_rangeCount;
 
-    int m_bindAlignment = 0;
-    int m_rangeLength = 0;
-    int m_paddedRangeLength = 0;
+    size_t m_bindAlignment = 0;
+    size_t m_rangeLength = 0;
+    size_t m_paddedRangeLength = 0;
 
     unsigned char* m_data{ nullptr };
 
-    int m_current = 0;
+    size_t m_current = 0;
     std::vector<GLBufferRange> m_ranges;
 };
 

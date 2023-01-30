@@ -60,12 +60,17 @@ struct GLBufferRange {
         GLenum res = GL_UNSIGNALED;
         while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
         {
-            res = glClientWaitSync(m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 50000);
+            res = glClientWaitSync(m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 10000);
             count++;
         }
 
-        //if (count > 1)
+        //if (count > 1) {
         //    std::cout << '[' << count << ']';
+        //}
+        //else {
+        //    std::cout << '.';
+        //}
+
         glDeleteSync(m_sync);
         m_sync = 0;
     }

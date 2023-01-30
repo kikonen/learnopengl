@@ -74,7 +74,7 @@ assets:
   terrain_tile_size: 400
 
   batch_size: 8192
-  batch_buffers: 10
+  batch_buffers: 40
 
   near_plane: 0.1
   far_plane: 1000.0

@@ -31,6 +31,8 @@ namespace backend {
     {
         const auto info = ki::GL::getInfo();
 
+        m_frustumEnabled = assets.frustumEnabled;
+
         m_batchCount = batchCount;
         m_rangeCount = rangeCount;
 
@@ -55,8 +57,8 @@ namespace backend {
         m_commands->prepare(BUFFER_ALIGNMENT);
 
         {
-            constexpr int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT | GL_MAP_COHERENT_BIT;
-            constexpr int mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+            constexpr int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;
+            constexpr int mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT;
 
             m_drawParameters.createEmpty(rangeCount * sizeof(gl::DrawIndirectParameters), storageFlags);
             m_drawParameters.map(mapFlags);
@@ -124,7 +126,7 @@ namespace backend {
 
         constexpr size_t PARAMS_SZ = sizeof(gl::DrawIndirectParameters);
         const size_t paramsOffset = cmdRange.m_index * PARAMS_SZ;
-        {
+        if (m_frustumEnabled) {
             gl::DrawIndirectParameters params{
                 cmdRange.m_baseIndex,
                 util::as_integer(drawRange.m_drawOptions->type)
@@ -134,19 +136,20 @@ namespace backend {
             data += cmdRange.m_index;
             // NOTE KI memcpy is *likely* faster than assignment operator
             memcpy(data, &params, PARAMS_SZ);
+
+            m_drawParameters.flushRange(paramsOffset, PARAMS_SZ);
         }
 
-        {
+        if (m_frustumEnabled) {
             m_cullingCompute->bind(*drawRange.m_state);
             m_cullingCompute->u_drawParametersIndex.set(cmdRange.m_index);
 
-            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
             glDispatchCompute(drawCount, 1, 1);
         }
 
         m_drawCounter += drawCount;
 
-        const auto& next = m_commands->next(false);
+        const auto& next = m_commands->next(false, false);
         if (!next.empty()) {
             // NOTE KI trigger draw pending if out of buffers
             drawPending(true);
@@ -217,6 +220,9 @@ namespace backend {
                     drawCount,
                     sizeof(backend::gl::DrawIndirectCommand));
             }
+
+            // NOTE KI need to wait finishing of draw commands
+            cmdRange.setFence();
         };
 
         m_commands->processPending(handler, drawCurrent, true);

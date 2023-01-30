@@ -360,7 +360,7 @@ MeshType* SceneFile::createType(
         type->m_entityType = EntityType::quad;
     }
     else if (data.type == EntityType::billboard) {
-        if(false) {
+        if(true) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME);
             auto* mesh = future.get();

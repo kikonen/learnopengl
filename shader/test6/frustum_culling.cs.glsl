@@ -46,17 +46,17 @@ struct PerformanceCounters {
 
 layout(location = UNIFORM_DRAW_PARAMETERS_INDEX) uniform uint u_drawParametersIndex;
 
-layout (binding = SSBO_DRAW_COMMANDS, std430) buffer DrawCommandSSBO
+layout (binding = SSBO_DRAW_COMMANDS, std430) restrict buffer DrawCommandSSBO
 {
   DrawIndirectCommand u_commands[];
 };
 
-layout (binding = SSBO_DRAW_PARAMETERS, std430) buffer DrawParametersSSBO
+layout (binding = SSBO_DRAW_PARAMETERS, std430) readonly buffer DrawParametersSSBO
 {
   DrawParameters u_params[];
 };
 
-layout (binding = SSBO_PERFORMANCE_COUNTERS, std430) buffer PerformanceCountersSSBO
+layout (binding = SSBO_PERFORMANCE_COUNTERS, std430) writeonly buffer PerformanceCountersSSBO
 {
   PerformanceCounters u_counters;
 };
