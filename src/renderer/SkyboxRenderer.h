@@ -8,6 +8,8 @@
 
 #include "Renderer.h"
 
+#include "scene/CubeMap.h"
+
 class SkyboxRenderer final : public Renderer
 {
 public:
@@ -20,23 +22,19 @@ public:
         const Assets& assets,
         Registry* registry) override;
 
-    void assign(Shader* shader);
     void bindTexture(const RenderContext& ctx);
 
     void render(const RenderContext& ctx);
-
-public:
-    unsigned int m_textureID;
 
 private:
     const std::string m_shaderName;
     const std::string m_materialName;
 
+    CubeMap m_cubeMap{ false };
+
     GLVertexArray m_vao;
     GLBuffer m_vbo{ "skyboxVBO" };
 
     Shader* m_shader{ nullptr };
-
-    bool m_boundTexture = false;
 };
 

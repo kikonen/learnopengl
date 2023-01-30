@@ -87,23 +87,12 @@ void GLState::bindVAO(GLuint vaoId) noexcept
     }
 }
 
-//void GLState::bindTextures(
-//    const GLuint unitIndexFirst,
-//    const std::vector<GLuint>& textureIDs) noexcept
-//{
-//    //glBindTextures(unitIndexFirst, textureIDs.size(), &textureIDs[0]);
-//    GLuint unitIndex = unitIndexFirst;
-//    for (auto textureID : textureIDs) {
-//        bindTexture(unitIndex++, textureID, false);
-//    }
-//}
-
 void GLState::bindTexture(
     const GLuint unitIndex,
     const GLuint textureID,
     bool force) noexcept
 {
-    force = true;
+    //force = true;
 
     // NOTE KI logic failing when new texture generated, but its' ID does not change
     // (i.e. IDs are apparently reused after texture delete)

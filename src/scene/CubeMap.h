@@ -5,16 +5,32 @@
 
 #include "ki/GL.h"
 
+class RenderContext;
 
 class CubeMap
 {
 public:
-    static unsigned int createEmpty(
-        int size,
-        GLenum internalFormat = GL_RGBA8);
+    CubeMap(bool empty);
 
-    static unsigned int createFromImages(
-        std::vector<std::string> faces,
-        GLenum format = GL_RGB,
-        GLenum internalFormat = GL_RGB8);
+    ~CubeMap();
+
+    void create();
+
+    void bindTexture(const RenderContext& ctx, int unitIndex);
+
+private:
+    GLuint createEmpty();
+
+    GLuint createFaces();
+
+public:
+    const bool m_empty;
+
+    std::vector<std::string> m_faces;
+    int m_size = 0;
+
+    GLuint m_textureID = 0;
+
+    GLenum m_format = GL_RGB;
+    GLenum m_internalFormat = GL_RGBA8;
 };

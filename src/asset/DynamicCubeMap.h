@@ -4,6 +4,8 @@
 
 #include "ki/GL.h"
 
+#include "scene/CubeMap.h"
+
 class RenderContext;
 
 class DynamicCubeMap
@@ -24,7 +26,7 @@ public:
 public:
     const int m_size;
 
-    unsigned int m_textureID = 0;
+    CubeMap m_cubeMap{ true };
 
     bool m_valid = false;
 

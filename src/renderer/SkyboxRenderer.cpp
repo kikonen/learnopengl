@@ -62,7 +62,7 @@ const float skyboxVertices[] = {
 SkyboxRenderer::SkyboxRenderer(
     const std::string& shaderName,
     const std::string& materialName)
-  : m_shaderName(shaderName),
+    : m_shaderName(shaderName),
     m_materialName(materialName)
 {
 }
@@ -93,7 +93,7 @@ void SkyboxRenderer::prepare(
             basePath = fp.string();
         }
 
-        std::vector<std::string> faces{
+        m_cubeMap.m_faces = {
             basePath + "/right.jpg",
             basePath + "/left.jpg",
             basePath + "/top.jpg",
@@ -102,8 +102,8 @@ void SkyboxRenderer::prepare(
             basePath + "/back.jpg"
         };
 
-        m_textureID = CubeMap::createFromImages(faces);
     }
+    m_cubeMap.create();
 
     {
         m_vao.create();
@@ -123,17 +123,9 @@ void SkyboxRenderer::prepare(
     }
 }
 
-void SkyboxRenderer::assign(Shader* shader)
-{
-//    shader->skybox.set(ctx.assets.skyboxUnitIndex);
-}
-
 void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 {
-    if (!m_boundTexture) {
-        m_boundTexture = true;
-        ctx.state.bindTexture(UNIT_SKYBOX, m_textureID, false);
-    }
+    m_cubeMap.bindTexture(ctx, UNIT_SKYBOX);
 }
 
 void SkyboxRenderer::render(const RenderContext& ctx)

@@ -17,7 +17,7 @@ DynamicCubeMap::~DynamicCubeMap()
 
 void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
 {
-    ctx.state.bindTexture(unitIndex, m_textureID, false);
+    m_cubeMap.bindTexture(ctx, unitIndex);
 }
 
 void DynamicCubeMap::bind(const RenderContext& ctx)
@@ -74,6 +74,8 @@ void DynamicCubeMap::prepare(
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    m_textureID = CubeMap::createEmpty(m_size);
+    m_cubeMap.m_size = m_size;
+    m_cubeMap.create();
+
     m_valid = true;
 }

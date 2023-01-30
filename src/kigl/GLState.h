@@ -28,10 +28,6 @@ public:
     void useProgram(GLuint programId) noexcept;
     void bindVAO(GLuint vaoId) noexcept;
 
-    //void bindTextures(
-    //    const GLuint unitIndexFirst,
-    //    const std::vector<GLuint>& textureIDs) noexcept;
-
     void bindTexture(
         const GLuint unitIndex,
         const GLuint textureID,

@@ -150,7 +150,7 @@ bool CubeMapRenderer::render(
             GL_FRAMEBUFFER,
             GL_COLOR_ATTACHMENT0,
             GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
-            m_curr->m_textureID,
+            m_curr->m_cubeMap.m_textureID,
             0);
 
         {
@@ -203,7 +203,7 @@ void CubeMapRenderer::clearCubeMap(
     for (int face = 0; face < 6; face++) {
         glFramebufferTexture2D(
             GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cube.m_textureID, 0);
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cube.m_cubeMap.m_textureID, 0);
 
         glm::vec4 c = color;
         if (debug) c = DEBUG_COLOR[face];
