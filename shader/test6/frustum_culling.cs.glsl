@@ -72,18 +72,24 @@ void main(void) {
   const uint baseInstance = param.drawType == DRAW_TYPE_ELEMENTS ? cmd.baseInstance_or_pad : cmd.baseVertex_or_baseInstance;
   const Entity entity = u_entities[baseInstance];
 
-  const vec4 pos = u_projectedMatrix *
-    entity.modelMatrix *
-    vec4(entity.volumeCenter, 1.0);
+  bool visible = true;
 
-  const vec4 radiusPos = u_projectedMatrix *
-    entity.modelMatrix *
-    vec4(entity.volumeCenter + vec3(entity.volumeRadius, entity.volumeRadius, entity.volumeRadius), 1.0);
+  if (entity.flags != ENTITY_FLAG_NO_FRUSTUM) {
+    const vec4 pos = u_projectedMatrix *
+      entity.modelMatrix *
+      vec4(entity.volumeCenter, 1.0);
 
-  const float radius = length(vec3(radiusPos) - vec3(pos));
+    const vec4 radiusPos = u_projectedMatrix *
+      entity.modelMatrix *
+      vec4(entity.volumeCenter + vec3(entity.volumeRadius, entity.volumeRadius, entity.volumeRadius), 1.0);
 
-  if ((abs(pos.x) - radius) < (pos.w * EXPAND_X) &&
-      (abs(pos.y) - radius) < (pos.w * EXPAND_Y)) {
+    const float radius = length(vec3(radiusPos) - vec3(pos));
+
+    visible = (abs(pos.x) - radius) < (pos.w * EXPAND_X) &&
+      (abs(pos.y) - radius) < (pos.w * EXPAND_Y);
+  }
+
+  if (visible) {
     atomicAdd(u_counters.drawCount, 1);
     u_commands[baseIndex + gl_GlobalInvocationID.x].instanceCount = 1;
   } else {

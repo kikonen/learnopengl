@@ -18,6 +18,8 @@ namespace backend {
         // - GL_POINTS
         GLenum mode = GL_POINTS;
 
+        GLenum depthFunc = GL_LESS;
+
         bool renderBack = false;
         bool wireframe = false;
         bool blend = false;
@@ -47,7 +49,8 @@ namespace backend {
                 wireframe == b.wireframe &&
                 (allowBlend ? blend == b.blend : true) &&
                 mode == b.mode &&
-                type == b.type;
+                type == b.type &&
+                depthFunc == b.depthFunc;
         }
 
         inline bool operator<(const DrawOptions& o) const noexcept {

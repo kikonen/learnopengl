@@ -93,6 +93,7 @@ void SkyboxRenderer::prepare(
             basePath = fp.string();
         }
 
+        m_cubeMap.m_internalFormat = GL_RGB8;
         m_cubeMap.m_faces = {
             basePath + "/right.jpg",
             basePath + "/left.jpg",
@@ -141,7 +142,7 @@ void SkyboxRenderer::render(const RenderContext& ctx)
     bindTexture(ctx);
 
     // NOTE KI skybox needs "equal", since drawing "at inifinity"
-    glDepthFunc(GL_LEQUAL);
+    ctx.state.setDepthFunc(GL_LEQUAL);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    glDepthFunc(ctx.m_depthFunc);
+    ctx.state.setDepthFunc(ctx.m_depthFunc);
 }

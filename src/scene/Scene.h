@@ -23,6 +23,7 @@
 #include "TextureBuffer.h"
 #include "WindowBuffer.h"
 
+#include "CubeMap.h"
 
 class Camera;
 class Light;
@@ -128,4 +129,6 @@ private:
     std::unique_ptr<WindowBuffer> m_windowBuffer{ nullptr };
 
     unsigned int m_pbo = 0;
+
+    CubeMap m_skyboxMap{ false };
 };

@@ -93,7 +93,7 @@ void SceneFile::attach(
     const std::vector<EntityData>& entities,
     std::vector<Material>& materials)
 {
-    attachSkybox(skybox, materials);
+    attachSkybox(root, skybox, materials);
 
     attachEntity(root, root, materials);
     attachVolume(root);
@@ -105,6 +105,7 @@ void SceneFile::attach(
 }
 
 void SceneFile::attachSkybox(
+    const EntityData& root,
     SkyboxData& data,
     std::vector<Material>& materials)
 {

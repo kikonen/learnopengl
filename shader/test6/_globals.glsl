@@ -44,6 +44,7 @@
 #define ENTITY_DRAW_ARRAY 2
 
 #define ENTITY_FLAG_BILLBOARD 1
+#define ENTITY_FLAG_NO_FRUSTUM 2
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 // => defined by c++ side (more optimal)

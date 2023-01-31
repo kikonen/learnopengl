@@ -272,6 +272,9 @@ void Scene::bind(RenderContext& ctx)
     if (m_shadowMapRenderer) {
         m_shadowMapRenderer->bind(ctx);
     }
+    if (m_registry->m_nodeRegistry->m_skybox) {
+        m_registry->m_nodeRegistry->m_skybox->bindTexture(ctx);
+    }
 
     m_renderData->bind();
 
@@ -294,7 +297,7 @@ backend::gl::PerformanceCounters Scene::getCounters(bool clear)
 
 void Scene::draw(RenderContext& ctx)
 {
-    glDepthFunc(ctx.m_depthFunc);
+    ctx.state.setDepthFunc(ctx.m_depthFunc);
 
     bool wasCubeMap = false;
     int renderCount = 0;

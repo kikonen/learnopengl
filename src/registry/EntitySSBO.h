@@ -6,6 +6,7 @@ constexpr int ENTITY_DRAW_ELEMENT = 1;
 constexpr int ENTITY_DRAW_ARRAY = 2;
 
 constexpr int ENTITY_FLAG_BILLBOARD = 1;
+constexpr int ENTITY_FLAG_NO_FRUSTUM = 2;
 
 // SSBO entry
 //

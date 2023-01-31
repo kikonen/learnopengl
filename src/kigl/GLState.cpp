@@ -116,3 +116,11 @@ void GLState::setBlendMode(const GLBlendMode& mode)
         glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
     }
 }
+
+void GLState::setDepthFunc(const GLenum mode)
+{
+    if (m_depthFunc != mode) {
+        m_depthFunc = mode;
+        glDepthFunc(mode);
+    }
+}

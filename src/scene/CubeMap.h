@@ -32,5 +32,5 @@ public:
     GLuint m_textureID = 0;
 
     GLenum m_format = GL_RGB;
-    GLenum m_internalFormat = GL_RGBA8;
+    GLenum m_internalFormat = GL_RGB8;
 };

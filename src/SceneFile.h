@@ -231,6 +231,7 @@ private:
         std::vector<Material>& materials);
 
     void attachSkybox(
+        const EntityData& root,
         SkyboxData& data,
         std::vector<Material>& materials);
 

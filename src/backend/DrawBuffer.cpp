@@ -255,6 +255,8 @@ namespace backend {
         drawRange.m_shader->bind(state);
         state.bindVAO(*drawRange.m_vao);
 
+        state.setDepthFunc(drawOptions.depthFunc);
+
         if (drawOptions.renderBack) {
             state.disable(GL_CULL_FACE);
         }

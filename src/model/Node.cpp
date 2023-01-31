@@ -72,9 +72,14 @@ void Node::prepare(
 
         auto* entity = registry->m_entityRegistry->get(m_entityIndex);
         entity->m_materialIndex = getMaterialIndex();
+
         if (m_type->m_entityType == EntityType::billboard) {
             entity->m_flags = ENTITY_FLAG_BILLBOARD;
         }
+        if (m_type->m_flags.noFrustum) {
+            entity->m_flags = ENTITY_FLAG_NO_FRUSTUM;
+        }
+
         entity->setObjectID(m_objectID);
     }
 

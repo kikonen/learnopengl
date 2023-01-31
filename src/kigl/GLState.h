@@ -34,6 +34,7 @@ public:
         bool force) noexcept;
 
     void setBlendMode(const GLBlendMode& mode);
+    void setDepthFunc(const GLenum mode);
 
 private:
     std::set<GLenum> m_enabled;
@@ -49,5 +50,6 @@ private:
     int m_vaoId = -1;
 
     GLBlendMode m_blendMode{ 0, 0, 0, 0 };
+    GLenum m_depthFunc = -1;
 };
 

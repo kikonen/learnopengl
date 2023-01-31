@@ -42,6 +42,7 @@ int Engine::setup() {
         GL_CLIP_DISTANCE1,
         GL_STENCIL_TEST,
         GL_DEPTH_TEST,
+        GL_RASTERIZER_DISCARD,
     };
     for (auto& key : keys) {
         m_state.track(key, false);
