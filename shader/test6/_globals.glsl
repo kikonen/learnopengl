@@ -40,11 +40,10 @@
 #define DRAW_TYPE_ELEMENTS 1
 #define DRAW_TYPE_ARRAYS 2
 
-#define ENTITY_DRAW_ELEMENT 1
-#define ENTITY_DRAW_ARRAY 2
-
-#define ENTITY_FLAG_BILLBOARD 1
-#define ENTITY_FLAG_NO_FRUSTUM 2
+#define ENTITY_DRAW_ELEMENT_BIT 1
+#define ENTITY_DRAW_ARRAY_BIT 2
+#define ENTITY_BILLBOARD_BIT 4
+#define ENTITY_NO_FRUSTUM_BIT 8
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 // => defined by c++ side (more optimal)

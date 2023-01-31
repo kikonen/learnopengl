@@ -74,7 +74,7 @@ void main(void) {
 
   bool visible = true;
 
-  if (entity.flags != ENTITY_FLAG_NO_FRUSTUM) {
+  if ( !((entity.flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)) {
     const vec4 pos = u_projectedMatrix *
       entity.modelMatrix *
       vec4(entity.volumeCenter, 1.0);

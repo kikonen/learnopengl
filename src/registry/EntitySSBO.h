@@ -2,11 +2,10 @@
 
 #include <glm/glm.hpp>
 
-constexpr int ENTITY_DRAW_ELEMENT = 1;
-constexpr int ENTITY_DRAW_ARRAY = 2;
-
-constexpr int ENTITY_FLAG_BILLBOARD = 1;
-constexpr int ENTITY_FLAG_NO_FRUSTUM = 2;
+constexpr unsigned int ENTITY_DRAW_ELEMENT_BIT = 1;
+constexpr unsigned int ENTITY_DRAW_ARRAY_BIT = 2;
+constexpr unsigned int ENTITY_BILLBOARD_BIT = 4;
+constexpr unsigned int ENTITY_NO_FRUSTUM_BIT = 8;
 
 // SSBO entry
 //
@@ -41,11 +40,9 @@ struct EntitySSBO {
 
     GLuint m_flags{ 0 }; // 1 * 4 = 4
 
-    GLuint m_drawType = { ENTITY_DRAW_ELEMENT };
-
     // TOTAL: 136
 
-    //int pad1;
+    int pad1;
     //int pad2;
 
     inline void setObjectID(int objectID) {

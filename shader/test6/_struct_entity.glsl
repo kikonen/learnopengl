@@ -10,5 +10,5 @@ struct Entity {
   uint highlightIndex;
   uint flags;
 
-  uint drawType;
+  uint pad1;
 };

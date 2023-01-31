@@ -46,7 +46,8 @@ void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
 
   vec4 worldPos;
-  if (entity.flags == ENTITY_FLAG_BILLBOARD) {
+
+  if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
     // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
     // - "ogl" approach
     vec3 entityPos = vec3(entity.modelMatrix[3]);

@@ -74,10 +74,10 @@ void Node::prepare(
         entity->m_materialIndex = getMaterialIndex();
 
         if (m_type->m_entityType == EntityType::billboard) {
-            entity->m_flags = ENTITY_FLAG_BILLBOARD;
+            entity->m_flags |= ENTITY_BILLBOARD_BIT;
         }
         if (m_type->m_flags.noFrustum) {
-            entity->m_flags = ENTITY_FLAG_NO_FRUSTUM;
+            entity->m_flags |= ENTITY_NO_FRUSTUM_BIT;
         }
 
         entity->setObjectID(m_objectID);
