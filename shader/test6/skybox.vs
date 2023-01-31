@@ -2,9 +2,6 @@
 
 layout (location = ATTR_POS) in vec4 a_pos;
 
-//layout(location = UNIFORM_PROJECTION_MATRIX) uniform mat4 u_projectionMatrix;
-//layout(location = UNIFORM_VIEW_MATRIX) uniform mat4 u_viewMatrix;
-
 #include uniform_matrices.glsl
 
 out vec3 texCoord;

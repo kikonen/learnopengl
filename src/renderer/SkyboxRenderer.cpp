@@ -131,6 +131,8 @@ void SkyboxRenderer::bindTexture(const RenderContext& ctx)
 
 void SkyboxRenderer::render(const RenderContext& ctx)
 {
+    return;
+
     if (!m_prepared) return;
 
     ctx.m_batch->flush(ctx);

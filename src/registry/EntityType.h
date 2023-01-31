@@ -7,4 +7,5 @@ enum class EntityType {
     billboard,
     sprite,
     terrain,
+    skybox,
 };

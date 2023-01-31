@@ -37,7 +37,6 @@
 
 #include "renderer/SkyboxRenderer.h"
 
-
 #include "scene/TerrainGenerator.h"
 
 
@@ -50,6 +49,7 @@ namespace {
     const double DEF_ALPHA = 1.0;
 
     const std::string QUAD_MESH_NAME{ "quad" };
+    const std::string SKYBOX_MESH_NAME{ "skybox" };
 }
 
 
@@ -113,6 +113,33 @@ void SceneFile::attachSkybox(
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
     m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
+
+    auto type = m_registry->m_typeRegistry->getType("<skybox>");
+    auto future = m_registry->m_modelRegistry->getMesh(
+        SKYBOX_MESH_NAME);
+    auto* mesh = future.get();
+    type->setMesh(mesh);
+    type->m_entityType = EntityType::skybox;
+
+    auto& flags = type->m_flags;
+
+    flags.wireframe = false;
+    flags.renderBack = true;
+    flags.noShadow = true;
+    flags.noFrustum = true;
+    flags.noReflect = true;
+    flags.noRefract = true;
+    flags.noDisplay = false;
+    flags.noSelect = true;
+
+    type->m_drawOptions.depthFunc = GL_LEQUAL;
+
+    type->m_nodeShader = m_registry->m_shaderRegistry->getShader(data.shaderName);
+
+    auto node = new Node(type);
+    node->m_parentId = root.base.id;
+
+    m_registry->m_nodeRegistry->addNode(type, node);
 }
 
 void SceneFile::attachVolume(

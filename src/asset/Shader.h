@@ -30,6 +30,7 @@ const std::string TEX_DEBUG_DEPTH{ "debug_depth" };
 const std::string TEX_EFFECT{ "effect" };
 const std::string TEX_VIEWPORT{ "viewport" };
 const std::string TEX_VOLUME{ "volume" };
+const std::string TEX_SKYBOX{ "skybox" };
 
 const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
