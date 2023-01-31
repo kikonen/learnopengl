@@ -127,8 +127,8 @@ void SceneFile::attachSkybox(
     flags.renderBack = true;
     flags.noShadow = true;
     flags.noFrustum = true;
-    flags.noReflect = true;
-    flags.noRefract = true;
+    //flags.noReflect = true;
+    //flags.noRefract = true;
     flags.noDisplay = false;
     flags.noSelect = true;
 

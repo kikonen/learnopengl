@@ -101,7 +101,7 @@ entities:
     pos: [0.0, -3.0, 0.0]
     render_flags:
       cube_map: true
-    enabled: false
+    enabled: true
   - name: Glass ball
     model: glass_ball
     shader: texture
@@ -111,7 +111,7 @@ entities:
       reflection: 0.8
       refraction: 0.05
       refraction_ratio: [1.0, 1.52]
-    enabled: false
+    enabled: true
   - name: Brick wall
     type: quad
     material: brickwall
