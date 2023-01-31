@@ -13,7 +13,6 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
-#include "SkyboxRenderer.h"
 #include "WaterNoiseGenerator.h"
 
 
@@ -111,8 +110,7 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 }
 
 bool WaterMapRenderer::render(
-    const RenderContext& ctx,
-    SkyboxRenderer* skybox)
+    const RenderContext& ctx)
 {
     if (!needRender(ctx)) return false;
 
@@ -154,7 +152,7 @@ bool WaterMapRenderer::render(
 
         m_reflectionBuffer->bind(localCtx);
 
-        drawNodes(localCtx, skybox, closest, true);
+        drawNodes(localCtx, closest, true);
 
         //m_reflectionBuffer->unbind(ctx);
 
@@ -185,7 +183,7 @@ bool WaterMapRenderer::render(
 
         m_refractionBuffer->bind(localCtx);
 
-        drawNodes(localCtx, skybox, closest, false);
+        drawNodes(localCtx, closest, false);
 
         //m_refractionBuffer->unbind(ctx);
 
@@ -201,7 +199,6 @@ bool WaterMapRenderer::render(
 
 void WaterMapRenderer::drawNodes(
     const RenderContext& ctx,
-    SkyboxRenderer* skybox,
     Node* current,
     bool reflect)
 {
@@ -244,10 +241,6 @@ void WaterMapRenderer::drawNodes(
 
         for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
             renderTypes(all.second);
-        }
-
-        if (skybox) {
-            skybox->render(ctx);
         }
 
         for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {

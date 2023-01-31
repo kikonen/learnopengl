@@ -9,7 +9,6 @@
 #include "model/Viewport.h"
 
 class Node;
-class SkyboxRenderer;
 class TextureBuffer;
 class Viewport;
 
@@ -26,11 +25,10 @@ public:
     void bindTexture(const RenderContext& ctx);
 
     bool render(
-        const RenderContext& ctx,
-        SkyboxRenderer* skybox);
+        const RenderContext& ctx);
 
 private:
-    void drawNodes(const RenderContext& ctx, SkyboxRenderer* skybox, Node* current);
+    void drawNodes(const RenderContext& ctx, Node* current);
     Node* findClosest(const RenderContext& ctx);
 
 public:

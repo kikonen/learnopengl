@@ -65,3 +65,11 @@
 #ifndef LIGHT_COUNT
   #define LIGHT_COUNT 8
 #endif
+
+#ifndef CS_COUNT_X
+  #define CS_COUNT_X 32
+#endif
+
+#ifndef CS_COUNT_Y
+  #define CS_COUNT_Y 1
+#endif

@@ -171,7 +171,7 @@ void SceneFile::attachVolume(
     flags.wireframe = true;
     flags.renderBack = true;
     flags.noShadow = true;
-    flags.noFrustum = true;
+    flags.noFrustum = false;
     flags.noReflect = true;
     flags.noRefract = true;
     flags.noDisplay = true;
@@ -222,7 +222,7 @@ void SceneFile::attachCubeMapCenter(
     flags.wireframe = true;
     flags.renderBack = true;
     flags.noShadow = true;
-    flags.noFrustum = true;
+    flags.noFrustum = false;
     flags.noReflect = true;
     flags.noRefract = true;
     flags.noDisplay = true;

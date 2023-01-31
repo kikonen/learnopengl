@@ -10,8 +10,6 @@
 #include "scene/TextureBuffer.h"
 
 
-class SkyboxRenderer;
-
 class CubeMapRenderer final : public Renderer
 {
 public:
@@ -25,8 +23,7 @@ public:
     void bindTexture(const RenderContext& ctx);
 
     bool render(
-        const RenderContext& ctx,
-        SkyboxRenderer* skybox);
+        const RenderContext& ctx);
 
 private:
     void clearCubeMap(
@@ -37,7 +34,6 @@ private:
 
     void drawNodes(
         const RenderContext& ctx,
-        SkyboxRenderer* skybox,
         const Node* centerNode);
 
     Node* findCenter(

@@ -2,8 +2,6 @@
 
 #include "asset/Shader.h"
 
-#include "SkyboxRenderer.h"
-
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
@@ -46,8 +44,7 @@ void NodeRenderer::update(const RenderContext& ctx)
 }
 
 void NodeRenderer::render(
-    const RenderContext& ctx,
-    SkyboxRenderer* skybox)
+    const RenderContext& ctx)
 {
     m_taggedCount = ctx.assets.showTagged ? ctx.m_registry->m_nodeRegistry->countTagged() : 0;
     m_selectedCount = ctx.assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
@@ -80,7 +77,7 @@ void NodeRenderer::render(
         }
 
         renderSelectionStencil(ctx);
-        drawNodes(ctx, skybox, false);
+        drawNodes(ctx, false);
         drawBlended(ctx);
         renderSelection(ctx);
 
@@ -104,7 +101,7 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // draw entity data mask
-    drawNodes(ctx, nullptr, true);
+    drawNodes(ctx, true);
 
     ctx.state.disable(GL_STENCIL_TEST);
 }
@@ -134,7 +131,6 @@ void NodeRenderer::renderSelection(const RenderContext& ctx)
 // draw all non selected nodes
 void NodeRenderer::drawNodes(
     const RenderContext& ctx,
-    SkyboxRenderer* skybox,
     bool selection)
 {
     if (selection) {
@@ -175,12 +171,6 @@ void NodeRenderer::drawNodes(
 
     for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
         renderTypes(all.second);
-    }
-
-    if (!selection) {
-        if (skybox) {
-            skybox->render(ctx);
-        }
     }
 
     if (selection) {

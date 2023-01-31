@@ -17,8 +17,6 @@
 #include "registry/ModelRegistry.h"
 #include "registry/MaterialRegistry.h"
 
-#include "renderer/SkyboxRenderer.h"
-
 #include "scene/AsyncLoader.h"
 
 

@@ -1,6 +1,6 @@
 #version 460 core
 
-layout (local_size_x = 1, local_size_y = 1) in;
+layout (local_size_x = CS_COUNT_X, local_size_y = CS_COUNT_Y) in;
 
 #include struct_entity.glsl
 
@@ -74,7 +74,7 @@ void main(void) {
 
   bool visible = true;
 
-  if ( !((entity.flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)) {
+  if ((entity.flags & ENTITY_NO_FRUSTUM_BIT) != ENTITY_NO_FRUSTUM_BIT) {
     const vec4 pos = u_projectedMatrix *
       entity.modelMatrix *
       vec4(entity.volumeCenter, 1.0);

@@ -220,10 +220,6 @@ void Scene::update(RenderContext& ctx)
         generator->update(ctx);
     }
 
-    if (m_registry->m_nodeRegistry->m_skybox) {
-        m_registry->m_nodeRegistry->m_skybox->update(ctx);
-    }
-
     if (m_nodeRenderer) {
         m_nodeRenderer->update(ctx);
     }
@@ -312,14 +308,14 @@ void Scene::draw(RenderContext& ctx)
     //glEnable(GL_POLYGON_OFFSET_FILL);
     //glPolygonOffset(0.2f, 0.2f);
 
-    if (m_cubeMapRenderer && m_cubeMapRenderer->render(ctx, m_registry->m_nodeRegistry->m_skybox.get())) {
+    if (m_cubeMapRenderer && m_cubeMapRenderer->render(ctx)) {
         wasCubeMap = true;
     }
 
-    if (!wasCubeMap && m_waterMapRenderer && m_waterMapRenderer->render(ctx, m_registry->m_nodeRegistry->m_skybox.get()))
+    if (!wasCubeMap && m_waterMapRenderer && m_waterMapRenderer->render(ctx))
         renderCount++;
 
-    if (!wasCubeMap && m_mirrorMapRenderer && m_mirrorMapRenderer->render(ctx, m_registry->m_nodeRegistry->m_skybox.get()))
+    if (!wasCubeMap && m_mirrorMapRenderer && m_mirrorMapRenderer->render(ctx))
         renderCount++;
 
     // NOTE KI skip main render if special update cycle
@@ -422,7 +418,7 @@ void Scene::drawScene(RenderContext& ctx)
     }
 
     if (m_nodeRenderer) {
-        m_nodeRenderer->render(ctx, m_registry->m_nodeRegistry->m_skybox.get());
+        m_nodeRenderer->render(ctx);
     }
 
     if (m_particleSystem) {

@@ -10,12 +10,12 @@
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
+#include "renderer/SkyboxRenderer.h"
+
 #include "Registry.h"
 #include "MaterialRegistry.h"
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
-
-#include "renderer/SkyboxRenderer.h"
 
 namespace {
     const NodeVector EMPTY_NODE_LIST;

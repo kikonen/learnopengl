@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "Renderer.h"
-#include "SkyboxRenderer.h"
 
 class NodeRenderer final : public Renderer
 {
@@ -17,18 +16,14 @@ public:
     void update(const RenderContext& ctx) override;
 
     void render(
-        const RenderContext& ctx,
-        SkyboxRenderer* skybox);
+        const RenderContext& ctx);
 
 private:
     void renderSelectionStencil(const RenderContext& ctx);
     void renderSelection(const RenderContext& ctx);
 
-//    void drawBlended(const RenderContext& ctx);
-
     void drawNodes(
         const RenderContext& ctx,
-        SkyboxRenderer* skybox,
         bool selection);
 
     void drawBlended(

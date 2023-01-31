@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include "SkyboxRenderer.h"
-
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
@@ -113,8 +111,7 @@ void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 }
 
 bool CubeMapRenderer::render(
-    const RenderContext& mainCtx,
-    SkyboxRenderer* skybox)
+    const RenderContext& mainCtx)
 {
     if (!m_cleared) {
         clearCubeMap(mainCtx, *m_prev.get(), { 0, 0, 0, 1 }, false);
@@ -181,7 +178,7 @@ bool CubeMapRenderer::render(
         ctx.m_matrices.lightProjected = mainCtx.m_matrices.lightProjected;
         ctx.updateMatricesUBO();
 
-        drawNodes(ctx, skybox, centerNode);
+        drawNodes(ctx, centerNode);
     }
 
     m_curr->unbind(mainCtx);
@@ -216,7 +213,6 @@ void CubeMapRenderer::clearCubeMap(
 
 void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
-    SkyboxRenderer* skybox,
     const Node* centerNode)
 {
     auto renderTypes = [&ctx, &centerNode](const MeshTypeMap& typeMap) {
@@ -244,11 +240,6 @@ void CubeMapRenderer::drawNodes(
 
     for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
         renderTypes(all.second);
-    }
-
-    // NOTE KI skybox MUST be rendered before blended nodes
-    if (skybox) {
-        skybox->render(ctx);
     }
 
     for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {

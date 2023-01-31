@@ -1,7 +1,5 @@
 #include "MirrorMapRenderer.h"
 
-#include "SkyboxRenderer.h"
-
 #include "model/Node.h"
 #include "model/Viewport.h"
 
@@ -102,8 +100,7 @@ void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
 }
 
 bool MirrorMapRenderer::render(
-    const RenderContext& ctx,
-    SkyboxRenderer* skybox)
+    const RenderContext& ctx)
 {
     if (!needRender(ctx)) return false;
 
@@ -168,7 +165,7 @@ bool MirrorMapRenderer::render(
         m_curr->bind(localCtx);
 
         bindTexture(localCtx);
-        drawNodes(localCtx, skybox, closest);
+        drawNodes(localCtx, closest);
 
         //m_curr->unbind(ctx);
 
@@ -188,7 +185,6 @@ bool MirrorMapRenderer::render(
 
 void MirrorMapRenderer::drawNodes(
     const RenderContext& ctx,
-    SkyboxRenderer* skybox,
     Node* current)
 {
     {
@@ -227,10 +223,6 @@ void MirrorMapRenderer::drawNodes(
 
         for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
             renderTypes(all.second);
-        }
-
-        if (skybox) {
-            skybox->render(ctx);
         }
 
         for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
