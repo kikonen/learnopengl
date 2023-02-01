@@ -21,7 +21,7 @@ void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
   const int materialIndex = entity.materialIndex;
   const vec4 worldPos = entity.modelMatrix * pos;
-  const mat3 normalMatrix = transpose(inverse(mat3(u_viewMatrix * entity.modelMatrix)));
+  const mat3 normalMatrix = mat3(transpose(inverse(entity.modelMatrix)));
 
   const vec4 pos = u_projectedMatrix * worldPos;
 

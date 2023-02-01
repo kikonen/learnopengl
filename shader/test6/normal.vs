@@ -23,7 +23,7 @@ precision mediump float;
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
   const int materialIndex = entity.materialIndex;
-  const mat3 normalMatrix = transpose(inverse(mat3(u_viewMatrix * entity.modelMatrix)));
+  const mat3 normalMatrix = mat3(transpose(inverse(u_viewMatrix * entity.modelMatrix)));
 
   vec4 worldPos;
 
