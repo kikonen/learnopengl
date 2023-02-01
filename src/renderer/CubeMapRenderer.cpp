@@ -174,16 +174,21 @@ bool CubeMapRenderer::render(
             m_nearPlane,
             m_farPlane,
             m_curr->m_size, m_curr->m_size);
+
         bindTexture(ctx);
-        ctx.m_matrices.lightProjected = mainCtx.m_matrices.lightProjected;
+
+        ctx.m_matrices.u_lightProjected = mainCtx.m_matrices.u_lightProjected;
+        ctx.m_matrices.u_shadow = mainCtx.m_matrices.u_shadow;
+
         ctx.updateMatricesUBO();
 
         drawNodes(ctx, centerNode);
     }
 
     m_curr->unbind(mainCtx);
-
     m_prev.swap(m_curr);
+
+    mainCtx.updateMatricesUBO();
 
     m_rendered = true;
     return true;

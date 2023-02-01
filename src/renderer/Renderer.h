@@ -22,6 +22,8 @@ public:
 
     bool needRender(const RenderContext& ctx);
 
+    bool isRendered() { return m_rendered;  }
+
 protected:
     void setClosest(Node* closest, int tagIndex);
 

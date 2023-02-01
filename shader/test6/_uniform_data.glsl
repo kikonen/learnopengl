@@ -11,4 +11,8 @@ layout(std140, binding = UBO_DATA) uniform Data {
   vec4 u_fogColor;
   float u_fogStart;
   float u_fogEnd;
+
+  bool u_cubeMapExist;
+
+  uint pad2;
 };

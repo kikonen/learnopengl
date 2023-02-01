@@ -28,15 +28,7 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)
 {
-    if (false) {
-        const auto& res = ctx.m_resolution;
-
-        // Reset viewport back
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, res.x, res.y);
-    }
-
-    ctx.updateMatricesUBO();
+    //ctx.updateMatricesUBO();
 }
 
 void DynamicCubeMap::prepare(

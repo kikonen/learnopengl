@@ -5,10 +5,14 @@
 
 // NOTE KI align 16 for UBO struct
 struct MatricesUBO {
-    glm::mat4 projected;
-    glm::mat4 projection;
-    glm::mat4 view;
-    glm::mat4 viewSkybox;
-    glm::mat4 lightProjected;
-    glm::mat4 shadow;
+    glm::mat4 u_projected{ 1.0f };
+    glm::mat4 u_projection{ 1.0f };
+    glm::mat4 u_view{ 1.0f };
+    glm::mat4 u_viewSkybox{ 1.0f };
+
+    // NOTE KI calculated by shadow calculation
+    glm::mat4 u_shadow{ 1.0f };
+
+    // NOTE KI shadow calculation only
+    glm::mat4 u_lightProjected{ 1.0f };
 };

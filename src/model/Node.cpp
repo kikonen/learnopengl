@@ -257,7 +257,7 @@ void Node::setScale(const glm::vec3& scale) noexcept
 bool Node::inFrustum(const RenderContext& ctx, float radiusFlex) const
 {
     //https://en.wikibooks.org/wiki/OpenGL_Programming/Glescraft_5
-    auto coords = ctx.m_matrices.projected * glm::vec4(m_worldPosition, 1.0);
+    auto coords = ctx.m_matrices.u_projected * glm::vec4(m_worldPosition, 1.0);
     coords.x /= coords.w;
     coords.y /= coords.w;
 

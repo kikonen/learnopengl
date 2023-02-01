@@ -106,11 +106,11 @@ RenderContext::RenderContext(
         m_nearPlane,
         m_farPlane);
 
-    m_matrices.view = m_camera->getView();
+    m_matrices.u_view = m_camera->getView();
     // NOTE KI remove translation from the view matrix for skybox
-    m_matrices.viewSkybox = glm::mat4(glm::mat3(m_matrices.view));
-    m_matrices.projection = m_camera->getProjection();
-    m_matrices.projected = m_camera->getProjected();
+    m_matrices.u_viewSkybox = glm::mat4(glm::mat3(m_matrices.u_view));
+    m_matrices.u_projection = m_camera->getProjection();
+    m_matrices.u_projected = m_camera->getProjected();
 
     m_data = {
         m_camera->getViewPosition(),
@@ -127,6 +127,7 @@ RenderContext::RenderContext(
         assets.fogColor,
         assets.fogStart,
         assets.fogEnd,
+        true,
         };
 
     for (int i = 0; i < CLIP_PLANE_COUNT; i++) {

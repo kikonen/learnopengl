@@ -27,7 +27,13 @@ void Light::update(const RenderContext& ctx, Node& node) noexcept
     }
 
     if (m_spot || m_directional) {
-        const Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetId);
+        Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetId);
+
+        if (!targetNode) {
+            KI_WARN(fmt::format("´LIGHT: MISSING TARGET: {}", KI_UUID_STR(m_targetId)));
+            targetNode = ctx.m_registry->m_nodeRegistry->m_root;
+        }
+
         if (!targetNode) return;
 
         const bool targetChanged = m_targetMatrixLevel != targetNode->getMatrixLevel();

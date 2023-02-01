@@ -25,7 +25,9 @@ struct DataUBO {
     float u_fogStart;
     float u_fogEnd;
 
-    int pad3;
+    bool u_cubeMapExist;
+
+    //int pad3;
     int pad4;
 
 };

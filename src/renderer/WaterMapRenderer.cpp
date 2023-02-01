@@ -142,7 +142,9 @@ bool WaterMapRenderer::render(
         camera.setRotation(rot);
 
         RenderContext localCtx("WATER_REFLECT", &ctx, &camera, m_reflectionBuffer->m_spec.width, m_reflectionBuffer->m_spec.height);
-        localCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
+
+        localCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
+        localCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
 
         ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         clip.enabled = true;
@@ -173,7 +175,9 @@ bool WaterMapRenderer::render(
         camera.setRotation(rot);
 
         RenderContext localCtx("WATER_REFRACT", &ctx, &camera, m_refractionBuffer->m_spec.width, m_refractionBuffer->m_spec.height);
-        localCtx.m_matrices.lightProjected = ctx.m_matrices.lightProjected;
+
+        localCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
+        localCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
 
         ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         clip.enabled = true;
