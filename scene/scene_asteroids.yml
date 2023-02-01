@@ -61,7 +61,7 @@ entities:
     pos: [0, 25, -40]
     scale: 2.5
     model: light
-    shader: light
+    shader: texture
     render_flags:
       light: true
       no_shadow: true
