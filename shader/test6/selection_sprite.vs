@@ -20,15 +20,18 @@ const vec3 pos = vec3(0.0, -1.0, 0.0);
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  #include var_entity_model_matrix.glsl
+  #include var_entity_normal_matrix.glsl
+
   const int materialIndex = entity.materialIndex;
-  const vec4 worldPos = entity.modelMatrix * vec4(pos, 1.0);
+  const vec4 worldPos = modelMatrix * vec4(pos, 1.0);
 
   gl_Position = worldPos;
 
   vs_out.materialIndex = materialIndex;
   vs_out.highlightIndex = entity.highlightIndex;
 
-  vs_out.scale = vec3(entity.modelMatrix[0][0],
-                      entity.modelMatrix[1][1],
-                      entity.modelMatrix[2][2]);
+  vs_out.scale = vec3(modelMatrix[0][0],
+                      modelMatrix[1][1],
+                      modelMatrix[2][2]);
 }

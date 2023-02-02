@@ -116,10 +116,10 @@ void Node::update(
     if (m_dirtyEntity && isEntity() && !m_type->m_flags.instanced) {
         auto* entity = ctx.m_registry->m_entityRegistry->get(m_entityIndex);
 
-        entity->u_modelMatrix = m_modelMatrix;
-        entity->u_normalMatrix = m_normalMatrix;
+        entity->setModelMatrix(m_modelMatrix);
+        entity->setNormalMatrix(m_normalMatrix);
         entity->u_materialIndex = getMaterialIndex();
-        entity->u_highlightIndex = getHighlightIndex(ctx);
+            entity->u_highlightIndex = getHighlightIndex(ctx);
 
         entity->u_volume = glm::vec4{ m_volumeCenter, m_volumeRadius };
 

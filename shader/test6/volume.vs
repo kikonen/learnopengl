@@ -18,8 +18,11 @@ out VS_OUT {
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  #include var_entity_model_matrix.glsl
+  #include var_entity_normal_matrix.glsl
+
   const int materialIndex = entity.materialIndex;
-  const vec4 worldPos = entity.modelMatrix * a_pos;
+  const vec4 worldPos = modelMatrix * a_pos;
 
   gl_Position = u_projectedMatrix * worldPos;
   vs_out.fragPos = worldPos.xyz;

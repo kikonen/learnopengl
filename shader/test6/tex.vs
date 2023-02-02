@@ -46,7 +46,8 @@ precision mediump float;
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
-  const mat3 normalMatrix = mat3(entity.normalMatrix);
+  #include var_entity_model_matrix.glsl
+  #include var_entity_normal_matrix.glsl
 
   int materialIndex = entity.materialIndex;
 
@@ -59,17 +60,17 @@ void main() {
   if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
     // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
     // - "ogl" approach
-    vec3 entityPos = vec3(entity.modelMatrix[3]);
-    vec3 entityScale = vec3(entity.modelMatrix[0][0],
-                            entity.modelMatrix[1][1],
-                            entity.modelMatrix[2][2]);
+    vec3 entityPos = vec3(modelMatrix[3]);
+    vec3 entityScale = vec3(modelMatrix[0][0],
+                            modelMatrix[1][1],
+                            modelMatrix[2][2]);
 
     worldPos = vec4(entityPos
                     + u_viewRight * a_pos.x * entityScale.x
                     + u_viewUp * a_pos.y * entityScale.y,
                     1.0);
   } else {
-    worldPos = entity.modelMatrix * a_pos;
+    worldPos = modelMatrix * a_pos;
   }
 
   gl_Position = u_projectedMatrix * worldPos;

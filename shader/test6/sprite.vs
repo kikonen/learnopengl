@@ -33,9 +33,11 @@ precision mediump float;
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
-  const mat3 normalMatrix = mat3(entity.normalMatrix);
+  #include var_entity_model_matrix.glsl
+  #include var_entity_normal_matrix.glsl
+
   const int materialIndex = entity.materialIndex;
-  const vec4 worldPos = entity.modelMatrix * pos;
+  const vec4 worldPos = modelMatrix * pos;
 
   gl_Position = worldPos;
 
@@ -45,9 +47,9 @@ void main() {
 
   vs_out.normal = normalize(normalMatrix * normal);
 
-  vs_out.scale = vec3(entity.modelMatrix[0][0],
-                      entity.modelMatrix[1][1],
-                      entity.modelMatrix[2][2]);
+  vs_out.scale = vec3(modelMatrix[0][0],
+                      modelMatrix[1][1],
+                      modelMatrix[2][2]);
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0) {

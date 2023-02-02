@@ -20,7 +20,9 @@ out VS_OUT {
 void main()
 {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
-  const vec4 worldPos = entity.modelMatrix * a_pos;
+  #include var_entity_model_matrix.glsl
+
+  const vec4 worldPos = modelMatrix * a_pos;
 
   gl_Position = u_lightProjectedMatrix * worldPos;
 

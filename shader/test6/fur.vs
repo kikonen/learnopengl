@@ -27,11 +27,13 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
-  const mat3 normalMatrix = mat3(entity.normalMatrix);
-  const int materialIndex = entity.materialIndex;
-  const vec4 worldPos = entity.modelMatrix * a_pos;
+  #include var_entity_model_matrix.glsl
+  #include var_entity_normal_matrix.glsl
 
-  const mat4 vmMat = u_viewMatrix * entity.modelMatrix;
+  const int materialIndex = entity.materialIndex;
+  const vec4 worldPos = modelMatrix * a_pos;
+
+  const mat4 vmMat = u_viewMatrix * modelMatrix;
 
   gl_Position = vmMat * a_pos;
 

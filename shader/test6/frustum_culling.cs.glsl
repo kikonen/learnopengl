@@ -70,7 +70,9 @@ void main(void) {
   const uint baseIndex = param.baseIndex;
   const DrawIndirectCommand cmd = u_commands[baseIndex + gl_GlobalInvocationID.x];
   const uint baseInstance = param.drawType == DRAW_TYPE_ELEMENTS ? cmd.baseInstance_or_pad : cmd.baseVertex_or_baseInstance;
+
   const Entity entity = u_entities[baseInstance];
+  #include var_entity_model_matrix.glsl
 
   bool visible = true;
 
@@ -79,11 +81,11 @@ void main(void) {
     const float volumeRadius = entity.volume.a;
 
     const vec4 pos = u_projectedMatrix *
-      entity.modelMatrix *
+      modelMatrix *
       vec4(volumeCenter, 1.0);
 
     const vec4 radiusPos = u_projectedMatrix *
-      entity.modelMatrix *
+      modelMatrix *
       vec4(volumeCenter + vec3(volumeRadius), 1.0);
 
     const float radius = length(vec3(radiusPos) - vec3(pos));
