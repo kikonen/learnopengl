@@ -71,13 +71,13 @@ void Node::prepare(
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
         auto* entity = registry->m_entityRegistry->get(m_entityIndex);
-        entity->m_materialIndex = getMaterialIndex();
+        entity->u_materialIndex = getMaterialIndex();
 
         if (m_type->m_entityType == EntityType::billboard) {
-            entity->m_flags |= ENTITY_BILLBOARD_BIT;
+            entity->u_flags |= ENTITY_BILLBOARD_BIT;
         }
         if (m_type->m_flags.noFrustum) {
-            entity->m_flags |= ENTITY_NO_FRUSTUM_BIT;
+            entity->u_flags |= ENTITY_NO_FRUSTUM_BIT;
         }
 
         entity->setObjectID(m_objectID);
@@ -116,13 +116,12 @@ void Node::update(
     if (m_dirtyEntity && isEntity() && !m_type->m_flags.instanced) {
         auto* entity = ctx.m_registry->m_entityRegistry->get(m_entityIndex);
 
-        entity->m_modelMatrix = m_modelMatrix;
-        //entity->m_normalMatrix = m_normalMatrix;
-        entity->m_materialIndex = getMaterialIndex();
-        entity->m_highlightIndex = getHighlightIndex(ctx);
+        entity->u_modelMatrix = m_modelMatrix;
+        entity->u_normalMatrix = m_normalMatrix;
+        entity->u_materialIndex = getMaterialIndex();
+        entity->u_highlightIndex = getHighlightIndex(ctx);
 
-        entity->m_volumeRadius = m_volumeRadius;
-        entity->m_volumeCenter = m_volumeCenter;
+        entity->u_volume = glm::vec4{ m_volumeCenter, m_volumeRadius };
 
         ctx.m_registry->m_entityRegistry->markDirty(m_entityIndex);
 
@@ -179,14 +178,13 @@ void Node::updateModelMatrix(Node* parent) noexcept
 
     if (parent) {
         m_modelMatrix = parent->m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
-        //m_normalMatrix = parent->m_normalMatrix * glm::inverseTranspose(glm::mat3(m_modelMatrix));
         m_parentMatrixLevel = parentMatrixLevel;
     }
     else {
         m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
     }
     // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
-    //m_normalMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
+    m_normalMatrix = glm::mat3(glm::inverseTranspose(m_modelMatrix));
 
     m_worldPosition = m_modelMatrix[3];
 

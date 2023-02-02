@@ -46,8 +46,9 @@ precision mediump float;
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const mat3 normalMatrix = mat3(entity.normalMatrix);
+
   int materialIndex = entity.materialIndex;
-  const mat3 normalMatrix = mat3(transpose(inverse(entity.modelMatrix)));
 
   if (materialIndex < 0) {
     materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];

@@ -74,13 +74,13 @@ void AsteroidBeltController::updateAsteroids(
                 modelMat = glm::rotate(modelMat, asteroid.m_rotationAngle, glm::vec3(0.4f, 0.6f, 0.8f));
             }
 
-            entity->m_modelMatrix = parent->getModelMatrix() * modelMat;
+            entity->u_modelMatrix = parent->getModelMatrix() * modelMat;
             // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
-            //entity->m_normalMatrix = glm::inverseTranspose(glm::mat3(entity->m_modelMatrix));
+            entity->u_normalMatrix = glm::mat3(glm::inverseTranspose(entity->u_modelMatrix));
         }
 
-        entity->m_materialIndex = node.getMaterialIndex();
-        entity->m_highlightIndex = node.getHighlightIndex(ctx);
+        entity->u_materialIndex = node.getMaterialIndex();
+        entity->u_highlightIndex = node.getHighlightIndex(ctx);
 
         registry->m_entityRegistry->markDirty(asteroid.m_entityIndex);
     }
@@ -162,7 +162,7 @@ void AsteroidBeltController::initAsteroids(
 
         auto* entity = registry->m_entityRegistry->get(asteroid.m_entityIndex);
         entity->setObjectID(node.m_objectID);
-        entity->m_materialIndex = node.getMaterialIndex();
+        entity->u_materialIndex = node.getMaterialIndex();
     }
 }
 

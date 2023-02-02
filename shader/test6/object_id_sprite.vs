@@ -20,6 +20,8 @@ const vec4 pos = vec4(0.0, -1.0, 0.0, 1.0);
 //
 ////////////////////////////////////////////////////////////
 
+#include fn_convert_object_id.glsl
+
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
   const int materialIndex = entity.materialIndex;
@@ -27,7 +29,7 @@ void main() {
 
   gl_Position =  worldPos;
 
-  vs_out.objectID = entity.objectID;
+  vs_out.objectID = convertObjectID(entity.objectID);
 
   vs_out.materialIndex = materialIndex;
 

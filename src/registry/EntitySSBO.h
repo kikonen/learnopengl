@@ -27,33 +27,33 @@ constexpr unsigned int ENTITY_NO_FRUSTUM_BIT = 8;
 struct EntitySSBO {
     // NOTE KI must align struct to 16 byte boundary
     // matrix is just N * vec4, thus vec4 is *largest*
-    glm::mat4 m_modelMatrix{ 1.f }; // 4 * 4 * 4 = 64
-    //glm::mat4 m_normalMatrix{ 1.f }; // 4 *  3 * 4 = 48
-    glm::vec4 m_objectID{ 0.f }; // 4 * 1 * 4 = 16
+    glm::mat4 u_modelMatrix{ 1.f }; // 4 * 4 * 4 = 64
+    glm::mat4 u_normalMatrix{ 1.f }; // 4 *  4 * 4 = 64
 
-    glm::vec3 m_volumeCenter{ 0.f }; // 3 * 1 * 4 = 12 => 16
+    // center + radius
+    glm::vec4 u_volume{ 0.f }; // 3 * 1 * 4 = 12 => 16
 
-    GLfloat m_volumeRadius{ 0.f }; // 1 * 1 * 4 = 4
+    GLint u_materialIndex{ 0 }; // 1 * 4 = 4
+    GLuint u_highlightIndex{ 0 }; // 1 * 4 = 4
 
-    GLint m_materialIndex{ 0 }; // 1 * 4 = 4
-    GLuint m_highlightIndex{ 0 }; // 1 * 4 = 4
-
-    GLuint m_flags{ 0 }; // 1 * 4 = 4
+    GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4
+    GLuint u_flags{ 0 }; // 1 * 4 = 4
 
     // TOTAL: 136
 
-    int pad1;
-    //int pad2;
+    glm::vec4 pad1;
+    glm::vec4 pad2;
 
     inline void setObjectID(int objectID) {
-        int r = (objectID & 0x000000FF) >> 0;
-        int g = (objectID & 0x0000FF00) >> 8;
-        int b = (objectID & 0x00FF0000) >> 16;
+    //    int r = (objectID & 0x000000FF) >> 0;
+    //    int g = (objectID & 0x0000FF00) >> 8;
+    //    int b = (objectID & 0x00FF0000) >> 16;
 
-        m_objectID.r = r / 255.0f;
-        m_objectID.g = g / 255.0f;
-        m_objectID.b = b / 255.0f;
-        m_objectID.a = 1.0f;
+    //    u_objectID.r = r / 255.0f;
+    //    u_objectID.g = g / 255.0f;
+    //    u_objectID.b = b / 255.0f;
+    //    u_objectID.a = 1.0f;
+        u_objectID = objectID;
     }
 };
 #pragma pack(pop)

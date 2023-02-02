@@ -181,7 +181,7 @@ private:
     glm::vec3 m_scale{ 1.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
-    //glm::mat3 m_normalMatrix{ 1.f };
+    glm::mat3 m_normalMatrix{ 1.f };
 
     glm::mat4 m_rotationMatrix{ 0.f };
     glm::mat4 m_translateMatrix{ 0.f };

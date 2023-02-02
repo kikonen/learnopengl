@@ -75,13 +75,16 @@ void main(void) {
   bool visible = true;
 
   if ((entity.flags & ENTITY_NO_FRUSTUM_BIT) != ENTITY_NO_FRUSTUM_BIT) {
+    const vec3 volumeCenter = entity.volume.xyz;
+    const float volumeRadius = entity.volume.a;
+
     const vec4 pos = u_projectedMatrix *
       entity.modelMatrix *
-      vec4(entity.volumeCenter, 1.0);
+      vec4(volumeCenter, 1.0);
 
     const vec4 radiusPos = u_projectedMatrix *
       entity.modelMatrix *
-      vec4(entity.volumeCenter + vec3(entity.volumeRadius, entity.volumeRadius, entity.volumeRadius), 1.0);
+      vec4(volumeCenter + vec3(volumeRadius), 1.0);
 
     const float radius = length(vec3(radiusPos) - vec3(pos));
 

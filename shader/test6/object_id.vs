@@ -30,6 +30,8 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
+#include fn_convert_object_id.glsl
+
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
 
@@ -53,7 +55,7 @@ void main() {
 
   gl_Position = u_projectedMatrix * worldPos;
 
-  vs_out.objectID = entity.objectID;
+  vs_out.objectID = convertObjectID(entity.objectID);
 
 #ifdef USE_ALPHA
   int materialIndex = entity.materialIndex;

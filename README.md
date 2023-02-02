@@ -17,6 +17,10 @@ https://glad.dav1d.de
 
 # Misc techniques
 
+## UBO/SSBO alignment
+- https://computergraphics.stackexchange.com/questions/5810/shader-storage-buffer-indexing-by-4-bytes-instead-of-3
+- https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
+
 ## Bilboard
 
 - https://ogldev.org/www/tutorial27/tutorial27.html
