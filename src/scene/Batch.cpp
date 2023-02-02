@@ -195,11 +195,18 @@ void Batch::flush(
             cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
 
-            for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
-                for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
-                    int entityIndex = m_entityIndeces[i] + instanceIndex;
-                    cmd.baseInstance = entityIndex;
-                    m_draw->send(drawRange, indirect);
+            if (!ctx.assets.frustumEnabled && drawOptions.instanced) {
+                cmd.instanceCount = curr.m_instancedCount;
+                cmd.baseInstance = m_entityIndeces[curr.m_index];
+                m_draw->send(drawRange, indirect);
+            }
+            else {
+                for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
+                    for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
+                        int entityIndex = m_entityIndeces[i] + instanceIndex;
+                        cmd.baseInstance = entityIndex;
+                        m_draw->send(drawRange, indirect);
+                    }
                 }
             }
         }
@@ -211,11 +218,17 @@ void Batch::flush(
             cmd.instanceCount = ctx.assets.frustumEnabled ? 0 : 1;
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
 
-            for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
-                for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
-                    int entityIndex = m_entityIndeces[i] + instanceIndex;
-                    cmd.baseInstance = entityIndex;
-                    m_draw->send(drawRange, indirect);
+            if (!ctx.assets.frustumEnabled && drawOptions.instanced) {
+                cmd.instanceCount = curr.m_instancedCount;
+                cmd.baseInstance = m_entityIndeces[curr.m_index];
+                m_draw->send(drawRange, indirect);
+            } else {
+                for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
+                    for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
+                        int entityIndex = m_entityIndeces[i] + instanceIndex;
+                        cmd.baseInstance = entityIndex;
+                        m_draw->send(drawRange, indirect);
+                    }
                 }
             }
         }
