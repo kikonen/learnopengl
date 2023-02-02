@@ -6,7 +6,7 @@ namespace {
     // NOTE KI terrain is primarily flat
     // perlin noise creates -4/+4 peaks in mesh, which are scaled down
     // when terrain tile is scaled by factor x200 x/z wise
-    const AABB TERRAIN_AABB = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
+    const AABB TERRAIN_AABB = { glm::vec3{ -1.075f, -1.075f, -0.075f }, glm::vec3{ 1.075f, 1.075f, 0.05f }, true };
 
 }
 
