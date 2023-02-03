@@ -97,11 +97,13 @@ int Test6::onRender(const ki::RenderClock& clock) {
         m_frame->bind(ctx);
     }
 
+    //std::cout << "*****" << "\n";
     scene->processEvents(ctx);
     scene->update(ctx);
     scene->bind(ctx);
     scene->draw(ctx);
     scene->unbind(ctx);
+    //std::cout << "\n*****" << "\n";
 
     {
         InputState state{

@@ -61,10 +61,6 @@ layout (binding = SSBO_PERFORMANCE_COUNTERS, std430) writeonly buffer Performanc
   PerformanceCounters u_counters;
 };
 
-
-const float EXPAND_X = 1.0;
-const float EXPAND_Y = 1.0;
-
 void main(void) {
   const DrawParameters param = u_params[u_drawParametersIndex];
   const uint baseIndex = param.baseIndex;
@@ -74,30 +70,34 @@ void main(void) {
   const Entity entity = u_entities[baseInstance];
   #include var_entity_model_matrix.glsl
 
-  bool visible = true;
+  bool visible = (entity.flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT;
 
-  if ((entity.flags & ENTITY_NO_FRUSTUM_BIT) != ENTITY_NO_FRUSTUM_BIT) {
+  // https://www.lighthouse3d.com/tutorials/view-frustum-culling/clip-space-approach-extracting-the-planes/
+  if (!visible) {
     const vec3 volumeCenter = entity.volume.xyz;
     const float volumeRadius = entity.volume.a;
 
-    const vec4 pos = u_projectedMatrix *
-      modelMatrix *
+    const mat4 projectedModel = u_projectedMatrix * modelMatrix;
+
+    const vec4 pos = projectedModel *
       vec4(volumeCenter, 1.0);
 
-    const vec4 radiusPos = u_projectedMatrix *
-      modelMatrix *
+    const vec4 radiusPos = projectedModel *
       vec4(volumeCenter + vec3(volumeRadius), 1.0);
 
     const float radius = length(vec3(radiusPos) - vec3(pos));
 
-    visible = (abs(pos.x) - radius) < (pos.w * EXPAND_X) &&
-      (abs(pos.y) - radius) < (pos.w * EXPAND_Y);
+    const float w = pos.w * 1.0;
+
+    visible = -w <= pos.x + radius && pos.x - radius <= w &&
+      -w <= pos.y + radius && pos.y - radius <= w &&
+      -w <= pos.z + radius && pos.z - radius <= w;
   }
 
   if (visible) {
-    atomicAdd(u_counters.drawCount, 1);
+    //atomicAdd(u_counters.drawCount, 1);
     u_commands[baseIndex + gl_GlobalInvocationID.x].instanceCount = 1;
-  } else {
-    atomicAdd(u_counters.skipCount, 1);
+  //} else {
+    //atomicAdd(u_counters.skipCount, 1);
   }
 }

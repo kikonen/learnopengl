@@ -43,31 +43,31 @@ public:
     const glm::mat4& getProjected() noexcept;
     const glm::mat4& getView() noexcept;
 
-    const int getProjectionLevel() const noexcept { return m_projectionLevel; }
-    const int getProjectedLevel() const noexcept { return m_projectedLevel; }
-    const int getViewLevel() const noexcept { return m_viewLevel; }
+    inline const int getProjectionLevel() const noexcept { return m_projectionLevel; }
+    inline const int getProjectedLevel() const noexcept { return m_projectedLevel; }
+    inline const int getViewLevel() const noexcept { return m_viewLevel; }
 
-    const glm::vec3& getViewPosition() const noexcept { return m_viewPosition;  }
+    inline const glm::vec3& getViewPosition() const noexcept { return m_viewPosition;  }
     const glm::vec3& getViewFront() const noexcept;
     const glm::vec3& getViewRight() const noexcept;
     const glm::vec3& getViewUp() const noexcept;
 
     void setFront(const glm::vec3& front) noexcept;
 
-    const glm::vec3& getFront() const noexcept {
+    inline const glm::vec3& getFront() const noexcept {
         return m_front;
     }
 
-    const glm::vec3& getRight() const noexcept {
+    inline const glm::vec3& getRight() const noexcept {
         return m_right;
     }
 
     void setUp(const glm::vec3& up) noexcept;
-    const glm::vec3& getUp() const noexcept {
+    inline const glm::vec3& getUp() const noexcept {
         return m_up;
     }
 
-    float getZoom() const noexcept {
+    inline float getZoom() const noexcept {
         return m_zoom;
     }
 
@@ -75,12 +75,12 @@ public:
     void adjustZoom(float adjustement) noexcept;
 
     void setPosition(const glm::vec3& pos) noexcept;
-    const glm::vec3& getPosition() const noexcept {
+    inline const glm::vec3& getPosition() const noexcept {
         return m_position;
     }
 
     void setRotation(const glm::vec3& rotation) noexcept;
-    const glm::vec3& getRotation() const noexcept {
+    inline const glm::vec3& getRotation() const noexcept {
         return m_rotation;
     }
 

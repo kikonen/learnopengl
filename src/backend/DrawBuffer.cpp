@@ -229,7 +229,7 @@ namespace backend {
 
         m_commands->processPending(handler, drawCurrent, true);
 
-        //std::cout << '=' << count << '=';
+        //std::cout << '=' << count << " / " << m_drawCounter << '=';
     }
 
     gl::PerformanceCounters DrawBuffer::getCounters(bool clear)

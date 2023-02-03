@@ -16,7 +16,10 @@
 #include "backend/DrawBuffer.h"
 
 #include "model/Node.h"
+
 #include "registry/MeshType.h"
+#include "registry/Registry.h"
+#include "registry/EntityRegistry.h"
 
 #include "scene/RenderContext.h"
 
@@ -40,14 +43,37 @@ Batch::Batch()
 {
 }
 
+bool inFrustumZ(
+    const RenderContext& ctx,
+    const int entityIndex)
+{
+    return true;
+    const auto* entity = ctx.m_registry->m_entityRegistry->get(entityIndex);
+
+    if ((entity->u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
+        return true;
+
+    const auto& cameraPos = ctx.m_camera->getViewPosition();
+
+    const auto& entityPos = entity->u_modelMatrix3;
+    const auto& volume = entity->u_volume;
+
+    float dist = (entityPos.z + volume.z - cameraPos.z);
+    return dist + volume.a >= ctx.m_nearPlane && dist - volume.a <= ctx.m_farPlane;
+}
+
 void Batch::add(
     const RenderContext& ctx,
     const int entityIndex)
 {
     if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
 
+    if (!inFrustumZ(ctx, entityIndex))
+        return;
+
     auto& top = m_batches.back();
     top.m_drawCount++;
+
     m_entityIndeces.push_back(entityIndex);
 }
 
@@ -62,16 +88,27 @@ void Batch::addAll(
 
 void Batch::addInstanced(
     const RenderContext& ctx,
-    int firstIndex,
-    int count)
+    const int firstEntityIndex,
+    const int count)
 {
-    if (firstIndex < 0 || count <= 0) return;
+    if (firstEntityIndex < 0 || count <= 0) return;
 
     auto& top = m_batches.back();
 
+    int actualIndex = firstEntityIndex;
+    int actualCount = count;
+
+    while (!inFrustumZ(ctx, actualIndex) && actualCount > 0) {
+        actualIndex++;
+        actualCount--;
+    }
+
+    if (actualCount == 0)
+        return;
+
     top.m_drawCount = 1;
-    top.m_instancedCount = count;
-    m_entityIndeces.push_back(firstIndex);
+    top.m_instancedCount = actualCount;
+    m_entityIndeces.push_back(actualIndex);
 }
 
 void Batch::bind() noexcept

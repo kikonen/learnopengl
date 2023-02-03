@@ -47,7 +47,7 @@ public:
 
     void addInstanced(
         const RenderContext& ctx,
-        int firstIndex,
+        int firstEntityIndex,
         int count);
 
     void bind() noexcept;

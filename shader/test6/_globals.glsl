@@ -67,7 +67,7 @@
 #endif
 
 #ifndef CS_COUNT_X
-  #define CS_COUNT_X 32
+  #define CS_COUNT_X 1
 #endif
 
 #ifndef CS_COUNT_Y
