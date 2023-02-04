@@ -67,12 +67,17 @@ public:
         const RenderContext& ctx);
 
     backend::gl::PerformanceCounters getCounters(bool clear);
+    backend::gl::PerformanceCounters getCountersLocal(bool clear);
 
 private:
     void addCommand(
         const RenderContext& ctx,
         MeshType* type,
         Shader* shader);
+
+    bool inFrustumZ(
+        const RenderContext& ctx,
+        const int entityIndex);
 
 private:
     bool m_prepared = false;
@@ -83,4 +88,7 @@ private:
     std::vector<int> m_entityIndeces;
 
     std::unique_ptr<backend::DrawBuffer> m_draw;
+
+    unsigned long m_drawCount = 0;
+    unsigned long m_skipCount = 0;
 };

@@ -47,7 +47,8 @@ public:
     inline const int getProjectedLevel() const noexcept { return m_projectedLevel; }
     inline const int getViewLevel() const noexcept { return m_viewLevel; }
 
-    inline const glm::vec3& getViewPosition() const noexcept { return m_viewPosition;  }
+    inline const glm::vec3& getWorldPosition() const noexcept { return m_worldPosition;  }
+
     const glm::vec3& getViewFront() const noexcept;
     const glm::vec3& getViewRight() const noexcept;
     const glm::vec3& getViewUp() const noexcept;
@@ -118,7 +119,7 @@ private:
     int m_projectedLevel = -1;
     int m_viewLevel = -1;
 
-    glm::vec3 m_viewPosition{ 0.f };
+    glm::vec3 m_worldPosition{ 0.f };
     mutable glm::vec3 m_viewFront{ 0.f };
     mutable glm::vec3 m_viewRight{ 0.f };
     mutable glm::vec3 m_viewUp{ 0.f };

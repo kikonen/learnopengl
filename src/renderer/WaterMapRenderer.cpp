@@ -127,7 +127,7 @@ bool WaterMapRenderer::render(
     // reflection map
     {
         const auto* mainCamera = ctx.m_camera;
-        glm::vec3 pos = mainCamera->getViewPosition();
+        glm::vec3 pos = mainCamera->getWorldPosition();
         const float dist = pos.y - planePos.y;
         pos.y -= dist * 2;
 
@@ -165,7 +165,7 @@ bool WaterMapRenderer::render(
     {
         const auto* mainCamera = ctx.m_camera;
         const auto& rot = mainCamera->getRotation();
-        const auto& pos = mainCamera->getViewPosition();
+        const auto& pos = mainCamera->getWorldPosition();
 
         auto& camera = m_cameras[1];
         camera.setPosition(pos);
@@ -259,7 +259,7 @@ void WaterMapRenderer::drawNodes(
 Node* WaterMapRenderer::findClosest(
     const RenderContext& ctx)
 {
-    const glm::vec3& cameraPos = ctx.m_camera->getViewPosition();
+    const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;

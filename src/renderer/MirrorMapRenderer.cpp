@@ -119,7 +119,7 @@ bool MirrorMapRenderer::render(
     {
         const auto* mainCamera = ctx.m_camera;
         const auto& mirrorSize = closest->getVolumeRadius();
-        const auto& eyePos = mainCamera->getViewPosition();
+        const auto& eyePos = mainCamera->getWorldPosition();
 
         const auto& planeNormal = closest->getWorldPlaneNormal();
 
@@ -238,7 +238,7 @@ void MirrorMapRenderer::drawNodes(
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
-    const auto& cameraPos = ctx.m_camera->getViewPosition();
+    const auto& cameraPos = ctx.m_camera->getWorldPosition();
     const auto& cameraFront = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;

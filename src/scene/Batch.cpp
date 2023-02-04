@@ -43,23 +43,43 @@ Batch::Batch()
 {
 }
 
-bool inFrustumZ(
+bool Batch::inFrustumZ(
     const RenderContext& ctx,
     const int entityIndex)
 {
-    return true;
     const auto* entity = ctx.m_registry->m_entityRegistry->get(entityIndex);
 
     if ((entity->u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
         return true;
 
-    const auto& cameraPos = ctx.m_camera->getViewPosition();
-
+    const auto& cameraPos = ctx.m_camera->getWorldPosition();
+    const auto& cameraFront = ctx.m_camera->getFront();
     const auto& entityPos = entity->u_modelMatrix3;
+    auto& top = m_batches.back();
+
     const auto& volume = entity->u_volume;
 
-    float dist = (entityPos.z + volume.z - cameraPos.z);
-    return dist + volume.a >= ctx.m_nearPlane && dist - volume.a <= ctx.m_farPlane;
+    glm::vec3 entityViewPos = cameraPos + glm::vec3(entity->u_modelMatrix3);
+    glm::vec3 radiusView = cameraFront * volume.a;
+
+    auto dot = glm::dot(cameraFront, entityViewPos);
+
+    if (dot > 0) {
+        entityViewPos -= radiusView;
+    }
+    else {
+        entityViewPos += radiusView;
+        entityViewPos *= -1.f;
+    }
+
+    auto valid = entityViewPos.z >= ctx.m_nearPlane && entityViewPos.z <= ctx.m_farPlane;
+    if (valid) {
+        m_drawCount++;
+    }
+    else {
+        m_skipCount++;
+    }
+    return valid;
 }
 
 void Batch::add(
@@ -285,4 +305,14 @@ void Batch::flush(
 backend::gl::PerformanceCounters Batch::getCounters(bool clear)
 {
     return m_draw->getCounters(clear);
+}
+
+backend::gl::PerformanceCounters Batch::getCountersLocal(bool clear)
+{
+    backend::gl::PerformanceCounters counters{ m_drawCount, m_skipCount };
+    if (clear) {
+        m_drawCount = 0;
+        m_skipCount = 0;
+    }
+    return counters;
 }

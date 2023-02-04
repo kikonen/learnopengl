@@ -22,7 +22,7 @@ Camera::Camera(
     m_nodeCamera = nodeCamera;
 
     m_position = pos;
-    m_viewPosition = pos;
+    m_worldPosition = pos;
 
     // Default: look to Z direction
     m_front = glm::normalize(front);
@@ -45,7 +45,7 @@ void Camera::update(const RenderContext& ctx, Node& node)
     const bool nodeChanged = m_nodeMatrixLevel != node.getMatrixLevel();
     if (!nodeChanged) return;
 
-    m_viewPosition = node.getModelMatrix() * glm::vec4(m_position, 1.f);
+    m_worldPosition = node.getModelMatrix() * glm::vec4(m_position, 1.f);
     //m_viewPosition = node.getWorldPosition() + m_position;
 
     m_dirty = true;
@@ -118,8 +118,8 @@ const glm::mat4& Camera::getView() noexcept
     if (!m_dirtyView) return m_viewMatrix;
 
     m_viewMatrix = glm::lookAt(
-        m_viewPosition,
-        m_viewPosition + m_viewFront,
+        m_worldPosition,
+        m_worldPosition + m_viewFront,
         m_viewUp);
     m_dirtyView = false;
     m_viewLevel++;
@@ -176,7 +176,7 @@ void Camera::setPosition(const glm::vec3& pos) noexcept
     if (m_position != pos) {
         m_position = pos;
         if (!m_nodeCamera) {
-            m_viewPosition = pos;
+            m_worldPosition = pos;
         }
         m_dirty = true;
     }

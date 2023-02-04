@@ -256,7 +256,7 @@ void CubeMapRenderer::drawNodes(
 
 Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
 {
-    const glm::vec3& cameraPos = ctx.m_camera->getViewPosition();
+    const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;

@@ -113,7 +113,7 @@ RenderContext::RenderContext(
     m_matrices.u_projected = m_camera->getProjected();
 
     m_data = {
-        m_camera->getViewPosition(),
+        m_camera->getWorldPosition(),
         0,
         m_camera->getViewFront(),
         0,

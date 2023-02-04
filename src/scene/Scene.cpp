@@ -275,6 +275,10 @@ backend::gl::PerformanceCounters Scene::getCounters(bool clear)
     return m_batch->getCounters(clear);
 }
 
+backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear)
+{
+    return m_batch->getCountersLocal(clear);
+}
 
 void Scene::draw(RenderContext& ctx)
 {
@@ -333,7 +337,7 @@ void Scene::drawRear(RenderContext& ctx)
 
     auto* mainCamera = ctx.m_camera;
 
-    Camera camera(mainCamera->getViewPosition(), mainCamera->getFront(), mainCamera->getUp());
+    Camera camera(mainCamera->getWorldPosition(), mainCamera->getFront(), mainCamera->getUp());
     camera.setZoom(mainCamera->getZoom());
 
     glm::vec3 rot = mainCamera->getRotation();

@@ -132,7 +132,7 @@ int Test6::onRender(const ki::RenderClock& clock) {
         m_frame->render(ctx);
     }
 
-    if (m_assets.frustumEnabled && m_assets.frustumDebug) {
+    if (m_assets.frustumDebug) {
         m_frustumElapsedSecs += clock.elapsedSecs;
         if (m_frustumElapsedSecs >= 10) {
             m_frustumElapsedSecs -= 10;
@@ -140,6 +140,10 @@ int Test6::onRender(const ki::RenderClock& clock) {
             auto counters = scene->getCounters(true);
             m_drawCount += counters.u_drawCount;
             m_skipCount += counters.u_skipCount;
+
+            auto countersLocal = scene->getCountersLocal(true);
+
+            KI_INFO_OUT(fmt::format("BATCH : batch-draw: {}, batch-skip: {}", countersLocal.u_drawCount, countersLocal.u_skipCount));
 
             auto ratio = (float)m_skipCount / (float)m_drawCount;
             auto frameDraw = (float)m_drawCount / (float)clock.frameCount;
