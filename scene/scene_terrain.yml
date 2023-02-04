@@ -8,21 +8,18 @@ lights: {}
 cube_maps: {}
 root:
   type: origo
-  pos: [200, 0, 200]
 entities:
   - name: Origo
     type: origo
-    pos: [0, 0, -5]
+    pos: [0, 2, -5]
     camera:
       zoom: 45
-      up: [0, 1, 0]
-      front: [0, 0, -1]
-      pos: [200, 0, 190]
+      pos: [0, 0, 0]
       rotation: [0, 180, 0.0]
+      default: true
       enabled: true
     controller:
       type: camera
-      default: true
       enabled: true
     enabled: true
   - name: Terrain grass
@@ -34,9 +31,9 @@ entities:
     render_flags:
       no_shadow: true
     repeat:
-      x_count: 1
+      x_count: 2
       y_count: 1
-      z_count: 1
+      z_count: 2
       x_step: 200
       y_step: 0
       z_step: 200

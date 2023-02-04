@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <algorithm>
 
 constexpr unsigned int ENTITY_DRAW_ELEMENT_BIT = 1;
 constexpr unsigned int ENTITY_DRAW_ARRAY_BIT = 2;
@@ -52,6 +53,16 @@ struct EntitySSBO {
 
     //glm::vec4 pad1;
     //glm::vec4 pad2;
+
+    inline float getMaxScale() const {
+        return std::max(
+            u_modelMatrix0[0],
+            std::max(u_modelMatrix1[1], u_modelMatrix2[2]));
+    }
+
+    inline const glm::vec4 getWorldPosition() const {
+        return u_modelMatrix3;
+    }
 
     inline void setModelMatrix(const glm::mat4& mat) {
         u_modelMatrix0 = mat[0];

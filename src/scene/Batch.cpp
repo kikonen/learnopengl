@@ -54,25 +54,20 @@ bool Batch::inFrustumZ(
 
     const auto& cameraPos = ctx.m_camera->getWorldPosition();
     const auto& cameraFront = ctx.m_camera->getFront();
-    const auto& entityPos = entity->u_modelMatrix3;
+
+    const auto& scale = entity->getMaxScale();
+    const auto& entityPos = entity->getWorldPosition();
+    const auto& radius = entity->u_volume.a * scale;
+
     auto& top = m_batches.back();
 
-    const auto& volume = entity->u_volume;
+    glm::vec3 entityViewPos = ctx.m_matrices.u_view * entityPos;
 
-    glm::vec3 entityViewPos = cameraPos + glm::vec3(entity->u_modelMatrix3);
-    glm::vec3 radiusView = cameraFront * volume.a;
+    auto dist = glm::dot(cameraFront, entityViewPos);
 
-    auto dot = glm::dot(cameraFront, entityViewPos);
+    dist += radius;
 
-    if (dot > 0) {
-        entityViewPos -= radiusView;
-    }
-    else {
-        entityViewPos += radiusView;
-        entityViewPos *= -1.f;
-    }
-
-    auto valid = entityViewPos.z >= ctx.m_nearPlane && entityViewPos.z <= ctx.m_farPlane;
+    auto valid = dist >= ctx.m_nearPlane && dist <= ctx.m_farPlane;
     if (valid) {
         m_drawCount++;
     }
