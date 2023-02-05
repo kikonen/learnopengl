@@ -1,6 +1,6 @@
 #version 460 core
 
-layout (location = ATTR_POS) in vec4 a_pos;
+layout (location = ATTR_POS) in vec3 a_pos;
 #ifdef USE_ALPHA
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
@@ -22,7 +22,7 @@ void main()
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
 
-  const vec4 worldPos = modelMatrix * a_pos;
+  const vec4 worldPos = modelMatrix * vec4(a_pos, 1.0);
 
   gl_Position = u_lightProjectedMatrix * worldPos;
 

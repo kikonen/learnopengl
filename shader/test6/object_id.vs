@@ -1,6 +1,6 @@
 #version 460 core
 
-layout (location = ATTR_POS) in vec4 a_pos;
+layout (location = ATTR_POS) in vec3 a_pos;
 #ifdef USE_ALPHA
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
@@ -37,6 +37,8 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
+  const vec4 pos = vec4(a_pos, 1.0);
+
   vec4 worldPos;
 
   if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
@@ -52,7 +54,7 @@ void main() {
                     + u_viewUp * a_pos.y * entityScale.y,
                     1.0);
   } else {
-    worldPos = modelMatrix * a_pos;
+    worldPos = modelMatrix * pos;
   }
 
   gl_Position = u_projectedMatrix * worldPos;

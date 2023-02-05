@@ -1,6 +1,6 @@
 #version 460 core
 
-layout (location = ATTR_POS) in vec4 a_pos;
+layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 #ifdef USE_NORMAL_TEX
 layout (location = ATTR_TANGENT) in vec3 a_tangent;
@@ -55,6 +55,7 @@ void main() {
     materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
   }
 
+  const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
 
   if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
@@ -70,7 +71,7 @@ void main() {
                     + u_viewUp * a_pos.y * entityScale.y,
                     1.0);
   } else {
-    worldPos = modelMatrix * a_pos;
+    worldPos = modelMatrix * pos;
   }
 
   gl_Position = u_projectedMatrix * worldPos;
@@ -80,7 +81,7 @@ void main() {
   vs_out.texCoord = a_texCoord * u_materials[materialIndex].tiling;
 
   vs_out.fragPos = worldPos.xyz;
-  vs_out.vertexPos = a_pos;
+  vs_out.vertexPos = pos;
   vs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
 
   vs_out.normal = normalize(normalMatrix * a_normal);

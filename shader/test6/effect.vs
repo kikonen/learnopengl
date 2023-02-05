@@ -1,6 +1,6 @@
 #version 460 core
 
-layout (location = ATTR_POS) in vec4 a_pos;
+layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 
 
@@ -30,7 +30,7 @@ void main() {
   #include var_entity_normal_matrix.glsl
 
   const int materialIndex = entity.materialIndex;
-  const vec4 worldPos = modelMatrix * a_pos;
+  const vec4 worldPos = modelMatrix * vec4(a_pos, 1.0);
 
   gl_Position = u_projectedMatrix * worldPos;
 
