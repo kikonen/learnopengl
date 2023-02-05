@@ -95,9 +95,9 @@ void main(void) {
   }
 
   if (visible) {
-    //atomicAdd(u_counters.drawCount, 1);
+    atomicAdd(u_counters.drawCount, 1);
     u_commands[baseIndex + gl_GlobalInvocationID.x].instanceCount = 1;
-  //} else {
-    //atomicAdd(u_counters.skipCount, 1);
+  } else {
+    atomicAdd(u_counters.skipCount, 1);
   }
 }
