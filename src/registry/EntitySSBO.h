@@ -28,10 +28,7 @@ constexpr unsigned int ENTITY_NO_FRUSTUM_BIT = 8;
 struct EntitySSBO {
     // NOTE KI must align struct to 16 byte boundary
     // matrix is just N * vec4, thus vec4 is *largest*
-    glm::vec4 u_modelMatrix0{ 0.f }; // 4 * 4 * 4 = 64
-    glm::vec4 u_modelMatrix1{ 0.f }; // 4 * 4 * 4 = 64
-    glm::vec4 u_modelMatrix2{ 0.f }; // 4 * 4 * 4 = 64
-    glm::vec4 u_modelMatrix3{ 0.f }; // 4 * 4 * 4 = 64
+    glm::mat4 u_modelMatrix{ 1.f }; // 4 * 4 * 4 = 64
 
     glm::vec3 u_normalMatrix0{ 0.f }; // 4 *  4 * 4 = 64
     int pad1;
@@ -56,19 +53,20 @@ struct EntitySSBO {
 
     inline float getMaxScale() const {
         return std::max(
-            u_modelMatrix0[0],
-            std::max(u_modelMatrix1[1], u_modelMatrix2[2]));
+            u_modelMatrix[0][0],
+            std::max(u_modelMatrix[1][1], u_modelMatrix[2][2]));
     }
 
-    inline const glm::vec4 getWorldPosition() const {
-        return u_modelMatrix3;
+    inline const glm::vec4& getWorldPosition() const {
+        return u_modelMatrix[3];
+    }
+
+    inline const glm::mat4& getModelMatrix() const {
+        return u_modelMatrix;
     }
 
     inline void setModelMatrix(const glm::mat4& mat) {
-        u_modelMatrix0 = mat[0];
-        u_modelMatrix1 = mat[1];
-        u_modelMatrix2 = mat[2];
-        u_modelMatrix3 = mat[3];
+        u_modelMatrix = mat;
     }
 
     inline void setNormalMatrix(const glm::mat3& mat) {

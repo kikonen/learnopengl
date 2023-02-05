@@ -52,29 +52,31 @@ bool Batch::inFrustumZ(
     if ((entity->u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
         return true;
 
-    const auto& cameraPos = ctx.m_camera->getWorldPosition();
-    const auto& cameraFront = ctx.m_camera->getFront();
+    const auto& volume = entity->u_volume;
 
-    const auto& scale = entity->getMaxScale();
-    const auto& entityPos = entity->getWorldPosition();
-    const auto& radius = entity->u_volume.a * scale;
+    const glm::vec3 volumeCenter = glm::vec3(volume);
+    const float volumeRadius = volume.a;
 
-    auto& top = m_batches.back();
+    const glm::mat4 projectedModel = ctx.m_matrices.u_projected * entity->getModelMatrix();
 
-    glm::vec3 entityViewPos = ctx.m_matrices.u_view * entityPos;
+    const glm::vec4 centerPos = projectedModel * glm::vec4(volumeCenter, 1.0);
+    const glm::vec3 radiusPos = projectedModel * glm::vec4(volumeCenter + glm::vec3(volumeRadius), 1.0);
 
-    auto dist = glm::dot(cameraFront, entityViewPos);
+    const float radius = glm::length(radiusPos - glm::vec3(centerPos));
 
-    dist += radius;
+    const float w = centerPos.w * 1.0;
 
-    auto valid = dist >= ctx.m_nearPlane && dist <= ctx.m_farPlane;
-    if (valid) {
+    bool visible = -w <= centerPos.x + radius && centerPos.x - radius <= w &&
+        -w <= centerPos.y + radius && centerPos.y - radius <= w &&
+        -w <= centerPos.z + radius && centerPos.z - radius <= w;
+
+    if (visible) {
         m_drawCount++;
     }
     else {
         m_skipCount++;
     }
-    return valid;
+    return visible;
 }
 
 void Batch::add(
@@ -122,6 +124,14 @@ void Batch::addInstanced(
     while (!inFrustumZ(ctx, actualIndex) && actualCount > 0) {
         actualIndex++;
         actualCount--;
+    }
+
+    if (actualCount > 0) {
+        int endIndex = actualIndex + actualCount;
+        while (!inFrustumZ(ctx, endIndex) && actualCount > 0) {
+            endIndex--;
+            actualCount--;
+        }
     }
 
     if (actualCount == 0)

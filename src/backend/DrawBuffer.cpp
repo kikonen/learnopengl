@@ -195,7 +195,9 @@ namespace backend {
 
     void DrawBuffer::drawPending(bool drawCurrent)
     {
-        glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
+        if (m_frustumEnabled) {
+            glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
+        }
 
         int count = 0;
         auto handler = [this, &count](GLBufferRange& cmdRange) {
