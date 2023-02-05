@@ -5,6 +5,7 @@
 #include "glm/glm.hpp"
 
 #include "scene/RenderContext.h"
+#include "scene/Batch.h"
 
 FrameBuffer::FrameBuffer(const FrameBufferSpecification& spec)
     : m_spec(spec)
@@ -109,6 +110,9 @@ void FrameBuffer::prepare(
 
 void FrameBuffer::bind(const RenderContext& ctx)
 {
+    // NOTE KI MUST flush before changing render target
+    ctx.m_batch->flush(ctx);
+
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     glViewport(0, 0, m_spec.width, m_spec.height);
 }

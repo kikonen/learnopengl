@@ -9,7 +9,7 @@ namespace {
     // scene_full = 91 109
     constexpr int MAX_ENTITY_COUNT = 1000000;
 
-    constexpr int MAX_SKIP = 10;
+    constexpr int MAX_SKIP = 20;
 }
 
 EntityRegistry::EntityRegistry(const Assets& assets)
@@ -57,6 +57,10 @@ void EntityRegistry::update(const RenderContext& ctx)
 
             m_ssbo.flushRange(from * sz, count * sz);
 
+            for (int i = 0; i < count; i++) {
+                m_dirty[from + i] = false;
+            }
+
             skip = 0;
             from = -1;
             updatedCount += count;
@@ -66,9 +70,9 @@ void EntityRegistry::update(const RenderContext& ctx)
 
     //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, updated={}", ctx.m_clock.frameCount, updatedCount));
 
-    for (int i = m_minDirty; i < m_maxDirty; i++) {
-        m_dirty[i] = false;
-    }
+    //for (int i = m_minDirty; i < m_maxDirty; i++) {
+    //    m_dirty[i] = false;
+    //}
 
     m_minDirty = -1;
     m_maxDirty = -1;

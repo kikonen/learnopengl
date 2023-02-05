@@ -50,6 +50,7 @@ void Camera::update(const RenderContext& ctx, Node& node)
 
     m_dirty = true;
     m_dirtyView = true;
+    m_dirtyProjected = true;
 
     m_nodeMatrixLevel = node.getMatrixLevel();
 }
@@ -86,7 +87,8 @@ const glm::mat4& Camera::getProjection() const noexcept
 
 const glm::mat4& Camera::getProjected() noexcept
 {
-    if (!m_dirtyProjected) return m_projectedMatrix;
+    updateCamera();
+    if (!m_dirtyProjected && !m_dirtyView) return m_projectedMatrix;
     m_projectedMatrix = m_projectionMatrix * getView();
     m_dirtyProjected = false;
     m_projectedLevel++;

@@ -1,7 +1,9 @@
 #include "DynamicCubeMap.h"
 
 #include "scene/CubeMap.h"
+
 #include "scene/RenderContext.h"
+#include "scene/Batch.h"
 
 
 DynamicCubeMap::DynamicCubeMap(int size)
@@ -22,6 +24,9 @@ void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
 
 void DynamicCubeMap::bind(const RenderContext& ctx)
 {
+    // NOTE KI must flush before changing render target
+    ctx.m_batch->flush(ctx);
+
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     glViewport(0, 0, m_size, m_size);
 }

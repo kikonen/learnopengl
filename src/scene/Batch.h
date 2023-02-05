@@ -83,6 +83,9 @@ private:
 private:
     bool m_prepared = false;
 
+    bool m_frustumCPU = false;
+    bool m_frustumGPU = false;
+
     RenderContext* m_currentRenderContext{ nullptr };
     std::vector<BatchCommand> m_batches;
 

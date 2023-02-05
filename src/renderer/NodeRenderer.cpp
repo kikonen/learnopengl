@@ -96,20 +96,30 @@ void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
     if (!ctx.assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
+    ctx.m_batch->flush(ctx);
+
     ctx.state.enable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    glStencilMask(0xFF);
+
     // draw entity data mask
     drawNodes(ctx, true);
+    ctx.m_batch->flush(ctx);
 
     ctx.state.disable(GL_STENCIL_TEST);
+
+    glStencilMask(0x00);
 }
 
 void NodeRenderer::renderSelection(const RenderContext& ctx)
 {
     if (!ctx.assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
+
+    ctx.m_batch->flush(ctx);
 
     ctx.state.enable(GL_STENCIL_TEST);
     ctx.state.disable(GL_DEPTH_TEST);
@@ -120,6 +130,7 @@ void NodeRenderer::renderSelection(const RenderContext& ctx)
 
     // draw selection color (scaled a bit bigger)
     drawSelectionStencil(ctx);
+    ctx.m_batch->flush(ctx);
 
     glStencilMask(0xFF);
     glStencilFunc(GL_ALWAYS, 0, 0xFF);
@@ -133,14 +144,6 @@ void NodeRenderer::drawNodes(
     const RenderContext& ctx,
     bool selection)
 {
-    if (selection) {
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
-    }
-    else {
-        glStencilMask(0x00);
-    }
-
     auto renderTypes = [this, &ctx, &selection](const MeshTypeMap& typeMap) {
         auto shader = typeMap.begin()->first.type->m_nodeShader;
 
@@ -179,8 +182,6 @@ void NodeRenderer::drawNodes(
             renderTypes(all.second);
         }
     }
-
-    ctx.m_batch->flush(ctx);
 }
 
 // draw all selected nodes with stencil
@@ -215,8 +216,6 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
     for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
         renderTypes(all.second);
     }
-
-    ctx.m_batch->flush(ctx);
 }
 
 void NodeRenderer::drawBlended(
@@ -247,5 +246,5 @@ void NodeRenderer::drawBlended(
     }
 
     // TODO KI if no flush here then render order of blended nodes is incorrect
-    ctx.m_batch->flush(ctx);
+    //ctx.m_batch->flush(ctx);
 }

@@ -31,7 +31,7 @@ namespace backend {
     {
         const auto info = ki::GL::getInfo();
 
-        m_frustumEnabled = assets.frustumEnabled;
+        m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
 
         m_batchCount = batchCount;
         m_rangeCount = rangeCount;
@@ -126,7 +126,7 @@ namespace backend {
 
         constexpr size_t PARAMS_SZ = sizeof(gl::DrawIndirectParameters);
         const size_t paramsOffset = cmdRange.m_index * PARAMS_SZ;
-        if (m_frustumEnabled) {
+        if (m_frustumGPU) {
             gl::DrawIndirectParameters params{
                 cmdRange.m_baseIndex,
                 util::as_integer(drawRange.m_drawOptions->type)
@@ -140,7 +140,7 @@ namespace backend {
             m_drawParameters.flushRange(paramsOffset, PARAMS_SZ);
         }
 
-        if (m_frustumEnabled) {
+        if (m_frustumGPU) {
             m_cullingCompute->bind(*drawRange.m_state);
             m_cullingCompute->u_drawParametersIndex.set(cmdRange.m_index);
 
@@ -195,7 +195,7 @@ namespace backend {
 
     void DrawBuffer::drawPending(bool drawCurrent)
     {
-        if (m_frustumEnabled) {
+        if (m_frustumGPU) {
             glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
         }
 

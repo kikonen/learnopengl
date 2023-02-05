@@ -52,7 +52,7 @@ assets:
   clear_color: true
 
   frustum_enabled: true
-  frustum_cpu: false
+  frustum_cpu: true
   frustum_gpu: true
   frustum_debug: true
 
@@ -68,7 +68,7 @@ assets:
 
   water_tile_size: 100
   water_render_frame_start: 0
-  water_render_frame_step: 3
+  water_render_frame_step: 1
 
   terrain_vertex_count: 32
   terrain_tile_size: 400

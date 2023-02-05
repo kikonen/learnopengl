@@ -217,6 +217,9 @@ void WaterMapRenderer::drawNodes(
         glClear(mask);
     }
 
+    // NOTE KI flush before touching clip distance
+    ctx.m_batch->flush(ctx);
+
     ctx.updateClipPlanesUBO();
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
@@ -251,6 +254,8 @@ void WaterMapRenderer::drawNodes(
             renderTypes(all.second);
         }
     }
+
+    // NOTE KI flush before touching clip distance
     ctx.m_batch->flush(ctx);
 
     ctx.state.disable(GL_CLIP_DISTANCE0);

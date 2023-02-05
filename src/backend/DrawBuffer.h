@@ -55,7 +55,7 @@ namespace backend {
         int m_batchCount = 0;
         int m_rangeCount = 0;
 
-        bool m_frustumEnabled = true;
+        bool m_frustumGPU = false;
 
         bool m_bound = false;
 

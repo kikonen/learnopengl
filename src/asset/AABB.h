@@ -28,7 +28,7 @@ struct AABB final
 
     ~AABB() noexcept = default;
 
-    inline glm::vec4 getVolume() const {
+    inline const glm::vec4& getVolume() const {
         return m_volume;
     }
 
