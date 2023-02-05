@@ -2,12 +2,12 @@ vec4 calculateSpotLight(
   in SpotLight light,
   in vec3 normal,
   in vec3 toView,
-  in vec3 fragPos,
+  in vec3 worldPos,
   in Material material)
 {
-  vec3 toLight = normalize(light.pos - fragPos);
+  vec3 toLight = normalize(light.worldPos - worldPos);
 
-  float theta = dot(toLight, normalize(-light.dir));
+  float theta = dot(toLight, normalize(-light.worldDir));
   bool shade = theta > light.cutoff;
 
   vec4 ambient;
@@ -38,7 +38,7 @@ vec4 calculateSpotLight(
     ambient = light.ambient * material.diffuse;
   }
 
-  float distance = length(light.pos - fragPos);
+  float distance = length(light.worldPos - worldPos);
   float attenuation = 1.0 / (light.constant + light.linear * distance +
                              light.quadratic * (distance * distance));
   ambient  *= attenuation;

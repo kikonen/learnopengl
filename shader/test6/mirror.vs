@@ -16,15 +16,15 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 out VS_OUT {
   vec4 glp;
 
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec4 vertexPos;
-  vec3 viewVertexPos;
+  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec4 fragPosLightSpace;
+  vec4 shadowPos;
 
   mat3 TBN;
 } vs_out;
@@ -49,11 +49,11 @@ void main() {
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord;
 
-  vs_out.fragPos = worldPos.xyz;
+  vs_out.worldPos = worldPos.xyz;
   vs_out.vertexPos = pos;
-  vs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
+  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   vs_out.normal = normalize(normalMatrix * a_normal);
 
-  vs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+  vs_out.shadowPos = u_shadowMatrix * worldPos;
 }

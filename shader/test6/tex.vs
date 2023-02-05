@@ -19,15 +19,15 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_material_indeces.glsl
 
 out VS_OUT {
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec4 vertexPos;
-  vec3 viewVertexPos;
+  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec4 fragPosLightSpace;
+  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -80,15 +80,15 @@ void main() {
 
   vs_out.texCoord = a_texCoord * u_materials[materialIndex].tiling;
 
-  vs_out.fragPos = worldPos.xyz;
+  vs_out.worldPos = worldPos.xyz;
   vs_out.vertexPos = pos;
-  vs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
+  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   vs_out.normal = normalize(normalMatrix * a_normal);
 
   calculateClipping(worldPos);
 
-  vs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+  vs_out.shadowPos = u_shadowMatrix * worldPos;
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0)

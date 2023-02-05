@@ -11,7 +11,7 @@ layout(early_fragment_tests) in;
 in VS_OUT {
   vec4 color;
   vec2 texCoord;
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
 } fs_in;
 
@@ -25,7 +25,7 @@ layout (location = 0) out vec4 fragColor;
 
 void main() {
 
-  vec4 texColor = rayExplosion(fragPos);
+  vec4 texColor = rayExplosion(worldPos);
 
 #ifdef USE_ALPHA
   if (texColor.a < 0.1)

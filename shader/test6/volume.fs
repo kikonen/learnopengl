@@ -6,7 +6,7 @@
 #include uniform_matrices.glsl
 
 in VS_OUT {
-  vec3 fragPos;
+  vec3 worldPos;
   flat uint materialIndex;
 } fs_in;
 

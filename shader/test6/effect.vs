@@ -12,7 +12,7 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
 } vs_out;
 
@@ -36,6 +36,6 @@ void main() {
 
   calculateClipping(worldPos);
 
-  vs_out.fragPos = worldPos.xyz;
+  vs_out.worldPos = worldPos.xyz;
   vs_out.normal = normalize(normalMatrix * a_normal);
 }

@@ -1,5 +1,5 @@
 layout(std140, binding = UBO_DATA) uniform Data {
-  vec3 u_viewPos;
+  vec3 u_viewWorldPos;
   vec3 u_viewFront;
   vec3 u_viewUp;
   vec3 u_viewRight;

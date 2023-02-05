@@ -10,13 +10,13 @@
 #include uniform_textures.glsl
 
 in VS_OUT {
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
 
   flat uint materialIndex;
 
-  vec4 fragPosLightSpace;
+  vec4 shadowPos;
 } fs_in;
 
 layout (location = 0) out vec4 fragColor;

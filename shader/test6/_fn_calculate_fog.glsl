@@ -4,7 +4,7 @@ vec4 calculateFog(
 {
   if (fogRatio == 0) return color;
 
-  float dist = length(fs_in.viewVertexPos);
+  float dist = length(fs_in.viewPos);
   float fogFactor = clamp(((u_fogEnd - dist) / (u_fogEnd - u_fogStart)), 0.0, 1.0);
 
 #ifdef USE_BLEND

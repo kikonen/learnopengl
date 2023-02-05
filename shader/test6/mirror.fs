@@ -12,15 +12,15 @@
 in VS_OUT {
   vec4 glp;
 
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec4 vertexPos;
-  vec3 viewVertexPos;
+  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec4 fragPosLightSpace;
+  vec4 shadowPos;
 
   mat3 TBN;
 } fs_in;
@@ -53,7 +53,7 @@ void main() {
     normal = -normal;
   }
 
-  vec3 toView = normalize(u_viewPos - fs_in.fragPos);
+  vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
 
   if (gl_FrontFacing)
   {

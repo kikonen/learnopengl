@@ -2,10 +2,10 @@ vec4 calculatePointLight(
   in PointLight light,
   in vec3 normal,
   in vec3 toView,
-  in vec3 fragPos,
+  in vec3 worldPos,
   in Material material)
 {
-  vec3 toLight = normalize(light.pos - fragPos);
+  vec3 toLight = normalize(light.worldPos - worldPos);
 
   // ambient
   vec4 ambient = light.ambient * material.ambient;
@@ -20,7 +20,7 @@ vec4 calculatePointLight(
   float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
   vec4 specular = light.specular * (spec * material.specular);
 
-  float distance = length(light.pos - fragPos);
+  float distance = length(light.worldPos - worldPos);
   float attenuation = 1.0 / (light.constant + light.linear * distance +
                              light.quadratic * (distance * distance));
   ambient  *= attenuation;

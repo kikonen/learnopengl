@@ -11,10 +11,10 @@ in VS_OUT {
 
   flat uint materialIndex;
 
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
 
-  vec4 fragPosLightSpace;
+  vec4 shadowPos;
 
   mat3 TBN;
 } vs_in[];
@@ -25,10 +25,10 @@ out VS_OUT {
 
   flat uint materialIndex;
 
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
 
-  vec4 fragPosLightSpace;
+  vec4 shadowPos;
 
   mat3 TBN;
 } gs_out;
@@ -53,9 +53,9 @@ void sendVertex(in int i, in vec4 pos) {
   gs_out.texCoord = vs_in[i].texCoord;
   gs_out.vertexPos = vs_in[i].vertexPos;
   gs_out.materialIndex = vs_in[i].materialIndex;
-  gs_out.fragPos = vs_in[i].fragPos;
+  gs_out.worldPos = vs_in[i].worldPos;
   gs_out.normal = vs_in[i].normal;
-  gs_out.fragPosLightSpace = vs_in[i].fragPosLightSpace;
+  gs_out.shadowPos = vs_in[i].shadowPos;
   gs_out.TBN = vs_in[i].TBN;
   EmitVertex();
 }

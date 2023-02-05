@@ -14,7 +14,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 out VS_OUT {
   flat uint materialIndex;
   vec2 texCoord;
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
 } vs_out;
 
@@ -42,6 +42,6 @@ void main() {
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord;
 
-  vs_out.fragPos = worldPos.xyz;
+  vs_out.worldPos = worldPos.xyz;
   vs_out.normal = normalize(normalMatrix * a_normal);
 }

@@ -24,15 +24,15 @@ in VS_OUT {
 } gs_in[];
 
 out GS_OUT {
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec4 vertexPos;
-  vec3 viewVertexPos;
+  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec4 fragPosLightSpace;
+  vec4 shadowPos;
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
 #endif
@@ -64,7 +64,7 @@ void generateQuad(const int index)
   // https://ogldev.org/www/tutorial27/tutorial27.html
   vec3 pos = gl_in[0].gl_Position.xyz;
   vec3 scale = gs_in[index].scale * 2.0;
-  vec3 toView = normalize(u_viewPos - pos);
+  vec3 toView = normalize(u_viewWorldPos - pos);
   vec3 up = vec3(0, 1, 0);
   vec3 right = cross(toView, up);
 
@@ -78,10 +78,10 @@ void generateQuad(const int index)
   pos -= (scaledRight * 0.5);
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
-  gs_out.fragPos = pos;
-  gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
+  gs_out.worldPos = worldPos;
+  gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(0.0, 0.0);
-  gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+  gs_out.shadowPos = u_shadowMatrix * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();
@@ -91,10 +91,10 @@ void generateQuad(const int index)
   pos.y += scaledY;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
-  gs_out.fragPos = pos;
-  gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
+  gs_out.worldPos = worldPos;
+  gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(0.0, 1.0);
-  gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+  gs_out.shadowPos = u_shadowMatrix * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();
@@ -105,10 +105,10 @@ void generateQuad(const int index)
   pos += scaledRight;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
-  gs_out.fragPos = pos;
-  gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
+  gs_out.worldPos = worldPos;
+  gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(1.0, 0.0);
-  gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+  gs_out.shadowPos = u_shadowMatrix * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();
@@ -118,10 +118,10 @@ void generateQuad(const int index)
   pos.y += scaledY;
   worldPos = vec4(pos, 1.0);
   gl_Position = u_projectedMatrix * worldPos;
-  gs_out.fragPos = pos;
-  gs_out.viewVertexPos = (u_viewMatrix * worldPos).xyz;
+  gs_out.worldPos = worldPos;
+  gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(1.0, 1.0);
-  gs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+  gs_out.shadowPos = u_shadowMatrix * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();

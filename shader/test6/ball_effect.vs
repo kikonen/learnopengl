@@ -14,13 +14,13 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
-  vec3 fragPos;
+  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
 
   flat uint materialIndex;
 
-  vec4 fragPosLightSpace;
+  vec4 shadowPos;
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -47,10 +47,10 @@ void main() {
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord * u_materials[materialIndex].tiling;
 
-  vs_out.fragPos = worldPos.xyz;
+  vs_out.worldPos = worldPos.xyz;
   vs_out.normal = normalize(normalMatrix * a_normal);
 
   calculateClipping(worldPos);
 
-  vs_out.fragPosLightSpace = u_shadowMatrix * worldPos;
+  vs_out.shadowPos = u_shadowMatrix * worldPos;
 }

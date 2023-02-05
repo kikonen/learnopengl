@@ -43,7 +43,7 @@ void generateQuad(const int index)
   // https://ogldev.org/www/tutorial27/tutorial27.html
   vec3 pos = gl_in[0].gl_Position.xyz;
   vec3 scale = gs_in[index].scale * 2.0;
-  vec3 toView = normalize(u_viewPos - pos);
+  vec3 toView = normalize(u_viewWorldPos - pos);
   vec3 up = vec3(0, 1, 0);
   vec3 right = cross(toView, up);
 
