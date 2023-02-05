@@ -103,10 +103,16 @@ void Batch::addAll(
 
 void Batch::addInstanced(
     const RenderContext& ctx,
+    int instancedEntityIndex,
     const int firstEntityIndex,
     const int count)
 {
     if (firstEntityIndex < 0 || count <= 0) return;
+
+    if (!inFrustumZ(ctx, instancedEntityIndex)) {
+        m_skipCount += count - 1;
+        return;
+    }
 
     auto& top = m_batches.back();
 

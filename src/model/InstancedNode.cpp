@@ -34,7 +34,7 @@ void InstancedNode::update(
 
 void InstancedNode::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
-    batch.addInstanced(ctx, m_firstIndex, m_count);
+    batch.addInstanced(ctx, m_entityIndex, m_firstIndex, m_count);
 }
 
 void InstancedNode::setEntityRange(int firstIndex, int count) noexcept

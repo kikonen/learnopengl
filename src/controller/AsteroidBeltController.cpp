@@ -6,6 +6,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "asset/Mesh.h"
+
 #include "model/InstancedNode.h"
 
 #include "scene/RenderContext.h"
@@ -61,6 +63,9 @@ void AsteroidBeltController::updateAsteroids(
         rotateAsteroids(ctx, node, m_asteroids);
     }
 
+    const Mesh* mesh = node.m_type->getMesh();
+    const auto & volume = mesh->getAABB().getVolume();
+
     for (const auto& asteroid : m_asteroids)
     {
         auto* entity = registry->m_entityRegistry->get(asteroid.m_entityIndex);
@@ -82,6 +87,7 @@ void AsteroidBeltController::updateAsteroids(
 
         entity->u_materialIndex = node.getMaterialIndex();
         entity->u_highlightIndex = node.getHighlightIndex(ctx);
+        entity->u_volume = volume;
 
         registry->m_entityRegistry->markDirty(asteroid.m_entityIndex);
     }
@@ -191,7 +197,6 @@ void AsteroidBeltController::calculateVolume(
     InstancedNode& node,
     std::vector<Asteroid> asteroids)
 {
-    return;
     glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
     glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
 

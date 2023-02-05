@@ -47,6 +47,7 @@ public:
 
     void addInstanced(
         const RenderContext& ctx,
+        int instancedEntityIndex,
         int firstEntityIndex,
         int count);
 

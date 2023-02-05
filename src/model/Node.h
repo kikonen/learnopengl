@@ -43,12 +43,8 @@ public:
         return m_worldPlaneNormal;
     }
 
-    inline float getVolumeRadius() const noexcept {
-        return m_volumeRadius;
-    }
-
-    inline const glm::vec3& getVolumeCenter() const noexcept {
-        return m_volumeCenter;
+    inline const glm::vec4& getVolume() const noexcept {
+        return m_aabb.getVolume();
     }
 
     bool inFrustum(const RenderContext& ctx, float radiusFlex) const;
@@ -165,9 +161,6 @@ protected:
 private:
     int m_matrixLevel = -1;
     int m_parentMatrixLevel = -1;
-
-    float m_volumeRadius{ 0.f };
-    glm::vec3 m_volumeCenter{ 0.f };
 
     glm::vec3 m_worldPosition{ 0.f };
 

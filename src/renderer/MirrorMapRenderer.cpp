@@ -118,7 +118,12 @@ bool MirrorMapRenderer::render(
     // reflection map
     {
         const auto* mainCamera = ctx.m_camera;
-        const auto& mirrorSize = closest->getVolumeRadius();
+
+        const auto& volume = closest->getVolume();
+        const glm::vec3 volumeCenter = glm::vec3(volume);
+        const float volumeRadius = volume.a;
+
+        const auto& mirrorSize = volumeRadius;
         const auto& eyePos = mainCamera->getWorldPosition();
 
         const auto& planeNormal = closest->getWorldPlaneNormal();

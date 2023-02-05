@@ -65,7 +65,7 @@ void Node::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    if (isEntity() && !m_type->m_flags.instanced) {
+    {
         m_entityIndex = registry->m_entityRegistry->add();
 
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
@@ -113,15 +113,16 @@ void Node::update(
         }
     }
 
-    if (m_dirtyEntity && isEntity() && !m_type->m_flags.instanced) {
+    if (m_dirtyEntity)
+    {
         auto* entity = ctx.m_registry->m_entityRegistry->get(m_entityIndex);
 
         entity->setModelMatrix(m_modelMatrix);
         entity->setNormalMatrix(m_normalMatrix);
         entity->u_materialIndex = getMaterialIndex();
-            entity->u_highlightIndex = getHighlightIndex(ctx);
+        entity->u_highlightIndex = getHighlightIndex(ctx);
 
-        entity->u_volume = glm::vec4{ m_volumeCenter, m_volumeRadius };
+        entity->u_volume = getVolume();
 
         ctx.m_registry->m_entityRegistry->markDirty(m_entityIndex);
 
@@ -144,7 +145,6 @@ void Node::updateModelMatrix(Node* parent) noexcept
         || dirtyParent;
     if (!dirtyModel) return;
 
-    const bool needRadius = m_dirtyScale || dirtyParent;
     const bool needPlaneNormal = m_type->m_flags.mirror && (m_dirtyRotation || dirtyParent);
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
@@ -190,15 +190,6 @@ void Node::updateModelMatrix(Node* parent) noexcept
 
     if (needPlaneNormal) {
         m_worldPlaneNormal = glm::normalize(glm::vec3(m_modelMatrix * glm::vec4(m_planeNormal, 0.f)));
-    }
-
-    if (needRadius) {
-        // NOTE KI radius can change if scale of node or parent changes
-        const auto& min = m_aabb.m_min;
-        const auto& max = m_aabb.m_max;
-
-        m_volumeRadius = glm::length(min - max) * 0.5f;
-        m_volumeCenter = (max + min) * 0.5f;
     }
 
     m_dirtyEntity = true;
@@ -261,7 +252,8 @@ bool Node::inFrustum(const RenderContext& ctx, float radiusFlex) const
 
     bool hit = true;
     if (coords.x < -1 || coords.x > 1 || coords.y < -1 || coords.y > 1 || coords.z < 0) {
-        float diameter = m_volumeRadius * radiusFlex;
+        const auto& volume = getVolume();
+        float diameter = volume.a * radiusFlex;
 
         if (coords.z < -diameter) {
             hit = false;
