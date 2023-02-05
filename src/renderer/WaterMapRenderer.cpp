@@ -210,7 +210,7 @@ void WaterMapRenderer::drawNodes(
         int mask = GL_DEPTH_BUFFER_BIT;
         if (ctx.assets.clearColor) {
             if (ctx.assets.debugClearColor) {
-                glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
+                glClearColor(0.9f, 0.3f, 0.3f, 0.0f);
             }
             mask |= GL_COLOR_BUFFER_BIT;
         }

@@ -142,7 +142,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
         {
             // make clear color by default black
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         }
 
         {

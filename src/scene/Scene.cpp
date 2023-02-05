@@ -371,8 +371,8 @@ void Scene::drawViewports(RenderContext& ctx)
         int mask = GL_DEPTH_BUFFER_BIT;
         if (m_assets.clearColor) {
             if (m_assets.debugClearColor) {
-                //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-                glClearColor(0.9f, 0.9f, 0.0f, 1.0f);
+                //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+                glClearColor(0.9f, 0.9f, 0.0f, 0.0f);
             }
             mask |= GL_COLOR_BUFFER_BIT;
         }
@@ -391,7 +391,7 @@ void Scene::drawScene(RenderContext& ctx)
         int mask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
         if (m_assets.clearColor) {
             if (m_assets.debugClearColor) {
-                glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+                glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
             }
             mask |= GL_COLOR_BUFFER_BIT;
         }
@@ -482,10 +482,10 @@ void Scene::updateMainViewport(RenderContext& ctx)
         // NOTE KI alpha NOT needed
         auto buffer = new TextureBuffer({
             w, h,
-            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepthStencil() } });
+            { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() } });
 
         m_mainBuffer.reset(buffer);
-        m_mainBuffer->prepare(true, { 0, 0, 0, 1.0 });
+        m_mainBuffer->prepare(true, { 0, 0, 0, 0.0 });
 
         m_mainViewport->setTextureId(m_mainBuffer->m_spec.attachments[0].textureID);
         m_mainViewport->setSourceFrameBuffer(m_mainBuffer.get());
@@ -503,10 +503,10 @@ void Scene::updateMainViewport(RenderContext& ctx)
             // NOTE KI alpha NOT needed
             auto buffer = new TextureBuffer({
                 mirrorW, mirrorH,
-                { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepthStencil() } });
+                { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() } });
 
             m_rearBuffer.reset(buffer);
-            m_rearBuffer->prepare(true, { 0, 0, 0, 1.0 });
+            m_rearBuffer->prepare(true, { 0, 0, 0, 0.0 });
 
             m_rearViewport->setTextureId(m_rearBuffer->m_spec.attachments[0].textureID);
             m_rearViewport->setSourceFrameBuffer(m_rearBuffer.get());
