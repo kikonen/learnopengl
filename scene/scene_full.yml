@@ -224,7 +224,7 @@ entities:
     scale: 1.0
     material: glass_ball
     material_modifier:
-      reflection: 0.9
+      reflection: 0.7
       refraction: 0.05
       refraction_ratio: [1.0, 1.52]
     render_flags:
@@ -357,7 +357,7 @@ entities:
     pos: [-15.0, 10.0, 5.0]
     scale: 20.0
     material_modifier:
-      reflection: 0.9
+      reflection: 0.7
     render_flags:
       render_back: true
     enabled: false
@@ -390,7 +390,7 @@ entities:
     scale: 1.0
     material: teapot
     material_modifier:
-      reflection: 0.8
+      reflection: 0.7
       refraction: 0.05
       refraction_ratio: [1.0, 1.52]
     render_flags:
@@ -441,7 +441,7 @@ entities:
     scale: 1.3
     material_modifier:
       reflection: 0.05
-      refraction: 0.95
+      refraction: 0.85
       refraction_ratio: [1.0, 1.52]
     enabled: true
   - name: Mirror ball
@@ -450,7 +450,7 @@ entities:
     pos: [0.0, 20.0, 0.0]
     scale: 1.3
     material_modifier:
-      reflection: 1.0
+      reflection: 0.8
     enabled: true
   - name: Water ball
     model: water_ball
@@ -679,7 +679,7 @@ entities:
     pos: [0.0, 0, 0.0]
     scale: 1.5
     material_modifier:
-      reflection: 0.7
+      reflection: 0.6
     enabled: true
   - name: Asteroid belt
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
@@ -687,7 +687,7 @@ entities:
     instanced: true
     shader: texture
     material_modifier:
-      reflection: 0.7
+      reflection: 0.4
     pos: [0, 0, 0]
     controller:
       type: asteroid_belt
@@ -875,7 +875,7 @@ materials:
     d: 1.000000
     illum: 2
     map_kd: Marble White_VH_512.PNG
-    reflection: 0.9
+    reflection: 0.5
     refraction: 0.05
     refraction_ratio: [1.0, 1.52]
   - name: default_glass_ball_todo
@@ -884,7 +884,7 @@ materials:
     kd: [0.8, 0.8, 0.0, 1.0]
     ks: [0.9, 0.9, 0.0, 1.0]
     reflection: 0.1
-    refraction: 0.9
+    refraction: 0.7
     refraction_ratio: [1.0, 1.52]
   - name: brickwall
     ns: 225.000000

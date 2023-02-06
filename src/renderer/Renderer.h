@@ -25,7 +25,8 @@ public:
     bool isRendered() { return m_rendered;  }
 
 protected:
-    void setClosest(Node* closest, int tagIndex);
+    // @return true if changed node
+    bool setClosest(Node* closest, int tagIndex);
 
 protected:
     bool m_prepared = false;

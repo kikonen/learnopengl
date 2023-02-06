@@ -298,7 +298,7 @@ void Scene::draw(RenderContext& ctx)
     //glPolygonOffset(0.2f, 0.2f);
 
     if (m_cubeMapRenderer && m_cubeMapRenderer->render(ctx)) {
-        wasCubeMap = true;
+        //wasCubeMap = true;
     }
 
     if (!wasCubeMap && m_waterMapRenderer && m_waterMapRenderer->render(ctx))
@@ -308,7 +308,7 @@ void Scene::draw(RenderContext& ctx)
         renderCount++;
 
     // NOTE KI skip main render if special update cycle
-    if (!wasCubeMap) // && renderCount <= 2)
+    //if (!wasCubeMap) // && renderCount <= 2)
     {
         drawMain(ctx);
         drawRear(ctx);

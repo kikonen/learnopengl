@@ -100,6 +100,6 @@ assets:
   cube_map_near_plane: 0.5
   cube_map_far_plane: 200
   cube_map_render_frame_start: 1
-  cube_map_render_frame_step: 5
+  cube_map_render_frame_step: 2
 
   viewport_effect: none

@@ -26,8 +26,9 @@ void Renderer::update(const RenderContext& ctx)
 {
 }
 
-void Renderer::setClosest(Node* closest, int tagIndex)
+bool Renderer::setClosest(Node* closest, int tagIndex)
 {
+    const bool changed = m_lastClosest != closest;
     if (tagIndex != -1) {
         if (m_lastClosest) {
             m_lastClosest->setTagMaterialIndex(-1);
@@ -37,6 +38,7 @@ void Renderer::setClosest(Node* closest, int tagIndex)
         }
     }
     m_lastClosest = closest;
+    return changed;
 }
 
 bool Renderer::needRender(const RenderContext& ctx)

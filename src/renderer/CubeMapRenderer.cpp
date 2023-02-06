@@ -114,14 +114,21 @@ bool CubeMapRenderer::render(
     const RenderContext& mainCtx)
 {
     if (!m_cleared) {
-        clearCubeMap(mainCtx, *m_prev.get(), { 0, 0, 0, 1 }, false);
-        clearCubeMap(mainCtx, *m_curr.get(), { 0, 0, 0, 1 }, false);
+        clearCubeMap(mainCtx, *m_prev.get(), { 0, 0, 0, 0 }, false);
+        clearCubeMap(mainCtx, *m_curr.get(), { 0, 0, 0, 0 }, false);
         m_cleared = true;
     }
 
     if (!needRender(mainCtx)) return false;
 
     Node* centerNode = findCenter(mainCtx);
+    if (m_lastClosest && setClosest(centerNode, -1)) {
+        //std::cout << "NEW_CENTER\n";
+        m_curr->m_updateFace = -1;
+        m_prev->m_updateFace = -1;
+        m_curr->m_rendered = false;
+        m_prev->m_rendered = false;
+    }
     if (!centerNode) return false;
 
     if (mainCtx.assets.showCubeMapCenter) {
@@ -142,7 +149,20 @@ bool CubeMapRenderer::render(
 
     m_curr->bind(mainCtx);
 
-    for (int face = 0; face < 6; face++) {
+    int fromFace = m_curr->m_updateFace;
+    int updateCount = 1;
+    bool full = fromFace == -1;
+
+    if (full) {
+        //std::cout << "FULL\n";
+        fromFace = 0;
+        updateCount = 6;
+    }
+    else {
+        //std::cout << "update: " << m_updateFace << "\n";
+    }
+
+    for (int face = fromFace; face < fromFace + updateCount; face++) {
         glFramebufferTexture2D(
             GL_FRAMEBUFFER,
             GL_COLOR_ATTACHMENT0,
@@ -154,7 +174,7 @@ bool CubeMapRenderer::render(
             int mask = GL_DEPTH_BUFFER_BIT;
             if (mainCtx.assets.clearColor) {
                 if (mainCtx.assets.debugClearColor) {
-                    auto color = DEBUG_COLOR[face];
+                    const auto& color = DEBUG_COLOR[face];
                     glClearColor(color.r, color.g, color.b, color.a);
                 }
                 mask |= GL_COLOR_BUFFER_BIT;
@@ -185,10 +205,17 @@ bool CubeMapRenderer::render(
         drawNodes(ctx, centerNode);
     }
 
+    if (full)
+        m_curr->m_rendered = true;
+
     m_curr->unbind(mainCtx);
     m_prev.swap(m_curr);
 
     mainCtx.updateMatricesUBO();
+
+    if (m_curr->m_rendered) {
+        m_curr->m_updateFace = (m_curr->m_updateFace + 1) % 6;
+    }
 
     m_rendered = true;
     return true;

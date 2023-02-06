@@ -30,6 +30,9 @@ public:
 
     bool m_valid = false;
 
+    bool m_rendered = false;
+    int m_updateFace = -1;
+
 private:
     bool m_prepared = false;
 
