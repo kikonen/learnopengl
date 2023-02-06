@@ -2,7 +2,6 @@
 
 #include "NodeController.h"
 
-class InstancedNode;
 
 class InstancedController : public NodeController
 {
@@ -23,11 +22,11 @@ protected:
     virtual void prepareInstanced(
         const Assets& assets,
         Registry* registry,
-        InstancedNode& node);
+        Node& node);
 
     virtual bool updateInstanced(
         const RenderContext& ctx,
-        InstancedNode& node,
+        Node& node,
         Node* parent);
 };
 

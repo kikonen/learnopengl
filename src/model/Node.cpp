@@ -132,7 +132,11 @@ void Node::update(
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
-    batch.add(ctx, m_entityIndex);
+    if (m_instancedIndex == -1) {
+        batch.add(ctx, m_entityIndex);
+    } else {
+        batch.addInstanced(ctx, m_entityIndex, m_instancedIndex, m_instancedCount);
+    }
 }
 
 void Node::updateModelMatrix(Node* parent) noexcept

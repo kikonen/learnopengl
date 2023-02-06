@@ -1,6 +1,6 @@
 #include "InstancedController.h"
 
-#include "model/InstancedNode.h"
+#include "model/Node.h"
 
 InstancedController::InstancedController()
 {
@@ -17,7 +17,7 @@ void InstancedController::prepare(
     prepareInstanced(
         assets,
         registry,
-        dynamic_cast<InstancedNode&>(node));
+        node);
 }
 
 bool InstancedController::update(
@@ -25,19 +25,19 @@ bool InstancedController::update(
     Node& node,
     Node* parent) noexcept
 {
-    return updateInstanced(ctx, dynamic_cast<InstancedNode&>(node), parent);
+    return updateInstanced(ctx, node, parent);
 }
 
 void InstancedController::prepareInstanced(
     const Assets & assets,
     Registry* registry,
-    InstancedNode& node)
+    Node& node)
 {
 }
 
 bool InstancedController::updateInstanced(
     const RenderContext& ctx,
-    InstancedNode& node,
+    Node& node,
     Node* parent)
 {
     return false;

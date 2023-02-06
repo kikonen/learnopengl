@@ -20,7 +20,6 @@
 
 #include "model/Group.h"
 #include "model/Node.h"
-#include "model/InstancedNode.h"
 
 #include "controller/AsteroidBeltController.h"
 #include "controller/CameraController.h"
@@ -475,9 +474,7 @@ Node* SceneFile::createNode(
     bool isRoot,
     bool cloned)
 {
-    Node* node = data.instanced
-        ? new InstancedNode(type)
-        : new Node(type);
+    Node* node = new Node(type);
 
     glm::vec3 pos = data.position + clonePosition + posAdjustment;
 

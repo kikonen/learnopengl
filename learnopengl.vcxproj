@@ -254,7 +254,6 @@
     <ClCompile Include="src\controller\MovingLightController.cpp" />
     <ClCompile Include="src\controller\AsteroidBeltController.cpp" />
     <ClCompile Include="src\controller\NodeController.cpp" />
-    <ClCompile Include="src\model\InstancedNode.cpp" />
     <ClCompile Include="src\util\Perlin.cpp" />
     <ClCompile Include="src\scene\FrameBuffer.cpp" />
     <ClCompile Include="src\asset\MeshBuffers.cpp" />
@@ -401,7 +400,6 @@
     <ClInclude Include="src\controller\MovingLightController.h" />
     <ClInclude Include="src\controller\AsteroidBeltController.h" />
     <ClInclude Include="src\controller\NodeController.h" />
-    <ClInclude Include="src\model\InstancedNode.h" />
     <ClInclude Include="src\util\Perlin.h" />
     <ClInclude Include="src\scene\FrameBuffer.h" />
     <ClInclude Include="src\asset\MeshBuffers.h" />

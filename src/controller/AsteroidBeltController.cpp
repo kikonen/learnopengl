@@ -8,7 +8,7 @@
 
 #include "asset/Mesh.h"
 
-#include "model/InstancedNode.h"
+#include "model/Node.h"
 
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
@@ -29,14 +29,14 @@ AsteroidBeltController::AsteroidBeltController(int asteroidCount)
 void AsteroidBeltController::prepareInstanced(
     const Assets& assets,
     Registry* registry,
-    InstancedNode& node)
+    Node& node)
 {
     createAsteroids(assets, registry, node);
 }
 
 bool AsteroidBeltController::updateInstanced(
     const RenderContext& ctx,
-    InstancedNode& node,
+    Node& node,
     Node* parent)
 {
     const bool rotate = m_updateIndex% m_updateStep == 0 || node.getMatrixLevel() != m_nodeMatrixLevel;
@@ -53,7 +53,7 @@ bool AsteroidBeltController::updateInstanced(
 
 void AsteroidBeltController::updateAsteroids(
     const RenderContext& ctx,
-    InstancedNode& node,
+    Node& node,
     Node* parent,
     bool rotate)
 {
@@ -98,7 +98,7 @@ void AsteroidBeltController::updateAsteroids(
 void AsteroidBeltController::createAsteroids(
     const Assets& assets,
     Registry* registry,
-    InstancedNode& node)
+    Node& node)
 {
     auto& type = node.m_type;
 
@@ -117,7 +117,7 @@ void AsteroidBeltController::createAsteroids(
 void AsteroidBeltController::initAsteroids(
     const Assets& assets,
     Registry* registry,
-    InstancedNode& node,
+    Node& node,
     std::vector<Asteroid>& asteroids)
 {
     size_t count = asteroids.size();
@@ -175,7 +175,7 @@ void AsteroidBeltController::initAsteroids(
 
 void AsteroidBeltController::rotateAsteroids(
     const RenderContext& ctx,
-    InstancedNode& node,
+    Node& node,
     std::vector<Asteroid>& asteroids)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
@@ -194,7 +194,7 @@ void AsteroidBeltController::rotateAsteroids(
 }
 
 void AsteroidBeltController::calculateVolume(
-    InstancedNode& node,
+    Node& node,
     std::vector<Asteroid> asteroids)
 {
     glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());

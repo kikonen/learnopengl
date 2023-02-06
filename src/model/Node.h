@@ -20,20 +20,21 @@ class Batch;
 
 struct EntitySSBO;
 
-class Node
+class Node final
 {
 public:
     Node(MeshType* type);
-    virtual ~Node();
+    ~Node();
 
     const std::string str() const noexcept;
 
-    virtual void prepare(
+    void prepare(
         const Assets& assets,
         Registry* registry);
 
-    virtual void update(const RenderContext& ctx, Node* parent) noexcept;
-    virtual void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
+    void update(const RenderContext& ctx, Node* parent) noexcept;
+
+    void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
 
     inline const glm::vec3& getWorldPosition() const noexcept {
         return m_worldPosition;
@@ -116,6 +117,11 @@ public:
 
     static int nextID() noexcept;
 
+    void setEntityRange(int instancedIndex, int instancedCount) noexcept {
+        m_instancedIndex = instancedIndex;
+        m_instancedCount = instancedCount;
+    }
+
 public:
     int lua_getId() const noexcept;
 
@@ -155,6 +161,9 @@ protected:
     bool m_prepared = false;
 
     int m_entityIndex = -1;
+
+    int m_instancedIndex = -1;
+    int  m_instancedCount = 0;
 
     AABB m_aabb;
 

@@ -4,8 +4,6 @@
 #include "asset/PlainTexture.h"
 #include "asset/Shader.h"
 
-#include "model/InstancedNode.h"
-
 #include "controller/CameraController.h"
 #include "controller/AsteroidBeltController.h"
 #include "controller/MovingLightController.h"

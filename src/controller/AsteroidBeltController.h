@@ -25,38 +25,38 @@ protected:
     void prepareInstanced(
         const Assets& assets,
         Registry* registry,
-        InstancedNode& node) override;
+        Node& node) override;
 
     bool updateInstanced(
         const RenderContext& ctx,
-        InstancedNode& node,
+        Node& node,
         Node* parent) override;
 
 private:
     void updateAsteroids(
         const RenderContext& ctx,
-        InstancedNode& node,
+        Node& node,
         Node* parent,
         bool rotate);
 
     void createAsteroids(
         const Assets& assets,
         Registry* registry,
-        InstancedNode& node);
+        Node& node);
 
     void initAsteroids(
         const Assets& assets,
         Registry* registry,
-        InstancedNode& node,
+        Node& node,
         std::vector<Asteroid>& asteroids);
 
     void rotateAsteroids(
         const RenderContext& ctx,
-        InstancedNode& node,
+        Node& node,
         std::vector<Asteroid>& asteroids);
 
     void calculateVolume(
-        InstancedNode& node,
+        Node& node,
         std::vector<Asteroid> asteroids);
 
 private:
