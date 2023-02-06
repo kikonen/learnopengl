@@ -45,7 +45,8 @@ void main() {
 
   vs_out.vertexPos = pos;
 
-  vs_out.normal = normalize(normalMatrix * normal);
+  // NOTE KI pointless to normalize vs side
+  vs_out.normal = normalMatrix * normal;
 
   vs_out.scale = vec3(modelMatrix[0][0],
                       modelMatrix[1][1],
@@ -55,7 +56,7 @@ void main() {
   if (u_materials[materialIndex].normalMapTex >= 0) {
     const vec3 tangent = vec3(1.0, 0.0, 0.0);
 
-    const vec3 N = vs_out.normal;
+    const vec3 N = normalize(vs_out.normal);
     const vec3 T = normalize(normalMatrix * tangent);
     T = normalize(T - dot(T, N) * N);
     const vec3 B = cross(N, T);

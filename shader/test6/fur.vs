@@ -42,7 +42,8 @@ void main() {
 
   vs_out.texCoord = a_texCoord * u_materials[materialIndex].tiling;
 
-  vs_out.normal = normalize(normalMatrix * a_normal);
+  // NOTE KI pointless to normalize vs side
+  vs_out.normal = normalMatrix * a_normal;
 
   calculateClipping(worldPos);
 }

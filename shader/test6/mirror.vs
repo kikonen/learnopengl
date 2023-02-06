@@ -53,7 +53,8 @@ void main() {
   vs_out.vertexPos = pos;
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
-  vs_out.normal = normalize(normalMatrix * a_normal);
+  // NOTE KI pointless to normalize vs side
+  vs_out.normal = normalMatrix * a_normal;
 
   vs_out.shadowPos = u_shadowMatrix * worldPos;
 }

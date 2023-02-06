@@ -37,5 +37,7 @@ void main() {
   calculateClipping(worldPos);
 
   vs_out.worldPos = worldPos.xyz;
-  vs_out.normal = normalize(normalMatrix * a_normal);
+
+  // NOTE KI pointless to normalize vs side
+  vs_out.normal = normalMatrix * a_normal;
 }

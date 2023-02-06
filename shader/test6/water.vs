@@ -60,13 +60,14 @@ void main() {
   vs_out.vertexPos = pos;
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
-  vs_out.normal = normalize(normalMatrix * a_normal);
+  // NOTE KI pointless to normalize vs side
+  vs_out.normal = normalMatrix * a_normal;
 
   vs_out.shadowPos = u_shadowMatrix * worldPos;
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0) {
-    const vec3 N = vs_out.normal;
+    const vec3 N = normalize(vs_out.normal);
     vec3 T = normalize(normalMatrix * a_tangent);
     T = normalize(T - dot(T, N) * N);
     const vec3 B = cross(N, T);
