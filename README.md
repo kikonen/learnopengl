@@ -38,6 +38,12 @@ https://glad.dav1d.de
   * applied for "quad" billboard
 - https://www.flipcode.com/archives/Billboarding-Excerpt_From_iReal-Time_Renderingi_2E.shtml
 
+## Frustum culling
+- https://www.lighthouse3d.com/tutorials/view-frustum-culling/clip-space-approach-extracting-the-planes/
+- https://cgvr.cs.uni-bremen.de/teaching/cg_literatur/lighthouse3d_view_frustum_culling/index.html
+- https://zeux.io/2009/01/31/view-frustum-culling-optimization-introduction/
+- https://fgiesen.wordpress.com/2010/10/17/view-frustum-culling/
+
 ## GPU frustum/occlusion culling
 - https://cpp-rendering.io/indirect-rendering/
 - https://registry.khronos.org/OpenGL/extensions/ARB/ARB_indirect_parameters.txt
