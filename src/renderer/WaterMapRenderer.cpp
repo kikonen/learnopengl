@@ -121,17 +121,20 @@ bool WaterMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
+    const auto* mainCamera = ctx.m_camera;
+    const auto& cameraRot = mainCamera->getRotation();
+    const auto& cameraPos = mainCamera->getWorldPosition();
+
     const auto& planePos = closest->getWorldPosition();
+    const float sdist = cameraPos.y - planePos.y;
 
     // https://prideout.net/clip-planes
     // reflection map
     {
-        const auto* mainCamera = ctx.m_camera;
-        glm::vec3 pos = mainCamera->getWorldPosition();
-        const float dist = pos.y - planePos.y;
-        pos.y -= dist * 2;
+        glm::vec3 pos = cameraPos;
+        pos.y -= sdist * 2;
 
-        glm::vec3 rot = ctx.m_camera->getRotation();
+        glm::vec3 rot = cameraRot;
         rot.x = -rot.x;
 
         auto& camera = m_cameras[0];
@@ -148,7 +151,7 @@ bool WaterMapRenderer::render(
 
         ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         clip.enabled = true;
-        clip.plane = glm::vec4(0, 1, 0, -planePos.y);
+        clip.plane = glm::vec4(0, (sdist > 0 ? 1 : -1), 0, (sdist > 0 ? -1 : 1) * planePos.y);
 
         localCtx.updateMatricesUBO();
 
@@ -163,9 +166,8 @@ bool WaterMapRenderer::render(
 
     // refraction map
     {
-        const auto* mainCamera = ctx.m_camera;
-        const auto& rot = mainCamera->getRotation();
-        const auto& pos = mainCamera->getWorldPosition();
+        glm::vec3 pos = cameraPos;
+        glm::vec3 rot = cameraRot;
 
         auto& camera = m_cameras[1];
         camera.setPosition(pos);
@@ -181,7 +183,7 @@ bool WaterMapRenderer::render(
 
         ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         clip.enabled = true;
-        clip.plane = glm::vec4(0, -1, 0, planePos.y);
+        clip.plane = glm::vec4(0, (sdist > 0 ? -1 : 1), 0, (sdist > 0 ? 1 : -1) * planePos.y);
 
         localCtx.updateMatricesUBO();
 

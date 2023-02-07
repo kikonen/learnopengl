@@ -102,20 +102,16 @@ void main() {
     normal = normal * 2.0 - 1.0;
     normal = normalize(fs_in.TBN * normal);
   } else {
-    normal = fs_in.normal;
+    normal = normalize(fs_in.normal);
   }
 #else
-  vec3 normal = fs_in.normal;
+  vec3 normal = normalize(fs_in.normal);
 #endif
 
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex.
   // input parameters are offset for neighbors, and scaling for width and height
-//  normal = estimateWaveNormal(.0002, 32.0, 16.0);
-
-  if (!gl_FrontFacing) {
-    normal = -normal;
-  }
+  normal = estimateWaveNormal(.0002, 32.0, 16.0);
 
   vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
 
@@ -128,24 +124,27 @@ void main() {
   refractCoord = clamp(refractCoord, 0., 1.0);
   reflectCoord = clamp(reflectCoord, 0., 1.0);
 
-//  reflectCoord.x = clamp(reflectCoord.x, 0.001, 0.999);
-//  reflectCoord.y = clamp(reflectCoord.y, -0.999, -0.001);
-
   vec4 refractColor = texture(u_refractionTex, refractCoord);
   vec4 reflectColor = texture(u_reflectionTex, reflectCoord);
 
   float refractiveFactor = dot(toView, normal);
-  refractiveFactor = pow(refractiveFactor, 4);
+
+  if (!gl_FrontFacing) {
+    refractiveFactor = 1.0;
+  }
+
+  refractiveFactor = clamp(refractiveFactor, 0, 1);
 
   vec4 mixColor = mix(reflectColor, refractColor, refractiveFactor);
 
   vec4 origDiffuse = material.diffuse;
   material.diffuse = mix(material.diffuse, mixColor, 0.9);
 
-  vec4 shaded = calculateLight(normal, toView, material);
-  vec4 texColor = shaded;
-
-  texColor = calculateFog(material.fogRatio, texColor);
+  vec4 texColor = material.diffuse;
+  {
+    texColor = calculateLight(normal, toView, material);
+    texColor = calculateFog(material.fogRatio, texColor);
+  }
 
 #ifdef USE_BLEND
   fragColor = texColor;

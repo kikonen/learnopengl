@@ -139,7 +139,7 @@ materials:
     ns: 150
     ks: [0.2, 0.2, 0.5, 1.0]
     kd: [0.0, 0.1, 0.8, 1.0]
-    map_bump: waterNormalMap_512.png
+    map_bump: water_surface_512_normal.png
     map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
