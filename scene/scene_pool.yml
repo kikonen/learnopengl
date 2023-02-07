@@ -76,15 +76,7 @@ entities:
       y_step: 0
       z_step: 60
     enabled: true
-    init_script: |
-      function cycleWater()
-        local wid = -1
-        local cid = -1
-        cid = cmd:moveSpline(id, { after=wid, time=10, relative=true }, { 2, 2, 0 }, { 0, -2, 0 })
-        wid = cmd:wait(cid, 3)
-        cmd:moveSpline(id, { after=wid, time=10, relative=true }, { 3,- 1, 0 }, { 0, 2.1, 0 })
-      end
-      cycleWater()
+    init_script_file: scripts/cycle_water
   - name: Pool side
     model: pool_brick
     shader: texture

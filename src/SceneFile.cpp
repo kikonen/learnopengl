@@ -4,6 +4,7 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <filesystem>
 
 #include <fmt/format.h>
 
@@ -58,6 +59,7 @@ SceneFile::SceneFile(
     std::shared_ptr<AsyncLoader> asyncLoader,
     const std::string& filename)
     : m_filename(filename),
+    m_dirname(util::dirName(filename)),
     m_alive(alive),
     m_assets(assets),
     m_asyncLoader(asyncLoader)
@@ -919,6 +921,11 @@ void SceneFile::loadEntityClone(
         else if (k == "init_script") {
             data.initScript = v.as<std::string>();
         }
+        else if (k == "init_script_file") {
+            std::string filename = v.as<std::string>() + ".lua";
+            data.initScript = readFile(filename);
+            std::cout << data.initScript << "\n";
+        }
         else if (k == "run_script") {
             data.runScript = v.as<std::string>();
         }
@@ -1391,3 +1398,28 @@ const std::string SceneFile::resolveTexturePath(const std::string& path)
 {
     return path;
 }
+
+std::string SceneFile::readFile(const std::string& filename)
+{
+    std::stringstream buffer;
+
+    std::filesystem::path filePath;
+    filePath /= m_dirname;
+    filePath /= filename;
+    try {
+        std::ifstream t(filePath);
+        t.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+        buffer << t.rdbuf();
+    }
+    catch (std::ifstream::failure e) {
+        std::string what{ e.what() };
+        const auto msg = fmt::format(
+            "SCENE::FILE_NOT_SUCCESFULLY_READ: {}\n{}",
+            filePath.string(), what);
+
+        throw std::runtime_error{ msg };
+    }
+    return buffer.str();
+}
+

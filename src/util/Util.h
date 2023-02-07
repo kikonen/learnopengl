@@ -1,12 +1,38 @@
 #pragma once
 
+#include <iostream>
 #include <string>
+#include <algorithm>
+#include <filesystem>
+
 
 namespace util
 {
-    const std::string& toUpper(std::string& str);
+    //
+    // modify str param to upper case
+    //
+    // @return reference of str param
+    inline std::string& toUpper(std::string& str)
+    {
+        std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+        return str;
+    }
 
-    const std::string& toLower(std::string& str);
+    //
+    // modify str param to lower case
+    // 
+    // @return reference of str param
+    inline std::string& toLower(std::string& str)
+    {
+        std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+        return str;
+    }
+
+    inline const std::string dirName(const std::string& filename)
+    {
+        std::filesystem::path p{ filename };
+        return p.parent_path().string();
+    }
 
     // https://stackoverflow.com/questions/11421432/how-can-i-output-the-value-of-an-enum-class-in-c11
     template <typename Enumeration>

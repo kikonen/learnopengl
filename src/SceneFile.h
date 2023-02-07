@@ -354,12 +354,13 @@ private:
     glm::vec3 readScale3(const YAML::Node& node);
     glm::vec4 readRGBA(const YAML::Node& node);
     glm::vec2 readRefractionRatio(const YAML::Node& node);
-
+    std::string readFile(const std::string& filename);
 
     const std::string resolveTexturePath(const std::string& line);
 
 public:
     const std::string m_filename;
+    const std::string m_dirname;
 
 private:
     const Assets& m_assets;
