@@ -129,7 +129,8 @@ public:
 
     float fogRatio = 1.0f;
 
-    float tiling = 1.0f;
+    float tilingX = 1.0f;
+    float tilingY = 1.0f;
 
     std::array<BoundTexture, 5> m_textures;
 

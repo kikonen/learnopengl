@@ -614,7 +614,8 @@ void SceneFile::modifyMaterial(
 
     if (f.fogRatio) m.fogRatio = mod.fogRatio;
 
-    if (f.tiling) m.tiling = mod.tiling;
+    if (f.tilingX) m.tilingX = mod.tilingX;
+    if (f.tilingY) m.tilingY = mod.tilingY;
 
     if (f.ns) m.ns = mod.ns;
 
@@ -1266,8 +1267,18 @@ void SceneFile::loadMaterial(
             fields.fogRatio = true;
         }
         else if (k == "tiling") {
-            material.tiling = v.as<float>();
-            fields.tiling = true;
+            material.tilingX = v.as<float>();
+            material.tilingY = v.as<float>();
+            fields.tilingX = true;
+            fields.tilingY = true;
+        }
+        else if (k == "tilingX") {
+            material.tilingX = v.as<float>();
+            fields.tilingX = true;
+        }
+        else if (k == "tilingY") {
+            material.tilingY = v.as<float>();
+            fields.tilingY = true;
         }
         else if (k == "texture_spec") {
             loadTextureSpec(v, material.textureSpec);

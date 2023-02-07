@@ -278,6 +278,7 @@ const MaterialSSBO Material::toSSBO() const
         getRefractionRatio(),
 
         fogRatio,
-        tiling,
+        tilingX,
+        tilingY,
     };
 }

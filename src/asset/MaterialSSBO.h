@@ -39,7 +39,11 @@ struct MaterialSSBO {
     float refractionRatio;
 
     float fogRatio;
-    float tiling;
 
-    // NOTE KI *NO* padding needed
+    float tilingX;
+    float tilingY;
+
+    int pad1;
+    int pad2;
+    int pad3;
 };

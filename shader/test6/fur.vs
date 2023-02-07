@@ -40,7 +40,8 @@ void main() {
 
   vs_out.materialIndex = materialIndex;
 
-  vs_out.texCoord = a_texCoord * u_materials[materialIndex].tiling;
+  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
+  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normalMatrix * a_normal;

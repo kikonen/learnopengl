@@ -53,7 +53,7 @@ entities:
       cmd:scale(id, { after=wid, time=20, relative=false }, { 1.2, 1.2, 0.2 })
   - name: Player
     model: player
-    pos: [-10, 8.5, -20.0]
+    pos: [-10, 12, -20.0]
     rotation: [0, 180, 0.0]
     scale: 0.8
     shader: texture
@@ -119,15 +119,15 @@ entities:
   - name: Moving point light origo
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     type: origo
-    pos: [0, 9, 0]
+    pos: [0, 14, 0]
     clones:
-      - pos: [0.0, 9.0, 0.0]
+      - pos: [0.0, 14.0, 0.0]
         id: 6eced5e5-f691-4137-abc1-8055f8ece410
-      - pos: [30.0, 9.0, 0.0]
+      - pos: [30.0, 14.0, 0.0]
         id: 24c9652c-0bd6-41ab-8a8c-dadf82e2aa24
-      - pos: [0.0, 9.0, 30.0]
+      - pos: [0.0, 14.0, 30.0]
         id: 117b6b3f-6c40-4cb6-b138-856a95888ceb
-      - pos: [30.0, 9.0, 30.0]
+      - pos: [30.0, 14.0, 30.0]
         id: e5514669-a024-41ee-b2df-89db0bb3f361
     init_script: |
       cmd:rotate(id, { time=600, relative=true }, { 0.0, 7200.0, 0.0 })
@@ -242,7 +242,7 @@ entities:
     model: quad
     material: window_1
     shader: texture
-    pos: [5.0, 10.0, -5.0]
+    pos: [5.0, 14.0, -5.0]
     rotation: [0.0, 180.0, 0.0]
     scale: [1, 1.3, 0]
     render_flags:
@@ -253,7 +253,7 @@ entities:
     model: quad
     material: window_2
     shader: texture
-    pos: [7.0, 10.0, -8.0]
+    pos: [7.0, 14.0, -8.0]
     rotation: [0.0, 180.0, 0.0]
     scale: [1, 1.2, 0]
     render_flags:
@@ -264,7 +264,7 @@ entities:
     model: quad
     material: window_2
     shader: texture
-    pos: [-10.0, 15.0, 10.0]
+    pos: [-10.0, 20.0, 10.0]
     rotation: [0.0, 180.0, 0.0]
     scale: [1, 1.3, 0]
     render_flags:
@@ -276,7 +276,7 @@ entities:
     enabled: true
   - name: Cube map - brick_wood_wall
     type: origo
-    pos: [-1.0, 8.5, 14.0]
+    pos: [-1.0, 13.5, 14.0]
     render_flags:
       cube_map: true
     enabled: true
@@ -284,7 +284,7 @@ entities:
     model: quad
     material: brickwall
     shader: texture
-    pos: [-5.0, 8.5, 14.0]
+    pos: [-5.0, 13.5, 14.0]
     render_flags:
       render_back: true
     repeat:
@@ -295,7 +295,7 @@ entities:
     model: quad
     material: woodwall
     shader: texture
-    pos: [-3.0, 8.5, 14.0]
+    pos: [-3.0, 13.5, 14.0]
     render_flags:
       render_back: true
     repeat:
@@ -306,7 +306,7 @@ entities:
     model: quad
     material: mirror
     shader: mirror
-    pos: [-55.0, 20.0, 10.0]
+    pos: [-55.0, 25.0, 10.0]
     rotation: [0.0, 45.0, 0.0]
     scale: 15.0
     render_flags:
@@ -324,7 +324,7 @@ entities:
     model: quad
     material: mirror
     shader: mirror
-    pos: [55.0, 20.0, 10.0]
+    pos: [55.0, 25.0, 10.0]
     rotation: [0.0, 215.0, 0.0]
     scale: 15.0
     render_flags:
@@ -341,7 +341,7 @@ entities:
   - name: Spyro
     model: spyro2
     shader: texture
-    pos: [0.0, 30.0, 30.0]
+    pos: [0.0, 35.0, 30.0]
     scale: 0.06
     enabled: true
   - name: Backback
@@ -354,7 +354,7 @@ entities:
   - name: Bunny
     model: bunny
     shader: texture
-    pos: [-15.0, 10.0, 5.0]
+    pos: [-15.0, 14.0, 5.0]
     scale: 20.0
     material_modifier:
       reflection: 0.7
@@ -364,7 +364,7 @@ entities:
   - name: Dragon
     model: dragon
     shader: texture
-    pos: [-15.0, 15.0, 0.0]
+    pos: [-15.0, 25.0, 0.0]
     scale: 30.0
     render_flags:
       render_back: true
@@ -386,7 +386,7 @@ entities:
     id: fe3d4648-e0ee-4a84-8864-a8eda9a281f9
     model: smooth_teapot
     shader: texture
-    pos: [-5.0, 20.0, -5.0]
+    pos: [-5.0, 25.0, -5.0]
     scale: 1.0
     material: teapot
     material_modifier:
@@ -400,7 +400,7 @@ entities:
   - name: Cow
     model: cow
     shader: texture
-    pos: [5.0, 20.0, -5.0]
+    pos: [5.0, 25.0, -5.0]
     rotation: [0, 180, 0]
     scale: 0.8
     material: cow
@@ -419,25 +419,25 @@ entities:
   - name: Ball
     model: texture_ball
     shader: texture
-    pos: [0.0, 8.0, 0.0]
+    pos: [0.0, 13.0, 0.0]
     scale: 2.0
     enabled: true
   - name: Cube map 2 - common
     type: origo
-    pos: [0.0, 23.0, 8.0]
+    pos: [0.0, 28.0, 8.0]
     render_flags:
       cube_map: true
     enabled: true
   - name: Cube map 2 - glass_ball
     type: origo
-    pos: [5.0, 20.0, 0.0]
+    pos: [5.0, 25.0, 0.0]
     render_flags:
       cube_map: true
     enabled: true
   - name: Glass ball
     model: glass_ball
     shader: texture
-    pos: [5.0, 20.0, 0.0]
+    pos: [5.0, 25.0, 0.0]
     scale: 1.3
     material_modifier:
       reflection: 0.05
@@ -447,7 +447,7 @@ entities:
   - name: Mirror ball
     model: glass_ball
     shader: texture
-    pos: [0.0, 20.0, 0.0]
+    pos: [0.0, 25.0, 0.0]
     scale: 1.3
     material_modifier:
       reflection: 0.8
@@ -455,7 +455,7 @@ entities:
   - name: Water ball
     model: water_ball
     shader: texture
-    pos: [5.0, 25.0, 0.0]
+    pos: [5.0, 30.0, 0.0]
     scale: 1.3
     particle_generator:
       - ParticleDefinition pd;
@@ -467,7 +467,7 @@ entities:
   - name: Basic ball
     model: water_ball
     shader: texture
-    pos: [5.0, 25.0, 5.0]
+    pos: [5.0, 30.0, 5.0]
     scale: 1.3
     material: default_ball
     force_material: true
@@ -477,7 +477,7 @@ entities:
   - name: Gold ball
     model: water_ball
     shader: texture
-    pos: [5.0, 25.0, 10.0]
+    pos: [5.0, 30.0, 10.0]
     scale: 1.3
     force_material: true
     material: gold_ball
@@ -487,12 +487,12 @@ entities:
   - name: ball origo
     type: origo
     id: 82896a38-e5cf-4274-b4be-e79ac8325b65
-    pos: [5.0, 25.0, 15.0]
+    pos: [5.0, 30.0, 15.0]
     enabled: true
   - name: Silver ball
     model: water_ball
     shader: texture
-    pos: [5.0, 25.0, 15.0]
+    pos: [5.0, 30.0, 15.0]
     scale: 1.3
     force_material: true
     material: silver_ball
@@ -528,7 +528,7 @@ entities:
     shader: ball_effect
     shader_definitions:
       effect_plasma: 1
-    pos: [-5.0, 20.0, 5.0]
+    pos: [-5.0, 30.0, 5.0]
     scale: 3
     render_flags:
       blend: true
@@ -537,7 +537,7 @@ entities:
   - name: Brickcube
     model: texture_cube
     shader: texture
-    pos: [5.0, 20.0, 5.0]
+    pos: [5.0, 25.0, 5.0]
     scale: 1
     enabled: true
   - name: Four cubes
@@ -556,28 +556,28 @@ entities:
       enabled: true
     enabled: true
     clones:
-      - pos: [-5.0, 15.0, -5.0]
+      - pos: [-5.0, 20.0, -5.0]
         init_script: |
           local wid = -1
           local cid = -1
 
           wid = cmd:wait(0, 10)
           cmd:rotate(id, { after=wid, time=120 }, { 0.0, -360.0, 0.0 })
-      - pos: [5.0, 15.0, -5.0]
+      - pos: [5.0, 20.0, -5.0]
         init_script: |
           local wid = -1
           local cid = -1
 
           wid = cmd:wait(0, 10)
           cmd:rotate(id, { after=wid, time=120 }, { 0.0, 2 * 360.0, 0.0 })
-      - pos: [-5.0, 15.0, 5.0]
+      - pos: [-5.0, 20.0, 5.0]
         init_script: |
           local wid = -1
           local cid = -1
 
           wid = cmd:wait(0, 10)
           cmd:rotate(id, { after=wid, time=120 }, { 0.0, -3 * 360.0, 0.0 })
-      - pos: [5.0, 15.0, 5.0]
+      - pos: [5.0, 20.0, 5.0]
         init_script: |
           local wid = -1
           local cid = -1
@@ -587,7 +587,7 @@ entities:
   - name: Cube 4
     model: texture_cube_4
     shader: texture
-    pos: [-5.0, 20.0, 5.0]
+    pos: [-5.0, 25.0, 5.0]
     scale: 1
     selected: false
     enabled: true
@@ -612,7 +612,7 @@ entities:
     type: quad
     material: water_surface
     shader: water
-    pos: [0, 7, -10]
+    pos: [0, 9.0, -10]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
     render_flags:
@@ -626,6 +626,24 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
+    enabled: true
+  - name: Pool side
+    model: pool_brick
+    shader: texture
+    material_modifier:
+      tilingX: 30
+      tilingY: 2
+      texture_spec:
+        clamp: GL_REPEAT
+    clones:
+      - pos: [-30.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [90.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [30.0, 4, 80]
+        scale: [60, 6, 0.3]
+      - pos: [30.0, 4, -40]
+        scale: [60, 6, 0.3]
     enabled: true
   - name: Terrain grass
     type: terrain
@@ -698,7 +716,7 @@ entities:
     model: quad
     material: brickwall
     shader: texture
-    pos: [15, 6.5, 20.0]
+    pos: [15, 11.5, 20.0]
     render_flags:
       render_back: true
     enabled: false
@@ -707,7 +725,7 @@ entities:
     material: brickwall
     shader: texture
     scale: 2
-    pos: [10, 6.5, 20.0]
+    pos: [10, 11.5, 20.0]
     render_flags:
       render_back: true
     enabled: false
@@ -716,14 +734,14 @@ entities:
     material: brickwall
     shader: texture
     scale: 3
-    pos: [5, 6.5, 20.0]
+    pos: [5, 11.5, 20.0]
     render_flags:
       render_back: true
     enabled: false
   - name: Linden tree forest
     type: billboard
     shader: texture
-    pos: [150, 10.0, 150.0]
+    pos: [150, 15.0, 150.0]
     material: linden_tree
     render_flags:
       alpha: true
@@ -737,7 +755,7 @@ entities:
   - name: Skeleton army
     type: billboard
     shader: texture
-    pos: [15, 6.5, 60.0]
+    pos: [15, 11.5, 60.0]
     material: skeleton
     render_flags:
       alpha: true
@@ -781,7 +799,7 @@ entities:
     xid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
     model: quad
     shader: texture
-    pos: [15, 6.5, 20.0]
+    pos: [15, 11.5, 20.0]
     material: skeleton
     render_flags:
       alpha: true

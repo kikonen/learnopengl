@@ -19,5 +19,10 @@ struct Material {
   float refractionRatio;
 
   float fogRatio;
-  float tiling;
+  float tilingX;
+  float tilingY;
+
+  int pad1;
+  int pad2;
+  int pad3;
 };

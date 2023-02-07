@@ -53,7 +53,8 @@ class SceneFile
 
         bool fogRatio = false;
 
-        bool tiling = false;
+        bool tilingX = false;
+        bool tilingY = false;
 
         bool ns = false;
 
