@@ -24,30 +24,35 @@ public:
 
     int lua_move(
         int objectID,
-        const sol::table& opt,
+        const sol::table& lua_opt,
         const sol::table& pos) noexcept;
 
     int lua_moveSpline(
         int objectID,
-        const sol::table& opt,
+        const sol::table& lua_opt,
         const sol::table& p,
         const sol::table& pos) noexcept;
 
     int lua_rotate(
         int objectID,
-        const sol::table& opt,
+        const sol::table& lua_opt,
         const sol::table& rot) noexcept;
 
     int lua_scale(
         int objectID,
-        const sol::table& opt,
+        const sol::table& lua_opt,
         const sol::table& scale) noexcept;
 
     int lua_start(
         int objectID,
-        int afterCommandId,
+        const sol::table& lua_opt,
         sol::function fn,
         sol::variadic_args va) noexcept;
+
+    int lua_resume(
+        int objectID,
+        const sol::table& lua_opt,
+        const std::string& callbackFn) noexcept;
 
 private:
    CommandEngine& m_commandEngine;

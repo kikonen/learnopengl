@@ -9,6 +9,7 @@
 #include "api/MoveSplineNode.h"
 #include "api/RotateNode.h"
 #include "api/ScaleNode.h"
+#include "api/ResumeNode.h"
 #include "api/StartNode.h"
 
 
@@ -147,18 +148,34 @@ int CommandAPI::lua_scale(
 }
 
 int CommandAPI::lua_start(
-    int afterCommandId,
     int objectID,
+    const sol::table& lua_opt,
     sol::function fn,
     sol::variadic_args va) noexcept
 {
+    const auto opt = readOptions(lua_opt);
+
     auto task = std::make_unique<sol::coroutine>(m_runner.state(), fn);
     //auto r = (*task)(va);
 
     return m_commandEngine.addCommand(
         std::make_unique<StartNode>(
-            afterCommandId,
+            opt.afterId,
             objectID,
             std::move(task),
             va));
+}
+
+int CommandAPI::lua_resume(
+    int objectID,
+    const sol::table& lua_opt,
+    const std::string& callbackFn) noexcept
+{
+    const auto opt = readOptions(lua_opt);
+
+    return m_commandEngine.addCommand(
+        std::make_unique<ResumeNode>(
+            opt.afterId,
+            objectID,
+            callbackFn));
 }

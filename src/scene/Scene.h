@@ -76,7 +76,7 @@ public:
     Node* getActiveCamera() const;
     NodeController* getActiveCameraController() const;
 
-    void bindComponents(Node& node);
+    void bindComponents(Node* node);
     int getObjectID(const RenderContext& ctx, double posx, double posy);
 
     //void bindPendingChildren();

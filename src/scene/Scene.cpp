@@ -46,7 +46,7 @@ Scene::Scene(
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
 
     NodeListener listener = [this](Node* node, NodeOperation operation) {
-        bindComponents(*node);
+        bindComponents(node);
     };
     m_registry->m_nodeRegistry->addListener(listener);
 
@@ -437,17 +437,18 @@ NodeController* Scene::getActiveCameraController() const
     return node ? node->m_controller.get() : nullptr;
 }
 
-void Scene::bindComponents(Node& node)
+void Scene::bindComponents(Node* node)
 {
-    auto& type = node.m_type;
+    auto& type = node->m_type;
 
-    if (node.m_particleGenerator) {
+    if (node->m_particleGenerator) {
         if (m_particleSystem) {
-            node.m_particleGenerator->system = m_particleSystem.get();
-            m_particleGenerators.push_back(node.m_particleGenerator.get());
+            node->m_particleGenerator->system = m_particleSystem.get();
+            m_particleGenerators.push_back(node->m_particleGenerator.get());
         }
     }
 
+    m_scriptEngine->registerNode(node);
     m_scriptEngine->registerScript(node, NodeScriptId::init, type->m_initScript);
     m_scriptEngine->registerScript(node, NodeScriptId::run, type->m_runScript);
 

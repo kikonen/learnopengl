@@ -194,6 +194,7 @@
     <ClCompile Include="src\asset\SpriteMaterialInit.cpp" />
     <ClCompile Include="src\asset\SpriteVAO.cpp" />
     <ClCompile Include="src\backend\DrawBuffer.cpp" />
+    <ClCompile Include="src\command\api\ResumeNode.cpp" />
     <ClCompile Include="src\command\api\Wait.cpp" />
     <ClCompile Include="src\registry\ImageRegistry.cpp" />
     <ClCompile Include="src\registry\MaterialRegistry.cpp" />
@@ -322,6 +323,7 @@
     <ClInclude Include="src\backend\gl\DrawIndirectParameters.h" />
     <ClInclude Include="src\backend\DrawRange.h" />
     <ClInclude Include="src\backend\gl\PerformanceCounters.h" />
+    <ClInclude Include="src\command\api\ResumeNode.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.h" />
     <ClInclude Include="src\kigl\GLBuffer.h" />
     <ClInclude Include="src\kigl\GLBufferRange.h" />

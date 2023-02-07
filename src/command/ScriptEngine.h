@@ -22,14 +22,21 @@ public:
     void prepare(
         CommandEngine& commandEngine);
 
+    void registerNode(
+        Node* node);
+
     void runScript(
-        Node& node,
+        Node* node,
         const NodeScriptId scriptId);
 
     void registerScript(
-        Node& node,
+        Node* node,
         const NodeScriptId scriptId,
         const std::string& script);
+
+    void invokeFunction(
+        Node* node,
+        const std::string& callbackFn);
 
 private:
     void registerTypes();

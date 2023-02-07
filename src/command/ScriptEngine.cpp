@@ -1,7 +1,10 @@
 #include "ScriptEngine.h"
 
+#include <iostream>
+
 #include <fmt/format.h>
 
+#include "util/Util.h"
 
 #include "command/CommandEngine.h"
 #include "command/CommandAPI.h"
@@ -9,14 +12,18 @@
 #include "model/Node.h"
 
 namespace {
-    std::string scriptIdToString(NodeScriptId scriptId) {
+    const std::string INIT_FN{ "init" };
+    const std::string RUN_FN{ "run" };
+    const std::string NONE_FN{ "<missing>" };
+
+    const std::string& scriptIdToString(NodeScriptId scriptId) {
         switch (scriptId) {
         case NodeScriptId::init:
-            return "init";
+            return INIT_FN;
         case NodeScriptId::run:
-            return "init";
+            return RUN_FN;
         }
-        return "WTF";
+        return NONE_FN;
     }
 }
 
@@ -40,6 +47,7 @@ void ScriptEngine::prepare(
     registerTypes();
 
     m_lua.set("cmd", m_commandAPI.get());
+    m_lua["nodes"] = m_lua.create_table_with();
 }
 
 void ScriptEngine::registerTypes()
@@ -58,6 +66,7 @@ void ScriptEngine::registerTypes()
         ut["rotate"] = &CommandAPI::lua_rotate;
         ut["scale"] = &CommandAPI::lua_scale;
 
+        ut["resume"] = &CommandAPI::lua_resume;
         ut["start"] = &CommandAPI::lua_start;
     }
 
@@ -73,28 +82,39 @@ void ScriptEngine::registerTypes()
 }
 
 void ScriptEngine::runScript(
-    Node& node,
+    Node* node,
     const NodeScriptId scriptId)
 {
-    const auto& nodeIt = m_nodeScripts.find(node.m_objectID);
+    const auto& nodeIt = m_nodeScripts.find(node->m_objectID);
     if (nodeIt == m_nodeScripts.end()) return;
+
     const auto& fnIt = nodeIt->second.find(scriptId);
     if (fnIt == nodeIt->second.end()) return;
 
     const auto& nodeFnName = fnIt->second;
+
     sol::function fn = m_lua[nodeFnName];
-    fn(node, node.m_objectID);
+    fn(node, node->m_objectID);
+}
+
+void ScriptEngine::registerNode(
+    Node* node)
+{
+    sol::table nodes = m_lua["nodes"];
+    nodes[node->m_objectID] = m_lua.create_table_with();
 }
 
 void ScriptEngine::registerScript(
-    Node& node,
+    Node* node,
     const NodeScriptId scriptId,
     const std::string& script)
 {
     if (script.empty()) return;
 
+    const auto& scriptName = scriptIdToString(scriptId);
+
     // NOTE KI unique wrapperFn for node
-    const std::string nodeFnName = fmt::format("fn_{}_{}", scriptIdToString(scriptId), node.m_objectID);
+    const std::string nodeFnName = fmt::format("fn_{}_{}", scriptName, node->m_objectID);
     const auto scriptlet = fmt::format(R"(
 function {}(node, id)
 {}
@@ -102,5 +122,20 @@ end)", nodeFnName, script);
 
     m_lua.script(scriptlet);
 
-    m_nodeScripts[node.m_objectID][scriptId] = nodeFnName;
+    sol::table luaNode = m_lua["nodes"][node->m_objectID];
+    luaNode[scriptName] = m_lua[nodeFnName];
+
+    sol::function fn = luaNode[scriptName];
+
+    m_nodeScripts[node->m_objectID][scriptId] = nodeFnName;
+}
+
+void ScriptEngine::invokeFunction(
+    Node* node,
+    const std::string& callbackFn)
+{
+    std::cout << "CALL LUA: " << callbackFn << "\n";
+    sol::table luaNode = m_lua["nodes"][node->m_objectID];
+    sol::function fn = luaNode[callbackFn];
+    fn(node, node->m_objectID);
 }
