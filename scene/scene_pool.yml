@@ -76,6 +76,15 @@ entities:
       y_step: 0
       z_step: 60
     enabled: true
+    init_script: |
+      function cycleWater()
+        local wid = -1
+        local cid = -1
+        cid = cmd:moveSpline(id, { after=wid, time=10, relative=true }, { 2, 2, 0 }, { 0, -2, 0 })
+        wid = cmd:wait(cid, 3)
+        cmd:moveSpline(id, { after=wid, time=10, relative=true }, { 3,- 1, 0 }, { 0, 2.1, 0 })
+      end
+      cycleWater()
   - name: Pool side
     model: pool_brick
     shader: texture
@@ -126,7 +135,7 @@ materials:
       clamp: GL_REPEAT
       _pattern: 1
   - name: water_bottom
-    type: model
+    type: texture
     ns: 225
     ka: [1.0, 1.0, 1.0, 1.0]
     kd: [0.8, 0.8, 0.8, 1.0]
@@ -135,7 +144,8 @@ materials:
     ni: 1.45
     d: 1.0
     illum: 2
-    map_kd: Marble White_VH_512.PNG
+    xxmap_kd: Marble White_VH_512.PNG
+    map_kd: tiles_1024.png
     tiling: 8
     texture_spec:
       clamp: GL_REPEAT
