@@ -80,7 +80,8 @@ void MeshLoader::loadData(
 
     std::filesystem::path filePath;
     filePath /= assets.modelsDir;
-    filePath /= mesh.m_meshPath;
+    if (!mesh.m_meshPath.empty())
+        filePath /= mesh.m_meshPath;
     filePath /= mesh.m_meshName + ".obj";
 
     //const std::string modelPath = assets.modelsDir + path + modelName + ".obj";
