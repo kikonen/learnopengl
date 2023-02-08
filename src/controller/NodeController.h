@@ -14,17 +14,25 @@ class RenderContext;
 class NodeController
 {
 public:
-    NodeController();
+    NodeController() = default;
+    virtual ~NodeController() = default;
 
     virtual void prepare(
         const Assets& assets,
         Registry* registry,
-        Node& node);
+        Node& node)
+    {
+        if (m_prepared) return;
+        m_prepared = true;
+    }
 
     virtual bool update(
         const RenderContext& ctx,
         Node& node,
-        Node* parent) noexcept;
+        Node* parent)
+    {
+        return false;
+    }
 
     virtual void onKey(Input* input, const ki::RenderClock& clock) {};
     virtual void onMouseMove(Input* input, double xoffset, double yoffset) {};
@@ -33,4 +41,3 @@ public:
 protected:
     bool m_prepared = false;
 };
-

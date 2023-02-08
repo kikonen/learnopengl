@@ -21,13 +21,12 @@ class AsteroidBeltController final : public InstancedController
 public:
     AsteroidBeltController(int asteroidCount);
 
-protected:
-    void prepareInstanced(
+    virtual void prepare(
         const Assets& assets,
         Registry* registry,
         Node& node) override;
 
-    bool updateInstanced(
+    virtual bool update(
         const RenderContext& ctx,
         Node& node,
         Node* parent) override;

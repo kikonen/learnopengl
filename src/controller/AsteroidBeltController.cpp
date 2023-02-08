@@ -26,15 +26,17 @@ AsteroidBeltController::AsteroidBeltController(int asteroidCount)
 {
 }
 
-void AsteroidBeltController::prepareInstanced(
+void AsteroidBeltController::prepare(
     const Assets& assets,
     Registry* registry,
     Node& node)
 {
+    NodeController::prepare(assets, registry, node);
+
     createAsteroids(assets, registry, node);
 }
 
-bool AsteroidBeltController::updateInstanced(
+bool AsteroidBeltController::update(
     const RenderContext& ctx,
     Node& node,
     Node* parent)
