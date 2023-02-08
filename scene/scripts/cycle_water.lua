@@ -29,6 +29,8 @@ local function animation()
 end
 
 local function start()
+   print(string.format("START-water: %d", id))
+
    local luaNode = nodes[id]
    local wid = -1
 

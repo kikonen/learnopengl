@@ -627,6 +627,7 @@ entities:
       y_step: 0
       z_step: 60
     enabled: true
+    init_script_file: scripts/cycle_water
   - name: Pool side
     model: pool_brick
     shader: texture
@@ -794,7 +795,8 @@ entities:
         cid = cmd:move(id, { after=cid, time=2, relative=false }, { x, y, z })
       end
 
-      cmd:start(-1, id, main)
+      cmd:start(id, { after=wid }, main)
+      --main()
   - name: Skeleton single
     xid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
     model: quad

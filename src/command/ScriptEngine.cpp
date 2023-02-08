@@ -94,7 +94,7 @@ void ScriptEngine::runScript(
     const auto& nodeFnName = fnIt->second;
 
     sol::function fn = m_lua[nodeFnName];
-    fn(node, node->m_objectID);
+    fn(std::ref(node), node->m_objectID);
 }
 
 void ScriptEngine::registerNode(
@@ -137,5 +137,5 @@ void ScriptEngine::invokeFunction(
     std::cout << "CALL LUA: " << callbackFn << "\n";
     sol::table luaNode = m_lua["nodes"][node->m_objectID];
     sol::function fn = luaNode[callbackFn];
-    fn(node, node->m_objectID);
+    fn(std::ref(node), node->m_objectID);
 }
