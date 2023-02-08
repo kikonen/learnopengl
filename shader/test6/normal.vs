@@ -44,7 +44,7 @@ void main() {
                     + u_viewUp * a_pos.y * entityScale.y,
                     1.0);
   } else {
-    worldPos = entity.modelMatrix * pos;
+    worldPos = modelMatrix * pos;
   }
 
   gl_Position = u_viewMatrix * worldPos;
