@@ -32,6 +32,7 @@ public:
     int addRange(const int count);
 
     EntitySSBO* get(int index);
+    EntitySSBO* update(int index, bool dirty);
 
     void markDirty(int index);
 

@@ -113,6 +113,12 @@ EntitySSBO* EntityRegistry::get(int index)
     return &m_entries[index];
 }
 
+EntitySSBO* EntityRegistry::update(int index, bool dirty)
+{
+    if (dirty) markDirty(index);
+    return &m_entries[index];
+}
+
 void EntityRegistry::markDirty(int index)
 {
     if (index < m_minDirty || m_minDirty == -1) {
