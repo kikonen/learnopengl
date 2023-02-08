@@ -86,6 +86,14 @@ public:
 
     void updateModelMatrix(Node* parent) noexcept;
 
+    inline int getInstancedIndex() {
+        return m_instancedIndex;
+    }
+
+    inline int getInstancedCount() {
+        return m_instancedCount;
+    }
+
     void setAABB(const AABB& aabb);
 
     const AABB& getAABB() const {
@@ -157,10 +165,10 @@ public:
     std::unique_ptr<Light> m_light{ nullptr };
     std::unique_ptr<ParticleGenerator> m_particleGenerator{ nullptr };
 
+    int m_entityIndex = -1;
+
 protected:
     bool m_prepared = false;
-
-    int m_entityIndex = -1;
 
     int m_instancedIndex = -1;
     int  m_instancedCount = 0;

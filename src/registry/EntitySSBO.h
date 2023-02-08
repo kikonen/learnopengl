@@ -75,6 +75,13 @@ struct EntitySSBO {
         u_normalMatrix2 = mat[2];
     }
 
+    inline void adjustPosition(const glm::vec3 adjust) {
+        glm::vec4& c = u_modelMatrix[3];
+        c.x += adjust.x;
+        c.y += adjust.y;
+        c.z += adjust.z;
+    }
+
     inline void setObjectID(int objectID) {
     //    int r = (objectID & 0x000000FF) >> 0;
     //    int g = (objectID & 0x0000FF00) >> 8;

@@ -1,3 +1,5 @@
+// NOTE KI using vec4 split due to "alignment is biggest element size"
+// => mat4 wastes lot of space (2 * vec4)
 struct Entity {
   vec4 modelMatrix0;
   vec4 modelMatrix1;

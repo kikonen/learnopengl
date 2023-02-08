@@ -22,6 +22,7 @@
 #include "model/Group.h"
 #include "model/Node.h"
 
+#include "controller/GridController.h"
 #include "controller/AsteroidBeltController.h"
 #include "controller/CameraController.h"
 #include "controller/MovingLightController.h"
@@ -112,9 +113,6 @@ void SceneFile::attachSkybox(
 {
     if (!data.valid()) return;
 
-    auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
-    m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
-
     auto type = m_registry->m_typeRegistry->getType("<skybox>");
     auto future = m_registry->m_modelRegistry->getMesh(
         SKYBOX_MESH_NAME);
@@ -140,6 +138,8 @@ void SceneFile::attachSkybox(
     auto node = new Node(type);
     node->m_parentId = root.base.id;
 
+    auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
+    m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
     m_registry->m_nodeRegistry->addNode(type, node);
 }
 
@@ -696,32 +696,42 @@ std::unique_ptr<NodeController> SceneFile::createController(
     const ControllerData& data,
     Node* node)
 {
-    std::unique_ptr<NodeController> controller;
-
-    if (!data.enabled) return controller;
+    if (!data.enabled) return nullptr;
 
     const auto& center = node->getPosition();
 
     switch (data.type) {
         case ControllerType::camera: {
-            controller = std::make_unique<CameraController>();
-            break;
+            auto controller = std::make_unique<CameraController>();
+            return controller;
         }
         case ControllerType::path: {
-            controller = std::make_unique<NodePathController>(center, data.mode);
-            break;
+            auto controller = std::make_unique<NodePathController>(center, data.mode);
+            return controller;
+        }
+        case ControllerType::grid: {
+            auto controller = std::make_unique<GridController>();
+            controller->m_xCount = data.repeat.xCount;
+            controller->m_yCount = data.repeat.yCount;
+            controller->m_zCount = data.repeat.zCount;
+
+            controller->m_xStep = data.repeat.xStep;
+            controller->m_yStep = data.repeat.yStep;
+            controller->m_zStep = data.repeat.zStep;
+
+            return controller;
         }
         case ControllerType::asteroid_belt: {
-            controller = std::make_unique<AsteroidBeltController>(data.count);
-            break;
+            auto controller = std::make_unique<AsteroidBeltController>(data.count);
+            return controller;
         }
         case ControllerType::moving_light: {
-            controller = std::make_unique<MovingLightController>(center, data.radius, data.speed);
-            break;
+            auto controller = std::make_unique<MovingLightController>(center, data.radius, data.speed);
+            return controller;
         }
     }
 
-    return controller;
+    return nullptr;
 }
 
 void SceneFile::loadSkybox(
@@ -1116,6 +1126,9 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
             else if (type == "path") {
                 data.type = ControllerType::path;
             }
+            else if (type == "grid") {
+                data.type = ControllerType::grid;
+            }
             else if (type == "asteroid_belt") {
                 data.type = ControllerType::asteroid_belt;
             }
@@ -1129,6 +1142,9 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
         //else if (k == "center") {
         //    data.center = readVec3(v);
         //}
+        else if (k == "repeat") {
+            loadRepeat(v, data.repeat);
+        }
         else if (k == "speed") {
             data.speed = v.as<float>();
         }

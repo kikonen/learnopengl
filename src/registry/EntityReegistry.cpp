@@ -7,7 +7,7 @@
 
 namespace {
     // scene_full = 91 109
-    constexpr int MAX_ENTITY_COUNT = 1000000;
+    constexpr int MAX_ENTITY_COUNT = 2000000;
 
     constexpr int MAX_SKIP = 20;
 }

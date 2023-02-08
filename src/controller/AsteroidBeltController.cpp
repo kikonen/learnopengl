@@ -60,17 +60,15 @@ void AsteroidBeltController::updateAsteroids(
     bool rotate)
 {
     auto* registry = ctx.m_registry;
+    auto& entityRegistry = *registry->m_entityRegistry;
 
     if (rotate) {
         rotateAsteroids(ctx, node, m_asteroids);
     }
 
-    const Mesh* mesh = node.m_type->getMesh();
-    const auto & volume = mesh->getAABB().getVolume();
-
     for (const auto& asteroid : m_asteroids)
     {
-        auto* entity = registry->m_entityRegistry->get(asteroid.m_entityIndex);
+        auto* entity = entityRegistry.update(asteroid.m_entityIndex, true);
 
         if (rotate) {
             glm::mat4 modelMat{ 1.f };
@@ -89,9 +87,6 @@ void AsteroidBeltController::updateAsteroids(
 
         entity->u_materialIndex = node.getMaterialIndex();
         entity->u_highlightIndex = node.getHighlightIndex(ctx);
-        entity->u_volume = volume;
-
-        registry->m_entityRegistry->markDirty(asteroid.m_entityIndex);
     }
 
     node.setEntityRange(m_firstEntityIndex, m_asteroidCount);
@@ -102,7 +97,12 @@ void AsteroidBeltController::createAsteroids(
     Registry* registry,
     Node& node)
 {
+    auto& entityRegistry = *registry->m_entityRegistry;
+
     auto& type = node.m_type;
+
+    const Mesh* mesh = node.m_type->getMesh();
+    const auto& volume = mesh->getAABB().getVolume();
 
     m_firstEntityIndex = registry->m_entityRegistry->addRange(m_asteroidCount);
 
@@ -110,6 +110,9 @@ void AsteroidBeltController::createAsteroids(
     {
         auto& asteroid = m_asteroids.emplace_back();
         asteroid.m_entityIndex = m_firstEntityIndex + i;
+
+        auto* entity = entityRegistry.update(asteroid.m_entityIndex, true);
+        entity->u_volume = volume;
     }
 
     initAsteroids(assets, registry, node, m_asteroids);

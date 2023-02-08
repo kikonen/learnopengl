@@ -89,6 +89,7 @@ class SceneFile
         none,
         camera,
         path,
+        grid,
         asteroid_belt,
         moving_light,
     };
@@ -103,6 +104,8 @@ class SceneFile
 
         int mode{ 0 };
         int count{ 0 };
+
+        Repeat repeat;
     };
 
     struct CameraData {
