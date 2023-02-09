@@ -101,7 +101,17 @@ void ImageTexture::prepare(const Assets& assets)
 
     if (!m_valid) return;
 
-    if (m_image->m_channels == 3) {
+    // NOTE KI 1 & 2 channels have issues
+    // => need to convert manually to RGB(A) format
+    if (m_image->m_channels == 1) {
+        m_format = GL_RED;
+        m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
+        //m_specialTexture = true;
+    } else if (m_image->m_channels == 2) {
+        m_format = GL_RG;
+        m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
+        //m_specialTexture = true;
+    } else if (m_image->m_channels == 3) {
         m_format = GL_RGB;
         m_internalFormat = GL_RGB8;
         //m_internalFormat = assets.glPreferredTextureFormatRGB;
@@ -119,24 +129,29 @@ void ImageTexture::prepare(const Assets& assets)
     // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
     glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
 
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.clamp);
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.clamp);
+    if (m_specialTexture) {
+        glTextureStorage2D(m_textureID, 1, m_internalFormat, m_image->m_width, m_image->m_height);
+        glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, GL_UNSIGNED_BYTE, m_image->m_data);
+    }
+    else {
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.clamp);
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.clamp);
 
-    // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
-    // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
-    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
-    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
+        // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
+        // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
+        glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
+        glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
 
-    glTextureStorage2D(m_textureID, m_spec.mipMapLevels, m_internalFormat, m_image->m_width, m_image->m_height);
-    glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, GL_UNSIGNED_BYTE, m_image->m_data);
+        glTextureStorage2D(m_textureID, m_spec.mipMapLevels, m_internalFormat, m_image->m_width, m_image->m_height);
+        glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, GL_UNSIGNED_BYTE, m_image->m_data);
+        glGenerateTextureMipmap(m_textureID);
 
-    glGenerateTextureMipmap(m_textureID);
+        // OpenGL Superbible, 7th Edition, page 552
+        // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
 
-    // OpenGL Superbible, 7th Edition, page 552
-    // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
-
-    m_handle = glGetTextureHandleARB(m_textureID);
-    glMakeTextureHandleResidentARB(m_handle);
+        m_handle = glGetTextureHandleARB(m_textureID);
+        glMakeTextureHandleResidentARB(m_handle);
+    }
 
     m_texIndex = Texture::nextIndex();
 
@@ -153,11 +168,13 @@ void ImageTexture::load() {
         return;
     }
 
-    if (m_image->m_channels != 3 && m_image->m_channels != 4) {
-        KI_WARN(fmt::format("IMAGE: unsupported channels {}", m_image->m_channels));
-        m_image.reset();
-        return;
-    }
+    // NOTE KI 1 & 2 channels have issues
+    // => need to convert manually to RGB(A) format
+    //if (m_image->m_channels != 3 && m_image->m_channels != 4) {
+    //    KI_WARN(fmt::format("IMAGE: unsupported channels {}", m_image->m_channels));
+    //    m_image.reset();
+    //    return;
+    //}
 
     m_valid = true;
 }

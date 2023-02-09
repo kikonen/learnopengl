@@ -44,6 +44,14 @@ enum class MaterialType {
     sprite
 };
 
+constexpr int DIFFUSE_IDX = 0;
+constexpr int EMISSION_IDX = 1;
+constexpr int SPECULAR_IDX = 2;
+constexpr int NORMAL_MAP_IDX = 3;
+constexpr int DUDV_MAP_IDX = 4;
+constexpr int HEIGHT_MAP_IDX = 5;
+constexpr int MATERIAL_TEXTURE_COUNT = HEIGHT_MAP_IDX;
+
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
 * http://paulbourke.net/dataformats/obj/
@@ -97,13 +105,16 @@ public:
         const int objectID,
         std::vector<Material>& materials);
 
+    const std::string getTexturePath(
+        const Assets& assets,
+        const std::string& textureName);
+
 private:
     std::string resolveBaseDir(const Assets& assets);
 
     void loadTexture(
         const Assets& assets,
         int idx,
-        const std::string& baseDir,
         const std::string& name);
 
 public:
@@ -132,7 +143,7 @@ public:
     float tilingX = 1.0f;
     float tilingY = 1.0f;
 
-    std::array<BoundTexture, 5> m_textures;
+    std::array<BoundTexture, MATERIAL_TEXTURE_COUNT> m_textures;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     // ranges between 0 and 1000
@@ -182,6 +193,7 @@ public:
     int illum = 0;
 
     std::string map_dudv;
+    std::string map_height;
 
     static const int DEFAULT_ID = 0;
 private:

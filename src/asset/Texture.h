@@ -47,6 +47,8 @@ public:
 
     mutable bool m_sent = false;
 
+    bool m_specialTexture = false;
+
 protected:
     bool m_prepared = false;
 

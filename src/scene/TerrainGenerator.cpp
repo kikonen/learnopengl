@@ -2,6 +2,8 @@
 
 #include "util/Perlin.h"
 
+#include "asset/Image.h"
+
 namespace {
     // NOTE KI terrain is primarily flat
     // perlin noise creates -4/+4 peaks in mesh, which are scaled down
@@ -11,21 +13,35 @@ namespace {
 }
 
 TerrainGenerator::TerrainGenerator(const Assets& assets)
-    : assets(assets)
+    : m_assets(assets)
 {
 }
 
-std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain()
+std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
+    Material* material)
 {
     auto mesh = std::make_unique<ModelMesh>("terrain");
 
     Perlin perlin(-1);
 
-    const size_t tileSize = assets.terrainTileSize;
-    const size_t vertexCount = assets.terrainVertexCount;
+    const auto& imagePath = material->getTexturePath(m_assets, material->map_height);
+    KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
+
+    auto image = std::make_unique<Image>(imagePath);
+    int res = image->load(true);
+
+    unsigned char* data = image->m_data;
+
+    const size_t tileSize = m_assets.terrainTileSize;
+    const size_t vertexCount = m_assets.terrainVertexCount;
 
     auto& vertices = mesh->m_vertices;
     auto& tris = mesh->m_tris;
+
+    const int imageW = image->m_width;
+    const int channels = image->m_channels;
+    const float ratioZ = (float)image->m_height / (float)vertexCount;
+    const float ratioX = (float)image->m_width / (float)vertexCount;
 
     vertices.reserve(vertexCount * vertexCount);
     for (int z = 0; z < vertexCount; z++) {
@@ -40,8 +56,21 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain()
 
             gx = gx * 2.f - 1.f;
 
-            float gy = perlin.perlin(gx * tileSize, 0, gz * tileSize);
-            gy = std::clamp(gy, -4.f, 4.f);
+            //float gy = perlin.perlin(gx * tileSize, 0, gz * tileSize);
+            int pz = ratioZ * z;
+            int px = ratioX * x;
+            int offsetZ = imageW * pz;
+            int offsetX = px;
+            int offset = offsetZ * channels + offsetX * channels;
+
+            auto* ptr = data;
+            ptr += offset;
+
+            unsigned char heightValue = *ptr;
+            float height = (heightValue / 255.f) * 32.f;
+            float gy = height;
+
+            //gy = std::clamp(gy, -4.f, 4.f);
 
             glm::vec3 pos{ gx, gy, gz };
             glm::vec2 texture{ tx, tz };

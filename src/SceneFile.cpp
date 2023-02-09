@@ -411,7 +411,7 @@ MeshType* SceneFile::createType(
     }
     else if (data.type == EntityType::terrain) {
         TerrainGenerator generator(assets);
-        auto mesh = generator.generateTerrain();
+        auto mesh = generator.generateTerrain(material);
         type->setMesh(std::move(mesh), true);
         type->m_entityType = EntityType::terrain;
     }
@@ -636,6 +636,7 @@ void SceneFile::modifyMaterial(
     if (f.illum) m.illum = mod.illum;
 
     if (f.map_dudv) m.map_dudv = mod. map_dudv;
+    if (f.map_height) m.map_height = mod.map_height;
 }
 
 std::unique_ptr<Camera> SceneFile::createCamera(
@@ -1268,6 +1269,11 @@ void SceneFile::loadMaterial(
             std::string line = v.as<std::string>();
             material.map_dudv = resolveTexturePath(line);
             fields.map_dudv = true;
+        }
+        else if (k == "map_height") {
+            std::string line = v.as<std::string>();
+            material.map_height = resolveTexturePath(line);
+            fields.map_height = true;
         }
         else if (k == "pattern") {
             material.pattern = v.as<int>();

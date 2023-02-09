@@ -8,10 +8,11 @@ class TerrainGenerator final
 public:
     TerrainGenerator(const Assets& assets);
 
-    std::unique_ptr<ModelMesh> generateTerrain();
+    std::unique_ptr<ModelMesh> generateTerrain(
+        Material* material);
 
     std::unique_ptr<QuadMesh> generateWater();
 
 public:
-    const Assets& assets;
+    const Assets& m_assets;
 };

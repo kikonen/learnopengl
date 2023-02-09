@@ -17,12 +17,6 @@
 #include "scene/RenderContext.h"
 
 namespace {
-    constexpr int DIFFUSE_IDX = 0;
-    constexpr int EMISSION_IDX = 1;
-    constexpr int SPECULAR_IDX = 2;
-    constexpr int NORMAL_MAP_IDX = 3;
-    constexpr int DUDV_MAP_IDX = 4;
-
     int idBase = 0;
 
     std::mutex type_id_lock;
@@ -157,13 +151,13 @@ void Material::loadTextures(const Assets& assets)
     if (m_loaded) return;
     m_loaded = true;
 
-    auto baseDir = resolveBaseDir(assets);
-
-    loadTexture(assets, DIFFUSE_IDX, baseDir, map_kd);
-    loadTexture(assets, EMISSION_IDX, baseDir, map_ke);
-    loadTexture(assets, SPECULAR_IDX, baseDir, map_ks);
-    loadTexture(assets, NORMAL_MAP_IDX, baseDir, map_bump);
-    loadTexture(assets, DUDV_MAP_IDX, baseDir, map_dudv);
+    loadTexture(assets, DIFFUSE_IDX, map_kd);
+    loadTexture(assets, EMISSION_IDX, map_ke);
+    loadTexture(assets, SPECULAR_IDX, map_ks);
+    loadTexture(assets, NORMAL_MAP_IDX, map_bump);
+    loadTexture(assets, DUDV_MAP_IDX, map_dudv);
+    loadTexture(assets, DUDV_MAP_IDX, map_height);
+    //loadTexture(assets, HEIGHT_MAP_IDX, map_height);
 }
 
 std::string Material::resolveBaseDir(const Assets& assets)
@@ -183,19 +177,11 @@ std::string Material::resolveBaseDir(const Assets& assets)
 void Material::loadTexture(
     const Assets& assets,
     int idx,
-    const std::string& baseDir,
     const std::string& textureName)
 {
     if (textureName.empty()) return;
 
-    std::string texturePath;
-    {
-        std::filesystem::path fp;
-        fp /= baseDir;
-        fp /= m_path;
-        fp /= textureName;
-        texturePath = fp.string();
-    }
+    std::string texturePath = getTexturePath(assets, textureName);
 
     KI_INFO(fmt::format("MATERIAL: name={}, texture={}", m_name, texturePath));
 
@@ -222,6 +208,25 @@ void Material::loadTexture(
     if (texture && texture->isValid()) {
         m_textures[idx].texture = texture;
     }
+}
+
+const std::string Material::getTexturePath(
+    const Assets& assets,
+    const std::string& textureName)
+{
+    if (textureName.empty()) return {};
+
+    std::string texturePath;
+    {
+        auto baseDir = resolveBaseDir(assets);
+
+        std::filesystem::path fp;
+        fp /= baseDir;
+        fp /= m_path;
+        fp /= textureName;
+        texturePath = fp.string();
+    }
+    return texturePath;
 }
 
 int Material::getActiveTextureCount() const
