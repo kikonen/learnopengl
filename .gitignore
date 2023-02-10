@@ -15,6 +15,7 @@ imgui.ini
 
 vcpkg_installed/*
 
+.*autosave.kra
 .emacs*
 
 *.orig

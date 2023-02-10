@@ -410,11 +410,15 @@ entities:
       render_back: false
     selected: false
     enabled: true
-  - name: Mountains
-    model: texture_mountains
-    shader: texture
-    pos: [100.0, 0.0, -100.0]
-    scale: 1.0
+  - name: Mountain
+    type: terrain
+    material: terrain_mountain
+    shader: terrain
+    pos: [140.0, -40.0, -110.0]
+    rotation: [0, 200, 0]
+    scale: [100, 1, 100]
+    tiling:
+      height_scale: 128
     enabled: true
   - name: Ball
     model: texture_ball
@@ -649,30 +653,9 @@ entities:
   - name: Terrain grass
     type: terrain
     material: terrain_grass
-    shader: texture
-    pos: [-400, -30, -400]
-    scale: [100, 1, 100]
-    xrender_flags:
-      no_shadow: true
-    tiling:
-      tiles: [8, 1, 8]
-      height_scale: 32
-    repeat:
-      x_count: 8
-      y_count: 1
-      z_count: 8
-      x_step: 200
-      y_step: 0
-      z_step: 200
-    enabled: false
-  - name: Terrain grass
-    type: terrain
-    material: terrain_grass
     shader: terrain
-    pos: [-400, -34, -400]
+    pos: [-400, -32, -400]
     scale: [100, 1, 100]
-    xxrender_flags:
-      no_shadow: true
     tiling:
       tiles: [8, 1, 8]
       height_scale: 64
@@ -1032,6 +1015,14 @@ materials:
     map_kd: terrain/terrain_1025_m.png
     map_bump: terrain/terrain_1025_normal.png
     map_height: terrain/terrain_1025_height.png
+  - name: terrain_mountain
+    type: texture
+    ns: 50
+    ks: [0.6, 0.6, 0.6, 1.0]
+    map_kd: terrain/two-kingdoms_2048.png
+    map_height: terrain/mountain_1025_height.png
+    xmap_kd: terrain/terrain_1025_m.png
+    xmap_height: terrain/terrain_1025_height.png
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: noise_256.png
