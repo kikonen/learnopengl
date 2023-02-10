@@ -45,19 +45,19 @@ entities:
     material: terrain_grass
     shader: terrain
     xpos: [100, -4, 100]
-    scale: [50, 1, 50]
+    scale: [100, 1, 100]
     render_flags:
       xno_shadow: true
     tiles: [2, 1, 2]
     clone_mesh: false
     clones:
-      - pos:  [-50, 0, -50]
+      - pos:  [-100, 0, -100]
         tile: [0, 0, 0]
-      - pos:  [50, 0, -50]
+      - pos:  [100, 0, -100]
         tile: [1, 0, 0]
-      - pos:  [-50, 0, 50]
+      - pos:  [-100, 0, 100]
         tile: [0, 0, 1]
-      - pos:  [50, 0, 50]
+      - pos:  [100, 0, 100]
         tile: [1, 0, 1]
     xrepeat:
       x_count: 2

@@ -35,19 +35,21 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
 
     auto image = std::make_unique<Image>(imagePath);
-    int res = image->load(true);
+    // NOTE KI don't flip, otherwise have to reverse offsets
+    int res = image->load(false);
+
+    const int imageH = image->m_height;
+    const int imageW = image->m_width;
+    const int channels = image->m_channels;
 
     const unsigned char* data = image->m_data;
+    const size_t dataSize = imageH * imageW * channels;
 
     const size_t gridSize = m_assets.terrainGridSize;
     const size_t vertexCount = gridSize + 1;
 
     auto& vertices = mesh->m_vertices;
     auto& tris = mesh->m_tris;
-
-    const int imageH = image->m_height;
-    const int imageW = image->m_width;
-    const int channels = image->m_channels;
 
     // grid cell size
     const float tileH = (float)imageH / (float)m_worldTilesZ;
@@ -58,22 +60,25 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     const float texTileW = (float)1.f / (float)m_worldTilesX;
 
     // ratio per grid cell
-    const float ratioH = tileH / (float)gridSize;
-    const float ratioW = tileW / (float)gridSize;
+    const float ratioH = tileH / (float)vertexCount;
+    const float ratioW = tileW / (float)vertexCount;
 
     // ratio per grid texel cell
     const float texRatioH = texTileH / (float)gridSize;
     const float texRatioW = texTileW / (float)gridSize;
 
-    const int baseZI = worldZI * (vertexCount - 1);
-    const int baseXI = worldXI * (vertexCount - 1);
+    const int baseZI = worldZI * gridSize;
+    const int baseXI = worldXI * gridSize;
+
+    if (worldXI == 1 && worldZI == 1)
+        int b = 0;
 
     vertices.reserve(vertexCount * vertexCount);
     for (int zi = 0; zi < vertexCount; zi++) {
         // vz = [-1, 1] => local to mesh
-        float vz = zi / (float)gridSize;
-        vz = vz * 2.f - 1.f;
-        vz = std::clamp(vz, -1.f, 1.f);
+        float z = zi / (float)gridSize;
+        z = z * 2.f - 1.f;
+        z = std::clamp(z, -1.f, 1.f);
 
         // tz = [0, 1] => global to world
         float v = 1.f - (baseZI + zi) * texRatioH;
@@ -81,20 +86,23 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
 
         for (int xi = 0; xi < vertexCount; xi++) {
             // gx = [-1, 1] => local to mesh
-            float vx = xi / (float)gridSize;
-            vx = vx * 2.f - 1.f;
-            vx = std::clamp(vx, -1.f, 1.f);
+            float x = xi / (float)gridSize;
+            x = x * 2.f - 1.f;
+            x = std::clamp(x, -1.f, 1.f);
 
             // tx = [0, 1] => global to world
             float u = (baseXI + xi) * texRatioW;
             //tx = std::clamp(tx, 0.f, 1.f);
 
             //float gy = perlin.perlin(gx * tileSize, 0, gz * tileSize);
-            int pz = tileH + ratioH * vz;
-            int px = tileW + ratioW * vx;
+            int pz = (baseZI + zi) * ratioH;
+            int px = (baseXI + xi) * ratioW;
             int offsetZ = imageW * pz;
             int offsetX = px;
             int offset = offsetZ * channels + offsetX * channels;
+
+            if (offset > dataSize)
+                int b = 0;
 
             auto* ptr = data;
             ptr += offset;
@@ -105,12 +113,12 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
 
             KI_INFO_OUT(fmt::format(
                 "vz={}, vx={}, vy={}, v={}, u={}, zi={}, xi={}, offsetZ={}, offsetX={}, ratioZ={}, ratioX={}, tileSizeZ={}, tileSizeX={}, h={}, w={}, channels={}",
-                vz, vx, vy, v, u, zi, xi, offsetZ, offsetX, ratioH, ratioW, tileH, tileW, imageH, imageW, channels));
+                z, x, vy, v, u, zi, xi, offsetZ, offsetX, ratioH, ratioW, tileH, tileW, imageH, imageW, channels));
 
             //gy = std::clamp(gy, -4.f, 4.f);
-            vy = 0.f;
+            //vy = 0.f;
 
-            glm::vec3 pos{ vx, vy, vz };
+            glm::vec3 pos{ x, vy, z };
             glm::vec2 texture{ u, v };
             glm::vec3 normal{ 0.f, 1.f, 0.f };
 
