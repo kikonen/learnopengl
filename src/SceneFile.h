@@ -257,10 +257,22 @@ private:
 
     MeshType* attachEntityClone(
         MeshType* type,
+        Group* group,
         const EntityData& root,
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
+        std::vector<Material>& materials);
+
+    MeshType* attachEntityCloneRepeat(
+        MeshType* type,
+        Group* group,
+        const EntityData& root,
+        const EntityData& entity,
+        const EntityCloneData& data,
+        bool cloned,
+        glm::vec3 posAdjustment,
+        glm::uvec3 tile,
         std::vector<Material>& materials);
 
     void assignFlags(
@@ -275,6 +287,7 @@ private:
     MeshType* createType(
         const EntityData& entity,
         const EntityCloneData& data,
+        glm::uvec3 tile,
         std::vector<Material>& materials);
 
     Node* createNode(
@@ -284,6 +297,7 @@ private:
         MeshType* type,
         const glm::vec3& rootPos,
         const glm::vec3& posAdjustment,
+        glm::uvec3 tile,
         bool isRoot,
         bool instanced);
 

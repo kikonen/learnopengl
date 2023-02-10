@@ -44,13 +44,13 @@ entities:
     type: terrain
     material: terrain_grass
     shader: terrain
-    xpos: [100, -4, 100]
+    pos: [-100, 0, -100]
     scale: [100, 1, 100]
     render_flags:
       xno_shadow: true
     tiles: [2, 1, 2]
     clone_mesh: false
-    clones:
+    xxclones:
       - pos:  [-100, 0, -100]
         tile: [0, 0, 0]
       - pos:  [100, 0, -100]
@@ -59,7 +59,7 @@ entities:
         tile: [0, 0, 1]
       - pos:  [100, 0, 100]
         tile: [1, 0, 1]
-    xrepeat:
+    repeat:
       x_count: 2
       y_count: 1
       z_count: 2
