@@ -107,10 +107,20 @@ RenderContext::RenderContext(
         m_farPlane);
 
     m_matrices.u_view = m_camera->getView();
-    // NOTE KI remove translation from the view matrix for skybox
-    m_matrices.u_viewSkybox = glm::mat4(glm::mat3(m_matrices.u_view));
+
     m_matrices.u_projection = m_camera->getProjection();
     m_matrices.u_projected = m_camera->getProjected();
+
+    {
+        // https://www.rioki.org/2013/03/07/glsl-skybox.html
+        // NOTE KI remove translation from the view matrix for skybox
+        glm::mat4 m = m_matrices.u_view;
+        m[3][0] = 0.f;
+        m[3][1] = 0.f;
+        m[3][2] = 0.f;
+
+        m_matrices.u_viewSkybox = glm::inverse(m) * glm::inverse(m_matrices.u_projection);
+    }
 
     m_data = {
         m_camera->getWorldPosition(),

@@ -64,6 +64,8 @@ https://glad.dav1d.de
 
 ## Misc
 - https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
+- https://www.flipcode.com/archives/Skybox_With_A_Single_Quad.shtml
+- https://www.rioki.org/2013/03/07/glsl-skybox.html
 
 # References
 

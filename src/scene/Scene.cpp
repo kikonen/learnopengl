@@ -296,6 +296,7 @@ void Scene::draw(RenderContext& ctx)
     // Enable polygon offset to resolve depth-fighting isuses
     //glEnable(GL_POLYGON_OFFSET_FILL);
     //glPolygonOffset(0.2f, 0.2f);
+    ctx.state.enable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
     if (m_cubeMapRenderer && m_cubeMapRenderer->render(ctx)) {
         //wasCubeMap = true;

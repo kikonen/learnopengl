@@ -50,7 +50,7 @@ namespace {
     const double DEF_ALPHA = 1.0;
 
     const std::string QUAD_MESH_NAME{ "quad" };
-    const std::string SKYBOX_MESH_NAME{ "skybox" };
+    const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
 }
 
 
