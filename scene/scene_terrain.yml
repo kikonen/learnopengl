@@ -23,7 +23,7 @@ entities:
       enabled: true
     enabled: true
   - name: Directional light
-    pos: [0, 65, -100]
+    pos: [0, 45, -100]
     scale: 2.5
     model: light
     shader: texture
@@ -47,8 +47,19 @@ entities:
     pos: [-100, -4, -100]
     scale: [100, 1, 100]
     render_flags:
-      no_shadow: true
-    repeat:
+      xno_shadow: true
+    tiles: [2, 1, 2]
+    clone_mesh: false
+    clones:
+      - pos: [-200, -4, 200]
+        tile: [0, 0, 1]
+      - pos: [0, -4, 200]
+        tile: [1, 0, 1]
+      - pos: [-200, -4, 0]
+        tile: [0, 0, 0]
+      - pos: [0, -4, 0]
+        tile: [1, 0, 0]
+    xrepeat:
       x_count: 2
       y_count: 1
       z_count: 2

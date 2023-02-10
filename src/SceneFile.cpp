@@ -264,6 +264,8 @@ void SceneFile::attachEntity(
             MeshType* type{ nullptr };
             for (auto& cloneData : data.clones) {
                 if (!*m_alive) return;
+                if (!data.base.cloneMesh)
+                    type = nullptr;
                 type = attachEntityClone(type, root, data, cloneData, true, materials);
             }
         }
@@ -410,10 +412,10 @@ MeshType* SceneFile::createType(
         type->m_entityType = EntityType::sprite;
     }
     else if (data.type == EntityType::terrain) {
-        TerrainGenerator generator(assets);
-        auto mesh = generator.generateTerrain(material);
+        TerrainGenerator generator(assets, data.tiles.z, data.tiles.x);
+        auto mesh = generator.generateTerrain(data.tile.z, data.tile.x, material);
         type->setMesh(std::move(mesh), true);
-        type->m_entityType = EntityType::terrain;
+            type->m_entityType = EntityType::terrain;
     }
     else if (data.type == EntityType::origo) {
         // NOTE KI nothing to do
@@ -924,6 +926,15 @@ void SceneFile::loadEntityClone(
         }
         else if (k == "clone_position") {
             data.clonePosition = readVec3(v);
+        }
+        else if (k == "clone_mesh") {
+            data.cloneMesh = v.as<bool>();
+        }
+        else if (k == "tiles") {
+            data.tiles = readVec3(v);
+        }
+        else if (k == "tile") {
+            data.tile = readVec3(v);
         }
         else if (k == "clones") {
             if (recurse)

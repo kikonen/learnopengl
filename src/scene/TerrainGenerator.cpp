@@ -12,12 +12,19 @@ namespace {
 
 }
 
-TerrainGenerator::TerrainGenerator(const Assets& assets)
-    : m_assets(assets)
+TerrainGenerator::TerrainGenerator(
+    const Assets& assets,
+    float worldTilesZ,
+    float worldTilesX)
+    : m_assets(assets),
+    m_worldTilesZ(worldTilesZ),
+    m_worldTilesX(worldTilesX)
 {
 }
 
 std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
+    int worldZ,
+    int worldX,
     Material* material)
 {
     auto mesh = std::make_unique<ModelMesh>("terrain");
@@ -38,10 +45,18 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     auto& vertices = mesh->m_vertices;
     auto& tris = mesh->m_tris;
 
+    const int imageH = image->m_height;
     const int imageW = image->m_width;
     const int channels = image->m_channels;
-    const float ratioZ = (float)image->m_height / (float)vertexCount;
-    const float ratioX = (float)image->m_width / (float)vertexCount;
+
+    const float tileSizeZ = (float)imageH / (float)m_worldTilesZ;
+    const float tileSizeX = (float)imageW / (float)m_worldTilesX;
+
+    const float ratioZ = tileSizeZ / (float)vertexCount;
+    const float ratioX = tileSizeX / (float)vertexCount;
+
+    const int tileZ = tileSizeZ * worldZ;
+    const int tileX = tileSizeX * worldX;
 
     vertices.reserve(vertexCount * vertexCount);
     for (int z = 0; z < vertexCount; z++) {
@@ -57,11 +72,15 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
             gx = gx * 2.f - 1.f;
 
             //float gy = perlin.perlin(gx * tileSize, 0, gz * tileSize);
-            int pz = ratioZ * z;
-            int px = ratioX * x;
+            int pz = tileZ + ratioZ * z;
+            int px = tileX + ratioX * x;
             int offsetZ = imageW * pz;
             int offsetX = px;
             int offset = offsetZ * channels + offsetX * channels;
+
+            std::cout << fmt::format(
+                "z={}, x={}, tileZ={}, tileX={}, offsetZ={}, offsetX={}, ratioZ={}, ratioX={}, tileSizeZ={}, tileSizeX={}, h={}, w={}, channels={}",
+                z, x, tileZ, tileX, offsetZ, offsetX, ratioZ, ratioX, tileSizeZ, tileSizeX, imageH, imageW, channels) << "\n";
 
             auto* ptr = data;
             ptr += offset;

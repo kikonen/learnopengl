@@ -186,6 +186,10 @@ class SceneFile
 
         bool selected{ false };
         bool instanced{ false };
+        bool cloneMesh{ true };
+
+        glm::uvec3 tiles{ 0 };
+        glm::uvec3 tile{ 0 };
 
         glm::vec3 clonePosition{ 0 };
 
