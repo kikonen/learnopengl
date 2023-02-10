@@ -81,9 +81,14 @@ class SceneFile
         int yCount{ 1 };
         int zCount{ 1 };
 
-        double xStep{ 0 };
-        double yStep{ 0 };
-        double zStep{ 0 };
+        double xStep{ 0.f };
+        double yStep{ 0.f };
+        double zStep{ 0.f };
+    };
+
+    struct Tiling {
+        float heightScale{ 32 };
+        glm::uvec3 tiles{ 1 };
     };
 
     enum class ControllerType {
@@ -135,22 +140,22 @@ class SceneFile
         bool enabled{ false };
         LightType type{ LightType::none };
 
-        glm::vec3 pos{ 0 };
+        glm::vec3 pos{ 0.f };
 
         // NOTE KI debug only
         std::string targetId_str;
 
         uuids::uuid targetId{};
 
-        float linear{ 0 };
-        float quadratic{ 0 };
+        float linear{ 0.f };
+        float quadratic{ 0.f };
 
-        float cutoffAngle{ 0 };
-        float outerCutoffAngle{ 0 };
+        float cutoffAngle{ 0.f };
+        float outerCutoffAngle{ 0.f };
 
-        glm::vec4 ambient{ 0 };
-        glm::vec4 diffuse{ 0 };
-        glm::vec4 specular{ 0 };
+        glm::vec4 ambient{ 0.f };
+        glm::vec4 diffuse{ 0.f };
+        glm::vec4 specular{ 0.f };
     };
 
     struct EntityCloneData {
@@ -179,19 +184,19 @@ class SceneFile
 
         std::map<std::string, std::string> shaderDefinitions{};
         std::map<const std::string, bool> renderFlags{};
-        glm::vec3 position{ 0 };
-        glm::vec3 rotation{ 0 };
-        glm::vec3 planeNormal{ 0 };
-        glm::vec3 scale{ 1 };
+        glm::vec3 position{ 0.f };
+        glm::vec3 rotation{ 0.f };
+        glm::vec3 planeNormal{ 0.f };
+        glm::vec3 scale{ 1.f };
 
         bool selected{ false };
         bool instanced{ false };
         bool cloneMesh{ true };
 
-        glm::uvec3 tiles{ 0 };
+        Tiling tiling;
         glm::uvec3 tile{ 0 };
 
-        glm::vec3 clonePosition{ 0 };
+        glm::vec3 clonePosition{ 0.f };
 
         bool loadTextures{ true };
         std::string materialName;
@@ -344,6 +349,10 @@ private:
         const YAML::Node& node,
         Repeat& data);
 
+    void loadTiling(
+        const YAML::Node& node,
+        Tiling& data);
+
     void loadCamera(
         const YAML::Node& node,
         CameraData& data);
@@ -372,6 +381,8 @@ private:
     glm::vec2 readVec2(const YAML::Node& node);
     glm::vec3 readVec3(const YAML::Node& node);
     glm::vec4 readVec4(const YAML::Node& node);
+
+    glm::uvec3 readUVec3(const YAML::Node& node);
 
     glm::vec3 readScale3(const YAML::Node& node);
     glm::vec4 readRGBA(const YAML::Node& node);

@@ -48,7 +48,9 @@ entities:
     scale: [100, 1, 100]
     xxrender_flags:
       no_shadow: true
-    tiles: [2, 1, 2]
+    tiling:
+      tiles: [2, 1, 2]
+      height_scale: 32
     clone_mesh: false
     xxclones:
       - pos:  [-100, 0, -100]

@@ -450,7 +450,11 @@ MeshType* SceneFile::createType(
         type->m_entityType = EntityType::sprite;
     }
     else if (data.type == EntityType::terrain) {
-        TerrainGenerator generator(assets, data.tiles.z, data.tiles.x);
+        TerrainGenerator generator(
+            assets,
+            data.tiling.tiles.z,
+            data.tiling.tiles.x,
+            data.tiling.heightScale);
         auto mesh = generator.generateTerrain(tile.z, tile.x, material);
         type->setMesh(std::move(mesh), true);
             type->m_entityType = EntityType::terrain;
@@ -945,6 +949,9 @@ void SceneFile::loadEntityClone(
         else if (k == "repeat") {
             loadRepeat(v, data.repeat);
         }
+        else if (k == "tiling") {
+            loadTiling(v, data.tiling);
+        }
         else if (k == "camera") {
             loadCamera(v, data.camera);
         }
@@ -968,9 +975,6 @@ void SceneFile::loadEntityClone(
         }
         else if (k == "clone_mesh") {
             data.cloneMesh = v.as<bool>();
-        }
-        else if (k == "tiles") {
-            data.tiles = readVec3(v);
         }
         else if (k == "tile") {
             data.tile = readVec3(v);
@@ -1051,6 +1055,26 @@ void SceneFile::loadRepeat(
         }
         else {
             std::cout << "UNKNOWN REPEAT_ENTRY: " << k << "=" << v << "\n";
+        }
+    }
+}
+
+void SceneFile::loadTiling(
+    const YAML::Node& node,
+    Tiling& data)
+{
+    for (const auto& pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "tiles") {
+            data.tiles = readUVec3(v);
+        }
+        else if (k == "height_scale") {
+            data.heightScale = v.as<float>();
+        }
+        else {
+            std::cout << "UNKNOWN TILING_ENTRY: " << k << "=" << v << "\n";
         }
     }
 }
@@ -1418,6 +1442,16 @@ glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
         a.push_back(e.as<float>());
     }
     return glm::vec4{ a[0], a[1], a[2], a[3] };
+}
+
+glm::uvec3 SceneFile::readUVec3(const YAML::Node& node) {
+    std::vector<int> a;
+    a.reserve(3);
+
+    for (const auto& e : node) {
+        a.push_back(e.as<int>());
+    }
+    return glm::uvec3{ a[0], a[1], a[2] };
 }
 
 glm::vec3 SceneFile::readScale3(const YAML::Node& node) {

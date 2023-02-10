@@ -15,10 +15,12 @@ namespace {
 TerrainGenerator::TerrainGenerator(
     const Assets& assets,
     float worldTilesZ,
-    float worldTilesX)
+    float worldTilesX,
+    float heightScale)
     : m_assets(assets),
     m_worldTilesZ(worldTilesZ),
-    m_worldTilesX(worldTilesX)
+    m_worldTilesX(worldTilesX),
+    m_heightScale(heightScale)
 {
 }
 
@@ -108,12 +110,12 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
             ptr += offset;
 
             unsigned char heightValue = *ptr;
-            float height = (heightValue / 255.f) * 32.f;
+            float height = (heightValue / 255.f) * m_heightScale;
             float vy = height;
 
-            KI_INFO_OUT(fmt::format(
-                "vz={}, vx={}, vy={}, v={}, u={}, zi={}, xi={}, offsetZ={}, offsetX={}, ratioZ={}, ratioX={}, tileSizeZ={}, tileSizeX={}, h={}, w={}, channels={}",
-                z, x, vy, v, u, zi, xi, offsetZ, offsetX, ratioH, ratioW, tileH, tileW, imageH, imageW, channels));
+            //KI_INFO_OUT(fmt::format(
+            //    "vz={}, vx={}, vy={}, v={}, u={}, zi={}, xi={}, offsetZ={}, offsetX={}, ratioZ={}, ratioX={}, tileSizeZ={}, tileSizeX={}, h={}, w={}, channels={}",
+            //    z, x, vy, v, u, zi, xi, offsetZ, offsetX, ratioH, ratioW, tileH, tileW, imageH, imageW, channels));
 
             //gy = std::clamp(gy, -4.f, 4.f);
             //vy = 0.f;

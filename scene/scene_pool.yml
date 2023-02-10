@@ -99,11 +99,13 @@ entities:
     type: terrain
     material: terrain_grass
     shader: terrain
-    pos: [-100, -18, -100]
+    pos: [-100, -10, -60]
     scale: [100, 1, 100]
     xxrender_flags:
       no_shadow: true
-    tiles: [2, 1, 2]
+    tiling:
+      tiles: [2, 1, 2]
+      height_scale: 20
     clone_mesh: false
     repeat:
       x_count: 2

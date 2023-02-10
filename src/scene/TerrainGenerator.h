@@ -9,7 +9,8 @@ public:
     TerrainGenerator(
         const Assets& assets,
         float worldTilesZ,
-        float worldTilesX);
+        float worldTilesX,
+        float heightScale);
 
     std::unique_ptr<ModelMesh> generateTerrain(
         int worldZ,
@@ -22,4 +23,5 @@ public:
     const Assets& m_assets;
     const float m_worldTilesZ;
     const float m_worldTilesX;
+    const float m_heightScale;
 };
