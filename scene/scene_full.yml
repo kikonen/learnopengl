@@ -650,10 +650,33 @@ entities:
     type: terrain
     material: terrain_grass
     shader: texture
-    pos: [-400, 0, -400]
+    pos: [-400, -30, -400]
     scale: [100, 1, 100]
-    render_flags:
+    xrender_flags:
       no_shadow: true
+    tiling:
+      tiles: [8, 1, 8]
+      height_scale: 32
+    repeat:
+      x_count: 8
+      y_count: 1
+      z_count: 8
+      x_step: 200
+      y_step: 0
+      z_step: 200
+    enabled: false
+  - name: Terrain grass
+    type: terrain
+    material: terrain_grass
+    shader: terrain
+    pos: [-400, -34, -400]
+    scale: [100, 1, 100]
+    xxrender_flags:
+      no_shadow: true
+    tiling:
+      tiles: [8, 1, 8]
+      height_scale: 64
+    clone_mesh: false
     repeat:
       x_count: 8
       y_count: 1
@@ -1005,11 +1028,9 @@ materials:
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: Grass_Dark_VH_1024.PNG
-    map_bump: Grass_Dark_VH_1024_normal.PNG
-    tiling: 100
-    texture_spec:
-      clamp: GL_REPEAT
+    map_kd: terrain/terrain_1025_m.png
+    map_bump: terrain/terrain_1025_normal.png
+    map_height: terrain/terrain_1025_height.png
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: noise_256.png
