@@ -46,8 +46,8 @@ entities:
     shader: terrain
     pos: [-100, 0, -100]
     scale: [100, 1, 100]
-    render_flags:
-      xno_shadow: true
+    xxrender_flags:
+      no_shadow: true
     tiles: [2, 1, 2]
     clone_mesh: false
     xxclones:
@@ -78,6 +78,3 @@ materials:
     map_kd: terrain/terrain_1025_m.png
     map_bump: terrain/terrain_1025_normal.png
     map_height: terrain/terrain_1025_height.png
-    tiling: 1
-    xtexture_spec:
-      clamp: GL_REPEAT

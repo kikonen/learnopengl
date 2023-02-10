@@ -98,11 +98,13 @@ entities:
   - name: Terrain grass
     type: terrain
     material: terrain_grass
-    shader: texture
-    pos: [-100, 0, -100]
+    shader: terrain
+    pos: [-100, -18, -100]
     scale: [100, 1, 100]
-    render_flags:
+    xxrender_flags:
       no_shadow: true
+    tiles: [2, 1, 2]
+    clone_mesh: false
     repeat:
       x_count: 2
       y_count: 1
@@ -145,8 +147,6 @@ materials:
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: Grass_Dark_VH_1024.PNG
-    map_bump: Grass_Dark_VH_1024_normal.PNG
-    tiling: 100
-    texture_spec:
-      clamp: GL_REPEAT
+    map_kd: terrain/terrain_1025_m.png
+    map_bump: terrain/terrain_1025_normal.png
+    map_height: terrain/terrain_1025_height.png

@@ -1,6 +1,6 @@
 assets:
   log_file: log/development.log
-  scene_file: scene/scene_terrain.yml
+  scene_file: scene/scene_pool.yml
 
   glfw_swap_interval: 1
   gl_debug: true
@@ -70,7 +70,7 @@ assets:
   water_render_frame_start: 0
   water_render_frame_step: 1
 
-  terrain_grid_size: 32
+  terrain_grid_size: 64
 
   batch_size: 16384
   batch_buffers: 40
