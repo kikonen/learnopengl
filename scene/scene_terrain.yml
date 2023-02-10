@@ -11,11 +11,11 @@ root:
 entities:
   - name: Origo
     type: origo
-    pos: [0, 20, -5]
+    pos: [0, 50, 50]
     camera:
       zoom: 45
       pos: [0, 0, 0]
-      rotation: [0, 180, 0.0]
+      Xrotation: [0, 180, 0.0]
       default: true
       enabled: true
     controller:
@@ -44,21 +44,21 @@ entities:
     type: terrain
     material: terrain_grass
     shader: terrain
-    pos: [-100, -4, -100]
-    scale: [100, 1, 100]
+    xpos: [100, -4, 100]
+    scale: [50, 1, 50]
     render_flags:
       xno_shadow: true
     tiles: [2, 1, 2]
     clone_mesh: false
     clones:
-      - pos: [-200, -4, 200]
-        tile: [0, 0, 1]
-      - pos: [0, -4, 200]
-        tile: [1, 0, 1]
-      - pos: [-200, -4, 0]
+      - pos:  [-50, 0, -50]
         tile: [0, 0, 0]
-      - pos: [0, -4, 0]
+      - pos:  [50, 0, -50]
         tile: [1, 0, 0]
+      - pos:  [-50, 0, 50]
+        tile: [0, 0, 1]
+      - pos:  [50, 0, 50]
+        tile: [1, 0, 1]
     xrepeat:
       x_count: 2
       y_count: 1
@@ -75,9 +75,9 @@ materials:
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: terrain/terrain_1025.png
+    map_kd: terrain/terrain_1025_m.png
     map_bump: terrain/terrain_1025_normal.png
     map_height: terrain/terrain_1025_height.png
     tiling: 1
-    texture_spec:
+    xtexture_spec:
       clamp: GL_REPEAT

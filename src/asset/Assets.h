@@ -107,8 +107,7 @@ public:
     int waterRenderFrameStart;
     int waterRenderFrameStep;
 
-    int terrainVertexCount;
-    int terrainTileSize;
+    int terrainGridSize;
 
     int batchSize;
     int batchBuffers;

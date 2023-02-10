@@ -91,8 +91,7 @@ Assets::Assets()
     waterRenderFrameStart = 0;
     waterRenderFrameStep = 2;
 
-    terrainVertexCount = 64;
-    terrainTileSize = 512;
+    terrainGridSize = 32;
 
     batchSize = 16;
     batchBuffers = 3;

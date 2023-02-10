@@ -62,6 +62,9 @@ https://glad.dav1d.de
 ## Compute shader
 - https://computergraphics.stackexchange.com/questions/400/synchronizing-successive-opengl-compute-shader-invocations
 
+## Misc
+- https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
+
 # References
 
 - https://learnopengl.com

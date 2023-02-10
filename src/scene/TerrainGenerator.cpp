@@ -23,8 +23,8 @@ TerrainGenerator::TerrainGenerator(
 }
 
 std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
-    int worldZ,
-    int worldX,
+    int worldZI,
+    int worldXI,
     Material* material)
 {
     auto mesh = std::make_unique<ModelMesh>("terrain");
@@ -37,10 +37,10 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     auto image = std::make_unique<Image>(imagePath);
     int res = image->load(true);
 
-    unsigned char* data = image->m_data;
+    const unsigned char* data = image->m_data;
 
-    const size_t tileSize = m_assets.terrainTileSize;
-    const size_t vertexCount = m_assets.terrainVertexCount;
+    const size_t gridSize = m_assets.terrainGridSize;
+    const size_t vertexCount = gridSize + 1;
 
     auto& vertices = mesh->m_vertices;
     auto& tris = mesh->m_tris;
@@ -49,50 +49,69 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     const int imageW = image->m_width;
     const int channels = image->m_channels;
 
-    const float tileSizeZ = (float)imageH / (float)m_worldTilesZ;
-    const float tileSizeX = (float)imageW / (float)m_worldTilesX;
+    // grid cell size
+    const float tileH = (float)imageH / (float)m_worldTilesZ;
+    const float tileW = (float)imageW / (float)m_worldTilesX;
 
-    const float ratioZ = tileSizeZ / (float)vertexCount;
-    const float ratioX = tileSizeX / (float)vertexCount;
+    // grid texel cell size
+    const float texTileH = (float)1.f / (float)m_worldTilesZ;
+    const float texTileW = (float)1.f / (float)m_worldTilesX;
 
-    const int tileZ = tileSizeZ * worldZ;
-    const int tileX = tileSizeX * worldX;
+    // ratio per grid cell
+    const float ratioH = tileH / (float)gridSize;
+    const float ratioW = tileW / (float)gridSize;
+
+    // ratio per grid texel cell
+    const float texRatioH = texTileH / (float)gridSize;
+    const float texRatioW = texTileW / (float)gridSize;
+
+    const int baseZI = worldZI * (vertexCount - 1);
+    const int baseXI = worldXI * (vertexCount - 1);
 
     vertices.reserve(vertexCount * vertexCount);
-    for (int z = 0; z < vertexCount; z++) {
-        float gz = (z / ((float)vertexCount - 1));// *tileSize;
-        float tz = (z / ((float)vertexCount - 1));
+    for (int zi = 0; zi < vertexCount; zi++) {
+        // vz = [-1, 1] => local to mesh
+        float vz = zi / (float)gridSize;
+        vz = vz * 2.f - 1.f;
+        vz = std::clamp(vz, -1.f, 1.f);
 
-        gz = gz * 2.f - 1.f;
+        // tz = [0, 1] => global to world
+        float v = 1.f - (baseZI + zi) * texRatioH;
+        //tz = std::clamp(tz, 0.f, 1.f);
 
-        for (int x = 0; x < vertexCount; x++) {
-            float gx = (x / ((float)vertexCount - 1));// *tileSize;
-            float tx = (x / ((float)vertexCount - 1));
+        for (int xi = 0; xi < vertexCount; xi++) {
+            // gx = [-1, 1] => local to mesh
+            float vx = xi / (float)gridSize;
+            vx = vx * 2.f - 1.f;
+            vx = std::clamp(vx, -1.f, 1.f);
 
-            gx = gx * 2.f - 1.f;
+            // tx = [0, 1] => global to world
+            float u = (baseXI + xi) * texRatioW;
+            //tx = std::clamp(tx, 0.f, 1.f);
 
             //float gy = perlin.perlin(gx * tileSize, 0, gz * tileSize);
-            int pz = tileZ + ratioZ * z;
-            int px = tileX + ratioX * x;
+            int pz = tileH + ratioH * vz;
+            int px = tileW + ratioW * vx;
             int offsetZ = imageW * pz;
             int offsetX = px;
             int offset = offsetZ * channels + offsetX * channels;
-
-            std::cout << fmt::format(
-                "z={}, x={}, tileZ={}, tileX={}, offsetZ={}, offsetX={}, ratioZ={}, ratioX={}, tileSizeZ={}, tileSizeX={}, h={}, w={}, channels={}",
-                z, x, tileZ, tileX, offsetZ, offsetX, ratioZ, ratioX, tileSizeZ, tileSizeX, imageH, imageW, channels) << "\n";
 
             auto* ptr = data;
             ptr += offset;
 
             unsigned char heightValue = *ptr;
             float height = (heightValue / 255.f) * 32.f;
-            float gy = height;
+            float vy = height;
+
+            KI_INFO_OUT(fmt::format(
+                "vz={}, vx={}, vy={}, v={}, u={}, zi={}, xi={}, offsetZ={}, offsetX={}, ratioZ={}, ratioX={}, tileSizeZ={}, tileSizeX={}, h={}, w={}, channels={}",
+                vz, vx, vy, v, u, zi, xi, offsetZ, offsetX, ratioH, ratioW, tileH, tileW, imageH, imageW, channels));
 
             //gy = std::clamp(gy, -4.f, 4.f);
+            vy = 0.f;
 
-            glm::vec3 pos{ gx, gy, gz };
-            glm::vec2 texture{ tx, tz };
+            glm::vec3 pos{ vx, vy, vz };
+            glm::vec2 texture{ u, v };
             glm::vec3 normal{ 0.f, 1.f, 0.f };
 
             vertices.emplace_back(

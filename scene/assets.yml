@@ -70,8 +70,7 @@ assets:
   water_render_frame_start: 0
   water_render_frame_step: 1
 
-  terrain_vertex_count: 32
-  terrain_tile_size: 400
+  terrain_grid_size: 32
 
   batch_size: 16384
   batch_buffers: 40

@@ -198,11 +198,8 @@ void AssetsFile::loadAssets(
         else if (k == "water_render_frame_step") {
             data.waterRenderFrameStep = v.as<int>();
         }
-        else if (k == "terrain_vertex_count") {
-            data.terrainVertexCount = v.as<int>();
-        }
-        else if (k == "terrain_tile_size") {
-            data.terrainTileSize = v.as<int>();
+        else if (k == "terrain_grid_size") {
+            data.terrainGridSize = v.as<int>();
         }
         else if (k == "batch_size") {
             data.batchSize = v.as<int>();

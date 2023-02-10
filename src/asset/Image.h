@@ -19,7 +19,7 @@ public:
     int m_channels = 0;
 
     bool m_flipped = false;
-    unsigned char* m_data = nullptr;
+    unsigned char* m_data{ nullptr };
 
 private:
     bool m_loaded = false;
