@@ -1,4 +1,4 @@
-#include "Test6.h"
+#include "SampleApp.h"
 
 #include <fmt/format.h>
 
@@ -26,20 +26,20 @@
 #include "scene/Scene.h"
 
 
-Test6::Test6()
+SampleApp::SampleApp()
 {
 }
 
-int Test6::onInit()
+int SampleApp::onInit()
 {
-    m_title = "Test 6";
+    m_title = "OpenGL";
     //glfwWindowHint(GLFW_SAMPLES, 4);
 
     m_assets = loadAssets();
     return 0;
 }
 
-int Test6::onSetup() {
+int SampleApp::onSetup() {
     m_currentScene = loadScene();
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -58,7 +58,7 @@ int Test6::onSetup() {
     return 0;
 }
 
-int Test6::onRender(const ki::RenderClock& clock) {
+int SampleApp::onRender(const ki::RenderClock& clock) {
     auto* scene = m_currentScene.get();
     Window* window = m_window.get();
 
@@ -157,11 +157,11 @@ int Test6::onRender(const ki::RenderClock& clock) {
     return 0;
 }
 
-void Test6::onDestroy()
+void SampleApp::onDestroy()
 {
 }
 
-void Test6::selectNode(
+void SampleApp::selectNode(
     const RenderContext& ctx,
     Scene* scene,
     const InputState& inputState,
@@ -205,13 +205,13 @@ void Test6::selectNode(
     }
 }
 
-Assets Test6::loadAssets()
+Assets SampleApp::loadAssets()
 {
     AssetsFile file{ "scene/assets.yml" };
     return file.load();
 }
 
-std::shared_ptr<Scene> Test6::loadScene()
+std::shared_ptr<Scene> SampleApp::loadScene()
 {
     auto scene = std::make_shared<Scene>(m_assets, m_registry);
 

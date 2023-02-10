@@ -10,10 +10,10 @@
 
 
 #include "Engine.h"
-#include "Test6.h"
+#include "SampleApp.h"
 
 int runEngine() {
-    auto engine = std::make_unique<Test6>();
+    auto engine = std::make_unique<SampleApp>();
 
     try {
         KI_INFO("START: ENGINE INIT");

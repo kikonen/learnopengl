@@ -12,7 +12,7 @@ assets:
   async_loader_delay: 0
 
   models_dir: 3d_model
-  shaders_dir: shader/test6
+  shaders_dir: shader
   sprites_dir: sprites
   textures_dir: textures
   ground_offset: [200, 0, 200]

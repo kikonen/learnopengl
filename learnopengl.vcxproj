@@ -284,7 +284,7 @@
     <ClCompile Include="vendor\stb_image\src\stb_image.cpp" />
     <ClCompile Include="src\asset\Texture.cpp" />
     <ClCompile Include="src\asset\Vertex.cpp" />
-    <ClCompile Include="src\Test6.cpp" />
+    <ClCompile Include="src\SampleApp.cpp" />
     <ClCompile Include="src\model\Viewport.cpp" />
     <ClCompile Include="src\renderer\ViewportRenderer.cpp" />
     <ClCompile Include="src\scene\TerrainGenerator.cpp" />
@@ -433,7 +433,7 @@
     <ClInclude Include="src\asset\Shader.h" />
     <ClInclude Include="src\asset\Texture.h" />
     <ClInclude Include="src\asset\Vertex.h" />
-    <ClInclude Include="src\Test6.h" />
+    <ClInclude Include="src\SampleApp.h" />
     <ClInclude Include="src\asset\UBO.h" />
     <ClInclude Include="src\model\Viewport.h" />
     <ClInclude Include="src\renderer\ViewportRenderer.h" />

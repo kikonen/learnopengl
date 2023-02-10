@@ -11,9 +11,9 @@
 #include "SceneFile.h"
 
 
-class Test6 final : public Engine {
+class SampleApp final : public Engine {
 public:
-    Test6();
+    SampleApp();
 
 protected:
     int onInit() override;
