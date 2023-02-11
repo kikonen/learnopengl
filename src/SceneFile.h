@@ -35,6 +35,7 @@ class SceneFile
     struct SkyboxData {
         std::string programName{ "skybox" };
         std::string materialName{};
+        int priority{ -100 };
 
         bool const valid() {
             return !materialName.empty();
@@ -380,18 +381,23 @@ private:
         const YAML::Node& node,
         TextureSpec& textureSpec);
 
-    glm::vec2 readVec2(const YAML::Node& node);
-    glm::vec3 readVec3(const YAML::Node& node);
-    glm::vec4 readVec4(const YAML::Node& node);
+    glm::vec2 readVec2(const YAML::Node& node) const;
+    glm::vec3 readVec3(const YAML::Node& node) const;
+    glm::vec4 readVec4(const YAML::Node& node) const;
 
-    glm::uvec3 readUVec3(const YAML::Node& node);
+    glm::uvec3 readUVec3(const YAML::Node& node) const;
 
-    glm::vec3 readScale3(const YAML::Node& node);
-    glm::vec4 readRGBA(const YAML::Node& node);
-    glm::vec2 readRefractionRatio(const YAML::Node& node);
-    std::string readFile(const std::string& filename);
+    glm::vec3 readScale3(const YAML::Node& node) const;
+    glm::vec4 readRGBA(const YAML::Node& node) const;
+    glm::vec2 readRefractionRatio(const YAML::Node& node) const;
+    std::string readFile(const std::string& filename) const;
 
-    const std::string resolveTexturePath(const std::string& line);
+    const std::string resolveTexturePath(const std::string& line) const;
+
+    void reportUnknown(
+        const std::string& scope,
+        const std::string& k,
+        const YAML::Node&) const;
 
 public:
     const std::string m_filename;

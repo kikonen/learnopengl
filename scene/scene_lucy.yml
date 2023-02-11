@@ -5,23 +5,22 @@ skybox:
 entities:
   - name: Camera
     type: origo
-    pos: [0, 0, 0]
+    pos: [0, 20, 60]
     camera:
-      rotation: [0, 180, 0.0]
+      default: true
       enabled: true
     enabled: true
     controller:
       type: camera
-      default: true
       enabled: true
   - name: Cube map 1
     type: origo
-    pos: [0.0, -3.0, 0.0]
+    pos: [0.0, 35.0, 0.0]
     render_flags:
       cube_map: true
     enabled: true
   - name: Directional light
-    pos: [0, 25, -40]
+    pos: [0, 55, 60]
     scale: 2.5
     model: light
     program: light
@@ -38,16 +37,58 @@ entities:
       specular: [0.7, 0.7, 0.6, 1.0]
       enabled: true
     enabled: true
+  - name: Water bottom
+    model: quad
+    material: water_bottom
+    program: texture
+    pos: [0.0, 0.1, 0]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 100
+    render_flags:
+      no_shadow: true
+    enabled: true
+  - name: Water surface
+    type: quad
+    material: water_surface
+    program: water
+    pos: [0, 3.1, 0]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 100
+    render_flags:
+      no_shadow: true
+      render_back: true
+      water: true
+    enabled: true
+    init_script_file: scripts/cycle_water
+  - name: Pool side
+    model: pool_brick
+    program: texture
+    material_modifier:
+      tilingX: 30
+      tilingY: 2
+      texture_spec:
+        clamp: GL_REPEAT
+    clones:
+      - pos: [-100.0, -1, 0]
+        scale: [0.3, 6, 100]
+      - pos: [100.0, -1, 0]
+        scale: [0.3, 6, 100]
+      - pos: [0.0, -1, -100]
+        scale: [100, 6, 0.3]
+      - pos: [0.0, -1, 100]
+        scale: [100, 6, 0.3]
+    enabled: true
   - name: Lucy statue
     model: [metallic-lucy-statue-stanford-scan, metallic-lucy-statue]
     program: texture
-    pos: [0.0, 0.0, 20.0]
+    pos: [0.0, 0.0, 0.0]
+    rotation: [0, 180, 0]
     scale: 0.2
     material: gold_ball
     force_material: true
     material_modifier:
       reflection: 0.4
-    xrender_flags:
+    xxrender_flags:
       render_back: true
     enabled: true
 materials:
@@ -102,3 +143,29 @@ materials:
     ka: [0.2125, 0.1275, 0.0540, 1.0]
     kd: [0.7140, 0.4284, 0.1814, 1.0]
     reflection: 0.05
+  - name: water_surface
+    type: texture
+    ns: 150
+    ks: [0.2, 0.2, 0.5, 1.0]
+    kd: [0.0, 0.1, 0.8, 1.0]
+    map_bump: water_surface_512_normal.png
+    map_dudv: waterDUDV_512.png
+    tiling: 2
+    texture_spec:
+      clamp: GL_REPEAT
+      _pattern: 1
+  - name: water_bottom
+    type: texture
+    ns: 225
+    ka: [1.0, 1.0, 1.0, 1.0]
+    kd: [0.8, 0.8, 0.8, 1.0]
+    ks: [0.5, 0.5, 0.5, 1.0]
+    ke: [0.0, 0.0, 0.0, 1.0]
+    ni: 1.45
+    d: 1.0
+    illum: 2
+    xxmap_kd: Marble White_VH_512.PNG
+    map_kd: tiles_1024.png
+    tiling: 8
+    texture_spec:
+      clamp: GL_REPEAT

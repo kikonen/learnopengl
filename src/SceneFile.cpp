@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -114,7 +115,7 @@ void SceneFile::attachSkybox(
     if (!data.valid()) return;
 
     auto type = m_registry->m_typeRegistry->getType("<skybox>");
-    type->m_priority = -10;
+    type->m_priority = data.priority;
 
     auto future = m_registry->m_modelRegistry->getMesh(
         SKYBOX_MESH_NAME);
@@ -802,8 +803,11 @@ void SceneFile::loadSkybox(
         else if (k == "material") {
             data.materialName = v.as<std::string>();
         }
+        else if (k == "priority") {
+            data.priority = v.as<int>();
+        }
         else {
-            std::cout << "UNKNOWN SKYBOX_ENTRY: " << k << "=" << v << "\n";
+            reportUnknown("skybox_entry", k, v);
         }
     }
 }
@@ -874,7 +878,7 @@ void SceneFile::loadEntityClone(
                 data.type = EntityType::terrain;
             }
             else {
-                std::cout << "UNKNOWN ENTITY_TYPE: " << k << "=" << v << "\n";
+                reportUnknown("entity_type", k, v);
             }
         }
         else if (k == "priority") {
@@ -996,13 +1000,12 @@ void SceneFile::loadEntityClone(
         else if (k == "init_script_file") {
             std::string filename = v.as<std::string>() + ".lua";
             data.initScript = readFile(filename);
-            std::cout << data.initScript << "\n";
         }
         else if (k == "run_script") {
             data.runScript = v.as<std::string>();
         }
         else {
-            std::cout << "UNKNOWN ENTITY_ENTRY: " << k << "=" << v << "\n";
+            reportUnknown("entity_entry", k, v);
         }
     }
 
@@ -1061,7 +1064,7 @@ void SceneFile::loadRepeat(
             data.zStep = v.as<double>();
         }
         else {
-            std::cout << "UNKNOWN REPEAT_ENTRY: " << k << "=" << v << "\n";
+            reportUnknown("repeat_entry", k, v);
         }
     }
 }
@@ -1081,7 +1084,7 @@ void SceneFile::loadTiling(
             data.heightScale = v.as<float>();
         }
         else {
-            std::cout << "UNKNOWN TILING_ENTRY: " << k << "=" << v << "\n";
+            reportUnknown("tiling_entry", k, v);
         }
     }
 }
@@ -1116,7 +1119,7 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
             data.rotation = readVec3(v);
         }
         else {
-            std::cout << "UNKNOWN CONTROLLER_ENTRY: " << k << "=" << v << "\n";
+            reportUnknown("controller_entry", k, v);
         }
     }
 }
@@ -1150,7 +1153,7 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
                 data.type = LightType::spot;
             }
             else {
-                std::cout << "UNKNOWN LIGHT_TYPE: " << k << "=" << v << "\n";
+                reportUnknown("light_type", k, v);
             }
         }
         else if (k == "pos") {
@@ -1182,7 +1185,7 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
             data.specular = readRGBA(v);
         }
         else {
-            std::cout << "UNKNOWN CONTROLLER_ENTRY: " << k << "=" << v << "\n";
+            reportUnknown("light_entry", k, v);
         }
     }
 }
@@ -1218,7 +1221,7 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
                 data.type = ControllerType::moving_light;
             }
             else {
-                std::cout << "UNKNOWN CONTROLLER_TYPE: " << k << "=" << v << "\n";
+                reportUnknown("controller_type", k, v);
             }
         }
         //else if (k == "center") {
@@ -1243,7 +1246,7 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
             //data.pos = readVec3(v);
         }
         else {
-            std::cout << "UNKNOWN CONTROLLER_ENTRY: " << k << "=" << v << "\n";
+            reportUnknown("controller_entry", k, v);
         }
     }
 }
@@ -1286,7 +1289,7 @@ void SceneFile::loadMaterial(
                 fields.type = true;
             }
             else {
-                std::cout << "UNKNOWN MATERIAL_TYPE: " << k << "=" << v << "\n";
+                reportUnknown("material_type", k, v);
             }
         }
         else if (k == "ns") {
@@ -1395,7 +1398,7 @@ void SceneFile::loadMaterial(
             fields.textureSpec = true;
         }
         else {
-            std::cout << "UNKNOWN MATERIAL_ENTRY: " << k << "=" << v << "\n";
+            reportUnknown("material_entry", k, v);
         }
     }
 }
@@ -1412,16 +1415,17 @@ void SceneFile::loadTextureSpec(
             if (v.as<std::string>() == "GL_REPEAT") {
                 textureSpec.clamp = GL_REPEAT;
             } else {
-                std::cout << "UNKNOWN MODE: " << k << "=" << v << "\n";
+                reportUnknown("tex_mode", k, v);
             }
         }
         else {
-            std::cout << "UNKNOWN TEXTURE_SPEC: " << k << "=" << v << "\n";
+            reportUnknown("tex_spec", k, v);
         }
     }
 }
 
-glm::vec2 SceneFile::readVec2(const YAML::Node& node) {
+glm::vec2 SceneFile::readVec2(const YAML::Node& node) const
+{
     std::vector<float> a;
     a.reserve(2);
 
@@ -1431,7 +1435,8 @@ glm::vec2 SceneFile::readVec2(const YAML::Node& node) {
     return glm::vec2{ a[0], a[1] };
 }
 
-glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
+glm::vec3 SceneFile::readVec3(const YAML::Node& node) const
+{
     std::vector<double> a;
     a.reserve(3);
 
@@ -1441,7 +1446,8 @@ glm::vec3 SceneFile::readVec3(const YAML::Node& node) {
     return glm::vec3{ a[0], a[1], a[2] };
 }
 
-glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
+glm::vec4 SceneFile::readVec4(const YAML::Node& node) const
+{
     std::vector<float> a;
     a.reserve(4);
 
@@ -1451,7 +1457,8 @@ glm::vec4 SceneFile::readVec4(const YAML::Node& node) {
     return glm::vec4{ a[0], a[1], a[2], a[3] };
 }
 
-glm::uvec3 SceneFile::readUVec3(const YAML::Node& node) {
+glm::uvec3 SceneFile::readUVec3(const YAML::Node& node) const
+{
     std::vector<int> a;
     a.reserve(3);
 
@@ -1461,7 +1468,8 @@ glm::uvec3 SceneFile::readUVec3(const YAML::Node& node) {
     return glm::uvec3{ a[0], a[1], a[2] };
 }
 
-glm::vec3 SceneFile::readScale3(const YAML::Node& node) {
+glm::vec3 SceneFile::readScale3(const YAML::Node& node) const
+{
     if (node.IsSequence()) {
         std::vector<float> a;
         a.reserve(3);
@@ -1479,7 +1487,8 @@ glm::vec3 SceneFile::readScale3(const YAML::Node& node) {
     return glm::vec3{ scale };
 }
 
-glm::vec4 SceneFile::readRGBA(const YAML::Node& node) {
+glm::vec4 SceneFile::readRGBA(const YAML::Node& node) const
+{
     std::vector<float> a;
     a.reserve(4);
 
@@ -1493,7 +1502,8 @@ glm::vec4 SceneFile::readRGBA(const YAML::Node& node) {
     return glm::vec4{ a[0], a[1], a[2], a[3] };
 }
 
-glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) {
+glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) const
+{
     std::vector<float> a;
     a.reserve(2);
 
@@ -1507,12 +1517,12 @@ glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) {
     return glm::vec2{ a[0], a[1] };
 }
 
-const std::string SceneFile::resolveTexturePath(const std::string& path)
+const std::string SceneFile::resolveTexturePath(const std::string& path) const
 {
     return path;
 }
 
-std::string SceneFile::readFile(const std::string& filename)
+std::string SceneFile::readFile(const std::string& filename) const
 {
     std::stringstream buffer;
 
@@ -1534,4 +1544,15 @@ std::string SceneFile::readFile(const std::string& filename)
         throw std::runtime_error{ msg };
     }
     return buffer.str();
+}
+
+void SceneFile::reportUnknown(
+    const std::string& scope,
+    const std::string& k,
+    const YAML::Node& v) const
+{
+    std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";
+    std::stringstream ss;
+    ss<< v;
+    KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, ss.str()));
 }

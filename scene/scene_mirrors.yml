@@ -15,7 +15,7 @@ entities:
       up: [0, 1, 0]
       front: [0, 0, -1]
       pos: [0, 0, -10]
-      xrotation: [0, 180, 0.0]
+      xxrotation: [0, 180, 0.0]
       default: true
       enabled: true
     controller:
@@ -124,7 +124,7 @@ entities:
   - name: Giant wooden box
     id: e264f27f-d949-4504-b862-583213484d7c
     type: quad
-    xmodel: woodwall
+    xxmodel: woodwall
     material: giant_woodbox
     program: texture
     clone_position: [0, 40, 0]
@@ -183,7 +183,7 @@ materials:
     ns: 51.2
     ka: [0.1923, 0.1923, 0.1923, 1.0]
     kd: [0.5075, 0.5075, 0.5075, 1.0]
-    xkd: [1, 1, 0, 1.0]
+    xxkd: [1, 1, 0, 1.0]
     ks: [0.5083, 0.5083, 0.5083, 1.0]
   - name: skeleton
     type: sprite

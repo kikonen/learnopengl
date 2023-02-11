@@ -13,7 +13,7 @@ namespace {
 
 AssetsFile::AssetsFile(
     const std::string& filename)
-    : filename(filename)
+    : m_filename(filename)
 {
 }
 
@@ -23,7 +23,7 @@ AssetsFile::~AssetsFile()
 
 Assets AssetsFile::load()
 {
-    std::ifstream fin(filename);
+    std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);
 
     Assets assets;
@@ -243,7 +243,7 @@ void AssetsFile::loadAssets(
         else if (k == "mirror_reflection_size") {
             data.mirrorReflectionSize = v.as<int>();
         }
-        else if (k == "mirror_reRefraction_size") {
+        else if (k == "mirror_refraction_size") {
             data.mirrorRefractionSize = v.as<int>();
         }
         else if (k == "water_reflection_size") {
@@ -288,16 +288,17 @@ void AssetsFile::loadAssets(
                 data.viewportEffect = ViewportEffect::sharpen;
             }
             else {
-                std::cout << "UNKNOWN viewport_effect: " << k << "=" << v << "\n";
+                reportUnknown("viewport_effect", k, v);
             }
         }
         else {
-            std::cout << "UNKNOWN ASSETS_ENTRY: " << k << "=" << v << "\n";
+            reportUnknown("asset", k, v);
         }
     }
 }
 
-glm::vec2 AssetsFile::readVec2(const YAML::Node& node) {
+glm::vec2 AssetsFile::readVec2(const YAML::Node& node) const
+{
     std::vector<float> a;
     for (auto& e : node) {
         a.push_back(e.as<float>());
@@ -305,7 +306,8 @@ glm::vec2 AssetsFile::readVec2(const YAML::Node& node) {
     return glm::vec2{ a[0], a[1] };
 }
 
-glm::vec3 AssetsFile::readVec3(const YAML::Node& node) {
+glm::vec3 AssetsFile::readVec3(const YAML::Node& node) const
+{
     std::vector<double> a;
     for (auto& e : node) {
         a.push_back(e.as<double>());
@@ -313,7 +315,8 @@ glm::vec3 AssetsFile::readVec3(const YAML::Node& node) {
     return glm::vec3{ a[0], a[1], a[2] };
 }
 
-glm::vec4 AssetsFile::readVec4(const YAML::Node& node) {
+glm::vec4 AssetsFile::readVec4(const YAML::Node& node) const
+{
     std::vector<double> a;
     for (auto& e : node) {
         a.push_back(e.as<double>());
@@ -321,7 +324,8 @@ glm::vec4 AssetsFile::readVec4(const YAML::Node& node) {
     return glm::vec4{ a[0], a[1], a[2], a[3] };
 }
 
-glm::vec2 AssetsFile::readScale2(const YAML::Node& node) {
+glm::vec2 AssetsFile::readScale2(const YAML::Node& node) const
+{
     std::vector<float> a;
 
     if (node.IsSequence()) {
@@ -336,4 +340,15 @@ glm::vec2 AssetsFile::readScale2(const YAML::Node& node) {
 
     auto scale = node.as<float>();
     return glm::vec3{ scale };
+}
+
+void AssetsFile::reportUnknown(
+    const std::string& scope,
+    const std::string& k,
+    const YAML::Node& v) const
+{
+    std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";
+    std::stringstream ss;
+    ss << v;
+    KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, ss.str()));
 }

@@ -1,6 +1,6 @@
 assets:
   log_file: log/development.log
-  scene_file: scene/scene_origo.yml
+  scene_file: scene/scene_lucy.yml
 
   glfw_swap_interval: 1
   gl_debug: true
@@ -15,13 +15,9 @@ assets:
   shaders_dir: shader
   sprites_dir: sprites
   textures_dir: textures
-  ground_offset: [200, 0, 200]
 
   placeholder_texture_always: false
   placeholder_texture: textures/tiles_1024.png
-
-  ground_offset_nope: [0.0, 15.0, -40.0]
-  xxground_offset: [200, 0, 200]
 
   use_imgui: false
   use_light: true
@@ -43,8 +39,8 @@ assets:
   show_selection_volume: true
   show_highlight: true
   show_selection: true
-  show_cube_map_center: true
-  show_tagged: true
+  show_cube_map_center: false
+  show_tagged: false
 
   rasterizer_discard: false
 
@@ -90,7 +86,7 @@ assets:
   shadow_render_frame_step: 2
 
   mirror_reflection_size: 1024
-  mirror_rdRefraction_size: 1024
+  mirror_refraction_size: 1024
 
   water_reflection_size: 1024
   water_refraction_size: 1024

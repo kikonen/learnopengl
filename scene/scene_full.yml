@@ -3,6 +3,7 @@ name: Full
 viewports:
 skybox:
   program: skybox
+  priority: -100
   material: skybox
 lights: {}
 cube_maps: {}
@@ -228,8 +229,8 @@ entities:
       refraction: 0.05
       refraction_ratio: [1.0, 1.52]
     render_flags:
-      xblend: true
-      xrender_back: true
+      xxblend: true
+      xxrender_back: true
     repeat:
       x_count: 2
       y_count: 1
@@ -597,6 +598,7 @@ entities:
     enabled: true
   - name: Water bottom
     model: quad
+    priority: -10
     material: water_bottom
     program: texture
     pos: [0.0, 3.2, -10.0]
@@ -614,6 +616,7 @@ entities:
     enabled: true
   - name: Water surface
     type: quad
+    priority: -5
     material: water_surface
     program: water
     pos: [0, 9.0, -10]
@@ -652,6 +655,7 @@ entities:
     enabled: true
   - name: Terrain grass
     type: terrain
+    priority: -15
     material: terrain_grass
     program: terrain
     pos: [-400, -32, -400]
@@ -747,6 +751,7 @@ entities:
     enabled: false
   - name: Linden tree forest
     type: billboard
+    priority: 1
     program: texture
     pos: [150, 15.0, 150.0]
     material: linden_tree
@@ -761,6 +766,7 @@ entities:
     enabled: true
   - name: Skeleton army
     type: billboard
+    priority: 1
     program: texture
     pos: [15, 11.5, 60.0]
     material: skeleton
@@ -804,7 +810,7 @@ entities:
       cmd:start(id, { after=wid }, main)
       --main()
   - name: Skeleton single
-    xid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
+    xxid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
     model: quad
     program: texture
     pos: [15, 11.5, 20.0]
@@ -817,7 +823,7 @@ entities:
   - name: Giant wooden box
     id: e264f27f-d949-4504-b862-583213484d7c
     model: quad
-    xmodel: woodwall
+    xxmodel: woodwall
     material: giant_woodbox
     program: texture
     clone_position: [0, 40, 0]
@@ -992,7 +998,7 @@ materials:
     tiling: 2
     texture_spec:
       clamp: GL_REPEAT
-      _pattern: 1
+      xxpattern: 1
   - name: water_bottom
     type: model
     ns: 225
@@ -1021,8 +1027,8 @@ materials:
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: terrain/two-kingdoms_2048.png
     map_height: terrain/mountain_1025_height.png
-    xmap_kd: terrain/terrain_1025_m.png
-    xmap_height: terrain/terrain_1025_height.png
+    xxmap_kd: terrain/terrain_1025_m.png
+    xxmap_height: terrain/terrain_1025_height.png
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: noise_256.png

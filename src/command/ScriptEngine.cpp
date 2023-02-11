@@ -134,7 +134,7 @@ void ScriptEngine::invokeFunction(
     Node* node,
     const std::string& callbackFn)
 {
-    std::cout << "CALL LUA: " << callbackFn << "\n";
+    //std::cout << "CALL LUA: " << callbackFn << "\n";
     sol::table luaNode = m_lua["nodes"][node->m_objectID];
     sol::function fn = luaNode[callbackFn];
     fn(std::ref(node), node->m_objectID);

@@ -41,8 +41,7 @@ int runEngine() {
     return 0;
 }
 
-int main()
-{
+void testVolume() {
     {
         const AABB quad = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
         const auto& min = quad.m_min;
@@ -61,6 +60,11 @@ int main()
 
         std::cout << "CUBE: center={" << center.x << "," << center.x << "," << center.x << "}, radius=" << radius << "\n";
     }
+}
+
+int main()
+{
+    //testVolume();
 
     entt::registry registry;
     Log::init();
