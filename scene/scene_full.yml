@@ -220,7 +220,7 @@ entities:
   - name: EXAMPLE
     model: glass_ball
     program: texture
-    pos: [-1.5, 0.0, -1.5]
+    pos: [-1.5, 5.0, -1.5]
     rotation: [0.0, 0.0, 0.0]
     scale: 1.0
     material: glass_ball
