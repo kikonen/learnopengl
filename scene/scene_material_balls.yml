@@ -2,7 +2,7 @@
 name: Full
 viewports:
 skybox:
-  shader: skybox
+  program: skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -27,7 +27,7 @@ entities:
     enabled: true
   - name: Basic ball
     model: water_ball
-    shader: texture
+    program: texture
     pos: [5.0, 25.0, 5.0]
     scale: 1.3
     material: default_ball
@@ -37,7 +37,7 @@ entities:
     enabled: true
   - name: Gold ball
     model: water_ball
-    shader: texture
+    program: texture
     pos: [5.0, 25.0, 10.0]
     scale: 1.3
     force_material: true
@@ -52,7 +52,7 @@ entities:
     enabled: true
   - name: Silver ball
     model: water_ball
-    shader: texture
+    program: texture
     pos: [5.0, 25.0, 15.0]
     scale: 1.3
     force_material: true
@@ -63,7 +63,7 @@ entities:
   - name: Bronze ball
     parent_id: 82896a38-e5cf-4274-b4be-e79ac8325b65
     model: water_ball
-    shader: texture
+    program: texture
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
     force_material: true

@@ -2,7 +2,7 @@
 name: Full
 viewports:
 skybox:
-  shader: skybox
+  program: skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -15,7 +15,7 @@ entities:
     pos: [-10, 7, -20.0]
     rotation: [0, 180, 0.0]
     scale: 0.8
-    shader: texture
+    program: texture
     render_flags:
       allow_normals: false
     camera:
@@ -30,7 +30,7 @@ entities:
   - name: Water surface
     type: quad
     material: water_surface
-    shader: water
+    program: water
     pos: [0, 5, -10]
     rotation: [270.0, 0.0, 0.0]
     scale: 30

@@ -38,7 +38,7 @@ entities:
   - name: Planet
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
     model: [planet, planet]
-    shader: texture
+    program: texture
     pos: [0, 0, 0]
     scale: 1
     material_modifier:
@@ -48,7 +48,7 @@ entities:
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
     model: [rock, rock]
     instanced: true
-    shader: texture
+    program: texture
     material_modifier:
       reflection: 0.7
     pos: [0, 0, 0]
@@ -61,7 +61,7 @@ entities:
     pos: [0, 25, -40]
     scale: 2.5
     model: light
-    shader: texture
+    program: texture
     render_flags:
       light: true
       no_shadow: true

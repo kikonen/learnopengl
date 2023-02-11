@@ -2,7 +2,7 @@
 name: Full
 viewports:
 skybox:
-  shader: skybox
+  program: skybox
   material: skybox
 lights: {}
 root:
@@ -35,7 +35,7 @@ entities:
     pos: [0, 0, 0]
     scale: 0.5
     model: light
-    shader: light
+    program: light
     render_flags:
       light: true
       no_shadow: true

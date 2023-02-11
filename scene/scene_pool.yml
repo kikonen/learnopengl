@@ -2,7 +2,7 @@
 name: Full
 viewports:
 skybox:
-  shader: skybox
+  program: skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -26,7 +26,7 @@ entities:
     pos: [0, 45, -100]
     scale: 2.5
     model: light
-    shader: texture
+    program: texture
     render_flags:
       light: true
       no_shadow: true
@@ -43,7 +43,7 @@ entities:
   - name: Water bottom
     model: quad
     material: water_bottom
-    shader: texture
+    program: texture
     pos: [0.0, 3.2, -10.0]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
@@ -60,7 +60,7 @@ entities:
   - name: Water surface
     type: quad
     material: water_surface
-    shader: water
+    program: water
     pos: [0, 9.0, -10]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
@@ -79,7 +79,7 @@ entities:
     init_script_file: scripts/cycle_water
   - name: Pool side
     model: pool_brick
-    shader: texture
+    program: texture
     material_modifier:
       tilingX: 30
       tilingY: 2
@@ -98,7 +98,7 @@ entities:
   - name: Terrain grass
     type: terrain
     material: terrain_grass
-    shader: terrain
+    program: terrain
     pos: [-100, -10, -60]
     scale: [100, 1, 100]
     xxrender_flags:

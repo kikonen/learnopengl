@@ -22,7 +22,7 @@ entities:
     enabled: true
   - name: Bunny
     model: bunny
-    shader: texture
+    program: texture
     pos: [0.0, 0.0, 10.0]
     scale: 30.0
     material_modifier:
@@ -36,7 +36,7 @@ entities:
     pos: [0, 25, -40]
     scale: 2.5
     model: light
-    shader: light
+    program: light
     render_flags:
       light: true
       no_shadow: true

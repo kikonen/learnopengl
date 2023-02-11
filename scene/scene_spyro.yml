@@ -16,7 +16,7 @@ entities:
       enabled: true
   - name: Spyro
     model: spyro2
-    shader: texture
+    program: texture
     pos: [0.0, 0.0, 30.0]
     scale: 0.06
     enabled: true

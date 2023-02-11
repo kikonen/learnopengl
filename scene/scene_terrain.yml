@@ -2,7 +2,7 @@
 name: Full
 viewports:
 skybox:
-  shader: skybox
+  program: skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -26,7 +26,7 @@ entities:
     pos: [0, 45, -100]
     scale: 2.5
     model: light
-    shader: texture
+    program: texture
     render_flags:
       light: true
       no_shadow: true
@@ -43,7 +43,7 @@ entities:
   - name: Terrain grass
     type: terrain
     material: terrain_grass
-    shader: terrain
+    program: terrain
     pos: [-100, 0, -100]
     scale: [100, 1, 100]
     xxrender_flags:

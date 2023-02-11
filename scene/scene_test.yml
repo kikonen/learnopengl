@@ -16,7 +16,7 @@ entities:
       enabled: true
   - name: Window 1
     model: window1
-    shader: texture
+    program: texture
     pos: [0.0, 0.0, 8.0]
     render_flags:
       blend: true
@@ -26,7 +26,7 @@ entities:
     pos: [0, 25, -40]
     scale: 2.5
     model: light
-    shader: light
+    program: light
     render_flags:
       light: true
       no_shadow: true

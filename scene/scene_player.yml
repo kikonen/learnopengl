@@ -2,7 +2,7 @@
 name: Full
 viewports:
 skybox:
-  shader: skybox
+  program: skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -12,7 +12,7 @@ entities:
     pos: [0, 0, 0.0]
     rotation: [0, 180, 0.0]
     scale: 1.0
-    shader: texture
+    program: texture
     render_flags:
       allow_normals: false
     camera:
@@ -27,7 +27,7 @@ entities:
     enabled: true
   - name: Four cubes
     model: texture_cube_3
-    shader: texture
+    program: texture
     scale: 1
     enabled: true
     clones:
