@@ -144,7 +144,9 @@ bool WaterMapRenderer::render(
         camera.setZoom(mainCamera->getZoom());
         camera.setRotation(rot);
 
-        RenderContext localCtx("WATER_REFLECT", &ctx, &camera, m_reflectionBuffer->m_spec.width, m_reflectionBuffer->m_spec.height);
+        RenderContext localCtx(
+            "WATER_REFLECT", &ctx, &camera,
+            m_reflectionBuffer->m_spec.width, m_reflectionBuffer->m_spec.height);
 
         localCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
         localCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
@@ -166,17 +168,19 @@ bool WaterMapRenderer::render(
 
     // refraction map
     {
-        glm::vec3 pos = cameraPos;
-        glm::vec3 rot = cameraRot;
+        //glm::vec3 pos = cameraPos;
+        //glm::vec3 rot = cameraRot;
 
         auto& camera = m_cameras[1];
-        camera.setPosition(pos);
+        camera.setPosition(cameraPos);
         camera.setFront(mainCamera->getFront());
         camera.setUp(mainCamera->getUp());
         camera.setZoom(mainCamera->getZoom());
-        camera.setRotation(rot);
+        camera.setRotation(cameraRot);
 
-        RenderContext localCtx("WATER_REFRACT", &ctx, &camera, m_refractionBuffer->m_spec.width, m_refractionBuffer->m_spec.height);
+        RenderContext localCtx(
+            "WATER_REFRACT", &ctx, &camera,
+            m_refractionBuffer->m_spec.width, m_refractionBuffer->m_spec.height);
 
         localCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
         localCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
