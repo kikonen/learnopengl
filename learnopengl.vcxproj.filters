@@ -144,7 +144,7 @@
     <ClCompile Include="src\scene\ParticleSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\Shader.cpp">
+    <ClCompile Include="src\asset\Program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\ShadowBuffer.cpp">
@@ -270,7 +270,7 @@
     <ClCompile Include="src\asset\OBB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\ShaderRegistry.cpp">
+    <ClCompile Include="src\registry\ProgramRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\FrustumNew.cpp">
@@ -479,7 +479,7 @@
     <ClInclude Include="src\scene\ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\Shader.h">
+    <ClInclude Include="src\asset\Program.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\ShadowBuffer.h">
@@ -542,7 +542,7 @@
     <ClInclude Include="src\AssetsFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\ShaderBind.h">
+    <ClInclude Include="src\asset\ProgramBind.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\Volume.h">
@@ -647,7 +647,7 @@
     <ClInclude Include="src\asset\OBB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\ShaderRegistry.h">
+    <ClInclude Include="src\registry\ProgramRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLState.h">

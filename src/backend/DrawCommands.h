@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 
 class FrameBuffer;
-class Shader;
+class Program;
 
 struct GLVertexArray;
 
@@ -18,7 +18,7 @@ namespace backend {
     };
 
     struct DrawEntity {
-        Shader* shader;
+        Program* program;
         GLVertexArray* vao;
         DrawOptions* drawOptions;
         bool allowBlend;

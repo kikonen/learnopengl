@@ -3,13 +3,13 @@
 #include <fmt/format.h>
 
 #include "asset/Assets.h"
-#include "asset/Shader.h"
 #include "asset/SSBO.h"
+#include "asset/Program.h"
 
 #include "util/Util.h"
 
 #include "registry/Registry.h"
-#include "registry/ShaderRegistry.h"
+#include "registry/ProgramRegistry.h"
 
 #include "backend/gl/DrawIndirectParameters.h"
 #include "backend/gl/PerformanceCounters.h"
@@ -47,7 +47,7 @@ namespace backend {
         int candidateRangeCount = rangeCount;
         int commandRangeCount = rangeCount;
 
-        m_cullingCompute = registry->m_shaderRegistry->getComputeShader(CS_FRUSTUM_CULLING);
+        m_cullingCompute = registry->m_programRegistry->getComputeProgram(CS_FRUSTUM_CULLING);
         m_cullingCompute->prepare(assets);
 
         m_commands = std::make_unique<GLCommandQueue>(
@@ -118,11 +118,11 @@ namespace backend {
         m_commands->flush();
 
         // NOTE KI
-        // - bind CS shader
-        // - execute CS shader
+        // - bind CS program
+        // - execute CS program
         // - glMemoryBarrier
-        // - bind draw shader
-        // - execute draw shader
+        // - bind draw program
+        // - execute draw program
 
         constexpr size_t PARAMS_SZ = sizeof(gl::DrawIndirectParameters);
         const size_t paramsOffset = cmdRange.m_index * PARAMS_SZ;
@@ -164,7 +164,7 @@ namespace backend {
 
         bool sameDraw = true;
         if (!cmdRange.empty()) {
-            sameDraw = curr.m_shader == sendRange.m_shader &&
+            sameDraw = curr.m_program == sendRange.m_program &&
                 curr.m_vao == sendRange.m_vao &&
                 curr.m_drawOptions->isSameMultiDraw(*sendRange.m_drawOptions, curr.m_allowBlend);
         }
@@ -254,7 +254,7 @@ namespace backend {
         auto& drawOptions = *drawRange.m_drawOptions;
         auto& state = *drawRange.m_state;
 
-        drawRange.m_shader->bind(state);
+        drawRange.m_program->bind(state);
         state.bindVAO(*drawRange.m_vao);
 
         state.setDepthFunc(drawOptions.depthFunc);

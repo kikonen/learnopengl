@@ -6,8 +6,8 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/ShaderRegistry.h"
 #include "registry/MaterialRegistry.h"
+#include "registry/ProgramRegistry.h"
 
 #include "scene/TextureBuffer.h"
 #include "scene/RenderContext.h"
@@ -79,7 +79,7 @@ void WaterMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         m_reflectionBuffer->m_spec.attachments[0].textureID,
-        m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
+        m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
 
     m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffer.get());
 
@@ -90,7 +90,7 @@ void WaterMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         m_refractionBuffer->m_spec.attachments[0].textureID,
-        m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
+        m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
 
     m_refractionDebugViewport->setSourceFrameBuffer(m_refractionBuffer.get());
 
@@ -226,7 +226,7 @@ void WaterMapRenderer::drawNodes(
     ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [reflect, &ctx, &current](const MeshTypeMap& typeMap) {
-            auto shader = typeMap.begin()->first.type->m_nodeShader;
+            auto program = typeMap.begin()->first.type->m_program;
 
             for (const auto& it : typeMap) {
                 auto& type = *it.first.type;
@@ -239,7 +239,7 @@ void WaterMapRenderer::drawNodes(
 
                 for (auto& node : it.second) {
                     if (node == current) continue;
-                    batch->draw(ctx, *node, shader);
+                    batch->draw(ctx, *node, program);
                 }
             }
         };

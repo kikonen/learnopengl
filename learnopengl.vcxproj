@@ -204,7 +204,7 @@
     <ClCompile Include="src\registry\ModelRegistry.cpp" />
     <ClCompile Include="src\registry\MeshTypeRegistry.cpp" />
     <ClCompile Include="src\registry\Registry.cpp" />
-    <ClCompile Include="src\registry\ShaderRegistry.cpp" />
+    <ClCompile Include="src\registry\ProgramRegistry.cpp" />
     <ClCompile Include="src\asset\FrustumNew.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
     <ClCompile Include="src\asset\SpriteMesh.cpp" />
@@ -278,7 +278,7 @@
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\asset\Material.cpp" />
-    <ClCompile Include="src\asset\Shader.cpp" />
+    <ClCompile Include="src\asset\Program.cpp" />
     <ClCompile Include="src\util\Util.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
     <ClCompile Include="vendor\stb_image\src\stb_image.cpp" />
@@ -343,13 +343,13 @@
     <ClInclude Include="src\asset\Plane.h" />
     <ClInclude Include="src\asset\SpriteMesh.h" />
     <ClInclude Include="src\asset\Volume.h" />
-    <ClInclude Include="src\asset\ShaderBind.h" />
+    <ClInclude Include="src\asset\ProgramBind.h" />
     <ClInclude Include="src\AssetsFile.h" />
     <ClInclude Include="src\registry\EntitySSBO.h" />
     <ClInclude Include="src\registry\EntityRegistry.h" />
     <ClInclude Include="src\registry\ModelRegistry.h" />
     <ClInclude Include="src\registry\MeshTypeRegistry.h" />
-    <ClInclude Include="src\registry\ShaderRegistry.h" />
+    <ClInclude Include="src\registry\ProgramRegistry.h" />
     <ClInclude Include="src\backend\Command.h" />
     <ClInclude Include="src\backend\DrawCommands.h" />
     <ClInclude Include="src\backend\RenderSystem.h" />
@@ -430,7 +430,7 @@
     <ClInclude Include="src\asset\Material.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\asset\Shader.h" />
+    <ClInclude Include="src\asset\Program.h" />
     <ClInclude Include="src\asset\Texture.h" />
     <ClInclude Include="src\asset\Vertex.h" />
     <ClInclude Include="src\SampleApp.h" />

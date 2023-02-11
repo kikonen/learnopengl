@@ -13,7 +13,7 @@
 #include "BatchCommand.h"
 #include "BatchEntry.h"
 
-class Shader;
+class Program;
 class RenderContext;
 class MeshType;
 class Node;
@@ -62,7 +62,7 @@ public:
     void draw(
         const RenderContext& ctx,
         Node& node,
-        Shader* shader);
+        Program* program);
 
     void flush(
         const RenderContext& ctx);
@@ -74,7 +74,7 @@ private:
     void addCommand(
         const RenderContext& ctx,
         MeshType* type,
-        Shader* shader);
+        Program* program);
 
     bool inFrustumZ(
         const RenderContext& ctx,

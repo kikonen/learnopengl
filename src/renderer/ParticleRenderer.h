@@ -17,6 +17,5 @@ public:
         const RenderContext& ctx);
 
 private:
-    Shader* particleShader{ nullptr };
+    Program* particleProgram{ nullptr };
 };
-

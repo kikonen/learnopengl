@@ -109,7 +109,7 @@ constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_UNIT_COU
 #define ASSERT_TEX_UNIT(unitIndex) assert(unitIndex >= FIRST_TEXTURE_UNIT && unitIndex <= LAST_TEXTURE_UNIT)
 
 
-class Shader final
+class Program final
 {
 public:
     void load();
@@ -129,7 +129,7 @@ public:
 
 public:
     // public due to shared_ptr
-    Shader(
+    Program(
         const Assets& assets,
         const std::string& key,
         const std::string& name,
@@ -138,11 +138,11 @@ public:
         const std::map<std::string, std::string>& defines);
 
     // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
-    Shader(const Shader&) = delete;
-    Shader& operator=(const Shader&) = delete;
+    Program(const Program&) = delete;
+    Program& operator=(const Program&) = delete;
 
     // public due to shared_ptr
-    ~Shader();
+    ~Program();
 
     void validateProgram() const;
 
@@ -170,27 +170,6 @@ private:
     GLuint getSubroutineIndex(const std::string& name, GLenum shadertype);
 
 public:
-    //class SubroutineIndex final {
-    //protected:
-    //    SubroutineIndex(const std::string_view& name, GLenum shaderType)
-    //        : m_name(name),
-    //        m_shaderType(shaderType)
-    //    {
-    //    }
-
-    //public:
-    //    void init(Shader* shader) {
-    //        m_index = shader->getSubroutineIndex(m_name, m_shaderType);
-    //    }
-
-    //public:
-    //    const GLenum m_shaderType;
-    //    GLuint m_index = -1;
-
-    //protected:
-    //    const std::string m_name;
-    //};
-
     class Uniform {
     protected:
         // NOTE KI "location=N" is not really feasible due to limitations
@@ -201,9 +180,9 @@ public:
         {}
 
     public:
-        void init(Shader* shader) {
+        void init(Program* program) {
             if (m_locId == -1) {
-                m_locId = shader->getUniformLoc(m_name);
+                m_locId = program->getUniformLoc(m_name);
             }
         }
 
@@ -222,9 +201,9 @@ public:
         {
         }
 
-        void init(Shader* shader) {
+        void init(Program* program) {
             if (m_locId == -1) {
-                m_locId = shader->getUniformSubroutineLoc(m_name, m_shaderType);
+                m_locId = program->getUniformSubroutineLoc(m_name, m_shaderType);
             }
         }
 
@@ -415,7 +394,7 @@ public:
 public:
     const int m_objectID;
 
-    const std::string m_shaderName;
+    const std::string m_programName;
     const std::string m_key;
 
     const bool m_compute;
@@ -424,19 +403,19 @@ public:
     const std::string m_geometryType;
 
     //bool m_bindTexture = false;
-    bool m_selection = false;
+    //bool m_selection = false;
 
     int m_programId = -1;
 
-    //Shader::Mat4 u_projectionMatrix{ "u_projectionMatrix", UNIFORM_PROJECTION_MATRIX };
-    //Shader::Mat4 u_viewMatrix{ "u_viewMatrix", UNIFORM_VIEW_MATRIX };
+    //Program::Mat4 u_projectionMatrix{ "u_projectionMatrix", UNIFORM_PROJECTION_MATRIX };
+    //Program::Mat4 u_viewMatrix{ "u_viewMatrix", UNIFORM_VIEW_MATRIX };
 
-    Shader::UInt u_drawParametersIndex{ "u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX };
+    Program::UInt u_drawParametersIndex{ "u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX };
 
-    Shader::Float u_nearPlane{ "u_nearPlane", UNIFORM_NEAR_PLANE };
-    Shader::Float u_farPlane{ "u_farPlane", UNIFORM_FAR_PLANE };
+    Program::Float u_nearPlane{ "u_nearPlane", UNIFORM_NEAR_PLANE };
+    Program::Float u_farPlane{ "u_farPlane", UNIFORM_FAR_PLANE };
 
-    Shader::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER, UNIFORM_EFFECT };
+    Program::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER, UNIFORM_EFFECT };
 
 private:
     int m_prepareResult = -1;

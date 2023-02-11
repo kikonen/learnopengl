@@ -18,6 +18,5 @@ private:
     void drawNodes(const RenderContext& ctx);
 
 private:
-    Shader* m_normalShader{ nullptr };
+    Program* m_normalProgram{ nullptr };
 };
-

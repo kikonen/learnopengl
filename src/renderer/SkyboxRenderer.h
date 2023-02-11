@@ -17,7 +17,7 @@ class SkyboxRenderer
 {
 public:
     SkyboxRenderer(
-        const std::string& shaderName,
+        const std::string& programName,
         const std::string& materialName);
     ~SkyboxRenderer();
 
@@ -28,9 +28,8 @@ public:
     void bindTexture(const RenderContext& ctx);
 
 private:
-    const std::string m_shaderName;
+    const std::string m_programName;
     const std::string m_materialName;
 
     CubeMap m_cubeMap{ false };
 };
-

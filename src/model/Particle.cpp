@@ -22,7 +22,7 @@
 //    const std::string& path,
 //    const std::string& normalMapPath)
 //{
-//    auto type = std::make_shared<MeshType>(MeshType::nextID(), Shader::getShader(assets, TEX_TEXTURE, ""));
+//    auto type = std::make_shared<MeshType>(MeshType::nextID(), Program::getProgram(assets, TEX_TEXTURE, ""));
 //    type->renderBack = true;
 //
 //    QuadMesh* mesh = new QuadMesh(path);

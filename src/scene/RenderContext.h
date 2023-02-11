@@ -9,7 +9,7 @@
 #include "asset/LightUBO.h"
 
 #include "asset/Assets.h"
-#include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "ki/RenderClock.h"
 #include "kigl/GLState.h"

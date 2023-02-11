@@ -167,7 +167,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
                 close = onRender(clock);
 
-                m_registry->m_shaderRegistry->validate();
+                m_registry->m_programRegistry->validate();
 
                 renderEnd = std::chrono::system_clock::now();
                 renderDuration = renderEnd - renderStart;

@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "scene/FrameBuffer.h"
 
@@ -16,7 +16,7 @@ Viewport::Viewport(
     const glm::vec2& size,
     bool useFrameBuffer,
     unsigned int textureId,
-    Shader* shader,
+    Program* program,
     std::function<void(Viewport&)> binder)
     : m_name(name),
     m_position(pos),
@@ -24,7 +24,7 @@ Viewport::Viewport(
     m_size(size),
     m_useFrameBuffer(useFrameBuffer),
     m_textureId(textureId),
-    m_shader(shader),
+    m_program(program),
     m_binder(binder)
 {
 }
@@ -54,10 +54,10 @@ void Viewport::prepare(const Assets& assets)
     if (m_prepared) return;
     m_prepared = true;
 
-    // NOTE KI no shader VAO/VBO with framebuffer blit
+    // NOTE KI no program VAO/VBO with framebuffer blit
     if (m_useFrameBuffer) return;
 
-    m_shader->prepare(assets);
+    m_program->prepare(assets);
 
     prepareVBO();
 }
@@ -109,12 +109,12 @@ void Viewport::bind(const RenderContext& ctx)
     if (m_useFrameBuffer) return;
     if (m_textureId == 0) return;
 
-    m_shader->bind(ctx.state);
+    m_program->bind(ctx.state);
 
-    //m_shader->viewportTex.set(UNIT_VIEWPORT);
+    //m_program->viewportTex.set(UNIT_VIEWPORT);
     ctx.state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
-    m_shader->u_effect.set((int)m_effect);
+    m_program->u_effect.set((int)m_effect);
 
     ctx.state.bindVAO(m_vao);
 
@@ -123,7 +123,7 @@ void Viewport::bind(const RenderContext& ctx)
 
 void Viewport::unbind(const RenderContext& ctx)
 {
-    //m_shader->unbind();
+    //m_program->unbind();
 }
 
 void Viewport::draw(const RenderContext& ctx)

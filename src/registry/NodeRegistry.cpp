@@ -4,7 +4,7 @@
 
 #include "ki/GL.h"
 
-#include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "component/Light.h"
 #include "component/Camera.h"
@@ -20,7 +20,7 @@
 namespace {
     const NodeVector EMPTY_NODE_LIST;
 
-    const int NULL_SHADER_ID = 0;
+    const int NULL_PROGRAM_ID = 0;
 }
 
 
@@ -272,11 +272,11 @@ void NodeRegistry::bindNode(
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
     const auto& type = node->m_type;
-    auto* shader = type->m_nodeShader;
+    auto* program = type->m_program;
 
     if (type->m_entityType != EntityType::origo) {
-        assert(shader);
-        if (!shader) return;
+        assert(program);
+        if (!program) return;
     }
 
     {
@@ -301,14 +301,19 @@ void NodeRegistry::bindNode(
             map = &invisibleNodes;
 
         // NOTE KI more optimal to not switch between culling mode (=> group by it)
-        const ShaderKey shaderKey(
-            shader ? shader->m_objectID : NULL_SHADER_ID,
+        const ProgramKey programKey(
+            program ? program->m_objectID : NULL_PROGRAM_ID,
+            -type->m_priority,
             type->m_drawOptions);
+
+        KI_INFO_OUT(fmt::format(
+            "REGISTER: {}-{}",
+            program ? program->m_key : "<na>", programKey.str()));
 
         const MeshTypeKey typeKey(type);
 
-        auto& vAll = allNodes[shaderKey][typeKey];
-        auto& vTyped = (*map)[shaderKey][typeKey];
+        auto& vAll = allNodes[programKey][typeKey];
+        auto& vTyped = (*map)[programKey][typeKey];
 
         objectIdToNode[node->m_objectID] = node;
         if (!node->m_id.is_nil()) idToNode[node->m_id] = node;

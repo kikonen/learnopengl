@@ -8,7 +8,7 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-class Shader;
+class Program;
 class RenderContext;
 class FrameBuffer;
 
@@ -22,7 +22,7 @@ public:
         const glm::vec2& size,
         bool useFrameBuffer,
         unsigned int textureId,
-        Shader* shader,
+        Program* program,
         std::function<void(Viewport&)> binder = [](Viewport&) {});
 
     ~Viewport();
@@ -64,7 +64,6 @@ private:
 
     GLuint m_textureId;
 
-    Shader* m_shader{ nullptr };
+    Program* m_program{ nullptr };
     std::function<void(Viewport&)> m_binder;
 };
-

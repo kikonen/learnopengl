@@ -34,9 +34,8 @@ public:
     std::shared_ptr<Viewport> m_debugViewport;
 
 private:
-    Shader* m_idShader{ nullptr };
-    Shader* m_idShaderSprite{ nullptr };
+    Program* m_idProgram{ nullptr };
+    Program* m_idProgramSprite{ nullptr };
 
     std::unique_ptr<TextureBuffer> m_idBuffer{ nullptr };
 };
-

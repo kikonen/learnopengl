@@ -2,7 +2,7 @@
 name: Full
 viewports:
 skybox:
-  shader: skybox
+  program: skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -27,7 +27,7 @@ entities:
     pos: [0, 25, -40]
     scale: 2.5
     model: light
-    shader: light
+    program: light
     render_flags:
       light: true
       no_shadow: true
@@ -52,7 +52,7 @@ entities:
     model: water_ball
     material: silver_ball
     force_material: true
-    shader: texture
+    program: texture
     pos: [0, 1, 0]
     scale: 1.3
     material_modifier:
@@ -60,7 +60,7 @@ entities:
     enabled: false
   - name: Woodcube
     model: texture_cube
-    shader: texture
+    program: texture
     material: woodwall
     force_material: true
     pos: [5.0, 5.0, 5.0]
@@ -68,7 +68,7 @@ entities:
     enabled: false
   - name: Four cubes
     model: texture_cube_3
-    shader: texture
+    program: texture
     scale: 1
     enabled: true
     clones:
@@ -80,7 +80,7 @@ entities:
         rotation: [0, 180, 0]
   - name: Skeleton army
     type: billboard
-    shader: texture
+    program: texture
     pos: [15, 6.5, 20.0]
     material: skeleton
     render_flags:
@@ -101,7 +101,7 @@ entities:
     enabled: true
   - name: Glass ball
     model: glass_ball
-    shader: texture
+    program: texture
     pos: [5.0, 3.0, 0.0]
     scale: 1.3
     material_modifier:
@@ -112,7 +112,7 @@ entities:
   - name: Brick wall
     type: quad
     material: brickwall
-    shader: texture
+    program: texture
     pos: [-5.0, 8.5, 14.0]
     render_flags:
       render_back: true
@@ -123,7 +123,7 @@ entities:
   - name: Wood wall
     type: quad
     material: woodwall
-    shader: texture
+    program: texture
     pos: [-3.0, 8.5, 14.0]
     render_flags:
       render_back: true
@@ -136,7 +136,7 @@ entities:
     type: quad
     xmodel: woodwall
     material: giant_woodbox
-    shader: texture
+    program: texture
     clone_position: [0, 40, 0]
     render_flags:
       render_back: true
@@ -160,7 +160,7 @@ entities:
   - name: Big mirror 1
     type: quad
     material: mirror
-    shader: mirror
+    program: mirror
     pos: [-40.0, 10.0, 10.0]
     rotation: [0.0, 90.0, 0.0]
     scale: 15.0

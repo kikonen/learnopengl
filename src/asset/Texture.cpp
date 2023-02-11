@@ -2,7 +2,7 @@
 
 #include <mutex>
 
-#include "Shader.h"
+#include "Program.h"
 
 #include "TextureUBO.h"
 

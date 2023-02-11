@@ -8,7 +8,7 @@
 #include "ki/uuid.h"
 
 #include "asset/VertexEntry.h"
-#include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "backend/gl/DrawIndirectCommand.h"
 
@@ -187,12 +187,12 @@ void Batch::prepare(
 void Batch::addCommand(
     const RenderContext& ctx,
     MeshType* type,
-    Shader* shader)
+    Program* program)
 {
     auto& cmd = m_batches.emplace_back();
 
     cmd.m_vao = type->m_vao;
-    cmd.m_shader = shader;
+    cmd.m_program = program;
     cmd.m_drawOptions = &type->m_drawOptions;
     cmd.m_index = m_entityIndeces.size();
 }
@@ -200,7 +200,7 @@ void Batch::addCommand(
 void Batch::draw(
     const RenderContext& ctx,
     Node& node,
-    Shader* shader)
+    Program* program)
 {
     const auto type = node.m_type;
 
@@ -213,13 +213,13 @@ void Batch::draw(
         bool change = true;
         if (!m_batches.empty()) {
             auto& top = m_batches.back();
-            change = shader != top.m_shader ||
+            change = program != top.m_program ||
                 type->m_vao != top.m_vao ||
                 !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions, allowBlend);
         }
 
         if (change) {
-            addCommand(ctx, type, shader);
+            addCommand(ctx, type, program);
         }
 
         auto& top = m_batches.back();
@@ -254,7 +254,7 @@ void Batch::flush(
 
         backend::DrawRange drawRange = {
             &ctx.state,
-            curr.m_shader,
+            curr.m_program,
             curr.m_vao,
             curr.m_drawOptions,
             ctx.m_allowBlend,

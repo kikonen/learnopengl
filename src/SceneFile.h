@@ -33,7 +33,7 @@ class AsyncLoader;
 class SceneFile
 {
     struct SkyboxData {
-        std::string shaderName{ "skybox" };
+        std::string programName{ "skybox" };
         std::string materialName{};
 
         bool const valid() {
@@ -168,6 +168,8 @@ class SceneFile
         std::string name;
         std::string desc;
 
+        int priority{ 0 };
+
         // NOTE KI debug only
         std::string id_str;
         // NOTE KI debug only
@@ -179,10 +181,10 @@ class SceneFile
         std::string meshName;
         std::string meshPath;
 
-        std::string shaderName{};
+        std::string programName{};
         std::string geometryType;
 
-        std::map<std::string, std::string> shaderDefinitions{};
+        std::map<std::string, std::string> programDefinitions{};
         std::map<const std::string, bool> renderFlags{};
         glm::vec3 position{ 0.f };
         glm::vec3 rotation{ 0.f };

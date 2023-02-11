@@ -1,6 +1,6 @@
 #include "QuadMaterialInit.h"
 
-#include "Shader.h"
+#include "Program.h"
 #include "ModelMesh.h"
 #include "MaterialVBO.h"
 #include "QuadMesh.h"

@@ -4,7 +4,7 @@
 
 #include "asset/Assets.h"
 
-#include "registry/ShaderRegistry.h"
+#include "registry/ProgramRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MeshTypeRegistry.h"
@@ -23,7 +23,7 @@ public:
     void prepare();
 
 public:
-    std::unique_ptr<ShaderRegistry> m_shaderRegistry;
+    std::unique_ptr<ProgramRegistry> m_programRegistry;
 
     std::unique_ptr<MaterialRegistry> m_materialRegistry;
     std::unique_ptr<MeshTypeRegistry> m_typeRegistry;

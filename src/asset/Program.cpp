@@ -1,4 +1,4 @@
-#include "Shader.h"
+#include "Program.h"
 
 #include <fstream>
 #include <sstream>
@@ -16,7 +16,7 @@
 #include "asset/LightUBO.h"
 #include "asset/TextureUBO.h"
 
-#include "ShaderBind.h"
+#include "ProgramBind.h"
 
 namespace {
     constexpr int LOG_SIZE = 4096;
@@ -38,7 +38,7 @@ namespace {
     }
 }
 
-Shader::Shader(
+Program::Program(
     const Assets& assets,
     const std::string& key,
     const std::string& name,
@@ -48,7 +48,7 @@ Shader::Shader(
     : m_objectID(nextID()),
     assets(assets),
     m_key(key),
-    m_shaderName(name),
+    m_programName(name),
     m_compute(compute),
     m_geometryType(geometryType),
     m_defines(defines)
@@ -88,28 +88,28 @@ Shader::Shader(
     }
 }
 
-Shader::~Shader()
+Program::~Program()
 {
-    KI_INFO(fmt::format("DELETE: shader={}", m_key));
+    KI_INFO(fmt::format("DELETE: program={}", m_key));
     if (m_programId != -1) {
         glDeleteProgram(m_programId);
     }
 }
 
-void Shader::bind(GLState& state) const noexcept
+void Program::bind(GLState& state) const noexcept
 {
     assert(m_prepared);
     state.useProgram(m_programId);
 }
 
-void Shader::load()
+void Program::load()
 {
     for (auto& [type, path] : m_paths) {
         m_sources[type] = loadSource(path, !m_required[type]);
     }
 }
 
-int Shader::prepare(const Assets& assets)
+int Program::prepare(const Assets& assets)
 {
     if (m_prepared) return m_prepareResult;
     m_prepared = true;
@@ -123,7 +123,7 @@ int Shader::prepare(const Assets& assets)
     return m_prepareResult;
 }
 
-GLint Shader::getUniformLoc(const std::string& name)
+GLint Program::getUniformLoc(const std::string& name)
 {
     const auto& e = m_uniformLocations.find(name);
     if (e != m_uniformLocations.end()) {
@@ -134,13 +134,13 @@ GLint Shader::getUniformLoc(const std::string& name)
     m_uniformLocations[name] = vi;
     if (vi < 0) {
         KI_DEBUG(fmt::format(
-            "SHADER::MISSING_UNIFORM: {} - uniform={}",
-            m_shaderName, name));
+            "PROGRAM::MISSING_UNIFORM: {} - uniform={}",
+            m_programName, name));
     }
     return vi;
 }
 
-GLuint Shader::getUniformSubroutineLoc(const std::string& name, GLenum shaderType)
+GLuint Program::getUniformSubroutineLoc(const std::string& name, GLenum shaderType)
 {
     auto& map = m_subroutineLocations[shaderType];
     const auto& e = map.find(name);
@@ -152,13 +152,13 @@ GLuint Shader::getUniformSubroutineLoc(const std::string& name, GLenum shaderTyp
     map[name] = vi;
     if (vi < 0) {
         KI_DEBUG(fmt::format(
-            "SHADER::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
-            m_shaderName, shaderType, name));
+            "PROGRAM::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
+            m_programName, shaderType, name));
     }
     return vi;
 }
 
-GLuint Shader::getSubroutineIndex(const std::string& name, GLenum shaderType)
+GLuint Program::getSubroutineIndex(const std::string& name, GLenum shaderType)
 {
     auto& map = m_subroutineIndeces[shaderType];
     const auto& e = map.find(name);
@@ -170,13 +170,13 @@ GLuint Shader::getSubroutineIndex(const std::string& name, GLenum shaderType)
     map[name] = vi;
     if (vi < 0) {
         KI_DEBUG(fmt::format(
-            "SHADER::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
-            m_shaderName, shaderType, name));
+            "PROGRAM::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
+            m_programName, shaderType, name));
     }
     return vi;
 }
 
-int Shader::compileSource(
+int Program::compileSource(
     GLenum shaderType,
     const std::string& shaderPath,
     const std::string& source)
@@ -198,8 +198,8 @@ int Shader::compileSource(
             char infoLog[LOG_SIZE];
             glGetShaderInfoLog(shaderId, LOG_SIZE, NULL, infoLog);
             KI_ERROR(fmt::format(
-                "SHADER:::COMPILE_FAILED[{:#04x}] SHADER={}\nPATH={}\n{}",
-                shaderType, m_shaderName, shaderPath, infoLog));
+                "PROGRAM:::SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}\nPATH={}\n{}",
+                shaderType, m_programName, shaderPath, infoLog));
             KI_ERROR(fmt::format(
                 "FAILED_SOURCE:\n-------------------\n{}\n-------------------",
                 source));
@@ -208,8 +208,8 @@ int Shader::compileSource(
             shaderId = -1;
 
             const auto msg = fmt::format(
-                "SHADER:::COMPILE_FAILED[{:#04x}] SHADER={}, PATH={}",
-                shaderType, m_shaderName, shaderPath);
+                "PROGRAM:::SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}, PATH={}",
+                shaderType, m_programName, shaderPath);
             throw std::runtime_error{ msg };
         }
     }
@@ -217,7 +217,7 @@ int Shader::compileSource(
     return shaderId;
 }
 
-int Shader::createProgram() {
+int Program::createProgram() {
     // build and compile our shader program
     // ------------------------------------
     std::map<GLenum, GLuint> shaderIds;
@@ -244,8 +244,8 @@ int Shader::createProgram() {
                 char infoLog[LOG_SIZE];
                 glGetProgramInfoLog(m_programId, LOG_SIZE, NULL, infoLog);
                 const auto msg = fmt::format(
-                    "SHADER::PROGRAM::LINKING_FAILED shader={}\n{}",
-                    m_shaderName, infoLog);
+                    "PROGRAM::PROGRAM::LINKING_FAILED program={}\n{}",
+                    m_programName, infoLog);
                 KI_ERROR(msg);
 
                 glDeleteProgram(m_programId);
@@ -268,7 +268,7 @@ int Shader::createProgram() {
 }
 
 // https://community.khronos.org/t/samplers-of-different-types-use-the-same-textur/66329/4
-void Shader::validateProgram() const {
+void Program::validateProgram() const {
     if (m_programId == -1) return;
     glValidateProgram(m_programId);
 
@@ -279,8 +279,8 @@ void Shader::validateProgram() const {
         glGetProgramInfoLog(m_programId, LOG_SIZE, NULL, infoLog);
 
         const auto msg = fmt::format(
-            "SHADER::PROGRAM::VALIDATE_FAILED shader={}\n{}",
-            m_shaderName, infoLog);
+            "PROGRAM::PROGRAM::VALIDATE_FAILED program={}\n{}",
+            m_programName, infoLog);
 
         KI_ERROR(msg);
 
@@ -288,11 +288,11 @@ void Shader::validateProgram() const {
     }
 }
 
-int Shader::initProgram() {
-    KI_INFO_OUT(fmt::format("[SHADER - {}]", m_key));
+int Program::initProgram() {
+    KI_INFO_OUT(fmt::format("[PROGRAM - {}]", m_key));
 
 #ifdef _DEBUG
-    // NOTE KI set UBOs only once for shader
+    // NOTE KI set UBOs only once for program
     setupUBO("Matrices", UBO_MATRICES, sizeof(MatricesUBO));
     setupUBO("Data", UBO_DATA, sizeof(DataUBO));
     setupUBO("Lights", UBO_LIGHTS, sizeof(LightsUBO));
@@ -306,14 +306,14 @@ int Shader::initProgram() {
     return 0;
 }
 
-void Shader::appendDefines(std::vector<std::string>& lines)
+void Program::appendDefines(std::vector<std::string>& lines)
 {
     for (const auto& [key, value] : m_defines) {
         lines.push_back(fmt::format("#define {} {}",key, value));
     }
 }
 
-void Shader::setInt(const std::string& name, int value) noexcept
+void Program::setInt(const std::string& name, int value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
@@ -321,7 +321,7 @@ void Shader::setInt(const std::string& name, int value) noexcept
     }
 }
 
-void Shader::setupUBO(
+void Program::setupUBO(
     const char* name,
     unsigned int ubo,
     unsigned int expectedSize)
@@ -332,8 +332,8 @@ void Shader::setupUBO(
     unsigned int blockIndex = glGetUniformBlockIndex(m_programId, name);
     if (blockIndex == GL_INVALID_INDEX) {
         KI_WARN(fmt::format(
-            "SHADER::MISSING_UBO shader={}, UBO={}",
-            m_shaderName, name));
+            "PROGRAM::MISSING_UBO program={}, UBO={}",
+            m_programName, name));
         return;
     }
     //glUniformBlockBinding(m_programId, blockIndex, ubo);
@@ -342,8 +342,8 @@ void Shader::setupUBO(
     glGetActiveUniformBlockiv(m_programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
 
     KI_INFO(fmt::format(
-        "SHADER::UBO_SIZE shader={}, UBO={}, size={}, expected_size={}",
-        m_shaderName, name, blockSize, expectedSize));
+        "PROGRAM::UBO_SIZE program={}, UBO={}, size={}, expected_size={}",
+        m_programName, name, blockSize, expectedSize));
 
     if (blockSize != expectedSize) {
         for (const auto& [k, v] : m_defines) {
@@ -351,8 +351,8 @@ void Shader::setupUBO(
         }
 
         const auto msg = fmt::format(
-            "SHADER::UBO_SIZE shader={}. UBO={}. size={}. expected_size={}",
-            m_shaderName, name, blockSize, expectedSize);
+            "PROGRAM::UBO_SIZE program={}. UBO={}. size={}. expected_size={}",
+            m_programName, name, blockSize, expectedSize);
 
         KI_CRITICAL(msg);
         __debugbreak();
@@ -364,7 +364,7 @@ void Shader::setupUBO(
 /**
 * Load shader file
 */
-std::string Shader::loadSource(
+std::string Program::loadSource(
     const std::string& path,
     bool optional)
 {
@@ -385,7 +385,7 @@ std::string Shader::loadSource(
 /**
 * Load shader file
 */
-std::vector<std::string> Shader::loadSourceLines(
+std::vector<std::string> Program::loadSourceLines(
     const std::string& path,
     bool optional)
 {
@@ -443,13 +443,13 @@ std::vector<std::string> Shader::loadSourceLines(
     catch (std::ifstream::failure e) {
         if (!optional) {
             KI_ERROR(fmt::format(
-                "SHADER::FILE_NOT_SUCCESFULLY_READ shader={}, path={}",
-                m_shaderName, path));
+                "PROGRAM::FILE_NOT_SUCCESFULLY_READ program={}, path={}",
+                m_programName, path));
         }
         else {
             KI_DEBUG(fmt::format(
-                "SHADER::FILE_NOT_SUCCESFULLY_READ shader={}, path={}",
-                m_shaderName, path));
+                "PROGRAM::FILE_NOT_SUCCESFULLY_READ program={}, path={}",
+                m_programName, path));
         }
         throw;
     }
@@ -457,7 +457,7 @@ std::vector<std::string> Shader::loadSourceLines(
     return lines;
 }
 
-std::vector<std::string> Shader::processInclude(
+std::vector<std::string> Program::processInclude(
     const std::string& includePath,
     int lineNumber)
 {
@@ -479,4 +479,3 @@ std::vector<std::string> Shader::processInclude(
 
     return result;
 }
-

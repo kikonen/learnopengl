@@ -19,8 +19,8 @@ void NormalRenderer::prepare(
 
     Renderer::prepare(assets, registry);
 
-    m_normalShader = m_registry->m_shaderRegistry->getShader(TEX_NORMAL);
-    m_normalShader->prepare(assets);
+    m_normalProgram = m_registry->m_programRegistry->getProgram(TEX_NORMAL);
+    m_normalProgram->prepare(assets);
 }
 
 void NormalRenderer::render(
@@ -31,16 +31,16 @@ void NormalRenderer::render(
 
 void NormalRenderer::drawNodes(const RenderContext& ctx)
 {
-    auto shader = m_normalShader;
+    auto program = m_normalProgram;
 
-    auto renderTypes = [this, &ctx, &shader](const MeshTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, &program](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
             auto& type = *it.first.type;
             auto& batch = ctx.m_batch;
 
             for (auto& node : it.second) {
                 if (!node->m_allowNormals) continue;
-                batch->draw(ctx, *node, shader);
+                batch->draw(ctx, *node, program);
             }
         }
     };

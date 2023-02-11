@@ -37,9 +37,8 @@ private:
     float m_farPlane = 1000.f;
     float m_frustumSize = 100.f;
 
-    Shader* m_shadowShader{ nullptr };
-    //Shader* m_solidShadowShader{ nullptr };
-    //Shader* m_blendedShadowShader{ nullptr };
-    Shader* m_shadowDebugShader{ nullptr };
+    Program* m_shadowProgram{ nullptr };
+    //Program* m_solidShadowProgram{ nullptr };
+    //Program* m_blendedShadowProgram{ nullptr };
+    Program* m_shadowDebugProgram{ nullptr };
 };
-

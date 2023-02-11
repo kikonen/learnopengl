@@ -15,7 +15,7 @@
 #include "DrawOptions.h"
 
 class Assets;
-class Shader;
+class Program;
 class Registry;
 
 namespace backend {
@@ -59,7 +59,7 @@ namespace backend {
 
         bool m_bound = false;
 
-        Shader* m_cullingCompute{ nullptr };
+        Program* m_cullingCompute{ nullptr };
 
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
 

@@ -1,6 +1,6 @@
 #include "ObjectIdRenderer.h"
 
-#include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "component/Camera.h"
 #include "scene/RenderContext.h"
@@ -87,11 +87,11 @@ void ObjectIdRenderer::prepare(
 
     Renderer::prepare(assets, registry);
 
-    m_idShader = m_registry->m_shaderRegistry->getShader(TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
-    m_idShader->prepare(assets);
+    m_idProgram = m_registry->m_programRegistry->getProgram(TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
+    m_idProgram->prepare(assets);
 
-    m_idShaderSprite = m_registry->m_shaderRegistry->getShader(TEX_OBJECT_ID_SPRITE, { { DEF_USE_ALPHA, "1"} });
-    m_idShaderSprite->prepare(assets);
+    m_idProgramSprite = m_registry->m_programRegistry->getProgram(TEX_OBJECT_ID_SPRITE, { { DEF_USE_ALPHA, "1"} });
+    m_idProgramSprite->prepare(assets);
 
     m_debugViewport = std::make_shared<Viewport>(
         "ObjectID",
@@ -101,7 +101,7 @@ void ObjectIdRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         0,
-        m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
+        m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
 
     m_debugViewport->prepare(assets);
 }
@@ -156,15 +156,15 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
                 auto& type = *it.first.type;
                 if (type.m_flags.noSelect) continue;
 
-                auto shader = m_idShader;
+                auto program = m_idProgram;
                 if (type.m_entityType == EntityType::sprite) {
-                    shader = m_idShaderSprite;
+                    program = m_idProgramSprite;
                 }
 
                 auto& batch = ctx.m_batch;
 
                 for (auto& node : it.second) {
-                    batch->draw(ctx, *node, shader);
+                    batch->draw(ctx, *node, program);
                 }
             }
         };

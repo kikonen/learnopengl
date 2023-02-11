@@ -5,7 +5,7 @@
 #include "scene/Batch.h"
 
 #include "registry/Registry.h"
-#include "registry/ShaderRegistry.h"
+#include "registry/ProgramRegistry.h"
 
 #include "model/Particle.h"
 
@@ -21,8 +21,8 @@ void ParticleSystem::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    particleShader = registry->m_shaderRegistry->getShader(TEX_PARTICLE, {});
-    particleShader->prepare(assets);
+    particleProgram = registry->m_programRegistry->getProgram(TEX_PARTICLE, {});
+    particleProgram->prepare(assets);
 }
 
 void ParticleSystem::update(const RenderContext& ctx)
@@ -39,14 +39,14 @@ void ParticleSystem::render(const RenderContext& ctx)
     ctx.state.disable(GL_CULL_FACE);
 
     for (auto& w : particles) {
-        //Shader* shader;// = t->bind(ctx, nullptr);
-        //if (!shader) continue;
-        //shader->shadowMap.set(assets.shadowMapUnitIndex);
+        //Program* program;// = t->bind(ctx, nullptr);
+        //if (!program) continue;
+        //program->shadowMap.set(assets.shadowMapUnitIndex);
 
         //Batch& batch = t->batch;
-        //batch.bind(ctx, shader);
+        //batch.bind(ctx, program);
 
-        //batch.draw(ctx, e, shader);
+        //batch.draw(ctx, e, program);
     }
 
     ctx.bindDefaults();

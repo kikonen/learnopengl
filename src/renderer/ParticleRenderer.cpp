@@ -1,6 +1,6 @@
 #include "ParticleRenderer.h"
 
-#include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -18,8 +18,8 @@ void ParticleRenderer::prepare(
 
     Renderer::prepare(assets, registry);
 
-    particleShader = m_registry->m_shaderRegistry->getShader(TEX_PARTICLE);
-    particleShader->prepare(assets);
+    particleProgram = m_registry->m_programRegistry->getProgram(TEX_PARTICLE);
+    particleProgram->prepare(assets);
 }
 
 void ParticleRenderer::update(const RenderContext& ctx)

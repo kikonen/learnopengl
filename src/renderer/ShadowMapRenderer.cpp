@@ -1,6 +1,6 @@
 #include "ShadowMapRenderer.h"
 
-#include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "component/Light.h"
 
@@ -47,15 +47,15 @@ void ShadowMapRenderer::prepare(
     m_farPlane = assets.shadowFarPlane;
     m_frustumSize = assets.shadowFrustumSize;
 
-    m_shadowShader = m_registry->m_shaderRegistry->getShader(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
-    //m_solidShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH);
-    //m_blendedShadowShader = shaders.getShader(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
-    m_shadowDebugShader = m_registry->m_shaderRegistry->getShader(TEX_DEBUG_DEPTH);
+    m_shadowProgram = m_registry->m_programRegistry->getProgram(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    //m_solidShadowProgram = programs.getProgram(TEX_SIMPLE_DEPTH);
+    //m_blendedShadowProgram = programs.getProgram(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    m_shadowDebugProgram = m_registry->m_programRegistry->getProgram(TEX_DEBUG_DEPTH);
 
-    m_shadowShader->prepare(assets);
-    //m_solidShadowShader->prepare(assets);
-    //m_blendedShadowShader->prepare(assets);
-    m_shadowDebugShader->prepare(assets);
+    m_shadowProgram->prepare(assets);
+    //m_solidShadowProgram->prepare(assets);
+    //m_blendedShadowProgram->prepare(assets);
+    m_shadowDebugProgram->prepare(assets);
 
     auto buffer = new ShadowBuffer({
         assets.shadowMapSize, assets.shadowMapSize,
@@ -72,10 +72,10 @@ void ShadowMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         false,
         m_shadowBuffer->m_spec.attachments[0].textureID,
-        m_shadowDebugShader,
+        m_shadowDebugProgram,
         [this, &assets](Viewport& vp) {
-            m_shadowDebugShader->u_nearPlane.set(m_nearPlane);
-            m_shadowDebugShader->u_farPlane.set(m_farPlane);
+            m_shadowDebugProgram->u_nearPlane.set(m_nearPlane);
+            m_shadowDebugProgram->u_farPlane.set(m_farPlane);
         });
 
     m_debugViewport->prepare(assets);
@@ -141,7 +141,7 @@ bool ShadowMapRenderer::render(
 void ShadowMapRenderer::drawNodes(
     const RenderContext& ctx)
 {
-    auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap, Shader* shader) {
+    auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap, Program* program) {
         for (const auto& it : typeMap) {
             auto& type = *it.first.type;
             auto& batch = ctx.m_batch;
@@ -149,13 +149,13 @@ void ShadowMapRenderer::drawNodes(
             if (type.m_flags.noShadow) continue;
 
             for (auto& node : it.second) {
-                batch->draw(ctx, *node, shader);
+                batch->draw(ctx, *node, program);
             }
         }
     };
 
     for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
-        renderTypes(all.second, m_shadowShader);
+        renderTypes(all.second, m_shadowProgram);
     }
 
     ctx.m_batch->flush(ctx);

@@ -5,6 +5,8 @@
 #include <mutex>
 #include <tuple>
 
+#include <fmt/format.h>
+
 #include <ki/uuid.h>
 
 #include "backend/DrawOptions.h"
@@ -20,25 +22,37 @@ class Registry;
 class SkyboxRenderer;
 
 //
-// NOTE KI shader key is REQUIRED for sorting "gull back face" draws
+// NOTE KI program key is REQUIRED for sorting "gull back face" draws
 // next to each other to avoid redundant state changes
 // => relies into fact that std::map is sorted by this
 //
- struct ShaderKey {
-    ShaderKey(int shaderID, const backend::DrawOptions& drawOptions) noexcept
-        : shaderID(shaderID),
+ struct ProgramKey {
+    ProgramKey(
+        int programID,
+        int typePriority,
+        const backend::DrawOptions& drawOptions) noexcept
+        : programID(programID),
+        typePriority(typePriority),
         renderBack(drawOptions.renderBack),
         wireframe(drawOptions.wireframe)
     {};
 
-    bool operator<(const ShaderKey & o) const noexcept {
-        // NOTE KI renderBack & wireframe goes into separate render always due to GL state
-        // => reduce state changes via sorting
-        return std::tie(shaderID, renderBack, wireframe) <
-            std::tie(o.shaderID, o.renderBack, o.wireframe);
+    const std::string str() const noexcept
+    {
+        return fmt::format(
+            "<PROGRAM_KEY: id={}, pri={}, renderBack={}, wireframe={}>",
+            programID, typePriority, renderBack, wireframe);
     }
 
-    const int shaderID;
+    bool operator<(const ProgramKey & o) const noexcept {
+        // NOTE KI renderBack & wireframe goes into separate render always due to GL state
+        // => reduce state changes via sorting
+        return std::tie(typePriority, programID, renderBack, wireframe) <
+            std::tie(o.typePriority, o.programID, o.renderBack, o.wireframe);
+    }
+
+    const int typePriority;
+    const int programID;
     const bool renderBack;
     const bool wireframe;
 };
@@ -60,7 +74,7 @@ using GroupVector = std::vector<Group*>;
 
 using NodeVector = std::vector<Node*>;
 using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
-using ShaderTypeMap = std::map<ShaderKey, MeshTypeMap>;
+using ProgramTypeMap = std::map<ProgramKey, MeshTypeMap>;
 
 using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
 
@@ -145,11 +159,11 @@ public:
     std::map<int, Node*> objectIdToNode;
     std::map<uuids::uuid, Node*> idToNode;
 
-    ShaderTypeMap allNodes;
-    ShaderTypeMap solidNodes;
-    ShaderTypeMap alphaNodes;
-    ShaderTypeMap blendedNodes;
-    ShaderTypeMap invisibleNodes;
+    ProgramTypeMap allNodes;
+    ProgramTypeMap solidNodes;
+    ProgramTypeMap alphaNodes;
+    ProgramTypeMap blendedNodes;
+    ProgramTypeMap invisibleNodes;
 
     ViewportVector viewports;
 

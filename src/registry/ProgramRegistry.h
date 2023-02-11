@@ -2,28 +2,28 @@
 
 #include <mutex>
 
-#include "asset/Shader.h"
+#include "asset/Program.h"
 
-class ShaderRegistry final
+class ProgramRegistry final
 {
 public:
-    ShaderRegistry(
+    ProgramRegistry(
         const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive);
 
-    ~ShaderRegistry();
+    ~ProgramRegistry();
 
-    Shader* getShader(
+    Program* getProgram(
         const std::string& name);
 
-    Shader* getShader(
+    Program* getProgram(
         const std::string& name,
         const std::map<std::string, std::string>& defines);
 
-    Shader* getComputeShader(
+    Program* getComputeProgram(
         const std::string& name);
 
-    Shader* getShader(
+    Program* getProgram(
         const std::string& name,
         const bool compute,
         const std::string& geometryType,
@@ -37,7 +37,7 @@ private:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     // name + geom
-    std::map<std::string, std::unique_ptr<Shader>> m_shaders;
+    std::map<std::string, std::unique_ptr<Program>> m_programs;
 
-    std::mutex m_shaders_lock;
+    std::mutex m_programs_lock;
 };

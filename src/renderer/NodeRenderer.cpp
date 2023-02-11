@@ -1,6 +1,6 @@
 #include "NodeRenderer.h"
 
-#include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -30,13 +30,13 @@ void NodeRenderer::prepare(
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
 
-    m_selectionShader = m_registry->m_shaderRegistry->getShader(TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
-    m_selectionShader->m_selection = true;
-    m_selectionShader->prepare(assets);
+    m_selectionProgram = m_registry->m_programRegistry->getProgram(TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
+    //m_selectionProgram->m_selection = true;
+    m_selectionProgram->prepare(assets);
 
-    m_selectionShaderSprite = m_registry->m_shaderRegistry->getShader(TEX_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
-    m_selectionShaderSprite->m_selection = true;
-    m_selectionShaderSprite->prepare(assets);
+    m_selectionProgramSprite = m_registry->m_programRegistry->getProgram(TEX_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
+    //m_selectionProgramSprite->m_selection = true;
+    m_selectionProgramSprite->prepare(assets);
 }
 
 void NodeRenderer::update(const RenderContext& ctx)
@@ -57,7 +57,7 @@ void NodeRenderer::render(
 
     {
         // NOTE KI multitarget *WAS* just to support ObjectID, which is now separate renderer
-        // => If shader needs it need to define some logic
+        // => If program needs it need to define some logic
         int bufferCount = 1;
 
         GLenum buffers[] = {
@@ -145,7 +145,7 @@ void NodeRenderer::drawNodes(
     bool selection)
 {
     auto renderTypes = [this, &ctx, &selection](const MeshTypeMap& typeMap) {
-        auto shader = typeMap.begin()->first.type->m_nodeShader;
+        auto program = typeMap.begin()->first.type->m_program;
 
         for (const auto& it : typeMap) {
             auto& type = *it.first.type;
@@ -163,7 +163,7 @@ void NodeRenderer::drawNodes(
                     if (highlight) continue;
                 }
 
-                batch->draw(ctx, *node, shader);
+                batch->draw(ctx, *node, program);
             }
         }
     };
@@ -192,15 +192,15 @@ void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
             auto& type = *it.first.type;
             auto& batch = ctx.m_batch;
 
-            auto shader = m_selectionShader;
+            auto program = m_selectionProgram;
             if (type.m_entityType == EntityType::sprite) {
-                shader = m_selectionShaderSprite;
+                program = m_selectionProgramSprite;
             }
 
             for (auto& node : it.second) {
                 if (!(node->isHighlighted())) continue;
 
-                batch->draw(ctx, *node, shader);
+                batch->draw(ctx, *node, program);
             }
         }
     };
@@ -236,13 +236,13 @@ void NodeRenderer::drawBlended(
         }
     }
 
-    // NOTE KI blending is *NOT* optimal shader / nodetypw wise due to depth sorting
+    // NOTE KI blending is *NOT* optimal program / nodetypw wise due to depth sorting
     // NOTE KI order = from furthest away to nearest
     for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
         auto* node = it->second;
-        auto* shader = node->m_type->m_nodeShader;
+        auto* program = node->m_type->m_program;
 
-        ctx.m_batch->draw(ctx, *node, shader);
+        ctx.m_batch->draw(ctx, *node, program);
     }
 
     // TODO KI if no flush here then render order of blended nodes is incorrect

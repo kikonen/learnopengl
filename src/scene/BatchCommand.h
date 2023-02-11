@@ -7,12 +7,12 @@
 #include "backend/DrawOptions.h"
 
 
-class Shader;
+class Program;
 class MaterialVBO;
 
 
 struct BatchCommand {
-    const Shader* m_shader{ nullptr };
+    const Program* m_program{ nullptr };
     //MeshType* m_type{ nullptr };
 
     const GLVertexArray* m_vao{ nullptr };

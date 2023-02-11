@@ -248,7 +248,7 @@ void CubeMapRenderer::drawNodes(
     const Node* centerNode)
 {
     auto renderTypes = [&ctx, &centerNode](const MeshTypeMap& typeMap) {
-        auto shader = typeMap.begin()->first.type->m_nodeShader;
+        auto program = typeMap.begin()->first.type->m_program;
 
         for (const auto& it : typeMap) {
             auto& type = *it.first.type;
@@ -261,7 +261,7 @@ void CubeMapRenderer::drawNodes(
                 // => i.e. show garbage from old render round and such
                 if (node == centerNode) continue;
 
-                batch->draw(ctx, *node, shader);
+                batch->draw(ctx, *node, program);
             }
         }
     };

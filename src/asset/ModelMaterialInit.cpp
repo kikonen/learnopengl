@@ -1,6 +1,6 @@
 #include "ModelMaterialInit.h"
 
-#include "Shader.h"
+#include "asset/Program.h"
 #include "ModelMesh.h"
 #include "MaterialVBO.h"
 

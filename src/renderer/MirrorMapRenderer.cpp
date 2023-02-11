@@ -89,7 +89,7 @@ void MirrorMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         0,
-        m_registry->m_shaderRegistry->getShader(TEX_VIEWPORT));
+        m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
 
     m_debugViewport->prepare(assets);
 }
@@ -209,7 +209,7 @@ void MirrorMapRenderer::drawNodes(
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         auto renderTypes = [&ctx, &current](const MeshTypeMap& typeMap) {
-            auto shader = typeMap.begin()->first.type->m_nodeShader;
+            auto program = typeMap.begin()->first.type->m_program;
 
             for (const auto& it : typeMap) {
                 auto& type = *it.first.type;
@@ -219,7 +219,7 @@ void MirrorMapRenderer::drawNodes(
 
                 for (auto& node : it.second) {
                     if (node == current) continue;
-                    batch->draw(ctx, *node, shader);
+                    batch->draw(ctx, *node, program);
                 }
             }
         };

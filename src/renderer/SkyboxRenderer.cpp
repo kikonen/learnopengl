@@ -8,9 +8,9 @@
 
 
 SkyboxRenderer::SkyboxRenderer(
-    const std::string& shaderName,
+    const std::string& programName,
     const std::string& materialName)
-    : m_shaderName(shaderName),
+    : m_programName(programName),
     m_materialName(materialName)
 {
 }

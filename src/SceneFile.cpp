@@ -13,7 +13,7 @@
 #include "asset/Material.h"
 #include "asset/QuadMesh.h"
 #include "asset/SpriteMesh.h"
-#include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "component/Light.h"
 #include "component/Camera.h"
@@ -114,6 +114,8 @@ void SceneFile::attachSkybox(
     if (!data.valid()) return;
 
     auto type = m_registry->m_typeRegistry->getType("<skybox>");
+    type->m_priority = -10;
+
     auto future = m_registry->m_modelRegistry->getMesh(
         SKYBOX_MESH_NAME);
     auto* mesh = future.get();
@@ -133,12 +135,12 @@ void SceneFile::attachSkybox(
 
     type->m_drawOptions.depthFunc = GL_LEQUAL;
 
-    type->m_nodeShader = m_registry->m_shaderRegistry->getShader(data.shaderName);
+    type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
 
     auto node = new Node(type);
     node->m_parentId = root.base.id;
 
-    auto skybox = std::make_unique<SkyboxRenderer>(data.shaderName, data.materialName);
+    auto skybox = std::make_unique<SkyboxRenderer>(data.programName, data.materialName);
     m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
     m_registry->m_nodeRegistry->addNode(type, node);
 }
@@ -178,7 +180,7 @@ void SceneFile::attachVolume(
     flags.noDisplay = true;
     flags.noSelect = true;
 
-    type->m_nodeShader = m_registry->m_shaderRegistry->getShader(TEX_VOLUME);
+    type->m_program = m_registry->m_programRegistry->getProgram(TEX_VOLUME);
 
     auto node = new Node(type);
     node->m_id = m_assets.volumeUUID;
@@ -200,6 +202,7 @@ void SceneFile::attachCubeMapCenter(
     if (!m_assets.showCubeMapCenter) return;
 
     auto type = m_registry->m_typeRegistry->getType("<cube_map>");
+
     auto future = m_registry->m_modelRegistry->getMesh("ball_volume");
     auto& mesh = future.get();
 
@@ -229,7 +232,7 @@ void SceneFile::attachCubeMapCenter(
     flags.noDisplay = true;
     flags.noSelect = true;
 
-    type->m_nodeShader = m_registry->m_shaderRegistry->getShader(TEX_VOLUME);
+    type->m_program = m_registry->m_programRegistry->getProgram(TEX_VOLUME);
 
     auto node = new Node(type);
     node->m_id = m_assets.cubeMapUUID;
@@ -379,6 +382,7 @@ MeshType* SceneFile::createType(
 
     auto& materialVBO = type->m_materialVBO;
 
+    type->m_priority = data.priority;
     type->m_initScript = data.initScript;
     type->m_runScript = data.runScript;
 
@@ -485,7 +489,7 @@ MeshType* SceneFile::createType(
         });
 
         std::map<std::string, std::string> definitions;
-        for (const auto& [k, v] : data.shaderDefinitions) {
+        for (const auto& [k, v] : data.programDefinitions) {
             definitions[k] = v;
         }
         if (type->m_flags.alpha) {
@@ -498,9 +502,9 @@ MeshType* SceneFile::createType(
             definitions[DEF_USE_NORMAL_TEX] = "1";
         }
 
-        if (!data.shaderName.empty()) {
-            type->m_nodeShader = m_registry->m_shaderRegistry->getShader(
-                data.shaderName,
+        if (!data.programName.empty()) {
+            type->m_program = m_registry->m_programRegistry->getProgram(
+                data.programName,
                 false,
                 data.geometryType,
                 definitions);
@@ -792,8 +796,8 @@ void SceneFile::loadSkybox(
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
-        if (k == "shader") {
-            data.shaderName = v.as<std::string>();
+        if (k == "program" || k == "shader") {
+            data.programName = v.as<std::string>();
         }
         else if (k == "material") {
             data.materialName = v.as<std::string>();
@@ -873,6 +877,9 @@ void SceneFile::loadEntityClone(
                 std::cout << "UNKNOWN ENTITY_TYPE: " << k << "=" << v << "\n";
             }
         }
+        else if (k == "priority") {
+            data.priority = v.as<int>();
+        }
         else if (k == "name") {
             data.name = v.as<std::string>();
         }
@@ -896,20 +903,20 @@ void SceneFile::loadEntityClone(
                 data.meshName = v.as<std::string>();
             }
         }
-        else if (k == "shader") {
-            data.shaderName = v.as<std::string>();
-            if (data.shaderName == "texture") {
-                data.shaderName = TEX_TEXTURE;
+        else if (k == "program" || k == "shader") {
+            data.programName = v.as<std::string>();
+            if (data.programName == "texture") {
+                data.programName = TEX_TEXTURE;
             }
         }
         else if (k == "geometry_type") {
             data.geometryType = v.as<std::string>();
         }
-        else if (k == "shader_definitions") {
+        else if (k == "program_definitions" || k == "shader_definitions") {
             for (const auto& defNode : v) {
                 auto defName = defNode.first.as<std::string>();
                 const auto& defValue = defNode.second.as<std::string>();
-                data.shaderDefinitions[util::toUpper(defName)] = defValue;
+                data.programDefinitions[util::toUpper(defName)] = defValue;
             }
         }
         else if (k == "render_flags") {
@@ -1528,4 +1535,3 @@ std::string SceneFile::readFile(const std::string& filename)
     }
     return buffer.str();
 }
-

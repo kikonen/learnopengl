@@ -33,7 +33,7 @@ enum class NodeScriptId {
     run
 };
 
-class Shader;
+class Program;
 class RenderContext;
 class Registry;
 class Mesh;
@@ -72,10 +72,12 @@ public:
     EntityType m_entityType;
     NodeRenderFlags m_flags;
 
+    int m_priority = { 0 };
+
     std::string m_initScript;
     std::string m_runScript;
 
-    Shader* m_nodeShader{ nullptr };
+    Program* m_program{ nullptr };
 
     MaterialVBO m_materialVBO;
 

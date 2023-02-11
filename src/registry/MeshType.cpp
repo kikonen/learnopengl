@@ -105,7 +105,7 @@ void MeshType::prepare(
 
     m_mesh->prepareVAO(*m_vao, m_drawOptions);
 
-    if (m_nodeShader) {
-        m_nodeShader->prepare(assets);
+    if (m_program) {
+        m_program->prepare(assets);
     }
 }

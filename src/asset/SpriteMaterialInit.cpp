@@ -1,6 +1,6 @@
 #include "SpriteMaterialInit.h"
 
-#include "Shader.h"
+#include "Program.h"
 #include "ModelMesh.h"
 #include "MaterialVBO.h"
 #include "SpriteMesh.h"

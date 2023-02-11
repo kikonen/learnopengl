@@ -3,7 +3,7 @@
 #include "asset/Assets.h"
 
 
-class Shader;
+class Program;
 class Registry;
 class RenderContext;
 class Node;

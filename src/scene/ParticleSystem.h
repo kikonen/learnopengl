@@ -8,7 +8,7 @@ class Assets;
 class RenderContext;
 class Registry;
 class MeshType;
-class Shader;
+class Program;
 
 class ParticleSystem final
 {
@@ -27,7 +27,7 @@ private:
 
     std::vector<Particle> particles;
 
-    Shader* particleShader{ nullptr };
+    Program* particleProgram{ nullptr };
 
     MeshType* type;
 };

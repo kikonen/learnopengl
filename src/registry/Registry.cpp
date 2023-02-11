@@ -7,7 +7,7 @@ Registry::Registry(
     : m_assets(assets),
     m_alive(alive)
 {
-    m_shaderRegistry = std::make_unique<ShaderRegistry>(assets, m_alive);
+    m_programRegistry = std::make_unique<ProgramRegistry>(assets, m_alive);
     m_materialRegistry = std::make_unique<MaterialRegistry>(assets, m_alive);
     m_typeRegistry = std::make_unique<MeshTypeRegistry>(assets, m_alive);
     m_modelRegistry = std::make_unique<ModelRegistry>(assets, m_alive);
