@@ -306,9 +306,9 @@ void NodeRegistry::bindNode(
             -type->m_priority,
             type->m_drawOptions);
 
-        KI_INFO_OUT(fmt::format(
-            "REGISTER: {}-{}",
-            program ? program->m_key : "<na>", programKey.str()));
+        //KI_INFO_OUT(fmt::format(
+        //    "REGISTER: {}-{}",
+        //    program ? program->m_key : "<na>", programKey.str()));
 
         const MeshTypeKey typeKey(type);
 
