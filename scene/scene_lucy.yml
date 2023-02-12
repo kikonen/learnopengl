@@ -90,6 +90,7 @@ entities:
       reflection: 0.4
     xxrender_flags:
       render_back: true
+    init_script_file: scripts/anim_lucy
     enabled: true
 materials:
   - name: skybox
