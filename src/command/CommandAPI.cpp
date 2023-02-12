@@ -16,7 +16,7 @@
 namespace {
     struct CommandOptions {
         int afterId = 0;
-        int time = 0;
+        float secs = 0;
         bool relative = false;
         bool repeat = false;
     };
@@ -29,7 +29,7 @@ namespace {
                 opt.afterId = value.as<int>();
             }
             else if (k == "time") {
-                opt.time = value.as<int>();
+                opt.secs = value.as<float>();
             }
             else if (k == "relative") {
                 opt.relative = value.as<bool>();
@@ -88,7 +88,7 @@ int CommandAPI::lua_move(
         std::make_unique<MoveNode>(
             opt.afterId,
             objectID,
-            opt.time,
+            opt.secs,
             opt.relative,
             pos));
 }
@@ -107,7 +107,7 @@ int CommandAPI::lua_moveSpline(
         std::make_unique<MoveSplineNode>(
             opt.afterId,
             objectID,
-            opt.time,
+            opt.secs,
             opt.relative,
             p,
             pos));
@@ -125,7 +125,7 @@ int CommandAPI::lua_rotate(
         std::make_unique<RotateNode>(
             opt.afterId,
             objectID,
-            opt.time,
+            opt.secs,
             opt.relative,
             rot));
 }
@@ -142,7 +142,7 @@ int CommandAPI::lua_scale(
         std::make_unique<ScaleNode>(
             opt.afterId,
             objectID,
-            opt.time,
+            opt.secs,
             opt.relative,
             scale));
 }

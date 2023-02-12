@@ -26,7 +26,7 @@ local function animation()
 end
 
 luaNode.start = function()
-   print(string.format("START-%s: %d", node:getName(), id))
+   print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
    luaNode.callback = coroutine.wrap(animation)
    cmd:resume(id, {}, "callback")
 end

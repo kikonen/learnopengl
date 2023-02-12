@@ -556,39 +556,16 @@ entities:
       offset: [0, 0, 0]
       pos: [0, 1, 0]
       enabled: true
-    controller:
+    xxcontroller:
       type: camera
       enabled: true
+    init_script_file: scripts/anim_four_cubes
     enabled: true
     clones:
       - pos: [-5.0, 20.0, -5.0]
-        init_script: |
-          local wid = -1
-          local cid = -1
-
-          wid = cmd:wait(0, 10)
-          cmd:rotate(id, { after=wid, time=120 }, { 0.0, -360.0, 0.0 })
       - pos: [5.0, 20.0, -5.0]
-        init_script: |
-          local wid = -1
-          local cid = -1
-
-          wid = cmd:wait(0, 10)
-          cmd:rotate(id, { after=wid, time=120 }, { 0.0, 2 * 360.0, 0.0 })
       - pos: [-5.0, 20.0, 5.0]
-        init_script: |
-          local wid = -1
-          local cid = -1
-
-          wid = cmd:wait(0, 10)
-          cmd:rotate(id, { after=wid, time=120 }, { 0.0, -3 * 360.0, 0.0 })
       - pos: [5.0, 20.0, 5.0]
-        init_script: |
-          local wid = -1
-          local cid = -1
-
-          wid = cmd:wait(0, 10)
-          cmd:rotate(id, { after=wid, time=120 }, { 0.0, 4 * 360.0, 0.0 })
   - name: Cube 4
     model: texture_cube_4
     program: texture
