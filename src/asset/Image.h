@@ -14,6 +14,7 @@ public:
 public:
     const std::string m_path;
 
+    // NOTE KI stbi_load requires int
     int m_width = 0;
     int m_height = 0;
     int m_channels = 0;

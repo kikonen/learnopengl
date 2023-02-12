@@ -4,6 +4,9 @@
 
 #include "asset/Image.h"
 
+#include "asset/AABB.h"
+#include "asset/ModelMesh.h"
+
 namespace {
     // NOTE KI terrain is primarily flat
     // perlin noise creates -4/+4 peaks in mesh, which are scaled down
@@ -13,41 +16,62 @@ namespace {
 }
 
 TerrainGenerator::TerrainGenerator(
-    const Assets& assets,
     float worldTilesZ,
     float worldTilesX,
-    float heightScale)
-    : m_assets(assets),
-    m_worldTilesZ(worldTilesZ),
+    float heightScale,
+    Material material)
+    : m_worldTilesZ(worldTilesZ),
     m_worldTilesX(worldTilesX),
-    m_heightScale(heightScale)
+    m_heightScale(heightScale),
+    m_material(material)
 {
+}
+
+void TerrainGenerator::prepare(
+    const Assets& assets,
+    Registry* registry,
+    Node& node)
+{
+    m_gridSize = assets.terrainGridSize;
+
+    m_poolTilesZ = 4;
+    m_poolTilesX = 4;
+
+    const auto& imagePath = m_material.getTexturePath(assets, m_material.map_height);
+    KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
+
+    m_image = std::make_unique<Image>(imagePath);
+    // NOTE KI don't flip, otherwise have to reverse offsets
+    int res = m_image->load(false);
+
+}
+
+bool TerrainGenerator::update(
+    const RenderContext& ctx,
+    Node& node,
+    Node* parent)
+{
+    return false;
 }
 
 std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     int worldZI,
-    int worldXI,
-    Material* material)
+    int worldXI)
 {
     auto mesh = std::make_unique<ModelMesh>("terrain");
 
     Perlin perlin(-1);
 
-    const auto& imagePath = material->getTexturePath(m_assets, material->map_height);
-    KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
+    const auto gridSize = m_gridSize;
+    const auto& image = *m_image;
 
-    auto image = std::make_unique<Image>(imagePath);
-    // NOTE KI don't flip, otherwise have to reverse offsets
-    int res = image->load(false);
+    const int imageH = image.m_height;
+    const int imageW = image.m_width;
+    const int channels = image.m_channels;
 
-    const size_t imageH = image->m_height;
-    const size_t imageW = image->m_width;
-    const size_t channels = image->m_channels;
-
-    const unsigned char* data = image->m_data;
+    const unsigned char* data = image.m_data;
     const size_t dataSize = imageH * imageW * channels;
 
-    const size_t gridSize = m_assets.terrainGridSize;
     const size_t vertexCount = gridSize + 1;
 
     auto& vertices = mesh->m_vertices;
@@ -130,7 +154,7 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
                 normal,
                 glm::vec3(0.f),
                 Material::DEFAULT_ID
-                );
+            );
         }
     }
 
@@ -154,13 +178,4 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     mesh->setAABB(aabb);
 
     return mesh;
-}
-
-std::unique_ptr<QuadMesh> TerrainGenerator::generateWater()
-{
-    //auto mesh = std::make_unique<QuadMesh>();
-    //mesh->m_material = material;
-
-    //return mesh;
-    return nullptr;
 }
