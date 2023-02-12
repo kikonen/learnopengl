@@ -185,8 +185,9 @@ bool WaterMapRenderer::render(
         localCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
         localCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
 
+        // TODO KI refraction plane clipping produces inproper clipping
         ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
-        clip.enabled = true;
+        clip.enabled = false;
         clip.plane = glm::vec4(0, (sdist > 0 ? -1 : 1), 0, (sdist > 0 ? 1 : -1) * planePos.y);
 
         localCtx.updateMatricesUBO();

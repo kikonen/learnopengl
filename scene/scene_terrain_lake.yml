@@ -23,7 +23,7 @@ entities:
       enabled: true
     enabled: true
   - name: Directional light
-    pos: [0, 45, -100]
+    pos: [0, 85, -200]
     scale: 2.5
     model: light
     program: texture
@@ -80,8 +80,32 @@ entities:
       no_shadow: true
       render_back: true
       water: true
+    enabled: false
+    init_script_file: scripts/anim_water
+  - name: Sea
+    type: quad
+    material: water_surface
+    program: water
+    pos: [0, 14.0, 0]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 800
+    render_flags:
+      no_shadow: true
+      render_back: true
+      water: true
     enabled: true
-    init_script_file: scripts/cycle_water
+    init_script_file: scripts/anim_water
+  - name: Sea floor
+    model: quad
+    material: tiles
+    program: texture
+    pos: [0, -20, 0]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 800
+    render_flags:
+      no_shadow: true
+      render_back: true
+    enabled: true
 materials:
   - name: skybox
     type: skybox
@@ -103,3 +127,9 @@ materials:
     tiling: 2
     texture_spec:
       clamp: GL_REPEAT
+  - name: tiles
+    type: texture
+    map_kd: tiles_1024.png
+    tiling: 32
+    texture_spec:
+      wrap: GL_REPEAT

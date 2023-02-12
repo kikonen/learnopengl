@@ -113,7 +113,7 @@ void Node::update(
         }
     }
 
-    if (m_dirtyEntity)
+    if (m_dirtyEntity && m_entityIndex != -1)
     {
         auto* entity = ctx.m_registry->m_entityRegistry->get(m_entityIndex);
 
