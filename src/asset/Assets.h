@@ -55,7 +55,9 @@ public:
 
     bool useIMGUI;
 
+    bool useScript;
     bool useLight;
+
     bool forceWireframe;
 
     bool renderCubeMap;

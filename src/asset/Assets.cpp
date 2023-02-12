@@ -40,7 +40,9 @@ Assets::Assets()
 
     useIMGUI = false;
 
+    useScript = true;
     useLight = true;
+
     forceWireframe = false;
 
     rasterizerDiscard = false;

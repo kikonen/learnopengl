@@ -2,7 +2,7 @@
 
 #include "ki/GL.h"
 
-constexpr int MIP_MAP_LEVELS = 8;
+constexpr int MIP_MAP_LEVELS = 5;
 
 struct TextureSpec {
     GLint wrapS = GL_CLAMP_TO_EDGE;

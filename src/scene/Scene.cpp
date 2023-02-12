@@ -450,19 +450,21 @@ void Scene::bindComponents(Node* node)
         }
     }
 
-    m_scriptEngine->registerNode(node);
-    m_scriptEngine->registerScript(node, NodeScriptId::init, type->m_initScript);
-    m_scriptEngine->registerScript(node, NodeScriptId::run, type->m_runScript);
+    if (m_assets.useScript) {
+        m_scriptEngine->registerNode(node);
+        m_scriptEngine->registerScript(node, NodeScriptId::init, type->m_initScript);
+        m_scriptEngine->registerScript(node, NodeScriptId::run, type->m_runScript);
 
-    m_scriptEngine->runScript(node, NodeScriptId::init);
+        m_scriptEngine->runScript(node, NodeScriptId::init);
 
-    // NOTE KI start via queue, in sync with next update cycle
-    if (m_scriptEngine->hasFunction(node, "start")) {
-        m_commandEngine->addCommand(
-            std::make_unique<ResumeNode>(
-                -1,
-                node->m_objectID,
-                "start"));
+        // NOTE KI start via queue, in sync with next update cycle
+        if (m_scriptEngine->hasFunction(node, "start")) {
+            m_commandEngine->addCommand(
+                std::make_unique<ResumeNode>(
+                    -1,
+                    node->m_objectID,
+                    "start"));
+        }
     }
 }
 

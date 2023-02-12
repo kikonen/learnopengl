@@ -90,6 +90,9 @@ void AssetsFile::loadAssets(
         else if (k == "use_imgui") {
             data.useIMGUI = v.as<bool>();
         }
+        else if (k == "use_script") {
+            data.useScript= v.as<bool>();
+        }
         else if (k == "use_light") {
             data.useLight = v.as<bool>();
         }

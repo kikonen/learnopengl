@@ -20,7 +20,10 @@ assets:
   placeholder_texture: textures/tiles_1024.png
 
   use_imgui: false
+
+  use_script: true
   use_light: true
+
   force_wireframe: false
 
   render_cube_map: true
