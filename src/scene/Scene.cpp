@@ -34,6 +34,7 @@
 #include "scene/RenderContext.h"
 #include "scene/RenderData.h"
 
+#include "command/api/ResumeNode.h"
 
 Scene::Scene(
     const Assets& assets,
@@ -454,6 +455,15 @@ void Scene::bindComponents(Node* node)
     m_scriptEngine->registerScript(node, NodeScriptId::run, type->m_runScript);
 
     m_scriptEngine->runScript(node, NodeScriptId::init);
+
+    // NOTE KI start via queue, in sync with next update cycle
+    if (m_scriptEngine->hasFunction(node, "start")) {
+        m_commandEngine->addCommand(
+            std::make_unique<ResumeNode>(
+                -1,
+                node->m_objectID,
+                "start"));
+    }
 }
 
 int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double screenPosY)

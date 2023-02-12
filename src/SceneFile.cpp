@@ -262,7 +262,7 @@ void SceneFile::attachEntity(
     m_asyncLoader->addLoader(m_alive, [this, &root, &data, &materials]() {
         if (data.clones.empty()) {
             MeshType* type{ nullptr };
-            attachEntityClone(type, nullptr, root, data, data.base, false, materials);
+            attachEntityClone(type, nullptr, root, data, data.base, false, 0, materials);
         }
         else {
             MeshType* type{ nullptr };
@@ -273,11 +273,13 @@ void SceneFile::attachEntity(
                 //nodeRegistry.addGroup(group);
             }
 
+            int cloneIndex = 0;
             for (auto& cloneData : data.clones) {
                 if (!*m_alive) return;
-                type = attachEntityClone(type, group, root, data, cloneData, true, materials);
+                type = attachEntityClone(type, group, root, data, cloneData, true, cloneIndex, materials);
                 if (!data.base.cloneMesh)
                     type = nullptr;
+                cloneIndex++;
             }
         }
     });
@@ -290,6 +292,7 @@ MeshType* SceneFile::attachEntityClone(
     const EntityData& entity,
     const EntityCloneData& data,
     bool cloned,
+    int cloneIndex,
     std::vector<Material>& materials)
 {
     if (!*m_alive) return type;
@@ -305,6 +308,7 @@ MeshType* SceneFile::attachEntityClone(
             for (auto x = 0; x < repeat.xCount; x++) {
                 if (!*m_alive) return type;
 
+                const glm::vec3 tile = { x, y, z };
                 const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
                 type = SceneFile::attachEntityCloneRepeat(
@@ -314,8 +318,9 @@ MeshType* SceneFile::attachEntityClone(
                     entity,
                     data,
                     cloned,
+                    cloneIndex,
+                    tile,
                     posAdjustment,
-                    { x, y, z },
                     materials);
 
                 if (!entity.base.cloneMesh)
@@ -334,8 +339,9 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     const EntityData& entity,
     const EntityCloneData& data,
     bool cloned,
-    glm::vec3 posAdjustment,
-    glm::uvec3 tile,
+    int cloneIndex,
+    const glm::uvec3& tile,
+    const glm::vec3& posAdjustment,
     std::vector<Material>& materials)
 {
     if (!*m_alive) return type;
@@ -357,7 +363,12 @@ MeshType* SceneFile::attachEntityCloneRepeat(
 
     if (!*m_alive) return type;
 
-    auto node = createNode(group, root, data, type, data.clonePosition, posAdjustment, tile, entity.isRoot, cloned);
+    auto node = createNode(
+        type, group, root, data,
+        cloned, cloneIndex, tile,
+        data.clonePosition, posAdjustment,
+        entity.isRoot);
+
     if (data.selected) {
         node->setSelectionMaterialIndex(nodeRegistry.m_selectionMaterial.m_registeredIndex);
     }
@@ -369,7 +380,7 @@ MeshType* SceneFile::attachEntityCloneRepeat(
 MeshType* SceneFile::createType(
     const EntityData& entity,
     const EntityCloneData& data,
-    glm::uvec3 tile,
+    const glm::uvec3& tile,
     std::vector<Material>& materials)
 {
     const Assets& assets = m_assets;
@@ -516,17 +527,21 @@ MeshType* SceneFile::createType(
 }
 
 Node* SceneFile::createNode(
+    MeshType* type,
     const Group* group,
     const EntityData& root,
     const EntityCloneData& data,
-    MeshType* type,
+    bool cloned,
+    int cloneIndex,
+    const glm::uvec3& tile,
     const glm::vec3& clonePosition,
     const glm::vec3& posAdjustment,
-    glm::uvec3 tile,
-    bool isRoot,
-    bool cloned)
+    bool isRoot)
 {
     Node* node = new Node(type);
+
+    node->setCloneIndex(cloneIndex);
+    node->setTile(tile);
 
     glm::vec3 pos = data.position + clonePosition + posAdjustment;
 

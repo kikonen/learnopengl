@@ -34,9 +34,13 @@ public:
         const NodeScriptId scriptId,
         const std::string& script);
 
+    bool hasFunction(
+        Node* node,
+        const std::string& name);
+
     void invokeFunction(
         Node* node,
-        const std::string& callbackFn);
+        const std::string& name);
 
 private:
     void registerTypes();

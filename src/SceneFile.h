@@ -270,6 +270,7 @@ private:
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
+        int cloneIndex,
         std::vector<Material>& materials);
 
     MeshType* attachEntityCloneRepeat(
@@ -279,8 +280,9 @@ private:
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
-        glm::vec3 posAdjustment,
-        glm::uvec3 tile,
+        int cloneIndex,
+        const glm::uvec3& tile,
+        const glm::vec3& posAdjustment,
         std::vector<Material>& materials);
 
     void assignFlags(
@@ -295,19 +297,20 @@ private:
     MeshType* createType(
         const EntityData& entity,
         const EntityCloneData& data,
-        glm::uvec3 tile,
+        const glm::uvec3& tile,
         std::vector<Material>& materials);
 
     Node* createNode(
+        MeshType* type,
         const Group* group,
         const EntityData& root,
         const EntityCloneData& data,
-        MeshType* type,
-        const glm::vec3& rootPos,
+        bool cloned,
+        int cloneIndex,
+        const glm::uvec3& tile,
+        const glm::vec3& clonePosition,
         const glm::vec3& posAdjustment,
-        glm::uvec3 tile,
-        bool isRoot,
-        bool instanced);
+        bool isRoot);
 
     std::unique_ptr<Camera> createCamera(
         const EntityCloneData& entity,

@@ -79,6 +79,21 @@ public:
         return m_scale;
     }
 
+    int getCloneIndex() {
+        return m_cloneIndex;
+    }
+
+    void setCloneIndex(int cloneIndex) {
+        m_cloneIndex = cloneIndex;
+    }
+
+    const glm::uvec3& getTile() {
+        return m_tile;
+    }
+
+    void setTile(const glm::uvec3& tile) {
+        m_tile = tile;
+    }
 
     inline const glm::mat4& getModelMatrix() const noexcept {
         return m_modelMatrix;
@@ -132,6 +147,10 @@ public:
 
 public:
     int lua_getId() const noexcept;
+    const std::string& lua_getName() const noexcept;
+
+    int lua_getCloneIndex() const noexcept;
+    const std::array<unsigned int, 3> lua_getTile() const noexcept;
 
     const std::array<float, 3> lua_getPos() const noexcept;
     void lua_setPos(float x, float y, float z) noexcept;
@@ -189,6 +208,9 @@ private:
     glm::vec3 m_rotation{ 0.f };
 
     glm::vec3 m_scale{ 1.f };
+
+    int m_cloneIndex{ 0 };
+    glm::uvec3 m_tile{ 0 };
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::mat3 m_normalMatrix{ 1.f };

@@ -308,6 +308,21 @@ int Node::lua_getId() const noexcept
     return m_objectID;
 }
 
+const std::string& Node::lua_getName() const noexcept
+{
+    return m_type->m_name;
+}
+
+int Node::lua_getCloneIndex() const noexcept
+{
+    return m_cloneIndex;
+}
+
+const std::array<unsigned int, 3> Node::lua_getTile() const noexcept
+{
+    return { m_tile.x, m_tile.y, m_tile.z };
+}
+
 const std::array<float, 3> Node::lua_getPos() const noexcept
 {
     return { m_position.x, m_position.y, m_position.z };

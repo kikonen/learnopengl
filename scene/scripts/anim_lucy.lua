@@ -1,3 +1,4 @@
+local luaNode = nodes[id]
 
 local function animation()
    local wid = -1
@@ -24,13 +25,10 @@ local function animation()
    end
 end
 
-local function start()
-   local luaNode = nodes[id]
-   local wid = -1
-
+luaNode.start = function()
+   print(string.format("START-%s: %d", node:getName(), id))
    luaNode.callback = coroutine.wrap(animation)
-
-   cmd:resume(id, { after=wid }, "callback")
+   cmd:resume(id, {}, "callback")
 end
-
-start()
+-- invoked by scene
+--luaNode.start()

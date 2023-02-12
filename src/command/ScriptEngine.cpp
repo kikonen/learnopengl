@@ -75,7 +75,13 @@ void ScriptEngine::registerTypes()
         m_lua.new_usertype<Node>("Node");
 
         const auto& ut = m_lua["Node"];
+
         ut["getId"] = &Node::lua_getId;
+        ut["getName"] = &Node::lua_getName;
+
+        ut["getCloneIndex"] = &Node::lua_getCloneIndex;
+        ut["getTile"] = &Node::lua_getTile;
+
         ut["getPos"] = &Node::lua_getPos;
         ut["setPos"] = &Node::lua_setPos;
     }
@@ -130,12 +136,26 @@ end)", nodeFnName, script);
     m_nodeScripts[node->m_objectID][scriptId] = nodeFnName;
 }
 
+bool ScriptEngine::hasFunction(
+    Node* node,
+    const std::string& name)
+{
+    sol::table luaNode = m_lua["nodes"][node->m_objectID];
+
+    sol::optional<sol::function> fnPtr = luaNode[name];
+    return fnPtr != sol::nullopt;
+}
+
 void ScriptEngine::invokeFunction(
     Node* node,
-    const std::string& callbackFn)
+    const std::string& name)
 {
-    KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->m_objectID, callbackFn));
+    KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->m_objectID, name));
     sol::table luaNode = m_lua["nodes"][node->m_objectID];
-    sol::function fn = luaNode[callbackFn];
-    fn(std::ref(node), node->m_objectID);
+
+    sol::optional<sol::function> fnPtr = luaNode[name];
+    if (fnPtr != sol::nullopt) {
+        sol::function fn = luaNode[name];
+        fn(std::ref(node), node->m_objectID);
+    }
 }
