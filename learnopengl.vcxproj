@@ -307,6 +307,7 @@
     <ClInclude Include="src\asset\MatricesUBO.h" />
     <ClInclude Include="src\asset\ModelVAO.h" />
     <ClInclude Include="src\asset\SpriteVAO.h" />
+    <ClInclude Include="src\asset\TextureSpec.h" />
     <ClInclude Include="src\asset\TextureUBO.h" />
     <ClInclude Include="src\asset\VertexEntry.h" />
     <ClInclude Include="src\asset\MaterialVBO.h" />
