@@ -634,7 +634,7 @@ entities:
       y_step: 0
       z_step: 60
     enabled: true
-    init_script_file: scripts/cycle_water
+    init_script_file: scripts/anim_water
   - name: Pool side
     model: pool_brick
     program: texture

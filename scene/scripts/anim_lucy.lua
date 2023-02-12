@@ -2,17 +2,22 @@
 local function animation()
    local wid = -1
    local cid = -1
+   local dir = 1
 
    wid = cmd:wait(cid, 1)
 
    while(true) do
+      -- NOTE KI *WAIT* for resume to complete
+      wid = cmd:wait(wid, 0.5)
+
       cid = cmd:rotate(
          id,
          { after=wid, time=10, relative=true },
-         { 0, 360, 0 })
-      wid = -1
+         { 0, dir * 360, 0 })
 
-      cmd:resume(id, { after=cid }, "callback")
+      cid = cmd:resume(id, { after=cid }, "callback")
+      wid = cid
+      dir = -dir
 
       -- NOTE KI wait for callback
       coroutine.yield()

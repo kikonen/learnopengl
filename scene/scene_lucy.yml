@@ -59,7 +59,7 @@ entities:
       render_back: true
       water: true
     enabled: true
-    init_script_file: scripts/cycle_water
+    init_script_file: scripts/anim_water
   - name: Pool side
     model: pool_brick
     program: texture

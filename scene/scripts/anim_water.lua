@@ -6,7 +6,9 @@ local function animation()
    local origPos = node:getPos()
 
    while(true) do
+      -- NOTE KI *WAIT* for resume to complete
       wid = cmd:wait(cid, 3)
+
       cid = cmd:moveSpline(
          id,
          { after=wid, time=10, relative=true },
@@ -21,7 +23,7 @@ local function animation()
          origPos)
 
       wid = cmd:wait(cid, 1)
-      cmd:resume(id, { after=wid }, "callback")
+      cid = cmd:resume(id, { after=wid }, "callback")
 
       -- NOTE KI wait for callback
       coroutine.yield()
