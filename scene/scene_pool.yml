@@ -114,6 +114,47 @@ entities:
       y_step: 0
       z_step: 200
     enabled: true
+  - name: Water bottom - SINGLE
+    model: quad
+    material: water_bottom
+    program: texture
+    pos: [160.0, 3.2, 20.0]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 60
+    render_flags:
+      no_shadow: true
+    enabled: true
+  - name: Water surface - SINGLE
+    type: quad
+    material: water_surface
+    program: water
+    pos: [160, 9.0, 20]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 60
+    render_flags:
+      no_shadow: true
+      render_back: true
+      water: true
+    enabled: true
+    xxinit_script_file: scripts/cycle_water
+  - name: Pool side - SINGLE
+    model: pool_brick
+    program: texture
+    material_modifier:
+      tilingX: 30
+      tilingY: 2
+      texture_spec:
+        clamp: GL_REPEAT
+    clones:
+      - pos: [100.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [220.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [160.0, 4, 80]
+        scale: [60, 6, 0.3]
+      - pos: [160.0, 4, -40]
+        scale: [60, 6, 0.3]
+    enabled: true
 materials:
   - name: skybox
     type: skybox
