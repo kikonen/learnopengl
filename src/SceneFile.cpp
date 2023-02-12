@@ -1411,17 +1411,35 @@ void SceneFile::loadTextureSpec(
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
-        if (k == "clamp") {
-            if (v.as<std::string>() == "GL_REPEAT") {
-                textureSpec.clamp = GL_REPEAT;
-            } else {
-                reportUnknown("tex_mode", k, v);
-            }
+        if (k == "wrap") {
+            loadTextureWrap(k, v, textureSpec.wrapS);
+            loadTextureWrap(k, v, textureSpec.wrapT);
+        }
+        else if (k == "wrap_s") {
+            loadTextureWrap(k, v, textureSpec.wrapS);
+        }
+        else if (k == "wrap_t") {
+            loadTextureWrap(k, v, textureSpec.wrapT);
         }
         else {
             reportUnknown("tex_spec", k, v);
         }
     }
+}
+
+void SceneFile::loadTextureWrap(
+    const std::string& k,
+    const YAML::Node& v,
+    GLint& wrapMode)
+{
+    const std::string& wrap = v.as<std::string>();
+    if (wrap == "GL_REPEAT") {
+        wrapMode = GL_REPEAT;
+    }
+    else if (wrap == "GL_CLAMP_TO_EDGE") {
+        wrapMode = GL_CLAMP_TO_EDGE;
+    }
+    reportUnknown("wrap_mode", k, v);
 }
 
 glm::vec2 SceneFile::readVec2(const YAML::Node& node) const

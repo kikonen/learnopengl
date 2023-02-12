@@ -29,8 +29,8 @@ void PlainTexture::prepare(const Assets& assets)
     //KI_GL_CALL(glad_glTextureStorage2D(m_textureID, 1, m_internalFormat, m_width, m_height));
     glTextureStorage2D(m_textureID, m_spec.mipMapLevels, m_internalFormat, m_width, m_height);
 
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.clamp);
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.clamp);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
 
     glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
     glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);

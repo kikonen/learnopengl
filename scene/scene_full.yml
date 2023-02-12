@@ -642,7 +642,7 @@ entities:
       tilingX: 30
       tilingY: 2
       texture_spec:
-        clamp: GL_REPEAT
+        wrap: GL_REPEAT
     clones:
       - pos: [-30.0, 4, 20]
         scale: [0.3, 6, 60]
@@ -997,7 +997,7 @@ materials:
     map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
-      clamp: GL_REPEAT
+      wrap: GL_REPEAT
       xxpattern: 1
   - name: water_bottom
     type: model
@@ -1013,7 +1013,7 @@ materials:
     map_kd: tiles_1024.png
     tiling: 8
     texture_spec:
-      clamp: GL_REPEAT
+      wrap: GL_REPEAT
   - name: terrain_grass
     type: texture
     ns: 50

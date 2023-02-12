@@ -62,6 +62,11 @@ https://glad.dav1d.de
 ## Compute shader
 - https://computergraphics.stackexchange.com/questions/400/synchronizing-successive-opengl-compute-shader-invocations
 
+## Scripting
+- http://lua-users.org/wiki/ScopeTutorial
+- https://sol2.readthedocs.io/en/latest/tutorial/all-the-things.html
+- https://sol2.readthedocs.io/en/latest/tutorial/functions.html
+
 ## Misc
 - https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
 - https://www.flipcode.com/archives/Skybox_With_A_Single_Quad.shtml

@@ -6,10 +6,11 @@
 
 #include "ki/GL.h"
 
-constexpr int MIP_MAP_LEVELS = 3;
+constexpr int MIP_MAP_LEVELS = 5;
 
 struct TextureSpec {
-    int clamp = GL_CLAMP_TO_EDGE;
+    GLint wrapS = GL_CLAMP_TO_EDGE;
+    GLint wrapT = GL_CLAMP_TO_EDGE;
 
     int minFilter = GL_NEAREST_MIPMAP_LINEAR;
     int magFilter = GL_LINEAR;

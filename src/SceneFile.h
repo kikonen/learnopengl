@@ -381,6 +381,11 @@ private:
         const YAML::Node& node,
         TextureSpec& textureSpec);
 
+    void loadTextureWrap(
+        const std::string& k,
+        const YAML::Node& v,
+        GLint& wrapMode);
+
     glm::vec2 readVec2(const YAML::Node& node) const;
     glm::vec3 readVec3(const YAML::Node& node) const;
     glm::vec4 readVec4(const YAML::Node& node) const;

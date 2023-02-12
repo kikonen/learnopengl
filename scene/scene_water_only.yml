@@ -143,7 +143,7 @@ materials:
     map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
-      clamp: GL_REPEAT
+      wrap: GL_REPEAT
       _pattern: 1
   - name: terrain_grass
     type: texture
@@ -153,7 +153,7 @@ materials:
     map_bump: Grass_Dark_VH_1024_normal.PNG
     tiling: 100
     texture_spec:
-      clamp: GL_REPEAT
+      wrap: GL_REPEAT
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: noise_256.png

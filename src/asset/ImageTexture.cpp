@@ -56,7 +56,10 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
 {
     std::lock_guard<std::mutex> lock(textures_lock);
 
-    const std::string cacheKey = path + "_" + std::to_string(spec.clamp);
+    const std::string cacheKey = fmt::format(
+        "{}_{}_{}-{}_{}_{}",
+        path, spec.wrapS, spec.wrapT,
+        spec.minFilter, spec.magFilter, spec.mipMapLevels);
 
     {
         const auto& e = textures.find(cacheKey);
@@ -134,8 +137,8 @@ void ImageTexture::prepare(const Assets& assets)
         glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, GL_UNSIGNED_BYTE, m_image->m_data);
     }
     else {
-        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.clamp);
-        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.clamp);
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
 
         // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
         // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
