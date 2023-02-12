@@ -17,8 +17,9 @@ void CommandEngine::prepare()
 {
 }
 
-void CommandEngine::update(const RenderContext& ctx) noexcept
+void CommandEngine::update(const RenderContext& ctx)
 {
+    updateOldest();
     processCanceled(ctx);
     processPending(ctx);
     processBlocked(ctx);
@@ -80,9 +81,17 @@ void CommandEngine::processPending(const RenderContext& ctx) noexcept
         m_commands[cmd->m_id] = cmd.get();
 
         if (cmd->m_afterCommandId > 0) {
-            auto prev = m_commands[cmd->m_afterCommandId];
-            if (prev) {
-                prev->m_next.push_back(cmd->m_id);
+            if (cmd->m_afterCommandId < m_oldestAliveCommandId) {
+                KI_WARN_OUT(fmt::format("GARBAGE AFTER: cmd={}, after={}, oldest={}", cmd->m_id, cmd->m_afterCommandId, m_oldestAliveCommandId));
+            }
+
+            if (cmd->m_afterCommandId != cmd->m_id &&
+                cmd->m_afterCommandId >= m_oldestAliveCommandId)
+            {
+                auto prev = m_commands[cmd->m_afterCommandId];
+                if (prev) {
+                    prev->m_next.push_back(cmd->m_id);
+                }
             }
         }
 
@@ -143,7 +152,7 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
     }
 }
 
-void CommandEngine::processActive(const RenderContext& ctx) noexcept
+void CommandEngine::processActive(const RenderContext& ctx)
 {
     if (m_active.empty()) return;
 
@@ -186,4 +195,25 @@ void CommandEngine::processActive(const RenderContext& ctx) noexcept
             });
         m_active.erase(it, m_active.end());
     }
+}
+
+void CommandEngine::updateOldest() noexcept
+{
+    int min = INT_MAX;
+    for (const auto& cmd : m_pending) {
+        if (cmd->m_id < min) {
+            min = cmd->m_id;
+        }
+    }
+    for (const auto& cmd : m_blocked) {
+        if (cmd->m_id < min) {
+            min = cmd->m_id;
+        }
+    }
+    for (const auto& cmd : m_active) {
+        if (cmd->m_id < min) {
+            min = cmd->m_id;
+        }
+    }
+    m_oldestAliveCommandId = min;
 }

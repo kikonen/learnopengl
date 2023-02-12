@@ -20,7 +20,7 @@ public:
 
     void prepare();
 
-    void update(const RenderContext& ctx) noexcept;
+    void update(const RenderContext& ctx);
 
     int addCommand(std::unique_ptr<Command> cmd) noexcept;
     void cancel(int commandId) noexcept;
@@ -32,7 +32,10 @@ private:
     void processCanceled(const RenderContext& ctx) noexcept;
     void processPending(const RenderContext& ctx) noexcept;
     void processBlocked(const RenderContext& ctx) noexcept;
-    void processActive(const RenderContext& ctx) noexcept;
+    void processActive(const RenderContext& ctx);
+
+
+    void updateOldest() noexcept;
 
 private:
     const Assets& m_assets;
@@ -44,4 +47,6 @@ private:
     std::map<int, Command*> m_commands;
 
     std::vector<int> m_canceled;
+
+    int m_oldestAliveCommandId = -1;
 };
