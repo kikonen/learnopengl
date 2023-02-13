@@ -14,7 +14,7 @@ root:
     type: path
     mode: 1
     enabled: false
-  xinit_script: |
+  xxscript: |
     local wid = -1
     local cid = -1
 
@@ -26,7 +26,7 @@ entities:
     type: origo
     pos: [0.0, 0.0, 0.0]
     enabled: true
-    init_script: |
+    script: |
       local wid = -1
       local cid = -1
 
@@ -41,7 +41,7 @@ entities:
     pos: [0.0, 0.0, 0.0]
     scale: 0.3
     enabled: true
-    init_script: |
+    script: |
       local wid = -1
       local cid = -1
 
@@ -93,7 +93,7 @@ entities:
     type: origo
     pos: [0.0, 0.0, 0.0]
     enabled: true
-    init_script: |
+    script: |
       cmd:rotate(id, { time=3600, relative=true }, { 0.0, 7200.0, 0.0 })
   - name: Directional light
     parent_id: 910be8c1-2060-455f-9b43-179a4814732f
@@ -130,7 +130,7 @@ entities:
         id: 117b6b3f-6c40-4cb6-b138-856a95888ceb
       - pos: [30.0, 14.0, 30.0]
         id: e5514669-a024-41ee-b2df-89db0bb3f361
-    init_script: |
+    script: |
       cmd:rotate(id, { time=600, relative=true }, { 0.0, 7200.0, 0.0 })
     enabled: true
   - name: Moving point light
@@ -169,7 +169,7 @@ entities:
     type: origo
     pos: [0.0, 10.0, 0.0]
     enabled: true
-    init_script: |
+    script: |
       cmd:rotate(id, { time=900, relative=true }, { 0.0, 7200.0, 0.0 })
   - name: Rock light
     parent_id: b2e6b0e4-7e29-4697-9bca-f387d740ba6c
@@ -315,7 +315,7 @@ entities:
       mirror: true
     plane_normal: [0.0, 0.0, 1.0]
     enabled: true
-    init_script: |
+    script: |
       local wid = -1
       local cid = -1
 
@@ -333,7 +333,7 @@ entities:
       mirror: true
     plane_normal: [0.0, 0.0, 1.0]
     enabled: true
-    init_script: |
+    script: |
       local wid = -1
       local cid = -1
 
@@ -559,7 +559,7 @@ entities:
     xxcontroller:
       type: camera
       enabled: true
-    init_script_file: scripts/anim_four_cubes
+    script_file: scripts/anim_four_cubes
     enabled: true
     clones:
       - pos: [-5.0, 20.0, -5.0]
@@ -611,7 +611,7 @@ entities:
       y_step: 0
       z_step: 60
     enabled: true
-    init_script_file: scripts/anim_water
+    script_file: scripts/anim_water
   - name: Pool side
     model: pool_brick
     program: texture
@@ -663,7 +663,7 @@ entities:
     material_modifier:
       fog_ratio: 0
     enabled: true
-    init_script: |
+    script: |
       local wid = -1
       local cid = -1
 
@@ -757,7 +757,7 @@ entities:
       x_step: -3
       z_step: 2
     enabled: true
-    init_script: |
+    script: |
       local function main()
         --print(string.format("START: %d", id))
 

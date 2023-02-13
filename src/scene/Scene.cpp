@@ -452,8 +452,7 @@ void Scene::bindComponents(Node* node)
 
     if (m_assets.useScript) {
         m_scriptEngine->registerNode(node);
-        m_scriptEngine->registerScript(node, NodeScriptId::init, type->m_initScript);
-        m_scriptEngine->registerScript(node, NodeScriptId::run, type->m_runScript);
+        m_scriptEngine->registerScript(node, NodeScriptId::init, type->m_script);
 
         m_scriptEngine->runScript(node, NodeScriptId::init);
 

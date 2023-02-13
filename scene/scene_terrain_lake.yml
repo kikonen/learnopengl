@@ -81,7 +81,7 @@ entities:
       render_back: true
       water: true
     enabled: false
-    init_script_file: scripts/anim_water
+    script_file: scripts/anim_water
   - name: Sea
     type: quad
     material: water_surface
@@ -94,7 +94,7 @@ entities:
       render_back: true
       water: true
     enabled: true
-    init_script_file: scripts/anim_water
+    script_file: scripts/anim_water
   - name: Sea floor
     model: quad
     material: tiles

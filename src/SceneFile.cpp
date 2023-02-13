@@ -395,8 +395,7 @@ MeshType* SceneFile::createType(
     auto& materialVBO = type->m_materialVBO;
 
     type->m_priority = data.priority;
-    type->m_initScript = data.initScript;
-    type->m_runScript = data.runScript;
+    type->m_script = data.script;
 
     if (entity.isRoot) {
         type->m_flags.root = true;
@@ -1009,15 +1008,12 @@ void SceneFile::loadEntityClone(
             if (recurse)
                 hasClones = true;
         }
-        else if (k == "init_script") {
-            data.initScript = v.as<std::string>();
+        else if (k == "script") {
+            data.script = v.as<std::string>();
         }
-        else if (k == "init_script_file") {
+        else if (k == "script_file") {
             std::string filename = v.as<std::string>() + ".lua";
-            data.initScript = readFile(filename);
-        }
-        else if (k == "run_script") {
-            data.runScript = v.as<std::string>();
+            data.script = readFile(filename);
         }
         else {
             reportUnknown("entity_entry", k, v);

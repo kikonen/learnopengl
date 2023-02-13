@@ -74,8 +74,7 @@ public:
 
     int m_priority = { 0 };
 
-    std::string m_initScript;
-    std::string m_runScript;
+    std::string m_script;
 
     Program* m_program{ nullptr };
 

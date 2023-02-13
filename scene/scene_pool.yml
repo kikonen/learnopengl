@@ -75,7 +75,7 @@ entities:
       y_step: 0
       z_step: 60
     enabled: true
-    init_script_file: scripts/anim_water
+    script_file: scripts/anim_water
   - name: Pool side
     model: pool_brick
     program: texture
@@ -136,7 +136,7 @@ entities:
       render_back: true
       water: true
     enabled: true
-    xxinit_script_file: scripts/cycle_water
+    xxscript_file: scripts/cycle_water
   - name: Pool side - SINGLE
     model: pool_brick
     program: texture
