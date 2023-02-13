@@ -57,7 +57,7 @@ void TestSceneSetup::setupEffectExplosion()
         auto node = new Node(type);
         node->setScale(2);
 
-        m_registry->m_nodeRegistry->addNode(type, node);
+        m_registry->m_nodeRegistry->addNode(node);
      });
 }
 

@@ -30,7 +30,6 @@ const std::string Mesh::str() const
 }
 
 void Mesh::prepareVolume() {
-    const auto& aabb = calculateAABB();
-    setAABB(aabb);
+    setAABB(calculateAABB());
 }
 

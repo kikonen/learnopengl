@@ -98,7 +98,6 @@ public:
     void addGroup(Group* group) noexcept;
 
     void addNode(
-        MeshType* type,
         Node* node) noexcept;
 
     inline bool containsNode(const int objectID) const noexcept

@@ -123,7 +123,6 @@ void NodeRegistry::addGroup(Group* group) noexcept
 }
 
 void NodeRegistry::addNode(
-    MeshType* type,
     Node* node) noexcept
 {
     if (!*m_alive) return;

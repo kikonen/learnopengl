@@ -214,8 +214,7 @@ class SceneFile
 
         Repeat repeat;
 
-        std::string initScript;
-        std::string runScript;
+        std::string script;
 
         ControllerData controller;
         CameraData camera;

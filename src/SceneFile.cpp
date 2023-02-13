@@ -143,7 +143,7 @@ void SceneFile::attachSkybox(
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.programName, data.materialName);
     m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
-    m_registry->m_nodeRegistry->addNode(type, node);
+    m_registry->m_nodeRegistry->addNode(node);
 }
 
 void SceneFile::attachVolume(
@@ -194,7 +194,7 @@ void SceneFile::attachVolume(
 
     node->m_controller = std::make_unique<VolumeController>();
 
-    m_registry->m_nodeRegistry->addNode(type, node);
+    m_registry->m_nodeRegistry->addNode(node);
 }
 
 void SceneFile::attachCubeMapCenter(
@@ -247,7 +247,7 @@ void SceneFile::attachCubeMapCenter(
 
     node->setAABB(mesh->getAABB());
 
-    m_registry->m_nodeRegistry->addNode(type, node);
+    m_registry->m_nodeRegistry->addNode(node);
 }
 
 void SceneFile::attachEntity(
@@ -308,7 +308,7 @@ MeshType* SceneFile::attachEntityClone(
             for (auto x = 0; x < repeat.xCount; x++) {
                 if (!*m_alive) return type;
 
-                const glm::vec3 tile = { x, y, z };
+                const glm::uvec3 tile = { x, y, z };
                 const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
                 type = SceneFile::attachEntityCloneRepeat(
@@ -372,7 +372,7 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     if (data.selected) {
         node->setSelectionMaterialIndex(nodeRegistry.m_selectionMaterial.m_registeredIndex);
     }
-    nodeRegistry.addNode(type, node);
+    nodeRegistry.addNode(node);
 
     return type;
 }
