@@ -96,7 +96,6 @@ class SceneFile
         none,
         camera,
         path,
-        grid,
         asteroid_belt,
         moving_light,
     };

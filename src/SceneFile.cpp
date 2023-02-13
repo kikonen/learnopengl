@@ -12,6 +12,7 @@
 #include "util/Util.h"
 
 #include "asset/Material.h"
+#include "asset/ModelMesh.h"
 #include "asset/QuadMesh.h"
 #include "asset/SpriteMesh.h"
 #include "asset/Program.h"
@@ -23,7 +24,6 @@
 #include "model/Group.h"
 #include "model/Node.h"
 
-#include "controller/GridController.h"
 #include "controller/AsteroidBeltController.h"
 #include "controller/CameraController.h"
 #include "controller/MovingLightController.h"
@@ -774,18 +774,6 @@ std::unique_ptr<NodeController> SceneFile::createController(
             auto controller = std::make_unique<NodePathController>(center, data.mode);
             return controller;
         }
-        case ControllerType::grid: {
-            auto controller = std::make_unique<GridController>();
-            controller->m_xCount = data.repeat.xCount;
-            controller->m_yCount = data.repeat.yCount;
-            controller->m_zCount = data.repeat.zCount;
-
-            controller->m_xStep = data.repeat.xStep;
-            controller->m_yStep = data.repeat.yStep;
-            controller->m_zStep = data.repeat.zStep;
-
-            return controller;
-        }
         case ControllerType::asteroid_belt: {
             auto controller = std::make_unique<AsteroidBeltController>(data.count);
             return controller;
@@ -1221,9 +1209,6 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
             }
             else if (type == "path") {
                 data.type = ControllerType::path;
-            }
-            else if (type == "grid") {
-                data.type = ControllerType::grid;
             }
             else if (type == "asteroid_belt") {
                 data.type = ControllerType::asteroid_belt;
