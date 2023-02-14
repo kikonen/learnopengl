@@ -205,7 +205,7 @@ void Batch::draw(
     const auto type = node.m_type;
 
     if (!type->getMesh()) return;
-    if (type->m_flags.noRender) return;
+    if (type->m_flags.invisible) return;
     if (type->m_flags.noDisplay) return;
 
     {

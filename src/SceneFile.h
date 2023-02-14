@@ -25,7 +25,6 @@ class Registry;
 
 class MeshType;
 class Node;
-class Group;
 class NodeController;
 
 class AsyncLoader;
@@ -263,7 +262,6 @@ private:
 
     MeshType* attachEntityClone(
         MeshType* type,
-        Group* group,
         const EntityData& root,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -273,7 +271,6 @@ private:
 
     MeshType* attachEntityCloneRepeat(
         MeshType* type,
-        Group* group,
         const EntityData& root,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -300,7 +297,6 @@ private:
 
     Node* createNode(
         MeshType* type,
-        const Group* group,
         const EntityData& root,
         const EntityCloneData& data,
         bool cloned,

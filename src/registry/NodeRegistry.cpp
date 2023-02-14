@@ -296,7 +296,7 @@ void NodeRegistry::bindNode(
         if (type->m_flags.blend)
             map = &blendedNodes;
 
-        if (type->m_flags.noRender)
+        if (type->m_flags.invisible)
             map = &invisibleNodes;
 
         // NOTE KI more optimal to not switch between culling mode (=> group by it)

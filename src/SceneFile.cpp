@@ -23,7 +23,6 @@
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
-#include "model/Group.h"
 #include "model/Node.h"
 
 #include "controller/AsteroidBeltController.h"
@@ -261,21 +260,15 @@ void SceneFile::attachEntity(
     m_asyncLoader->addLoader(m_alive, [this, &root, &data, &materials]() {
         if (data.clones.empty()) {
             MeshType* type{ nullptr };
-            attachEntityClone(type, nullptr, root, data, data.base, false, 0, materials);
+            attachEntityClone(type, root, data, data.base, false, 0, materials);
         }
         else {
             MeshType* type{ nullptr };
 
-            Group* group = new Group();
-            {
-                group->m_id = data.base.id;
-                //nodeRegistry.addGroup(group);
-            }
-
             int cloneIndex = 0;
             for (auto& cloneData : data.clones) {
                 if (!*m_alive) return;
-                type = attachEntityClone(type, group, root, data, cloneData, true, cloneIndex, materials);
+                type = attachEntityClone(type, root, data, cloneData, true, cloneIndex, materials);
                 if (!data.base.cloneMesh)
                     type = nullptr;
                 cloneIndex++;
@@ -286,7 +279,6 @@ void SceneFile::attachEntity(
 
 MeshType* SceneFile::attachEntityClone(
     MeshType* type,
-    Group* group,
     const EntityData& root,
     const EntityData& entity,
     const EntityCloneData& data,
@@ -312,7 +304,6 @@ MeshType* SceneFile::attachEntityClone(
 
                 type = SceneFile::attachEntityCloneRepeat(
                     type,
-                    group,
                     root,
                     entity,
                     data,
@@ -333,7 +324,6 @@ MeshType* SceneFile::attachEntityClone(
 
 MeshType* SceneFile::attachEntityCloneRepeat(
     MeshType* type,
-    Group* group,
     const EntityData& root,
     const EntityData& entity,
     const EntityCloneData& data,
@@ -363,7 +353,7 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     if (!*m_alive) return type;
 
     auto node = createNode(
-        type, group, root, data,
+        type, root, data,
         cloned, cloneIndex, tile,
         data.clonePosition, posAdjustment,
         entity.isRoot);
@@ -371,6 +361,7 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     if (data.selected) {
         node->setSelectionMaterialIndex(nodeRegistry.m_selectionMaterial.m_registeredIndex);
     }
+
     nodeRegistry.addNode(node);
 
     return type;
@@ -398,7 +389,7 @@ MeshType* SceneFile::createType(
 
     if (entity.isRoot) {
         type->m_flags.root = true;
-        type->m_flags.noRender = true;
+        type->m_flags.invisible = true;
         type->m_entityType = EntityType::origo;
     }
 
@@ -443,7 +434,7 @@ MeshType* SceneFile::createType(
         type->m_entityType = EntityType::quad;
     }
     else if (data.type == EntityType::billboard) {
-        if(true) {
+        if (true) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME);
             auto* mesh = future.get();
@@ -477,7 +468,7 @@ MeshType* SceneFile::createType(
     else if (data.type == EntityType::origo) {
         // NOTE KI nothing to do
         type->m_entityType = EntityType::origo;
-        type->m_flags.noRender = true;
+        type->m_flags.invisible = true;
     }
 
     if (data.type != EntityType::origo) {
@@ -527,7 +518,6 @@ MeshType* SceneFile::createType(
 
 Node* SceneFile::createNode(
     MeshType* type,
-    const Group* group,
     const EntityData& root,
     const EntityCloneData& data,
     bool cloned,
@@ -544,14 +534,10 @@ Node* SceneFile::createNode(
 
     glm::vec3 pos = data.position + clonePosition + posAdjustment;
 
-    if (group) {
-        node->m_groupId = group->m_id;
-    } else {
-        // NOTE KI no id for clones; would duplicate base id => conflicts
-        // => except if clone defines own ID
-        if (root.base.id != data.id || isRoot)
-            node->m_id = data.id;
-    }
+    // NOTE KI no id for clones; would duplicate base id => conflicts
+    // => except if clone defines own ID
+    if (root.base.id != data.id || isRoot)
+        node->m_id = data.id;
 
     if (!isRoot) {
         if (data.parentId.is_nil()) {

@@ -12,20 +12,25 @@
 struct NodeRenderFlags {
     bool alpha = false;
     bool blend = false;
+    bool renderBack = false;
+    bool wireframe = false;
+
+    bool root = false;
+    bool instanced = false;
+
     bool mirror = false;
     bool water = false;
-    bool renderBack = false;
+    bool cubeMap = false;
+
     bool noShadow = false;
     bool noSelect = false;
     bool noReflect = false;
     bool noRefract = false;
-    bool noRender = false;
+    // invisible == permanently invisible
+    bool invisible = false;
+    // noDisplay == temporarily hidden
     bool noDisplay = false;
-    bool wireframe = false;
-    bool instanced = false;
-    bool root = false;
     bool noFrustum = false;
-    bool cubeMap = false;
 };
 
 enum class NodeScriptId {

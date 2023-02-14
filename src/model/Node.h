@@ -117,7 +117,7 @@ public:
 
     inline bool isEntity() {
         return m_type->getMesh() &&
-            !m_type->m_flags.noRender;
+            !m_type->m_flags.invisible;
     }
 
     inline int getTagMaterialIndex() const { return m_tagMaterialIndex;  }
@@ -169,9 +169,6 @@ public:
     // UUID of node's parent
     // => both parent & children queried from NodeRegistry
     uuids::uuid m_parentId;
-
-    // NOTE KI group != parent (does not affect modelMatrix and such)
-    uuids::uuid m_groupId;
 
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };
