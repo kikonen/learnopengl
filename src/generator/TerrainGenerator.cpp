@@ -55,6 +55,11 @@ void TerrainGenerator::prepare(
             auto type = createType(registry, container.m_type);
             type->setMesh(std::move(mesh), true);
 
+            // NOTE KI must laod textures in the context of *THIS* material
+            type->modifyMaterials([&assets](Material& m) {
+                m.loadTextures(assets);
+            });
+
             auto node = new Node(type);
             node->m_parentId = container.m_id;
 
@@ -95,7 +100,15 @@ MeshType* TerrainGenerator::createType(
     type->m_script = containerType->m_script;
 
     // TODO KI *redundant* copy of material
-    type->m_materialVBO.setMaterials(containerType->m_materialVBO.getMaterials());
+    auto& containerMaterials = containerType->m_materialVBO;
+    auto& materialVBO = type->m_materialVBO;
+
+    // NOTE MUST copy *all* data from materials
+    materialVBO.m_defaultMaterial = containerMaterials.m_defaultMaterial;
+    materialVBO.m_useDefaultMaterial = true;
+    materialVBO.m_forceDefaultMaterial = true;
+    materialVBO.setMaterials(containerMaterials.getMaterials());
+
     type->m_program = containerType->m_program;
 
     return type;
