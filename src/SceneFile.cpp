@@ -969,9 +969,7 @@ void SceneFile::loadEntityClone(
         }
         else if (k == "parent_id") {
             data.parentId_str = v.as<std::string>();
-            if (!data.id_str.empty()) {
-                data.parentId = KI_UUID(data.parentId_str);
-            }
+            data.parentId = KI_UUID(data.parentId_str);
         }
         else if (k == "model") {
             if (v.Type() == YAML::NodeType::Sequence) {
