@@ -73,7 +73,9 @@ std::shared_future<ModelMesh*> ModelRegistry::startLoad(ModelMesh* mesh)
     auto th = std::thread{
         [this, mesh, p = std::move(promise)]() mutable {
             try {
-                KI_DEBUG(fmt::format("START_LOADER: {}", mesh->str()));
+                std::string info = mesh->str();
+
+                KI_DEBUG(fmt::format("START_LOADER: {}", info));
 
                 MeshLoader loader(m_assets, m_alive);
                 auto loaded = loader.load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
@@ -82,7 +84,14 @@ std::shared_future<ModelMesh*> ModelRegistry::startLoad(ModelMesh* mesh)
                     loaded->prepareVolume();
                 }
 
-                p.set_value(mesh);
+                // NOTE KI if not valid then null; avoids internal errors in render logic
+                if (loaded) {
+                    p.set_value(mesh);
+                }
+                else {
+                    KI_CRITICAL("FAIL_LOADER: Invalid mesh: {}", info);
+                    p.set_value(nullptr);
+                }
              } catch (const std::exception& ex) {
                 KI_CRITICAL(ex.what());
                 p.set_exception(std::make_exception_ptr(ex));

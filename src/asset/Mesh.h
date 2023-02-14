@@ -28,8 +28,9 @@ public:
     Mesh();
     virtual ~Mesh();
 
-    virtual const std::string str() const;
+    virtual const std::string str() const noexcept;
 
+    virtual bool isValid() const noexcept { return true; }
     virtual void prepareVolume();
     virtual const AABB calculateAABB() const = 0;
 

@@ -17,6 +17,7 @@
 class ModelMesh final : public Mesh {
     friend class MeshLoader;
     friend class TerrainGenerator;
+    friend class LegacyTerrainGenerator;
     friend class ModelMeshVBO;
     friend class ModelMaterialInit;
 
@@ -30,7 +31,11 @@ public:
 
     virtual ~ModelMesh();
 
-    virtual const std::string str() const override;
+    virtual const std::string str() const noexcept override;
+    virtual bool isValid() const noexcept override
+    {
+        return !m_vertices.empty() && !m_tris.empty();
+    }
 
     virtual const AABB calculateAABB() const override;
 

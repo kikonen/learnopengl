@@ -14,7 +14,7 @@ public:
     SpriteMesh();
     virtual ~SpriteMesh();
 
-    virtual const std::string str() const override;
+    virtual const std::string str() const noexcept override;
 
     virtual const AABB calculateAABB() const override;
 

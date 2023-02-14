@@ -24,7 +24,7 @@ Mesh::~Mesh()
     KI_INFO(fmt::format("MESH: delete {}", str()));
 }
 
-const std::string Mesh::str() const
+const std::string Mesh::str() const noexcept
 {
     return fmt::format("<MESH: {}>", m_objectID);
 }

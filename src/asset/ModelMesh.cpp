@@ -41,7 +41,7 @@ ModelMesh::~ModelMesh()
     m_vertices.clear();
 }
 
-const std::string ModelMesh::str() const
+const std::string ModelMesh::str() const noexcept
 {
     return fmt::format(
         "<MODEL: {}, mesh={}/{}>",

@@ -28,7 +28,7 @@ QuadMesh::~QuadMesh()
 {
 }
 
-const std::string QuadMesh::str() const
+const std::string QuadMesh::str() const noexcept
 {
     return fmt::format("<QUAD: {}>", m_objectID);
 }

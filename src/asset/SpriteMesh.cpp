@@ -28,7 +28,7 @@ SpriteMesh::~SpriteMesh()
 {
 }
 
-const std::string SpriteMesh::str() const
+const std::string SpriteMesh::str() const noexcept
 {
     return fmt::format("<SPRITE: {}>", m_objectID);
 }
