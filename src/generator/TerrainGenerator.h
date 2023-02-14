@@ -1,45 +1,48 @@
 #pragma once
 
-#include "Generator.h"
+#include "NodeGenerator.h"
 
 #include "asset/Material.h"
 #include "asset/Image.h"
 
 class ModelMesh;
+class MeshType;
 
-class TerrainGenerator : public Generator
+class TerrainGenerator final : public NodeGenerator
 {
 public:
-    TerrainGenerator(
-        float worldTilesZ,
-        float worldTilesX,
-        float heightScale,
-        Material material);
+    TerrainGenerator();
 
     virtual void prepare(
         const Assets& assets,
         Registry* registry,
         Node& node) override;
 
-    virtual bool update(
+    virtual void update(
         const RenderContext& ctx,
         Node& node,
         Node* parent) override;
 
 private:
+    MeshType* createType(
+        Registry* registry,
+        MeshType* containerType);
+
     std::unique_ptr<ModelMesh> generateTerrain(
         int worldZ,
         int worldX);
 
-private:
-    const float m_worldTilesZ;
-    const float m_worldTilesX;
-    const float m_heightScale;
+public:
+    int m_worldTileSize{ 100 };
+    int m_worldTilesZ{ 1 };
+    int m_worldTilesX{ 1 };
+    float m_heightScale{ 1 };
 
     Material m_material;
 
-    size_t m_poolTilesZ;
-    size_t m_poolTilesX;
+private:
+    size_t m_poolTilesZ{ 0 };
+    size_t m_poolTilesX{ 0 };
     size_t m_gridSize{ 0 };
     std::unique_ptr<Image> m_image{ nullptr };
 };

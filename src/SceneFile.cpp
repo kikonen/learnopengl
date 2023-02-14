@@ -25,6 +25,9 @@
 
 #include "model/Node.h"
 
+#include "generator/GridGenerator.h"
+#include "generator/TerrainGenerator.h"
+
 #include "controller/AsteroidBeltController.h"
 #include "controller/CameraController.h"
 #include "controller/MovingLightController.h"
@@ -69,6 +72,8 @@ SceneFile::SceneFile(
 SceneFile::~SceneFile()
 {
     KI_INFO(fmt::format("SCENE_FILE: delete - file={}", m_filename));
+
+    m_defaultMaterial = Material::createMaterial(BasicMaterial::basic);
 }
 
 void SceneFile::load(
@@ -343,7 +348,7 @@ MeshType* SceneFile::attachEntityCloneRepeat(
 
     if (!type) {
         type = createType(
-            entity,
+            entity.isRoot,
             data,
             tile,
             materials);
@@ -368,26 +373,18 @@ MeshType* SceneFile::attachEntityCloneRepeat(
 }
 
 MeshType* SceneFile::createType(
-    const EntityData& entity,
+    bool isRoot,
     const EntityCloneData& data,
     const glm::uvec3& tile,
     std::vector<Material>& materials)
 {
-    const Assets& assets = m_assets;
-
-    // NOTE KI if repeated then create transparent owner node for children
-    const auto& repeat = data.repeat;
-    const bool grouped = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
-
     auto type = m_registry->m_typeRegistry->getType(data.name);
     assignFlags(data, type);
-
-    auto& materialVBO = type->m_materialVBO;
 
     type->m_priority = data.priority;
     type->m_script = data.script;
 
-    if (entity.isRoot) {
+    if (isRoot) {
         type->m_flags.root = true;
         type->m_flags.invisible = true;
         type->m_entityType = EntityType::origo;
@@ -397,24 +394,88 @@ MeshType* SceneFile::createType(
         type->m_flags.instanced = true;
     }
 
+    resolveMaterial(type, data, materials);
+    resolveMesh(type, data, tile);
+
+    if (data.type != EntityType::origo) {
+        // NOTE KI container does not have mesh itself, but it can setup
+        // material & program for contained nodes
+        if (data.type != EntityType::container) {
+            if (!type->getMesh()) {
+                KI_WARN(fmt::format(
+                    "SCENE_FILEIGNORE: NO_MESH id={} ({})",
+                    KI_UUID_STR(data.id), data.name));
+                return nullptr;
+            }
+        }
+
+        bool normalTex = true;
+
+        type->modifyMaterials([this, &normalTex, &data](Material& m) {
+            if (data.materialModifiers_enabled) {
+                modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
+            }
+            m.loadTextures(m_assets);
+
+            normalTex |= m.hasNormalTex();
+        });
+
+        if (!data.programName.empty()) {
+            std::map<std::string, std::string> definitions;
+            for (const auto& [k, v] : data.programDefinitions) {
+                definitions[k] = v;
+            }
+            if (type->m_flags.alpha) {
+                definitions[DEF_USE_ALPHA] = "1";
+            }
+            if (type->m_flags.blend) {
+                definitions[DEF_USE_BLEND] = "1";
+            }
+            if (normalTex) {
+                definitions[DEF_USE_NORMAL_TEX] = "1";
+            }
+
+            type->m_program = m_registry->m_programRegistry->getProgram(
+                data.programName,
+                false,
+                data.geometryType,
+                definitions);
+        }
+    }
+
+    return type;
+}
+
+void SceneFile::resolveMaterial(
+    MeshType* type,
+    const EntityCloneData& data,
+    std::vector<Material>& materials)
+{
     // NOTE KI need to create copy *IF* modifiers
     // TODO KI should make copy *ALWAYS* for safety
-    Material basicMaterial = Material::createMaterial(BasicMaterial::basic);
     Material* material = nullptr;
+
     if (!data.materialName.empty()) {
         material = Material::find(data.materialName, materials);
     }
 
     if (!material) {
-        material = &basicMaterial;
+        material = &m_defaultMaterial;
     }
 
-    if (material) {
-        materialVBO.m_defaultMaterial = *material;
-        materialVBO.m_useDefaultMaterial = true;
-        materialVBO.m_forceDefaultMaterial = data.forceMaterial;
-    }
+    auto& materialVBO = type->m_materialVBO;
 
+    materialVBO.m_defaultMaterial = *material;
+    materialVBO.m_useDefaultMaterial = true;
+    materialVBO.m_forceDefaultMaterial = data.forceMaterial;
+}
+
+void SceneFile::resolveMesh(
+    MeshType* type,
+    const EntityCloneData& data,
+    const glm::uvec3& tile)
+{
+    // NOTE KI materials MUST be resolved before loading mesh
     if (data.type == EntityType::model) {
         auto future = m_registry->m_modelRegistry->getMesh(
             data.meshName,
@@ -465,55 +526,21 @@ MeshType* SceneFile::createType(
         type->setMesh(std::move(mesh), true);
         type->m_entityType = EntityType::terrain;
     }
+    else if (data.type == EntityType::container) {
+        // NOTE KI generator takes care of actual work
+        type->m_entityType = EntityType::container;
+        type->m_flags.invisible = true;
+    }
     else if (data.type == EntityType::origo) {
         // NOTE KI nothing to do
         type->m_entityType = EntityType::origo;
         type->m_flags.invisible = true;
     }
-
-    if (data.type != EntityType::origo) {
-        if (!type->getMesh()) {
-            KI_WARN(fmt::format(
-                "SCENE_FILEIGNORE: NO_MESH id={} ({})",
-                KI_UUID_STR(data.id), data.name));
-            return nullptr;
-        }
-
-        bool normalTex = true;
-
-        type->modifyMaterials([this, &normalTex, &data, &assets](Material& m) {
-            if (data.materialModifiers_enabled) {
-                modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
-            }
-            m.loadTextures(assets);
-
-            normalTex |= m.hasNormalTex();
-        });
-
-        std::map<std::string, std::string> definitions;
-        for (const auto& [k, v] : data.programDefinitions) {
-            definitions[k] = v;
-        }
-        if (type->m_flags.alpha) {
-            definitions[DEF_USE_ALPHA] = "1";
-        }
-        if (type->m_flags.blend) {
-            definitions[DEF_USE_BLEND] = "1";
-        }
-        if (normalTex) {
-            definitions[DEF_USE_NORMAL_TEX] = "1";
-        }
-
-        if (!data.programName.empty()) {
-            type->m_program = m_registry->m_programRegistry->getProgram(
-                data.programName,
-                false,
-                data.geometryType,
-                definitions);
-        }
+    else {
+        // NOTE KI unknown; don't render, just keep it in hierarchy
+        type->m_entityType = EntityType::origo;
+        type->m_flags.invisible = true;
     }
-
-    return type;
 }
 
 Node* SceneFile::createNode(
@@ -569,6 +596,10 @@ Node* SceneFile::createNode(
 
     if (data.controller.enabled) {
         node->m_controller = createController(data, data.controller, node);
+    }
+
+    if (data.generator.enabled) {
+        node->m_generator = createGenerator(data, data.generator, node);
     }
 
     return node;
@@ -773,6 +804,47 @@ std::unique_ptr<NodeController> SceneFile::createController(
     return nullptr;
 }
 
+std::unique_ptr<NodeGenerator> SceneFile::createGenerator(
+    const EntityCloneData& entity,
+    const GeneratorData& data,
+    Node* node)
+{
+    if (!data.enabled) return nullptr;
+
+    const auto& center = node->getPosition();
+
+    switch (data.type) {
+    case GeneratorType::terrain: {
+        auto generator = std::make_unique<TerrainGenerator>();
+
+        auto& materialVBO = node->m_type->m_materialVBO;
+        const auto& tiling = data.tiling;
+
+        generator->m_worldTileSize = tiling.tile_size;
+        generator->m_worldTilesZ = tiling.tiles.z;
+        generator->m_worldTilesX = tiling.tiles.x;
+        generator->m_heightScale= tiling.heightScale;
+        generator->m_material = materialVBO.m_defaultMaterial;
+
+        return generator;
+    }
+    case GeneratorType::grid: {
+        auto generator = std::make_unique<GridGenerator>();
+        generator->m_xCount = data.repeat.xCount;
+        generator->m_yCount = data.repeat.yCount;
+        generator->m_zCount = data.repeat.zCount;
+
+        generator->m_xStep = data.repeat.xStep;
+        generator->m_yStep = data.repeat.yStep;
+        generator->m_zStep = data.repeat.zStep;
+
+        return generator;
+    }
+    }
+
+    return nullptr;
+}
+
 void SceneFile::loadSkybox(
     const YAML::Node& doc,
     SkyboxData& data)
@@ -849,6 +921,9 @@ void SceneFile::loadEntityClone(
             std::string type = v.as<std::string>();
             if (type == "origo") {
                 data.type = EntityType::origo;
+            }
+            else if (type == "container") {
+                data.type = EntityType::container;
             }
             else if (type == "model") {
                 data.type = EntityType::model;
@@ -960,6 +1035,9 @@ void SceneFile::loadEntityClone(
         else if (k == "controller") {
             loadController(v, data.controller);
         }
+        else if (k == "generator") {
+            loadGenerator(v, data.generator);
+        }
         else if (k == "instanced") {
             data.instanced = v.as<bool>();
         }
@@ -1064,6 +1142,9 @@ void SceneFile::loadTiling(
 
         if (k == "tiles") {
             data.tiles = readUVec3(v);
+        }
+        else if (k == "tile_size") {
+            data.tile_size = v.as<int>();
         }
         else if (k == "height_scale") {
             data.heightScale = v.as<float>();
@@ -1229,6 +1310,41 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
         }
         else {
             reportUnknown("controller_entry", k, v);
+        }
+    }
+}
+
+void SceneFile::loadGenerator(
+    const YAML::Node& node,
+    GeneratorData& data)
+{
+    for (const auto& pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "enabled") {
+            data.enabled = v.as<bool>();
+        }
+        else if (k == "type") {
+            std::string type = v.as<std::string>();
+            if (type == "none") {
+                data.type = GeneratorType::none;
+            }
+            else if (type == "terrain") {
+                data.type = GeneratorType::terrain;
+            }
+            else {
+                reportUnknown("generator_type", k, v);
+            }
+        }
+        else if (k == "repeat") {
+            loadRepeat(v, data.repeat);
+        }
+        else if (k == "tiling") {
+            loadTiling(v, data.tiling);
+        }
+        else {
+            reportUnknown("generator_entry", k, v);
         }
     }
 }

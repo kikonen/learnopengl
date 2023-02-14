@@ -336,10 +336,10 @@
     <ClCompile Include="src\command\api\ResumeNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\controller\GridController.cpp">
+    <ClCompile Include="src\generator\GridGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\generator\Generator.cpp">
+    <ClCompile Include="src\generator\NodeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\generator\TerrainGenerator.cpp">
@@ -788,13 +788,13 @@
     <ClInclude Include="src\registry\Registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\controller\GridController.h">
+    <ClInclude Include="src\generator\GridGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\command\api\ResumeNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\generator\Generator.h">
+    <ClInclude Include="src\generator\NodeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\generator\TerrainGenerator.h">

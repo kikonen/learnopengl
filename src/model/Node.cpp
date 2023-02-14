@@ -86,6 +86,10 @@ void Node::prepare(
     if (m_controller) {
         m_controller->prepare(assets, registry, *this);
     }
+
+    if (m_generator) {
+        m_generator->prepare(assets, registry, *this);
+    }
 }
 
 void Node::update(

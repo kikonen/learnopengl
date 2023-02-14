@@ -11,21 +11,21 @@ class RenderContext;
 //
 // Generate node OR entity instances for node
 //
-class Generator
+class NodeGenerator
 {
 public:
-    Generator() = default;
-    virtual ~Generator() = default;
+    NodeGenerator() = default;
+    virtual ~NodeGenerator() = default;
 
     virtual void prepare(
         const Assets& assets,
         Registry* registry,
-        Node& node) {}
+        Node& container) {}
 
-    virtual bool update(
+    virtual void update(
         const RenderContext& ctx,
-        Node& node,
-        Node* parent) {}
+        Node& container,
+        Node* containerParent) {}
 
 protected:
     size_t m_poolSize = 0;

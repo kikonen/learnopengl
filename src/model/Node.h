@@ -5,6 +5,8 @@
 
 #include "asset/AABB.h"
 
+#include "generator/NodeGenerator.h"
+
 #include "registry/MeshType.h"
 
 
@@ -180,6 +182,8 @@ public:
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };
     std::unique_ptr<ParticleGenerator> m_particleGenerator{ nullptr };
+
+    std::unique_ptr<NodeGenerator> m_generator{ nullptr };
 
     int m_entityIndex = -1;
 

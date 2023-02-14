@@ -2,6 +2,7 @@
 
 enum class EntityType {
     origo,
+    container,
     model,
     quad,
     billboard,

@@ -196,8 +196,8 @@
     <ClCompile Include="src\backend\DrawBuffer.cpp" />
     <ClCompile Include="src\command\api\ResumeNode.cpp" />
     <ClCompile Include="src\command\api\Wait.cpp" />
-    <ClCompile Include="src\controller\GridController.cpp" />
-    <ClCompile Include="src\generator\Generator.cpp" />
+    <ClCompile Include="src\generator\GridGenerator.cpp" />
+    <ClCompile Include="src\generator\NodeGenerator.cpp" />
     <ClCompile Include="src\generator\TerrainGenerator.cpp" />
     <ClCompile Include="src\registry\ImageRegistry.cpp" />
     <ClCompile Include="src\registry\MaterialRegistry.cpp" />
@@ -327,9 +327,9 @@
     <ClInclude Include="src\backend\gl\DrawIndirectParameters.h" />
     <ClInclude Include="src\backend\DrawRange.h" />
     <ClInclude Include="src\backend\gl\PerformanceCounters.h" />
-    <ClInclude Include="src\controller\GridController.h" />
+    <ClInclude Include="src\generator\GridGenerator.h" />
     <ClInclude Include="src\command\api\ResumeNode.h" />
-    <ClInclude Include="src\generator\Generator.h" />
+    <ClInclude Include="src\generator\NodeGenerator.h" />
     <ClInclude Include="src\generator\TerrainGenerator.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.h" />
     <ClInclude Include="src\kigl\GLBuffer.h" />

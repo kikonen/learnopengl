@@ -7,6 +7,10 @@
 #include "asset/AABB.h"
 #include "asset/ModelMesh.h"
 
+#include "registry/MeshType.h"
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
+
 namespace {
     // NOTE KI terrain is primarily flat
     // perlin noise creates -4/+4 peaks in mesh, which are scaled down
@@ -15,22 +19,15 @@ namespace {
 
 }
 
-TerrainGenerator::TerrainGenerator(
-    float worldTilesZ,
-    float worldTilesX,
-    float heightScale,
-    Material material)
-    : m_worldTilesZ(worldTilesZ),
-    m_worldTilesX(worldTilesX),
-    m_heightScale(heightScale),
-    m_material(material)
+TerrainGenerator::TerrainGenerator()
+    : NodeGenerator()
 {
 }
 
 void TerrainGenerator::prepare(
     const Assets& assets,
     Registry* registry,
-    Node& node)
+    Node& container)
 {
     m_gridSize = assets.terrainGridSize;
 
@@ -44,14 +41,64 @@ void TerrainGenerator::prepare(
     // NOTE KI don't flip, otherwise have to reverse offsets
     int res = m_image->load(false);
 
+    const glm::vec3 scale{ m_worldTileSize, 0, m_worldTileSize };
+    const int step = m_worldTileSize / 2;
+    int cloneIndex = 0;
+
+    for (int z = 0; z < m_worldTilesZ; z++) {
+        for (int x = 0; x < m_worldTilesX; x++) {
+            const glm::vec3 tile = { x, 0, z };
+            const glm::vec3 pos{ x * step, 0, z * step };
+
+            auto mesh = generateTerrain(z, x);
+
+            auto type = createType(registry, container.m_type);
+            type->setMesh(std::move(mesh), true);
+
+            auto node = new Node(type);
+            node->m_parentId = container.m_id;
+
+            node->setCloneIndex(cloneIndex);
+            node->setTile(tile);
+
+            node->setPosition(pos);
+            node->setScale(scale);
+            node->setAABB(type->getMesh()->getAABB());
+
+            registry->m_nodeRegistry->addNode(node);
+
+            cloneIndex++;
+        }
+    }
 }
 
-bool TerrainGenerator::update(
+void TerrainGenerator::update(
     const RenderContext& ctx,
     Node& node,
     Node* parent)
 {
-    return false;
+}
+
+MeshType* TerrainGenerator::createType(
+    Registry* registry,
+    MeshType* containerType)
+{
+    auto type = registry->m_typeRegistry->getType(containerType->m_name);
+    type->m_entityType = EntityType::terrain;
+
+    auto& flags = type->m_flags;
+    flags = containerType->m_flags;
+    flags.noDisplay = false;
+    flags.invisible = false;
+
+    type->m_priority = containerType->m_priority;
+    type->m_script = containerType->m_script;
+
+    // TODO KI *redundant* copy of material
+    type->m_materialVBO.setMaterials(containerType->m_materialVBO.getMaterials());
+    type->m_program = containerType->m_program;
+
+    return type;
 }
 
 std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
@@ -59,8 +106,6 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     int worldXI)
 {
     auto mesh = std::make_unique<ModelMesh>("terrain");
-
-    Perlin perlin(-1);
 
     const auto gridSize = m_gridSize;
     const auto& image = *m_image;
@@ -70,7 +115,7 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     const int channels = image.m_channels;
 
     const unsigned char* data = image.m_data;
-    const size_t dataSize = imageH * imageW * channels;
+    const int dataSize = imageH * imageW * channels;
 
     const size_t vertexCount = gridSize + 1;
 
@@ -174,8 +219,9 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
         }
     }
 
-    const auto& aabb = TERRAIN_AABB;
-    mesh->setAABB(aabb);
+    mesh->prepareVolume();
+    //const auto& aabb = TERRAIN_AABB;
+    //mesh->setAABB(aabb);
 
     return mesh;
 }

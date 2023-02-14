@@ -25,6 +25,8 @@ class Registry;
 
 class MeshType;
 class Node;
+
+class NodeGenerator;
 class NodeController;
 
 class AsyncLoader;
@@ -87,6 +89,7 @@ class SceneFile
     };
 
     struct Tiling {
+        int tile_size{ 100 };
         float heightScale{ 32 };
         glm::uvec3 tiles{ 1 };
     };
@@ -111,6 +114,20 @@ class SceneFile
         int count{ 0 };
 
         Repeat repeat;
+    };
+
+    enum class GeneratorType {
+        none,
+        grid,
+        terrain,
+    };
+
+    struct GeneratorData {
+        bool enabled{ false };
+        GeneratorType type{ GeneratorType::none };
+
+        Repeat repeat;
+        Tiling tiling;
     };
 
     struct CameraData {
@@ -217,6 +234,8 @@ class SceneFile
         ControllerData controller;
         CameraData camera;
         LightData light;
+
+        GeneratorData generator;
     };
 
     struct EntityData {
@@ -290,10 +309,20 @@ private:
         const Material& mod);
 
     MeshType* createType(
-        const EntityData& entity,
+        bool isRoot,
         const EntityCloneData& data,
         const glm::uvec3& tile,
         std::vector<Material>& materials);
+
+    void resolveMaterial(
+        MeshType* type,
+        const EntityCloneData& data,
+        std::vector<Material>& materials);
+
+    void resolveMesh(
+        MeshType* type,
+        const EntityCloneData& data,
+        const glm::uvec3& tile);
 
     Node* createNode(
         MeshType* type,
@@ -317,6 +346,11 @@ private:
     std::unique_ptr<NodeController> createController(
         const EntityCloneData& entity,
         const ControllerData& data,
+        Node* node);
+
+    std::unique_ptr<NodeGenerator> createGenerator(
+        const EntityCloneData& entity,
+        const GeneratorData& data,
         Node* node);
 
     void loadSkybox(
@@ -364,6 +398,10 @@ private:
     void loadController(
         const YAML::Node& node,
         ControllerData& data);
+
+    void loadGenerator(
+        const YAML::Node& node,
+        GeneratorData& data);
 
     void loadMaterials(
         const YAML::Node& doc,
@@ -419,4 +457,6 @@ private:
     EntityData m_root;
     std::vector<EntityData> m_entities;
     std::vector<Material> m_materials;
+
+    Material m_defaultMaterial;
 };
