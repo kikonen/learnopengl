@@ -24,7 +24,8 @@ struct FrameBufferAttachment {
     GLint minFilter = GL_NEAREST;
     GLint magFilter = GL_NEAREST;
 
-    int textureWrap = GL_CLAMP_TO_EDGE;
+    int textureWrapS = GL_CLAMP_TO_EDGE;
+    int textureWrapT = GL_CLAMP_TO_EDGE;
 
     glm::vec4 borderColor = { 0.0, 0.0, 0.0, 0.0 };
 
@@ -110,12 +111,15 @@ struct FrameBufferAttachment {
     static FrameBufferAttachment getDepthTexture() {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::depth_texture;
-        spec.internalFormat = GL_DEPTH_COMPONENT16;
+        // NOTE KI need to have 24bit, 16bit is FAR TOO SMALL
+        spec.internalFormat = GL_DEPTH_COMPONENT24;
         spec.format = GL_RGBA;
         spec.attachment = GL_DEPTH_ATTACHMENT;
-        spec.minFilter = GL_NEAREST;
-        spec.magFilter = GL_NEAREST;
-        spec.textureWrap = GL_CLAMP_TO_BORDER;
+        // NOTE KI linear slower, but *BETTER* results
+        spec.minFilter = GL_LINEAR;
+        spec.magFilter = GL_LINEAR;
+        spec.textureWrapS = GL_CLAMP_TO_BORDER;
+        spec.textureWrapT = GL_CLAMP_TO_BORDER;
 
         return spec;
     }

@@ -4,6 +4,7 @@ float lookup(
   in float y,
   in float bias)
 {
+  // NOtE KI textureProj == automatic p.xyz / p.w
   float t = textureProj(u_shadowMap,
                         shadowPos + vec4(x * 0.001 * shadowPos.w,
                                                  y * 0.001 * shadowPos.w,
@@ -41,6 +42,7 @@ float calcShadow2(
   in vec3 toLight)
 {
   float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
+  // NOtE KI textureProj == automatic p.xyz / p.w
   return textureProj(u_shadowMap, shadowPos, bias);
 }
 

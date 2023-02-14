@@ -15,6 +15,8 @@ namespace {
     // @see OpenGL Programming Guide, 8th Edition, page 406
     // The scale and bias matrix maps depth values in projection space
     // (which lie between -1.0 and +1.0) into the range 0.0 to 1.0.
+    //
+    // TODO KI add small bias into Translation Z component
     const glm::mat4 scaleBiasMatrix = {
       {0.5f, 0.0f, 0.0f, 0.0f},
       {0.0f, 0.5f, 0.0f, 0.0f},

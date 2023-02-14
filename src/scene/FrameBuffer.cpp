@@ -49,8 +49,8 @@ void FrameBuffer::prepare(
             glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
             glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
 
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrap);
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrap);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
 
             glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
 
@@ -75,11 +75,12 @@ void FrameBuffer::prepare(
             glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
             glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
 
+            // NOTE KI *IMPORTANT* for shadow map min/mag interpolation
             glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
             glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrap);
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrap);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
 
             glm::vec4 borderColor{ 1.0f, 1.0f, 1.0f, 1.0f };
             glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(borderColor));
