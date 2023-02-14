@@ -1,3 +1,5 @@
+#include "SceneFile.h"
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -39,10 +41,7 @@
 
 #include "renderer/SkyboxRenderer.h"
 
-#include "scene/TerrainGenerator.h"
-
-
-#include "SceneFile.h"
+#include "scene/LegacyTerrainGenerator.h"
 
 #include <scene/AsyncLoader.h>
 
@@ -465,14 +464,15 @@ MeshType* SceneFile::createType(
         type->m_entityType = EntityType::sprite;
     }
     else if (data.type == EntityType::terrain) {
-        TerrainGenerator generator(
-            assets,
+        Material material = type->m_materialVBO.m_defaultMaterial;
+        LegacyTerrainGenerator generator(
+            m_assets,
             data.tiling.tiles.z,
             data.tiling.tiles.x,
             data.tiling.heightScale);
-        auto mesh = generator.generateTerrain(tile.z, tile.x, material);
+        auto mesh = generator.generateTerrain(tile.z, tile.x, &material);
         type->setMesh(std::move(mesh), true);
-            type->m_entityType = EntityType::terrain;
+        type->m_entityType = EntityType::terrain;
     }
     else if (data.type == EntityType::origo) {
         // NOTE KI nothing to do

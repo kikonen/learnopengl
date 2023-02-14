@@ -230,6 +230,7 @@
     <ClCompile Include="src\kigl\GLState.cpp" />
     <ClCompile Include="src\asset\DynamicCubeMap.cpp" />
     <ClCompile Include="src\scene\RenderData.cpp" />
+    <ClCompile Include="src\scene\LegacyTerrainGenerator.cpp" />
     <ClCompile Include="src\scene\WindowBuffer.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
     <ClCompile Include="src\asset\ImageTexture.cpp" />
@@ -289,7 +290,6 @@
     <ClCompile Include="src\SampleApp.cpp" />
     <ClCompile Include="src\model\Viewport.cpp" />
     <ClCompile Include="src\renderer\ViewportRenderer.cpp" />
-    <ClCompile Include="src\scene\TerrainGenerator.cpp" />
     <ClCompile Include="src\renderer\WaterMapRenderer.cpp" />
     <ClCompile Include="src\gui\Frame.cpp" />
     <ClCompile Include="src\gui\Window.cpp" />
@@ -381,6 +381,7 @@
     <ClInclude Include="src\scene\BatchCommand.h" />
     <ClInclude Include="src\scene\BatchEntry.h" />
     <ClInclude Include="src\scene\RenderData.h" />
+    <ClInclude Include="src\scene\LegacyTerrainGenerator.h" />
     <ClInclude Include="src\scene\WindowBuffer.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\asset\ImageTexture.h" />
@@ -442,7 +443,6 @@
     <ClInclude Include="src\asset\UBO.h" />
     <ClInclude Include="src\model\Viewport.h" />
     <ClInclude Include="src\renderer\ViewportRenderer.h" />
-    <ClInclude Include="src\scene\TerrainGenerator.h" />
     <ClInclude Include="src\renderer\WaterMapRenderer.h" />
     <ClInclude Include="src\gui\Frame.h" />
     <ClInclude Include="src\ki\Timer.h" />

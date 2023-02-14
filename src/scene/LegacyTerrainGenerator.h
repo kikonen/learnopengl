@@ -3,10 +3,10 @@
 #include "asset/ModelMesh.h"
 #include "asset/QuadMesh.h"
 
-class TerrainGenerator final
+class LegacyTerrainGenerator final
 {
 public:
-    TerrainGenerator(
+    LegacyTerrainGenerator(
         const Assets& assets,
         float worldTilesZ,
         float worldTilesX,
@@ -16,8 +16,6 @@ public:
         int worldZ,
         int worldX,
         Material* material);
-
-    std::unique_ptr<QuadMesh> generateWater();
 
 public:
     const Assets& m_assets;

@@ -1,4 +1,4 @@
-#include "TerrainGenerator.h"
+#include "LegacyTerrainGenerator.h"
 
 #include "util/Perlin.h"
 
@@ -12,7 +12,7 @@ namespace {
 
 }
 
-TerrainGenerator::TerrainGenerator(
+LegacyTerrainGenerator::LegacyTerrainGenerator(
     const Assets& assets,
     float worldTilesZ,
     float worldTilesX,
@@ -24,7 +24,7 @@ TerrainGenerator::TerrainGenerator(
 {
 }
 
-std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
+std::unique_ptr<ModelMesh> LegacyTerrainGenerator::generateTerrain(
     int worldZI,
     int worldXI,
     Material* material)
@@ -154,13 +154,4 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     mesh->setAABB(aabb);
 
     return mesh;
-}
-
-std::unique_ptr<QuadMesh> TerrainGenerator::generateWater()
-{
-    //auto mesh = std::make_unique<QuadMesh>();
-    //mesh->m_material = material;
-
-    //return mesh;
-    return nullptr;
 }
