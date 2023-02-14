@@ -46,8 +46,6 @@ entities:
     material: terrain_grass
     program: terrain
     pos: [-100, 0, -100]
-    xxrender_flags:
-      no_shadow: true
     generator:
       type: terrain
       tiling:

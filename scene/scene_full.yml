@@ -412,14 +412,21 @@ entities:
     selected: false
     enabled: true
   - name: Mountain
-    type: terrain
+    id: auto
+    type: container
     material: terrain_mountain
     program: terrain
-    pos: [140.0, -40.0, -110.0]
-    rotation: [0, 200, 0]
-    scale: [100, 1, 100]
-    tiling:
-      height_scale: 128
+    pos: [140.0, -60.0, -110.0]
+    rotation: [0, 180, 0]
+    render_flags:
+      render_back: true
+    generator:
+      type: terrain
+      tiling:
+        tile_size: 200
+        tiles: [1, 0, 1]
+        height_scale: 128
+      enabled: true
     enabled: true
   - name: Ball
     model: texture_ball
@@ -631,23 +638,18 @@ entities:
         scale: [60, 6, 0.3]
     enabled: true
   - name: Terrain grass
-    type: terrain
-    priority: -15
+    id: auto
+    type: container
     material: terrain_grass
     program: terrain
     pos: [-400, -32, -400]
-    scale: [100, 1, 100]
-    tiling:
-      tiles: [8, 1, 8]
-      height_scale: 64
-    clone_mesh: false
-    repeat:
-      x_count: 8
-      y_count: 1
-      z_count: 8
-      x_step: 200
-      y_step: 0
-      z_step: 200
+    generator:
+      type: terrain
+      tiling:
+        tile_size: 200
+        tiles: [8, 0, 8]
+        height_scale: 64
+      enabled: true
     enabled: true
   - name: Planet origo
     id: 8712cec1-e1a3-4973-8889-533adfbbb196
@@ -1002,10 +1004,9 @@ materials:
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: terrain/two-kingdoms_2048.png
-    map_height: terrain/mountain_1025_height.png
-    xxmap_kd: terrain/terrain_1025_m.png
-    xxmap_height: terrain/terrain_1025_height.png
+    map_kd: terrain/test_1_1024.jpg
+    map_bump: terrain/test_1_1024_normal.png
+    map_height: terrain/test_1_512_height.png
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: noise_256.png
