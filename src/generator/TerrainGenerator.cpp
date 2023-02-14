@@ -41,8 +41,9 @@ void TerrainGenerator::prepare(
     // NOTE KI don't flip, otherwise have to reverse offsets
     int res = m_image->load(false);
 
-    const glm::vec3 scale{ m_worldTileSize, 0, m_worldTileSize };
-    const int step = m_worldTileSize / 2;
+    // NOTE scale.y == makes *FLAT* plane
+    const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
+    const int step = m_worldTileSize;
     int cloneIndex = 0;
 
     for (int z = 0; z < m_worldTilesZ; z++) {

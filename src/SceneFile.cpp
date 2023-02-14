@@ -51,6 +51,8 @@
 namespace {
     const double DEF_ALPHA = 1.0;
 
+    const std::string AUTO_UUID{ "AUTO" };
+
     const std::string QUAD_MESH_NAME{ "quad" };
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
 }
@@ -955,11 +957,21 @@ void SceneFile::loadEntityClone(
         }
         else if (k == "id") {
             data.id_str = v.as<std::string>();
-            data.id = KI_UUID(data.id_str);
+            if (!data.id_str.empty()) {
+                if (util::toUpper(data.id_str) == AUTO_UUID) {
+                    data.id_auto = true;
+                    data.id = uuids::uuid_system_generator{}();
+                }
+                else {
+                    data.id = KI_UUID(data.id_str);
+                }
+            }
         }
         else if (k == "parent_id") {
             data.parentId_str = v.as<std::string>();
-            data.parentId = uuids::uuid::from_string(data.parentId_str).value();
+            if (!data.id_str.empty()) {
+                data.parentId = KI_UUID(data.parentId_str);
+            }
         }
         else if (k == "model") {
             if (v.Type() == YAML::NodeType::Sequence) {

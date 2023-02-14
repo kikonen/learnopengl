@@ -1,6 +1,9 @@
 #pragma once
 
 //#include <fmt/format.h>
+
+// https://github.com/mariusbancila/stduuid
+#define UUID_SYSTEM_GENERATOR 1
 #include <stduuid/uuid.h>
 
 #define KI_UUID(x) (uuids::uuid::from_string(x).value())

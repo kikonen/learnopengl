@@ -188,6 +188,7 @@ class SceneFile
 
         // NOTE KI debug only
         std::string id_str;
+        std::string id_auto;
         // NOTE KI debug only
         std::string parentId_str;
 

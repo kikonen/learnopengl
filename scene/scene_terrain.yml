@@ -41,33 +41,20 @@ entities:
       enabled: true
     enabled: true
   - name: Terrain grass
-    type: terrain
+    id: auto
+    type: container
     material: terrain_grass
     program: terrain
     pos: [-100, 0, -100]
-    scale: [100, 1, 100]
     xxrender_flags:
       no_shadow: true
-    tiling:
-      tiles: [2, 1, 2]
-      height_scale: 32
-    clone_mesh: false
-    xxclones:
-      - pos:  [-100, 0, -100]
-        tile: [0, 0, 0]
-      - pos:  [100, 0, -100]
-        tile: [1, 0, 0]
-      - pos:  [-100, 0, 100]
-        tile: [0, 0, 1]
-      - pos:  [100, 0, 100]
-        tile: [1, 0, 1]
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 200
-      y_step: 0
-      z_step: 200
+    generator:
+      type: terrain
+      tiling:
+        tile_size: 200
+        tiles: [2, 0, 2]
+        height_scale: 32
+      enabled: true
     enabled: true
 materials:
   - name: skybox
