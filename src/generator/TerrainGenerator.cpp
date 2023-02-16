@@ -136,27 +136,32 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     auto& vertices = mesh->m_vertices;
     auto& tris = mesh->m_tris;
 
-    // grid cell size
-    const float tileH = (float)imageH / (float)m_worldTilesZ;
-    const float tileW = (float)imageW / (float)m_worldTilesX;
-
-    // grid texel cell size
-    const float texTileH = (float)1.f / (float)m_worldTilesZ;
-    const float texTileW = (float)1.f / (float)m_worldTilesX;
-
     // ratio per grid cell
-    const float ratioH = tileH / (float)vertexCount;
-    const float ratioW = tileW / (float)vertexCount;
+    float ratioH;
+    float ratioW;
+    {
+        // grid cell size
+        const float tileH = (float)imageH / (float)m_worldTilesZ;
+        const float tileW = (float)imageW / (float)m_worldTilesX;
+
+        ratioH = tileH / (float)vertexCount;
+        ratioW = tileW / (float)vertexCount;
+    }
 
     // ratio per grid texel cell
-    const float texRatioH = texTileH / (float)gridSize;
-    const float texRatioW = texTileW / (float)gridSize;
+    float texRatioH;
+    float texRatioW;
+    {
+        // grid texel cell size
+        const float texTileH = (float)1.f / (float)m_worldTilesZ;
+        const float texTileW = (float)1.f / (float)m_worldTilesX;
+
+        texRatioH = texTileH / (float)gridSize;
+        texRatioW = texTileW / (float)gridSize;
+    }
 
     const int baseZI = worldZI * gridSize;
     const int baseXI = worldXI * gridSize;
-
-    if (worldXI == 1 && worldZI == 1)
-        int b = 0;
 
     vertices.reserve(vertexCount * vertexCount);
     for (int zi = 0; zi < vertexCount; zi++) {
@@ -165,9 +170,8 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
         z = z * 2.f - 1.f;
         z = std::clamp(z, -1.f, 1.f);
 
-        // tz = [0, 1] => global to world
+        // v = [0, 1] => global to world
         float v = 1.f - (baseZI + zi) * texRatioH;
-        //tz = std::clamp(tz, 0.f, 1.f);
 
         for (int xi = 0; xi < vertexCount; xi++) {
             // gx = [-1, 1] => local to mesh
@@ -175,35 +179,28 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
             x = x * 2.f - 1.f;
             x = std::clamp(x, -1.f, 1.f);
 
-            // tx = [0, 1] => global to world
+            // u = [0, 1] => global to world
             float u = (baseXI + xi) * texRatioW;
-            //tx = std::clamp(tx, 0.f, 1.f);
 
-            //float gy = perlin.perlin(gx * tileSize, 0, gz * tileSize);
             int pz = (baseZI + zi) * ratioH;
             int px = (baseXI + xi) * ratioW;
             int offsetZ = imageW * pz;
             int offsetX = px;
             int offset = offsetZ * channels + offsetX * channels;
 
-            if (offset > dataSize)
-                int b = 0;
-
             auto* ptr = data;
             ptr += offset;
 
             unsigned char heightValue = *ptr;
             float height = (heightValue / 255.f) * m_heightScale;
-            float vy = height;
+            float y = height;
 
             //KI_INFO_OUT(fmt::format(
             //    "vz={}, vx={}, vy={}, v={}, u={}, zi={}, xi={}, offsetZ={}, offsetX={}, ratioZ={}, ratioX={}, tileSizeZ={}, tileSizeX={}, h={}, w={}, channels={}",
             //    z, x, vy, v, u, zi, xi, offsetZ, offsetX, ratioH, ratioW, tileH, tileW, imageH, imageW, channels));
 
-            //gy = std::clamp(gy, -4.f, 4.f);
-            //vy = 0.f;
 
-            glm::vec3 pos{ x, vy, z };
+            glm::vec3 pos{ x, y, z };
             glm::vec2 texture{ u, v };
             glm::vec3 normal{ 0.f, 1.f, 0.f };
 
@@ -224,9 +221,6 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
             int topRight = (z * vertexCount) + x + 1;
             int bottomLeft = ((z + 1) * vertexCount) + x;
             int bottomRight = ((z + 1) * vertexCount) + x + 1;
-
-            //Tri* tri1 = new Tri(glm::uvec3(topLeft, bottomLeft, topRight));
-            //Tri* tri2 = new Tri(glm::uvec3(topRight, bottomLeft, bottomRight));
 
             tris.emplace_back(topRight, bottomLeft, bottomRight);
             tris.emplace_back(topLeft, bottomLeft, topRight);
