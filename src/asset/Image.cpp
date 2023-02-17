@@ -48,12 +48,24 @@ int Image::load(bool flip) {
     stbi_set_flip_vertically_on_load_thread(flip);
     //stbi_set_flip_vertically_on_load(flip);
 
-    m_data = stbi_load(
-        m_path.c_str(),
-        &m_width,
-        &m_height,
-        &m_channels,
-        STBI_default);
+    m_is_16_bit = stbi_is_16_bit(m_path.c_str());
+
+    if (m_is_16_bit) {
+        m_data = (unsigned char*)stbi_load_16(
+            m_path.c_str(),
+            &m_width,
+            &m_height,
+            &m_channels,
+            STBI_default);
+    }
+    else {
+        m_data = (unsigned char*)stbi_load(
+            m_path.c_str(),
+            &m_width,
+            &m_height,
+            &m_channels,
+            STBI_default);
+    }
 
     if (m_data) {
         KI_INFO(fmt::format(
