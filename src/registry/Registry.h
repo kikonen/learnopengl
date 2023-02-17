@@ -11,6 +11,8 @@
 #include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
 
+#include "physics/PhysicsEngine.h"
+
 //
 // Container for all registries to simplify passing them around
 //
@@ -30,6 +32,8 @@ public:
     std::unique_ptr<ModelRegistry> m_modelRegistry;
     std::unique_ptr<NodeRegistry> m_nodeRegistry;
     std::unique_ptr<EntityRegistry> m_entityRegistry;
+
+    std::unique_ptr<physics::PhysicsEngine> m_physicsEngine;
 
 private:
     const Assets& m_assets;

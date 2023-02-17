@@ -13,6 +13,8 @@ Registry::Registry(
     m_modelRegistry = std::make_unique<ModelRegistry>(assets, m_alive);
     m_nodeRegistry = std::make_unique<NodeRegistry>(assets, m_alive);
     m_entityRegistry = std::make_unique<EntityRegistry>(assets);
+
+    m_physicsEngine = std::make_unique<physics::PhysicsEngine>(assets);
 }
 
 void Registry::prepare()
@@ -25,4 +27,6 @@ void Registry::prepare()
     m_modelRegistry->prepare();
 
     m_nodeRegistry->prepare(this);
+
+    m_physicsEngine->prepare();
 }

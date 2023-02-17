@@ -5,8 +5,11 @@
 #include "asset/Material.h"
 #include "asset/Image.h"
 
+#include "physics/HeightMap.h"
+
 class ModelMesh;
 class MeshType;
+
 
 class TerrainGenerator final : public NodeGenerator
 {
@@ -24,6 +27,16 @@ public:
         Node* parent) override;
 
 private:
+    void prepareHeightMap(
+        const Assets& assets,
+        Registry* registry,
+        Node& container);
+
+    void createTiles(
+        const Assets& assets,
+        Registry* registry,
+        Node& container);
+
     MeshType* createType(
         Registry* registry,
         MeshType* containerType);
@@ -44,5 +57,6 @@ private:
     size_t m_poolTilesZ{ 0 };
     size_t m_poolTilesX{ 0 };
     size_t m_gridSize{ 0 };
-    std::unique_ptr<Image> m_image{ nullptr };
+
+    physics::HeightMap* m_heightMap{ nullptr };
 };

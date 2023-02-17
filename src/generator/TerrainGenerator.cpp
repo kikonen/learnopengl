@@ -7,6 +7,9 @@
 #include "asset/AABB.h"
 #include "asset/ModelMesh.h"
 
+#include "physics/PhysicsEngine.h"
+#include "physics/HeightMap.h"
+
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -34,13 +37,48 @@ void TerrainGenerator::prepare(
     m_poolTilesZ = 4;
     m_poolTilesX = 4;
 
+    prepareHeightMap(assets, registry, container);
+    createTiles(assets, registry, container);
+}
+
+void TerrainGenerator::update(
+    const RenderContext& ctx,
+    Node& node,
+    Node* parent)
+{
+}
+
+void TerrainGenerator::prepareHeightMap(
+    const Assets& assets,
+    Registry* registry,
+    Node& container)
+{
     const auto& imagePath = m_material.getTexturePath(assets, m_material.map_height);
     KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
 
-    m_image = std::make_unique<Image>(imagePath);
+    auto image = std::make_unique<Image>(imagePath);
     // NOTE KI don't flip, otherwise have to reverse offsets
-    int res = m_image->load(false);
+    int res = image->load(false);
 
+    auto heightMap = std::make_unique<physics::HeightMap>(
+        std::move(image),
+        m_heightScale);
+    {
+        glm::vec3 min{};
+        glm::vec3 max{};
+        AABB aabb{ min, max, false };
+
+        heightMap->setAABB(aabb);
+    }
+    m_heightMap = static_cast<physics::HeightMap*>(registry->m_physicsEngine->registerSurface(std::move(heightMap)));
+    m_heightMap->prepare();
+}
+
+void TerrainGenerator::createTiles(
+    const Assets& assets,
+    Registry* registry,
+    Node& container)
+{
     // NOTE scale.y == makes *FLAT* plane
     const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
     const int step = m_worldTileSize;
@@ -59,7 +97,7 @@ void TerrainGenerator::prepare(
             // NOTE KI must laod textures in the context of *THIS* material
             type->modifyMaterials([&assets](Material& m) {
                 m.loadTextures(assets);
-            });
+                });
 
             auto node = new Node(type);
             node->m_parentId = container.m_id;
@@ -76,13 +114,6 @@ void TerrainGenerator::prepare(
             cloneIndex++;
         }
     }
-}
-
-void TerrainGenerator::update(
-    const RenderContext& ctx,
-    Node& node,
-    Node* parent)
-{
 }
 
 MeshType* TerrainGenerator::createType(
@@ -122,7 +153,7 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     auto mesh = std::make_unique<ModelMesh>("terrain");
 
     const auto gridSize = m_gridSize;
-    const auto& image = *m_image;
+    const auto& image = *m_heightMap->m_image;
 
     const int imageH = image.m_height;
     const int imageW = image.m_width;

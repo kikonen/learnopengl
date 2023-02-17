@@ -66,6 +66,9 @@ int main()
 {
     //testVolume();
 
+    // https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-stdlib
+    std::ios_base::sync_with_stdio(false);
+
     entt::registry registry;
     Log::init();
     KI_INFO_OUT("START");
