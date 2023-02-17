@@ -72,6 +72,9 @@ https://glad.dav1d.de
 - https://www.flipcode.com/archives/Skybox_With_A_Single_Quad.shtml
 - https://www.rioki.org/2013/03/07/glsl-skybox.html
 
+## Libraries
+- https://github.com/nothings/stb
+
 # References
 
 - https://learnopengl.com

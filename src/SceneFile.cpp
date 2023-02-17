@@ -49,12 +49,20 @@
 
 
 namespace {
-    const double DEF_ALPHA = 1.0;
+    const float DEF_ALPHA = 1.0;
 
     const std::string AUTO_UUID{ "AUTO" };
 
     const std::string QUAD_MESH_NAME{ "quad" };
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
+
+    // https://stackoverflow.com/questions/447206/c-isfloat-function
+    bool isFloat(std::string_view s)
+    {
+        double val;
+        auto [p, ec] = std::from_chars(s.data(), s.data() + s.size(), val);
+        return ec == std::errc() && p == s.data() + s.size();
+    }
 }
 
 
@@ -1128,13 +1136,13 @@ void SceneFile::loadRepeat(
             data.zCount = v.as<int>();
         }
         else if (k == "x_step") {
-            data.xStep = v.as<double>();
+            data.xStep = readFloat(v);
         }
         else if (k == "y_step") {
-            data.yStep = v.as<double>();
+            data.yStep = readFloat(v);
         }
         else if (k == "z_step") {
-            data.zStep = v.as<double>();
+            data.zStep = readFloat(v);
         }
         else {
             reportUnknown("repeat_entry", k, v);
@@ -1180,7 +1188,7 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
             data.isDefault = v.as<bool>();
         }
         else if (k == "zoom") {
-            data.zoom = v.as<float>();
+            data.zoom = readFloat(v);
         }
         else if (k == "front") {
             data.front = readVec3(v);
@@ -1240,16 +1248,16 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
             data.targetId = KI_UUID(data.targetId_str);
         }
         else if (k == "linear") {
-            data.linear = v.as<float>();
+            data.linear = readFloat(v);
         }
         else if (k == "quadratic") {
-            data.quadratic = v.as<float>();
+            data.quadratic = readFloat(v);
         }
         else if (k == "cutoff_angle") {
-            data.cutoffAngle = v.as<float>();
+            data.cutoffAngle = readFloat(v);
         }
         else if (k == "outer_cutoff_angle") {
-            data.outerCutoffAngle = v.as<float>();
+            data.outerCutoffAngle = readFloat(v);
         }
         else if (k == "ambient") {
             data.ambient = readRGBA(v);
@@ -1304,10 +1312,10 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
             loadRepeat(v, data.repeat);
         }
         else if (k == "speed") {
-            data.speed = v.as<float>();
+            data.speed = readFloat(v);
         }
         else if (k == "radius") {
-            data.radius = v.as<float>();
+            data.radius = readFloat(v);
         }
         else if (k == "mode") {
             data.mode = v.as<int>();
@@ -1401,7 +1409,7 @@ void SceneFile::loadMaterial(
             }
         }
         else if (k == "ns") {
-            material.ns = v.as<float>();
+            material.ns = readFloat(v);
             fields.ns = true;
         }
         else if (k == "ka") {
@@ -1421,15 +1429,15 @@ void SceneFile::loadMaterial(
             fields.ke = true;
         }
         else if (k == "ni") {
-            material.ni = v.as<float>();
+            material.ni = readFloat(v);
             fields.ni = true;
         }
         else if (k == "d") {
-            material.d = v.as<float>();
+            material.d = readFloat(v);
             fields.d = true;
         }
         else if (k == "illum") {
-            material.d = v.as<float>();
+            material.d = readFloat(v);
             fields.illum = true;
         }
         else if (k == "map_kd") {
@@ -1472,11 +1480,11 @@ void SceneFile::loadMaterial(
             fields.pattern = true;
         }
         else if (k == "reflection") {
-            material.reflection = v.as<float>();
+            material.reflection = readFloat(v);
             fields.reflection = true;
         }
         else if (k == "refraction") {
-            material.refraction = v.as<float>();
+            material.refraction = readFloat(v);
             fields.refraction = true;
         }
         else if (k == "refraction_ratio") {
@@ -1484,21 +1492,21 @@ void SceneFile::loadMaterial(
             fields.refractionRatio = true;
         }
         else if (k == "fog_ratio") {
-            material.fogRatio = v.as<float>();
+            material.fogRatio = readFloat(v);
             fields.fogRatio = true;
         }
         else if (k == "tiling") {
-            material.tilingX = v.as<float>();
-            material.tilingY = v.as<float>();
+            material.tilingX = readFloat(v);
+            material.tilingY = readFloat(v);
             fields.tilingX = true;
             fields.tilingY = true;
         }
         else if (k == "tilingX") {
-            material.tilingX = v.as<float>();
+            material.tilingX = readFloat(v);
             fields.tilingX = true;
         }
         else if (k == "tilingY") {
-            material.tilingY = v.as<float>();
+            material.tilingY = readFloat(v);
             fields.tilingY = true;
         }
         else if (k == "texture_spec") {
@@ -1550,48 +1558,145 @@ void SceneFile::loadTextureWrap(
     reportUnknown("wrap_mode", k, v);
 }
 
+float SceneFile::readFloat(const YAML::Node& node) const
+{
+    if (!isFloat(node.as<std::string>())) {
+        KI_WARN(fmt::format("invalid float {}", renderNode(node)));
+        return 0.f;
+    }
+
+    return node.as<float>();
+}
+
 glm::vec2 SceneFile::readVec2(const YAML::Node& node) const
 {
-    std::vector<float> a;
-    a.reserve(2);
+    if (node.IsSequence()) {
+        std::vector<float> a;
+        a.reserve(2);
 
-    for (const auto& e : node) {
-        a.push_back(e.as<float>());
+        for (const auto& e : node) {
+            a.push_back(readFloat(e));
+        }
+
+        if (a.size() == 0) {
+            a.push_back(0.f);
+            a.push_back(0.f);
+        }
+        else if (a.size() == 1) {
+            // FILL x, x
+            a.push_back(a[0]);
+        }
+
+        return glm::vec2{ a[0], a[1] };
     }
-    return glm::vec2{ a[0], a[1] };
+
+    auto v = readFloat(node);
+    return glm::vec2{ v };
 }
 
 glm::vec3 SceneFile::readVec3(const YAML::Node& node) const
 {
-    std::vector<double> a;
-    a.reserve(3);
+    if (node.IsSequence()) {
+        std::vector<float> a;
+        a.reserve(3);
 
-    for (const auto& e : node) {
-        a.push_back(e.as<double>());
+        for (const auto& e : node) {
+            a.push_back(readFloat(e));
+        }
+
+        if (a.size() == 0) {
+            a.push_back(0.f);
+            a.push_back(0.f);
+            a.push_back(0.f);
+        }
+        else if (a.size() == 1) {
+            // FILL x, x, x
+            a.push_back(a[0]);
+            a.push_back(a[0]);
+        }
+        else if (a.size() == 2) {
+            // FILL x, 0, z
+            a.push_back(a[1]);
+            a[1] = 0.f;
+        }
+        return glm::vec3{ a[0], a[1], a[2] };
     }
-    return glm::vec3{ a[0], a[1], a[2] };
+
+    auto v = readFloat(node);
+    return glm::vec3{ v };
 }
 
 glm::vec4 SceneFile::readVec4(const YAML::Node& node) const
 {
-    std::vector<float> a;
-    a.reserve(4);
+    if (node.IsSequence()) {
+        std::vector<float> a;
+        a.reserve(4);
 
-    for (const auto& e : node) {
-        a.push_back(e.as<float>());
+        for (const auto& e : node) {
+            a.push_back(readFloat(e));
+        }
+
+        if (a.size() == 0) {
+            a.push_back(0.f);
+            a.push_back(0.f);
+            a.push_back(0.f);
+            a.push_back(1.f);
+        }
+        else if (a.size() == 1) {
+            a.push_back(a[0]);
+            a.push_back(a[0]);
+        }
+        else if (a.size() == 2) {
+            // FilL: x, 0, z, 1
+            a.push_back(a[1]);
+            a[1] = 0.f;
+            // w == 1.f
+            a.push_back(1.f);
+        }
+        else if (a.size() == 3) {
+            // FILL x, y, z, 1
+            // w == 1.f
+            a.push_back(1.f);
+        }
+
+        return glm::vec4{ a[0], a[1], a[2], a[3] };
     }
-    return glm::vec4{ a[0], a[1], a[2], a[3] };
+
+    auto v = readFloat(node);
+    return glm::vec4{ v };
 }
 
 glm::uvec3 SceneFile::readUVec3(const YAML::Node& node) const
 {
-    std::vector<int> a;
-    a.reserve(3);
+    if (node.IsSequence()) {
+        std::vector<int> a;
+        a.reserve(3);
 
-    for (const auto& e : node) {
-        a.push_back(e.as<int>());
+        for (const auto& e : node) {
+            a.push_back(e.as<int>());
+        }
+
+        if (a.size() == 0) {
+            a.push_back(0.f);
+            a.push_back(0.f);
+            a.push_back(0.f);
+        }
+        else if (a.size() == 1) {
+            // FILL x, x, x
+            a.push_back(a[0]);
+            a.push_back(a[0]);
+        }
+        else if (a.size() == 2) {
+            // FILL x, 0, z
+            a.push_back(a[1]);
+            a[1] = 0;
+        }
+
+        return glm::uvec3{ a[0], a[1], a[2] };
     }
-    return glm::uvec3{ a[0], a[1], a[2] };
+
+    auto v = node.as<unsigned int>();
+    return glm::uvec3{ v };
 }
 
 glm::vec3 SceneFile::readScale3(const YAML::Node& node) const
@@ -1601,31 +1706,53 @@ glm::vec3 SceneFile::readScale3(const YAML::Node& node) const
         a.reserve(3);
 
         for (const auto& e : node) {
-            a.push_back(e.as<float>());
+            a.push_back(readFloat(e));
         }
+
         while (a.size() < 3) {
-            a.push_back(1.0);
+            a.push_back(1.0f);
         }
+
         return glm::vec3{ a[0], a[1], a[2] };
     }
 
-    auto scale = node.as<float>();
+    auto scale = readFloat(node);
     return glm::vec3{ scale };
 }
 
 glm::vec4 SceneFile::readRGBA(const YAML::Node& node) const
 {
-    std::vector<float> a;
-    a.reserve(4);
+    if (node.IsSequence()) {
+        std::vector<float> a;
+        a.reserve(4);
 
-    for (const auto& e : node) {
-        a.push_back(e.as<float>());
+        for (const auto& e : node) {
+            a.push_back(readFloat(e));
+        }
+
+        if (a.size() == 0) {
+            a.push_back(0.f);
+            a.push_back(0.f);
+            a.push_back(0.f);
+        }
+        else if (a.size() == 1) {
+            a.push_back(a[0]);
+            a.push_back(a[0]);
+        }
+        else if (a.size() == 2) {
+            a.push_back(a[0]);
+        }
+
+        // NOTE KI check if alpha is missing
+        if (a.size() < 4) {
+            a.push_back(DEF_ALPHA);
+        }
+
+        return glm::vec4{ a[0], a[1], a[2], a[3] };
     }
-    // NOTE KI check if alpha is missing
-    if (a.size() < 4) {
-        a.push_back(DEF_ALPHA);
-    }
-    return glm::vec4{ a[0], a[1], a[2], a[3] };
+
+    auto r = readFloat(node);
+    return glm::vec4{ r, r, r, DEF_ALPHA };
 }
 
 glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) const
@@ -1634,7 +1761,7 @@ glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) const
     a.reserve(2);
 
     for (const auto& e : node) {
-        a.push_back(e.as<float>());
+        a.push_back(readFloat(e));
     }
     // NOTE KI check if just single number
     if (a.size() < 1) {
@@ -1678,7 +1805,13 @@ void SceneFile::reportUnknown(
     const YAML::Node& v) const
 {
     std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";
+    KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, renderNode(v)));
+}
+
+std::string SceneFile::renderNode(
+    const YAML::Node& v) const
+{
     std::stringstream ss;
-    ss<< v;
-    KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, ss.str()));
+    ss << v;
+    return ss.str();
 }

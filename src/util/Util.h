@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <algorithm>
 #include <filesystem>
 
@@ -20,7 +21,7 @@ namespace util
 
     //
     // modify str param to lower case
-    // 
+    //
     // @return reference of str param
     inline std::string& toLower(std::string& str)
     {

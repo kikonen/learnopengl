@@ -422,6 +422,8 @@ private:
         const YAML::Node& v,
         GLint& wrapMode);
 
+    float readFloat(const YAML::Node& node) const;
+
     glm::vec2 readVec2(const YAML::Node& node) const;
     glm::vec3 readVec3(const YAML::Node& node) const;
     glm::vec4 readVec4(const YAML::Node& node) const;
@@ -439,6 +441,9 @@ private:
         const std::string& scope,
         const std::string& k,
         const YAML::Node&) const;
+
+    std::string renderNode(
+        const YAML::Node& v) const;
 
 public:
     const std::string m_filename;
