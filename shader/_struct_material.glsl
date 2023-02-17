@@ -10,6 +10,7 @@ struct Material {
   int specularTex;
   int normalMapTex;
   int dudvMapTex;
+  int heightvMapTex;
 
   int pattern;
 
@@ -24,5 +25,5 @@ struct Material {
 
   int pad1;
   int pad2;
-  int pad3;
+//  int pad3;
 };

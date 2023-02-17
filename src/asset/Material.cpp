@@ -156,7 +156,6 @@ void Material::loadTextures(const Assets& assets)
     loadTexture(assets, SPECULAR_IDX, map_ks);
     loadTexture(assets, NORMAL_MAP_IDX, map_bump);
     loadTexture(assets, DUDV_MAP_IDX, map_dudv);
-    loadTexture(assets, DUDV_MAP_IDX, map_height);
     //loadTexture(assets, HEIGHT_MAP_IDX, map_height);
 }
 
@@ -275,6 +274,7 @@ const MaterialSSBO Material::toSSBO() const
         m_textures[SPECULAR_IDX].m_texIndex,
         m_textures[NORMAL_MAP_IDX].m_texIndex,
         m_textures[DUDV_MAP_IDX].m_texIndex,
+        m_textures[HEIGHT_MAP_IDX].m_texIndex,
 
         pattern,
 

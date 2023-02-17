@@ -30,6 +30,7 @@ struct MaterialSSBO {
     int specularTex;
     int normalMap;
     int dudvMap;
+    int heightMap;
 
     int pattern;
 
@@ -45,5 +46,5 @@ struct MaterialSSBO {
 
     int pad1;
     int pad2;
-    int pad3;
+    //int pad3;
 };

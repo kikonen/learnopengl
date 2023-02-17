@@ -50,7 +50,7 @@ constexpr int SPECULAR_IDX = 2;
 constexpr int NORMAL_MAP_IDX = 3;
 constexpr int DUDV_MAP_IDX = 4;
 constexpr int HEIGHT_MAP_IDX = 5;
-constexpr int MATERIAL_TEXTURE_COUNT = HEIGHT_MAP_IDX;
+constexpr int MATERIAL_TEXTURE_COUNT = HEIGHT_MAP_IDX + 1;
 
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
