@@ -49,7 +49,9 @@ public:
     int m_worldTileSize{ 100 };
     int m_worldTilesZ{ 1 };
     int m_worldTilesX{ 1 };
-    float m_heightScale{ 1 };
+
+    glm::vec2 m_verticalRange{ 0.f, 32.f };
+    float m_horizontalScale{ 1.f };
 
     Material m_material;
 

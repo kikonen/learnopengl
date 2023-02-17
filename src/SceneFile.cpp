@@ -531,7 +531,7 @@ void SceneFile::resolveMesh(
             m_assets,
             data.tiling.tiles.z,
             data.tiling.tiles.x,
-            data.tiling.heightScale);
+            data.tiling.height_scale);
         auto mesh = generator.generateTerrain(tile.z, tile.x, &material);
         type->setMesh(std::move(mesh), true);
         type->m_entityType = EntityType::terrain;
@@ -833,7 +833,8 @@ std::unique_ptr<NodeGenerator> SceneFile::createGenerator(
         generator->m_worldTileSize = tiling.tile_size;
         generator->m_worldTilesZ = tiling.tiles.z;
         generator->m_worldTilesX = tiling.tiles.x;
-        generator->m_heightScale= tiling.heightScale;
+        generator->m_verticalRange = tiling.vertical_range;
+        generator->m_horizontalScale = tiling.horizontal_scale;
         generator->m_material = materialVBO.m_defaultMaterial;
 
         return generator;
@@ -1165,7 +1166,13 @@ void SceneFile::loadTiling(
             data.tile_size = v.as<int>();
         }
         else if (k == "height_scale") {
-            data.heightScale = v.as<float>();
+            data.height_scale = readFloat(v);
+        }
+        else if (k == "vertical_range" || k == "vert_range") {
+            data.vertical_range = readVec2(v);
+        }
+        else if (k == "horizontal_scale" || k == "horiz_scale") {
+            data.horizontal_scale = readFloat(v);
         }
         else {
             reportUnknown("tiling_entry", k, v);

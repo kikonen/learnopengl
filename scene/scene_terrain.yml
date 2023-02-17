@@ -11,11 +11,10 @@ root:
 entities:
   - name: Origo
     type: origo
-    pos: [0, 50, 50]
+    pos: [0, 150, 50]
     camera:
       zoom: 45
       pos: [0, 0, 0]
-      Xrotation: [0, 180, 0.0]
       default: true
       enabled: true
     controller:
@@ -23,7 +22,7 @@ entities:
       enabled: true
     enabled: true
   - name: Directional light
-    pos: [0, 45, -100]
+    pos: [0, 200, 500]
     scale: 2.5
     model: light
     program: texture
@@ -45,23 +44,73 @@ entities:
     type: container
     material: terrain_grass
     program: terrain
-    pos: [-100, 0, -100]
+    pos: [-1024, 0, -1024]
+    render_flags:
+      no_shadow: true
     generator:
       type: terrain
       tiling:
-        tile_size: 200
-        tiles: [2, 0, 2]
-        height_scale: 32
+        tile_size: 512
+        tiles: [4, 0, 4]
+        vert_range: [-62.54, 221.9]
+        horiz_scale: 2
       enabled: true
+    enabled: true
+  - name: Sea
+    type: quad
+    material: water_surface
+    program: water
+    pos: [0, 0.0, 0]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 1000
+    render_flags:
+      no_shadow: true
+      render_back: true
+      water: true
+    enabled: true
+  - name: Sea floor
+    model: quad
+    material: tiles
+    program: texture
+    pos: [0, -20, 0]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 1200
+    render_flags:
+      no_shadow: true
+      render_back: true
     enabled: true
 materials:
   - name: skybox
     type: skybox
     asset: skybox
-  - name: terrain_grass
+  - name: terrain_grass_OLD
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: terrain/terrain_1025_m.png
     map_bump: terrain/terrain_1025_normal.png
     map_height: terrain/terrain_1025_height.png
+  - name: terrain_grass
+    type: texture
+    ns: 50
+    ks: [0.6, 0.6, 0.6, 1.0]
+    map_kd: terrain_2/terrain_2_TX.jpg
+    map_ks: terrain_2/terrain_2_SpecLM.png
+    map_bump: terrain_2/terrain_2_TN.png
+    map_height: terrain_2/terrain_2_height.png
+  - name: water_surface
+    type: texture
+    ns: 150
+    ks: [0.2, 0.2, 0.5, 1.0]
+    kd: [0.0, 0.1, 0.8, 1.0]
+    map_bump: water_surface_512_normal.png
+    map_dudv: waterDUDV_512.png
+    tiling: 2
+    texture_spec:
+      clamp: GL_REPEAT
+  - name: tiles
+    type: texture
+    map_kd: tiles_1024.png
+    tiling: 32
+    texture_spec:
+      wrap: GL_REPEAT

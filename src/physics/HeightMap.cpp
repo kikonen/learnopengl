@@ -89,7 +89,7 @@ namespace physics {
                 ptr += offset;
 
                 unsigned char heightValue = *ptr;
-                float height = (heightValue / 255.f) * m_heightScale;
+                float height = (heightValue / 255.f) * 1;
                 float vy = height;
             }
         }

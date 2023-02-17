@@ -10,10 +10,8 @@ namespace physics {
     class HeightMap : public Surface {
     public:
         HeightMap(
-            std::unique_ptr<Image> image,
-            float heightScale)
-            : m_image(std::move(image)),
-            m_heightScale(heightScale)
+            std::unique_ptr<Image> image)
+            : m_image(std::move(image))
         {
         }
 
@@ -32,7 +30,9 @@ namespace physics {
 
     public:
         const std::unique_ptr<Image> m_image;
-        const float m_heightScale;
+
+        glm::vec2 m_verticalRange{ 0.f, 32.f };
+        float m_horizontalScale{ 1.f };
 
     private:
         float* m_heights{ nullptr };

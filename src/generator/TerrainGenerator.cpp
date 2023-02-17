@@ -60,10 +60,11 @@ void TerrainGenerator::prepareHeightMap(
     // NOTE KI don't flip, otherwise have to reverse offsets
     int res = image->load(false);
 
-    auto heightMap = std::make_unique<physics::HeightMap>(
-        std::move(image),
-        m_heightScale);
+    auto heightMap = std::make_unique<physics::HeightMap>(std::move(image));
     {
+        heightMap->m_verticalRange = m_verticalRange;
+        heightMap->m_horizontalScale = m_horizontalScale;
+
         glm::vec3 min{};
         glm::vec3 max{};
         AABB aabb{ min, max, false };
@@ -97,7 +98,7 @@ void TerrainGenerator::createTiles(
             // NOTE KI must laod textures in the context of *THIS* material
             type->modifyMaterials([&assets](Material& m) {
                 m.loadTextures(assets);
-                });
+            });
 
             auto node = new Node(type);
             node->m_parentId = container.m_id;
@@ -160,7 +161,11 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     const int channels = image.m_channels;
 
     const unsigned char* data = image.m_data;
-    const int dataSize = imageH * imageW * channels;
+    const bool image16b = image.m_is_16_bit;
+    const int entrySize = channels * (image16b ? 2 : 1);
+    const float entryScale = image16b ? 65535 : 255;
+
+    const int dataSize = imageH * imageW * entrySize;
 
     const size_t vertexCount = gridSize + 1;
 
@@ -194,6 +199,16 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     const int baseZI = worldZI * gridSize;
     const int baseXI = worldXI * gridSize;
 
+    int minH = 9999999;
+    int maxH = -1;
+
+    float minY = 99999999;
+    float maxY = -1;
+
+    const float rangeYmin = m_verticalRange[0];
+    const float rangeYmax = m_verticalRange[1];
+    const float rangeY = rangeYmax - rangeYmin;
+
     vertices.reserve(vertexCount * vertexCount);
     for (int zi = 0; zi < vertexCount; zi++) {
         // vz = [-1, 1] => local to mesh
@@ -217,14 +232,30 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
             int px = (baseXI + xi) * ratioW;
             int offsetZ = imageW * pz;
             int offsetX = px;
-            int offset = offsetZ * channels + offsetX * channels;
+            int offset = offsetZ * entrySize + offsetX * entrySize;
 
             auto* ptr = data;
             ptr += offset;
 
-            unsigned char heightValue = *ptr;
-            float height = (heightValue / 255.f) * m_heightScale;
-            float y = height;
+            unsigned short heightValue;
+            unsigned short heightValue8 = *ptr;
+            unsigned short heightValue8_2 = *(ptr + 1);
+            if (image16b) {
+                heightValue = *((unsigned short*)ptr);
+            }
+            else {
+                heightValue = *ptr;
+            }
+            float height = (heightValue / entryScale) * rangeY;
+            float y = rangeYmin + height;
+
+            if (heightValue < minH) minH = heightValue;
+            if (heightValue > maxH) maxH = heightValue;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+
+            if (maxH > 65535)
+                int b = 1;
 
             //KI_INFO_OUT(fmt::format(
             //    "vz={}, vx={}, vy={}, v={}, u={}, zi={}, xi={}, offsetZ={}, offsetX={}, ratioZ={}, ratioX={}, tileSizeZ={}, tileSizeX={}, h={}, w={}, channels={}",
@@ -244,6 +275,11 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
             );
         }
     }
+
+    KI_INFO_OUT(fmt::format(
+        "HMAP: {} .. {} vs {} .. {}",
+        minH, maxH, minY, maxY
+    ));
 
     tris.reserve(vertexCount * vertexCount * 2);
     for (size_t z = 0; z < vertexCount - 1; z++) {

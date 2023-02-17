@@ -19,7 +19,7 @@ void CameraController::prepare(
 
     m_node = &node;
 
-    m_moveStep = 4.5f;
+    m_moveStep = 8.5f;
     m_rotateStep = 15.f;
     m_zoomStep = 20.0f;
     m_mouseSensitivity = 0.1f;
