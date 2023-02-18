@@ -14,26 +14,14 @@ root:
     type: path
     mode: 1
     enabled: false
-  xxscript: |
-    local wid = -1
-    local cid = -1
-
-    wid = cmd:wait(0, 5)
-    cmd:rotate(id, { after=wid, time=2, relative=true }, { 0.0, 360.0, 0.0 })
+  xxscript_file: scripts/seq_spin_root
 entities:
   - name: zero origo
     id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     type: origo
     pos: [0.0, 0.0, 0.0]
     enabled: true
-    script: |
-      local wid = -1
-      local cid = -1
-
-      wid = cmd:wait(0, 5)
-      cid = cmd:moveSpline(id, { after=wid, time=20, relative=false }, { -50, 50, 0 }, { -20, 50, 0 })
-      wid = cmd:wait(cid, 60)
-      cmd:moveSpline(id, { after=wid, time=20, relative=true }, { 50, -40, 0 }, { 20, -40, 0 })
+    script_file: scripts/seq_zero_origo
   - name: ZERO
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     model: water_ball
@@ -41,17 +29,7 @@ entities:
     pos: [0.0, 0.0, 0.0]
     scale: 0.3
     enabled: true
-    script: |
-      local wid = -1
-      local cid = -1
-
-      wid = cmd:wait(0, 5)
-      cmd:scale(id, { after=wid, time=40, relative=true }, { 4.0, 6.0, 0.2 })
-      wid = cmd:wait(0, 30)
-      cid = cmd:rotate(id, { after=wid, time=10, relative=true }, { 0.0, 720.0, 0.0 })
-      wid = cmd:wait(cid, 30)
-      cmd:rotate(id, { after=wid, time=10, relative=true }, { 0.0, 720.0, 0.0 })
-      cmd:scale(id, { after=wid, time=20, relative=false }, { 1.2, 1.2, 0.2 })
+    script_file: scripts/seq_zero
   - name: Player
     model: player
     pos: [-10, 12, -20.0]
@@ -93,11 +71,10 @@ entities:
     type: origo
     pos: [0.0, 0.0, 0.0]
     enabled: true
-    script: |
-      cmd:rotate(id, { time=3600, relative=true }, { 0.0, 7200.0, 0.0 })
+    script_file: scripts/anim_directional_light
   - name: Directional light
     parent_id: 910be8c1-2060-455f-9b43-179a4814732f
-    pos: [0, 0, -80]
+    pos: [0, 0, -100]
     scale: 1.5
     model: light
     program: ball_effect
@@ -130,8 +107,7 @@ entities:
         id: 117b6b3f-6c40-4cb6-b138-856a95888ceb
       - pos: [30.0, 14.0, 30.0]
         id: e5514669-a024-41ee-b2df-89db0bb3f361
-    script: |
-      cmd:rotate(id, { time=600, relative=true }, { 0.0, 7200.0, 0.0 })
+    script_file: scripts/anim_moving_point_light
     enabled: true
   - name: Moving point light
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
@@ -169,8 +145,7 @@ entities:
     type: origo
     pos: [0.0, 10.0, 0.0]
     enabled: true
-    script: |
-      cmd:rotate(id, { time=900, relative=true }, { 0.0, 7200.0, 0.0 })
+    script_file: scripts/anim_rock_light
   - name: Rock light
     parent_id: b2e6b0e4-7e29-4697-9bca-f387d740ba6c
     pos: [-10, 0, 0]
@@ -315,12 +290,7 @@ entities:
       mirror: true
     plane_normal: [0.0, 0.0, 1.0]
     enabled: true
-    script: |
-      local wid = -1
-      local cid = -1
-
-      wid = cmd:wait(0, 5)
-      cmd:rotate(id, { after=wid, time=3600, relative=true }, { 0.0, -7200.0, 0.0 })
+    script_file: scripts/anim_mirror
   - name: Big mirror 2
     model: quad
     material: mirror
@@ -333,12 +303,7 @@ entities:
       mirror: true
     plane_normal: [0.0, 0.0, 1.0]
     enabled: true
-    script: |
-      local wid = -1
-      local cid = -1
-
-      wid = cmd:wait(0, 5)
-      cmd:rotate(id, { after=wid, time=3600, relative=true }, { 0.0, 7200.0, 0.0 })
+    script_file: scripts/anim_mirror
   - name: Spyro
     model: spyro2
     program: texture
@@ -721,12 +686,7 @@ entities:
     material_modifier:
       fog_ratio: 0
     enabled: true
-    script: |
-      local wid = -1
-      local cid = -1
-
-      wid = cmd:wait(0, 5)
-      cmd:rotate(id, { after=wid, time=3600, relative=true }, { 0.0, 720.0, 0.0 })
+    script_file: scripts/anim_planet
   - name: Rock origo
     id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
@@ -818,35 +778,7 @@ entities:
       x_step: -3
       z_step: 2
     enabled: true
-    script: |
-      local function main()
-        --print(string.format("START: %d", id))
-
-        local pos = node:getPos()
-        local rnd = math.random
-        local x = pos[1]
-        local y = pos[2]
-        local z = pos[3]
-        local wid = -1
-        local cid = -1
-
-        wid = cmd:wait(0, 5)
-        cid = cmd:move(id, { after=wid, time=10, relative=true }, { 25 - rnd(100), 0, 25 - rnd(100) })
-
-        wid = cmd:wait(0, 7)
-        cmd:cancel(wid, 0, cid)
-
-        cid = cmd:move(id, { after=cid, time=10, relative=true }, { 25 - rnd(100), 0, 25 - rnd(100) })
-        cmd:cancel(-1, 0, cid)
-
-        cid = cmd:move(id, { after=cid, time=5, relative=true }, { 25 - rnd(50), 0, 25 - rnd(50) })
-        cid = cmd:move(id, { after=cid, time=5, relative=true }, { 10 - rnd(20), 0, 10 - rnd(20) })
-        cid = cmd:moveSpline(id, { after=cid, time=3, relative=true }, { 20, 0, 5 }, { 5 - rnd(10), 0, 5 - rnd(10) })
-        cid = cmd:move(id, { after=cid, time=2, relative=false }, { x, y, z })
-      end
-
-      cmd:start(id, { after=wid }, main)
-      --main()
+    script_file: scripts/seq_skeleton_army
   - name: Skeleton single
     xxid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
     model: quad

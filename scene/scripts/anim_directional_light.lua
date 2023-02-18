@@ -8,22 +8,11 @@ local function animation()
 
    while(true) do
       -- NOTE KI *WAIT* for resume to complete
-      wid = cmd:wait(cid, 3)
+      wid = cmd:wait(cid, 5)
 
-      cid = cmd:moveSpline(
-         id,
-         { after=wid, time=10, relative=true },
-         { 0, 1.5, 0 },
-         { 0, -2.5, 0 })
+      cid = cmd:rotate(id, { time=120, relative=true }, { 0.0, 360.0, 0.0 })
 
-      wid = cmd:wait(cid, 1)
-      cid = cmd:moveSpline(
-         id,
-         { after=wid, time=10, relative=false },
-         { 0, -1.5, 0 },
-         origPos)
-
-      wid = cmd:wait(cid, 1)
+      wid = cmd:wait(cid, 0)
       cid = cmd:resume(id, { after=wid }, "callback")
 
       -- NOTE KI wait for callback
