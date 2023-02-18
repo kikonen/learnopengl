@@ -831,8 +831,8 @@ std::unique_ptr<NodeGenerator> SceneFile::createGenerator(
         const auto& tiling = data.tiling;
 
         generator->m_worldTileSize = tiling.tile_size;
-        generator->m_worldTilesZ = tiling.tiles.z;
-        generator->m_worldTilesX = tiling.tiles.x;
+        generator->m_worldTilesU = tiling.tiles.x;
+        generator->m_worldTilesV = tiling.tiles.z;
         generator->m_verticalRange = tiling.vertical_range;
         generator->m_horizontalScale = tiling.horizontal_scale;
         generator->m_material = materialVBO.m_defaultMaterial;

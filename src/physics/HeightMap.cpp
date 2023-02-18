@@ -1,5 +1,8 @@
 #include "HeightMap.h"
 
+#include "util/Log.h"
+#include <fmt/format.h>
+
 namespace physics {
     void HeightMap::prepare()
     {
@@ -9,93 +12,62 @@ namespace physics {
         const int imageW = image.m_width;
         const int channels = image.m_channels;
 
-        const int count = imageH * imageW;
+        const bool image16b = image.m_is_16_bit;
+        const int entrySize = channels * (image16b ? 2 : 1);
+        const float entryScale = image16b ? 65535.f : 255.f;
 
-        m_heights = new float[count];
+        const size_t size = imageH * imageW;
+
+        const float rangeYmin = m_verticalRange[0];
+        const float rangeYmax = m_verticalRange[1];
+        const float rangeY = rangeYmax - rangeYmin;
+
+        int minH = 9999999;
+        int maxH = -1;
+        float minY = 99999999;
+        float maxY = -1;
+
+        m_heights = new float[size];
 
         const unsigned char* ptr = image.m_data;
-        for (int i = 0; i < count; i++) {
-            unsigned char h = *ptr;
-            m_heights[i] = h / 255.f;
-            ptr += channels;
+        for (int i = 0; i < size; i++) {
+            unsigned short heightValue = *((unsigned short*)ptr);
+            float y = rangeYmin + (float)heightValue / entryScale * rangeY;
+
+            if (heightValue < minH) minH = heightValue;
+            if (heightValue > maxH) maxH = heightValue;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+
+            m_heights[i] = y;
+            ptr += entrySize;
         }
+
+        KI_INFO_OUT(fmt::format(
+            "HMAP: {} .. {} vs {} .. {}",
+            minH, maxH, minY, maxY
+        ));
+
+        m_width = imageW;
+        m_height = imageH;
     }
 
-    float HeightMap::getHeight(float z, float x)
+    float HeightMap::getTerrainHeight(float u, float v)
     {
-        int worldZI = 0;
-        int worldXI = 0;
-        const auto gridSize = 100;
-        const auto worldTilesZ = 8;
-        const auto worldTilesX = 8;
+        u = std::clamp(u, 0.f, 1.f);
+        v = std::clamp(v, 0.f, 1.f);
 
-        const auto& image = *m_image;
+        int mapX = m_width * u;
+        int mapY = m_height * (1.f - v);
 
-        const int imageH = image.m_height;
-        const int imageW = image.m_width;
-        const int channels = image.m_channels;
+        mapX = std::clamp(mapX, 0, m_width - 1);
+        mapY = std::clamp(mapY, 0, m_height - 1);
 
-        const unsigned char* data = image.m_data;
-        const int dataSize = imageH * imageW * channels;
+        const int offset = m_width * mapY + mapX;
+        if (offset > m_height * m_width)
+            throw std::runtime_error{ "out-of-bounds" };
 
-        const size_t vertexCount = gridSize + 1;
-
-        // grid cell size
-        const float tileH = (float)imageH / (float)worldTilesZ;
-        const float tileW = (float)imageW / (float)worldTilesX;
-
-        // grid texel cell size
-        const float texTileH = (float)1.f / (float)worldTilesZ;
-        const float texTileW = (float)1.f / (float)worldTilesX;
-
-        // ratio per grid cell
-        const float ratioH = tileH / (float)vertexCount;
-        const float ratioW = tileW / (float)vertexCount;
-
-        // ratio per grid texel cell
-        const float texRatioH = texTileH / (float)gridSize;
-        const float texRatioW = texTileW / (float)gridSize;
-
-        const int baseZI = worldZI * gridSize;
-        const int baseXI = worldXI * gridSize;
-
-        for (int zi = 0; zi < vertexCount; zi++) {
-            // vz = [-1, 1] => local to mesh
-            float z = zi / (float)gridSize;
-            z = z * 2.f - 1.f;
-            z = std::clamp(z, -1.f, 1.f);
-
-            // tz = [0, 1] => global to world
-            float v = 1.f - (baseZI + zi) * texRatioH;
-
-            for (int xi = 0; xi < vertexCount; xi++) {
-                // gx = [-1, 1] => local to mesh
-                float x = xi / (float)gridSize;
-                x = x * 2.f - 1.f;
-                x = std::clamp(x, -1.f, 1.f);
-
-                // tx = [0, 1] => global to world
-                float u = (baseXI + xi) * texRatioW;
-                //tx = std::clamp(tx, 0.f, 1.f);
-
-                //float gy = perlin.perlin(gx * tileSize, 0, gz * tileSize);
-                int pz = (baseZI + zi) * ratioH;
-                int px = (baseXI + xi) * ratioW;
-                int offsetZ = imageW * pz;
-                int offsetX = px;
-                int offset = offsetZ * channels + offsetX * channels;
-
-                auto* ptr = data;
-                ptr += offset;
-
-                unsigned char heightValue = *ptr;
-                float height = (heightValue / 255.f) * 1;
-                float vy = height;
-            }
-        }
-
-        // TODO KI interpolate value
-        return 0.f;
+        return m_heights[offset];
     }
 
     float HeightMap::getLevel(const glm::vec3& pos)

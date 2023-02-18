@@ -132,6 +132,10 @@ void Node::update(
 
         m_dirtyEntity = false;
     }
+
+    if (m_generator) {
+        m_generator->update(ctx, *this, parent);
+    }
 }
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept

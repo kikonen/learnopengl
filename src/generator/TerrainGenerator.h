@@ -42,13 +42,13 @@ private:
         MeshType* containerType);
 
     std::unique_ptr<ModelMesh> generateTerrain(
-        int worldZ,
-        int worldX);
+        int tileU,
+        int tileV);
 
 public:
     int m_worldTileSize{ 100 };
-    int m_worldTilesZ{ 1 };
-    int m_worldTilesX{ 1 };
+    int m_worldTilesU{ 1 };
+    int m_worldTilesV{ 1 };
 
     glm::vec2 m_verticalRange{ 0.f, 32.f };
     float m_horizontalScale{ 1.f };
@@ -56,9 +56,10 @@ public:
     Material m_material;
 
 private:
-    size_t m_poolTilesZ{ 0 };
-    size_t m_poolTilesX{ 0 };
     size_t m_gridSize{ 0 };
+
+    size_t m_poolSizeU{ 0 };
+    size_t m_poolSizeV{ 0 };
 
     physics::HeightMap* m_heightMap{ nullptr };
 };

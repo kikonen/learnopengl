@@ -34,8 +34,8 @@ void TerrainGenerator::prepare(
 {
     m_gridSize = assets.terrainGridSize;
 
-    m_poolTilesZ = 4;
-    m_poolTilesX = 4;
+    m_poolSizeU = 4;
+    m_poolSizeV = 4;
 
     prepareHeightMap(assets, registry, container);
     createTiles(assets, registry, container);
@@ -46,6 +46,7 @@ void TerrainGenerator::update(
     Node& node,
     Node* parent)
 {
+    m_heightMap->m_origin = parent->getWorldPosition();
 }
 
 void TerrainGenerator::prepareHeightMap(
@@ -85,12 +86,12 @@ void TerrainGenerator::createTiles(
     const int step = m_worldTileSize;
     int cloneIndex = 0;
 
-    for (int z = 0; z < m_worldTilesZ; z++) {
-        for (int x = 0; x < m_worldTilesX; x++) {
-            const glm::vec3 tile = { x, 0, z };
-            const glm::vec3 pos{ x * step, 0, z * step };
+    for (int v = 0; v < m_worldTilesV; v++) {
+        for (int u = 0; u < m_worldTilesU; u++) {
+            const glm::vec3 tile = { u, 0, v };
+            const glm::vec3 pos{ u * step, 0, v * step };
 
-            auto mesh = generateTerrain(z, x);
+            auto mesh = generateTerrain(u, v);
 
             auto type = createType(registry, container.m_type);
             type->setMesh(std::move(mesh), true);
@@ -148,119 +149,56 @@ MeshType* TerrainGenerator::createType(
 }
 
 std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
-    int worldZI,
-    int worldXI)
+    int tileU,
+    int tileV)
 {
     auto mesh = std::make_unique<ModelMesh>("terrain");
 
-    const auto gridSize = m_gridSize;
-    const auto& image = *m_heightMap->m_image;
-
-    const int imageH = image.m_height;
-    const int imageW = image.m_width;
-    const int channels = image.m_channels;
-
-    const unsigned char* data = image.m_data;
-    const bool image16b = image.m_is_16_bit;
-    const int entrySize = channels * (image16b ? 2 : 1);
-    const float entryScale = image16b ? 65535 : 255;
-
-    const int dataSize = imageH * imageW * entrySize;
-
-    const size_t vertexCount = gridSize + 1;
-
-    auto& vertices = mesh->m_vertices;
-    auto& tris = mesh->m_tris;
-
-    // ratio per grid cell
-    float ratioH;
-    float ratioW;
-    {
-        // grid cell size
-        const float tileH = (float)imageH / (float)m_worldTilesZ;
-        const float tileW = (float)imageW / (float)m_worldTilesX;
-
-        ratioH = tileH / (float)vertexCount;
-        ratioW = tileW / (float)vertexCount;
-    }
+    const size_t vertexCount = m_gridSize + 1;
 
     // ratio per grid texel cell
-    float texRatioH;
-    float texRatioW;
+    float texRatioU;
+    float texRatioV;
     {
         // grid texel cell size
-        const float texTileH = (float)1.f / (float)m_worldTilesZ;
-        const float texTileW = (float)1.f / (float)m_worldTilesX;
+        const float texTileU = (float)1.f / (float)m_worldTilesU;
+        const float texTileV = (float)1.f / (float)m_worldTilesV;
 
-        texRatioH = texTileH / (float)gridSize;
-        texRatioW = texTileW / (float)gridSize;
+        texRatioU = texTileU / (float)m_gridSize;
+        texRatioV = texTileV / (float)m_gridSize;
     }
 
-    const int baseZI = worldZI * gridSize;
-    const int baseXI = worldXI * gridSize;
-
-    int minH = 9999999;
-    int maxH = -1;
+    const int baseU = tileU * m_gridSize;
+    const int baseV = tileV * m_gridSize;
 
     float minY = 99999999;
     float maxY = -1;
 
-    const float rangeYmin = m_verticalRange[0];
-    const float rangeYmax = m_verticalRange[1];
-    const float rangeY = rangeYmax - rangeYmin;
-
+    auto& vertices = mesh->m_vertices;
     vertices.reserve(vertexCount * vertexCount);
-    for (int zi = 0; zi < vertexCount; zi++) {
+
+    for (int vi = 0; vi < vertexCount; vi++) {
         // vz = [-1, 1] => local to mesh
-        float z = zi / (float)gridSize;
+        float z = vi / (float)m_gridSize;
         z = z * 2.f - 1.f;
         z = std::clamp(z, -1.f, 1.f);
 
         // v = [0, 1] => global to world
-        float v = 1.f - (baseZI + zi) * texRatioH;
+        const float v = 1.f - (baseV + vi) * texRatioV;
 
-        for (int xi = 0; xi < vertexCount; xi++) {
+        for (int ui = 0; ui < vertexCount; ui++) {
             // gx = [-1, 1] => local to mesh
-            float x = xi / (float)gridSize;
+            float x = ui / (float)m_gridSize;
             x = x * 2.f - 1.f;
             x = std::clamp(x, -1.f, 1.f);
 
             // u = [0, 1] => global to world
-            float u = (baseXI + xi) * texRatioW;
+            const float u = (baseU + ui) * texRatioU;
 
-            int pz = (baseZI + zi) * ratioH;
-            int px = (baseXI + xi) * ratioW;
-            int offsetZ = imageW * pz;
-            int offsetX = px;
-            int offset = offsetZ * entrySize + offsetX * entrySize;
+            float y = m_heightMap->getTerrainHeight(u, v);
 
-            auto* ptr = data;
-            ptr += offset;
-
-            unsigned short heightValue;
-            unsigned short heightValue8 = *ptr;
-            unsigned short heightValue8_2 = *(ptr + 1);
-            if (image16b) {
-                heightValue = *((unsigned short*)ptr);
-            }
-            else {
-                heightValue = *ptr;
-            }
-            float height = (heightValue / entryScale) * rangeY;
-            float y = rangeYmin + height;
-
-            if (heightValue < minH) minH = heightValue;
-            if (heightValue > maxH) maxH = heightValue;
             if (y < minY) minY = y;
             if (y > maxY) maxY = y;
-
-            if (maxH > 65535)
-                int b = 1;
-
-            //KI_INFO_OUT(fmt::format(
-            //    "vz={}, vx={}, vy={}, v={}, u={}, zi={}, xi={}, offsetZ={}, offsetX={}, ratioZ={}, ratioX={}, tileSizeZ={}, tileSizeX={}, h={}, w={}, channels={}",
-            //    z, x, vy, v, u, zi, xi, offsetZ, offsetX, ratioH, ratioW, tileH, tileW, imageH, imageW, channels));
-
 
             glm::vec3 pos{ x, y, z };
             glm::vec2 texture{ u, v };
@@ -277,11 +215,13 @@ std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
     }
 
     KI_INFO_OUT(fmt::format(
-        "HMAP: {} .. {} vs {} .. {}",
-        minH, maxH, minY, maxY
+        "TERRAIN-Y: {} .. {}",
+        minY, maxY
     ));
 
+    auto& tris = mesh->m_tris;
     tris.reserve(vertexCount * vertexCount * 2);
+
     for (size_t z = 0; z < vertexCount - 1; z++) {
         for (size_t x = 0; x < vertexCount - 1; x++) {
             int topLeft = (z * vertexCount) + x;

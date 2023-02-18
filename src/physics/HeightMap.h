@@ -24,17 +24,24 @@ namespace physics {
 
         virtual float getLevel(const glm::vec3& pos) override;
 
-        // @param pz [0, 1]
-        // @param px [0, 1]
-        float getHeight(float z, float x);
+        // Using texture coordinates
+        //
+        // @param u [0, 1]
+        // @param v [0, 1]
+        float getTerrainHeight(float u, float v);
 
     public:
         const std::unique_ptr<Image> m_image;
+
+        glm::vec3 m_origin{ 0.f };
 
         glm::vec2 m_verticalRange{ 0.f, 32.f };
         float m_horizontalScale{ 1.f };
 
     private:
+        int m_height{ 0 };
+        int m_width{ 0 };
+
         float* m_heights{ nullptr };
     };
 

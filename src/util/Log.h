@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 #include <sstream>
 
 #define KI_FLUSH() Log::flush()
