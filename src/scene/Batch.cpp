@@ -49,7 +49,7 @@ bool Batch::inFrustumZ(
 {
     if (!m_frustumCPU) return true;
 
-    const auto* entity = ctx.m_registry->m_entityRegistry->get(entityIndex);
+    const auto* entity = ctx.m_registry->m_entityRegistry->getEntity(entityIndex);
 
     if ((entity->u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
         return true;

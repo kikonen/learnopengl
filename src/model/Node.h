@@ -36,6 +36,8 @@ public:
 
     void update(const RenderContext& ctx, Node* parent) noexcept;
 
+    void updateEntity(const RenderContext& ctx);
+
     void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
 
     inline const glm::vec3& getWorldPosition() const noexcept {

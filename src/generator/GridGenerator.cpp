@@ -46,14 +46,14 @@ void GridGenerator::updateInstances(
     auto& entityRegistry = *ctx.m_registry->m_entityRegistry;
 
     const auto& nodePos = container.getPosition();
-    auto* nodeEntity = entityRegistry.get(container.m_entityIndex);
+    auto* nodeEntity = entityRegistry.getEntity(container.m_entityIndex);
 
     int entityIndex = container.getInstancedIndex();
 
     for (auto z = 0; z < m_zCount; z++) {
         for (auto y = 0; y < m_yCount; y++) {
             for (auto x = 0; x < m_xCount; x++) {
-                auto* entity = entityRegistry.update(entityIndex, true);
+                auto* entity = entityRegistry.updateEntity(entityIndex, true);
                 *entity = *nodeEntity;
 
                 const glm::vec3 posAdjustment{ x * m_xStep, y * m_yStep, z * m_zStep };
@@ -73,7 +73,7 @@ void GridGenerator::createInstances(
     auto& entityRegistry = *registry->m_entityRegistry;
 
     const int entityCount = m_zCount * m_xCount * m_yCount;
-    const int firstIndex = entityRegistry.addRange(entityCount);
+    const int firstIndex = entityRegistry.addEntityRange(entityCount);
 
     node.setEntityRange(firstIndex, entityCount);
 }

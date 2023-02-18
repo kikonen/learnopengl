@@ -66,11 +66,11 @@ void Node::prepare(
     m_prepared = true;
 
     {
-        m_entityIndex = registry->m_entityRegistry->add();
+        m_entityIndex = registry->m_entityRegistry->addEntity();
 
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
-        auto* entity = registry->m_entityRegistry->get(m_entityIndex);
+        auto* entity = registry->m_entityRegistry->getEntity(m_entityIndex);
         entity->u_materialIndex = getMaterialIndex();
 
         if (m_type->m_entityType == EntityType::billboard) {
@@ -119,7 +119,7 @@ void Node::update(
 
     if (m_dirtyEntity && m_entityIndex != -1)
     {
-        auto* entity = ctx.m_registry->m_entityRegistry->get(m_entityIndex);
+        auto* entity = ctx.m_registry->m_entityRegistry->updateEntity(m_entityIndex, true);
 
         entity->setModelMatrix(m_modelMatrix);
         entity->setNormalMatrix(m_normalMatrix);
@@ -127,8 +127,6 @@ void Node::update(
         entity->u_highlightIndex = getHighlightIndex(ctx);
 
         entity->u_volume = getVolume();
-
-        ctx.m_registry->m_entityRegistry->markDirty(m_entityIndex);
 
         m_dirtyEntity = false;
     }

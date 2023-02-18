@@ -85,13 +85,13 @@ void EntityRegistry::bind(
 }
 
 // index of entity
-int EntityRegistry::add()
+int EntityRegistry::addEntity()
 {
-    return addRange(1);
+    return addEntityRange(1);
 }
 
 // @return first index of range
-int EntityRegistry::addRange(const int count)
+int EntityRegistry::addEntityRange(const int count)
 {
     if (m_entries.size() + count > MAX_ENTITY_COUNT)
         throw std::runtime_error{ "MAX_ENTITY_COUNT" };
@@ -108,12 +108,12 @@ int EntityRegistry::addRange(const int count)
     return firstIndex;
 }
 
-EntitySSBO* EntityRegistry::get(int index)
+EntitySSBO* EntityRegistry::getEntity(int index)
 {
     return &m_entries[index];
 }
 
-EntitySSBO* EntityRegistry::update(int index, bool dirty)
+EntitySSBO* EntityRegistry::updateEntity(int index, bool dirty)
 {
     if (dirty) markDirty(index);
     return &m_entries[index];

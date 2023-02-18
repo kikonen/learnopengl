@@ -26,13 +26,13 @@ public:
     void bind(const RenderContext& ctx);
 
     // index of entity
-    int add();
+    int addEntity();
 
     // @return first index of range
-    int addRange(const int count);
+    int addEntityRange(const int count);
 
-    EntitySSBO* get(int index);
-    EntitySSBO* update(int index, bool dirty);
+    EntitySSBO* getEntity(int index);
+    EntitySSBO* updateEntity(int index, bool dirty);
 
     void markDirty(int index);
 
