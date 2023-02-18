@@ -156,7 +156,7 @@ void Material::loadTextures(const Assets& assets)
     loadTexture(assets, SPECULAR_IDX, map_ks);
     loadTexture(assets, NORMAL_MAP_IDX, map_bump);
     loadTexture(assets, DUDV_MAP_IDX, map_dudv);
-    //loadTexture(assets, HEIGHT_MAP_IDX, map_height);
+    loadTexture(assets, HEIGHT_MAP_IDX, map_height);
 }
 
 std::string Material::resolveBaseDir(const Assets& assets)

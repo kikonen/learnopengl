@@ -104,16 +104,24 @@ void ImageTexture::prepare(const Assets& assets)
 
     if (!m_valid) return;
 
+    m_pixelFormat = GL_UNSIGNED_BYTE;
+
     // NOTE KI 1 & 2 channels have issues
     // => need to convert manually to RGB(A) format
     if (m_image->m_channels == 1) {
-        m_format = GL_RED;
-        m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
-        //m_specialTexture = true;
+        if (m_image->m_is_16_bit) {
+            m_format = GL_R16;
+            m_internalFormat = GL_R16;
+            m_pixelFormat = GL_UNSIGNED_SHORT;
+        }
+        else {
+            m_format = GL_RED;
+            m_internalFormat = GL_R8;
+        }
+        m_specialTexture = true;
     } else if (m_image->m_channels == 2) {
         m_format = GL_RG;
         m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
-        //m_specialTexture = true;
     } else if (m_image->m_channels == 3) {
         m_format = GL_RGB;
         m_internalFormat = GL_RGB8;
@@ -134,7 +142,10 @@ void ImageTexture::prepare(const Assets& assets)
 
     if (m_specialTexture) {
         glTextureStorage2D(m_textureID, 1, m_internalFormat, m_image->m_width, m_image->m_height);
-        glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, GL_UNSIGNED_BYTE, m_image->m_data);
+        glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, m_pixelFormat, m_image->m_data);
+
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
     }
     else {
         glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
@@ -146,7 +157,7 @@ void ImageTexture::prepare(const Assets& assets)
         glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
 
         glTextureStorage2D(m_textureID, m_spec.mipMapLevels, m_internalFormat, m_image->m_width, m_image->m_height);
-        glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, GL_UNSIGNED_BYTE, m_image->m_data);
+        glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, m_pixelFormat, m_image->m_data);
         glGenerateTextureMipmap(m_textureID);
 
         // OpenGL Superbible, 7th Edition, page 552

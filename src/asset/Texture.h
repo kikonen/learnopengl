@@ -46,4 +46,6 @@ protected:
     int m_height = 0;
     int m_format = 0;
     int m_internalFormat = 0;
+
+    GLenum m_pixelFormat = 0;
 };
