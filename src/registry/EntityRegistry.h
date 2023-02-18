@@ -37,6 +37,9 @@ public:
     void markDirty(int index);
 
 private:
+    void processNodes(const RenderContext& ctx);
+
+private:
     const Assets& m_assets;
 
     std::vector<EntitySSBO> m_entries;

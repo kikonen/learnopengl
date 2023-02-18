@@ -31,6 +31,9 @@ struct NodeRenderFlags {
     // noDisplay == temporarily hidden
     bool noDisplay = false;
     bool noFrustum = false;
+
+    bool enforceBounds = false;
+    bool physics = false;
 };
 
 enum class NodeScriptId {

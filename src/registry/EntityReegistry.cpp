@@ -4,6 +4,9 @@
 
 #include "scene/RenderContext.h"
 
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
+
 
 namespace {
     // scene_full = 91 109
@@ -26,6 +29,8 @@ void EntityRegistry::prepare()
 
 void EntityRegistry::update(const RenderContext& ctx)
 {
+    processNodes(ctx);
+
     if (m_minDirty < 0) return;
 
     constexpr size_t sz = sizeof(EntitySSBO);
@@ -130,3 +135,15 @@ void EntityRegistry::markDirty(int index)
 
     m_dirty[index] = true;
 }
+
+void EntityRegistry::processNodes(const RenderContext& ctx)
+{
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
+        for (const auto& it : all.second) {
+            for (auto& node : it.second) {
+                node->updateEntity(ctx);
+            }
+        }
+    }
+}
+

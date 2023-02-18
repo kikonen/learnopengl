@@ -7,6 +7,8 @@
 #include "Surface.h"
 
 class RenderContext;
+class Node;
+class MeshType;
 
 namespace physics {
     class PhysicsEngine {
@@ -16,21 +18,19 @@ namespace physics {
         void prepare();
         void update(const RenderContext& ctx);
 
-        inline Surface* registerSurface(std::unique_ptr<Surface> surface) {
-            m_surfaces.push_back(std::move(surface));
-            return m_surfaces.back().get();
-        }
+        Surface* registerSurface(std::unique_ptr<Surface> surface);
+        float getWorldSurfaceLevel(const glm::vec3& pos);
 
-        inline float getLevel(const glm::vec3& pos) {
-            float min = 1000000000000;
-            for (auto& surface : m_surfaces) {
-                if (!surface->withinBounds(pos)) continue;
+    private:
+        void enforceBounds(
+            const RenderContext& ctx,
+            const MeshType& type,
+            Node& node);
 
-                float level = surface->getLevel(pos);
-                if (level < min) min = level;
-            }
-            return min;
-        }
+        void updateNode(
+            const RenderContext& ctx,
+            const MeshType& type,
+            Node& node);
 
     private:
         const Assets& m_assets;

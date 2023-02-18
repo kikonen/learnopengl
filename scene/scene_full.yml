@@ -427,7 +427,7 @@ entities:
         tiles: [1, 0, 1]
         height_scale: 128
       enabled: true
-    enabled: true
+    enabled: false
   - name: Ball
     model: texture_ball
     program: texture
@@ -792,6 +792,7 @@ entities:
     material: linden_tree
     render_flags:
       alpha: true
+      enforce_bounds: true
     scale: [7, 10, 1]
     repeat:
       x_count: 20
@@ -808,6 +809,8 @@ entities:
     render_flags:
       alpha: true
       render_back: false
+      enforce_bounds: true
+      physics: true
     scale: [1.5, 3, 1]
     repeat:
       x_count: 20

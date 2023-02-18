@@ -155,6 +155,8 @@ void Scene::prepare()
 
         m_mainViewport->prepare(m_assets);
         m_registry->m_nodeRegistry->addViewPort(m_mainViewport);
+
+        m_registry->m_physicsEngine->prepare();
     }
 
     if (m_assets.showObjectIDView) {
@@ -215,6 +217,7 @@ void Scene::update(RenderContext& ctx)
 
     if (m_registry->m_nodeRegistry->m_root) {
         m_registry->m_nodeRegistry->m_root->update(ctx, nullptr);
+        m_registry->m_physicsEngine->update(ctx);
     }
 
     for (auto& generator : m_particleGenerators) {

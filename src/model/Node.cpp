@@ -109,6 +109,7 @@ void Node::update(
 
     if (m_camera) m_camera->update(ctx, *this);
     if (m_light) m_light->update(ctx, *this);
+    if (m_generator) m_generator->update(ctx, *this, parent);
 
     const auto* children = ctx.m_registry->m_nodeRegistry->getChildren(*this);
     if (children) {
@@ -116,24 +117,22 @@ void Node::update(
             child->update(ctx, this);
         }
     }
+}
 
-    if (m_dirtyEntity && m_entityIndex != -1)
-    {
-        auto* entity = ctx.m_registry->m_entityRegistry->updateEntity(m_entityIndex, true);
+void Node::updateEntity(const RenderContext& ctx)
+{
+    if (!m_dirtyEntity || m_entityIndex == -1) return;
 
-        entity->setModelMatrix(m_modelMatrix);
-        entity->setNormalMatrix(m_normalMatrix);
-        entity->u_materialIndex = getMaterialIndex();
-        entity->u_highlightIndex = getHighlightIndex(ctx);
+    auto* entity = ctx.m_registry->m_entityRegistry->updateEntity(m_entityIndex, true);
 
-        entity->u_volume = getVolume();
+    entity->setModelMatrix(m_modelMatrix);
+    entity->setNormalMatrix(m_normalMatrix);
+    entity->u_materialIndex = getMaterialIndex();
+    entity->u_highlightIndex = getHighlightIndex(ctx);
 
-        m_dirtyEntity = false;
-    }
+    entity->u_volume = getVolume();
 
-    if (m_generator) {
-        m_generator->update(ctx, *this, parent);
-    }
+    m_dirtyEntity = false;
 }
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
