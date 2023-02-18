@@ -39,10 +39,10 @@ entities:
       specular: [0.9, 0.9, 0.5, 1.0]
       enabled: true
     enabled: true
-  - name: Terrain grass
+  - name: Terrain grass v2
     id: auto
     type: container
-    material: terrain_grass
+    material: terrain_grass_2
     program: terrain
     pos: [-1024, 0, -1024]
     render_flags:
@@ -56,13 +56,13 @@ entities:
         horiz_scale: 2
       enabled: true
     enabled: true
-  - name: Sea
+  - name: Sea surface
     type: quad
-    material: water_surface
+    material: sea_surface
     program: water
     pos: [0, 0.0, 0]
     rotation: [270.0, 0.0, 0.0]
-    scale: 1000
+    scale: 1500
     render_flags:
       no_shadow: true
       render_back: true
@@ -70,11 +70,11 @@ entities:
     enabled: true
   - name: Sea floor
     model: quad
-    material: tiles
+    material: sea_floor
     program: texture
-    pos: [0, -20, 0]
+    pos: [0, -70, 0]
     rotation: [270.0, 0.0, 0.0]
-    scale: 1200
+    scale: 2000
     render_flags:
       no_shadow: true
       render_back: true
@@ -90,7 +90,7 @@ materials:
     map_kd: terrain/terrain_1025_m.png
     map_bump: terrain/terrain_1025_normal.png
     map_height: terrain/terrain_1025_height.png
-  - name: terrain_grass
+  - name: terrain_grass_2
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
@@ -98,7 +98,7 @@ materials:
     map_ks: terrain_2/terrain_2_SpecLM.png
     map_bump: terrain_2/terrain_2_TN.png
     map_height: terrain_2/terrain_2_height.png
-  - name: water_surface
+  - name: sea_surface
     type: texture
     ns: 150
     ks: [0.2, 0.2, 0.5, 1.0]
@@ -108,7 +108,7 @@ materials:
     tiling: 2
     texture_spec:
       clamp: GL_REPEAT
-  - name: tiles
+  - name: sea_floor
     type: texture
     map_kd: tiles_1024.png
     tiling: 32

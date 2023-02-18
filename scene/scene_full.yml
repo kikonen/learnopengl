@@ -580,28 +580,10 @@ entities:
     scale: 1
     selected: false
     enabled: true
-  - name: Water bottom
-    model: quad
-    priority: -10
-    material: water_bottom
-    program: texture
-    pos: [0.0, 3.2, -10.0]
-    rotation: [270.0, 0.0, 0.0]
-    scale: 30
-    render_flags:
-      no_shadow: true
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 60
-      y_step: 0
-      z_step: 60
-    enabled: true
-  - name: Water surface
+  - name: Pool surface
     type: quad
     priority: -5
-    material: water_surface
+    material: pool_surface
     program: water
     pos: [0, 9.0, -10]
     rotation: [270.0, 0.0, 0.0]
@@ -619,6 +601,24 @@ entities:
       z_step: 60
     enabled: true
     script_file: scripts/anim_water
+  - name: Pool floor
+    model: quad
+    priority: -10
+    material: pool_floor
+    program: texture
+    pos: [0.0, 3.2, -10.0]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 30
+    render_flags:
+      no_shadow: true
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+    enabled: true
   - name: Pool side
     model: pool_brick
     program: texture
@@ -637,10 +637,11 @@ entities:
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
     enabled: true
-  - name: Terrain grass
+  - name: Terrain grass v1.1
     id: auto
+    priority: -15
     type: container
-    material: terrain_grass
+    material: terrain_grass_1
     program: terrain
     pos: [-400, -32, -400]
     generator:
@@ -650,6 +651,61 @@ entities:
         tiles: [8, 0, 8]
         height_scale: 64
       enabled: true
+    enabled: false
+  - name: Terrain grass v2
+    id: auto
+    priority: -15
+    type: container
+    material: terrain_grass_2
+    program: terrain
+    pos: [-1084, -5, -800]
+    generator:
+      type: terrain
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-62.54, 221.9]
+        horiz_scale: 2
+      enabled: true
+    enabled: true
+  - name: Sea surface
+    priority: -20
+    type: quad
+    material: sea_surface
+    program: water
+    pos: [-1024, 0.0, -1024]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 128
+    render_flags:
+      no_shadow: true
+      render_back: true
+      water: true
+    repeat:
+      x_count: 8
+      y_count: 1
+      z_count: 8
+      x_step: 256
+      y_step: 0
+      z_step: 256
+    enabled: true
+  - name: Sea floor
+    priority: -25
+    model: quad
+    material: sea_floor
+    program: texture
+    pos: [-1024, -70.0, -1024]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 128
+    render_flags:
+      no_shadow: true
+      render_back: true
+    repeat:
+      x_count: 8
+      y_count: 1
+      z_count: 8
+      x_step: 256
+      y_step: 0
+      z_step: 256
     enabled: true
   - name: Planet origo
     id: 8712cec1-e1a3-4973-8889-533adfbbb196
@@ -967,7 +1023,7 @@ materials:
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: Skeleton_VH.PNG
     _map_bump: Skeleton_VH_normal.PNG
-  - name: water_surface
+  - name: pool_surface
     type: texture
     ns: 150
     ks: [0.2, 0.2, 0.5, 1.0]
@@ -978,7 +1034,7 @@ materials:
     texture_spec:
       wrap: GL_REPEAT
       xxpattern: 1
-  - name: water_bottom
+  - name: pool_floor
     type: model
     ns: 225
     ka: [1.0, 1.0, 1.0, 1.0]
@@ -993,13 +1049,21 @@ materials:
     tiling: 8
     texture_spec:
       wrap: GL_REPEAT
-  - name: terrain_grass
+  - name: terrain_grass_1
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: terrain/terrain_1025_m.png
     map_bump: terrain/terrain_1025_normal.png
     map_height: terrain/terrain_1025_height.png
+  - name: terrain_grass_2
+    type: texture
+    ns: 50
+    ks: [0.6, 0.6, 0.6, 1.0]
+    map_kd: terrain_2/terrain_2_TX.jpg
+    map_ks: terrain_2/terrain_2_SpecLM.png
+    map_bump: terrain_2/terrain_2_TN.png
+    map_height: terrain_2/terrain_2_height.png
   - name: terrain_mountain
     type: texture
     ns: 50
@@ -1007,6 +1071,22 @@ materials:
     map_kd: terrain/test_1_1024.jpg
     map_bump: terrain/test_1_1024_normal.png
     map_height: terrain/test_1_512_height.png
+  - name: sea_surface
+    type: texture
+    ns: 150
+    ks: [0.2, 0.2, 0.5, 1.0]
+    kd: [0.0, 0.1, 0.8, 1.0]
+    map_bump: water_surface_512_normal.png
+    map_dudv: waterDUDV_512.png
+    tiling: 2
+    texture_spec:
+      clamp: GL_REPEAT
+  - name: sea_floor
+    type: texture
+    map_kd: tiles_1024.png
+    tiling: 2
+    texture_spec:
+      wrap: GL_REPEAT
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: noise_256.png
