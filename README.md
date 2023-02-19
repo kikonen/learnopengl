@@ -67,14 +67,20 @@ https://glad.dav1d.de
 - https://sol2.readthedocs.io/en/latest/tutorial/all-the-things.html
 - https://sol2.readthedocs.io/en/latest/tutorial/functions.html
 
-## Misc
-- https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
+## SKybox
 - https://www.flipcode.com/archives/Skybox_With_A_Single_Quad.shtml
 - https://www.rioki.org/2013/03/07/glsl-skybox.html
+
+## Height map
+- https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map
 - https://stackoverflow.com/questions/41713631/what-is-the-correct-way-to-sample-a-16-bit-height-map-in-opengl
+
+## Misc
+- https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
 
 ## Libraries
 - https://github.com/nothings/stb
+
 
 # References
 
