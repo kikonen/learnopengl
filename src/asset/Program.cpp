@@ -75,8 +75,8 @@ Program::Program(
             m_paths[GL_GEOMETRY_SHADER] = basePath + "_" + geometryType + ".gs.glsl";
         }
 
-        //paths[GL_TESS_CONTROL_SHADER] = basePath + ".tcs.glsl";
-        //paths[GL_TESS_EVALUATION_SHADER] = basePath + ".tes.glsl";
+        m_paths[GL_TESS_CONTROL_SHADER] = basePath + ".tcs.glsl";
+        m_paths[GL_TESS_EVALUATION_SHADER] = basePath + ".tes.glsl";
 
         m_required[GL_VERTEX_SHADER] = true;
         m_required[GL_FRAGMENT_SHADER] = true;
@@ -186,6 +186,8 @@ int Program::compileSource(
     const char* src = source.c_str();
 
     int shaderId = glCreateShader(shaderType);
+
+    glObjectLabel(GL_SHADER, shaderId, shaderPath.length(), shaderPath.c_str());
     glShaderSource(shaderId, 1, &src, NULL);
     glCompileShader(shaderId);
 
@@ -229,9 +231,12 @@ int Program::createProgram() {
     {
         m_programId = glCreateProgram();
 
+        glObjectLabel(GL_PROGRAM, m_programId, m_programName.length(), m_programName.c_str());
+
         for (auto& [type, shaderId] : shaderIds) {
             if (shaderId == -1) continue;
             glAttachShader(m_programId, shaderId);
+            glObjectLabel(GL_SHADER, shaderId, m_paths[type].length(), m_paths[type].c_str());
         }
 
         glLinkProgram(m_programId);

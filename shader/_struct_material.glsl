@@ -10,7 +10,7 @@ struct Material {
   int specularTex;
   int normalMapTex;
   int dudvMapTex;
-  int heightvMapTex;
+  int heightMapTex;
 
   int pattern;
 

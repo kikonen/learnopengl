@@ -9,6 +9,8 @@ layout(early_fragment_tests) in;
 #endif
 
 in VS_OUT {
+  flat uint entityIndex;
+
   vec4 color;
   vec2 texCoord;
   vec3 worldPos;

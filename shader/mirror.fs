@@ -12,6 +12,8 @@
 in VS_OUT {
   vec4 glp;
 
+  flat uint entityIndex;
+
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;

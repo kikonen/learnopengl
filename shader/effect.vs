@@ -12,6 +12,8 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
+  flat uint entityIndex;
+
   vec3 worldPos;
   vec3 normal;
 } vs_out;
@@ -36,6 +38,7 @@ void main() {
 
   calculateClipping(worldPos);
 
+  vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
   vs_out.worldPos = worldPos.xyz;
 
   // NOTE KI pointless to normalize vs side

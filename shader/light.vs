@@ -12,6 +12,8 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
+  flat uint entityIndex;
+
   flat uint materialIndex;
   vec2 texCoord;
   vec3 worldPos;
@@ -39,6 +41,7 @@ void main() {
 
   calculateClipping(worldPos);
 
+  vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord;
 

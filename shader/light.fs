@@ -5,7 +5,10 @@
 #include uniform_materials.glsl
 
 in VS_OUT {
+  flat uint entityIndex;
+
   flat uint materialIndex;
+
   vec2 texCoord;
   vec3 worldPos;
   vec3 normal;
