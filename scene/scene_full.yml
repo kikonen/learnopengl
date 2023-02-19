@@ -623,7 +623,7 @@ entities:
     type: container
     material: terrain_grass_2
     program: terrain
-    pos: [-1060, -6, -800]
+    pos: [-1060, -5.5, -800]
     generator:
       type: terrain
       tiling:
