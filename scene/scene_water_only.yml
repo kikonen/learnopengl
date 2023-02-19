@@ -8,19 +8,16 @@ lights: {}
 cube_maps: {}
 root:
   type: origo
-  pos: [200, 0, 200]
 entities:
   - name: Player
     model: player
-    pos: [-10, 7, -20.0]
-    rotation: [0, 180, 0.0]
+    pos: [0, 5, 5]
     scale: 0.8
     program: texture
     render_flags:
       allow_normals: false
     camera:
-      pos: [200, 0, 200]
-      rotation: [0, 180, 0.0]
+      pos: [0, 3, -3]
       default: true
       enabled: true
     controller:
@@ -31,7 +28,7 @@ entities:
     type: quad
     material: water_surface
     program: water
-    pos: [0, 5, -10]
+    pos: [-30, 0, -30]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
     render_flags:

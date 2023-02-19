@@ -7,17 +7,12 @@ skybox:
 lights: {}
 root:
   type: origo
-  pos: [200, 0, 200]
 entities:
   - name: Origo
     type: origo
-    pos: [0, 0, -5]
+    pos: [0, 0, 10]
     camera:
-      zoom: 45
-      up: [0, 1, 0]
-      front: [0, 0, -1]
-      pos: [200, 0, 190]
-      rotation: [0, 180, 0.0]
+      pos: [0, 0, 3]
       default: true
       enabled: true
     controller:
