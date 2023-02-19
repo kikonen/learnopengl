@@ -89,7 +89,7 @@ namespace physics {
             hit = true;
         }
 
-        return min;
+        return hit ? min : pos.y;
     }
 }
 

@@ -37,8 +37,9 @@ namespace physics {
 
         Node* m_origin{ nullptr };
 
-        float m_worldSizeU{ 0.f };
-        float m_worldSizeV{ 0.f };
+        int m_worldTileSize{ 0 };
+        int m_worldSizeU{ 0 };
+        int m_worldSizeV{ 0 };
 
         glm::vec2 m_verticalRange{ 0.f, 32.f };
         float m_horizontalScale{ 1.f };

@@ -11,7 +11,7 @@ root:
 entities:
   - name: Origo
     type: origo
-    pos: [0, 150, 50]
+    pos: [0, 200, 100]
     camera:
       zoom: 45
       pos: [0, 0, 0]
@@ -56,6 +56,20 @@ entities:
         horiz_scale: 2
       enabled: true
     enabled: true
+  - name: grid points
+    model: glass_ball
+    program: texture
+    pos: [-1024, 150, -1024]
+    scale: 5.0
+    material: glass_ball
+    repeat:
+      x_count: 9
+      y_count: 1
+      z_count: 9
+      x_step: 256
+      y_step: 0
+      z_step: 256
+    enabled: true
   - name: Sea surface
     type: quad
     material: sea_surface
@@ -78,6 +92,24 @@ entities:
     render_flags:
       no_shadow: true
       render_back: true
+    enabled: true
+  - name: Skeleton army
+    type: billboard
+    priority: 1
+    program: texture
+    pos: [0, 11.5, 0.0]
+    material: skeleton
+    render_flags:
+      alpha: true
+      render_back: false
+      enforce_bounds: true
+      physics: true
+    scale: [1.5, 3, 1]
+    repeat:
+      x_count: 20
+      z_count: 101
+      x_step: 3
+      z_step: -2
     enabled: true
 materials:
   - name: skybox
@@ -114,3 +146,9 @@ materials:
     tiling: 32
     texture_spec:
       wrap: GL_REPEAT
+  - name: skeleton
+    type: sprite
+    ns: 100
+    ks: [0.6, 0.6, 0.6, 1.0]
+    map_kd: Skeleton_VH.PNG
+    _map_bump: Skeleton_VH_normal.PNG

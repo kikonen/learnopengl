@@ -66,6 +66,7 @@ void TerrainGenerator::prepareHeightMap(
         heightMap->m_verticalRange = m_verticalRange;
         heightMap->m_horizontalScale = m_horizontalScale;
 
+        heightMap->m_worldTileSize = m_worldTileSize;
         heightMap->m_worldSizeU = m_worldTileSize * m_worldTilesU;
         heightMap->m_worldSizeV = m_worldTileSize * m_worldTilesV;
 
