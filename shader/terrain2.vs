@@ -1,10 +1,7 @@
 #version 460 core
 
-layout (location = ATTR_POS) in vec3 a_pos;
-layout (location = ATTR_NORMAL) in vec3 a_normal;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
-#include struct_lights.glsl
 #include struct_material.glsl
 #include struct_clip_plane.glsl
 #include struct_entity.glsl
@@ -12,22 +9,19 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_lights.glsl
 #include uniform_materials.glsl
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
   flat uint entityIndex;
 
-  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec4 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec4 shadowPos;
+  vec3 scale;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -35,6 +29,11 @@ out VS_OUT {
 } vs_out;
 
 //out float gl_ClipDistance[CLIP_COUNT];
+
+const vec4 pos = vec4(0.0, 0.0, 0.0, 1.0);
+const vec3 normal = vec3(0.0, 1.0, 0.0);
+const vec3 tangent = vec3(0.0, 0.0, 1.0);
+
 
 ////////////////////////////////////////////////////////////
 //
@@ -48,10 +47,9 @@ void main() {
   #include var_entity_normal_matrix.glsl
 
   const int materialIndex = entity.materialIndex;
-  const vec4 pos = vec4(a_pos, 1.0);
   const vec4 worldPos = modelMatrix * pos;
 
-  gl_Position = u_projectedMatrix * worldPos;
+  gl_Position = worldPos;
 
   vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
   vs_out.materialIndex = materialIndex;
@@ -59,14 +57,26 @@ void main() {
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
-  vs_out.worldPos = worldPos.xyz;
-  vs_out.vertexPos = pos;
-  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
-
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * a_normal;
+  vs_out.normal = normalMatrix * normal;
+
+  vs_out.scale = vec3(modelMatrix[0][0],
+                      modelMatrix[1][1],
+                      modelMatrix[2][2]);
 
   //calculateClipping(worldPos);
 
-  vs_out.shadowPos = u_shadowMatrix * worldPos;
+  //vs_out.shadowPos = u_shadowMatrix * worldPos;
+
+#ifdef USE_NORMAL_TEX
+  if (u_materials[materialIndex].normalMapTex >= 0)
+  {
+    const vec3 N = normalize(vs_out.normal);
+    vec3 T = normalize(normalMatrix * tangent);
+    T = normalize(T - dot(T, N) * N);
+    const vec3 B = cross(N, T);
+
+    vs_out.TBN = mat3(T, B, N);
+  }
+#endif
 }

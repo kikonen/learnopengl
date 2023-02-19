@@ -193,6 +193,9 @@
     <ClCompile Include="src\asset\QuadVAO.cpp" />
     <ClCompile Include="src\asset\SpriteMaterialInit.cpp" />
     <ClCompile Include="src\asset\SpriteVAO.cpp" />
+    <ClCompile Include="src\asset\TerrainMaterialInit.cpp" />
+    <ClCompile Include="src\asset\TerrainMesh.cpp" />
+    <ClCompile Include="src\asset\TerrainVAO.cpp" />
     <ClCompile Include="src\backend\DrawBuffer.cpp" />
     <ClCompile Include="src\command\api\ResumeNode.cpp" />
     <ClCompile Include="src\command\api\Wait.cpp" />
@@ -312,6 +315,9 @@
     <ClInclude Include="src\asset\MatricesUBO.h" />
     <ClInclude Include="src\asset\ModelVAO.h" />
     <ClInclude Include="src\asset\SpriteVAO.h" />
+    <ClInclude Include="src\asset\TerrainMaterialInit.h" />
+    <ClInclude Include="src\asset\TerrainMesh.h" />
+    <ClInclude Include="src\asset\TerrainVAO.h" />
     <ClInclude Include="src\asset\TextureSpec.h" />
     <ClInclude Include="src\asset\TextureUBO.h" />
     <ClInclude Include="src\asset\VertexEntry.h" />

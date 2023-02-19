@@ -13,15 +13,13 @@ layout(quads, fractional_odd_spacing, ccw) in;
 in TCS_OUT {
   flat uint entityIndex;
 
-  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec4 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec4 shadowPos;
+  vec3 scale;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -73,13 +71,13 @@ void main()
   vec2 texCoord = (t1 - t0) * v + t0;
 
   ts_out.entityIndex = ts_in[0].entityIndex;
-  ts_out.worldPos = ts_in[0].worldPos;
+//  ts_out.worldPos = ts_in[0].worldPos;
   ts_out.normal = ts_in[0].normal;
   ts_out.texCoord = ts_in[0].texCoord;
-  ts_out.vertexPos = ts_in[0].vertexPos;
-  ts_out.viewPos = ts_in[0].viewPos;
+//  ts_out.vertexPos = ts_in[0].vertexPos;
+//  ts_out.viewPos = ts_in[0].viewPos;
   ts_out.materialIndex = ts_in[0].materialIndex;
-  ts_out.shadowPos = ts_in[0].shadowPos;
+//  ts_out.shadowPos = ts_in[0].shadowPos;
 
 #ifdef USE_NORMAL_TEX
   ts_out.TBN = ts_in[0].TBN;

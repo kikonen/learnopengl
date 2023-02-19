@@ -9,6 +9,8 @@
 #include uniform_materials.glsl
 
 out VS_OUT {
+  flat uint entityIndex;
+
   vec3 normal;
   vec4 vertexPos;
 
@@ -24,6 +26,7 @@ out VS_OUT {
 // TODO KI y = -1.0 fixes sprite.gs, but why?!?
 const vec4 pos = vec4(0.0, -1.0, 0.0, 1.0);
 const vec3 normal = vec3(0.0, 0.0, 1.0);
+const vec3 tangent = vec3(1.0, 0.0, 0.0);
 
 ////////////////////////////////////////////////////////////
 //
@@ -41,6 +44,7 @@ void main() {
 
   gl_Position = worldPos;
 
+  vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
   vs_out.materialIndex = materialIndex;
 
   vs_out.vertexPos = pos;
@@ -53,11 +57,10 @@ void main() {
                       modelMatrix[2][2]);
 
 #ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex >= 0) {
-    const vec3 tangent = vec3(1.0, 0.0, 0.0);
-
+  if (u_materials[materialIndex].normalMapTex >= 0)
+  {
     const vec3 N = normalize(vs_out.normal);
-    const vec3 T = normalize(normalMatrix * tangent);
+    vec3 T = normalize(normalMatrix * tangent);
     T = normalize(T - dot(T, N) * N);
     const vec3 B = cross(N, T);
 

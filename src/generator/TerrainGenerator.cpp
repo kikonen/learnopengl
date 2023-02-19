@@ -6,6 +6,7 @@
 
 #include "asset/AABB.h"
 #include "asset/ModelMesh.h"
+#include "asset/TerrainMesh.h"
 
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
@@ -15,8 +16,6 @@
 #include "registry/NodeRegistry.h"
 
 namespace {
-    const std::string QUAD_MESH_NAME{ "quad" };
-
     // NOTE KI terrain is primarily flat
     // perlin noise creates -4/+4 peaks in mesh, which are scaled down
     // when terrain tile is scaled by factor x200 x/z wise
@@ -100,9 +99,9 @@ void TerrainGenerator::createTiles(
             auto type = createType(registry, container.m_type);
 
             if (container.m_type->m_flags.tessellation) {
-                auto future = registry->m_modelRegistry->getMesh(QUAD_MESH_NAME);
-                auto* mesh = future.get();
-                type->setMesh(mesh);
+                auto mesh = std::make_unique<TerrainMesh>();
+                mesh->prepareVolume();
+                type->setMesh(std::move(mesh), true);
             }
             else {
                 auto mesh = generateTerrain(u, v);

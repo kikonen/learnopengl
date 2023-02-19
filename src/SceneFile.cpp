@@ -690,6 +690,12 @@ void SceneFile::assignFlags(
         }
     }
     {
+        const auto& e = data.renderFlags.find("tessellation");
+        if (e != data.renderFlags.end()) {
+            flags.tessellation = e->second;
+        }
+    }
+    {
         const auto& e = data.renderFlags.find("physics");
         if (e != data.renderFlags.end()) {
             flags.physics = e->second;

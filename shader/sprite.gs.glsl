@@ -11,6 +11,8 @@ layout(max_vertices = 4) out;
 #include uniform_clip_planes.glsl
 
 in VS_OUT {
+  flat uint entityIndex;
+
   vec3 normal;
   vec4 vertexPos;
 
@@ -24,6 +26,8 @@ in VS_OUT {
 } gs_in[];
 
 out GS_OUT {
+  flat uint entityIndex;
+
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
@@ -51,6 +55,8 @@ precision mediump float;
 
 void fillVertex(const int i)
 {
+  gs_out.entityIndex = gs_in[i].entityIndex;
+
   gs_out.normal = gs_in[i].normal;
   gs_out.vertexPos = gs_in[i].vertexPos;
   gs_out.materialIndex = gs_in[i].materialIndex;
