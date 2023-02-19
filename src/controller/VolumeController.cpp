@@ -30,10 +30,16 @@ bool VolumeController::update(
     //const auto& volume = targetNode->getVolume();
 
     const auto& modelMatrix = targetNode->getModelMatrix();
-    const glm::vec3 worldScale = {
-        glm::length(modelMatrix[0]),
-        glm::length(modelMatrix[1]),
-        glm::length(modelMatrix[2]) };
+    //const glm::vec3 worldScale = {
+    //    glm::length(modelMatrix[0]),
+    //    glm::length(modelMatrix[1]),
+    //    glm::length(modelMatrix[2]) };
+
+    const glm::vec3 worldScale{
+        modelMatrix[0][0],
+        modelMatrix[1][1],
+        modelMatrix[2][2]
+    };
 
     const auto& rootPos = ctx.m_registry->m_nodeRegistry->m_root->getPosition();
 

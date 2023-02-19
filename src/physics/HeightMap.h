@@ -6,6 +6,8 @@
 
 #include "Surface.h"
 
+class Node;
+
 namespace physics {
     class HeightMap : public Surface {
     public:
@@ -33,7 +35,10 @@ namespace physics {
     public:
         const std::unique_ptr<Image> m_image;
 
-        glm::vec3 m_origin{ 0.f };
+        Node* m_origin{ nullptr };
+
+        float m_worldSizeU{ 0.f };
+        float m_worldSizeV{ 0.f };
 
         glm::vec2 m_verticalRange{ 0.f, 32.f };
         float m_horizontalScale{ 1.f };

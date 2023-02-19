@@ -46,7 +46,6 @@ void TerrainGenerator::update(
     Node& node,
     Node* parent)
 {
-    m_heightMap->m_origin = parent->getWorldPosition();
 }
 
 void TerrainGenerator::prepareHeightMap(
@@ -63,8 +62,12 @@ void TerrainGenerator::prepareHeightMap(
 
     auto heightMap = std::make_unique<physics::HeightMap>(std::move(image));
     {
+        heightMap->m_origin = &container;
         heightMap->m_verticalRange = m_verticalRange;
         heightMap->m_horizontalScale = m_horizontalScale;
+
+        heightMap->m_worldSizeU = m_worldTileSize * m_worldTilesU;
+        heightMap->m_worldSizeV = m_worldTileSize * m_worldTilesV;
 
         glm::vec3 min{};
         glm::vec3 max{};

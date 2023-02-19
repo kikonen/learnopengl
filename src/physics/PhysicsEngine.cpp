@@ -46,11 +46,19 @@ namespace physics {
         Node& node)
     {
         const auto& worldPos = node.getWorldPosition();
-        const auto& pos = node.getPosition();
+        glm::vec3 pos = node.getPosition();
 
-        auto level = getWorldSurfaceLevel(worldPos);
+        auto surfaceY = getWorldSurfaceLevel(worldPos);
 
         auto* parent = ctx.m_registry->m_nodeRegistry->getParent(node);
+
+        auto y = surfaceY - parent->getWorldPosition().y;
+        y += node.getScale().y;
+        pos.y = y;
+
+        node.setPosition(pos);
+
+        node.updateModelMatrix(parent);
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_objectID, level));
     }

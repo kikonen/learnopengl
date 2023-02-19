@@ -3,6 +3,8 @@
 #include "util/Log.h"
 #include <fmt/format.h>
 
+#include "model/Node.h"
+
 namespace physics {
     void HeightMap::prepare()
     {
@@ -60,6 +62,8 @@ namespace physics {
         int mapX = m_width * u;
         int mapY = m_height * (1.f - v);
 
+        // TODO KI off by one bug
+        // HACK KI -1 to workaround "out of bounds"
         mapX = std::clamp(mapX, 0, m_width - 1);
         mapY = std::clamp(mapY, 0, m_height - 1);
 
@@ -72,6 +76,19 @@ namespace physics {
 
     float HeightMap::getLevel(const glm::vec3& pos)
     {
-        return 0;
+        const auto& originPos = m_origin->getWorldPosition();
+
+        const auto diff = pos - originPos;
+
+        const float u = diff.x / (float)m_worldSizeU;
+        const float v = 1.f - diff.z / (float)m_worldSizeV;
+
+        float h = getTerrainHeight(u, v);
+
+        const auto& modelMat = m_origin->getModelMatrix();
+        const auto p = glm::vec4{ 0.f, h, 0.f, 1.f };
+
+        auto worldPos = modelMat * p;
+        return worldPos.y;
     }
 }
