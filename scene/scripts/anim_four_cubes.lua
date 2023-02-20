@@ -50,7 +50,7 @@ local function animationRotation()
 end
 
 luaNode.start = function()
-   print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
+   --print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
    luaNode.callbackMove = coroutine.wrap(animationMove)
    luaNode.callbackRotation = coroutine.wrap(animationRotation)
 

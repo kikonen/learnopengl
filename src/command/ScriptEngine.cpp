@@ -150,7 +150,7 @@ void ScriptEngine::invokeFunction(
     Node* node,
     const std::string& name)
 {
-    KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->m_objectID, name));
+    //KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->m_objectID, name));
     sol::table luaNode = m_lua["nodes"][node->m_objectID];
 
     sol::optional<sol::function> fnPtr = luaNode[name];
