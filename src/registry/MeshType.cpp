@@ -102,6 +102,7 @@ void MeshType::prepare(
     m_drawOptions.wireframe = m_flags.wireframe;
     m_drawOptions.blend = m_flags.blend;
     m_drawOptions.instanced = m_flags.instanced;
+    m_drawOptions.tessellation = m_flags.tessellation;
 
     m_mesh->prepareVAO(*m_vao, m_drawOptions);
 

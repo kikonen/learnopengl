@@ -16,6 +16,8 @@
 #include "registry/NodeRegistry.h"
 
 namespace {
+    const std::string TERRAIN_QUAD_MESH_NAME{ "quad_terrain" };
+
     // NOTE KI terrain is primarily flat
     // perlin noise creates -4/+4 peaks in mesh, which are scaled down
     // when terrain tile is scaled by factor x200 x/z wise
@@ -89,6 +91,7 @@ void TerrainGenerator::createTiles(
     // NOTE scale.y == makes *FLAT* plane
     const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
     const int step = m_worldTileSize;
+    const bool tessellation = container.m_type->m_flags.tessellation;
     int cloneIndex = 0;
 
     for (int v = 0; v < m_worldTilesV; v++) {
@@ -98,7 +101,7 @@ void TerrainGenerator::createTiles(
 
             auto type = createType(registry, container.m_type);
 
-            if (container.m_type->m_flags.tessellation) {
+            if (tessellation) {
                 auto mesh = std::make_unique<TerrainMesh>();
                 mesh->prepareVolume();
                 type->setMesh(std::move(mesh), true);
@@ -109,7 +112,13 @@ void TerrainGenerator::createTiles(
             }
 
             // NOTE KI must laod textures in the context of *THIS* material
-            type->modifyMaterials([&assets](Material& m) {
+            type->modifyMaterials([this, tessellation, u, v, &assets](Material& m) {
+                if (tessellation) {
+                    m.tileX = u;
+                    m.tileY = v;
+                    m.tilingX = m_worldTilesU;
+                    m.tilingY = m_worldTilesV;
+                }
                 m.loadTextures(assets);
             });
 

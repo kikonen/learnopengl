@@ -3,6 +3,7 @@ struct Material {
   vec4 diffuse;
   vec4 emission;
   vec4 specular;
+
   float shininess;
 
   int diffuseTex;
@@ -20,10 +21,14 @@ struct Material {
   float refractionRatio;
 
   float fogRatio;
+
+  float tileX;
+  float tileY;
+
   float tilingX;
   float tilingY;
 
-  int pad1;
-  int pad2;
+//  int pad1;
+//  int pad2;
 //  int pad3;
 };

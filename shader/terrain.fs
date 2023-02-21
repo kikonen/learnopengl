@@ -46,5 +46,7 @@ void main() {
   vec4 texColor = calculateLight(normal, toView, material);
   texColor = calculateFog(material.fogRatio, texColor);
 
+//  texColor = vec4(1.0 / (1 + material.tileX), 1.0 / (1 + material.tileY), 0, 1.0);
+
   fragColor = texColor;
 }

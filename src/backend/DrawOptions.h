@@ -28,6 +28,8 @@ namespace backend {
         // and first entry drawn is first one on that sequence
         bool instanced = false;
 
+        bool tessellation = false;
+
         // cont of indeces for indexed drawing
         // 0 for non indexed draw
         GLsizei indexCount = 0;

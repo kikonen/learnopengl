@@ -49,8 +49,23 @@ void main() {
 
   vs_out.materialIndex = materialIndex;
 
-  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
-  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
+  if (false) {
+    float x = u_materials[materialIndex].tileX;
+    float y = u_materials[materialIndex].tileY;
+    float tilingX = u_materials[materialIndex].tilingX;
+    float tilingY = u_materials[materialIndex].tilingY;
+    float sizeX = 1.0 / tilingX;
+    float sizeY = 1.0 / tilingY;
+
+    float scaledX = a_texCoord.x / tilingX;
+    float scaledY = a_texCoord.y / tilingY;
+
+    vs_out.texCoord.x = sizeX * x + scaledX;
+    vs_out.texCoord.y = sizeY * (tilingY - (y + 1)) + scaledY;
+  } else {
+    vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
+    vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
+  }
 
   vs_out.worldPos = worldPos.xyz;
   vs_out.vertexPos = pos;

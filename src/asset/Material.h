@@ -140,6 +140,9 @@ public:
 
     float fogRatio = 1.0f;
 
+    float tileX = 0.0f;
+    float tileY = 0.0f;
+
     float tilingX = 1.0f;
     float tilingY = 1.0f;
 
