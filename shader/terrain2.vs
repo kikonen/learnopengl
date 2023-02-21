@@ -1,5 +1,10 @@
 #version 460 core
 
+layout (location = ATTR_POS) in vec3 a_pos;
+layout (location = ATTR_NORMAL) in vec3 a_normal;
+#ifdef USE_NORMAL_TEX
+layout (location = ATTR_TANGENT) in vec3 a_tangent;
+#endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_material.glsl
@@ -11,17 +16,20 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_data.glsl
 #include uniform_materials.glsl
 #include uniform_clip_planes.glsl
+#include uniform_material_indeces.glsl
 
 out VS_OUT {
   flat uint entityIndex;
 
+  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec4 vertexPos;
+  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec3 scale;
+  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -30,14 +38,11 @@ out VS_OUT {
 
 //out float gl_ClipDistance[CLIP_COUNT];
 
-const vec4 pos = vec4(0.0, 0.0, 0.0, 1.0);
-const vec3 normal = vec3(0.0, 1.0, 0.0);
-const vec3 tangent = vec3(0.0, 0.0, 1.0);
-
-
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
+
+precision mediump float;
 
 //#include fn_calculate_clipping.glsl
 
@@ -46,33 +51,50 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  const int materialIndex = entity.materialIndex;
-  const vec4 worldPos = modelMatrix * pos;
+  int materialIndex = entity.materialIndex;
 
-  gl_Position = worldPos;
+  const vec4 pos = vec4(a_pos, 1.0);
+  vec4 worldPos;
+
+  worldPos = modelMatrix * pos;
+
+//  gl_Position = u_projectedMatrix * worldPos;
+  gl_Position = pos;
 
   vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
   vs_out.materialIndex = materialIndex;
 
-  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
-  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
+  {
+    float x = u_materials[materialIndex].tileX;
+    float y = u_materials[materialIndex].tileY;
+    float tilingX = u_materials[materialIndex].tilingX;
+    float tilingY = u_materials[materialIndex].tilingY;
+    float sizeX = 1.0 / tilingX;
+    float sizeY = 1.0 / tilingY;
+
+    float scaledX = a_texCoord.x / tilingX;
+    float scaledY = a_texCoord.y / tilingY;
+
+    vs_out.texCoord.x = sizeX * x + scaledX;
+    vs_out.texCoord.y = sizeY * (tilingY - (y + 1)) + scaledY;
+  }
+
+  vs_out.worldPos = worldPos.xyz;
+  vs_out.vertexPos = pos;
+  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * normal;
+  vs_out.normal = normalMatrix * a_normal;
 
-  vs_out.scale = vec3(modelMatrix[0][0],
-                      modelMatrix[1][1],
-                      modelMatrix[2][2]);
+//  calculateClipping(worldPos);
 
-  //calculateClipping(worldPos);
-
-  //vs_out.shadowPos = u_shadowMatrix * worldPos;
+  vs_out.shadowPos = u_shadowMatrix * worldPos;
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0)
   {
     const vec3 N = normalize(vs_out.normal);
-    vec3 T = normalize(normalMatrix * tangent);
+    vec3 T = normalize(normalMatrix * a_tangent);
     T = normalize(T - dot(T, N) * N);
     const vec3 B = cross(N, T);
 

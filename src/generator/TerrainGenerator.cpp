@@ -102,9 +102,12 @@ void TerrainGenerator::createTiles(
             auto type = createType(registry, container.m_type);
 
             if (tessellation) {
-                auto mesh = std::make_unique<TerrainMesh>();
-                mesh->prepareVolume();
-                type->setMesh(std::move(mesh), true);
+                auto future = registry->m_modelRegistry->getMesh(
+                    TERRAIN_QUAD_MESH_NAME);
+                auto* mesh = future.get();
+                mesh->setAABB(TERRAIN_AABB);
+                type->setMesh(mesh);
+                type->m_drawOptions.patchVertices = 4;
             }
             else {
                 auto mesh = generateTerrain(u, v);

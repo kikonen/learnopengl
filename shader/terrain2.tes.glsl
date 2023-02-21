@@ -13,13 +13,15 @@ layout(quads, fractional_odd_spacing, ccw) in;
 in TCS_OUT {
   flat uint entityIndex;
 
+  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec4 vertexPos;
+  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec3 scale;
+  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -71,19 +73,19 @@ void main()
   vec2 texCoord = (t1 - t0) * v + t0;
 
   tes_out.entityIndex = tes_in[0].entityIndex;
-//  tes_out.worldPos = tes_in[0].worldPos;
+  tes_out.worldPos = tes_in[0].worldPos;
   tes_out.normal = tes_in[0].normal;
-  tes_out.texCoord = tes_in[0].texCoord;
-//  tes_out.vertexPos = tes_in[0].vertexPos;
-//  tes_out.viewPos = tes_in[0].viewPos;
+  tes_out.texCoord = texCoord; //tes_in[0].texCoord;
+  tes_out.vertexPos = tes_in[0].vertexPos;
+  tes_out.viewPos = tes_in[0].viewPos;
   tes_out.materialIndex = tes_in[0].materialIndex;
-//  tes_out.shadowPos = tes_in[0].shadowPos;
+  tes_out.shadowPos = tes_in[0].shadowPos;
 
 #ifdef USE_NORMAL_TEX
   tes_out.TBN = tes_in[0].TBN;
 #endif
 
-  tes_out.height = texture(heightMap, texCoord).y * 64.0 - 16.0;
+  tes_out.height = texture(heightMap, texCoord).r * 64.0 - 16.0;
 
   vec4 p00 = gl_in[0].gl_Position;
   vec4 p01 = gl_in[1].gl_Position;

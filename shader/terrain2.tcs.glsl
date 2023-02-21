@@ -12,13 +12,15 @@ layout(vertices=4) out;
 in VS_OUT {
   flat uint entityIndex;
 
+  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec4 vertexPos;
+  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec3 scale;
+  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -28,13 +30,15 @@ in VS_OUT {
 out TCS_OUT {
   flat uint entityIndex;
 
+  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec4 vertexPos;
+  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec3 scale;
+  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -59,11 +63,13 @@ void main()
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
   tcs_out[gl_InvocationID].entityIndex = tcs_in[gl_InvocationID].entityIndex;
+  tcs_out[gl_InvocationID].worldPos = tcs_in[gl_InvocationID].worldPos;
   tcs_out[gl_InvocationID].normal = tcs_in[gl_InvocationID].normal;
   tcs_out[gl_InvocationID].texCoord = tcs_in[gl_InvocationID].texCoord;
   tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
+  tcs_out[gl_InvocationID].viewPos = tcs_in[gl_InvocationID].viewPos;
   tcs_out[gl_InvocationID].materialIndex = tcs_in[gl_InvocationID].materialIndex;
-  tcs_out[gl_InvocationID].scale = tcs_in[gl_InvocationID].scale;
+  tcs_out[gl_InvocationID].shadowPos = tcs_in[gl_InvocationID].shadowPos;
 
 #ifdef USE_NORMAL_TEX
   tcs_out[gl_InvocationID].TBN = tcs_in[gl_InvocationID].TBN;
@@ -72,26 +78,27 @@ void main()
   if (gl_InvocationID == 0) {
     const int MIN_TESS_LEVEL = 4;
     const int MAX_TESS_LEVEL = 64;
-    const float MIN_DISTANCE = 20;
-    const float MAX_DISTANCE = 800;
+    const float MIN_DIST = 20;
+    const float MAX_DIST = 800;
+    const float DIST_DIFF = MAX_DIST - MIN_DIST;
 
     mat4 mvMatrix = u_viewMatrix * modelMatrix;
 
-    vec4 eyeSpacePos00 = mvMatrix * gl_in[0].gl_Position;
-    vec4 eyeSpacePos01 = mvMatrix * gl_in[1].gl_Position;
-    vec4 eyeSpacePos10 = mvMatrix * gl_in[2].gl_Position;
-    vec4 eyeSpacePos11 = mvMatrix * gl_in[3].gl_Position;
+    vec4 viewPos00 = mvMatrix * gl_in[0].gl_Position;
+    vec4 viewPos01 = mvMatrix * gl_in[1].gl_Position;
+    vec4 viewPos10 = mvMatrix * gl_in[2].gl_Position;
+    vec4 viewPos11 = mvMatrix * gl_in[3].gl_Position;
 
     // "distance" from camera scaled between 0 and 1
-    float distance00 = clamp( (abs(eyeSpacePos00.z) - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE), 0.0, 1.0 );
-    float distance01 = clamp( (abs(eyeSpacePos01.z) - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE), 0.0, 1.0 );
-    float distance10 = clamp( (abs(eyeSpacePos10.z) - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE), 0.0, 1.0 );
-    float distance11 = clamp( (abs(eyeSpacePos11.z) - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE), 0.0, 1.0 );
+    float dist00 = clamp( (abs(viewPos00.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
+    float dist01 = clamp( (abs(viewPos01.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
+    float dist10 = clamp( (abs(viewPos10.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
+    float dist11 = clamp( (abs(viewPos11.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
 
-    float tessLevel0 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(distance10, distance00) );
-    float tessLevel1 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(distance00, distance01) );
-    float tessLevel2 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(distance01, distance11) );
-    float tessLevel3 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(distance11, distance10) );
+    float tessLevel0 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist10, dist00) );
+    float tessLevel1 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist00, dist01) );
+    float tessLevel2 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist01, dist11) );
+    float tessLevel3 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist11, dist10) );
 
     gl_TessLevelOuter[0] = tessLevel0;
     gl_TessLevelOuter[1] = tessLevel1;

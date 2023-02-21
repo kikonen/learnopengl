@@ -104,7 +104,7 @@ void ModelMesh::prepareVAO(
     //m_vertexVBO.prepareVAO(vao);
 
     drawOptions.type = backend::DrawOptions::Type::elements;
-    drawOptions.mode = GL_TRIANGLES;
+    drawOptions.mode = drawOptions.tessellation ? GL_PATCHES : GL_TRIANGLES;
     drawOptions.indexCount = m_triCount * 3;
     drawOptions.vertexOffset = m_vertexVBO.m_vertexOffset;
     drawOptions.indexOffset = m_vertexVBO.m_indexOffset;

@@ -273,6 +273,10 @@ namespace backend {
             state.polygonFrontAndBack(GL_FILL);
         }
 
+        if (drawOptions.tessellation) {
+            glPatchParameteri(GL_PATCH_VERTICES, drawOptions.patchVertices);
+        }
+
         if (drawOptions.blend && drawRange.m_allowBlend) {
             state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             state.enable(GL_BLEND);

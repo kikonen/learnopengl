@@ -46,6 +46,11 @@ void main() {
   vec4 texColor = calculateLight(normal, toView, material);
   texColor = calculateFog(material.fogRatio, texColor);
 
+  sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);
+  float h = texture(heightMap, fs_in.texCoord).r;
+
+//  texColor = vec4(h, h, h, 1.0);
+
 //  texColor = vec4(1.0 / (1 + material.tileX), 1.0 / (1 + material.tileY), 0, 1.0);
 
   fragColor = texColor;

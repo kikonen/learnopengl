@@ -29,6 +29,7 @@ namespace backend {
         bool instanced = false;
 
         bool tessellation = false;
+        int patchVertices = 3;
 
         // cont of indeces for indexed drawing
         // 0 for non indexed draw
