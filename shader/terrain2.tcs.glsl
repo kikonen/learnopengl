@@ -23,7 +23,7 @@ in VS_OUT {
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
 #endif
-} ts_in[];
+} tcs_in[];
 
 out TCS_OUT {
   flat uint entityIndex;
@@ -39,7 +39,7 @@ out TCS_OUT {
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
 #endif
-} ts_out[];
+} tcs_out[];
 
 //out float gl_ClipDistance[CLIP_COUNT];
 
@@ -51,22 +51,22 @@ out TCS_OUT {
 
 void main()
 {
-  const Entity entity = u_entities[ts_in[gl_InvocationID].entityIndex];
+  const Entity entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
   #include var_entity_model_matrix.glsl
 
-  //calculateClipping(ts_in[gl_InvocationID].worldPos);
+  //calculateClipping(tcs_in[gl_InvocationID].worldPos);
 
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
-  ts_out[gl_InvocationID].entityIndex = ts_in[gl_InvocationID].entityIndex;
-  ts_out[gl_InvocationID].normal = ts_in[gl_InvocationID].normal;
-  ts_out[gl_InvocationID].texCoord = ts_in[gl_InvocationID].texCoord;
-  ts_out[gl_InvocationID].vertexPos = ts_in[gl_InvocationID].vertexPos;
-  ts_out[gl_InvocationID].materialIndex = ts_in[gl_InvocationID].materialIndex;
-  ts_out[gl_InvocationID].scale = ts_in[gl_InvocationID].scale;
+  tcs_out[gl_InvocationID].entityIndex = tcs_in[gl_InvocationID].entityIndex;
+  tcs_out[gl_InvocationID].normal = tcs_in[gl_InvocationID].normal;
+  tcs_out[gl_InvocationID].texCoord = tcs_in[gl_InvocationID].texCoord;
+  tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
+  tcs_out[gl_InvocationID].materialIndex = tcs_in[gl_InvocationID].materialIndex;
+  tcs_out[gl_InvocationID].scale = tcs_in[gl_InvocationID].scale;
 
 #ifdef USE_NORMAL_TEX
-  ts_out[gl_InvocationID].TBN = ts_in[gl_InvocationID].TBN;
+  tcs_out[gl_InvocationID].TBN = tcs_in[gl_InvocationID].TBN;
 #endif
 
   if (gl_InvocationID == 0) {
