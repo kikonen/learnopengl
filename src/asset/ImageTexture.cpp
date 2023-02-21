@@ -110,7 +110,7 @@ void ImageTexture::prepare(const Assets& assets)
     // => need to convert manually to RGB(A) format
     if (m_image->m_channels == 1) {
         if (m_image->m_is_16_bit) {
-            m_format = GL_R16;
+            m_format = GL_RED;
             m_internalFormat = GL_R16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
         }
@@ -118,7 +118,7 @@ void ImageTexture::prepare(const Assets& assets)
             m_format = GL_RED;
             m_internalFormat = GL_R8;
         }
-        m_specialTexture = true;
+        //m_specialTexture = true;
     } else if (m_image->m_channels == 2) {
         m_format = GL_RG;
         m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
