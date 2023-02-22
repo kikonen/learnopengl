@@ -1,6 +1,6 @@
 #version 460 core
 
-layout(vertices=4) out;
+layout(vertices=3) out;
 
 #include struct_entity.glsl
 #include struct_clip_plane.glsl
@@ -87,23 +87,23 @@ void main()
     vec4 viewPos00 = mvMatrix * gl_in[0].gl_Position;
     vec4 viewPos01 = mvMatrix * gl_in[1].gl_Position;
     vec4 viewPos10 = mvMatrix * gl_in[2].gl_Position;
-    vec4 viewPos11 = mvMatrix * gl_in[3].gl_Position;
+    //vec4 viewPos11 = mvMatrix * gl_in[3].gl_Position;
 
     // "distance" from camera scaled between 0 and 1
     float dist00 = clamp( (abs(viewPos00.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
     float dist01 = clamp( (abs(viewPos01.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
     float dist10 = clamp( (abs(viewPos10.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
-    float dist11 = clamp( (abs(viewPos11.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
+    //float dist11 = clamp( (abs(viewPos11.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
 
     float tessLevel0 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist10, dist00) );
     float tessLevel1 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist00, dist01) );
-    float tessLevel2 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist01, dist11) );
-    float tessLevel3 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist11, dist10) );
+    float tessLevel2 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist01, dist10) );
+    float tessLevel3 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist00, dist10) );
 
     gl_TessLevelOuter[0] = tessLevel0;
-    gl_TessLevelOuter[1] = tessLevel1;
-    gl_TessLevelOuter[2] = tessLevel2;
-    gl_TessLevelOuter[3] = tessLevel3;
+    gl_TessLevelOuter[1] = tessLevel0;
+    gl_TessLevelOuter[2] = tessLevel0;
+    gl_TessLevelOuter[3] = tessLevel0;
 
     gl_TessLevelInner[0] = max(tessLevel1, tessLevel3);
     gl_TessLevelInner[1] = max(tessLevel0, tessLevel2);

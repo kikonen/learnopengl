@@ -75,6 +75,10 @@ https://glad.dav1d.de
 - https://learnopengl.com/Guest-Articles/2021/Tessellation/Height-map
 - https://stackoverflow.com/questions/41713631/what-is-the-correct-way-to-sample-a-16-bit-height-map-in-opengl
 
+## Tessellation
+- https://gamedev.stackexchange.com/questions/87616/opengl-quad-tessellation-control-shader
+- https://ogldev.org/www/tutorial30/tutorial30.html
+
 ## Misc
 - https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
 

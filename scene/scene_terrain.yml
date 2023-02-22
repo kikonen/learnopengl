@@ -43,10 +43,11 @@ entities:
     id: auto
     type: container
     material: terrain_grass_2
-    program: terrain
+    program: terrain2
     pos: [-1024, 0, -1024]
     render_flags:
       no_shadow: true
+      tessellation: true
     generator:
       type: terrain
       tiling:

@@ -107,7 +107,7 @@ void TerrainGenerator::createTiles(
                 auto* mesh = future.get();
                 mesh->setAABB(TERRAIN_AABB);
                 type->setMesh(mesh);
-                type->m_drawOptions.patchVertices = 4;
+                type->m_drawOptions.patchVertices = 3;
             }
             else {
                 auto mesh = generateTerrain(u, v);

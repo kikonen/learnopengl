@@ -1,6 +1,6 @@
 #version 460 core
 
-layout(quads, fractional_odd_spacing, ccw) in;
+layout(triangles, fractional_odd_spacing, ccw) in;
 
 #include struct_material.glsl
 #include struct_entity.glsl
@@ -52,6 +52,20 @@ out TES_OUT {
 //
 ////////////////////////////////////////////////////////////
 
+vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
+{
+  return vec2(gl_TessCoord.x) * v0 +
+    vec2(gl_TessCoord.y) * v1 +
+    vec2(gl_TessCoord.z) * v2;
+}
+
+vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
+{
+  return vec3(gl_TessCoord.x) * v0 +
+    vec3(gl_TessCoord.y) * v1 +
+    vec3(gl_TessCoord.z) * v2;
+}
+
 void main()
 {
   const Entity entity = u_entities[tes_in[0].entityIndex];
@@ -60,22 +74,18 @@ void main()
   const Material material = u_materials[tes_in[0].materialIndex];
   sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);
 
-  float u = gl_TessCoord.x;
-  float v = gl_TessCoord.y;
+  // Interpolate the attributes of the output vertex using the barycentric coordinates
+  vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
+  vec3 normal = interpolate3D(tes_in[0].normal, tes_in[1].normal, tes_in[2].normal);
+  vec3 worldPos = interpolate3D(tes_in[0].worldPos, tes_in[1].worldPos, tes_in[2].worldPos);
 
-  vec2 t00 = tes_in[0].texCoord;
-  vec2 t01 = tes_in[1].texCoord;
-  vec2 t10 = tes_in[2].texCoord;
-  vec2 t11 = tes_in[3].texCoord;
-
-  vec2 t0 = (t01 - t00) * u + t00;
-  vec2 t1 = (t11 - t10) * u + t10;
-  vec2 texCoord = (t1 - t0) * v + t0;
+  float h = texture(heightMap, texCoord).r * 221.9 - 62.54;
+  worldPos.y += h;
 
   tes_out.entityIndex = tes_in[0].entityIndex;
-  tes_out.worldPos = tes_in[0].worldPos;
-  tes_out.normal = tes_in[0].normal;
-  tes_out.texCoord = texCoord; //tes_in[0].texCoord;
+  tes_out.worldPos = worldPos;
+  tes_out.normal = normal;
+  tes_out.texCoord = texCoord;
   tes_out.vertexPos = tes_in[0].vertexPos;
   tes_out.viewPos = tes_in[0].viewPos;
   tes_out.materialIndex = tes_in[0].materialIndex;
@@ -85,20 +95,7 @@ void main()
   tes_out.TBN = tes_in[0].TBN;
 #endif
 
-  tes_out.height = texture(heightMap, texCoord).r * 64.0 - 16.0;
+  tes_out.height = h;
 
-  vec4 p00 = gl_in[0].gl_Position;
-  vec4 p01 = gl_in[1].gl_Position;
-  vec4 p10 = gl_in[2].gl_Position;
-  vec4 p11 = gl_in[3].gl_Position;
-
-  vec4 uVec = p01 - p00;
-  vec4 vVec = p10 - p00;
-  vec4 normal = normalize( vec4(cross(vVec.xyz, uVec.xyz), 0) );
-
-  vec4 p0 = (p01 - p00) * u + p00;
-  vec4 p1 = (p11 - p10) * u + p10;
-  vec4 p = (p1 - p0) * v + p0 + normal * tes_out.height;
-
-  gl_Position = u_projectedMatrix * modelMatrix * p;
+  gl_Position = u_projectedMatrix * vec4(worldPos, 1.0);
 }

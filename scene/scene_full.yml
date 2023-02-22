@@ -622,13 +622,15 @@ entities:
     priority: -15
     type: container
     material: terrain_grass_2
-    program: terrain
+    program: terrain2
     pos: [-1060, -5.5, -800]
+    render_flags:
+      tessellation: true
     generator:
       type: terrain
       tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
+        tile_size: 128
+        tiles: [16, 0, 16]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
       enabled: true
