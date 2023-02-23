@@ -625,6 +625,7 @@ entities:
     program: terrain2
     pos: [-1144, -5.5, -800]
     render_flags:
+      xxwireframe: true
       tessellation: true
     generator:
       type: terrain
