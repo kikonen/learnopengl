@@ -617,13 +617,13 @@ entities:
         height_scale: 64
       enabled: true
     enabled: false
-  - name: Terrain grass v2
+  - name: Terrain grass v2.2
     id: auto
     priority: -15
     type: container
     material: terrain_grass_2
     program: terrain2
-    pos: [-1060, -5.5, -800]
+    pos: [-1144, -5.5, -800]
     render_flags:
       tessellation: true
     generator:

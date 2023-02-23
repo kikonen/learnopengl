@@ -101,9 +101,9 @@ void main()
     float tessLevel3 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist00, dist10) );
 
     gl_TessLevelOuter[0] = tessLevel0;
-    gl_TessLevelOuter[1] = tessLevel0;
-    gl_TessLevelOuter[2] = tessLevel0;
-    gl_TessLevelOuter[3] = tessLevel0;
+    gl_TessLevelOuter[1] = tessLevel1;
+    gl_TessLevelOuter[2] = tessLevel2;
+    gl_TessLevelOuter[3] = tessLevel3;
 
     gl_TessLevelInner[0] = max(tessLevel1, tessLevel3);
     gl_TessLevelInner[1] = max(tessLevel0, tessLevel2);

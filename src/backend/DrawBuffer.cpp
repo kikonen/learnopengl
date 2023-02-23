@@ -166,7 +166,10 @@ namespace backend {
         if (!cmdRange.empty()) {
             sameDraw = curr.m_program == sendRange.m_program &&
                 curr.m_vao == sendRange.m_vao &&
-                curr.m_drawOptions->isSameMultiDraw(*sendRange.m_drawOptions, curr.m_allowBlend);
+                curr.m_drawOptions->isSameMultiDraw(
+                    *sendRange.m_drawOptions,
+                    curr.m_forceWireframe,
+                    curr.m_allowBlend);
         }
 
         if (!sameDraw) {
@@ -266,7 +269,9 @@ namespace backend {
             state.enable(GL_CULL_FACE);
         }
 
-        if (drawOptions.wireframe || drawRange.m_forceWireframe) {
+        const bool wireframe = drawOptions.wireframe || drawRange.m_forceWireframe;
+
+        if (wireframe) {
             state.polygonFrontAndBack(GL_LINE);
         }
         else {
@@ -277,7 +282,7 @@ namespace backend {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.patchVertices);
         }
 
-        if (drawOptions.blend && drawRange.m_allowBlend) {
+        if (!wireframe && drawOptions.blend && drawRange.m_allowBlend) {
             state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             state.enable(GL_BLEND);
         }

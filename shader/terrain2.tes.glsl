@@ -79,7 +79,13 @@ void main()
   vec3 normal = interpolate3D(tes_in[0].normal, tes_in[1].normal, tes_in[2].normal);
   vec3 worldPos = interpolate3D(tes_in[0].worldPos, tes_in[1].worldPos, tes_in[2].worldPos);
 
-  float h = texture(heightMap, texCoord).r * 221.9 - 62.54;
+
+  const float rangeYmin = -62.54;
+  const float rangeYmax = 221.9;
+  const float rangeY = rangeYmax - rangeYmin;
+
+  float h = rangeYmin + texture(heightMap, texCoord).r * rangeY;
+
   worldPos.y += h;
 
   tes_out.entityIndex = tes_in[0].entityIndex;
@@ -87,9 +93,9 @@ void main()
   tes_out.normal = normal;
   tes_out.texCoord = texCoord;
   tes_out.vertexPos = tes_in[0].vertexPos;
-  tes_out.viewPos = tes_in[0].viewPos;
+  tes_out.viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
   tes_out.materialIndex = tes_in[0].materialIndex;
-  tes_out.shadowPos = tes_in[0].shadowPos;
+  tes_out.shadowPos = u_shadowMatrix * vec4(worldPos, 1.0);
 
 #ifdef USE_NORMAL_TEX
   tes_out.TBN = tes_in[0].TBN;

@@ -39,17 +39,25 @@ namespace backend {
         int vertexOffset = 0;
         int indexOffset = 0;
 
-        inline bool isSameDrawCommand(const DrawOptions& b, bool allowBlend) const noexcept {
+        inline bool isSameDrawCommand(
+            const DrawOptions& b,
+            bool forceWireframe,
+            bool allowBlend) const noexcept
+        {
             // NOTE KI multi/single material *CAN* go in same indirect draw
-            return isSameMultiDraw(b, allowBlend) &&
+            return isSameMultiDraw(b, allowBlend, forceWireframe) &&
                 vertexOffset == b.vertexOffset &&
                 indexOffset == b.indexOffset &&
                 instanced == b.instanced;
         }
 
-        inline bool isSameMultiDraw(const DrawOptions& b, bool allowBlend) const noexcept {
+        inline bool isSameMultiDraw(
+            const DrawOptions& b,
+            bool forceWireframe,
+            bool allowBlend) const noexcept
+        {
             return renderBack == b.renderBack &&
-                wireframe == b.wireframe &&
+                (forceWireframe ? true : wireframe == b.wireframe) &&
                 (allowBlend ? blend == b.blend : true) &&
                 mode == b.mode &&
                 type == b.type &&

@@ -78,6 +78,7 @@ https://glad.dav1d.de
 ## Tessellation
 - https://gamedev.stackexchange.com/questions/87616/opengl-quad-tessellation-control-shader
 - https://ogldev.org/www/tutorial30/tutorial30.html
+- https://yiweimao.github.io/blog/tessellation/
 
 ## Misc
 - https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates

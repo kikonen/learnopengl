@@ -215,7 +215,10 @@ void Batch::draw(
             auto& top = m_batches.back();
             change = program != top.m_program ||
                 type->m_vao != top.m_vao ||
-                !top.m_drawOptions->isSameDrawCommand(type->m_drawOptions, allowBlend);
+                !top.m_drawOptions->isSameDrawCommand(
+                    type->m_drawOptions,
+                    ctx.m_forceWireframe,
+                    allowBlend);
         }
 
         if (change) {
