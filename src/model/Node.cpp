@@ -126,7 +126,10 @@ void Node::updateEntity(const RenderContext& ctx)
     auto* entity = ctx.m_registry->m_entityRegistry->updateEntity(m_entityIndex, true);
 
     entity->setModelMatrix(m_modelMatrix);
-    entity->setNormalMatrix(m_normalMatrix);
+
+    // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+    entity->setNormalMatrix(glm::mat3(glm::inverseTranspose(m_modelMatrix)));
+
     entity->u_materialIndex = getMaterialIndex();
     entity->u_highlightIndex = getHighlightIndex(ctx);
 
@@ -192,8 +195,6 @@ void Node::updateModelMatrix(Node* parent) noexcept
     else {
         m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
     }
-    // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
-    m_normalMatrix = glm::mat3(glm::inverseTranspose(m_modelMatrix));
 
     m_worldPosition = m_modelMatrix[3];
 
