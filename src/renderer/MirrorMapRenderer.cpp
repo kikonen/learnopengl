@@ -277,10 +277,10 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
                     }
                 }
 
-                if (!node->inFrustum(ctx, 1.1f)) {
-                    // NOTE KI not in frustum; ignore
-                    continue;
-                }
+                //if (!node->inFrustum(ctx, 1.1f)) {
+                //    // NOTE KI not in frustum; ignore
+                //    continue;
+                //}
 
                 {
                     const auto eyeV = node->getWorldPosition() - cameraPos;
