@@ -19,6 +19,12 @@ struct Entity {
   uint objectID;
   uint flags;
 
+  uint tileX;
+  uint tileY;
+
+  float rangeYmin;
+  float rangeYmax;
+
 //  vec4 pad1;
 //  vec4 pad2;
 };

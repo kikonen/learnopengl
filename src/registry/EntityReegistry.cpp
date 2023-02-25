@@ -105,9 +105,10 @@ int EntityRegistry::addEntityRange(const int count)
 
     for (int i = 0; i < count; i++) {
         m_entries.emplace_back();
-        m_dirty.emplace_back(true);
+        m_dirty.emplace_back(false);
 
-        markDirty(firstIndex + i);
+        // NOTE KI *lazy*, allow generating entities, without updating GPU side
+        //markDirty(firstIndex + i);
     }
 
     return firstIndex;

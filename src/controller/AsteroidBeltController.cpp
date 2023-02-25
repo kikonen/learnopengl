@@ -71,15 +71,15 @@ void AsteroidBeltController::updateAsteroids(
         auto* entity = entityRegistry.updateEntity(asteroid.m_entityIndex, true);
 
         if (rotate) {
-            glm::mat4 modelMat{ 1.f };
+            glm::mat4 modelMatrix{ 1.f };
             {
                 //modelMat = glm::translate(modelMat, asteroid.m_position + parentPos);
-                modelMat = glm::translate(modelMat, asteroid.m_position);
-                modelMat = glm::scale(modelMat, glm::vec3(asteroid.m_scale));
-                modelMat = glm::rotate(modelMat, asteroid.m_rotationAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+                modelMatrix = glm::translate(modelMatrix, asteroid.m_position);
+                modelMatrix = glm::scale(modelMatrix, glm::vec3(asteroid.m_scale));
+                modelMatrix = glm::rotate(modelMatrix, asteroid.m_rotationAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+                modelMatrix = parent->getModelMatrix() * modelMatrix;
             }
 
-            glm::mat4 modelMatrix = parent->getModelMatrix() * modelMat;
             entity->setModelMatrix(modelMatrix);
             // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
             entity->setNormalMatrix(glm::mat3(glm::inverseTranspose(modelMatrix)));
@@ -202,22 +202,12 @@ void AsteroidBeltController::calculateVolume(
     Node& node,
     std::vector<Asteroid> asteroids)
 {
-    glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
-    glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+    AABB minmax{ true };
 
     for (auto&& asteroid : asteroids)
     {
-        auto& pos = asteroid.m_position;
-
-        minAABB.x = std::min(minAABB.x, pos.x);
-        minAABB.y = std::min(minAABB.y, pos.y);
-        minAABB.z = std::min(minAABB.z, pos.z);
-
-        maxAABB.x = std::max(maxAABB.x, pos.x);
-        maxAABB.y = std::max(maxAABB.y, pos.y);
-        maxAABB.z = std::max(maxAABB.z, pos.z);
+        minmax.minmax(asteroid.m_position);
     }
 
-    AABB aabb{ minAABB, maxAABB, false };
-    node.setAABB(aabb);
+    node.setAABB(minmax);
 }

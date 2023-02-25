@@ -11,9 +11,14 @@
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
 
+#include "scene/RenderContext.h"
+
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/EntityRegistry.h"
+#include "registry/MaterialRegistry.h"
+
 
 namespace {
     const std::string TERRAIN_QUAD_MESH_NAME{ "quad_terrain" };
@@ -41,14 +46,27 @@ void TerrainGenerator::prepare(
     m_poolSizeV = 4;
 
     prepareHeightMap(assets, registry, container);
-    createTiles(assets, registry, container);
+
+    if (container.m_type->m_flags.tessellation) {
+        createTilesTessellation(assets, registry, container);
+    }
+    else {
+        createTilesMesh(assets, registry, container);
+    }
 }
 
 void TerrainGenerator::update(
     const RenderContext& ctx,
-    Node& node,
-    Node* parent)
+    Node& container,
+    Node* containerParent)
 {
+    if (!container.m_type->m_flags.tessellation) return;
+
+    if (m_containerMatrixLevel != container.getMatrixLevel())
+    {
+        updateTiles(ctx, container, containerParent);
+        m_containerMatrixLevel = container.getMatrixLevel();
+    }
 }
 
 void TerrainGenerator::prepareHeightMap(
@@ -83,7 +101,110 @@ void TerrainGenerator::prepareHeightMap(
     m_heightMap->prepare();
 }
 
-void TerrainGenerator::createTiles(
+void TerrainGenerator::updateTiles(
+    const RenderContext& ctx,
+    Node& container,
+    Node* containerParent)
+{
+    auto* entityRegistry = ctx.m_registry->m_entityRegistry.get();
+
+    const auto& containerMatrix = container.getModelMatrix();
+
+    // NOTE scale.y == makes *FLAT* plane
+    const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
+    const int step = m_worldTileSize;
+
+    int entityIndex = m_firstEntityIndex;
+    for (int v = 0; v < m_worldTilesV; v++) {
+        for (int u = 0; u < m_worldTilesU; u++) {
+            const glm::vec3 pos{ u * step, 0, v * step };
+
+            auto* entity = entityRegistry->updateEntity(entityIndex, true);
+
+            glm::mat4 modelMatrix{ 1.f };
+            {
+                modelMatrix = glm::scale(modelMatrix, scale);
+                modelMatrix = glm::translate(modelMatrix, pos);
+                modelMatrix = containerMatrix * modelMatrix;
+            }
+
+            entity->setModelMatrix(modelMatrix);
+            entity->setNormalMatrix(glm::mat3(glm::inverseTranspose(modelMatrix)));
+
+            entityIndex++;
+        }
+    }
+
+    // Make tiles visible
+    m_node->setEntityRange(m_firstEntityIndex, m_worldTilesU * m_worldTilesV);
+}
+
+void TerrainGenerator::createTilesTessellation(
+    const Assets& assets,
+    Registry* registry,
+    Node& container)
+{
+    auto* entityRegistry = registry->m_entityRegistry.get();
+    auto* materialRegistry = registry->m_materialRegistry.get();
+
+    auto type = createType(registry, container.m_type, true);
+    {
+        auto future = registry->m_modelRegistry->getMesh(TERRAIN_QUAD_MESH_NAME);
+        auto* mesh = future.get();
+        mesh->setAABB(TERRAIN_AABB);
+        type->setMesh(mesh);
+        type->m_drawOptions.patchVertices = 3;
+    }
+
+    // NOTE KI must laod textures in the context of *THIS* material
+    // NOTE KI only SINGLE material supported
+    int materialIndex = -1;
+    type->modifyMaterials([this, &materialIndex , &materialRegistry, &assets](Material& m) {
+        m.tilingX = m_worldTilesU;
+        m.tilingY = m_worldTilesV;
+
+        m.loadTextures(assets);
+
+        materialRegistry->add(m);
+        materialIndex = m.m_registeredIndex;
+    });
+
+    const auto& tileVolume = TERRAIN_AABB.getVolume();
+    const int step = m_worldTileSize;
+    AABB minmax{ true };
+
+    m_firstEntityIndex = entityRegistry->addEntityRange(m_worldTilesU * m_worldTilesV);
+
+    // Setup initial static values for entity
+    int entityIndex = m_firstEntityIndex;
+    for (int v = 0; v < m_worldTilesV; v++) {
+        for (int u = 0; u < m_worldTilesU; u++) {
+            const glm::vec3 pos{ u * step, 0, v * step };
+            minmax.minmax(pos);
+
+            auto* entity = entityRegistry->updateEntity(entityIndex, false);
+            entity->u_tileX = u;
+            entity->u_tileY = v;
+
+            entity->u_rangeYmin = m_verticalRange[0];
+            entity->u_rangeYmax = m_verticalRange[1];
+
+            entity->u_materialIndex = materialIndex;
+            entity->u_volume = tileVolume;
+
+            entityIndex++;
+        }
+    }
+
+    {
+        m_node = new Node(type);
+        m_node->setAABB(minmax);
+        m_node->m_parentId = container.m_id;
+        registry->m_nodeRegistry->addNode(m_node);
+    }
+}
+
+void TerrainGenerator::createTilesMesh(
     const Assets& assets,
     Registry* registry,
     Node& container)
@@ -91,7 +212,6 @@ void TerrainGenerator::createTiles(
     // NOTE scale.y == makes *FLAT* plane
     const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
     const int step = m_worldTileSize;
-    const bool tessellation = container.m_type->m_flags.tessellation;
     int cloneIndex = 0;
 
     for (int v = 0; v < m_worldTilesV; v++) {
@@ -99,29 +219,13 @@ void TerrainGenerator::createTiles(
             const glm::vec3 tile = { u, 0, v };
             const glm::vec3 pos{ u * step, 0, v * step };
 
-            auto type = createType(registry, container.m_type);
+            auto type = createType(registry, container.m_type, false);
 
-            if (tessellation) {
-                auto future = registry->m_modelRegistry->getMesh(
-                    TERRAIN_QUAD_MESH_NAME);
-                auto* mesh = future.get();
-                mesh->setAABB(TERRAIN_AABB);
-                type->setMesh(mesh);
-                type->m_drawOptions.patchVertices = 3;
-            }
-            else {
-                auto mesh = generateTerrain(u, v);
-                type->setMesh(std::move(mesh), true);
-            }
+            auto mesh = generateTerrain(u, v);
+            type->setMesh(std::move(mesh), true);
 
             // NOTE KI must laod textures in the context of *THIS* material
-            type->modifyMaterials([this, tessellation, u, v, &assets](Material& m) {
-                if (tessellation) {
-                    m.tileX = u;
-                    m.tileY = v;
-                    m.tilingX = m_worldTilesU;
-                    m.tilingY = m_worldTilesV;
-                }
+            type->modifyMaterials([this, &assets](Material& m) {
                 m.loadTextures(assets);
             });
 
@@ -144,7 +248,8 @@ void TerrainGenerator::createTiles(
 
 MeshType* TerrainGenerator::createType(
     Registry* registry,
-    MeshType* containerType)
+    MeshType* containerType,
+    bool tessellation)
 {
     auto type = registry->m_typeRegistry->getType(containerType->m_name);
     type->m_entityType = EntityType::terrain;
@@ -153,6 +258,9 @@ MeshType* TerrainGenerator::createType(
     flags = containerType->m_flags;
     flags.noDisplay = false;
     flags.invisible = false;
+    if (tessellation) {
+        flags.instanced = true;
+    }
 
     type->m_priority = containerType->m_priority;
     type->m_script = containerType->m_script;

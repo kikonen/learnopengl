@@ -6,6 +6,14 @@
 struct AABB final
 {
     AABB() noexcept = default;
+
+    AABB(bool minmax)
+        : AABB(
+            glm::vec3(std::numeric_limits<float>::max()),
+            glm::vec3(std::numeric_limits<float>::min()),
+            false)
+    {}
+
     AABB(const AABB& aabb) noexcept
         : AABB(aabb.m_min, aabb.m_max, aabb.m_quad)
     {}
@@ -37,6 +45,8 @@ struct AABB final
         glm::vec3 center = (m_max + m_min) * 0.5f;
         m_volume = glm::vec4(center, radius);
     }
+
+    void minmax(const glm::vec3& pos);
 
 public:
     glm::vec4 m_volume;

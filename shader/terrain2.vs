@@ -65,8 +65,8 @@ void main() {
   vs_out.materialIndex = materialIndex;
 
   {
-    float x = u_materials[materialIndex].tileX;
-    float y = u_materials[materialIndex].tileY;
+    float x = entity.tileX;
+    float y = entity.tileY;
     float tilingX = u_materials[materialIndex].tilingX;
     float tilingY = u_materials[materialIndex].tilingY;
     float sizeX = 1.0 / tilingX;

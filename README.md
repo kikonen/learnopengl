@@ -79,9 +79,11 @@ https://glad.dav1d.de
 - https://gamedev.stackexchange.com/questions/87616/opengl-quad-tessellation-control-shader
 - https://ogldev.org/www/tutorial30/tutorial30.html
 - https://yiweimao.github.io/blog/tessellation/
+- https://www.khronos.org/opengl/wiki/Tessellation
 
 ## Misc
 - https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
+- https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
 
 ## Libraries
 - https://github.com/nothings/stb

@@ -80,8 +80,8 @@ void main()
   vec3 worldPos = interpolate3D(tes_in[0].worldPos, tes_in[1].worldPos, tes_in[2].worldPos);
 
 
-  const float rangeYmin = -62.54;
-  const float rangeYmax = 221.9;
+  const float rangeYmin = entity.rangeYmin;
+  const float rangeYmax = entity.rangeYmax;
   const float rangeY = rangeYmax - rangeYmin;
 
   float h = rangeYmin + texture(heightMap, texCoord).r * rangeY;

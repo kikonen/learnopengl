@@ -140,10 +140,13 @@ void Node::updateEntity(const RenderContext& ctx)
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
-    if (m_instancedIndex == -1) {
-        batch.add(ctx, m_entityIndex);
+    if (m_type->m_flags.instanced) {
+        // NOTE KI instanced node may not be ready, or currently not generating visible entities
+        if (m_instancedIndex != -1) {
+            batch.addInstanced(ctx, m_entityIndex, m_instancedIndex, m_instancedCount);
+        }
     } else {
-        batch.addInstanced(ctx, m_entityIndex, m_instancedIndex, m_instancedCount);
+        batch.add(ctx, m_entityIndex);
     }
 }
 

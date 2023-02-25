@@ -46,6 +46,12 @@ struct EntitySSBO {
     GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4
     GLuint u_flags{ 0 }; // 1 * 4 = 4
 
+    GLuint u_tileX{ 0 };
+    GLuint u_tileY{ 0 };
+
+    float u_rangeYmin{ 0.f };
+    float u_rangeYmax{ 0.f };
+
     // TOTAL: 136
 
     //glm::vec4 pad1;

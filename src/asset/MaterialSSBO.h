@@ -41,13 +41,10 @@ struct MaterialSSBO {
 
     float fogRatio;
 
-    float tileX;
-    float tileY;
-
     float tilingX;
     float tilingY;
 
-    //int pad1;
-    //int pad2;
+    int pad1;
+    int pad2;
     //int pad3;
 };
