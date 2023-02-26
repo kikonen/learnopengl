@@ -62,10 +62,10 @@ void TerrainGenerator::update(
 {
     if (!container.m_type->m_flags.tessellation) return;
 
-    if (m_containerMatrixLevel != container.getMatrixLevel())
+    if (m_nodeMatrixLevel != m_node->getMatrixLevel())
     {
         updateTiles(ctx, container, containerParent);
-        m_containerMatrixLevel = container.getMatrixLevel();
+        m_nodeMatrixLevel = m_node->getMatrixLevel();
     }
 }
 
@@ -108,7 +108,7 @@ void TerrainGenerator::updateTiles(
 {
     auto* entityRegistry = ctx.m_registry->m_entityRegistry.get();
 
-    const auto& containerMatrix = container.getModelMatrix();
+    const auto& nodeMatrix = m_node->getModelMatrix();
 
     // NOTE scale.y == makes *FLAT* plane
     const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
@@ -123,9 +123,10 @@ void TerrainGenerator::updateTiles(
 
             glm::mat4 modelMatrix{ 1.f };
             {
-                modelMatrix = glm::scale(modelMatrix, scale);
+                // NOTE KI incorrect order of translate + scale caused terrain to fail (only 0,0 tile appeared)
                 modelMatrix = glm::translate(modelMatrix, pos);
-                modelMatrix = containerMatrix * modelMatrix;
+                modelMatrix = glm::scale(modelMatrix, scale);
+                modelMatrix = nodeMatrix * modelMatrix;
             }
 
             entity->setModelMatrix(modelMatrix);
