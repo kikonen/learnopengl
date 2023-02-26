@@ -75,7 +75,7 @@ private:
     size_t m_firstEntityIndex{ 0 };
     Node* m_node{ nullptr };
 
-    int m_containerMatrixLevel = -1;
+    int m_nodeMatrixLevel = -1;
 
     physics::HeightMap* m_heightMap{ nullptr };
 };

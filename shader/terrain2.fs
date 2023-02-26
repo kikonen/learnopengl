@@ -2,7 +2,9 @@
 
 #include struct_lights.glsl
 #include struct_material.glsl
+#include struct_entity.glsl
 
+#include uniform_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_lights.glsl
@@ -53,6 +55,7 @@ precision mediump float;
 #include fn_calculate_fog.glsl
 
 void main() {
+  const Entity entity = u_entities[fs_in.entityIndex];
   #include var_tex_material.glsl
 
 #ifdef USE_ALPHA

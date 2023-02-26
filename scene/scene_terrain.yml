@@ -46,8 +46,11 @@ entities:
     program: terrain2
     pos: [-1024, 0, -1024]
     render_flags:
-      no_shadow: true
+      xxwireframe: true
+      xxno_shadow: true
       tessellation: true
+      xxrender_back: true
+      xxno_frustum: true
     generator:
       type: terrain
       tiling:
