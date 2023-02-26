@@ -1526,11 +1526,11 @@ void SceneFile::loadMaterial(
             fields.tilingX = true;
             fields.tilingY = true;
         }
-        else if (k == "tilingX") {
+        else if (k == "tiling_x") {
             material.tilingX = readFloat(v);
             fields.tilingX = true;
         }
-        else if (k == "tilingY") {
+        else if (k == "tiling_y") {
             material.tilingY = readFloat(v);
             fields.tilingY = true;
         }

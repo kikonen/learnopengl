@@ -64,8 +64,8 @@ entities:
     model: pool_brick
     program: texture
     material_modifier:
-      tilingX: 30
-      tilingY: 2
+      tiling_x: 30
+      tiling_y: 2
       texture_spec:
         wrap: GL_REPEAT
     clones:
