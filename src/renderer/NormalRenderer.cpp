@@ -39,7 +39,6 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
             auto& batch = ctx.m_batch;
 
             for (auto& node : it.second) {
-                if (!node->m_allowNormals) continue;
                 batch->draw(ctx, *node, program);
             }
         }

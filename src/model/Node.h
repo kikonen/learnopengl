@@ -177,8 +177,6 @@ public:
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };
 
-    bool m_allowNormals = true;
-
     std::unique_ptr <NodeController> m_controller{ nullptr };
 
     std::unique_ptr<Camera> m_camera{ nullptr };
@@ -209,7 +207,6 @@ private:
 
     glm::vec3 m_position{ 0.f };
     glm::vec3 m_rotation{ 0.f };
-
     glm::vec3 m_scale{ 1.f };
 
     int m_cloneIndex{ 0 };
