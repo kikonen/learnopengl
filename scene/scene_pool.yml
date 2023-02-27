@@ -138,7 +138,7 @@ entities:
       tiling_x: 30
       tiling_y: 2
       texture_spec:
-        clamp: GL_REPEAT
+        wrap: GL_REPEAT
     clones:
       - pos: [100.0, 4, 20]
         scale: [0.3, 6, 60]
@@ -160,7 +160,6 @@ materials:
     tiling: 2
     texture_spec:
       wrap: GL_REPEAT
-      _pattern: 1
   - name: water_bottom
     type: texture
     ns: 225

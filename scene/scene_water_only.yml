@@ -138,7 +138,6 @@ materials:
     tiling: 2
     texture_spec:
       wrap: GL_REPEAT
-      _pattern: 1
   - name: terrain_grass
     type: texture
     ns: 50

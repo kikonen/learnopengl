@@ -140,7 +140,7 @@ materials:
     map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
-      clamp: GL_REPEAT
+      wrap: GL_REPEAT
   - name: sea_floor
     type: texture
     map_kd: tiles_1024.png
@@ -152,4 +152,4 @@ materials:
     ns: 100
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: Skeleton_VH.PNG
-    _map_bump: Skeleton_VH_normal.PNG
+    xxmap_bump: Skeleton_VH_normal.PNG

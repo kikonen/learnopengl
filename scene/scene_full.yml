@@ -42,7 +42,6 @@ entities:
       zoom: 45
       up: [0, 1, 0]
       front: [0, 0, -1]
-      offset: [0, 0, 0]
       pos: [0, 0, -9]
       rotation: [0, 180, 0.0]
       default: true
@@ -525,7 +524,6 @@ entities:
       zoom: 80
       up: [0, 1, 0]
       front: [0, 0, -1]
-      offset: [0, 0, 0]
       pos: [0, 1, 0]
       enabled: true
     xxcontroller:
@@ -957,7 +955,7 @@ materials:
     ns: 100
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: Skeleton_VH.PNG
-    _map_bump: Skeleton_VH_normal.PNG
+    xxmap_bump: Skeleton_VH_normal.PNG
   - name: pool_surface
     type: texture
     ns: 150
@@ -968,7 +966,6 @@ materials:
     tiling: 2
     texture_spec:
       wrap: GL_REPEAT
-      xxpattern: 1
   - name: pool_floor
     type: model
     ns: 225
@@ -1015,7 +1012,7 @@ materials:
     map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
-      clamp: GL_REPEAT
+      wrap: GL_REPEAT
   - name: sea_floor
     type: texture
     map_kd: tiles_1024.png

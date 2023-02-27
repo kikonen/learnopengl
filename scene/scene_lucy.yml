@@ -151,7 +151,6 @@ materials:
     tiling: 2
     texture_spec:
       wrap: GL_REPEAT
-      _pattern: 1
   - name: water_bottom
     type: texture
     ns: 225
