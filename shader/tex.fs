@@ -21,7 +21,7 @@ in VS_OUT {
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
-  vec4 vertexPos;
+  vec3 vertexPos;
   vec3 viewPos;
 
   flat uint materialIndex;

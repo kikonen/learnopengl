@@ -16,7 +16,7 @@ in TCS_OUT {
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
-  vec4 vertexPos;
+  vec3 vertexPos;
   vec3 viewPos;
 
   flat uint materialIndex;
@@ -34,7 +34,7 @@ out TES_OUT {
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
-  vec4 vertexPos;
+  vec3 vertexPos;
   vec3 viewPos;
 
   flat uint materialIndex;
@@ -77,7 +77,7 @@ void main()
   // Interpolate the attributes of the output vertex using the barycentric coordinates
   vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
   vec3 normal = interpolate3D(tes_in[0].normal, tes_in[1].normal, tes_in[2].normal);
-  vec3 worldPos = interpolate3D(tes_in[0].worldPos, tes_in[1].worldPos, tes_in[2].worldPos);
+  vec3 vertexPos = interpolate3D(tes_in[0].vertexPos, tes_in[1].vertexPos, tes_in[2].vertexPos);
 
 
   const float rangeYmin = entity.rangeYmin;
@@ -86,16 +86,18 @@ void main()
 
   float h = rangeYmin + texture(heightMap, texCoord).r * rangeY;
 
-  worldPos.y += h;
+  vertexPos.y += h;
+
+  vec4 worldPos = modelMatrix * vec4(vertexPos, 1.0);
 
   tes_out.entityIndex = tes_in[0].entityIndex;
-  tes_out.worldPos = worldPos;
+  tes_out.worldPos = worldPos.xyz;
   tes_out.normal = normal;
   tes_out.texCoord = texCoord;
-  tes_out.vertexPos = tes_in[0].vertexPos;
-  tes_out.viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+  tes_out.vertexPos = vertexPos;
+  tes_out.viewPos = (u_viewMatrix * worldPos).xyz;
   tes_out.materialIndex = tes_in[0].materialIndex;
-  tes_out.shadowPos = u_shadowMatrix * vec4(worldPos, 1.0);
+  tes_out.shadowPos = u_shadowMatrix * worldPos;
 
 #ifdef USE_NORMAL_TEX
   tes_out.TBN = tes_in[0].TBN;
@@ -103,5 +105,5 @@ void main()
 
   tes_out.height = h;
 
-  gl_Position = u_projectedMatrix * vec4(worldPos, 1.0);
+  gl_Position = u_projectedMatrix * worldPos;
 }

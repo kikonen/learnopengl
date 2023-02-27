@@ -12,7 +12,7 @@ out VS_OUT {
   flat uint entityIndex;
 
   vec3 normal;
-  vec4 vertexPos;
+  vec3 vertexPos;
 
   flat uint materialIndex;
 
@@ -47,7 +47,7 @@ void main() {
   vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
   vs_out.materialIndex = materialIndex;
 
-  vs_out.vertexPos = pos;
+  vs_out.vertexPos = pos.xyz;
 
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normalMatrix * normal;

@@ -7,7 +7,7 @@ layout (triangle_strip, max_vertices = 3) out;
 
 in VS_OUT {
   vec2 texCoord;
-  vec4 vertexPos;
+  vec3 vertexPos;
 
   flat uint materialIndex;
 
@@ -21,7 +21,7 @@ in VS_OUT {
 
 out VS_OUT {
   vec2 texCoord;
-  vec4 vertexPos;
+  vec3 vertexPos;
 
   flat uint materialIndex;
 
