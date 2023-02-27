@@ -47,6 +47,3 @@ entities:
       enabled: true
     enabled: true
 materials:
-  - name: skybox
-    type: skybox
-    asset: skybox

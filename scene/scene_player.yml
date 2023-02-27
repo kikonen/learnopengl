@@ -36,6 +36,3 @@ entities:
       - pos: [-5.0, 0.0, 5.0]
       - pos: [5.0, 0.0, 5.0]
 materials:
-  - name: skybox
-    type: skybox
-    asset: skybox

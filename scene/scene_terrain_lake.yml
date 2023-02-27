@@ -92,9 +92,6 @@ entities:
       render_back: true
     enabled: true
 materials:
-  - name: skybox
-    type: skybox
-    asset: skybox
   - name: terrain_grass
     type: texture
     ns: 50

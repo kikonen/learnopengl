@@ -21,9 +21,6 @@ entities:
     scale: 0.06
     enabled: true
 materials:
-  - name: skybox
-    type: skybox
-    asset: skybox
   - name: default
     ns: 100.0
     ks: [0.9, 0.9, 0.0, 1.0]

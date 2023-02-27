@@ -93,9 +93,6 @@ entities:
     script_file: scripts/anim_lucy
     enabled: true
 materials:
-  - name: skybox
-    type: skybox
-    asset: skybox
   - name: default
     ns: 100.0
     ks: [0.9, 0.9, 0.0, 1.0]

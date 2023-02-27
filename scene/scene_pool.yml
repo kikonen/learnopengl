@@ -150,9 +150,6 @@ entities:
         scale: [60, 6, 0.3]
     enabled: true
 materials:
-  - name: skybox
-    type: skybox
-    asset: skybox
   - name: water_surface
     type: texture
     ns: 150

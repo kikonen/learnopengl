@@ -69,9 +69,6 @@ entities:
       reflection: 0.05
     enabled: true
 materials:
-  - name: skybox
-    type: skybox
-    asset: skybox
   - name: default_ball
     ns: 100.0
     ka: [0.3, 0.3, 0.0, 1.0]

@@ -171,9 +171,6 @@ entities:
     plane_normal: [0.0, 0.0, 1.0]
     enabled: false
 materials:
-  - name: skybox
-    type: skybox
-    asset: skybox
   - name: silver_ball
     ns: 51.2
     ka: [0.1923, 0.1923, 0.1923, 1.0]

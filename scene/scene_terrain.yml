@@ -116,9 +116,6 @@ entities:
       z_step: -2
     enabled: true
 materials:
-  - name: skybox
-    type: skybox
-    asset: skybox
   - name: terrain_grass_OLD
     type: texture
     ns: 50
