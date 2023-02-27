@@ -1575,7 +1575,10 @@ void SceneFile::loadTextureWrap(
     else if (wrap == "GL_CLAMP_TO_EDGE") {
         wrapMode = GL_CLAMP_TO_EDGE;
     }
-    reportUnknown("wrap_mode", k, v);
+    else {
+        wrapMode = GL_CLAMP_TO_EDGE;
+        reportUnknown("wrap_mode", k, v);
+    }
 }
 
 float SceneFile::readFloat(const YAML::Node& node) const
