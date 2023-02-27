@@ -52,6 +52,9 @@ namespace {
     const float DEF_ALPHA = 1.0;
 
     const std::string AUTO_UUID{ "AUTO" };
+    const std::string ROOT_UUID{ "ROOT" };
+    const std::string VOLUME_UUID{ "VOLUME" };
+    const std::string CUBE_MAP_UUID{ "CUBE_MAP" };
 
     const std::string QUAD_MESH_NAME{ "quad" };
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
@@ -984,19 +987,11 @@ void SceneFile::loadEntityClone(
         }
         else if (k == "id") {
             data.id_str = v.as<std::string>();
-            if (!data.id_str.empty()) {
-                if (util::toUpper(data.id_str) == AUTO_UUID) {
-                    data.id_auto = true;
-                    data.id = uuids::uuid_system_generator{}();
-                }
-                else {
-                    data.id = KI_UUID(data.id_str);
-                }
-            }
+            data.id = readUUID(v);
         }
         else if (k == "parent_id") {
             data.parentId_str = v.as<std::string>();
-            data.parentId = KI_UUID(data.parentId_str);
+            data.parentId = readUUID(v);
         }
         else if (k == "model") {
             if (v.Type() == YAML::NodeType::Sequence) {
@@ -1270,7 +1265,7 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
         }
         else if (k == "target_id") {
             data.targetId_str = v.as<std::string>();
-            data.targetId = KI_UUID(data.targetId_str);
+            data.targetId = readUUID(v);
         }
         else if (k == "linear") {
             data.linear = readFloat(v);
@@ -1793,6 +1788,30 @@ glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) const
         a.push_back(1.0);
     }
     return glm::vec2{ a[0], a[1] };
+}
+
+uuids::uuid SceneFile::readUUID(const YAML::Node& node) const
+{
+    std::string str = node.as<std::string>();
+    str = util::toUpper(str);
+
+    if (str.empty()) return {};
+
+    if (str == AUTO_UUID) {
+        return uuids::uuid_system_generator{}();
+    }
+    else if (str == ROOT_UUID) {
+        return m_assets.rootUUID;
+    }
+    else if (str == VOLUME_UUID) {
+        return m_assets.volumeUUID;
+    }
+    else if (str == CUBE_MAP_UUID) {
+        return m_assets.cubeMapUUID;
+    }
+    else {
+        return KI_UUID(str);
+    }
 }
 
 const std::string SceneFile::resolveTexturePath(const std::string& path) const

@@ -190,7 +190,6 @@ class SceneFile
 
         // NOTE KI debug only
         std::string id_str;
-        std::string id_auto;
         // NOTE KI debug only
         std::string parentId_str;
 
@@ -435,6 +434,9 @@ private:
     glm::vec3 readScale3(const YAML::Node& node) const;
     glm::vec4 readRGBA(const YAML::Node& node) const;
     glm::vec2 readRefractionRatio(const YAML::Node& node) const;
+
+    uuids::uuid readUUID(const YAML::Node& node) const;
+
     std::string readFile(const std::string& filename) const;
 
     const std::string resolveTexturePath(const std::string& line) const;
