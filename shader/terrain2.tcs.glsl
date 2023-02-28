@@ -79,7 +79,7 @@ void main()
     const int MIN_TESS_LEVEL = 3;
     const int MAX_TESS_LEVEL = 32;
     const float MIN_DIST = 20;
-    const float MAX_DIST = 800;
+    const float MAX_DIST = 500;
     const float DIST_DIFF = MAX_DIST - MIN_DIST;
 
     mat4 mvMatrix = u_viewMatrix * modelMatrix;
