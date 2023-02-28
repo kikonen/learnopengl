@@ -83,7 +83,6 @@ void ScriptEngine::registerTypes()
         ut["getTile"] = &Node::lua_getTile;
 
         ut["getPos"] = &Node::lua_getPos;
-        ut["setPos"] = &Node::lua_setPos;
     }
 }
 

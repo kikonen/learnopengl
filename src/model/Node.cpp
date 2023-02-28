@@ -29,6 +29,7 @@ namespace {
 
     std::mutex object_id_lock;
 
+    const static glm::mat4 IDENTITY_MATRIX{ 1.f };
 }
 
 int Node::nextID() noexcept
@@ -149,8 +150,6 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 
 void Node::updateModelMatrix(Node* parent) noexcept
 {
-    const static glm::mat4 IDENTITY_MATRIX{ 1.f };
-
     const int parentMatrixLevel = parent ? parent->m_matrixLevel : -1;
     const bool dirtyParent = m_parentMatrixLevel != parentMatrixLevel;
     const bool dirtyModel = m_dirty
@@ -171,16 +170,12 @@ void Node::updateModelMatrix(Node* parent) noexcept
     //const auto& scaleMatrix = glm::scale(IDENTITY_MATRIX, m_scale);
     //const auto& modelMatrix = translateMatrix * rotationMatrix * scaleMatrix;
 
-    const auto& modelMatrix = glm::scale(
-        glm::translate(IDENTITY_MATRIX, m_position) * m_rotationMatrix,
-        m_scale);
-
     if (parent) {
-        m_modelMatrix = parent->m_modelMatrix * modelMatrix;
+        m_modelMatrix = parent->m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
         m_parentMatrixLevel = parentMatrixLevel;
     }
     else {
-        m_modelMatrix = modelMatrix;
+        m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
     }
 
     m_worldPosition = m_modelMatrix[3];
@@ -203,8 +198,13 @@ void Node::setPlaneNormal(const glm::vec3& planeNormal) noexcept
 
 void Node::setPosition(const glm::vec3& pos) noexcept
 {
-    if (m_position != pos) {
-        m_position = pos;
+    if (m_translateMatrix[3][0] != pos.x ||
+        m_translateMatrix[3][1] != pos.y ||
+        m_translateMatrix[3][2] != pos.z)
+    {
+        m_translateMatrix[3][0] = pos.x;
+        m_translateMatrix[3][1] = pos.y;
+        m_translateMatrix[3][2] = pos.z;
         m_dirty = true;
     }
 }
@@ -221,22 +221,27 @@ void Node::setRotation(const glm::vec3& rotation) noexcept
 void Node::setScale(float scale) noexcept
 {
     assert(scale >= 0);
-    if (m_scale.x != scale ||
-        m_scale.y != scale ||
-        m_scale.z != scale)
+    if (m_scaleMatrix[0][0] != scale ||
+        m_scaleMatrix[1][1] != scale ||
+        m_scaleMatrix[2][2] != scale)
     {
-        m_scale.x = scale;
-        m_scale.y = scale;
-        m_scale.z = scale;
+        m_scaleMatrix[0][0] = scale;
+        m_scaleMatrix[1][1] = scale;
+        m_scaleMatrix[2][2] = scale;
         m_dirty = true;
     }
 }
 
 void Node::setScale(const glm::vec3& scale) noexcept
 {
-    if (m_scale != scale) {
-        assert(scale.x >= 0 && scale.y >= 0 && scale.z >= 0);
-        m_scale = scale;
+    assert(scale.x >= 0 && scale.y >= 0 && scale.z >= 0);
+    if (m_scaleMatrix[0][0] != scale.x ||
+        m_scaleMatrix[1][1] != scale.y ||
+        m_scaleMatrix[2][2] != scale.z)
+    {
+        m_scaleMatrix[0][0] = scale.x;
+        m_scaleMatrix[1][1] = scale.y;
+        m_scaleMatrix[2][2] = scale.z;
         m_dirty = true;
     }
 }
@@ -319,13 +324,6 @@ const std::array<unsigned int, 3> Node::lua_getTile() const noexcept
 
 const std::array<float, 3> Node::lua_getPos() const noexcept
 {
-    return { m_position.x, m_position.y, m_position.z };
-}
-
-void Node::lua_setPos(float x, float y, float z) noexcept
-{
-    m_position.x = x;
-    m_position.y = y;
-    m_position.z = z;
-    m_dirty = true;
+    const auto& pos = getPosition();
+    return { pos.x, pos.y, pos.z };
 }

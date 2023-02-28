@@ -142,13 +142,13 @@ void AsteroidBeltGenerator::initAsteroids(
             displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
             float z = cos(angle) * radius + displacement;
 
-            asteroid.m_position = { x, y, z };
+            asteroid.setPosition({x, y, z});
         }
 
         {
             // 2. scale: scale between 0.05 and 0.25f
             float scale = (rand() % 20) / 100.0f + 0.05f;
-            asteroid.m_scale = glm::vec3{ scale };
+            asteroid.setScale({ scale, scale, scale });
         }
 
         {
@@ -184,7 +184,7 @@ void AsteroidBeltGenerator::rotateAsteroids(
         float angle = asteroid.m_angularVelocity * elapsed;
 
         auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
-        asteroid.m_position = mat * glm::vec4(asteroid.m_position, 0.f);
+        asteroid.setPosition(mat * glm::vec4(asteroid.getPosition(), 1.f));
     }
 }
 
@@ -196,7 +196,7 @@ void AsteroidBeltGenerator::calculateVolume(
 
     for (auto&& asteroid : asteroids)
     {
-        minmax.minmax(asteroid.m_position);
+        minmax.minmax(asteroid.getPosition());
     }
 
     node.setAABB(minmax);

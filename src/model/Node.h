@@ -67,7 +67,7 @@ public:
     void setPosition(const glm::vec3& pos) noexcept;
 
     inline const glm::vec3& getPosition() const noexcept {
-        return m_position;
+        return { m_translateMatrix[3][0], m_translateMatrix[3][1], m_translateMatrix[3][2] };
     }
 
     void setRotation(const glm::vec3& rotation) noexcept;
@@ -80,7 +80,7 @@ public:
     void setScale(const glm::vec3& scale) noexcept;
 
     inline const glm::vec3& getScale() const noexcept {
-        return m_scale;
+        return { m_scaleMatrix[0][0], m_scaleMatrix[1][1], m_scaleMatrix[2][2] };
     }
 
     int getCloneIndex() {
@@ -157,7 +157,6 @@ public:
     const std::array<unsigned int, 3> lua_getTile() const noexcept;
 
     const std::array<float, 3> lua_getPos() const noexcept;
-    void lua_setPos(float x, float y, float z) noexcept;
 
 protected:
 
@@ -205,10 +204,10 @@ private:
 
     glm::vec3 m_planeNormal{ 0 };
 
-    glm::vec3 m_position{ 0.f };
-    glm::vec3 m_rotation{ 0.f };
-    glm::vec3 m_scale{ 1.f };
+    glm::mat4 m_translateMatrix{ 1.f };
+    glm::mat4 m_scaleMatrix{ 1.f };
 
+    glm::vec3 m_rotation{ 0.f };
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     // quaternion rotation matrix
     glm::mat4 m_rotationMatrix{ 1.f };
