@@ -148,11 +148,23 @@ void TerrainGenerator::createTilesTessellation(
     auto* entityRegistry = registry->m_entityRegistry.get();
     auto* materialRegistry = registry->m_materialRegistry.get();
 
+    float scale = m_worldTileSize / 2.f;
+    float vertMinAABB = m_verticalRange[0] / scale;
+    float vertMaxAABB = 1.20f * m_verticalRange[1] / scale;
+
+    const AABB aabb = {
+        glm::vec3{ -1.075f, vertMinAABB, -1.075f },
+        glm::vec3{ 1.075f, vertMaxAABB, 1.075f },
+        true
+    };
+
+    KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
+
     auto type = createType(registry, container.m_type, true);
     {
         auto future = registry->m_modelRegistry->getMesh(TERRAIN_QUAD_MESH_NAME);
         auto* mesh = future.get();
-        mesh->setAABB(TERRAIN_AABB);
+        mesh->setAABB(aabb);
         type->setMesh(mesh);
         type->m_drawOptions.patchVertices = 3;
     }
@@ -170,7 +182,7 @@ void TerrainGenerator::createTilesTessellation(
         materialIndex = m.m_registeredIndex;
     });
 
-    const auto& tileVolume = TERRAIN_AABB.getVolume();
+    const auto& tileVolume = aabb.getVolume();
     const int step = m_worldTileSize;
     AABB minmax{ true };
 
