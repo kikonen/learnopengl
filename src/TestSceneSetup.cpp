@@ -5,9 +5,6 @@
 #include "asset/Program.h"
 
 #include "controller/CameraController.h"
-#include "controller/AsteroidBeltController.h"
-#include "controller/MovingLightController.h"
-#include "controller/NodePathController.h"
 
 #include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"

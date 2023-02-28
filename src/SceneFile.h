@@ -99,32 +99,30 @@ class SceneFile
     enum class ControllerType {
         none,
         camera,
-        path,
-        asteroid_belt,
     };
 
     struct ControllerData {
         bool enabled{ false };
         ControllerType type{ ControllerType::none };
 
-        float speed{ 0.f };
-        float radius{ 0.f };
-
         int mode{ 0 };
-        int count{ 0 };
-
-        Repeat repeat;
+        float speed{ 0.f };
     };
 
     enum class GeneratorType {
         none,
         grid,
         terrain,
+        asteroid_belt,
     };
 
     struct GeneratorData {
         bool enabled{ false };
         GeneratorType type{ GeneratorType::none };
+
+        int count{ 0 };
+        int mode{ 0 };
+        float radius{ 0.f };
 
         Repeat repeat;
         Tiling tiling;

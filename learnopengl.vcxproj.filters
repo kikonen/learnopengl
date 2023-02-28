@@ -54,16 +54,10 @@
     <ClCompile Include="src\model\Particle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\controller\AsteroidBeltController.cpp">
+    <ClCompile Include="src\generator\AsteroidBeltGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\controller\CameraController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\controller\InstancedController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\controller\NodePathController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\component\Light.cpp">
@@ -410,16 +404,10 @@
     <ClInclude Include="src\model\Particle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\controller\AsteroidBeltController.h">
+    <ClInclude Include="src\generator\AsteroidBeltGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\CameraController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\controller\InstancedController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\controller\NodePathController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\component\Light.h">

@@ -2,58 +2,55 @@
 
 #include <ki/uuid.h>
 
-#include "model/NodeInstance.h"
-
-#include "InstancedController.h"
+#include "NodeGenerator.h"
 
 
 class Registry;
 
-class AsteroidBeltController final : public InstancedController
+class AsteroidBeltGenerator final : public NodeGenerator
 {
     struct Asteroid : NodeInstance {
         float m_angularVelocity;
-        int m_entityIndex;
     };
 
 public:
-    AsteroidBeltController(int asteroidCount);
+    AsteroidBeltGenerator(int asteroidCount);
 
     virtual void prepare(
         const Assets& assets,
         Registry* registry,
-        Node& node) override;
+        Node& container) override;
 
-    virtual bool update(
+    virtual void update(
         const RenderContext& ctx,
-        Node& node,
-        Node* parent) override;
+        Node& container,
+        Node* containerParent) override;
 
 private:
     void updateAsteroids(
         const RenderContext& ctx,
-        Node& node,
-        Node* parent,
+        Node& container,
+        Node* containerParent,
         bool rotate);
 
     void createAsteroids(
         const Assets& assets,
         Registry* registry,
-        Node& node);
+        Node& container);
 
     void initAsteroids(
         const Assets& assets,
         Registry* registry,
-        Node& node,
+        Node& container,
         std::vector<Asteroid>& asteroids);
 
     void rotateAsteroids(
         const RenderContext& ctx,
-        Node& node,
+        Node& container,
         std::vector<Asteroid>& asteroids);
 
     void calculateVolume(
-        Node& node,
+        Node& container,
         std::vector<Asteroid> asteroids);
 
 private:

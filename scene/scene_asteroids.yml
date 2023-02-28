@@ -51,7 +51,7 @@ entities:
     material_modifier:
       reflection: 0.7
     pos: [0, 0, 0]
-    controller:
+    generator:
       type: asteroid_belt
       count: 1000
       enabled: true

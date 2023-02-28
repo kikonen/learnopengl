@@ -27,10 +27,9 @@
 
 #include "generator/GridGenerator.h"
 #include "generator/TerrainGenerator.h"
+#include "generator/AsteroidBeltGenerator.h"
 
-#include "controller/AsteroidBeltController.h"
 #include "controller/CameraController.h"
-#include "controller/NodePathController.h"
 #include "controller/VolumeController.h"
 
 #include "registry/Registry.h"
@@ -817,14 +816,6 @@ std::unique_ptr<NodeController> SceneFile::createController(
             auto controller = std::make_unique<CameraController>();
             return controller;
         }
-        case ControllerType::path: {
-            auto controller = std::make_unique<NodePathController>(center, data.mode);
-            return controller;
-        }
-        case ControllerType::asteroid_belt: {
-            auto controller = std::make_unique<AsteroidBeltController>(data.count);
-            return controller;
-        }
     }
 
     return nullptr;
@@ -853,6 +844,10 @@ std::unique_ptr<NodeGenerator> SceneFile::createGenerator(
         generator->m_horizontalScale = tiling.horizontal_scale;
         generator->m_material = materialVBO.m_defaultMaterial;
 
+        return generator;
+    }
+    case GeneratorType::asteroid_belt: {
+        auto generator = std::make_unique<AsteroidBeltGenerator>(data.count);
         return generator;
     }
     case GeneratorType::grid: {
@@ -1307,30 +1302,15 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
             else if (type == "camera") {
                 data.type = ControllerType::camera;
             }
-            else if (type == "path") {
-                data.type = ControllerType::path;
-            }
-            else if (type == "asteroid_belt") {
-                data.type = ControllerType::asteroid_belt;
-            }
             else {
                 reportUnknown("controller_type", k, v);
             }
         }
-        else if (k == "repeat") {
-            loadRepeat(v, data.repeat);
-        }
         else if (k == "speed") {
             data.speed = readFloat(v);
         }
-        else if (k == "radius") {
-            data.radius = readFloat(v);
-        }
         else if (k == "mode") {
             data.mode = v.as<int>();
-        }
-        else if (k == "count") {
-            data.count = v.as<int>();
         }
         else {
             reportUnknown("controller_entry", k, v);
@@ -1357,9 +1337,21 @@ void SceneFile::loadGenerator(
             else if (type == "terrain") {
                 data.type = GeneratorType::terrain;
             }
+            else if (type == "asteroid_belt") {
+                data.type = GeneratorType::asteroid_belt;
+            }
             else {
                 reportUnknown("generator_type", k, v);
             }
+        }
+        else if (k == "count") {
+            data.count = v.as<int>();
+        }
+        else if (k == "radius") {
+            data.radius = readFloat(v);
+        }
+        else if (k == "mode") {
+            data.mode = v.as<int>();
         }
         else if (k == "repeat") {
             loadRepeat(v, data.repeat);

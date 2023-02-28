@@ -261,9 +261,7 @@
     <ClCompile Include="src\scene\Batch.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
     <ClCompile Include="src\registry\MeshType.cpp" />
-    <ClCompile Include="src\controller\NodePathController.cpp" />
-    <ClCompile Include="src\controller\InstancedController.cpp" />
-    <ClCompile Include="src\controller\AsteroidBeltController.cpp" />
+    <ClCompile Include="src\generator\AsteroidBeltGenerator.cpp" />
     <ClCompile Include="src\controller\NodeController.cpp" />
     <ClCompile Include="src\util\Perlin.cpp" />
     <ClCompile Include="src\scene\FrameBuffer.cpp" />
@@ -419,9 +417,7 @@
     <ClInclude Include="src\scene\Batch.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\registry\MeshType.h" />
-    <ClInclude Include="src\controller\NodePathController.h" />
-    <ClInclude Include="src\controller\InstancedController.h" />
-    <ClInclude Include="src\controller\AsteroidBeltController.h" />
+    <ClInclude Include="src\generator\AsteroidBeltGenerator.h" />
     <ClInclude Include="src\controller\NodeController.h" />
     <ClInclude Include="src\util\Perlin.h" />
     <ClInclude Include="src\scene\FrameBuffer.h" />

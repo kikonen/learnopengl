@@ -171,9 +171,9 @@ void Node::updateModelMatrix(Node* parent) noexcept
     //const auto& scaleMatrix = glm::scale(IDENTITY_MATRIX, m_scale);
     //const auto& modelMatrix = translateMatrix * rotationMatrix * scaleMatrix;
 
-    const auto& modelMatrix = glm::translate(IDENTITY_MATRIX, m_position) *
-        glm::toMat4(glm::quat(glm::radians(m_rotation))) *
-        glm::scale(IDENTITY_MATRIX, m_scale);
+    const auto& modelMatrix = glm::scale(
+        glm::translate(IDENTITY_MATRIX, m_position) * m_rotationMatrix,
+        m_scale);
 
     if (parent) {
         m_modelMatrix = parent->m_modelMatrix * modelMatrix;
@@ -213,6 +213,7 @@ void Node::setRotation(const glm::vec3& rotation) noexcept
 {
     if (m_rotation != rotation) {
         m_rotation = rotation;
+        m_rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
         m_dirty = true;
     }
 }

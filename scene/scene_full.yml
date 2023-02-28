@@ -10,10 +10,6 @@ cube_maps: {}
 root:
   type: origo
   pos: [200, 0, 200]
-  controller:
-    type: path
-    mode: 1
-    enabled: false
   xxscript_file: scripts/seq_spin_root
 entities:
   - name: zero origo
@@ -169,10 +165,7 @@ entities:
     model: texture_cube
     program: texture
     pos: [0, 15, 0]
-    controller:
-      type: path
-      mode: 1
-      enabled: true
+    script_file: scripts/anim_node_path
     enabled: true
   - name: Active node around rock
     id: c5c1d3e7-7d86-42d3-95e6-eed4ab54c58b
@@ -180,10 +173,7 @@ entities:
     model: texture_cube
     program: texture
     pos: [0, -5, 0]
-    controller:
-      type: path
-      mode: 1
-      enabled: true
+    script_file: scripts/anim_node_path
     enabled: true
   - name: Cube map 1
     type: origo
@@ -714,7 +704,7 @@ entities:
     material_modifier:
       reflection: 0.4
     pos: [0, 0, 0]
-    controller:
+    generator:
       type: asteroid_belt
       count: 1000
       enabled: true
