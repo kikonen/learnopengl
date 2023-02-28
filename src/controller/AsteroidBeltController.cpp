@@ -71,14 +71,7 @@ void AsteroidBeltController::updateAsteroids(
         auto* entity = entityRegistry.updateEntity(asteroid.m_entityIndex, true);
 
         if (rotate) {
-            glm::mat4 modelMatrix{ 1.f };
-            {
-                //modelMat = glm::translate(modelMat, asteroid.m_position + parentPos);
-                modelMatrix = glm::translate(modelMatrix, asteroid.m_position);
-                modelMatrix = glm::scale(modelMatrix, glm::vec3(asteroid.m_scale));
-                modelMatrix = glm::rotate(modelMatrix, asteroid.m_rotationAngle, glm::vec3(0.4f, 0.6f, 0.8f));
-                modelMatrix = parent->getModelMatrix() * modelMatrix;
-            }
+            const auto& modelMatrix = asteroid.compile(parent->getModelMatrix());
 
             entity->setModelMatrix(modelMatrix);
             // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
@@ -157,19 +150,18 @@ void AsteroidBeltController::initAsteroids(
         {
             // 2. scale: scale between 0.05 and 0.25f
             float scale = (rand() % 20) / 100.0f + 0.05f;
-            asteroid.m_scale = scale;
+            asteroid.m_scale = glm::vec3{ scale };
         }
 
         {
             // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
-            float rotAngle = (rand() % 360);
-            asteroid.m_rotationAngle = rotAngle;
+            asteroid.m_rotation = glm::vec3{ rand() % 360, rand() % 360, rand() % 360 };
         }
 
         {
             // 3. make asteroids to rotate slowly
-            float speed = (rand() % 200) / 20000.0f + 0.0005f;
-            asteroid.m_speed = speed;
+            float velocity = (rand() % 200) / 20000.0f + 0.0005f;
+            asteroid.m_angularVelocity = velocity;
         }
 
         auto* entity = registry->m_entityRegistry->updateEntity(asteroid.m_entityIndex, true);
@@ -191,7 +183,7 @@ void AsteroidBeltController::rotateAsteroids(
         Asteroid& asteroid = asteroids[i];
 
         glm::mat4 modelMat{ 1.f };
-        float angle = asteroid.m_speed * elapsed;
+        float angle = asteroid.m_angularVelocity * elapsed;
 
         auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
         asteroid.m_position = mat * glm::vec4(asteroid.m_position, 0.f);

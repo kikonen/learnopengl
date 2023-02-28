@@ -214,15 +214,9 @@ private:
 
     glm::mat4 m_modelMatrix{ 1.f };
 
-    glm::mat4 m_rotationMatrix{ 0.f };
-    glm::mat4 m_translateMatrix{ 0.f };
-    glm::mat4 m_scaleMatrix{ 0.f };
-
     int m_tagMaterialIndex = -1;
     int m_selectionMaterialIndex = -1;
 
-    bool m_dirtyRotation = true;
-    bool m_dirtyTranslate = true;
-    bool m_dirtyScale = true;
+    bool m_dirty = true;
     bool m_dirtyEntity = true;
 };

@@ -2,6 +2,8 @@
 
 #include "asset/Assets.h"
 
+#include "model/NodeInstance.h"
+
 #include "ki/GL.h"
 
 class Node;
@@ -29,4 +31,6 @@ public:
 
 protected:
     size_t m_poolSize = 0;
+
+    std::vector<NodeInstance> m_instances;
 };

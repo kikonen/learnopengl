@@ -2,6 +2,8 @@
 
 #include <ki/uuid.h>
 
+#include "model/NodeInstance.h"
+
 #include "InstancedController.h"
 
 
@@ -9,12 +11,8 @@ class Registry;
 
 class AsteroidBeltController final : public InstancedController
 {
-    struct Asteroid {
-        int m_asteroidID;
-        glm::vec3 m_position;
-        float m_rotationAngle;
-        float m_scale;
-        float m_speed;
+    struct Asteroid : NodeInstance {
+        float m_angularVelocity;
         int m_entityIndex;
     };
 

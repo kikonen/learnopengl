@@ -202,6 +202,7 @@
     <ClCompile Include="src\generator\GridGenerator.cpp" />
     <ClCompile Include="src\generator\NodeGenerator.cpp" />
     <ClCompile Include="src\generator\TerrainGenerator.cpp" />
+    <ClCompile Include="src\model\NodeInstance.cpp" />
     <ClCompile Include="src\physics\HeightMap.cpp" />
     <ClCompile Include="src\physics\Surface.cpp" />
     <ClCompile Include="src\physics\PhysicsEngine.cpp" />
@@ -348,6 +349,7 @@
     <ClInclude Include="src\kigl\GLBlendMode.h" />
     <ClInclude Include="src\ki\OpenGLInfo.h" />
     <ClInclude Include="src\ki\RenderClock.h" />
+    <ClInclude Include="src\model\NodeInstance.h" />
     <ClInclude Include="src\physics\HeightMap.h" />
     <ClInclude Include="src\physics\Plane.h" />
     <ClInclude Include="src\physics\Surface.h" />

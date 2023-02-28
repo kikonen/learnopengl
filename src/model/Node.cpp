@@ -27,9 +27,6 @@
 namespace {
     int objectIDbase = 100;
 
-    const auto BASE_MAT_1 = glm::mat4(1.0f);
-
-
     std::mutex object_id_lock;
 
 }
@@ -152,51 +149,38 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 
 void Node::updateModelMatrix(Node* parent) noexcept
 {
+    const static glm::mat4 IDENTITY_MATRIX{ 1.f };
+
     const int parentMatrixLevel = parent ? parent->m_matrixLevel : -1;
     const bool dirtyParent = m_parentMatrixLevel != parentMatrixLevel;
-    const bool dirtyModel = m_dirtyRotation
-        || m_dirtyTranslate
-        || m_dirtyScale
+    const bool dirtyModel = m_dirty
         || dirtyParent;
     if (!dirtyModel) return;
 
-    const bool needPlaneNormal = m_type->m_flags.mirror && (m_dirtyRotation || dirtyParent);
+    const bool needPlaneNormal = m_type->m_flags.mirror && (m_dirty || dirtyParent);
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    if (m_dirtyRotation) {
-        m_rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
-        m_dirtyRotation = false;
-    }
-
-    if (m_dirtyTranslate) {
-        m_translateMatrix = glm::translate(
-            BASE_MAT_1,
-            m_position
-        );
-        m_dirtyTranslate = false;
-    }
-
-    if (m_dirtyScale) {
-        assert(m_scale.x >= 0 && m_scale.y >= 0 && m_scale.z >= 0);
-
-        m_scaleMatrix = glm::scale(
-            BASE_MAT_1,
-            m_scale
-        );
-        m_dirtyScale = false;
-    }
 
     // https://learnopengl.com/Lighting/Basic-Lighting
     // http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
     // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
     // normal = mat3(transpose(inverse(model))) * aNormal;
 
+    //const auto& translateMatrix = glm::translate(IDENTITY_MATRIX, m_position);
+    //const auto& rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
+    //const auto& scaleMatrix = glm::scale(IDENTITY_MATRIX, m_scale);
+    //const auto& modelMatrix = translateMatrix * rotationMatrix * scaleMatrix;
+
+    const auto& modelMatrix = glm::translate(IDENTITY_MATRIX, m_position) *
+        glm::toMat4(glm::quat(glm::radians(m_rotation))) *
+        glm::scale(IDENTITY_MATRIX, m_scale);
+
     if (parent) {
-        m_modelMatrix = parent->m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
+        m_modelMatrix = parent->m_modelMatrix * modelMatrix;
         m_parentMatrixLevel = parentMatrixLevel;
     }
     else {
-        m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
+        m_modelMatrix = modelMatrix;
     }
 
     m_worldPosition = m_modelMatrix[3];
@@ -213,7 +197,7 @@ void Node::setPlaneNormal(const glm::vec3& planeNormal) noexcept
 {
     if (m_planeNormal != planeNormal) {
         m_planeNormal = planeNormal;
-        m_dirtyRotation = true;
+        m_dirty = true;
     }
 }
 
@@ -221,7 +205,7 @@ void Node::setPosition(const glm::vec3& pos) noexcept
 {
     if (m_position != pos) {
         m_position = pos;
-        m_dirtyTranslate = true;
+        m_dirty = true;
     }
 }
 
@@ -229,7 +213,7 @@ void Node::setRotation(const glm::vec3& rotation) noexcept
 {
     if (m_rotation != rotation) {
         m_rotation = rotation;
-        m_dirtyRotation = true;
+        m_dirty = true;
     }
 }
 
@@ -243,7 +227,7 @@ void Node::setScale(float scale) noexcept
         m_scale.x = scale;
         m_scale.y = scale;
         m_scale.z = scale;
-        m_dirtyScale = true;
+        m_dirty = true;
     }
 }
 
@@ -252,7 +236,7 @@ void Node::setScale(const glm::vec3& scale) noexcept
     if (m_scale != scale) {
         assert(scale.x >= 0 && scale.y >= 0 && scale.z >= 0);
         m_scale = scale;
-        m_dirtyScale = true;
+        m_dirty = true;
     }
 }
 
@@ -342,5 +326,5 @@ void Node::lua_setPos(float x, float y, float z) noexcept
     m_position.x = x;
     m_position.y = y;
     m_position.z = z;
-    m_dirtyTranslate = true;
+    m_dirty = true;
 }

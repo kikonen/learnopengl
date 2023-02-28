@@ -366,6 +366,9 @@
     <ClCompile Include="src\asset\TerrainMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\model\NodeInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -843,6 +846,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\TerrainMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\NodeInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
