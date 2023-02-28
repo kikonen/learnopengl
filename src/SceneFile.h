@@ -101,14 +101,12 @@ class SceneFile
         camera,
         path,
         asteroid_belt,
-        moving_light,
     };
 
     struct ControllerData {
         bool enabled{ false };
         ControllerType type{ ControllerType::none };
 
-        //glm::vec3 center{ 0 };
         float speed{ 0.f };
         float radius{ 0.f };
 

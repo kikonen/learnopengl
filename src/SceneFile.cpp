@@ -30,7 +30,6 @@
 
 #include "controller/AsteroidBeltController.h"
 #include "controller/CameraController.h"
-#include "controller/MovingLightController.h"
 #include "controller/NodePathController.h"
 #include "controller/VolumeController.h"
 
@@ -826,10 +825,6 @@ std::unique_ptr<NodeController> SceneFile::createController(
             auto controller = std::make_unique<AsteroidBeltController>(data.count);
             return controller;
         }
-        case ControllerType::moving_light: {
-            auto controller = std::make_unique<MovingLightController>(center, data.radius, data.speed);
-            return controller;
-        }
     }
 
     return nullptr;
@@ -1318,16 +1313,10 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
             else if (type == "asteroid_belt") {
                 data.type = ControllerType::asteroid_belt;
             }
-            else if (type == "moving_light") {
-                data.type = ControllerType::moving_light;
-            }
             else {
                 reportUnknown("controller_type", k, v);
             }
         }
-        //else if (k == "center") {
-        //    data.center = readVec3(v);
-        //}
         else if (k == "repeat") {
             loadRepeat(v, data.repeat);
         }
@@ -1342,9 +1331,6 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
         }
         else if (k == "count") {
             data.count = v.as<int>();
-        }
-        else if (k == "pos") {
-            //data.pos = readVec3(v);
         }
         else {
             reportUnknown("controller_entry", k, v);

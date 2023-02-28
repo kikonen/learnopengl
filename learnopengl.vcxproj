@@ -263,7 +263,6 @@
     <ClCompile Include="src\registry\MeshType.cpp" />
     <ClCompile Include="src\controller\NodePathController.cpp" />
     <ClCompile Include="src\controller\InstancedController.cpp" />
-    <ClCompile Include="src\controller\MovingLightController.cpp" />
     <ClCompile Include="src\controller\AsteroidBeltController.cpp" />
     <ClCompile Include="src\controller\NodeController.cpp" />
     <ClCompile Include="src\util\Perlin.cpp" />
@@ -422,7 +421,6 @@
     <ClInclude Include="src\registry\MeshType.h" />
     <ClInclude Include="src\controller\NodePathController.h" />
     <ClInclude Include="src\controller\InstancedController.h" />
-    <ClInclude Include="src\controller\MovingLightController.h" />
     <ClInclude Include="src\controller\AsteroidBeltController.h" />
     <ClInclude Include="src\controller\NodeController.h" />
     <ClInclude Include="src\util\Perlin.h" />

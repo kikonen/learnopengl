@@ -63,9 +63,6 @@
     <ClCompile Include="src\controller\InstancedController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\controller\MovingLightController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\controller\NodePathController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -420,9 +417,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\InstancedController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\controller\MovingLightController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\NodePathController.h">
