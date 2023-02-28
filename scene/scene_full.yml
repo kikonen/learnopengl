@@ -624,6 +624,20 @@ entities:
         horiz_scale: 2
       enabled: true
     enabled: true
+  - name: grid points
+    model: glass_ball
+    program: texture
+    pos: [-1024, 150, -1024]
+    scale: 5.0
+    material: basic
+    repeat:
+      x_count: 9
+      y_count: 1
+      z_count: 9
+      x_step: 256
+      y_step: 0
+      z_step: 256
+    enabled: true
   - name: Sea surface
     priority: -20
     type: quad
