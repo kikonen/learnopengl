@@ -163,6 +163,7 @@ public:
     ProgramTypeMap alphaNodes;
     ProgramTypeMap blendedNodes;
     ProgramTypeMap invisibleNodes;
+    ProgramTypeMap physicsNodes;
 
     ViewportVector viewports;
 

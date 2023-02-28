@@ -117,11 +117,13 @@ void Node::update(
     }
 }
 
-void Node::updateEntity(const RenderContext& ctx)
+void Node::updateEntity(
+    const RenderContext& ctx,
+    EntityRegistry* entityRegistry)
 {
     if (!m_dirtyEntity || m_entityIndex == -1) return;
 
-    auto* entity = ctx.m_registry->m_entityRegistry->updateEntity(m_entityIndex, true);
+    auto* entity = entityRegistry->updateEntity(m_entityIndex, true);
 
     entity->setModelMatrix(m_modelMatrix);
 

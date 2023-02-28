@@ -21,19 +21,19 @@ namespace physics {
 
     void PhysicsEngine::update(const RenderContext& ctx)
     {
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->physicsNodes) {
             for (const auto& it : all.second) {
                 const MeshType& type = *it.first.type;
-
-                if (type.m_flags.enforceBounds) {
-                    for (auto& node : it.second) {
-                        enforceBounds(ctx, type, *node);
-                    }
-                }
 
                 if (type.m_flags.physics) {
                     for (auto& node : it.second) {
                         updateNode(ctx, type, *node);
+                    }
+                }
+
+                if (type.m_flags.enforceBounds) {
+                    for (auto& node : it.second) {
+                        enforceBounds(ctx, type, *node);
                     }
                 }
             }

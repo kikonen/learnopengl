@@ -142,7 +142,7 @@ void EntityRegistry::processNodes(const RenderContext& ctx)
     for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
         for (const auto& it : all.second) {
             for (auto& node : it.second) {
-                node->updateEntity(ctx);
+                node->updateEntity(ctx, this);
             }
         }
     }

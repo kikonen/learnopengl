@@ -320,6 +320,11 @@ void NodeRegistry::bindNode(
         insertNode(vAll, node);
         insertNode(vTyped, node);
 
+        if (type->m_flags.enforceBounds || type->m_flags.physics) {
+            auto& vPhysics = physicsNodes[programKey][typeKey];
+            insertNode(vPhysics, node);
+        }
+
         if (node->m_camera) {
             m_cameras.push_back(node);
             if (!m_activeCamera && node->m_camera->isDefault()) {

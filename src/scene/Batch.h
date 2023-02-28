@@ -19,6 +19,7 @@ class MeshType;
 class Node;
 class MaterialVBO;
 class Registry;
+class EntityRegistry;
 
 
 // NOTE KI use single shared UBO buffer for rendering
@@ -88,6 +89,8 @@ private:
 
     RenderContext* m_currentRenderContext{ nullptr };
     std::vector<BatchCommand> m_batches;
+
+    EntityRegistry* m_entityRegistry{ nullptr };
 
     std::vector<int> m_entityIndeces;
 

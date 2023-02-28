@@ -36,7 +36,9 @@ public:
 
     void update(const RenderContext& ctx, Node* parent) noexcept;
 
-    void updateEntity(const RenderContext& ctx);
+    void updateEntity(
+        const RenderContext& ctx,
+        EntityRegistry* entityRegistry);
 
     void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
 

@@ -10,7 +10,8 @@
 class RenderContext;
 
 CommandEngine::CommandEngine(const Assets& assets)
-    : m_assets(assets)
+    : m_assets(assets),
+    m_cleanupStep(5)
 {}
 
 void CommandEngine::prepare()
@@ -24,6 +25,7 @@ void CommandEngine::update(const RenderContext& ctx)
     processPending(ctx);
     processBlocked(ctx);
     processActive(ctx);
+    processCleanup(ctx);
 }
 
 int CommandEngine::addCommand(std::unique_ptr<Command> pcmd) noexcept
@@ -104,11 +106,10 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
 {
     if (m_blocked.empty()) return;
 
-    bool cleanup = false;
     for (auto& cmd : m_blocked) {
         // canceled; discard
         if (cmd->m_canceled) {
-            cleanup = true;
+            m_blockedCleanup = true;
             continue;
         }
 
@@ -121,7 +122,7 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
         // NOTE KI execute flag can be set only when previous is finished
         if (!cmd->m_ready) continue;
 
-        cleanup = true;
+        m_blockedCleanup = true;
 
         if (cmd->isNode()) {
             auto nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
@@ -138,29 +139,16 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
 
         m_active.emplace_back(std::move(cmd));
     }
-
-    if (cleanup) {
-        // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
-        const auto& it = std::remove_if(
-            m_blocked.begin(),
-            m_blocked.end(),
-            [this](auto& cmd) {
-                if (cmd && cmd->m_canceled) m_commands.erase(cmd->m_id);
-                return !cmd || cmd->m_canceled;
-            });
-        m_blocked.erase(it, m_blocked.end());
-    }
 }
 
 void CommandEngine::processActive(const RenderContext& ctx)
 {
     if (m_active.empty()) return;
 
-    bool cleanup = false;
     for (auto& cmd : m_active) {
         // canceled; discard
         if (cmd->m_canceled) {
-            cleanup = true;
+            m_activeCleanup = true;
             continue;
         }
 
@@ -179,12 +167,33 @@ void CommandEngine::processActive(const RenderContext& ctx)
                 if (!cmd) continue;
                 cmd->m_ready = true;
             }
-            cleanup = true;
+            m_activeCleanup = true;
             //cmd->m_callback(cmd->m_node);
         }
     }
+}
 
-    if (cleanup) {
+void CommandEngine::processCleanup(const RenderContext& ctx) noexcept
+{
+    // TODO KI current m_blocked logic requires cleanup on every step
+    //m_cleanupIndex++;
+    //if ((m_cleanupIndex % m_cleanupStep) != 0) return;
+
+    if (m_blockedCleanup) {
+        // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
+        const auto& it = std::remove_if(
+            m_blocked.begin(),
+            m_blocked.end(),
+            [this](auto& cmd) {
+                if (cmd && cmd->m_canceled) m_commands.erase(cmd->m_id);
+                return !cmd || cmd->m_canceled;
+            });
+        m_blocked.erase(it, m_blocked.end());
+
+        m_blockedCleanup = false;
+    }
+
+    if (m_activeCleanup) {
         // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
         const auto& it = std::remove_if(
             m_active.begin(),
@@ -194,6 +203,8 @@ void CommandEngine::processActive(const RenderContext& ctx)
                 return cmd->m_finished || cmd->m_canceled;;
             });
         m_active.erase(it, m_active.end());
+
+        m_activeCleanup = false;
     }
 }
 

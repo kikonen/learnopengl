@@ -49,7 +49,7 @@ bool Batch::inFrustumZ(
 {
     if (!m_frustumCPU) return true;
 
-    const auto* entity = ctx.m_registry->m_entityRegistry->getEntity(entityIndex);
+    const auto* entity = m_entityRegistry->getEntity(entityIndex);
 
     if ((entity->u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
         return true;
@@ -182,6 +182,8 @@ void Batch::prepare(
 
     m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
     m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
+
+    m_entityRegistry = registry->m_entityRegistry.get();
 }
 
 void Batch::addCommand(

@@ -33,7 +33,7 @@ private:
     void processPending(const RenderContext& ctx) noexcept;
     void processBlocked(const RenderContext& ctx) noexcept;
     void processActive(const RenderContext& ctx);
-
+    void processCleanup(const RenderContext& ctx) noexcept;
 
     void updateOldest() noexcept;
 
@@ -43,6 +43,15 @@ private:
     std::vector<std::unique_ptr<Command>> m_pending;
     std::vector<std::unique_ptr<Command>> m_blocked;
     std::vector<std::unique_ptr<Command>> m_active;
+
+    bool m_blockedCleanup = false;
+    bool m_pendingCleanup = false;
+    bool m_activeCleanup = false;
+
+    // NOTE KI don't do cleanup on every iteration
+    // - just minor temporary memory leak
+    int m_cleanupIndex = 0;
+    int m_cleanupStep = 0;
 
     std::map<int, Command*> m_commands;
 
