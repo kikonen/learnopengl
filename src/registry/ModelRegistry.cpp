@@ -89,7 +89,7 @@ std::shared_future<ModelMesh*> ModelRegistry::startLoad(ModelMesh* mesh)
                     p.set_value(mesh);
                 }
                 else {
-                    KI_CRITICAL("FAIL_LOADER: Invalid mesh: {}", info);
+                    KI_CRITICAL(fmt::format("FAIL_LOADER: Invalid mesh: {}", info));
                     p.set_value(nullptr);
                 }
              } catch (const std::exception& ex) {

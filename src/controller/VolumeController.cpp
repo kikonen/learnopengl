@@ -56,7 +56,7 @@ bool VolumeController::update(
         glm::vec4(volumeCenter + glm::vec3(volumeRadius, 0, 0), 1.f);
     radiusPos -= rootPos;
 
-    const auto volumeScale = glm::length(radiusPos - pos);
+    //const auto volumeScale = glm::length(radiusPos - pos);
     const auto volumeScale2 = maxScale * volumeRadius;
 
     volumeNode.setPosition(pos);

@@ -10,6 +10,9 @@ class RenderContext;
 class Node;
 class MeshType;
 
+struct NodeInstance;
+
+
 namespace physics {
     class PhysicsEngine {
     public:
@@ -25,12 +28,14 @@ namespace physics {
         void enforceBounds(
             const RenderContext& ctx,
             const MeshType& type,
-            Node& node);
+            Node& node,
+            NodeInstance& instance);
 
         void updateNode(
             const RenderContext& ctx,
             const MeshType& type,
-            Node& node);
+            Node& node,
+            NodeInstance& instance);
 
     private:
         const Assets& m_assets;

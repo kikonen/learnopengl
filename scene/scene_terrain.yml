@@ -38,10 +38,11 @@ entities:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       specular: [0.9, 0.9, 0.5, 1.0]
       enabled: true
-    enabled: true
+    enabled: false
   - name: Terrain grass v2
     id: auto
     type: container
+    instanced: true
     material: terrain_grass_2
     program: terrain2
     pos: [-1024, 0, -1024]
@@ -54,8 +55,8 @@ entities:
     generator:
       type: terrain
       tiling:
-        tile_size: 512
-        tiles: [4, 0, 4]
+        tile_size: 256
+        tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
       enabled: true
@@ -73,7 +74,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-    enabled: true
+    enabled: false
   - name: Sea surface
     type: quad
     material: sea_surface
@@ -85,7 +86,7 @@ entities:
       no_shadow: true
       render_back: true
       water: true
-    enabled: true
+    enabled: false
   - name: Sea floor
     model: quad
     material: sea_floor
@@ -96,7 +97,28 @@ entities:
     render_flags:
       no_shadow: true
       render_back: true
-    enabled: true
+    enabled: false
+  - name: Linden tree forest
+    type: billboard
+    priority: 1
+    program: texture
+    instanced: true
+    pos: [150, 15.0, 150.0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      enforce_bounds: true
+    scale: [7, 10, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 20
+        z_count: 20
+        x_step: -20
+        z_step: 20
+      enabled: true
+    enabled: false
   - name: Skeleton army
     type: billboard
     priority: 1
@@ -114,7 +136,7 @@ entities:
       z_count: 101
       x_step: 3
       z_step: -2
-    enabled: true
+    enabled: false
 materials:
   - name: terrain_grass_OLD
     type: texture
@@ -147,6 +169,11 @@ materials:
     tiling: 32
     texture_spec:
       wrap: GL_REPEAT
+  - name: linden_tree
+    type: sprite
+    ns: 100
+    ks: [0.8, 0.8, 0.8, 1.0]
+    map_kd: linden_tree_512.png
   - name: skeleton
     type: sprite
     ns: 100

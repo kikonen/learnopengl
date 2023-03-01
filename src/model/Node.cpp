@@ -53,7 +53,7 @@ const std::string Node::str() const noexcept
 {
     return fmt::format(
         "<NODE: {} / {} - entity={}, type={}>",
-        m_objectID, KI_UUID_STR(m_id), m_entityIndex, m_type->str());
+        m_objectID, KI_UUID_STR(m_id), m_instance.m_entityIndex, m_type->str());
 }
 
 void Node::prepare(
@@ -64,21 +64,22 @@ void Node::prepare(
     m_prepared = true;
 
     {
-        m_entityIndex = registry->m_entityRegistry->addEntity();
+        m_instance.m_entityIndex = registry->m_entityRegistry->addEntity();
+        m_instance.setMaterialIndex(getMaterialIndex());
 
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
-        auto* entity = registry->m_entityRegistry->getEntity(m_entityIndex);
-        entity->u_materialIndex = getMaterialIndex();
+        int flags = 0;
 
         if (m_type->m_entityType == EntityType::billboard) {
-            entity->u_flags |= ENTITY_BILLBOARD_BIT;
+            flags |= ENTITY_BILLBOARD_BIT;
         }
         if (m_type->m_flags.noFrustum) {
-            entity->u_flags |= ENTITY_NO_FRUSTUM_BIT;
+            flags |= ENTITY_NO_FRUSTUM_BIT;
         }
 
-        entity->setObjectID(m_objectID);
+        m_instance.setFlags(flags);
+        m_instance.setObjectID(m_objectID);
     }
 
     if (m_controller) {
@@ -94,7 +95,6 @@ void Node::update(
     const RenderContext& ctx,
     Node* parent) noexcept
 {
-    int matrixLevel = m_matrixLevel;
     updateModelMatrix(parent);
 
     bool changed = false;
@@ -121,137 +121,54 @@ void Node::updateEntity(
     const RenderContext& ctx,
     EntityRegistry* entityRegistry)
 {
-    if (!m_dirtyEntity || m_entityIndex == -1) return;
+    if (m_instance.m_entityIndex != -1)
+    {
+        if (m_instance.m_entityDirty) {
+            auto* entity = entityRegistry->updateEntity(m_instance.m_entityIndex, true);
 
-    auto* entity = entityRegistry->updateEntity(m_entityIndex, true);
+            entity->u_highlightIndex = getHighlightIndex(ctx);
 
-    entity->setModelMatrix(m_modelMatrix);
+            m_instance.updateEntity(entity);
+        }
+    }
 
-    // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
-    entity->setNormalMatrix(glm::mat3(glm::inverseTranspose(m_modelMatrix)));
-
-    entity->u_materialIndex = getMaterialIndex();
-    entity->u_highlightIndex = getHighlightIndex(ctx);
-
-    entity->u_volume = getVolume();
-
-    m_dirtyEntity = false;
+    if (m_generator) {
+        m_generator->updateEntity(ctx, *this, entityRegistry);
+    }
 }
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 {
     if (m_type->m_flags.instanced) {
-        // NOTE KI instanced node may not be ready, or currently not generating visible entities
-        if (m_instancedIndex != -1) {
-            batch.addInstanced(ctx, m_entityIndex, m_instancedIndex, m_instancedCount);
+        if (m_instancer) {
+            m_instancer->bindBatch(ctx, *this, batch);
         }
     } else {
-        batch.add(ctx, m_entityIndex);
+        batch.add(ctx, m_instance.m_entityIndex);
     }
 }
 
 void Node::updateModelMatrix(Node* parent) noexcept
 {
-    const int parentMatrixLevel = parent ? parent->m_matrixLevel : -1;
-    const bool dirtyParent = m_parentMatrixLevel != parentMatrixLevel;
-    const bool dirtyModel = m_dirty
-        || dirtyParent;
-    if (!dirtyModel) return;
-
-    const bool needPlaneNormal = m_type->m_flags.mirror && (m_dirty || dirtyParent);
-
-    // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-
-    // https://learnopengl.com/Lighting/Basic-Lighting
-    // http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
-    // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
-    // normal = mat3(transpose(inverse(model))) * aNormal;
-
-    //const auto& translateMatrix = glm::translate(IDENTITY_MATRIX, m_position);
-    //const auto& rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
-    //const auto& scaleMatrix = glm::scale(IDENTITY_MATRIX, m_scale);
-    //const auto& modelMatrix = translateMatrix * rotationMatrix * scaleMatrix;
-
+    int oldLevel = m_instance.m_matrixLevel;
     if (parent) {
-        m_modelMatrix = parent->m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
-        m_parentMatrixLevel = parentMatrixLevel;
+        m_instance.updateModelMatrix(parent->getModelMatrix(), parent->getParentMatrixLevel());
     }
     else {
-        m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
+        m_instance.updateRootMatrix();
     }
 
-    m_worldPosition = m_modelMatrix[3];
+    if (oldLevel == m_instance.m_matrixLevel) return;
 
-    if (needPlaneNormal) {
-        m_worldPlaneNormal = glm::normalize(glm::vec3(m_modelMatrix * glm::vec4(m_planeNormal, 0.f)));
-    }
-
-    m_dirtyEntity = true;
-    m_matrixLevel++;
-}
-
-void Node::setPlaneNormal(const glm::vec3& planeNormal) noexcept
-{
-    if (m_planeNormal != planeNormal) {
-        m_planeNormal = planeNormal;
-        m_dirty = true;
-    }
-}
-
-void Node::setPosition(const glm::vec3& pos) noexcept
-{
-    if (m_translateMatrix[3][0] != pos.x ||
-        m_translateMatrix[3][1] != pos.y ||
-        m_translateMatrix[3][2] != pos.z)
-    {
-        m_translateMatrix[3][0] = pos.x;
-        m_translateMatrix[3][1] = pos.y;
-        m_translateMatrix[3][2] = pos.z;
-        m_dirty = true;
-    }
-}
-
-void Node::setRotation(const glm::vec3& rotation) noexcept
-{
-    if (m_rotation != rotation) {
-        m_rotation = rotation;
-        m_rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
-        m_dirty = true;
-    }
-}
-
-void Node::setScale(float scale) noexcept
-{
-    assert(scale >= 0);
-    if (m_scaleMatrix[0][0] != scale ||
-        m_scaleMatrix[1][1] != scale ||
-        m_scaleMatrix[2][2] != scale)
-    {
-        m_scaleMatrix[0][0] = scale;
-        m_scaleMatrix[1][1] = scale;
-        m_scaleMatrix[2][2] = scale;
-        m_dirty = true;
-    }
-}
-
-void Node::setScale(const glm::vec3& scale) noexcept
-{
-    assert(scale.x >= 0 && scale.y >= 0 && scale.z >= 0);
-    if (m_scaleMatrix[0][0] != scale.x ||
-        m_scaleMatrix[1][1] != scale.y ||
-        m_scaleMatrix[2][2] != scale.z)
-    {
-        m_scaleMatrix[0][0] = scale.x;
-        m_scaleMatrix[1][1] = scale.y;
-        m_scaleMatrix[2][2] = scale.z;
-        m_dirty = true;
+    if (m_type->m_flags.mirror) {
+        m_worldPlaneNormal = glm::normalize(glm::vec3(m_instance.m_modelMatrix * glm::vec4(m_planeNormal, 0.f)));
     }
 }
 
 bool Node::inFrustum(const RenderContext& ctx, float radiusFlex) const
 {
     //https://en.wikibooks.org/wiki/OpenGL_Programming/Glescraft_5
-    auto coords = ctx.m_matrices.u_projected * glm::vec4(m_worldPosition, 1.0);
+    auto coords = ctx.m_matrices.u_projected * glm::vec4(getWorldPosition(), 1.0);
     coords.x /= coords.w;
     coords.y /= coords.w;
 
@@ -274,16 +191,10 @@ bool Node::inFrustum(const RenderContext& ctx, float radiusFlex) const
     return hit;
 }
 
-void Node::setAABB(const AABB& aabb)
-{
-    m_aabb = aabb;
-}
-
 void Node::setTagMaterialIndex(int index)
 {
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
-        m_dirtyEntity = true;
     }
 }
 
@@ -291,7 +202,6 @@ void Node::setSelectionMaterialIndex(int index)
 {
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
-        m_dirtyEntity = true;
     }
 }
 
@@ -312,16 +222,6 @@ int Node::lua_getId() const noexcept
 const std::string& Node::lua_getName() const noexcept
 {
     return m_type->m_name;
-}
-
-int Node::lua_getCloneIndex() const noexcept
-{
-    return m_cloneIndex;
-}
-
-const std::array<unsigned int, 3> Node::lua_getTile() const noexcept
-{
-    return { m_tile.x, m_tile.y, m_tile.z };
 }
 
 const std::array<float, 3> Node::lua_getPos() const noexcept

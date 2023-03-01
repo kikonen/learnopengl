@@ -202,6 +202,7 @@
     <ClCompile Include="src\generator\GridGenerator.cpp" />
     <ClCompile Include="src\generator\NodeGenerator.cpp" />
     <ClCompile Include="src\generator\TerrainGenerator.cpp" />
+    <ClCompile Include="src\model\InstancePhysics.cpp" />
     <ClCompile Include="src\model\NodeInstance.cpp" />
     <ClCompile Include="src\physics\HeightMap.cpp" />
     <ClCompile Include="src\physics\Surface.cpp" />
@@ -237,7 +238,6 @@
     <ClCompile Include="src\kigl\GLState.cpp" />
     <ClCompile Include="src\asset\DynamicCubeMap.cpp" />
     <ClCompile Include="src\scene\RenderData.cpp" />
-    <ClCompile Include="src\scene\LegacyTerrainGenerator.cpp" />
     <ClCompile Include="src\scene\WindowBuffer.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
     <ClCompile Include="src\asset\ImageTexture.cpp" />
@@ -346,6 +346,7 @@
     <ClInclude Include="src\kigl\GLBlendMode.h" />
     <ClInclude Include="src\ki\OpenGLInfo.h" />
     <ClInclude Include="src\ki\RenderClock.h" />
+    <ClInclude Include="src\model\InstancePhysics.h" />
     <ClInclude Include="src\model\NodeInstance.h" />
     <ClInclude Include="src\physics\HeightMap.h" />
     <ClInclude Include="src\physics\Plane.h" />
@@ -393,7 +394,6 @@
     <ClInclude Include="src\scene\BatchCommand.h" />
     <ClInclude Include="src\scene\BatchEntry.h" />
     <ClInclude Include="src\scene\RenderData.h" />
-    <ClInclude Include="src\scene\LegacyTerrainGenerator.h" />
     <ClInclude Include="src\scene\WindowBuffer.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\asset\ImageTexture.h" />

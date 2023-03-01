@@ -58,29 +58,19 @@ void AsteroidBeltGenerator::updateAsteroids(
     bool rotate)
 {
     auto* registry = ctx.m_registry;
-    auto& entityRegistry = *registry->m_entityRegistry;
 
     if (rotate) {
-        rotateAsteroids(ctx, container, m_asteroids);
+        rotateAsteroids(ctx, container);
     }
 
-    for (const auto& asteroid : m_asteroids)
+    for (auto& asteroid : m_instances)
     {
-        auto* entity = entityRegistry.updateEntity(asteroid.m_entityIndex, true);
-
         if (rotate) {
-            const auto& modelMatrix = asteroid.compile(container.getModelMatrix());
-
-            entity->setModelMatrix(modelMatrix);
-            // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
-            entity->setNormalMatrix(glm::mat3(glm::inverseTranspose(modelMatrix)));
+            asteroid.updateModelMatrix(container.getModelMatrix(), container.getMatrixLevel());
         }
-
-        entity->u_materialIndex = container.getMaterialIndex();
-        entity->u_highlightIndex = container.getHighlightIndex(ctx);
     }
 
-    container.setEntityRange(m_firstEntityIndex, m_asteroidCount);
+    setActiveRange(m_reservedFirst, m_reservedCount);
 }
 
 void AsteroidBeltGenerator::createAsteroids(
@@ -88,38 +78,36 @@ void AsteroidBeltGenerator::createAsteroids(
     Registry* registry,
     Node& container)
 {
-    auto& entityRegistry = *registry->m_entityRegistry;
-
     auto& type = container.m_type;
 
     const Mesh* mesh = container.m_type->getMesh();
     const auto& volume = mesh->getAABB().getVolume();
 
-    m_firstEntityIndex = registry->m_entityRegistry->addEntityRange(m_asteroidCount);
+    m_reservedCount = m_asteroidCount;
+    m_reservedFirst = registry->m_entityRegistry->addEntityRange(m_reservedCount);
 
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
-        auto& asteroid = m_asteroids.emplace_back();
-        asteroid.m_entityIndex = m_firstEntityIndex + i;
+        m_physics.emplace_back();
+        auto& asteroid = m_instances.emplace_back();
 
-        auto* entity = entityRegistry.updateEntity(asteroid.m_entityIndex, false);
-        entity->u_volume = volume;
+        asteroid.setMaterialIndex(container.getMaterialIndex());
+        asteroid.setVolume(volume);
     }
 
-    initAsteroids(assets, registry, container, m_asteroids);
-    calculateVolume(container, m_asteroids);
+    initAsteroids(assets, registry, container);
+    container.setVolume(calculateVolume());
 }
 
 void AsteroidBeltGenerator::initAsteroids(
     const Assets& assets,
     Registry* registry,
-    Node& container,
-    std::vector<Asteroid>& asteroids)
+    Node& container)
 {
-    size_t count = asteroids.size();
-
     // initialize random seed
     srand(glfwGetTime());
+
+    const size_t count = m_instances.size();
 
     const glm::vec3 center{ 0.f };
     const float radius = m_radius;
@@ -127,7 +115,8 @@ void AsteroidBeltGenerator::initAsteroids(
 
     for (size_t i = 0; i < count; i++)
     {
-        Asteroid& asteroid = asteroids[i];
+        auto& asteroid = m_instances[i];
+        auto& physics = m_physics[i];
 
         {
             // 1. translation: displace along circle with 'radius' in range [-offset, offset]
@@ -159,45 +148,27 @@ void AsteroidBeltGenerator::initAsteroids(
         {
             // 3. make asteroids to rotate slowly
             float velocity = (rand() % 200) / 20000.0f + 0.0005f;
-            asteroid.m_angularVelocity = velocity;
+            physics.m_angularVelocity = velocity;
         }
-
-        auto* entity = registry->m_entityRegistry->updateEntity(asteroid.m_entityIndex, false);
-        entity->setObjectID(container.m_objectID);
-        entity->u_materialIndex = container.getMaterialIndex();
     }
 }
 
 void AsteroidBeltGenerator::rotateAsteroids(
     const RenderContext& ctx,
-    Node& container,
-    std::vector<Asteroid>& asteroids)
+    Node& container)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
-    const size_t count = asteroids.size();
+    const size_t count = m_instances.size();
 
     for (size_t i = 0; i < count; i++)
     {
-        Asteroid& asteroid = asteroids[i];
+        auto& asteroid = m_instances[i];
+        auto& physics = m_physics[i];
 
         glm::mat4 modelMat{ 1.f };
-        float angle = asteroid.m_angularVelocity * elapsed;
+        float angle = physics.m_angularVelocity * elapsed;
 
         auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
         asteroid.setPosition(mat * glm::vec4(asteroid.getPosition(), 1.f));
     }
-}
-
-void AsteroidBeltGenerator::calculateVolume(
-    Node& node,
-    std::vector<Asteroid> asteroids)
-{
-    AABB minmax{ true };
-
-    for (auto&& asteroid : asteroids)
-    {
-        minmax.minmax(asteroid.getPosition());
-    }
-
-    node.setAABB(minmax);
 }

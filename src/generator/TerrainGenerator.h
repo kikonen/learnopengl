@@ -37,24 +37,14 @@ private:
         Registry* registry,
         Node& container);
 
-    void createTilesTessellation(
-        const Assets& assets,
-        Registry* registry,
-        Node& container);
-
-    void createTilesMesh(
+    void createTiles(
         const Assets& assets,
         Registry* registry,
         Node& container);
 
     MeshType* createType(
         Registry* registry,
-        MeshType* containerType,
-        bool tessellation);
-
-    std::unique_ptr<ModelMesh> generateTerrain(
-        int tileU,
-        int tileV);
+        MeshType* containerType);
 
 public:
     int m_worldTileSize{ 100 };
@@ -72,10 +62,7 @@ private:
     size_t m_poolSizeU{ 0 };
     size_t m_poolSizeV{ 0 };
 
-    size_t m_firstEntityIndex{ 0 };
     Node* m_node{ nullptr };
-
-    int m_nodeMatrixLevel = -1;
 
     physics::HeightMap* m_heightMap{ nullptr };
 };

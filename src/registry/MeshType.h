@@ -15,7 +15,6 @@ struct NodeRenderFlags {
     bool renderBack = false;
     bool wireframe = false;
 
-    bool root = false;
     bool instanced = false;
 
     bool mirror = false;
@@ -62,7 +61,7 @@ public:
     void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
     void setMesh(Mesh* mesh);
 
-    const Mesh* getMesh() const {
+    const Mesh* getMesh() const noexcept {
         return m_mesh;
     }
 
@@ -79,7 +78,7 @@ public:
     const int typeID;
     const std::string m_name;
 
-    EntityType m_entityType;
+    EntityType m_entityType{ EntityType::origo };
     NodeRenderFlags m_flags;
 
     int m_priority = { 0 };

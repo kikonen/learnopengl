@@ -2,7 +2,11 @@
 
 #include <fmt/format.h>
 
+#include "model/NodeInstance.h"
+
 #include "scene/RenderContext.h"
+
+#include "generator/NodeGenerator.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -27,13 +31,27 @@ namespace physics {
 
                 if (type.m_flags.physics) {
                     for (auto& node : it.second) {
-                        updateNode(ctx, type, *node);
+                        if (node->m_instancer) {
+                            for (auto& instance : node->m_instancer->getInstances()) {
+                                updateNode(ctx, type, *node, instance);
+                            }
+                        }
+                        else {
+                            updateNode(ctx, type, *node, node->getInstance());
+                        }
                     }
                 }
 
                 if (type.m_flags.enforceBounds) {
                     for (auto& node : it.second) {
-                        enforceBounds(ctx, type, *node);
+                        if (node->m_instancer) {
+                            for (auto& instance : node->m_instancer->getInstances()) {
+                                enforceBounds(ctx, type, *node, instance);
+                            }
+                        }
+                        else {
+                            enforceBounds(ctx, type, *node, node->getInstance());
+                        }
                     }
                 }
             }
@@ -43,22 +61,27 @@ namespace physics {
     void PhysicsEngine::enforceBounds(
         const RenderContext& ctx,
         const MeshType& type,
-        Node& node)
+        Node& node,
+        NodeInstance& instance)
     {
-        const auto& worldPos = node.getWorldPosition();
-        glm::vec3 pos = node.getPosition();
+        const auto& worldPos = instance.getWorldPosition();
+        glm::vec3 pos = instance.getPosition();
 
         auto surfaceY = getWorldSurfaceLevel(worldPos);
 
         auto* parent = ctx.m_registry->m_nodeRegistry->getParent(node);
 
         auto y = surfaceY - parent->getWorldPosition().y;
-        y += node.getScale().y;
+        y += instance.getScale().y;
         pos.y = y;
 
-        node.setPosition(pos);
+        //KI_INFO_OUT(fmt::format(
+        //    "({},{}, {}) => {}, {}, {}",
+        //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
 
-        node.updateModelMatrix(parent);
+        instance.setPosition(pos);
+
+        instance.updateModelMatrix(parent->getModelMatrix(), parent->getMatrixLevel());
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_objectID, level));
     }
@@ -66,7 +89,8 @@ namespace physics {
     void PhysicsEngine::updateNode(
         const RenderContext& ctx,
         const MeshType& type,
-        Node& node)
+        Node& node,
+        NodeInstance& instance)
     {
     }
 
@@ -85,11 +109,11 @@ namespace physics {
             //if (!surface->withinBounds(pos)) continue;
 
             float level = surface->getLevel(pos);
-            if (!hit || level < min) min = level;
+            if (!hit || level > min) min = level;
             hit = true;
         }
 
-        return hit ? min : pos.y;
+        return hit ? min : 0.f;
     }
 }
 

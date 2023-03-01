@@ -79,9 +79,6 @@ void ScriptEngine::registerTypes()
         ut["getId"] = &Node::lua_getId;
         ut["getName"] = &Node::lua_getName;
 
-        ut["getCloneIndex"] = &Node::lua_getCloneIndex;
-        ut["getTile"] = &Node::lua_getTile;
-
         ut["getPos"] = &Node::lua_getPos;
     }
 }

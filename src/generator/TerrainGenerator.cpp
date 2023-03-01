@@ -23,11 +23,6 @@
 namespace {
     const std::string TERRAIN_QUAD_MESH_NAME{ "quad_terrain" };
 
-    // NOTE KI terrain is primarily flat
-    // perlin noise creates -4/+4 peaks in mesh, which are scaled down
-    // when terrain tile is scaled by factor x200 x/z wise
-    const AABB TERRAIN_AABB = { glm::vec3{ -1.075f, -60.075f, -0.075f }, glm::vec3{ 1.075f, 200.075f, 0.05f }, true };
-
 }
 
 TerrainGenerator::TerrainGenerator()
@@ -47,12 +42,7 @@ void TerrainGenerator::prepare(
 
     prepareHeightMap(assets, registry, container);
 
-    if (container.m_type->m_flags.tessellation) {
-        createTilesTessellation(assets, registry, container);
-    }
-    else {
-        createTilesMesh(assets, registry, container);
-    }
+    createTiles(assets, registry, container);
 }
 
 void TerrainGenerator::update(
@@ -60,13 +50,10 @@ void TerrainGenerator::update(
     Node& container,
     Node* containerParent)
 {
-    if (!container.m_type->m_flags.tessellation) return;
+    if (m_containerMatrixLevel == container.getMatrixLevel()) return;
 
-    if (m_nodeMatrixLevel != m_node->getMatrixLevel())
-    {
-        updateTiles(ctx, container, containerParent);
-        m_nodeMatrixLevel = m_node->getMatrixLevel();
-    }
+    updateTiles(ctx, container, containerParent);
+    m_containerMatrixLevel = container.getMatrixLevel();
 }
 
 void TerrainGenerator::prepareHeightMap(
@@ -106,41 +93,34 @@ void TerrainGenerator::updateTiles(
     Node& container,
     Node* containerParent)
 {
-    auto* entityRegistry = ctx.m_registry->m_entityRegistry.get();
-
-    const auto& nodeMatrix = m_node->getModelMatrix();
+    const auto& containerMatrix = container.getModelMatrix();
+    const auto containerLevel = container.getMatrixLevel();
 
     // NOTE scale.y == makes *FLAT* plane
     const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
     const int step = m_worldTileSize;
 
-    int entityIndex = m_firstEntityIndex;
+    int idx = 0;
     for (int v = 0; v < m_worldTilesV; v++) {
         for (int u = 0; u < m_worldTilesU; u++) {
             const glm::vec3 pos{ u * step, 0, v * step };
 
-            auto* entity = entityRegistry->updateEntity(entityIndex, true);
+            auto& instance = m_instances[idx];
 
-            glm::mat4 modelMatrix{ 1.f };
-            {
-                // NOTE KI incorrect order of translate + scale caused terrain to fail (only 0,0 tile appeared)
-                modelMatrix = glm::translate(modelMatrix, pos);
-                modelMatrix = glm::scale(modelMatrix, scale);
-                modelMatrix = nodeMatrix * modelMatrix;
-            }
+            instance.setPosition(pos);
+            instance.setScale(scale);
 
-            entity->setModelMatrix(modelMatrix);
-            entity->setNormalMatrix(glm::mat3(glm::inverseTranspose(modelMatrix)));
+            instance.updateModelMatrix(containerMatrix, containerLevel);
 
-            entityIndex++;
+            idx++;
         }
     }
 
     // Make tiles visible
-    m_node->setEntityRange(m_firstEntityIndex, m_worldTilesU * m_worldTilesV);
+    setActiveRange(m_reservedFirst, m_reservedCount);
 }
 
-void TerrainGenerator::createTilesTessellation(
+void TerrainGenerator::createTiles(
     const Assets& assets,
     Registry* registry,
     Node& container)
@@ -149,10 +129,10 @@ void TerrainGenerator::createTilesTessellation(
     auto* materialRegistry = registry->m_materialRegistry.get();
 
     float scale = m_worldTileSize / 2.f;
-    float vertMinAABB = m_verticalRange[0] / scale;
-    float vertMaxAABB = 1.20f * m_verticalRange[1] / scale;
+    float vertMinAABB = 3.f * m_verticalRange[0] / scale;
+    float vertMaxAABB = 3.f * m_verticalRange[1] / scale;
 
-    const AABB aabb = {
+    const AABB aabb{
         glm::vec3{ -1.075f, vertMinAABB, -1.075f },
         glm::vec3{ 1.075f, vertMaxAABB, 1.075f },
         true
@@ -160,7 +140,7 @@ void TerrainGenerator::createTilesTessellation(
 
     KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
 
-    auto type = createType(registry, container.m_type, true);
+    auto type = createType(registry, container.m_type);
     {
         auto future = registry->m_modelRegistry->getMesh(TERRAIN_QUAD_MESH_NAME);
         auto* mesh = future.get();
@@ -182,87 +162,54 @@ void TerrainGenerator::createTilesTessellation(
         materialIndex = m.m_registeredIndex;
     });
 
-    const auto& tileVolume = aabb.getVolume();
+    const glm::vec4 tileVolume = aabb.getVolume();
     const int step = m_worldTileSize;
     AABB minmax{ true };
 
-    m_firstEntityIndex = entityRegistry->addEntityRange(m_worldTilesU * m_worldTilesV);
+    m_reservedCount = m_worldTilesU * m_worldTilesV;
+    m_reservedFirst = entityRegistry->addEntityRange(m_reservedCount);
+
+    m_instances.reserve(m_reservedCount);
 
     // Setup initial static values for entity
-    int entityIndex = m_firstEntityIndex;
+    int idx = 0;
     for (int v = 0; v < m_worldTilesV; v++) {
         for (int u = 0; u < m_worldTilesU; u++) {
             const glm::vec3 pos{ u * step, 0, v * step };
             minmax.minmax(pos);
 
-            auto* entity = entityRegistry->updateEntity(entityIndex, false);
-            entity->u_tileX = u;
-            entity->u_tileY = v;
+            {
+                auto& instance = m_instances.emplace_back();
 
-            entity->u_rangeYmin = m_verticalRange[0];
-            entity->u_rangeYmax = m_verticalRange[1];
+                instance.setMaterialIndex(materialIndex);
+                instance.setVolume(tileVolume);
+            }
 
-            entity->u_materialIndex = materialIndex;
-            entity->u_volume = tileVolume;
+            {
+                auto* entity = entityRegistry->updateEntity(m_reservedFirst + idx, false);
+                entity->u_tileX = u;
+                entity->u_tileY = v;
 
-            entityIndex++;
+                entity->u_rangeYmin = m_verticalRange[0];
+                entity->u_rangeYmax = m_verticalRange[1];
+            }
+
+            idx++;
         }
     }
 
     {
         m_node = new Node(type);
-        m_node->setAABB(minmax);
+        m_node->setVolume(minmax.getVolume());
         m_node->m_parentId = container.m_id;
+        m_node->m_instancer = this;
         registry->m_nodeRegistry->addNode(m_node);
-    }
-}
-
-void TerrainGenerator::createTilesMesh(
-    const Assets& assets,
-    Registry* registry,
-    Node& container)
-{
-    // NOTE scale.y == makes *FLAT* plane
-    const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
-    const int step = m_worldTileSize;
-    int cloneIndex = 0;
-
-    for (int v = 0; v < m_worldTilesV; v++) {
-        for (int u = 0; u < m_worldTilesU; u++) {
-            const glm::vec3 tile = { u, 0, v };
-            const glm::vec3 pos{ u * step, 0, v * step };
-
-            auto type = createType(registry, container.m_type, false);
-
-            auto mesh = generateTerrain(u, v);
-            type->setMesh(std::move(mesh), true);
-
-            // NOTE KI must laod textures in the context of *THIS* material
-            type->modifyMaterials([this, &assets](Material& m) {
-                m.loadTextures(assets);
-            });
-
-            auto node = new Node(type);
-            node->m_parentId = container.m_id;
-
-            node->setCloneIndex(cloneIndex);
-            node->setTile(tile);
-
-            node->setPosition(pos);
-            node->setScale(scale);
-            node->setAABB(type->getMesh()->getAABB());
-
-            registry->m_nodeRegistry->addNode(node);
-
-            cloneIndex++;
-        }
     }
 }
 
 MeshType* TerrainGenerator::createType(
     Registry* registry,
-    MeshType* containerType,
-    bool tessellation)
+    MeshType* containerType)
 {
     auto type = registry->m_typeRegistry->getType(containerType->m_name);
     type->m_entityType = EntityType::terrain;
@@ -271,9 +218,6 @@ MeshType* TerrainGenerator::createType(
     flags = containerType->m_flags;
     flags.noDisplay = false;
     flags.invisible = false;
-    if (tessellation) {
-        flags.instanced = true;
-    }
 
     type->m_priority = containerType->m_priority;
     type->m_script = containerType->m_script;
@@ -291,97 +235,4 @@ MeshType* TerrainGenerator::createType(
     type->m_program = containerType->m_program;
 
     return type;
-}
-
-std::unique_ptr<ModelMesh> TerrainGenerator::generateTerrain(
-    int tileU,
-    int tileV)
-{
-    auto mesh = std::make_unique<ModelMesh>("terrain");
-
-    const size_t vertexCount = m_gridSize + 1;
-
-    // ratio per grid texel cell
-    float texRatioU;
-    float texRatioV;
-    {
-        // grid texel cell size
-        const float texTileU = (float)1.f / (float)m_worldTilesU;
-        const float texTileV = (float)1.f / (float)m_worldTilesV;
-
-        texRatioU = texTileU / (float)m_gridSize;
-        texRatioV = texTileV / (float)m_gridSize;
-    }
-
-    const int baseU = tileU * m_gridSize;
-    const int baseV = tileV * m_gridSize;
-
-    float minY = 99999999;
-    float maxY = -1;
-
-    auto& vertices = mesh->m_vertices;
-    vertices.reserve(vertexCount * vertexCount);
-
-    for (int vi = 0; vi < vertexCount; vi++) {
-        // vz = [-1, 1] => local to mesh
-        float z = vi / (float)m_gridSize;
-        z = z * 2.f - 1.f;
-        z = std::clamp(z, -1.f, 1.f);
-
-        // v = [0, 1] => global to world
-        const float v = 1.f - (baseV + vi) * texRatioV;
-
-        for (int ui = 0; ui < vertexCount; ui++) {
-            // gx = [-1, 1] => local to mesh
-            float x = ui / (float)m_gridSize;
-            x = x * 2.f - 1.f;
-            x = std::clamp(x, -1.f, 1.f);
-
-            // u = [0, 1] => global to world
-            const float u = (baseU + ui) * texRatioU;
-
-            float y = m_heightMap->getTerrainHeight(u, v);
-
-            if (y < minY) minY = y;
-            if (y > maxY) maxY = y;
-
-            glm::vec3 pos{ x, y, z };
-            glm::vec2 texture{ u, v };
-            glm::vec3 normal{ 0.f, 1.f, 0.f };
-
-            vertices.emplace_back(
-                pos,
-                texture,
-                normal,
-                glm::vec3(0.f),
-                Material::DEFAULT_ID
-            );
-        }
-    }
-
-    KI_INFO_OUT(fmt::format(
-        "TERRAIN-Y: {} .. {}",
-        minY, maxY
-    ));
-
-    auto& tris = mesh->m_tris;
-    tris.reserve(vertexCount * vertexCount * 2);
-
-    for (size_t z = 0; z < vertexCount - 1; z++) {
-        for (size_t x = 0; x < vertexCount - 1; x++) {
-            int topLeft = (z * vertexCount) + x;
-            int topRight = (z * vertexCount) + x + 1;
-            int bottomLeft = ((z + 1) * vertexCount) + x;
-            int bottomRight = ((z + 1) * vertexCount) + x + 1;
-
-            tris.emplace_back(topRight, bottomLeft, bottomRight);
-            tris.emplace_back(topLeft, bottomLeft, topRight);
-        }
-    }
-
-    mesh->prepareVolume();
-    //const auto& aabb = TERRAIN_AABB;
-    //mesh->setAABB(aabb);
-
-    return mesh;
 }

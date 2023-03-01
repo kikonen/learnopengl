@@ -609,6 +609,7 @@ entities:
     id: auto
     priority: -15
     type: container
+    instanced: true
     material: terrain_grass_2
     program: terrain2
     pos: [-1144, -5.5, -800]
@@ -713,6 +714,7 @@ entities:
   - name: Asteroid belt
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
     model: [rock, rock]
+    type: container
     instanced: true
     program: texture
     material_modifier:

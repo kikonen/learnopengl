@@ -346,7 +346,7 @@ void NodeRegistry::bindNode(
             }
         }
 
-        if (type->m_flags.root) {
+        if (node->m_id == m_assets.rootUUID) {
             m_root = node;
         }
     }

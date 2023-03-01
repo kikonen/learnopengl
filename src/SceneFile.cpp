@@ -41,8 +41,6 @@
 
 #include "renderer/SkyboxRenderer.h"
 
-#include "scene/LegacyTerrainGenerator.h"
-
 #include <scene/AsyncLoader.h>
 
 
@@ -204,7 +202,7 @@ void SceneFile::attachVolume(
     // NOTE KI m_radius = 1.73205078
     mesh->prepareVolume();
 
-    node->setAABB(mesh->getAABB());
+    node->setVolume(mesh->getAABB().getVolume());
 
     node->m_controller = std::make_unique<VolumeController>();
 
@@ -259,7 +257,7 @@ void SceneFile::attachCubeMapCenter(
     // NOTE KI m_radius = 1.73205078
     mesh->prepareVolume();
 
-    node->setAABB(mesh->getAABB());
+    node->setVolume(mesh->getAABB().getVolume());
 
     m_registry->m_nodeRegistry->addNode(node);
 }
@@ -396,7 +394,6 @@ MeshType* SceneFile::createType(
     type->m_script = data.script;
 
     if (isRoot) {
-        type->m_flags.root = true;
         type->m_flags.invisible = true;
         type->m_entityType = EntityType::origo;
     }
@@ -405,10 +402,14 @@ MeshType* SceneFile::createType(
         type->m_flags.instanced = true;
     }
 
-    resolveMaterial(type, data, materials);
-    resolveMesh(type, data, tile);
+    if (data.type == EntityType::origo) {
+        type->m_flags.invisible = true;
+        type->m_entityType = EntityType::origo;
+    } else
+    {
+        resolveMaterial(type, data, materials);
+        resolveMesh(type, data, tile);
 
-    if (data.type != EntityType::origo) {
         // NOTE KI container does not have mesh itself, but it can setup
         // material & program for contained nodes
         if (data.type != EntityType::container) {
@@ -527,14 +528,6 @@ void SceneFile::resolveMesh(
         type->m_entityType = EntityType::sprite;
     }
     else if (data.type == EntityType::terrain) {
-        Material material = type->m_materialVBO.m_defaultMaterial;
-        LegacyTerrainGenerator generator(
-            m_assets,
-            data.tiling.tiles.z,
-            data.tiling.tiles.x,
-            data.tiling.height_scale);
-        auto mesh = generator.generateTerrain(tile.z, tile.x, &material);
-        type->setMesh(std::move(mesh), true);
         type->m_entityType = EntityType::terrain;
     }
     else if (data.type == EntityType::container) {
@@ -542,13 +535,8 @@ void SceneFile::resolveMesh(
         type->m_entityType = EntityType::container;
         type->m_flags.invisible = true;
     }
-    else if (data.type == EntityType::origo) {
-        // NOTE KI nothing to do
-        type->m_entityType = EntityType::origo;
-        type->m_flags.invisible = true;
-    }
     else {
-        // NOTE KI unknown; don't render, just keep it in hierarchy
+        // NOTE KI root/origo/unknown; don't render, just keep it in hierarchy
         type->m_entityType = EntityType::origo;
         type->m_flags.invisible = true;
     }
@@ -567,8 +555,8 @@ Node* SceneFile::createNode(
 {
     Node* node = new Node(type);
 
-    node->setCloneIndex(cloneIndex);
-    node->setTile(tile);
+    //node->setCloneIndex(cloneIndex);
+    //node->setTile(tile);
 
     glm::vec3 pos = data.position + clonePosition + posAdjustment;
 
@@ -594,7 +582,7 @@ Node* SceneFile::createNode(
 
     auto mesh = type->getMesh();
     if (mesh) {
-        node->setAABB(mesh->getAABB());
+        node->setVolume(mesh->getAABB().getVolume());
     }
 
     if (data.camera.enabled) {
@@ -1336,6 +1324,9 @@ void SceneFile::loadGenerator(
             }
             else if (type == "terrain") {
                 data.type = GeneratorType::terrain;
+            }
+            else if (type == "grid") {
+                data.type = GeneratorType::grid;
             }
             else if (type == "asteroid_belt") {
                 data.type = GeneratorType::asteroid_belt;

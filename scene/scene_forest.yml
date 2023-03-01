@@ -5,7 +5,7 @@ skybox:
 entities:
   - name: Camera
     type: origo
-    pos: [0, 0, -5]
+    pos: [0, 0, -20]
     camera:
       rotation: [0, 180, 0.0]
       default: true
@@ -35,19 +35,22 @@ entities:
   - name: Linden tree forest
     type: billboard
     program: texture
+    instanced: true
     pos: [0, 5.0, 0.0]
     material: linden_tree
     render_flags:
       alpha: true
+      enforce_bounds: true
     scale: [7, 10, 1]
-    controller:
+    generator:
       type: grid
       enabled: true
       repeat:
         x_count: 100
         z_count: 100
-        x_step: -2
-        z_step: 2
+        x_step: -20
+        z_step: 20
+      enabled: true
     enabled: true
 materials:
   - name: linden_tree

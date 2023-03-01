@@ -84,6 +84,11 @@ https://glad.dav1d.de
 ## Misc
 - https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
 - https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+- http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
+- https://learnopengl.com/Lighting/Basic-Lighting
+- http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
+- https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+
 
 ## Libraries
 - https://github.com/nothings/stb

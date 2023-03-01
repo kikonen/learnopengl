@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <ki/uuid.h>
 
-#include "asset/AABB.h"
+#include "model/NodeInstance.h"
 
 #include "generator/NodeGenerator.h"
 
@@ -42,8 +42,16 @@ public:
 
     void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
 
-    inline const glm::vec3& getWorldPosition() const noexcept {
-        return m_worldPosition;
+    inline NodeInstance& getInstance() noexcept {
+        return m_instance;
+    }
+
+    inline int getEntityIndex() const noexcept {
+        return m_instance.m_entityIndex;
+    }
+
+    inline const glm::vec3 getWorldPosition() const noexcept {
+        return m_instance.getWorldPosition();
     }
 
     inline const glm::vec3& getWorldPlaneNormal() const noexcept {
@@ -51,75 +59,65 @@ public:
     }
 
     inline const glm::vec4& getVolume() const noexcept {
-        return m_aabb.getVolume();
+        return m_instance.getVolume();
+    }
+
+    void setVolume(const glm::vec4& volume) {
+        m_instance.setVolume(volume);
     }
 
     bool inFrustum(const RenderContext& ctx, float radiusFlex) const;
-
-    inline int getMatrixLevel() const noexcept {
-        return m_matrixLevel;
-    }
-
-    void setPlaneNormal(const glm::vec3& planeNormal) noexcept;
 
     inline const glm::vec3& getPlaneNormal() const noexcept {
         return m_planeNormal;
     }
 
-    void setPosition(const glm::vec3& pos) noexcept;
-
-    inline const glm::vec3& getPosition() const noexcept {
-        return { m_translateMatrix[3][0], m_translateMatrix[3][1], m_translateMatrix[3][2] };
+    void setPlaneNormal(const glm::vec3& planeNormal) noexcept
+    {
+        m_planeNormal = planeNormal;
     }
 
-    void setRotation(const glm::vec3& rotation) noexcept;
+    inline void setPosition(const glm::vec3& pos) noexcept {
+        m_instance.setPosition(pos);
+    }
+
+    inline const glm::vec3 getPosition() const noexcept {
+        return m_instance.getPosition();
+    }
+
+    inline void setRotation(const glm::vec3& rotation) noexcept {
+        m_instance.setRotation(rotation);
+    }
 
     inline const glm::vec3& getRotation() const noexcept {
-        return m_rotation;
+        return m_instance.getRotation();
     }
 
-    void setScale(float scale) noexcept;
-    void setScale(const glm::vec3& scale) noexcept;
-
-    inline const glm::vec3& getScale() const noexcept {
-        return { m_scaleMatrix[0][0], m_scaleMatrix[1][1], m_scaleMatrix[2][2] };
+    inline void setScale(float scale) noexcept {
+        m_instance.setScale(scale);
     }
 
-    int getCloneIndex() {
-        return m_cloneIndex;
+    inline void setScale(const glm::vec3& scale) noexcept {
+        m_instance.setScale(scale);
     }
 
-    void setCloneIndex(int cloneIndex) {
-        m_cloneIndex = cloneIndex;
+    inline const glm::vec3 getScale() const noexcept {
+        return m_instance.getScale();
     }
 
-    const glm::uvec3& getTile() {
-        return m_tile;
+    inline int getParentMatrixLevel() const noexcept {
+        return m_instance.m_parentMatrixLevel;
     }
 
-    void setTile(const glm::uvec3& tile) {
-        m_tile = tile;
+    inline int getMatrixLevel() const noexcept {
+        return m_instance.m_matrixLevel;
     }
 
     inline const glm::mat4& getModelMatrix() const noexcept {
-        return m_modelMatrix;
+        return m_instance.m_modelMatrix;
     }
 
     void updateModelMatrix(Node* parent) noexcept;
-
-    inline int getInstancedIndex() {
-        return m_instancedIndex;
-    }
-
-    inline int getInstancedCount() {
-        return m_instancedCount;
-    }
-
-    void setAABB(const AABB& aabb);
-
-    const AABB& getAABB() const {
-        return m_aabb;
-    }
 
     inline bool isEntity() {
         return m_type->getMesh() &&
@@ -146,17 +144,9 @@ public:
 
     static int nextID() noexcept;
 
-    void setEntityRange(int instancedIndex, int instancedCount) noexcept {
-        m_instancedIndex = instancedIndex;
-        m_instancedCount = instancedCount;
-    }
-
 public:
     int lua_getId() const noexcept;
     const std::string& lua_getName() const noexcept;
-
-    int lua_getCloneIndex() const noexcept;
-    const std::array<unsigned int, 3> lua_getTile() const noexcept;
 
     const std::array<float, 3> lua_getPos() const noexcept;
 
@@ -186,42 +176,18 @@ public:
 
     std::unique_ptr<NodeGenerator> m_generator{ nullptr };
 
-    int m_entityIndex = -1;
+    NodeGenerator* m_instancer{ nullptr };
 
 protected:
     bool m_prepared = false;
 
-    int m_instancedIndex = -1;
-    int  m_instancedCount = 0;
-
-    AABB m_aabb;
-
 private:
-    int m_matrixLevel = -1;
-    int m_parentMatrixLevel = -1;
-
-    glm::vec3 m_worldPosition{ 0.f };
-
     glm::vec3 m_worldPlaneNormal{ 0.f };
 
     glm::vec3 m_planeNormal{ 0 };
 
-    glm::mat4 m_translateMatrix{ 1.f };
-    glm::mat4 m_scaleMatrix{ 1.f };
-
-    glm::vec3 m_rotation{ 0.f };
-    // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    // quaternion rotation matrix
-    glm::mat4 m_rotationMatrix{ 1.f };
-
-    int m_cloneIndex{ 0 };
-    glm::uvec3 m_tile{ 0 };
-
-    glm::mat4 m_modelMatrix{ 1.f };
+    NodeInstance m_instance;
 
     int m_tagMaterialIndex = -1;
     int m_selectionMaterialIndex = -1;
-
-    bool m_dirty = true;
-    bool m_dirtyEntity = true;
 };

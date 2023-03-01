@@ -9,10 +9,6 @@ class Registry;
 
 class AsteroidBeltGenerator final : public NodeGenerator
 {
-    struct Asteroid : NodeInstance {
-        float m_angularVelocity;
-    };
-
 public:
     AsteroidBeltGenerator(int asteroidCount);
 
@@ -41,17 +37,11 @@ private:
     void initAsteroids(
         const Assets& assets,
         Registry* registry,
-        Node& container,
-        std::vector<Asteroid>& asteroids);
+        Node& container);
 
     void rotateAsteroids(
         const RenderContext& ctx,
-        Node& container,
-        std::vector<Asteroid>& asteroids);
-
-    void calculateVolume(
-        Node& container,
-        std::vector<Asteroid> asteroids);
+        Node& container);
 
 private:
     const int m_asteroidCount;
@@ -61,9 +51,5 @@ private:
 
     int m_nodeMatrixLevel = 0;
     int m_updateIndex = 0;
-
-    int m_firstEntityIndex;
-
-    std::vector<Asteroid> m_asteroids;
 };
 

@@ -48,6 +48,7 @@ bool Batch::inFrustumZ(
     const int entityIndex)
 {
     if (!m_frustumCPU) return true;
+    if (entityIndex == -1) return false;
 
     const auto* entity = m_entityRegistry->getEntity(entityIndex);
 
@@ -117,7 +118,7 @@ void Batch::addInstanced(
     int actualCount = count;
 
     if (m_frustumCPU) {
-        if (!inFrustumZ(ctx, instancedEntityIndex)) {
+        if (instancedEntityIndex != -1 && !inFrustumZ(ctx, instancedEntityIndex)) {
             m_skipCount += count - 1;
             return;
         }

@@ -20,13 +20,14 @@ public:
         Node* containerParent) override;
 
 private:
-    void createInstances(
-        const Assets& assets,
-        Registry* registry,
-        Node& container);
-
     void updateInstances(
         const RenderContext& ctx,
+        Node& container,
+        Node* containerParent);
+
+    void prepareInstances(
+        const Assets& assets,
+        Registry* registry,
         Node& container);
 
 public:
@@ -37,7 +38,4 @@ public:
     double m_xStep{ 0 };
     double m_yStep{ 0 };
     double m_zStep{ 0 };
-
-private:
-    int m_matrixLevel = -1;
 };
