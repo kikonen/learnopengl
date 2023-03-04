@@ -103,7 +103,7 @@ void TerrainGenerator::updateTiles(
     int idx = 0;
     for (int v = 0; v < m_worldTilesV; v++) {
         for (int u = 0; u < m_worldTilesU; u++) {
-            const glm::vec3 pos{ u * step, 0, v * step };
+            const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
 
             auto& instance = m_instances[idx];
 
@@ -175,7 +175,7 @@ void TerrainGenerator::createTiles(
     int idx = 0;
     for (int v = 0; v < m_worldTilesV; v++) {
         for (int u = 0; u < m_worldTilesU; u++) {
-            const glm::vec3 pos{ u * step, 0, v * step };
+            const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
             minmax.minmax(pos);
 
             {

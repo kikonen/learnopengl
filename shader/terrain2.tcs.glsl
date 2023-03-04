@@ -2,12 +2,15 @@
 
 layout(vertices=3) out;
 
+#include struct_material.glsl
 #include struct_entity.glsl
 #include struct_clip_plane.glsl
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
+#include uniform_materials.glsl
 #include uniform_clip_planes.glsl
+#include uniform_material_indeces.glsl
 
 in VS_OUT {
   flat uint entityIndex;
@@ -58,6 +61,8 @@ void main()
   const Entity entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
   #include var_entity_model_matrix.glsl
 
+  int materialIndex = entity.materialIndex;
+
   //calculateClipping(tcs_in[gl_InvocationID].worldPos);
 
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
@@ -76,8 +81,12 @@ void main()
 #endif
 
   if (gl_InvocationID == 0) {
+    // NOTE ratio scaling to retain more-or-less consistent level
+    // with tile size changes
+    const float ratio = 8.0 / u_materials[materialIndex].tilingX;
+
     const int MIN_TESS_LEVEL = 4;
-    const int MAX_TESS_LEVEL = 32;
+    const int MAX_TESS_LEVEL = int(32 * ratio);
     const float MIN_DIST = 20;
     const float MAX_DIST = 700;
     const float DIST_DIFF = MAX_DIST - MIN_DIST;

@@ -79,8 +79,8 @@ namespace physics {
         const auto& originPos = m_origin->getWorldPosition();
 
         auto diff = pos - originPos;
-        diff.x += m_worldTileSize / 2.f;
-        diff.z += m_worldTileSize / 2.f;
+        //diff.x += m_worldTileSize / 2.f;
+        //diff.z += m_worldTileSize / 2.f;
 
         const float u = diff.x / (float)m_worldSizeU;
         const float v = 1.f - diff.z / (float)m_worldSizeV;

@@ -46,6 +46,7 @@ entities:
     material: terrain_grass_2
     program: terrain2
     pos: [-1024, 0, -1024]
+    xxpos: [0, 0, 0]
     render_flags:
       xxwireframe: true
       xxno_shadow: true
@@ -65,6 +66,7 @@ entities:
     model: glass_ball
     program: texture
     pos: [-1024, 150, -1024]
+    xxpos: [0, 150, 0]
     scale: 5.0
     material: glass_ball
     repeat:
@@ -74,7 +76,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-    enabled: false
+    enabled: true
   - name: Sea surface
     type: quad
     material: sea_surface
@@ -118,7 +120,7 @@ entities:
         x_step: -20
         z_step: 20
       enabled: true
-    enabled: false
+    enabled: true
   - name: Skeleton army
     type: billboard
     priority: 1
@@ -136,7 +138,7 @@ entities:
       z_count: 101
       x_step: 3
       z_step: -2
-    enabled: false
+    enabled: true
 materials:
   - name: terrain_grass_OLD
     type: texture
