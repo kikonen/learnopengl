@@ -5,9 +5,8 @@ skybox:
 entities:
   - name: Camera
     type: origo
-    pos: [0, 0, -20]
+    pos: [0, 10, 20]
     camera:
-      rotation: [0, 180, 0.0]
       default: true
       enabled: true
     enabled: true
@@ -15,7 +14,7 @@ entities:
       type: camera
       enabled: true
   - name: Directional light
-    pos: [0, 25, -40]
+    pos: [0, 25, 40]
     scale: 2.5
     model: light
     program: light
@@ -36,7 +35,7 @@ entities:
     type: billboard
     program: texture
     instanced: true
-    pos: [0, 5.0, 0.0]
+    pos: [-1000, -5.0, 0.0]
     material: linden_tree
     render_flags:
       alpha: true
@@ -46,10 +45,10 @@ entities:
       type: grid
       enabled: true
       repeat:
-        x_count: 100
-        z_count: 100
-        x_step: -20
-        z_step: 20
+        x_count: 200
+        z_count: 200
+        x_step: 20
+        z_step: -20
       enabled: true
     enabled: true
 materials:
