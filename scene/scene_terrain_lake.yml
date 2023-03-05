@@ -11,11 +11,8 @@ root:
 entities:
   - name: Origo
     type: origo
-    pos: [0, 50, 50]
+    pos: [0, 100, 50]
     camera:
-      zoom: 45
-      pos: [0, 0, 0]
-      Xrotation: [0, 180, 0.0]
       default: true
       enabled: true
     controller:
@@ -23,7 +20,7 @@ entities:
       enabled: true
     enabled: true
   - name: Directional light
-    pos: [0, 85, -200]
+    pos: [-300, 200, -400]
     scale: 2.5
     model: light
     program: texture
@@ -35,23 +32,33 @@ entities:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
-      ambient: [0.3, 0.32, 0.32, 1.0]
-      diffuse: [0.9, 0.9, 0.7, 1.0]
+      ambient: [0.4, 0.42, 0.42, 1.0]
+      diffuse: [0.9, 0.9, 0.8, 1.0]
       specular: [0.9, 0.9, 0.5, 1.0]
       enabled: true
+    script_file: scripts/anim_lake_light
     enabled: true
-  - name: Terrain grass
+  - name: Terrain grass v2
     id: auto
     type: container
-    material: terrain_grass
-    program: terrain
-    pos: [-100, 0, -100]
+    instanced: true
+    material: terrain_grass_2
+    program: terrain2
+    pos: [-1024, 0, -1024]
+    xxpos: [0, 0, 0]
+    render_flags:
+      xxwireframe: true
+      xxno_shadow: true
+      tessellation: true
+      xxrender_back: true
+      xxno_frustum: true
     generator:
       type: terrain
       tiling:
-        tile_size: 200
-        tiles: [2, 0, 2]
-        height_scale: 32
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-62.54, 221.9]
+        horiz_scale: 2
       enabled: true
     enabled: true
   - name: Water surface - SINGLE
@@ -92,13 +99,14 @@ entities:
       render_back: true
     enabled: true
 materials:
-  - name: terrain_grass
+  - name: terrain_grass_2
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: terrain/test_1_1024.jpg
-    map_bump: terrain/test_1_1024_normal.png
-    map_height: terrain/test_1_512_height.png
+    map_kd: terrain_2/terrain_2_TX.jpg
+    map_ks: terrain_2/terrain_2_SpecLM.png
+    map_bump: terrain_2/terrain_2_TN.png
+    map_height: terrain_2/terrain_2_height.png
   - name: water_surface
     type: texture
     ns: 150
