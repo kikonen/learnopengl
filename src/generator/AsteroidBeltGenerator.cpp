@@ -148,7 +148,7 @@ void AsteroidBeltGenerator::initAsteroids(
 
         {
             // 2. scale: scale between 0.05 and 0.25f
-            float scale = (rand() % 20) / 100.0f + 0.05f * 20.f;
+            float scale = (rand() % 20) / 100.0f + 0.05f;
             asteroid.setScale({ scale, scale, scale });
         }
 
