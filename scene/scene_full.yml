@@ -724,7 +724,7 @@ entities:
       type: asteroid_belt
       count: 1000
       enabled: true
-    enabled: false
+    enabled: true
   - name: Scale 1
     model: quad
     material: brickwall
