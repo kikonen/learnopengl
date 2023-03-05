@@ -10,9 +10,11 @@
 
 #include "fmt/format.h"
 
-#include "ImageTexture.h"
+#include "asset/Shader.h"
 
-#include "TextureUBO.h"
+#include "asset/ImageTexture.h"
+
+#include "asset/TextureUBO.h"
 
 #include "scene/RenderContext.h"
 

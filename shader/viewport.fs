@@ -15,7 +15,7 @@ layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 
 subroutine vec4 sub_effect(vec4 color);
 
-subroutine uniform sub_effect u_effect;
+subroutine(location = UNIFORM_EFFECT) uniform sub_effect u_effect;
 
 const float offset = 1.0 / 300.0;
 

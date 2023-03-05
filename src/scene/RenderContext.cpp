@@ -9,6 +9,8 @@
 
 #include "asset/ImageTexture.h"
 
+#include "component/Camera.h"
+
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
 

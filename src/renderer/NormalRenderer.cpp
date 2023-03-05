@@ -1,5 +1,7 @@
 #include "NormalRenderer.h"
 
+#include "asset/Shader.h"
+
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
@@ -19,7 +21,7 @@ void NormalRenderer::prepare(
 
     Renderer::prepare(assets, registry);
 
-    m_normalProgram = m_registry->m_programRegistry->getProgram(TEX_NORMAL);
+    m_normalProgram = m_registry->m_programRegistry->getProgram(SHADER_NORMAL);
     m_normalProgram->prepare(assets);
 }
 

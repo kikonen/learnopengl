@@ -4,6 +4,8 @@
 
 #include "asset/Program.h"
 
+class Program;
+
 class ProgramRegistry final
 {
 public:

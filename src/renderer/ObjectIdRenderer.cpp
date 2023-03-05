@@ -1,6 +1,7 @@
 #include "ObjectIdRenderer.h"
 
 #include "asset/Program.h"
+#include "asset/Shader.h"
 
 #include "component/Camera.h"
 #include "scene/RenderContext.h"
@@ -87,10 +88,10 @@ void ObjectIdRenderer::prepare(
 
     Renderer::prepare(assets, registry);
 
-    m_idProgram = m_registry->m_programRegistry->getProgram(TEX_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
+    m_idProgram = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idProgram->prepare(assets);
 
-    m_idProgramSprite = m_registry->m_programRegistry->getProgram(TEX_OBJECT_ID_SPRITE, { { DEF_USE_ALPHA, "1"} });
+    m_idProgramSprite = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID_SPRITE, { { DEF_USE_ALPHA, "1"} });
     m_idProgramSprite->prepare(assets);
 
     m_debugViewport = std::make_shared<Viewport>(
@@ -101,7 +102,7 @@ void ObjectIdRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         0,
-        m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
+        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
     m_debugViewport->prepare(assets);
 }

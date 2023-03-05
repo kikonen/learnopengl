@@ -1,5 +1,7 @@
 #include "ParticleSystem.h"
 
+#include "asset/Shader.h"
+
 #include "component/Camera.h"
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
@@ -21,7 +23,7 @@ void ParticleSystem::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    particleProgram = registry->m_programRegistry->getProgram(TEX_PARTICLE, {});
+    particleProgram = registry->m_programRegistry->getProgram(SHADER_PARTICLE, {});
     particleProgram->prepare(assets);
 }
 

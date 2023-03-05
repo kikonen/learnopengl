@@ -9,12 +9,10 @@
 #include "asset/LightUBO.h"
 
 #include "asset/Assets.h"
-#include "asset/Program.h"
 
 #include "ki/RenderClock.h"
 #include "kigl/GLState.h"
 
-#include "component/Camera.h"
 
 namespace backend {
     class RenderSystem;
@@ -22,6 +20,7 @@ namespace backend {
 
 class Scene;
 
+class Camera;
 class CommandEngine;
 class ScriptEngine;
 class Registry;

@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "asset/Uniform.h"
+
 #include "Renderer.h"
 #include "model/Viewport.h"
 #include "scene/ShadowBuffer.h"
@@ -41,4 +43,7 @@ private:
     //Program* m_solidShadowProgram{ nullptr };
     //Program* m_blendedShadowProgram{ nullptr };
     Program* m_shadowDebugProgram{ nullptr };
+
+    uniform::Float u_nearPlane{ "u_nearPlane", UNIFORM_NEAR_PLANE };
+    uniform::Float u_farPlane{ "u_farPlane", UNIFORM_FAR_PLANE };
 };

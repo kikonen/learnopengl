@@ -8,7 +8,7 @@
 
 #include <fmt/format.h>
 
-#include "UBO.h"
+#include "asset/UBO.h"
 
 #include "asset/MatricesUBO.h"
 #include "asset/DataUBO.h"
@@ -16,10 +16,18 @@
 #include "asset/LightUBO.h"
 #include "asset/TextureUBO.h"
 
-#include "ProgramBind.h"
+#include "asset/ProgramBind.h"
+#include "asset/Shader.h"
+
+#include "kigl/GLState.h"
+
 
 namespace {
     constexpr int LOG_SIZE = 4096;
+
+    const std::string INC_GLOBALS{ "globals.glsl" };
+
+    const std::string GEOM_NONE{ "" };
 
     int idBase = 0;
 
@@ -46,7 +54,7 @@ Program::Program(
     const std::string& geometryType,
     const std::map<std::string, std::string>& defines)
     : m_objectID(nextID()),
-    assets(assets),
+    m_assets(assets),
     m_key(key),
     m_programName(name),
     m_compute(compute),
@@ -469,7 +477,7 @@ std::vector<std::string> Program::processInclude(
     std::string path;
     {
         std::filesystem::path fp;
-        fp /= assets.shadersDir;
+        fp /= m_assets.shadersDir;
         fp /= "_" + includePath;
         path = fp.string();
     }

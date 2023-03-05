@@ -4,6 +4,7 @@
 #include <fmt/format.h>
 
 #include "asset/Program.h"
+#include "asset/Shader.h"
 
 #include "asset/ModelMeshVBO.h"
 

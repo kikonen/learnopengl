@@ -2,7 +2,10 @@
 
 #include <functional>
 
+#include "util/Util.h"
+
 #include "asset/Program.h"
+#include "asset/Shader.h"
 
 #include "scene/FrameBuffer.h"
 
@@ -114,7 +117,9 @@ void Viewport::bind(const RenderContext& ctx)
     //m_program->viewportTex.set(UNIT_VIEWPORT);
     ctx.state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
-    m_program->u_effect.set((int)m_effect);
+    uniform::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER, UNIFORM_EFFECT };
+
+    u_effect.set(util::as_integer(m_effect));
 
     ctx.state.bindVAO(m_vao);
 

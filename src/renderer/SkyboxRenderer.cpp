@@ -2,6 +2,8 @@
 
 #include <filesystem>
 
+#include "asset/Shader.h"
+
 #include "scene/CubeMap.h"
 
 #include "scene/RenderContext.h"

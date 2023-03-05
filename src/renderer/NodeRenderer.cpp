@@ -1,6 +1,7 @@
 #include "NodeRenderer.h"
 
 #include "asset/Program.h"
+#include "asset/Shader.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -30,11 +31,11 @@ void NodeRenderer::prepare(
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
 
-    m_selectionProgram = m_registry->m_programRegistry->getProgram(TEX_SELECTION, { { DEF_USE_ALPHA, "1" } });
+    m_selectionProgram = m_registry->m_programRegistry->getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
     //m_selectionProgram->m_selection = true;
     m_selectionProgram->prepare(assets);
 
-    m_selectionProgramSprite = m_registry->m_programRegistry->getProgram(TEX_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
+    m_selectionProgramSprite = m_registry->m_programRegistry->getProgram(SHADER_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
     //m_selectionProgramSprite->m_selection = true;
     m_selectionProgramSprite->prepare(assets);
 }

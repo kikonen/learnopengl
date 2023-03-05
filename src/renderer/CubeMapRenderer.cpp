@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "asset/Shader.h"
+
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 

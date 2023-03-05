@@ -1,5 +1,7 @@
 #include "MirrorMapRenderer.h"
 
+#include "asset/Shader.h"
+
 #include "model/Node.h"
 #include "model/Viewport.h"
 
@@ -89,7 +91,7 @@ void MirrorMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         0,
-        m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
+        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
     m_debugViewport->prepare(assets);
 }

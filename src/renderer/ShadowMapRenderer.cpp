@@ -1,6 +1,7 @@
 #include "ShadowMapRenderer.h"
 
 #include "asset/Program.h"
+#include "asset/Shader.h"
 
 #include "component/Light.h"
 
@@ -49,10 +50,10 @@ void ShadowMapRenderer::prepare(
     m_farPlane = assets.shadowFarPlane;
     m_frustumSize = assets.shadowFrustumSize;
 
-    m_shadowProgram = m_registry->m_programRegistry->getProgram(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
-    //m_solidShadowProgram = programs.getProgram(TEX_SIMPLE_DEPTH);
-    //m_blendedShadowProgram = programs.getProgram(TEX_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
-    m_shadowDebugProgram = m_registry->m_programRegistry->getProgram(TEX_DEBUG_DEPTH);
+    m_shadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    //m_solidShadowProgram = programs.getProgram(SHADER_SIMPLE_DEPTH);
+    //m_blendedShadowProgram = programs.getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    m_shadowDebugProgram = m_registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH);
 
     m_shadowProgram->prepare(assets);
     //m_solidShadowProgram->prepare(assets);
@@ -76,8 +77,8 @@ void ShadowMapRenderer::prepare(
         m_shadowBuffer->m_spec.attachments[0].textureID,
         m_shadowDebugProgram,
         [this, &assets](Viewport& vp) {
-            m_shadowDebugProgram->u_nearPlane.set(m_nearPlane);
-            m_shadowDebugProgram->u_farPlane.set(m_farPlane);
+            u_nearPlane.set(m_nearPlane);
+            u_farPlane.set(m_farPlane);
         });
 
     m_debugViewport->prepare(assets);

@@ -4,9 +4,11 @@
 #include <glm/glm.hpp>
 
 #include "asset/Assets.h"
+#include "asset/Uniform.h"
 
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
+
 
 class Program;
 class RenderContext;
@@ -65,5 +67,8 @@ private:
     GLuint m_textureId;
 
     Program* m_program{ nullptr };
+
+    uniform::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER, UNIFORM_EFFECT };
+
     std::function<void(Viewport&)> m_binder;
 };

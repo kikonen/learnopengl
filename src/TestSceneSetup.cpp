@@ -3,6 +3,7 @@
 #include "asset/MeshLoader.h"
 #include "asset/PlainTexture.h"
 #include "asset/Program.h"
+#include "asset/Shader.h"
 
 #include "controller/CameraController.h"
 
@@ -44,7 +45,7 @@ void TestSceneSetup::setup(
 void TestSceneSetup::setupEffectExplosion()
 {
     m_asyncLoader->addLoader(m_alive, [this]() {
-        Program* program = m_registry->m_programRegistry->getProgram(TEX_EFFECT);
+        Program* program = m_registry->m_programRegistry->getProgram(SHADER_EFFECT);
 
         auto type = m_registry->m_typeRegistry->getType("<effect>");
         type->m_program = program;
@@ -75,7 +76,7 @@ void TestSceneSetup::setupViewport1()
         glm::vec2(0.25f, 0.25f),
         false,
         texture->m_textureID,
-        m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
+        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
     viewport->prepare(m_assets);
     m_registry->m_nodeRegistry->addViewPort(viewport);
 }

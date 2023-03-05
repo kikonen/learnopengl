@@ -18,6 +18,7 @@
 #include "asset/QuadMesh.h"
 #include "asset/SpriteMesh.h"
 #include "asset/Program.h"
+#include "asset/Shader.h"
 
 #include "component/Light.h"
 #include "component/Camera.h"
@@ -193,7 +194,7 @@ void SceneFile::attachVolume(
     flags.noDisplay = true;
     flags.noSelect = true;
 
-    type->m_program = m_registry->m_programRegistry->getProgram(TEX_VOLUME);
+    type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
     auto node = new Node(type);
     node->m_id = m_assets.volumeUUID;
@@ -245,7 +246,7 @@ void SceneFile::attachCubeMapCenter(
     flags.noDisplay = true;
     flags.noSelect = true;
 
-    type->m_program = m_registry->m_programRegistry->getProgram(TEX_VOLUME);
+    type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
     auto node = new Node(type);
     node->m_id = m_assets.cubeMapUUID;
@@ -983,7 +984,7 @@ void SceneFile::loadEntityClone(
         else if (k == "program" || k == "shader") {
             data.programName = v.as<std::string>();
             if (data.programName == "texture") {
-                data.programName = TEX_TEXTURE;
+                data.programName = SHADER_TEXTURE;
             }
         }
         else if (k == "geometry_type") {

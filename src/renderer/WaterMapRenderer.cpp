@@ -1,5 +1,7 @@
 #include "WaterMapRenderer.h"
 
+#include "asset/Shader.h"
+
 #include "component/Camera.h"
 
 #include "model/Viewport.h"
@@ -79,7 +81,7 @@ void WaterMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         m_reflectionBuffer->m_spec.attachments[0].textureID,
-        m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
+        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
     m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffer.get());
 
@@ -90,7 +92,7 @@ void WaterMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         true,
         m_refractionBuffer->m_spec.attachments[0].textureID,
-        m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
+        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
     m_refractionDebugViewport->setSourceFrameBuffer(m_refractionBuffer.get());
 

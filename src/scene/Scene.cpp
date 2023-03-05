@@ -7,6 +7,7 @@
 #include "ki/Timer.h"
 
 #include "asset/UBO.h"
+#include "asset/Shader.h"
 
 #include "component/ParticleGenerator.h"
 
@@ -149,7 +150,7 @@ void Scene::prepare()
             glm::vec2(2.f, 2.f),
             true,
             0,
-            m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
+            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
         m_mainViewport->m_effect = m_assets.viewportEffect;
 
@@ -173,7 +174,7 @@ void Scene::prepare()
             glm::vec2(0.5f, 0.5f),
             true,
             0,
-            m_registry->m_programRegistry->getProgram(TEX_VIEWPORT));
+            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
         m_rearViewport->prepare(m_assets);
         m_registry->m_nodeRegistry->addViewPort(m_rearViewport);

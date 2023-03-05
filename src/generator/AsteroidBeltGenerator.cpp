@@ -178,5 +178,5 @@ void AsteroidBeltGenerator::rotateAsteroids(
 
         auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
         asteroid.setPosition(mat * glm::vec4(asteroid.getPosition(), 1.f));
-    }
+        }
 }

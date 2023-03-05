@@ -5,6 +5,7 @@
 #include "asset/Assets.h"
 #include "asset/SSBO.h"
 #include "asset/Program.h"
+#include "asset/Shader.h"
 
 #include "util/Util.h"
 
@@ -142,7 +143,8 @@ namespace backend {
 
         if (m_frustumGPU) {
             m_cullingCompute->bind(*drawRange.m_state);
-            m_cullingCompute->u_drawParametersIndex.set(cmdRange.m_index);
+
+            u_drawParametersIndex.set(cmdRange.m_index);
 
             glDispatchCompute(drawCount, 1, 1);
         }

@@ -2,9 +2,10 @@
 
 #include <mutex>
 
-#include "Program.h"
+#include "asset/Program.h"
+#include "asset/Shader.h"
 
-#include "TextureUBO.h"
+#include "asset/TextureUBO.h"
 
 
 namespace {
