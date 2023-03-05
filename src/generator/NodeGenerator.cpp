@@ -21,9 +21,7 @@ void NodeGenerator::updateEntity(
         if (!instance.m_entityDirty) continue;
 
         auto* entity = entityRegistry->updateEntity(entityIndex, true);
-
         instance.m_entityIndex = entityIndex;
-        entity->setObjectID(container.m_objectID);
 
         instance.updateEntity(entity);
 

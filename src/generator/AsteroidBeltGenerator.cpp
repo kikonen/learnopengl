@@ -59,15 +59,16 @@ void AsteroidBeltGenerator::updateAsteroids(
 {
     auto* registry = ctx.m_registry;
 
+    const auto& containerMatrix = containerParent->getModelMatrix();
+    const auto containerLevel = containerParent->getMatrixLevel();
+
     if (rotate) {
         rotateAsteroids(ctx, container);
     }
 
-    for (auto& asteroid : m_instances)
+    for (auto& instance : m_instances)
     {
-        if (rotate) {
-            asteroid.updateModelMatrix(container.getModelMatrix(), container.getMatrixLevel());
-        }
+        instance.updateModelMatrix(containerMatrix, containerLevel);
     }
 
     setActiveRange(m_reservedFirst, m_reservedCount);
@@ -83,6 +84,8 @@ void AsteroidBeltGenerator::createAsteroids(
     const Mesh* mesh = container.m_type->getMesh();
     const auto& volume = mesh->getAABB().getVolume();
 
+    const auto& containerInstance = container.getInstance();
+
     m_reservedCount = m_asteroidCount;
     m_reservedFirst = registry->m_entityRegistry->addEntityRange(m_reservedCount);
 
@@ -93,6 +96,11 @@ void AsteroidBeltGenerator::createAsteroids(
 
         asteroid.setMaterialIndex(container.getMaterialIndex());
         asteroid.setVolume(volume);
+
+        asteroid.setObjectID(containerInstance.getObjectID());
+        asteroid.setFlags(containerInstance.getFlags());
+
+        asteroid.setObjectID(container.m_objectID);
     }
 
     initAsteroids(assets, registry, container);

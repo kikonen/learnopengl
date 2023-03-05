@@ -46,7 +46,6 @@ entities:
   - name: Asteroid belt
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
     model: [rock, rock]
-    type: container
     instanced: true
     program: texture
     material_modifier:

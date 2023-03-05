@@ -612,15 +612,16 @@ entities:
     instanced: true
     material: terrain_grass_2
     program: terrain2
-    pos: [-1144, -5.5, -800]
+    pos: [-1200, -5.5, -900]
+    xxpos: [-1024, -5.5, -1024]
     render_flags:
       xxwireframe: true
       tessellation: true
     generator:
       type: terrain
       tiling:
-        tile_size: 128
-        tiles: [16, 0, 16]
+        tile_size: 256
+        tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
       enabled: true
@@ -714,7 +715,6 @@ entities:
   - name: Asteroid belt
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
     model: [rock, rock]
-    type: container
     instanced: true
     program: texture
     material_modifier:
@@ -724,7 +724,7 @@ entities:
       type: asteroid_belt
       count: 1000
       enabled: true
-    enabled: true
+    enabled: false
   - name: Scale 1
     model: quad
     material: brickwall
@@ -755,17 +755,22 @@ entities:
     type: billboard
     priority: 1
     program: texture
-    pos: [150, 15.0, 150.0]
+    instanced: true
+    pos: [150, 15.0, 350.0]
     material: linden_tree
     render_flags:
       alpha: true
       enforce_bounds: true
     scale: [7, 10, 1]
-    repeat:
-      x_count: 20
-      z_count: 20
-      x_step: -20
-      z_step: 20
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 20
+        z_count: 20
+        x_step: -20
+        z_step: 20
+      enabled: true
     enabled: true
   - name: Skeleton army
     type: billboard
