@@ -10,7 +10,13 @@
 class ModelMesh;
 class MeshType;
 
-
+//
+// Tessellated terrain generator
+//
+// NOTE KI tessellated terraiin *CANNOT* currently produce shadows
+// - would require separate special terrain-shadow renderer
+// - also tessellation level likely *would* pose problems with jumping terrain
+//   * distance from light is different than from camera
 class TerrainGenerator final : public NodeGenerator
 {
 public:
