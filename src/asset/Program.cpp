@@ -148,7 +148,7 @@ GLint Program::getUniformLoc(const std::string& name)
     return vi;
 }
 
-GLuint Program::getUniformSubroutineLoc(const std::string& name, GLenum shaderType)
+GLint Program::getUniformSubroutineLoc(const std::string& name, GLenum shaderType)
 {
     auto& map = m_subroutineLocations[shaderType];
     const auto& e = map.find(name);
@@ -156,7 +156,7 @@ GLuint Program::getUniformSubroutineLoc(const std::string& name, GLenum shaderTy
         return e->second;
     }
 
-    GLuint vi = glGetSubroutineUniformLocation(m_programId, shaderType, name.c_str());
+    GLint vi = glGetSubroutineUniformLocation(m_programId, shaderType, name.c_str());
     map[name] = vi;
     if (vi < 0) {
         KI_DEBUG(fmt::format(
@@ -166,7 +166,7 @@ GLuint Program::getUniformSubroutineLoc(const std::string& name, GLenum shaderTy
     return vi;
 }
 
-GLuint Program::getSubroutineIndex(const std::string& name, GLenum shaderType)
+GLint Program::getSubroutineIndex(const std::string& name, GLenum shaderType)
 {
     auto& map = m_subroutineIndeces[shaderType];
     const auto& e = map.find(name);
@@ -174,7 +174,7 @@ GLuint Program::getSubroutineIndex(const std::string& name, GLenum shaderType)
         return e->second;
     }
 
-    GLuint vi = glGetSubroutineIndex(m_programId, shaderType, name.c_str());
+    GLint vi = glGetSubroutineIndex(m_programId, shaderType, name.c_str());
     map[name] = vi;
     if (vi < 0) {
         KI_DEBUG(fmt::format(

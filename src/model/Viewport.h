@@ -41,6 +41,22 @@ public:
     void unbind(const RenderContext& ctx);
     void draw(const RenderContext& ctx);
 
+    bool isEffectEnabled() {
+        return m_effectEnabled;
+    }
+
+    void setEffectEnabled(bool enabled) {
+        m_effectEnabled = enabled;
+    }
+
+    ViewportEffect getEffect() {
+        return m_effect;
+    }
+
+    void setEffect(ViewportEffect effect) {
+        m_effect = effect;
+    }
+
 private:
     void prepareVBO();
 
@@ -52,8 +68,6 @@ public:
     const glm::vec2 m_size;
 
     const bool m_useFrameBuffer;
-
-    ViewportEffect m_effect = ViewportEffect::none;
 
 private:
     bool m_prepared = false;
@@ -68,7 +82,10 @@ private:
 
     Program* m_program{ nullptr };
 
-    uniform::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER, UNIFORM_EFFECT };
+    bool m_effectEnabled{ false };
+    ViewportEffect m_effect = ViewportEffect::none;
+
+    uniform::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER, SUBROUTINE_EFFECT };
 
     std::function<void(Viewport&)> m_binder;
 };

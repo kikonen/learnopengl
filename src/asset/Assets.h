@@ -142,6 +142,7 @@ public:
     float cubeMapNearPlane;
     float cubeMapFarPlane;
 
+    bool viewportEffectEnabled;
     ViewportEffect viewportEffect;
 
     uuids::uuid rootUUID;

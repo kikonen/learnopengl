@@ -148,13 +148,14 @@ void Scene::prepare()
             glm::vec3(0, 0, 0),
             //glm::vec2(1.5f, 1.5f),
             glm::vec2(2.f, 2.f),
-            true,
+            false,
             0,
             m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
-        m_mainViewport->m_effect = m_assets.viewportEffect;
-
+        m_mainViewport->setEffectEnabled(m_assets.viewportEffectEnabled);
+        m_mainViewport->setEffect(m_assets.viewportEffect);
         m_mainViewport->prepare(m_assets);
+
         m_registry->m_nodeRegistry->addViewPort(m_mainViewport);
 
         m_registry->m_physicsEngine->prepare();

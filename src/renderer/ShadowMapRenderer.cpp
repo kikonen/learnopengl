@@ -80,7 +80,7 @@ void ShadowMapRenderer::prepare(
             u_nearPlane.set(m_nearPlane);
             u_farPlane.set(m_farPlane);
         });
-
+    m_debugViewport->setEffectEnabled(false);
     m_debugViewport->prepare(assets);
 }
 

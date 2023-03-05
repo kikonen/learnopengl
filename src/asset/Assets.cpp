@@ -126,6 +126,7 @@ Assets::Assets()
     cubeMapRenderFrameStart = 1;
     cubeMapRenderFrameStep = 2;
 
+    viewportEffectEnabled = false;
     viewportEffect = ViewportEffect::none;
 
     rootUUID =    KI_UUID("11111111-1111-1111-1111-111111111111");

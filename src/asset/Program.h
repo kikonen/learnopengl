@@ -78,8 +78,8 @@ private:
     //void prepareTextureUniforms();
 
     GLint getUniformLoc(const std::string& name);
-    GLuint getUniformSubroutineLoc(const std::string& name, GLenum shadertype);
-    GLuint getSubroutineIndex(const std::string& name, GLenum shadertype);
+    GLint getUniformSubroutineLoc(const std::string& name, GLenum shadertype);
+    GLint getSubroutineIndex(const std::string& name, GLenum shadertype);
 
 public:
     const int m_objectID;

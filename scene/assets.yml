@@ -100,4 +100,5 @@ assets:
   cube_map_render_frame_start: 1
   cube_map_render_frame_step: 2
 
+  viewport_effect_enabled: true
   viewport_effect: none

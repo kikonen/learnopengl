@@ -61,6 +61,7 @@ void Viewport::prepare(const Assets& assets)
     if (m_useFrameBuffer) return;
 
     m_program->prepare(assets);
+    u_effect.init(m_program);
 
     prepareVBO();
 }
@@ -117,9 +118,9 @@ void Viewport::bind(const RenderContext& ctx)
     //m_program->viewportTex.set(UNIT_VIEWPORT);
     ctx.state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
-    uniform::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER, UNIFORM_EFFECT };
-
-    u_effect.set(util::as_integer(m_effect));
+    if (m_effectEnabled) {
+        u_effect.set(util::as_integer(m_effect));
+    }
 
     ctx.state.bindVAO(m_vao);
 

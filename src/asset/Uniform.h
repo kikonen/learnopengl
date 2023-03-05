@@ -11,8 +11,10 @@ constexpr int UNIFORM_PROJECTION_MATRIX = 1;
 constexpr int UNIFORM_VIEW_MATRIX = 2;
 constexpr int UNIFORM_NEAR_PLANE = 3;
 constexpr int UNIFORM_FAR_PLANE = 4;
-constexpr int UNIFORM_EFFECT = 5;
 constexpr int UNIFORM_DRAW_PARAMETERS_INDEX = 6;
+
+// NOTE KI subroutine uniform locations overlap other uniforms
+constexpr int SUBROUTINE_EFFECT = 0;
 
 class Program;
 
@@ -45,6 +47,10 @@ namespace uniform {
         {
         }
 
+        ~Subroutine() {
+            delete[] m_indeces;
+        }
+
         void init(Program* program);
 
         // @param shaderType
@@ -53,17 +59,12 @@ namespace uniform {
         // - GL_GEOMETRY_SHADER
         // - GL_TESS_CONTROL_SHADER
         // - GL_TESS_EVALUATION_SHADER
-        void set(GLuint index) noexcept {
-            if (m_locId != -1 && (m_unassigned || index != m_lastValue)) {
-                glUniformSubroutinesuiv(m_shaderType, 1, &index);
-                m_lastValue = index;
-                //m_unassigned = false;
-            }
-        }
+        void set(GLuint routineIndex) noexcept;
 
     private:
         const GLenum m_shaderType;
         GLuint m_lastValue = 0;
+        GLuint* m_indeces{ nullptr };
     };
 
 

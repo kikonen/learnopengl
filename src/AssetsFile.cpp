@@ -270,6 +270,9 @@ void AssetsFile::loadAssets(
         else if (k == "cube_map_render_frame_step") {
             data.cubeMapRenderFrameStep = v.as<int>();
         }
+        else if (k == "viewport_effect_enabled") {
+            data.viewportEffectEnabled = v.as<bool>();
+        }
         else if (k == "viewport_effect") {
             std::string effect = v.as<std::string>();
             if (effect == "none") {
