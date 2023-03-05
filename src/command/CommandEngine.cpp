@@ -52,6 +52,11 @@ void CommandEngine::cancel(int commandId) noexcept
     m_canceled.push_back(commandId);
 }
 
+bool CommandEngine::isAlive(int commandId) noexcept
+{
+    return commandId >= m_oldestAliveCommandId;
+}
+
 void CommandEngine::processCanceled(const RenderContext& ctx) noexcept
 {
     // NOTE KI can cancel only *EXISTING* commands not future commands

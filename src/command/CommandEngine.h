@@ -25,6 +25,8 @@ public:
     int addCommand(std::unique_ptr<Command> cmd) noexcept;
     void cancel(int commandId) noexcept;
 
+    bool isAlive(int commandId) noexcept;
+
 private:
     bool isCanceled(int commandId) noexcept;
     bool isValid(const RenderContext& ctx, Command* cmd) noexcept;

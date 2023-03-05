@@ -22,6 +22,10 @@ public:
         int afterCommandId,
         float secs) noexcept;
 
+    int lua_sync(
+        const sol::table& lua_opt,
+        const sol::table& lua_ids) noexcept;
+
     int lua_move(
         int objectID,
         const sol::table& lua_opt,

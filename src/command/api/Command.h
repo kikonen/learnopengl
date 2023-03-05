@@ -5,6 +5,7 @@
 #include <string>
 
 class RenderContext;
+class CommandEngine;
 
 class Command
 {
@@ -20,7 +21,8 @@ public:
     virtual void bind(const RenderContext& ctx) noexcept;
 
     // NOTE KI set m_finished to stop
-    virtual void execute(const RenderContext& ctx) noexcept = 0;
+    virtual void execute(
+        const RenderContext& ctx) noexcept = 0;
 
 public:
     const int m_id;

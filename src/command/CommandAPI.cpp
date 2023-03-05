@@ -5,6 +5,8 @@
 
 #include "api/CancelCommand.h"
 #include "api/Wait.h"
+#include "api/Sync.h"
+
 #include "api/MoveNode.h"
 #include "api/MoveSplineNode.h"
 #include "api/RotateNode.h"
@@ -37,12 +39,21 @@ namespace {
             else if (k == "loop") {
                 opt.repeat = value.as<bool>();
             }
-            });
+        });
         return opt;
     }
 
     glm::vec3 readVec3(const sol::table& v) noexcept {
         return glm::vec3{ v.get<float>(1), v.get<float>(2), v.get<float>(3) };
+    }
+
+    std::vector<int> readIds(const sol::table& v) noexcept {
+        std::vector<int> ids;
+        v.for_each([&](sol::object const& key, sol::object const& value) {
+            int id = value.as<int>();
+            ids.push_back(id);
+        });
+        return ids;
     }
 }
 
@@ -74,6 +85,20 @@ int CommandAPI::lua_wait(
         std::make_unique<Wait>(
             afterCommandId,
             secs));
+}
+
+int CommandAPI::lua_sync(
+    const sol::table& lua_opt,
+    const sol::table& lua_ids) noexcept
+{
+    const auto opt = readOptions(lua_opt);
+    const auto commandIds = readIds(lua_ids);
+
+    return m_commandEngine.addCommand(
+        std::make_unique<Sync>(
+            opt.afterId,
+            opt.secs,
+            commandIds));
 }
 
 int CommandAPI::lua_move(

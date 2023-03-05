@@ -60,6 +60,7 @@ void ScriptEngine::registerTypes()
 
         ut["cancel"] = &CommandAPI::lua_cancel;
         ut["wait"] = &CommandAPI::lua_wait;
+        ut["sync"] = &CommandAPI::lua_sync;
 
         ut["move"] = &CommandAPI::lua_move;
         ut["moveSpline"] = &CommandAPI::lua_moveSpline;

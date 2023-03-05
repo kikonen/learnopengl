@@ -199,6 +199,7 @@
     <ClCompile Include="src\asset\Uniform.cpp" />
     <ClCompile Include="src\backend\DrawBuffer.cpp" />
     <ClCompile Include="src\command\api\ResumeNode.cpp" />
+    <ClCompile Include="src\command\api\Sync.cpp" />
     <ClCompile Include="src\command\api\Wait.cpp" />
     <ClCompile Include="src\generator\GridGenerator.cpp" />
     <ClCompile Include="src\generator\NodeGenerator.cpp" />
@@ -337,6 +338,7 @@
     <ClInclude Include="src\backend\gl\DrawIndirectParameters.h" />
     <ClInclude Include="src\backend\DrawRange.h" />
     <ClInclude Include="src\backend\gl\PerformanceCounters.h" />
+    <ClInclude Include="src\command\api\Sync.h" />
     <ClInclude Include="src\generator\GridGenerator.h" />
     <ClInclude Include="src\command\api\ResumeNode.h" />
     <ClInclude Include="src\generator\NodeGenerator.h" />
