@@ -756,7 +756,7 @@ entities:
     priority: 1
     program: texture
     instanced: true
-    pos: [150, 15.0, 350.0]
+    pos: [250, 15.0, 150.0]
     material: linden_tree
     render_flags:
       alpha: true
@@ -766,8 +766,8 @@ entities:
       type: grid
       enabled: true
       repeat:
-        x_count: 20
-        z_count: 20
+        x_count: 40
+        z_count: 40
         x_step: -20
         z_step: 20
       enabled: true

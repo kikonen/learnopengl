@@ -58,7 +58,7 @@ void GridGenerator::updateInstances(
 
                 const glm::vec3 pos{ x * m_xStep, y * m_yStep, z * m_zStep };
 
-                instance.setPosition(pos);
+                instance.setPosition(containerInstance.getPosition() + pos);
 
                 instance.setObjectID(containerInstance.getObjectID());
                 instance.setFlags(containerInstance.getFlags());
