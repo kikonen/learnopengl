@@ -1,5 +1,5 @@
 ---
-name: Full
+name: Terrain
 viewports:
 skybox:
   program: skybox

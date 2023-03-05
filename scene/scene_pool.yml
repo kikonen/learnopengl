@@ -1,5 +1,5 @@
 ---
-name: Full
+name: Pool
 viewports:
 skybox:
   program: skybox
@@ -11,10 +11,9 @@ root:
 entities:
   - name: Origo
     type: origo
-    pos: [0, 0, -5]
+    pos: [0, 0, 5]
     camera:
       pos: [0, 12, 0]
-      rotation: [0, 180, 0.0]
       default: true
       enabled: true
     controller:
@@ -22,7 +21,7 @@ entities:
       enabled: true
     enabled: true
   - name: Directional light
-    pos: [0, 45, -100]
+    pos: [0, 45, 100]
     scale: 2.5
     model: light
     program: texture
@@ -94,18 +93,27 @@ entities:
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
     enabled: true
-  - name: Terrain grass
+  - name: Terrain grass v2
     id: auto
     type: container
-    material: terrain_grass
-    program: terrain
-    pos: [-100, -18, -60]
+    instanced: true
+    material: terrain_grass_2
+    program: terrain2
+    pos: [-1024, 10, -1024]
+    xxpos: [0, 0, 0]
+    render_flags:
+      xxwireframe: true
+      xxno_shadow: true
+      tessellation: true
+      xxrender_back: true
+      xxno_frustum: true
     generator:
       type: terrain
       tiling:
-        tile_size: 200
-        tiles: [2, 0, 2]
-        height_scale: 32
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-32.54, 31.9]
+        horiz_scale: 2
       enabled: true
     enabled: true
   - name: Water bottom - SINGLE
@@ -175,10 +183,11 @@ materials:
     tiling: 8
     texture_spec:
       wrap: GL_REPEAT
-  - name: terrain_grass
+  - name: terrain_grass_2
     type: texture
     ns: 50
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: terrain/terrain_1025_m.png
-    map_bump: terrain/terrain_1025_normal.png
-    map_height: terrain/terrain_1025_height.png
+    map_kd: terrain_2/terrain_2_TX.jpg
+    map_ks: terrain_2/terrain_2_SpecLM.png
+    map_bump: terrain_2/terrain_2_TN.png
+    map_height: terrain_2/terrain_2_height.png

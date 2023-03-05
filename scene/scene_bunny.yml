@@ -1,5 +1,5 @@
 ---
-name: Full
+name: Bunny
 skybox:
   material: skybox
 entities:
@@ -7,7 +7,6 @@ entities:
     type: origo
     pos: [0, 0, 0]
     camera:
-      rotation: [0, 180, 0.0]
       default: true
       enabled: true
     enabled: true
@@ -16,14 +15,14 @@ entities:
       enabled: true
   - name: Cube map 1
     type: origo
-    pos: [0.0, -3.0, 0.0]
+    pos: [0.0, 3.0, 0.0]
     render_flags:
       cube_map: true
     enabled: true
   - name: Bunny
     model: bunny
     program: texture
-    pos: [0.0, 0.0, 10.0]
+    pos: [0.0, 0.0, -10.0]
     scale: 30.0
     material_modifier:
       reflection: 0.01
@@ -33,7 +32,7 @@ entities:
       render_back: true
     enabled: true
   - name: Directional light
-    pos: [0, 25, -40]
+    pos: [0, 25, 40]
     scale: 2.5
     model: light
     program: light

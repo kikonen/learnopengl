@@ -1,5 +1,5 @@
 ---
-name: Full
+name: Test
 skybox:
   material: skybox
 entities:
@@ -7,7 +7,6 @@ entities:
     type: origo
     pos: [0, 0, 0]
     camera:
-      rotation: [0, 180, 0.0]
       default: true
       enabled: true
     enabled: true
@@ -17,13 +16,13 @@ entities:
   - name: Window 1
     model: window1
     program: texture
-    pos: [0.0, 0.0, 8.0]
+    pos: [0.0, 0.0, -8.0]
     render_flags:
       blend: true
       render_back: true
     enabled: true
   - name: Directional light
-    pos: [0, 25, -40]
+    pos: [0, 25, 40]
     scale: 2.5
     model: light
     program: light

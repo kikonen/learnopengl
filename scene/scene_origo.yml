@@ -1,5 +1,5 @@
 ---
-name: Full
+name: Origo
 viewports:
 skybox:
   program: skybox
@@ -8,14 +8,12 @@ lights: {}
 cube_maps: {}
 root:
   type: origo
-  pos: [0, 0, 0]
 entities:
   - name: Origo
     type: origo
-    pos: [10, 0, -20]
+    pos: [10, 0, 20]
     camera:
       pos: [0, 0, 9]
-      rotation: [0, 180, 0.0]
       default: true
       enabled: true
     controller:
@@ -23,7 +21,7 @@ entities:
       enabled: true
     enabled: true
   - name: Directional light
-    pos: [0, 25, -40]
+    pos: [0, 25, 40]
     scale: 2.5
     model: light
     program: light
@@ -40,11 +38,6 @@ entities:
       specular: [0.9, 0.9, 0.5, 1.0]
       enabled: true
     camera:
-      zoom: 45
-      up: [0, 1, 0]
-      front: [0, 0, -1]
-      pos: [0, 0, 0]
-      rotation: [0, 180, 0.0]
       enabled: true
     enabled: true
   - name: Silver ball
@@ -62,7 +55,7 @@ entities:
     program: texture
     material: woodwall
     force_material: true
-    pos: [5.0, 5.0, 5.0]
+    pos: [5.0, 5.0, -5.0]
     scale: 1
     enabled: false
   - name: Four cubes
@@ -80,7 +73,7 @@ entities:
   - name: Skeleton army
     type: billboard
     program: texture
-    pos: [15, 6.5, 20.0]
+    pos: [15, 6.5, -20.0]
     material: skeleton
     render_flags:
       alpha: true
@@ -94,7 +87,7 @@ entities:
     enabled: false
   - name: Cube map 1
     type: origo
-    pos: [0.0, -3.0, 0.0]
+    pos: [0.0, 3.0, 0.0]
     render_flags:
       cube_map: true
     enabled: true
@@ -112,7 +105,7 @@ entities:
     type: quad
     material: brickwall
     program: texture
-    pos: [-5.0, 8.5, 14.0]
+    pos: [-5.0, 8.5, -14.0]
     render_flags:
       render_back: true
     repeat:
@@ -123,7 +116,7 @@ entities:
     type: quad
     material: woodwall
     program: texture
-    pos: [-3.0, 8.5, 14.0]
+    pos: [-3.0, 8.5, -14.0]
     render_flags:
       render_back: true
     repeat:
@@ -160,7 +153,7 @@ entities:
     type: quad
     material: mirror
     program: mirror
-    pos: [-40.0, 10.0, 10.0]
+    pos: [-40.0, 10.0, -10.0]
     rotation: [0.0, 90.0, 0.0]
     scale: 15.0
     render_flags:

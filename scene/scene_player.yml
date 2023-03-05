@@ -1,5 +1,5 @@
 ---
-name: Full
+name: Player
 viewports:
 skybox:
   program: skybox
@@ -10,15 +10,11 @@ entities:
   - name: Player
     model: texture_cube
     pos: [0, 0, 0.0]
-    rotation: [0, 180, 0.0]
     scale: 1.0
     program: texture
     render_flags:
       allow_normals: false
     camera:
-      zoom: 45
-      pos: [0, 0, -5]
-      rotation: [0, 180, 0.0]
       default: true
       enabled: true
     controller:

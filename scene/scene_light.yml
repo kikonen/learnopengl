@@ -1,5 +1,5 @@
 ---
-name: Full
+name: Light
 viewports:
 skybox:
   program: skybox

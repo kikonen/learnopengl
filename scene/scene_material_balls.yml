@@ -1,5 +1,5 @@
 ---
-name: Full
+name: Material balls
 viewports:
 skybox:
   program: skybox
