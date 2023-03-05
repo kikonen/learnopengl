@@ -224,6 +224,11 @@ const std::string& Node::lua_getName() const noexcept
     return m_type->m_name;
 }
 
+int Node::lua_getCloneIndex() const noexcept
+{
+   return m_cloneIndex;
+}
+
 const std::array<float, 3> Node::lua_getPos() const noexcept
 {
     const auto& pos = getPosition();

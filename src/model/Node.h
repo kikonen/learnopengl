@@ -137,6 +137,14 @@ public:
         return m_type->getMaterialIndex();
     }
 
+    inline int getCloneIndex() const {
+        return m_cloneIndex;
+    }
+
+    inline void setCloneIndex(int cloneIndex) {
+        m_cloneIndex = cloneIndex;
+    }
+
     inline bool isHighlighted() { return m_tagMaterialIndex > -1 || m_selectionMaterialIndex > -1; }
 
     inline bool isSelected() { return m_selectionMaterialIndex > -1; }
@@ -147,6 +155,8 @@ public:
 public:
     int lua_getId() const noexcept;
     const std::string& lua_getName() const noexcept;
+
+    int lua_getCloneIndex() const noexcept;
 
     const std::array<float, 3> lua_getPos() const noexcept;
 
@@ -187,6 +197,8 @@ private:
     glm::vec3 m_planeNormal{ 0 };
 
     NodeInstance m_instance;
+
+    int m_cloneIndex{ 0 };
 
     int m_tagMaterialIndex = -1;
     int m_selectionMaterialIndex = -1;

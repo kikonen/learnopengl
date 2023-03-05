@@ -555,7 +555,7 @@ Node* SceneFile::createNode(
 {
     Node* node = new Node(type);
 
-    //node->setCloneIndex(cloneIndex);
+    node->setCloneIndex(cloneIndex);
     //node->setTile(tile);
 
     glm::vec3 pos = data.position + clonePosition + posAdjustment;
