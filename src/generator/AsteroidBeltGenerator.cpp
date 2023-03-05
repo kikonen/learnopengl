@@ -72,6 +72,7 @@ void AsteroidBeltGenerator::updateAsteroids(
     }
 
     setActiveRange(m_reservedFirst, m_reservedCount);
+    container.m_instancer = this;
 }
 
 void AsteroidBeltGenerator::createAsteroids(
@@ -92,7 +93,10 @@ void AsteroidBeltGenerator::createAsteroids(
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
         m_physics.emplace_back();
+
         auto& asteroid = m_instances.emplace_back();
+
+        asteroid.m_entityIndex = m_reservedFirst + i;
 
         asteroid.setMaterialIndex(container.getMaterialIndex());
         asteroid.setVolume(volume);
@@ -144,7 +148,7 @@ void AsteroidBeltGenerator::initAsteroids(
 
         {
             // 2. scale: scale between 0.05 and 0.25f
-            float scale = (rand() % 20) / 100.0f + 0.05f;
+            float scale = (rand() % 20) / 100.0f + 0.05f * 20.f;
             asteroid.setScale({ scale, scale, scale });
         }
 
@@ -178,5 +182,5 @@ void AsteroidBeltGenerator::rotateAsteroids(
 
         auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
         asteroid.setPosition(mat * glm::vec4(asteroid.getPosition(), 1.f));
-        }
+    }
 }

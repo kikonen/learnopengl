@@ -26,13 +26,7 @@ entities:
     type: origo
     pos: [0.0, 0.0, 0.0]
     enabled: true
-    script: |
-      local wid = -1
-      local cid = -1
-
-      wid = cmd:wait(0, 2)
-      cmd:rotate(id, { after=wid, time=360, relative=true }, { 0.0, 180.0, 0.0 })
-      cmd:rotate(id, { after=wid, time=180, relative=true }, { 360.0, 0, 0.0 })
+    script_file: scripts/anim_asteroids_roll
   - name: Planet
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
     model: [planet, planet]

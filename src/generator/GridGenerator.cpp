@@ -92,6 +92,7 @@ void GridGenerator::prepareInstances(
     m_instances.reserve(m_reservedCount);
 
     for (int i = 0; i < m_reservedCount; i++) {
-        m_instances.emplace_back();
+        auto& instance = m_instances.emplace_back();
+        instance.m_entityIndex = m_reservedFirst + i;
     }
 }

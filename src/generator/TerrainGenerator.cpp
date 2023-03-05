@@ -178,15 +178,19 @@ void TerrainGenerator::createTiles(
             const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
             minmax.minmax(pos);
 
+            const int entityIndex = m_reservedFirst + idx;
+
             {
                 auto& instance = m_instances.emplace_back();
 
                 instance.setMaterialIndex(materialIndex);
                 instance.setVolume(tileVolume);
+
+                instance.m_entityIndex = entityIndex;
             }
 
             {
-                auto* entity = entityRegistry->updateEntity(m_reservedFirst + idx, false);
+                auto* entity = entityRegistry->updateEntity(entityIndex, false);
                 entity->u_tileX = u;
                 entity->u_tileY = v;
 
