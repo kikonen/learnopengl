@@ -152,7 +152,7 @@ void Node::updateModelMatrix(Node* parent) noexcept
 {
     int oldLevel = m_instance.m_matrixLevel;
     if (parent) {
-        m_instance.updateModelMatrix(parent->getModelMatrix(), parent->getParentMatrixLevel());
+        m_instance.updateModelMatrix(parent->getModelMatrix(), parent->getMatrixLevel());
     }
     else {
         m_instance.updateRootMatrix();
