@@ -277,7 +277,8 @@ void Batch::flush(
             cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
             cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
 
-            if (!m_frustumGPU && drawOptions.instanced) {
+            //if (!m_frustumGPU && drawOptions.instanced) {
+            if (drawOptions.instanced) {
                 cmd.instanceCount = curr.m_instancedCount;
                 cmd.baseInstance = m_entityIndeces[curr.m_index];
                 m_draw->send(drawRange, indirect);
@@ -300,7 +301,8 @@ void Batch::flush(
             cmd.instanceCount = m_frustumGPU ? 0 : 1;
             cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
 
-            if (!m_frustumGPU && drawOptions.instanced) {
+            //if (!m_frustumGPU && drawOptions.instanced) {
+            if (drawOptions.instanced) {
                 cmd.instanceCount = curr.m_instancedCount;
                 cmd.baseInstance = m_entityIndeces[curr.m_index];
                 m_draw->send(drawRange, indirect);
