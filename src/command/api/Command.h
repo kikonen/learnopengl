@@ -16,6 +16,11 @@ public:
 
     virtual ~Command() {}
 
+    inline bool isCompleted() const noexcept
+    {
+        return m_canceled || m_finished;
+    }
+
     virtual bool isNode() noexcept { return false; }
 
     virtual void bind(const RenderContext& ctx) noexcept;

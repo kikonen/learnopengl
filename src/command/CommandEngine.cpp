@@ -57,12 +57,29 @@ bool CommandEngine::isAlive(int commandId) noexcept
     return commandId >= m_oldestAliveCommandId;
 }
 
+void CommandEngine::activateNext(const Command* cmd) noexcept
+{
+    if (cmd->m_next.empty()) return;
+
+    for (auto nextId : cmd->m_next) {
+        const auto& it = m_commands.find(nextId);
+        if (it != m_commands.end()) {
+            it->second->m_ready = true;
+        }
+    }
+}
+
 void CommandEngine::processCanceled(const RenderContext& ctx) noexcept
 {
     // NOTE KI can cancel only *EXISTING* commands not future commands
     if (m_canceled.empty()) return;
 
     for (auto& cmd : m_pending) {
+        if (!isCanceled(cmd->m_id)) continue;
+        cmd->m_canceled = true;
+    }
+
+    for (auto& cmd : m_blocked) {
         if (!isCanceled(cmd->m_id)) continue;
         cmd->m_canceled = true;
     }
@@ -87,20 +104,15 @@ void CommandEngine::processPending(const RenderContext& ctx) noexcept
 
         m_commands.insert(std::make_pair(cmd->m_id, cmd.get()));
 
+        bool ready = true;
         if (cmd->m_afterCommandId > 0) {
-            if (cmd->m_afterCommandId < m_oldestAliveCommandId) {
-                KI_WARN_OUT(fmt::format("GARBAGE AFTER: cmd={}, after={}, oldest={}", cmd->m_id, cmd->m_afterCommandId, m_oldestAliveCommandId));
-            }
-
-            if (cmd->m_afterCommandId != cmd->m_id &&
-                cmd->m_afterCommandId >= m_oldestAliveCommandId)
-            {
-                const auto& it = m_commands.find(cmd->m_afterCommandId);
-                if (it != m_commands.end()) {
-                    it->second->m_next.push_back(cmd->m_id);
-                }
+            const auto& it = m_commands.find(cmd->m_afterCommandId);
+            if (it != m_commands.end()) {
+                it->second->m_next.push_back(cmd->m_id);
+                ready = false;
             }
         }
+        cmd->m_ready = ready;
 
         m_blocked.emplace_back(std::move(cmd));
     }
@@ -114,26 +126,9 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
     for (auto& cmd : m_blocked) {
         // canceled; discard
         if (cmd->m_canceled) {
+            activateNext(cmd.get());
             m_blockedCleanup = true;
             continue;
-        }
-
-        if (cmd->m_afterCommandId > 0) {
-            const auto& it = m_commands.find(cmd->m_afterCommandId);
-            if (it == m_commands.end()) {
-                // NOTE KI if prev disappeared; then ready
-                cmd->m_ready = true;
-            } else {
-                auto* prev = it->second;
-                if (prev->m_finished || prev->m_canceled) {
-                    // NOTE KI if prev completed; then ready
-                    cmd->m_ready = true;
-                }
-            }
-        }
-        else {
-            // NOTE KI if command without prev; then ready
-            cmd->m_ready = true;
         }
 
         // NOTE KI execute flag can be set only when previous is finished
@@ -145,6 +140,7 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
             auto* nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
             auto* node = ctx.m_registry->m_nodeRegistry->getNode(nodeCmd->m_objectID);
             if (!node) {
+                activateNext(cmd.get());
                 cmd->m_canceled = true;
                 continue;
             }
@@ -163,28 +159,12 @@ void CommandEngine::processActive(const RenderContext& ctx)
     if (m_active.empty()) return;
 
     for (auto& cmd : m_active) {
-        // canceled; discard
-        if (cmd->m_canceled) {
-            m_activeCleanup = true;
-            continue;
+        if (!cmd->isCompleted()) {
+            cmd->execute(ctx);
         }
 
-        //// => Discard node; it has disappeared
-        //if (!isValid(ctx, cmd.get())) {
-        //    cmd->m_canceled = true;
-        //    cleanup = true;
-        //    continue;
-        //}
-
-        cmd->execute(ctx);
-
-        if (cmd->m_finished) {
-            for (auto nextId : cmd->m_next) {
-                const auto& it = m_commands.find(nextId);
-                if (it != m_commands.end()) {
-                    it->second->m_ready = true;
-                }
-            }
+        if (cmd->isCompleted()) {
+            activateNext(cmd.get());
             m_activeCleanup = true;
         }
     }

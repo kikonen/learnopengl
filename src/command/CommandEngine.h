@@ -31,6 +31,8 @@ private:
     bool isCanceled(int commandId) noexcept;
     bool isValid(const RenderContext& ctx, Command* cmd) noexcept;
 
+    void activateNext(const Command* cmd) noexcept;
+
     void processCanceled(const RenderContext& ctx) noexcept;
     void processPending(const RenderContext& ctx) noexcept;
     void processBlocked(const RenderContext& ctx) noexcept;
