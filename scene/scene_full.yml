@@ -978,7 +978,7 @@ materials:
     texture_spec:
       wrap: GL_REPEAT
   - name: pool_floor
-    type: model
+    type: texture
     ns: 225
     ka: [1.0, 1.0, 1.0, 1.0]
     kd: [0.8, 0.8, 0.8, 1.0]
