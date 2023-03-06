@@ -22,6 +22,7 @@ public:
         const RenderContext& ctx) noexcept override;
 
 private:
-    const glm::vec3 m_end;
-    glm::vec3 m_begin;
+    const glm::vec3 m_rotation;
+    glm::vec3 m_end{ 0.f };
+    glm::vec3 m_previous{ 0.f };
 };
