@@ -70,10 +70,11 @@ void main(void) {
   const Entity entity = u_entities[baseInstance];
   #include var_entity_model_matrix.glsl
 
+  const bool skip = cmd.instanceCount > 0;
   bool visible = (entity.flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT;
 
   // https://www.lighthouse3d.com/tutorials/view-frustum-culling/clip-space-approach-extracting-the-planes/
-  if (!visible) {
+  if (!skip && !visible) {
     const vec3 volumeCenter = entity.volume.xyz;
     const float volumeRadius = entity.volume.a;
 
@@ -94,7 +95,9 @@ void main(void) {
       -w <= pos.z + radius && pos.z - radius <= w;
   }
 
-  if (visible) {
+  if (skip) {
+    atomicAdd(u_counters.drawCount, 1);
+  } else if (visible) {
     atomicAdd(u_counters.drawCount, 1);
     u_commands[baseIndex + gl_GlobalInvocationID.x].instanceCount = 1;
   } else {
