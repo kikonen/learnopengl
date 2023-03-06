@@ -22,7 +22,8 @@ void MoveNode::bind(const RenderContext& ctx, Node* node) noexcept
 
     m_end = m_position;
     if (!m_relative) {
-        m_end -= m_node->getPosition();
+        const auto& nodePosition = m_node->getPosition();
+        m_end -= nodePosition;
     }
 }
 
@@ -32,7 +33,7 @@ void MoveNode::execute(
     m_elapsedTime += ctx.m_clock.elapsedSecs;
     m_finished = m_elapsedTime >= m_finishTime;
 
-    const auto& nodeposition = m_node->getPosition();
+    const auto& nodePosition = m_node->getPosition();
 
     // NOTE KI keep steps relative to previous
     // => in case there is N concurrent commands
@@ -50,6 +51,6 @@ void MoveNode::execute(
     }
 
     auto adjust = position - m_previous;
-    m_node->setPosition(nodeposition + adjust);
+    m_node->setPosition(nodePosition + adjust);
     m_previous = position;
 }
