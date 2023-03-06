@@ -64,6 +64,9 @@ namespace physics {
         Node& node,
         NodeInstance& instance)
     {
+        int physicsLevel = type.m_flags.staticPhysics ? m_staticPhysicsLevel : m_physicsLevel;
+        if (instance.m_physicsLevel == m_staticPhysicsLevel) return;
+
         const auto& worldPos = instance.getWorldPosition();
         glm::vec3 pos = instance.getPosition();
 
@@ -81,7 +84,10 @@ namespace physics {
 
         instance.setPosition(pos);
 
-        instance.updateModelMatrix(parent->getModelMatrix(), parent->getMatrixLevel());
+        if (instance.m_dirty) {
+            instance.updateModelMatrix(parent->getModelMatrix(), parent->getMatrixLevel());
+        }
+        instance.m_physicsLevel = physicsLevel;
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_objectID, level));
     }
@@ -97,6 +103,8 @@ namespace physics {
     Surface* PhysicsEngine::registerSurface(std::unique_ptr<Surface> surface)
     {
         m_surfaces.push_back(std::move(surface));
+        m_physicsLevel++;
+        m_staticPhysicsLevel++;
         return m_surfaces.back().get();
     }
 

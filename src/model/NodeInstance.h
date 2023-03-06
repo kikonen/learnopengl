@@ -16,6 +16,7 @@ struct NodeInstance {
 
     int m_parentMatrixLevel = -1;
     int m_matrixLevel = -1;
+    int m_physicsLevel = -1;
 
     int m_objectID{ 0 };
     int m_entityIndex{ -1 };

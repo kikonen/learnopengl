@@ -686,6 +686,12 @@ void SceneFile::assignFlags(
         }
     }
     {
+        const auto& e = data.renderFlags.find("static_physics");
+        if (e != data.renderFlags.end()) {
+            flags.staticPhysics = e->second;
+        }
+    }
+    {
         const auto& e = data.renderFlags.find("physics");
         if (e != data.renderFlags.end()) {
             flags.physics = e->second;

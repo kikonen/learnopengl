@@ -40,6 +40,9 @@ namespace physics {
     private:
         const Assets& m_assets;
 
+        int m_staticPhysicsLevel{ -1 };
+        int m_physicsLevel{ -1 };
+
         std::vector<std::unique_ptr<Surface>> m_surfaces;
     };
 

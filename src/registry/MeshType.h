@@ -33,6 +33,7 @@ struct NodeRenderFlags {
 
     bool tessellation = false;
 
+    bool staticPhysics = false;
     bool enforceBounds = false;
     bool physics = false;
 };

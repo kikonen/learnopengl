@@ -109,6 +109,7 @@ entities:
     material: linden_tree
     render_flags:
       alpha: true
+      static_physics: true
       enforce_bounds: true
     scale: [7, 10, 1]
     generator:
