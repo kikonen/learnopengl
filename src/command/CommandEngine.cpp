@@ -85,7 +85,7 @@ void CommandEngine::processPending(const RenderContext& ctx) noexcept
         // canceled; discard
         if (cmd->m_canceled) continue;
 
-        m_commands[cmd->m_id] = cmd.get();
+        m_commands.insert(std::make_pair(cmd->m_id, cmd.get()));
 
         if (cmd->m_afterCommandId > 0) {
             if (cmd->m_afterCommandId < m_oldestAliveCommandId) {
@@ -95,9 +95,9 @@ void CommandEngine::processPending(const RenderContext& ctx) noexcept
             if (cmd->m_afterCommandId != cmd->m_id &&
                 cmd->m_afterCommandId >= m_oldestAliveCommandId)
             {
-                auto prev = m_commands[cmd->m_afterCommandId];
-                if (prev) {
-                    prev->m_next.push_back(cmd->m_id);
+                const auto& it = m_commands.find(cmd->m_afterCommandId);
+                if (it != m_commands.end()) {
+                    it->second->m_next.push_back(cmd->m_id);
                 }
             }
         }
@@ -118,8 +118,20 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
             continue;
         }
 
-        auto prev = m_commands[cmd->m_afterCommandId];
-        if (!prev) {
+        if (cmd->m_afterCommandId > 0) {
+            const auto& it = m_commands.find(cmd->m_afterCommandId);
+            if (it == m_commands.end()) {
+                // NOTE KI if prev disappeared; then ready
+                cmd->m_ready = true;
+            } else {
+                auto* prev = it->second;
+                if (prev->m_finished || prev->m_canceled) {
+                    // NOTE KI if prev completed; then ready
+                    cmd->m_ready = true;
+                }
+            }
+        }
+        else {
             // NOTE KI if command without prev; then ready
             cmd->m_ready = true;
         }
@@ -130,8 +142,8 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
         m_blockedCleanup = true;
 
         if (cmd->isNode()) {
-            auto nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
-            const auto & node = ctx.m_registry->m_nodeRegistry->getNode(nodeCmd->m_objectID);
+            auto* nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
+            auto* node = ctx.m_registry->m_nodeRegistry->getNode(nodeCmd->m_objectID);
             if (!node) {
                 cmd->m_canceled = true;
                 continue;
@@ -168,12 +180,12 @@ void CommandEngine::processActive(const RenderContext& ctx)
 
         if (cmd->m_finished) {
             for (auto nextId : cmd->m_next) {
-                auto cmd = m_commands[nextId];
-                if (!cmd) continue;
-                cmd->m_ready = true;
+                const auto& it = m_commands.find(nextId);
+                if (it != m_commands.end()) {
+                    it->second->m_ready = true;
+                }
             }
             m_activeCleanup = true;
-            //cmd->m_callback(cmd->m_node);
         }
     }
 }
