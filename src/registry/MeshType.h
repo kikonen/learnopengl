@@ -61,7 +61,7 @@ public:
     void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
     void setMesh(Mesh* mesh);
 
-    const Mesh* getMesh() const noexcept {
+    inline const Mesh* getMesh() const noexcept {
         return m_mesh;
     }
 
