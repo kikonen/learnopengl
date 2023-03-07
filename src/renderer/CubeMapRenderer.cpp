@@ -11,6 +11,8 @@
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 
+#include "NodeDraw.h"
+
 // https://stackoverflow.com/questions/28845375/rendering-a-dynamic-cubemap-opengl
 // https://mbroecker.com/project_dynamic_cubemapping.html
 
@@ -247,38 +249,16 @@ void CubeMapRenderer::clearCubeMap(
 
 void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
-    const Node* centerNode)
+    const Node* current)
 {
-    auto renderTypes = [&ctx, &centerNode](const MeshTypeMap& typeMap) {
-        auto program = typeMap.begin()->first.type->m_program;
-
-        for (const auto& it : typeMap) {
-            auto& type = *it.first.type;
-            auto& batch = ctx.m_batch;
-
-            if (type.m_flags.noReflect) continue;
-
-            for (auto& node : it.second) {
-                // NOTE KI skip drawing center node itself (can produce odd results)
-                // => i.e. show garbage from old render round and such
-                if (node == centerNode) continue;
-
-                batch->draw(ctx, *node, program);
-            }
-        }
-    };
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-        renderTypes(all.second);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-        renderTypes(all.second);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-        renderTypes(all.second);
-    }
+    NodeDraw draw;
+    draw.drawNodes(
+        ctx,
+        true,
+        [](const MeshType* type) { return !type->m_flags.noReflect; },
+        // NOTE KI skip drawing center node itself (can produce odd results)
+        // => i.e. show garbage from old render round and such
+        [&current](const Node* node) { return node != current; });
 
     ctx.m_batch->flush(ctx);
 }

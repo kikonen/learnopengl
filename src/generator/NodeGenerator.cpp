@@ -24,7 +24,7 @@ void NodeGenerator::updateEntity(
         auto* entity = entityRegistry->updateEntity(instance.m_entityIndex, true);
         instance.updateEntity(entity);
 
-        //entity->u_highlightIndex = getHighlightIndex(ctx);
+        //entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
         //entity->u_highlightIndex = 1;
 
         entityIndex++;

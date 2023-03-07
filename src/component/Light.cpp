@@ -12,10 +12,6 @@
 #include "registry/NodeRegistry.h"
 
 
-Light::Light()
-{
-}
-
 void Light::update(const RenderContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
@@ -62,24 +58,6 @@ void Light::update(const RenderContext& ctx, Node& node) noexcept
     }
 
     m_nodeMatrixLevel = node.getMatrixLevel();
-}
-
-void Light::markDirty() noexcept
-{
-    m_nodeMatrixLevel = -1;
-    m_targetMatrixLevel = -1;
-}
-
-void Light::setPosition(const glm::vec3& pos) noexcept
-{
-    m_position = pos;
-    m_nodeMatrixLevel = -1;
-}
-
-void Light::setTargetId(const uuids::uuid& targetId) noexcept
-{
-    m_targetId = targetId;
-    m_targetMatrixLevel = -1;
 }
 
 DirLightUBO Light::toDirLightUBO() const noexcept

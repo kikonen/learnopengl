@@ -23,10 +23,6 @@ void ParticleRenderer::prepare(
     particleProgram->prepare(assets);
 }
 
-void ParticleRenderer::update(const RenderContext& ctx)
-{
-}
-
 void ParticleRenderer::render(
     const RenderContext& ctx)
 {

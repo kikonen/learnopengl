@@ -11,8 +11,6 @@ public:
         const Assets& assets,
         Registry* registry) override;
 
-    virtual void update(const RenderContext& ctx);
-
     void render(
         const RenderContext& ctx);
 

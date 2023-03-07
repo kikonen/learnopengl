@@ -27,7 +27,7 @@ void NodeInstance::updateEntity(
     entity->u_flags = m_flags;
     entity->u_materialIndex = m_materialIndex;
 
-    //entity->u_highlightIndex = getHighlightIndex(ctx);
+    //entity->u_highlightIndex = getHighlightIndex(assets);
     entity->u_volume = m_volume;
 
     entity->setModelMatrix(m_modelMatrix);

@@ -131,7 +131,14 @@ public:
     void setSelectionMaterialIndex(int index);
 
     // @return -1 if no highlight color
-    int getHighlightIndex(const RenderContext& ctx) const;
+    inline int getHighlightIndex(const Assets& assets) const
+    {
+        if (assets.showHighlight) {
+            if (assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
+            if (assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
+        }
+        return -1;
+    }
 
     inline int getMaterialIndex() const {
         return m_type->getMaterialIndex();
@@ -145,7 +152,10 @@ public:
         m_cloneIndex = cloneIndex;
     }
 
-    inline bool isHighlighted() { return m_tagMaterialIndex > -1 || m_selectionMaterialIndex > -1; }
+    inline bool isHighlighted(const Assets & assets) const
+    {
+        return getHighlightIndex(assets) != -1;
+    }
 
     inline bool isSelected() { return m_selectionMaterialIndex > -1; }
     inline bool isTagged() { return m_tagMaterialIndex > -1; }

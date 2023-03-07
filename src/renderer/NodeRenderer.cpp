@@ -11,6 +11,8 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+#include "NodeDraw.h"
+
 namespace
 {
 }
@@ -38,10 +40,6 @@ void NodeRenderer::prepare(
     m_selectionProgramSprite = m_registry->m_programRegistry->getProgram(SHADER_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
     //m_selectionProgramSprite->m_selection = true;
     m_selectionProgramSprite->prepare(assets);
-}
-
-void NodeRenderer::update(const RenderContext& ctx)
-{
 }
 
 void NodeRenderer::render(
@@ -77,7 +75,7 @@ void NodeRenderer::render(
             }
         }
 
-        renderSelectionStencil(ctx);
+        renderStencil(ctx);
         drawNodes(ctx, false);
         drawBlended(ctx);
         renderSelection(ctx);
@@ -92,7 +90,7 @@ void NodeRenderer::render(
     //ctx.state.disable(GL_CLIP_DISTANCE0);
 }
 
-void NodeRenderer::renderSelectionStencil(const RenderContext& ctx)
+void NodeRenderer::renderStencil(const RenderContext& ctx)
 {
     if (!ctx.assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
@@ -130,7 +128,7 @@ void NodeRenderer::renderSelection(const RenderContext& ctx)
     glStencilMask(0x00);
 
     // draw selection color (scaled a bit bigger)
-    drawSelectionStencil(ctx);
+    drawStencil(ctx);
     ctx.m_batch->flush(ctx);
 
     glStencilMask(0xFF);
@@ -145,107 +143,35 @@ void NodeRenderer::drawNodes(
     const RenderContext& ctx,
     bool selection)
 {
-    auto renderTypes = [this, &ctx, &selection](const MeshTypeMap& typeMap) {
-        auto program = typeMap.begin()->first.type->m_program;
-
-        for (const auto& it : typeMap) {
-            auto& type = *it.first.type;
-            auto& batch = ctx.m_batch;
-
-            for (auto& node : it.second) {
-                bool tagged = ctx.assets.showTagged ? node->isTagged() : false;
-                bool selected = ctx.assets.showSelection ? node->isSelected() : false;
-                bool highlight = ctx.assets.showHighlight ? tagged || selected : false;
-
-                if (selection) {
-                    if (!highlight) continue;
-                }
-                else {
-                    if (highlight) continue;
-                }
-
-                batch->draw(ctx, *node, program);
-            }
-        }
-    };
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-        renderTypes(all.second);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-        renderTypes(all.second);
-    }
-
-    if (selection) {
-        // NOTE KI do not try blend here; end result is worse than not doing blend at all (due to stencil)
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-            renderTypes(all.second);
-        }
-    }
+    NodeDraw draw;
+    draw.drawNodes(
+        ctx,
+        selection,
+        [](const MeshType* type) { return true; },
+        [&ctx, selection](const Node* node) {
+            const auto match = node->isHighlighted(ctx.assets);
+            return selection ? match : !match;
+        });
 }
 
 // draw all selected nodes with stencil
-void NodeRenderer::drawSelectionStencil(const RenderContext& ctx)
+void NodeRenderer::drawStencil(const RenderContext& ctx)
 {
-    auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
-        for (const auto& it : typeMap) {
-            auto& type = *it.first.type;
-            auto& batch = ctx.m_batch;
-
-            auto program = m_selectionProgram;
-            if (type.m_entityType == EntityType::sprite) {
-                program = m_selectionProgramSprite;
-            }
-
-            for (auto& node : it.second) {
-                if (!(node->isHighlighted())) continue;
-
-                batch->draw(ctx, *node, program);
-            }
-        }
-    };
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-        renderTypes(all.second);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-        renderTypes(all.second);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-        renderTypes(all.second);
-    }
+    NodeDraw draw;
+    draw.drawStencil(
+        ctx,
+        m_selectionProgram,
+        m_selectionProgramSprite,
+        [](const MeshType* type) { return true; },
+        [&ctx](const Node* node) { return node->isHighlighted(ctx.assets); });
 }
 
 void NodeRenderer::drawBlended(
     const RenderContext& ctx)
 {
-    if (ctx.m_registry->m_nodeRegistry->blendedNodes.empty()) return;
-
-    const glm::vec3& viewPos = ctx.m_camera->getWorldPosition();
-
-    // TODO KI discards nodes if *same* distance
-    std::map<float, Node*> sorted;
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-        for (const auto& map : all.second) {
-            for (const auto& node : map.second) {
-                const float distance = glm::length(viewPos - node->getWorldPosition());
-                sorted[distance] = node;
-            }
-        }
-    }
-
-    // NOTE KI blending is *NOT* optimal program / nodetypw wise due to depth sorting
-    // NOTE KI order = from furthest away to nearest
-    for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
-        auto* node = it->second;
-        auto* program = node->m_type->m_program;
-
-        ctx.m_batch->draw(ctx, *node, program);
-    }
-
-    // TODO KI if no flush here then render order of blended nodes is incorrect
-    //ctx.m_batch->flush(ctx);
+    NodeDraw draw;
+    draw.drawBlended(
+        ctx,
+        [](const MeshType* type) { return true; },
+        [](const Node* node) { return true; });
 }

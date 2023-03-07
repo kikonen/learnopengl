@@ -17,6 +17,7 @@
 
 #include "WaterNoiseGenerator.h"
 
+#include "NodeDraw.h"
 
 namespace {
     const glm::vec3 CAMERA_FRONT[6] = {
@@ -231,37 +232,17 @@ void WaterMapRenderer::drawNodes(
 
     ctx.updateClipPlanesUBO();
     ctx.state.enable(GL_CLIP_DISTANCE0);
+
     {
-        auto renderTypes = [reflect, &ctx, &current](const MeshTypeMap& typeMap) {
-            auto program = typeMap.begin()->first.type->m_program;
-
-            for (const auto& it : typeMap) {
-                auto& type = *it.first.type;
-                auto& batch = ctx.m_batch;
-
-                if (type.m_flags.water) continue;
-
-                if (reflect && type.m_flags.noReflect) continue;
-                if (!reflect && type.m_flags.noRefract) continue;
-
-                for (auto& node : it.second) {
-                    if (node == current) continue;
-                    batch->draw(ctx, *node, program);
-                }
-            }
-        };
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-            renderTypes(all.second);
-        }
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-            renderTypes(all.second);
-        }
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-            renderTypes(all.second);
-        }
+        NodeDraw draw;
+        draw.drawNodes(
+            ctx,
+            true,
+            [reflect](const MeshType* type) {
+                return !type->m_flags.water &&
+                    (reflect ? !type->m_flags.noReflect : !type->m_flags.noRefract);
+            },
+            [&current](const Node* node) { return node != current; });
     }
 
     // NOTE KI flush before touching clip distance

@@ -13,13 +13,11 @@ public:
         const Assets& assets,
         Registry* registry) override;
 
-    void update(const RenderContext& ctx) override;
-
     void render(
         const RenderContext& ctx);
 
 private:
-    void renderSelectionStencil(const RenderContext& ctx);
+    void renderStencil(const RenderContext& ctx);
     void renderSelection(const RenderContext& ctx);
 
     void drawNodes(
@@ -29,7 +27,7 @@ private:
     void drawBlended(
         const RenderContext& ctx);
 
-    void drawSelectionStencil(const RenderContext& ctx);
+    void drawStencil(const RenderContext& ctx);
 
 private:
     Program* m_selectionProgram{ nullptr };

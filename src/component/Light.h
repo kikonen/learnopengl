@@ -14,14 +14,22 @@ class RenderContext;
 class Light final
 {
 public:
-    Light();
+    Light() {};
     ~Light() = default;
 
     void update(const RenderContext& ctx, Node& node) noexcept;
 
-    void markDirty() noexcept;
+    void markDirty() noexcept
+    {
+        m_nodeMatrixLevel = -1;
+        m_targetMatrixLevel = -1;
+    }
 
-    void setTargetId(const uuids::uuid& targetId) noexcept;
+    void setTargetId(const uuids::uuid& targetId) noexcept
+    {
+        m_targetId = targetId;
+        m_targetMatrixLevel = -1;
+    }
 
     const uuids::uuid& getTargetId() const noexcept {
         return m_targetId;
@@ -39,7 +47,11 @@ public:
         return m_position;
     }
 
-    void setPosition(const glm::vec3& pos) noexcept;
+    void setPosition(const glm::vec3& pos) noexcept
+    {
+        m_position = pos;
+        m_nodeMatrixLevel = -1;
+    }
 
     DirLightUBO toDirLightUBO() const noexcept;
     PointLightUBO toPointightUBO() const noexcept;

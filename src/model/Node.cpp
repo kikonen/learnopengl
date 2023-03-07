@@ -126,7 +126,7 @@ void Node::updateEntity(
         if (m_instance.m_entityDirty) {
             auto* entity = entityRegistry->updateEntity(m_instance.m_entityIndex, true);
 
-            entity->u_highlightIndex = getHighlightIndex(ctx);
+            entity->u_highlightIndex = getHighlightIndex(ctx.assets);
 
             m_instance.updateEntity(entity);
         }
@@ -203,15 +203,6 @@ void Node::setSelectionMaterialIndex(int index)
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
     }
-}
-
-int Node::getHighlightIndex(const RenderContext& ctx) const
-{
-    if (ctx.assets.showHighlight) {
-        if (ctx.assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
-        if (ctx.assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
-    }
-    return -1;
 }
 
 int Node::lua_getId() const noexcept

@@ -13,6 +13,8 @@
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 
+#include "NodeDraw.h"
+
 namespace {
     namespace {
         const glm::vec3 CAMERA_FRONT[6] = {
@@ -165,9 +167,9 @@ bool MirrorMapRenderer::render(
         localCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
         localCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
 
-        ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
-        //clip.enabled = true;
-        clip.plane = glm::vec4(planePos, 0);
+        //ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
+        ////clip.enabled = true;
+        //clip.plane = glm::vec4(planePos, 0);
 
         localCtx.updateMatricesUBO();
 
@@ -178,7 +180,7 @@ bool MirrorMapRenderer::render(
 
         //m_curr->unbind(ctx);
 
-        ctx.updateClipPlanesUBO();
+        //ctx.updateClipPlanesUBO();
 
         m_debugViewport->setTextureId(m_curr->m_spec.attachments[0].textureID);
         m_debugViewport->setSourceFrameBuffer(m_curr.get());
@@ -207,36 +209,15 @@ void MirrorMapRenderer::drawNodes(
         glClear(mask);
     }
 
-    ctx.updateClipPlanesUBO();
+    //ctx.updateClipPlanesUBO();
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     {
-        auto renderTypes = [&ctx, &current](const MeshTypeMap& typeMap) {
-            auto program = typeMap.begin()->first.type->m_program;
-
-            for (const auto& it : typeMap) {
-                auto& type = *it.first.type;
-                auto& batch = ctx.m_batch;
-
-                if (type.m_flags.noReflect) continue;
-
-                for (auto& node : it.second) {
-                    if (node == current) continue;
-                    batch->draw(ctx, *node, program);
-                }
-            }
-        };
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-            renderTypes(all.second);
-        }
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-            renderTypes(all.second);
-        }
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-            renderTypes(all.second);
-        }
+        NodeDraw draw;
+        draw.drawNodes(
+            ctx,
+            true,
+            [](const MeshType* type) { return !type->m_flags.noReflect; },
+            [&current](const Node* node) { return node != current; });
     }
     //ctx.state.disable(GL_CLIP_DISTANCE0);
 
