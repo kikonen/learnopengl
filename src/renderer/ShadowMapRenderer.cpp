@@ -149,10 +149,16 @@ void ShadowMapRenderer::drawNodes(
     // NOTE KI *NO* G-buffer in shadow
     auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap, Program* program) {
         for (const auto& it : typeMap) {
-            auto& type = *it.first.type;
+            auto* type = it.first.type;
             auto& batch = ctx.m_batch;
 
-            if (type.m_flags.noShadow) continue;
+            if (type->m_flags.noShadow) continue;
+
+            // NOTE KI tessellation not suppported
+            if (type->m_flags.tessellation) continue;
+
+            // NOTE KI point sprite currently not supported
+            if (type->m_entityType != EntityType::sprite) continue;
 
             for (auto& node : it.second) {
                 batch->draw(ctx, *node, program);
