@@ -11,6 +11,8 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+#include "NodeDraw.h"
+
 namespace {
     // @see Computer Graphics Programmming in OpenGL Using C++, Second Edition
     // @see OpenGL Programming Guide, 8th Edition, page 406
@@ -144,6 +146,7 @@ bool ShadowMapRenderer::render(
 void ShadowMapRenderer::drawNodes(
     const RenderContext& ctx)
 {
+    // NOTE KI *NO* G-buffer in shadow
     auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap, Program* program) {
         for (const auto& it : typeMap) {
             auto& type = *it.first.type;

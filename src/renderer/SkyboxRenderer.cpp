@@ -9,18 +9,6 @@
 #include "scene/RenderContext.h"
 
 
-SkyboxRenderer::SkyboxRenderer(
-    const std::string& programName,
-    const std::string& materialName)
-    : m_programName(programName),
-    m_materialName(materialName)
-{
-}
-
-SkyboxRenderer::~SkyboxRenderer()
-{
-}
-
 void SkyboxRenderer::prepare(
     const Assets& assets,
     Registry* registry)

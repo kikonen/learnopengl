@@ -10,6 +10,8 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+#include "NodeDraw.h"
+
 ObjectIdRenderer::ObjectIdRenderer()
     : Renderer()
 {
@@ -152,36 +154,14 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     {
-        auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap) {
-            for (const auto& it : typeMap) {
-                auto& type = *it.first.type;
-                if (type.m_flags.noSelect) continue;
-
-                auto program = m_idProgram;
-                if (type.m_entityType == EntityType::sprite) {
-                    program = m_idProgramSprite;
-                }
-
-                auto& batch = ctx.m_batch;
-
-                for (auto& node : it.second) {
-                    batch->draw(ctx, *node, program);
-                }
-            }
-        };
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-            renderTypes(all.second);
-        }
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-            renderTypes(all.second);
-        }
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-            renderTypes(all.second);
-        }
-
-        ctx.m_batch->flush(ctx);
+        NodeDraw draw;
+        draw.drawProgram(
+            ctx,
+            m_idProgram,
+            m_idProgramSprite,
+            [](const MeshType* type) { return !type->m_flags.noSelect; },
+            [](const Node* node) { return true; });
     }
+
+    ctx.m_batch->flush(ctx);
 }

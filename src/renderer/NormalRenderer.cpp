@@ -8,6 +8,8 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+#include "NodeDraw.h"
+
 NormalRenderer::NormalRenderer()
 {
 }
@@ -33,29 +35,14 @@ void NormalRenderer::render(
 
 void NormalRenderer::drawNodes(const RenderContext& ctx)
 {
-    auto program = m_normalProgram;
-
-    auto renderTypes = [this, &ctx, &program](const MeshTypeMap& typeMap) {
-        for (const auto& it : typeMap) {
-            auto& type = *it.first.type;
-            auto& batch = ctx.m_batch;
-
-            for (auto& node : it.second) {
-                batch->draw(ctx, *node, program);
-            }
-        }
-    };
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-        renderTypes(all.second);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-        renderTypes(all.second);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-        renderTypes(all.second);
+    {
+        NodeDraw draw;
+        draw.drawProgram(
+            ctx,
+            m_normalProgram,
+            m_normalProgram,
+            [](const MeshType* type) { return true; },
+            [](const Node* node) { return true; });
     }
 
     ctx.m_batch->flush(ctx);

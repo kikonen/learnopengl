@@ -20,11 +20,11 @@ public:
         std::function<bool(const MeshType*)> typeSelector,
         std::function<bool(const Node*)> nodeSelector);
 
-    // draw all selected nodes with stencil
-    void drawStencil(
+    void drawProgram(
         const RenderContext& ctx,
-        Program* stencilProgram,
-        Program* stencilProgramSprite,
+        Program* program,
+        Program* programSprite,
         std::function<bool(const MeshType*)> typeSelector,
         std::function<bool(const Node*)> nodeSelector);
 };
+

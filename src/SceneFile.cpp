@@ -154,7 +154,7 @@ void SceneFile::attachSkybox(
     auto node = new Node(type);
     node->m_parentId = root.base.id;
 
-    auto skybox = std::make_unique<SkyboxRenderer>(data.programName, data.materialName);
+    auto skybox = std::make_unique<SkyboxRenderer>(data.materialName);
     m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
     m_registry->m_nodeRegistry->addNode(node);
 }

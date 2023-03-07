@@ -48,12 +48,6 @@ void NodeRenderer::render(
     m_taggedCount = ctx.assets.showTagged ? ctx.m_registry->m_nodeRegistry->countTagged() : 0;
     m_selectedCount = ctx.assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
 
-    //ctx.state.enable(GL_CLIP_DISTANCE0);
-    //ClipPlaneUBO& clip = ctx.clipPlanes.clipping[0];
-    //clip.enabled = true;
-    //clip.plane = glm::vec4(0, -1, 0, 15);
-    //ctx.bindClipPlanesUBO();
-
     {
         // NOTE KI multitarget *WAS* just to support ObjectID, which is now separate renderer
         // => If program needs it need to define some logic
@@ -68,11 +62,6 @@ void NodeRenderer::render(
         };
         if (bufferCount > 1) {
             glDrawBuffers(bufferCount, buffers);
-            {
-                // NOTE KI this was *ONLY* for ObjectID case
-                //glm::vec4 bg{ 0.f, 0.f, 0.f, 1.f };
-                //glClearBufferfv(GL_COLOR, 1, glm::value_ptr(bg));
-            }
         }
 
         renderStencil(ctx);
@@ -84,10 +73,6 @@ void NodeRenderer::render(
             glDrawBuffers(1, buffers);
         }
     }
-
-    //clip.enabled = false;
-    //ctx.bindClipPlanesUBO();
-    //ctx.state.disable(GL_CLIP_DISTANCE0);
 }
 
 void NodeRenderer::renderStencil(const RenderContext& ctx)
@@ -157,8 +142,9 @@ void NodeRenderer::drawNodes(
 // draw all selected nodes with stencil
 void NodeRenderer::drawStencil(const RenderContext& ctx)
 {
+    // draw all selected nodes with stencil
     NodeDraw draw;
-    draw.drawStencil(
+    draw.drawProgram(
         ctx,
         m_selectionProgram,
         m_selectionProgramSprite,

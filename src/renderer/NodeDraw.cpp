@@ -55,48 +55,6 @@ void NodeDraw::drawNodes(
     }
 }
 
-// draw all selected nodes with stencil
-void NodeDraw::drawStencil(
-    const RenderContext& ctx,
-    Program* stencilProgram,
-    Program* stencilProgramSprite,
-    std::function<bool(const MeshType*)> typeSelector,
-    std::function<bool(const Node*)> nodeSelector)
-{
-    auto renderTypes = [this, &ctx, &stencilProgram, &stencilProgramSprite, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
-        for (const auto& it : typeMap) {
-            auto* type = it.first.type;
-
-            if (!typeSelector(type)) continue;
-
-            auto& batch = ctx.m_batch;
-
-            auto* program = stencilProgram;
-            if (type->m_entityType == EntityType::sprite) {
-                program = stencilProgramSprite;
-            }
-
-            for (auto& node : it.second) {
-                if (!nodeSelector(node)) continue;
-
-                batch->draw(ctx, *node, program);
-            }
-        }
-    };
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-        renderTypes(all.second);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-        renderTypes(all.second);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-        renderTypes(all.second);
-    }
-}
-
 void NodeDraw::drawBlended(
     const RenderContext& ctx,
     std::function<bool(const MeshType*)> typeSelector,
@@ -134,4 +92,45 @@ void NodeDraw::drawBlended(
 
     // TODO KI if no flush here then render order of blended nodes is incorrect
     //ctx.m_batch->flush(ctx);
+}
+
+void NodeDraw::drawProgram(
+    const RenderContext& ctx,
+    Program* program,
+    Program* programSprite,
+    std::function<bool(const MeshType*)> typeSelector,
+    std::function<bool(const Node*)> nodeSelector)
+{
+    auto renderTypes = [this, &ctx, &program, &programSprite, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
+        for (const auto& it : typeMap) {
+            auto* type = it.first.type;
+
+            if (!typeSelector(type)) continue;
+
+            auto& batch = ctx.m_batch;
+
+            auto activeProgram = program;
+            if (type->m_entityType == EntityType::sprite) {
+                activeProgram = programSprite;
+            }
+
+            for (auto& node : it.second) {
+                if (!nodeSelector(node)) continue;
+
+                batch->draw(ctx, *node, activeProgram);
+            }
+        }
+    };
+
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
+        renderTypes(all.second);
+    }
+
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
+        renderTypes(all.second);
+    }
+
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
+        renderTypes(all.second);
+    }
 }
