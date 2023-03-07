@@ -13,8 +13,8 @@ class Viewport;
 class WaterMapRenderer final : public Renderer
 {
 public:
-    WaterMapRenderer();
-    virtual ~WaterMapRenderer();
+    WaterMapRenderer() {}
+    virtual ~WaterMapRenderer() = default;
 
     virtual void prepare(
         const Assets& assets,

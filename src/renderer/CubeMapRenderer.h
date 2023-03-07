@@ -13,8 +13,8 @@
 class CubeMapRenderer final : public Renderer
 {
 public:
-    CubeMapRenderer();
-    virtual ~CubeMapRenderer();
+    CubeMapRenderer() {}
+    virtual ~CubeMapRenderer() = default;
 
     virtual void prepare(
         const Assets& assets,

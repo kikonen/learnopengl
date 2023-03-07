@@ -12,14 +12,6 @@
 
 #include "NodeDraw.h"
 
-ObjectIdRenderer::ObjectIdRenderer()
-    : Renderer()
-{
-}
-
-ObjectIdRenderer::~ObjectIdRenderer()
-{
-}
 
 int ObjectIdRenderer::getObjectId(
     const RenderContext& ctx,

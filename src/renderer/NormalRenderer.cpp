@@ -10,9 +10,6 @@
 
 #include "NodeDraw.h"
 
-NormalRenderer::NormalRenderer()
-{
-}
 
 void NormalRenderer::prepare(
     const Assets& assets,

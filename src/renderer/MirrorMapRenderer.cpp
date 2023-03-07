@@ -34,13 +34,6 @@ namespace {
     };
 }
 
-MirrorMapRenderer::MirrorMapRenderer()
-{
-}
-
-MirrorMapRenderer::~MirrorMapRenderer()
-{
-}
 
 void MirrorMapRenderer::prepare(
     const Assets& assets,

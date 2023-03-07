@@ -7,7 +7,7 @@ class FrameBuffer;
 class ViewportRenderer final : public Renderer
 {
 public:
-    ViewportRenderer();
+    ViewportRenderer() {}
 
     virtual void prepare(
         const Assets& assets,

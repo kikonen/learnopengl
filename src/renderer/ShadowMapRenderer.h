@@ -12,8 +12,8 @@
 class ShadowMapRenderer final : public Renderer
 {
 public:
-    ShadowMapRenderer();
-    virtual ~ShadowMapRenderer();
+    ShadowMapRenderer() {}
+    virtual ~ShadowMapRenderer() = default;
 
     virtual void prepare(
         const Assets& assets,

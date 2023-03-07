@@ -21,6 +21,29 @@ void NodeDraw::drawNodes(
 {
     auto* nodeRegistry = ctx.m_registry->m_nodeRegistry.get();
 
+#if 0
+    {
+        // NOTE KI multitarget *WAS* just to support ObjectID, which is now separate renderer
+    // => If program needs it need to define some logic
+        int bufferCount = 1;
+
+        GLenum buffers[] = {
+            GL_COLOR_ATTACHMENT0,
+            GL_COLOR_ATTACHMENT1,
+            GL_COLOR_ATTACHMENT2,
+            GL_COLOR_ATTACHMENT3,
+            GL_COLOR_ATTACHMENT4,
+        };
+        if (bufferCount > 1) {
+            glDrawBuffers(bufferCount, buffers);
+        }
+
+        if (bufferCount > 1) {
+            glDrawBuffers(1, buffers);
+        }
+    }
+#endif
+
     auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
         auto program = typeMap.begin()->first.type->m_program;
 

@@ -7,7 +7,7 @@
 class NodeRenderer final : public Renderer
 {
 public:
-    NodeRenderer();
+    NodeRenderer() {}
 
     void prepare(
         const Assets& assets,
@@ -19,15 +19,6 @@ public:
 private:
     void renderStencil(const RenderContext& ctx);
     void renderSelection(const RenderContext& ctx);
-
-    void drawNodes(
-        const RenderContext& ctx,
-        bool selection);
-
-    void drawBlended(
-        const RenderContext& ctx);
-
-    void drawStencil(const RenderContext& ctx);
 
 private:
     Program* m_selectionProgram{ nullptr };

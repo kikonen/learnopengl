@@ -67,14 +67,6 @@ namespace {
 }
 
 
-CubeMapRenderer::CubeMapRenderer()
-{
-}
-
-CubeMapRenderer::~CubeMapRenderer()
-{
-}
-
 void CubeMapRenderer::prepare(
     const Assets& assets,
     Registry* registry)

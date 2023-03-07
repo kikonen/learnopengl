@@ -7,6 +7,9 @@ class Program;
 class MeshType;
 class Node;
 
+//const auto ANY_TYPE = [](const MeshType* type) { return true; };
+//const auto ANY_NODE = [](const Node* node) { return true; };
+
 class NodeDraw final {
 public:
     void drawNodes(

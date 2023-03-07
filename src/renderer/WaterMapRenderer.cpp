@@ -31,13 +31,6 @@ namespace {
     };
 }
 
-WaterMapRenderer::WaterMapRenderer()
-{
-}
-
-WaterMapRenderer::~WaterMapRenderer()
-{
-}
 
 void WaterMapRenderer::prepare(
     const Assets& assets,

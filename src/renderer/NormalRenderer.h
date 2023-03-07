@@ -5,7 +5,7 @@
 class NormalRenderer final : public Renderer
 {
 public:
-    NormalRenderer();
+    NormalRenderer() {}
 
     virtual void prepare(
         const Assets& assets,

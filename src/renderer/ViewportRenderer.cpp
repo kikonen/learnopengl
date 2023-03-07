@@ -6,9 +6,6 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
-ViewportRenderer::ViewportRenderer()
-{
-}
 
 void ViewportRenderer::prepare(
     const Assets& assets,

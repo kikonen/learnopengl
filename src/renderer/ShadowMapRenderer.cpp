@@ -28,13 +28,6 @@ namespace {
     };
 }
 
-ShadowMapRenderer::ShadowMapRenderer()
-{
-}
-
-ShadowMapRenderer::~ShadowMapRenderer()
-{
-}
 
 void ShadowMapRenderer::prepare(
     const Assets& assets,

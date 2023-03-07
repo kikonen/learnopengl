@@ -15,8 +15,8 @@ class Viewport;
 class MirrorMapRenderer final : public Renderer
 {
 public:
-    MirrorMapRenderer();
-    ~MirrorMapRenderer();
+    MirrorMapRenderer() {}
+    ~MirrorMapRenderer() = default;
 
     virtual void prepare(
         const Assets& assets,
