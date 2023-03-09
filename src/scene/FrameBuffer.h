@@ -69,8 +69,8 @@ struct FrameBufferAttachment {
     static FrameBufferAttachment getGBufferPosition() {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGB16F;
-        spec.format = GL_RGB16F;
+        spec.internalFormat = GL_RGBA16F;
+        spec.format = GL_RGBA;
         spec.attachment = GL_COLOR_ATTACHMENT0;
         spec.useDrawBuffer = true;
 
@@ -81,8 +81,8 @@ struct FrameBufferAttachment {
     static FrameBufferAttachment getGBufferNormal() {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGB16F;
-        spec.format = GL_RGB16F;
+        spec.internalFormat = GL_RGBA16F;
+        spec.format = GL_RGBA;
         spec.attachment = GL_COLOR_ATTACHMENT1;
         spec.useDrawBuffer = true;
 
@@ -93,8 +93,8 @@ struct FrameBufferAttachment {
     static FrameBufferAttachment getGBufferAlbedo() {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA16F;
-        spec.format = GL_RGBA16F;
+        spec.internalFormat = GL_RGBA;
+        spec.format = GL_RGBA;
         spec.attachment = GL_COLOR_ATTACHMENT2;
         spec.useDrawBuffer = true;
 
@@ -105,8 +105,8 @@ struct FrameBufferAttachment {
     static FrameBufferAttachment getGBufferEmission() {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGB16F;
-        spec.format = GL_RGB16F;
+        spec.internalFormat = GL_RGBA;
+        spec.format = GL_RGBA;
         spec.attachment = GL_COLOR_ATTACHMENT3;
         spec.useDrawBuffer = true;
 
@@ -182,6 +182,8 @@ public:
     FrameBufferSpecification m_spec;
 
     GLuint m_fbo = 0;
+
+    int m_clearMask = 0;
 
 protected:
     bool m_prepared = false;

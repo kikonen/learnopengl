@@ -72,7 +72,9 @@ public:
     void drawRear(RenderContext& ctx);
     void drawViewports(RenderContext& ctx);
 
-    void drawScene(RenderContext& ctx);
+    void drawScene(
+        RenderContext& ctx,
+        FrameBuffer* targetBuffer);
 
     Node* getActiveCamera() const;
     NodeController* getActiveCameraController() const;

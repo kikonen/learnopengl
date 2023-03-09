@@ -7,10 +7,10 @@
 #include "scene/RenderContext.h"
 
 
-WindowBuffer::WindowBuffer()
+WindowBuffer::WindowBuffer(int fbo)
     : FrameBuffer({ 0, 0, {} })
 {
-    m_fbo = 0;
+    m_fbo = fbo;
 }
 
 void WindowBuffer::update(const RenderContext& ctx)

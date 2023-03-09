@@ -337,9 +337,7 @@ void Scene::drawMain(RenderContext& ctx)
     mainCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
     mainCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
 
-    m_mainBuffer->bind(mainCtx);
-    drawScene(mainCtx);
-    m_mainBuffer->unbind(ctx);
+    drawScene(mainCtx, m_mainBuffer.get());
 }
 
 // "back mirror" viewport
@@ -363,11 +361,8 @@ void Scene::drawRear(RenderContext& ctx)
 
     mirrorCtx.updateMatricesUBO();
 
-    m_rearBuffer->bind(mirrorCtx);
+    drawScene(mirrorCtx, m_rearBuffer.get());
 
-    drawScene(mirrorCtx);
-
-    m_rearBuffer->unbind(ctx);
     ctx.updateMatricesUBO();
 }
 
@@ -396,20 +391,10 @@ void Scene::drawViewports(RenderContext& ctx)
     }
 }
 
-void Scene::drawScene(RenderContext& ctx)
+void Scene::drawScene(
+    RenderContext& ctx,
+    FrameBuffer* targetBuffer)
 {
-    // NOTE KI clear for current draw buffer buffer (main/mirror/etc.)
-    {
-        int mask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
-        if (m_assets.clearColor) {
-            if (m_assets.debugClearColor) {
-                glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
-            }
-            mask |= GL_COLOR_BUFFER_BIT;
-        }
-        glClear(mask);
-    }
-
     m_registry->m_materialRegistry->bind(ctx);
     m_registry->m_entityRegistry->bind(ctx);
 
@@ -424,8 +409,10 @@ void Scene::drawScene(RenderContext& ctx)
     }
 
     if (m_nodeRenderer) {
-        m_nodeRenderer->render(ctx);
+        m_nodeRenderer->render(ctx, targetBuffer);
     }
+
+    targetBuffer->bind(ctx);
 
     if (m_particleSystem) {
         m_particleSystem->render(ctx);

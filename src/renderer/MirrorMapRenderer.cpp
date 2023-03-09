@@ -166,12 +166,8 @@ bool MirrorMapRenderer::render(
 
         localCtx.updateMatricesUBO();
 
-        m_curr->bind(localCtx);
-
         bindTexture(localCtx);
-        drawNodes(localCtx, closest);
-
-        //m_curr->unbind(ctx);
+        drawNodes(localCtx, m_curr.get(), closest);
 
         //ctx.updateClipPlanesUBO();
 
@@ -189,27 +185,22 @@ bool MirrorMapRenderer::render(
 
 void MirrorMapRenderer::drawNodes(
     const RenderContext& ctx,
+    FrameBuffer* targetBuffer,
     Node* current)
 {
-    {
-        int mask = GL_DEPTH_BUFFER_BIT;
-        if (ctx.assets.clearColor) {
-            if (ctx.assets.debugClearColor) {
-                glClearColor(0.9f, 0.0f, 0.9f, 0.0f);
-            }
-            mask |= GL_COLOR_BUFFER_BIT;
-        }
-        glClear(mask);
-    }
+    const glm::vec4 clearColor{ 0.9f, 0.0f, 0.9f, 0.0f };
 
     //ctx.updateClipPlanesUBO();
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     {
         ctx.m_nodeDraw->drawNodes(
             ctx,
+            targetBuffer,
             true,
             [](const MeshType* type) { return !type->m_flags.noReflect; },
-            [&current](const Node* node) { return node != current; });
+            [&current](const Node* node) { return node != current; },
+            true,
+            clearColor);
     }
     //ctx.state.disable(GL_CLIP_DISTANCE0);
 }

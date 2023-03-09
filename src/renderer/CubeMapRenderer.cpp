@@ -13,6 +13,8 @@
 
 #include "NodeDraw.h"
 
+#include "scene/WindowBuffer.h"
+
 // https://stackoverflow.com/questions/28845375/rendering-a-dynamic-cubemap-opengl
 // https://mbroecker.com/project_dynamic_cubemapping.html
 
@@ -166,17 +168,7 @@ bool CubeMapRenderer::render(
             m_curr->m_cubeMap.m_textureID,
             0);
 
-        {
-            int mask = GL_DEPTH_BUFFER_BIT;
-            if (mainCtx.assets.clearColor) {
-                if (mainCtx.assets.debugClearColor) {
-                    const auto& color = DEBUG_COLOR[face];
-                    glClearColor(color.r, color.g, color.b, color.a);
-                }
-                mask |= GL_COLOR_BUFFER_BIT;
-            }
-            glClear(mask);
-        }
+        glm::vec4 clearColor{ DEBUG_COLOR[face] };
 
         // centerNode->getVolume()->getRadius();
 
@@ -198,7 +190,9 @@ bool CubeMapRenderer::render(
 
         ctx.updateMatricesUBO();
 
-        drawNodes(ctx, centerNode);
+        WindowBuffer targetBuffer{};
+
+        drawNodes(ctx, &targetBuffer, centerNode, true, clearColor);
     }
 
     if (full)
@@ -241,15 +235,21 @@ void CubeMapRenderer::clearCubeMap(
 
 void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
-    const Node* current)
+    FrameBuffer* targetBuffer,
+    const Node* current,
+    bool clearTarget,
+    const glm::vec4& clearColor)
 {
     ctx.m_nodeDraw->drawNodes(
         ctx,
+        targetBuffer,
         true,
         [](const MeshType* type) { return !type->m_flags.noReflect; },
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
-        [&current](const Node* node) { return node != current; });
+        [&current](const Node* node) { return node != current; },
+        clearTarget,
+        clearColor);
 }
 
 Node* CubeMapRenderer::findCenter(const RenderContext& ctx)

@@ -37,21 +37,27 @@ void NodeRenderer::prepare(
 }
 
 void NodeRenderer::render(
-    const RenderContext& ctx)
+    const RenderContext& ctx,
+    FrameBuffer* targetBuffer)
 {
     m_taggedCount = ctx.assets.showTagged ? ctx.m_registry->m_nodeRegistry->countTagged() : 0;
     m_selectedCount = ctx.assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
 
     {
-        renderStencil(ctx);
+        renderStencil(ctx, targetBuffer);
         {
+            const glm::vec4 clearColor{ 0.0f, 0.0f, 1.0f, 0.0f };
+
             ctx.m_nodeDraw->drawNodes(
                 ctx,
+                targetBuffer,
                 false,
                 [](const MeshType* type) { return true; },
                 [&ctx](const Node* node) {
                     return !node->isHighlighted(ctx.assets);
-                });
+                },
+                true,
+                clearColor);
         }
         {
             ctx.m_nodeDraw->drawBlended(
@@ -63,7 +69,9 @@ void NodeRenderer::render(
     }
 }
 
-void NodeRenderer::renderStencil(const RenderContext& ctx)
+void NodeRenderer::renderStencil(
+    const RenderContext& ctx,
+    FrameBuffer* targetBuffer)
 {
     if (!ctx.assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
@@ -79,13 +87,18 @@ void NodeRenderer::renderStencil(const RenderContext& ctx)
 
     // draw entity data mask
     {
+        const glm::vec4 clearColor{ 0.0f, 1.0f, 1.0f, 0.0f };
+
         ctx.m_nodeDraw->drawNodes(
             ctx,
+            targetBuffer,
             true,
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) {
                 return node->isHighlighted(ctx.assets);
-            });
+            },
+            true,
+            clearColor);
     }
 
     ctx.state.disable(GL_STENCIL_TEST);

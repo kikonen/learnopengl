@@ -9,6 +9,7 @@
 
 #include "scene/TextureBuffer.h"
 
+class FrameBuffer;
 
 class CubeMapRenderer final : public Renderer
 {
@@ -34,7 +35,10 @@ private:
 
     void drawNodes(
         const RenderContext& ctx,
-        const Node* centerNode);
+        FrameBuffer* targetBuffer,
+        const Node* centerNode,
+        bool clearTarget,
+        const glm::vec4& clearColor);
 
     Node* findCenter(
         const RenderContext& ctx);

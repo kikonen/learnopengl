@@ -28,7 +28,11 @@ public:
         const RenderContext& ctx);
 
 private:
-    void drawNodes(const RenderContext& ctx, Node* current);
+    void drawNodes(
+        const RenderContext& ctx,
+        FrameBuffer* targetBuffer,
+        Node* current);
+
     Node* findClosest(const RenderContext& ctx);
 
 public:

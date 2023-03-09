@@ -9,6 +9,7 @@
 class Node;
 class TextureBuffer;
 class Viewport;
+class FrameBuffer;
 
 class WaterMapRenderer final : public Renderer
 {
@@ -28,6 +29,7 @@ public:
 private:
     void drawNodes(
         const RenderContext& ctx,
+        FrameBuffer* targetBuffer,
         Node* current,
         bool reflect);
 

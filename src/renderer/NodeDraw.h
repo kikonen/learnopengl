@@ -21,9 +21,12 @@ public:
 
     void drawNodes(
         const RenderContext& ctx,
+        FrameBuffer* targetBuffer,
         bool includeBlended,
         std::function<bool(const MeshType*)> typeSelector,
-        std::function<bool(const Node*)> nodeSelector);
+        std::function<bool(const Node*)> nodeSelector,
+        bool clearTarget,
+        const glm::vec4& clearColor);
 
     void drawBlended(
         const RenderContext& ctx,

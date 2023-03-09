@@ -24,23 +24,38 @@ void NodeDraw::update(const RenderContext& ctx)
 
 void NodeDraw::drawNodes(
     const RenderContext& ctx,
+    FrameBuffer* targetBuffer,
     bool includeBlended,
     std::function<bool(const MeshType*)> typeSelector,
-    std::function<bool(const Node*)> nodeSelector)
+    std::function<bool(const Node*)> nodeSelector,
+    bool clearTarget,
+    const glm::vec4& clearColor)
 {
 //    m_gbuffer.bind(ctx);
+    targetBuffer->bind(ctx);
 
-    // phase 1 - render to G-buffer
+    // NOTE KI clear for current draw buffer buffer (main/mirror/etc.)
+    if (clearTarget) {
+        int mask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+        if (ctx.assets.clearColor) {
+            if (ctx.assets.debugClearColor) {
+                glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+            }
+            mask |= GL_COLOR_BUFFER_BIT;
+        }
+        glClear(mask);
+    }
+
+    // pass 1 - geometry
     // => nodes supporting G-buffer
     drawNodesImpl(ctx, includeBlended, typeSelector, nodeSelector);
     ctx.m_batch->flush(ctx);
 
-    // phase 2 - render to targetBuffer
+    // pass 2 - light
 
-    // phase 3 - render to targetBuffer
-    // => nodes NOT supporting G-buffer
+    // pass 3 - non G-buffer nodes
 
-    // phase 4 - render BLENDED to targetBuffer
+    // pass 4 - blend
 }
 
 void NodeDraw::drawBlended(

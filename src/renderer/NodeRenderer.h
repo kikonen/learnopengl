@@ -4,6 +4,8 @@
 
 #include "Renderer.h"
 
+class FrameBuffer;
+
 class NodeRenderer final : public Renderer
 {
 public:
@@ -14,10 +16,14 @@ public:
         Registry* registry) override;
 
     void render(
-        const RenderContext& ctx);
+        const RenderContext& ctx,
+        FrameBuffer* targetBuffer);
 
 private:
-    void renderStencil(const RenderContext& ctx);
+    void renderStencil(
+        const RenderContext& ctx,
+        FrameBuffer* targetBuffer);
+
     void renderSelection(const RenderContext& ctx);
 
 private:

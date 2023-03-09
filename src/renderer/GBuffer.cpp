@@ -9,6 +9,7 @@ void GBuffer::prepare(const Assets& assets)
 
 void GBuffer::update(const RenderContext& ctx)
 {
+    return;
     const auto& res = ctx.m_resolution;
     int w = ctx.assets.resolutionScale.x * res.x;
     int h = ctx.assets.resolutionScale.y * res.y;

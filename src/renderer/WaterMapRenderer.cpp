@@ -153,9 +153,7 @@ bool WaterMapRenderer::render(
 
         localCtx.updateMatricesUBO();
 
-        m_reflectionBuffer->bind(localCtx);
-
-        drawNodes(localCtx, closest, true);
+        drawNodes(localCtx, m_reflectionBuffer.get(), closest, true);
 
         //m_reflectionBuffer->unbind(ctx);
 
@@ -188,11 +186,7 @@ bool WaterMapRenderer::render(
 
         localCtx.updateMatricesUBO();
 
-        m_refractionBuffer->bind(localCtx);
-
-        drawNodes(localCtx, closest, false);
-
-        //m_refractionBuffer->unbind(ctx);
+        drawNodes(localCtx, m_refractionBuffer.get(), closest, false);
 
         ctx.updateClipPlanesUBO();
     }
@@ -206,19 +200,11 @@ bool WaterMapRenderer::render(
 
 void WaterMapRenderer::drawNodes(
     const RenderContext& ctx,
+    FrameBuffer* targetBuffer,
     Node* current,
     bool reflect)
 {
-    {
-        int mask = GL_DEPTH_BUFFER_BIT;
-        if (ctx.assets.clearColor) {
-            if (ctx.assets.debugClearColor) {
-                glClearColor(0.9f, 0.3f, 0.3f, 0.0f);
-            }
-            mask |= GL_COLOR_BUFFER_BIT;
-        }
-        glClear(mask);
-    }
+    const glm::vec4 clearColor(0.9f, 0.3f, 0.3f, 0.0f);
 
     // NOTE KI flush before touching clip distance
     ctx.m_batch->flush(ctx);
@@ -229,12 +215,15 @@ void WaterMapRenderer::drawNodes(
     {
         ctx.m_nodeDraw->drawNodes(
             ctx,
+            targetBuffer,
             true,
             [reflect](const MeshType* type) {
                 return !type->m_flags.water &&
                     (reflect ? !type->m_flags.noReflect : !type->m_flags.noRefract);
             },
-            [&current](const Node* node) { return node != current; });
+            [&current](const Node* node) { return node != current; },
+            true,
+            clearColor);
     }
 
     ctx.state.disable(GL_CLIP_DISTANCE0);
