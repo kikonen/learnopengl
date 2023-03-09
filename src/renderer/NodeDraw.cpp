@@ -12,37 +12,53 @@
 #include "scene/Batch.h"
 
 
-// draw all non selected nodes
+void NodeDraw::prepare(const Assets& assets)
+{
+    m_gbuffer.prepare(assets);
+}
+
+void NodeDraw::update(const RenderContext& ctx)
+{
+    m_gbuffer.update(ctx);
+}
+
 void NodeDraw::drawNodes(
     const RenderContext& ctx,
     bool includeBlended,
     std::function<bool(const MeshType*)> typeSelector,
     std::function<bool(const Node*)> nodeSelector)
 {
+//    m_gbuffer.bind(ctx);
+
+    // phase 1 - render to G-buffer
+    // => nodes supporting G-buffer
+    drawNodesImpl(ctx, includeBlended, typeSelector, nodeSelector);
+    ctx.m_batch->flush(ctx);
+
+    // phase 2 - render to targetBuffer
+
+    // phase 3 - render to targetBuffer
+    // => nodes NOT supporting G-buffer
+
+    // phase 4 - render BLENDED to targetBuffer
+}
+
+void NodeDraw::drawBlended(
+    const RenderContext& ctx,
+    std::function<bool(const MeshType*)> typeSelector,
+    std::function<bool(const Node*)> nodeSelector)
+{
+    drawBlendedImpl(ctx, typeSelector, nodeSelector);
+    ctx.m_batch->flush(ctx);
+}
+
+void NodeDraw::drawNodesImpl(
+    const RenderContext& ctx,
+    bool includeBlended,
+    std::function<bool(const MeshType*)> typeSelector,
+    std::function<bool(const Node*)> nodeSelector)
+{
     auto* nodeRegistry = ctx.m_registry->m_nodeRegistry.get();
-
-#if 0
-    {
-        // NOTE KI multitarget *WAS* just to support ObjectID, which is now separate renderer
-    // => If program needs it need to define some logic
-        int bufferCount = 1;
-
-        GLenum buffers[] = {
-            GL_COLOR_ATTACHMENT0,
-            GL_COLOR_ATTACHMENT1,
-            GL_COLOR_ATTACHMENT2,
-            GL_COLOR_ATTACHMENT3,
-            GL_COLOR_ATTACHMENT4,
-        };
-        if (bufferCount > 1) {
-            glDrawBuffers(bufferCount, buffers);
-        }
-
-        if (bufferCount > 1) {
-            glDrawBuffers(1, buffers);
-        }
-    }
-#endif
 
     auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
         auto program = typeMap.begin()->first.type->m_program;
@@ -78,7 +94,7 @@ void NodeDraw::drawNodes(
     }
 }
 
-void NodeDraw::drawBlended(
+void NodeDraw::drawBlendedImpl(
     const RenderContext& ctx,
     std::function<bool(const MeshType*)> typeSelector,
     std::function<bool(const Node*)> nodeSelector)

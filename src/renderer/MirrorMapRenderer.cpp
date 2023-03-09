@@ -205,16 +205,13 @@ void MirrorMapRenderer::drawNodes(
     //ctx.updateClipPlanesUBO();
     //ctx.state.enable(GL_CLIP_DISTANCE0);
     {
-        NodeDraw draw;
-        draw.drawNodes(
+        ctx.m_nodeDraw->drawNodes(
             ctx,
             true,
             [](const MeshType* type) { return !type->m_flags.noReflect; },
             [&current](const Node* node) { return node != current; });
     }
     //ctx.state.disable(GL_CLIP_DISTANCE0);
-
-    ctx.m_batch->flush(ctx);
 }
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)

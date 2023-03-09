@@ -25,7 +25,7 @@ class CommandEngine;
 class ScriptEngine;
 class Registry;
 class Batch;
-
+class NodeDraw;
 
 class RenderContext final
 {
@@ -76,7 +76,9 @@ public:
     const RenderContext* const m_parent;
     const ki::RenderClock& m_clock;
 
+    NodeDraw* const m_nodeDraw;
     Batch* const m_batch;
+
     backend::RenderSystem* const m_backend;
 
     GLenum m_depthFunc = GL_LESS;

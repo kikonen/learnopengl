@@ -2,6 +2,10 @@
 
 #include <functional>
 
+#include "asset/Assets.h"
+
+#include "GBuffer.h"
+
 class RenderContext;
 class Program;
 class MeshType;
@@ -12,6 +16,9 @@ class Node;
 
 class NodeDraw final {
 public:
+    void prepare(const Assets& assets);
+    void update(const RenderContext& ctx);
+
     void drawNodes(
         const RenderContext& ctx,
         bool includeBlended,
@@ -29,5 +36,20 @@ public:
         Program* programSprite,
         std::function<bool(const MeshType*)> typeSelector,
         std::function<bool(const Node*)> nodeSelector);
+
+private:
+    void drawNodesImpl(
+        const RenderContext& ctx,
+        bool includeBlended,
+        std::function<bool(const MeshType*)> typeSelector,
+        std::function<bool(const Node*)> nodeSelector);
+
+    void drawBlendedImpl(
+        const RenderContext& ctx,
+        std::function<bool(const MeshType*)> typeSelector,
+        std::function<bool(const Node*)> nodeSelector);
+
+private:
+    GBuffer m_gbuffer;
 };
 

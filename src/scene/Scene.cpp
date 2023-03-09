@@ -24,6 +24,8 @@
 
 #include "renderer/SkyboxRenderer.h"
 
+#include "renderer/NodeDraw.h"
+
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MeshTypeRegistry.h"
@@ -76,6 +78,7 @@ Scene::Scene(
     m_particleSystem = std::make_unique<ParticleSystem>();
 
     m_batch = std::make_unique<Batch>();
+    m_nodeDraw = std::make_unique<NodeDraw>();
     m_renderData = std::make_unique<RenderData>();
 }
 
@@ -98,6 +101,7 @@ void Scene::prepare()
     m_scriptEngine->prepare(*m_commandEngine);
 
     m_batch->prepare(m_assets, m_registry.get());
+    m_nodeDraw->prepare(m_assets);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {
@@ -247,6 +251,7 @@ void Scene::update(RenderContext& ctx)
 
     updateMainViewport(ctx);
 
+    m_nodeDraw->update(ctx);
     m_windowBuffer->update(ctx);
 
     m_renderData->update();

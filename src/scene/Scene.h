@@ -32,6 +32,7 @@ class Node;
 class NodeController;
 class RenderData;
 class Batch;
+class NodeDraw;
 class RenderContext;
 
 class NodeRenderer;
@@ -97,6 +98,7 @@ public:
     std::unique_ptr<ScriptEngine> m_scriptEngine;
 
     std::unique_ptr<Batch> m_batch;
+    std::unique_ptr<NodeDraw> m_nodeDraw;
 
 protected:
 

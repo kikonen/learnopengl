@@ -86,6 +86,7 @@ RenderContext::RenderContext(
     m_clock(clock),
     state(state),
     m_scene(scene),
+    m_nodeDraw(scene->m_nodeDraw.get()),
     m_batch(scene->m_batch.get()),
     m_registry(scene->m_registry.get()),
     m_commandEngine(scene->m_commandEngine.get()),

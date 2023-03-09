@@ -227,8 +227,7 @@ void WaterMapRenderer::drawNodes(
     ctx.state.enable(GL_CLIP_DISTANCE0);
 
     {
-        NodeDraw draw;
-        draw.drawNodes(
+        ctx.m_nodeDraw->drawNodes(
             ctx,
             true,
             [reflect](const MeshType* type) {
@@ -237,9 +236,6 @@ void WaterMapRenderer::drawNodes(
             },
             [&current](const Node* node) { return node != current; });
     }
-
-    // NOTE KI flush before touching clip distance
-    ctx.m_batch->flush(ctx);
 
     ctx.state.disable(GL_CLIP_DISTANCE0);
 }

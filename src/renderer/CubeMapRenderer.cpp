@@ -243,16 +243,13 @@ void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
     const Node* current)
 {
-    NodeDraw draw;
-    draw.drawNodes(
+    ctx.m_nodeDraw->drawNodes(
         ctx,
         true,
         [](const MeshType* type) { return !type->m_flags.noReflect; },
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
         [&current](const Node* node) { return node != current; });
-
-    ctx.m_batch->flush(ctx);
 }
 
 Node* CubeMapRenderer::findCenter(const RenderContext& ctx)

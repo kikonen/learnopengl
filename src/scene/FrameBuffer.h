@@ -17,6 +17,7 @@ struct FrameBufferAttachment {
     FrameBufferAttachmentType type = FrameBufferAttachmentType::texture;
 
     GLenum attachment = GL_COLOR_ATTACHMENT0;
+    GLenum useDrawBuffer = false;
 
     int internalFormat = GL_RGBA8;
     int format = GL_RGBA;
@@ -64,46 +65,50 @@ struct FrameBufferAttachment {
         return spec;
     }
 
-    // G buffer: position
+    // G buffer: position - ATTACHMENT0
     static FrameBufferAttachment getGBufferPosition() {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
         spec.internalFormat = GL_RGB16F;
         spec.format = GL_RGB16F;
-        spec.attachment = GL_COLOR_ATTACHMENT1;
+        spec.attachment = GL_COLOR_ATTACHMENT0;
+        spec.useDrawBuffer = true;
 
         return spec;
     }
 
-    // G buffer: normal
+    // G buffer: normal - ATTACHMENT1
     static FrameBufferAttachment getGBufferNormal() {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
         spec.internalFormat = GL_RGB16F;
         spec.format = GL_RGB16F;
-        spec.attachment = GL_COLOR_ATTACHMENT2;
+        spec.attachment = GL_COLOR_ATTACHMENT1;
+        spec.useDrawBuffer = true;
 
         return spec;
     }
 
-    // G buffer: diffuse + specular
+    // G buffer: diffuse + specular - ATTACHMENT2
     static FrameBufferAttachment getGBufferAlbedo() {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
         spec.internalFormat = GL_RGBA16F;
         spec.format = GL_RGBA16F;
-        spec.attachment = GL_COLOR_ATTACHMENT3;
+        spec.attachment = GL_COLOR_ATTACHMENT2;
+        spec.useDrawBuffer = true;
 
         return spec;
     }
 
-    // G buffer: emission
+    // G buffer: emission - ATTACHMENT3
     static FrameBufferAttachment getGBufferEmission() {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
         spec.internalFormat = GL_RGB16F;
         spec.format = GL_RGB16F;
         spec.attachment = GL_COLOR_ATTACHMENT3;
+        spec.useDrawBuffer = true;
 
         return spec;
     }
@@ -180,5 +185,6 @@ public:
 
 protected:
     bool m_prepared = false;
+    std::vector<GLenum> m_drawBuffers;
 };
 

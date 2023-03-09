@@ -33,8 +33,7 @@ void NormalRenderer::render(
 void NormalRenderer::drawNodes(const RenderContext& ctx)
 {
     {
-        NodeDraw draw;
-        draw.drawProgram(
+        ctx.m_nodeDraw->drawProgram(
             ctx,
             m_normalProgram,
             m_normalProgram,

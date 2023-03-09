@@ -45,8 +45,7 @@ void NodeRenderer::render(
     {
         renderStencil(ctx);
         {
-            NodeDraw draw;
-            draw.drawNodes(
+            ctx.m_nodeDraw->drawNodes(
                 ctx,
                 false,
                 [](const MeshType* type) { return true; },
@@ -55,8 +54,7 @@ void NodeRenderer::render(
                 });
         }
         {
-            NodeDraw draw;
-            draw.drawBlended(
+            ctx.m_nodeDraw->drawBlended(
                 ctx,
                 [](const MeshType* type) { return true; },
                 [](const Node* node) { return true; });
@@ -81,8 +79,7 @@ void NodeRenderer::renderStencil(const RenderContext& ctx)
 
     // draw entity data mask
     {
-        NodeDraw draw;
-        draw.drawNodes(
+        ctx.m_nodeDraw->drawNodes(
             ctx,
             true,
             [](const MeshType* type) { return true; },
@@ -90,8 +87,6 @@ void NodeRenderer::renderStencil(const RenderContext& ctx)
                 return node->isHighlighted(ctx.assets);
             });
     }
-
-    ctx.m_batch->flush(ctx);
 
     ctx.state.disable(GL_STENCIL_TEST);
 
@@ -115,8 +110,7 @@ void NodeRenderer::renderSelection(const RenderContext& ctx)
     // draw selection color (scaled a bit bigger)
     {
         // draw all selected nodes with stencil
-        NodeDraw draw;
-        draw.drawProgram(
+        ctx.m_nodeDraw->drawProgram(
             ctx,
             m_selectionProgram,
             m_selectionProgramSprite,

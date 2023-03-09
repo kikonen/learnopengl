@@ -146,8 +146,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     {
-        NodeDraw draw;
-        draw.drawProgram(
+        ctx.m_nodeDraw->drawProgram(
             ctx,
             m_idProgram,
             m_idProgramSprite,

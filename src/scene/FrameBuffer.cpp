@@ -58,6 +58,10 @@ void FrameBuffer::prepare(
 
             glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
+            if (att.useDrawBuffer) {
+                m_drawBuffers.push_back(att.attachment);
+            }
+
             clearMask |= GL_COLOR_BUFFER_BIT;
         }
         else if (att.type == FrameBufferAttachmentType::rbo) {
@@ -93,6 +97,10 @@ void FrameBuffer::prepare(
 
             clearMask |= GL_DEPTH_BUFFER_BIT;
         }
+    }
+
+    if (m_drawBuffers.size() > 0) {
+        glNamedFramebufferDrawBuffers(m_fbo, m_drawBuffers.size(), m_drawBuffers.data());
     }
 
     if (glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
