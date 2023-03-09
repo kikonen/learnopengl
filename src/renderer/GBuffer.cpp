@@ -30,6 +30,8 @@ void GBuffer::update(const RenderContext& ctx)
                 FrameBufferAttachment::getGBufferEmission(),
                 FrameBufferAttachment::getGBufferPosition(),
                 FrameBufferAttachment::getGBufferNormal(),
+                // depth & stencil needed
+                FrameBufferAttachment::getRBODepthStencil()
             }
         });
 
