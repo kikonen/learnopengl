@@ -141,3 +141,44 @@ void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int
 {
     ctx.state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID, false);
 }
+
+void FrameBuffer::blit(
+    FrameBuffer* target,
+    const glm::vec2& pos,
+    const glm::vec2& size)
+{
+    const float srcW = m_spec.width;
+    const float srcH = m_spec.height;
+
+    const float dstW = target->m_spec.width;
+    const float dstH = target->m_spec.height;
+
+    const glm::vec2 s0{ 0 };
+    const glm::vec2 s1{ srcW, srcH };
+
+    const float mx = dstW * 0.5f;
+    const float my = dstH * 0.5f;
+
+    const float dx = mx - mx * -pos.x;
+    const float dy = my - my * pos.y;
+
+    const float sx = mx * size.x;
+    const float sy = my * size.y;
+
+    const glm::vec2 d0{ dx, dy };
+    const glm::vec2 d1{ dx + sx, dy + sy };
+
+    glBlitNamedFramebuffer(
+        m_fbo,
+        target->m_fbo,
+        s0.x,
+        s0.y,
+        s1.x,
+        s1.y,
+        d0.x,
+        d0.y,
+        d1.x,
+        d1.y,
+        GL_COLOR_BUFFER_BIT,
+        GL_NEAREST);
+}

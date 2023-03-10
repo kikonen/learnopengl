@@ -135,40 +135,7 @@ void Viewport::unbind(const RenderContext& ctx)
 void Viewport::draw(const RenderContext& ctx)
 {
     if (m_useFrameBuffer) {
-        const float srcW = m_sourceBuffer->m_spec.width;
-        const float srcH = m_sourceBuffer->m_spec.height;
-
-        const float dstW = m_destinationBuffer->m_spec.width;
-        const float dstH = m_destinationBuffer->m_spec.height;
-
-        const glm::vec2 s0{ 0 };
-        const glm::vec2 s1{ srcW, srcH };
-
-        const float mx = dstW * 0.5f;
-        const float my = dstH * 0.5f;
-
-        const float dx = mx - mx * -m_position.x;
-        const float dy = my - my * m_position.y;
-
-        const float sx = mx * m_size.x;
-        const float sy = my * m_size.y;
-
-        const glm::vec2 d0{ dx, dy };
-        const glm::vec2 d1{ dx + sx, dy + sy };
-
-        glBlitNamedFramebuffer(
-            m_sourceBuffer->m_fbo,
-            m_destinationBuffer->m_fbo,
-            s0.x,
-            s0.y,
-            s1.x,
-            s1.y,
-            d0.x,
-            d0.y,
-            d1.x,
-            d1.y,
-            GL_COLOR_BUFFER_BIT,
-            GL_NEAREST);
+        m_sourceBuffer->blit(m_destinationBuffer, m_position, m_size);
     }
     else
     {

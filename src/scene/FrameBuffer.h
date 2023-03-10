@@ -178,6 +178,11 @@ public:
 
     void bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex);
 
+    void blit(
+        FrameBuffer* target,
+        const glm::vec2& pos,
+        const glm::vec2& size);
+
 public:
     FrameBufferSpecification m_spec;
 
