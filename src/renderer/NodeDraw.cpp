@@ -32,30 +32,22 @@ void NodeDraw::drawNodes(
     const glm::vec4& clearColor)
 {
     m_gbuffer.bind(ctx);
-    //targetBuffer->bind(ctx);
+    m_gbuffer.m_buffer->clear(ctx, clearColor);
 
-    // NOTE KI clear for current draw buffer buffer (main/mirror/etc.)
-    if (clearTarget) {
-        int mask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
-        if (ctx.assets.clearColor) {
-            if (ctx.assets.debugClearColor) {
-                glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-            }
-            mask |= GL_COLOR_BUFFER_BIT;
-        }
-        glClear(mask);
-    }
-
-    // pass 1 - geometry
+        // pass 1 - geometry
     // => nodes supporting G-buffer
     drawNodesImpl(ctx, includeBlended, true, typeSelector, nodeSelector);
     ctx.m_batch->flush(ctx);
 
     // pass 2 - light
+    glNamedFramebufferReadBuffer(m_gbuffer.m_buffer->m_fbo, GL_COLOR_ATTACHMENT0);
     m_gbuffer.blit(targetBuffer, {-1.f, 1.f}, {2.f, 2.f});
 
     // pass 3 - non G-buffer nodes
     targetBuffer->bind(ctx);
+    if (clearTarget) {
+        //targetBuffer->clear(ctx, clearColor);
+    }
     drawNodesImpl(ctx, includeBlended, false, typeSelector, nodeSelector);
     ctx.m_batch->flush(ctx);
 

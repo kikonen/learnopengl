@@ -23,6 +23,8 @@ public:
         const glm::vec2& pos,
         const glm::vec2& size);
 
-private:
+public:
     std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
+
+private:
 };

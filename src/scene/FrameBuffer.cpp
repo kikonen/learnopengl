@@ -186,3 +186,18 @@ void FrameBuffer::blit(
         GL_COLOR_BUFFER_BIT,
         GL_NEAREST);
 }
+
+void FrameBuffer::clear(
+    const RenderContext& ctx,
+    const glm::vec4& clearColor)
+{
+    // NOTE KI clear for current draw buffer buffer (main/mirror/etc.)
+    int mask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+    if (ctx.assets.clearColor) {
+        if (ctx.assets.debugClearColor) {
+            glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+        }
+            mask |= GL_COLOR_BUFFER_BIT;
+    }
+    glClear(mask);
+}

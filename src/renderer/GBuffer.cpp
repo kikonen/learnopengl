@@ -26,9 +26,9 @@ void GBuffer::update(const RenderContext& ctx)
         auto buffer = new FrameBuffer({
             w, h,
             {
-                FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT1),
                 FrameBufferAttachment::getGBufferAlbedo(GL_COLOR_ATTACHMENT0),
-                FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT1),
+                FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT1),
+                FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT2),
                 FrameBufferAttachment::getGBufferEmission(GL_COLOR_ATTACHMENT3),
                 // depth & stencil needed
                 FrameBufferAttachment::getRBODepthStencil()

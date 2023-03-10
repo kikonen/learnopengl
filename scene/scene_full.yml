@@ -649,6 +649,7 @@ entities:
     rotation: [270.0, 0.0, 0.0]
     scale: 128
     render_flags:
+      xxno_gbuffer: true
       no_shadow: true
       render_back: true
       water: true

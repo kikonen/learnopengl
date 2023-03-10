@@ -32,6 +32,10 @@ public:
         const glm::vec2& pos,
         const glm::vec2& size);
 
+    void clear(
+        const RenderContext& ctx,
+        const glm::vec4& clearColor);
+
 public:
     FrameBufferSpecification m_spec;
 
