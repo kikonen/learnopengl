@@ -18,6 +18,8 @@ const std::string SHADER_VIEWPORT{ "viewport" };
 const std::string SHADER_VOLUME{ "volume" };
 const std::string SHADER_SKYBOX{ "skybox" };
 
+const std::string SHADER_DEFERRED_PHASE{ "deferred_phase" };
+
 const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
 const std::string GS_SPRITE{ "sprite" };

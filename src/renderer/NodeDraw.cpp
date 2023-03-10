@@ -1,6 +1,7 @@
 #include "NodeDraw.h"
 
 #include "asset/Program.h"
+#include "asset/Shader.h"
 
 #include "component/Camera.h"
 
@@ -12,9 +13,14 @@
 #include "scene/Batch.h"
 
 
-void NodeDraw::prepare(const Assets& assets)
+void NodeDraw::prepare(
+    const Assets& assets,
+    Registry* registry)
 {
     m_gbuffer.prepare(assets);
+
+    //m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PHASE);
+    //m_deferredProgram ->prepare(assets);
 }
 
 void NodeDraw::update(const RenderContext& ctx)
@@ -34,7 +40,7 @@ void NodeDraw::drawNodes(
     m_gbuffer.bind(ctx);
     m_gbuffer.m_buffer->clear(ctx, clearColor);
 
-        // pass 1 - geometry
+    // pass 1 - geometry
     // => nodes supporting G-buffer
     drawNodesImpl(ctx, includeBlended, true, typeSelector, nodeSelector);
     ctx.m_batch->flush(ctx);

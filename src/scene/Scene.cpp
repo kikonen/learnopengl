@@ -101,7 +101,7 @@ void Scene::prepare()
     m_scriptEngine->prepare(*m_commandEngine);
 
     m_batch->prepare(m_assets, m_registry.get());
-    m_nodeDraw->prepare(m_assets);
+    m_nodeDraw->prepare(m_assets, m_registry.get());
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {

@@ -10,13 +10,18 @@ class RenderContext;
 class Program;
 class MeshType;
 class Node;
+class Program;
+class Registry;
 
 //const auto ANY_TYPE = [](const MeshType* type) { return true; };
 //const auto ANY_NODE = [](const Node* node) { return true; };
 
 class NodeDraw final {
 public:
-    void prepare(const Assets& assets);
+    void prepare(
+        const Assets& assets,
+        Registry* registry);
+
     void update(const RenderContext& ctx);
 
     void drawNodes(
@@ -55,5 +60,7 @@ private:
 
 private:
     GBuffer m_gbuffer;
+
+    Program* m_deferredProgram{ nullptr };
 };
 
