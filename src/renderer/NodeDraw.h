@@ -58,8 +58,15 @@ private:
         std::function<bool(const MeshType*)> typeSelector,
         std::function<bool(const Node*)> nodeSelector);
 
+    void drawQuad(const RenderContext& ctx);
+
+    void prepareQuad();
+
 private:
     GBuffer m_gbuffer;
+
+    GLuint m_quadVAO{ 0 };
+    GLuint m_quadVBO{ 0 };
 
     Program* m_deferredProgram{ nullptr };
 };

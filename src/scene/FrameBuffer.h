@@ -26,6 +26,7 @@ public:
     void unbind(const RenderContext& ctx);
 
     void bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex);
+    void unbindTexture(const RenderContext& ctx, int unitIndex);
 
     void blit(
         FrameBuffer* target,

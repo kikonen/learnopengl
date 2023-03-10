@@ -18,7 +18,7 @@ const std::string SHADER_VIEWPORT{ "viewport" };
 const std::string SHADER_VOLUME{ "volume" };
 const std::string SHADER_SKYBOX{ "skybox" };
 
-const std::string SHADER_DEFERRED_PHASE{ "deferred_phase" };
+const std::string SHADER_DEFERRED_PASS{ "deferred_pass" };
 
 const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
@@ -67,6 +67,11 @@ constexpr int VBO_VERTEX_BINDING = 0;
 //constexpr int ATTR_INSTANCE_HIGHLIGHT_INDEX = 14;
 //constexpr int ATTR_INSTANCE_ENTITY_INDEX = 15;
 //constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
+
+constexpr int UNIT_G_ALBEDO_SPEC = 60;
+constexpr int UNIT_G_POSITION = 61;
+constexpr int UNIT_G_NORMAL = 62;
+constexpr int UNIT_G_EMISSION = 63;
 
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
 constexpr int UNIT_WATER_NOISE = 64;

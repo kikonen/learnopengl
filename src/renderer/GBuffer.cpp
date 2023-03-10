@@ -1,5 +1,7 @@
 #include "GBuffer.h"
 
+#include "asset/Shader.h"
+
 #include "scene/RenderContext.h"
 
 
@@ -37,12 +39,30 @@ void GBuffer::update(const RenderContext& ctx)
 
         m_buffer.reset(buffer);
         m_buffer->prepare(true, { 0, 0, 0, 0.0 });
+
+        unbindTexture(ctx);
     }
 }
 
 void GBuffer::bind(const RenderContext& ctx)
 {
     m_buffer->bind(ctx);
+}
+
+void GBuffer::bindTexture(const RenderContext& ctx)
+{
+    m_buffer->bindTexture(ctx, 0, UNIT_G_ALBEDO_SPEC);
+    m_buffer->bindTexture(ctx, 1, UNIT_G_POSITION);
+    m_buffer->bindTexture(ctx, 2, UNIT_G_NORMAL);
+    m_buffer->bindTexture(ctx, 3, UNIT_G_EMISSION);
+}
+
+void GBuffer::unbindTexture(const RenderContext& ctx)
+{
+    m_buffer->unbindTexture(ctx, UNIT_G_ALBEDO_SPEC);
+    m_buffer->unbindTexture(ctx, UNIT_G_POSITION);
+    m_buffer->unbindTexture(ctx, UNIT_G_NORMAL);
+    m_buffer->unbindTexture(ctx, UNIT_G_EMISSION);
 }
 
 void GBuffer::blit(

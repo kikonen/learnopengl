@@ -19,13 +19,14 @@ void NodeDraw::prepare(
 {
     m_gbuffer.prepare(assets);
 
-    //m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PHASE);
-    //m_deferredProgram ->prepare(assets);
+    m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
+    m_deferredProgram ->prepare(assets);
 }
 
 void NodeDraw::update(const RenderContext& ctx)
 {
     m_gbuffer.update(ctx);
+    prepareQuad();
 }
 
 void NodeDraw::drawNodes(
@@ -46,8 +47,15 @@ void NodeDraw::drawNodes(
     ctx.m_batch->flush(ctx);
 
     // pass 2 - light
-    glNamedFramebufferReadBuffer(m_gbuffer.m_buffer->m_fbo, GL_COLOR_ATTACHMENT0);
-    m_gbuffer.blit(targetBuffer, {-1.f, 1.f}, {2.f, 2.f});
+    //glNamedFramebufferReadBuffer(m_gbuffer.m_buffer->m_fbo, GL_COLOR_ATTACHMENT0);
+    //m_gbuffer.blit(targetBuffer, {-1.f, 1.f}, {2.f, 2.f});
+    targetBuffer->bind(ctx);
+    if (clearTarget) {
+        targetBuffer->clear(ctx, clearColor);
+    }
+    m_deferredProgram->bind(ctx.state);
+    m_gbuffer.bindTexture(ctx);
+    drawQuad(ctx);
 
     // pass 3 - non G-buffer nodes
     targetBuffer->bind(ctx);
@@ -191,4 +199,33 @@ void NodeDraw::drawProgram(
     for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
         renderTypes(all.second);
     }
+}
+
+void NodeDraw::drawQuad(const RenderContext& ctx)
+{
+    ctx.state.bindVAO(m_quadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    //glBindVertexArray(0);
+}
+
+void NodeDraw::prepareQuad()
+{
+    float quadVertices[] = {
+        // positions        // texture Coords
+        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+         1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+    };
+
+    // setup plane VAO
+    glGenVertexArrays(1, &m_quadVAO);
+    glGenBuffers(1, &m_quadVBO);
+    glBindVertexArray(m_quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 }

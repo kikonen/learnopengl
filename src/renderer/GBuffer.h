@@ -18,6 +18,9 @@ public:
 
     void bind(const RenderContext& ctx);
 
+    void bindTexture(const RenderContext& ctx);
+    void unbindTexture(const RenderContext& ctx);
+
     void blit(
         FrameBuffer* target,
         const glm::vec2& pos,

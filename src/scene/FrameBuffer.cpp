@@ -146,6 +146,11 @@ void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int
     ctx.state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID, false);
 }
 
+void FrameBuffer::unbindTexture(const RenderContext& ctx, int unitIndex)
+{
+    ctx.state.bindTexture(unitIndex, 0, true);
+}
+
 void FrameBuffer::blit(
     FrameBuffer* target,
     const glm::vec2& pos,
