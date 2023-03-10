@@ -9,7 +9,6 @@ void GBuffer::prepare(const Assets& assets)
 
 void GBuffer::update(const RenderContext& ctx)
 {
-    return;
     const auto& res = ctx.m_resolution;
     int w = ctx.assets.resolutionScale.x * res.x;
     int h = ctx.assets.resolutionScale.y * res.y;
@@ -27,10 +26,10 @@ void GBuffer::update(const RenderContext& ctx)
         auto buffer = new FrameBuffer({
             w, h,
             {
-                FrameBufferAttachment::getGBufferAlbedo(),
-                FrameBufferAttachment::getGBufferEmission(),
-                FrameBufferAttachment::getGBufferPosition(),
-                FrameBufferAttachment::getGBufferNormal(),
+                FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT1),
+                FrameBufferAttachment::getGBufferAlbedo(GL_COLOR_ATTACHMENT0),
+                FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT1),
+                FrameBufferAttachment::getGBufferEmission(GL_COLOR_ATTACHMENT3),
                 // depth & stencil needed
                 FrameBufferAttachment::getRBODepthStencil()
             }
@@ -44,4 +43,12 @@ void GBuffer::update(const RenderContext& ctx)
 void GBuffer::bind(const RenderContext& ctx)
 {
     m_buffer->bind(ctx);
+}
+
+void GBuffer::blit(
+    FrameBuffer* target,
+    const glm::vec2& pos,
+    const glm::vec2& size)
+{
+    m_buffer->blit(target, pos, size);
 }

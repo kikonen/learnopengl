@@ -31,8 +31,8 @@ void NodeDraw::drawNodes(
     bool clearTarget,
     const glm::vec4& clearColor)
 {
-//    m_gbuffer.bind(ctx);
-    targetBuffer->bind(ctx);
+    m_gbuffer.bind(ctx);
+    //targetBuffer->bind(ctx);
 
     // NOTE KI clear for current draw buffer buffer (main/mirror/etc.)
     if (clearTarget) {
@@ -48,12 +48,16 @@ void NodeDraw::drawNodes(
 
     // pass 1 - geometry
     // => nodes supporting G-buffer
-    drawNodesImpl(ctx, includeBlended, typeSelector, nodeSelector);
+    drawNodesImpl(ctx, includeBlended, true, typeSelector, nodeSelector);
     ctx.m_batch->flush(ctx);
 
     // pass 2 - light
+    m_gbuffer.blit(targetBuffer, {-1.f, 1.f}, {2.f, 2.f});
 
     // pass 3 - non G-buffer nodes
+    targetBuffer->bind(ctx);
+    drawNodesImpl(ctx, includeBlended, false, typeSelector, nodeSelector);
+    ctx.m_batch->flush(ctx);
 
     // pass 4 - blend
 }
@@ -70,17 +74,19 @@ void NodeDraw::drawBlended(
 void NodeDraw::drawNodesImpl(
     const RenderContext& ctx,
     bool includeBlended,
+    bool useGBuffer,
     std::function<bool(const MeshType*)> typeSelector,
     std::function<bool(const Node*)> nodeSelector)
 {
     auto* nodeRegistry = ctx.m_registry->m_nodeRegistry.get();
 
-    auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, useGBuffer, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
         auto program = typeMap.begin()->first.type->m_program;
 
         for (const auto& it : typeMap) {
             auto* type = it.first.type;
 
+            if (useGBuffer == type->m_flags.noGBuffer) continue;
             if (!typeSelector(type)) continue;
 
             auto& batch = ctx.m_batch;

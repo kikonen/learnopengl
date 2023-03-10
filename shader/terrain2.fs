@@ -40,6 +40,9 @@ layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
 layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 fragColor;
+layout (location = 1) out vec3 fragPosition;
+layout (location = 2) out vec3 fragNormal;
+layout (location = 3) out vec4 fragEmission;
 
 ////////////////////////////////////////////////////////////
 //
@@ -103,4 +106,6 @@ void main() {
 //  texColor = vec4(h, h, h, 1.0);
 
   fragColor = texColor;
+  fragPosition = fs_in.worldPos;
+  fragNormal = fs_in.normal;
 }

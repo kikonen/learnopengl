@@ -18,6 +18,11 @@ public:
 
     void bind(const RenderContext& ctx);
 
+    void blit(
+        FrameBuffer* target,
+        const glm::vec2& pos,
+        const glm::vec2& size);
+
 private:
     std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
 };
