@@ -1,5 +1,6 @@
 #version 460 core
-out vec4 oFragColor;
+
+out vec4 o_fragColor;
 
 in vec2 texCoord;
 
@@ -18,6 +19,6 @@ float LinearizeDepth(float depth)
 void main()
 {
   float depthValue = texture(u_viewportTex, texCoord).r;
-//  fragColor = vec4(vec3(LinearizeDepth(depthValue) / u_farPlane), 1.0); // perspective
-  oFragColor = vec4(vec3(depthValue), 1.0); // orthographic
+//  o_fragColor = vec4(vec3(LinearizeDepth(depthValue) / u_farPlane), 1.0); // perspective
+  o_fragColor = vec4(vec3(depthValue), 1.0); // orthographic
 }

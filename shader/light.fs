@@ -14,7 +14,7 @@ in VS_OUT {
   vec3 normal;
 } fs_in;
 
-layout (location = 0) out vec4 fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
@@ -28,5 +28,5 @@ void main() {
   // combined
   vec4 texColor = material.diffuse;
 
-  fragColor = texColor;
+  o_fragColor = texColor;
 }

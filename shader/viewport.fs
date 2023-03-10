@@ -7,7 +7,7 @@
 #define EFF_BLUR 4
 #define EFF_EDGE 5
 
-out vec4 fragColor;
+out vec4 o_fragColor;
 
 in vec2 texCoord;
 
@@ -176,5 +176,5 @@ vec4 effectX(in vec4 color)
 
 void main()
 {
-  fragColor = u_effect(texture(u_viewportTex, texCoord));
+  o_fragColor = u_effect(texture(u_viewportTex, texCoord));
 }

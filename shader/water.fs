@@ -35,7 +35,7 @@ layout(binding = UNIT_WATER_REFRACTION) uniform sampler2D u_refractionTex;
 
 layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
-layout (location = 0) out vec4 fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
@@ -149,8 +149,8 @@ void main() {
   }
 
 #ifdef USE_BLEND
-  fragColor = texColor;
+  o_fragColor = texColor;
 #else
-  fragColor = vec4(texColor.xyz, 1.0);
+  o_fragColor = vec4(texColor.xyz, 1.0);
 #endif
 }

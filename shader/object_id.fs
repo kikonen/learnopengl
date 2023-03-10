@@ -26,7 +26,7 @@ in VS_OUT {
 #endif
 
 
-layout (location = 0) out vec4 fragObjectID;
+layout (location = 0) out vec4 o_fragObjectID;
 
 ////////////////////////////////////////////////////////////
 //
@@ -41,5 +41,5 @@ void main() {
     discard;
 #endif
 
-  fragObjectID = fs_in.objectID;
+  o_fragObjectID = fs_in.objectID;
 }

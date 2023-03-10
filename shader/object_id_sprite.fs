@@ -11,7 +11,7 @@ in GS_OUT {
   flat uint materialIndex;
 } fs_in;
 
-layout (location = 0) out vec4 fragObjectID;
+layout (location = 0) out vec4 o_fragObjectID;
 
 ////////////////////////////////////////////////////////////
 //
@@ -24,5 +24,5 @@ void main() {
   if (alpha < 0.4)
     discard;
 
-  fragObjectID = fs_in.objectID;
+  o_fragObjectID = fs_in.objectID;
 }

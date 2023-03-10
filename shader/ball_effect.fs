@@ -21,7 +21,7 @@ in VS_OUT {
   vec4 shadowPos;
 } fs_in;
 
-layout (location = 0) out vec4 fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
@@ -56,13 +56,13 @@ void main() {
   iMouse = u_resolution * 0.5;
   iChannel0 = material.diffuseTex;
 
-  mainImage(fragColor, gl_FragCoord.xy);
+  mainImage(o_fragColor, gl_FragCoord.xy);
 
-  if (fragColor.r < 0.1 && fragColor.g < 0.1 && fragColor.b < 0.1) {
-    fragColor = vec4(fragColor.rgb, 0.0);
+  if (o_fragColor.r < 0.1 && o_fragColor.g < 0.1 && o_fragColor.b < 0.1) {
+    o_fragColor = vec4(o_fragColor.rgb, 0.0);
   }
 
 #ifdef USE_BLEND
-  fragColor = vec4(fragColor.rgb, 0.2);
+  o_fragColor = vec4(o_fragColor.rgb, 0.2);
 #endif
 }

@@ -11,7 +11,7 @@ in GS_OUT {
   flat uint highlightIndex;
 } fs_in;
 
-layout (location = 0) out vec4 fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
@@ -27,5 +27,5 @@ void main() {
 
   Material highlightMaterial = u_materials[fs_in.highlightIndex];
 
-  fragColor = highlightMaterial.diffuse;
+  o_fragColor = highlightMaterial.diffuse;
 }

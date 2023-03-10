@@ -17,7 +17,7 @@ in VS_OUT {
   flat uint materialIndex;
 } fs_in;
 
-layout (location = 0) out vec4 fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
@@ -39,5 +39,5 @@ void main() {
     discard;
 #endif
 
-  fragColor = texColor;
+  o_fragColor = texColor;
 }

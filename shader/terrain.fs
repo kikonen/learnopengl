@@ -23,7 +23,7 @@ in VS_OUT {
 
 layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
-layout (location = 0) out vec4 fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
@@ -53,5 +53,5 @@ void main() {
 
 //  texColor = vec4(1.0 / (1 + material.tileX), 1.0 / (1 + material.tileY), 0, 1.0);
 
-  fragColor = texColor;
+  o_fragColor = texColor;
 }
