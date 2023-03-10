@@ -26,7 +26,7 @@ void GBuffer::update(const RenderContext& ctx)
         auto buffer = new FrameBuffer({
             w, h,
             {
-                FrameBufferAttachment::getGBufferAlbedo(GL_COLOR_ATTACHMENT0),
+                FrameBufferAttachment::getGBufferAlbedoSpecular(GL_COLOR_ATTACHMENT0),
                 FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT1),
                 FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT2),
                 FrameBufferAttachment::getGBufferEmission(GL_COLOR_ATTACHMENT3),

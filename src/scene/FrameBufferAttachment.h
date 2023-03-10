@@ -59,7 +59,7 @@ struct FrameBufferAttachment {
     }
 
     // G buffer: diffuse + specular
-    static FrameBufferAttachment getGBufferAlbedo(GLenum attachment = GL_COLOR_ATTACHMENT0) {
+    static FrameBufferAttachment getGBufferAlbedoSpecular(GLenum attachment = GL_COLOR_ATTACHMENT0) {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
         spec.internalFormat = GL_RGBA16F;

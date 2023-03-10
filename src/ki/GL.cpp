@@ -69,26 +69,22 @@ namespace ki {
         const GLchar* message,
         const void* userParam) noexcept
     {
-        std::stringstream ss;
-        ss << "OPENGL: "
-            << formatSource(source)
-            << " (" << id << ")"
-            << " " << formatType(type)
-            << " " << formatSeverity(severity)
-            << " - " << message;
+        std::string sb = fmt::format(
+            "OPENGL: {} 0x{:x} ({}) {} {} - {}",
+            formatSource(source), id, id, formatType(type), formatSeverity(severity), message);
 
         switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH:
-            KI_ERROR(ss.str());
+            KI_ERROR(sb);
             break;
         case GL_DEBUG_SEVERITY_MEDIUM:
-            KI_WARN(ss.str());
+            KI_WARN(sb);
             break;
         case GL_DEBUG_SEVERITY_LOW:
-            KI_INFO(ss.str());
+            KI_INFO(sb);
             break;
         default:
-            KI_DEBUG(ss.str());
+            KI_DEBUG(sb);
         };
     }
 
