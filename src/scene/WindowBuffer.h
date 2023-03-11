@@ -7,7 +7,7 @@ class WindowBuffer final : public FrameBuffer
 public:
     WindowBuffer() : WindowBuffer(0) {}
 
-    WindowBuffer(int fbo);
+    WindowBuffer(GLuint fbo);
 
     virtual ~WindowBuffer() override = default;
 

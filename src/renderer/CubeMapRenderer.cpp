@@ -13,7 +13,8 @@
 
 #include "NodeDraw.h"
 
-#include "scene/WindowBuffer.h"
+#include "scene/CubeMapBuffer.h"
+
 
 // https://stackoverflow.com/questions/28845375/rendering-a-dynamic-cubemap-opengl
 // https://mbroecker.com/project_dynamic_cubemapping.html
@@ -111,6 +112,9 @@ void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 bool CubeMapRenderer::render(
     const RenderContext& mainCtx)
 {
+    // NOTE KI must flush before changing render target
+    mainCtx.m_batch->flush(mainCtx);
+
     if (!m_cleared) {
         clearCubeMap(mainCtx, *m_prev.get(), { 0, 0, 0, 0 }, false);
         clearCubeMap(mainCtx, *m_curr.get(), { 0, 0, 0, 0 }, false);
@@ -145,7 +149,7 @@ bool CubeMapRenderer::render(
     // https://eng.libretexts.org/Bookshelves/Computer_Science/Book%3A_Introduction_to_Computer_Graphics_(Eck)/07%3A_3D_Graphics_with_WebGL/7.04%3A_Framebuffers
     // view-source:math.hws.edu/eck/cs424/graphicsbook2018/source/webgl/cube-camera.html
 
-    m_curr->bind(mainCtx);
+    //m_curr->bind(mainCtx);
 
     int fromFace = m_curr->m_updateFace;
     int updateCount = 1;
@@ -160,13 +164,13 @@ bool CubeMapRenderer::render(
         //std::cout << "update: " << m_updateFace << "\n";
     }
 
-    for (int face = fromFace; face < fromFace + updateCount; face++) {
-        glFramebufferTexture2D(
-            GL_FRAMEBUFFER,
-            GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
-            m_curr->m_cubeMap.m_textureID,
-            0);
+    for (unsigned int face = fromFace; face < fromFace + updateCount; face++) {
+        //glFramebufferTexture2D(
+        //    GL_FRAMEBUFFER,
+        //    GL_COLOR_ATTACHMENT0,
+        //    GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
+        //    m_curr->m_cubeMap.m_textureID,
+        //    0);
 
         glm::vec4 clearColor{ DEBUG_COLOR[face] };
 
@@ -190,15 +194,15 @@ bool CubeMapRenderer::render(
 
         ctx.updateMatricesUBO();
 
-        WindowBuffer targetBuffer{};
-
+        auto targetBuffer = m_curr->asFrameBuffer(face);
+        //targetBuffer.clear(ctx, clearColor);
         drawNodes(ctx, &targetBuffer, centerNode, true, clearColor);
     }
 
     if (full)
         m_curr->m_rendered = true;
 
-    m_curr->unbind(mainCtx);
+    //m_curr->unbind(mainCtx);
     m_prev.swap(m_curr);
 
     mainCtx.updateMatricesUBO();

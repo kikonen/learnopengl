@@ -76,3 +76,13 @@ void DynamicCubeMap::prepare(
 
     m_valid = true;
 }
+
+CubeMapBuffer DynamicCubeMap::asFrameBuffer(int face)
+{
+    return {
+        m_fbo,
+        m_size,
+        (GLenum)GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
+        m_cubeMap.m_textureID,
+    };
+}

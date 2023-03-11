@@ -1,5 +1,9 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
+#include "ki/GL.h"
+
 enum class FrameBufferAttachmentType {
     texture,
     depth_texture,
@@ -28,117 +32,29 @@ struct FrameBufferAttachment {
     unsigned int textureID = 0;
     unsigned int rbo = 0;
 
-    static FrameBufferAttachment getTextureRGBA(GLenum attachment = GL_COLOR_ATTACHMENT0) {
-        FrameBufferAttachment spec;
-        spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA8;
-        spec.format = GL_RGBA;
-        spec.attachment = attachment;
+    static FrameBufferAttachment getTextureRGBA(GLenum attachment = GL_COLOR_ATTACHMENT0);
 
-        return spec;
-    }
+    static FrameBufferAttachment getTextureRGB(GLenum attachment = GL_COLOR_ATTACHMENT0);
 
-    static FrameBufferAttachment getTextureRGB(GLenum attachment = GL_COLOR_ATTACHMENT0) {
-        FrameBufferAttachment spec;
-        spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGB8;
-        spec.format = GL_RGB;
-        spec.attachment = attachment;
-
-        return spec;
-    }
-
-    static FrameBufferAttachment getObjectId() {
-        FrameBufferAttachment spec;
-        spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA8;
-        spec.format = GL_RGBA;
-        spec.attachment = GL_COLOR_ATTACHMENT0;
-
-        return spec;
-    }
+    static FrameBufferAttachment getObjectId();
 
     // G buffer: diffuse + specular
-    static FrameBufferAttachment getGBufferAlbedoSpecular(GLenum attachment = GL_COLOR_ATTACHMENT0) {
-        FrameBufferAttachment spec;
-        spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA16F;
-        spec.format = GL_RGBA;
-        spec.attachment = attachment;
-        spec.useDrawBuffer = true;
-
-        return spec;
-    }
+    static FrameBufferAttachment getGBufferAlbedoSpecular(GLenum attachment);
 
     // G buffer: position
-    static FrameBufferAttachment getGBufferPosition(GLenum attachment = GL_COLOR_ATTACHMENT1) {
-        FrameBufferAttachment spec;
-        spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA16F;
-        spec.format = GL_RGBA;
-        spec.attachment = attachment;
-        spec.useDrawBuffer = true;
-
-        return spec;
-    }
+    static FrameBufferAttachment getGBufferPosition(GLenum attachment);
 
     // G buffer: normal
-    static FrameBufferAttachment getGBufferNormal(GLenum attachment = GL_COLOR_ATTACHMENT2) {
-        FrameBufferAttachment spec;
-        spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA16F;
-        spec.format = GL_RGBA;
-        spec.attachment = attachment;
-        spec.useDrawBuffer = true;
-
-        return spec;
-    }
+    static FrameBufferAttachment getGBufferNormal(GLenum attachment);
 
     // G buffer: emission - ATTACHMENT
-    static FrameBufferAttachment getGBufferEmission(GLenum attachment = GL_COLOR_ATTACHMENT3) {
-        FrameBufferAttachment spec;
-        spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA16F;
-        spec.format = GL_RGBA;
-        spec.attachment = attachment;
-        spec.useDrawBuffer = true;
+    static FrameBufferAttachment getGBufferEmission(GLenum attachment);
 
-        return spec;
-    }
+    static FrameBufferAttachment getDepthTexture();
 
-    static FrameBufferAttachment getDepthTexture() {
-        FrameBufferAttachment spec;
-        spec.type = FrameBufferAttachmentType::depth_texture;
-        // NOTE KI need to have 24bit, 16bit is FAR TOO SMALL
-        spec.internalFormat = GL_DEPTH_COMPONENT24;
-        spec.format = GL_RGBA;
-        spec.attachment = GL_DEPTH_ATTACHMENT;
-        // NOTE KI linear slower, but *BETTER* results
-        spec.minFilter = GL_LINEAR;
-        spec.magFilter = GL_LINEAR;
-        spec.textureWrapS = GL_CLAMP_TO_BORDER;
-        spec.textureWrapT = GL_CLAMP_TO_BORDER;
+    static FrameBufferAttachment getRBODepthStencil();
 
-        return spec;
-    }
-
-    static FrameBufferAttachment getRBODepthStencil() {
-        FrameBufferAttachment spec;
-        spec.type = FrameBufferAttachmentType::rbo;
-        spec.internalFormat = GL_DEPTH24_STENCIL8;
-        spec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
-
-        return spec;
-    }
-
-    static FrameBufferAttachment getRBODepth() {
-        FrameBufferAttachment spec;
-        spec.type = FrameBufferAttachmentType::rbo;
-        spec.internalFormat = GL_DEPTH_COMPONENT24;
-        spec.attachment = GL_DEPTH_ATTACHMENT;
-
-        return spec;
-    }
+    static FrameBufferAttachment getRBODepth();
 };
 
 struct FrameBufferSpecification {

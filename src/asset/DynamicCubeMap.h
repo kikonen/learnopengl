@@ -6,6 +6,8 @@
 
 #include "scene/CubeMap.h"
 
+#include "scene/CubeMapBuffer.h"
+
 class RenderContext;
 
 class DynamicCubeMap
@@ -23,6 +25,8 @@ public:
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
 
+    CubeMapBuffer asFrameBuffer(int side);
+
 public:
     const int m_size;
 
@@ -33,10 +37,11 @@ public:
     bool m_rendered = false;
     int m_updateFace = -1;
 
+    GLuint m_fbo = 0;
+    GLuint m_depthBuffer = 0;
+
 private:
     bool m_prepared = false;
 
-    unsigned int m_fbo = 0;
-    unsigned int m_depthBuffer = 0;
 };
 

@@ -7,7 +7,7 @@
 #include "scene/RenderContext.h"
 
 
-WindowBuffer::WindowBuffer(int fbo)
+WindowBuffer::WindowBuffer(GLuint fbo)
     : FrameBuffer({ 0, 0, {} })
 {
     m_fbo = fbo;

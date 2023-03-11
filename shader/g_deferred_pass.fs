@@ -14,7 +14,9 @@ in VS_OUT {
 layout(binding = UNIT_G_ALBEDO_SPEC) uniform sampler2D g_albedoSpec;
 layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
-layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;
+layout(binding = UNIT_G_EMISSION_SHININESS) uniform sampler2D g_emissionShininess;
+
+layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 
 out vec4 o_fragColor;
@@ -37,24 +39,32 @@ void main()
   vec3 normal = texture(g_normal, fs_in.texCoords).rgb;
 
   // TODO KI shadowPos needed
-  vec3 shadowPos = worldPos;
+  vec4 shadowPos = vec4(worldPos, 1);
+  // TODO KI viewPos needed
+  vec3 viewPos = worldPos;
 
   Material material;
-  material.diffuse = texture(g_albedoSpec, fs_in.texCoords).rgb;
+
+  material.diffuse = texture(g_albedoSpec, fs_in.texCoords);
+  float specular = material.diffuse.a;
   material.diffuse.a = 1.0;
-  material.specular = texture(g_albedoSpec, fs_in.texCoords).a;
+  material.specular = vec4(specular);
+
   material.ambient = vec4(0.5, 0.5, 0.5, 1);
 
-  // TODO KI shininess needed (pass materialIndex?!?)
-  material.shininess = 0.0;
+  material.emission = texture(g_emissionShininess, fs_in.texCoords);
+  material.shininess = material.emission.a;
+  material.emission.a = 1.0;
+
   // TODO KI fogRatio needed (change to be global?!?)
-  material.fogRatio = 0.0;
+  material.fogRatio = 1.0;
 
   vec3 toView = normalize(u_viewWorldPos - worldPos);
 
   vec4 shaded = calculateLight(normal, toView, worldPos, shadowPos, material);
   vec4 texColor = shaded;
-  texColor = calculateFog(material.fogRatio, texColor);
+  texColor = calculateFog(viewPos, material.fogRatio, texColor);
+  texColor = vec4(material.diffuse.rgb + material.emission.rgb, 1.0);
 
   o_fragColor = texColor;
 }

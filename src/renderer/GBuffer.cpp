@@ -54,7 +54,7 @@ void GBuffer::bindTexture(const RenderContext& ctx)
     m_buffer->bindTexture(ctx, 0, UNIT_G_ALBEDO_SPEC);
     m_buffer->bindTexture(ctx, 1, UNIT_G_POSITION);
     m_buffer->bindTexture(ctx, 2, UNIT_G_NORMAL);
-    m_buffer->bindTexture(ctx, 3, UNIT_G_EMISSION);
+    m_buffer->bindTexture(ctx, 3, UNIT_G_EMISSION_SHININESS);
 }
 
 void GBuffer::unbindTexture(const RenderContext& ctx)
@@ -62,7 +62,7 @@ void GBuffer::unbindTexture(const RenderContext& ctx)
     m_buffer->unbindTexture(ctx, UNIT_G_ALBEDO_SPEC);
     m_buffer->unbindTexture(ctx, UNIT_G_POSITION);
     m_buffer->unbindTexture(ctx, UNIT_G_NORMAL);
-    m_buffer->unbindTexture(ctx, UNIT_G_EMISSION);
+    m_buffer->unbindTexture(ctx, UNIT_G_EMISSION_SHININESS);
 }
 
 void GBuffer::blit(
