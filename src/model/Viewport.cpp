@@ -135,7 +135,7 @@ void Viewport::unbind(const RenderContext& ctx)
 void Viewport::draw(const RenderContext& ctx)
 {
     if (m_useFrameBuffer) {
-        m_sourceBuffer->blit(m_destinationBuffer, m_position, m_size);
+        m_sourceBuffer->blit(m_destinationBuffer, GL_COLOR_BUFFER_BIT, m_position, m_size);
     }
     else
     {

@@ -38,41 +38,47 @@ void NodeDraw::drawNodes(
     bool clearTarget,
     const glm::vec4& clearColor)
 {
-    m_gbuffer.bind(ctx);
-    m_gbuffer.m_buffer->clear(ctx, clearColor);
-
     // pass 1 - geometry
     // => nodes supporting G-buffer
-    drawNodesImpl(ctx, includeBlended, true, typeSelector, nodeSelector);
-    ctx.m_batch->flush(ctx);
+    {
+        m_gbuffer.bind(ctx);
+        m_gbuffer.m_buffer->clear(ctx, clearColor);
+
+        drawNodesImpl(ctx, includeBlended, true, typeSelector, nodeSelector);
+        ctx.m_batch->flush(ctx);
+    }
 
     // pass 2 - light
-    //glNamedFramebufferReadBuffer(m_gbuffer.m_buffer->m_fbo, GL_COLOR_ATTACHMENT0);
-    //m_gbuffer.blit(targetBuffer, {-1.f, 1.f}, {2.f, 2.f});
-    targetBuffer->bind(ctx);
-    if (clearTarget) {
-        targetBuffer->clear(ctx, clearColor);
+    {
+        targetBuffer->bind(ctx);
+        if (clearTarget) {
+            targetBuffer->clear(ctx, clearColor);
+        }
+        m_deferredProgram->bind(ctx.state);
+        m_gbuffer.bindTexture(ctx);
+        drawQuad(ctx);
     }
-    m_deferredProgram->bind(ctx.state);
-    m_gbuffer.bindTexture(ctx);
-    drawQuad(ctx);
 
     // pass 3 - non G-buffer nodes
-    targetBuffer->bind(ctx);
-    if (clearTarget) {
-        //targetBuffer->clear(ctx, clearColor);
+    {
+        m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
+
+        drawNodesImpl(ctx, includeBlended, false, typeSelector, nodeSelector);
+        ctx.m_batch->flush(ctx);
     }
-    drawNodesImpl(ctx, includeBlended, false, typeSelector, nodeSelector);
-    ctx.m_batch->flush(ctx);
 
     // pass 4 - blend
+    {
+    }
 }
 
 void NodeDraw::drawBlended(
     const RenderContext& ctx,
+    FrameBuffer* targetBuffer,
     std::function<bool(const MeshType*)> typeSelector,
     std::function<bool(const Node*)> nodeSelector)
 {
+    targetBuffer->bind(ctx);
     drawBlendedImpl(ctx, typeSelector, nodeSelector);
     ctx.m_batch->flush(ctx);
 }
@@ -112,7 +118,7 @@ void NodeDraw::drawNodesImpl(
         renderTypes(all.second);
     }
 
-    if (includeBlended)
+    if (!useGBuffer && includeBlended)
     {
         // NOTE KI do not try blend here; end result is worse than not doing blend at all (due to stencil)
         for (const auto& all : nodeRegistry->blendedNodes) {

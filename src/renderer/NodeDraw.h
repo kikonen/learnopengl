@@ -35,6 +35,7 @@ public:
 
     void drawBlended(
         const RenderContext& ctx,
+        FrameBuffer* targetBuffer,
         std::function<bool(const MeshType*)> typeSelector,
         std::function<bool(const Node*)> nodeSelector);
 

@@ -64,11 +64,3 @@ void GBuffer::unbindTexture(const RenderContext& ctx)
     m_buffer->unbindTexture(ctx, UNIT_G_NORMAL);
     m_buffer->unbindTexture(ctx, UNIT_G_EMISSION_SHININESS);
 }
-
-void GBuffer::blit(
-    FrameBuffer* target,
-    const glm::vec2& pos,
-    const glm::vec2& size)
-{
-    m_buffer->blit(target, pos, size);
-}

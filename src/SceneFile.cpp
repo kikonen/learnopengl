@@ -146,7 +146,7 @@ void SceneFile::attachSkybox(
     //flags.noRefract = true;
     flags.noDisplay = false;
     flags.noSelect = true;
-    //flags.noGBuffer = true;
+    flags.noGBuffer = true;
 
     type->m_drawOptions.depthFunc = GL_LEQUAL;
 

@@ -30,6 +30,7 @@ public:
 
     void blit(
         FrameBuffer* target,
+        GLbitfield mask,
         const glm::vec2& pos,
         const glm::vec2& size);
 

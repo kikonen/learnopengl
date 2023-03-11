@@ -62,6 +62,7 @@ void NodeRenderer::render(
         {
             ctx.m_nodeDraw->drawBlended(
                 ctx,
+                targetBuffer,
                 [](const MeshType* type) { return true; },
                 [](const Node* node) { return true; });
         }

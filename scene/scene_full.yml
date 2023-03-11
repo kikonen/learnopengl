@@ -213,6 +213,7 @@ entities:
     render_flags:
       blend: true
       render_back: true
+      use_gbuffer: false
     enabled: true
   - name: Window 2
     model: quad
@@ -224,6 +225,7 @@ entities:
     render_flags:
       blend: true
       render_back: true
+      use_gbuffer: false
     enabled: true
   - name: Stained windows
     model: quad
@@ -235,6 +237,7 @@ entities:
     render_flags:
       blend: true
       render_back: true
+      use_gbuffer: false
     repeat:
       x_count: 10
       x_step: 2
@@ -499,6 +502,7 @@ entities:
     render_flags:
       blend: true
       no_select: true
+      use_gbuffer: false
     enabled: true
   - name: Brickcube
     model: texture_cube

@@ -151,8 +151,10 @@ void FrameBuffer::unbindTexture(const RenderContext& ctx, int unitIndex)
     ctx.state.bindTexture(unitIndex, 0, true);
 }
 
+// mask = GL_COLOR_BUFFER_BIT,
 void FrameBuffer::blit(
     FrameBuffer* target,
+    GLbitfield mask,
     const glm::vec2& pos,
     const glm::vec2& size)
 {
@@ -188,7 +190,7 @@ void FrameBuffer::blit(
         d0.y,
         d1.x,
         d1.y,
-        GL_COLOR_BUFFER_BIT,
+        mask,
         GL_NEAREST);
 }
 
