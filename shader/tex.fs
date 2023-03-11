@@ -74,8 +74,9 @@ void main() {
 
   #include var_calculate_diffuse.glsl
 
-  vec4 shaded = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
-  vec4 texColor = shaded;
+//  vec4 shaded = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
+//  vec4 texColor = shaded;
+  vec4 texColor = material.diffuse;
 
 #ifdef USE_ALPHA
   if (texColor.a < 0.1)
@@ -92,7 +93,7 @@ void main() {
     texColor.a = alpha;
   }
 
-  texColor = calculateFog(material.fogRatio, texColor);
+//  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
 
   o_fragColor = texColor;
   o_fragColor.a = material.specular.r;

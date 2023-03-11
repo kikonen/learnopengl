@@ -79,8 +79,9 @@ void main() {
 
   #include var_calculate_diffuse.glsl
 
-  vec4 shaded = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
-  vec4 texColor = shaded;
+//  vec4 shaded = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
+//  vec4 texColor = shaded;
+  vec4 texColor = material.diffuse;
 
 #ifdef USE_ALPHA
   if (texColor.a < 0.1)
@@ -97,7 +98,7 @@ void main() {
     texColor.a = alpha;
   }
 
-  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
+//  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
 
   sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);
   float h = texture(heightMap, fs_in.texCoord).r;
