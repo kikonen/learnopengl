@@ -147,8 +147,8 @@ void main() {
 
   vec4 texColor = material.diffuse;
   {
-    texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
-    texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
+//    texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
+//    texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
   }
 
 #ifdef USE_BLEND
