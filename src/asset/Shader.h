@@ -18,7 +18,8 @@ const std::string SHADER_VIEWPORT{ "viewport" };
 const std::string SHADER_VOLUME{ "volume" };
 const std::string SHADER_SKYBOX{ "skybox" };
 
-const std::string SHADER_DEFERRED_PASS{ "deferred_pass" };
+const std::string SHADER_GEOMETRY_PASS{ "g_geometry_pass" };
+const std::string SHADER_DEFERRED_PASS{ "g_deferred_pass" };
 
 const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 

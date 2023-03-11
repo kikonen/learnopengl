@@ -73,6 +73,8 @@ vec3 estimateWaveNormal(
 const float waveStrength = 0.01;
 
 void main() {
+  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
+
   #include var_tex_material.glsl
 
   vec2 distortedTexCoord = fs_in.texCoord;
@@ -115,8 +117,6 @@ void main() {
   // input parameters are offset for neighbors, and scaling for width and height
   normal = estimateWaveNormal(.0002, 32.0, 16.0);
 
-  vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
-
 //  #include var_calculate_diffuse.glsl
 
   vec4 gp = fs_in.glp;
@@ -144,8 +144,8 @@ void main() {
 
   vec4 texColor = material.diffuse;
   {
-    texColor = calculateLight(normal, toView, material);
-    texColor = calculateFog(material.fogRatio, texColor);
+    texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
+    texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
   }
 
 #ifdef USE_BLEND

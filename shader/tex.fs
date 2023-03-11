@@ -54,6 +54,7 @@ precision mediump float;
 #include fn_calculate_fog.glsl
 
 void main() {
+  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
   #include var_tex_material.glsl
 
 #ifdef USE_ALPHA
@@ -64,18 +65,16 @@ void main() {
   #include var_tex_material_normal.glsl
 
   if (material.pattern == 1) {
-    normal = calculateNormalPattern(normal);
+    normal = calculateNormalPattern(fs_in.vertexPos, normal);
   }
 
   if (!gl_FrontFacing) {
     normal = -normal;
   }
 
-  vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
-
   #include var_calculate_diffuse.glsl
 
-  vec4 shaded = calculateLight(normal, toView, material);
+  vec4 shaded = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
   vec4 texColor = shaded;
 
 #ifdef USE_ALPHA
