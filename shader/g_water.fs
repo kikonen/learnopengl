@@ -1,11 +1,9 @@
 #version 460 core
 
-#include struct_lights.glsl
 #include struct_material.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_lights.glsl
 #include uniform_materials.glsl
 #include uniform_textures.glsl
 
@@ -33,8 +31,6 @@ layout(binding = UNIT_WATER_NOISE) uniform sampler3D u_noiseTex;
 layout(binding = UNIT_WATER_REFLECTION) uniform sampler2D u_reflectionTex;
 layout(binding = UNIT_WATER_REFRACTION) uniform sampler2D u_refractionTex;
 
-layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
-
 layout (location = 0) out vec4 o_fragColor;
 layout (location = 1) out vec4 o_fragSpecular;
 layout (location = 2) out vec4 o_fragEmission;
@@ -48,10 +44,6 @@ layout (location = 5) out vec3 o_fragNormal;
 
 precision mediump float;
 
-#include fn_calculate_dir_light.glsl
-#include fn_calculate_point_light.glsl
-#include fn_calculate_spot_light.glsl
-#include fn_calculate_light.glsl
 #include fn_calculate_normal_pattern.glsl
 #include fn_calculate_fog.glsl
 
@@ -148,16 +140,6 @@ void main() {
   material.diffuse = mix(material.diffuse, mixColor, 0.9);
 
   vec4 texColor = material.diffuse;
-  {
-//    texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
-//    texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
-  }
-
-#ifdef USE_BLEND
-  o_fragColor = texColor;
-#else
-  o_fragColor = vec4(texColor.xyz, 1.0);
-#endif
 
   o_fragColor = texColor;
   o_fragSpecular = material.specular;

@@ -1,11 +1,9 @@
 #version 460 core
 
-#include struct_lights.glsl
 #include struct_material.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_lights.glsl
 #include uniform_materials.glsl
 #include uniform_textures.glsl
 
@@ -29,8 +27,6 @@ in VS_OUT {
 
 layout(binding = UNIT_MIRROR_REFLECTION) uniform sampler2D u_reflectionTex;
 
-layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
-
 layout (location = 0) out vec4 o_fragColor;
 layout (location = 1) out vec4 o_fragSpecular;
 layout (location = 2) out vec4 o_fragEmission;
@@ -44,12 +40,7 @@ layout (location = 5) out vec3 o_fragNormal;
 
 precision mediump float;
 
-#include fn_calculate_dir_light.glsl
-#include fn_calculate_point_light.glsl
-#include fn_calculate_spot_light.glsl
-#include fn_calculate_light.glsl
 #include fn_calculate_normal_pattern.glsl
-#include fn_calculate_fog.glsl
 
 void main() {
   const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
@@ -71,7 +62,6 @@ void main() {
 
     vec4 mixColor = reflectColor;
 
-    vec4 origDiffuse = material.diffuse;
     material.diffuse = mix(material.diffuse, mixColor, 0.9);
   }
 

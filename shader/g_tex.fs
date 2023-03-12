@@ -1,11 +1,9 @@
 #version 460 core
 
-#include struct_lights.glsl
 #include struct_material.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_lights.glsl
 #include uniform_materials.glsl
 #include uniform_textures.glsl
 
@@ -33,7 +31,6 @@ in VS_OUT {
 } fs_in;
 
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
-layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 o_fragColor;
 layout (location = 1) out vec4 o_fragSpecular;
@@ -48,12 +45,7 @@ layout (location = 5) out vec3 o_fragNormal;
 
 precision mediump float;
 
-#include fn_calculate_dir_light.glsl
-#include fn_calculate_point_light.glsl
-#include fn_calculate_spot_light.glsl
-#include fn_calculate_light.glsl
 #include fn_calculate_normal_pattern.glsl
-#include fn_calculate_fog.glsl
 
 void main() {
   const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
@@ -83,17 +75,11 @@ void main() {
     discard;
 #endif
 
-#ifndef USE_BLEND
-  texColor = vec4(texColor.rgb, 1.0);
-#endif
-
   if (!gl_FrontFacing) {
     float alpha = texColor.a;
     texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);
     texColor.a = alpha;
   }
-
-//  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
 
   o_fragColor = texColor;
   o_fragSpecular = material.specular;
