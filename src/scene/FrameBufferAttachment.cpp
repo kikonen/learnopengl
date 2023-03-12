@@ -33,8 +33,34 @@ FrameBufferAttachment FrameBufferAttachment::getObjectId()
     return spec;
 }
 
-// G buffer: diffuse + specular
-FrameBufferAttachment FrameBufferAttachment::getGBufferAlbedoSpecular(GLenum attachment)
+// G buffer: diffuse
+FrameBufferAttachment FrameBufferAttachment::getGBufferAlbedo(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::texture;
+    spec.internalFormat = GL_RGBA8;
+    spec.format = GL_RGBA;
+    spec.attachment = attachment;
+    spec.useDrawBuffer = true;
+
+    return spec;
+}
+
+// G buffer: specular
+FrameBufferAttachment FrameBufferAttachment::getGBufferSpecular(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::texture;
+    spec.internalFormat = GL_RGBA8;
+    spec.format = GL_RGBA;
+    spec.attachment = attachment;
+    spec.useDrawBuffer = true;
+
+    return spec;
+}
+
+// G buffer: emission
+FrameBufferAttachment FrameBufferAttachment::getGBufferEmission(GLenum attachment)
 {
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
@@ -65,19 +91,6 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGBA16F;
-    spec.format = GL_RGBA;
-    spec.attachment = attachment;
-    spec.useDrawBuffer = true;
-
-    return spec;
-}
-
-// G buffer: emission - ATTACHMENT
-FrameBufferAttachment FrameBufferAttachment::getGBufferEmission(GLenum attachment)
-{
-    FrameBufferAttachment spec;
-    spec.type = FrameBufferAttachmentType::texture;
-    spec.internalFormat = GL_RGBA8;
     spec.format = GL_RGBA;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;

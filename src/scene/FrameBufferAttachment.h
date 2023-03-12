@@ -38,17 +38,20 @@ struct FrameBufferAttachment {
 
     static FrameBufferAttachment getObjectId();
 
-    // G buffer: diffuse + specular
-    static FrameBufferAttachment getGBufferAlbedoSpecular(GLenum attachment);
+    // G buffer: diffuse
+    static FrameBufferAttachment getGBufferAlbedo(GLenum attachment);
+
+    // G buffer: specular
+    static FrameBufferAttachment getGBufferSpecular(GLenum attachment);
+
+    // G buffer: emission
+    static FrameBufferAttachment getGBufferEmission(GLenum attachment);
 
     // G buffer: position
     static FrameBufferAttachment getGBufferPosition(GLenum attachment);
 
     // G buffer: normal
     static FrameBufferAttachment getGBufferNormal(GLenum attachment);
-
-    // G buffer: emission - ATTACHMENT
-    static FrameBufferAttachment getGBufferEmission(GLenum attachment);
 
     static FrameBufferAttachment getDepthTexture();
 

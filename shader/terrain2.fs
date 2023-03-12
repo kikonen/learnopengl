@@ -40,9 +40,10 @@ layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
 layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 o_fragColor;
-layout (location = 1) out vec3 o_fragPosition;
-layout (location = 2) out vec3 o_fragNormal;
-layout (location = 3) out vec4 o_fragEmissionShininess;
+layout (location = 1) out vec4 o_fragSpecular;
+layout (location = 2) out vec4 o_fragEmission;
+layout (location = 3) out vec3 o_fragPosition;
+layout (location = 4) out vec3 o_fragNormal;
 
 ////////////////////////////////////////////////////////////
 //
@@ -106,9 +107,10 @@ void main() {
 //  texColor = vec4(h, h, h, 1.0);
 
   o_fragColor = texColor;
-  o_fragColor.a = material.specular.r;
+  o_fragSpecular = material.specular;
+  o_fragSpecular.a = material.shininess;
+  o_fragEmission = material.emission;
+
   o_fragPosition = fs_in.worldPos;
   o_fragNormal = fs_in.normal;
-  o_fragEmissionShininess = material.emission;
-  o_fragEmissionShininess.a = material.shininess;
 }

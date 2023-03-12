@@ -25,7 +25,10 @@ public:
     virtual void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
 
+    // NOTE KI bind if needed
     void bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex);
+
+    // NOTE KI *force* unbind
     void unbindTexture(const RenderContext& ctx, int unitIndex);
 
     void blit(

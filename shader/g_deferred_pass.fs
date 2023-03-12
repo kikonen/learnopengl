@@ -11,10 +11,11 @@ in VS_OUT {
   vec2 texCoords;
 } fs_in;
 
-layout(binding = UNIT_G_ALBEDO_SPEC) uniform sampler2D g_albedoSpec;
+layout(binding = UNIT_G_ALBEDO) uniform sampler2D g_albedo;
+layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;
+layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;
 layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
-layout(binding = UNIT_G_EMISSION_SHININESS) uniform sampler2D g_emissionShininess;
 
 layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
@@ -35,34 +36,35 @@ precision mediump float;
 
 void main()
 {
-  vec3 worldPos = texture(g_position, fs_in.texCoords).rgb;
-  vec3 normal = texture(g_normal, fs_in.texCoords).rgb;
+  const vec3 worldPos = texture(g_position, fs_in.texCoords).rgb;
+  const vec3 normal = texture(g_normal, fs_in.texCoords).rgb;
 
-  vec4 shadowPos = u_shadowMatrix * vec4(worldPos, 1.0);
-  vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+  const vec4 shadowPos = u_shadowMatrix * vec4(worldPos, 1.0);
+  const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+
+  const vec3 toView = normalize(u_viewWorldPos - worldPos);
 
   Material material;
+  {
+    material.diffuse = texture(g_albedo, fs_in.texCoords);
+    material.diffuse.a = 1.0;
 
-  material.diffuse = texture(g_albedoSpec, fs_in.texCoords);
-  float specular = 0; //material.diffuse.a;
-  material.diffuse.a = 1.0;
-  material.specular = vec4(specular);
+    material.specular = texture(g_specular, fs_in.texCoords);
+    material.shininess = material.specular.a;
+    material.specular.a = 1.0;
 
-  material.ambient = vec4(0.5, 0.5, 0.5, 1);
+    material.ambient = vec4(0.5, 0.5, 0.5, 1);
 
-  material.emission = texture(g_emissionShininess, fs_in.texCoords);
-  material.shininess = material.emission.a;
-  material.emission.a = 1.0;
+    material.emission = texture(g_emission, fs_in.texCoords);
+    material.emission.a = 1.0;
 
-  // NOTE KI fogRatio is global only now
-  material.fogRatio = u_fogRatio;
+    // NOTE KI fogRatio is global only now
+    material.fogRatio = u_fogRatio;
+  }
 
-  vec3 toView = normalize(u_viewWorldPos - worldPos);
+  vec4 color = calculateLight(normal, toView, worldPos, shadowPos, material);
+  color = calculateFog(viewPos, material.fogRatio, color);
+//  color = vec4(material.diffuse.rgb + material.emission.rgb, 1.0);
 
-  vec4 shaded = calculateLight(normal, toView, worldPos, shadowPos, material);
-  vec4 texColor = shaded;
-  texColor = calculateFog(viewPos, material.fogRatio, texColor);
-//  texColor = vec4(material.diffuse.rgb + material.emission.rgb, 1.0);
-
-  o_fragColor = texColor;
+  o_fragColor = color;
 }

@@ -28,10 +28,11 @@ void GBuffer::update(const RenderContext& ctx)
         auto buffer = new FrameBuffer({
             w, h,
             {
-                FrameBufferAttachment::getGBufferAlbedoSpecular(GL_COLOR_ATTACHMENT0),
-                FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT1),
-                FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT2),
-                FrameBufferAttachment::getGBufferEmission(GL_COLOR_ATTACHMENT3),
+                FrameBufferAttachment::getGBufferAlbedo(GL_COLOR_ATTACHMENT0),
+                FrameBufferAttachment::getGBufferSpecular(GL_COLOR_ATTACHMENT1),
+                FrameBufferAttachment::getGBufferEmission(GL_COLOR_ATTACHMENT2),
+                FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT3),
+                FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT4),
                 // depth & stencil needed
                 FrameBufferAttachment::getRBODepthStencil()
             }
@@ -51,16 +52,18 @@ void GBuffer::bind(const RenderContext& ctx)
 
 void GBuffer::bindTexture(const RenderContext& ctx)
 {
-    m_buffer->bindTexture(ctx, 0, UNIT_G_ALBEDO_SPEC);
-    m_buffer->bindTexture(ctx, 1, UNIT_G_POSITION);
-    m_buffer->bindTexture(ctx, 2, UNIT_G_NORMAL);
-    m_buffer->bindTexture(ctx, 3, UNIT_G_EMISSION_SHININESS);
+    m_buffer->bindTexture(ctx, 0, UNIT_G_ALBEDO);
+    m_buffer->bindTexture(ctx, 1, UNIT_G_SPECULAR);
+    m_buffer->bindTexture(ctx, 2, UNIT_G_EMISSION);
+    m_buffer->bindTexture(ctx, 3, UNIT_G_POSITION);
+    m_buffer->bindTexture(ctx, 4, UNIT_G_NORMAL);
 }
 
 void GBuffer::unbindTexture(const RenderContext& ctx)
 {
-    m_buffer->unbindTexture(ctx, UNIT_G_ALBEDO_SPEC);
+    m_buffer->unbindTexture(ctx, UNIT_G_ALBEDO);
+    m_buffer->unbindTexture(ctx, UNIT_G_SPECULAR);
+    m_buffer->unbindTexture(ctx, UNIT_G_EMISSION);
     m_buffer->unbindTexture(ctx, UNIT_G_POSITION);
     m_buffer->unbindTexture(ctx, UNIT_G_NORMAL);
-    m_buffer->unbindTexture(ctx, UNIT_G_EMISSION_SHININESS);
 }
