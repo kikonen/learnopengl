@@ -38,15 +38,13 @@ void main()
   vec3 worldPos = texture(g_position, fs_in.texCoords).rgb;
   vec3 normal = texture(g_normal, fs_in.texCoords).rgb;
 
-  // TODO KI shadowPos needed
-  vec4 shadowPos = vec4(worldPos, 1);
-  // TODO KI viewPos needed
-  vec3 viewPos = worldPos;
+  vec4 shadowPos = u_shadowMatrix * vec4(worldPos, 1.0);
+  vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
 
   Material material;
 
   material.diffuse = texture(g_albedoSpec, fs_in.texCoords);
-  float specular = material.diffuse.a;
+  float specular = 0; //material.diffuse.a;
   material.diffuse.a = 1.0;
   material.specular = vec4(specular);
 
@@ -64,7 +62,7 @@ void main()
   vec4 shaded = calculateLight(normal, toView, worldPos, shadowPos, material);
   vec4 texColor = shaded;
   texColor = calculateFog(viewPos, material.fogRatio, texColor);
-  texColor = vec4(material.diffuse.rgb + material.emission.rgb, 1.0);
+//  texColor = vec4(material.diffuse.rgb + material.emission.rgb, 1.0);
 
   o_fragColor = texColor;
 }

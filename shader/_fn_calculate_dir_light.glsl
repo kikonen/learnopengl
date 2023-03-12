@@ -75,7 +75,6 @@ vec4 calculateDirLight(
   // if (shadow != 0.0) {
   //   shadow = 1;
   // }
-  shadow = 1;
   vec4 lighting = ambient + shadow * (diffuse + specular);
 
   return lighting;
