@@ -112,5 +112,5 @@ void main() {
   o_fragEmission = material.emission;
 
   o_fragPosition = fs_in.worldPos;
-  o_fragNormal = fs_in.normal;
+  o_fragNormal = normal;
 }

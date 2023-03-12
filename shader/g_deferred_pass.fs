@@ -37,7 +37,7 @@ precision mediump float;
 void main()
 {
   const vec3 worldPos = texture(g_position, fs_in.texCoords).rgb;
-  const vec3 normal = texture(g_normal, fs_in.texCoords).rgb;
+  const vec3 normal = normalize(texture(g_normal, fs_in.texCoords).rgb);
 
   const vec4 shadowPos = u_shadowMatrix * vec4(worldPos, 1.0);
   const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
