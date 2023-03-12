@@ -5,9 +5,6 @@ Material material = u_materials[fs_in.materialIndex];
 
     sampler2D sampler = sampler2D(u_texture_handles[material.diffuseTex]);
     material.diffuse = texture(sampler, fs_in.texCoord);
-
-    // TODO KI WHAT was going on here?!?
-    //material.ambient = material.ambient;
   }
 
   if (material.emissionTex >= 0) {

@@ -14,6 +14,7 @@ in VS_OUT {
 layout(binding = UNIT_G_ALBEDO) uniform sampler2D g_albedo;
 layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;
 layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;
+layout(binding = UNIT_G_AMBIENT) uniform sampler2D g_ambient;
 layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
 
@@ -53,7 +54,8 @@ void main()
     material.shininess = material.specular.a;
     material.specular.a = 1.0;
 
-    material.ambient = vec4(0.5, 0.5, 0.5, 1);
+    material.ambient = texture(g_ambient, fs_in.texCoords);
+    material.ambient.a = 1.0;
 
     material.emission = texture(g_emission, fs_in.texCoords);
     material.emission.a = 1.0;

@@ -72,6 +72,19 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferEmission(GLenum attachmen
     return spec;
 }
 
+// G buffer: ambient
+FrameBufferAttachment FrameBufferAttachment::getGBufferAmbient(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::texture;
+    spec.internalFormat = GL_RGBA8;
+    spec.format = GL_RGBA;
+    spec.attachment = attachment;
+    spec.useDrawBuffer = true;
+
+    return spec;
+}
+
 // G buffer: position
 FrameBufferAttachment FrameBufferAttachment::getGBufferPosition(GLenum attachment)
 {
