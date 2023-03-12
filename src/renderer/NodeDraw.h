@@ -24,6 +24,10 @@ public:
 
     void update(const RenderContext& ctx);
 
+    void clear(
+        const RenderContext& ctx,
+        const glm::vec4& clearColor);
+
     void drawNodes(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,

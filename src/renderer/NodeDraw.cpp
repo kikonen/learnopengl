@@ -29,6 +29,12 @@ void NodeDraw::update(const RenderContext& ctx)
     prepareQuad();
 }
 
+void NodeDraw::clear(const RenderContext& ctx, const glm::vec4& clearColor)
+{
+    m_gbuffer.bind(ctx);
+    m_gbuffer.m_buffer->clear(ctx, clearColor);
+}
+
 void NodeDraw::drawNodes(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer,
@@ -40,7 +46,7 @@ void NodeDraw::drawNodes(
 {
     // pass 1 - geometry
     // => nodes supporting G-buffer
-    {
+    if (clearTarget) {
         m_gbuffer.bind(ctx);
         m_gbuffer.m_buffer->clear(ctx, clearColor);
 
@@ -61,7 +67,7 @@ void NodeDraw::drawNodes(
 
     // pass 3 - non G-buffer nodes
     {
-        m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
+        m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
 
         drawNodesImpl(ctx, includeBlended, false, typeSelector, nodeSelector);
         ctx.m_batch->flush(ctx);
