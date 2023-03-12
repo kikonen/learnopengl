@@ -233,11 +233,7 @@ void MeshLoader::loadData(
 
 // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
 void MeshLoader::splitFragmentValue(const std::string& v, std::vector<std::string>& vv) {
-    std::istringstream f(v);
-    std::string s;
-    while (getline(f, s, '/')) {
-        vv.emplace_back(s);
-    }
+    util::splitString(v, vv, '/');
 }
 
 unsigned int MeshLoader::resolveVertexIndex(

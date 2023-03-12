@@ -93,13 +93,13 @@ entities:
     pos: [0, 14, 0]
     clones:
       - pos: [0.0, 14.0, 0.0]
-        id: 6eced5e5-f691-4137-abc1-8055f8ece410
+        id: [auto, light-1]
       - pos: [30.0, 14.0, 0.0]
-        id: 24c9652c-0bd6-41ab-8a8c-dadf82e2aa24
+        id: [auto, light-2]
       - pos: [0.0, 14.0, 30.0]
-        id: 117b6b3f-6c40-4cb6-b138-856a95888ceb
+        id: [auto, light-3]
       - pos: [30.0, 14.0, 30.0]
-        id: e5514669-a024-41ee-b2df-89db0bb3f361
+        id: [auto, light-4]
     script_file: scripts/anim_moving_point_light
     enabled: true
   - name: Moving point light
@@ -113,13 +113,13 @@ entities:
       no_shadow: true
     clones:
       - pos: [0.0, 0.0, 10.0]
-        parent_id: 6eced5e5-f691-4137-abc1-8055f8ece410
+        parent_id: [auto, light-1]
       - pos: [0.0, 0.0, 10.0]
-        parent_id: 24c9652c-0bd6-41ab-8a8c-dadf82e2aa24
+        parent_id: [auto, light-2]
       - pos: [0.0, 0.0, 10.0]
-        parent_id: 117b6b3f-6c40-4cb6-b138-856a95888ceb
+        parent_id: [auto, light-3]
       - pos: [0.0, 0.0, 10.0]
-        parent_id: e5514669-a024-41ee-b2df-89db0bb3f361
+        parent_id: [auto, light-4]
     light:
       type: point
       linear: 0.14

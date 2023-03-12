@@ -431,7 +431,7 @@ private:
     glm::vec4 readRGBA(const YAML::Node& node) const;
     glm::vec2 readRefractionRatio(const YAML::Node& node) const;
 
-    uuids::uuid readUUID(const YAML::Node& node) const;
+    uuids::uuid readUUID(const YAML::Node& node);
 
     std::string readFile(const std::string& filename) const;
 
@@ -463,6 +463,8 @@ private:
     EntityData m_root;
     std::vector<EntityData> m_entities;
     std::vector<Material> m_materials;
+
+    std::map<std::string, uuids::uuid> m_autoIds;
 
     Material m_defaultMaterial;
 };

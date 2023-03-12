@@ -979,11 +979,11 @@ void SceneFile::loadEntityClone(
             data.desc = v.as<std::string>();
         }
         else if (k == "id") {
-            data.id_str = v.as<std::string>();
+            data.id_str = renderNode(v);
             data.id = readUUID(v);
         }
         else if (k == "parent_id") {
-            data.parentId_str = v.as<std::string>();
+            data.parentId_str = renderNode(v);
             data.parentId = readUUID(v);
         }
         else if (k == "model") {
@@ -1257,7 +1257,7 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
             data.pos = readVec3(v);
         }
         else if (k == "target_id") {
-            data.targetId_str = v.as<std::string>();
+            data.targetId_str = renderNode(v);
             data.targetId = readUUID(v);
         }
         else if (k == "linear") {
@@ -1777,27 +1777,53 @@ glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) const
     return glm::vec2{ a[0], a[1] };
 }
 
-uuids::uuid SceneFile::readUUID(const YAML::Node& node) const
+uuids::uuid SceneFile::readUUID(const YAML::Node& node)
 {
-    std::string str = node.as<std::string>();
-    str = util::toUpper(str);
+    std::vector<std::string> parts;
 
-    if (str.empty()) return {};
-
-    if (str == AUTO_UUID) {
-        return uuids::uuid_system_generator{}();
+    if (node.IsSequence()) {
+        for (const auto& e : node) {
+            parts.push_back(e.as<std::string>());
+        }
     }
-    else if (str == ROOT_UUID) {
+    else {
+        parts.push_back(node.as<std::string>());
+    }
+
+    std::string key = parts[0];
+    key = util::toUpper(key);
+
+    if (key.empty()) return {};
+
+    if (key == AUTO_UUID) {
+        uuids::uuid uuid;
+        if (parts.size() > 1) {
+            const auto& name = parts[1];
+            const auto& it = m_autoIds.find(name);
+            if (it == m_autoIds.end()) {
+                uuid = uuids::uuid_system_generator{}();
+                m_autoIds[name] = uuid;
+            }
+            else {
+                uuid = it->second;
+            }
+        }
+        if (uuid.is_nil()) {
+            uuid = uuids::uuid_system_generator{}();
+        }
+        return uuid;
+    }
+    else if (key == ROOT_UUID) {
         return m_assets.rootUUID;
     }
-    else if (str == VOLUME_UUID) {
+    else if (key == VOLUME_UUID) {
         return m_assets.volumeUUID;
     }
-    else if (str == CUBE_MAP_UUID) {
+    else if (key == CUBE_MAP_UUID) {
         return m_assets.cubeMapUUID;
     }
     else {
-        return KI_UUID(str);
+        return KI_UUID(key);
     }
 }
 

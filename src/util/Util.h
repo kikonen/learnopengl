@@ -5,7 +5,7 @@
 #include <string_view>
 #include <algorithm>
 #include <filesystem>
-
+#include <vector>
 
 namespace util
 {
@@ -28,6 +28,12 @@ namespace util
         std::transform(str.begin(), str.end(), str.begin(), ::tolower);
         return str;
     }
+
+    // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
+    void splitString(
+        const std::string& v,
+        std::vector<std::string>& result,
+        char separator);
 
     inline const std::string dirName(const std::string& filename)
     {
