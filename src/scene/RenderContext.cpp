@@ -140,6 +140,7 @@ RenderContext::RenderContext(
         assets.fogColor,
         assets.fogStart,
         assets.fogEnd,
+        assets.fogRatio,
         true,
         };
 

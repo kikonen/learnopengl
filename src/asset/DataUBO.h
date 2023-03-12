@@ -24,10 +24,11 @@ struct DataUBO {
     glm::vec4 u_fogColor;
     float u_fogStart;
     float u_fogEnd;
+    float u_fogRatio;
 
     bool u_cubeMapExist;
 
     //int pad3;
-    int pad4;
+    //int pad4;
 
 };

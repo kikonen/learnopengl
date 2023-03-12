@@ -33,8 +33,6 @@ entities:
     program: texture
     pos: [0, 0, 0]
     scale: 1
-    material_modifier:
-      fog_ratio: 0
     enabled: true
   - name: Asteroid belt
     parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196

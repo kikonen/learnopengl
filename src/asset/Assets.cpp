@@ -104,6 +104,7 @@ Assets::Assets()
     fogColor = glm::vec4(0.1, 0.1, 0.2, 1.0);
     fogStart = 50.0;
     fogEnd = 700.0;
+    fogRatio = 1.0;
 
     shadowNearPlane = 0.1f;
     shadowFarPlane = 1000.0f;

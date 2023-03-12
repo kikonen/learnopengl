@@ -80,6 +80,7 @@ assets:
   fog_color: [0.2, 0.2, 0.2, 1.0]
   fog_start: 800.0
   fog_end: 3000.0
+  fog_ratio: 1.0
 
   shadow_near_plane: 0.1
   shadow_far_plane: 1000.0

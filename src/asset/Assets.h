@@ -120,6 +120,7 @@ public:
     glm::vec4 fogColor;
     float fogStart;
     float fogEnd;
+    float fogRatio;
 
     // NOTE KI MUST match lookup() in light shadow shader
     float shadowNearPlane;

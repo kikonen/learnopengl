@@ -56,8 +56,8 @@ void main()
   material.shininess = material.emission.a;
   material.emission.a = 1.0;
 
-  // TODO KI fogRatio needed (change to be global?!?)
-  material.fogRatio = 1.0;
+  // NOTE KI fogRatio is global only now
+  material.fogRatio = u_fogRatio;
 
   vec3 toView = normalize(u_viewWorldPos - worldPos);
 

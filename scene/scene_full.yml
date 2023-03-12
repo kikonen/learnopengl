@@ -695,8 +695,6 @@ entities:
     program: texture
     pos: [0, 0, 0]
     scale: 10
-    material_modifier:
-      fog_ratio: 0
     enabled: true
     script_file: scripts/anim_planet
   - name: Rock origo

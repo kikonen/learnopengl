@@ -225,6 +225,9 @@ void AssetsFile::loadAssets(
         else if (k == "fog_end") {
             data.fogEnd = v.as<float>();
         }
+        else if (k == "fog_ratio") {
+            data.fogRatio = v.as<float>();
+            }
         else if (k == "shadow_near_plane") {
             data.shadowNearPlane = v.as<float>();
         }

@@ -21,4 +21,6 @@ Material material = u_materials[fs_in.materialIndex];
     sampler2D sampler = sampler2D(u_texture_handles[material.specularTex]);
     material.specular = texture(sampler, fs_in.texCoord);
   }
+
+  material.fogRatio = u_fogRatio;
 }
