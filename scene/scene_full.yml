@@ -27,7 +27,8 @@ entities:
     enabled: true
     script_file: scripts/seq_zero
   - name: Player
-    model: player
+    xxmodel: player
+    type: origo
     pos: [-10, 12, -20.0]
     rotation: [0, 180, 0.0]
     scale: 0.8
