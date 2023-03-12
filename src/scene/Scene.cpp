@@ -341,11 +341,11 @@ void Scene::drawMain(RenderContext& ctx)
 }
 
 // "back mirror" viewport
-void Scene::drawRear(RenderContext& ctx)
+void Scene::drawRear(RenderContext& parentCtx)
 {
     if (!m_assets.showRearView) return;
 
-    auto* mainCamera = ctx.m_camera;
+    auto* mainCamera = parentCtx.m_camera;
 
     Camera camera(mainCamera->getWorldPosition(), mainCamera->getFront(), mainCamera->getUp());
     camera.setZoom(mainCamera->getZoom());
@@ -354,16 +354,18 @@ void Scene::drawRear(RenderContext& ctx)
     rot.y += 180;
     camera.setRotation(-rot);
 
-    RenderContext mirrorCtx("BACK", &ctx, &camera, m_rearBuffer->m_spec.width, m_rearBuffer->m_spec.height);
+    RenderContext localCtx("BACK", &parentCtx, &camera, m_rearBuffer->m_spec.width, m_rearBuffer->m_spec.height);
 
-    mirrorCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
-    mirrorCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
+    localCtx.m_matrices.u_lightProjected = parentCtx.m_matrices.u_lightProjected;
+    localCtx.m_matrices.u_shadow = parentCtx.m_matrices.u_shadow;
 
-    mirrorCtx.updateMatricesUBO();
+    localCtx.updateMatricesUBO();
+    localCtx.updateDataUBO();
 
-    drawScene(mirrorCtx, m_rearBuffer.get());
+    drawScene(localCtx, m_rearBuffer.get());
 
-    ctx.updateMatricesUBO();
+    parentCtx.updateMatricesUBO();
+    parentCtx.updateDataUBO();
 }
 
 void Scene::drawViewports(RenderContext& ctx)

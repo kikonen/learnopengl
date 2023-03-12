@@ -110,20 +110,20 @@ void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 }
 
 bool CubeMapRenderer::render(
-    const RenderContext& mainCtx)
+    const RenderContext& parentCtx)
 {
     // NOTE KI must flush before changing render target
-    mainCtx.m_batch->flush(mainCtx);
+    parentCtx.m_batch->flush(parentCtx);
 
     if (!m_cleared) {
-        clearCubeMap(mainCtx, *m_prev.get(), { 0, 0, 0, 0 }, false);
-        clearCubeMap(mainCtx, *m_curr.get(), { 0, 0, 0, 0 }, false);
+        clearCubeMap(parentCtx, *m_prev.get(), { 0, 0, 0, 0 }, false);
+        clearCubeMap(parentCtx, *m_curr.get(), { 0, 0, 0, 0 }, false);
         m_cleared = true;
     }
 
-    if (!needRender(mainCtx)) return false;
+    if (!needRender(parentCtx)) return false;
 
-    Node* centerNode = findCenter(mainCtx);
+    Node* centerNode = findCenter(parentCtx);
     if (m_lastClosest && setClosest(centerNode, -1)) {
         //std::cout << "NEW_CENTER\n";
         m_curr->m_updateFace = -1;
@@ -133,10 +133,10 @@ bool CubeMapRenderer::render(
     }
     if (!centerNode) return false;
 
-    if (mainCtx.assets.showCubeMapCenter) {
+    if (parentCtx.assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
-            const auto& rootPos = mainCtx.m_registry->m_nodeRegistry->m_root->getPosition();
+            const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getPosition();
             const auto& centerPos = centerNode->getWorldPosition();
             const auto tagPos = centerPos - rootPos;
             tagNode->setPosition(tagPos);
@@ -180,23 +180,24 @@ bool CubeMapRenderer::render(
         auto& camera = m_cameras[face];
         camera.setPosition(center);
 
-        RenderContext ctx("CUBE",
-            &mainCtx,
+        RenderContext localCtx("CUBE",
+            &parentCtx,
             &camera,
             m_nearPlane,
             m_farPlane,
             m_curr->m_size, m_curr->m_size);
 
-        bindTexture(ctx);
+        bindTexture(localCtx);
 
-        ctx.m_matrices.u_lightProjected = mainCtx.m_matrices.u_lightProjected;
-        ctx.m_matrices.u_shadow = mainCtx.m_matrices.u_shadow;
+        localCtx.m_matrices.u_lightProjected = parentCtx.m_matrices.u_lightProjected;
+        localCtx.m_matrices.u_shadow = parentCtx.m_matrices.u_shadow;
 
-        ctx.updateMatricesUBO();
+        localCtx.updateMatricesUBO();
+        localCtx.updateDataUBO();
 
         auto targetBuffer = m_curr->asFrameBuffer(face);
         //targetBuffer.clear(ctx, clearColor);
-        drawNodes(ctx, &targetBuffer, centerNode, true, clearColor);
+        drawNodes(localCtx, &targetBuffer, centerNode, true, clearColor);
     }
 
     if (full)
@@ -205,7 +206,8 @@ bool CubeMapRenderer::render(
     //m_curr->unbind(mainCtx);
     m_prev.swap(m_curr);
 
-    mainCtx.updateMatricesUBO();
+    parentCtx.updateMatricesUBO();
+    parentCtx.updateDataUBO();
 
     if (m_curr->m_rendered) {
         m_curr->m_updateFace = (m_curr->m_updateFace + 1) % 6;

@@ -33,7 +33,6 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)
 {
-    //ctx.updateMatricesUBO();
 }
 
 void DynamicCubeMap::prepare(

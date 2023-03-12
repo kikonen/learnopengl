@@ -97,11 +97,11 @@ void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
 }
 
 bool MirrorMapRenderer::render(
-    const RenderContext& ctx)
+    const RenderContext& parentCtx)
 {
-    if (!needRender(ctx)) return false;
+    if (!needRender(parentCtx)) return false;
 
-    Node* closest = findClosest(ctx);
+    Node* closest = findClosest(parentCtx);
     setClosest(closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
 
@@ -114,7 +114,7 @@ bool MirrorMapRenderer::render(
     // https://stackoverflow.com/questions/48613493/reflecting-scene-by-plane-mirror-in-opengl
     // reflection map
     {
-        const auto* mainCamera = ctx.m_camera;
+        const auto* mainCamera = parentCtx.m_camera;
 
         const auto& volume = closest->getVolume();
         const glm::vec3 volumeCenter = glm::vec3(volume);
@@ -151,20 +151,21 @@ bool MirrorMapRenderer::render(
         //camera.setZoom(fovAngle);
 
         RenderContext localCtx("MIRROR",
-            &ctx,
+            &parentCtx,
             &camera,
             dist,
-            ctx.assets.farPlane,
+            parentCtx.assets.farPlane,
             m_curr->m_spec.width, m_curr->m_spec.height);
 
-        localCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
-        localCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
+        localCtx.m_matrices.u_lightProjected = parentCtx.m_matrices.u_lightProjected;
+        localCtx.m_matrices.u_shadow = parentCtx.m_matrices.u_shadow;
 
         //ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         ////clip.enabled = true;
         //clip.plane = glm::vec4(planePos, 0);
 
         localCtx.updateMatricesUBO();
+        localCtx.updateDataUBO();
 
         bindTexture(localCtx);
         drawNodes(localCtx, m_curr.get(), closest);
@@ -177,7 +178,8 @@ bool MirrorMapRenderer::render(
 
     m_prev.swap(m_curr);
 
-    ctx.updateMatricesUBO();
+    parentCtx.updateMatricesUBO();
+    parentCtx.updateDataUBO();
 
     m_rendered = true;
     return true;

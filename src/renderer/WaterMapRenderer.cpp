@@ -106,18 +106,18 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 }
 
 bool WaterMapRenderer::render(
-    const RenderContext& ctx)
+    const RenderContext& parentCtx)
 {
-    if (!needRender(ctx)) return false;
+    if (!needRender(parentCtx)) return false;
 
-    auto closest = findClosest(ctx);
+    auto closest = findClosest(parentCtx);
     setClosest(closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    const auto* mainCamera = ctx.m_camera;
+    const auto* mainCamera = parentCtx.m_camera;
     const auto& cameraRot = mainCamera->getRotation();
     const auto& cameraPos = mainCamera->getWorldPosition();
 
@@ -141,23 +141,25 @@ bool WaterMapRenderer::render(
         camera.setRotation(rot);
 
         RenderContext localCtx(
-            "WATER_REFLECT", &ctx, &camera,
+            "WATER_REFLECT", &parentCtx, &camera,
             m_reflectionBuffer->m_spec.width, m_reflectionBuffer->m_spec.height);
 
-        localCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
-        localCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
+        localCtx.m_matrices.u_lightProjected = parentCtx.m_matrices.u_lightProjected;
+        localCtx.m_matrices.u_shadow = parentCtx.m_matrices.u_shadow;
 
         ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         clip.enabled = true;
         clip.plane = glm::vec4(0, (sdist > 0 ? 1 : 1), 0, (sdist > 0 ? -1 : 1) * planePos.y);
 
         localCtx.updateMatricesUBO();
+        localCtx.updateDataUBO();
 
         drawNodes(localCtx, m_reflectionBuffer.get(), closest, true);
 
         //m_reflectionBuffer->unbind(ctx);
 
-        ctx.updateClipPlanesUBO();
+        parentCtx.updateClipPlanesUBO();
+        parentCtx.updateDataUBO();
     }
 
     // refraction map
@@ -173,11 +175,11 @@ bool WaterMapRenderer::render(
         camera.setRotation(cameraRot);
 
         RenderContext localCtx(
-            "WATER_REFRACT", &ctx, &camera,
+            "WATER_REFRACT", &parentCtx, &camera,
             m_refractionBuffer->m_spec.width, m_refractionBuffer->m_spec.height);
 
-        localCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
-        localCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
+        localCtx.m_matrices.u_lightProjected = parentCtx.m_matrices.u_lightProjected;
+        localCtx.m_matrices.u_shadow = parentCtx.m_matrices.u_shadow;
 
         // TODO KI refraction plane clipping produces inproper clipping
         ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
@@ -185,13 +187,15 @@ bool WaterMapRenderer::render(
         clip.plane = glm::vec4(0, (sdist > 0 ? 1 : 1), 0, (sdist > 0 ? 1 : -1) * planePos.y);
 
         localCtx.updateMatricesUBO();
+        localCtx.updateDataUBO();
 
         drawNodes(localCtx, m_refractionBuffer.get(), closest, false);
 
-        ctx.updateClipPlanesUBO();
+        parentCtx.updateClipPlanesUBO();
     }
 
-    ctx.updateMatricesUBO();
+    parentCtx.updateMatricesUBO();
+    parentCtx.updateDataUBO();
 
     m_rendered = true;
 
