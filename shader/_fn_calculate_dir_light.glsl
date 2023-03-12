@@ -53,10 +53,10 @@ vec4 calculateDirLight(
   in vec4 shadowPos,
   in Material material)
 {
-  vec3 toLight = normalize(-light.worldDir);
+  const vec3 toLight = normalize(-light.worldDir);
 
   // ambient
-  vec4 ambient = light.ambient * material.diffuse;
+  const vec4 ambient = light.ambient * material.ambient * material.diffuse;
 
   // diffuse
   float diff = max(dot(normal, toLight), 0.0);

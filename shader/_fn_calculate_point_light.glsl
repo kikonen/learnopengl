@@ -5,10 +5,10 @@ vec4 calculatePointLight(
   in vec3 worldPos,
   in Material material)
 {
-  vec3 toLight = normalize(light.worldPos - worldPos);
+  const vec3 toLight = normalize(light.worldPos - worldPos);
 
   // ambient
-  vec4 ambient = light.ambient * material.ambient;
+  vec4 ambient = light.ambient * material.ambient * material.diffuse;
 
   // diffuse
   float diff = max(dot(toLight, normal), 0.0);
