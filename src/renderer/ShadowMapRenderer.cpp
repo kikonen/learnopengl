@@ -151,7 +151,7 @@ void ShadowMapRenderer::drawNodes(
             if (type->m_flags.tessellation) continue;
 
             // NOTE KI point sprite currently not supported
-            if (type->m_entityType != EntityType::sprite) continue;
+            if (type->m_entityType == EntityType::sprite) continue;
 
             for (auto& node : it.second) {
                 batch->draw(ctx, *node, program);
