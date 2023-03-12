@@ -92,14 +92,22 @@ entities:
     type: origo
     pos: [0, 14, 0]
     clones:
-      - pos: [0.0, 14.0, 0.0]
+      - pos: [-15.0, 14.0, -15.0]
         id: [auto, light-1]
-      - pos: [30.0, 14.0, 0.0]
+      - pos: [15.0, 14.0, -15.0]
         id: [auto, light-2]
-      - pos: [0.0, 14.0, 30.0]
+      - pos: [-15.0, 14.0, 15.0]
         id: [auto, light-3]
-      - pos: [30.0, 14.0, 30.0]
+      - pos: [15.0, 14.0, 15.0]
         id: [auto, light-4]
+      - pos: [-25.0, 10.0, -25.0]
+        id: [auto, light-5]
+      - pos: [25.0, 10.0, -25.0]
+        id: [auto, light-6]
+      - pos: [-25, 10.0, 25.0]
+        id: [auto, light-7]
+      - pos: [25.0, 10.0, 25.0]
+        id: [auto, light-8]
     script_file: scripts/anim_moving_point_light
     enabled: true
   - name: Moving point light
@@ -120,6 +128,38 @@ entities:
         parent_id: [auto, light-3]
       - pos: [0.0, 0.0, 10.0]
         parent_id: [auto, light-4]
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: [auto, light-5]
+        material_modifier:
+          kd: [0.8, 0.0, 0.0, 1.0]
+        light:
+          ambient: [0.6, 0.0 0.0, 1.0]
+          diffuse: [0.8, 0.0, 0.0, 1.0]
+          specular: [0.9, 0.0, 0.0, 1.0]
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: [auto, light-6]
+        material_modifier:
+          kd: [0.0, 0.9, 0.0, 1.0]
+        light:
+          ambient: [0.0, 0.6 0.0, 1.0]
+          diffuse: [0.0, 0.8, 0.0, 1.0]
+          specular: [0.0, 0.9, 0.0, 1.0]
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: [auto, light-7]
+        material_modifier:
+          kd: [0.0, 0.0, 0.9, 1.0]
+        light:
+          ambient: [0.0, 0.0 0.6, 1.0]
+          diffuse: [0.0, 0.0, 0.8, 1.0]
+          specular: [0.0, 0.0, 0.9, 1.0]
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: [auto, light-8]
+        material_modifier:
+          kd: [0.9, 0.0, 0.9, 1.0]
+        light:
+          ambient: [0.6, 0.0 0.6, 1.0]
+          diffuse: [0.8, 0.0, 0.8, 1.0]
+          specular: [0.9, 0.0, 0.9, 1.0]
     light:
       type: point
       linear: 0.14
@@ -607,6 +647,18 @@ entities:
     pos: [-1024, 150, -1024]
     scale: 5.0
     material: basic
+    render_flags:
+      light: true
+    light:
+      type: point
+      linear: 0.014
+      quadratic: 0.0007
+      cutoff_angle: 12.5
+      outer_cutoff_angle: 25.0
+      ambient: [0.0, 0.4, 0.0, 1.0]
+      diffuse: [0.0, 0.8, 0.0, 1.0]
+      specular: [0.0, 1.0, 0.0, 1.0]
+      enabled: true
     repeat:
       x_count: 9
       y_count: 1

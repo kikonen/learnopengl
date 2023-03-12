@@ -99,25 +99,35 @@ void RenderData::updateLights(Registry* registry, bool useLight)
     if (useLight) {
         int count = 0;
         for (auto* node : registry->m_nodeRegistry->m_pointLights) {
-            if (count >= LIGHT_COUNT) break;
+            if (count >= MAX_LIGHT_COUNT) break;
             if (!node->m_light->m_enabled) continue;
 
             lightsUbo.pointLights[count] = node->m_light->toPointightUBO();
             count++;
         }
         lightsUbo.pointCount = count;
+
+        int diff = registry->m_nodeRegistry->m_pointLights.size() - MAX_LIGHT_COUNT;
+        if (diff > 0) {
+            KI_INFO_OUT(fmt::format("SKIPPED POINT_LIGHTS: {}", diff));
+        }
     }
 
     if (useLight) {
         int count = 0;
         for (auto* node : registry->m_nodeRegistry->m_spotLights) {
-            if (count >= LIGHT_COUNT) break;
+            if (count >= MAX_LIGHT_COUNT) break;
             if (!node->m_light->m_enabled) continue;
 
             lightsUbo.spotLights[count] = node->m_light->toSpotLightUBO();
             count++;
         }
         lightsUbo.spotCount = count;
+
+        int diff = registry->m_nodeRegistry->m_spotLights.size() - MAX_LIGHT_COUNT;
+        if (diff > 0) {
+            KI_INFO_OUT(fmt::format("SKIPPED SPOT_LIGHTS: {}", diff));
+        }
     }
 
     m_lights.update(0, sizeof(LightsUBO), &lightsUbo);

@@ -71,7 +71,7 @@
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 #ifndef LIGHT_COUNT
-  #define LIGHT_COUNT 8
+  #define LIGHT_COUNT 128
 #endif
 
 #ifndef CS_COUNT_X

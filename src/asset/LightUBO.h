@@ -4,9 +4,7 @@
 
 #include "ki/GL.h"
 
-constexpr unsigned int MIN_LIGHT_COUNT = 8;
-constexpr unsigned int MAX_LIGHT_COUNT = 8;
-constexpr unsigned int LIGHT_COUNT = MAX_LIGHT_COUNT;
+constexpr unsigned int MAX_LIGHT_COUNT = 128;
 
 
 // NOTE KI align 16 for UBO struct
@@ -66,7 +64,7 @@ struct LightsUBO {
 
     DirLightUBO dir[1];
     // NOTE KI align 16 for UBO array entries
-    PointLightUBO pointLights[LIGHT_COUNT];
+    PointLightUBO pointLights[MAX_LIGHT_COUNT];
     // NOTE KI align 16 for UBO array entries
-    SpotLightUBO spotLights[LIGHT_COUNT];
+    SpotLightUBO spotLights[MAX_LIGHT_COUNT];
 };
