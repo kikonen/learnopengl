@@ -15,12 +15,8 @@ in VS_OUT {
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
-
-  vec4 shadowPos;
 
   mat3 TBN;
 } fs_in;
@@ -43,8 +39,6 @@ precision mediump float;
 #include fn_calculate_normal_pattern.glsl
 
 void main() {
-  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
-
   #include var_tex_material.glsl
 
   vec3 normal = fs_in.normal;

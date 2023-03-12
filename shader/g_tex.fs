@@ -66,11 +66,6 @@ void main() {
 
   vec4 texColor = material.diffuse;
 
-#ifdef USE_ALPHA
-  if (texColor.a < 0.1)
-    discard;
-#endif
-
   if (!gl_FrontFacing) {
     float alpha = texColor.a;
     texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);
