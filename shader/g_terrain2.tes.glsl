@@ -17,11 +17,8 @@ in TCS_OUT {
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
-
-  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -35,11 +32,8 @@ out TES_OUT {
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
-
-  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -95,9 +89,7 @@ void main()
   tes_out.normal = normal;
   tes_out.texCoord = texCoord;
   tes_out.vertexPos = vertexPos;
-  tes_out.viewPos = (u_viewMatrix * worldPos).xyz;
   tes_out.materialIndex = tes_in[0].materialIndex;
-  tes_out.shadowPos = u_shadowMatrix * worldPos;
 
 #ifdef USE_NORMAL_TEX
   tes_out.TBN = tes_in[0].TBN;

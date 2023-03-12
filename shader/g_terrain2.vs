@@ -25,11 +25,8 @@ out VS_OUT {
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
-
-  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -81,14 +78,11 @@ void main() {
 
   vs_out.worldPos = worldPos.xyz;
   vs_out.vertexPos = a_pos;
-  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normalMatrix * a_normal;
 
 //  calculateClipping(worldPos);
-
-  vs_out.shadowPos = u_shadowMatrix * worldPos;
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0)

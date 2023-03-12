@@ -1,5 +1,4 @@
 #ifdef USE_NORMAL_TEX
-  //vec3 normal = texture(u_textures[material.normalMapTex], fs_in.texCoord).rgb;
   vec3 normal;
   if (material.normalMapTex >= 0) {
     sampler2D sampler = sampler2D(u_texture_handles[material.normalMapTex]);

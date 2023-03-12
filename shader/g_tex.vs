@@ -19,17 +19,12 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_material_indeces.glsl
 
 out VS_OUT {
-  flat uint entityIndex;
-
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
-
-  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -78,7 +73,6 @@ void main() {
 
   gl_Position = u_projectedMatrix * worldPos;
 
-  vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
   vs_out.materialIndex = materialIndex;
 
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
@@ -86,14 +80,11 @@ void main() {
 
   vs_out.worldPos = worldPos.xyz;
   vs_out.vertexPos = a_pos;
-  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normalMatrix * a_normal;
 
   calculateClipping(worldPos);
-
-  vs_out.shadowPos = u_shadowMatrix * worldPos;
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0)

@@ -10,17 +10,11 @@
 in VS_OUT {
   vec4 glp;
 
-  flat uint entityIndex;
-
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
-
-  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   mat3 TBN;
@@ -113,8 +107,6 @@ void main() {
   // by looking up three height values around this vertex.
   // input parameters are offset for neighbors, and scaling for width and height
   normal = estimateWaveNormal(.0002, 32.0, 16.0);
-
-//  #include var_calculate_diffuse.glsl
 
   vec4 gp = fs_in.glp;
   vec2 refractCoord = vec2(gp.x, gp.y) / (gp.w * 2.0) + 0.5 + totalDistortion;

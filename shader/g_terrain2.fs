@@ -22,11 +22,9 @@ in TES_OUT {
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
 
-  vec4 shadowPos;
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
 #endif

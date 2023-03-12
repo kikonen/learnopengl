@@ -19,11 +19,8 @@ in VS_OUT {
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
-
-  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -37,11 +34,8 @@ out TCS_OUT {
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
-  vec3 viewPos;
 
   flat uint materialIndex;
-
-  vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -72,10 +66,7 @@ void main()
   tcs_out[gl_InvocationID].normal = tcs_in[gl_InvocationID].normal;
   tcs_out[gl_InvocationID].texCoord = tcs_in[gl_InvocationID].texCoord;
   tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
-  tcs_out[gl_InvocationID].viewPos = tcs_in[gl_InvocationID].viewPos;
   tcs_out[gl_InvocationID].materialIndex = tcs_in[gl_InvocationID].materialIndex;
-  tcs_out[gl_InvocationID].shadowPos = tcs_in[gl_InvocationID].shadowPos;
-
 #ifdef USE_NORMAL_TEX
   tcs_out[gl_InvocationID].TBN = tcs_in[gl_InvocationID].TBN;
 #endif
