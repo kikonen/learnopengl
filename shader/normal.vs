@@ -2,6 +2,7 @@
 
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
+layout (location = ATTR_TANGENT) in vec3 a_tangent;
 
 #include struct_entity.glsl
 
@@ -11,6 +12,7 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 
 out VS_OUT {
   vec3 normal;
+  flat mat3 TBN;
 } vs_out;
 
 
@@ -50,4 +52,13 @@ void main() {
   gl_Position = u_viewMatrix * worldPos;
 
   vs_out.normal = normalize(viewNormalMatrix * a_normal);
+
+  {
+    const vec3 N = normalize(vs_out.normal);
+    vec3 T = normalize(normalMatrix * a_tangent);
+    T = normalize(T - dot(T, N) * N);
+    const vec3 B = cross(N, T);
+
+    vs_out.TBN = mat3(T, B, N);
+  }
 }

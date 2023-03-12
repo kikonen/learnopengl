@@ -13,7 +13,7 @@ entities:
     type: origo
     pos: [10, 0, 20]
     camera:
-      pos: [0, 0, 9]
+      pos: [0, 0, 0]
       default: true
       enabled: true
     controller:

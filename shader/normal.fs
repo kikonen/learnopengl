@@ -1,4 +1,10 @@
 #version 460 core
+
+
+in GS_OUT {
+  vec4 fragColor;
+} fs_in;
+
 out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
@@ -9,5 +15,5 @@ precision mediump float;
 
 void main()
 {
-  o_fragColor = vec4(1.0, 1.0, 0.0, 1.0);
+  o_fragColor = fs_in.fragColor;
 }

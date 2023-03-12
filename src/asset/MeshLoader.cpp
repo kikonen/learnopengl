@@ -112,7 +112,8 @@ void MeshLoader::loadData(
             if (k == "mtllib") {
                 loadMaterials(mesh, loadedMaterials, v1);
                 for (auto& material : loadedMaterials) {
-                    if (!material.map_bump.empty()) {
+                    //if (!material.map_bump.empty())
+                    {
                         tangents.reserve(positions.size());
                     }
                 }
@@ -173,7 +174,8 @@ void MeshLoader::loadData(
                     ni = createNormal(positions, normals, pi);
                 }
 
-                if (material && !material->map_bump.empty()) {
+                //if (material && !material->map_bump.empty())
+                if (!textures.empty()) {
                     createTangents(positions, textures, normals, tangents, pi, ti, ni, tangenti);
                 }
 
