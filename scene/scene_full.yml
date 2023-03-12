@@ -13,13 +13,13 @@ root:
   xxscript_file: scripts/seq_spin_root
 entities:
   - name: zero origo
-    id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    id: [auto, zero-origo]
     type: origo
     pos: [0.0, 0.0, 0.0]
     enabled: true
     script_file: scripts/seq_zero_origo
   - name: ZERO
-    parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    parent_id: [auto, zero-origo]
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 0.0]
@@ -59,14 +59,14 @@ entities:
       z_step: 50
     enabled: true
   - name: Directional light origo
-    id: 910be8c1-2060-455f-9b43-179a4814732f
-    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    id: [auto, light-dir-origo]
+    parent_id: [auto, planet-origo]
     type: origo
     pos: [0.0, 0.0, 0.0]
     enabled: true
     script_file: scripts/anim_directional_light
   - name: Directional light
-    parent_id: 910be8c1-2060-455f-9b43-179a4814732f
+    parent_id: [auto, light-dir-origo]
     pos: [0, 0, -100]
     scale: 1.5
     model: light
@@ -81,14 +81,14 @@ entities:
       kd: [0.0, 0.7, 0.0, 1.0]
     light:
       type: directional
-      target_id: fe3d4648-e0ee-4a84-8864-a8eda9a281f9
+      target_id: [auto, dir-light-target]
       ambient: [0.5, 0.52, 0.52, 1.0]
       diffuse: [0.8, 0.8, 0.6, 1.0]
       specular: [0.3, 0.3, 0.2, 1.0]
       enabled: true
     enabled: true
   - name: Moving point light origo
-    parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    parent_id: [auto, zero-origo]
     type: origo
     pos: [0, 14, 0]
     clones:
@@ -103,7 +103,7 @@ entities:
     script_file: scripts/anim_moving_point_light
     enabled: true
   - name: Moving point light
-    parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    parent_id: [auto, zero-origo]
     pos: [0, 0, 0]
     scale: 0.5
     model: light
@@ -133,14 +133,14 @@ entities:
       enabled: true
     enabled: true
   - name: Rock light origo
-    id: b2e6b0e4-7e29-4697-9bca-f387d740ba6c
-    parent_id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
+    id: [auto, rock-light-origo]
+    parent_id: [auto, rock-origo]
     type: origo
     pos: [0.0, 10.0, 0.0]
     enabled: true
     script_file: scripts/anim_rock_light
   - name: Rock light
-    parent_id: b2e6b0e4-7e29-4697-9bca-f387d740ba6c
+    parent_id: [auto, rock-light-origo]
     pos: [-10, 0, 0]
     scale: 0.5
     model: light
@@ -159,15 +159,14 @@ entities:
       enabled: true
     enabled: true
   - name: Active node
-    parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    parent_id: [auto, zero-origo]
     model: texture_cube
     program: g_tex
     pos: [0, 15, 0]
     script_file: scripts/anim_node_path
     enabled: true
   - name: Active node around rock
-    id: c5c1d3e7-7d86-42d3-95e6-eed4ab54c58b
-    parent_id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
+    parent_id: [auto, rock-origo]
     model: texture_cube
     program: g_tex
     pos: [0, -5, 0]
@@ -333,7 +332,7 @@ entities:
     enabled: true
   - name: Teapot
     desc: Dir light target
-    id: fe3d4648-e0ee-4a84-8864-a8eda9a281f9
+    id: [auto, dir-light-target]
     model: smooth_teapot
     program: g_tex
     pos: [-5.0, 25.0, -5.0]
@@ -430,7 +429,7 @@ entities:
     enabled: true
   - name: ball origo
     type: origo
-    id: 82896a38-e5cf-4274-b4be-e79ac8325b65
+    id: [auto, ball-origo]
     pos: [5.0, 30.0, 15.0]
     enabled: true
   - name: Silver ball
@@ -444,7 +443,7 @@ entities:
       reflection: 0.05
     enabled: true
   - name: Bronze ball
-    parent_id: 82896a38-e5cf-4274-b4be-e79ac8325b65
+    parent_id: [auto, ball-origo]
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 5.0]
@@ -455,7 +454,7 @@ entities:
       reflection: 0.05
     enabled: true
   - name: Copper ball
-    parent_id: 82896a38-e5cf-4274-b4be-e79ac8325b65
+    parent_id: [auto, ball-origo]
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 10.0]
@@ -656,12 +655,12 @@ entities:
       z_step: 256
     enabled: true
   - name: Planet origo
-    id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    id: [auto, planet-origo]
     type: origo
     pos: [10.0, 150.0, 200.0]
     enabled: true
   - name: Planet
-    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    parent_id: [auto, planet-origo]
     model: [planet, planet]
     program: g_tex
     pos: [0, 0, 0]
@@ -669,16 +668,15 @@ entities:
     enabled: true
     script_file: scripts/anim_planet
   - name: Rock origo
-    id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
-    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    id: [auto, rock-origo]
+    parent_id: [auto, planet-origo]
     type: origo
     pos: [0.0, -50.0, 0.0]
     render_flags:
       cube_map: true
     enabled: true
   - name: Rock
-    id: 91874c8a-643c-4ae9-b90a-9712cb68f95d
-    parent_id: 7c90bc35-1a05-4755-b52a-1f8eea0bacfa
+    parent_id: [auto, rock-origo]
     model: [rock, rock]
     program: g_tex
     pos: [0.0, 0, 0.0]
@@ -687,7 +685,7 @@ entities:
       reflection: 0.6
     enabled: true
   - name: Asteroid belt
-    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    parent_id: [auto, planet-origo]
     model: [rock, rock]
     instanced: true
     program: g_tex
@@ -766,19 +764,7 @@ entities:
       z_step: 2
     enabled: true
     script_file: scripts/seq_skeleton_army
-  - name: Skeleton single
-    xxid: fb7ba424-f219-4c12-a00f-703b9ecebbbf
-    model: quad
-    program: g_tex
-    pos: [15, 11.5, 20.0]
-    material: skeleton
-    render_flags:
-      alpha: true
-      render_back: false
-    scale: [1.5, 3, 1]
-    enabled: false
   - name: Giant wooden box
-    id: e264f27f-d949-4504-b862-583213484d7c
     model: quad
     xxmodel: woodwall
     material: giant_woodbox
@@ -792,7 +778,6 @@ entities:
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [90, 0, 0]
-        id: 9da42971-4809-480b-98b6-ed238b978ed2
       - pos: [0.0, -100.0, .0]
         rot: [270, 0, 0]
       - pos: [100.0, 0.0, 0.0]
