@@ -35,10 +35,7 @@ entities:
     render_flags:
       allow_normals: false
     camera:
-      zoom: 45
-      up: [0, 1, 0]
-      front: [0, 0, -1]
-      pos: [0, 0, -9]
+      pos: [0, 0, 0]
       rotation: [0, 180, 0.0]
       default: true
       enabled: true
@@ -516,9 +513,7 @@ entities:
     scale: 1
     camera:
       zoom: 80
-      up: [0, 1, 0]
-      front: [0, 0, -1]
-      pos: [0, 1, 0]
+      pos: [0, 0, 0]
       enabled: true
     xxcontroller:
       type: camera
