@@ -40,11 +40,6 @@ layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
 layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 o_fragColor;
-layout (location = 1) out vec4 o_fragSpecular;
-layout (location = 2) out vec4 o_fragEmission;
-layout (location = 3) out vec4 o_fragAmbient;
-layout (location = 4) out vec3 o_fragPosition;
-layout (location = 5) out vec3 o_fragNormal;
 
 ////////////////////////////////////////////////////////////
 //
@@ -81,9 +76,7 @@ void main() {
 
   #include var_calculate_diffuse.glsl
 
-//  vec4 shaded = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
-//  vec4 texColor = shaded;
-  vec4 texColor = material.diffuse;
+  vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
 
 #ifdef USE_ALPHA
   if (texColor.a < 0.1)
@@ -100,7 +93,7 @@ void main() {
     texColor.a = alpha;
   }
 
-//  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
+  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
 
   sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);
   float h = texture(heightMap, fs_in.texCoord).r;
@@ -108,11 +101,4 @@ void main() {
 //  texColor = vec4(h, h, h, 1.0);
 
   o_fragColor = texColor;
-  o_fragSpecular = material.specular;
-  o_fragSpecular.a = material.shininess;
-  o_fragEmission = material.emission;
-  o_fragAmbient = material.ambient;
-
-  o_fragPosition = fs_in.worldPos;
-  o_fragNormal = normal;
 }

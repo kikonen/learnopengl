@@ -2,7 +2,9 @@
 
 #include struct_lights.glsl
 #include struct_material.glsl
+#include struct_entity.glsl
 
+#include uniform_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_lights.glsl
@@ -15,7 +17,7 @@
 layout(early_fragment_tests) in;
 #endif
 
-in GS_OUT {
+in TES_OUT {
   flat uint entityIndex;
 
   vec3 worldPos;
@@ -30,12 +32,19 @@ in GS_OUT {
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
 #endif
+
+  float height;
 } fs_in;
 
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
 layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 o_fragColor;
+layout (location = 1) out vec4 o_fragSpecular;
+layout (location = 2) out vec4 o_fragEmission;
+layout (location = 3) out vec4 o_fragAmbient;
+layout (location = 4) out vec3 o_fragPosition;
+layout (location = 5) out vec3 o_fragNormal;
 
 ////////////////////////////////////////////////////////////
 //
@@ -52,7 +61,7 @@ precision mediump float;
 
 void main() {
   const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
-
+  const Entity entity = u_entities[fs_in.entityIndex];
   #include var_tex_material.glsl
 
 #ifdef USE_ALPHA
@@ -62,9 +71,17 @@ void main() {
 
   #include var_tex_material_normal.glsl
 
+  if (material.pattern == 1) {
+    normal = calculateNormalPattern(fs_in.vertexPos, normal);
+  }
+
+  if (!gl_FrontFacing) {
+    normal = -normal;
+  }
+
   #include var_calculate_diffuse.glsl
 
-  vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
+  vec4 texColor = material.diffuse;
 
 #ifdef USE_ALPHA
   if (texColor.a < 0.1)
@@ -75,6 +92,25 @@ void main() {
   texColor = vec4(texColor.rgb, 1.0);
 #endif
 
-  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
+  if (!gl_FrontFacing) {
+    float alpha = texColor.a;
+    texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);
+    texColor.a = alpha;
+  }
+
+//  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
+
+  sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);
+  float h = texture(heightMap, fs_in.texCoord).r;
+
+//  texColor = vec4(h, h, h, 1.0);
+
   o_fragColor = texColor;
+  o_fragSpecular = material.specular;
+  o_fragSpecular.a = material.shininess;
+  o_fragEmission = material.emission;
+  o_fragAmbient = material.ambient;
+
+  o_fragPosition = fs_in.worldPos;
+  o_fragNormal = normal;
 }

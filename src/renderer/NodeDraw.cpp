@@ -98,7 +98,7 @@ void NodeDraw::drawNodesImpl(
         for (const auto& it : typeMap) {
             auto* type = it.first.type;
 
-            if (useGBuffer == type->m_flags.noGBuffer) continue;
+            if (useGBuffer != type->m_flags.gbuffer) continue;
             if (!typeSelector(type)) continue;
 
             auto& batch = ctx.m_batch;

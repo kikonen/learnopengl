@@ -15,6 +15,8 @@ struct NodeRenderFlags {
     bool renderBack = false;
     bool wireframe = false;
 
+    bool gbuffer = false;
+
     bool instanced = false;
 
     bool mirror = false;
@@ -30,7 +32,6 @@ struct NodeRenderFlags {
     // noDisplay == temporarily hidden
     bool noDisplay = false;
     bool noFrustum = false;
-    bool noGBuffer = false;
 
     bool tessellation = false;
 

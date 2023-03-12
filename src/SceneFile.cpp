@@ -146,7 +146,6 @@ void SceneFile::attachSkybox(
     //flags.noRefract = true;
     flags.noDisplay = false;
     flags.noSelect = true;
-    flags.noGBuffer = true;
 
     type->m_drawOptions.depthFunc = GL_LEQUAL;
 
@@ -612,6 +611,8 @@ void SceneFile::assignFlags(
 {
     NodeRenderFlags& flags = type->m_flags;
 
+    flags.gbuffer = data.programName.starts_with("g_");
+
     {
         const auto& e = data.renderFlags.find("alpha");
         if (e != data.renderFlags.end()) {
@@ -657,9 +658,9 @@ void SceneFile::assignFlags(
         }
     }
     {
-        const auto& e = data.renderFlags.find("no_gbuffer");
+        const auto& e = data.renderFlags.find("gbuffer");
         if (e != data.renderFlags.end()) {
-            flags.noGBuffer = e->second;
+            flags.gbuffer = e->second;
         }
     }
     {

@@ -9,13 +9,9 @@
 #include uniform_materials.glsl
 #include uniform_textures.glsl
 
-#ifndef USE_ALPHA
-// https://www.khronos.org/opengl/wiki/Early_Fragment_Test
-// https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
-layout(early_fragment_tests) in;
-#endif
+in VS_OUT {
+  vec4 glp;
 
-in GS_OUT {
   flat uint entityIndex;
 
   vec3 worldPos;
@@ -27,15 +23,20 @@ in GS_OUT {
   flat uint materialIndex;
 
   vec4 shadowPos;
-#ifdef USE_NORMAL_TEX
-  flat mat3 TBN;
-#endif
+
+  mat3 TBN;
 } fs_in;
 
-layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
+layout(binding = UNIT_MIRROR_REFLECTION) uniform sampler2D u_reflectionTex;
+
 layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
 
 layout (location = 0) out vec4 o_fragColor;
+layout (location = 1) out vec4 o_fragSpecular;
+layout (location = 2) out vec4 o_fragEmission;
+layout (location = 3) out vec4 o_fragAmbient;
+layout (location = 4) out vec3 o_fragPosition;
+layout (location = 5) out vec3 o_fragNormal;
 
 ////////////////////////////////////////////////////////////
 //
@@ -55,26 +56,33 @@ void main() {
 
   #include var_tex_material.glsl
 
-#ifdef USE_ALPHA
-  if (material.diffuse.a < 0.01)
-    discard;
-#endif
+  vec3 normal = fs_in.normal;
 
-  #include var_tex_material_normal.glsl
+  if (!gl_FrontFacing) {
+    normal = -normal;
+  }
 
-  #include var_calculate_diffuse.glsl
+  if (gl_FrontFacing)
+  {
+    vec4 gp = fs_in.glp;
+    vec2 reflectCoord = vec2(-gp.x, gp.y) / (gp.w * 2.0) + 0.5;
 
-  vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
+    vec4 reflectColor = texture(u_reflectionTex, reflectCoord);
 
-#ifdef USE_ALPHA
-  if (texColor.a < 0.1)
-    discard;
-#endif
+    vec4 mixColor = reflectColor;
 
-#ifndef USE_BLEND
-  texColor = vec4(texColor.rgb, 1.0);
-#endif
+    vec4 origDiffuse = material.diffuse;
+    material.diffuse = mix(material.diffuse, mixColor, 0.9);
+  }
 
-  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
+  vec4 texColor = material.diffuse;
+
   o_fragColor = texColor;
+  o_fragSpecular = material.specular;
+  o_fragSpecular.a = material.shininess;
+  o_fragEmission = material.emission;
+  o_fragAmbient = material.ambient;
+
+  o_fragPosition = fs_in.worldPos;
+  o_fragNormal = normal;
 }
