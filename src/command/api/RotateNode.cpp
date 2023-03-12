@@ -32,8 +32,6 @@ void RotateNode::execute(
     m_elapsedTime += ctx.m_clock.elapsedSecs;
     m_finished = m_elapsedTime >= m_finishTime;
 
-    const auto& nodeRotation = m_node->getRotation();
-
     // NOTE KI keep steps relative to previous
     // => in case there is N concurrent commands
     glm::vec3 rotation;
@@ -50,6 +48,6 @@ void RotateNode::execute(
     }
 
     auto adjust = rotation - m_previous;
-    m_node->setRotation(nodeRotation + adjust);
+    m_node->adjustRotation(adjust);
     m_previous = rotation;
 }

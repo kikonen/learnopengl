@@ -81,12 +81,20 @@ public:
         m_instance.setPosition(pos);
     }
 
+    inline void adjustPosition(const glm::vec3& adjust) noexcept {
+        m_instance.adjustPosition(adjust);
+    }
+
     inline const glm::vec3 getPosition() const noexcept {
         return m_instance.getPosition();
     }
 
     inline void setRotation(const glm::vec3& rotation) noexcept {
         m_instance.setRotation(rotation);
+    }
+
+    inline void adjustRotation(const glm::vec3& adjust) noexcept {
+        m_instance.adjustRotation(adjust);
     }
 
     inline const glm::vec3& getRotation() const noexcept {
@@ -99,6 +107,10 @@ public:
 
     inline void setScale(const glm::vec3& scale) noexcept {
         m_instance.setScale(scale);
+    }
+
+    inline void adjustScale(const glm::vec3& adjust) noexcept {
+        m_instance.adjustScale(adjust);
     }
 
     inline const glm::vec3 getScale() const noexcept {

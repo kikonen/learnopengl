@@ -32,8 +32,6 @@ void ScaleNode::execute(
     m_elapsedTime += ctx.m_clock.elapsedSecs;
     m_finished = m_elapsedTime >= m_finishTime;
 
-    const auto& nodescale = m_node->getScale();
-
     // NOTE KI keep steps relative to previous
     // => in case there is N concurrent commands
     glm::vec3 scale;
@@ -50,6 +48,6 @@ void ScaleNode::execute(
     }
 
     auto adjust = scale - m_previous;
-    m_node->setScale(nodescale + adjust);
+    m_node->adjustScale(adjust);
     m_previous = scale;
 }

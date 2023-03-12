@@ -43,7 +43,6 @@ void MoveSplineNode::execute(
     m_elapsedTime += ctx.m_clock.elapsedSecs;
     m_finished = m_elapsedTime >= m_finishTime;
 
-    const auto& nodePosition = m_node->getPosition();
     //if (m_node->m_id == KI_UUID("65ce67c8-3efe-4b04-aaf9-fe384152c547")) {
     //    KI_INFO_OUT(fmt::format(
     //        "MOVE-{}: {}, {}, {}",
@@ -68,7 +67,7 @@ void MoveSplineNode::execute(
     }
 
     auto adjust = position - m_previous;
-    m_node->setPosition(nodePosition + adjust);
+    m_node->adjustPosition(adjust);
     m_previous = position;
 
     //if (m_finished) {

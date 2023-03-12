@@ -33,8 +33,6 @@ void MoveNode::execute(
     m_elapsedTime += ctx.m_clock.elapsedSecs;
     m_finished = m_elapsedTime >= m_finishTime;
 
-    const auto& nodePosition = m_node->getPosition();
-
     // NOTE KI keep steps relative to previous
     // => in case there is N concurrent commands
     glm::vec3 position;
@@ -51,6 +49,6 @@ void MoveNode::execute(
     }
 
     auto adjust = position - m_previous;
-    m_node->setPosition(nodePosition + adjust);
+    m_node->adjustPosition(adjust);
     m_previous = position;
 }

@@ -105,6 +105,17 @@ struct NodeInstance {
         }
     }
 
+    inline void adjustPosition(const glm::vec3& adjust) noexcept {
+        glm::vec3 pos{ adjust };
+        {
+            auto& vec = m_translateMatrix[3];
+            pos.x += vec[0];
+            pos.y += vec[1];
+            pos.z += vec[2];
+        }
+        setPosition(pos);
+    }
+
     inline void setScale(float scale) noexcept
     {
         assert(scale >= 0);
@@ -133,7 +144,27 @@ struct NodeInstance {
         }
     }
 
+    inline void adjustScale(const glm::vec3& adjust) noexcept {
+        glm::vec3 scale{ adjust };
+        {
+            scale.x += m_scaleMatrix[0][0];
+            scale.y += m_scaleMatrix[1][1];
+            scale.z += m_scaleMatrix[2][2];
+        }
+        setScale(scale);
+    }
+
     void setRotation(const glm::vec3& rotation) noexcept;
+
+    inline void adjustRotation(const glm::vec3& adjust) noexcept {
+        glm::vec3 rotation{ adjust };
+        {
+            rotation.x += m_rotation.x;
+            rotation.y += m_rotation.y;
+            rotation.z += m_rotation.z;
+        }
+        setRotation(rotation);
+    }
 
     inline const glm::vec3 getWorldPosition() const noexcept {
         return m_modelMatrix[3];
@@ -143,6 +174,7 @@ struct NodeInstance {
     {
         if (!m_dirty) return;
 
+        updateRotationMatrix();
         m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
         m_dirty = false;
         m_matrixLevel++;
@@ -153,12 +185,15 @@ struct NodeInstance {
     {
         if (!m_dirty && parentMatrixLevel == m_parentMatrixLevel) return;
 
+        updateRotationMatrix();
         m_modelMatrix = parentMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
         m_dirty = false;
         m_parentMatrixLevel = parentMatrixLevel;
         m_matrixLevel++;
         m_entityDirty = true;
     }
+
+    void updateRotationMatrix() noexcept;
 
     void updateEntity(EntitySSBO* entity);
 };
