@@ -39,7 +39,7 @@ private:
     void processActive(const RenderContext& ctx);
     void processCleanup(const RenderContext& ctx) noexcept;
 
-    void updateOldest() noexcept;
+    //void updateOldest() noexcept;
 
 private:
     const Assets& m_assets;
@@ -61,5 +61,5 @@ private:
 
     std::vector<int> m_canceled;
 
-    int m_oldestAliveCommandId = -1;
+    //int m_oldestAliveCommandId = -1;
 };

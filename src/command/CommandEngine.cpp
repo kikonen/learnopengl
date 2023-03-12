@@ -20,7 +20,7 @@ void CommandEngine::prepare()
 
 void CommandEngine::update(const RenderContext& ctx)
 {
-    updateOldest();
+    //updateOldest();
     processCanceled(ctx);
     processPending(ctx);
     processBlocked(ctx);
@@ -54,7 +54,7 @@ void CommandEngine::cancel(int commandId) noexcept
 
 bool CommandEngine::isAlive(int commandId) noexcept
 {
-    return commandId >= m_oldestAliveCommandId;
+    return m_commands.find(commandId) != m_commands.end();
 }
 
 void CommandEngine::activateNext(const Command* cmd) noexcept
@@ -205,23 +205,23 @@ void CommandEngine::processCleanup(const RenderContext& ctx) noexcept
     }
 }
 
-void CommandEngine::updateOldest() noexcept
-{
-    int min = INT_MAX;
-    for (const auto& cmd : m_pending) {
-        if (cmd->m_id < min) {
-            min = cmd->m_id;
-        }
-    }
-    for (const auto& cmd : m_blocked) {
-        if (cmd->m_id < min) {
-            min = cmd->m_id;
-        }
-    }
-    for (const auto& cmd : m_active) {
-        if (cmd->m_id < min) {
-            min = cmd->m_id;
-        }
-    }
-    m_oldestAliveCommandId = min;
-}
+//void CommandEngine::updateOldest() noexcept
+//{
+//    int min = INT_MAX;
+//    for (const auto& cmd : m_pending) {
+//        if (cmd->m_id < min) {
+//            min = cmd->m_id;
+//        }
+//    }
+//    for (const auto& cmd : m_blocked) {
+//        if (cmd->m_id < min) {
+//            min = cmd->m_id;
+//        }
+//    }
+//    for (const auto& cmd : m_active) {
+//        if (cmd->m_id < min) {
+//            min = cmd->m_id;
+//        }
+//    }
+//    m_oldestAliveCommandId = min;
+//}
