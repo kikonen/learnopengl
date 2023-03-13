@@ -136,6 +136,8 @@ entities:
           ambient: [0.6, 0.0 0.0, 1.0]
           diffuse: [0.8, 0.0, 0.0, 1.0]
           specular: [0.9, 0.0, 0.0, 1.0]
+          enabled: false
+        enabled: false
       - pos: [0.0, 0.0, 15.0]
         parent_id: [auto, light-6]
         material_modifier:
@@ -144,6 +146,8 @@ entities:
           ambient: [0.0, 0.6 0.0, 1.0]
           diffuse: [0.0, 0.8, 0.0, 1.0]
           specular: [0.0, 0.9, 0.0, 1.0]
+          enabled: false
+        enabled: false
       - pos: [0.0, 0.0, 15.0]
         parent_id: [auto, light-7]
         material_modifier:
@@ -152,6 +156,8 @@ entities:
           ambient: [0.0, 0.0 0.6, 1.0]
           diffuse: [0.0, 0.0, 0.8, 1.0]
           specular: [0.0, 0.0, 0.9, 1.0]
+          enabled: false
+        enabled: false
       - pos: [0.0, 0.0, 15.0]
         parent_id: [auto, light-8]
         material_modifier:
@@ -160,6 +166,8 @@ entities:
           ambient: [0.6, 0.0 0.6, 1.0]
           diffuse: [0.8, 0.0, 0.8, 1.0]
           specular: [0.9, 0.0, 0.9, 1.0]
+          enabled: false
+        enabled: false
     light:
       type: point
       linear: 0.14
@@ -658,7 +666,7 @@ entities:
       ambient: [0.0, 0.4, 0.0, 1.0]
       diffuse: [0.0, 0.8, 0.0, 1.0]
       specular: [0.0, 1.0, 0.0, 1.0]
-      enabled: true
+      enabled: false
     repeat:
       x_count: 9
       y_count: 1
