@@ -29,10 +29,13 @@ void NodeDraw::update(const RenderContext& ctx)
     prepareQuad();
 }
 
-void NodeDraw::clear(const RenderContext& ctx, const glm::vec4& clearColor)
+void NodeDraw::clear(
+    const RenderContext& ctx,
+    GLbitfield clearMask,
+    const glm::vec4& clearColor)
 {
     m_gbuffer.bind(ctx);
-    m_gbuffer.m_buffer->clear(ctx, clearColor);
+    m_gbuffer.m_buffer->clear(ctx, clearMask, clearColor);
 }
 
 void NodeDraw::drawNodes(
@@ -41,14 +44,14 @@ void NodeDraw::drawNodes(
     bool includeBlended,
     std::function<bool(const MeshType*)> typeSelector,
     std::function<bool(const Node*)> nodeSelector,
-    bool clearTarget,
+    GLbitfield clearMask,
     const glm::vec4& clearColor)
 {
     // pass 1 - geometry
     // => nodes supporting G-buffer
-    if (clearTarget) {
+    {
         m_gbuffer.bind(ctx);
-        m_gbuffer.m_buffer->clear(ctx, clearColor);
+        m_gbuffer.m_buffer->clear(ctx, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, clearColor);
 
         drawNodesImpl(ctx, includeBlended, true, typeSelector, nodeSelector);
         ctx.m_batch->flush(ctx);
@@ -57,9 +60,8 @@ void NodeDraw::drawNodes(
     // pass 2 - light
     {
         targetBuffer->bind(ctx);
-        if (clearTarget) {
-            targetBuffer->clear(ctx, clearColor);
-        }
+        targetBuffer->clear(ctx, clearMask, clearColor);
+
         m_deferredProgram->bind(ctx.state);
         m_gbuffer.bindTexture(ctx);
         drawQuad(ctx);
@@ -67,7 +69,7 @@ void NodeDraw::drawNodes(
 
     // pass 3 - non G-buffer nodes
     {
-        m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
+        m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
 
         drawNodesImpl(ctx, includeBlended, false, typeSelector, nodeSelector);
         ctx.m_batch->flush(ctx);

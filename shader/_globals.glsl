@@ -18,6 +18,7 @@
 #define UNIFORM_NEAR_PLANE 3
 #define UNIFORM_FAR_PLANE 4
 #define UNIFORM_DRAW_PARAMETERS_INDEX 6
+#define UNIFORM_STENCIL_MODE 7
 
 #define SUBROUTINE_EFFECT 0
 
@@ -52,6 +53,9 @@
 #define ENTITY_DRAW_ARRAY_BIT 2
 #define ENTITY_BILLBOARD_BIT 4
 #define ENTITY_NO_FRUSTUM_BIT 8
+
+#define STENCIL_MODE_MASK 1
+#define STENCIL_MODE_HIGHLIGHT 2
 
 // NOTE KI *Too* big (like 32) array *will* cause shader to crash mysteriously
 // => defined by c++ side (more optimal)

@@ -226,7 +226,8 @@ void WaterMapRenderer::drawNodes(
                     (reflect ? !type->m_flags.noReflect : !type->m_flags.noRefract);
             },
             [&current](const Node* node) { return node != current; },
-            true,
+            // NOTE KI only color & depth used
+            GL_DEPTH_BUFFER_BIT,
             clearColor);
     }
 

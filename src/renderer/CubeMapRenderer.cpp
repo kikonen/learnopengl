@@ -197,7 +197,7 @@ bool CubeMapRenderer::render(
 
         auto targetBuffer = m_curr->asFrameBuffer(face);
         //targetBuffer.clear(ctx, clearColor);
-        drawNodes(localCtx, &targetBuffer, centerNode, true, clearColor);
+        drawNodes(localCtx, &targetBuffer, centerNode, clearColor);
     }
 
     if (full)
@@ -243,7 +243,6 @@ void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer,
     const Node* current,
-    bool clearTarget,
     const glm::vec4& clearColor)
 {
     ctx.m_nodeDraw->drawNodes(
@@ -254,7 +253,8 @@ void CubeMapRenderer::drawNodes(
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
         [&current](const Node* node) { return node != current; },
-        clearTarget,
+        // NOTE KI only color & depth used
+        GL_DEPTH_BUFFER_BIT,
         clearColor);
 }
 

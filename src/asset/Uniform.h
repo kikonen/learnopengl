@@ -12,9 +12,13 @@ constexpr int UNIFORM_VIEW_MATRIX = 2;
 constexpr int UNIFORM_NEAR_PLANE = 3;
 constexpr int UNIFORM_FAR_PLANE = 4;
 constexpr int UNIFORM_DRAW_PARAMETERS_INDEX = 6;
+constexpr int UNIFORM_STENCIL_MODE = 7;
 
 // NOTE KI subroutine uniform locations overlap other uniforms
 constexpr int SUBROUTINE_EFFECT = 0;
+
+constexpr int STENCIL_MODE_MASK = 1;
+constexpr int STENCIL_MODE_HIGHLIGHT = 2;
 
 class Program;
 

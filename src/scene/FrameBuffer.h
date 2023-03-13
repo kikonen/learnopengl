@@ -39,6 +39,7 @@ public:
 
     void clear(
         const RenderContext& ctx,
+        GLbitfield clearMask,
         const glm::vec4& clearColor);
 
 public:

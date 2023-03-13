@@ -201,7 +201,8 @@ void MirrorMapRenderer::drawNodes(
             true,
             [](const MeshType* type) { return !type->m_flags.noReflect; },
             [&current](const Node* node) { return node != current; },
-            true,
+            // NOTE KI only color & depth used
+            GL_DEPTH_BUFFER_BIT,
             clearColor);
     }
     //ctx.state.disable(GL_CLIP_DISTANCE0);

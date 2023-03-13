@@ -39,6 +39,8 @@ public:
         unsigned int UBO,
         unsigned int expectedSize);
 
+    operator int() const { return m_programId; }
+
 public:
     // public due to shared_ptr
     Program(

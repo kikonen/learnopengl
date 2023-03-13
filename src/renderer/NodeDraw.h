@@ -26,6 +26,7 @@ public:
 
     void clear(
         const RenderContext& ctx,
+        GLbitfield clearMask,
         const glm::vec4& clearColor);
 
     void drawNodes(
@@ -34,7 +35,7 @@ public:
         bool includeBlended,
         std::function<bool(const MeshType*)> typeSelector,
         std::function<bool(const Node*)> nodeSelector,
-        bool clearTarget,
+        GLbitfield clearMask,
         const glm::vec4& clearColor);
 
     void drawBlended(

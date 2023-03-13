@@ -37,7 +37,6 @@ private:
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
         const Node* centerNode,
-        bool clearTarget,
         const glm::vec4& clearColor);
 
     Node* findCenter(

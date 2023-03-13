@@ -10,6 +10,8 @@ layout(max_vertices = 4) out;
 #include uniform_matrices.glsl
 #include uniform_clip_planes.glsl
 
+layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
+
 in VS_OUT {
   vec3 scale;
   flat uint materialIndex;

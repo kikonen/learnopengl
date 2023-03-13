@@ -28,11 +28,9 @@ void NodeRenderer::prepare(
     m_renderFrameStep = assets.nodeRenderFrameStep;
 
     m_selectionProgram = m_registry->m_programRegistry->getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
-    //m_selectionProgram->m_selection = true;
     m_selectionProgram->prepare(assets);
 
     m_selectionProgramSprite = m_registry->m_programRegistry->getProgram(SHADER_SELECTION_SPRITE, { { DEF_USE_ALPHA, "1" } });
-    //m_selectionProgramSprite->m_selection = true;
     m_selectionProgramSprite->prepare(assets);
 }
 
@@ -44,19 +42,22 @@ void NodeRenderer::render(
     m_selectedCount = ctx.assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
 
     {
+        const glm::vec4 clearColor{ 0.0f, 0.0f, 1.0f, 0.0f };
+        targetBuffer->bind(ctx);
+        targetBuffer->clear(ctx, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, clearColor);
+
         renderStencil(ctx, targetBuffer);
         {
-            const glm::vec4 clearColor{ 0.0f, 0.0f, 1.0f, 0.0f };
-
             ctx.m_nodeDraw->drawNodes(
                 ctx,
                 targetBuffer,
                 false,
                 [](const MeshType* type) { return true; },
                 [&ctx](const Node* node) {
-                    return !node->isHighlighted(ctx.assets);
+                    return true; // !node->isHighlighted(ctx.assets);
                 },
-                true,
+                // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
+                GL_DEPTH_BUFFER_BIT,
                 clearColor);
         }
         {
@@ -66,10 +67,11 @@ void NodeRenderer::render(
                 [](const MeshType* type) { return true; },
                 [](const Node* node) { return true; });
         }
-        renderSelection(ctx);
+        renderHighlight(ctx, targetBuffer);
     }
 }
 
+// Render selected nodes into stencil mask
 void NodeRenderer::renderStencil(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer)
@@ -77,7 +79,7 @@ void NodeRenderer::renderStencil(
     if (!ctx.assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
-    ctx.m_batch->flush(ctx);
+    targetBuffer->bind(ctx);
 
     ctx.state.enable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -90,29 +92,35 @@ void NodeRenderer::renderStencil(
     {
         const glm::vec4 clearColor{ 0.0f, 1.0f, 1.0f, 0.0f };
 
-        ctx.m_nodeDraw->drawNodes(
+        m_selectionProgramSprite->bind(ctx.state);
+        u_stencilModeSprite.set(STENCIL_MODE_MASK);
+
+        m_selectionProgram->bind(ctx.state);
+        u_stencilMode.set(STENCIL_MODE_MASK);
+
+        ctx.m_nodeDraw->drawProgram(
             ctx,
-            targetBuffer,
-            true,
+            m_selectionProgram,
+            m_selectionProgramSprite,
             [](const MeshType* type) { return true; },
-            [&ctx](const Node* node) {
-                return node->isHighlighted(ctx.assets);
-            },
-            true,
-            clearColor);
+            [&ctx](const Node* node) { return node->isHighlighted(ctx.assets); });
     }
+    ctx.m_batch->flush(ctx);
 
     ctx.state.disable(GL_STENCIL_TEST);
 
     glStencilMask(0x00);
 }
 
-void NodeRenderer::renderSelection(const RenderContext& ctx)
+// Render highlight over stencil masked nodes
+void NodeRenderer::renderHighlight(
+    const RenderContext& ctx,
+    FrameBuffer* targetBuffer)
 {
     if (!ctx.assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
-    ctx.m_batch->flush(ctx);
+    targetBuffer->bind(ctx);
 
     ctx.state.enable(GL_STENCIL_TEST);
     ctx.state.disable(GL_DEPTH_TEST);
@@ -123,6 +131,12 @@ void NodeRenderer::renderSelection(const RenderContext& ctx)
 
     // draw selection color (scaled a bit bigger)
     {
+        m_selectionProgramSprite->bind(ctx.state);
+        u_stencilModeSprite.set(STENCIL_MODE_HIGHLIGHT);
+
+        m_selectionProgram->bind(ctx.state);
+        u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);
+
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(
             ctx,

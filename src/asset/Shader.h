@@ -2,8 +2,10 @@
 
 const std::string SHADER_TEXTURE{ "tex" };
 const std::string SHADER_SPRITE{ "sprite" };
+
 const std::string SHADER_SELECTION{ "selection" };
 const std::string SHADER_SELECTION_SPRITE{ "selection_sprite" };
+
 //const std::string SHADER_TERRAIN{ "terrain" };
 //const std::string SHADER_WATER{ "water" };
 const std::string SHADER_PARTICLE{ "particle" };
