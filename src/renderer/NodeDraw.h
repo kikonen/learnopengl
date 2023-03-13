@@ -54,7 +54,6 @@ public:
 private:
     void drawNodesImpl(
         const RenderContext& ctx,
-        bool includeBlended,
         bool useGBuffer,
         std::function<bool(const MeshType*)> typeSelector,
         std::function<bool(const Node*)> nodeSelector);

@@ -53,7 +53,7 @@ void NodeDraw::drawNodes(
         m_gbuffer.bind(ctx);
         m_gbuffer.m_buffer->clear(ctx, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, clearColor);
 
-        drawNodesImpl(ctx, includeBlended, true, typeSelector, nodeSelector);
+        drawNodesImpl(ctx, true, typeSelector, nodeSelector);
         ctx.m_batch->flush(ctx);
     }
 
@@ -68,15 +68,21 @@ void NodeDraw::drawNodes(
     }
 
     // pass 3 - non G-buffer nodes
+    // => separate light calculations
     {
         m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
 
-        drawNodesImpl(ctx, includeBlended, false, typeSelector, nodeSelector);
+        drawNodesImpl(ctx, false, typeSelector, nodeSelector);
+
         ctx.m_batch->flush(ctx);
     }
 
     // pass 4 - blend
-    {
+    // => separate light calculations
+    if (includeBlended) {
+        targetBuffer->bind(ctx);
+        drawBlendedImpl(ctx, typeSelector, nodeSelector);
+        ctx.m_batch->flush(ctx);
     }
 }
 
@@ -93,7 +99,6 @@ void NodeDraw::drawBlended(
 
 void NodeDraw::drawNodesImpl(
     const RenderContext& ctx,
-    bool includeBlended,
     bool useGBuffer,
     std::function<bool(const MeshType*)> typeSelector,
     std::function<bool(const Node*)> nodeSelector)
@@ -124,14 +129,6 @@ void NodeDraw::drawNodesImpl(
 
     for (const auto& all : nodeRegistry->alphaNodes) {
         renderTypes(all.second);
-    }
-
-    if (!useGBuffer && includeBlended)
-    {
-        // NOTE KI do not try blend here; end result is worse than not doing blend at all (due to stencil)
-        for (const auto& all : nodeRegistry->blendedNodes) {
-            renderTypes(all.second);
-        }
     }
 }
 

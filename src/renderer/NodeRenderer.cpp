@@ -51,21 +51,12 @@ void NodeRenderer::render(
             ctx.m_nodeDraw->drawNodes(
                 ctx,
                 targetBuffer,
-                false,
+                true,
                 [](const MeshType* type) { return true; },
-                [&ctx](const Node* node) {
-                    return true; // !node->isHighlighted(ctx.assets);
-                },
+                [](const Node* node) { return true; },
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
                 GL_DEPTH_BUFFER_BIT,
                 clearColor);
-        }
-        {
-            ctx.m_nodeDraw->drawBlended(
-                ctx,
-                targetBuffer,
-                [](const MeshType* type) { return true; },
-                [](const Node* node) { return true; });
         }
         renderHighlight(ctx, targetBuffer);
     }
