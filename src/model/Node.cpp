@@ -195,6 +195,7 @@ void Node::setTagMaterialIndex(int index)
 {
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
+        m_instance.m_entityDirty = true;
     }
 }
 
@@ -202,6 +203,7 @@ void Node::setSelectionMaterialIndex(int index)
 {
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
+        m_instance.m_entityDirty = true;
     }
 }
 
