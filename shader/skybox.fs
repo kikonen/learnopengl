@@ -1,6 +1,8 @@
 #version 460 core
 in vec3 texCoord;
 
+layout(early_fragment_tests) in;
+
 layout(binding = UNIT_SKYBOX) uniform samplerCube u_skybox;
 
 out vec4 o_fragColor;

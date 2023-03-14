@@ -93,6 +93,8 @@ https://glad.dav1d.de
 - http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
 - https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
 - https://community.khronos.org/t/sampler-array-limit-with-bindless-textures/73856/2
+- https://www.khronos.org/opengl/wiki/Early_Fragment_Test
+- https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
 
 
 ## Libraries

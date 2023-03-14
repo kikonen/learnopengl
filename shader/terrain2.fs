@@ -11,11 +11,9 @@
 #include uniform_materials.glsl
 #include uniform_textures.glsl
 
-#ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
 layout(early_fragment_tests) in;
-#endif
 
 in TES_OUT {
   flat uint entityIndex;
@@ -59,11 +57,6 @@ void main() {
   const Entity entity = u_entities[fs_in.entityIndex];
   #include var_tex_material.glsl
 
-#ifdef USE_ALPHA
-  if (material.diffuse.a < 0.01)
-    discard;
-#endif
-
   #include var_tex_material_normal.glsl
 
   if (material.pattern == 1) {
@@ -78,20 +71,11 @@ void main() {
 
   vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
 
-#ifdef USE_ALPHA
-  if (texColor.a < 0.1)
-    discard;
-#endif
-
-#ifndef USE_BLEND
-  texColor = vec4(texColor.rgb, 1.0);
-#endif
-
   if (!gl_FrontFacing) {
-    float alpha = texColor.a;
     texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);
-    texColor.a = alpha;
   }
+
+  texColor.a = 1.0;
 
   texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
 
