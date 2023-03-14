@@ -54,6 +54,10 @@ namespace {
 GLuint Texture::nextIndex()
 {
     assert(indexBase < MAX_TEXTURE_COUNT - 1);
+
+    if (indexBase >= MAX_TEXTURE_COUNT)
+        throw std::runtime_error{ fmt::format("MAX_TEXTURE_COUNT: {}", MAX_TEXTURE_COUNT) };
+
     return indexBase++;
 }
 

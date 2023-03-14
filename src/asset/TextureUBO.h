@@ -5,9 +5,7 @@
 #include "ki/GL.h"
 
 // MAX textures used in shader
-constexpr unsigned int MIN_TEXTURE_COUNT = 256;
 constexpr unsigned int MAX_TEXTURE_COUNT = 256;
-constexpr unsigned int TEXTURE_COUNT = MAX_TEXTURE_COUNT;
 
 // NOTE KI align 16 for UBO struct
 // OpenGL Superbible, 7th Edition, page 552
@@ -22,5 +20,5 @@ struct TextureUBO {
 // NOTE KI align 16 for UBO struct
 struct TexturesUBO {
     // NOTE KI align 16 for array entries
-    TextureUBO textures[TEXTURE_COUNT];
+    TextureUBO textures[MAX_TEXTURE_COUNT];
 };

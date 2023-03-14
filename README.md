@@ -81,6 +81,10 @@ https://glad.dav1d.de
 - https://yiweimao.github.io/blog/tessellation/
 - https://www.khronos.org/opengl/wiki/Tessellation
 
+## G-buffer
+- https://learnopengl.com/Advanced-Lighting/Deferred-Shading
+- https://www.khronos.org/opengl/wiki/Compute_eye_space_from_window_space
+
 ## Misc
 - https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
 - https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
@@ -88,6 +92,7 @@ https://glad.dav1d.de
 - https://learnopengl.com/Lighting/Basic-Lighting
 - http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
 - https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+- https://community.khronos.org/t/sampler-array-limit-with-bindless-textures/73856/2
 
 
 ## Libraries

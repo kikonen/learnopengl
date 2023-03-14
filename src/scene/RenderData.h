@@ -40,6 +40,6 @@ private:
     GLBuffer m_clipPlanes{ "clipPlanesUBO" };
     GLBuffer m_lights{ "lightsUBO" };
 
-    GLSyncQueue<TextureUBO, true, false> m_textures{ "textures", 1, TEXTURE_COUNT };
+    GLSyncQueue<TextureUBO, true, false> m_textures{ "textures", 1, MAX_TEXTURE_COUNT };
     int m_textureLevel = -1;
 };
