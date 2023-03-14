@@ -6,13 +6,13 @@
 #include "asset/LightUBO.h"
 
 #include "model/Node.h"
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
 
-void Light::update(const RenderContext& ctx, Node& node) noexcept
+void Light::update(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
 

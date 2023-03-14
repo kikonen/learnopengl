@@ -11,7 +11,10 @@
 
 
 class Program;
+
+class UpdateContext;
 class RenderContext;
+
 class FrameBuffer;
 
 class Viewport final
@@ -36,7 +39,8 @@ public:
 
     void prepare(const Assets& assets);
 
-    void update(const RenderContext& ctx);
+    void update(const UpdateContext& ctx);
+
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
     void draw(const RenderContext& ctx);

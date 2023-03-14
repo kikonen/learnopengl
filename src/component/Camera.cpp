@@ -38,7 +38,7 @@ Camera::~Camera()
 {
 }
 
-void Camera::update(const RenderContext& ctx, Node& node)
+void Camera::update(Node& node)
 {
     if (!m_enabled) return;
 

@@ -2,7 +2,7 @@
 
 #include <mutex>
 
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 
 namespace {
     int idBase = 0;
@@ -26,7 +26,7 @@ Command::Command(
 {
 }
 
-void Command::bind(const RenderContext& ctx) noexcept
+void Command::bind(const UpdateContext& ctx) noexcept
 {
     m_elapsedTime = 0.f;
 }

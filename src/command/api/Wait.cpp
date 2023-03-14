@@ -2,6 +2,8 @@
 
 #include "command/CommandEngine.h"
 
+#include "scene/UpdateContext.h"
+
 Wait::Wait(
     int afterCommandId,
     float finishTime) noexcept
@@ -10,7 +12,7 @@ Wait::Wait(
 }
 
 void Wait::execute(
-    const RenderContext& ctx) noexcept
+    const UpdateContext& ctx) noexcept
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
     m_finished = m_elapsedTime >= m_finishTime;

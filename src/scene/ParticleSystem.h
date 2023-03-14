@@ -5,7 +5,10 @@
 #include "model/Particle.h"
 
 class Assets;
+
+class UpdateContext;
 class RenderContext;
+
 class Registry;
 class MeshType;
 class Program;
@@ -16,7 +19,7 @@ public:
     ParticleSystem();
 
     void prepare(const Assets& assets, Registry* registry);
-    void update(const RenderContext& ctx);
+    void update(const UpdateContext& ctx);
     void bind(const RenderContext& ctx);
     void render(const RenderContext& ctx);
 

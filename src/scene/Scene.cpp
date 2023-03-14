@@ -32,9 +32,11 @@
 #include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
 
-#include "scene/RenderContext.h"
 #include "scene/Batch.h"
+
+#include "scene/UpdateContext.h"
 #include "scene/RenderContext.h"
+
 #include "scene/RenderData.h"
 
 #include "command/api/ResumeNode.h"
@@ -210,11 +212,11 @@ void Scene::attachNodes()
     m_registry->m_nodeRegistry->attachNodes();
 }
 
-void Scene::processEvents(RenderContext& ctx)
+void Scene::processEvents(const UpdateContext& ctx)
 {
 }
 
-void Scene::update(RenderContext& ctx)
+void Scene::update(const UpdateContext& ctx)
 {
     //if (ctx.clock.frameCount > 120) {
     if (getActiveCamera()) {
@@ -249,15 +251,19 @@ void Scene::update(RenderContext& ctx)
     m_registry->m_materialRegistry->update(ctx);
     m_registry->m_entityRegistry->update(ctx);
 
-    updateMainViewport(ctx);
-
-    m_nodeDraw->update(ctx);
-    m_windowBuffer->update(ctx);
 
     m_renderData->update();
 }
 
-void Scene::bind(RenderContext& ctx)
+void Scene::updateView(const RenderContext& ctx)
+{
+    updateMainViewport(ctx);
+
+    m_nodeDraw->update(ctx);
+    m_windowBuffer->update(ctx);
+}
+
+void Scene::bind(const RenderContext& ctx)
 {
     if (m_shadowMapRenderer) {
         m_shadowMapRenderer->bind(ctx);
@@ -277,7 +283,7 @@ void Scene::bind(RenderContext& ctx)
 }
 
 
-void Scene::unbind(RenderContext& ctx)
+void Scene::unbind(const RenderContext& ctx)
 {
 }
 
@@ -291,7 +297,7 @@ backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear)
     return m_batch->getCountersLocal(clear);
 }
 
-void Scene::draw(RenderContext& ctx)
+void Scene::draw(const RenderContext& ctx)
 {
     ctx.state.setDepthFunc(ctx.m_depthFunc);
 
@@ -330,7 +336,7 @@ void Scene::draw(RenderContext& ctx)
     //glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
-void Scene::drawMain(RenderContext& ctx)
+void Scene::drawMain(const RenderContext& ctx)
 {
     RenderContext mainCtx("MAIN", &ctx, ctx.m_camera, m_mainBuffer->m_spec.width, m_mainBuffer->m_spec.height);
 
@@ -341,7 +347,7 @@ void Scene::drawMain(RenderContext& ctx)
 }
 
 // "back mirror" viewport
-void Scene::drawRear(RenderContext& parentCtx)
+void Scene::drawRear(const RenderContext& parentCtx)
 {
     if (!m_assets.showRearView) return;
 
@@ -368,7 +374,7 @@ void Scene::drawRear(RenderContext& parentCtx)
     parentCtx.updateDataUBO();
 }
 
-void Scene::drawViewports(RenderContext& ctx)
+void Scene::drawViewports(const RenderContext& ctx)
 {
     m_windowBuffer->bind(ctx);
 
@@ -394,7 +400,7 @@ void Scene::drawViewports(RenderContext& ctx)
 }
 
 void Scene::drawScene(
-    RenderContext& ctx,
+    const RenderContext& ctx,
     FrameBuffer* targetBuffer)
 {
     m_registry->m_materialRegistry->bind(ctx);
@@ -475,7 +481,7 @@ int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double scree
     return 0;
 }
 
-void Scene::updateMainViewport(RenderContext& ctx)
+void Scene::updateMainViewport(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
     int w = ctx.assets.resolutionScale.x * res.x;

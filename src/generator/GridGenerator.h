@@ -15,13 +15,13 @@ public:
         Node& container) override;
 
     virtual void update(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& container,
         Node* containerParent) override;
 
 private:
     void updateInstances(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& container,
         Node* containerParent);
 

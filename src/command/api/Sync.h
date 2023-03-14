@@ -12,7 +12,7 @@ public:
         std::vector<int> commandIds) noexcept;
 
     virtual void execute(
-        const RenderContext& ctx) noexcept override;
+        const UpdateContext& ctx) noexcept override;
 
 private:
     std::vector<int> m_commandIds;

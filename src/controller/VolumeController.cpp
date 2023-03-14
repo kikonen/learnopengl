@@ -2,7 +2,7 @@
 
 #include "glm/glm.hpp"
 
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -12,7 +12,7 @@ VolumeController::VolumeController()
 }
 
 bool VolumeController::update(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node& volumeNode,
     Node* parent) noexcept
 {

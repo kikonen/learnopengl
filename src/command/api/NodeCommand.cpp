@@ -11,7 +11,7 @@ NodeCommand::NodeCommand(
 {
 }
 
-void NodeCommand::bind(const RenderContext& ctx, Node* node) noexcept
+void NodeCommand::bind(const UpdateContext& ctx, Node* node) noexcept
 {
     Command::bind(ctx);
     m_node = node;

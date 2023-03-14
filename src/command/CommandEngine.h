@@ -8,9 +8,7 @@
 
 #include "api/Command.h"
 
-#include "scene/RenderContext.h"
-
-class RenderContext;
+class UpdateContext;
 
 class CommandEngine final
 {
@@ -20,7 +18,7 @@ public:
 
     void prepare();
 
-    void update(const RenderContext& ctx);
+    void update(const UpdateContext& ctx);
 
     int addCommand(std::unique_ptr<Command> cmd) noexcept;
     void cancel(int commandId) noexcept;
@@ -29,15 +27,15 @@ public:
 
 private:
     bool isCanceled(int commandId) noexcept;
-    bool isValid(const RenderContext& ctx, Command* cmd) noexcept;
+    bool isValid(const UpdateContext& ctx, Command* cmd) noexcept;
 
     void activateNext(const Command* cmd) noexcept;
 
-    void processCanceled(const RenderContext& ctx) noexcept;
-    void processPending(const RenderContext& ctx) noexcept;
-    void processBlocked(const RenderContext& ctx) noexcept;
-    void processActive(const RenderContext& ctx);
-    void processCleanup(const RenderContext& ctx) noexcept;
+    void processCanceled(const UpdateContext& ctx) noexcept;
+    void processPending(const UpdateContext& ctx) noexcept;
+    void processBlocked(const UpdateContext& ctx) noexcept;
+    void processActive(const UpdateContext& ctx);
+    void processCleanup(const UpdateContext& ctx) noexcept;
 
     //void updateOldest() noexcept;
 

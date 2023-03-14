@@ -11,7 +11,7 @@
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
 
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
@@ -46,7 +46,7 @@ void TerrainGenerator::prepare(
 }
 
 void TerrainGenerator::update(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node& container,
     Node* containerParent)
 {
@@ -89,7 +89,7 @@ void TerrainGenerator::prepareHeightMap(
 }
 
 void TerrainGenerator::updateTiles(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node& container,
     Node* containerParent)
 {

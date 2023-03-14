@@ -4,7 +4,7 @@
 
 #include "model/NodeInstance.h"
 
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 
 #include "generator/NodeGenerator.h"
 
@@ -20,10 +20,9 @@ namespace physics {
 
     void PhysicsEngine::prepare()
     {
-
     }
 
-    void PhysicsEngine::update(const RenderContext& ctx)
+    void PhysicsEngine::update(const UpdateContext& ctx)
     {
         for (const auto& all : ctx.m_registry->m_nodeRegistry->physicsNodes) {
             for (const auto& it : all.second) {
@@ -59,7 +58,7 @@ namespace physics {
     }
 
     void PhysicsEngine::enforceBounds(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         const MeshType& type,
         Node& node,
         NodeInstance& instance)
@@ -96,7 +95,7 @@ namespace physics {
     }
 
     void PhysicsEngine::updateNode(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         const MeshType& type,
         Node& node,
         NodeInstance& instance)

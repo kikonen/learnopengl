@@ -15,7 +15,6 @@
 
 #include "registry/ModelRegistry.h"
 
-#include "scene/RenderContext.h"
 
 namespace {
 }

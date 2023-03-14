@@ -4,7 +4,7 @@
 
 #include <string>
 
-class RenderContext;
+class UpdateContext;
 class CommandEngine;
 
 class Command
@@ -23,11 +23,11 @@ public:
 
     virtual bool isNode() noexcept { return false; }
 
-    virtual void bind(const RenderContext& ctx) noexcept;
+    virtual void bind(const UpdateContext& ctx) noexcept;
 
     // NOTE KI set m_finished to stop
     virtual void execute(
-        const RenderContext& ctx) noexcept = 0;
+        const UpdateContext& ctx) noexcept = 0;
 
 public:
     const int m_id;

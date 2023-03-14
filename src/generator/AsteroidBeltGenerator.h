@@ -18,13 +18,13 @@ public:
         Node& container) override;
 
     virtual void update(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& container,
         Node* containerParent) override;
 
 private:
     void updateAsteroids(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& container,
         Node* containerParent,
         bool rotate);
@@ -40,7 +40,7 @@ private:
         Node& container);
 
     void rotateAsteroids(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& container);
 
 private:

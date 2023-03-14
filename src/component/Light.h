@@ -8,7 +8,7 @@
 
 
 class Node;
-class RenderContext;
+class UpdateContext;
 
 
 class Light final
@@ -17,7 +17,7 @@ public:
     Light() {};
     ~Light() = default;
 
-    void update(const RenderContext& ctx, Node& node) noexcept;
+    void update(const UpdateContext& ctx, Node& node) noexcept;
 
     void markDirty() noexcept
     {

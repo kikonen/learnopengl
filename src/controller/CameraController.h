@@ -16,7 +16,7 @@ public:
         Node& node) override;
 
     bool update(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& node,
         Node* parent) noexcept override;
 

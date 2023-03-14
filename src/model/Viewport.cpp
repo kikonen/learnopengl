@@ -104,7 +104,7 @@ void Viewport::prepareVBO()
     }
 }
 
-void Viewport::update(const RenderContext& ctx)
+void Viewport::update(const UpdateContext& ctx)
 {
 }
 

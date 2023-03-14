@@ -5,7 +5,9 @@
 
 #include "model/Particle.h"
 
+#include "scene/UpdateContext.h"
 #include "scene/RenderContext.h"
+
 
 ParticleGenerator::ParticleGenerator(
     const ParticleDefinition definition)
@@ -13,7 +15,7 @@ ParticleGenerator::ParticleGenerator(
 {
 }
 
-void ParticleGenerator::update(const RenderContext& ctx)
+void ParticleGenerator::update(const UpdateContext& ctx)
 {
     float x = definition.particlesPerSec * ctx.m_clock.elapsedSecs;
 

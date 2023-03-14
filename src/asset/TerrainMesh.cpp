@@ -8,8 +8,6 @@
 #include "asset/TerrainMaterialInit.h"
 #include "asset/TerrainVAO.h"
 
-#include "scene/RenderContext.h"
-
 
 namespace {
 

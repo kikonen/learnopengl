@@ -2,7 +2,7 @@
 
 #include "model/Node.h"
 
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 #include "component/Camera.h"
 
 
@@ -19,32 +19,33 @@ void CameraController::prepare(
 
     m_node = &node;
 
-    m_moveStep = 8.5f;
-    m_rotateStep = 15.f;
+    m_moveStep = 6.5f;
+    m_rotateStep = 7.5f;
     m_zoomStep = 20.0f;
     m_mouseSensitivity = 0.1f;
 }
 
 bool CameraController::update(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node& node,
     Node* parent) noexcept
 {
-    if (!m_node) return false;
-    auto* camera = m_node->m_camera.get();
+    //if (!m_node) return false;
+    //auto* camera = m_node->m_camera.get();
 
-    const auto& viewFront = camera->getViewFront();
-    const auto& viewUp = camera->getViewUp();
-    //const auto& pos = camera->getPos();// +(front * 0.1f);
-    const auto& rot = camera->getRotation();
+    //const auto& viewFront = camera->getViewFront();
+    //const auto& viewUp = camera->getViewUp();
+    ////const auto& pos = camera->getPos();// +(front * 0.1f);
+    //const auto& rot = camera->getRotation();
 
-    //auto nodePos = pos - viewUp * 2.8f + viewFront * 9.f;
-    //nodePos -= parent->getWorldPosition();
+    ////auto nodePos = pos - viewUp * 2.8f + viewFront * 9.f;
+    ////nodePos -= parent->getWorldPosition();
 
-    //node.setPosition(nodePos);
-    node.setRotation({-rot.x, 90 + rot.y, rot.z});
+    ////node.setPosition(nodePos);
+    //node.setRotation({-rot.x, 90 + rot.y, rot.z});
 
-    return true;
+    //return true;
+    return false;
 }
 
 void CameraController::onKey(Input* input, const ki::RenderClock& clock)
@@ -60,57 +61,76 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
         rotateSize *= 3;
     }
 
-    const auto& viewFront = camera->getViewFront();
-    const auto& viewRight = camera->getViewRight();
-    const auto& viewUp = camera->getViewUp();
+    {
+        if (true) {
+            glm::vec3 rotation = camera->getRotation();
 
-    glm::vec3 pos = m_node->getPosition();
+            if (input->isKeyDown(Key::ROTATE_LEFT)) {
+                rotation.y += rotateSize * dt;
+            }
+            if (input->isKeyDown(Key::ROTATE_RIGHT)) {
+                rotation.y -= rotateSize * dt;
+            }
 
-    if (input->isKeyDown(Key::FORWARD)) {
-        pos += viewFront * dt * moveSize;
-    }
-
-    if (input->isKeyDown(Key::BACKWARD)) {
-        pos -= viewFront * dt * moveSize;
-    }
-
-    if (input->isKeyDown(Key::LEFT)) {
-        pos -= viewRight * dt * moveSize;
-    }
-
-    if (input->isKeyDown(Key::RIGHT)) {
-        pos += viewRight * dt * moveSize;
-    }
-
-    if (input->isKeyDown(Key::UP)) {
-        pos += viewUp * dt * moveSize;
-    }
-
-    if (input->isKeyDown(Key::DOWN)) {
-        pos -= viewUp * dt * moveSize;
-    }
-
-    m_node->setPosition(pos);
-
-    if (true) {
-        glm::vec3 rotation = camera->getRotation();
-
-        if (input->isKeyDown(Key::ROTATE_LEFT)) {
-            rotation.y  += rotateSize * dt;
-        }
-        if (input->isKeyDown(Key::ROTATE_RIGHT)) {
-            rotation.y -= rotateSize * dt;
+            camera->setRotation(rotation);
+            m_node->setRotation({ rotation.x, rotation.y, rotation.z });
         }
 
-        camera->setRotation(rotation);
+        if (input->isKeyDown(Key::ZOOM_IN)) {
+            camera->adjustZoom(-m_zoomStep * dt);
+        }
+        if (input->isKeyDown(Key::ZOOM_OUT)) {
+            camera->adjustZoom(m_zoomStep * dt);
+        }
     }
 
+    {
+        bool changed = false;
+        glm::vec3 pos = m_node->getPosition();
 
-    if (input->isKeyDown(Key::ZOOM_IN)) {
-        camera->adjustZoom(-m_zoomStep * dt);
-    }
-    if (input->isKeyDown(Key::ZOOM_OUT)) {
-        camera->adjustZoom(m_zoomStep * dt);
+        {
+            const auto& viewFront = camera->getViewFront();
+
+            if (input->isKeyDown(Key::FORWARD)) {
+                pos += viewFront * dt * moveSize;
+                changed = true;
+            }
+            if (input->isKeyDown(Key::BACKWARD)) {
+                pos -= viewFront * dt * moveSize;
+                changed = true;
+            }
+        }
+
+        {
+            const auto& viewRight = camera->getViewRight();
+
+            if (input->isKeyDown(Key::LEFT)) {
+                pos -= viewRight * dt * moveSize;
+                changed = true;
+            }
+            if (input->isKeyDown(Key::RIGHT)) {
+                pos += viewRight * dt * moveSize;
+                changed = true;
+            }
+        }
+
+        {
+            const auto& viewUp = camera->getViewUp();
+
+            if (input->isKeyDown(Key::UP)) {
+                pos += viewUp * dt * moveSize;
+                changed = true;
+            }
+            if (input->isKeyDown(Key::DOWN)) {
+                pos -= viewUp * dt * moveSize;
+                changed = true;
+            }
+
+        }
+
+        if (changed) {
+            m_node->setPosition(pos);
+        }
     }
 }
 
@@ -147,6 +167,7 @@ void CameraController::onMouseMove(Input* input, double xoffset, double yoffset)
 
     if (changed) {
         camera->setRotation(rotation);
+        m_node->setRotation({ rotation.x, rotation.y, rotation.z });
     }
 }
 

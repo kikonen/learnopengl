@@ -6,7 +6,7 @@
 
 #include "model/Node.h"
 
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
@@ -28,7 +28,7 @@ void GridGenerator::prepare(
 }
 
 void GridGenerator::update(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node& container,
     Node* containerParent)
 {
@@ -41,7 +41,7 @@ void GridGenerator::update(
 }
 
 void GridGenerator::updateInstances(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node& container,
     Node* containerParent)
 {

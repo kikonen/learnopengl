@@ -16,6 +16,7 @@ struct ParticleDefinition {
     Material material;
 };
 
+class UpdateContext;
 class RenderContext;
 
 class ParticleGenerator final
@@ -26,7 +27,7 @@ public:
 
     ~ParticleGenerator() = default;
 
-    virtual void update(const RenderContext& ctx);
+    virtual void update(const UpdateContext& ctx);
 
 public:
     ParticleSystem* system = nullptr;

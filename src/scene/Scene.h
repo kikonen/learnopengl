@@ -33,6 +33,8 @@ class NodeController;
 class RenderData;
 class Batch;
 class NodeDraw;
+
+class UpdateContext;
 class RenderContext;
 
 class NodeRenderer;
@@ -58,22 +60,24 @@ public:
 
     void attachNodes();
 
-    void processEvents(RenderContext& ctx);
-    void update(RenderContext& ctx);
-    void bind(RenderContext& ctx);
-    void unbind(RenderContext& ctx);
+    void processEvents(const UpdateContext& ctx);
+    void update(const UpdateContext& ctx);
+    void updateView(const RenderContext& ctx);
+
+    void bind(const RenderContext& ctx);
+    void unbind(const RenderContext& ctx);
 
     backend::gl::PerformanceCounters getCounters(bool clear);
     backend::gl::PerformanceCounters getCountersLocal(bool clear);
 
-    void draw(RenderContext& ctx);
+    void draw(const RenderContext& ctx);
 
-    void drawMain(RenderContext& ctx);
-    void drawRear(RenderContext& ctx);
-    void drawViewports(RenderContext& ctx);
+    void drawMain(const RenderContext& ctx);
+    void drawRear(const RenderContext& ctx);
+    void drawViewports(const RenderContext& ctx);
 
     void drawScene(
-        RenderContext& ctx,
+        const RenderContext& ctx,
         FrameBuffer* targetBuffer);
 
     Node* getActiveCamera() const;
@@ -85,7 +89,7 @@ public:
     //void bindPendingChildren();
 
 private:
-    void updateMainViewport(RenderContext& ctx);
+    void updateMainViewport(const RenderContext& ctx);
 
 public:
     const Assets& m_assets;

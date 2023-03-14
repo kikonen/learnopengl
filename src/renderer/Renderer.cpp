@@ -4,13 +4,6 @@
 
 #include "registry/Registry.h"
 
-Renderer::Renderer()
-{
-}
-
-Renderer::~Renderer()
-{
-}
 
 void Renderer::prepare(
     const Assets& assets,
@@ -20,10 +13,6 @@ void Renderer::prepare(
 
     m_renderFrameStart = assets.renderFrameStart;
     m_renderFrameStep = assets.renderFrameStep;
-}
-
-void Renderer::update(const RenderContext& ctx)
-{
 }
 
 bool Renderer::setClosest(Node* closest, int tagIndex)

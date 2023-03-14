@@ -2,6 +2,8 @@
 
 #include "command/CommandEngine.h"
 
+#include "scene/UpdateContext.h"
+
 Sync::Sync(
     int afterCommandId,
     float finishTime,
@@ -12,7 +14,7 @@ Sync::Sync(
 }
 
 void Sync::execute(
-    const RenderContext& ctx) noexcept
+    const UpdateContext& ctx) noexcept
 {
     if (!m_syncedAll) {
         int count = 0;

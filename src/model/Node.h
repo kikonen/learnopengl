@@ -14,7 +14,10 @@ class NodeController;
 class Camera;
 class Light;
 class ParticleGenerator;
+
+class UpdateContext;
 class RenderContext;
+
 class MeshType;
 class EntityRegistry;
 class ParticleGenrator;
@@ -34,10 +37,10 @@ public:
         const Assets& assets,
         Registry* registry);
 
-    void update(const RenderContext& ctx, Node* parent) noexcept;
+    void update(const UpdateContext& ctx, Node* parent) noexcept;
 
     void updateEntity(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         EntityRegistry* entityRegistry);
 
     void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;

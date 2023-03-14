@@ -9,8 +9,6 @@
 
 #include "backend/DrawOptions.h"
 
-#include "scene/RenderContext.h"
-
 #include "NodeRegistry.h"
 #include "MaterialRegistry.h"
 #include "ModelRegistry.h"

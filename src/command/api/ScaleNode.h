@@ -15,11 +15,11 @@ public:
         const glm::vec3& scale) noexcept;
 
     virtual void bind(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node* node) noexcept override;
 
     virtual void execute(
-        const RenderContext& ctx) noexcept override;
+        const UpdateContext& ctx) noexcept override;
 
 private:
     const glm::vec3 m_scale;

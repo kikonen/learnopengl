@@ -28,13 +28,13 @@ public:
         Node& container) override;
 
     virtual void update(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& container,
         Node* containerParent) override;
 
 private:
     void updateTiles(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& container,
         Node* containerParent);
 

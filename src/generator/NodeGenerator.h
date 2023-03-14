@@ -9,7 +9,10 @@
 
 class Node;
 class Registry;
+
+class UpdateContext;
 class RenderContext;
+
 class Batch;
 class EntityRegistry;
 
@@ -28,12 +31,12 @@ public:
         Node& container) {}
 
     virtual void update(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& container,
         Node* containerParent) {}
 
     virtual void updateEntity(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& container,
         EntityRegistry* entityRegistry);
 

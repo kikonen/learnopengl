@@ -14,11 +14,11 @@ public:
         sol::variadic_args vargs) noexcept;
 
     virtual void bind(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node* node) noexcept override;
 
     virtual void execute(
-        const RenderContext& ctx) noexcept override;
+        const UpdateContext& ctx) noexcept override;
 
 private:
     std::unique_ptr<sol::coroutine> m_coroutine;

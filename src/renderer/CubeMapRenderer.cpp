@@ -153,7 +153,7 @@ bool CubeMapRenderer::render(
 
     int fromFace = m_curr->m_updateFace;
     int updateCount = 1;
-    bool full = fromFace == -1;
+    bool full = true;// fromFace == -1;
 
     if (full) {
         //std::cout << "FULL\n";

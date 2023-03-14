@@ -9,7 +9,7 @@
 
 class Node;
 class Registry;
-class RenderContext;
+class UpdateContext;
 
 class NodeController
 {
@@ -27,7 +27,7 @@ public:
     }
 
     virtual bool update(
-        const RenderContext& ctx,
+        const UpdateContext& ctx,
         Node& node,
         Node* parent)
     {

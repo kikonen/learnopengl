@@ -12,7 +12,7 @@ public:
         int commandId) noexcept;
 
     virtual void execute(
-        const RenderContext& ctx) noexcept override;
+        const UpdateContext& ctx) noexcept override;
 
 private:
     const int m_commandId;

@@ -1,6 +1,8 @@
 #include "ViewportRenderer.h"
 
+#include "scene/UpdateContext.h"
 #include "scene/RenderContext.h"
+
 #include "scene/FrameBuffer.h"
 
 #include "registry/Registry.h"
@@ -17,7 +19,7 @@ void ViewportRenderer::prepare(
     Renderer::prepare(assets, registry);
 }
 
-void ViewportRenderer::update(const RenderContext& ctx)
+void ViewportRenderer::update(const UpdateContext& ctx)
 {
     for (auto& viewport : ctx.m_registry->m_nodeRegistry->viewports) {
         viewport->update(ctx);

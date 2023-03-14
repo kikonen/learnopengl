@@ -3,7 +3,10 @@
 #include "asset/Shader.h"
 
 #include "component/Camera.h"
+
+#include "scene/UpdateContext.h"
 #include "scene/RenderContext.h"
+
 #include "scene/Batch.h"
 
 #include "registry/Registry.h"
@@ -27,7 +30,7 @@ void ParticleSystem::prepare(
     particleProgram->prepare(assets);
 }
 
-void ParticleSystem::update(const RenderContext& ctx)
+void ParticleSystem::update(const UpdateContext& ctx)
 {
 }
 

@@ -84,7 +84,7 @@ Material* MaterialRegistry::findID(
     return it != m_materials.end() ? &(*it) : nullptr;
 }
 
-void MaterialRegistry::update(const RenderContext& ctx)
+void MaterialRegistry::update(const UpdateContext& ctx)
 {
     if (m_updatedSize == m_materials.size()) return;
     if (m_materials.size() == 0) return;

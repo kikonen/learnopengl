@@ -5,20 +5,23 @@
 
 class Program;
 class Registry;
+
+class UpdateContext;
 class RenderContext;
+
 class Node;
 
 class Renderer
 {
 public:
-    Renderer();
-    virtual ~Renderer();
+    Renderer() {}
+    virtual ~Renderer() = default;
 
     virtual void prepare(
         const Assets& assets,
         Registry* registry);
 
-    virtual void update(const RenderContext& ctx);
+    virtual void update(const UpdateContext& ctx) {}
 
     bool needRender(const RenderContext& ctx);
 

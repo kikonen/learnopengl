@@ -2,6 +2,8 @@
 
 #include "command/CommandEngine.h"
 
+#include "scene/UpdateContext.h"
+
 CancelCommand::CancelCommand(
     int afterCommandId,
     float finishTime,
@@ -12,7 +14,7 @@ CancelCommand::CancelCommand(
 }
 
 void CancelCommand::execute(
-    const RenderContext& ctx) noexcept
+    const UpdateContext& ctx) noexcept
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
 

@@ -15,7 +15,7 @@ public:
 
     virtual bool isNode() noexcept override final { return true; };
 
-    virtual void bind(const RenderContext& ctx, Node* node) noexcept;
+    virtual void bind(const UpdateContext& ctx, Node* node) noexcept;
 
 public:
     const int m_objectID;

@@ -1,6 +1,6 @@
 #include "StartNode.h"
 
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 
 
 StartNode::StartNode(
@@ -14,13 +14,13 @@ StartNode::StartNode(
 {
 }
 
-void StartNode::bind(const RenderContext& ctx, Node* node) noexcept
+void StartNode::bind(const UpdateContext& ctx, Node* node) noexcept
 {
     NodeCommand::bind(ctx, node);
 }
 
 void StartNode::execute(
-    const RenderContext& ctx) noexcept
+    const UpdateContext& ctx) noexcept
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
 

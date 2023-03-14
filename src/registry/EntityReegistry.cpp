@@ -2,6 +2,7 @@
 
 #include "EntitySSBO.h"
 
+#include "scene/UpdateContext.h"
 #include "scene/RenderContext.h"
 
 #include "registry/Registry.h"
@@ -27,7 +28,7 @@ void EntityRegistry::prepare()
     m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
 }
 
-void EntityRegistry::update(const RenderContext& ctx)
+void EntityRegistry::update(const UpdateContext& ctx)
 {
     processNodes(ctx);
 
@@ -137,7 +138,7 @@ void EntityRegistry::markDirty(int index)
     m_dirty[index] = true;
 }
 
-void EntityRegistry::processNodes(const RenderContext& ctx)
+void EntityRegistry::processNodes(const UpdateContext& ctx)
 {
     for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
         for (const auto& it : all.second) {
@@ -147,4 +148,3 @@ void EntityRegistry::processNodes(const RenderContext& ctx)
         }
     }
 }
-

@@ -2,7 +2,7 @@
 
 #include "model/Node.h"
 
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 
 
 MoveNode::MoveNode(
@@ -16,7 +16,7 @@ MoveNode::MoveNode(
 {
 }
 
-void MoveNode::bind(const RenderContext& ctx, Node* node) noexcept
+void MoveNode::bind(const UpdateContext& ctx, Node* node) noexcept
 {
     NodeCommand::bind(ctx, node);
 
@@ -28,7 +28,7 @@ void MoveNode::bind(const RenderContext& ctx, Node* node) noexcept
 }
 
 void MoveNode::execute(
-    const RenderContext& ctx) noexcept
+    const UpdateContext& ctx) noexcept
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
     m_finished = m_elapsedTime >= m_finishTime;

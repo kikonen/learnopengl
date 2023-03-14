@@ -1,6 +1,6 @@
 #include "ResumeNode.h"
 
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 
 #include "command/ScriptEngine.h"
 
@@ -15,7 +15,7 @@ ResumeNode::ResumeNode(
 }
 
 void ResumeNode::execute(
-    const RenderContext& ctx) noexcept
+    const UpdateContext& ctx) noexcept
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
 

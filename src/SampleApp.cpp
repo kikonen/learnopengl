@@ -23,6 +23,9 @@
 #include "AssetsFile.h"
 #include "SceneFile.h"
 
+#include "scene/UpdateContext.h"
+#include "scene/RenderContext.h"
+
 #include "scene/Scene.h"
 
 
@@ -69,6 +72,18 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
     Node* cameraNode = scene->getActiveCamera();
     if (!cameraNode) return 0;
 
+    {
+        UpdateContext ctx(
+            clock,
+            m_assets,
+            m_currentScene->m_commandEngine.get(),
+            m_currentScene->m_scriptEngine.get(),
+            m_currentScene->m_registry.get());
+
+        scene->processEvents(ctx);
+        scene->update(ctx);
+    }
+
     int w = window->m_width;
     int h = window->m_height;
     if (w < 1) w = 1;
@@ -77,33 +92,34 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
     RenderContext ctx("TOP", nullptr,
         m_assets, clock, m_state, scene, cameraNode->m_camera.get(), m_backend.get(),
         m_assets.nearPlane, m_assets.farPlane, w, h);
+    {
+        ctx.m_forceWireframe = m_assets.forceWireframe;
+        ctx.m_useLight = m_assets.useLight;
 
-    ctx.m_forceWireframe = m_assets.forceWireframe;
-    ctx.m_useLight = m_assets.useLight;
+        // https://paroj.github.io/gltut/apas04.html
+        if (m_assets.rasterizerDiscard) {
+            //glEnable(GL_RASTERIZER_DISCARD);
+            ctx.state.enable(GL_RASTERIZER_DISCARD);
+        }
 
-    // https://paroj.github.io/gltut/apas04.html
-    if (m_assets.rasterizerDiscard) {
-        //glEnable(GL_RASTERIZER_DISCARD);
-        ctx.state.enable(GL_RASTERIZER_DISCARD);
+        ctx.state.useProgram(0);
+        ctx.state.bindVAO(0);
+
+        ctx.state.enable(GL_PROGRAM_POINT_SIZE);
+        glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
+
+        if (m_assets.useIMGUI) {
+            m_frame->bind(ctx);
+        }
+
+        //std::cout << "*****" << "\n";
+
+        scene->updateView(ctx);
+        scene->bind(ctx);
+        scene->draw(ctx);
+        scene->unbind(ctx);
+        //std::cout << "\n*****" << "\n";
     }
-
-    ctx.state.useProgram(0);
-    ctx.state.bindVAO(0);
-
-    ctx.state.enable(GL_PROGRAM_POINT_SIZE);
-    glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
-
-    if (m_assets.useIMGUI) {
-        m_frame->bind(ctx);
-    }
-
-    //std::cout << "*****" << "\n";
-    scene->processEvents(ctx);
-    scene->update(ctx);
-    scene->bind(ctx);
-    scene->draw(ctx);
-    scene->unbind(ctx);
-    //std::cout << "\n*****" << "\n";
 
     {
         InputState state{

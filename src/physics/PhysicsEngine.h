@@ -6,7 +6,8 @@
 
 #include "Surface.h"
 
-class RenderContext;
+class UpdateContext;
+
 class Node;
 class MeshType;
 
@@ -19,20 +20,20 @@ namespace physics {
         PhysicsEngine(const Assets& assets);
 
         void prepare();
-        void update(const RenderContext& ctx);
+        void update(const UpdateContext& ctx);
 
         Surface* registerSurface(std::unique_ptr<Surface> surface);
         float getWorldSurfaceLevel(const glm::vec3& pos);
 
     private:
         void enforceBounds(
-            const RenderContext& ctx,
+            const UpdateContext& ctx,
             const MeshType& type,
             Node& node,
             NodeInstance& instance);
 
         void updateNode(
-            const RenderContext& ctx,
+            const UpdateContext& ctx,
             const MeshType& type,
             Node& node,
             NodeInstance& instance);

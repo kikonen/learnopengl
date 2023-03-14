@@ -7,7 +7,8 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
-class RenderContext;
+#include "scene/UpdateContext.h"
+
 
 CommandEngine::CommandEngine(const Assets& assets)
     : m_assets(assets),
@@ -18,7 +19,7 @@ void CommandEngine::prepare()
 {
 }
 
-void CommandEngine::update(const RenderContext& ctx)
+void CommandEngine::update(const UpdateContext& ctx)
 {
     //updateOldest();
     processCanceled(ctx);
@@ -39,7 +40,7 @@ bool CommandEngine::isCanceled(int commandId) noexcept
     return std::find(m_canceled.begin(), m_canceled.end(), commandId) != m_canceled.end();
 }
 
-bool CommandEngine::isValid(const RenderContext& ctx, Command* cmd) noexcept
+bool CommandEngine::isValid(const UpdateContext& ctx, Command* cmd) noexcept
 {
     if (!cmd->isNode()) return true;
 
@@ -69,7 +70,7 @@ void CommandEngine::activateNext(const Command* cmd) noexcept
     }
 }
 
-void CommandEngine::processCanceled(const RenderContext& ctx) noexcept
+void CommandEngine::processCanceled(const UpdateContext& ctx) noexcept
 {
     // NOTE KI can cancel only *EXISTING* commands not future commands
     if (m_canceled.empty()) return;
@@ -92,7 +93,7 @@ void CommandEngine::processCanceled(const RenderContext& ctx) noexcept
     m_canceled.clear();
 }
 
-void CommandEngine::processPending(const RenderContext& ctx) noexcept
+void CommandEngine::processPending(const UpdateContext& ctx) noexcept
 {
     // NOTE KI scripts cannot exist before node is in registry
     // => thus it MUST exist
@@ -119,7 +120,7 @@ void CommandEngine::processPending(const RenderContext& ctx) noexcept
     m_pending.clear();
 }
 
-void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
+void CommandEngine::processBlocked(const UpdateContext& ctx) noexcept
 {
     if (m_blocked.empty()) return;
 
@@ -154,7 +155,7 @@ void CommandEngine::processBlocked(const RenderContext& ctx) noexcept
     }
 }
 
-void CommandEngine::processActive(const RenderContext& ctx)
+void CommandEngine::processActive(const UpdateContext& ctx)
 {
     if (m_active.empty()) return;
 
@@ -170,7 +171,7 @@ void CommandEngine::processActive(const RenderContext& ctx)
     }
 }
 
-void CommandEngine::processCleanup(const RenderContext& ctx) noexcept
+void CommandEngine::processCleanup(const UpdateContext& ctx) noexcept
 {
     // TODO KI current m_blocked logic requires cleanup on every step
     //m_cleanupIndex++;

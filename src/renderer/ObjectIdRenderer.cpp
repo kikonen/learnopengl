@@ -101,7 +101,7 @@ void ObjectIdRenderer::prepare(
     m_debugViewport->prepare(assets);
 }
 
-void ObjectIdRenderer::update(const RenderContext& ctx)
+void ObjectIdRenderer::updateView(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
     int w = ctx.assets.resolutionScale.x * res.x;

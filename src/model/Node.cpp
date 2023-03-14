@@ -21,7 +21,9 @@
 #include "registry/EntityRegistry.h"
 #include "registry/EntitySSBO.h"
 
+#include "scene/UpdateContext.h"
 #include "scene/RenderContext.h"
+
 #include "scene/Batch.h"
 
 namespace {
@@ -92,7 +94,7 @@ void Node::prepare(
 }
 
 void Node::update(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node* parent) noexcept
 {
     updateModelMatrix(parent);
@@ -105,7 +107,7 @@ void Node::update(
     if (changed)
         updateModelMatrix(parent);
 
-    if (m_camera) m_camera->update(ctx, *this);
+    if (m_camera) m_camera->update(*this);
     if (m_light) m_light->update(ctx, *this);
     if (m_generator) m_generator->update(ctx, *this, parent);
 
@@ -118,7 +120,7 @@ void Node::update(
 }
 
 void Node::updateEntity(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     EntityRegistry* entityRegistry)
 {
     if (m_instance.m_entityIndex != -1)
@@ -126,7 +128,7 @@ void Node::updateEntity(
         if (m_instance.m_entityDirty) {
             auto* entity = entityRegistry->updateEntity(m_instance.m_entityIndex, true);
 
-            entity->u_highlightIndex = getHighlightIndex(ctx.assets);
+            entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
 
             m_instance.updateEntity(entity);
         }

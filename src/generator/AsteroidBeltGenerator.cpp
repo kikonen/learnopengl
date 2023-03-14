@@ -10,7 +10,7 @@
 
 #include "model/Node.h"
 
-#include "scene/RenderContext.h"
+#include "scene/UpdateContext.h"
 #include "scene/Batch.h"
 
 #include "registry/Registry.h"
@@ -37,7 +37,7 @@ void AsteroidBeltGenerator::prepare(
 }
 
 void AsteroidBeltGenerator::update(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node& container,
     Node* containerParent)
 {
@@ -52,7 +52,7 @@ void AsteroidBeltGenerator::update(
 }
 
 void AsteroidBeltGenerator::updateAsteroids(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node& container,
     Node* containerParent,
     bool rotate)
@@ -166,7 +166,7 @@ void AsteroidBeltGenerator::initAsteroids(
 }
 
 void AsteroidBeltGenerator::rotateAsteroids(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node& container)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;

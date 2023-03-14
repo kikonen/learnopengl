@@ -8,7 +8,6 @@
 #include "asset/QuadMaterialInit.h"
 #include "asset/QuadVAO.h"
 
-#include "scene/RenderContext.h"
 
 namespace {
     constexpr int INDEX_COUNT = 4;

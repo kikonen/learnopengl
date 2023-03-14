@@ -10,6 +10,7 @@
 
 #include "EntitySSBO.h"
 
+class UpdateContext;
 class RenderContext;
 
 //
@@ -22,7 +23,7 @@ public:
     EntityRegistry(const Assets& assets);
 
     void prepare();
-    void update(const RenderContext& ctx);
+    void update(const UpdateContext& ctx);
     void bind(const RenderContext& ctx);
 
     // index of entity
@@ -37,7 +38,7 @@ public:
     void markDirty(int index);
 
 private:
-    void processNodes(const RenderContext& ctx);
+    void processNodes(const UpdateContext& ctx);
 
 private:
     const Assets& m_assets;

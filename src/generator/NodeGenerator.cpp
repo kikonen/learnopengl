@@ -9,7 +9,7 @@
 #include "registry/EntityRegistry.h"
 
 void NodeGenerator::updateEntity(
-    const RenderContext& ctx,
+    const UpdateContext& ctx,
     Node& container,
     EntityRegistry* entityRegistry)
 {

@@ -5,7 +5,6 @@
 
 #include "ki/GL.h"
 
-class RenderContext;
 class Node;
 
 struct CameraProjection {
@@ -24,7 +23,7 @@ public:
         bool nodeCamera = false);
     ~Camera();
 
-    void update(const RenderContext& ctx, Node& node);
+    void update(Node& node);
 
     inline void setDefault(bool value) { m_default = value; }
     inline bool isDefault() const { return m_default; }

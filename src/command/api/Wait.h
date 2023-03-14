@@ -11,7 +11,7 @@ public:
         float finishTime) noexcept;
 
     virtual void execute(
-        const RenderContext& ctx) noexcept override;
+        const UpdateContext& ctx) noexcept override;
 
 private:
 };

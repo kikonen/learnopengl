@@ -46,7 +46,6 @@ enum class NodeScriptId {
 };
 
 class Program;
-class RenderContext;
 class Registry;
 class Mesh;
 class Batch;
