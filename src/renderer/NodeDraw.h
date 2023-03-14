@@ -5,6 +5,7 @@
 #include "asset/Assets.h"
 
 #include "GBuffer.h"
+#include "Quad.h"
 
 class RenderContext;
 class Program;
@@ -70,8 +71,7 @@ private:
 private:
     GBuffer m_gbuffer;
 
-    GLuint m_quadVAO{ 0 };
-    GLuint m_quadVBO{ 0 };
+    Quad m_quad;
 
     Program* m_deferredProgram{ nullptr };
 };
