@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+class RenderContext;
+
 struct EntitySSBO;
 
 //
@@ -196,4 +198,6 @@ struct NodeInstance {
     void updateRotationMatrix() noexcept;
 
     void updateEntity(EntitySSBO* entity);
+
+    bool inFrustum(const RenderContext& ctx, float radiusFlex) const;
 };

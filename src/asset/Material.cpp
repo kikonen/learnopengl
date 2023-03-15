@@ -16,7 +16,6 @@
 
 #include "asset/TextureUBO.h"
 
-#include "scene/RenderContext.h"
 
 namespace {
     int idBase = 0;

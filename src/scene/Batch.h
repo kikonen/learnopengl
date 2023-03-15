@@ -87,7 +87,6 @@ private:
     bool m_frustumCPU = false;
     bool m_frustumGPU = false;
 
-    RenderContext* m_currentRenderContext{ nullptr };
     std::vector<BatchCommand> m_batches;
 
     EntityRegistry* m_entityRegistry{ nullptr };

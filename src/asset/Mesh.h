@@ -18,7 +18,6 @@
 
 #include "registry/Registry.h"
 
-class RenderContext;
 class Registry;
 
 

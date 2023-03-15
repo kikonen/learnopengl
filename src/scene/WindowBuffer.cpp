@@ -13,7 +13,7 @@ WindowBuffer::WindowBuffer(GLuint fbo)
     m_fbo = fbo;
 }
 
-void WindowBuffer::update(const RenderContext& ctx)
+void WindowBuffer::updateView(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
     int w = res.x;

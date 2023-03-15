@@ -133,7 +133,7 @@ bool CubeMapRenderer::render(
     }
     if (!centerNode) return false;
 
-    if (parentCtx.assets.showCubeMapCenter) {
+    if (parentCtx.m_assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
             const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getPosition();

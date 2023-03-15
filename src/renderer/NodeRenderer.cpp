@@ -38,8 +38,8 @@ void NodeRenderer::render(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer)
 {
-    m_taggedCount = ctx.assets.showTagged ? ctx.m_registry->m_nodeRegistry->countTagged() : 0;
-    m_selectedCount = ctx.assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
+    m_taggedCount = ctx.m_assets.showTagged ? ctx.m_registry->m_nodeRegistry->countTagged() : 0;
+    m_selectedCount = ctx.m_assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
 
     {
         const glm::vec4 clearColor{ 0.0f, 0.0f, 1.0f, 0.0f };
@@ -67,7 +67,7 @@ void NodeRenderer::renderStencil(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer)
 {
-    if (!ctx.assets.showHighlight) return;
+    if (!ctx.m_assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
     targetBuffer->bind(ctx);
@@ -94,7 +94,7 @@ void NodeRenderer::renderStencil(
             m_selectionProgram,
             m_selectionProgramSprite,
             [](const MeshType* type) { return true; },
-            [&ctx](const Node* node) { return node->isHighlighted(ctx.assets); });
+            [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); });
     }
     ctx.m_batch->flush(ctx);
 
@@ -108,7 +108,7 @@ void NodeRenderer::renderHighlight(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer)
 {
-    if (!ctx.assets.showHighlight) return;
+    if (!ctx.m_assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
     targetBuffer->bind(ctx);
@@ -134,7 +134,7 @@ void NodeRenderer::renderHighlight(
             m_selectionProgram,
             m_selectionProgramSprite,
             [](const MeshType* type) { return true; },
-            [&ctx](const Node* node) { return node->isHighlighted(ctx.assets); });
+            [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); });
     }
     ctx.m_batch->flush(ctx);
 

@@ -141,7 +141,7 @@ bool MirrorMapRenderer::render(
         const auto mirrorEyePos = planePos - (reflectFront * dist);
 
         //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
-        //const float fovAngle = ctx.assets.mirrorFov;
+        //const float fovAngle = ctx.m_assets.mirrorFov;
 
         auto& camera = m_cameras[0];
         camera.setPosition(mirrorEyePos);
@@ -154,7 +154,7 @@ bool MirrorMapRenderer::render(
             &parentCtx,
             &camera,
             dist,
-            parentCtx.assets.farPlane,
+            parentCtx.m_assets.farPlane,
             m_curr->m_spec.width, m_curr->m_spec.height);
 
         localCtx.m_matrices.u_lightProjected = parentCtx.m_matrices.u_lightProjected;

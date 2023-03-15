@@ -112,7 +112,7 @@ bool ShadowMapRenderer::render(
     if (!needRender(ctx)) return false;
 
     // NOTE KI no shadows if no light
-    if (!ctx.assets.useLight) return false;
+    if (!ctx.m_assets.useLight) return false;
 
     auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
     if (!node) return false;

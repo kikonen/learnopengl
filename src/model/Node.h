@@ -69,8 +69,6 @@ public:
         m_instance.setVolume(volume);
     }
 
-    bool inFrustum(const RenderContext& ctx, float radiusFlex) const;
-
     inline const glm::vec3& getPlaneNormal() const noexcept {
         return m_planeNormal;
     }

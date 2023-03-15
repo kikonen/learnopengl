@@ -9,8 +9,6 @@
 
 #include "MaterialSSBO.h"
 
-class RenderContext;
-
 
 struct BoundTexture {
     Texture* texture = nullptr;
@@ -18,14 +16,6 @@ struct BoundTexture {
 
     bool valid() {
         return texture;
-    }
-
-    void bind(const RenderContext& ctx)
-    {
-    }
-
-    void unbind()
-    {
     }
 };
 

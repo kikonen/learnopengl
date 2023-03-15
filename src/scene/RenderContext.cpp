@@ -32,7 +32,7 @@ RenderContext::RenderContext(
     : RenderContext(
         name,
         parent,
-        parent->assets,
+        parent->m_assets,
         parent->m_clock,
         parent->state,
         parent->m_scene,
@@ -55,7 +55,7 @@ RenderContext::RenderContext(
     : RenderContext(
         name,
         parent,
-        parent->assets,
+        parent->m_assets,
         parent->m_clock,
         parent->state,
         parent->m_scene,
@@ -82,7 +82,7 @@ RenderContext::RenderContext(
     int height)
     : m_name(name),
     m_parent(parent),
-    assets(assets),
+    m_assets(assets),
     m_clock(clock),
     state(state),
     m_scene(scene),

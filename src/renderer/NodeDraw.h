@@ -23,7 +23,7 @@ public:
         const Assets& assets,
         Registry* registry);
 
-    void update(const RenderContext& ctx);
+    void updateView(const RenderContext& ctx);
 
     void clear(
         const RenderContext& ctx,

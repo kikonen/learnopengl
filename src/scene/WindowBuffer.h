@@ -11,7 +11,7 @@ public:
 
     virtual ~WindowBuffer() override = default;
 
-    void update(const RenderContext& ctx);
+    void updateView(const RenderContext& ctx);
 
 private:
 };

@@ -259,8 +259,8 @@ void Scene::updateView(const RenderContext& ctx)
 {
     updateMainViewport(ctx);
 
-    m_nodeDraw->update(ctx);
-    m_windowBuffer->update(ctx);
+    m_nodeDraw->updateView(ctx);
+    m_windowBuffer->updateView(ctx);
 }
 
 void Scene::bind(const RenderContext& ctx)
@@ -484,8 +484,8 @@ int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double scree
 void Scene::updateMainViewport(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
-    int w = ctx.assets.resolutionScale.x * res.x;
-    int h = ctx.assets.resolutionScale.y * res.y;
+    int w = ctx.m_assets.resolutionScale.x * res.x;
+    int h = ctx.m_assets.resolutionScale.y * res.y;
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 

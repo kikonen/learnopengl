@@ -72,7 +72,7 @@ public:
 
 public:
     const std::string m_name;
-    const Assets& assets;
+    const Assets& m_assets;
     const RenderContext* const m_parent;
     const ki::RenderClock& m_clock;
 

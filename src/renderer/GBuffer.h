@@ -14,7 +14,7 @@ public:
 
     void prepare(const Assets& assets);
 
-    void update(const RenderContext& ctx);
+    void updateView(const RenderContext& ctx);
 
     void bind(const RenderContext& ctx);
 

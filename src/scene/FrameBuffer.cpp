@@ -200,8 +200,8 @@ void FrameBuffer::clear(
     const glm::vec4& clearColor)
 {
     // NOTE KI clear for current draw buffer buffer (main/mirror/etc.)
-    if (ctx.assets.clearColor) {
-        if (ctx.assets.debugClearColor) {
+    if (ctx.m_assets.clearColor) {
+        if (ctx.m_assets.debugClearColor) {
             glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
         }
         clearMask |= GL_COLOR_BUFFER_BIT;

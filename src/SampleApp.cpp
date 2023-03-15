@@ -186,7 +186,7 @@ void SampleApp::selectNode(
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
     int objectID = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
 
-    auto* volumeNode = nodeRegistry.getNode(ctx.assets.volumeUUID);
+    auto* volumeNode = nodeRegistry.getNode(ctx.m_assets.volumeUUID);
     auto* node = nodeRegistry.getNode(objectID);
 
     // deselect

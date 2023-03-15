@@ -9,11 +9,11 @@ void GBuffer::prepare(const Assets& assets)
 {
 }
 
-void GBuffer::update(const RenderContext& ctx)
+void GBuffer::updateView(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
-    int w = ctx.assets.resolutionScale.x * res.x;
-    int h = ctx.assets.resolutionScale.y * res.y;
+    int w = ctx.m_assets.resolutionScale.x * res.x;
+    int h = ctx.m_assets.resolutionScale.y * res.y;
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 

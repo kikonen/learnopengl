@@ -24,9 +24,9 @@ void NodeDraw::prepare(
     m_deferredProgram ->prepare(assets);
 }
 
-void NodeDraw::update(const RenderContext& ctx)
+void NodeDraw::updateView(const RenderContext& ctx)
 {
-    m_gbuffer.update(ctx);
+    m_gbuffer.updateView(ctx);
 }
 
 void NodeDraw::clear(
