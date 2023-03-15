@@ -10,7 +10,10 @@ local function animation()
       -- NOTE KI *WAIT* for resume to complete
       wid = cmd:wait(cid, 1)
 
-      cid = cmd:rotate(id, { after=wid, time=120, relative=true }, { 0.0, 360.0, 0.0 })
+      -- slow for frontside of mirror
+      cid = cmd:rotate(id, { after=wid, time=120, relative=true }, { 0.0, 120.0, 0.0 })
+      -- fast for backside of mirror
+      cid = cmd:rotate(id, { after=cid, time=8, relative=true }, { 0.0, 240.0, 0.0 })
 
       wid = cmd:wait(cid, 1)
       cid = cmd:resume(id, { after=wid }, "callback")
