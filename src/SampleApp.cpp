@@ -73,6 +73,8 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
             m_currentScene->m_scriptEngine.get(),
             m_currentScene->m_registry.get());
 
+        scene->attachNodes();
+
         scene->processEvents(ctx);
         scene->update(ctx);
     }
@@ -86,11 +88,8 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
     if (!scene) return 0;
 
-    scene->attachNodes();
-
     Node* cameraNode = scene->getActiveCamera();
     if (!cameraNode) return 0;
-
 
     int w = window->m_width;
     int h = window->m_height;
@@ -155,7 +154,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
     }
 
     if (m_assets.useIMGUI) {
-        //ImGui::ShowDemoWindow();
+        ImGui::ShowDemoWindow();
 
         m_frame->draw(ctx);
         m_frame->render(ctx);
