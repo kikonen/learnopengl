@@ -55,7 +55,13 @@ void AssetsFile::loadAssets(
             data.glfwSwapInterval = v.as<int>();
         }
         else if (k == "resolution_scale") {
-            data.resolutionScale = readScale2(v);
+            data.resolutionScale = v.as<float>();
+        }
+        else if (k == "gbuffer_scale") {
+            data.gbufferScale = v.as<float>();
+        }
+        else if (k == "buffer_scale") {
+            data.bufferScale = v.as<float>();
         }
         else if (k == "gl_debug") {
             data.glDebug = v.as<bool>();

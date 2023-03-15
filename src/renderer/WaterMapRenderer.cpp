@@ -47,14 +47,29 @@ void WaterMapRenderer::prepare(
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
 
-    FrameBufferSpecification spec = {
-        assets.waterReflectionSize ,
-        assets.waterReflectionSize,
-        { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
-    };
+    {
+        int size = assets.waterReflectionSize;
+        int scaledSize = assets.bufferScale * size;
 
-    m_reflectionBuffer = std::make_unique<TextureBuffer>(spec);
-    m_refractionBuffer = std::make_unique<TextureBuffer>(spec);
+        FrameBufferSpecification spec = {
+            scaledSize, scaledSize,
+            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
+        };
+
+        m_reflectionBuffer = std::make_unique<TextureBuffer>(spec);
+    }
+
+    {
+        int size = assets.waterRefractionSize;
+        int scaledSize = assets.bufferScale * size;
+
+        FrameBufferSpecification spec = {
+            scaledSize, scaledSize,
+            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
+        };
+
+        m_refractionBuffer = std::make_unique<TextureBuffer>(spec);
+    }
 
     m_reflectionBuffer->prepare(true, { 0, 0, 0, 1.0 });
     m_refractionBuffer->prepare(true, { 0, 0, 0, 1.0 });

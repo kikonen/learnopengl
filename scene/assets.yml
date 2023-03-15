@@ -7,6 +7,8 @@ assets:
   gl_no_error: false
 
   resolution_scale: 0.5
+  gbuffer_scale: 0.5
+  buffer_scale: 1.0
 
   async_loader_enabled: true
   async_loader_delay: 0

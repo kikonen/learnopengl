@@ -484,8 +484,9 @@ int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double scree
 void Scene::updateMainViewport(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
-    int w = ctx.m_assets.resolutionScale.x * res.x;
-    int h = ctx.m_assets.resolutionScale.y * res.y;
+
+    int w = ctx.m_assets.resolutionScale * res.x;
+    int h = ctx.m_assets.resolutionScale * res.y;
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 

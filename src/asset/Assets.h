@@ -37,7 +37,9 @@ public:
     // https://www.khronos.org/opengl/wiki/OpenGL_Error#No_error_contexts
     bool glNoError;
 
-    glm::vec2 resolutionScale;
+    float resolutionScale;
+    float gbufferScale;
+    float bufferScale;
 
     bool asyncLoaderEnabled;
     int asyncLoaderDelay;

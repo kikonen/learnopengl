@@ -90,10 +90,13 @@ void CubeMapRenderer::prepare(
     m_nearPlane = assets.cubeMapNearPlane;
     m_farPlane = assets.cubeMapFarPlane;
 
-    m_curr = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
+    int size = assets.cubeMapSize;
+    int scaledSize = assets.bufferScale * size;
+
+    m_curr = std::make_unique<DynamicCubeMap>(scaledSize);
     m_curr->prepare(false, { 0, 0, 1, 1.0 });
 
-    m_prev = std::make_unique<DynamicCubeMap>(assets.cubeMapSize);
+    m_prev = std::make_unique<DynamicCubeMap>(scaledSize);
     m_prev->prepare(false, { 0, 1, 0, 1.0 });
 
     glm::vec3 origo{ 0 };

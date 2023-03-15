@@ -53,18 +53,21 @@ void MirrorMapRenderer::prepare(
 
     // NOTE KI *CANNOT* share same buffer spec
     {
+        int size = assets.mirrorReflectionSize;
+        int scaledSize = assets.bufferScale * size;
+
         FrameBufferSpecification spec = {
-            assets.mirrorReflectionSize ,
-            assets.mirrorReflectionSize,
+            scaledSize, scaledSize,
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
         };
         m_prev = std::make_unique<TextureBuffer>(spec);
     }
     {
+        int size = assets.mirrorReflectionSize;
+        int scaledSize = assets.bufferScale * size;
 
         FrameBufferSpecification spec = {
-            assets.mirrorReflectionSize ,
-            assets.mirrorReflectionSize,
+            scaledSize, scaledSize,
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
         };
         m_curr = std::make_unique<TextureBuffer>(spec);

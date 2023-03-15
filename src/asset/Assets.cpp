@@ -22,7 +22,9 @@ Assets::Assets()
     glDebug = false;
     glNoError = false;
 
-    resolutionScale = { 0.5, 0.5 };
+    resolutionScale = 0.5f;
+    gbufferScale = 0.5f;
+    bufferScale = 0.5f;
 
     asyncLoaderEnabled = true;
     asyncLoaderDelay = 1000;
