@@ -141,13 +141,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
         int close = 0;
 
         {
-            // make clear color by default black
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        }
-
-        {
             //ki::Timer t("loop");
-
 
             loopTime = std::chrono::system_clock::now();
             elapsedDuration = loopTime - prevLoopTime;
@@ -165,9 +159,15 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             {
                 renderStart = std::chrono::system_clock::now();
 
-                close = onRender(clock);
-
-                m_registry->m_programRegistry->validate();
+                if (!close) {
+                    close = onUpdate(clock);
+                }
+                if (!close) {
+                    close = onRender(clock);
+                }
+                if (!close) {
+                    m_registry->m_programRegistry->validate();
+                }
 
                 renderEnd = std::chrono::system_clock::now();
                 renderDuration = renderEnd - renderStart;

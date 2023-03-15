@@ -19,10 +19,16 @@ protected:
     int onInit() override;
     int onSetup() override;
 
+    int onUpdate(const ki::RenderClock& clock) override;
     int onRender(const ki::RenderClock& clock) override;
+
     void onDestroy() override;
 
 private:
+    void frustumDebug(
+        const RenderContext& ctx,
+        const ki::RenderClock& clock);
+
     void selectNode(
         const RenderContext& ctx,
         Scene* scene,

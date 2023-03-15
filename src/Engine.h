@@ -38,7 +38,10 @@ public:
 protected:
     virtual int onInit() = 0;
     virtual int onSetup() = 0;
+
+    virtual int onUpdate(const ki::RenderClock& clock) = 0;
     virtual int onRender(const ki::RenderClock& clock) = 0;
+
     virtual void onDestroy();
 
 public:
