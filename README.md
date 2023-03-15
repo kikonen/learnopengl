@@ -15,6 +15,12 @@ https://glad.dav1d.de
 
 3) Unzip into vendor/glad
 
+# TODO/Research
+- "shell based grass and fur"
+  + https://gim.studio/an-introduction-to-shell-based-fur-technique/
+  + https://xbdev.net/directx3dx/specialX/Fur/index.php
+  + https://www.researchgate.net/figure/Close-view-of-grass-rendered-with-16-shells_fig3_244493698
+
 # Misc techniques
 
 ## UBO/SSBO alignment
