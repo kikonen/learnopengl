@@ -15,9 +15,11 @@
 #include "model/Node.h"
 #include "model/Viewport.h"
 
-#include "event/Queue.h"
-
 #include "registry/MeshType.h"
+
+namespace event {
+    class Dispatcher;
+}
 
 class Registry;
 

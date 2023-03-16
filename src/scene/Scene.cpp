@@ -14,7 +14,6 @@
 #include "controller/NodeController.h"
 
 #include "renderer/NodeRenderer.h"
-//#include "renderer/TerrainRenderer.h"
 #include "renderer/ViewportRenderer.h"
 
 #include "renderer/WaterMapRenderer.h"
@@ -51,7 +50,7 @@ Scene::Scene(
     m_commandEngine = std::make_unique<CommandEngine>(assets);
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
 
-    m_registry->m_eventQueue->m_queue.appendListener(
+    m_registry->m_dispatcher->m_queue.appendListener(
         event::EventType::node_added,
         [this](const event::Event& event) {
             //std::cout << "BIND: " << event.ref.nodeEvent.m_node->m_objectID << "\n";
@@ -59,7 +58,6 @@ Scene::Scene(
         });
 
     m_nodeRenderer = std::make_unique<NodeRenderer>();
-    //terrainRenderer = std::make_unique<TerrainRenderer>();
 
     m_viewportRenderer = std::make_unique<ViewportRenderer>();
 
@@ -111,7 +109,6 @@ void Scene::prepare()
     if (m_nodeRenderer) {
         m_nodeRenderer->prepare(m_assets, m_registry.get());
     }
-    //terrainRenderer->prepare(programs);
 
     if (m_viewportRenderer) {
         m_viewportRenderer->prepare(m_assets, m_registry.get());
@@ -216,7 +213,7 @@ void Scene::attachNodes()
 
 void Scene::processEvents(const UpdateContext& ctx)
 {
-    m_registry->m_eventQueue->dispatchEvents(ctx);
+    m_registry->m_dispatcher->dispatchEvents(ctx);
 }
 
 void Scene::update(const UpdateContext& ctx)

@@ -10,7 +10,7 @@
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
-#include "event/Queue.h"
+#include "event/Dispatcher.h"
 
 #include "renderer/SkyboxRenderer.h"
 
@@ -110,7 +110,7 @@ void NodeRegistry::prepare(
     m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
     registry->m_materialRegistry->add(m_selectionMaterial);
 
-    m_registry->m_eventQueue->m_queue.appendListener(
+    m_registry->m_dispatcher->m_queue.appendListener(
         event::EventType::node_add,
         [this](const event::Event& event) {
             //std::cout << "ADD: " << event.ref.nodeEvent.m_node->m_objectID << "\n";
@@ -355,7 +355,7 @@ void NodeRegistry::bindNode(
 
     event::Event evt { event::EventType::node_added };
     evt.ref.nodeEvent.m_node = node;
-    m_registry->m_eventQueue->m_queue.enqueue(evt);
+    m_registry->m_dispatcher->m_queue.enqueue(evt);
 
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
 }

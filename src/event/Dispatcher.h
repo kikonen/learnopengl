@@ -12,9 +12,9 @@
 class UpdateContexxt;
 
 namespace event {
-    class Queue final {
+    class Dispatcher final {
     public:
-        Queue(const Assets& assets);
+        Dispatcher(const Assets& assets);
 
         void prepare();
 

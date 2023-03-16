@@ -14,7 +14,6 @@
 
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
-#include "event/Queue.h"
 
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
@@ -25,6 +24,10 @@
 #include "WindowBuffer.h"
 
 #include "CubeMap.h"
+
+namespace event {
+    class Dispatcher;
+}
 
 class Camera;
 class Light;
@@ -39,7 +42,6 @@ class UpdateContext;
 class RenderContext;
 
 class NodeRenderer;
-//class TerrainRenderer
 class ViewportRenderer;
 
 class WaterMapRenderer;
@@ -117,7 +119,6 @@ private:
 
     std::unique_ptr<NodeRenderer> m_nodeRenderer{ nullptr };
 
-    //std::unique_ptr<TerrainRenderer> terrainRenderer{ nullptr };
     std::unique_ptr<ViewportRenderer> m_viewportRenderer{ nullptr };
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };

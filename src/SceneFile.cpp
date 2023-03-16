@@ -33,7 +33,7 @@
 #include "controller/CameraController.h"
 #include "controller/VolumeController.h"
 
-#include "event/Queue.h"
+#include "event/Dispatcher.h"
 
 #include "registry/Registry.h"
 #include "registry/MeshType.h"
@@ -92,7 +92,7 @@ void SceneFile::load(
     std::shared_ptr<Registry> registry)
 {
     m_registry = registry;
-    m_eventQueue = registry->m_eventQueue.get();
+    m_dispatcher = registry->m_dispatcher.get();
 
     std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);
@@ -160,12 +160,9 @@ void SceneFile::attachSkybox(
     auto skybox = std::make_unique<SkyboxRenderer>(data.materialName);
     m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
 
-    //m_registry->m_nodeRegistry->addNode(node);
-    //m_eventQueue->addEvent(event::NodeAdd {node});
-
     event::Event evt { event::EventType::node_add };
     evt.ref.nodeEvent.m_node = node;
-    m_eventQueue->m_queue.enqueue(evt);
+    m_dispatcher->m_queue.enqueue(evt);
 }
 
 void SceneFile::attachVolume(
@@ -216,12 +213,9 @@ void SceneFile::attachVolume(
 
     node->m_controller = std::make_unique<VolumeController>();
 
-    //m_registry->m_nodeRegistry->addNode(node);
-    //m_eventQueue->addEvent(event::NodeAdd {node});
-
     event::Event evt { event::EventType::node_add };
     evt.ref.nodeEvent.m_node = node;
-    m_eventQueue->m_queue.enqueue(evt);
+    m_dispatcher->m_queue.enqueue(evt);
 }
 
 void SceneFile::attachCubeMapCenter(
@@ -274,12 +268,9 @@ void SceneFile::attachCubeMapCenter(
 
     node->setVolume(mesh->getAABB().getVolume());
 
-    //m_registry->m_nodeRegistry->addNode(node);
-    //m_eventQueue->addEvent(event::NodeAdd {node});
-
     event::Event evt { event::EventType::node_add };
     evt.ref.nodeEvent.m_node = node;
-    m_eventQueue->m_queue.enqueue(evt);
+    m_dispatcher->m_queue.enqueue(evt);
 }
 
 void SceneFile::attachEntity(
@@ -396,12 +387,9 @@ MeshType* SceneFile::attachEntityCloneRepeat(
         node->setSelectionMaterialIndex(nodeRegistry.m_selectionMaterial.m_registeredIndex);
     }
 
-    //nodeRegistry.addNode(node);
-    //m_eventQueue->addEvent(event::NodeAdd {node});
-
     event::Event evt { event::EventType::node_add };
     evt.ref.nodeEvent.m_node = node;
-    m_eventQueue->m_queue.enqueue(evt);
+    m_dispatcher->m_queue.enqueue(evt);
 
     return type;
 }

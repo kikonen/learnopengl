@@ -1,4 +1,4 @@
-#include "Queue.h"
+#include "Dispatcher.h"
 
 #include "scene/UpdateContext.h"
 
@@ -8,16 +8,16 @@ namespace event {
         EventType::node_added,
     };
 
-    Queue::Queue(const Assets& assets)
+    Dispatcher::Dispatcher(const Assets& assets)
         : m_assets(assets)
     {
     }
 
-    void Queue::prepare()
+    void Dispatcher::prepare()
     {
     }
 
-    void Queue::dispatchEvents(const UpdateContext& ctx)
+    void Dispatcher::dispatchEvents(const UpdateContext& ctx)
     {
         for (auto type : EVENT_TYPES) {
             m_queue.process();

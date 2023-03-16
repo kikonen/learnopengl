@@ -384,6 +384,12 @@
     <ClCompile Include="src\scene\UpdateContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\event\Event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\event\Dispatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -882,6 +888,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\UpdateContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\Event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\Dispatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,7 +18,7 @@
 #include "registry/EntityType.h"
 
 namespace event {
-    class Queue;
+    class Dispatcher;
 }
 
 struct Material;
@@ -462,7 +462,7 @@ private:
 
     std::shared_ptr<Registry> m_registry;
 
-    event::Queue* m_eventQueue { nullptr };
+    event::Dispatcher* m_dispatcher{ nullptr };
 
     SkyboxData m_skybox;
 

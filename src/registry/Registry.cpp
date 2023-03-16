@@ -15,7 +15,7 @@ Registry::Registry(
     m_entityRegistry = std::make_unique<EntityRegistry>(assets);
 
     m_physicsEngine = std::make_unique<physics::PhysicsEngine>(assets);
-    m_eventQueue = std::make_unique<event::Queue>(assets);
+    m_dispatcher = std::make_unique<event::Dispatcher>(assets);
 }
 
 void Registry::prepare()
@@ -23,7 +23,7 @@ void Registry::prepare()
     if (m_prepared) return;
     m_prepared = true;
 
-    m_eventQueue->prepare();
+    m_dispatcher->prepare();
 
     m_materialRegistry->prepare();
     m_entityRegistry->prepare();
