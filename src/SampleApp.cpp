@@ -73,9 +73,9 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
             m_currentScene->m_scriptEngine.get(),
             m_currentScene->m_registry.get());
 
+        scene->processEvents(ctx);
         scene->attachNodes();
 
-        scene->processEvents(ctx);
         scene->update(ctx);
     }
 
@@ -265,7 +265,7 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     for (auto& file : m_files) {
         KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", file->m_filename));
-        file->load(m_registry);
+        file->load(m_registry, scene->m_eventQueue.get());
     }
 
     m_testSetup = std::make_unique<TestSceneSetup>(

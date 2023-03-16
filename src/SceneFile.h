@@ -17,6 +17,10 @@
 #include "asset/Material.h"
 #include "registry/EntityType.h"
 
+namespace event {
+    class Queue;
+}
+
 struct Material;
 class Light;
 class Camera;
@@ -252,7 +256,8 @@ public:
     ~SceneFile();
 
     void load(
-        std::shared_ptr<Registry> registry);
+        std::shared_ptr<Registry> registry,
+        event::Queue* eventQueue);
 
 private:
     void attach(
@@ -457,6 +462,8 @@ private:
     std::shared_ptr<AsyncLoader> m_asyncLoader;
 
     std::shared_ptr<Registry> m_registry;
+
+    event::Queue* m_eventQueue { nullptr };
 
     SkyboxData m_skybox;
 

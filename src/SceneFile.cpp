@@ -33,6 +33,8 @@
 #include "controller/CameraController.h"
 #include "controller/VolumeController.h"
 
+#include "event/Queue.h"
+
 #include "registry/Registry.h"
 #include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
@@ -87,9 +89,11 @@ SceneFile::~SceneFile()
 }
 
 void SceneFile::load(
-    std::shared_ptr<Registry> registry)
+    std::shared_ptr<Registry> registry,
+    event::Queue* eventQueue)
 {
     m_registry = registry;
+    m_eventQueue = eventQueue;
 
     std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);
@@ -156,7 +160,9 @@ void SceneFile::attachSkybox(
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.materialName);
     m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
-    m_registry->m_nodeRegistry->addNode(node);
+
+    //m_registry->m_nodeRegistry->addNode(node);
+    m_eventQueue->addEvent(event::NodeAdd {node});
 }
 
 void SceneFile::attachVolume(
@@ -207,7 +213,8 @@ void SceneFile::attachVolume(
 
     node->m_controller = std::make_unique<VolumeController>();
 
-    m_registry->m_nodeRegistry->addNode(node);
+    //m_registry->m_nodeRegistry->addNode(node);
+    m_eventQueue->addEvent(event::NodeAdd {node});
 }
 
 void SceneFile::attachCubeMapCenter(
@@ -260,7 +267,8 @@ void SceneFile::attachCubeMapCenter(
 
     node->setVolume(mesh->getAABB().getVolume());
 
-    m_registry->m_nodeRegistry->addNode(node);
+    //m_registry->m_nodeRegistry->addNode(node);
+    m_eventQueue->addEvent(event::NodeAdd {node});
 }
 
 void SceneFile::attachEntity(
@@ -377,7 +385,8 @@ MeshType* SceneFile::attachEntityCloneRepeat(
         node->setSelectionMaterialIndex(nodeRegistry.m_selectionMaterial.m_registeredIndex);
     }
 
-    nodeRegistry.addNode(node);
+    //nodeRegistry.addNode(node);
+    m_eventQueue->addEvent(event::NodeAdd {node});
 
     return type;
 }

@@ -183,6 +183,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\event\Event.cpp" />
+    <ClCompile Include="src\event\Queue.cpp" />
     <ClCompile Include="src\AssetsFile.cpp" />
     <ClCompile Include="src\asset\AABB.cpp" />
     <ClCompile Include="src\asset\MaterialVBO.cpp" />
@@ -345,6 +347,8 @@
     <ClInclude Include="src\backend\DrawRange.h" />
     <ClInclude Include="src\backend\gl\PerformanceCounters.h" />
     <ClInclude Include="src\command\api\Sync.h" />
+    <ClInclude Include="src\event\Event.h" />
+    <ClInclude Include="src\event\Queue.h" />
     <ClInclude Include="src\generator\GridGenerator.h" />
     <ClInclude Include="src\command\api\ResumeNode.h" />
     <ClInclude Include="src\generator\NodeGenerator.h" />

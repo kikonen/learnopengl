@@ -51,6 +51,8 @@ Scene::Scene(
     m_commandEngine = std::make_unique<CommandEngine>(assets);
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
 
+    m_eventQueue = std::make_unique<event::Queue>(assets);
+
     NodeListener listener = [this](Node* node, NodeOperation operation) {
         bindComponents(node);
     };
@@ -214,6 +216,7 @@ void Scene::attachNodes()
 
 void Scene::processEvents(const UpdateContext& ctx)
 {
+    m_eventQueue->dispatchEvents(ctx);
 }
 
 void Scene::update(const UpdateContext& ctx)
