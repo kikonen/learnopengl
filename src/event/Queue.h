@@ -3,6 +3,8 @@
 #include <mutex>
 #include <vector>
 
+#include "eventpp/eventqueue.h"
+
 #include "asset/Assets.h"
 
 #include "Event.h"
@@ -14,23 +16,22 @@ namespace event {
     public:
         Queue(const Assets& assets);
 
-        // USAGE:
-        // event::NodeAdd evt{node};
-        // m_eventQueue->addEvent(evt);
-        //    OR
-        // m_eventQueue->addEvent(event::NodeAdd {node});
-        //
-        void addEvent(const event::EventRef&& ref) {
-            std::lock_guard<std::mutex> lock(m_lock);
-            m_events.push_back(ref);
-        }
+        void prepare();
 
         void dispatchEvents(const UpdateContext& ctx);
+
+        void enqueu(const event::Event&& event) {
+            m_queue.enqueue(event);
+        }
+
+        eventpp::EventQueue<
+            EventType,
+            void(const event::Event&),
+            EventPolicies
+        > m_queue;
 
     private:
         const Assets& m_assets;
         std::mutex m_lock;
-
-        std::vector<event::EventRef> m_events;
     };
 }

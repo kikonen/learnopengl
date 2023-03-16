@@ -105,7 +105,7 @@ https://glad.dav1d.de
 
 ## Libraries
 - https://github.com/nothings/stb
-
+- https://github.com/wqking/eventpp
 
 # References
 

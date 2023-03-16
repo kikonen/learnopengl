@@ -27,5 +27,6 @@ public:
 
     CommandEngine* const m_commandEngine;
     ScriptEngine* const m_scriptEngine;
+
     Registry* const m_registry;
 };

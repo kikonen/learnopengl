@@ -14,7 +14,6 @@
 
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
-
 #include "event/Queue.h"
 
 #include "renderer/ObjectIdRenderer.h"
@@ -104,8 +103,6 @@ public:
 
     std::unique_ptr<CommandEngine> m_commandEngine;
     std::unique_ptr<ScriptEngine> m_scriptEngine;
-
-    std::unique_ptr<event::Queue> m_eventQueue;
 
     std::unique_ptr<Batch> m_batch;
     std::unique_ptr<NodeDraw> m_nodeDraw;

@@ -1,15 +1,32 @@
 #pragma once
 
+#include <array>
 #include <variant>
 
 class UpdateContext;
 class Node;
 
 namespace event {
-    struct NodeAdd {
-        Node* m_node{ nullptr };
-        void dispatch(const UpdateContext& ctx);
+    enum class EventType {
+        node_add,
+        node_added,
     };
 
-    using EventRef = std::variant<NodeAdd>;
+    struct NodeEvent {
+        Node* m_node{ nullptr };
+    };
+
+    struct Event {
+        EventType m_type;
+        union {
+            NodeEvent nodeEvent;
+        } ref;
+    };
+
+    struct EventPolicies
+    {
+        static EventType getEvent(const Event& e) {
+            return e.m_type;
+        }
+    };
 }

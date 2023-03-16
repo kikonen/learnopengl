@@ -89,11 +89,10 @@ SceneFile::~SceneFile()
 }
 
 void SceneFile::load(
-    std::shared_ptr<Registry> registry,
-    event::Queue* eventQueue)
+    std::shared_ptr<Registry> registry)
 {
     m_registry = registry;
-    m_eventQueue = eventQueue;
+    m_eventQueue = registry->m_eventQueue.get();
 
     std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);
@@ -162,7 +161,11 @@ void SceneFile::attachSkybox(
     m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
 
     //m_registry->m_nodeRegistry->addNode(node);
-    m_eventQueue->addEvent(event::NodeAdd {node});
+    //m_eventQueue->addEvent(event::NodeAdd {node});
+
+    event::Event evt { event::EventType::node_add };
+    evt.ref.nodeEvent.m_node = node;
+    m_eventQueue->m_queue.enqueue(evt);
 }
 
 void SceneFile::attachVolume(
@@ -214,7 +217,11 @@ void SceneFile::attachVolume(
     node->m_controller = std::make_unique<VolumeController>();
 
     //m_registry->m_nodeRegistry->addNode(node);
-    m_eventQueue->addEvent(event::NodeAdd {node});
+    //m_eventQueue->addEvent(event::NodeAdd {node});
+
+    event::Event evt { event::EventType::node_add };
+    evt.ref.nodeEvent.m_node = node;
+    m_eventQueue->m_queue.enqueue(evt);
 }
 
 void SceneFile::attachCubeMapCenter(
@@ -268,7 +275,11 @@ void SceneFile::attachCubeMapCenter(
     node->setVolume(mesh->getAABB().getVolume());
 
     //m_registry->m_nodeRegistry->addNode(node);
-    m_eventQueue->addEvent(event::NodeAdd {node});
+    //m_eventQueue->addEvent(event::NodeAdd {node});
+
+    event::Event evt { event::EventType::node_add };
+    evt.ref.nodeEvent.m_node = node;
+    m_eventQueue->m_queue.enqueue(evt);
 }
 
 void SceneFile::attachEntity(
@@ -386,7 +397,11 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     }
 
     //nodeRegistry.addNode(node);
-    m_eventQueue->addEvent(event::NodeAdd {node});
+    //m_eventQueue->addEvent(event::NodeAdd {node});
+
+    event::Event evt { event::EventType::node_add };
+    evt.ref.nodeEvent.m_node = node;
+    m_eventQueue->m_queue.enqueue(evt);
 
     return type;
 }

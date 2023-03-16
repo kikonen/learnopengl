@@ -265,7 +265,7 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     for (auto& file : m_files) {
         KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", file->m_filename));
-        file->load(m_registry, scene->m_eventQueue.get());
+        file->load(m_registry);
     }
 
     m_testSetup = std::make_unique<TestSceneSetup>(

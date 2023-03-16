@@ -15,6 +15,8 @@
 #include "model/Node.h"
 #include "model/Viewport.h"
 
+#include "event/Queue.h"
+
 #include "registry/MeshType.h"
 
 class Registry;
@@ -66,10 +68,6 @@ struct MeshTypeKey {
     const MeshType* type;
 };
 
-enum class NodeOperation {
-    ADDED
-};
-
 using GroupVector = std::vector<Group*>;
 
 using NodeVector = std::vector<Node*>;
@@ -77,8 +75,6 @@ using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
 using ProgramTypeMap = std::map<ProgramKey, MeshTypeMap>;
 
 using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
-
-using NodeListener = std::function<void(Node*, NodeOperation)>;
 
 
 class NodeRegistry final
@@ -92,8 +88,6 @@ public:
 
     void prepare(
         Registry* registry);
-
-    void addListener(NodeListener& listener);
 
     void addGroup(Group* group) noexcept;
 
@@ -152,8 +146,6 @@ private:
     void bindChildren(
         Node* parent);
 
-    void notifyListeners(Node* node, NodeOperation operation);
-
 public:
     std::map<int, Node*> objectIdToNode;
     std::map<uuids::uuid, Node*> idToNode;
@@ -193,7 +185,6 @@ private:
     Registry* m_registry{ nullptr };
 
     std::mutex m_load_lock;
-    std::condition_variable m_waitCondition;
 
     std::map<uuids::uuid, NodeVector> m_pendingChildren;
 
@@ -204,6 +195,4 @@ private:
     NodeVector m_newNodes;
 
     Node* m_activeCamera{ nullptr };
-
-    std::vector<NodeListener> m_listeners;
 };

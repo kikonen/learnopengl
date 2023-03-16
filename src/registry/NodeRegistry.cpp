@@ -10,6 +10,8 @@
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
+#include "event/Queue.h"
+
 #include "renderer/SkyboxRenderer.h"
 
 #include "Registry.h"
@@ -107,11 +109,13 @@ void NodeRegistry::prepare(
 
     m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
     registry->m_materialRegistry->add(m_selectionMaterial);
-}
 
-void NodeRegistry::addListener(NodeListener& listener)
-{
-    m_listeners.push_back(listener);
+    m_registry->m_eventQueue->m_queue.appendListener(
+        event::EventType::node_add,
+        [this](const event::Event& event) {
+            //std::cout << "ADD: " << event.ref.nodeEvent.m_node->m_objectID << "\n";
+            addNode(event.ref.nodeEvent.m_node);
+        });
 }
 
 void NodeRegistry::addGroup(Group* group) noexcept
@@ -130,8 +134,6 @@ void NodeRegistry::addNode(
     std::lock_guard<std::mutex> lock(m_load_lock);
     KI_INFO(fmt::format("ADD_NODE: {}", node->str()));
     m_pendingNodes.push_back(node);
-
-    m_waitCondition.notify_all();
 }
 
 Node* NodeRegistry::getNode(const uuids::uuid& id) const noexcept
@@ -351,7 +353,9 @@ void NodeRegistry::bindNode(
         }
     }
 
-    notifyListeners(node, NodeOperation::ADDED);
+    event::Event evt { event::EventType::node_added };
+    evt.ref.nodeEvent.m_node = node;
+    m_registry->m_eventQueue->m_queue.enqueue(evt);
 
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
 }
@@ -427,13 +431,6 @@ void NodeRegistry::bindChildren(
     }
 
     m_pendingChildren.erase(parent->m_id);
-}
-
-void NodeRegistry::notifyListeners(Node* node, NodeOperation operation)
-{
-    for (auto& listener : m_listeners) {
-        listener(node, operation);
-    }
 }
 
 void NodeRegistry::setActiveCamera(Node* node)

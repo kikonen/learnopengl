@@ -256,8 +256,7 @@ public:
     ~SceneFile();
 
     void load(
-        std::shared_ptr<Registry> registry,
-        event::Queue* eventQueue);
+        std::shared_ptr<Registry> registry);
 
 private:
     void attach(

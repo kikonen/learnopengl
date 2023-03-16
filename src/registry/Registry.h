@@ -4,6 +4,8 @@
 
 #include "asset/Assets.h"
 
+#include "event/Queue.h"
+
 #include "registry/ProgramRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
@@ -34,6 +36,8 @@ public:
     std::unique_ptr<EntityRegistry> m_entityRegistry;
 
     std::unique_ptr<physics::PhysicsEngine> m_physicsEngine;
+
+    std::unique_ptr<event::Queue> m_eventQueue;
 
 private:
     const Assets& m_assets;
