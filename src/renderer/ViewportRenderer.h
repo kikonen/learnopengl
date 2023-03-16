@@ -13,7 +13,7 @@ public:
         const Assets& assets,
         Registry* registry) override;
 
-    virtual void update(const UpdateContext& ctx) override;
+    void update(const UpdateContext& ctx);
 
     void render(
         const RenderContext& ctx,

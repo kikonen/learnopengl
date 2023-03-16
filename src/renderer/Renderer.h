@@ -21,8 +21,6 @@ public:
         const Assets& assets,
         Registry* registry);
 
-    virtual void update(const UpdateContext& ctx) {}
-
     bool needRender(const RenderContext& ctx);
 
     bool isRendered() { return m_rendered;  }

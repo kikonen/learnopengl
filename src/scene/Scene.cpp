@@ -235,14 +235,6 @@ void Scene::update(const UpdateContext& ctx)
         generator->update(ctx);
     }
 
-    if (m_nodeRenderer) {
-        m_nodeRenderer->update(ctx);
-    }
-
-    if (m_objectIdRenderer) {
-        m_objectIdRenderer->update(ctx);
-    }
-
     if (m_viewportRenderer) {
         m_viewportRenderer->update(ctx);
     }
@@ -254,12 +246,15 @@ void Scene::update(const UpdateContext& ctx)
     m_registry->m_materialRegistry->update(ctx);
     m_registry->m_entityRegistry->update(ctx);
 
-
     m_renderData->update();
 }
 
 void Scene::updateView(const RenderContext& ctx)
 {
+    if (m_objectIdRenderer) {
+        m_objectIdRenderer->updateView(ctx);
+    }
+
     updateMainViewport(ctx);
 
     m_nodeDraw->updateView(ctx);
