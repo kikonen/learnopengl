@@ -5,8 +5,9 @@
 #include "asset/Uniform.h"
 
 #include "Renderer.h"
-#include "model/Viewport.h"
-#include "scene/ShadowBuffer.h"
+
+class Viewport;
+class FrameBuffer;
 
 
 class ShadowMapRenderer final : public Renderer
@@ -30,7 +31,7 @@ private:
     void drawNodes(const RenderContext& ctx);
 
 public:
-    std::unique_ptr<ShadowBuffer> m_shadowBuffer{ nullptr };
+    std::unique_ptr<FrameBuffer> m_shadowBuffer{ nullptr };
 
     std::shared_ptr<Viewport> m_debugViewport;
 

@@ -62,7 +62,7 @@ void NodeDraw::drawNodes(
         targetBuffer->bind(ctx);
         targetBuffer->clear(ctx, clearMask, clearColor);
 
-        m_deferredProgram->bind(ctx.state);
+        m_deferredProgram->bind(ctx.m_state);
         m_gbuffer.bindTexture(ctx);
         m_quad.draw(ctx);
     }

@@ -23,7 +23,7 @@ void CubeMap::create()
 
 void CubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
 {
-    ctx.state.bindTexture(unitIndex, m_textureID, false);
+    ctx.m_state.bindTexture(unitIndex, m_textureID, false);
 }
 
 //

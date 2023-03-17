@@ -113,16 +113,16 @@ void Viewport::bind(const RenderContext& ctx)
     if (m_useFrameBuffer) return;
     if (m_textureId == 0) return;
 
-    m_program->bind(ctx.state);
+    m_program->bind(ctx.m_state);
 
     //m_program->viewportTex.set(UNIT_VIEWPORT);
-    ctx.state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
+    ctx.m_state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
     if (m_effectEnabled) {
         u_effect.set(util::as_integer(m_effect));
     }
 
-    ctx.state.bindVAO(m_vao);
+    ctx.m_state.bindVAO(m_vao);
 
     m_binder(*this);
 }

@@ -2,9 +2,10 @@
 
 #include "Renderer.h"
 
-#include "scene/TextureBuffer.h"
-
 #include "model/Viewport.h"
+
+#include "scene/FrameBuffer.h"
+
 
 class ObjectIdRenderer final : public Renderer
 {
@@ -38,5 +39,5 @@ private:
     Program* m_idProgram{ nullptr };
     Program* m_idProgramSprite{ nullptr };
 
-    std::unique_ptr<TextureBuffer> m_idBuffer{ nullptr };
+    std::unique_ptr<FrameBuffer> m_idBuffer{ nullptr };
 };

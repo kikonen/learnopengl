@@ -19,9 +19,11 @@
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
 
-#include "scene/Scene.h"
+#include "renderer/NodeDraw.h"
+
 #include "scene/RenderData.h"
 #include "scene/Batch.h"
+
 
 RenderContext::RenderContext(
     const std::string& name,
@@ -32,12 +34,16 @@ RenderContext::RenderContext(
     : RenderContext(
         name,
         parent,
-        parent->m_assets,
         parent->m_clock,
-        parent->state,
-        parent->m_scene,
+        parent->m_assets,
+        parent->m_commandEngine,
+        parent->m_scriptEngine,
+        parent->m_registry,
+        parent->m_renderData,
+        parent->m_nodeDraw,
+        parent->m_batch,
+        parent->m_state,
         camera,
-        parent->m_backend,
         parent->m_nearPlane,
         parent->m_farPlane,
         width,
@@ -55,12 +61,16 @@ RenderContext::RenderContext(
     : RenderContext(
         name,
         parent,
-        parent->m_assets,
         parent->m_clock,
-        parent->state,
-        parent->m_scene,
+        parent->m_assets,
+        parent->m_commandEngine,
+        parent->m_scriptEngine,
+        parent->m_registry,
+        parent->m_renderData,
+        parent->m_nodeDraw,
+        parent->m_batch,
+        parent->m_state,
         camera,
-        parent->m_backend,
         nearPlane,
         farPlane,
         width,
@@ -70,12 +80,16 @@ RenderContext::RenderContext(
 RenderContext::RenderContext(
     const std::string& name,
     const RenderContext* parent,
-    const Assets& assets,
     const ki::RenderClock& clock,
+    const Assets& assets,
+    CommandEngine* commandEngine,
+    ScriptEngine* scriptEngine,
+    Registry* registry,
+    RenderData* renderData,
+    NodeDraw* nodeDraw,
+    Batch* batch,
     GLState& state,
-    Scene* scene,
     Camera* camera,
-    backend::RenderSystem* backend,
     float nearPlane,
     float farPlane,
     int width,
@@ -84,21 +98,20 @@ RenderContext::RenderContext(
     m_parent(parent),
     m_assets(assets),
     m_clock(clock),
-    state(state),
-    m_scene(scene),
-    m_nodeDraw(scene->m_nodeDraw.get()),
-    m_batch(scene->m_batch.get()),
-    m_registry(scene->m_registry.get()),
-    m_commandEngine(scene->m_commandEngine.get()),
-    m_scriptEngine(scene->m_scriptEngine.get()),
+    m_state(state),
+    m_renderData(renderData),
+    m_nodeDraw(nodeDraw),
+    m_batch(batch),
+    m_registry(registry),
+    m_commandEngine(commandEngine),
+    m_scriptEngine(scriptEngine),
     m_camera(camera),
-    m_backend(backend),
     m_nearPlane(nearPlane),
     m_farPlane(farPlane),
-    m_resolution{ width, height },
+    m_resolution({ width, height }),
     m_aspectRatio((float)width / (float)height)
 {
-    if (parent) {
+    if (m_parent) {
         m_forceWireframe = m_parent->m_forceWireframe;
         m_useLight = m_parent->m_useLight;
         m_allowBlend = m_parent->m_allowBlend;
@@ -156,12 +169,12 @@ RenderContext::~RenderContext()
 void RenderContext::bindDefaults() const
 {
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
-    state.enable(GL_CULL_FACE);
-    state.cullFace(GL_BACK);
-    state.frontFace(GL_CCW);
+    m_state.enable(GL_CULL_FACE);
+    m_state.cullFace(GL_BACK);
+    m_state.frontFace(GL_CCW);
 
-    state.polygonFrontAndBack(GL_FILL);
-    state.disable(GL_BLEND);
+    m_state.polygonFrontAndBack(GL_FILL);
+    m_state.disable(GL_BLEND);
 }
 
 void RenderContext::updateUBOs() const
@@ -175,20 +188,20 @@ void RenderContext::updateUBOs() const
 
 void RenderContext::updateMatricesUBO() const
 {
-    m_scene->m_renderData->updateMatrices(m_matrices);
+    m_renderData->updateMatrices(m_matrices);
 }
 
 void RenderContext::updateDataUBO() const
 {
-    m_scene->m_renderData->updateData(m_data);
+    m_renderData->updateData(m_data);
 }
 
 void RenderContext::updateClipPlanesUBO() const
 {
-    m_scene->m_renderData->updateClipPlanes(m_clipPlanes);
+    m_renderData->updateClipPlanes(m_clipPlanes);
 }
 
 void RenderContext::updateLightsUBO() const
 {
-    m_scene->m_renderData->updateLights(m_registry, m_useLight);
+    m_renderData->updateLights(m_registry, m_useLight);
 }

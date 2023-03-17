@@ -123,9 +123,6 @@
     <ClCompile Include="src\renderer\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\TextureBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\scene\RenderContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -136,9 +133,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\Program.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\scene\ShadowBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\util\Perlin.cpp">
@@ -503,9 +497,6 @@
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\TextureBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\scene\RenderContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -519,9 +510,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\Program.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scene\ShadowBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\ParticleRenderer.h">

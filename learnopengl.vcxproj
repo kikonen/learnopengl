@@ -253,8 +253,6 @@
     <ClCompile Include="src\asset\ImageTexture.cpp" />
     <ClCompile Include="src\asset\PlainTexture.cpp" />
     <ClCompile Include="src\scene\Raycast.cpp" />
-    <ClCompile Include="src\scene\TextureBuffer.cpp" />
-    <ClCompile Include="src\scene\ShadowBuffer.cpp" />
     <ClCompile Include="src\registry\NodeRegistry.cpp" />
     <ClCompile Include="src\controller\CameraController.cpp" />
     <ClCompile Include="src\scene\CubeMap.cpp" />
@@ -420,8 +418,6 @@
     <ClInclude Include="src\asset\ImageTexture.h" />
     <ClInclude Include="src\asset\PlainTexture.h" />
     <ClInclude Include="src\scene\Raycast.h" />
-    <ClInclude Include="src\scene\TextureBuffer.h" />
-    <ClInclude Include="src\scene\ShadowBuffer.h" />
     <ClInclude Include="src\registry\NodeRegistry.h" />
     <ClInclude Include="src\controller\CameraController.h" />
     <ClInclude Include="src\scene\CubeMap.h" />

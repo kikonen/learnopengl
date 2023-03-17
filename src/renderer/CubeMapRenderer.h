@@ -7,9 +7,8 @@
 
 #include "component/Camera.h"
 
-#include "scene/TextureBuffer.h"
+#include "scene/FrameBuffer.h"
 
-class FrameBuffer;
 
 class CubeMapRenderer final : public Renderer
 {

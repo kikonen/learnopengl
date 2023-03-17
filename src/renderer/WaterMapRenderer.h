@@ -7,7 +7,7 @@
 #include "component/Camera.h"
 
 class Node;
-class TextureBuffer;
+class FrameBuffer;
 class Viewport;
 class FrameBuffer;
 
@@ -45,8 +45,8 @@ private:
 
     std::vector<Camera> m_cameras;
 
-    std::unique_ptr<TextureBuffer> m_reflectionBuffer{ nullptr };
-    std::unique_ptr<TextureBuffer> m_refractionBuffer{ nullptr };
+    std::unique_ptr<FrameBuffer> m_reflectionBuffer{ nullptr };
+    std::unique_ptr<FrameBuffer> m_refractionBuffer{ nullptr };
 
     unsigned int m_noiseTextureID{ 0 };
 

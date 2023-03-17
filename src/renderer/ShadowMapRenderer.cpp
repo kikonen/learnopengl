@@ -5,6 +5,9 @@
 
 #include "component/Light.h"
 
+#include "model/Viewport.h"
+
+#include "scene/FrameBuffer.h"
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
@@ -55,7 +58,7 @@ void ShadowMapRenderer::prepare(
     //m_blendedShadowProgram->prepare(assets);
     m_shadowDebugProgram->prepare(assets);
 
-    auto buffer = new ShadowBuffer({
+    auto buffer = new FrameBuffer({
         assets.shadowMapSize, assets.shadowMapSize,
         { FrameBufferAttachment::getDepthTexture() } });
 

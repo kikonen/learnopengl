@@ -11,7 +11,7 @@
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
 
-#include "scene/TextureBuffer.h"
+#include "scene/FrameBuffer.h"
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
@@ -56,7 +56,7 @@ void WaterMapRenderer::prepare(
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
         };
 
-        m_reflectionBuffer = std::make_unique<TextureBuffer>(spec);
+        m_reflectionBuffer = std::make_unique<FrameBuffer>(spec);
     }
 
     {
@@ -68,7 +68,7 @@ void WaterMapRenderer::prepare(
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
         };
 
-        m_refractionBuffer = std::make_unique<TextureBuffer>(spec);
+        m_refractionBuffer = std::make_unique<FrameBuffer>(spec);
     }
 
     m_reflectionBuffer->prepare(true, { 0, 0, 0, 1.0 });
@@ -116,7 +116,7 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
     m_reflectionBuffer->bindTexture(ctx, 0, UNIT_WATER_REFLECTION);
     m_refractionBuffer->bindTexture(ctx, 0, UNIT_WATER_REFRACTION);
     if (m_noiseTextureID > 0) {
-        ctx.state.bindTexture(UNIT_WATER_NOISE, m_noiseTextureID, false);
+        ctx.m_state.bindTexture(UNIT_WATER_NOISE, m_noiseTextureID, false);
     }
 }
 
@@ -229,7 +229,7 @@ void WaterMapRenderer::drawNodes(
     ctx.m_batch->flush(ctx);
 
     ctx.updateClipPlanesUBO();
-    ctx.state.enable(GL_CLIP_DISTANCE0);
+    ctx.m_state.enable(GL_CLIP_DISTANCE0);
 
     {
         ctx.m_nodeDraw->drawNodes(
@@ -246,7 +246,7 @@ void WaterMapRenderer::drawNodes(
             clearColor);
     }
 
-    ctx.state.disable(GL_CLIP_DISTANCE0);
+    ctx.m_state.disable(GL_CLIP_DISTANCE0);
 }
 
 Node* WaterMapRenderer::findClosest(

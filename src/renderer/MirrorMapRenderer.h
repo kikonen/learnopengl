@@ -9,7 +9,7 @@
 #include "model/Viewport.h"
 
 class Node;
-class TextureBuffer;
+class FrameBuffer;
 class Viewport;
 
 class MirrorMapRenderer final : public Renderer
@@ -44,8 +44,8 @@ private:
 
     std::vector<Camera> m_cameras;
 
-    std::unique_ptr<TextureBuffer> m_prev{ nullptr };
-    std::unique_ptr<TextureBuffer> m_curr{ nullptr };
+    std::unique_ptr<FrameBuffer> m_prev{ nullptr };
+    std::unique_ptr<FrameBuffer> m_curr{ nullptr };
 
     Material m_tagMaterial;
 };

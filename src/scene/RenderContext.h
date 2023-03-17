@@ -14,18 +14,13 @@
 #include "kigl/GLState.h"
 
 
-namespace backend {
-    class RenderSystem;
-}
-
-class Scene;
-
 class Camera;
 class CommandEngine;
 class ScriptEngine;
 class Registry;
 class Batch;
 class NodeDraw;
+class RenderData;
 
 class RenderContext final
 {
@@ -49,12 +44,16 @@ public:
     RenderContext(
         const std::string& name,
         const RenderContext* parent,
-        const Assets& assets,
         const ki::RenderClock& clock,
+        const Assets& assets,
+        CommandEngine* commandEngine,
+        ScriptEngine* scriptEngine,
+        Registry* registry,
+        RenderData* renderData,
+        NodeDraw* nodeDraw,
+        Batch* batch,
         GLState& state,
-        Scene* scene,
         Camera* camera,
-        backend::RenderSystem* backend,
         float nearPlane,
         float farPlane,
         int width,
@@ -72,21 +71,21 @@ public:
 
 public:
     const std::string m_name;
-    const Assets& m_assets;
     const RenderContext* const m_parent;
+
+    const Assets& m_assets;
     const ki::RenderClock& m_clock;
 
+    RenderData* const m_renderData;
     NodeDraw* const m_nodeDraw;
     Batch* const m_batch;
-
-    backend::RenderSystem* const m_backend;
 
     GLenum m_depthFunc = GL_LESS;
 
 
     mutable bool m_shadow = false;
 
-    GLState& state;
+    GLState& m_state;
 
     const glm::vec2 m_resolution;
 
@@ -110,7 +109,4 @@ public:
     mutable bool m_useLight = true;
     mutable bool m_forceWireframe = false;
     mutable bool m_allowBlend = true;
-
-private:
-    Scene* m_scene{ nullptr };
 };

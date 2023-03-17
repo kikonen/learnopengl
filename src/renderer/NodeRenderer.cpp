@@ -72,7 +72,7 @@ void NodeRenderer::renderStencil(
 
     targetBuffer->bind(ctx);
 
-    ctx.state.enable(GL_STENCIL_TEST);
+    ctx.m_state.enable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
@@ -83,10 +83,10 @@ void NodeRenderer::renderStencil(
     {
         const glm::vec4 clearColor{ 0.0f, 1.0f, 1.0f, 0.0f };
 
-        m_selectionProgramSprite->bind(ctx.state);
+        m_selectionProgramSprite->bind(ctx.m_state);
         u_stencilModeSprite.set(STENCIL_MODE_MASK);
 
-        m_selectionProgram->bind(ctx.state);
+        m_selectionProgram->bind(ctx.m_state);
         u_stencilMode.set(STENCIL_MODE_MASK);
 
         ctx.m_nodeDraw->drawProgram(
@@ -98,7 +98,7 @@ void NodeRenderer::renderStencil(
     }
     ctx.m_batch->flush(ctx);
 
-    ctx.state.disable(GL_STENCIL_TEST);
+    ctx.m_state.disable(GL_STENCIL_TEST);
 
     glStencilMask(0x00);
 }
@@ -113,8 +113,8 @@ void NodeRenderer::renderHighlight(
 
     targetBuffer->bind(ctx);
 
-    ctx.state.enable(GL_STENCIL_TEST);
-    ctx.state.disable(GL_DEPTH_TEST);
+    ctx.m_state.enable(GL_STENCIL_TEST);
+    ctx.m_state.disable(GL_DEPTH_TEST);
 
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -122,10 +122,10 @@ void NodeRenderer::renderHighlight(
 
     // draw selection color (scaled a bit bigger)
     {
-        m_selectionProgramSprite->bind(ctx.state);
+        m_selectionProgramSprite->bind(ctx.m_state);
         u_stencilModeSprite.set(STENCIL_MODE_HIGHLIGHT);
 
-        m_selectionProgram->bind(ctx.state);
+        m_selectionProgram->bind(ctx.m_state);
         u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);
 
         // draw all selected nodes with stencil
@@ -141,6 +141,6 @@ void NodeRenderer::renderHighlight(
     glStencilMask(0xFF);
     glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
-    ctx.state.enable(GL_DEPTH_TEST);
-    ctx.state.disable(GL_STENCIL_TEST);
+    ctx.m_state.enable(GL_DEPTH_TEST);
+    ctx.m_state.disable(GL_STENCIL_TEST);
 }

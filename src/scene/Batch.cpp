@@ -259,7 +259,7 @@ void Batch::flush(
         if (curr.m_drawCount == 0) continue;
 
         backend::DrawRange drawRange = {
-            &ctx.state,
+            &ctx.m_state,
             curr.m_program,
             curr.m_vao,
             curr.m_drawOptions,

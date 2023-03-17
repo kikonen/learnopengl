@@ -26,7 +26,7 @@ void Quad::prepare()
 
 void Quad::draw(const RenderContext& ctx)
 {
-    ctx.state.bindVAO(m_vao);
+    ctx.m_state.bindVAO(m_vao);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     //glBindVertexArray(0);
 }

@@ -20,9 +20,6 @@
 
 #include "ParticleSystem.h"
 
-#include "TextureBuffer.h"
-#include "WindowBuffer.h"
-
 #include "CubeMap.h"
 
 namespace event {
@@ -40,6 +37,8 @@ class NodeDraw;
 
 class UpdateContext;
 class RenderContext;
+class FrameBuffer;
+class WindowBuffer;
 
 class NodeRenderer;
 class ViewportRenderer;
@@ -131,10 +130,10 @@ private:
 
     std::unique_ptr<ParticleSystem> m_particleSystem{ nullptr };
 
-    std::unique_ptr<TextureBuffer> m_rearBuffer{ nullptr };
+    std::unique_ptr<FrameBuffer> m_rearBuffer{ nullptr };
     std::shared_ptr<Viewport> m_rearViewport;
 
-    std::unique_ptr<TextureBuffer> m_mainBuffer{ nullptr };
+    std::unique_ptr<FrameBuffer> m_mainBuffer{ nullptr };
     std::shared_ptr<Viewport> m_mainViewport;
 
     std::unique_ptr<WindowBuffer> m_windowBuffer{ nullptr };

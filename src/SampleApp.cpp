@@ -96,10 +96,19 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    RenderContext ctx("TOP", nullptr,
-        m_assets, clock, m_state, scene,
+    RenderContext ctx(
+        "TOP",
+        nullptr,
+        clock,
+        m_assets,
+        m_currentScene->m_commandEngine.get(),
+        m_currentScene->m_scriptEngine.get(),
+        m_currentScene->m_registry.get(),
+        m_currentScene->m_renderData.get(),
+        m_currentScene->m_nodeDraw.get(),
+        m_currentScene->m_batch.get(),
+        m_state,
         cameraNode->m_camera.get(),
-        m_backend.get(),
         m_assets.nearPlane,
         m_assets.farPlane,
         w, h);
@@ -110,13 +119,13 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         // https://paroj.github.io/gltut/apas04.html
         if (m_assets.rasterizerDiscard) {
             //glEnable(GL_RASTERIZER_DISCARD);
-            ctx.state.enable(GL_RASTERIZER_DISCARD);
+            ctx.m_state.enable(GL_RASTERIZER_DISCARD);
         }
 
-        ctx.state.useProgram(0);
-        ctx.state.bindVAO(0);
+        ctx.m_state.useProgram(0);
+        ctx.m_state.bindVAO(0);
 
-        ctx.state.enable(GL_PROGRAM_POINT_SIZE);
+        ctx.m_state.enable(GL_PROGRAM_POINT_SIZE);
         glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
 
         // make clear color by default black

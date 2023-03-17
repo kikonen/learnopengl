@@ -7,7 +7,7 @@
 
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
-#include "scene/TextureBuffer.h"
+#include "scene/FrameBuffer.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -60,7 +60,7 @@ void MirrorMapRenderer::prepare(
             scaledSize, scaledSize,
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
         };
-        m_prev = std::make_unique<TextureBuffer>(spec);
+        m_prev = std::make_unique<FrameBuffer>(spec);
     }
     {
         int size = assets.mirrorReflectionSize;
@@ -70,7 +70,7 @@ void MirrorMapRenderer::prepare(
             scaledSize, scaledSize,
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
         };
-        m_curr = std::make_unique<TextureBuffer>(spec);
+        m_curr = std::make_unique<FrameBuffer>(spec);
     }
 
     m_prev->prepare(true, DEBUG_COLOR[0]);
@@ -196,7 +196,7 @@ void MirrorMapRenderer::drawNodes(
     const glm::vec4 clearColor{ 0.9f, 0.0f, 0.9f, 0.0f };
 
     //ctx.updateClipPlanesUBO();
-    //ctx.state.enable(GL_CLIP_DISTANCE0);
+    //ctx.m_state.enable(GL_CLIP_DISTANCE0);
     {
         ctx.m_nodeDraw->drawNodes(
             ctx,
@@ -208,7 +208,7 @@ void MirrorMapRenderer::drawNodes(
             GL_DEPTH_BUFFER_BIT,
             clearColor);
     }
-    //ctx.state.disable(GL_CLIP_DISTANCE0);
+    //ctx.m_state.disable(GL_CLIP_DISTANCE0);
 }
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)

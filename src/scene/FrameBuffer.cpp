@@ -143,12 +143,12 @@ void FrameBuffer::unbind(const RenderContext& ctx)
 
 void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex)
 {
-    ctx.state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID, false);
+    ctx.m_state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID, false);
 }
 
 void FrameBuffer::unbindTexture(const RenderContext& ctx, int unitIndex)
 {
-    ctx.state.bindTexture(unitIndex, 0, true);
+    ctx.m_state.bindTexture(unitIndex, 0, true);
 }
 
 // mask = GL_COLOR_BUFFER_BIT,

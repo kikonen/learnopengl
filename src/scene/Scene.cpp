@@ -35,6 +35,8 @@
 
 #include "scene/UpdateContext.h"
 #include "scene/RenderContext.h"
+#include "scene/WindowBuffer.h"
+#include "scene/FrameBuffer.h"
 
 #include "scene/RenderData.h"
 
@@ -294,7 +296,7 @@ backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear)
 
 void Scene::draw(const RenderContext& ctx)
 {
-    ctx.state.setDepthFunc(ctx.m_depthFunc);
+    ctx.m_state.setDepthFunc(ctx.m_depthFunc);
 
     bool wasCubeMap = false;
     int renderCount = 0;
@@ -308,7 +310,7 @@ void Scene::draw(const RenderContext& ctx)
     // Enable polygon offset to resolve depth-fighting isuses
     //glEnable(GL_POLYGON_OFFSET_FILL);
     //glPolygonOffset(0.2f, 0.2f);
-    ctx.state.enable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    ctx.m_state.enable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
     if (m_cubeMapRenderer && m_cubeMapRenderer->render(ctx)) {
         //wasCubeMap = true;
@@ -494,7 +496,7 @@ void Scene::updateMainViewport(const RenderContext& ctx)
     // MAIN
     {
         // NOTE KI alpha NOT needed
-        auto buffer = new TextureBuffer({
+        auto buffer = new FrameBuffer({
             w, h,
             { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() } });
 
@@ -515,7 +517,7 @@ void Scene::updateMainViewport(const RenderContext& ctx)
 
         if (!m_rearBuffer && m_assets.showRearView) {
             // NOTE KI alpha NOT needed
-            auto buffer = new TextureBuffer({
+            auto buffer = new FrameBuffer({
                 mirrorW, mirrorH,
                 { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() } });
 

@@ -7,8 +7,11 @@
 #include "scene/RenderContext.h"
 #include "scene/Batch.h"
 
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+
+#include "scene/FrameBuffer.h"
 
 #include "NodeDraw.h"
 
@@ -114,7 +117,7 @@ void ObjectIdRenderer::updateView(const RenderContext& ctx)
     if (!changed) return;
 
     // https://riptutorial.com/opengl/example/28872/using-pbos
-    auto buffer = new TextureBuffer({
+    auto buffer = new FrameBuffer({
         w, h,
         { FrameBufferAttachment::getObjectId(), FrameBufferAttachment::getRBODepth() } });
 
@@ -139,7 +142,7 @@ void ObjectIdRenderer::render(
 
 void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
 {
-    ctx.state.enable(GL_DEPTH_TEST);
+    ctx.m_state.enable(GL_DEPTH_TEST);
 
     ctx.bindDefaults();
 
