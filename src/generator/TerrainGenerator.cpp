@@ -202,9 +202,14 @@ void TerrainGenerator::createTiles(
     {
         m_node = new Node(type);
         m_node->setVolume(minmax.getVolume());
-        m_node->m_parentId = container.m_id;
         m_node->m_instancer = this;
-        registry->m_nodeRegistry->addNode(m_node);
+    }
+
+    {
+        event::Event evt { event::EventType::node_add };
+        evt.ref.nodeEvent.m_node = m_node;
+        evt.ref.nodeEvent.m_parentId = container.m_id;
+        registry->m_dispatcher->m_queue.enqueue(evt);
     }
 }
 

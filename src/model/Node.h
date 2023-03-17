@@ -51,7 +51,6 @@ public:
 
     inline void setParent(Node* parent) {
         m_parent = parent;
-        m_parentId = parent ? parent->m_id : uuids::uuid{};
     }
 
     inline NodeInstance& getInstance() noexcept {
@@ -202,10 +201,6 @@ public:
     // UUID of node for persistency
     // => *CAN* be empty for auto generated nodes
     uuids::uuid m_id;
-
-    // UUID of node's parent
-    // => both parent & children queried from NodeRegistry
-    uuids::uuid m_parentId;
 
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };

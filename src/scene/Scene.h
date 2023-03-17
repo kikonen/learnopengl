@@ -61,8 +61,6 @@ public:
 
     void prepare();
 
-    void attachNodes();
-
     void processEvents(const UpdateContext& ctx);
     void update(const UpdateContext& ctx);
     void updateView(const RenderContext& ctx);

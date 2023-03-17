@@ -73,7 +73,6 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
             m_currentScene->m_registry.get());
 
         scene->processEvents(ctx);
-        scene->attachNodes();
 
         scene->update(ctx);
     }

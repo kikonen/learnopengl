@@ -58,7 +58,7 @@ public:
     SpotLightUBO toSpotLightUBO() const noexcept;
 
 public:
-    bool m_enabled = true;
+    bool m_enabled = false;
     bool m_directional = false;
     bool m_point = false;
     bool m_spot = false;

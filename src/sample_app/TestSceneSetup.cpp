@@ -55,8 +55,13 @@ void TestSceneSetup::setupEffectExplosion()
         auto node = new Node(type);
         node->setScale(2);
 
-        m_registry->m_nodeRegistry->addNode(node);
-     });
+        {
+            event::Event evt { event::EventType::node_add };
+            evt.ref.nodeEvent.m_node = node;
+            evt.ref.nodeEvent.m_parentId = m_assets.rootUUID;
+            m_registry->m_dispatcher->m_queue.enqueue(evt);
+        }
+    });
 }
 
 void TestSceneSetup::setupViewport1()

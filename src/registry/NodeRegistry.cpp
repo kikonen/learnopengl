@@ -46,16 +46,12 @@ NodeRegistry::NodeRegistry(
     : m_assets(assets),
     m_alive(alive)
 {
-    m_pendingNodes.reserve(1000);
-    m_newNodes.reserve(1000);
 }
 
 NodeRegistry::~NodeRegistry()
 {
     // NOTE KI forbid access into deleted nodes
     {
-        std::lock_guard<std::mutex> lock(m_load_lock);
-        m_pendingNodes.clear();
         objectIdToNode.clear();
         idToNode.clear();
 
@@ -113,26 +109,16 @@ void NodeRegistry::prepare(
         event::EventType::node_add,
         [this](const event::Event& event) {
             //std::cout << "ADD: " << event.ref.nodeEvent.m_node->m_objectID << "\n";
-            addNode(event.ref.nodeEvent.m_node);
+            attachNode(
+                event.ref.nodeEvent.m_node,
+                event.ref.nodeEvent.m_parentId);
         });
-}
 
-void NodeRegistry::addGroup(Group* group) noexcept
-{
-    if (!*m_alive) return;
-
-    std::lock_guard<std::mutex> lock(m_load_lock);
-    groups.push_back(group);
-}
-
-void NodeRegistry::addNode(
-    Node* node) noexcept
-{
-    if (!*m_alive) return;
-
-    std::lock_guard<std::mutex> lock(m_load_lock);
-    KI_INFO(fmt::format("ADD_NODE: {}", node->str()));
-    m_pendingNodes.push_back(node);
+    m_registry->m_dispatcher->m_queue.appendListener(
+        event::EventType::node_change_parent,
+        [this](const event::Event& event) {
+            changeParent(event.ref.nodeEvent.m_node, event.ref.nodeEvent.m_parentId);
+        });
 }
 
 Node* NodeRegistry::getNode(const uuids::uuid& id) const noexcept
@@ -173,32 +159,18 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcep
 
 void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport) noexcept
 {
-    std::lock_guard<std::mutex> lock(m_load_lock);
     viewports.push_back(viewport);
 }
 
-void NodeRegistry::attachNodes()
+void NodeRegistry::attachNode(
+    Node* node,
+    const uuids::uuid& parentId) noexcept
 {
-    {
-        std::lock_guard<std::mutex> lock(m_load_lock);
+    // NOTE KI ignore children without parent; until parent is found
+    if (!bindParent(node, parentId)) return;
 
-        if (m_pendingNodes.empty()) return;
-
-        m_newNodes.insert(
-            m_newNodes.end(),
-            m_pendingNodes.begin(),
-            m_pendingNodes.end());
-
-        m_pendingNodes.clear();
-    }
-
-    for (auto& node : m_newNodes) {
-        // NOTE KI ignore children without parent; until parent is found
-        if (!bindParent(node)) continue;
-
-        bindNode(node);
-        bindChildren(node);
-    }
+    bindNode(node);
+    bindChildren(node);
 
     bindPendingChildren();
 
@@ -208,8 +180,6 @@ void NodeRegistry::attachNodes()
             m_assets,
             m_registry);
     }
-
-    m_newNodes.clear();
 }
 
 int NodeRegistry::countTagged() const noexcept
@@ -240,7 +210,7 @@ int NodeRegistry::countSelected() const noexcept
 
 void NodeRegistry::changeParent(
     Node* node,
-    uuids::uuid parentId) noexcept
+    const uuids::uuid& parentId) noexcept
 {
     Node* parent = getNode(parentId);
     if (!parent) return;
@@ -393,15 +363,16 @@ void NodeRegistry::bindPendingChildren()
 
 
 bool NodeRegistry::bindParent(
-    Node* child)
+    Node* child,
+    const uuids::uuid& parentId)
 {
-    if (child->m_parentId.is_nil()) return true;
+    if (parentId.is_nil()) return true;
 
-    const auto& parentIt = idToNode.find(child->m_parentId);
+    const auto& parentIt = idToNode.find(parentId);
     if (parentIt == idToNode.end()) {
         KI_INFO(fmt::format("PENDING_CHILD: node={}", child->str()));
 
-        m_pendingChildren[child->m_parentId].push_back(child);
+        m_pendingChildren[parentId].push_back(child);
         return false;
     }
 

@@ -208,11 +208,6 @@ void Scene::prepare()
     }
 }
 
-void Scene::attachNodes()
-{
-    m_registry->m_nodeRegistry->attachNodes();
-}
-
 void Scene::processEvents(const UpdateContext& ctx)
 {
     m_registry->m_dispatcher->dispatchEvents(ctx);

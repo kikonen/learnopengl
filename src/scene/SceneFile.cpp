@@ -155,14 +155,16 @@ void SceneFile::attachSkybox(
     type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
 
     auto node = new Node(type);
-    node->m_parentId = root.base.id;
 
     auto skybox = std::make_unique<SkyboxRenderer>(data.materialName);
     m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
 
-    event::Event evt { event::EventType::node_add };
-    evt.ref.nodeEvent.m_node = node;
-    m_dispatcher->m_queue.enqueue(evt);
+    {
+        event::Event evt { event::EventType::node_add };
+        evt.ref.nodeEvent.m_node = node;
+        evt.ref.nodeEvent.m_parentId = root.base.id;
+        m_dispatcher->m_queue.enqueue(evt);
+    }
 }
 
 void SceneFile::attachVolume(
@@ -204,7 +206,6 @@ void SceneFile::attachVolume(
 
     auto node = new Node(type);
     node->m_id = m_assets.volumeUUID;
-    node->m_parentId = root.base.id;
 
     // NOTE KI m_radius = 1.73205078
     mesh->prepareVolume();
@@ -213,9 +214,12 @@ void SceneFile::attachVolume(
 
     node->m_controller = std::make_unique<VolumeController>();
 
-    event::Event evt { event::EventType::node_add };
-    evt.ref.nodeEvent.m_node = node;
-    m_dispatcher->m_queue.enqueue(evt);
+    {
+        event::Event evt { event::EventType::node_add };
+        evt.ref.nodeEvent.m_node = node;
+        evt.ref.nodeEvent.m_parentId = root.base.id;
+        m_dispatcher->m_queue.enqueue(evt);
+    }
 }
 
 void SceneFile::attachCubeMapCenter(
@@ -258,7 +262,6 @@ void SceneFile::attachCubeMapCenter(
 
     auto node = new Node(type);
     node->m_id = m_assets.cubeMapUUID;
-    node->m_parentId = root.base.id;
 
     //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
     node->setScale(4.f);
@@ -268,9 +271,12 @@ void SceneFile::attachCubeMapCenter(
 
     node->setVolume(mesh->getAABB().getVolume());
 
-    event::Event evt { event::EventType::node_add };
-    evt.ref.nodeEvent.m_node = node;
-    m_dispatcher->m_queue.enqueue(evt);
+    {
+        event::Event evt { event::EventType::node_add };
+        evt.ref.nodeEvent.m_node = node;
+        evt.ref.nodeEvent.m_parentId = root.base.id;
+        m_dispatcher->m_queue.enqueue(evt);
+    }
 }
 
 void SceneFile::attachEntity(
@@ -387,9 +393,14 @@ MeshType* SceneFile::attachEntityCloneRepeat(
         node->setSelectionMaterialIndex(nodeRegistry.m_selectionMaterial.m_registeredIndex);
     }
 
-    event::Event evt { event::EventType::node_add };
-    evt.ref.nodeEvent.m_node = node;
-    m_dispatcher->m_queue.enqueue(evt);
+    {
+        event::Event evt { event::EventType::node_add };
+        evt.ref.nodeEvent.m_node = node;
+        if (!entity.isRoot) {
+            evt.ref.nodeEvent.m_parentId = data.parentId.is_nil() ? root.base.id : data.parentId;
+        }
+        m_dispatcher->m_queue.enqueue(evt);
+    }
 
     return type;
 }
@@ -575,16 +586,8 @@ Node* SceneFile::createNode(
 
     // NOTE KI no id for clones; would duplicate base id => conflicts
     // => except if clone defines own ID
-    if (root.base.id != data.id || isRoot)
+    if (root.base.id != data.id || isRoot) {
         node->m_id = data.id;
-
-    if (!isRoot) {
-        if (data.parentId.is_nil()) {
-            node->m_parentId = root.base.id;
-        }
-        else {
-            node->m_parentId = data.parentId;
-        }
     }
 
     node->setPosition(pos);

@@ -3,9 +3,10 @@
 #include "engine/UpdateContext.h"
 
 namespace event {
-    constexpr std::array<EventType, 2> EVENT_TYPES{
+    constexpr std::array<EventType, 3> EVENT_TYPES{
         EventType::node_add,
         EventType::node_added,
+        EventType::node_change_parent,
     };
 
     Dispatcher::Dispatcher(const Assets& assets)

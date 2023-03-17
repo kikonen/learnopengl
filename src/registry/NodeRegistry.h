@@ -2,7 +2,6 @@
 
 #include <map>
 #include <vector>
-#include <mutex>
 #include <tuple>
 
 #include <fmt/format.h>
@@ -93,9 +92,6 @@ public:
 
     void addGroup(Group* group) noexcept;
 
-    void addNode(
-        Node* node) noexcept;
-
     inline bool containsNode(const int objectID) const noexcept
     {
         const auto& it = objectIdToNode.find(objectID);
@@ -112,12 +108,12 @@ public:
 
     void addViewPort(std::shared_ptr<Viewport> viewport) noexcept;
 
-    void attachNodes();
-
     int countTagged() const noexcept;
     int countSelected() const noexcept;
 
-    void changeParent(Node* node, uuids::uuid parentId) noexcept;
+    void changeParent(
+        Node* node,
+        const uuids::uuid& parentId) noexcept;
 
     inline const NodeVector* getChildren(const Node& parent) const noexcept {
         const auto& it = m_parentToChildren.find(parent.m_objectID);
@@ -130,7 +126,11 @@ public:
     Node* findDefaultCamera() const;
 
 private:
-    void insertNode(NodeVector& list, Node* node);
+    void attachNode(
+        Node* node,
+        const uuids::uuid& parentId) noexcept;
+
+        void insertNode(NodeVector& list, Node* node);
 
     void bindPendingChildren();
 
@@ -138,7 +138,8 @@ private:
         Node* node);
 
     bool bindParent(
-        Node* child);
+        Node* child,
+        const uuids::uuid& parentId);
 
     void bindChildren(
         Node* parent);
@@ -177,18 +178,11 @@ private:
 
     bool m_skyboxPrepared = false;
 
-    Batch* m_batch{ nullptr };
-
     Registry* m_registry{ nullptr };
-
-    std::mutex m_load_lock;
 
     std::map<uuids::uuid, NodeVector> m_pendingChildren;
 
     std::map<int, NodeVector> m_parentToChildren;
-
-    NodeVector m_pendingNodes;
-    NodeVector m_newNodes;
 
     Node* m_activeCamera{ nullptr };
 };
