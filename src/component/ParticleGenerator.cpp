@@ -1,12 +1,13 @@
 #include "ParticleGenerator.h"
 
 #include "asset/Assets.h"
-#include "scene/ParticleSystem.h"
 
 #include "model/Particle.h"
 
-#include "scene/UpdateContext.h"
-#include "scene/RenderContext.h"
+#include "engine/UpdateContext.h"
+#include "render/RenderContext.h"
+
+#include "scene/ParticleSystem.h"
 
 
 ParticleGenerator::ParticleGenerator(

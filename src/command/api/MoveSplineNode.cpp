@@ -2,7 +2,7 @@
 
 #include "model/Node.h"
 
-#include "scene/UpdateContext.h"
+#include "engine/UpdateContext.h"
 
 
 MoveSplineNode::MoveSplineNode(

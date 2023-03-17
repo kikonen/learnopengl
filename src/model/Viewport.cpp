@@ -7,9 +7,9 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
-#include "scene/FrameBuffer.h"
+#include "render/FrameBuffer.h"
 
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 
 
 Viewport::Viewport(

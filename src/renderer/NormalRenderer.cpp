@@ -2,13 +2,13 @@
 
 #include "asset/Shader.h"
 
-#include "scene/RenderContext.h"
-#include "scene/Batch.h"
+#include "render/RenderContext.h"
+#include "render/Batch.h"
+#include "render/NodeDraw.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
-#include "NodeDraw.h"
 
 
 void NormalRenderer::prepare(

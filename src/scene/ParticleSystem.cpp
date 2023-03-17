@@ -4,10 +4,10 @@
 
 #include "component/Camera.h"
 
-#include "scene/UpdateContext.h"
-#include "scene/RenderContext.h"
+#include "engine/UpdateContext.h"
+#include "render/RenderContext.h"
 
-#include "scene/Batch.h"
+#include "render/Batch.h"
 
 #include "registry/Registry.h"
 #include "registry/ProgramRegistry.h"

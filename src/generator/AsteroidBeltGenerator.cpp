@@ -10,8 +10,8 @@
 
 #include "model/Node.h"
 
-#include "scene/UpdateContext.h"
-#include "scene/Batch.h"
+#include "engine/UpdateContext.h"
+#include "render/Batch.h"
 
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"

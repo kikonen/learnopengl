@@ -5,8 +5,9 @@
 
 #include "asset/LightUBO.h"
 
+#include "engine/UpdateContext.h"
+
 #include "model/Node.h"
-#include "scene/UpdateContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"

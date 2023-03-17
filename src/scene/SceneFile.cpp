@@ -44,7 +44,7 @@
 
 #include "renderer/SkyboxRenderer.h"
 
-#include <scene/AsyncLoader.h>
+#include <engine/AsyncLoader.h>
 
 
 namespace {

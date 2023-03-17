@@ -4,16 +4,14 @@
 #include "asset/Shader.h"
 
 #include "component/Camera.h"
-#include "scene/RenderContext.h"
-#include "scene/Batch.h"
 
+#include "render/RenderContext.h"
+#include "render/Batch.h"
+#include "render/FrameBuffer.h"
+#include "render/NodeDraw.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-
-#include "scene/FrameBuffer.h"
-
-#include "NodeDraw.h"
 
 
 int ObjectIdRenderer::getObjectId(

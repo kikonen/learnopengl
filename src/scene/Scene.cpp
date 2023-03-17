@@ -31,14 +31,15 @@
 #include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
 
-#include "scene/Batch.h"
+#include "render/Batch.h"
 
-#include "scene/UpdateContext.h"
-#include "scene/RenderContext.h"
-#include "scene/WindowBuffer.h"
-#include "scene/FrameBuffer.h"
+#include "engine/UpdateContext.h"
 
-#include "scene/RenderData.h"
+#include "render/RenderContext.h"
+#include "render/WindowBuffer.h"
+#include "render/FrameBuffer.h"
+
+#include "render/RenderData.h"
 
 #include "command/api/ResumeNode.h"
 

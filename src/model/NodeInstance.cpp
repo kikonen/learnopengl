@@ -8,7 +8,7 @@
 
 #include "registry/EntitySSBO.h"
 
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 
 
 void NodeInstance::setRotation(const glm::vec3& rotation) noexcept
@@ -68,4 +68,3 @@ bool NodeInstance::inFrustum(const RenderContext& ctx, float radiusFlex) const
     }
     return hit;
 }
-

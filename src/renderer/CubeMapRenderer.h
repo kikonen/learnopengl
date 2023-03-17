@@ -7,7 +7,7 @@
 
 #include "component/Camera.h"
 
-#include "scene/FrameBuffer.h"
+#include "render/FrameBuffer.h"
 
 
 class CubeMapRenderer final : public Renderer

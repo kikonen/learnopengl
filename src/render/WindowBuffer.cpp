@@ -4,7 +4,7 @@
 
 #include "glm/glm.hpp"
 
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 
 
 WindowBuffer::WindowBuffer(GLuint fbo)

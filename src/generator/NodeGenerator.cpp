@@ -4,7 +4,7 @@
 
 #include "model/Node.h"
 
-#include "scene/Batch.h"
+#include "render/Batch.h"
 
 #include "registry/EntityRegistry.h"
 

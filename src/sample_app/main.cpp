@@ -8,9 +8,9 @@
 
 #include <entt/entt.hpp>
 
+#include "engine/Engine.h"
+#include "sample_app/SampleApp.h"
 
-#include "Engine.h"
-#include "SampleApp.h"
 
 int runEngine() {
     auto engine = std::make_unique<SampleApp>();

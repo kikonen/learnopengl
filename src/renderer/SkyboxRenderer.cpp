@@ -4,9 +4,9 @@
 
 #include "asset/Shader.h"
 
-#include "scene/CubeMap.h"
+#include "render/CubeMap.h"
 
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 
 
 void SkyboxRenderer::prepare(

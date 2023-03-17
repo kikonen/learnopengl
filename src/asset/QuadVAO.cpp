@@ -5,7 +5,7 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
-#include "scene/Batch.h"
+#include "render/Batch.h"
 
 namespace {
     const float VERTICES[] = {

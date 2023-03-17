@@ -4,7 +4,7 @@
 
 #include "model/NodeInstance.h"
 
-#include "scene/UpdateContext.h"
+#include "engine/UpdateContext.h"
 
 #include "generator/NodeGenerator.h"
 
@@ -126,4 +126,3 @@ namespace physics {
         return hit ? min : 0.f;
     }
 }
-

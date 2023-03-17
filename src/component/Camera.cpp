@@ -6,7 +6,7 @@
 #include <glm/ext.hpp>
 
 #include "model/Node.h"
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 
 const float MIN_ZOOM = 10.0f;
 // NOTE KI 90 to allow cubemap & shadowmap wide angle
@@ -223,4 +223,3 @@ void Camera::updateCamera() const noexcept
     m_dirtyView = true;
     m_dirtyProjected = true;
 }
-

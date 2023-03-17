@@ -15,19 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Engine.cpp">
+    <ClCompile Include="src\engine\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\sample_app\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SampleApp.cpp">
+    <ClCompile Include="src\sample_app\SampleApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ki\GL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TestSceneSetup.cpp">
+    <ClCompile Include="src\sample_app\TestSceneSetup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\src\stb_image.cpp">
@@ -102,13 +102,13 @@
     <ClCompile Include="src\asset\ModelMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\Batch.cpp">
+    <ClCompile Include="src\render\Batch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\CubeMap.cpp">
+    <ClCompile Include="src\render\CubeMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\FrameBuffer.cpp">
+    <ClCompile Include="src\render\FrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\QuadMesh.cpp">
@@ -117,13 +117,13 @@
     <ClCompile Include="src\scene\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\AsyncLoader.cpp">
+    <ClCompile Include="src\engine\AsyncLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\RenderContext.cpp">
+    <ClCompile Include="src\render\RenderContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\Raycast.cpp">
@@ -183,10 +183,10 @@
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneFile.cpp">
+    <ClCompile Include="src\scene\SceneFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AssetsFile.cpp">
+    <ClCompile Include="src\engine\AssetsFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\Volume.cpp">
@@ -300,13 +300,13 @@
     <ClCompile Include="src\backend\DrawBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\WindowBuffer.cpp">
+    <ClCompile Include="src\render\WindowBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\registry\EntityReegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\RenderData.cpp">
+    <ClCompile Include="src\render\RenderData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\util\Util.cpp">
@@ -360,22 +360,22 @@
     <ClCompile Include="src\command\api\Sync.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\NodeDraw.cpp">
+    <ClCompile Include="src\render\NodeDraw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\GBuffer.cpp">
+    <ClCompile Include="src\render\GBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\FrameBufferAttachment.cpp">
+    <ClCompile Include="src\render\FrameBufferAttachment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\CubeMapBuffer.cpp">
+    <ClCompile Include="src\render\CubeMapBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\Quad.cpp">
+    <ClCompile Include="src\render\Quad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\UpdateContext.cpp">
+    <ClCompile Include="src\engine\UpdateContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\event\Event.cpp">
@@ -389,10 +389,10 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine.h">
+    <ClInclude Include="src\engine\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SampleApp.h">
+    <ClInclude Include="src\sample_app\SampleApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\Timer.h">
@@ -401,7 +401,7 @@
     <ClInclude Include="src\ki\GL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TestSceneSetup.h">
+    <ClInclude Include="src\sample_app\TestSceneSetup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendor\stb_image\src\stb_image.h">
@@ -476,13 +476,13 @@
     <ClInclude Include="src\asset\ModelMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\Batch.h">
+    <ClInclude Include="src\render\Batch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\CubeMap.h">
+    <ClInclude Include="src\render\CubeMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\FrameBuffer.h">
+    <ClInclude Include="src\render\FrameBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\QuadMesh.h">
@@ -491,13 +491,13 @@
     <ClInclude Include="src\scene\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\AsyncLoader.h">
+    <ClInclude Include="src\engine\AsyncLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\RenderContext.h">
+    <ClInclude Include="src\render\RenderContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\Raycast.h">
@@ -560,10 +560,10 @@
     <ClInclude Include="src\renderer\ObjectIdRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SceneFile.h">
+    <ClInclude Include="src\scene\SceneFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AssetsFile.h">
+    <ClInclude Include="src\engine\AssetsFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\ProgramBind.h">
@@ -713,7 +713,7 @@
     <ClInclude Include="src\asset\IndexEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\BatchEntry.h">
+    <ClInclude Include="src\render\BatchEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\backend\DrawOptions.h">
@@ -725,7 +725,7 @@
     <ClInclude Include="src\asset\ModelVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\BatchCommand.h">
+    <ClInclude Include="src\render\BatchCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\backend\DrawBuffer.h">
@@ -737,7 +737,7 @@
     <ClInclude Include="src\kigl\GLBlendMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\WindowBuffer.h">
+    <ClInclude Include="src\render\WindowBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\MaterialSSBO.h">
@@ -755,7 +755,7 @@
     <ClInclude Include="src\registry\EntityRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\RenderData.h">
+    <ClInclude Include="src\render\RenderData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\LightUBO.h">
@@ -860,22 +860,22 @@
     <ClInclude Include="src\command\api\Sync.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\NodeDraw.h">
+    <ClInclude Include="src\render\NodeDraw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\GBuffer.h">
+    <ClInclude Include="src\render\GBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\FrameBufferAttachment.h">
+    <ClInclude Include="src\render\FrameBufferAttachment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\CubeMapBuffer.h">
+    <ClInclude Include="src\render\CubeMapBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\Quad.h">
+    <ClInclude Include="src\render\Quad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\UpdateContext.h">
+    <ClInclude Include="src\engine\UpdateContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\event\Event.h">

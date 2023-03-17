@@ -2,7 +2,7 @@
 
 #include "command/CommandEngine.h"
 
-#include "scene/UpdateContext.h"
+#include "engine/UpdateContext.h"
 
 Sync::Sync(
     int afterCommandId,

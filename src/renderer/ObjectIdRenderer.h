@@ -4,7 +4,7 @@
 
 #include "model/Viewport.h"
 
-#include "scene/FrameBuffer.h"
+#include "render/FrameBuffer.h"
 
 
 class ObjectIdRenderer final : public Renderer

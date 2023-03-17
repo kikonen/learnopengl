@@ -18,15 +18,14 @@
 #include "registry/ModelRegistry.h"
 #include "registry/MaterialRegistry.h"
 
-#include "TestSceneSetup.h"
+#include "engine/AssetsFile.h"
 
-#include "AssetsFile.h"
-#include "SceneFile.h"
-
-#include "scene/UpdateContext.h"
-#include "scene/RenderContext.h"
+#include "engine/UpdateContext.h"
+#include "render/RenderContext.h"
 
 #include "scene/Scene.h"
+
+#include "TestSceneSetup.h"
 
 
 SampleApp::SampleApp()

@@ -11,13 +11,13 @@
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
 
-#include "scene/FrameBuffer.h"
-#include "scene/RenderContext.h"
-#include "scene/Batch.h"
+#include "render/FrameBuffer.h"
+#include "render/RenderContext.h"
+#include "render/Batch.h"
+#include "render/NodeDraw.h"
 
 #include "WaterNoiseGenerator.h"
 
-#include "NodeDraw.h"
 
 namespace {
     const glm::vec3 CAMERA_FRONT[6] = {

@@ -15,12 +15,13 @@
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
 
+#include "render/CubeMap.h"
+
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
 
 #include "ParticleSystem.h"
 
-#include "CubeMap.h"
 
 namespace event {
     class Dispatcher;

@@ -21,8 +21,8 @@
 
 #include "renderer/NodeDraw.h"
 
-#include "scene/RenderData.h"
-#include "scene/Batch.h"
+#include "render/RenderData.h"
+#include "render/Batch.h"
 
 
 RenderContext::RenderContext(

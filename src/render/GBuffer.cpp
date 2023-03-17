@@ -2,7 +2,7 @@
 
 #include "asset/Shader.h"
 
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 
 
 void GBuffer::prepare(const Assets& assets)

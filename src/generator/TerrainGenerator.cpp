@@ -11,7 +11,7 @@
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
 
-#include "scene/UpdateContext.h"
+#include "engine/UpdateContext.h"
 
 #include "registry/MeshType.h"
 #include "registry/Registry.h"

@@ -8,7 +8,7 @@
 
 #include "Renderer.h"
 
-#include "scene/CubeMap.h"
+#include "render/CubeMap.h"
 
 class Assets;
 class Registry;

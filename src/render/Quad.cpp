@@ -1,6 +1,6 @@
 #include "Quad.h"
 
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 
 void Quad::prepare()
 {

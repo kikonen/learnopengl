@@ -9,10 +9,11 @@
 #include "registry/MaterialRegistry.h"
 
 #include "component/Camera.h"
-#include "scene/RenderContext.h"
-#include "scene/Batch.h"
 
-#include "NodeDraw.h"
+#include "render/RenderContext.h"
+#include "render/Batch.h"
+#include "render/NodeDraw.h"
+
 
 
 void NodeRenderer::prepare(

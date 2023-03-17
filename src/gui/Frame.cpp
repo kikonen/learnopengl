@@ -1,6 +1,6 @@
 #include "Frame.h"
 
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 
 Frame::Frame(Window& window)
     : m_window(window)
@@ -31,5 +31,3 @@ void Frame::render(const RenderContext& ctx)
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-
-

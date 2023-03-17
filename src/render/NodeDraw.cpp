@@ -9,8 +9,8 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
-#include "scene/RenderContext.h"
-#include "scene/Batch.h"
+#include "render/RenderContext.h"
+#include "render/Batch.h"
 
 
 void NodeDraw::prepare(

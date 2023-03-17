@@ -2,7 +2,7 @@
 
 #include "glm/glm.hpp"
 
-#include "scene/UpdateContext.h"
+#include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"

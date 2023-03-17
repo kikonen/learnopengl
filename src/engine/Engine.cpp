@@ -10,7 +10,7 @@
 #include "ki/Timer.h"
 #include "ki/OpenGLInfo.h"
 
-#include "scene/AsyncLoader.h"
+#include "engine/AsyncLoader.h"
 
 
 Engine::Engine()

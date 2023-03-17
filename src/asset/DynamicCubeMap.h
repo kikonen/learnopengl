@@ -4,9 +4,8 @@
 
 #include "ki/GL.h"
 
-#include "scene/CubeMap.h"
-
-#include "scene/CubeMapBuffer.h"
+#include "render/CubeMap.h"
+#include "render/CubeMapBuffer.h"
 
 class RenderContext;
 
@@ -44,4 +43,3 @@ private:
     bool m_prepared = false;
 
 };
-

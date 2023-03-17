@@ -21,10 +21,10 @@
 #include "registry/EntityRegistry.h"
 #include "registry/EntitySSBO.h"
 
-#include "scene/UpdateContext.h"
-#include "scene/RenderContext.h"
+#include "engine/UpdateContext.h"
+#include "render/RenderContext.h"
 
-#include "scene/Batch.h"
+#include "render/Batch.h"
 
 namespace {
     int objectIDbase = 100;

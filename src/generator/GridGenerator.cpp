@@ -6,7 +6,7 @@
 
 #include "model/Node.h"
 
-#include "scene/UpdateContext.h"
+#include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"

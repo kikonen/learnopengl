@@ -1,9 +1,9 @@
 #include "ViewportRenderer.h"
 
-#include "scene/UpdateContext.h"
-#include "scene/RenderContext.h"
+#include "engine/UpdateContext.h"
+#include "render/RenderContext.h"
 
-#include "scene/FrameBuffer.h"
+#include "render/FrameBuffer.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"

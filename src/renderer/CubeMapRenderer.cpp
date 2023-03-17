@@ -4,16 +4,15 @@
 
 #include "asset/Shader.h"
 
-#include "scene/RenderContext.h"
-#include "scene/Batch.h"
+#include "render/RenderContext.h"
+#include "render/Batch.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 
-#include "NodeDraw.h"
-
-#include "scene/CubeMapBuffer.h"
+#include "render/NodeDraw.h"
+#include "render/CubeMapBuffer.h"
 
 
 // https://stackoverflow.com/questions/28845375/rendering-a-dynamic-cubemap-opengl

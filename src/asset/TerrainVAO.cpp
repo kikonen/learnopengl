@@ -4,7 +4,7 @@
 
 #include "Program.h"
 
-#include "scene/Batch.h"
+#include "render/Batch.h"
 
 namespace {
 #pragma pack(push, 1)

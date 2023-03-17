@@ -4,10 +4,10 @@
 
 #include "api/NodeCommand.h"
 
+#include "engine/UpdateContext.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-
-#include "scene/UpdateContext.h"
 
 
 CommandEngine::CommandEngine(const Assets& assets)

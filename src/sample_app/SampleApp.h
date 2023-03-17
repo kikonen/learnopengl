@@ -2,13 +2,14 @@
 
 #include "ki/GL.h"
 
-#include "Engine.h"
+#include "engine/Engine.h"
 
 #include "gui/FrameInit.h"
 #include "gui/Frame.h"
 
+#include "scene/SceneFile.h"
+
 #include "TestSceneSetup.h"
-#include "SceneFile.h"
 
 
 class SampleApp final : public Engine {

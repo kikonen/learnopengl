@@ -13,7 +13,7 @@
 #include "registry/ModelRegistry.h"
 #include "registry/MaterialRegistry.h"
 
-#include "scene/AsyncLoader.h"
+#include "engine/AsyncLoader.h"
 
 
 namespace {

@@ -2,7 +2,7 @@
 
 #include <fmt/format.h>
 
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 #include "asset/ModelMesh.h"
 #include "asset/ModelMeshVBO.h"
 #include "asset/MeshLoader.h"

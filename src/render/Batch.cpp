@@ -21,7 +21,7 @@
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
 
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 
 namespace {
     constexpr int BATCH_COUNT = 100;

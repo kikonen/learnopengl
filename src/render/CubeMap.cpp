@@ -4,7 +4,7 @@
 
 #include "asset/Image.h"
 
-#include "scene/RenderContext.h"
+#include "render/RenderContext.h"
 
 
 CubeMap::CubeMap(bool empty)
