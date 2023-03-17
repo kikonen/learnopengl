@@ -17,8 +17,7 @@ public:
 
     bool update(
         const UpdateContext& ctx,
-        Node& node,
-        Node* parent) noexcept override;
+        Node& node) noexcept override;
 
     virtual void onKey(Input* input, const ki::RenderClock& clock) override;
     virtual void onMouseMove(Input* input, double xoffset, double yoffset) override;

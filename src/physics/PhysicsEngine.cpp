@@ -72,7 +72,7 @@ namespace physics {
 
         auto surfaceY = getWorldSurfaceLevel(worldPos);
 
-        auto* parent = ctx.m_registry->m_nodeRegistry->getParent(node);
+        auto* parent = node.getParent();
 
         auto y = surfaceY - parent->getWorldPosition().y;
         y += instance.getScale().y;
@@ -85,7 +85,7 @@ namespace physics {
         instance.setPosition(pos);
 
         if (instance.m_dirty) {
-            instance.updateModelMatrix(parent->getModelMatrix(), parent->getMatrixLevel());
+            instance.updateModelMatrix(parent->getInstance());
         }
 
         instance.m_physicsMatrixLevel = instance.m_matrixLevel;

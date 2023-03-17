@@ -2,9 +2,11 @@
 
 #include <iostream>
 
+#include "engine/Engine.h"
+
 #include "controller/NodeController.h"
+
 #include "scene/Scene.h"
-#include "Engine.h"
 
 Window::Window(Engine& engine, const Assets& assets)
     : m_engine(engine), assets(assets)

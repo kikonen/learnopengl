@@ -119,11 +119,6 @@ public:
 
     void changeParent(Node* node, uuids::uuid parentId) noexcept;
 
-    inline Node* getParent(const Node& child) const noexcept {
-        const auto& it = m_childToParent.find(child.m_objectID);
-        return it != m_childToParent.end() ? it->second : nullptr;
-    }
-
     inline const NodeVector* getChildren(const Node& parent) const noexcept {
         const auto& it = m_parentToChildren.find(parent.m_objectID);
         return it != m_parentToChildren.end() ? &it->second : nullptr;
@@ -190,7 +185,6 @@ private:
 
     std::map<uuids::uuid, NodeVector> m_pendingChildren;
 
-    std::map<int, Node*> m_childToParent;
     std::map<int, NodeVector> m_parentToChildren;
 
     NodeVector m_pendingNodes;

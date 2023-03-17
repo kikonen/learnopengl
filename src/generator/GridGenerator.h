@@ -16,14 +16,12 @@ public:
 
     virtual void update(
         const UpdateContext& ctx,
-        Node& container,
-        Node* containerParent) override;
+        Node& container) override;
 
 private:
     void updateInstances(
         const UpdateContext& ctx,
-        Node& container,
-        Node* containerParent);
+        Node& container);
 
     void prepareInstances(
         const Assets& assets,

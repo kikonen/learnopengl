@@ -29,24 +29,21 @@ void GridGenerator::prepare(
 
 void GridGenerator::update(
     const UpdateContext& ctx,
-    Node& container,
-    Node* containerParent)
+    Node& container)
 {
-    if (m_containerMatrixLevel == container.getMatrixLevel()) return;
+    const int parentLevel = container.getParent()->getMatrixLevel();
+    if (m_containerMatrixLevel == parentLevel) return;
     updateInstances(
         ctx,
-        container,
-        containerParent);
-    m_containerMatrixLevel = container.getMatrixLevel();
+        container);
+    m_containerMatrixLevel = parentLevel;
 }
 
 void GridGenerator::updateInstances(
     const UpdateContext& ctx,
-    Node& container,
-    Node* containerParent)
+    Node& container)
 {
-    const auto& containerMatrix = containerParent->getModelMatrix();
-    const auto containerLevel = containerParent->getMatrixLevel();
+    const auto& parentInstance = container.getParent()->getInstance();
 
     const auto& containerInstance = container.getInstance();
     int idx = 0;
@@ -68,7 +65,7 @@ void GridGenerator::updateInstances(
                 instance.setRotation(containerInstance.getRotation());
                 instance.setScale(containerInstance.getScale());
 
-                instance.updateModelMatrix(containerMatrix, containerLevel);
+                instance.updateModelMatrix(parentInstance);
 
                 idx++;
             }

@@ -9,8 +9,7 @@ public:
 
     bool update(
         const UpdateContext& ctx,
-        Node& node,
-        Node* parent) noexcept override;
+        Node& node) noexcept override;
 
     int getTarget();
     void setTarget(int targetID);

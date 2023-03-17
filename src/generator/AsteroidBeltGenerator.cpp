@@ -38,29 +38,27 @@ void AsteroidBeltGenerator::prepare(
 
 void AsteroidBeltGenerator::update(
     const UpdateContext& ctx,
-    Node& container,
-    Node* containerParent)
+    Node& container)
 {
-    const bool rotate = m_updateIndex% m_updateStep == 0 || container.getMatrixLevel() != m_nodeMatrixLevel;
+    const int parentLevel = container.getParent()->getMatrixLevel();
+    const bool rotate = m_updateIndex% m_updateStep == 0 || parentLevel != m_containerMatrixLevel;
 
     if (rotate) {
-        updateAsteroids(ctx, container, containerParent, rotate);
+        updateAsteroids(ctx, container, rotate);
     }
 
     m_updateIndex++;
-    m_nodeMatrixLevel = container.getMatrixLevel();
+    m_containerMatrixLevel = parentLevel;
 }
 
 void AsteroidBeltGenerator::updateAsteroids(
     const UpdateContext& ctx,
     Node& container,
-    Node* containerParent,
     bool rotate)
 {
     auto* registry = ctx.m_registry;
 
-    const auto& containerMatrix = containerParent->getModelMatrix();
-    const auto containerLevel = containerParent->getMatrixLevel();
+    const auto& parentInstance = container.getParent()->getInstance();
 
     if (rotate) {
         rotateAsteroids(ctx, container);
@@ -68,7 +66,7 @@ void AsteroidBeltGenerator::updateAsteroids(
 
     for (auto& instance : m_instances)
     {
-        instance.updateModelMatrix(containerMatrix, containerLevel);
+        instance.updateModelMatrix(parentInstance);
     }
 
     setActiveRange(m_reservedFirst, m_reservedCount);

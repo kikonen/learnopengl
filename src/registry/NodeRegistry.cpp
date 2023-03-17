@@ -59,7 +59,6 @@ NodeRegistry::~NodeRegistry()
         objectIdToNode.clear();
         idToNode.clear();
 
-        m_childToParent.clear();
         m_parentToChildren.clear();
     }
 
@@ -247,7 +246,7 @@ void NodeRegistry::changeParent(
     if (!parent) return;
 
     {
-        Node* oldParent = getNode(node->m_parentId);
+        Node* oldParent = node->getParent();
         if (oldParent == parent) return;
 
         auto& oldChildren = m_parentToChildren[oldParent->m_objectID];
@@ -260,11 +259,10 @@ void NodeRegistry::changeParent(
         oldChildren.erase(it, oldChildren.end());
     }
 
-    auto& children = m_parentToChildren[parent->m_objectID];
+    node->setParent(parent);
 
+    auto& children = m_parentToChildren[parent->m_objectID];
     children.push_back(node);
-    m_childToParent[node->m_objectID] = parent;
-    node->m_parentId = parent->m_id;
 }
 
 void NodeRegistry::bindNode(
@@ -383,7 +381,7 @@ void NodeRegistry::bindPendingChildren()
             KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
             bindNode(child);
 
-            m_childToParent[child->m_objectID] = parent;
+            child->setParent(parent);
             m_parentToChildren[parent->m_objectID].push_back(child);
         }
     }
@@ -410,7 +408,7 @@ bool NodeRegistry::bindParent(
     auto& parent = parentIt->second;
     KI_INFO(fmt::format("BIND_PARENT: parent={}, child={}", parent->str(), child->str()));
 
-    m_childToParent[child->m_objectID] = parent;
+    child->setParent(parent);
     m_parentToChildren[parent->m_objectID].push_back(child);
 
     return true;
@@ -426,7 +424,7 @@ void NodeRegistry::bindChildren(
         KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
         bindNode(child);
 
-        m_childToParent[child->m_objectID] = parent;
+        child->setParent(parent);
         m_parentToChildren[parent->m_objectID].push_back(child);
     }
 

@@ -28,8 +28,7 @@ public:
 
     virtual bool update(
         const UpdateContext& ctx,
-        Node& node,
-        Node* parent)
+        Node& node)
     {
         return false;
     }

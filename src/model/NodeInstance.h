@@ -183,14 +183,14 @@ struct NodeInstance {
         m_entityDirty = true;
     }
 
-    inline void updateModelMatrix(const glm::mat4& parentMatrix, int parentMatrixLevel) noexcept
+    inline void updateModelMatrix(const NodeInstance& parent) noexcept
     {
-        if (!m_dirty && parentMatrixLevel == m_parentMatrixLevel) return;
+        if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
 
         updateRotationMatrix();
-        m_modelMatrix = parentMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
+        m_modelMatrix = parent.m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
         m_dirty = false;
-        m_parentMatrixLevel = parentMatrixLevel;
+        m_parentMatrixLevel = parent.m_matrixLevel;
         m_matrixLevel++;
         m_entityDirty = true;
     }

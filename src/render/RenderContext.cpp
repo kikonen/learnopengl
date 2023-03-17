@@ -19,8 +19,7 @@
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
 
-#include "renderer/NodeDraw.h"
-
+#include "render/NodeDraw.h"
 #include "render/RenderData.h"
 #include "render/Batch.h"
 

@@ -19,14 +19,12 @@ public:
 
     virtual void update(
         const UpdateContext& ctx,
-        Node& container,
-        Node* containerParent) override;
+        Node& container) override;
 
 private:
     void updateAsteroids(
         const UpdateContext& ctx,
         Node& container,
-        Node* containerParent,
         bool rotate);
 
     void createAsteroids(
@@ -49,7 +47,6 @@ private:
     const float m_offset;
     const int m_updateStep;
 
-    int m_nodeMatrixLevel = 0;
     int m_updateIndex = 0;
 };
 

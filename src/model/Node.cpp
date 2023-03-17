@@ -94,27 +94,26 @@ void Node::prepare(
 }
 
 void Node::update(
-    const UpdateContext& ctx,
-    Node* parent) noexcept
+    const UpdateContext& ctx) noexcept
 {
-    updateModelMatrix(parent);
+    updateModelMatrix();
 
     bool changed = false;
     if (m_controller) {
-        changed = m_controller->update(ctx, *this, parent);
+        changed = m_controller->update(ctx, *this);
     }
 
     if (changed)
-        updateModelMatrix(parent);
+        updateModelMatrix();
 
     if (m_camera) m_camera->update(*this);
     if (m_light) m_light->update(ctx, *this);
-    if (m_generator) m_generator->update(ctx, *this, parent);
+    if (m_generator) m_generator->update(ctx, *this);
 
     const auto* children = ctx.m_registry->m_nodeRegistry->getChildren(*this);
     if (children) {
         for (auto& child : *children) {
-            child->update(ctx, this);
+            child->update(ctx);
         }
     }
 }
@@ -150,11 +149,11 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
     }
 }
 
-void Node::updateModelMatrix(Node* parent) noexcept
+void Node::updateModelMatrix() noexcept
 {
     int oldLevel = m_instance.m_matrixLevel;
-    if (parent) {
-        m_instance.updateModelMatrix(parent->getModelMatrix(), parent->getMatrixLevel());
+    if (m_parent) {
+        m_instance.updateModelMatrix(m_parent->getInstance());
     }
     else {
         m_instance.updateRootMatrix();

@@ -37,13 +37,22 @@ public:
         const Assets& assets,
         Registry* registry);
 
-    void update(const UpdateContext& ctx, Node* parent) noexcept;
+    void update(const UpdateContext& ctx) noexcept;
 
     void updateEntity(
         const UpdateContext& ctx,
         EntityRegistry* entityRegistry);
 
     void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
+
+    inline Node* getParent() {
+        return m_parent;
+    }
+
+    inline void setParent(Node* parent) {
+        m_parent = parent;
+        m_parentId = parent ? parent->m_id : uuids::uuid{};
+    }
 
     inline NodeInstance& getInstance() noexcept {
         return m_instance;
@@ -130,7 +139,7 @@ public:
         return m_instance.m_modelMatrix;
     }
 
-    void updateModelMatrix(Node* parent) noexcept;
+    void updateModelMatrix() noexcept;
 
     inline bool isEntity() {
         return m_type->getMesh() &&
@@ -218,6 +227,8 @@ private:
     glm::vec3 m_worldPlaneNormal{ 0.f };
 
     glm::vec3 m_planeNormal{ 0 };
+
+    Node* m_parent{ nullptr };
 
     NodeInstance m_instance;
 

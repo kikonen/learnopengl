@@ -13,8 +13,7 @@ VolumeController::VolumeController()
 
 bool VolumeController::update(
     const UpdateContext& ctx,
-    Node& volumeNode,
-    Node* parent) noexcept
+    Node& volumeNode) noexcept
 {
     Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetID);
 

@@ -29,14 +29,12 @@ public:
 
     virtual void update(
         const UpdateContext& ctx,
-        Node& container,
-        Node* containerParent) override;
+        Node& container) override;
 
 private:
     void updateTiles(
         const UpdateContext& ctx,
-        Node& container,
-        Node* containerParent);
+        Node& container);
 
     void prepareHeightMap(
         const Assets& assets,

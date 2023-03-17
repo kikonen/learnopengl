@@ -20,10 +20,10 @@
 #include "renderer/MirrorMapRenderer.h"
 #include "renderer/CubeMapRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
-
 #include "renderer/SkyboxRenderer.h"
 
-#include "renderer/NodeDraw.h"
+#include "render/NodeDraw.h"
+#include "render/Batch.h"
 
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
@@ -31,7 +31,6 @@
 #include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
 
-#include "render/Batch.h"
 
 #include "engine/UpdateContext.h"
 
@@ -227,7 +226,7 @@ void Scene::update(const UpdateContext& ctx)
     }
 
     if (m_registry->m_nodeRegistry->m_root) {
-        m_registry->m_nodeRegistry->m_root->update(ctx, nullptr);
+        m_registry->m_nodeRegistry->m_root->update(ctx);
         m_registry->m_physicsEngine->update(ctx);
     }
 

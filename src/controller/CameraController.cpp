@@ -28,8 +28,7 @@ void CameraController::prepare(
 
 bool CameraController::update(
     const UpdateContext& ctx,
-    Node& node,
-    Node* parent) noexcept
+    Node& node) noexcept
 {
     //if (!m_node) return false;
     //auto* camera = m_node->m_camera.get();

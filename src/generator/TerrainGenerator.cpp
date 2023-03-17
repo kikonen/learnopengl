@@ -47,12 +47,11 @@ void TerrainGenerator::prepare(
 
 void TerrainGenerator::update(
     const UpdateContext& ctx,
-    Node& container,
-    Node* containerParent)
+    Node& container)
 {
     if (m_containerMatrixLevel == container.getMatrixLevel()) return;
 
-    updateTiles(ctx, container, containerParent);
+    updateTiles(ctx, container);
     m_containerMatrixLevel = container.getMatrixLevel();
 }
 
@@ -90,11 +89,9 @@ void TerrainGenerator::prepareHeightMap(
 
 void TerrainGenerator::updateTiles(
     const UpdateContext& ctx,
-    Node& container,
-    Node* containerParent)
+    Node& container)
 {
-    const auto& containerMatrix = container.getModelMatrix();
-    const auto containerLevel = container.getMatrixLevel();
+    const auto& containerInstance = container.getInstance();
 
     // NOTE scale.y == makes *FLAT* plane
     const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
@@ -110,7 +107,7 @@ void TerrainGenerator::updateTiles(
             instance.setPosition(pos);
             instance.setScale(scale);
 
-            instance.updateModelMatrix(containerMatrix, containerLevel);
+            instance.updateModelMatrix(containerInstance);
 
             idx++;
         }
