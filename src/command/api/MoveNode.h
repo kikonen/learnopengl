@@ -11,7 +11,7 @@ public:
     MoveNode(
         int afterCommandId,
         int objectID,
-        float finishTime,
+        float duration,
         bool relative,
         const glm::vec3& position) noexcept;
 

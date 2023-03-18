@@ -19,10 +19,10 @@ namespace {
 
 Command::Command(
     int afterCommandId,
-    float finishTime) noexcept
+    float duration) noexcept
     : m_id(nextID()),
     m_afterCommandId(afterCommandId),
-    m_finishTime(finishTime)
+    m_duration(duration)
 {
 }
 

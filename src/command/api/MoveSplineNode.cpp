@@ -8,11 +8,11 @@
 MoveSplineNode::MoveSplineNode(
     int afterCommandId,
     int objectID,
-    float finishTime,
+    float duration,
     bool relative,
     const glm::vec3& controlPoint,
     const glm::vec3& position) noexcept
-    : NodeCommand(afterCommandId, objectID, finishTime, relative),
+    : NodeCommand(afterCommandId, objectID, duration, relative),
     m_controlPoint(controlPoint),
     m_position(position)
 {
@@ -41,7 +41,7 @@ void MoveSplineNode::execute(
     const UpdateContext& ctx) noexcept
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
-    m_finished = m_elapsedTime >= m_finishTime;
+    m_finished = m_elapsedTime >= m_duration;
 
     //if (m_node->m_id == KI_UUID("65ce67c8-3efe-4b04-aaf9-fe384152c547")) {
     //    KI_INFO_OUT(fmt::format(
@@ -57,7 +57,7 @@ void MoveSplineNode::execute(
         position = m_end;
     }
     else {
-        const auto t = (m_elapsedTime / m_finishTime);
+        const auto t = (m_elapsedTime / m_duration);
 
         glm::vec3 p0{ 0.f };
         glm::vec3 p1{ m_controlPoint };

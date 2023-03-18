@@ -8,7 +8,7 @@ class Sync final : public Command
 public:
     Sync(
         int afterCommandId,
-        float finishTime,
+        float duration,
         std::vector<int> commandIds) noexcept;
 
     virtual void execute(

@@ -10,9 +10,10 @@ class CommandEngine;
 class Command
 {
 public:
+    // @param duration seconds
     Command(
         int afterCommandId,
-        float finishTime) noexcept;
+        float duration) noexcept;
 
     virtual ~Command() {}
 
@@ -32,7 +33,9 @@ public:
 public:
     const int m_id;
     const int m_afterCommandId;
-    const float m_finishTime;
+
+    // seconds
+    const float m_duration;
 
     bool m_canceled = false;
     bool m_ready = false;

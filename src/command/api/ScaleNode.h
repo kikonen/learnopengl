@@ -10,7 +10,7 @@ public:
     ScaleNode(
         int afterCommandId,
         int objectID,
-        float finishTime,
+        float duration,
         bool relative,
         const glm::vec3& scale) noexcept;
 

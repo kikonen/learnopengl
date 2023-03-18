@@ -10,7 +10,7 @@ public:
     NodeCommand(
         int afterCommandId,
         int objectID,
-        float finishTime,
+        float duration,
         bool relative) noexcept;
 
     virtual bool isNode() noexcept override final { return true; };

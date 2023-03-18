@@ -6,9 +6,9 @@
 
 CancelCommand::CancelCommand(
     int afterCommandId,
-    float finishTime,
+    float duration,
     int commandId) noexcept
-    : Command(afterCommandId, finishTime),
+    : Command(afterCommandId, duration),
     m_commandId(commandId)
 {
 }
@@ -18,7 +18,7 @@ void CancelCommand::execute(
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
 
-    m_finished = m_elapsedTime >= m_finishTime;
+    m_finished = m_elapsedTime >= m_duration;
     if (m_finished) {
         ctx.m_commandEngine->cancel(m_commandId);
     }

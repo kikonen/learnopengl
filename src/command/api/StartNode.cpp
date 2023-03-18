@@ -24,7 +24,7 @@ void StartNode::execute(
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
 
-    m_finished = m_elapsedTime >= m_finishTime;
+    m_finished = m_elapsedTime >= m_duration;
     if (m_finished) {
         // TODO KI start...
         (*m_coroutine)(m_vargs);

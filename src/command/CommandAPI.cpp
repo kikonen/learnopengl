@@ -18,7 +18,7 @@
 namespace {
     struct CommandOptions {
         int afterId = 0;
-        float secs = 0;
+        float duration = 0;
         bool relative = false;
         bool repeat = false;
     };
@@ -31,7 +31,10 @@ namespace {
                 opt.afterId = value.as<int>();
             }
             else if (k == "time") {
-                opt.secs = value.as<float>();
+                opt.duration = value.as<float>();
+            }
+            else if (k == "duration") {
+                opt.duration = value.as<float>();
             }
             else if (k == "relative") {
                 opt.relative = value.as<bool>();
@@ -67,24 +70,24 @@ CommandAPI::CommandAPI(
 
 int CommandAPI::lua_cancel(
     int afterCommandId,
-    float secs,
+    float duration,
     int commandId) noexcept
 {
     return m_commandEngine->addCommand(
         std::make_unique<CancelCommand>(
             afterCommandId,
-            secs,
+            duration,
             commandId));
 }
 
 int CommandAPI::lua_wait(
     int afterCommandId,
-    float secs) noexcept
+    float duration) noexcept
 {
     return m_commandEngine->addCommand(
         std::make_unique<Wait>(
             afterCommandId,
-            secs));
+            duration));
 }
 
 int CommandAPI::lua_sync(
@@ -97,7 +100,7 @@ int CommandAPI::lua_sync(
     return m_commandEngine->addCommand(
         std::make_unique<Sync>(
             opt.afterId,
-            opt.secs,
+            opt.duration,
             commandIds));
 }
 
@@ -113,7 +116,7 @@ int CommandAPI::lua_move(
         std::make_unique<MoveNode>(
             opt.afterId,
             objectID,
-            opt.secs,
+            opt.duration,
             opt.relative,
             pos));
 }
@@ -132,7 +135,7 @@ int CommandAPI::lua_moveSpline(
         std::make_unique<MoveSplineNode>(
             opt.afterId,
             objectID,
-            opt.secs,
+            opt.duration,
             opt.relative,
             p,
             pos));
@@ -150,7 +153,7 @@ int CommandAPI::lua_rotate(
         std::make_unique<RotateNode>(
             opt.afterId,
             objectID,
-            opt.secs,
+            opt.duration,
             opt.relative,
             rot));
 }
@@ -167,7 +170,7 @@ int CommandAPI::lua_scale(
         std::make_unique<ScaleNode>(
             opt.afterId,
             objectID,
-            opt.secs,
+            opt.duration,
             opt.relative,
             scale));
 }

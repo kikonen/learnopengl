@@ -19,7 +19,7 @@ void ResumeNode::execute(
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
 
-    m_finished = m_elapsedTime >= m_finishTime;
+    m_finished = m_elapsedTime >= m_duration;
     if (m_finished) {
         ctx.m_scriptEngine->invokeFunction(m_node, m_callbackFn);
     }

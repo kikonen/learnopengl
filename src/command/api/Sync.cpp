@@ -6,9 +6,9 @@
 
 Sync::Sync(
     int afterCommandId,
-    float finishTime,
+    float duration,
     std::vector<int> commandIds) noexcept
-    : Command(afterCommandId, finishTime),
+    : Command(afterCommandId, duration),
     m_commandIds(commandIds)
 {
 }
@@ -30,6 +30,6 @@ void Sync::execute(
     }
     else {
         m_elapsedTime += ctx.m_clock.elapsedSecs;
-        m_finished = m_elapsedTime >= m_finishTime;
+        m_finished = m_elapsedTime >= m_duration;
     }
 }

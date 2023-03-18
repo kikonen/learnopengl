@@ -8,10 +8,10 @@
 ScaleNode::ScaleNode(
     int afterCommandId,
     int objectID,
-    float finishTime,
+    float duration,
     bool relative,
     const glm::vec3& scale) noexcept
-    : NodeCommand(afterCommandId, objectID, finishTime, relative),
+    : NodeCommand(afterCommandId, objectID, duration, relative),
     m_scale(scale)
 {
 }
@@ -30,7 +30,7 @@ void ScaleNode::execute(
     const UpdateContext& ctx) noexcept
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
-    m_finished = m_elapsedTime >= m_finishTime;
+    m_finished = m_elapsedTime >= m_duration;
 
     // NOTE KI keep steps relative to previous
     // => in case there is N concurrent commands
@@ -39,7 +39,7 @@ void ScaleNode::execute(
         scale = m_end;
     }
     else {
-        const auto t = (m_elapsedTime / m_finishTime);
+        const auto t = (m_elapsedTime / m_duration);
 
         glm::vec3 p0{ 0 };
         glm::vec3 p1{ m_end };

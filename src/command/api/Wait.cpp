@@ -6,8 +6,8 @@
 
 Wait::Wait(
     int afterCommandId,
-    float finishTime) noexcept
-    : Command(afterCommandId, finishTime)
+    float duration) noexcept
+    : Command(afterCommandId, duration)
 {
 }
 
@@ -15,5 +15,5 @@ void Wait::execute(
     const UpdateContext& ctx) noexcept
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
-    m_finished = m_elapsedTime >= m_finishTime;
+    m_finished = m_elapsedTime >= m_duration;
 }

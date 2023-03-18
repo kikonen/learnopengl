@@ -8,7 +8,7 @@ class CancelCommand final : public Command
 public:
     CancelCommand(
         int afterCommandId,
-        float finishTime,
+        float duration,
         int commandId) noexcept;
 
     virtual void execute(

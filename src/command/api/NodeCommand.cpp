@@ -3,9 +3,9 @@
 NodeCommand::NodeCommand(
     int afterCommandId,
     int objectID,
-    float finishTime,
+    float duration,
     bool relative) noexcept
-    : Command(afterCommandId, finishTime),
+    : Command(afterCommandId, duration),
     m_objectID(objectID),
     m_relative(relative)
 {
