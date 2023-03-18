@@ -4,7 +4,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "Engine.h"
+#include "engine/Engine.h"
 
 FrameInit::FrameInit(Window& window)
     : window(window)
