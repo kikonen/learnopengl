@@ -14,6 +14,7 @@ struct EntitySSBO;
 //
 struct NodeInstance {
     bool m_dirty = true;
+    bool m_rotationDirty = true;
     bool m_entityDirty = true;
 
     int m_parentMatrixLevel = -1;
@@ -40,56 +41,67 @@ struct NodeInstance {
 
     glm::mat4 m_modelMatrix{ 1.f };
 
-    inline int getObjectID() const noexcept {
+    inline int getObjectID() const noexcept
+    {
         return m_objectID;
     }
 
-    inline void setObjectID(int objectID) noexcept {
+    inline void setObjectID(int objectID) noexcept
+    {
         m_objectID = objectID;
     }
 
-    inline int getFlags() const noexcept {
+    inline int getFlags() const noexcept
+    {
         return m_flags;
     }
 
-    inline void setFlags(int flags) noexcept {
+    inline void setFlags(int flags) noexcept
+    {
         if (m_flags != flags) {
             m_flags = flags;
             m_entityDirty = true;
         }
     }
 
-    inline int getMaterialIndex() const noexcept {
+    inline int getMaterialIndex() const noexcept
+    {
         return m_materialIndex;
     }
 
-    inline void setMaterialIndex(int materialIndex) noexcept {
+    inline void setMaterialIndex(int materialIndex) noexcept
+    {
         if (m_materialIndex != materialIndex) {
             m_materialIndex = materialIndex;
             m_entityDirty = true;
         }
     }
 
-    inline const glm::vec4& getVolume() const noexcept {
+    inline const glm::vec4& getVolume() const noexcept
+    {
         return m_volume;
     }
 
-    inline void setVolume(const glm::vec4& volume) noexcept {
+    inline void setVolume(const glm::vec4& volume) noexcept
+    {
         if (m_volume != volume) {
             m_volume = volume;
             m_entityDirty = true;
         }
     }
 
-    inline const glm::vec3 getPosition() const noexcept {
+    inline const glm::vec3 getPosition() const noexcept
+    {
         return { m_translateMatrix[3][0], m_translateMatrix[3][1], m_translateMatrix[3][2] };
     }
 
-    inline const glm::vec3 getScale() const noexcept {
+    inline const glm::vec3 getScale() const noexcept
+    {
         return { m_scaleMatrix[0][0], m_scaleMatrix[1][1], m_scaleMatrix[2][2] };
     }
 
-    inline const glm::vec3& getRotation() const noexcept {
+    inline const glm::vec3& getRotation() const noexcept
+    {
         return m_rotation;
     }
 
@@ -107,7 +119,8 @@ struct NodeInstance {
         }
     }
 
-    inline void adjustPosition(const glm::vec3& adjust) noexcept {
+    inline void adjustPosition(const glm::vec3& adjust) noexcept
+    {
         glm::vec3 pos{ adjust };
         {
             auto& vec = m_translateMatrix[3];
@@ -146,7 +159,8 @@ struct NodeInstance {
         }
     }
 
-    inline void adjustScale(const glm::vec3& adjust) noexcept {
+    inline void adjustScale(const glm::vec3& adjust) noexcept
+    {
         glm::vec3 scale{ adjust };
         {
             scale.x += m_scaleMatrix[0][0];
@@ -156,9 +170,17 @@ struct NodeInstance {
         setScale(scale);
     }
 
-    void setRotation(const glm::vec3& rotation) noexcept;
+    void setRotation(const glm::vec3& rotation) noexcept
+    {
+        if (m_rotation != rotation) {
+            m_rotation = rotation;
+            m_rotationDirty = true;
+            m_dirty = true;
+        }
+    }
 
-    inline void adjustRotation(const glm::vec3& adjust) noexcept {
+    inline void adjustRotation(const glm::vec3& adjust) noexcept
+    {
         glm::vec3 rotation{ adjust };
         {
             rotation.x += m_rotation.x;
@@ -168,7 +190,8 @@ struct NodeInstance {
         setRotation(rotation);
     }
 
-    inline const glm::vec3 getWorldPosition() const noexcept {
+    inline const glm::vec3 getWorldPosition() const noexcept
+    {
         return m_modelMatrix[3];
     }
 

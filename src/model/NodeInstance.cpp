@@ -11,17 +11,12 @@
 #include "render/RenderContext.h"
 
 
-void NodeInstance::setRotation(const glm::vec3& rotation) noexcept
-{
-    if (m_rotation != rotation) {
-        m_rotation = rotation;
-        m_dirty = true;
-    }
-}
 
 void NodeInstance::updateRotationMatrix() noexcept
 {
+    if (!m_rotationDirty) return;
     m_rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
+    m_rotationDirty = false;
 }
 
 void NodeInstance::updateEntity(
