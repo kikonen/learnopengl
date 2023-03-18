@@ -8,6 +8,8 @@
 
 #include "EntityType.h"
 
+#include "asset/CustomMaterial.h"
+
 
 struct NodeRenderFlags {
     bool alpha = false;
@@ -72,9 +74,17 @@ public:
     int getMaterialIndex() const;
     int getMaterialCount() const;
 
+    CustomMaterial* getCustomMaterial();
+    void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial)
+    {
+        m_customMaterial = std::move(customMaterial);
+    }
+
     void prepare(
         const Assets& assets,
         Registry* registry);
+
+    void bind(const RenderContext& ctx);
 
 public:
     const int typeID;
@@ -101,6 +111,8 @@ private:
 
     Mesh* m_mesh{ nullptr };
     std::unique_ptr<Mesh> m_deleter;
+
+    std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
     GLVertexArray m_privateVAO;
 };

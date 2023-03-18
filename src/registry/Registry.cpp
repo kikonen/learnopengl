@@ -13,6 +13,7 @@ Registry::Registry(
     m_modelRegistry = std::make_unique<ModelRegistry>(assets, m_alive);
     m_nodeRegistry = std::make_unique<NodeRegistry>(assets, m_alive);
     m_entityRegistry = std::make_unique<EntityRegistry>(assets);
+    m_viewportRegistry = std::make_unique<ViewportRegistry>(assets);
 
     m_physicsEngine = std::make_unique<physics::PhysicsEngine>(assets);
     m_dispatcher = std::make_unique<event::Dispatcher>(assets);
@@ -28,6 +29,8 @@ void Registry::prepare()
     m_materialRegistry->prepare();
     m_entityRegistry->prepare();
     m_modelRegistry->prepare();
+
+    m_viewportRegistry->prepare();
 
     m_nodeRegistry->prepare(this);
 

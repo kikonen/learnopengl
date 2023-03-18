@@ -12,6 +12,7 @@
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
+#include "registry/ViewportRegistry.h"
 
 #include "physics/PhysicsEngine.h"
 
@@ -34,6 +35,7 @@ public:
     std::unique_ptr<ModelRegistry> m_modelRegistry;
     std::unique_ptr<NodeRegistry> m_nodeRegistry;
     std::unique_ptr<EntityRegistry> m_entityRegistry;
+    std::unique_ptr<ViewportRegistry> m_viewportRegistry;
 
     std::unique_ptr<physics::PhysicsEngine> m_physicsEngine;
 

@@ -5,7 +5,10 @@
 #include <mutex>
 
 #include "asset/Assets.h"
-#include "MeshType.h"
+
+#include "registry/MeshType.h"
+
+class RenderContext;
 
 class MeshTypeRegistry {
 public:
@@ -17,6 +20,8 @@ public:
 
     MeshType* getType(
         const std::string& name);
+
+    void bind(const RenderContext& ctx);
 
 private:
     const Assets& m_assets;

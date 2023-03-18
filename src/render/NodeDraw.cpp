@@ -106,7 +106,7 @@ void NodeDraw::drawNodesImpl(
     auto* nodeRegistry = ctx.m_registry->m_nodeRegistry.get();
 
     auto renderTypes = [this, &ctx, useGBuffer, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
-        auto program = typeMap.begin()->first.type->m_program;
+        auto* program = typeMap.begin()->first.type->m_program;
 
         for (const auto& it : typeMap) {
             auto* type = it.first.type;

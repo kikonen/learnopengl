@@ -45,7 +45,7 @@
     <ClCompile Include="src\renderer\ShadowMapRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\SkyboxRenderer.cpp">
+    <ClCompile Include="src\scene\SkyboxMaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\model\Node.cpp">
@@ -384,6 +384,12 @@
     <ClCompile Include="src\event\Dispatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\registry\ViewportRegistry.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\registry\ViewportRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -419,7 +425,7 @@
     <ClInclude Include="src\renderer\ShadowMapRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\SkyboxRenderer.h">
+    <ClInclude Include="src\scene\SkyboxMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\model\Node.h">
@@ -882,6 +888,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\event\Dispatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\CustomMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

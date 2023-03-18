@@ -236,6 +236,8 @@
     <ClCompile Include="src\command\api\MoveNode.cpp" />
     <ClCompile Include="src\command\api\StartNode.cpp" />
     <ClCompile Include="src\controller\VolumeController.cpp" />
+    <ClCompile Include="src\registry\ViewportRegistry.cpp" />
+    <ClCompile Include="src\registry\ViewportRegistry.h" />
     <ClCompile Include="src\render\GBuffer.cpp" />
     <ClCompile Include="src\render\NodeDraw.cpp" />
     <ClCompile Include="src\render\Quad.cpp" />
@@ -281,7 +283,7 @@
     <ClCompile Include="src\sample_app\TestSceneSetup.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\asset\Assets.cpp" />
-    <ClCompile Include="src\renderer\SkyboxRenderer.cpp" />
+    <ClCompile Include="src\scene\SkyboxMaterial.cpp" />
     <ClCompile Include="src\asset\Image.cpp" />
     <ClCompile Include="src\render\RenderContext.cpp" />
     <ClCompile Include="src\gui\Input.cpp" />
@@ -311,6 +313,7 @@
     <ClInclude Include="Group.h" />
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
+    <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\FrustumNew.h" />
     <ClInclude Include="src\asset\DataUBO.h" />
@@ -446,7 +449,7 @@
     <ClInclude Include="src\sample_app\TestSceneSetup.h" />
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\asset\Assets.h" />
-    <ClInclude Include="src\renderer\SkyboxRenderer.h" />
+    <ClInclude Include="src\scene\SkyboxMaterial.h" />
     <ClInclude Include="src\asset\Image.h" />
     <ClInclude Include="src\render\RenderContext.h" />
     <ClInclude Include="src\gui\Input.h" />

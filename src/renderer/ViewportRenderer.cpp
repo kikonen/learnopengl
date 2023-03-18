@@ -6,7 +6,7 @@
 #include "render/FrameBuffer.h"
 
 #include "registry/Registry.h"
-#include "registry/NodeRegistry.h"
+#include "registry/ViewportRegistry.h"
 
 
 void ViewportRenderer::prepare(
@@ -21,7 +21,7 @@ void ViewportRenderer::prepare(
 
 void ViewportRenderer::update(const UpdateContext& ctx)
 {
-    for (auto& viewport : ctx.m_registry->m_nodeRegistry->viewports) {
+    for (auto& viewport : ctx.m_registry->m_viewportRegistry->getViewports()) {
         viewport->update(ctx);
     }
 }
@@ -30,7 +30,9 @@ void ViewportRenderer::render(
     const RenderContext& ctx,
     FrameBuffer* destinationBuffer)
 {
-    if (ctx.m_registry->m_nodeRegistry->viewports.empty()) return;
+    auto& viewports = ctx.m_registry->m_viewportRegistry->getViewports();
+
+    if (viewports.empty()) return;
 
     ctx.m_state.disable(GL_DEPTH_TEST);
     ctx.m_state.enable(GL_BLEND);
@@ -39,7 +41,7 @@ void ViewportRenderer::render(
     ctx.m_forceWireframe = false;
     ctx.bindDefaults();
 
-    for (auto& viewport : ctx.m_registry->m_nodeRegistry->viewports) {
+    for (auto& viewport : viewports) {
         viewport->setDestinationFrameBuffer(destinationBuffer);
         viewport->bind(ctx);
         viewport->draw(ctx);

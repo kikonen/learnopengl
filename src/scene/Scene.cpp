@@ -20,7 +20,6 @@
 #include "renderer/MirrorMapRenderer.h"
 #include "renderer/CubeMapRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
-#include "renderer/SkyboxRenderer.h"
 
 #include "render/NodeDraw.h"
 #include "render/Batch.h"
@@ -30,7 +29,7 @@
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
-
+#include "registry/ViewportRegistry.h"
 
 #include "engine/UpdateContext.h"
 
@@ -159,14 +158,14 @@ void Scene::prepare()
         m_mainViewport->setEffect(m_assets.viewportEffect);
         m_mainViewport->prepare(m_assets);
 
-        m_registry->m_nodeRegistry->addViewPort(m_mainViewport);
+        m_registry->m_viewportRegistry->addViewport(m_mainViewport);
 
         m_registry->m_physicsEngine->prepare();
     }
 
     if (m_assets.showObjectIDView) {
         if (m_objectIdRenderer) {
-            m_registry->m_nodeRegistry->addViewPort(m_objectIdRenderer->m_debugViewport);
+            m_registry->m_viewportRegistry->addViewport(m_objectIdRenderer->m_debugViewport);
         }
     }
 
@@ -181,25 +180,25 @@ void Scene::prepare()
             m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
         m_rearViewport->prepare(m_assets);
-        m_registry->m_nodeRegistry->addViewPort(m_rearViewport);
+        m_registry->m_viewportRegistry->addViewport(m_rearViewport);
     }
 
     if (m_assets.showShadowMapView) {
         if (m_shadowMapRenderer) {
-            m_registry->m_nodeRegistry->addViewPort(m_shadowMapRenderer->m_debugViewport);
+            m_registry->m_viewportRegistry->addViewport(m_shadowMapRenderer->m_debugViewport);
         }
     }
     if (m_assets.showReflectionView) {
         if (m_waterMapRenderer) {
-            m_registry->m_nodeRegistry->addViewPort(m_waterMapRenderer->m_reflectionDebugViewport);
+            m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer->m_reflectionDebugViewport);
         }
         if (m_mirrorMapRenderer) {
-            m_registry->m_nodeRegistry->addViewPort(m_mirrorMapRenderer->m_debugViewport);
+            m_registry->m_viewportRegistry->addViewport(m_mirrorMapRenderer->m_debugViewport);
         }
     }
     if (m_assets.showRefractionView) {
         if (m_waterMapRenderer) {
-            m_registry->m_nodeRegistry->addViewPort(m_waterMapRenderer->m_refractionDebugViewport);
+            m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer->m_refractionDebugViewport);
         }
     }
 }
@@ -256,9 +255,8 @@ void Scene::bind(const RenderContext& ctx)
     if (m_shadowMapRenderer) {
         m_shadowMapRenderer->bind(ctx);
     }
-    if (m_registry->m_nodeRegistry->m_skybox) {
-        m_registry->m_nodeRegistry->m_skybox->bindTexture(ctx);
-    }
+
+    m_registry->m_typeRegistry->bind(ctx);
 
     m_renderData->bind();
 

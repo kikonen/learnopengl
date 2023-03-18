@@ -42,7 +42,7 @@
 #include "registry/ModelRegistry.h"
 #include "registry/MaterialRegistry.h"
 
-#include "renderer/SkyboxRenderer.h"
+#include "scene/SkyboxMaterial.h"
 
 #include <engine/AsyncLoader.h>
 
@@ -154,10 +154,9 @@ void SceneFile::attachSkybox(
 
     type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
 
-    auto node = new Node(type);
+    type->setCustomMaterial(std::make_unique<SkyboxMaterial>(data.materialName));
 
-    auto skybox = std::make_unique<SkyboxRenderer>(data.materialName);
-    m_registry->m_nodeRegistry->m_skybox = std::move(skybox);
+    auto node = new Node(type);
 
     {
         event::Event evt { event::EventType::node_add };

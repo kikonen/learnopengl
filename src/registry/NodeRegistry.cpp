@@ -12,8 +12,6 @@
 
 #include "event/Dispatcher.h"
 
-#include "renderer/SkyboxRenderer.h"
-
 #include "Registry.h"
 #include "MaterialRegistry.h"
 #include "EntityRegistry.h"
@@ -156,11 +154,6 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcep
     }
 }
 
-void NodeRegistry::addViewPort(std::shared_ptr<Viewport> viewport) noexcept
-{
-    viewports.push_back(viewport);
-}
-
 void NodeRegistry::attachNode(
     Node* node,
     const uuids::uuid& parentId) noexcept
@@ -172,13 +165,6 @@ void NodeRegistry::attachNode(
     bindChildren(node);
 
     bindPendingChildren();
-
-    if (m_skybox && !m_skyboxPrepared) {
-        m_skyboxPrepared = true;
-        m_skybox->prepare(
-            m_assets,
-            m_registry);
-    }
 }
 
 int NodeRegistry::countTagged() const noexcept

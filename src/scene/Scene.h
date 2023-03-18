@@ -48,7 +48,6 @@ class WaterMapRenderer;
 class MirrorMapRenderer;
 class CubeMapRenderer;
 class ShadowMapRenderer;
-class SkyboxRenderer;
 
 
 class Scene final

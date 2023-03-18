@@ -21,7 +21,15 @@ MeshType* MeshTypeRegistry::getType(
 {
     std::lock_guard<std::mutex> lock(m_lock);
 
-    MeshType* type = new MeshType(name);
+    MeshType * type = new MeshType(name);
     m_types.push_back(type);
     return type;
+}
+
+void MeshTypeRegistry::bind(const RenderContext& ctx)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+    for (auto* type : m_types) {
+        type->bind(ctx);
+    }
 }

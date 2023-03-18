@@ -1,4 +1,4 @@
-#include "SkyboxRenderer.h"
+#include "SkyboxMaterial.h"
 
 #include <filesystem>
 
@@ -9,7 +9,7 @@
 #include "render/RenderContext.h"
 
 
-void SkyboxRenderer::prepare(
+void SkyboxMaterial::prepare(
     const Assets& assets,
     Registry* registry)
 {
@@ -36,7 +36,7 @@ void SkyboxRenderer::prepare(
     m_cubeMap.create();
 }
 
-void SkyboxRenderer::bindTexture(const RenderContext& ctx)
+void SkyboxMaterial::bindTextures(const RenderContext& ctx)
 {
     m_cubeMap.bindTexture(ctx, UNIT_SKYBOX);
 }

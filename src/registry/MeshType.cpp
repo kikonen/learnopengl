@@ -107,4 +107,15 @@ void MeshType::prepare(
     if (m_program) {
         m_program->prepare(assets);
     }
+
+    if (m_customMaterial) {
+        m_customMaterial->prepare(assets, registry);
+    }
+}
+
+void MeshType::bind(const RenderContext& ctx)
+{
+    if (m_customMaterial) {
+        m_customMaterial->bindTextures(ctx);
+    }
 }

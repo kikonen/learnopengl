@@ -12,14 +12,12 @@
 
 #include "model/Group.h"
 #include "model/Node.h"
-#include "model/Viewport.h"
 
 #include "registry/MeshType.h"
 
 
 class Registry;
 
-class SkyboxRenderer;
 
 //
 // NOTE KI program key is REQUIRED for sorting "gull back face" draws
@@ -72,8 +70,6 @@ using NodeVector = std::vector<Node*>;
 using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
 using ProgramTypeMap = std::map<ProgramKey, MeshTypeMap>;
 
-using ViewportVector = std::vector<std::shared_ptr<Viewport>>;
-
 
 class NodeRegistry final
 {
@@ -102,8 +98,6 @@ public:
     Node* getNode(const uuids::uuid& id) const noexcept;
 
     void selectNodeByObjectId(int objectID, bool append) const noexcept;
-
-    void addViewPort(std::shared_ptr<Viewport> viewport) noexcept;
 
     int countTagged() const noexcept;
     int countSelected() const noexcept;
@@ -152,10 +146,6 @@ public:
     ProgramTypeMap invisibleNodes;
     ProgramTypeMap physicsNodes;
 
-    ViewportVector viewports;
-
-    std::unique_ptr<SkyboxRenderer> m_skybox;
-
     Node* m_root{ nullptr };
     Node* m_dirLight{ nullptr };
 
@@ -172,8 +162,6 @@ private:
     const Assets& m_assets;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
-
-    bool m_skyboxPrepared = false;
 
     Registry* m_registry{ nullptr };
 

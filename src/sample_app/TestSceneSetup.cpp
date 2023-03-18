@@ -12,6 +12,7 @@
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/MaterialRegistry.h"
+#include "registry/ViewportRegistry.h"
 
 #include "engine/AsyncLoader.h"
 
@@ -83,5 +84,5 @@ void TestSceneSetup::setupViewport1()
         texture->m_textureID,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
     viewport->prepare(m_assets);
-    m_registry->m_nodeRegistry->addViewPort(viewport);
+    m_registry->m_viewportRegistry->addViewport(viewport);
 }
