@@ -20,7 +20,7 @@ public:
     ~ScriptEngine()= default;
 
     void prepare(
-        CommandEngine& commandEngine);
+        CommandEngine* commandEngine);
 
     void registerNode(
         Node* node);

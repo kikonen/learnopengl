@@ -59,7 +59,7 @@ namespace {
 
 
 CommandAPI::CommandAPI(
-    CommandEngine& commandEngine,
+    CommandEngine* commandEngine,
     sol::thread& runner)
   : m_commandEngine(commandEngine),
     m_runner(runner)
@@ -70,7 +70,7 @@ int CommandAPI::lua_cancel(
     float secs,
     int commandId) noexcept
 {
-    return m_commandEngine.addCommand(
+    return m_commandEngine->addCommand(
         std::make_unique<CancelCommand>(
             afterCommandId,
             secs,
@@ -81,7 +81,7 @@ int CommandAPI::lua_wait(
     int afterCommandId,
     float secs) noexcept
 {
-    return m_commandEngine.addCommand(
+    return m_commandEngine->addCommand(
         std::make_unique<Wait>(
             afterCommandId,
             secs));
@@ -94,7 +94,7 @@ int CommandAPI::lua_sync(
     const auto opt = readOptions(lua_opt);
     const auto commandIds = readIds(lua_ids);
 
-    return m_commandEngine.addCommand(
+    return m_commandEngine->addCommand(
         std::make_unique<Sync>(
             opt.afterId,
             opt.secs,
@@ -109,7 +109,7 @@ int CommandAPI::lua_move(
     const auto opt = readOptions(lua_opt);
     const auto pos = readVec3(lua_pos);
 
-    return m_commandEngine.addCommand(
+    return m_commandEngine->addCommand(
         std::make_unique<MoveNode>(
             opt.afterId,
             objectID,
@@ -128,7 +128,7 @@ int CommandAPI::lua_moveSpline(
     const auto p = readVec3(lua_p);
     const auto pos = readVec3(lua_pos);
 
-    return m_commandEngine.addCommand(
+    return m_commandEngine->addCommand(
         std::make_unique<MoveSplineNode>(
             opt.afterId,
             objectID,
@@ -146,7 +146,7 @@ int CommandAPI::lua_rotate(
     const auto opt = readOptions(lua_opt);
     const auto rot = readVec3(lua_rot);
 
-    return m_commandEngine.addCommand(
+    return m_commandEngine->addCommand(
         std::make_unique<RotateNode>(
             opt.afterId,
             objectID,
@@ -163,7 +163,7 @@ int CommandAPI::lua_scale(
     const auto opt = readOptions(lua_opt);
     const auto scale = readVec3(lua_scale);
 
-    return m_commandEngine.addCommand(
+    return m_commandEngine->addCommand(
         std::make_unique<ScaleNode>(
             opt.afterId,
             objectID,
@@ -183,7 +183,7 @@ int CommandAPI::lua_start(
     auto task = std::make_unique<sol::coroutine>(m_runner.state(), fn);
     //auto r = (*task)(va);
 
-    return m_commandEngine.addCommand(
+    return m_commandEngine->addCommand(
         std::make_unique<StartNode>(
             opt.afterId,
             objectID,
@@ -198,7 +198,7 @@ int CommandAPI::lua_resume(
 {
     const auto opt = readOptions(lua_opt);
 
-    return m_commandEngine.addCommand(
+    return m_commandEngine->addCommand(
         std::make_unique<ResumeNode>(
             opt.afterId,
             objectID,

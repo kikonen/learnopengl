@@ -9,6 +9,7 @@
 #include "api/Command.h"
 
 class UpdateContext;
+class Registry;
 
 class CommandEngine final
 {
@@ -16,7 +17,7 @@ public:
     CommandEngine(const Assets& assets);
     ~CommandEngine() = default;
 
-    void prepare();
+    void prepare(Registry* registry);
 
     void update(const UpdateContext& ctx);
 

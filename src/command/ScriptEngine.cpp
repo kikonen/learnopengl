@@ -33,7 +33,7 @@ ScriptEngine::ScriptEngine(const Assets& assets)
 }
 
 void ScriptEngine::prepare(
-    CommandEngine& commandEngine)
+    CommandEngine* commandEngine)
 {
     m_runner = sol::thread::create(m_lua);
     m_commandAPI = std::make_unique<CommandAPI>(commandEngine, m_runner);

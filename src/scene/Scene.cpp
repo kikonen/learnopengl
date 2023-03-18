@@ -96,13 +96,10 @@ Scene::~Scene()
 
 void Scene::prepare()
 {
-    if (m_prepared) return;
-    m_prepared = true;
-
     m_renderData->prepare();
 
-    m_commandEngine->prepare();
-    m_scriptEngine->prepare(*m_commandEngine);
+    m_commandEngine->prepare(m_registry.get());
+    m_scriptEngine->prepare(m_commandEngine.get());
 
     m_batch->prepare(m_assets, m_registry.get());
     m_nodeDraw->prepare(m_assets, m_registry.get());

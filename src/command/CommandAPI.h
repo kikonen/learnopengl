@@ -8,7 +8,7 @@ class CommandAPI final
 {
 public:
     CommandAPI(
-        CommandEngine& commandEngine,
+        CommandEngine* commandEngine,
         sol::thread& m_runner);
     ~CommandAPI() = default;
 
@@ -59,6 +59,6 @@ public:
         const std::string& callbackFn) noexcept;
 
 private:
-   CommandEngine& m_commandEngine;
+   CommandEngine* const m_commandEngine;
    sol::thread& m_runner;
 };

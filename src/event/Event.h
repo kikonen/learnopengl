@@ -11,9 +11,12 @@ class Node;
 
 namespace event {
     enum class EventType {
+        none = 0,
         node_add,
         node_added,
         node_change_parent,
+        animate_move,
+        animate_rotate,
     };
 
     struct NodeEvent {
@@ -21,10 +24,15 @@ namespace event {
         uuids::uuid m_parentId;
     };
 
+    struct AnimateEvent {
+        int id;
+    };
+
     struct Event {
         EventType m_type;
         union {
             NodeEvent nodeEvent;
+            AnimateEvent animateEvent;
         } ref;
     };
 

@@ -16,9 +16,6 @@
 
 #include "registry/MeshType.h"
 
-namespace event {
-    class Dispatcher;
-}
 
 class Registry;
 

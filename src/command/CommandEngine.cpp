@@ -15,8 +15,14 @@ CommandEngine::CommandEngine(const Assets& assets)
     m_cleanupStep(5)
 {}
 
-void CommandEngine::prepare()
+void CommandEngine::prepare(Registry* registry)
 {
+    registry->m_dispatcher->m_queue.appendListener(
+        event::EventType::animate_move,
+        [this](const event::Event& event) {
+            addCommand()
+        });
+
 }
 
 void CommandEngine::update(const UpdateContext& ctx)
