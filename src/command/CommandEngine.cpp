@@ -2,7 +2,17 @@
 
 #include "model/Node.h"
 
+#include "api/CancelCommand.h"
+#include "api/Wait.h"
+#include "api/Sync.h"
+
 #include "api/NodeCommand.h"
+#include "api/MoveNode.h"
+#include "api/MoveSplineNode.h"
+#include "api/RotateNode.h"
+#include "api/ScaleNode.h"
+#include "api/ResumeNode.h"
+#include "api/StartNode.h"
 
 #include "engine/UpdateContext.h"
 
@@ -17,12 +27,44 @@ CommandEngine::CommandEngine(const Assets& assets)
 
 void CommandEngine::prepare(Registry* registry)
 {
-    registry->m_dispatcher->m_queue.appendListener(
-        event::EventType::animate_move,
-        [this](const event::Event& event) {
-            addCommand()
+    registry->m_dispatcher->addListener(
+        event::EventType::animate_wait,
+        [this](const event::Event& e) {
+            auto& anim = e.body.animate;
+            std::cout << "ANIM:wait " << anim.target << "\n";
+            addCommand(
+                std::make_unique<Wait>(
+                    anim.after,
+                    anim.duration));
         });
 
+    registry->m_dispatcher->addListener(
+        event::EventType::animate_move,
+        [this](const event::Event& e) {
+            auto& anim = e.body.animate;
+            std::cout << "ANIM:move " << anim.target << "\n";
+            addCommand(
+                std::make_unique<MoveNode>(
+                    anim.after,
+                    anim.target,
+                    anim.duration,
+                    anim.relative,
+                    anim.data));
+        });
+
+    registry->m_dispatcher->addListener(
+        event::EventType::animate_rotate,
+        [this](const event::Event& e) {
+            auto& anim = e.body.animate;
+            std::cout << "ANIM:rotate " << anim.target << "\n";
+            addCommand(
+                std::make_unique<RotateNode>(
+                    anim.after,
+                    anim.target,
+                    anim.duration,
+                    anim.relative,
+                    anim.data));
+        });
 }
 
 void CommandEngine::update(const UpdateContext& ctx)

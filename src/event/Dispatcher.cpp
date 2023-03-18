@@ -3,11 +3,13 @@
 #include "engine/UpdateContext.h"
 
 namespace event {
-    constexpr std::array<EventType, 6> EVENT_TYPES{
+    constexpr std::array<EventType, 7> EVENT_TYPES{
         EventType::none,
         EventType::node_add,
         EventType::node_added,
         EventType::node_change_parent,
+
+        EventType::animate_wait,
         EventType::animate_move,
         EventType::animate_rotate,
     };

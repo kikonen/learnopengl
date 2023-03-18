@@ -105,19 +105,18 @@ void NodeRegistry::prepare(
     m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
     registry->m_materialRegistry->add(m_selectionMaterial);
 
-    m_registry->m_dispatcher->m_queue.appendListener(
+    m_registry->m_dispatcher->addListener(
         event::EventType::node_add,
-        [this](const event::Event& event) {
-            //std::cout << "ADD: " << event.ref.nodeEvent.m_node->m_objectID << "\n";
+        [this](const event::Event& e) {
             attachNode(
-                event.ref.nodeEvent.m_node,
-                event.ref.nodeEvent.m_parentId);
+                e.body.node.target,
+                e.body.node.parentId);
         });
 
-    m_registry->m_dispatcher->m_queue.appendListener(
+    m_registry->m_dispatcher->addListener(
         event::EventType::node_change_parent,
-        [this](const event::Event& event) {
-            changeParent(event.ref.nodeEvent.m_node, event.ref.nodeEvent.m_parentId);
+        [this](const event::Event& e) {
+            changeParent(e.body.node.target, e.body.node.parentId);
         });
 }
 
@@ -322,8 +321,8 @@ void NodeRegistry::bindNode(
     }
 
     event::Event evt { event::EventType::node_added };
-    evt.ref.nodeEvent.m_node = node;
-    m_registry->m_dispatcher->m_queue.enqueue(evt);
+    evt.body.node.target = node;
+    m_registry->m_dispatcher->send(evt);
 
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
 }

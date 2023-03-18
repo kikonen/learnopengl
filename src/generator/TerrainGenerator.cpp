@@ -207,9 +207,9 @@ void TerrainGenerator::createTiles(
 
     {
         event::Event evt { event::EventType::node_add };
-        evt.ref.nodeEvent.m_node = m_node;
-        evt.ref.nodeEvent.m_parentId = container.m_id;
-        registry->m_dispatcher->m_queue.enqueue(evt);
+        evt.body.node.target = m_node;
+        evt.body.node.parentId = container.m_id;
+        registry->m_dispatcher->send(evt);
     }
 }
 

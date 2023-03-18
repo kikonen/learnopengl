@@ -161,9 +161,9 @@ void SceneFile::attachSkybox(
 
     {
         event::Event evt { event::EventType::node_add };
-        evt.ref.nodeEvent.m_node = node;
-        evt.ref.nodeEvent.m_parentId = root.base.id;
-        m_dispatcher->m_queue.enqueue(evt);
+        evt.body.node.target = node;
+        evt.body.node.parentId = root.base.id;
+        m_dispatcher->send(evt);
     }
 }
 
@@ -216,9 +216,9 @@ void SceneFile::attachVolume(
 
     {
         event::Event evt { event::EventType::node_add };
-        evt.ref.nodeEvent.m_node = node;
-        evt.ref.nodeEvent.m_parentId = root.base.id;
-        m_dispatcher->m_queue.enqueue(evt);
+        evt.body.node.target = node;
+        evt.body.node.parentId = root.base.id;
+        m_dispatcher->send(evt);
     }
 }
 
@@ -273,9 +273,9 @@ void SceneFile::attachCubeMapCenter(
 
     {
         event::Event evt { event::EventType::node_add };
-        evt.ref.nodeEvent.m_node = node;
-        evt.ref.nodeEvent.m_parentId = root.base.id;
-        m_dispatcher->m_queue.enqueue(evt);
+        evt.body.node.target = node;
+        evt.body.node.parentId = root.base.id;
+        m_dispatcher->send(evt);
     }
 }
 
@@ -395,11 +395,25 @@ MeshType* SceneFile::attachEntityCloneRepeat(
 
     {
         event::Event evt { event::EventType::node_add };
-        evt.ref.nodeEvent.m_node = node;
+        evt.body.node.target = node;
         if (!entity.isRoot) {
-            evt.ref.nodeEvent.m_parentId = data.parentId.is_nil() ? root.base.id : data.parentId;
+            evt.body.node.parentId = data.parentId.is_nil() ? root.base.id : data.parentId;
         }
-        m_dispatcher->m_queue.enqueue(evt);
+        m_dispatcher->send(evt);
+    }
+
+    // try anim event
+    //if (!entity.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
+    if (data.name == "Cow")
+    {
+        event::AnimateEvent anim {};
+        anim.target = node->m_objectID;
+        anim.duration = 20;
+        anim.data = { 0, 360.f, 0 };
+
+        event::Event evt { event::EventType::animate_rotate };
+        evt.body.animate = anim;
+        m_dispatcher->send(evt);
     }
 
     return type;

@@ -57,9 +57,9 @@ void TestSceneSetup::setupEffectExplosion()
 
         {
             event::Event evt { event::EventType::node_add };
-            evt.ref.nodeEvent.m_node = node;
-            evt.ref.nodeEvent.m_parentId = m_assets.rootUUID;
-            m_registry->m_dispatcher->m_queue.enqueue(evt);
+            evt.body.node.target = node;
+            evt.body.node.parentId = m_assets.rootUUID;
+            m_registry->m_dispatcher->send(evt);
         }
     });
 }

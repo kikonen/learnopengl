@@ -52,11 +52,10 @@ Scene::Scene(
     m_commandEngine = std::make_unique<CommandEngine>(assets);
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
 
-    m_registry->m_dispatcher->m_queue.appendListener(
+    m_registry->m_dispatcher->addListener(
         event::EventType::node_added,
-        [this](const event::Event& event) {
-            //std::cout << "BIND: " << event.ref.nodeEvent.m_node->m_objectID << "\n";
-            this->bindComponents(event.ref.nodeEvent.m_node);
+        [this](const event::Event& e) {
+            this->bindComponents(e.body.node.target);
         });
 
     m_nodeRenderer = std::make_unique<NodeRenderer>();

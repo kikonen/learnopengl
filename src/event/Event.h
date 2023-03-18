@@ -3,6 +3,8 @@
 #include <array>
 #include <variant>
 
+#include <glm/vec3.hpp>
+
 #include "ki/uuid.h"
 
 
@@ -15,31 +17,40 @@ namespace event {
         node_add,
         node_added,
         node_change_parent,
+
+        animate_wait,
         animate_move,
         animate_rotate,
     };
 
     struct NodeEvent {
-        Node* m_node{ nullptr };
-        uuids::uuid m_parentId;
+        Node* target{ nullptr };
+        uuids::uuid parentId;
     };
 
     struct AnimateEvent {
-        int id;
+        int target;
+
+        int after{ 0 };
+        float duration{ 0 };
+        bool relative{ true };
+        glm::vec3 data{ 0.f };
     };
 
     struct Event {
-        EventType m_type;
+        EventType type;
+        int id;
+
         union {
-            NodeEvent nodeEvent;
-            AnimateEvent animateEvent;
-        } ref;
+            NodeEvent node;
+            AnimateEvent animate;
+        } body;
     };
 
     struct EventPolicies
     {
         static EventType getEvent(const Event& e) {
-            return e.m_type;
+            return e.type;
         }
     };
 }
