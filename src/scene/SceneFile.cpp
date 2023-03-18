@@ -792,6 +792,7 @@ std::unique_ptr<Light> SceneFile::createLight(
 
     auto light = std::make_unique<Light>();
 
+    light->m_enabled = true;
     light->setPosition(data.pos);
     light->setTargetId(data.targetId);
 
