@@ -57,7 +57,7 @@ void TestSceneSetup::setupEffectExplosion()
         node->setScale(2);
 
         {
-            event::Event evt { event::EventType::node_add };
+            event::Event evt { event::Type::node_add };
             evt.body.node.target = node;
             evt.body.node.parentId = m_assets.rootUUID;
             m_registry->m_dispatcher->send(evt);

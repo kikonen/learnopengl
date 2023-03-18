@@ -3,15 +3,15 @@
 #include "engine/UpdateContext.h"
 
 namespace event {
-    constexpr std::array<EventType, 7> EVENT_TYPES{
-        EventType::none,
-        EventType::node_add,
-        EventType::node_added,
-        EventType::node_change_parent,
+    constexpr std::array<Type, 7> EVENT_TYPES{
+        Type::none,
+        Type::node_add,
+        Type::node_added,
+        Type::node_change_parent,
 
-        EventType::animate_wait,
-        EventType::animate_move,
-        EventType::animate_rotate,
+        Type::animate_wait,
+        Type::animate_move,
+        Type::animate_rotate,
     };
 
     Dispatcher::Dispatcher(const Assets& assets)

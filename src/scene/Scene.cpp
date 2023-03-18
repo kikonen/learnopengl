@@ -52,7 +52,7 @@ Scene::Scene(
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
 
     m_registry->m_dispatcher->addListener(
-        event::EventType::node_added,
+        event::Type::node_added,
         [this](const event::Event& e) {
             this->bindComponents(e.body.node.target);
         });

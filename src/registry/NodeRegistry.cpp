@@ -104,7 +104,7 @@ void NodeRegistry::prepare(
     registry->m_materialRegistry->add(m_selectionMaterial);
 
     m_registry->m_dispatcher->addListener(
-        event::EventType::node_add,
+        event::Type::node_add,
         [this](const event::Event& e) {
             attachNode(
                 e.body.node.target,
@@ -112,7 +112,7 @@ void NodeRegistry::prepare(
         });
 
     m_registry->m_dispatcher->addListener(
-        event::EventType::node_change_parent,
+        event::Type::node_change_parent,
         [this](const event::Event& e) {
             changeParent(e.body.node.target, e.body.node.parentId);
         });
@@ -306,7 +306,7 @@ void NodeRegistry::bindNode(
         }
     }
 
-    event::Event evt { event::EventType::node_added };
+    event::Event evt { event::Type::node_added };
     evt.body.node.target = node;
     m_registry->m_dispatcher->send(evt);
 

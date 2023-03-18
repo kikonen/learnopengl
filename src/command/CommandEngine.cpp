@@ -28,7 +28,7 @@ CommandEngine::CommandEngine(const Assets& assets)
 void CommandEngine::prepare(Registry* registry)
 {
     registry->m_dispatcher->addListener(
-        event::EventType::animate_wait,
+        event::Type::animate_wait,
         [this](const event::Event& e) {
             auto& anim = e.body.animate;
             std::cout << "ANIM:wait " << anim.target << "\n";
@@ -39,7 +39,7 @@ void CommandEngine::prepare(Registry* registry)
         });
 
     registry->m_dispatcher->addListener(
-        event::EventType::animate_move,
+        event::Type::animate_move,
         [this](const event::Event& e) {
             auto& anim = e.body.animate;
             std::cout << "ANIM:move " << anim.target << "\n";
@@ -53,7 +53,7 @@ void CommandEngine::prepare(Registry* registry)
         });
 
     registry->m_dispatcher->addListener(
-        event::EventType::animate_rotate,
+        event::Type::animate_rotate,
         [this](const event::Event& e) {
             auto& anim = e.body.animate;
             std::cout << "ANIM:rotate " << anim.target << "\n";

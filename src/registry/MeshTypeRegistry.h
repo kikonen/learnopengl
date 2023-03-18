@@ -10,6 +10,9 @@
 
 class RenderContext;
 
+//
+// NOTE KI main purpsoe of this registry is to delete MeshType instances
+//
 class MeshTypeRegistry {
 public:
     MeshTypeRegistry(

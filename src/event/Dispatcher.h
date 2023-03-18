@@ -44,7 +44,7 @@ namespace event {
         std::atomic<int> m_baseId{ 1 };
 
         eventpp::EventQueue<
-            EventType,
+            Type,
             void(const event::Event&),
             EventPolicies
         > m_queue;

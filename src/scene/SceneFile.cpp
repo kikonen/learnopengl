@@ -159,7 +159,7 @@ void SceneFile::attachSkybox(
     auto node = new Node(type);
 
     {
-        event::Event evt { event::EventType::node_add };
+        event::Event evt { event::Type::node_add };
         evt.body.node.target = node;
         evt.body.node.parentId = root.base.id;
         m_dispatcher->send(evt);
@@ -214,7 +214,7 @@ void SceneFile::attachVolume(
     node->m_controller = std::make_unique<VolumeController>();
 
     {
-        event::Event evt { event::EventType::node_add };
+        event::Event evt { event::Type::node_add };
         evt.body.node.target = node;
         evt.body.node.parentId = root.base.id;
         m_dispatcher->send(evt);
@@ -271,7 +271,7 @@ void SceneFile::attachCubeMapCenter(
     node->setVolume(mesh->getAABB().getVolume());
 
     {
-        event::Event evt { event::EventType::node_add };
+        event::Event evt { event::Type::node_add };
         evt.body.node.target = node;
         evt.body.node.parentId = root.base.id;
         m_dispatcher->send(evt);
@@ -393,7 +393,7 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     }
 
     {
-        event::Event evt { event::EventType::node_add };
+        event::Event evt { event::Type::node_add };
         evt.body.node.target = node;
         if (!entity.isRoot) {
             evt.body.node.parentId = data.parentId.is_nil() ? root.base.id : data.parentId;
@@ -405,12 +405,12 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     //if (!entity.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
     if (data.name == "Cow")
     {
-        event::AnimateEvent anim {};
+        event::AnimateAction anim {};
         anim.target = node->m_objectID;
         anim.duration = 20;
         anim.data = { 0, 360.f, 0 };
 
-        event::Event evt { event::EventType::animate_rotate };
+        event::Event evt { event::Type::animate_rotate };
         evt.body.animate = anim;
         m_dispatcher->send(evt);
     }

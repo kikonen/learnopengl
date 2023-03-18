@@ -12,7 +12,7 @@ class UpdateContext;
 class Node;
 
 namespace event {
-    enum class EventType {
+    enum class Type {
         none = 0,
         node_add,
         node_added,
@@ -23,12 +23,12 @@ namespace event {
         animate_rotate,
     };
 
-    struct NodeEvent {
+    struct NodeAction {
         Node* target{ nullptr };
         uuids::uuid parentId;
     };
 
-    struct AnimateEvent {
+    struct AnimateAction {
         int target;
 
         int after{ 0 };
@@ -38,18 +38,18 @@ namespace event {
     };
 
     struct Event {
-        EventType type;
+        Type type;
         int id;
 
         union {
-            NodeEvent node;
-            AnimateEvent animate;
+            NodeAction node;
+            AnimateAction animate;
         } body;
     };
 
     struct EventPolicies
     {
-        static EventType getEvent(const Event& e) {
+        static Type getEvent(const Event& e) {
             return e.type;
         }
     };
