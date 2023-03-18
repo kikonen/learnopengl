@@ -405,13 +405,12 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     //if (!entity.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
     if (data.name == "Cow")
     {
-        event::AnimateAction anim {};
-        anim.target = node->m_objectID;
-        anim.duration = 20;
-        anim.data = { 0, 360.f, 0 };
-
         event::Event evt { event::Type::animate_rotate };
-        evt.body.animate = anim;
+        evt.body.animate = {
+            .target = node->m_objectID,
+            .duration = 20,
+            .data = { 0, 360.f, 0 },
+        };
         m_dispatcher->send(evt);
     }
 

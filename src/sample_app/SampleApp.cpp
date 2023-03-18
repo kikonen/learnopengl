@@ -244,13 +244,12 @@ void SampleApp::selectNode(
     KI_INFO(fmt::format("selected: {}", objectID));
 
     if (node) {
-        event::AnimateAction anim {};
-        anim.target = node->m_objectID;
-        anim.duration = 5;
-        anim.data = { 0, 360.f, 0 };
-
         event::Event evt { event::Type::animate_rotate };
-        evt.body.animate = anim;
+        evt.body.animate = {
+            .target = node->m_objectID,
+            .duration = 5,
+            .data = { 0, 360.f, 0 }
+        };
         ctx.m_registry->m_dispatcher->send(evt);
     }
 
