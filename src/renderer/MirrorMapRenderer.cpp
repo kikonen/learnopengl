@@ -148,8 +148,7 @@ bool MirrorMapRenderer::render(
 
         auto& camera = m_cameras[0];
         camera.setPosition(mirrorEyePos);
-        camera.setFront(reflectFront);
-        camera.setUp(mainCamera->getViewUp());
+        camera.setAxis(reflectFront, mainCamera->getViewUp());
         //camera.setZoom(ctx.m_camera.getZoom());
         //camera.setZoom(fovAngle);
 

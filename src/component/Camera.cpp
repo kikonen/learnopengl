@@ -14,24 +14,17 @@ const float MAX_ZOOM = 90.0f;
 
 
 Camera::Camera(
-    const glm::vec3& pos,
+    const glm::vec3& worldPos,
     const glm::vec3 front,
     const glm::vec3 up,
     bool nodeCamera)
 {
     m_nodeCamera = nodeCamera;
+    m_enabled = true;
+    m_position = worldPos;
+    m_worldPosition = worldPos;
 
-    m_position = pos;
-    m_worldPosition = pos;
-
-    // Default: look to Z direction
-    m_front = glm::normalize(front);
-    m_up = glm::normalize(up);
-    m_right = glm::normalize(glm::cross(m_front, m_up));
-
-    m_rotateMatrix = glm::mat4(1.0f);
-
-    m_dirty = true;
+    setAxis(front, up);
 }
 
 Camera::~Camera()
@@ -147,20 +140,14 @@ const glm::vec3& Camera::getViewUp() const noexcept
     return m_viewUp;
 }
 
-void Camera::setFront(const glm::vec3& front) noexcept
+void Camera::setAxis(
+    const glm::vec3& front,
+    const glm::vec3& up) noexcept
 {
-    if (m_front != front) {
-        m_dirty = true;
-        m_front = front;
-    }
-}
-
-void Camera::setUp(const glm::vec3& up) noexcept
-{
-    if (m_up != up) {
-        m_dirty = true;
-        m_up = up;
-    }
+    m_front = glm::normalize(front);
+    m_up = glm::normalize(up);
+    m_right = glm::normalize(glm::cross(m_front, m_up));
+    m_dirty = true;
 }
 
 void Camera::setZoom(float zoom) noexcept

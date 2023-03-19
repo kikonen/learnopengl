@@ -52,7 +52,9 @@ public:
     const glm::vec3& getViewRight() const noexcept;
     const glm::vec3& getViewUp() const noexcept;
 
-    void setFront(const glm::vec3& front) noexcept;
+    void setAxis(
+        const glm::vec3& front,
+        const glm::vec3& up) noexcept;
 
     inline const glm::vec3& getFront() const noexcept {
         return m_front;
@@ -62,7 +64,6 @@ public:
         return m_right;
     }
 
-    void setUp(const glm::vec3& up) noexcept;
     inline const glm::vec3& getUp() const noexcept {
         return m_up;
     }
@@ -96,23 +97,23 @@ private:
     bool m_nodeCamera = false;
     int m_nodeMatrixLevel = -1;
 
-    float m_zoom = 45.0f;
+    float m_zoom{ 45.f };
     float m_zoomProjection = -1.0f;
 
-    glm::vec3 m_position;
-    glm::vec3 m_front;
-    glm::vec3 m_right;
-    glm::vec3 m_up;
+    glm::vec3 m_position{ 0.f };
+    glm::vec3 m_front{ 0.f, 0.f, -1.f };
+    glm::vec3 m_right{ 1.f, 0.f, 0.f };
+    glm::vec3 m_up{ 0.f, 1.f, 0.f };
 
     float m_aspectRatio = -1;
     float m_nearPlane = -1;
     float m_farPlane = -1;
 
-    glm::mat4 m_projectionMatrix;
-    mutable glm::mat4 m_projectedMatrix;
+    glm::mat4 m_projectionMatrix{ 1.f };
+    mutable glm::mat4 m_projectedMatrix{ 1.f };
 
-    mutable glm::mat4 m_viewMatrix;
-    mutable glm::mat4 m_rotateMatrix;
+    mutable glm::mat4 m_viewMatrix{ 1.f };
+    mutable glm::mat4 m_rotateMatrix{ 1.f };
 
     int m_projectionLevel = -1;
     int m_projectedLevel = -1;
@@ -127,9 +128,6 @@ private:
     //m_pitch = rotation.x;
     //m_roll = rotation.z;
     glm::vec3 m_rotation{ 0.f };
-    //float m_yaw = 0;
-    //float m_pitch = 0;
-    //float m_roll = 0;
 
     mutable bool m_dirty = true;
     mutable bool m_dirtyView = true;

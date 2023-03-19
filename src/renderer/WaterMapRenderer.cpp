@@ -150,8 +150,7 @@ bool WaterMapRenderer::render(
 
         auto& camera = m_cameras[0];
         camera.setPosition(pos);
-        camera.setFront(mainCamera->getFront());
-        camera.setUp(mainCamera->getUp());
+        camera.setAxis(mainCamera->getFront(), mainCamera->getUp());
         camera.setZoom(mainCamera->getZoom());
         camera.setRotation(rot);
 
@@ -184,8 +183,7 @@ bool WaterMapRenderer::render(
 
         auto& camera = m_cameras[1];
         camera.setPosition(cameraPos);
-        camera.setFront(mainCamera->getFront());
-        camera.setUp(mainCamera->getUp());
+        camera.setAxis(mainCamera->getFront(), mainCamera->getUp());
         camera.setZoom(mainCamera->getZoom());
         camera.setRotation(cameraRot);
 
