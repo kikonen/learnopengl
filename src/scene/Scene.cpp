@@ -436,8 +436,8 @@ void Scene::bindComponents(Node* node)
 
     if (node->m_particleGenerator) {
         if (m_particleSystem) {
-            node->m_particleGenerator->system = m_particleSystem.get();
-            m_particleGenerators.push_back(node->m_particleGenerator.get());
+            node->m_particleGenerator->setSystem(m_particleSystem.get());
+            m_particleGenerators.push_back(node);
         }
     }
 

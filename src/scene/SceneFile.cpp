@@ -786,7 +786,10 @@ std::unique_ptr<Camera> SceneFile::createCamera(
     if (!data.enabled) return std::unique_ptr<Camera>();
 
     // NOTE only node cameras in scenefile for now
-    auto camera = std::make_unique<Camera>(data.pos, data.front, data.up, true);
+    auto camera = std::make_unique<Camera>();
+
+    camera->setPosition(data.pos);
+    camera->setAxis(data.front, data.up);
     camera->setRotation(data.rotation);
     camera->setZoom(data.zoom);
 

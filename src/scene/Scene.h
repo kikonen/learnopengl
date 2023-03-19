@@ -109,7 +109,7 @@ public:
 protected:
 
 private:
-    std::vector<ParticleGenerator*> m_particleGenerators;
+    std::vector<Node*> m_particleGenerators;
 
     std::unique_ptr<NodeRenderer> m_nodeRenderer{ nullptr };
 

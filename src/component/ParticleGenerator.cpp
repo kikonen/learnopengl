@@ -10,15 +10,9 @@
 #include "scene/ParticleSystem.h"
 
 
-ParticleGenerator::ParticleGenerator(
-    const ParticleDefinition definition)
-    : definition(definition)
-{
-}
-
 void ParticleGenerator::update(const UpdateContext& ctx)
 {
-    float x = definition.particlesPerSec * ctx.m_clock.elapsedSecs;
+    float x = m_definition.particlesPerSec * ctx.m_clock.elapsedSecs;
 
     //if ()
 //    definition.
@@ -28,5 +22,5 @@ void ParticleGenerator::update(const UpdateContext& ctx)
     particle.velocity = 2;
     particle.lifetime = 5;
 
-    system->addParticle(particle);
+    m_system->addParticle(particle);
 }

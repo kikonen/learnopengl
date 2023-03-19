@@ -22,18 +22,24 @@ class RenderContext;
 class ParticleGenerator final
 {
 public:
-    ParticleGenerator(
-        const ParticleDefinition definition);
+    ParticleGenerator() {}
 
     ~ParticleGenerator() = default;
 
     virtual void update(const UpdateContext& ctx);
 
-public:
-    ParticleSystem* system = nullptr;
+    void setDefinition(const ParticleDefinition& definition)
+    {
+        m_definition = definition;
+    }
+
+    void setSystem(ParticleSystem* system) {
+        m_system = system;
+    }
 
 private:
-    const ParticleDefinition definition;
+    ParticleDefinition m_definition;
+    ParticleSystem* m_system{ nullptr };
 
     float lastTs = -1;
 };

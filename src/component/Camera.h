@@ -16,12 +16,13 @@ struct CameraProjection {
 class Camera final
 {
 public:
+    Camera();
+
     Camera(
         const glm::vec3& pos,
         const glm::vec3 front,
-        const glm::vec3 up,
-        bool nodeCamera = false);
-    ~Camera();
+        const glm::vec3 up);
+    ~Camera() = default;
 
     void update(Node& node);
 
@@ -94,7 +95,7 @@ private:
     bool m_enabled = false;
     bool m_default = false;
 
-    bool m_nodeCamera = false;
+    bool m_standalone = false;
     int m_nodeMatrixLevel = -1;
 
     float m_zoom{ 45.f };

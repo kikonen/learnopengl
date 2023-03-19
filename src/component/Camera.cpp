@@ -13,22 +13,21 @@ const float MIN_ZOOM = 10.0f;
 const float MAX_ZOOM = 90.0f;
 
 
+Camera::Camera()
+{}
+
 Camera::Camera(
     const glm::vec3& worldPos,
     const glm::vec3 front,
-    const glm::vec3 up,
-    bool nodeCamera)
+    const glm::vec3 up)
 {
-    m_nodeCamera = nodeCamera;
+    m_standalone = true;
+
     m_enabled = true;
     m_position = worldPos;
     m_worldPosition = worldPos;
 
     setAxis(front, up);
-}
-
-Camera::~Camera()
-{
 }
 
 void Camera::update(Node& node)
@@ -164,7 +163,7 @@ void Camera::setPosition(const glm::vec3& pos) noexcept
 {
     if (m_position != pos) {
         m_position = pos;
-        if (!m_nodeCamera) {
+        if (m_standalone) {
             m_worldPosition = pos;
         }
         m_dirty = true;
