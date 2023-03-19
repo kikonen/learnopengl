@@ -280,23 +280,23 @@ void NodeRegistry::bindNode(
             insertNode(vPhysics, node);
         }
 
-        if (node->m_camera) {
+        if (node->m_type->m_componentType == ComponentType::camera) {
             m_cameras.push_back(node);
-            if (!m_activeCamera && node->m_camera->isDefault()) {
+            if (!m_activeCamera && node->m_component.camera.isDefault()) {
                 m_activeCamera = node;
             }
         }
 
-        if (node->m_light) {
-            Light* light = node->m_light.get();
+        if (node->m_type->m_componentType == ComponentType::light) {
+            Light& light = node->m_component.light;
 
-            if (light->m_directional) {
+            if (light.m_directional) {
                 m_dirLight = node;
             }
-            else if (light->m_point) {
+            else if (light.m_point) {
                 m_pointLights.push_back(node);
             }
-            else if (light->m_spot) {
+            else if (light.m_spot) {
                 m_spotLights.push_back(node);
             }
         }
@@ -390,7 +390,7 @@ void NodeRegistry::bindChildren(
 void NodeRegistry::setActiveCamera(Node* node)
 {
     if (!node) return;
-    if (!node->m_camera) return;
+    if (node->m_type->m_componentType != ComponentType::camera) return;
 
     m_activeCamera = node;
 }
@@ -400,6 +400,6 @@ Node* NodeRegistry::findDefaultCamera() const
     const auto& it = std::find_if(
         m_cameras.begin(),
         m_cameras.end(),
-        [](Node* node) { return node->m_camera->isDefault(); });
+        [](Node* node) { return node->m_component.camera.isDefault(); });
     return it != m_cameras.end() ? *it : nullptr;
 }

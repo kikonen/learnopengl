@@ -65,7 +65,7 @@ void Node::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    {
+    if (m_type-> m_componentType == ComponentType::entity) {
         m_instance.m_entityIndex = registry->m_entityRegistry->addEntity();
         m_instance.setMaterialIndex(getMaterialIndex());
 
@@ -98,23 +98,33 @@ void Node::update(
 {
     updateModelMatrix();
 
-    bool changed = false;
     if (m_controller) {
-        changed = m_controller->update(ctx, *this);
+        bool changed = m_controller->update(ctx, *this);
+        if (changed) {
+            updateModelMatrix();
+        }
     }
 
-    if (changed)
-        updateModelMatrix();
-
-    if (m_camera) m_camera->update(*this);
-    if (m_light) m_light->update(ctx, *this);
-    if (m_generator) m_generator->update(ctx, *this);
-
     const auto* children = ctx.m_registry->m_nodeRegistry->getChildren(*this);
-    if (children) {
-        for (auto& child : *children) {
-            child->update(ctx);
+
+    switch (m_type->m_componentType) {
+    case ComponentType::origo:
+        // fall-through
+    case ComponentType::entity:
+        if (m_generator) m_generator->update(ctx, *this);
+
+        if (children) {
+            for (auto& child : *children) {
+                child->update(ctx);
+            }
         }
+        break;
+    case ComponentType::camera:
+        m_component.camera.update(*this);
+        break;
+    case ComponentType::light:
+        m_component.light.update(ctx, *this);
+        break;
     }
 }
 

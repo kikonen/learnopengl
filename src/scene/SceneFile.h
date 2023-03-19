@@ -17,6 +17,9 @@
 #include "asset/Material.h"
 #include "registry/EntityType.h"
 
+#include "component/ComponentType.h"
+
+
 namespace event {
     class Dispatcher;
 }
@@ -181,7 +184,8 @@ class SceneFile
 
         bool enabled{ false };
 
-        EntityType type { EntityType::model };
+        ComponentType type{ ComponentType::entity };
+        EntityType entityType { EntityType::model };
 
         std::string name;
         std::string desc;
@@ -337,13 +341,15 @@ private:
         const glm::vec3& posAdjustment,
         bool isRoot);
 
-    std::unique_ptr<Camera> createCamera(
+    void createCamera(
         const EntityCloneData& entity,
-        const CameraData& data);
+        const CameraData& data,
+        Camera& camera);
 
-    std::unique_ptr<Light> createLight(
+    void createLight(
         const EntityCloneData& entity,
-        const LightData& data);
+        const LightData& data,
+        Light& light);
 
     std::unique_ptr<NodeController> createController(
         const EntityCloneData& entity,

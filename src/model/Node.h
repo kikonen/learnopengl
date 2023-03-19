@@ -9,6 +9,7 @@
 
 #include "registry/MeshType.h"
 
+#include "component/Component.h"
 
 class NodeController;
 class Camera;
@@ -24,6 +25,7 @@ class ParticleGenrator;
 class Batch;
 
 struct EntitySSBO;
+
 
 class Node final
 {
@@ -202,14 +204,12 @@ public:
     // => *CAN* be empty for auto generated nodes
     uuids::uuid m_id;
 
+    std::unique_ptr <NodeController> m_controller{ nullptr };
+
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };
 
-    std::unique_ptr <NodeController> m_controller{ nullptr };
-
-    std::unique_ptr<Camera> m_camera{ nullptr };
-    std::unique_ptr<Light> m_light{ nullptr };
-    std::unique_ptr<ParticleGenerator> m_particleGenerator{ nullptr };
+    Component m_component;
 
     std::unique_ptr<NodeGenerator> m_generator{ nullptr };
 

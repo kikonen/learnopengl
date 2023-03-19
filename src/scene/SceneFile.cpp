@@ -20,6 +20,7 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "component/Component.h"
 #include "component/Light.h"
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
@@ -93,6 +94,17 @@ void SceneFile::load(
 {
     m_registry = registry;
     m_dispatcher = registry->m_dispatcher.get();
+
+    auto typeSize = sizeof(MeshType);
+    auto nodeSize = sizeof(Node);
+    auto cameraSize = sizeof(Camera);
+    auto lightSize = sizeof(Light);
+    auto particleSize = sizeof(ParticleDefinition);
+    auto componentSize = sizeof(Component);
+
+    std::cout << fmt::format(
+        "type={}, node={}, component={}, camera={}, light={}, particle={}\n",
+        typeSize, nodeSize, componentSize, cameraSize, lightSize, particleSize);
 
     std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);
@@ -438,7 +450,7 @@ MeshType* SceneFile::createType(
         type->m_flags.instanced = true;
     }
 
-    if (data.type == EntityType::origo) {
+    if (data.type == ComponentType::origo) {
         type->m_flags.invisible = true;
         type->m_entityType = EntityType::origo;
     } else
@@ -448,7 +460,7 @@ MeshType* SceneFile::createType(
 
         // NOTE KI container does not have mesh itself, but it can setup
         // material & program for contained nodes
-        if (data.type != EntityType::container) {
+        if (data.entityType != EntityType::container) {
             if (!type->getMesh()) {
                 KI_WARN(fmt::format(
                     "SCENE_FILEIGNORE: NO_MESH id={} ({})",
@@ -524,7 +536,7 @@ void SceneFile::resolveMesh(
     const glm::uvec3& tile)
 {
     // NOTE KI materials MUST be resolved before loading mesh
-    if (data.type == EntityType::model) {
+    if (data.entityType == EntityType::model) {
         auto future = m_registry->m_modelRegistry->getMesh(
             data.meshName,
             data.meshPath);
@@ -536,13 +548,13 @@ void SceneFile::resolveMesh(
             "SCENE_FILE ATTACH: id={}, type={}",
             data.id_str, type->str()));
     }
-    else if (data.type == EntityType::quad) {
+    else if (data.entityType == EntityType::quad) {
         auto mesh = std::make_unique<QuadMesh>();
         mesh->prepareVolume();
         type->setMesh(std::move(mesh), true);
         type->m_entityType = EntityType::quad;
     }
-    else if (data.type == EntityType::billboard) {
+    else if (data.entityType == EntityType::billboard) {
         if (true) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME);
@@ -556,17 +568,17 @@ void SceneFile::resolveMesh(
         }
         type->m_entityType = EntityType::billboard;
     }
-    else if (data.type == EntityType::sprite) {
+    else if (data.entityType == EntityType::sprite) {
         // NOTE KI sprite *shall* differ from quad later on
         auto mesh = std::make_unique<SpriteMesh>();
         mesh->prepareVolume();
         type->setMesh(std::move(mesh), true);
         type->m_entityType = EntityType::sprite;
     }
-    else if (data.type == EntityType::terrain) {
+    else if (data.entityType == EntityType::terrain) {
         type->m_entityType = EntityType::terrain;
     }
-    else if (data.type == EntityType::container) {
+    else if (data.entityType == EntityType::container) {
         // NOTE KI generator takes care of actual work
         type->m_entityType = EntityType::container;
         type->m_flags.invisible = true;
@@ -613,20 +625,29 @@ Node* SceneFile::createNode(
         node->setVolume(mesh->getAABB().getVolume());
     }
 
-    if (data.camera.enabled) {
-        node->m_camera = createCamera(data, data.camera);
-    }
-
-    if (data.light.enabled) {
-        node->m_light = createLight(data, data.light);
-    }
-
-    if (data.controller.enabled) {
-        node->m_controller = createController(data, data.controller, node);
+    switch (data.type) {
+    case ComponentType::camera:
+        type->m_componentType = ComponentType::camera;
+        createCamera(data, data.camera, node->m_component.camera);
+        break;
+    case ComponentType::light:
+        type->m_componentType = ComponentType::light;
+        createLight(data, data.light, node->m_component.light);
+        break;
+    case ComponentType::entity:
+        type->m_componentType = ComponentType::entity;
+        break;
+    case ComponentType::origo:
+        type->m_componentType = ComponentType::origo;
+        break;
     }
 
     if (data.generator.enabled) {
         node->m_generator = createGenerator(data, data.generator, node);
+    }
+
+    if (data.controller.enabled) {
+        node->m_controller = createController(data, data.controller, node);
     }
 
     return node;
@@ -779,58 +800,56 @@ void SceneFile::modifyMaterial(
     if (f.map_height) m.map_height = mod.map_height;
 }
 
-std::unique_ptr<Camera> SceneFile::createCamera(
+void SceneFile::createCamera(
     const EntityCloneData& entity,
-    const CameraData& data)
+    const CameraData& data,
+    Camera& camera)
 {
-    if (!data.enabled) return std::unique_ptr<Camera>();
+    if (!data.enabled) return;
 
-    // NOTE only node cameras in scenefile for now
-    auto camera = std::make_unique<Camera>(data.pos, data.front, data.up, true);
-    camera->setRotation(data.rotation);
-    camera->setZoom(data.zoom);
+    camera.setEnabled(data.enabled);
+    camera.setAxis(data.front, data.up);
+    camera.setPosition(data.pos);
+    camera.setNodeCamera(true);
+    camera.setRotation(data.rotation);
+    camera.setZoom(data.zoom);
 
-    camera->setEnabled(data.enabled);
-    camera->setDefault(data.isDefault);
-
-    return camera;
+    camera.setEnabled(data.enabled);
+    camera.setDefault(data.isDefault);
 }
 
-std::unique_ptr<Light> SceneFile::createLight(
+void SceneFile::createLight(
     const EntityCloneData& entity,
-    const LightData& data)
+    const LightData& data,
+    Light& light)
 {
-    if (!data.enabled) return std::unique_ptr<Light>();
+    if (!data.enabled) return;
 
-    auto light = std::make_unique<Light>();
+    light.m_enabled = true;
+    light.setPosition(data.pos);
+    light.setTargetId(data.targetId);
 
-    light->m_enabled = true;
-    light->setPosition(data.pos);
-    light->setTargetId(data.targetId);
+    light.linear = data.linear;
+    light.quadratic = data.quadratic;
 
-    light->linear = data.linear;
-    light->quadratic = data.quadratic;
+    light.cutoffAngle = data.cutoffAngle;
+    light.outerCutoffAngle = data.outerCutoffAngle;
 
-    light->cutoffAngle = data.cutoffAngle;
-    light->outerCutoffAngle = data.outerCutoffAngle;
-
-    light->ambient = data.ambient;
-    light->diffuse = data.diffuse;
-    light->specular = data.specular;
+    light.ambient = data.ambient;
+    light.diffuse = data.diffuse;
+    light.specular = data.specular;
 
     switch (data.type) {
     case LightType::directional:
-        light->m_directional = true;
+        light.m_directional = true;
         break;
     case LightType::point:
-        light->m_point = true;
+        light.m_point = true;
         break;
     case LightType::spot:
-        light->m_spot = true;
+        light.m_spot = true;
         break;
     }
-
-    return light;
 }
 
 std::unique_ptr<NodeController> SceneFile::createController(
@@ -934,7 +953,8 @@ void SceneFile::loadRoot(
 
     root.base.id_str = KI_UUID_STR(m_assets.rootUUID);
     root.base.id = m_assets.rootUUID;
-    root.base.type = EntityType::origo;
+    root.base.type = ComponentType::origo;
+    root.base.entityType = EntityType::origo;
     root.isRoot = true;
     root.base.enabled = true;
 }
@@ -973,25 +993,43 @@ void SceneFile::loadEntityClone(
         if (k == "type") {
             std::string type = v.as<std::string>();
             if (type == "origo") {
-                data.type = EntityType::origo;
+                data.type = ComponentType::origo;
+            }
+            else if (type == "entity") {
+                data.type = ComponentType::entity;
+            }
+            else if (type == "camera") {
+                data.type = ComponentType::camera;
+            }
+            else if (type == "light") {
+                data.type = ComponentType::light;
+            }
+            else {
+                reportUnknown("type", k, v);
+            }
+        }
+        else if (k == "entity") {
+            std::string type = v.as<std::string>();
+            if (type == "origo") {
+                data.entityType = EntityType::origo;
             }
             else if (type == "container") {
-                data.type = EntityType::container;
+                data.entityType = EntityType::container;
             }
             else if (type == "model") {
-                data.type = EntityType::model;
+                data.entityType = EntityType::model;
             }
             else if (type == "quad") {
-                data.type = EntityType::quad;
+                data.entityType = EntityType::quad;
             }
             else if (type == "billboard") {
-                data.type = EntityType::billboard;
+                data.entityType = EntityType::billboard;
             }
             else if (type == "sprite") {
-                data.type = EntityType::sprite;
+                data.entityType = EntityType::sprite;
             }
             else if (type == "terrain") {
-                data.type = EntityType::terrain;
+                data.entityType = EntityType::terrain;
             }
             else {
                 reportUnknown("entity_type", k, v);

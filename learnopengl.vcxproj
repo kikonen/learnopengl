@@ -348,6 +348,9 @@
     <ClInclude Include="src\backend\DrawRange.h" />
     <ClInclude Include="src\backend\gl\PerformanceCounters.h" />
     <ClInclude Include="src\command\api\Sync.h" />
+    <ClInclude Include="src\component\ComponentType.h" />
+    <ClInclude Include="src\component\Component.h" />
+    <ClInclude Include="src\component\Origo.h" />
     <ClInclude Include="src\event\Event.h" />
     <ClInclude Include="src\event\Dispatcher.h" />
     <ClInclude Include="src\generator\GridGenerator.h" />

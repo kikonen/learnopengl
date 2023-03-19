@@ -6,10 +6,11 @@
 
 #include "kigl/GLVertexArray.h"
 
-#include "EntityType.h"
-
 #include "asset/CustomMaterial.h"
 
+#include "component/ComponentType.h"
+
+#include "registry/EntityType.h"
 
 struct NodeRenderFlags {
     bool alpha = false;
@@ -90,7 +91,9 @@ public:
     const int typeID;
     const std::string m_name;
 
+    ComponentType m_componentType{ ComponentType::origo };
     EntityType m_entityType{ EntityType::origo };
+
     NodeRenderFlags m_flags;
 
     int m_priority = { 0 };

@@ -16,14 +16,18 @@ struct CameraProjection {
 class Camera final
 {
 public:
+    Camera();
+
     Camera(
         const glm::vec3& pos,
         const glm::vec3 front,
-        const glm::vec3 up,
-        bool nodeCamera = false);
+        const glm::vec3 up);
     ~Camera();
 
     void update(Node& node);
+
+    void setNodeCamera(bool value) { m_nodeCamera = value; }
+    bool isNodeCamera() { return m_nodeCamera; }
 
     inline void setDefault(bool value) { m_default = value; }
     inline bool isDefault() const { return m_default; }

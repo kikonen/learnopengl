@@ -12,13 +12,29 @@ entities:
   - name: Origo
     type: origo
     pos: [10, 0, 20]
-    camera:
-      pos: [0, 0, 0]
-      default: true
-      enabled: true
     controller:
       type: camera
       enabled: true
+    xxenabled: true
+    xxchildren:
+      - type: camera
+        pos: [0, 0, 0]
+        camera:
+          default: true
+        enabled: true
+  - name: Origo
+    id: [auto, origo]
+    type: origo
+    pos: [10, 0, 20]
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - parent_id: [auto, origo]
+    type: camera
+    pos: [0, 0, 0]
+    camera:
+      default: true
     enabled: true
   - name: Directional light
     pos: [0, 25, 40]

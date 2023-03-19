@@ -434,10 +434,10 @@ void Scene::bindComponents(Node* node)
 {
     auto& type = node->m_type;
 
-    if (node->m_particleGenerator) {
+    if (node->m_type->m_componentType == ComponentType::particle_generator) {
         if (m_particleSystem) {
-            node->m_particleGenerator->system = m_particleSystem.get();
-            m_particleGenerators.push_back(node->m_particleGenerator.get());
+            node->m_component.particleGenerator.system = m_particleSystem.get();
+            m_particleGenerators.push_back(&node->m_component.particleGenerator);
         }
     }
 

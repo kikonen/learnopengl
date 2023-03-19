@@ -106,7 +106,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         m_currentScene->m_nodeDraw.get(),
         m_currentScene->m_batch.get(),
         m_state,
-        cameraNode->m_camera.get(),
+        &cameraNode->m_component.camera,
         m_assets.nearPlane,
         m_assets.farPlane,
         w, h);
