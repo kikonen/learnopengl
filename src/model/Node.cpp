@@ -161,9 +161,8 @@ void Node::updateModelMatrix() noexcept
 
     if (oldLevel == m_instance.m_matrixLevel) return;
 
-    if (m_type->m_flags.mirror) {
-        m_worldPlaneNormal = glm::normalize(glm::vec3(m_instance.m_modelMatrix * glm::vec4(m_planeNormal, 0.f)));
-    }
+    // NOTE KI w == 0; only rotation
+    m_viewFront = glm::normalize(glm::vec3(m_instance.m_rotationMatrix * glm::vec4(m_front, 0.f)));
 }
 
 void Node::setTagMaterialIndex(int index)

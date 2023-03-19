@@ -154,15 +154,14 @@ entities:
     material: mirror
     program: mirror
     pos: [-40.0, 10.0, -10.0]
-    rotation: [0.0, 90.0, 0.0]
+    xxrotation: [0.0, 90.0, 0.0]
     scale: 15.0
     render_flags:
       render_back: true
       mirror: true
       no_reflect: true
       no_refract: true
-    plane_normal: [0.0, 0.0, 1.0]
-    enabled: false
+    enabled: true
 materials:
   - name: silver_ball
     ns: 51.2

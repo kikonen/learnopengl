@@ -606,7 +606,7 @@ Node* SceneFile::createNode(
     node->setRotation(data.rotation);
     node->setScale(data.scale);
 
-    node->setPlaneNormal(data.planeNormal);
+    node->setFront(data.front);
 
     auto mesh = type->getMesh();
     if (mesh) {
@@ -1046,8 +1046,8 @@ void SceneFile::loadEntityClone(
                 data.renderFlags[util::toLower(flagName)] = flagValue;
             }
         }
-        else if (k == "plane_normal") {
-            data.planeNormal = readVec3(v);
+        else if (k == "front") {
+            data.front = readVec3(v);
         }
         else if (k == "material") {
             data.materialName = v.as<std::string>();

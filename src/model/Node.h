@@ -65,8 +65,8 @@ public:
         return m_instance.getWorldPosition();
     }
 
-    inline const glm::vec3& getWorldPlaneNormal() const noexcept {
-        return m_worldPlaneNormal;
+    inline const glm::vec3& getViewFront() const noexcept {
+        return m_viewFront;
     }
 
     inline const glm::vec4& getVolume() const noexcept {
@@ -77,13 +77,13 @@ public:
         m_instance.setVolume(volume);
     }
 
-    inline const glm::vec3& getPlaneNormal() const noexcept {
-        return m_planeNormal;
+    inline const glm::vec3& getFront() const noexcept {
+        return m_front;
     }
 
-    void setPlaneNormal(const glm::vec3& planeNormal) noexcept
+    void setFront(const glm::vec3& front) noexcept
     {
-        m_planeNormal = planeNormal;
+        m_front = glm::normalize(front);
     }
 
     inline void setPosition(const glm::vec3& pos) noexcept {
@@ -219,9 +219,9 @@ protected:
     bool m_prepared = false;
 
 private:
-    glm::vec3 m_worldPlaneNormal{ 0.f };
+    glm::vec3 m_viewFront{ 0.f, 0.f, 1.f };
 
-    glm::vec3 m_planeNormal{ 0 };
+    glm::vec3 m_front{ 0.f, 0.f, 1.f };
 
     Node* m_parent{ nullptr };
 

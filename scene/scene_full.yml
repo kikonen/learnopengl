@@ -319,7 +319,6 @@ entities:
     render_flags:
       render_back: true
       mirror: true
-    plane_normal: [0.0, 0.0, 1.0]
     enabled: true
     script_file: scripts/anim_mirror
   - name: Big mirror 2
@@ -332,7 +331,6 @@ entities:
     render_flags:
       render_back: true
       mirror: true
-    plane_normal: [0.0, 0.0, 1.0]
     enabled: true
     script_file: scripts/anim_mirror
   - name: Spyro

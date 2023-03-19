@@ -126,13 +126,13 @@ bool MirrorMapRenderer::render(
         const auto& mirrorSize = volumeRadius;
         const auto& eyePos = mainCamera->getWorldPosition();
 
-        const auto& planeNormal = closest->getWorldPlaneNormal();
+        const auto& viewFront = closest->getViewFront();
 
         const auto eyeV = planePos - eyePos;
         const auto dist = glm::length(eyeV);
         auto eyeN = glm::normalize(eyeV);
 
-        const auto dot = glm::dot(planeNormal, mainCamera->getViewFront());
+        const auto dot = glm::dot(viewFront, mainCamera->getViewFront());
         if (dot > 0) {
             // NOTE KI backside; ignore
             // => should not happen; finding closest already does this!
@@ -140,7 +140,7 @@ bool MirrorMapRenderer::render(
             eyeN = -eyeN;
         }
 
-        const auto reflectFront = glm::reflect(eyeN, planeNormal);
+        const auto reflectFront = glm::reflect(eyeN, viewFront);
         const auto mirrorEyePos = planePos - (reflectFront * dist);
 
         //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
@@ -224,10 +224,11 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
             if (!type->m_flags.mirror) continue;
 
             for (const auto& node : nodes) {
-                const auto& planeNormal = node->getWorldPlaneNormal();
-                const auto dot = glm::dot(planeNormal, cameraFront);
+                const auto& viewFront = node->getViewFront();
 
-                if (dot > 0) {
+                const auto dot = glm::dot(viewFront, cameraFront);
+
+                if (dot >= 0) {
                     // NOTE KI not facing mirror; ignore
                     continue;
                 }
@@ -236,8 +237,8 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
                     // https://stackoverflow.com/questions/59534787/signed-distance-function-3d-plane
                     //const auto eyeV = node->getWorldPosition() - cameraPos;
                     //const auto eyeN = glm::normalize(eyeV);
-                    const auto planeDist = glm::dot(planeNormal, node->getWorldPosition());
-                    const auto planeDot = glm::dot(planeNormal, cameraPos);
+                    const auto planeDist = glm::dot(viewFront, node->getWorldPosition());
+                    const auto planeDot = glm::dot(viewFront, cameraPos);
                     const auto dist = planeDot - planeDist;
 
                     if (dist <= 0) {

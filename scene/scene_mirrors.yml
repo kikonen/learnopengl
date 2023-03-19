@@ -154,7 +154,6 @@ entities:
       mirror: true
       no_reflect: true
       no_refract: true
-    plane_normal: [0.0, 0.0, 1.0]
     enabled: true
   - name: Big mirror 2
     type: quad
@@ -168,7 +167,6 @@ entities:
       mirror: true
       no_reflect: true
       no_refract: true
-    plane_normal: [0.0, 0.0, 1.0]
     enabled: true
 materials:
   - name: silver_ball
