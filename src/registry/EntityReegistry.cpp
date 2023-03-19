@@ -11,8 +11,10 @@
 
 
 namespace {
-    // scene_full = 91 109
-    constexpr int MAX_ENTITY_COUNT = 2000000;
+    constexpr size_t ENTITY_BLOCK_SIZE = 100;
+    constexpr size_t ENTITY_BLOCK_COUNT = 20000;
+
+    constexpr size_t MAX_ENTITY_COUNT = ENTITY_BLOCK_SIZE * ENTITY_BLOCK_COUNT;
 
     constexpr int MAX_SKIP = 20;
 }
@@ -20,12 +22,12 @@ namespace {
 EntityRegistry::EntityRegistry(const Assets& assets)
     : m_assets(assets)
 {
-    m_entries.reserve(MAX_ENTITY_COUNT);
+    m_entries.reserve(ENTITY_BLOCK_SIZE);
 }
 
 void EntityRegistry::prepare()
 {
-    m_ssbo.createEmpty(MAX_ENTITY_COUNT * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
+    m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
     m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
 }
 
@@ -44,42 +46,58 @@ void EntityRegistry::update(const UpdateContext& ctx)
     int from = -1;
     int skip = 0;
 
-    const int size = m_dirty.size();
+    const int totalCount = m_entries.size();
+
+    bool refreshAll = false;
+    {
+        // NOTE KI *reallocate* SSBO if needed
+        if (m_ssbo.m_size < totalCount * sz) {
+            m_ssbo.resizeBuffer(m_entries.capacity() * sz);
+            m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+            refreshAll = true;
+        }
+    }
+
     int updatedCount = 0;
 
-    while (idx <= m_maxDirty) {
-        if (!m_dirty[idx]) {
-            skip++;
+    if (refreshAll) {
+        memcpy(m_ssbo.m_data, &m_entries[0], totalCount * sz);
+        m_ssbo.flushRange(0, totalCount * sz);
+        for (int i = 0; i < totalCount; i++) {
+            m_dirty[i] = false;
         }
-        else {
-            if (from == -1) from = idx;
-        }
-
-        if (from != -1 && (skip >= MAX_SKIP || idx == m_maxDirty)) {
-            int to = idx;
-            const int count = to + 1 - from;
-
-            //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
-            memcpy(m_ssbo.m_data + from * sz, &m_entries[from], count * sz);
-
-            m_ssbo.flushRange(from * sz, count * sz);
-
-            for (int i = 0; i < count; i++) {
-                m_dirty[from + i] = false;
+    }
+    else {
+        while (idx <= m_maxDirty) {
+            if (!m_dirty[idx]) {
+                skip++;
+            }
+            else {
+                if (from == -1) from = idx;
             }
 
-            skip = 0;
-            from = -1;
-            updatedCount += count;
+            if (from != -1 && (skip >= MAX_SKIP || idx == m_maxDirty)) {
+                int to = idx;
+                const int count = to + 1 - from;
+
+                //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
+                memcpy(m_ssbo.m_data + from * sz, &m_entries[from], count * sz);
+
+                m_ssbo.flushRange(from * sz, count * sz);
+
+                for (int i = 0; i < count; i++) {
+                    m_dirty[from + i] = false;
+                }
+
+                skip = 0;
+                from = -1;
+                updatedCount += count;
+            }
+            idx++;
         }
-        idx++;
     }
 
     //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, updated={}", ctx.m_clock.frameCount, updatedCount));
-
-    //for (int i = m_minDirty; i < m_maxDirty; i++) {
-    //    m_dirty[i] = false;
-    //}
 
     m_minDirty = -1;
     m_maxDirty = -1;
@@ -98,10 +116,16 @@ int EntityRegistry::addEntity()
 }
 
 // @return first index of range
-int EntityRegistry::addEntityRange(const int count)
+int EntityRegistry::addEntityRange(const size_t count)
 {
     if (m_entries.size() + count > MAX_ENTITY_COUNT)
-        throw std::runtime_error{ "MAX_ENTITY_COUNT" };
+        throw std::runtime_error{ fmt::format("MAX_ENTITY_COUNT: {}", MAX_ENTITY_COUNT) };
+
+    {
+        size_t size = m_entries.size() + std::max(ENTITY_BLOCK_SIZE, count) + ENTITY_BLOCK_SIZE;
+        size = std::min(size, MAX_ENTITY_COUNT);
+        m_entries.reserve(size);
+    }
 
     int firstIndex = m_entries.size();
 

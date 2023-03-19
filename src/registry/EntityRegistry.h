@@ -30,7 +30,7 @@ public:
     int addEntity();
 
     // @return first index of range
-    int addEntityRange(const int count);
+    int addEntityRange(const size_t count);
 
     EntitySSBO* getEntity(int index);
     EntitySSBO* updateEntity(int index, bool dirty);

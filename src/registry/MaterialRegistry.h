@@ -45,6 +45,10 @@ public:
         const RenderContext& ctx);
 
 private:
+    void updateMaterialBuffer();
+    void updateIndexBuffer();
+
+private:
     const Assets& m_assets;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
@@ -55,9 +59,10 @@ private:
 
     std::vector<MaterialSSBO> m_materialsSSBO;
 
-    std::vector<MaterialIndex> m_materialIndeces;
+    std::vector<MaterialIndex> m_indeces;
 
-    size_t m_updatedSize = 0;
+    size_t m_lastMaterialSize = 0;
+    size_t m_lastIndexSize = 0;
 
     //GLBuffer m_ubo{ "materialsUBO" };
     GLBuffer m_ssbo{ "materialsSSBO" };

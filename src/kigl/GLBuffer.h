@@ -11,10 +11,6 @@ struct GLBuffer {
     }
 
     ~GLBuffer() {
-        //KI_DEBUG(fmt::format(
-        //    "BUFFER: delete - name={}, id={}, binding={}, mapped={}, size={}",
-        //    m_name, m_id, m_binding, m_mapped, m_size));
-
         if (m_mapped) {
             glUnmapNamedBuffer(m_id);
         }
@@ -37,11 +33,22 @@ struct GLBuffer {
         initEmpty(size, flags);
     }
 
+    void resizeBuffer(int size)
+    {
+        if (size == m_size) return;
+        unmap();
+        if (m_created) {
+            glDeleteBuffers(1, &m_id);
+            m_created = false;
+        }
+        createEmpty(size, m_flags);
+    }
 
     // For mapped buffer
     // flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
     void initEmpty(int size, int flags) {
         m_size = size;
+        m_flags = flags;
 
         KI_DEBUG(fmt::format(
             "BUFFER: initEmpty - name={}, id={}, size={}, flags={}",
@@ -165,6 +172,7 @@ struct GLBuffer {
 
     GLuint m_id = 0;
     size_t m_size = 0;
+    int m_flags = 0;
 
     int m_binding = -1;
 

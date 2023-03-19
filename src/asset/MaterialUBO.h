@@ -4,9 +4,9 @@
 
 #include "ki/GL.h"
 
-constexpr unsigned int MIN_MATERIAL_COUNT = 200;
-constexpr unsigned int MAX_MATERIAL_COUNT = 200;
-constexpr unsigned int MATERIAL_COUNT = MAX_MATERIAL_COUNT;
+//constexpr unsigned int MIN_MATERIAL_COUNT = 200;
+//constexpr unsigned int MAX_MATERIAL_COUNT = 200;
+//constexpr unsigned int MATERIAL_COUNT = MAX_MATERIAL_COUNT;
 
 
 // NOTE KI align 16 for UBO struct
@@ -40,5 +40,5 @@ struct MaterialUBO {
 // NOTE KI align 16 for UBO struct
 struct MaterialsUBO {
     // NOTE KI align 16 for UBO array entries
-    MaterialUBO materials[MATERIAL_COUNT];
+    MaterialUBO materials[];
 };
