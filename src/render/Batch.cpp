@@ -63,7 +63,7 @@ bool Batch::inFrustumZ(
     const glm::mat4 projectedModel = ctx.m_matrices.u_projected * entity->getModelMatrix();
 
     const glm::vec4 centerPos = projectedModel * glm::vec4(volumeCenter, 1.0);
-    const glm::vec3 radiusPos = projectedModel * glm::vec4(volumeCenter + glm::vec3(volumeRadius), 1.0);
+    const glm::vec3 radiusPos = projectedModel * glm::vec4(volumeCenter + glm::vec3(volumeRadius, 0.f, 0.f), 1.0);
 
     const float radius = glm::length(radiusPos - glm::vec3(centerPos));
 

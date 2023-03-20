@@ -84,7 +84,7 @@ void main(void) {
       vec4(volumeCenter, 1.0);
 
     const vec4 radiusPos = projectedModel *
-      vec4(volumeCenter + vec3(volumeRadius), 1.0);
+      vec4(volumeCenter + vec3(volumeRadius, 0, 0), 1.0);
 
     const float radius = length(vec3(radiusPos) - vec3(pos));
 
