@@ -147,7 +147,7 @@ bool MirrorMapRenderer::render(
         //const float fovAngle = ctx.m_assets.mirrorFov;
 
         auto& camera = m_cameras[0];
-        camera.setPosition(mirrorEyePos);
+        camera.setWorldPosition(mirrorEyePos);
         camera.setAxis(reflectFront, mainCamera->getViewUp());
         //camera.setZoom(ctx.m_camera.getZoom());
         //camera.setZoom(fovAngle);

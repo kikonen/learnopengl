@@ -106,7 +106,7 @@ void Node::update(
     if (changed)
         updateModelMatrix();
 
-    if (m_camera) m_camera->update(*this);
+    if (m_camera) m_camera->update(ctx, *this);
     if (m_light) m_light->update(ctx, *this);
     if (m_generator) m_generator->update(ctx, *this);
 

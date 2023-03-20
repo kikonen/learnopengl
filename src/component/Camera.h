@@ -5,6 +5,7 @@
 
 #include "ki/GL.h"
 
+class UpdateContext;
 class Node;
 
 struct CameraProjection {
@@ -24,7 +25,7 @@ public:
         const glm::vec3 up);
     ~Camera() = default;
 
-    void update(Node& node);
+    void update(const UpdateContext& ctx, Node& node) noexcept;
 
     inline void setDefault(bool value) { m_default = value; }
     inline bool isDefault() const { return m_default; }
@@ -48,6 +49,9 @@ public:
     inline const int getViewLevel() const noexcept { return m_viewLevel; }
 
     inline const glm::vec3& getWorldPosition() const noexcept { return m_worldPosition;  }
+
+    // NOTE KI for standalone camera
+    void setWorldPosition(const glm::vec3& pos) noexcept;
 
     const glm::vec3& getViewFront() const noexcept;
     const glm::vec3& getViewRight() const noexcept;
@@ -76,7 +80,10 @@ public:
     void setZoom(float zoom) noexcept;
     void adjustZoom(float adjustement) noexcept;
 
+    // NOTE KI for node camera; relative to node
     void setPosition(const glm::vec3& pos) noexcept;
+
+    // NOTE KI for node camera; relative to node
     inline const glm::vec3& getPosition() const noexcept {
         return m_position;
     }
@@ -95,8 +102,9 @@ private:
     bool m_enabled = false;
     bool m_default = false;
 
-    bool m_standalone = false;
-    int m_nodeMatrixLevel = -1;
+    // NOTE KI *identity* matrix for standalone camera
+    glm::mat4 m_nodeModelMatrix{ 1.f };
+    int m_nodeLevel = -1;
 
     float m_zoom{ 45.f };
     float m_zoomProjection = -1.0f;

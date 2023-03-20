@@ -21,7 +21,7 @@ void CameraController::prepare(
     m_node = &node;
 
     m_moveStep = 6.5f;
-    m_rotateStep = 7.5f;
+    m_rotateStep = 12.f;
     m_zoomStep = 20.0f;
     m_mouseSensitivity = 0.1f;
 }
@@ -30,21 +30,6 @@ bool CameraController::update(
     const UpdateContext& ctx,
     Node& node) noexcept
 {
-    //if (!m_node) return false;
-    //auto* camera = m_node->m_camera.get();
-
-    //const auto& viewFront = camera->getViewFront();
-    //const auto& viewUp = camera->getViewUp();
-    ////const auto& pos = camera->getPos();// +(front * 0.1f);
-    //const auto& rot = camera->getRotation();
-
-    ////auto nodePos = pos - viewUp * 2.8f + viewFront * 9.f;
-    ////nodePos -= parent->getWorldPosition();
-
-    ////node.setPosition(nodePos);
-    //node.setRotation({-rot.x, 90 + rot.y, rot.z});
-
-    //return true;
     return false;
 }
 
@@ -63,7 +48,7 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
 
     {
         if (true) {
-            glm::vec3 rotation = camera->getRotation();
+            glm::vec3 rotation = m_node->getRotation();
 
             if (input->isKeyDown(Key::ROTATE_LEFT)) {
                 rotation.y += rotateSize * dt;
@@ -72,7 +57,6 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
                 rotation.y -= rotateSize * dt;
             }
 
-            camera->setRotation(rotation);
             m_node->setRotation({ rotation.x, rotation.y, rotation.z });
         }
 
@@ -137,12 +121,11 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
 void CameraController::onMouseMove(Input* input, double xoffset, double yoffset)
 {
     if (!m_node) return;
-    auto* camera = m_node->m_camera.get();
 
     bool changed = false;
     const float MAX_ANGLE = 89.f;
 
-    glm::vec3 rotation = camera->getRotation();
+    glm::vec3 rotation = m_node->getRotation();
 
     if (xoffset != 0) {
         auto yaw = rotation.y - m_mouseSensitivity * xoffset;
@@ -166,8 +149,7 @@ void CameraController::onMouseMove(Input* input, double xoffset, double yoffset)
     }
 
     if (changed) {
-        camera->setRotation(rotation);
-        m_node->setRotation({ rotation.x, rotation.y, rotation.z });
+        m_node->setRotation(rotation);
     }
 }
 

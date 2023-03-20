@@ -180,7 +180,7 @@ bool CubeMapRenderer::render(
 
         const auto& center = centerNode->getWorldPosition();
         auto& camera = m_cameras[face];
-        camera.setPosition(center);
+        camera.setWorldPosition(center);
 
         RenderContext localCtx("CUBE",
             &parentCtx,

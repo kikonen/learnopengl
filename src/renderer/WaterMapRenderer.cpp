@@ -149,7 +149,7 @@ bool WaterMapRenderer::render(
         rot.x = -rot.x;
 
         auto& camera = m_cameras[0];
-        camera.setPosition(pos);
+        camera.setWorldPosition(pos);
         camera.setAxis(mainCamera->getFront(), mainCamera->getUp());
         camera.setZoom(mainCamera->getZoom());
         camera.setRotation(rot);
@@ -182,7 +182,7 @@ bool WaterMapRenderer::render(
         //glm::vec3 rot = cameraRot;
 
         auto& camera = m_cameras[1];
-        camera.setPosition(cameraPos);
+        camera.setWorldPosition(cameraPos);
         camera.setAxis(mainCamera->getFront(), mainCamera->getUp());
         camera.setZoom(mainCamera->getZoom());
         camera.setRotation(cameraRot);

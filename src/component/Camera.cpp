@@ -21,8 +21,6 @@ Camera::Camera(
     const glm::vec3 front,
     const glm::vec3 up)
 {
-    m_standalone = true;
-
     m_enabled = true;
     m_position = worldPos;
     m_worldPosition = worldPos;
@@ -30,21 +28,28 @@ Camera::Camera(
     setAxis(front, up);
 }
 
-void Camera::update(Node& node)
+void Camera::update(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
 
-    const bool nodeChanged = m_nodeMatrixLevel != node.getMatrixLevel();
+    const bool nodeChanged = m_nodeLevel != node.getMatrixLevel();
     if (!nodeChanged) return;
 
-    m_worldPosition = node.getModelMatrix() * glm::vec4(m_position, 1.f);
-    //m_viewPosition = node.getWorldPosition() + m_position;
+    m_nodeModelMatrix = node.getModelMatrix();
+
+    // NOTE KI *IGNORE* scale
+    const auto& scale = node.getScale();
+    m_nodeModelMatrix[0][0] /= scale[0];
+    m_nodeModelMatrix[1][1] /= scale[1];
+    m_nodeModelMatrix[2][2] /= scale[2];
+
+    m_worldPosition = m_nodeModelMatrix * glm::vec4(m_position, 1.f);
 
     m_dirty = true;
     m_dirtyView = true;
     m_dirtyProjected = true;
 
-    m_nodeMatrixLevel = node.getMatrixLevel();
+    m_nodeLevel = node.getMatrixLevel();
 }
 
 void Camera::setupProjection(
@@ -159,13 +164,19 @@ void Camera::adjustZoom(float adjustment) noexcept
     updateZoom(m_zoom - adjustment);
 }
 
+void Camera::setWorldPosition(const glm::vec3& pos) noexcept
+{
+    if (m_worldPosition != pos) {
+        m_worldPosition = pos;
+        m_dirty = true;
+    }
+}
+
 void Camera::setPosition(const glm::vec3& pos) noexcept
 {
     if (m_position != pos) {
         m_position = pos;
-        if (m_standalone) {
-            m_worldPosition = pos;
-        }
+        m_worldPosition = pos;
         m_dirty = true;
     }
 }
@@ -196,16 +207,20 @@ void Camera::updateZoom(float zoom) noexcept
 void Camera::updateCamera() const noexcept
 {
     if (!m_dirty) return;
-    m_dirty = false;
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     m_rotateMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
 
+    glm::mat4 modelMatrix = m_nodeModelMatrix * m_rotateMatrix;
+    // NOTE KI remove translate
+    modelMatrix[3] = { 0.f, 0.f, 0.f, 1.f };
+
     // NOTE KI glm::normalize for vec4 *IS* incorrect (4d len...)
-    m_viewFront = glm::normalize(glm::vec3(m_rotateMatrix * glm::vec4(m_front, 1.f)));
-    m_viewUp = glm::normalize(glm::vec3(m_rotateMatrix * glm::vec4(m_up, 1.f)));
+    m_viewFront = glm::normalize(glm::vec3(modelMatrix * glm::vec4(m_front, 1.f)));
+    m_viewUp = glm::normalize(glm::vec3(modelMatrix * glm::vec4(m_up, 1.f)));
     m_viewRight = glm::normalize(glm::cross(m_viewFront, m_viewUp));
 
+    m_dirty = false;
     m_dirtyView = true;
     m_dirtyProjected = true;
 }
