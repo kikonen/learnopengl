@@ -36,3 +36,10 @@ void Registry::prepare()
 
     m_physicsEngine->prepare();
 }
+
+void Registry::update(const UpdateContext& ctx)
+{
+    m_materialRegistry->update(ctx);
+    m_modelRegistry->update(ctx);
+    m_entityRegistry->update(ctx);
+}

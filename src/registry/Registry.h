@@ -16,6 +16,9 @@
 
 #include "physics/PhysicsEngine.h"
 
+
+class UpdateContext;
+
 //
 // Container for all registries to simplify passing them around
 //
@@ -26,6 +29,8 @@ public:
         std::shared_ptr<std::atomic<bool>> alive);
 
     void prepare();
+
+    void update(const UpdateContext& ctx);
 
 public:
     std::unique_ptr<ProgramRegistry> m_programRegistry;

@@ -9,8 +9,8 @@
 #include "asset/MaterialIndex.h"
 
 namespace {
-    constexpr size_t MATERIAL_BLOCK_SIZE = 100;
-    constexpr size_t MATERIAL_BLOCK_COUNT = 100;
+    constexpr size_t MATERIAL_BLOCK_SIZE = 10;
+    constexpr size_t MATERIAL_BLOCK_COUNT = 1000;
 
     constexpr size_t MAX_MATERIAL_COUNT = MATERIAL_BLOCK_SIZE * MATERIAL_BLOCK_COUNT;
 
@@ -39,13 +39,16 @@ void MaterialRegistry::add(const Material& material)
 {
     if (material.m_registeredIndex >= 0) return;
 
-    if (m_materials.size() >= MAX_MATERIAL_COUNT)
+    const size_t count = 1;
+
+    if (m_materials.size() + count > MAX_MATERIAL_COUNT)
         throw std::runtime_error{ fmt::format("MAX_MATERIAL_COUNT: {}", MAX_MATERIAL_COUNT) };
 
-    if (m_materials.size() % MATERIAL_BLOCK_SIZE == 0) {
-        size_t size = m_materials.size() + MATERIAL_BLOCK_SIZE * 2;
-        size = std::max(size, MAX_MATERIAL_COUNT);
-        m_materials.reserve(size);
+    {
+        size_t size = m_indeces.size() + std::max(MATERIAL_BLOCK_SIZE, count) + MATERIAL_BLOCK_SIZE;
+        size += MATERIAL_BLOCK_SIZE - size % MATERIAL_BLOCK_SIZE;
+        size = std::min(size, MAX_MATERIAL_COUNT);
+        m_indeces.reserve(size);
     }
 
     material.m_registeredIndex = m_materials.size();
@@ -65,6 +68,7 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 
     {
         size_t size = m_indeces.size() + std::max(INDEX_BLOCK_SIZE, count) + INDEX_BLOCK_SIZE;
+        size += INDEX_BLOCK_SIZE - size % INDEX_BLOCK_SIZE;
         size = std::min(size, MAX_INDEX_COUNT);
         m_indeces.reserve(size);
     }

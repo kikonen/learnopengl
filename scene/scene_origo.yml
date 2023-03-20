@@ -11,9 +11,14 @@ root:
 entities:
   - name: Origo
     type: origo
+    model: water_ball
+    material: silver_ball
+    program: texture
     pos: [10, 0, 20]
+    scale: 0.5
     camera:
-      pos: [0, 0, 0]
+      pos: [0, 0.5, 2]
+      rotation: [0, 0, 0]
       default: true
       enabled: true
     controller:

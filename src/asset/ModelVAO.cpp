@@ -9,8 +9,15 @@
 #include "asset/ModelMeshVBO.h"
 
 namespace {
-    constexpr int MAX_VERTEX_ENTRIES = 10000000;
-    constexpr int MAX_INDEX_ENTRIES = 10000000;
+    constexpr size_t VERTEX_BLOCK_SIZE = 1000;
+    constexpr size_t VERTEX_BLOCK_COUNT = 10000;
+
+    constexpr size_t MAX_VERTEX_COUNT = VERTEX_BLOCK_SIZE * VERTEX_BLOCK_COUNT;
+
+    constexpr size_t INDEX_BLOCK_SIZE = 1000;
+    constexpr size_t INDEX_BLOCK_COUNT = 10000;
+
+    constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
 }
 
 ModelVAO::ModelVAO(bool singleMaterial)
@@ -29,14 +36,14 @@ GLVertexArray* ModelVAO::prepare()
         m_vao->create();
     }
     {
-        m_vbo.createEmpty(MAX_VERTEX_ENTRIES * sizeof(VertexEntry), GL_DYNAMIC_STORAGE_BIT);
+        m_vbo.createEmpty(VERTEX_BLOCK_SIZE * sizeof(VertexEntry), GL_DYNAMIC_STORAGE_BIT);
 
-        m_vertexEntries.reserve(MAX_VERTEX_ENTRIES);
+        m_vertexEntries.reserve(VERTEX_BLOCK_SIZE);
     }
     {
-        m_ebo.createEmpty(MAX_INDEX_ENTRIES * sizeof(IndexEntry), GL_DYNAMIC_STORAGE_BIT);
+        m_ebo.createEmpty(INDEX_BLOCK_SIZE * sizeof(IndexEntry), GL_DYNAMIC_STORAGE_BIT);
 
-        m_indexEntries.reserve(MAX_INDEX_ENTRIES);
+        m_indexEntries.reserve(INDEX_BLOCK_SIZE);
     }
 
     // NOTE KI VBO & EBO are just empty buffers here
@@ -96,21 +103,22 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
         const size_t baseIndex = m_vertexEntries.size();
         const size_t baseOffset = baseIndex * sizeof(VertexEntry);
 
-        assert(baseIndex + count <= MAX_VERTEX_ENTRIES);
-
-        KI_INFO(fmt::format("MESH vertex index={}, MAX={}", baseIndex, MAX_VERTEX_ENTRIES));
+        if (m_vertexEntries.size() + count >= MAX_VERTEX_COUNT)
+            throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
 
         meshVBO.m_vertexOffset = baseOffset;
+
+        {
+            size_t size = m_vertexEntries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
+            size += VERTEX_BLOCK_SIZE - size % VERTEX_BLOCK_SIZE;
+            size = std::min(size, MAX_VERTEX_COUNT);
+            m_vertexEntries.reserve(size);
+        }
 
         m_vertexEntries.insert(
             m_vertexEntries.end(),
             meshVBO.m_vertexEntries.begin(),
             meshVBO.m_vertexEntries.end());
-
-        m_vbo.update(
-            baseOffset,
-            count * sizeof(VertexEntry),
-            &m_vertexEntries[baseIndex]);
     }
 
     {
@@ -118,11 +126,17 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
         const size_t baseIndex = m_indexEntries.size();
         const size_t baseOffset = baseIndex * sizeof(IndexEntry);
 
-        assert(baseIndex + count <= MAX_INDEX_ENTRIES);
-
-        KI_INFO(fmt::format("MESH index index={}, MAX={}", baseIndex, MAX_INDEX_ENTRIES));
+        if (m_indexEntries.size() + count >= MAX_INDEX_COUNT)
+            throw std::runtime_error{ fmt::format("MAX_INDEX_COUNT: {}", MAX_INDEX_COUNT) };
 
         meshVBO.m_indexOffset = baseOffset;
+
+        {
+            size_t size = m_indexEntries.size() + std::max(INDEX_BLOCK_SIZE, count) + INDEX_BLOCK_SIZE;
+            size += INDEX_BLOCK_SIZE - size % INDEX_BLOCK_SIZE;
+            size = std::min(size, MAX_INDEX_COUNT);
+            m_indexEntries.reserve(size);
+        }
 
         m_indexEntries.insert(
             m_indexEntries.end(),
@@ -136,4 +150,70 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
     }
 
     return m_vao.get();
+}
+
+void ModelVAO::update(const UpdateContext& ctx)
+{
+    updateVertexBuffer();
+    updateIndexBuffer();
+}
+
+void ModelVAO::updateVertexBuffer()
+{
+    const size_t index = m_lastVertexSize;
+    const size_t totalCount = m_vertexEntries.size();
+
+    if (index == totalCount) return;
+    if (totalCount == 0) return;
+
+    {
+        constexpr size_t sz = sizeof(VertexEntry);
+        int updateIndex = index;
+
+        // NOTE KI *reallocate* SSBO if needed
+        if (m_vbo.m_size < totalCount * sz) {
+            m_vbo.resizeBuffer(m_vertexEntries.capacity() * sz);
+            glVertexArrayVertexBuffer(*m_vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(VertexEntry));
+            updateIndex = 0;
+        }
+
+        const int updateCount = totalCount - index;
+
+        m_vbo.update(
+            updateIndex * sz,
+            updateCount * sz,
+            &m_vertexEntries[updateIndex]);
+    }
+
+    m_lastVertexSize = totalCount;
+}
+
+void ModelVAO::updateIndexBuffer()
+{
+    const size_t index = m_lastIndexSize;
+    const size_t totalCount = m_indexEntries.size();
+
+    if (index == totalCount) return;
+    if (totalCount == 0) return;
+
+    {
+        constexpr size_t sz = sizeof(IndexEntry);
+        int updateIndex = index;
+
+        // NOTE KI *reallocate* SSBO if needed
+        if (m_ebo.m_size < totalCount * sz) {
+            m_ebo.resizeBuffer(m_indexEntries.capacity() * sz);
+            glVertexArrayElementBuffer(*m_vao, m_ebo);
+            updateIndex = 0;
+        }
+
+        const int updateCount = totalCount - index;
+
+        m_ebo.update(
+            updateIndex * sz,
+            updateCount * sz,
+            &m_indexEntries[updateIndex]);
+    }
+
+    m_lastIndexSize = totalCount;
 }

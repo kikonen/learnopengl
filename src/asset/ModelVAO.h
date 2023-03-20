@@ -9,6 +9,8 @@
 
 class Batch;
 class ModelMeshVBO;
+class UpdateContext;
+
 
 class ModelVAO {
 public:
@@ -19,11 +21,16 @@ public:
     // @return VAO for mesh
     GLVertexArray* registerModel(ModelMeshVBO& meshVBO);
 
+    void update(const UpdateContext& ctx);
+
 private:
     void prepareVAO(
         GLVertexArray& vao,
         GLBuffer& vbo,
         GLBuffer& ebo);
+
+    void updateVertexBuffer();
+    void updateIndexBuffer();
 
 private:
     const bool m_singleMaterial;
@@ -36,4 +43,7 @@ private:
 
     std::vector<VertexEntry> m_vertexEntries;
     std::vector<IndexEntry> m_indexEntries;
+
+    size_t m_lastVertexSize = 0;
+    size_t m_lastIndexSize = 0;
 };

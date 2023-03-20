@@ -26,8 +26,8 @@
 
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/MeshTypeRegistry.h"
-#include "registry/ModelRegistry.h"
+//#include "registry/MeshTypeRegistry.h"
+//#include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 
@@ -232,8 +232,7 @@ void Scene::update(const UpdateContext& ctx)
         m_particleSystem->update(ctx);
     }
 
-    m_registry->m_materialRegistry->update(ctx);
-    m_registry->m_entityRegistry->update(ctx);
+    m_registry->update(ctx);
 
     m_renderData->update();
 }
