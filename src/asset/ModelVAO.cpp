@@ -172,7 +172,7 @@ void ModelVAO::updateVertexBuffer()
             updateIndex = 0;
         }
 
-        const int updateCount = totalCount - index;
+        const int updateCount = totalCount - updateIndex;
 
         m_vbo.update(
             updateIndex * sz,
@@ -202,7 +202,7 @@ void ModelVAO::updateIndexBuffer()
             updateIndex = 0;
         }
 
-        const int updateCount = totalCount - index;
+        const int updateCount = totalCount - updateIndex;
 
         m_ebo.update(
             updateIndex * sz,

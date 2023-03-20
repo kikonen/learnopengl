@@ -171,7 +171,7 @@ void MaterialRegistry::updateMaterialBuffer()
 
 void MaterialRegistry::updateIndexBuffer()
 {
-    const size_t index = m_lastMaterialSize;
+    const size_t index = m_lastIndexSize;
     const size_t totalCount = m_indeces.size();
 
     if (index == totalCount) return;
@@ -187,7 +187,7 @@ void MaterialRegistry::updateIndexBuffer()
             updateIndex = 0;
         }
 
-        const int updateCount = totalCount - index;
+        const int updateCount = totalCount - updateIndex;
 
         m_indexBuffer.update(
             updateIndex * sz,
