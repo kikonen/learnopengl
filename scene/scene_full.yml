@@ -37,7 +37,7 @@ entities:
       allow_normals: false
     camera:
       pos: [0, 0, 0]
-      rotation: [0, 180, 0.0]
+      xxrotation: [0, 180, 0.0]
       default: true
       enabled: true
     particle_generator:
