@@ -184,7 +184,7 @@ void Batch::prepare(
     m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
     m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
 
-    m_entityRegistry = registry->m_entityRegistry.get();
+    m_entityRegistry = registry->m_entityRegistry;
 }
 
 void Batch::addCommand(

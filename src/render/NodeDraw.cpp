@@ -103,7 +103,7 @@ void NodeDraw::drawNodesImpl(
     std::function<bool(const MeshType*)> typeSelector,
     std::function<bool(const Node*)> nodeSelector)
 {
-    auto* nodeRegistry = ctx.m_registry->m_nodeRegistry.get();
+    auto* nodeRegistry = ctx.m_registry->m_nodeRegistry;
 
     auto renderTypes = [this, &ctx, useGBuffer, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
         auto* program = typeMap.begin()->first.type->m_program;

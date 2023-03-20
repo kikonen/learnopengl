@@ -92,7 +92,7 @@ void SceneFile::load(
     std::shared_ptr<Registry> registry)
 {
     m_registry = registry;
-    m_dispatcher = registry->m_dispatcher.get();
+    m_dispatcher = registry->m_dispatcher;
 
     std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);

@@ -122,8 +122,8 @@ void TerrainGenerator::createTiles(
     Registry* registry,
     Node& container)
 {
-    auto* entityRegistry = registry->m_entityRegistry.get();
-    auto* materialRegistry = registry->m_materialRegistry.get();
+    auto* entityRegistry = registry->m_entityRegistry;
+    auto* materialRegistry = registry->m_materialRegistry;
 
     float scale = m_worldTileSize / 2.f;
     float vertMinAABB = 3.f * m_verticalRange[0] / scale;

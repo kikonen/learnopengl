@@ -20,6 +20,10 @@ https://glad.dav1d.de
   + https://gim.studio/an-introduction-to-shell-based-fur-technique/
   + https://xbdev.net/directx3dx/specialX/Fur/index.php
   + https://www.researchgate.net/figure/Close-view-of-grass-rendered-with-16-shells_fig3_244493698
+- ECS
+  + https://skypjack.github.io/entt/md_docs_md_entity.html
+  * https://habr.com/en/post/651921/
+
 
 # Misc techniques
 

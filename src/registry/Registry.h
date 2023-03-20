@@ -33,18 +33,18 @@ public:
     void update(const UpdateContext& ctx);
 
 public:
-    std::unique_ptr<ProgramRegistry> m_programRegistry;
+    ProgramRegistry* const m_programRegistry;
 
-    std::unique_ptr<MaterialRegistry> m_materialRegistry;
-    std::unique_ptr<MeshTypeRegistry> m_typeRegistry;
-    std::unique_ptr<ModelRegistry> m_modelRegistry;
-    std::unique_ptr<NodeRegistry> m_nodeRegistry;
-    std::unique_ptr<EntityRegistry> m_entityRegistry;
-    std::unique_ptr<ViewportRegistry> m_viewportRegistry;
+    MaterialRegistry* const m_materialRegistry;
+    MeshTypeRegistry* const m_typeRegistry;
+    ModelRegistry* const m_modelRegistry;
+    NodeRegistry* const m_nodeRegistry;
+    EntityRegistry* const m_entityRegistry;
+    ViewportRegistry* const m_viewportRegistry;
 
-    std::unique_ptr<physics::PhysicsEngine> m_physicsEngine;
+    physics::PhysicsEngine* const m_physicsEngine;
 
-    std::unique_ptr<event::Dispatcher> m_dispatcher;
+    event::Dispatcher* const m_dispatcher;
 
 private:
     const Assets& m_assets;
@@ -52,4 +52,17 @@ private:
     bool m_prepared = false;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
+
+    ProgramRegistry m_programRegistryImpl;
+
+    MaterialRegistry m_materialRegistryImpl;
+    MeshTypeRegistry m_typeRegistryImpl;
+    ModelRegistry m_modelRegistryImpl;
+    NodeRegistry m_nodeRegistryImpl;
+    EntityRegistry m_entityRegistryImpl;
+    ViewportRegistry m_viewportRegistryImpl;
+
+    physics::PhysicsEngine m_physicsEngineImpl;
+
+    event::Dispatcher m_dispatcherImpl;
 };

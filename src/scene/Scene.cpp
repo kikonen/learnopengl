@@ -96,46 +96,48 @@ void Scene::prepare()
 {
     m_renderData->prepare();
 
-    m_commandEngine->prepare(m_registry.get());
+    auto* registry = m_registry.get();
+
+    m_commandEngine->prepare(registry);
     m_scriptEngine->prepare(m_commandEngine.get());
 
-    m_batch->prepare(m_assets, m_registry.get());
-    m_nodeDraw->prepare(m_assets, m_registry.get());
+    m_batch->prepare(m_assets, registry);
+    m_nodeDraw->prepare(m_assets, registry);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_nodeRenderer) {
-        m_nodeRenderer->prepare(m_assets, m_registry.get());
+        m_nodeRenderer->prepare(m_assets, registry);
     }
 
     if (m_viewportRenderer) {
-        m_viewportRenderer->prepare(m_assets, m_registry.get());
+        m_viewportRenderer->prepare(m_assets, registry);
     }
 
     if (m_waterMapRenderer) {
-        m_waterMapRenderer->prepare(m_assets, m_registry.get());
+        m_waterMapRenderer->prepare(m_assets, registry);
     }
     if (m_mirrorMapRenderer) {
-        m_mirrorMapRenderer->prepare(m_assets, m_registry.get());
+        m_mirrorMapRenderer->prepare(m_assets, registry);
     }
     if (m_cubeMapRenderer) {
-        m_cubeMapRenderer->prepare(m_assets, m_registry.get());
+        m_cubeMapRenderer->prepare(m_assets, registry);
     }
     if (m_shadowMapRenderer) {
-        m_shadowMapRenderer->prepare(m_assets, m_registry.get());
+        m_shadowMapRenderer->prepare(m_assets, registry);
     }
 
     if (m_objectIdRenderer) {
-        m_objectIdRenderer->prepare(m_assets, m_registry.get());
+        m_objectIdRenderer->prepare(m_assets, registry);
     }
 
     if (m_assets.showNormals) {
         if (m_normalRenderer) {
-            m_normalRenderer->prepare(m_assets, m_registry.get());
+            m_normalRenderer->prepare(m_assets, registry);
         }
     }
 
     if (m_particleSystem) {
-        m_particleSystem->prepare(m_assets, m_registry.get());
+        m_particleSystem->prepare(m_assets, registry);
     }
 
     {
