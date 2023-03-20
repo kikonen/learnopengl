@@ -17,6 +17,14 @@
 
 #include "render/CubeMap.h"
 
+#include "renderer/NodeRenderer.h"
+#include "renderer/ViewportRenderer.h"
+
+#include "renderer/WaterMapRenderer.h"
+#include "renderer/MirrorMapRenderer.h"
+#include "renderer/CubeMapRenderer.h"
+#include "renderer/ShadowMapRenderer.h"
+
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
 
@@ -109,21 +117,20 @@ public:
 protected:
 
 private:
-    std::vector<Node*> m_particleGenerators;
+    NodeRenderer m_nodeRenderer;
+    ViewportRenderer m_viewportRenderer;
 
-    std::unique_ptr<NodeRenderer> m_nodeRenderer{ nullptr };
+    WaterMapRenderer m_waterMapRenderer;
+    MirrorMapRenderer m_mirrorMapRenderer;
+    CubeMapRenderer m_cubeMapRenderer;
+    ShadowMapRenderer m_shadowMapRenderer;
 
-    std::unique_ptr<ViewportRenderer> m_viewportRenderer{ nullptr };
-
-    std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
-    std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
-    std::unique_ptr<CubeMapRenderer> m_cubeMapRenderer{ nullptr };
-    std::unique_ptr<ShadowMapRenderer> m_shadowMapRenderer{ nullptr };
-
-    std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };
-    std::unique_ptr<NormalRenderer> m_normalRenderer{ nullptr };
+    ObjectIdRenderer m_objectIdRenderer;
+    NormalRenderer m_normalRenderer;
 
     std::unique_ptr<ParticleSystem> m_particleSystem{ nullptr };
+
+    std::vector<Node*> m_particleGenerators;
 
     std::unique_ptr<FrameBuffer> m_rearBuffer{ nullptr };
     std::shared_ptr<Viewport> m_rearViewport;

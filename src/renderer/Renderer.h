@@ -23,7 +23,17 @@ public:
 
     bool needRender(const RenderContext& ctx);
 
-    bool isRendered() { return m_rendered;  }
+    inline bool isRendered() const noexcept {
+        return m_rendered;
+    }
+
+    void setEnabled(bool enabled) {
+        m_enabled = enabled;
+    }
+
+    inline bool isEnabled() const noexcept {
+        return m_enabled;
+    }
 
 protected:
     // @return true if changed node
@@ -31,6 +41,8 @@ protected:
 
 protected:
     bool m_prepared = false;
+
+    bool m_enabled{ false };
 
     Registry* m_registry{ nullptr };
 
