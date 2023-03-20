@@ -389,7 +389,7 @@ MeshType* SceneFile::attachEntityCloneRepeat(
         entity.isRoot);
 
     if (data.selected) {
-        node->setSelectionMaterialIndex(nodeRegistry.m_selectionMaterial.m_registeredIndex);
+        node->setSelectionMaterialIndex(nodeRegistry.getSelectionMaterial().m_registeredIndex);
     }
 
     {

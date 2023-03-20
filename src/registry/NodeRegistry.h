@@ -10,7 +10,6 @@
 
 #include "backend/DrawOptions.h"
 
-#include "model/Group.h"
 #include "model/Node.h"
 
 #include "registry/MeshType.h"
@@ -64,8 +63,6 @@ struct MeshTypeKey {
     const MeshType* type;
 };
 
-using GroupVector = std::vector<Group*>;
-
 using NodeVector = std::vector<Node*>;
 using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
 using ProgramTypeMap = std::map<ProgramKey, MeshTypeMap>;
@@ -83,19 +80,26 @@ public:
     void prepare(
         Registry* registry);
 
-    void addGroup(Group* group) noexcept;
-
     inline bool containsNode(const int objectID) const noexcept
     {
-        const auto& it = objectIdToNode.find(objectID);
-        return it != objectIdToNode.end();
+        const auto& it = m_objectIdToNode.find(objectID);
+        return it != m_objectIdToNode.end();
     }
 
     // @return node null if not found
-    Node* getNode(const int objectID) const noexcept;
+    inline Node* getNode(const int objectID) const noexcept
+    {
+        const auto& it = m_objectIdToNode.find(objectID);
+        return it != m_objectIdToNode.end() ? it->second : nullptr;
+    }
+
 
     // @return node null if not found
-    Node* getNode(const uuids::uuid& id) const noexcept;
+    inline Node* getNode(const uuids::uuid& id) const noexcept
+    {
+        const auto& it = m_idToNode.find(id);
+        return it != m_idToNode.end() ? it->second : nullptr;
+    }
 
     void selectNodeByObjectId(int objectID, bool append) const noexcept;
 
@@ -111,10 +115,18 @@ public:
         return it != m_parentToChildren.end() ? &it->second : nullptr;
     }
 
-    Node* getActiveCamera() const { return m_activeCamera; }
+    inline Node* getActiveCamera() const noexcept { return m_activeCamera; }
     void setActiveCamera(Node* node);
 
     Node* findDefaultCamera() const;
+
+    inline const Material& getSelectionMaterial() const noexcept {
+        return m_selectionMaterial;
+    }
+
+    void setSelectionMaterial(const Material& material) {
+        m_selectionMaterial = material;
+    }
 
 private:
     void attachNode(
@@ -136,9 +148,6 @@ private:
         Node* parent);
 
 public:
-    std::map<int, Node*> objectIdToNode;
-    std::map<uuids::uuid, Node*> idToNode;
-
     ProgramTypeMap allNodes;
     ProgramTypeMap solidNodes;
     ProgramTypeMap alphaNodes;
@@ -154,10 +163,6 @@ public:
     NodeVector m_pointLights;
     NodeVector m_spotLights;
 
-    GroupVector groups;
-
-    Material m_selectionMaterial;
-
 private:
     const Assets& m_assets;
 
@@ -165,9 +170,14 @@ private:
 
     Registry* m_registry{ nullptr };
 
+    std::map<int, Node*> m_objectIdToNode;
+    std::map<uuids::uuid, Node*> m_idToNode;
+
     std::map<uuids::uuid, NodeVector> m_pendingChildren;
 
     std::map<int, NodeVector> m_parentToChildren;
 
     Node* m_activeCamera{ nullptr };
+
+    Material m_selectionMaterial;
 };

@@ -50,8 +50,8 @@ NodeRegistry::~NodeRegistry()
 {
     // NOTE KI forbid access into deleted nodes
     {
-        objectIdToNode.clear();
-        idToNode.clear();
+        m_objectIdToNode.clear();
+        m_idToNode.clear();
 
         m_parentToChildren.clear();
     }
@@ -88,11 +88,6 @@ NodeRegistry::~NodeRegistry()
         }
     }
     m_pendingChildren.clear();
-
-    for (auto& group : groups) {
-        delete group;
-    }
-    groups.clear();
 }
 
 void NodeRegistry::prepare(
@@ -118,25 +113,10 @@ void NodeRegistry::prepare(
         });
 }
 
-Node* NodeRegistry::getNode(const uuids::uuid& id) const noexcept
-{
-    if (id.is_nil()) return nullptr;
-
-    //std::lock_guard<std::mutex> lock(load_lock);
-    const auto& it = idToNode.find(id);
-    return it != idToNode.end() ? it->second : nullptr;
-}
-
-Node* NodeRegistry::getNode(const int objectID) const noexcept
-{
-    const auto& it = objectIdToNode.find(objectID);
-    return it != objectIdToNode.end() ? it->second : nullptr;
-}
-
 void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcept
 {
     if (!append) {
-        for (auto& x : objectIdToNode) {
+        for (auto& x : m_objectIdToNode) {
             x.second->setSelectionMaterialIndex(-1);
         }
     }
@@ -269,8 +249,9 @@ void NodeRegistry::bindNode(
         auto& vAll = allNodes[programKey][typeKey];
         auto& vTyped = (*map)[programKey][typeKey];
 
-        objectIdToNode[node->m_objectID] = node;
-        if (!node->m_id.is_nil()) idToNode[node->m_id] = node;
+        m_objectIdToNode.insert(std::make_pair(node->m_objectID, node));
+
+        if (!node->m_id.is_nil()) m_idToNode[node->m_id] = node;
 
         insertNode(vAll, node);
         insertNode(vTyped, node);
@@ -326,8 +307,8 @@ void NodeRegistry::bindPendingChildren()
     std::vector<uuids::uuid> boundIds;
 
     for (const auto& [parentId, children] : m_pendingChildren) {
-        const auto& parentIt = idToNode.find(parentId);
-        if (parentIt == idToNode.end()) continue;
+        const auto& parentIt = m_idToNode.find(parentId);
+        if (parentIt == m_idToNode.end()) continue;
 
         boundIds.push_back(parentId);
 
@@ -353,8 +334,8 @@ bool NodeRegistry::bindParent(
 {
     if (parentId.is_nil()) return true;
 
-    const auto& parentIt = idToNode.find(parentId);
-    if (parentIt == idToNode.end()) {
+    const auto& parentIt = m_idToNode.find(parentId);
+    if (parentIt == m_idToNode.end()) {
         KI_INFO(fmt::format("PENDING_CHILD: node={}", child->str()));
 
         m_pendingChildren[parentId].push_back(child);
