@@ -163,6 +163,7 @@ struct GLBuffer {
     }
 
     void unmap() {
+        if (!m_mapped) return;
         glUnmapNamedBuffer(m_id);
         m_data = nullptr;
         m_mapped = false;

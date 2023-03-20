@@ -142,11 +142,6 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
             m_indexEntries.end(),
             meshVBO.m_indexEntries.begin(),
             meshVBO.m_indexEntries.end());
-
-        m_ebo.update(
-            baseOffset,
-            count * sizeof(IndexEntry),
-            &m_indexEntries[baseIndex]);
     }
 
     return m_vao.get();
