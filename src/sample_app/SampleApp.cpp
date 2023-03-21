@@ -13,10 +13,8 @@
 #include "controller/VolumeController.h"
 
 #include "registry/MeshType.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/ModelRegistry.h"
-#include "registry/MaterialRegistry.h"
+#include "registry/ControllerRegistry.h"
 
 #include "engine/AssetsFile.h"
 
@@ -224,7 +222,7 @@ void SampleApp::selectNode(
         node->setSelectionMaterialIndex(-1);
 
         if (volumeNode) {
-            auto controller = dynamic_cast<VolumeController*>(volumeNode->m_controller.get());
+            auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
             if (controller->getTarget() == node->m_objectID) {
                 controller->setTarget(-1);
             }
@@ -237,7 +235,7 @@ void SampleApp::selectNode(
     nodeRegistry.selectNodeByObjectId(objectID, inputState.shift);
 
     if (volumeNode) {
-        auto controller = dynamic_cast<VolumeController*>(volumeNode->m_controller.get());
+        auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
         controller->setTarget(node ? node->m_objectID : -1);
     }
 

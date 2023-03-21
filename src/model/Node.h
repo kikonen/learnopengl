@@ -10,7 +10,6 @@
 #include "registry/MeshType.h"
 
 
-class NodeController;
 class Camera;
 class Light;
 class ParticleGenerator;
@@ -204,8 +203,6 @@ public:
 
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };
-
-    std::unique_ptr <NodeController> m_controller{ nullptr };
 
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };

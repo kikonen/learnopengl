@@ -30,6 +30,7 @@
 //#include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
+#include "registry/ControllerRegistry.h"
 
 #include "engine/UpdateContext.h"
 
@@ -50,12 +51,6 @@ Scene::Scene(
 {
     m_commandEngine = std::make_unique<CommandEngine>(assets);
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
-
-    m_registry->m_dispatcher->addListener(
-        event::Type::node_added,
-        [this](const event::Event& e) {
-            this->bindComponents(e.body.node.target);
-        });
 
     m_nodeRenderer.setEnabled(true);
     m_viewportRenderer.setEnabled(true);
@@ -85,6 +80,12 @@ Scene::~Scene()
 
 void Scene::prepare()
 {
+    m_registry->m_dispatcher->addListener(
+        event::Type::node_added,
+        [this](const event::Event& e) {
+            this->bindComponents(e.body.node.target);
+        });
+
     m_renderData->prepare();
 
     auto* registry = m_registry.get();
@@ -417,7 +418,7 @@ Node* Scene::getActiveCamera() const
 NodeController* Scene::getActiveCameraController() const
 {
     auto* node = getActiveCamera();
-    return node ? node->m_controller.get() : nullptr;
+    return node ? m_registry->m_controllerRegistry->get<NodeController>(node) : nullptr;
 }
 
 void Scene::bindComponents(Node* node)

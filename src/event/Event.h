@@ -2,6 +2,7 @@
 
 #include <array>
 #include <variant>
+#include <memory>
 
 #include <glm/vec3.hpp>
 
@@ -10,6 +11,7 @@
 
 class UpdateContext;
 class Node;
+class NodeController;
 
 namespace event {
     enum class Type {
@@ -17,6 +19,8 @@ namespace event {
         node_add,
         node_added,
         node_change_parent,
+
+        controller_add,
 
         animate_wait,
         animate_move,
@@ -28,8 +32,13 @@ namespace event {
         uuids::uuid parentId;
     };
 
+    struct ControlAction {
+        int target{ 0 };
+        NodeController* controller{ nullptr };
+    };
+
     struct AnimateAction {
-        int target;
+        int target{ 0 };
 
         int after{ 0 };
         float duration{ 0 };
@@ -43,6 +52,7 @@ namespace event {
 
         union {
             NodeAction node;
+            ControlAction control;
             AnimateAction animate;
         } body;
     };

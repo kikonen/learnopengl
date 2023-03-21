@@ -211,6 +211,7 @@
     <ClCompile Include="src\physics\HeightMap.cpp" />
     <ClCompile Include="src\physics\Surface.cpp" />
     <ClCompile Include="src\physics\PhysicsEngine.cpp" />
+    <ClCompile Include="src\registry\ControllerRegistry.cpp" />
     <ClCompile Include="src\registry\ImageRegistry.cpp" />
     <ClCompile Include="src\registry\MaterialRegistry.cpp" />
     <ClCompile Include="src\asset\OBB.cpp" />
@@ -368,6 +369,7 @@
     <ClInclude Include="src\physics\Plane.h" />
     <ClInclude Include="src\physics\Surface.h" />
     <ClInclude Include="src\physics\PhysicsEngine.h" />
+    <ClInclude Include="src\registry\ControllerRegistry.h" />
     <ClInclude Include="src\registry\EntityType.h" />
     <ClInclude Include="src\registry\Registry.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />

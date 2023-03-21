@@ -345,7 +345,7 @@ private:
         const EntityCloneData& entity,
         const LightData& data);
 
-    std::unique_ptr<NodeController> createController(
+    NodeController* createController(
         const EntityCloneData& entity,
         const ControllerData& data,
         Node* node);

@@ -22,16 +22,10 @@ bool VolumeController::update(
         return false;
     }
 
-    const auto& targetPos = targetNode->getWorldPosition();
-
-    //auto radius = volumeNode.getVolume()->getRadius();
-
-    //const auto& volume = targetNode->getVolume();
-
     const auto& modelMatrix = targetNode->getModelMatrix();
     const auto& maxScale = targetNode->getInstance().getWorldMaxScale();
 
-    const auto& rootPos = ctx.m_registry->m_nodeRegistry->m_root->getPosition();
+    const auto& rootPos = ctx.m_registry->m_nodeRegistry->m_root->getWorldPosition();
 
     const auto& volume = targetNode->getVolume();
     const glm::vec3 volumeCenter = glm::vec3(volume);
@@ -39,10 +33,6 @@ bool VolumeController::update(
 
     glm::vec3 pos{ modelMatrix * glm::vec4(volumeCenter, 1.f)};
     pos -= rootPos;
-
-    glm::vec3 radiusPos = modelMatrix *
-        glm::vec4(volumeCenter + glm::vec3(volumeRadius, 0, 0), 1.f);
-    radiusPos -= rootPos;
 
     const auto volumeScale = maxScale * volumeRadius;
 

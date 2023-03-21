@@ -211,12 +211,20 @@ void SceneFile::attachVolume(
 
     node->setVolume(mesh->getAABB().getVolume());
 
-    node->m_controller = std::make_unique<VolumeController>();
-
     {
         event::Event evt { event::Type::node_add };
         evt.body.node.target = node;
         evt.body.node.parentId = root.base.id;
+        m_dispatcher->send(evt);
+    }
+    {
+        auto* controller = new VolumeController();
+
+        event::Event evt { event::Type::controller_add };
+        evt.body.control = {
+            .target = node->m_objectID,
+            .controller = controller
+        };
         m_dispatcher->send(evt);
     }
 }
@@ -398,6 +406,18 @@ MeshType* SceneFile::attachEntityCloneRepeat(
         if (!entity.isRoot) {
             evt.body.node.parentId = data.parentId.is_nil() ? root.base.id : data.parentId;
         }
+        m_dispatcher->send(evt);
+    }
+
+    if (data.controller.enabled)
+    {
+        auto* controller = createController(data, data.controller, node);
+
+        event::Event evt { event::Type::controller_add };
+        evt.body.control = {
+            .target = node->m_objectID,
+            .controller = controller
+        };
         m_dispatcher->send(evt);
     }
 
@@ -621,10 +641,6 @@ Node* SceneFile::createNode(
         node->m_light = createLight(data, data.light);
     }
 
-    if (data.controller.enabled) {
-        node->m_controller = createController(data, data.controller, node);
-    }
-
     if (data.generator.enabled) {
         node->m_generator = createGenerator(data, data.generator, node);
     }
@@ -836,7 +852,7 @@ std::unique_ptr<Light> SceneFile::createLight(
     return light;
 }
 
-std::unique_ptr<NodeController> SceneFile::createController(
+NodeController* SceneFile::createController(
     const EntityCloneData& entity,
     const ControllerData& data,
     Node* node)
@@ -847,7 +863,7 @@ std::unique_ptr<NodeController> SceneFile::createController(
 
     switch (data.type) {
         case ControllerType::camera: {
-            auto controller = std::make_unique<CameraController>();
+            auto* controller = new CameraController();
             return controller;
         }
     }

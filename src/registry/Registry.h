@@ -13,6 +13,7 @@
 #include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
+#include "registry/ControllerRegistry.h"
 
 #include "physics/PhysicsEngine.h"
 
@@ -41,6 +42,7 @@ public:
     NodeRegistry* const m_nodeRegistry;
     EntityRegistry* const m_entityRegistry;
     ViewportRegistry* const m_viewportRegistry;
+    ControllerRegistry* const m_controllerRegistry;
 
     physics::PhysicsEngine* const m_physicsEngine;
 
@@ -61,6 +63,7 @@ private:
     NodeRegistry m_nodeRegistryImpl;
     EntityRegistry m_entityRegistryImpl;
     ViewportRegistry m_viewportRegistryImpl;
+    ControllerRegistry m_controllerRegistryImpl;
 
     physics::PhysicsEngine m_physicsEngineImpl;
 

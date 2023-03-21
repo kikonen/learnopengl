@@ -14,8 +14,6 @@
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
-#include "controller/NodeController.h"
-
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
@@ -84,10 +82,6 @@ void Node::prepare(
         m_instance.setObjectID(m_objectID);
     }
 
-    if (m_controller) {
-        m_controller->prepare(assets, registry, *this);
-    }
-
     if (m_generator) {
         m_generator->prepare(assets, registry, *this);
     }
@@ -97,13 +91,6 @@ void Node::update(
     const UpdateContext& ctx) noexcept
 {
     updateModelMatrix();
-
-    if (m_controller) {
-        bool changed = false;
-        changed = m_controller->update(ctx, *this);
-        if (changed)
-            updateModelMatrix();
-    }
 
     if (m_camera) m_camera->update(ctx, *this);
     if (m_light) m_light->update(ctx, *this);

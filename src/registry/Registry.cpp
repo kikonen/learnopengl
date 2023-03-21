@@ -14,6 +14,7 @@ Registry::Registry(
     m_nodeRegistryImpl(assets, m_alive),
     m_entityRegistryImpl(assets),
     m_viewportRegistryImpl(assets),
+    m_controllerRegistryImpl(assets),
     m_physicsEngineImpl(assets),
     m_dispatcherImpl(assets),
     // pointers
@@ -24,6 +25,7 @@ Registry::Registry(
     m_nodeRegistry(&m_nodeRegistryImpl),
     m_entityRegistry(&m_entityRegistryImpl),
     m_viewportRegistry(&m_viewportRegistryImpl),
+    m_controllerRegistry(&m_controllerRegistryImpl),
     m_physicsEngine(&m_physicsEngineImpl),
     m_dispatcher(&m_dispatcherImpl)
 {
@@ -41,6 +43,7 @@ void Registry::prepare()
     m_modelRegistryImpl.prepare();
 
     m_viewportRegistryImpl.prepare();
+    m_controllerRegistryImpl.prepare(this);
 
     m_nodeRegistryImpl.prepare(this);
 
@@ -49,6 +52,7 @@ void Registry::prepare()
 
 void Registry::update(const UpdateContext& ctx)
 {
+    m_controllerRegistryImpl.update(ctx);
     m_materialRegistryImpl.update(ctx);
     m_modelRegistryImpl.update(ctx);
     m_entityRegistryImpl.update(ctx);
