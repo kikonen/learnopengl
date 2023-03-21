@@ -98,13 +98,12 @@ void Node::update(
 {
     updateModelMatrix();
 
-    bool changed = false;
     if (m_controller) {
+        bool changed = false;
         changed = m_controller->update(ctx, *this);
+        if (changed)
+            updateModelMatrix();
     }
-
-    if (changed)
-        updateModelMatrix();
 
     if (m_camera) m_camera->update(ctx, *this);
     if (m_light) m_light->update(ctx, *this);

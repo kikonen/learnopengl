@@ -54,15 +54,14 @@ struct EntitySSBO {
     float u_rangeYmin{ 0.f };
     float u_rangeYmax{ 0.f };
 
-    // TOTAL: 136
+    glm::vec3 u_worldScale;
 
-    //glm::vec4 pad1;
-    //glm::vec4 pad2;
+    int pad4_1;
 
+    // NOTE KI maxScale *CANNOT* be get from modelmatrix if both
+    // Scale AND Rotation is applied!
     inline float getMaxScale() const {
-        return std::max(
-            u_modelMatrix[0][0],
-            std::max(u_modelMatrix[1][1], u_modelMatrix[2][2]));
+        return std::max(std::max(u_worldScale[0], u_worldScale[1]), u_worldScale[2]);
     }
 
     inline const glm::vec4& getWorldPosition() const {

@@ -31,7 +31,5 @@ void main() {
   vs_out.materialIndex = materialIndex;
   vs_out.highlightIndex = entity.highlightIndex;
 
-  vs_out.scale = vec3(modelMatrix[0][0],
-                      modelMatrix[1][1],
-                      modelMatrix[2][2]);
+  vs_out.scale = entity.worldScale;
 }

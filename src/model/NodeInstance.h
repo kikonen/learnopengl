@@ -40,6 +40,7 @@ struct NodeInstance {
     glm::mat4 m_rotationMatrix{ 1.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
+    glm::mat4 m_modelScale{ 1.f };
 
     inline int getObjectID() const noexcept
     {
@@ -195,12 +196,23 @@ struct NodeInstance {
         return m_modelMatrix[3];
     }
 
+    inline const glm::vec3 getWorldScale() const noexcept
+    {
+        return { m_modelScale[0][0], m_modelScale[1][1], m_modelScale[2][2] };
+    }
+
+    inline float getWorldMaxScale() const noexcept
+    {
+        return std::max(std::max(m_modelScale[0][0], m_modelScale[1][1]), m_modelScale[2][2]);
+    }
+
     inline void updateRootMatrix() noexcept
     {
         if (!m_dirty) return;
 
         updateRotationMatrix();
         m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
+        m_modelScale = m_scaleMatrix;
         m_dirty = false;
         m_matrixLevel++;
         m_entityDirty = true;
@@ -212,6 +224,7 @@ struct NodeInstance {
 
         updateRotationMatrix();
         m_modelMatrix = parent.m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
+        m_modelScale = parent.m_modelScale * m_scaleMatrix;
         m_dirty = false;
         m_parentMatrixLevel = parent.m_matrixLevel;
         m_matrixLevel++;

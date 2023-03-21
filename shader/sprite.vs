@@ -52,9 +52,7 @@ void main() {
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normalMatrix * normal;
 
-  vs_out.scale = vec3(modelMatrix[0][0],
-                      modelMatrix[1][1],
-                      modelMatrix[2][2]);
+  vs_out.scale = entity.worldScale;
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0)

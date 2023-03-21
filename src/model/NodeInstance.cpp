@@ -35,6 +35,8 @@ void NodeInstance::updateEntity(
     // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
     entity->setNormalMatrix(glm::mat3(glm::inverseTranspose(m_modelMatrix)));
 
+    entity->u_worldScale = getWorldScale();
+
     m_entityDirty = false;
 }
 
