@@ -307,7 +307,7 @@ void AssetsFile::loadAssets(
             }
         }
         else if (k == "compute_groups") {
-            data.computeGroups = readUVec3(node);
+            data.computeGroups = readUVec3(v);
         }
         else {
             reportUnknown("asset", k, v);
@@ -317,10 +317,13 @@ void AssetsFile::loadAssets(
 
 glm::uvec3 AssetsFile::readUVec3(const YAML::Node& node) const
 {
-    std::vector<unsigned int> a;
-    for (auto& e : node) {
-        a.push_back(e.as<unsigned int>());
+    std::vector<int> a;
+    a.reserve(3);
+
+    for (const auto& e : node) {
+        a.push_back(e.as<int>());
     }
+
     return glm::uvec3{ a[0], a[1], a[2] };
 }
 

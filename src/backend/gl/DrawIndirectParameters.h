@@ -7,5 +7,6 @@ namespace backend::gl {
     {
         GLuint u_baseIndex;
         GLuint u_drawType;
+        GLuint u_drawCount;
     };
 }

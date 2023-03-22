@@ -37,6 +37,7 @@ struct DrawIndirectCommand
 struct DrawParameters {
   uint baseIndex;
   uint drawType;
+  uint drawCount;
 };
 
 #ifdef FRUSTUM_DEBUG
@@ -64,9 +65,14 @@ layout (binding = SSBO_DRAW_PARAMETERS, std430) readonly buffer DrawParametersSS
 };
 
 void main(void) {
+  // NOTE KI this is valid *ONLY* if local_y == local_z == 1
+  const uint drawIndex = gl_GlobalInvocationID.x + CS_GROUP_X * (gl_GlobalInvocationID.y - 1);
+
   const DrawParameters param = u_params[u_drawParametersIndex];
+  //if (drawIndex > param.drawCount) return;
+
   const uint baseIndex = param.baseIndex;
-  const DrawIndirectCommand cmd = u_commands[baseIndex + gl_GlobalInvocationID.x];
+  const DrawIndirectCommand cmd = u_commands[baseIndex + drawIndex];
   const uint baseInstance = param.drawType == DRAW_TYPE_ELEMENTS ? cmd.baseInstance_or_pad : cmd.baseVertex_or_baseInstance;
 
   const Entity entity = u_entities[baseInstance];
@@ -102,13 +108,13 @@ void main(void) {
     atomicAdd(u_counters.drawCount, 1);
   } else if (visible) {
     atomicAdd(u_counters.drawCount, 1);
-    u_commands[baseIndex + gl_GlobalInvocationID.x].instanceCount = 1;
+    u_commands[baseIndex + drawIndex].instanceCount = 1;
   } else {
     atomicAdd(u_counters.skipCount, 1);
   }
 #else
   if (!skip && visible) {
-    u_commands[baseIndex + gl_GlobalInvocationID.x].instanceCount = 1;
+    u_commands[baseIndex + drawIndex].instanceCount = 1;
   }
 #endif
 }

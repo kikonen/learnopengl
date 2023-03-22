@@ -138,11 +138,13 @@ namespace backend {
         if (m_frustumGPU) {
             gl::DrawIndirectParameters params{
                 cmdRange.m_baseIndex,
-                util::as_integer(drawRange.m_drawOptions->type)
+                util::as_integer(drawRange.m_drawOptions->type),
+                drawCount
             };
 
             auto* data = (gl::DrawIndirectParameters*)m_drawParameters.m_data;
             data += cmdRange.m_index;
+
             // NOTE KI memcpy is *likely* faster than assignment operator
             memcpy(data, &params, PARAMS_SZ);
 
@@ -154,10 +156,16 @@ namespace backend {
 
             u_drawParametersIndex.set(cmdRange.m_index);
 
-            int groupY = drawCount / m_computeGroups[0];
-            int remainderY = drawCount % m_computeGroups[0] == 0 ? 0 : 1;
+            const int maxX = m_computeGroups[0];
+            int groupX = drawCount;
+            int groupY = 1;
+            if (drawCount > maxX) {
+                groupX = maxX;
+                groupY = drawCount / maxX;
+                if (drawCount % maxX != 0) groupY++;
+            }
 
-            glDispatchCompute(m_computeGroups[0], groupY + remainderY, 1);
+            glDispatchCompute(m_computeGroups[0], groupY, 1);
         }
 
         m_drawCounter += drawCount;
