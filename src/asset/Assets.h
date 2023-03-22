@@ -148,6 +148,8 @@ public:
     bool viewportEffectEnabled;
     ViewportEffect viewportEffect;
 
+    glm::uvec3 computeGroups;
+
     uuids::uuid rootUUID;
     uuids::uuid volumeUUID;
     uuids::uuid cubeMapUUID;

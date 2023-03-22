@@ -78,10 +78,10 @@
   #define LIGHT_COUNT 128
 #endif
 
-#ifndef CS_COUNT_X
-  #define CS_COUNT_X 1
+#ifndef CS_GROUP_X
+  #define CS_GROUP_X 1
 #endif
 
-#ifndef CS_COUNT_Y
-  #define CS_COUNT_Y 1
+#ifndef CS_GROUP_Y
+  #define CS_GROUP_Y 1
 #endif

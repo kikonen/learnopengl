@@ -30,6 +30,8 @@ private:
         const YAML::Node& node,
         Assets& data);
 
+    glm::uvec3 readUVec3(const YAML::Node& node) const;
+
     glm::vec2 readVec2(const YAML::Node& node) const;
     glm::vec3 readVec3(const YAML::Node& node) const;
     glm::vec4 readVec4(const YAML::Node& node) const;

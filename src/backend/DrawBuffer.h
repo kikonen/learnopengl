@@ -61,6 +61,8 @@ namespace backend {
 
         bool m_bound = false;
 
+        glm::uvec3 m_computeGroups;
+
         Program* m_cullingCompute{ nullptr };
 
         uniform::UInt u_drawParametersIndex{ "u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX };

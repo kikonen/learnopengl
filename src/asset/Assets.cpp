@@ -132,6 +132,8 @@ Assets::Assets()
     viewportEffectEnabled = false;
     viewportEffect = ViewportEffect::none;
 
+    computeGroups = { 1, 1, 1 };
+
     rootUUID =    KI_UUID("11111111-1111-1111-1111-111111111111");
     volumeUUID =  KI_UUID("11111111-1111-1111-1111-222222222222");
     cubeMapUUID = KI_UUID("11111111-1111-1111-1111-333333333333");

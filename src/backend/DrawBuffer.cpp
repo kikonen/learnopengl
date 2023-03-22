@@ -48,7 +48,15 @@ namespace backend {
         int candidateRangeCount = rangeCount;
         int commandRangeCount = rangeCount;
 
-        m_cullingCompute = registry->m_programRegistry->getComputeProgram(CS_FRUSTUM_CULLING);
+        m_computeGroups = assets.computeGroups;
+        m_cullingCompute = registry->m_programRegistry->getComputeProgram(
+            CS_FRUSTUM_CULLING,
+            {
+                { DEF_CS_GROUP_X, std::to_string(m_computeGroups[0])},
+                { DEF_CS_GROUP_Y, std::to_string(m_computeGroups[1]) },
+                { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
+            });
+
         m_cullingCompute->prepare(assets);
 
         m_commands = std::make_unique<GLCommandQueue>(
@@ -146,7 +154,10 @@ namespace backend {
 
             u_drawParametersIndex.set(cmdRange.m_index);
 
-            glDispatchCompute(drawCount, 1, 1);
+            int groupY = drawCount / m_computeGroups[0];
+            int remainderY = drawCount % m_computeGroups[0] == 0 ? 0 : 1;
+
+            glDispatchCompute(m_computeGroups[0], groupY + remainderY, 1);
         }
 
         m_drawCounter += drawCount;

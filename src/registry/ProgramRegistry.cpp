@@ -37,9 +37,10 @@ Program* ProgramRegistry::getProgram(
 }
 
 Program* ProgramRegistry::getComputeProgram(
-    const std::string& name)
+    const std::string& name,
+    const std::map<std::string, std::string>& defines)
 {
-    return getProgram(name, true, "", {});
+    return getProgram(name, true, "", defines);
 }
 
 Program* ProgramRegistry::getProgram(

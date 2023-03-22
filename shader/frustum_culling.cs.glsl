@@ -1,6 +1,6 @@
 #version 460 core
 
-layout (local_size_x = CS_COUNT_X, local_size_y = CS_COUNT_Y) in;
+layout (local_size_x = CS_GROUP_X, local_size_y = CS_GROUP_Y) in;
 
 #include struct_entity.glsl
 

@@ -306,10 +306,22 @@ void AssetsFile::loadAssets(
                 reportUnknown("viewport_effect", k, v);
             }
         }
+        else if (k == "compute_groups") {
+            data.computeGroups = readUVec3(node);
+        }
         else {
             reportUnknown("asset", k, v);
         }
     }
+}
+
+glm::uvec3 AssetsFile::readUVec3(const YAML::Node& node) const
+{
+    std::vector<unsigned int> a;
+    for (auto& e : node) {
+        a.push_back(e.as<unsigned int>());
+    }
+    return glm::uvec3{ a[0], a[1], a[2] };
 }
 
 glm::vec2 AssetsFile::readVec2(const YAML::Node& node) const

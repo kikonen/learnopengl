@@ -54,7 +54,7 @@ assets:
 
   frustum_enabled: true
   frustum_cpu: true
-  frustum_gpu: false
+  frustum_gpu: true
   frustum_debug: true
 
   camera_fov: 45
@@ -105,3 +105,5 @@ assets:
 
   viewport_effect_enabled: true
   viewport_effect: none
+
+  compute_groups: [32, 1, 1]

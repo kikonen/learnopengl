@@ -23,7 +23,8 @@ public:
         const std::map<std::string, std::string>& defines);
 
     Program* getComputeProgram(
-        const std::string& name);
+        const std::string& name,
+        const std::map<std::string, std::string>& defines);
 
     Program* getProgram(
         const std::string& name,
