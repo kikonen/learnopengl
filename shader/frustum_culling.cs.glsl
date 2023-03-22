@@ -39,10 +39,17 @@ struct DrawParameters {
   uint drawType;
 };
 
+#ifdef FRUSTUM_DEBUG
 struct PerformanceCounters {
   uint drawCount;
   uint skipCount;
 };
+
+layout (binding = SSBO_PERFORMANCE_COUNTERS, std430) writeonly buffer PerformanceCountersSSBO
+{
+  PerformanceCounters u_counters;
+};
+#endif
 
 layout(location = UNIFORM_DRAW_PARAMETERS_INDEX) uniform uint u_drawParametersIndex;
 
@@ -54,11 +61,6 @@ layout (binding = SSBO_DRAW_COMMANDS, std430) restrict buffer DrawCommandSSBO
 layout (binding = SSBO_DRAW_PARAMETERS, std430) readonly buffer DrawParametersSSBO
 {
   DrawParameters u_params[];
-};
-
-layout (binding = SSBO_PERFORMANCE_COUNTERS, std430) writeonly buffer PerformanceCountersSSBO
-{
-  PerformanceCounters u_counters;
 };
 
 void main(void) {
@@ -95,6 +97,7 @@ void main(void) {
       -w <= pos.z + radius && pos.z - radius <= w;
   }
 
+#ifdef FRUSTUM_DEBUG
   if (skip) {
     atomicAdd(u_counters.drawCount, 1);
   } else if (visible) {
@@ -103,4 +106,9 @@ void main(void) {
   } else {
     atomicAdd(u_counters.skipCount, 1);
   }
+#else
+  if (!skip && visible) {
+    u_commands[baseIndex + gl_GlobalInvocationID.x].instanceCount = 1;
+  }
+#endif
 }

@@ -9,41 +9,25 @@ GLState::GLState()
 
 void GLState::track(GLenum key, bool initial) noexcept
 {
-    m_tracked.insert(key);
-    if (initial) {
-        enable(key);
+    setEnabled(key, initial);
+}
+
+void GLState::setEnabled(GLenum key, bool enabled) noexcept
+{
+    const auto& it = m_enabled.find(key);
+    const bool changed = it == m_enabled.end() || it->second != enabled;
+    if (!changed) return;
+
+    if (enabled) {
+        glEnable(key);
     }
     else {
-        disable(key);
-    }
-}
-
-void GLState::enable(GLenum key) noexcept
-{
-    if (m_tracked.find(key) == m_tracked.end()) {
-        glEnable(key);
-        return;
-    }
-
-    if (m_enabled.find(key) != m_enabled.end()) {
-        return;
-    }
-    glEnable(key);
-    m_enabled.insert(key);
-}
-
-void GLState::disable(GLenum key) noexcept
-{
-    if (m_tracked.find(key) == m_tracked.end()) {
         glDisable(key);
-        return;
     }
 
-    if (m_enabled.find(key) == m_enabled.end()) {
-        return;
+    if (it != m_enabled.end()) {
+        it->second = enabled;
     }
-    glDisable(key);
-    m_enabled.erase(key);
 }
 
 void GLState::cullFace(GLenum mode) noexcept

@@ -65,7 +65,7 @@ public:
     }
 
     inline const glm::vec3& getViewFront() const noexcept {
-        return m_viewFront;
+        return m_instance.getViewFront();
     }
 
     inline const glm::vec4& getVolume() const noexcept {
@@ -77,12 +77,12 @@ public:
     }
 
     inline const glm::vec3& getFront() const noexcept {
-        return m_front;
+        return m_instance.getFront();
     }
 
     void setFront(const glm::vec3& front) noexcept
     {
-        m_front = glm::normalize(front);
+        m_instance.setFront(front);
     }
 
     inline void setPosition(const glm::vec3& pos) noexcept {
@@ -180,8 +180,6 @@ public:
     inline bool isSelected() { return m_selectionMaterialIndex > -1; }
     inline bool isTagged() { return m_tagMaterialIndex > -1; }
 
-    static int nextID() noexcept;
-
 public:
     int lua_getId() const noexcept;
     const std::string& lua_getName() const noexcept;
@@ -216,10 +214,6 @@ protected:
     bool m_prepared = false;
 
 private:
-    glm::vec3 m_viewFront{ 0.f, 0.f, 1.f };
-
-    glm::vec3 m_front{ 0.f, 0.f, 1.f };
-
     Node* m_parent{ nullptr };
 
     NodeInstance m_instance;

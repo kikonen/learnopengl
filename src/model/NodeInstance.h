@@ -39,6 +39,10 @@ struct NodeInstance {
     // quaternion rotation matrix
     glm::mat4 m_rotationMatrix{ 1.f };
 
+    glm::vec3 m_front{ 0.f, 0.f, 1.f };
+
+    glm::vec3 m_viewFront{ 0.f, 0.f, 1.f };
+
     glm::mat4 m_modelMatrix{ 1.f };
     glm::mat4 m_modelScale{ 1.f };
 
@@ -191,6 +195,22 @@ struct NodeInstance {
         setRotation(rotation);
     }
 
+    inline const glm::vec3& getFront() const noexcept {
+        return m_front;
+    }
+
+    void setFront(const glm::vec3& front) noexcept
+    {
+        if (m_front != front) {
+            m_front = front;
+            m_dirty = true;
+        }
+    }
+
+    inline const glm::vec3& getViewFront() const noexcept {
+        return m_viewFront;
+    }
+
     inline const glm::vec3 getWorldPosition() const noexcept
     {
         return m_modelMatrix[3];
@@ -213,6 +233,10 @@ struct NodeInstance {
         updateRotationMatrix();
         m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
         m_modelScale = m_scaleMatrix;
+
+        // NOTE KI w == 0; only rotation
+        m_viewFront = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_front, 0.f)));
+
         m_dirty = false;
         m_matrixLevel++;
         m_entityDirty = true;
@@ -225,6 +249,10 @@ struct NodeInstance {
         updateRotationMatrix();
         m_modelMatrix = parent.m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
         m_modelScale = parent.m_modelScale * m_scaleMatrix;
+
+        // NOTE KI w == 0; only rotation
+        m_viewFront = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_front, 0.f)));
+
         m_dirty = false;
         m_parentMatrixLevel = parent.m_matrixLevel;
         m_matrixLevel++;

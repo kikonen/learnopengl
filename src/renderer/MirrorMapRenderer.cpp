@@ -195,7 +195,7 @@ void MirrorMapRenderer::drawNodes(
     const glm::vec4 clearColor{ 0.9f, 0.0f, 0.9f, 0.0f };
 
     //ctx.updateClipPlanesUBO();
-    //ctx.m_state.enable(GL_CLIP_DISTANCE0);
+    //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
     {
         ctx.m_nodeDraw->drawNodes(
             ctx,
@@ -207,7 +207,7 @@ void MirrorMapRenderer::drawNodes(
             GL_DEPTH_BUFFER_BIT,
             clearColor);
     }
-    //ctx.m_state.disable(GL_CLIP_DISTANCE0);
+    //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
 }
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)

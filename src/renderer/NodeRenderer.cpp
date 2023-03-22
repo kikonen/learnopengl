@@ -73,7 +73,7 @@ void NodeRenderer::renderStencil(
 
     targetBuffer->bind(ctx);
 
-    ctx.m_state.enable(GL_STENCIL_TEST);
+    ctx.m_state.setEnabled(GL_STENCIL_TEST, true);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
@@ -99,7 +99,7 @@ void NodeRenderer::renderStencil(
     }
     ctx.m_batch->flush(ctx);
 
-    ctx.m_state.disable(GL_STENCIL_TEST);
+    ctx.m_state.setEnabled(GL_STENCIL_TEST, false);
 
     glStencilMask(0x00);
 }
@@ -114,8 +114,8 @@ void NodeRenderer::renderHighlight(
 
     targetBuffer->bind(ctx);
 
-    ctx.m_state.enable(GL_STENCIL_TEST);
-    ctx.m_state.disable(GL_DEPTH_TEST);
+    ctx.m_state.setEnabled(GL_STENCIL_TEST, true);
+    ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -142,6 +142,6 @@ void NodeRenderer::renderHighlight(
     glStencilMask(0xFF);
     glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
-    ctx.m_state.enable(GL_DEPTH_TEST);
-    ctx.m_state.disable(GL_STENCIL_TEST);
+    ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+    ctx.m_state.setEnabled(GL_STENCIL_TEST, false);
 }

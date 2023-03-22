@@ -264,12 +264,7 @@ namespace backend {
 
         state.setDepthFunc(drawOptions.depthFunc);
 
-        if (drawOptions.renderBack) {
-            state.disable(GL_CULL_FACE);
-        }
-        else {
-            state.enable(GL_CULL_FACE);
-        }
+        state.setEnabled(GL_CULL_FACE, !drawOptions.renderBack);
 
         const bool wireframe = drawOptions.wireframe || drawRange.m_forceWireframe;
 
@@ -284,12 +279,10 @@ namespace backend {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.patchVertices);
         }
 
-        if (!wireframe && drawOptions.blend && drawRange.m_allowBlend) {
+        const bool blend = !wireframe && drawOptions.blend && drawRange.m_allowBlend;
+        state.setEnabled(GL_BLEND, blend);
+        if (blend) {
             state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
-            state.enable(GL_BLEND);
-        }
-        else {
-            state.disable(GL_BLEND);
         }
     }
 }

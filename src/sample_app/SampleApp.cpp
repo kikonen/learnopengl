@@ -48,7 +48,7 @@ int SampleApp::onSetup() {
         glfwSwapInterval(m_assets.glfwSwapInterval);
     }
 
-    //state.disable(GL_MULTISAMPLE);
+    //state.setEnabled(GL_MULTISAMPLE, false);
 
     if (m_assets.useIMGUI) {
         m_frameInit = std::make_unique<FrameInit>(*m_window);
@@ -115,13 +115,13 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         // https://paroj.github.io/gltut/apas04.html
         if (m_assets.rasterizerDiscard) {
             //glEnable(GL_RASTERIZER_DISCARD);
-            ctx.m_state.enable(GL_RASTERIZER_DISCARD);
+            ctx.m_state.setEnabled(GL_RASTERIZER_DISCARD, true);
         }
 
         ctx.m_state.useProgram(0);
         ctx.m_state.bindVAO(0);
 
-        ctx.m_state.enable(GL_PROGRAM_POINT_SIZE);
+        ctx.m_state.setEnabled(GL_PROGRAM_POINT_SIZE, true);
         glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
 
         // make clear color by default black

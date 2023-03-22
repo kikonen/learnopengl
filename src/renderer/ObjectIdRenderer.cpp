@@ -140,7 +140,7 @@ void ObjectIdRenderer::render(
 
 void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
 {
-    ctx.m_state.enable(GL_DEPTH_TEST);
+    ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
 
     ctx.bindDefaults();
 

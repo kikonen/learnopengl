@@ -71,6 +71,7 @@ https://glad.dav1d.de
 
 ## Compute shader
 - https://computergraphics.stackexchange.com/questions/400/synchronizing-successive-opengl-compute-shader-invocations
+- https://www.reddit.com/r/vulkan/comments/lh9cu1/do_compute_shaders_only_parallelize_up_to_local/
 
 ## Scripting
 - http://lua-users.org/wiki/ScopeTutorial

@@ -7,52 +7,64 @@
 
 
 namespace ki {
+    const std::string STR_GL_DEBUG_SOURCE_API{ "API" };
+    const std::string STR_GL_DEBUG_SOURCE_WINDOW_SYSTEM{ "WINDOW" };
+    const std::string STR_GL_DEBUG_SOURCE_SHADER_COMPILER{ "COMPILER" };
+    const std::string STR_GL_DEBUG_SOURCE_THIRD_PARTY{ "3RD_PARTY" };
+    const std::string STR_GL_DEBUG_SOURCE_APPLICATION{ "APP" };
+    const std::string STR_GL_DEBUG_SOURCE_OTHER{ "OTHER" };
+
+    const std::string STR_GL_DEBUG_TYPE_ERROR{ "ERROR" };
+    const std::string STR_GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR{ "DEPRECATED" };
+    const std::string STR_GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR{ "UNDEFINED" };
+    const std::string STR_GL_DEBUG_TYPE_PORTABILITY{ "PORTABILITY" };
+    const std::string STR_GL_DEBUG_TYPE_PERFORMANCE{ "PERFORMANCE" };
+    const std::string STR_GL_DEBUG_TYPE_OTHER{ "OTHER" };
+
+    const std::string STR_GL_DEBUG_SEVERITY_HIGH{ "HIGH" };
+    const std::string STR_GL_DEBUG_SEVERITY_MEDIUM{ "MEDIUM" };
+    const std::string STR_GL_DEBUG_SEVERITY_LOW{ "LOW" };
+
     // https://gist.github.com/liam-middlebrook/c52b069e4be2d87a6d2f
 
     std::string formatSource(GLenum source) noexcept
     {
         switch (source) {
-        case GL_DEBUG_SOURCE_API: "API";
-        case GL_DEBUG_SOURCE_WINDOW_SYSTEM: "WINDOW";
-        case GL_DEBUG_SOURCE_SHADER_COMPILER: "COMPILER";
-        case GL_DEBUG_SOURCE_THIRD_PARTY: "3RD_PARTY";
-        case GL_DEBUG_SOURCE_APPLICATION: "APP";
-        case GL_DEBUG_SOURCE_OTHER: return "OTHER";
+        case GL_DEBUG_SOURCE_API: return STR_GL_DEBUG_SOURCE_API;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM: return STR_GL_DEBUG_SOURCE_WINDOW_SYSTEM;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER: return STR_GL_DEBUG_SOURCE_SHADER_COMPILER;
+        case GL_DEBUG_SOURCE_THIRD_PARTY: return STR_GL_DEBUG_SOURCE_THIRD_PARTY;
+        case GL_DEBUG_SOURCE_APPLICATION: return STR_GL_DEBUG_SOURCE_APPLICATION;
+        case GL_DEBUG_SOURCE_OTHER: return STR_GL_DEBUG_SOURCE_OTHER;
         };
 
-        std::stringstream ss;
-        ss << "0x" << std::hex << source;
-        return ss.str();
+        return fmt::format("0x{:x}", source);
     }
 
 
     std::string formatType(GLenum type) noexcept
     {
         switch (type) {
-        case GL_DEBUG_TYPE_ERROR: "ERROR";
-        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: "DEPRECATED";
-        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: "UNDEFINED";
-        case GL_DEBUG_TYPE_PORTABILITY: "PORTABILITY";
-        case GL_DEBUG_TYPE_PERFORMANCE: "PERFORMANCE";
-        case GL_DEBUG_TYPE_OTHER: return "OTHER";
+        case GL_DEBUG_TYPE_ERROR: return STR_GL_DEBUG_TYPE_ERROR;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return STR_GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: return STR_GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR;
+        case GL_DEBUG_TYPE_PORTABILITY: return STR_GL_DEBUG_TYPE_PORTABILITY;
+        case GL_DEBUG_TYPE_PERFORMANCE: return STR_GL_DEBUG_TYPE_PERFORMANCE;
+        case GL_DEBUG_TYPE_OTHER: return STR_GL_DEBUG_TYPE_OTHER;
         };
 
-        std::stringstream ss;
-        ss << "0x" << std::hex << type;
-        return ss.str();
+        return fmt::format("0x{:x}", type);
     }
 
     std::string formatSeverity(GLenum severity) noexcept
     {
         switch (severity) {
-        case GL_DEBUG_SEVERITY_HIGH: "HIGH";
-        case GL_DEBUG_SEVERITY_MEDIUM: return "MEDIUM";
-        case GL_DEBUG_SEVERITY_LOW: return "LOW";
+        case GL_DEBUG_SEVERITY_HIGH: return STR_GL_DEBUG_SEVERITY_HIGH;
+        case GL_DEBUG_SEVERITY_MEDIUM: return STR_GL_DEBUG_SEVERITY_MEDIUM;
+        case GL_DEBUG_SEVERITY_LOW: return STR_GL_DEBUG_SEVERITY_LOW;
         };
 
-        std::stringstream ss;
-        ss << "0x" << std::hex << severity;
-        return ss.str();
+        return fmt::format("0x{:x}", severity);
     }
 
     void glfwErrorCallback(int, const char* message) noexcept

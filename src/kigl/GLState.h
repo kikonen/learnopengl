@@ -17,8 +17,7 @@ public:
 
     void track(GLenum key, bool initial) noexcept;
 
-    inline void enable(GLenum key) noexcept;
-    inline void disable(GLenum key) noexcept;
+    void setEnabled(GLenum key, bool enabled) noexcept;
 
     void cullFace(GLenum mode) noexcept;
     void frontFace(GLenum mode) noexcept;
@@ -37,8 +36,7 @@ public:
     void setDepthFunc(const GLenum mode);
 
 private:
-    std::set<GLenum> m_enabled;
-    std::set<GLenum> m_tracked;
+    std::map<GLenum, bool> m_enabled;
 
     std::map<GLuint, GLuint> m_textureUnits;
 

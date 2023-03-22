@@ -40,8 +40,8 @@ void ParticleSystem::bind(const RenderContext& ctx)
 
 void ParticleSystem::render(const RenderContext& ctx)
 {
-    ctx.m_state.enable(GL_BLEND);
-    ctx.m_state.disable(GL_CULL_FACE);
+    ctx.m_state.setEnabled(GL_BLEND, true);
+    ctx.m_state.setEnabled(GL_CULL_FACE, false);
 
     for (auto& w : particles) {
         //Program* program;// = t->bind(ctx, nullptr);

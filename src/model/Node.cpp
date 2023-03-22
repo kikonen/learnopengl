@@ -30,12 +30,12 @@ namespace {
     std::mutex object_id_lock;
 
     const static glm::mat4 IDENTITY_MATRIX{ 1.f };
-}
 
-int Node::nextID() noexcept
-{
-    std::lock_guard<std::mutex> lock(object_id_lock);
-    return ++objectIDbase;
+    int nextID() noexcept
+    {
+        std::lock_guard<std::mutex> lock(object_id_lock);
+        return ++objectIDbase;
+    }
 }
 
 Node::Node(MeshType* type)
@@ -146,9 +146,6 @@ void Node::updateModelMatrix() noexcept
     }
 
     if (oldLevel == m_instance.m_matrixLevel) return;
-
-    // NOTE KI w == 0; only rotation
-    m_viewFront = glm::normalize(glm::vec3(m_instance.m_rotationMatrix * glm::vec4(m_front, 0.f)));
 }
 
 void Node::setTagMaterialIndex(int index)

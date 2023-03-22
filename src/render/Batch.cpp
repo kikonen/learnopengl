@@ -25,7 +25,7 @@
 
 namespace {
     constexpr int BATCH_COUNT = 100;
-    constexpr int ENTITY_COUNT = 500000;
+    constexpr int ENTITY_COUNT = 100000;
     constexpr int BATCH_RANGE_COUNT = 8;
 
     int idBase = 0;
@@ -88,13 +88,13 @@ void Batch::add(
 {
     if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
 
-    if (!inFrustumZ(ctx, entityIndex))
+    if (m_frustumCPU && !inFrustumZ(ctx, entityIndex))
         return;
 
     auto& top = m_batches.back();
     top.m_drawCount++;
 
-    m_entityIndeces.push_back(entityIndex);
+    m_entityIndeces.emplace_back(entityIndex);
 }
 
 void Batch::addAll(
@@ -145,7 +145,7 @@ void Batch::addInstanced(
     top.m_drawCount = 1;
     top.m_instancedCount = actualCount;
 
-    m_entityIndeces.push_back(actualIndex);
+    m_entityIndeces.emplace_back(actualIndex);
 }
 
 void Batch::bind() noexcept

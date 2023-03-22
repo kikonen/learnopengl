@@ -227,7 +227,7 @@ void WaterMapRenderer::drawNodes(
     ctx.m_batch->flush(ctx);
 
     ctx.updateClipPlanesUBO();
-    ctx.m_state.enable(GL_CLIP_DISTANCE0);
+    ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
 
     {
         ctx.m_nodeDraw->drawNodes(
@@ -244,7 +244,7 @@ void WaterMapRenderer::drawNodes(
             clearColor);
     }
 
-    ctx.m_state.disable(GL_CLIP_DISTANCE0);
+    ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
 }
 
 Node* WaterMapRenderer::findClosest(
