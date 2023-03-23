@@ -96,6 +96,11 @@ https://glad.dav1d.de
 - https://learnopengl.com/Advanced-Lighting/Deferred-Shading
 - https://www.khronos.org/opengl/wiki/Compute_eye_space_from_window_space
 
+## Geometry shader
+- https://www.informit.com/articles/article.aspx?p=2120983&seqNum=2
+- https://www.khronos.org/opengl/wiki/Built-in_Variable_(GLSL)
+  + pass "gl_ClipDistance[CLIP_COUNT]" to pass through gs shader
+
 ## Misc
 - https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
 - https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix

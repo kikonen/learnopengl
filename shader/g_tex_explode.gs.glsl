@@ -8,6 +8,13 @@ layout (triangle_strip, max_vertices = 3) out;
 #include uniform_data.glsl
 #include uniform_clip_planes.glsl
 
+in gl_PerVertex
+{
+  vec4 gl_Position;
+  float gl_PointSize;
+  float gl_ClipDistance[CLIP_COUNT];
+} gl_in[3];
+
 in VS_OUT {
   vec3 worldPos;
   vec3 normal;
@@ -34,7 +41,7 @@ out VS_OUT {
 #endif
 } gs_out;
 
-//out float gl_ClipDistance[CLIP_COUNT];
+out float gl_ClipDistance[CLIP_COUNT];
 
 ////////////////////////////////////////////////////////////
 //
@@ -42,7 +49,6 @@ out VS_OUT {
 
 precision mediump float;
 
-//#include fn_calculate_clipping.glsl
 
 vec3 getNormal()
 {
@@ -71,7 +77,9 @@ void sendVertex(in int i, in vec4 pos) {
 
   gs_out.TBN = vs_in[i].TBN;
 
-//  calculateClipping(vec4(gs_out.worldPos, 1.0));
+  for (int ci = 0; ci < u_clipCount; ci++) {
+    gl_ClipDistance[ci] = gl_in[i].gl_ClipDistance[ci];
+  }
 
   EmitVertex();
 }
