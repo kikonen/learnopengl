@@ -72,8 +72,15 @@ struct EntitySSBO {
         return u_modelMatrix;
     }
 
-    inline void setModelMatrix(const glm::mat4& mat) {
+    // NOTE KI M-T matrix needed *ONLY* if non uniform scale
+    inline void setModelMatrix(const glm::mat4& mat, bool uniformScale) {
         u_modelMatrix = mat;
+
+        if (uniformScale) {
+            u_normalMatrix0 = mat[0];
+            u_normalMatrix1 = mat[1];
+            u_normalMatrix2 = mat[2];
+        }
     }
 
     inline void setNormalMatrix(const glm::mat3& mat) {

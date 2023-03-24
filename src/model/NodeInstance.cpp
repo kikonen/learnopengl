@@ -31,9 +31,13 @@ void NodeInstance::updateEntity(
     //entity->u_highlightIndex = getHighlightIndex(assets);
     entity->u_volume = m_volume;
 
-    entity->setModelMatrix(m_modelMatrix);
-    // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
-    entity->setNormalMatrix(glm::mat3(glm::inverseTranspose(m_modelMatrix)));
+    // NOTE KI M-T matrix needed *ONLY* if non uniform scale
+    bool uniformScale = isUniformScale();
+    entity->setModelMatrix(m_modelMatrix, uniformScale);
+    if (!uniformScale) {
+        // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+        entity->setNormalMatrix(glm::mat3(glm::inverseTranspose(m_modelMatrix)));
+    }
 
     entity->u_worldScale = getWorldScale();
 

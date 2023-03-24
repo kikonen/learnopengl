@@ -100,6 +100,11 @@ struct NodeInstance {
         return { m_translateMatrix[3][0], m_translateMatrix[3][1], m_translateMatrix[3][2] };
     }
 
+    inline const bool isUniformScale() const noexcept
+    {
+        return m_scaleMatrix[0][0] == m_scaleMatrix[1][1] && m_scaleMatrix[0][0] == m_scaleMatrix[2][2];
+    }
+
     inline const glm::vec3 getScale() const noexcept
     {
         return { m_scaleMatrix[0][0], m_scaleMatrix[1][1], m_scaleMatrix[2][2] };
