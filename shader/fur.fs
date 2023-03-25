@@ -20,6 +20,7 @@ in VS_OUT {
   vec3 vertexPos;
 
   flat uint materialIndex;
+  flat float furStrength;
 
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -46,45 +47,24 @@ precision mediump float;
 float getFurAlpha(int noiseTex, vec2 texCoord) {
   sampler2D sampler = sampler2D(u_texture_handles[noiseTex]);
   vec4 noise = texture(sampler, texCoord);
-//  return clamp(noise.g - noise.r, 0, 1.0);
-
-  if (noise.g > noise.r) {
-    return noise.r;
-  } else {
-    return noise.g;
-  }
+  return clamp(1.0 - noise.r, 0, 1.0);
 }
 
 void main() {
   const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos.xyz);
   #include var_tex_material.glsl
 
-  material.diffuse.a = getFurAlpha(material.dudvMapTex, fs_in.texCoord);
+//  material.diffuse.a = getFurAlpha(material.noiseMapTex, fs_in.texCoord);
+  material.diffuse.a *= fs_in.furStrength;
 
 #ifdef USE_ALPHA
-  if (material.diffuse.a < 0.01)
-    discard;
+//  if (material.diffuse.a < 0.1)
+//    discard;
 #endif
 
   #include var_tex_material_normal.glsl
 
-  if (material.pattern == 1) {
-    normal = calculateNormalPattern(fs_in.vertexPos, normal);
-  }
-
-  if (!gl_FrontFacing) {
-    normal = -normal;
-  }
-
-  #include var_calculate_cubemap_diffuse.glsl
-
   vec4 texColor = material.diffuse;
-
-  if (!gl_FrontFacing) {
-    float alpha = texColor.a;
-    texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);
-    texColor.a = alpha;
-  }
 
   o_fragColor = texColor;
   o_fragSpecular = material.specular;

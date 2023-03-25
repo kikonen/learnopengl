@@ -667,7 +667,16 @@ void SceneFile::assignFlags(
         if (e != data.renderFlags.end()) {
             flags.blend = e->second;
             // NOTE KI alpha MUST BE true if blend
-            if (flags.blend) flags.alpha = true;
+            if (flags.blend) {
+                KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): {}", data.name));
+                flags.alpha = true;
+            }
+            // NOTE KI blend CANNOT be gbuffer
+            if (flags.blend && flags.gbuffer) {
+                KI_ERROR(fmt::format("GBUFFER vs. BLEND mismatch (disabled blend): {}", data.name));
+                // NOTE KI turning off blend; shader is designed for gbuffer
+                flags.blend = false;
+            }
         }
     }
     {
