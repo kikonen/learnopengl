@@ -20,8 +20,10 @@ void CameraController::prepare(
 
     m_node = &node;
 
-    m_moveStep = 4.5f;
-    m_rotateStep = 10.f;
+    // NOTE KI need to keep "ratio" between these similar speed wise
+    m_moveStep = 3.5f;
+    m_rotateStep = 15.f;
+
     m_zoomStep = 20.0f;
     m_mouseSensitivity = 0.1f;
 }
@@ -42,7 +44,8 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
     float moveSize = m_moveStep;
     float rotateSize = m_rotateStep;
     if (input->isModifierDown(Modifier::SHIFT)) {
-        moveSize *= 3;
+        // NOTE KI need to keep "ratio" between these similar speed wise
+        moveSize *= 2;
         rotateSize *= 3;
     }
 
