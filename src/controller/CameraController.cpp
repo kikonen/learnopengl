@@ -21,8 +21,11 @@ void CameraController::prepare(
     m_node = &node;
 
     // NOTE KI need to keep "ratio" between these similar speed wise
-    m_moveStep = 3.5f;
-    m_rotateStep = 15.f;
+    m_forwardStep = 5.5f;
+    m_upStep = 6.5f;
+    m_rightStep = 4.5f;
+
+    m_rotateStep = 12.5f;
 
     m_zoomStep = 20.0f;
     m_mouseSensitivity = 0.1f;
@@ -41,12 +44,17 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
     auto* camera = m_node->m_camera.get();
 
     const float dt = clock.elapsedSecs;
-    float moveSize = m_moveStep;
+    float forwardSize = m_forwardStep;
+    float upSize = m_upStep;
+    float rightSize = m_rightStep;
     float rotateSize = m_rotateStep;
+
     if (input->isModifierDown(Modifier::SHIFT)) {
         // NOTE KI need to keep "ratio" between these similar speed wise
-        moveSize *= 2;
-        rotateSize *= 3;
+        forwardSize *= 3;
+        upSize *= 3;
+        rightSize *= 2;
+        rotateSize *= 2.5;
     }
 
     {
@@ -79,11 +87,11 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
             const auto& viewFront = camera->getViewFront();
 
             if (input->isKeyDown(Key::FORWARD)) {
-                pos += viewFront * dt * moveSize;
+                pos += viewFront * dt * forwardSize;
                 changed = true;
             }
             if (input->isKeyDown(Key::BACKWARD)) {
-                pos -= viewFront * dt * moveSize;
+                pos -= viewFront * dt * forwardSize;
                 changed = true;
             }
         }
@@ -92,11 +100,11 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
             const auto& viewRight = camera->getViewRight();
 
             if (input->isKeyDown(Key::LEFT)) {
-                pos -= viewRight * dt * moveSize;
+                pos -= viewRight * dt * rightSize;
                 changed = true;
             }
             if (input->isKeyDown(Key::RIGHT)) {
-                pos += viewRight * dt * moveSize;
+                pos += viewRight * dt * rightSize;
                 changed = true;
             }
         }
@@ -105,11 +113,11 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
             const auto& viewUp = camera->getViewUp();
 
             if (input->isKeyDown(Key::UP)) {
-                pos += viewUp * dt * moveSize;
+                pos += viewUp * dt * upSize;
                 changed = true;
             }
             if (input->isKeyDown(Key::DOWN)) {
-                pos -= viewUp * dt * moveSize;
+                pos -= viewUp * dt * upSize;
                 changed = true;
             }
 

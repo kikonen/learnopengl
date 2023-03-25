@@ -26,7 +26,10 @@ public:
 private:
     Node* m_node{ nullptr };
 
-    float m_moveStep = 10.0f;
+    float m_forwardStep = 8.0f;
+    float m_upStep = 8.0f;
+    float m_rightStep = 5.0f;
+
     float m_rotateStep = 30.f;
     float m_zoomStep = 20.0f;
     float m_mouseSensitivity = 0.1f;
