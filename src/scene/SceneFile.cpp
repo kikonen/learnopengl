@@ -165,6 +165,7 @@ void SceneFile::attachSkybox(
     type->setCustomMaterial(std::make_unique<SkyboxMaterial>(data.materialName));
 
     auto node = new Node(type);
+    node->m_id = m_assets.skyboxUUID;
 
     {
         event::Event evt { event::Type::node_add };

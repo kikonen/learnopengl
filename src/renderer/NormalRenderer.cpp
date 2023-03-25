@@ -38,7 +38,11 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
             m_normalProgram,
             m_normalProgram,
             [](const MeshType* type) { return !type->m_flags.tessellation && type->m_entityType != EntityType::sprite; },
-            [](const Node* node) { return true; });
+            [&ctx](const Node* node) {
+                return node->m_id != ctx.m_assets.volumeUUID &&
+                    node->m_id != ctx.m_assets.cubeMapUUID &&
+                    node->m_id != ctx.m_assets.skyboxUUID;
+            });
     }
 
     ctx.m_batch->flush(ctx);

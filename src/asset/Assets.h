@@ -153,6 +153,7 @@ public:
     uuids::uuid rootUUID;
     uuids::uuid volumeUUID;
     uuids::uuid cubeMapUUID;
+    uuids::uuid skyboxUUID;
 
     // NOTE KI TEMPORARY HACKS
     // => provide logic for these via scenefile
