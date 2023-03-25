@@ -40,7 +40,8 @@ constexpr int SPECULAR_IDX = 2;
 constexpr int NORMAL_MAP_IDX = 3;
 constexpr int DUDV_MAP_IDX = 4;
 constexpr int HEIGHT_MAP_IDX = 5;
-constexpr int MATERIAL_TEXTURE_COUNT = HEIGHT_MAP_IDX + 1;
+constexpr int NOISE_MAP_IDX = 6;
+constexpr int MATERIAL_TEXTURE_COUNT = NOISE_MAP_IDX + 1;
 
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
@@ -184,6 +185,7 @@ public:
 
     std::string map_dudv;
     std::string map_height;
+    std::string map_noise;
 
     static const int DEFAULT_ID = 0;
 private:

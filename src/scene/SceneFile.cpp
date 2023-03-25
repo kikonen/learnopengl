@@ -793,6 +793,7 @@ void SceneFile::modifyMaterial(
 
     if (f.map_dudv) m.map_dudv = mod. map_dudv;
     if (f.map_height) m.map_height = mod.map_height;
+    if (f.map_noise) m.map_noise = mod.map_noise;
 }
 
 std::unique_ptr<Camera> SceneFile::createCamera(
@@ -1525,6 +1526,11 @@ void SceneFile::loadMaterial(
             std::string line = v.as<std::string>();
             material.map_height = resolveTexturePath(line);
             fields.map_height = true;
+        }
+        else if (k == "map_noise") {
+            std::string line = v.as<std::string>();
+            material.map_noise = resolveTexturePath(line);
+            fields.map_noise = true;
         }
         else if (k == "pattern") {
             material.pattern = v.as<int>();

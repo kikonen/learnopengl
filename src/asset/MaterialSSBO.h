@@ -22,29 +22,28 @@ struct MaterialSSBO {
     glm::vec4 diffuse; // 16
     glm::vec4 emission; // 16
     glm::vec4 specular; // 16
-    float shininess;
 
     // NOTE KI "tex index", not "unit index"
     int diffuseTex;
     int emissionTex;
     int specularTex;
     int normalMap;
+
     int dudvMap;
     int heightMap;
+    int noiseMap;
 
     int pattern;
-
+    float shininess;
     float reflection;
     float refraction;
 
     float refractionRatio;
-
     float fogRatio;
-
     float tilingX;
     float tilingY;
 
     int pad1;
-    int pad2;
-    //int pad3;
+//    int pad2;
+//    int pad3;
 };

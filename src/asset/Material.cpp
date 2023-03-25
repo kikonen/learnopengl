@@ -158,6 +158,7 @@ void Material::loadTextures(const Assets& assets)
     loadTexture(assets, NORMAL_MAP_IDX, map_bump);
     loadTexture(assets, DUDV_MAP_IDX, map_dudv);
     loadTexture(assets, HEIGHT_MAP_IDX, map_height);
+    loadTexture(assets, NOISE_MAP_IDX, map_noise);
 }
 
 std::string Material::resolveBaseDir(const Assets& assets)
@@ -268,23 +269,23 @@ const MaterialSSBO Material::toSSBO() const
         kd,
         glm::vec4(0),
         ks,
-        ns,
 
         m_textures[DIFFUSE_IDX].m_texIndex,
         m_textures[EMISSION_IDX].m_texIndex,
         m_textures[SPECULAR_IDX].m_texIndex,
         m_textures[NORMAL_MAP_IDX].m_texIndex,
+
         m_textures[DUDV_MAP_IDX].m_texIndex,
         m_textures[HEIGHT_MAP_IDX].m_texIndex,
+        m_textures[NOISE_MAP_IDX].m_texIndex,
 
         pattern,
-
+        ns,
         reflection,
         refraction,
+
         getRefractionRatio(),
-
         fogRatio,
-
         tilingX,
         tilingY,
     };

@@ -80,6 +80,7 @@ class SceneFile
 
         bool map_dudv = false;
         bool map_height = false;
+        bool map_noise = false;
     };
 
     struct Repeat {

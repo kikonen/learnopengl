@@ -67,7 +67,7 @@ void main() {
     normal = -normal;
   }
 
-  #include var_calculate_diffuse.glsl
+  #include var_calculate_cubemap_diffuse.glsl
 
   vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
 

@@ -38,4 +38,8 @@ materials:
     xkd: [1, 1, 0, 1.0]
     ks: [0.5083, 0.5083, 0.5083, 1.0]
     map_kd: Dirt_vh_1024.png
-    map_dudv: noise_256.png
+    xxmap_kd: noise2_256.png
+    map_noise: noise2_256.png
+    tiling: 4
+    texture_spec:
+      wrap: GL_REPEAT
