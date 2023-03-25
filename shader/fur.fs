@@ -28,8 +28,8 @@ void main() {
   t *= fs_in.furStrength;
   vec4 texColor = material.diffuse * vec4(1.0, 1.0, 1.0, t);
 
-  if (texColor.a < 0.1)
-    discard;
+//  if (texColor.a < 0.1)
+//    discard;
 
   o_fragColor = texColor;
 }
