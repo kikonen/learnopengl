@@ -169,6 +169,9 @@ public:
     // Dissolve works on all illumination models.
     float d = 1.0f;
 
+    int layers = 0;
+    float depth = 0.f;
+
     // Multiple illumination models are available, per material
     // 0. Color on and Ambient off
     // 1. Color on and Ambient on

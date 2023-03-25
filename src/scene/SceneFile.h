@@ -78,6 +78,9 @@ class SceneFile
         bool d = false;
         bool illum = false;
 
+        bool layers = false;
+        bool depth = false;
+
         bool map_dudv = false;
         bool map_height = false;
         bool map_noise = false;
@@ -424,6 +427,7 @@ private:
         const YAML::Node& v,
         GLint& wrapMode);
 
+    int readInt(const YAML::Node& node) const;
     float readFloat(const YAML::Node& node) const;
 
     glm::vec2 readVec2(const YAML::Node& node) const;

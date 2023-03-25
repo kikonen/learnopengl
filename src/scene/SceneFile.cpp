@@ -59,6 +59,14 @@ namespace {
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
 
     // https://stackoverflow.com/questions/447206/c-isfloat-function
+    bool isInt(std::string_view s)
+    {
+        int val;
+        auto [p, ec] = std::from_chars(s.data(), s.data() + s.size(), val);
+        return ec == std::errc() && p == s.data() + s.size();
+    }
+
+    // https://stackoverflow.com/questions/447206/c-isfloat-function
     bool isFloat(std::string_view s)
     {
         double val;
@@ -1575,6 +1583,14 @@ void SceneFile::loadMaterial(
             material.tilingY = readFloat(v);
             fields.tilingY = true;
         }
+        else if (k == "layers") {
+            material.layers = readInt(v);
+            fields.layers = true;
+        }
+        else if (k == "depth") {
+            material.depth = readFloat(v);
+            fields.depth = true;
+            }
         else if (k == "texture_spec") {
             loadTextureSpec(v, material.textureSpec);
             fields.textureSpec = true;
@@ -1625,6 +1641,16 @@ void SceneFile::loadTextureWrap(
         wrapMode = GL_CLAMP_TO_EDGE;
         reportUnknown("wrap_mode", k, v);
     }
+}
+
+int SceneFile::readInt(const YAML::Node& node) const
+{
+    if (!isInt(node.as<std::string>())) {
+        KI_WARN(fmt::format("invalid int{}", renderNode(node)));
+        return 0;
+    }
+
+    return node.as<int>();
 }
 
 float SceneFile::readFloat(const YAML::Node& node) const

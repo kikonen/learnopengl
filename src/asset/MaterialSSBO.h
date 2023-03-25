@@ -43,7 +43,10 @@ struct MaterialSSBO {
     float tilingX;
     float tilingY;
 
+    int layers;
+    float depth;
+
     int pad1;
-//    int pad2;
-//    int pad3;
+    int pad2;
+    int pad3;
 };

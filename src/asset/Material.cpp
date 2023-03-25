@@ -288,5 +288,8 @@ const MaterialSSBO Material::toSSBO() const
         fogRatio,
         tilingX,
         tilingY,
+
+        layers,
+        depth,
     };
 }
