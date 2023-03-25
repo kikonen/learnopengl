@@ -53,7 +53,7 @@ void main() {
 
   {
     const vec3 N = normalize(vs_out.normal);
-    vec3 T = normalize(modelMatrix * vec4(a_tangent, 1.0)).xyz;
+    vec3 T = normalize((modelMatrix * vec4(a_tangent, 1.0)).xyz);
     T = normalize(T - dot(T, N) * N);
     const vec3 B = cross(N, T);
 
