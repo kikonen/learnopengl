@@ -10,9 +10,10 @@
 
 #include "ki/Timer.h"
 
-const glm::vec2 EMPTY_TEX{ 0, 0 };
-const glm::vec3 EMPTY_NORMAL{ 0, 0, 0 };
-
+namespace {
+    const glm::vec2 EMPTY_TEX{ 0, 0 };
+    const glm::vec3 EMPTY_NORMAL{ 0, 0, 0 };
+}
 
 MeshLoader::MeshLoader(
     const Assets& assets,
@@ -54,6 +55,8 @@ void MeshLoader::loadData(
 {
     if (!*m_alive) return;
 
+    //std::cout << "==========================\n";
+
     ki::Timer t("loadData: mesh=" + mesh.str());
 
     auto& tris = mesh.m_tris;
@@ -63,7 +66,11 @@ void MeshLoader::loadData(
     std::string name;
 
     std::vector<Material> loadedMaterials;
-    std::map<glm::vec3*, int> vertexMapping;
+
+    // NOTE KI *MUST* record array of vertex indeces per pos mapping
+    // => Same pos may be hit multiple times with different other data in Vertex
+    //    in random order; need to track all hits
+    std::map<glm::vec3, std::vector<int>, Vec3MapCompare> vertexMapping;
 
     std::vector<glm::vec3> positions;
     std::vector<glm::vec2> textures;
@@ -237,7 +244,7 @@ void MeshLoader::splitFragmentValue(const std::string& v, std::vector<std::strin
 }
 
 unsigned int MeshLoader::resolveVertexIndex(
-    std::map<glm::vec3*, int>& vertexMapping,
+    std::map<glm::vec3, std::vector<int>, Vec3MapCompare>& vertexMapping,
     std::vector<Vertex>& vertices,
     std::vector<glm::vec3>& positions,
     std::vector<glm::vec2>& textures,
@@ -258,7 +265,7 @@ unsigned int MeshLoader::resolveVertexIndex(
     // TODO KI danger with shared default material
     material->m_used = true;
 
-    glm::vec3& pos = positions[pi];
+    glm::vec3 pos = positions[pi];
 
     Vertex v(
         pos,
@@ -268,17 +275,30 @@ unsigned int MeshLoader::resolveVertexIndex(
         material->m_objectID);
 
     {
-        const auto& it = vertexMapping.find(&pos);
+        const auto& it = vertexMapping.find(pos);
         if (it != vertexMapping.end()) {
-            const auto& old = vertices[it->second];
-            if (old == v) {
-                return it->second;
+            if (pos == glm::vec3{ 1, 1, 1 })
+                int x = 0;
+
+            for (const auto idx : it->second) {
+                const auto& old = vertices[idx];
+                if (old == v) {
+                    return idx;
+                }
             }
+        }
+        else {
+            vertexMapping.insert(std::make_pair(pos, std::vector<int>{}));
         }
     }
 
+    //std::cout << v.str() << "\n";
+
     size_t index = vertices.size();
-    vertexMapping[&pos] = index;
+    {
+        auto& mappedIndeces = vertexMapping[pos];
+        mappedIndeces.push_back(index);
+    }
     vertices.push_back(std::move(v));
 
     return index;
@@ -297,6 +317,12 @@ glm::vec3 MeshLoader::createNormal(
     glm::vec3 b{ p3 - p1 };
 
     glm::vec3 normal = glm::cross(a, b);
+
+    // NOTE KI take care of "-0"
+    if (std::abs(normal.x) == 0) normal.x = 0;
+    if (std::abs(normal.y) == 0) normal.y = 0;
+    if (std::abs(normal.z) == 0) normal.z = 0;
+
     normals.push_back(normal);
     size_t idx = normals.size() - 1;
     return glm::vec3(idx, idx, idx);
@@ -353,6 +379,11 @@ void MeshLoader::createTangents(
             f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y),
             f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z),
         };
+
+        // NOTE KI take care of "-0"
+        if (std::abs(tangent.x) == 0) tangent.x = 0;
+        if (std::abs(tangent.y) == 0) tangent.y = 0;
+        if (std::abs(tangent.z) == 0) tangent.z = 0;
 
         glm::vec3 nt = glm::normalize(tangent);
 

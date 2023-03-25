@@ -9,6 +9,12 @@
 
 class MeshLoader final
 {
+    struct Vec3MapCompare {
+        bool operator()(const glm::vec3& a, const glm::vec3& b) const {
+            return std::tie(a.x, a.y, a.z) < std::tie(b.x, b.y, b.z);
+        }
+    };
+
 public:
     MeshLoader(
         const Assets& assets,
@@ -31,7 +37,7 @@ public:
 
 private:
     unsigned int resolveVertexIndex(
-        std::map<glm::vec3*, int>& vertexMapping,
+        std::map<glm::vec3, std::vector<int>, Vec3MapCompare>& vertexMapping,
         std::vector<Vertex>& vertices,
         std::vector<glm::vec3>& positions,
         std::vector<glm::vec2>& textures,
