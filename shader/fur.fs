@@ -25,8 +25,8 @@ void main() {
   #include var_tex_material.glsl
 
   sampler2D sampler = sampler2D(u_texture_handles[material.noiseMapTex]);
-  vec4 noiseColor = texture(sampler, fs_in.texCoord * 32.0);
-  float noise =  noiseColor.r;
+  vec4 noiseColor = texture(sampler, fs_in.texCoord * 8.0);
+  float noise = noiseColor.r;
 
   float alpha = material.diffuse.a;
   float t = material.diffuse.a;

@@ -14,7 +14,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_material_indeces.glsl
 
 out VS_OUT {
-  mat4 modelMatrix;
+  flat mat4 modelMatrix;
 
   vec3 normal;
   vec2 texCoord;

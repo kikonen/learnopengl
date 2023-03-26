@@ -7,7 +7,7 @@ layout (triangle_strip, max_vertices = 128) out;
 #include uniform_data.glsl
 
 in VS_OUT {
-  mat4 modelMatrix;
+  flat mat4 modelMatrix;
 
   vec3 normal;
   vec2 texCoord;
@@ -29,17 +29,26 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 
 void main() {
+  const mat4 modelMatrix = vs_in[0].modelMatrix;
+  const mat4 projectedModel = u_projectedMatrix * modelMatrix;
+
   const int furLayers = vs_in[0].layers;
   const float furDepth = vs_in[0].depth;
 
-  float delta = 1.0 / float(furLayers);
-  float d = 0.0;
+  const float delta = 1.0 / float(furLayers);
+
+  vec4 force = vec4(0, -0.05, 0, 0);
+  force.x += sin(u_time / 2.0) / 16.0;
+  force.y -= (1.0 + cos(u_time / 3.0)) / 32.0;
+  force.z += cos(u_time / 2.0) / 32.0;
 
   for (int layer = 0; layer < furLayers; layer++) {
+    const float d = delta * layer;
+
     for (int i = 0; i < gl_in.length(); i++) {
       vec3 n = normalize(vs_in[i].normal);
 
-     vec4 pos = gl_in[i].gl_Position + vec4(n * d * furDepth, 0.0);
+      vec4 pos = gl_in[i].gl_Position + vec4(n * d * furDepth, 0.0);
       // float scale = 1.0 + d * furDepth;
       // const mat4 scaleMat = mat4(scale, 0, 0, 0,
       //                            0, scale, 0, 0,
@@ -47,17 +56,27 @@ void main() {
       //                            0, 0,     0, 1);
       // vec4 pos = scaleMat * gl_in[i].gl_Position;
 
-      //      pos.x += (sin(u_time + d) / 10.0);
-//      pos.y += (sin(u_time * d * 1.2) / 12.0);
+      {
+        // Couple of lines to give a swaying effect!
+        // Additional Gravit/Force Code
+        vec4 modelForce = modelMatrix * force;
+
+        // We use the pow function, so that only the tips of the hairs bend
+        // As layer goes from 0 to 1, so by using pow(..) function is still
+        // goes form 0 to 1, but it increases faster! exponentially
+        float k =  pow(d, 3);
+
+        pos = pos + modelForce * k;
+        // End Gravity Force Addit Code
+      }
 
       gs_out.furStrength = 1.0 - d;
       gs_out.texCoord = vs_in[i].texCoord;
       gs_out.materialIndex = vs_in[i].materialIndex;
-      gl_Position = u_projectedMatrix * vs_in[i].modelMatrix * pos;
+      gl_Position = projectedModel * pos;
 
       EmitVertex();
     }
-    d += delta;
 
     EndPrimitive();
   }
