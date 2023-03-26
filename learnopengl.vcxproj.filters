@@ -390,6 +390,15 @@
     <ClCompile Include="src\registry\ViewportRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\actor\CameraActor.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\actor\LightActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\registry\ComponentRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\registry\ControllerRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -894,6 +903,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\CustomMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\actor\Actor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\actor\LightActor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\actor\EntityActor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\actor\OrigoActor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\Role.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\ComponentRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\ControllerRegistry.h">

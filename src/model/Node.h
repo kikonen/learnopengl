@@ -9,6 +9,8 @@
 
 #include "registry/MeshType.h"
 
+#include "model/Role.h"
+
 
 class Camera;
 class Light;
@@ -24,11 +26,11 @@ class Batch;
 
 struct EntitySSBO;
 
-class Node final
+class Node
 {
 public:
     Node(MeshType* type);
-    ~Node();
+    virtual ~Node();
 
     const std::string str() const noexcept;
 
@@ -202,6 +204,7 @@ public:
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };
 
+    Role m_role;
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };
     std::unique_ptr<ParticleGenerator> m_particleGenerator{ nullptr };

@@ -23,8 +23,8 @@ entities:
     model: cow
     xxmodel: cube
     xxtype: quad
-    material: fur_base
-    force_material: true
+    xxmaterial: fur_base
+    xxforce_material: true
     priority: 1
     program: g_tex
     render_flags:
@@ -43,7 +43,7 @@ entities:
     render_flags:
       XXrender_back: true
       alpha: true
-      blend: true
+      xblend: true
     pos: [0, 0, 0]
     scale: 1.3
     enabled: true

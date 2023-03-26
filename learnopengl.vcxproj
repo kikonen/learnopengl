@@ -183,6 +183,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\actor\CameraActor.h" />
+    <ClCompile Include="src\actor\LightActor.cpp" />
     <ClCompile Include="src\event\Event.cpp" />
     <ClCompile Include="src\event\Dispatcher.cpp" />
     <ClCompile Include="src\engine\AssetsFile.cpp" />
@@ -211,6 +213,7 @@
     <ClCompile Include="src\physics\HeightMap.cpp" />
     <ClCompile Include="src\physics\Surface.cpp" />
     <ClCompile Include="src\physics\PhysicsEngine.cpp" />
+    <ClCompile Include="src\registry\ComponentRegistry.cpp" />
     <ClCompile Include="src\registry\ControllerRegistry.cpp" />
     <ClCompile Include="src\registry\ImageRegistry.cpp" />
     <ClCompile Include="src\registry\MaterialRegistry.cpp" />
@@ -312,6 +315,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Group.h" />
+    <ClInclude Include="src\actor\Actor.h" />
+    <ClInclude Include="src\actor\EntityActor.h" />
+    <ClInclude Include="src\actor\LightActor.h" />
+    <ClInclude Include="src\actor\OrigoActor.h" />
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
@@ -365,10 +372,12 @@
     <ClInclude Include="src\ki\RenderClock.h" />
     <ClInclude Include="src\model\InstancePhysics.h" />
     <ClInclude Include="src\model\NodeInstance.h" />
+    <ClInclude Include="src\model\Role.h" />
     <ClInclude Include="src\physics\HeightMap.h" />
     <ClInclude Include="src\physics\Plane.h" />
     <ClInclude Include="src\physics\Surface.h" />
     <ClInclude Include="src\physics\PhysicsEngine.h" />
+    <ClInclude Include="src\registry\ComponentRegistry.h" />
     <ClInclude Include="src\registry\ControllerRegistry.h" />
     <ClInclude Include="src\registry\EntityType.h" />
     <ClInclude Include="src\registry\Registry.h" />
