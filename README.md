@@ -20,6 +20,8 @@ https://glad.dav1d.de
   + https://gim.studio/an-introduction-to-shell-based-fur-technique/
   + https://xbdev.net/directx3dx/specialX/Fur/index.php
   + https://www.researchgate.net/figure/Close-view-of-grass-rendered-with-16-shells_fig3_244493698
+  + http://www.catalinzima.com/xna/tutorials/fur-rendering/
+  + https://stackoverflow.com/questions/19862841/fur-shading-using-glsl
 - ECS
   + https://skypjack.github.io/entt/md_docs_md_entity.html
   * https://habr.com/en/post/651921/

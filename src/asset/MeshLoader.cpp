@@ -224,6 +224,8 @@ void MeshLoader::loadData(
         std::chrono::duration<float> ts = tp2 - tp1;
         float loadTime = ts.count() * 1000;
 
+        KI_INFO_OUT(fmt::format("VERTEX_COUNT={} - {}", vertices.size(), mesh.str()));
+
         KI_INFO(fmt::format("MESH_LOADER: duration={}ms", loadTime));
     }
     catch (std::ifstream::failure e) {

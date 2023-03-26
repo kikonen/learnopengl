@@ -39,9 +39,15 @@ void main() {
     for (int i = 0; i < gl_in.length(); i++) {
       vec3 n = normalize(vs_in[i].normal);
 
-      vec4 pos = gl_in[i].gl_Position + vec4(n * d * furDepth, 0.0);
+     vec4 pos = gl_in[i].gl_Position + vec4(n * d * furDepth, 0.0);
+      // float scale = 1.0 + d * furDepth;
+      // const mat4 scaleMat = mat4(scale, 0, 0, 0,
+      //                            0, scale, 0, 0,
+      //                            0, 0, scale, 0,
+      //                            0, 0,     0, 1);
+      // vec4 pos = scaleMat * gl_in[i].gl_Position;
 
-//      pos.x += (sin(u_time + d) / 10.0);
+      //      pos.x += (sin(u_time + d) / 10.0);
 //      pos.y += (sin(u_time * d * 1.2) / 12.0);
 
       gs_out.furStrength = 1.0 - d;

@@ -25,18 +25,26 @@ void main() {
   #include var_tex_material.glsl
 
   sampler2D sampler = sampler2D(u_texture_handles[material.noiseMapTex]);
-  vec4 noiseColor = texture(sampler, fs_in.texCoord * 2.0);
+  vec4 noiseColor = texture(sampler, fs_in.texCoord * 32.0);
   float noise =  noiseColor.r;
 
+  float alpha = material.diffuse.a;
   float t = material.diffuse.a;
 //  t *= fs_in.furStrength * noise;
   t = noise;
 
-  if (t < 0.2)
+  if (t < 0.09)
     discard;
-//  t = 1.0;
 
-  vec4 texColor = material.diffuse * vec4(1.0, 1.0, 1.0, t);
+  t *= 1.5;
+  t = clamp(t, 0, 1);
+
+  // NOTE KI fake shadow
+  float shadow = mix(0.4, 1, 1.0 - fs_in.furStrength);
+  vec4 texColor = material.diffuse * shadow;
+  texColor.a = alpha;
+
+  texColor *= vec4(1.0, 1.0, 1.0, t);
 
 //  if (texColor.a < 0.1)
 //    discard;

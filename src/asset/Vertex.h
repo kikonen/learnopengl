@@ -21,19 +21,9 @@ public:
     {
     }
 
-    inline bool operator==(const Vertex& b) const noexcept
-    {
-        return pos == b.pos &&
-            texture == b.texture &&
-            normal == b.normal &&
-            tangent == b.tangent &&
-            materialID == b.materialID;
-    }
+    bool operator==(const Vertex& b) const noexcept;
 
-    inline bool operator!=(const Vertex& b) const noexcept
-    {
-        return !(*this == b);
-    }
+    bool operator!=(const Vertex& b) const noexcept;
 
     const std::string str() const noexcept;
 

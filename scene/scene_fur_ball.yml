@@ -19,8 +19,8 @@ entities:
       type: camera
       enabled: true
     enabled: true
-  - name: Base ball
-    model: water_ball
+  - name: Base
+    model: cow
     xxmodel: cube
     xxtype: quad
     material: fur_base
@@ -29,23 +29,41 @@ entities:
     program: g_tex
     render_flags:
       xxwireframe: true
-      render_back: true
+      xxrender_back: true
     pos: [0, 0, 0]
     scale: 1.3
     enabled: true
-  - name: Fur ball
-    model: water_ball
+  - name: Fur
+    model: cow
     xxmodel: cube
     xxtype: quad
     material: fur
     force_material: true
     program: fur
     render_flags:
-      render_back: true
+      XXrender_back: true
       alpha: true
       blend: true
     pos: [0, 0, 0]
     scale: 1.3
+    enabled: true
+  - name: Directional light
+    pos: [0, 25, 40]
+    scale: 2.5
+    model: light
+    program: g_light
+    render_flags:
+      light: true
+      no_shadow: true
+    force_material: true
+    material_modifier:
+      kd: [0.8, 0.8, 0.6, 1.0]
+    light:
+      type: directional
+      ambient: [0.3, 0.32, 0.32, 1.0]
+      diffuse: [0.9, 0.9, 0.7, 1.0]
+      specular: [0.9, 0.9, 0.5, 1.0]
+      enabled: true
     enabled: true
 materials:
   - name: fur_base
@@ -55,7 +73,7 @@ materials:
     ks: [0.5083, 0.5083, 0.5083, 1.0]
     xxmap_kd: Dirt_vh_1024.png
     tiling: 1
-    texture_spec:
+    xxtexture_spec:
       wrap: GL_REPEAT
   - name: fur
     ns: 51.2
@@ -64,10 +82,9 @@ materials:
     xkd: [1, 1, 0, 1.0]
     ks: [0.5083, 0.5083, 0.5083, 1.0]
     map_kd: Dirt_vh_1024.png
-    xxmap_kd: noise2_256.png
     map_noise: noise2_256.png
     tiling: 1
-    layers: 30
-    depth: 0.1
+    layers: 20
+    depth: 0.05
     texture_spec:
       wrap: GL_REPEAT
