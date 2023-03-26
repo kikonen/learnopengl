@@ -24,8 +24,18 @@ layout (location = 0) out vec4 o_fragColor;
 void main() {
   #include var_tex_material.glsl
 
+  sampler2D sampler = sampler2D(u_texture_handles[material.noiseMapTex]);
+  vec4 noiseColor = texture(sampler, fs_in.texCoord * 2.0);
+  float noise =  noiseColor.r;
+
   float t = material.diffuse.a;
-  t *= fs_in.furStrength;
+//  t *= fs_in.furStrength * noise;
+  t = noise;
+
+  if (t < 0.2)
+    discard;
+//  t = 1.0;
+
   vec4 texColor = material.diffuse * vec4(1.0, 1.0, 1.0, t);
 
 //  if (texColor.a < 0.1)
