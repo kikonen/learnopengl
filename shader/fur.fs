@@ -40,7 +40,7 @@ void main() {
   t = clamp(t, 0, 1);
 
   // NOTE KI fake shadow
-  float shadow = mix(0.4, 1, 1.0 - fs_in.furStrength);
+  float shadow = mix(0.4, 1.0, 1.0 - fs_in.furStrength);
   vec4 texColor = material.diffuse * shadow;
   texColor.a = alpha;
 
