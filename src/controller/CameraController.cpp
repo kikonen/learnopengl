@@ -54,7 +54,7 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
         forwardSize *= 3;
         upSize *= 3;
         rightSize *= 2;
-        rotateSize *= 2.5;
+        rotateSize *= 2.9;
     }
 
     {
