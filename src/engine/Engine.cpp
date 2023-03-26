@@ -36,7 +36,6 @@ int Engine::init() {
 int Engine::setup() {
     GLenum keys[] = {
         GL_CULL_FACE,
-        GL_FRONT_AND_BACK,
         GL_BLEND,
         GL_CLIP_DISTANCE0,
         GL_CLIP_DISTANCE1,
