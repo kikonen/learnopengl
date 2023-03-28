@@ -32,7 +32,6 @@ entities:
     model: light
     program: light
     render_flags:
-      light: true
       no_shadow: true
     light:
       type: point

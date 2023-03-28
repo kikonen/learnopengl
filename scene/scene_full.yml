@@ -74,7 +74,6 @@ entities:
     program_definitions:
       effect_sun: 1
     render_flags:
-      light: true
       no_shadow: true
     force_material: true
     material_modifier:
@@ -117,7 +116,6 @@ entities:
     model: light
     program: g_tex
     render_flags:
-      light: true
       no_shadow: true
     clones:
       - pos: [0.0, 0.0, 10.0]
@@ -194,7 +192,6 @@ entities:
     model: light
     program: g_tex
     render_flags:
-      light: true
       no_shadow: true
     light:
       type: point
@@ -333,6 +330,12 @@ entities:
       mirror: true
     enabled: true
     script_file: scripts/anim_mirror
+  - name: Airboat
+    model: airboat
+    program: g_tex
+    pos: [24.0, 13.0, 15.0]
+    scale: 1.0
+    enabled: true
   - name: Spyro
     model: spyro2
     program: g_tex
@@ -653,8 +656,6 @@ entities:
     pos: [-1024, 150, -1024]
     scale: 5.0
     material: basic
-    render_flags:
-      light: true
     light:
       type: point
       linear: 0.014

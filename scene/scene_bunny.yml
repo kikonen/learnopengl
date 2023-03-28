@@ -37,7 +37,6 @@ entities:
     model: light
     program: light
     render_flags:
-      light: true
       no_shadow: true
     force_material: true
     material_modifier:
