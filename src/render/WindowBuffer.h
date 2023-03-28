@@ -5,9 +5,9 @@
 class WindowBuffer final : public FrameBuffer
 {
 public:
-    WindowBuffer() : WindowBuffer(0) {}
+    WindowBuffer(bool forceBind) : WindowBuffer(0, forceBind) {}
 
-    WindowBuffer(GLuint fbo);
+    WindowBuffer(GLuint fbo, bool forceBind);
 
     virtual ~WindowBuffer() override = default;
 

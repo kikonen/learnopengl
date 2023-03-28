@@ -115,9 +115,12 @@ void ObjectIdRenderer::updateView(const RenderContext& ctx)
     if (!changed) return;
 
     // https://riptutorial.com/opengl/example/28872/using-pbos
-    auto buffer = new FrameBuffer({
-        w, h,
-        { FrameBufferAttachment::getObjectId(), FrameBufferAttachment::getRBODepth() } });
+    auto buffer = new FrameBuffer(
+        "object_id",
+        {
+            w, h,
+            { FrameBufferAttachment::getObjectId(), FrameBufferAttachment::getRBODepth() }
+        });
 
     m_idBuffer.reset(buffer);
     m_idBuffer->prepare(true, { 0, 0, 0, 0.5 });

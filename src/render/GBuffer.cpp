@@ -26,19 +26,21 @@ void GBuffer::updateView(const RenderContext& ctx)
 
     {
         // NOTE KI alpha NOT needed
-        auto buffer = new FrameBuffer({
-            w, h,
+        auto buffer = new FrameBuffer(
+            "gbuffer",
             {
-                FrameBufferAttachment::getGBufferAlbedo(GL_COLOR_ATTACHMENT0),
-                FrameBufferAttachment::getGBufferSpecular(GL_COLOR_ATTACHMENT1),
-                FrameBufferAttachment::getGBufferEmission(GL_COLOR_ATTACHMENT2),
-                FrameBufferAttachment::getGBufferAmbient(GL_COLOR_ATTACHMENT3),
-                FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT4),
-                FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT5),
-                // depth & stencil needed
-                FrameBufferAttachment::getRBODepth()
-            }
-        });
+                w, h,
+                {
+                    FrameBufferAttachment::getGBufferAlbedo(GL_COLOR_ATTACHMENT0),
+                    FrameBufferAttachment::getGBufferSpecular(GL_COLOR_ATTACHMENT1),
+                    FrameBufferAttachment::getGBufferEmission(GL_COLOR_ATTACHMENT2),
+                    FrameBufferAttachment::getGBufferAmbient(GL_COLOR_ATTACHMENT3),
+                    FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT4),
+                    FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT5),
+                    // depth & stencil needed
+                    FrameBufferAttachment::getRBODepth()
+                }
+            });
 
         m_buffer.reset(buffer);
         m_buffer->prepare(true, { 0, 0, 0, 0.0 });

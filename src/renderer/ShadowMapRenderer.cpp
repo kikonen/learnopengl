@@ -58,9 +58,12 @@ void ShadowMapRenderer::prepare(
     //m_blendedShadowProgram->prepare(assets);
     m_shadowDebugProgram->prepare(assets);
 
-    auto buffer = new FrameBuffer({
-        assets.shadowMapSize, assets.shadowMapSize,
-        { FrameBufferAttachment::getDepthTexture() } });
+    auto buffer = new FrameBuffer(
+        "shadow_map",
+        {
+            assets.shadowMapSize, assets.shadowMapSize,
+            { FrameBufferAttachment::getDepthTexture() }
+        });
 
     m_shadowBuffer.reset(buffer);
     m_shadowBuffer->prepare(true, { 0, 0, 0, 1.0 });

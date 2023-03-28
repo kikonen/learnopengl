@@ -131,7 +131,7 @@ void Scene::prepare()
     }
 
     {
-        m_windowBuffer = std::make_unique<WindowBuffer>();
+        m_windowBuffer = std::make_unique<WindowBuffer>(true);
     }
 
     {
@@ -476,9 +476,12 @@ void Scene::updateMainViewport(const RenderContext& ctx)
     // MAIN
     {
         // NOTE KI alpha NOT needed
-        auto buffer = new FrameBuffer({
-            w, h,
-            { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() } });
+        auto buffer = new FrameBuffer(
+            "main",
+            {
+                w, h,
+                { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() }
+            });
 
         m_mainBuffer.reset(buffer);
         m_mainBuffer->prepare(true, { 0, 0, 0, 0.0 });
@@ -497,9 +500,12 @@ void Scene::updateMainViewport(const RenderContext& ctx)
 
         if (!m_rearBuffer && m_assets.showRearView) {
             // NOTE KI alpha NOT needed
-            auto buffer = new FrameBuffer({
-                mirrorW, mirrorH,
-                { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() } });
+            auto buffer = new FrameBuffer(
+                "rear",
+                {
+                    mirrorW, mirrorH,
+                    { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() }
+                });
 
             m_rearBuffer.reset(buffer);
             m_rearBuffer->prepare(true, { 0, 0, 0, 0.0 });

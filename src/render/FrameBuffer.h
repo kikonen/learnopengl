@@ -15,8 +15,13 @@ class RenderContext;
 class FrameBuffer
 {
 public:
-    FrameBuffer(const FrameBufferSpecification& spec);
+    FrameBuffer(
+        const std::string& name,
+        const FrameBufferSpecification& spec);
+
     virtual ~FrameBuffer();
+
+    const std::string str() const noexcept;
 
     virtual void prepare(
         const bool clear,
@@ -43,9 +48,12 @@ public:
         const glm::vec4& clearColor);
 
 public:
+    const std::string m_name;
+
     FrameBufferSpecification m_spec;
 
     GLuint m_fbo = 0;
+    bool m_forceBind{ false };
 
     int m_clearMask = 0;
 

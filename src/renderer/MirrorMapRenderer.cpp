@@ -60,7 +60,7 @@ void MirrorMapRenderer::prepare(
             scaledSize, scaledSize,
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
         };
-        m_prev = std::make_unique<FrameBuffer>(spec);
+        m_prev = std::make_unique<FrameBuffer>("mirror_prev", spec);
     }
     {
         int size = assets.mirrorReflectionSize;
@@ -70,7 +70,7 @@ void MirrorMapRenderer::prepare(
             scaledSize, scaledSize,
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
         };
-        m_curr = std::make_unique<FrameBuffer>(spec);
+        m_curr = std::make_unique<FrameBuffer>("mirror_curr", spec);
     }
 
     m_prev->prepare(true, DEBUG_COLOR[0]);

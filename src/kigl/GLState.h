@@ -32,6 +32,8 @@ public:
         const GLuint textureID,
         bool force) noexcept;
 
+    void bindFrameBuffer(GLuint fbo, bool force) noexcept;
+
     void setBlendMode(const GLBlendMode& mode);
     void setDepthFunc(const GLenum mode);
 
@@ -46,6 +48,8 @@ private:
 
     int m_programId = -1;
     int m_vaoId = -1;
+
+    int m_fbo = -1;
 
     GLBlendMode m_blendMode{ 0, 0, 0, 0 };
     GLenum m_depthFunc = -1;

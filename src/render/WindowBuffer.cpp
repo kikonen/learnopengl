@@ -7,10 +7,13 @@
 #include "render/RenderContext.h"
 
 
-WindowBuffer::WindowBuffer(GLuint fbo)
-    : FrameBuffer({ 0, 0, {} })
+WindowBuffer::WindowBuffer(
+    GLuint fbo,
+    bool forceBind)
+    : FrameBuffer("window", { 0, 0, {} })
 {
     m_fbo = fbo;
+    m_forceBind = forceBind;
 }
 
 void WindowBuffer::updateView(const RenderContext& ctx)

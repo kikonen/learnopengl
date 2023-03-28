@@ -7,8 +7,11 @@
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 
-FrameBuffer::FrameBuffer(const FrameBufferSpecification& spec)
-    : m_spec(spec)
+FrameBuffer::FrameBuffer(
+    const std::string& name,
+    const FrameBufferSpecification& spec)
+    : m_name(name),
+    m_spec(spec)
 {
 }
 
@@ -29,6 +32,15 @@ FrameBuffer::~FrameBuffer()
 
 }
 
+const std::string FrameBuffer::str() const noexcept
+{
+    return fmt::format(
+        "<FBO: name={}, fbo={}, w={}, h={}, attachments={}>",
+        m_name, m_fbo,
+        m_spec.width, m_spec.height,
+        m_spec.attachments.size());
+}
+
 void FrameBuffer::prepare(
     const bool clear,
     const glm::vec4& clearColor)
@@ -38,6 +50,7 @@ void FrameBuffer::prepare(
 
     {
         glCreateFramebuffers(1, &m_fbo);
+        KI_INFO(fmt::format("CREATE: FBO={}", str()));
     }
 
     int clearMask = 0;
@@ -45,6 +58,7 @@ void FrameBuffer::prepare(
     for (auto& att : m_spec.attachments) {
         if (att.type == FrameBufferAttachmentType::texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
+            KI_INFO(fmt::format("CREATE_TEX: FBO={}, TEX={}", str(), att.textureID));
 
             glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
             glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
@@ -66,6 +80,8 @@ void FrameBuffer::prepare(
         }
         else if (att.type == FrameBufferAttachmentType::rbo) {
             glCreateRenderbuffers(1, &att.rbo);
+            KI_INFO(fmt::format("CREATE_RBO: FBO={}, RBO={}", str(), att.rbo));
+
             glNamedRenderbufferStorage(att.rbo, att.internalFormat, m_spec.width, m_spec.height);
             glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, att.rbo);
 
@@ -73,6 +89,7 @@ void FrameBuffer::prepare(
         }
         else if (att.type == FrameBufferAttachmentType::depth_texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
+            KI_INFO(fmt::format("CREATE_DEPTH: FBO={}, DEPTH={}", str(), att.textureID));
 
             glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
 
@@ -126,7 +143,7 @@ void FrameBuffer::bind(const RenderContext& ctx)
     // NOTE KI MUST flush before changing render target
     ctx.m_batch->flush(ctx);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+    ctx.m_state.bindFrameBuffer(m_fbo, m_forceBind);
     glViewport(0, 0, m_spec.width, m_spec.height);
 }
 

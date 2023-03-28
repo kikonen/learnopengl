@@ -56,7 +56,7 @@ void WaterMapRenderer::prepare(
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
         };
 
-        m_reflectionBuffer = std::make_unique<FrameBuffer>(spec);
+        m_reflectionBuffer = std::make_unique<FrameBuffer>("water_reflect", spec);
     }
 
     {
@@ -68,7 +68,7 @@ void WaterMapRenderer::prepare(
             { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
         };
 
-        m_refractionBuffer = std::make_unique<FrameBuffer>(spec);
+        m_refractionBuffer = std::make_unique<FrameBuffer>("water_refract", spec);
     }
 
     m_reflectionBuffer->prepare(true, { 0, 0, 0, 1.0 });

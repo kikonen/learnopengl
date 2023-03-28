@@ -89,6 +89,14 @@ void GLState::bindTexture(
     }
 }
 
+void GLState::bindFrameBuffer(GLuint fbo, bool force) noexcept
+{
+    if (m_fbo != fbo || force) {
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        m_fbo = fbo;
+    }
+}
+
 void GLState::setBlendMode(const GLBlendMode& mode)
 {
     if (m_blendMode != mode)

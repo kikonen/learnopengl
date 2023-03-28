@@ -27,7 +27,7 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
     // NOTE KI must flush before changing render target
     ctx.m_batch->flush(ctx);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+    ctx.m_state.bindFrameBuffer(m_fbo, false);
     glViewport(0, 0, m_size, m_size);
 }
 

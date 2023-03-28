@@ -7,7 +7,7 @@ CubeMapBuffer::CubeMapBuffer(
     int size,
     GLenum side,
     GLuint textureID)
-    : FrameBuffer({ 0, 0, {} }),
+    : FrameBuffer( "cube_map", { 0, 0, {} }),
     m_side(side),
     m_textureID(textureID)
 {
