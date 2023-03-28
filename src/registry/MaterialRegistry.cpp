@@ -48,7 +48,8 @@ void MaterialRegistry::add(const Material& material)
         size_t size = m_indeces.size() + std::max(MATERIAL_BLOCK_SIZE, count) + MATERIAL_BLOCK_SIZE;
         size += MATERIAL_BLOCK_SIZE - size % MATERIAL_BLOCK_SIZE;
         size = std::min(size, MAX_MATERIAL_COUNT);
-        m_indeces.reserve(size);
+        m_materials.reserve(size);
+        m_materialsSSBO.reserve(size);
     }
 
     material.m_registeredIndex = m_materials.size();
@@ -130,9 +131,12 @@ void MaterialRegistry::updateMaterialBuffer()
     if (totalCount == 0) return;
 
     {
+        // NOTE KI update m_materialsSSBO from *index*, not *updateIndex* point
+        // - otherwise entries are multiplied, and indexed incorrectly
         for (size_t i = index; i < totalCount; i++) {
             auto& material = m_materials[i];
             material.prepare(m_assets);
+            m_materialsSSBO.emplace_back(material.toSSBO());
         }
     }
 
@@ -148,11 +152,6 @@ void MaterialRegistry::updateMaterialBuffer()
         }
 
         const int updateCount = totalCount - updateIndex;
-
-        for (size_t i = updateIndex; i < totalCount; i++) {
-            const auto& material = m_materials[i];
-            m_materialsSSBO.emplace_back(material.toSSBO());
-        }
 
         m_ssbo.update(
             updateIndex * sz,
