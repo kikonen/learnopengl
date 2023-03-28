@@ -34,35 +34,35 @@ public:
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
         bool includeBlended,
-        std::function<bool(const MeshType*)> typeSelector,
-        std::function<bool(const Node*)> nodeSelector,
+        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const Node*)>& nodeSelector,
         GLbitfield clearMask,
         const glm::vec4& clearColor);
 
     void drawBlended(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
-        std::function<bool(const MeshType*)> typeSelector,
-        std::function<bool(const Node*)> nodeSelector);
+        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const Node*)>& nodeSelector);
 
     void drawProgram(
         const RenderContext& ctx,
         Program* program,
         Program* programSprite,
-        std::function<bool(const MeshType*)> typeSelector,
-        std::function<bool(const Node*)> nodeSelector);
+        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const Node*)>& nodeSelector);
 
 private:
     void drawNodesImpl(
         const RenderContext& ctx,
         bool useGBuffer,
-        std::function<bool(const MeshType*)> typeSelector,
-        std::function<bool(const Node*)> nodeSelector);
+        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const Node*)>& nodeSelector);
 
     void drawBlendedImpl(
         const RenderContext& ctx,
-        std::function<bool(const MeshType*)> typeSelector,
-        std::function<bool(const Node*)> nodeSelector);
+        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const Node*)>& nodeSelector);
 
     void drawQuad(const RenderContext& ctx);
 

@@ -42,8 +42,8 @@ void NodeDraw::drawNodes(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer,
     bool includeBlended,
-    std::function<bool(const MeshType*)> typeSelector,
-    std::function<bool(const Node*)> nodeSelector,
+    const std::function<bool(const MeshType*)>& typeSelector,
+    const std::function<bool(const Node*)>& nodeSelector,
     GLbitfield clearMask,
     const glm::vec4& clearColor)
 {
@@ -89,8 +89,8 @@ void NodeDraw::drawNodes(
 void NodeDraw::drawBlended(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer,
-    std::function<bool(const MeshType*)> typeSelector,
-    std::function<bool(const Node*)> nodeSelector)
+    const std::function<bool(const MeshType*)>& typeSelector,
+    const std::function<bool(const Node*)>& nodeSelector)
 {
     targetBuffer->bind(ctx);
     drawBlendedImpl(ctx, typeSelector, nodeSelector);
@@ -100,8 +100,8 @@ void NodeDraw::drawBlended(
 void NodeDraw::drawNodesImpl(
     const RenderContext& ctx,
     bool useGBuffer,
-    std::function<bool(const MeshType*)> typeSelector,
-    std::function<bool(const Node*)> nodeSelector)
+    const std::function<bool(const MeshType*)>& typeSelector,
+    const std::function<bool(const Node*)>& nodeSelector)
 {
     auto* nodeRegistry = ctx.m_registry->m_nodeRegistry;
 
@@ -134,8 +134,8 @@ void NodeDraw::drawNodesImpl(
 
 void NodeDraw::drawBlendedImpl(
     const RenderContext& ctx,
-    std::function<bool(const MeshType*)> typeSelector,
-    std::function<bool(const Node*)> nodeSelector)
+    const std::function<bool(const MeshType*)>& typeSelector,
+    const std::function<bool(const Node*)>& nodeSelector)
 {
     if (ctx.m_registry->m_nodeRegistry->blendedNodes.empty()) return;
 
@@ -175,8 +175,8 @@ void NodeDraw::drawProgram(
     const RenderContext& ctx,
     Program* program,
     Program* programSprite,
-    std::function<bool(const MeshType*)> typeSelector,
-    std::function<bool(const Node*)> nodeSelector)
+    const std::function<bool(const MeshType*)>& typeSelector,
+    const std::function<bool(const Node*)>& nodeSelector)
 {
     auto renderTypes = [this, &ctx, &program, &programSprite, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
