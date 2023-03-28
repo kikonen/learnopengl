@@ -132,13 +132,7 @@ void MaterialRegistry::updateMaterialBuffer()
     {
         for (size_t i = index; i < totalCount; i++) {
             auto& material = m_materials[i];
-
             material.prepare(m_assets);
-
-            for (auto& tex : material.m_textures) {
-                if (!tex.texture) continue;
-                tex.m_texIndex = tex.texture->m_texIndex;
-            }
         }
     }
 

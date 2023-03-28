@@ -68,6 +68,7 @@ void NodeDraw::drawNodes(
     }
 
     // pass 3 - non G-buffer nodes
+    // => for example, "skybox"
     // => separate light calculations
     {
         m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });

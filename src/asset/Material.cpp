@@ -254,6 +254,7 @@ void Material::prepare(const Assets& assets)
     for (auto& tex : m_textures) {
         if (!tex.texture) continue;
         tex.texture->prepare(assets);
+        tex.m_texIndex = tex.texture->m_texIndex;
     }
 }
 
