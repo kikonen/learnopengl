@@ -30,7 +30,7 @@ public:
 
     bool m_singleMaterial = true;
 
-    GLBuffer* m_buffer{ nullptr };
+    //GLBuffer* m_buffer{ nullptr };
     int m_bufferIndex = 0;
 
     std::vector<Material> m_materials;

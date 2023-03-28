@@ -75,7 +75,7 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
     }
 
     materialVBO.m_bufferIndex = index;
-    materialVBO.m_buffer = &m_indexBuffer;
+    //materialVBO.m_buffer = &m_indexBuffer;
 
     m_indeces.insert(
         m_indeces.end(),
