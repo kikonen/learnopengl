@@ -18,6 +18,6 @@ public:
 private:
     std::map<const std::string, std::unique_ptr<Image>> m_images;
 
-    std::mutex m_lock;
+    std::mutex m_lock{};
 };
 

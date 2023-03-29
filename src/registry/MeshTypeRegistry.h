@@ -31,6 +31,6 @@ private:
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
-    std::mutex m_lock;
+    std::mutex m_lock{};
     std::vector<MeshType*> m_types;
 };

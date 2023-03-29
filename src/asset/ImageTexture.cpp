@@ -14,7 +14,7 @@ namespace {
     int preparedTexturesLevel = 0;
     std::vector<const ImageTexture*> preparedTextures;
 
-    std::mutex textures_lock;
+    std::mutex textures_lock{};
 
     std::shared_future<ImageTexture*> startLoad(ImageTexture* texture)
     {

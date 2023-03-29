@@ -36,5 +36,5 @@ private:
 
     std::condition_variable m_waitCondition;
 
-    std::mutex m_load_lock;
+    std::mutex m_load_lock{};
 };

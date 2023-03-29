@@ -7,7 +7,7 @@
 namespace {
     int idBase = 0;
 
-    std::mutex id_lock;
+    std::mutex id_lock{};
 
     int nextID()
     {

@@ -16,7 +16,7 @@
 namespace {
     int idBase = 0;
 
-    std::mutex type_id_lock;
+    std::mutex type_id_lock{};
 
     int nextID()
     {

@@ -20,7 +20,7 @@
 #include "util/Log.h"
 
 namespace {
-    std::mutex load_lock;
+    std::mutex load_lock{};
 }
 
 Image::Image(const std::string& path)

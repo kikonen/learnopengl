@@ -47,7 +47,7 @@ private:
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
-    std::mutex m_meshes_lock;
+    std::mutex m_meshes_lock{};
     std::map<const std::string, std::shared_future<ModelMesh*>> m_meshes;
 
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };

@@ -27,7 +27,7 @@
 namespace {
     int objectIDbase = 100;
 
-    std::mutex object_id_lock;
+    std::mutex object_id_lock{};
 
     const static glm::mat4 IDENTITY_MATRIX{ 1.f };
 

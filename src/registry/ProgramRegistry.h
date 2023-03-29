@@ -42,5 +42,5 @@ private:
     // name + geom
     std::map<std::string, std::unique_ptr<Program>> m_programs;
 
-    std::mutex m_programs_lock;
+    std::mutex m_programs_lock{};
 };
