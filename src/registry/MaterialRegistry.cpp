@@ -30,6 +30,11 @@ MaterialRegistry::MaterialRegistry(
     m_materials.reserve(MATERIAL_BLOCK_SIZE);
     m_materialsSSBO.reserve(MATERIAL_BLOCK_SIZE);
     m_indeces.reserve(INDEX_BLOCK_SIZE);
+
+    // NOTE KI *reserve* index 0
+    // => multi-material needs to do "-index" trick, does not work for zero
+    m_zero = Material::createMaterial(BasicMaterial::basic);
+    add(m_zero);
 }
 
 MaterialRegistry::~MaterialRegistry() {

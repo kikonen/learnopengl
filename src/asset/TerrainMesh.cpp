@@ -59,8 +59,7 @@ void TerrainMesh::prepareMaterials(
     init.prepare(*this, materialVBO);
 }
 
-void TerrainMesh::prepareVAO(
-    GLVertexArray& vao,
+void TerrainMesh::prepareDrawOptions(
     backend::DrawOptions& drawOptions)
 {
     drawOptions.type = backend::DrawOptions::Type::arrays;

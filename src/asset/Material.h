@@ -96,6 +96,10 @@ public:
         const int objectID,
         std::vector<Material>& materials);
 
+    static const Material* findID(
+        const int objectID,
+        const std::vector<Material>& materials);
+
     const std::string getTexturePath(
         const Assets& assets,
         const std::string& textureName);

@@ -60,8 +60,7 @@ void QuadMesh::prepareMaterials(
     init.prepare(*this, materialVBO);
 }
 
-void QuadMesh::prepareVAO(
-    GLVertexArray& vao,
+void QuadMesh::prepareDrawOptions(
     backend::DrawOptions& drawOptions)
 {
     drawOptions.type = backend::DrawOptions::Type::arrays;

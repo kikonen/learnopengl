@@ -53,6 +53,8 @@ private:
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
+    Material m_zero;
+
     std::vector<Material> m_materials;
 
     //MaterialsUBO m_materialsUbo;

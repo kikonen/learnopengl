@@ -41,7 +41,7 @@ const std::string MeshType::str() const noexcept
 {
     return fmt::format(
         "<NODE_TYPE: id={}, name={}, mesh={}, vao={}, materialIndex={}, materialCount={}>",
-        typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao ? *m_vao : -1, getMaterialIndex(), getMaterialCount());
+        typeID, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao ? *m_vao : -1, m_materialIndex, getMaterialCount());
 }
 
 void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
@@ -65,7 +65,7 @@ void MeshType::modifyMaterials(std::function<void(Material&)> fn)
     }
 }
 
-int MeshType::getMaterialIndex() const
+int MeshType::resolveMaterialIndex() const
 {
     auto& materialVBO = m_materialVBO;
     if (materialVBO.m_singleMaterial) {
@@ -73,11 +73,6 @@ int MeshType::getMaterialIndex() const
         return materialVBO.m_indeces.empty() ? -1 : materialVBO.m_indeces[0].m_materialIndex;
     }
     return -materialVBO.m_bufferIndex;
-}
-
-int MeshType::getMaterialCount() const
-{
-    return m_materialVBO.m_materials.size();
 }
 
 void MeshType::prepare(
@@ -91,18 +86,25 @@ void MeshType::prepare(
 
     //m_privateVAO.create();
 
+    for (auto& material : m_materialVBO.m_materials) {
+        registry->m_materialRegistry->add(material);
+    }
+
     m_vao = m_mesh->prepare(assets, registry);
     m_mesh->prepareMaterials(m_materialVBO);
 
     registry->m_materialRegistry->registerMaterialVBO(m_materialVBO);
+    m_materialIndex = resolveMaterialIndex();
 
-    m_drawOptions.renderBack = m_flags.renderBack;
-    m_drawOptions.wireframe = m_flags.wireframe;
-    m_drawOptions.blend = m_flags.blend;
-    m_drawOptions.instanced = m_flags.instanced;
-    m_drawOptions.tessellation = m_flags.tessellation;
+    {
+        m_drawOptions.renderBack = m_flags.renderBack;
+        m_drawOptions.wireframe = m_flags.wireframe;
+        m_drawOptions.blend = m_flags.blend;
+        m_drawOptions.instanced = m_flags.instanced;
+        m_drawOptions.tessellation = m_flags.tessellation;
 
-    m_mesh->prepareVAO(*m_vao, m_drawOptions);
+        m_mesh->prepareDrawOptions(m_drawOptions);
+    }
 
     if (m_program) {
         m_program->prepare(assets);

@@ -9,6 +9,16 @@
 namespace {
     int instancedCount = 0;
     int vertecedCount = 0;
+
+    std::unique_ptr<Material> NULL_MATERIAL;
+
+    Material* getNullMaterial()
+    {
+        if (!NULL_MATERIAL) {
+            NULL_MATERIAL = std::make_unique<Material>();
+        }
+        return NULL_MATERIAL.get();
+    }
 }
 
 void MaterialVBO::setMaterials(const std::vector<Material>& materials)
@@ -34,7 +44,13 @@ void MaterialVBO::setMaterials(const std::vector<Material>& materials)
     }
 }
 
-const std::vector<Material>& MaterialVBO::getMaterials() const
+const std::vector<Material>& MaterialVBO::getMaterials() const noexcept
 {
     return m_materials;
+}
+
+const Material& MaterialVBO::getFirst() const noexcept
+{
+    if (m_materials.empty()) return *NULL_MATERIAL;
+    return m_materials[0];
 }

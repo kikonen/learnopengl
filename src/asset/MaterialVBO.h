@@ -7,6 +7,7 @@
 
 #include "Material.h"
 
+
 class Mesh;
 struct MaterialIndex;
 
@@ -18,7 +19,9 @@ public:
     virtual ~MaterialVBO() = default;
 
     void setMaterials(const std::vector<Material>& materials);
-    const std::vector<Material>& getMaterials() const;
+    const std::vector<Material>& getMaterials() const noexcept;
+
+    const const Material& getFirst() const noexcept;
 
     //virtual void prepareVAO(
     //    GLVertexArray& vao);

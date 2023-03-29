@@ -63,7 +63,7 @@ void Node::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    {
+    if (m_type->getMesh()) {
         m_instance.m_entityIndex = registry->m_entityRegistry->addEntity();
         m_instance.setMaterialIndex(getMaterialIndex());
 

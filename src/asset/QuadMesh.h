@@ -27,8 +27,7 @@ public:
     virtual void prepareMaterials(
         MaterialVBO& materialVBO) override;
 
-    virtual void prepareVAO(
-        GLVertexArray& vao,
+    virtual void prepareDrawOptions(
         backend::DrawOptions& drawOptions) override;
 
 protected:

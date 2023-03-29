@@ -21,7 +21,7 @@ void QuadMaterialInit::prepare(
 void QuadMaterialInit::prepareVertices(
     MaterialVBO& materialVBO)
 {
-    const auto& material = materialVBO.getMaterials()[0];
+    const auto& material = materialVBO.getFirst();
 
     // MaterialVBO
     // https://paroj.github.io/gltut/Basic%20Optimization.html

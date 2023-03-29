@@ -20,7 +20,7 @@ void TerrainMaterialInit::prepare(
 void TerrainMaterialInit::prepareVertices(
     MaterialVBO& materialVBO)
 {
-    const auto& material = materialVBO.getMaterials()[0];
+    const auto& material = materialVBO.getFirst();
 
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     {

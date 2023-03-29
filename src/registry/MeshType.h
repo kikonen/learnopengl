@@ -71,11 +71,22 @@ public:
 
     void modifyMaterials(std::function<void(Material&)> fn);
 
-    int getMaterialIndex() const;
-    int getMaterialCount() const;
+    inline int getMaterialIndex() const noexcept
+    {
+        return m_materialIndex;
+    }
+
+    int resolveMaterialIndex() const;
+
+    inline int getMaterialCount() const noexcept
+    {
+        return m_materialVBO.m_materials.size();
+    }
+
 
     CustomMaterial* getCustomMaterial();
-    void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial)
+
+    void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept
     {
         m_customMaterial = std::move(customMaterial);
     }
@@ -100,6 +111,8 @@ public:
     Program* m_program{ nullptr };
 
     MaterialVBO m_materialVBO;
+
+    int m_materialIndex{ 0 };
 
     backend::DrawOptions m_drawOptions;
 

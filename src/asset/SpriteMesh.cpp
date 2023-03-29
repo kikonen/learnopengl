@@ -59,8 +59,7 @@ void SpriteMesh::prepareMaterials(
     init.prepare(*this, materialVBO);
 }
 
-void SpriteMesh::prepareVAO(
-    GLVertexArray& vao,
+void SpriteMesh::prepareDrawOptions(
     backend::DrawOptions& drawOptions)
 {
     drawOptions.type = backend::DrawOptions::Type::arrays;

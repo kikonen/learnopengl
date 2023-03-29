@@ -135,6 +135,17 @@ Material* Material::findID(
     return it != materials.end() ? &(*it) : nullptr;
 }
 
+const Material* Material::findID(
+    const int objectID,
+    const std::vector<Material>& materials)
+{
+    const auto& it = std::find_if(
+        materials.begin(),
+        materials.end(),
+        [objectID](const Material& m) { return m.m_objectID == objectID; });
+    return it != materials.end() ? &(*it) : nullptr;
+}
+
 Material::Material()
     : m_objectID(nextID())
 {

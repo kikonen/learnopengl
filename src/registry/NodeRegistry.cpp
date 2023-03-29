@@ -213,12 +213,6 @@ void NodeRegistry::bindNode(
         if (!program) return;
     }
 
-    {
-        type->modifyMaterials([this](Material& m) {
-            m_registry->m_materialRegistry->add(m);
-        });
-    }
-
     type->prepare(m_assets, m_registry);
     node->prepare(m_assets, m_registry);
 

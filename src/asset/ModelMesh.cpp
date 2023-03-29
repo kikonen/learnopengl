@@ -96,12 +96,9 @@ void ModelMesh::prepareMaterials(
     init.prepare(*this, materialVBO);
 }
 
-void ModelMesh::prepareVAO(
-    GLVertexArray& vao,
+void ModelMesh::prepareDrawOptions(
     backend::DrawOptions& drawOptions)
 {
-    //m_vertexVBO.prepareVAO(vao);
-
     drawOptions.type = backend::DrawOptions::Type::elements;
     drawOptions.mode = drawOptions.tessellation ? GL_PATCHES : GL_TRIANGLES;
     drawOptions.indexCount = m_triCount * 3;

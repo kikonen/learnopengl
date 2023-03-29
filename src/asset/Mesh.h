@@ -43,8 +43,7 @@ public:
     virtual void prepareMaterials(
         MaterialVBO& materialVBO) = 0;
 
-    virtual void prepareVAO(
-        GLVertexArray& vao,
+    virtual void prepareDrawOptions(
         backend::DrawOptions& drawOptions) = 0;
 
     void setAABB(const AABB& aabb) {
