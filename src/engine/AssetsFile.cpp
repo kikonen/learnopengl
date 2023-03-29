@@ -69,6 +69,27 @@ void AssetsFile::loadAssets(
         else if (k == "gl_no_error") {
             data.glNoError = v.as<bool>();
         }
+        else if (k == "camera_move_mormal") {
+            data.cameraMoveNormal = readVec3(v);
+        }
+        else if (k == "camera_move_run") {
+            data.cameraMoveRun = readVec3(v);
+        }
+        else if (k == "camera_rotate_normal") {
+            data.cameraRotateNormal = readVec3(v);
+        }
+        else if (k == "camera_rotate_run") {
+            data.cameraRotateRun = readVec3(v);
+        }
+        else if (k == "camera_zoom_mormal") {
+            data.cameraZoomNormal = readVec3(v);
+        }
+        else if (k == "camera_zoom_run") {
+            data.cameraZoomRun = readVec3(v);
+        }
+        else if (k == "camera_mouse_senstivity") {
+            data.cameraMouseSensitivity = readVec3(v);
+        }
         else if (k == "async_loader_enabled") {
             data.asyncLoaderEnabled = v.as<bool>();
         }

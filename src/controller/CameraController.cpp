@@ -20,15 +20,14 @@ void CameraController::prepare(
 
     m_node = &node;
 
-    // NOTE KI need to keep "ratio" between these similar speed wise
-    m_forwardStep = 5.5f;
-    m_upStep = 6.5f;
-    m_rightStep = 4.5f;
+    m_cameraMoveNormal = assets.cameraMoveNormal;
+    m_cameraMoveRun = assets.cameraMoveRun;
+    m_cameraRotateNormal = assets.cameraRotateNormal;
+    m_cameraRotateRun = assets.cameraRotateRun;
+    m_cameraZoomNormal = assets.cameraZoomNormal;
+    m_cameraZoomRun = assets.cameraZoomRun;
 
-    m_rotateStep = 12.5f;
-
-    m_zoomStep = 20.0f;
-    m_mouseSensitivity = 0.1f;
+    m_cameraMouseSensitivity = assets.cameraMouseSensitivity;
 }
 
 bool CameraController::update(
@@ -44,17 +43,15 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
     auto* camera = m_node->m_camera.get();
 
     const float dt = clock.elapsedSecs;
-    float forwardSize = m_forwardStep;
-    float upSize = m_upStep;
-    float rightSize = m_rightStep;
-    float rotateSize = m_rotateStep;
+
+    glm::vec3 moveSpeed{ m_cameraMoveNormal };
+    glm::vec3 rotateSpeed{ m_cameraRotateNormal };
+    glm::vec3 zoomSpeed{ m_cameraZoomNormal };
 
     if (input->isModifierDown(Modifier::SHIFT)) {
-        // NOTE KI need to keep "ratio" between these similar speed wise
-        forwardSize *= 3;
-        upSize *= 3;
-        rightSize *= 2;
-        rotateSize *= 2.9;
+        moveSpeed = m_cameraMoveRun;
+        rotateSpeed = m_cameraRotateRun;
+        zoomSpeed = m_cameraZoomRun;
     }
 
     {
@@ -62,20 +59,20 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
             glm::vec3 rotation = m_node->getRotation();
 
             if (input->isKeyDown(Key::ROTATE_LEFT)) {
-                rotation.y += rotateSize * dt;
+                rotation.y += rotateSpeed.y * dt;
             }
             if (input->isKeyDown(Key::ROTATE_RIGHT)) {
-                rotation.y -= rotateSize * dt;
+                rotation.y -= rotateSpeed.y * dt;
             }
 
             m_node->setRotation({ rotation.x, rotation.y, rotation.z });
         }
 
         if (input->isKeyDown(Key::ZOOM_IN)) {
-            camera->adjustZoom(-m_zoomStep * dt);
+            camera->adjustZoom(-zoomSpeed.z * dt);
         }
         if (input->isKeyDown(Key::ZOOM_OUT)) {
-            camera->adjustZoom(m_zoomStep * dt);
+            camera->adjustZoom(zoomSpeed.z * dt);
         }
     }
 
@@ -87,11 +84,11 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
             const auto& viewFront = camera->getViewFront();
 
             if (input->isKeyDown(Key::FORWARD)) {
-                pos += viewFront * dt * forwardSize;
+                pos += viewFront * dt * moveSpeed.z;
                 changed = true;
             }
             if (input->isKeyDown(Key::BACKWARD)) {
-                pos -= viewFront * dt * forwardSize;
+                pos -= viewFront * dt * moveSpeed.z;
                 changed = true;
             }
         }
@@ -100,11 +97,11 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
             const auto& viewRight = camera->getViewRight();
 
             if (input->isKeyDown(Key::LEFT)) {
-                pos -= viewRight * dt * rightSize;
+                pos -= viewRight * dt * moveSpeed.x;
                 changed = true;
             }
             if (input->isKeyDown(Key::RIGHT)) {
-                pos += viewRight * dt * rightSize;
+                pos += viewRight * dt * moveSpeed.x;
                 changed = true;
             }
         }
@@ -113,11 +110,11 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
             const auto& viewUp = camera->getViewUp();
 
             if (input->isKeyDown(Key::UP)) {
-                pos += viewUp * dt * upSize;
+                pos += viewUp * dt * moveSpeed.y;
                 changed = true;
             }
             if (input->isKeyDown(Key::DOWN)) {
-                pos -= viewUp * dt * upSize;
+                pos -= viewUp * dt * moveSpeed.y;
                 changed = true;
             }
 
@@ -139,14 +136,14 @@ void CameraController::onMouseMove(Input* input, double xoffset, double yoffset)
     glm::vec3 rotation = m_node->getRotation();
 
     if (xoffset != 0) {
-        auto yaw = rotation.y - m_mouseSensitivity * xoffset;
+        auto yaw = rotation.y - m_cameraMouseSensitivity.x * xoffset;
 
         rotation.y = yaw;
         changed = true;
     }
 
     if (yoffset != 0) {
-        auto pitch = rotation.x + m_mouseSensitivity * yoffset;
+        auto pitch = rotation.x + m_cameraMouseSensitivity.y * yoffset;
 
         if (pitch < -MAX_ANGLE) {
             pitch = -MAX_ANGLE;
@@ -169,5 +166,7 @@ void CameraController::onMouseScroll(Input* input, double xoffset, double yoffse
     if (!m_node) return;
     auto* camera = m_node->m_camera.get();
 
-    camera->adjustZoom(-yoffset);
+    auto zoom = m_cameraMouseSensitivity.z * yoffset;
+
+    camera->adjustZoom(-zoom);
 }

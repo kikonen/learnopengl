@@ -10,6 +10,14 @@ assets:
   gbuffer_scale: 0.5
   buffer_scale: 1.0
 
+  camera_move_mormal: [2.5, 4.5, 4.5]
+  camera_move_run: [4, 6, 6]
+  camera_rotate_normal: [14, 14, 14]
+  camera_rotate_run: [26, 26, 26]
+  camera_zoom_normal: [20, 20, 20]
+  camera_zoom_run: [25, 25, 25]
+  camera_mouse_senstivity: [0.1, 0.1, 0.5]
+
   async_loader_enabled: true
   async_loader_delay: 0
 

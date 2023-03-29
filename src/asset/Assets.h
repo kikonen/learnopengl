@@ -41,6 +41,14 @@ public:
     float gbufferScale;
     float bufferScale;
 
+    glm::vec3 cameraMoveNormal;
+    glm::vec3 cameraMoveRun;
+    glm::vec3 cameraRotateNormal;
+    glm::vec3 cameraRotateRun;
+    glm::vec3 cameraZoomNormal;
+    glm::vec3 cameraZoomRun;
+    glm::vec3 cameraMouseSensitivity;
+
     bool asyncLoaderEnabled;
     int asyncLoaderDelay;
 

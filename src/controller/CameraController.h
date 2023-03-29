@@ -26,11 +26,12 @@ public:
 private:
     Node* m_node{ nullptr };
 
-    float m_forwardStep = 8.0f;
-    float m_upStep = 8.0f;
-    float m_rightStep = 5.0f;
+    glm::vec3 m_cameraMoveNormal{ 0.f };
+    glm::vec3 m_cameraMoveRun{ 0.f };
+    glm::vec3 m_cameraRotateNormal{ 0.f };
+    glm::vec3 m_cameraRotateRun{ 0.f };
+    glm::vec3 m_cameraZoomNormal{ 0.f };
+    glm::vec3 m_cameraZoomRun{ 0.f };
 
-    float m_rotateStep = 30.f;
-    float m_zoomStep = 20.0f;
-    float m_mouseSensitivity = 0.1f;
+    glm::vec3 m_cameraMouseSensitivity{ 0.f };
 };

@@ -26,6 +26,14 @@ Assets::Assets()
     gbufferScale = 0.5f;
     bufferScale = 0.5f;
 
+    cameraMoveNormal = { 4.5, 4.5, 4.5 };
+    cameraMoveRun = { 8, 8, 8 };
+    cameraRotateNormal = { 12, 12, 12};
+    cameraRotateRun = { 20, 20, 20 };
+    cameraZoomNormal = { 20, 20, 20 };
+    cameraZoomRun = { 25, 25, 25 };
+    cameraMouseSensitivity = { 0.1, 0.1, 0.1 };
+
     asyncLoaderEnabled = true;
     asyncLoaderDelay = 1000;
 
