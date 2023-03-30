@@ -35,6 +35,7 @@ MaterialRegistry::MaterialRegistry(
     // => multi-material needs to do "-index" trick, does not work for zero
     m_zero = Material::createMaterial(BasicMaterial::basic);
     add(m_zero);
+    m_indeces.emplace_back(m_zero.m_registeredIndex);
 }
 
 MaterialRegistry::~MaterialRegistry() {
