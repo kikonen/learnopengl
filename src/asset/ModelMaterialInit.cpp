@@ -4,10 +4,6 @@
 #include "ModelMesh.h"
 #include "MaterialVBO.h"
 
-#include "asset/MaterialIndex.h"
-
-namespace {
-}
 
 void ModelMaterialInit::prepare(
     ModelMesh& mesh,
@@ -32,8 +28,6 @@ void ModelMaterialInit::prepareVertices(
             int x = 0;
 
         for (int i = 0; i < count; i++) {
-            auto& entry = indeces.emplace_back();
-
             const auto& vertex = vertices[i];
             auto* mat = Material::findID(vertex.materialID, materialVBO.m_materials);
 
@@ -51,7 +45,8 @@ void ModelMaterialInit::prepareVertices(
 
             // TODO KI should use noticeable value for missing
             // => would trigger undefined array access in render side
-            entry.m_materialIndex = mat ? mat->m_registeredIndex : Material::DEFAULT_ID;
+            GLuint materialIndex = mat ? mat->m_registeredIndex : Material::DEFAULT_ID;
+            indeces.emplace_back(materialIndex);
         }
 
         materialVBO.m_singleMaterial = single;

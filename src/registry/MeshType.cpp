@@ -4,7 +4,6 @@
 #include <fmt/format.h>
 
 #include "asset/Assets.h"
-#include "asset/MaterialIndex.h"
 #include "asset/Mesh.h"
 
 #include "backend/DrawOptions.h"
@@ -70,7 +69,7 @@ int MeshType::resolveMaterialIndex() const
     auto& materialVBO = m_materialVBO;
     if (materialVBO.m_singleMaterial) {
         // NOTE KI handles "per instance" material case; per vertex separately
-        return materialVBO.m_indeces.empty() ? -1 : materialVBO.m_indeces[0].m_materialIndex;
+        return materialVBO.m_indeces.empty() ? -1 : materialVBO.m_indeces[0];
     }
     return -materialVBO.m_bufferIndex;
 }

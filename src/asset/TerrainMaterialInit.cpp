@@ -5,10 +5,6 @@
 #include "MaterialVBO.h"
 #include "TerrainMesh.h"
 
-#include "asset/MaterialIndex.h"
-
-namespace {
-}
 
 void TerrainMaterialInit::prepare(
     TerrainMesh& mesh,
@@ -25,8 +21,6 @@ void TerrainMaterialInit::prepareVertices(
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     {
         auto& entries = materialVBO.m_indeces;
-
-        auto& entry = entries.emplace_back();
-        entry.m_materialIndex = material.m_registeredIndex;
+        entries.emplace_back(material.m_registeredIndex);
     }
 }

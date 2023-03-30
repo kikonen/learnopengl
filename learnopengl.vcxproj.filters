@@ -755,9 +755,6 @@
     <ClInclude Include="src\kigl\GLSyncQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\MaterialIndex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\registry\EntitySSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -8,8 +8,6 @@
 
 #include "ki/GL.h"
 
-#include "asset/MaterialIndex.h"
-
 #include "component/Light.h"
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"

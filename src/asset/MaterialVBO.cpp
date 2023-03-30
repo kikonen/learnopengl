@@ -4,7 +4,6 @@
 
 #include "Program.h"
 #include "ModelMesh.h"
-#include "MaterialIndex.h"
 
 namespace {
     int instancedCount = 0;

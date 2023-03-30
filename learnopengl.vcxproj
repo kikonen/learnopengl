@@ -359,7 +359,6 @@
     <ClInclude Include="src\kigl\GLBuffer.h" />
     <ClInclude Include="src\kigl\GLBufferRange.h" />
     <ClInclude Include="src\kigl\GLVertexArray.h" />
-    <ClInclude Include="src\asset\MaterialIndex.h" />
     <ClInclude Include="src\kigl\GLBlendMode.h" />
     <ClInclude Include="src\ki\OpenGLInfo.h" />
     <ClInclude Include="src\ki\RenderClock.h" />

@@ -5,8 +5,6 @@
 #include "MaterialVBO.h"
 #include "QuadMesh.h"
 
-#include "asset/MaterialIndex.h"
-
 namespace {
     constexpr int VERTEX_COUNT = 4;
 }
@@ -33,10 +31,8 @@ void QuadMaterialInit::prepareVertices(
         entries.reserve(count);
 
         for (int i = 0; i < count; i++) {
-            auto& entry = entries.emplace_back();
-
             // NOTE KI hardcoded single material
-            entry.m_materialIndex = material.m_registeredIndex;
+            entries.emplace_back(material.m_registeredIndex);
         }
     }
 }

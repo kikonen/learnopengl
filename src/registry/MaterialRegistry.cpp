@@ -6,7 +6,7 @@
 #include "asset/MaterialVBO.h"
 #include "asset/MaterialUBO.h"
 #include "asset/MaterialSSBO.h"
-#include "asset/MaterialIndex.h"
+
 
 namespace {
     constexpr size_t MATERIAL_BLOCK_SIZE = 10;
@@ -38,10 +38,7 @@ MaterialRegistry::MaterialRegistry(
     m_indeces.emplace_back(m_zero.m_registeredIndex);
 }
 
-MaterialRegistry::~MaterialRegistry() {
-}
-
-void MaterialRegistry::add(const Material& material)
+void MaterialRegistry::add(Material& material)
 {
     if (material.m_registeredIndex >= 0) return;
 
@@ -68,7 +65,7 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 
     const size_t count = materialVBO.m_indeces.size();
     const size_t index = m_indeces.size();
-    const size_t offset = index * sizeof(MaterialIndex);
+    const size_t offset = index * sizeof(GLuint);
 
     if (index + count > MAX_INDEX_COUNT)
         throw std::runtime_error{ fmt::format("MAX_INDEX_COUNT: {}", MAX_INDEX_COUNT) };
@@ -118,7 +115,7 @@ void MaterialRegistry::update(const UpdateContext& ctx)
 void MaterialRegistry::prepare()
 {
     m_ssbo.createEmpty(MATERIAL_BLOCK_SIZE * sizeof(MaterialSSBO), GL_DYNAMIC_STORAGE_BIT);
-    m_indexBuffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(MaterialIndex), GL_DYNAMIC_STORAGE_BIT);
+    m_indexBuffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
 }
 
 void MaterialRegistry::bind(
@@ -177,7 +174,7 @@ void MaterialRegistry::updateIndexBuffer()
     if (totalCount == 0) return;
 
     {
-        constexpr size_t sz = sizeof(MaterialIndex);
+        constexpr size_t sz = sizeof(GLuint);
         int updateIndex = index;
 
         // NOTE KI *reallocate* SSBO if needed

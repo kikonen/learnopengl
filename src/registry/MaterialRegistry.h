@@ -12,7 +12,6 @@ class MaterialVBO;
 class UpdateContext;
 class RenderContext;
 
-struct MaterialIndex;
 struct MaterialSSBO;
 
 
@@ -22,10 +21,10 @@ public:
         const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive);
 
-    ~MaterialRegistry();
+    ~MaterialRegistry() = default;
 
     // Updates m_registeredIndex of Material
-    void add(const Material& material);
+    void add(Material& material);
 
     void registerMaterialVBO(MaterialVBO& materialVBO);
 
@@ -61,7 +60,7 @@ private:
 
     std::vector<MaterialSSBO> m_materialsSSBO;
 
-    std::vector<MaterialIndex> m_indeces;
+    std::vector<GLuint> m_indeces;
 
     size_t m_lastMaterialSize = 0;
     size_t m_lastIndexSize = 0;

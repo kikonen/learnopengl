@@ -9,7 +9,6 @@
 
 
 class Mesh;
-struct MaterialIndex;
 
 class MaterialVBO {
     friend class MeshType;
@@ -37,7 +36,7 @@ public:
     int m_bufferIndex = 0;
 
     std::vector<Material> m_materials;
-    std::vector<MaterialIndex> m_indeces;
+    std::vector<GLuint> m_indeces;
 
 private:
     bool m_prepared = false;
