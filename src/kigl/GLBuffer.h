@@ -35,6 +35,10 @@ struct GLBuffer {
 
     void resizeBuffer(int size)
     {
+        KI_DEBUG(fmt::format(
+            "BUFFER: resize - name={}, id={}, oldSize={}, newSize={}",
+            m_name, m_id,
+            m_size, size));
         if (size == m_size) return;
         unmap();
         if (m_created) {
