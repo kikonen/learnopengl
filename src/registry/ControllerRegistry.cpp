@@ -45,7 +45,10 @@ void ControllerRegistry::addController(
 {
     Node* node = m_registry->m_nodeRegistry->getNode(targetObjectID);
 
-    if (!node) return;
+    if (!node) {
+        KI_WARN(fmt::format("ADD_CONTROLLER: MISSING_NODE - objectID={}", targetObjectID));
+        return;
+    }
 
     controller->prepare(m_assets, m_registry, *node);
 

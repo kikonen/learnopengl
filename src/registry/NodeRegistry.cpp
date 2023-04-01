@@ -138,6 +138,8 @@ void NodeRegistry::attachNode(
     Node* node,
     const uuids::uuid& parentId) noexcept
 {
+    m_objectIdToNode.insert(std::make_pair(node->m_objectID, node));
+
     // NOTE KI ignore children without parent; until parent is found
     if (!bindParent(node, parentId)) return;
 
@@ -242,8 +244,6 @@ void NodeRegistry::bindNode(
 
         auto& vAll = allNodes[programKey][typeKey];
         auto& vTyped = (*map)[programKey][typeKey];
-
-        m_objectIdToNode.insert(std::make_pair(node->m_objectID, node));
 
         if (!node->m_id.is_nil()) m_idToNode[node->m_id] = node;
 
