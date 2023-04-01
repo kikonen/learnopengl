@@ -10,7 +10,8 @@ void TerrainMaterialInit::prepare(
     TerrainMesh& mesh,
     MaterialVBO& materialVBO)
 {
-    prepareVertices(materialVBO);
+    // NOTE KI *NO* indeces if single material
+    //prepareVertices(materialVBO);
 }
 
 void TerrainMaterialInit::prepareVertices(

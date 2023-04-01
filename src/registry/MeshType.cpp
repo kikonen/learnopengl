@@ -67,9 +67,9 @@ void MeshType::modifyMaterials(std::function<void(Material&)> fn)
 int MeshType::resolveMaterialIndex() const
 {
     auto& materialVBO = m_materialVBO;
-    if (materialVBO.m_singleMaterial) {
-        // NOTE KI handles "per instance" material case; per vertex separately
-        return materialVBO.m_indeces.empty() ? -1 : materialVBO.m_indeces[0];
+    if (materialVBO.isSingle()) {
+        // NOTE KI *NO* indeces if single material
+        return materialVBO.getFirst().m_registeredIndex;
     }
     return -materialVBO.m_bufferIndex;
 }

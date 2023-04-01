@@ -20,12 +20,15 @@ void ModelMaterialInit::prepareVertices(
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     {
         const bool single = materialVBO.m_materials.size() == 1;
-        const size_t count = single ? 1 : vertices.size();
+
+        // NOTE KI *NO* indeces if single material
+        if (single) {
+            return;
+        }
+
+        const size_t count = vertices.size();
         auto& indeces = materialVBO.m_indeces;
         indeces.reserve(count);
-
-        if (!single)
-            int x = 0;
 
         for (int i = 0; i < count; i++) {
             const auto& vertex = vertices[i];
@@ -48,7 +51,5 @@ void ModelMaterialInit::prepareVertices(
             GLuint materialIndex = mat ? mat->m_registeredIndex : Material::DEFAULT_ID;
             indeces.emplace_back(materialIndex);
         }
-
-        materialVBO.m_singleMaterial = single;
     }
 }

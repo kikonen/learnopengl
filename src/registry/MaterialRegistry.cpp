@@ -61,7 +61,8 @@ void MaterialRegistry::add(Material& material)
 
 void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 {
-    assert(!materialVBO.m_indeces.empty());
+    // NOTE KI *NO* indeces if single material
+    if (materialVBO.isSingle()) return;
 
     const size_t count = materialVBO.m_indeces.size();
     const size_t index = m_indeces.size();

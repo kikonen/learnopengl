@@ -22,15 +22,12 @@ public:
 
     const Material& getFirst() const noexcept;
 
-    //virtual void prepareVAO(
-    //    GLVertexArray& vao);
+    bool isSingle() const noexcept { return m_indeces.empty(); }
 
 public:
     Material m_defaultMaterial;
     bool m_useDefaultMaterial = false;
     bool m_forceDefaultMaterial = false;
-
-    bool m_singleMaterial = true;
 
     //GLBuffer* m_buffer{ nullptr };
     int m_bufferIndex = 0;

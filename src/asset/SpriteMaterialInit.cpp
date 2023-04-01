@@ -10,7 +10,8 @@ void SpriteMaterialInit::prepare(
     SpriteMesh& mesh,
     MaterialVBO& materialVBO)
 {
-    prepareVertices(materialVBO);
+    // NOTE KI *NO* indeces if single material
+    //prepareVertices(materialVBO);
 }
 
 void SpriteMaterialInit::prepareVertices(

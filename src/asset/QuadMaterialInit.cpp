@@ -13,7 +13,8 @@ void QuadMaterialInit::prepare(
     QuadMesh& mesh,
     MaterialVBO& materialVBO)
 {
-    prepareVertices(materialVBO);
+    // NOTE KI *NO* indeces if single material
+    //prepareVertices(materialVBO);
 }
 
 void QuadMaterialInit::prepareVertices(

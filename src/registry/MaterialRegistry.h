@@ -60,6 +60,8 @@ private:
 
     std::vector<MaterialSSBO> m_materialsSSBO;
 
+    // NOTE KI material indeces for "per vertex" materials
+    // => no indeces if single material in model
     std::vector<GLuint> m_indeces;
 
     size_t m_lastMaterialSize = 0;
