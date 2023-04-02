@@ -48,14 +48,14 @@ void ShadowMapRenderer::prepare(
     m_farPlane = assets.shadowFarPlane;
     m_frustumSize = assets.shadowFrustumSize;
 
-    m_shadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
-    //m_solidShadowProgram = programs.getProgram(SHADER_SIMPLE_DEPTH);
-    //m_blendedShadowProgram = programs.getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    //m_shadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    m_solidShadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
+    m_blendedShadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
     m_shadowDebugProgram = m_registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH);
 
-    m_shadowProgram->prepare(assets);
-    //m_solidShadowProgram->prepare(assets);
-    //m_blendedShadowProgram->prepare(assets);
+    //m_shadowProgram->prepare(assets);
+    m_solidShadowProgram->prepare(assets);
+    m_blendedShadowProgram->prepare(assets);
     m_shadowDebugProgram->prepare(assets);
 
     auto buffer = new FrameBuffer(
@@ -165,8 +165,16 @@ void ShadowMapRenderer::drawNodes(
         }
     };
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
-        renderTypes(all.second, m_shadowProgram);
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
+        renderTypes(all.second, m_solidShadowProgram);
+    }
+
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
+        renderTypes(all.second, m_blendedShadowProgram);
+    }
+
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
+        renderTypes(all.second, m_blendedShadowProgram);
     }
 
     ctx.m_batch->flush(ctx);

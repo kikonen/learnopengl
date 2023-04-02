@@ -40,9 +40,9 @@ private:
     float m_farPlane = 1000.f;
     float m_frustumSize = 100.f;
 
-    Program* m_shadowProgram{ nullptr };
-    //Program* m_solidShadowProgram{ nullptr };
-    //Program* m_blendedShadowProgram{ nullptr };
+    //Program* m_shadowProgram{ nullptr };
+    Program* m_solidShadowProgram{ nullptr };
+    Program* m_blendedShadowProgram{ nullptr };
     Program* m_shadowDebugProgram{ nullptr };
 
     uniform::Float u_nearPlane{ "u_nearPlane", UNIFORM_NEAR_PLANE };

@@ -9,7 +9,9 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
+#ifdef USE_ALPHA
 #include uniform_material_indeces.glsl
+#endif
 
 #ifdef USE_ALPHA
 out VS_OUT {
