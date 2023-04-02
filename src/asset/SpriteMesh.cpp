@@ -28,7 +28,7 @@ SpriteMesh::~SpriteMesh()
 
 const std::string SpriteMesh::str() const noexcept
 {
-    return fmt::format("<SPRITE: {}>", m_objectID);
+    return fmt::format("<SPRITE: id={}>", m_objectID);
 }
 
 const AABB SpriteMesh::calculateAABB() const

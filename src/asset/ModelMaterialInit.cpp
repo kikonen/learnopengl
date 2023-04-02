@@ -9,7 +9,7 @@ void ModelMaterialInit::prepare(
     ModelMesh& mesh,
     MaterialVBO& materialVBO)
 {
-    KI_INFO_OUT(fmt::format("PREPARE_MAT: {}", mesh.str()));
+    KI_INFO_OUT(fmt::format("PREPARE_MATERIAL: mesh={}, materials={}", mesh.str(), materialVBO.m_materials.size()));
     prepareVertices(mesh.m_vertices, materialVBO);
 }
 
@@ -42,9 +42,9 @@ void ModelMaterialInit::prepareVertices(
                 }
             }
 
-            KI_INFO(fmt::format(
-                "FIND: matID={} => matIndex={}, forcedDef={}",
-                vertex.materialID, mat->m_registeredIndex, forcedDefault));
+            //KI_INFO(fmt::format(
+            //    "FIND_MATERIAL: matID={} => matIndex={}, forcedDef={}",
+            //    vertex.materialID, mat->m_registeredIndex, forcedDefault));
 
             // TODO KI should use noticeable value for missing
             // => would trigger undefined array access in render side

@@ -29,7 +29,7 @@ QuadMesh::~QuadMesh()
 
 const std::string QuadMesh::str() const noexcept
 {
-    return fmt::format("<QUAD: {}>", m_objectID);
+    return fmt::format("<QUAD: id={}>", m_objectID);
 }
 
 const AABB QuadMesh::calculateAABB() const

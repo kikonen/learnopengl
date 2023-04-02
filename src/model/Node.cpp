@@ -50,7 +50,7 @@ Node::~Node()
 const std::string Node::str() const noexcept
 {
     return fmt::format(
-        "<NODE: {} / {} - entity={}, type={}>",
+        "<NODE: objectID={}, id={}, entity={}, type={}>",
         m_objectID, KI_UUID_STR(m_id), m_instance.m_entityIndex, m_type->str());
 }
 

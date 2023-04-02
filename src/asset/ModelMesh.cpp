@@ -43,7 +43,7 @@ ModelMesh::~ModelMesh()
 const std::string ModelMesh::str() const noexcept
 {
     return fmt::format(
-        "<MODEL: {}, mesh={}/{}>",
+        "<MODEL: id={}, mesh={}, name={}>",
         m_objectID, m_meshPath, m_meshName);
 }
 

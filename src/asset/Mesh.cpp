@@ -26,7 +26,7 @@ Mesh::~Mesh()
 
 const std::string Mesh::str() const noexcept
 {
-    return fmt::format("<MESH: {}>", m_objectID);
+    return fmt::format("<MESH: id={}>", m_objectID);
 }
 
 void Mesh::prepareVolume() {
