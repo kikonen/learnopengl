@@ -81,7 +81,7 @@ void AssetsFile::loadAssets(
         else if (k == "camera_rotate_run") {
             data.cameraRotateRun = readVec3(v);
         }
-        else if (k == "camera_zoom_mormal") {
+        else if (k == "camera_zoom_normal") {
             data.cameraZoomNormal = readVec3(v);
         }
         else if (k == "camera_zoom_run") {
