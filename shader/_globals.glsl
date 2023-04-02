@@ -78,6 +78,10 @@
   #define LIGHT_COUNT 128
 #endif
 
+#ifndef SHADOW_CASCADES
+  #define SHADOW_CASCADES 3
+#endif
+
 #ifndef CS_GROUP_X
   #define CS_GROUP_X 1
 #endif

@@ -33,7 +33,7 @@ in VS_OUT {
 } fs_in;
 
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
-layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap;
+layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap[SHADOW_CASCADES];
 
 layout (location = 0) out vec4 o_fragColor;
 

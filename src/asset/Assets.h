@@ -137,6 +137,7 @@ public:
     float shadowFarPlane;
     float shadowFrustumSize;
     int shadowMapSize;
+    int shadowCascades;
     int shadowRenderFrameStart;
     int shadowRenderFrameStep;
 

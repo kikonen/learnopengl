@@ -269,6 +269,9 @@ void AssetsFile::loadAssets(
         else if (k == "shadow_map_size") {
             data.shadowMapSize = v.as<int>();
         }
+        else if (k == "shadow_cascades") {
+            data.shadowCascades = v.as<int>();
+        }
         else if (k == "shadow_render_frame_start") {
             data.shadowRenderFrameStart = v.as<int>();
         }

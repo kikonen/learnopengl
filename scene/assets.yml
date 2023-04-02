@@ -43,7 +43,7 @@ assets:
 
   show_normals: false
   show_rear_view: false
-  show_shadow_map_view: false
+  show_shadow_map_view: true
   show_reflection_view: false
   show_refraction_view: false
   show_objectid_view: false
@@ -93,9 +93,10 @@ assets:
   fog_ratio: 1.0
 
   shadow_near_plane: 0.1
-  shadow_far_plane: 1000.0
-  shadow_frustum_size: 200
+  shadow_far_plane: 100.0
+  shadow_frustum_size: 10
   shadow_map_size: 2048
+  shadow_cascades: 3
   shadow_render_frame_start: 0
   shadow_render_frame_step: 2
 

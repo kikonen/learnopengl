@@ -19,17 +19,38 @@ entities:
       type: camera
       enabled: true
     enabled: true
-  - name: Base
+  - name: Stacked Base
     model: cow
-    xxtype: quad
-    material: fur_base
     force_material: true
     priority: 1
+    pos: [0, 0, 0]
+    scale: 1.3
+    program_stack:
+      - material: fur_base
+        force_material: true
+        program: g_tex
+        render_flags:
+          xxwireframe: true
+          xxrender_back: true
+      - material: fur
+        force_material: true
+        program: fur
+        render_flags:
+          alpha: true
+          xxblend: true
+        layers: 10
+    xxenabled: true
+  - name: Base
+    model: cow
+    xxmodel: cube
+    xxmaterial: fur_base
+    xxforce_material: true
     program: g_tex
     render_flags:
       xxwireframe: true
+    priority: 1
     pos: [0, 0, 0]
-    scale: 1.3
+    scale: 1.0
     repeat:
       x_count: 5
       z_count: 5
@@ -43,9 +64,9 @@ entities:
     force_material: true
     program: g_fur
     render_flags:
-      alpha: true
+      xxalpha: true
     pos: [0, 0, 0]
-    scale: 1.3
+    scale: 1.0
     repeat:
       x_count: 5
       z_count: 5

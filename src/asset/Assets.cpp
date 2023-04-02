@@ -120,6 +120,7 @@ Assets::Assets()
     shadowFarPlane = 1000.0f;
     shadowFrustumSize = 100.0f;
     shadowMapSize = 1024;
+    shadowCascades = 3;
 
     shadowRenderFrameStart = 0;
     shadowRenderFrameStep = 2;

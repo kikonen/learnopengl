@@ -1,11 +1,12 @@
 float lookup(
+  in int csmIndex,
   in vec4 shadowPos,
   in float x,
   in float y,
   in float bias)
 {
   // NOtE KI textureProj == automatic p.xyz / p.w
-  float t = textureProj(u_shadowMap,
+  float t = textureProj(u_shadowMap[csmIndex],
                         shadowPos + vec4(x * 0.001 * shadowPos.w,
                                                  y * 0.001 * shadowPos.w,
                                                  -0.01, 0.0),
@@ -14,6 +15,7 @@ float lookup(
 }
 
 float calcShadow(
+  in int csmIndex,
   in vec4 shadowPos,
   in vec3 normal,
   in vec3 toLight)
@@ -27,23 +29,24 @@ float calcShadow(
   float d2 = 1.5 * swidth;
 
   float shadowFactor = 0.0;
-  shadowFactor += lookup(shadowPos, -d2 + o.x,  d2 - o.y, bias);
-  shadowFactor += lookup(shadowPos, -d2 + o.x, -d1 - o.y, bias);
-  shadowFactor += lookup(shadowPos,  d1 + o.x,  d2 - o.y, bias);
-  shadowFactor += lookup(shadowPos,  d1 + o.x, -d1 - o.y, bias);
+  shadowFactor += lookup(csmIndex, shadowPos, -d2 + o.x,  d2 - o.y, bias);
+  shadowFactor += lookup(csmIndex, shadowPos, -d2 + o.x, -d1 - o.y, bias);
+  shadowFactor += lookup(csmIndex, shadowPos,  d1 + o.x,  d2 - o.y, bias);
+  shadowFactor += lookup(csmIndex, shadowPos,  d1 + o.x, -d1 - o.y, bias);
   shadowFactor = shadowFactor / 4.0;
 
   return shadowFactor;
 }
 
 float calcShadow2(
+  in int csmIndex,
   in vec4 shadowPos,
   in vec3 normal,
   in vec3 toLight)
 {
   float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
   // NOtE KI textureProj == automatic p.xyz / p.w
-  return textureProj(u_shadowMap, shadowPos, bias);
+  return textureProj(u_shadowMap[csmIndex], shadowPos, bias);
 }
 
 vec4 calculateDirLight(
@@ -71,7 +74,8 @@ vec4 calculateDirLight(
   }
 
   // calculate shadow
-  float shadow = calcShadow(shadowPos, normal, toLight);
+  int csmIndex = 0;
+  float shadow = calcShadow(csmIndex, shadowPos, normal, toLight);
   // if (shadow != 0.0) {
   //   shadow = 1;
   // }
