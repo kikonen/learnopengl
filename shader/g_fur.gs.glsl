@@ -1,7 +1,8 @@
 #version 460 core
 
 layout (triangles) in;
-layout (triangle_strip, max_vertices = 64) out;
+// NOTE KI 73 == max what Nvidia GTX 1070 allowed
+layout (triangle_strip, max_vertices = 73) out;
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl

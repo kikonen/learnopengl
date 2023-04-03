@@ -114,6 +114,7 @@ https://glad.dav1d.de
 - https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 - https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
 - https://iquilezles.org/articles/distfunctions/
+- http://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
 
 ## Libraries
 - https://github.com/nothings/stb
