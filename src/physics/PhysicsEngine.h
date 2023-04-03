@@ -4,8 +4,6 @@
 
 #include "asset/Assets.h"
 
-#include "Surface.h"
-
 class UpdateContext;
 
 class Node;
@@ -15,9 +13,12 @@ struct NodeInstance;
 
 
 namespace physics {
+    class Surface;
+
     class PhysicsEngine {
     public:
         PhysicsEngine(const Assets& assets);
+        ~PhysicsEngine();
 
         void prepare();
         void update(const UpdateContext& ctx);

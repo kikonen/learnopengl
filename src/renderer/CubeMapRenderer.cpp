@@ -3,9 +3,10 @@
 #include <vector>
 
 #include "asset/Shader.h"
-
+#include "asset/DynamicCubeMap.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"
+#include "render/FrameBuffer.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -13,6 +14,8 @@
 
 #include "render/NodeDraw.h"
 #include "render/CubeMapBuffer.h"
+
+#include "registry/MeshType.h"
 
 
 // https://stackoverflow.com/questions/28845375/rendering-a-dynamic-cubemap-opengl
@@ -68,6 +71,8 @@ namespace {
     };
 }
 
+CubeMapRenderer::~CubeMapRenderer()
+{}
 
 void CubeMapRenderer::prepare(
     const Assets& assets,

@@ -12,6 +12,9 @@
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
+#include "generator/NodeGenerator.h"
+
+#include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
@@ -63,7 +66,7 @@ void Node::prepare(
 
     if (m_type->getMesh()) {
         m_instance.m_entityIndex = registry->m_entityRegistry->addEntity();
-        m_instance.setMaterialIndex(getMaterialIndex());
+        m_instance.setMaterialIndex(m_type->getMaterialIndex());
 
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
@@ -100,6 +103,12 @@ void Node::update(
             child->update(ctx);
         }
     }
+}
+
+bool Node::isEntity() const noexcept
+{
+    return m_type->getMesh() &&
+        !m_type->m_flags.invisible;
 }
 
 void Node::updateEntity(

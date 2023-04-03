@@ -6,7 +6,12 @@
 
 #include "controller/NodeController.h"
 
+#include "asset/DynamicCubeMap.h"
+
 #include "scene/Scene.h"
+
+#include "Input.h"
+
 
 Window::Window(Engine& engine, const Assets& assets)
     : m_engine(engine), assets(assets)

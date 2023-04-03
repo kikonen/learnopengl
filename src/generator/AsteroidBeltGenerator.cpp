@@ -96,7 +96,7 @@ void AsteroidBeltGenerator::createAsteroids(
 
         asteroid.m_entityIndex = m_reservedFirst + i;
 
-        asteroid.setMaterialIndex(container.getMaterialIndex());
+        asteroid.setMaterialIndex(container.m_type->getMaterialIndex());
         asteroid.setVolume(volume);
 
         asteroid.setObjectID(containerInstance.getObjectID());

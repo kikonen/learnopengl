@@ -9,8 +9,8 @@
 #include "imgui.h"
 
 #include "asset/Assets.h"
-#include "Input.h"
 
+class Input;
 class Engine;
 
 class Window final

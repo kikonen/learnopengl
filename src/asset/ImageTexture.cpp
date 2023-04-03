@@ -5,6 +5,8 @@
 
 #include "fmt/format.h"
 
+#include "asset/Image.h"
+
 #include "ki/GL.h"
 
 namespace {

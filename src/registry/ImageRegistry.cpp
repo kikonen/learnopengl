@@ -1,5 +1,8 @@
 #include "imageRegistry.h"
 
+#include "asset/Image.h"
+
+
 namespace {
 }
 

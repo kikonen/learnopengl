@@ -10,11 +10,6 @@
 
 #include "kigl/GLSyncQueue.h"
 
-#include "registry/Registry.h"
-
-#include "command/CommandEngine.h"
-#include "command/ScriptEngine.h"
-
 #include "render/CubeMap.h"
 
 #include "renderer/NodeRenderer.h"
@@ -43,6 +38,11 @@ class NodeController;
 class RenderData;
 class Batch;
 class NodeDraw;
+
+class Registry;
+
+class CommandEngine;
+class ScriptEngine;
 
 class UpdateContext;
 class RenderContext;

@@ -5,7 +5,8 @@
 #include <future>
 
 #include "Texture.h"
-#include "Image.h"
+
+class Image;
 
 class ImageTexture final : public Texture
 {

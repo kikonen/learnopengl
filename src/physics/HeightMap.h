@@ -2,10 +2,9 @@
 
 #include <glm/glm.hpp>
 
-#include "asset/Image.h"
-
 #include "Surface.h"
 
+class Image;
 class Node;
 
 namespace physics {

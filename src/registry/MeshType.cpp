@@ -5,6 +5,8 @@
 
 #include "asset/Assets.h"
 #include "asset/Mesh.h"
+#include "asset/Program.h"
+#include "asset/CustomMaterial.h"
 
 #include "backend/DrawOptions.h"
 
@@ -119,4 +121,9 @@ void MeshType::bind(const RenderContext& ctx)
     if (m_customMaterial) {
         m_customMaterial->bindTextures(ctx);
     }
+}
+
+void MeshType::setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept
+{
+    m_customMaterial = std::move(customMaterial);
 }

@@ -1,6 +1,7 @@
 #include "ParticleSystem.h"
 
 #include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "component/Camera.h"
 

@@ -8,6 +8,7 @@
 #include "controller/CameraController.h"
 
 #include "registry/MeshType.h"
+#include "registry/Registry.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
@@ -15,7 +16,6 @@
 #include "registry/ViewportRegistry.h"
 
 #include "engine/AsyncLoader.h"
-
 
 namespace {
     //constexpr auto PLANET_UUID = KI_UUID("8712cec1-e1a3-4973-8889-533adfbbb196");

@@ -2,10 +2,12 @@
 
 #include "EntitySSBO.h"
 
+
 #include "engine/UpdateContext.h"
 
 #include "render/RenderContext.h"
 
+#include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 

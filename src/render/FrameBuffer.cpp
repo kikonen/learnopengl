@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "glm/glm.hpp"
+#include "glm/ext.hpp"
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"

@@ -1,6 +1,7 @@
 #include "NormalRenderer.h"
 
 #include "asset/Shader.h"
+#include "asset/Program.h"
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"

@@ -8,8 +8,16 @@
 
 #include "asset/UBO.h"
 #include "asset/Shader.h"
+#include "asset/DynamicCubeMap.h"
+
+#include "backend/DrawBuffer.h"
 
 #include "component/ParticleGenerator.h"
+
+#include "command/CommandEngine.h"
+#include "command/ScriptEngine.h"
+#include "command/CommandAPI.h"
+#include "command/api/ResumeNode.h"
 
 #include "controller/NodeController.h"
 
@@ -24,6 +32,7 @@
 #include "render/NodeDraw.h"
 #include "render/Batch.h"
 
+#include "registry/Registry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
 //#include "registry/MeshTypeRegistry.h"
@@ -39,8 +48,6 @@
 #include "render/FrameBuffer.h"
 
 #include "render/RenderData.h"
-
-#include "command/api/ResumeNode.h"
 
 Scene::Scene(
     const Assets& assets,

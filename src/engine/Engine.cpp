@@ -12,6 +12,8 @@
 
 #include "engine/AsyncLoader.h"
 
+#include "gui/Window.h"
+
 
 Engine::Engine()
     : m_alive(std::make_shared<std::atomic<bool>>(true))

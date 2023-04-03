@@ -1,17 +1,14 @@
 #pragma once
 
-
-#include "kigl/GLBuffer.h"
-#include "kigl/GLVertexArray.h"
-#include "kigl/GLBufferRange.h"
+#include "asset/Assets.h"
 
 #include "backend/gl/PerformanceCounters.h"
 
-#include "backend/DrawOptions.h"
-#include "backend/DrawBuffer.h"
-
 #include "BatchCommand.h"
-#include "BatchEntry.h"
+
+namespace backend {
+    class DrawBuffer;
+}
 
 class Program;
 class RenderContext;

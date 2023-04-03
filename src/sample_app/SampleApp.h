@@ -7,14 +7,14 @@
 #include "gui/FrameInit.h"
 #include "gui/Frame.h"
 
-#include "scene/SceneFile.h"
-
 #include "TestSceneSetup.h"
 
+class SceneFile;
 
 class SampleApp final : public Engine {
 public:
     SampleApp();
+    ~SampleApp();
 
 protected:
     int onInit() override;

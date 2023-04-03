@@ -1,11 +1,19 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <map>
 
-#include "ModelMesh.h"
-#include "Assets.h"
+#include "glm/glm.hpp"
 
-#include "Sphere.h"
+#include "asset/Assets.h"
+#include "asset/Material.h"
+
+class ModelMesh;
+
+struct Sphere;
+struct Material;
+struct Vertex;
 
 class MeshLoader final
 {

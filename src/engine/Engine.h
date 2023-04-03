@@ -9,10 +9,9 @@
 
 #include "backend/RenderSystem.h"
 
-#include "gui/Window.h"
-
 #include "ki/RenderClock.h"
 
+class Window;
 class Scene;
 class AsyncLoader;
 

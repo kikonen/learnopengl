@@ -13,6 +13,7 @@
 
 #include "asset/ModelMaterialInit.h"
 
+#include "registry/MeshType.h"
 #include "registry/ModelRegistry.h"
 
 

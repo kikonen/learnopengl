@@ -8,8 +8,6 @@
 
 #include "EntityType.h"
 
-#include "asset/CustomMaterial.h"
-
 
 struct NodeRenderFlags {
     bool alpha = false;
@@ -47,10 +45,13 @@ enum class NodeScriptId {
     run
 };
 
+class CustomMaterial;
 class Program;
 class Registry;
 class Mesh;
 class Batch;
+class RenderContext;
+
 
 class MeshType final
 {
@@ -84,12 +85,9 @@ public:
     }
 
 
-    CustomMaterial* getCustomMaterial();
+    CustomMaterial* getCustomMaterial() { return m_customMaterial.get(); }
 
-    void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept
-    {
-        m_customMaterial = std::move(customMaterial);
-    }
+    void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
 
     void prepare(
         const Assets& assets,

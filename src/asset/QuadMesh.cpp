@@ -8,6 +8,8 @@
 #include "asset/QuadMaterialInit.h"
 #include "asset/QuadVAO.h"
 
+#include "registry/MeshType.h"
+
 
 namespace {
     constexpr int INDEX_COUNT = 4;

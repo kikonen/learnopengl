@@ -21,7 +21,6 @@ namespace event {
     class Dispatcher;
 }
 
-struct Material;
 class Light;
 class Camera;
 

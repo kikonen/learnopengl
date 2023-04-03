@@ -3,18 +3,17 @@
 #include "Renderer.h"
 
 #include "asset/Material.h"
-#include "asset/DynamicCubeMap.h"
 
 #include "component/Camera.h"
 
-#include "render/FrameBuffer.h"
-
+class FrameBuffer;
+class DynamicCubeMap;
 
 class CubeMapRenderer final : public Renderer
 {
 public:
     CubeMapRenderer() {}
-    virtual ~CubeMapRenderer() = default;
+    ~CubeMapRenderer();
 
     virtual void prepare(
         const Assets& assets,

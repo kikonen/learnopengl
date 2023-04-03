@@ -10,6 +10,14 @@
 
 #include "ki/Timer.h"
 
+#include "asset/Sphere.h"
+#include "asset/ModelMesh.h"
+
+#include "asset/Vertex.h"
+
+#include "registry/MeshType.h"
+
+
 namespace {
     const glm::vec2 EMPTY_TEX{ 0, 0 };
     const glm::vec3 EMPTY_NORMAL{ 0, 0, 0 };

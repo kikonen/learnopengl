@@ -23,6 +23,7 @@
 
 #include "render/RenderContext.h"
 
+
 namespace {
     constexpr int BATCH_COUNT = 100;
     constexpr int ENTITY_COUNT = 100000;

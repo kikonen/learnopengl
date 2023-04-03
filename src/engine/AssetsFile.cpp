@@ -3,7 +3,9 @@
 #include <vector>
 #include <fstream>
 
-#include "asset/MeshLoader.h"
+#include <fmt/format.h>
+
+#include "util/Log.h"
 
 
 #include "AssetsFile.h"

@@ -4,7 +4,8 @@
 #include <mutex>
 #include <map>
 
-#include "asset/Image.h"
+
+class Image;
 
 class ImageRegistry final
 {

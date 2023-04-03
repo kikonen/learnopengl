@@ -6,10 +6,10 @@
 
 #include "asset/Assets.h"
 
-#include "api/Command.h"
 
 class UpdateContext;
 class Registry;
+class Command;
 
 class CommandEngine final
 {

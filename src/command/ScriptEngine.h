@@ -7,9 +7,9 @@
 
 #include "asset/Assets.h"
 
-#include "command/CommandAPI.h"
 
 class CommandEngine;
+class CommandAPI;
 class Node;
 enum class NodeScriptId;
 

@@ -8,6 +8,8 @@
 #include "ki/GL.h"
 #include "editor/EditorFrame.h"
 
+#include "asset/DynamicCubeMap.h"
+
 #include "backend/gl/PerformanceCounters.h"
 
 #include "controller/VolumeController.h"
@@ -22,11 +24,19 @@
 #include "render/RenderContext.h"
 
 #include "scene/Scene.h"
+#include "scene/SceneFile.h"
 
 #include "TestSceneSetup.h"
 
+#include "gui/Input.h"
+#include "gui/Window.h"
+
 
 SampleApp::SampleApp()
+{
+}
+
+SampleApp::~SampleApp()
 {
 }
 

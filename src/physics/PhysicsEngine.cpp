@@ -11,11 +11,16 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+#include "Surface.h"
+
 
 namespace physics {
 
     PhysicsEngine::PhysicsEngine(const Assets& assets)
         : m_assets(assets)
+    {}
+
+    PhysicsEngine::~PhysicsEngine()
     {}
 
     void PhysicsEngine::prepare()

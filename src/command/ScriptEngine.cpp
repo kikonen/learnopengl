@@ -11,6 +11,9 @@
 
 #include "model/Node.h"
 
+#include "registry/MeshType.h"
+
+
 namespace {
     const std::string INIT_FN{ "init" };
     const std::string RUN_FN{ "run" };

@@ -3,21 +3,20 @@
 #include <glm/glm.hpp>
 #include <ki/uuid.h>
 
+#include "asset/Assets.h"
+
 #include "model/NodeInstance.h"
-
-#include "generator/NodeGenerator.h"
-
-#include "registry/MeshType.h"
-
 
 class Camera;
 class Light;
 class ParticleGenerator;
+class NodeGenerator;
 
 class UpdateContext;
 class RenderContext;
 
 class MeshType;
+class Registry;
 class EntityRegistry;
 class ParticleGenrator;
 class Batch;
@@ -139,10 +138,7 @@ public:
 
     void updateModelMatrix() noexcept;
 
-    inline bool isEntity() {
-        return m_type->getMesh() &&
-            !m_type->m_flags.invisible;
-    }
+    bool isEntity() const noexcept;
 
     inline int getTagMaterialIndex() const { return m_tagMaterialIndex;  }
     inline int getSelectionMaterialIndex() const { return m_selectionMaterialIndex;  }
@@ -158,10 +154,6 @@ public:
             if (assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
         }
         return -1;
-    }
-
-    inline int getMaterialIndex() const {
-        return m_type->getMaterialIndex();
     }
 
     inline int getCloneIndex() const {

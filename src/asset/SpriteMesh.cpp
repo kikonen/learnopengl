@@ -8,6 +8,8 @@
 #include "asset/SpriteMaterialInit.h"
 #include "asset/SpriteVAO.h"
 
+#include "registry/MeshType.h"
+
 
 namespace {
 

@@ -6,8 +6,6 @@
 
 #include "component/Camera.h"
 
-#include "model/Viewport.h"
-
 class Node;
 class FrameBuffer;
 class Viewport;

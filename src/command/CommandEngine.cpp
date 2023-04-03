@@ -6,6 +6,8 @@
 #include "api/Wait.h"
 #include "api/Sync.h"
 
+#include "api/Command.h"
+
 #include "api/NodeCommand.h"
 #include "api/MoveNode.h"
 #include "api/MoveSplineNode.h"
