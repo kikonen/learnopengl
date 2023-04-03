@@ -81,7 +81,7 @@ entities:
     light:
       type: directional
       target_id: [auto, dir-light-target]
-      ambient: [0.5, 0.52, 0.52, 1.0]
+      ambient: [0.9, 0.9, 0.9, 1.0]
       diffuse: [0.8, 0.8, 0.6, 1.0]
       specular: [0.3, 0.3, 0.2, 1.0]
       enabled: true
@@ -131,7 +131,7 @@ entities:
         material_modifier:
           kd: [0.8, 0.0, 0.0, 1.0]
         light:
-          ambient: [0.6, 0.0 0.0, 1.0]
+          ambient: [0.9, 0.0 0.0, 1.0]
           diffuse: [0.8, 0.0, 0.0, 1.0]
           specular: [0.9, 0.0, 0.0, 1.0]
           enabled: false
@@ -141,7 +141,7 @@ entities:
         material_modifier:
           kd: [0.0, 0.9, 0.0, 1.0]
         light:
-          ambient: [0.0, 0.6 0.0, 1.0]
+          ambient: [0.0, 0.9 0.0, 1.0]
           diffuse: [0.0, 0.8, 0.0, 1.0]
           specular: [0.0, 0.9, 0.0, 1.0]
           enabled: false
@@ -151,7 +151,7 @@ entities:
         material_modifier:
           kd: [0.0, 0.0, 0.9, 1.0]
         light:
-          ambient: [0.0, 0.0 0.6, 1.0]
+          ambient: [0.0, 0.0 0.9, 1.0]
           diffuse: [0.0, 0.0, 0.8, 1.0]
           specular: [0.0, 0.0, 0.9, 1.0]
           enabled: false
@@ -161,7 +161,7 @@ entities:
         material_modifier:
           kd: [0.9, 0.0, 0.9, 1.0]
         light:
-          ambient: [0.6, 0.0 0.6, 1.0]
+          ambient: [0.6, 0.0 0.9, 1.0]
           diffuse: [0.8, 0.0, 0.8, 1.0]
           specular: [0.9, 0.0, 0.9, 1.0]
           enabled: false
@@ -173,7 +173,7 @@ entities:
       cutoff_angle: 12.5
       outer_cutoff_angle: 25.0
       target_id: ROOT
-      ambient: [0.4, 0.4, 0.2, 1.0]
+      ambient: [0.9, 0.9, 0.7, 1.0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
       specular: [1.0, 1.0, 0.9, 1.0]
       enabled: true
@@ -198,7 +198,7 @@ entities:
       linear: 0.014
       quadratic: 0.0007
       target_id: ROOT
-      ambient: [0.4, 0.4, 0.2, 1.0]
+      ambient: [0.9, 0.9, 0.7, 1.0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
       specular: [1.0, 1.0, 0.9, 1.0]
       enabled: true
@@ -407,6 +407,17 @@ entities:
     render_flags:
       render_back: false
     selected: false
+    enabled: true
+  - name: Cow fur
+    model: cow
+    program: g_fur
+    pos: [5.0, 25.0, -5.0]
+    rotation: [0, 180, 0]
+    scale: 0.8
+    material: cow_fur
+    force_material: true
+    render_flags:
+      alpha: true
     enabled: true
   - name: Ball
     model: texture_ball
@@ -662,7 +673,7 @@ entities:
       quadratic: 0.0007
       cutoff_angle: 12.5
       outer_cutoff_angle: 25.0
-      ambient: [0.0, 0.4, 0.0, 1.0]
+      ambient: [0.0, 0.9, 0.0, 1.0]
       diffuse: [0.0, 0.8, 0.0, 1.0]
       specular: [0.0, 1.0, 0.0, 1.0]
       enabled: false
@@ -863,6 +874,18 @@ materials:
     ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.160, 0.578, 0.168, 1.0]
     ks: [0.9, 0.9, 0.0, 1.0]
+  - name: cow_fur
+    ns: 1
+    ka: [0.4923, 0.4923, 0.4923, 1.0]
+    kd: [0.5075, 0.5075, 0.5075, 1.0]
+    ks: [0.1, 0.1, 0.1, 1.0]
+    map_kd: Dirt_vh_1024.png
+    map_noise: noise2_256.png
+    tiling: 1
+    layers: 25
+    depth: 0.2
+    texture_spec:
+      wrap: GL_REPEAT
   - name: default_ball
     ns: 100.0
     ka: [0.3, 0.3, 0.0, 1.0]
