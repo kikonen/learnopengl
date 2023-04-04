@@ -40,10 +40,6 @@ void ShadowCascade::prepare(
     const Assets& assets,
     Registry* registry)
 {
-    m_nearPlane = assets.shadowNearPlane;
-    m_farPlane = assets.shadowFarPlane;
-    m_frustumSize = assets.shadowFrustumSize;
-
     //m_shadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
     m_solidShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
     m_blendedShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
@@ -55,7 +51,7 @@ void ShadowCascade::prepare(
     m_buffer = new FrameBuffer(
         "shadow_map",
         {
-            assets.shadowMapSize, assets.shadowMapSize,
+            m_mapSize, m_mapSize,
             { FrameBufferAttachment::getDepthTexture() }
         });
 

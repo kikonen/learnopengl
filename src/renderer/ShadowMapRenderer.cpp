@@ -32,16 +32,26 @@ void ShadowMapRenderer::prepare(
     m_renderFrameStart = assets.shadowRenderFrameStart;
     m_renderFrameStep = assets.shadowRenderFrameStep;
 
-    m_nearPlane = assets.shadowNearPlane;
-    m_farPlane = assets.shadowFarPlane;
+    m_planes = assets.shadowPlanes;
+    m_frustumSizes = assets.shadowFrustumSizes;
+    m_mapSizes = assets.shadowMapSizes;
 
-    for (int level = 0; level < assets.shadowCascades; level++) {
-        auto* cascade = new ShadowCascade(level);
+    for (int level = 0; level < m_planes.size() - 1; level++) {
+        auto* cascade = new ShadowCascade(
+            level,
+            m_planes[level],
+            m_planes[level + 1],
+            m_frustumSizes[level],
+            m_mapSizes[level]);
         m_cascades.push_back(cascade);
     }
 
     m_shadowDebugProgram = registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH);
     m_shadowDebugProgram->prepare(assets);
+
+    for (auto& cascade : m_cascades) {
+        cascade->prepare(assets, registry);
+    }
 
     auto& first = m_cascades[0];
 
@@ -54,9 +64,9 @@ void ShadowMapRenderer::prepare(
         false,
         first->getTextureID(),
         m_shadowDebugProgram,
-        [this, &assets](Viewport& vp) {
-            u_nearPlane.set(m_nearPlane);
-            u_farPlane.set(m_farPlane);
+        [this, &assets, &first](Viewport& vp) {
+            u_nearPlane.set(first->m_nearPlane);
+            u_farPlane.set(first->m_farPlane);
         });
     m_debugViewport->setEffectEnabled(false);
     m_debugViewport->prepare(assets);

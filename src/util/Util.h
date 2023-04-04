@@ -1,33 +1,26 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include <string_view>
-#include <algorithm>
-#include <filesystem>
 #include <vector>
 
 namespace util
 {
+    bool isBool(std::string_view s);
+    bool isInt(std::string_view s);
+    bool isFloat(std::string_view s);
+
     //
     // modify str param to upper case
     //
     // @return reference of str param
-    inline std::string& toUpper(std::string& str)
-    {
-        std::transform(str.begin(), str.end(), str.begin(), ::toupper);
-        return str;
-    }
+    std::string& toUpper(std::string& str);
 
     //
     // modify str param to lower case
     //
     // @return reference of str param
-    inline std::string& toLower(std::string& str)
-    {
-        std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-        return str;
-    }
+    std::string& toLower(std::string& str);
 
     // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
     void splitString(
@@ -35,11 +28,7 @@ namespace util
         std::vector<std::string>& result,
         char separator);
 
-    inline const std::string dirName(const std::string& filename)
-    {
-        std::filesystem::path p{ filename };
-        return p.parent_path().string();
-    }
+    const std::string dirName(const std::string& filename);
 
     // https://stackoverflow.com/questions/11421432/how-can-i-output-the-value-of-an-enum-class-in-c11
     template <typename Enumeration>

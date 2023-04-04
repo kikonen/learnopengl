@@ -116,11 +116,9 @@ Assets::Assets()
     fogEnd = 700.0;
     fogRatio = 1.0;
 
-    shadowNearPlane = 0.1f;
-    shadowFarPlane = 1000.0f;
-    shadowFrustumSize = 100.0f;
-    shadowMapSize = 1024;
-    shadowCascades = 3;
+    shadowPlanes = { 0.1f, 100.f, 500.f, 1000.f };
+    shadowFrustumSizes = { 10.f, 100.f, 200.f };
+    shadowMapSizes = { 1024, 512, 512 };
 
     shadowRenderFrameStart = 0;
     shadowRenderFrameStep = 2;

@@ -30,6 +30,13 @@ private:
         const YAML::Node& node,
         Assets& data);
 
+    bool readBool(const YAML::Node& node) const;
+    int readInt(const YAML::Node& node) const;
+    float readFloat(const YAML::Node& node) const;
+
+    std::vector<int> readIntVector(const YAML::Node& node, int reserve) const;
+    std::vector<float> readFloatVector(const YAML::Node& node, int reserve) const;
+
     glm::uvec3 readUVec3(const YAML::Node& node) const;
 
     glm::vec2 readVec2(const YAML::Node& node) const;
@@ -42,6 +49,9 @@ private:
         const std::string& scope,
         const std::string& k,
         const YAML::Node&) const;
+
+    std::string renderNode(
+        const YAML::Node& v) const;
 
 private:
     const std::string m_filename;

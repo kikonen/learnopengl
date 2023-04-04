@@ -14,8 +14,17 @@ class Program;
 
 class ShadowCascade final {
 public:
-    ShadowCascade(int level)
-    : m_level(level)
+    ShadowCascade(
+        int level,
+        float nearPlane,
+        float farPlane,
+        float frustumSize,
+        int mapSize)
+    : m_level(level),
+    m_nearPlane(nearPlane),
+    m_farPlane(farPlane),
+    m_frustumSize(frustumSize),
+    m_mapSize(mapSize)
     {}
 
     ~ShadowCascade();
@@ -39,14 +48,14 @@ private:
 
 public:
     const int m_level;
+    const float m_nearPlane;
+    const float m_farPlane;
+    const float m_frustumSize;
+    const int m_mapSize;
 
 private:
     // NOTE KI std::unique_ptr triggered exhaustive error loop
     FrameBuffer* m_buffer{ nullptr };
-
-    float m_nearPlane = 0.1f;
-    float m_farPlane = 1000.f;
-    float m_frustumSize = 100.f;
 
     //Program* m_shadowProgram{ nullptr };
     Program* m_solidShadowProgram{ nullptr };

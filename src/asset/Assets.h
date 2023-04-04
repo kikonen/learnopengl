@@ -133,11 +133,9 @@ public:
     float fogRatio;
 
     // NOTE KI MUST match lookup() in light shadow shader
-    float shadowNearPlane;
-    float shadowFarPlane;
-    float shadowFrustumSize;
-    int shadowMapSize;
-    int shadowCascades;
+    std::vector<float> shadowPlanes;
+    std::vector<float> shadowFrustumSizes;
+    std::vector<int> shadowMapSizes;
     int shadowRenderFrameStart;
     int shadowRenderFrameStep;
 

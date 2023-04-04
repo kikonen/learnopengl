@@ -58,23 +58,7 @@ namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
 
-    // https://stackoverflow.com/questions/447206/c-isfloat-function
-    bool isInt(std::string_view s)
-    {
-        int val;
-        auto [p, ec] = std::from_chars(s.data(), s.data() + s.size(), val);
-        return ec == std::errc() && p == s.data() + s.size();
-    }
-
-    // https://stackoverflow.com/questions/447206/c-isfloat-function
-    bool isFloat(std::string_view s)
-    {
-        double val;
-        auto [p, ec] = std::from_chars(s.data(), s.data() + s.size(), val);
-        return ec == std::errc() && p == s.data() + s.size();
-    }
 }
-
 
 SceneFile::SceneFile(
     const Assets& assets,
@@ -955,7 +939,7 @@ void SceneFile::loadSkybox(
             data.materialName = v.as<std::string>();
         }
         else if (k == "priority") {
-            data.priority = v.as<int>();
+            data.priority = readInt(v);
         }
         else {
             reportUnknown("skybox_entry", k, v);
@@ -1036,7 +1020,7 @@ void SceneFile::loadEntityClone(
             }
         }
         else if (k == "priority") {
-            data.priority = v.as<int>();
+            data.priority = readInt(v);
         }
         else if (k == "name") {
             data.name = v.as<std::string>();
@@ -1080,7 +1064,7 @@ void SceneFile::loadEntityClone(
         else if (k == "render_flags") {
             for (const auto& flagNode : v) {
                 auto flagName = flagNode.first.as<std::string>();
-                const auto flagValue = flagNode.second.as<bool>();
+                const auto flagValue = readBool(flagNode.second);
                 data.renderFlags[util::toLower(flagName)] = flagValue;
             }
         }
@@ -1094,13 +1078,13 @@ void SceneFile::loadEntityClone(
             loadMaterialModifiers(v, data);
         }
         else if (k == "force_material") {
-            data.forceMaterial = v.as<bool>();
+            data.forceMaterial = readBool(v);
         }
         else if (k == "batch_size") {
-            data.batchSize = v.as<int>();
+            data.batchSize = readInt(v);
         }
         else if (k == "load_textures") {
-            data.loadTextures = v.as<bool>();
+            data.loadTextures = readBool(v);
         }
         else if (k == "position" || k == "pos") {
             data.position = readVec3(v);
@@ -1130,19 +1114,19 @@ void SceneFile::loadEntityClone(
             loadGenerator(v, data.generator);
         }
         else if (k == "instanced") {
-            data.instanced = v.as<bool>();
+            data.instanced = readBool(v);
         }
         else if (k == "selected") {
-            data.selected = v.as<bool>();
+            data.selected = readBool(v);
         }
         else if (k == "enabled") {
-            data.enabled = v.as<bool>();
+            data.enabled = readBool(v);
         }
         else if (k == "clone_position") {
             data.clonePosition = readVec3(v);
         }
         else if (k == "clone_mesh") {
-            data.cloneMesh = v.as<bool>();
+            data.cloneMesh = readBool(v);
         }
         else if (k == "tile") {
             data.tile = readVec3(v);
@@ -1200,13 +1184,13 @@ void SceneFile::loadRepeat(
         const YAML::Node& v = pair.second;
 
         if (k == "x_count") {
-            data.xCount = v.as<int>();
+            data.xCount = readInt(v);
         }
         else if (k == "y_count") {
-            data.yCount = v.as<int>();
+            data.yCount = readInt(v);
         }
         else if (k == "z_count") {
-            data.zCount = v.as<int>();
+            data.zCount = readInt(v);
         }
         else if (k == "x_step") {
             data.xStep = readFloat(v);
@@ -1235,7 +1219,7 @@ void SceneFile::loadTiling(
             data.tiles = readUVec3(v);
         }
         else if (k == "tile_size") {
-            data.tile_size = v.as<int>();
+            data.tile_size = readInt(v);
         }
         else if (k == "height_scale") {
             data.height_scale = readFloat(v);
@@ -1261,10 +1245,10 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
         const YAML::Node& v = pair.second;
 
         if (k == "enabled") {
-            data.enabled = v.as<bool>();
+            data.enabled = readBool(v);
         }
         else if (k == "default") {
-            data.isDefault = v.as<bool>();
+            data.isDefault = readBool(v);
         }
         else if (k == "zoom") {
             data.zoom = readFloat(v);
@@ -1299,7 +1283,7 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
         const YAML::Node& v = pair.second;
 
         if (k == "enabled") {
-            data.enabled = v.as<bool>();
+            data.enabled = readBool(v);
         }
         else if (k == "type") {
             std::string type = v.as<std::string>();
@@ -1361,7 +1345,7 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
         const YAML::Node& v = pair.second;
 
         if (k == "enabled") {
-            data.enabled = v.as<bool>();
+            data.enabled = readBool(v);
         }
         else if (k == "type") {
             std::string type = v.as<std::string>();
@@ -1379,7 +1363,7 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
             data.speed = readFloat(v);
         }
         else if (k == "mode") {
-            data.mode = v.as<int>();
+            data.mode = readInt(v);
         }
         else {
             reportUnknown("controller_entry", k, v);
@@ -1396,7 +1380,7 @@ void SceneFile::loadGenerator(
         const YAML::Node& v = pair.second;
 
         if (k == "enabled") {
-            data.enabled = v.as<bool>();
+            data.enabled = readBool(v);
         }
         else if (k == "type") {
             std::string type = v.as<std::string>();
@@ -1417,13 +1401,13 @@ void SceneFile::loadGenerator(
             }
         }
         else if (k == "count") {
-            data.count = v.as<int>();
+            data.count = readInt(v);
         }
         else if (k == "radius") {
             data.radius = readFloat(v);
         }
         else if (k == "mode") {
-            data.mode = v.as<int>();
+            data.mode = readInt(v);
         }
         else if (k == "repeat") {
             loadRepeat(v, data.repeat);
@@ -1551,7 +1535,7 @@ void SceneFile::loadMaterial(
             fields.map_noise = true;
         }
         else if (k == "pattern") {
-            material.pattern = v.as<int>();
+            material.pattern = readInt(v);
             fields.pattern = true;
         }
         else if (k == "reflection") {
@@ -1644,9 +1628,19 @@ void SceneFile::loadTextureWrap(
     }
 }
 
+bool SceneFile::readBool(const YAML::Node& node) const
+{
+    if (!util::isBool(node.as<std::string>())) {
+        KI_WARN(fmt::format("invalid bool={}", renderNode(node)));
+        return false;
+    }
+
+    return node.as<bool>();
+}
+
 int SceneFile::readInt(const YAML::Node& node) const
 {
-    if (!isInt(node.as<std::string>())) {
+    if (!util::isInt(node.as<std::string>())) {
         KI_WARN(fmt::format("invalid int{}", renderNode(node)));
         return 0;
     }
@@ -1656,7 +1650,7 @@ int SceneFile::readInt(const YAML::Node& node) const
 
 float SceneFile::readFloat(const YAML::Node& node) const
 {
-    if (!isFloat(node.as<std::string>())) {
+    if (!util::isFloat(node.as<std::string>())) {
         KI_WARN(fmt::format("invalid float {}", renderNode(node)));
         return 0.f;
     }
@@ -1664,15 +1658,34 @@ float SceneFile::readFloat(const YAML::Node& node) const
     return node.as<float>();
 }
 
+std::vector<int> SceneFile::readIntVector(const YAML::Node& node, int reserve) const
+{
+    std::vector<int> a;
+    a.reserve(reserve);
+
+    for (const auto& e : node) {
+        a.push_back(readInt(e));
+    }
+
+    return a;
+}
+
+std::vector<float> SceneFile::readFloatVector(const YAML::Node& node, int reserve) const
+{
+    std::vector<float> a;
+    a.reserve(reserve);
+
+    for (const auto& e : node) {
+        a.push_back(readFloat(e));
+    }
+
+    return a;
+}
+
 glm::vec2 SceneFile::readVec2(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
-        std::vector<float> a;
-        a.reserve(2);
-
-        for (const auto& e : node) {
-            a.push_back(readFloat(e));
-        }
+        auto a = readFloatVector(node, 2);
 
         if (a.size() == 0) {
             a.push_back(0.f);
@@ -1693,12 +1706,7 @@ glm::vec2 SceneFile::readVec2(const YAML::Node& node) const
 glm::vec3 SceneFile::readVec3(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
-        std::vector<float> a;
-        a.reserve(3);
-
-        for (const auto& e : node) {
-            a.push_back(readFloat(e));
-        }
+        auto a = readFloatVector(node, 3);
 
         if (a.size() == 0) {
             a.push_back(0.f);
@@ -1725,12 +1733,7 @@ glm::vec3 SceneFile::readVec3(const YAML::Node& node) const
 glm::vec4 SceneFile::readVec4(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
-        std::vector<float> a;
-        a.reserve(4);
-
-        for (const auto& e : node) {
-            a.push_back(readFloat(e));
-        }
+        auto a = readFloatVector(node, 4);
 
         if (a.size() == 0) {
             a.push_back(0.f);
@@ -1765,17 +1768,12 @@ glm::vec4 SceneFile::readVec4(const YAML::Node& node) const
 glm::uvec3 SceneFile::readUVec3(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
-        std::vector<int> a;
-        a.reserve(3);
-
-        for (const auto& e : node) {
-            a.push_back(e.as<int>());
-        }
+        auto a = readIntVector(node, 3);
 
         if (a.size() == 0) {
-            a.push_back(0.f);
-            a.push_back(0.f);
-            a.push_back(0.f);
+            a.push_back(0);
+            a.push_back(0);
+            a.push_back(0);
         }
         else if (a.size() == 1) {
             // FILL x, x, x
@@ -1798,12 +1796,7 @@ glm::uvec3 SceneFile::readUVec3(const YAML::Node& node) const
 glm::vec3 SceneFile::readScale3(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
-        std::vector<float> a;
-        a.reserve(3);
-
-        for (const auto& e : node) {
-            a.push_back(readFloat(e));
-        }
+        auto a = readFloatVector(node, 3);
 
         while (a.size() < 3) {
             a.push_back(1.0f);
@@ -1819,12 +1812,7 @@ glm::vec3 SceneFile::readScale3(const YAML::Node& node) const
 glm::vec4 SceneFile::readRGBA(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
-        std::vector<float> a;
-        a.reserve(4);
-
-        for (const auto& e : node) {
-            a.push_back(readFloat(e));
-        }
+        auto a = readFloatVector(node, 4);
 
         if (a.size() == 0) {
             a.push_back(0.f);
@@ -1853,12 +1841,8 @@ glm::vec4 SceneFile::readRGBA(const YAML::Node& node) const
 
 glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) const
 {
-    std::vector<float> a;
-    a.reserve(2);
+    auto a = readFloatVector(node, 2);
 
-    for (const auto& e : node) {
-        a.push_back(readFloat(e));
-    }
     // NOTE KI check if just single number
     if (a.size() < 1) {
         a.push_back(1.0);

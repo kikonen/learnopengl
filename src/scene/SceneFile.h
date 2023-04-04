@@ -426,8 +426,12 @@ private:
         const YAML::Node& v,
         GLint& wrapMode);
 
+    bool readBool(const YAML::Node& node) const;
     int readInt(const YAML::Node& node) const;
     float readFloat(const YAML::Node& node) const;
+
+    std::vector<int> readIntVector(const YAML::Node& node, int reserve) const;
+    std::vector<float> readFloatVector(const YAML::Node& node, int reserve) const;
 
     glm::vec2 readVec2(const YAML::Node& node) const;
     glm::vec3 readVec3(const YAML::Node& node) const;
