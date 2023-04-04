@@ -49,3 +49,40 @@ entities:
       specular: [0.9, 0.9, 0.5, 1.0]
       enabled: true
     enabled: true
+  - name: Giant wooden box
+    model: quad
+    xxmodel: woodwall
+    material: giant_woodbox
+    program: g_tex
+    clone_position: [0, 60, 60]
+    render_flags:
+      render_back: true
+      no_shadow: true
+    scale: [100, 100, 100]
+    enabled: true
+    clones:
+      - pos: [0.0, 100.0, 0.0]
+        rot: [90, 0, 0]
+      - pos: [0.0, -100.0, .0]
+        rot: [270, 0, 0]
+      - pos: [100.0, 0.0, 0.0]
+        rot: [0, 270, 0]
+      - pos: [-100.0, 0.0, 0.0]
+        rot: [0, 90, 0]
+      - pos: [0.0, 0.0, 100.0]
+        rot: [0, 180, 0]
+      - pos: [0.0, 0.0, -100.0]
+        rot: [0, 0, 0]
+materials:
+  - name: giant_woodbox
+    ns: 225.000000
+    type: model
+    ka: [0.500000, 0.500000, 0.500000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: wood_1024.png
+    reflection: 0.1
