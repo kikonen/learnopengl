@@ -34,6 +34,8 @@ private:
     // NOTE KI std::unique_ptr triggered exhaustive error loop
     std::vector<ShadowCascade*> m_cascades;
 
+    int m_activeCascade;
+
     Program* m_shadowDebugProgram{ nullptr };
 
     std::vector<float> m_planes;

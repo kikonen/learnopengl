@@ -36,13 +36,13 @@ void ShadowMapRenderer::prepare(
     m_frustumSizes = assets.shadowFrustumSizes;
     m_mapSizes = assets.shadowMapSizes;
 
-    for (int level = 0; level < m_planes.size() - 1; level++) {
+    for (int index = 0; index < m_planes.size() - 1; index++) {
         auto* cascade = new ShadowCascade(
-            level,
-            m_planes[level],
-            m_planes[level + 1],
-            m_frustumSizes[level],
-            m_mapSizes[level]);
+            index,
+            m_planes[index],
+            m_planes[index + 1],
+            m_frustumSizes[index],
+            m_mapSizes[index]);
         m_cascades.push_back(cascade);
     }
 
@@ -53,7 +53,9 @@ void ShadowMapRenderer::prepare(
         cascade->prepare(assets, registry);
     }
 
-    auto& first = m_cascades[0];
+    m_activeCascade = 0;
+
+    auto& active = m_cascades[m_activeCascade];
 
     m_debugViewport = std::make_shared<Viewport>(
         "ShadowMap",
@@ -62,11 +64,11 @@ void ShadowMapRenderer::prepare(
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
         false,
-        first->getTextureID(),
+        active->getTextureID(),
         m_shadowDebugProgram,
-        [this, &assets, &first](Viewport& vp) {
-            u_nearPlane.set(first->m_nearPlane);
-            u_farPlane.set(first->m_farPlane);
+        [this, &assets, &active](Viewport& vp) {
+            u_nearPlane.set(active->m_nearPlane);
+            u_farPlane.set(active->m_farPlane);
         });
     m_debugViewport->setEffectEnabled(false);
     m_debugViewport->prepare(assets);
@@ -85,7 +87,9 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 {
     if (!m_rendered) return;
-    m_cascades[0]->bindTexture(ctx);
+    for (auto& cascade : m_cascades) {
+        cascade->bindTexture(ctx);
+    }
 }
 
 bool ShadowMapRenderer::render(

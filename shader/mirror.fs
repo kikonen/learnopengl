@@ -33,7 +33,7 @@ in VS_OUT {
 
 layout(binding = UNIT_MIRROR_REFLECTION) uniform sampler2D u_reflectionTex;
 
-layout(binding = UNIT_SHADOW_MAP) uniform sampler2DShadow u_shadowMap[SHADOW_CASCADES];
+layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[SHADOW_MAP_COUNT];
 
 layout (location = 0) out vec4 o_fragColor;
 

@@ -60,7 +60,9 @@ void ShadowCascade::prepare(
 
 void ShadowCascade::bindTexture(const RenderContext& ctx)
 {
-    m_buffer->bindTexture(ctx, 0, UNIT_SHADOW_MAP);
+    // NOTE KI important, how binding works in uniforms for array
+    // https://stackoverflow.com/questions/62031259/specifying-binding-for-texture-arrays-in-glsl
+    m_buffer->bindTexture(ctx, 0, UNIT_SHADOW_MAP_FIRST + m_index);
 }
 
 GLuint ShadowCascade::getTextureID()

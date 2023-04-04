@@ -15,12 +15,12 @@ class Program;
 class ShadowCascade final {
 public:
     ShadowCascade(
-        int level,
+        int index,
         float nearPlane,
         float farPlane,
         float frustumSize,
         int mapSize)
-    : m_level(level),
+    : m_index(index),
     m_nearPlane(nearPlane),
     m_farPlane(farPlane),
     m_frustumSize(frustumSize),
@@ -47,7 +47,7 @@ private:
         const RenderContext& ctx);
 
 public:
-    const int m_level;
+    const int m_index;
     const float m_nearPlane;
     const float m_farPlane;
     const float m_frustumSize;

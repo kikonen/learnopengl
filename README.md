@@ -29,6 +29,9 @@ https://glad.dav1d.de
 
 # Misc techniques
 
+## OpenGL Specs
+- https://registry.khronos.org/OpenGL/specs/gl/GLSLangSpec.4.60.html
+
 ## UBO/SSBO alignment
 - https://computergraphics.stackexchange.com/questions/5810/shader-storage-buffer-indexing-by-4-bytes-instead-of-3
 - https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o

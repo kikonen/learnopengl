@@ -89,9 +89,10 @@ constexpr int UNIT_WATER_REFRACTION = 66;
 constexpr int UNIT_MIRROR_REFLECTION = 67;
 //constexpr int UNIT_MIRROR_RERACTION = 68;
 constexpr int UNIT_CUBE_MAP = 69;
-constexpr int UNIT_SHADOW_MAP = 70;
-constexpr int UNIT_SKYBOX = 71;
-constexpr int UNIT_VIEWPORT = 72;
+constexpr int UNIT_SKYBOX = 70;
+constexpr int UNIT_VIEWPORT = 71;
+constexpr int UNIT_SHADOW_MAP_FIRST = 72;
+constexpr int UNIT_SHADOW_MAP_LAST = 74;
 
 constexpr unsigned int TEXTURE_UNIT_COUNT = 64;
 constexpr unsigned int FIRST_TEXTURE_UNIT = 0;

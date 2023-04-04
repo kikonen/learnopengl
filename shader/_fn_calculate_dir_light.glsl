@@ -74,6 +74,7 @@ vec4 calculateDirLight(
   }
 
   // calculate shadow
+  // TODO KI select CSM level somehow based into distance from camera
   int csmIndex = 0;
   float shadow = calcShadow(csmIndex, shadowPos, normal, toLight);
   // if (shadow != 0.0) {

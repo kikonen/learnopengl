@@ -35,9 +35,10 @@
 #define UNIT_MIRROR_REFLECTION 67
 //#define UNIT_MIRROR_RERACTION 68
 #define UNIT_CUBE_MAP 69
-#define UNIT_SHADOW_MAP 70
-#define UNIT_SKYBOX 71
-#define UNIT_VIEWPORT 72
+#define UNIT_SKYBOX 70
+#define UNIT_VIEWPORT 71
+#define UNIT_SHADOW_MAP_FIRST 72
+#define UNIT_SHADOW_MAP_LAST 74
 
 #define ATTR_POS 0
 #define ATTR_NORMAL 1
@@ -78,8 +79,8 @@
   #define LIGHT_COUNT 128
 #endif
 
-#ifndef SHADOW_CASCADES
-  #define SHADOW_CASCADES 3
+#ifndef SHADOW_MAP_COUNT
+  #define SHADOW_MAP_COUNT 3
 #endif
 
 #ifndef CS_GROUP_X
