@@ -15,7 +15,7 @@ class Renderer
 {
 public:
     Renderer() {}
-    virtual ~Renderer() = default;
+    virtual ~Renderer();
 
     virtual void prepare(
         const Assets& assets,

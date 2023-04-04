@@ -239,6 +239,8 @@
     <ClCompile Include="src\controller\VolumeController.cpp" />
     <ClCompile Include="src\registry\ViewportRegistry.cpp" />
     <ClCompile Include="src\registry\ViewportRegistry.h" />
+    <ClCompile Include="src\renderer\ShadowCascade.cpp" />
+    <ClCompile Include="src\renderer\ShadowCascade.h" />
     <ClCompile Include="src\render\GBuffer.cpp" />
     <ClCompile Include="src\render\NodeDraw.cpp" />
     <ClCompile Include="src\render\Quad.cpp" />

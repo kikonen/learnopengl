@@ -3,14 +3,13 @@
 #include "asset/Assets.h"
 
 
-#include "render/FrameBuffer.h"
-
-
+class FrameBuffer;
 class RenderContext;
 
 class GBuffer {
 public:
     GBuffer() {}
+    ~GBuffer() {}
 
     void prepare(const Assets& assets);
 

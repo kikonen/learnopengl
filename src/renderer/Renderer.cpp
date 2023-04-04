@@ -5,6 +5,9 @@
 #include "registry/Registry.h"
 
 
+Renderer::~Renderer()
+{}
+
 void Renderer::prepare(
     const Assets& assets,
     Registry* registry)

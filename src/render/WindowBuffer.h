@@ -9,7 +9,7 @@ public:
 
     WindowBuffer(GLuint fbo, bool forceBind);
 
-    virtual ~WindowBuffer() override = default;
+    virtual ~WindowBuffer() override {};
 
     void updateView(const RenderContext& ctx);
 

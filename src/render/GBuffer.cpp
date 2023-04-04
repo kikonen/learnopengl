@@ -3,6 +3,7 @@
 #include "asset/Shader.h"
 
 #include "render/RenderContext.h"
+#include "render/FrameBuffer.h"
 
 
 void GBuffer::prepare(const Assets& assets)

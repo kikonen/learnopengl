@@ -10,7 +10,7 @@ class ObjectIdRenderer final : public Renderer
 {
 public:
     ObjectIdRenderer() {}
-    virtual ~ObjectIdRenderer() = default;
+    virtual ~ObjectIdRenderer() {};
 
     int getObjectId(
         const RenderContext& ctx,

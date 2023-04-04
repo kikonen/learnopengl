@@ -116,6 +116,9 @@ https://glad.dav1d.de
 - https://iquilezles.org/articles/distfunctions/
 - http://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
 
+## C++
+- https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
+
 ## Libraries
 - https://github.com/nothings/stb
 - https://github.com/wqking/eventpp

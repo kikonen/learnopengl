@@ -3,34 +3,22 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
-#include "component/Light.h"
-
 #include "model/Viewport.h"
 
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
-#include "render/Batch.h"
-#include "render/NodeDraw.h"
 
 #include "registry/Registry.h"
-#include "registry/NodeRegistry.h"
+#
+#include "renderer/ShadowCascade.h"
 
 
-namespace {
-    // @see Computer Graphics Programmming in OpenGL Using C++, Second Edition
-    // @see OpenGL Programming Guide, 8th Edition, page 406
-    // The scale and bias matrix maps depth values in projection space
-    // (which lie between -1.0 and +1.0) into the range 0.0 to 1.0.
-    //
-    // TODO KI add small bias into Translation Z component
-    const glm::mat4 scaleBiasMatrix = {
-      {0.5f, 0.0f, 0.0f, 0.0f},
-      {0.0f, 0.5f, 0.0f, 0.0f},
-      {0.0f, 0.0f, 0.5f, 0.0f},
-      {0.5f, 0.5f, 0.5f, 1.0f},
-    };
+ShadowMapRenderer::~ShadowMapRenderer()
+{
+    for (auto& cascade : m_cascades) {
+        delete cascade;
+    }
 }
-
 
 void ShadowMapRenderer::prepare(
     const Assets& assets,
@@ -46,27 +34,16 @@ void ShadowMapRenderer::prepare(
 
     m_nearPlane = assets.shadowNearPlane;
     m_farPlane = assets.shadowFarPlane;
-    m_frustumSize = assets.shadowFrustumSize;
 
-    //m_shadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
-    m_solidShadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
-    m_blendedShadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
-    m_shadowDebugProgram = m_registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH);
+    for (int level = 0; level < assets.shadowCascades; level++) {
+        auto* cascade = new ShadowCascade(level);
+        m_cascades.push_back(cascade);
+    }
 
-    //m_shadowProgram->prepare(assets);
-    m_solidShadowProgram->prepare(assets);
-    m_blendedShadowProgram->prepare(assets);
+    m_shadowDebugProgram = registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH);
     m_shadowDebugProgram->prepare(assets);
 
-    auto buffer = new FrameBuffer(
-        "shadow_map",
-        {
-            assets.shadowMapSize, assets.shadowMapSize,
-            { FrameBufferAttachment::getDepthTexture() }
-        });
-
-    m_shadowBuffer.reset(buffer);
-    m_shadowBuffer->prepare(true, { 0, 0, 0, 1.0 });
+    auto& first = m_cascades[0];
 
     m_debugViewport = std::make_shared<Viewport>(
         "ShadowMap",
@@ -75,7 +52,7 @@ void ShadowMapRenderer::prepare(
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
         false,
-        m_shadowBuffer->m_spec.attachments[0].textureID,
+        first->getTextureID(),
         m_shadowDebugProgram,
         [this, &assets](Viewport& vp) {
             u_nearPlane.set(m_nearPlane);
@@ -90,26 +67,15 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
     if (!node) return;
 
-    const glm::vec3 up{ 0.0, 1.0, 0.0 };
-    const glm::mat4 lightViewMatrix = glm::lookAt(
-        node->m_light->getWorldPosition(),
-        node->m_light->getWorldTargetPosition(), up);
-
-    const glm::mat4 lightProjectionMatrix = glm::ortho(
-        -m_frustumSize, m_frustumSize, -m_frustumSize, m_frustumSize,
-        m_nearPlane,
-        m_farPlane);
-
-    //lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
-
-    ctx.m_matrices.u_lightProjected = lightProjectionMatrix * lightViewMatrix;
-    ctx.m_matrices.u_shadow = scaleBiasMatrix * ctx.m_matrices.u_lightProjected;
+    for (auto& cascade : m_cascades) {
+        cascade->bind(ctx);
+    }
 }
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 {
     if (!m_rendered) return;
-    m_shadowBuffer->bindTexture(ctx, 0, UNIT_SHADOW_MAP);
+    m_cascades[0]->bindTexture(ctx);
 }
 
 bool ShadowMapRenderer::render(
@@ -123,59 +89,10 @@ bool ShadowMapRenderer::render(
     auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
     if (!node) return false;
 
-    {
-        m_shadowBuffer->bind(ctx);
-
-        // NOTE KI *NO* color in shadowmap
-        glClear(GL_DEPTH_BUFFER_BIT);
-
-        ctx.m_shadow = true;
-        ctx.m_allowBlend = false;
-        drawNodes(ctx);
-        ctx.m_shadow = false;
-        ctx.m_allowBlend = true;
-
-        m_shadowBuffer->unbind(ctx);
+    for (auto& cascade : m_cascades) {
+        cascade->render(ctx);
     }
 
     m_rendered = true;
     return true;
-}
-
-void ShadowMapRenderer::drawNodes(
-    const RenderContext& ctx)
-{
-    // NOTE KI *NO* G-buffer in shadow
-    auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap, Program* program) {
-        for (const auto& it : typeMap) {
-            auto* type = it.first.type;
-            auto& batch = ctx.m_batch;
-
-            if (type->m_flags.noShadow) continue;
-
-            // NOTE KI tessellation not suppported
-            if (type->m_flags.tessellation) continue;
-
-            // NOTE KI point sprite currently not supported
-            if (type->m_entityType == EntityType::sprite) continue;
-
-            for (auto& node : it.second) {
-                batch->draw(ctx, *node, program);
-            }
-        }
-    };
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-        renderTypes(all.second, m_solidShadowProgram);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-        renderTypes(all.second, m_blendedShadowProgram);
-    }
-
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-        renderTypes(all.second, m_blendedShadowProgram);
-    }
-
-    ctx.m_batch->flush(ctx);
 }

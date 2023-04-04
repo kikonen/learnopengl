@@ -9,6 +9,7 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+#include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 

@@ -6,24 +6,9 @@
 #include <mutex>
 #include <atomic>
 
+#include "asset/Assets.h"
+
 #include "backend/gl/PerformanceCounters.h"
-
-#include "kigl/GLSyncQueue.h"
-
-#include "render/CubeMap.h"
-
-#include "renderer/NodeRenderer.h"
-#include "renderer/ViewportRenderer.h"
-
-#include "renderer/WaterMapRenderer.h"
-#include "renderer/MirrorMapRenderer.h"
-#include "renderer/CubeMapRenderer.h"
-#include "renderer/ShadowMapRenderer.h"
-
-#include "renderer/ObjectIdRenderer.h"
-#include "renderer/NormalRenderer.h"
-
-#include "ParticleSystem.h"
 
 
 namespace event {
@@ -33,8 +18,12 @@ namespace event {
 class Camera;
 class Light;
 class ParticleGenerator;
+
 class Node;
+class Viewport;
+
 class NodeController;
+
 class RenderData;
 class Batch;
 class NodeDraw;
@@ -56,6 +45,10 @@ class WaterMapRenderer;
 class MirrorMapRenderer;
 class CubeMapRenderer;
 class ShadowMapRenderer;
+
+class ObjectIdRenderer;
+class NormalRenderer;
+class ParticleSystem;
 
 
 class Scene final
@@ -117,30 +110,28 @@ public:
 protected:
 
 private:
-    NodeRenderer m_nodeRenderer;
-    ViewportRenderer m_viewportRenderer;
+    std::unique_ptr<NodeRenderer> m_nodeRenderer{ nullptr };
+    std::unique_ptr<ViewportRenderer> m_viewportRenderer{ nullptr };
 
-    WaterMapRenderer m_waterMapRenderer;
-    MirrorMapRenderer m_mirrorMapRenderer;
-    CubeMapRenderer m_cubeMapRenderer;
-    ShadowMapRenderer m_shadowMapRenderer;
+    std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
+    std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
+    std::unique_ptr<CubeMapRenderer> m_cubeMapRenderer{ nullptr };
+    std::unique_ptr<ShadowMapRenderer> m_shadowMapRenderer{ nullptr };
 
-    ObjectIdRenderer m_objectIdRenderer;
-    NormalRenderer m_normalRenderer;
+    std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };
+    std::unique_ptr<NormalRenderer> m_normalRenderer{ nullptr };
 
     std::unique_ptr<ParticleSystem> m_particleSystem{ nullptr };
 
     std::vector<Node*> m_particleGenerators;
 
     std::unique_ptr<FrameBuffer> m_rearBuffer{ nullptr };
-    std::shared_ptr<Viewport> m_rearViewport;
+    std::shared_ptr<Viewport> m_rearViewport{ nullptr };
 
     std::unique_ptr<FrameBuffer> m_mainBuffer{ nullptr };
-    std::shared_ptr<Viewport> m_mainViewport;
+    std::shared_ptr<Viewport> m_mainViewport{ nullptr };
 
     std::unique_ptr<WindowBuffer> m_windowBuffer{ nullptr };
 
     unsigned int m_pbo = 0;
-
-    CubeMap m_skyboxMap{ false };
 };

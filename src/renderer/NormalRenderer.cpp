@@ -4,6 +4,7 @@
 #include "asset/Program.h"
 
 #include "render/RenderContext.h"
+#include "render/FrameBuffer.h"
 #include "render/Batch.h"
 #include "render/NodeDraw.h"
 

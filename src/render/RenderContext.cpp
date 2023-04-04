@@ -21,6 +21,7 @@
 
 #include "render/NodeDraw.h"
 #include "render/RenderData.h"
+#include "render/FrameBuffer.h"
 #include "render/Batch.h"
 
 

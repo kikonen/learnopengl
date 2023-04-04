@@ -14,12 +14,33 @@
 
 #include "component/ParticleGenerator.h"
 
+#include "model/Viewport.h"
+
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
 #include "command/CommandAPI.h"
 #include "command/api/ResumeNode.h"
 
 #include "controller/NodeController.h"
+
+#include "registry/Registry.h"
+#include "registry/MaterialRegistry.h"
+#include "registry/NodeRegistry.h"
+#include "registry/EntityRegistry.h"
+#include "registry/ViewportRegistry.h"
+#include "registry/ControllerRegistry.h"
+
+#include "engine/UpdateContext.h"
+
+#include "render/NodeDraw.h"
+#include "render/Batch.h"
+#include "render/CubeMap.h"
+#include "render/RenderContext.h"
+#include "render/WindowBuffer.h"
+#include "render/FrameBuffer.h"
+#include "render/RenderData.h"
+
+#include "renderer/ShadowCascade.h"
 
 #include "renderer/NodeRenderer.h"
 #include "renderer/ViewportRenderer.h"
@@ -29,25 +50,10 @@
 #include "renderer/CubeMapRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
 
-#include "render/NodeDraw.h"
-#include "render/Batch.h"
+#include "renderer/ObjectIdRenderer.h"
+#include "renderer/NormalRenderer.h"
 
-#include "registry/Registry.h"
-#include "registry/MaterialRegistry.h"
-#include "registry/NodeRegistry.h"
-//#include "registry/MeshTypeRegistry.h"
-//#include "registry/ModelRegistry.h"
-#include "registry/EntityRegistry.h"
-#include "registry/ViewportRegistry.h"
-#include "registry/ControllerRegistry.h"
-
-#include "engine/UpdateContext.h"
-
-#include "render/RenderContext.h"
-#include "render/WindowBuffer.h"
-#include "render/FrameBuffer.h"
-
-#include "render/RenderData.h"
+#include "scene/ParticleSystem.h"
 
 Scene::Scene(
     const Assets& assets,
@@ -59,16 +65,29 @@ Scene::Scene(
     m_commandEngine = std::make_unique<CommandEngine>(assets);
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
 
-    m_nodeRenderer.setEnabled(true);
-    m_viewportRenderer.setEnabled(true);
+    {
+        m_nodeRenderer = std::make_unique<NodeRenderer>();
+        m_viewportRenderer = std::make_unique<ViewportRenderer>();
 
-    m_waterMapRenderer.setEnabled(m_assets.renderWaterMap);
-    m_mirrorMapRenderer.setEnabled(m_assets.renderMirrorMap);
-    m_cubeMapRenderer.setEnabled(m_assets.renderCubeMap);
-    m_shadowMapRenderer.setEnabled(m_assets.renderShadowMap);
+        m_waterMapRenderer = std::make_unique<WaterMapRenderer>();
+        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>();
+        m_cubeMapRenderer = std::make_unique<CubeMapRenderer>();
+        m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>();
 
-    m_objectIdRenderer.setEnabled(true);
-    m_normalRenderer.setEnabled(m_assets.showNormals);
+        m_objectIdRenderer = std::make_unique<ObjectIdRenderer>();
+        m_normalRenderer = std::make_unique<NormalRenderer>();
+
+        m_nodeRenderer->setEnabled(true);
+        m_viewportRenderer->setEnabled(true);
+
+        m_waterMapRenderer->setEnabled(m_assets.renderWaterMap);
+        m_mirrorMapRenderer->setEnabled(m_assets.renderMirrorMap);
+        m_cubeMapRenderer->setEnabled(m_assets.renderCubeMap);
+        m_shadowMapRenderer->setEnabled(m_assets.renderShadowMap);
+
+        m_objectIdRenderer->setEnabled(true);
+        m_normalRenderer->setEnabled(m_assets.showNormals);
+    }
 
     m_particleSystem = std::make_unique<ParticleSystem>();
 
@@ -104,33 +123,33 @@ void Scene::prepare()
     m_nodeDraw->prepare(m_assets, registry);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
-    if (m_nodeRenderer.isEnabled()) {
-        m_nodeRenderer.prepare(m_assets, registry);
+    if (m_nodeRenderer->isEnabled()) {
+        m_nodeRenderer->prepare(m_assets, registry);
     }
 
-    if (m_viewportRenderer.isEnabled()) {
-        m_viewportRenderer.prepare(m_assets, registry);
+    if (m_viewportRenderer->isEnabled()) {
+        m_viewportRenderer->prepare(m_assets, registry);
     }
 
-    if (m_waterMapRenderer.isEnabled()) {
-        m_waterMapRenderer.prepare(m_assets, registry);
+    if (m_waterMapRenderer->isEnabled()) {
+        m_waterMapRenderer->prepare(m_assets, registry);
     }
-    if (m_mirrorMapRenderer.isEnabled()) {
-        m_mirrorMapRenderer.prepare(m_assets, registry);
+    if (m_mirrorMapRenderer->isEnabled()) {
+        m_mirrorMapRenderer->prepare(m_assets, registry);
     }
-    if (m_cubeMapRenderer.isEnabled()) {
-        m_cubeMapRenderer.prepare(m_assets, registry);
+    if (m_cubeMapRenderer->isEnabled()) {
+        m_cubeMapRenderer->prepare(m_assets, registry);
     }
-    if (m_shadowMapRenderer.isEnabled()) {
-        m_shadowMapRenderer.prepare(m_assets, registry);
-    }
-
-    if (m_objectIdRenderer.isEnabled()) {
-        m_objectIdRenderer.prepare(m_assets, registry);
+    if (m_shadowMapRenderer->isEnabled()) {
+        m_shadowMapRenderer->prepare(m_assets, registry);
     }
 
-    if (m_normalRenderer.isEnabled()) {
-        m_normalRenderer.prepare(m_assets, registry);
+    if (m_objectIdRenderer->isEnabled()) {
+        m_objectIdRenderer->prepare(m_assets, registry);
+    }
+
+    if (m_normalRenderer->isEnabled()) {
+        m_normalRenderer->prepare(m_assets, registry);
     }
 
     if (m_particleSystem) {
@@ -163,8 +182,8 @@ void Scene::prepare()
     }
 
     if (m_assets.showObjectIDView) {
-        if (m_objectIdRenderer.isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_objectIdRenderer.m_debugViewport);
+        if (m_objectIdRenderer->isEnabled()) {
+            m_registry->m_viewportRegistry->addViewport(m_objectIdRenderer->m_debugViewport);
         }
     }
 
@@ -183,21 +202,21 @@ void Scene::prepare()
     }
 
     if (m_assets.showShadowMapView) {
-        if (m_shadowMapRenderer.isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_shadowMapRenderer.m_debugViewport);
+        if (m_shadowMapRenderer->isEnabled()) {
+            m_registry->m_viewportRegistry->addViewport(m_shadowMapRenderer->m_debugViewport);
         }
     }
     if (m_assets.showReflectionView) {
-        if (m_waterMapRenderer.isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer.m_reflectionDebugViewport);
+        if (m_waterMapRenderer->isEnabled()) {
+            m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer->m_reflectionDebugViewport);
         }
-        if (m_mirrorMapRenderer.isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_mirrorMapRenderer.m_debugViewport);
+        if (m_mirrorMapRenderer->isEnabled()) {
+            m_registry->m_viewportRegistry->addViewport(m_mirrorMapRenderer->m_debugViewport);
         }
     }
     if (m_assets.showRefractionView) {
-        if (m_waterMapRenderer.isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer.m_refractionDebugViewport);
+        if (m_waterMapRenderer->isEnabled()) {
+            m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer->m_refractionDebugViewport);
         }
     }
 }
@@ -223,8 +242,8 @@ void Scene::update(const UpdateContext& ctx)
         generator->update(ctx);
     }
 
-    if (m_viewportRenderer.isEnabled()) {
-        m_viewportRenderer.update(ctx);
+    if (m_viewportRenderer->isEnabled()) {
+        m_viewportRenderer->update(ctx);
     }
 
     if (m_particleSystem) {
@@ -238,8 +257,8 @@ void Scene::update(const UpdateContext& ctx)
 
 void Scene::updateView(const RenderContext& ctx)
 {
-    if (m_objectIdRenderer.isEnabled()) {
-        m_objectIdRenderer.updateView(ctx);
+    if (m_objectIdRenderer->isEnabled()) {
+        m_objectIdRenderer->updateView(ctx);
     }
 
     updateMainViewport(ctx);
@@ -250,15 +269,15 @@ void Scene::updateView(const RenderContext& ctx)
 
 void Scene::bind(const RenderContext& ctx)
 {
-    if (m_shadowMapRenderer.isEnabled()) {
-        m_shadowMapRenderer.bind(ctx);
+    if (m_shadowMapRenderer->isEnabled()) {
+        m_shadowMapRenderer->bind(ctx);
     }
 
     m_registry->m_typeRegistry->bind(ctx);
 
     m_renderData->bind();
 
-    ctx.m_data.u_cubeMapExist = m_cubeMapRenderer.isEnabled() && m_cubeMapRenderer.isRendered();
+    ctx.m_data.u_cubeMapExist = m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->isRendered();
 
     ctx.bindDefaults();
     ctx.updateUBOs();
@@ -288,9 +307,9 @@ void Scene::draw(const RenderContext& ctx)
     bool wasCubeMap = false;
     int renderCount = 0;
 
-    if (m_shadowMapRenderer.isEnabled() && m_shadowMapRenderer.render(ctx)) {
+    if (m_shadowMapRenderer->isEnabled() && m_shadowMapRenderer->render(ctx)) {
         renderCount++;
-        m_shadowMapRenderer.bindTexture(ctx);
+        m_shadowMapRenderer->bindTexture(ctx);
     }
 
     // OpenGL Programming Guide, 8th Edition, page 404
@@ -299,14 +318,14 @@ void Scene::draw(const RenderContext& ctx)
     //glPolygonOffset(0.2f, 0.2f);
     ctx.m_state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, true);
 
-    if (m_cubeMapRenderer.isEnabled() && m_cubeMapRenderer.render(ctx)) {
+    if (m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->render(ctx)) {
         //wasCubeMap = true;
     }
 
-    if (!wasCubeMap && m_waterMapRenderer.isEnabled() && m_waterMapRenderer.render(ctx))
+    if (!wasCubeMap && m_waterMapRenderer->isEnabled() && m_waterMapRenderer->render(ctx))
         renderCount++;
 
-    if (!wasCubeMap && m_mirrorMapRenderer.isEnabled() && m_mirrorMapRenderer.render(ctx))
+    if (!wasCubeMap && m_mirrorMapRenderer->isEnabled() && m_mirrorMapRenderer->render(ctx))
         renderCount++;
 
     // NOTE KI skip main render if special update cycle
@@ -378,8 +397,8 @@ void Scene::drawViewports(const RenderContext& ctx)
         glClear(mask);
     }
 
-    if (m_viewportRenderer.isEnabled()) {
-        m_viewportRenderer.render(ctx, m_windowBuffer.get());
+    if (m_viewportRenderer->isEnabled()) {
+        m_viewportRenderer->render(ctx, m_windowBuffer.get());
     }
 }
 
@@ -390,18 +409,18 @@ void Scene::drawScene(
     m_registry->m_materialRegistry->bind(ctx);
     m_registry->m_entityRegistry->bind(ctx);
 
-    if (m_cubeMapRenderer.isEnabled()) {
-        m_cubeMapRenderer.bindTexture(ctx);
+    if (m_cubeMapRenderer->isEnabled()) {
+        m_cubeMapRenderer->bindTexture(ctx);
     }
-    if (m_waterMapRenderer.isEnabled()) {
-        m_waterMapRenderer.bindTexture(ctx);
+    if (m_waterMapRenderer->isEnabled()) {
+        m_waterMapRenderer->bindTexture(ctx);
     }
-    if (m_mirrorMapRenderer.isEnabled()) {
-        m_mirrorMapRenderer.bindTexture(ctx);
+    if (m_mirrorMapRenderer->isEnabled()) {
+        m_mirrorMapRenderer->bindTexture(ctx);
     }
 
-    if (m_nodeRenderer.isEnabled()) {
-        m_nodeRenderer.render(ctx, targetBuffer);
+    if (m_nodeRenderer->isEnabled()) {
+        m_nodeRenderer->render(ctx, targetBuffer);
     }
 
     targetBuffer->bind(ctx);
@@ -411,8 +430,8 @@ void Scene::drawScene(
     }
 
     if (m_assets.showNormals) {
-        if (m_normalRenderer.isEnabled()) {
-            m_normalRenderer.render(ctx);
+        if (m_normalRenderer->isEnabled()) {
+            m_normalRenderer->render(ctx);
         }
     }
 }
@@ -458,9 +477,9 @@ void Scene::bindComponents(Node* node)
 
 int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double screenPosY)
 {
-    if (m_objectIdRenderer.isEnabled()) {
-        m_objectIdRenderer.render(ctx);
-        return m_objectIdRenderer.getObjectId(ctx, screenPosX, screenPosY, m_mainViewport.get());
+    if (m_objectIdRenderer->isEnabled()) {
+        m_objectIdRenderer->render(ctx);
+        return m_objectIdRenderer->getObjectId(ctx, screenPosX, screenPosY, m_mainViewport.get());
     }
     return 0;
 }
