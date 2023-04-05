@@ -337,7 +337,7 @@ void Program::setInt(const std::string& name, int value) noexcept
 void Program::setupUBO(
     const char* name,
     unsigned int ubo,
-    unsigned int expectedSize)
+    unsigned int localSize)
 {
     // NOTE KI no setup really; just validation
     // => validation required to avoid serious memory corruption issues
@@ -351,21 +351,21 @@ void Program::setupUBO(
     }
     //glUniformBlockBinding(m_programId, blockIndex, ubo);
 
-    GLint blockSize;
-    glGetActiveUniformBlockiv(m_programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
+    GLint remoteSize;
+    glGetActiveUniformBlockiv(m_programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &remoteSize);
 
     KI_INFO(fmt::format(
-        "PROGRAM::UBO_SIZE program={}, UBO={}, size={}, expected_size={}",
-        m_programName, name, blockSize, expectedSize));
+        "PROGRAM::UBO_SIZE program={}, UBO={}, local_size={}, remote_size={}",
+        m_programName, name, localSize, remoteSize));
 
-    if (blockSize != expectedSize) {
+    if (localSize != remoteSize) {
         for (const auto& [k, v] : m_defines) {
             KI_ERROR(fmt::format("DEFINE: {}={}", k, v));
         }
 
         const auto msg = fmt::format(
-            "PROGRAM::UBO_SIZE program={}. UBO={}. size={}. expected_size={}",
-            m_programName, name, blockSize, expectedSize);
+            "PROGRAM::UBO_SIZE program={}. UBO={}. local_size={}. remote_size={}",
+            m_programName, name, localSize, remoteSize);
 
         KI_CRITICAL(msg);
         __debugbreak();

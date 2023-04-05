@@ -82,7 +82,6 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     for (auto& cascade : m_cascades) {
         cascade->bind(ctx);
     }
-    m_cascades[m_activeCascade]->bind(ctx);
 }
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)

@@ -76,18 +76,20 @@ void ShadowCascade::bind(const RenderContext& ctx)
     if (!node) return;
 
     const glm::vec3 up{ 0.0, 1.0, 0.0 };
-    const glm::mat4 lightViewMatrix = glm::lookAt(
+    const glm::mat4 shadowViewMatrix = glm::lookAt(
         node->m_light->getWorldPosition(),
         node->m_light->getWorldTargetPosition(), up);
 
-    const glm::mat4 lightProjectionMatrix = glm::ortho(
+    const glm::mat4 shadowProjectionMatrix = glm::ortho(
         -m_frustumSize, m_frustumSize, -m_frustumSize, m_frustumSize,
         m_nearPlane,
         m_farPlane);
 
     //lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
 
-    ctx.m_matrices.u_shadowProjected[m_index] = lightProjectionMatrix * lightViewMatrix;
+    ctx.m_matrices.u_shadowProjected[m_index] = shadowProjectionMatrix * shadowViewMatrix;
+    ctx.m_matrices.u_shadowPlanes[m_index] = m_nearPlane;
+    ctx.m_matrices.u_shadowPlanes[m_index + 1] = m_farPlane;
     ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
 }
 
