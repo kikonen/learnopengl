@@ -339,14 +339,18 @@ void Scene::draw(const RenderContext& ctx)
     //glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
-void Scene::drawMain(const RenderContext& ctx)
+void Scene::drawMain(const RenderContext& parentCtx)
 {
-    RenderContext mainCtx("MAIN", &ctx, ctx.m_camera, m_mainBuffer->m_spec.width, m_mainBuffer->m_spec.height);
+    RenderContext localCtx(
+        "MAIN",
+        &parentCtx,
+        parentCtx.m_camera,
+        m_mainBuffer->m_spec.width,
+        m_mainBuffer->m_spec.height);
 
-    mainCtx.m_matrices.u_lightProjected = ctx.m_matrices.u_lightProjected;
-    mainCtx.m_matrices.u_shadow = ctx.m_matrices.u_shadow;
+    localCtx.copyShadowFrom(parentCtx);
 
-    drawScene(mainCtx, m_mainBuffer.get());
+    drawScene(localCtx, m_mainBuffer.get());
 }
 
 // "back mirror" viewport
@@ -365,8 +369,7 @@ void Scene::drawRear(const RenderContext& parentCtx)
 
     RenderContext localCtx("BACK", &parentCtx, &camera, m_rearBuffer->m_spec.width, m_rearBuffer->m_spec.height);
 
-    localCtx.m_matrices.u_lightProjected = parentCtx.m_matrices.u_lightProjected;
-    localCtx.m_matrices.u_shadow = parentCtx.m_matrices.u_shadow;
+    localCtx.copyShadowFrom(parentCtx);
 
     localCtx.updateMatricesUBO();
     localCtx.updateDataUBO();

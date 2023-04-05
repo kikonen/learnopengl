@@ -67,6 +67,9 @@ void fillVertex(const int i)
 
 void generateQuad(const int index)
 {
+  // TODO KI select shadow map index
+  const uint shadowIndex = 0;
+
   // https://ogldev.org/www/tutorial27/tutorial27.html
   vec3 pos = gl_in[0].gl_Position.xyz;
   vec3 scale = gs_in[index].scale * 2.0;
@@ -87,7 +90,7 @@ void generateQuad(const int index)
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(0.0, 0.0);
-  gs_out.shadowPos = u_shadowMatrix * worldPos;
+  gs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();
@@ -100,7 +103,7 @@ void generateQuad(const int index)
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(0.0, 1.0);
-  gs_out.shadowPos = u_shadowMatrix * worldPos;
+  gs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();
@@ -114,7 +117,7 @@ void generateQuad(const int index)
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(1.0, 0.0);
-  gs_out.shadowPos = u_shadowMatrix * worldPos;
+  gs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();
@@ -127,7 +130,7 @@ void generateQuad(const int index)
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(1.0, 1.0);
-  gs_out.shadowPos = u_shadowMatrix * worldPos;
+  gs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
   calculateClipping(worldPos);
   EmitVertex();

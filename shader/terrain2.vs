@@ -51,6 +51,9 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
+  // TODO KI select shadow map index
+  const uint shadowIndex = 0;
+
   int materialIndex = entity.materialIndex;
 
   const vec4 pos = vec4(a_pos, 1.0);
@@ -88,7 +91,7 @@ void main() {
 
 //  calculateClipping(worldPos);
 
-  vs_out.shadowPos = u_shadowMatrix * worldPos;
+  vs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0)

@@ -87,14 +87,16 @@ void ShadowCascade::bind(const RenderContext& ctx)
 
     //lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
 
-    ctx.m_matrices.u_lightProjected = lightProjectionMatrix * lightViewMatrix;
-    ctx.m_matrices.u_shadow = scaleBiasMatrix * ctx.m_matrices.u_lightProjected;
+    ctx.m_matrices.u_shadowProjected[m_index] = lightProjectionMatrix * lightViewMatrix;
+    ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
 }
 
 void ShadowCascade::render(
     const RenderContext& ctx)
 {
     m_buffer->bind(ctx);
+
+    u_shadowIndex.set(m_index);
 
     // NOTE KI *NO* color in shadowmap
     glClear(GL_DEPTH_BUFFER_BIT);

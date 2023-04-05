@@ -60,5 +60,7 @@ private:
     //Program* m_shadowProgram{ nullptr };
     Program* m_solidShadowProgram{ nullptr };
     Program* m_blendedShadowProgram{ nullptr };
+
+    uniform::UInt u_shadowIndex{ "u_shadowIndex", UNIFORM_SHADOW_MAP_INDEX };
 };
 

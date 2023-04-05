@@ -159,8 +159,7 @@ bool MirrorMapRenderer::render(
             parentCtx.m_assets.farPlane,
             m_curr->m_spec.width, m_curr->m_spec.height);
 
-        localCtx.m_matrices.u_lightProjected = parentCtx.m_matrices.u_lightProjected;
-        localCtx.m_matrices.u_shadow = parentCtx.m_matrices.u_shadow;
+        localCtx.copyShadowFrom(parentCtx);
 
         //ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         ////clip.enabled = true;

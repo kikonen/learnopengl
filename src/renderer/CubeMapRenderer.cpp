@@ -196,8 +196,7 @@ bool CubeMapRenderer::render(
 
         bindTexture(localCtx);
 
-        localCtx.m_matrices.u_lightProjected = parentCtx.m_matrices.u_lightProjected;
-        localCtx.m_matrices.u_shadow = parentCtx.m_matrices.u_shadow;
+        localCtx.copyShadowFrom(parentCtx);
 
         localCtx.updateMatricesUBO();
         localCtx.updateDataUBO();
