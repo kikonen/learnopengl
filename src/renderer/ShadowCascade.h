@@ -16,13 +16,13 @@ class ShadowCascade final {
 public:
     ShadowCascade(
         int index,
-        float nearPlane,
-        float farPlane,
+        float shadowBegin,
+        float shadowEnd,
         float frustumSize,
         int mapSize)
     : m_index(index),
-    m_nearPlane(nearPlane),
-    m_farPlane(farPlane),
+    m_shadowBegin(shadowBegin),
+    m_shadowEnd(shadowEnd),
     m_frustumSize(frustumSize),
     m_mapSize(mapSize)
     {}
@@ -48,10 +48,13 @@ private:
 
 public:
     const int m_index;
-    const float m_nearPlane;
-    const float m_farPlane;
+    const float m_shadowBegin;
+    const float m_shadowEnd;
     const float m_frustumSize;
     const int m_mapSize;
+
+    float m_nearPlane{ 0.f };
+    float m_farPlane{ 0.f };
 
 private:
     // NOTE KI std::unique_ptr triggered exhaustive error loop

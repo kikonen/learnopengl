@@ -55,8 +55,6 @@ void ShadowMapRenderer::prepare(
 
     m_activeCascade = 0;
 
-    auto& active = m_cascades[m_activeCascade];
-
     m_debugViewport = std::make_shared<Viewport>(
         "ShadowMap",
         //glm::vec3(-1 + 0.01, 1 - 0.01, 0),
@@ -64,9 +62,11 @@ void ShadowMapRenderer::prepare(
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
         false,
-        active->getTextureID(),
+        -1,
         m_shadowDebugProgram,
-        [this, &assets, &active](Viewport& vp) {
+        [this, &assets](Viewport& vp) {
+            auto& active = m_cascades[m_activeCascade];
+            vp.setTextureId(active->getTextureID());
             u_nearPlane.set(active->m_nearPlane);
             u_farPlane.set(active->m_farPlane);
         });

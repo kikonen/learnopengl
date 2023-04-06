@@ -43,6 +43,10 @@ public:
         return m_worldTargetPosition;
     }
 
+    const glm::vec3& getWorldDirection() const noexcept {
+        return m_worldDir;
+    }
+
     const glm::vec3& getPosition() const noexcept {
         return m_position;
     }

@@ -4,6 +4,7 @@
 #include "asset/Shader.h"
 
 #include "component/Light.h"
+#include "component/Camera.h"
 
 #include "model/Viewport.h"
 
@@ -75,22 +76,77 @@ void ShadowCascade::bind(const RenderContext& ctx)
     auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
     if (!node) return;
 
-    const glm::vec3 up{ 0.0, 1.0, 0.0 };
-    const glm::mat4 shadowViewMatrix = glm::lookAt(
-        node->m_light->getWorldPosition(),
-        node->m_light->getWorldTargetPosition(), up);
+    {
+        const auto& camera = ctx.m_camera;
+        const auto& viewMatrix = camera->getView();
+        const auto viewInverseMatrix = glm::inverse(viewMatrix);
 
-    const glm::mat4 shadowProjectionMatrix = glm::ortho(
-        -m_frustumSize, m_frustumSize, -m_frustumSize, m_frustumSize,
-        m_nearPlane,
-        m_farPlane);
+        Camera shadowCamera{
+            node->m_light->getWorldPosition(),
+            node->m_light->getWorldDirection(),
+            {0.f, 1.f, 0.f} };
 
-    //lightProjection = glm::perspective(glm::radians(60.0f), (float)ctx.engine.width / (float)ctx.engine.height, near_plane, far_plane);
+        const auto& shadowMatrix = shadowCamera.getView();
 
-    ctx.m_matrices.u_shadowProjected[m_index] = shadowProjectionMatrix * shadowViewMatrix;
-    ctx.m_matrices.u_shadowPlanes[m_index] = m_nearPlane;
-    ctx.m_matrices.u_shadowPlanes[m_index + 1] = m_farPlane;
-    ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
+        const float ar = ctx.m_aspectRatio;
+        const float tanHalfHFOV = tanf(glm::radians(camera->getZoom() / 2.0f));
+        const float tanHalfVFOV = tanf(glm::radians((camera->getZoom() * ar) / 2.0f));
+
+        const float xn = m_shadowBegin * tanHalfHFOV;
+        const float xf = m_shadowEnd * tanHalfHFOV;
+        const float yn = m_shadowBegin * tanHalfVFOV;
+        const float yf = m_shadowEnd * tanHalfVFOV;
+
+        constexpr int FRUSTUM_CORNER_COUNT = 8;
+
+        glm::vec4 frustumCorners[FRUSTUM_CORNER_COUNT] = {
+            // near face
+            glm::vec4(xn,   yn, m_shadowBegin, 1.0),
+            glm::vec4(-xn,  yn, m_shadowBegin, 1.0),
+            glm::vec4(xn,  -yn, m_shadowBegin, 1.0),
+            glm::vec4(-xn, -yn, m_shadowBegin, 1.0),
+
+            // far face
+            glm::vec4(xf,   yf, m_shadowEnd, 1.0),
+            glm::vec4(-xf,  yf, m_shadowEnd, 1.0),
+            glm::vec4(xf,  -yf, m_shadowEnd, 1.0),
+            glm::vec4(-xf, -yf, m_shadowEnd, 1.0)
+        };
+
+        glm::vec4 frustumCornersL[FRUSTUM_CORNER_COUNT]{};
+
+        float minX = std::numeric_limits<float>::max();
+        float maxX = std::numeric_limits<float>::min();
+        float minY = std::numeric_limits<float>::max();
+        float maxY = std::numeric_limits<float>::min();
+        float minZ = std::numeric_limits<float>::max();
+        float maxZ = std::numeric_limits<float>::min();
+
+        for (int j = 0; j < FRUSTUM_CORNER_COUNT; j++) {
+            glm::vec4 vW = viewInverseMatrix * frustumCorners[j];
+            frustumCornersL[j] = shadowMatrix * vW;
+
+            minX = std::min(minX, frustumCornersL[j].x);
+            maxX = std::max(maxX, frustumCornersL[j].x);
+            minY = std::min(minY, frustumCornersL[j].y);
+            maxY = std::max(maxY, frustumCornersL[j].y);
+            minZ = std::min(minZ, frustumCornersL[j].z);
+            maxZ = std::max(maxZ, frustumCornersL[j].z);
+        }
+
+        const glm::mat4 shadowProjectionMatrix = glm::ortho(
+            minX, maxX, minY, maxY,
+            minZ,
+            maxZ);
+
+        m_nearPlane = minZ;
+        m_farPlane = maxZ;
+
+        ctx.m_matrices.u_shadowProjected[m_index] = shadowProjectionMatrix * shadowMatrix;
+        ctx.m_matrices.u_shadowPlanes[m_index] = m_shadowBegin;
+        ctx.m_matrices.u_shadowPlanes[m_index + 1] = m_shadowEnd;
+        ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
+    }
 }
 
 void ShadowCascade::render(
