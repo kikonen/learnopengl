@@ -224,3 +224,20 @@ void Camera::updateCamera() const noexcept
     m_dirtyView = true;
     m_dirtyProjected = true;
 }
+
+/* https://ogldev.org/www/tutorial13/tutorial13.html
+void Camera::updateUVN()
+{
+    Vector3f N = Target;
+    N.Normalize();
+    Vector3f U = Up;
+    U = U.Cross(Target);
+    U.Normalize();
+    Vector3f V = N.Cross(U);
+
+    m[0][0] = U.x; m[0][1] = U.y; m[0][2] = U.z; m[0][3] = 0.0f;
+    m[1][0] = V.x; m[1][1] = V.y; m[1][2] = V.z; m[1][3] = 0.0f;
+    m[2][0] = N.x; m[2][1] = N.y; m[2][2] = N.z; m[2][3] = 0.0f;
+    m[3][0] = 0.0f; m[3][1] = 0.0f; m[3][2] = 0.0f; m[3][3] = 1.0f;
+}
+*/
