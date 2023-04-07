@@ -33,7 +33,7 @@ entities:
     enabled: true
   - name: Directional light
     type: origo
-    pos: [0, 25, 40]
+    pos: [0, 25, 25]
     scale: 2.5
     model: light
     program: g_light

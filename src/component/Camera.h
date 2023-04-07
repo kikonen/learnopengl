@@ -110,9 +110,16 @@ private:
     float m_zoomProjection = -1.0f;
 
     glm::vec3 m_position{ 0.f };
+
+    // *DIRECTION* at camera is pointing at (== target)
+    // *NOT* required to be orthogonal to up
     glm::vec3 m_front{ 0.f, 0.f, -1.f };
-    glm::vec3 m_right{ 1.f, 0.f, 0.f };
+
+    // *UP* direction of world
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
+
+    // *RIGHT* cross product of front * up
+    glm::vec3 m_right{ 1.f, 0.f, 0.f };
 
     float m_aspectRatio = -1;
     float m_nearPlane = -1;
