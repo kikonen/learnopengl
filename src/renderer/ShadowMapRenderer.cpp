@@ -53,7 +53,7 @@ void ShadowMapRenderer::prepare(
         cascade->prepare(assets, registry);
     }
 
-    m_activeCascade = 1;
+    m_activeCascade = 0;
 
     m_debugViewport = std::make_shared<Viewport>(
         "ShadowMap",

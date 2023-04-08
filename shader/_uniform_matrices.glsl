@@ -9,5 +9,5 @@ layout (std140, binding = UBO_MATRICES) uniform Matrices {
   // NOTE KI shadow calculation only
   mat4 u_shadowProjectedMatrix[SHADOW_MAP_COUNT];
 
-  float u_shadowPlanes[SHADOW_MAP_COUNT + 1];
+  float u_shadowEnd[SHADOW_MAP_COUNT];
 };

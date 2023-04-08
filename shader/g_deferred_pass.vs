@@ -4,7 +4,7 @@ layout (location = 0) in vec3 a_pos;
 layout (location = 1) in vec2 a_texCoords;
 
 out VS_OUT {
-  out vec2 texCoords;
+  vec2 texCoords;
 } vs_out;
 
 void main()

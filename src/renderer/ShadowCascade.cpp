@@ -88,9 +88,10 @@ void ShadowCascade::bind(const RenderContext& ctx)
 
         const auto& shadowMatrix = shadowCamera.getView();
 
+        // NOTE KI reverse aspect ratio compared to RenderContext
         const float ar = ctx.m_aspectRatio;
-        const float tanHalfHFOV = tanf(glm::radians(camera->getFov() / 2.0f));
-        const float tanHalfVFOV = tanf(glm::radians((camera->getFov() * ar) / 2.0f));
+        const float tanHalfHFOV = tanf(glm::radians((camera->getFov() * ar) / 2.0f));
+        const float tanHalfVFOV = tanf(glm::radians((camera->getFov() * 1.0) / 2.0f));
 
         const float xn = m_shadowBegin * tanHalfHFOV;
         const float xf = m_shadowEnd * tanHalfHFOV;
@@ -143,8 +144,11 @@ void ShadowCascade::bind(const RenderContext& ctx)
         m_farPlane = maxZ;
 
         ctx.m_matrices.u_shadowProjected[m_index] = shadowProjectionMatrix * shadowMatrix;
-        ctx.m_matrices.u_shadowPlanes[m_index] = m_shadowBegin;
-        ctx.m_matrices.u_shadowPlanes[m_index + 1] = m_shadowEnd;
+        {
+            const auto& clip = ctx.m_matrices.u_projection * glm::vec4{ 0, 0, m_shadowEnd, 1.0 };
+            ctx.m_matrices.u_shadowEndClipZ[m_index] = clip.z;
+            KI_INFO_OUT(fmt::format("CSM: index={}, clipZ={}", m_index, clip.z));
+        }
         ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
     }
 }

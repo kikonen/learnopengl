@@ -92,11 +92,11 @@ assets:
   fog_end: 3000.0
   fog_ratio: 1.0
 
-  shadow_planes: [0.1, 50, 100, 1000]
+  shadow_planes: [0.1, 30, 50, 1000]
   shadow_frustum_sizes: [10, 100, 200]
   shadow_map_sizes: [1024, 512, 512]
   shadow_render_frame_start: 0
-  shadow_render_frame_step: 2
+  shadow_render_frame_step: 1
 
   mirror_reflection_size: 1024
   mirror_refraction_size: 1024

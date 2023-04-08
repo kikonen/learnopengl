@@ -35,13 +35,28 @@ precision mediump float;
 #include fn_calculate_light.glsl
 #include fn_calculate_fog.glsl
 
+const vec4 CASCADE_COLORS[3] =
+  vec4[3](
+          vec4(0.5, 0.0, 0.0, 0.0),
+          vec4(0.0, 0.5, 0.0, 0.0),
+          vec4(0.0, 0.0, 0.5, 0.0)
+          );
+
 void main()
 {
   const vec3 worldPos = texture(g_position, fs_in.texCoords).rgb;
   const vec3 normal = normalize(texture(g_normal, fs_in.texCoords).rgb);
 
   // TODO KI select shadow map index
-  const uint shadowIndex = 0;
+  uint shadowIndex = 2;
+
+  vec4 clipPos = u_projectedMatrix * vec4(worldPos, 1.0);
+
+  for (uint i = 0; i < SHADOW_MAP_COUNT; i++) {
+    if (clipPos.z <= u_shadowEnd[i]) {
+      shadowIndex = i;
+    }
+  }
 
   const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
   const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
@@ -69,6 +84,8 @@ void main()
 
   vec4 color = calculateLight(normal, toView, worldPos, shadowPos, material);
   color = calculateFog(viewPos, material.fogRatio, color);
+
+  color += CASCADE_COLORS[shadowIndex];
 
   o_fragColor = color;
 }
