@@ -140,7 +140,7 @@ class SceneFile
 
         bool isDefault { false };
 
-        float zoom{ 45.f };
+        float fov{ 45.f };
 
         glm::vec3 front{ 0.f, 0.f, -1.f };
         glm::vec3 up{ 0.f, 1.f, 0.f };

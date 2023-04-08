@@ -69,10 +69,10 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
         }
 
         if (input->isKeyDown(Key::ZOOM_IN)) {
-            camera->adjustZoom(-zoomSpeed.z * dt);
+            camera->adjustFov(-zoomSpeed.z * dt);
         }
         if (input->isKeyDown(Key::ZOOM_OUT)) {
-            camera->adjustZoom(zoomSpeed.z * dt);
+            camera->adjustFov(zoomSpeed.z * dt);
         }
     }
 
@@ -166,7 +166,7 @@ void CameraController::onMouseScroll(Input* input, double xoffset, double yoffse
     if (!m_node) return;
     auto* camera = m_node->m_camera.get();
 
-    auto zoom = m_cameraMouseSensitivity.z * yoffset;
+    auto adjustment = m_cameraMouseSensitivity.z * yoffset;
 
-    camera->adjustZoom(-zoom);
+    camera->adjustFov(-adjustment);
 }

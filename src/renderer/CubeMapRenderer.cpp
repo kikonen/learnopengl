@@ -106,7 +106,7 @@ void CubeMapRenderer::prepare(
     glm::vec3 origo{ 0 };
     for (int face = 0; face < 6; face++) {
         auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[face], CAMERA_UP[face]);
-        camera.setZoom(90.0);
+        camera.setFov(90.0);
     }
 }
 

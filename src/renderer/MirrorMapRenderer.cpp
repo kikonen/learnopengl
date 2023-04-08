@@ -79,7 +79,7 @@ void MirrorMapRenderer::prepare(
     glm::vec3 origo(0);
     for (int i = 0; i < 1; i++) {
         auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[i], CAMERA_UP[i]);
-        camera.setZoom(assets.mirrorFov);
+        camera.setFov(assets.mirrorFov);
     }
 
     m_debugViewport = std::make_shared<Viewport>(
@@ -149,8 +149,8 @@ bool MirrorMapRenderer::render(
         auto& camera = m_cameras[0];
         camera.setWorldPosition(mirrorEyePos);
         camera.setAxis(reflectFront, mainCamera->getViewUp());
-        //camera.setZoom(ctx.m_camera.getZoom());
-        //camera.setZoom(fovAngle);
+        //camera.setFov(ctx.m_camera.getFov());
+        //camera.setFov(fovAngle);
 
         RenderContext localCtx("MIRROR",
             &parentCtx,

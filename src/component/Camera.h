@@ -65,20 +65,20 @@ public:
         return m_front;
     }
 
-    inline const glm::vec3& getRight() const noexcept {
-        return m_right;
-    }
+    //inline const glm::vec3& getRight() const noexcept {
+    //    return m_right;
+    //}
 
     inline const glm::vec3& getUp() const noexcept {
         return m_up;
     }
 
-    inline float getZoom() const noexcept {
-        return m_zoom;
+    inline float getFov() const noexcept {
+        return m_fov;
     }
 
-    void setZoom(float zoom) noexcept;
-    void adjustZoom(float adjustement) noexcept;
+    void setFov(float fov) noexcept;
+    void adjustFov(float adjustement) noexcept;
 
     // NOTE KI for node camera; relative to node
     void setPosition(const glm::vec3& pos) noexcept;
@@ -96,7 +96,7 @@ public:
     void updateCamera() const noexcept;
 
 private:
-    void updateZoom(float aZoom) noexcept;
+    void updateFov(float fov) noexcept;
 
 private:
     bool m_enabled = false;
@@ -106,8 +106,8 @@ private:
     glm::mat4 m_nodeModelMatrix{ 1.f };
     int m_nodeLevel = -1;
 
-    float m_zoom{ 45.f };
-    float m_zoomProjection = -1.0f;
+    float m_fov{ 45.f };
+    float m_fovProjection = -1.0f;
 
     glm::vec3 m_position{ 0.f };
 
@@ -118,8 +118,8 @@ private:
     // *UP* direction of world
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
 
-    // *RIGHT* cross product of front * up
-    glm::vec3 m_right{ 1.f, 0.f, 0.f };
+    //// *RIGHT* cross product of front * up
+    //glm::vec3 m_right{ 1.f, 0.f, 0.f };
 
     float m_aspectRatio = -1;
     float m_nearPlane = -1;

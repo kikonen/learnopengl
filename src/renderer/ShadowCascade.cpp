@@ -89,8 +89,8 @@ void ShadowCascade::bind(const RenderContext& ctx)
         const auto& shadowMatrix = shadowCamera.getView();
 
         const float ar = ctx.m_aspectRatio;
-        const float tanHalfHFOV = tanf(glm::radians(camera->getZoom() / 2.0f));
-        const float tanHalfVFOV = tanf(glm::radians((camera->getZoom() * ar) / 2.0f));
+        const float tanHalfHFOV = tanf(glm::radians(camera->getFov() / 2.0f));
+        const float tanHalfVFOV = tanf(glm::radians((camera->getFov() * ar) / 2.0f));
 
         const float xn = m_shadowBegin * tanHalfHFOV;
         const float xf = m_shadowEnd * tanHalfHFOV;
@@ -101,15 +101,15 @@ void ShadowCascade::bind(const RenderContext& ctx)
 
         glm::vec4 frustumCorners[FRUSTUM_CORNER_COUNT] = {
             // near face
-            glm::vec4(xn,   yn, m_shadowBegin, 1.0),
+            glm::vec4( xn,  yn, m_shadowBegin, 1.0),
             glm::vec4(-xn,  yn, m_shadowBegin, 1.0),
-            glm::vec4(xn,  -yn, m_shadowBegin, 1.0),
+            glm::vec4( xn, -yn, m_shadowBegin, 1.0),
             glm::vec4(-xn, -yn, m_shadowBegin, 1.0),
 
             // far face
-            glm::vec4(xf,   yf, m_shadowEnd, 1.0),
+            glm::vec4( xf,  yf, m_shadowEnd, 1.0),
             glm::vec4(-xf,  yf, m_shadowEnd, 1.0),
-            glm::vec4(xf,  -yf, m_shadowEnd, 1.0),
+            glm::vec4( xf, -yf, m_shadowEnd, 1.0),
             glm::vec4(-xf, -yf, m_shadowEnd, 1.0)
         };
 

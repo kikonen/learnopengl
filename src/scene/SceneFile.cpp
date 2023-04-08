@@ -813,7 +813,7 @@ std::unique_ptr<Camera> SceneFile::createCamera(
     camera->setPosition(data.pos);
     camera->setAxis(data.front, data.up);
     camera->setRotation(data.rotation);
-    camera->setZoom(data.zoom);
+    camera->setFov(data.fov);
 
     camera->setEnabled(data.enabled);
     camera->setDefault(data.isDefault);
@@ -1241,7 +1241,7 @@ void SceneFile::loadTiling(
 
 void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
 {
-    data.zoom = m_assets.cameraFov;
+    data.fov = m_assets.cameraFov;
 
     for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
@@ -1253,8 +1253,8 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
         else if (k == "default") {
             data.isDefault = readBool(v);
         }
-        else if (k == "zoom") {
-            data.zoom = readFloat(v);
+        else if (k == "fov") {
+            data.fov = readFloat(v);
         }
         else if (k == "front") {
             data.front = readVec3(v);

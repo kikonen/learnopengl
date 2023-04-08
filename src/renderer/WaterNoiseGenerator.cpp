@@ -43,16 +43,16 @@ GLuint WaterNoiseGenerator::generate()
     return textureID;
 }
 
-double WaterNoiseGenerator::smoothNoise(double zoom, double x1, double y1, double z1) {
+double WaterNoiseGenerator::smoothNoise(double fov, double x1, double y1, double z1) {
     //get fractional part of x, y, and z
     double fractX = x1 - (int)x1;
     double fractY = y1 - (int)y1;
     double fractZ = z1 - (int)z1;
 
     //neighbor values that wrap
-    double x2 = x1 - 1; if (x2 < 0) x2 = (round(noiseHeight / zoom)) - 1;
-    double y2 = y1 - 1; if (y2 < 0) y2 = (round(noiseWidth / zoom)) - 1;
-    double z2 = z1 - 1; if (z2 < 0) z2 = (round(noiseDepth / zoom)) - 1;
+    double x2 = x1 - 1; if (x2 < 0) x2 = (round(noiseHeight / fov)) - 1;
+    double y2 = y1 - 1; if (y2 < 0) y2 = (round(noiseWidth / fov)) - 1;
+    double z2 = z1 - 1; if (z2 < 0) z2 = (round(noiseDepth / fov)) - 1;
 
     //smooth the noise by interpolating
     double value = 0.0;
@@ -69,28 +69,28 @@ double WaterNoiseGenerator::smoothNoise(double zoom, double x1, double y1, doubl
     return value;
 }
 
-double WaterNoiseGenerator::turbulence(double x, double y, double z, double maxZoom) {
-    double sum = 0.0, zoom = maxZoom;
+double WaterNoiseGenerator::turbulence(double x, double y, double z, double maxFov) {
+    double sum = 0.0, fov = maxFov;
 
     sum = (sin((1.0 / 512.0) * (8 * PI) * (x + z)) + 1) * 8.0;
 
-    while (zoom >= 0.9) {
-        sum = sum + smoothNoise(zoom, x / zoom, y / zoom, z / zoom) * zoom;
-        zoom = zoom / 2.0;
+    while (fov >= 0.9) {
+        sum = sum + smoothNoise(fov, x / fov, y / fov, z / fov) * fov;
+        fov = fov / 2.0;
     }
 
-    sum = 128.0 * sum / maxZoom;
+    sum = 128.0 * sum / maxFov;
     return sum;
 }
 
 void WaterNoiseGenerator::fillDataArray(GLubyte data[]) {
-    double maxZoom = 32.0;
+    double maxFov = 32.0;
     for (int i = 0; i < noiseHeight; i++) {
         for (int j = 0; j < noiseWidth; j++) {
             for (int k = 0; k < noiseDepth; k++) {
-                data[i * (noiseWidth * noiseHeight * 4) + j * (noiseHeight * 4) + k * 4 + 0] = (GLubyte)turbulence(i, j, k, maxZoom);
-                data[i * (noiseWidth * noiseHeight * 4) + j * (noiseHeight * 4) + k * 4 + 1] = (GLubyte)turbulence(i, j, k, maxZoom);
-                data[i * (noiseWidth * noiseHeight * 4) + j * (noiseHeight * 4) + k * 4 + 2] = (GLubyte)turbulence(i, j, k, maxZoom);
+                data[i * (noiseWidth * noiseHeight * 4) + j * (noiseHeight * 4) + k * 4 + 0] = (GLubyte)turbulence(i, j, k, maxFov);
+                data[i * (noiseWidth * noiseHeight * 4) + j * (noiseHeight * 4) + k * 4 + 1] = (GLubyte)turbulence(i, j, k, maxFov);
+                data[i * (noiseWidth * noiseHeight * 4) + j * (noiseHeight * 4) + k * 4 + 2] = (GLubyte)turbulence(i, j, k, maxFov);
                 data[i * (noiseWidth * noiseHeight * 4) + j * (noiseHeight * 4) + k * 4 + 3] = (GLubyte)255;
             }
         }

@@ -361,7 +361,7 @@ void Scene::drawRear(const RenderContext& parentCtx)
     auto* mainCamera = parentCtx.m_camera;
 
     Camera camera(mainCamera->getWorldPosition(), mainCamera->getFront(), mainCamera->getUp());
-    camera.setZoom(mainCamera->getZoom());
+    camera.setFov(mainCamera->getFov());
 
     glm::vec3 rot = mainCamera->getRotation();
     rot.y += 180;

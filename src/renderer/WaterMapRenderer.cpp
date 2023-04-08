@@ -77,7 +77,7 @@ void WaterMapRenderer::prepare(
     glm::vec3 origo(0);
     for (int i = 0; i < 2; i++) {
         auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[i], CAMERA_UP[i]);
-        camera.setZoom(90.0);
+        camera.setFov(90.0);
     }
 
     //WaterNoiseGenerator generator;
@@ -151,7 +151,7 @@ bool WaterMapRenderer::render(
         auto& camera = m_cameras[0];
         camera.setWorldPosition(pos);
         camera.setAxis(mainCamera->getFront(), mainCamera->getUp());
-        camera.setZoom(mainCamera->getZoom());
+        camera.setFov(mainCamera->getFov());
         camera.setRotation(rot);
 
         RenderContext localCtx(
@@ -183,7 +183,7 @@ bool WaterMapRenderer::render(
         auto& camera = m_cameras[1];
         camera.setWorldPosition(cameraPos);
         camera.setAxis(mainCamera->getFront(), mainCamera->getUp());
-        camera.setZoom(mainCamera->getZoom());
+        camera.setFov(mainCamera->getFov());
         camera.setRotation(cameraRot);
 
         RenderContext localCtx(

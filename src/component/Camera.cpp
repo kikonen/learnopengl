@@ -8,9 +8,9 @@
 #include "model/Node.h"
 #include "render/RenderContext.h"
 
-const float MIN_ZOOM = 10.0f;
+const float MIN_FOV = 10.0f;
 // NOTE KI 90 to allow cubemap & shadowmap wide angle
-const float MAX_ZOOM = 90.0f;
+const float MAX_FOV = 90.0f;
 
 
 Camera::Camera()
@@ -60,15 +60,15 @@ void Camera::setupProjection(
     if (m_aspectRatio == aspectRatio &&
         m_nearPlane == nearPlane &&
         m_farPlane == farPlane &&
-        m_zoomProjection == m_zoom) return;
+        m_fovProjection == m_fov) return;
 
     m_aspectRatio = aspectRatio;
     m_nearPlane = nearPlane;
     m_farPlane = farPlane;
-    m_zoomProjection = m_zoom;
+    m_fovProjection = m_fov;
 
     m_projectionMatrix = glm::perspective(
-        glm::radians(m_zoomProjection),
+        glm::radians(m_fovProjection),
         m_aspectRatio,
         m_nearPlane,
         m_farPlane);
@@ -150,18 +150,18 @@ void Camera::setAxis(
 {
     m_front = glm::normalize(front);
     m_up = glm::normalize(up);
-    m_right = glm::normalize(glm::cross(m_front, m_up));
+    //m_right = glm::normalize(glm::cross(m_front, m_up));
     m_dirty = true;
 }
 
-void Camera::setZoom(float zoom) noexcept
+void Camera::setFov(float fov) noexcept
 {
-    updateZoom(zoom);
+    updateFov(fov);
 }
 
-void Camera::adjustZoom(float adjustment) noexcept
+void Camera::adjustFov(float adjustment) noexcept
 {
-    updateZoom(m_zoom - adjustment);
+    updateFov(m_fov - adjustment);
 }
 
 void Camera::setWorldPosition(const glm::vec3& pos) noexcept
@@ -190,16 +190,16 @@ void Camera::setRotation(const glm::vec3& rotation) noexcept
     }
 }
 
-void Camera::updateZoom(float zoom) noexcept
+void Camera::updateFov(float fov) noexcept
 {
-    if (zoom < MIN_ZOOM) {
-        zoom = MIN_ZOOM;
+    if (fov < MIN_FOV) {
+        fov = MIN_FOV;
     }
-    if (zoom > MAX_ZOOM) {
-        zoom = MAX_ZOOM;
+    if (fov > MAX_FOV) {
+        fov = MAX_FOV;
     }
-    if (m_zoom != zoom) {
-        m_zoom = zoom;
+    if (m_fov != fov) {
+        m_fov = fov;
         m_dirty = true;
     }
 }
