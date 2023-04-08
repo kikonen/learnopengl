@@ -141,6 +141,7 @@ void SceneFile::attachSkybox(
     //flags.noRefract = true;
     flags.noDisplay = false;
     flags.noSelect = true;
+    flags.gbuffer = data.programName.starts_with("g_");
 
     type->m_drawOptions.depthFunc = GL_LEQUAL;
 
@@ -193,6 +194,7 @@ void SceneFile::attachVolume(
     flags.noRefract = true;
     flags.noDisplay = true;
     flags.noSelect = true;
+    flags.gbuffer = SHADER_VOLUME.starts_with("g_");
 
     type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
@@ -257,6 +259,7 @@ void SceneFile::attachCubeMapCenter(
     flags.noRefract = true;
     flags.noDisplay = true;
     flags.noSelect = true;
+    flags.gbuffer = SHADER_VOLUME.starts_with("g_");
 
     type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
