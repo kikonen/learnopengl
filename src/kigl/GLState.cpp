@@ -84,6 +84,7 @@ void GLState::bindTexture(
     if (force || m_textureUnits[unitIndex] != textureID) {
         // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
         //KI_GL_CALL(glBindTextures(unitIndex, 1, &textureID));
+        KI_DEBUG(fmt::format("BIND_TEXTURE: unitIndex={}, textureID={}", unitIndex, textureID));
         glBindTextureUnit(unitIndex, textureID);
         m_textureUnits[unitIndex] = textureID;
     }

@@ -60,7 +60,7 @@ assets:
   debug_clear_color: true
   clear_color: true
 
-  frustum_enabled: true
+  frustum_enabled: false
   frustum_cpu: true
   frustum_gpu: false
   frustum_debug: true

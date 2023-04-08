@@ -19,16 +19,14 @@ Viewport::Viewport(
     const glm::vec2& size,
     bool useFrameBuffer,
     unsigned int textureId,
-    Program* program,
-    std::function<void(Viewport&)> binder)
+    Program* program)
     : m_name(name),
     m_position(pos),
     m_rotation(rotation),
     m_size(size),
     m_useFrameBuffer(useFrameBuffer),
     m_textureId(textureId),
-    m_program(program),
-    m_binder(binder)
+    m_program(program)
 {
 }
 
@@ -110,6 +108,8 @@ void Viewport::update(const UpdateContext& ctx)
 
 void Viewport::bind(const RenderContext& ctx)
 {
+    m_bindBefore(*this);
+
     if (m_useFrameBuffer) return;
     if (m_textureId == 0) return;
 
@@ -123,8 +123,7 @@ void Viewport::bind(const RenderContext& ctx)
     }
 
     ctx.m_state.bindVAO(m_vao);
-
-    m_binder(*this);
+    m_bindAfter(*this);
 }
 
 void Viewport::unbind(const RenderContext& ctx)

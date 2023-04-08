@@ -27,10 +27,19 @@ public:
         const glm::vec2& size,
         bool useFrameBuffer,
         unsigned int textureId,
-        Program* program,
-        std::function<void(Viewport&)> binder = [](Viewport&) {});
+        Program* program);
 
     ~Viewport();
+
+    // NOTE KI called *before* binding program, to setup texture and such
+    void setBindBefore(std::function<void(Viewport&)> binder) {
+        m_bindBefore = binder;
+    }
+
+    // NOTE KI called *after* binding program, to setup uniforms and such
+    void setBindAfter(std::function<void(Viewport&)> binder) {
+        m_bindAfter = binder;
+    }
 
     void setSourceFrameBuffer(FrameBuffer* frameBuffer);
     void setDestinationFrameBuffer(FrameBuffer* frameBuffer);
@@ -91,5 +100,6 @@ private:
 
     uniform::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER, SUBROUTINE_EFFECT };
 
-    std::function<void(Viewport&)> m_binder;
+    std::function<void(Viewport&)> m_bindBefore{ [](Viewport&) {} };
+    std::function<void(Viewport&)> m_bindAfter{ [](Viewport&) {} };
 };

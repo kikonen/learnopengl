@@ -154,8 +154,6 @@ void ShadowCascade::render(
 {
     m_buffer->bind(ctx);
 
-    u_shadowIndex.set(m_index);
-
     // NOTE KI *NO* color in shadowmap
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -191,16 +189,26 @@ void ShadowCascade::drawNodes(
         }
     };
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-        renderTypes(all.second, m_solidShadowProgram);
+    {
+        m_solidShadowProgram->bind(ctx.m_state);
+        u_shadowIndex.set(m_index);
+
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
+            renderTypes(all.second, m_solidShadowProgram);
+        }
     }
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-        renderTypes(all.second, m_blendedShadowProgram);
-    }
+    {
+        m_blendedShadowProgram->bind(ctx.m_state);
+        u_shadowIndex.set(m_index);
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-        renderTypes(all.second, m_blendedShadowProgram);
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
+            renderTypes(all.second, m_blendedShadowProgram);
+        }
+
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
+            renderTypes(all.second, m_blendedShadowProgram);
+        }
     }
 
     ctx.m_batch->flush(ctx);
