@@ -1,5 +1,7 @@
 #include "ShadowCascade.h"
 
+#include "util/glm_format.h"
+
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
@@ -146,8 +148,9 @@ void ShadowCascade::bind(const RenderContext& ctx)
         ctx.m_matrices.u_shadowProjected[m_index] = shadowProjectionMatrix * shadowMatrix;
         {
             const auto& clip = ctx.m_matrices.u_projection * glm::vec4{ 0, 0, m_shadowEnd, 1.0 };
+            KI_INFO_OUT(fmt::format("CSM: projectionMatrix={}", ctx.m_matrices.u_projection));
             ctx.m_matrices.u_shadowEndClipZ[m_index] = clip.z;
-            KI_INFO_OUT(fmt::format("CSM: index={}, clipZ={}", m_index, clip.z));
+            KI_INFO_OUT(fmt::format("CSM: index={}, clip={}", m_index, clip));
         }
         ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
     }

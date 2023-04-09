@@ -37,9 +37,9 @@ precision mediump float;
 
 const vec4 CASCADE_COLORS[3] =
   vec4[3](
-          vec4(0.5, 0.0, 0.0, 0.0),
-          vec4(0.0, 0.5, 0.0, 0.0),
-          vec4(0.0, 0.0, 0.5, 0.0)
+          vec4(0.2, 0.0, 0.0, 0.0),
+          vec4(0.0, 0.2, 0.0, 0.0),
+          vec4(0.0, 0.0, 0.2, 0.0)
           );
 
 void main()
@@ -48,12 +48,12 @@ void main()
   const vec3 normal = normalize(texture(g_normal, fs_in.texCoords).rgb);
 
   // TODO KI select shadow map index
-  uint shadowIndex = 2;
+  uint shadowIndex = 0;
 
   vec4 clipPos = u_projectedMatrix * vec4(worldPos, 1.0);
 
   for (uint i = 0; i < SHADOW_MAP_COUNT; i++) {
-    if (clipPos.z <= u_shadowEnd[i]) {
+    if (clipPos.z > u_shadowEnd[i]) {
       shadowIndex = i;
     }
   }
