@@ -82,7 +82,7 @@ entities:
       type: directional
       target_id: [auto, dir-light-target]
       ambient: [0.9, 0.9, 0.9, 1.0]
-      diffuse: [0.8, 0.8, 0.6, 1.0]
+      diffuse: [0.4, 0.4, 0.4, 1.0]
       specular: [0.3, 0.3, 0.2, 1.0]
       enabled: true
     enabled: true
@@ -132,8 +132,8 @@ entities:
           kd: [0.8, 0.0, 0.0, 1.0]
         light:
           ambient: [0.9, 0.0 0.0, 1.0]
-          diffuse: [0.8, 0.0, 0.0, 1.0]
-          specular: [0.9, 0.0, 0.0, 1.0]
+          diffuse: [0.5, 0.0, 0.0, 1.0]
+          specular: [0.6, 0.0, 0.0, 1.0]
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
@@ -142,8 +142,8 @@ entities:
           kd: [0.0, 0.9, 0.0, 1.0]
         light:
           ambient: [0.0, 0.9 0.0, 1.0]
-          diffuse: [0.0, 0.8, 0.0, 1.0]
-          specular: [0.0, 0.9, 0.0, 1.0]
+          diffuse: [0.0, 0.5, 0.0, 1.0]
+          specular: [0.0, 0.6, 0.0, 1.0]
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
@@ -152,8 +152,8 @@ entities:
           kd: [0.0, 0.0, 0.9, 1.0]
         light:
           ambient: [0.0, 0.0 0.9, 1.0]
-          diffuse: [0.0, 0.0, 0.8, 1.0]
-          specular: [0.0, 0.0, 0.9, 1.0]
+          diffuse: [0.0, 0.0, 0.5, 1.0]
+          specular: [0.0, 0.0, 0.6, 1.0]
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
@@ -162,8 +162,8 @@ entities:
           kd: [0.9, 0.0, 0.9, 1.0]
         light:
           ambient: [0.6, 0.0 0.9, 1.0]
-          diffuse: [0.8, 0.0, 0.8, 1.0]
-          specular: [0.9, 0.0, 0.9, 1.0]
+          diffuse: [0.5, 0.0, 0.5, 1.0]
+          specular: [0.6, 0.0, 0.6, 1.0]
           enabled: false
         enabled: false
     light:
@@ -174,8 +174,8 @@ entities:
       outer_cutoff_angle: 25.0
       target_id: ROOT
       ambient: [0.9, 0.9, 0.7, 1.0]
-      diffuse: [0.8, 0.8, 0.7, 1.0]
-      specular: [1.0, 1.0, 0.9, 1.0]
+      diffuse: [0.6, 0.6, 0.6, 1.0]
+      specular: [0.6, 0.6, 0.6, 1.0]
       enabled: true
     enabled: true
   - name: Rock light origo
@@ -199,8 +199,8 @@ entities:
       quadratic: 0.0007
       target_id: ROOT
       ambient: [0.9, 0.9, 0.7, 1.0]
-      diffuse: [0.8, 0.8, 0.7, 1.0]
-      specular: [1.0, 1.0, 0.9, 1.0]
+      diffuse: [0.5, 0.5, 0.5, 1.0]
+      specular: [0.5, 0.5, 0.5, 1.0]
       enabled: true
     enabled: true
   - name: Active node
@@ -674,8 +674,8 @@ entities:
       cutoff_angle: 12.5
       outer_cutoff_angle: 25.0
       ambient: [0.0, 0.9, 0.0, 1.0]
-      diffuse: [0.0, 0.8, 0.0, 1.0]
-      specular: [0.0, 1.0, 0.0, 1.0]
+      diffuse: [0.0, 0.6, 0.0, 1.0]
+      specular: [0.0, 0.6, 0.0, 1.0]
       enabled: false
     repeat:
       x_count: 9
@@ -1046,7 +1046,8 @@ materials:
   - name: terrain_grass_2
     type: texture
     ns: 50
-    ks: [0.6, 0.6, 0.6, 1.0]
+    ks: [0.5, 0.5, 0.5, 1.0]
+    ka: [0.5, 0.5, 0.5, 1.0]
     map_kd: terrain_2/terrain_2_TX.jpg
     map_ks: terrain_2/terrain_2_SpecLM.png
     map_bump: terrain_2/terrain_2_TN.png

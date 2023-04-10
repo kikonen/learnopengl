@@ -58,9 +58,9 @@ void main() {
     normal = calculateNormalPattern(fs_in.vertexPos, normal);
   }
 
-  if (!gl_FrontFacing) {
-    normal = -normal;
-  }
+  // if (!gl_FrontFacing) {
+  //   normal = -normal;
+  // }
 
   #include var_calculate_cubemap_diffuse.glsl
 

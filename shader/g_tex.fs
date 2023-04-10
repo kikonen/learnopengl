@@ -54,23 +54,23 @@ void main() {
 
   #include var_tex_material_normal.glsl
 
-  if (material.pattern == 1) {
-    normal = calculateNormalPattern(fs_in.vertexPos, normal);
-  }
+//  if (material.pattern == 1) {
+//    normal = calculateNormalPattern(fs_in.vertexPos, normal);
+//  }
 
-  if (!gl_FrontFacing) {
-    normal = -normal;
-  }
+//  if (!gl_FrontFacing) {
+//    normal = -normal;
+//  }
 
   #include var_calculate_cubemap_diffuse.glsl
 
   vec4 texColor = material.diffuse;
 
-  if (!gl_FrontFacing) {
-    float alpha = texColor.a;
-    texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);
-    texColor.a = alpha;
-  }
+  // if (!gl_FrontFacing) {
+  //   float alpha = texColor.a;
+  //   texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);
+  //   texColor.a = alpha;
+  // }
 
   o_fragColor = texColor;
   o_fragSpecular = material.specular;

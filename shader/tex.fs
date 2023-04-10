@@ -66,9 +66,9 @@ void main() {
     normal = calculateNormalPattern(fs_in.vertexPos, normal);
   }
 
-  if (!gl_FrontFacing) {
-    normal = -normal;
-  }
+  // if (!gl_FrontFacing) {
+  //   normal = -normal;
+  // }
 
   #include var_calculate_cubemap_diffuse.glsl
 
@@ -83,11 +83,11 @@ void main() {
   texColor = vec4(texColor.rgb, 1.0);
 #endif
 
-  if (!gl_FrontFacing) {
-    float alpha = texColor.a;
-    texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);
-    texColor.a = alpha;
-  }
+  // if (!gl_FrontFacing) {
+  //   float alpha = texColor.a;
+  //   texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);
+  //   texColor.a = alpha;
+  // }
 
   texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
 

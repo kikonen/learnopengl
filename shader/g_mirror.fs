@@ -47,9 +47,9 @@ void main() {
 
   vec3 normal = fs_in.normal;
 
-  if (!gl_FrontFacing) {
-    normal = -normal;
-  }
+  // if (!gl_FrontFacing) {
+  //   normal = -normal;
+  // }
 
   if (gl_FrontFacing)
   {

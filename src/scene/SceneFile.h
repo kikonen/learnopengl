@@ -174,9 +174,10 @@ class SceneFile
         float cutoffAngle{ 0.f };
         float outerCutoffAngle{ 0.f };
 
-        glm::vec4 ambient{ 0.f };
-        glm::vec4 diffuse{ 0.f };
-        glm::vec4 specular{ 0.f };
+        // NOTE KI ambient 1.0 for light is neutral
+        glm::vec4 ambient{ 1.f };
+        glm::vec4 diffuse{ 0.5f, 0.5f, 0.5f, 1.f };
+        glm::vec4 specular{ 0.5f, 0.5f, 0.5f, 1.f };
     };
 
     struct EntityCloneData {

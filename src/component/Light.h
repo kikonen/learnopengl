@@ -69,19 +69,19 @@ public:
 
     // http://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
     float constant = 1.f;
-    float linear = 0.f;
-    float quadratic = 0.f;
+    float linear = 0.14f;
+    float quadratic = 0.07f;
 
     // degrees
-    float cutoffAngle = 0.f;
+    float cutoffAngle = 12.5f;
     // degrees
-    float outerCutoffAngle = 0.f;
+    float outerCutoffAngle = 25.f;
 
-    float radius = 0.f;
+    float radius = 1.f;
 
-    glm::vec4 ambient{ 0.2f, 0.2f, 0.2f, 1.f };
-    glm::vec4 diffuse{ 0.5f, 0.5f, 0.5f, 1.f };
-    glm::vec4 specular{ 1.0f, 1.0f, 1.0f, 1.f };
+    glm::vec4 ambient{ 1.f, 1.f, 1.f, 1.f };
+    glm::vec4 diffuse{ 0.7f, 0.7f, 0.7f, 1.f };
+    glm::vec4 specular{ 0.6f, 0.6f, 0.6f, 1.f };
 
 private:
     // dir = FROM pos to TARGET
