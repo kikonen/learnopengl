@@ -71,19 +71,19 @@ public:
 
     void copyShadowFrom(const RenderContext& b) {
         std::copy(
-            std::begin(m_matrices.u_shadow),
-            std::end(m_matrices.u_shadow),
-            std::begin(b.m_matrices.u_shadow));
+            std::begin(b.m_matrices.u_shadow),
+            std::end(b.m_matrices.u_shadow),
+            std::begin(m_matrices.u_shadow));
 
         std::copy(
-            std::begin(m_matrices.u_shadowEndClipZ),
-            std::end(m_matrices.u_shadowEndClipZ),
-            std::begin(b.m_matrices.u_shadowEndClipZ));
+            std::begin(b.m_matrices.u_shadowPlanes),
+            std::end(b.m_matrices.u_shadowPlanes),
+            std::begin(m_matrices.u_shadowPlanes));
 
         std::copy(
-            std::begin(m_matrices.u_shadowProjected),
-            std::end(m_matrices.u_shadowProjected),
-            std::begin(b.m_matrices.u_shadowProjected));
+            std::begin(b.m_matrices.u_shadowProjected),
+            std::end(b.m_matrices.u_shadowProjected),
+            std::begin(m_matrices.u_shadowProjected));
     }
 
 public:

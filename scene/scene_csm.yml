@@ -1,0 +1,72 @@
+---
+name: Origo
+viewports:
+skybox:
+  program: g_skybox
+  material: skybox
+lights: {}
+cube_maps: {}
+root:
+  type: origo
+entities:
+  - name: Origo
+    type: origo
+    pos: [0, 1, 15]
+    camera:
+      default: true
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: Other
+    model: texture_cube
+    program: g_tex
+    pos: [0.0, 0.0, 0.0]
+    enabled: true
+    repeat:
+      z_count: 20
+      z_step: -10
+  - name: Directional light
+    type: origo
+    pos: [0, 25, 25]
+    scale: 2.5
+    model: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    force_material: true
+    material_modifier:
+      kd: [0.8, 0.8, 0.6, 1.0]
+    light:
+      type: directional
+      ambient: [0.3, 0.32, 0.32, 1.0]
+      diffuse: [0.9, 0.9, 0.7, 1.0]
+      specular: [0.9, 0.9, 0.5, 1.0]
+      enabled: true
+    enabled: true
+  - name: Giant wooden box
+    model: quad
+    xxmodel: woodwall
+    material: giant_woodbox
+    program: g_tex
+    position: [0, -10, 0]
+    rot: [90, 0, 0]
+    render_flags:
+      render_back: true
+      no_shadow: true
+    scale: [200, 200, 200]
+    enabled: true
+materials:
+  - name: giant_woodbox
+    ns: 225.000000
+    type: model
+    ka: [0.500000, 0.500000, 0.500000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: wood_1024.png
+    reflection: 0.1

@@ -101,6 +101,11 @@ https://glad.dav1d.de
 - https://learnopengl.com/Advanced-Lighting/Deferred-Shading
 - https://www.khronos.org/opengl/wiki/Compute_eye_space_from_window_space
 
+## CSM
+- https://ogldev.org/www/tutorial49/tutorial49.html
+- https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
+- https://learnopengl.com/Guest-Articles/2021/CSM
+
 ## Geometry shader
 - https://www.informit.com/articles/article.aspx?p=2120983&seqNum=2
 - https://www.khronos.org/opengl/wiki/Built-in_Variable_(GLSL)

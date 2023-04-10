@@ -88,6 +88,11 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     for (auto& cascade : m_cascades) {
         cascade->bind(ctx);
     }
+
+    std::copy(
+        std::begin(m_planes),
+        std::end(m_planes),
+        std::begin(ctx.m_matrices.u_shadowPlanes));
 }
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)

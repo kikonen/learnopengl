@@ -37,9 +37,9 @@ precision mediump float;
 
 const vec4 CASCADE_COLORS[3] =
   vec4[3](
-          vec4(0.2, 0.0, 0.0, 0.0),
-          vec4(0.0, 0.2, 0.0, 0.0),
-          vec4(0.0, 0.0, 0.2, 0.0)
+          vec4(0.4, 0.0, 0.0, 0.0),
+          vec4(0.0, 0.4, 0.0, 0.0),
+          vec4(0.0, 0.0, 0.4, 0.0)
           );
 
 void main()
@@ -48,18 +48,22 @@ void main()
   const vec3 normal = normalize(texture(g_normal, fs_in.texCoords).rgb);
 
   // TODO KI select shadow map index
-  uint shadowIndex = 0;
+  uint shadowIndex = SHADOW_MAP_COUNT;
 
-  vec4 clipPos = u_projectedMatrix * vec4(worldPos, 1.0);
+  const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+  const float depthValue = abs(viewPos.z);
 
   for (uint i = 0; i < SHADOW_MAP_COUNT; i++) {
-    if (clipPos.z > u_shadowEnd[i]) {
+    if (depthValue < u_shadowPlanes[i + 1]) {
       shadowIndex = i;
+//      break;
     }
+  }
+  if (shadowIndex == SHADOW_MAP_COUNT) {
+    shadowIndex = SHADOW_MAP_COUNT - 2;
   }
 
   const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
-  const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
 
   const vec3 toView = normalize(u_viewWorldPos - worldPos);
 
@@ -84,6 +88,10 @@ void main()
 
   vec4 color = calculateLight(normal, toView, worldPos, shadowPos, material);
   color = calculateFog(viewPos, material.fogRatio, color);
+
+  if (u_shadowPlanes[0] - 0.1 < 0.001) {
+//    shadowIndex = 1;
+  }
 
   color += CASCADE_COLORS[shadowIndex];
 

@@ -32,6 +32,32 @@ namespace {
       {0.0f, 0.0f, 0.5f, 0.0f},
       {0.5f, 0.5f, 0.5f, 1.0f},
     };
+
+    std::vector<glm::vec4> getFrustumCornersWorldSpace(
+        const glm::mat4& projectedMatrix)
+    {
+        const auto inv = glm::inverse(projectedMatrix);
+
+        std::vector<glm::vec4> frustumCorners;
+        for (unsigned int x = 0; x < 2; ++x)
+        {
+            for (unsigned int y = 0; y < 2; ++y)
+            {
+                for (unsigned int z = 0; z < 2; ++z)
+                {
+                    const glm::vec4 pt =
+                        inv * glm::vec4(
+                            2.0f * x - 1.0f,
+                            2.0f * y - 1.0f,
+                            2.0f * z - 1.0f,
+                            1.0f);
+                    frustumCorners.push_back(pt / pt.w);
+                }
+            }
+        }
+
+        return frustumCorners;
+    }
 }
 
 ShadowCascade::~ShadowCascade()
@@ -116,7 +142,17 @@ void ShadowCascade::bind(const RenderContext& ctx)
             glm::vec4(-xf, -yf, m_shadowEnd, 1.0)
         };
 
-        glm::vec4 frustumCornersL[FRUSTUM_CORNER_COUNT]{};
+        for (int j = 0; j < FRUSTUM_CORNER_COUNT; j++) {
+            frustumCorners[j] = viewInverseMatrix * frustumCorners[j];
+        }
+
+        const auto proj = glm::perspective(
+            glm::radians(camera->getFov()),
+            ctx.m_aspectRatio,
+            m_shadowBegin,
+            m_shadowEnd);
+
+        auto corners = getFrustumCornersWorldSpace(proj * viewMatrix);
 
         float minX = std::numeric_limits<float>::max();
         float maxX = std::numeric_limits<float>::min();
@@ -125,16 +161,19 @@ void ShadowCascade::bind(const RenderContext& ctx)
         float minZ = std::numeric_limits<float>::max();
         float maxZ = std::numeric_limits<float>::min();
 
+        //glm::vec4 frustumCornersL[FRUSTUM_CORNER_COUNT]{};
         for (int j = 0; j < FRUSTUM_CORNER_COUNT; j++) {
-            glm::vec4 vW = viewInverseMatrix * frustumCorners[j];
-            frustumCornersL[j] = shadowMatrix * vW;
+            //glm::vec4 vW = viewInverseMatrix * frustumCorners[j];
+            //frustumCornersL[j] = shadowMatrix * vW;
+            //const auto p = shadowMatrix * frustumCorners[j];
+            const auto p = shadowMatrix * corners[j];
 
-            minX = std::min(minX, frustumCornersL[j].x);
-            maxX = std::max(maxX, frustumCornersL[j].x);
-            minY = std::min(minY, frustumCornersL[j].y);
-            maxY = std::max(maxY, frustumCornersL[j].y);
-            minZ = std::min(minZ, frustumCornersL[j].z);
-            maxZ = std::max(maxZ, frustumCornersL[j].z);
+            minX = std::min(minX, p.x);
+            maxX = std::max(maxX, p.x);
+            minY = std::min(minY, p.y);
+            maxY = std::max(maxY, p.y);
+            minZ = std::min(minZ, p.z);
+            maxZ = std::max(maxZ, p.z);
         }
 
         const glm::mat4 shadowProjectionMatrix = glm::ortho(
@@ -146,13 +185,17 @@ void ShadowCascade::bind(const RenderContext& ctx)
         m_farPlane = maxZ;
 
         ctx.m_matrices.u_shadowProjected[m_index] = shadowProjectionMatrix * shadowMatrix;
-        {
-            const auto& clip = ctx.m_matrices.u_projection * glm::vec4{ 0, 0, m_shadowEnd, 1.0 };
-            KI_INFO_OUT(fmt::format("CSM: projectionMatrix={}", ctx.m_matrices.u_projection));
-            ctx.m_matrices.u_shadowEndClipZ[m_index] = clip.z;
-            KI_INFO_OUT(fmt::format("CSM: index={}, clip={}", m_index, clip));
-        }
+        //{
+        //    const auto& clip = ctx.m_matrices.u_projection * glm::vec4{ 0, 0, m_shadowEnd, 1.0 };
+        //    KI_INFO_OUT(fmt::format("CSM: projectionMatrix={}", ctx.m_matrices.u_projection));
+        //    ctx.m_matrices.u_shadowEndClipZ[m_index] = clip.z;
+        //    KI_INFO_OUT(fmt::format("CSM: index={}, clip={}", m_index, clip));
+        //}
         ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
+
+        auto viewPos = viewMatrix * glm::vec4(0, 0, 0, 1.0);
+
+        KI_INFO_OUT(fmt::format("viewPos={}", viewPos));
     }
 }
 
