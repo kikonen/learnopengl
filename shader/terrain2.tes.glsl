@@ -71,9 +71,6 @@ void main()
   const Entity entity = u_entities[tes_in[0].entityIndex];
   #include var_entity_model_matrix.glsl
 
-  // TODO KI select shadow map index
-  const uint shadowIndex = 0;
-
   const Material material = u_materials[tes_in[0].materialIndex];
   sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);
 
@@ -92,6 +89,9 @@ void main()
   vertexPos.y += h;
 
   vec4 worldPos = modelMatrix * vec4(vertexPos, 1.0);
+
+  const vec3 viewPos = (u_viewMatrix * worldPos).xyz;
+  const uint shadowIndex = calculateShadowIndex(viewPos);
 
   tes_out.entityIndex = tes_in[0].entityIndex;
   tes_out.worldPos = worldPos.xyz;

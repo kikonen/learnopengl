@@ -76,7 +76,7 @@ void main()
   vec4 color = calculateLight(normal, toView, worldPos, shadowIndex, shadowPos, material);
   color = calculateFog(viewPos, material.fogRatio, color);
 
-  color += CASCADE_COLORS[shadowIndex];
+//  color += CASCADE_COLORS[shadowIndex];
 
   o_fragColor = color;
 }

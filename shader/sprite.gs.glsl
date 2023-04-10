@@ -67,9 +67,6 @@ void fillVertex(const int i)
 
 void generateQuad(const int index)
 {
-  // TODO KI select shadow map index
-  const uint shadowIndex = 0;
-
   // https://ogldev.org/www/tutorial27/tutorial27.html
   vec3 pos = gl_in[0].gl_Position.xyz;
   vec3 scale = gs_in[index].scale * 2.0;
@@ -81,11 +78,17 @@ void generateQuad(const int index)
   float scaledY = 1.0 * scale.y;
 
   vec4 worldPos;
+  vec3 viewPos;
+  uint shadowIndex;
 
   // bottom-left
   fillVertex(index);
   pos -= (scaledRight * 0.5);
+
   worldPos = vec4(pos, 1.0);
+  viewPos = (u_viewMatrix * worldPos).xyz;
+  shadowIndex = calculateShadowIndex(viewPos);
+
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
@@ -98,7 +101,11 @@ void generateQuad(const int index)
   // top-left
   fillVertex(index);
   pos.y += scaledY;
+
   worldPos = vec4(pos, 1.0);
+  viewPos = (u_viewMatrix * worldPos).xyz;
+  shadowIndex = calculateShadowIndex(viewPos);
+
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
@@ -112,7 +119,11 @@ void generateQuad(const int index)
   fillVertex(index);
   pos.y -= scaledY;
   pos += scaledRight;
+
   worldPos = vec4(pos, 1.0);
+  viewPos = (u_viewMatrix * worldPos).xyz;
+  shadowIndex = calculateShadowIndex(viewPos);
+
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
@@ -125,7 +136,11 @@ void generateQuad(const int index)
   // top-right
   fillVertex(index);
   pos.y += scaledY;
+
   worldPos = vec4(pos, 1.0);
+  viewPos = (u_viewMatrix * worldPos).xyz;
+  shadowIndex = calculateShadowIndex(viewPos);
+
   gl_Position = u_projectedMatrix * worldPos;
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;

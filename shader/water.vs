@@ -48,12 +48,12 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  // TODO KI select shadow map index
-  const uint shadowIndex = 0;
-
   const int materialIndex = entity.materialIndex;
   const vec4 pos = vec4(a_pos, 1.0);
   const vec4 worldPos = modelMatrix * pos;
+
+  const vec3 viewPos = (u_viewMatrix * worldPos).xyz;
+  const uint shadowIndex = calculateShadowIndex(viewPos);
 
   vs_out.glp = u_projectedMatrix * worldPos;
   gl_Position = vs_out.glp;

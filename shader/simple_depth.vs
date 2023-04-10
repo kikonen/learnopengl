@@ -27,7 +27,7 @@ void main()
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
 
-  const uint shadowIndex = 0; //u_shadowIndex;
+  const uint shadowIndex = u_shadowIndex;
   const vec4 worldPos = modelMatrix * vec4(a_pos, 1.0);
 
   gl_Position = u_shadowProjectedMatrix[shadowIndex] * worldPos;
