@@ -85,7 +85,7 @@ assets:
   batch_buffers: 40
 
   near_plane: 0.1
-  far_plane: 200.0
+  far_plane: 2000.0
 
   fog_color: [0.2, 0.2, 0.2, 1.0]
   fog_start: 800.0
