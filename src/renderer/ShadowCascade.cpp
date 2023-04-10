@@ -108,13 +108,6 @@ void ShadowCascade::bind(const RenderContext& ctx)
         const auto& camera = ctx.m_camera;
         const auto& viewMatrix = camera->getView();
 
-        Camera shadowCamera{
-            node->m_light->getWorldPosition(),
-            node->m_light->getWorldDirection(),
-            {0.f, 1.f, 0.f} };
-
-        const auto& shadowMatrix = shadowCamera.getView();
-
         const auto proj = glm::perspective(
             glm::radians(camera->getFov()),
             ctx.m_aspectRatio,
@@ -122,6 +115,17 @@ void ShadowCascade::bind(const RenderContext& ctx)
             m_shadowEnd);
 
         const auto& corners = getFrustumCornersWorldSpace(proj * viewMatrix);
+
+        glm::vec3 center = glm::vec3{ 0, 0, 0 };
+        for (const auto& v : corners) {
+            center += glm::vec3(v);
+        }
+        center /= corners.size();
+
+        const auto shadowViewMatrix = glm::lookAt(
+            center - node->m_light->getWorldDirection(),
+            center,
+            glm::vec3{ 0.0f, 1.0f, 0.0f });
 
         float minX = std::numeric_limits<float>::max();
         float maxX = std::numeric_limits<float>::min();
@@ -131,7 +135,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
         float maxZ = std::numeric_limits<float>::min();
 
         for (int j = 0; j < corners.size(); j++) {
-            const auto p = shadowMatrix * corners[j];
+            const auto p = shadowViewMatrix * corners[j];
 
             minX = std::min(minX, p.x);
             maxX = std::max(maxX, p.x);
@@ -149,11 +153,8 @@ void ShadowCascade::bind(const RenderContext& ctx)
         m_nearPlane = minZ;
         m_farPlane = maxZ;
 
-        ctx.m_matrices.u_shadowProjected[m_index] = shadowProjectionMatrix * shadowMatrix;
+        ctx.m_matrices.u_shadowProjected[m_index] = shadowProjectionMatrix * shadowViewMatrix;
         ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
-
-        //const auto viewPos = viewMatrix * glm::vec4(0, 0, 0, 1.0);
-        //KI_INFO_OUT(fmt::format("viewPos={}", viewPos));
     }
 }
 

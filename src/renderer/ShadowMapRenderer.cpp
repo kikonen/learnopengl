@@ -87,7 +87,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
         cascade->bind(ctx);
     }
 
-    ctx.m_data.u_shadowPlaneCount = m_planes.size();
+    ctx.m_data.u_shadowCount = m_planes.size() - 1;
 
     for (int i = 0; i < m_planes.size(); i++) {
         ctx.m_data.u_shadowPlanes[i] = { 0.f, 0.f, m_planes[i], 0.f };
