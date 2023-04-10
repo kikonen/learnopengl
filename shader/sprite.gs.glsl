@@ -36,6 +36,7 @@ out GS_OUT {
 
   flat uint materialIndex;
 
+  flat uint shadowIndex;
   vec4 shadowPos;
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -52,6 +53,8 @@ out float gl_ClipDistance[CLIP_COUNT];
 precision mediump float;
 
 #include fn_calculate_clipping.glsl
+#include fn_calculate_shadow_index.glsl
+
 
 void fillVertex(const int i)
 {
@@ -93,6 +96,8 @@ void generateQuad(const int index)
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(0.0, 0.0);
+
+  gs_out.shadowIndex = shadowIndex;
   gs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
   calculateClipping(worldPos);
@@ -110,6 +115,8 @@ void generateQuad(const int index)
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(0.0, 1.0);
+
+  gs_out.shadowIndex = shadowIndex;
   gs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
   calculateClipping(worldPos);
@@ -128,6 +135,8 @@ void generateQuad(const int index)
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(1.0, 0.0);
+
+  gs_out.shadowIndex = shadowIndex;
   gs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
   calculateClipping(worldPos);
@@ -145,6 +154,8 @@ void generateQuad(const int index)
   gs_out.worldPos = worldPos;
   gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
   gs_out.texCoord = vec2(1.0, 1.0);
+
+  gs_out.shadowIndex = shadowIndex;
   gs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
   calculateClipping(worldPos);

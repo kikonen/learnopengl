@@ -29,6 +29,7 @@ out VS_OUT {
 
   flat uint materialIndex;
 
+  flat uint shadowIndex;
   vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
@@ -45,6 +46,7 @@ out float gl_ClipDistance[CLIP_COUNT];
 precision mediump float;
 
 #include fn_calculate_clipping.glsl
+#include fn_calculate_shadow_index.glsl
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
@@ -94,6 +96,7 @@ void main() {
 
   calculateClipping(worldPos);
 
+  vs_out.shadowIndex = shadowIndex;
   vs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
 #ifdef USE_NORMAL_TEX

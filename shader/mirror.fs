@@ -26,6 +26,7 @@ in VS_OUT {
 
   flat uint materialIndex;
 
+  flat uint shadowIndex;
   vec4 shadowPos;
 
   mat3 TBN;
@@ -74,7 +75,7 @@ void main() {
     material.diffuse = mix(material.diffuse, mixColor, 0.9);
   }
 
-  vec4 color = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
+  vec4 color = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowIndex, fs_in.shadowPos, material);
   color = calculateFog(fs_in.viewPos, material.fogRatio, color);
 
   o_fragColor = color;

@@ -26,6 +26,7 @@ out VS_OUT {
 
   flat uint materialIndex;
 
+  flat uint shadowIndex;
   vec4 shadowPos;
 
   mat3 TBN;
@@ -35,6 +36,8 @@ out VS_OUT {
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
+
+#include fn_calculate_shadow_index.glsl
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
@@ -62,5 +65,6 @@ void main() {
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normalMatrix * a_normal;
 
+  vs_out.shadowIndex = shadowIndex;
   vs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 }

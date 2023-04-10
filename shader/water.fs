@@ -26,6 +26,7 @@ in VS_OUT {
 
   flat uint materialIndex;
 
+  flat uint shadowIndex;
   vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
@@ -148,7 +149,7 @@ void main() {
 
   vec4 texColor = material.diffuse;
   {
-    texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
+    texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowIndex, fs_in.shadowPos, material);
     texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
   }
 

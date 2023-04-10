@@ -26,6 +26,7 @@ in VS_OUT {
 
   flat uint materialIndex;
 
+  flat uint shadowIndex;
   vec4 shadowPos;
 #ifdef USE_NORMAL_TEX
   flat mat3 TBN;
@@ -71,7 +72,7 @@ void main() {
 
   #include var_calculate_cubemap_diffuse.glsl
 
-  vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowPos, material);
+  vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowIndex, fs_in.shadowPos, material);
 
 #ifdef USE_ALPHA
   if (texColor.a < 0.1)

@@ -52,6 +52,11 @@ out TES_OUT {
 //
 ////////////////////////////////////////////////////////////
 
+precision mediump float;
+
+#include fn_calculate_shadow_index.glsl
+
+
 vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
 {
   return vec2(gl_TessCoord.x) * v0 +
