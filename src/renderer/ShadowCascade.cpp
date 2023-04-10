@@ -145,6 +145,25 @@ void ShadowCascade::bind(const RenderContext& ctx)
             maxZ = std::max(maxZ, p.z);
         }
 
+        // Tune this parameter according to the scene
+        constexpr float zMult = 2.0f;
+        if (minZ < 0)
+        {
+            minZ *= zMult;
+        }
+        else
+        {
+            minZ /= zMult;
+        }
+        if (maxZ < 0)
+        {
+            maxZ /= zMult;
+        }
+        else
+        {
+            maxZ *= zMult;
+        }
+
         const glm::mat4 shadowProjectionMatrix = glm::ortho(
             minX, maxX, minY, maxY,
             minZ,

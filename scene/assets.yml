@@ -92,8 +92,8 @@ assets:
   fog_end: 3000.0
   fog_ratio: 1.0
 
-  xxshadow_planes: [0.1, 20, 50, 100]
-  shadow_planes: [0.1, 100]
+  shadow_planes: [0.1, 20, 50, 200]
+  xxshadow_planes: [0.1, 100]
   shadow_map_sizes: [2048, 512, 512]
   shadow_render_frame_start: 0
   shadow_render_frame_step: 1

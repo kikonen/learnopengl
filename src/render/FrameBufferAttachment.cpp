@@ -120,8 +120,9 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
     spec.format = GL_RGBA;
     spec.attachment = GL_DEPTH_ATTACHMENT;
     // NOTE KI linear slower, but *BETTER* results
-    spec.minFilter = GL_LINEAR;
-    spec.magFilter = GL_LINEAR;
+    // CHECK KI does it actually matter for shadowmap?!?
+    spec.minFilter = GL_NEAREST;
+    spec.magFilter = GL_NEAREST;
     spec.textureWrapS = GL_CLAMP_TO_BORDER;
     spec.textureWrapT = GL_CLAMP_TO_BORDER;
 
