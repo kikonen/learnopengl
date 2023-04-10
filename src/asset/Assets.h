@@ -134,7 +134,6 @@ public:
 
     // NOTE KI MUST match lookup() in light shadow shader
     std::vector<float> shadowPlanes;
-    std::vector<float> shadowFrustumSizes;
     std::vector<int> shadowMapSizes;
     int shadowRenderFrameStart;
     int shadowRenderFrameStep;

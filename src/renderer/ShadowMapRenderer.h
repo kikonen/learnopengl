@@ -39,7 +39,6 @@ private:
     Program* m_shadowDebugProgram{ nullptr };
 
     std::vector<float> m_planes;
-    std::vector<float> m_frustumSizes;
     std::vector<int> m_mapSizes;
 
     uniform::Float u_nearPlane{ "u_nearPlane", UNIFORM_NEAR_PLANE };

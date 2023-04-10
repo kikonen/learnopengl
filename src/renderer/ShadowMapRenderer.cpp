@@ -33,7 +33,6 @@ void ShadowMapRenderer::prepare(
     m_renderFrameStep = assets.shadowRenderFrameStep;
 
     m_planes = assets.shadowPlanes;
-    m_frustumSizes = assets.shadowFrustumSizes;
     m_mapSizes = assets.shadowMapSizes;
 
     for (int index = 0; index < m_planes.size() - 1; index++) {
@@ -41,7 +40,6 @@ void ShadowMapRenderer::prepare(
             index,
             m_planes[index],
             m_planes[index + 1],
-            m_frustumSizes[index],
             m_mapSizes[index]);
         m_cascades.push_back(cascade);
     }

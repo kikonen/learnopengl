@@ -18,12 +18,10 @@ public:
         int index,
         float shadowBegin,
         float shadowEnd,
-        float frustumSize,
         int mapSize)
     : m_index(index),
     m_shadowBegin(shadowBegin),
     m_shadowEnd(shadowEnd),
-    m_frustumSize(frustumSize),
     m_mapSize(mapSize)
     {}
 
@@ -50,7 +48,6 @@ public:
     const int m_index;
     const float m_shadowBegin;
     const float m_shadowEnd;
-    const float m_frustumSize;
     const int m_mapSize;
 
     float m_nearPlane{ 0.f };

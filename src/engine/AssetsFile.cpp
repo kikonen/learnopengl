@@ -261,9 +261,6 @@ void AssetsFile::loadAssets(
         else if (k == "shadow_planes") {
             data.shadowPlanes = readFloatVector(v, 4);
         }
-        else if (k == "shadow_frustum_sizes") {
-            data.shadowFrustumSizes = readFloatVector(v, 3);
-        }
         else if (k == "shadow_map_sizes") {
             data.shadowMapSizes = readIntVector(v, 3);
         }
