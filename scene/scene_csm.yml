@@ -22,7 +22,7 @@ entities:
   - name: Other
     model: texture_cube
     program: g_tex
-    pos: [0.0, 0.0, 0.0]
+    pos: [0.0, 2.0, 0.0]
     enabled: true
     repeat:
       z_count: 20
@@ -50,7 +50,7 @@ entities:
     xxmodel: woodwall
     material: giant_woodbox
     program: g_tex
-    position: [0, -10, 0]
+    position: [0, 0, 0]
     rot: [90, 0, 0]
     render_flags:
       render_back: true
