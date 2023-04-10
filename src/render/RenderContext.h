@@ -76,11 +76,6 @@ public:
             std::begin(m_matrices.u_shadow));
 
         std::copy(
-            std::begin(b.m_matrices.u_shadowPlanes),
-            std::end(b.m_matrices.u_shadowPlanes),
-            std::begin(m_matrices.u_shadowPlanes));
-
-        std::copy(
             std::begin(b.m_matrices.u_shadowProjected),
             std::end(b.m_matrices.u_shadowProjected),
             std::begin(m_matrices.u_shadowProjected));

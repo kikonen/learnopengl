@@ -89,10 +89,11 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
         cascade->bind(ctx);
     }
 
-    std::copy(
-        std::begin(m_planes),
-        std::end(m_planes),
-        std::begin(ctx.m_matrices.u_shadowPlanes));
+    ctx.m_data.u_shadowPlaneCount = m_planes.size();
+
+    for (int i = 0; i < m_planes.size(); i++) {
+        ctx.m_data.u_shadowPlanes[i] = { 0.f, 0.f, m_planes[i], 0.f };
+    }
 }
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)

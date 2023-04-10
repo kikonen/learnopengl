@@ -37,9 +37,9 @@ precision mediump float;
 
 const vec4 CASCADE_COLORS[3] =
   vec4[3](
-          vec4(0.2, 0.0, 0.0, 0.0),
-          vec4(0.0, 0.2, 0.0, 0.0),
-          vec4(0.0, 0.0, 0.2, 0.0)
+          vec4(0.1, 0.0, 0.0, 0.0),
+          vec4(0.0, 0.1, 0.0, 0.0),
+          vec4(0.0, 0.0, 0.1, 0.0)
           );
 
 void main()
@@ -53,16 +53,11 @@ void main()
   const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
   const float depthValue = abs(viewPos.z);
 
-  for (int i = SHADOW_MAP_COUNT - 1; i > 0; i--) {
-    if (depthValue < u_shadowPlanes[i + 1]) {
+  for (int i = 0; i < SHADOW_MAP_COUNT; i++) {
+    if (depthValue < u_shadowPlanes[i + 1].z) {
       shadowIndex = i;
+      break;
     }
-  }
-  if (depthValue < 40) {
-    shadowIndex = 1;
-  }
-  if (depthValue < 20) {
-    shadowIndex = 0;
   }
 
   const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);

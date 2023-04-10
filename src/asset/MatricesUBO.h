@@ -17,11 +17,4 @@ struct MatricesUBO {
 
     // NOTE KI shadow calculation only
     glm::mat4 u_shadowProjected[SHADOW_MAP_COUNT];
-
-    // From *view* point of view (not shadow rendering)
-    float u_shadowPlanes[SHADOW_MAP_COUNT + 1];
-
-    glm::vec4 pad1;
-    glm::vec4 pad2;
-    glm::vec4 pad3;
 };

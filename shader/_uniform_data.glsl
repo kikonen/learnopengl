@@ -15,5 +15,7 @@ layout(std140, binding = UBO_DATA) uniform Data {
 
   bool u_cubeMapExist;
 
-  //uint pad2;
+  int u_shadowPlaneCount;
+
+  vec4 u_shadowPlanes[SHADOW_MAP_COUNT + 1];
 };
