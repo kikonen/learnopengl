@@ -71,11 +71,11 @@ void ShadowCascade::prepare(
 {
     //m_shadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
     m_solidShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
-    m_blendedShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    m_alphaShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
 
     //m_shadowProgram->prepare(assets);
     m_solidShadowProgram->prepare(assets);
-    m_blendedShadowProgram->prepare(assets);
+    m_alphaShadowProgram->prepare(assets);
 
     m_buffer = new FrameBuffer(
         "shadow_map",
@@ -185,11 +185,14 @@ void ShadowCascade::render(
     // NOTE KI *NO* color in shadowmap
     glClear(GL_DEPTH_BUFFER_BIT);
 
+    auto oldShadow = ctx.m_shadow;
+    auto oldAllowBlend = ctx.m_allowBlend;
+
     ctx.m_shadow = true;
     ctx.m_allowBlend = false;
     drawNodes(ctx);
-    ctx.m_shadow = false;
-    ctx.m_allowBlend = true;
+    ctx.m_shadow = oldShadow;
+    ctx.m_allowBlend = oldAllowBlend;
 
     m_buffer->unbind(ctx);
 }
@@ -219,7 +222,7 @@ void ShadowCascade::drawNodes(
 
     {
         m_solidShadowProgram->bind(ctx.m_state);
-        u_shadowIndex.set(m_index);
+        u_solidShadowIndex.set(m_index);
 
         for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
             renderTypes(all.second, m_solidShadowProgram);
@@ -227,15 +230,15 @@ void ShadowCascade::drawNodes(
     }
 
     {
-        m_blendedShadowProgram->bind(ctx.m_state);
-        u_shadowIndex.set(m_index);
+        m_alphaShadowProgram->bind(ctx.m_state);
+        u_alphaShadowIndex.set(m_index);
 
         for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-            renderTypes(all.second, m_blendedShadowProgram);
+            renderTypes(all.second, m_alphaShadowProgram);
         }
 
         for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-            renderTypes(all.second, m_blendedShadowProgram);
+            renderTypes(all.second, m_alphaShadowProgram);
         }
     }
 

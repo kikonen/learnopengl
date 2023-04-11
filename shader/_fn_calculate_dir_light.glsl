@@ -8,8 +8,9 @@ float lookup(
   // NOtE KI textureProj == automatic p.xyz / p.w
   float t = textureProj(u_shadowMap[shadowIndex],
                         shadowPos + vec4(x * 0.001 * shadowPos.w,
-                                                 y * 0.001 * shadowPos.w,
-                                                 -0.01, 0.0),
+                                         y * 0.001 * shadowPos.w,
+                                         -0.01,
+                                         0.0),
                         bias);
   return t;
 }
