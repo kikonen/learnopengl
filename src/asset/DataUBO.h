@@ -35,7 +35,7 @@ struct DataUBO {
 
     // From *camera* view (not shadow view)
     // NOTE KI std410 arrays are glm::vec4 *alignment* per item
-    glm::vec4 u_shadowPlanes[SHADOW_MAP_COUNT + 1];
+    glm::vec4 u_shadowPlanes[MAX_SHADOW_MAP_COUNT + 1];
 
     //int pad3;
     //int pad4;

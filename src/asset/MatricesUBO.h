@@ -13,8 +13,8 @@ struct MatricesUBO {
     glm::mat4 u_viewSkybox{ 1.0f };
 
     // NOTE KI calculated by shadow calculation
-    glm::mat4 u_shadow[SHADOW_MAP_COUNT];
+    glm::mat4 u_shadow[MAX_SHADOW_MAP_COUNT];
 
     // NOTE KI shadow calculation only
-    glm::mat4 u_shadowProjected[SHADOW_MAP_COUNT];
+    glm::mat4 u_shadowProjected[MAX_SHADOW_MAP_COUNT];
 };

@@ -17,5 +17,5 @@ layout(std140, binding = UBO_DATA) uniform Data {
 
   int u_shadowCount;
 
-  vec4 u_shadowPlanes[SHADOW_MAP_COUNT + 1];
+  vec4 u_shadowPlanes[MAX_SHADOW_MAP_COUNT + 1];
 };

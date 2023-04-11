@@ -92,9 +92,9 @@ constexpr int UNIT_CUBE_MAP = 69;
 constexpr int UNIT_SKYBOX = 70;
 constexpr int UNIT_VIEWPORT = 71;
 
-constexpr int SHADOW_MAP_COUNT = 3;
+constexpr int MAX_SHADOW_MAP_COUNT = 5;
 constexpr int UNIT_SHADOW_MAP_FIRST = 72;
-constexpr int UNIT_SHADOW_MAP_LAST = UNIT_SHADOW_MAP_FIRST + SHADOW_MAP_COUNT - 1;
+constexpr int UNIT_SHADOW_MAP_LAST = UNIT_SHADOW_MAP_FIRST + MAX_SHADOW_MAP_COUNT - 1;
 
 constexpr unsigned int TEXTURE_UNIT_COUNT = 64;
 constexpr unsigned int FIRST_TEXTURE_UNIT = 0;
