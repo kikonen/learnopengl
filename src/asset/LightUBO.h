@@ -9,8 +9,6 @@ constexpr unsigned int MAX_LIGHT_COUNT = 128;
 
 // NOTE KI align 16 for UBO struct
 struct DirLightUBO {
-    glm::vec3 pos;
-    int pad1;
     glm::vec3 dir;
     int pad2;
     glm::vec4 ambient;

@@ -1,6 +1,4 @@
 struct DirLight {
-  vec3 worldPos;
-
   vec3 worldDir;
 
   vec4 ambient;
