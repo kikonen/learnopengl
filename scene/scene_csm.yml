@@ -70,3 +70,6 @@ materials:
     illum: 2
     map_kd: wood_1024.png
     reflection: 0.1
+    tiling: 60
+    texture_spec:
+      wrap: GL_REPEAT

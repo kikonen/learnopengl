@@ -113,11 +113,12 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
 
 FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthTexture()
 {
+    // https://stackoverflow.com/questions/22419682/glsl-sampler2dshadow-and-shadow2d-clarification
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::depth_texture;
     // NOTE KI need to have 24bit, 16bit is FAR TOO SMALL
-    spec.internalFormat = GL_DEPTH_COMPONENT24;
-    spec.format = GL_RGBA;
+    spec.internalFormat = GL_DEPTH_COMPONENT32F;
+    spec.format = GL_FLOAT;
     spec.attachment = GL_DEPTH_ATTACHMENT;
     // NOTE KI linear slower, but *BETTER* results
     // CHECK KI does it actually matter for shadowmap?!?

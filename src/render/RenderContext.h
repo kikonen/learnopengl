@@ -69,17 +69,7 @@ public:
     void updateClipPlanesUBO() const;
     void updateLightsUBO() const;
 
-    void copyShadowFrom(const RenderContext& b) {
-        std::copy(
-            std::begin(b.m_matrices.u_shadow),
-            std::end(b.m_matrices.u_shadow),
-            std::begin(m_matrices.u_shadow));
-
-        std::copy(
-            std::begin(b.m_matrices.u_shadowProjected),
-            std::end(b.m_matrices.u_shadowProjected),
-            std::begin(m_matrices.u_shadowProjected));
-    }
+    void copyShadowFrom(const RenderContext& b);
 
 public:
     const std::string m_name;

@@ -98,6 +98,7 @@ void FrameBuffer::prepare(
             glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
 
             // NOTE KI *IMPORTANT* for shadow map min/mag interpolation
+            // https://stackoverflow.com/questions/22419682/glsl-sampler2dshadow-and-shadow2d-clarification
             glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
             glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 

@@ -105,6 +105,7 @@ https://glad.dav1d.de
 - https://ogldev.org/www/tutorial49/tutorial49.html
 - https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
 - https://learnopengl.com/Guest-Articles/2021/CSM
+- https://stackoverflow.com/questions/28847767/cascaded-shadow-maps-not-quite-right
 
 ## Geometry shader
 - https://www.informit.com/articles/article.aspx?p=2120983&seqNum=2
