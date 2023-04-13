@@ -38,7 +38,7 @@ layout(binding = UNIT_WATER_NOISE) uniform sampler3D u_noiseTex;
 layout(binding = UNIT_WATER_REFLECTION) uniform sampler2D u_reflectionTex;
 layout(binding = UNIT_WATER_REFRACTION) uniform sampler2D u_refractionTex;
 
-layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
+layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2D u_shadowMap[MAX_SHADOW_MAP_COUNT];
 
 layout (location = 0) out vec4 o_fragColor;
 

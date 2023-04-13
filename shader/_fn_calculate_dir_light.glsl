@@ -76,33 +76,16 @@ float calcShadow3(
   // PCF
   float shadow = 0.0;
 
-  vec2 texSize;
-  switch(shadowIndex) {
-  case 0: texSize = textureSize(u_shadowMap[0], 0); break;
-  case 1: texSize = textureSize(u_shadowMap[1], 0); break;
-  case 2: texSize = textureSize(u_shadowMap[2], 0); break;
-  default: texSize = vec2(0.4);
-  }
-
-  vec2 texelSize = 1.0 / vec2(texSize);
+  vec2 texelSize = 1.0 / vec2(textureSize(u_shadowMap[shadowIndex], 0));
 
   for (int x = -1; x <= 1; ++x) {
     for (int y = -1; y <= 1; ++y) {
       // float pcfDepth = texture(u_shadowMap[shadowIndex], vec3(projCoords.xy + vec2(x, y) * texelSize, 1)).r;
 
-      // float pcfDepth =
-      //   texture(
-      //           u_shadowMap[shadowIndex],
-      //           vec3(projCoords.xy + vec2(x, y) * texelSize, shadowIndex)).r;
-
-      vec2 uvCoords = projCoords.xy + vec2(x, y) * texelSize;
-      float pcfDepth;
-      switch(shadowIndex) {
-      case 0: pcfDepth = texture(u_shadowMap[0], uvCoords).x; break;
-      case 1: pcfDepth = texture(u_shadowMap[1], uvCoords).x; break;
-      case 2: pcfDepth = texture(u_shadowMap[2], uvCoords).x; break;
-      default: pcfDepth = 1.0;
-      }
+      float pcfDepth =
+        texture(
+                u_shadowMap[shadowIndex],
+                projCoords.xy + vec2(x, y) * texelSize).r;
 
       shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;
     }

@@ -18,7 +18,7 @@ layout(binding = UNIT_G_AMBIENT) uniform sampler2D g_ambient;
 layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
 
-layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
+layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2D u_shadowMap[MAX_SHADOW_MAP_COUNT];
 
 
 out vec4 o_fragColor;
