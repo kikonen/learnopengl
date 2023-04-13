@@ -119,6 +119,12 @@ bool ShadowMapRenderer::render(
         cascade->render(ctx);
     }
 
+    m_rotateElapsedSecs += ctx.m_clock.elapsedSecs;
+    if (m_rotateElapsedSecs > 5) {
+        m_activeCascade = (m_activeCascade + 1) % m_cascades.size();
+        m_rotateElapsedSecs = 0.f;
+    }
+
     m_rendered = true;
     return true;
 }

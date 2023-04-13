@@ -1,6 +1,6 @@
 assets:
   log_file: log/development.log
-  scene_file: scene/scene_csm.yml
+  scene_file: scene/scene_full.yml
 
   glfw_swap_interval: 1
   gl_debug: true
@@ -60,7 +60,7 @@ assets:
   debug_clear_color: true
   clear_color: true
 
-  frustum_enabled: false
+  frustum_enabled: true
   frustum_cpu: true
   frustum_gpu: false
   frustum_debug: true
@@ -94,9 +94,9 @@ assets:
 
   shadow_planes: [0.1, 20, 50, 200]
   xxshadow_planes: [0.1, 20, 100]
-  shadow_map_sizes: [2048, 512, 512]
+  shadow_map_sizes: [2048, 1024, 1024, 1024]
   shadow_render_frame_start: 0
-  shadow_render_frame_step: 1
+  shadow_render_frame_step: 2
 
   mirror_reflection_size: 1024
   mirror_refraction_size: 1024

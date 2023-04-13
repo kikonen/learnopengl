@@ -34,6 +34,8 @@ private:
 
     int m_activeCascade;
 
+    float m_rotateElapsedSecs{ 0.f };
+
     Program* m_shadowDebugProgram{ nullptr };
 
     std::vector<float> m_planes;
