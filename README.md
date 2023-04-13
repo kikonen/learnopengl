@@ -106,6 +106,8 @@ https://glad.dav1d.de
 - https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
 - https://learnopengl.com/Guest-Articles/2021/CSM
 - https://stackoverflow.com/questions/28847767/cascaded-shadow-maps-not-quite-right
+- https://stackoverflow.com/questions/40323029/cascaded-shadow-map-texture-access-bug-on-openglgl
+- https://www.reddit.com/r/vulkan/comments/g0l8u5/sampler2darrayshadow_doesnt_work/
 
 ## Geometry shader
 - https://www.informit.com/articles/article.aspx?p=2120983&seqNum=2

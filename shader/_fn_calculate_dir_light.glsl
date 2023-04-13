@@ -1,3 +1,4 @@
+/*
 float lookup(
   in uint shadowIndex,
   in vec4 shadowPos,
@@ -49,6 +50,67 @@ float calcShadow2(
   // NOtE KI textureProj == automatic p.xyz / p.w
   return textureProj(u_shadowMap[shadowIndex], shadowPos, bias);
 }
+*/
+
+float calcShadow3(
+  in uint shadowIndex,
+  in vec4 shadowPos,
+  in vec3 normal,
+  in vec3 toLight)
+{
+  vec3 projCoords = shadowPos.xyz / shadowPos.w;
+  projCoords = projCoords * 0.5 + 0.5;
+  float currentDepth = projCoords.z;
+
+  // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
+  if (currentDepth > 1.0) {
+    return 1.0;
+  }
+
+  // calculate bias (based on depth map resolution and slope)
+  float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
+  const float biasModifier = 0.5f;
+
+  bias *= 1 / (u_shadowPlanes[shadowIndex + 1].z * biasModifier);
+
+  // PCF
+  float shadow = 0.0;
+
+  vec2 texSize;
+  switch(shadowIndex) {
+  case 0: texSize = textureSize(u_shadowMap[0], 0); break;
+  case 1: texSize = textureSize(u_shadowMap[1], 0); break;
+  case 2: texSize = textureSize(u_shadowMap[2], 0); break;
+  default: texSize = vec2(0.4);
+  }
+
+  vec2 texelSize = 1.0 / vec2(texSize);
+
+  for (int x = -1; x <= 1; ++x) {
+    for (int y = -1; y <= 1; ++y) {
+      // float pcfDepth = texture(u_shadowMap[shadowIndex], vec3(projCoords.xy + vec2(x, y) * texelSize, 1)).r;
+
+      // float pcfDepth =
+      //   texture(
+      //           u_shadowMap[shadowIndex],
+      //           vec3(projCoords.xy + vec2(x, y) * texelSize, shadowIndex)).r;
+
+      vec2 uvCoords = projCoords.xy + vec2(x, y) * texelSize;
+      float pcfDepth;
+      switch(shadowIndex) {
+      case 0: pcfDepth = texture(u_shadowMap[0], uvCoords).x; break;
+      case 1: pcfDepth = texture(u_shadowMap[1], uvCoords).x; break;
+      case 2: pcfDepth = texture(u_shadowMap[2], uvCoords).x; break;
+      default: pcfDepth = 1.0;
+      }
+
+      shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;
+    }
+  }
+  shadow /= 9.0;
+
+  return 1.0 - shadow;
+}
 
 vec4 calculateDirLight(
   in DirLight light,
@@ -76,7 +138,7 @@ vec4 calculateDirLight(
   }
 
   // calculate shadow
-  float shadow = calcShadow(shadowIndex, shadowPos, normal, toLight);
+  float shadow = calcShadow3(shadowIndex, shadowPos, normal, toLight);
   // if (shadow != 0.0) {
   //   shadow = 1;
   // }

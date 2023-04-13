@@ -22,15 +22,20 @@ out VS_OUT {
 } vs_out;
 #endif
 
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
+
+precision mediump float;
+
 void main()
 {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
 
-  const uint shadowIndex = u_shadowIndex;
   const vec4 worldPos = modelMatrix * vec4(a_pos, 1.0);
 
-  gl_Position = u_shadowProjectedMatrix[shadowIndex] * worldPos;
+  gl_Position = u_shadowProjectedMatrix[u_shadowIndex] * worldPos;
 
 #ifdef USE_ALPHA
   int materialIndex = entity.materialIndex;

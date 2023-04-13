@@ -127,6 +127,8 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
     spec.textureWrapS = GL_CLAMP_TO_BORDER;
     spec.textureWrapT = GL_CLAMP_TO_BORDER;
 
+    spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
+
     return spec;
 }
 

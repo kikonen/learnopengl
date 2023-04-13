@@ -146,7 +146,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
         }
 
         // Tune this parameter according to the scene
-        constexpr float zMult = 2.0f;
+        constexpr float zMult = 10.0f;
         if (minZ < 0)
         {
             minZ *= zMult;
@@ -173,7 +173,8 @@ void ShadowCascade::bind(const RenderContext& ctx)
         m_farPlane = maxZ;
 
         ctx.m_matrices.u_shadowProjected[m_index] = shadowProjectionMatrix * shadowViewMatrix;
-        ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
+        //ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
+        ctx.m_matrices.u_shadow[m_index] = ctx.m_matrices.u_shadowProjected[m_index];
     }
 }
 

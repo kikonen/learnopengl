@@ -97,16 +97,15 @@ void FrameBuffer::prepare(
             glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
             glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
 
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
+
             // NOTE KI *IMPORTANT* for shadow map min/mag interpolation
             // https://stackoverflow.com/questions/22419682/glsl-sampler2dshadow-and-shadow2d-clarification
             glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
             glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
-
-            glm::vec4 borderColor{ 1.0f, 1.0f, 1.0f, 1.0f };
-            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(borderColor));
+            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
 
             {
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
@@ -125,8 +124,8 @@ void FrameBuffer::prepare(
     GLenum status = glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER);
     if (status != GL_FRAMEBUFFER_COMPLETE) {
         std::string msg = fmt::format(
-            "FRAMEBUFFER:: Framebuffer is not complete! status=0x{:x} ({})",
-            status, status);
+            "FRAMEBUFFER:: Framebuffer is not complete! buffer={}, status=0x{:x} ({})",
+            str(), status, status);
         KI_ERROR(msg);
         throw std::runtime_error{ msg };
     }
