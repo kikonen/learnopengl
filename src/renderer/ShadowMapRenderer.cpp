@@ -2,6 +2,7 @@
 
 #include "asset/Program.h"
 #include "asset/Shader.h"
+#include "asset/Uniform.h"
 
 #include "model/Viewport.h"
 
@@ -71,8 +72,8 @@ void ShadowMapRenderer::prepare(
 
     m_debugViewport->setBindAfter([this, &assets](Viewport& vp) {
         auto& active = m_cascades[m_activeCascade];
-        u_nearPlane.set(active->m_nearPlane);
-        u_farPlane.set(active->m_farPlane);
+        vp.getProgram()->u_nearPlane->set(active->m_nearPlane);
+        vp.getProgram()->u_farPlane->set(active->m_farPlane);
     });
 
     m_debugViewport->setEffectEnabled(false);

@@ -4,6 +4,7 @@
 
 #include "asset/Program.h"
 #include "asset/Shader.h"
+#include "asset/Uniform.h"
 
 #include "component/Light.h"
 #include "component/Camera.h"
@@ -223,7 +224,7 @@ void ShadowCascade::drawNodes(
 
     {
         m_solidShadowProgram->bind(ctx.m_state);
-        u_solidShadowIndex.set(m_index);
+        m_solidShadowProgram->u_shadowIndex->set(m_index);
 
         for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
             renderTypes(all.second, m_solidShadowProgram);
@@ -232,7 +233,7 @@ void ShadowCascade::drawNodes(
 
     {
         m_alphaShadowProgram->bind(ctx.m_state);
-        u_alphaShadowIndex.set(m_index);
+        m_alphaShadowProgram->u_shadowIndex->set(m_index);
 
         for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
             renderTypes(all.second, m_alphaShadowProgram);

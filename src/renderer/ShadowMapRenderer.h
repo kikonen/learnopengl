@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include "asset/Uniform.h"
-
 #include "Renderer.h"
 
 class ShadowCascade;
@@ -40,7 +38,4 @@ private:
 
     std::vector<float> m_planes;
     std::vector<int> m_mapSizes;
-
-    uniform::Float u_nearPlane{ "u_nearPlane", UNIFORM_NEAR_PLANE };
-    uniform::Float u_farPlane{ "u_farPlane", UNIFORM_FAR_PLANE };
 };

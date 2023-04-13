@@ -6,6 +6,7 @@
 #include "asset/SSBO.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
+#include "asset/uniform.h"
 
 #include "util/Util.h"
 
@@ -154,7 +155,7 @@ namespace backend {
         if (m_frustumGPU) {
             m_cullingCompute->bind(*drawRange.m_state);
 
-            u_drawParametersIndex.set(cmdRange.m_index);
+            m_cullingCompute->u_drawParametersIndex->set(cmdRange.m_index);
 
             const int maxX = m_computeGroups[0];
             int groupX = drawCount;

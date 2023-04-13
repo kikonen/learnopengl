@@ -18,8 +18,10 @@
 
 #include "asset/ProgramBind.h"
 #include "asset/Shader.h"
+#include "asset/Uniform.h"
 
 #include "kigl/GLState.h"
+
 
 
 namespace {
@@ -126,6 +128,18 @@ int Program::prepare(const Assets& assets)
         m_prepareResult = -1;
         return -1;
     }
+
+    u_shadowIndex = std::make_unique< uniform::UInt>("u_shadowIndex", UNIFORM_SHADOW_MAP_INDEX);
+    u_effect = std::make_unique< uniform::Subroutine>("u_effect", GL_FRAGMENT_SHADER, SUBROUTINE_EFFECT);
+
+    u_nearPlane = std::make_unique< uniform::Float>("u_nearPlane", UNIFORM_NEAR_PLANE);
+    u_farPlane = std::make_unique< uniform::Float>("u_farPlane", UNIFORM_FAR_PLANE);
+
+    u_drawParametersIndex = std::make_unique< uniform::UInt>("u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX);
+
+    u_stencilMode = std::make_unique< uniform::Int>("u_stencilMode", UNIFORM_STENCIL_MODE);
+
+    u_effect->init(this);
 
     m_prepareResult = 0;
     return m_prepareResult;

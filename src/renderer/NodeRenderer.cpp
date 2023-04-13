@@ -3,6 +3,7 @@
 
 #include "asset/Program.h"
 #include "asset/Shader.h"
+#include "asset/Uniform.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -86,10 +87,10 @@ void NodeRenderer::renderStencil(
         const glm::vec4 clearColor{ 0.0f, 1.0f, 1.0f, 0.0f };
 
         m_selectionProgramSprite->bind(ctx.m_state);
-        u_stencilModeSprite.set(STENCIL_MODE_MASK);
+        m_selectionProgramSprite->u_stencilMode->set(STENCIL_MODE_MASK);
 
         m_selectionProgram->bind(ctx.m_state);
-        u_stencilMode.set(STENCIL_MODE_MASK);
+        m_selectionProgram->u_stencilMode->set(STENCIL_MODE_MASK);
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
@@ -125,10 +126,10 @@ void NodeRenderer::renderHighlight(
     // draw selection color (scaled a bit bigger)
     {
         m_selectionProgramSprite->bind(ctx.m_state);
-        u_stencilModeSprite.set(STENCIL_MODE_HIGHLIGHT);
+        m_selectionProgramSprite->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
 
         m_selectionProgram->bind(ctx.m_state);
-        u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);
+        m_selectionProgram->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
 
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(

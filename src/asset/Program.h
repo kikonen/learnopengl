@@ -16,6 +16,9 @@ class GLState;
 namespace uniform {
     class Uniform;
     class Subroutine;
+    class Float;
+    class Int;
+    class UInt;
 }
 
 class Program final
@@ -94,6 +97,16 @@ public:
     const std::string m_geometryType;
 
     int m_programId = -1;
+
+    std::unique_ptr<uniform::UInt> u_shadowIndex;
+    std::unique_ptr<uniform::Subroutine> u_effect;
+
+    std::unique_ptr<uniform::Float> u_nearPlane;
+    std::unique_ptr<uniform::Float> u_farPlane;
+
+    std::unique_ptr<uniform::UInt> u_drawParametersIndex;
+
+    std::unique_ptr<uniform::Int> u_stencilMode;
 
 private:
     const Assets& m_assets;

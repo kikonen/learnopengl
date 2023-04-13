@@ -64,7 +64,7 @@ namespace uniform {
         // - GL_GEOMETRY_SHADER
         // - GL_TESS_CONTROL_SHADER
         // - GL_TESS_EVALUATION_SHADER
-        void set(GLuint routineIndex) noexcept;
+        void set(GLuint routineIndex, bool force = false) noexcept;
 
     private:
         const GLenum m_shaderType;
@@ -78,7 +78,7 @@ namespace uniform {
         Mat4(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const glm::mat4& value) noexcept {
+        void set(const glm::mat4& value, bool force = false) noexcept {
             if (m_locId != -1) {
                 glUniformMatrix4fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
@@ -90,7 +90,7 @@ namespace uniform {
         Mat3(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const glm::mat3& value) noexcept {
+        void set(const glm::mat3& value, bool force = false) noexcept {
             if (m_locId != -1) {
                 glUniformMatrix3fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
@@ -102,7 +102,7 @@ namespace uniform {
         Mat2(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const glm::mat2& value) noexcept {
+        void set(const glm::mat2& value, bool force = false) noexcept {
             if (m_locId != -1) {
                 glUniformMatrix3fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
@@ -114,7 +114,7 @@ namespace uniform {
         Vec4(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const glm::vec4& value) noexcept {
+        void set(const glm::vec4& value, bool force = false) noexcept {
             if (m_locId != -1) {
                 glUniform1fv(m_locId, 4, glm::value_ptr(value));
             }
@@ -126,7 +126,7 @@ namespace uniform {
         Vec3(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const glm::vec3& value) noexcept {
+        void set(const glm::vec3& value, bool force = false) noexcept {
             if (m_locId != -1) {
                 glUniform1fv(m_locId, 3, glm::value_ptr(value));
             }
@@ -138,7 +138,7 @@ namespace uniform {
         Vec2(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const glm::vec2& value) noexcept {
+        void set(const glm::vec2& value, bool force = false) noexcept {
             if (m_locId != -1) {
                 glUniform1fv(m_locId, 2, glm::value_ptr(value));
             }
@@ -150,7 +150,7 @@ namespace uniform {
         FloatArray(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(int count, const float* values) noexcept {
+        void set(int count, const float* values, bool force = false) noexcept {
             if (m_locId != -1) {
                 glUniform1fv(m_locId, count, values);
             }
@@ -162,7 +162,7 @@ namespace uniform {
         IntArray(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(int count, const GLint* values) noexcept {
+        void set(int count, const GLint* values, bool force = false) noexcept {
             if (m_locId != -1) {
                 glUniform1iv(m_locId, count, values);
             }
@@ -174,11 +174,11 @@ namespace uniform {
         Float(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const float value) noexcept {
-            if (m_locId != -1 && (m_unassigned || value != m_lastValue)) {
+        void set(const float value, bool force = false) noexcept {
+            if (m_locId != -1 && (force || m_unassigned || value != m_lastValue)) {
                 glUniform1f(m_locId, value);
                 m_lastValue = value;
-                m_unassigned = false;
+                m_unassigned = force;
             }
         }
 
@@ -191,11 +191,11 @@ namespace uniform {
         Int(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const GLint value) noexcept {
-            if (m_locId != -1 && (m_unassigned || value != m_lastValue)) {
+        void set(const GLint value, bool force = false) noexcept {
+            if (m_locId != -1 && (force || m_unassigned || value != m_lastValue)) {
                 glUniform1i(m_locId, value);
                 m_lastValue = value;
-                m_unassigned = false;
+                m_unassigned = force;
             }
         }
 
@@ -208,11 +208,11 @@ namespace uniform {
         UInt(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const GLuint value) noexcept {
-            if (m_locId != -1 && (m_unassigned || value != m_lastValue)) {
+        void set(const GLuint value, bool force = false) noexcept {
+            if (m_locId != -1 && (force || m_unassigned || value != m_lastValue)) {
                 glUniform1ui(m_locId, value);
                 m_lastValue = value;
-                m_unassigned = false;
+                m_unassigned = force;
             }
         }
 
@@ -225,11 +225,11 @@ namespace uniform {
         Bool(const std::string_view& name, GLint locId = -1) : Uniform(name, locId) {
         }
 
-        void set(const bool value) noexcept {
-            if (m_locId != -1 && (m_unassigned || value != m_lastValue)) {
+        void set(const bool value, bool force = false) noexcept {
+            if (m_locId != -1 && (force || m_unassigned || value != m_lastValue)) {
                 glUniform1i(m_locId, (int)value);
                 m_lastValue = value;
-                m_unassigned = false;
+                m_unassigned = force;
             }
         }
 

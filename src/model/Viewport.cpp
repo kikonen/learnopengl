@@ -6,6 +6,7 @@
 
 #include "asset/Program.h"
 #include "asset/Shader.h"
+#include "asset/Uniform.h"
 
 #include "render/FrameBuffer.h"
 
@@ -59,7 +60,6 @@ void Viewport::prepare(const Assets& assets)
     if (m_useFrameBuffer) return;
 
     m_program->prepare(assets);
-    u_effect.init(m_program);
 
     prepareVBO();
 }
@@ -119,7 +119,7 @@ void Viewport::bind(const RenderContext& ctx)
     ctx.m_state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
     if (m_effectEnabled) {
-        u_effect.set(util::as_integer(m_effect));
+        m_program->u_effect->set(util::as_integer(m_effect));
     }
 
     ctx.m_state.bindVAO(m_vao);

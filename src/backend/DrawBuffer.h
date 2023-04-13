@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "ki/GL.h"
 
 #include "kigl/GLState.h"
@@ -10,8 +12,6 @@
 
 #include "gl/DrawIndirectCommand.h"
 #include "gl/PerformanceCounters.h"
-
-#include "asset/Uniform.h"
 
 #include "DrawRange.h"
 #include "DrawOptions.h"
@@ -64,8 +64,6 @@ namespace backend {
         glm::uvec3 m_computeGroups;
 
         Program* m_cullingCompute{ nullptr };
-
-        uniform::UInt u_drawParametersIndex{ "u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX };
 
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
 

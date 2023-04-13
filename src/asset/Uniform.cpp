@@ -31,12 +31,12 @@ namespace uniform {
         }
     }
 
-    void Subroutine::set(GLuint routineIndex) noexcept {
-        if (m_locId != -1 && (m_unassigned || routineIndex != m_lastValue)) {
+    void Subroutine::set(GLuint routineIndex, bool force) noexcept {
+        if (m_locId != -1 && (force || m_unassigned || routineIndex != m_lastValue)) {
             m_indeces[m_locId] = routineIndex;
             glUniformSubroutinesuiv(m_shaderType, m_locId + 1, m_indeces);
             m_lastValue = routineIndex;
-            //m_unassigned = false;
+            //m_unassigned = force;
         }
     }
 

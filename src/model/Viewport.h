@@ -4,7 +4,6 @@
 #include <glm/glm.hpp>
 
 #include "asset/Assets.h"
-#include "asset/Uniform.h"
 
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
@@ -70,6 +69,10 @@ public:
         m_effect = effect;
     }
 
+    Program* getProgram() const noexcept {
+        return m_program;
+    }
+
 private:
     void prepareVBO();
 
@@ -97,8 +100,6 @@ private:
 
     bool m_effectEnabled{ false };
     ViewportEffect m_effect = ViewportEffect::none;
-
-    uniform::Subroutine u_effect{ "u_effect", GL_FRAGMENT_SHADER, SUBROUTINE_EFFECT };
 
     std::function<void(Viewport&)> m_bindBefore{ [](Viewport&) {} };
     std::function<void(Viewport&)> m_bindAfter{ [](Viewport&) {} };

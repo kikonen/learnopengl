@@ -4,7 +4,8 @@
 #include <memory>
 
 #include "asset/Assets.h"
-#include "asset/Uniform.h"
+
+#include "ki/GL.h"
 
 
 class FrameBuffer;
@@ -60,8 +61,5 @@ private:
     //Program* m_shadowProgram{ nullptr };
     Program* m_solidShadowProgram{ nullptr };
     Program* m_alphaShadowProgram{ nullptr };
-
-    uniform::UInt u_solidShadowIndex{ "u_shadowIndex", UNIFORM_SHADOW_MAP_INDEX };
-    uniform::UInt u_alphaShadowIndex{ "u_shadowIndex", UNIFORM_SHADOW_MAP_INDEX };
 };
 
