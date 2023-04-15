@@ -1,4 +1,4 @@
-/*
+
 float lookup(
   in uint shadowIndex,
   in vec4 shadowPos,
@@ -50,8 +50,8 @@ float calcShadow2(
   // NOtE KI textureProj == automatic p.xyz / p.w
   return textureProj(u_shadowMap[shadowIndex], shadowPos, bias);
 }
-*/
 
+/*
 float calcShadow3(
   in uint shadowIndex,
   in vec4 shadowPos,
@@ -94,6 +94,41 @@ float calcShadow3(
 
   return 1.0 - shadow;
 }
+*/
+
+float calcShadow4(
+  in uint shadowIndex,
+  in vec4 shadowPos,
+  in vec3 normal,
+  in vec3 toLight)
+{
+  // calculate bias (based on depth map resolution and slope)
+  float bias = max(0.05 * (1.0 - dot(normal, toLight)), 0.005);
+  const float biasModifier = 0.5f;
+
+  bias *= 1 / (u_shadowPlanes[shadowIndex + 1].z * biasModifier);
+
+  // PCF
+  float shadow = 0.0;
+
+  const float w = shadowPos.w;
+  const vec2 texelSize = (1.0 / vec2(textureSize(u_shadowMap[shadowIndex], 0))) / w;
+
+  for (int x = -1; x <= 1; ++x) {
+    for (int y = -1; y <= 1; ++y) {
+      float pcf =
+        textureProj(
+                u_shadowMap[shadowIndex],
+                shadowPos + vec4(x * texelSize.x, y * texelSize.y, 0.0, 0.0),
+                bias).r;
+
+      shadow += pcf;
+    }
+  }
+  shadow /= 9.0;
+
+  return shadow;
+}
 
 vec4 calculateDirLight(
   in DirLight light,
@@ -121,7 +156,7 @@ vec4 calculateDirLight(
   }
 
   // calculate shadow
-  float shadow = calcShadow3(shadowIndex, shadowPos, normal, toLight);
+  float shadow = calcShadow(shadowIndex, shadowPos, normal, toLight);
   // if (shadow != 0.0) {
   //   shadow = 1;
   // }

@@ -393,6 +393,12 @@
     <ClCompile Include="src\registry\ControllerRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\ShadowCascade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\ShadowCascade.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -894,6 +900,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\ControllerRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\glm_format.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
