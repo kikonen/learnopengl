@@ -87,7 +87,7 @@ void MirrorMapRenderer::prepare(
         glm::vec3(-1.0, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        true,
+        false,
         0,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 

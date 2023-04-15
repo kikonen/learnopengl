@@ -88,7 +88,7 @@ void WaterMapRenderer::prepare(
         glm::vec3(0.5, 0.5, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        true,
+        false,
         m_reflectionBuffer->m_spec.attachments[0].textureID,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
@@ -99,7 +99,7 @@ void WaterMapRenderer::prepare(
         glm::vec3(0.5, 0.0, 0),
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
-        true,
+        false,
         m_refractionBuffer->m_spec.attachments[0].textureID,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
