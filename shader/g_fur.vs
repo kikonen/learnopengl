@@ -51,7 +51,7 @@ void main() {
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * a_normal;
+  vs_out.normal = a_normal;//normalMatrix * a_normal;
 
   gl_Position = vec4(a_pos, 1.0);
 }

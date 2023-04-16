@@ -62,7 +62,7 @@ assets:
 
   frustum_enabled: true
   frustum_cpu: true
-  frustum_gpu: false
+  frustum_gpu: true
   frustum_debug: true
 
   camera_fov: 45
@@ -96,7 +96,7 @@ assets:
   xxshadow_planes: [0.1, 20, 100]
   shadow_map_sizes: [2048, 1024, 1024, 1024]
   shadow_render_frame_start: 0
-  shadow_render_frame_step: 2
+  shadow_render_frame_step: 1
 
   mirror_reflection_size: 1024
   mirror_refraction_size: 1024
