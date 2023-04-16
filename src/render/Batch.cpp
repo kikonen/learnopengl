@@ -50,7 +50,7 @@ Batch::Batch()
 {
 }
 
-bool Batch::inFrustumZ(
+bool Batch::inFrustum(
     const RenderContext& ctx,
     const int entityIndex)
 {
@@ -62,60 +62,18 @@ bool Batch::inFrustumZ(
     if ((entity->u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
         return true;
 
-    const auto& volume = entity->u_volume;
-
-    const glm::vec3 volumeCenter = glm::vec3(volume);
-    const float volumeRadius = volume.a;
-
-    const auto& modelMatrix = entity->getModelMatrix();
-    const glm::mat4 projectedModel = ctx.m_matrices.u_projected * modelMatrix;
-
-    const auto viewPos = ctx.m_matrices.u_view * glm::vec4(entity->getWorldPosition());
-    const auto projPos = ctx.m_matrices.u_projected * glm::vec4(entity->getWorldPosition());
-
-
-    const glm::vec4 centerPos = projectedModel * glm::vec4(volumeCenter, 1.f);
-    const glm::vec4 radiusPosX = projectedModel * glm::vec4(volumeCenter + glm::vec3(volumeRadius, 0, 0), 1.f);
-    const glm::vec4 radiusPosY = projectedModel * glm::vec4(volumeCenter + glm::vec3(0, volumeRadius, 0), 1.f);
-    const glm::vec4 radiusPosZ = projectedModel * glm::vec4(volumeCenter + glm::vec3(0, 0, -volumeRadius), 1.f);
-
-    //const float radius = glm::length(radiusPos - glm::vec3(centerPos));
-
-    const auto clipCenter = centerPos / centerPos.w;
-    auto clipRadiusX = radiusPosX / radiusPosX.w;
-    auto clipRadiusY = radiusPosY / radiusPosY.w;
-    auto clipRadiusZ = radiusPosZ / radiusPosZ.w;
-
-    const float radiusX = glm::length(glm::vec3(clipRadiusX));
-    const float radiusY = glm::length(glm::vec3(clipRadiusY));
-    const float radiusZ = glm::length(glm::vec3(clipRadiusZ));
-
-    const float w = 1.f;// centerPos.w * 1.f;
-
-    bool visibleX = -w <= clipCenter.x + radiusX && clipCenter.x - radiusX <= w;
-    bool visibleY =- w <= clipCenter.y + radiusY && clipCenter.y - radiusY <= w;
-    bool visibleZ = -w <= clipCenter.z + radiusZ && clipCenter.z - radiusZ <= w;
-
-    bool visible = visibleX && visibleY && visibleZ;
-
-    if (!visible) {
-        //KI_INFO_OUT(fmt::format(
-        //    "KO: worldPos={}, viewPos={}, volume={}, clipCenter={}, clipRadius=X{}, clipRadius=Y{}, clipRadius=Z{}, centerPos={}, radiusX={}, radiusY={}, radiusZ={}, x={}, y={}, z={}",
-        //    entity->getWorldPosition(), viewPos, volume, clipCenter, clipRadiusX, clipRadiusY, clipRadiusZ, centerPos, radiusX, radiusY, radiusZ, visibleX, visibleY, visibleZ));
-    }
-
+    bool visible;
     {
         const auto& frustum = ctx.m_camera->getFrustum();
-        Sphere sphere{ volume };
+        Sphere volume{ entity->u_volume };
 
-        bool inFrustum = sphere.isOnFrustum(frustum, 0, modelMatrix);
+        visible = volume.isOnFrustum(frustum);
 
-        visible = inFrustum;
-        if (!visible) {
-            KI_INFO_OUT(fmt::format(
-                "KO: frustum={}, volume={}, sphere={}",
-                frustum.str(), volume, sphere.str()));
-        }
+        //if (!visible) {
+        //    KI_INFO_OUT(fmt::format(
+        //        "KO: frustum={}, volume={}",
+        //        frustum.str(), volume.str()));
+        //}
     }
 
     if (visible) {
@@ -134,7 +92,7 @@ void Batch::add(
 {
     if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
 
-    if (m_frustumCPU && !inFrustumZ(ctx, entityIndex))
+    if (m_frustumCPU && !inFrustum(ctx, entityIndex))
         return;
 
     auto& top = m_batches.back();
@@ -164,19 +122,19 @@ void Batch::addInstanced(
     int actualCount = count;
 
     if (m_frustumCPU) {
-        if (instancedEntityIndex != -1 && !inFrustumZ(ctx, instancedEntityIndex)) {
+        if (instancedEntityIndex != -1 && !inFrustum(ctx, instancedEntityIndex)) {
             m_skipCount += count - 1;
             return;
         }
 
-        while (!inFrustumZ(ctx, actualIndex) && actualCount > 0) {
+        while (!inFrustum(ctx, actualIndex) && actualCount > 0) {
             actualIndex++;
             actualCount--;
         }
 
         if (actualCount > 0) {
             int endIndex = actualIndex + actualCount;
-            while (!inFrustumZ(ctx, endIndex) && actualCount > 0) {
+            while (!inFrustum(ctx, endIndex) && actualCount > 0) {
                 endIndex--;
                 actualCount--;
             }

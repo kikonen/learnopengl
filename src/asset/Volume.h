@@ -14,15 +14,10 @@ struct Volume {
 
     virtual std::unique_ptr<Volume> clone() const noexcept = 0;
 
-    virtual const glm::vec3& getCenter() const noexcept = 0;
-    virtual float getRadius() const noexcept = 0;
+    virtual bool isOnFrustum(const Frustum& frustum) const noexcept = 0;
 
-    bool isOnFrustum(const Frustum& frustum) const noexcept;
-
-    virtual bool isOnFrustum(
-        const Frustum& camFrustum,
-        const int modelMatrixLevel,
-        const glm::mat4& modelWorldMatrix) const noexcept = 0;
-
-    virtual bool isOnOrForwardPlane(const Plane& plan) const noexcept = 0;
+    virtual void updateVolume(
+        const int matrixLevel,
+        const glm::mat4& modelMatrix,
+        float maxScale) const noexcept = 0;
 };

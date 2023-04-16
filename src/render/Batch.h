@@ -74,7 +74,7 @@ private:
         MeshType* type,
         Program* program);
 
-    bool inFrustumZ(
+    bool inFrustum(
         const RenderContext& ctx,
         const int entityIndex);
 

@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "asset/Sphere.h"
+
 class RenderContext;
 
 struct EntitySSBO;
@@ -29,7 +31,7 @@ struct NodeInstance {
 
     int m_materialIndex{ 0 };
 
-    glm::vec4 m_volume{ 0.f };
+    Sphere m_volume;
 
     glm::mat4 m_translateMatrix{ 1.f };
     glm::mat4 m_scaleMatrix{ 1.f };
@@ -84,12 +86,12 @@ struct NodeInstance {
 
     inline const glm::vec4& getVolume() const noexcept
     {
-        return m_volume;
+        return m_volume.getVolume();
     }
 
     inline void setVolume(const glm::vec4& volume) noexcept
     {
-        if (m_volume != volume) {
+        if (m_volume.getVolume() != volume) {
             m_volume = volume;
             m_entityDirty = true;
         }
@@ -268,5 +270,5 @@ struct NodeInstance {
 
     void updateEntity(EntitySSBO* entity);
 
-    bool inFrustum(const RenderContext& ctx, float radiusFlex) const;
+    //bool inFrustum(const RenderContext& ctx, float radiusFlex) const;
 };
