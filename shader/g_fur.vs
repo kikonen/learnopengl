@@ -33,6 +33,7 @@ out VS_OUT {
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
+  #include var_entity_normal_matrix.glsl
 
   vs_out.modelMatrix = modelMatrix;
 
@@ -50,7 +51,7 @@ void main() {
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = a_normal;
+  vs_out.normal = normalMatrix * a_normal;
 
   gl_Position = vec4(a_pos, 1.0);
 }

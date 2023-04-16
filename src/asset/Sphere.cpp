@@ -2,33 +2,39 @@
 
 #include <algorithm>
 
+#include <fmt/format.h>
+
+#include "util/glm_format.h"
+
 #include "Sphere.h"
 
 Sphere::Sphere(const glm::vec3& center, float radius) noexcept
     : Volume{},
     m_center{ center },
-    m_radius{ radius },
-    m_worldSphere{ std::make_unique<Sphere>() }
+    m_radius{ radius }
 {}
+
+Sphere::Sphere(const glm::vec4& volume) noexcept
+    : Volume{},
+    m_center{ volume },
+    m_radius{ volume.a }
+{}
+
+const std::string Sphere::str() const noexcept
+{
+    return fmt::format(
+        "<SPHERE: center={}, radius={}, worldCenter={}, worldRadius={}>",
+        m_center, m_radius, m_worldCenter, m_worldRadius);
+}
 
 std::unique_ptr<Volume> Sphere::clone() const noexcept
 {
     return std::make_unique<Sphere>(m_center, m_radius);
 }
 
-const glm::vec3& Sphere::getCenter() const noexcept
-{
-    return m_center;
-}
-
-float Sphere::getRadius() const noexcept
-{
-    return m_radius;
-}
-
 bool Sphere::isOnOrForwardPlane(const Plane& plane) const noexcept
 {
-    return plane.getSignedDistanceToPlane(m_center) > -m_radius;
+    return plane.getSignedDistanceToPlane(m_worldCenter) > -m_worldRadius;
 }
 
 bool Sphere::isOnFrustum(
@@ -37,8 +43,6 @@ bool Sphere::isOnFrustum(
     const glm::mat4& modelWorldMatrix) const noexcept
 {
     updateWorldSphere(modelMatrixLevel, modelWorldMatrix);
-
-    const auto& worldSphere = *m_worldSphere.get();
 
     //// Check Firstly the result that have the most chance to faillure to avoid to call all functions.
     //const bool left = worldSphere.isOnOrForwardPlane(frustum.leftFace);
@@ -60,12 +64,12 @@ bool Sphere::isOnFrustum(
     //}
 
     // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
-    return worldSphere.isOnOrForwardPlane(frustum.nearFace) &&
-        worldSphere.isOnOrForwardPlane(frustum.topFace) &&
-        worldSphere.isOnOrForwardPlane(frustum.bottomFace) &&
-        worldSphere.isOnOrForwardPlane(frustum.leftFace) &&
-        worldSphere.isOnOrForwardPlane(frustum.rightFace) &&
-        worldSphere.isOnOrForwardPlane(frustum.farFace);
+    return isOnOrForwardPlane(frustum.nearFace) &&
+        isOnOrForwardPlane(frustum.topFace) &&
+        isOnOrForwardPlane(frustum.bottomFace) &&
+        isOnOrForwardPlane(frustum.leftFace) &&
+        isOnOrForwardPlane(frustum.rightFace) &&
+        isOnOrForwardPlane(frustum.farFace);
 };
 
 void Sphere::updateWorldSphere(
@@ -86,10 +90,10 @@ void Sphere::updateWorldSphere(
     const float maxScale = std::max(std::max(sx, sy), sz);
 
     // Get our world center with process it with the world model matrix of our transform
-    m_worldSphere->m_center = modelWorldMatrix * glm::vec4(m_center, 1.f);
+    m_worldCenter = modelWorldMatrix * glm::vec4(m_center, 1.f);
 
     // Max scale is assuming for the diameter. So, we need the half to apply it to our radius
-    m_worldSphere->m_radius = m_radius * maxScale * 0.5f;
+    m_worldRadius = m_radius * maxScale * 0.5f;
 
     m_modelMatrixLevel = modelMatrixLevel;
 }

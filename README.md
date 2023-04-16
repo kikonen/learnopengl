@@ -58,6 +58,7 @@ https://glad.dav1d.de
 - https://cgvr.cs.uni-bremen.de/teaching/cg_literatur/lighthouse3d_view_frustum_culling/index.html
 - https://zeux.io/2009/01/31/view-frustum-culling-optimization-introduction/
 - https://fgiesen.wordpress.com/2010/10/17/view-frustum-culling/
+- https://gamedev.stackexchange.com/questions/73682/frustum-culling-based-on-mvp-matrix
 
 ## GPU frustum/occlusion culling
 - https://cpp-rendering.io/indirect-rendering/

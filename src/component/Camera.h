@@ -5,6 +5,8 @@
 
 #include "ki/GL.h"
 
+#include "asset/Frustum.h"
+
 class UpdateContext;
 class Node;
 
@@ -95,6 +97,15 @@ public:
 
     void updateCamera() const noexcept;
 
+    const Frustum& getFrustum() const noexcept
+    {
+        updateCamera();
+        if (m_dirtyFrustum) updateFrustum();
+        return m_frustum;
+    }
+
+    void updateFrustum() const noexcept;
+
 private:
     void updateFov(float fov) noexcept;
 
@@ -145,8 +156,10 @@ private:
     //m_roll = rotation.z;
     glm::vec3 m_rotation{ 0.f };
 
+    mutable Frustum m_frustum;
+
     mutable bool m_dirty = true;
     mutable bool m_dirtyView = true;
     mutable bool m_dirtyProjected = true;
+    mutable bool m_dirtyFrustum = true;
 };
-

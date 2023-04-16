@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "glm/glm.hpp"
 
 
@@ -17,6 +19,8 @@ struct Plane {
         : m_normal(glm::normalize(normal)),
         m_distance(glm::dot(m_normal, p1))
     {}
+
+    const std::string str() const noexcept;
 
     float getSignedDistanceToPlane(const glm::vec3& point) const noexcept
     {

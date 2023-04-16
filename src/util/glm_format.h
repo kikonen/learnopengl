@@ -9,32 +9,6 @@
 // https://fmt.dev/latest/api.html#format-api
 // 
 
-template <> struct fmt::formatter<glm::vec4> {
-    // Presentation format: 'f' - fixed, 'e' - exponential.
-    char presentation = 'f';
-
-    constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
-        auto it = ctx.begin(), end = ctx.end();
-        if (it != end && (*it == 'f' || *it == 'e')) presentation = *it++;
-
-        if (it != end && *it != '}') throw fmt::format_error("invalid format");
-
-        return it;
-    }
-
-    template <typename FormatContext>
-    auto format(const glm::vec4& p, FormatContext& ctx) const -> decltype(ctx.out()) {
-        return presentation == 'f'
-            ? fmt::format_to(
-                ctx.out(),
-                "({:.1f}, {:.1f}, {:.1f}, {:.1f})",
-                p.x, p.y, p.z, p.w)
-            : fmt::format_to(
-                ctx.out(),
-                "({:.1e}, {:.1e}, {:.1e}, {:.1e})",
-                p.x, p.y, p.z, p.w);
-    }
-};
 
 template <> struct fmt::formatter<glm::vec3> {
     // Presentation format: 'f' - fixed, 'e' - exponential.
@@ -54,12 +28,39 @@ template <> struct fmt::formatter<glm::vec3> {
         return presentation == 'f'
             ? fmt::format_to(
                 ctx.out(),
-                "({:.1f}, {:.1f}, {:.1f})",
+                "({:.3f}, {:.3f}, {:.3f})",
                 p.x, p.y, p.z)
             : fmt::format_to(
                 ctx.out(),
-                "({:.1e}, {:.1e}, {:.1e})",
+                "({:.3e}, {:.3e}, {:.3e})",
                 p.x, p.y, p.z);
+    }
+};
+
+template <> struct fmt::formatter<glm::vec4> {
+    // Presentation format: 'f' - fixed, 'e' - exponential.
+    char presentation = 'f';
+
+    constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
+        auto it = ctx.begin(), end = ctx.end();
+        if (it != end && (*it == 'f' || *it == 'e')) presentation = *it++;
+
+        if (it != end && *it != '}') throw fmt::format_error("invalid format");
+
+        return it;
+    }
+
+    template <typename FormatContext>
+    auto format(const glm::vec4& p, FormatContext& ctx) const -> decltype(ctx.out()) {
+        return presentation == 'f'
+            ? fmt::format_to(
+                ctx.out(),
+                "({:.3f}, {:.3f}, {:.3f}, {:.3f})",
+                p.x, p.y, p.z, p.w)
+            : fmt::format_to(
+                ctx.out(),
+                "({:.3e}, {:.3e}, {:.3e}, {:.3e})",
+                p.x, p.y, p.z, p.w);
     }
 };
 

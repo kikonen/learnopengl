@@ -6,6 +6,7 @@
 #include "glm/glm.hpp"
 
 #include "ki/uuid.h"
+#include "util/glm_format.h"
 
 #include "asset/VertexEntry.h"
 #include "asset/Program.h"
@@ -16,6 +17,11 @@
 #include "backend/DrawBuffer.h"
 
 #include "model/Node.h"
+
+#include "asset/Sphere.h"
+#include "asset/Frustum.h"
+
+#include "component/Camera.h"
 
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
@@ -61,18 +67,56 @@ bool Batch::inFrustumZ(
     const glm::vec3 volumeCenter = glm::vec3(volume);
     const float volumeRadius = volume.a;
 
-    const glm::mat4 projectedModel = ctx.m_matrices.u_projected * entity->getModelMatrix();
+    const auto& modelMatrix = entity->getModelMatrix();
+    const glm::mat4 projectedModel = ctx.m_matrices.u_projected * modelMatrix;
 
-    const glm::vec4 centerPos = projectedModel * glm::vec4(volumeCenter, 1.0);
-    const glm::vec3 radiusPos = projectedModel * glm::vec4(volumeCenter + glm::vec3(volumeRadius, 0.f, 0.f), 1.0);
+    const auto viewPos = ctx.m_matrices.u_view * glm::vec4(entity->getWorldPosition());
+    const auto projPos = ctx.m_matrices.u_projected * glm::vec4(entity->getWorldPosition());
 
-    const float radius = glm::length(radiusPos - glm::vec3(centerPos));
 
-    const float w = centerPos.w * 1.0;
+    const glm::vec4 centerPos = projectedModel * glm::vec4(volumeCenter, 1.f);
+    const glm::vec4 radiusPosX = projectedModel * glm::vec4(volumeCenter + glm::vec3(volumeRadius, 0, 0), 1.f);
+    const glm::vec4 radiusPosY = projectedModel * glm::vec4(volumeCenter + glm::vec3(0, volumeRadius, 0), 1.f);
+    const glm::vec4 radiusPosZ = projectedModel * glm::vec4(volumeCenter + glm::vec3(0, 0, -volumeRadius), 1.f);
 
-    bool visible = -w <= centerPos.x + radius && centerPos.x - radius <= w &&
-        -w <= centerPos.y + radius && centerPos.y - radius <= w &&
-        -w <= centerPos.z + radius && centerPos.z - radius <= w;
+    //const float radius = glm::length(radiusPos - glm::vec3(centerPos));
+
+    const auto clipCenter = centerPos / centerPos.w;
+    auto clipRadiusX = radiusPosX / radiusPosX.w;
+    auto clipRadiusY = radiusPosY / radiusPosY.w;
+    auto clipRadiusZ = radiusPosZ / radiusPosZ.w;
+
+    const float radiusX = glm::length(glm::vec3(clipRadiusX));
+    const float radiusY = glm::length(glm::vec3(clipRadiusY));
+    const float radiusZ = glm::length(glm::vec3(clipRadiusZ));
+
+    const float w = 1.f;// centerPos.w * 1.f;
+
+    bool visibleX = -w <= clipCenter.x + radiusX && clipCenter.x - radiusX <= w;
+    bool visibleY =- w <= clipCenter.y + radiusY && clipCenter.y - radiusY <= w;
+    bool visibleZ = -w <= clipCenter.z + radiusZ && clipCenter.z - radiusZ <= w;
+
+    bool visible = visibleX && visibleY && visibleZ;
+
+    if (!visible) {
+        //KI_INFO_OUT(fmt::format(
+        //    "KO: worldPos={}, viewPos={}, volume={}, clipCenter={}, clipRadius=X{}, clipRadius=Y{}, clipRadius=Z{}, centerPos={}, radiusX={}, radiusY={}, radiusZ={}, x={}, y={}, z={}",
+        //    entity->getWorldPosition(), viewPos, volume, clipCenter, clipRadiusX, clipRadiusY, clipRadiusZ, centerPos, radiusX, radiusY, radiusZ, visibleX, visibleY, visibleZ));
+    }
+
+    {
+        const auto& frustum = ctx.m_camera->getFrustum();
+        Sphere sphere{ volume };
+
+        bool inFrustum = sphere.isOnFrustum(frustum, 0, modelMatrix);
+
+        visible = inFrustum;
+        if (!visible) {
+            KI_INFO_OUT(fmt::format(
+                "KO: frustum={}, volume={}, sphere={}",
+                frustum.str(), volume, sphere.str()));
+        }
+    }
 
     if (visible) {
         m_drawCount++;
@@ -80,6 +124,7 @@ bool Batch::inFrustumZ(
     else {
         m_skipCount++;
     }
+
     return visible;
 }
 

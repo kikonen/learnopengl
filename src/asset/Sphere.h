@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include "Volume.h"
 
@@ -9,20 +10,28 @@ struct Sphere final : public Volume
 {
     Sphere() noexcept = default;
     Sphere(const glm::vec3& center, float radius) noexcept;
+    Sphere(const glm::vec4& volume) noexcept;
 
     virtual ~Sphere() noexcept = default;
 
-    virtual std::unique_ptr<Volume> clone() const noexcept override final;
+    const std::string str() const noexcept;
 
-    virtual const glm::vec3& getCenter() const noexcept override final;
-    virtual float getRadius() const noexcept override final;
+    virtual std::unique_ptr<Volume> clone() const noexcept override;
 
-    bool isOnOrForwardPlane(const Plane& plan) const noexcept override final;
+    virtual const glm::vec3& getCenter() const noexcept override {
+        return m_center;
+    }
+
+    virtual float getRadius() const noexcept override {
+        return m_radius;
+    }
+
+    bool isOnOrForwardPlane(const Plane& plan) const noexcept override;
 
     bool isOnFrustum(
         const Frustum& camFrustum,
         const int modelMatrixLevel,
-        const glm::mat4& modelWorldMatrix) const noexcept override final;
+        const glm::mat4& modelWorldMatrix) const noexcept override;
 
 private:
     void updateWorldSphere(
@@ -34,6 +43,7 @@ private:
     float m_radius{ 0.f };
 
     mutable int m_modelMatrixLevel = -1;
-    mutable std::unique_ptr<Sphere> m_worldSphere;
+    mutable glm::vec3 m_worldCenter{ 0.f, 0.f, 0.f };
+    mutable float m_worldRadius{ 0.f };
 };
 

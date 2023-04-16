@@ -183,6 +183,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\asset\Frustum.cpp" />
+    <ClCompile Include="src\asset\Plane.cpp" />
     <ClCompile Include="src\event\Event.cpp" />
     <ClCompile Include="src\event\Dispatcher.cpp" />
     <ClCompile Include="src\engine\AssetsFile.cpp" />

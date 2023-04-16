@@ -229,6 +229,7 @@ void Camera::updateCamera() const noexcept
     m_dirty = false;
     m_dirtyView = true;
     m_dirtyProjected = true;
+    m_dirtyFrustum = true;
 }
 
 /* https://ogldev.org/www/tutorial13/tutorial13.html
@@ -247,3 +248,52 @@ void Camera::updateUVN()
     m[3][0] = 0.0f; m[3][1] = 0.0f; m[3][2] = 0.0f; m[3][3] = 1.0f;
 }
 */
+
+void Camera::updateFrustum() const noexcept
+{
+    // TODO KI https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
+    // https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/entity.h
+
+    // NOTE KI use 90 angle for culling; smaller does cut-off too early
+    // => 90 angle neither working correctly always for terrain tiles
+    // => TODO KI WHAT is failing
+    const float fovY = glm::radians(getFov());
+    //const float fovY = glm::radians(90.f);
+    const glm::vec3& pos = getWorldPosition();
+    const glm::vec3& front = getViewFront();
+    const glm::vec3& up = getViewUp();
+    const glm::vec3& right = getViewRight();
+
+    const float halfVSide = m_farPlane * tanf(fovY * .5f);
+    const float halfHSide = halfVSide * m_aspectRatio;
+    const glm::vec3 frontMultFar = m_farPlane * front;
+
+    // NOTE KI near and far plane don't have camee pos as "point in plane"
+    // NOTE KI other side HAVE camra pos as "point in plane"
+
+    m_frustum.nearFace = {
+        pos + m_nearPlane * front,
+        front };
+
+    m_frustum.farFace = {
+        pos + frontMultFar,
+        -front };
+
+    m_frustum.rightFace = {
+        pos,
+        glm::cross(up, frontMultFar + right * halfHSide) };
+
+    m_frustum.leftFace = {
+        pos,
+        glm::cross(frontMultFar - right * halfHSide, up) };
+
+    m_frustum.topFace = {
+        pos,
+        glm::cross(right, frontMultFar - up * halfVSide) };
+
+    m_frustum.bottomFace = {
+        pos,
+        glm::cross(frontMultFar + up * halfVSide, right) };
+
+    m_dirtyFrustum = false;
+}

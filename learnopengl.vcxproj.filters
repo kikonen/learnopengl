@@ -399,6 +399,12 @@
     <ClCompile Include="src\renderer\ShadowCascade.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\asset\Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asset\Frustum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
