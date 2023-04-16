@@ -53,6 +53,7 @@ namespace backend {
         m_cullingCompute = registry->m_programRegistry->getComputeProgram(
             CS_FRUSTUM_CULLING,
             {
+                { DEF_FRUSTUM_DEBUG, std::to_string(assets.frustumDebug) },
                 { DEF_CS_GROUP_X, std::to_string(m_computeGroups[0])},
                 { DEF_CS_GROUP_Y, std::to_string(m_computeGroups[1]) },
                 { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },

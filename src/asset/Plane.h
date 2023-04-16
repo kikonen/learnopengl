@@ -21,6 +21,11 @@ struct Plane {
 
     const std::string str() const noexcept;
 
+    inline const glm::vec4 getPlane() const noexcept
+    {
+        return { m_normal, m_distance };
+    }
+
     inline float getSignedDistanceToPlane(const glm::vec3& point) const noexcept
     {
         return glm::dot(m_normal, point) - m_distance;

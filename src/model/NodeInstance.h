@@ -84,7 +84,7 @@ struct NodeInstance {
         }
     }
 
-    inline const glm::vec4& getVolume() const noexcept
+    inline const glm::vec4 getVolume() const noexcept
     {
         return m_volume.getVolume();
     }

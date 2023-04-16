@@ -64,6 +64,36 @@ layout (binding = SSBO_DRAW_PARAMETERS, std430) readonly buffer DrawParametersSS
   DrawParameters u_params[];
 };
 
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
+
+precision mediump float;
+
+float getSignedDistanceToPlane(in vec4 plane, in vec3 p)
+{
+  return dot(plane.xyz, p) - plane.w;
+}
+
+bool isOnOrForwardPlane(in vec4 plane, in vec3 p, in float radius)
+{
+  return getSignedDistanceToPlane(plane, p) >= -radius;
+}
+
+bool isOnFrustum(in vec4 volume)
+{
+  const vec3 p = volume.xyz;
+  const float radius = volume.w;
+
+  return
+    isOnOrForwardPlane(u_frustum[0], p, radius) &&
+    isOnOrForwardPlane(u_frustum[1], p, radius) &&
+    isOnOrForwardPlane(u_frustum[2], p, radius) &&
+    isOnOrForwardPlane(u_frustum[3], p, radius) &&
+    isOnOrForwardPlane(u_frustum[4], p, radius) &&
+    isOnOrForwardPlane(u_frustum[5], p, radius);
+};
+
 void main(void) {
   // NOTE KI this is valid *ONLY* if local_y == local_z == 1
   const uint drawIndex = gl_GlobalInvocationID.x + CS_GROUP_X * (gl_GlobalInvocationID.y - 1);
@@ -76,31 +106,12 @@ void main(void) {
   const uint baseInstance = param.drawType == DRAW_TYPE_ELEMENTS ? cmd.baseInstance_or_pad : cmd.baseVertex_or_baseInstance;
 
   const Entity entity = u_entities[baseInstance];
-  #include var_entity_model_matrix.glsl
 
   const bool skip = cmd.instanceCount > 0;
   bool visible = (entity.flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT;
 
-  // https://www.lighthouse3d.com/tutorials/view-frustum-culling/clip-space-approach-extracting-the-planes/
   if (!skip && !visible) {
-    const vec3 volumeCenter = entity.volume.xyz;
-    const float volumeRadius = entity.volume.a;
-
-    const mat4 projectedModel = u_projectedMatrix * modelMatrix;
-
-    const vec4 pos = projectedModel *
-      vec4(volumeCenter, 1.0);
-
-    const vec4 radiusPos = projectedModel *
-      vec4(volumeCenter + vec3(volumeRadius, 0, 0), 1.0);
-
-    const float radius = length(vec3(radiusPos) - vec3(pos));
-
-    const float w = pos.w * 1.0;
-
-    visible = -w <= pos.x + radius && pos.x - radius <= w &&
-      -w <= pos.y + radius && pos.y - radius <= w &&
-      -w <= pos.z + radius && pos.z - radius <= w;
+    visible = isOnFrustum(entity.volume);
   }
 
 #ifdef FRUSTUM_DEBUG

@@ -48,7 +48,7 @@ void EntityRegistry::update(const UpdateContext& ctx)
     int from = -1;
     int skip = 0;
 
-    const int totalCount = m_entries.size();
+    const size_t totalCount = m_entries.size();
 
     bool refreshAll = false;
     {

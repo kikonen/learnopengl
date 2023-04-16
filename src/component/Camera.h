@@ -97,6 +97,10 @@ public:
 
     void updateCamera() const noexcept;
 
+    const std::array<glm::vec4, 6> getFrustumPlanes() {
+        return getFrustum().getPlanes();
+    }
+
     const Frustum& getFrustum() const noexcept
     {
         updateCamera();

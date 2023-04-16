@@ -245,7 +245,7 @@ void Batch::flush(
     // NOTE KI two cases
     // - empty batch
     // - "save back" entry without actual draw
-    int pendingCount = m_entityIndeces.size();
+    size_t pendingCount = m_entityIndeces.size();
 
     if (pendingCount == 0) {
         m_batches.clear();

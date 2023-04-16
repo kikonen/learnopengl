@@ -39,6 +39,8 @@ const std::string DEF_CLIP_COUNT{ "CLIP_COUNT" };
 const std::string DEF_EFFECT_SUN{ "EFFECT_SUN" };
 const std::string DEF_EFFECT_PLASMA{ "EFFECT_PLASMA" };
 
+const std::string DEF_FRUSTUM_DEBUG{ "FRUSTUM_DEBUG" };
+
 const std::string DEF_CS_GROUP_X{ "CS_GROUP_X" };
 const std::string DEF_CS_GROUP_Y{ "CS_GROUP_Y" };
 const std::string DEF_CS_GROUP_Z{ "CS_GROUP_Z" };

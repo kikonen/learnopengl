@@ -17,4 +17,7 @@ struct MatricesUBO {
 
     // NOTE KI shadow calculation only
     glm::mat4 u_shadowProjected[MAX_SHADOW_MAP_COUNT];
+
+    // top, bottom, left, right, near, far
+    glm::vec4 u_frustumPlanes[6];
 };

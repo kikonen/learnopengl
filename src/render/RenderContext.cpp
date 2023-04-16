@@ -136,6 +136,12 @@ RenderContext::RenderContext(
         m[3][2] = 0.f;
 
         m_matrices.u_viewSkybox = glm::inverse(m) * glm::inverse(m_matrices.u_projection);
+
+        const auto& planes = m_camera->getFrustumPlanes();
+        std::copy(
+            std::begin(planes),
+            std::end(planes),
+            std::begin(m_matrices.u_frustumPlanes));
     }
 
     m_data = {

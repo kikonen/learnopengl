@@ -79,7 +79,7 @@ public:
 
     int resolveMaterialIndex() const;
 
-    inline int getMaterialCount() const noexcept
+    inline size_t getMaterialCount() const noexcept
     {
         return m_materialVBO.m_materials.size();
     }
