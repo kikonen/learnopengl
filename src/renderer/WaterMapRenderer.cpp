@@ -133,26 +133,28 @@ bool WaterMapRenderer::render(
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
     const auto* parentCamera = parentCtx.m_camera;
-    const auto& cameraRot = parentCamera->getRotation();
-    const auto& cameraPos = parentCamera->getWorldPosition();
+    const auto& parentCameraFront = parentCamera->getViewFront();
+    const auto& parentCameraUp = parentCamera->getViewUp();
+    const auto& parentCameraPos = parentCamera->getWorldPosition();
+    const auto& parentCameraFov = parentCamera->getFov();
 
     const auto& planePos = closest->getWorldPosition();
-    const float sdist = cameraPos.y - planePos.y;
+    const float sdist = parentCameraPos.y - planePos.y;
 
     // https://prideout.net/clip-planes
     // reflection map
     {
-        glm::vec3 pos = cameraPos;
-        pos.y -= sdist * 2;
+        glm::vec3 cameraPos = parentCameraPos;
+        cameraPos.y -= sdist * 2;
 
-        glm::vec3 rot = cameraRot;
-        rot.x = -rot.x;
+        // NOTE KI rotate camera
+        glm::vec3 cameraFront = parentCameraFront;
+        cameraFront.y *= -1;
 
         auto& camera = m_cameras[0];
-        camera.setWorldPosition(pos);
-        camera.setAxis(parentCamera->getFront(), parentCamera->getUp());
-        camera.setFov(parentCamera->getFov());
-        camera.setRotation(rot);
+        camera.setWorldPosition(cameraPos);
+        camera.setAxis(cameraFront, parentCameraUp);
+        camera.setFov(parentCameraFov);
 
         RenderContext localCtx(
             "WATER_REFLECT", &parentCtx, &camera,
@@ -169,20 +171,17 @@ bool WaterMapRenderer::render(
         localCtx.updateClipPlanesUBO();
 
         drawNodes(localCtx, m_reflectionBuffer.get(), closest, true);
-
-        //m_reflectionBuffer->unbind(ctx);
     }
 
     // refraction map
     {
-        //glm::vec3 pos = cameraPos;
-        //glm::vec3 rot = cameraRot;
+        const auto& cameraPos = parentCameraPos;
+        const auto& cameraFront = parentCameraFront;
 
         auto& camera = m_cameras[1];
         camera.setWorldPosition(cameraPos);
-        camera.setAxis(parentCamera->getFront(), parentCamera->getUp());
-        camera.setFov(parentCamera->getFov());
-        camera.setRotation(cameraRot);
+        camera.setAxis(cameraFront, parentCameraUp);
+        camera.setFov(parentCameraFov);
 
         RenderContext localCtx(
             "WATER_REFRACT", &parentCtx, &camera,
@@ -190,7 +189,6 @@ bool WaterMapRenderer::render(
 
         localCtx.copyShadowFrom(parentCtx);
 
-        // TODO KI refraction plane clipping produces inproper clipping
         ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         clip.enabled = true;
         clip.plane = glm::vec4(0, (sdist > 0 ? -1 : 1), 0, (sdist > 0 ? 1 : -1) * planePos.y);
@@ -202,9 +200,9 @@ bool WaterMapRenderer::render(
         drawNodes(localCtx, m_refractionBuffer.get(), closest, false);
     }
 
-    parentCtx.updateClipPlanesUBO();
     parentCtx.updateMatricesUBO();
     parentCtx.updateDataUBO();
+    parentCtx.updateClipPlanesUBO();
 
     m_rendered = true;
 

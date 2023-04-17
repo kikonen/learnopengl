@@ -190,7 +190,7 @@ void Scene::prepare()
     if (m_assets.showRearView) {
         m_rearViewport = std::make_shared<Viewport>(
             "Rear",
-            glm::vec3(0.5, 1, 0),
+            glm::vec3(-1.f, -0.5f, 0),
             glm::vec3(0, 0, 0),
             glm::vec2(0.5f, 0.5f),
             true,
@@ -360,12 +360,11 @@ void Scene::drawRear(const RenderContext& parentCtx)
 
     auto* parentCamera = parentCtx.m_camera;
 
+    glm::vec3 cameraFront = parentCamera->getViewFront() * -1.f;
+
     Camera camera(parentCamera->getWorldPosition(), parentCamera->getFront(), parentCamera->getUp());
     camera.setFov(parentCamera->getFov());
-
-    glm::vec3 rot = parentCamera->getRotation();
-    rot.y += 180;
-    camera.setRotation(-rot);
+    camera.setAxis(cameraFront, parentCamera->getViewUp());
 
     RenderContext localCtx("BACK", &parentCtx, &camera, m_rearBuffer->m_spec.width, m_rearBuffer->m_spec.height);
 
@@ -521,18 +520,18 @@ void Scene::updateMainViewport(const RenderContext& ctx)
 
     // VMIRROR
     {
-        int mirrorW = w * 0.5;
-        int mirrorH = h * 0.5;
+        int rearW = w * 0.5;
+        int rearH = h * 0.5;
 
-        if (mirrorW < 1) mirrorW = 1;
-        if (mirrorH < 1) mirrorH = 1;
+        if (rearW < 1) rearW = 1;
+        if (rearH < 1) rearH = 1;
 
         if (!m_rearBuffer && m_assets.showRearView) {
             // NOTE KI alpha NOT needed
             auto buffer = new FrameBuffer(
                 "rear",
                 {
-                    mirrorW, mirrorH,
+                    rearW, rearH,
                     { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() }
                 });
 
