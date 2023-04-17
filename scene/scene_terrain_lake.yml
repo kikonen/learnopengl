@@ -2,7 +2,7 @@
 name: Terrain lake
 viewports:
 skybox:
-  program: skybox
+  program: g_skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -23,7 +23,7 @@ entities:
     pos: [-300, 200, -400]
     scale: 2.5
     model: light
-    program: texture
+    program: g_Tex
     render_flags:
       no_shadow: true
     force_material: true
@@ -31,9 +31,8 @@ entities:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
-      ambient: [0.4, 0.42, 0.42, 1.0]
       diffuse: [0.9, 0.9, 0.8, 1.0]
-      specular: [0.9, 0.9, 0.5, 1.0]
+      specular: [0.9, 0.9, 0.8, 1.0]
       enabled: true
     script_file: scripts/anim_lake_light
     enabled: true
@@ -42,7 +41,7 @@ entities:
     type: container
     instanced: true
     material: terrain_grass_2
-    program: terrain2
+    program: g_terrain2
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
     render_flags:
@@ -63,7 +62,7 @@ entities:
   - name: Water surface - SINGLE
     type: quad
     material: water_surface
-    program: water
+    program: g_water
     pos: [-50, 14.5, -20]
     rotation: [270.0, 0.0, 0.0]
     scale: 70
@@ -76,7 +75,7 @@ entities:
   - name: Sea
     type: quad
     material: water_surface
-    program: water
+    program: g_water
     pos: [0, 14.0, 0]
     rotation: [270.0, 0.0, 0.0]
     scale: 800
@@ -88,8 +87,8 @@ entities:
     script_file: scripts/anim_water
   - name: Sea floor
     model: quad
-    material: tiles
-    program: texture
+    material: sea_floor
+    program: g_tex
     pos: [0, -20, 0]
     rotation: [270.0, 0.0, 0.0]
     scale: 800
@@ -101,6 +100,7 @@ materials:
   - name: terrain_grass_2
     type: texture
     ns: 50
+    ka: [0.6, 0.6, 0.6, 1.0]
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: terrain_2/terrain_2_TX.jpg
     map_ks: terrain_2/terrain_2_SpecLM.png
@@ -109,16 +109,26 @@ materials:
   - name: water_surface
     type: texture
     ns: 150
-    ks: [0.2, 0.2, 0.5, 1.0]
-    kd: [0.0, 0.1, 0.8, 1.0]
+    ka: [0.25, 0.25, 0.65, 1.0]
+    ks: [0.55, 0.55, 0.95, 1.0]
+    kd: [0.55, 0.55, 0.95, 1.0]
     map_bump: water_surface_512_normal.png
     map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
       wrap: GL_REPEAT
-  - name: tiles
+  - name: sea_floor
     type: texture
+    ns: 225
+    ka: [0.5, 0.5, 0.5, 1.0]
+    kd: [0.8, 0.8, 0.8, 1.0]
+    ks: [0.5, 0.5, 0.5, 1.0]
+    ke: [0.0, 0.0, 0.0, 1.0]
+    ni: 1.45
+    d: 1.0
+    illum: 2
+    xxmap_kd: Marble White_VH_512.PNG
     map_kd: tiles_1024.png
-    tiling: 32
+    tiling: 8
     texture_spec:
       wrap: GL_REPEAT

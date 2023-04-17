@@ -35,9 +35,9 @@ entities:
       specular: [0.9, 0.9, 0.8, 1.0]
       enabled: true
     enabled: true
-  - name: Water bottom
+  - name: Pool floor
     model: quad
-    material: water_bottom
+    material: pool_floor
     program: g_tex
     pos: [0.0, 0.1, 0]
     rotation: [270.0, 0.0, 0.0]
@@ -45,9 +45,9 @@ entities:
     render_flags:
       no_shadow: true
     enabled: true
-  - name: Water surface
+  - name: Pool surface
     type: quad
-    material: water_surface
+    material: pool_surface
     program: g_water
     pos: [0, 3.1, 0]
     rotation: [270.0, 0.0, 0.0]
@@ -139,20 +139,21 @@ materials:
     ka: [0.2125, 0.1275, 0.0540, 1.0]
     kd: [0.7140, 0.4284, 0.1814, 1.0]
     reflection: 0.05
-  - name: water_surface
+  - name: pool_surface
     type: texture
     ns: 150
-    ks: [0.2, 0.2, 0.5, 1.0]
-    kd: [0.0, 0.1, 0.8, 1.0]
+    ka: [0.25, 0.25, 0.65, 1.0]
+    ks: [0.55, 0.55, 0.95, 1.0]
+    kd: [0.55, 0.55, 0.95, 1.0]
     map_bump: water_surface_512_normal.png
     map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
       wrap: GL_REPEAT
-  - name: water_bottom
+  - name: pool_floor
     type: texture
     ns: 225
-    ka: [0.9, 0.9, 0.9, 1.0]
+    ka: [0.5, 0.5, 0.5, 1.0]
     kd: [0.8, 0.8, 0.8, 1.0]
     ks: [0.5, 0.5, 0.5, 1.0]
     ke: [0.0, 0.0, 0.0, 1.0]

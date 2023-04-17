@@ -2,7 +2,7 @@
 name: Material balls
 viewports:
 skybox:
-  program: skybox
+  program: g_skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -27,7 +27,7 @@ entities:
   - name: Basic ball
     model: water_ball
     parent_id: 82896a38-e5cf-4274-b4be-e79ac8325b65
-    program: texture
+    program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.3
     material: default_ball
@@ -38,7 +38,7 @@ entities:
   - name: Gold ball
     parent_id: 82896a38-e5cf-4274-b4be-e79ac8325b65
     model: water_ball
-    program: texture
+    program: g_tex
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
     force_material: true
@@ -49,7 +49,7 @@ entities:
   - name: Silver ball
     parent_id: 82896a38-e5cf-4274-b4be-e79ac8325b65
     model: water_ball
-    program: texture
+    program: g_tex
     pos: [0.0, 0.0, 10.0]
     scale: 1.3
     force_material: true
@@ -60,7 +60,7 @@ entities:
   - name: Bronze ball
     parent_id: 82896a38-e5cf-4274-b4be-e79ac8325b65
     model: water_ball
-    program: texture
+    program: g_tex
     pos: [0.0, 0.0, 15.0]
     scale: 1.3
     force_material: true

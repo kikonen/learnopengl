@@ -7,6 +7,7 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
+#include uniform_data.glsl
 #include uniform_materials.glsl
 #include uniform_textures.glsl
 
@@ -21,6 +22,7 @@ in TCS_OUT {
 
   flat uint materialIndex;
 
+  flat uint shadowIndex;
   vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
@@ -39,6 +41,7 @@ out TES_OUT {
 
   flat uint materialIndex;
 
+  flat uint shadowIndex;
   vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX

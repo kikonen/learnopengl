@@ -2,7 +2,7 @@
 name: Player
 viewports:
 skybox:
-  program: skybox
+  program: g_skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -11,7 +11,7 @@ entities:
     model: texture_cube
     pos: [0, 0, 0.0]
     scale: 1.0
-    program: texture
+    program: g_tex
     render_flags:
       allow_normals: false
     camera:
@@ -23,7 +23,7 @@ entities:
     enabled: true
   - name: Four cubes
     model: texture_cube_3
-    program: texture
+    program: g_tex
     scale: 1
     enabled: true
     clones:

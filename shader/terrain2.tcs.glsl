@@ -23,6 +23,7 @@ in VS_OUT {
 
   flat uint materialIndex;
 
+  flat uint shadowIndex;
   vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
@@ -41,6 +42,7 @@ out TCS_OUT {
 
   flat uint materialIndex;
 
+  flat uint shadowIndex;
   vec4 shadowPos;
 
 #ifdef USE_NORMAL_TEX
@@ -74,6 +76,7 @@ void main()
   tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
   tcs_out[gl_InvocationID].viewPos = tcs_in[gl_InvocationID].viewPos;
   tcs_out[gl_InvocationID].materialIndex = tcs_in[gl_InvocationID].materialIndex;
+  tcs_out[gl_InvocationID].shadowIndex = tcs_in[gl_InvocationID].shadowIndex;
   tcs_out[gl_InvocationID].shadowPos = tcs_in[gl_InvocationID].shadowPos;
 
 #ifdef USE_NORMAL_TEX

@@ -2,7 +2,7 @@
 name: Pool
 viewports:
 skybox:
-  program: skybox
+  program: g_skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -24,7 +24,7 @@ entities:
     pos: [0, 45, 100]
     scale: 2.5
     model: light
-    program: texture
+    program: g_tex
     render_flags:
       no_shadow: true
     force_material: true
@@ -32,15 +32,14 @@ entities:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
-      ambient: [0.3, 0.32, 0.32, 1.0]
       diffuse: [0.9, 0.9, 0.7, 1.0]
-      specular: [0.9, 0.9, 0.5, 1.0]
+      specular: [0.9, 0.9, 0.7, 1.0]
       enabled: true
     enabled: true
-  - name: Water bottom
+  - name: Pool floor
     model: quad
-    material: water_bottom
-    program: texture
+    material: pool_floor
+    program: g_tex
     pos: [0.0, 3.2, -10.0]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
@@ -54,10 +53,10 @@ entities:
       y_step: 0
       z_step: 60
     enabled: true
-  - name: Water surface
+  - name: Pool surface
     type: quad
-    material: water_surface
-    program: water
+    material: pool_surface
+    program: g_water
     pos: [0, 9.0, -10]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
@@ -76,7 +75,7 @@ entities:
     script_file: scripts/anim_water
   - name: Pool side
     model: pool_brick
-    program: texture
+    program: g_tex
     material_modifier:
       tiling_x: 30
       tiling_y: 2
@@ -97,7 +96,7 @@ entities:
     type: container
     instanced: true
     material: terrain_grass_2
-    program: terrain2
+    program: g_terrain2
     pos: [-1024, 10, -1024]
     xxpos: [0, 0, 0]
     render_flags:
@@ -115,20 +114,20 @@ entities:
         horiz_scale: 2
       enabled: true
     enabled: true
-  - name: Water bottom - SINGLE
+  - name: Pool floor - SINGLE
     model: quad
-    material: water_bottom
-    program: texture
+    material: pool_floor
+    program: g_tex
     pos: [160.0, 3.2, 20.0]
     rotation: [270.0, 0.0, 0.0]
     scale: 60
     render_flags:
       no_shadow: true
     enabled: true
-  - name: Water surface - SINGLE
+  - name: Pool surface - SINGLE
     type: quad
-    material: water_surface
-    program: water
+    material: pool_surface
+    program: g_water
     pos: [160, 9.0, 20]
     rotation: [270.0, 0.0, 0.0]
     scale: 60
@@ -140,7 +139,7 @@ entities:
     xxscript_file: scripts/cycle_water
   - name: Pool side - SINGLE
     model: pool_brick
-    program: texture
+    program: g_tex
     material_modifier:
       tiling_x: 30
       tiling_y: 2
@@ -157,20 +156,21 @@ entities:
         scale: [60, 6, 0.3]
     enabled: true
 materials:
-  - name: water_surface
+  - name: pool_surface
     type: texture
     ns: 150
-    ks: [0.2, 0.2, 0.5, 1.0]
-    kd: [0.0, 0.1, 0.8, 1.0]
+    ka: [0.25, 0.25, 0.65, 1.0]
+    ks: [0.55, 0.55, 0.95, 1.0]
+    kd: [0.55, 0.55, 0.95, 1.0]
     map_bump: water_surface_512_normal.png
     map_dudv: waterDUDV_512.png
     tiling: 2
     texture_spec:
       wrap: GL_REPEAT
-  - name: water_bottom
+  - name: pool_floor
     type: texture
     ns: 225
-    ka: [1.0, 1.0, 1.0, 1.0]
+    ka: [0.5, 0.5, 0.5, 1.0]
     kd: [0.8, 0.8, 0.8, 1.0]
     ks: [0.5, 0.5, 0.5, 1.0]
     ke: [0.0, 0.0, 0.0, 1.0]
@@ -185,6 +185,7 @@ materials:
   - name: terrain_grass_2
     type: texture
     ns: 50
+    ka: [0.6, 0.6, 0.6, 1.0]
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: terrain_2/terrain_2_TX.jpg
     map_ks: terrain_2/terrain_2_SpecLM.png
