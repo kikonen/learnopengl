@@ -358,12 +358,12 @@ void Scene::drawRear(const RenderContext& parentCtx)
 {
     if (!m_assets.showRearView) return;
 
-    auto* mainCamera = parentCtx.m_camera;
+    auto* parentCamera = parentCtx.m_camera;
 
-    Camera camera(mainCamera->getWorldPosition(), mainCamera->getFront(), mainCamera->getUp());
-    camera.setFov(mainCamera->getFov());
+    Camera camera(parentCamera->getWorldPosition(), parentCamera->getFront(), parentCamera->getUp());
+    camera.setFov(parentCamera->getFov());
 
-    glm::vec3 rot = mainCamera->getRotation();
+    glm::vec3 rot = parentCamera->getRotation();
     rot.y += 180;
     camera.setRotation(-rot);
 

@@ -117,14 +117,14 @@ bool MirrorMapRenderer::render(
     // https://stackoverflow.com/questions/48613493/reflecting-scene-by-plane-mirror-in-opengl
     // reflection map
     {
-        const auto* mainCamera = parentCtx.m_camera;
+        const auto* parentCamera = parentCtx.m_camera;
 
         const auto& volume = closest->getVolume();
         const glm::vec3 volumeCenter = glm::vec3(volume);
         const float volumeRadius = volume.a;
 
         const auto& mirrorSize = volumeRadius;
-        const auto& eyePos = mainCamera->getWorldPosition();
+        const auto& eyePos = parentCamera->getWorldPosition();
 
         const auto& viewFront = closest->getViewFront();
 
@@ -132,7 +132,7 @@ bool MirrorMapRenderer::render(
         const auto dist = glm::length(eyeV);
         auto eyeN = glm::normalize(eyeV);
 
-        const auto dot = glm::dot(viewFront, mainCamera->getViewFront());
+        const auto dot = glm::dot(viewFront, parentCamera->getViewFront());
         if (dot > 0) {
             // NOTE KI backside; ignore
             // => should not happen; finding closest already does this!
@@ -148,7 +148,7 @@ bool MirrorMapRenderer::render(
 
         auto& camera = m_cameras[0];
         camera.setWorldPosition(mirrorEyePos);
-        camera.setAxis(reflectFront, mainCamera->getViewUp());
+        camera.setAxis(reflectFront, parentCamera->getViewUp());
         //camera.setFov(ctx.m_camera.getFov());
         //camera.setFov(fovAngle);
 

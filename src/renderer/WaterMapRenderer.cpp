@@ -132,9 +132,9 @@ bool WaterMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    const auto* mainCamera = parentCtx.m_camera;
-    const auto& cameraRot = mainCamera->getRotation();
-    const auto& cameraPos = mainCamera->getWorldPosition();
+    const auto* parentCamera = parentCtx.m_camera;
+    const auto& cameraRot = parentCamera->getRotation();
+    const auto& cameraPos = parentCamera->getWorldPosition();
 
     const auto& planePos = closest->getWorldPosition();
     const float sdist = cameraPos.y - planePos.y;
@@ -150,8 +150,8 @@ bool WaterMapRenderer::render(
 
         auto& camera = m_cameras[0];
         camera.setWorldPosition(pos);
-        camera.setAxis(mainCamera->getFront(), mainCamera->getUp());
-        camera.setFov(mainCamera->getFov());
+        camera.setAxis(parentCamera->getFront(), parentCamera->getUp());
+        camera.setFov(parentCamera->getFov());
         camera.setRotation(rot);
 
         RenderContext localCtx(
@@ -182,8 +182,8 @@ bool WaterMapRenderer::render(
 
         auto& camera = m_cameras[1];
         camera.setWorldPosition(cameraPos);
-        camera.setAxis(mainCamera->getFront(), mainCamera->getUp());
-        camera.setFov(mainCamera->getFov());
+        camera.setAxis(parentCamera->getFront(), parentCamera->getUp());
+        camera.setFov(parentCamera->getFov());
         camera.setRotation(cameraRot);
 
         RenderContext localCtx(
