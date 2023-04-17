@@ -81,9 +81,8 @@ entities:
     light:
       type: directional
       target_id: [auto, dir-light-target]
-      ambient: [0.9, 0.9, 0.9, 1.0]
       diffuse: [0.4, 0.4, 0.4, 1.0]
-      specular: [0.3, 0.3, 0.2, 1.0]
+      specular: [0.4, 0.4, 0.4, 1.0]
       enabled: true
     enabled: true
   - name: Moving point light origo
@@ -131,8 +130,7 @@ entities:
         material_modifier:
           kd: [0.8, 0.0, 0.0, 1.0]
         light:
-          ambient: [0.9, 0.0 0.0, 1.0]
-          diffuse: [0.5, 0.0, 0.0, 1.0]
+          diffuse: [0.6, 0.0, 0.0, 1.0]
           specular: [0.6, 0.0, 0.0, 1.0]
           enabled: false
         enabled: false
@@ -141,8 +139,7 @@ entities:
         material_modifier:
           kd: [0.0, 0.9, 0.0, 1.0]
         light:
-          ambient: [0.0, 0.9 0.0, 1.0]
-          diffuse: [0.0, 0.5, 0.0, 1.0]
+          diffuse: [0.0, 0.6, 0.0, 1.0]
           specular: [0.0, 0.6, 0.0, 1.0]
           enabled: false
         enabled: false
@@ -151,8 +148,7 @@ entities:
         material_modifier:
           kd: [0.0, 0.0, 0.9, 1.0]
         light:
-          ambient: [0.0, 0.0 0.9, 1.0]
-          diffuse: [0.0, 0.0, 0.5, 1.0]
+          diffuse: [0.0, 0.0, 0.6, 1.0]
           specular: [0.0, 0.0, 0.6, 1.0]
           enabled: false
         enabled: false
@@ -161,8 +157,7 @@ entities:
         material_modifier:
           kd: [0.9, 0.0, 0.9, 1.0]
         light:
-          ambient: [0.6, 0.0 0.9, 1.0]
-          diffuse: [0.5, 0.0, 0.5, 1.0]
+          diffuse: [0.6, 0.0, 0.6, 1.0]
           specular: [0.6, 0.0, 0.6, 1.0]
           enabled: false
         enabled: false
@@ -173,7 +168,6 @@ entities:
       cutoff_angle: 12.5
       outer_cutoff_angle: 25.0
       target_id: ROOT
-      ambient: [0.9, 0.9, 0.7, 1.0]
       diffuse: [0.6, 0.6, 0.6, 1.0]
       specular: [0.6, 0.6, 0.6, 1.0]
       enabled: true
@@ -198,7 +192,6 @@ entities:
       linear: 0.014
       quadratic: 0.0007
       target_id: ROOT
-      ambient: [0.9, 0.9, 0.7, 1.0]
       diffuse: [0.5, 0.5, 0.5, 1.0]
       specular: [0.5, 0.5, 0.5, 1.0]
       enabled: true
@@ -573,7 +566,7 @@ entities:
     priority: -5
     material: pool_surface
     program: g_water
-    pos: [0, 9.0, -10]
+    pos: [0, 9.5, -10]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
     render_flags:
@@ -594,7 +587,7 @@ entities:
     priority: -10
     material: pool_floor
     program: g_tex
-    pos: [0.0, 3.2, -10.0]
+    pos: [0.0, 3.7, -10.0]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
     render_flags:
@@ -673,7 +666,6 @@ entities:
       quadratic: 0.0007
       cutoff_angle: 12.5
       outer_cutoff_angle: 25.0
-      ambient: [0.0, 0.9, 0.0, 1.0]
       diffuse: [0.0, 0.6, 0.0, 1.0]
       specular: [0.0, 0.6, 0.0, 1.0]
       enabled: false
@@ -1014,8 +1006,9 @@ materials:
   - name: pool_surface
     type: texture
     ns: 150
-    ks: [0.2, 0.2, 0.5, 1.0]
-    kd: [0.0, 0.1, 0.8, 1.0]
+    ka: [0.25, 0.25, 0.65, 1.0]
+    ks: [0.55, 0.55, 0.95, 1.0]
+    kd: [0.55, 0.55, 0.95, 1.0]
     map_bump: water_surface_512_normal.png
     map_dudv: waterDUDV_512.png
     tiling: 2
