@@ -166,13 +166,11 @@ bool WaterMapRenderer::render(
 
         localCtx.updateMatricesUBO();
         localCtx.updateDataUBO();
+        localCtx.updateClipPlanesUBO();
 
         drawNodes(localCtx, m_reflectionBuffer.get(), closest, true);
 
         //m_reflectionBuffer->unbind(ctx);
-
-        parentCtx.updateClipPlanesUBO();
-        parentCtx.updateDataUBO();
     }
 
     // refraction map
@@ -199,12 +197,12 @@ bool WaterMapRenderer::render(
 
         localCtx.updateMatricesUBO();
         localCtx.updateDataUBO();
+        localCtx.updateClipPlanesUBO();
 
         drawNodes(localCtx, m_refractionBuffer.get(), closest, false);
-
-        parentCtx.updateClipPlanesUBO();
     }
 
+    parentCtx.updateClipPlanesUBO();
     parentCtx.updateMatricesUBO();
     parentCtx.updateDataUBO();
 
