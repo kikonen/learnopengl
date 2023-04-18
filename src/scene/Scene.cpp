@@ -366,6 +366,7 @@ void Scene::drawRear(const RenderContext& parentCtx)
         parentCamera->getWorldPosition(),
         parentCamera->getFront(),
         parentCamera->getUp());
+    camera.setViewport(parentCamera->getViewport());
     camera.setFov(parentCamera->getFov());
     camera.setAxis(cameraFront, parentCamera->getViewUp());
 

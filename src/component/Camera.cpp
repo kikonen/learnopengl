@@ -52,6 +52,14 @@ void Camera::update(const UpdateContext& ctx, Node& node) noexcept
     m_nodeLevel = node.getMatrixLevel();
 }
 
+void Camera::setViewport(
+    const std::array<float, 4>& viewport)
+{
+    m_viewport = viewport;
+    m_orthagonal = true;
+    m_dirty = true;
+}
+
 void Camera::setupProjection(
     float aspectRatio,
     float nearPlane,
@@ -67,11 +75,18 @@ void Camera::setupProjection(
     m_farPlane = farPlane;
     m_fovProjection = m_fov;
 
-    m_projectionMatrix = glm::perspective(
-        glm::radians(m_fovProjection),
-        m_aspectRatio,
-        m_nearPlane,
-        m_farPlane);
+    if (m_orthagonal) {
+        m_projectionMatrix = glm::ortho(
+            m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3],
+            m_nearPlane,
+            m_farPlane);
+    } else {
+        m_projectionMatrix = glm::perspective(
+            glm::radians(m_fovProjection),
+            m_aspectRatio,
+            m_nearPlane,
+            m_farPlane);
+    }
 
     m_projectionLevel++;
     m_dirtyProjected = true;
@@ -250,6 +265,51 @@ void Camera::updateUVN()
 */
 
 void Camera::updateFrustum() const noexcept
+{
+    if (m_orthagonal) {
+        updateOrthagonalFrustum();
+    }
+    else {
+        updatePerspectiveFrustum();
+    }
+}
+
+void Camera::updateOrthagonalFrustum() const noexcept
+{
+    const auto& viewport = getViewport();
+    const auto& pos = getWorldPosition();
+    const auto& front = getViewFront();
+    const auto& up = getViewUp();
+    const auto& right = getViewRight();
+
+    m_frustum.nearFace = {
+        pos + m_nearPlane * front,
+        front };
+
+    m_frustum.farFace = {
+        pos + m_farPlane * front,
+        -front };
+
+    m_frustum.rightFace = {
+        pos + viewport[1] * right,
+        -right };
+
+    m_frustum.leftFace = {
+        pos - viewport[0] * right,
+        right };
+
+    m_frustum.topFace = {
+        pos - viewport[2] * up,
+        -up };
+
+    m_frustum.bottomFace = {
+        pos + viewport[3] * up,
+        up };
+
+    m_dirtyFrustum = false;
+}
+
+void Camera::updatePerspectiveFrustum() const noexcept
 {
     // TODO KI https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
     // https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/entity.h

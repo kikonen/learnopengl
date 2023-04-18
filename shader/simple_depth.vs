@@ -35,7 +35,7 @@ void main()
 
   const vec4 worldPos = modelMatrix * vec4(a_pos, 1.0);
 
-  gl_Position = u_shadowProjectedMatrix[u_shadowIndex] * worldPos;
+  gl_Position = u_projectedMatrix * worldPos;
 
 #ifdef USE_ALPHA
   int materialIndex = entity.materialIndex;

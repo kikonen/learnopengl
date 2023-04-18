@@ -29,11 +29,25 @@ public:
 
     void update(const UpdateContext& ctx, Node& node) noexcept;
 
+    bool isOrthagonal() const noexcept {
+        return m_orthagonal;
+    }
+
+    const std::array<float, 4>&  getViewport() const noexcept {
+        return m_viewport;
+    }
+
+    void setViewport(
+        const std::array<float, 4>& viewport);
+
     inline void setDefault(bool value) { m_default = value; }
-    inline bool isDefault() const { return m_default; }
+    inline bool isDefault() const noexcept { return m_default; }
 
     inline void setEnabled(bool value) { m_enabled = value; }
-    inline bool isEnabled() const { return m_enabled; }
+    inline bool isEnabled() const noexcept { return m_enabled; }
+
+    float getNearPlane() const noexcept { return m_nearPlane; }
+    float getFarPlane() const noexcept { return m_farPlane; }
 
     // Setup projection
     // updates projection and projected matrices as needed
@@ -113,7 +127,14 @@ public:
 private:
     void updateFov(float fov) noexcept;
 
+    void updateOrthagonalFrustum() const noexcept;
+    void updatePerspectiveFrustum() const noexcept;
+
 private:
+    bool m_orthagonal{ false };
+    // minX, maxX, minY, maxY
+    std::array<float, 4> m_viewport;
+
     bool m_enabled = false;
     bool m_default = false;
 

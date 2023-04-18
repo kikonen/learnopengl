@@ -5,6 +5,8 @@
 
 #include "asset/Assets.h"
 
+#include "component/Camera.h"
+
 #include "ki/GL.h"
 
 
@@ -41,6 +43,9 @@ public:
     void render(
         const RenderContext& ctx);
 
+    float getNearPlane() const noexcept { return m_camera.getNearPlane(); }
+    float getFarPlane() const noexcept { return m_camera.getFarPlane(); }
+
 private:
     void drawNodes(
         const RenderContext& ctx);
@@ -51,12 +56,11 @@ public:
     const float m_shadowEnd;
     const int m_mapSize;
 
-    float m_nearPlane{ 0.f };
-    float m_farPlane{ 0.f };
-
 private:
     // NOTE KI std::unique_ptr triggered exhaustive error loop
     FrameBuffer* m_buffer{ nullptr };
+
+    Camera m_camera;
 
     //Program* m_shadowProgram{ nullptr };
     Program* m_solidShadowProgram{ nullptr };

@@ -123,9 +123,9 @@ void ShadowCascade::bind(const RenderContext& ctx)
         }
         center /= corners.size();
 
-        const auto shadowViewMatrix = glm::lookAt(
-            center - node->m_light->getWorldDirection(),
-            center,
+        m_camera.setPosition(center - node->m_light->getWorldDirection());
+        m_camera.setAxis(
+            node->m_light->getWorldDirection(),
             glm::vec3{ 0.0f, 1.0f, 0.0f });
 
         float minX = std::numeric_limits<float>::max();
@@ -136,7 +136,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
         float maxZ = std::numeric_limits<float>::min();
 
         for (int j = 0; j < corners.size(); j++) {
-            const auto p = shadowViewMatrix * corners[j];
+            const auto p = m_camera.getView() * corners[j];
 
             minX = std::min(minX, p.x);
             maxX = std::max(maxX, p.x);
@@ -165,38 +165,37 @@ void ShadowCascade::bind(const RenderContext& ctx)
             maxZ *= zMult;
         }
 
-        const glm::mat4 shadowProjectionMatrix = glm::ortho(
-            minX, maxX, minY, maxY,
-            minZ,
-            maxZ);
+        m_camera.setViewport({ minX, maxX, minY, maxY });
+        m_camera.setupProjection(1.f, minZ, maxZ);
 
-        m_nearPlane = minZ;
-        m_farPlane = maxZ;
-
-        ctx.m_matrices.u_shadowProjected[m_index] = shadowProjectionMatrix * shadowViewMatrix;
-        ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * ctx.m_matrices.u_shadowProjected[m_index];
+        ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * m_camera.getProjected();
         //ctx.m_matrices.u_shadow[m_index] = ctx.m_matrices.u_shadowProjected[m_index];
     }
 }
 
 void ShadowCascade::render(
-    const RenderContext& ctx)
+    const RenderContext& parentCtx)
 {
-    m_buffer->bind(ctx);
+    RenderContext localCtx("SHADOW",
+        &parentCtx,
+        &m_camera,
+        m_camera.getNearPlane(),
+        m_camera.getFarPlane(),
+        m_mapSize, m_mapSize);
 
-    // NOTE KI *NO* color in shadowmap
+    localCtx.copyShadowFrom(parentCtx);
+
+    localCtx.updateMatricesUBO();
+    localCtx.updateDataUBO();
+
+    localCtx.m_shadow = true;
+    localCtx.m_allowBlend = false;
+
+    m_buffer->bind(localCtx);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    auto oldShadow = ctx.m_shadow;
-    auto oldAllowBlend = ctx.m_allowBlend;
-
-    ctx.m_shadow = true;
-    ctx.m_allowBlend = false;
-    drawNodes(ctx);
-    ctx.m_shadow = oldShadow;
-    ctx.m_allowBlend = oldAllowBlend;
-
-    m_buffer->unbind(ctx);
+    drawNodes(localCtx);
+    m_buffer->unbind(localCtx);
 }
 
 void ShadowCascade::drawNodes(

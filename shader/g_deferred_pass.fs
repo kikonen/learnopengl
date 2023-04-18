@@ -36,11 +36,13 @@ precision mediump float;
 #include fn_calculate_fog.glsl
 #include fn_calculate_shadow_index.glsl
 
-const vec4 CASCADE_COLORS[3] =
-  vec4[3](
-          vec4(0.1, 0.0, 0.0, 0.0),
-          vec4(0.0, 0.1, 0.0, 0.0),
-          vec4(0.0, 0.0, 0.1, 0.0)
+const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT] =
+  vec4[MAX_SHADOW_MAP_COUNT](
+          vec4(0.2, 0.0, 0.0, 0.0),
+          vec4(0.0, 0.2, 0.0, 0.0),
+          vec4(0.0, 0.0, 0.2, 0.0),
+          vec4(0.2, 0.0, 0.2, 0.0),
+          vec4(0.2, 0.2, 0.0, 0.0)
           );
 
 void main()
@@ -76,7 +78,9 @@ void main()
   vec4 color = calculateLight(normal, toView, worldPos, shadowIndex, shadowPos, material);
   color = calculateFog(viewPos, material.fogRatio, color);
 
-//  color += CASCADE_COLORS[shadowIndex];
+  if (u_frustumVisual) {
+    color += CASCADE_COLORS[shadowIndex];
+  }
 
   o_fragColor = color;
 }

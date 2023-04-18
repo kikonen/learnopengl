@@ -152,16 +152,18 @@ RenderContext::RenderContext(
         m_camera->getViewUp(),
         0,
         m_camera->getViewRight(),
-        (float)m_clock.ts,
+        0,
         m_resolution,
-        0,
-        0,
+        assets.renderCubeMap,
+        assets.frustumVisual,
         assets.fogColor,
         assets.fogStart,
         assets.fogEnd,
         assets.fogRatio,
-        true,
-        };
+        (float)m_clock.ts,
+        // NOTE KI u_shadowPlanes not initialized
+        0,
+    };
 
     for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
         m_clipPlanes.clipping[i].enabled = false;
@@ -219,8 +221,8 @@ void RenderContext::copyShadowFrom(const RenderContext& b)
         std::end(b.m_matrices.u_shadow),
         std::begin(m_matrices.u_shadow));
 
-    std::copy(
-        std::begin(b.m_matrices.u_shadowProjected),
-        std::end(b.m_matrices.u_shadowProjected),
-        std::begin(m_matrices.u_shadowProjected));
+    //std::copy(
+    //    std::begin(b.m_matrices.u_shadowProjected),
+    //    std::end(b.m_matrices.u_shadowProjected),
+    //    std::begin(m_matrices.u_shadowProjected));
 }
