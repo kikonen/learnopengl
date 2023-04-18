@@ -9,10 +9,10 @@ layout(std140, binding = UBO_DATA) uniform Data {
   vec2 u_resolution;
 
   vec4 u_fogColor;
+
   float u_fogStart;
   float u_fogEnd;
   float u_fogRatio;
-
   bool u_cubeMapExist;
 
   int u_shadowCount;

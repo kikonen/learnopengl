@@ -99,6 +99,7 @@ public:
     bool frustumCPU;
     bool frustumGPU;
     bool frustumDebug;
+    bool frustumVisual;
 
     float cameraFov;
 

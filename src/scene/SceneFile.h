@@ -140,6 +140,9 @@ class SceneFile
 
         bool isDefault { false };
 
+        bool orthagonal{ false };
+        std::array<float, 4> viewport{ 0.f };
+
         float fov{ 45.f };
 
         glm::vec3 front{ 0.f, 0.f, -1.f };

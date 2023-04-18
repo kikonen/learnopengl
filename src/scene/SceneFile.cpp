@@ -810,6 +810,9 @@ std::unique_ptr<Camera> SceneFile::createCamera(
     // NOTE only node cameras in scenefile for now
     auto camera = std::make_unique<Camera>();
 
+    if (data.orthagonal) {
+        camera->setViewport(data.viewport);
+    }
     camera->setPosition(data.pos);
     camera->setAxis(data.front, data.up);
     camera->setRotation(data.rotation);
@@ -1267,6 +1270,13 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
         }
         else if (k == "rotation") {
             data.rotation = readVec3(v);
+        }
+        else if (k == "orthagonal") {
+            data.orthagonal = readBool(v);
+        }
+        else if (k == "viewport") {
+            const auto& vec = readVec4(v);
+            data.viewport = { vec[0], vec[1], vec[2], vec[3] };
         }
         else {
             reportUnknown("controller_entry", k, v);

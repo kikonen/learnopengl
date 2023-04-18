@@ -362,7 +362,10 @@ void Scene::drawRear(const RenderContext& parentCtx)
 
     glm::vec3 cameraFront = parentCamera->getViewFront() * -1.f;
 
-    Camera camera(parentCamera->getWorldPosition(), parentCamera->getFront(), parentCamera->getUp());
+    Camera camera(
+        parentCamera->getWorldPosition(),
+        parentCamera->getFront(),
+        parentCamera->getUp());
     camera.setFov(parentCamera->getFov());
     camera.setAxis(cameraFront, parentCamera->getViewUp());
 

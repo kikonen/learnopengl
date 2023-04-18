@@ -82,6 +82,9 @@ void ShadowMapRenderer::prepare(
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
 {
+    // NOTE KI no shadows if no light
+    if (!ctx.m_useLight) return;
+
     auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
     if (!node) return;
 
@@ -124,6 +127,9 @@ bool ShadowMapRenderer::render(
         m_activeCascade = (m_activeCascade + 1) % m_cascades.size();
         m_rotateElapsedSecs = 0.f;
     }
+
+    ctx.updateMatricesUBO();
+    ctx.updateDataUBO();
 
     m_rendered = true;
     return true;

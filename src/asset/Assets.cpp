@@ -83,6 +83,7 @@ Assets::Assets()
     frustumCPU = false;
     frustumCPU = true;
     frustumDebug = false;
+    frustumVisual = false;
 
     cameraFov = 45.f;
 

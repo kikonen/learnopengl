@@ -210,6 +210,9 @@ void AssetsFile::loadAssets(
         else if (k == "frustum_debug") {
             data.frustumDebug = readBool(v);
         }
+        else if (k == "frustum_visual") {
+            data.frustumVisual = readBool(v);
+        }
         else if (k == "camera_fov") {
             data.cameraFov = readFloat(v);
         }
