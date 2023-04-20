@@ -78,6 +78,8 @@ void ShadowCascade::prepare(
     m_solidShadowProgram->prepare(assets);
     m_alphaShadowProgram->prepare(assets);
 
+    m_cascadeCount = assets.shadowPlanes.size() - 1;
+
     m_buffer = new FrameBuffer(
         "shadow_map",
         {
@@ -147,7 +149,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
         }
 
         // Tune this parameter according to the scene
-        const float zMult = 6.f / (m_index + 1);
+        const float zMult = 10.f / (m_index + 1);
         if (minZ < 0)
         {
             minZ *= zMult;

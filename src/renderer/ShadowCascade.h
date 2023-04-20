@@ -60,6 +60,8 @@ private:
     // NOTE KI std::unique_ptr triggered exhaustive error loop
     FrameBuffer* m_buffer{ nullptr };
 
+    int m_cascadeCount{ 0 };
+
     Camera m_camera;
 
     //Program* m_shadowProgram{ nullptr };

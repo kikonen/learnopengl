@@ -145,7 +145,9 @@ public:
     float ns = 0.0f;
 
     // The ambient color of the material is declared using Ka.
-    glm::vec4 ka { 0.f, 0.f, 0.f, 1.f };
+    // HACK KI a bit ambient even if forgotten
+    // => otherwise total blackness shall happen in few cases
+    glm::vec4 ka { 0.01f, 0.01f, 0.01f, 1.f };
 
     // Similarly, the diffuse color is declared using Kd.
     glm::vec4 kd { 0.f, 0.f, 0.f, 1.f };

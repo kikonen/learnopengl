@@ -10,7 +10,7 @@ local function animation()
       -- NOTE KI *WAIT* for resume to complete
       wid = cmd:wait(cid, 5)
 
-      cid = cmd:rotate(id, { time=60 * 10, relative=true }, { 0.0, 360.0, 0.0 })
+      cid = cmd:rotate(id, { time=60 * 20, relative=true }, { 0.0, 360.0, 0.0 })
 
       wid = cmd:wait(cid, 0)
       cid = cmd:resume(id, { after=wid }, "callback")

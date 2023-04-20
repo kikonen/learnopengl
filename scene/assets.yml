@@ -10,9 +10,9 @@ assets:
   gbuffer_scale: 0.5
   buffer_scale: 1.0
 
-  camera_move_mormal: [3.5, 5.5, 5.5]
-  camera_move_run: [6, 8, 8]
-  camera_rotate_normal: [14, 14, 14]
+  camera_move_mormal: [5.5, 7.5, 7.5]
+  camera_move_run: [10, 14, 14]
+  camera_rotate_normal: [16, 16, 16]
   camera_rotate_run: [26, 26, 26]
   camera_zoom_normal: [20, 20, 20]
   camera_zoom_run: [25, 25, 25]
@@ -93,9 +93,9 @@ assets:
   fog_end: 3000.0
   fog_ratio: 1.0
 
-  shadow_planes: [0.1, 20, 50, 200]
+  shadow_planes: [0.1, 20, 60, 400, 1000]
   xxshadow_planes: [0.1, 20, 100]
-  shadow_map_sizes: [2048, 1024, 1024, 1024]
+  shadow_map_sizes: [2048, 2048, 2048, 1024]
   shadow_render_frame_start: 0
   shadow_render_frame_step: 1
 

@@ -58,17 +58,17 @@ entities:
       x_step: 50
       z_step: 50
     enabled: true
-  - name: Directional light origo
+  - name: Sun light origo
     id: [auto, light-dir-origo]
     parent_id: [auto, planet-origo]
     type: origo
-    pos: [0.0, 0.0, 0.0]
+    pos: [0.0, 400.0, 0.0]
     enabled: true
-    script_file: scripts/anim_directional_light
-  - name: Directional light
+    script_file: scripts/anim_sun_light
+  - name: Sun light
     parent_id: [auto, light-dir-origo]
-    pos: [0, 0, -100]
-    scale: 1.5
+    pos: [0, 0, 600]
+    scale: 20
     model: light
     program: ball_effect
     program_definitions:
@@ -1055,8 +1055,9 @@ materials:
   - name: sea_surface
     type: texture
     ns: 150
-    ks: [0.2, 0.2, 0.5, 1.0]
-    kd: [0.0, 0.1, 0.8, 1.0]
+    ka: [0.25, 0.25, 0.65, 1.0]
+    ks: [0.55, 0.55, 0.95, 1.0]
+    kd: [0.55, 0.55, 0.95, 1.0]
     map_bump: water_surface_512_normal.png
     map_dudv: waterDUDV_512.png
     tiling: 2
