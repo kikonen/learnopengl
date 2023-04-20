@@ -40,13 +40,22 @@ const std::string Sphere::str() const noexcept
 bool Sphere::isOnFrustum(
     const Frustum& frustum) const noexcept
 {
-    //// Check Firstly the result that have the most chance to faillure to avoid to call all functions.
-    //const bool left = worldSphere.isOnOrForwardPlane(frustum.leftFace);
-    //const bool right = worldSphere.isOnOrForwardPlane(frustum.rightFace);
-    //const bool far = worldSphere.isOnOrForwardPlane(frustum.farFace);
-    //const bool near = worldSphere.isOnOrForwardPlane(frustum.nearFace);
-    //const bool top = worldSphere.isOnOrForwardPlane(frustum.topFace);
-    //const bool bottom = worldSphere.isOnOrForwardPlane(frustum.bottomFace);
+    //float dist[] = {
+    //    frustum.topFace.getSignedDistanceToPlane(m_worldCenter),
+    //    frustum.bottomFace.getSignedDistanceToPlane(m_worldCenter),
+    //    frustum.leftFace.getSignedDistanceToPlane(m_worldCenter),
+    //    frustum.rightFace.getSignedDistanceToPlane(m_worldCenter),
+    //    frustum.nearFace.getSignedDistanceToPlane(m_worldCenter),
+    //    frustum.farFace.getSignedDistanceToPlane(m_worldCenter),
+    //};
+    //bool match[] = {
+    //    isOnOrForwardPlane(frustum.topFace),
+    //    isOnOrForwardPlane(frustum.bottomFace),
+    //    isOnOrForwardPlane(frustum.leftFace),
+    //    isOnOrForwardPlane(frustum.rightFace),
+    //    isOnOrForwardPlane(frustum.nearFace),
+    //    isOnOrForwardPlane(frustum.farFace),
+    //};
 
     // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
     return isOnOrForwardPlane(frustum.nearFace) &&
