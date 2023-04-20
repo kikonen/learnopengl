@@ -283,27 +283,27 @@ void Camera::updateOrthagonalFrustum() const noexcept
     const auto& right = getViewRight();
 
     m_frustum.nearFace = {
-        m_nearPlane * front,
+        pos + m_nearPlane * front,
         front };
 
     m_frustum.farFace = {
-        m_farPlane * front,
+        pos + m_farPlane * front,
         -front };
 
     m_frustum.leftFace = {
-        viewport[0] * right,
+        pos + viewport[0] * right,
         right };
 
     m_frustum.rightFace = {
-        viewport[1] * right,
+        pos + viewport[1] * right,
         -right };
 
     m_frustum.bottomFace = {
-        viewport[2] * up,
+        pos + viewport[2] * up,
         up };
 
     m_frustum.topFace = {
-        viewport[3] * up,
+        pos + viewport[3] * up,
         -up };
 
     m_dirtyFrustum = false;
