@@ -7,9 +7,6 @@ vec4 calculatePointLight(
 {
   const vec3 toLight = normalize(light.worldPos - worldPos);
 
-  // ambient
-  vec4 ambient = light.ambient * material.ambient * material.diffuse;
-
   // diffuse
   float diff = max(dot(toLight, normal), 0.0);
   vec4 diffuse = light.diffuse * (diff * material.diffuse);
@@ -23,12 +20,8 @@ vec4 calculatePointLight(
   float distance = length(light.worldPos - worldPos);
   float attenuation = 1.0 / (light.constant + light.linear * distance +
                              light.quadratic * (distance * distance));
-  ambient  *= attenuation;
   diffuse  *= attenuation;
   specular *= attenuation;
 
-  vec4 lighting = ambient + diffuse + specular;
-  lighting.a = material.diffuse.a;
-
-  return lighting;
+  return diffuse + specular;
 }

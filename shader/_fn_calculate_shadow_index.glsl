@@ -6,7 +6,7 @@ uint calculateShadowIndex(
   const float depthValue = abs(viewPos.z);
 
   for (int i = 0; i < u_shadowCount; i++) {
-    if (depthValue < u_shadowPlanes[i + 1].z) {
+    if (depthValue <= u_shadowPlanes[i + 1].z) {
       shadowIndex = i;
       break;
     }

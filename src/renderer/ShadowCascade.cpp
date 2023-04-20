@@ -170,6 +170,13 @@ void ShadowCascade::bind(const RenderContext& ctx)
 
         ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * m_camera.getProjected();
         //ctx.m_matrices.u_shadow[m_index] = ctx.m_matrices.u_shadowProjected[m_index];
+
+        //KI_INFO_OUT(fmt::format(
+        //    "pos={}, viewport=({}, {}, {}, {}), frustum={}",
+        //    m_camera.getWorldPosition(),
+        //    minX, maxX, minY, maxY,
+        //    m_camera.getFrustum().str()));
+
     }
 }
 

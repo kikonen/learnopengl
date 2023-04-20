@@ -10,8 +10,6 @@ vec4 calculateSpotLight(
   float theta = dot(toLight, normalize(-light.worldDir));
   bool shade = theta > light.cutoff;
 
-  vec4 ambient = light.ambient * material.ambient * material.diffuse;
-
   vec4 diffuse;
   vec4 specular;
   if (shade) {
@@ -37,12 +35,8 @@ vec4 calculateSpotLight(
   float distance = length(light.worldPos - worldPos);
   float attenuation = 1.0 / (light.constant + light.linear * distance +
                              light.quadratic * (distance * distance));
-  ambient  *= attenuation;
   diffuse  *= attenuation;
   specular *= attenuation;
 
-  vec4 lighting = ambient + diffuse + specular;
-  lighting.a = material.diffuse.a;
-
-  return lighting;
+  return diffuse + specular;
 }

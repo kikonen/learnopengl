@@ -6,8 +6,6 @@ vec4 calculateLight(
   in vec4 shadowPos,
   in Material material)
 {
-  const vec4 emission = material.emission;
-
   // https://community.khronos.org/t/default-value-of-uninitialized-local-variable-and-uniforms/74701/2
   // TODO KI if dir light not defined need to have some ambient light
   vec4 dirShaded = material.diffuse;
@@ -36,7 +34,9 @@ vec4 calculateLight(
 
   vec4 shaded;
   if (lightCount > 0) {
-    shaded = dirShaded + pointShaded + spotShaded + emission;
+    shaded = (material.ambient * material.diffuse) +
+      dirShaded + pointShaded + spotShaded +
+      material.emission;
   } else {
     shaded = material.diffuse;// + material.emission;
   }

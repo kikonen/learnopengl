@@ -37,6 +37,7 @@ public:
         return m_viewport;
     }
 
+    // left, right, bottom, top
     void setViewport(
         const std::array<float, 4>& viewport);
 
@@ -132,7 +133,7 @@ private:
 
 private:
     bool m_orthagonal{ false };
-    // minX, maxX, minY, maxY
+    // left, right, bottom, top
     std::array<float, 4> m_viewport;
 
     bool m_enabled = false;

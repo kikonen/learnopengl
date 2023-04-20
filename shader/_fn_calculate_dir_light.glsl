@@ -51,6 +51,38 @@ float calcShadow2(
   return textureProj(u_shadowMap[shadowIndex], shadowPos, bias);
 }
 
+float calcShadow2_2(
+  in uint shadowIndex,
+  in vec4 shadowPos,
+  in vec3 normal,
+  in vec3 toLight)
+{
+  // NOtE KI textureProj == automatic p.xyz / p.w
+
+  if (shadowPos.z > 1.0) return 0.0;
+
+  const float shadowDepth = shadowPos.z;
+
+  float bias = max(0.03 * (1.0 - dot(normal, toLight)), 0.005);
+
+  const vec2 texelSize = 1.0 / vec2(textureSize(u_shadowMap[shadowIndex], 0));
+
+  float shadow = 0.0;
+
+  for (int x = -1; x < 2; x++) {
+    for (int y = -1; y < 2; y++) {
+      vec4 pos = shadowPos + vec4(
+                                  x * texelSize.x,
+                                  y * texelSize.y,
+                                  0,
+                                  0.0);
+      float pcf = textureProj(u_shadowMap[shadowIndex], pos, bias);
+      shadow += shadowDepth - bias > pcf ? 0.0 : 1.0;
+    }
+  }
+  return shadow / 9.0;
+}
+
 /*
 float calcShadow3(
   in uint shadowIndex,
@@ -140,9 +172,6 @@ vec4 calculateDirLight(
 {
   const vec3 toLight = normalize(-light.worldDir);
 
-  // ambient
-  const vec4 ambient = light.ambient * material.ambient * material.diffuse;
-
   // diffuse
   float diff = max(dot(normal, toLight), 0.0);
   vec4 diffuse = diff * light.diffuse * material.diffuse;
@@ -156,11 +185,7 @@ vec4 calculateDirLight(
   }
 
   // calculate shadow
-  float shadow = calcShadow(shadowIndex, shadowPos, normal, toLight);
-  // if (shadow != 0.0) {
-  //   shadow = 1;
-  // }
-  vec4 lighting = ambient + shadow * (diffuse + specular);
+  float shadow = calcShadow2_2(shadowIndex, shadowPos, normal, toLight);
 
-  return lighting;
+  return shadow * (diffuse + specular);
 }
