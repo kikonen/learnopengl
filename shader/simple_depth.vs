@@ -9,6 +9,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
+#include uniform_data.glsl
 #ifdef USE_ALPHA
 #include uniform_material_indeces.glsl
 #endif
@@ -33,7 +34,22 @@ void main()
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
 
-  const vec4 worldPos = modelMatrix * vec4(a_pos, 1.0);
+  vec4 worldPos;
+
+  if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
+    // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
+    // - "ogl" approach
+    vec3 entityPos = vec3(modelMatrix[3]);
+    vec3 entityScale = entity.worldScale;
+
+    worldPos = vec4(entityPos
+                    + u_viewRight * a_pos.x * entityScale.x
+                    + u_viewUp * a_pos.y * entityScale.y,
+                    1.0);
+  } else {
+    worldPos = modelMatrix * vec4(a_pos, 1.0);
+  }
+
 
   gl_Position = u_projectedMatrix * worldPos;
 

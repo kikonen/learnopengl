@@ -29,7 +29,8 @@ entities:
       z_step: -10
   - name: Directional light
     type: origo
-    pos: [0, 25, 25]
+    xxpos: [0, 25, 25]
+    pos: [-25, 25, 0]
     scale: 2.5
     model: light
     program: g_light
@@ -42,6 +43,28 @@ entities:
       type: directional
       diffuse: [0.5, 0.5, 0.5, 1.0]
       specular: [0.5, 0.5, 0.5, 1.0]
+      enabled: true
+    enabled: true
+  - name: Linden tree forest
+    type: billboard
+    priority: 1
+    program: g_tex
+    instanced: true
+    pos: [20, 0.0, 0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      static_physics: true
+      enforce_bounds: true
+    scale: [7, 10, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 20
+        z_step: -20
       enabled: true
     enabled: true
   - name: Giant wooden box
@@ -71,3 +94,9 @@ materials:
     tiling: 60
     texture_spec:
       wrap: GL_REPEAT
+  - name: linden_tree
+    type: sprite
+    ns: 100
+    ks: [0.8, 0.8, 0.8, 1.0]
+    ka: [0.7, 0.7, 0.7, 1.0]
+    map_kd: linden_tree_512.png
