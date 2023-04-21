@@ -133,7 +133,7 @@ void Batch::addInstanced(
         }
 
         if (actualCount > 0) {
-            int endIndex = actualIndex + actualCount;
+            int endIndex = actualIndex + actualCount - 1;
             while (!inFrustum(ctx, endIndex) && actualCount > 0) {
                 endIndex--;
                 actualCount--;
