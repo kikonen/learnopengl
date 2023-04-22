@@ -35,15 +35,15 @@ namespace {
     constexpr int ENTITY_COUNT = 100000;
     constexpr int BATCH_RANGE_COUNT = 8;
 
-    int idBase = 0;
+    //int idBase = 0;
 
-    std::mutex type_id_lock{};
+    //std::mutex type_id_lock{};
 
-    int nextID()
-    {
-        std::lock_guard<std::mutex> lock(type_id_lock);
-        return ++idBase;
-    }
+    //int nextID()
+    //{
+    //    std::lock_guard<std::mutex> lock(type_id_lock);
+    //    return ++idBase;
+    //}
 }
 
 Batch::Batch()
@@ -52,11 +52,8 @@ Batch::Batch()
 
 bool Batch::inFrustum(
     const RenderContext& ctx,
-    const int entityIndex)
+    const int entityIndex) const noexcept
 {
-    if (!m_frustumCPU) return true;
-    if (entityIndex == -1) return false;
-
     const auto* entity = m_entityRegistry->getEntity(entityIndex);
 
     if ((entity->u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
@@ -65,15 +62,9 @@ bool Batch::inFrustum(
     bool visible;
     {
         const auto& frustum = ctx.m_camera->getFrustum();
-        Sphere volume{ entity->u_volume };
+        const Sphere volume{ entity->u_volume };
 
         visible = volume.isOnFrustum(frustum);
-
-        //if (!visible) {
-        //    KI_INFO_OUT(fmt::format(
-        //        "KO: frustum={}, volume={}",
-        //        frustum.str(), volume.str()));
-        //}
     }
 
     if (visible) {
@@ -88,9 +79,10 @@ bool Batch::inFrustum(
 
 void Batch::add(
     const RenderContext& ctx,
-    const int entityIndex)
+    const int entityIndex) noexcept
 {
-    if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
+    //if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
+    if (entityIndex < 0) return;
 
     if (m_frustumCPU && !inFrustum(ctx, entityIndex))
         return;
@@ -103,7 +95,7 @@ void Batch::add(
 
 void Batch::addAll(
     const RenderContext& ctx,
-    const std::vector<int> entityIndeces)
+    const std::vector<int> entityIndeces) noexcept
 {
     for (const auto& entityIndex : entityIndeces) {
         add(ctx, entityIndex);
@@ -114,7 +106,7 @@ void Batch::addInstanced(
     const RenderContext& ctx,
     int instancedEntityIndex,
     const int firstEntityIndex,
-    const int count)
+    const int count) noexcept
 {
     if (firstEntityIndex < 0 || count <= 0) return;
 
@@ -194,7 +186,7 @@ void Batch::prepare(
 void Batch::addCommand(
     const RenderContext& ctx,
     MeshType* type,
-    Program* program)
+    Program* program) noexcept
 {
     auto& cmd = m_batches.emplace_back();
 
@@ -211,9 +203,7 @@ void Batch::draw(
 {
     const auto type = node.m_type;
 
-    if (type->m_flags.invisible) return;
-    if (type->m_flags.noDisplay) return;
-    //if (!type->getMesh()) return;
+    if (type->m_flags.invisible || type->m_flags.noDisplay) return;
 
     {
         const bool allowBlend = ctx.m_allowBlend;

@@ -37,17 +37,17 @@ public:
 
     void add(
         const RenderContext& ctx,
-        const int entityIndex);
+        const int entityIndex) noexcept;
 
     void addAll(
         const RenderContext& ctx,
-        const std::vector<int> entityIndeces);
+        const std::vector<int> entityIndeces) noexcept;
 
     void addInstanced(
         const RenderContext& ctx,
         int instancedEntityIndex,
         int firstEntityIndex,
-        int count);
+        int count) noexcept;
 
     void bind() noexcept;
 
@@ -72,11 +72,11 @@ private:
     void addCommand(
         const RenderContext& ctx,
         MeshType* type,
-        Program* program);
+        Program* program) noexcept;
 
     bool inFrustum(
         const RenderContext& ctx,
-        const int entityIndex);
+        const int entityIndex) const noexcept;
 
 private:
     bool m_prepared = false;
@@ -92,6 +92,6 @@ private:
 
     std::unique_ptr<backend::DrawBuffer> m_draw;
 
-    unsigned long m_drawCount = 0;
-    unsigned long m_skipCount = 0;
+    mutable unsigned long m_drawCount = 0;
+    mutable unsigned long m_skipCount = 0;
 };
