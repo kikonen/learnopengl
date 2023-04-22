@@ -11,7 +11,6 @@ constexpr unsigned int MAX_LIGHT_COUNT = 128;
 struct DirLightUBO {
     glm::vec3 dir;
     int pad2;
-    glm::vec4 ambient;
     glm::vec4 diffuse;
     glm::vec4 specular;
 };
@@ -21,7 +20,6 @@ struct PointLightUBO {
     glm::vec3 pos;
     int pad1;
 
-    glm::vec4 ambient;
     glm::vec4 diffuse;
     glm::vec4 specular;
 
@@ -37,7 +35,6 @@ struct SpotLightUBO {
     int pad1;
     glm::vec3 dir;
     int pad2;
-    glm::vec4 ambient;
     glm::vec4 diffuse;
     glm::vec4 specular;
 

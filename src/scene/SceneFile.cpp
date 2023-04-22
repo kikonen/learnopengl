@@ -842,7 +842,6 @@ std::unique_ptr<Light> SceneFile::createLight(
     light->cutoffAngle = data.cutoffAngle;
     light->outerCutoffAngle = data.outerCutoffAngle;
 
-    light->ambient = data.ambient;
     light->diffuse = data.diffuse;
     light->specular = data.specular;
 
@@ -1334,9 +1333,6 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
         }
         else if (k == "outer_cutoff_angle") {
             data.outerCutoffAngle = readFloat(v);
-        }
-        else if (k == "ambient") {
-            data.ambient = readRGBA(v);
         }
         else if (k == "diffuse") {
             data.diffuse = readRGBA(v);

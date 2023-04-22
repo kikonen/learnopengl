@@ -79,9 +79,8 @@ public:
 
     float radius = 1.f;
 
-    glm::vec4 ambient{ 1.f, 1.f, 1.f, 1.f };
     glm::vec4 diffuse{ 0.7f, 0.7f, 0.7f, 1.f };
-    glm::vec4 specular{ 0.6f, 0.6f, 0.6f, 1.f };
+    glm::vec4 specular{ 0.7f, 0.7f, 0.7f, 1.f };
 
 private:
     // dir = FROM pos to TARGET
