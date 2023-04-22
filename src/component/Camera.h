@@ -65,14 +65,31 @@ public:
     inline const int getProjectedLevel() const noexcept { return m_projectedLevel; }
     inline const int getViewLevel() const noexcept { return m_viewLevel; }
 
-    inline const glm::vec3& getWorldPosition() const noexcept { return m_worldPosition;  }
+    inline const glm::vec3& getWorldPosition() const noexcept {
+        if (m_dirty) updateCamera();
+        return m_worldPosition;
+    }
 
     // NOTE KI for standalone camera
     void setWorldPosition(const glm::vec3& pos) noexcept;
 
-    const glm::vec3& getViewFront() const noexcept;
-    const glm::vec3& getViewRight() const noexcept;
-    const glm::vec3& getViewUp() const noexcept;
+    const glm::vec3& getViewFront() const noexcept
+    {
+        if (m_dirty) updateCamera();
+        return m_viewFront;
+    }
+
+    const glm::vec3& getViewRight() const noexcept
+    {
+        if (m_dirty) updateCamera();
+        return m_viewRight;
+    }
+
+    const glm::vec3& getViewUp() const noexcept
+    {
+        if (m_dirty) updateCamera();
+        return m_viewUp;
+    }
 
     void setAxis(
         const glm::vec3& front,
@@ -116,9 +133,8 @@ public:
         return getFrustum().getPlanes();
     }
 
-    const Frustum& getFrustum() const noexcept
+    inline const Frustum& getFrustum() const noexcept
     {
-        updateCamera();
         if (m_dirtyFrustum) updateFrustum();
         return m_frustum;
     }

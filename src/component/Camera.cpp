@@ -99,7 +99,7 @@ const glm::mat4& Camera::getProjection() const noexcept
 
 const glm::mat4& Camera::getProjected() noexcept
 {
-    updateCamera();
+    if (m_dirty) updateCamera();
     if (!m_dirtyProjected && !m_dirtyView) return m_projectedMatrix;
     m_projectedMatrix = m_projectionMatrix * getView();
     m_dirtyProjected = false;
@@ -128,7 +128,7 @@ const glm::mat4& Camera::getProjected() noexcept
 //
 const glm::mat4& Camera::getView() noexcept
 {
-    updateCamera();
+    if (m_dirty) updateCamera();
     if (!m_dirtyView) return m_viewMatrix;
 
     m_viewMatrix = glm::lookAt(
@@ -139,24 +139,6 @@ const glm::mat4& Camera::getView() noexcept
     m_viewLevel++;
 
     return m_viewMatrix;
-}
-
-const glm::vec3& Camera::getViewFront() const noexcept
-{
-    if (m_dirty) updateCamera();
-    return m_viewFront;
-}
-
-const glm::vec3& Camera::getViewRight() const noexcept
-{
-    if (m_dirty) updateCamera();
-    return m_viewRight;
-}
-
-const glm::vec3& Camera::getViewUp() const noexcept
-{
-    if (m_dirty) updateCamera();
-    return m_viewUp;
 }
 
 void Camera::setAxis(
@@ -314,17 +296,12 @@ void Camera::updatePerspectiveFrustum() const noexcept
     // TODO KI https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
     // https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/entity.h
 
-    // NOTE KI use 90 angle for culling; smaller does cut-off too early
-    // => 90 angle neither working correctly always for terrain tiles
-    // => TODO KI WHAT is failing
-    const float fovY = glm::radians(getFov());
-    //const float fovY = glm::radians(90.f);
     const glm::vec3& pos = getWorldPosition();
     const glm::vec3& front = getViewFront();
     const glm::vec3& up = getViewUp();
     const glm::vec3& right = getViewRight();
 
-    const float halfVSide = m_farPlane * tanf(fovY * .5f);
+    const float halfVSide = m_farPlane * tanf(glm::radians(getFov()) * .5f);
     const float halfHSide = halfVSide * m_aspectRatio;
     const glm::vec3 frontMultFar = m_farPlane * front;
 

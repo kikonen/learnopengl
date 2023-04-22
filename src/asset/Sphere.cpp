@@ -37,44 +37,44 @@ const std::string Sphere::str() const noexcept
         m_center, m_radius, m_worldCenter, m_worldRadius);
 }
 
-bool Sphere::isOnFrustum(
-    const Frustum& frustum) const noexcept
-{
-    //float dist[] = {
-    //    frustum.topFace.getSignedDistanceToPlane(m_worldCenter),
-    //    frustum.bottomFace.getSignedDistanceToPlane(m_worldCenter),
-    //    frustum.leftFace.getSignedDistanceToPlane(m_worldCenter),
-    //    frustum.rightFace.getSignedDistanceToPlane(m_worldCenter),
-    //    frustum.nearFace.getSignedDistanceToPlane(m_worldCenter),
-    //    frustum.farFace.getSignedDistanceToPlane(m_worldCenter),
-    //};
-    //bool match[] = {
-    //    isOnOrForwardPlane(frustum.topFace),
-    //    isOnOrForwardPlane(frustum.bottomFace),
-    //    isOnOrForwardPlane(frustum.leftFace),
-    //    isOnOrForwardPlane(frustum.rightFace),
-    //    isOnOrForwardPlane(frustum.nearFace),
-    //    isOnOrForwardPlane(frustum.farFace),
-    //};
-
-    //bool visible = isOnOrForwardPlane(frustum.nearFace) &&
-    //    isOnOrForwardPlane(frustum.topFace) &&
-    //    isOnOrForwardPlane(frustum.bottomFace) &&
-    //    isOnOrForwardPlane(frustum.leftFace) &&
-    //    isOnOrForwardPlane(frustum.rightFace) &&
-    //    isOnOrForwardPlane(frustum.farFace);
-
-    //if (!visible)
-    //    int x = 0;
-
-    // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
-    return isOnOrForwardPlane(frustum.nearFace) &&
-        isOnOrForwardPlane(frustum.topFace) &&
-        isOnOrForwardPlane(frustum.bottomFace) &&
-        isOnOrForwardPlane(frustum.leftFace) &&
-        isOnOrForwardPlane(frustum.rightFace) &&
-        isOnOrForwardPlane(frustum.farFace);
-};
+//bool Sphere::isOnFrustum(
+//    const Frustum& frustum) const noexcept
+//{
+//    //float dist[] = {
+//    //    frustum.topFace.getSignedDistanceToPlane(m_worldCenter),
+//    //    frustum.bottomFace.getSignedDistanceToPlane(m_worldCenter),
+//    //    frustum.leftFace.getSignedDistanceToPlane(m_worldCenter),
+//    //    frustum.rightFace.getSignedDistanceToPlane(m_worldCenter),
+//    //    frustum.nearFace.getSignedDistanceToPlane(m_worldCenter),
+//    //    frustum.farFace.getSignedDistanceToPlane(m_worldCenter),
+//    //};
+//    //bool match[] = {
+//    //    isOnOrForwardPlane(frustum.topFace),
+//    //    isOnOrForwardPlane(frustum.bottomFace),
+//    //    isOnOrForwardPlane(frustum.leftFace),
+//    //    isOnOrForwardPlane(frustum.rightFace),
+//    //    isOnOrForwardPlane(frustum.nearFace),
+//    //    isOnOrForwardPlane(frustum.farFace),
+//    //};
+//
+//    //bool visible = isOnOrForwardPlane(frustum.nearFace) &&
+//    //    isOnOrForwardPlane(frustum.topFace) &&
+//    //    isOnOrForwardPlane(frustum.bottomFace) &&
+//    //    isOnOrForwardPlane(frustum.leftFace) &&
+//    //    isOnOrForwardPlane(frustum.rightFace) &&
+//    //    isOnOrForwardPlane(frustum.farFace);
+//
+//    //if (!visible)
+//    //    int x = 0;
+//
+//    // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
+//    return isOnOrForwardPlane(frustum.nearFace) &&
+//        isOnOrForwardPlane(frustum.leftFace) &&
+//        isOnOrForwardPlane(frustum.rightFace) &&
+//        isOnOrForwardPlane(frustum.topFace) &&
+//        isOnOrForwardPlane(frustum.bottomFace) &&
+//        isOnOrForwardPlane(frustum.farFace);
+//};
 
 void Sphere::updateVolume(
     const int matrixLevel,

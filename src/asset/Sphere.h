@@ -39,7 +39,20 @@ struct Sphere final : public Volume
         return plane.getSignedDistanceToPlane(m_worldCenter) >= -m_worldRadius;
     }
 
-    bool isOnFrustum(const Frustum& frustum) const noexcept override;
+    //bool isOnFrustum(
+    //    const Frustum& frustum) const noexcept;
+
+    inline bool isOnFrustum(
+        const Frustum& frustum) const noexcept
+    {
+        // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
+        return isOnOrForwardPlane(frustum.nearFace) &&
+            isOnOrForwardPlane(frustum.leftFace) &&
+            isOnOrForwardPlane(frustum.rightFace) &&
+            isOnOrForwardPlane(frustum.topFace) &&
+            isOnOrForwardPlane(frustum.bottomFace) &&
+            isOnOrForwardPlane(frustum.farFace);
+    };
 
     virtual void updateVolume(
         const int matrixLevel,
