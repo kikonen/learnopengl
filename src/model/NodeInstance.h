@@ -4,6 +4,7 @@
 
 #include "asset/Sphere.h"
 
+class UpdateContext;
 class RenderContext;
 
 struct EntitySSBO;
@@ -18,6 +19,7 @@ struct NodeInstance {
     bool m_dirty = true;
     bool m_rotationDirty = true;
     bool m_entityDirty = true;
+    bool m_uniformScale = false;
 
     int m_parentMatrixLevel = -1;
     int m_matrixLevel = -1;
@@ -33,6 +35,7 @@ struct NodeInstance {
 
     Sphere m_volume;
 
+    glm::vec3 m_position{ 0.f, 0.f, 0.f };
     glm::mat4 m_translateMatrix{ 1.f };
     glm::mat4 m_scaleMatrix{ 1.f };
 
@@ -99,12 +102,12 @@ struct NodeInstance {
 
     inline const glm::vec3 getPosition() const noexcept
     {
-        return { m_translateMatrix[3][0], m_translateMatrix[3][1], m_translateMatrix[3][2] };
+        return m_position;;
     }
 
     inline const bool isUniformScale() const noexcept
     {
-        return m_scaleMatrix[0][0] == m_scaleMatrix[1][1] && m_scaleMatrix[0][0] == m_scaleMatrix[2][2];
+        return m_uniformScale;
     }
 
     inline const glm::vec3 getScale() const noexcept
@@ -127,6 +130,11 @@ struct NodeInstance {
             vec[0] = pos.x;
             vec[1] = pos.y;
             vec[2] = pos.z;
+
+            m_position[0] = m_translateMatrix[3][0];
+            m_position[1] = m_translateMatrix[3][1];
+            m_position[2] = m_translateMatrix[3][2];
+
             m_dirty = true;
         }
     }
@@ -153,6 +161,8 @@ struct NodeInstance {
             m_scaleMatrix[0][0] = scale;
             m_scaleMatrix[1][1] = scale;
             m_scaleMatrix[2][2] = scale;
+
+            m_uniformScale = m_scaleMatrix[0][0] == m_scaleMatrix[1][1] && m_scaleMatrix[0][0] == m_scaleMatrix[2][2];
             m_dirty = true;
         }
     }
@@ -167,6 +177,8 @@ struct NodeInstance {
             m_scaleMatrix[0][0] = scale.x;
             m_scaleMatrix[1][1] = scale.y;
             m_scaleMatrix[2][2] = scale.z;
+
+            m_uniformScale = m_scaleMatrix[0][0] == m_scaleMatrix[1][1] && m_scaleMatrix[0][0] == m_scaleMatrix[2][2];
             m_dirty = true;
         }
     }
@@ -268,7 +280,7 @@ struct NodeInstance {
 
     void updateRotationMatrix() noexcept;
 
-    void updateEntity(EntitySSBO* entity);
-
-    //bool inFrustum(const RenderContext& ctx, float radiusFlex) const;
+    void updateEntity(
+        const UpdateContext& ctx,
+        EntitySSBO* entity);
 };

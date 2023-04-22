@@ -22,7 +22,7 @@ void NodeGenerator::updateEntity(
         if (instance.m_entityIndex == -1) continue;
 
         auto* entity = entityRegistry->updateEntity(instance.m_entityIndex, true);
-        instance.updateEntity(entity);
+        instance.updateEntity(ctx, entity);
 
         //entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
         //entity->u_highlightIndex = 1;

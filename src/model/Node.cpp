@@ -122,7 +122,7 @@ void Node::updateEntity(
 
             entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
 
-            m_instance.updateEntity(entity);
+            m_instance.updateEntity(ctx, entity);
         }
     }
 
