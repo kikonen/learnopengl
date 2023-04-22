@@ -678,6 +678,7 @@ entities:
       z_step: 256
     enabled: true
   - name: Sea surface
+    desc: TODO KI conflicting water reflect with pool
     priority: -20
     type: quad
     material: sea_surface
@@ -696,7 +697,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-    enabled: true
+    xxenabled: true
   - name: Sea floor
     priority: -25
     model: quad
