@@ -130,9 +130,9 @@ void TerrainGenerator::createTiles(
     float vertMaxAABB = 3.f * m_verticalRange[1] / scale;
 
     const AABB aabb{
-        glm::vec3{ -1.075f, vertMinAABB, -1.075f },
-        glm::vec3{ 1.075f, vertMaxAABB, 1.075f },
-        true
+        glm::vec3{ -1.f, vertMinAABB, -1.f },
+        glm::vec3{ 1.f, vertMaxAABB, 1.f },
+        false
     };
 
     KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));

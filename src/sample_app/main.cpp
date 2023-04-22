@@ -40,27 +40,27 @@ int runEngine() {
 
     return 0;
 }
-
-void testVolume() {
-    {
-        const AABB quad = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
-        const auto& min = quad.m_min;
-        const auto& max = quad.m_max;
-        auto radius = glm::length(min - max) * 0.5f;
-        auto center = (max + min) * 0.5f;
-
-        std::cout << "QUAD: center={" << center.x << "," << center.x << "," << center.x << "}, radius=" << radius << "\n";
-    }
-    {
-        const AABB quad = { glm::vec3{ -1.f, -1.f, -1.f }, glm::vec3{ 1.f, 1.f, 1.f }, true };
-        const auto& min = quad.m_min;
-        const auto& max = quad.m_max;
-        auto radius = glm::length(min - max) * 0.5f;
-        auto center = (max + min) * 0.5f;
-
-        std::cout << "CUBE: center={" << center.x << "," << center.x << "," << center.x << "}, radius=" << radius << "\n";
-    }
-}
+//
+//void testVolume() {
+//    {
+//        const AABB quad = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f } };
+//        const auto& min = quad.m_min;
+//        const auto& max = quad.m_max;
+//        auto radius = glm::length(min - max) * 0.5f;
+//        auto center = (max + min) * 0.5f;
+//
+//        std::cout << "QUAD: center={" << center.x << "," << center.x << "," << center.x << "}, radius=" << radius << "\n";
+//    }
+//    {
+//        const AABB quad = { glm::vec3{ -1.f, -1.f, -1.f }, glm::vec3{ 1.f, 1.f, 1.f } };
+//        const auto& min = quad.m_min;
+//        const auto& max = quad.m_max;
+//        auto radius = glm::length(min - max) * 0.5f;
+//        auto center = (max + min) * 0.5f;
+//
+//        std::cout << "CUBE: center={" << center.x << "," << center.x << "," << center.x << "}, radius=" << radius << "\n";
+//    }
+//}
 
 int main()
 {

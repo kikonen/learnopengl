@@ -57,6 +57,16 @@ bool Sphere::isOnFrustum(
     //    isOnOrForwardPlane(frustum.farFace),
     //};
 
+    //bool visible = isOnOrForwardPlane(frustum.nearFace) &&
+    //    isOnOrForwardPlane(frustum.topFace) &&
+    //    isOnOrForwardPlane(frustum.bottomFace) &&
+    //    isOnOrForwardPlane(frustum.leftFace) &&
+    //    isOnOrForwardPlane(frustum.rightFace) &&
+    //    isOnOrForwardPlane(frustum.farFace);
+
+    //if (!visible)
+    //    int x = 0;
+
     // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
     return isOnOrForwardPlane(frustum.nearFace) &&
         isOnOrForwardPlane(frustum.topFace) &&
@@ -75,11 +85,8 @@ void Sphere::updateVolume(
         return;
     }
 
-    // Get our world center with process it with the world model matrix of our transform
     m_worldCenter = modelMatrix * glm::vec4(m_center, 1.f);
-
-    // Max scale is assuming for the diameter. So, we need the half to apply it to our radius
-    m_worldRadius = m_radius * maxScale * 0.5f;
+    m_worldRadius = m_radius * maxScale;
 
     m_modelMatrixLevel = matrixLevel;
 }

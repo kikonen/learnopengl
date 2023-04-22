@@ -13,7 +13,11 @@
 
 namespace {
 
-    const AABB SPRITE_AABB = { glm::vec3{ -1.f, -1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }, true };
+    // NOTE KI plane, only xy
+    const AABB QUAD_AABB = {
+        glm::vec3{ -1.f, -1.f, 0.f },
+        glm::vec3{ 1.f, 1.f, 0.f },
+        true };
 
     SpriteVAO spriteVAO;
 }
@@ -35,7 +39,7 @@ const std::string SpriteMesh::str() const noexcept
 
 const AABB SpriteMesh::calculateAABB() const
 {
-    return SPRITE_AABB;
+    return QUAD_AABB;
 }
 
 const std::vector<Material>& SpriteMesh::getMaterials() const

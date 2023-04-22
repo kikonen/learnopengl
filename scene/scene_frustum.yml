@@ -1,0 +1,66 @@
+---
+name: Origo
+viewports:
+skybox:
+  program: skybox
+  material: skybox
+lights: {}
+cube_maps: {}
+root:
+  type: origo
+entities:
+  - name: Origo
+    type: origo
+    pos: [9.95, 0, 10]
+    camera:
+      default: true
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: Base
+    model: cow
+    xxmodel: cube
+    xxmaterial: fur_base
+    xxforce_material: true
+    program: g_tex
+    render_flags:
+      xxwireframe: true
+    priority: 1
+    pos: [0, 0, 0]
+    scale: 1.0
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 15
+      z_step: -15
+    enabled: true
+  - name: Directional light
+    type: origo
+    pos: [0, 25, 40]
+    scale: 2.5
+    model: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    force_material: true
+    material_modifier:
+      kd: [0.8, 0.8, 0.6, 1.0]
+    light:
+      type: directional
+      ambient: [0.9, 0.9, 0.9, 1.0]
+      diffuse: [0.9, 0.9, 0.7, 1.0]
+      specular: [0.9, 0.9, 0.5, 1.0]
+      enabled: true
+    enabled: true
+materials:
+  - name: fur_base
+    ns: 51.2
+    ka: [0.2923, 0.2923, 0.2923, 1.0]
+    kd: [0.5075, 0.5075, 0.5075, 1.0]
+    ks: [0.5083, 0.5083, 0.5083, 1.0]
+    map_kd: Dirt_vh_1024.png
+    tiling: 1
+    texture_spec:
+      wrap: GL_REPEAT

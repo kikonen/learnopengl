@@ -14,10 +14,10 @@
 namespace {
     constexpr int INDEX_COUNT = 4;
 
-    // HACK KI scale x2; should not need, but frustum culling does not work properly for quads
+    // NOTE KI plane, only xy
     const AABB QUAD_AABB = {
-        glm::vec3{ -1.f, -1.f, 0.f } * 2.f,
-        glm::vec3{ 1.f, 1.f, 0.f } * 2.f,
+        glm::vec3{ -1.f, -1.f, 0.f },
+        glm::vec3{ 1.f, 1.f, 0.f },
         true };
 
     QuadVAO quadVAO;

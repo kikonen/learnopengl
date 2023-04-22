@@ -36,7 +36,7 @@ struct Sphere final : public Volume
 
     inline bool isOnOrForwardPlane(const Plane& plane) const noexcept
     {
-        return plane.getSignedDistanceToPlane(m_worldCenter) > -m_worldRadius;
+        return plane.getSignedDistanceToPlane(m_worldCenter) >= -m_worldRadius;
     }
 
     bool isOnFrustum(const Frustum& frustum) const noexcept override;
