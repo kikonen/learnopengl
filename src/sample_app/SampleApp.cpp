@@ -199,14 +199,26 @@ void SampleApp::frustumDebug(
 
         auto countersLocal = scene->getCountersLocal(true);
 
-        KI_INFO_OUT(fmt::format("BATCH : batch-draw: {}, batch-skip: {}", countersLocal.u_drawCount, countersLocal.u_skipCount));
+        if (m_assets.frustumCPU) {
+            auto ratio = (float)countersLocal.u_skipCount / (float)countersLocal.u_drawCount;
+            KI_INFO_OUT(fmt::format(
+                "BATCH: cpu-draw={}, cpu-skip={}, cpu-ratio={}",
+                countersLocal.u_drawCount, countersLocal.u_skipCount, ratio));
+        }
 
-        auto ratio = (float)m_skipCount / (float)m_drawCount;
-        auto frameDraw = (float)m_drawCount / (float)clock.frameCount;
-        auto frameSkip = (float)m_skipCount / (float)clock.frameCount;
+        if (m_assets.frustumGPU) {
+            auto ratio = (float)m_skipCount / (float)m_drawCount;
+            auto frameDraw = (float)m_drawCount / (float)clock.frameCount;
+            auto frameSkip = (float)m_skipCount / (float)clock.frameCount;
 
-        KI_INFO(fmt::format("{} : total-frames: {}, total-draw: {}, total-skip: {}, ratio: {}", ctx.m_name, clock.frameCount, m_drawCount, m_skipCount, ratio));
-        KI_INFO(fmt::format("{} : frame-draw: {}, frame-skip: {}", ctx.m_name, frameDraw, frameSkip));
+            KI_INFO(fmt::format(
+                "{}: total-frames={}, gpu-draw={}, gpu-skip={}, gpu-ratio={}",
+                ctx.m_name, clock.frameCount, m_drawCount, m_skipCount, ratio));
+
+            KI_INFO(fmt::format(
+                "{}: gpu-frame-draw={}, gpu-frame-skip={}",
+                ctx.m_name, frameDraw, frameSkip));
+        }
     }
 }
 

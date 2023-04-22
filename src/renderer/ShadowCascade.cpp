@@ -149,7 +149,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
         }
 
         // Tune this parameter according to the scene
-        const float zMult = 10.f / (m_index + 1);
+        const float zMult = 20.f / (m_index + 1);
         if (minZ < 0)
         {
             minZ *= zMult;

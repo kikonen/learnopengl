@@ -62,7 +62,7 @@ assets:
 
   frustum_enabled: true
   frustum_cpu: true
-  frustum_gpu: true
+  frustum_gpu: false
   frustum_debug: true
   frustum_visual: false
 
@@ -89,11 +89,11 @@ assets:
   far_plane: 2000.0
 
   fog_color: [0.2, 0.2, 0.2, 1.0]
-  fog_start: 800.0
-  fog_end: 3000.0
+  fog_start: 500.0
+  fog_end: 2000.0
   fog_ratio: 1.0
 
-  shadow_planes: [0.1, 15, 80, 500]
+  shadow_planes: [0.1, 30, 100, 500]
   xxshadow_planes: [0.1, 20, 100]
   xxshadow_planes: [0.1, 100]
   shadow_map_sizes: [2048, 2048, 2048, 1024]

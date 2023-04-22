@@ -63,6 +63,7 @@ entities:
     parent_id: [auto, planet-origo]
     type: origo
     pos: [0.0, 400.0, 0.0]
+    rotation: [0.0, 25.0, 0.0]
     enabled: true
     script_file: scripts/anim_sun_light
   - name: Sun light
