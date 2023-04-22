@@ -33,7 +33,7 @@ void NodeInstance::updateEntity(
 
     //entity->u_highlightIndex = getHighlightIndex(assets);
 
-    if (ctx.m_assets.frustumGPU) {
+    if (ctx.m_assets.frustumEnabled) {
         m_volume.updateVolume(m_matrixLevel, m_modelMatrix, getWorldMaxScale());
         entity->u_volume = m_volume.getWorldVolume();
     }
