@@ -2,10 +2,13 @@
 
 layout (triangles) in;
 // NOTE KI 73 == max what Nvidia GTX 1070 allowed
-layout (triangle_strip, max_vertices = 73) out;
+layout (triangle_strip, max_vertices = 64) out;
+
+#include struct_clip_plane.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+#include uniform_clip_planes.glsl
 
 in VS_OUT {
   flat mat4 modelMatrix;
@@ -27,9 +30,16 @@ out VS_OUT {
   flat float furStrength;
 } gs_out;
 
+
+out float gl_ClipDistance[CLIP_COUNT];
+
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
+
+precision mediump float;
+
+#include fn_calculate_clipping.glsl
 
 void main() {
   const mat4 modelMatrix = vs_in[0].modelMatrix;
@@ -73,13 +83,16 @@ void main() {
         // End Gravity Force Addit Code
       }
 
+      vec4 worldPos = modelMatrix * pos;
+
       gs_out.furStrength = 1.0 - d;
-      gs_out.worldPos = (modelMatrix * pos).xyz;
+      gs_out.worldPos = worldPos.xyx;
       gs_out.normal = normal;
       gs_out.texCoord = vs_in[i].texCoord;
       gs_out.materialIndex = vs_in[i].materialIndex;
       gl_Position = projectedModel * pos;
 
+      calculateClipping(worldPos);
       EmitVertex();
     }
 
