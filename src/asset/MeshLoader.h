@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #include "glm/glm.hpp"
 
@@ -18,8 +18,11 @@ struct Vertex;
 class MeshLoader final
 {
     struct Vec3MapCompare {
-        bool operator()(const glm::vec3& a, const glm::vec3& b) const {
-            return std::tie(a.x, a.y, a.z) < std::tie(b.x, b.y, b.z);
+        //bool operator()(const glm::vec3& a, const glm::vec3& b) const {
+        //    return std::tie(a.x, a.y, a.z) < std::tie(b.x, b.y, b.z);
+        //}
+        std::size_t operator () (const glm::vec3& v) const {
+            return int(v.x) ^ int(v.y) ^ int(v.z);
         }
     };
 
@@ -45,7 +48,7 @@ public:
 
 private:
     unsigned int resolveVertexIndex(
-        std::map<glm::vec3, std::vector<int>, Vec3MapCompare>& vertexMapping,
+        std::unordered_map<glm::vec3, std::vector<int>, Vec3MapCompare>& vertexMapping,
         std::vector<Vertex>& vertices,
         std::vector<glm::vec3>& positions,
         std::vector<glm::vec2>& textures,

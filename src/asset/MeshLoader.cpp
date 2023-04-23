@@ -78,7 +78,7 @@ void MeshLoader::loadData(
     // NOTE KI *MUST* record array of vertex indeces per pos mapping
     // => Same pos may be hit multiple times with different other data in Vertex
     //    in random order; need to track all hits
-    std::map<glm::vec3, std::vector<int>, Vec3MapCompare> vertexMapping;
+    std::unordered_map<glm::vec3, std::vector<int>, Vec3MapCompare> vertexMapping;
 
     std::vector<glm::vec3> positions;
     std::vector<glm::vec2> textures;
@@ -254,7 +254,7 @@ void MeshLoader::splitFragmentValue(const std::string& v, std::vector<std::strin
 }
 
 unsigned int MeshLoader::resolveVertexIndex(
-    std::map<glm::vec3, std::vector<int>, Vec3MapCompare>& vertexMapping,
+    std::unordered_map<glm::vec3, std::vector<int>, Vec3MapCompare>& vertexMapping,
     std::vector<Vertex>& vertices,
     std::vector<glm::vec3>& positions,
     std::vector<glm::vec2>& textures,

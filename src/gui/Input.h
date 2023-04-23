@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 
 class Window;
 
@@ -57,13 +57,13 @@ public:
 private:
     bool m_prepared = false;
 
-    std::map<Key, int*> m_keyMappings;
+    std::unordered_map<Key, int*> m_keyMappings;
 
-    std::map<Modifier, int*> m_modifierMappings;
+    std::unordered_map<Modifier, int*> m_modifierMappings;
 
-    std::map<Modifier, bool> m_modifierDown;
-    std::map<Modifier, bool> m_modifierPressed;
-    std::map<Modifier, bool> m_modifierReleased;
+    std::unordered_map<Modifier, bool> m_modifierDown;
+    std::unordered_map<Modifier, bool> m_modifierPressed;
+    std::unordered_map<Modifier, bool> m_modifierReleased;
 
     bool m_firstMouse = true;
 

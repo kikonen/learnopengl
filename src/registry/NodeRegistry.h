@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <tuple>
 
@@ -170,12 +171,12 @@ private:
 
     Registry* m_registry{ nullptr };
 
-    std::map<int, Node*> m_objectIdToNode;
-    std::map<uuids::uuid, Node*> m_idToNode;
+    std::unordered_map<int, Node*> m_objectIdToNode;
+    std::unordered_map<uuids::uuid, Node*> m_idToNode;
 
-    std::map<uuids::uuid, NodeVector> m_pendingChildren;
+    std::unordered_map<uuids::uuid, NodeVector> m_pendingChildren;
 
-    std::map<int, NodeVector> m_parentToChildren;
+    std::unordered_map<int, NodeVector> m_parentToChildren;
 
     Node* m_activeCamera{ nullptr };
 

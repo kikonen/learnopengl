@@ -1,6 +1,6 @@
 #include "ImageTexture.h"
 
-#include <map>
+#include <unordered_map>
 #include <mutex>
 
 #include "fmt/format.h"
@@ -10,7 +10,7 @@
 #include "ki/GL.h"
 
 namespace {
-    std::map<const std::string, std::shared_future<ImageTexture*>> textures;
+    std::unordered_map<std::string, std::shared_future<ImageTexture*>> textures;
 
     bool preparedTexturesReady = false;
     int preparedTexturesLevel = 0;

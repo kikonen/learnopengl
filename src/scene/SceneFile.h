@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 #include <ki/uuid.h>
 
@@ -208,7 +209,7 @@ class SceneFile
         std::string geometryType;
 
         std::map<std::string, std::string> programDefinitions{};
-        std::map<const std::string, bool> renderFlags{};
+        std::unordered_map<std::string, bool> renderFlags{};
         glm::vec3 position{ 0.f };
         glm::vec3 rotation{ 0.f };
         glm::vec3 front{ 0.f, 0.f, 1.f };
@@ -480,7 +481,7 @@ private:
     std::vector<EntityData> m_entities;
     std::vector<Material> m_materials;
 
-    std::map<std::string, uuids::uuid> m_autoIds;
+    std::unordered_map<std::string, uuids::uuid> m_autoIds;
 
     Material m_defaultMaterial;
 };

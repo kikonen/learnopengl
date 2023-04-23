@@ -1,7 +1,7 @@
 #pragma once
 
 #include <set>
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 #include "ki/GL.h"
@@ -38,9 +38,9 @@ public:
     void setDepthFunc(const GLenum mode);
 
 private:
-    std::map<GLenum, bool> m_enabled;
+    std::unordered_map<GLenum, bool> m_enabled;
 
-    std::map<GLuint, GLuint> m_textureUnits;
+    std::unordered_map<GLuint, GLuint> m_textureUnits;
 
     int m_cullFace = -1;
     int m_frontFace = -1;

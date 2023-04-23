@@ -37,4 +37,11 @@ namespace util
     {
         return static_cast<typename std::underlying_type<Enumeration>::type>(value);
     }
+
+    // https://stackoverflow.com/questions/3998978/using-a-const-key-for-unordered-map
+    struct constant_string_hash {
+        std::size_t operator () (const std::string& s) const {
+            return std::hash<std::string>{}(s);
+        }
+    };
 }

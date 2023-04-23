@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 #include <sol/sol.hpp>
@@ -54,5 +54,5 @@ private:
 
     std::unique_ptr<CommandAPI> m_commandAPI;
 
-    std::map<int, std::map<NodeScriptId, std::string>> m_nodeScripts;
+    std::unordered_map<int, std::unordered_map<NodeScriptId, std::string>> m_nodeScripts;
 };

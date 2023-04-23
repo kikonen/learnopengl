@@ -1,12 +1,14 @@
 #pragma once
 
 #include <vector>
-#include <map>
+#include <unordered_map>
+#include <string>
 #include <mutex>
 #include <future>
 
 #include "glm/glm.hpp"
 
+#include "util/Util.h"
 #include "kigl/GLVertexArray.h"
 
 #include "asset/Assets.h"
@@ -48,7 +50,7 @@ private:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::mutex m_meshes_lock{};
-    std::map<const std::string, std::shared_future<ModelMesh*>> m_meshes;
+    std::unordered_map<const std::string, std::shared_future<ModelMesh*>, util::constant_string_hash> m_meshes;
 
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;

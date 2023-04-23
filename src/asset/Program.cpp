@@ -244,7 +244,7 @@ int Program::compileSource(
 int Program::createProgram() {
     // build and compile our shader program
     // ------------------------------------
-    std::map<GLenum, GLuint> shaderIds;
+    std::unordered_map<GLenum, GLuint> shaderIds;
     for (auto& [type, source] : m_sources) {
         shaderIds[type] = compileSource(type, m_paths[type], source);
     }

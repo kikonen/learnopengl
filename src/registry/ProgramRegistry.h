@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 #include <string>
 #include <mutex>
 
@@ -43,7 +44,7 @@ private:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     // name + geom
-    std::map<std::string, std::unique_ptr<Program>> m_programs;
+    std::unordered_map<std::string, std::unique_ptr<Program>> m_programs;
 
     std::mutex m_programs_lock{};
 };

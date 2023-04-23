@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 
 #include "asset/Assets.h"
 
@@ -40,5 +40,5 @@ private:
 
     Registry* m_registry{ nullptr };
 
-    std::map<int, NodeController*> m_controllers;
+    std::unordered_map<int, NodeController*> m_controllers;
 };

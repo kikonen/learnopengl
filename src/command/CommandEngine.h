@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 #include "asset/Assets.h"
@@ -56,7 +56,7 @@ private:
     int m_cleanupIndex = 0;
     int m_cleanupStep = 0;
 
-    std::map<int, Command*> m_commands;
+    std::unordered_map<int, Command*> m_commands;
 
     std::vector<int> m_canceled;
 

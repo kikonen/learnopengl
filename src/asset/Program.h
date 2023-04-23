@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <string>
 
@@ -116,11 +117,11 @@ private:
 
     mutable std::map<std::string, std::string> m_defines;
 
-    std::map<GLenum, std::string> m_paths;
-    std::map<GLenum, bool> m_required;
-    std::map<GLenum, std::string> m_sources;
+    std::unordered_map<GLenum, std::string> m_paths;
+    std::unordered_map<GLenum, bool> m_required;
+    std::unordered_map<GLenum, std::string> m_sources;
 
-    std::map<const std::string, GLint> m_uniformLocations;
-    std::map<GLenum, std::map<const std::string, GLuint>> m_subroutineIndeces;
-    std::map<GLenum, std::map<const std::string, GLuint>> m_subroutineLocations;
+    std::unordered_map<std::string, GLint> m_uniformLocations;
+    std::unordered_map<GLenum, std::unordered_map<std::string, GLuint>> m_subroutineIndeces;
+    std::unordered_map<GLenum, std::unordered_map<std::string, GLuint>> m_subroutineLocations;
 };

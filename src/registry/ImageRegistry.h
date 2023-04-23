@@ -2,7 +2,7 @@
 
 #include <string>
 #include <mutex>
-#include <map>
+#include <unordered_map>
 
 
 class Image;
@@ -17,7 +17,7 @@ public:
 public:
 
 private:
-    std::map<const std::string, std::unique_ptr<Image>> m_images;
+    std::unordered_map<std::string, std::unique_ptr<Image>> m_images;
 
     std::mutex m_lock{};
 };
