@@ -115,7 +115,7 @@ float calcShadow2_3(
     visibility -= 0.2 * (1.0 - texture(
                            u_shadowMap[shadowIndex],
                            vec3(
-                             shadowPos.xy + poissonDisk[index] / 700.0,
+                             shadowPos.xy + poissonDisk[index] / 2000.0,
                              (shadowPos.z - bias) / shadowPos.w) ));
   }
 

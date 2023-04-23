@@ -90,8 +90,9 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferPosition(GLenum attachmen
 {
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
-    spec.internalFormat = GL_RGBA16F;
-    spec.format = GL_RGBA;
+    // NOTE KI GL_RGB16F is *NOT* enough precision; causes very block light/shadows
+    spec.internalFormat = GL_RGB32F;
+    spec.format = GL_RGB;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 

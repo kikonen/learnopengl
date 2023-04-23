@@ -651,7 +651,7 @@ entities:
       quadratic: 0.0007
       diffuse: [0.6, 1.2, 0.6, 1.0]
       specular: [0.6, 1.2, 0.6, 1.0]
-      enabled: true
+      xxenabled: true
     repeat:
       x_count: 9
       y_count: 1
@@ -659,7 +659,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-    enabled: false
+    enabled: true
   - name: Sea surface
     desc: TODO KI conflicting water reflect with pool
     priority: -20
