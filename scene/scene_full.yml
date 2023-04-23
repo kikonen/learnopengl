@@ -619,21 +619,6 @@ entities:
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
     enabled: true
-  - name: Terrain grass v1.1
-    id: auto
-    priority: -15
-    type: container
-    material: terrain_grass_1
-    program: terrain
-    pos: [-400, -32, -400]
-    generator:
-      type: terrain
-      tiling:
-        tile_size: 200
-        tiles: [8, 0, 8]
-        height_scale: 64
-      enabled: true
-    enabled: false
   - name: Terrain grass v2.2
     id: auto
     priority: -15
@@ -1031,13 +1016,6 @@ materials:
     tiling: 8
     texture_spec:
       wrap: GL_REPEAT
-  - name: terrain_grass_1
-    type: texture
-    ns: 50
-    ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: terrain/terrain_1025_m.png
-    map_bump: terrain/terrain_1025_normal.png
-    map_height: terrain/terrain_1025_height.png
   - name: terrain_grass_2
     type: texture
     ns: 50
@@ -1047,13 +1025,6 @@ materials:
     map_ks: terrain_2/terrain_2_SpecLM.png
     map_bump: terrain_2/terrain_2_TN.png
     map_height: terrain_2/terrain_2_height.png
-  - name: terrain_mountain
-    type: texture
-    ns: 50
-    ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: terrain/test_1_1024.jpg
-    map_bump: terrain/test_1_1024_normal.png
-    map_height: terrain/test_1_512_height.png
   - name: sea_surface
     type: texture
     ns: 150

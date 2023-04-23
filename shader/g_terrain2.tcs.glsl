@@ -8,6 +8,7 @@ layout(vertices=3) out;
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
+#include uniform_data.glsl
 #include uniform_materials.glsl
 #include uniform_clip_planes.glsl
 #include uniform_material_indeces.glsl
@@ -82,12 +83,16 @@ void main()
     const float MAX_DIST = 700;
     const float DIST_DIFF = MAX_DIST - MIN_DIST;
 
-    mat4 mvMatrix = u_viewMatrix * modelMatrix;
+    // NOTE KI use *world* not *view* space for distance
+    // => to avoid terrain bumping around when rotating in place
+    //mat4 mvMatrix = u_viewMatrix * modelMatrix;
+    mat4 mvMatrix = modelMatrix;
+    vec4 viewPos = vec4(u_viewWorldPos, 1.0);
 
-    vec4 viewPos00 = mvMatrix * gl_in[0].gl_Position;
-    vec4 viewPos01 = mvMatrix * gl_in[1].gl_Position;
-    vec4 viewPos10 = mvMatrix * gl_in[2].gl_Position;
-    //vec4 viewPos11 = mvMatrix * gl_in[3].gl_Position;
+    vec4 viewPos00 = viewPos - mvMatrix * gl_in[0].gl_Position;
+    vec4 viewPos01 = viewPos - mvMatrix * gl_in[1].gl_Position;
+    vec4 viewPos10 = viewPos - mvMatrix * gl_in[2].gl_Position;
+    //vec4 viewPos11 = viewPos - mvMatrix * gl_in[3].gl_Position;
 
     // "distance" from camera scaled between 0 and 1
     float dist00 = clamp( (abs(viewPos00.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
