@@ -373,7 +373,7 @@ entities:
     scale: 1.0
     enabled: true
   - name: Teapot
-    desc: Dir light target
+    desc: Dir light target (back needed due to gap in lid)
     id: [auto, dir-light-target]
     model: smooth_teapot
     program: g_tex
@@ -385,7 +385,7 @@ entities:
       refraction: 0.05
       refraction_ratio: [1.0, 1.52]
     render_flags:
-      render_back: false
+      render_back: true
     selected: false
     enabled: true
   - name: Cow
