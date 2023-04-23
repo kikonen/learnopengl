@@ -166,6 +166,7 @@ vec4 calculateDirLight(
   in DirLight light,
   in vec3 normal,
   in vec3 toView,
+  in vec3 worldPos,
   in uint shadowIndex,
   in vec4 shadowPos,
   in Material material)

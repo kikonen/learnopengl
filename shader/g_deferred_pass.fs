@@ -75,7 +75,11 @@ void main()
     material.fogRatio = u_fogRatio;
   }
 
-  vec4 color = calculateLight(normal, toView, worldPos, shadowIndex, shadowPos, material);
+  vec4 color = calculateLight(
+    normal, toView, worldPos,
+    shadowIndex, shadowPos,
+    material);
+
   color = calculateFog(viewPos, material.fogRatio, color);
 
   if (u_frustumVisual) {

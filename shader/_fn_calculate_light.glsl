@@ -15,7 +15,9 @@ vec4 calculateLight(
   uint lightCount = u_dirLightCount + u_pointLightCount + u_spotLightCount;
 
   for (int i = 0; i < u_dirLightCount; i++) {
-    dirShaded = calculateDirLight(u_dirLights[i], normal, toView, shadowIndex, shadowPos, material);
+    dirShaded = calculateDirLight(
+      u_dirLights[i], normal, toView, worldPos,
+      shadowIndex, shadowPos, material);
   }
 
   for (int i = 0; i < u_pointLightCount; i++) {
