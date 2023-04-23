@@ -2,6 +2,7 @@
 
 layout(triangles, fractional_odd_spacing, ccw) in;
 
+#include struct_clip_plane.glsl
 #include struct_material.glsl
 #include struct_entity.glsl
 
@@ -9,6 +10,7 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 #include uniform_matrices.glsl
 #include uniform_materials.glsl
 #include uniform_textures.glsl
+#include uniform_clip_planes.glsl
 
 in TCS_OUT {
   flat uint entityIndex;
@@ -42,9 +44,17 @@ out TES_OUT {
   float height;
 } tes_out;
 
+
+out float gl_ClipDistance[CLIP_COUNT];
+
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
+
+precision mediump float;
+
+#include fn_calculate_clipping.glsl
+
 
 vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
 {
@@ -96,6 +106,8 @@ void main()
 #endif
 
   tes_out.height = h;
+
+  calculateClipping(worldPos);
 
   gl_Position = u_projectedMatrix * worldPos;
 }
