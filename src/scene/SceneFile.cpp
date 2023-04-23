@@ -375,6 +375,7 @@ MeshType* SceneFile::attachEntityCloneRepeat(
 
     auto& nodeRegistry = *m_registry->m_nodeRegistry;
 
+    // NOTE KI overriding material in clones is *NOT* supported"
     if (!type) {
         type = createType(
             entity.isRoot,

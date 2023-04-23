@@ -22,10 +22,10 @@ entities:
       enabled: true
     enabled: true
   - name: Directional light
-    pos: [0, 200, 500]
+    pos: [0, 400, 500]
     scale: 2.5
     model: light
-    program: g_tex
+    program: g_light
     render_flags:
       no_shadow: true
     force_material: true
@@ -36,7 +36,7 @@ entities:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       specular: [0.9, 0.9, 0.7, 1.0]
       enabled: true
-    enabled: false
+    enabled: true
   - name: Terrain grass v2
     id: auto
     type: container
@@ -66,7 +66,7 @@ entities:
     pos: [-1024, 150, -1024]
     xxpos: [0, 150, 0]
     scale: 5.0
-    material: glass_ball
+    xxmaterial: glass_ball
     repeat:
       x_count: 9
       y_count: 1
@@ -139,16 +139,10 @@ entities:
       z_step: -2
     enabled: true
 materials:
-  - name: terrain_grass_OLD
-    type: texture
-    ns: 50
-    ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: terrain/terrain_1025_m.png
-    map_bump: terrain/terrain_1025_normal.png
-    map_height: terrain/terrain_1025_height.png
   - name: terrain_grass_2
     type: texture
     ns: 50
+    ka: [0.5, 0.5, 0.5, 1.0]
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: terrain_2/terrain_2_TX.jpg
     map_ks: terrain_2/terrain_2_SpecLM.png
@@ -183,11 +177,13 @@ materials:
   - name: linden_tree
     type: sprite
     ns: 100
+    ka: [0.35, 0.35, 0.35, 1.0]
     ks: [0.8, 0.8, 0.8, 1.0]
     map_kd: linden_tree_512.png
   - name: skeleton
     type: sprite
     ns: 100
+    ka: [0.7, 0.7, 0.7, 1.0]
     ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: Skeleton_VH.PNG
     xxmap_bump: Skeleton_VH_normal.PNG

@@ -17,7 +17,7 @@ entities:
     type: origo
     pos: [0.0, 0.0, 0.0]
     enabled: true
-    script_file: scripts/seq_zero_origo
+    xxscript_file: scripts/seq_zero_origo
   - name: ZERO
     parent_id: [auto, zero-origo]
     model: water_ball
@@ -110,11 +110,12 @@ entities:
     script_file: scripts/anim_moving_point_light
     enabled: true
   - name: Moving point light
+    desc: "NOTE overriding material in clones is *NOT* supported"
     parent_id: [auto, zero-origo]
     pos: [0, 0, 0]
     scale: 0.5
     model: light
-    program: g_tex
+    program: g_light
     render_flags:
       no_shadow: true
     clones:
@@ -131,8 +132,8 @@ entities:
         material_modifier:
           kd: [0.8, 0.0, 0.0, 1.0]
         light:
-          diffuse: [0.6, 0.0, 0.0, 1.0]
-          specular: [0.6, 0.0, 0.0, 1.0]
+          diffuse: [0.9, 0.0, 0.0, 1.0]
+          specular: [0.9, 0.0, 0.0, 1.0]
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
@@ -140,8 +141,8 @@ entities:
         material_modifier:
           kd: [0.0, 0.9, 0.0, 1.0]
         light:
-          diffuse: [0.0, 0.6, 0.0, 1.0]
-          specular: [0.0, 0.6, 0.0, 1.0]
+          diffuse: [0.0, 0.9, 0.0, 1.0]
+          specular: [0.0, 0.9, 0.0, 1.0]
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
@@ -149,8 +150,8 @@ entities:
         material_modifier:
           kd: [0.0, 0.0, 0.9, 1.0]
         light:
-          diffuse: [0.0, 0.0, 0.6, 1.0]
-          specular: [0.0, 0.0, 0.6, 1.0]
+          diffuse: [0.0, 0.0, 0.9, 1.0]
+          specular: [0.0, 0.0, 0.9, 1.0]
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
@@ -158,19 +159,17 @@ entities:
         material_modifier:
           kd: [0.9, 0.0, 0.9, 1.0]
         light:
-          diffuse: [0.6, 0.0, 0.6, 1.0]
-          specular: [0.6, 0.0, 0.6, 1.0]
+          diffuse: [0.9, 0.0, 0.9, 1.0]
+          specular: [0.9, 0.0, 0.9, 1.0]
           enabled: false
         enabled: false
     light:
       type: point
-      linear: 0.14
-      quadratic: 0.07
-      cutoff_angle: 12.5
-      outer_cutoff_angle: 25.0
+      linear: 0.09
+      quadratic: 0.032
       target_id: ROOT
-      diffuse: [0.6, 0.6, 0.6, 1.0]
-      specular: [0.6, 0.6, 0.6, 1.0]
+      diffuse: [0.8, 0.8, 0.8, 1.0]
+      specular: [0.8, 0.8, 0.8, 1.0]
       enabled: true
     enabled: true
   - name: Rock light origo
@@ -190,11 +189,11 @@ entities:
       no_shadow: true
     light:
       type: point
-      linear: 0.014
-      quadratic: 0.0007
+      linear: 0.09
+      quadratic: 0.032
       target_id: ROOT
-      diffuse: [0.5, 0.5, 0.5, 1.0]
-      specular: [0.5, 0.5, 0.5, 1.0]
+      diffuse: [0.8, 0.8, 0.8, 1.0]
+      specular: [0.8, 0.8, 0.8, 1.0]
       enabled: true
     enabled: true
   - name: Active node
@@ -650,11 +649,9 @@ entities:
       type: point
       linear: 0.014
       quadratic: 0.0007
-      cutoff_angle: 12.5
-      outer_cutoff_angle: 25.0
-      diffuse: [0.0, 0.6, 0.0, 1.0]
-      specular: [0.0, 0.6, 0.0, 1.0]
-      enabled: false
+      diffuse: [0.6, 1.2, 0.6, 1.0]
+      specular: [0.6, 1.2, 0.6, 1.0]
+      enabled: true
     repeat:
       x_count: 9
       y_count: 1
@@ -662,7 +659,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-    enabled: true
+    enabled: false
   - name: Sea surface
     desc: TODO KI conflicting water reflect with pool
     priority: -20
@@ -986,8 +983,8 @@ materials:
   - name: skeleton
     type: sprite
     ns: 100
-    ks: [0.6, 0.6, 0.6, 1.0]
     ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.6, 0.6, 0.6, 1.0]
     map_kd: Skeleton_VH.PNG
     xxmap_bump: Skeleton_VH_normal.PNG
   - name: pool_surface
@@ -1019,8 +1016,8 @@ materials:
   - name: terrain_grass_2
     type: texture
     ns: 50
-    ks: [0.5, 0.5, 0.5, 1.0]
     ka: [0.5, 0.5, 0.5, 1.0]
+    ks: [0.5, 0.5, 0.5, 1.0]
     map_kd: terrain_2/terrain_2_TX.jpg
     map_ks: terrain_2/terrain_2_SpecLM.png
     map_bump: terrain_2/terrain_2_TN.png

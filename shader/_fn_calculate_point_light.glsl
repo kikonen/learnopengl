@@ -7,15 +7,17 @@ vec4 calculatePointLight(
 {
   const vec3 toLight = normalize(light.worldPos - worldPos);
 
+  const float powerup = 1.7;
+
   // diffuse
   float diff = max(dot(toLight, normal), 0.0);
-  vec4 diffuse = light.diffuse * (diff * material.diffuse);
+  vec4 diffuse = powerup * light.diffuse * (diff * material.diffuse);
 
   // specular
   vec3 reflectDir = reflect(-toLight, normal);
   vec3 halfwayDir = normalize(toLight + toView);
   float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
-  vec4 specular = light.specular * (spec * material.specular);
+  vec4 specular = powerup * light.specular * (spec * material.specular);
 
   float distance = length(light.worldPos - worldPos);
   float attenuation = 1.0 / (light.constant + light.linear * distance +
