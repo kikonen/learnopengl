@@ -104,8 +104,8 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
 {
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
-    spec.internalFormat = GL_RGBA16F;
-    spec.format = GL_RGBA;
+    spec.internalFormat = GL_RGB16F;
+    spec.format = GL_RGB;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
@@ -118,7 +118,7 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::depth_texture;
     // NOTE KI need to have 24bit, 16bit is FAR TOO SMALL
-    spec.internalFormat = GL_DEPTH_COMPONENT32F;
+    spec.internalFormat = GL_DEPTH_COMPONENT24;
     spec.format = GL_FLOAT;
     spec.attachment = GL_DEPTH_ATTACHMENT;
     // NOTE KI linear slower, but *BETTER* results
