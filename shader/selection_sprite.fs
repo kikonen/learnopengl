@@ -17,7 +17,7 @@ layout (location = 0) out vec4 o_fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-precision mediump float;
+SET_FLOAT_PRECISION
 
 void main() {
   #include var_tex_material_alpha.glsl

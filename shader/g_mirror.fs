@@ -38,7 +38,7 @@ layout (location = 5) out vec3 o_fragNormal;
 //
 ////////////////////////////////////////////////////////////
 
-precision mediump float;
+SET_FLOAT_PRECISION
 
 #include fn_calculate_normal_pattern.glsl
 

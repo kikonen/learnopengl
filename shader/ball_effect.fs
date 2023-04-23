@@ -34,7 +34,7 @@ float iTime;
 //
 ////////////////////////////////////////////////////////////
 
-precision mediump float;
+SET_FLOAT_PRECISION
 
 #include fn_calculate_dir_light.glsl
 #include fn_calculate_point_light.glsl

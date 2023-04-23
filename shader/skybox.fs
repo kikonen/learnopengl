@@ -7,7 +7,11 @@ layout(binding = UNIT_SKYBOX) uniform samplerCube u_skybox;
 
 out vec4 o_fragColor;
 
-precision mediump float;
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
+
+SET_FLOAT_PRECISION
 
 void main() {
   o_fragColor = texture(u_skybox, texCoord);

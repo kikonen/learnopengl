@@ -47,7 +47,7 @@ out float gl_ClipDistance[CLIP_COUNT];
 //
 ////////////////////////////////////////////////////////////
 
-precision mediump float;
+SET_FLOAT_PRECISION
 
 
 vec3 getNormal()

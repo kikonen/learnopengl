@@ -42,7 +42,7 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
-precision mediump float;
+SET_FLOAT_PRECISION
 
 #include fn_calculate_shadow_index.glsl
 

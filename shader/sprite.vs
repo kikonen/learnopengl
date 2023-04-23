@@ -32,7 +32,7 @@ const vec3 tangent = vec3(1.0, 0.0, 0.0);
 //
 ////////////////////////////////////////////////////////////
 
-precision mediump float;
+SET_FLOAT_PRECISION
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];

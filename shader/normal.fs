@@ -15,7 +15,7 @@ out vec4 o_fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-precision mediump float;
+SET_FLOAT_PRECISION
 
 void main()
 {

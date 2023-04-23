@@ -93,3 +93,6 @@
 
 #define STENCIL_MODE_MASK 1
 #define STENCIL_MODE_HIGHLIGHT 2
+
+//#define SET_FLOAT_PRECISION
+#define SET_FLOAT_PRECISION precision mediump float;

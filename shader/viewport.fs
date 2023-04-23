@@ -27,7 +27,7 @@ const float offset = 1.0 / 300.0;
 //
 ////////////////////////////////////////////////////////////
 
-precision mediump float;
+SET_FLOAT_PRECISION
 
 layout (index = EFF_NONE)
 subroutine (sub_effect)
