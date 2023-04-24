@@ -71,6 +71,11 @@ public:
 
     void copyShadowFrom(const RenderContext& b);
 
+    bool pushAllowBlend(bool flag) const {
+        bool old = m_allowBlend;
+        m_allowBlend = flag;
+        return old;
+    }
 public:
     const std::string m_name;
     const RenderContext* const m_parent;
@@ -83,9 +88,6 @@ public:
     Batch* const m_batch;
 
     GLenum m_depthFunc = GL_LESS;
-
-
-    mutable bool m_shadow = false;
 
     GLState& m_state;
 
@@ -111,4 +113,5 @@ public:
     mutable bool m_useLight = true;
     mutable bool m_forceWireframe = false;
     mutable bool m_allowBlend = true;
+    mutable bool m_shadow = false;
 };

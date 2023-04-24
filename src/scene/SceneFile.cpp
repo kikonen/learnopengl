@@ -496,6 +496,9 @@ MeshType* SceneFile::createType(
             if (type->m_flags.blend) {
                 definitions[DEF_USE_BLEND] = "1";
             }
+            if (type->m_flags.blendOIT) {
+                definitions[DEF_USE_BLEND_OIT] = "1";
+            }
             if (normalTex) {
                 definitions[DEF_USE_NORMAL_TEX] = "1";
             }
@@ -673,6 +676,17 @@ void SceneFile::assignFlags(
                 KI_ERROR(fmt::format("GBUFFER vs. BLEND mismatch (disabled blend): {}", data.name));
                 // NOTE KI turning off blend; shader is designed for gbuffer
                 flags.blend = false;
+            }
+        }
+    }
+    {
+        const auto& e = data.renderFlags.find("blend_oit");
+        if (e != data.renderFlags.end()) {
+            flags.blendOIT = e->second;
+            // NOTE KI alpha MUST BE true if blend
+            if (flags.blendOIT) {
+                KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): {}", data.name));
+                flags.alpha = true;
             }
         }
     }

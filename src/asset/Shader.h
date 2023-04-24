@@ -29,6 +29,7 @@ const std::string GS_SPRITE{ "sprite" };
 
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };
+const std::string DEF_USE_BLEND_OIT{ "USE_BLEND_OIT" };
 const std::string DEF_USE_NORMAL_TEX{ "USE_NORMAL_TEX" };
 
 const std::string DEF_MAT_COUNT{ "MAT_COUNT" };

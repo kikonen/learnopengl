@@ -1,0 +1,74 @@
+---
+name: Test
+skybox:
+  material: skybox
+entities:
+  - name: Camera
+    type: origo
+    pos: [0, 0, 0]
+    camera:
+      default: true
+      enabled: true
+    enabled: true
+    controller:
+      type: camera
+      enabled: true
+  - name: Window 1
+    model: quad
+    material: window_1
+    program: g_tex
+    pos: [0.0, 0.0, -8.0]
+    render_flags:
+      blend_oit: true
+      alpha: true
+      render_back: true
+    enabled: true
+  - name: Window 2
+    model: quad
+    material: window_2
+    program: g_tex
+    pos: [0.5, 0.0, -10.0]
+    render_flags:
+      blend_oit: true
+      alpha: true
+      render_back: true
+    enabled: true
+  - name: Directional light
+    pos: [0, 25, 40]
+    scale: 2.5
+    model: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    force_material: true
+    material_modifier:
+      kd: [0.8, 0.8, 0.6, 1.0]
+    light:
+      type: directional
+      diffuse: [0.9, 0.9, 0.7, 1.0]
+      specular: [0.7, 0.7, 0.6, 1.0]
+      enabled: true
+    enabled: true
+materials:
+  - name: window_1
+    ns: 225.000000
+    type: model
+    ka: [0.500000, 0.500000, 0.500000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: Window_Open_lg_HI_256.PNG
+  - name: window_2
+    ns: 225.000000
+    type: model
+    ka: [0.500000, 0.500000, 0.500000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: Window_Stained_Glass_lg_HI_256.PNG

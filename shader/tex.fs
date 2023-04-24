@@ -56,8 +56,13 @@ void main() {
   #include var_tex_material.glsl
 
 #ifdef USE_ALPHA
+#ifdef USE_BLEND_OIT
+  if (material.diffuse.a < 0.95)
+    discard;
+#else
   if (material.diffuse.a < 0.01)
     discard;
+#endif
 #endif
 
   #include var_tex_material_normal.glsl
@@ -75,8 +80,13 @@ void main() {
   vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowIndex, fs_in.shadowPos, material);
 
 #ifdef USE_ALPHA
-  if (texColor.a < 0.1)
+#ifdef USE_BLEND_OIT
+  if (material.diffuse.a < 0.95)
     discard;
+#else
+  if (material.diffuse.a < 0.01)
+    discard;
+#endif
 #endif
 
 #ifndef USE_BLEND

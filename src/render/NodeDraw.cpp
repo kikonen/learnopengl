@@ -48,6 +48,9 @@ void NodeDraw::drawNodes(
     GLbitfield clearMask,
     const glm::vec4& clearColor)
 {
+    // NOTE KI no blend in G-buffer
+    auto wasAllowBlend = ctx.pushAllowBlend(false);
+
     // pass 1 - geometry
     // => nodes supporting G-buffer
     {
@@ -78,6 +81,8 @@ void NodeDraw::drawNodes(
 
         ctx.m_batch->flush(ctx);
     }
+
+    ctx.pushAllowBlend(wasAllowBlend);
 
     // pass 4 - blend
     // => separate light calculations
