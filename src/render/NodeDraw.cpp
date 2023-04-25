@@ -62,7 +62,7 @@ void NodeDraw::drawNodes(
     // => nodes supporting G-buffer
     {
         m_gbuffer.bind(ctx);
-        m_gbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, clearColor);
+        m_gbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, {0.f, 0.f, 0.f, 0.f});
 
         drawNodesImpl(
             ctx,
@@ -75,7 +75,7 @@ void NodeDraw::drawNodes(
     // pass 1 - blend OIT
     {
         m_oitbuffer.bind(ctx);
-        m_oitbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, { 0, 0, 0, 0});
+        m_oitbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, { 0.f, 0.f, 0.f, 0.f});
 
         // only "blend OIT" nodes
         drawProgram(
