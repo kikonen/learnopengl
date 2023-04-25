@@ -977,8 +977,8 @@ materials:
   - name: linden_tree
     type: sprite
     ns: 100
+    ka: [0.5, 0.45 0.5, 1.0]
     ks: [0.8, 0.8, 0.8, 1.0]
-    ka: [0.7, 0.7, 0.7, 1.0]
     map_kd: linden_tree_512.png
   - name: skeleton
     type: sprite

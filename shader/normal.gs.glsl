@@ -1,7 +1,7 @@
 #version 460 core
 
 layout (triangles) in;
-layout (line_strip, max_vertices = 12) out;
+layout (line_strip, max_vertices = 16) out;
 
 #include uniform_matrices.glsl
 

@@ -557,9 +557,10 @@ void SceneFile::resolveMesh(
             data.id_str, type->str()));
     }
     else if (data.type == EntityType::quad) {
-        auto mesh = std::make_unique<QuadMesh>();
-        mesh->prepareVolume();
-        type->setMesh(std::move(mesh), true);
+        auto future = m_registry->m_modelRegistry->getMesh(
+            QUAD_MESH_NAME);
+        auto* mesh = future.get();
+        type->setMesh(mesh);
         type->m_entityType = EntityType::quad;
     }
     else if (data.type == EntityType::billboard) {

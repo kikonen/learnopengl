@@ -47,7 +47,6 @@ SET_FLOAT_PRECISION
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
-  #include var_entity_normal_matrix.glsl
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;

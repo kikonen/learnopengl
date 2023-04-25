@@ -1,6 +1,7 @@
 ---
 name: Forest
 skybox:
+  program: g_skybox
   material: skybox
 entities:
   - name: Camera
@@ -17,7 +18,7 @@ entities:
     pos: [0, 25, 40]
     scale: 2.5
     model: light
-    program: light
+    program: g_light
     render_flags:
       no_shadow: true
     force_material: true
@@ -25,14 +26,13 @@ entities:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
-      ambient: [0.5, 0.5, 0.5, 1.0]
       diffuse: [0.9, 0.9, 0.7, 1.0]
       specular: [0.7, 0.7, 0.6, 1.0]
       enabled: true
     enabled: true
   - name: Linden tree forest
     type: billboard
-    program: texture
+    program: g_tex
     instanced: true
     pos: [-1000, -5.0, 0.0]
     material: linden_tree
@@ -55,5 +55,7 @@ materials:
   - name: linden_tree
     type: sprite
     ns: 100
-    ks: [0.8, 0.8, 0.8, 1.0]
+    ka: [0.5, 0.5, 0.5, 1.0]
+    ks: [0.6, 0.6, 0.6, 1.0]
+    kd: [0.6, 0.6, 0.6, 1.0]
     map_kd: linden_tree_512.png

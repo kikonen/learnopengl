@@ -32,6 +32,8 @@ void main() {
   const mat3 viewNormalMatrix = mat3(transpose(inverse(u_viewMatrix * modelMatrix)));
 
   vec4 worldPos;
+  vec3 normal;
+  vec3 tangent;
 
   if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
     // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
@@ -43,17 +45,23 @@ void main() {
                     + u_viewRight * a_pos.x * entityScale.x
                     + u_viewUp * a_pos.y * entityScale.y,
                     1.0);
+
+    normal = -u_viewFront;
+    tangent = u_viewRight;
   } else {
     worldPos = modelMatrix * pos;
+
+    normal = normalize(viewNormalMatrix * a_normal);
+    tangent = normalize(viewNormalMatrix * a_tangent);
   }
 
   gl_Position = u_viewMatrix * worldPos;
 
-  vs_out.normal = normalize(viewNormalMatrix * a_normal);
+  vs_out.normal = normal;
 
   {
     const vec3 N = normalize(vs_out.normal);
-    vec3 T = normalize(viewNormalMatrix * a_tangent);
+    vec3 T = tangent;
     T = normalize(T - dot(T, N) * N);
     const vec3 B = cross(N, T);
 
