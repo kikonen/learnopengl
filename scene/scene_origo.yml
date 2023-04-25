@@ -178,10 +178,11 @@ materials:
     ks: [0.5083, 0.5083, 0.5083, 1.0]
   - name: skeleton
     type: sprite
-    ns: 100
-    ks: [0.6, 0.6, 0.6, 1.0]
+    ns: 20
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: Skeleton_VH.PNG
-    _map_bump: Skeleton_VH_normal.PNG
+    xxmap_bump: Skeleton_VH_normal.PNG
   - name: brickwall
     ns: 225.000000
     type: model

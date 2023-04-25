@@ -96,7 +96,7 @@ materials:
       wrap: GL_REPEAT
   - name: linden_tree
     type: sprite
-    ns: 100
-    ks: [0.8, 0.8, 0.8, 1.0]
+    ns: 10
     ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.3, 0.3, 0.3, 1.0]
     map_kd: linden_tree_512.png

@@ -54,8 +54,7 @@ entities:
 materials:
   - name: linden_tree
     type: sprite
-    ns: 100
-    ka: [0.5, 0.5, 0.5, 1.0]
-    ks: [0.6, 0.6, 0.6, 1.0]
-    kd: [0.6, 0.6, 0.6, 1.0]
+    ns: 10
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.3, 0.3, 0.3, 1.0]
     map_kd: linden_tree_512.png

@@ -976,15 +976,15 @@ materials:
     map_kd: Window_Stained_Glass_lg_HI_256.PNG
   - name: linden_tree
     type: sprite
-    ns: 100
-    ka: [0.5, 0.45 0.5, 1.0]
-    ks: [0.8, 0.8, 0.8, 1.0]
+    ns: 10
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.3, 0.3, 0.3, 1.0]
     map_kd: linden_tree_512.png
   - name: skeleton
     type: sprite
-    ns: 100
+    ns: 20
     ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.6, 0.6, 0.6, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: Skeleton_VH.PNG
     xxmap_bump: Skeleton_VH_normal.PNG
   - name: pool_surface
