@@ -54,7 +54,6 @@ void NodeRenderer::render(
             ctx.m_nodeDraw->drawNodes(
                 ctx,
                 targetBuffer,
-                true,
                 [](const MeshType* type) { return true; },
                 [](const Node* node) { return true; },
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer

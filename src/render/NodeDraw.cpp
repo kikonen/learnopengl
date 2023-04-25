@@ -50,7 +50,6 @@ void NodeDraw::clear(
 void NodeDraw::drawNodes(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer,
-    bool includeBlended,
     const std::function<bool(const MeshType*)>& typeSelector,
     const std::function<bool(const Node*)>& nodeSelector,
     GLbitfield clearMask,
@@ -120,7 +119,7 @@ void NodeDraw::drawNodes(
 
     // pass 4 - blend
     // => separate light calculations
-    if (includeBlended) {
+    {
         targetBuffer->bind(ctx);
         drawBlendedImpl(ctx, typeSelector, nodeSelector);
         ctx.m_batch->flush(ctx);

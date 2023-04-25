@@ -254,7 +254,6 @@ void CubeMapRenderer::drawNodes(
     ctx.m_nodeDraw->drawNodes(
         ctx,
         targetBuffer,
-        true,
         [](const MeshType* type) { return !type->m_flags.noReflect; },
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such

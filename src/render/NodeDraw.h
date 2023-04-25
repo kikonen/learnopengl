@@ -34,7 +34,6 @@ public:
     void drawNodes(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
-        bool includeBlended,
         const std::function<bool(const MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         GLbitfield clearMask,
@@ -77,4 +76,3 @@ private:
     Program* m_deferredProgram{ nullptr };
     Program* m_oitProgram{ nullptr };
 };
-

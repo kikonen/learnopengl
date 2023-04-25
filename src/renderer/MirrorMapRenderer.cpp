@@ -199,7 +199,6 @@ void MirrorMapRenderer::drawNodes(
         ctx.m_nodeDraw->drawNodes(
             ctx,
             targetBuffer,
-            true,
             [](const MeshType* type) { return !type->m_flags.noReflect; },
             [&current](const Node* node) { return node != current; },
             // NOTE KI only color & depth used
