@@ -75,9 +75,8 @@ void NodeDraw::drawNodes(
     // pass 1 - blend OIT
     {
         m_oitbuffer.bind(ctx);
-        m_oitbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT, clearColor);
+        m_oitbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, { 0, 0, 0, 0});
 
-        m_oitProgram->bind(ctx.m_state);
         // only "blend OIT" nodes
         drawProgram(
             ctx,
@@ -113,8 +112,6 @@ void NodeDraw::drawNodes(
         ctx.m_batch->flush(ctx);
     }
 
-    m_oitbuffer.m_buffer->blit(targetBuffer, GL_COLOR_ATTACHMENT1, { -1.f, 1.f }, { 2.f, 2.f });
-
     ctx.pushAllowBlend(wasAllowBlend);
 
     // pass 4 - blend
@@ -123,6 +120,28 @@ void NodeDraw::drawNodes(
         targetBuffer->bind(ctx);
         drawBlendedImpl(ctx, typeSelector, nodeSelector);
         ctx.m_batch->flush(ctx);
+    }
+
+    {
+        constexpr float SZ = 0.25f;
+
+        for (int i = 0; i < m_oitbuffer.m_buffer->getDrawBufferCount(); i++) {
+            m_oitbuffer.m_buffer->blit(
+                targetBuffer,
+                GL_COLOR_BUFFER_BIT,
+                GL_COLOR_ATTACHMENT0 + i,
+                GL_COLOR_ATTACHMENT0,
+                { -1.f, -0.75f + i * SZ }, { SZ, SZ });
+        }
+
+        for (int i = 0; i < m_gbuffer.m_buffer->getDrawBufferCount(); i++) {
+            m_gbuffer.m_buffer->blit(
+                targetBuffer,
+                GL_COLOR_BUFFER_BIT,
+                GL_COLOR_ATTACHMENT0 + i,
+                GL_COLOR_ATTACHMENT0,
+                { 0.75f, -0.75f + i * SZ }, { SZ, SZ });
+        }
     }
 }
 

@@ -42,10 +42,22 @@ public:
         const glm::vec2& pos,
         const glm::vec2& size);
 
+    void blit(
+        FrameBuffer* target,
+        GLbitfield mask,
+        GLenum sourceColorAttachment,
+        GLenum targetColorAttachment,
+        const glm::vec2& pos,
+        const glm::vec2& size);
+
     void clear(
         const RenderContext& ctx,
         GLbitfield clearMask,
         const glm::vec4& clearColor);
+
+    int getDrawBufferCount() const noexcept {
+        return m_drawBuffers.size();
+    }
 
 public:
     const std::string m_name;

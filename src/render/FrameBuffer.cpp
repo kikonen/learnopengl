@@ -176,6 +176,18 @@ void FrameBuffer::blit(
     const glm::vec2& pos,
     const glm::vec2& size)
 {
+    blit(target, mask, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT0, pos, size);
+}
+
+// mask = GL_COLOR_BUFFER_BIT,
+void FrameBuffer::blit(
+    FrameBuffer* target,
+    GLbitfield mask,
+    GLenum sourceColorAttachment,
+    GLenum targetColorAttachment,
+    const glm::vec2& pos,
+    const glm::vec2& size)
+{
     const float srcW = m_spec.width;
     const float srcH = m_spec.height;
 
@@ -197,6 +209,9 @@ void FrameBuffer::blit(
     const glm::vec2 d0{ dx, dy };
     const glm::vec2 d1{ dx + sx, dy + sy };
 
+    glNamedFramebufferReadBuffer(m_fbo, sourceColorAttachment);
+    glNamedFramebufferDrawBuffer(target->m_fbo, targetColorAttachment);
+
     glBlitNamedFramebuffer(
         m_fbo,
         target->m_fbo,
@@ -210,6 +225,10 @@ void FrameBuffer::blit(
         d1.y,
         mask,
         GL_NEAREST);
+
+    //if (target->m_drawBuffers.size() > 0) {
+    //    glNamedFramebufferDrawBuffers(target->m_fbo, target->m_drawBuffers.size(), target->m_drawBuffers.data());
+    //}
 }
 
 void FrameBuffer::clear(
