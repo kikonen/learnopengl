@@ -26,11 +26,11 @@ void main() {
   texColor.a = 0.0;
 
   o_fragColor = texColor;
-  o_fragSpecular = texColor;
-  o_fragSpecular.a = 0;
-  o_fragEmission = texColor;
-  o_fragAmbient = texColor;
+  // o_fragSpecular = texColor;
+  // o_fragSpecular.a = 0;
+  // o_fragEmission = texColor;
+  // o_fragAmbient = texColor;
 
-  o_fragPosition = u_viewWorldPos + 1000 * u_viewFront;
-  o_fragNormal = u_viewFront;
+  // o_fragPosition = u_viewWorldPos + 1000 * u_viewFront;
+  // o_fragNormal = u_viewFront;
 }
