@@ -33,7 +33,7 @@ FrameBufferAttachment FrameBufferAttachment::getObjectId()
     return spec;
 }
 
-// G buffer: diffuse
+// G buffer: diffuse + IGNORE light flag
 FrameBufferAttachment FrameBufferAttachment::getGBufferAlbedo(GLenum attachment)
 {
     FrameBufferAttachment spec;

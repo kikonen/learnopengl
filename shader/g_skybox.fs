@@ -23,7 +23,7 @@ SET_FLOAT_PRECISION
 void main() {
   vec4 texColor = texture(u_skybox, texCoord);
   //texColor = vec4(1.0, 0, 0, 1.0);
-  texColor.a = 1.0;
+  texColor.a = 0.0;
 
   o_fragColor = texColor;
   o_fragSpecular = texColor;

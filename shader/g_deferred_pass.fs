@@ -57,8 +57,11 @@ void main()
   const vec3 toView = normalize(u_viewWorldPos - worldPos);
 
   Material material;
+
+  bool skipLight;
   {
     material.diffuse = texture(g_albedo, fs_in.texCoords);
+    skipLight = material.diffuse.a == 0.0;
     material.diffuse.a = 1.0;
 
     material.specular = texture(g_specular, fs_in.texCoords);
@@ -75,15 +78,20 @@ void main()
     material.fogRatio = u_fogRatio;
   }
 
-  vec4 color = calculateLight(
-    normal, toView, worldPos,
-    shadowIndex, shadowPos,
-    material);
+  vec4 color;
+  if (skipLight) {
+    color = material.diffuse;
+  } else {
+    color = calculateLight(
+      normal, toView, worldPos,
+      shadowIndex, shadowPos,
+      material);
 
-  color = calculateFog(viewPos, material.fogRatio, color);
+    color = calculateFog(viewPos, material.fogRatio, color);
 
-  if (u_frustumVisual) {
-    color += CASCADE_COLORS[shadowIndex];
+    if (u_frustumVisual) {
+      color += CASCADE_COLORS[shadowIndex];
+    }
   }
 
   o_fragColor = color;

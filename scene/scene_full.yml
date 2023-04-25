@@ -2,7 +2,7 @@
 name: Full
 viewports:
 skybox:
-  program: skybox
+  program: g_skybox
   priority: -100
   material: skybox
 lights: {}
