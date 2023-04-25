@@ -95,6 +95,7 @@ void NodeDraw::drawNodes(
 
         m_deferredProgram->bind(ctx.m_state);
         m_gbuffer.bindTexture(ctx);
+        m_oitbuffer.bindTexture(ctx);
         m_quad.draw(ctx);
     }
 

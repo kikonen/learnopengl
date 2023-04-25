@@ -18,6 +18,9 @@ layout(binding = UNIT_G_AMBIENT) uniform sampler2D g_ambient;
 layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
 
+layout(binding = UNIT_OIT_ACCUMULATOR) uniform sampler2D oit_accumulator;
+layout(binding = UNIT_OIT_REVEAL) uniform sampler2D oit_reveal;
+
 layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
 
 
@@ -36,6 +39,8 @@ SET_FLOAT_PRECISION
 #include fn_calculate_fog.glsl
 #include fn_calculate_shadow_index.glsl
 
+const float EPSILON = 0.00001f;
+
 const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT] =
   vec4[MAX_SHADOW_MAP_COUNT](
           vec4(0.1, 0.0, 0.0, 0.0),
@@ -44,6 +49,11 @@ const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT] =
           vec4(0.1, 0.0, 0.1, 0.0),
           vec4(0.1, 0.1, 0.0, 0.0)
           );
+
+float max3(vec3 v)
+{
+  return max(max(v.x, v.y), v.z);
+}
 
 void main()
 {
@@ -61,7 +71,8 @@ void main()
   bool skipLight;
   {
     material.diffuse = texture(g_albedo, fs_in.texCoords);
-    skipLight = material.diffuse.a == 0.0;
+    // HACK KI alpha == 0.0 is used for skybox
+    skipLight = false;//material.diffuse.a == 0.0;
     material.diffuse.a = 1.0;
 
     material.specular = texture(g_specular, fs_in.texCoords);
@@ -76,6 +87,18 @@ void main()
 
     // NOTE KI fogRatio is global only now
     material.fogRatio = u_fogRatio;
+
+    ivec2 fragCoords = ivec2(gl_FragCoord.xy);
+
+    float revealage = texelFetch(oit_reveal, fragCoords, 0).r;
+    vec4 accumulation = texelFetch(oit_accumulator, fragCoords, 0);
+
+    if (isinf(max3(abs(accumulation.rgb))))
+      accumulation.rgb = vec3(accumulation.a);
+
+    vec3 averageColor = accumulation.rgb / max(accumulation.a, EPSILON);
+
+    material.diffuse = vec4(material.diffuse.xyz + averageColor, 1.0f - revealage);
   }
 
   vec4 color;
