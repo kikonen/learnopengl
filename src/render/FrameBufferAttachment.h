@@ -61,6 +61,9 @@ struct FrameBufferAttachment {
     static FrameBufferAttachment getRBODepthStencil();
 
     static FrameBufferAttachment getRBODepth();
+
+    static FrameBufferAttachment getOITAccumulatorTexture(GLenum attachment);
+    static FrameBufferAttachment getOITRevealTexture(GLenum attachment);
 };
 
 struct FrameBufferSpecification {

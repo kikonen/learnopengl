@@ -5,6 +5,7 @@
 #include "asset/Assets.h"
 
 #include "GBuffer.h"
+#include "OITBuffer.h"
 #include "Quad.h"
 
 class RenderContext;
@@ -55,7 +56,6 @@ public:
 private:
     void drawNodesImpl(
         const RenderContext& ctx,
-        bool useGBuffer,
         const std::function<bool(const MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector);
 
@@ -70,9 +70,11 @@ private:
 
 private:
     GBuffer m_gbuffer;
+    OITBuffer m_oitbuffer;
 
     Quad m_quad;
 
     Program* m_deferredProgram{ nullptr };
+    Program* m_oitProgram{ nullptr };
 };
 

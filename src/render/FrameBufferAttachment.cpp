@@ -154,3 +154,31 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepth()
 
     return spec;
 }
+
+FrameBufferAttachment FrameBufferAttachment::getOITAccumulatorTexture(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::texture;
+    spec.internalFormat = GL_RGBA16F;
+    spec.format = GL_RGBA;
+    spec.minFilter = GL_LINEAR;
+    spec.magFilter = GL_LINEAR;
+    spec.attachment = attachment;
+    spec.useDrawBuffer = true;
+
+    return spec;
+}
+
+FrameBufferAttachment FrameBufferAttachment::getOITRevealTexture(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::texture;
+    spec.internalFormat = GL_R8;
+    spec.format = GL_RED;
+    spec.minFilter = GL_LINEAR;
+    spec.magFilter = GL_LINEAR;
+    spec.attachment = attachment;
+    spec.useDrawBuffer = true;
+
+    return spec;
+}

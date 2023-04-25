@@ -19,15 +19,20 @@ void NodeDraw::prepare(
     Registry* registry)
 {
     m_gbuffer.prepare(assets);
+    m_oitbuffer.prepare(assets);
     m_quad.prepare();
 
     m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
     m_deferredProgram ->prepare(assets);
+
+    m_oitProgram = registry->m_programRegistry->getProgram(SHADER_OIT_PASS);
+    m_oitProgram->prepare(assets);
 }
 
 void NodeDraw::updateView(const RenderContext& ctx)
 {
     m_gbuffer.updateView(ctx);
+    m_oitbuffer.updateView(ctx);
 }
 
 void NodeDraw::clear(
@@ -37,6 +42,9 @@ void NodeDraw::clear(
 {
     m_gbuffer.bind(ctx);
     m_gbuffer.m_buffer->clear(ctx, clearMask, clearColor);
+
+    m_oitbuffer.bind(ctx);
+    m_oitbuffer.m_buffer->clear(ctx, clearMask, clearColor);
 }
 
 void NodeDraw::drawNodes(
@@ -55,9 +63,30 @@ void NodeDraw::drawNodes(
     // => nodes supporting G-buffer
     {
         m_gbuffer.bind(ctx);
-        m_gbuffer.m_buffer->clear(ctx, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, clearColor);
+        m_gbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, clearColor);
 
-        drawNodesImpl(ctx, true, typeSelector, nodeSelector);
+        drawNodesImpl(
+            ctx,
+            [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+            nodeSelector);
+
+        ctx.m_batch->flush(ctx);
+    }
+
+    // pass 1 - blend OIT
+    {
+        m_oitbuffer.bind(ctx);
+        m_oitbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT, clearColor);
+
+        m_oitProgram->bind(ctx.m_state);
+        // only "blend OIT" nodes
+        drawProgram(
+            ctx,
+            m_oitProgram,
+            nullptr,
+            [&typeSelector](const MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
+            nodeSelector);
+
         ctx.m_batch->flush(ctx);
     }
 
@@ -77,10 +106,15 @@ void NodeDraw::drawNodes(
     {
         m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
 
-        drawNodesImpl(ctx, false, typeSelector, nodeSelector);
+        drawNodesImpl(
+            ctx,
+            [&typeSelector](const MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
+            nodeSelector);
 
         ctx.m_batch->flush(ctx);
     }
+
+    m_oitbuffer.m_buffer->blit(targetBuffer, GL_COLOR_ATTACHMENT1, { -1.f, 1.f }, { 2.f, 2.f });
 
     ctx.pushAllowBlend(wasAllowBlend);
 
@@ -106,19 +140,17 @@ void NodeDraw::drawBlended(
 
 void NodeDraw::drawNodesImpl(
     const RenderContext& ctx,
-    bool useGBuffer,
     const std::function<bool(const MeshType*)>& typeSelector,
     const std::function<bool(const Node*)>& nodeSelector)
 {
     auto* nodeRegistry = ctx.m_registry->m_nodeRegistry;
 
-    auto renderTypes = [this, &ctx, useGBuffer, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
         auto* program = typeMap.begin()->first.type->m_program;
 
         for (const auto& it : typeMap) {
             auto* type = it.first.type;
 
-            if (useGBuffer != type->m_flags.gbuffer) continue;
             if (!typeSelector(type)) continue;
 
             auto& batch = ctx.m_batch;
@@ -197,6 +229,8 @@ void NodeDraw::drawProgram(
             if (type->m_entityType == EntityType::sprite) {
                 activeProgram = programSprite;
             }
+
+            if (!activeProgram) continue;
 
             for (auto& node : it.second) {
                 if (!nodeSelector(node)) continue;

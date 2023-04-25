@@ -23,6 +23,8 @@ const std::string SHADER_SKYBOX{ "skybox" };
 const std::string SHADER_GEOMETRY_PASS{ "g_geometry_pass" };
 const std::string SHADER_DEFERRED_PASS{ "g_deferred_pass" };
 
+const std::string SHADER_OIT_PASS{ "oit_pass" };
+
 const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
 const std::string GS_SPRITE{ "sprite" };
@@ -84,6 +86,9 @@ constexpr int UNIT_G_EMISSION = 52;
 constexpr int UNIT_G_AMBIENT = 53;
 constexpr int UNIT_G_POSITION = 54;
 constexpr int UNIT_G_NORMAL = 55;
+
+constexpr int UNIT_OIT_ACCUMULATOR = 56;
+constexpr int UNIT_OIT_REVEAL = 57;
 
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
 constexpr int UNIT_WATER_NOISE = 64;

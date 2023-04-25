@@ -38,7 +38,7 @@ void GBuffer::updateView(const RenderContext& ctx)
                     FrameBufferAttachment::getGBufferAmbient(GL_COLOR_ATTACHMENT3),
                     FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT4),
                     FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT5),
-                    // depth & stencil needed
+                    // depth needed
                     FrameBufferAttachment::getRBODepth()
                 }
             });

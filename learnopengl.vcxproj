@@ -245,6 +245,7 @@
     <ClCompile Include="src\renderer\ShadowCascade.h" />
     <ClCompile Include="src\render\GBuffer.cpp" />
     <ClCompile Include="src\render\NodeDraw.cpp" />
+    <ClCompile Include="src\render\OITBuffer.cpp" />
     <ClCompile Include="src\render\Quad.cpp" />
     <ClCompile Include="src\scene\SceneFile.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
@@ -409,6 +410,7 @@
     <ClInclude Include="src\model\Group.h" />
     <ClInclude Include="src\render\GBuffer.h" />
     <ClInclude Include="src\render\NodeDraw.h" />
+    <ClInclude Include="src\render\OITBuffer.h" />
     <ClInclude Include="src\render\Quad.h" />
     <ClInclude Include="src\scene\SceneFile.h" />
     <ClInclude Include="src\renderer\ObjectIdRenderer.h" />

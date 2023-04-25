@@ -12,11 +12,11 @@
 struct NodeRenderFlags {
     bool alpha = false;
     bool blend = false;
-    bool blendOIT = false;
     bool renderBack = false;
     bool wireframe = false;
 
     bool gbuffer = false;
+    bool blendOIT = false;
 
     bool instanced = false;
 
