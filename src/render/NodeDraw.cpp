@@ -77,6 +77,12 @@ void NodeDraw::drawNodes(
         m_oitbuffer.bind(ctx);
         m_oitbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, { 0.f, 0.f, 0.f, 0.f});
 
+        glDepthMask(GL_FALSE);
+        glEnable(GL_BLEND);
+        glBlendFunci(0, GL_ONE, GL_ONE);
+        glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+        glBlendEquation(GL_FUNC_ADD);
+
         // only "blend OIT" nodes
         drawProgram(
             ctx,
@@ -86,6 +92,9 @@ void NodeDraw::drawNodes(
             nodeSelector);
 
         ctx.m_batch->flush(ctx);
+
+        glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
     }
 
     // pass 2 - light

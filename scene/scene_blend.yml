@@ -19,6 +19,7 @@ entities:
     material: window_1
     program: g_tex
     pos: [0.0, 0.0, -8.0]
+    scale: [0.8, 1.0]
     render_flags:
       blend_oit: true
       alpha: true
@@ -29,6 +30,7 @@ entities:
     material: window_2
     program: g_tex
     pos: [0.5, 0.0, -10.0]
+    scale: [0.8, 1.0]
     render_flags:
       blend_oit: true
       alpha: true
