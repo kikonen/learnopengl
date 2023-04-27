@@ -291,10 +291,18 @@ namespace backend {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.patchVertices);
         }
 
-        const bool blend = !wireframe && drawOptions.blend && drawRange.m_allowBlend;
+        const bool blend = !wireframe && (drawOptions.blend || drawOptions.blendOIT) && drawRange.m_allowBlend;
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
-            state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+            glBlendEquation(GL_FUNC_ADD);
+
+            if (drawOptions.blendOIT) {
+                glBlendFunci(0, GL_ONE, GL_ONE);
+                glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+            }
+            else {
+                state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+            }
         }
     }
 }

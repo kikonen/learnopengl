@@ -23,6 +23,7 @@ namespace backend {
         bool renderBack = false;
         bool wireframe = false;
         bool blend = false;
+        bool blendOIT = false;
 
         // NOTE KI STRONG assumption; instanced nodes are in same sequence
         // and first entry drawn is first one on that sequence

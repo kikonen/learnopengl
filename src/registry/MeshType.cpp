@@ -101,6 +101,7 @@ void MeshType::prepare(
         m_drawOptions.renderBack = m_flags.renderBack;
         m_drawOptions.wireframe = m_flags.wireframe;
         m_drawOptions.blend = m_flags.blend;
+        m_drawOptions.blendOIT = m_flags.blendOIT;
         m_drawOptions.instanced = m_flags.instanced;
         m_drawOptions.tessellation = m_flags.tessellation;
 

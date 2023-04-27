@@ -55,14 +55,14 @@ void NodeDraw::drawNodes(
     GLbitfield clearMask,
     const glm::vec4& clearColor)
 {
-    // NOTE KI no blend in G-buffer
-    auto wasAllowBlend = ctx.pushAllowBlend(false);
-
     // pass 1 - geometry
     // => nodes supporting G-buffer
     {
         m_gbuffer.bind(ctx);
         m_gbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, {0.f, 0.f, 0.f, 0.f});
+
+        // NOTE KI no blend in G-buffer
+        auto wasAllowBlend = ctx.pushAllowBlend(false);
 
         drawNodesImpl(
             ctx,
@@ -70,18 +70,26 @@ void NodeDraw::drawNodes(
             nodeSelector);
 
         ctx.m_batch->flush(ctx);
+
+        ctx.pushAllowBlend(wasAllowBlend);
     }
 
     // pass 1 - blend OIT
+    //if (false)
     {
         m_oitbuffer.bind(ctx);
-        m_oitbuffer.m_buffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, { 0.f, 0.f, 0.f, 0.f});
 
+        glm::vec4 zero{ 0.f, 0.f, 0.f, 0.f };
+        glm::vec4 one{ 0.f, 0.f, 0.f, 0.f };
+
+        glClearBufferfv(GL_COLOR, 0, &zero[0]);
+        glClearBufferfv(GL_COLOR, 1, &one[0]);
+
+        // NOTE KI copy depth from G-buffer
+        m_gbuffer.m_buffer->blit(m_oitbuffer.m_buffer.get(), GL_DEPTH_BUFFER_BIT, {-1.f, 1.f}, {2.f, 2.f});
+
+        // NOTE KI do NOT modify depth with blend
         glDepthMask(GL_FALSE);
-        glEnable(GL_BLEND);
-        glBlendFunci(0, GL_ONE, GL_ONE);
-        glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
-        glBlendEquation(GL_FUNC_ADD);
 
         // only "blend OIT" nodes
         drawProgram(
@@ -94,13 +102,17 @@ void NodeDraw::drawNodes(
         ctx.m_batch->flush(ctx);
 
         glDepthMask(GL_TRUE);
-        glDisable(GL_BLEND);
     }
 
     // pass 2 - light
     {
         targetBuffer->bind(ctx);
         targetBuffer->clear(ctx, clearMask, clearColor);
+
+        glDepthFunc(GL_ALWAYS);
+
+        glEnable(GL_BLEND);
+        ctx.m_state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         m_deferredProgram->bind(ctx.m_state);
         m_gbuffer.bindTexture(ctx);
@@ -121,8 +133,6 @@ void NodeDraw::drawNodes(
 
         ctx.m_batch->flush(ctx);
     }
-
-    ctx.pushAllowBlend(wasAllowBlend);
 
     // pass 4 - blend
     // => separate light calculations
