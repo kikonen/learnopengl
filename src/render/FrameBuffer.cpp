@@ -61,13 +61,13 @@ void FrameBuffer::prepare(
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
             KI_INFO(fmt::format("CREATE_TEX: FBO={}, TEX={}", str(), att.textureID));
 
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
+
             glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
             glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
 
             glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
             glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
-
-            glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
 
             glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
 

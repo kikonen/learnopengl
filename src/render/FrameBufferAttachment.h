@@ -17,7 +17,7 @@ struct FrameBufferAttachment {
     GLenum useDrawBuffer = false;
 
     int internalFormat = GL_RGBA8;
-    int format = GL_RGBA;
+    //int format = GL_RGBA;
 
     GLint minFilter = GL_NEAREST;
     GLint magFilter = GL_NEAREST;

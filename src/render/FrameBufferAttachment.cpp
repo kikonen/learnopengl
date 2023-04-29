@@ -5,7 +5,7 @@ FrameBufferAttachment FrameBufferAttachment::getTextureRGBA(GLenum attachment)
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGBA8;
-    spec.format = GL_RGBA;
+    //spec.format = GL_RGBA;
     spec.attachment = attachment;
 
     return spec;
@@ -16,7 +16,7 @@ FrameBufferAttachment FrameBufferAttachment::getTextureRGB(GLenum attachment)
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGB8;
-    spec.format = GL_RGB;
+    //spec.format = GL_RGB;
     spec.attachment = attachment;
 
     return spec;
@@ -27,7 +27,7 @@ FrameBufferAttachment FrameBufferAttachment::getObjectId()
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGBA8;
-    spec.format = GL_RGBA;
+    //spec.format = GL_RGBA;
     spec.attachment = GL_COLOR_ATTACHMENT0;
 
     return spec;
@@ -39,7 +39,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferAlbedo(GLenum attachment)
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGBA8;
-    spec.format = GL_RGBA;
+    //spec.format = GL_RGBA;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
@@ -52,7 +52,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferSpecular(GLenum attachmen
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGBA8;
-    spec.format = GL_RGBA;
+    //spec.format = GL_RGBA;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
@@ -65,7 +65,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferEmission(GLenum attachmen
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGBA8;
-    spec.format = GL_RGBA;
+    //spec.format = GL_RGBA;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
@@ -78,7 +78,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferAmbient(GLenum attachment
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGBA8;
-    spec.format = GL_RGBA;
+    //spec.format = GL_RGBA;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
@@ -92,7 +92,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferPosition(GLenum attachmen
     spec.type = FrameBufferAttachmentType::texture;
     // NOTE KI GL_RGB16F is *NOT* enough precision; causes very block light/shadows
     spec.internalFormat = GL_RGB32F;
-    spec.format = GL_RGB;
+    //spec.format = GL_RGB;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
@@ -105,7 +105,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGB16F;
-    spec.format = GL_RGB;
+    //spec.format = GL_RGB;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
@@ -119,7 +119,7 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
     spec.type = FrameBufferAttachmentType::depth_texture;
     // NOTE KI need to have 24bit, 16bit is FAR TOO SMALL
     spec.internalFormat = GL_DEPTH_COMPONENT24;
-    spec.format = GL_FLOAT;
+    //spec.format = GL_FLOAT;
     spec.attachment = GL_DEPTH_ATTACHMENT;
     // NOTE KI linear slower, but *BETTER* results
     // CHECK KI does it actually matter for shadowmap?!?
@@ -160,7 +160,7 @@ FrameBufferAttachment FrameBufferAttachment::getOITAccumulatorTexture(GLenum att
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGBA16F;
-    spec.format = GL_RGBA;
+    //spec.format = GL_RGBA;
     spec.minFilter = GL_LINEAR;
     spec.magFilter = GL_LINEAR;
     spec.attachment = attachment;
@@ -174,7 +174,7 @@ FrameBufferAttachment FrameBufferAttachment::getOITRevealTexture(GLenum attachme
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_R8;
-    spec.format = GL_RED;
+    //spec.format = GL_RED;
     spec.minFilter = GL_LINEAR;
     spec.magFilter = GL_LINEAR;
     spec.attachment = attachment;
