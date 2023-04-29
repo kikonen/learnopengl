@@ -50,6 +50,12 @@ const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT] =
           vec4(0.1, 0.1, 0.0, 0.0)
           );
 
+
+bool isApproximatelyEqual(float a, float b)
+{
+  return abs(a - b) <= (abs(a) < abs(b) ? abs(b) : abs(a)) * EPSILON;
+}
+
 float max3(vec3 v)
 {
   return max(max(v.x, v.y), v.z);
@@ -72,7 +78,7 @@ void main()
   {
     material.diffuse = texture(g_albedo, fs_in.texCoords);
     // HACK KI alpha == 0.0 is used for skybox
-    skipLight = false;//material.diffuse.a == 0.0;
+    skipLight = material.diffuse.a == 0.0;
     material.diffuse.a = 1.0;
 
     material.specular = texture(g_specular, fs_in.texCoords);
@@ -87,18 +93,25 @@ void main()
 
     // NOTE KI fogRatio is global only now
     material.fogRatio = u_fogRatio;
+  }
 
+  {
     ivec2 fragCoords = ivec2(gl_FragCoord.xy);
 
     float revealage = texelFetch(oit_reveal, fragCoords, 0).r;
-    vec4 accumulation = texelFetch(oit_accumulator, fragCoords, 0);
+    if (!isApproximatelyEqual(revealage, 1.0f)) {
+      vec4 accumulation = texelFetch(oit_accumulator, fragCoords, 0);
 
-    if (isinf(max3(abs(accumulation.rgb))))
-      accumulation.rgb = vec3(accumulation.a);
+      if (isinf(max3(abs(accumulation.rgb))))
+        accumulation.rgb = vec3(accumulation.a);
 
-    vec3 averageColor = accumulation.rgb / max(accumulation.a, EPSILON);
+      vec3 averageColor = accumulation.rgb / max(accumulation.a, EPSILON);
 
-    material.diffuse = vec4(material.diffuse.xyz + averageColor, 1.0f - revealage);
+      material.diffuse = vec4(material.diffuse.xyz + averageColor, 1.0f - revealage);
+      material.diffuse = vec4(averageColor, 1.0f);
+    } else {
+      material.diffuse = vec4(1, 1, 0, 1);
+    }
   }
 
   vec4 color;

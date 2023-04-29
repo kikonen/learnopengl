@@ -79,8 +79,8 @@ void NodeDraw::drawNodes(
     {
         m_oitbuffer.bind(ctx);
 
-        glm::vec4 zero{ 0.f, 0.f, 0.f, 0.f };
-        glm::vec4 one{ 0.f, 0.f, 0.f, 0.f };
+        const glm::vec4 zero{ 0.f, 0.f, 0.f, 0.f };
+        const glm::vec4 one{ 0.5f, 1.f, 1.f, 1.f };
 
         glClearBufferfv(GL_COLOR, 0, &zero[0]);
         glClearBufferfv(GL_COLOR, 1, &one[0]);
@@ -90,6 +90,10 @@ void NodeDraw::drawNodes(
 
         // NOTE KI do NOT modify depth with blend
         glDepthMask(GL_FALSE);
+
+        glBlendFunci(0, GL_ONE, GL_ONE);
+        glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+        glBlendEquation(GL_FUNC_ADD);
 
         // only "blend OIT" nodes
         drawProgram(
@@ -107,17 +111,20 @@ void NodeDraw::drawNodes(
     // pass 2 - light
     {
         targetBuffer->bind(ctx);
-        targetBuffer->clear(ctx, clearMask, clearColor);
+        targetBuffer->clear(ctx, clearMask, { 0.f , 0.f, 0.f, 0.f });
 
-        glDepthFunc(GL_ALWAYS);
+        ctx.m_state.setDepthFunc(GL_ALWAYS);
 
-        glEnable(GL_BLEND);
+        ctx.m_state.setEnabled(GL_BLEND, true);
         ctx.m_state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         m_deferredProgram->bind(ctx.m_state);
         m_gbuffer.bindTexture(ctx);
         m_oitbuffer.bindTexture(ctx);
         m_quad.draw(ctx);
+
+        ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+        ctx.m_state.setEnabled(GL_BLEND, false);
     }
 
     // pass 3 - non G-buffer nodes
@@ -142,6 +149,8 @@ void NodeDraw::drawNodes(
         ctx.m_batch->flush(ctx);
     }
 
+    // pass 5 - debug info
+    //if (false)
     {
         constexpr float SZ = 0.25f;
 

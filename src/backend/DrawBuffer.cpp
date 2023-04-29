@@ -294,13 +294,8 @@ namespace backend {
         const bool blend = !wireframe && (drawOptions.blend || drawOptions.blendOIT) && drawRange.m_allowBlend;
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
-            glBlendEquation(GL_FUNC_ADD);
-
-            if (drawOptions.blendOIT) {
-                glBlendFunci(0, GL_ONE, GL_ONE);
-                glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
-            }
-            else {
+            if (!drawOptions.blendOIT) {
+                glBlendEquation(GL_FUNC_ADD);
                 state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             }
         }

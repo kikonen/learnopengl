@@ -28,13 +28,14 @@ void main()
   #include var_tex_material.glsl
   vec4 color = material.diffuse;
 
-  if (color.a < 0.01 || color.a >= 0.95)
+  const float alpha = color.a;
+
+  if (alpha < 0.01 || alpha >= 0.95)
     discard;
 
-  float weight = clamp(pow(min(1.0, color.a * 10.0) + 0.01, 3.0) * 1e8 * pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
+  float weight = clamp(pow(min(1.0, alpha * 10.0) + 0.01, 3.0) * 1e8 * pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
 
-  o_accum = vec4(color.rgb * color.a, color.a) * weight;
-  o_reveal = color.a;
+  o_accum = vec4(color.rgb * alpha, alpha) * weight;
 
 //  o_accum = vec4(1, 1, 0, 1);
 //  o_reveal = 0.5;
