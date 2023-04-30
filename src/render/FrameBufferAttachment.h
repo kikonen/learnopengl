@@ -21,7 +21,7 @@ struct FrameBufferAttachment {
     FrameBufferAttachmentType type = FrameBufferAttachmentType::texture;
 
     GLenum attachment = GL_COLOR_ATTACHMENT0;
-    GLenum useDrawBuffer = false;
+    bool useDrawBuffer = false;
 
     int internalFormat = GL_RGBA8;
     //int format = GL_RGBA;

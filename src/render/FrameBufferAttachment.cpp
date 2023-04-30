@@ -36,6 +36,7 @@ FrameBufferAttachment FrameBufferAttachment::getTextureRGBA(GLenum attachment)
     spec.internalFormat = GL_RGBA8;
     //spec.format = GL_RGBA;
     spec.attachment = attachment;
+    spec.useDrawBuffer = true;
 
     return spec;
 }
@@ -47,6 +48,7 @@ FrameBufferAttachment FrameBufferAttachment::getTextureRGB(GLenum attachment)
     spec.internalFormat = GL_RGB8;
     //spec.format = GL_RGB;
     spec.attachment = attachment;
+    spec.useDrawBuffer = true;
 
     return spec;
 }
@@ -58,6 +60,7 @@ FrameBufferAttachment FrameBufferAttachment::getObjectId()
     spec.internalFormat = GL_RGBA8;
     //spec.format = GL_RGBA;
     spec.attachment = GL_COLOR_ATTACHMENT0;
+    spec.useDrawBuffer = true;
 
     return spec;
 }
@@ -160,6 +163,7 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
     spec.textureWrapT = GL_CLAMP_TO_BORDER;
 
     spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
+    spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
     spec.clearType = ClearType::DEPTH_STENCIL;
 
     return spec;
@@ -173,6 +177,8 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepthStencil()
     spec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
     spec.clearType = ClearType::DEPTH_STENCIL;
 
+    spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
+
     return spec;
 }
 
@@ -183,6 +189,8 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepth()
     spec.internalFormat = GL_DEPTH_COMPONENT24;
     spec.attachment = GL_DEPTH_ATTACHMENT;
     spec.clearType = ClearType::DEPTH_STENCIL;
+
+    spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
 
     return spec;
 }
