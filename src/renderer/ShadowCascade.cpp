@@ -87,7 +87,7 @@ void ShadowCascade::prepare(
             { FrameBufferAttachment::getDepthTexture() }
         });
 
-    m_buffer->prepare(true, { 0, 0, 0, 1.0 });
+    m_buffer->prepare(true);
 }
 
 void ShadowCascade::bindTexture(const RenderContext& ctx)
@@ -200,9 +200,9 @@ void ShadowCascade::render(
     localCtx.m_shadow = true;
     localCtx.m_allowBlend = false;
 
-    m_buffer->bind(localCtx);
-    glClear(GL_DEPTH_BUFFER_BIT);
+    m_buffer->clearAll();
 
+    m_buffer->bind(localCtx);
     drawNodes(localCtx);
     m_buffer->unbind(localCtx);
 }

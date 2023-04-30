@@ -516,7 +516,7 @@ void Scene::updateMainViewport(const RenderContext& ctx)
             });
 
         m_mainBuffer.reset(buffer);
-        m_mainBuffer->prepare(true, { 0, 0, 0, 0.0 });
+        m_mainBuffer->prepare(true);
 
         m_mainViewport->setTextureId(m_mainBuffer->m_spec.attachments[0].textureID);
         m_mainViewport->setSourceFrameBuffer(m_mainBuffer.get());
@@ -540,7 +540,7 @@ void Scene::updateMainViewport(const RenderContext& ctx)
                 });
 
             m_rearBuffer.reset(buffer);
-            m_rearBuffer->prepare(true, { 0, 0, 0, 0.0 });
+            m_rearBuffer->prepare(true);
 
             m_rearViewport->setTextureId(m_rearBuffer->m_spec.attachments[0].textureID);
             m_rearViewport->setSourceFrameBuffer(m_rearBuffer.get());

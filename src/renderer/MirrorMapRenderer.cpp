@@ -73,8 +73,8 @@ void MirrorMapRenderer::prepare(
         m_curr = std::make_unique<FrameBuffer>("mirror_curr", spec);
     }
 
-    m_prev->prepare(true, DEBUG_COLOR[0]);
-    m_curr->prepare(true, DEBUG_COLOR[1]);
+    m_prev->prepare(true);
+    m_curr->prepare(true);
 
     glm::vec3 origo(0);
     for (int i = 0; i < 1; i++) {

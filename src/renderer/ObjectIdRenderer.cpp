@@ -123,7 +123,7 @@ void ObjectIdRenderer::updateView(const RenderContext& ctx)
         });
 
     m_idBuffer.reset(buffer);
-    m_idBuffer->prepare(true, { 0, 0, 0, 0.5 });
+    m_idBuffer->prepare(true);
 
     m_debugViewport->setTextureId(m_idBuffer->m_spec.attachments[0].textureID);
     m_debugViewport->setSourceFrameBuffer(m_idBuffer.get());
@@ -147,8 +147,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
 
     ctx.bindDefaults();
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    m_idBuffer->clearAll();
 
     {
         ctx.m_nodeDraw->drawProgram(

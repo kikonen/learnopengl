@@ -24,8 +24,7 @@ public:
     const std::string str() const noexcept;
 
     virtual void prepare(
-        const bool clear,
-        const glm::vec4& clearColor);
+        const bool clear);
 
     virtual void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
@@ -54,6 +53,9 @@ public:
         const RenderContext& ctx,
         GLbitfield clearMask,
         const glm::vec4& clearColor);
+
+    void clearAll() const;
+    void clearAttachment(int attachmentIndex) const;
 
     int getDrawBufferCount() const noexcept {
         return m_drawBuffers.size();

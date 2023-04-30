@@ -71,8 +71,8 @@ void WaterMapRenderer::prepare(
         m_refractionBuffer = std::make_unique<FrameBuffer>("water_refract", spec);
     }
 
-    m_reflectionBuffer->prepare(true, { 0, 0, 0, 1.0 });
-    m_refractionBuffer->prepare(true, { 0, 0, 0, 1.0 });
+    m_reflectionBuffer->prepare(true);
+    m_refractionBuffer->prepare(true);
 
     glm::vec3 origo(0);
     for (int i = 0; i < 2; i++) {

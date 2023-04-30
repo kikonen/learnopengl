@@ -10,6 +10,13 @@ enum class FrameBufferAttachmentType {
     rbo,
 };
 
+enum class ClearType {
+    FLOAT,
+    INT,
+    UNSIGNED_INT,
+    DEPTH_STENCIL,
+};
+
 struct FrameBufferAttachment {
     FrameBufferAttachmentType type = FrameBufferAttachmentType::texture;
 
@@ -25,12 +32,17 @@ struct FrameBufferAttachment {
     int textureWrapS = GL_CLAMP_TO_EDGE;
     int textureWrapT = GL_CLAMP_TO_EDGE;
 
-    glm::vec4 borderColor = { 0.0, 0.0, 0.0, 0.0 };
+    glm::vec4 borderColor{ 0.f, 0.f, 0.f, 0.f };
+    glm::vec4 clearColor{ 0.f, 0.f, 0.f, 0.f };
+    ClearType clearType{ ClearType::FLOAT };
 
     bool useMibMap = false;
 
+    int drawBufferIndex = -1;
     unsigned int textureID = 0;
     unsigned int rbo = 0;
+
+    void clearBuffer(int fbo) const;
 
     static FrameBufferAttachment getTextureRGBA(GLenum attachment = GL_COLOR_ATTACHMENT0);
 

@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <fmt/format.h>
+
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 
@@ -43,8 +45,7 @@ const std::string FrameBuffer::str() const noexcept
 }
 
 void FrameBuffer::prepare(
-    const bool clear,
-    const glm::vec4& clearColor)
+    const bool clear)
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -53,8 +54,6 @@ void FrameBuffer::prepare(
         glCreateFramebuffers(1, &m_fbo);
         KI_INFO(fmt::format("CREATE: FBO={}", str()));
     }
-
-    int clearMask = 0;
 
     for (auto& att : m_spec.attachments) {
         if (att.type == FrameBufferAttachmentType::texture) {
@@ -74,10 +73,9 @@ void FrameBuffer::prepare(
             glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
             if (att.useDrawBuffer) {
+                att.drawBufferIndex = m_drawBuffers.size();
                 m_drawBuffers.push_back(att.attachment);
             }
-
-            clearMask |= GL_COLOR_BUFFER_BIT;
         }
         else if (att.type == FrameBufferAttachmentType::rbo) {
             glCreateRenderbuffers(1, &att.rbo);
@@ -85,8 +83,6 @@ void FrameBuffer::prepare(
 
             glNamedRenderbufferStorage(att.rbo, att.internalFormat, m_spec.width, m_spec.height);
             glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, att.rbo);
-
-            clearMask |= GL_COLOR_BUFFER_BIT;
         }
         else if (att.type == FrameBufferAttachmentType::depth_texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
@@ -112,8 +108,6 @@ void FrameBuffer::prepare(
                 glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
                 glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
             }
-
-            clearMask |= GL_DEPTH_BUFFER_BIT;
         }
     }
 
@@ -132,17 +126,17 @@ void FrameBuffer::prepare(
 
     // NOTE KI clear buffer to avoid showing garbage
     if (clear) {
-        glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-        glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-        glClear(clearMask);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        for (auto& att : m_spec.attachments) {
+            att.clearBuffer(m_fbo);
+        }
     }
 }
 
 void FrameBuffer::bind(const RenderContext& ctx)
 {
-    // NOTE KI MUST flush before changing render target
-    ctx.m_batch->flush(ctx);
+    if (!ctx.m_batch->isFlushed()) {
+        throw std::runtime_error{ fmt::format("BIND_ERROR: Batch was NOT flushed: FBO={}", str()) };
+    }
 
     ctx.m_state.bindFrameBuffer(m_fbo, m_forceBind);
     glViewport(0, 0, m_spec.width, m_spec.height);
@@ -246,4 +240,16 @@ void FrameBuffer::clear(
     if (clearMask != 0) {
         glClear(clearMask);
     }
+}
+
+void FrameBuffer::clearAll() const
+{
+    for (const auto& att : m_spec.attachments) {
+       att.clearBuffer(m_fbo);
+    }
+}
+
+void FrameBuffer::clearAttachment(int attachmentIndex) const
+{
+    m_spec.attachments[attachmentIndex].clearBuffer(m_fbo);
 }

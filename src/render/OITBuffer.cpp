@@ -40,7 +40,7 @@ void OITBuffer::updateView(const RenderContext& ctx)
             });
 
         m_buffer.reset(buffer);
-        m_buffer->prepare(true, { 0, 0, 0, 0.0 });
+        m_buffer->prepare(true);
 
         unbindTexture(ctx);
     }

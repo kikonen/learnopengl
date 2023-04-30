@@ -1,5 +1,34 @@
 #include "FrameBufferAttachment.h"
 
+#include "glm/ext.hpp"
+
+namespace {
+}
+
+void FrameBufferAttachment::clearBuffer(int fbo) const
+{
+    switch (clearType) {
+    case ClearType::FLOAT:
+        if (drawBufferIndex >= 0) {
+            glClearNamedFramebufferfv(fbo, GL_COLOR, drawBufferIndex, glm::value_ptr(clearColor));
+        }
+        break;
+    case ClearType::INT:
+        if (drawBufferIndex >= 0) {
+            glClearNamedFramebufferiv(fbo, GL_COLOR, drawBufferIndex, glm::value_ptr(glm::ivec4(clearColor)));
+        }
+        break;
+    case ClearType::UNSIGNED_INT:
+        if (drawBufferIndex >= 0) {
+            glClearNamedFramebufferuiv(fbo, GL_COLOR, drawBufferIndex, glm::value_ptr(glm::uvec4(clearColor)));
+        }
+        break;
+    case ClearType::DEPTH_STENCIL:
+        glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], clearColor[1]);
+        break;
+    }
+}
+
 FrameBufferAttachment FrameBufferAttachment::getTextureRGBA(GLenum attachment)
 {
     FrameBufferAttachment spec;
@@ -131,6 +160,7 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
     spec.textureWrapT = GL_CLAMP_TO_BORDER;
 
     spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
+    spec.clearType = ClearType::DEPTH_STENCIL;
 
     return spec;
 }
@@ -141,6 +171,7 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepthStencil()
     spec.type = FrameBufferAttachmentType::rbo;
     spec.internalFormat = GL_DEPTH24_STENCIL8;
     spec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
+    spec.clearType = ClearType::DEPTH_STENCIL;
 
     return spec;
 }
@@ -151,6 +182,7 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepth()
     spec.type = FrameBufferAttachmentType::rbo;
     spec.internalFormat = GL_DEPTH_COMPONENT24;
     spec.attachment = GL_DEPTH_ATTACHMENT;
+    spec.clearType = ClearType::DEPTH_STENCIL;
 
     return spec;
 }
@@ -166,6 +198,8 @@ FrameBufferAttachment FrameBufferAttachment::getOITAccumulatorTexture(GLenum att
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
+    spec.clearColor = { 1.f, 1.f, 0.f, 0.f };
+
     return spec;
 }
 
@@ -179,6 +213,8 @@ FrameBufferAttachment FrameBufferAttachment::getOITRevealTexture(GLenum attachme
     spec.magFilter = GL_LINEAR;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
+
+    spec.clearColor = { 0.f, 1.f, 0.f, 0.f };
 
     return spec;
 }

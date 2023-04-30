@@ -62,6 +62,11 @@ public:
         Node& node,
         Program* program);
 
+    bool isFlushed() const noexcept
+    {
+        return m_entityIndeces.size() == 0;
+    }
+
     void flush(
         const RenderContext& ctx);
 
