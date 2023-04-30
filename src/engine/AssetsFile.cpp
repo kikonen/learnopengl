@@ -243,6 +243,9 @@ void AssetsFile::loadAssets(
         else if (k == "batch_buffers") {
             data.batchBuffers = readInt(v);
         }
+        else if (k == "batch_debug") {
+            data.batchDebug = readBool(v);
+        }
         else if (k == "near_plane") {
             data.nearPlane = readFloat(v);
         }

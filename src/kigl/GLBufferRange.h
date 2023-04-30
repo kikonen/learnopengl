@@ -3,6 +3,8 @@
 #include "ki/GL.h"
 
 struct GLBufferRange {
+    bool m_debug{ false };
+
     size_t m_maxCount = 0;
     size_t m_usedCount = 0;
 
@@ -64,12 +66,14 @@ struct GLBufferRange {
             count++;
         }
 
-        //if (count > 1) {
-        //    std::cout << '[' << count << ']';
-        //}
-        //else {
-        //    std::cout << '.';
-        //}
+        if (m_debug) {
+            if (count > 1) {
+                std::cout << '[' << count << ']';
+            }
+            //else {
+            //    std::cout << '.';
+            //}
+        }
 
         glDeleteSync(m_sync);
         m_sync = 0;

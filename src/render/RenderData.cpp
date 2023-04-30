@@ -34,7 +34,7 @@ void RenderData::prepare()
     //glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ubo.textures);
     //glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(TexturesUBO), &m_textures, GL_DYNAMIC_COPY);
     //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    m_textures.prepare(1);
+    m_textures.prepare(1, false);
 }
 
 void RenderData::bind()

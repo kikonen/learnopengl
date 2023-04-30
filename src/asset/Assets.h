@@ -124,6 +124,7 @@ public:
 
     int batchSize;
     int batchBuffers;
+    int batchDebug;
 
     float nearPlane;
     float farPlane;

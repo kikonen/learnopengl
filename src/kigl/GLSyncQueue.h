@@ -29,7 +29,7 @@ public:
         }
     }
 
-    void prepare(int bindAlignment) {
+    void prepare(int bindAlignment, bool debug) {
         m_bindAlignment = bindAlignment;
         m_rangeLength = m_entryCount * m_entrySize;
 
@@ -64,6 +64,7 @@ public:
         for (size_t i = 0; i < m_rangeCount; i++) {
             auto& range = m_ranges.emplace_back();
             // static
+            range.m_debug = debug;
             range.m_index = i;
             range.m_baseIndex = i * m_entryCount;
             range.m_maxCount = m_entryCount;

@@ -43,10 +43,7 @@ namespace backend {
         //batchMultiplier = rangeCount;
         //rangeCount = 1;
 
-        int candidateBatchCount = batchCount * batchMultiplier;
         int commandBatchCount = batchCount * batchMultiplier;
-
-        int candidateRangeCount = rangeCount;
         int commandRangeCount = rangeCount;
 
         m_computeGroups = assets.computeGroups;
@@ -60,12 +57,6 @@ namespace backend {
             });
 
         m_cullingCompute->prepare(assets);
-
-        m_commands = std::make_unique<GLCommandQueue>(
-            "drawCandidate",
-            candidateBatchCount,
-            candidateRangeCount);
-        m_commands->prepare(BUFFER_ALIGNMENT);
 
         {
             constexpr int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;
@@ -90,7 +81,7 @@ namespace backend {
             "drawCommand",
             commandBatchCount,
             commandRangeCount);
-        m_commands->prepare(BUFFER_ALIGNMENT);
+        m_commands->prepare(BUFFER_ALIGNMENT, assets.batchDebug);
 
         m_drawRanges.reserve(rangeCount);
         for (int i = 0; i < rangeCount; i++) {

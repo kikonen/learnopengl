@@ -108,6 +108,7 @@ Assets::Assets()
 
     batchSize = 16;
     batchBuffers = 3;
+    batchDebug = false;
 
     nearPlane = 0.1f;
     farPlane = 1000.0f;
