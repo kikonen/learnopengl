@@ -57,7 +57,7 @@ void NodeDraw::drawNodes(
 {
     // pass 1 - geometry
     // => nodes supporting G-buffer
-    if (true)
+    //if (false)
     {
         m_gbuffer.bind(ctx);
         m_gbuffer.m_buffer->clearAll();
@@ -107,6 +107,7 @@ void NodeDraw::drawNodes(
     }
 
     // pass 2 - light
+    //if (false)
     {
         targetBuffer->bind(ctx);
         targetBuffer->clear(ctx, clearMask, { 0.f , 0.f, 0.f, 0.f });
@@ -128,6 +129,7 @@ void NodeDraw::drawNodes(
     // pass 3 - non G-buffer nodes
     // => for example, "skybox"
     // => separate light calculations
+    if (false)
     {
         m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
 
@@ -141,6 +143,7 @@ void NodeDraw::drawNodes(
 
     // pass 4 - blend
     // => separate light calculations
+    if (false)
     {
         targetBuffer->bind(ctx);
         drawBlendedImpl(ctx, typeSelector, nodeSelector);
