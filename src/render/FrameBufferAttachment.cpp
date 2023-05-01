@@ -186,6 +186,7 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepthStencil()
     spec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
     spec.clearType = ClearType::DEPTH_STENCIL;
 
+    // NOTE KI (depth, clear, _, _)
     spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
 
     return spec;
@@ -199,6 +200,7 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepth()
     spec.attachment = GL_DEPTH_ATTACHMENT;
     spec.clearType = ClearType::DEPTH_STENCIL;
 
+    // NOTE KI (depth, clear, _, _)
     spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
 
     return spec;

@@ -66,10 +66,10 @@ void FrameBuffer::prepare(
                 m_drawBuffers.push_back(att.attachment);
             }
 
-            if (att.type == FrameBufferAttachmentType::texture) {
+            if (att.shared->type == FrameBufferAttachmentType::texture) {
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
             }
-            else if (att.type == FrameBufferAttachmentType::rbo) {
+            else if (att.shared->type == FrameBufferAttachmentType::rbo) {
                 glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, att.rbo);
             }
             else if (att.shared->type == FrameBufferAttachmentType::depth_texture) {

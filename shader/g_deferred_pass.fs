@@ -108,7 +108,7 @@ void main()
       vec3 averageColor = accumulation.rgb / max(accumulation.a, EPSILON);
 
       material.diffuse = vec4(material.diffuse.xyz + averageColor, 1.0f - revealage);
-      skipLight = false;
+      skipLight = true;
     }
   }
 
