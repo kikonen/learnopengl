@@ -238,34 +238,34 @@ entities:
   - name: Window 1
     model: quad
     material: window_1
-    program: tex
+    program: g_tex
     pos: [5.0, 14.0, -5.0]
     rotation: [0.0, 180.0, 0.0]
     scale: [1, 1.3, 0]
     render_flags:
-      blend: true
+      blend_oit: true
       render_back: true
     enabled: true
   - name: Window 2
     model: quad
     material: window_2
-    program: tex
+    program: g_tex
     pos: [7.0, 14.0, -8.0]
     rotation: [0.0, 180.0, 0.0]
     scale: [1, 1.2, 0]
     render_flags:
-      blend: true
+      blend_oit: true
       render_back: true
     enabled: true
   - name: Stained windows
     model: quad
     material: window_2
-    program: tex
+    program: g_tex
     pos: [-10.0, 20.0, 10.0]
     rotation: [0.0, 180.0, 0.0]
     scale: [1, 1.3, 0]
     render_flags:
-      blend: true
+      blend_oit: true
       render_back: true
     repeat:
       x_count: 10
