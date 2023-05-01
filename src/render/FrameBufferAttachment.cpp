@@ -29,6 +29,15 @@ void FrameBufferAttachment::clearBuffer(int fbo) const
     }
 }
 
+FrameBufferAttachment FrameBufferAttachment::getShared(FrameBufferAttachment* shared)
+{
+    FrameBufferAttachment spec{ *shared };
+    spec.type = FrameBufferAttachmentType::shared;
+    spec.shared = shared;
+
+    return spec;
+}
+
 FrameBufferAttachment FrameBufferAttachment::getTextureRGBA(GLenum attachment)
 {
     FrameBufferAttachment spec;
@@ -206,7 +215,7 @@ FrameBufferAttachment FrameBufferAttachment::getOITAccumulatorTexture(GLenum att
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
-    spec.clearColor = { 1.f, 1.f, 0.f, 0.f };
+    spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
 
     return spec;
 }
@@ -222,7 +231,7 @@ FrameBufferAttachment FrameBufferAttachment::getOITRevealTexture(GLenum attachme
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
-    spec.clearColor = { 0.f, 1.f, 0.f, 0.f };
+    spec.clearColor = { 1.f, 1.f, 1.f, 1.f };
 
     return spec;
 }

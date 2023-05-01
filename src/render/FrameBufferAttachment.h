@@ -5,6 +5,7 @@
 #include "ki/GL.h"
 
 enum class FrameBufferAttachmentType {
+    shared,
     texture,
     depth_texture,
     rbo,
@@ -42,7 +43,11 @@ struct FrameBufferAttachment {
     unsigned int textureID = 0;
     unsigned int rbo = 0;
 
+    FrameBufferAttachment* shared{ nullptr };
+
     void clearBuffer(int fbo) const;
+
+    static FrameBufferAttachment getShared(FrameBufferAttachment* shared);
 
     static FrameBufferAttachment getTextureRGBA(GLenum attachment = GL_COLOR_ATTACHMENT0);
 

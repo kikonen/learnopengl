@@ -25,6 +25,9 @@ FrameBuffer::~FrameBuffer()
     glDeleteFramebuffers(1, &m_fbo);
 
     for (auto& att : m_spec.attachments) {
+        // NOTE KI don't touch shared buffer
+        if (att.shared) continue;
+
         if (att.textureID) {
             glDeleteTextures(1, &att.textureID);
         }
@@ -56,7 +59,25 @@ void FrameBuffer::prepare(
     }
 
     for (auto& att : m_spec.attachments) {
-        if (att.type == FrameBufferAttachmentType::texture) {
+        if (att.type == FrameBufferAttachmentType::shared) {
+            // NOTE KI drawBuffer index *can* be different between fbos
+            if (att.useDrawBuffer) {
+                att.drawBufferIndex = m_drawBuffers.size();
+                m_drawBuffers.push_back(att.attachment);
+            }
+
+            if (att.type == FrameBufferAttachmentType::texture) {
+                glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
+            }
+            else if (att.type == FrameBufferAttachmentType::rbo) {
+                glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, att.rbo);
+            }
+            else if (att.shared->type == FrameBufferAttachmentType::depth_texture) {
+                glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
+                glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
+                glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
+            }
+        } else if (att.type == FrameBufferAttachmentType::texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
             KI_INFO(fmt::format("CREATE_TEX: FBO={}, TEX={}", str(), att.textureID));
 
@@ -203,8 +224,10 @@ void FrameBuffer::blit(
     const glm::vec2 d0{ dx, dy };
     const glm::vec2 d1{ dx + sx, dy + sy };
 
-    glNamedFramebufferReadBuffer(m_fbo, sourceColorAttachment);
-    glNamedFramebufferDrawBuffer(target->m_fbo, targetColorAttachment);
+    if ((mask & GL_COLOR_BUFFER_BIT) == GL_COLOR_BUFFER_BIT) {
+        glNamedFramebufferReadBuffer(m_fbo, sourceColorAttachment);
+        glNamedFramebufferDrawBuffer(target->m_fbo, targetColorAttachment);
+    }
 
     glBlitNamedFramebuffer(
         m_fbo,
@@ -219,10 +242,6 @@ void FrameBuffer::blit(
         d1.y,
         mask,
         GL_NEAREST);
-
-    //if (target->m_drawBuffers.size() > 0) {
-    //    glNamedFramebufferDrawBuffers(target->m_fbo, target->m_drawBuffers.size(), target->m_drawBuffers.data());
-    //}
 }
 
 void FrameBuffer::clear(
@@ -252,4 +271,14 @@ void FrameBuffer::clearAll() const
 void FrameBuffer::clearAttachment(int attachmentIndex) const
 {
     m_spec.attachments[attachmentIndex].clearBuffer(m_fbo);
+}
+
+FrameBufferAttachment* FrameBuffer::getDepthAttachment()
+{
+    for (auto& att : m_spec.attachments) {
+        if (att.attachment == GL_DEPTH_ATTACHMENT) {
+            return &att;
+        }
+    }
+    return nullptr;
 }

@@ -2,12 +2,17 @@
 
 #include "asset/Shader.h"
 
+#include "render/GBuffer.h"
+
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 
 
-void OITBuffer::prepare(const Assets& assets)
+void OITBuffer::prepare(
+    const Assets& assets,
+    GBuffer* gbuffer)
 {
+    m_gbuffer = gbuffer;
 }
 
 void OITBuffer::updateView(const RenderContext& ctx)
@@ -34,8 +39,8 @@ void OITBuffer::updateView(const RenderContext& ctx)
                 {
                     FrameBufferAttachment::getOITAccumulatorTexture(GL_COLOR_ATTACHMENT0),
                     FrameBufferAttachment::getOITRevealTexture(GL_COLOR_ATTACHMENT1),
-                    // depth needed
-                    FrameBufferAttachment::getRBODepth()
+                    // NOTE KI *SHARE* depth with gbuffer
+                    FrameBufferAttachment::getShared(m_gbuffer->m_buffer->getDepthAttachment()),
                 }
             });
 

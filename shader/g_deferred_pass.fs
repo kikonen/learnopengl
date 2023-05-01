@@ -95,7 +95,7 @@ void main()
     material.fogRatio = u_fogRatio;
   }
 
-  {
+  if (true) {
     ivec2 fragCoords = ivec2(gl_FragCoord.xy);
 
     float revealage = texelFetch(oit_reveal, fragCoords, 0).r;
@@ -108,9 +108,7 @@ void main()
       vec3 averageColor = accumulation.rgb / max(accumulation.a, EPSILON);
 
       material.diffuse = vec4(material.diffuse.xyz + averageColor, 1.0f - revealage);
-      material.diffuse = vec4(averageColor, 1.0f);
-    } else {
-      material.diffuse = vec4(1, 1, 0, 1);
+      skipLight = false;
     }
   }
 

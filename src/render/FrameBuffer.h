@@ -35,12 +35,14 @@ public:
     // NOTE KI *force* unbind
     void unbindTexture(const RenderContext& ctx, int unitIndex);
 
+    // TODO KI does NOT support blit for depth only color
     void blit(
         FrameBuffer* target,
         GLbitfield mask,
         const glm::vec2& pos,
         const glm::vec2& size);
 
+    // TODO KI does NOT support blit for depth only color
     void blit(
         FrameBuffer* target,
         GLbitfield mask,
@@ -60,6 +62,8 @@ public:
     int getDrawBufferCount() const noexcept {
         return m_drawBuffers.size();
     }
+
+    FrameBufferAttachment* getDepthAttachment();
 
 public:
     const std::string m_name;

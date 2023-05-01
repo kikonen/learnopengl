@@ -36,7 +36,5 @@ void main()
   float weight = clamp(pow(min(1.0, alpha * 10.0) + 0.01, 3.0) * 1e8 * pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
 
   o_accum = vec4(color.rgb * alpha, alpha) * weight;
-
-//  o_accum = vec4(1, 1, 0, 1);
-//  o_reveal = 0.5;
+  o_reveal = alpha;
 }

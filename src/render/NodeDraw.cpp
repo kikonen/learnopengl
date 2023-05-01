@@ -19,7 +19,7 @@ void NodeDraw::prepare(
     Registry* registry)
 {
     m_gbuffer.prepare(assets);
-    m_oitbuffer.prepare(assets);
+    m_oitbuffer.prepare(assets, &m_gbuffer);
     m_quad.prepare();
 
     m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
@@ -83,9 +83,6 @@ void NodeDraw::drawNodes(
         m_oitbuffer.m_buffer->clearAttachment(0);
         m_oitbuffer.m_buffer->clearAttachment(1);
 
-        // NOTE KI copy depth from G-buffer
-        m_gbuffer.m_buffer->blit(m_oitbuffer.m_buffer.get(), GL_DEPTH_BUFFER_BIT, {-1.f, 1.f}, {2.f, 2.f});
-
         // NOTE KI do NOT modify depth with blend
         glDepthMask(GL_FALSE);
 
@@ -129,8 +126,10 @@ void NodeDraw::drawNodes(
     // pass 3 - non G-buffer nodes
     // => for example, "skybox"
     // => separate light calculations
-    if (false)
+    //if (false)
     {
+        // NOTE KI *wrong* blit
+        // TODO KI broken depth blit
         m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
 
         drawNodesImpl(
@@ -143,7 +142,7 @@ void NodeDraw::drawNodes(
 
     // pass 4 - blend
     // => separate light calculations
-    if (false)
+    //if (false)
     {
         targetBuffer->bind(ctx);
         drawBlendedImpl(ctx, typeSelector, nodeSelector);
@@ -153,8 +152,8 @@ void NodeDraw::drawNodes(
     // pass 5 - debug info
     //if (false)
     {
-        constexpr float SZ = 0.25f;
-        constexpr float SZ2 = 0.5f;
+        constexpr float SZ1 = 0.25f;
+        //constexpr float SZ2 = 0.5f;
 
         for (int i = 0; i < m_oitbuffer.m_buffer->getDrawBufferCount(); i++) {
             m_oitbuffer.m_buffer->blit(
@@ -162,7 +161,7 @@ void NodeDraw::drawNodes(
                 GL_COLOR_BUFFER_BIT,
                 GL_COLOR_ATTACHMENT0 + i,
                 GL_COLOR_ATTACHMENT0,
-                { -1.f, -1 + SZ2 + i * SZ2 }, { SZ2, SZ2 });
+                { -1.f, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
         }
 
         for (int i = 0; i < m_gbuffer.m_buffer->getDrawBufferCount(); i++) {
@@ -171,7 +170,7 @@ void NodeDraw::drawNodes(
                 GL_COLOR_BUFFER_BIT,
                 GL_COLOR_ATTACHMENT0 + i,
                 GL_COLOR_ATTACHMENT0,
-                { 1 - SZ, -1 + SZ + i * SZ }, { SZ, SZ });
+                { 1 - SZ1, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
         }
     }
 }
