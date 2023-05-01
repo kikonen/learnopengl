@@ -83,8 +83,10 @@ assets:
   terrain_grid_size: 64
 
   batch_size: 500
-  batch_buffers: 400
+  batch_buffers: 500
   batch_debug: true
+
+  draw_debug: false
 
   near_plane: 0.1
   far_plane: 2000.0

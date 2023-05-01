@@ -124,7 +124,9 @@ public:
 
     int batchSize;
     int batchBuffers;
-    int batchDebug;
+    bool batchDebug;
+
+    bool drawDebug;
 
     float nearPlane;
     float farPlane;

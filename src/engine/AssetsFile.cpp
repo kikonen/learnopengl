@@ -246,6 +246,9 @@ void AssetsFile::loadAssets(
         else if (k == "batch_debug") {
             data.batchDebug = readBool(v);
         }
+        else if (k == "draw_debug") {
+            data.drawDebug = readBool(v);
+        }
         else if (k == "near_plane") {
             data.nearPlane = readFloat(v);
         }
