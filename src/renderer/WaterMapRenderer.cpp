@@ -53,7 +53,10 @@ void WaterMapRenderer::prepare(
 
         FrameBufferSpecification spec = {
             scaledSize, scaledSize,
-            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
+            {
+                FrameBufferAttachment::getTextureRGB(),
+                FrameBufferAttachment::getRBODepth(),
+            }
         };
 
         m_reflectionBuffer = std::make_unique<FrameBuffer>("water_reflect", spec);
@@ -65,7 +68,12 @@ void WaterMapRenderer::prepare(
 
         FrameBufferSpecification spec = {
             scaledSize, scaledSize,
-            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
+            {
+                FrameBufferAttachment::getTextureRGB(),
+                // NOTE KI *SHARE* depth with reflection
+                // => saves some GPU memory
+                FrameBufferAttachment::getShared(m_reflectionBuffer->getDepthAttachment()),
+            }
         };
 
         m_refractionBuffer = std::make_unique<FrameBuffer>("water_refract", spec);

@@ -1,9 +1,12 @@
 #include "DynamicCubeMap.h"
 
+#include "glm/ext.hpp"
+
 #include "render/CubeMap.h"
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"
+#include "render/FrameBufferAttachment.h"
 
 
 DynamicCubeMap::DynamicCubeMap(int size)
@@ -13,7 +16,6 @@ DynamicCubeMap::DynamicCubeMap(int size)
 
 DynamicCubeMap::~DynamicCubeMap()
 {
-    glDeleteRenderbuffers(1, &m_depthBuffer);
     glDeleteFramebuffers(1, &m_fbo);
 }
 
@@ -36,25 +38,24 @@ void DynamicCubeMap::unbind(const RenderContext& ctx)
 }
 
 void DynamicCubeMap::prepare(
+    const FrameBufferAttachment* depthAttachment,
     const bool clear,
     const glm::vec4& clearColor)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    int clearMask = 0;
-
-    // TODO KI glNamedFramebufferTexture2DEXT missing
+    // TODO KI glNamedFramebufferTexture2DEXT missing (resolved!)
     {
         glCreateFramebuffers(1, &m_fbo);
-        clearMask |= GL_COLOR_BUFFER_BIT;
     }
 
     {
-        glCreateRenderbuffers(1, &m_depthBuffer);
-        glNamedRenderbufferStorage(m_depthBuffer, GL_DEPTH_COMPONENT24, m_size, m_size);
-        glNamedFramebufferRenderbuffer(m_fbo, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
-        clearMask |= GL_DEPTH_BUFFER_BIT;
+        glNamedFramebufferRenderbuffer(
+            m_fbo,
+            depthAttachment->attachment,
+            GL_RENDERBUFFER,
+            depthAttachment->rbo);
     }
 
     GLenum status = glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER);
@@ -68,10 +69,8 @@ void DynamicCubeMap::prepare(
 
     // NOTE KI clear buffer to avoid showing garbage
     if (clear) {
-        glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-        glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-        glClear(clearMask);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClearNamedFramebufferfv(m_fbo, GL_COLOR, 0, glm::value_ptr(clearColor));
+        glClearNamedFramebufferfi(m_fbo, GL_DEPTH_STENCIL, 0, 1.f, 0);
     }
 
     m_cubeMap.m_size = m_size;

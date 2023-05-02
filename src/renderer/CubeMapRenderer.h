@@ -55,6 +55,9 @@ private:
     std::unique_ptr<DynamicCubeMap> m_prev;
     std::unique_ptr<DynamicCubeMap> m_curr;
 
+    // NOTE KI shared depth for prev & curr
+    std::unique_ptr<FrameBuffer> m_depthBuffer{ nullptr };
+
     std::vector<Camera> m_cameras;
 
     Material m_tagMaterial;

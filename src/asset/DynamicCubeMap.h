@@ -8,6 +8,7 @@
 #include "render/CubeMapBuffer.h"
 
 class RenderContext;
+class FrameBufferAttachment;
 
 class DynamicCubeMap
 {
@@ -16,6 +17,7 @@ public:
     ~DynamicCubeMap();
 
     void prepare(
+        const FrameBufferAttachment* depthAttachment,
         const bool clear,
         const glm::vec4& clearColor);
 
@@ -37,7 +39,6 @@ public:
     int m_updateFace = -1;
 
     GLuint m_fbo = 0;
-    GLuint m_depthBuffer = 0;
 
 private:
     bool m_prepared = false;

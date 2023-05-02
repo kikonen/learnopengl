@@ -97,11 +97,30 @@ void CubeMapRenderer::prepare(
     int size = assets.cubeMapSize;
     int scaledSize = assets.bufferScale * size;
 
-    m_curr = std::make_unique<DynamicCubeMap>(scaledSize);
-    m_curr->prepare(false, { 0, 0, 1, 1.0 });
+    {
+        FrameBufferSpecification spec = {
+            scaledSize, scaledSize,
+            {
+                FrameBufferAttachment::getRBODepth(),
+            }
+        };
 
-    m_prev = std::make_unique<DynamicCubeMap>(scaledSize);
-    m_prev->prepare(false, { 0, 1, 0, 1.0 });
+        m_depthBuffer = std::make_unique<FrameBuffer>("cube_depth", spec);
+        m_depthBuffer->prepare(true);
+    }
+
+    {
+        m_curr = std::make_unique<DynamicCubeMap>(scaledSize);
+        m_curr->prepare(
+            m_depthBuffer->getDepthAttachment(),
+            false, { 0, 0, 1.f, 1.f });
+
+        m_prev = std::make_unique<DynamicCubeMap>(scaledSize);
+        m_prev->prepare(
+            m_depthBuffer->getDepthAttachment(),
+            false,
+            { 0, 1.f, 0, 1.f });
+    }
 
     glm::vec3 origo{ 0 };
     for (int face = 0; face < 6; face++) {

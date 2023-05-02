@@ -58,7 +58,10 @@ void MirrorMapRenderer::prepare(
 
         FrameBufferSpecification spec = {
             scaledSize, scaledSize,
-            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
+            {
+                FrameBufferAttachment::getTextureRGB(),
+                FrameBufferAttachment::getRBODepth(),
+            }
         };
         m_prev = std::make_unique<FrameBuffer>("mirror_prev", spec);
     }
@@ -68,7 +71,12 @@ void MirrorMapRenderer::prepare(
 
         FrameBufferSpecification spec = {
             scaledSize, scaledSize,
-            { FrameBufferAttachment::getTextureRGB(), FrameBufferAttachment::getRBODepth() }
+            {
+                FrameBufferAttachment::getTextureRGB(),
+                // NOTE KI *SHARE* depth with prev
+                // => saves some GPU memory
+                FrameBufferAttachment::getShared(m_prev->getDepthAttachment()),
+            }
         };
         m_curr = std::make_unique<FrameBuffer>("mirror_curr", spec);
     }
