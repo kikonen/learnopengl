@@ -1,11 +1,9 @@
 #version 460 core
 
-#include struct_lights.glsl
 #include struct_material.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_lights.glsl
 #include uniform_materials.glsl
 #include uniform_textures.glsl
 
@@ -23,8 +21,6 @@ in VS_OUT {
 
 layout (location = 0) out vec4 o_fragColor;
 
-layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
-
 int iChannel0;
 vec2 iMouse;
 vec2 iResolution;
@@ -35,11 +31,6 @@ float iTime;
 ////////////////////////////////////////////////////////////
 
 SET_FLOAT_PRECISION
-
-#include fn_calculate_dir_light.glsl
-#include fn_calculate_point_light.glsl
-#include fn_calculate_spot_light.glsl
-#include fn_calculate_light.glsl
 
 #ifdef EFFECT_SUN
   #include effect_sun.glsl
