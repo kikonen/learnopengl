@@ -35,6 +35,7 @@ public:
     void bindFrameBuffer(GLuint fbo, bool force) noexcept;
 
     GLBlendMode setBlendMode(const GLBlendMode& mode);
+    void clearBlendMode();
 
     GLenum setDepthFunc(const GLenum func);
     GLenum setDepthMask(const GLenum mask);

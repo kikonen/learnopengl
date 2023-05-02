@@ -114,6 +114,11 @@ GLBlendMode GLState::setBlendMode(const GLBlendMode& mode)
     return old;
 }
 
+void GLState::clearBlendMode()
+{
+    m_blendMode = { 0, 0, 0, 0 };
+}
+
 GLenum GLState::setDepthFunc(const GLenum func)
 {
     GLenum old = m_depthFunc;

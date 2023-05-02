@@ -243,6 +243,7 @@ entities:
     rotation: [0.0, 180.0, 0.0]
     scale: [1, 1.3, 0]
     render_flags:
+      alpha: true
       blend_oit: true
       render_back: true
     enabled: true
@@ -254,6 +255,7 @@ entities:
     rotation: [0.0, 180.0, 0.0]
     scale: [2.5, 4, 0]
     render_flags:
+      alpha: true
       blend_oit: true
       render_back: true
     enabled: true
@@ -265,6 +267,7 @@ entities:
     rotation: [0.0, 180.0, 0.0]
     scale: [1, 1.2, 0]
     render_flags:
+      alpha: true
       blend_oit: true
       render_back: true
     enabled: true
@@ -276,6 +279,7 @@ entities:
     rotation: [0.0, 180.0, 0.0]
     scale: [1, 1.3, 0]
     render_flags:
+      alpha: true
       blend_oit: true
       render_back: true
     repeat:
@@ -538,6 +542,7 @@ entities:
     pos: [-5.0, 25.0, 5.0]
     scale: 3
     render_flags:
+      alpha: true
       blend: true
       no_select: true
     enabled: true

@@ -100,6 +100,7 @@ void NodeDraw::drawNodes(
 
         ctx.m_batch->flush(ctx);
 
+        ctx.m_state.clearBlendMode();
         ctx.m_state.setDepthMask(oldDepthMask);
     }
 
@@ -109,21 +110,14 @@ void NodeDraw::drawNodes(
         targetBuffer->bind(ctx);
         targetBuffer->clear(ctx, clearMask, { 0.f , 0.f, 0.f, 0.f });
 
-        //ctx.m_state.setDepthFunc(GL_ALWAYS);
-        //ctx.m_state.setEnabled(GL_BLEND, true);
-        //ctx.m_state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
-
         m_deferredProgram->bind(ctx.m_state);
         m_gbuffer.bindTexture(ctx);
         m_oitbuffer.bindTexture(ctx);
         m_quad.draw(ctx);
-
-        //ctx.m_state.setDepthFunc(ctx.m_depthFunc);
-        //ctx.m_state.setEnabled(GL_BLEND, false);
     }
 
     // pass 3 - non G-buffer nodes
-    // => for example, "skybox"
+    // => for example, "skybox" (skybox is mostly via g_skybox now!)
     // => separate light calculations
     //if (false)
     {
