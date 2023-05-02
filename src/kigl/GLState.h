@@ -34,8 +34,10 @@ public:
 
     void bindFrameBuffer(GLuint fbo, bool force) noexcept;
 
-    void setBlendMode(const GLBlendMode& mode);
-    void setDepthFunc(const GLenum mode);
+    GLBlendMode setBlendMode(const GLBlendMode& mode);
+
+    GLenum setDepthFunc(const GLenum func);
+    GLenum setDepthMask(const GLenum mask);
 
 private:
     std::unordered_map<GLenum, bool> m_enabled;
@@ -53,5 +55,6 @@ private:
 
     GLBlendMode m_blendMode{ 0, 0, 0, 0 };
     GLenum m_depthFunc = -1;
+    GLenum m_depthMask = -1;
 };
 

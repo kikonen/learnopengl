@@ -71,7 +71,7 @@ public:
 
     void copyShadowFrom(const RenderContext& b);
 
-    bool pushAllowBlend(bool flag) const {
+    bool setAllowBlend(bool flag) const {
         bool old = m_allowBlend;
         m_allowBlend = flag;
         return old;

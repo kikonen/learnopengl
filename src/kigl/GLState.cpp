@@ -98,8 +98,10 @@ void GLState::bindFrameBuffer(GLuint fbo, bool force) noexcept
     }
 }
 
-void GLState::setBlendMode(const GLBlendMode& mode)
+GLBlendMode GLState::setBlendMode(const GLBlendMode& mode)
 {
+    GLBlendMode old= m_blendMode;
+
     if (m_blendMode != mode)
     {
         m_blendMode = mode;
@@ -108,12 +110,30 @@ void GLState::setBlendMode(const GLBlendMode& mode)
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBlendFuncSeparate(mode.srcRGB, mode.dstRGB, mode.srcAlpha, mode.dstAlpha);
     }
+
+    return old;
 }
 
-void GLState::setDepthFunc(const GLenum mode)
+GLenum GLState::setDepthFunc(const GLenum func)
 {
-    if (m_depthFunc != mode) {
-        m_depthFunc = mode;
-        glDepthFunc(mode);
+    GLenum old = m_depthFunc;
+
+    if (m_depthFunc != func) {
+        m_depthFunc = func;
+        glDepthFunc(func);
     }
+
+    return old;
+}
+
+GLenum GLState::setDepthMask(const GLenum mask)
+{
+    GLenum old = m_depthMask;
+
+    if (m_depthMask != mask) {
+        m_depthMask = mask;
+        glDepthMask(mask);
+    }
+
+    return old;
 }

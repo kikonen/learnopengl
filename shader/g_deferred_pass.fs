@@ -61,6 +61,14 @@ float max3(vec3 v)
   return max(max(v.x, v.y), v.z);
 }
 
+// https://stackoverflow.com/questions/56625730/does-blending-work-with-the-glsl-mix-function
+//
+// blendMode{ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE }
+vec4 blend(vec4 source, vec4 dest)
+{
+  return vec4(source.xyz * source.a + dest.xyz * (1.0 - source.a), 1.0);
+}
+
 void main()
 {
   const vec3 worldPos = texture(g_position, fs_in.texCoords).rgb;
@@ -107,8 +115,9 @@ void main()
 
       vec3 averageColor = accumulation.rgb / max(accumulation.a, EPSILON);
 
-      material.diffuse = vec4(material.diffuse.xyz + averageColor, 1.0f - revealage);
-      skipLight = true;
+      material.diffuse = blend(
+        vec4(averageColor, 1.0f - revealage),
+        material.diffuse);
     }
   }
 

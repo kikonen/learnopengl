@@ -63,7 +63,7 @@ void NodeDraw::drawNodes(
         m_gbuffer.m_buffer->clearAll();
 
         // NOTE KI no blend in G-buffer
-        auto wasAllowBlend = ctx.pushAllowBlend(false);
+        auto oldAllowBlend = ctx.setAllowBlend(false);
 
         drawNodesImpl(
             ctx,
@@ -72,7 +72,7 @@ void NodeDraw::drawNodes(
 
         ctx.m_batch->flush(ctx);
 
-        ctx.pushAllowBlend(wasAllowBlend);
+        ctx.setAllowBlend(oldAllowBlend);
     }
 
     // pass 1 - blend OIT
@@ -84,7 +84,7 @@ void NodeDraw::drawNodes(
         m_oitbuffer.m_buffer->clearAttachment(1);
 
         // NOTE KI do NOT modify depth with blend
-        glDepthMask(GL_FALSE);
+        auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
 
         glBlendFunci(0, GL_ONE, GL_ONE);
         glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
@@ -100,7 +100,7 @@ void NodeDraw::drawNodes(
 
         ctx.m_batch->flush(ctx);
 
-        glDepthMask(GL_TRUE);
+        ctx.m_state.setDepthMask(oldDepthMask);
     }
 
     // pass 2 - light
@@ -109,18 +109,17 @@ void NodeDraw::drawNodes(
         targetBuffer->bind(ctx);
         targetBuffer->clear(ctx, clearMask, { 0.f , 0.f, 0.f, 0.f });
 
-        ctx.m_state.setDepthFunc(GL_ALWAYS);
-
-        ctx.m_state.setEnabled(GL_BLEND, true);
-        ctx.m_state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+        //ctx.m_state.setDepthFunc(GL_ALWAYS);
+        //ctx.m_state.setEnabled(GL_BLEND, true);
+        //ctx.m_state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         m_deferredProgram->bind(ctx.m_state);
         m_gbuffer.bindTexture(ctx);
         m_oitbuffer.bindTexture(ctx);
         m_quad.draw(ctx);
 
-        ctx.m_state.setDepthFunc(ctx.m_depthFunc);
-        ctx.m_state.setEnabled(GL_BLEND, false);
+        //ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+        //ctx.m_state.setEnabled(GL_BLEND, false);
     }
 
     // pass 3 - non G-buffer nodes
