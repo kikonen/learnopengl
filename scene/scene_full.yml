@@ -246,6 +246,17 @@ entities:
       blend_oit: true
       render_back: true
     enabled: true
+  - name: Window 1_1
+    model: quad
+    material: window_1
+    program: g_tex
+    pos: [5.0, 12.0, 0.0]
+    rotation: [0.0, 180.0, 0.0]
+    scale: [2.5, 4, 0]
+    render_flags:
+      blend_oit: true
+      render_back: true
+    enabled: true
   - name: Window 2
     model: quad
     material: window_2

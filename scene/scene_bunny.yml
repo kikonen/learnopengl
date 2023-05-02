@@ -16,7 +16,7 @@ entities:
       enabled: true
   - name: Cube map 1
     type: origo
-    pos: [0.0, 3.0, 0.0]
+    pos: [0.0, 0.0, -10.0]
     render_flags:
       cube_map: true
     enabled: true
@@ -26,10 +26,11 @@ entities:
     pos: [0.0, 0.0, -10.0]
     scale: 30.0
     material_modifier:
-      reflection: 0.01
-      refraction: 0.95
-      refraction_ratio: [1.0, 1.52]
+      reflection: 0.95
+      xxrefraction: 0.05
+      xxrefraction_ratio: [1.0, 1.52]
     render_flags:
+      no_reflect: true
       render_back: true
     enabled: true
   - name: Directional light

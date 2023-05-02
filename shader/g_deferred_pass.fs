@@ -118,6 +118,8 @@ void main()
       material.diffuse = blend(
         vec4(averageColor, 1.0f - revealage),
         material.diffuse);
+
+      skipLight = false;
     }
   }
 
