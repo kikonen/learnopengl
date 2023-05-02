@@ -28,8 +28,6 @@ entities:
     model: airboat_fixed_colors
     program: g_tex
     pos: [0.0, 0.0, 0.0]
-    xxrender_flags:
-      blend: true
     enabled: true
   - name: Directional light
     type: origo

@@ -2,6 +2,7 @@
 name: One
 viewports:
 skybox:
+  program: g_skybox
   material: skybox
 entities:
   - name: Camera
@@ -17,7 +18,7 @@ entities:
   - name: Mountains
     id: 63ca20c5-dce1-4400-8968-6484cb4af8ca
     model: texture_mountains
-    program: texture
+    program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.0
     enabled: true

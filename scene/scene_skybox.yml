@@ -1,6 +1,7 @@
 ---
 name: Skybox
 skybox:
+  program: g_skybox
   material: skybox
 entities:
   - name: Camera

@@ -2,7 +2,7 @@
 name: Light
 viewports:
 skybox:
-  program: skybox
+  program: g_skybox
   material: skybox
 lights: {}
 root:
@@ -30,7 +30,7 @@ entities:
     pos: [0, 0, 0]
     scale: 0.5
     model: light
-    program: light
+    program: g_light
     render_flags:
       no_shadow: true
     light:
@@ -40,7 +40,6 @@ entities:
       cutoff_angle: 12.5
       outer_cutoff_angle: 25.0
       target_pos: [0, 0, 0]
-      ambient: [0.4, 0.4, 0.2, 1.0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
       specular: [1.0, 1.0, 0.9, 1.0]
       enabled: true

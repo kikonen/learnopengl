@@ -2,7 +2,7 @@
 name: Origo
 viewports:
 skybox:
-  program: skybox
+  program: g_skybox
   material: skybox
 lights: {}
 cube_maps: {}
@@ -34,10 +34,9 @@ entities:
           xxrender_back: true
       - material: fur
         force_material: true
-        program: fur
+        program: g_fur
         render_flags:
           alpha: true
-          xxblend: true
         layers: 10
     xxenabled: true
   - name: Base

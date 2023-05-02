@@ -101,7 +101,7 @@ entities:
   - name: Linden tree forest
     type: billboard
     priority: 1
-    program: texture
+    program: g_tex
     instanced: true
     pos: [150, 15.0, 150.0]
     material: linden_tree

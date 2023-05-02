@@ -1,6 +1,7 @@
 ---
 name: Asteroids
 skybox:
+  program: g_skybox
   material: skybox
 lights: {}
 cube_maps: {}
