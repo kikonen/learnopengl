@@ -658,6 +658,12 @@ void SceneFile::assignFlags(
     flags.gbuffer = data.programName.starts_with("g_");
 
     {
+        const auto& e = data.renderFlags.find("gbuffer");
+        if (e != data.renderFlags.end()) {
+            flags.gbuffer = e->second;
+        }
+    }
+    {
         const auto& e = data.renderFlags.find("alpha");
         if (e != data.renderFlags.end()) {
             flags.alpha = e->second;
@@ -719,12 +725,6 @@ void SceneFile::assignFlags(
         const auto& e = data.renderFlags.find("no_refract");
         if (e != data.renderFlags.end()) {
             flags.noRefract = e->second;
-        }
-    }
-    {
-        const auto& e = data.renderFlags.find("gbuffer");
-        if (e != data.renderFlags.end()) {
-            flags.gbuffer = e->second;
         }
     }
     {
