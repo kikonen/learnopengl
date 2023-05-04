@@ -4,7 +4,6 @@
 
 #include "asset/SSBO.h"
 #include "asset/MaterialVBO.h"
-#include "asset/MaterialUBO.h"
 #include "asset/MaterialSSBO.h"
 
 

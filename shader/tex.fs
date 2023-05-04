@@ -99,7 +99,7 @@ void main() {
   //   texColor.a = alpha;
   // }
 
-  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
+  texColor = calculateFog(fs_in.viewPos, texColor);
 
   o_fragColor = texColor;
 }

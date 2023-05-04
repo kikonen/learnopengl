@@ -118,7 +118,7 @@ Assets::Assets()
     fogColor = glm::vec4(0.1, 0.1, 0.2, 1.0);
     fogStart = 50.0;
     fogEnd = 700.0;
-    fogRatio = 1.0;
+    fogDensity = 1.0;
 
     shadowPlanes = { 0.1f, 20.f, 50.f, 100.f };
     shadowMapSizes = { 1024, 512, 512 };

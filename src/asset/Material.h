@@ -133,8 +133,6 @@ public:
     float refraction = 0.f;
     glm::vec2 refractionRatio{ 0 };
 
-    float fogRatio = 1.0f;
-
     float tilingX = 1.0f;
     float tilingY = 1.0f;
 

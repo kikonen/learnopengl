@@ -159,7 +159,7 @@ RenderContext::RenderContext(
         assets.fogColor,
         assets.fogStart,
         assets.fogEnd,
-        assets.fogRatio,
+        assets.fogDensity,
         (float)m_clock.ts,
         // NOTE KI u_shadowPlanes not initialized
         0,

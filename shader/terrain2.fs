@@ -78,7 +78,7 @@ void main() {
 
   texColor.a = 1.0;
 
-  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
+  texColor = calculateFog(fs_in.viewPos, texColor);
 
   sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);
   float h = texture(heightMap, fs_in.texCoord).r;

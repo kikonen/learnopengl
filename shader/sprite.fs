@@ -76,6 +76,6 @@ void main() {
   texColor = vec4(texColor.rgb, 1.0);
 #endif
 
-  texColor = calculateFog(fs_in.viewPos, material.fogRatio, texColor);
+  texColor = calculateFog(fs_in.viewPos, texColor);
   o_fragColor = texColor;
 }

@@ -791,8 +791,6 @@ void SceneFile::modifyMaterial(
     if (f.refraction) m.refraction = mod.refraction;
     if (f.refractionRatio) m.refractionRatio = mod.refractionRatio;
 
-    if (f.fogRatio) m.fogRatio = mod.fogRatio;
-
     if (f.tilingX) m.tilingX = mod.tilingX;
     if (f.tilingY) m.tilingY = mod.tilingY;
 
@@ -1574,10 +1572,6 @@ void SceneFile::loadMaterial(
         else if (k == "refraction_ratio") {
             material.refractionRatio = readRefractionRatio(v);
             fields.refractionRatio = true;
-        }
-        else if (k == "fog_ratio") {
-            material.fogRatio = readFloat(v);
-            fields.fogRatio = true;
         }
         else if (k == "tiling") {
             material.tilingX = readFloat(v);

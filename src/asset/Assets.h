@@ -134,7 +134,7 @@ public:
     glm::vec4 fogColor;
     float fogStart;
     float fogEnd;
-    float fogRatio;
+    float fogDensity;
 
     // NOTE KI MUST match lookup() in light shadow shader
     std::vector<float> shadowPlanes;

@@ -264,8 +264,8 @@ void AssetsFile::loadAssets(
         else if (k == "fog_end") {
             data.fogEnd = readFloat(v);
         }
-        else if (k == "fog_ratio") {
-            data.fogRatio = readFloat(v);
+        else if (k == "fog_density") {
+            data.fogDensity = readFloat(v);
             }
         else if (k == "shadow_planes") {
             data.shadowPlanes = readFloatVector(v, 4);

@@ -94,7 +94,7 @@ assets:
   fog_color: [0.2, 0.2, 0.2, 1.0]
   fog_start: 500.0
   fog_end: 2000.0
-  fog_ratio: 1.0
+  fog_density: 1.1
 
   shadow_planes: [0.1, 30, 100, 500]
   xxshadow_planes: [0.1, 20, 100]

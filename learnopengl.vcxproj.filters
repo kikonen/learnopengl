@@ -794,9 +794,6 @@
     <ClInclude Include="src\asset\ClipPlaneUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\MaterialUBO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\registry\EntityType.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -326,7 +326,6 @@
     <ClInclude Include="src\asset\IndexEntry.h" />
     <ClInclude Include="src\asset\LightUBO.h" />
     <ClInclude Include="src\asset\MaterialSSBO.h" />
-    <ClInclude Include="src\asset\MaterialUBO.h" />
     <ClInclude Include="src\asset\MatricesUBO.h" />
     <ClInclude Include="src\asset\ModelVAO.h" />
     <ClInclude Include="src\asset\Shader.h" />

@@ -98,9 +98,6 @@ void main()
 
     material.emission = texture(g_emission, fs_in.texCoords);
     material.emission.a = 1.0;
-
-    // NOTE KI fogRatio is global only now
-    material.fogRatio = u_fogRatio;
   }
 
   if (true) {
@@ -132,7 +129,7 @@ void main()
       shadowIndex, shadowPos,
       material);
 
-    color = calculateFog(viewPos, material.fogRatio, color);
+    color = calculateFog(viewPos, color);
 
     if (u_frustumVisual) {
       color += CASCADE_COLORS[shadowIndex];

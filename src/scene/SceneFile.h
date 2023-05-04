@@ -57,8 +57,6 @@ class SceneFile
         bool refraction = false;
         bool refractionRatio = false;
 
-        bool fogRatio = false;
-
         bool tilingX = false;
         bool tilingY = false;
 

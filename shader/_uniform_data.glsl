@@ -12,7 +12,7 @@ layout(std140, binding = UBO_DATA) uniform Data {
 
   float u_fogStart;
   float u_fogEnd;
-  float u_fogRatio;
+  float u_fogDensity;
   float u_time;
 
   int u_shadowCount;
