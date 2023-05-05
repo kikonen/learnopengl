@@ -72,12 +72,29 @@ FrameBufferAttachment FrameBufferAttachment::getObjectId()
 }
 
 // G buffer: material index
+// https://community.khronos.org/t/how-to-get-integer-textures/76002/2
 FrameBufferAttachment FrameBufferAttachment::getGBufferMaterial(GLenum attachment)
 {
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_R16UI;
     spec.attachment = attachment;
+    spec.minFilter = GL_NEAREST;
+    spec.magFilter = GL_NEAREST;
+    spec.useDrawBuffer = true;
+
+    return spec;
+}
+
+// G buffer: texCoord
+FrameBufferAttachment FrameBufferAttachment::getGBufferTexCoord(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::texture;
+    spec.internalFormat = GL_RGB32F;
+    spec.attachment = attachment;
+    spec.minFilter = GL_NEAREST;
+    spec.magFilter = GL_NEAREST;
     spec.useDrawBuffer = true;
 
     return spec;
@@ -149,7 +166,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
 {
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
-    spec.internalFormat = GL_RGB16F;
+    spec.internalFormat = GL_R11F_G11F_B10F;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 

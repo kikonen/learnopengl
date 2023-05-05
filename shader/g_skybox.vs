@@ -4,7 +4,9 @@ layout (location = ATTR_POS) in vec3 a_pos;
 
 #include uniform_matrices.glsl
 
-out vec3 texCoord;
+out VS_OUT {
+  vec3 texCoord;
+} vs_out;
 
 out float gl_ClipDistance[2];
 
@@ -24,7 +26,7 @@ void main() {
   vec4 v = u_viewMatrixSkybox * pos;
 
   gl_Position = pos;
-  texCoord = v.xyz;
+  vs_out.texCoord = v.xyz;
 
   gl_ClipDistance[0] = 1;
   gl_ClipDistance[1] = 1;

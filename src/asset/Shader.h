@@ -80,13 +80,11 @@ constexpr int VBO_VERTEX_BINDING = 0;
 //constexpr int ATTR_INSTANCE_ENTITY_INDEX = 15;
 //constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
 
-constexpr int UNIT_G_ALBEDO = 50;
-constexpr int UNIT_G_SPECULAR = 51;
-constexpr int UNIT_G_EMISSION = 52;
-constexpr int UNIT_G_AMBIENT = 53;
-constexpr int UNIT_G_POSITION = 54;
-constexpr int UNIT_G_NORMAL = 55;
-constexpr int UNIT_G_MATERIAL = 56;
+constexpr int UNIT_G_ALBEDO = 40;
+constexpr int UNIT_G_MATERIAL = 41;
+constexpr int UNIT_G_TEX_COORD = 42;
+constexpr int UNIT_G_POSITION = 43;
+constexpr int UNIT_G_NORMAL = 44;
 
 constexpr int UNIT_OIT_ACCUMULATOR = 57;
 constexpr int UNIT_OIT_REVEAL = 58;

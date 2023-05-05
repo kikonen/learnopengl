@@ -5,25 +5,28 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+#include uniform_materials.glsl
+#include uniform_textures.glsl
 #include uniform_lights.glsl
 
 in VS_OUT {
-  vec2 texCoords;
+  vec2 texCoord;
 } fs_in;
 
+// https://community.khronos.org/t/how-to-get-integer-textures/76002/2
+layout(binding = UNIT_G_MATERIAL) uniform usampler2D g_material;
+layout(binding = UNIT_G_TEX_COORD) uniform sampler2D g_texCoord;
 layout(binding = UNIT_G_ALBEDO) uniform sampler2D g_albedo;
-layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;
-layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;
-layout(binding = UNIT_G_AMBIENT) uniform sampler2D g_ambient;
 layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
-layout(binding = UNIT_G_MATERIAL) uniform sampler2D g_material;
 
 layout(binding = UNIT_OIT_ACCUMULATOR) uniform sampler2D oit_accumulator;
 layout(binding = UNIT_OIT_REVEAL) uniform sampler2D oit_reveal;
 
 layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
 
+layout(binding = UNIT_SKYBOX) uniform samplerCube u_skybox;
+layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
 
 out vec4 o_fragColor;
 
@@ -72,8 +75,8 @@ vec4 blend(vec4 source, vec4 dest)
 
 void main()
 {
-  const vec3 worldPos = texture(g_position, fs_in.texCoords).rgb;
-  const vec3 normal = normalize(texture(g_normal, fs_in.texCoords).rgb);
+  const vec3 worldPos = texture(g_position, fs_in.texCoord).rgb;
+  const vec3 normal = normalize(texture(g_normal, fs_in.texCoord).rgb);
 
   const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
   const uint shadowIndex = calculateShadowIndex(viewPos);
@@ -85,22 +88,38 @@ void main()
 
   bool skipLight;
   {
-    uint materialindex = uint(texture(g_material, fs_in.texCoords).r);
+    uint materialIndex = texture(g_material, fs_in.texCoord).r;
 
-    material.diffuse = texture(g_albedo, fs_in.texCoords);
+    if (materialIndex == MATERIAL_SKYBOX) {
+      skipLight = true;
+
+      vec3 gTexCoord = texture(g_texCoord, fs_in.texCoord).xyz;
+
+      material.diffuse = texture(u_skybox, gTexCoord);
+
+      material.ambient = material.diffuse;
+      material.specular = material.diffuse;
+      material.emission = material.diffuse;
+    } else {
+      skipLight = false;
+
+      bool passColor = false;
+      if (materialIndex > MATERIAL_PASS_COLOR) {
+        passColor = true;
+        materialIndex -= MATERIAL_PASS_COLOR;
+      }
+      vec2 gTexCoord = texture(g_texCoord, fs_in.texCoord).xy;
+      #include var_tex_deferred_material.glsl
+      if (passColor) {
+        material.diffuse = texture(g_albedo, fs_in.texCoord);
+      }
+      #include var_calculate_cubemap_diffuse.glsl
+    }
+
+    //material.diffuse = texture(g_albedo, fs_in.texCoord);
     // HACK KI alpha == 0.0 is used for skybox
-    skipLight = material.diffuse.a == 0.0;
-    material.diffuse.a = 1.0;
-
-    material.specular = texture(g_specular, fs_in.texCoords);
-    material.shininess = material.specular.a;
-    material.specular.a = 1.0;
-
-    material.ambient = texture(g_ambient, fs_in.texCoords);
-    material.ambient.a = 1.0;
-
-    material.emission = texture(g_emission, fs_in.texCoords);
-    material.emission.a = 1.0;
+    //skipLight = material.diffuse.a == 0.0;
+    //material.diffuse.a = 1.0;
   }
 
   if (true) {
@@ -132,7 +151,7 @@ void main()
       shadowIndex, shadowPos,
       material);
 
-    color = calculateFog(viewPos, color);
+  //  color = calculateFog(viewPos, color);
 
     if (u_frustumVisual) {
       color += CASCADE_COLORS[shadowIndex];

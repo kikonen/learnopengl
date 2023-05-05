@@ -58,6 +58,9 @@ struct FrameBufferAttachment {
     // G buffer: material
     static FrameBufferAttachment getGBufferMaterial(GLenum attachment);
 
+    // G buffer: texCoord
+    static FrameBufferAttachment getGBufferTexCoord(GLenum attachment);
+
     // G buffer: diffuse
     static FrameBufferAttachment getGBufferAlbedo(GLenum attachment);
 

@@ -28,7 +28,7 @@ entities:
       z_count: 20
       z_step: -10
   - name: Directional light
-    type: origo
+    type: model
     xxpos: [0, 25, 25]
     pos: [-25, 25, 0]
     scale: 2.5
@@ -41,8 +41,8 @@ entities:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
-      diffuse: [0.5, 0.5, 0.5, 1.0]
-      specular: [0.5, 0.5, 0.5, 1.0]
+      diffuse: [0.8, 0.8, 0.8, 1.0]
+      specular: [0.8, 0.8, 0.8, 1.0]
       enabled: true
     enabled: true
   - name: Linden tree forest
@@ -83,9 +83,9 @@ materials:
   - name: giant_woodbox
     ns: 225.000000
     type: model
-    ka: [0.200000, 0.200000, 0.200000, 1.0]
+    ka: [0.300000, 0.300000, 0.300000, 1.0]
     kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.200000, 0.200000, 0.200000, 1.0]
+    ks: [0.700000, 0.700000, 0.700000, 1.0]
     ni: 1.450000
     d: 1.000000
     illum: 2

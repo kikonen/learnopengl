@@ -30,12 +30,10 @@ layout(binding = UNIT_WATER_REFLECTION) uniform sampler2D u_reflectionTex;
 layout(binding = UNIT_WATER_REFRACTION) uniform sampler2D u_refractionTex;
 
 layout (location = 0) out vec4 o_fragColor;
-layout (location = 1) out vec4 o_fragSpecular;
-layout (location = 2) out vec4 o_fragEmission;
-layout (location = 3) out vec4 o_fragAmbient;
-layout (location = 4) out vec3 o_fragPosition;
-layout (location = 5) out vec3 o_fragNormal;
-layout (location = 6) out uint o_fragMaterial;
+layout (location = 1) out uint o_fragMaterial;
+layout (location = 2) out vec3 o_fragTexCoord;
+layout (location = 3) out vec3 o_fragPosition;
+layout (location = 4) out vec3 o_fragNormal;
 
 ////////////////////////////////////////////////////////////
 //
@@ -137,18 +135,12 @@ void main() {
   refractiveFactor = clamp(refractiveFactor, 0, 1);
 
   vec4 mixColor = mix(reflectColor, refractColor, refractiveFactor);
+  vec4 texColor = mix(material.diffuse, mixColor, 0.9);
 
-  vec4 origDiffuse = material.diffuse;
-  material.diffuse = mix(material.diffuse, mixColor, 0.9);
-
-  vec4 texColor = material.diffuse;
-
-  o_fragMaterial = fs_in.materialIndex;
   o_fragColor = texColor;
-  o_fragSpecular = material.specular;
-  o_fragSpecular.a = material.shininess;
-  o_fragEmission = material.emission;
-  o_fragAmbient = material.ambient;
+
+  o_fragMaterial = fs_in.materialIndex + MATERIAL_PASS_COLOR;
+  o_fragTexCoord = vec3(fs_in.texCoord, 1.0);
 
   o_fragPosition = fs_in.worldPos;
   o_fragNormal = normal;
