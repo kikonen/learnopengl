@@ -86,9 +86,10 @@ constexpr int UNIT_G_EMISSION = 52;
 constexpr int UNIT_G_AMBIENT = 53;
 constexpr int UNIT_G_POSITION = 54;
 constexpr int UNIT_G_NORMAL = 55;
+constexpr int UNIT_G_MATERIAL = 56;
 
-constexpr int UNIT_OIT_ACCUMULATOR = 56;
-constexpr int UNIT_OIT_REVEAL = 57;
+constexpr int UNIT_OIT_ACCUMULATOR = 57;
+constexpr int UNIT_OIT_REVEAL = 58;
 
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
 constexpr int UNIT_WATER_NOISE = 64;

@@ -34,6 +34,7 @@ layout (location = 2) out vec4 o_fragEmission;
 layout (location = 3) out vec4 o_fragAmbient;
 layout (location = 4) out vec3 o_fragPosition;
 layout (location = 5) out vec3 o_fragNormal;
+layout (location = 6) out uint o_fragMaterial;
 
 ////////////////////////////////////////////////////////////
 //
@@ -77,6 +78,7 @@ void main() {
   //   texColor.a = alpha;
   // }
 
+  o_fragMaterial = fs_in.materialIndex;
   o_fragColor = texColor;
   o_fragSpecular = material.specular;
   o_fragSpecular.a = material.shininess;

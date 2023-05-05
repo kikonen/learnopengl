@@ -55,6 +55,9 @@ struct FrameBufferAttachment {
 
     static FrameBufferAttachment getObjectId();
 
+    // G buffer: material
+    static FrameBufferAttachment getGBufferMaterial(GLenum attachment);
+
     // G buffer: diffuse
     static FrameBufferAttachment getGBufferAlbedo(GLenum attachment);
 

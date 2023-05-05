@@ -17,6 +17,7 @@ layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;
 layout(binding = UNIT_G_AMBIENT) uniform sampler2D g_ambient;
 layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
+layout(binding = UNIT_G_MATERIAL) uniform sampler2D g_material;
 
 layout(binding = UNIT_OIT_ACCUMULATOR) uniform sampler2D oit_accumulator;
 layout(binding = UNIT_OIT_REVEAL) uniform sampler2D oit_reveal;
@@ -84,6 +85,8 @@ void main()
 
   bool skipLight;
   {
+    uint materialindex = uint(texture(g_material, fs_in.texCoords).r);
+
     material.diffuse = texture(g_albedo, fs_in.texCoords);
     // HACK KI alpha == 0.0 is used for skybox
     skipLight = material.diffuse.a == 0.0;

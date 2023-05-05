@@ -38,6 +38,7 @@ void GBuffer::updateView(const RenderContext& ctx)
                     FrameBufferAttachment::getGBufferAmbient(GL_COLOR_ATTACHMENT3),
                     FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT4),
                     FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT5),
+                    FrameBufferAttachment::getGBufferMaterial(GL_COLOR_ATTACHMENT6),
                     // depth needed
                     FrameBufferAttachment::getRBODepth()
                 }
@@ -63,6 +64,7 @@ void GBuffer::bindTexture(const RenderContext& ctx)
     m_buffer->bindTexture(ctx, 3, UNIT_G_AMBIENT);
     m_buffer->bindTexture(ctx, 4, UNIT_G_POSITION);
     m_buffer->bindTexture(ctx, 5, UNIT_G_NORMAL);
+    m_buffer->bindTexture(ctx, 6, UNIT_G_MATERIAL);
 }
 
 void GBuffer::unbindTexture(const RenderContext& ctx)
@@ -73,4 +75,5 @@ void GBuffer::unbindTexture(const RenderContext& ctx)
     m_buffer->unbindTexture(ctx, UNIT_G_AMBIENT);
     m_buffer->unbindTexture(ctx, UNIT_G_POSITION);
     m_buffer->unbindTexture(ctx, UNIT_G_NORMAL);
+    m_buffer->unbindTexture(ctx, UNIT_G_MATERIAL);
 }

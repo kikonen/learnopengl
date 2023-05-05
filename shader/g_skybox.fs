@@ -13,6 +13,7 @@ layout (location = 2) out vec4 o_fragEmission;
 layout (location = 3) out vec4 o_fragAmbient;
 layout (location = 4) out vec3 o_fragPosition;
 layout (location = 5) out vec3 o_fragNormal;
+layout (location = 6) out uint o_fragMaterial;
 
 ////////////////////////////////////////////////////////////
 //
@@ -25,6 +26,7 @@ void main() {
   //texColor = vec4(1.0, 0, 0, 1.0);
   texColor.a = 0.0;
 
+  o_fragMaterial = MATERIAL_SKYBOX;
   o_fragColor = texColor;
   o_fragSpecular = texColor;
   o_fragSpecular.a = 0;
