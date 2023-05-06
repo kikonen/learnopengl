@@ -1349,10 +1349,10 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
             data.outerCutoffAngle = readFloat(v);
         }
         else if (k == "diffuse") {
-            data.diffuse = readRGBA(v);
+            data.diffuse = readRGB(v);
         }
         else if (k == "specular") {
-            data.specular = readRGBA(v);
+            data.specular = readRGB(v);
         }
         else {
             reportUnknown("light_entry", k, v);
@@ -1490,7 +1490,7 @@ void SceneFile::loadMaterial(
             fields.ns = true;
         }
         else if (k == "ka") {
-            material.ka = readRGBA(v);
+            material.ka = readRGB(v);
             fields.ka = true;
         }
         else if (k == "kd") {
@@ -1498,11 +1498,11 @@ void SceneFile::loadMaterial(
             fields.kd = true;
         }
         else if (k == "ks") {
-            material.ks = readRGBA(v);
+            material.ks = readRGB(v);
             fields.ks = true;
         }
         else if (k == "ke") {
-            material.ke = readRGBA(v);
+            material.ke = readRGB(v);
             fields.ke = true;
         }
         else if (k == "ni") {
@@ -1826,6 +1826,31 @@ glm::vec3 SceneFile::readScale3(const YAML::Node& node) const
 
     auto scale = readFloat(node);
     return glm::vec3{ scale };
+}
+
+glm::vec3 SceneFile::readRGB(const YAML::Node& node) const
+{
+    if (node.IsSequence()) {
+        auto a = readFloatVector(node, 3);
+
+        if (a.size() == 0) {
+            a.push_back(0.f);
+            a.push_back(0.f);
+            a.push_back(0.f);
+        }
+        else if (a.size() == 1) {
+            a.push_back(a[0]);
+            a.push_back(a[0]);
+        }
+        else if (a.size() == 2) {
+            a.push_back(a[0]);
+        }
+
+        return glm::vec3{ a[0], a[1], a[2] };
+    }
+
+    auto r = readFloat(node);
+    return glm::vec3{ r, r, r };
 }
 
 glm::vec4 SceneFile::readRGBA(const YAML::Node& node) const

@@ -1,12 +1,15 @@
 struct Material {
-  vec4 ambient;
   vec4 diffuse;
-  vec4 emission;
-  vec4 specular;
+  vec3 specular;
+  int pad1;
+  vec3 emission;
+  int pad2;
+
+  float ambient;
 
   int diffuseTex;
-  int emissionTex;
   int specularTex;
+  int emissionTex;
   int normalMapTex;
 
   int dudvMapTex;

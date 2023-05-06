@@ -71,7 +71,7 @@ FrameBufferAttachment FrameBufferAttachment::getObjectId()
     return spec;
 }
 
-// G buffer: diffuse + IGNORE light flag
+// G buffer: diffuse + ambient
 FrameBufferAttachment FrameBufferAttachment::getGBufferAlbedo(GLenum attachment)
 {
     FrameBufferAttachment spec;
@@ -83,7 +83,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferAlbedo(GLenum attachment)
     return spec;
 }
 
-// G buffer: specular
+// G buffer: specular + shininess
 FrameBufferAttachment FrameBufferAttachment::getGBufferSpecular(GLenum attachment)
 {
     FrameBufferAttachment spec;
@@ -100,7 +100,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferEmission(GLenum attachmen
 {
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
-    spec.internalFormat = GL_RGBA8;
+    spec.internalFormat = GL_RGB8;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
@@ -108,16 +108,16 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferEmission(GLenum attachmen
 }
 
 // G buffer: ambient
-FrameBufferAttachment FrameBufferAttachment::getGBufferAmbient(GLenum attachment)
-{
-    FrameBufferAttachment spec;
-    spec.type = FrameBufferAttachmentType::texture;
-    spec.internalFormat = GL_RGBA8;
-    spec.attachment = attachment;
-    spec.useDrawBuffer = true;
-
-    return spec;
-}
+//FrameBufferAttachment FrameBufferAttachment::getGBufferAmbient(GLenum attachment)
+//{
+//    FrameBufferAttachment spec;
+//    spec.type = FrameBufferAttachmentType::texture;
+//    spec.internalFormat = GL_RGB8;
+//    spec.attachment = attachment;
+//    spec.useDrawBuffer = true;
+//
+//    return spec;
+//}
 
 // G buffer: position
 FrameBufferAttachment FrameBufferAttachment::getGBufferPosition(GLenum attachment)
