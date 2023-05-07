@@ -1,9 +1,7 @@
 struct Material {
   vec4 diffuse;
   vec3 specular;
-  int pad1;
   vec3 emission;
-  int pad2;
 
   float ambient;
 

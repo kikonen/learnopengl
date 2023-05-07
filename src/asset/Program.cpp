@@ -318,7 +318,7 @@ void Program::validateProgram() const {
 int Program::initProgram() {
     KI_INFO_OUT(fmt::format("[PROGRAM - {}]", m_key));
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
     // NOTE KI set UBOs only once for program
     setupUBO("Matrices", UBO_MATRICES, sizeof(MatricesUBO));
     setupUBO("Data", UBO_DATA, sizeof(DataUBO));
@@ -326,7 +326,7 @@ int Program::initProgram() {
     //setupUBO("Materials", UBO_MATERIALS, sizeof(MaterialsUBO));
     setupUBO("ClipPlanes", UBO_CLIP_PLANES, sizeof(ClipPlanesUBO));
     setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
-#endif
+//#endif
 
     m_sources.clear();
 
