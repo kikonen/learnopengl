@@ -43,6 +43,23 @@ entities:
       y_step: 0
       z_step: 60
     enabled: true
+  - name: Pool floor
+    model: quad
+    material: pool_floor
+    program: g_tex
+    pos: [-30, -4, -30]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 30
+    render_flags:
+      no_shadow: true
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+    enabled: true
 materials:
   - name: water_surface
     type: texture
@@ -53,5 +70,20 @@ materials:
     map_bump: water_surface_512_normal.png
     map_dudv: waterDUDV_512.png
     tiling: 2
+    texture_spec:
+      wrap: GL_REPEAT
+  - name: pool_floor
+    type: texture
+    ns: 225
+    ka: [0.5, 0.5, 0.5, 1.0]
+    kd: [0.8, 0.8, 0.8, 1.0]
+    ks: [0.5, 0.5, 0.5, 1.0]
+    ke: [0.0, 0.0, 0.0, 1.0]
+    ni: 1.45
+    d: 1.0
+    illum: 2
+    xxmap_kd: Marble White_VH_512.PNG
+    map_kd: tiles_1024.png
+    tiling: 8
     texture_spec:
       wrap: GL_REPEAT

@@ -10,8 +10,8 @@ layout(binding = UNIT_SKYBOX) uniform samplerCube u_skybox;
 layout (location = 0) out vec4 o_fragColor;
 layout (location = 1) out vec4 o_fragSpecular;
 layout (location = 2) out vec3 o_fragEmission;
-layout (location = 4) out vec3 o_fragPosition;
-layout (location = 5) out vec3 o_fragNormal;
+layout (location = 3) out vec3 o_fragPosition;
+layout (location = 4) out vec3 o_fragNormal;
 
 ////////////////////////////////////////////////////////////
 //
