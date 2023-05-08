@@ -14,7 +14,6 @@ in VS_OUT {
 layout(binding = UNIT_G_ALBEDO) uniform sampler2D g_albedo;
 layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;
 layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;
-layout(binding = UNIT_G_AMBIENT) uniform sampler2D g_ambient;
 layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
 
@@ -85,16 +84,12 @@ void main()
   bool skipLight;
   {
     material.diffuse = texture(g_albedo, fs_in.texCoords);
-    // HACK KI alpha == 0.0 is used for skybox
-    skipLight = material.diffuse.a == 0.0;
+    material.ambient = material.diffuse.a;
     material.diffuse.a = 1.0;
 
     material.specular = texture(g_specular, fs_in.texCoords);
     material.shininess = material.specular.a;
     material.specular.a = 1.0;
-
-    material.ambient = texture(g_ambient, fs_in.texCoords);
-    material.ambient.a = 1.0;
 
     material.emission = texture(g_emission, fs_in.texCoords);
     material.emission.a = 1.0;
@@ -116,6 +111,10 @@ void main()
 
       skipLight = false;
     }
+  }
+
+  if (material.ambient >= 1.0) {
+    skipLight = true;
   }
 
   vec4 color;

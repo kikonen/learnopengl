@@ -64,9 +64,6 @@ struct FrameBufferAttachment {
     // G buffer: emission
     static FrameBufferAttachment getGBufferEmission(GLenum attachment);
 
-    // G buffer: ambient
-    static FrameBufferAttachment getGBufferAmbient(GLenum attachment);
-
     // G buffer: position
     static FrameBufferAttachment getGBufferPosition(GLenum attachment);
 

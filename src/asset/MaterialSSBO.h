@@ -18,10 +18,11 @@
 // rules, rounded up to a multiple of the
 // structure alignment."
 struct MaterialSSBO {
-    glm::vec4 ambient; // 16
     glm::vec4 diffuse; // 16
     glm::vec4 emission; // 16
     glm::vec4 specular; // 16
+
+    float ambient;
 
     // NOTE KI "tex index", not "unit index"
     int diffuseTex;
@@ -43,4 +44,8 @@ struct MaterialSSBO {
     float tilingY;
     int layers;
     float depth;
+
+    int pad1;
+    int pad2;
+    int pad3;
 };

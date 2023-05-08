@@ -28,6 +28,10 @@ namespace {
         return ++idBase;
     }
 
+    float calculateAmbient(glm::vec4 ambient) {
+        return (ambient.x + ambient.y + ambient.z) / 3.f;
+    }
+
     Material createDefaultMaterial() {
         Material mat;
         mat.m_name = "<default>";
@@ -277,10 +281,11 @@ const MaterialSSBO Material::toSSBO() const
     }
 
     return {
-        ka,
         kd,
         glm::vec4(0),
         ks,
+
+        calculateAmbient(ka),
 
         m_textures[DIFFUSE_IDX].m_texIndex,
         m_textures[EMISSION_IDX].m_texIndex,

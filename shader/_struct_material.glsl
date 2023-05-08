@@ -1,8 +1,9 @@
 struct Material {
-  vec4 ambient;
   vec4 diffuse;
   vec4 emission;
   vec4 specular;
+
+  float ambient;
 
   int diffuseTex;
   int emissionTex;
