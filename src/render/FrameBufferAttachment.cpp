@@ -201,12 +201,13 @@ FrameBufferAttachment FrameBufferAttachment::getOITAccumulatorTexture(GLenum att
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGBA16F;
-    spec.minFilter = GL_LINEAR;
-    spec.magFilter = GL_LINEAR;
+    spec.minFilter = GL_NEAREST;
+    spec.magFilter = GL_NEAREST;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
     spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
+    spec.borderColor = { 0.f, 0.f, 0.f, 0.f };
 
     return spec;
 }
@@ -216,12 +217,13 @@ FrameBufferAttachment FrameBufferAttachment::getOITRevealTexture(GLenum attachme
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_R8;
-    spec.minFilter = GL_LINEAR;
-    spec.magFilter = GL_LINEAR;
+    spec.minFilter = GL_NEAREST;
+    spec.magFilter = GL_NEAREST;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
     spec.clearColor = { 1.f, 1.f, 1.f, 1.f };
+    spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
 
     return spec;
 }

@@ -101,11 +101,9 @@ void main()
   }
 
   if (true) {
-    ivec2 fragCoords = ivec2(gl_FragCoord.xy);
-
-    float revealage = texelFetch(oit_reveal, fragCoords, 0).r;
+    float revealage = texture(oit_reveal, fs_in.texCoords).r;
     if (!isApproximatelyEqual(revealage, 1.0f)) {
-      vec4 accumulation = texelFetch(oit_accumulator, fragCoords, 0);
+      vec4 accumulation = texture(oit_accumulator, fs_in.texCoords, 0);
 
       if (isinf(max3(abs(accumulation.rgb))))
         accumulation.rgb = vec3(accumulation.a);
@@ -129,7 +127,7 @@ void main()
       shadowIndex, shadowPos,
       material);
 
-    color = calculateFog(viewPos, color);
+//    color = calculateFog(viewPos, color);
 
     if (u_frustumVisual) {
       color += CASCADE_COLORS[shadowIndex];
