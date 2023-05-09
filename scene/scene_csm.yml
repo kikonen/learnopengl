@@ -73,7 +73,7 @@ entities:
     material: giant_woodbox
     program: g_tex
     position: [0, 0, 0]
-    rot: [90, 0, 0]
+    rot: [270, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true

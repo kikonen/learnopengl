@@ -225,7 +225,8 @@ vec4 calculateDirLight(
   }
 
   // calculate shadow
-  float shadow = calcShadow2_3(worldPos, shadowIndex, shadowPos, normal, toLight);
+  //float shadow = calcShadow2_3(worldPos, shadowIndex, shadowPos, normal, toLight);
+  float shadow = calcShadow2_2(shadowIndex, shadowPos, normal, toLight);
 
   return shadow * (diffuse + specular);
 }
