@@ -145,7 +145,7 @@ float calcShadow2_2(
       vec4 pos = shadowPos + vec4(
         x * texelSize.x,
         y * texelSize.y,
-        0.0,
+        0.0001,
         0.0);
       float pcf = textureProj(u_shadowMap[shadowIndex], pos);
 
