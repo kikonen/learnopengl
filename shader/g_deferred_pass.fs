@@ -126,7 +126,7 @@ void main()
       shadowIndex, shadowPos,
       material);
 
-//    color = calculateFog(viewPos, color);
+    color = calculateFog(viewPos, color);
 
     if (u_frustumVisual) {
       color += CASCADE_COLORS[shadowIndex];
