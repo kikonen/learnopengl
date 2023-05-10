@@ -176,8 +176,8 @@ class SceneFile
         float cutoffAngle{ 0.f };
         float outerCutoffAngle{ 0.f };
 
-        glm::vec4 diffuse{ 0.5f, 0.5f, 0.5f, 1.f };
-        glm::vec4 specular{ 0.5f, 0.5f, 0.5f, 1.f };
+        glm::vec3 diffuse{ 0.5f, 0.5f, 0.5f };
+        glm::vec3 specular{ 0.5f, 0.5f, 0.5f };
     };
 
     struct EntityCloneData {
@@ -441,6 +441,7 @@ private:
     glm::uvec3 readUVec3(const YAML::Node& node) const;
 
     glm::vec3 readScale3(const YAML::Node& node) const;
+    glm::vec3 readRGB(const YAML::Node& node) const;
     glm::vec4 readRGBA(const YAML::Node& node) const;
     glm::vec2 readRefractionRatio(const YAML::Node& node) const;
 

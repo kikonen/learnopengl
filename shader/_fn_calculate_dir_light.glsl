@@ -201,7 +201,7 @@ float calcShadow3(
 }
 */
 
-vec4 calculateDirLight(
+vec3 calculateDirLight(
   in DirLight light,
   in vec3 normal,
   in vec3 toView,
@@ -214,14 +214,14 @@ vec4 calculateDirLight(
 
   // diffuse
   float diff = max(dot(normal, toLight), 0.0);
-  vec4 diffuse = diff * light.diffuse * material.diffuse;
+  vec3 diffuse = diff * light.diffuse * material.diffuse.xyz;
 
   // specular
-  vec4 specular = vec4(0);
+  vec3 specular = vec3(0);
   if (material.shininess > 0) {
     vec3 reflectDir = reflect(-toLight, normal);
     float spec = pow(max(dot(toView, reflectDir), 0.0), material.shininess);
-    specular = spec * light.specular * material.specular;
+    specular = spec * light.specular * material.specular.xyz;
   }
 
   // calculate shadow

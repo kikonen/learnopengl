@@ -10,9 +10,13 @@ constexpr unsigned int MAX_LIGHT_COUNT = 128;
 // NOTE KI align 16 for UBO struct
 struct DirLightUBO {
     glm::vec3 dir;
+    int pad1;
+
+    glm::vec3 diffuse;
     int pad2;
-    glm::vec4 diffuse;
-    glm::vec4 specular;
+
+    glm::vec3 specular;
+    int pad3;
 };
 
 // NOTE KI align 16 for UBO struct
@@ -20,8 +24,11 @@ struct PointLightUBO {
     glm::vec3 pos;
     int pad1;
 
-    glm::vec4 diffuse;
-    glm::vec4 specular;
+    glm::vec3 diffuse;
+    int pad2;
+
+    glm::vec3 specular;
+    int pad3;
 
     float constant;
     float linear;
@@ -33,10 +40,15 @@ struct PointLightUBO {
 struct SpotLightUBO {
     glm::vec3 pos;
     int pad1;
+
     glm::vec3 dir;
     int pad2;
-    glm::vec4 diffuse;
-    glm::vec4 specular;
+
+    glm::vec3 diffuse;
+    int pad3;
+
+    glm::vec3 specular;
+    int pad4;
 
     float constant;
     float linear;
@@ -46,8 +58,8 @@ struct SpotLightUBO {
     float outerCutoff;
     float radius;
 
-    int pad3;
-    int pad4;
+    int pad5;
+    int pad6;
 };
 
 // NOTE KI align 16 for UBO struct

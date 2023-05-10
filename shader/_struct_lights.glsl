@@ -1,14 +1,14 @@
 struct DirLight {
   vec3 worldDir;
 
-  vec4 diffuse;
-  vec4 specular;
+  vec3 diffuse;
+  vec3 specular;
 };
 struct PointLight {
   vec3 worldPos;
 
-  vec4 diffuse;
-  vec4 specular;
+  vec3 diffuse;
+  vec3 specular;
 
   float constant;
   float linear;
@@ -19,8 +19,8 @@ struct SpotLight {
   vec3 worldPos;
   vec3 worldDir;
 
-  vec4 diffuse;
-  vec4 specular;
+  vec3 diffuse;
+  vec3 specular;
 
   float constant;
   float linear;

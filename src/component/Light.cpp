@@ -63,7 +63,16 @@ void Light::update(const UpdateContext& ctx, Node& node) noexcept
 
 DirLightUBO Light::toDirLightUBO() const noexcept
 {
-    return { m_worldDir, 0, diffuse, specular };
+    return {
+        m_worldDir,
+        0,
+
+        diffuse,
+        0,
+
+        specular,
+        0,
+    };
 }
 
 PointLightUBO Light::toPointightUBO() const noexcept
@@ -73,7 +82,10 @@ PointLightUBO Light::toPointightUBO() const noexcept
         0,
 
         diffuse,
+        0,
+
         specular,
+        0,
 
         constant,
         linear,
@@ -87,10 +99,15 @@ SpotLightUBO Light::toSpotLightUBO() const noexcept
     return {
         m_worldPosition,
         0,
+
         m_worldDir,
         0,
+
         diffuse,
+        0,
+
         specular,
+        0,
 
         constant,
         linear,

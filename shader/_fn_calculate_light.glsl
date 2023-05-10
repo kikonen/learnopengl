@@ -7,7 +7,7 @@ vec4 calculateLight(
   in Material material)
 {
   // https://community.khronos.org/t/default-value-of-uninitialized-local-variable-and-uniforms/74701/2
-  vec4 color = vec4(0);
+  vec3 color = vec3(0);
 
   uint lightCount = u_dirLightCount + u_pointLightCount + u_spotLightCount;
 
@@ -31,16 +31,15 @@ vec4 calculateLight(
     }
   }
 
-  vec4 shaded;
+  vec3 shaded;
   if (lightCount > 0) {
-    shaded = (material.ambient * material.diffuse) +
+    shaded = (material.ambient * material.diffuse.xyz) +
       color +
-      material.emission;
+      material.emission.xyz;
   } else {
-    shaded = material.diffuse;// + material.emission;
+    shaded = material.diffuse.xyz;
   }
-  // NOTE KI keep blending from material
-  shaded.a = material.diffuse.a;
 
-  return shaded;
+  // NOTE KI keep blending from material
+  return vec4(shaded, material.diffuse.a);
 }

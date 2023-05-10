@@ -1,4 +1,4 @@
-vec4 calculatePointLight(
+vec3 calculatePointLight(
   in PointLight light,
   in vec3 normal,
   in vec3 toView,
@@ -11,13 +11,13 @@ vec4 calculatePointLight(
 
   // diffuse
   float diff = max(dot(toLight, normal), 0.0);
-  vec4 diffuse = powerup * light.diffuse * (diff * material.diffuse);
+  vec3 diffuse = powerup * light.diffuse * (diff * material.diffuse.xyz);
 
   // specular
   vec3 reflectDir = reflect(-toLight, normal);
   vec3 halfwayDir = normalize(toLight + toView);
   float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
-  vec4 specular = powerup * light.specular * (spec * material.specular);
+  vec3 specular = powerup * light.specular * (spec * material.specular.xyz);
 
   float distance = length(light.worldPos - worldPos);
   float attenuation = 1.0 / (light.constant + light.linear * distance +
