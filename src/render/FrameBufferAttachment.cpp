@@ -125,7 +125,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
 {
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
-    spec.internalFormat = GL_RGB16F;
+    spec.internalFormat = GL_R11F_G11F_B10F;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
