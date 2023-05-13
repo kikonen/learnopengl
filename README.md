@@ -101,6 +101,8 @@ https://glad.dav1d.de
 ## G-buffer
 - https://learnopengl.com/Advanced-Lighting/Deferred-Shading
 - https://www.khronos.org/opengl/wiki/Compute_eye_space_from_window_space
+- https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
+  * vec3 alignment *is* broken in opengl std140
 
 ## CSM
 - https://ogldev.org/www/tutorial49/tutorial49.html
