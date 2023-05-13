@@ -1490,7 +1490,7 @@ void SceneFile::loadMaterial(
             fields.ns = true;
         }
         else if (k == "ka") {
-            material.ka = readRGBA(v);
+            material.ka = readRGB(v);
             fields.ka = true;
         }
         else if (k == "kd") {
@@ -1498,7 +1498,7 @@ void SceneFile::loadMaterial(
             fields.kd = true;
         }
         else if (k == "ks") {
-            material.ks = readRGBA(v);
+            material.ks = readRGB(v);
             fields.ks = true;
         }
         else if (k == "ke") {

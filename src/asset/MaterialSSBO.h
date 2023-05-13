@@ -20,6 +20,8 @@
 struct MaterialSSBO {
     glm::vec4 diffuse; // 16
     glm::vec4 emission; // 16
+
+    // specular + shininess
     glm::vec4 specular; // 16
 
     float ambient;
@@ -35,7 +37,6 @@ struct MaterialSSBO {
     int noiseMap;
     int pattern;
 
-    float shininess;
     float reflection;
     float refraction;
     float refractionRatio;
@@ -45,7 +46,7 @@ struct MaterialSSBO {
     int layers;
     float depth;
 
-    int pad1;
-    int pad2;
-    int pad3;
+    //int pad3_1;
+    //int pad3_2;
+//    int pad3_3;
 };

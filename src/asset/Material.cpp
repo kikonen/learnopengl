@@ -28,7 +28,7 @@ namespace {
         return ++idBase;
     }
 
-    float calculateAmbient(glm::vec4 ambient) {
+    float calculateAmbient(glm::vec3 ambient) {
         return (ambient.x + ambient.y + ambient.z) / 3.f;
     }
 
@@ -283,7 +283,8 @@ const MaterialSSBO Material::toSSBO() const
     return {
         kd,
         glm::vec4(0),
-        ks,
+
+        glm::vec4(ks, ns),
 
         calculateAmbient(ka),
 
@@ -297,7 +298,6 @@ const MaterialSSBO Material::toSSBO() const
         m_textures[NOISE_MAP_IDX].m_texIndex,
 
         pattern,
-        ns,
         reflection,
         refraction,
 

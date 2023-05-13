@@ -32,7 +32,6 @@ void main() {
 
   o_fragColor = vec4(texColor.xyz, material.ambient);
   o_fragSpecular = material.specular;
-  o_fragSpecular.a = material.shininess;
   o_fragEmission = texColor;
 
   o_fragPosition = fs_in.worldPos;

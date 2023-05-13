@@ -88,8 +88,6 @@ void main()
     material.diffuse.a = 1.0;
 
     material.specular = texture(g_specular, fs_in.texCoords);
-    material.shininess = material.specular.a;
-    material.specular.a = 1.0;
 
     material.emission = texture(g_emission, fs_in.texCoords);
     material.emission.a = 1.0;

@@ -1,6 +1,8 @@
 struct Material {
   vec4 diffuse;
   vec4 emission;
+
+  // specular + shininess
   vec4 specular;
 
   float ambient;
@@ -15,7 +17,6 @@ struct Material {
   int noiseMapTex;
   int pattern;
 
-  float shininess;
   float reflection;
   float refraction;
   float refractionRatio;

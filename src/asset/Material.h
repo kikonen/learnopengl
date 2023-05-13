@@ -145,14 +145,14 @@ public:
     // The ambient color of the material is declared using Ka.
     // HACK KI a bit ambient even if forgotten
     // => otherwise total blackness shall happen in few cases
-    glm::vec4 ka { 0.01f, 0.01f, 0.01f, 1.f };
+    glm::vec3 ka { 0.01f, 0.01f, 0.01f };
 
     // Similarly, the diffuse color is declared using Kd.
     glm::vec4 kd { 0.f, 0.f, 0.f, 1.f };
     std::string map_kd;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
-    glm::vec4 ks { 0.f, 0.f, 0.f, 1.f };
+    glm::vec3 ks { 0.f, 0.f, 0.f };
     std::string map_ks;
 
     // Ke/map_Ke     # emissive

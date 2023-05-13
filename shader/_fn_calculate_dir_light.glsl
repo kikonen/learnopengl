@@ -218,9 +218,10 @@ vec3 calculateDirLight(
 
   // specular
   vec3 specular = vec3(0);
-  if (material.shininess > 0) {
+  const float shininess = material.specular.a;
+  if (shininess > 0) {
     vec3 reflectDir = reflect(-toLight, normal);
-    float spec = pow(max(dot(toView, reflectDir), 0.0), material.shininess);
+    float spec = pow(max(dot(toView, reflectDir), 0.0), shininess);
     specular = spec * light.specular * material.specular.xyz;
   }
 
