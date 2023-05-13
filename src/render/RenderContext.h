@@ -76,6 +76,13 @@ public:
         m_allowBlend = flag;
         return old;
     }
+
+    bool setAllowDrawDebug(bool flag) const {
+        bool old = m_allowDrawDebug;
+        m_allowDrawDebug = flag;
+        return old;
+    }
+
 public:
     const std::string m_name;
     const RenderContext* const m_parent;
@@ -114,4 +121,5 @@ public:
     mutable bool m_forceWireframe = false;
     mutable bool m_allowBlend = true;
     mutable bool m_shadow = false;
+    mutable bool m_allowDrawDebug = false;
 };

@@ -143,7 +143,7 @@ void NodeDraw::drawNodes(
     }
 
     // pass 5 - debug info
-    if (ctx.m_assets.drawDebug)
+    if (ctx.m_allowDrawDebug && ctx.m_assets.drawDebug)
     {
         constexpr float SZ1 = 0.25f;
         //constexpr float SZ2 = 0.5f;

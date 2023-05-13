@@ -115,6 +115,7 @@ RenderContext::RenderContext(
         m_forceWireframe = m_parent->m_forceWireframe;
         m_useLight = m_parent->m_useLight;
         m_allowBlend = m_parent->m_allowBlend;
+        m_allowDrawDebug = m_parent->m_allowDrawDebug;
     }
 
     m_camera->setupProjection(

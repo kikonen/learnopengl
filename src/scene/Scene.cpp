@@ -350,6 +350,7 @@ void Scene::drawMain(const RenderContext& parentCtx)
 
     localCtx.copyShadowFrom(parentCtx);
 
+    localCtx.m_allowDrawDebug = true;
     drawScene(localCtx, m_mainBuffer.get());
 }
 
