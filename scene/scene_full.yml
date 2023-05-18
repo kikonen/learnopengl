@@ -17,7 +17,7 @@ entities:
     type: origo
     pos: [0.0, 0.0, 0.0]
     enabled: true
-    xxscript_file: scripts/seq_zero_origo
+    script_file: scripts/seq_zero_origo
   - name: ZERO
     parent_id: [auto, zero-origo]
     model: water_ball
