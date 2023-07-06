@@ -2,10 +2,14 @@ vec3 calculatePointLight(
   in PointLight light,
   in vec3 normal,
   in vec3 toView,
-  in vec3 worldPos,
+  in vec3 toLight,
   in Material material)
 {
-  const vec3 toLight = normalize(light.worldPos - worldPos);
+  const float dist = length(toLight);
+
+  if (dist > light.radius) return vec3(0.0);
+
+  toLight = normalize(toLight);
 
   const float powerup = 1.7;
 
@@ -23,9 +27,8 @@ vec3 calculatePointLight(
     specular = powerup * light.specular * (spec * material.specular.xyz);
   }
 
-  float distance = length(light.worldPos - worldPos);
-  float attenuation = 1.0 / (light.constant + light.linear * distance +
-                             light.quadratic * (distance * distance));
+  float attenuation = 1.0 / (light.constant + light.linear * dist +
+                             light.quadratic * (dist * dist));
   diffuse  *= attenuation;
   specular *= attenuation;
 
