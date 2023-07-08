@@ -12,10 +12,7 @@ in VS_OUT {
   flat uint materialIndex;
 } fs_in;
 
-
-layout (location = 0) out vec4 o_accum;
-layout (location = 1) out float o_reveal;
-
+LAYOUT_OIT_OUT;
 
 ////////////////////////////////////////////////////////////
 //

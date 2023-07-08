@@ -29,11 +29,7 @@ layout(binding = UNIT_WATER_NOISE) uniform sampler3D u_noiseTex;
 layout(binding = UNIT_WATER_REFLECTION) uniform sampler2D u_reflectionTex;
 layout(binding = UNIT_WATER_REFRACTION) uniform sampler2D u_refractionTex;
 
-layout (location = 0) out vec4 o_fragColor;
-layout (location = 1) out vec4 o_fragSpecular;
-layout (location = 2) out vec4 o_fragEmission;
-layout (location = 3) out vec3 o_fragPosition;
-layout (location = 4) out vec3 o_fragNormal;
+LAYOUT_G_BUFFER_OUT;
 
 ////////////////////////////////////////////////////////////
 //

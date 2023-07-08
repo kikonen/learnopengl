@@ -12,11 +12,7 @@ in VS_OUT {
   vec3 normal;
 } fs_in;
 
-layout (location = 0) out vec4 o_fragColor;
-layout (location = 1) out vec4 o_fragSpecular;
-layout (location = 2) out vec4 o_fragEmission;
-layout (location = 3) out vec3 o_fragPosition;
-layout (location = 4) out vec3 o_fragNormal;
+LAYOUT_G_BUFFER_OUT;
 
 ////////////////////////////////////////////////////////////
 //

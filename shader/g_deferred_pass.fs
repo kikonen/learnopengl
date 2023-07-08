@@ -11,14 +11,8 @@ in VS_OUT {
   vec2 texCoords;
 } fs_in;
 
-layout(binding = UNIT_G_ALBEDO) uniform sampler2D g_albedo;
-layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;
-layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;
-layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;
-layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
-
-layout(binding = UNIT_OIT_ACCUMULATOR) uniform sampler2D oit_accumulator;
-layout(binding = UNIT_OIT_REVEAL) uniform sampler2D oit_reveal;
+LAYOUT_G_BUFFER_SAMPLERS;
+LAYOUT_OIT_SAMPLERS;
 
 layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
 
