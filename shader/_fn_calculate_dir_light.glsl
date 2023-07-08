@@ -150,10 +150,11 @@ float calcShadow2_2(
       float pcf = textureProj(u_shadowMap[shadowIndex], pos);
 
       // Shadow acne correction
-      shadow += shadowDepth - bias > pcf ? 0.0 : 0.5;
+      shadow += shadowDepth - bias < pcf ? 0.5 : 0.0;
     }
   }
-  return shadow / 9.0;
+
+  return clamp(shadow / 9.0, 0.0, 1.0);
 }
 
 /*
