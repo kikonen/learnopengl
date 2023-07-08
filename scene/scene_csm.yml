@@ -67,6 +67,45 @@ entities:
         z_step: -20
       enabled: true
     enabled: true
+  - name: Skeleton army - grid
+    type: billboard
+    priority: 1
+    program: g_tex
+    instanced: true
+    pos: [20, 0.0, 20]
+    material: skeleton
+    render_flags:
+      alpha: true
+      physics: true
+      enforce_bounds: true
+    scale: [1.5, 3, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 10
+        z_step: -10
+      enabled: true
+    enabled: true
+  - name: Skeleton army
+    type: billboard
+    priority: 1
+    program: g_tex
+    pos: [20, 0.0, 50]
+    material: skeleton
+    render_flags:
+      alpha: true
+      physics: true
+      enforce_bounds: true
+    scale: [1.5, 3, 1]
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+    enabled: true
   - name: Giant wooden box
     model: quad
     xxmodel: woodwall
@@ -100,3 +139,9 @@ materials:
     ka: [0.7, 0.7, 0.7, 1.0]
     ks: [0.5, 0.5, 0.5, 1.0]
     map_kd: linden_tree_512.png
+  - name: skeleton
+    type: sprite
+    ns: 20
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
+    map_kd: Skeleton_VH.PNG
