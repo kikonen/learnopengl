@@ -98,7 +98,11 @@ void main() {
   {
     const vec3 N = normalize(vs_out.normal);
     vec3 T = tangent;
+
+    // NOTE KI Gram-Schmidt process to re-orthogonalize
+    // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     T = normalize(T - dot(T, N) * N);
+
     const vec3 B = cross(N, T);
 
     vs_out.TBN = mat3(T, B, N);

@@ -106,6 +106,8 @@ https://glad.dav1d.de
 - https://www.reddit.com/r/GraphicsProgramming/comments/zxrww8/should_i_have_tangents_in_my_gbuffer_in_a/
   * tangent space lighting typically happens in forward renderers
 - https://gamedev.stackexchange.com/questions/162248/correctly-transforming-normals-for-g-buffer-in-deferred-rendering
+- http://c0de517e.blogspot.com/2015/01/notes-on-g-buffer-normal-encodings.html
+  * example of g-buffer encoding
 
 ## CSM
 - https://ogldev.org/www/tutorial49/tutorial49.html
