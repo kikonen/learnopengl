@@ -17,7 +17,7 @@ layout (location = 4) out vec3 o_fragNormal;
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 void main() {
   vec4 texColor = texture(u_skybox, texCoord);

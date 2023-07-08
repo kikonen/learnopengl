@@ -11,7 +11,7 @@ out vec4 o_fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 void main() {
   o_fragColor = texture(u_skybox, texCoord);

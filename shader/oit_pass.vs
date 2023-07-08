@@ -26,7 +26,7 @@ out float gl_ClipDistance[CLIP_COUNT];
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 #include fn_calculate_clipping.glsl
 

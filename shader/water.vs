@@ -42,7 +42,7 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 #include fn_calculate_shadow_index.glsl
 

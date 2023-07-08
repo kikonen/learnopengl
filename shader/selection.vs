@@ -40,7 +40,7 @@ const mat4 SCALE_MATRIX = mat4(SCALE, 0, 0, 0,
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 #include fn_calculate_clipping.glsl
 

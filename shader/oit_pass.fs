@@ -21,7 +21,7 @@ layout (location = 1) out float o_reveal;
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 void main()
 {

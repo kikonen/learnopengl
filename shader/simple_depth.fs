@@ -26,7 +26,7 @@ in VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 void main()
 {

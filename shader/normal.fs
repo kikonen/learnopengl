@@ -15,7 +15,7 @@ out vec4 o_fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 void main()
 {

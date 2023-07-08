@@ -30,7 +30,7 @@ float iTime;
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 #ifdef EFFECT_SUN
   #include effect_sun.glsl

@@ -68,7 +68,7 @@ layout (binding = SSBO_DRAW_PARAMETERS, std430) readonly buffer DrawParametersSS
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 float getSignedDistanceToPlane(in vec4 plane, in vec3 p)
 {

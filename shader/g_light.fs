@@ -22,7 +22,7 @@ layout (location = 4) out vec3 o_fragNormal;
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 void main() {
   Material material = u_materials[fs_in.materialIndex];

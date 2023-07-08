@@ -23,7 +23,7 @@ layout (location = 0) out vec4 o_fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-SET_FLOAT_PRECISION
+SET_FLOAT_PRECISION;
 
 void main() {
   Material material = u_materials[fs_in.materialIndex];
