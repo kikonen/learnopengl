@@ -103,6 +103,9 @@ https://glad.dav1d.de
 - https://www.khronos.org/opengl/wiki/Compute_eye_space_from_window_space
 - https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
   * vec3 alignment *is* broken in opengl std140
+- https://www.reddit.com/r/GraphicsProgramming/comments/zxrww8/should_i_have_tangents_in_my_gbuffer_in_a/
+  * tangent space lighting typically happens in forward renderers
+- https://gamedev.stackexchange.com/questions/162248/correctly-transforming-normals-for-g-buffer-in-deferred-rendering
 
 ## CSM
 - https://ogldev.org/www/tutorial49/tutorial49.html

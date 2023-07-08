@@ -42,6 +42,15 @@ void NodeInstance::updateEntity(
     entity->setModelMatrix(m_modelMatrix, m_uniformScale);
     if (!m_uniformScale) {
         // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+        // https://gamedev.stackexchange.com/questions/162248/correctly-transforming-normals-for-g-buffer-in-deferred-rendering
+        // ???
+        // "Then, for each scene object, compute their world space transforms,
+        // and normal matrices. Tangent space (TBN) matrices can be computed
+        // in the first pass shader.
+        //
+        // The normal matrix is the inverse transpose of the world space transform
+        // (not object space to view space, as you would in a simpler forward rendering pipeline)."
+        // ???
         entity->setNormalMatrix(glm::mat3(glm::inverseTranspose(m_modelMatrix)));
     }
 
