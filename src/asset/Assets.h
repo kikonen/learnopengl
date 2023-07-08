@@ -98,6 +98,7 @@ public:
     bool frustumEnabled;
     bool frustumCPU;
     bool frustumGPU;
+    bool frustumAny;
     bool frustumDebug;
     bool frustumVisual;
 

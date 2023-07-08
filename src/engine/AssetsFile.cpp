@@ -340,6 +340,8 @@ void AssetsFile::loadAssets(
             reportUnknown("asset", k, v);
         }
     }
+
+    data.frustumAny = data.frustumEnabled && (data.frustumCPU || data.frustumGPU);
 }
 
 bool AssetsFile::readBool(const YAML::Node& node) const
