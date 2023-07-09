@@ -8,7 +8,7 @@
 #include uniform_lights.glsl
 
 in VS_OUT {
-  vec2 texCoords;
+  vec2 texCoord;
 } fs_in;
 
 LAYOUT_G_BUFFER_SAMPLERS;
@@ -64,10 +64,11 @@ vec4 blend(vec4 source, vec4 dest)
 
 void main()
 {
-  const vec3 worldPos = texture(g_position, fs_in.texCoords).rgb;
-  const vec3 normal = normalize(texture(g_normal, fs_in.texCoords).rgb);
+  const vec3 worldPos = texture(g_position, fs_in.texCoord).rgb;
+  const vec3 normal = normalize(texture(g_normal, fs_in.texCoord).xyz);
 
   const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+
   const uint shadowIndex = calculateShadowIndex(viewPos);
   const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
 
@@ -77,20 +78,20 @@ void main()
 
   bool skipLight;
   {
-    material.diffuse = texture(g_albedo, fs_in.texCoords);
+    material.diffuse = texture(g_albedo, fs_in.texCoord);
     material.ambient = material.diffuse.a;
     material.diffuse.a = 1.0;
 
-    material.specular = texture(g_specular, fs_in.texCoords);
+    material.specular = texture(g_specular, fs_in.texCoord);
 
-    material.emission = texture(g_emission, fs_in.texCoords);
+    material.emission = texture(g_emission, fs_in.texCoord);
     material.emission.a = 1.0;
   }
 
   if (true) {
-    float revealage = texture(oit_reveal, fs_in.texCoords).r;
+    float revealage = texture(oit_reveal, fs_in.texCoord).r;
     if (!isApproximatelyEqual(revealage, 1.0f)) {
-      vec4 accumulation = texture(oit_accumulator, fs_in.texCoords, 0);
+      vec4 accumulation = texture(oit_accumulator, fs_in.texCoord, 0);
 
       if (isinf(max3(abs(accumulation.rgb))))
         accumulation.rgb = vec3(accumulation.a);
