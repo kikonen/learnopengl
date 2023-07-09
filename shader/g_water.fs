@@ -141,6 +141,6 @@ void main() {
   o_fragSpecular = material.specular;
   o_fragEmission = material.emission;
 
-  o_fragPosition = fs_in.worldPos;
+  //o_fragPosition = fs_in.worldPos;
   o_fragNormal = normal;
 }

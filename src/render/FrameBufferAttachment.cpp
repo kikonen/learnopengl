@@ -127,6 +127,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
     spec.type = FrameBufferAttachmentType::texture;
     // NOTE KI it seems GL_R11F_G11F_B10F is not enough precision for normal
     // => causes odd artifacts in light render
+    // => i.e. "world space", not "tangent space" normals are stored
     spec.internalFormat = GL_RGB16F;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;

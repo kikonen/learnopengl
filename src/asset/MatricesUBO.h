@@ -9,8 +9,13 @@
 #pragma pack(push, 1)
 struct MatricesUBO {
     glm::mat4 u_projected{ 1.0f };
+
     glm::mat4 u_projection{ 1.0f };
+    glm::mat4 u_invProjection{ 1.0f };
+
     glm::mat4 u_view{ 1.0f };
+    glm::mat4 u_invView{ 1.0f };
+
     glm::mat4 u_viewSkybox{ 1.0f };
 
     // NOTE KI calculated by shadow calculation

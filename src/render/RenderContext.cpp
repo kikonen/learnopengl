@@ -124,8 +124,11 @@ RenderContext::RenderContext(
         m_farPlane);
 
     m_matrices.u_view = m_camera->getView();
+    m_matrices.u_invView = glm::inverse(m_matrices.u_view);
 
     m_matrices.u_projection = m_camera->getProjection();
+    m_matrices.u_invProjection = glm::inverse(m_matrices.u_projection);
+
     m_matrices.u_projected = m_camera->getProjected();
 
     {
