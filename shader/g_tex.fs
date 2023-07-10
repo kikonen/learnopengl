@@ -77,5 +77,5 @@ void main() {
   o_fragEmission = material.emission;
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = normal;
+  o_fragNormal = normal * 0.5 + 0.5;
 }

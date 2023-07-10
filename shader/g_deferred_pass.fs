@@ -77,7 +77,8 @@ void main()
   }
 
   //const vec3 worldPos = texture(g_position, fs_in.texCoord).rgb;
-  const vec3 normal = normalize(texture(g_normal, fs_in.texCoord).xyz);
+  // NOTE KI normal stored as [0, 1] (normalized)
+  const vec3 normal = texture(g_normal, fs_in.texCoord).xyz * 2.0 - 1.0;
 
   //const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
 

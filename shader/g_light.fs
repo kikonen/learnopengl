@@ -31,5 +31,5 @@ void main() {
   o_fragEmission = texColor;
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = fs_in.normal;
+  o_fragNormal = normalize(fs_in.normal) * 0.5 + 0.5;
 }

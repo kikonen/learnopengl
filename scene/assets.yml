@@ -43,7 +43,7 @@ assets:
 
   show_normals: false
   show_rear_view: false
-  show_shadow_map_view: false
+  show_shadow_map_view: true
   show_reflection_view: false
   show_refraction_view: false
   show_objectid_view: false
@@ -60,7 +60,7 @@ assets:
   debug_clear_color: true
   clear_color: true
 
-  frustum_enabled: true
+  frustum_enabled: false
   frustum_cpu: true
   frustum_gpu: false
   frustum_debug: true
@@ -86,7 +86,7 @@ assets:
   batch_buffers: 500
   batch_debug: true
 
-  draw_debug: false
+  draw_debug: true
 
   near_plane: 0.1
   far_plane: 2000.0

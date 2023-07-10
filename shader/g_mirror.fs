@@ -40,7 +40,7 @@ SET_FLOAT_PRECISION;
 void main() {
   #include var_tex_material.glsl
 
-  vec3 normal = fs_in.normal;
+  vec3 normal = normalize(fs_in.normal);
 
   // if (!gl_FrontFacing) {
   //   normal = -normal;
@@ -65,5 +65,5 @@ void main() {
   o_fragEmission = material.emission;
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = normal;
+  o_fragNormal = normal * 0.5 + 0.5;
 }

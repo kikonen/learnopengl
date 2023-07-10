@@ -25,5 +25,5 @@ void main() {
   o_fragEmission = texColor;
 
   //o_fragPosition = u_viewWorldPos + 1000 * u_viewFront;
-  o_fragNormal = u_viewFront;
+  o_fragNormal = u_viewFront * 0.5 + 0.5;
 }
