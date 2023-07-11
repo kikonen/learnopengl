@@ -1,6 +1,6 @@
 struct Material {
   vec4 diffuse;
-  vec4 emission;
+  vec3 emission;
 
   // specular + shininess
   vec4 specular;

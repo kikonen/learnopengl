@@ -7,7 +7,7 @@ Material material = u_materials[fs_in.materialIndex];
 
   if (material.emissionTex >= 0) {
     sampler2D sampler = sampler2D(u_texture_handles[material.emissionTex]);
-    material.emission = texture(sampler, fs_in.texCoord);
+    material.emission = texture(sampler, fs_in.texCoord).xyz;
   }
 
   if (material.specularTex >= 0) {
