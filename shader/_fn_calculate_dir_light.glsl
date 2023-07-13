@@ -157,6 +157,51 @@ float calcShadow2_2(
   return clamp(shadow / 9.0, 0.0, 1.0);
 }
 
+float calcShadow2_4(
+  in uint shadowIndex,
+  in vec4 shadowPos,
+  in vec3 normal,
+  in vec3 toLight)
+{
+  const float shadowDepth = shadowPos.z;
+
+  if (shadowDepth > 1.0) return 0.0;
+
+  const float bias = 0.0001;
+
+  vec4 pos = shadowPos;
+  pos.z -= bias;
+
+  float shadow = 0.0;
+
+  for (int x = -1; x < 2; x++) {
+    for (int y = -1; y < 2; y++) {
+      shadow += textureProjOffset(u_shadowMap[shadowIndex], pos, ivec2(x, y));
+    }
+  }
+
+  return shadow / 9.0;
+}
+
+float calcShadow2_5(
+  in uint shadowIndex,
+  in vec4 shadowPos,
+  in vec3 normal,
+  in vec3 toLight)
+{
+  const float shadowDepth = shadowPos.z;
+
+  if (shadowDepth > 1.0) return 0.0;
+
+  float bias = 0.001;
+  vec4 pos = shadowPos;
+  pos.z -= bias;
+  float shadow = textureProj(u_shadowMap[shadowIndex], pos);
+
+  return shadow;
+}
+
+
 /*
 float calcShadow3(
   in uint shadowIndex,
@@ -228,7 +273,7 @@ vec3 calculateDirLight(
 
   // calculate shadow
   //float shadow = calcShadow2_3(worldPos, shadowIndex, shadowPos, normal, toLight);
-  float shadow = calcShadow2_2(shadowIndex, shadowPos, normal, toLight);
+  float shadow = calcShadow2_4(shadowIndex, shadowPos, normal, toLight);
 
   return shadow * (diffuse + specular);
 }

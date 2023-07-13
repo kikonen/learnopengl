@@ -131,6 +131,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
     //    - https://www.khronos.org/opengl/wiki/Image_Format
     // => MUST scale [-1, 1] range to [0, 1] range in gbuffer (& remember to normalize)
     spec.internalFormat = GL_R11F_G11F_B10F;
+    //spec.internalFormat = GL_RGB16F;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 

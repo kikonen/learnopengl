@@ -27,6 +27,12 @@ namespace {
     // (which lie between -1.0 and +1.0) into the range 0.0 to 1.0.
     //
     // TODO KI add small bias into Translation Z component
+
+    //auto B = glm::scale(
+    //    glm::translate(
+    //        glm::mat4(1),
+    //        glm::vec3(0.5, 0.5, 0.5)),
+    //    glm::vec3(0.5, 0.5, 0.5));
     const glm::mat4 scaleBiasMatrix = {
       {0.5f, 0.0f, 0.0f, 0.0f},
       {0.0f, 0.5f, 0.0f, 0.0f},
