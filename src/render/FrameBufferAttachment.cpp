@@ -148,10 +148,12 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
     spec.attachment = GL_DEPTH_ATTACHMENT;
     // NOTE KI linear slower, but *BETTER* results
     // CHECK KI does it actually matter for shadowmap?!?
-    spec.minFilter = GL_NEAREST;
-    spec.magFilter = GL_NEAREST;
-    //spec.minFilter = GL_LINEAR;
-    //spec.magFilter = GL_LINEAR;
+    // "LINEAR" is *supposed* get free 4 texel PCF in shadow mapping
+    // - https://fabiensanglard.net/shadowmappingPCF/index.php
+    //spec.minFilter = GL_NEAREST;
+    //spec.magFilter = GL_NEAREST;
+    spec.minFilter = GL_LINEAR;
+    spec.magFilter = GL_LINEAR;
     spec.textureWrapS = GL_CLAMP_TO_BORDER;
     spec.textureWrapT = GL_CLAMP_TO_BORDER;
 

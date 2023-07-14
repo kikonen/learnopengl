@@ -198,6 +198,8 @@ float calcShadow2_5(
   float bias = 0.001;
   vec4 pos = shadowPos;
   pos.z -= bias;
+  // With GL_LINEAR & sampler2dshadow & textureProj
+  // => free HW PCF
   float shadow = textureProj(u_shadowMap[shadowIndex], pos);
 
   return shadow;
