@@ -183,6 +183,8 @@ float calcShadow2_4(
   return shadow / 9.0;
 }
 
+// NOTE KI
+// https://computergraphics.stackexchange.com/questions/4354/exponential-shadow-maps-sampling-with-pcf-for-sampler2dshadow-instead-of-sampler
 float calcShadow2_5(
   in uint shadowIndex,
   in vec4 shadowPos,
@@ -273,7 +275,7 @@ vec3 calculateDirLight(
 
   // calculate shadow
   //float shadow = calcShadow2_3(worldPos, shadowIndex, shadowPos, normal, toLight);
-  float shadow = calcShadow2_4(shadowIndex, shadowPos, normal, toLight);
+  float shadow = calcShadow2_5(shadowIndex, shadowPos, normal, toLight);
 
   return shadow * (diffuse + specular);
 }
