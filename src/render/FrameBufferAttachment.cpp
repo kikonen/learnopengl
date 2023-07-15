@@ -150,6 +150,7 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
     // CHECK KI does it actually matter for shadowmap?!?
     // "LINEAR" is *supposed* get free 4 texel PCF in shadow mapping
     // - https://fabiensanglard.net/shadowmappingPCF/index.php
+    // => based into experimentation that is true
     //spec.minFilter = GL_NEAREST;
     //spec.magFilter = GL_NEAREST;
     spec.minFilter = GL_LINEAR;
