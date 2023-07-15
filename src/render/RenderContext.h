@@ -22,6 +22,15 @@ class Batch;
 class NodeDraw;
 class RenderData;
 
+struct RenderContextDefaults {
+    // https://cmichel.io/understanding-front-faces-winding-order-and-normals
+    bool m_cullFaceEnabled{ true };
+    GLenum m_cullFace{ GL_BACK };
+    GLenum m_frontFace{ GL_CCW };
+    GLenum m_polygonFrontAndBack{ GL_FILL };
+    GLenum m_blendEnabled{ false };
+};
+
 class RenderContext final
 {
 public:
@@ -97,6 +106,8 @@ public:
     GLenum m_depthFunc = GL_LESS;
 
     GLState& m_state;
+
+    RenderContextDefaults m_defaults;
 
     const glm::vec2 m_resolution;
 

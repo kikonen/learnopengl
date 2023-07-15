@@ -181,12 +181,12 @@ RenderContext::~RenderContext()
 void RenderContext::bindDefaults() const
 {
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
-    m_state.setEnabled(GL_CULL_FACE, true);
-    m_state.cullFace(GL_BACK);
-    m_state.frontFace(GL_CCW);
+    m_state.setEnabled(GL_CULL_FACE, m_defaults.m_cullFaceEnabled);
+    m_state.cullFace(m_defaults.m_cullFace);
+    m_state.frontFace(m_defaults.m_frontFace);
 
-    m_state.polygonFrontAndBack(GL_FILL);
-    m_state.setEnabled(GL_BLEND, false);
+    m_state.polygonFrontAndBack(m_defaults.m_polygonFrontAndBack);
+    m_state.setEnabled(GL_BLEND, m_defaults.m_blendEnabled);
 }
 
 void RenderContext::updateUBOs() const
