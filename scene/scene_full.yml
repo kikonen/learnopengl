@@ -725,6 +725,8 @@ entities:
     parent_id: [auto, planet-origo]
     model: [planet, planet]
     program: g_tex
+    material_modifier:
+      map_bump: mars_normal.png
     pos: [0, 0, 0]
     scale: 10
     enabled: true
