@@ -85,7 +85,7 @@ void main() {
 //  calculateClipping(worldPos);
 
 #ifdef USE_NORMAL_TEX
-  {
+  if (u_materials[materialIndex].normalMapTex >= 0) {
     const vec3 N = normalize(vs_out.normal);
     vec3 T = normalize((modelMatrix * vec4(a_tangent, 1.0)).xyz);
 

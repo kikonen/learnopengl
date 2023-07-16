@@ -67,9 +67,11 @@ void main() {
 
   #include var_tex_material_normal.glsl
 
+#ifdef USE_NORMAL_PATTERN
   if (material.pattern == 1) {
     normal = calculateNormalPattern(fs_in.vertexPos, normal);
   }
+#endif
 
   // if (!gl_FrontFacing) {
   //   normal = -normal;

@@ -1,3 +1,4 @@
+#ifdef USE_NORMAL_PATTERN
 vec3 calculateNormalPattern(
   in vec3 vertexPos,
   in vec3 normal)
@@ -13,3 +14,4 @@ vec3 calculateNormalPattern(
   N.z = normal.z + a * sin(b*z);
   return normalize(N);
 }
+#endif
