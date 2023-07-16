@@ -130,8 +130,11 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
     // => *likely* reason is that GL_R11F_G11F_B10F does NOT have sign bit
     //    - https://www.khronos.org/opengl/wiki/Image_Format
     // => MUST scale [-1, 1] range to [0, 1] range in gbuffer (& remember to normalize)
-    spec.internalFormat = GL_R11F_G11F_B10F;
-    //spec.internalFormat = GL_RGB16F;
+    // NOTE KI GL_R11F_G11F_B10F does not seem to be enough resolution for curved surfaces
+    // => cause "ring" arfifacts
+    // => shadow artifacts on ball surface seem to be different issue
+    //spec.internalFormat = GL_R11F_G11F_B10F;
+    spec.internalFormat = GL_RGB16F;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
 
