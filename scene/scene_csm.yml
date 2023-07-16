@@ -135,6 +135,20 @@ entities:
       x_step: 10
       z_step: -10
     enabled: true
+  - name: Planet
+    model: [planet, planet]
+    program: g_tex
+    pos: [0, 0, 20]
+    scale: 1
+    enabled: true
+  - name: Planet
+    model: [planet, planet]
+    program: g_tex
+    pos: [0, 3.5, 30]
+    material_modifier:
+      map_bump: mars_normal.png
+    scale: 1
+    enabled: true
   - name: Wood wall
     model: quad
     material: woodwall

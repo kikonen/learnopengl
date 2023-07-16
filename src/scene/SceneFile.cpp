@@ -1461,8 +1461,9 @@ void SceneFile::loadMaterial(
     Material& material)
 {
     for (const auto& pair : node) {
-        const std::string& k = pair.first.as<std::string>();
+        auto key = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
+        const std::string k = util::toLower(key);
 
         if (k == "name") {
             material.m_name = v.as<std::string>();
