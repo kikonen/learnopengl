@@ -135,6 +135,20 @@ entities:
       x_step: 10
       z_step: -10
     enabled: true
+  - name: Cube map - mirror_ball
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+    enabled: true
+  - name: Mirror ball
+    model: glass_ball
+    program: g_tex
+    pos: [0, 5, 10]
+    scale: 1
+    material_modifier:
+      reflection: 0.8
+    enabled: true
   - name: Planet
     model: [planet, planet]
     program: g_tex

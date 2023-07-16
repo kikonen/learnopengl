@@ -14,10 +14,14 @@ layout(early_fragment_tests) in;
 #endif
 
 in VS_OUT {
+#ifdef USE_CUBE_MAP
   vec3 worldPos;
+#endif
   vec3 normal;
   vec2 texCoord;
+#ifdef USE_NORMAL_PATTERN
   vec3 vertexPos;
+#endif
 
   flat uint materialIndex;
 
@@ -39,7 +43,6 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_normal_pattern.glsl
 
 void main() {
-  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
   #include var_tex_material.glsl
 
 #ifdef USE_ALPHA
@@ -62,7 +65,10 @@ void main() {
 //    normal = -normal;
 //  }
 
-  #include var_calculate_cubemap_diffuse.glsl
+#ifdef USE_CUBE_MAP
+  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
+  #include var_calculate_cube_map_diffuse.glsl
+#endif
 
   vec4 texColor = material.diffuse;
 

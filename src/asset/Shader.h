@@ -33,6 +33,8 @@ const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };
 const std::string DEF_USE_BLEND_OIT{ "USE_BLEND_OIT" };
 const std::string DEF_USE_NORMAL_TEX{ "USE_NORMAL_TEX" };
+const std::string DEF_USE_CUBE_MAP{ "USE_CUBE_MAP" };
+const std::string DEF_USE_NORMAL_PATTERN{ "USE_NORMAL_PATTERN" };
 
 const std::string DEF_MAT_COUNT{ "MAT_COUNT" };
 const std::string DEF_TEX_COUNT{ "TEX_COUNT" };

@@ -75,7 +75,9 @@ void main() {
   //   normal = -normal;
   // }
 
-  #include var_calculate_cubemap_diffuse.glsl
+#ifdef USE_CUBE_MAP
+  #include var_calculate_cube_map_diffuse.glsl
+#endif
 
   vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowIndex, fs_in.shadowPos, material);
 

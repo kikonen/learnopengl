@@ -120,7 +120,9 @@ void main() {
   // input parameters are offset for neighbors, and scaling for width and height
   normal = estimateWaveNormal(.0002, 32.0, 16.0);
 
-  // #include var_calculate_cubemap_diffuse.glsl
+#ifdef USE_CUBE_MAP
+  // #include var_calculate_cube_map_diffuse.glsl
+#endif
 
   vec4 gp = fs_in.glp;
   vec2 refractCoord = vec2(gp.x, gp.y) / (gp.w * 2.0) + 0.5 + totalDistortion;

@@ -474,15 +474,19 @@ MeshType* SceneFile::createType(
             }
         }
 
-        bool normalTex = false;
+        bool useNormalTex = false;
+        bool useCubeMap = false;
+        bool useNormalPattern = false;
 
-        type->modifyMaterials([this, &normalTex, &data](Material& m) {
+        type->modifyMaterials([this, &useNormalTex, &useCubeMap, &useNormalPattern, &data](Material& m) {
             if (data.materialModifiers_enabled) {
                 modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
             }
             m.loadTextures(m_assets);
 
-            normalTex |= m.hasNormalTex();
+            useNormalTex |= m.hasNormalTex();
+            useCubeMap |= 1.0 - m.reflection - m.refraction < 1.0;
+            useNormalPattern |= m.pattern > 0;
         });
 
         if (!data.programName.empty()) {
@@ -499,8 +503,14 @@ MeshType* SceneFile::createType(
             if (type->m_flags.blendOIT) {
                 definitions[DEF_USE_BLEND_OIT] = "1";
             }
-            if (normalTex) {
+            if (useNormalTex) {
                 definitions[DEF_USE_NORMAL_TEX] = "1";
+            }
+            if (useCubeMap) {
+                definitions[DEF_USE_CUBE_MAP] = "1";
+            }
+            if (useNormalPattern) {
+                definitions[DEF_USE_NORMAL_PATTERN] = "1";
             }
 
             type->m_program = m_registry->m_programRegistry->getProgram(
