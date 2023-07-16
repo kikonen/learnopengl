@@ -155,7 +155,13 @@ void ShadowCascade::bind(const RenderContext& ctx)
         }
 
         // Tune this parameter according to the scene
-        const float zMult = 20.f / (m_index + 1);
+        float zMult = 1.0;// 20.f / (m_index + 1);
+        if (m_index == 0) {
+            zMult = 3.5;
+        } else if (m_index == 1) {
+            zMult = 2.0;
+        }
+
         if (minZ < 0)
         {
             minZ *= zMult;
@@ -198,6 +204,8 @@ void ShadowCascade::render(
         m_camera.getFarPlane(),
         m_mapSize, m_mapSize);
 
+    localCtx.m_defaults.m_cullFace = GL_FRONT;
+
     localCtx.copyShadowFrom(parentCtx);
 
     localCtx.updateMatricesUBO();
@@ -209,7 +217,9 @@ void ShadowCascade::render(
     m_buffer->clearAll();
 
     m_buffer->bind(localCtx);
+    localCtx.bindDefaults();
     drawNodes(localCtx);
+    parentCtx.bindDefaults();
     m_buffer->unbind(localCtx);
 }
 

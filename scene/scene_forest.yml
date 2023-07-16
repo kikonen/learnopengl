@@ -40,6 +40,7 @@ entities:
       alpha: true
       static_physics: true
       enforce_bounds: true
+      render_back: true
     scale: [7, 10, 1]
     generator:
       type: grid

@@ -109,6 +109,7 @@ entities:
       alpha: true
       static_physics: true
       enforce_bounds: true
+      render_back: true
     scale: [7, 10, 1]
     generator:
       type: grid
@@ -128,7 +129,7 @@ entities:
     material: skeleton
     render_flags:
       alpha: true
-      render_back: false
+      render_back: true
       enforce_bounds: true
       physics: true
     scale: [1.5, 3, 1]
