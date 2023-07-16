@@ -474,7 +474,7 @@ MeshType* SceneFile::createType(
             }
         }
 
-        bool normalTex = true;
+        bool normalTex = false;
 
         type->modifyMaterials([this, &normalTex, &data](Material& m) {
             if (data.materialModifiers_enabled) {

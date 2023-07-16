@@ -56,7 +56,6 @@ void main() {
   vec4 worldPos;
 
   vec3 normal;
-  vec3 tangent;
 
   if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
     // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
@@ -70,12 +69,10 @@ void main() {
                     1.0);
 
     normal = -u_viewFront;
-    tangent = u_viewRight;
   } else {
     worldPos = modelMatrix * pos;
 
     normal = normalize(normalMatrix * a_normal);
-    tangent = normalize((modelMatrix * vec4(a_tangent, 1.0)).xyz);
   }
 
   gl_Position = u_projectedMatrix * worldPos;
@@ -94,6 +91,13 @@ void main() {
   calculateClipping(worldPos);
 
 #ifdef USE_NORMAL_TEX
+  vec3 tangent;
+  if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
+    tangent = u_viewRight;
+  } else {
+    tangent = normalize((modelMatrix * vec4(a_tangent, 1.0)).xyz);
+  }
+
   if (u_materials[materialIndex].normalMapTex >= 0)
   {
     const vec3 N = normalize(vs_out.normal);
