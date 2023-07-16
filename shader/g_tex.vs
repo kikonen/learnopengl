@@ -91,15 +91,14 @@ void main() {
   calculateClipping(worldPos);
 
 #ifdef USE_NORMAL_TEX
-  vec3 tangent;
-  if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
-    tangent = u_viewRight;
-  } else {
-    tangent = normalize((modelMatrix * vec4(a_tangent, 1.0)).xyz);
-  }
-
-  if (u_materials[materialIndex].normalMapTex >= 0)
   {
+    vec3 tangent;
+    if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
+      tangent = u_viewRight;
+    } else {
+      tangent = normalize((modelMatrix * vec4(a_tangent, 1.0)).xyz);
+    }
+
     const vec3 N = normalize(vs_out.normal);
     vec3 T = tangent;
 

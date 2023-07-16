@@ -108,7 +108,6 @@ void main() {
   vs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
 #ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex >= 0)
   {
     const vec3 N = normalize(vs_out.normal);
     vec3 T = tangent;
