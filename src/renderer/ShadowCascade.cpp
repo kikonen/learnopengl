@@ -33,7 +33,7 @@ namespace {
     //        glm::mat4(1),
     //        glm::vec3(0.5, 0.5, 0.5)),
     //    glm::vec3(0.5, 0.5, 0.5));
-    const glm::mat4 scaleBiasMatrix = {
+    const glm::mat4 SCALE_BIAS_MATRIX = {
       {0.5f, 0.0f, 0.0f, 0.0f},
       {0.0f, 0.5f, 0.0f, 0.0f},
       {0.0f, 0.0f, 0.5f, 0.0f},
@@ -181,6 +181,18 @@ void ShadowCascade::bind(const RenderContext& ctx)
 
         m_camera.setViewport({ minX, maxX, minY, maxY });
         m_camera.setupProjection(1.f, minZ, maxZ);
+
+        const float bias = 0.0f;
+
+        const auto scaleMatrix = glm::scale(
+            glm::mat4(1.f),
+            glm::vec3(0.5f, 0.5f, 0.5f));
+
+        const auto translateMatrix = glm::translate(
+            glm::mat4(1.f),
+            glm::vec3(0.5f, 0.5f, 0.5f - bias));
+
+        const auto scaleBiasMatrix = translateMatrix * scaleMatrix;
 
         ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * m_camera.getProjected();
         //ctx.m_matrices.u_shadow[m_index] = ctx.m_matrices.u_shadowProjected[m_index];

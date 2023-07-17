@@ -163,6 +163,12 @@ entities:
       map_bump: mars_normal.png
     scale: 1
     enabled: true
+  - name: Cube map - wood_wall
+    type: origo
+    pos: [35.0, 2.5, 5.0]
+    render_flags:
+      cube_map: true
+    enabled: true
   - name: Wood wall
     model: quad
     material: woodwall

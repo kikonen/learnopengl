@@ -195,7 +195,12 @@ float calcShadow2_5(
 
   if (shadowDepth > 1.0) return 0.0;
 
-  float bias = 0.001;
+  // NOTE KI bias applied in shadowMatrix in CPU side
+
+  vec3 reflectDir = reflect(-toLight, normal);
+  float bias = max(0.004 * (0.5 - dot(reflectDir, toLight)), 0.001);
+  //float bias = 0.001;
+
   vec4 pos = shadowPos;
   pos.z -= bias;
   // With GL_LINEAR & sampler2dshadow & textureProj
