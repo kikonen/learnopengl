@@ -995,10 +995,11 @@ materials:
     map_kd: Window_Stained_Glass_lg_HI_256.PNG
   - name: linden_tree
     type: sprite
-    ns: 10
+    ns: 0
     ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.3, 0.3, 0.3, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: linden_tree_512.png
+    map_bump: linden_tree_512_normal.png
   - name: skeleton
     type: sprite
     ns: 20
