@@ -46,10 +46,11 @@ namespace backend {
             bool allowBlend) const noexcept
         {
             // NOTE KI multi/single material *CAN* go in same indirect draw
+            // NOTE KI multiple "instanced" at once does not work
             return isSameMultiDraw(b, allowBlend, forceWireframe) &&
                 vertexOffset == b.vertexOffset &&
                 indexOffset == b.indexOffset &&
-                instanced == b.instanced;
+                (instanced == b.instanced ? !b.instanced : false);
         }
 
         inline bool isSameMultiDraw(
@@ -66,8 +67,8 @@ namespace backend {
         }
 
         inline bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(blend, renderBack, wireframe, type, mode, vertexOffset, indexOffset) <
-                std::tie(o.blend, o.renderBack, o.wireframe, o.type, o.mode, o.vertexOffset, o.indexOffset);
+            return std::tie(instanced, blend, renderBack, wireframe, type, mode, vertexOffset, indexOffset) <
+                std::tie(instanced, o.blend, o.renderBack, o.wireframe, o.type, o.mode, o.vertexOffset, o.indexOffset);
         }
     };
 }

@@ -45,7 +45,7 @@ entities:
       specular: [0.7, 0.7, 0.7, 1.0]
       enabled: true
     enabled: true
-  - name: Linden tree forest
+  - name: Linden tree forest 1
     type: model
     model: quad
     priority: 1
@@ -70,7 +70,7 @@ entities:
         z_step: -20
       enabled: true
     enabled: true
-  - name: Linden tree forest
+  - name: Linden tree forest 2
     type: model
     model: quad
     priority: 1
@@ -116,7 +116,7 @@ entities:
         x_step: 10
         z_step: -10
       enabled: true
-    enabled: false
+    enabled: true
   - name: Skeleton army
     type: billboard
     priority: 1
@@ -149,13 +149,13 @@ entities:
     material_modifier:
       reflection: 0.8
     enabled: true
-  - name: Planet
+  - name: Planet 1
     model: [planet, planet]
     program: g_tex
     pos: [0, 0, 20]
     scale: 1
     enabled: true
-  - name: Planet
+  - name: Planet 2
     model: [planet, planet]
     program: g_tex
     pos: [0, 3.5, 30]
