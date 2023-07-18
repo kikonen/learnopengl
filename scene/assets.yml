@@ -96,6 +96,9 @@ assets:
   fog_end: 2000.0
   fog_density: 1.1
 
+  shadow_polygon_offset_enabled: true
+  shadow_polygon_offset: [2, 0.5]
+
   shadow_planes: [0.1, 30, 100, 500]
   xxshadow_planes: [0.1, 20, 100]
   xxshadow_planes: [0.1, 100]
@@ -109,6 +112,7 @@ assets:
   water_reflection_size: 1024
   water_refraction_size: 1024
 
+  cube_map_seamless: true
   cube_map_size: 1024
   cube_map_near_plane: 0.5
   cube_map_far_plane: 200

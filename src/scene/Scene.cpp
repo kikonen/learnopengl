@@ -312,11 +312,7 @@ void Scene::draw(const RenderContext& ctx)
         m_shadowMapRenderer->bindTexture(ctx);
     }
 
-    // OpenGL Programming Guide, 8th Edition, page 404
-    // Enable polygon offset to resolve depth-fighting isuses
-    //glEnable(GL_POLYGON_OFFSET_FILL);
-    //glPolygonOffset(0.2f, 0.2f);
-    ctx.m_state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, true);
+    ctx.m_state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, ctx.m_assets.cubeMapSeamless);
 
     if (m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->render(ctx)) {
         //wasCubeMap = true;
@@ -335,8 +331,6 @@ void Scene::draw(const RenderContext& ctx)
         drawRear(ctx);
     }
     drawViewports(ctx);
-
-    //glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
 void Scene::drawMain(const RenderContext& parentCtx)

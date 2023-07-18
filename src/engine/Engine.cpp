@@ -37,13 +37,15 @@ int Engine::init() {
 
 int Engine::setup() {
     GLenum keys[] = {
-        GL_CULL_FACE,
         GL_BLEND,
         GL_CLIP_DISTANCE0,
         GL_CLIP_DISTANCE1,
-        GL_STENCIL_TEST,
+        GL_CULL_FACE,
         GL_DEPTH_TEST,
+        GL_POLYGON_OFFSET_FILL,
         GL_RASTERIZER_DISCARD,
+        GL_STENCIL_TEST,
+        GL_TEXTURE_CUBE_MAP_SEAMLESS,
     };
     for (auto& key : keys) {
         m_state.track(key, false);

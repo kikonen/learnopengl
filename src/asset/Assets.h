@@ -137,6 +137,9 @@ public:
     float fogEnd;
     float fogDensity;
 
+    bool shadowPolygonOffsetEnabled;
+    glm::vec2 shadowPolygonOffset;
+
     // NOTE KI MUST match lookup() in light shadow shader
     std::vector<float> shadowPlanes;
     std::vector<int> shadowMapSizes;
@@ -148,6 +151,8 @@ public:
 
     int waterReflectionSize;
     int waterRefractionSize;
+
+    bool cubeMapSeamless;
 
     int cubeMapSize;
     int cubeMapRenderFrameStart;

@@ -266,7 +266,13 @@ void AssetsFile::loadAssets(
         }
         else if (k == "fog_density") {
             data.fogDensity = readFloat(v);
-            }
+        }
+        else if (k == "shadow_polygon_offset_enabled") {
+            data.shadowPolygonOffsetEnabled = readBool(v);
+        }
+        else if (k == "shadow_polygon_offset") {
+            data.shadowPolygonOffset = readVec2(v);
+        }
         else if (k == "shadow_planes") {
             data.shadowPlanes = readFloatVector(v, 4);
         }
@@ -290,6 +296,9 @@ void AssetsFile::loadAssets(
         }
         else if (k == "water_refraction_size") {
             data.waterRefractionSize = readInt(v);
+        }
+        else if (k == "cube_map_seamless") {
+            data.cubeMapSeamless = readBool(v);
         }
         else if (k == "cube_map_size") {
             data.cubeMapSize = readInt(v);

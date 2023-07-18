@@ -54,6 +54,11 @@ void GLState::polygonFrontAndBack(GLenum mode) noexcept
     }
 }
 
+void GLState::polygonOffset(const glm::vec2& offset) noexcept
+{
+    glPolygonOffset(offset[0], offset[1]);
+}
+
 void GLState::useProgram(GLuint programId) noexcept
 {
     if (m_programId != programId) {

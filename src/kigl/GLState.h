@@ -3,6 +3,7 @@
 #include <set>
 #include <unordered_map>
 #include <vector>
+#include <glm/glm.hpp>
 
 #include "ki/GL.h"
 
@@ -23,6 +24,8 @@ public:
     void frontFace(GLenum mode) noexcept;
 
     void polygonFrontAndBack(GLenum mode) noexcept;
+
+    void polygonOffset(const glm::vec2& offset) noexcept;
 
     void useProgram(GLuint programId) noexcept;
     void bindVAO(GLuint vaoId) noexcept;

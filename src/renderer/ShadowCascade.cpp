@@ -228,11 +228,18 @@ void ShadowCascade::render(
 
     m_buffer->clearAll();
 
+    // OpenGL Programming Guide, 8th Edition, page 404
+    // Enable polygon offset to resolve depth-fighting isuses
+    localCtx.m_state.setEnabled(GL_POLYGON_OFFSET_FILL, localCtx.m_assets.shadowPolygonOffsetEnabled);
+    localCtx.m_state.polygonOffset(localCtx.m_assets.shadowPolygonOffset);
+
     m_buffer->bind(localCtx);
     localCtx.bindDefaults();
     drawNodes(localCtx);
     parentCtx.bindDefaults();
     m_buffer->unbind(localCtx);
+
+    localCtx.m_state.setEnabled(GL_POLYGON_OFFSET_FILL, false);
 }
 
 void ShadowCascade::drawNodes(

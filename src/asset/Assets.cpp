@@ -122,6 +122,9 @@ Assets::Assets()
     fogEnd = 700.0;
     fogDensity = 1.0;
 
+    shadowPolygonOffsetEnabled = true;
+    shadowPolygonOffset = { 2.f, 2.f };
+
     shadowPlanes = { 0.1f, 20.f, 50.f, 100.f };
     shadowMapSizes = { 1024, 512, 512 };
 
@@ -133,6 +136,8 @@ Assets::Assets()
 
     waterReflectionSize = 1024;
     waterRefractionSize = 1024;
+
+    cubeMapSeamless = true;
 
     cubeMapSize = 1024;
     cubeMapNearPlane = 0.5;
