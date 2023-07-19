@@ -126,7 +126,6 @@ void main()
   //const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
-  const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
 
   const vec3 toView = normalize(u_viewWorldPos - worldPos);
 
@@ -170,7 +169,7 @@ void main()
   } else {
     color = calculateLight(
       normal, toView, worldPos,
-      shadowIndex, shadowPos,
+      shadowIndex,
       material);
 
     color = calculateFog(viewPos, color);

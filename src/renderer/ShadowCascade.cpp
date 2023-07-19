@@ -90,7 +90,7 @@ void ShadowCascade::prepare(
         "shadow_map",
         {
             m_mapSize, m_mapSize,
-            { FrameBufferAttachment::getDepthTexture() }
+            { FrameBufferAttachment::getShadow() }
         });
 
     m_buffer->prepare(true);
@@ -155,11 +155,11 @@ void ShadowCascade::bind(const RenderContext& ctx)
         }
 
         // Tune this parameter according to the scene
-        float zMult = 1.0;// 20.f / (m_index + 1);
+        float zMult = 5.0f; // 20.f / (m_index + 1);
         if (m_index == 0) {
-            zMult = 3.5;
+            zMult = 20.f;
         } else if (m_index == 1) {
-            zMult = 2.0;
+            zMult = 10.f;
         }
 
         if (minZ < 0)

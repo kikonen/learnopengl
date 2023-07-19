@@ -61,9 +61,9 @@ void main() {
 //    normal = calculateNormalPattern(fs_in.vertexPos, normal);
 //  }
 
-//  if (!gl_FrontFacing) {
-//    normal = -normal;
-//  }
+  if (!gl_FrontFacing) {
+    normal = -normal;
+  }
 
 #ifdef USE_CUBE_MAP
   const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);

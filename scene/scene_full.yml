@@ -303,6 +303,15 @@ entities:
       x_count: 3
       x_step: 4
     enabled: true
+  - name: Brick wall - one
+    model: quad
+    material: brickwall
+    program: g_tex
+    pos: [5.0, 13.5, 14.0]
+    rotation: [0, 180, 0]
+    render_flags:
+      render_back: true
+    enabled: true
   - name: Wood wall
     model: quad
     material: woodwall
@@ -343,6 +352,12 @@ entities:
     program: g_tex
     pos: [24.0, 11.0, 15.0]
     scale: 1.0
+    enabled: true
+  - name: Airboat 2
+    model: airboat_fixed_colors
+    program: g_tex
+    pos: [6.0, 19.0, 22.0]
+    scale: 0.5
     enabled: true
   - name: Spyro
     model: spyro2

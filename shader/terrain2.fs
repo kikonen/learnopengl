@@ -74,7 +74,10 @@ void main() {
   #include var_calculate_cube_map_diffuse.glsl
 #endif
 
-  vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowIndex, fs_in.shadowPos, material);
+  vec4 texColor = calculateLight(
+    normal, toView, fs_in.worldPos,
+    fs_in.shadowIndex,
+    material);
 
   if (!gl_FrontFacing) {
     texColor = mix(texColor, vec4(0.1, 0.1, 0.9, 1.0), 0.15);

@@ -81,7 +81,10 @@ void main() {
   #include var_calculate_cube_map_diffuse.glsl
 #endif
 
-  vec4 texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowIndex, fs_in.shadowPos, material);
+  vec4 texColor = calculateLight(
+    normal, toView, fs_in.worldPos,
+    fs_in.shadowIndex,
+    material);
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND_OIT

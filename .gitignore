@@ -12,6 +12,7 @@ imgui.ini
 *~
 #.*
 .*#
+*swp
 
 vcpkg_installed/*
 
