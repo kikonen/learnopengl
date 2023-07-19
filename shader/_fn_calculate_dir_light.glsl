@@ -39,7 +39,7 @@ vec3 calculateDirLight(
   // calculate shadow
   //float shadow = calcShadow2_3(worldPos, shadowIndex, shadowPos, normal, toLight);
   float shadow = calcShadow2_5(u_shadowMap[shadowIndex], shadowPos);
-  shadow = clamp(shadow, 0.4, 1.0);
+  shadow = clamp(shadow, 0.2, 1.0);
 
   return shadow * (diffuse + specular);
 }
