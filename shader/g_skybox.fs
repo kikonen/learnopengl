@@ -24,6 +24,6 @@ void main() {
   o_fragSpecular = vec4(texColor.xyz, 0);
   o_fragEmission = texColor.xyz;
 
-  //o_fragPosition = u_viewWorldPos + 1000 * u_viewFront;
+  o_fragPosition = u_viewWorldPos + 1000 * u_viewFront;
   o_fragNormal = u_viewFront * 0.5 + 0.5;
 }

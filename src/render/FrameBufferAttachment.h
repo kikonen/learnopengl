@@ -9,12 +9,15 @@ enum class FrameBufferAttachmentType {
     texture,
     depth_texture,
     rbo,
+    shadow,
 };
 
 enum class ClearType {
     FLOAT,
     INT,
     UNSIGNED_INT,
+    DEPTH,
+    STENCIL,
     DEPTH_STENCIL,
 };
 
@@ -70,11 +73,11 @@ struct FrameBufferAttachment {
     // G buffer: normal
     static FrameBufferAttachment getGBufferNormal(GLenum attachment);
 
-    static FrameBufferAttachment getDepthTexture();
-
     static FrameBufferAttachment getRBODepthStencil();
-
     static FrameBufferAttachment getRBODepth();
+
+    static FrameBufferAttachment getDepthTexture();
+    static FrameBufferAttachment getShadow();
 
     static FrameBufferAttachment getOITAccumulatorTexture(GLenum attachment);
     static FrameBufferAttachment getOITRevealTexture(GLenum attachment);

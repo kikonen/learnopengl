@@ -75,7 +75,10 @@ void main() {
     material.diffuse = mix(material.diffuse, mixColor, 0.9);
   }
 
-  vec4 color = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowIndex, fs_in.shadowPos, material);
+  vec4 color = calculateLight(
+    normal, toView, fs_in.worldPos,
+    fs_in.shadowIndex,
+    material);
   color = calculateFog(fs_in.viewPos, color);
 
   o_fragColor = color;

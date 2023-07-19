@@ -90,7 +90,7 @@ void ShadowCascade::prepare(
         "shadow_map",
         {
             m_mapSize, m_mapSize,
-            { FrameBufferAttachment::getDepthTexture() }
+            { FrameBufferAttachment::getShadow() }
         });
 
     m_buffer->prepare(true);

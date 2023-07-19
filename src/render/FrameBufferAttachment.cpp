@@ -23,6 +23,14 @@ void FrameBufferAttachment::clearBuffer(int fbo) const
             glClearNamedFramebufferuiv(fbo, GL_COLOR, drawBufferIndex, glm::value_ptr(glm::uvec4(clearColor)));
         }
         break;
+    case ClearType::DEPTH:
+        //glClear(GL_DEPTH_BUFFER_BIT);
+        glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], clearColor[1]);
+        break;
+    case ClearType::STENCIL:
+        //glClear(GL_STENCIL_BUFFER_BIT);
+        glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], clearColor[1]);
+        break;
     case ClearType::DEPTH_STENCIL:
         glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], clearColor[1]);
         break;
@@ -163,7 +171,34 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
 
     spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
     spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
-    spec.clearType = ClearType::DEPTH_STENCIL;
+    spec.clearType = ClearType::DEPTH;
+
+    return spec;
+}
+
+FrameBufferAttachment FrameBufferAttachment::getShadow()
+{
+    // https://stackoverflow.com/questions/22419682/glsl-sampler2dshadow-and-shadow2d-clarification
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::depth_texture;
+    // NOTE KI need to have 24bit, 16bit is FAR TOO SMALL
+    spec.internalFormat = GL_DEPTH_COMPONENT24;
+    spec.attachment = GL_DEPTH_ATTACHMENT;
+    // NOTE KI linear slower, but *BETTER* results
+    // CHECK KI does it actually matter for shadowmap?!?
+    // "LINEAR" is *supposed* get free 4 texel PCF in shadow mapping
+    // - https://fabiensanglard.net/shadowmappingPCF/index.php
+    // => based into experimentation that is true
+    //spec.minFilter = GL_NEAREST;
+    //spec.magFilter = GL_NEAREST;
+    spec.minFilter = GL_LINEAR;
+    spec.magFilter = GL_LINEAR;
+    spec.textureWrapS = GL_CLAMP_TO_BORDER;
+    spec.textureWrapT = GL_CLAMP_TO_BORDER;
+
+    spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
+    spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
+    spec.clearType = ClearType::DEPTH;
 
     return spec;
 }
@@ -188,7 +223,7 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepth()
     spec.type = FrameBufferAttachmentType::rbo;
     spec.internalFormat = GL_DEPTH_COMPONENT24;
     spec.attachment = GL_DEPTH_ATTACHMENT;
-    spec.clearType = ClearType::DEPTH_STENCIL;
+    spec.clearType = ClearType::DEPTH;
 
     // NOTE KI (depth, clear, _, _)
     spec.clearColor = { 1.f, 0.f, 0.f, 0.f };

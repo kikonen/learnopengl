@@ -149,7 +149,10 @@ void main() {
 
   vec4 texColor = material.diffuse;
   {
-    texColor = calculateLight(normal, toView, fs_in.worldPos, fs_in.shadowIndex, fs_in.shadowPos, material);
+    texColor = calculateLight(
+      normal, toView, fs_in.worldPos,
+      fs_in.shadowIndex,
+      material);
     texColor = calculateFog(fs_in.viewPos, texColor);
   }
 

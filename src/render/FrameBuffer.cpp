@@ -130,6 +130,31 @@ void FrameBuffer::prepare(
                 glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
             }
         }
+        else if (att.type == FrameBufferAttachmentType::shadow) {
+            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
+            KI_INFO(fmt::format("CREATE_SHADOW: FBO={}, DEPTH={}", str(), att.textureID));
+
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
+
+            // NOTE KI *IMPORTANT* for shadow map min/mag interpolation
+            // https://stackoverflow.com/questions/22419682/glsl-sampler2dshadow-and-shadow2d-clarification
+            glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+            glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
+            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
+
+            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
+
+            {
+                glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
+                glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
+                glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
+            }
+        }
     }
 
     if (m_drawBuffers.size() > 0) {

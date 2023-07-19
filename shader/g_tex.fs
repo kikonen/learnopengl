@@ -14,9 +14,7 @@ layout(early_fragment_tests) in;
 #endif
 
 in VS_OUT {
-#ifdef USE_CUBE_MAP
   vec3 worldPos;
-#endif
   vec3 normal;
   vec2 texCoord;
 #ifdef USE_NORMAL_PATTERN
@@ -82,6 +80,6 @@ void main() {
   o_fragSpecular = material.specular;
   o_fragEmission = material.emission.xyz;
 
-  //o_fragPosition = fs_in.worldPos;
+  o_fragPosition = fs_in.worldPos;
   o_fragNormal = normal * 0.5 + 0.5;
 }

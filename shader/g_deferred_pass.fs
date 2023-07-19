@@ -107,26 +107,13 @@ vec4 calculateGlow()
 
 void main()
 {
-  // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
-  vec3 worldPos;
-  vec3 viewPos;
-  {
-    float depth = texture(g_depth, fs_in.texCoord).x * 2.0 - 1.0;
-
-    vec4 clip = vec4(fs_in.texCoord.x * 2.0 - 1.0, fs_in.texCoord.y * 2.0 - 1.0, depth, 1.0);
-    vec4 viewW  = u_invProjectionMatrix * clip;
-    viewPos  = viewW.xyz / viewW.w;
-    worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
-  }
-
-  //const vec3 worldPos = texture(g_position, fs_in.texCoord).rgb;
+  const vec3 worldPos = texture(g_position, fs_in.texCoord).xyz;
   // NOTE KI normal stored as [0, 1] (normalized)
   const vec3 normal = texture(g_normal, fs_in.texCoord).xyz * 2.0 - 1.0;
 
-  //const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+  const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
-  const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
 
   const vec3 toView = normalize(u_viewWorldPos - worldPos);
 
@@ -170,7 +157,7 @@ void main()
   } else {
     color = calculateLight(
       normal, toView, worldPos,
-      shadowIndex, shadowPos,
+      shadowIndex,
       material);
 
     color = calculateFog(viewPos, color);

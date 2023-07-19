@@ -3,7 +3,6 @@ vec4 calculateLight(
   in vec3 toView,
   in vec3 worldPos,
   in uint shadowIndex,
-  in vec4 shadowPos,
   in Material material)
 {
   // https://community.khronos.org/t/default-value-of-uninitialized-local-variable-and-uniforms/74701/2
@@ -21,7 +20,6 @@ vec4 calculateLight(
       toView,
       worldPos,
       shadowIndex,
-      shadowPos,
       material);
   }
 

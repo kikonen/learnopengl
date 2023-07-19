@@ -19,9 +19,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_material_indeces.glsl
 
 out VS_OUT {
-#ifdef USE_CUBE_MAP
   vec3 worldPos;
-#endif
   vec3 normal;
   vec2 texCoord;
 #ifdef USE_NORMAL_PATTERN
@@ -86,9 +84,8 @@ void main() {
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
-#ifdef USE_CUBE_MAP
   vs_out.worldPos = worldPos.xyz;
-#endif
+
 #ifdef USE_NORMAL_PATTERN
   vs_out.vertexPos = a_pos;
 #endif

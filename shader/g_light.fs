@@ -30,6 +30,6 @@ void main() {
   o_fragSpecular = material.specular;
   o_fragEmission = texColor.xyz;
 
-  //o_fragPosition = fs_in.worldPos;
+  o_fragPosition = fs_in.worldPos;
   o_fragNormal = normalize(fs_in.normal) * 0.5 + 0.5;
 }
