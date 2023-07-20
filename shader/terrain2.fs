@@ -54,9 +54,13 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_fog.glsl
 
 void main() {
+  Material material = u_materials[fs_in.materialIndex];
+
+  #include var_tex_coord.glsl
+  #include var_tex_material.glsl
+
   const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
   const Entity entity = u_entities[fs_in.entityIndex];
-  #include var_tex_material.glsl
 
   #include var_tex_material_normal.glsl
 
@@ -88,7 +92,7 @@ void main() {
   texColor = calculateFog(fs_in.viewPos, texColor);
 
   sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);
-  float h = texture(heightMap, fs_in.texCoord).r;
+  float h = texture(heightMap, texCoord).r;
 
 //  texColor = vec4(h, h, h, 1.0);
 

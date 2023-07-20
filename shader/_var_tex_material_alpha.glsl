@@ -5,7 +5,7 @@ float alpha;
 
   if (diffuseTex >= 0) {
     sampler2D sampler = sampler2D(u_texture_handles[diffuseTex]);
-    alpha = texture(sampler, fs_in.texCoord).a;
+    alpha = texture(sampler, texCoord).a;
   } else {
     alpha = u_materials[matIdx].diffuse.a;
   }

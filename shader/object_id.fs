@@ -34,11 +34,14 @@ layout (location = 0) out vec4 o_fragObjectID;
 
 void main() {
 #ifdef USE_ALPHA
-  #include var_tex_material_alpha.glsl
+  {
+    const vec2 texCoord = fs_in.texCoord;
+    #include var_tex_material_alpha.glsl
 
-  // NOtE KI experimental value; depends from few aspects in blended windows
-  if (alpha < 0.4)
-    discard;
+    // NOtE KI experimental value; depends from few aspects in blended windows
+    if (alpha < 0.4)
+      discard;
+  }
 #endif
 
   o_fragObjectID = fs_in.objectID;

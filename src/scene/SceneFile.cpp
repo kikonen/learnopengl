@@ -1622,7 +1622,7 @@ void SceneFile::loadMaterial(
         else if (k == "depth") {
             material.depth = readFloat(v);
             fields.depth = true;
-            }
+        }
         else if (k == "texture_spec") {
             loadTextureSpec(v, material.textureSpec);
             fields.textureSpec = true;

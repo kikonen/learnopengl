@@ -43,9 +43,13 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_normal_pattern.glsl
 
 void main() {
+  Material material = u_materials[fs_in.materialIndex];
+
+  #include var_tex_coord.glsl
+  #include var_tex_material.glsl
+
   const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
   const Entity entity = u_entities[fs_in.entityIndex];
-  #include var_tex_material.glsl
 
   #include var_tex_material_normal.glsl
 

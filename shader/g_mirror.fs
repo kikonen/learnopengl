@@ -38,6 +38,9 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_normal_pattern.glsl
 
 void main() {
+  Material material = u_materials[fs_in.materialIndex];
+
+  #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
   vec3 normal = normalize(fs_in.normal);

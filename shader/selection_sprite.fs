@@ -20,6 +20,7 @@ layout (location = 0) out vec4 o_fragColor;
 SET_FLOAT_PRECISION;
 
 void main() {
+  const vec2 texCoord = fs_in.texCoord;
   #include var_tex_material_alpha.glsl
 
   if (alpha < 0.6)

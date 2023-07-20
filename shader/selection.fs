@@ -36,10 +36,14 @@ SET_FLOAT_PRECISION;
 
 void main() {
 #ifdef USE_ALPHA
-  #include var_tex_material_alpha.glsl
+  {
+    const vec2 texCoord = fs_in.texCoord;
 
-  if (alpha < 0.6)
-    discard;
+    #include var_tex_material_alpha.glsl
+
+    if (alpha < 0.6)
+      discard;
+  }
 #endif
 
   Material highlightMaterial = u_materials[fs_in.highlightIndex];

@@ -22,10 +22,13 @@ layout (location = 0) out vec4 o_fragColor;
 ////////////////////////////////////////////////////////////
 
 void main() {
+  Material material = u_materials[fs_in.materialIndex];
+
+  #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
   sampler2D sampler = sampler2D(u_texture_handles[material.noiseMapTex]);
-  vec4 noiseColor = texture(sampler, fs_in.texCoord * 8.0);
+  vec4 noiseColor = texture(sampler, texCoord * 8.0);
   float noise = noiseColor.r;
 
   float alpha = material.diffuse.a;

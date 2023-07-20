@@ -31,11 +31,14 @@ SET_FLOAT_PRECISION;
 void main()
 {
 #ifdef USE_ALPHA
-  #include var_tex_material_alpha.glsl
+  {
+    const vec2 texCoord = fs_in.texCoord;
+    #include var_tex_material_alpha.glsl
 
-  // NOtE KI experimental value; depends from few aspects in blended windows
-  if (alpha < 0.7)
-    discard;
+    // NOtE KI experimental value; depends from few aspects in blended windows
+    if (alpha < 0.7)
+      discard;
+  }
 #endif
 
     // gl_FragDepth = gl_FragCoord.z;

@@ -22,7 +22,11 @@ SET_FLOAT_PRECISION;
 
 void main()
 {
+  Material material = u_materials[fs_in.materialIndex];
+
+  #include var_tex_coord.glsl
   #include var_tex_material.glsl
+
   vec4 color = material.diffuse;
 
   const float alpha = color.a;

@@ -52,9 +52,12 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_fog.glsl
 
 void main() {
-  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
+  Material material = u_materials[fs_in.materialIndex];
 
+  #include var_tex_coord.glsl
   #include var_tex_material.glsl
+
+  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
 
   vec3 normal = fs_in.normal;
 

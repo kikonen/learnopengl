@@ -40,6 +40,9 @@ SET_FLOAT_PRECISION;
 #endif
 
 void main() {
+  Material material = u_materials[fs_in.materialIndex];
+
+  #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
   iTime = u_time;

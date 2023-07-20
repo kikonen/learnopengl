@@ -62,7 +62,7 @@ vec4 blend(vec4 source, vec4 dest)
   return vec4(source.xyz * source.a + dest.xyz * (1.0 - source.a), 1.0);
 }
 
-vec4 calculateGlow()
+vec4 calculateGlow(vec2 texCoord)
 {
   const float offset = 1.0 / 300.0;
 
@@ -95,7 +95,7 @@ vec4 calculateGlow()
 
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(texture(g_emission, fs_in.texCoord + offsets[i]));
+      sampleTex[i] = vec3(texture(g_emission, texCoord + offsets[i]));
     }
 
     vec3 col = vec3(0.0);
@@ -107,21 +107,23 @@ vec4 calculateGlow()
 
 void main()
 {
+  const vec2 texCoord = fs_in.texCoord;
+
   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
   vec3 worldPos;
   vec3 viewPos;
   {
-    float depth = texture(g_depth, fs_in.texCoord).x * 2.0 - 1.0;
+    float depth = texture(g_depth, texCoord).x * 2.0 - 1.0;
 
-    vec4 clip = vec4(fs_in.texCoord.x * 2.0 - 1.0, fs_in.texCoord.y * 2.0 - 1.0, depth, 1.0);
+    vec4 clip = vec4(texCoord.x * 2.0 - 1.0, texCoord.y * 2.0 - 1.0, depth, 1.0);
     vec4 viewW  = u_invProjectionMatrix * clip;
     viewPos  = viewW.xyz / viewW.w;
     worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
   }
 
-  //const vec3 worldPos = texture(g_position, fs_in.texCoord).rgb;
+  //const vec3 worldPos = texture(g_position, texCoord).rgb;
   // NOTE KI normal stored as [0, 1] (normalized)
-  const vec3 normal = texture(g_normal, fs_in.texCoord).xyz * 2.0 - 1.0;
+  const vec3 normal = texture(g_normal, texCoord).xyz * 2.0 - 1.0;
 
   //const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
 
@@ -133,18 +135,18 @@ void main()
 
   bool skipLight;
   {
-    material.diffuse = texture(g_albedo, fs_in.texCoord);
+    material.diffuse = texture(g_albedo, texCoord);
     material.ambient = material.diffuse.a;
     material.diffuse.a = 1.0;
 
-    material.specular = texture(g_specular, fs_in.texCoord);
-    material.emission = texture(g_emission, fs_in.texCoord).xyz;
+    material.specular = texture(g_specular, texCoord);
+    material.emission = texture(g_emission, texCoord).xyz;
   }
 
   if (true) {
-    float revealage = texture(oit_reveal, fs_in.texCoord).r;
+    float revealage = texture(oit_reveal, texCoord).r;
     if (!isApproximatelyEqual(revealage, 1.0f)) {
-      vec4 accumulation = texture(oit_accumulator, fs_in.texCoord, 0);
+      vec4 accumulation = texture(oit_accumulator, texCoord, 0);
 
       if (isinf(max3(abs(accumulation.rgb))))
         accumulation.rgb = vec3(accumulation.a);

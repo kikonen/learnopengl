@@ -25,6 +25,8 @@ in VS_OUT {
 
 #ifdef USE_TBN
   mat3 TBN;
+  vec3 viewTangentPos;
+  vec3 tangentPos;
 #endif
 } fs_in;
 
@@ -39,9 +41,15 @@ LAYOUT_G_BUFFER_OUT;
 SET_FLOAT_PRECISION;
 
 #include fn_calculate_normal_pattern.glsl
+#include fn_calculate_parallax_mapping.glsl
 
 void main() {
+  Material material = u_materials[fs_in.materialIndex];
+
+  #include var_tex_coord.glsl
   #include var_tex_material.glsl
+
+  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND_OIT
@@ -64,7 +72,6 @@ void main() {
   }
 
 #ifdef USE_CUBE_MAP
-  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
   #include var_calculate_cube_map_diffuse.glsl
 #endif
 

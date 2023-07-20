@@ -56,11 +56,12 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_fog.glsl
 
 vec3 estimateWaveNormal(
+  in vec2 texCoord,
   in float offset,
   in float mapScale,
   in float hScale)
 {
-  vec2 tc = fs_in.texCoord;
+  vec2 tc = texCoord;
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex
   float h1 = (texture(u_noiseTex, vec3(((tc.s))*mapScale, 0.5, ((tc.t)+offset)*mapScale))).r * hScale;
@@ -78,26 +79,29 @@ vec3 estimateWaveNormal(
 const float waveStrength = 0.01;
 
 void main() {
-  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
+  Material material = u_materials[fs_in.materialIndex];
 
+  #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
-  vec2 distortedTexCoord = fs_in.texCoord;
+  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
+
+  vec2 distortedTexCoord = texCoord;
   vec2 totalDistortion = vec2(0);
 
   if (material.dudvMapTex >= 0) {
     float moveFactor = (sin(u_time / 10.0) + 1.0) * 0.5;
 
-    // distortedTexCoord = texture(u_textures[material.dudvMapTex], vec2(fs_in.texCoord.x + moveFactor, fs_in.texCoord.y)).rg * 0.1;
-    // distortedTexCoord = fs_in.texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
+    // distortedTexCoord = texture(u_textures[material.dudvMapTex], vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
+    // distortedTexCoord = texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
     // distortedTexCoord = clamp(distortedTexCoord, 0.0, 1.0);
     //totalDistortion = (texture(u_textures[material.dudvMapTex], distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
 
     //vec2 distortedTexCoord;
     {
       sampler2D sampler = sampler2D(u_texture_handles[material.dudvMapTex]);
-      distortedTexCoord = texture(sampler, vec2(fs_in.texCoord.x + moveFactor, fs_in.texCoord.y)).rg * 0.1;
-      distortedTexCoord = fs_in.texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
+      distortedTexCoord = texture(sampler, vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
+      distortedTexCoord = texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
       totalDistortion = (texture(sampler, distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
     }
   }
