@@ -18,7 +18,7 @@ out VS_OUT {
 
   vec3 scale;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } vs_out;

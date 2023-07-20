@@ -474,20 +474,28 @@ MeshType* SceneFile::createType(
             }
         }
 
+        bool useTBN = false;
+        bool useDudvTex = false;
+        bool useHeightTex = false;
         bool useNormalTex = false;
         bool useCubeMap = false;
         bool useNormalPattern = false;
 
-        type->modifyMaterials([this, &useNormalTex, &useCubeMap, &useNormalPattern, &data](Material& m) {
+        type->modifyMaterials([
+            this, &useNormalTex, &useCubeMap, &useDudvTex, &useHeightTex, &useNormalPattern, &data
+        ](Material& m) {
             if (data.materialModifiers_enabled) {
                 modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
             }
             m.loadTextures(m_assets);
 
-            useNormalTex |= m.hasNormalTex();
+            useDudvTex |= m.hasTex(DUDV_MAP_IDX);
+            useHeightTex |= m.hasTex(HEIGHT_MAP_IDX);
+            useNormalTex |= m.hasTex(NORMAL_MAP_IDX);
             useCubeMap |= 1.0 - m.reflection - m.refraction < 1.0;
             useNormalPattern |= m.pattern > 0;
         });
+        useTBN = useNormalTex || useDudvTex || useHeightTex;
 
         if (!data.programName.empty()) {
             std::map<std::string, std::string> definitions;
@@ -502,6 +510,15 @@ MeshType* SceneFile::createType(
             }
             if (type->m_flags.blendOIT) {
                 definitions[DEF_USE_BLEND_OIT] = "1";
+            }
+            if (useTBN) {
+                definitions[DEF_USE_TBN] = "1";
+            }
+            if (useDudvTex) {
+                definitions[DEF_USE_DUDV_TEX] = "1";
+            }
+            if (useHeightTex) {
+                definitions[DEF_USE_HEIGHT_TEX] = "1";
             }
             if (useNormalTex) {
                 definitions[DEF_USE_NORMAL_TEX] = "1";

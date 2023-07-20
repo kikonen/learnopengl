@@ -20,7 +20,7 @@ in VS_OUT {
 
   vec3 scale;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } gs_in[];
@@ -38,7 +38,7 @@ out GS_OUT {
 
   flat uint shadowIndex;
   vec4 shadowPos;
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } gs_out;
@@ -63,7 +63,7 @@ void fillVertex(const int i)
   gs_out.normal = gs_in[i].normal;
   gs_out.vertexPos = gs_in[i].vertexPos;
   gs_out.materialIndex = gs_in[i].materialIndex;
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   gs_out.TBN = gs_in[i].TBN;
 #endif
 }

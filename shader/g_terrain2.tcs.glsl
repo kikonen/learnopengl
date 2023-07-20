@@ -23,7 +23,7 @@ in VS_OUT {
 
   flat uint materialIndex;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } tcs_in[];
@@ -38,7 +38,7 @@ out TCS_OUT {
 
   flat uint materialIndex;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } tcs_out[];
@@ -68,7 +68,7 @@ void main()
   tcs_out[gl_InvocationID].texCoord = tcs_in[gl_InvocationID].texCoord;
   tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
   tcs_out[gl_InvocationID].materialIndex = tcs_in[gl_InvocationID].materialIndex;
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   tcs_out[gl_InvocationID].TBN = tcs_in[gl_InvocationID].TBN;
 #endif
 

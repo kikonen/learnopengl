@@ -23,7 +23,7 @@ in TES_OUT {
 
   flat uint materialIndex;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 

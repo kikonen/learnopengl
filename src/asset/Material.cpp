@@ -255,6 +255,12 @@ int Material::getActiveTextureCount() const
     return texCount;
 }
 
+bool Material::hasTex(int index) const
+{
+    const auto& tex = m_textures[index];
+    return tex.texture != nullptr;
+}
+
 bool Material::hasNormalTex() const
 {
     const auto& tex = m_textures[NORMAL_MAP_IDX];

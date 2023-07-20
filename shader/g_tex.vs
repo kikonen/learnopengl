@@ -2,7 +2,7 @@
 
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
 layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
@@ -19,9 +19,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_material_indeces.glsl
 
 out VS_OUT {
-#ifdef USE_CUBE_MAP
   vec3 worldPos;
-#endif
   vec3 normal;
   vec2 texCoord;
 #ifdef USE_NORMAL_PATTERN
@@ -30,7 +28,7 @@ out VS_OUT {
 
   flat uint materialIndex;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } vs_out;
@@ -98,17 +96,16 @@ void main() {
 
   calculateClipping(worldPos);
 
-#ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex >= 0) {
-    vec3 tangent;
-    if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
-      tangent = u_viewRight;
-    } else {
-      tangent = normalize((modelMatrix * vec4(a_tangent, 1.0)).xyz);
-    }
+#ifdef USE_TBN
+  if (u_materials[materialIndex].normalMapTex >= 0 || u_materials[materialIndex].heightMapTex >= 0) {
+    const vec3 N = normal;
 
-    const vec3 N = normalize(vs_out.normal);
-    vec3 T = tangent;
+    vec3 T;
+    if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
+      T = u_viewRight;
+    } else {
+      T = normalize(normalMatrix * a_tangent);
+    }
 
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping

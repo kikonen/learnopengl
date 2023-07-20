@@ -2,7 +2,7 @@
 
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
 layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
@@ -25,7 +25,7 @@ out VS_OUT {
 
   flat uint materialIndex;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   mat3 TBN;
 #endif
 } vs_out;

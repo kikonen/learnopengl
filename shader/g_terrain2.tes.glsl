@@ -22,7 +22,7 @@ in TCS_OUT {
 
   flat uint materialIndex;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } tes_in[];
@@ -37,7 +37,7 @@ out TES_OUT {
 
   flat uint materialIndex;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 
@@ -101,7 +101,7 @@ void main()
   tes_out.vertexPos = vertexPos;
   tes_out.materialIndex = tes_in[0].materialIndex;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   tes_out.TBN = tes_in[0].TBN;
 #endif
 

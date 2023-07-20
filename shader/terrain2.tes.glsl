@@ -25,7 +25,7 @@ in TCS_OUT {
   flat uint shadowIndex;
   vec4 shadowPos;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } tes_in[];
@@ -44,7 +44,7 @@ out TES_OUT {
   flat uint shadowIndex;
   vec4 shadowPos;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 
@@ -110,7 +110,7 @@ void main()
   tes_out.materialIndex = tes_in[0].materialIndex;
   tes_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   tes_out.TBN = tes_in[0].TBN;
 #endif
 

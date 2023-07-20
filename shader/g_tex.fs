@@ -14,9 +14,7 @@ layout(early_fragment_tests) in;
 #endif
 
 in VS_OUT {
-#ifdef USE_CUBE_MAP
   vec3 worldPos;
-#endif
   vec3 normal;
   vec2 texCoord;
 #ifdef USE_NORMAL_PATTERN
@@ -25,8 +23,8 @@ in VS_OUT {
 
   flat uint materialIndex;
 
-#ifdef USE_NORMAL_TEX
-  flat mat3 TBN;
+#ifdef USE_TBN
+  mat3 TBN;
 #endif
 } fs_in;
 

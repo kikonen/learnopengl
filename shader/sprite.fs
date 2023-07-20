@@ -28,7 +28,7 @@ in GS_OUT {
 
   flat uint shadowIndex;
   vec4 shadowPos;
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } fs_in;

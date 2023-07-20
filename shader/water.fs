@@ -29,7 +29,7 @@ in VS_OUT {
   flat uint shadowIndex;
   vec4 shadowPos;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   mat3 TBN;
 #endif
 } fs_in;
@@ -102,9 +102,9 @@ void main() {
     }
   }
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   vec3 normal;
-  {
+  if (u_materials[materialIndex].normalMapTex >= 0) {
     sampler2D sampler = sampler2D(u_texture_handles[material.normalMapTex]);
     normal = texture(sampler, distortedTexCoord).rgb;
 

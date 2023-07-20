@@ -76,6 +76,7 @@ public:
     void loadTextures(const Assets& assets);
 
     int getActiveTextureCount() const;
+    bool hasTex(int index) const;
     bool hasNormalTex() const;
 
     void prepare(const Assets& assets);

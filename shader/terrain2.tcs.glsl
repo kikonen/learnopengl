@@ -26,7 +26,7 @@ in VS_OUT {
   flat uint shadowIndex;
   vec4 shadowPos;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } tcs_in[];
@@ -45,7 +45,7 @@ out TCS_OUT {
   flat uint shadowIndex;
   vec4 shadowPos;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   flat mat3 TBN;
 #endif
 } tcs_out[];
@@ -79,7 +79,7 @@ void main()
   tcs_out[gl_InvocationID].shadowIndex = tcs_in[gl_InvocationID].shadowIndex;
   tcs_out[gl_InvocationID].shadowPos = tcs_in[gl_InvocationID].shadowPos;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   tcs_out[gl_InvocationID].TBN = tcs_in[gl_InvocationID].TBN;
 #endif
 
