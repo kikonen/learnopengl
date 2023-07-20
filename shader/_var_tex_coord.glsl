@@ -7,8 +7,11 @@
     texCoord = fs_in.texCoord;
   }
 
+#ifdef USE_ALPHA
   if(texCoord.x > 1.0 || texCoord.y > 1.0 || texCoord.x < 0.0 || texCoord.y < 0.0)
     discard;
+#endif
+
 #else
   const vec2 texCoord = fs_in.texCoord;
 #endif
