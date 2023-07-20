@@ -41,7 +41,7 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_fog.glsl
 
 vec3 estimateWaveNormal(
-  in vec2 texCoord,
+  in vec2 tc,
   in float offset,
   in float mapScale,
   in float hScale)
@@ -106,7 +106,7 @@ void main() {
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex.
   // input parameters are offset for neighbors, and scaling for width and height
-  normal = estimateWaveNormal(.0002, 32.0, 16.0);
+  normal = estimateWaveNormal(texCoord, .0002, 32.0, 16.0);
 
   // vec2 ndc = (fs_in.glp.xy / fs_in.glp.w) / 2.0 + 0.5;
 
