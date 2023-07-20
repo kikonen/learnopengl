@@ -28,6 +28,7 @@ bool Renderer::setClosest(Node* closest, int tagIndex)
         if (closest) {
             closest->setTagMaterialIndex(tagIndex);
         }
+        m_registry->m_nodeRegistry->clearTaggedCount();
     }
     m_lastClosest = closest;
     return changed;

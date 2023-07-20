@@ -107,6 +107,13 @@ public:
     int countTagged() const noexcept;
     int countSelected() const noexcept;
 
+    void clearTaggedCount() const noexcept {
+        m_taggedCount = -1;
+    }
+    void clearSelectedCount() const noexcept {
+        m_selectedCount = -1;
+    }
+
     void changeParent(
         Node* node,
         const uuids::uuid& parentId) noexcept;
@@ -181,4 +188,7 @@ private:
     Node* m_activeCamera{ nullptr };
 
     Material m_selectionMaterial;
+
+    mutable int m_taggedCount{ -1 };
+    mutable int m_selectedCount{ -1 };
 };
