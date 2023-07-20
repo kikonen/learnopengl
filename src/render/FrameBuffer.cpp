@@ -104,6 +104,9 @@ void FrameBuffer::prepare(
 
             glNamedRenderbufferStorage(att.rbo, att.internalFormat, m_spec.width, m_spec.height);
             glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, att.rbo);
+
+            m_hasDepth = true;
+            m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
         }
         else if (att.type == FrameBufferAttachmentType::depth_texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
@@ -124,6 +127,9 @@ void FrameBuffer::prepare(
                 glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
                 glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
             }
+
+            m_hasDepth = true;
+            m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
         }
         else if (att.type == FrameBufferAttachmentType::shadow) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
@@ -150,6 +156,8 @@ void FrameBuffer::prepare(
                 glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
                 glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
             }
+
+            m_hasDepth = true;
         }
     }
 
@@ -276,6 +284,12 @@ void FrameBuffer::clear(
             glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
         }
         clearMask |= GL_COLOR_BUFFER_BIT;
+    }
+    if (!m_hasDepth) {
+        clearMask &= ~GL_DEPTH_BUFFER_BIT;
+    }
+    if (!m_hasStencil) {
+        clearMask &= ~GL_STENCIL_BUFFER_BIT;
     }
     if (clearMask != 0) {
         glClear(clearMask);

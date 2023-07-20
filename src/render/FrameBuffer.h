@@ -72,6 +72,8 @@ public:
 
     GLuint m_fbo = 0;
     bool m_forceBind{ false };
+    bool m_hasStencil{ false };
+    bool m_hasDepth{ false };
 
     int m_clearMask = 0;
 
