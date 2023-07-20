@@ -95,9 +95,6 @@ entities:
     rotation: [0, 270, 0]
     render_flags:
       render_back: true
-    repeat:
-      x_count: 1
-      x_step: 1
     enabled: true
   - name: Brick wall - parallax
     model: quad
@@ -111,9 +108,56 @@ entities:
     render_flags:
       alpha: true
       render_back: true
-    repeat:
-      x_count: 1
-      x_step: 1
+    enabled: true
+  - name: Brick wall - parallax
+    model: quad
+    material: brickwall2
+    material_modifier:
+      map_height: bricks2_disp.jpg
+    program: g_tex
+    pos: [20.0, 2.5, 5.0]
+    scale: 2.5
+    rotation: [0, 270, 0]
+    render_flags:
+      alpha: true
+      render_back: true
+    enabled: true
+  - name: Brick wall - parallax 2
+    model: quad
+    material: brickwall
+    material_modifier:
+      map_height: brickwall_1024_height.jpg
+    program: g_tex
+    pos: [20.0, 2.5, 10.0]
+    scale: 2.5
+    rotation: [0, 270, 0]
+    render_flags:
+      alpha: true
+      render_back: true
+    enabled: true
+  - name: Brick wall - normal 2
+    model: quad
+    material: brickwall
+    program: g_tex
+    pos: [20.0, 2.5, 15.0]
+    scale: 2.5
+    rotation: [0, 270, 0]
+    render_flags:
+      alpha: true
+      render_back: true
+    enabled: true
+  - name: Brick wall - 2
+    model: quad
+    material: brickwall
+    material_modifier:
+      map_bump: ''
+    program: g_tex
+    pos: [20.0, 2.5, 20.0]
+    scale: 2.5
+    rotation: [0, 270, 0]
+    render_flags:
+      alpha: true
+      render_back: true
     enabled: true
   - name: Giant wooden box
     model: quad
@@ -153,8 +197,9 @@ materials:
     d: 1.000000
     illum: 2
     map_kd: brickwall_1024.png
-    xmap_bump: brickwall_1024_normal.png
+    map_bump: brickwall_1024_normal.png
     xreflection: 0.2
+    depth: 0.2
   - name: brickwall2
     ns: 225.000000
     type: texture
