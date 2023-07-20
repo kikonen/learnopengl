@@ -424,7 +424,7 @@ void Scene::drawScene(
         m_nodeRenderer->render(ctx, targetBuffer);
     }
 
-    targetBuffer->bind(ctx);
+    //targetBuffer->bind(ctx);
 
     if (m_particleSystem) {
         m_particleSystem->render(ctx);
