@@ -62,7 +62,7 @@ struct GLBufferRange {
         GLenum res = GL_UNSIGNALED;
         while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
         {
-            res = glClientWaitSync(m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 10000);
+            res = glClientWaitSync(m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 100000);
             count++;
         }
 
