@@ -2,7 +2,7 @@
   vec2 texCoord;
   if (material.heightMapTex >= 0) {
     const vec3 tanToView = normalize(fs_in.viewTangentPos - fs_in.tangentPos);
-    texCoord = calculateParallaxMapping(material, fs_in.texCoord, tanToView);
+    texCoord = calculateDeepParallaxMapping(material, fs_in.texCoord, tanToView);
   } else {
     texCoord = fs_in.texCoord;
   }
