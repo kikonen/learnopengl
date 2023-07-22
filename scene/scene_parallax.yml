@@ -112,6 +112,8 @@ entities:
     repeat:
       z_count: 5
       z_step: 5
+      y_count: 2
+      y_step: 5
 
   - name: Brick wall 1 - plain
     model: quad
@@ -154,6 +156,8 @@ entities:
     repeat:
       z_count: 5
       z_step: 5
+      y_count: 2
+      y_step: 5
   - name: Giant wooden box
     model: quad
     xxmodel: woodwall
@@ -194,7 +198,7 @@ materials:
     map_kd: brickwall_1024.png
     map_bump: brickwall_1024_normal.png
     xreflection: 0.2
-    depth: 0.2
+    depth: 0.02
   - name: brickwall2
     ns: 225.000000
     type: texture
@@ -208,7 +212,7 @@ materials:
     map_kd: bricks2.jpg
     map_bump: bricks2_normal.jpg
     xreflection: 0.2
-    depth: 0.1
+    depth: 0.07
   - name: woodwall
     ns: 225.000000
     type: model
