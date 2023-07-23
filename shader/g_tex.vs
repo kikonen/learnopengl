@@ -58,9 +58,7 @@ void main() {
     materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
   }
 
-  const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
-
   vec3 normal;
 
   if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
@@ -76,7 +74,7 @@ void main() {
 
     normal = -u_viewFront;
   } else {
-    worldPos = modelMatrix * pos;
+    worldPos = modelMatrix * vec4(a_pos, 1.0);
 
     normal = normalize(normalMatrix * a_normal);
   }

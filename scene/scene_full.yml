@@ -249,6 +249,7 @@ entities:
     enabled: true
   - name: Window 1_1
     model: quad
+    type: billboard
     material: window_1
     program: g_tex
     pos: [5.0, 12.0, 0.0]
