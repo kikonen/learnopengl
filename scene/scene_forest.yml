@@ -30,8 +30,9 @@ entities:
       specular: [0.7, 0.7, 0.6, 1.0]
       enabled: true
     enabled: true
-  - name: Linden tree forest
-    type: billboard
+  - name: Linden tree forest - part 1
+    type: model
+    model: quad
     program: g_tex
     instanced: true
     pos: [-1000, -5.0, 0.0]
@@ -52,10 +53,62 @@ entities:
         z_step: -20
       enabled: true
     enabled: true
+  - name: Linden tree forest - part 2
+    type: model
+    model: quad
+    program: g_tex
+    instanced: true
+    pos: [-1000, -5.0, 0.0]
+    rotation: [0, 90, 0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [7, 10, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 200
+        z_count: 200
+        x_step: 20
+        z_step: -20
+      enabled: true
+    enabled: true
+  - name: wooden floor
+    model: quad
+    xxmodel: woodwall
+    material: wood_floor
+    program: g_tex
+    position: [0, 0, 0]
+    rot: [270, 0, 0]
+    render_flags:
+      render_back: true
+      no_shadow: true
+    scale: [2000, 2000, 2000]
+    enabled: true
 materials:
   - name: linden_tree
     type: sprite
-    ns: 10
+    ns: 0
     ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.3, 0.3, 0.3, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: linden_tree_512.png
+    map_bump: linden_tree_512_normal.png
+  - name: wood_floor
+    ns: 225.000000
+    type: model
+    ka: [0.400000, 0.400000, 0.400000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: wood_1024.png
+    map_bump: wood_1024_normal.png
+    reflection: 0.1
+    tiling: 60
+    texture_spec:
+      wrap: GL_REPEAT

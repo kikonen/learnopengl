@@ -98,12 +98,38 @@ entities:
       no_shadow: true
       render_back: true
     enabled: false
-  - name: Linden tree forest
-    type: billboard
+  - name: Linden tree forest - part 1
+    type: model
+    model: quad
     priority: 1
     program: g_tex
     instanced: true
     pos: [150, 15.0, 150.0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [7, 10, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 20
+        z_count: 20
+        x_step: -20
+        z_step: 20
+      enabled: true
+    enabled: true
+  - name: Linden tree forest - part 2
+    type: model
+    model: quad
+    priority: 1
+    program: g_tex
+    instanced: true
+    pos: [150, 15.0, 150.0]
+    rotation: [0, 90, 0]
     material: linden_tree
     render_flags:
       alpha: true
@@ -177,10 +203,11 @@ materials:
       wrap: GL_REPEAT
   - name: linden_tree
     type: sprite
-    ns: 10
+    ns: 0
     ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.3, 0.3, 0.3, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: linden_tree_512.png
+    map_bump: linden_tree_512_normal.png
   - name: skeleton
     type: sprite
     ns: 20

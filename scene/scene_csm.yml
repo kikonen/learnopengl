@@ -182,10 +182,10 @@ entities:
       x_count: 1
       x_step: 1
     enabled: true
-  - name: Giant wooden box
+  - name: wooden floor
     model: quad
     xxmodel: woodwall
-    material: giant_woodbox
+    material: wood_floor
     program: g_tex
     position: [0, 0, 0]
     rot: [270, 0, 0]
@@ -195,7 +195,7 @@ entities:
     scale: [100, 100, 100]
     enabled: true
 materials:
-  - name: giant_woodbox
+  - name: wood_floor
     ns: 225.000000
     type: model
     ka: [0.400000, 0.400000, 0.400000, 1.0]
