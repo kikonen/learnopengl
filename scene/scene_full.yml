@@ -961,7 +961,9 @@ materials:
     illum: 2
     map_kd: brickwall_1024.png
     map_bump: brickwall_1024_normal.png
-    reflection: 0.2
+    map_height: brickwall_1024_height.jpg
+    depth: 0.017
+    reflection: 0.02
   - name: woodwall
     ns: 225.000000
     type: model
