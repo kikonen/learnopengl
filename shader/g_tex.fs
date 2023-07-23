@@ -44,6 +44,7 @@ SET_FLOAT_PRECISION;
 
 #include fn_calculate_normal_pattern.glsl
 #include fn_calculate_parallax_mapping.glsl
+#include fn_gbuffer_encode.glsl
 
 void main() {
   Material material = u_materials[fs_in.materialIndex];
@@ -90,5 +91,5 @@ void main() {
   o_fragEmission = material.emission.xyz;
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = normal * 0.5 + 0.5;
+  o_fragNormal = encodeGNormal(normal);
 }

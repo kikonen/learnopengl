@@ -20,8 +20,12 @@ LAYOUT_G_BUFFER_OUT;
 
 SET_FLOAT_PRECISION;
 
+#include fn_gbuffer_encode.glsl
+
 void main() {
   Material material = u_materials[fs_in.materialIndex];
+
+  const vec3 normal = normalize(fs_in.normal);
 
   // combined
   vec4 texColor = material.diffuse;
@@ -31,5 +35,5 @@ void main() {
   o_fragEmission = texColor.xyz;
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = normalize(fs_in.normal) * 0.5 + 0.5;
+  o_fragNormal = encodeGNormal(normal);
 }

@@ -15,6 +15,8 @@ LAYOUT_G_BUFFER_OUT;
 
 SET_FLOAT_PRECISION;
 
+#include fn_gbuffer_encode.glsl
+
 void main() {
   vec4 texColor = texture(u_skybox, texCoord);
   //texColor = vec4(1.0, 0, 0, 1.0);
@@ -25,5 +27,5 @@ void main() {
   o_fragEmission = texColor.xyz;
 
   //o_fragPosition = u_viewWorldPos + 1000 * u_viewFront;
-  o_fragNormal = u_viewFront * 0.5 + 0.5;
+  o_fragNormal = encodeGNormal(u_viewFront);
 }
