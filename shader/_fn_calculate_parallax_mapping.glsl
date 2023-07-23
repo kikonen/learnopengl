@@ -2,32 +2,32 @@
 vec2 calculateParallaxMapping(
   in Material material,
   vec2 texCoord,
-  vec3 toView)
+  vec3 viewTangentDir)
 {
   sampler2D sampler = sampler2D(u_texture_handles[material.heightMapTex]);
   float height = texture(sampler, texCoord).r;
-  vec2 p = toView.xy / toView.z * (height * material.depth);
+  vec2 p = viewTangentDir.xy / viewTangentDir.z * (height * material.depth);
   return texCoord - p;
 }
 
 vec2 calculateDeepParallaxMapping(
   in Material material,
   vec2 texCoord,
-  vec3 toView)
+  vec3 viewTangentDir)
 {
   sampler2D sampler = sampler2D(u_texture_handles[material.heightMapTex]);
 
   // number of depth layers
   const float minLayers = 8.0;
   const float maxLayers = 32.0;
-  const float numLayers = mix(maxLayers, minLayers, max(dot(vec3(0.0, 0.0, 1.0), toView), 0.0));
+  const float numLayers = mix(maxLayers, minLayers, max(dot(vec3(0.0, 0.0, 1.0), viewTangentDir), 0.0));
 
   // calculate the size of each layer
   float layerDepth = 1.0 / numLayers;
   // depth of current layer
   float currentLayerDepth = 0.0;
   // the amount to shift the texture coordinates per layer (from vector P)
-  vec2 P = toView.xy * material.depth;
+  vec2 P = viewTangentDir.xy * material.depth;
   vec2 deltaTexCoord = P / numLayers;
 
   // get initial values
@@ -50,21 +50,21 @@ vec2 calculateDeepParallaxMapping(
 vec2 calculateParallaxOcclusionMapping(
   in Material material,
   vec2 texCoord,
-  vec3 toView)
+  vec3 viewTangentDir)
 {
   sampler2D sampler = sampler2D(u_texture_handles[material.heightMapTex]);
 
   // number of depth layers
   const float minLayers = 8.0;
   const float maxLayers = 32.0;
-  const float numLayers = mix(maxLayers, minLayers, max(dot(vec3(0.0, 0.0, 1.0), toView), 0.0));
+  const float numLayers = mix(maxLayers, minLayers, max(dot(vec3(0.0, 0.0, 1.0), viewTangentDir), 0.0));
 
   // calculate the size of each layer
   float layerDepth = 1.0 / numLayers;
   // depth of current layer
   float currentLayerDepth = 0.0;
   // the amount to shift the texture coordinates per layer (from vector P)
-  vec2 P = toView.xy * material.depth;
+  vec2 P = viewTangentDir.xy * material.depth;
   vec2 deltaTexCoord = P / numLayers;
 
   // get initial values

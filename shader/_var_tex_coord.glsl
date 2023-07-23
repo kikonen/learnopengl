@@ -1,8 +1,8 @@
 #ifdef USE_HEIGHT_TEX
   vec2 texCoord;
   if (material.heightMapTex >= 0) {
-    const vec3 tanToView = normalize(fs_in.viewTangentPos - fs_in.tangentPos);
-    texCoord = calculateParallaxOcclusionMapping(material, fs_in.texCoord, tanToView);
+    const vec3 viewTangentDir = normalize(fs_in.viewTangentPos - fs_in.tangentPos);
+    texCoord = calculateParallaxOcclusionMapping(material, fs_in.texCoord, viewTangentDir);
   } else {
     texCoord = fs_in.texCoord;
   }
