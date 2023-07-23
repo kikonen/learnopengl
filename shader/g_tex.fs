@@ -25,6 +25,8 @@ in VS_OUT {
 
 #ifdef USE_TBN
   mat3 TBN;
+#endif
+#ifdef USE_PARALLAX
   vec3 viewTangentPos;
   vec3 tangentPos;
 #endif

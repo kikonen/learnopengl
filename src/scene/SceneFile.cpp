@@ -475,6 +475,7 @@ MeshType* SceneFile::createType(
         }
 
         bool useTBN = false;
+        bool useParallax = false;
         bool useDudvTex = false;
         bool useHeightTex = false;
         bool useNormalTex = false;
@@ -482,7 +483,7 @@ MeshType* SceneFile::createType(
         bool useNormalPattern = false;
 
         type->modifyMaterials([
-            this, &useNormalTex, &useCubeMap, &useDudvTex, &useHeightTex, &useNormalPattern, &data
+            this, &useNormalTex, &useCubeMap, &useDudvTex, &useHeightTex, &useNormalPattern, &useParallax, &data
         ](Material& m) {
             if (data.materialModifiers_enabled) {
                 modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
@@ -494,6 +495,7 @@ MeshType* SceneFile::createType(
             useNormalTex |= m.hasTex(NORMAL_MAP_IDX);
             useCubeMap |= 1.0 - m.reflection - m.refraction < 1.0;
             useNormalPattern |= m.pattern > 0;
+            useParallax |= m.hasTex(HEIGHT_MAP_IDX) && m.depth > 0;
         });
         useTBN = useNormalTex || useDudvTex || useHeightTex;
 
@@ -522,6 +524,9 @@ MeshType* SceneFile::createType(
             }
             if (useNormalTex) {
                 definitions[DEF_USE_NORMAL_TEX] = "1";
+            }
+            if (useParallax) {
+                definitions[DEF_USE_PARALLAX] = "1";
             }
             if (useCubeMap) {
                 definitions[DEF_USE_CUBE_MAP] = "1";

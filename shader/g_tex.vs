@@ -30,6 +30,8 @@ out VS_OUT {
 
 #ifdef USE_TBN
   flat mat3 TBN;
+#endif
+#ifdef USE_PARALLAX
   vec3 viewTangentPos;
   vec3 tangentPos;
 #endif
@@ -117,9 +119,11 @@ void main() {
 
     vs_out.TBN = mat3(T, B, N);
 
+#ifdef USE_PARALLAX
     mat3 invTBN = transpose(vs_out.TBN);
     vs_out.viewTangentPos  = invTBN * u_viewWorldPos;
     vs_out.tangentPos  = invTBN * worldPos.xyz;
+#endif
   }
 #endif
 }

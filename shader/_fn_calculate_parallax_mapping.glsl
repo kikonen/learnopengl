@@ -1,4 +1,4 @@
-#ifdef USE_HEIGHT_TEX
+#ifdef USE_PARALLAX
 vec2 calculateParallaxMapping(
   in Material material,
   vec2 texCoord,

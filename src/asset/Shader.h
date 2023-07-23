@@ -36,6 +36,7 @@ const std::string DEF_USE_TBN{ "USE_TBN" };
 const std::string DEF_USE_DUDV_TEX{ "USE_DUDV_TEX" };
 const std::string DEF_USE_HEIGHT_TEX{ "USE_HEIGHT_TEX" };
 const std::string DEF_USE_NORMAL_TEX{ "USE_NORMAL_TEX" };
+const std::string DEF_USE_PARALLAX{ "USE_PARALLAX" };
 const std::string DEF_USE_CUBE_MAP{ "USE_CUBE_MAP" };
 const std::string DEF_USE_NORMAL_PATTERN{ "USE_NORMAL_PATTERN" };
 
