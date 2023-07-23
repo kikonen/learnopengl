@@ -57,7 +57,7 @@ void main() {
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
-  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
+  const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
 
   vec3 normal = fs_in.normal;
 
@@ -79,7 +79,7 @@ void main() {
   }
 
   vec4 color = calculateLight(
-    normal, toView, fs_in.worldPos,
+    normal, viewDir, fs_in.worldPos,
     fs_in.shadowIndex,
     material);
   color = calculateFog(fs_in.viewPos, color);

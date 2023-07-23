@@ -1,6 +1,6 @@
 vec4 calculateLight(
   in vec3 normal,
-  in vec3 toView,
+  in vec3 viewDir,
   in vec3 worldPos,
   in uint shadowIndex,
   in Material material)
@@ -17,7 +17,7 @@ vec4 calculateLight(
     color += calculateDirLight(
       u_dirLights[i],
       normal,
-      toView,
+      viewDir,
       worldPos,
       shadowIndex,
       material);
@@ -27,7 +27,7 @@ vec4 calculateLight(
     color += calculatePointLight(
       u_pointLights[i],
       normal,
-      toView,
+      viewDir,
       u_pointLights[i].worldPos - worldPos,
       material);
   }
@@ -36,7 +36,7 @@ vec4 calculateLight(
     color += calculateSpotLight(
       u_spotLights[i],
       normal,
-      toView,
+      viewDir,
       u_spotLights[i].worldPos - worldPos,
       material);
   }

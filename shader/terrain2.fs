@@ -59,7 +59,7 @@ void main() {
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
-  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
+  const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
   const Entity entity = u_entities[fs_in.entityIndex];
 
   #include var_tex_material_normal.glsl
@@ -79,7 +79,7 @@ void main() {
 #endif
 
   vec4 texColor = calculateLight(
-    normal, toView, fs_in.worldPos,
+    normal, viewDir, fs_in.worldPos,
     fs_in.shadowIndex,
     material);
 

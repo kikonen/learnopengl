@@ -129,7 +129,7 @@ void main()
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
 
-  const vec3 toView = normalize(u_viewWorldPos - worldPos);
+  const vec3 viewDir = normalize(u_viewWorldPos - worldPos);
 
   Material material;
 
@@ -170,7 +170,7 @@ void main()
     color = material.diffuse;
   } else {
     color = calculateLight(
-      normal, toView, worldPos,
+      normal, viewDir, worldPos,
       shadowIndex,
       material);
 

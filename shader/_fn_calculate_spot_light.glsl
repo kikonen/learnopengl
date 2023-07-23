@@ -1,17 +1,17 @@
 vec3 calculateSpotLight(
   in SpotLight light,
   in vec3 normal,
-  in vec3 toView,
-  in vec3 toLight,
+  in vec3 viewDir,
+  in vec3 lightDir,
   in Material material)
 {
-  const float dist = length(toLight);
+  const float dist = length(lightDir);
 
   if (dist > light.radius) return vec3(0.0);
 
-  toLight = normalize(toLight);
+  lightDir = normalize(lightDir);
 
-  float theta = dot(toLight, normalize(-light.worldDir));
+  float theta = dot(lightDir, normalize(-light.worldDir));
   bool shade = theta > light.cutoff;
 
   vec3 diffuse = vec3(0);
@@ -22,14 +22,14 @@ vec3 calculateSpotLight(
     float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
 
     // diffuse
-    float diff = max(dot(normal, toLight), 0.0);
+    float diff = max(dot(normal, lightDir), 0.0);
     diffuse = light.diffuse * (diff * material.diffuse.xyz);
 
     // specular
     const float shininess = material.specular.a;
     if (shininess > 0) {
-      vec3 reflectDir = reflect(-toLight, normal);
-      float spec = pow(max(dot(toView, reflectDir), 0.0), shininess);
+      vec3 reflectDir = reflect(-lightDir, normal);
+      float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
       specular = spec * light.specular * material.specular.xyz;
     }
 

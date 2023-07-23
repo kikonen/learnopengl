@@ -83,7 +83,7 @@ void main() {
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
-  const vec3 toView = normalize(u_viewWorldPos - fs_in.worldPos);
+  const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
 
   vec2 distortedTexCoord = texCoord;
   vec2 totalDistortion = vec2(0);
@@ -137,7 +137,7 @@ void main() {
   vec4 refractColor = texture(u_refractionTex, refractCoord);
   vec4 reflectColor = texture(u_reflectionTex, reflectCoord);
 
-  float refractiveFactor = dot(toView, normal);
+  float refractiveFactor = dot(viewDir, normal);
 
   if (!gl_FrontFacing) {
     refractiveFactor = 1.0;
@@ -153,7 +153,7 @@ void main() {
   vec4 texColor = material.diffuse;
   {
     texColor = calculateLight(
-      normal, toView, fs_in.worldPos,
+      normal, viewDir, fs_in.worldPos,
       fs_in.shadowIndex,
       material);
     texColor = calculateFog(fs_in.viewPos, texColor);
