@@ -70,6 +70,21 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
     vec3(gl_TessCoord.z) * v2;
 }
 
+float fetchHeight(
+  in sampler2D heightMap,
+  in vec2 texCoord)
+{
+  const vec2 ts = 1.0 / vec2(textureSize(heightMap, 0));
+
+  float height = 0.0;
+  for (int x = -1; x < 2; x++) {
+    for (int y = -1; y < 2; y++) {
+      height += texture(heightMap, texCoord + vec2(x * ts.x, y * ts.y)).r;
+    }
+  }
+  return height / 9.0;
+}
+
 void main()
 {
   const Entity entity = u_entities[tes_in[0].entityIndex];
@@ -88,7 +103,8 @@ void main()
   const float rangeYmax = entity.rangeYmax;
   const float rangeY = rangeYmax - rangeYmin;
 
-  float h = rangeYmin + texture(heightMap, texCoord).r * rangeY;
+  float avgHeight = fetchHeight(heightMap, texCoord);
+  float h = rangeYmin + avgHeight * rangeY;
 
   vertexPos.y += h;
 

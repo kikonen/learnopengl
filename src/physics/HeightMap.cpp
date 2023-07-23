@@ -61,19 +61,32 @@ namespace physics {
         u = std::clamp(u, 0.f, 1.f);
         v = std::clamp(v, 0.f, 1.f);
 
-        int mapX = m_width * u;
-        int mapY = m_height * (1.f - v);
+        const float baseX = m_width * u;
+        const float baseY = m_height * (1.f - v);
 
-        // TODO KI off by one bug
-        // HACK KI -1 to workaround "out of bounds"
-        mapX = std::clamp(mapX, 0, m_width - 1);
-        mapY = std::clamp(mapY, 0, m_height - 1);
+        float total = 0.0;
+        float bias = 2.5;
 
-        const int offset = m_width * mapY + mapX;
-        if (offset > m_height * m_width)
-            throw std::runtime_error{ "out-of-bounds" };
+        for (int x = -1; x < 2; x++) {
+            for (int y = -1; y < 2; y++) {
+                int mapX = (int)(baseX + x * bias);
+                int mapY = (int)(baseY + y * bias);
 
-        return m_heights[offset];
+                // TODO KI off by one bug
+                // HACK KI -1 to workaround "out of bounds"
+                mapX = std::clamp(mapX, 0, m_width - 1);
+                mapY = std::clamp(mapY, 0, m_height - 1);
+
+                const int offset = m_width * mapY + mapX;
+#ifdef _DEBUG
+                if (offset > m_height * m_width)
+                    throw std::runtime_error{ "out-of-bounds" };
+#endif
+                total += m_heights[offset];
+            }
+        }
+
+        return total / 9.0;
     }
 
     float HeightMap::getLevel(const glm::vec3& pos)
