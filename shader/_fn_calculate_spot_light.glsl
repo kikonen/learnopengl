@@ -2,14 +2,15 @@ vec3 calculateSpotLight(
   in SpotLight light,
   in vec3 normal,
   in vec3 viewDir,
-  in vec3 lightDir,
+  in vec3 worldPos,
   in Material material)
 {
-  const float dist = length(lightDir);
+  const vec3 toLight = light.worldPos - worldPos;
+  const float dist = length(toLight);
 
   if (dist > light.radius) return vec3(0.0);
 
-  lightDir = normalize(lightDir);
+  const vec3 lightDir = normalize(toLight);
 
   float theta = dot(lightDir, normalize(-light.worldDir));
   bool shade = theta > light.cutoff;

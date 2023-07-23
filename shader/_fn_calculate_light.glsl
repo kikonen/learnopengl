@@ -28,7 +28,7 @@ vec4 calculateLight(
       u_pointLights[i],
       normal,
       viewDir,
-      u_pointLights[i].worldPos - worldPos,
+      worldPos,
       material);
   }
 
@@ -37,7 +37,7 @@ vec4 calculateLight(
       u_spotLights[i],
       normal,
       viewDir,
-      u_spotLights[i].worldPos - worldPos,
+      worldPos,
       material);
   }
 
