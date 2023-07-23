@@ -817,12 +817,40 @@ entities:
     render_flags:
       render_back: true
     enabled: false
-  - name: Linden tree forest
-    type: billboard
+  - name: Linden tree forest - base
+    type: model
+    model: quad
+    xtype: billboard
     priority: 1
     program: g_tex
     instanced: true
     pos: [250, 15.0, 150.0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [7, 10, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 40
+        z_count: 40
+        x_step: -20
+        z_step: 20
+      enabled: true
+    enabled: true
+  - name: Linden tree forest - rotated
+    type: model
+    model: quad
+    xtype: billboard
+    priority: 1
+    program: g_tex
+    instanced: true
+    pos: [250, 15.0, 150.0]
+    rotation: [0, 90, 0]
     material: linden_tree
     render_flags:
       alpha: true
