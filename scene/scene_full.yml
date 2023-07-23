@@ -323,6 +323,20 @@ entities:
       x_count: 2
       x_step: 4
     enabled: true
+  - name: Wood wall - upper - normal
+    model: quad
+    material: woodwall
+    material_modifier:
+      map_bump: wood_1024_normal.png
+      depth: 0.02
+    program: g_tex
+    pos: [-3.0, 15.5, 14.0]
+    render_flags:
+      render_back: true
+    repeat:
+      x_count: 2
+      x_step: 4
+    enabled: true
   - name: Big mirror 1
     model: quad
     material: mirror
@@ -975,7 +989,7 @@ materials:
     d: 1.000000
     illum: 2
     map_kd: wood_1024.png
-    reflection: 0.4
+    reflection: 0.1
   - name: giant_woodbox
     ns: 225.000000
     type: model
