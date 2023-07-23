@@ -24,7 +24,7 @@ in VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 } vs_in[];
 
@@ -37,7 +37,7 @@ out VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 } gs_out;
 
@@ -75,7 +75,7 @@ void sendVertex(in int i, in vec4 pos) {
 
   gs_out.materialIndex = vs_in[i].materialIndex;
 
-  gs_out.TBN = vs_in[i].TBN;
+  gs_out.tangent = vs_in[i].tangent;
 
   for (int ci = 0; ci < u_clipCount; ci++) {
     gl_ClipDistance[ci] = gl_in[i].gl_ClipDistance[ci];

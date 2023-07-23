@@ -24,7 +24,7 @@ in VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  mat3 TBN;
+  vec3 tangent;
 #endif
 #ifdef USE_PARALLAX
   vec3 viewTangentPos;

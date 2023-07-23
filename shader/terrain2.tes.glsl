@@ -26,7 +26,7 @@ in TCS_OUT {
   vec4 shadowPos;
 
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 } tes_in[];
 
@@ -45,7 +45,7 @@ out TES_OUT {
   vec4 shadowPos;
 
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 
   float height;
@@ -111,7 +111,7 @@ void main()
   tes_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
 #ifdef USE_TBN
-  tes_out.TBN = tes_in[0].TBN;
+  tes_out.tangent = tes_in[0].tangent;
 #endif
 
   tes_out.height = h;

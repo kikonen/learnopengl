@@ -21,7 +21,7 @@ in VS_OUT {
   vec3 scale;
 
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 } gs_in[];
 
@@ -38,8 +38,9 @@ out GS_OUT {
 
   flat uint shadowIndex;
   vec4 shadowPos;
+
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 } gs_out;
 
@@ -64,7 +65,7 @@ void fillVertex(const int i)
   gs_out.vertexPos = gs_in[i].vertexPos;
   gs_out.materialIndex = gs_in[i].materialIndex;
 #ifdef USE_TBN
-  gs_out.TBN = gs_in[i].TBN;
+  gs_out.tangent = gs_in[i].tangent;
 #endif
 }
 

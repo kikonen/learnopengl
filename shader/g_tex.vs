@@ -29,7 +29,7 @@ out VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 #ifdef USE_PARALLAX
   vec3 viewTangentPos;
@@ -113,12 +113,11 @@ void main() {
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     T = normalize(T - dot(T, N) * N);
 
-    const vec3 B = cross(N, T);
-
-    vs_out.TBN = mat3(T, B, N);
+    vs_out.tangent = T;
 
 #ifdef USE_PARALLAX
-    mat3 invTBN = transpose(vs_out.TBN);
+    const vec3 B = cross(N, T);
+    const mat3 invTBN = transpose(mat3(T, B, N));
     vs_out.viewTangentPos  = invTBN * u_viewWorldPos;
     vs_out.tangentPos  = invTBN * worldPos.xyz;
 #endif

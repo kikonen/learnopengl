@@ -24,7 +24,7 @@ in TES_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 
   float height;

@@ -22,7 +22,9 @@ in VS_OUT {
 
   flat uint materialIndex;
 
-  mat3 TBN;
+#ifdef USE_TBN
+  vec3 tangent;
+#endif
 } fs_in;
 
 layout(binding = UNIT_MIRROR_REFLECTION) uniform sampler2D u_reflectionTex;

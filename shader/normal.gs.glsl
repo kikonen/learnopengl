@@ -7,7 +7,8 @@ layout (line_strip, max_vertices = 16) out;
 
 in VS_OUT {
   vec3 normal;
-  flat mat3 TBN;
+  vec3 tangent;
+  vec3 bitangent;
 } vs_in[];
 
 out GS_OUT {
@@ -35,7 +36,7 @@ void generateNormal(const int index)
 
 void generateTangent(const int index)
 {
-  vec3 tangent = vs_in[index].TBN[0];
+  vec3 tangent = normalize(vs_in[index].tangent);
 
   gs_out.fragColor = vec4(0.0, 0.0, 1.0, 1.0);
 
@@ -52,7 +53,7 @@ void generateTangent(const int index)
 
 void generateBitangent(const int index)
 {
-  vec3 bitangent = vs_in[index].TBN[1];
+  vec3 bitangent = normalize(vs_in[index].bitangent);
 
   gs_out.fragColor = vec4(0.0, 1.0, 0.0, 1.0);
 

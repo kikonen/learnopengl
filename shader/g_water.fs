@@ -21,7 +21,7 @@ in VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  mat3 TBN;
+  vec3 tangent;
 #endif
 } fs_in;
 
@@ -95,10 +95,14 @@ void main() {
   vec3 normal;
   {
     sampler2D sampler = sampler2D(u_texture_handles[material.normalMapTex]);
-    normal = texture(sampler, distortedTexCoord).rgb;
 
-    normal = normal * 2.0 - 1.0;
-    normal = normalize(fs_in.TBN * normal);
+    const vec3 N = normalize(fs_in.normal);
+    const vec3 T = normalize(fs_in.tangent);
+    const vec3 B = cross(N, T);
+    const mat3 TBN = mat3(T, B, N);
+
+    normal = texture(sampler, distortedTexCoord).rgb;
+    normal = normalize(TBN * normal);
   }
 #else
   vec3 normal = normalize(fs_in.normal);

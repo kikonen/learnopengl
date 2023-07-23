@@ -26,7 +26,7 @@ out VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  mat3 TBN;
+  vec3 tangent;
 #endif
 } vs_out;
 
@@ -68,9 +68,9 @@ void main() {
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     T = normalize(T - dot(T, N) * N);
 
-    const vec3 B = cross(N, T);
+    //const vec3 B = cross(N, T);
 
-    vs_out.TBN = mat3(T, B, N);
+    vs_out.tangent = T;
   }
 #endif
 }

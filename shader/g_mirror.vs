@@ -24,7 +24,9 @@ out VS_OUT {
 
   flat uint materialIndex;
 
-  mat3 TBN;
+#ifdef USE_TBN
+  vec3 tangent;
+#endif
 } vs_out;
 
 

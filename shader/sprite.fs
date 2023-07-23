@@ -28,8 +28,9 @@ in GS_OUT {
 
   flat uint shadowIndex;
   vec4 shadowPos;
+
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 } fs_in;
 

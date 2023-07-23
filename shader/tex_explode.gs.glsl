@@ -16,7 +16,9 @@ in VS_OUT {
 
   vec4 shadowPos;
 
-  mat3 TBN;
+#ifdef USE_TBN
+  vec3 tangent;
+#endif
 } vs_in[];
 
 out VS_OUT {
@@ -30,7 +32,9 @@ out VS_OUT {
 
   vec4 shadowPos;
 
-  mat3 TBN;
+#ifdef USE_TBN
+  vec3 tangent;
+#endif
 } gs_out;
 
 vec3 getNormal()
@@ -56,7 +60,7 @@ void sendVertex(in int i, in vec4 pos) {
   gs_out.worldPos = vs_in[i].worldPos;
   gs_out.normal = vs_in[i].normal;
   gs_out.shadowPos = vs_in[i].shadowPos;
-  gs_out.TBN = vs_in[i].TBN;
+  gs_out.tangent = vs_in[i].tangent;
   EmitVertex();
 }
 

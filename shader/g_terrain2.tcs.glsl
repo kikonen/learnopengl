@@ -24,7 +24,7 @@ in VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 } tcs_in[];
 
@@ -39,7 +39,7 @@ out TCS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  flat mat3 TBN;
+  vec3 tangent;
 #endif
 } tcs_out[];
 
@@ -69,7 +69,7 @@ void main()
   tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
   tcs_out[gl_InvocationID].materialIndex = tcs_in[gl_InvocationID].materialIndex;
 #ifdef USE_TBN
-  tcs_out[gl_InvocationID].TBN = tcs_in[gl_InvocationID].TBN;
+  tcs_out[gl_InvocationID].tangent = tcs_in[gl_InvocationID].tangent;
 #endif
 
   if (gl_InvocationID == 0) {

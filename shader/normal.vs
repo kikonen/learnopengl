@@ -12,7 +12,8 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 
 out VS_OUT {
   vec3 normal;
-  flat mat3 TBN;
+  vec3 tangent;
+  vec3 bitangent;
 } vs_out;
 
 
@@ -60,7 +61,7 @@ void main() {
   vs_out.normal = normal;
 
   {
-    const vec3 N = normalize(vs_out.normal);
+    const vec3 N = vs_out.normal;
     vec3 T = tangent;
 
     // NOTE KI Gram-Schmidt process to re-orthogonalize
@@ -69,6 +70,7 @@ void main() {
 
     const vec3 B = cross(N, T);
 
-    vs_out.TBN = mat3(T, B, N);
+    vs_out.tangent = T;
+    vs_out.bitangent = B;
   }
 }
