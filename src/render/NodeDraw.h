@@ -39,6 +39,10 @@ public:
         GLbitfield clearMask,
         const glm::vec4& clearColor);
 
+    void drawDebug(
+        const RenderContext& ctx,
+        FrameBuffer* targetBuffer);
+
     void drawBlended(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,

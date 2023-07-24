@@ -55,7 +55,7 @@ void NodeDraw::drawNodes(
     GLbitfield clearMask,
     const glm::vec4& clearColor)
 {
-    // pass 1 - geometry
+    // pass 1.1 - draw geometry
     // => nodes supporting G-buffer
     //if (false)
     {
@@ -75,7 +75,7 @@ void NodeDraw::drawNodes(
         ctx.setAllowBlend(oldAllowBlend);
     }
 
-    // pass 1 - blend OIT
+    // pass 1.2 - draw OIT
     //if (false)
     {
         m_oitbuffer.bind(ctx);
@@ -102,6 +102,11 @@ void NodeDraw::drawNodes(
 
         ctx.m_state.clearBlendMode();
         ctx.m_state.setDepthMask(oldDepthMask);
+    }
+
+    // pass 1.3 - blend OIT
+    //if (false)
+    {
     }
 
     // pass 2 - light
@@ -138,33 +143,42 @@ void NodeDraw::drawNodes(
     //if (false)
     {
         targetBuffer->bind(ctx);
-        drawBlendedImpl(ctx, typeSelector, nodeSelector);
+        drawBlendedImpl(
+            ctx,
+            [&typeSelector](const MeshType* type) { return !type->m_flags.blendOIT && typeSelector(type); },
+            nodeSelector);
         ctx.m_batch->flush(ctx);
     }
 
     // pass 5 - debug info
-    if (ctx.m_allowDrawDebug && ctx.m_assets.drawDebug)
-    {
-        constexpr float SZ1 = 0.25f;
-        //constexpr float SZ2 = 0.5f;
+    drawDebug(ctx, targetBuffer);
+}
 
-        for (int i = 0; i < m_oitbuffer.m_buffer->getDrawBufferCount(); i++) {
-            m_oitbuffer.m_buffer->blit(
-                targetBuffer,
-                GL_COLOR_BUFFER_BIT,
-                GL_COLOR_ATTACHMENT0 + i,
-                GL_COLOR_ATTACHMENT0,
-                { -1.f, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
-        }
+void NodeDraw::drawDebug(
+    const RenderContext& ctx,
+    FrameBuffer* targetBuffer)
+{
+    if (!(ctx.m_allowDrawDebug && ctx.m_assets.drawDebug)) return;
 
-        for (int i = 0; i < m_gbuffer.m_buffer->getDrawBufferCount(); i++) {
-            m_gbuffer.m_buffer->blit(
-                targetBuffer,
-                GL_COLOR_BUFFER_BIT,
-                GL_COLOR_ATTACHMENT0 + i,
-                GL_COLOR_ATTACHMENT0,
-                { 1 - SZ1, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
-        }
+    constexpr float SZ1 = 0.25f;
+    //constexpr float SZ2 = 0.5f;
+
+    for (int i = 0; i < m_oitbuffer.m_buffer->getDrawBufferCount(); i++) {
+        m_oitbuffer.m_buffer->blit(
+            targetBuffer,
+            GL_COLOR_BUFFER_BIT,
+            GL_COLOR_ATTACHMENT0 + i,
+            GL_COLOR_ATTACHMENT0,
+            { -1.f, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
+    }
+
+    for (int i = 0; i < m_gbuffer.m_buffer->getDrawBufferCount(); i++) {
+        m_gbuffer.m_buffer->blit(
+            targetBuffer,
+            GL_COLOR_BUFFER_BIT,
+            GL_COLOR_ATTACHMENT0 + i,
+            GL_COLOR_ATTACHMENT0,
+            { 1 - SZ1, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
     }
 }
 
