@@ -121,6 +121,8 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcep
         }
     }
 
+    clearSelectedCount();
+
     Node* node = getNode(objectID);
     if (!node) return;
 
@@ -132,8 +134,6 @@ void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcep
         KI_INFO(fmt::format("SELECT: objectID={}", objectID));
         node->setSelectionMaterialIndex(m_selectionMaterial.m_registeredIndex);
     }
-
-    clearSelectedCount();
 }
 
 void NodeRegistry::attachNode(
@@ -155,6 +155,7 @@ int NodeRegistry::countTagged() const noexcept
 {
     int count = m_taggedCount;
     if (count < 0) {
+        count = 0;
         for (const auto& all : allNodes) {
             for (const auto& x : all.second) {
                 for (auto& node : x.second) {
@@ -171,6 +172,7 @@ int NodeRegistry::countSelected() const noexcept
 {
     int count = m_selectedCount;
     if (count < 0) {
+        count = 0;
         for (const auto& all : allNodes) {
             for (const auto& x : all.second) {
                 for (auto& node : x.second) {

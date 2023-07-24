@@ -241,7 +241,7 @@ void SampleApp::selectNode(
 
     // deselect
     if (node && node->isSelected()) {
-        node->setSelectionMaterialIndex(-1);
+        nodeRegistry.selectNodeByObjectId(-1, false);
 
         if (volumeNode) {
             auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
