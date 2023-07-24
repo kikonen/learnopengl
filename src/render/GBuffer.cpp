@@ -73,3 +73,13 @@ void GBuffer::unbindTexture(const RenderContext& ctx)
     m_buffer->unbindTexture(ctx, UNIT_G_NORMAL);
     m_buffer->unbindTexture(ctx, UNIT_G_DEPTH);
 }
+
+void GBuffer::bindDepthTexture(const RenderContext& ctx)
+{
+    m_buffer->bindTexture(ctx, 4, UNIT_G_DEPTH);
+}
+
+void GBuffer::unbindDepthTexture(const RenderContext& ctx)
+{
+    m_buffer->unbindTexture(ctx, UNIT_G_DEPTH);
+}

@@ -57,7 +57,8 @@ private:
 
     int m_fbo = -1;
 
-    GLBlendMode m_blendMode{ 0, 0, 0, 0 };
+    GLBlendMode m_blendMode{ 0, 0, 0, 0, 0 };
+
     GLenum m_depthFunc = -1;
     GLenum m_depthMask = -1;
 };

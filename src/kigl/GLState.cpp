@@ -111,6 +111,8 @@ GLBlendMode GLState::setBlendMode(const GLBlendMode& mode)
     {
         m_blendMode = mode;
 
+        glBlendEquation(m_blendMode.blendEquation);
+
         // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBlendFuncSeparate(mode.srcRGB, mode.dstRGB, mode.srcAlpha, mode.dstAlpha);

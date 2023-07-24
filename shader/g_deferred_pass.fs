@@ -29,7 +29,6 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_point_light.glsl
 #include fn_calculate_spot_light.glsl
 #include fn_calculate_light.glsl
-#include fn_calculate_fog.glsl
 #include fn_calculate_shadow_index.glsl
 #include fn_gbuffer_decode.glsl
 
@@ -174,8 +173,6 @@ void main()
       normal, viewDir, worldPos,
       shadowIndex,
       material);
-
-    color = calculateFog(viewPos, color);
 
     if (u_frustumVisual) {
       color += CASCADE_COLORS[shadowIndex];

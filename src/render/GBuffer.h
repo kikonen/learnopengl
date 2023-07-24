@@ -20,6 +20,9 @@ public:
     void bindTexture(const RenderContext& ctx);
     void unbindTexture(const RenderContext& ctx);
 
+    void bindDepthTexture(const RenderContext& ctx);
+    void unbindDepthTexture(const RenderContext& ctx);
+
 public:
     std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
 

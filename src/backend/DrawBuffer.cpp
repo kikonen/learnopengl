@@ -295,8 +295,7 @@ namespace backend {
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
             if (!drawOptions.blendOIT) {
-                glBlendEquation(GL_FUNC_ADD);
-                state.setBlendMode({ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+                state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             }
         }
     }

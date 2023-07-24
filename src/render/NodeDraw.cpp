@@ -27,6 +27,9 @@ void NodeDraw::prepare(
 
     m_oitProgram = registry->m_programRegistry->getProgram(SHADER_OIT_PASS);
     m_oitProgram->prepare(assets);
+
+    m_fogProgram = registry->m_programRegistry->getProgram(SHADER_FOG_PASS);
+    m_fogProgram->prepare(assets);
 }
 
 void NodeDraw::updateView(const RenderContext& ctx)
@@ -86,6 +89,7 @@ void NodeDraw::drawNodes(
         // NOTE KI do NOT modify depth with blend
         auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
 
+        // NOTE KI different blend mode for each draw buffer
         glBlendFunci(0, GL_ONE, GL_ONE);
         glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
         glBlendEquation(GL_FUNC_ADD);
@@ -100,6 +104,7 @@ void NodeDraw::drawNodes(
 
         ctx.m_batch->flush(ctx);
 
+        // NOTE KI *MUST* reset blend mode (messed caching earlier)
         ctx.m_state.clearBlendMode();
         ctx.m_state.setDepthMask(oldDepthMask);
     }
@@ -148,6 +153,24 @@ void NodeDraw::drawNodes(
             [&typeSelector](const MeshType* type) { return !type->m_flags.blendOIT && typeSelector(type); },
             nodeSelector);
         ctx.m_batch->flush(ctx);
+    }
+
+    // pass 3 - fog
+    // NOTE KI cannot do fog if blend not allowed
+    if (ctx.m_allowBlend)
+    {
+        targetBuffer->bind(ctx);
+
+        ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+        ctx.m_state.setEnabled(GL_BLEND, true);
+        ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+
+        m_fogProgram->bind(ctx.m_state);
+        m_gbuffer.bindDepthTexture(ctx);
+        m_quad.draw(ctx);
+
+        ctx.m_state.setEnabled(GL_BLEND, false);
+        ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
     }
 
     // pass 5 - debug info
