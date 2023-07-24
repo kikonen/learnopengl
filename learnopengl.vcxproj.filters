@@ -372,7 +372,7 @@
     <ClCompile Include="src\render\CubeMapBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\Quad.cpp">
+    <ClCompile Include="src\render\PlainQuad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\engine\UpdateContext.cpp">
@@ -406,6 +406,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\render\OITBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\TextureQuad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -890,7 +893,7 @@
     <ClInclude Include="src\render\CubeMapBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\Quad.h">
+    <ClInclude Include="src\render\PlainQuad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\UpdateContext.h">
@@ -912,6 +915,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\OITBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\BufferInfoUBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\TextureQuad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

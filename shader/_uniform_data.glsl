@@ -4,7 +4,8 @@ layout(std140, binding = UBO_DATA) uniform Data {
   vec3 u_viewUp;
   vec3 u_viewRight;
 
-  vec2 u_resolution;
+  vec2 u_screenResolution;
+
   bool u_cubeMapExist;
   bool u_frustumVisual;
 

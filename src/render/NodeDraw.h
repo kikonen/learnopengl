@@ -6,7 +6,8 @@
 
 #include "GBuffer.h"
 #include "OITBuffer.h"
-#include "Quad.h"
+#include "PlainQuad.h"
+#include "TextureQuad.h"
 
 class RenderContext;
 class Program;
@@ -67,15 +68,15 @@ private:
         const std::function<bool(const MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector);
 
-    void drawQuad(const RenderContext& ctx);
-
-    void prepareQuad();
+    void drawPlainQuad(const RenderContext& ctx);
+    void drawTextureQuad(const RenderContext& ctx);
 
 private:
     GBuffer m_gbuffer;
     OITBuffer m_oitbuffer;
 
-    Quad m_quad;
+    PlainQuad m_plainQuad;
+    TextureQuad m_textureQuad;
 
     Program* m_deferredProgram{ nullptr };
     Program* m_oitProgram{ nullptr };

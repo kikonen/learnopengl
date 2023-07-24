@@ -1,8 +1,8 @@
-#include "Quad.h"
+#include "TextureQuad.h"
 
 #include "render/RenderContext.h"
 
-void Quad::prepare()
+void TextureQuad::prepare()
 {
     float quadVertices[] = {
         // positions        // texture Coords
@@ -24,7 +24,7 @@ void Quad::prepare()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 }
 
-void Quad::draw(const RenderContext& ctx)
+void TextureQuad::draw(const RenderContext& ctx)
 {
     ctx.m_state.bindVAO(m_vao);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

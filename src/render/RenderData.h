@@ -11,10 +11,10 @@ class Registry;
 
 struct MatricesUBO;
 struct DataUBO;
+struct BufferInfoUBO;
 struct ClipPlanesUBO;
 struct LightsUBO;
 struct TesturUBO;
-
 
 class RenderData {
 public:
@@ -26,6 +26,7 @@ public:
 
     void updateMatrices(MatricesUBO& data);
     void updateData(DataUBO& data);
+    void updateBufferInfo(BufferInfoUBO& data);
     void updateClipPlanes(ClipPlanesUBO& data);
     void updateLights(Registry* registry, bool useLight);
 
@@ -37,6 +38,7 @@ public:
 private:
     GLBuffer m_matrices{ "matricesUBO" };
     GLBuffer m_data{ "dataUBO" };
+    GLBuffer m_bufferInfo{ "bufferInfoUBO" };
     GLBuffer m_clipPlanes{ "clipPlanesUBO" };
     GLBuffer m_lights{ "lightsUBO" };
 

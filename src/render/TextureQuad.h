@@ -4,7 +4,7 @@
 
 class RenderContext;
 
-class Quad {
+class TextureQuad {
 public:
     void prepare();
 

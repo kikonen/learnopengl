@@ -4,6 +4,7 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+#include uniform_buffer_info.glsl
 #include uniform_materials.glsl
 #include uniform_textures.glsl
 
@@ -46,8 +47,8 @@ void main() {
   #include var_tex_material.glsl
 
   iTime = u_time;
-  iResolution = u_resolution;
-  iMouse = u_resolution * 0.5;
+  iResolution = u_bufferResolution;
+  iMouse = u_bufferResolution * 0.5;
   iChannel0 = material.diffuseTex;
 
   mainImage(o_fragColor, gl_FragCoord.xy);

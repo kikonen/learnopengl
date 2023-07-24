@@ -20,7 +20,9 @@ void NodeDraw::prepare(
 {
     m_gbuffer.prepare(assets);
     m_oitbuffer.prepare(assets, &m_gbuffer);
-    m_quad.prepare();
+
+    m_plainQuad.prepare();
+    m_textureQuad.prepare();
 
     m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
     m_deferredProgram ->prepare(assets);
@@ -129,7 +131,7 @@ void NodeDraw::drawNodes(
         m_deferredProgram->bind(ctx.m_state);
         m_gbuffer.bindTexture(ctx);
         m_oitbuffer.bindTexture(ctx);
-        m_quad.draw(ctx);
+        m_plainQuad.draw(ctx);
     }
 
     // pass 3 - non G-buffer nodes
@@ -174,13 +176,13 @@ void NodeDraw::drawNodes(
         m_oitbuffer.bindTexture(ctx);
 
         m_emissionProgram->bind(ctx.m_state);
-        m_quad.draw(ctx);
+        m_plainQuad.draw(ctx);
 
         m_blendOitProgram->bind(ctx.m_state);
-        m_quad.draw(ctx);
+        m_plainQuad.draw(ctx);
 
         m_fogProgram->bind(ctx.m_state);
-        m_quad.draw(ctx);
+        m_plainQuad.draw(ctx);
 
         ctx.m_state.setEnabled(GL_BLEND, false);
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);

@@ -246,7 +246,8 @@
     <ClCompile Include="src\render\GBuffer.cpp" />
     <ClCompile Include="src\render\NodeDraw.cpp" />
     <ClCompile Include="src\render\OITBuffer.cpp" />
-    <ClCompile Include="src\render\Quad.cpp" />
+    <ClCompile Include="src\render\PlainQuad.cpp" />
+    <ClCompile Include="src\render\TextureQuad.cpp" />
     <ClCompile Include="src\scene\SceneFile.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
     <ClCompile Include="src\renderer\MirrorMapRenderer.cpp" />
@@ -318,6 +319,7 @@
   <ItemGroup>
     <ClInclude Include="Group.h" />
     <ClInclude Include="src\asset\AABB.h" />
+    <ClInclude Include="src\asset\BufferInfoUBO.h" />
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\Frustum.h" />
@@ -410,7 +412,8 @@
     <ClInclude Include="src\render\GBuffer.h" />
     <ClInclude Include="src\render\NodeDraw.h" />
     <ClInclude Include="src\render\OITBuffer.h" />
-    <ClInclude Include="src\render\Quad.h" />
+    <ClInclude Include="src\render\PlainQuad.h" />
+    <ClInclude Include="src\render\TextureQuad.h" />
     <ClInclude Include="src\scene\SceneFile.h" />
     <ClInclude Include="src\renderer\ObjectIdRenderer.h" />
     <ClInclude Include="src\renderer\MirrorMapRenderer.h" />

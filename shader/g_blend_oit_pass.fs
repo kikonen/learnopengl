@@ -2,10 +2,7 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-
-in VS_OUT {
-  vec2 texCoord;
-} fs_in;
+#include uniform_buffer_info.glsl
 
 LAYOUT_OIT_SAMPLERS;
 
@@ -27,7 +24,7 @@ float max3(vec3 v)
 
 void main()
 {
-  const vec2 texCoord = fs_in.texCoord;
+  const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
 
   float revealage = texture(oit_reveal, texCoord).r;
 

@@ -20,7 +20,8 @@ struct DataUBO {
     // NOTE KI std140
     // "Both the size and alignment are twice"
     // "the size of the underlying scalar type."
-    glm::vec2 u_resolution;
+    glm::vec2 u_screenResolution;
+
     int u_cubeMapExist; // bool as 4 bytes
     int u_frustumVisual; // bool as 4 bytes
 

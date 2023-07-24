@@ -9,6 +9,8 @@
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"
+#include "render/RenderData.h"
+
 
 FrameBuffer::FrameBuffer(
     const std::string& name,
@@ -16,6 +18,7 @@ FrameBuffer::FrameBuffer(
     : m_name(name),
     m_spec(spec)
 {
+    m_bufferInfo.u_bufferResolution = { m_spec.width, m_spec.height };
 }
 
 FrameBuffer::~FrameBuffer()
@@ -190,6 +193,8 @@ void FrameBuffer::bind(const RenderContext& ctx)
 
     ctx.m_state.bindFrameBuffer(m_fbo, m_forceBind);
     glViewport(0, 0, m_spec.width, m_spec.height);
+
+    ctx.m_renderData->updateBufferInfo(m_bufferInfo);
 }
 
 void FrameBuffer::unbind(const RenderContext& ctx)

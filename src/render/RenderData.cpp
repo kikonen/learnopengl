@@ -4,6 +4,7 @@
 
 #include "asset/MatricesUBO.h"
 #include "asset/DataUBO.h"
+#include "asset/BufferInfoUBO.h"
 #include "asset/ClipPlaneUBO.h"
 #include "asset/LightUBO.h"
 #include "asset/TextureUBO.h"
@@ -22,6 +23,7 @@ void RenderData::prepare()
 {
     m_matrices.createEmpty(sizeof(MatricesUBO), GL_DYNAMIC_STORAGE_BIT);
     m_data.createEmpty(sizeof(DataUBO), GL_DYNAMIC_STORAGE_BIT);
+    m_bufferInfo.createEmpty(sizeof(BufferInfoUBO), GL_DYNAMIC_STORAGE_BIT);
     m_clipPlanes.createEmpty(sizeof(ClipPlanesUBO), GL_DYNAMIC_STORAGE_BIT);
     m_lights.createEmpty(sizeof(LightsUBO), GL_DYNAMIC_STORAGE_BIT);
 
@@ -41,6 +43,7 @@ void RenderData::bind()
 {
     m_matrices.bind(UBO_MATRICES);
     m_data.bind(UBO_DATA);
+    m_bufferInfo.bind(UBO_BUFFER_INFO);
     m_clipPlanes.bind(UBO_CLIP_PLANES);
     m_lights.bind(UBO_LIGHTS);
 
@@ -61,6 +64,11 @@ void RenderData::updateMatrices(MatricesUBO& data)
 void RenderData::updateData(DataUBO& data)
 {
     m_data.update(0, sizeof(DataUBO), &data);
+}
+
+void RenderData::updateBufferInfo(BufferInfoUBO& data)
+{
+    m_bufferInfo.update(0, sizeof(BufferInfoUBO), & data);
 }
 
 void RenderData::updateClipPlanes(ClipPlanesUBO& data)

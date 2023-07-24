@@ -1,19 +1,15 @@
-
 #include "CubeMapBuffer.h"
-
 
 CubeMapBuffer::CubeMapBuffer(
     GLuint fbo,
     int size,
     GLenum side,
     GLuint textureID)
-    : FrameBuffer( "cube_map", { 0, 0, {} }),
+    : FrameBuffer( "cube_map", { size, size, {} }),
     m_side(side),
     m_textureID(textureID)
 {
     m_fbo = fbo;
-    m_spec.width = size;
-    m_spec.height = size;
 }
 
 void CubeMapBuffer::bind(const RenderContext& ctx)

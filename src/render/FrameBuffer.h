@@ -7,6 +7,8 @@
 
 #include "ki/GL.h"
 
+#include "asset/BufferInfoUBO.h"
+
 #include "FrameBufferAttachment.h"
 
 
@@ -80,5 +82,7 @@ public:
 protected:
     bool m_prepared = false;
     std::vector<GLenum> m_drawBuffers;
+
+    BufferInfoUBO m_bufferInfo;
 };
 
