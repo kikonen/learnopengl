@@ -14,7 +14,7 @@ public:
 
     void prepare(
         const Assets& assets,
-        GBuffer* gbuffer);
+        GBuffer* gBuffer);
 
     void updateView(const RenderContext& ctx);
 
@@ -27,5 +27,5 @@ public:
     std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
 
 private:
-    GBuffer* m_gbuffer{ nullptr };
+    GBuffer* m_gBuffer{ nullptr };
 };

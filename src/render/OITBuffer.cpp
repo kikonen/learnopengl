@@ -10,9 +10,9 @@
 
 void OITBuffer::prepare(
     const Assets& assets,
-    GBuffer* gbuffer)
+    GBuffer* gBuffer)
 {
-    m_gbuffer = gbuffer;
+    m_gBuffer = gBuffer;
 }
 
 void OITBuffer::updateView(const RenderContext& ctx)
@@ -40,7 +40,7 @@ void OITBuffer::updateView(const RenderContext& ctx)
                     FrameBufferAttachment::getOITAccumulatorTexture(GL_COLOR_ATTACHMENT0),
                     FrameBufferAttachment::getOITRevealTexture(GL_COLOR_ATTACHMENT1),
                     // NOTE KI *SHARE* depth with gbuffer
-                    FrameBufferAttachment::getShared(m_gbuffer->m_buffer->getDepthAttachment()),
+                    FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
                 }
             });
 
