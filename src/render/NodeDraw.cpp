@@ -28,6 +28,9 @@ void NodeDraw::prepare(
     m_oitProgram = registry->m_programRegistry->getProgram(SHADER_OIT_PASS);
     m_oitProgram->prepare(assets);
 
+    m_blendOitProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_OIT_PASS);
+    m_blendOitProgram->prepare(assets);
+
     m_emissionProgram = registry->m_programRegistry->getProgram(SHADER_EMISSION_PASS);
     m_emissionProgram->prepare(assets);
 
@@ -167,7 +170,11 @@ void NodeDraw::drawNodes(
         ctx.m_state.setEnabled(GL_BLEND, true);
         ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-        m_gbuffer.bindDepthTexture(ctx);
+        m_gbuffer.bindTexture(ctx);
+        m_oitbuffer.bindTexture(ctx);
+
+        m_blendOitProgram->bind(ctx.m_state);
+        m_quad.draw(ctx);
 
         m_emissionProgram->bind(ctx.m_state);
         m_quad.draw(ctx);

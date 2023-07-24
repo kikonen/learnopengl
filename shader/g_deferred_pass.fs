@@ -12,7 +12,6 @@ in VS_OUT {
 } fs_in;
 
 LAYOUT_G_BUFFER_SAMPLERS;
-LAYOUT_OIT_SAMPLERS;
 
 layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
 
@@ -32,8 +31,6 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_shadow_index.glsl
 #include fn_gbuffer_decode.glsl
 
-const float EPSILON = 0.00001f;
-
 const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT] =
   vec4[MAX_SHADOW_MAP_COUNT](
           vec4(0.1, 0.0, 0.0, 0.0),
@@ -42,25 +39,6 @@ const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT] =
           vec4(0.1, 0.0, 0.1, 0.0),
           vec4(0.1, 0.1, 0.0, 0.0)
           );
-
-
-bool isApproximatelyEqual(float a, float b)
-{
-  return abs(a - b) <= (abs(a) < abs(b) ? abs(b) : abs(a)) * EPSILON;
-}
-
-float max3(vec3 v)
-{
-  return max(max(v.x, v.y), v.z);
-}
-
-// https://stackoverflow.com/questions/56625730/does-blending-work-with-the-glsl-mix-function
-//
-// blendMode{ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE }
-vec4 blend(vec4 source, vec4 dest)
-{
-  return vec4(source.xyz * source.a + dest.xyz * (1.0 - source.a), 1.0);
-}
 
 void main()
 {
@@ -78,11 +56,7 @@ void main()
     worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
   }
 
-  //const vec3 worldPos = texture(g_position, texCoord).rgb;
-  // NOTE KI normal stored as [0, 1] (normalized)
   const vec3 normal = decodeGNormal(texCoord);
-
-  //const vec3 viewPos = (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
 
@@ -90,7 +64,6 @@ void main()
 
   Material material;
 
-  bool skipLight;
   {
     material.diffuse = texture(g_albedo, texCoord);
     material.ambient = material.diffuse.a;
@@ -100,27 +73,7 @@ void main()
     material.emission = vec3(0);
   }
 
-  if (true) {
-    float revealage = texture(oit_reveal, texCoord).r;
-    if (!isApproximatelyEqual(revealage, 1.0f)) {
-      vec4 accumulation = texture(oit_accumulator, texCoord, 0);
-
-      if (isinf(max3(abs(accumulation.rgb))))
-        accumulation.rgb = vec3(accumulation.a);
-
-      vec3 averageColor = accumulation.rgb / max(accumulation.a, EPSILON);
-
-      material.diffuse = blend(
-        vec4(averageColor, 1.0f - revealage),
-        material.diffuse);
-
-      skipLight = false;
-    }
-  }
-
-  if (material.ambient >= 1.0) {
-    skipLight = true;
-  }
+  bool skipLight = material.ambient >= 1.0;
 
   vec4 color;
   if (skipLight) {
