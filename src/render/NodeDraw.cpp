@@ -28,6 +28,9 @@ void NodeDraw::prepare(
     m_oitProgram = registry->m_programRegistry->getProgram(SHADER_OIT_PASS);
     m_oitProgram->prepare(assets);
 
+    m_emissionProgram = registry->m_programRegistry->getProgram(SHADER_EMISSION_PASS);
+    m_emissionProgram->prepare(assets);
+
     m_fogProgram = registry->m_programRegistry->getProgram(SHADER_FOG_PASS);
     m_fogProgram->prepare(assets);
 }
@@ -155,8 +158,7 @@ void NodeDraw::drawNodes(
         ctx.m_batch->flush(ctx);
     }
 
-    // pass 3 - fog
-    // NOTE KI cannot do fog if blend not allowed
+    // pass 3 - blend screenspace effects
     if (ctx.m_allowBlend)
     {
         targetBuffer->bind(ctx);
@@ -165,8 +167,12 @@ void NodeDraw::drawNodes(
         ctx.m_state.setEnabled(GL_BLEND, true);
         ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-        m_fogProgram->bind(ctx.m_state);
         m_gbuffer.bindDepthTexture(ctx);
+
+        m_emissionProgram->bind(ctx.m_state);
+        m_quad.draw(ctx);
+
+        m_fogProgram->bind(ctx.m_state);
         m_quad.draw(ctx);
 
         ctx.m_state.setEnabled(GL_BLEND, false);

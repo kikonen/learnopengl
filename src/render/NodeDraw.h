@@ -79,5 +79,6 @@ private:
 
     Program* m_deferredProgram{ nullptr };
     Program* m_oitProgram{ nullptr };
+    Program* m_emissionProgram{ nullptr };
     Program* m_fogProgram{ nullptr };
 };

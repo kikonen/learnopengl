@@ -24,7 +24,6 @@ d 1.000000
 illum 2
 map_Bump kari_512_normal.png
 map_Kd kari_512.png
-map_Ke matrix_512.png
 
 newmtl wood
 Ns 225.000000
@@ -37,3 +36,4 @@ d 1.000000
 illum 2
 map_Kd container2_512.png
 map_Ks container2_512_specular.png
+map_Ke matrix_512.png
