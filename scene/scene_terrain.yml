@@ -108,6 +108,7 @@ entities:
     material: linden_tree
     render_flags:
       alpha: true
+      no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
@@ -133,6 +134,7 @@ entities:
     material: linden_tree
     render_flags:
       alpha: true
+      no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true

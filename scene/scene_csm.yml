@@ -45,7 +45,7 @@ entities:
       specular: [0.7, 0.7, 0.7, 1.0]
       enabled: true
     enabled: true
-  - name: Linden tree forest 1
+  - name: Linden tree forest - part 1
     type: model
     model: quad
     priority: 1
@@ -56,6 +56,7 @@ entities:
     material: linden_tree
     render_flags:
       alpha: true
+      no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
@@ -70,7 +71,7 @@ entities:
         z_step: -20
       enabled: true
     enabled: true
-  - name: Linden tree forest 2
+  - name: Linden tree forest - part 2
     type: model
     model: quad
     priority: 1
@@ -80,6 +81,7 @@ entities:
     material: linden_tree
     render_flags:
       alpha: true
+      no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true

@@ -817,7 +817,7 @@ entities:
     render_flags:
       render_back: true
     enabled: false
-  - name: Linden tree forest - base
+  - name: Linden tree forest - part 1
     type: model
     model: quad
     xtype: billboard
@@ -828,6 +828,7 @@ entities:
     material: linden_tree
     render_flags:
       alpha: true
+      no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
@@ -842,7 +843,7 @@ entities:
         z_step: 20
       enabled: true
     enabled: true
-  - name: Linden tree forest - rotated
+  - name: Linden tree forest - part 2
     type: model
     model: quad
     xtype: billboard
@@ -854,6 +855,7 @@ entities:
     material: linden_tree
     render_flags:
       alpha: true
+      no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true

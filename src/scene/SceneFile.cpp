@@ -736,6 +736,12 @@ void SceneFile::assignFlags(
         }
     }
     {
+        const auto& e = data.renderFlags.find("no_frustum");
+        if (e != data.renderFlags.end()) {
+            flags.noFrustum = e->second;
+        }
+    }
+    {
         const auto& e = data.renderFlags.find("no_shadow");
         if (e != data.renderFlags.end()) {
             flags.noShadow = e->second;
