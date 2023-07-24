@@ -173,10 +173,10 @@ void NodeDraw::drawNodes(
         m_gbuffer.bindTexture(ctx);
         m_oitbuffer.bindTexture(ctx);
 
-        m_blendOitProgram->bind(ctx.m_state);
+        m_emissionProgram->bind(ctx.m_state);
         m_quad.draw(ctx);
 
-        m_emissionProgram->bind(ctx.m_state);
+        m_blendOitProgram->bind(ctx.m_state);
         m_quad.draw(ctx);
 
         m_fogProgram->bind(ctx.m_state);
