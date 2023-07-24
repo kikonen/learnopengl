@@ -45,6 +45,8 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
+const vec3 UP = vec3(0, 1, 0);
+
 #include fn_calculate_clipping.glsl
 
 void main() {
@@ -60,8 +62,11 @@ void main() {
 
   vec4 worldPos;
   vec3 normal;
+#ifdef USE_TBN
+  vec3 tangent;
+#endif
 
-  if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
+  if ((entity.flags & ENTITY_BILLBOARD_BIT) != 0) {
     // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
     // - "ogl" approach
     vec3 entityPos = vec3(modelMatrix[3]);
@@ -69,14 +74,20 @@ void main() {
 
     worldPos = vec4(entityPos
                     + u_viewRight * a_pos.x * entityScale.x
-                    + u_viewUp * a_pos.y * entityScale.y,
+                    + UP * a_pos.y * entityScale.y,
                     1.0);
 
     normal = -u_viewFront;
+#ifdef USE_TBN
+    tangent = u_viewRight;
+#endif
   } else {
     worldPos = modelMatrix * vec4(a_pos, 1.0);
 
     normal = normalize(normalMatrix * a_normal);
+#ifdef USE_TBN
+    tangent = normalize(normalMatrix * a_tangent);
+#endif
   }
 
   gl_Position = u_projectedMatrix * worldPos;
@@ -101,13 +112,7 @@ void main() {
 #ifdef USE_TBN
   if (u_materials[materialIndex].normalMapTex >= 0 || u_materials[materialIndex].heightMapTex >= 0) {
     const vec3 N = normal;
-
-    vec3 T;
-    if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
-      T = u_viewRight;
-    } else {
-      T = normalize(normalMatrix * a_tangent);
-    }
+    vec3 T = tangent;
 
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping

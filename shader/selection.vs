@@ -42,6 +42,8 @@ const mat4 SCALE_MATRIX = mat4(SCALE, 0, 0, 0,
 
 SET_FLOAT_PRECISION;
 
+const vec3 UP = vec3(0, 1, 0);
+
 #include fn_calculate_clipping.glsl
 
 void main() {
@@ -68,7 +70,7 @@ void main() {
                        0, 0,     0, 1);
   }
 
-  if ((entity.flags & ENTITY_BILLBOARD_BIT) == ENTITY_BILLBOARD_BIT) {
+  if ((entity.flags & ENTITY_BILLBOARD_BIT) != 0) {
     // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
     // - "ogl" approach
     vec3 entityPos = vec3(modelMatrix[3]);
@@ -78,7 +80,7 @@ void main() {
 
     worldPos = vec4(entityPos
                     + u_viewRight * a_pos.x * entityScale.x
-                    + u_viewUp * a_pos.y * entityScale.y,
+                    + UP * a_pos.y * entityScale.y,
                     1.0);
   } else {
     worldPos = modelMatrix * scaleMatrix * pos;
