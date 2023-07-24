@@ -117,20 +117,19 @@ void NodeDraw::drawNodes(
         ctx.m_state.setDepthMask(oldDepthMask);
     }
 
-    // pass 1.3 - blend OIT
-    //if (false)
-    {
-    }
-
-    // pass 2 - light
-    //if (false)
+    // pass 2 => targetBuffer
     {
         targetBuffer->bind(ctx);
         targetBuffer->clear(ctx, clearMask, { 0.f , 0.f, 0.f, 0.f });
 
-        m_deferredProgram->bind(ctx.m_state);
         m_gbuffer.bindTexture(ctx);
         m_oitbuffer.bindTexture(ctx);
+    }
+
+    // pass 2.1 - light
+    //if (false)
+    {
+        m_deferredProgram->bind(ctx.m_state);
         m_plainQuad.draw(ctx);
     }
 
@@ -155,7 +154,6 @@ void NodeDraw::drawNodes(
     // => separate light calculations
     //if (false)
     {
-        targetBuffer->bind(ctx);
         drawBlendedImpl(
             ctx,
             [&typeSelector](const MeshType* type) { return !type->m_flags.blendOIT && typeSelector(type); },
@@ -166,14 +164,9 @@ void NodeDraw::drawNodes(
     // pass 3 - blend screenspace effects
     if (ctx.m_allowBlend)
     {
-        targetBuffer->bind(ctx);
-
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
         ctx.m_state.setEnabled(GL_BLEND, true);
         ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
-
-        m_gbuffer.bindTexture(ctx);
-        m_oitbuffer.bindTexture(ctx);
 
         m_emissionProgram->bind(ctx.m_state);
         m_plainQuad.draw(ctx);
