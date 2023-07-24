@@ -690,7 +690,10 @@ entities:
     program: g_tex
     pos: [-1024, 150, -1024]
     scale: 5.0
-    material: basic
+    material: sea_floor
+    force_material: true
+    material_modifier:
+      ke: [0, 0.2, 0, 1.0]
     light:
       type: point
       linear: 0.014

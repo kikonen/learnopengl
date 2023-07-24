@@ -288,7 +288,7 @@ const MaterialSSBO Material::toSSBO() const
 
     return {
         kd,
-        glm::vec4(0),
+        ke,
 
         glm::vec4(ks, ns),
 
