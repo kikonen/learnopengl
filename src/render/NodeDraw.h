@@ -72,8 +72,8 @@ private:
     void drawTextureQuad(const RenderContext& ctx);
 
 private:
-    GBuffer m_gbuffer;
-    OITBuffer m_oitbuffer;
+    GBuffer m_gBuffer;
+    OITBuffer m_oitBuffer;
 
     PlainQuad m_plainQuad;
     TextureQuad m_textureQuad;

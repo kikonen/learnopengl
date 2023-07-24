@@ -18,8 +18,8 @@ void NodeDraw::prepare(
     const Assets& assets,
     Registry* registry)
 {
-    m_gbuffer.prepare(assets);
-    m_oitbuffer.prepare(assets, &m_gbuffer);
+    m_gBuffer.prepare(assets);
+    m_oitBuffer.prepare(assets, &m_gBuffer);
 
     m_plainQuad.prepare();
     m_textureQuad.prepare();
@@ -42,8 +42,8 @@ void NodeDraw::prepare(
 
 void NodeDraw::updateView(const RenderContext& ctx)
 {
-    m_gbuffer.updateView(ctx);
-    m_oitbuffer.updateView(ctx);
+    m_gBuffer.updateView(ctx);
+    m_oitBuffer.updateView(ctx);
 }
 
 void NodeDraw::clear(
@@ -70,8 +70,8 @@ void NodeDraw::drawNodes(
     // => nodes supporting G-buffer
     //if (false)
     {
-        m_gbuffer.bind(ctx);
-        m_gbuffer.m_buffer->clearAll();
+        m_gBuffer.bind(ctx);
+        m_gBuffer.m_buffer->clearAll();
 
         // NOTE KI no blend in G-buffer
         auto oldAllowBlend = ctx.setAllowBlend(false);
@@ -89,10 +89,10 @@ void NodeDraw::drawNodes(
     // pass 1.2 - draw OIT
     //if (false)
     {
-        m_oitbuffer.bind(ctx);
+        m_oitBuffer.bind(ctx);
 
-        m_oitbuffer.m_buffer->clearAttachment(0);
-        m_oitbuffer.m_buffer->clearAttachment(1);
+        m_oitBuffer.m_buffer->clearAttachment(0);
+        m_oitBuffer.m_buffer->clearAttachment(1);
 
         // NOTE KI do NOT modify depth with blend
         auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
@@ -122,8 +122,8 @@ void NodeDraw::drawNodes(
         targetBuffer->bind(ctx);
         targetBuffer->clear(ctx, clearMask, { 0.f , 0.f, 0.f, 0.f });
 
-        m_gbuffer.bindTexture(ctx);
-        m_oitbuffer.bindTexture(ctx);
+        m_gBuffer.bindTexture(ctx);
+        m_oitBuffer.bindTexture(ctx);
     }
 
     // pass 2.1 - light
@@ -140,7 +140,7 @@ void NodeDraw::drawNodes(
     {
         // NOTE KI *wrong* blit
         // TODO KI broken depth blit
-        m_gbuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
+        m_gBuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
 
         drawNodesImpl(
             ctx,
@@ -194,8 +194,8 @@ void NodeDraw::drawDebug(
     constexpr float SZ1 = 0.25f;
     //constexpr float SZ2 = 0.5f;
 
-    for (int i = 0; i < m_oitbuffer.m_buffer->getDrawBufferCount(); i++) {
-        m_oitbuffer.m_buffer->blit(
+    for (int i = 0; i < m_oitBuffer.m_buffer->getDrawBufferCount(); i++) {
+        m_oitBuffer.m_buffer->blit(
             targetBuffer,
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0 + i,
@@ -203,8 +203,8 @@ void NodeDraw::drawDebug(
             { -1.f, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
     }
 
-    for (int i = 0; i < m_gbuffer.m_buffer->getDrawBufferCount(); i++) {
-        m_gbuffer.m_buffer->blit(
+    for (int i = 0; i < m_gBuffer.m_buffer->getDrawBufferCount(); i++) {
+        m_gBuffer.m_buffer->blit(
             targetBuffer,
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0 + i,
