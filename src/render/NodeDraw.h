@@ -6,6 +6,7 @@
 
 #include "GBuffer.h"
 #include "OITBuffer.h"
+#include "EffectBuffer.h"
 #include "PlainQuad.h"
 #include "TextureQuad.h"
 
@@ -74,6 +75,7 @@ private:
 private:
     GBuffer m_gBuffer;
     OITBuffer m_oitBuffer;
+    EffectBuffer m_effectBuffer;
 
     PlainQuad m_plainQuad;
     TextureQuad m_textureQuad;

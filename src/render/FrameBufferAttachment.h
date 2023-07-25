@@ -73,6 +73,9 @@ struct FrameBufferAttachment {
     // G buffer: normal
     static FrameBufferAttachment getGBufferNormal(GLenum attachment);
 
+    // Effect buffer: diffuse
+    static FrameBufferAttachment getEffectTexture(GLenum attachment);
+
     static FrameBufferAttachment getRBODepthStencil();
     static FrameBufferAttachment getRBODepth();
 

@@ -99,6 +99,10 @@ constexpr int UNIT_G_DEPTH = 55;
 constexpr int UNIT_OIT_ACCUMULATOR = 56;
 constexpr int UNIT_OIT_REVEAL = 57;
 
+constexpr int UNIT_EFFECT_ALBEDO = 58;
+constexpr int UNIT_EFFECT_BRIGHT = 59;
+constexpr int UNIT_EFFECT_WORK = 60;
+
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
 constexpr int UNIT_WATER_NOISE = 64;
 constexpr int UNIT_WATER_REFLECTION = 65;

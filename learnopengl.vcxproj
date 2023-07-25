@@ -183,6 +183,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\render\EffectBuffer.cpp" />
     <ClCompile Include="src\asset\Frustum.cpp" />
     <ClCompile Include="src\asset\Plane.cpp" />
     <ClCompile Include="src\event\Event.cpp" />
@@ -409,6 +410,7 @@
     <ClInclude Include="src\controller\VolumeController.h" />
     <ClInclude Include="src\ki\uuid.h" />
     <ClInclude Include="src\model\Group.h" />
+    <ClInclude Include="src\render\EffectBuffer.h" />
     <ClInclude Include="src\render\GBuffer.h" />
     <ClInclude Include="src\render\NodeDraw.h" />
     <ClInclude Include="src\render\OITBuffer.h" />

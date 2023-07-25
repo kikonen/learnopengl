@@ -20,6 +20,7 @@ void NodeDraw::prepare(
 {
     m_gBuffer.prepare(assets);
     m_oitBuffer.prepare(assets, &m_gBuffer);
+    m_effectBuffer.prepare(assets, &m_gBuffer);
 
     m_plainQuad.prepare();
     m_textureQuad.prepare();
@@ -44,6 +45,7 @@ void NodeDraw::updateView(const RenderContext& ctx)
 {
     m_gBuffer.updateView(ctx);
     m_oitBuffer.updateView(ctx);
+    m_effectBuffer.updateView(ctx);
 }
 
 void NodeDraw::clear(
@@ -117,10 +119,10 @@ void NodeDraw::drawNodes(
         ctx.m_state.setDepthMask(oldDepthMask);
     }
 
-    // pass 2 => targetBuffer
+    // pass 2 => effectBuffer
     {
-        targetBuffer->bind(ctx);
-        targetBuffer->clear(ctx, clearMask, { 0.f , 0.f, 0.f, 0.f });
+        m_effectBuffer.bind(ctx);
+        m_effectBuffer.m_buffer->clearAttachment(0);
 
         m_gBuffer.bindTexture(ctx);
         m_oitBuffer.bindTexture(ctx);
@@ -129,8 +131,10 @@ void NodeDraw::drawNodes(
     // pass 2.1 - light
     //if (false)
     {
+        ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
         m_deferredProgram->bind(ctx.m_state);
         m_plainQuad.draw(ctx);
+        ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
     }
 
     // pass 3 - non G-buffer nodes
@@ -138,10 +142,6 @@ void NodeDraw::drawNodes(
     // => separate light calculations
     //if (false)
     {
-        // NOTE KI *wrong* blit
-        // TODO KI broken depth blit
-        m_gBuffer.m_buffer->blit(targetBuffer, GL_DEPTH_BUFFER_BIT, { -1.f, 1.f }, { 2.f, 2.f });
-
         drawNodesImpl(
             ctx,
             [&typeSelector](const MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
@@ -181,8 +181,30 @@ void NodeDraw::drawNodes(
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
     }
 
-    // pass 5 - debug info
-    drawDebug(ctx, targetBuffer);
+    // pass 5 - blit to target
+    {
+        targetBuffer->bind(ctx);
+        targetBuffer->clear(ctx, clearMask | GL_COLOR_BUFFER_BIT, { 0.f , 0.f, 0.f, 0.f });
+
+        // NOTE KI *wrong* blit
+        // TODO KI broken depth blit
+        m_gBuffer.m_buffer->blit(
+            targetBuffer,
+            GL_DEPTH_BUFFER_BIT,
+            { -1.f, 1.f },
+            { 2.f, 2.f });
+
+        m_effectBuffer.m_buffer->blit(
+            targetBuffer,
+            GL_COLOR_BUFFER_BIT,
+            GL_COLOR_ATTACHMENT0,
+            GL_COLOR_ATTACHMENT0,
+            { -1.f, 1.f },
+            { 2.f, 2.f });
+
+        // pass 5 - debug info
+        drawDebug(ctx, targetBuffer);
+    }
 }
 
 void NodeDraw::drawDebug(
@@ -201,6 +223,15 @@ void NodeDraw::drawDebug(
             GL_COLOR_ATTACHMENT0 + i,
             GL_COLOR_ATTACHMENT0,
             { -1.f, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
+    }
+
+    for (int i = 0; i < m_effectBuffer.m_buffer->getDrawBufferCount(); i++) {
+        m_effectBuffer.m_buffer->blit(
+            targetBuffer,
+            GL_COLOR_BUFFER_BIT,
+            GL_COLOR_ATTACHMENT0 + i,
+            GL_COLOR_ATTACHMENT0,
+            { -1.f, -1 + 2 * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
     }
 
     for (int i = 0; i < m_gBuffer.m_buffer->getDrawBufferCount(); i++) {

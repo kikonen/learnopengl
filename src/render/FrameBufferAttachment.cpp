@@ -149,6 +149,18 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
     return spec;
 }
 
+// Effect buffer: diffuse.rgba
+FrameBufferAttachment FrameBufferAttachment::getEffectTexture(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::texture;
+    spec.internalFormat = GL_RGBA8;
+    spec.attachment = attachment;
+    spec.useDrawBuffer = true;
+
+    return spec;
+}
+
 FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthTexture()
 {
     FrameBufferAttachment spec;
