@@ -42,7 +42,8 @@ public:
         FrameBuffer* target,
         GLbitfield mask,
         const glm::vec2& pos,
-        const glm::vec2& size);
+        const glm::vec2& size,
+        GLenum filter);
 
     // TODO KI does NOT support blit for depth only color
     void blit(
@@ -51,7 +52,8 @@ public:
         GLenum sourceColorAttachment,
         GLenum targetColorAttachment,
         const glm::vec2& pos,
-        const glm::vec2& size);
+        const glm::vec2& size,
+        GLenum filter);
 
     void clear(
         const RenderContext& ctx,

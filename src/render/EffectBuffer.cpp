@@ -44,9 +44,10 @@ void EffectBuffer::updateView(const RenderContext& ctx)
                 //// dst - combine
                 //FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT3),
 
-                // NOTE KI *SHARE* depth with gbuffer
+                // NOTE KI sharing depth buffer with gbuffer IS NOT VALID
+                // => reading and "writing" same depth buffer in shader is undefined operation
                 // NOTE KI depth needed since there may be "non gbuffer" render steps
-                FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
+                FrameBufferAttachment::getRBODepth(),
             }
             });
 

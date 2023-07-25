@@ -127,9 +127,19 @@ void NodeDraw::drawNodes(
     //if (false)
     {
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+
         m_deferredProgram->bind(ctx.m_state);
         m_plainQuad.draw(ctx);
+
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+
+        // NOTE KI make depth available for "non gbuffer node" rendering
+        m_gBuffer.m_buffer->blit(
+            m_effectBuffer.m_primary.get(),
+            GL_DEPTH_BUFFER_BIT,
+            { -1.f, 1.f },
+            { 2.f, 2.f },
+            GL_NEAREST);
     }
 
     // pass 3 - non G-buffer nodes
@@ -201,15 +211,14 @@ void NodeDraw::drawNodes(
     {
         targetBuffer->bind(ctx);
 
-        // NOTE KI *CANNOT* blit depth buffer
-        // => WOULD be needed for some stencil highlight effects
-        //if ((copyMask & GL_DEPTH_BUFFER_BIT) != 0) {
-        //    m_gBuffer.m_buffer->blit(
-        //        targetBuffer,
-        //        GL_DEPTH_BUFFER_BIT,
-        //        { -1.f, 1.f },
-        //        { 2.f, 2.f });
-        //}
+        if ((copyMask & GL_DEPTH_BUFFER_BIT) != 0) {
+            m_gBuffer.m_buffer->blit(
+                targetBuffer,
+                GL_DEPTH_BUFFER_BIT,
+                { -1.f, 1.f },
+                { 2.f, 2.f },
+                GL_NEAREST);
+        }
 
         if ((copyMask & GL_COLOR_BUFFER_BIT) != 0) {
             m_effectBuffer.m_primary->blit(
@@ -218,7 +227,8 @@ void NodeDraw::drawNodes(
                 GL_COLOR_ATTACHMENT0,
                 GL_COLOR_ATTACHMENT0,
                 { -1.f, 1.f },
-                { 2.f, 2.f });
+                { 2.f, 2.f },
+                GL_LINEAR);
         }
 
         // pass 5 - debug info
@@ -242,7 +252,8 @@ void NodeDraw::drawDebug(
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0 + i,
             GL_COLOR_ATTACHMENT0,
-            { -1.f, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
+            { -1.f, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
+            GL_NEAREST);
     }
     count += m_oitBuffer.m_buffer->getDrawBufferCount();
 
@@ -252,7 +263,8 @@ void NodeDraw::drawDebug(
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0 + i,
             GL_COLOR_ATTACHMENT0,
-            { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
+            { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
+            GL_NEAREST);
     }
     count += m_oitBuffer.m_buffer->getDrawBufferCount();
 
@@ -263,7 +275,8 @@ void NodeDraw::drawDebug(
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0,
             GL_COLOR_ATTACHMENT0,
-            { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
+            { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
+            GL_NEAREST);
     }
     count += m_effectBuffer.m_buffers.size();
 
@@ -273,7 +286,8 @@ void NodeDraw::drawDebug(
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0 + i,
             GL_COLOR_ATTACHMENT0,
-            { 1 - SZ1, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
+            { 1 - SZ1, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
+            GL_NEAREST);
     }
 }
 

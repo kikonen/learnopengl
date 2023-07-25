@@ -12,6 +12,7 @@
 
 #include "asset/MatricesUBO.h"
 #include "asset/DataUBO.h"
+#include "asset/BufferInfoUBO.h"
 #include "asset/ClipPlaneUBO.h"
 #include "asset/LightUBO.h"
 #include "asset/TextureUBO.h"
@@ -320,15 +321,14 @@ void Program::validateProgram() const {
 int Program::initProgram() {
     KI_INFO_OUT(fmt::format("[PROGRAM - {}]", m_key));
 
-#ifdef _DEBUG
     // NOTE KI set UBOs only once for program
     setupUBO("Matrices", UBO_MATRICES, sizeof(MatricesUBO));
     setupUBO("Data", UBO_DATA, sizeof(DataUBO));
+    setupUBO("BufferInfo", UBO_BUFFER_INFO, sizeof(BufferInfoUBO));
     setupUBO("Lights", UBO_LIGHTS, sizeof(LightsUBO));
     //setupUBO("Materials", UBO_MATERIALS, sizeof(MaterialsUBO));
     setupUBO("ClipPlanes", UBO_CLIP_PLANES, sizeof(ClipPlanesUBO));
     setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
-#endif
 
     m_sources.clear();
 

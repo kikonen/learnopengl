@@ -229,9 +229,11 @@ void FrameBuffer::blit(
     FrameBuffer* target,
     GLbitfield mask,
     const glm::vec2& pos,
-    const glm::vec2& size)
+    const glm::vec2& size,
+    GLenum filter)
 {
-    blit(target, mask, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT0, pos, size);
+    // NOTE KI GL_COLOR_ATTACHMENT0 values irrelevant if just GL_DEPTH_BUFFER_BIT
+    blit(target, mask, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT0, pos, size, filter);
 }
 
 // mask = GL_COLOR_BUFFER_BIT,
@@ -241,7 +243,8 @@ void FrameBuffer::blit(
     GLenum sourceColorAttachment,
     GLenum targetColorAttachment,
     const glm::vec2& pos,
-    const glm::vec2& size)
+    const glm::vec2& size,
+    GLenum filter)
 {
     const float srcW = m_spec.width;
     const float srcH = m_spec.height;
@@ -281,7 +284,7 @@ void FrameBuffer::blit(
         d1.x,
         d1.y,
         mask,
-        GL_NEAREST);
+        filter);
 }
 
 void FrameBuffer::clear(

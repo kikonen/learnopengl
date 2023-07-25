@@ -31,11 +31,11 @@ SET_FLOAT_PRECISION;
 
 const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT] =
   vec4[MAX_SHADOW_MAP_COUNT](
-          vec4(0.1, 0.0, 0.0, 0.0),
-          vec4(0.0, 0.1, 0.0, 0.0),
-          vec4(0.0, 0.0, 0.1, 0.0),
-          vec4(0.1, 0.0, 0.1, 0.0),
-          vec4(0.1, 0.1, 0.0, 0.0)
+          vec4(0.2, 0.0, 0.0, 0.0),
+          vec4(0.0, 0.2, 0.0, 0.0),
+          vec4(0.0, 0.0, 0.5, 0.0),
+          vec4(0.2, 0.0, 0.2, 0.0),
+          vec4(0.2, 0.2, 0.0, 0.0)
           );
 
 void main()
