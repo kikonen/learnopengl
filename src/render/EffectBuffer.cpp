@@ -45,6 +45,7 @@ void EffectBuffer::updateView(const RenderContext& ctx)
                     //FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT0),
 
                     // NOTE KI *SHARE* depth with gbuffer
+                    // NOTE KI depth needed since there may be "non gbuffer" render steps
                     FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
                 }
             });

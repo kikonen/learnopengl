@@ -32,6 +32,10 @@
 #include "gui/Window.h"
 
 
+namespace {
+    const glm::vec4 BLACK_COLOR{ 0.f };
+}
+
 SampleApp::SampleApp()
 {
 }
@@ -136,7 +140,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
         // make clear color by default black
         // => ensure "sane" start state for each loop
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        ctx.m_state.clearColor(BLACK_COLOR);
 
         if (m_assets.useIMGUI) {
             m_frame->bind(ctx);

@@ -28,18 +28,12 @@ public:
 
     void updateView(const RenderContext& ctx);
 
-    void clear(
-        const RenderContext& ctx,
-        GLbitfield clearMask,
-        const glm::vec4& clearColor);
-
     void drawNodes(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
         const std::function<bool(const MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
-        GLbitfield clearMask,
-        const glm::vec4& clearColor);
+        GLbitfield copyMask);
 
     void drawDebug(
         const RenderContext& ctx,
@@ -68,9 +62,6 @@ private:
         const RenderContext& ctx,
         const std::function<bool(const MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector);
-
-    void drawPlainQuad(const RenderContext& ctx);
-    void drawTextureQuad(const RenderContext& ctx);
 
 private:
     GBuffer m_gBuffer;

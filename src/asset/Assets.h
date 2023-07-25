@@ -92,8 +92,7 @@ public:
 
     bool rasterizerDiscard;
 
-    bool debugClearColor;
-    int clearColor;
+    bool useDebugColor;
 
     bool frustumEnabled;
     bool frustumCPU;

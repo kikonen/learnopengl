@@ -17,7 +17,6 @@ public:
     ~DynamicCubeMap();
 
     void prepare(
-        const FrameBufferAttachment* depthAttachment,
         const bool clear,
         const glm::vec4& clearColor);
 

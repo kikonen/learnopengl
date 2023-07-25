@@ -76,8 +76,7 @@ Assets::Assets()
     showCubeMapCenter = false;
     showTagged = false;
 
-    debugClearColor = false;
-    clearColor = false;
+    useDebugColor = false;
 
     frustumEnabled = true;
     frustumCPU = false;

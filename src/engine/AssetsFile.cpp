@@ -192,11 +192,8 @@ void AssetsFile::loadAssets(
         else if (k == "node_render_frame_step") {
             data.nodeRenderFrameStep = readInt(v);
         }
-        else if (k == "debug_clear_color") {
-            data.debugClearColor = readBool(v);
-        }
-        else if (k == "clear_color") {
-            data.clearColor = readBool(v);
+        else if (k == "use_debug_color") {
+            data.useDebugColor = readBool(v);
         }
         else if (k == "frustum_enabled") {
             data.frustumEnabled = readBool(v);

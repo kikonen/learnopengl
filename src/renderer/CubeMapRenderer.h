@@ -27,15 +27,13 @@ public:
 private:
     void clearCubeMap(
         const RenderContext& ctx,
-        DynamicCubeMap& cube,
-        const glm::vec4& color,
-        bool debug);
+        DynamicCubeMap& cube);
 
     void drawNodes(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
         const Node* centerNode,
-        const glm::vec4& clearColor);
+        const glm::vec4& debugColor);
 
     Node* findCenter(
         const RenderContext& ctx);
@@ -54,9 +52,6 @@ private:
 
     std::unique_ptr<DynamicCubeMap> m_prev;
     std::unique_ptr<DynamicCubeMap> m_curr;
-
-    // NOTE KI shared depth for prev & curr
-    std::unique_ptr<FrameBuffer> m_depthBuffer{ nullptr };
 
     std::vector<Camera> m_cameras;
 

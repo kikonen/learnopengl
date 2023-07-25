@@ -98,26 +98,12 @@ void CubeMapRenderer::prepare(
     int scaledSize = assets.bufferScale * size;
 
     {
-        FrameBufferSpecification spec = {
-            scaledSize, scaledSize,
-            {
-                FrameBufferAttachment::getRBODepth(),
-            }
-        };
-
-        m_depthBuffer = std::make_unique<FrameBuffer>("cube_depth", spec);
-        m_depthBuffer->prepare(true);
-    }
-
-    {
         m_curr = std::make_unique<DynamicCubeMap>(scaledSize);
         m_curr->prepare(
-            m_depthBuffer->getDepthAttachment(),
             false, { 0, 0, 1.f, 1.f });
 
         m_prev = std::make_unique<DynamicCubeMap>(scaledSize);
         m_prev->prepare(
-            m_depthBuffer->getDepthAttachment(),
             false,
             { 0, 1.f, 0, 1.f });
     }
@@ -142,8 +128,8 @@ bool CubeMapRenderer::render(
     parentCtx.m_batch->flush(parentCtx);
 
     if (!m_cleared) {
-        clearCubeMap(parentCtx, *m_prev.get(), { 0, 0, 0, 0 }, false);
-        clearCubeMap(parentCtx, *m_curr.get(), { 0, 0, 0, 0 }, false);
+        clearCubeMap(parentCtx, *m_prev.get());
+        clearCubeMap(parentCtx, *m_curr.get());
         m_cleared = true;
     }
 
@@ -190,6 +176,8 @@ bool CubeMapRenderer::render(
         //std::cout << "update: " << m_updateFace << "\n";
     }
 
+    clearCubeMap(parentCtx, *m_curr.get());
+
     for (unsigned int face = fromFace; face < fromFace + updateCount; face++) {
         //glFramebufferTexture2D(
         //    GL_FRAMEBUFFER,
@@ -198,7 +186,7 @@ bool CubeMapRenderer::render(
         //    m_curr->m_cubeMap.m_textureID,
         //    0);
 
-        glm::vec4 clearColor{ DEBUG_COLOR[face] };
+        glm::vec4 debugColor{ DEBUG_COLOR[face] };
 
         // centerNode->getVolume()->getRadius();
 
@@ -222,7 +210,7 @@ bool CubeMapRenderer::render(
 
         auto targetBuffer = m_curr->asFrameBuffer(face);
         //targetBuffer.clear(ctx, clearColor);
-        drawNodes(localCtx, &targetBuffer, centerNode, clearColor);
+        drawNodes(localCtx, &targetBuffer, centerNode, debugColor);
     }
 
     if (full)
@@ -244,21 +232,23 @@ bool CubeMapRenderer::render(
 
 void CubeMapRenderer::clearCubeMap(
     const RenderContext& ctx,
-    DynamicCubeMap& cube,
-    const glm::vec4& color,
-    bool debug)
+    DynamicCubeMap& cube)
 {
     cube.bind(ctx);
 
+    glm::vec4 clearColor{ 0.f };
+
     for (int face = 0; face < 6; face++) {
         glFramebufferTexture2D(
-            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cube.m_cubeMap.m_textureID, 0);
+            GL_FRAMEBUFFER,
+            GL_COLOR_ATTACHMENT0,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
+            cube.m_cubeMap.m_textureID,
+            0);
 
-        glm::vec4 c = color;
-        if (debug) c = DEBUG_COLOR[face];
-        glClearColor(c.r, c.g, c.b, c.a);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        ctx.m_state.clearColor(clearColor);
+
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     cube.unbind(ctx);
@@ -268,7 +258,7 @@ void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer,
     const Node* current,
-    const glm::vec4& clearColor)
+    const glm::vec4& debugColor)
 {
     ctx.m_nodeDraw->drawNodes(
         ctx,
@@ -277,9 +267,7 @@ void CubeMapRenderer::drawNodes(
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
         [&current](const Node* node) { return node != current; },
-        // NOTE KI only color & depth used
-        GL_DEPTH_BUFFER_BIT,
-        clearColor);
+        GL_COLOR_BUFFER_BIT);
 }
 
 Node* CubeMapRenderer::findCenter(const RenderContext& ctx)

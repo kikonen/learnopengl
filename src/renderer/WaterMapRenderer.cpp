@@ -55,7 +55,6 @@ void WaterMapRenderer::prepare(
             scaledSize, scaledSize,
             {
                 FrameBufferAttachment::getTextureRGB(),
-                FrameBufferAttachment::getRBODepth(),
             }
         };
 
@@ -70,9 +69,6 @@ void WaterMapRenderer::prepare(
             scaledSize, scaledSize,
             {
                 FrameBufferAttachment::getTextureRGB(),
-                // NOTE KI *SHARE* depth with reflection
-                // => saves some GPU memory
-                FrameBufferAttachment::getShared(m_reflectionBuffer->getDepthAttachment()),
             }
         };
 
@@ -223,7 +219,8 @@ void WaterMapRenderer::drawNodes(
     Node* current,
     bool reflect)
 {
-    const glm::vec4 clearColor(0.9f, 0.3f, 0.3f, 0.0f);
+    const glm::vec4 debugColor(0.9f, 0.3f, 0.3f, 0.0f);
+    targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
 
     // NOTE KI flush before touching clip distance
     ctx.m_batch->flush(ctx);
@@ -240,9 +237,7 @@ void WaterMapRenderer::drawNodes(
                     (reflect ? !type->m_flags.noReflect : !type->m_flags.noRefract);
             },
             [&current](const Node* node) { return node != current; },
-            // NOTE KI only color & depth used
-            GL_DEPTH_BUFFER_BIT,
-            clearColor);
+            GL_COLOR_BUFFER_BIT);
     }
 
     ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);

@@ -95,12 +95,14 @@ void GLState::bindTexture(
     }
 }
 
-void GLState::bindFrameBuffer(GLuint fbo, bool force) noexcept
+bool GLState::bindFrameBuffer(GLuint fbo, bool force) noexcept
 {
     if (m_fbo != fbo || force) {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         m_fbo = fbo;
+        return true;
     }
+    return false;
 }
 
 GLBlendMode GLState::setBlendMode(const GLBlendMode& mode)
@@ -149,3 +151,12 @@ GLenum GLState::setDepthMask(const GLenum mask)
 
     return old;
 }
+
+void GLState::clearColor(const glm::vec4& clearColor)
+{
+    if (m_clearColor != clearColor) {
+        m_clearColor = clearColor;
+        glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    }
+}
+

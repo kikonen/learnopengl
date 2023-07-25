@@ -48,25 +48,12 @@ void NodeDraw::updateView(const RenderContext& ctx)
     m_effectBuffer.updateView(ctx);
 }
 
-void NodeDraw::clear(
-    const RenderContext& ctx,
-    GLbitfield clearMask,
-    const glm::vec4& clearColor)
-{
-    //m_gbuffer.bind(ctx);
-    //m_gbuffer.m_buffer->clear(ctx, clearMask, clearColor);
-
-    //m_oitbuffer.bind(ctx);
-    //m_oitbuffer.m_buffer->clear(ctx, clearMask, clearColor);
-}
-
 void NodeDraw::drawNodes(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer,
     const std::function<bool(const MeshType*)>& typeSelector,
     const std::function<bool(const Node*)>& nodeSelector,
-    GLbitfield clearMask,
-    const glm::vec4& clearColor)
+    GLbitfield copyMask)
 {
     // pass 1.1 - draw geometry
     // => nodes supporting G-buffer
@@ -181,26 +168,29 @@ void NodeDraw::drawNodes(
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
     }
 
-    // pass 5 - blit to target
+    // pass 5 - render to target
     {
         targetBuffer->bind(ctx);
-        targetBuffer->clear(ctx, clearMask | GL_COLOR_BUFFER_BIT, { 0.f , 0.f, 0.f, 0.f });
 
-        // NOTE KI *wrong* blit
-        // TODO KI broken depth blit
-        m_gBuffer.m_buffer->blit(
-            targetBuffer,
-            GL_DEPTH_BUFFER_BIT,
-            { -1.f, 1.f },
-            { 2.f, 2.f });
+        // NOTE KI *CANNOT* blit depth buffer
+        // => WOULD be needed for some stencil highlight effects
+        //if ((copyMask & GL_DEPTH_BUFFER_BIT) != 0) {
+        //    m_gBuffer.m_buffer->blit(
+        //        targetBuffer,
+        //        GL_DEPTH_BUFFER_BIT,
+        //        { -1.f, 1.f },
+        //        { 2.f, 2.f });
+        //}
 
-        m_effectBuffer.m_buffer->blit(
-            targetBuffer,
-            GL_COLOR_BUFFER_BIT,
-            GL_COLOR_ATTACHMENT0,
-            GL_COLOR_ATTACHMENT0,
-            { -1.f, 1.f },
-            { 2.f, 2.f });
+        if ((copyMask & GL_COLOR_BUFFER_BIT) != 0) {
+            m_effectBuffer.m_buffer->blit(
+                targetBuffer,
+                GL_COLOR_BUFFER_BIT,
+                GL_COLOR_ATTACHMENT0,
+                GL_COLOR_ATTACHMENT0,
+                { -1.f, 1.f },
+                { 2.f, 2.f });
+        }
 
         // pass 5 - debug info
         drawDebug(ctx, targetBuffer);

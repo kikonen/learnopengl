@@ -45,9 +45,9 @@ void NodeRenderer::render(
     m_selectedCount = ctx.m_assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
 
     {
-        const glm::vec4 clearColor{ 0.0f, 0.0f, 1.0f, 0.0f };
+        const glm::vec4 debugColor{ 0.0f, 0.0f, 1.0f, 0.0f };
         targetBuffer->bind(ctx);
-        targetBuffer->clear(ctx, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, clearColor);
+        targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, debugColor);
 
         renderStencil(ctx, targetBuffer);
         {
@@ -57,8 +57,7 @@ void NodeRenderer::render(
                 [](const MeshType* type) { return true; },
                 [](const Node* node) { return true; },
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
-                GL_DEPTH_BUFFER_BIT,
-                clearColor);
+                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         }
         renderHighlight(ctx, targetBuffer);
     }

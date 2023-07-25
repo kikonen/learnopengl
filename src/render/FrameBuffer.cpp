@@ -12,6 +12,11 @@
 #include "render/RenderData.h"
 
 
+namespace {
+    const glm::vec4 BLACK_COLOR{ 0.f };
+}
+
+
 FrameBuffer::FrameBuffer(
     const std::string& name,
     const FrameBufferSpecification& spec)
@@ -191,10 +196,11 @@ void FrameBuffer::bind(const RenderContext& ctx)
         throw std::runtime_error{ fmt::format("BIND_ERROR: Batch was NOT flushed: FBO={}", str()) };
     }
 
-    ctx.m_state.bindFrameBuffer(m_fbo, m_forceBind);
-    glViewport(0, 0, m_spec.width, m_spec.height);
+    if (ctx.m_state.bindFrameBuffer(m_fbo, m_forceBind)) {
+        glViewport(0, 0, m_spec.width, m_spec.height);
 
-    ctx.m_renderData->updateBufferInfo(m_bufferInfo);
+        ctx.m_renderData->updateBufferInfo(m_bufferInfo);
+    }
 }
 
 void FrameBuffer::unbind(const RenderContext& ctx)
@@ -281,23 +287,39 @@ void FrameBuffer::blit(
 void FrameBuffer::clear(
     const RenderContext& ctx,
     GLbitfield clearMask,
-    const glm::vec4& clearColor)
+    const glm::vec4& debugColor)
 {
-    // NOTE KI clear for current draw buffer buffer (main/mirror/etc.)
-    if (ctx.m_assets.clearColor) {
-        if (ctx.m_assets.debugClearColor) {
-            glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    const bool hasAttachments = !m_spec.attachments.empty();
+
+    if ((clearMask & GL_COLOR_BUFFER_BIT) != 0) {
+        if (ctx.m_assets.useDebugColor) {
+            ctx.m_state.clearColor(debugColor);
         }
-        clearMask |= GL_COLOR_BUFFER_BIT;
+        else {
+            ctx.m_state.clearColor(BLACK_COLOR);
+        }
     }
-    if (!m_hasDepth) {
-        clearMask &= ~GL_DEPTH_BUFFER_BIT;
+
+    // NOTE KI if no attachments cannot know
+    if (hasAttachments) {
+        if (!m_hasDepth) {
+            clearMask &= ~GL_DEPTH_BUFFER_BIT;
+        }
+        if (!m_hasStencil) {
+            clearMask &= ~GL_STENCIL_BUFFER_BIT;
+        }
     }
-    if (!m_hasStencil) {
-        clearMask &= ~GL_STENCIL_BUFFER_BIT;
-    }
+
     if (clearMask != 0) {
-        glClear(clearMask);
+        if (hasAttachments) {
+            for (const auto& att : m_spec.attachments) {
+                att.clearWithMask(m_fbo, clearMask);
+            }
+        }
+        else {
+            // NOTE KI *FAILS* if buffer is not bound
+            glClear(clearMask);
+        }
     }
 }
 

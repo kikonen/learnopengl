@@ -57,8 +57,7 @@ assets:
 
   rasterizer_discard: false
 
-  debug_clear_color: true
-  clear_color: true
+  use_debug_color: true
 
   frustum_enabled: true
   frustum_cpu: true

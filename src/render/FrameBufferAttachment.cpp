@@ -5,6 +5,9 @@
 namespace {
 }
 
+// NOTE KI *bindless* clear
+// i.e. "glClear" *requires* bind
+// => less changes of breaking state
 void FrameBufferAttachment::clearBuffer(int fbo) const
 {
     switch (clearType) {
@@ -24,11 +27,9 @@ void FrameBufferAttachment::clearBuffer(int fbo) const
         }
         break;
     case ClearType::DEPTH:
-        //glClear(GL_DEPTH_BUFFER_BIT);
         glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], clearColor[1]);
         break;
     case ClearType::STENCIL:
-        //glClear(GL_STENCIL_BUFFER_BIT);
         glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], clearColor[1]);
         break;
     case ClearType::DEPTH_STENCIL:
@@ -37,11 +38,19 @@ void FrameBufferAttachment::clearBuffer(int fbo) const
     }
 }
 
+void FrameBufferAttachment::clearWithMask(int fbo, GLbitfield mask) const
+{
+    if ((clearMask & mask) != 0) {
+        clearBuffer(fbo);
+    }
+}
+
 FrameBufferAttachment FrameBufferAttachment::getShared(FrameBufferAttachment* shared)
 {
     FrameBufferAttachment spec{ *shared };
     spec.type = FrameBufferAttachmentType::shared;
     spec.shared = shared;
+    // NOTE KI no clearMask on shared; cannot clear as part as shared
 
     return spec;
 }
@@ -53,6 +62,7 @@ FrameBufferAttachment FrameBufferAttachment::getTextureRGBA(GLenum attachment)
     spec.internalFormat = GL_RGBA8;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
 
     return spec;
 }
@@ -64,6 +74,7 @@ FrameBufferAttachment FrameBufferAttachment::getTextureRGB(GLenum attachment)
     spec.internalFormat = GL_RGB8;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
 
     return spec;
 }
@@ -75,6 +86,7 @@ FrameBufferAttachment FrameBufferAttachment::getObjectId()
     spec.internalFormat = GL_RGBA8;
     spec.attachment = GL_COLOR_ATTACHMENT0;
     spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
 
     return spec;
 }
@@ -87,6 +99,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferAlbedo(GLenum attachment)
     spec.internalFormat = GL_RGBA8;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
 
     return spec;
 }
@@ -99,6 +112,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferSpecular(GLenum attachmen
     spec.internalFormat = GL_RGBA8;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
 
     return spec;
 }
@@ -111,6 +125,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferEmission(GLenum attachmen
     spec.internalFormat = GL_RGB8;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
 
     return spec;
 }
@@ -124,6 +139,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferPosition(GLenum attachmen
     spec.internalFormat = GL_RGB32F;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
 
     return spec;
 }
@@ -145,6 +161,7 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferNormal(GLenum attachment)
     spec.internalFormat = GL_RGB16F;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
 
     return spec;
 }
@@ -157,6 +174,7 @@ FrameBufferAttachment FrameBufferAttachment::getEffectTexture(GLenum attachment)
     spec.internalFormat = GL_RGBA8;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
 
     return spec;
 }
@@ -178,6 +196,8 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
     spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
     spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
     spec.clearType = ClearType::DEPTH;
+
+    spec.clearMask = GL_DEPTH_BUFFER_BIT;
 
     return spec;
 }
@@ -206,6 +226,8 @@ FrameBufferAttachment FrameBufferAttachment::getShadow()
     spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
     spec.clearType = ClearType::DEPTH;
 
+    spec.clearMask = GL_DEPTH_BUFFER_BIT;
+
     return spec;
 }
 
@@ -220,6 +242,8 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepthStencil()
     // NOTE KI (depth, clear, _, _)
     spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
 
+    spec.clearMask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+
     return spec;
 }
 
@@ -233,6 +257,8 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepth()
 
     // NOTE KI (depth, clear, _, _)
     spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
+
+    spec.clearMask = GL_DEPTH_BUFFER_BIT;
 
     return spec;
 }
@@ -250,6 +276,8 @@ FrameBufferAttachment FrameBufferAttachment::getOITAccumulatorTexture(GLenum att
     spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
     spec.borderColor = { 0.f, 0.f, 0.f, 0.f };
 
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
+
     return spec;
 }
 
@@ -265,6 +293,8 @@ FrameBufferAttachment FrameBufferAttachment::getOITRevealTexture(GLenum attachme
 
     spec.clearColor = { 1.f, 1.f, 1.f, 1.f };
     spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
+
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
 
     return spec;
 }

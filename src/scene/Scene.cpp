@@ -386,16 +386,18 @@ void Scene::drawViewports(const RenderContext& ctx)
     // => Stencil is not supposed to exist here
     // => no need to clear this; ViewPort will do glBlitNamedFramebuffer
     // => *BUT* if glDraw is used instead then clear *IS* needed for depth
-    if (false) {
-        int mask = GL_DEPTH_BUFFER_BIT;
-        if (m_assets.clearColor) {
-            if (m_assets.debugClearColor) {
-                //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-                glClearColor(0.9f, 0.9f, 0.0f, 0.0f);
-            }
-            mask |= GL_COLOR_BUFFER_BIT;
+    //
+    // NOTE KI *CLEAR* buffer
+    // - https://stackoverflow.com/questions/37335281/is-glcleargl-color-buffer-bit-preferred-before-a-whole-frame-buffer-overwritte
+    //
+    //if (false)
+    {
+        glm::vec4 clearColor{ 0.f };
+        if (m_assets.useDebugColor) {
+            clearColor = { 0.9f, 0.9f, 0.0f, 0.0f };
         }
-        glClear(mask);
+        ctx.m_state.clearColor(clearColor);
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     }
 
     if (m_viewportRenderer->isEnabled()) {

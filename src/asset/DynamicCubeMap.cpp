@@ -27,10 +27,14 @@ void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
 void DynamicCubeMap::bind(const RenderContext& ctx)
 {
     // NOTE KI must flush before changing render target
-    ctx.m_batch->flush(ctx);
+    //ctx.m_batch->flush(ctx);
+    if (!ctx.m_batch->isFlushed()) {
+        throw std::runtime_error{ fmt::format("BIND_ERROR: Batch was NOT flushed: FBO={}", m_fbo) };
+    }
 
-    ctx.m_state.bindFrameBuffer(m_fbo, false);
-    glViewport(0, 0, m_size, m_size);
+    if (ctx.m_state.bindFrameBuffer(m_fbo, false)) {
+        glViewport(0, 0, m_size, m_size);
+    }
 }
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)
@@ -38,40 +42,29 @@ void DynamicCubeMap::unbind(const RenderContext& ctx)
 }
 
 void DynamicCubeMap::prepare(
-    const FrameBufferAttachment* depthAttachment,
     const bool clear,
     const glm::vec4& clearColor)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    // TODO KI glNamedFramebufferTexture2DEXT missing (resolved!)
     {
         glCreateFramebuffers(1, &m_fbo);
     }
 
-    {
-        glNamedFramebufferRenderbuffer(
-            m_fbo,
-            depthAttachment->attachment,
-            GL_RENDERBUFFER,
-            depthAttachment->rbo);
-    }
+    //GLenum status = glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER);
+    //if (status != GL_FRAMEBUFFER_COMPLETE) {
+    //    std::string msg = fmt::format(
+    //        "FRAMEBUFFER:: Framebuffer is not complete! status=0x{:x} ({})",
+    //        status, status);
+    //    KI_ERROR(msg);
+    //    throw std::runtime_error{ msg };
+    //}
 
-    GLenum status = glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER);
-    if (status != GL_FRAMEBUFFER_COMPLETE) {
-        std::string msg = fmt::format(
-            "FRAMEBUFFER:: Framebuffer is not complete! status=0x{:x} ({})",
-            status, status);
-        KI_ERROR(msg);
-        throw std::runtime_error{ msg };
-    }
-
-    // NOTE KI clear buffer to avoid showing garbage
-    if (clear) {
-        glClearNamedFramebufferfv(m_fbo, GL_COLOR, 0, glm::value_ptr(clearColor));
-        glClearNamedFramebufferfi(m_fbo, GL_DEPTH_STENCIL, 0, 1.f, 0);
-    }
+    //// NOTE KI clear buffer to avoid showing garbage
+    //if (clear) {
+    //    glClearNamedFramebufferfv(m_fbo, GL_COLOR, 0, glm::value_ptr(clearColor));
+    //}
 
     m_cubeMap.m_size = m_size;
     m_cubeMap.create();

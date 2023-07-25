@@ -35,13 +35,16 @@ public:
         const GLuint textureID,
         bool force) noexcept;
 
-    void bindFrameBuffer(GLuint fbo, bool force) noexcept;
+    // @return true if bind was done
+    bool bindFrameBuffer(GLuint fbo, bool force) noexcept;
 
     GLBlendMode setBlendMode(const GLBlendMode& mode);
     void clearBlendMode();
 
     GLenum setDepthFunc(const GLenum func);
     GLenum setDepthMask(const GLenum mask);
+
+    void clearColor(const glm::vec4& clearColor);
 
 private:
     std::unordered_map<GLenum, bool> m_enabled;
@@ -61,5 +64,7 @@ private:
 
     GLenum m_depthFunc = -1;
     GLenum m_depthMask = -1;
+
+    glm::vec4 m_clearColor;
 };
 

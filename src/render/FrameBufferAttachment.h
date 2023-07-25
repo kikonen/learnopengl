@@ -46,9 +46,12 @@ struct FrameBufferAttachment {
     unsigned int textureID = 0;
     unsigned int rbo = 0;
 
+    GLbitfield clearMask = 0;
+
     FrameBufferAttachment* shared{ nullptr };
 
     void clearBuffer(int fbo) const;
+    void clearWithMask(int fbo, GLbitfield mask) const;
 
     static FrameBufferAttachment getShared(FrameBufferAttachment* shared);
 

@@ -60,7 +60,6 @@ void MirrorMapRenderer::prepare(
             scaledSize, scaledSize,
             {
                 FrameBufferAttachment::getTextureRGB(),
-                FrameBufferAttachment::getRBODepth(),
             }
         };
         m_prev = std::make_unique<FrameBuffer>("mirror_prev", spec);
@@ -73,9 +72,6 @@ void MirrorMapRenderer::prepare(
             scaledSize, scaledSize,
             {
                 FrameBufferAttachment::getTextureRGB(),
-                // NOTE KI *SHARE* depth with prev
-                // => saves some GPU memory
-                FrameBufferAttachment::getShared(m_prev->getDepthAttachment()),
             }
         };
         m_curr = std::make_unique<FrameBuffer>("mirror_curr", spec);
@@ -199,7 +195,8 @@ void MirrorMapRenderer::drawNodes(
     FrameBuffer* targetBuffer,
     Node* current)
 {
-    const glm::vec4 clearColor{ 0.9f, 0.0f, 0.9f, 0.0f };
+    const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
+    targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
 
     //ctx.updateClipPlanesUBO();
     //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
@@ -209,9 +206,7 @@ void MirrorMapRenderer::drawNodes(
             targetBuffer,
             [](const MeshType* type) { return !type->m_flags.noReflect; },
             [&current](const Node* node) { return node != current; },
-            // NOTE KI only color & depth used
-            GL_DEPTH_BUFFER_BIT,
-            clearColor);
+            GL_COLOR_BUFFER_BIT);
     }
     //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
 }
