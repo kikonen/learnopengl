@@ -45,6 +45,7 @@ void main() {
   const int materialIndex = entity.materialIndex;
   const vec4 pos = vec4(a_pos, 1.0);
   const vec4 worldPos = modelMatrix * pos;
+  const vec3 normal = normalize(normalMatrix * a_normal);
 
   vs_out.glp = u_projectedMatrix * worldPos;
   gl_Position = vs_out.glp;
@@ -57,12 +58,12 @@ void main() {
   vs_out.worldPos = worldPos.xyz;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * a_normal;
+  vs_out.normal = normal;
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0) {
-    const vec3 N = normalize(vs_out.normal);
-    vec3 T = normalize((modelMatrix * vec4(a_tangent, 1.0)).xyz);
+    const vec3 N = normal;
+    vec3 T = normalize(normalMatrix * a_tangent);
 
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping

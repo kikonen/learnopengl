@@ -83,7 +83,7 @@ void main() {
     worldPos = modelMatrix * pos;
 
     normal = normalize(normalMatrix * a_normal);
-    tangent = normalize((modelMatrix * vec4(a_tangent, 1.0)).xyz);
+    tangent = normalize(normalMatrix * a_tangent);
   }
 
   const vec3 viewPos = (u_viewMatrix * worldPos).xyz;

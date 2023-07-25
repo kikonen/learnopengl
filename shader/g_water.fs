@@ -42,6 +42,7 @@ SET_FLOAT_PRECISION;
 #include fn_gbuffer_encode.glsl
 
 vec3 estimateWaveNormal(
+  in sampler3D sampler,
   in vec2 tc,
   in float offset,
   in float mapScale,
@@ -49,9 +50,9 @@ vec3 estimateWaveNormal(
 {
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex
-  float h1 = (texture(u_noiseTex, vec3(((tc.s))*mapScale, 0.5, ((tc.t)+offset)*mapScale))).r * hScale;
-  float h2 = (texture(u_noiseTex, vec3(((tc.s)-offset)*mapScale, 0.5, ((tc.t)-offset)*mapScale))).r * hScale;
-  float h3 = (texture(u_noiseTex, vec3(((tc.s)+offset)*mapScale, 0.5, ((tc.t)-offset)*mapScale))).r * hScale;
+  float h1 = (texture(sampler, vec3(((tc.s))*mapScale, 0.5, ((tc.t)+offset)*mapScale))).r * hScale;
+  float h2 = (texture(sampler, vec3(((tc.s)-offset)*mapScale, 0.5, ((tc.t)-offset)*mapScale))).r * hScale;
+  float h3 = (texture(sampler, vec3(((tc.s)+offset)*mapScale, 0.5, ((tc.t)-offset)*mapScale))).r * hScale;
   vec3 v1 = vec3(0, h1, -1);
   vec3 v2 = vec3(-1, h2, 1);
   vec3 v3 = vec3(1, h3, 1);
@@ -91,7 +92,7 @@ void main() {
     }
   }
 
-#ifdef USE_TBN
+#ifdef USE_NORMAL_TEX
   vec3 normal;
   {
     sampler2D sampler = sampler2D(u_texture_handles[material.normalMapTex]);
@@ -111,7 +112,7 @@ void main() {
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex.
   // input parameters are offset for neighbors, and scaling for width and height
-  normal = estimateWaveNormal(texCoord, .0002, 32.0, 16.0);
+  normal = estimateWaveNormal(u_noiseTex, texCoord, .0002, 32.0, 16.0);
 
   // vec2 ndc = (fs_in.glp.xy / fs_in.glp.w) / 2.0 + 0.5;
 
