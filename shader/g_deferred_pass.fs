@@ -53,7 +53,7 @@ void main()
     worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
   }
 
-  const vec3 normal = decodeGNormal(texCoord);
+  #include var_gbuffer_normal.glsl
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
 
