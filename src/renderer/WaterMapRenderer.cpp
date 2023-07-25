@@ -47,36 +47,43 @@ void WaterMapRenderer::prepare(
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
 
-    {
-        int size = assets.waterReflectionSize;
-        int scaledSize = assets.bufferScale * size;
+    for (int i = 0; i < 2; i++) {
+        {
+            int size = assets.waterReflectionSize;
+            int scaledSize = assets.bufferScale * size;
 
-        FrameBufferSpecification spec = {
-            scaledSize, scaledSize,
-            {
-                FrameBufferAttachment::getTextureRGB(),
-            }
-        };
+            FrameBufferSpecification spec = {
+                scaledSize, scaledSize,
+                {
+                    FrameBufferAttachment::getTextureRGB(),
+                }
+            };
 
-        m_reflectionBuffer = std::make_unique<FrameBuffer>("water_reflect", spec);
+            m_reflectionBuffers.push_back(std::make_unique<FrameBuffer>("water_reflect", spec));
+        }
+
+        {
+            int size = assets.waterRefractionSize;
+            int scaledSize = assets.bufferScale * size;
+
+            FrameBufferSpecification spec = {
+                scaledSize, scaledSize,
+                {
+                    FrameBufferAttachment::getTextureRGB(),
+                }
+            };
+
+            m_refractionBuffers.push_back(std::make_unique<FrameBuffer>("water_refract", spec));
+        }
     }
 
-    {
-        int size = assets.waterRefractionSize;
-        int scaledSize = assets.bufferScale * size;
-
-        FrameBufferSpecification spec = {
-            scaledSize, scaledSize,
-            {
-                FrameBufferAttachment::getTextureRGB(),
-            }
-        };
-
-        m_refractionBuffer = std::make_unique<FrameBuffer>("water_refract", spec);
+    for (auto& buf : m_reflectionBuffers) {
+        buf->prepare(true);
     }
 
-    m_reflectionBuffer->prepare(true);
-    m_refractionBuffer->prepare(true);
+    for (auto& buf : m_refractionBuffers) {
+        buf->prepare(true);
+    }
 
     glm::vec3 origo(0);
     for (int i = 0; i < 2; i++) {
@@ -93,10 +100,10 @@ void WaterMapRenderer::prepare(
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
         false,
-        m_reflectionBuffer->m_spec.attachments[0].textureID,
+        m_reflectionBuffers[0]->m_spec.attachments[0].textureID,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
-    m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffer.get());
+    m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
 
     m_refractionDebugViewport = std::make_shared<Viewport>(
         "WaterRefract",
@@ -104,10 +111,10 @@ void WaterMapRenderer::prepare(
         glm::vec3(0, 0, 0),
         glm::vec2(0.5f, 0.5f),
         false,
-        m_refractionBuffer->m_spec.attachments[0].textureID,
+        m_refractionBuffers[0]->m_spec.attachments[0].textureID,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
-    m_refractionDebugViewport->setSourceFrameBuffer(m_refractionBuffer.get());
+    m_refractionDebugViewport->setSourceFrameBuffer(m_refractionBuffers[0].get());
 
     m_reflectionDebugViewport->prepare(assets);
     m_refractionDebugViewport->prepare(assets);
@@ -117,8 +124,12 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 {
     if (!m_rendered) return;
 
-    m_reflectionBuffer->bindTexture(ctx, 0, UNIT_WATER_REFLECTION);
-    m_refractionBuffer->bindTexture(ctx, 0, UNIT_WATER_REFRACTION);
+    auto& refractionBuffer = m_refractionBuffers[m_prevIndex];
+    auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
+
+    reflectionBuffer->bindTexture(ctx, 0, UNIT_WATER_REFLECTION);
+    refractionBuffer->bindTexture(ctx, 0, UNIT_WATER_REFRACTION);
+
     if (m_noiseTextureID > 0) {
         ctx.m_state.bindTexture(UNIT_WATER_NOISE, m_noiseTextureID, false);
     }
@@ -132,6 +143,18 @@ bool WaterMapRenderer::render(
     auto closest = findClosest(parentCtx);
     setClosest(closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
+
+    if (!m_cleared) {
+        for (auto& buf : m_reflectionBuffers) {
+            buf->clearAll();
+        }
+
+        for (auto& buf : m_refractionBuffers) {
+            buf->clearAll();
+        }
+
+        m_cleared = true;
+    }
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
@@ -148,6 +171,8 @@ bool WaterMapRenderer::render(
     // https://prideout.net/clip-planes
     // reflection map
     {
+        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
+
         glm::vec3 cameraPos = parentCameraPos;
         cameraPos.y -= sdist * 2;
 
@@ -162,7 +187,7 @@ bool WaterMapRenderer::render(
 
         RenderContext localCtx(
             "WATER_REFLECT", &parentCtx, &camera,
-            m_reflectionBuffer->m_spec.width, m_reflectionBuffer->m_spec.height);
+            reflectionBuffer->m_spec.width, reflectionBuffer->m_spec.height);
 
         localCtx.copyShadowFrom(parentCtx);
 
@@ -174,11 +199,16 @@ bool WaterMapRenderer::render(
         localCtx.updateDataUBO();
         localCtx.updateClipPlanesUBO();
 
-        drawNodes(localCtx, m_reflectionBuffer.get(), closest, true);
+        drawNodes(localCtx, reflectionBuffer.get(), closest, true);
+
+        m_reflectionDebugViewport->setTextureId(reflectionBuffer->m_spec.attachments[0].textureID);
+        m_reflectionDebugViewport->setSourceFrameBuffer(reflectionBuffer.get());
     }
 
     // refraction map
     {
+        auto& refractionBuffer = m_refractionBuffers[m_currIndex];
+
         const auto& cameraPos = parentCameraPos;
         const auto& cameraFront = parentCameraFront;
 
@@ -189,7 +219,7 @@ bool WaterMapRenderer::render(
 
         RenderContext localCtx(
             "WATER_REFRACT", &parentCtx, &camera,
-            m_refractionBuffer->m_spec.width, m_refractionBuffer->m_spec.height);
+            refractionBuffer->m_spec.width, refractionBuffer->m_spec.height);
 
         localCtx.copyShadowFrom(parentCtx);
 
@@ -201,12 +231,18 @@ bool WaterMapRenderer::render(
         localCtx.updateDataUBO();
         localCtx.updateClipPlanesUBO();
 
-        drawNodes(localCtx, m_refractionBuffer.get(), closest, false);
+        drawNodes(localCtx, refractionBuffer.get(), closest, false);
+
+        m_refractionDebugViewport->setTextureId(refractionBuffer->m_spec.attachments[0].textureID);
+        m_refractionDebugViewport->setSourceFrameBuffer(refractionBuffer.get());
     }
 
     parentCtx.updateMatricesUBO();
     parentCtx.updateDataUBO();
     parentCtx.updateClipPlanesUBO();
+
+    m_prevIndex = m_currIndex;
+    m_currIndex = (m_currIndex + 1) % 2;
 
     m_rendered = true;
 

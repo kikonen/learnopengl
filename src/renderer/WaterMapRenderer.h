@@ -45,8 +45,12 @@ private:
 
     std::vector<Camera> m_cameras;
 
-    std::unique_ptr<FrameBuffer> m_reflectionBuffer{ nullptr };
-    std::unique_ptr<FrameBuffer> m_refractionBuffer{ nullptr };
+    bool m_cleared{ false };
+    int m_currIndex{ 0 };
+    int m_prevIndex{ 1 };
+
+    std::vector<std::unique_ptr<FrameBuffer>> m_reflectionBuffers;
+    std::vector<std::unique_ptr<FrameBuffer>> m_refractionBuffers;
 
     unsigned int m_noiseTextureID{ 0 };
 
