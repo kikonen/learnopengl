@@ -339,6 +339,9 @@ void AssetsFile::loadAssets(
                 reportUnknown("viewport_effect", k, v);
             }
         }
+        else if (k == "effect_bloom_exposure") {
+            data.effectBloomExposure = readFloat(v);
+        }
         else if (k == "compute_groups") {
             data.computeGroups = readUVec3(v);
         }

@@ -15,6 +15,8 @@ constexpr int UNIFORM_DRAW_PARAMETERS_INDEX = 6;
 constexpr int UNIFORM_STENCIL_MODE = 7;
 constexpr int UNIFORM_SHADOW_MAP_INDEX = 8;
 
+constexpr int UNIFORM_EFFECT_BLOOM_ITERATION = 9;
+
 // NOTE KI subroutine uniform locations overlap other uniforms
 constexpr int SUBROUTINE_EFFECT = 0;
 

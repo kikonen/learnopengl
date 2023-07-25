@@ -107,6 +107,8 @@ public:
 
     std::unique_ptr<uniform::UInt> u_drawParametersIndex;
 
+    std::unique_ptr<uniform::UInt> u_effectBloomIteration;
+
     std::unique_ptr<uniform::Int> u_stencilMode;
 
 private:

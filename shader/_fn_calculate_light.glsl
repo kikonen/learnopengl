@@ -41,9 +41,9 @@ vec4 calculateLight(
       material);
   }
 
-  vec3 shaded = (material.ambient * material.diffuse.xyz) +
+  vec3 shaded = (material.ambient * material.diffuse.rgb) +
     color +
-    material.emission.xyz;
+    material.emission.rgb;
 
   // NOTE KI keep blending from material
   return vec4(shaded, material.diffuse.a);

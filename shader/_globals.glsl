@@ -54,8 +54,8 @@
 #define UNIFORM_FAR_PLANE 4
 #define UNIFORM_DRAW_PARAMETERS_INDEX 6
 #define UNIFORM_STENCIL_MODE 7
-
 #define UNIFORM_SHADOW_MAP_INDEX 8
+#define UNIFORM_EFFECT_BLOOM_ITERATION 9
 
 #define SUBROUTINE_EFFECT 0
 
@@ -68,6 +68,10 @@
 
 #define UNIT_OIT_ACCUMULATOR 56
 #define UNIT_OIT_REVEAL 57
+
+#define UNIT_EFFECT_ALBEDO 58
+#define UNIT_EFFECT_BRIGHT 59
+#define UNIT_EFFECT_WORK 60
 
 #define UNIT_WATER_NOISE 64
 #define UNIT_WATER_REFLECTION 65
@@ -124,3 +128,8 @@
 #define LAYOUT_OIT_SAMPLERS\
  layout(binding = UNIT_OIT_ACCUMULATOR) uniform sampler2D oit_accumulator;\
  layout(binding = UNIT_OIT_REVEAL) uniform sampler2D oit_reveal;
+
+#define LAYOUT_EFFECT_SAMPLERS\
+ layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D effect_albedo;\
+ layout(binding = UNIT_EFFECT_BRIGHT) uniform sampler2D effect_bright; \
+ layout(binding = UNIT_EFFECT_WORK) uniform sampler2D effect_work;

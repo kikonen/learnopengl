@@ -139,6 +139,8 @@ int Program::prepare(const Assets& assets)
 
     u_stencilMode = std::make_unique< uniform::Int>("u_stencilMode", UNIFORM_STENCIL_MODE);
 
+    u_effectBloomIteration = std::make_unique< uniform::UInt>("u_effectBloomIteration", UNIFORM_EFFECT_BLOOM_ITERATION);
+
     u_effect->init(this);
 
     m_prepareResult = 0;

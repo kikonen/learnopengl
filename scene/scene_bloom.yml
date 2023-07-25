@@ -1,0 +1,238 @@
+---
+name: Origo
+viewports:
+skybox:
+  program: g_skybox
+  material: skybox
+lights: {}
+cube_maps: {}
+root:
+  type: origo
+entities:
+  - name: Origo
+    type: origo
+    pos: [0, 1, 15]
+    camera:
+      default: true
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: Other
+    model: texture_cube_4
+    program: g_tex
+    pos: [0.0, 2.0, 0.0]
+    rotation: [0, 180, 0]
+    enabled: true
+    repeat:
+      z_count: 20
+      z_step: -10
+  - name: Directional light
+    type: model
+    xxpos: [0, 25, 25]
+    pos: [-25, 25, 0]
+    scale: 2.5
+    model: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    force_material: true
+    material_modifier:
+      kd: [0.8, 0.8, 0.6, 1.0]
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      specular: [0.7, 0.7, 0.7, 1.0]
+      enabled: true
+    enabled: true
+  - name: Linden tree forest - part 1
+    type: model
+    model: quad
+    priority: 1
+    program: g_tex
+    instanced: true
+    pos: [20, 0.0, 0]
+    rotation: [0, 279, 0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      no_frustum: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [5, 5, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 20
+        z_step: -20
+      enabled: true
+    enabled: true
+  - name: Linden tree forest - part 2
+    type: model
+    model: quad
+    priority: 1
+    program: g_tex
+    instanced: true
+    pos: [20, 0.0, 0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      no_frustum: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [5, 5, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 20
+        z_step: -20
+      enabled: true
+    enabled: true
+  - name: Skeleton army - grid
+    type: billboard
+    priority: 1
+    program: g_tex
+    instanced: true
+    pos: [20, 0.0, 20]
+    material: skeleton
+    render_flags:
+      alpha: true
+      physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [1.5, 3, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 10
+        z_step: -10
+      enabled: true
+    enabled: true
+  - name: Skeleton army
+    type: billboard
+    priority: 1
+    program: g_tex
+    pos: [20, 0.0, 50]
+    material: skeleton
+    render_flags:
+      alpha: true
+      physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [1.5, 3, 1]
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+    enabled: true
+  - name: Cube map - mirror_ball
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+    enabled: true
+  - name: Mirror ball
+    model: glass_ball
+    program: g_tex
+    pos: [0, 5, 10]
+    scale: 1
+    material_modifier:
+      reflection: 0.8
+    enabled: true
+  - name: Planet 1
+    model: [planet, planet]
+    program: g_tex
+    pos: [0, 0, 20]
+    scale: 1
+    enabled: true
+  - name: Planet 2
+    model: [planet, planet]
+    program: g_tex
+    pos: [0, 3.5, 30]
+    material_modifier:
+      map_bump: mars_normal.png
+    scale: 1
+    enabled: true
+  - name: Cube map - wood_wall
+    type: origo
+    pos: [35.0, 2.5, 5.0]
+    render_flags:
+      cube_map: true
+    enabled: true
+  - name: Wood wall
+    model: quad
+    material: woodwall
+    program: g_tex
+    pos: [20.0, 2.5, 0.0]
+    scale: 2.5
+    rotation: [0, 270, 0]
+    render_flags:
+      render_back: true
+    repeat:
+      x_count: 1
+      x_step: 1
+    enabled: true
+  - name: wooden floor
+    model: quad
+    xxmodel: woodwall
+    material: wood_floor
+    program: g_tex
+    position: [0, 0, 0]
+    rot: [270, 0, 0]
+    render_flags:
+      render_back: true
+      no_shadow: true
+    scale: [100, 100, 100]
+    enabled: true
+materials:
+  - name: wood_floor
+    ns: 225.000000
+    type: model
+    ka: [0.400000, 0.400000, 0.400000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: wood_1024.png
+    reflection: 0.1
+    tiling: 60
+    texture_spec:
+      wrap: GL_REPEAT
+  - name: woodwall
+    ns: 225.000000
+    type: model
+    ka: [0.500000, 0.500000, 0.500000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: wood_1024.png
+    reflection: 0.4
+  - name: linden_tree
+    type: sprite
+    ns: 0
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
+    map_kd: linden_tree_512.png
+    map_bump: linden_tree_512_normal.png
+  - name: skeleton
+    type: sprite
+    ns: 20
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
+    map_kd: skeleton.png

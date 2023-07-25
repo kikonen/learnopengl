@@ -13,7 +13,8 @@ LAYOUT_G_BUFFER_SAMPLERS;
 layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
 
 
-out vec4 o_fragColor;
+layout (location = 0) out vec4 o_fragColor;
+layout (location = 1) out vec4 o_fragBright;
 
 ////////////////////////////////////////////////////////////
 //
@@ -67,23 +68,37 @@ void main()
     material.diffuse.a = 1.0;
 
     material.specular = texture(g_specular, texCoord);
-    material.emission = vec3(0);
+    material.emission = texture(g_emission, texCoord).xyz;
   }
 
   bool skipLight = material.ambient >= 1.0;
 
   vec4 color;
+  vec3 color2;
+  bool emission = false;
   if (skipLight) {
     color = material.diffuse;
+    color2 = vec3(0.0);
   } else {
     color = calculateLight(
       normal, viewDir, worldPos,
       shadowIndex,
       material);
 
+    vec3 color2 = (material.ambient * material.diffuse.rgb) + material.emission.rgb;
+
+    emission = (material.emission.r + material.emission.g + material.emission.b) > 0.01;
+
     if (u_frustumVisual) {
       color += CASCADE_COLORS[shadowIndex];
     }
+  }
+
+  float brightness = dot(color2, vec3(0.2126, 0.7152, 0.0722));
+  if (emission || brightness > 0.95) {
+    o_fragBright = emission ? vec4(material.emission, 1.0) : vec4(color2, 1.0);
+  } else {
+    o_fragBright = vec4(0.0, 0.0, 0.0, 1.0);
   }
 
   o_fragColor = color;

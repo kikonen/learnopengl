@@ -145,8 +145,11 @@ Assets::Assets()
     cubeMapRenderFrameStart = 1;
     cubeMapRenderFrameStep = 2;
 
+
     viewportEffectEnabled = false;
     viewportEffect = ViewportEffect::none;
+
+    effectBloomExposure = 1.0f;
 
     computeGroups = { 1, 1, 1 };
 

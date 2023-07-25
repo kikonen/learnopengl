@@ -28,8 +28,11 @@ public:
     void bindTexture(const RenderContext& ctx);
     void unbindTexture(const RenderContext& ctx);
 
+    void clear();
+
 public:
-    std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
+    std::unique_ptr<FrameBuffer> m_primary{ nullptr };
+    std::vector<std::unique_ptr<FrameBuffer>> m_buffers;
 
 private:
     GBuffer* m_gBuffer{ nullptr };

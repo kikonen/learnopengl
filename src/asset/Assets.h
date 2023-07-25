@@ -160,8 +160,11 @@ public:
     float cubeMapNearPlane;
     float cubeMapFarPlane;
 
+
     bool viewportEffectEnabled;
     ViewportEffect viewportEffect;
+
+    float effectBloomExposure;
 
     glm::uvec3 computeGroups;
 

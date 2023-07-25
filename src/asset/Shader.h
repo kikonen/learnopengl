@@ -22,6 +22,8 @@ const std::string SHADER_SKYBOX{ "skybox" };
 
 const std::string SHADER_GEOMETRY_PASS{ "g_geometry_pass" };
 const std::string SHADER_DEFERRED_PASS{ "g_deferred_pass" };
+const std::string SHADER_BLOOM_PASS{ "g_bloom_pass" };
+const std::string SHADER_BLEND_BLOOM_PASS{ "g_blend_bloom_pass" };
 const std::string SHADER_EMISSION_PASS{ "g_emission_pass" };
 const std::string SHADER_FOG_PASS{ "g_fog_pass" };
 const std::string SHADER_BLEND_OIT_PASS{ "g_blend_oit_pass" };

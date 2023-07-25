@@ -2,6 +2,7 @@
 
 #include "asset/Program.h"
 #include "asset/Shader.h"
+#include "asset/Uniform.h"
 
 #include "component/Camera.h"
 
@@ -33,6 +34,12 @@ void NodeDraw::prepare(
 
     m_blendOitProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_OIT_PASS);
     m_blendOitProgram->prepare(assets);
+
+    m_bloomProgram = registry->m_programRegistry->getProgram(SHADER_BLOOM_PASS);
+    m_bloomProgram->prepare(assets);
+
+    m_blendBloomProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_BLOOM_PASS);
+    m_blendBloomProgram->prepare(assets);
 
     m_emissionProgram = registry->m_programRegistry->getProgram(SHADER_EMISSION_PASS);
     m_emissionProgram->prepare(assets);
@@ -109,10 +116,11 @@ void NodeDraw::drawNodes(
     // pass 2 => effectBuffer
     {
         m_effectBuffer.bind(ctx);
-        m_effectBuffer.m_buffer->clearAttachment(0);
+        m_effectBuffer.clear();
 
         m_gBuffer.bindTexture(ctx);
         m_oitBuffer.bindTexture(ctx);
+        m_effectBuffer.bindTexture(ctx);
     }
 
     // pass 2.1 - light
@@ -152,11 +160,32 @@ void NodeDraw::drawNodes(
     if (ctx.m_allowBlend)
     {
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+
+        //if (false)
+        {
+            //m_emissionProgram->bind(ctx.m_state);
+            //m_plainQuad.draw(ctx);
+
+            m_bloomProgram->bind(ctx.m_state);
+            m_effectBuffer.m_primary->bindTexture(ctx, 1, UNIT_EFFECT_WORK);
+            for (int i = 0; i < 10; i++) {
+                auto& buf = m_effectBuffer.m_buffers[i % 2];
+                buf->bind(ctx);
+
+                m_bloomProgram->u_effectBloomIteration->set(i);
+
+                m_plainQuad.draw(ctx);
+                buf->bindTexture(ctx, 0, UNIT_EFFECT_WORK);
+            }
+
+            m_effectBuffer.m_primary->bind(ctx);
+
+            m_blendBloomProgram->bind(ctx.m_state);
+            m_plainQuad.draw(ctx);
+        }
+
         ctx.m_state.setEnabled(GL_BLEND, true);
         ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
-
-        m_emissionProgram->bind(ctx.m_state);
-        m_plainQuad.draw(ctx);
 
         m_blendOitProgram->bind(ctx.m_state);
         m_plainQuad.draw(ctx);
@@ -183,7 +212,7 @@ void NodeDraw::drawNodes(
         //}
 
         if ((copyMask & GL_COLOR_BUFFER_BIT) != 0) {
-            m_effectBuffer.m_buffer->blit(
+            m_effectBuffer.m_primary->blit(
                 targetBuffer,
                 GL_COLOR_BUFFER_BIT,
                 GL_COLOR_ATTACHMENT0,
@@ -206,6 +235,7 @@ void NodeDraw::drawDebug(
     constexpr float SZ1 = 0.25f;
     //constexpr float SZ2 = 0.5f;
 
+    int count = 0;
     for (int i = 0; i < m_oitBuffer.m_buffer->getDrawBufferCount(); i++) {
         m_oitBuffer.m_buffer->blit(
             targetBuffer,
@@ -214,15 +244,28 @@ void NodeDraw::drawDebug(
             GL_COLOR_ATTACHMENT0,
             { -1.f, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
     }
+    count += m_oitBuffer.m_buffer->getDrawBufferCount();
 
-    for (int i = 0; i < m_effectBuffer.m_buffer->getDrawBufferCount(); i++) {
-        m_effectBuffer.m_buffer->blit(
+    for (int i = 0; i < m_effectBuffer.m_primary->getDrawBufferCount(); i++) {
+        m_effectBuffer.m_primary->blit(
             targetBuffer,
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0 + i,
             GL_COLOR_ATTACHMENT0,
-            { -1.f, -1 + 2 * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
+            { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
     }
+    count += m_oitBuffer.m_buffer->getDrawBufferCount();
+
+    for (int i = 0; i < m_effectBuffer.m_buffers.size(); i++) {
+        auto& buf = m_effectBuffer.m_buffers[i];
+        buf->blit(
+            targetBuffer,
+            GL_COLOR_BUFFER_BIT,
+            GL_COLOR_ATTACHMENT0,
+            GL_COLOR_ATTACHMENT0,
+            { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 });
+    }
+    count += m_effectBuffer.m_buffers.size();
 
     for (int i = 0; i < m_gBuffer.m_buffer->getDrawBufferCount(); i++) {
         m_gBuffer.m_buffer->blit(

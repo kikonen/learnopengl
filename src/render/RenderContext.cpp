@@ -157,15 +157,16 @@ RenderContext::RenderContext(
         0,
         m_camera->getViewRight(),
         0,
+        assets.fogColor,
         m_resolution,
         assets.renderCubeMap,
         assets.frustumVisual,
-        assets.fogColor,
         assets.fogStart,
         assets.fogEnd,
         assets.fogDensity,
         (float)m_clock.ts,
         // NOTE KI u_shadowPlanes not initialized
+        assets.effectBloomExposure,
         0,
     };
 

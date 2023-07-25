@@ -1,6 +1,6 @@
 assets:
   log_file: log/development.log
-  scene_file: scene/scene_csm.yml
+  scene_file: scene/scene_bloom.yml
 
   glfw_swap_interval: 1
   gl_debug: true
@@ -120,5 +120,7 @@ assets:
 
   viewport_effect_enabled: true
   viewport_effect: none
+
+  effect_bloom_exposure: 1.0
 
   compute_groups: [32, 1, 1]
