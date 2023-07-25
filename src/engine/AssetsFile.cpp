@@ -342,6 +342,9 @@ void AssetsFile::loadAssets(
         else if (k == "effect_bloom_exposure") {
             data.effectBloomExposure = readFloat(v);
         }
+        else if (k == "effect_bloom_iterations") {
+            data.effectBloomIterations = readInt(v);
+        }
         else if (k == "compute_groups") {
             data.computeGroups = readUVec3(v);
         }

@@ -39,7 +39,7 @@ entities:
       no_shadow: true
     force_material: true
     material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
+      kd: [0.8, 0.8, 0.3, 1.0]
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
@@ -230,9 +230,11 @@ materials:
     ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: linden_tree_512.png
     map_bump: linden_tree_512_normal.png
+    xxke: [0.0, 0.01, 0.0, 1.0]
   - name: skeleton
     type: sprite
     ns: 20
     ka: [0.7, 0.7, 0.7, 1.0]
     ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: skeleton.png
+    ke: [0.0, 0.2, 0.0, 1.0]

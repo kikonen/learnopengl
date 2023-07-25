@@ -168,7 +168,7 @@ void NodeDraw::drawNodes(
 
             m_bloomProgram->bind(ctx.m_state);
             m_effectBuffer.m_primary->bindTexture(ctx, 1, UNIT_EFFECT_WORK);
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < ctx.m_assets.effectBloomIterations; i++) {
                 auto& buf = m_effectBuffer.m_buffers[i % 2];
                 buf->bind(ctx);
 

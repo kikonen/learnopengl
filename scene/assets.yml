@@ -122,5 +122,6 @@ assets:
   viewport_effect: none
 
   effect_bloom_exposure: 1.0
+  effect_bloom_iterations: 4
 
   compute_groups: [32, 1, 1]

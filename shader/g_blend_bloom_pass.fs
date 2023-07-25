@@ -26,7 +26,7 @@ void main()
 
   vec3 color = hdrColor;
 
-  if (bloomColor.r + bloomColor.g + bloomColor.b > 0.01) {
+  if (bloomColor.r + bloomColor.g + bloomColor.b > 0) {
     // additive blending
     hdrColor += bloomColor;
 

@@ -150,6 +150,7 @@ Assets::Assets()
     viewportEffect = ViewportEffect::none;
 
     effectBloomExposure = 1.0f;
+    effectBloomIterations = 5;
 
     computeGroups = { 1, 1, 1 };
 

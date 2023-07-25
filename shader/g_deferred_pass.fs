@@ -87,7 +87,7 @@ void main()
 
     vec3 color2 = (material.ambient * material.diffuse.rgb) + material.emission.rgb;
 
-    emission = (material.emission.r + material.emission.g + material.emission.b) > 0.01;
+    emission = (material.emission.r + material.emission.g + material.emission.b) > 0;
 
     if (u_frustumVisual) {
       color += CASCADE_COLORS[shadowIndex];

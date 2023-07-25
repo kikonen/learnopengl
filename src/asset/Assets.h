@@ -165,6 +165,7 @@ public:
     ViewportEffect viewportEffect;
 
     float effectBloomExposure;
+    int effectBloomIterations;
 
     glm::uvec3 computeGroups;
 
