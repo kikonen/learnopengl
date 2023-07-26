@@ -24,6 +24,7 @@ namespace ki {
     const std::string STR_GL_DEBUG_SEVERITY_HIGH{ "HIGH" };
     const std::string STR_GL_DEBUG_SEVERITY_MEDIUM{ "MEDIUM" };
     const std::string STR_GL_DEBUG_SEVERITY_LOW{ "LOW" };
+    const std::string STR_GL_DEBUG_SEVERITY_NOTIFICATION{ "NOTE" };
 
     // https://gist.github.com/liam-middlebrook/c52b069e4be2d87a6d2f
 
@@ -62,6 +63,7 @@ namespace ki {
         case GL_DEBUG_SEVERITY_HIGH: return STR_GL_DEBUG_SEVERITY_HIGH;
         case GL_DEBUG_SEVERITY_MEDIUM: return STR_GL_DEBUG_SEVERITY_MEDIUM;
         case GL_DEBUG_SEVERITY_LOW: return STR_GL_DEBUG_SEVERITY_LOW;
+        case GL_DEBUG_SEVERITY_NOTIFICATION: return STR_GL_DEBUG_SEVERITY_NOTIFICATION;
         };
 
         return fmt::format("0x{:x}", severity);
@@ -85,6 +87,8 @@ namespace ki {
             "OPENGL: {} 0x{:x} ({}) {} {} - {}",
             formatSource(source), id, id, formatType(type), formatSeverity(severity), message);
 
+        int index = 0;// sb.find("Program undefined behavior");
+
         switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH:
             KI_ERROR(sb);
@@ -98,6 +102,11 @@ namespace ki {
         default:
             KI_DEBUG(sb);
         };
+
+        if (index >= 0) {
+            KI_FLUSH();
+            int x = 0;
+        }
     }
 
     void GL::startError()
