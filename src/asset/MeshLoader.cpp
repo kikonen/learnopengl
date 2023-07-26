@@ -19,8 +19,11 @@
 
 
 namespace {
-    const glm::vec2 EMPTY_TEX{ 0, 0 };
-    const glm::vec3 EMPTY_NORMAL{ 0, 0, 0 };
+    const glm::vec2 EMPTY_TEX { 0.f };
+    const glm::vec3 EMPTY_NORMAL { 0.f };
+
+    const glm::vec4 COLOR_BLACK { 0.f };
+    const glm::vec4 COLOR_WHITE { 1.f };
 }
 
 MeshLoader::MeshLoader(
@@ -473,15 +476,20 @@ void MeshLoader::loadMaterials(
             else if (k == "illum") {
                 material->d = stof(v1);
             } else if (k == "map_kd") {
-                material->map_kd = resolveTexturePath(line);
+                material->map_kd = resolveTexturePath(line, 0);
             } else if (k == "map_ke") {
-                material->map_ke = resolveTexturePath(line);
+                material->map_ke = resolveTexturePath(line, 0);
             } else if (k == "map_ks") {
-                material->map_ks = resolveTexturePath(line);
+                material->map_ks = resolveTexturePath(line, 0);
             } else if (k == "map_bump") {
-                material->map_bump = resolveTexturePath(line);
+                int skipCount = 0;
+                if (v1 == "-bm") {
+                    skipCount = 2;
+                    material->map_bump_strength = stof(v2);
+                }
+                material->map_bump = resolveTexturePath(line, skipCount);
             } else if (k == "bump") {
-                material->map_bump = resolveTexturePath(line);
+                material->map_bump = resolveTexturePath(line, 0);
             }
         }
         file.close();
@@ -500,11 +508,14 @@ void MeshLoader::loadMaterials(
         materials.size()));
 }
 
-std::string MeshLoader::resolveTexturePath(const std::string& line)
+std::string MeshLoader::resolveTexturePath(const std::string& line, int skipCount)
 {
     std::string k;
     std::stringstream is2(line);
     is2 >> k;
+    for (int i = 0; i < skipCount; i++) {
+        is2 >> k;
+    }
     std::stringstream tmp;
     tmp << is2.rdbuf();
     std::string path = tmp.str();

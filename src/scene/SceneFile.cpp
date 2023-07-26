@@ -844,9 +844,13 @@ void SceneFile::modifyMaterial(
     if (f.ke) m.ke = mod.ke;
     if (f.map_ke) m.map_ke = mod.map_ke;
     if (f.map_bump) m.map_bump = mod.map_bump;
+    if (f.map_bump_strength) m.map_bump_strength = mod.map_bump_strength;
     if (f.ni) m.ni = mod.ni;
     if (f.d) m.d = mod.d;
     if (f.illum) m.illum = mod.illum;
+
+    if (f.layers) m.layers = mod.layers;
+    if (f.depth) m.depth = mod.depth;
 
     if (f.map_dudv) m.map_dudv = mod. map_dudv;
     if (f.map_height) m.map_height = mod.map_height;
@@ -1575,6 +1579,10 @@ void SceneFile::loadMaterial(
             std::string line = v.as<std::string>();
             material.map_bump = resolveTexturePath(line);
             fields.map_bump = true;
+        }
+        else if (k == "map_bump_strength") {
+            material.map_bump_strength = readFloat(v);
+            fields.map_bump_strength = true;
         }
         else if (k == "bump") {
             std::string line = v.as<std::string>();

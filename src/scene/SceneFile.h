@@ -72,6 +72,7 @@ class SceneFile
         bool ke = false;
         bool map_ke = false;
         bool map_bump = false;
+        bool map_bump_strength = false;
         bool ni = false;
         bool d = false;
         bool illum = false;

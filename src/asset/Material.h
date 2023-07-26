@@ -164,6 +164,7 @@ public:
     // bump map(which by default uses luminance channel of the image)
     // bump lemur_bump.tga
     std::string map_bump;
+    float map_bump_strength{ 1.f };
 
     // A material can also have an optical density for its surface. This is also known as index of refraction.
     float ni = 0.0f;

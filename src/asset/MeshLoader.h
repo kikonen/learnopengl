@@ -85,7 +85,9 @@ private:
         std::vector<Material>& materials,
         const std::string& libraryName);
 
-    std::string resolveTexturePath(const std::string& line);
+    std::string resolveTexturePath(
+        const std::string& line,
+        int skipCount);
 
 private:
     Material m_defaultMaterial;
