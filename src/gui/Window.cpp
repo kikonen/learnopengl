@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "kigl/GLState.h"
+
 #include "engine/Engine.h"
 
 #include "controller/NodeController.h"
@@ -13,8 +15,11 @@
 #include "Input.h"
 
 
-Window::Window(Engine& engine, const Assets& assets)
-    : m_engine(engine), assets(assets)
+Window::Window(
+    Engine& engine,
+    GLState& state,
+    const Assets& assets)
+    : m_engine(engine), m_state(state), m_assets(assets)
 {
     m_width = 800;
     m_height = 600;
@@ -59,19 +64,19 @@ void Window::createGLFWWindow()
     glfwInit();
     KI_INFO("DONE: GLFW INIT");
 
-    if (assets.glDebug) {
+    if (m_assets.glDebug) {
         // NOTE KI MUST be after glfwInit BUT before glfwWindow creat4e
         // https://learnopengl.com/in-practice/debugging
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
     }
 
-    if (assets.glNoError) {
+    if (m_assets.glNoError) {
         // https://www.khronos.org/opengl/wiki/OpenGL_Error#No_error_contexts
         glfwWindowHint(GLFW_CONTEXT_NO_ERROR, GLFW_TRUE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, assets.glsl_version[0]);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, assets.glsl_version[1]);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_assets.glsl_version[0]);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_assets.glsl_version[1]);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
@@ -157,7 +162,7 @@ void Window::processInput(const ki::RenderClock& clock)
 
 void Window::onWindowResize(int width, int height)
 {
-    glViewport(0, 0, width, height);
+    m_state.setViewport({ 0, 0, width, height });
     m_width = width;
     m_height = height;
 }
@@ -169,7 +174,7 @@ void Window::onMouseMove(double xpos, double ypos)
     bool isAlt = m_input->isModifierDown(Modifier::ALT);
     int state = glfwGetMouseButton(m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
-    if ((isAlt || state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+    if ((isAlt || state == GLFW_PRESS) && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         auto* controller = m_engine.m_currentScene->getActiveCameraController();

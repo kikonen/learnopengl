@@ -32,9 +32,8 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
         throw std::runtime_error{ fmt::format("BIND_ERROR: Batch was NOT flushed: FBO={}", m_fbo) };
     }
 
-    if (ctx.m_state.bindFrameBuffer(m_fbo, false)) {
-        glViewport(0, 0, m_size, m_size);
-    }
+    ctx.m_state.bindFrameBuffer(m_fbo, false);
+    ctx.m_state.setViewport({ 0, 0, m_size, m_size });
 }
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)

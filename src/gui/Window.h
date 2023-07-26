@@ -10,13 +10,18 @@
 
 #include "asset/Assets.h"
 
+
 class Input;
 class Engine;
+class GLState;
 
 class Window final
 {
 public:
-    Window(Engine& engine, const Assets& assets);
+    Window(
+        Engine& engine,
+        GLState& state,
+        const Assets& assets);
     ~Window();
 
     bool create();
@@ -39,7 +44,9 @@ private:
     void bindGLFWCallbacks();
 
 public:
-    const Assets& assets;
+    const Assets& m_assets;
+
+    GLState& m_state;
 
     GLFWwindow* m_glfwWindow{ nullptr };
     int m_width = 0;

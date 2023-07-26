@@ -105,6 +105,16 @@ bool GLState::bindFrameBuffer(GLuint fbo, bool force) noexcept
     return false;
 }
 
+bool GLState::setViewport(const glm::vec4& viewport)
+{
+    if (m_viewport != viewport) {
+        m_viewport = viewport;
+        glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+        return true;
+    }
+    return false;
+}
+
 GLBlendMode GLState::setBlendMode(const GLBlendMode& mode)
 {
     GLBlendMode old= m_blendMode;

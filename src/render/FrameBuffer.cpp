@@ -196,9 +196,10 @@ void FrameBuffer::bind(const RenderContext& ctx)
         throw std::runtime_error{ fmt::format("BIND_ERROR: Batch was NOT flushed: FBO={}", str()) };
     }
 
-    if (ctx.m_state.bindFrameBuffer(m_fbo, m_forceBind)) {
-        glViewport(0, 0, m_spec.width, m_spec.height);
+    bool changed = ctx.m_state.bindFrameBuffer(m_fbo, m_forceBind);
+    changed |= ctx.m_state.setViewport({ 0, 0, m_spec.width, m_spec.height });
 
+    if (changed) {
         ctx.m_renderData->updateBufferInfo(m_bufferInfo);
     }
 }

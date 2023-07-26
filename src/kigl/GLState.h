@@ -38,6 +38,8 @@ public:
     // @return true if bind was done
     bool bindFrameBuffer(GLuint fbo, bool force) noexcept;
 
+    bool setViewport(const glm::vec4& viewport);
+
     GLBlendMode setBlendMode(const GLBlendMode& mode);
     void clearBlendMode();
 
@@ -59,6 +61,8 @@ private:
     int m_vaoId = -1;
 
     int m_fbo = -1;
+
+    glm::vec4 m_viewport{ 0.f };
 
     GLBlendMode m_blendMode{ 0, 0, 0, 0, 0 };
 

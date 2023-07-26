@@ -31,7 +31,7 @@ int Engine::init() {
     m_registry = std::make_shared<Registry>(m_assets, m_alive);
     m_asyncLoader = std::make_shared<AsyncLoader>(m_assets, m_alive);
 
-    m_window = std::make_unique<Window>(*this, m_assets);
+    m_window = std::make_unique<Window>(*this, m_state, m_assets);
     return m_window->create() ? 0 : -1;
 }
 
