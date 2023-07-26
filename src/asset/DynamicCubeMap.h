@@ -8,7 +8,7 @@
 #include "render/CubeMapBuffer.h"
 
 class RenderContext;
-class FrameBufferAttachment;
+struct FrameBufferAttachment;
 
 class DynamicCubeMap
 {

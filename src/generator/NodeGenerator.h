@@ -70,7 +70,7 @@ public:
         m_activeCount = count;
     }
 
-    const glm::vec4& calculateVolume();
+    const glm::vec4 calculateVolume();
 
 protected:
     size_t m_poolSize = 0;

@@ -43,7 +43,7 @@ void NodeGenerator::bindBatch(
     batch.addInstanced(ctx, -1, m_activeFirst, m_activeCount);
 }
 
-const glm::vec4& NodeGenerator::calculateVolume()
+const glm::vec4 NodeGenerator::calculateVolume()
 {
     AABB minmax{ true };
 

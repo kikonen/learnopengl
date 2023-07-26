@@ -163,8 +163,8 @@ bool CubeMapRenderer::render(
 
     //m_curr->bind(mainCtx);
 
-    int fromFace = m_curr->m_updateFace;
-    int updateCount = 1;
+    unsigned int fromFace = m_curr->m_updateFace;
+    unsigned int updateCount = 1;
     bool full = true;// fromFace == -1;
 
     if (full) {
