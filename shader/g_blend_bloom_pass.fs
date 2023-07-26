@@ -31,7 +31,8 @@ void main()
     hdrColor += bloomColor;
 
     // tone mapping
-    color = vec3(1.0) - exp(-hdrColor * u_effectBloomExposure);
+    float exposure = u_effectBloomExposure + sin(u_time) * 0.3;
+    color = vec3(1.0) - exp(-hdrColor * exposure);
 
     // also gamma correct while we're at it
     color = pow(color, vec3(1.0 / gamma));
