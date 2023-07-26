@@ -38,6 +38,7 @@ struct FrameBufferAttachment {
 
     glm::vec4 borderColor{ 0.f, 0.f, 0.f, 0.f };
     glm::vec4 clearColor{ 0.f, 0.f, 0.f, 0.f };
+    GLint stencilClear{ 0 };
     ClearType clearType{ ClearType::FLOAT };
 
     bool useMibMap = false;

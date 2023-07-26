@@ -27,13 +27,13 @@ void FrameBufferAttachment::clearBuffer(int fbo) const
         }
         break;
     case ClearType::DEPTH:
-        glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], clearColor[1]);
+        glClearNamedFramebufferfv(fbo, GL_DEPTH, 0, &clearColor[0]);
         break;
     case ClearType::STENCIL:
-        glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], clearColor[1]);
+        glClearNamedFramebufferiv(fbo, GL_STENCIL, 0, &stencilClear);
         break;
     case ClearType::DEPTH_STENCIL:
-        glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], clearColor[1]);
+        glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], stencilClear);
         break;
     }
 }
