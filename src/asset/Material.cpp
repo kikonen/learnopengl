@@ -158,8 +158,8 @@ Material::Material()
 Material::~Material()
 {
     KI_INFO(fmt::format(
-        "MATERIAL: delete - name={}, index={}",
-        m_name, m_registeredIndex));
+        "MATERIAL: delete - ID={}, name={}, index={}",
+        m_objectID, m_name, m_registeredIndex));
 }
 
 void Material::loadTextures(const Assets& assets)
@@ -199,7 +199,7 @@ void Material::loadTexture(
 
     std::string texturePath = getTexturePath(assets, textureName);
 
-    KI_INFO(fmt::format("MATERIAL: name={}, texture={}", m_name, texturePath));
+    KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_objectID, m_name, texturePath));
 
     std::string placeholderPath = assets.placeholderTexture;
     auto future = ImageTexture::getTexture(

@@ -15,7 +15,9 @@ struct Entity {
   vec4 volume;
 
   vec4 worldScale;
+
   int materialIndex;
+  int spriteIndex;
   uint highlightIndex;
 
   uint objectID;

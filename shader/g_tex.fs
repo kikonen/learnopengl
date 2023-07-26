@@ -1,8 +1,10 @@
 #version 460 core
 
 #include struct_material.glsl
+#include struct_sprite.glsl
 
 #include uniform_matrices.glsl
+#include uniform_sprites.glsl
 #include uniform_data.glsl
 #include uniform_materials.glsl
 #include uniform_textures.glsl
@@ -22,6 +24,7 @@ in VS_OUT {
 #endif
 
   flat uint materialIndex;
+  flat uint spriteIndex;
 
 #ifdef USE_TBN
   vec3 tangent;

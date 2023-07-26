@@ -50,6 +50,7 @@ struct EntitySSBO {
     int pad4_1;
 
     GLint u_materialIndex{ 0 }; // 1 * 4 = 4
+    GLint u_spriteIndex{ -1 }; // 1 * 4 = 4
     GLuint u_highlightIndex{ 0 }; // 1 * 4 = 4
 
     GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4
@@ -61,9 +62,9 @@ struct EntitySSBO {
     float u_rangeYmin{ 0.f };
     float u_rangeYmax{ 0.f };
 
-    //int pad2_1;
-    //int pad2_2;
-    //int pad2_3;
+    int pad2_1;
+    int pad2_2;
+    int pad2_3;
 
     // NOTE KI maxScale *CANNOT* be get from modelmatrix if both
     // Scale AND Rotation is applied!

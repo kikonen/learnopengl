@@ -1,0 +1,111 @@
+---
+name: Origo
+viewports:
+skybox:
+  program: g_skybox
+  material: skybox
+lights: {}
+cube_maps: {}
+root:
+  type: origo
+entities:
+  - name: Origo
+    type: origo
+    pos: [0, 1, 15]
+    camera:
+      default: true
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: Object
+    type: billboard
+    priority: 1
+    program: g_tex
+    pos: [0, 0, 0]
+    material: skeleton
+    spritesheet: skeleton
+    render_flags:
+      alpha: true
+      physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [0.8, 1.8, 1]
+    enabled: true
+  - name: Directional light
+    type: origo
+    pos: [-25, 25, 25]
+    model: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    force_material: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      specular: [0.7, 0.7, 0.7, 1.0]
+      enabled: true
+    xenabled: true
+  - name: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+    enabled: true
+  - name: wooden floor
+    model: quad
+    xxmodel: woodwall
+    material: wood_floor
+    program: g_tex
+    position: [0, -1.8, 0]
+    rot: [270, 0, 0]
+    render_flags:
+      render_back: true
+      no_shadow: true
+    scale: [100, 100, 100]
+    enabled: true
+materials:
+  - name: wood_floor
+    ns: 225.000000
+    type: model
+    ka: [0.400000, 0.400000, 0.400000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: wood_1024.png
+    reflection: 0.1
+    tiling: 60
+    texture_spec:
+      wrap: GL_REPEAT
+  - name: skeleton
+    type: sprite
+    ns: 20
+    ka: [0.1, 0.1, 0.1, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
+    map_kd: skeleton/skeleton_front.png
+  - name: skeleton_front
+    type: sprite
+    ns: 20
+    ka: [0.1, 0.1, 0.1, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
+    map_kd: skeleton/skeleton_front.png
+  - name: skeleton_back
+    type: sprite
+    ns: 20
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
+    map_kd: skeleton/skeleton_back.png
+spritesheets:
+  - name: skeleton
+    sprites:
+      - dir: 0
+        map_kd: skeleton/skeleton_front.png
+      - dir: 90
+        map_kd: skeleton/skeleton_right.png
+      - dir: 180
+        map_kd: skeleton/skeleton_back.png
+      - dir: 270
+        map_kd: skeleton/skeleton_left.png
