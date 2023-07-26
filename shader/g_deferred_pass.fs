@@ -29,8 +29,8 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_shadow_index.glsl
 #include fn_gbuffer_decode.glsl
 
-const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT] =
-  vec4[MAX_SHADOW_MAP_COUNT](
+const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT_ABS] =
+  vec4[MAX_SHADOW_MAP_COUNT_ABS](
           vec4(0.2, 0.0, 0.0, 0.0),
           vec4(0.0, 0.2, 0.0, 0.0),
           vec4(0.0, 0.0, 0.5, 0.0),
