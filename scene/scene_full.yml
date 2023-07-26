@@ -19,6 +19,15 @@ entities:
     enabled: true
     script_file: scripts/seq_zero_origo
   - name: ZERO
+    model: ball_volume
+    program: g_tex
+    material: default_ball
+    material_modifier:
+      kd: [0, 0.8, 0]
+    pos: [0.0, 0.0, 0.0]
+    scale: 0.2
+    enabled: true
+  - name: Moving water ball
     parent_id: [auto, zero-origo]
     model: water_ball
     program: g_tex
