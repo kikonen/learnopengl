@@ -45,8 +45,10 @@ void main()
   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
   vec3 worldPos;
   vec3 viewPos;
+  bool skipLight;
   {
     float depth = texture(g_depth, texCoord).x * 2.0 - 1.0;
+    skipLight = depth >= 1.0;
 
     vec4 clip = vec4(texCoord.x * 2.0 - 1.0, texCoord.y * 2.0 - 1.0, depth, 1.0);
     vec4 viewW  = u_invProjectionMatrix * clip;
@@ -71,7 +73,7 @@ void main()
     material.emission = texture(g_emission, texCoord).xyz;
   }
 
-  bool skipLight = material.ambient >= 1.0;
+  //bool skipLight = material.ambient >= 1.0;
 
   vec4 color;
   vec3 color2;
