@@ -43,7 +43,7 @@ assets:
 
   show_normals: false
   show_rear_view: false
-  show_shadow_map_view: true
+  show_shadow_map_view: false
   show_reflection_view: false
   show_refraction_view: false
   show_objectid_view: false
