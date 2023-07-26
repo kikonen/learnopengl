@@ -27,6 +27,9 @@ constexpr unsigned int ENTITY_SKYBOX_BIT = 16;
 // members, according to the previous
 // rules, rounded up to a multiple of the
 // structure alignment."
+// 
+// NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
+//
 #pragma pack(push, 1)
 struct EntitySSBO {
     // NOTE KI must align struct to 16 byte boundary
@@ -43,6 +46,9 @@ struct EntitySSBO {
     // center + radius
     glm::vec4 u_volume{ 0.f }; // 3 * 1 * 4 = 12 => 16
 
+    glm::vec3 u_worldScale{ 0.f };
+    int pad4_1;
+
     GLint u_materialIndex{ 0 }; // 1 * 4 = 4
     GLuint u_highlightIndex{ 0 }; // 1 * 4 = 4
 
@@ -55,9 +61,9 @@ struct EntitySSBO {
     float u_rangeYmin{ 0.f };
     float u_rangeYmax{ 0.f };
 
-    glm::vec3 u_worldScale;
-
-    int pad4_1;
+    int pad2_1;
+    int pad2_2;
+    int pad2_3;
 
     // NOTE KI maxScale *CANNOT* be get from modelmatrix if both
     // Scale AND Rotation is applied!

@@ -167,13 +167,13 @@ void Material::loadTextures(const Assets& assets)
     if (m_loaded) return;
     m_loaded = true;
 
-    loadTexture(assets, DIFFUSE_IDX, map_kd);
-    loadTexture(assets, EMISSION_IDX, map_ke);
-    loadTexture(assets, SPECULAR_IDX, map_ks);
-    loadTexture(assets, NORMAL_MAP_IDX, map_bump);
-    loadTexture(assets, DUDV_MAP_IDX, map_dudv);
-    loadTexture(assets, HEIGHT_MAP_IDX, map_height);
-    loadTexture(assets, NOISE_MAP_IDX, map_noise);
+    loadTexture(assets, MATERIAL_DIFFUSE_IDX, map_kd);
+    loadTexture(assets, MATERIAL_EMISSION_IDX, map_ke);
+    loadTexture(assets, MATERIAL_SPECULAR_IDX, map_ks);
+    loadTexture(assets, MATERIAL_NORMAL_MAP_IDX, map_bump);
+    loadTexture(assets, MATERIAL_DUDV_MAP_IDX, map_dudv);
+    loadTexture(assets, MATERIAL_HEIGHT_MAP_IDX, map_height);
+    loadTexture(assets, MATERIAL_NOISE_MAP_IDX, map_noise);
 }
 
 std::string Material::resolveBaseDir(const Assets& assets)
@@ -245,25 +245,9 @@ const std::string Material::getTexturePath(
     return texturePath;
 }
 
-int Material::getActiveTextureCount() const
-{
-    int texCount = 0;
-    for (auto& tex : m_textures) {
-        if (!tex.texture) continue;
-        texCount++;
-    }
-    return texCount;
-}
-
 bool Material::hasTex(int index) const
 {
     const auto& tex = m_textures[index];
-    return tex.texture != nullptr;
-}
-
-bool Material::hasNormalTex() const
-{
-    const auto& tex = m_textures[NORMAL_MAP_IDX];
     return tex.texture != nullptr;
 }
 
@@ -294,14 +278,14 @@ const MaterialSSBO Material::toSSBO() const
 
         calculateAmbient(ka),
 
-        m_textures[DIFFUSE_IDX].m_texIndex,
-        m_textures[EMISSION_IDX].m_texIndex,
-        m_textures[SPECULAR_IDX].m_texIndex,
-        m_textures[NORMAL_MAP_IDX].m_texIndex,
+        m_textures[MATERIAL_DIFFUSE_IDX].m_texIndex,
+        m_textures[MATERIAL_EMISSION_IDX].m_texIndex,
+        m_textures[MATERIAL_SPECULAR_IDX].m_texIndex,
+        m_textures[MATERIAL_NORMAL_MAP_IDX].m_texIndex,
 
-        m_textures[DUDV_MAP_IDX].m_texIndex,
-        m_textures[HEIGHT_MAP_IDX].m_texIndex,
-        m_textures[NOISE_MAP_IDX].m_texIndex,
+        m_textures[MATERIAL_DUDV_MAP_IDX].m_texIndex,
+        m_textures[MATERIAL_HEIGHT_MAP_IDX].m_texIndex,
+        m_textures[MATERIAL_NOISE_MAP_IDX].m_texIndex,
 
         pattern,
         reflection,

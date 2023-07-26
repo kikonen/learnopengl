@@ -31,5 +31,5 @@ void main() {
   vs_out.materialIndex = materialIndex;
   vs_out.highlightIndex = entity.highlightIndex;
 
-  vs_out.scale = entity.worldScale;
+  vs_out.scale = entity.worldScale.xyz;
 }

@@ -490,12 +490,12 @@ MeshType* SceneFile::createType(
             }
             m.loadTextures(m_assets);
 
-            useDudvTex |= m.hasTex(DUDV_MAP_IDX);
-            useHeightTex |= m.hasTex(HEIGHT_MAP_IDX);
-            useNormalTex |= m.hasTex(NORMAL_MAP_IDX);
+            useDudvTex |= m.hasTex(MATERIAL_DUDV_MAP_IDX);
+            useHeightTex |= m.hasTex(MATERIAL_HEIGHT_MAP_IDX);
+            useNormalTex |= m.hasTex(MATERIAL_NORMAL_MAP_IDX);
             useCubeMap |= 1.0 - m.reflection - m.refraction < 1.0;
             useNormalPattern |= m.pattern > 0;
-            useParallax |= m.hasTex(HEIGHT_MAP_IDX) && m.depth > 0;
+            useParallax |= m.hasTex(MATERIAL_HEIGHT_MAP_IDX) && m.depth > 0;
         });
         useTBN = useNormalTex || useDudvTex || useHeightTex;
 

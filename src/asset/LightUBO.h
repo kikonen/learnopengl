@@ -6,6 +6,7 @@
 
 constexpr unsigned int MAX_LIGHT_COUNT = 128;
 
+// NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 
 // NOTE KI align 16 for UBO struct
 struct DirLightUBO {

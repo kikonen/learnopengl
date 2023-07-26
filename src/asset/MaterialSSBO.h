@@ -17,6 +17,9 @@
 // members, according to the previous
 // rules, rounded up to a multiple of the
 // structure alignment."
+// 
+// NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
+//
 struct MaterialSSBO {
     glm::vec4 diffuse; // 16
     glm::vec4 emission; // 16

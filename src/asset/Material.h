@@ -10,15 +10,6 @@
 #include "MaterialSSBO.h"
 
 
-struct BoundTexture {
-    Texture* texture = nullptr;
-    int m_texIndex = -1;
-
-    bool valid() {
-        return texture;
-    }
-};
-
 enum class BasicMaterial {
     basic,
     gold,
@@ -34,14 +25,14 @@ enum class MaterialType {
     sprite
 };
 
-constexpr int DIFFUSE_IDX = 0;
-constexpr int EMISSION_IDX = 1;
-constexpr int SPECULAR_IDX = 2;
-constexpr int NORMAL_MAP_IDX = 3;
-constexpr int DUDV_MAP_IDX = 4;
-constexpr int HEIGHT_MAP_IDX = 5;
-constexpr int NOISE_MAP_IDX = 6;
-constexpr int MATERIAL_TEXTURE_COUNT = NOISE_MAP_IDX + 1;
+constexpr int MATERIAL_DIFFUSE_IDX = 0;
+constexpr int MATERIAL_EMISSION_IDX = 1;
+constexpr int MATERIAL_SPECULAR_IDX = 2;
+constexpr int MATERIAL_NORMAL_MAP_IDX = 3;
+constexpr int MATERIAL_DUDV_MAP_IDX = 4;
+constexpr int MATERIAL_HEIGHT_MAP_IDX = 5;
+constexpr int MATERIAL_NOISE_MAP_IDX = 6;
+constexpr int MATERIAL_TEXTURE_COUNT = MATERIAL_NOISE_MAP_IDX + 1;
 
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
@@ -64,6 +55,16 @@ map_Kd texture_cube_512.png
 struct Material final
 {
 public:
+    struct BoundTexture {
+        Texture* texture = nullptr;
+        int m_texIndex = -1;
+
+        bool valid() {
+            return texture;
+        }
+    };
+
+public:
     Material();
 
     Material(const Material&) = default;
@@ -75,9 +76,7 @@ public:
 
     void loadTextures(const Assets& assets);
 
-    int getActiveTextureCount() const;
     bool hasTex(int index) const;
-    bool hasNormalTex() const;
 
     void prepare(const Assets& assets);
 

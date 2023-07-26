@@ -70,7 +70,8 @@ void main()
     material.diffuse.a = 1.0;
 
     material.specular = texture(g_specular, texCoord);
-    material.emission = texture(g_emission, texCoord).xyz;
+    material.emission = texture(g_emission, texCoord);
+    material.emission.a = 1.0;
   }
 
   //bool skipLight = material.ambient >= 1.0;
@@ -98,7 +99,7 @@ void main()
 
   float brightness = dot(color2, vec3(0.2126, 0.7152, 0.0722));
   if (emission || brightness > 0.95) {
-    o_fragBright = emission ? vec4(material.emission, 1.0) : vec4(color2, 1.0);
+    o_fragBright = emission ? material.emission : vec4(color2, 1.0);
   } else {
     o_fragBright = vec4(0.0, 0.0, 0.0, 1.0);
   }

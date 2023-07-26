@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-#define KI_FLUSH() Log::flush()
+#define KI_FLUSH() Log::flush();
 
 #define KI_CRITICAL(msg) Log::critical(msg);
 #define KI_ERROR(msg) Log::error(msg);
@@ -12,7 +12,6 @@
 #define KI_INFO(msg) Log::info(msg);
 #define KI_DEBUG(msg) Log::debug(msg);
 #define KI_TRACE(msg) Log::trace(msg);
-#define KI_FLUSH() Log::flush();
 
 #define KI_INFO_OUT(msg) { std::cout << msg << '\n'; Log::info(msg); }
 #define KI_WARN_OUT(msg) { std::cout << msg << '\n'; Log::warn(msg); }

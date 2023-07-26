@@ -6,7 +6,8 @@
 
   if (material.emissionTex >= 0) {
     sampler2D sampler = sampler2D(u_texture_handles[material.emissionTex]);
-    material.emission = texture(sampler, texCoord).xyz;
+    material.emission = texture(sampler, texCoord);
+    material.emission.a = 1.0;
   }
 
   if (material.specularTex >= 0) {

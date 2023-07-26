@@ -67,7 +67,7 @@ public:
         return m_instance.getViewFront();
     }
 
-    inline const glm::vec4& getVolume() const noexcept {
+    inline const glm::vec4 getVolume() const noexcept {
         return m_instance.getVolume();
     }
 
