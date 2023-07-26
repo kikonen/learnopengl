@@ -1,0 +1,74 @@
+---
+name: Origo
+viewports:
+skybox:
+  program: g_skybox
+  material: skybox
+lights: {}
+cube_maps: {}
+root:
+  type: origo
+entities:
+  - name: Origo
+    type: origo
+    pos: [0, 1, 15]
+    camera:
+      default: true
+      enabled: true
+    controller:
+      type: camera
+      enabled: true
+    enabled: true
+  - name: Object
+    model: texture_cube_4
+    program: g_tex
+    pos: [0.0, 0.0, 0.0]
+    rotation: [0, 180, 0]
+    enabled: true
+  - name: Directional light
+    type: origo
+    pos: [-25, 25, 25]
+    model: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    force_material: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      specular: [0.7, 0.7, 0.7, 1.0]
+      enabled: true
+    enabled: true
+  - name: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+    xenabled: true
+  - name: wooden floor
+    model: quad
+    xxmodel: woodwall
+    material: wood_floor
+    program: g_tex
+    position: [0, -3, 0]
+    rot: [270, 0, 0]
+    render_flags:
+      render_back: true
+      no_shadow: true
+    scale: [100, 100, 100]
+    enabled: true
+materials:
+  - name: wood_floor
+    ns: 225.000000
+    type: model
+    ka: [0.400000, 0.400000, 0.400000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: wood_1024.png
+    reflection: 0.1
+    tiling: 60
+    texture_spec:
+      wrap: GL_REPEAT

@@ -563,14 +563,16 @@ entities:
       reflection: 0.05
     enabled: true
   - name: Plasma ball
+    parent_id: [auto, cube-3]
     model: ball_volume
     material: plasma_ball
     force_material: true
     program: ball_effect
     program_definitions:
       effect_plasma: 1
-    pos: [-5.0, 25.0, 5.0]
-    scale: 3
+    #pos: [-5.0, 25.0, 5.0]
+    pos: [0, 0, 0]
+    scale: 2
     render_flags:
       alpha: true
       blend: true
@@ -597,13 +599,18 @@ entities:
     enabled: true
     clones:
       - pos: [-5.0, 20.0, -5.0]
+        id: [auto, cube-1]
       - pos: [5.0, 20.0, -5.0]
+        id: [auto, cube-2]
       - pos: [-5.0, 20.0, 5.0]
+        id: [auto, cube-3]
       - pos: [5.0, 20.0, 5.0]
-  - name: Cube 4
+        id: [auto, cube-4]
+  - name: Wooden matrix Cube
     model: texture_cube_4
     program: g_tex
     pos: [-5.0, 25.0, 5.0]
+    rotation: [0, 180, 0]
     scale: 1
     selected: false
     enabled: true
