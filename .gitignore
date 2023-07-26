@@ -16,7 +16,8 @@ imgui.ini
 
 vcpkg_installed/*
 
-.*autosave.kra
+*-autosave.kra
+*.blend?
 .emacs*
 
 *.orig
