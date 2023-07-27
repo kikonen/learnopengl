@@ -45,7 +45,6 @@ private:
 
     std::vector<Camera> m_cameras;
 
-    bool m_cleared{ false };
     int m_currIndex{ 0 };
     int m_prevIndex{ 1 };
 

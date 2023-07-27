@@ -124,7 +124,7 @@ void WaterMapRenderer::prepare(
 
 void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 {
-    if (!m_rendered) return;
+    //if (!m_rendered) return;
 
     auto& refractionBuffer = m_refractionBuffers[m_prevIndex];
     auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
@@ -145,18 +145,6 @@ bool WaterMapRenderer::render(
     auto closest = findClosest(parentCtx);
     setClosest(closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
-
-    if (!m_cleared) {
-        for (auto& buf : m_reflectionBuffers) {
-            buf->clearAll();
-        }
-
-        for (auto& buf : m_refractionBuffers) {
-            buf->clearAll();
-        }
-
-        m_cleared = true;
-    }
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
