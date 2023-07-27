@@ -132,19 +132,23 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
             ctx.m_state.setEnabled(GL_RASTERIZER_DISCARD, true);
         }
 
-        ctx.m_state.useProgram(0);
-        ctx.m_state.bindVAO(0);
+        m_state.useProgram(0);
+        m_state.bindVAO(0);
 
-        ctx.m_state.setEnabled(GL_PROGRAM_POINT_SIZE, true);
+        m_state.setEnabled(GL_PROGRAM_POINT_SIZE, true);
         glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
 
         // make clear color by default black
         // => ensure "sane" start state for each loop
         ctx.m_state.clearColor(BLACK_COLOR);
 
+        m_state.clearFrameBuffer();
+        m_state.clearViewport();
+
         if (m_assets.useIMGUI) {
             m_frame->bind(ctx);
-        }
+            m_state.clear();
+        } 
 
         scene->updateView(ctx);
         scene->bind(ctx);

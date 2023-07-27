@@ -2,20 +2,46 @@
 
 GLState::GLState()
 {
+    clear();
 }
 
-//void GLState::reload() {
-//}
+void GLState::clear() {
+    for (auto& it : m_enabled) {
+        it.second = -1;
+    }
 
-void GLState::track(GLenum key, bool initial) noexcept
+    m_textureUnits.clear();
+
+    m_cullFace = -1;
+    m_frontFace = -1;
+    m_polygonFrontAndBack = -1;
+
+    m_programId = -1;
+    m_vaoId = -1;
+
+    m_fbo = -1;
+
+    m_viewport = { 0.f, 0.f, 0.f, 0.f };
+
+    m_blendMode = { 0, 0, 0, 0, 0 };
+
+    m_depthFunc = -1;
+    m_depthMask = -1;
+
+    m_clearColor = { 0.f, 0.f, 0.f, 0.f };
+}
+
+
+void GLState::track(GLenum key) noexcept
 {
-    setEnabled(key, initial);
+    m_enabled[key] = -1;
 }
 
 void GLState::setEnabled(GLenum key, bool enabled) noexcept
 {
+    int value = enabled;
     const auto& it = m_enabled.find(key);
-    const bool changed = it == m_enabled.end() || it->second != enabled;
+    const bool changed = it == m_enabled.end() || it->second != value;
     if (!changed) return;
 
     if (enabled) {
@@ -26,7 +52,7 @@ void GLState::setEnabled(GLenum key, bool enabled) noexcept
     }
 
     if (it != m_enabled.end()) {
-        it->second = enabled;
+        it->second = value;
     }
 }
 
@@ -97,7 +123,7 @@ void GLState::bindTexture(
 
 bool GLState::bindFrameBuffer(GLuint fbo, bool force) noexcept
 {
-    if (m_fbo != fbo || force) {
+    if (true || m_fbo != fbo || force) {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         m_fbo = fbo;
         return true;
@@ -105,14 +131,23 @@ bool GLState::bindFrameBuffer(GLuint fbo, bool force) noexcept
     return false;
 }
 
+void GLState::clearFrameBuffer() {
+    m_fbo = -1;
+}
+
 bool GLState::setViewport(const glm::vec4& viewport)
 {
-    if (m_viewport != viewport) {
+    if (true || m_viewport != viewport) {
         m_viewport = viewport;
         glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
         return true;
     }
     return false;
+}
+
+void GLState::clearViewport()
+{
+    m_viewport = { 0.f, 0.f, 0.f, 0.f };
 }
 
 GLBlendMode GLState::setBlendMode(const GLBlendMode& mode)

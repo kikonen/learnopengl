@@ -14,9 +14,9 @@ class GLState final
 public:
     GLState();
 
-    //void reload();
+    void clear();
 
-    void track(GLenum key, bool initial) noexcept;
+    void track(GLenum key) noexcept;
 
     void setEnabled(GLenum key, bool enabled) noexcept;
 
@@ -37,8 +37,10 @@ public:
 
     // @return true if bind was done
     bool bindFrameBuffer(GLuint fbo, bool force) noexcept;
+    void clearFrameBuffer();
 
     bool setViewport(const glm::vec4& viewport);
+    void clearViewport();
 
     GLBlendMode setBlendMode(const GLBlendMode& mode);
     void clearBlendMode();
@@ -49,7 +51,7 @@ public:
     void clearColor(const glm::vec4& clearColor);
 
 private:
-    std::unordered_map<GLenum, bool> m_enabled;
+    std::unordered_map<GLenum, int> m_enabled;
 
     std::unordered_map<GLuint, GLuint> m_textureUnits;
 
@@ -69,6 +71,6 @@ private:
     GLenum m_depthFunc = -1;
     GLenum m_depthMask = -1;
 
-    glm::vec4 m_clearColor;
+    glm::vec4 m_clearColor{ 0.f };
 };
 

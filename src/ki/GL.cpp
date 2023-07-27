@@ -164,18 +164,18 @@ namespace ki {
         }
     }
 
-    void GL::unbindFBO()
-    {
-        GLint drawFboId = 0, readFboId = 0, plainFboId = 0;
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &plainFboId);
-        glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
-        glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
-        KI_DEBUG(fmt::format(
-            "FBO: unbind - plain={}, draw={}, read={}",
-            plainFboId, drawFboId, readFboId));
+    //void GL::unbindFBO()
+    //{
+    //    GLint drawFboId = 0, readFboId = 0, plainFboId = 0;
+    //    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &plainFboId);
+    //    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
+    //    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
+    //    KI_DEBUG(fmt::format(
+    //        "FBO: unbind - plain={}, draw={}, read={}",
+    //        plainFboId, drawFboId, readFboId));
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
+    //    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //}
 
     OpenGLInfo GL::getInfo()
     {

@@ -162,9 +162,11 @@ void Window::processInput(const ki::RenderClock& clock)
 
 void Window::onWindowResize(int width, int height)
 {
-    m_state.setViewport({ 0, 0, width, height });
+    glViewport(0, 0, width, height);
     m_width = width;
     m_height = height;
+
+    m_state.clear();
 }
 
 void Window::onMouseMove(double xpos, double ypos)

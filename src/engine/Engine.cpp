@@ -48,7 +48,7 @@ int Engine::setup() {
         GL_TEXTURE_CUBE_MAP_SEAMLESS,
     };
     for (auto& key : keys) {
-        m_state.track(key, false);
+        m_state.track(key);
     }
 
     m_registry->prepare();
