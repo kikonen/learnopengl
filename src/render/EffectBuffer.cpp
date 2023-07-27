@@ -94,7 +94,7 @@ void EffectBuffer::updateView(const RenderContext& ctx)
         }
     }
 
-    m_width = h;
+    m_width = w;
     m_height = h;
 }
 

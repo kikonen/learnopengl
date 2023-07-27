@@ -48,7 +48,7 @@ void GBuffer::updateView(const RenderContext& ctx)
         unbindTexture(ctx);
     }
 
-    m_width = h;
+    m_width = w;
     m_height = h;
 }
 
