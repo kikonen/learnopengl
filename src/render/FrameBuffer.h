@@ -17,6 +17,10 @@ class RenderContext;
 class FrameBuffer
 {
 public:
+    static const int RESET_DRAW_ALL = -2;
+    static const int RESET_DRAW_ACTIVE = -1;
+
+public:
     FrameBuffer(
         const std::string& name,
         const FrameBufferSpecification& spec);
@@ -27,6 +31,11 @@ public:
 
     virtual void prepare(
         const bool clear);
+
+    // @param activeCount
+    // FrameBuffer::RESET_DRAW_ACTIVE keep current active count
+    // FrameBuffer::RESET_DRAW_ALL reset to default all buffers
+    void resetDrawBuffers(int activeCount);
 
     virtual void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
@@ -83,6 +92,8 @@ public:
 
 protected:
     bool m_prepared = false;
+
+    int m_activeDrawBuffers{ -1 };
     std::vector<GLenum> m_drawBuffers;
 
     BufferInfoUBO m_bufferInfo;

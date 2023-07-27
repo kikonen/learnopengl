@@ -61,6 +61,8 @@ void FrameBuffer::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
+    m_bufferInfo.u_bufferResolution = { m_spec.width, m_spec.height };
+
     {
         glCreateFramebuffers(1, &m_fbo);
         KI_INFO(fmt::format("CREATE: FBO={}", str()));
@@ -169,6 +171,8 @@ void FrameBuffer::prepare(
         }
     }
 
+    resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+
     if (m_drawBuffers.size() > 0) {
         glNamedFramebufferDrawBuffers(m_fbo, m_drawBuffers.size(), m_drawBuffers.data());
     }
@@ -187,6 +191,18 @@ void FrameBuffer::prepare(
         for (auto& att : m_spec.attachments) {
             att.clearBuffer(m_fbo);
         }
+    }
+}
+
+void FrameBuffer::resetDrawBuffers(int activeCount)
+{
+    if (activeCount == FrameBuffer::RESET_DRAW_ACTIVE) activeCount = m_activeDrawBuffers;
+    if (activeCount < 0) activeCount = m_drawBuffers.size();
+    if (activeCount > m_drawBuffers.size()) activeCount = m_drawBuffers.size();
+
+    if (m_activeDrawBuffers != activeCount) {
+        m_activeDrawBuffers = activeCount;
+        glNamedFramebufferDrawBuffers(m_fbo, activeCount, m_drawBuffers.data());
     }
 }
 
@@ -286,6 +302,11 @@ void FrameBuffer::blit(
         d1.y,
         mask,
         filter);
+
+    if (mask & GL_COLOR_BUFFER_BIT) {
+        // NOTE KI MUST reset draw buffer state (keep current active count)
+        target->resetDrawBuffers(FrameBuffer::RESET_DRAW_ACTIVE);
+    }
 }
 
 void FrameBuffer::clear(

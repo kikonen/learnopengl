@@ -62,8 +62,11 @@ void NodeDraw::drawNodes(
     const std::function<bool(const Node*)>& nodeSelector,
     GLbitfield copyMask)
 {
-    m_effectBuffer.clearAll();
+    // https://community.khronos.org/t/selectively-writing-to-buffers/71054
+    m_effectBuffer.m_primary->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
     auto* activeBuffer = m_effectBuffer.m_primary.get();
+
+    m_effectBuffer.clearAll();
 
     // pass 1.1 - draw geometry
     // => nodes supporting G-buffer
@@ -144,6 +147,8 @@ void NodeDraw::drawNodes(
             { -1.f, 1.f },
             { 2.f, 2.f },
             GL_NEAREST);
+
+        m_effectBuffer.m_primary->resetDrawBuffers(1);
     }
 
     // pass 3 - non G-buffer nodes
@@ -175,13 +180,14 @@ void NodeDraw::drawNodes(
     {
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
-        if (false)
+        if (true)
         {
             //m_emissionProgram->bind(ctx.m_state);
             //m_plainQuad.draw(ctx);
 
             m_bloomProgram->bind(ctx.m_state);
             activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
+
             for (int i = 0; i < ctx.m_assets.effectBloomIterations; i++) {
                 auto& buf = m_effectBuffer.m_buffers[i % 2];
                 buf->bind(ctx);
@@ -197,6 +203,19 @@ void NodeDraw::drawNodes(
 
             m_blendBloomProgram->bind(ctx.m_state);
             m_plainQuad.draw(ctx);
+        }
+        else {
+            activeBuffer->blit(
+                m_effectBuffer.m_secondary.get(),
+                GL_COLOR_BUFFER_BIT,
+                GL_COLOR_ATTACHMENT0,
+                GL_COLOR_ATTACHMENT0,
+                { -1.f, 1.f },
+                { 2.f, 2.f },
+                GL_LINEAR);
+
+            activeBuffer = m_effectBuffer.m_secondary.get();
+            activeBuffer->bind(ctx);
         }
 
         ctx.m_state.setEnabled(GL_BLEND, true);
@@ -247,43 +266,52 @@ void NodeDraw::drawDebug(
 {
     if (!(ctx.m_allowDrawDebug && ctx.m_assets.drawDebug)) return;
 
+    m_effectBuffer.m_primary->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+
     constexpr float SZ1 = 0.25f;
     //constexpr float SZ2 = 0.5f;
 
     int count = 0;
+    float padding = 0.f;
     for (int i = 0; i < m_oitBuffer.m_buffer->getDrawBufferCount(); i++) {
         m_oitBuffer.m_buffer->blit(
             targetBuffer,
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0 + i,
             GL_COLOR_ATTACHMENT0,
-            { -1.f, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
+            { -1.f, -1 + padding + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
             GL_NEAREST);
+        padding = 0.f;
     }
     count += m_oitBuffer.m_buffer->getDrawBufferCount();
 
+    padding = 0.01f;
     for (int i = 0; i < m_effectBuffer.m_primary->getDrawBufferCount(); i++) {
         m_effectBuffer.m_primary->blit(
             targetBuffer,
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0 + i,
             GL_COLOR_ATTACHMENT0,
-            { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
+            { -1.f, -1 + padding + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
             GL_NEAREST);
+        padding = 0.f;
     }
     count += m_effectBuffer.m_primary->getDrawBufferCount();
 
+    padding = 0.01f;
     for (int i = 0; i < m_effectBuffer.m_secondary->getDrawBufferCount(); i++) {
         m_effectBuffer.m_secondary->blit(
             targetBuffer,
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0 + i,
             GL_COLOR_ATTACHMENT0,
-            { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
+            { -1.f, -1 + padding + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
             GL_NEAREST);
+        padding = 0.f;
     }
     count += m_effectBuffer.m_secondary->getDrawBufferCount();
 
+    padding = 0.02f;
     for (int i = 0; i < m_effectBuffer.m_buffers.size(); i++) {
         auto& buf = m_effectBuffer.m_buffers[i];
         buf->blit(
@@ -291,19 +319,23 @@ void NodeDraw::drawDebug(
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0,
             GL_COLOR_ATTACHMENT0,
-            { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
+            { -1.f, -1 + padding + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
             GL_NEAREST);
+        padding = 0.f;
     }
     count += m_effectBuffer.m_buffers.size();
 
+    count = 0;
+    padding = 0.f;
     for (int i = 0; i < m_gBuffer.m_buffer->getDrawBufferCount(); i++) {
         m_gBuffer.m_buffer->blit(
             targetBuffer,
             GL_COLOR_BUFFER_BIT,
             GL_COLOR_ATTACHMENT0 + i,
             GL_COLOR_ATTACHMENT0,
-            { 1 - SZ1, -1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
+            { 1 - SZ1, -1 + padding + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
             GL_NEAREST);
+        padding = 0.f;
     }
 }
 

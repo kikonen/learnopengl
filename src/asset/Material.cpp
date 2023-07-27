@@ -274,7 +274,7 @@ const MaterialSSBO Material::toSSBO() const
         kd,
         ke,
 
-        glm::vec4(ks, ns),
+        glm::vec4{ ks, ns },
 
         calculateAmbient(ka),
 

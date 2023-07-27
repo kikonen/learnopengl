@@ -156,7 +156,7 @@ public:
     std::string map_ks;
 
     // Ke/map_Ke     # emissive
-    glm::vec4 ke { 0.f, 0.f, 0.f, 1.f };
+    glm::vec4 ke { 0.f, 0.f, 0.f, 0.f };
     std::string map_ke;
 
     // some implementations use 'map_bump' instead of 'bump' below
