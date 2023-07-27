@@ -25,7 +25,7 @@ in VS_OUT {
 #endif
 } fs_in;
 
-layout(binding = UNIT_WATER_NOISE) uniform sampler3D u_noiseTex;
+//layout(binding = UNIT_WATER_NOISE) uniform sampler3D u_noiseTex;
 layout(binding = UNIT_WATER_REFLECTION) uniform sampler2D u_reflectionTex;
 layout(binding = UNIT_WATER_REFRACTION) uniform sampler2D u_refractionTex;
 
@@ -112,7 +112,7 @@ void main() {
   // estimate the normal using the noise texture
   // by looking up three height values around this vertex.
   // input parameters are offset for neighbors, and scaling for width and height
-  normal = estimateWaveNormal(u_noiseTex, texCoord, .0002, 32.0, 16.0);
+  //normal = estimateWaveNormal(u_noiseTex, texCoord, .0002, 32.0, 16.0);
 
   // vec2 ndc = (fs_in.glp.xy / fs_in.glp.w) / 2.0 + 0.5;
 
