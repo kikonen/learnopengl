@@ -40,7 +40,7 @@ void FrameBufferAttachment::clearBuffer(int fbo) const
 
 void FrameBufferAttachment::clearWithMask(int fbo, GLbitfield mask) const
 {
-    if ((clearMask & mask) != 0) {
+    if (clearMask & mask) {
         clearBuffer(fbo);
     }
 }

@@ -1,6 +1,6 @@
 #version 460 core
 
-out vec4 o_fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 in vec2 texCoord;
 

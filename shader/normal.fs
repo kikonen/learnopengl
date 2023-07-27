@@ -9,7 +9,7 @@ in GS_OUT {
   vec4 fragColor;
 } fs_in;
 
-out vec4 o_fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //

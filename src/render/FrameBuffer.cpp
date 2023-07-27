@@ -268,7 +268,7 @@ void FrameBuffer::blit(
     const glm::vec2 d0{ dx, dy };
     const glm::vec2 d1{ dx + sx, dy + sy };
 
-    if ((mask & GL_COLOR_BUFFER_BIT) == GL_COLOR_BUFFER_BIT) {
+    if (mask & GL_COLOR_BUFFER_BIT) {
         glNamedFramebufferReadBuffer(m_fbo, sourceColorAttachment);
         glNamedFramebufferDrawBuffer(target->m_fbo, targetColorAttachment);
     }
@@ -295,7 +295,7 @@ void FrameBuffer::clear(
 {
     const bool hasAttachments = !m_spec.attachments.empty();
 
-    if ((clearMask & GL_COLOR_BUFFER_BIT) != 0) {
+    if (clearMask & GL_COLOR_BUFFER_BIT) {
         if (ctx.m_assets.useDebugColor) {
             ctx.m_state.clearColor(debugColor);
         }

@@ -216,7 +216,7 @@ void NodeDraw::drawNodes(
     {
         targetBuffer->bind(ctx);
 
-        if ((copyMask & GL_DEPTH_BUFFER_BIT) != 0) {
+        if (copyMask & GL_DEPTH_BUFFER_BIT) {
             m_gBuffer.m_buffer->blit(
                 targetBuffer,
                 GL_DEPTH_BUFFER_BIT,
@@ -225,7 +225,7 @@ void NodeDraw::drawNodes(
                 GL_NEAREST);
         }
 
-        if ((copyMask & GL_COLOR_BUFFER_BIT) != 0) {
+        if (copyMask & GL_COLOR_BUFFER_BIT) {
             activeBuffer->blit(
                 targetBuffer,
                 GL_COLOR_BUFFER_BIT,
