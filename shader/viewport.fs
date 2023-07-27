@@ -11,8 +11,6 @@
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
 layout(early_fragment_tests) in;
 
-out vec4 o_fragColor;
-
 in vec2 texCoord;
 
 layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
@@ -21,13 +19,15 @@ subroutine vec4 sub_effect(vec4 color);
 
 layout(location = SUBROUTINE_EFFECT) subroutine uniform sub_effect u_effect;
 
-const float offset = 1.0 / 300.0;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
 
 SET_FLOAT_PRECISION;
+
+const float offset = 1.0 / 300.0;
 
 layout (index = EFF_NONE)
 subroutine (sub_effect)

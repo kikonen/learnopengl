@@ -8,7 +8,7 @@ layout(location = UNIFORM_EFFECT_BLOOM_ITERATION) uniform uint u_effectBloomIter
 
 layout(binding = UNIT_EFFECT_WORK) uniform sampler2D effect_work;
 
-out vec4 o_fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //

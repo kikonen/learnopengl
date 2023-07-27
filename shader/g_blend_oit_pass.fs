@@ -6,7 +6,7 @@
 
 LAYOUT_OIT_SAMPLERS;
 
-out vec4 o_fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //

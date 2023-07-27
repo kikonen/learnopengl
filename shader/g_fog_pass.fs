@@ -7,7 +7,7 @@
 
 layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
 
-out vec4 o_fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //

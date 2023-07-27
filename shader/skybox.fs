@@ -5,7 +5,7 @@ layout(early_fragment_tests) in;
 
 layout(binding = UNIT_SKYBOX) uniform samplerCube u_skybox;
 
-out vec4 o_fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //

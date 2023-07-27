@@ -7,7 +7,7 @@
 layout(binding = UNIT_G_ALBEDO) uniform sampler2D g_albedo;
 layout(binding = UNIT_EFFECT_WORK) uniform sampler2D effect_work;
 
-out vec4 o_fragColor;
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
