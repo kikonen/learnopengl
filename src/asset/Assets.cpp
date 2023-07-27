@@ -149,8 +149,12 @@ Assets::Assets()
     viewportEffectEnabled = false;
     viewportEffect = ViewportEffect::none;
 
+    effectBloomEnabled = true;
     effectBloomExposure = 1.0f;
     effectBloomIterations = 5;
+
+    effectGlowEnabled = true;
+    effectFogEnabled = true;
 
     computeGroups = { 1, 1, 1 };
 

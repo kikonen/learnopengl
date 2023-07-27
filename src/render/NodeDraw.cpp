@@ -180,7 +180,7 @@ void NodeDraw::drawNodes(
     {
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
-        if (true)
+        if (ctx.m_assets.effectBloomEnabled)
         {
             //m_emissionProgram->bind(ctx.m_state);
             //m_textureQuad.draw(ctx);
@@ -224,8 +224,10 @@ void NodeDraw::drawNodes(
         m_blendOitProgram->bind(ctx.m_state);
         m_textureQuad.draw(ctx);
 
+        if (ctx.m_assets.effectFogEnabled) {
             m_fogProgram->bind(ctx.m_state);
             m_textureQuad.draw(ctx);
+        }
 
         ctx.m_state.setEnabled(GL_BLEND, false);
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);

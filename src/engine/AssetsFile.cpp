@@ -339,11 +339,20 @@ void AssetsFile::loadAssets(
                 reportUnknown("viewport_effect", k, v);
             }
         }
+        else if (k == "effect_bloom_enabled") {
+            data.effectBloomEnabled = readBool(v);
+        }
         else if (k == "effect_bloom_exposure") {
             data.effectBloomExposure = readFloat(v);
         }
         else if (k == "effect_bloom_iterations") {
             data.effectBloomIterations = readInt(v);
+        }
+        else if (k == "effect_glow_enabled") {
+            data.effectGlowEnabled = readBool(v);
+        }
+        else if (k == "effect_fog_enabled") {
+            data.effectFogEnabled = readBool(v);
         }
         else if (k == "compute_groups") {
             data.computeGroups = readUVec3(v);

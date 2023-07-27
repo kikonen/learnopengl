@@ -164,8 +164,12 @@ public:
     bool viewportEffectEnabled;
     ViewportEffect viewportEffect;
 
+    bool effectBloomEnabled;
     float effectBloomExposure;
     int effectBloomIterations;
+
+    bool effectGlowEnabled;
+    bool effectFogEnabled;
 
     glm::uvec3 computeGroups;
 
