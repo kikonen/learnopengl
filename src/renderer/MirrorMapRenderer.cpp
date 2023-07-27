@@ -32,6 +32,8 @@ namespace {
         {  1,  0,  0, 1 },
         {  0,  1,  0, 1 },
     };
+
+    static const int ATT_ALBEDO_INDEX = 0;
 }
 
 
@@ -100,7 +102,7 @@ void MirrorMapRenderer::prepare(
 
 void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
 {
-    m_prev->bindTexture(ctx, 0, UNIT_MIRROR_REFLECTION);
+    m_prev->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_MIRROR_REFLECTION);
 }
 
 bool MirrorMapRenderer::render(

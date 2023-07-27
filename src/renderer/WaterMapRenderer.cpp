@@ -29,6 +29,8 @@ namespace {
         {  0,  1,  0 },
         {  0,  1,  0 },
     };
+
+    static const int ATT_ALBEDO_INDEX = 0;
 }
 
 
@@ -127,8 +129,8 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
     auto& refractionBuffer = m_refractionBuffers[m_prevIndex];
     auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
 
-    reflectionBuffer->bindTexture(ctx, 0, UNIT_WATER_REFLECTION);
-    refractionBuffer->bindTexture(ctx, 0, UNIT_WATER_REFRACTION);
+    reflectionBuffer->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_WATER_REFLECTION);
+    refractionBuffer->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_WATER_REFRACTION);
 
     if (m_noiseTextureID > 0) {
         ctx.m_state.bindTexture(UNIT_WATER_NOISE, m_noiseTextureID, false);
