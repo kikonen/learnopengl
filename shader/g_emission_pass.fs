@@ -2,7 +2,11 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_buffer_info.glsl
+//#include uniform_buffer_info.glsl
+
+in VS_OUT {
+  vec2 texCoord;
+} fs_in;
 
 layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;
 layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
@@ -62,7 +66,8 @@ vec4 calculateEmission(vec2 texCoord)
 
 void main()
 {
-  const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
+  //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
+  const vec2 texCoord = fs_in.texCoord;
 
   vec4 color = calculateEmission(texCoord);
 

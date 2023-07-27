@@ -5,8 +5,12 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_buffer_info.glsl
+//#include uniform_buffer_info.glsl
 #include uniform_lights.glsl
+
+in VS_OUT {
+  vec2 texCoord;
+} fs_in;
 
 LAYOUT_G_BUFFER_SAMPLERS;
 
@@ -40,7 +44,8 @@ const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT_ABS] =
 
 void main()
 {
-  const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
+  //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
+  const vec2 texCoord = fs_in.texCoord;
 
   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
   vec3 worldPos;

@@ -136,7 +136,7 @@ void NodeDraw::drawNodes(
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
         m_deferredProgram->bind(ctx.m_state);
-        m_plainQuad.draw(ctx);
+        m_textureQuad.draw(ctx);
 
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
 
@@ -183,7 +183,7 @@ void NodeDraw::drawNodes(
         if (true)
         {
             //m_emissionProgram->bind(ctx.m_state);
-            //m_plainQuad.draw(ctx);
+            //m_textureQuad.draw(ctx);
 
             m_bloomProgram->bind(ctx.m_state);
             activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
@@ -193,7 +193,7 @@ void NodeDraw::drawNodes(
                 buf->bind(ctx);
 
                 m_bloomProgram->u_effectBloomIteration->set(i);
-                m_plainQuad.draw(ctx);
+                m_textureQuad.draw(ctx);
 
                 buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);
             }
@@ -202,7 +202,7 @@ void NodeDraw::drawNodes(
             activeBuffer->bind(ctx);
 
             m_blendBloomProgram->bind(ctx.m_state);
-            m_plainQuad.draw(ctx);
+            m_textureQuad.draw(ctx);
         }
         else {
             activeBuffer->blit(
@@ -222,10 +222,10 @@ void NodeDraw::drawNodes(
         ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         m_blendOitProgram->bind(ctx.m_state);
-        m_plainQuad.draw(ctx);
+        m_textureQuad.draw(ctx);
 
-        m_fogProgram->bind(ctx.m_state);
-        m_plainQuad.draw(ctx);
+            m_fogProgram->bind(ctx.m_state);
+            m_textureQuad.draw(ctx);
 
         ctx.m_state.setEnabled(GL_BLEND, false);
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);

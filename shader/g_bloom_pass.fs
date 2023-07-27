@@ -2,7 +2,11 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_buffer_info.glsl
+//#include uniform_buffer_info.glsl
+
+in VS_OUT {
+  vec2 texCoord;
+} fs_in;
 
 layout(location = UNIFORM_EFFECT_BLOOM_ITERATION) uniform uint u_effectBloomIteration;
 
@@ -20,7 +24,8 @@ const float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016
 
 void main()
 {
-  const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
+  //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
+  const vec2 texCoord = fs_in.texCoord;
 
   vec2 offset = 1.0 / textureSize(effect_work, 0);
   vec3 color = texture(effect_work, texCoord).rgb * weight[0];

@@ -2,7 +2,11 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_buffer_info.glsl
+//#include uniform_buffer_info.glsl
+
+in VS_OUT {
+  vec2 texCoord;
+} fs_in;
 
 layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D effect_albedo;
 layout(binding = UNIT_EFFECT_WORK) uniform sampler2D effect_work;
@@ -17,7 +21,8 @@ SET_FLOAT_PRECISION;
 
 void main()
 {
-  const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
+  //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
+  const vec2 texCoord = fs_in.texCoord;
 
   const float gamma = 2.2;
 
