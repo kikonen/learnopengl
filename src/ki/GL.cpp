@@ -104,7 +104,7 @@ namespace ki {
         };
 
         if (index >= 0) {
-            KI_FLUSH();
+            //KI_FLUSH();
             int x = 0;
         }
     }
