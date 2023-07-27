@@ -26,6 +26,8 @@ public:
 
     bool create();
 
+    glm::vec2 getSize();
+
     void close();
     bool isClosed();
 
@@ -49,13 +51,14 @@ public:
     GLState& m_state;
 
     GLFWwindow* m_glfwWindow{ nullptr };
-    int m_width = 0;
-    int m_height = 0;
 
     std::unique_ptr<Input> m_input{ nullptr };
 
 protected:
     Engine& m_engine;
+
+    int m_width{ 0 };
+    int m_height{ 0 };
 
     std::string m_title;
 };

@@ -40,6 +40,21 @@ bool Window::create()
     return m_glfwWindow != nullptr;
 }
 
+glm::vec2 Window::getSize()
+{
+    int w;
+    int h;
+    glfwGetWindowSize(m_glfwWindow, &w, &h);
+
+    m_width = w;
+    m_height = h;
+
+    if (w < 1) w = 1;
+    if (h < 1) h = 1;
+
+    return { w, h };
+}
+
 void Window::setTitle(const std::string& title)
 {
     m_title = title;
@@ -79,6 +94,7 @@ void Window::createGLFWWindow()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_assets.glsl_version[1]);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 
 //#ifdef __APPLE__
 //    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);

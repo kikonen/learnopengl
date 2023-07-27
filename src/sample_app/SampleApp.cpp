@@ -101,10 +101,8 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
     Node* cameraNode = scene->getActiveCamera();
     if (!cameraNode) return 0;
 
-    int w = window->m_width;
-    int h = window->m_height;
-    if (w < 1) w = 1;
-    if (h < 1) h = 1;
+
+    glm::vec2 size = window->getSize();
 
     RenderContext ctx(
         "TOP",
@@ -121,7 +119,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         cameraNode->m_camera.get(),
         m_assets.nearPlane,
         m_assets.farPlane,
-        w, h);
+        size.x, size.y);
     {
         ctx.m_forceWireframe = m_assets.forceWireframe;
         ctx.m_useLight = m_assets.useLight;
@@ -148,7 +146,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         if (m_assets.useIMGUI) {
             m_frame->bind(ctx);
             m_state.clear();
-        } 
+        }
 
         scene->updateView(ctx);
         scene->bind(ctx);
