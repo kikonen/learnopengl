@@ -22,12 +22,13 @@ void EffectBuffer::updateView(const RenderContext& ctx)
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    bool changed = !m_primary || w != m_primary->m_spec.width || h != m_primary->m_spec.height;
+    bool changed = w != m_width || h != m_height;
     if (!changed) return;
 
     //if (m_mainBuffer) return;
     KI_INFO(fmt::format("EFFECT_BUFFER: update - w={}, h={}", w, h));
 
+    // primary
     {
         // NOTE KI alpha NOT needed
         auto buffer = new FrameBuffer(
@@ -35,14 +36,10 @@ void EffectBuffer::updateView(const RenderContext& ctx)
             {
                 w, h,
                 {
-                // src - diffuse from previous pass
+                // diffuse
                 FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT0),
-                // src - brighness from previous pass
+                // diffuse bright
                 FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT1),
-                // work - intermediate work buffer
-                FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT2),
-                //// dst - combine
-                //FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT3),
 
                 // NOTE KI sharing depth buffer with gbuffer IS NOT VALID
                 // => reading and "writing" same depth buffer in shader is undefined operation
@@ -53,7 +50,30 @@ void EffectBuffer::updateView(const RenderContext& ctx)
 
         m_primary.reset(buffer);
         m_primary->prepare(true);
+    }
 
+    // secondary
+    {
+        // NOTE KI alpha NOT needed
+        auto buffer = new FrameBuffer(
+            "effect_secondary",
+            {
+                w, h,
+                {
+                // diffuse
+                FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT0),
+
+                //// NOTE KI *SHARE* depth with gbuffer
+                //FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
+            }
+            });
+
+        m_secondary.reset(buffer);
+        m_secondary->prepare(true);
+    }
+
+    // work buffers
+    {
         m_buffers.clear();
         for (int i = 0; i < 2; i++) {
             // NOTE KI alpha NOT needed
@@ -72,31 +92,16 @@ void EffectBuffer::updateView(const RenderContext& ctx)
         for (auto& buf : m_buffers) {
             buf->prepare(true);
         }
-
-        unbindTexture(ctx);
     }
+
+    m_width = h;
+    m_height = h;
 }
 
-void EffectBuffer::bind(const RenderContext& ctx)
-{
-    m_primary->bind(ctx);
-}
-
-void EffectBuffer::bindTexture(const RenderContext& ctx)
-{
-    m_primary->bindTexture(ctx, 0, UNIT_EFFECT_ALBEDO);
-    m_primary->bindTexture(ctx, 1, UNIT_EFFECT_BRIGHT);
-}
-
-void EffectBuffer::unbindTexture(const RenderContext& ctx)
-{
-    m_primary->unbindTexture(ctx, UNIT_EFFECT_ALBEDO);
-    m_primary->unbindTexture(ctx, UNIT_EFFECT_BRIGHT);
-}
-
-void EffectBuffer::clear()
+void EffectBuffer::clearAll()
 {
     m_primary->clearAll();
+    m_secondary->clearAll();
     for (auto& buf : m_buffers) {
         buf->clearAll();
     }

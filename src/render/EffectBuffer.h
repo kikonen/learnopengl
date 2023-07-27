@@ -14,6 +14,11 @@ class GBuffer;
 //
 class EffectBuffer {
 public:
+    static const int ATT_ALBEDO_INDEX = 0;
+    static const int ATT_BRIGHT_INDEX = 1;
+    static const int ATT_WORK_INDEX = 0;
+
+public:
     EffectBuffer() {}
     ~EffectBuffer() {}
 
@@ -23,17 +28,16 @@ public:
 
     void updateView(const RenderContext& ctx);
 
-    void bind(const RenderContext& ctx);
-
-    void bindTexture(const RenderContext& ctx);
-    void unbindTexture(const RenderContext& ctx);
-
-    void clear();
+    void clearAll();
 
 public:
     std::unique_ptr<FrameBuffer> m_primary{ nullptr };
+    std::unique_ptr<FrameBuffer> m_secondary{ nullptr };
     std::vector<std::unique_ptr<FrameBuffer>> m_buffers;
 
 private:
     GBuffer* m_gBuffer{ nullptr };
+
+    int m_width{ -1 };
+    int m_height{ -1 };
 };

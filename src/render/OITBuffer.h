@@ -9,6 +9,10 @@ class GBuffer;
 
 class OITBuffer {
 public:
+    static const int ATT_ACCUMULATOR_INDEX = 0;
+    static const int ATT_REVEAL_INDEX = 1;
+
+public:
     OITBuffer() {}
     ~OITBuffer() {}
 
@@ -28,4 +32,7 @@ public:
 
 private:
     GBuffer* m_gBuffer{ nullptr };
+
+    int m_width{ -1 };
+    int m_height{ -1 };
 };

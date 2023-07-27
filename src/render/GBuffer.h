@@ -27,4 +27,7 @@ public:
     std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
 
 private:
+
+    int m_width{ -1 };
+    int m_height{ -1 };
 };

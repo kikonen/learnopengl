@@ -19,7 +19,7 @@ void GBuffer::updateView(const RenderContext& ctx)
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    bool changed = !m_buffer || w != m_buffer->m_spec.width || h != m_buffer->m_spec.height;
+    bool changed = w != m_width || h != m_height;
     if (!changed) return;
 
     //if (m_mainBuffer) return;
@@ -47,6 +47,9 @@ void GBuffer::updateView(const RenderContext& ctx)
 
         unbindTexture(ctx);
     }
+
+    m_width = h;
+    m_height = h;
 }
 
 void GBuffer::bind(const RenderContext& ctx)

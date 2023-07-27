@@ -62,6 +62,9 @@ void NodeDraw::drawNodes(
     const std::function<bool(const Node*)>& nodeSelector,
     GLbitfield copyMask)
 {
+    m_effectBuffer.clearAll();
+    auto* activeBuffer = m_effectBuffer.m_primary.get();
+
     // pass 1.1 - draw geometry
     // => nodes supporting G-buffer
     //if (false)
@@ -87,8 +90,8 @@ void NodeDraw::drawNodes(
     {
         m_oitBuffer.bind(ctx);
 
-        m_oitBuffer.m_buffer->clearAttachment(0);
-        m_oitBuffer.m_buffer->clearAttachment(1);
+        m_oitBuffer.m_buffer->clearAttachment(OITBuffer::ATT_ACCUMULATOR_INDEX);
+        m_oitBuffer.m_buffer->clearAttachment(OITBuffer::ATT_REVEAL_INDEX);
 
         // NOTE KI do NOT modify depth with blend
         auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
@@ -115,12 +118,13 @@ void NodeDraw::drawNodes(
 
     // pass 2 => effectBuffer
     {
-        m_effectBuffer.bind(ctx);
-        m_effectBuffer.clear();
+        activeBuffer->bind(ctx);
 
         m_gBuffer.bindTexture(ctx);
         m_oitBuffer.bindTexture(ctx);
-        m_effectBuffer.bindTexture(ctx);
+
+        activeBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
+        activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
     }
 
     // pass 2.1 - light
@@ -135,7 +139,7 @@ void NodeDraw::drawNodes(
 
         // NOTE KI make depth available for "non gbuffer node" rendering
         m_gBuffer.m_buffer->blit(
-            m_effectBuffer.m_primary.get(),
+            activeBuffer,
             GL_DEPTH_BUFFER_BIT,
             { -1.f, 1.f },
             { 2.f, 2.f },
@@ -145,7 +149,7 @@ void NodeDraw::drawNodes(
     // pass 3 - non G-buffer nodes
     // => for example, "skybox" (skybox is mostly via g_skybox now!)
     // => separate light calculations
-    //if (false)
+    if (false)
     {
         drawNodesImpl(
             ctx,
@@ -157,7 +161,7 @@ void NodeDraw::drawNodes(
 
     // pass 4 - blend
     // => separate light calculations
-    //if (false)
+    if (false)
     {
         drawBlendedImpl(
             ctx,
@@ -171,24 +175,25 @@ void NodeDraw::drawNodes(
     {
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
-        //if (false)
+        if (false)
         {
             //m_emissionProgram->bind(ctx.m_state);
             //m_plainQuad.draw(ctx);
 
             m_bloomProgram->bind(ctx.m_state);
-            m_effectBuffer.m_primary->bindTexture(ctx, 1, UNIT_EFFECT_WORK);
+            activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
             for (int i = 0; i < ctx.m_assets.effectBloomIterations; i++) {
                 auto& buf = m_effectBuffer.m_buffers[i % 2];
                 buf->bind(ctx);
 
                 m_bloomProgram->u_effectBloomIteration->set(i);
-
                 m_plainQuad.draw(ctx);
-                buf->bindTexture(ctx, 0, UNIT_EFFECT_WORK);
+
+                buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);
             }
 
-            m_effectBuffer.m_primary->bind(ctx);
+            activeBuffer = m_effectBuffer.m_secondary.get();
+            activeBuffer->bind(ctx);
 
             m_blendBloomProgram->bind(ctx.m_state);
             m_plainQuad.draw(ctx);
@@ -221,7 +226,7 @@ void NodeDraw::drawNodes(
         }
 
         if ((copyMask & GL_COLOR_BUFFER_BIT) != 0) {
-            m_effectBuffer.m_primary->blit(
+            activeBuffer->blit(
                 targetBuffer,
                 GL_COLOR_BUFFER_BIT,
                 GL_COLOR_ATTACHMENT0,
@@ -266,7 +271,18 @@ void NodeDraw::drawDebug(
             { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
             GL_NEAREST);
     }
-    count += m_oitBuffer.m_buffer->getDrawBufferCount();
+    count += m_effectBuffer.m_primary->getDrawBufferCount();
+
+    for (int i = 0; i < m_effectBuffer.m_secondary->getDrawBufferCount(); i++) {
+        m_effectBuffer.m_secondary->blit(
+            targetBuffer,
+            GL_COLOR_BUFFER_BIT,
+            GL_COLOR_ATTACHMENT0 + i,
+            GL_COLOR_ATTACHMENT0,
+            { -1.f, -1 + count * SZ1 + SZ1 + i * SZ1 }, { SZ1, SZ1 },
+            GL_NEAREST);
+    }
+    count += m_effectBuffer.m_secondary->getDrawBufferCount();
 
     for (int i = 0; i < m_effectBuffer.m_buffers.size(); i++) {
         auto& buf = m_effectBuffer.m_buffers[i];

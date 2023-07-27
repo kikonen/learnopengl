@@ -24,7 +24,7 @@ void OITBuffer::updateView(const RenderContext& ctx)
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    bool changed = !m_buffer || w != m_buffer->m_spec.width || h != m_buffer->m_spec.height;
+    bool changed = w != m_width || h != m_height;
     if (!changed) return;
 
     //if (m_mainBuffer) return;
@@ -49,6 +49,9 @@ void OITBuffer::updateView(const RenderContext& ctx)
 
         unbindTexture(ctx);
     }
+
+    m_width = h;
+    m_height = h;
 }
 
 void OITBuffer::bind(const RenderContext& ctx)
@@ -58,8 +61,8 @@ void OITBuffer::bind(const RenderContext& ctx)
 
 void OITBuffer::bindTexture(const RenderContext& ctx)
 {
-    m_buffer->bindTexture(ctx, 0, UNIT_OIT_ACCUMULATOR);
-    m_buffer->bindTexture(ctx, 1, UNIT_OIT_REVEAL);
+    m_buffer->bindTexture(ctx, ATT_ACCUMULATOR_INDEX, UNIT_OIT_ACCUMULATOR);
+    m_buffer->bindTexture(ctx, ATT_REVEAL_INDEX, UNIT_OIT_REVEAL);
 }
 
 void OITBuffer::unbindTexture(const RenderContext& ctx)
