@@ -154,7 +154,7 @@ void NodeDraw::drawNodes(
     // pass 3 - non G-buffer nodes
     // => for example, "skybox" (skybox is mostly via g_skybox now!)
     // => separate light calculations
-    if (false)
+    //if (false)
     {
         drawNodesImpl(
             ctx,
@@ -166,7 +166,7 @@ void NodeDraw::drawNodes(
 
     // pass 4 - blend
     // => separate light calculations
-    if (false)
+    //if (false)
     {
         drawBlendedImpl(
             ctx,
