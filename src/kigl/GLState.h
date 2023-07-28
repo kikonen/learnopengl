@@ -20,6 +20,8 @@ public:
 
     void setEnabled(GLenum key, bool enabled) noexcept;
 
+    bool isEnabled(GLenum key) noexcept;
+
     void cullFace(GLenum mode) noexcept;
     void frontFace(GLenum mode) noexcept;
 

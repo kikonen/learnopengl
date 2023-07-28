@@ -146,6 +146,9 @@ bool WaterMapRenderer::render(
     setClosest(closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
 
+    // NOTE KI fix severe flicker in water map rendering in intel GPU
+    parentCtx.m_state.bindFrameBuffer(0, false);
+
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
@@ -159,6 +162,9 @@ bool WaterMapRenderer::render(
     const float sdist = parentCameraPos.y - planePos.y;
 
     // https://prideout.net/clip-planes
+
+    parentCtx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
+
     // reflection map
     {
         auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
@@ -243,6 +249,8 @@ bool WaterMapRenderer::render(
     parentCtx.updateDataUBO();
     parentCtx.updateClipPlanesUBO();
 
+    parentCtx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
+
     m_prevIndex = m_currIndex;
     m_currIndex = (m_currIndex + 1) % 2;
 
@@ -264,7 +272,6 @@ void WaterMapRenderer::drawNodes(
     ctx.m_batch->flush(ctx);
 
     ctx.updateClipPlanesUBO();
-    ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
 
     {
         ctx.m_nodeDraw->drawNodes(
@@ -277,8 +284,6 @@ void WaterMapRenderer::drawNodes(
             [&current](const Node* node) { return node != current; },
             GL_COLOR_BUFFER_BIT);
     }
-
-    ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
 }
 
 Node* WaterMapRenderer::findClosest(

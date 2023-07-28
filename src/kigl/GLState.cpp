@@ -56,6 +56,15 @@ void GLState::setEnabled(GLenum key, bool enabled) noexcept
     }
 }
 
+bool GLState::isEnabled(GLenum key) noexcept
+{
+    const auto& it = m_enabled.find(key);
+    if (it != m_enabled.end()) {
+        return it->second == 1;
+    }
+    return false;
+}
+
 void GLState::cullFace(GLenum mode) noexcept
 {
     if (m_cullFace != mode) {
@@ -127,7 +136,7 @@ void GLState::bindTexture(
 
 bool GLState::bindFrameBuffer(GLuint fbo, bool force) noexcept
 {
-    if (true || m_fbo != fbo || force) {
+    if (m_fbo != fbo || force) {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         m_fbo = fbo;
         return true;
@@ -141,7 +150,7 @@ void GLState::clearFrameBuffer() {
 
 bool GLState::setViewport(const glm::vec4& viewport)
 {
-    if (true || m_viewport != viewport) {
+    if (m_viewport != viewport) {
         m_viewport = viewport;
         glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
         return true;
