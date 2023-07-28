@@ -21,8 +21,7 @@ Window::Window(
     const Assets& assets)
     : m_engine(engine), m_state(state), m_assets(assets)
 {
-    m_width = 800;
-    m_height = 600;
+    m_size = assets.windowSize;
     m_title = "GL test";
 
     m_input = std::make_unique<Input>(this);
@@ -40,19 +39,23 @@ bool Window::create()
     return m_glfwWindow != nullptr;
 }
 
-glm::vec2 Window::getSize()
+const glm::vec2& Window::getSize()
 {
-    int w;
-    int h;
-    glfwGetWindowSize(m_glfwWindow, &w, &h);
+    if (!m_sizeValid) {
+        int w;
+        int h;
+        glfwGetWindowSize(m_glfwWindow, &w, &h);
 
-    m_width = w;
-    m_height = h;
+        m_size = { w, h };
 
-    if (w < 1) w = 1;
-    if (h < 1) h = 1;
+        if (w < 1) w = 1;
+        if (h < 1) h = 1;
 
-    return { w, h };
+        m_safeSize = { w, h };
+
+        m_sizeValid = true;
+    }
+    return m_safeSize;
 }
 
 void Window::setTitle(const std::string& title)
@@ -94,14 +97,12 @@ void Window::createGLFWWindow()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_assets.glsl_version[1]);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
-
-//#ifdef __APPLE__
-//    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-//#endif
+    if (m_assets.windowMaximized) {
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+    }
 
     KI_INFO("START: WDINDOW CREATE");
-    m_glfwWindow = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+    m_glfwWindow = glfwCreateWindow(m_size.x, m_size.y, m_title.c_str(), nullptr, nullptr);
     if (m_glfwWindow == nullptr)
     {
         KI_ERROR("Failed to create GLFW window");
@@ -179,8 +180,9 @@ void Window::processInput(const ki::RenderClock& clock)
 void Window::onWindowResize(int width, int height)
 {
     glViewport(0, 0, width, height);
-    m_width = width;
-    m_height = height;
+
+    m_size = { width, height };
+    m_sizeValid = false;
 
     m_state.clear();
 }

@@ -26,7 +26,7 @@ public:
 
     bool create();
 
-    glm::vec2 getSize();
+    const glm::vec2& getSize();
 
     void close();
     bool isClosed();
@@ -57,8 +57,9 @@ public:
 protected:
     Engine& m_engine;
 
-    int m_width{ 0 };
-    int m_height{ 0 };
+    bool m_sizeValid{ false };
+    glm::uvec2 m_size{ 0 } ;
+    glm::uvec2 m_safeSize{ 1 };
 
     std::string m_title;
 };

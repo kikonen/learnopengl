@@ -26,6 +26,9 @@ Assets::Assets()
     gbufferScale = 0.5f;
     bufferScale = 0.5f;
 
+    windowSize = { 800, 600 };
+    windowMaximized = false;
+
     cameraMoveNormal = { 4.5, 4.5, 4.5 };
     cameraMoveRun = { 8, 8, 8 };
     cameraRotateNormal = { 12, 12, 12};

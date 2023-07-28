@@ -66,6 +66,12 @@ void AssetsFile::loadAssets(
         else if (k == "buffer_scale") {
             data.bufferScale = readFloat(v);
         }
+        else if (k == "window_size") {
+            data.windowSize = readVec2(v);
+        }
+        else if (k == "window_maximized") {
+            data.windowMaximized = readBool(v);
+        }
         else if (k == "gl_debug") {
             data.glDebug = readBool(v);
         }

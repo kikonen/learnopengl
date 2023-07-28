@@ -10,6 +10,9 @@ assets:
   gbuffer_scale: 0.5
   buffer_scale: 1.0
 
+  window_size: [800, 600]
+  window_maximized: true
+
   camera_move_mormal: [5.5, 7.5, 7.5]
   camera_move_run: [10, 14, 14]
   camera_rotate_normal: [18, 18, 18]
