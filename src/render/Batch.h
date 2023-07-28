@@ -67,6 +67,8 @@ public:
         return m_entityIndeces.size() == 0;
     }
 
+    void Batch::checkFlushed(const std::string& label);
+
     void flush(
         const RenderContext& ctx);
 
