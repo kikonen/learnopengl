@@ -140,14 +140,13 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 bool WaterMapRenderer::render(
     const RenderContext& parentCtx)
 {
+    parentCtx.validateRender("water_map");
+
     if (!needRender(parentCtx)) return false;
 
     auto closest = findClosest(parentCtx);
     setClosest(closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
-
-    // NOTE KI fix severe flicker in water map rendering in intel GPU
-    parentCtx.m_state.bindFrameBuffer(0, false);
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf

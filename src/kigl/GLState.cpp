@@ -134,6 +134,21 @@ void GLState::bindTexture(
     }
 }
 
+int GLState::getFrameBuffer() noexcept
+{
+    GLint drawFboId;
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
+
+    if (m_fbo >= 0) {
+        if (m_fbo != drawFboId) {
+            throw std::runtime_error{ fmt::format("CONTEXT: FBO mismatch: expectedFbo={}, actualFbo={}", m_fbo, drawFboId)};
+        }
+        return m_fbo;
+    }
+
+    return drawFboId;
+}
+
 bool GLState::bindFrameBuffer(GLuint fbo, bool force) noexcept
 {
     if (m_fbo != fbo || force) {

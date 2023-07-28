@@ -67,7 +67,7 @@ void AssetsFile::loadAssets(
             data.bufferScale = readFloat(v);
         }
         else if (k == "window_size") {
-            data.windowSize = readVec2(v);
+            data.windowSize = readUVec2(v);
         }
         else if (k == "window_maximized") {
             data.windowMaximized = readBool(v);
@@ -423,6 +423,12 @@ std::vector<float> AssetsFile::readFloatVector(const YAML::Node& node, int reser
     }
 
     return a;
+}
+
+glm::uvec2 AssetsFile::readUVec2(const YAML::Node& node) const
+{
+    const auto& a = readIntVector(node, 2);
+    return glm::uvec2{ a[0], a[1] };
 }
 
 glm::uvec3 AssetsFile::readUVec3(const YAML::Node& node) const

@@ -39,7 +39,7 @@ bool Window::create()
     return m_glfwWindow != nullptr;
 }
 
-const glm::vec2& Window::getSize()
+const glm::uvec2& Window::getSize()
 {
     if (!m_sizeValid) {
         int w;

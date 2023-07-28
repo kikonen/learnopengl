@@ -26,7 +26,7 @@ public:
 
     bool create();
 
-    const glm::vec2& getSize();
+    const glm::uvec2& getSize();
 
     void close();
     bool isClosed();

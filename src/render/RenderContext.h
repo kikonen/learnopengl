@@ -78,6 +78,9 @@ public:
     void updateClipPlanesUBO() const;
     void updateLightsUBO() const;
 
+    // Ensure context is in sane state for start rendering
+    void validateRender(const std::string& label) const;
+
     void copyShadowFrom(const RenderContext& b);
 
     bool setAllowBlend(bool flag) const {

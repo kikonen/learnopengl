@@ -124,8 +124,7 @@ void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 bool CubeMapRenderer::render(
     const RenderContext& parentCtx)
 {
-    // NOTE KI must flush before changing render target
-    parentCtx.m_batch->flush(parentCtx);
+    parentCtx.validateRender("cube_map");
 
     if (!m_cleared) {
         clearCubeMap(parentCtx, *m_prev.get());
@@ -260,6 +259,9 @@ void CubeMapRenderer::drawNodes(
     const Node* current,
     const glm::vec4& debugColor)
 {
+    // TODO KI to match special logic in CubeMapBuffer
+    targetBuffer->bind(ctx);
+
     ctx.m_nodeDraw->drawNodes(
         ctx,
         targetBuffer,

@@ -41,6 +41,8 @@ void NodeRenderer::render(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer)
 {
+    ctx.validateRender("node_map");
+
     m_taggedCount = ctx.m_assets.showTagged ? ctx.m_registry->m_nodeRegistry->countTagged() : 0;
     m_selectedCount = ctx.m_assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
 

@@ -235,7 +235,10 @@ void NodeDraw::drawNodes(
 
     // pass 5 - render to target
     {
-        targetBuffer->bind(ctx);
+        // NOTE KI binding target buffer should be 100% redundant here
+        // i.e. blit does not need it
+        // NOTE KI *Exception* CubeMapBuffer::bind logic
+        //targetBuffer->bind(ctx);
 
         if (copyMask & GL_DEPTH_BUFFER_BIT) {
             m_gBuffer.m_buffer->blit(
@@ -260,6 +263,8 @@ void NodeDraw::drawNodes(
         // pass 5 - debug info
         drawDebug(ctx, targetBuffer);
     }
+
+    ctx.m_state.bindFrameBuffer(0, false);
 }
 
 void NodeDraw::drawDebug(

@@ -140,9 +140,6 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         // => ensure "sane" start state for each loop
         ctx.m_state.clearColor(BLACK_COLOR);
 
-        m_state.clearFrameBuffer();
-        m_state.clearViewport();
-
         if (m_assets.useIMGUI) {
             m_frame->bind(ctx);
             m_state.clear();

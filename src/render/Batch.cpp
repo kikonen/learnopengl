@@ -229,13 +229,6 @@ void Batch::draw(
     node.bindBatch(ctx, *this);
 }
 
-void Batch::checkFlushed(const std::string& label)
-{
-    if (!isFlushed()) {
-        throw std::runtime_error{ fmt::format("BIND_ERROR: Batch was NOT flushed: context={}", label)};
-    }
-}
-
 void Batch::flush(
     const RenderContext& ctx)
 {

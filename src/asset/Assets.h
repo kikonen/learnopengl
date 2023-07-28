@@ -41,7 +41,7 @@ public:
     float gbufferScale;
     float bufferScale;
 
-    glm::vec2 windowSize;
+    glm::uvec2 windowSize;
     bool windowMaximized;
 
     glm::vec3 cameraMoveNormal;

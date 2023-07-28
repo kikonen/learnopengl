@@ -108,6 +108,8 @@ void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
 bool MirrorMapRenderer::render(
     const RenderContext& parentCtx)
 {
+    parentCtx.validateRender("mirror_map");
+
     if (!needRender(parentCtx)) return false;
 
     Node* closest = findClosest(parentCtx);

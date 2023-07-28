@@ -37,6 +37,7 @@ private:
     std::vector<int> readIntVector(const YAML::Node& node, int reserve) const;
     std::vector<float> readFloatVector(const YAML::Node& node, int reserve) const;
 
+    glm::uvec2 readUVec2(const YAML::Node& node) const;
     glm::uvec3 readUVec3(const YAML::Node& node) const;
 
     glm::vec2 readVec2(const YAML::Node& node) const;

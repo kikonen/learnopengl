@@ -110,6 +110,8 @@ void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
 bool ShadowMapRenderer::render(
     const RenderContext& ctx)
 {
+    ctx.validateRender("shadow_map");
+
     if (!needRender(ctx)) return false;
 
     // NOTE KI no shadows if no light
@@ -132,5 +134,8 @@ bool ShadowMapRenderer::render(
     ctx.updateDataUBO();
 
     m_rendered = true;
+
+    ctx.m_state.bindFrameBuffer(0, false);
+
     return true;
 }
