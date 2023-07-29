@@ -28,6 +28,21 @@ entities:
     repeat:
       z_count: 20
       z_step: -10
+  - name: Stained windows
+    model: quad
+    material: window_2
+    program: g_tex
+    pos: [10, 4, -10]
+    rotation: [0.0, 90.0, 0.0]
+    scale: [1, 1.3, 0]
+    render_flags:
+      alpha: true
+      blend_oit: true
+      render_back: true
+    repeat:
+      z_count: 10
+      z_step: 2
+    enabled: true
   - name: Directional light
     type: model
     xxpos: [0, 25, 25]
@@ -198,6 +213,17 @@ entities:
     scale: [100, 100, 100]
     enabled: true
 materials:
+  - name: window_2
+    ns: 225.000000
+    type: model
+    ka: [0.500000, 0.500000, 0.500000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: Window_Stained_Glass_lg_HI_256.PNG
   - name: wood_floor
     ns: 225.000000
     type: model
