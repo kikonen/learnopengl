@@ -116,13 +116,14 @@ void NodeDraw::drawNodes(
 
     // pass 2 => effectBuffer
     {
+        activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+
         activeBuffer->bind(ctx);
         activeBuffer->clearAll();
 
         m_gBuffer.bindTexture(ctx);
         m_oitBuffer.bindTexture(ctx);
 
-        activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
         activeBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
         activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
     }
