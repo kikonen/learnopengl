@@ -255,7 +255,7 @@ entities:
       alpha: true
       blend_oit: true
       render_back: true
-    enabled: true
+    xenabled: true
   - name: Window 1_1
     model: quad
     type: billboard
@@ -268,7 +268,7 @@ entities:
       alpha: true
       blend_oit: true
       render_back: true
-    enabled: true
+    xenabled: true
   - name: Window 2
     model: quad
     material: window_2
@@ -280,7 +280,7 @@ entities:
       alpha: true
       blend_oit: true
       render_back: true
-    enabled: true
+    xenabled: true
   - name: Stained windows
     model: quad
     material: window_2
@@ -295,7 +295,7 @@ entities:
     repeat:
       x_count: 10
       x_step: 2
-    enabled: true
+    xenabled: true
   - name: Cube map - brick_wood_wall
     type: origo
     pos: [-1.0, 13.5, 14.0]
