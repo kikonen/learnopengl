@@ -227,7 +227,7 @@ void RenderContext::validateRender(const std::string& label) const
 
     int fbo = m_state.getFrameBuffer();
     if (fbo > 0) {
-        throw std::runtime_error{ fmt::format("CONTEXT: Stale frame byffer: context={}, fbo={}, label={}", m_name, fbo, label)};
+        throw std::runtime_error{ fmt::format("CONTEXT: Stale frame buffer: context={}, fbo={}, label={}", m_name, fbo, label)};
     }
 }
 

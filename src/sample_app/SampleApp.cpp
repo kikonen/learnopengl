@@ -130,8 +130,8 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
             ctx.m_state.setEnabled(GL_RASTERIZER_DISCARD, true);
         }
 
-        m_state.useProgram(0);
-        m_state.bindVAO(0);
+        //m_state.useProgram(0);
+        //m_state.bindVAO(0);
 
         m_state.setEnabled(GL_PROGRAM_POINT_SIZE, true);
         glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);

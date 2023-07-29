@@ -38,6 +38,7 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)
 {
+    ctx.m_state.bindFrameBuffer(0, false);
 }
 
 void DynamicCubeMap::prepare(
@@ -49,6 +50,7 @@ void DynamicCubeMap::prepare(
 
     {
         glCreateFramebuffers(1, &m_fbo);
+        KI_INFO(fmt::format("CREATE: FBO={}, dynamic_cube_map", m_fbo));
     }
 
     //GLenum status = glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER);
@@ -67,6 +69,19 @@ void DynamicCubeMap::prepare(
 
     m_cubeMap.m_size = m_size;
     m_cubeMap.create();
+
+    //glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+    //for (unsigned int face = 0; face < 6; face++)
+    //{
+    //    // https://registry.khronos.org/OpenGL-Refpages/es2.0/xhtml/glFramebufferTexture2D.xml
+    //    glFramebufferTexture2D(
+    //        GL_FRAMEBUFFER,
+    //        GL_COLOR_ATTACHMENT0,
+    //        (GLenum)GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
+    //        m_cubeMap.m_textureID,
+    //        0);
+    //}
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     m_valid = true;
 }

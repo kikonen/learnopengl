@@ -128,7 +128,6 @@ bool CubeMapRenderer::render(
 
     if (!m_cleared) {
         clearCubeMap(parentCtx, *m_prev.get());
-        clearCubeMap(parentCtx, *m_curr.get());
         m_cleared = true;
     }
 
@@ -175,16 +174,7 @@ bool CubeMapRenderer::render(
         //std::cout << "update: " << m_updateFace << "\n";
     }
 
-    clearCubeMap(parentCtx, *m_curr.get());
-
     for (unsigned int face = fromFace; face < fromFace + updateCount; face++) {
-        //glFramebufferTexture2D(
-        //    GL_FRAMEBUFFER,
-        //    GL_COLOR_ATTACHMENT0,
-        //    GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
-        //    m_curr->m_cubeMap.m_textureID,
-        //    0);
-
         glm::vec4 debugColor{ DEBUG_COLOR[face] };
 
         // centerNode->getVolume()->getRadius();
@@ -208,7 +198,6 @@ bool CubeMapRenderer::render(
         localCtx.updateDataUBO();
 
         auto targetBuffer = m_curr->asFrameBuffer(face);
-        //targetBuffer.clear(ctx, clearColor);
         drawNodes(localCtx, &targetBuffer, centerNode, debugColor);
     }
 
@@ -261,6 +250,7 @@ void CubeMapRenderer::drawNodes(
 {
     // TODO KI to match special logic in CubeMapBuffer
     targetBuffer->bind(ctx);
+    targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
 
     ctx.m_nodeDraw->drawNodes(
         ctx,
@@ -270,6 +260,8 @@ void CubeMapRenderer::drawNodes(
         // => i.e. show garbage from old render round and such
         [&current](const Node* node) { return node != current; },
         GL_COLOR_BUFFER_BIT);
+
+    targetBuffer->unbind(ctx);
 }
 
 Node* CubeMapRenderer::findCenter(const RenderContext& ctx)

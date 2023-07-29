@@ -136,6 +136,7 @@ void GLState::bindTexture(
 
 int GLState::getFrameBuffer() noexcept
 {
+    // https://stackoverflow.com/questions/27459859/how-to-check-which-frame-buffer-object-is-currently-bound-in-opengl
     GLint drawFboId;
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
 
