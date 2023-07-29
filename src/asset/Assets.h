@@ -171,6 +171,7 @@ public:
     float effectBloomExposure;
     int effectBloomIterations;
 
+    bool effectOitEnabled;
     bool effectGlowEnabled;
     bool effectFogEnabled;
 

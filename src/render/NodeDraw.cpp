@@ -80,10 +80,12 @@ void NodeDraw::drawNodes(
         ctx.m_batch->flush(ctx);
 
         ctx.setAllowBlend(oldAllowBlend);
+
+        m_gBuffer.bindTexture(ctx);
     }
 
     // pass 1.2 - draw OIT
-    //if (false)
+    if (ctx.m_assets.effectOitEnabled)
     {
         m_oitBuffer.bind(ctx);
         m_oitBuffer.clearAll();
@@ -109,6 +111,8 @@ void NodeDraw::drawNodes(
         // NOTE KI *MUST* reset blend mode (messed caching earlier)
         ctx.m_state.clearBlendMode();
         ctx.m_state.setDepthMask(oldDepthMask);
+
+        m_oitBuffer.bindTexture(ctx);
     }
 
     // https://community.khronos.org/t/selectively-writing-to-buffers/71054
@@ -119,10 +123,7 @@ void NodeDraw::drawNodes(
         activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
         activeBuffer->bind(ctx);
-        activeBuffer->clearAll();
-
-        m_gBuffer.bindTexture(ctx);
-        m_oitBuffer.bindTexture(ctx);
+        m_effectBuffer.clearAll();
 
         activeBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
         activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
@@ -198,7 +199,6 @@ void NodeDraw::drawNodes(
 
             activeBuffer = m_effectBuffer.m_secondary.get();
             activeBuffer->bind(ctx);
-            activeBuffer->clearAll();
 
             m_blendBloomProgram->bind(ctx.m_state);
             m_textureQuad.draw(ctx);
@@ -215,14 +215,20 @@ void NodeDraw::drawNodes(
 
             activeBuffer = m_effectBuffer.m_secondary.get();
             activeBuffer->bind(ctx);
-            activeBuffer->clearAll();
         }
 
         ctx.m_state.setEnabled(GL_BLEND, true);
         ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-        m_blendOitProgram->bind(ctx.m_state);
-        m_textureQuad.draw(ctx);
+        //// NOTE KI do NOT modify depth with blend
+        //auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
+
+        if (ctx.m_assets.effectOitEnabled) {
+            m_blendOitProgram->bind(ctx.m_state);
+            m_textureQuad.draw(ctx);
+        }
+
+        //ctx.m_state.setDepthMask(oldDepthMask);
 
         if (ctx.m_assets.effectFogEnabled) {
             m_fogProgram->bind(ctx.m_state);
@@ -268,7 +274,9 @@ void NodeDraw::drawNodes(
     {
         ctx.m_state.bindFrameBuffer(0, false);
 
-        m_oitBuffer.invalidateAll();
+        if (ctx.m_assets.effectOitEnabled) {
+            m_oitBuffer.invalidateAll();
+        }
         m_effectBuffer.invalidateAll();
         m_gBuffer.invalidateAll();
     }

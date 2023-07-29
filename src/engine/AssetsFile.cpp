@@ -354,6 +354,9 @@ void AssetsFile::loadAssets(
         else if (k == "effect_bloom_iterations") {
             data.effectBloomIterations = readInt(v);
         }
+        else if (k == "effect_oit_enabled") {
+            data.effectOitEnabled = readBool(v);
+        }
         else if (k == "effect_glow_enabled") {
             data.effectGlowEnabled = readBool(v);
         }

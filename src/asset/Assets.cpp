@@ -156,6 +156,7 @@ Assets::Assets()
     effectBloomExposure = 1.0f;
     effectBloomIterations = 5;
 
+    effectOitEnabled = true;
     effectGlowEnabled = true;
     effectFogEnabled = true;
 
