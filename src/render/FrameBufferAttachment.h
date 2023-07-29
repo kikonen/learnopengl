@@ -51,8 +51,14 @@ struct FrameBufferAttachment {
 
     FrameBufferAttachment* shared{ nullptr };
 
+    FrameBufferAttachment();
+    ~FrameBufferAttachment();
+
     void clearBuffer(int fbo) const;
     void clearWithMask(int fbo, GLbitfield mask) const;
+
+    void invalidate(
+        int fbo) const;
 
     static FrameBufferAttachment getShared(FrameBufferAttachment* shared);
 

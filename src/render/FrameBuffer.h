@@ -72,6 +72,11 @@ public:
     void clearAll() const;
     void clearAttachment(int attachmentIndex) const;
 
+    void invalidateAttachment(
+        int attachmentIndex);
+
+    void invalidateAll();
+
     int getDrawBufferCount() const noexcept {
         return m_drawBuffers.size();
     }

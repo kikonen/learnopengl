@@ -70,3 +70,13 @@ void OITBuffer::unbindTexture(const RenderContext& ctx)
     m_buffer->unbindTexture(ctx, UNIT_OIT_ACCUMULATOR);
     m_buffer->unbindTexture(ctx, UNIT_OIT_REVEAL);
 }
+
+void OITBuffer::clearAll()
+{
+    m_buffer->clearAll();
+}
+
+void OITBuffer::invalidateAll()
+{
+    m_buffer->invalidateAll();
+}

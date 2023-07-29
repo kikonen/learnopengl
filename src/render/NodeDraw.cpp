@@ -62,18 +62,12 @@ void NodeDraw::drawNodes(
     const std::function<bool(const Node*)>& nodeSelector,
     GLbitfield copyMask)
 {
-    // https://community.khronos.org/t/selectively-writing-to-buffers/71054
-    m_effectBuffer.m_primary->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
-    auto* activeBuffer = m_effectBuffer.m_primary.get();
-
-    m_effectBuffer.clearAll();
-
     // pass 1.1 - draw geometry
     // => nodes supporting G-buffer
     //if (false)
     {
         m_gBuffer.bind(ctx);
-        m_gBuffer.m_buffer->clearAll();
+        m_gBuffer.clearAll();
 
         // NOTE KI no blend in G-buffer
         auto oldAllowBlend = ctx.setAllowBlend(false);
@@ -92,9 +86,7 @@ void NodeDraw::drawNodes(
     //if (false)
     {
         m_oitBuffer.bind(ctx);
-
-        m_oitBuffer.m_buffer->clearAttachment(OITBuffer::ATT_ACCUMULATOR_INDEX);
-        m_oitBuffer.m_buffer->clearAttachment(OITBuffer::ATT_REVEAL_INDEX);
+        m_oitBuffer.clearAll();
 
         // NOTE KI do NOT modify depth with blend
         auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
@@ -119,13 +111,18 @@ void NodeDraw::drawNodes(
         ctx.m_state.setDepthMask(oldDepthMask);
     }
 
+    // https://community.khronos.org/t/selectively-writing-to-buffers/71054
+    auto* activeBuffer = m_effectBuffer.m_primary.get();
+
     // pass 2 => effectBuffer
     {
         activeBuffer->bind(ctx);
+        activeBuffer->clearAll();
 
         m_gBuffer.bindTexture(ctx);
         m_oitBuffer.bindTexture(ctx);
 
+        activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
         activeBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
         activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
     }
@@ -200,6 +197,7 @@ void NodeDraw::drawNodes(
 
             activeBuffer = m_effectBuffer.m_secondary.get();
             activeBuffer->bind(ctx);
+            activeBuffer->clearAll();
 
             m_blendBloomProgram->bind(ctx.m_state);
             m_textureQuad.draw(ctx);
@@ -216,6 +214,7 @@ void NodeDraw::drawNodes(
 
             activeBuffer = m_effectBuffer.m_secondary.get();
             activeBuffer->bind(ctx);
+            activeBuffer->clearAll();
         }
 
         ctx.m_state.setEnabled(GL_BLEND, true);
@@ -264,7 +263,14 @@ void NodeDraw::drawNodes(
         drawDebug(ctx, targetBuffer);
     }
 
-    ctx.m_state.bindFrameBuffer(0, false);
+    // cleanup
+    {
+        ctx.m_state.bindFrameBuffer(0, false);
+
+        m_oitBuffer.invalidateAll();
+        m_effectBuffer.invalidateAll();
+        m_gBuffer.invalidateAll();
+    }
 }
 
 void NodeDraw::drawDebug(

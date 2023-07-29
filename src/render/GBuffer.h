@@ -23,6 +23,9 @@ public:
     void bindDepthTexture(const RenderContext& ctx);
     void unbindDepthTexture(const RenderContext& ctx);
 
+    void clearAll();
+    void invalidateAll();
+
 public:
     std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
 

@@ -29,6 +29,7 @@ public:
     void updateView(const RenderContext& ctx);
 
     void clearAll();
+    void invalidateAll();
 
 public:
     std::unique_ptr<FrameBuffer> m_primary{ nullptr };

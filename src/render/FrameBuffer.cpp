@@ -31,19 +31,7 @@ FrameBuffer::~FrameBuffer()
     if (!m_prepared) return;
 
     glDeleteFramebuffers(1, &m_fbo);
-
-    for (auto& att : m_spec.attachments) {
-        // NOTE KI don't touch shared buffer
-        if (att.shared) continue;
-
-        if (att.textureID) {
-            glDeleteTextures(1, &att.textureID);
-        }
-        if (att.rbo) {
-            glDeleteRenderbuffers(1, &att.rbo);
-        }
-    }
-
+    m_spec.attachments.clear();
 }
 
 const std::string FrameBuffer::str() const noexcept
@@ -358,6 +346,19 @@ void FrameBuffer::clearAll() const
 void FrameBuffer::clearAttachment(int attachmentIndex) const
 {
     m_spec.attachments[attachmentIndex].clearBuffer(m_fbo);
+}
+
+void FrameBuffer::invalidateAttachment(
+    int attachmentIndex)
+{
+    m_spec.attachments[attachmentIndex].invalidate(m_fbo);
+}
+
+void FrameBuffer::invalidateAll()
+{
+    for (const auto& att : m_spec.attachments) {
+        att.invalidate(m_fbo);
+    }
 }
 
 FrameBufferAttachment* FrameBuffer::getDepthAttachment()

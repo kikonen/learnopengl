@@ -93,3 +93,13 @@ void GBuffer::unbindDepthTexture(const RenderContext& ctx)
 {
     m_buffer->unbindTexture(ctx, UNIT_G_DEPTH);
 }
+
+void GBuffer::clearAll()
+{
+    m_buffer->clearAll();
+}
+
+void GBuffer::invalidateAll()
+{
+    m_buffer->invalidateAll();
+}

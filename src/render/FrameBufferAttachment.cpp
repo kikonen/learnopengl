@@ -5,11 +5,31 @@
 namespace {
 }
 
+
+FrameBufferAttachment::FrameBufferAttachment()
+{
+}
+
+FrameBufferAttachment::~FrameBufferAttachment()
+{
+    // NOTE KI don't touch shared buffer
+    if (shared) return;
+
+    if (textureID) {
+        glDeleteTextures(1, &textureID);
+    }
+    if (rbo) {
+        glDeleteRenderbuffers(1, &rbo);
+    }
+}
+
 // NOTE KI *bindless* clear
 // i.e. "glClear" *requires* bind
 // => less changes of breaking state
 void FrameBufferAttachment::clearBuffer(int fbo) const
 {
+    if (shared) return;
+
     switch (clearType) {
     case ClearType::FLOAT:
         if (drawBufferIndex >= 0) {
@@ -36,6 +56,20 @@ void FrameBufferAttachment::clearBuffer(int fbo) const
         glClearNamedFramebufferfi(fbo, GL_DEPTH_STENCIL, 0, clearColor[0], stencilClear);
         break;
     }
+}
+
+void FrameBufferAttachment::invalidate(
+    int fbo) const
+{
+    //https://www.khronos.org/opengl/wiki/Framebuffer
+    // https://community.arm.com/arm-community-blogs/b/graphics-gaming-and-vr-blog/posts/mali-performance-2-how-to-correctly-handle-framebuffers
+
+    //return;
+    if (shared) return;
+
+    GLenum attachments[] = { attachment };
+
+    glInvalidateNamedFramebufferData(fbo, 1, attachments);
 }
 
 void FrameBufferAttachment::clearWithMask(int fbo, GLbitfield mask) const

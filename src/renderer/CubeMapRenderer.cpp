@@ -225,6 +225,7 @@ void CubeMapRenderer::clearCubeMap(
     cube.bind(ctx);
 
     glm::vec4 clearColor{ 0.f };
+    ctx.m_state.clearColor(clearColor);
 
     for (int face = 0; face < 6; face++) {
         glFramebufferTexture2D(
@@ -233,8 +234,6 @@ void CubeMapRenderer::clearCubeMap(
             GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
             cube.m_cubeMap.m_textureID,
             0);
-
-        ctx.m_state.clearColor(clearColor);
 
         glClear(GL_COLOR_BUFFER_BIT);
     }

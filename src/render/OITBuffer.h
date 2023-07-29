@@ -27,6 +27,9 @@ public:
     void bindTexture(const RenderContext& ctx);
     void unbindTexture(const RenderContext& ctx);
 
+    void clearAll();
+    void invalidateAll();
+
 public:
     std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
 

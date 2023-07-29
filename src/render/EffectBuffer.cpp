@@ -106,3 +106,12 @@ void EffectBuffer::clearAll()
         buf->clearAll();
     }
 }
+
+void EffectBuffer::invalidateAll()
+{
+    m_primary->invalidateAll();
+    m_secondary->invalidateAll();
+    for (auto& buf : m_buffers) {
+        buf->invalidateAll();
+    }
+}
