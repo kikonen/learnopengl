@@ -108,7 +108,10 @@ void NodeDraw::drawNodes(
 
         ctx.m_batch->flush(ctx);
 
-        // NOTE KI *MUST* reset blend mode (messed caching earlier)
+        // NOTE KI *MUST* reset blend mode (especially for attachment 1)
+        // ex. if not done OIT vs. bloom works strangely
+        glBlendFunci(0, GL_ONE, GL_ONE);
+        glBlendFunci(1, GL_ONE, GL_ONE);
         ctx.m_state.clearBlendMode();
         ctx.m_state.setDepthMask(oldDepthMask);
 
@@ -178,6 +181,8 @@ void NodeDraw::drawNodes(
     if (ctx.m_allowBlend)
     {
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+        // NOTE KI do NOT modify depth with blend (likely redundant)
+        auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
 
         if (ctx.m_assets.effectBloomEnabled)
         {
@@ -217,25 +222,24 @@ void NodeDraw::drawNodes(
             activeBuffer->bind(ctx);
         }
 
-        ctx.m_state.setEnabled(GL_BLEND, true);
-        ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+        {
+            ctx.m_state.setEnabled(GL_BLEND, true);
+            ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-        //// NOTE KI do NOT modify depth with blend
-        //auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
+            if (ctx.m_assets.effectOitEnabled) {
+                m_blendOitProgram->bind(ctx.m_state);
+                m_textureQuad.draw(ctx);
+            }
 
-        if (ctx.m_assets.effectOitEnabled) {
-            m_blendOitProgram->bind(ctx.m_state);
-            m_textureQuad.draw(ctx);
+            if (ctx.m_assets.effectFogEnabled) {
+                m_fogProgram->bind(ctx.m_state);
+                m_textureQuad.draw(ctx);
+            }
+
+            ctx.m_state.setEnabled(GL_BLEND, false);
         }
 
-        //ctx.m_state.setDepthMask(oldDepthMask);
-
-        if (ctx.m_assets.effectFogEnabled) {
-            m_fogProgram->bind(ctx.m_state);
-            m_textureQuad.draw(ctx);
-        }
-
-        ctx.m_state.setEnabled(GL_BLEND, false);
+        ctx.m_state.setDepthMask(oldDepthMask);
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
     }
 
