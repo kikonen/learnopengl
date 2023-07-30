@@ -23,7 +23,7 @@ entities:
     model: texture_cube_4
     program: g_tex
     pos: [0.0, 2.0, 0.0]
-    rotation: [0, 180, 0]
+    rotation: [0, 90, 0]
     enabled: true
     repeat:
       z_count: 20
