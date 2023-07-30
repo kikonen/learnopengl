@@ -32,6 +32,62 @@ entities:
       enforce_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
+    xenabled: true
+  - name: Object front
+    type: billboard
+    priority: 1
+    program: g_tex
+    pos: [2.5, 0, 0]
+    material: skeleton_front
+    spritesheet: skeleton
+    render_flags:
+      alpha: true
+      physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [0.8, 1.8, 1]
+    enabled: true
+  - name: Object back
+    type: billboard
+    priority: 1
+    program: g_tex
+    pos: [5, 0, 0]
+    material: skeleton_back
+    spritesheet: skeleton
+    render_flags:
+      alpha: true
+      physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [0.8, 1.8, 1]
+    enabled: true
+  - name: Object right
+    type: billboard
+    priority: 1
+    program: g_tex
+    pos: [7.5, 0, 0]
+    material: skeleton_right
+    spritesheet: skeleton
+    render_flags:
+      alpha: true
+      physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [0.8, 1.8, 1]
+    enabled: true
+  - name: Object left
+    type: billboard
+    priority: 1
+    program: g_tex
+    pos: [10, 0, 0]
+    material: skeleton_left
+    spritesheet: skeleton
+    render_flags:
+      alpha: true
+      physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [0.8, 1.8, 1]
     enabled: true
   - name: Directional light
     type: origo
@@ -98,6 +154,18 @@ materials:
     ka: [0.7, 0.7, 0.7, 1.0]
     ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: skeleton/skeleton_back.png
+  - name: skeleton_left
+    type: sprite
+    ns: 20
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
+    map_kd: skeleton/skeleton_left.png
+  - name: skeleton_right
+    type: sprite
+    ns: 20
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
+    map_kd: skeleton/skeleton_right.png
 spritesheets:
   - name: skeleton
     sprites:
