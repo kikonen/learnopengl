@@ -146,7 +146,7 @@ bool ShadowMapRenderer::render(
 
     m_rendered = true;
 
-    ctx.m_state.bindFrameBuffer(0, false);
+    //ctx.m_state.bindFrameBuffer(0, false);
 
     return true;
 }

@@ -272,7 +272,7 @@ void NodeDraw::drawNodes(
 
     // cleanup
     {
-        ctx.m_state.bindFrameBuffer(0, false);
+        //ctx.m_state.bindFrameBuffer(0, false);
 
         if (ctx.m_assets.effectOitEnabled) {
             m_oitBuffer.invalidateAll();

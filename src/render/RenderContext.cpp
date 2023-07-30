@@ -225,10 +225,10 @@ void RenderContext::validateRender(const std::string& label) const
         throw std::runtime_error{ fmt::format("CONTEXT: Batch was NOT flushed: name={}, label={}", m_name, label)};
     }
 
-    int fbo = m_state.getFrameBuffer();
-    if (fbo > 0) {
-        throw std::runtime_error{ fmt::format("CONTEXT: Stale frame buffer: context={}, fbo={}, label={}", m_name, fbo, label)};
-    }
+    //int fbo = m_state.getFrameBuffer();
+    //if (fbo > 0) {
+    //    throw std::runtime_error{ fmt::format("CONTEXT: Stale frame buffer: context={}, fbo={}, label={}", m_name, fbo, label)};
+    //}
 }
 
 void RenderContext::copyShadowFrom(const RenderContext& b)

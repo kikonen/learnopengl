@@ -38,7 +38,7 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)
 {
-    ctx.m_state.bindFrameBuffer(0, false);
+    //ctx.m_state.bindFrameBuffer(0, false);
 }
 
 void DynamicCubeMap::prepare(
