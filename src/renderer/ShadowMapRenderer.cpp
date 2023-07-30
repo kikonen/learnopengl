@@ -120,8 +120,19 @@ bool ShadowMapRenderer::render(
     auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
     if (!node) return false;
 
-    for (auto& cascade : m_cascades) {
-        cascade->render(ctx);
+    {
+        // OpenGL Programming Guide, 8th Edition, page 404
+        // Enable polygon offset to resolve depth-fighting isuses
+        ctx.m_state.setEnabled(GL_POLYGON_OFFSET_FILL, ctx.m_assets.shadowPolygonOffsetEnabled);
+        ctx.m_state.polygonOffset(ctx.m_assets.shadowPolygonOffset);
+        ctx.m_state.cullFace(GL_FRONT);
+
+        for (auto& cascade : m_cascades) {
+            cascade->render(ctx);
+        }
+
+        ctx.m_state.cullFace(ctx.m_defaults.m_cullFace);
+        ctx.m_state.setEnabled(GL_POLYGON_OFFSET_FILL, false);
     }
 
     m_rotateElapsedSecs += ctx.m_clock.elapsedSecs;
