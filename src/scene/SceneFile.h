@@ -22,6 +22,9 @@ namespace event {
     class Dispatcher;
 }
 
+class Sprite;
+struct Shape;
+
 class Light;
 class Camera;
 
@@ -232,6 +235,8 @@ class SceneFile
         Material materialModifiers;
         bool materialModifiers_enabled = false;
 
+        std::string spriteName;
+
         int batchSize{ -1 };
 
         Repeat repeat;
@@ -268,7 +273,8 @@ private:
         SkyboxData& skybox,
         const EntityData& root,
         const std::vector<EntityData>& entities,
-        std::vector<Material>& materials);
+        std::vector<Material>& materials,
+        std::vector<Sprite>& sprited);
 
     void attachSkybox(
         const EntityData& root,
@@ -284,7 +290,8 @@ private:
     void attachEntity(
         const EntityData& root,
         const EntityData& data,
-        std::vector<Material>& materials);
+        std::vector<Material>& materials,
+        std::vector<Sprite>& sprites);
 
     MeshType* attachEntityClone(
         MeshType* type,
@@ -293,7 +300,8 @@ private:
         const EntityCloneData& data,
         bool cloned,
         int cloneIndex,
-        std::vector<Material>& materials);
+        std::vector<Material>& materials,
+        std::vector<Sprite>& sprites);
 
     MeshType* attachEntityCloneRepeat(
         MeshType* type,
@@ -304,7 +312,8 @@ private:
         int cloneIndex,
         const glm::uvec3& tile,
         const glm::vec3& posAdjustment,
-        std::vector<Material>& materials);
+        std::vector<Material>& materials,
+        std::vector<Sprite>& sprites);
 
     void assignFlags(
         const EntityCloneData& data,
@@ -319,12 +328,18 @@ private:
         bool isRoot,
         const EntityCloneData& data,
         const glm::uvec3& tile,
-        std::vector<Material>& materials);
+        std::vector<Material>& materials,
+        std::vector<Sprite>& sprites);
 
     void resolveMaterial(
         MeshType* type,
         const EntityCloneData& data,
         std::vector<Material>& materials);
+
+    void resolveSprite(
+        MeshType* type,
+        const EntityCloneData& data,
+        std::vector<Sprite>& sprites);
 
     void resolveMesh(
         MeshType* type,
@@ -419,6 +434,22 @@ private:
         MaterialField& fields,
         Material& material);
 
+    void loadSprites(
+        const YAML::Node& doc,
+        std::vector<Sprite>& sprites);
+
+    void loadSprite(
+        const YAML::Node& doc,
+        Sprite& sprites);
+
+    void loadShapes(
+        const YAML::Node& doc,
+        std::vector<Shape>& shapes);
+
+    void loadShape(
+        const YAML::Node& node,
+        Shape& shape);
+
     void loadTextureSpec(
         const YAML::Node& node,
         TextureSpec& textureSpec);
@@ -480,6 +511,7 @@ private:
     EntityData m_root;
     std::vector<EntityData> m_entities;
     std::vector<Material> m_materials;
+    std::vector<Sprite> m_sprites;
 
     std::unordered_map<std::string, uuids::uuid> m_autoIds;
 

@@ -47,7 +47,7 @@ void MaterialRegistry::add(Material& material)
         throw std::runtime_error{ fmt::format("MAX_MATERIAL_COUNT: {}", MAX_MATERIAL_COUNT) };
 
     {
-        size_t size = m_indeces.size() + std::max(MATERIAL_BLOCK_SIZE, count) + MATERIAL_BLOCK_SIZE;
+        size_t size = m_materials.size() + std::max(MATERIAL_BLOCK_SIZE, count) + MATERIAL_BLOCK_SIZE;
         size += MATERIAL_BLOCK_SIZE - size % MATERIAL_BLOCK_SIZE;
         size = std::min(size, MAX_MATERIAL_COUNT);
         m_materials.reserve(size);

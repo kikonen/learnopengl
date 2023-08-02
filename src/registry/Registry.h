@@ -8,6 +8,7 @@
 
 #include "registry/ProgramRegistry.h"
 #include "registry/MaterialRegistry.h"
+#include "registry/SpriteRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
@@ -37,6 +38,7 @@ public:
     ProgramRegistry* const m_programRegistry;
 
     MaterialRegistry* const m_materialRegistry;
+    SpriteRegistry* const m_spriteRegistry;
     MeshTypeRegistry* const m_typeRegistry;
     ModelRegistry* const m_modelRegistry;
     NodeRegistry* const m_nodeRegistry;
@@ -58,6 +60,7 @@ private:
     ProgramRegistry m_programRegistryImpl;
 
     MaterialRegistry m_materialRegistryImpl;
+    SpriteRegistry m_spriteRegistryImpl;
     MeshTypeRegistry m_typeRegistryImpl;
     ModelRegistry m_modelRegistryImpl;
     NodeRegistry m_nodeRegistryImpl;

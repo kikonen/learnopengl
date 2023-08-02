@@ -25,7 +25,7 @@ entities:
     program: g_tex
     pos: [0, 0, 0]
     material: skeleton
-    spritesheet: skeleton
+    sprite: skeleton
     render_flags:
       alpha: true
       physics: true
@@ -39,7 +39,7 @@ entities:
     program: g_tex
     pos: [2.5, 0, 0]
     material: skeleton_front
-    spritesheet: skeleton
+    sprite: skeleton
     render_flags:
       alpha: true
       physics: true
@@ -53,7 +53,7 @@ entities:
     program: g_tex
     pos: [5, 0, 0]
     material: skeleton_back
-    spritesheet: skeleton
+    sprite: skeleton
     render_flags:
       alpha: true
       physics: true
@@ -67,7 +67,7 @@ entities:
     program: g_tex
     pos: [7.5, 0, 0]
     material: skeleton_right
-    spritesheet: skeleton
+    sprite: skeleton
     render_flags:
       alpha: true
       physics: true
@@ -81,7 +81,7 @@ entities:
     program: g_tex
     pos: [10, 0, 0]
     material: skeleton_left
-    spritesheet: skeleton
+    sprite: skeleton
     render_flags:
       alpha: true
       physics: true
@@ -166,14 +166,14 @@ materials:
     ka: [0.7, 0.7, 0.7, 1.0]
     ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: skeleton/skeleton_right.png
-spritesheets:
+sprites:
   - name: skeleton
-    sprites:
-      - dir: 0
+    shapes:
+      - rotation: 0
         map_kd: skeleton/skeleton_front.png
-      - dir: 90
+      - rotation: 90
         map_kd: skeleton/skeleton_right.png
-      - dir: 180
+      - rotation: 180
         map_kd: skeleton/skeleton_back.png
-      - dir: 270
+      - rotation: 270
         map_kd: skeleton/skeleton_left.png

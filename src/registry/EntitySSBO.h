@@ -50,7 +50,7 @@ struct EntitySSBO {
     int pad4_1;
 
     GLint u_materialIndex{ 0 }; // 1 * 4 = 4
-    GLint u_spriteIndex{ -1 }; // 1 * 4 = 4
+    GLint u_shapeIndex{ -1 }; // 1 * 4 = 4
     GLuint u_highlightIndex{ 0 }; // 1 * 4 = 4
 
     GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4

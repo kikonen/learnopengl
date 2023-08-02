@@ -17,7 +17,7 @@ struct Entity {
   vec4 worldScale;
 
   int materialIndex;
-  int spriteIndex;
+  int shapeIndex;
   uint highlightIndex;
 
   uint objectID;

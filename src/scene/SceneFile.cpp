@@ -17,6 +17,8 @@
 #include "asset/ModelMesh.h"
 #include "asset/QuadMesh.h"
 #include "asset/SpriteMesh.h"
+#include "asset/Sprite.h"
+#include "asset/Shape.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
@@ -91,27 +93,29 @@ void SceneFile::load(
 
     loadSkybox(doc, m_skybox);
     loadMaterials(doc, m_materials);
+    loadSprites(doc, m_sprites);
 
     loadRoot(doc, m_root);
     loadEntities(doc, m_entities);
 
-    attach(m_skybox, m_root, m_entities, m_materials);
+    attach(m_skybox, m_root, m_entities, m_materials, m_sprites);
 }
 
 void SceneFile::attach(
     SkyboxData& skybox,
     const EntityData& root,
     const std::vector<EntityData>& entities,
-    std::vector<Material>& materials)
+    std::vector<Material>& materials,
+    std::vector<Sprite>& sprites)
 {
     attachSkybox(root, skybox, materials);
 
-    attachEntity(root, root, materials);
+    attachEntity(root, root, materials, sprites);
     attachVolume(root);
     attachCubeMapCenter(root);
 
     for (const auto& entity : entities) {
-        attachEntity(root, entity, materials);
+        attachEntity(root, entity, materials, sprites);
     }
 }
 
@@ -215,7 +219,7 @@ void SceneFile::attachVolume(
     {
         auto* controller = new VolumeController();
 
-        event::Event evt { event::Type::controller_add };
+            event::Event evt { event::Type::controller_add };
         evt.body.control = {
             .target = node->m_objectID,
             .controller = controller
@@ -285,16 +289,17 @@ void SceneFile::attachCubeMapCenter(
 void SceneFile::attachEntity(
     const EntityData& root,
     const EntityData& data,
-    std::vector<Material>& materials)
+    std::vector<Material>& materials,
+    std::vector<Sprite>& sprites)
 {
     if (!data.base.enabled) {
         return;
     }
 
-    m_asyncLoader->addLoader(m_alive, [this, &root, &data, &materials]() {
+    m_asyncLoader->addLoader(m_alive, [this, &root, &data, &materials, &sprites]() {
         if (data.clones.empty()) {
             MeshType* type{ nullptr };
-            attachEntityClone(type, root, data, data.base, false, 0, materials);
+            attachEntityClone(type, root, data, data.base, false, 0, materials, sprites);
         }
         else {
             MeshType* type{ nullptr };
@@ -302,7 +307,7 @@ void SceneFile::attachEntity(
             int cloneIndex = 0;
             for (auto& cloneData : data.clones) {
                 if (!*m_alive) return;
-                type = attachEntityClone(type, root, data, cloneData, true, cloneIndex, materials);
+                type = attachEntityClone(type, root, data, cloneData, true, cloneIndex, materials, sprites);
                 if (!data.base.cloneMesh)
                     type = nullptr;
                 cloneIndex++;
@@ -318,7 +323,8 @@ MeshType* SceneFile::attachEntityClone(
     const EntityCloneData& data,
     bool cloned,
     int cloneIndex,
-    std::vector<Material>& materials)
+    std::vector<Material>& materials,
+    std::vector<Sprite>& sprites)
 {
     if (!*m_alive) return type;
 
@@ -345,7 +351,8 @@ MeshType* SceneFile::attachEntityClone(
                     cloneIndex,
                     tile,
                     posAdjustment,
-                    materials);
+                    materials,
+                    sprites);
 
                 if (!entity.base.cloneMesh)
                     type = nullptr;
@@ -365,7 +372,8 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     int cloneIndex,
     const glm::uvec3& tile,
     const glm::vec3& posAdjustment,
-    std::vector<Material>& materials)
+    std::vector<Material>& materials,
+    std::vector<Sprite>& sprites)
 {
     if (!*m_alive) return type;
 
@@ -381,7 +389,8 @@ MeshType* SceneFile::attachEntityCloneRepeat(
             entity.isRoot,
             data,
             tile,
-            materials);
+            materials,
+            sprites);
         if (!type) return type;
     }
 
@@ -438,7 +447,8 @@ MeshType* SceneFile::createType(
     bool isRoot,
     const EntityCloneData& data,
     const glm::uvec3& tile,
-    std::vector<Material>& materials)
+    std::vector<Material>& materials,
+    std::vector<Sprite>& sprites)
 {
     auto type = m_registry->m_typeRegistry->getType(data.name);
     assignFlags(data, type);
@@ -1648,6 +1658,81 @@ void SceneFile::loadMaterial(
         }
         else {
             reportUnknown("material_entry", k, v);
+        }
+    }
+}
+
+void SceneFile::loadSprites(
+    const YAML::Node& doc,
+    std::vector<Sprite>& sprites)
+{
+    for (const auto& entry : doc["sprites"]) {
+        Sprite& sprite = sprites.emplace_back();
+        loadSprite(entry, sprite);
+    }
+}
+
+void SceneFile::loadSprite(
+    const YAML::Node& node,
+    Sprite& sprite)
+{
+    for (const auto& pair : node) {
+        auto key = pair.first.as<std::string>();
+        const std::string k = util::toLower(key);
+        const YAML::Node& v = pair.second;
+
+        if (k == "name") {
+            sprite.m_name = v.as<std::string>();
+        }
+        else if (k == "shapes") {
+            loadShapes(v, sprite.m_shapes);
+        }
+    }
+}
+
+void SceneFile::loadShapes(
+    const YAML::Node& node,
+    std::vector<Shape>& shapes)
+{
+    for (const auto& entry : node) {
+        Shape& shape = shapes.emplace_back();
+        loadShape(entry, shape);
+    }
+}
+
+void SceneFile::loadShape(
+    const YAML::Node& node,
+    Shape& shape)
+{
+    for (const auto& pair : node) {
+        auto key = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+        const std::string k = util::toLower(key);
+
+        if (k == "rotation") {
+            shape.rotation = readFloat(v);
+        }
+        else if (k == "map_kd") {
+            std::string line = v.as<std::string>();
+            shape.map_kd = resolveTexturePath(line);
+        }
+        else if (k == "map_ke") {
+            std::string line = v.as<std::string>();
+            shape.map_ke = resolveTexturePath(line);
+        }
+        else if (k == "map_ks") {
+            std::string line = v.as<std::string>();
+            shape.map_ks = resolveTexturePath(line);
+        }
+        else if (k == "map_bump") {
+            std::string line = v.as<std::string>();
+            shape.map_bump = resolveTexturePath(line);
+        }
+        else if (k == "map_bump_strength") {
+            shape.map_bump_strength = readFloat(v);
+        }
+        else {
+            reportUnknown("shape_entry", k, v);
         }
     }
 }

@@ -183,8 +183,9 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
-    <ClCompile Include="src\asset\Spritesheet.cpp" />
+    <ClCompile Include="src\registry\SpriteRegistry.cpp" />
     <ClCompile Include="src\render\EffectBuffer.cpp" />
     <ClCompile Include="src\asset\Frustum.cpp" />
     <ClCompile Include="src\asset\Plane.cpp" />
@@ -334,9 +335,9 @@
     <ClInclude Include="src\asset\MatricesUBO.h" />
     <ClInclude Include="src\asset\ModelVAO.h" />
     <ClInclude Include="src\asset\Shader.h" />
+    <ClInclude Include="src\asset\Shape.h" />
     <ClInclude Include="src\asset\Sprite.h" />
-    <ClInclude Include="src\asset\SpriteSheet.h" />
-    <ClInclude Include="src\asset\SpriteSSBO.h" />
+    <ClInclude Include="src\asset\ShapeSSBO.h" />
     <ClInclude Include="src\asset\SpriteVAO.h" />
     <ClInclude Include="src\asset\TerrainMaterialInit.h" />
     <ClInclude Include="src\asset\TerrainMesh.h" />
@@ -415,6 +416,7 @@
     <ClInclude Include="src\controller\VolumeController.h" />
     <ClInclude Include="src\ki\uuid.h" />
     <ClInclude Include="src\model\Group.h" />
+    <ClInclude Include="src\registry\SpriteRegistry.h" />
     <ClInclude Include="src\render\EffectBuffer.h" />
     <ClInclude Include="src\render\GBuffer.h" />
     <ClInclude Include="src\render\NodeDraw.h" />

@@ -124,8 +124,6 @@ public:
     bool m_used = false;
     mutable int m_registeredIndex = -1;
 
-    std::string m_materialDir;
-
     TextureSpec textureSpec;
 
     int pattern = -1;

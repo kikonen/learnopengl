@@ -17,37 +17,37 @@
 // members, according to the previous
 // rules, rounded up to a multiple of the
 // structure alignment."
-// 
+//
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 //
 struct MaterialSSBO {
-    glm::vec4 diffuse; // 16
-    glm::vec4 emission; // 16
+    glm::vec4 u_diffuse; // 16
+    glm::vec4 u_emission; // 16
 
     // specular + shininess
-    glm::vec4 specular; // 16
+    glm::vec4 u_specular; // 16
 
-    float ambient;
+    float u_ambient;
 
     // NOTE KI "tex index", not "unit index"
-    int diffuseTex;
-    int emissionTex;
-    int specularTex;
-    int normalMap;
+    int u_diffuseTex;
+    int u_emissionTex;
+    int u_specularTex;
+    int u_normalMap;
 
-    int dudvMap;
-    int heightMap;
-    int noiseMap;
-    int pattern;
+    int u_dudvMap;
+    int u_heightMap;
+    int u_noiseMap;
+    int u_pattern;
 
-    float reflection;
-    float refraction;
-    float refractionRatio;
+    float u_reflection;
+    float u_refraction;
+    float u_refractionRatio;
 
-    float tilingX;
-    float tilingY;
-    int layers;
-    float depth;
+    float u_tilingX;
+    float u_tilingY;
+    int u_layers;
+    float u_depth;
 
     //int pad3_1;
     //int pad3_2;

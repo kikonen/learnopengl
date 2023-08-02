@@ -17,14 +17,20 @@
 // members, according to the previous
 // rules, rounded up to a multiple of the
 // structure alignment."
-// 
+//
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 //
-struct SpriteSSBO {
+struct ShapeSSBO {
     // NOTE KI "tex index", not "unit index"
-    int diffuseTex;
-    int emissionTex;
-    int specularTex;
-    int normalMap;
+    int u_diffuseTex;
+    int u_emissionTex;
+    int u_specularTex;
+    int u_normalMap;
+
+    float u_mapBumpStrength;
+
+    int pad1;
+    int pad2;
+    int pad3;
 };
 #pragma once

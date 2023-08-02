@@ -106,7 +106,7 @@ namespace {
 Material Material::createMaterial(BasicMaterial type)
 {
     switch (type) {
-    case BasicMaterial::basic: return createGoldMaterial();
+    case BasicMaterial::basic: return createBasicMaterial();
     case BasicMaterial::gold: return createGoldMaterial();
     case BasicMaterial::silver: return createSilverMaterial();
     case BasicMaterial::bronze: return createBronzeMaterial();

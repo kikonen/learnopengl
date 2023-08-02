@@ -17,7 +17,7 @@ layout(early_fragment_tests) in;
 in VS_OUT {
   vec2 texCoord;
   flat uint materialIndex;
-  flat uint spriteIndex;
+  flat uint shapeIndex;
 } fs_in;
 
 #endif

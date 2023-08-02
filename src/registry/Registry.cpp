@@ -9,6 +9,7 @@ Registry::Registry(
     // registries
     m_programRegistryImpl(assets, m_alive),
     m_materialRegistryImpl(assets, m_alive),
+    m_spriteRegistryImpl(assets, m_alive),
     m_typeRegistryImpl(assets, m_alive),
     m_modelRegistryImpl(assets, m_alive),
     m_nodeRegistryImpl(assets, m_alive),
@@ -20,6 +21,7 @@ Registry::Registry(
     // pointers
     m_programRegistry(&m_programRegistryImpl),
     m_materialRegistry(&m_materialRegistryImpl),
+    m_spriteRegistry(&m_spriteRegistryImpl),
     m_typeRegistry(&m_typeRegistryImpl),
     m_modelRegistry(&m_modelRegistryImpl),
     m_nodeRegistry(&m_nodeRegistryImpl),
@@ -39,6 +41,7 @@ void Registry::prepare()
     m_dispatcherImpl.prepare();
 
     m_materialRegistryImpl.prepare();
+    m_spriteRegistryImpl.prepare();
     m_entityRegistryImpl.prepare();
     m_modelRegistryImpl.prepare();
 
@@ -54,6 +57,7 @@ void Registry::update(const UpdateContext& ctx)
 {
     m_controllerRegistryImpl.update(ctx);
     m_materialRegistryImpl.update(ctx);
+    m_spriteRegistryImpl.update(ctx);
     m_modelRegistryImpl.update(ctx);
     m_entityRegistryImpl.update(ctx);
 }
