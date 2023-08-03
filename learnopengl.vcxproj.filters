@@ -288,9 +288,6 @@
     <ClCompile Include="src\asset\QuadMaterialInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\SpriteMaterialInit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\asset\SpriteVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -409,6 +406,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\render\TextureQuad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asset\Shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asset\Sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\registry\SpriteRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\EffectBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -731,9 +740,6 @@
     <ClInclude Include="src\asset\QuadMaterialInit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\SpriteMaterialInit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\asset\VertexEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -921,6 +927,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\TextureQuad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\Shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\Sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\ShapeSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\SpriteRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\EffectBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

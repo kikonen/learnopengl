@@ -2,14 +2,14 @@
 
 #include <string>
 
-#include "Assets.h"
-#include "Material.h"
-#include "Mesh.h"
+#include "asset/Assets.h"
+#include "asset/Material.h"
+#include "asset/Mesh.h"
+#include "asset/Sprite.h"
+
 
 class SpriteMesh final : public Mesh
 {
-    friend class SpriteMaterialInit;
-
 public:
     SpriteMesh();
     virtual ~SpriteMesh();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "asset/MaterialVBO.h"
+#include "asset/Sprite.h"
 
 #include "backend/DrawOptions.h"
 
@@ -110,6 +111,7 @@ public:
     Program* m_program{ nullptr };
 
     MaterialVBO m_materialVBO;
+    Sprite m_sprite;
 
     int m_materialIndex{ 0 };
 

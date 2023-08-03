@@ -26,6 +26,8 @@ public:
 
     void prepare(const Assets& assets);
 
+    void loadTextures(const Assets& assets);
+
     std::vector<Shape>& getShapes() {
         return m_shapes;
     }
@@ -36,8 +38,7 @@ public:
     std::string m_name;
     std::vector<Shape> m_shapes;
 
-    bool m_registered{ false };
-
 private:
     bool m_prepared{ false };
+    bool m_loaded{ false };
 };

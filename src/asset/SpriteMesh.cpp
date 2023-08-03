@@ -5,7 +5,6 @@
 #include "ki/GL.h"
 
 #include "asset/Sphere.h"
-#include "asset/SpriteMaterialInit.h"
 #include "asset/SpriteVAO.h"
 
 #include "registry/MeshType.h"
@@ -61,8 +60,6 @@ GLVertexArray* SpriteMesh::prepare(
 void SpriteMesh::prepareMaterials(
     MaterialVBO& materialVBO)
 {
-    SpriteMaterialInit init;
-    init.prepare(*this, materialVBO);
 }
 
 void SpriteMesh::prepareDrawOptions(

@@ -88,17 +88,19 @@ void SceneFile::load(
     m_registry = registry;
     m_dispatcher = registry->m_dispatcher;
 
-    std::ifstream fin(m_filename);
-    YAML::Node doc = YAML::Load(fin);
+    m_asyncLoader->addLoader(m_alive, [this]() {
+        std::ifstream fin(m_filename);
+        YAML::Node doc = YAML::Load(fin);
 
-    loadSkybox(doc, m_skybox);
-    loadMaterials(doc, m_materials);
-    loadSprites(doc, m_sprites);
+        loadSkybox(doc, m_skybox);
+        loadMaterials(doc, m_materials);
+        loadSprites(doc, m_sprites);
 
-    loadRoot(doc, m_root);
-    loadEntities(doc, m_entities);
+        loadRoot(doc, m_root);
+        loadEntities(doc, m_entities);
 
-    attach(m_skybox, m_root, m_entities, m_materials, m_sprites);
+        attach(m_skybox, m_root, m_entities, m_materials, m_sprites);
+    });
 }
 
 void SceneFile::attach(
@@ -296,24 +298,22 @@ void SceneFile::attachEntity(
         return;
     }
 
-    m_asyncLoader->addLoader(m_alive, [this, &root, &data, &materials, &sprites]() {
-        if (data.clones.empty()) {
-            MeshType* type{ nullptr };
-            attachEntityClone(type, root, data, data.base, false, 0, materials, sprites);
-        }
-        else {
-            MeshType* type{ nullptr };
+    if (data.clones.empty()) {
+        MeshType* type{ nullptr };
+        attachEntityClone(type, root, data, data.base, false, 0, materials, sprites);
+    }
+    else {
+        MeshType* type{ nullptr };
 
-            int cloneIndex = 0;
-            for (auto& cloneData : data.clones) {
-                if (!*m_alive) return;
-                type = attachEntityClone(type, root, data, cloneData, true, cloneIndex, materials, sprites);
-                if (!data.base.cloneMesh)
-                    type = nullptr;
-                cloneIndex++;
-            }
+        int cloneIndex = 0;
+        for (auto& cloneData : data.clones) {
+            if (!*m_alive) return;
+            type = attachEntityClone(type, root, data, cloneData, true, cloneIndex, materials, sprites);
+            if (!data.base.cloneMesh)
+                type = nullptr;
+            cloneIndex++;
         }
-    });
+    }
 }
 
 MeshType* SceneFile::attachEntityClone(
@@ -471,6 +471,7 @@ MeshType* SceneFile::createType(
     } else
     {
         resolveMaterial(type, data, materials);
+        resolveSprite(type, data, sprites);
         resolveMesh(type, data, tile);
 
         // NOTE KI container does not have mesh itself, but it can setup
@@ -580,6 +581,23 @@ void SceneFile::resolveMaterial(
     materialVBO.m_forceDefaultMaterial = data.forceMaterial;
 }
 
+void SceneFile::resolveSprite(
+    MeshType* type,
+    const EntityCloneData& data,
+    std::vector<Sprite>& sprites)
+{
+    Sprite* sprite{ nullptr };
+
+    if (!data.spriteName.empty()) {
+        sprite = Sprite::find(data.spriteName, sprites);
+    }
+
+    if (sprite) {
+        sprite->loadTextures(m_assets);
+        type->m_sprite = *sprite;
+    }
+}
+
 void SceneFile::resolveMesh(
     MeshType* type,
     const EntityCloneData& data,
@@ -606,24 +624,17 @@ void SceneFile::resolveMesh(
         type->m_entityType = EntityType::quad;
     }
     else if (data.type == EntityType::billboard) {
-        if (true) {
-            auto future = m_registry->m_modelRegistry->getMesh(
-                QUAD_MESH_NAME);
-            auto* mesh = future.get();
-            type->setMesh(mesh);
-        }
-        else {
-            auto mesh = std::make_unique<QuadMesh>();
-            mesh->prepareVolume();
-            type->setMesh(std::move(mesh), true);
-        }
+        auto future = m_registry->m_modelRegistry->getMesh(
+            QUAD_MESH_NAME);
+        auto* mesh = future.get();
+        type->setMesh(mesh);
         type->m_entityType = EntityType::billboard;
     }
     else if (data.type == EntityType::sprite) {
-        // NOTE KI sprite *shall* differ from quad later on
-        auto mesh = std::make_unique<SpriteMesh>();
-        mesh->prepareVolume();
-        type->setMesh(std::move(mesh), true);
+        auto future = m_registry->m_modelRegistry->getMesh(
+            QUAD_MESH_NAME);
+        auto* mesh = future.get();
+        type->setMesh(mesh);
         type->m_entityType = EntityType::sprite;
     }
     else if (data.type == EntityType::terrain) {
@@ -1150,6 +1161,9 @@ void SceneFile::loadEntityClone(
         }
         else if (k == "force_material") {
             data.forceMaterial = readBool(v);
+        }
+        else if (k == "sprite") {
+            data.spriteName = v.as<std::string>();
         }
         else if (k == "batch_size") {
             data.batchSize = readInt(v);

@@ -91,6 +91,10 @@ void MeshType::prepare(
         registry->m_materialRegistry->add(material);
     }
 
+    if (m_entityType == EntityType::sprite) {
+        registry->m_spriteRegistry->add(m_sprite);
+    }
+
     m_vao = m_mesh->prepare(assets, registry);
     m_mesh->prepareMaterials(m_materialVBO);
 

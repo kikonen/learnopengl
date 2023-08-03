@@ -20,8 +20,7 @@ entities:
       enabled: true
     enabled: true
   - name: Object
-    type: billboard
-    priority: 1
+    type: sprite
     program: g_tex
     pos: [0, 0, 0]
     material: skeleton
@@ -34,8 +33,7 @@ entities:
     scale: [0.8, 1.8, 1]
     xenabled: true
   - name: Object front
-    type: billboard
-    priority: 1
+    type: sprite
     program: g_tex
     pos: [2.5, 0, 0]
     material: skeleton_front
@@ -46,10 +44,10 @@ entities:
       enforce_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
+    script_file: scripts/anim_rotate_object
     enabled: true
   - name: Object back
     type: billboard
-    priority: 1
     program: g_tex
     pos: [5, 0, 0]
     material: skeleton_back
@@ -62,8 +60,7 @@ entities:
     scale: [0.8, 1.8, 1]
     enabled: true
   - name: Object right
-    type: billboard
-    priority: 1
+    type: quad
     program: g_tex
     pos: [7.5, 0, 0]
     material: skeleton_right
@@ -76,8 +73,7 @@ entities:
     scale: [0.8, 1.8, 1]
     enabled: true
   - name: Object left
-    type: billboard
-    priority: 1
+    type: sprite
     program: g_tex
     pos: [10, 0, 0]
     material: skeleton_left

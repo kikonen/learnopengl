@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <map>
 
 #include "asset/Assets.h"
 #include "asset/Sprite.h"
@@ -23,7 +24,6 @@ public:
 
     ~SpriteRegistry() = default;
 
-    // Updates m_registeredIndex of Sprite
     void add(Sprite& sprite);
 
     void prepare();
@@ -42,6 +42,7 @@ private:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::vector<Sprite> m_sprites;
+    std::map<int, Sprite*> m_idToSprites;
 
     std::vector<ShapeSSBO> m_shapesSSBO;
 

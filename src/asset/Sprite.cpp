@@ -71,6 +71,15 @@ void Sprite::prepare(const Assets& assets)
 
     for (auto& shape : m_shapes) {
         shape.prepare(assets);
+    }
+}
+
+void Sprite::loadTextures(const Assets& assets)
+{
+    if (m_loaded) return;
+    m_loaded = true;
+
+    for (auto& shape : m_shapes) {
         shape.loadTextures(assets);
     }
 }

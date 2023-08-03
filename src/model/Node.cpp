@@ -75,6 +75,9 @@ void Node::prepare(
         if (m_type->m_entityType == EntityType::billboard) {
             flags |= ENTITY_BILLBOARD_BIT;
         }
+        if (m_type->m_entityType == EntityType::sprite) {
+            flags |= ENTITY_SPRITE_BIT;
+        }
         if (m_type->m_entityType == EntityType::skybox) {
             flags |= ENTITY_SKYBOX_BIT;
         }

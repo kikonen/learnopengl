@@ -66,7 +66,7 @@ void main() {
   vec3 normal;
   vec3 tangent;
 
-  if ((entity.flags & ENTITY_BILLBOARD_BIT) != 0) {
+  if ((entity.flags & (ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT)) != 0) {
     // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
     // - "ogl" approach
     vec3 entityPos = vec3(modelMatrix[3]);

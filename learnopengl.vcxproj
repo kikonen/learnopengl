@@ -199,7 +199,6 @@
     <ClCompile Include="src\asset\ModelVAO.cpp" />
     <ClCompile Include="src\asset\QuadMaterialInit.cpp" />
     <ClCompile Include="src\asset\QuadVAO.cpp" />
-    <ClCompile Include="src\asset\SpriteMaterialInit.cpp" />
     <ClCompile Include="src\asset\SpriteVAO.cpp" />
     <ClCompile Include="src\asset\TerrainMaterialInit.cpp" />
     <ClCompile Include="src\asset\TerrainMesh.cpp" />
@@ -351,7 +350,6 @@
     <ClInclude Include="src\asset\ModelMeshVBO.h" />
     <ClInclude Include="src\asset\QuadMaterialInit.h" />
     <ClInclude Include="src\asset\QuadVAO.h" />
-    <ClInclude Include="src\asset\SpriteMaterialInit.h" />
     <ClInclude Include="src\asset\SSBO.h" />
     <ClInclude Include="src\backend\DrawBuffer.h" />
     <ClInclude Include="src\backend\DrawOptions.h" />

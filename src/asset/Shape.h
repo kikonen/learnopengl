@@ -71,10 +71,4 @@ public:
     std::string map_ke;
     std::string map_bump;
     float map_bump_strength{ 1.f };
-
-    static const int DEFAULT_ID = 0;
-private:
-    bool m_prepared = false;
-
-    bool m_loaded = false;
 };

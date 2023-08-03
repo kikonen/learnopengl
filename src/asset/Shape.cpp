@@ -34,9 +34,6 @@ Shape::~Shape()
 
 void Shape::loadTextures(const Assets& assets)
 {
-    if (m_loaded) return;
-    m_loaded = true;
-
     loadTexture(assets, SHAPE_DIFFUSE_IDX, map_kd);
     loadTexture(assets, SHAPE_EMISSION_IDX, map_ke);
     loadTexture(assets, SHAPE_SPECULAR_IDX, map_ks);
@@ -103,9 +100,6 @@ bool Shape::hasTex(int index) const
 
 void Shape::prepare(const Assets& assets)
 {
-    if (m_prepared) return;
-    m_prepared = true;
-
     for (auto& tex : m_textures) {
         if (!tex.texture) continue;
         tex.texture->prepare(assets);

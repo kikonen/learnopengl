@@ -8,6 +8,7 @@
 #include "render/Batch.h"
 
 namespace {
+    // NOTE KI normal, tangent, tex stored to allow normal g_tex shader
     const float VERTICES[] = {
         // pos              // normal         // tangent        // tex
         -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,

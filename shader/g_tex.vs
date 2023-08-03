@@ -82,6 +82,21 @@ void main() {
 #ifdef USE_TBN
     tangent = u_viewRight;
 #endif
+  } else if ((entity.flags & ENTITY_SPRITE_BIT) != 0) {
+    // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
+    // - "ogl" approach
+    vec3 entityPos = vec3(modelMatrix[3]);
+
+    vec4 pos = vec4(u_viewRight * a_pos.x
+                    + UP * a_pos.y,
+                    1.0);
+
+    worldPos = modelMatrix * pos;
+
+    normal = -u_viewFront;
+#ifdef USE_TBN
+    tangent = u_viewRight;
+#endif
   } else {
     worldPos = modelMatrix * vec4(a_pos, 1.0);
 

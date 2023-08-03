@@ -26,7 +26,10 @@ SpriteRegistry::SpriteRegistry(
 
 void SpriteRegistry::add(Sprite& sprite)
 {
-    if (sprite.m_registered) return;
+    auto it = m_idToSprites.find(sprite.m_objectID);
+    if (it != m_idToSprites.end()) {
+        return;
+    }
 
     const size_t count = sprite.m_shapes.size();
 
@@ -41,12 +44,12 @@ void SpriteRegistry::add(Sprite& sprite)
         m_shapesSSBO.reserve(size);
     }
 
-    for (auto& shape : sprite.m_shapes) {
+    auto& ref = m_sprites.emplace_back(sprite);
+    m_idToSprites[sprite.m_objectID] = &ref;
+
+    for (auto& shape : ref.m_shapes) {
         shape.m_registeredIndex = m_shapeIndex++;
     }
-
-    sprite.m_registered = true;
-    m_sprites.emplace_back(sprite);
 }
 
 void SpriteRegistry::update(const UpdateContext& ctx)
