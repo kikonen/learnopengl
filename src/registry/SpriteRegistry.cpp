@@ -79,7 +79,7 @@ void SpriteRegistry::updateShapeBuffer()
 {
     const size_t spriteIndex = m_lastSpriteSize;
     const size_t spriteCount = m_sprites.size();
-    const size_t shapeIndex = m_shapesSSBO.size();
+    const size_t shapeIndex = m_lastShapeSize;
 
     if (spriteIndex == spriteCount) return;
     if (spriteCount == 0) return;
@@ -117,4 +117,5 @@ void SpriteRegistry::updateShapeBuffer()
     }
 
     m_lastSpriteSize = m_sprites.size();
+    m_lastShapeSize = m_shapesSSBO.size();
 }

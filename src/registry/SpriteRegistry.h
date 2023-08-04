@@ -46,9 +46,10 @@ private:
 
     std::vector<ShapeSSBO> m_shapesSSBO;
 
-    size_t m_shapeIndex = 0;
+    size_t m_shapeIndex{ 0 };
 
-    size_t m_lastSpriteSize = 0;
+    size_t m_lastSpriteSize{ 0 };
+    size_t m_lastShapeSize{ 0 };
 
     GLBuffer m_ssbo{ "shapesSSBO" };
 };
