@@ -32,6 +32,7 @@ struct NodeInstance {
     int m_flags = { 0 };
 
     int m_materialIndex{ 0 };
+    int m_shapeIndex{ 0 };
 
     Sphere m_volume;
 

@@ -30,6 +30,7 @@ void NodeInstance::updateEntity(
     entity->setObjectID(m_objectID);
     entity->u_flags = m_flags;
     entity->u_materialIndex = m_materialIndex;
+    entity->u_shapeIndex = m_shapeIndex;
 
     //entity->u_highlightIndex = getHighlightIndex(assets);
 
