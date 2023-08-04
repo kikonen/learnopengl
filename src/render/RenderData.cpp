@@ -73,14 +73,6 @@ void RenderData::updateBufferInfo(BufferInfoUBO& data)
 
 void RenderData::updateClipPlanes(ClipPlanesUBO& data)
 {
-    int count = 0;
-    for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
-        if (!data.clipping[i].enabled) continue;
-        count++;
-    }
-
-    data.clipCount = count;
-
     m_clipPlanes.update(0, sizeof(ClipPlanesUBO), &data);
 }
 

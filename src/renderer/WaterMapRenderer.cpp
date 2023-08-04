@@ -187,13 +187,13 @@ bool WaterMapRenderer::render(
         localCtx.copyShadowFrom(parentCtx);
 
         {
-            ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
+            ClipPlaneUBO& clip = localCtx.m_clipPlanes.u_clipping[0];
 
             glm::vec3 normal = glm::vec3(0, (sdist > 0 ? 1 : -1), 0);
             float dist = (sdist > 0 ? -1 : 1) * planePos.y;
 
-            clip.plane = glm::vec4(normal, dist);
-            clip.enabled = true;
+            clip.u_plane = glm::vec4(normal, dist);
+            localCtx.m_clipPlanes.u_clipCount = 1;
         }
 
         localCtx.updateMatricesUBO();
@@ -225,13 +225,14 @@ bool WaterMapRenderer::render(
         localCtx.copyShadowFrom(parentCtx);
 
         {
-            ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
+            ClipPlaneUBO& clip = localCtx.m_clipPlanes.u_clipping[0];
 
             glm::vec3 normal = glm::vec3(0, (sdist > 0 ? -1 : 1), 0);
             float dist = (sdist > 0 ? 1 : -1) * planePos.y;
 
-            clip.plane = glm::vec4(normal, dist);
-            clip.enabled = true;
+            clip.u_plane = glm::vec4(normal, dist);
+
+            localCtx.m_clipPlanes.u_clipCount = 1;
         }
 
         localCtx.updateMatricesUBO();

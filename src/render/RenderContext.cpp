@@ -170,9 +170,7 @@ RenderContext::RenderContext(
         0,
     };
 
-    for (int i = 0; i < CLIP_PLANE_COUNT; i++) {
-        m_clipPlanes.clipping[i].enabled = false;
-    }
+    m_clipPlanes.u_clipCount = 0;
 }
 
 RenderContext::~RenderContext()
