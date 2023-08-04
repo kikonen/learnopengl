@@ -80,19 +80,19 @@ void RenderData::updateLights(Registry* registry, bool useLight)
 {
     LightsUBO lightsUbo{};
     if (!useLight) {
-        lightsUbo.dirCount = 0;
-        lightsUbo.pointCount = 0;
-        lightsUbo.spotCount = 0;
+        lightsUbo.u_dirCount = 0;
+        lightsUbo.u_pointCount = 0;
+        lightsUbo.u_spotCount = 0;
     }
 
     if (useLight) {
         auto* node = registry->m_nodeRegistry->m_dirLight;
         if (node && node->m_light->m_enabled) {
-            lightsUbo.dir[0] = node->m_light->toDirLightUBO();
-            lightsUbo.dirCount = 1;
+            lightsUbo.u_dir[0] = node->m_light->toDirLightUBO();
+            lightsUbo.u_dirCount = 1;
         }
         else {
-            lightsUbo.dirCount = 0;
+            lightsUbo.u_dirCount = 0;
         }
     }
 
@@ -102,10 +102,10 @@ void RenderData::updateLights(Registry* registry, bool useLight)
             if (count >= MAX_LIGHT_COUNT) break;
             if (!node->m_light->m_enabled) continue;
 
-            lightsUbo.pointLights[count] = node->m_light->toPointightUBO();
+            lightsUbo.u_pointLights[count] = node->m_light->toPointightUBO();
             count++;
         }
-        lightsUbo.pointCount = count;
+        lightsUbo.u_pointCount = count;
 
         int diff = registry->m_nodeRegistry->m_pointLights.size() - MAX_LIGHT_COUNT;
         if (diff > 0) {
@@ -119,10 +119,10 @@ void RenderData::updateLights(Registry* registry, bool useLight)
             if (count >= MAX_LIGHT_COUNT) break;
             if (!node->m_light->m_enabled) continue;
 
-            lightsUbo.spotLights[count] = node->m_light->toSpotLightUBO();
+            lightsUbo.u_spotLights[count] = node->m_light->toSpotLightUBO();
             count++;
         }
-        lightsUbo.spotCount = count;
+        lightsUbo.u_spotCount = count;
 
         int diff = registry->m_nodeRegistry->m_spotLights.size() - MAX_LIGHT_COUNT;
         if (diff > 0) {

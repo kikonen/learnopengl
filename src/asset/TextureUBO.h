@@ -7,6 +7,8 @@
 // MAX textures used in shader
 constexpr unsigned int MAX_TEXTURE_COUNT = 256;
 
+#pragma pack(push, 1)
+
 // NOTE KI align 16 for UBO struct
 // OpenGL Superbible, 7th Edition, page 552
 // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
@@ -22,3 +24,5 @@ struct TexturesUBO {
     // NOTE KI align 16 for array entries
     TextureUBO textures[MAX_TEXTURE_COUNT];
 };
+
+#pragma pack(pop)

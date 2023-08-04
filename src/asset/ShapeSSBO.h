@@ -20,6 +20,7 @@
 //
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 //
+#pragma pack(push, 1)
 struct ShapeSSBO {
     // NOTE KI "tex index", not "unit index"
     int u_diffuseTex;
@@ -27,10 +28,6 @@ struct ShapeSSBO {
     int u_specularTex;
     int u_normalMap;
 
-    float u_mapBumpStrength;
-
-    int pad1;
-    int pad2;
-    int pad3;
+    //float u_mapBumpStrength;
 };
-#pragma once
+#pragma pack(pop)

@@ -20,6 +20,7 @@
 //
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 //
+#pragma pack(push, 1)
 struct MaterialSSBO {
     glm::vec4 u_diffuse; // 16
     glm::vec4 u_emission; // 16
@@ -53,3 +54,4 @@ struct MaterialSSBO {
     //int pad3_2;
 //    int pad3_3;
 };
+#pragma pack(pop)

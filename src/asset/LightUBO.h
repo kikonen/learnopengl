@@ -8,56 +8,58 @@ constexpr unsigned int MAX_LIGHT_COUNT = 128;
 
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 
+#pragma pack(push, 1)
+
 // NOTE KI align 16 for UBO struct
 struct DirLightUBO {
-    glm::vec3 dir;
+    glm::vec3 u_dir;
     int pad1;
 
-    glm::vec3 diffuse;
+    glm::vec3 u_diffuse;
     int pad2;
 
-    glm::vec3 specular;
+    glm::vec3 u_specular;
     int pad3;
 };
 
 // NOTE KI align 16 for UBO struct
 struct PointLightUBO {
-    glm::vec3 pos;
+    glm::vec3 u_pos;
     int pad1;
 
-    glm::vec3 diffuse;
+    glm::vec3 u_diffuse;
     int pad2;
 
-    glm::vec3 specular;
+    glm::vec3 u_specular;
     int pad3;
 
-    float constant;
-    float linear;
-    float quadratic;
-    float radius;
+    float u_constant;
+    float u_linear;
+    float u_quadratic;
+    float u_radius;
 };
 
 // NOTE KI align 16 for UBO struct
 struct SpotLightUBO {
-    glm::vec3 pos;
+    glm::vec3 u_pos;
     int pad1;
 
-    glm::vec3 dir;
+    glm::vec3 u_dir;
     int pad2;
 
-    glm::vec3 diffuse;
+    glm::vec3 u_diffuse;
     int pad3;
 
-    glm::vec3 specular;
+    glm::vec3 u_specular;
     int pad4;
 
-    float constant;
-    float linear;
-    float quadratic;
+    float u_constant;
+    float u_linear;
+    float u_quadratic;
 
-    float cutoff;
-    float outerCutoff;
-    float radius;
+    float u_cutoff;
+    float u_outerCutoff;
+    float u_radius;
 
     int pad5;
     int pad6;
@@ -65,14 +67,16 @@ struct SpotLightUBO {
 
 // NOTE KI align 16 for UBO struct
 struct LightsUBO {
-    unsigned int dirCount;
-    unsigned int pointCount;
-    unsigned int spotCount;
+    unsigned int u_dirCount;
+    unsigned int u_pointCount;
+    unsigned int u_spotCount;
     int pad1;
 
-    DirLightUBO dir[1];
+    DirLightUBO u_dir[1];
     // NOTE KI align 16 for UBO array entries
-    PointLightUBO pointLights[MAX_LIGHT_COUNT];
+    PointLightUBO u_pointLights[MAX_LIGHT_COUNT];
     // NOTE KI align 16 for UBO array entries
-    SpotLightUBO spotLights[MAX_LIGHT_COUNT];
+    SpotLightUBO u_spotLights[MAX_LIGHT_COUNT];
 };
+
+#pragma pack(pop)
