@@ -451,11 +451,11 @@ void NodeDraw::drawBlendedImpl(
 void NodeDraw::drawProgram(
     const RenderContext& ctx,
     Program* program,
-    Program* programSprite,
+    Program* programPointSprite,
     const std::function<bool(const MeshType*)>& typeSelector,
     const std::function<bool(const Node*)>& nodeSelector)
 {
-    auto renderTypes = [this, &ctx, &program, &programSprite, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, &program, &programPointSprite, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
             auto* type = it.first.type;
 
@@ -464,8 +464,8 @@ void NodeDraw::drawProgram(
             auto& batch = ctx.m_batch;
 
             auto activeProgram = program;
-            if (type->m_entityType == EntityType::sprite) {
-                activeProgram = programSprite;
+            if (type->m_entityType == EntityType::point_sprite) {
+                activeProgram = programPointSprite;
             }
 
             if (!activeProgram) continue;

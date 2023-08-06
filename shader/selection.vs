@@ -70,13 +70,13 @@ void main() {
                        0, 0,     0, 1);
   }
 
-  if ((entity.flags & (ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT)) != 0) {
+  if ((entity.u_flags & (ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT)) != 0) {
     // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
     // - "ogl" approach
     vec3 entityPos = vec3(modelMatrix[3]);
-    vec3 entityScale = vec3(entity.worldScale[0] * scale,
-                            entity.worldScale[1] * scale,
-                            entity.worldScale[2] * scale);
+    vec3 entityScale = vec3(entity.u_worldScale[0] * scale,
+                            entity.u_worldScale[1] * scale,
+                            entity.u_worldScale[2] * scale);
 
     worldPos = vec4(entityPos
                     + u_viewRight * a_pos.x * entityScale.x
@@ -89,7 +89,7 @@ void main() {
   gl_Position = u_projectedMatrix * worldPos;
 
 #ifdef USE_ALPHA
-  int materialIndex = entity.materialIndex;
+  int materialIndex = entity.u_materialIndex;
   if (materialIndex < 0) {
     materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
   }
@@ -98,7 +98,7 @@ void main() {
   vs_out.texCoord = a_texCoord;
 #endif
 
-  vs_out.highlightIndex = entity.highlightIndex;
+  vs_out.highlightIndex = entity.u_highlightIndex;
 
   calculateClipping(worldPos);
 }

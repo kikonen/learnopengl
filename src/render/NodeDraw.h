@@ -48,7 +48,7 @@ public:
     void drawProgram(
         const RenderContext& ctx,
         Program* program,
-        Program* programSprite,
+        Program* programPointSprite,
         const std::function<bool(const MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector);
 

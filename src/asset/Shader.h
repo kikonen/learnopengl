@@ -1,17 +1,17 @@
 #pragma once
 
 const std::string SHADER_TEXTURE{ "tex" };
-const std::string SHADER_SPRITE{ "sprite" };
+const std::string SHADER_POINT_SPRITE{ "point_sprite" };
 
 const std::string SHADER_SELECTION{ "selection" };
-const std::string SHADER_SELECTION_SPRITE{ "selection_sprite" };
+const std::string SHADER_SELECTION_POINT_SPRITE{ "selection_point_sprite" };
 
 //const std::string SHADER_TERRAIN{ "terrain" };
 //const std::string SHADER_WATER{ "water" };
 const std::string SHADER_PARTICLE{ "particle" };
 const std::string SHADER_NORMAL{ "normal" };
 const std::string SHADER_OBJECT_ID{ "object_id" };
-const std::string SHADER_OBJECT_ID_SPRITE{ "object_id_sprite" };
+const std::string SHADER_OBJECT_ID_POINT_SPRITE{ "object_id_point_sprite" };
 //const std::string SHADER_LIGHT{ "light" };
 const std::string SHADER_SIMPLE_DEPTH{ "simple_depth" };
 const std::string SHADER_DEBUG_DEPTH{ "debug_depth" };
@@ -32,7 +32,7 @@ const std::string SHADER_OIT_PASS{ "oit_pass" };
 
 const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
-const std::string GS_SPRITE{ "sprite" };
+const std::string GS_POINT_SPRITE{ "point_sprite" };
 
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };

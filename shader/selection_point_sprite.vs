@@ -4,37 +4,32 @@
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
-#include uniform_data.glsl
 
 out VS_OUT {
-  flat vec4 objectID;
-
   vec3 scale;
   flat uint materialIndex;
+  flat uint highlightIndex;
 } vs_out;
 
 // TODO KI y = -1.0 fixes sprite.gs, but why?!?
-const vec4 pos = vec4(0.0, -1.0, 0.0, 1.0);
+const vec3 pos = vec3(0.0, -1.0, 0.0);
 
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
-
-#include fn_convert_object_id.glsl
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  const int materialIndex = entity.materialIndex;
-  const vec4 worldPos = modelMatrix * pos;
+  const int materialIndex = entity.u_materialIndex;
+  const vec4 worldPos = modelMatrix * vec4(pos, 1.0);
 
-  gl_Position =  worldPos;
-
-  vs_out.objectID = convertObjectID(entity.objectID);
+  gl_Position = worldPos;
 
   vs_out.materialIndex = materialIndex;
+  vs_out.highlightIndex = entity.u_highlightIndex;
 
-  vs_out.scale = entity.worldScale.xyz;
+  vs_out.scale = entity.u_worldScale.xyz;
 }

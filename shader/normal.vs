@@ -30,7 +30,7 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  const int materialIndex = entity.materialIndex;
+  const int materialIndex = entity.u_materialIndex;
   const vec4 pos = vec4(a_pos, 1.0);
   const mat3 viewNormalMatrix = mat3(transpose(inverse(u_viewMatrix * modelMatrix)));
 
@@ -38,11 +38,11 @@ void main() {
   vec3 normal;
   vec3 tangent;
 
-  if ((entity.flags & (ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT)) != 0) {
+  if ((entity.u_flags & (ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT)) != 0) {
     // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
     // - "ogl" approach
     vec3 entityPos = vec3(modelMatrix[3]);
-    vec3 entityScale = entity.worldScale.xyz;
+    vec3 entityScale = entity.u_worldScale.xyz;
 
     worldPos = vec4(entityPos
                     + u_viewRight * a_pos.x * entityScale.x

@@ -7,6 +7,7 @@ enum class EntityType {
     quad,
     billboard,
     sprite,
+    point_sprite,
     terrain,
     skybox,
 };

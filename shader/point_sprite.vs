@@ -39,7 +39,7 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  const int materialIndex = entity.materialIndex;
+  const int materialIndex = entity.u_materialIndex;
   const vec4 worldPos = modelMatrix * pos;
 
   gl_Position = worldPos;
@@ -52,7 +52,7 @@ void main() {
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normalMatrix * normal;
 
-  vs_out.scale = entity.worldScale.xyz;
+  vs_out.scale = entity.u_worldScale.xyz;
 
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex >= 0) {

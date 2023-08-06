@@ -36,7 +36,7 @@ void main() {
 
   vs_out.modelMatrix = modelMatrix;
 
-  int materialIndex = entity.materialIndex;
+  int materialIndex = entity.u_materialIndex;
   if (materialIndex < 0) {
     materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
   }

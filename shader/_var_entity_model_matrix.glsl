@@ -1,4 +1,5 @@
-const mat4 modelMatrix = mat4(entity.modelMatrix0,
-                       entity.modelMatrix1,
-                       entity.modelMatrix2,
-                       entity.modelMatrix3);
+const mat4 modelMatrix = mat4(
+  entity.u_modelMatrix0,
+  entity.u_modelMatrix1,
+  entity.u_modelMatrix2,
+  entity.u_modelMatrix3);

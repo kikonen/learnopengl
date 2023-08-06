@@ -99,8 +99,8 @@ void main()
   vec3 vertexPos = interpolate3D(tes_in[0].vertexPos, tes_in[1].vertexPos, tes_in[2].vertexPos);
 
 
-  const float rangeYmin = entity.rangeYmin;
-  const float rangeYmax = entity.rangeYmax;
+  const float rangeYmin = entity.u_rangeYmin;
+  const float rangeYmax = entity.u_rangeYmax;
   const float rangeY = rangeYmax - rangeYmin;
 
   float avgHeight = fetchHeight(heightMap, texCoord);

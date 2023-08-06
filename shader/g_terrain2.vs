@@ -48,7 +48,7 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  int materialIndex = entity.materialIndex;
+  int materialIndex = entity.u_materialIndex;
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
@@ -62,8 +62,8 @@ void main() {
   vs_out.materialIndex = materialIndex;
 
   {
-    float x = entity.tileX;
-    float y = entity.tileY;
+    float x = entity.u_tileX;
+    float y = entity.u_tileY;
     float tilingX = u_materials[materialIndex].tilingX;
     float tilingY = u_materials[materialIndex].tilingY;
     float sizeX = 1.0 / tilingX;

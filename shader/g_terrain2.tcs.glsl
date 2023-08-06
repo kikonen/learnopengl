@@ -56,7 +56,7 @@ void main()
   const Entity entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
   #include var_entity_model_matrix.glsl
 
-  int materialIndex = entity.materialIndex;
+  int materialIndex = entity.u_materialIndex;
 
   //calculateClipping(tcs_in[gl_InvocationID].worldPos);
 

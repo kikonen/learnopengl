@@ -108,10 +108,10 @@ void main(void) {
   const Entity entity = u_entities[baseInstance];
 
   const bool skip = cmd.instanceCount > 0;
-  bool visible = (entity.flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT;
+  bool visible = (entity.u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT;
 
   if (!skip && !visible) {
-    visible = isOnFrustum(entity.volume);
+    visible = isOnFrustum(entity.u_volume);
   }
 
 #ifdef FRUSTUM_DEBUG
