@@ -59,7 +59,6 @@ void main() {
 		    1.0);
 
     worldPos = modelMatrix * pos;
-    vs_out.shapeIndex = entity.u_shapeIndex;
   } else {
     worldPos = modelMatrix * pos;
   }
@@ -75,7 +74,7 @@ void main() {
   }
 
   vs_out.materialIndex = materialIndex;
-  vs_out.shapeIndex = materialIndex;
+  vs_out.shapeIndex = entity.u_shapeIndex;
   vs_out.texCoord = a_texCoord;
 #endif
 }

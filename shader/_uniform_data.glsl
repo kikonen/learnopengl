@@ -4,6 +4,11 @@ layout(std140, binding = UBO_DATA) uniform Data {
   vec3 u_viewUp;
   vec3 u_viewRight;
 
+  vec3 u_mainViewWorldPos;
+  vec3 u_mainViewFront;
+  vec3 u_mainViewUp;
+  vec3 u_mainViewRight;
+
   vec4 u_fogColor;
 
   vec2 u_screenResolution;

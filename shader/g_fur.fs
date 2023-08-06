@@ -31,7 +31,7 @@ void main() {
   Material material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
-  #include var_tex_material.glsl
+  #include var_tex_plain_material.glsl
 
   sampler2D sampler = sampler2D(u_texture_handles[material.noiseMapTex]);
   vec4 noiseColor = texture(sampler, texCoord * 8.0);

@@ -61,7 +61,6 @@ void main() {
 		    1.0);
 
     worldPos = modelMatrix * pos;
-    vs_out.shapeIndex = entity.u_shapeIndex;
   } else {
     worldPos = modelMatrix * vec4(a_pos, 1.0);
   }
@@ -69,6 +68,7 @@ void main() {
   gl_Position = u_projectedMatrix * worldPos;
 
   vs_out.materialIndex = materialIndex;
+  vs_out.shapeIndex = entity.u_shapeIndex;
 
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;

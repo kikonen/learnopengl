@@ -4,9 +4,9 @@
 #include struct_shape.glsl
 
 #include uniform_matrices.glsl
-#include uniform_shapes.glsl
 #include uniform_data.glsl
 #include uniform_materials.glsl
+#include uniform_shapes.glsl
 #include uniform_textures.glsl
 
 #ifndef USE_ALPHA
@@ -53,7 +53,7 @@ void main() {
   Material material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
-  #include var_tex_material.glsl
+  #include var_tex_sprite_material.glsl
 
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
 
@@ -67,7 +67,7 @@ void main() {
 #endif
 #endif
 
-  #include var_tex_material_normal.glsl
+  #include var_tex_sprite_material_normal.glsl
 
 //  if (material.pattern == 1) {
 //    normal = calculateNormalPattern(fs_in.vertexPos, normal);

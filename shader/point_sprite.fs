@@ -56,7 +56,7 @@ void main() {
   Material material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
-  #include var_tex_material.glsl
+  #include var_tex_plain_material.glsl
 
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
 
@@ -65,7 +65,7 @@ void main() {
     discard;
 #endif
 
-  #include var_tex_material_normal.glsl
+  #include var_tex_plain_material_normal.glsl
 
 #ifdef USE_CUBE_MAP
   #include var_calculate_cube_map_diffuse.glsl
