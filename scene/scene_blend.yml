@@ -36,6 +36,22 @@ entities:
       alpha: true
       render_back: true
     enabled: true
+  - name: Blend cubes
+    model: rubik_cube
+    program: g_tex
+    render_flags:
+      alpha: true
+      blend_oit: true
+      render_back: true
+    scale: 1
+    pos: [-4, 0, -6]
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 8
+      z_step: -8
+    script_file: scripts/anim_rotate_object
+    enabled: true
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5

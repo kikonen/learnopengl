@@ -439,8 +439,10 @@ void MeshLoader::loadMaterials(
             std::string v1;
             std::string v2;
             std::string v3;
+            std::string v4;
+
             ss >> k;
-            ss >> v1 >> v2 >> v3;
+            ss >> v1 >> v2 >> v3 >> v4;
 
             k = util::toLower(k);
 
@@ -456,8 +458,12 @@ void MeshLoader::loadMaterials(
                 glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };
                 material->ka = v;
             } else if (k == "kd") {
-                glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };
-                material->kd = v;
+                if (v4.empty()) {
+                    material->kd = { stof(v1), stof(v2), stof(v3), 1.f };
+                }
+                else {
+                    material->kd = { stof(v1), stof(v2), stof(v3), stof(v4) };
+                }
             }
             else if (k == "ks") {
                 glm::vec4 v{ stof(v1), stof(v2), stof(v3), 1.f };

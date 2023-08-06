@@ -615,6 +615,20 @@ entities:
         id: [auto, cube-3]
       - pos: [5.0, 20.0, 5.0]
         id: [auto, cube-4]
+  - name: Blend cubes
+    model: rubik_cube
+    program: g_tex
+    render_flags:
+      alpha: true
+      blend_oit: true
+      render_back: true
+    script_file: scripts/anim_four_cubes
+    enabled: true
+    clones:
+      - pos: [-5.0, 30.0, -5.0]
+      - pos: [5.0, 30.0, -5.0]
+      - pos: [-5.0, 30.0, 5.0]
+      - pos: [5.0, 30.0, 5.0]
   - name: Wooden matrix Cube
     model: texture_cube_4
     program: g_tex
