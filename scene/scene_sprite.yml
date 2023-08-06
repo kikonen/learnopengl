@@ -110,7 +110,7 @@ entities:
     xxmodel: woodwall
     material: wood_floor
     program: g_tex
-    position: [0, -1.8, 0]
+    position: [0, 0, 0]
     rot: [270, 0, 0]
     render_flags:
       render_back: true
