@@ -41,7 +41,8 @@ void main()
 
   vec3 averageColor = accumulation.rgb / max(accumulation.a, EPSILON);
 
-  o_fragColor = vec4(averageColor, 1.0 - revealage);
+  float alpha = clamp(1.0 - revealage, 0.0, 1.0);
 
-  o_fragBright = vec4(averageColor * 0.1, 1.0 - revealage);
+  o_fragColor = vec4(averageColor, alpha);
+  o_fragBright = vec4(averageColor * 0.1, alpha);
 }
