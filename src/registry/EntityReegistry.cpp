@@ -139,6 +139,8 @@ int EntityRegistry::addEntityRange(const size_t count)
         //markDirty(firstIndex + i);
     }
 
+    KI_INFO(fmt::format("Entity: ADDED_RANGE: firstIndex={}, count={}, newSize={}", firstIndex, count, m_entries.size()));
+
     return firstIndex;
 }
 

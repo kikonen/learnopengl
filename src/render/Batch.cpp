@@ -119,14 +119,14 @@ void Batch::addInstanced(
             return;
         }
 
-        while (!inFrustum(ctx, actualIndex) && actualCount > 0) {
+        while (actualCount > 0 && !inFrustum(ctx, actualIndex)) {
             actualIndex++;
             actualCount--;
         }
 
         if (actualCount > 0) {
             int endIndex = actualIndex + actualCount - 1;
-            while (!inFrustum(ctx, endIndex) && actualCount > 0) {
+            while (actualCount > 0 && !inFrustum(ctx, endIndex)) {
                 endIndex--;
                 actualCount--;
             }
