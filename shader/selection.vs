@@ -20,6 +20,7 @@ layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 out VS_OUT {
   vec2 texCoord;
   flat uint materialIndex;
+  flat uint shapeIndex;
   flat uint highlightIndex;
 } vs_out;
 #else
@@ -70,9 +71,9 @@ void main() {
                        0, 0,     0, 1);
   }
 
-  if ((entity.u_flags & (ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT)) != 0) {
-    // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
-    // - "ogl" approach
+  // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
+  // - "ogl" approach
+  if ((entity.u_flags & ENTITY_BILLBOARD_BIT) != 0) {
     vec3 entityPos = vec3(modelMatrix[3]);
     vec3 entityScale = vec3(entity.u_worldScale[0] * scale,
                             entity.u_worldScale[1] * scale,
@@ -82,6 +83,12 @@ void main() {
                     + u_viewRight * a_pos.x * entityScale.x
                     + UP * a_pos.y * entityScale.y,
                     1.0);
+  } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
+    vec4 pos = vec4(u_viewRight * a_pos.x
+		    + UP * a_pos.y,
+		    1.0);
+
+    worldPos = modelMatrix * pos;
   } else {
     worldPos = modelMatrix * scaleMatrix * pos;
   }
@@ -95,6 +102,7 @@ void main() {
   }
 
   vs_out.materialIndex = materialIndex;
+  vs_out.shapeIndex = materialIndex;
   vs_out.texCoord = a_texCoord;
 #endif
 

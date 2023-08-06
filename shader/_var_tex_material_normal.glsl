@@ -1,7 +1,16 @@
 #ifdef USE_NORMAL_TEX
-  vec3 normal;
-  if (material.normalMapTex >= 0) {
-    sampler2D sampler = sampler2D(u_texture_handles[material.normalMapTex]);
+vec3 normal;
+{
+  int normalMapTex;
+
+  if (fs_in.shapeIndex > 0) {
+    normalMapTex = u_shapes[fs_in.shapeIndex].normalMapTex;
+  } else {
+    normalMapTex = material.normalMapTex;
+  }
+
+  if (normalMapTex >= 0) {
+    sampler2D sampler = sampler2D(u_texture_handles[normalMapTex]);
 
     const vec3 N = normalize(fs_in.normal);
     const vec3 T = normalize(fs_in.tangent);
@@ -14,7 +23,8 @@
     // NOTE KI model *can* have multiple materials; some with normalTex
     normal = normalize(fs_in.normal);
   }
+}
 #else
-  // NOTE KI interpolation from vs to fs denormalizes normal
-  vec3 normal = normalize(fs_in.normal);
+// NOTE KI interpolation from vs to fs denormalizes normal
+vec3 normal = normalize(fs_in.normal);
 #endif

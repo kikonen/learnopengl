@@ -1,15 +1,18 @@
 #version 460 core
 
 #include struct_material.glsl
+#include struct_shape.glsl
 
 #include uniform_data.glsl
 #include uniform_materials.glsl
+#include uniform_shapes.glsl
 #include uniform_textures.glsl
 
 in VS_OUT {
   vec2 texCoord;
 
   flat uint materialIndex;
+  flat uint shapeIndex;
 } fs_in;
 
 LAYOUT_OIT_OUT;

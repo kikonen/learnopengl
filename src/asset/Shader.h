@@ -37,6 +37,10 @@ const std::string GS_POINT_SPRITE{ "point_sprite" };
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };
 const std::string DEF_USE_BLEND_OIT{ "USE_BLEND_OIT" };
+
+const std::string DEF_USE_BILLBOARD{ "USE_BILLBOARD" };
+const std::string DEF_USE_SPRITE{ "USE_SPRITE" };
+
 const std::string DEF_USE_TBN{ "USE_TBN" };
 const std::string DEF_USE_DUDV_TEX{ "USE_DUDV_TEX" };
 const std::string DEF_USE_HEIGHT_TEX{ "USE_HEIGHT_TEX" };

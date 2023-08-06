@@ -33,8 +33,8 @@ void NodeRenderer::prepare(
     m_selectionProgram = m_registry->m_programRegistry->getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
     m_selectionProgram->prepare(assets);
 
-    m_selectionProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_SELECTION_POINT_SPRITE, { { DEF_USE_ALPHA, "1" } });
-    m_selectionProgramPointSprite->prepare(assets);
+    //m_selectionProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_SELECTION_POINT_SPRITE, { { DEF_USE_ALPHA, "1" } });
+    //m_selectionProgramPointSprite->prepare(assets);
 }
 
 void NodeRenderer::render(
@@ -86,8 +86,8 @@ void NodeRenderer::renderStencil(
     {
         const glm::vec4 clearColor{ 0.0f, 1.0f, 1.0f, 0.0f };
 
-        m_selectionProgramPointSprite->bind(ctx.m_state);
-        m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_MASK);
+        //m_selectionProgramPointSprite->bind(ctx.m_state);
+        //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_MASK);
 
         m_selectionProgram->bind(ctx.m_state);
         m_selectionProgram->u_stencilMode->set(STENCIL_MODE_MASK);
@@ -95,7 +95,8 @@ void NodeRenderer::renderStencil(
         ctx.m_nodeDraw->drawProgram(
             ctx,
             m_selectionProgram,
-            m_selectionProgramPointSprite,
+            //m_selectionProgramPointSprite,
+            nullptr,
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); });
     }
@@ -125,8 +126,8 @@ void NodeRenderer::renderHighlight(
 
     // draw selection color (scaled a bit bigger)
     {
-        m_selectionProgramPointSprite->bind(ctx.m_state);
-        m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
+        //m_selectionProgramPointSprite->bind(ctx.m_state);
+        //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
 
         m_selectionProgram->bind(ctx.m_state);
         m_selectionProgram->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
@@ -135,7 +136,8 @@ void NodeRenderer::renderHighlight(
         ctx.m_nodeDraw->drawProgram(
             ctx,
             m_selectionProgram,
-            m_selectionProgramPointSprite,
+            //m_selectionProgramPointSprite,
+            nullptr,
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); });
     }

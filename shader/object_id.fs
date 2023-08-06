@@ -3,8 +3,10 @@
 
 #ifdef USE_ALPHA
 #include struct_material.glsl
+#include struct_shape.glsl
 
 #include uniform_materials.glsl
+#include uniform_shapes.glsl
 #include uniform_textures.glsl
 
 in VS_OUT {
@@ -12,6 +14,7 @@ in VS_OUT {
 
   vec2 texCoord;
   flat uint materialIndex;
+  flat uint shapeIndex;
 } fs_in;
 
 #else

@@ -86,8 +86,8 @@ void ObjectIdRenderer::prepare(
     m_idProgram = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idProgram->prepare(assets);
 
-    m_idProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID_POINT_SPRITE, { { DEF_USE_ALPHA, "1"} });
-    m_idProgramPointSprite->prepare(assets);
+    //m_idProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID_POINT_SPRITE, { { DEF_USE_ALPHA, "1"} });
+    //m_idProgramPointSprite->prepare(assets);
 
     m_debugViewport = std::make_shared<Viewport>(
         "ObjectID",
@@ -156,7 +156,8 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
         ctx.m_nodeDraw->drawProgram(
             ctx,
             m_idProgram,
-            m_idProgramPointSprite,
+            //m_idProgramPointSprite,
+            nullptr,
             [](const MeshType* type) { return !type->m_flags.noSelect && !type->m_flags.tessellation; },
             [](const Node* node) { return true; });
     }

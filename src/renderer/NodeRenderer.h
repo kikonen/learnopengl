@@ -30,7 +30,7 @@ private:
 
 private:
     Program* m_selectionProgram{ nullptr };
-    Program* m_selectionProgramPointSprite{ nullptr };
+    //Program* m_selectionProgramPointSprite{ nullptr };
 
     int m_taggedCount{ 0 };
     int m_selectedCount{ 0 };

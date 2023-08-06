@@ -404,6 +404,10 @@ void NodeDraw::drawNodesImpl(
         renderTypes(all.second);
     }
 
+    for (const auto& all : nodeRegistry->spriteNodes) {
+        renderTypes(all.second);
+    }
+
     for (const auto& all : nodeRegistry->alphaNodes) {
         renderTypes(all.second);
     }
@@ -479,6 +483,10 @@ void NodeDraw::drawProgram(
     };
 
     for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
+        renderTypes(all.second);
+    }
+
+    for (const auto& all : ctx.m_registry->m_nodeRegistry->spriteNodes) {
         renderTypes(all.second);
     }
 

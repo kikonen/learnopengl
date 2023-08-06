@@ -229,17 +229,6 @@ void NodeRegistry::bindNode(
     node->prepare(m_assets, m_registry);
 
     {
-        auto* map = &solidNodes;
-
-        if (type->m_flags.alpha)
-            map = &alphaNodes;
-
-        if (type->m_flags.blend)
-            map = &blendedNodes;
-
-        if (type->m_flags.invisible)
-            map = &invisibleNodes;
-
         // NOTE KI more optimal to not switch between culling mode (=> group by it)
         const ProgramKey programKey(
             program ? program->m_objectID : NULL_PROGRAM_ID,
@@ -252,13 +241,31 @@ void NodeRegistry::bindNode(
 
         const MeshTypeKey typeKey(type);
 
-        auto& vAll = allNodes[programKey][typeKey];
-        auto& vTyped = (*map)[programKey][typeKey];
-
         if (!node->m_id.is_nil()) m_idToNode[node->m_id] = node;
 
-        insertNode(vAll, node);
-        insertNode(vTyped, node);
+        {
+            auto& vAll = allNodes[programKey][typeKey];
+            insertNode(vAll, node);
+        }
+
+        {
+            auto* map = &solidNodes;
+
+            if (type->m_flags.alpha)
+                map = &alphaNodes;
+
+            if (type->m_flags.blend)
+                map = &blendedNodes;
+
+            if (type->m_entityType == EntityType::sprite)
+                map = &spriteNodes;
+
+            if (type->m_flags.invisible)
+                map = &invisibleNodes;
+
+            auto& vTyped = (*map)[programKey][typeKey];
+            insertNode(vTyped, node);
+        }
 
         if (type->m_flags.enforceBounds || type->m_flags.physics) {
             auto& vPhysics = physicsNodes[programKey][typeKey];

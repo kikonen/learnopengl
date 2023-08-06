@@ -18,6 +18,7 @@ out VS_OUT {
   vec2 texCoord;
 
   flat uint materialIndex;
+  flat uint shapeIndex;
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -44,9 +45,9 @@ void main() {
 
   vec4 worldPos;
 
-  if ((entity.u_flags & (ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT)) != 0) {
-    // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
-    // - "ogl" approach
+  // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
+  // - "ogl" approach
+  if ((entity.u_flags & ENTITY_BILLBOARD_BIT) != 0) {
     vec3 entityPos = vec3(modelMatrix[3]);
     vec3 entityScale = entity.u_worldScale.xyz;
 
@@ -54,6 +55,13 @@ void main() {
                     + u_viewRight * a_pos.x * entityScale.x
                     + UP * a_pos.y * entityScale.y,
                     1.0);
+  } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
+    vec4 pos = vec4(u_viewRight * a_pos.x
+		    + UP * a_pos.y,
+		    1.0);
+
+    worldPos = modelMatrix * pos;
+    vs_out.shapeIndex = entity.u_shapeIndex;
   } else {
     worldPos = modelMatrix * vec4(a_pos, 1.0);
   }

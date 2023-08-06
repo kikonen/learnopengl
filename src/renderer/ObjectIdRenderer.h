@@ -36,7 +36,7 @@ public:
 
 private:
     Program* m_idProgram{ nullptr };
-    Program* m_idProgramPointSprite{ nullptr };
+    //Program* m_idProgramPointSprite{ nullptr };
 
     std::unique_ptr<FrameBuffer> m_idBuffer{ nullptr };
 };

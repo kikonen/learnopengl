@@ -159,6 +159,7 @@ public:
     ProgramTypeMap allNodes;
     ProgramTypeMap solidNodes;
     ProgramTypeMap alphaNodes;
+    ProgramTypeMap spriteNodes;
     ProgramTypeMap blendedNodes;
     ProgramTypeMap invisibleNodes;
     ProgramTypeMap physicsNodes;

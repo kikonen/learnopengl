@@ -55,15 +55,6 @@ void main() {
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
-  if (fs_in.shapeIndex > 0) {
-    Shape shape = u_shapes[fs_in.shapeIndex];
-//    Shape shape = u_shapes[1];
-    if (shape.diffuseTex >= 0) {
-      sampler2D sampler = sampler2D(u_texture_handles[shape.diffuseTex]);
-      material.diffuse = texture(sampler, texCoord);
-    }
-  }
-
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
 
 #ifdef USE_ALPHA

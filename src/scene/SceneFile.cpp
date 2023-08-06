@@ -515,6 +515,7 @@ MeshType* SceneFile::createType(
             for (const auto& [k, v] : data.programDefinitions) {
                 definitions[k] = v;
             }
+
             if (type->m_flags.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
             }
@@ -524,6 +525,14 @@ MeshType* SceneFile::createType(
             if (type->m_flags.blendOIT) {
                 definitions[DEF_USE_BLEND_OIT] = "1";
             }
+
+            //if (type->m_entityType == EntityType::billboard) {
+            //    definitions[DEF_USE_BILLBOARD] = "1";
+            //}
+            //if (type->m_entityType == EntityType::sprite) {
+            //    definitions[DEF_USE_SPRITE] = "1";
+            //}
+
             if (useTBN) {
                 definitions[DEF_USE_TBN] = "1";
             }

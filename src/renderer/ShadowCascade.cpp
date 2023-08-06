@@ -76,11 +76,9 @@ void ShadowCascade::prepare(
     const Assets& assets,
     Registry* registry)
 {
-    //m_shadowProgram = m_registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
     m_solidShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
     m_alphaShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
 
-    //m_shadowProgram->prepare(assets);
     m_solidShadowProgram->prepare(assets);
     m_alphaShadowProgram->prepare(assets);
 
@@ -270,6 +268,10 @@ void ShadowCascade::drawNodes(
     {
         m_alphaShadowProgram->bind(ctx.m_state);
         m_alphaShadowProgram->u_shadowIndex->set(m_index);
+
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->spriteNodes) {
+            renderTypes(all.second, m_alphaShadowProgram);
+        }
 
         for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
             renderTypes(all.second, m_alphaShadowProgram);

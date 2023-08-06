@@ -10,6 +10,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+
 #ifdef USE_ALPHA
 #include uniform_material_indeces.glsl
 #endif
@@ -39,9 +40,9 @@ void main()
 
   vec4 worldPos;
 
-  if ((entity.u_flags & (ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT)) != 0) {
-    // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
-    // - "ogl" approach
+  // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
+  // - "ogl" approach
+  if ((entity.u_flags & ENTITY_BILLBOARD_BIT) != 0) {
     vec3 entityPos = vec3(modelMatrix[3]);
     vec3 entityScale = entity.u_worldScale.xyz;
 
@@ -49,10 +50,18 @@ void main()
                     + u_viewRight * a_pos.x * entityScale.x
                     + UP * a_pos.y * entityScale.y,
                     1.0);
+  } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
+    vec4 pos = vec4(u_viewRight * a_pos.x
+		    + UP * a_pos.y,
+		    1.0);
+
+    worldPos = modelMatrix * pos;
+#ifdef USE_ALPHA
+    vs_out.shapeIndex = entity.u_shapeIndex;
+#endif
   } else {
     worldPos = modelMatrix * vec4(a_pos, 1.0);
   }
-
 
   gl_Position = u_projectedMatrix * worldPos;
 
@@ -63,7 +72,6 @@ void main()
   }
 
   vs_out.materialIndex = materialIndex;
-  vs_out.shapeIndex = entity.shapeIndex;
   vs_out.texCoord = a_texCoord;
 #endif
 }

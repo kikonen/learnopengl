@@ -98,7 +98,7 @@ entities:
       diffuse: [0.7, 0.7, 0.7, 1.0]
       specular: [0.7, 0.7, 0.7, 1.0]
       enabled: true
-    xenabled: true
+    enabled: true
   - name: Cube map
     type: origo
     pos: [0, 5, 10]

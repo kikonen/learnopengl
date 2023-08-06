@@ -64,7 +64,6 @@ private:
 
     Camera m_camera;
 
-    //Program* m_shadowProgram{ nullptr };
     Program* m_solidShadowProgram{ nullptr };
     Program* m_alphaShadowProgram{ nullptr };
 };

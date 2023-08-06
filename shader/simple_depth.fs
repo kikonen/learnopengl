@@ -2,8 +2,10 @@
 
 #ifdef USE_ALPHA
 #include struct_material.glsl
+#include struct_shape.glsl
 
 #include uniform_materials.glsl
+#include uniform_shapes.glsl
 #include uniform_textures.glsl
 #endif
 

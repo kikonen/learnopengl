@@ -66,9 +66,9 @@ void main() {
   vec3 normal;
   vec3 tangent;
 
-  if ((entity.u_flags & (ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT)) != 0) {
-    // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
-    // - "ogl" approach
+  // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
+  // - "ogl" approach
+  if ((entity.u_flags & ENTITY_BILLBOARD_BIT) != 0) {
     vec3 entityPos = vec3(modelMatrix[3]);
     vec3 entityScale = entity.u_worldScale.xyz;
 
@@ -79,6 +79,17 @@ void main() {
 
     normal = -u_viewFront;
     tangent = u_viewRight;
+  } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
+    vec4 pos = vec4(u_viewRight * a_pos.x
+		    + UP * a_pos.y,
+		    1.0);
+
+    worldPos = modelMatrix * pos;
+
+    normal = -u_viewFront;
+    tangent = u_viewRight;
+
+    vs_out.shapeIndex = entity.u_shapeIndex;
   } else {
     worldPos = modelMatrix * pos;
 
