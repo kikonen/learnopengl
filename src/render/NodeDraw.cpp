@@ -184,6 +184,19 @@ void NodeDraw::drawNodes(
         // NOTE KI do NOT modify depth with blend (likely redundant)
         auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
 
+        if (ctx.m_assets.effectOitEnabled) {
+            activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+
+            ctx.m_state.setEnabled(GL_BLEND, true);
+            ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+
+
+            m_blendOitProgram->bind(ctx.m_state);
+            m_textureQuad.draw(ctx);
+
+            ctx.m_state.setEnabled(GL_BLEND, false);
+        }
+
         if (ctx.m_assets.effectBloomEnabled)
         {
             //m_emissionProgram->bind(ctx.m_state);
@@ -226,10 +239,10 @@ void NodeDraw::drawNodes(
             ctx.m_state.setEnabled(GL_BLEND, true);
             ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-            if (ctx.m_assets.effectOitEnabled) {
-                m_blendOitProgram->bind(ctx.m_state);
-                m_textureQuad.draw(ctx);
-            }
+            //if (ctx.m_assets.effectOitEnabled) {
+            //    m_blendOitProgram->bind(ctx.m_state);
+            //    m_textureQuad.draw(ctx);
+            //}
 
             if (ctx.m_assets.effectFogEnabled) {
                 m_fogProgram->bind(ctx.m_state);

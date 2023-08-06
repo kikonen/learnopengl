@@ -11,6 +11,7 @@ in VS_OUT {
 LAYOUT_OIT_SAMPLERS;
 
 layout (location = 0) out vec4 o_fragColor;
+layout (location = 1) out vec4 o_fragBright;
 
 ////////////////////////////////////////////////////////////
 //
@@ -41,4 +42,6 @@ void main()
   vec3 averageColor = accumulation.rgb / max(accumulation.a, EPSILON);
 
   o_fragColor = vec4(averageColor, 1.0 - revealage);
+
+  o_fragBright = vec4(averageColor * 0.1, 1.0 - revealage);
 }
