@@ -410,6 +410,7 @@ void Scene::drawScene(
     FrameBuffer* targetBuffer)
 {
     m_registry->m_materialRegistry->bind(ctx);
+    m_registry->m_spriteRegistry->bind(ctx);
     m_registry->m_entityRegistry->bind(ctx);
 
     if (m_cubeMapRenderer->isEnabled()) {
