@@ -40,9 +40,7 @@
 #include "registry/Registry.h"
 #include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
-#include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/MaterialRegistry.h"
 
 #include "scene/SkyboxMaterial.h"
 
@@ -310,22 +308,24 @@ void SceneFile::attachEntity(
         return;
     }
 
-    if (data.clones.empty()) {
-        MeshType* type{ nullptr };
-        attachEntityClone(type, root, data, data.base, false, 0, materials, sprites);
-    }
-    else {
-        MeshType* type{ nullptr };
-
-        int cloneIndex = 0;
-        for (auto& cloneData : data.clones) {
-            if (!*m_alive) return;
-            type = attachEntityClone(type, root, data, cloneData, true, cloneIndex, materials, sprites);
-            if (!data.base.cloneMesh)
-                type = nullptr;
-            cloneIndex++;
+    m_asyncLoader->addLoader(m_alive, [this, &root, &data, &materials, &sprites]() {
+        if (data.clones.empty()) {
+            MeshType* type{ nullptr };
+            attachEntityClone(type, root, data, data.base, false, 0, materials, sprites);
         }
-    }
+        else {
+            MeshType* type{ nullptr };
+
+            int cloneIndex = 0;
+            for (auto& cloneData : data.clones) {
+                if (!*m_alive) return;
+                type = attachEntityClone(type, root, data, cloneData, true, cloneIndex, materials, sprites);
+                if (!data.base.cloneMesh)
+                    type = nullptr;
+                cloneIndex++;
+            }
+        }
+    });
 }
 
 MeshType* SceneFile::attachEntityClone(
@@ -393,8 +393,6 @@ MeshType* SceneFile::attachEntityCloneRepeat(
         return type;
     }
 
-    auto& nodeRegistry = *m_registry->m_nodeRegistry;
-
     // NOTE KI overriding material in clones is *NOT* supported"
     if (!type) {
         type = createType(
@@ -414,16 +412,18 @@ MeshType* SceneFile::attachEntityCloneRepeat(
         data.clonePosition, posAdjustment,
         entity.isRoot);
 
-    if (data.selected) {
-        node->setSelectionMaterialIndex(nodeRegistry.getSelectionMaterial().m_registeredIndex);
-    }
-
     {
         event::Event evt { event::Type::node_add };
         evt.body.node.target = node;
         if (!entity.isRoot) {
             evt.body.node.parentId = data.parentId.is_nil() ? root.base.id : data.parentId;
         }
+        m_dispatcher->send(evt);
+    }
+
+    if (data.selected) {
+        event::Event evt { event::Type::node_select };
+        evt.body.node.target = node;
         m_dispatcher->send(evt);
     }
 
