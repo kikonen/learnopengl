@@ -6,7 +6,7 @@ viewports:
 skybox:
   program: g_skybox
   priority: -100
-  material: skybox
+  material: skybox/BluePinkNebular
 lights: {}
 cube_maps: {}
 root:
