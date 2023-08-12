@@ -20,6 +20,7 @@ enum class BasicMaterial {
 };
 
 enum class MaterialType {
+    asset,
     model,
     texture,
     sprite

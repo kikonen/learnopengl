@@ -58,10 +58,12 @@ public:
     std::string logFile;
     std::string sceneFile;
 
+    std::string assetsDir;
     std::string modelsDir;
-    std::string shadersDir;
     std::string spritesDir;
     std::string texturesDir;
+
+    std::string shadersDir;
 
     bool placeholderTextureAlways;
     std::string placeholderTexture;

@@ -35,10 +35,12 @@ public:
     GLVertexArray* registerMeshVBO(ModelMeshVBO& meshVBO);
 
     std::shared_future<ModelMesh*> getMesh(
-        const std::string& meshName);
+        const std::string& meshName,
+        const std::string& meshDir);
 
     std::shared_future<ModelMesh*> getMesh(
         const std::string& meshName,
+        const std::string& meshDir,
         const std::string& meshPath);
 
 private:

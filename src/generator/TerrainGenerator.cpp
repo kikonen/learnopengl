@@ -139,7 +139,9 @@ void TerrainGenerator::createTiles(
 
     auto type = createType(registry, container.m_type);
     {
-        auto future = registry->m_modelRegistry->getMesh(TERRAIN_QUAD_MESH_NAME);
+        auto future = registry->m_modelRegistry->getMesh(
+            TERRAIN_QUAD_MESH_NAME,
+            m_modelsDir);
         auto* mesh = future.get();
         mesh->setAABB(aabb);
         type->setMesh(mesh);

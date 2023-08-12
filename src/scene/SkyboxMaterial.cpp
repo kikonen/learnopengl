@@ -17,7 +17,7 @@ void SkyboxMaterial::prepare(
         std::string basePath;
         {
             std::filesystem::path fp;
-            fp /= assets.modelsDir;
+            fp /= assets.assetsDir;
             fp /= m_materialName;
             basePath = fp.string();
         }

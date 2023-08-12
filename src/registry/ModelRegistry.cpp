@@ -37,20 +37,22 @@ void ModelRegistry::update(const UpdateContext& ctx)
 }
 
 std::shared_future<ModelMesh*> ModelRegistry::getMesh(
-    const std::string& meshName)
+    const std::string& meshName,
+    const std::string& meshDir)
 {
-    return getMesh(meshName, "");
+    return getMesh(meshName, meshDir, "");
 }
 
 std::shared_future<ModelMesh*> ModelRegistry::getMesh(
     const std::string& meshName,
+    const std::string& meshDir,
     const std::string& meshPath)
 {
     if (!*m_alive) return {};
 
     std::lock_guard<std::mutex> lock(m_meshes_lock);
 
-    const std::string key = meshPath + "/" + meshName;
+    const std::string key = meshPath + "/" + meshDir + "/" + meshName;
 
     {
         auto e = m_meshes.find(key);
@@ -60,6 +62,7 @@ std::shared_future<ModelMesh*> ModelRegistry::getMesh(
 
     auto mesh = new ModelMesh(
         meshName,
+        meshDir,
         meshPath);
 
     auto future = startLoad(mesh);

@@ -105,17 +105,20 @@ void AssetsFile::loadAssets(
         else if (k == "async_loader_delay") {
             data.asyncLoaderDelay = readInt(v);
         }
+        else if (k == "assets_dir") {
+            data.assetsDir = v.as<std::string>();
+        }
         else if (k == "models_dir") {
             data.modelsDir = v.as<std::string>();
-        }
-        else if (k == "shaders_dir") {
-            data.shadersDir = v.as<std::string>();
         }
         else if (k == "sprites_dir") {
             data.spritesDir = v.as<std::string>();
         }
         else if (k == "textures_dir") {
             data.texturesDir = v.as<std::string>();
+        }
+        else if (k == "shaders_dir") {
+            data.shadersDir = v.as<std::string>();
         }
         else if (k == "placeholder_texture_always") {
             data.placeholderTextureAlways = readBool(v);

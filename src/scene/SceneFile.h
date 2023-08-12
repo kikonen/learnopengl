@@ -40,6 +40,13 @@ class AsyncLoader;
 
 class SceneFile
 {
+    struct MetaData {
+        std::string name;
+
+        std::string assetsDir;
+        std::string modelsDir;
+    };
+
     struct SkyboxData {
         std::string programName{ "skybox" };
         std::string materialName{};
@@ -375,6 +382,10 @@ private:
         const GeneratorData& data,
         Node* node);
 
+    void loadMeta(
+        const YAML::Node& node,
+        MetaData& data);
+
     void loadSkybox(
         const YAML::Node& node,
         SkyboxData& data);
@@ -506,6 +517,7 @@ private:
 
     event::Dispatcher* m_dispatcher{ nullptr };
 
+    MetaData m_meta;
     SkyboxData m_skybox;
 
     EntityData m_root;

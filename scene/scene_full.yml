@@ -1,5 +1,7 @@
 ---
-name: Full
+meta:
+  name: Full
+  modelsDir: 3d_model
 viewports:
 skybox:
   program: g_skybox
@@ -208,6 +210,11 @@ entities:
   - name: Active node
     parent_id: [auto, zero-origo]
     model: texture_cube
+    material_modifier:
+      tiling_x: 2
+      tiling_y: 2
+      texture_spec:
+        wrap: GL_REPEAT
     program: g_tex
     pos: [0, 15, 0]
     script_file: scripts/anim_node_path
@@ -221,7 +228,7 @@ entities:
     enabled: true
   - name: Cube map 1
     type: origo
-    pos: [0.0, -3.0, 0.0]
+    pos: [0.0, 4.5, 0.0]
     render_flags:
       cube_map: true
     enabled: true
@@ -590,6 +597,11 @@ entities:
   - name: Brickcube
     model: texture_cube
     program: g_tex
+    material_modifier:
+      tiling_x: 2
+      tiling_y: 2
+      texture_spec:
+        wrap: GL_REPEAT
     pos: [5.0, 25.0, 5.0]
     scale: 1
     enabled: true
@@ -680,8 +692,8 @@ entities:
     model: pool_brick
     program: g_tex
     material_modifier:
-      tiling_x: 30
-      tiling_y: 2
+      tiling_x: 100
+      tiling_y: 10
       texture_spec:
         wrap: GL_REPEAT
     clones:

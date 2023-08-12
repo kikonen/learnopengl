@@ -92,6 +92,8 @@ void SceneFile::load(
         std::ifstream fin(m_filename);
         YAML::Node doc = YAML::Load(fin);
 
+        loadMeta(doc, m_meta);
+
         loadSkybox(doc, m_skybox);
         loadMaterials(doc, m_materials);
         loadSprites(doc, m_sprites);
@@ -132,7 +134,8 @@ void SceneFile::attachSkybox(
     type->m_priority = data.priority;
 
     auto future = m_registry->m_modelRegistry->getMesh(
-        SKYBOX_MESH_NAME);
+        SKYBOX_MESH_NAME,
+        m_meta.modelsDir);
     auto* mesh = future.get();
     type->setMesh(mesh);
     type->m_entityType = EntityType::skybox;
@@ -173,7 +176,9 @@ void SceneFile::attachVolume(
 
     auto type = m_registry->m_typeRegistry->getType("<volume>");
 
-    auto future = m_registry->m_modelRegistry->getMesh("ball_volume");
+    auto future = m_registry->m_modelRegistry->getMesh(
+        "ball_volume",
+        m_meta.modelsDir);
     auto* mesh = future.get();
 
     type->setMesh(mesh);
@@ -237,7 +242,9 @@ void SceneFile::attachCubeMapCenter(
 
     auto type = m_registry->m_typeRegistry->getType("<cube_map>");
 
-    auto future = m_registry->m_modelRegistry->getMesh("ball_volume");
+    auto future = m_registry->m_modelRegistry->getMesh(
+        "ball_volume",
+        m_meta.modelsDir);
     auto& mesh = future.get();
 
     type->setMesh(mesh);
@@ -616,6 +623,7 @@ void SceneFile::resolveMesh(
     if (data.type == EntityType::model) {
         auto future = m_registry->m_modelRegistry->getMesh(
             data.meshName,
+            m_meta.modelsDir,
             data.meshPath);
         auto* mesh = future.get();
         type->setMesh(mesh);
@@ -627,21 +635,24 @@ void SceneFile::resolveMesh(
     }
     else if (data.type == EntityType::quad) {
         auto future = m_registry->m_modelRegistry->getMesh(
-            QUAD_MESH_NAME);
+            QUAD_MESH_NAME,
+            m_meta.modelsDir);
         auto* mesh = future.get();
         type->setMesh(mesh);
         type->m_entityType = EntityType::quad;
     }
     else if (data.type == EntityType::billboard) {
         auto future = m_registry->m_modelRegistry->getMesh(
-            QUAD_MESH_NAME);
+            QUAD_MESH_NAME,
+            m_meta.modelsDir);
         auto* mesh = future.get();
         type->setMesh(mesh);
         type->m_entityType = EntityType::billboard;
     }
     else if (data.type == EntityType::sprite) {
         auto future = m_registry->m_modelRegistry->getMesh(
-            QUAD_MESH_NAME);
+            QUAD_MESH_NAME,
+            m_meta.modelsDir);
         auto* mesh = future.get();
         type->setMesh(mesh);
         type->m_entityType = EntityType::sprite;
@@ -981,6 +992,7 @@ std::unique_ptr<NodeGenerator> SceneFile::createGenerator(
         auto& materialVBO = node->m_type->m_materialVBO;
         const auto& tiling = data.tiling;
 
+        generator->m_modelsDir = m_meta.modelsDir;
         generator->m_worldTileSize = tiling.tile_size;
         generator->m_worldTilesU = tiling.tiles.x;
         generator->m_worldTilesV = tiling.tiles.z;
@@ -1009,6 +1021,36 @@ std::unique_ptr<NodeGenerator> SceneFile::createGenerator(
     }
 
     return nullptr;
+}
+
+void SceneFile::loadMeta(
+    const YAML::Node& doc,
+    MetaData& data)
+{
+    data.name = "<noname>";
+    data.modelsDir = m_assets.modelsDir;
+
+    auto& node = doc["skybox"];
+
+    if (!node) return;
+
+    for (const auto& pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "name") {
+            data.name= v.as<std::string>();
+        }
+        else if (k == "assetsDir") {
+            data.assetsDir = v.as<std::string>();
+        }
+        else if (k == "modelsDir") {
+            data.modelsDir = v.as<std::string>();
+        }
+        else {
+            reportUnknown("meta_entry", k, v);
+        }
+    }
 }
 
 void SceneFile::loadSkybox(

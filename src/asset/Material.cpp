@@ -180,6 +180,8 @@ std::string Material::resolveBaseDir(const Assets& assets)
 {
     std::string baseDir;
     switch (m_type) {
+    case MaterialType::asset:
+        return assets.assetsDir;
     case MaterialType::model:
         return assets.modelsDir;
     case MaterialType::texture:
@@ -187,7 +189,7 @@ std::string Material::resolveBaseDir(const Assets& assets)
     case MaterialType::sprite:
         return assets.spritesDir;
     }
-    return assets.modelsDir;
+    return assets.assetsDir;
 }
 
 void Material::loadTexture(

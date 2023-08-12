@@ -60,6 +60,8 @@ public:
 
     Material m_material;
 
+    std::string m_modelsDir;
+
 private:
     size_t m_gridSize{ 0 };
 
