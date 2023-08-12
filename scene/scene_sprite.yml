@@ -5,6 +5,7 @@ skybox:
   program: g_skybox
   xmaterial: skybox
   material: skybox/BluePinkNebular
+  swap_faces: true
 lights: {}
 cube_maps: {}
 root:

@@ -12,6 +12,10 @@ entities:
     pos: [0, 0, 0.0]
     scale: 1.0
     program: g_tex
+    material_modifier:
+      tiling: 5
+      texture_spec:
+        wrap: GL_REPEAT
     render_flags:
       allow_normals: false
     camera:

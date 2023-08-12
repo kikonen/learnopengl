@@ -156,7 +156,12 @@ void SceneFile::attachSkybox(
 
     type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
 
-    type->setCustomMaterial(std::make_unique<SkyboxMaterial>(data.materialName));
+    auto material{ std::make_unique<SkyboxMaterial>(data.materialName) };
+    material->m_swapFaces = data.swapFaces;
+    if (data.loadedFaces) {
+        material->m_faces = data.faces;
+    }
+    type->setCustomMaterial(std::move(material));
 
     auto node = new Node(type);
     node->m_id = m_assets.skyboxUUID;
@@ -1074,10 +1079,33 @@ void SceneFile::loadSkybox(
         else if (k == "priority") {
             data.priority = readInt(v);
         }
+        else if (k == "swap_faces") {
+            data.swapFaces = readBool(v);
+        }
+        else if (k == "faces") {
+            loadSkyboxFaces(v, data);
+        }
         else {
             reportUnknown("skybox_entry", k, v);
         }
     }
+}
+
+void SceneFile::loadSkyboxFaces(
+    const YAML::Node& node,
+    SkyboxData& data)
+{
+    if (!node.IsSequence()) {
+        return;
+    }
+
+    int idx = 0;
+    for (const auto& e : node) {
+        data.faces[idx] = e.as<std::string>();
+        idx++;
+    }
+
+    data.loadedFaces = true;
 }
 
 void SceneFile::loadRoot(

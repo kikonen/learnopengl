@@ -52,6 +52,10 @@ class SceneFile
         std::string materialName{};
         int priority{ -100 };
 
+        bool swapFaces{ false };
+        bool loadedFaces{ false };
+        std::array<std::string, 6> faces;
+
         bool const valid() {
             return !materialName.empty();
         }
@@ -387,6 +391,10 @@ private:
         MetaData& data);
 
     void loadSkybox(
+        const YAML::Node& node,
+        SkyboxData& data);
+
+    void loadSkyboxFaces(
         const YAML::Node& node,
         SkyboxData& data);
 

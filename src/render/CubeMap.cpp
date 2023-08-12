@@ -74,12 +74,28 @@ unsigned int CubeMap::createFaces()
 
     std::vector<std::unique_ptr<Image>> images{ 6 };
 
+    std::vector<GLenum> formats{};
+
     for (unsigned int i = 0; i < 6; i++)
     {
         images[i] = std::make_unique<Image>(m_faces[i]);
         Image* image = images[i].get();
 
-        if (image->load(false)) continue;
+        if (image->load(false)) {
+            formats.emplace_back(GL_RGB);
+            continue;
+        }
+
+        {
+            GLenum format;
+            if (image->m_channels == 4) {
+                format = GL_RGBA;
+            }
+            else {
+                format = GL_RGB;
+            }
+            formats.emplace_back(format);
+        }
 
         if (w == -1) {
             w = image->m_width;
@@ -103,7 +119,8 @@ unsigned int CubeMap::createFaces()
         Image* image = images[i].get();
         if (!image || !image->m_data) continue;
 
-        glTextureSubImage3D(textureID, 0, 0, 0, i, image->m_width, image->m_height, 1, m_format, GL_UNSIGNED_BYTE, image->m_data);
+        GLenum format = formats[i];
+        glTextureSubImage3D(textureID, 0, 0, 0, i, image->m_width, image->m_height, 1, format, GL_UNSIGNED_BYTE, image->m_data);
     }
 
     glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

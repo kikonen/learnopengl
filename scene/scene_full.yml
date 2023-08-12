@@ -7,6 +7,7 @@ skybox:
   program: g_skybox
   priority: -100
   material: skybox/BluePinkNebular
+  swap_faces: true
 lights: {}
 cube_maps: {}
 root:
