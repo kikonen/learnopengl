@@ -3,7 +3,9 @@ name: Origo
 viewports:
 skybox:
   program: g_skybox
-  material: skybox
+  xmaterial: skybox
+  material: skybox/BluePinkNebular
+  swap_faces: true
 lights: {}
 cube_maps: {}
 root:

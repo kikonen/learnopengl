@@ -3,7 +3,14 @@ name: Origo
 viewports:
 skybox:
   program: g_skybox
-  material: skybox
+  material: skybox/Skybox_3
+  faces:
+    - Left_Tex.png
+    - Right_Tex.png
+    - Up_Tex.png
+    - Down_Tex.png
+    - Front_Tex.png
+    - Back_Tex.png
 lights: {}
 cube_maps: {}
 root:
@@ -22,6 +29,10 @@ entities:
   - name: Other
     model: texture_cube
     program: g_tex
+    material_modifier:
+      tiling: 5
+      texture_spec:
+        wrap: GL_REPEAT
     pos: [0.0, 2.0, 0.0]
     enabled: true
     repeat:

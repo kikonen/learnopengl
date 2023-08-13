@@ -43,10 +43,12 @@ Assets::Assets()
     logFile = "log/development.log";
     sceneFile = "scene/scene_full.yml";
 
+    assetsDir = "3d_model";
     modelsDir = "3d_model";
+    spritesDir = "3d_model/sprites";
+    texturesDir = "3d_model/textures";
+
     shadersDir = "shader";
-    spritesDir = "sprites";
-    texturesDir = "textures";
 
     placeholderTextureAlways = false;
     placeholderTexture = "textures/tiles_1024.png";

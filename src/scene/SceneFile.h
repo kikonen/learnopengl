@@ -40,10 +40,21 @@ class AsyncLoader;
 
 class SceneFile
 {
+    struct MetaData {
+        std::string name;
+
+        std::string assetsDir;
+        std::string modelsDir;
+    };
+
     struct SkyboxData {
         std::string programName{ "skybox" };
         std::string materialName{};
         int priority{ -100 };
+
+        bool swapFaces{ false };
+        bool loadedFaces{ false };
+        std::array<std::string, 6> faces;
 
         bool const valid() {
             return !materialName.empty();
@@ -375,7 +386,15 @@ private:
         const GeneratorData& data,
         Node* node);
 
+    void loadMeta(
+        const YAML::Node& node,
+        MetaData& data);
+
     void loadSkybox(
+        const YAML::Node& node,
+        SkyboxData& data);
+
+    void loadSkyboxFaces(
         const YAML::Node& node,
         SkyboxData& data);
 
@@ -506,6 +525,7 @@ private:
 
     event::Dispatcher* m_dispatcher{ nullptr };
 
+    MetaData m_meta;
     SkyboxData m_skybox;
 
     EntityData m_root;

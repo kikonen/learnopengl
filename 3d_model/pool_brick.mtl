@@ -7,5 +7,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd Cobbles_grey_HI_512.PNG
-map_Bump Cobbles_grey_HI_512_normal.PNG
+map_Kd textures/brick_03.png
+map_Bump textures/brick_03_NRM.png

@@ -111,6 +111,13 @@ void NodeRegistry::prepare(
         [this](const event::Event& e) {
             changeParent(e.body.node.target, e.body.node.parentId);
         });
+
+    m_registry->m_dispatcher->addListener(
+        event::Type::node_select,
+        [this](const event::Event& e) {
+            auto& node = e.body.node.target;
+            node->setSelectionMaterialIndex(getSelectionMaterial().m_registeredIndex);
+        });
 }
 
 void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcept

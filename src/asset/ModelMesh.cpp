@@ -21,16 +21,19 @@ namespace {
 }
 
 ModelMesh::ModelMesh(
-    const std::string& meshName)
-    : ModelMesh(meshName, "")
+    const std::string& meshName,
+    const std::string& meshDir)
+    : ModelMesh(meshName, meshDir, "")
 {
 }
 
 ModelMesh::ModelMesh(
     const std::string& meshName,
+    const std::string& meshDir,
     const std::string& meshPath)
     : Mesh(),
     m_meshName(meshName),
+    m_meshDir(meshDir),
     m_meshPath(meshPath)
 {
 }

@@ -3,6 +3,7 @@ name: Origo
 viewports:
 skybox:
   program: g_skybox
+  priority: -100
   material: skybox
 lights: {}
 cube_maps: {}
@@ -22,6 +23,10 @@ entities:
   - name: Other
     model: texture_cube
     program: g_tex
+    material_modifier:
+      tiling: 5
+      texture_spec:
+        wrap: GL_REPEAT
     pos: [0.0, 2.0, 0.0]
     enabled: true
     repeat:

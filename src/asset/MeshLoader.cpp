@@ -97,12 +97,15 @@ void MeshLoader::loadData(
     }
 
     std::filesystem::path filePath;
-    filePath /= assets.modelsDir;
+
+    if (!mesh.m_meshDir.empty())
+        filePath /= mesh.m_meshDir;
+
     if (!mesh.m_meshPath.empty())
         filePath /= mesh.m_meshPath;
+
     filePath /= mesh.m_meshName + ".obj";
 
-    //const std::string modelPath = assets.modelsDir + path + modelName + ".obj";
     KI_INFO(fmt::format("MESH_LOADER: path={}", filePath.string()));
 
     std::ifstream file;
@@ -419,11 +422,10 @@ void MeshLoader::loadMaterials(
         "LOADER::LOAD_MATERIAL_LIB: lib={}", libraryName));
 
     std::filesystem::path filePath;
-    filePath /= assets.modelsDir;
+    filePath /= mesh.m_meshDir;
     filePath /= mesh.m_meshPath;
     filePath /= libraryName;
 
-    //std::string materialPath = assets.modelsDir + path + libraryName;
     std::ifstream file;
     //    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     file.exceptions(std::ifstream::badbit);

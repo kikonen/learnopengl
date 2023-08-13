@@ -19,6 +19,7 @@ namespace event {
         node_add,
         node_added,
         node_change_parent,
+        node_select,
 
         controller_add,
 

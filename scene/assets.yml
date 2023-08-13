@@ -24,10 +24,11 @@ assets:
   async_loader_enabled: true
   async_loader_delay: 0
 
+  assets_dir: 3d_model
   models_dir: 3d_model
   shaders_dir: shader
-  sprites_dir: sprites
-  textures_dir: textures
+  sprites_dir: 3d_model/sprites
+  textures_dir: 3d_model/textures
 
   placeholder_texture_always: false
   placeholder_texture: textures/tiles_1024.png

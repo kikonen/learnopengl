@@ -14,11 +14,11 @@ class Registry;
 class SkyboxMaterial : public CustomMaterial
 {
 public:
+    static const std::array<std::string, 6>& getDefaultFaces();
+
+public:
     SkyboxMaterial(
-        const std::string& materialName)
-        : CustomMaterial(materialName)
-    {
-    }
+        const std::string& materialName);
 
     ~SkyboxMaterial() = default;
 
@@ -27,6 +27,17 @@ public:
         Registry* registry) override;
 
     virtual void bindTextures(const RenderContext& ctx) override;
+
+public:
+    // ORDER
+    //basePath + "/right.jpg",
+    //basePath + "/left.jpg",
+    //basePath + "/top.jpg",
+    //basePath + "/bottom.jpg",
+    //basePath + "/front.jpg",
+    //basePath + "/back.jpg"
+    std::array<std::string, 6> m_faces;
+    bool m_swapFaces{ false };
 
 private:
     CubeMap m_cubeMap{ false };
