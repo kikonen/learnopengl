@@ -6,8 +6,16 @@ viewports:
 skybox:
   program: g_skybox
   priority: -100
-  material: skybox/BluePinkNebular
-  swap_faces: true
+  #material: skybox/BluePinkNebular
+  #swap_faces: true
+  material: skybox/Skybox_3
+  faces:
+    - Left_Tex.png
+    - Right_Tex.png
+    - Up_Tex.png
+    - Down_Tex.png
+    - Front_Tex.png
+    - Back_Tex.png
 lights: {}
 cube_maps: {}
 root:

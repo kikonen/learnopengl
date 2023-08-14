@@ -14,6 +14,24 @@ entities:
     controller:
       type: camera
       enabled: true
+  - name: Cube Gbuffer
+    model: texture_cube
+    program: g_tex
+    material_modifier:
+      tiling: 5
+      texture_spec:
+        wrap: GL_REPEAT
+    pos: [0.0, 1.5, -14.0]
+    enabled: true
+  - name: Cube Forward
+    model: texture_cube
+    program: tex
+    material_modifier:
+      tiling: 5
+      texture_spec:
+        wrap: GL_REPEAT
+    pos: [0.0, -1.5, -14.0]
+    enabled: true
   - name: Window 1
     model: quad
     material: window_1

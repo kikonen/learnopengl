@@ -8,6 +8,13 @@ class RenderContext;
 
 class GBuffer {
 public:
+    static const int ATT_ALBEDO_INDEX = 0;
+    static const int ATT_SPECULAR_INDEX = 1;
+    static const int ATT_EMISSION_INDEX = 2;
+    static const int ATT_NORMAL_INDEX = 3;
+    static const int ATT_DEPTH_INDEX = 4;
+
+public:
     GBuffer() {}
     ~GBuffer() {}
 

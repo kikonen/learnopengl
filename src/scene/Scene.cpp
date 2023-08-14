@@ -315,7 +315,7 @@ void Scene::draw(const RenderContext& ctx)
     ctx.m_state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, ctx.m_assets.cubeMapSeamless);
 
     if (m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->render(ctx)) {
-        //wasCubeMap = true;
+        wasCubeMap = true;
     }
 
     if (!wasCubeMap && m_waterMapRenderer->isEnabled() && m_waterMapRenderer->render(ctx))
@@ -492,8 +492,9 @@ void Scene::updateMainViewport(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
-    int w = ctx.m_assets.resolutionScale * res.x;
-    int h = ctx.m_assets.resolutionScale * res.y;
+    // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
+    int w = ctx.m_assets.gbufferScale * res.x;
+    int h = ctx.m_assets.gbufferScale * res.y;
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 

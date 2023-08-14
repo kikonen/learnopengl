@@ -21,7 +21,8 @@ class Program;
 class Registry;
 
 namespace backend {
-    using GLCommandQueue = GLSyncQueue<backend::gl::DrawIndirectCommand, true, true>;
+    // WIP KI it seems that there was no corruption in NVidia even if sync is turned off
+    using GLCommandQueue = GLSyncQueue<backend::gl::DrawIndirectCommand, true, false>;
 
     class DrawBuffer {
     public:
