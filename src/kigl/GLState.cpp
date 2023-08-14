@@ -234,3 +234,11 @@ void GLState::clearColor(const glm::vec4& clearColor)
     }
 }
 
+bool GLState::setBufferResolution(glm::vec2 bufferResolution)
+{
+    bool changed = m_bufferResolution != bufferResolution;
+    if (changed) {
+        m_bufferResolution = bufferResolution;
+    }
+    return changed;
+}

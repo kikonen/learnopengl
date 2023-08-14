@@ -203,7 +203,7 @@ void FrameBuffer::bind(const RenderContext& ctx)
     bool changed = ctx.m_state.bindFrameBuffer(m_fbo, m_forceBind);
     changed |= ctx.m_state.setViewport({ 0, 0, m_spec.width, m_spec.height });
 
-    if (changed) {
+    if (ctx.m_state.setBufferResolution(m_bufferInfo.u_bufferResolution)) {
         ctx.m_renderData->updateBufferInfo(m_bufferInfo);
     }
 }

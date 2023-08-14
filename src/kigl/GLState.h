@@ -54,6 +54,8 @@ public:
 
     void clearColor(const glm::vec4& clearColor);
 
+    bool setBufferResolution(glm::vec2 bufferResolution);
+
 private:
     std::unordered_map<GLenum, int> m_enabled;
 
@@ -76,5 +78,7 @@ private:
     GLenum m_depthMask = -1;
 
     glm::vec4 m_clearColor{ 0.f };
+
+    glm::vec2 m_bufferResolution{ 0.f };
 };
 
