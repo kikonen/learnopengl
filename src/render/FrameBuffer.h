@@ -64,6 +64,11 @@ public:
         const glm::vec2& size,
         GLenum filter);
 
+    void copy(
+        FrameBuffer* target,
+        int sourceAttachmentIndex,
+        int targetAttachmentIndex);
+
     void clear(
         const RenderContext& ctx,
         GLbitfield clearMask,

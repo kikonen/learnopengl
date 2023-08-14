@@ -84,7 +84,74 @@ void NodeDraw::drawNodes(
         m_gBuffer.bindTexture(ctx);
     }
 
+    // https://community.khronos.org/t/selectively-writing-to-buffers/71054
+    auto* activeBuffer = m_effectBuffer.m_primary.get();
+
+    // pass 2 => effectBuffer
+    {
+        activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+
+        activeBuffer->bind(ctx);
+        m_effectBuffer.clearAll();
+
+        activeBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
+        activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
+    }
+
+    // pass 2.1 - light
+    //if (false)
+    {
+        ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+
+        m_deferredProgram->bind(ctx.m_state);
+        m_textureQuad.draw(ctx);
+
+        ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+
+        // NOTE KI make depth available for "non gbuffer node" rendering
+        if (false) {
+            m_gBuffer.m_buffer->blit(
+                activeBuffer,
+                GL_DEPTH_BUFFER_BIT,
+                { -1.f, 1.f },
+                { 2.f, 2.f },
+                GL_NEAREST);
+        }
+        else {
+            // NOTE KI copy does not work with RBO
+            m_gBuffer.m_buffer->copy(
+                activeBuffer,
+                GBuffer::ATT_DEPTH_INDEX,
+                EffectBuffer::ATT_DEPTH_INDEX);
+        }
+
+        m_effectBuffer.m_primary->resetDrawBuffers(1);
+    }
+
+    // pass 3 - non G-buffer nodes
+    // => for example, "skybox" (skybox is mostly via g_skybox now!)
+    // => separate light calculations
+    // => currently these *CANNOT* work correctly
+    //if (false)
+    {
+        bool rendered = drawNodesImpl(
+            ctx,
+            [&typeSelector](const MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
+            nodeSelector);
+
+        if (rendered) {
+            ctx.m_batch->flush(ctx);
+
+            // copy depth back
+            activeBuffer->copy(
+                m_gBuffer.m_buffer.get(),
+                EffectBuffer::ATT_DEPTH_INDEX,
+                GBuffer::ATT_DEPTH_INDEX);
+        }
+    }
+
     // pass 1.2 - draw OIT
+    // NOTE KI OIT after *forward* pass to allow using depth texture from them
     if (ctx.m_assets.effectOitEnabled)
     {
         m_oitBuffer.bind(ctx);
@@ -118,53 +185,7 @@ void NodeDraw::drawNodes(
         m_oitBuffer.bindTexture(ctx);
     }
 
-    // https://community.khronos.org/t/selectively-writing-to-buffers/71054
-    auto* activeBuffer = m_effectBuffer.m_primary.get();
-
-    // pass 2 => effectBuffer
-    {
-        activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
-
-        activeBuffer->bind(ctx);
-        m_effectBuffer.clearAll();
-
-        activeBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
-        activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
-    }
-
-    // pass 2.1 - light
-    //if (false)
-    {
-        ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
-
-        m_deferredProgram->bind(ctx.m_state);
-        m_textureQuad.draw(ctx);
-
-        ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
-
-        // NOTE KI make depth available for "non gbuffer node" rendering
-        m_gBuffer.m_buffer->blit(
-            activeBuffer,
-            GL_DEPTH_BUFFER_BIT,
-            { -1.f, 1.f },
-            { 2.f, 2.f },
-            GL_NEAREST);
-
-        m_effectBuffer.m_primary->resetDrawBuffers(1);
-    }
-
-    // pass 3 - non G-buffer nodes
-    // => for example, "skybox" (skybox is mostly via g_skybox now!)
-    // => separate light calculations
-    //if (false)
-    {
-        drawNodesImpl(
-            ctx,
-            [&typeSelector](const MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
-            nodeSelector);
-
-        ctx.m_batch->flush(ctx);
-    }
+    activeBuffer->bind(ctx);
 
     // pass 4 - blend
     // => separate light calculations
@@ -228,14 +249,10 @@ void NodeDraw::drawNodes(
             m_textureQuad.draw(ctx);
         }
         else {
-            activeBuffer->blit(
+            activeBuffer->copy(
                 m_effectBuffer.m_secondary.get(),
-                GL_COLOR_BUFFER_BIT,
-                GL_COLOR_ATTACHMENT0,
-                GL_COLOR_ATTACHMENT0,
-                { -1.f, 1.f },
-                { 2.f, 2.f },
-                GL_LINEAR);
+                EffectBuffer::ATT_ALBEDO_INDEX,
+                EffectBuffer::ATT_ALBEDO_INDEX);
 
             activeBuffer = m_effectBuffer.m_secondary.get();
             activeBuffer->bind(ctx);
@@ -262,14 +279,27 @@ void NodeDraw::drawNodes(
         }
 
         if (copyMask & GL_COLOR_BUFFER_BIT) {
-            activeBuffer->blit(
-                targetBuffer,
-                GL_COLOR_BUFFER_BIT,
-                GL_COLOR_ATTACHMENT0,
-                GL_COLOR_ATTACHMENT0,
-                { -1.f, 1.f },
-                { 2.f, 2.f },
-                GL_LINEAR);
+            const bool canCopy = !targetBuffer->m_spec.attachments.empty() &&
+                targetBuffer->m_spec.width == activeBuffer->m_spec.width &&
+                targetBuffer->m_spec.height == activeBuffer->m_spec.height;
+
+            if (canCopy) {
+                activeBuffer->copy(
+                    targetBuffer,
+                    EffectBuffer::ATT_ALBEDO_INDEX,
+                    // NOTE KI assumption; buffer is at index 0
+                    EffectBuffer::ATT_ALBEDO_INDEX);
+            }
+            else {
+                activeBuffer->blit(
+                    targetBuffer,
+                    GL_COLOR_BUFFER_BIT,
+                    GL_COLOR_ATTACHMENT0,
+                    GL_COLOR_ATTACHMENT0,
+                    { -1.f, 1.f },
+                    { 2.f, 2.f },
+                    GL_LINEAR);
+            }
         }
 
         // pass 5 - debug info
@@ -378,14 +408,16 @@ void NodeDraw::drawBlended(
     ctx.m_batch->flush(ctx);
 }
 
-void NodeDraw::drawNodesImpl(
+bool NodeDraw::drawNodesImpl(
     const RenderContext& ctx,
     const std::function<bool(const MeshType*)>& typeSelector,
     const std::function<bool(const Node*)>& nodeSelector)
 {
+    bool rendered{ false };
+
     auto* nodeRegistry = ctx.m_registry->m_nodeRegistry;
 
-    auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector, &rendered](const MeshTypeMap& typeMap) {
         auto* program = typeMap.begin()->first.type->m_program;
 
         for (const auto& it : typeMap) {
@@ -397,6 +429,7 @@ void NodeDraw::drawNodesImpl(
 
             for (auto& node : it.second) {
                 if (!nodeSelector(node)) continue;
+                rendered = true;
                 batch->draw(ctx, *node, program);
             }
         }
@@ -413,6 +446,8 @@ void NodeDraw::drawNodesImpl(
     for (const auto& all : nodeRegistry->alphaNodes) {
         renderTypes(all.second);
     }
+
+    return rendered;
 }
 
 void NodeDraw::drawBlendedImpl(

@@ -2,11 +2,13 @@
 
 #include struct_lights.glsl
 #include struct_material.glsl
+#include struct_shape.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_lights.glsl
 #include uniform_materials.glsl
+#include uniform_shapes.glsl
 #include uniform_textures.glsl
 
 #ifndef USE_ALPHA
@@ -25,6 +27,7 @@ in VS_OUT {
   vec3 viewPos;
 
   flat uint materialIndex;
+  flat uint shapeIndex;
 
   flat uint shadowIndex;
   vec4 shadowPos;

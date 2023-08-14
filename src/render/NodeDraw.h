@@ -53,7 +53,7 @@ public:
         const std::function<bool(const Node*)>& nodeSelector);
 
 private:
-    void drawNodesImpl(
+    bool drawNodesImpl(
         const RenderContext& ctx,
         const std::function<bool(const MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector);

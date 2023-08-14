@@ -44,7 +44,9 @@ void EffectBuffer::updateView(const RenderContext& ctx)
                 // NOTE KI sharing depth buffer with gbuffer IS NOT VALID
                 // => reading and "writing" same depth buffer in shader is undefined operation
                 // NOTE KI depth needed since there may be "non gbuffer" render steps
-                FrameBufferAttachment::getRBODepth(),
+                // NOTE DepthTexture instead of RBODepth to allow *copy* instead of *blit*
+                //FrameBufferAttachment::getRBODepth(),
+                FrameBufferAttachment::getDepthTexture()
             }
             });
 

@@ -297,6 +297,25 @@ void FrameBuffer::blit(
     }
 }
 
+void FrameBuffer::copy(
+    FrameBuffer* target,
+    int sourceAttachmentIndex,
+    int targetAttachmentIndex)
+{
+    auto& srcAtt = m_spec.attachments[sourceAttachmentIndex];
+    auto& dstAtt = target->m_spec.attachments[targetAttachmentIndex];
+
+    // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCopyImageSubData.xhtml
+    // https://gamedev.stackexchange.com/questions/194959/glcopyimagesubdata-slower-than-binding-drawing
+    // https://stackoverflow.com/questions/23981016/best-method-to-copy-texture-to-texture
+    glCopyImageSubData(
+        srcAtt.textureID, GL_TEXTURE_2D, 0, 0, 0, 0,
+        dstAtt.textureID, GL_TEXTURE_2D, 0, 0, 0, 0,
+        m_spec.width,
+        m_spec.height,
+        1);
+}
+
 void FrameBuffer::clear(
     const RenderContext& ctx,
     GLbitfield clearMask,

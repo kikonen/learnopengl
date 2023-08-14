@@ -16,6 +16,7 @@ class EffectBuffer {
 public:
     static const int ATT_ALBEDO_INDEX = 0;
     static const int ATT_BRIGHT_INDEX = 1;
+    static const int ATT_DEPTH_INDEX = 2;
     static const int ATT_WORK_INDEX = 0;
 
 public:
