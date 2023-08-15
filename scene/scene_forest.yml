@@ -79,6 +79,56 @@ entities:
         z_step: -20
       enabled: true
     enabled: true
+  - name: Linden tree forest - part 3
+    type: model
+    model: quad
+    program: g_tex
+    instanced: true
+    pos: [-1000, -5.0, 0.0]
+    rotation: [0, 45, 0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      no_frustum: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [7, 10, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 200
+        z_count: 200
+        x_step: 20
+        z_step: -20
+      enabled: true
+    enabled: true
+  - name: Linden tree forest - part 4
+    type: model
+    model: quad
+    program: g_tex
+    instanced: true
+    pos: [-1000, -5.0, 0.0]
+    rotation: [0, 135, 0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      no_frustum: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [7, 10, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 200
+        z_count: 200
+        x_step: 20
+        z_step: -20
+      enabled: true
+    enabled: true
   - name: wooden floor
     model: quad
     xxmodel: woodwall
