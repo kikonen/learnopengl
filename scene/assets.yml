@@ -109,14 +109,14 @@ assets:
   shadow_render_frame_start: 0
   shadow_render_frame_step: 1
 
-  mirror_reflection_size: 1024
-  mirror_refraction_size: 1024
+  mirror_reflection_size: 2048
+  mirror_refraction_size: 2048
 
-  water_reflection_size: 1024
-  water_refraction_size: 1024
+  water_reflection_size: 2048
+  water_refraction_size: 2048
 
   cube_map_seamless: true
-  cube_map_size: 1024
+  cube_map_size: 2048
   cube_map_near_plane: 0.5
   cube_map_far_plane: 200
   cube_map_render_frame_start: 1

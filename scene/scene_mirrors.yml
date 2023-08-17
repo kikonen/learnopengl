@@ -64,6 +64,7 @@ entities:
   - name: Skeleton army
     type: sprite
     type: billboard
+    program: g_tex
     pos: [15, 6.5, -20.0]
     material: skeleton
     render_flags:
@@ -78,7 +79,7 @@ entities:
     enabled: true
   - name: Cube map 1
     type: origo
-    pos: [0.0, -3.0, 0.0]
+    pos: [5.0, 3.0, 0.0]
     render_flags:
       cube_map: true
     enabled: true
