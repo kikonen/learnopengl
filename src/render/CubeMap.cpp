@@ -45,8 +45,8 @@ GLuint CubeMap::createEmpty()
 
     glTextureStorage2D(textureID, 1, m_internalFormat, m_size, m_size);
 
-    glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -123,8 +123,8 @@ unsigned int CubeMap::createFaces()
         glTextureSubImage3D(textureID, 0, 0, 0, i, image->m_width, image->m_height, 1, format, GL_UNSIGNED_BYTE, image->m_data);
     }
 
-    glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);

@@ -53,6 +53,10 @@ void MirrorMapRenderer::prepare(
     m_renderFrameStart = assets.mirrorRenderFrameStart;
     m_renderFrameStep = assets.mirrorRenderFrameStep;
 
+    auto albedo = FrameBufferAttachment::getTextureRGB();
+    albedo.minFilter = GL_LINEAR;
+    albedo.magFilter = GL_LINEAR;
+
     // NOTE KI *CANNOT* share same buffer spec
     {
         int size = assets.mirrorReflectionSize;
@@ -61,7 +65,7 @@ void MirrorMapRenderer::prepare(
         FrameBufferSpecification spec = {
             scaledSize, scaledSize,
             {
-                FrameBufferAttachment::getTextureRGB(),
+                albedo,
             }
         };
         m_prev = std::make_unique<FrameBuffer>("mirror_prev", spec);
@@ -73,7 +77,7 @@ void MirrorMapRenderer::prepare(
         FrameBufferSpecification spec = {
             scaledSize, scaledSize,
             {
-                FrameBufferAttachment::getTextureRGB(),
+                albedo,
             }
         };
         m_curr = std::make_unique<FrameBuffer>("mirror_curr", spec);

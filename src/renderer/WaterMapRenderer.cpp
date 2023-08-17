@@ -20,12 +20,12 @@
 
 
 namespace {
-    const glm::vec3 CAMERA_FRONT[6] = {
-        {  1,  0,  0 },
-        {  1,  0,  0 },
+    const glm::vec3 CAMERA_FRONT[2] = {
+        {  0,  0,  -1 },
+        {  0,  0,  -1 },
     };
 
-    const glm::vec3 CAMERA_UP[6] = {
+    const glm::vec3 CAMERA_UP[2] = {
         {  0,  1,  0 },
         {  0,  1,  0 },
     };
@@ -49,6 +49,12 @@ void WaterMapRenderer::prepare(
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
 
+    auto albedo = FrameBufferAttachment::getTextureRGB();
+    albedo.minFilter = GL_LINEAR;
+    albedo.magFilter = GL_LINEAR;
+    albedo.textureWrapS = GL_REPEAT;
+    albedo.textureWrapT = GL_REPEAT;
+
     for (int i = 0; i < 2; i++) {
         {
             int size = assets.waterReflectionSize;
@@ -57,7 +63,7 @@ void WaterMapRenderer::prepare(
             FrameBufferSpecification spec = {
                 scaledSize, scaledSize,
                 {
-                    FrameBufferAttachment::getTextureRGB(),
+                    albedo,
                 }
             };
 
@@ -71,7 +77,7 @@ void WaterMapRenderer::prepare(
             FrameBufferSpecification spec = {
                 scaledSize, scaledSize,
                 {
-                    FrameBufferAttachment::getTextureRGB(),
+                    albedo,
                 }
             };
 
