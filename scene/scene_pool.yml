@@ -36,6 +36,16 @@ entities:
       specular: [0.9, 0.9, 0.7, 1.0]
       enabled: true
     enabled: true
+  - name: Other
+    model: texture_cube
+    program: g_tex
+    material_modifier:
+      tiling: 5
+      texture_spec:
+        wrap: GL_REPEAT
+    pos: [0, 9.5, -10]
+    scale: 2.5
+    enabled: true
   - name: Pool floor
     model: quad
     material: pool_floor
@@ -114,6 +124,16 @@ entities:
         horiz_scale: 2
       enabled: true
     enabled: true
+  - name: Other
+    model: texture_cube
+    program: g_tex
+    material_modifier:
+      tiling: 5
+      texture_spec:
+        wrap: GL_REPEAT
+    pos: [160, 9.5, 20]
+    scale: 2.5
+    enabled: true
   - name: Pool floor - SINGLE
     model: quad
     material: pool_floor
@@ -155,6 +175,55 @@ entities:
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
     enabled: true
+  - name: Linden tree forest - part 1
+    type: model
+    model: quad
+    program: g_tex
+    instanced: true
+    pos: [240.0, 14, 20]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      no_frustum: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [14, 20, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 1
+        z_count: 3
+        x_step: 20
+        z_step: -40
+      enabled: true
+    enabled: true
+  - name: Linden tree forest - part 2
+    type: model
+    model: quad
+    program: g_tex
+    instanced: true
+    pos: [240.0, 14, 20]
+    rotation: [0, 90, 0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      no_frustum: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [14, 20, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 1
+        z_count: 3
+        x_step: 20
+        z_step: -40
+      enabled: true
+    enabled: true
 materials:
   - name: pool_surface
     type: texture
@@ -191,3 +260,10 @@ materials:
     map_ks: terrain_2/terrain_2_SpecLM.png
     map_bump: terrain_2/terrain_2_TN.png
     map_height: terrain_2/terrain_2_height.png
+  - name: linden_tree
+    type: sprite
+    ns: 0
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
+    map_kd: linden_tree_512.png
+    map_bump: linden_tree_512_normal.png
