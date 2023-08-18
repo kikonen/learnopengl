@@ -780,7 +780,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-    enabled: false
+    enabled: true
   - name: Sea floor
     priority: -25
     model: quad
