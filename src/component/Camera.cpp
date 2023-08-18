@@ -205,17 +205,11 @@ void Camera::updateCamera() const noexcept
 {
     if (!m_dirty) return;
 
-    glm::vec3 viewFront = m_front;
-    //if (m_rotation.x != 0 || m_rotation.y != 0 || m_rotation.z != 0)
+    glm::vec3 viewFront;
     {
         // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-        m_rotateMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
-
-        glm::mat4 modelMatrix = m_nodeModelMatrix * m_rotateMatrix;
-        // NOTE KI remove translate
-        modelMatrix[3] = { 0.f, 0.f, 0.f, 1.f };
-
-        viewFront = glm::vec3(modelMatrix * glm::vec4(m_front, 1.f));
+        glm::mat3 rotateMatrix = glm::toMat3(glm::quat(glm::radians(m_rotation)));
+        viewFront = glm::mat3(m_nodeModelMatrix) * rotateMatrix * m_front;
     }
 
     // NOTE KI glm::normalize for vec4 *IS* incorrect (4d len...)

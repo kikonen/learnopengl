@@ -182,7 +182,6 @@ private:
     mutable glm::mat4 m_projectedMatrix{ 1.f };
 
     mutable glm::mat4 m_viewMatrix{ 1.f };
-    mutable glm::mat4 m_rotateMatrix{ 1.f };
 
     int m_projectionLevel = -1;
     int m_projectedLevel = -1;
