@@ -119,8 +119,8 @@ void main() {
 
   vec2 ndc = (fs_in.glp.xy / fs_in.glp.w) / 2.0 + 0.5;
 
-  vec2 refractCoord = vec2(ndc.x,  ndc.y);// + totalDistortion;
-  vec2 reflectCoord = vec2(ndc.x, -ndc.y);// + totalDistortion;
+  vec2 refractCoord = vec2(ndc.x,  ndc.y) + totalDistortion;
+  vec2 reflectCoord = vec2(ndc.x, -ndc.y) + totalDistortion;
 
   // NOTE KI do NOT do clamping of coords; breaks logic
   //refractCoord = clamp(refractCoord, 0., 1.0);
