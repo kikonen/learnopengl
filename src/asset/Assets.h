@@ -38,7 +38,8 @@ public:
     bool glNoError;
 
     float resolutionScale;
-    float gbufferScale;
+    float gBufferScale;
+    float waterBufferScale;
     float bufferScale;
 
     glm::uvec2 windowSize;
@@ -151,10 +152,6 @@ public:
     int shadowRenderFrameStep;
 
     int mirrorReflectionSize;
-    int mirrorRefractionSize;
-
-    int waterReflectionSize;
-    int waterRefractionSize;
 
     bool cubeMapSeamless;
 

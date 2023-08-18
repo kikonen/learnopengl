@@ -49,6 +49,52 @@ void WaterMapRenderer::prepare(
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
 
+    //WaterNoiseGenerator generator;
+    //noiseTextureID = generator.generate();
+
+    m_reflectionDebugViewport = std::make_shared<Viewport>(
+        "WaterReflect",
+        glm::vec3(0.5, 0.5, 0),
+        glm::vec3(0, 0, 0),
+        glm::vec2(0.5f, 0.5f),
+        false,
+        0,
+        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+
+    m_refractionDebugViewport = std::make_shared<Viewport>(
+        "WaterRefract",
+        glm::vec3(0.5, 0.0, 0),
+        glm::vec3(0, 0, 0),
+        glm::vec2(0.5f, 0.5f),
+        false,
+        0,
+        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+
+    m_reflectionDebugViewport->prepare(assets);
+    m_refractionDebugViewport->prepare(assets);
+
+    glm::vec3 origo(0);
+    for (int i = 0; i < 2; i++) {
+        auto & camera = m_cameras.emplace_back(origo, CAMERA_FRONT[i], CAMERA_UP[i]);
+        camera.setFov(90.0);
+    }
+}
+
+void WaterMapRenderer::updateView(const RenderContext& ctx)
+{
+    const auto& res = ctx.m_resolution;
+
+    int w = ctx.m_assets.waterBufferScale * res.x;
+    int h = ctx.m_assets.waterBufferScale * res.y;
+    if (w < 1) w = 1;
+    if (h < 1) h = 1;
+
+    bool changed = w != m_width || h != m_height;
+    if (!changed) return;
+
+    m_reflectionBuffers.clear();
+    m_refractionBuffers.clear();
+
     auto albedo = FrameBufferAttachment::getTextureRGB();
     albedo.minFilter = GL_LINEAR;
     albedo.magFilter = GL_LINEAR;
@@ -57,11 +103,8 @@ void WaterMapRenderer::prepare(
 
     for (int i = 0; i < 2; i++) {
         {
-            int size = assets.waterReflectionSize;
-            int scaledSize = assets.bufferScale * size;
-
             FrameBufferSpecification spec = {
-                scaledSize, scaledSize,
+                w, h,
                 {
                     albedo,
                 }
@@ -71,11 +114,8 @@ void WaterMapRenderer::prepare(
         }
 
         {
-            int size = assets.waterRefractionSize;
-            int scaledSize = assets.bufferScale * size;
-
             FrameBufferSpecification spec = {
-                scaledSize, scaledSize,
+                w, h,
                 {
                     albedo,
                 }
@@ -93,39 +133,14 @@ void WaterMapRenderer::prepare(
         buf->prepare(true);
     }
 
-    glm::vec3 origo(0);
-    for (int i = 0; i < 2; i++) {
-        auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[i], CAMERA_UP[i]);
-        camera.setFov(90.0);
-    }
-
-    //WaterNoiseGenerator generator;
-    //noiseTextureID = generator.generate();
-
-    m_reflectionDebugViewport = std::make_shared<Viewport>(
-        "WaterReflect",
-        glm::vec3(0.5, 0.5, 0),
-        glm::vec3(0, 0, 0),
-        glm::vec2(0.5f, 0.5f),
-        false,
-        m_reflectionBuffers[0]->m_spec.attachments[0].textureID,
-        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
-
+    m_reflectionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
     m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
 
-    m_refractionDebugViewport = std::make_shared<Viewport>(
-        "WaterRefract",
-        glm::vec3(0.5, 0.0, 0),
-        glm::vec3(0, 0, 0),
-        glm::vec2(0.5f, 0.5f),
-        false,
-        m_refractionBuffers[0]->m_spec.attachments[0].textureID,
-        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+    m_refractionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
+    m_refractionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
 
-    m_refractionDebugViewport->setSourceFrameBuffer(m_refractionBuffers[0].get());
-
-    m_reflectionDebugViewport->prepare(assets);
-    m_refractionDebugViewport->prepare(assets);
+    m_width = w;
+    m_height = h;
 }
 
 void WaterMapRenderer::bindTexture(const RenderContext& ctx)
@@ -159,6 +174,7 @@ bool WaterMapRenderer::render(
 
     const auto* parentCamera = parentCtx.m_camera;
     const auto& parentCameraFront = parentCamera->getViewFront();
+    const auto& parentCameraRight = parentCamera->getViewRight();
     const auto& parentCameraUp = parentCamera->getViewUp();
     const auto& parentCameraPos = parentCamera->getWorldPosition();
     const auto& parentCameraFov = parentCamera->getFov();
@@ -180,10 +196,11 @@ bool WaterMapRenderer::render(
         // NOTE KI rotate camera
         glm::vec3 cameraFront = parentCameraFront;
         cameraFront.y *= -1;
+        glm::vec3 cameraUp = glm::normalize(glm::cross(parentCameraRight, cameraFront));
 
         auto& camera = m_cameras[0];
         camera.setWorldPosition(cameraPos);
-        camera.setAxis(cameraFront, parentCameraUp);
+        camera.setAxis(cameraFront, cameraUp);
         camera.setFov(parentCameraFov);
 
         RenderContext localCtx(

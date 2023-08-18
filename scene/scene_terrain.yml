@@ -79,14 +79,14 @@ entities:
     type: quad
     material: sea_surface
     program: g_water
-    pos: [0, 0.0, 0]
+    pos: [0, 30.0, 0]
     rotation: [270.0, 0.0, 0.0]
     scale: 1500
     render_flags:
       no_shadow: true
       render_back: true
       water: true
-    enabled: false
+    enabled: true
   - name: Sea floor
     model: quad
     material: sea_floor

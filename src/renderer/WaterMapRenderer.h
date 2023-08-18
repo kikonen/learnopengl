@@ -21,6 +21,8 @@ public:
         const Assets& assets,
         Registry* registry) override;
 
+    void updateView(const RenderContext& ctx);
+
     void bindTexture(const RenderContext& ctx);
 
     bool render(
@@ -44,6 +46,9 @@ private:
     float m_farPlane{ 1000.0f };
 
     std::vector<Camera> m_cameras;
+
+    int m_width{ -1 };
+    int m_height{ -1 };
 
     int m_currIndex{ 0 };
     int m_prevIndex{ 1 };

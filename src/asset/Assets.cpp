@@ -23,7 +23,8 @@ Assets::Assets()
     glNoError = false;
 
     resolutionScale = 0.5f;
-    gbufferScale = 0.5f;
+    gBufferScale = 0.5f;
+    waterBufferScale = 0.5f;
     bufferScale = 0.5f;
 
     windowSize = { 800, 600 };
@@ -136,10 +137,6 @@ Assets::Assets()
     shadowRenderFrameStep = 2;
 
     mirrorReflectionSize = 1024;
-    mirrorRefractionSize = 1024;
-
-    waterReflectionSize = 1024;
-    waterRefractionSize = 1024;
 
     cubeMapSeamless = true;
 

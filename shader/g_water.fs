@@ -117,17 +117,14 @@ void main() {
   // input parameters are offset for neighbors, and scaling for width and height
   //normal = estimateWaveNormal(u_noiseTex, texCoord, .0002, 32.0, 16.0);
 
-  // vec2 ndc = (fs_in.glp.xy / fs_in.glp.w) / 2.0 + 0.5;
+  vec2 ndc = (fs_in.glp.xy / fs_in.glp.w) / 2.0 + 0.5;
 
-  // vec2 refractCoord = vec2(ndc.x,  ndc.y) + totalDistortion;
-  // vec2 reflectCoord = vec2(ndc.x, -ndc.y) + totalDistortion;
+  vec2 refractCoord = vec2(ndc.x,  ndc.y);// + totalDistortion;
+  vec2 reflectCoord = vec2(ndc.x, -ndc.y);// + totalDistortion;
 
-  vec4 gp = fs_in.glp;
-  vec2 refractCoord = vec2(gp.x, gp.y) / (gp.w * 2.0) + 0.5 + totalDistortion;
-  vec2 reflectCoord = vec2(gp.x, -gp.y) / (gp.w * 2.0) + 0.5 + totalDistortion;
-
-  refractCoord = clamp(refractCoord, 0., 1.0);
-  reflectCoord = clamp(reflectCoord, 0., 1.0);
+  // NOTE KI do NOT do clamping of coords; breaks logic
+  //refractCoord = clamp(refractCoord, 0., 1.0);
+  //reflectCoord = clamp(reflectCoord, 0., 1.0);
 
   vec4 refractColor = texture(u_refractionTex, refractCoord);
   vec4 reflectColor = texture(u_reflectionTex, reflectCoord);

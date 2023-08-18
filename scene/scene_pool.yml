@@ -11,7 +11,8 @@ root:
 entities:
   - name: Origo
     type: origo
-    pos: [0, 0, 5]
+    pos: [50, 30, 40]
+    rotation: [0, 0, 0]
     camera:
       pos: [0, 12, 0]
       default: true
@@ -101,6 +102,55 @@ entities:
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
     enabled: true
+  - name: Linden tree forest - part 1
+    type: model
+    model: quad
+    program: g_tex
+    instanced: true
+    pos: [-40.0, 4, 40]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      no_frustum: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [14, 20, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 1
+        z_count: 3
+        x_step: 20
+        z_step: -40
+      enabled: true
+    enabled: true
+  - name: Linden tree forest - part 2
+    type: model
+    model: quad
+    program: g_tex
+    instanced: true
+    pos: [-40.0, 4, 40]
+    rotation: [0, 90, 0]
+    material: linden_tree
+    render_flags:
+      alpha: true
+      no_frustum: true
+      static_physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [14, 20, 1]
+    generator:
+      type: grid
+      enabled: true
+      repeat:
+        x_count: 1
+        z_count: 3
+        x_step: 20
+        z_step: -40
+      enabled: true
+    enabled: true
   - name: Terrain grass v2
     id: auto
     type: container
@@ -180,7 +230,7 @@ entities:
     model: quad
     program: g_tex
     instanced: true
-    pos: [240.0, 14, 20]
+    pos: [240.0, 14, 40]
     material: linden_tree
     render_flags:
       alpha: true
@@ -204,7 +254,7 @@ entities:
     model: quad
     program: g_tex
     instanced: true
-    pos: [240.0, 14, 20]
+    pos: [240.0, 14, 40]
     rotation: [0, 90, 0]
     material: linden_tree
     render_flags:

@@ -60,8 +60,11 @@ void AssetsFile::loadAssets(
         else if (k == "resolution_scale") {
             data.resolutionScale = readFloat(v);
         }
-        else if (k == "gbuffer_scale") {
-            data.gbufferScale = readFloat(v);
+        else if (k == "g_buffer_scale") {
+            data.gBufferScale = readFloat(v);
+        }
+        else if (k == "water_buffer_scale") {
+            data.waterBufferScale = readFloat(v);
         }
         else if (k == "buffer_scale") {
             data.bufferScale = readFloat(v);
@@ -293,15 +296,6 @@ void AssetsFile::loadAssets(
         }
         else if (k == "mirror_reflection_size") {
             data.mirrorReflectionSize = readInt(v);
-        }
-        else if (k == "mirror_refraction_size") {
-            data.mirrorRefractionSize = readInt(v);
-        }
-        else if (k == "water_reflection_size") {
-            data.waterReflectionSize = readInt(v);
-        }
-        else if (k == "water_refraction_size") {
-            data.waterRefractionSize = readInt(v);
         }
         else if (k == "cube_map_seamless") {
             data.cubeMapSeamless = readBool(v);

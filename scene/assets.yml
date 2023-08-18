@@ -1,13 +1,14 @@
 assets:
   log_file: log/development.log
-  scene_file: scene/scene_blend.yml
+  scene_file: scene/scene_pool.yml
 
   glfw_swap_interval: 1
   gl_debug: true
   gl_no_error: false
 
   resolution_scale: 0.5
-  gbuffer_scale: 0.5
+  g_buffer_scale: 0.5
+  water_buffer_scale: 0.25
   buffer_scale: 1.0
 
   window_size: [800, 600]
@@ -81,7 +82,7 @@ assets:
 
   water_tile_size: 100
   water_render_frame_start: 0
-  water_render_frame_step: 2
+  water_render_frame_step: 1
 
   terrain_grid_size: 64
 
@@ -110,10 +111,6 @@ assets:
   shadow_render_frame_step: 1
 
   mirror_reflection_size: 2048
-  mirror_refraction_size: 2048
-
-  water_reflection_size: 2048
-  water_refraction_size: 2048
 
   cube_map_seamless: true
   cube_map_size: 2048

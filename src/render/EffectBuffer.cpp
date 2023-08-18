@@ -17,8 +17,8 @@ void EffectBuffer::updateView(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
-    int w = ctx.m_assets.gbufferScale * res.x;
-    int h = ctx.m_assets.gbufferScale * res.y;
+    int w = ctx.m_assets.gBufferScale * res.x;
+    int h = ctx.m_assets.gBufferScale * res.y;
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
