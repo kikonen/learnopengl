@@ -501,13 +501,13 @@ entities:
     render_flags:
       cube_map: true
     enabled: true
-  - name: Cube map 2 - glass_ball
+  - name: Cube map 2 - refract ball
     type: origo
     pos: [5.0, 25.0, 0.0]
     render_flags:
       cube_map: true
     enabled: true
-  - name: Glass ball
+  - name: Refract ball
     model: glass_ball
     program: g_tex
     pos: [5.0, 25.0, 0.0]
@@ -517,7 +517,13 @@ entities:
       refraction: 0.85
       refraction_ratio: [1.0, 1.52]
     enabled: true
-  - name: Mirror ball
+  - name: Cube map 2 - refract ball
+    type: origo
+    pos: [-10.0, 25.0, 0.0]
+    render_flags:
+      cube_map: true
+    enabled: true
+  - name: Reflect ball
     model: glass_ball
     program: g_tex
     pos: [-10.0, 25.0, 0.0]
