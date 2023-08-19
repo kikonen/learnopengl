@@ -442,6 +442,13 @@ entities:
     pos: [0.0, 40.0, -50.0]
     scale: 1.0
     enabled: true
+  - name: Sword - Excalibur
+    model: sword2
+    program: g_tex
+    rotation: [223, 28, 24]
+    pos: [250.0, 10.0, -190.0]
+    scale: 1.0
+    enabled: true
   - name: Teapot
     desc: Dir light target (back needed due to gap in lid)
     id: [auto, dir-light-target]
