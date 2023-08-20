@@ -66,8 +66,8 @@ entities:
     model: quad
     material: mirror
     program: g_mirror
-    pos: [0, 20.5, 50]
-    rotation: [0.0, 165.0, 0.0]
+    pos: [50, 20.5, -10]
+    rotation: [0.0, -60.0, 0.0]
     scale: 10.0
     render_flags:
       render_back: true

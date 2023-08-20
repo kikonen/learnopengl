@@ -73,7 +73,7 @@ void MirrorMapRenderer::prepare(
 
     m_reflectionDebugViewport->prepare(assets);
 
-    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, true);
+    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, m_squareAspectRatio);
     m_waterMapRenderer->setEnabled(assets.renderWaterMap);
 
     if (m_waterMapRenderer->isEnabled()) {
