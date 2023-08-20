@@ -62,6 +62,17 @@ entities:
     material_modifier:
       reflection: 0.8
     enabled: true
+  - name: Big mirror 2
+    model: quad
+    material: mirror
+    program: g_mirror
+    pos: [0, 20.5, 50]
+    rotation: [0.0, 165.0, 0.0]
+    scale: 10.0
+    render_flags:
+      render_back: true
+      mirror: true
+    enabled: true
   - name: Pool floor
     model: quad
     material: pool_floor
@@ -332,3 +343,17 @@ materials:
     ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: linden_tree_512.png
     map_bump: linden_tree_512_normal.png
+  - name: mirror
+    type: model
+    ns: 225.000000
+    ka: [0.500000, 0.500000, 0.500000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ke: [0.000000, 0.000000, 0.000000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_kd: Marble White_VH_512.PNG
+    reflection: 0.5
+    refraction: 0.05
+    refraction_ratio: [1.0, 1.52]

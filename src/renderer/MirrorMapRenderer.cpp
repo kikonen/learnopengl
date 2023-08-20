@@ -59,13 +59,15 @@ void MirrorMapRenderer::prepare(
     albedo.minFilter = GL_LINEAR;
     albedo.magFilter = GL_LINEAR;
 
+    int size = assets.mirrorReflectionSize;
+    int w = assets.bufferScale * size;
+    int h = assets.bufferScale * size;
+
     // NOTE KI *CANNOT* share same buffer spec
     {
-        int size = assets.mirrorReflectionSize;
-        int scaledSize = assets.bufferScale * size;
 
         FrameBufferSpecification spec = {
-            scaledSize, scaledSize,
+            w, h,
             {
                 albedo,
             }
@@ -73,11 +75,8 @@ void MirrorMapRenderer::prepare(
         m_prev = std::make_unique<FrameBuffer>("mirror_prev", spec);
     }
     {
-        int size = assets.mirrorReflectionSize;
-        int scaledSize = assets.bufferScale * size;
-
         FrameBufferSpecification spec = {
-            scaledSize, scaledSize,
+            w, h,
             {
                 albedo,
             }
@@ -223,8 +222,18 @@ void MirrorMapRenderer::drawNodes(
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->render(ctx);
-        m_waterMapRenderer->bindTexture(ctx);
+        if (false && m_rendered) {
+            bindTexture(ctx);
+            m_waterMapRenderer->render(ctx);
+            m_waterMapRenderer->bindTexture(ctx);
+        }
+        else {
+            // NOTE KI ignore mirror when not yet rendered
+            m_waterMapRenderer->m_sourceNode = current;
+            m_waterMapRenderer->render(ctx);
+            m_waterMapRenderer->bindTexture(ctx);
+            m_waterMapRenderer->m_sourceNode = nullptr;
+        }
     }
 
     //ctx.updateClipPlanesUBO();

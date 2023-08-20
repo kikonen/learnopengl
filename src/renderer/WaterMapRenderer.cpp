@@ -295,6 +295,8 @@ void WaterMapRenderer::drawNodes(
     Node* current,
     bool reflect)
 {
+    Node* sourceNode = m_sourceNode;
+
     const glm::vec4 debugColor(0.9f, 0.3f, 0.3f, 0.0f);
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
 
@@ -311,7 +313,10 @@ void WaterMapRenderer::drawNodes(
                 return !type->m_flags.water &&
                     (reflect ? !type->m_flags.noReflect : !type->m_flags.noRefract);
             },
-            [&current](const Node* node) { return node != current; },
+            [&current, sourceNode](const Node* node) {
+                return node != current &&
+                    node != sourceNode;
+            },
             GL_COLOR_BUFFER_BIT);
     }
 }

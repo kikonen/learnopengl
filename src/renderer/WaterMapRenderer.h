@@ -48,6 +48,8 @@ public:
     std::shared_ptr<Viewport> m_reflectionDebugViewport;
     std::shared_ptr<Viewport> m_refractionDebugViewport;
 
+    Node* m_sourceNode{ nullptr };
+
 private:
     const bool m_doubleBuffer;
     const bool m_squareAspectRatio;
