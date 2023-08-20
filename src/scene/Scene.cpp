@@ -66,16 +66,16 @@ Scene::Scene(
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
 
     {
-        m_nodeRenderer = std::make_unique<NodeRenderer>();
-        m_viewportRenderer = std::make_unique<ViewportRenderer>();
+        m_nodeRenderer = std::make_unique<NodeRenderer>(true);
+        m_viewportRenderer = std::make_unique<ViewportRenderer>(true);
 
-        m_waterMapRenderer = std::make_unique<WaterMapRenderer>();
-        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>();
-        m_cubeMapRenderer = std::make_unique<CubeMapRenderer>();
-        m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>();
+        m_waterMapRenderer = std::make_unique<WaterMapRenderer>(true, false);
+        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(true);
+        m_cubeMapRenderer = std::make_unique<CubeMapRenderer>(true);
+        m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>(true);
 
-        m_objectIdRenderer = std::make_unique<ObjectIdRenderer>();
-        m_normalRenderer = std::make_unique<NormalRenderer>();
+        m_objectIdRenderer = std::make_unique<ObjectIdRenderer>(false);
+        m_normalRenderer = std::make_unique<NormalRenderer>(false);
 
         m_nodeRenderer->setEnabled(true);
         m_viewportRenderer->setEnabled(true);
@@ -263,6 +263,7 @@ void Scene::updateView(const RenderContext& ctx)
 
     updateMainViewport(ctx);
 
+    m_cubeMapRenderer->updateView(ctx);
     m_waterMapRenderer->updateView(ctx);
     m_nodeDraw->updateView(ctx);
     m_windowBuffer->updateView(ctx);

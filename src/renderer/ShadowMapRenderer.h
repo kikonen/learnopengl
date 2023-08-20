@@ -11,7 +11,7 @@ class FrameBuffer;
 class ShadowMapRenderer final : public Renderer
 {
 public:
-    ShadowMapRenderer() {}
+    ShadowMapRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
     virtual ~ShadowMapRenderer();
 
     virtual void prepare(

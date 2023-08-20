@@ -65,7 +65,7 @@ void main()
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
 
-  const vec3 viewDir = normalize(u_viewWorldPos - worldPos);
+  const vec3 viewDir = normalize(u_mainViewWorldPos - worldPos);
 
   Material material;
 

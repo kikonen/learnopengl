@@ -8,16 +8,19 @@
 
 class FrameBuffer;
 class DynamicCubeMap;
+class WaterMapRenderer;
 
 class CubeMapRenderer final : public Renderer
 {
 public:
-    CubeMapRenderer() {}
+    CubeMapRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
     ~CubeMapRenderer();
 
     virtual void prepare(
         const Assets& assets,
         Registry* registry) override;
+
+    void updateView(const RenderContext& ctx);
 
     void bindTexture(const RenderContext& ctx);
 
@@ -59,4 +62,6 @@ private:
 
     uuids::uuid m_tagID;
     Node* m_tagNode{ nullptr };
+
+    std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
 };

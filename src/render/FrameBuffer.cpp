@@ -321,10 +321,11 @@ void FrameBuffer::clear(
     GLbitfield clearMask,
     const glm::vec4& debugColor)
 {
+    const bool useDebugColor = ctx.m_assets.useDebugColor;
     const bool hasAttachments = !m_spec.attachments.empty();
 
     if (clearMask & GL_COLOR_BUFFER_BIT) {
-        if (ctx.m_assets.useDebugColor) {
+        if (useDebugColor) {
             ctx.m_state.clearColor(debugColor);
         }
         else {
@@ -344,8 +345,15 @@ void FrameBuffer::clear(
 
     if (clearMask != 0) {
         if (hasAttachments) {
-            for (const auto& att : m_spec.attachments) {
-                att.clearWithMask(m_fbo, clearMask);
+            for (auto& att : m_spec.attachments) {
+                if (useDebugColor && att.clearMask & GL_COLOR_BUFFER_BIT) {
+                    glm::vec4 oldColor = att.clearColor;
+                    att.clearWithMask(m_fbo, clearMask);
+                    att.clearColor = oldColor;
+                }
+                else {
+                    att.clearWithMask(m_fbo, clearMask);
+                }
             }
         }
         else {

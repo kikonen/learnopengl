@@ -70,7 +70,7 @@ void main() {
   #include var_tex_coord.glsl
   #include var_tex_plain_material.glsl
 
-  const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
+  const vec3 viewDir = normalize(u_mainViewWorldPos - fs_in.worldPos);
 
   vec2 distortedTexCoord = texCoord;
   vec2 totalDistortion = vec2(0);
@@ -134,6 +134,7 @@ void main() {
   if (!gl_FrontFacing) {
     refractiveFactor = 1.0;
   }
+  //refractiveFactor = 1.0;
 
   refractiveFactor = clamp(refractiveFactor, 0, 1);
 

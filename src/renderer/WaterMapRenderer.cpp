@@ -86,6 +86,11 @@ void WaterMapRenderer::updateView(const RenderContext& ctx)
 
     int w = ctx.m_assets.waterBufferScale * res.x;
     int h = ctx.m_assets.waterBufferScale * res.y;
+
+    if (m_squareAspectRatio) {
+        h = w;
+    }
+
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 

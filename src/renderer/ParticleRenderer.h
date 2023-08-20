@@ -5,7 +5,7 @@
 class ParticleRenderer final : public Renderer
 {
 public:
-    ParticleRenderer();
+    ParticleRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
 
     virtual void prepare(
         const Assets& assets,
