@@ -14,7 +14,14 @@ class WaterMapRenderer;
 class MirrorMapRenderer final : public Renderer
 {
 public:
-    MirrorMapRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
+    MirrorMapRenderer(
+        bool useFrameStep,
+        bool doubleBuffer,
+        bool squareAspectRatio)
+        : Renderer(useFrameStep),
+        m_doubleBuffer(doubleBuffer),
+        m_squareAspectRatio(squareAspectRatio) {}
+
     ~MirrorMapRenderer() = default;
 
     virtual void prepare(
@@ -37,16 +44,25 @@ private:
     Node* findClosest(const RenderContext& ctx);
 
 public:
-    std::shared_ptr<Viewport> m_debugViewport;
+    std::shared_ptr<Viewport> m_reflectionDebugViewport;
 
 private:
+    const bool m_doubleBuffer;
+    const bool m_squareAspectRatio;
+
     float m_nearPlane = 0.1f;
     float m_farPlane = 1000.0f;
 
     std::vector<Camera> m_cameras;
 
-    std::unique_ptr<FrameBuffer> m_prev{ nullptr };
-    std::unique_ptr<FrameBuffer> m_curr{ nullptr };
+    int m_width{ -1 };
+    int m_height{ -1 };
+
+    int m_currIndex{ 0 };
+    int m_prevIndex{ 1 };
+
+    int m_bufferCount{ 1 };
+    std::vector<std::unique_ptr<FrameBuffer>> m_reflectionBuffers;
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
 

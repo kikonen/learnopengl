@@ -38,7 +38,6 @@ namespace {
     static const int ATT_ALBEDO_INDEX = 0;
 }
 
-
 void MirrorMapRenderer::prepare(
     const Assets& assets,
     Registry* registry)
@@ -55,37 +54,7 @@ void MirrorMapRenderer::prepare(
     m_renderFrameStart = assets.mirrorRenderFrameStart;
     m_renderFrameStep = assets.mirrorRenderFrameStep;
 
-    auto albedo = FrameBufferAttachment::getTextureRGB();
-    albedo.minFilter = GL_LINEAR;
-    albedo.magFilter = GL_LINEAR;
-
-    int size = assets.mirrorReflectionSize;
-    int w = assets.bufferScale * size;
-    int h = assets.bufferScale * size;
-
-    // NOTE KI *CANNOT* share same buffer spec
-    {
-
-        FrameBufferSpecification spec = {
-            w, h,
-            {
-                albedo,
-            }
-        };
-        m_prev = std::make_unique<FrameBuffer>("mirror_prev", spec);
-    }
-    {
-        FrameBufferSpecification spec = {
-            w, h,
-            {
-                albedo,
-            }
-        };
-        m_curr = std::make_unique<FrameBuffer>("mirror_curr", spec);
-    }
-
-    m_prev->prepare(true);
-    m_curr->prepare(true);
+    m_bufferCount = m_doubleBuffer ? 2 : 1;
 
     glm::vec3 origo(0);
     for (int i = 0; i < 1; i++) {
@@ -93,7 +62,7 @@ void MirrorMapRenderer::prepare(
         camera.setFov(assets.mirrorFov);
     }
 
-    m_debugViewport = std::make_shared<Viewport>(
+    m_reflectionDebugViewport = std::make_shared<Viewport>(
         "MirrorReflect",
         glm::vec3(-1.0, 0.5, 0),
         glm::vec3(0, 0, 0),
@@ -102,7 +71,7 @@ void MirrorMapRenderer::prepare(
         0,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
-    m_debugViewport->prepare(assets);
+    m_reflectionDebugViewport->prepare(assets);
 
     m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, true);
     m_waterMapRenderer->setEnabled(assets.renderWaterMap);
@@ -115,11 +84,57 @@ void MirrorMapRenderer::prepare(
 void MirrorMapRenderer::updateView(const RenderContext& ctx)
 {
     m_waterMapRenderer->updateView(ctx);
+
+    const auto& res = ctx.m_resolution;
+
+    int w = ctx.m_assets.waterBufferScale * res.x;
+    int h = ctx.m_assets.waterBufferScale * res.y;
+
+    if (m_squareAspectRatio) {
+        h = w;
+    }
+
+    if (w < 1) w = 1;
+    if (h < 1) h = 1;
+
+    bool changed = w != m_width || h != m_height;
+    if (!changed) return;
+
+    auto albedo = FrameBufferAttachment::getTextureRGB();
+    albedo.minFilter = GL_LINEAR;
+    albedo.magFilter = GL_LINEAR;
+
+    // NOTE KI *CANNOT* share same buffer spec
+
+    for (int i = 0; i < m_bufferCount; i++) {
+        {
+            FrameBufferSpecification spec = {
+                w, h,
+                {
+                    albedo,
+                }
+            };
+
+            m_reflectionBuffers.push_back(std::make_unique<FrameBuffer>("mirror_reflect", spec));
+        }
+    }
+
+    for (auto& buf : m_reflectionBuffers) {
+        buf->prepare(true);
+    }
+
+    m_reflectionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
+    m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
+
+    m_width = w;
+    m_height = h;
 }
 
 void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
 {
-    m_prev->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_MIRROR_REFLECTION);
+    auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
+
+    reflectionBuffer->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_MIRROR_REFLECTION);
 }
 
 bool MirrorMapRenderer::render(
@@ -142,6 +157,8 @@ bool MirrorMapRenderer::render(
     // https://stackoverflow.com/questions/48613493/reflecting-scene-by-plane-mirror-in-opengl
     // reflection map
     {
+        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
+
         const auto* parentCamera = parentCtx.m_camera;
 
         const auto& volume = closest->getVolume();
@@ -184,7 +201,7 @@ bool MirrorMapRenderer::render(
             &camera,
             dist,
             parentCtx.m_assets.farPlane,
-            m_curr->m_spec.width, m_curr->m_spec.height);
+            reflectionBuffer->m_spec.width, reflectionBuffer->m_spec.height);
 
         localCtx.copyShadowFrom(parentCtx);
 
@@ -196,18 +213,16 @@ bool MirrorMapRenderer::render(
         localCtx.updateDataUBO();
 
         bindTexture(localCtx);
-        drawNodes(localCtx, m_curr.get(), closest);
+        drawNodes(localCtx, reflectionBuffer.get(), closest);
 
         //ctx.updateClipPlanesUBO();
-
-        m_debugViewport->setTextureId(m_curr->m_spec.attachments[0].textureID);
-        m_debugViewport->setSourceFrameBuffer(m_curr.get());
     }
-
-    m_prev.swap(m_curr);
 
     parentCtx.updateMatricesUBO();
     parentCtx.updateDataUBO();
+
+    m_prevIndex = m_currIndex;
+    m_currIndex = (m_currIndex + 1) % m_bufferCount;
 
     m_rendered = true;
     return true;

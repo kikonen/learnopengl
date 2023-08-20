@@ -70,7 +70,7 @@ Scene::Scene(
         m_viewportRenderer = std::make_unique<ViewportRenderer>(true);
 
         m_waterMapRenderer = std::make_unique<WaterMapRenderer>(true, true, false);
-        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(true);
+        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(true, true, false);
         m_cubeMapRenderer = std::make_unique<CubeMapRenderer>(true);
         m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>(true);
 
@@ -211,7 +211,7 @@ void Scene::prepare()
             m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer->m_reflectionDebugViewport);
         }
         if (m_mirrorMapRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_mirrorMapRenderer->m_debugViewport);
+            m_registry->m_viewportRegistry->addViewport(m_mirrorMapRenderer->m_reflectionDebugViewport);
         }
     }
     if (m_assets.showRefractionView) {
