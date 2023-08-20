@@ -9,7 +9,7 @@ class FrameBuffer;
 class ObjectIdRenderer final : public Renderer
 {
 public:
-    ObjectIdRenderer() {}
+    ObjectIdRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
     virtual ~ObjectIdRenderer() {};
 
     int getObjectId(

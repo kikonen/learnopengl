@@ -6,9 +6,6 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
-ParticleRenderer::ParticleRenderer()
-{
-}
 
 void ParticleRenderer::prepare(
     const Assets& assets,

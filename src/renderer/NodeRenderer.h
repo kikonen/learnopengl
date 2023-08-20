@@ -9,7 +9,7 @@ class FrameBuffer;
 class NodeRenderer final : public Renderer
 {
 public:
-    NodeRenderer() {}
+    NodeRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
 
     void prepare(
         const Assets& assets,

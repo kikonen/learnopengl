@@ -8,12 +8,15 @@
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 
 #include "render/NodeDraw.h"
 #include "render/CubeMapBuffer.h"
+
+#include "renderer/WaterMapRenderer.h"
 
 #include "registry/MeshType.h"
 
@@ -111,8 +114,21 @@ void CubeMapRenderer::prepare(
     glm::vec3 origo{ 0 };
     for (int face = 0; face < 6; face++) {
         auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[face], CAMERA_UP[face]);
+        auto up = camera.getViewRight();
         camera.setFov(90.f);
     }
+
+    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, true);
+    m_waterMapRenderer->setEnabled(assets.renderWaterMap);
+
+    if (m_waterMapRenderer->isEnabled()) {
+        m_waterMapRenderer->prepare(assets, registry);
+    }
+}
+
+void CubeMapRenderer::updateView(const RenderContext& ctx)
+{
+    m_waterMapRenderer->updateView(ctx);
 }
 
 void CubeMapRenderer::bindTexture(const RenderContext& ctx)
@@ -250,6 +266,11 @@ void CubeMapRenderer::drawNodes(
     // TODO KI to match special logic in CubeMapBuffer
     targetBuffer->bind(ctx);
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
+
+    if (m_waterMapRenderer->isEnabled()) {
+        m_waterMapRenderer->render(ctx);
+        m_waterMapRenderer->bindTexture(ctx);
+    }
 
     ctx.m_nodeDraw->drawNodes(
         ctx,

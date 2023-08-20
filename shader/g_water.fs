@@ -134,6 +134,7 @@ void main() {
   if (!gl_FrontFacing) {
     refractiveFactor = 1.0;
   }
+  //refractiveFactor = 1.0;
 
   refractiveFactor = clamp(refractiveFactor, 0, 1);
 

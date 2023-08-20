@@ -14,7 +14,10 @@ class Node;
 class Renderer
 {
 public:
-    Renderer() {}
+    Renderer(bool useFrameStep)
+    : m_useFrameStep(useFrameStep)
+    {}
+
     virtual ~Renderer();
 
     virtual void prepare(
@@ -46,6 +49,7 @@ protected:
 
     Registry* m_registry{ nullptr };
 
+    bool m_useFrameStep{ false };
     int m_renderFrameStart = 0;
     int m_renderFrameStep = 0;
 
