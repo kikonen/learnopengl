@@ -9,6 +9,7 @@
 class Node;
 class FrameBuffer;
 class Viewport;
+class WaterMapRenderer;
 
 class MirrorMapRenderer final : public Renderer
 {
@@ -19,6 +20,8 @@ public:
     virtual void prepare(
         const Assets& assets,
         Registry* registry) override;
+
+    void updateView(const RenderContext& ctx);
 
     void bindTexture(const RenderContext& ctx);
 
@@ -44,6 +47,8 @@ private:
 
     std::unique_ptr<FrameBuffer> m_prev{ nullptr };
     std::unique_ptr<FrameBuffer> m_curr{ nullptr };
+
+    std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
 
     Material m_tagMaterial;
 };

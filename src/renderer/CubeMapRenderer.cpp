@@ -8,7 +8,6 @@
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 
-
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
@@ -118,7 +117,7 @@ void CubeMapRenderer::prepare(
         camera.setFov(90.f);
     }
 
-    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, true);
+    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, true);
     m_waterMapRenderer->setEnabled(assets.renderWaterMap);
 
     if (m_waterMapRenderer->isEnabled()) {

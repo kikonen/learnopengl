@@ -69,7 +69,7 @@ Scene::Scene(
         m_nodeRenderer = std::make_unique<NodeRenderer>(true);
         m_viewportRenderer = std::make_unique<ViewportRenderer>(true);
 
-        m_waterMapRenderer = std::make_unique<WaterMapRenderer>(true, false);
+        m_waterMapRenderer = std::make_unique<WaterMapRenderer>(true, true, false);
         m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(true);
         m_cubeMapRenderer = std::make_unique<CubeMapRenderer>(true);
         m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>(true);
@@ -264,6 +264,7 @@ void Scene::updateView(const RenderContext& ctx)
     updateMainViewport(ctx);
 
     m_cubeMapRenderer->updateView(ctx);
+    m_mirrorMapRenderer->updateView(ctx);
     m_waterMapRenderer->updateView(ctx);
     m_nodeDraw->updateView(ctx);
     m_windowBuffer->updateView(ctx);

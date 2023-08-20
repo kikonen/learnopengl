@@ -49,6 +49,8 @@ void WaterMapRenderer::prepare(
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
 
+    m_bufferCount = m_doubleBuffer ? 2 : 1;
+
     //WaterNoiseGenerator generator;
     //noiseTextureID = generator.generate();
 
@@ -106,7 +108,7 @@ void WaterMapRenderer::updateView(const RenderContext& ctx)
     albedo.textureWrapS = GL_REPEAT;
     albedo.textureWrapT = GL_REPEAT;
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < m_bufferCount; i++) {
         {
             FrameBufferSpecification spec = {
                 w, h,
@@ -280,7 +282,7 @@ bool WaterMapRenderer::render(
     parentCtx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
 
     m_prevIndex = m_currIndex;
-    m_currIndex = (m_currIndex + 1) % 2;
+    m_currIndex = (m_currIndex + 1) % m_bufferCount;
 
     m_rendered = true;
 

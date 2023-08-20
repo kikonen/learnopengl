@@ -14,6 +14,8 @@
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 
+#include "renderer/WaterMapRenderer.h"
+
 
 namespace {
     namespace {
@@ -102,6 +104,18 @@ void MirrorMapRenderer::prepare(
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
     m_debugViewport->prepare(assets);
+
+    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, true);
+    m_waterMapRenderer->setEnabled(assets.renderWaterMap);
+
+    if (m_waterMapRenderer->isEnabled()) {
+        m_waterMapRenderer->prepare(assets, registry);
+    }
+}
+
+void MirrorMapRenderer::updateView(const RenderContext& ctx)
+{
+    m_waterMapRenderer->updateView(ctx);
 }
 
 void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
@@ -207,6 +221,11 @@ void MirrorMapRenderer::drawNodes(
 {
     const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
+
+    if (m_waterMapRenderer->isEnabled()) {
+        m_waterMapRenderer->render(ctx);
+        m_waterMapRenderer->bindTexture(ctx);
+    }
 
     //ctx.updateClipPlanesUBO();
     //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);

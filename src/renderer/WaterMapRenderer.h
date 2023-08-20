@@ -14,8 +14,12 @@ class FrameBuffer;
 class WaterMapRenderer final : public Renderer
 {
 public:
-    WaterMapRenderer(bool useFrameStep, bool squareAspectRatio)
+    WaterMapRenderer(
+        bool useFrameStep,
+        bool doubleBuffer,
+        bool squareAspectRatio)
         : Renderer(useFrameStep),
+        m_doubleBuffer(doubleBuffer),
         m_squareAspectRatio(squareAspectRatio) {}
 
     virtual ~WaterMapRenderer() = default;
@@ -45,7 +49,10 @@ public:
     std::shared_ptr<Viewport> m_refractionDebugViewport;
 
 private:
+    const bool m_doubleBuffer;
     const bool m_squareAspectRatio;
+
+    int m_bufferCount{ 1 };
 
     float m_nearPlane{ 0.1f };
     float m_farPlane{ 1000.0f };
