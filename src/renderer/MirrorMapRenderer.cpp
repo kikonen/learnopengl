@@ -261,14 +261,14 @@ void MirrorMapRenderer::drawNodes(
     if (m_waterMapRenderer->isEnabled()) {
         // NOTE KI ignore mirror when not yet rendered
         m_waterMapRenderer->m_sourceNode = current;
-        m_waterMapRenderer->render(ctx);
+        renderedWater = m_waterMapRenderer->render(ctx);
         m_waterMapRenderer->m_sourceNode = nullptr;
     }
 
     if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled()) {
         // NOTE KI ignore mirror when not yet rendered
         m_mirrorMapRenderer->m_sourceNode = current;
-        m_mirrorMapRenderer->render(ctx);
+        renderedMirror = m_mirrorMapRenderer->render(ctx);
         m_mirrorMapRenderer->m_sourceNode = nullptr;
     }
 
