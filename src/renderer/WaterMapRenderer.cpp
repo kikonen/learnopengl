@@ -298,15 +298,15 @@ void WaterMapRenderer::drawNodes(
     Node* current,
     bool reflect)
 {
+    // NOTE KI flush before touching clip distance
+    ctx.validateRender("water-nodes");
+
     Node* sourceNode = m_sourceNode;
+
+    ctx.updateClipPlanesUBO();
 
     const glm::vec4 debugColor(0.9f, 0.3f, 0.3f, 0.0f);
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
-
-    // NOTE KI flush before touching clip distance
-    ctx.m_batch->flush(ctx);
-
-    ctx.updateClipPlanesUBO();
 
     {
         ctx.m_nodeDraw->drawNodes(

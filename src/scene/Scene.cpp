@@ -318,7 +318,7 @@ void Scene::draw(const RenderContext& ctx)
     ctx.m_state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, ctx.m_assets.cubeMapSeamless);
 
     if (m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->render(ctx)) {
-        wasCubeMap = true;
+        wasCubeMap = ctx.m_assets.cubeMapSkipOthers;
     }
 
     if (!wasCubeMap && m_waterMapRenderer->isEnabled() && m_waterMapRenderer->render(ctx))

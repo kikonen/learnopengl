@@ -140,6 +140,7 @@ Assets::Assets()
 
     cubeMapSeamless = true;
 
+    cubeMapSkipOthers = true;
     cubeMapSize = 1024;
     cubeMapNearPlane = 0.5;
     cubeMapFarPlane = 200;

@@ -300,6 +300,9 @@ void AssetsFile::loadAssets(
         else if (k == "cube_map_seamless") {
             data.cubeMapSeamless = readBool(v);
         }
+        else if (k == "cube_map_skip_others") {
+            data.cubeMapSkipOthers = readBool(v);
+        }
         else if (k == "cube_map_size") {
             data.cubeMapSize = readInt(v);
         }

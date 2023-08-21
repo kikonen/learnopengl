@@ -155,6 +155,7 @@ public:
 
     bool cubeMapSeamless;
 
+    bool cubeMapSkipOthers;
     int cubeMapSize;
     int cubeMapRenderFrameStart;
     int cubeMapRenderFrameStep;
