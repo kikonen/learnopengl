@@ -53,6 +53,7 @@ return f;
 }
 
 std::shared_future<ImageTexture*> ImageTexture::getTexture(
+    const std::string& name,
     const std::string& path,
     const TextureSpec& spec)
 {
@@ -69,7 +70,7 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
             return e->second;
     }
 
-    auto future = startLoad(new ImageTexture(path, spec));
+    auto future = startLoad(new ImageTexture(name, path, spec));
     textures[cacheKey] = future;
     return future;
 }
@@ -90,8 +91,12 @@ const std::pair<int, const std::vector<const ImageTexture*>&> ImageTexture::getP
     return { preparedTexturesLevel, preparedTextures };
 }
 
-ImageTexture::ImageTexture(const std::string& path, const TextureSpec& spec)
-    : Texture(path, spec)
+ImageTexture::ImageTexture(
+    const std::string& name,
+    const std::string& path,
+    const TextureSpec& spec)
+    : Texture(name, spec),
+    m_path(path)
 {
 }
 
@@ -142,6 +147,8 @@ void ImageTexture::prepare(const Assets& assets)
     // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
     glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
 
+    glObjectLabel(GL_TEXTURE, m_textureID, m_name.length(), m_name.c_str());
+
     if (m_specialTexture) {
         glTextureStorage2D(m_textureID, 1, m_internalFormat, m_image->m_width, m_image->m_height);
         glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, m_pixelFormat, m_image->m_data);
@@ -177,7 +184,7 @@ void ImageTexture::prepare(const Assets& assets)
 }
 
 void ImageTexture::load() {
-    m_image = std::make_unique<Image>(m_name);
+    m_image = std::make_unique<Image>(m_path);
     int res = m_image->load(true);
     if (res) {
         m_image.reset();

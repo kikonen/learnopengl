@@ -53,6 +53,8 @@ void FrameBuffer::prepare(
 
     {
         glCreateFramebuffers(1, &m_fbo);
+        glObjectLabel(GL_FRAMEBUFFER, m_fbo, m_name.length(), m_name.c_str());
+
         KI_INFO(fmt::format("CREATE: FBO={}", str()));
     }
 

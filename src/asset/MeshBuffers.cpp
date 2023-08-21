@@ -24,7 +24,7 @@ void MeshBuffers::prepare(bool useVertex, bool useMaterial, bool useIndeces)
     if (m_prepared) return;
     m_prepared = true;
 
-    VAO.create();
+    VAO.create("mesh");
     if (useVertex) {
         VBO.create();
     }

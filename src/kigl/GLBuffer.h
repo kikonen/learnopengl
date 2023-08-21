@@ -5,7 +5,7 @@
 #include "ki/GL.h"
 
 struct GLBuffer {
-    GLBuffer(const std::string name)
+    GLBuffer(const std::string& name)
         : m_name(name)
     {
     }
@@ -24,6 +24,7 @@ struct GLBuffer {
     void create() {
         if (m_created) return;
         glCreateBuffers(1, &m_id);
+        glObjectLabel(GL_BUFFER, m_id, m_name.length(), m_name.c_str());
         KI_DEBUG(fmt::format("BUFFER: create - name={}, id={}", m_name, m_id));
         m_created = true;
     }

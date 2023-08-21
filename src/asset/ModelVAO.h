@@ -14,7 +14,8 @@ class UpdateContext;
 
 class ModelVAO {
 public:
-    ModelVAO(bool singleMaterial);
+    ModelVAO() {};
+    ~ModelVAO() = default;
 
     GLVertexArray* prepare();
 
@@ -33,8 +34,6 @@ private:
     void updateIndexBuffer();
 
 private:
-    const bool m_singleMaterial;
-
     bool m_prepared = false;
 
     std::unique_ptr<GLVertexArray> m_vao;

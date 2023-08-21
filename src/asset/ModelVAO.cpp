@@ -20,12 +20,6 @@ namespace {
     constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
 }
 
-ModelVAO::ModelVAO(bool singleMaterial)
-    : m_singleMaterial(singleMaterial)
-{
-}
-
-
 GLVertexArray* ModelVAO::prepare()
 {
     if (m_prepared) return m_vao.get();
@@ -33,7 +27,7 @@ GLVertexArray* ModelVAO::prepare()
 
     {
         m_vao = std::make_unique<GLVertexArray>();
-        m_vao->create();
+        m_vao->create("model");
     }
     {
         m_vbo.createEmpty(VERTEX_BLOCK_SIZE * sizeof(VertexEntry), GL_DYNAMIC_STORAGE_BIT);

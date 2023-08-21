@@ -66,7 +66,7 @@ void Viewport::prepare(const Assets& assets)
 
 void Viewport::prepareVBO()
 {
-    m_vao.create();
+    m_vao.create("viewport");
     m_vbo.create();
 
     const float x = m_position.x;

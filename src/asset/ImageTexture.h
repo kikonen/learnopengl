@@ -11,10 +11,18 @@ class Image;
 class ImageTexture final : public Texture
 {
 public:
-    static std::shared_future<ImageTexture*> getTexture(const std::string& path, const TextureSpec& spec);
+    static std::shared_future<ImageTexture*> getTexture(
+        const std::string& name,
+        const std::string& path,
+        const TextureSpec& spec);
+
     static const std::pair<int, const std::vector<const ImageTexture*>&> getPreparedTextures();
 
-    ImageTexture(const std::string& path, const TextureSpec& spec);
+    ImageTexture(
+        const std::string& name,
+        const std::string& path,
+        const TextureSpec& spec);
+
     virtual ~ImageTexture();
 
     void prepare(const Assets& assets) override;
@@ -24,6 +32,7 @@ public:
     void load();
 
 private:
+    const std::string m_path;
 
 private:
     bool m_valid = false;

@@ -53,6 +53,7 @@ void Shape::loadTexture(
 
     std::string placeholderPath = assets.placeholderTexture;
     auto future = ImageTexture::getTexture(
+        "shape-placeholder",
         assets.placeholderTextureAlways ? placeholderPath : texturePath,
         textureSpec);
 
@@ -64,7 +65,7 @@ void Shape::loadTexture(
     }
 
     if (!texture->isValid()) {
-        future = ImageTexture::getTexture(placeholderPath, textureSpec);
+        future = ImageTexture::getTexture("shape-placeholder", placeholderPath, textureSpec);
         future.wait();
         if (future.valid()) {
             texture = future.get();

@@ -205,6 +205,7 @@ void Material::loadTexture(
 
     std::string placeholderPath = assets.placeholderTexture;
     auto future = ImageTexture::getTexture(
+        textureName,
         assets.placeholderTextureAlways ? placeholderPath : texturePath,
         textureSpec);
 
@@ -216,7 +217,7 @@ void Material::loadTexture(
     }
 
     if (!texture->isValid()) {
-        future = ImageTexture::getTexture(placeholderPath, textureSpec);
+        future = ImageTexture::getTexture("tex-placeholder", placeholderPath, textureSpec);
         future.wait();
         if (future.valid()) {
             texture = future.get();

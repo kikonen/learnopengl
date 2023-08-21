@@ -36,7 +36,7 @@ GLVertexArray* QuadVAO::prepare()
     m_prepared = true;
 
     m_vao = std::make_unique<GLVertexArray>();
-    m_vao->create();
+    m_vao->create("quad");
     m_vbo.create();
 
     prepareVBO(m_vbo);
