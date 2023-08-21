@@ -16,6 +16,7 @@
 #include "render/CubeMapBuffer.h"
 
 #include "renderer/WaterMapRenderer.h"
+#include "renderer/MirrorMapRenderer.h"
 
 #include "registry/MeshType.h"
 
@@ -123,11 +124,19 @@ void CubeMapRenderer::prepare(
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->prepare(assets, registry);
     }
+
+    m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(false, false, true);
+    m_mirrorMapRenderer->setEnabled(assets.renderMirrorMap);
+
+    if (m_mirrorMapRenderer->isEnabled()) {
+        m_mirrorMapRenderer->prepare(assets, registry);
+    }
 }
 
 void CubeMapRenderer::updateView(const RenderContext& ctx)
 {
     m_waterMapRenderer->updateView(ctx);
+    m_mirrorMapRenderer->updateView(ctx);
 }
 
 void CubeMapRenderer::bindTexture(const RenderContext& ctx)
@@ -262,9 +271,26 @@ void CubeMapRenderer::drawNodes(
     const Node* current,
     const glm::vec4& debugColor)
 {
+    bool renderedWater{ false };
+    bool renderedMirror{ false };
+
+    // NOTE KI notice if water was actually existing
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->render(ctx);
+        renderedWater = m_waterMapRenderer->render(ctx);
+    }
+
+    // NOTE KI mirror is *NOT* rendered in all cube sides
+    // => only when eye reflect dir in mirror matches closest
+    if (m_mirrorMapRenderer->isEnabled()) {
+        renderedMirror = m_mirrorMapRenderer->render(ctx);
+    }
+
+    if (m_waterMapRenderer->isEnabled() && renderedWater) {
         m_waterMapRenderer->bindTexture(ctx);
+    }
+
+    if (m_mirrorMapRenderer->isEnabled() && renderedMirror) {
+        m_mirrorMapRenderer->bindTexture(ctx);
     }
 
     // TODO KI to match special logic in CubeMapBuffer

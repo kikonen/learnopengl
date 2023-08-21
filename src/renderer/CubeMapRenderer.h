@@ -9,6 +9,7 @@
 class FrameBuffer;
 class DynamicCubeMap;
 class WaterMapRenderer;
+class MirrorMapRenderer;
 
 class CubeMapRenderer final : public Renderer
 {
@@ -64,4 +65,5 @@ private:
     Node* m_tagNode{ nullptr };
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
+    std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
 };
