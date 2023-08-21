@@ -46,6 +46,8 @@ private:
 public:
     std::shared_ptr<Viewport> m_reflectionDebugViewport;
 
+    Node* m_sourceNode{ nullptr };
+
 private:
     const bool m_doubleBuffer;
     const bool m_squareAspectRatio;
@@ -65,6 +67,7 @@ private:
     std::vector<std::unique_ptr<FrameBuffer>> m_reflectionBuffers;
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
+    std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
 
     Material m_tagMaterial;
 };

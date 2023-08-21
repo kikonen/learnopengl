@@ -82,11 +82,23 @@ void MirrorMapRenderer::prepare(
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->prepare(assets, registry);
     }
+
+    if (m_doubleBuffer) {
+        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(false, false, m_squareAspectRatio);
+        m_mirrorMapRenderer->setEnabled(assets.renderMirrorMap);
+
+        if (m_mirrorMapRenderer->isEnabled()) {
+            m_mirrorMapRenderer->prepare(assets, registry);
+        }
+    }
 }
 
 void MirrorMapRenderer::updateView(const RenderContext& ctx)
 {
     m_waterMapRenderer->updateView(ctx);
+    if (m_mirrorMapRenderer) {
+        m_mirrorMapRenderer->updateView(ctx);
+    }
 
     const auto& res = ctx.m_resolution;
 
@@ -243,32 +255,48 @@ void MirrorMapRenderer::drawNodes(
     FrameBuffer* targetBuffer,
     Node* current)
 {
+    bool renderedWater{ false };
+    bool renderedMirror{ false };
+
     if (m_waterMapRenderer->isEnabled()) {
-        if (false && m_rendered) {
-            bindTexture(ctx);
-            m_waterMapRenderer->render(ctx);
-            m_waterMapRenderer->bindTexture(ctx);
-        }
-        else {
-            // NOTE KI ignore mirror when not yet rendered
-            m_waterMapRenderer->m_sourceNode = current;
-            m_waterMapRenderer->render(ctx);
-            m_waterMapRenderer->bindTexture(ctx);
-            m_waterMapRenderer->m_sourceNode = nullptr;
-        }
+        // NOTE KI ignore mirror when not yet rendered
+        m_waterMapRenderer->m_sourceNode = current;
+        m_waterMapRenderer->render(ctx);
+        m_waterMapRenderer->m_sourceNode = nullptr;
+    }
+
+    if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled()) {
+        // NOTE KI ignore mirror when not yet rendered
+        m_mirrorMapRenderer->m_sourceNode = current;
+        m_mirrorMapRenderer->render(ctx);
+        m_mirrorMapRenderer->m_sourceNode = nullptr;
+    }
+
+    if (m_waterMapRenderer->isEnabled() && renderedWater) {
+        m_waterMapRenderer->bindTexture(ctx);
+    }
+
+    if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled() && renderedMirror) {
+        m_mirrorMapRenderer->bindTexture(ctx);
     }
 
     const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
 
+
     //ctx.updateClipPlanesUBO();
     //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
     {
+        Node* sourceNode = m_sourceNode;
+
         ctx.m_nodeDraw->drawNodes(
             ctx,
             targetBuffer,
             [](const MeshType* type) { return !type->m_flags.noReflect; },
-            [&current](const Node* node) { return node != current; },
+            [current, sourceNode](const Node* node) {
+                return node != current &&
+                    node != sourceNode;
+            },
             GL_COLOR_BUFFER_BIT);
     }
     //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);

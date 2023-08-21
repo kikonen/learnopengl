@@ -301,14 +301,14 @@ void WaterMapRenderer::drawNodes(
     // NOTE KI flush before touching clip distance
     ctx.validateRender("water-nodes");
 
-    Node* sourceNode = m_sourceNode;
-
     ctx.updateClipPlanesUBO();
 
     const glm::vec4 debugColor(0.9f, 0.3f, 0.3f, 0.0f);
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
 
     {
+        Node* sourceNode = m_sourceNode;
+
         ctx.m_nodeDraw->drawNodes(
             ctx,
             targetBuffer,
@@ -316,7 +316,7 @@ void WaterMapRenderer::drawNodes(
                 return !type->m_flags.water &&
                     (reflect ? !type->m_flags.noReflect : !type->m_flags.noRefract);
             },
-            [&current, sourceNode](const Node* node) {
+            [current, sourceNode](const Node* node) {
                 return node != current &&
                     node != sourceNode;
             },
