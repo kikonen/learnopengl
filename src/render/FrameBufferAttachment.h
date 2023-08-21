@@ -24,6 +24,8 @@ enum class ClearType {
 struct FrameBufferAttachment {
     FrameBufferAttachmentType type = FrameBufferAttachmentType::texture;
 
+    int index = -1;
+
     GLenum attachment = GL_COLOR_ATTACHMENT0;
     bool useDrawBuffer = false;
 
