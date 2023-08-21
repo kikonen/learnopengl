@@ -106,6 +106,8 @@ void MirrorMapRenderer::updateView(const RenderContext& ctx)
     auto albedo = FrameBufferAttachment::getTextureRGB();
     albedo.minFilter = GL_LINEAR;
     albedo.magFilter = GL_LINEAR;
+    albedo.textureWrapS = GL_REPEAT;
+    albedo.textureWrapT = GL_REPEAT;
 
     // NOTE KI *CANNOT* share same buffer spec
 
@@ -172,6 +174,7 @@ bool MirrorMapRenderer::render(
         const auto& eyePos = parentCamera->getWorldPosition();
 
         const auto& viewFront = closest->getViewFront();
+        const auto& viewUp = closest->getViewUp();
 
         const auto eyeV = planePos - eyePos;
         const auto dist = glm::length(eyeV);
@@ -189,7 +192,10 @@ bool MirrorMapRenderer::render(
         const auto mirrorEyePos = planePos - (reflectFront * dist);
 
         // NOTE KI keep mirror up straight up
-        glm::vec3 reflectUp{ 0.f, 1.f, 0.f };
+        //glm::vec3 reflectUp{ 0.f, 1.f, 0.f };
+        //glm::vec3 reflectUp = -parentCamera->getUp();
+        //glm::vec3 reflectUp = -glm::normalize(glm::cross(parentCamera->getViewRight(), reflectFront));
+        glm::vec3 reflectUp = viewUp;
 
         //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
         //const float fovAngle = ctx.m_assets.mirrorFov;
@@ -237,9 +243,6 @@ void MirrorMapRenderer::drawNodes(
     FrameBuffer* targetBuffer,
     Node* current)
 {
-    const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
-    targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
-
     if (m_waterMapRenderer->isEnabled()) {
         if (false && m_rendered) {
             bindTexture(ctx);
@@ -254,6 +257,9 @@ void MirrorMapRenderer::drawNodes(
             m_waterMapRenderer->m_sourceNode = nullptr;
         }
     }
+
+    const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
+    targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
 
     //ctx.updateClipPlanesUBO();
     //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);

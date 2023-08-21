@@ -262,14 +262,14 @@ void CubeMapRenderer::drawNodes(
     const Node* current,
     const glm::vec4& debugColor)
 {
-    // TODO KI to match special logic in CubeMapBuffer
-    targetBuffer->bind(ctx);
-    targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
-
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->render(ctx);
         m_waterMapRenderer->bindTexture(ctx);
     }
+
+    // TODO KI to match special logic in CubeMapBuffer
+    targetBuffer->bind(ctx);
+    targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
 
     ctx.m_nodeDraw->drawNodes(
         ctx,
