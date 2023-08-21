@@ -64,7 +64,7 @@ private:
     int m_height{ -1 };
 
     int m_currIndex{ 0 };
-    int m_prevIndex{ 1 };
+    int m_prevIndex{ 0 };
 
     int m_bufferCount{ 1 };
     std::vector<std::unique_ptr<FrameBuffer>> m_reflectionBuffers;

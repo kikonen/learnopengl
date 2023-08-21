@@ -49,7 +49,10 @@ void WaterMapRenderer::prepare(
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
 
-    m_bufferCount = m_doubleBuffer ? 2 : 1;
+    if (m_doubleBuffer) {
+        m_bufferCount = 2;
+        m_prevIndex = 1;
+    }
 
     //WaterNoiseGenerator generator;
     //noiseTextureID = generator.generate();

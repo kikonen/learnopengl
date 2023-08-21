@@ -54,7 +54,10 @@ void MirrorMapRenderer::prepare(
     m_renderFrameStart = assets.mirrorRenderFrameStart;
     m_renderFrameStep = assets.mirrorRenderFrameStep;
 
-    m_bufferCount = m_doubleBuffer ? 2 : 1;
+    if (m_doubleBuffer) {
+        m_bufferCount = 2;
+        m_prevIndex = 1;
+    }
 
     glm::vec3 origo(0);
     for (int i = 0; i < 1; i++) {
