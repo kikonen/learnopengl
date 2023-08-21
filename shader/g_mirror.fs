@@ -48,8 +48,9 @@ void main() {
 
   if (gl_FrontFacing)
   {
-    vec4 gp = fs_in.glp;
-    vec2 reflectCoord = vec2(-gp.x, gp.y) / (gp.w * 2.0) + 0.5;
+    vec2 ndc = (fs_in.glp.xy / fs_in.glp.w) / 2.0 + 0.5;
+
+    vec2 reflectCoord = vec2(-ndc.x, ndc.y);
 
     vec4 reflectColor = texture(u_reflectionTex, reflectCoord);
 
