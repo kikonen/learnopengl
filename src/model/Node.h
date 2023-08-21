@@ -63,8 +63,16 @@ public:
         return m_instance.getWorldPosition();
     }
 
+    inline const glm::vec3& getViewUp() const noexcept {
+        return m_instance.getViewUp();
+    }
+
     inline const glm::vec3& getViewFront() const noexcept {
         return m_instance.getViewFront();
+    }
+
+    inline const glm::vec3& getViewRight() const noexcept {
+        return m_instance.getViewRight();
     }
 
     inline const glm::vec4 getVolume() const noexcept {
