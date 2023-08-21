@@ -14,17 +14,11 @@ layout(early_fragment_tests) in;
 in VS_OUT {
   vec4 glp;
 
-  flat uint entityIndex;
-
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
 
   flat uint materialIndex;
-
-#ifdef USE_TBN
-  vec3 tangent;
-#endif
 } fs_in;
 
 layout(binding = UNIT_MIRROR_REFLECTION) uniform sampler2D u_reflectionTex;

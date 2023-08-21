@@ -57,7 +57,6 @@ void main() {
 
   vs_out.worldPos = worldPos.xyz;
 
-  // NOTE KI pointless to normalize vs side
   vs_out.normal = normal;
 
 #ifdef USE_NORMAL_TEX
