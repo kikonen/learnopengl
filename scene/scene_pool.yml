@@ -177,6 +177,24 @@ entities:
         z_step: -40
       enabled: true
     enabled: true
+  - name: Skeleton army
+    type: quad
+    priority: 1
+    program: g_tex
+    pos: [-20, 12.5, 80]
+    material: skeleton
+    render_flags:
+      alpha: true
+      xphysics: true
+      xenforce_bounds: true
+      render_back: true
+    scale: [1.5, 3, 1]
+    repeat:
+      x_count: 30
+      z_count: 1
+      x_step: 10
+      z_step: 0
+    enabled: true
   - name: Terrain grass v2
     id: auto
     type: container
@@ -357,3 +375,9 @@ materials:
     reflection: 0.5
     refraction: 0.05
     refraction_ratio: [1.0, 1.52]
+  - name: skeleton
+    type: sprite
+    ns: 20
+    ka: [0.7, 0.7, 0.7, 1.0]
+    ks: [0.2, 0.2, 0.2, 1.0]
+    map_kd: skeleton.png
