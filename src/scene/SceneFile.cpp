@@ -901,6 +901,10 @@ void SceneFile::modifyMaterial(
     if (f.map_dudv) m.map_dudv = mod. map_dudv;
     if (f.map_height) m.map_height = mod.map_height;
     if (f.map_noise) m.map_noise = mod.map_noise;
+
+    if (f.map_roughness) m.map_roughness = mod.map_roughness;
+    if (f.map_metalness) m.map_metalness = mod.map_metalness;
+    if (f.map_opacity) m.map_opacity = mod.map_opacity;
 }
 
 std::unique_ptr<Camera> SceneFile::createCamera(
@@ -1706,6 +1710,21 @@ void SceneFile::loadMaterial(
             std::string line = v.as<std::string>();
             material.map_noise = resolveTexturePath(line);
             fields.map_noise = true;
+        }
+        else if (k == "map_roughness") {
+            std::string line = v.as<std::string>();
+            material.map_roughness = resolveTexturePath(line);
+            fields.map_roughness = true;
+        }
+        else if (k == "map_metalness") {
+            std::string line = v.as<std::string>();
+            material.map_metalness = resolveTexturePath(line);
+            fields.map_metalness = true;
+        }
+        else if (k == "map_opacity") {
+            std::string line = v.as<std::string>();
+            material.map_opacity = resolveTexturePath(line);
+            fields.map_opacity = true;
         }
         else if (k == "pattern") {
             material.pattern = readInt(v);

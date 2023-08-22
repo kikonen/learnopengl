@@ -135,39 +135,22 @@ void RenderData::updateLights(Registry* registry, bool useLight)
 
 void RenderData::updateTextures()
 {
-    if (false) {
-        //TexturesUBO texturesUbo;
-        //memset(&texturesUbo.textures, 0, sizeof(texturesUbo.textures));
+    // OpenGL Superbible, 7th Edition, page 552
+    // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
+    // https://www.khronos.org/opengl/wiki/Bindless_Texture
 
-        //for (const auto& texture : ImageTexture::getPreparedTextures()) {
-        //    texturesUbo.textures[texture->m_texIndex * 2] = texture->m_handle;
-        //}
+    auto [level, textures] = ImageTexture::getPreparedTextures();
+    if (level != m_textureLevel && !textures.empty()) {
+        m_textureLevel = level;
 
-        ////glBindBuffer(GL_SHADER_STORAGE_BUFFER, scene->m_ubo.textures);
-        ////GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-        ////memcpy(p, &scene->m_textures, sizeof(TexturesUBO));
-        ////glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-
-        //glNamedBufferSubData(scene->m_ubo.textures, 0, sizeof(TexturesUBO), &texturesUbo);
-    }
-    else {
-        // OpenGL Superbible, 7th Edition, page 552
-        // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
-        // https://www.khronos.org/opengl/wiki/Bindless_Texture
-
-        auto [level, textures] = ImageTexture::getPreparedTextures();
-        if (level != m_textureLevel && !textures.empty()) {
-            m_textureLevel = level;
-
-            TextureUBO entry;
-            for (const auto* texture : textures) {
-                if (texture->m_sent) continue;
-                entry.handle = texture->m_handle;
-                m_textures.set(texture->m_texIndex, entry);
-                texture->m_sent = true;
-            }
-
-            m_textures.flush();
+        TextureUBO entry;
+        for (const auto* texture : textures) {
+            if (texture->m_sent) continue;
+            entry.handle = texture->m_handle;
+            m_textures.set(texture->m_texIndex, entry);
+            texture->m_sent = true;
         }
+
+        m_textures.flush();
     }
 }

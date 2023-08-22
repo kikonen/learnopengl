@@ -16,6 +16,11 @@ struct Material {
   int dudvMapTex;
   int heightMapTex;
   int noiseMapTex;
+
+  int roughessMapTex;
+  int metalnessMapTex;
+  int opacityMapTex;
+
   int pattern;
 
   float reflection;

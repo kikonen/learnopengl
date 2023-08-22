@@ -39,6 +39,11 @@ struct MaterialSSBO {
     int u_dudvMap;
     int u_heightMap;
     int u_noiseMap;
+
+    int u_roughnessMap;
+    int u_metalnessMap;
+    int u_opacityMap;
+
     int u_pattern;
 
     float u_reflection;
@@ -47,11 +52,12 @@ struct MaterialSSBO {
 
     float u_tilingX;
     float u_tilingY;
+
     int u_layers;
     float u_depth;
 
     //int pad3_1;
     //int pad3_2;
-//    int pad3_3;
+    int pad3_3;
 };
 #pragma pack(pop)
