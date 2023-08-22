@@ -6,20 +6,20 @@ struct Material {
   // specular + shininess
   vec4 specular;
 
+  uvec2 diffuseTex;
+  uvec2 emissionTex;
+  uvec2 specularTex;
+  uvec2 normalMapTex;
+
+  uvec2 dudvMapTex;
+  uvec2 heightMapTex;
+  uvec2 noiseMapTex;
+
+  uvec2 roughessMapTex;
+  uvec2 metalnessMapTex;
+  uvec2 opacityMapTex;
+
   float ambient;
-
-  int diffuseTex;
-  int emissionTex;
-  int specularTex;
-  int normalMapTex;
-
-  int dudvMapTex;
-  int heightMapTex;
-  int noiseMapTex;
-
-  int roughessMapTex;
-  int metalnessMapTex;
-  int opacityMapTex;
 
   int pattern;
 

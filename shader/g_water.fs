@@ -75,7 +75,7 @@ void main() {
   vec2 distortedTexCoord = texCoord;
   vec2 totalDistortion = vec2(0);
 
-  if (material.dudvMapTex >= 0) {
+  if (material.dudvMapTex.x > 0) {
     float moveFactor = (sin(u_time / 10.0) + 1.0) * 0.5;
 
     // distortedTexCoord = texture(u_textures[material.dudvMapTex], vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
@@ -85,7 +85,7 @@ void main() {
 
     //vec2 distortedTexCoord;
     {
-      sampler2D sampler = sampler2D(u_texture_handles[material.dudvMapTex]);
+      sampler2D sampler = sampler2D(material.dudvMapTex);
       distortedTexCoord = texture(sampler, vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
       distortedTexCoord = texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
       totalDistortion = (texture(sampler, distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
@@ -94,8 +94,8 @@ void main() {
 
 #ifdef USE_NORMAL_TEX
   vec3 normal;
-  if (material.normalMapTex >= 0) {
-    sampler2D sampler = sampler2D(u_texture_handles[material.normalMapTex]);
+  if (material.normalMapTex.x > 0) {
+    sampler2D sampler = sampler2D(material.normalMapTex);
 
     const vec3 N = normalize(fs_in.normal);
     const vec3 T = normalize(fs_in.tangent);

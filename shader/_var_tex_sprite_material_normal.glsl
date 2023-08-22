@@ -1,7 +1,7 @@
 #ifdef USE_NORMAL_TEX
 vec3 normal;
 {
-  int normalMapTex;
+  uvec2 normalMapTex;
 
   if (fs_in.shapeIndex > 0) {
     normalMapTex = u_shapes[fs_in.shapeIndex].normalMapTex;
@@ -9,8 +9,8 @@ vec3 normal;
     normalMapTex = material.normalMapTex;
   }
 
-  if (normalMapTex >= 0) {
-    sampler2D sampler = sampler2D(u_texture_handles[normalMapTex]);
+  if (normalMapTex.x > 0) {
+    sampler2D sampler = sampler2D(normalMapTex);
 
     const vec3 N = normalize(fs_in.normal);
     const vec3 T = normalize(fs_in.tangent);

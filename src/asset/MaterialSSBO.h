@@ -28,22 +28,21 @@ struct MaterialSSBO {
     // specular + shininess
     glm::vec4 u_specular; // 16
 
-    float u_ambient;
-
     // NOTE KI "tex index", not "unit index"
-    int u_diffuseTex;
-    int u_emissionTex;
-    int u_specularTex;
-    int u_normalMap;
+    GLuint64 u_diffuseTex;
+    GLuint64 u_emissionTex;
+    GLuint64 u_specularTex;
+    GLuint64 u_normalMap;
 
-    int u_dudvMap;
-    int u_heightMap;
-    int u_noiseMap;
+    GLuint64 u_dudvMap;
+    GLuint64 u_heightMap;
+    GLuint64 u_noiseMap;
 
-    int u_roughnessMap;
-    int u_metalnessMap;
-    int u_opacityMap;
+    GLuint64 u_roughnessMap;
+    GLuint64 u_metalnessMap;
+    GLuint64 u_opacityMap;
 
+    float u_ambient;
     int u_pattern;
 
     float u_reflection;
@@ -56,8 +55,8 @@ struct MaterialSSBO {
     int u_layers;
     float u_depth;
 
-    //int pad3_1;
-    //int pad3_2;
+    int pad3_1;
+    int pad3_2;
     int pad3_3;
 };
 #pragma pack(pop)

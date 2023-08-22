@@ -22,7 +22,7 @@ in VS_OUT {
 
 layout (location = 0) out vec4 o_fragColor;
 
-int iChannel0;
+uvec2 iChannel0;
 vec2 iMouse;
 vec2 iResolution;
 float iTime;

@@ -105,6 +105,7 @@ void Shape::prepare(const Assets& assets)
         if (!tex.texture) continue;
         tex.texture->prepare(assets);
         tex.m_texIndex = tex.texture->m_texIndex;
+        tex.m_handle = tex.texture->m_handle;
     }
 }
 
@@ -116,9 +117,9 @@ const ShapeSSBO Shape::toSSBO() const
     }
 
     return {
-        m_textures[SHAPE_DIFFUSE_IDX].m_texIndex,
-        m_textures[SHAPE_EMISSION_IDX].m_texIndex,
-        m_textures[SHAPE_SPECULAR_IDX].m_texIndex,
-        m_textures[SHAPE_NORMAL_MAP_IDX].m_texIndex,
+        m_textures[SHAPE_DIFFUSE_IDX].m_handle,
+        m_textures[SHAPE_EMISSION_IDX].m_handle,
+        m_textures[SHAPE_SPECULAR_IDX].m_handle,
+        m_textures[SHAPE_NORMAL_MAP_IDX].m_handle,
     };
 }

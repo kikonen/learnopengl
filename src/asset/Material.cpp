@@ -266,6 +266,7 @@ void Material::prepare(const Assets& assets)
         if (!tex.texture) continue;
         tex.texture->prepare(assets);
         tex.m_texIndex = tex.texture->m_texIndex;
+        tex.m_handle = tex.texture->m_handle;
     }
 }
 
@@ -282,21 +283,20 @@ const MaterialSSBO Material::toSSBO() const
 
         glm::vec4{ ks, ns },
 
+        m_textures[MATERIAL_DIFFUSE_IDX].m_handle,
+        m_textures[MATERIAL_EMISSION_IDX].m_handle,
+        m_textures[MATERIAL_SPECULAR_IDX].m_handle,
+        m_textures[MATERIAL_NORMAL_MAP_IDX].m_handle,
+
+        m_textures[MATERIAL_DUDV_MAP_IDX].m_handle,
+        m_textures[MATERIAL_HEIGHT_MAP_IDX].m_handle,
+        m_textures[MATERIAL_NOISE_MAP_IDX].m_handle,
+
+        m_textures[MATERIAL_ROUGHNESS_MAP_IDX].m_handle,
+        m_textures[MATERIAL_METALNESS_MAP_IDX].m_handle,
+        m_textures[MATERIAL_OPACITY_MAP_IDX].m_handle,
+
         calculateAmbient(ka),
-
-        m_textures[MATERIAL_DIFFUSE_IDX].m_texIndex,
-        m_textures[MATERIAL_EMISSION_IDX].m_texIndex,
-        m_textures[MATERIAL_SPECULAR_IDX].m_texIndex,
-        m_textures[MATERIAL_NORMAL_MAP_IDX].m_texIndex,
-
-        m_textures[MATERIAL_DUDV_MAP_IDX].m_texIndex,
-        m_textures[MATERIAL_HEIGHT_MAP_IDX].m_texIndex,
-        m_textures[MATERIAL_NOISE_MAP_IDX].m_texIndex,
-
-        m_textures[MATERIAL_ROUGHNESS_MAP_IDX].m_texIndex,
-        m_textures[MATERIAL_METALNESS_MAP_IDX].m_texIndex,
-        m_textures[MATERIAL_OPACITY_MAP_IDX].m_texIndex,
-
         pattern,
 
         reflection,

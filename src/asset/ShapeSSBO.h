@@ -23,10 +23,10 @@
 #pragma pack(push, 1)
 struct ShapeSSBO {
     // NOTE KI "tex index", not "unit index"
-    int u_diffuseTex;
-    int u_emissionTex;
-    int u_specularTex;
-    int u_normalMap;
+    GLuint64 u_diffuseTex;
+    GLuint64 u_emissionTex;
+    GLuint64 u_specularTex;
+    GLuint64 u_normalMap;
 
     //float u_mapBumpStrength;
 };

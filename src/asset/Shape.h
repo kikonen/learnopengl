@@ -25,6 +25,7 @@ public:
     struct BoundTexture {
         Texture* texture = nullptr;
         int m_texIndex = -1;
+        GLuint64 m_handle = 0;
 
         bool valid() {
             return texture;

@@ -91,7 +91,7 @@ void main()
   #include var_entity_model_matrix.glsl
 
   const Material material = u_materials[tes_in[0].materialIndex];
-  sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);
+  sampler2D heightMap = sampler2D(material.heightMapTex);
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
   vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);

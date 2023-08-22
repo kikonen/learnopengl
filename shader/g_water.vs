@@ -60,7 +60,7 @@ void main() {
   vs_out.normal = normal;
 
 #ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex >= 0) {
+  if (u_materials[materialIndex].normalMapTex.x > 0) {
     const vec3 N = normal;
     vec3 T = normalize(normalMatrix * a_tangent);
 
