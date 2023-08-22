@@ -24,7 +24,8 @@ Assets::Assets()
 
     resolutionScale = 0.5f;
     gBufferScale = 0.5f;
-    waterBufferScale = 0.5f;
+    waterBufferScale = 0.25f;
+    mirrorBufferScale = 0.5f;
     bufferScale = 0.5f;
 
     windowSize = { 800, 600 };

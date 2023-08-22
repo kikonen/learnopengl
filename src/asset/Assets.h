@@ -40,6 +40,7 @@ public:
     float resolutionScale;
     float gBufferScale;
     float waterBufferScale;
+    float mirrorBufferScale;
     float bufferScale;
 
     glm::uvec2 windowSize;

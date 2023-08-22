@@ -66,6 +66,9 @@ void AssetsFile::loadAssets(
         else if (k == "water_buffer_scale") {
             data.waterBufferScale = readFloat(v);
         }
+        else if (k == "mirror_buffer_scale") {
+            data.mirrorBufferScale = readFloat(v);
+        }
         else if (k == "buffer_scale") {
             data.bufferScale = readFloat(v);
         }

@@ -102,8 +102,8 @@ void MirrorMapRenderer::updateView(const RenderContext& ctx)
 
     const auto& res = ctx.m_resolution;
 
-    int w = ctx.m_assets.waterBufferScale * res.x;
-    int h = ctx.m_assets.waterBufferScale * res.y;
+    int w = ctx.m_assets.mirrorBufferScale * res.x;
+    int h = ctx.m_assets.mirrorBufferScale * res.y;
 
     if (m_squareAspectRatio) {
         h = w;

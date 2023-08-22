@@ -9,6 +9,7 @@ assets:
   resolution_scale: 0.5
   g_buffer_scale: 0.5
   water_buffer_scale: 0.25
+  mirror_buffer_scale: 0.5
   buffer_scale: 1.0
 
   window_size: [800, 600]
