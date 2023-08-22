@@ -23,20 +23,20 @@ entities:
       cube_map: true
     enabled: true
   - name: Planet origo
-    id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    id: [auto, planet-origo]
     type: origo
     pos: [0.0, 0.0, 0.0]
     enabled: true
     script_file: scripts/anim_asteroids_roll
   - name: Planet
-    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    parent_id: [auto, planet-origo]
     model: [planet, planet]
     program: g_tex
     pos: [0, 0, 0]
     scale: 1
     enabled: true
   - name: Asteroid belt
-    parent_id: 8712cec1-e1a3-4973-8889-533adfbbb196
+    parent_id: [auto, planet-origo]
     model: [rock, rock]
     instanced: true
     program: g_tex
