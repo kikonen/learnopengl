@@ -149,7 +149,7 @@ entities:
     model: quad
     material: brickwall
     material_modifier:
-      map_height: brickwall_1024_height.jpg
+      map_height: textures/brickwall_1024_height.jpg
     program: g_tex
     pos: [30.0, 2.5, 5.0]
     scale: 2.5
@@ -185,7 +185,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood_1024.png
+    map_kd: textures/wood_1024.png
     reflection: 0.1
     tiling: 60
     texture_spec:
@@ -200,8 +200,8 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: brickwall_1024.png
-    map_bump: brickwall_1024_normal.png
+    map_kd: textures/brickwall_1024.png
+    map_bump: textures/brickwall_1024_normal.png
     xreflection: 0.2
     depth: 0.02
   - name: brickwall2
@@ -227,5 +227,5 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood_1024.png
+    map_kd: textures/wood_1024.png
     reflection: 0.4

@@ -1,6 +1,6 @@
 assets:
   log_file: log/development.log
-  scene_file: scene/scene_pool.yml
+  scene_file: scene/scene_lucy.yml
 
   glfw_swap_interval: 1
   gl_debug: true
@@ -26,11 +26,11 @@ assets:
   async_loader_enabled: true
   async_loader_delay: 0
 
-  assets_dir: 3d_model
-  models_dir: 3d_model
+  assets_dir: resources/assets
+  models_dir: resources/assets
   shaders_dir: shader
-  sprites_dir: 3d_model/sprites
-  textures_dir: 3d_model/textures
+  sprites_dir: resources/assets/sprites
+  textures_dir: resources/assets/textures
 
   placeholder_texture_always: false
   placeholder_texture: textures/tiles_1024.png

@@ -158,8 +158,8 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood_1024.png
-    map_bump: wood_1024_normal.png
+    map_kd: textures/wood_1024.png
+    map_bump: textures/wood_1024_normal.png
     reflection: 0.1
     tiling: 60
     texture_spec:

@@ -340,7 +340,7 @@ materials:
     ni: 1.45
     d: 1.0
     illum: 2
-    xxmap_kd: Marble White_VH_512.PNG
+    xxmap_kd: textures/Marble White_VH_512.PNG
     map_kd: tiles_1024.png
     tiling: 8
     texture_spec:
@@ -371,7 +371,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Marble White_VH_512.PNG
+    map_kd: textures/Marble White_VH_512.PNG
     reflection: 0.5
     refraction: 0.05
     refraction_ratio: [1.0, 1.52]

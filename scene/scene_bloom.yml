@@ -223,31 +223,31 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Window_Stained_Glass_lg_HI_256.PNG
+    map_kd: textures/indow_Stained_Glass_lg_HI_256.PNG
   - name: wood_floor
     ns: 225.000000
-    type: model
+    type: asset
     ka: [0.400000, 0.400000, 0.400000, 1.0]
     kd: [0.800000, 0.800000, 0.800000, 1.0]
     ks: [0.500000, 0.500000, 0.500000, 1.0]
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood_1024.png
+    map_kd: textures/wood_1024.png
     reflection: 0.1
     tiling: 60
     texture_spec:
       wrap: GL_REPEAT
   - name: woodwall
     ns: 225.000000
-    type: model
+    type: asset
     ka: [0.500000, 0.500000, 0.500000, 1.0]
     kd: [0.800000, 0.800000, 0.800000, 1.0]
     ks: [0.500000, 0.500000, 0.500000, 1.0]
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood_1024.png
+    map_kd: textures/wood_1024.png
     reflection: 0.4
   - name: linden_tree
     type: sprite

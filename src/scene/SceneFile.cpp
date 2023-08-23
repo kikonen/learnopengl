@@ -1203,8 +1203,8 @@ void SceneFile::loadEntityClone(
         }
         else if (k == "model") {
             if (v.Type() == YAML::NodeType::Sequence) {
-                data.meshName = v[0].as<std::string>();
-                data.meshPath = v[1].as<std::string>();
+                data.meshPath = v[0].as<std::string>();
+                data.meshName = v[1].as<std::string>();
             }
             else {
                 data.meshName = v.as<std::string>();

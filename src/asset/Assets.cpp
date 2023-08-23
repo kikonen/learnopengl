@@ -45,10 +45,10 @@ Assets::Assets()
     logFile = "log/development.log";
     sceneFile = "scene/scene_full.yml";
 
-    assetsDir = "3d_model";
-    modelsDir = "3d_model";
-    spritesDir = "3d_model/sprites";
-    texturesDir = "3d_model/textures";
+    assetsDir = "resources/assets";
+    modelsDir = "resources/assets";
+    spritesDir = "resources/assets/sprites";
+    texturesDir = "resources/assets/textures";
 
     shadersDir = "shader";
 

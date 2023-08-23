@@ -60,7 +60,7 @@ materials:
     ka: [0.2923, 0.2923, 0.2923, 1.0]
     kd: [0.5075, 0.5075, 0.5075, 1.0]
     ks: [0.5083, 0.5083, 0.5083, 1.0]
-    map_kd: Dirt_vh_1024.png
+    map_kd: textures/Dirt_vh_1024.png
     tiling: 1
     texture_spec:
       wrap: GL_REPEAT

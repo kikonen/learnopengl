@@ -352,7 +352,7 @@ entities:
     model: quad
     material: woodwall
     material_modifier:
-      map_bump: wood_1024_normal.png
+      map_bump: textures/wood_1024_normal.png
       depth: 0.02
     program: g_tex
     pos: [-3.0, 15.5, 14.0]
@@ -430,7 +430,7 @@ entities:
       render_back: true
     enabled: false
   - name: Shuttle
-    model: [shuttle, opengl_book/NasaShuttle]
+    model: [opengl_book/NasaShuttle, shuttle]
     program: g_tex
     pos: [20.0, 40.0, -50.0]
     scale: 20.0
@@ -1054,8 +1054,8 @@ materials:
     ka: [0.4923, 0.4923, 0.4923, 1.0]
     kd: [0.5075, 0.5075, 0.5075, 1.0]
     ks: [0.1, 0.1, 0.1, 1.0]
-    map_kd: Dirt_vh_1024.png
-    map_noise: noise2_256.png
+    map_kd: textures/Dirt_vh_1024.png
+    map_noise: textures/noise2_256.png
     tiling: 1
     layers: 25
     depth: 0.2
@@ -1090,8 +1090,8 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Dirt_vh_1024.png
-    map_bump: Dirt_vh_1024_normal.png
+    map_kd: textures/Dirt_vh_1024.png
+    map_bump: textures/Dirt_vh_1024_normal.png
   - name: mirror
     type: model
     ns: 225.000000
@@ -1102,7 +1102,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Marble White_VH_512.PNG
+    map_kd: textures/Marble White_VH_512.PNG
     reflection: 0.5
     refraction: 0.05
     refraction_ratio: [1.0, 1.52]
@@ -1124,9 +1124,9 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: brickwall_1024.png
-    map_bump: brickwall_1024_normal.png
-    map_height: brickwall_1024_height.jpg
+    map_kd: textures/brickwall_1024.png
+    map_bump: textures/brickwall_1024_normal.png
+    map_height: textures/brickwall_1024_height.jpg
     depth: 0.017
     reflection: 0.02
   - name: woodwall
@@ -1139,7 +1139,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood_1024.png
+    map_kd: textures/wood_1024.png
     reflection: 0.1
   - name: giant_woodbox
     ns: 225.000000
@@ -1151,7 +1151,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: wood_1024.png
+    map_kd: textures/wood_1024.png
     reflection: 0.1
   - name: window_1
     ns: 225.000000
@@ -1163,7 +1163,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Window_Open_lg_HI_256.PNG
+    map_kd: textures/Window_Open_lg_HI_256.PNG
   - name: window_2
     ns: 225.000000
     type: model
@@ -1174,7 +1174,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: Window_Stained_Glass_lg_HI_256.PNG
+    map_kd: textures/Window_Stained_Glass_lg_HI_256.PNG
   - name: linden_tree
     type: sprite
     ns: 0
@@ -1209,7 +1209,7 @@ materials:
     ni: 1.45
     d: 1.0
     illum: 2
-    xxmap_kd: Marble White_VH_512.PNG
+    xxmap_kd: textures/Marble White_VH_512.PNG
     map_kd: tiles_1024.png
     tiling: 8
     texture_spec:
@@ -1243,4 +1243,4 @@ materials:
       wrap: GL_REPEAT
   - name: plasma_ball
     ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: noise_256.png
+    map_kd: textures/noise_256.png

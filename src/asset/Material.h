@@ -54,7 +54,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd texture_cube_512.png
+map_Kd textures/texture_cube_512.png
 */
 struct Material final
 {
@@ -123,7 +123,7 @@ public:
     std::string m_name;
     std::string m_path;
 
-    MaterialType m_type{ MaterialType::model };
+    MaterialType m_type{ MaterialType::asset };
 
     bool m_default = false;
     bool m_used = false;
