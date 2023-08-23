@@ -86,6 +86,10 @@ void SceneFile::load(
     m_registry = registry;
     m_dispatcher = registry->m_dispatcher;
 
+    if (!util::fileExists(m_filename)) {
+        throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_filename) };
+    }
+
     m_asyncLoader->addLoader(m_alive, [this]() {
         std::ifstream fin(m_filename);
         YAML::Node doc = YAML::Load(fin);
