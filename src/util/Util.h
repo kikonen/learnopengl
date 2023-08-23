@@ -28,7 +28,19 @@ namespace util
         std::vector<std::string>& result,
         char separator);
 
-    const std::string dirName(const std::string& filename);
+    bool fileExists(std::string filepath);
+
+    std::string dirName(const std::string& filename);
+
+    std::string joinPath(
+        const std::string& rootDir,
+        const std::string& parentDir,
+        const std::string& baseName,
+        const std::string& fileExt);
+
+    std::string joinPath(
+        const std::string& rootDir,
+        const std::string& baseName);
 
     // https://stackoverflow.com/questions/11421432/how-can-i-output-the-value-of-an-enum-class-in-c11
     template <typename Enumeration>

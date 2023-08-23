@@ -2,6 +2,8 @@
 
 #include <filesystem>
 
+#include "util/Util.h"
+
 #include "asset/Shader.h"
 
 #include "render/CubeMap.h"
@@ -36,22 +38,22 @@ void SkyboxMaterial::prepare(
     Registry* registry)
 {
     {
+        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         std::string basePath;
         {
-            std::filesystem::path fp;
-            fp /= assets.assetsDir;
-            fp /= m_materialName;
-            basePath = fp.string();
+            basePath = util::joinPath(
+                assets.assetsDir,
+                m_materialName);
         }
 
         m_cubeMap.m_internalFormat = GL_RGB8;
         m_cubeMap.m_faces = {
-            basePath + "/" + m_faces[0],
-            basePath + "/" + m_faces[1],
-            basePath + "/" + m_faces[2],
-            basePath + "/" + m_faces[3],
-            basePath + "/" + m_faces[4],
-            basePath + "/" + m_faces[5],
+            util::joinPath(basePath, m_faces[0]),
+            util::joinPath(basePath, m_faces[1]),
+            util::joinPath(basePath, m_faces[2]),
+            util::joinPath(basePath, m_faces[3]),
+            util::joinPath(basePath, m_faces[4]),
+            util::joinPath(basePath, m_faces[5]),
         };
 
         if (m_swapFaces) {

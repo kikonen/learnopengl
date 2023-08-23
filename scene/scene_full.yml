@@ -1,7 +1,6 @@
 ---
 meta:
   name: Full
-  modelsDir: 3d_model
 viewports:
 skybox:
   program: g_skybox

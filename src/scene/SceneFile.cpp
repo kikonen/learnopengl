@@ -2197,12 +2197,18 @@ std::string SceneFile::readFile(const std::string& filename) const
 {
     std::stringstream buffer;
 
-    std::filesystem::path filePath;
-    filePath /= m_dirname;
-    filePath /= filename;
+    std::string filePath = util::joinPath(
+        m_dirname,
+        filename);
+
+    if (!util::fileExists(filePath)) {
+        throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
+    }
+
     try {
         std::ifstream t(filePath);
-        t.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+        t.exceptions(std::ifstream::badbit);
+        //t.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
         buffer << t.rdbuf();
     }
@@ -2210,7 +2216,7 @@ std::string SceneFile::readFile(const std::string& filename) const
         std::string what{ e.what() };
         const auto msg = fmt::format(
             "SCENE::FILE_NOT_SUCCESFULLY_READ: {}\n{}",
-            filePath.string(), what);
+            filePath, what);
 
         throw std::runtime_error{ msg };
     }

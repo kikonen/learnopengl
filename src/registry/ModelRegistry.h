@@ -36,11 +36,11 @@ public:
 
     std::shared_future<ModelMesh*> getMesh(
         const std::string& meshName,
-        const std::string& meshDir);
+        const std::string& rootDir);
 
     std::shared_future<ModelMesh*> getMesh(
         const std::string& meshName,
-        const std::string& meshDir,
+        const std::string& rootDir,
         const std::string& meshPath);
 
 private:

@@ -10,6 +10,8 @@
 
 #include "fmt/format.h"
 
+#include "util/Util.h"
+
 #include "asset/Shader.h"
 
 #include "asset/ImageTexture.h"
@@ -85,10 +87,10 @@ const std::string Shape::getTexturePath(
 
     std::string texturePath;
     {
-        std::filesystem::path fp;
-        fp /= assets.spritesDir;
-        fp /= textureName;
-        texturePath = fp.string();
+        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
+        texturePath = util::joinPath(
+            assets.spritesDir,
+            textureName);
     }
     return texturePath;
 }

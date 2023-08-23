@@ -22,18 +22,18 @@ namespace {
 
 ModelMesh::ModelMesh(
     const std::string& meshName,
-    const std::string& meshDir)
-    : ModelMesh(meshName, meshDir, "")
+    const std::string& rootDir)
+    : ModelMesh(meshName, rootDir, "")
 {
 }
 
 ModelMesh::ModelMesh(
     const std::string& meshName,
-    const std::string& meshDir,
+    const std::string& rootDir,
     const std::string& meshPath)
     : Mesh(),
     m_meshName(meshName),
-    m_meshDir(meshDir),
+    m_rootDir(rootDir),
     m_meshPath(meshPath)
 {
 }
@@ -47,8 +47,8 @@ ModelMesh::~ModelMesh()
 const std::string ModelMesh::str() const noexcept
 {
     return fmt::format(
-        "<MODEL: id={}, mesh={}, name={}>",
-        m_objectID, m_meshPath, m_meshName);
+        "<MODEL: id={}, rootDir={}, meshPath={}, name={}>",
+        m_objectID, m_rootDir, m_meshPath, m_meshName);
 }
 
 const AABB ModelMesh::calculateAABB() const {

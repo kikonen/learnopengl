@@ -8,6 +8,8 @@
 
 #include <fmt/format.h>
 
+#include "util/Util.h"
+
 #include "asset/UBO.h"
 
 #include "asset/MatricesUBO.h"
@@ -41,12 +43,6 @@ namespace {
         std::lock_guard<std::mutex> lock(type_id_lock);
         return ++idBase;
     }
-
-    bool fileExists(std::string filepath)
-    {
-        std::ifstream f(filepath.c_str());
-        return f.good();
-    }
 }
 
 Program::Program(
@@ -66,10 +62,9 @@ Program::Program(
 {
     std::string basePath;
     {
-        std::filesystem::path fp;
-        fp /= assets.shadersDir;
-        fp /= name;
-        basePath = fp.string();
+        basePath = util::joinPath(
+            assets.shadersDir,
+            name);
     }
 
     if (m_compute) {
@@ -418,7 +413,7 @@ std::vector<std::string> Program::loadSourceLines(
     const std::string& path,
     bool optional)
 {
-    bool exists = fileExists(path);
+    bool exists = util::fileExists(path);
     if (!exists) {
         std::string msg = fmt::format("FILE_NOT_EXIST: {}", path);
         KI_INFO(msg);
@@ -492,10 +487,9 @@ std::vector<std::string> Program::processInclude(
 {
     std::string path;
     {
-        std::filesystem::path fp;
-        fp /= m_assets.shadersDir;
-        fp /= "_" + includePath;
-        path = fp.string();
+        path = util::joinPath(
+            m_assets.shadersDir,
+            "_" + includePath);
     }
 
     std::vector<std::string> lines = loadSourceLines(path, false);

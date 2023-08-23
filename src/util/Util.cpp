@@ -1,6 +1,7 @@
 #include "Util.h"
 
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <filesystem>
 
@@ -51,9 +52,69 @@ namespace util {
         }
     }
 
-    const std::string dirName(const std::string& filename)
+    bool fileExists(std::string filepath)
     {
-        std::filesystem::path p{ filename };
+        std::ifstream f(filepath.c_str());
+        return f.good();
+    }
+
+    std::string dirName(const std::string& filename)
+    {
+        std::string path = filename;
+        std::replace(path.begin(), path.end(), '/', '\\');
+
+        std::filesystem::path p{ path };
         return p.parent_path().string();
     }
+
+    std::string joinPath(
+        const std::string& rootDir,
+        const std::string& parentDir,
+        const std::string& baseName,
+        const std::string& fileExt)
+    {
+        std::filesystem::path filePath;
+
+        if (!rootDir.empty()) {
+            std::string path = rootDir;
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        if (!parentDir.empty()) {
+            std::string path = parentDir;
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        if (!baseName.empty()) {
+            std::string path = fileExt.empty() ? baseName : baseName + fileExt;
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        return filePath.string();
+    }
+
+    std::string joinPath(
+        const std::string& rootDir,
+        const std::string& baseName)
+    {
+        std::filesystem::path filePath;
+
+        if (!rootDir.empty()) {
+            std::string path = rootDir;
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        if (!baseName.empty()) {
+            std::string path = baseName;
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        return filePath.string();
+    }
+
 }

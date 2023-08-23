@@ -24,11 +24,11 @@ class ModelMesh final : public Mesh {
 public:
     ModelMesh(
         const std::string& meshName,
-        const std::string& meshDir);
+        const std::string& rootDir);
 
     ModelMesh(
         const std::string& meshName,
-        const std::string& meshDir,
+        const std::string& rootDir,
         const std::string& meshPath);
 
     virtual ~ModelMesh();
@@ -55,7 +55,7 @@ public:
 
 public:
     const std::string m_meshName;
-    const std::string m_meshDir;
+    const std::string m_rootDir;
     const std::string m_meshPath;
 
     bool m_loaded = false;

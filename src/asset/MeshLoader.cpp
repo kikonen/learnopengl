@@ -96,21 +96,21 @@ void MeshLoader::loadData(
         m_defaultMaterial.m_objectID = Material::DEFAULT_ID;
     }
 
-    std::filesystem::path filePath;
+    std::string filePath = util::joinPath(
+        mesh.m_rootDir,
+        mesh.m_meshPath,
+        mesh.m_meshName, ".obj");
 
-    if (!mesh.m_meshDir.empty())
-        filePath /= mesh.m_meshDir;
+    KI_INFO(fmt::format("MESH_LOADER: path={}", filePath));
 
-    if (!mesh.m_meshPath.empty())
-        filePath /= mesh.m_meshPath;
-
-    filePath /= mesh.m_meshName + ".obj";
-
-    KI_INFO(fmt::format("MESH_LOADER: path={}", filePath.string()));
+    if (!util::fileExists(filePath)) {
+        throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
+    }
 
     std::ifstream file;
-    //    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     file.exceptions(std::ifstream::badbit);
+    //file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
     try {
         auto tp1 = std::chrono::system_clock::now();
         auto tp2 = std::chrono::system_clock::now();
@@ -246,7 +246,7 @@ void MeshLoader::loadData(
         std::string what{ e.what() };
         KI_ERROR(fmt::format(
             "MODEL::FILE_NOT_SUCCESFULLY_READ: {}\n{}",
-            filePath.string(), what));
+            filePath, what));
     }
 
     KI_INFO(fmt::format(
@@ -421,14 +421,18 @@ void MeshLoader::loadMaterials(
     KI_INFO(fmt::format(
         "LOADER::LOAD_MATERIAL_LIB: lib={}", libraryName));
 
-    std::filesystem::path filePath;
-    filePath /= mesh.m_meshDir;
-    filePath /= mesh.m_meshPath;
-    filePath /= libraryName;
+    std::string filePath = util::joinPath(
+        mesh.m_rootDir,
+        mesh.m_meshPath,
+        libraryName, "");
+
+    if (!util::fileExists(filePath)) {
+        throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
+    }
 
     std::ifstream file;
-    //    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     file.exceptions(std::ifstream::badbit);
+    //file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try {
         file.open(filePath);
 
@@ -506,7 +510,7 @@ void MeshLoader::loadMaterials(
         std::string what{ e.what() };
         KI_ERROR(fmt::format(
             "TEXTURE::FILE_NOT_SUCCESFULLY_READ: {}\n{}",
-            filePath.string(), what));
+            filePath, what));
     }
 
     KI_INFO(fmt::format(
