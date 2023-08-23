@@ -87,7 +87,7 @@ namespace ki {
             "OPENGL: {} 0x{:x} ({}) {} {} - {}",
             formatSource(source), id, id, formatType(type), formatSeverity(severity), message);
 
-        int index = 0;// sb.find("Program undefined behavior");
+        int index = 0; // sb.find("GL_INVALID_OPERATION");
 
         switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH:

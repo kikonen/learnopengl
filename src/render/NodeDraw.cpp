@@ -281,7 +281,9 @@ void NodeDraw::drawNodes(
         if (copyMask & GL_COLOR_BUFFER_BIT) {
             const bool canCopy = !targetBuffer->m_spec.attachments.empty() &&
                 targetBuffer->m_spec.width == activeBuffer->m_spec.width &&
-                targetBuffer->m_spec.height == activeBuffer->m_spec.height;
+                targetBuffer->m_spec.height == activeBuffer->m_spec.height &&
+                targetBuffer->m_spec.attachments[EffectBuffer::ATT_ALBEDO_INDEX].internalFormat ==
+                activeBuffer->m_spec.attachments[EffectBuffer::ATT_ALBEDO_INDEX].internalFormat;
 
             if (canCopy) {
                 activeBuffer->copy(
