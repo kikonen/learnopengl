@@ -2,7 +2,10 @@ Debug/*
 .vs/*
 packages/*
 x64/*
-log/*.log
+log/*
+!log/.gitkeep
+tmp/*
+!tmp/.gitkeep
 dist/*
 dist*
 local/*
