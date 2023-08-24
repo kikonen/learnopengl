@@ -37,9 +37,9 @@ void EffectBuffer::updateView(const RenderContext& ctx)
                 w, h,
                 {
                 // diffuse
-                FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT0),
+                FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
                 // diffuse bright
-                FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT1),
+                FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT1),
 
                 // NOTE KI sharing depth buffer with gbuffer IS NOT VALID
                 // => reading and "writing" same depth buffer in shader is undefined operation

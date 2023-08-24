@@ -34,9 +34,9 @@ void GBuffer::updateView(const RenderContext& ctx)
             {
                 w, h,
                 {
-                    FrameBufferAttachment::getGBufferAlbedo(GL_COLOR_ATTACHMENT0),
-                    FrameBufferAttachment::getGBufferSpecular(GL_COLOR_ATTACHMENT1),
-                    FrameBufferAttachment::getGBufferEmission(GL_COLOR_ATTACHMENT2),
+                    FrameBufferAttachment::getGBufferAlbedoHdr(GL_COLOR_ATTACHMENT0),
+                    FrameBufferAttachment::getGBufferSpecularHdr(GL_COLOR_ATTACHMENT1),
+                    FrameBufferAttachment::getGBufferEmissionHdr(GL_COLOR_ATTACHMENT2),
                     //FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT3),
                     FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT3),
                     // depth needed

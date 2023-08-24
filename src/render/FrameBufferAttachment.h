@@ -72,12 +72,15 @@ struct FrameBufferAttachment {
 
     // G buffer: diffuse
     static FrameBufferAttachment getGBufferAlbedo(GLenum attachment);
+    static FrameBufferAttachment getGBufferAlbedoHdr(GLenum attachment);
 
     // G buffer: specular
     static FrameBufferAttachment getGBufferSpecular(GLenum attachment);
+    static FrameBufferAttachment getGBufferSpecularHdr(GLenum attachment);
 
     // G buffer: emission
     static FrameBufferAttachment getGBufferEmission(GLenum attachment);
+    static FrameBufferAttachment getGBufferEmissionHdr(GLenum attachment);
 
     // G buffer: position
     static FrameBufferAttachment getGBufferPosition(GLenum attachment);
@@ -87,6 +90,7 @@ struct FrameBufferAttachment {
 
     // Effect buffer: diffuse
     static FrameBufferAttachment getEffectTexture(GLenum attachment);
+    static FrameBufferAttachment getEffectTextureHdr(GLenum attachment);
 
     static FrameBufferAttachment getRBODepthStencil();
     static FrameBufferAttachment getRBODepth();

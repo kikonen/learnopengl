@@ -223,7 +223,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: textures/indow_Stained_Glass_lg_HI_256.PNG
+    map_kd: textures/Window_Stained_Glass_lg_HI_256.PNG
   - name: wood_floor
     ns: 225.000000
     type: asset
