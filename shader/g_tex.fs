@@ -62,7 +62,7 @@ void main() {
   if (material.diffuse.a < 0.95)
     discard;
 #else
-  if (material.diffuse.a < 0.01)
+  if (material.diffuse.a < 0.05)
     discard;
 #endif
 #endif

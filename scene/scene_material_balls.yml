@@ -72,8 +72,9 @@ entities:
     force_material: true
     material: silver_ball
     render_flags:
+      xblend_oit: true
       alpha: true
-      blend: true
+      xblend: true
       render_back: true
     material_modifier:
       reflection: 0.05

@@ -44,5 +44,6 @@ void main()
   float alpha = clamp(1.0 - revealage, 0.0, 1.0);
 
   o_fragColor = vec4(averageColor, alpha);
-  o_fragBright = vec4(averageColor * 0.1, alpha);
+  //o_fragBright = vec4(averageColor * 0.1, alpha);}
+  o_fragBright = vec4(0.0);
 }
