@@ -44,6 +44,13 @@ void main()
   float alpha = clamp(1.0 - revealage, 0.0, 1.0);
 
   o_fragColor = vec4(averageColor, alpha);
-  //o_fragBright = vec4(averageColor * 0.1, alpha);}
-  o_fragBright = vec4(0.0);
+
+  const vec3 T = vec3(0.2126, 0.7152, 0.0722);
+  const float brightness = dot(averageColor.xyz, T);
+
+  if (brightness > 1.0) {
+    o_fragBright = vec4(averageColor * 0.1, alpha);
+  } else {
+    o_fragBright = vec4(0.0);
+  }
 }

@@ -82,18 +82,14 @@ void main()
   //bool skipLight = material.ambient >= 1.0;
 
   vec4 color;
-  vec3 color2;
   bool emission = false;
   if (skipLight) {
     color = material.diffuse;
-    color2 = vec3(0.0);
   } else {
     color = calculateLight(
       normal, viewDir, worldPos,
       shadowIndex,
       material);
-
-    vec3 color2 = (material.ambient * material.diffuse.rgb) + material.emission.rgb;
 
     emission = (material.emission.r + material.emission.g + material.emission.b) > 0;
 
@@ -102,9 +98,13 @@ void main()
     }
   }
 
-  float brightness = dot(color2, vec3(0.2126, 0.7152, 0.0722));
-  if (emission || brightness > 0.95) {
-    o_fragBright = emission ? material.emission : vec4(color2, 1.0);
+  const vec3 T = vec3(0.2126, 0.7152, 0.0722);
+  const float brightness = dot(color.xyz, T);
+
+  if (emission) {
+    o_fragBright = vec4(material.emission.xyz, 1.0);
+  } else if (brightness > 1.0) {
+    o_fragBright = vec4(color.xyz, 1.0);
   } else {
     o_fragBright = vec4(0.0, 0.0, 0.0, 1.0);
   }
