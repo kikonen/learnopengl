@@ -46,6 +46,9 @@ void NodeDraw::prepare(
 
     m_fogProgram = registry->m_programRegistry->getProgram(SHADER_FOG_PASS);
     m_fogProgram->prepare(assets);
+
+    m_hdrGammaProgram = registry->m_programRegistry->getProgram(SHADER_HDR_GAMMA_PASS);
+    m_hdrGammaProgram->prepare(assets);
 }
 
 void NodeDraw::updateView(const RenderContext& ctx)
@@ -278,6 +281,7 @@ void NodeDraw::drawNodes(
                 GL_NEAREST);
         }
 
+        bool hdr = true;
         if (copyMask & GL_COLOR_BUFFER_BIT) {
             const bool canCopy = !targetBuffer->m_spec.attachments.empty() &&
                 targetBuffer->m_spec.width == activeBuffer->m_spec.width &&
@@ -293,14 +297,21 @@ void NodeDraw::drawNodes(
                     EffectBuffer::ATT_ALBEDO_INDEX);
             }
             else {
-                activeBuffer->blit(
-                    targetBuffer,
-                    GL_COLOR_BUFFER_BIT,
-                    GL_COLOR_ATTACHMENT0,
-                    GL_COLOR_ATTACHMENT0,
-                    { -1.f, 1.f },
-                    { 2.f, 2.f },
-                    GL_LINEAR);
+                if (hdr) {
+                    targetBuffer->bind(ctx);
+                    m_hdrGammaProgram->bind(ctx.m_state);
+                    m_textureQuad.draw(ctx);
+                }
+                else {
+                    activeBuffer->blit(
+                        targetBuffer,
+                        GL_COLOR_BUFFER_BIT,
+                        GL_COLOR_ATTACHMENT0,
+                        GL_COLOR_ATTACHMENT0,
+                        { -1.f, 1.f },
+                        { 2.f, 2.f },
+                        GL_LINEAR);
+                }
             }
         }
 

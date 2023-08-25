@@ -514,7 +514,10 @@ void Scene::updateMainViewport(const RenderContext& ctx)
             "main",
             {
                 w, h,
-                { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() }
+                {
+                    FrameBufferAttachment::getTextureRGBA(),
+                    FrameBufferAttachment::getRBODepthStencil(),
+                }
             });
 
         m_mainBuffer.reset(buffer);
@@ -538,7 +541,10 @@ void Scene::updateMainViewport(const RenderContext& ctx)
                 "rear",
                 {
                     rearW, rearH,
-                    { FrameBufferAttachment::getTextureRGBA(), FrameBufferAttachment::getRBODepthStencil() }
+                    {
+                        FrameBufferAttachment::getTextureRGBA(),
+                        FrameBufferAttachment::getRBODepthStencil(),
+                    }
                 });
 
             m_rearBuffer.reset(buffer);

@@ -63,7 +63,7 @@ void EffectBuffer::updateView(const RenderContext& ctx)
                 w, h,
                 {
                 // diffuse
-                FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT0),
+                FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
 
                 //// NOTE KI *SHARE* depth with gbuffer
                 //FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
@@ -85,7 +85,7 @@ void EffectBuffer::updateView(const RenderContext& ctx)
                     w, h,
                     {
                     // src - diffuse from previous pass
-                    FrameBufferAttachment::getEffectTexture(GL_COLOR_ATTACHMENT0),
+                    FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
                 }
                 });
             m_buffers.push_back(std::unique_ptr<FrameBuffer>(buffer));

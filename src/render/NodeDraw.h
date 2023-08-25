@@ -78,4 +78,5 @@ private:
     Program* m_blendBloomProgram{ nullptr };
     Program* m_emissionProgram{ nullptr };
     Program* m_fogProgram{ nullptr };
+    Program* m_hdrGammaProgram{ nullptr };
 };

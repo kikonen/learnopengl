@@ -65,8 +65,10 @@ struct FrameBufferAttachment {
     static FrameBufferAttachment getShared(FrameBufferAttachment* shared);
 
     static FrameBufferAttachment getTextureRGBA(GLenum attachment = GL_COLOR_ATTACHMENT0);
+    static FrameBufferAttachment getTextureRGBAHdr(GLenum attachment = GL_COLOR_ATTACHMENT0);
 
     static FrameBufferAttachment getTextureRGB(GLenum attachment = GL_COLOR_ATTACHMENT0);
+    static FrameBufferAttachment getTextureRGBHdr(GLenum attachment = GL_COLOR_ATTACHMENT0);
 
     static FrameBufferAttachment getObjectId();
 

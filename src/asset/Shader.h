@@ -27,6 +27,7 @@ const std::string SHADER_BLEND_BLOOM_PASS{ "g_blend_bloom_pass" };
 const std::string SHADER_EMISSION_PASS{ "g_emission_pass" };
 const std::string SHADER_FOG_PASS{ "g_fog_pass" };
 const std::string SHADER_BLEND_OIT_PASS{ "g_blend_oit_pass" };
+const std::string SHADER_HDR_GAMMA_PASS{ "g_hdr_gamma_pass" };
 
 const std::string SHADER_OIT_PASS{ "oit_pass" };
 

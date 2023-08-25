@@ -101,11 +101,35 @@ FrameBufferAttachment FrameBufferAttachment::getTextureRGBA(GLenum attachment)
     return spec;
 }
 
+FrameBufferAttachment FrameBufferAttachment::getTextureRGBAHdr(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::texture;
+    spec.internalFormat = GL_RGBA16F;
+    spec.attachment = attachment;
+    spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
+
+    return spec;
+}
+
 FrameBufferAttachment FrameBufferAttachment::getTextureRGB(GLenum attachment)
 {
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::texture;
     spec.internalFormat = GL_RGB8;
+    spec.attachment = attachment;
+    spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
+
+    return spec;
+}
+
+FrameBufferAttachment FrameBufferAttachment::getTextureRGBHdr(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::texture;
+    spec.internalFormat = GL_RGB16F;
     spec.attachment = attachment;
     spec.useDrawBuffer = true;
     spec.clearMask = GL_COLOR_BUFFER_BIT;
