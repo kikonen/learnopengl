@@ -168,6 +168,9 @@ public:
     bool viewportEffectEnabled;
     ViewportEffect viewportEffect;
 
+    float hdrGamma;
+    float hdrExposure;
+
     bool effectBloomEnabled;
     float effectBloomExposure;
     int effectBloomIterations;

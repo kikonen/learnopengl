@@ -176,9 +176,11 @@ RenderContext::RenderContext(
         assets.fogStart,
         assets.fogEnd,
         assets.fogDensity,
-        (float)m_clock.ts,
+        assets.hdrGamma,
+        assets.hdrExposure,
         // NOTE KI u_shadowPlanes not initialized
         assets.effectBloomExposure,
+        (float)m_clock.ts,
         0,
     };
 

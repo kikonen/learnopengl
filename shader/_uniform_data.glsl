@@ -19,9 +19,12 @@ layout(std140, binding = UBO_DATA) uniform Data {
   float u_fogStart;
   float u_fogEnd;
   float u_fogDensity;
-  float u_time;
 
+  float u_hdrGamma;
+  float u_hdrExposure;
   float u_effectBloomExposure;
+
+  float u_time;
   int u_shadowCount;
 
   vec4 u_shadowPlanes[MAX_SHADOW_MAP_COUNT + 1];

@@ -41,12 +41,15 @@ struct DataUBO {
     float u_fogStart;
     float u_fogEnd;
     float u_fogDensity;
-    float u_time;
 
+    float u_hdrGamma;
+    float u_hdrExposure;
     float u_effectBloomExposure;
+
+    float u_time;
     int u_shadowCount;
-    int pad3_1;
-    int pad3_2;
+    //int pad3_1;
+    //int pad3_2;
     //int pad3_3;
 
     // From *camera* view (not shadow view)

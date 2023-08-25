@@ -348,6 +348,12 @@ void AssetsFile::loadAssets(
                 reportUnknown("viewport_effect", k, v);
             }
         }
+        else if (k == "hdr_gamma") {
+            data.hdrGamma = readFloat(v);
+        }
+        else if (k == "hdr_exposure") {
+            data.hdrExposure = readFloat(v);
+        }
         else if (k == "effect_bloom_enabled") {
             data.effectBloomEnabled = readBool(v);
         }

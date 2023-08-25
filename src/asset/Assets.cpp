@@ -149,9 +149,11 @@ Assets::Assets()
     cubeMapRenderFrameStart = 1;
     cubeMapRenderFrameStep = 2;
 
-
     viewportEffectEnabled = false;
     viewportEffect = ViewportEffect::none;
+
+    hdrGamma = 2.2;
+    hdrExposure = 1.0;
 
     effectBloomEnabled = true;
     effectBloomExposure = 1.0f;
