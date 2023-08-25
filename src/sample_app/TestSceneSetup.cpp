@@ -69,7 +69,7 @@ void TestSceneSetup::setupViewport1()
 {
     TextureSpec spec;
     // NOTE KI memory_leak
-    auto texture = new PlainTexture("checkerboard", spec, 1, 1);
+    auto texture = new PlainTexture("checkerboard", false, spec, 1, 1);
     texture->prepare(m_assets);
 
     unsigned int color = 0x90ff2020;

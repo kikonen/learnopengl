@@ -5,7 +5,13 @@
 class PlainTexture final : public Texture
 {
 public:
-    PlainTexture(const std::string& name, const TextureSpec& spec, int width, int height);
+    PlainTexture(
+        const std::string& name,
+        bool gammaCorrect,
+        const TextureSpec& spec,
+        int width,
+        int height);
+
     virtual ~PlainTexture();
 
     void prepare(const Assets& assets) override;

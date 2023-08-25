@@ -13,10 +13,15 @@
 class Texture
 {
 public:
-    Texture(const std::string& name, const TextureSpec& spec);
+    Texture(
+        const std::string& name,
+        bool gammaCorrect,
+        const TextureSpec& spec);
+
     virtual ~Texture();
 
-    virtual void prepare(const Assets& assets) = 0;
+    virtual void prepare(
+        const Assets& assets) = 0;
 
     static GLuint nextIndex();
 
@@ -29,6 +34,7 @@ public:
 
 public:
     const std::string m_name;
+    const bool m_gammaCorrect;
     const TextureSpec m_spec;
 
     GLuint m_textureID = 0;

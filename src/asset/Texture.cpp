@@ -83,8 +83,12 @@ GLuint Texture::nextUnitIndex()
     return unitBase++ ;
 }
 
-Texture::Texture(const std::string& name, const TextureSpec& spec)
+Texture::Texture(
+    const std::string& name,
+    bool gammaCorrect,
+    const TextureSpec& spec)
     : m_name(name),
+    m_gammaCorrect(gammaCorrect),
     m_spec(spec)
 {
 }

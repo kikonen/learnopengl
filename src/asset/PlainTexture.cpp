@@ -5,14 +5,19 @@
 #include "ki/GL.h"
 
 
-PlainTexture::PlainTexture(const std::string& name, const TextureSpec& spec, int width, int height)
-    : Texture(name, spec)
+PlainTexture::PlainTexture(
+    const std::string& name,
+    bool gammaCorrect,
+    const TextureSpec& spec,
+    int width,
+    int height)
+    : Texture(name, gammaCorrect, spec)
 {
     m_width = width;
     m_height = height;
 
     m_format = GL_RGBA;
-    m_internalFormat = GL_RGBA8;
+    m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA8;
 }
 
 PlainTexture::~PlainTexture()

@@ -158,7 +158,7 @@ void SceneFile::attachSkybox(
 
     type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
 
-    auto material{ std::make_unique<SkyboxMaterial>(data.materialName) };
+    auto material{ std::make_unique<SkyboxMaterial>(data.materialName, true) };
     material->m_swapFaces = data.swapFaces;
     if (data.loadedFaces) {
         material->m_faces = data.faces;

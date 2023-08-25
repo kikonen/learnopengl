@@ -169,16 +169,16 @@ void Material::loadTextures(const Assets& assets)
     if (m_loaded) return;
     m_loaded = true;
 
-    loadTexture(assets, MATERIAL_DIFFUSE_IDX, map_kd);
-    loadTexture(assets, MATERIAL_EMISSION_IDX, map_ke);
-    loadTexture(assets, MATERIAL_SPECULAR_IDX, map_ks);
-    loadTexture(assets, MATERIAL_NORMAL_MAP_IDX, map_bump);
-    loadTexture(assets, MATERIAL_DUDV_MAP_IDX, map_dudv);
-    loadTexture(assets, MATERIAL_HEIGHT_MAP_IDX, map_height);
-    loadTexture(assets, MATERIAL_NOISE_MAP_IDX, map_noise);
-    loadTexture(assets, MATERIAL_ROUGHNESS_MAP_IDX, map_roughness);
-    loadTexture(assets, MATERIAL_METALNESS_MAP_IDX, map_metalness);
-    loadTexture(assets, MATERIAL_OPACITY_MAP_IDX, map_opacity);
+    loadTexture(assets, MATERIAL_DIFFUSE_IDX, map_kd, true, true);
+    loadTexture(assets, MATERIAL_EMISSION_IDX, map_ke, true, false);
+    loadTexture(assets, MATERIAL_SPECULAR_IDX, map_ks, true, false);
+    loadTexture(assets, MATERIAL_NORMAL_MAP_IDX, map_bump, false, false);
+    loadTexture(assets, MATERIAL_DUDV_MAP_IDX, map_dudv, false, false);
+    loadTexture(assets, MATERIAL_HEIGHT_MAP_IDX, map_height, false, false);
+    loadTexture(assets, MATERIAL_NOISE_MAP_IDX, map_noise, false, false);
+    loadTexture(assets, MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
+    loadTexture(assets, MATERIAL_METALNESS_MAP_IDX, map_metalness, false, false);
+    loadTexture(assets, MATERIAL_OPACITY_MAP_IDX, map_opacity, false, false);
 }
 
 std::string Material::resolveBaseDir(const Assets& assets)
@@ -200,7 +200,9 @@ std::string Material::resolveBaseDir(const Assets& assets)
 void Material::loadTexture(
     const Assets& assets,
     int idx,
-    const std::string& textureName)
+    const std::string& textureName,
+    bool gammaCorrect,
+    bool usePlaceholder)
 {
     if (textureName.empty()) return;
 
@@ -212,6 +214,7 @@ void Material::loadTexture(
     auto future = ImageTexture::getTexture(
         textureName,
         assets.placeholderTextureAlways ? placeholderPath : texturePath,
+        gammaCorrect,
         textureSpec);
 
     future.wait();
@@ -221,8 +224,8 @@ void Material::loadTexture(
         texture = future.get();
     }
 
-    if (!texture->isValid()) {
-        future = ImageTexture::getTexture("tex-placeholder", placeholderPath, textureSpec);
+    if (usePlaceholder && !texture->isValid()) {
+        future = ImageTexture::getTexture("tex-placeholder", placeholderPath, gammaCorrect, textureSpec);
         future.wait();
         if (future.valid()) {
             texture = future.get();

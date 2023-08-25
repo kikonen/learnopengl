@@ -18,7 +18,8 @@ public:
 
 public:
     SkyboxMaterial(
-        const std::string& materialName);
+        const std::string& materialName,
+        bool gammaCorrect);
 
     ~SkyboxMaterial() = default;
 

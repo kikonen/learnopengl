@@ -36,16 +36,18 @@ Shape::~Shape()
 
 void Shape::loadTextures(const Assets& assets)
 {
-    loadTexture(assets, SHAPE_DIFFUSE_IDX, map_kd);
-    loadTexture(assets, SHAPE_EMISSION_IDX, map_ke);
-    loadTexture(assets, SHAPE_SPECULAR_IDX, map_ks);
-    loadTexture(assets, SHAPE_NORMAL_MAP_IDX, map_bump);
+    loadTexture(assets, SHAPE_DIFFUSE_IDX, map_kd, true, true);
+    loadTexture(assets, SHAPE_EMISSION_IDX, map_ke, true, false);
+    loadTexture(assets, SHAPE_SPECULAR_IDX, map_ks, true, false);
+    loadTexture(assets, SHAPE_NORMAL_MAP_IDX, map_bump, false, false);
 }
 
 void Shape::loadTexture(
     const Assets& assets,
     int idx,
-    const std::string& textureName)
+    const std::string& textureName,
+    bool gammaCorrect,
+    bool usePlaceholder)
 {
     if (textureName.empty()) return;
 
@@ -57,6 +59,7 @@ void Shape::loadTexture(
     auto future = ImageTexture::getTexture(
         "shape-placeholder",
         assets.placeholderTextureAlways ? placeholderPath : texturePath,
+        gammaCorrect,
         textureSpec);
 
     future.wait();
@@ -66,8 +69,8 @@ void Shape::loadTexture(
         texture = future.get();
     }
 
-    if (!texture->isValid()) {
-        future = ImageTexture::getTexture("shape-placeholder", placeholderPath, textureSpec);
+    if (usePlaceholder && !texture->isValid()) {
+        future = ImageTexture::getTexture("shape-placeholder", placeholderPath, gammaCorrect, textureSpec);
         future.wait();
         if (future.valid()) {
             texture = future.get();

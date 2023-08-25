@@ -14,6 +14,7 @@ public:
     static std::shared_future<ImageTexture*> getTexture(
         const std::string& name,
         const std::string& path,
+        bool gammaCorrect,
         const TextureSpec& spec);
 
     static const std::pair<int, const std::vector<const ImageTexture*>&> getPreparedTextures();
@@ -21,11 +22,13 @@ public:
     ImageTexture(
         const std::string& name,
         const std::string& path,
+        bool gammaCorrect,
         const TextureSpec& spec);
 
     virtual ~ImageTexture();
 
-    void prepare(const Assets& assets) override;
+    void prepare(
+        const Assets& assets) override;
 
     bool isValid() { return m_valid; }
 

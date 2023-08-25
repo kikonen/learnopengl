@@ -26,8 +26,9 @@ const std::array<std::string, 6>& SkyboxMaterial::getDefaultFaces() {
 }
 
 SkyboxMaterial::SkyboxMaterial(
-    const std::string& materialName)
-    : CustomMaterial(materialName),
+    const std::string& materialName,
+    bool gammaCorrect)
+    : CustomMaterial(materialName, gammaCorrect),
     m_faces{ DEFAULT_FACES }
 {
 }
@@ -47,7 +48,7 @@ void SkyboxMaterial::prepare(
         }
 
         // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
-        m_cubeMap.m_internalFormat = GL_SRGB8;
+        m_cubeMap.m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB8;
         m_cubeMap.m_faces = {
             util::joinPath(basePath, m_faces[0]),
             util::joinPath(basePath, m_faces[1]),

@@ -13,8 +13,10 @@ class RenderContext;
 class CustomMaterial {
 public:
     CustomMaterial(
-        const std::string& materialName)
-        : m_materialName(materialName)
+        const std::string& materialName,
+        bool gammaCorrect)
+        : m_materialName(materialName),
+        m_gammaCorrect(gammaCorrect)
     {
     }
 
@@ -26,6 +28,7 @@ public:
 
     virtual void bindTextures(const RenderContext& ctx) {}
 
-protected:
+public:
     const std::string m_materialName;
+    const bool m_gammaCorrect;
 };

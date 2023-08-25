@@ -55,13 +55,15 @@ return f;
 std::shared_future<ImageTexture*> ImageTexture::getTexture(
     const std::string& name,
     const std::string& path,
+    bool gammaCorrect,
     const TextureSpec& spec)
 {
     std::lock_guard<std::mutex> lock(textures_lock);
 
     const std::string cacheKey = fmt::format(
-        "{}_{}_{}-{}_{}_{}",
-        path, spec.wrapS, spec.wrapT,
+        "{}_{}_{}-{}_{}_{}_{}",
+        path, gammaCorrect,
+        spec.wrapS, spec.wrapT,
         spec.minFilter, spec.magFilter, spec.mipMapLevels);
 
     {
@@ -70,7 +72,7 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
             return e->second;
     }
 
-    auto future = startLoad(new ImageTexture(name, path, spec));
+    auto future = startLoad(new ImageTexture(name, path, gammaCorrect, spec));
     textures[cacheKey] = future;
     return future;
 }
@@ -94,8 +96,9 @@ const std::pair<int, const std::vector<const ImageTexture*>&> ImageTexture::getP
 ImageTexture::ImageTexture(
     const std::string& name,
     const std::string& path,
+    bool gammaCorrect,
     const TextureSpec& spec)
-    : Texture(name, spec),
+    : Texture(name, gammaCorrect, spec),
     m_path(path)
 {
 }
@@ -104,7 +107,8 @@ ImageTexture::~ImageTexture()
 {
 }
 
-void ImageTexture::prepare(const Assets& assets)
+void ImageTexture::prepare(
+    const Assets& assets)
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -132,11 +136,11 @@ void ImageTexture::prepare(const Assets& assets)
         m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
     } else if (m_image->m_channels == 3) {
         m_format = GL_RGB;
-        m_internalFormat = GL_SRGB8;
+        m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB8;
         //m_internalFormat = assets.glPreferredTextureFormatRGB;
     } else if (m_image->m_channels == 4) {
         m_format = GL_RGBA;
-        m_internalFormat = GL_SRGB8_ALPHA8;
+        m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA8;
         //m_internalFormat = assets.glPreferredTextureFormatRGBA;
     } else {
         KI_WARN(fmt::format("IMAGE: unsupported channels {}", m_image->m_channels));

@@ -115,7 +115,9 @@ private:
     void loadTexture(
         const Assets& assets,
         int idx,
-        const std::string& name);
+        const std::string& name,
+        bool gammaCorrect,
+        bool usePlaceholder);
 
 public:
     int m_objectID;
