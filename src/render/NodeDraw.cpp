@@ -193,6 +193,7 @@ void NodeDraw::drawNodes(
     // pass 4 - blend
     // => separate light calculations
     //if (false)
+    if (ctx.m_allowBlend)
     {
         drawBlendedImpl(
             ctx,
@@ -300,6 +301,7 @@ void NodeDraw::drawNodes(
                 if (hdr) {
                     targetBuffer->bind(ctx);
                     m_hdrGammaProgram->bind(ctx.m_state);
+                    activeBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
                     m_textureQuad.draw(ctx);
                 }
                 else {
