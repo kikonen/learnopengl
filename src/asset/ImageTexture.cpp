@@ -115,6 +115,7 @@ void ImageTexture::prepare(const Assets& assets)
 
     // NOTE KI 1 & 2 channels have issues
     // => need to convert manually to RGB(A) format
+    // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
     if (m_image->m_channels == 1) {
         if (m_image->m_is_16_bit) {
             m_format = GL_RED;
@@ -131,11 +132,11 @@ void ImageTexture::prepare(const Assets& assets)
         m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
     } else if (m_image->m_channels == 3) {
         m_format = GL_RGB;
-        m_internalFormat = GL_RGB8;
+        m_internalFormat = GL_SRGB8;
         //m_internalFormat = assets.glPreferredTextureFormatRGB;
     } else if (m_image->m_channels == 4) {
         m_format = GL_RGBA;
-        m_internalFormat = GL_RGBA8;
+        m_internalFormat = GL_SRGB8_ALPHA8;
         //m_internalFormat = assets.glPreferredTextureFormatRGBA;
     } else {
         KI_WARN(fmt::format("IMAGE: unsupported channels {}", m_image->m_channels));

@@ -46,7 +46,8 @@ void SkyboxMaterial::prepare(
                 m_materialName);
         }
 
-        m_cubeMap.m_internalFormat = GL_RGB8;
+        // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
+        m_cubeMap.m_internalFormat = GL_SRGB8;
         m_cubeMap.m_faces = {
             util::joinPath(basePath, m_faces[0]),
             util::joinPath(basePath, m_faces[1]),
