@@ -115,7 +115,7 @@ void MirrorMapRenderer::updateView(const RenderContext& ctx)
     bool changed = w != m_width || h != m_height;
     if (!changed) return;
 
-    auto albedo = FrameBufferAttachment::getTextureRGB();
+    auto albedo = FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
     albedo.magFilter = GL_LINEAR;
     albedo.textureWrapS = GL_REPEAT;

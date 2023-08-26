@@ -105,7 +105,7 @@ void WaterMapRenderer::updateView(const RenderContext& ctx)
     m_reflectionBuffers.clear();
     m_refractionBuffers.clear();
 
-    auto albedo = FrameBufferAttachment::getTextureRGB();
+    auto albedo = FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
     albedo.magFilter = GL_LINEAR;
     albedo.textureWrapS = GL_REPEAT;

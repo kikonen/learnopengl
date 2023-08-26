@@ -9,6 +9,13 @@ CubeMapBuffer::CubeMapBuffer(
     m_side(side),
     m_textureID(textureID)
 {
+    auto albedo = FrameBufferAttachment::getTextureRGBHdr();
+    albedo.minFilter = GL_LINEAR;
+    albedo.magFilter = GL_LINEAR;
+    albedo.textureWrapS = GL_REPEAT;
+    albedo.textureWrapT = GL_REPEAT;
+    m_spec.attachments.emplace_back(FrameBufferAttachment::getShared(&albedo));
+
     m_fbo = fbo;
 }
 

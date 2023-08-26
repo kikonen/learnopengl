@@ -68,6 +68,7 @@ void DynamicCubeMap::prepare(
     //}
 
     m_cubeMap.m_size = m_size;
+    m_cubeMap.m_internalFormat = GL_RGB16F;
     m_cubeMap.create();
 
     //glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);

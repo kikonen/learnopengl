@@ -282,13 +282,18 @@ void NodeDraw::drawNodes(
                 GL_NEAREST);
         }
 
-        bool hdr = true;
         if (copyMask & GL_COLOR_BUFFER_BIT) {
+            GLenum sourceFormat = activeBuffer->m_spec.attachments[EffectBuffer::ATT_ALBEDO_INDEX].internalFormat;
+            GLenum targetFormat = -1;
+
+            if (!targetBuffer->m_spec.attachments.empty()) {
+                targetFormat = targetBuffer->m_spec.attachments[EffectBuffer::ATT_ALBEDO_INDEX].internalFormat;
+            }
+
             const bool canCopy = !targetBuffer->m_spec.attachments.empty() &&
                 targetBuffer->m_spec.width == activeBuffer->m_spec.width &&
                 targetBuffer->m_spec.height == activeBuffer->m_spec.height &&
-                targetBuffer->m_spec.attachments[EffectBuffer::ATT_ALBEDO_INDEX].internalFormat ==
-                activeBuffer->m_spec.attachments[EffectBuffer::ATT_ALBEDO_INDEX].internalFormat;
+                targetFormat == sourceFormat;
 
             if (canCopy) {
                 activeBuffer->copy(
@@ -298,6 +303,8 @@ void NodeDraw::drawNodes(
                     EffectBuffer::ATT_ALBEDO_INDEX);
             }
             else {
+                bool hdr = targetFormat != GL_RGB16F && targetFormat != GL_RGBA16F;
+
                 if (hdr) {
                     targetBuffer->bind(ctx);
                     m_hdrGammaProgram->bind(ctx.m_state);
