@@ -137,6 +137,8 @@ void NodeDraw::drawNodes(
     // => currently these *CANNOT* work correctly
     //if (false)
     {
+        ctx.validateRender("non_gbuffer");
+
         bool rendered = drawNodesImpl(
             ctx,
             [&typeSelector](const MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
@@ -145,11 +147,25 @@ void NodeDraw::drawNodes(
         if (rendered) {
             ctx.m_batch->flush(ctx);
 
-            // copy depth back
-            activeBuffer->copy(
-                m_gBuffer.m_buffer.get(),
-                EffectBuffer::ATT_DEPTH_INDEX,
-                GBuffer::ATT_DEPTH_INDEX);
+            if (false) {
+                activeBuffer->blit(
+                    m_gBuffer.m_buffer.get(),
+                    GL_DEPTH_BUFFER_BIT,
+                    { -1.f, 1.f },
+                    { 2.f, 2.f },
+                    GL_NEAREST);
+            }
+            else {
+                // copy depth back
+                activeBuffer->copy(
+                    m_gBuffer.m_buffer.get(),
+                    EffectBuffer::ATT_DEPTH_INDEX,
+                    GBuffer::ATT_DEPTH_INDEX);
+            }
+
+            // NOTE KI need to reset possibly changed drawing modes
+            // ex. selection volume changes to GL_LINE
+            ctx.bindDefaults();
         }
     }
 

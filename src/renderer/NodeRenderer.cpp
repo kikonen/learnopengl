@@ -47,9 +47,7 @@ void NodeRenderer::render(
     m_selectedCount = ctx.m_assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
 
     {
-        const glm::vec4 debugColor{ 0.0f, 0.0f, 1.0f, 0.0f };
-        targetBuffer->bind(ctx);
-        targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, debugColor);
+        targetBuffer->clearAll();
 
         renderStencil(ctx, targetBuffer);
         {
@@ -84,8 +82,6 @@ void NodeRenderer::renderStencil(
 
     // draw entity data mask
     {
-        const glm::vec4 clearColor{ 0.0f, 1.0f, 1.0f, 0.0f };
-
         //m_selectionProgramPointSprite->bind(ctx.m_state);
         //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_MASK);
 
