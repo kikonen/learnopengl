@@ -5,14 +5,12 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
 
-#include struct_clip_plane.glsl
 #include struct_entity.glsl
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_material_indeces.glsl
-#include uniform_clip_planes.glsl
 
 layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 
@@ -29,8 +27,6 @@ out VS_OUT {
 } vs_out;
 #endif
 
-out float gl_ClipDistance[CLIP_COUNT];
-
 const float SCALE = 1.024;
 const mat4 SCALE_MATRIX = mat4(SCALE, 0, 0, 0,
                                0, SCALE, 0, 0,
@@ -44,8 +40,6 @@ const mat4 SCALE_MATRIX = mat4(SCALE, 0, 0, 0,
 SET_FLOAT_PRECISION;
 
 const vec3 UP = vec3(0, 1, 0);
-
-#include fn_calculate_clipping.glsl
 
 void main() {
   const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
@@ -102,11 +96,9 @@ void main() {
   }
 
   vs_out.materialIndex = materialIndex;
-  vs_out.shapeIndex = materialIndex;
+  vs_out.shapeIndex = entity.u_shapeIndex;
   vs_out.texCoord = a_texCoord;
 #endif
 
   vs_out.highlightIndex = entity.u_highlightIndex;
-
-  calculateClipping(worldPos);
 }
