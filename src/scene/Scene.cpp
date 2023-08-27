@@ -393,15 +393,10 @@ void Scene::drawViewports(const RenderContext& ctx)
     // NOTE KI *CLEAR* buffer
     // - https://stackoverflow.com/questions/37335281/is-glcleargl-color-buffer-bit-preferred-before-a-whole-frame-buffer-overwritte
     //
-    //if (false)
-    {
-        glm::vec4 clearColor{ 0.f };
-        if (m_assets.useDebugColor) {
-            clearColor = { 0.9f, 0.9f, 0.0f, 0.0f };
-        }
-        ctx.m_state.clearColor(clearColor);
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    }
+    m_windowBuffer->clear(
+        ctx,
+        GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
+        { 0.9f, 0.9f, 0.0f, 0.0f });
 
     if (m_viewportRenderer->isEnabled()) {
         m_viewportRenderer->render(ctx, m_windowBuffer.get());
@@ -515,7 +510,7 @@ void Scene::updateMainViewport(const RenderContext& ctx)
             {
                 w, h,
                 {
-                    FrameBufferAttachment::getTextureRGBA(),
+                    FrameBufferAttachment::getTextureRGB(),
                     FrameBufferAttachment::getRBODepthStencil(),
                 }
             });
@@ -542,7 +537,7 @@ void Scene::updateMainViewport(const RenderContext& ctx)
                 {
                     rearW, rearH,
                     {
-                        FrameBufferAttachment::getTextureRGBA(),
+                        FrameBufferAttachment::getTextureRGB(),
                         FrameBufferAttachment::getRBODepthStencil(),
                     }
                 });
