@@ -18,14 +18,14 @@ Viewport::Viewport(
     const glm::vec3& pos,
     const glm::vec3& rotation,
     const glm::vec2& size,
-    bool useFrameBuffer,
+    bool m_useDirectBlit,
     unsigned int textureId,
     Program* program)
     : m_name(name),
     m_position(pos),
     m_rotation(rotation),
     m_size(size),
-    m_useFrameBuffer(useFrameBuffer),
+    m_useDirectBlit(false && m_useDirectBlit),
     m_textureId(textureId),
     m_program(program)
 {
@@ -57,7 +57,7 @@ void Viewport::prepare(const Assets& assets)
     m_prepared = true;
 
     // NOTE KI no program VAO/VBO with framebuffer blit
-    if (m_useFrameBuffer) return;
+    if (m_useDirectBlit) return;
 
     m_program->prepare(assets);
 
@@ -110,7 +110,7 @@ void Viewport::bind(const RenderContext& ctx)
 {
     m_bindBefore(*this);
 
-    if (m_useFrameBuffer) return;
+    if (m_useDirectBlit) return;
     if (m_textureId == 0) return;
 
     m_program->bind(ctx.m_state);
@@ -133,7 +133,7 @@ void Viewport::unbind(const RenderContext& ctx)
 
 void Viewport::draw(const RenderContext& ctx)
 {
-    if (m_useFrameBuffer) {
+    if (m_useDirectBlit) {
         m_sourceBuffer->blit(m_destinationBuffer, GL_COLOR_BUFFER_BIT, m_position, m_size, GL_LINEAR);
     }
     else

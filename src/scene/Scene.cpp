@@ -511,6 +511,7 @@ void Scene::updateMainViewport(const RenderContext& ctx)
                 w, h,
                 {
                     FrameBufferAttachment::getTextureRGB(),
+                    // NOTE KI depth/stencil needed only for highlight/selecction
                     FrameBufferAttachment::getRBODepthStencil(),
                 }
             });
@@ -518,7 +519,7 @@ void Scene::updateMainViewport(const RenderContext& ctx)
         m_mainBuffer.reset(buffer);
         m_mainBuffer->prepare(true);
 
-        m_mainViewport->setTextureId(m_mainBuffer->m_spec.attachments[0].textureID);
+        m_mainViewport->setTextureId(m_mainBuffer->m_spec.attachments[NodeRenderer::ATT_ALBEDO_INDEX].textureID);
         m_mainViewport->setSourceFrameBuffer(m_mainBuffer.get());
     }
 
@@ -538,6 +539,7 @@ void Scene::updateMainViewport(const RenderContext& ctx)
                     rearW, rearH,
                     {
                         FrameBufferAttachment::getTextureRGB(),
+                        // NOTE KI depth/stencil needed only for highlight/selecction
                         FrameBufferAttachment::getRBODepthStencil(),
                     }
                 });
@@ -545,7 +547,7 @@ void Scene::updateMainViewport(const RenderContext& ctx)
             m_rearBuffer.reset(buffer);
             m_rearBuffer->prepare(true);
 
-            m_rearViewport->setTextureId(m_rearBuffer->m_spec.attachments[0].textureID);
+            m_rearViewport->setTextureId(m_rearBuffer->m_spec.attachments[NodeRenderer::ATT_ALBEDO_INDEX].textureID);
             m_rearViewport->setSourceFrameBuffer(m_rearBuffer.get());
         }
     }

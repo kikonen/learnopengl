@@ -87,7 +87,7 @@ namespace ki {
             "OPENGL: {} 0x{:x} ({}) {} {} - {}",
             formatSource(source), id, id, formatType(type), formatSeverity(severity), message);
 
-        int index = 0; // sb.find("GL_INVALID_OPERATION");
+        int index = -1;// sb.find("GL_INVALID_OPERATION");
 
         switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH:
@@ -104,7 +104,7 @@ namespace ki {
         };
 
         if (index >= 0) {
-            //KI_FLUSH();
+            KI_FLUSH();
             int x = 0;
         }
     }

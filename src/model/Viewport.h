@@ -24,7 +24,7 @@ public:
         const glm::vec3& pos,
         const glm::vec3& rotation,
         const glm::vec2& size,
-        bool useFrameBuffer,
+        bool m_useDirectBlit,
         unsigned int textureId,
         Program* program);
 
@@ -83,7 +83,7 @@ public:
     const glm::vec3 m_rotation;
     const glm::vec2 m_size;
 
-    const bool m_useFrameBuffer;
+    const bool m_useDirectBlit;
 
 private:
     bool m_prepared = false;
