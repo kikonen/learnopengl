@@ -10,7 +10,7 @@ if (fs_in.shapeIndex > 0) {
   uvec2 diffuseTex = u_materials[matIdx].diffuseTex;
   uvec2 opacityMapTex = u_materials[matIdx].opacityMapTex;
 
-  if (diffuseTex.x >= 0) {
+  if (diffuseTex.x > 0) {
     sampler2D sampler = sampler2D(diffuseTex);
     alpha = texture(sampler, texCoord).a;
   } else {
