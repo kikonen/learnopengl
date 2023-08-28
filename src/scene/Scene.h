@@ -79,7 +79,7 @@ public:
 
     void drawScene(
         const RenderContext& ctx,
-        FrameBuffer* targetBuffer);
+        NodeRenderer* nodeRenderer);
 
     Node* getActiveCamera() const;
     NodeController* getActiveCameraController() const;
@@ -87,10 +87,10 @@ public:
     void bindComponents(Node* node);
     int getObjectID(const RenderContext& ctx, double posx, double posy);
 
-    //void bindPendingChildren();
+    std::shared_ptr<Viewport> m_mainViewport{ nullptr };
+    std::shared_ptr<Viewport> m_rearViewport{ nullptr };
 
-private:
-    void updateMainViewport(const RenderContext& ctx);
+    //void bindPendingChildren();
 
 public:
     const Assets& m_assets;
@@ -110,7 +110,9 @@ public:
 protected:
 
 private:
-    std::unique_ptr<NodeRenderer> m_nodeRenderer{ nullptr };
+    std::unique_ptr<NodeRenderer> m_mainRenderer{ nullptr };
+    std::unique_ptr<NodeRenderer> m_rearRenderer{ nullptr };
+
     std::unique_ptr<ViewportRenderer> m_viewportRenderer{ nullptr };
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
@@ -124,12 +126,6 @@ private:
     std::unique_ptr<ParticleSystem> m_particleSystem{ nullptr };
 
     std::vector<Node*> m_particleGenerators;
-
-    std::unique_ptr<FrameBuffer> m_rearBuffer{ nullptr };
-    std::shared_ptr<Viewport> m_rearViewport{ nullptr };
-
-    std::unique_ptr<FrameBuffer> m_mainBuffer{ nullptr };
-    std::shared_ptr<Viewport> m_mainViewport{ nullptr };
 
     std::unique_ptr<WindowBuffer> m_windowBuffer{ nullptr };
 

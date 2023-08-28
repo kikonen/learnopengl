@@ -66,7 +66,9 @@ Scene::Scene(
     m_scriptEngine = std::make_unique<ScriptEngine>(assets);
 
     {
-        m_nodeRenderer = std::make_unique<NodeRenderer>(true);
+        m_mainRenderer = std::make_unique<NodeRenderer>(true);
+        m_rearRenderer = std::make_unique<NodeRenderer>(true);
+
         m_viewportRenderer = std::make_unique<ViewportRenderer>(true);
 
         m_waterMapRenderer = std::make_unique<WaterMapRenderer>(true, true, false);
@@ -77,7 +79,9 @@ Scene::Scene(
         m_objectIdRenderer = std::make_unique<ObjectIdRenderer>(false);
         m_normalRenderer = std::make_unique<NormalRenderer>(false);
 
-        m_nodeRenderer->setEnabled(true);
+        m_mainRenderer->setEnabled(true);
+        m_rearRenderer->setEnabled(true);
+
         m_viewportRenderer->setEnabled(true);
 
         m_waterMapRenderer->setEnabled(m_assets.renderWaterMap);
@@ -122,9 +126,14 @@ void Scene::prepare()
     m_batch->prepare(m_assets, registry);
     m_nodeDraw->prepare(m_assets, registry);
 
+    m_mainRenderer->prepare(m_assets, registry);
+
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
-    if (m_nodeRenderer->isEnabled()) {
-        m_nodeRenderer->prepare(m_assets, registry);
+    if (m_rearRenderer->isEnabled()) {
+        m_rearRenderer->prepare(m_assets, registry);
+    }
+    if (m_rearRenderer->isEnabled()) {
+        m_rearRenderer->prepare(m_assets, registry);
     }
 
     if (m_viewportRenderer->isEnabled()) {
@@ -161,8 +170,12 @@ void Scene::prepare()
     }
 
     {
+        m_registry->m_physicsEngine->prepare();
+    }
+
+    {
         m_mainViewport = std::make_shared<Viewport>(
-            "Main",
+            "Node",
             //glm::vec3(-0.75, 0.75, 0),
             glm::vec3(-1.0f, 1.f, 0),
             glm::vec3(0, 0, 0),
@@ -176,15 +189,8 @@ void Scene::prepare()
         m_mainViewport->setEffect(m_assets.viewportEffect);
         m_mainViewport->prepare(m_assets);
 
+        m_mainRenderer->m_viewport = m_mainViewport.get();
         m_registry->m_viewportRegistry->addViewport(m_mainViewport);
-
-        m_registry->m_physicsEngine->prepare();
-    }
-
-    if (m_assets.showObjectIDView) {
-        if (m_objectIdRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_objectIdRenderer->m_debugViewport);
-        }
     }
 
     if (m_assets.showRearView) {
@@ -198,7 +204,15 @@ void Scene::prepare()
             m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
         m_rearViewport->prepare(m_assets);
+
+        m_rearRenderer->m_viewport = m_rearViewport.get();
         m_registry->m_viewportRegistry->addViewport(m_rearViewport);
+    }
+
+    if (m_assets.showObjectIDView) {
+        if (m_objectIdRenderer->isEnabled()) {
+            m_registry->m_viewportRegistry->addViewport(m_objectIdRenderer->m_debugViewport);
+        }
     }
 
     if (m_assets.showShadowMapView) {
@@ -261,7 +275,11 @@ void Scene::updateView(const RenderContext& ctx)
         m_objectIdRenderer->updateView(ctx);
     }
 
-    updateMainViewport(ctx);
+    m_mainRenderer->updateView(ctx);
+
+    if (m_assets.showRearView) {
+        m_rearRenderer->updateView(ctx);
+    }
 
     m_cubeMapRenderer->updateView(ctx);
     m_mirrorMapRenderer->updateView(ctx);
@@ -342,13 +360,13 @@ void Scene::drawMain(const RenderContext& parentCtx)
         "MAIN",
         &parentCtx,
         parentCtx.m_camera,
-        m_mainBuffer->m_spec.width,
-        m_mainBuffer->m_spec.height);
+        m_mainRenderer->m_buffer->m_spec.width,
+        m_mainRenderer->m_buffer->m_spec.height);
 
     localCtx.copyShadowFrom(parentCtx);
 
     localCtx.m_allowDrawDebug = true;
-    drawScene(localCtx, m_mainBuffer.get());
+    drawScene(localCtx, m_mainRenderer.get());
 }
 
 // "back mirror" viewport
@@ -368,14 +386,19 @@ void Scene::drawRear(const RenderContext& parentCtx)
     camera.setFov(parentCamera->getFov());
     camera.setAxis(cameraFront, parentCamera->getViewUp());
 
-    RenderContext localCtx("BACK", &parentCtx, &camera, m_rearBuffer->m_spec.width, m_rearBuffer->m_spec.height);
+    RenderContext localCtx(
+        "BACK",
+        &parentCtx,
+        &camera,
+        m_rearRenderer->m_buffer->m_spec.width,
+        m_rearRenderer->m_buffer->m_spec.height);
 
     localCtx.copyShadowFrom(parentCtx);
 
     localCtx.updateMatricesUBO();
     localCtx.updateDataUBO();
 
-    drawScene(localCtx, m_rearBuffer.get());
+    drawScene(localCtx, m_rearRenderer.get());
 
     parentCtx.updateMatricesUBO();
     parentCtx.updateDataUBO();
@@ -405,7 +428,7 @@ void Scene::drawViewports(const RenderContext& ctx)
 
 void Scene::drawScene(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer)
+    NodeRenderer* nodeRenderer)
 {
     m_registry->m_materialRegistry->bind(ctx);
     m_registry->m_spriteRegistry->bind(ctx);
@@ -421,8 +444,8 @@ void Scene::drawScene(
         m_mirrorMapRenderer->bindTexture(ctx);
     }
 
-    if (m_nodeRenderer->isEnabled()) {
-        m_nodeRenderer->render(ctx, targetBuffer);
+    if (nodeRenderer->isEnabled()) {
+        nodeRenderer->render(ctx, nodeRenderer->m_buffer.get());
     }
 
     //targetBuffer->bind(ctx);
@@ -484,71 +507,4 @@ int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double scree
         return m_objectIdRenderer->getObjectId(ctx, screenPosX, screenPosY, m_mainViewport.get());
     }
     return 0;
-}
-
-void Scene::updateMainViewport(const RenderContext& ctx)
-{
-    const auto& res = ctx.m_resolution;
-
-    // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
-    int w = ctx.m_assets.gBufferScale * res.x;
-    int h = ctx.m_assets.gBufferScale * res.y;
-    if (w < 1) w = 1;
-    if (h < 1) h = 1;
-
-    bool changed = !m_mainBuffer || w != m_mainBuffer->m_spec.width || h != m_mainBuffer->m_spec.height;
-    if (!changed) return;
-
-    //if (m_mainBuffer) return;
-    KI_INFO(fmt::format("FRAME_BUFFER: update - w={}, h={}", w, h));
-
-    // MAIN
-    {
-        // NOTE KI alpha NOT needed
-        auto buffer = new FrameBuffer(
-            "main",
-            {
-                w, h,
-                {
-                    FrameBufferAttachment::getTextureRGB(),
-                    // NOTE KI depth/stencil needed only for highlight/selecction
-                    FrameBufferAttachment::getRBODepthStencil(),
-                }
-            });
-
-        m_mainBuffer.reset(buffer);
-        m_mainBuffer->prepare(true);
-
-        m_mainViewport->setTextureId(m_mainBuffer->m_spec.attachments[NodeRenderer::ATT_ALBEDO_INDEX].textureID);
-        m_mainViewport->setSourceFrameBuffer(m_mainBuffer.get());
-    }
-
-    // VMIRROR
-    {
-        int rearW = w * 0.5;
-        int rearH = h * 0.5;
-
-        if (rearW < 1) rearW = 1;
-        if (rearH < 1) rearH = 1;
-
-        if (!m_rearBuffer && m_assets.showRearView) {
-            // NOTE KI alpha NOT needed
-            auto buffer = new FrameBuffer(
-                "rear",
-                {
-                    rearW, rearH,
-                    {
-                        FrameBufferAttachment::getTextureRGB(),
-                        // NOTE KI depth/stencil needed only for highlight/selecction
-                        FrameBufferAttachment::getRBODepthStencil(),
-                    }
-                });
-
-            m_rearBuffer.reset(buffer);
-            m_rearBuffer->prepare(true);
-
-            m_rearViewport->setTextureId(m_rearBuffer->m_spec.attachments[NodeRenderer::ATT_ALBEDO_INDEX].textureID);
-            m_rearViewport->setSourceFrameBuffer(m_rearBuffer.get());
-        }
-    }
 }

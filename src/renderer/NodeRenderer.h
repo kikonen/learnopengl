@@ -5,6 +5,8 @@
 #include "Renderer.h"
 
 class FrameBuffer;
+class Viewport;
+
 
 class NodeRenderer final : public Renderer
 {
@@ -19,6 +21,8 @@ public:
         const Assets& assets,
         Registry* registry) override;
 
+    void updateView(const RenderContext& ctx);
+
     void render(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer);
@@ -32,9 +36,17 @@ private:
         const RenderContext& ctx,
         FrameBuffer* targetBuffer);
 
+public:
+    std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
+
+    Viewport* m_viewport{ nullptr };
+
 private:
     Program* m_selectionProgram{ nullptr };
     //Program* m_selectionProgramPointSprite{ nullptr };
+
+    int m_width{ -1 };
+    int m_height{ -1 };
 
     int m_taggedCount{ 0 };
     int m_selectedCount{ 0 };

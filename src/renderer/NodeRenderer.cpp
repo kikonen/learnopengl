@@ -37,6 +37,48 @@ void NodeRenderer::prepare(
     //m_selectionProgramPointSprite->prepare(assets);
 }
 
+void NodeRenderer::updateView(const RenderContext& ctx)
+{
+    const auto& res = ctx.m_resolution;
+
+    // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
+    int w = ctx.m_assets.gBufferScale * res.x;
+    int h = ctx.m_assets.gBufferScale * res.y;
+    if (w < 1) w = 1;
+    if (h < 1) h = 1;
+
+    bool changed = w != m_width || h != m_height;
+    if (!changed) return;
+
+    //if (m_mainBuffer) return;
+    KI_INFO(fmt::format("NODE_BUFFER: update - w={}, h={}", w, h));
+
+    {
+        auto buffer = new FrameBuffer(
+            "node",
+            {
+                w, h,
+                {
+                    // NOTE KI alpha NOT needed
+                    FrameBufferAttachment::getTextureRGB(),
+                    // NOTE KI depth/stencil needed only for highlight/selecction
+                    FrameBufferAttachment::getRBODepthStencil(),
+                }
+            });
+
+        m_buffer.reset(buffer);
+        m_buffer->prepare(true);
+
+        if (m_viewport) {
+            m_viewport->setTextureId(m_buffer->m_spec.attachments[NodeRenderer::ATT_ALBEDO_INDEX].textureID);
+            m_viewport->setSourceFrameBuffer(m_buffer.get());
+        }
+    }
+
+    m_width = w;
+    m_height = h;
+}
+
 void NodeRenderer::render(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer)
