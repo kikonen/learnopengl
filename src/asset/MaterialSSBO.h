@@ -28,6 +28,9 @@ struct MaterialSSBO {
     // specular + shininess
     glm::vec4 u_specular; // 16
 
+    // G buffer: metalness, roughness, displacement, ambient-occlusion
+    glm::vec4 u_metal; // 16
+
     // NOTE KI "tex index", not "unit index"
     GLuint64 u_diffuseTex;
     GLuint64 u_emissionTex;
@@ -38,8 +41,9 @@ struct MaterialSSBO {
     GLuint64 u_heightMap;
     GLuint64 u_noiseMap;
 
-    GLuint64 u_roughnessMap;
     GLuint64 u_metalnessMap;
+    GLuint64 u_roughnessMap;
+    GLuint64 u_occlusionMapTex;
     GLuint64 u_opacityMap;
 
     float u_ambient;

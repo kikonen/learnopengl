@@ -21,7 +21,8 @@
 namespace backend {
     constexpr int BUFFER_ALIGNMENT = 1;
 
-    DrawBuffer::DrawBuffer()
+    DrawBuffer::DrawBuffer(bool useFence)
+        : m_useFence(useFence)
     {
     }
 
@@ -80,7 +81,8 @@ namespace backend {
         m_commands = std::make_unique<GLCommandQueue>(
             "drawCommand",
             commandBatchCount,
-            commandRangeCount);
+            commandRangeCount,
+            m_useFence);
         m_commands->prepare(BUFFER_ALIGNMENT, assets.batchDebug);
 
         m_drawRanges.reserve(rangeCount);
@@ -243,7 +245,10 @@ namespace backend {
             count += drawCount;
 
             // NOTE KI need to wait finishing of draw commands
-            cmdRange.setFence();
+            // TODO KI *very* odd that fence was set but not waited anywhere
+            if (m_useFence) {
+                cmdRange.setFence();
+            }
         };
 
         m_commands->processPending(handler, drawCurrent, true);

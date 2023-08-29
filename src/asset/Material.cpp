@@ -171,13 +171,14 @@ void Material::loadTextures(const Assets& assets)
 
     loadTexture(assets, MATERIAL_DIFFUSE_IDX, map_kd, true, true);
     loadTexture(assets, MATERIAL_EMISSION_IDX, map_ke, true, false);
-    loadTexture(assets, MATERIAL_SPECULAR_IDX, map_ks, true, false);
+    loadTexture(assets, MATERIAL_SPECULAR_IDX, map_ks, false, false);
     loadTexture(assets, MATERIAL_NORMAL_MAP_IDX, map_bump, false, false);
     loadTexture(assets, MATERIAL_DUDV_MAP_IDX, map_dudv, false, false);
     loadTexture(assets, MATERIAL_HEIGHT_MAP_IDX, map_height, false, false);
     loadTexture(assets, MATERIAL_NOISE_MAP_IDX, map_noise, false, false);
-    loadTexture(assets, MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
     loadTexture(assets, MATERIAL_METALNESS_MAP_IDX, map_metalness, false, false);
+    loadTexture(assets, MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
+    loadTexture(assets, MATERIAL_OCCLUSION_MAP_IDX, map_occlusion, false, false);
     loadTexture(assets, MATERIAL_OPACITY_MAP_IDX, map_opacity, false, false);
 }
 
@@ -285,6 +286,7 @@ const MaterialSSBO Material::toSSBO() const
         ke,
 
         glm::vec4{ ks, ns },
+        glm::vec4{ 0.f },
 
         m_textures[MATERIAL_DIFFUSE_IDX].m_handle,
         m_textures[MATERIAL_EMISSION_IDX].m_handle,
@@ -295,8 +297,9 @@ const MaterialSSBO Material::toSSBO() const
         m_textures[MATERIAL_HEIGHT_MAP_IDX].m_handle,
         m_textures[MATERIAL_NOISE_MAP_IDX].m_handle,
 
-        m_textures[MATERIAL_ROUGHNESS_MAP_IDX].m_handle,
         m_textures[MATERIAL_METALNESS_MAP_IDX].m_handle,
+        m_textures[MATERIAL_ROUGHNESS_MAP_IDX].m_handle,
+        m_textures[MATERIAL_OCCLUSION_MAP_IDX].m_handle,
         m_textures[MATERIAL_OPACITY_MAP_IDX].m_handle,
 
         calculateAmbient(ka),

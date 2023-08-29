@@ -65,6 +65,7 @@
 #define UNIT_G_SPECULAR 51
 #define UNIT_G_EMISSION 52
 //#define UNIT_G_POSITION 53
+#define UNIT_G_METAL 53
 #define UNIT_G_NORMAL 54
 #define UNIT_G_DEPTH 55
 
@@ -113,7 +114,8 @@
  layout (location = 0) out vec4 o_fragColor;\
  layout (location = 1) out vec4 o_fragSpecular;\
  layout (location = 2) out vec3 o_fragEmission;\
- layout (location = 3) out vec3 o_fragNormal;
+ layout (location = 3) out vec3 o_fragNormal;\
+ layout (location = 4) out vec4 o_fragMetal;
 // layout (location = 3) out vec3 o_fragPosition;\
 
 #define LAYOUT_G_BUFFER_SAMPLERS\
@@ -121,7 +123,8 @@
  layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;\
  layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;\
  layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;\
- layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
+ layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;\
+ layout(binding = UNIT_G_METAL) uniform sampler2D g_metal;
 // layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;\
 
 #define LAYOUT_OIT_OUT\

@@ -22,11 +22,11 @@ class Registry;
 
 namespace backend {
     // WIP KI it seems that there was no corruption in NVidia even if sync is turned off
-    using GLCommandQueue = GLSyncQueue<backend::gl::DrawIndirectCommand, true, false>;
+    using GLCommandQueue = GLSyncQueue<backend::gl::DrawIndirectCommand, true>;
 
     class DrawBuffer {
     public:
-        DrawBuffer();
+        DrawBuffer(bool useFence);
 
         void prepare(
             const Assets& assets,
@@ -55,6 +55,8 @@ namespace backend {
             const backend::DrawRange& drawRange) const;
 
     private:
+        const bool m_useFence;
+
         int m_batchCount = 0;
         int m_rangeCount = 0;
 

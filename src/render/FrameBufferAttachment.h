@@ -80,6 +80,9 @@ struct FrameBufferAttachment {
     static FrameBufferAttachment getGBufferSpecular(GLenum attachment);
     static FrameBufferAttachment getGBufferSpecularHdr(GLenum attachment);
 
+    // G buffer: metal
+    static FrameBufferAttachment getGBufferMetal(GLenum attachment);
+
     // G buffer: emission
     static FrameBufferAttachment getGBufferEmission(GLenum attachment);
     static FrameBufferAttachment getGBufferEmissionHdr(GLenum attachment);

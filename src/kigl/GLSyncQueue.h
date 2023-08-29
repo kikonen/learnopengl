@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <functional>
 
@@ -9,17 +10,19 @@
 //
 // SyncQueue, which is split into multiple ranges, which can be fence synced
 //
-template <class T, bool mappedMode, bool useFence>
+template <class T, bool mappedMode>
 class GLSyncQueue {
 public:
     GLSyncQueue(
-        std::string name,
+        const std::string& name,
         size_t entryCount,
-        size_t rangeCount)
+        size_t rangeCount,
+        bool useFence)
         : m_rangeCount(rangeCount),
         m_entryCount(entryCount),
+        m_useFence(useFence),
         m_entrySize(sizeof(T)),
-        m_buffer{ "syncQueue_" + name}
+        m_buffer{ "syncQueue_" + name }
     {
     }
 
@@ -85,7 +88,7 @@ public:
     bool send(const T& entry) {
         auto& range = m_ranges[m_current];
 
-        if constexpr (useFence)
+        if (m_useFence)
             range.waitFence();
 
         T* ptr = (T*)(m_data + range.nextOffset());
@@ -105,7 +108,7 @@ public:
     void set(int idx, T& entry) {
         auto& range = m_ranges[m_current];
 
-        if constexpr (useFence)
+        if (m_useFence)
             range.waitFence();
 
         //m_data[range.index(idx)] = entry;
@@ -174,7 +177,7 @@ public:
             m_ranges[m_current].clear();
         }
 
-        if constexpr (useFence)
+        if (m_useFence)
             if (fence)
                 m_ranges[m_current].setFence();
 
@@ -200,8 +203,10 @@ public:
 
 private:
     const size_t m_entryCount;
-    const size_t m_entrySize;
     const size_t m_rangeCount;
+    const bool m_useFence;
+
+    const size_t m_entrySize;
 
     size_t m_bindAlignment = 0;
     size_t m_rangeLength = 0;

@@ -201,6 +201,19 @@ FrameBufferAttachment FrameBufferAttachment::getGBufferSpecularHdr(GLenum attach
     return spec;
 }
 
+// G buffer: metalness, roughness, displacement, ambient-occlusion
+FrameBufferAttachment FrameBufferAttachment::getGBufferMetal(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::texture;
+    spec.internalFormat = GL_RGBA8;
+    spec.attachment = attachment;
+    spec.useDrawBuffer = true;
+    spec.clearMask = GL_COLOR_BUFFER_BIT;
+
+    return spec;
+}
+
 // G buffer: emission
 FrameBufferAttachment FrameBufferAttachment::getGBufferEmission(GLenum attachment)
 {

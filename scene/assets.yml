@@ -1,6 +1,6 @@
 assets:
   log_file: log/development.log
-  scene_file: scene/scene_bloom.yml
+  scene_file: scene/scene_material_balls.yml
 
   glfw_swap_interval: 1
   gl_debug: true

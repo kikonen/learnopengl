@@ -908,6 +908,7 @@ void SceneFile::modifyMaterial(
 
     if (f.map_roughness) m.map_roughness = mod.map_roughness;
     if (f.map_metalness) m.map_metalness = mod.map_metalness;
+    if (f.map_occlusion) m.map_occlusion = mod.map_occlusion;
     if (f.map_opacity) m.map_opacity = mod.map_opacity;
 }
 
@@ -1724,6 +1725,11 @@ void SceneFile::loadMaterial(
             std::string line = v.as<std::string>();
             material.map_metalness = resolveTexturePath(line);
             fields.map_metalness = true;
+        }
+        else if (k == "map_occlusion") {
+            std::string line = v.as<std::string>();
+            material.map_occlusion = resolveTexturePath(line);
+            fields.map_occlusion = true;
         }
         else if (k == "map_opacity") {
             std::string line = v.as<std::string>();

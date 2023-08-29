@@ -35,10 +35,12 @@ void GBuffer::updateView(const RenderContext& ctx)
                 w, h,
                 {
                     FrameBufferAttachment::getGBufferAlbedoHdr(GL_COLOR_ATTACHMENT0),
+                    // NOTE KI no specular in metal workflow
                     FrameBufferAttachment::getGBufferSpecularHdr(GL_COLOR_ATTACHMENT1),
                     FrameBufferAttachment::getGBufferEmissionHdr(GL_COLOR_ATTACHMENT2),
                     //FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT3),
                     FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT3),
+                    FrameBufferAttachment::getGBufferMetal(GL_COLOR_ATTACHMENT4),
                     // depth needed
                     FrameBufferAttachment::getDepthTexture()
                 }
@@ -66,6 +68,7 @@ void GBuffer::bindTexture(const RenderContext& ctx)
     m_buffer->bindTexture(ctx, ATT_EMISSION_INDEX, UNIT_G_EMISSION);
     //m_buffer->bindTexture(ctx, ATT_POSITION_INDEX, UNIT_G_POSITION);
     m_buffer->bindTexture(ctx, ATT_NORMAL_INDEX, UNIT_G_NORMAL);
+    m_buffer->bindTexture(ctx, ATT_METAL_INDEX, UNIT_G_METAL);
     m_buffer->bindTexture(ctx, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
 }
 
@@ -75,6 +78,7 @@ void GBuffer::unbindTexture(const RenderContext& ctx)
     m_buffer->unbindTexture(ctx, UNIT_G_SPECULAR);
     m_buffer->unbindTexture(ctx, UNIT_G_EMISSION);
     //m_buffer->unbindTexture(ctx, UNIT_G_POSITION);
+    m_buffer->unbindTexture(ctx, UNIT_G_METAL);
     m_buffer->unbindTexture(ctx, UNIT_G_NORMAL);
     m_buffer->unbindTexture(ctx, UNIT_G_DEPTH);
 }

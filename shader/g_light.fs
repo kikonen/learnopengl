@@ -32,6 +32,7 @@ void main() {
 
   o_fragColor = vec4(texColor.xyz, material.ambient);
   o_fragSpecular = material.specular;
+  o_fragMetal = material.metal;
   o_fragEmission = texColor.xyz;
 
   //o_fragPosition = fs_in.worldPos;
