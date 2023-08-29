@@ -135,13 +135,27 @@ void ImageTexture::prepare(
         m_format = GL_RG;
         m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
     } else if (m_image->m_channels == 3) {
-        m_format = GL_RGB;
-        m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB8;
-        //m_internalFormat = assets.glPreferredTextureFormatRGB;
+        if (m_image->m_is_16_bit) {
+            m_format = GL_RGB;
+            m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB16;
+            m_pixelFormat = GL_UNSIGNED_SHORT;
+        }
+        else {
+            m_format = GL_RGB;
+            m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB8;
+            //m_internalFormat = assets.glPreferredTextureFormatRGB;
+        }
     } else if (m_image->m_channels == 4) {
-        m_format = GL_RGBA;
-        m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA8;
-        //m_internalFormat = assets.glPreferredTextureFormatRGBA;
+        if (m_image->m_is_16_bit) {
+            m_format = GL_RGBA;
+            m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA16;
+            m_pixelFormat = GL_UNSIGNED_SHORT;
+        }
+        else {
+            m_format = GL_RGBA;
+            m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA8;
+            //m_internalFormat = assets.glPreferredTextureFormatRGBA;
+        }
     } else {
         KI_WARN(fmt::format("IMAGE: unsupported channels {}", m_image->m_channels));
         m_valid = false;
