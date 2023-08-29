@@ -5,6 +5,7 @@ assets:
   glfw_swap_interval: 1
   gl_debug: true
   gl_no_error: false
+  gl_use_fence: false
 
   resolution_scale: 0.5
   g_buffer_scale: 0.5

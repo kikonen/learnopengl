@@ -21,6 +21,7 @@ Assets::Assets()
     glfwSwapInterval = 3;
     glDebug = false;
     glNoError = false;
+    glUseFence = true;
 
     resolutionScale = 0.5f;
     gBufferScale = 0.5f;

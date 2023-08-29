@@ -64,7 +64,7 @@ namespace backend {
 
         bool m_bound = false;
 
-        glm::uvec3 m_computeGroups;
+        glm::uvec3 m_computeGroups{ 0 };
 
         Program* m_cullingCompute{ nullptr };
 

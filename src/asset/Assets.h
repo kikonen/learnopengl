@@ -37,6 +37,8 @@ public:
     // https://www.khronos.org/opengl/wiki/OpenGL_Error#No_error_contexts
     bool glNoError;
 
+    bool glUseFence;
+
     float resolutionScale;
     float gBufferScale;
     float waterBufferScale;

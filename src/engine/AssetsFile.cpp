@@ -84,6 +84,9 @@ void AssetsFile::loadAssets(
         else if (k == "gl_no_error") {
             data.glNoError = readBool(v);
         }
+        else if (k == "gl_use_fence") {
+            data.glUseFence = readBool(v);
+        }
         else if (k == "camera_move_mormal") {
             data.cameraMoveNormal = readVec3(v);
         }
