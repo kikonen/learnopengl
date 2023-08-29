@@ -488,6 +488,19 @@ entities:
     render_flags:
       alpha: true
     enabled: true
+  - name: Cow 2
+    model: cow
+    program: g_tex
+    pos: [5.0, 25.0, -15.0]
+    rotation: [0, 180, 0]
+    scale: 0.8
+    material: cow
+    material_modifier:
+      reflection: 0.1
+    render_flags:
+      render_back: false
+    selected: false
+    enabled: true
   - name: Ball
     model: texture_ball
     program: g_tex
