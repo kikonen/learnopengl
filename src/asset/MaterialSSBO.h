@@ -60,7 +60,7 @@ struct MaterialSSBO {
     float u_depth;
 
     int pad3_1;
-    int pad3_2;
-    int pad3_3;
+    //int pad3_2;
+    //int pad3_3;
 };
 #pragma pack(pop)
