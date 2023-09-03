@@ -212,10 +212,11 @@ void Material::loadTexture(
 
     KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_objectID, m_name, texturePath));
 
-    std::string placeholderPath = assets.placeholderTexture;
+    const std::string& placeholderPath = assets.placeholderTexture;
+
     auto future = ImageTexture::getTexture(
         textureName,
-        assets.placeholderTextureAlways ? placeholderPath : texturePath,
+        usePlaceholder && assets.placeholderTextureAlways ? placeholderPath : texturePath,
         gammaCorrect,
         textureSpec);
 
