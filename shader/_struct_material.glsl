@@ -15,12 +15,13 @@ struct Material {
   uvec2 normalMapTex;
 
   uvec2 dudvMapTex;
-  uvec2 displacementMapTex;
+  uvec2 heightMapTex;
   uvec2 noiseMapTex;
 
   uvec2 metalnessMapTex;
   uvec2 roughnessMapTex;
   uvec2 occlusionMapTex;
+  uvec2 displacementMapTex;
   uvec2 opacityMapTex;
 
   float ambient;

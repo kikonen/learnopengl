@@ -1139,7 +1139,7 @@ materials:
     illum: 2
     map_kd: textures/brickwall_1024.png
     map_bump: textures/brickwall_1024_normal.png
-    map_height: textures/brickwall_1024_height.jpg
+    map_displacement: textures/brickwall_1024_height.jpg
     depth: 0.017
     reflection: 0.02
   - name: woodwall

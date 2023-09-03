@@ -36,7 +36,8 @@ constexpr int MATERIAL_NOISE_MAP_IDX = 6;
 constexpr int MATERIAL_METALNESS_MAP_IDX = 7;
 constexpr int MATERIAL_ROUGHNESS_MAP_IDX = 8;
 constexpr int MATERIAL_OCCLUSION_MAP_IDX = 9;
-constexpr int MATERIAL_OPACITY_MAP_IDX = 10;
+constexpr int MATERIAL_DISPLACEMENT_MAP_IDX = 10;
+constexpr int MATERIAL_OPACITY_MAP_IDX = 11;
 constexpr int MATERIAL_TEXTURE_COUNT = MATERIAL_OPACITY_MAP_IDX + 1;
 
 /*
@@ -174,6 +175,7 @@ public:
     std::string map_roughness;
     std::string map_metalness;
     std::string map_occlusion;
+    std::string map_displacement;
     std::string map_opacity;
 
     // A material can also have an optical density for its surface. This is also known as index of refraction.

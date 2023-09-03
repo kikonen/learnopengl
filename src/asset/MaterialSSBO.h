@@ -44,6 +44,7 @@ struct MaterialSSBO {
     GLuint64 u_metalnessMap;
     GLuint64 u_roughnessMap;
     GLuint64 u_occlusionMapTex;
+    GLuint64 u_displacementMapTex;
     GLuint64 u_opacityMap;
 
     float u_ambient;
@@ -60,7 +61,7 @@ struct MaterialSSBO {
     float u_depth;
 
     int pad3_1;
-    //int pad3_2;
-    //int pad3_3;
+    int pad3_2;
+    int pad3_3;
 };
 #pragma pack(pop)

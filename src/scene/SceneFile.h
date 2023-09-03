@@ -101,6 +101,7 @@ class SceneFile
         bool map_roughness = false;
         bool map_metalness = false;
         bool map_occlusion = false;
+        bool map_displacement = false;
         bool map_opacity = false;
     };
 

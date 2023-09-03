@@ -179,6 +179,7 @@ void Material::loadTextures(const Assets& assets)
     loadTexture(assets, MATERIAL_METALNESS_MAP_IDX, map_metalness, false, false);
     loadTexture(assets, MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
     loadTexture(assets, MATERIAL_OCCLUSION_MAP_IDX, map_occlusion, false, false);
+    loadTexture(assets, MATERIAL_DISPLACEMENT_MAP_IDX, map_displacement, false, false);
     loadTexture(assets, MATERIAL_OPACITY_MAP_IDX, map_opacity, false, false);
 }
 
@@ -300,6 +301,7 @@ const MaterialSSBO Material::toSSBO() const
         m_textures[MATERIAL_METALNESS_MAP_IDX].m_handle,
         m_textures[MATERIAL_ROUGHNESS_MAP_IDX].m_handle,
         m_textures[MATERIAL_OCCLUSION_MAP_IDX].m_handle,
+        m_textures[MATERIAL_DISPLACEMENT_MAP_IDX].m_handle,
         m_textures[MATERIAL_OPACITY_MAP_IDX].m_handle,
 
         calculateAmbient(ka),

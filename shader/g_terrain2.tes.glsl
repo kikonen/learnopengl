@@ -71,15 +71,15 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
 }
 
 float fetchHeight(
-  in sampler2D displacementMap,
+  in sampler2D heightMap,
   in vec2 texCoord)
 {
-  const vec2 ts = 1.0 / vec2(textureSize(displacementMap, 0));
+  const vec2 ts = 1.0 / vec2(textureSize(heightMap, 0));
 
   float height = 0.0;
   for (int x = -1; x < 2; x++) {
     for (int y = -1; y < 2; y++) {
-      height += texture(displacementMap, texCoord + vec2(x * ts.x, y * ts.y)).r;
+      height += texture(heightMap, texCoord + vec2(x * ts.x, y * ts.y)).r;
     }
   }
   return height / 9.0;
@@ -91,7 +91,7 @@ void main()
   #include var_entity_model_matrix.glsl
 
   const Material material = u_materials[tes_in[0].materialIndex];
-  sampler2D displacementMap = sampler2D(material.displacementMapTex);
+  sampler2D heightMap = sampler2D(material.heightMapTex);
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
   vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
@@ -103,7 +103,7 @@ void main()
   const float rangeYmax = entity.u_rangeYmax;
   const float rangeY = rangeYmax - rangeYmin;
 
-  float avgHeight = fetchHeight(displacementMap, texCoord);
+  float avgHeight = fetchHeight(heightMap, texCoord);
   float h = rangeYmin + avgHeight * rangeY;
 
   vertexPos.y += h;

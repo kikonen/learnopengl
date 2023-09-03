@@ -83,6 +83,7 @@ entities:
       map_metalness: textures\Fence007A_4K-JPG\Fence007A_4K_Metalness_1024.jpg
       map_roughness: textures\Fence007A_4K-JPG\Fence007A_4K_Roughness_1024.jpg
       map_opacity: textures\Fence007A_4K-JPG\Fence007A_4K_Opacity_1024.jpg
+      map_displacement: textures\Fence007A_4K-JPG\Fence007A_4K_Displacement_1024.jpg
     enabled: true
   - name: Bronze ball
     parent_id: [auto, origo]

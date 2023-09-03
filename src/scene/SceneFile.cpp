@@ -505,12 +505,15 @@ MeshType* SceneFile::createType(
         bool useParallax = false;
         bool useDudvTex = false;
         bool useHeightTex = false;
+        bool useDisplacementTex = false;
         bool useNormalTex = false;
         bool useCubeMap = false;
         bool useNormalPattern = false;
 
         type->modifyMaterials([
-            this, &useNormalTex, &useCubeMap, &useDudvTex, &useHeightTex, &useNormalPattern, &useParallax, &data
+            this,
+            &useNormalTex, &useCubeMap, &useDudvTex, &useHeightTex, &useDisplacementTex, &useNormalPattern, &useParallax,
+            &data
         ](Material& m) {
             if (data.materialModifiers_enabled) {
                 modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
@@ -519,12 +522,13 @@ MeshType* SceneFile::createType(
 
             useDudvTex |= m.hasTex(MATERIAL_DUDV_MAP_IDX);
             useHeightTex |= m.hasTex(MATERIAL_HEIGHT_MAP_IDX);
+            useDisplacementTex |= m.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX);
             useNormalTex |= m.hasTex(MATERIAL_NORMAL_MAP_IDX);
             useCubeMap |= 1.0 - m.reflection - m.refraction < 1.0;
             useNormalPattern |= m.pattern > 0;
-            useParallax |= m.hasTex(MATERIAL_HEIGHT_MAP_IDX) && m.depth > 0;
+            useParallax |= m.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX) && m.depth > 0;
         });
-        useTBN = useNormalTex || useDudvTex || useHeightTex;
+        useTBN = useNormalTex || useDudvTex || useDisplacementTex;
 
         if (!data.programName.empty()) {
             std::map<std::string, std::string> definitions;
@@ -557,6 +561,9 @@ MeshType* SceneFile::createType(
             }
             if (useHeightTex) {
                 definitions[DEF_USE_HEIGHT_TEX] = "1";
+            }
+            if (useDisplacementTex) {
+                definitions[DEF_USE_DISPLACEMENT_TEX] = "1";
             }
             if (useNormalTex) {
                 definitions[DEF_USE_NORMAL_TEX] = "1";
@@ -909,6 +916,7 @@ void SceneFile::modifyMaterial(
     if (f.map_roughness) m.map_roughness = mod.map_roughness;
     if (f.map_metalness) m.map_metalness = mod.map_metalness;
     if (f.map_occlusion) m.map_occlusion = mod.map_occlusion;
+    if (f.map_displacement) m.map_displacement = mod.map_displacement;
     if (f.map_opacity) m.map_opacity = mod.map_opacity;
 }
 
@@ -1687,7 +1695,7 @@ void SceneFile::loadMaterial(
             material.map_ks = resolveTexturePath(line);
             fields.map_ks = true;
         }
-        else if (k == "map_bump") {
+        else if (k == "map_bump" || k == "bump") {
             std::string line = v.as<std::string>();
             material.map_bump = resolveTexturePath(line);
             fields.map_bump = true;
@@ -1695,11 +1703,6 @@ void SceneFile::loadMaterial(
         else if (k == "map_bump_strength") {
             material.map_bump_strength = readFloat(v);
             fields.map_bump_strength = true;
-        }
-        else if (k == "bump") {
-            std::string line = v.as<std::string>();
-            material.map_bump = resolveTexturePath(line);
-            fields.map_bump = true;
         }
         else if (k == "map_dudv") {
             std::string line = v.as<std::string>();
@@ -1730,6 +1733,11 @@ void SceneFile::loadMaterial(
             std::string line = v.as<std::string>();
             material.map_occlusion = resolveTexturePath(line);
             fields.map_occlusion = true;
+        }
+        else if (k == "map_displacement") {
+            std::string line = v.as<std::string>();
+            material.map_displacement = resolveTexturePath(line);
+            fields.map_displacement = true;
         }
         else if (k == "map_opacity") {
             std::string line = v.as<std::string>();

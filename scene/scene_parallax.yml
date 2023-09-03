@@ -105,7 +105,7 @@ entities:
     model: quad
     material: brickwall2
     material_modifier:
-      map_height: bricks2_disp.jpg
+      map_displacement: bricks2_disp.jpg
     program: g_tex
     pos: [20.0, 2.5, 5.0]
     scale: 2.5
@@ -149,7 +149,7 @@ entities:
     model: quad
     material: brickwall
     material_modifier:
-      map_height: textures/brickwall_1024_height.jpg
+      map_displacement: textures/brickwall_1024_height.jpg
     program: g_tex
     pos: [30.0, 2.5, 5.0]
     scale: 2.5
