@@ -78,14 +78,14 @@ entities:
         scale: [100, 6, 0.3]
     enabled: true
   - name: Lucy statue
-    model: [metallic-lucy-statue, metallic-lucy-statue-stanford-scan]
+    model: lucy
     program: g_tex
     pos: [0.0, 0.0, 0.0]
-    rotation: [0, 180, 0]
-    scale: 0.2
-    material: gold_ball
-    force_material: true
-    material_modifier:
+    rotation: [0, 0, 0]
+    scale: 4
+    xmaterial: gold_ball
+    xforce_material: true
+    xmaterial_modifier:
       reflection: 0.4
     xxrender_flags:
       render_back: true
