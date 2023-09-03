@@ -124,7 +124,7 @@ void main() {
   calculateClipping(worldPos);
 
 #ifdef USE_TBN
-  if (u_materials[materialIndex].normalMapTex.x > 0 || u_materials[materialIndex].displacementMapTex.x > 0) {
+  if (u_materials[materialIndex].normalMapTex.x > 0 || u_materials[materialIndex].parallaxDepth > 0) {
     const vec3 N = normal;
     vec3 T = tangent;
 

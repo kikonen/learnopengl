@@ -92,7 +92,8 @@ class SceneFile
         bool illum = false;
 
         bool layers = false;
-        bool depth = false;
+        bool layersDepth = false;
+        bool parallaxDepth = false;
 
         bool map_dudv = false;
         bool map_height = false;

@@ -353,7 +353,7 @@ entities:
     material: woodwall
     material_modifier:
       map_bump: textures/wood_1024_normal.png
-      depth: 0.02
+      parallax_depth: 0.02
     program: g_tex
     pos: [-3.0, 15.5, 14.0]
     render_flags:
@@ -1140,7 +1140,7 @@ materials:
     map_kd: textures/brickwall_1024.png
     map_bump: textures/brickwall_1024_normal.png
     map_displacement: textures/brickwall_1024_height.jpg
-    depth: 0.017
+    parallax_depth: 0.017
     reflection: 0.02
   - name: woodwall
     ns: 225.000000

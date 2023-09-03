@@ -203,7 +203,7 @@ materials:
     map_kd: textures/brickwall_1024.png
     map_bump: textures/brickwall_1024_normal.png
     xreflection: 0.2
-    depth: 0.02
+    parallax_depth: 0.02
   - name: brickwall2
     ns: 225.000000
     type: texture
@@ -217,7 +217,7 @@ materials:
     map_kd: bricks2.jpg
     map_bump: bricks2_normal.jpg
     xreflection: 0.2
-    depth: 0.07
+    parallax_depth: 0.07
   - name: woodwall
     ns: 225.000000
     type: model

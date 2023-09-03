@@ -15,7 +15,7 @@ in VS_OUT {
   flat uint materialIndex;
 
   flat int layers;
-  flat float depth;
+  flat float layersDepth;
 } vs_in[];
 
 out VS_OUT {
@@ -33,7 +33,7 @@ void main() {
   const mat4 projectedModel = u_projectedMatrix * modelMatrix;
 
   const int furLayers = vs_in[0].layers;
-  const float furDepth = vs_in[0].depth;
+  const float furDepth = vs_in[0].layersDepth;
 
   const float delta = 1.0 / float(furLayers);
 

@@ -1,5 +1,7 @@
 #include "Registry.h"
 
+#include "asset/MaterialSSBO.h"
+
 
 Registry::Registry(
     const Assets& assets,

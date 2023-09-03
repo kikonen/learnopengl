@@ -34,12 +34,12 @@ public:
 
     void load();
 
-private:
+public:
     const std::string m_path;
+
+    std::unique_ptr<Image> m_image;
 
 private:
     bool m_valid = false;
-
-    std::unique_ptr<Image> m_image;
 };
 

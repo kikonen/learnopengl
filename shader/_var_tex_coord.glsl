@@ -1,6 +1,6 @@
 #ifdef USE_PARALLAX
   vec2 texCoord;
-  if (material.displacementMapTex.x > 0) {
+  if (material.parallaxDepth > 0) {
     const vec3 viewTangentDir = normalize(fs_in.viewTangentPos - fs_in.tangentPos);
     texCoord = calculateParallaxOcclusionMapping(material, fs_in.texCoord, viewTangentDir);
   } else {

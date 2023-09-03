@@ -17,12 +17,9 @@ struct Material {
   uvec2 dudvMapTex;
   uvec2 heightMapTex;
   uvec2 noiseMapTex;
-
-  uvec2 metalnessMapTex;
-  uvec2 roughnessMapTex;
-  uvec2 occlusionMapTex;
-  uvec2 displacementMapTex;
   uvec2 opacityMapTex;
+
+  uvec2 metalMapTex;
 
   float ambient;
 
@@ -35,5 +32,6 @@ struct Material {
   float tilingX;
   float tilingY;
   int layers;
-  float depth;
+  float layersDepth;
+  float parallaxDepth;
 };

@@ -22,7 +22,7 @@ out VS_OUT {
   flat uint materialIndex;
 
   flat int layers;
-  flat float depth;
+  flat float layersDepth;
 } vs_out;
 
 
@@ -45,7 +45,7 @@ void main() {
   vs_out.materialIndex = materialIndex;
 
   vs_out.layers = u_materials[materialIndex].layers;
-  vs_out.depth = u_materials[materialIndex].depth;
+  vs_out.layersDepth = u_materials[materialIndex].layersDepth;
 
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;

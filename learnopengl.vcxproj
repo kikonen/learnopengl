@@ -183,6 +183,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\asset\ChannelTexture.cpp" />
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
     <ClCompile Include="src\registry\SpriteRegistry.cpp" />
@@ -323,6 +324,7 @@
     <ClInclude Include="Group.h" />
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\BufferInfoUBO.h" />
+    <ClInclude Include="src\asset\ChannelTexture.h" />
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\Frustum.h" />

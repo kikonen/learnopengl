@@ -10,6 +10,8 @@
 #include "ki/Timer.h"
 #include "ki/OpenGLInfo.h"
 
+#include "asset/MaterialSSBO.h"
+
 #include "engine/AsyncLoader.h"
 
 #include "gui/Window.h"

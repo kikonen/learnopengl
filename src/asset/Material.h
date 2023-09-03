@@ -7,8 +7,9 @@
 
 #include "Texture.h"
 
-#include "MaterialSSBO.h"
+//#include "MaterialSSBO.h"
 
+struct MaterialSSBO;
 
 enum class BasicMaterial {
     basic,
@@ -38,7 +39,8 @@ constexpr int MATERIAL_ROUGHNESS_MAP_IDX = 8;
 constexpr int MATERIAL_OCCLUSION_MAP_IDX = 9;
 constexpr int MATERIAL_DISPLACEMENT_MAP_IDX = 10;
 constexpr int MATERIAL_OPACITY_MAP_IDX = 11;
-constexpr int MATERIAL_TEXTURE_COUNT = MATERIAL_OPACITY_MAP_IDX + 1;
+constexpr int MATERIAL_METAL_CHANNEL_MAP_IDX = 12;
+constexpr int MATERIAL_TEXTURE_COUNT = MATERIAL_METAL_CHANNEL_MAP_IDX + 1;
 
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
@@ -62,12 +64,14 @@ struct Material final
 {
 public:
     struct BoundTexture {
-        Texture* texture = nullptr;
-        int m_texIndex = -1;
-        GLuint64 m_handle = 0;
+        Texture* m_texture{ nullptr };
+        int m_texIndex{ -1 };
+        GLuint64 m_handle{ 0 };
+        bool m_channelPart{ false };
+        bool m_channelTexture{ false };
 
         bool valid() {
-            return texture;
+            return m_texture;
         }
     };
 
@@ -120,6 +124,12 @@ private:
         const std::string& name,
         bool gammaCorrect,
         bool usePlaceholder);
+
+    void loadChannelTexture(
+        const Assets& assets,
+        int idx,
+        const std::string& name,
+        std::vector<int> textureIndeces);
 
 public:
     int m_objectID;
@@ -188,7 +198,8 @@ public:
     float d = 1.0f;
 
     int layers = 0;
-    float depth = 0.f;
+    float layersDepth = 0.f;
+    float parallaxDepth = 0.f;
 
     // Multiple illumination models are available, per material
     // 0. Color on and Ambient off

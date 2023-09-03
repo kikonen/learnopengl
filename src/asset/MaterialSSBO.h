@@ -40,12 +40,9 @@ struct MaterialSSBO {
     GLuint64 u_dudvMap;
     GLuint64 u_heightMap;
     GLuint64 u_noiseMap;
-
-    GLuint64 u_metalnessMap;
-    GLuint64 u_roughnessMap;
-    GLuint64 u_occlusionMapTex;
-    GLuint64 u_displacementMapTex;
     GLuint64 u_opacityMap;
+
+    GLuint64 u_metalMap;
 
     float u_ambient;
     int u_pattern;
@@ -58,10 +55,11 @@ struct MaterialSSBO {
     float u_tilingY;
 
     int u_layers;
-    float u_depth;
+    float u_layersDepth;
+    float u_parallaxDepth;
 
-    int pad3_1;
-    int pad3_2;
-    int pad3_3;
+    //int pad3_1;
+    //int pad3_2;
+    //int pad3_3;
 };
 #pragma pack(pop)

@@ -15,7 +15,9 @@
 #include "asset/Shader.h"
 
 #include "asset/ImageTexture.h"
+#include "asset/ChannelTexture.h"
 
+#include "asset/MaterialSSBO.h"
 #include "asset/TextureUBO.h"
 
 
@@ -178,9 +180,20 @@ void Material::loadTextures(const Assets& assets)
     loadTexture(assets, MATERIAL_NOISE_MAP_IDX, map_noise, false, false);
     loadTexture(assets, MATERIAL_METALNESS_MAP_IDX, map_metalness, false, false);
     loadTexture(assets, MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
-    loadTexture(assets, MATERIAL_OCCLUSION_MAP_IDX, map_occlusion, false, false);
     loadTexture(assets, MATERIAL_DISPLACEMENT_MAP_IDX, map_displacement, false, false);
+    loadTexture(assets, MATERIAL_OCCLUSION_MAP_IDX, map_occlusion, false, false);
     loadTexture(assets, MATERIAL_OPACITY_MAP_IDX, map_opacity, false, false);
+
+    loadChannelTexture(
+        assets,
+        MATERIAL_METAL_CHANNEL_MAP_IDX,
+        "metal",
+        {
+            MATERIAL_METALNESS_MAP_IDX,
+            MATERIAL_ROUGHNESS_MAP_IDX,
+            MATERIAL_DISPLACEMENT_MAP_IDX,
+            MATERIAL_OCCLUSION_MAP_IDX
+        });
 }
 
 std::string Material::resolveBaseDir(const Assets& assets)
@@ -236,7 +249,51 @@ void Material::loadTexture(
     }
 
     if (texture && texture->isValid()) {
-        m_textures[idx].texture = texture;
+        m_textures[idx].m_texture = texture;
+    }
+}
+
+void Material::loadChannelTexture(
+    const Assets& assets,
+    int idx,
+    const std::string& name,
+    std::vector<int> textureIndeces)
+{
+    std::vector<ImageTexture*> sourceTextures;
+
+    int validCount = 0;
+    for (auto sourceIndex : textureIndeces) {
+        auto& bound = m_textures[sourceIndex];
+        if (bound.m_texture) {
+            sourceTextures.push_back((ImageTexture*)bound.m_texture);
+            bound.m_channelPart = true;
+            validCount++;
+        }
+        else {
+            sourceTextures.push_back(nullptr);
+        }
+    }
+
+    KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_objectID, m_name, name));
+
+    const std::string& placeholderPath = assets.placeholderTexture;
+
+    auto future = ChannelTexture::getTexture(
+        name,
+        sourceTextures,
+        textureSpec);
+
+    future.wait();
+
+    ChannelTexture* texture{ nullptr };
+
+    if (future.valid()) {
+        texture = future.get();
+    }
+
+    if (texture && texture->isValid()) {
+        m_textures[idx].m_texture = texture;
+        m_textures[idx].m_channelTexture = true;
     }
 }
 
@@ -260,7 +317,7 @@ const std::string Material::getTexturePath(
 bool Material::hasTex(int index) const
 {
     const auto& tex = m_textures[index];
-    return tex.texture != nullptr;
+    return tex.m_texture != nullptr;
 }
 
 void Material::prepare(const Assets& assets)
@@ -269,17 +326,20 @@ void Material::prepare(const Assets& assets)
     m_prepared = true;
 
     for (auto& tex : m_textures) {
-        if (!tex.texture) continue;
-        tex.texture->prepare(assets);
-        tex.m_texIndex = tex.texture->m_texIndex;
-        tex.m_handle = tex.texture->m_handle;
+        if (!tex.m_texture) continue;
+        if (tex.m_channelPart) continue;
+
+        tex.m_texture->prepare(assets);
+        tex.m_texIndex = tex.m_texture->m_texIndex;
+        tex.m_handle = tex.m_texture->m_handle;
     }
 }
 
 const MaterialSSBO Material::toSSBO() const
 {
     for (auto& tex : m_textures) {
-        if (!tex.texture) continue;
+        if (!tex.m_texture) continue;
+        if (tex.m_channelPart) continue;
         ASSERT_TEX_INDEX(tex.m_texIndex);
     }
 
@@ -298,12 +358,9 @@ const MaterialSSBO Material::toSSBO() const
         m_textures[MATERIAL_DUDV_MAP_IDX].m_handle,
         m_textures[MATERIAL_HEIGHT_MAP_IDX].m_handle,
         m_textures[MATERIAL_NOISE_MAP_IDX].m_handle,
-
-        m_textures[MATERIAL_METALNESS_MAP_IDX].m_handle,
-        m_textures[MATERIAL_ROUGHNESS_MAP_IDX].m_handle,
-        m_textures[MATERIAL_OCCLUSION_MAP_IDX].m_handle,
-        m_textures[MATERIAL_DISPLACEMENT_MAP_IDX].m_handle,
         m_textures[MATERIAL_OPACITY_MAP_IDX].m_handle,
+
+        m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle,
 
         calculateAmbient(ka),
         pattern,
@@ -316,6 +373,7 @@ const MaterialSSBO Material::toSSBO() const
         tilingY,
 
         layers,
-        depth,
+        layersDepth,
+        parallaxDepth,
     };
 }

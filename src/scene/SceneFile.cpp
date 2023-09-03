@@ -526,7 +526,10 @@ MeshType* SceneFile::createType(
             useNormalTex |= m.hasTex(MATERIAL_NORMAL_MAP_IDX);
             useCubeMap |= 1.0 - m.reflection - m.refraction < 1.0;
             useNormalPattern |= m.pattern > 0;
-            useParallax |= m.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX) && m.depth > 0;
+            useParallax |= m.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX) && m.parallaxDepth > 0;
+            if (!useParallax) {
+                m.parallaxDepth = 0.f;
+            }
         });
         useTBN = useNormalTex || useDudvTex || useDisplacementTex;
 
@@ -907,7 +910,8 @@ void SceneFile::modifyMaterial(
     if (f.illum) m.illum = mod.illum;
 
     if (f.layers) m.layers = mod.layers;
-    if (f.depth) m.depth = mod.depth;
+    if (f.layersDepth) m.layersDepth = mod.layersDepth;
+    if (f.parallaxDepth) m.parallaxDepth = mod.parallaxDepth;
 
     if (f.map_dudv) m.map_dudv = mod. map_dudv;
     if (f.map_height) m.map_height = mod.map_height;
@@ -1778,9 +1782,13 @@ void SceneFile::loadMaterial(
             material.layers = readInt(v);
             fields.layers = true;
         }
-        else if (k == "depth") {
-            material.depth = readFloat(v);
-            fields.depth = true;
+        else if (k == "layers_depth") {
+            material.layersDepth = readFloat(v);
+            fields.layersDepth = true;
+        }
+        else if (k == "parallax_depth") {
+            material.parallaxDepth = readFloat(v);
+            fields.parallaxDepth = true;
         }
         else if (k == "texture_spec") {
             loadTextureSpec(v, material.textureSpec);
