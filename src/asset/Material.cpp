@@ -274,7 +274,9 @@ void Material::loadChannelTexture(
         }
     }
 
-    KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_objectID, m_name, name));
+    KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}, validCount={}", m_objectID, m_name, name, validCount));
+
+    if (validCount == 0) return;
 
     const std::string& placeholderPath = assets.placeholderTexture;
 

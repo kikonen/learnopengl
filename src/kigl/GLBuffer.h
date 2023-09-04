@@ -164,6 +164,7 @@ struct GLBuffer {
 
     void flushRange(size_t offset, size_t length) {
         if (!m_mapped) return;
+        if (length <= 0) return;
         glFlushMappedNamedBufferRange(m_id, offset, length);
     }
 

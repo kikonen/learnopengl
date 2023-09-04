@@ -31,7 +31,8 @@ public:
     void updateLights(Registry* registry, bool useLight);
 
 private:
-    void updateTextures();
+    void updateImageTextures();
+    void updateChannelTextures();
 
 public:
 
@@ -43,5 +44,6 @@ private:
     GLBuffer m_lights{ "lightsUBO" };
 
     GLSyncQueue<TextureUBO, true> m_textures{ "textures", 1, MAX_TEXTURE_COUNT, false };
-    int m_textureLevel = -1;
+    int m_imageTextureLevel = -1;
+    int m_channelTextureLevel = -1;
 };

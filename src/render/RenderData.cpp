@@ -1,6 +1,7 @@
 #include "RenderData.h"
 
 #include "asset/ImageTexture.h"
+#include "asset/ChannelTexture.h"
 
 #include "asset/MatricesUBO.h"
 #include "asset/DataUBO.h"
@@ -52,7 +53,8 @@ void RenderData::bind()
 
 void RenderData::update()
 {
-    updateTextures();
+    updateImageTextures();
+    updateChannelTextures();
 }
 
 void RenderData::updateMatrices(MatricesUBO& data)
@@ -133,15 +135,37 @@ void RenderData::updateLights(Registry* registry, bool useLight)
     m_lights.update(0, sizeof(LightsUBO), &lightsUbo);
 }
 
-void RenderData::updateTextures()
+void RenderData::updateImageTextures()
 {
     // OpenGL Superbible, 7th Edition, page 552
     // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
     // https://www.khronos.org/opengl/wiki/Bindless_Texture
 
     auto [level, textures] = ImageTexture::getPreparedTextures();
-    if (level != m_textureLevel && !textures.empty()) {
-        m_textureLevel = level;
+    if (level != m_imageTextureLevel && !textures.empty()) {
+        m_imageTextureLevel = level;
+
+        TextureUBO entry;
+        for (const auto* texture : textures) {
+            if (texture->m_sent) continue;
+            entry.handle = texture->m_handle;
+            m_textures.set(texture->m_texIndex, entry);
+            texture->m_sent = true;
+        }
+
+        m_textures.flush();
+    }
+}
+
+void RenderData::updateChannelTextures()
+{
+    // OpenGL Superbible, 7th Edition, page 552
+    // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
+    // https://www.khronos.org/opengl/wiki/Bindless_Texture
+
+    auto [level, textures] = ChannelTexture::getPreparedTextures();
+    if (level != m_channelTextureLevel && !textures.empty()) {
+        m_channelTextureLevel = level;
 
         TextureUBO entry;
         for (const auto* texture : textures) {

@@ -18,6 +18,8 @@ public:
         const std::vector<ImageTexture*>& sourceTextures,
         const TextureSpec& spec);
 
+    static const std::pair<int, const std::vector<const ChannelTexture*>&> getPreparedTextures();
+
     ChannelTexture(
         const std::string& name,
         const std::vector<ImageTexture*>& sourceTextures,

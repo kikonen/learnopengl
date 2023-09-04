@@ -78,6 +78,8 @@ void main()
     material.metal = texture(g_metal, texCoord);
     material.emission = texture(g_emission, texCoord);
     material.emission.a = 1.0;
+
+    material.metal = texture(g_metal, texCoord);
   }
 
   //bool skipLight = material.ambient >= 1.0;
