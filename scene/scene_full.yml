@@ -1071,7 +1071,7 @@ materials:
     map_noise: textures/noise2_256.png
     tiling: 1
     layers: 25
-    depth: 0.2
+    layers_depth: 0.2
     texture_spec:
       wrap: GL_REPEAT
   - name: default_ball
