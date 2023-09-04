@@ -5,8 +5,11 @@
 constexpr int MIP_MAP_LEVELS = 5;
 
 struct TextureSpec {
-    GLint wrapS = GL_CLAMP_TO_EDGE;
-    GLint wrapT = GL_CLAMP_TO_EDGE;
+    // NOTE KI opengl default is GL_REPEAT
+    // => match that
+    // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexParameter.xhtml
+    GLint wrapS = GL_REPEAT;
+    GLint wrapT = GL_REPEAT;
 
     int minFilter = GL_NEAREST_MIPMAP_LINEAR;
     int magFilter = GL_LINEAR;
