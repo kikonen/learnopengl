@@ -20,10 +20,12 @@ LAYOUT_G_BUFFER_OUT;
 
 SET_FLOAT_PRECISION;
 
+Material material;
+
 #include fn_gbuffer_encode.glsl
 
 void main() {
-  Material material = u_materials[fs_in.materialIndex];
+  material = u_materials[fs_in.materialIndex];
 
   const vec3 normal = normalize(fs_in.normal);
 

@@ -70,6 +70,8 @@ layout (binding = SSBO_DRAW_PARAMETERS, std430) readonly buffer DrawParametersSS
 
 SET_FLOAT_PRECISION;
 
+Entity entity;
+
 float getSignedDistanceToPlane(in vec4 plane, in vec3 p)
 {
   return dot(plane.xyz, p) - plane.w;
@@ -105,7 +107,7 @@ void main(void) {
   const DrawIndirectCommand cmd = u_commands[baseIndex + drawIndex];
   const uint baseInstance = param.drawType == DRAW_TYPE_ELEMENTS ? cmd.baseInstance_or_pad : cmd.baseVertex_or_baseInstance;
 
-  const Entity entity = u_entities[baseInstance];
+  entity = u_entities[baseInstance];
 
   const bool skip = cmd.instanceCount > 0;
   bool visible = (entity.u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT;

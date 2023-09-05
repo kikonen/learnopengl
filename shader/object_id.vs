@@ -31,12 +31,16 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
-#include fn_convert_object_id.glsl
+SET_FLOAT_PRECISION;
 
 const vec3 UP = vec3(0, 1, 0);
 
+Entity entity;
+
+#include fn_convert_object_id.glsl
+
 void main() {
-  const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
 
   const vec4 pos = vec4(a_pos, 1.0);

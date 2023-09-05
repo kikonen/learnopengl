@@ -49,11 +49,15 @@ out TCS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
+SET_FLOAT_PRECISION;
+
+Entity entity;
+
 //#include fn_calculate_clipping.glsl
 
 void main()
 {
-  const Entity entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
+  entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
   #include var_entity_model_matrix.glsl
 
   int materialIndex = entity.u_materialIndex;

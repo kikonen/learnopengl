@@ -53,6 +53,9 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
+Entity entity;
+Material material;
+
 #include fn_calculate_clipping.glsl
 
 
@@ -87,10 +90,10 @@ float fetchHeight(
 
 void main()
 {
-  const Entity entity = u_entities[tes_in[0].entityIndex];
+  entity = u_entities[tes_in[0].entityIndex];
   #include var_entity_model_matrix.glsl
 
-  const Material material = u_materials[tes_in[0].materialIndex];
+  material = u_materials[tes_in[0].materialIndex];
   sampler2D heightMap = sampler2D(material.heightMapTex);
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates

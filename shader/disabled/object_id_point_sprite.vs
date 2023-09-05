@@ -20,10 +20,14 @@ const vec4 pos = vec4(0.0, -1.0, 0.0, 1.0);
 //
 ////////////////////////////////////////////////////////////
 
+SET_FLOAT_PRECISION;
+
+Entity entity;
+
 #include fn_convert_object_id.glsl
 
 void main() {
-  const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 

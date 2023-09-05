@@ -1,6 +1,5 @@
 #ifdef USE_PARALLAX
 vec2 calculateParallaxMapping(
-  in Material material,
   vec2 texCoord,
   vec3 viewTangentDir)
 {
@@ -11,7 +10,6 @@ vec2 calculateParallaxMapping(
 }
 
 vec2 calculateDeepParallaxMapping(
-  in Material material,
   vec2 texCoord,
   vec3 viewTangentDir)
 {
@@ -48,7 +46,6 @@ vec2 calculateDeepParallaxMapping(
 }
 
 vec2 calculateParallaxOcclusionMapping(
-  in Material material,
   vec2 texCoord,
   vec3 viewTangentDir)
 {

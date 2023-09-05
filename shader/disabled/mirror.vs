@@ -39,10 +39,14 @@ out VS_OUT {
 //
 ////////////////////////////////////////////////////////////
 
+SET_FLOAT_PRECISION;
+
+Entity entity;
+
 #include fn_calculate_shadow_index.glsl
 
 void main() {
-  const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 

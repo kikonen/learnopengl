@@ -34,8 +34,10 @@ const vec3 tangent = vec3(1.0, 0.0, 0.0);
 
 SET_FLOAT_PRECISION;
 
+Entity entity;
+
 void main() {
-  const Entity entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  entity = u_entities[gl_BaseInstance + gl_InstanceID];
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 

@@ -33,6 +33,8 @@ float iTime;
 
 SET_FLOAT_PRECISION;
 
+Material material;
+
 #ifdef EFFECT_SUN
   #include effect_sun.glsl
 #endif
@@ -41,7 +43,7 @@ SET_FLOAT_PRECISION;
 #endif
 
 void main() {
-  Material material = u_materials[fs_in.materialIndex];
+  material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
   #include var_tex_plain_material.glsl

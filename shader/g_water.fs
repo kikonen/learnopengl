@@ -37,6 +37,8 @@ LAYOUT_G_BUFFER_OUT;
 
 SET_FLOAT_PRECISION;
 
+Material material;
+
 #include fn_calculate_normal_pattern.glsl
 #include fn_calculate_fog.glsl
 #include fn_gbuffer_encode.glsl
@@ -65,7 +67,7 @@ vec3 estimateWaveNormal(
 const float waveStrength = 0.01;
 
 void main() {
-  Material material = u_materials[fs_in.materialIndex];
+  material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
   #include var_tex_plain_material.glsl

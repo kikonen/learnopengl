@@ -57,6 +57,9 @@ out TES_OUT {
 
 SET_FLOAT_PRECISION;
 
+Entity entity;
+Material material;
+
 #include fn_calculate_shadow_index.glsl
 
 
@@ -76,10 +79,10 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
 
 void main()
 {
-  const Entity entity = u_entities[tes_in[0].entityIndex];
+  entity = u_entities[tes_in[0].entityIndex];
   #include var_entity_model_matrix.glsl
 
-  const Material material = u_materials[tes_in[0].materialIndex];
+  material = u_materials[tes_in[0].materialIndex];
   sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates

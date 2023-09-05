@@ -2,8 +2,7 @@ vec3 calculateSpotLight(
   in SpotLight light,
   in vec3 normal,
   in vec3 viewDir,
-  in vec3 worldPos,
-  in Material material)
+  in vec3 worldPos)
 {
   const vec3 toLight = light.worldPos.xyz - worldPos;
   const float dist = length(toLight);

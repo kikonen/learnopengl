@@ -26,6 +26,8 @@ layout (location = 1) out vec4 o_fragBright;
 
 SET_FLOAT_PRECISION;
 
+Material material;
+
 #include fn_calculate_dir_light.glsl
 #include fn_calculate_point_light.glsl
 #include fn_calculate_spot_light.glsl
@@ -67,8 +69,6 @@ void main()
 
   const vec3 viewDir = normalize(u_mainViewWorldPos - worldPos);
 
-  Material material;
-
   {
     material.diffuse = texture(g_albedo, texCoord);
     material.ambient = material.diffuse.a;
@@ -91,8 +91,7 @@ void main()
   } else {
     color = calculateLight(
       normal, viewDir, worldPos,
-      shadowIndex,
-      material);
+      shadowIndex);
 
     emission = (material.emission.r + material.emission.g + material.emission.b) > 0;
 

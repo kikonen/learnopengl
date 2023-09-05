@@ -23,9 +23,11 @@ LAYOUT_OIT_OUT;
 
 SET_FLOAT_PRECISION;
 
+Material material;
+
 void main()
 {
-  Material material = u_materials[fs_in.materialIndex];
+  material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
   #include var_tex_sprite_material.glsl

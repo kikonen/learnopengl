@@ -17,8 +17,7 @@ vec3 calculateDirLight(
   in vec3 normal,
   in vec3 viewDir,
   in vec3 worldPos,
-  in uint shadowIndex,
-  in Material material)
+  in uint shadowIndex)
 {
   const vec3 lightDir = normalize(-light.worldDir.xyz);
   const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);

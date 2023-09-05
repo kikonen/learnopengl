@@ -47,6 +47,9 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
+Entity entity;
+Material material;
+
 #include fn_calculate_dir_light.glsl
 #include fn_calculate_point_light.glsl
 #include fn_calculate_spot_light.glsl
@@ -55,13 +58,13 @@ SET_FLOAT_PRECISION;
 #include fn_calculate_fog.glsl
 
 void main() {
-  Material material = u_materials[fs_in.materialIndex];
+  material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
   #include var_tex_plain_material.glsl
 
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
-  const Entity entity = u_entities[fs_in.entityIndex];
+  entity = u_entities[fs_in.entityIndex];
 
   #include var_tex_plain_material_normal.glsl
 

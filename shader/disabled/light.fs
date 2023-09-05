@@ -22,8 +22,10 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
+Material material;
+
 void main() {
-  Material material = u_materials[fs_in.materialIndex];
+  material = u_materials[fs_in.materialIndex];
 
   // combined
   vec4 texColor = material.diffuse;
