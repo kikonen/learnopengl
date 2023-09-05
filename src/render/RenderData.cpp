@@ -53,8 +53,8 @@ void RenderData::bind()
 
 void RenderData::update()
 {
-    updateImageTextures();
-    updateChannelTextures();
+    //updateImageTextures();
+    //updateChannelTextures();
 }
 
 void RenderData::updateMatrices(MatricesUBO& data)
