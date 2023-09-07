@@ -78,10 +78,10 @@ unsigned int CubeMap::createFaces()
 
     for (unsigned int i = 0; i < 6; i++)
     {
-        images[i] = std::make_unique<Image>(m_faces[i]);
+        images[i] = std::make_unique<Image>(m_faces[i], false);
         Image* image = images[i].get();
 
-        if (image->load(false)) {
+        if (image->load()) {
             formats.emplace_back(GL_RGB);
             continue;
         }

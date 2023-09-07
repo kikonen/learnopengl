@@ -203,8 +203,8 @@ void ImageTexture::prepare(
 }
 
 void ImageTexture::load() {
-    m_image = std::make_unique<Image>(m_path);
-    int res = m_image->load(true);
+    m_image = std::make_unique<Image>(m_path, true);
+    int res = m_image->load();
     if (res) {
         m_image.reset();
         return;

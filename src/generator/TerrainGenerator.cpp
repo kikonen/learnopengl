@@ -63,9 +63,9 @@ void TerrainGenerator::prepareHeightMap(
     const auto& imagePath = m_material.getTexturePath(assets, m_material.map_height);
     KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
 
-    auto image = std::make_unique<Image>(imagePath);
+    auto image = std::make_unique<Image>(imagePath, false);
     // NOTE KI don't flip, otherwise have to reverse offsets
-    int res = image->load(false);
+    int res = image->load();
 
     auto heightMap = std::make_unique<physics::HeightMap>(std::move(image));
     {

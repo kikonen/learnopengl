@@ -14,7 +14,7 @@ Image* ImageRegistry::getImage(const std::string& path)
 
     auto e = m_images.find(cacheKey);
     if (e == m_images.end()) {
-        m_images[cacheKey] = std::make_unique<Image>(path);
+        m_images[cacheKey] = std::make_unique<Image>(path, true);
         e = m_images.find(cacheKey);
     }
     return e->second.get();

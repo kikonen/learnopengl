@@ -23,8 +23,18 @@ namespace {
     std::mutex load_lock{};
 }
 
-Image::Image(const std::string& path)
-    :m_path(path)
+Image::Image(const std::string& path, bool flipped)
+    :Image(path, flipped, false)
+{
+}
+
+Image::Image(
+    const std::string& path,
+    bool flipped,
+    bool hdri)
+    : m_path(path),
+    m_flipped(flipped),
+    m_hdri(hdri)
 {
 }
 
@@ -36,7 +46,7 @@ Image::~Image()
 
 // NOTE KI *NOT* thread safe
 // https://github.com/nothings/stb/issues/309
-int Image::load(bool flip) {
+int Image::load() {
     //std::lock_guard<std::mutex> lock(load_lock);
 
     if (m_loaded) {
@@ -44,13 +54,19 @@ int Image::load(bool flip) {
     }
     m_loaded = true;
 
-    m_flipped = flip;
-    stbi_set_flip_vertically_on_load_thread(flip);
+    stbi_set_flip_vertically_on_load_thread(m_flipped);
     //stbi_set_flip_vertically_on_load(flip);
 
     m_is_16_bit = stbi_is_16_bit(m_path.c_str());
 
-    if (m_is_16_bit) {
+    if (m_hdri) {
+        m_data = (unsigned char*)stbi_loadf(
+            m_path.c_str(),
+            &m_width,
+            &m_height,
+            &m_channels,
+            STBI_default);
+    } else if (m_is_16_bit) {
         m_data = (unsigned char*)stbi_load_16(
             m_path.c_str(),
             &m_width,
