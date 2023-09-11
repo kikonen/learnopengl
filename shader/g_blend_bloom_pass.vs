@@ -1,7 +1,7 @@
 #version 460 core
 
-layout (location = 0) in vec3 a_pos;
-layout (location = 1) in vec2 a_texCoord;
+layout (location = ATTR_POS) in vec3 a_pos;
+layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 out VS_OUT {
   vec2 texCoord;

@@ -107,7 +107,7 @@ void NodeDraw::drawNodes(
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
         m_deferredProgram->bind(ctx.m_state);
-        m_textureQuad.draw(ctx);
+        m_textureQuad.draw(ctx.m_state);
 
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
 
@@ -231,14 +231,14 @@ void NodeDraw::drawNodes(
 
             if (ctx.m_assets.effectFogEnabled) {
                 m_fogProgram->bind(ctx.m_state);
-                m_textureQuad.draw(ctx);
+                m_textureQuad.draw(ctx.m_state);
             }
 
             if (ctx.m_assets.effectOitEnabled) {
                 activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
                 m_blendOitProgram->bind(ctx.m_state);
-                m_textureQuad.draw(ctx);
+                m_textureQuad.draw(ctx.m_state);
             }
 
             ctx.m_state.setEnabled(GL_BLEND, false);
@@ -257,7 +257,7 @@ void NodeDraw::drawNodes(
                 buf->bind(ctx);
 
                 m_bloomProgram->u_effectBloomIteration->set(i);
-                m_textureQuad.draw(ctx);
+                m_textureQuad.draw(ctx.m_state);
 
                 buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);
             }
@@ -266,7 +266,7 @@ void NodeDraw::drawNodes(
             activeBuffer->bind(ctx);
 
             m_blendBloomProgram->bind(ctx.m_state);
-            m_textureQuad.draw(ctx);
+            m_textureQuad.draw(ctx.m_state);
         }
         else {
             activeBuffer->copy(
@@ -325,7 +325,7 @@ void NodeDraw::drawNodes(
                     targetBuffer->bind(ctx);
                     m_hdrGammaProgram->bind(ctx.m_state);
                     activeBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
-                    m_textureQuad.draw(ctx);
+                    m_textureQuad.draw(ctx.m_state);
                 }
                 else {
                     activeBuffer->blit(

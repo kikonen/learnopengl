@@ -37,6 +37,7 @@ public:
     int prepared() noexcept { return m_prepared; }
 
     void setInt(const std::string& name, int value) noexcept;
+    void setMat4(const std::string& name, const glm::mat4& value) noexcept;
 
     void setupUBO(
         const char* name,

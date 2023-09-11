@@ -37,6 +37,7 @@ struct FrameBufferAttachment {
 
     int textureWrapS = GL_CLAMP_TO_EDGE;
     int textureWrapT = GL_CLAMP_TO_EDGE;
+    int textureWrapR = GL_CLAMP_TO_EDGE;
 
     glm::vec4 borderColor{ 0.f, 0.f, 0.f, 0.f };
     glm::vec4 clearColor{ 0.f, 0.f, 0.f, 0.f };

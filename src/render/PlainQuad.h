@@ -2,15 +2,21 @@
 
 #include "ki/GL.h"
 
-class RenderContext;
+#include "kigl/GLBuffer.h"
+#include "kigl/GLVertexArray.h"
+
+class GLState;
 
 class PlainQuad {
 public:
+    PlainQuad() = default;
+    ~PlainQuad() = default;
+
     void prepare();
 
-    void draw(const RenderContext& ctx);
+    void draw(GLState& state);
 
 private:
-    GLuint m_vao{ 0 };
-    GLuint m_vbo{ 0 };
+    GLVertexArray m_vao;
+    GLBuffer m_vbo{ "plain_quad" };
 };

@@ -184,13 +184,15 @@ void FrameBuffer::prepare(
         glNamedFramebufferDrawBuffers(m_fbo, m_drawBuffers.size(), m_drawBuffers.data());
     }
 
-    GLenum status = glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER);
-    if (status != GL_FRAMEBUFFER_COMPLETE) {
-        std::string msg = fmt::format(
-            "FRAMEBUFFER:: Framebuffer is not complete! buffer={}, status=0x{:x} ({})",
-            str(), status, status);
-        KI_ERROR(msg);
-        throw std::runtime_error{ msg };
+    if (m_checkComplete) {
+        GLenum status = glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER);
+        if (status != GL_FRAMEBUFFER_COMPLETE) {
+            std::string msg = fmt::format(
+                "FRAMEBUFFER:: Framebuffer is not complete! buffer={}, status=0x{:x} ({})",
+                str(), status, status);
+            KI_ERROR(msg);
+            throw std::runtime_error{ msg };
+        }
     }
 
     // NOTE KI clear buffer to avoid showing garbage

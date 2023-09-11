@@ -142,8 +142,8 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
         if (m_assets.useIMGUI) {
             m_frame->bind(ctx);
-            m_state.clear();
         }
+        m_state.clear();
 
         scene->updateView(ctx);
         scene->bind(ctx);

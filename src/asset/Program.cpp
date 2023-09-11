@@ -345,6 +345,14 @@ void Program::setInt(const std::string& name, int value) noexcept
     }
 }
 
+void Program::setMat4(const std::string& name, const glm::mat4& value) noexcept
+{
+    GLint vi = getUniformLoc(name);
+    if (vi != -1) {
+        glUniformMatrix4fv(vi, 1, GL_FALSE, glm::value_ptr(value));
+    }
+}
+
 void Program::setupUBO(
     const char* name,
     unsigned int ubo,

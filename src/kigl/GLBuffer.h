@@ -23,10 +23,12 @@ struct GLBuffer {
 
     void create() {
         if (m_created) return;
+
         glCreateBuffers(1, &m_id);
+        m_created = true;
+
         glObjectLabel(GL_BUFFER, m_id, m_name.length(), m_name.c_str());
         KI_DEBUG(fmt::format("BUFFER: create - name={}, id={}", m_name, m_id));
-        m_created = true;
     }
 
     void createEmpty(int size, int flags) {
@@ -62,7 +64,7 @@ struct GLBuffer {
         glNamedBufferStorage(m_id, size, nullptr, flags);
     }
 
-    void init(int size, void* data, int flags) {
+    void init(int size, const void* data, int flags) {
         m_size = size;
 
         KI_DEBUG(fmt::format(

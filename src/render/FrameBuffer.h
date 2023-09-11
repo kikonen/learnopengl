@@ -88,10 +88,14 @@ public:
 
     FrameBufferAttachment* getDepthAttachment();
 
+    operator int() const { return m_fbo; }
+
 public:
     const std::string m_name;
 
     FrameBufferSpecification m_spec;
+
+    bool m_checkComplete{ true };
 
     GLuint m_fbo = 0;
     bool m_forceBind{ false };

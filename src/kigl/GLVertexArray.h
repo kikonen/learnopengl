@@ -7,18 +7,20 @@ struct GLVertexArray {
     }
 
     ~GLVertexArray() {
-        if (id != -1) {
-            glDeleteVertexArrays(1, &id);
+        if (m_created) {
+            glDeleteVertexArrays(1, &m_id);
         }
     }
 
-    operator int() const { return id; }
+    operator int() const { return m_id; }
 
     void create(const std::string& name) {
-        if (id != -1) return;
-        glCreateVertexArrays(1, &id);
-        glObjectLabel(GL_VERTEX_ARRAY, id, name.length(), name.c_str());
+        if (m_created) return;
+        glCreateVertexArrays(1, &m_id);
+        m_created = true;
+        glObjectLabel(GL_VERTEX_ARRAY, m_id, name.length(), name.c_str());
     }
 
-    GLuint id = -1;
+    bool m_created{ false };
+    GLuint m_id{ 0 };
 };
