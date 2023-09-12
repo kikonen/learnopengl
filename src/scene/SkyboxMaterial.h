@@ -29,6 +29,15 @@ public:
 
     virtual void bindTextures(const RenderContext& ctx) override;
 
+private:
+    void prepareFaces(
+        const Assets& assets,
+        Registry* registry);
+
+    void prepareHdri(
+        const Assets& assets,
+        Registry* registry);
+
 public:
     // ORDER
     //basePath + "/right.jpg",
@@ -39,6 +48,7 @@ public:
     //basePath + "/back.jpg"
     std::array<std::string, 6> m_faces;
     bool m_swapFaces{ false };
+    bool m_hdri;
 
 private:
     CubeMap m_cubeMap{ false };

@@ -1,8 +1,14 @@
-{
-  if (material.diffuseTex.x > 0) {
-    sampler2D sampler = sampler2D(material.diffuseTex);
-    material.diffuse = texture(sampler, texCoord);
+#define materialRGB(tx) \
+  if (material.tx ## Tex.x > 0) { \
+    material.tx = texture(sampler2D(material.tx ## Tex), texCoord); \
   }
+
+{
+  // if (material.diffuseTex.x > 0) {
+  //   sampler2D sampler = sampler2D(material.diffuseTex);
+  //   material.diffuse = texture(sampler, texCoord);
+  // }
+  materialRGB(diffuse);
 
   if (material.opacityMapTex.x > 0) {
     sampler2D sampler = sampler2D(material.opacityMapTex);

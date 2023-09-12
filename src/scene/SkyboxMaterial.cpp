@@ -33,8 +33,19 @@ SkyboxMaterial::SkyboxMaterial(
 {
 }
 
-
 void SkyboxMaterial::prepare(
+    const Assets& assets,
+    Registry* registry)
+{
+    if (m_hdri) {
+        prepareHdri(assets, registry);
+    }
+    else {
+        prepareFaces(assets, registry);
+    }
+}
+
+void SkyboxMaterial::prepareFaces(
     const Assets& assets,
     Registry* registry)
 {
@@ -65,7 +76,32 @@ void SkyboxMaterial::prepare(
         }
 
     }
-    m_cubeMap.create();
+    m_cubeMap.prepare(assets, registry);
+}
+
+void SkyboxMaterial::prepareHdri(
+    const Assets& assets,
+    Registry* registry)
+{
+    {
+        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
+        std::string filePath;
+        {
+            filePath = util::joinPath(
+                assets.assetsDir,
+                m_materialName);
+        }
+
+        m_cubeMap.m_faces = {
+            filePath,
+        };
+
+        // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
+        m_cubeMap.m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB8;
+        m_cubeMap.m_hdri = true;
+    }
+
+    m_cubeMap.prepare(assets, registry);
 }
 
 void SkyboxMaterial::bindTextures(const RenderContext& ctx)

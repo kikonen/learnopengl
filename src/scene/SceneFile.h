@@ -52,6 +52,7 @@ class SceneFile
         std::string materialName{};
         int priority{ -100 };
 
+        bool hdri{ false };
         bool swapFaces{ false };
         bool loadedFaces{ false };
         std::array<std::string, 6> faces;

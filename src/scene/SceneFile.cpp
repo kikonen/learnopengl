@@ -160,6 +160,7 @@ void SceneFile::attachSkybox(
 
     auto material{ std::make_unique<SkyboxMaterial>(data.materialName, true) };
     material->m_swapFaces = data.swapFaces;
+    material->m_hdri = data.hdri;
     if (data.loadedFaces) {
         material->m_faces = data.faces;
     }
@@ -1099,6 +1100,9 @@ void SceneFile::loadSkybox(
         }
         else if (k == "priority") {
             data.priority = readInt(v);
+        }
+        else if (k == "hdri") {
+            data.hdri = readBool(v);
         }
         else if (k == "swap_faces") {
             data.swapFaces = readBool(v);

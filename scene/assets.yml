@@ -128,7 +128,7 @@ assets:
   hdr_gamma: 2.2
   hdr_exposure: 1.0
 
-  effect_bloom_enabled: true
+  effect_bloom_enabled: false
   effect_bloom_exposure: 1.0
   effect_bloom_iterations: 1
 

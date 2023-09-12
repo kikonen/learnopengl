@@ -19,6 +19,7 @@ const std::string SHADER_EFFECT{ "effect" };
 const std::string SHADER_VIEWPORT{ "viewport" };
 const std::string SHADER_VOLUME{ "volume" };
 const std::string SHADER_SKYBOX{ "skybox" };
+const std::string SHADER_HDRI_CUBE_MAP{ "hdri_cube_map" };
 
 const std::string SHADER_GEOMETRY_PASS{ "g_geometry_pass" };
 const std::string SHADER_DEFERRED_PASS{ "g_deferred_pass" };
@@ -96,6 +97,8 @@ constexpr int VBO_VERTEX_BINDING = 0;
 //constexpr int ATTR_INSTANCE_HIGHLIGHT_INDEX = 14;
 //constexpr int ATTR_INSTANCE_ENTITY_INDEX = 15;
 //constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
+
+constexpr int UNIT_HDR_TEXTURE = 49;
 
 constexpr int UNIT_G_ALBEDO = 50;
 constexpr int UNIT_G_SPECULAR = 51;

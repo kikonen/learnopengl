@@ -42,6 +42,8 @@ void DynamicCubeMap::unbind(const RenderContext& ctx)
 }
 
 void DynamicCubeMap::prepare(
+    const Assets& assets,
+    Registry* registry,
     const bool clear,
     const glm::vec4& clearColor)
 {
@@ -69,7 +71,7 @@ void DynamicCubeMap::prepare(
 
     m_cubeMap.m_size = m_size;
     m_cubeMap.m_internalFormat = GL_RGB16F;
-    m_cubeMap.create();
+    m_cubeMap.prepare(assets, registry);
 
     //glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     //for (unsigned int face = 0; face < 6; face++)

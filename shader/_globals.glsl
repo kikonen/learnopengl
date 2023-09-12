@@ -61,6 +61,8 @@
 
 #define SUBROUTINE_EFFECT 0
 
+#define UNIT_HDR_TEXTURE 49
+
 #define UNIT_G_ALBEDO 50
 #define UNIT_G_SPECULAR 51
 #define UNIT_G_EMISSION 52

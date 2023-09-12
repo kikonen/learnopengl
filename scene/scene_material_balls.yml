@@ -4,6 +4,8 @@ viewports:
 skybox:
   program: g_skybox
   material: skybox
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  hdri: true
 lights: {}
 cube_maps: {}
 root:
@@ -62,6 +64,12 @@ entities:
     material: gold_ball
     material_modifier:
       reflection: 0.05
+      map_kd: textures\Planks 09 [8K]/Planks09_col_2048.png
+      map_bump: textures\Planks 09 [8K]/Planks09_nrm_2048.png
+      map_roughness: textures\Planks 09 [8K]/Planks09_rgh_2048.png
+      map_displacement: textures\Planks 09 [8K]/Planks09_disp_2048.png
+      map_occlusion: textures\Planks 09 [8K]/Planks09_ao_2048.png
+      parallax_depth: 0.0
     enabled: true
   - name: Silver ball
     parent_id: [auto, origo]
@@ -96,6 +104,11 @@ entities:
     material: bronze_ball
     material_modifier:
       reflection: 0.05
+      map_kd: textures\Plastic 01 [4K]/Plastic01_col_2048.png
+      map_bump: textures\Plastic 01 [4K]/Plastic01_nrm_2048.png
+      map_roughness: textures\Plastic 01 [4K]/Plastic01_rgh_2048.png
+      map_displacement: textures\Plastic 01 [4K]/Plastic01_disp_2048.png
+      parallax_depth: 0.0
     enabled: true
   - name: wooden floor
     model: quad

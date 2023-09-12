@@ -31,6 +31,8 @@ void FrameBufferAttachment::clearBuffer(int fbo) const
     if (shared) return;
 
     switch (clearType) {
+    case ClearType::NONE:
+        break;
     case ClearType::FLOAT:
         if (drawBufferIndex >= 0) {
             glClearNamedFramebufferfv(fbo, GL_COLOR, drawBufferIndex, glm::value_ptr(clearColor));
@@ -85,6 +87,17 @@ FrameBufferAttachment FrameBufferAttachment::getShared(FrameBufferAttachment* sh
     spec.type = FrameBufferAttachmentType::shared;
     spec.shared = shared;
     // NOTE KI no clearMask on shared; cannot clear as part as shared
+
+    return spec;
+}
+
+FrameBufferAttachment FrameBufferAttachment::getDrawBuffer(GLenum attachment)
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::draw_buffer;
+    spec.attachment = attachment;
+    spec.useDrawBuffer = true;
+    spec.clearType = ClearType::NONE;
 
     return spec;
 }
@@ -421,3 +434,21 @@ FrameBufferAttachment FrameBufferAttachment::getOITRevealTexture(GLenum attachme
 
     return spec;
 }
+
+//FrameBufferAttachment FrameBufferAttachment::getCubeMapHdri(GLenum attachment)
+//{
+//    FrameBufferAttachment spec;
+//    spec.type = FrameBufferAttachmentType::cube_map_texture;
+//    spec.internalFormat = GL_RGB16F;
+//    spec.attachment = attachment;
+//    spec.useDrawBuffer = false;
+//    spec.clearMask = GL_COLOR_BUFFER_BIT;
+//
+//    spec.minFilter = GL_LINEAR;
+//    spec.magFilter = GL_LINEAR;
+//    spec.textureWrapS = GL_CLAMP_TO_EDGE;
+//    spec.textureWrapT = GL_CLAMP_TO_EDGE;
+//    spec.textureWrapR = GL_CLAMP_TO_EDGE;
+//
+//    return spec;
+//}

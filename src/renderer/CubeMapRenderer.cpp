@@ -103,10 +103,12 @@ void CubeMapRenderer::prepare(
     {
         m_curr = std::make_unique<DynamicCubeMap>(scaledSize);
         m_curr->prepare(
+            assets, registry,
             false, { 0, 0, 1.f, 1.f });
 
         m_prev = std::make_unique<DynamicCubeMap>(scaledSize);
         m_prev->prepare(
+            assets, registry,
             false,
             { 0, 1.f, 0, 1.f });
     }

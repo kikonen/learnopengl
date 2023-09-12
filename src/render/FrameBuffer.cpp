@@ -86,6 +86,11 @@ void FrameBuffer::prepare(
                 glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
                 glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
             }
+        } else if (att.type == FrameBufferAttachmentType::draw_buffer) {
+            if (att.useDrawBuffer) {
+                att.drawBufferIndex = m_drawBuffers.size();
+                m_drawBuffers.push_back(att.attachment);
+            }
         } else if (att.type == FrameBufferAttachmentType::texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
             glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
@@ -109,6 +114,33 @@ void FrameBuffer::prepare(
                 m_drawBuffers.push_back(att.attachment);
             }
         }
+        //else if (att.type == FrameBufferAttachmentType::cube_map_texture) {
+        //    glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &att.textureID);
+
+        //    glTextureStorage2D(att.textureID, 0, att.internalFormat, m_spec.width, m_spec.height);
+
+        //    glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
+        //    glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
+        //    glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_R, att.textureWrapR);
+
+        //    glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
+        //    glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
+
+        //    //glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
+
+        //    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+        //    glFramebufferTexture2D(
+        //        GL_FRAMEBUFFER,
+        //        GL_COLOR_ATTACHMENT0,
+        //        GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0,
+        //        att.textureID,
+        //        0);
+
+        //    if (att.useDrawBuffer) {
+        //        att.drawBufferIndex = m_drawBuffers.size();
+        //        m_drawBuffers.push_back(att.attachment);
+        //    }
+        //}
         else if (att.type == FrameBufferAttachmentType::rbo) {
             glCreateRenderbuffers(1, &att.rbo);
             glObjectLabel(GL_RENDERBUFFER, att.rbo, attName.length(), attName.c_str());

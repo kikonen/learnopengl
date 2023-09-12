@@ -250,6 +250,7 @@
     <ClCompile Include="src\render\GBuffer.cpp" />
     <ClCompile Include="src\render\NodeDraw.cpp" />
     <ClCompile Include="src\render\OITBuffer.cpp" />
+    <ClCompile Include="src\render\TextureCube.cpp" />
     <ClCompile Include="src\render\PlainQuad.cpp" />
     <ClCompile Include="src\render\TextureQuad.cpp" />
     <ClCompile Include="src\scene\SceneFile.cpp" />
@@ -327,6 +328,7 @@
     <ClInclude Include="src\asset\ChannelTexture.h" />
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
+    <ClInclude Include="src\kigl\GLFrameBufferHandle.h" />
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\FrustumNew.h" />
     <ClInclude Include="src\asset\DataUBO.h" />
@@ -371,6 +373,7 @@
     <ClInclude Include="src\kigl\GLSyncQueue.h" />
     <ClInclude Include="src\kigl\GLBuffer.h" />
     <ClInclude Include="src\kigl\GLBufferRange.h" />
+    <ClInclude Include="src\kigl\GLTextureHandle.h" />
     <ClInclude Include="src\kigl\GLVertexArray.h" />
     <ClInclude Include="src\kigl\GLBlendMode.h" />
     <ClInclude Include="src\ki\OpenGLInfo.h" />
@@ -421,6 +424,7 @@
     <ClInclude Include="src\render\GBuffer.h" />
     <ClInclude Include="src\render\NodeDraw.h" />
     <ClInclude Include="src\render\OITBuffer.h" />
+    <ClInclude Include="src\render\TextureCube.h" />
     <ClInclude Include="src\render\PlainQuad.h" />
     <ClInclude Include="src\render\TextureQuad.h" />
     <ClInclude Include="src\scene\SceneFile.h" />

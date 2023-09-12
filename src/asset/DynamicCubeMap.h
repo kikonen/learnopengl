@@ -17,6 +17,8 @@ public:
     ~DynamicCubeMap();
 
     void prepare(
+        const Assets& assets,
+        Registry* registry,
         const bool clear,
         const glm::vec4& clearColor);
 

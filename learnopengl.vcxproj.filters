@@ -423,6 +423,9 @@
     <ClCompile Include="src\asset\ChannelTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\TextureCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -948,6 +951,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\ChannelTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kigl\GLFrameBufferHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kigl\GLTextureHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\TextureCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,13 +6,16 @@
 
 enum class FrameBufferAttachmentType {
     shared,
+    draw_buffer,
     texture,
+    //cube_map_texture,
     depth_texture,
     rbo,
     shadow,
 };
 
 enum class ClearType {
+    NONE,
     FLOAT,
     INT,
     UNSIGNED_INT,
@@ -64,6 +67,7 @@ struct FrameBufferAttachment {
         int fbo) const;
 
     static FrameBufferAttachment getShared(FrameBufferAttachment* shared);
+    static FrameBufferAttachment getDrawBuffer(GLenum attachment = GL_COLOR_ATTACHMENT0);
 
     static FrameBufferAttachment getTextureRGBA(GLenum attachment = GL_COLOR_ATTACHMENT0);
     static FrameBufferAttachment getTextureRGBAHdr(GLenum attachment = GL_COLOR_ATTACHMENT0);
@@ -106,6 +110,8 @@ struct FrameBufferAttachment {
 
     static FrameBufferAttachment getOITAccumulatorTexture(GLenum attachment);
     static FrameBufferAttachment getOITRevealTexture(GLenum attachment);
+
+    //static FrameBufferAttachment getCubeMapHdri(GLenum attachment);
 };
 
 struct FrameBufferSpecification {
