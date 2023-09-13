@@ -171,7 +171,10 @@ RenderContext::RenderContext(
         // NOTE KI keep original screen resolution across the board
         // => current buffer resolution is separately in bufferInfo UBO
         m_parent ? m_parent->m_resolution : m_resolution,
+
         assets.cubeMapEnabled,
+        assets.skyboxEnabled,
+        assets.irradianceMapEnabled,
 
         assets.frustumVisual,
 

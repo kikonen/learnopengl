@@ -330,6 +330,12 @@ void AssetsFile::loadAssets(
         else if (k == "skybox_size") {
               data.skyboxSize = readInt(v);
         }
+        else if (k == "irradiance_map_enabled") {
+            data.irradianceMapEnabled = readBool(v);
+        }
+        else if (k == "irradiance_map_size") {
+            data.irradianceMapSize = readInt(v);
+        }
         else if (k == "viewport_effect_enabled") {
             data.viewportEffectEnabled = readBool(v);
         }

@@ -152,6 +152,9 @@ Assets::Assets()
     skyboxEnabled = true;
     skyboxSize = 1024;
 
+    irradianceMapEnabled = true;
+    irradianceMapSize = 512;
+
     viewportEffectEnabled = false;
     viewportEffect = ViewportEffect::none;
 

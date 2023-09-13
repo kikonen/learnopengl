@@ -35,7 +35,11 @@ struct DataUBO {
     // "Both the size and alignment are twice"
     // "the size of the underlying scalar type."
     glm::vec2 u_screenResolution;
+
     int u_cubeMapExist; // bool as 4 bytes
+    int u_skyboxExist; // bool as 4 bytes
+    int u_irradianceMapExist; // bool as 4 bytes
+
     int u_frustumVisual; // bool as 4 bytes
 
     float u_fogStart;
@@ -48,8 +52,8 @@ struct DataUBO {
 
     float u_time;
     int u_shadowCount;
-    //int pad3_1;
-    //int pad3_2;
+    int pad3_1;
+    int pad3_2;
     //int pad3_3;
 
     // From *camera* view (not shadow view)

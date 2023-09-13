@@ -170,6 +170,9 @@ public:
     bool skyboxEnabled;
     int skyboxSize;
 
+    bool irradianceMapEnabled;
+    int irradianceMapSize;
+
     bool viewportEffectEnabled;
     ViewportEffect viewportEffect;
 

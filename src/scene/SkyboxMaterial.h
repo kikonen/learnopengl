@@ -52,4 +52,5 @@ public:
 
 private:
     CubeMap m_cubeMap{ false };
+    CubeMap m_irradianceMap{ false };
 };

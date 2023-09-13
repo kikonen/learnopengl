@@ -11,6 +11,8 @@
 class RenderContext;
 class Assets;
 class Registry;
+class Program;
+class GLState;
 
 class CubeMap
 {
@@ -36,9 +38,13 @@ private:
         const Assets& assets,
         Registry* registry);
 
-    void renderHdri(
+    void createIrradiance(
         const Assets& assets,
         Registry* registry);
+
+    void renderCube(
+        GLState& state,
+        Program* program);
 
     operator int() const { return m_textureID; }
 
@@ -52,6 +58,9 @@ public:
 
     GLenum m_internalFormat = GL_RGB8;
     bool m_hdri{ false };
+    bool m_irradiance{ false };
 
-    GLTextureHandle m_hdriCubeMap;
+    GLTextureHandle m_cubeTexture;
+
+    CubeMap* m_hdriCubeMapRef;
 };

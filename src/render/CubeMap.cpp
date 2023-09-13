@@ -35,6 +35,8 @@ void CubeMap::prepare(
 {
     if (m_hdri) {
         createHdri(assets, registry);
+    } else if (m_irradiance) {
+        createIrradiance(assets, registry);
     } else if (m_empty) {
         createEmpty();
     }
@@ -158,47 +160,9 @@ void CubeMap::createHdri(
     const Assets& assets,
     Registry* registry)
 {
-    GLuint textureID;
+    m_size = assets.skyboxSize;
 
-    glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureID);
-
-    renderHdri(assets, registry);
-
-    //glTextureStorage2D(textureID, 1, m_internalFormat, w, h);
-
-    //// https://github.com/fendevel/Guide-to-Modern-OpenGL-Functions
-    //for (unsigned int i = 0; i < 6; i++)
-    //{
-    //    GLenum format = GL_RGB;
-    //    char* data{ nullptr };
-    //    glTextureSubImage3D(textureID, 0, 0, 0, i, w, h, 1, format, GL_UNSIGNED_BYTE, data);
-    //}
-
-    //glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    //glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    //glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    //m_textureID = textureID;
-}
-
-void CubeMap::renderHdri(
-    const Assets& assets,
-    Registry* registry)
-{
-    const GLenum internalFormat = GL_RGB16F;
-    const GLenum pixelFormat = GL_FLOAT;
-    const GLenum format = GL_RGB;
-
-    m_size = assets.cubeMapSize;
-
-    GLState state;
-
-    auto program = registry->m_programRegistry->getProgram(SHADER_HDRI_CUBE_MAP);
-    program->prepare(assets);
-
-    GLTextureHandle hdrTexture;
+    GLTextureHandle hdriTexture;
     {
         auto image = std::make_unique<Image>(m_faces[0], true, true);
 
@@ -210,49 +174,93 @@ void CubeMap::renderHdri(
         const unsigned int height = image->m_height;
 
         {
-            hdrTexture.create("hdri", GL_TEXTURE_2D);
+            hdriTexture.create("hdri", GL_TEXTURE_2D);
 
-            glTextureStorage2D(hdrTexture, 1, internalFormat, width, height);
-            glTextureSubImage2D(hdrTexture, 0, 0, 0, width, height, format, pixelFormat, image->m_data);
+            const GLenum internalFormat = GL_RGB16F;
+            const GLenum pixelFormat = GL_FLOAT;
+            const GLenum format = GL_RGB;
 
-            glTextureParameteri(hdrTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(hdrTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(hdrTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTextureParameteri(hdrTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTextureStorage2D(hdriTexture, 1, internalFormat, width, height);
+            glTextureSubImage2D(hdriTexture, 0, 0, 0, width, height, format, pixelFormat, image->m_data);
+
+            glTextureParameteri(hdriTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTextureParameteri(hdriTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTextureParameteri(hdriTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTextureParameteri(hdriTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
     }
 
     {
-        m_hdriCubeMap.create("hdri_cube_map", GL_TEXTURE_CUBE_MAP);
+        GLState state;
 
-        glTextureStorage2D(m_hdriCubeMap, 1, internalFormat, m_size, m_size);
+        auto program = registry->m_programRegistry->getProgram(SHADER_HDRI_CUBE_MAP);
+        program->prepare(assets);
 
-        glTextureParameteri(m_hdriCubeMap, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(m_hdriCubeMap, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(m_hdriCubeMap, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(m_hdriCubeMap, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTextureParameteri(m_hdriCubeMap, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        program->bind(state);
+        state.bindTexture(UNIT_HDR_TEXTURE, hdriTexture, false);
+
+        renderCube(state, program);
+    }
+
+    m_textureID = m_cubeTexture;
+}
+
+void CubeMap::createIrradiance(
+    const Assets& assets,
+    Registry* registry)
+{
+    if (!m_hdriCubeMapRef) return;
+
+    m_size = assets.irradianceMapSize;
+
+    {
+        GLState state;
+
+        auto program = registry->m_programRegistry->getProgram(SHADER_IRRADIANCE_CUBE_MAP);
+        program->prepare(assets);
+
+        program->bind(state);
+        state.bindTexture(UNIT_SKYBOX, *m_hdriCubeMapRef, false);
+
+        renderCube(state, program);
+    }
+
+    m_textureID = m_cubeTexture;
+}
+
+void CubeMap::renderCube(
+    GLState& state,
+    Program* program)
+{
+    {
+        const GLenum internalFormat = GL_RGB16F;
+        const GLenum pixelFormat = GL_FLOAT;
+        const GLenum format = GL_RGB;
+
+        m_cubeTexture.create("cube_map", GL_TEXTURE_CUBE_MAP);
+
+        glTextureStorage2D(m_cubeTexture, 1, internalFormat, m_size, m_size);
+
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
     std::unique_ptr<FrameBuffer> captureFBO{ nullptr };
     {
-        // NOTE KI alpha NOT needed
         auto buffer = new FrameBuffer(
             "captureFBO",
             {
                 m_size, m_size,
                 {
-                    //FrameBufferAttachment::getCubeMapHdri(GL_COLOR_ATTACHMENT0),
-                    FrameBufferAttachment::getDrawBuffer(),
-                    FrameBufferAttachment::getRBODepth(),
-                }
+                FrameBufferAttachment::getDrawBuffer(),
+                FrameBufferAttachment::getRBODepth(),
+            }
             });
         captureFBO.reset(buffer);
-        //captureFBO->m_checkComplete = false;
         captureFBO->prepare(true);
-
-        //GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-        //glNamedFramebufferDrawBuffers(*captureFBO, 1, drawBuffers);
     }
 
     TextureCube cube;
@@ -270,34 +278,28 @@ void CubeMap::renderHdri(
            glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
         };
 
-        // convert HDR equirectangular environment map to cubemap equivalent
-        program->bind(state);
-
-        //program->setInt("equirectangularMap", 0);
-        program->setMat4("projection", captureProjection);
-
-        //glActiveTexture(GL_TEXTURE0);
-        //glBindTexture(GL_TEXTURE_2D, hdrTexture);
-        state.bindTexture(UNIT_HDR_TEXTURE, hdrTexture, false);
+        //program->setMat4("projection", captureProjection);
 
         glViewport(0, 0, m_size, m_size);
         glBindFramebuffer(GL_FRAMEBUFFER, *captureFBO);
 
         for (unsigned int i = 0; i < 6; ++i)
         {
-            program->setMat4("view", captureViews[i]);
+            //program->setMat4("view", captureViews[i]);
+            auto projected = captureProjection * captureViews[i];
+            program->setMat4("projected", projected);
+
             glFramebufferTexture2D(
                 GL_FRAMEBUFFER,
                 GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                m_hdriCubeMap,
+                m_cubeTexture,
                 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             cube.draw(state);
         }
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
-
-    m_textureID = m_hdriCubeMap;
 }

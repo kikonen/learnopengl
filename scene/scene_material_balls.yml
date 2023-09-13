@@ -4,8 +4,10 @@ viewports:
 skybox:
   program: g_skybox
   material: skybox
-  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  material: skybox/polyhaven/circus_arena_2k.hdr
   hdri: true
+  gamma_correct: false
 lights: {}
 cube_maps: {}
 root:

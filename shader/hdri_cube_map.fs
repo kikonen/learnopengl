@@ -4,7 +4,8 @@ in VS_OUT {
   vec3 worldPos;
 } fs_in;
 
-layout(binding = UNIT_HDR_TEXTURE) uniform sampler2D u_equirectangularMap;
+// equirectangularMap
+layout(binding = UNIT_HDR_TEXTURE) uniform sampler2D u_hdriTexture;
 
 out vec4 u_fragColor;
 
@@ -28,7 +29,7 @@ void main()
 {
   // make sure to normalize localPos
   vec2 uv = sampleSphericalMap(normalize(fs_in.worldPos));
-  vec3 color = texture(u_equirectangularMap, uv).rgb;
+  vec3 color = texture(u_hdriTexture, uv).rgb;
 
   u_fragColor = vec4(color, 1.0);
 }

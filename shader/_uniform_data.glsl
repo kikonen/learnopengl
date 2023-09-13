@@ -14,6 +14,9 @@ layout(std140, binding = UBO_DATA) uniform Data {
   vec2 u_screenResolution;
 
   bool u_cubeMapExist;
+  bool u_skyboxExist;
+  bool u_irradianceMapExist;
+
   bool u_frustumVisual;
 
   float u_fogStart;

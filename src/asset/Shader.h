@@ -19,7 +19,9 @@ const std::string SHADER_EFFECT{ "effect" };
 const std::string SHADER_VIEWPORT{ "viewport" };
 const std::string SHADER_VOLUME{ "volume" };
 const std::string SHADER_SKYBOX{ "skybox" };
+
 const std::string SHADER_HDRI_CUBE_MAP{ "hdri_cube_map" };
+const std::string SHADER_IRRADIANCE_CUBE_MAP{ "irradiance_cube_map" };
 
 const std::string SHADER_GEOMETRY_PASS{ "g_geometry_pass" };
 const std::string SHADER_DEFERRED_PASS{ "g_deferred_pass" };
@@ -122,12 +124,13 @@ constexpr int UNIT_WATER_REFRACTION = 66;
 constexpr int UNIT_MIRROR_REFLECTION = 67;
 //constexpr int UNIT_MIRROR_RERACTION = 68;
 constexpr int UNIT_CUBE_MAP = 69;
-constexpr int UNIT_SKYBOX = 70;
-constexpr int UNIT_VIEWPORT = 71;
+constexpr int UNIT_IRRADIANCE_MAP = 70;
+constexpr int UNIT_SKYBOX = 71;
+constexpr int UNIT_VIEWPORT = 72;
 
 constexpr int MAX_SHADOW_MAP_COUNT = 3;
-constexpr int UNIT_SHADOW_MAP_FIRST = 72;
-//constexpr int UNIT_SHADOW_MAP_LAST = UNIT_SHADOW_MAP_FIRST + MAX_SHADOW_MAP_COUNT_ABS - 1;
+constexpr int UNIT_SHADOW_MAP_FIRST = 75;
+constexpr int UNIT_SHADOW_MAP_LAST = UNIT_SHADOW_MAP_FIRST + MAX_SHADOW_MAP_COUNT - 1;
 
 constexpr unsigned int TEXTURE_UNIT_COUNT = 64;
 constexpr unsigned int FIRST_TEXTURE_UNIT = 0;
