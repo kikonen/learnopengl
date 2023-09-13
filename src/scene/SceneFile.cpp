@@ -1057,7 +1057,7 @@ void SceneFile::loadMeta(
     data.name = "<noname>";
     data.modelsDir = m_assets.modelsDir;
 
-    auto& node = doc["skybox"];
+    auto& node = doc["meta"];
 
     if (!node) return;
 
