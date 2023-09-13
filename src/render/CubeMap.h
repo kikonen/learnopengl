@@ -19,6 +19,8 @@ public:
 
     ~CubeMap();
 
+    bool valid() { return m_textureID > 0; }
+
     void prepare(
         const Assets& assets,
         Registry* registry);
@@ -37,6 +39,8 @@ private:
     void renderHdri(
         const Assets& assets,
         Registry* registry);
+
+    operator int() const { return m_textureID; }
 
 public:
     const bool m_empty;

@@ -11,6 +11,8 @@ public:
         : m_textureID(textureID) {
     }
 
+    bool valid() { return m_textureID > 0;  }
+
     void create(const std::string& name, GLenum target) {
         if (m_textureID > 0) return;
         glCreateTextures(target, 1, &m_textureID);
