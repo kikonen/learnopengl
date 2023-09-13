@@ -79,11 +79,6 @@ public:
 
     bool forceWireframe;
 
-    bool renderCubeMap;
-    bool renderShadowMap;
-    bool renderMirrorMap;
-    bool renderWaterMap;
-
     bool showNormals;
     bool showRearView;
     bool showShadowMapView;
@@ -119,10 +114,14 @@ public:
     int nodeRenderFrameStep;
 
     // NOTE KI mirror does not tolerate much skip
-    int mirrorRenderFrameStart;
-    int mirrorRenderFrameStep;
+    bool mirrorMapEnabled;
+    int mirrorReflectionSize;
     float mirrorFov;
 
+    int mirrorRenderFrameStart;
+    int mirrorRenderFrameStep;
+
+    bool waterMapEnabled;
     int waterTileSize;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
@@ -145,27 +144,31 @@ public:
     float fogEnd;
     float fogDensity;
 
+    bool shadowMapEnabled;
+
     bool shadowPolygonOffsetEnabled;
     glm::vec2 shadowPolygonOffset;
 
     // NOTE KI MUST match lookup() in light shadow shader
     std::vector<float> shadowPlanes;
     std::vector<int> shadowMapSizes;
+
     int shadowRenderFrameStart;
     int shadowRenderFrameStep;
 
-    int mirrorReflectionSize;
-
+    bool cubeMapEnabled;
     bool cubeMapSeamless;
-
     bool cubeMapSkipOthers;
     int cubeMapSize;
+
     int cubeMapRenderFrameStart;
     int cubeMapRenderFrameStep;
 
     float cubeMapNearPlane;
     float cubeMapFarPlane;
 
+    bool skyboxEnabled;
+    int skyboxSize;
 
     bool viewportEffectEnabled;
     ViewportEffect viewportEffect;

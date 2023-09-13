@@ -43,11 +43,6 @@ assets:
 
   force_wireframe: false
 
-  render_cube_map: true
-  render_shadow_map: true
-  render_mirror_map: true
-  render_water_map: true
-
   show_normals: false
   show_rear_view: false
   show_shadow_map_view: false
@@ -77,11 +72,13 @@ assets:
   render_frame_start: 1
   render_frame_step: 1
 
+  mirror_map_enabled: true
+  mirror_reflection_size: 2048
+  mirror_fov: 30
   mirror_render_frame_start: 0
   mirror_render_frame_step: 4
 
-  mirror_fov: 30
-
+  water_map_enabled: true
   water_tile_size: 100
   water_render_frame_start: 0
   water_render_frame_step: 1
@@ -102,9 +99,10 @@ assets:
   fog_end: 2000.0
   fog_density: 1.1
 
+  shadow_map_enabled: true
+
   shadow_polygon_offset_enabled: true
   shadow_polygon_offset: [2, 0.5]
-
   shadow_planes: [0.1, 30, 120, 500]
   xxshadow_planes: [0.1, 20, 100]
   xxshadow_planes: [0.1, 100]
@@ -112,8 +110,7 @@ assets:
   shadow_render_frame_start: 0
   shadow_render_frame_step: 1
 
-  mirror_reflection_size: 2048
-
+  cube_map_enabled: true
   cube_map_seamless: true
   cube_map_skip_others: true
   cube_map_size: 2048
@@ -121,6 +118,9 @@ assets:
   cube_map_far_plane: 200
   cube_map_render_frame_start: 1
   cube_map_render_frame_step: 6
+
+  skybox_enabled: true
+  skybox_size: 1024
 
   viewport_effect_enabled: true
   viewport_effect: none

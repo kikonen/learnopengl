@@ -147,18 +147,6 @@ void AssetsFile::loadAssets(
         else if (k == "force_wireframe") {
             data.forceWireframe = readBool(v);
         }
-        else if (k == "render_cube_map") {
-            data.renderCubeMap = readBool(v);
-        }
-        else if (k == "render_shadow_map") {
-            data.renderShadowMap = readBool(v);
-        }
-        else if (k == "render_mirror_map") {
-            data.renderMirrorMap = readBool(v);
-        }
-        else if (k == "render_water_map") {
-            data.renderWaterMap= readBool(v);
-        }
         else if (k == "show_normals") {
             data.showNormals = readBool(v);
         }
@@ -231,14 +219,23 @@ void AssetsFile::loadAssets(
         else if (k == "camera_fov") {
             data.cameraFov = readFloat(v);
         }
+        else if (k == "mirror_map_enabled") {
+            data.mirrorMapEnabled = readBool(v);
+        }
+        else if (k == "mirror_reflection_size") {
+            data.mirrorReflectionSize = readInt(v);
+        }
+        else if (k == "mirror_fov") {
+            data.mirrorFov = readFloat(v);
+        }
         else if (k == "mirror_render_frame_start") {
             data.mirrorRenderFrameStart = readInt(v);
         }
         else if (k == "mirror_render_frame_step") {
             data.mirrorRenderFrameStep = readInt(v);
         }
-        else if (k == "mirror_fov") {
-            data.mirrorFov = readFloat(v);
+        else if (k == "water_map_enabled") {
+            data.waterMapEnabled = readBool(v);
         }
         else if (k == "water_tile_size") {
             data.waterTileSize = readInt(v);
@@ -282,6 +279,9 @@ void AssetsFile::loadAssets(
         else if (k == "fog_density") {
             data.fogDensity = readFloat(v);
         }
+        else if (k == "shadow_map_enabled") {
+            data.shadowMapEnabled = readBool(v);
+        }
         else if (k == "shadow_polygon_offset_enabled") {
             data.shadowPolygonOffsetEnabled = readBool(v);
         }
@@ -300,8 +300,8 @@ void AssetsFile::loadAssets(
         else if (k == "shadow_render_frame_step") {
             data.shadowRenderFrameStep = readInt(v);
         }
-        else if (k == "mirror_reflection_size") {
-            data.mirrorReflectionSize = readInt(v);
+        else if (k == "cube_map_enabled") {
+            data.cubeMapEnabled = readBool(v);
         }
         else if (k == "cube_map_seamless") {
             data.cubeMapSeamless = readBool(v);
@@ -323,6 +323,12 @@ void AssetsFile::loadAssets(
         }
         else if (k == "cube_map_render_frame_step") {
             data.cubeMapRenderFrameStep = readInt(v);
+        }
+        else if (k == "skybox_enabled") {
+            data.skyboxEnabled = readBool(v);
+          }
+        else if (k == "skybox_size") {
+              data.skyboxSize = readInt(v);
         }
         else if (k == "viewport_effect_enabled") {
             data.viewportEffectEnabled = readBool(v);

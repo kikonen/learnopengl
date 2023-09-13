@@ -84,10 +84,10 @@ Scene::Scene(
 
         m_viewportRenderer->setEnabled(true);
 
-        m_waterMapRenderer->setEnabled(m_assets.renderWaterMap);
-        m_mirrorMapRenderer->setEnabled(m_assets.renderMirrorMap);
-        m_cubeMapRenderer->setEnabled(m_assets.renderCubeMap);
-        m_shadowMapRenderer->setEnabled(m_assets.renderShadowMap);
+        m_waterMapRenderer->setEnabled(m_assets.waterMapEnabled);
+        m_mirrorMapRenderer->setEnabled(m_assets.mirrorMapEnabled);
+        m_cubeMapRenderer->setEnabled(m_assets.cubeMapEnabled);
+        m_shadowMapRenderer->setEnabled(m_assets.shadowMapEnabled);
 
         m_objectIdRenderer->setEnabled(true);
         m_normalRenderer->setEnabled(m_assets.showNormals);

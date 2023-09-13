@@ -65,11 +65,6 @@ Assets::Assets()
 
     rasterizerDiscard = false;
 
-    renderCubeMap = true;
-    renderShadowMap = true;
-    renderMirrorMap = true;
-    renderWaterMap = true;
-
     showNormals = false;
     showRearView = false;
     showShadowMapView = false;
@@ -103,10 +98,14 @@ Assets::Assets()
     nodeRenderFrameStart = 0;
     nodeRenderFrameStep = 0;
 
+    mirrorMapEnabled = true;
+    mirrorReflectionSize = 1024;
+    mirrorFov = 30.f;
     // NOTE KI mirror does not tolerate much skip
     mirrorRenderFrameStart = 0;
     mirrorRenderFrameStep = 2;
 
+    waterMapEnabled = true;
     waterTileSize = 128;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
@@ -129,6 +128,8 @@ Assets::Assets()
     fogEnd = 700.0;
     fogDensity = 1.0;
 
+    shadowMapEnabled = true;
+
     shadowPolygonOffsetEnabled = true;
     shadowPolygonOffset = { 2.f, 2.f };
 
@@ -138,10 +139,8 @@ Assets::Assets()
     shadowRenderFrameStart = 0;
     shadowRenderFrameStep = 2;
 
-    mirrorReflectionSize = 1024;
-
+    cubeMapEnabled = true;
     cubeMapSeamless = true;
-
     cubeMapSkipOthers = true;
     cubeMapSize = 1024;
     cubeMapNearPlane = 0.5;
@@ -149,6 +148,9 @@ Assets::Assets()
 
     cubeMapRenderFrameStart = 1;
     cubeMapRenderFrameStep = 2;
+
+    skyboxEnabled = true;
+    skyboxSize = 1024;
 
     viewportEffectEnabled = false;
     viewportEffect = ViewportEffect::none;

@@ -171,15 +171,19 @@ RenderContext::RenderContext(
         // NOTE KI keep original screen resolution across the board
         // => current buffer resolution is separately in bufferInfo UBO
         m_parent ? m_parent->m_resolution : m_resolution,
-        assets.renderCubeMap,
+        assets.cubeMapEnabled,
+
         assets.frustumVisual,
+
         assets.fogStart,
         assets.fogEnd,
         assets.fogDensity,
+
         assets.hdrGamma,
         assets.hdrExposure,
         // NOTE KI u_shadowPlanes not initialized
         assets.effectBloomExposure,
+
         (float)m_clock.ts,
         0,
     };
