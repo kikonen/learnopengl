@@ -233,13 +233,9 @@ void CubeMap::renderCube(
     Program* program)
 {
     {
-        const GLenum internalFormat = GL_RGB16F;
-        const GLenum pixelFormat = GL_FLOAT;
-        const GLenum format = GL_RGB;
-
         m_cubeTexture.create("cube_map", GL_TEXTURE_CUBE_MAP);
 
-        glTextureStorage2D(m_cubeTexture, 1, internalFormat, m_size, m_size);
+        glTextureStorage2D(m_cubeTexture, 1, m_internalFormat, m_size, m_size);
 
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

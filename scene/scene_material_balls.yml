@@ -7,7 +7,6 @@ skybox:
   xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
   material: skybox/polyhaven/circus_arena_2k.hdr
   hdri: true
-  gamma_correct: false
 lights: {}
 cube_maps: {}
 root:
@@ -44,7 +43,8 @@ entities:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
-      diffuse: [0.7, 0.7, 0.7, 1.0]
+      #diffuse: [0.7, 0.7, 0.7, 1.0]
+      diffuse: [30000, 30000, 30000, 1.0]
       specular: [0.7, 0.7, 0.7, 1.0]
       enabled: true
     enabled: true
@@ -182,8 +182,14 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: textures/wood_1024.png
+    #map_kd: textures/wood_1024.png
     reflection: 0.1
-    tiling: 60
+    map_kd: textures\Planks 09 [8K]/Planks09_col_2048.png
+    map_bump: textures\Planks 09 [8K]/Planks09_nrm_2048.png
+    map_roughness: textures\Planks 09 [8K]/Planks09_rgh_2048.png
+    map_displacement: textures\Planks 09 [8K]/Planks09_disp_2048.png
+    map_occlusion: textures\Planks 09 [8K]/Planks09_ao_2048.png
+    parallax_depth: 0.0
+    tiling: 10
     texture_spec:
       wrap: GL_REPEAT

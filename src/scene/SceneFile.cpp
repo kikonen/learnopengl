@@ -158,9 +158,14 @@ void SceneFile::attachSkybox(
 
     type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
 
+    bool gammaCorrect = data.gammaCorrect;
+    if (data.hdri) {
+        gammaCorrect = false;
+    }
+
     auto material{ std::make_unique<SkyboxMaterial>(
         data.materialName,
-        data.gammaCorrect) };
+        gammaCorrect) };
     material->m_swapFaces = data.swapFaces;
     material->m_hdri = data.hdri;
     if (data.loadedFaces) {

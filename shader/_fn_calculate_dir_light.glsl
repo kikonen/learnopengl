@@ -56,7 +56,7 @@ vec3 calculateDirLightPbr(
   float shadow = calcShadow2_5(u_shadowMap[shadowIndex], shadowPos);
 
   //const vec3 lightPos = vec3(1000, 0, 1000);
-  const float lightDistance = 1.0;
+  const float lightDistance = 100.0;
 
   const vec3 N = normal;
   const vec3 V = viewDir;
@@ -86,7 +86,8 @@ vec3 calculateDirLightPbr(
     vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
     vec3 numerator    = NDF * G * F;
-    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
+    // + 0.0001 to prevent divide by zero
+    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
     vec3 specular = numerator / denominator;
 
     // kS is equal to Fresnel

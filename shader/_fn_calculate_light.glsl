@@ -89,8 +89,8 @@ vec4 calculateLightPbr(
   }
 
   // ambient lighting (we now use IBL as the ambient term)
-  vec3 ambient;
-  {
+  vec3 ambient = vec3(0.0);
+  if (true) {
     float metallic = material.metal.r;
     float ao = material.metal.a;
 
@@ -109,8 +109,8 @@ vec4 calculateLightPbr(
   }
 
   vec3 color = ambient + Lo + material.emission.rgb;
-  //vec3 color = Lo + material.emission.rgb;
-  //vec3 color = ambient;
+  //color = Lo + material.emission.rgb;
+  //color = ambient;
 
   // NOTE KI keep blending from material
   return vec4(color, material.diffuse.a);

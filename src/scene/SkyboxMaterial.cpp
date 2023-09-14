@@ -96,16 +96,18 @@ void SkyboxMaterial::prepareHdri(
             filePath,
         };
 
-        // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
-        m_cubeMap.m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB8;
+        // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
+        // - hdri is *linear*
+        m_cubeMap.m_internalFormat = GL_RGB16F;
         m_cubeMap.m_hdri = true;
 
         m_cubeMap.prepare(assets, registry);
     }
 
     if (assets.irradianceMapEnabled && m_cubeMap.valid()) {
-        // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
-        m_irradianceMap.m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB8;
+        // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
+        // - hdri is *linear*
+        m_irradianceMap.m_internalFormat = GL_RGB16F;
         m_irradianceMap.m_irradiance = true;
         m_irradianceMap.m_hdriCubeMapRef = &m_cubeMap;
 
