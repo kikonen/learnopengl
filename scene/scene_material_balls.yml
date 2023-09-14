@@ -13,7 +13,15 @@ cube_maps: {}
 root:
   type: origo
 entities:
-  - name: Origo
+  - name: origo
+    model: water_ball
+    program: g_tex
+    pos: [0.0, 0.0, 0.0]
+    scale: 5
+    material: default_ball
+    force_material: true
+    enabled: true
+  - name: Player
     type: origo
     pos: [0, 25, 40]
     camera:
@@ -25,7 +33,7 @@ entities:
     enabled: true
   - name: Directional light
     type: model
-    pos: [-25, 25, 0]
+    pos: [-25, 45, 0]
     scale: 2.5
     model: light
     program: g_light
@@ -40,6 +48,26 @@ entities:
       specular: [0.7, 0.7, 0.7, 1.0]
       enabled: true
     enabled: true
+  - name: Point light
+    type: model
+    pos: [-25, 45, 0]
+    scale: 2.5
+    model: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    force_material: true
+    material_modifier:
+      kd: [0.8, 0.8, 0.6, 1.0]
+    light:
+      #type: directional
+      type: point
+      linear: 0.09
+      quadratic: 0.032
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      specular: [0.7, 0.7, 0.7, 1.0]
+      enabled: true
+    xenabled: true
   - name: ball origo
     type: origo
     id: [auto, origo]

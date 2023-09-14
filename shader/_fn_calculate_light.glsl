@@ -44,3 +44,74 @@ vec4 calculateLight(
   // NOTE KI keep blending from material
   return vec4(shaded, material.diffuse.a);
 }
+
+vec4 calculateLightPbr(
+  in vec3 normal,
+  in vec3 viewDir,
+  in vec3 worldPos,
+  in uint shadowIndex)
+{
+  const vec3 N = normal;
+  const vec3 V = viewDir;
+
+  vec3 Lo = vec3(0.0);
+
+  const uint lightCount = u_dirLightCount + u_pointLightCount + u_spotLightCount;
+  if (lightCount == 0) {
+    return material.diffuse;
+  }
+
+  for (int i = 0; i < u_dirLightCount; i++) {
+    //vec3 Lo = vec3(0.0);
+    Lo += calculateDirLightPbr(
+      u_dirLights[i],
+      normal,
+      viewDir,
+      worldPos,
+      shadowIndex);
+  }
+
+  for (int i = 0; i < u_pointLightCount; i++) {
+    Lo += calculatePointLightPbr(
+      u_pointLights[i],
+      normal,
+      viewDir,
+      worldPos,
+      shadowIndex);
+  }
+
+  for (int i = 0; i < u_spotLightCount; i++) {
+    Lo += calculateSpotLight(
+      u_spotLights[i],
+      normal,
+      viewDir,
+      worldPos);
+  }
+
+  // ambient lighting (we now use IBL as the ambient term)
+  vec3 ambient;
+  {
+    float metallic = material.metal.r;
+    float ao = material.metal.a;
+
+    // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
+    // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)
+    vec3 F0 = vec3(0.04);
+    F0 = mix(F0, material.diffuse.rgb, metallic);
+
+    vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - metallic;
+    vec3 irradiance = texture(u_irradianceMap, N).rgb;
+    vec3 diffuse      = irradiance * material.diffuse.rgb;
+    ambient = (kD * diffuse) * ao;
+    // vec3 ambient = vec3(0.002);
+  }
+
+  vec3 color = ambient + Lo + material.emission.rgb;
+  //vec3 color = Lo + material.emission.rgb;
+  //vec3 color = ambient;
+
+  // NOTE KI keep blending from material
+  return vec4(color, material.diffuse.a);
+}

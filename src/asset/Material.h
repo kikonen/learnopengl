@@ -129,7 +129,8 @@ private:
         const Assets& assets,
         int idx,
         const std::string& name,
-        std::vector<int> textureIndeces);
+        const std::vector<int>& textureIndeces,
+        const glm::vec4& defaults);
 
 public:
     int m_objectID;

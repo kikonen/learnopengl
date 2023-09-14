@@ -4,6 +4,8 @@
 
 #include "ki/GL.h"
 
+#include "util/glm_format.h"
+
 #include "asset/ImageTexture.h"
 #include "asset/Image.h"
 
@@ -48,21 +50,21 @@ namespace {
 std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
     const std::string& name,
     const std::vector<ImageTexture*>& sourceTextures,
+    const glm::vec4& defaults,
     const TextureSpec& spec)
 {
     std::lock_guard<std::mutex> lock(textures_lock);
 
-    std::string texPaths;
+    std::string pathsStr;
 
     for (auto& tex : sourceTextures) {
-        if (!tex) continue;
-        texPaths.append(";");
-        texPaths.append(tex->m_path);
+        pathsStr.append(";");
+        pathsStr.append(tex ? tex->m_path : "-");
     }
 
     const std::string cacheKey = fmt::format(
-        "{}_{}_{}_{}_{}_{}_{}",
-        name, texPaths,
+        "{}_{}_{}_{}_{}_{}_{}_{}",
+        name, pathsStr, defaults,
         spec.wrapS, spec.wrapT,
         spec.minFilter, spec.magFilter, spec.mipMapLevels);
 
@@ -72,7 +74,7 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
             return e->second;
     }
 
-    auto future = startLoad(new ChannelTexture(name, sourceTextures, spec));
+    auto future = startLoad(new ChannelTexture(name, sourceTextures, defaults, spec));
     textures[cacheKey] = future;
     return future;
 }
@@ -96,9 +98,11 @@ const std::pair<int, const std::vector<const ChannelTexture*>&> ChannelTexture::
 ChannelTexture::ChannelTexture(
     const std::string& name,
     const std::vector<ImageTexture*>& sourceTextures,
+    const glm::vec4& defaults,
     const TextureSpec& spec)
     : Texture(name, false, spec),
-    m_sourceTextures{ sourceTextures }
+    m_sourceTextures{ sourceTextures },
+    m_defaults{ defaults }
 {
 }
 
@@ -198,7 +202,7 @@ void ChannelTexture::load()
     const int bufferSize = w * dstPixelBytes * h * dstRGBA;
 
     m_data = new unsigned char[bufferSize];
-    memset(m_data, 0, bufferSize);
+    memset(m_data, 1, bufferSize);
 
     int dstOffset = -1;
 
@@ -207,22 +211,29 @@ void ChannelTexture::load()
 
     for (auto& tex : m_sourceTextures) {
         dstOffset++;
-        if (!tex) continue;
+        int defaultValue = m_defaults[dstOffset] * 255;
+        //if (!tex) continue;
 
-        auto& image = tex->m_image;
-        if (!image) continue;
+        auto* image = tex ? tex->m_image.get() : nullptr;
+        //if (!image) continue;
 
-        const int srcMultiplier = image->m_is_16_bit ? 2 : 1;
+        const int srcMultiplier = image && image->m_is_16_bit ? 2 : 1;
         const int pixelRatio = srcMultiplier;
 
-        unsigned char* imageData = image->m_data;
+        unsigned char* imageData = image ? image->m_data : nullptr;
 
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
-                int srcIndex = y * w * srcMultiplier + x * srcMultiplier;
                 int dstIndex = y * w * dstPixelBytes * dstRGBA + x * dstPixelBytes * dstRGBA + dstOffset;
-                int value = imageData[srcIndex];
-                m_data[dstIndex] = value / pixelRatio;
+                int value;
+                if (imageData) {
+                    int srcIndex = y * w * srcMultiplier + x * srcMultiplier;
+                    value = imageData[srcIndex] / pixelRatio;
+                }
+                else {
+                    value = defaultValue;
+                }
+                m_data[dstIndex] = value;
             }
         }
     }

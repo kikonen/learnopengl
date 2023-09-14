@@ -16,6 +16,7 @@ public:
     static std::shared_future<ChannelTexture*> getTexture(
         const std::string& name,
         const std::vector<ImageTexture*>& sourceTextures,
+        const glm::vec4& defaults,
         const TextureSpec& spec);
 
     static const std::pair<int, const std::vector<const ChannelTexture*>&> getPreparedTextures();
@@ -23,6 +24,7 @@ public:
     ChannelTexture(
         const std::string& name,
         const std::vector<ImageTexture*>& sourceTextures,
+        const glm::vec4& defaults,
         const TextureSpec& spec);
 
     virtual ~ChannelTexture();
@@ -36,6 +38,7 @@ public:
 
 private:
     const std::vector<ImageTexture*> m_sourceTextures;
+    const glm::vec4 m_defaults;
 
     int m_width{ 0 };
     int m_height{ 0 };

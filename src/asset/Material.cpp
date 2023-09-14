@@ -22,6 +22,9 @@
 
 
 namespace {
+    // G buffer: metalness, roughness, displacement, ambient-occlusion
+    const glm::vec4 MATERIAL_METAL_CHANNEL_DEFAULTS{ 0.f, 0.f, 0.f, 1.f };
+
     int idBase = 0;
 
     std::mutex type_id_lock{};
@@ -193,7 +196,8 @@ void Material::loadTextures(const Assets& assets)
             MATERIAL_ROUGHNESS_MAP_IDX,
             MATERIAL_DISPLACEMENT_MAP_IDX,
             MATERIAL_OCCLUSION_MAP_IDX
-        });
+        },
+        MATERIAL_METAL_CHANNEL_DEFAULTS);
 }
 
 std::string Material::resolveBaseDir(const Assets& assets)
@@ -257,7 +261,8 @@ void Material::loadChannelTexture(
     const Assets& assets,
     int idx,
     const std::string& name,
-    std::vector<int> textureIndeces)
+    const std::vector<int>& textureIndeces,
+    const glm::vec4& defaults)
 {
     std::vector<ImageTexture*> sourceTextures;
 
@@ -283,6 +288,7 @@ void Material::loadChannelTexture(
     auto future = ChannelTexture::getTexture(
         name,
         sourceTextures,
+        defaults,
         textureSpec);
 
     future.wait();
@@ -350,7 +356,7 @@ const MaterialSSBO Material::toSSBO() const
         ke,
 
         glm::vec4{ ks, ns },
-        glm::vec4{ 0.f },
+        MATERIAL_METAL_CHANNEL_DEFAULTS,
 
         m_textures[MATERIAL_DIFFUSE_IDX].m_handle,
         m_textures[MATERIAL_EMISSION_IDX].m_handle,

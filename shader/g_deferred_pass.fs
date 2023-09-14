@@ -14,7 +14,7 @@ in VS_OUT {
 
 LAYOUT_G_BUFFER_SAMPLERS;
 
-layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradiance;
+layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradianceMap;
 
 layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
 
@@ -30,6 +30,7 @@ SET_FLOAT_PRECISION;
 
 Material material;
 
+#include pbr.glsl
 #include fn_calculate_dir_light.glsl
 #include fn_calculate_point_light.glsl
 #include fn_calculate_spot_light.glsl
@@ -91,7 +92,7 @@ void main()
   if (skipLight) {
     color = material.diffuse;
   } else {
-    color = calculateLight(
+    color = calculateLightPbr(
       normal, viewDir, worldPos,
       shadowIndex);
 
