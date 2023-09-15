@@ -462,6 +462,11 @@ private:
         MaterialField& fields,
         Material& material);
 
+    void loadMaterialPbr(
+        const std::string& pbrName,
+        MaterialField& fields,
+        Material& material);
+
     void loadSprites(
         const YAML::Node& doc,
         std::vector<Sprite>& sprites);

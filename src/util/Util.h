@@ -28,9 +28,11 @@ namespace util
         std::vector<std::string>& result,
         char separator);
 
-    bool fileExists(std::string filepath);
+    bool fileExists(std::string filePath);
 
-    std::string dirName(const std::string& filename);
+    std::string dirName(const std::string& filePath);
+
+    std::string baseName(const std::string& filePath);
 
     std::string joinPath(
         const std::string& rootDir,

@@ -93,11 +93,7 @@ entities:
     material: gold_ball
     material_modifier:
       reflection: 0.05
-      map_kd: textures\Planks 09 [8K]/Planks09_col_2048.png
-      map_bump: textures\Planks 09 [8K]/Planks09_nrm_2048.png
-      map_roughness: textures\Planks 09 [8K]/Planks09_rgh_2048.png
-      map_displacement: textures\Planks 09 [8K]/Planks09_disp_2048.png
-      map_occlusion: textures\Planks 09 [8K]/Planks09_ao_2048.png
+      map_pbr: textures\Planks 09 [8K]
       parallax_depth: 0.0
     enabled: true
   - name: Silver ball
@@ -115,12 +111,7 @@ entities:
       render_back: true
     material_modifier:
       reflection: 0.05
-      map_kd: textures\Fence007A_4K-JPG\Fence007A_4K_Color_1024.jpg
-      map_bump: textures\Fence007A_4K-JPG\Fence007A_4K_NormalGL_1024.jpg
-      map_metalness: textures\Fence007A_4K-JPG\Fence007A_4K_Metalness_1024.jpg
-      map_roughness: textures\Fence007A_4K-JPG\Fence007A_4K_Roughness_1024.jpg
-      map_opacity: textures\Fence007A_4K-JPG\Fence007A_4K_Opacity_1024.jpg
-      map_displacement: textures\Fence007A_4K-JPG\Fence007A_4K_Displacement_1024.jpg
+      map_pbr: textures\Fence007A_4K-JPG
       parallax_depth: 0.0
     enabled: true
   - name: Bronze ball
@@ -133,10 +124,7 @@ entities:
     material: bronze_ball
     material_modifier:
       reflection: 0.05
-      map_kd: textures\Plastic 01 [4K]/Plastic01_col_2048.png
-      map_bump: textures\Plastic 01 [4K]/Plastic01_nrm_2048.png
-      map_roughness: textures\Plastic 01 [4K]/Plastic01_rgh_2048.png
-      map_displacement: textures\Plastic 01 [4K]/Plastic01_disp_2048.png
+      map_pbr: textures\Plastic 01 [4K]
       parallax_depth: 0.0
     enabled: true
   - name: Rusted iron ball
@@ -149,11 +137,7 @@ entities:
     material: bronze_ball
     material_modifier:
       reflection: 0.05
-      map_kd: textures\Metal022_1K-PNG\Metal022_1K_Color.png
-      map_bump: textures\Metal022_1K-PNG\Metal022_1K_NormalGL.png
-      map_metalness: textures\Metal022_1K-PNG\Metal022_1K_Metallness.png
-      map_roughness: textures\Metal022_1K-PNG\Metal022_1K_Roughness.png
-      map_displacement: textures\Metal022_1K-PNG\Metal022_1K_Displacement.png
+      map_pbr: textures\Metal022_1K-PNG
       tiling: 3
       parallax_depth: 0.0
     enabled: true
@@ -167,11 +151,7 @@ entities:
     material: bronze_ball
     material_modifier:
       reflection: 0.05
-      map_kd: textures\Metal008_1K-PNG/Metal008_1K_Color.png
-      map_bump: textures\Metal008_1K-PNG/Metal008_1K_NormalGL.png
-      map_metalness: textures\Metal008_1K-PNG/Metal008_1K_Metalness.png
-      map_roughness: textures\Metal008_1K-PNG/Metal008_1K_Roughness.png
-      map_displacement: textures\Metal008_1K-PNG/Metal008_1K_Displacement.png
+      map_pbr: textures\Metal008_1K-PNG
       tiling: 3
       parallax_depth: 0.0
     enabled: true
@@ -219,11 +199,7 @@ materials:
     illum: 2
     #map_kd: textures/wood_1024.png
     reflection: 0.1
-    map_kd: textures\Planks 09 [8K]/Planks09_col_2048.png
-    map_bump: textures\Planks 09 [8K]/Planks09_nrm_2048.png
-    map_roughness: textures\Planks 09 [8K]/Planks09_rgh_2048.png
-    map_displacement: textures\Planks 09 [8K]/Planks09_disp_2048.png
-    map_occlusion: textures\Planks 09 [8K]/Planks09_ao_2048.png
+    map_pbr: textures\Planks 09 [8K]
     parallax_depth: 0.0
     tiling: 10
     texture_spec:

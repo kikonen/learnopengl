@@ -52,19 +52,28 @@ namespace util {
         }
     }
 
-    bool fileExists(std::string filepath)
+    bool fileExists(std::string filePath)
     {
-        std::ifstream f(filepath.c_str());
+        std::ifstream f(filePath.c_str());
         return f.good();
     }
 
-    std::string dirName(const std::string& filename)
+    std::string dirName(const std::string& filePath)
     {
-        std::string path = filename;
+        std::string path = filePath;
         std::replace(path.begin(), path.end(), '/', '\\');
 
         std::filesystem::path p{ path };
         return p.parent_path().string();
+    }
+
+    std::string baseName(const std::string& filePath)
+    {
+        std::string path = filePath;
+        std::replace(path.begin(), path.end(), '/', '\\');
+
+        std::filesystem::path p{ path };
+        return p.string();
     }
 
     std::string joinPath(
