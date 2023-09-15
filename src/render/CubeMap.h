@@ -62,5 +62,5 @@ public:
 
     GLTextureHandle m_cubeTexture;
 
-    CubeMap* m_hdriCubeMapRef;
+    CubeMap* m_envCubeMapRef;
 };

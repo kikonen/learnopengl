@@ -43,6 +43,8 @@ void SkyboxMaterial::prepare(
     else {
         prepareFaces(assets, registry);
     }
+
+    prepareIrradiance(assets, registry);
 }
 
 void SkyboxMaterial::prepareFaces(
@@ -103,13 +105,18 @@ void SkyboxMaterial::prepareHdri(
 
         m_cubeMap.prepare(assets, registry);
     }
+}
 
+void SkyboxMaterial::prepareIrradiance(
+    const Assets& assets,
+    Registry* registry)
+{
     if (assets.irradianceMapEnabled && m_cubeMap.valid()) {
         // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
         // - hdri is *linear*
         m_irradianceMap.m_internalFormat = GL_RGB16F;
         m_irradianceMap.m_irradiance = true;
-        m_irradianceMap.m_hdriCubeMapRef = &m_cubeMap;
+        m_irradianceMap.m_envCubeMapRef = &m_cubeMap;
 
         m_irradianceMap.prepare(assets, registry);
     }

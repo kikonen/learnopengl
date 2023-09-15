@@ -102,6 +102,7 @@ entities:
       type: directional
       target_id: [auto, dir-light-target]
       diffuse: [0.4, 0.4, 0.4, 1.0]
+      intensity: 100000
       specular: [0.4, 0.4, 0.4, 1.0]
       enabled: true
     enabled: true

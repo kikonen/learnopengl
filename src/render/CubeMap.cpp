@@ -209,7 +209,7 @@ void CubeMap::createIrradiance(
     const Assets& assets,
     Registry* registry)
 {
-    if (!m_hdriCubeMapRef) return;
+    if (!m_envCubeMapRef) return;
 
     m_size = assets.irradianceMapSize;
 
@@ -220,7 +220,7 @@ void CubeMap::createIrradiance(
         program->prepare(assets);
 
         program->bind(state);
-        state.bindTexture(UNIT_SKYBOX, *m_hdriCubeMapRef, false);
+        state.bindTexture(UNIT_SKYBOX, *m_envCubeMapRef, false);
 
         renderCube(state, program);
     }

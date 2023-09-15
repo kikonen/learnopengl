@@ -38,6 +38,10 @@ private:
         const Assets& assets,
         Registry* registry);
 
+    void prepareIrradiance(
+        const Assets& assets,
+        Registry* registry);
+
 public:
     // ORDER
     //basePath + "/right.jpg",
