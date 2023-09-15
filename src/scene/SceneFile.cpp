@@ -974,7 +974,7 @@ std::unique_ptr<Light> SceneFile::createLight(
     light->outerCutoffAngle = data.outerCutoffAngle;
 
     light->diffuse = data.diffuse;
-    light->specular = data.specular;
+    light->intensity = data.intensity;
 
     switch (data.type) {
     case LightType::directional:
@@ -1531,8 +1531,8 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
         else if (k == "diffuse") {
             data.diffuse = readRGB(v);
         }
-        else if (k == "specular") {
-            data.specular = readRGB(v);
+        else if (k == "intensity") {
+            data.intensity = readFloat(v);
         }
         else {
             reportUnknown("light_entry", k, v);

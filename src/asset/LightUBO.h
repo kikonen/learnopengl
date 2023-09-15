@@ -15,11 +15,8 @@ struct DirLightUBO {
     glm::vec3 u_dir;
     int pad1;
 
-    glm::vec3 u_diffuse;
-    int pad2;
-
-    glm::vec3 u_specular;
-    int pad3;
+    // color + a = intensity
+    glm::vec4 u_diffuse;
 };
 
 // NOTE KI align 16 for UBO struct
@@ -27,11 +24,8 @@ struct PointLightUBO {
     glm::vec3 u_pos;
     int pad1;
 
-    glm::vec3 u_diffuse;
-    int pad2;
-
-    glm::vec3 u_specular;
-    int pad3;
+    // color + a = intensity
+    glm::vec4 u_diffuse;
 
     float u_constant;
     float u_linear;
@@ -47,11 +41,8 @@ struct SpotLightUBO {
     glm::vec3 u_dir;
     int pad2;
 
-    glm::vec3 u_diffuse;
-    int pad3;
-
-    glm::vec3 u_specular;
-    int pad4;
+    // color + a = intensity
+    glm::vec4 u_diffuse;
 
     float u_constant;
     float u_linear;

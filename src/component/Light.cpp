@@ -67,11 +67,7 @@ DirLightUBO Light::toDirLightUBO() const noexcept
         m_worldDir,
         0,
 
-        diffuse,
-        0,
-
-        specular,
-        0,
+        glm::vec4(diffuse, intensity),
     };
 }
 
@@ -81,11 +77,7 @@ PointLightUBO Light::toPointightUBO() const noexcept
         m_worldPosition,
         0,
 
-        diffuse,
-        0,
-
-        specular,
-        0,
+        glm::vec4(diffuse, intensity),
 
         constant,
         linear,
@@ -103,11 +95,7 @@ SpotLightUBO Light::toSpotLightUBO() const noexcept
         m_worldDir,
         0,
 
-        diffuse,
-        0,
-
-        specular,
-        0,
+        glm::vec4(diffuse, intensity),
 
         constant,
         linear,

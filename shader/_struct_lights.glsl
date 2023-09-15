@@ -2,26 +2,28 @@
 struct DirLight {
   vec4 worldDir;
 
+  // color + a = intensity
   vec4 diffuse;
-  vec4 specular;
 };
+
 struct PointLight {
   vec4 worldPos;
 
+  // color + a = intensity
   vec4 diffuse;
-  vec4 specular;
 
   float constant;
   float linear;
   float quadratic;
   float radius;
 };
+
 struct SpotLight {
   vec4 worldPos;
   vec4 worldDir;
 
+  // color + a = intensity
   vec4 diffuse;
-  vec4 specular;
 
   float constant;
   float linear;

@@ -24,7 +24,7 @@ vec3 calculatePointLight(
     vec3 reflectDir = reflect(-lightDir, normal);
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(normal, halfwayDir), 0.0), shininess);
-    specular = powerup * light.specular.rgb * (spec * material.specular.rgb);
+    specular = powerup * light.diffuse.rgb * (spec * material.specular.rgb);
   }
 
   float attenuation = 1.0 / (light.constant + light.linear * dist +

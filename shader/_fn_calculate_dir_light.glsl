@@ -32,7 +32,7 @@ vec3 calculateDirLight(
   if (shininess > 0) {
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-    specular = spec * light.specular.rgb * material.specular.rgb;
+    specular = spec * light.diffuse.rgb * material.specular.rgb;
   }
 
   // calculate shadow
@@ -78,7 +78,7 @@ vec3 calculateDirLightPbr(
     vec3 H = normalize(V + L);
     float distance = lightDistance; // length(lightPos - worldPos);
     float attenuation = 1.0 / (distance * distance);
-    vec3 radiance = light.diffuse.rgb * attenuation;
+    vec3 radiance = light.diffuse.rgb * light.diffuse.a * attenuation;
 
     // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, roughness);

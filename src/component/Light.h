@@ -79,8 +79,8 @@ public:
 
     float radius = 1.f;
 
-    glm::vec3 diffuse{ 0.7f, 0.7f, 0.7f };
-    glm::vec3 specular{ 0.7f, 0.7f, 0.7f };
+    glm::vec3 diffuse{ 0.5f, 0.5f, 0.5f };
+    float intensity = 1.f;
 
 private:
     // dir = FROM pos to TARGET

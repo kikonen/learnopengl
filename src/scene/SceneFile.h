@@ -201,7 +201,7 @@ class SceneFile
         float outerCutoffAngle{ 0.f };
 
         glm::vec3 diffuse{ 0.5f, 0.5f, 0.5f };
-        glm::vec3 specular{ 0.5f, 0.5f, 0.5f };
+        float intensity{ 1.f };
     };
 
     struct EntityCloneData {
