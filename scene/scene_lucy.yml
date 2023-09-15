@@ -2,7 +2,9 @@
 name: Lucy
 skybox:
   program: g_skybox
-  material: skybox
+  xmaterial: skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+  hdri: true
 entities:
   - name: Camera
     type: origo
@@ -33,6 +35,7 @@ entities:
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.8, 1.0]
+      intensity: 50000
       specular: [0.9, 0.9, 0.8, 1.0]
       enabled: true
     enabled: true
@@ -85,8 +88,15 @@ entities:
     scale: 4
     xmaterial: gold_ball
     xforce_material: true
-    xmaterial_modifier:
-      reflection: 0.4
+    material_modifier:
+      xreflection: 0.05
+      map_kd: textures\Metal008_1K-PNG/Metal008_1K_Color.png
+      map_bump: textures\Metal008_1K-PNG/Metal008_1K_NormalGL.png
+      map_metalness: textures\Metal008_1K-PNG/Metal008_1K_Metalness.png
+      map_roughness: textures\Metal008_1K-PNG/Metal008_1K_Roughness.png
+      map_displacement: textures\Metal008_1K-PNG/Metal008_1K_Displacement.png
+      tiling: 6
+      parallax_depth: 0.0
     xxrender_flags:
       render_back: true
     script_file: scripts/anim_lucy
