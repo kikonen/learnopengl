@@ -2,8 +2,7 @@
 name: Lucy
 skybox:
   program: g_skybox
-  xmaterial: skybox
-  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
   hdri: true
 entities:
   - name: Camera

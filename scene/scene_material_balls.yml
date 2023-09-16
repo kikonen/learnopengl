@@ -3,9 +3,10 @@ name: Material balls
 viewports:
 skybox:
   program: g_skybox
-  material: skybox
-  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  xmaterial: skybox
+  xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
   xmaterial: skybox/polyhaven/borghese_gardens_2k.hdr
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
   hdri: true
 lights: {}
 cube_maps: {}
