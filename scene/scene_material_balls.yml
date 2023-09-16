@@ -7,7 +7,6 @@ skybox:
   xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
   xmaterial: skybox/polyhaven/borghese_gardens_2k.hdr
   material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
-  hdri: true
 lights: {}
 cube_maps: {}
 root:
@@ -200,7 +199,7 @@ materials:
     d: 1.000000
     illum: 2
     #map_kd: textures/wood_1024.png
-    reflection: 0.1
+    #reflection: 0.1
     map_pbr: textures\Planks 09 [8K]
     parallax_depth: 0.0
     tiling: 10

@@ -59,6 +59,64 @@ namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
 
+    const std::vector<std::regex> hdriMatchers{
+        std::regex(".*[\\.]hdr"),
+    };
+
+    const std::vector<std::regex> ignoreMatchers{
+        std::regex(".*[\\.]txt"),
+        std::regex(".*[\\.]usda"),
+        std::regex(".*PREVIEW.*"),
+    };
+
+    const std::vector<std::regex> colorMatchers{
+        std::regex(".*[-_ ][cC]olor[-_ \\.].*"),
+        std::regex(".*[-_ ][cC]ol[-_ \\.].*"),
+    };
+
+    const std::vector<std::regex> normalMatchers{
+        std::regex(".*[-_ ][nN]ormal[-_ \\.].*"),
+        std::regex(".*[-_ ][nN]ormalGL[-_ \\.].*"),
+        std::regex(".*[-_ ][nN]rm[-_ \\.].*"),
+    };
+
+    const std::vector<std::regex> metalnessMatchers{
+        std::regex(".*[-_ ][mM]etalness[-_ \\.].*"),
+        std::regex(".*[-_ ][mM]et[-_ \\.].*"),
+    };
+
+    const std::vector<std::regex> roughnessMatchers{
+        std::regex(".*[-_ ][rR]oughness[-_ \\.].*"),
+        std::regex(".*[-_ ][rR]gh[-_ \\.].*"),
+    };
+
+    const std::vector<std::regex> occlusionMatchers{
+        std::regex(".*[-_ ][aA]mbientOcclusion[-_ \\.].*"),
+        std::regex(".*[-_ ][oO]cclusion[-_ \\.].*"),
+        std::regex(".*[-_ ][aA][Oo][-_ \\.].*"),
+    };
+
+    const std::vector<std::regex> displacementMatchers{
+        std::regex(".*[-_ ][dD]isplacement[-_ \\.].*"),
+        std::regex(".*[-_ ][dD]isp[-_ \\.].*"),
+    };
+
+    const std::vector<std::regex> opacityMatchers{
+        std::regex(".*[-_ ][oO]pacity[-_ \\.].*"),
+        std::regex(".*[-_ ][oO]ps[-_ \\.].*"),
+    };
+
+    bool matchAny(
+        const std::vector<std::regex>& matchers,
+        const std::string& str)
+    {
+        for (auto& re : matchers) {
+            if (std::regex_match(str, re)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 SceneFile::SceneFile(
@@ -1125,6 +1183,14 @@ void SceneFile::loadSkybox(
             reportUnknown("skybox_entry", k, v);
         }
     }
+
+    if (matchAny(hdriMatchers, data.materialName)) {
+        data.hdri = true;
+    }
+
+    if (data.hdri) {
+        data.gammaCorrect = false;
+    }
 }
 
 void SceneFile::loadSkyboxFaces(
@@ -1831,116 +1897,61 @@ void SceneFile::loadMaterialPbr(
         m_assets.assetsDir,
         pbrName);
 
-    std::vector<std::regex> colorMatchers{
-        std::regex(".*[-_ ][cC]olor[-_ \\.].*"),
-        std::regex(".*[-_ ][cC]ol[-_ \\.].*"),
-    };
-
-    std::vector<std::regex> normalMatchers{
-        std::regex(".*[-_ ][nN]ormal[-_ \\.].*"),
-        std::regex(".*[-_ ][nN]ormalGL[-_ \\.].*"),
-        std::regex(".*[-_ ][nN]rm[-_ \\.].*"),
-    };
-
-    std::vector<std::regex> metalnessMatchers{
-        std::regex(".*[-_ ][mM]etalness[-_ \\.].*"),
-        std::regex(".*[-_ ][mM]et[-_ \\.].*"),
-    };
-
-    std::vector<std::regex> roughnessMatchers{
-        std::regex(".*[-_ ][rR]oughness[-_ \\.].*"),
-        std::regex(".*[-_ ][rR]gh[-_ \\.].*"),
-    };
-
-    std::vector<std::regex> occlusionMatchers{
-        std::regex(".*[-_ ][oO]cclusion[-_ \\.].*"),
-        std::regex(".*[-_ ][aA]o[-_ \\.].*"),
-    };
-
-    std::vector<std::regex> displacementMatchers{
-        std::regex(".*[-_ ][dD]isplacement[-_ \\.].*"),
-        std::regex(".*[-_ ][dD]isp[-_ \\.].*"),
-    };
-
-    std::vector<std::regex> opacityMatchers{
-        std::regex(".*[-_ ][oO]pacity[-_ \\.].*"),
-        std::regex(".*[-_ ][oO]ps[-_ \\.].*"),
-    };
-
     for (const auto& dirEntry : std::filesystem::directory_iterator(basePath)) {
         std::string fileName = dirEntry.path().filename().string();
         std::string assetPath = util::joinPath(pbrName,fileName);
         std::cout << fmt::format("{} = {}\n", fileName, assetPath);
 
+        if (matchAny(ignoreMatchers, fileName)) {
+            continue;
+        }
+
         bool found = false;
-        for (auto& re : colorMatchers) {
-            if (found) continue;
-            if (std::regex_match(fileName, re)) {
-                std::cout << "COLOR\n";
-                fields.map_kd = true;
-                material.map_kd = assetPath;
-                found = true;
-            }
+
+        if (!found && matchAny(colorMatchers, fileName)) {
+            fields.map_kd = true;
+            material.map_kd = assetPath;
+            found = true;
         }
 
-        for (auto& re : normalMatchers) {
-            if (found) continue;
-            if (std::regex_match(fileName, re)) {
-                std::cout << "NORMAL\n";
-                fields.map_bump = true;
-                material.map_bump = assetPath;
-                found = true;
-            }
+        if (!found && matchAny(normalMatchers, fileName)) {
+            fields.map_bump = true;
+            material.map_bump = assetPath;
+            found = true;
         }
 
-        for (auto& re : metalnessMatchers) {
-            if (found) continue;
-            if (std::regex_match(fileName, re)) {
-                std::cout << "METAL\n";
-                fields.map_metalness = true;
-                material.map_metalness = assetPath;
-                found = true;
-            }
+        if (!found && matchAny(metalnessMatchers, fileName)) {
+            fields.map_metalness = true;
+            material.map_metalness = assetPath;
+            found = true;
         }
 
-        for (auto& re : roughnessMatchers) {
-            if (found) continue;
-            if (std::regex_match(fileName, re)) {
-                std::cout << "ROUGHNESS\n";
-                fields.map_roughness = true;
-                material.map_roughness = assetPath;
-                found = true;
-            }
+        if (!found && matchAny(roughnessMatchers, fileName)) {
+            fields.map_roughness = true;
+            material.map_roughness = assetPath;
+            found = true;
         }
 
-        for (auto& re : occlusionMatchers) {
-            if (found) continue;
-            if (std::regex_match(fileName, re)) {
-                std::cout << "OCCLUSION\n";
-                fields.map_occlusion = true;
-                material.map_occlusion = assetPath;
-                found = true;
-            }
+        if (!found && matchAny(occlusionMatchers, fileName)) {
+            fields.map_occlusion = true;
+            material.map_occlusion = assetPath;
+            found = true;
         }
 
-        for (auto& re : displacementMatchers) {
-            if (found) continue;
-            if (std::regex_match(fileName, re)) {
-                std::cout << "DISPLACEEMENT\n";
-                fields.map_displacement = true;
-                material.map_displacement = assetPath;
-                found = true;
-            }
+        if (!found && matchAny(displacementMatchers, fileName)) {
+            fields.map_displacement = true;
+            material.map_displacement = assetPath;
+            found = true;
         }
 
-        for (auto& re : opacityMatchers) {
-            if (found) continue;
-            if (std::regex_match(fileName, re)) {
-                std::cout << "OPACITY\n";
-                fields.map_opacity = true;
-                material.map_opacity = assetPath;
-                found = true;
-            }
+        if (!found && matchAny(opacityMatchers, fileName)) {
+            fields.map_opacity = true;
+            material.map_opacity = assetPath;
+            found = true;
+        }
+
+        if (!found) {
+            throw std::runtime_error{ fmt::format("UNKNOWN_PBR_FILE: {}", assetPath) };
         }
     }
 }
