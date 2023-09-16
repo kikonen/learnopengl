@@ -361,7 +361,7 @@ const MaterialSSBO Material::toSSBO() const
 
         m_textures[MATERIAL_DIFFUSE_IDX].m_handle,
         m_textures[MATERIAL_EMISSION_IDX].m_handle,
-        m_textures[MATERIAL_SPECULAR_IDX].m_handle,
+        //m_textures[MATERIAL_SPECULAR_IDX].m_handle,
         m_textures[MATERIAL_NORMAL_MAP_IDX].m_handle,
 
         m_textures[MATERIAL_DUDV_MAP_IDX].m_handle,

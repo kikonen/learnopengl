@@ -124,7 +124,7 @@ const ShapeSSBO Shape::toSSBO() const
     return {
         m_textures[SHAPE_DIFFUSE_IDX].m_handle,
         m_textures[SHAPE_EMISSION_IDX].m_handle,
-        m_textures[SHAPE_SPECULAR_IDX].m_handle,
+        //m_textures[SHAPE_SPECULAR_IDX].m_handle,
         m_textures[SHAPE_NORMAL_MAP_IDX].m_handle,
     };
 }

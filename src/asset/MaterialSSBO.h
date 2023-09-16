@@ -34,7 +34,7 @@ struct MaterialSSBO {
     // NOTE KI "tex index", not "unit index"
     GLuint64 u_diffuseTex;
     GLuint64 u_emissionTex;
-    GLuint64 u_specularTex;
+    //GLuint64 u_specularTex;
     GLuint64 u_normalMap;
 
     GLuint64 u_dudvMap;
@@ -58,8 +58,8 @@ struct MaterialSSBO {
     float u_layersDepth;
     float u_parallaxDepth;
 
-    //int pad3_1;
-    //int pad3_2;
+    int pad3_1;
+    int pad3_2;
     //int pad3_3;
 };
 #pragma pack(pop)

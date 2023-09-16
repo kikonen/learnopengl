@@ -2,6 +2,6 @@
 struct Shape {
   uvec2 diffuseTex;
   uvec2 emissionTex;
-  uvec2 specularTex;
+  //uvec2 specularTex;
   uvec2 normalMapTex;
 };
