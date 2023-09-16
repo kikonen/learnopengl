@@ -121,7 +121,7 @@ void ImageTexture::prepare(
     // => need to convert manually to RGB(A) format
     // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
     if (m_image->m_channels == 1) {
-        if (m_image->m_is_16_bit) {
+        if (m_image->m_is16Bbit) {
             m_format = GL_RED;
             m_internalFormat = GL_R16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
@@ -135,7 +135,7 @@ void ImageTexture::prepare(
         m_format = GL_RG;
         m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
     } else if (m_image->m_channels == 3) {
-        if (m_image->m_is_16_bit) {
+        if (m_image->m_is16Bbit) {
             m_format = GL_RGB;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
@@ -146,7 +146,7 @@ void ImageTexture::prepare(
             //m_internalFormat = assets.glPreferredTextureFormatRGB;
         }
     } else if (m_image->m_channels == 4) {
-        if (m_image->m_is_16_bit) {
+        if (m_image->m_is16Bbit) {
             m_format = GL_RGBA;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA16;
             m_pixelFormat = GL_UNSIGNED_SHORT;

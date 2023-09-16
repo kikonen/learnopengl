@@ -57,7 +57,7 @@ int Image::load() {
     stbi_set_flip_vertically_on_load_thread(m_flipped);
     //stbi_set_flip_vertically_on_load(flip);
 
-    m_is_16_bit = stbi_is_16_bit(m_path.c_str());
+    m_is16Bbit = stbi_is_16_bit(m_path.c_str());
 
     if (m_hdri) {
         m_data = (unsigned char*)stbi_loadf(
@@ -66,7 +66,7 @@ int Image::load() {
             &m_height,
             &m_channels,
             STBI_default);
-    } else if (m_is_16_bit) {
+    } else if (m_is16Bbit) {
         m_data = (unsigned char*)stbi_load_16(
             m_path.c_str(),
             &m_width,

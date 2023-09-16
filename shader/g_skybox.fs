@@ -6,7 +6,7 @@ layout(early_fragment_tests) in;
 #include uniform_data.glsl
 
 layout(binding = UNIT_SKYBOX) uniform samplerCube u_skybox;
-layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradiance;
+layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradianceMap;
 
 LAYOUT_G_BUFFER_OUT;
 

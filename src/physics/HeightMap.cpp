@@ -16,7 +16,7 @@ namespace physics {
         const int imageW = image.m_width;
         const int channels = image.m_channels;
 
-        const bool image16b = image.m_is_16_bit;
+        const bool image16b = image.m_is16Bbit;
         const int entrySize = channels * (image16b ? 2 : 1);
         const float entryScale = image16b ? 65535.f : 255.f;
 

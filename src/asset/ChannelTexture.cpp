@@ -51,6 +51,7 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
     const std::string& name,
     const std::vector<ImageTexture*>& sourceTextures,
     const glm::vec4& defaults,
+    bool is16Bbit,
     const TextureSpec& spec)
 {
     std::lock_guard<std::mutex> lock(textures_lock);
@@ -63,8 +64,8 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
     }
 
     const std::string cacheKey = fmt::format(
-        "{}_{}_{}_{}_{}_{}_{}_{}",
-        name, pathsStr, defaults,
+        "{}_{}_{}_{}-{}_{}_{}_{}_{}",
+        name, pathsStr, defaults, is16Bbit,
         spec.wrapS, spec.wrapT,
         spec.minFilter, spec.magFilter, spec.mipMapLevels);
 
@@ -74,7 +75,7 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
             return e->second;
     }
 
-    auto future = startLoad(new ChannelTexture(name, sourceTextures, defaults, spec));
+    auto future = startLoad(new ChannelTexture(name, sourceTextures, defaults, is16Bbit, spec));
     textures[cacheKey] = future;
     return future;
 }
@@ -99,6 +100,7 @@ ChannelTexture::ChannelTexture(
     const std::string& name,
     const std::vector<ImageTexture*>& sourceTextures,
     const glm::vec4& defaults,
+    bool is16Bbit,
     const TextureSpec& spec)
     : Texture(name, false, spec),
     m_sourceTextures{ sourceTextures },
@@ -122,7 +124,12 @@ void ChannelTexture::prepare(
 
     if (!m_valid) return;
 
-    m_pixelFormat = GL_UNSIGNED_BYTE;
+    if (m_is16Bbit) {
+        m_pixelFormat = GL_UNSIGNED_SHORT;
+    }
+    else {
+        m_pixelFormat = GL_UNSIGNED_BYTE;
+    }
 
     switch (m_sourceTextures.size()) {
     case 4:
@@ -196,13 +203,23 @@ void ChannelTexture::load()
 
     if (!m_valid) return;
 
-    const int dstPixelBytes = 1;
+    const int dstPixelBytes = m_is16Bbit ? 2 : 1;
     const int dstRGBA = m_sourceTextures.size();
 
     const int bufferSize = w * dstPixelBytes * h * dstRGBA;
 
     m_data = new unsigned char[bufferSize];
     memset(m_data, 1, bufferSize);
+
+    unsigned char* dstByteData{ nullptr };
+    unsigned short* dstShortData{ nullptr };
+
+    if (m_is16Bbit) {
+        dstShortData = (unsigned short*)m_data;
+    }
+    else {
+        dstByteData = m_data;
+    }
 
     int dstOffset = -1;
 
@@ -211,29 +228,49 @@ void ChannelTexture::load()
 
     for (auto& tex : m_sourceTextures) {
         dstOffset++;
-        int defaultValue = m_defaults[dstOffset] * 255;
+        int defaultValue = m_defaults[dstOffset] * (m_is16Bbit ? 65535 : 255);
         //if (!tex) continue;
 
         auto* image = tex ? tex->m_image.get() : nullptr;
         //if (!image) continue;
 
-        const int srcMultiplier = image && image->m_is_16_bit ? 2 : 1;
-        const int pixelRatio = srcMultiplier;
+        const int srcPixelBytes = image && image->m_is16Bbit ? 2 : 1;
+        const float pixelRatio = dstPixelBytes / (float)srcPixelBytes;
 
-        unsigned char* imageData = image ? image->m_data : nullptr;
+        unsigned char* srcByteData{ nullptr };
+        unsigned short* srcShortData{ nullptr };
+
+        if (image) {
+            if (image->m_is16Bbit) {
+                srcShortData = (unsigned short*)image->m_data;
+            }
+            else {
+                srcByteData = image->m_data;
+            }
+        }
 
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
-                int dstIndex = y * w * dstPixelBytes * dstRGBA + x * dstPixelBytes * dstRGBA + dstOffset;
+                const int srcIndex = y * w + x;
+
                 int value;
-                if (imageData) {
-                    int srcIndex = y * w * srcMultiplier + x * srcMultiplier;
-                    value = imageData[srcIndex] / pixelRatio;
+                if (srcByteData) {
+                    value = srcByteData[srcIndex] * pixelRatio;
+                }
+                else if (srcShortData) {
+                    value = srcShortData[srcIndex] * pixelRatio;
                 }
                 else {
                     value = defaultValue;
                 }
-                m_data[dstIndex] = value;
+
+                int dstIndex = y * w * dstRGBA + x * dstRGBA + dstOffset;
+                if (m_is16Bbit) {
+                    dstShortData[dstIndex] = value;
+                }
+                else {
+                    dstByteData[dstIndex] = value;
+                }
             }
         }
     }

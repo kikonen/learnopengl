@@ -4,6 +4,8 @@ viewports:
 skybox:
   program: g_skybox
   material: skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+  hdri: true
 lights: {}
 cube_maps: {}
 root:
@@ -35,6 +37,7 @@ entities:
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
+      intensity: 50000
       specular: [0.9, 0.9, 0.7, 1.0]
       enabled: true
     enabled: true

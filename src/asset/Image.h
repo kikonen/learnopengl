@@ -30,7 +30,7 @@ public:
     int m_width = 0;
     int m_height = 0;
     int m_channels = 0;
-    bool m_is_16_bit = false;
+    bool m_is16Bbit = false;
 
     unsigned char* m_data{ nullptr };
 
