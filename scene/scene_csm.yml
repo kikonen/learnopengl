@@ -30,7 +30,8 @@ entities:
     model: texture_cube
     program: g_tex
     material_modifier:
-      tiling: 5
+      tiling: 3
+      map_pbr: textures\Bricks007_1K-PNG
       texture_spec:
         wrap: GL_REPEAT
     pos: [0.0, 2.0, 0.0]

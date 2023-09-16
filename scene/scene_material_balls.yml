@@ -93,7 +93,8 @@ entities:
     material: gold_ball
     material_modifier:
       reflection: 0.05
-      map_pbr: textures\Planks 09 [8K]
+      xmap_pbr: textures\Planks 09 [8K]
+      map_pbr: textures\Metal007_1K-PNG
       parallax_depth: 0.0
     enabled: true
   - name: Silver ball
