@@ -60,7 +60,7 @@ void main() {
   texColor *= vec4(1.0, 1.0, 1.0, t);
 
   o_fragColor = vec4(texColor.xyz, material.ambient);
-  o_fragSpecular = material.specular;
+  //o_fragSpecular = material.specular;
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;
 

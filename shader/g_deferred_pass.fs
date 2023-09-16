@@ -77,7 +77,7 @@ void main()
     material.ambient = material.diffuse.a;
     material.diffuse.a = 1.0;
 
-    material.specular = texture(g_specular, texCoord);
+    //material.specular = texture(g_specular, texCoord);
     material.metal = texture(g_metal, texCoord);
     material.emission = texture(g_emission, texCoord);
     material.emission.a = 1.0;

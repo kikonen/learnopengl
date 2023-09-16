@@ -35,7 +35,6 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.8, 1.0]
       intensity: 50000
-      specular: [0.9, 0.9, 0.8, 1.0]
       enabled: true
     enabled: true
   - name: Pool floor

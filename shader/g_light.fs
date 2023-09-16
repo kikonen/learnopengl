@@ -33,7 +33,7 @@ void main() {
   vec4 texColor = material.diffuse;
 
   o_fragColor = vec4(texColor.xyz, material.ambient);
-  o_fragSpecular = material.specular;
+  //o_fragSpecular = material.specular;
   o_fragMetal = material.metal;
   o_fragEmission = texColor.xyz;
 

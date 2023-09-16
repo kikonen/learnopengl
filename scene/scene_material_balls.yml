@@ -4,9 +4,8 @@ viewports:
 skybox:
   program: g_skybox
   xmaterial: skybox
-  xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
   xmaterial: skybox/polyhaven/borghese_gardens_2k.hdr
-  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 lights: {}
 cube_maps: {}
 root:
@@ -44,7 +43,7 @@ entities:
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
-      intensity: 50000
+      intensity: 20000
       enabled: true
     enabled: true
   - name: Point light
@@ -59,12 +58,10 @@ entities:
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
-      #type: directional
       type: point
       linear: 0.09
       quadratic: 0.032
       diffuse: [0.7, 0.7, 0.7, 1.0]
-      specular: [0.7, 0.7, 0.7, 1.0]
       enabled: true
     xenabled: true
   - name: ball origo

@@ -103,7 +103,7 @@ constexpr int VBO_VERTEX_BINDING = 0;
 constexpr int UNIT_HDR_TEXTURE = 49;
 
 constexpr int UNIT_G_ALBEDO = 50;
-constexpr int UNIT_G_SPECULAR = 51;
+//constexpr int UNIT_G_SPECULAR = 51;
 constexpr int UNIT_G_EMISSION = 52;
 //constexpr int UNIT_G_POSITION = 53;
 constexpr int UNIT_G_METAL = 53;

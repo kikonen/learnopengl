@@ -36,11 +36,11 @@ void GBuffer::updateView(const RenderContext& ctx)
                 {
                     FrameBufferAttachment::getGBufferAlbedoHdr(GL_COLOR_ATTACHMENT0),
                     // NOTE KI no specular in metal workflow
-                    FrameBufferAttachment::getGBufferSpecularHdr(GL_COLOR_ATTACHMENT1),
-                    FrameBufferAttachment::getGBufferEmissionHdr(GL_COLOR_ATTACHMENT2),
+                    //FrameBufferAttachment::getGBufferSpecularHdr(GL_COLOR_ATTACHMENT1),
+                    FrameBufferAttachment::getGBufferEmissionHdr(GL_COLOR_ATTACHMENT1),
                     //FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT3),
-                    FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT3),
-                    FrameBufferAttachment::getGBufferMetal(GL_COLOR_ATTACHMENT4),
+                    FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT2),
+                    FrameBufferAttachment::getGBufferMetal(GL_COLOR_ATTACHMENT3),
                     // depth needed
                     FrameBufferAttachment::getDepthTexture()
                 }
@@ -64,7 +64,7 @@ void GBuffer::bind(const RenderContext& ctx)
 void GBuffer::bindTexture(const RenderContext& ctx)
 {
     m_buffer->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_G_ALBEDO);
-    m_buffer->bindTexture(ctx, ATT_SPECULAR_INDEX, UNIT_G_SPECULAR);
+    //m_buffer->bindTexture(ctx, ATT_SPECULAR_INDEX, UNIT_G_SPECULAR);
     m_buffer->bindTexture(ctx, ATT_EMISSION_INDEX, UNIT_G_EMISSION);
     //m_buffer->bindTexture(ctx, ATT_POSITION_INDEX, UNIT_G_POSITION);
     m_buffer->bindTexture(ctx, ATT_NORMAL_INDEX, UNIT_G_NORMAL);
@@ -75,7 +75,7 @@ void GBuffer::bindTexture(const RenderContext& ctx)
 void GBuffer::unbindTexture(const RenderContext& ctx)
 {
     m_buffer->unbindTexture(ctx, UNIT_G_ALBEDO);
-    m_buffer->unbindTexture(ctx, UNIT_G_SPECULAR);
+    //m_buffer->unbindTexture(ctx, UNIT_G_SPECULAR);
     m_buffer->unbindTexture(ctx, UNIT_G_EMISSION);
     //m_buffer->unbindTexture(ctx, UNIT_G_POSITION);
     m_buffer->unbindTexture(ctx, UNIT_G_METAL);

@@ -54,8 +54,7 @@ entities:
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
-      intensity: 50000
-      specular: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
       enabled: true
     enabled: true
   - name: Linden tree forest - part 1

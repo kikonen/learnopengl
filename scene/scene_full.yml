@@ -103,7 +103,6 @@ entities:
       target_id: [auto, dir-light-target]
       diffuse: [0.4, 0.4, 0.4, 1.0]
       intensity: 100000
-      specular: [0.4, 0.4, 0.4, 1.0]
       enabled: true
     enabled: true
   - name: Moving point light origo
@@ -153,7 +152,6 @@ entities:
           kd: [0.8, 0.0, 0.0, 1.0]
         light:
           diffuse: [0.9, 0.0, 0.0, 1.0]
-          specular: [0.9, 0.0, 0.0, 1.0]
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
@@ -162,7 +160,6 @@ entities:
           kd: [0.0, 0.9, 0.0, 1.0]
         light:
           diffuse: [0.0, 0.9, 0.0, 1.0]
-          specular: [0.0, 0.9, 0.0, 1.0]
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
@@ -171,7 +168,6 @@ entities:
           kd: [0.0, 0.0, 0.9, 1.0]
         light:
           diffuse: [0.0, 0.0, 0.9, 1.0]
-          specular: [0.0, 0.0, 0.9, 1.0]
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
@@ -180,7 +176,6 @@ entities:
           kd: [0.9, 0.0, 0.9, 1.0]
         light:
           diffuse: [0.9, 0.0, 0.9, 1.0]
-          specular: [0.9, 0.0, 0.9, 1.0]
           enabled: false
         enabled: false
     light:
@@ -189,7 +184,6 @@ entities:
       quadratic: 0.032
       target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
-      specular: [0.8, 0.8, 0.8, 1.0]
       enabled: true
     enabled: true
   - name: Rock light origo
@@ -213,7 +207,6 @@ entities:
       quadratic: 0.032
       target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
-      specular: [0.8, 0.8, 0.8, 1.0]
       enabled: true
     enabled: true
   - name: Active node
@@ -776,7 +769,6 @@ entities:
       linear: 0.014
       quadratic: 0.0007
       diffuse: [0.6, 1.2, 0.6, 1.0]
-      specular: [0.6, 1.2, 0.6, 1.0]
       enabled: false
     repeat:
       x_count: 9
