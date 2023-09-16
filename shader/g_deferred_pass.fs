@@ -85,8 +85,6 @@ void main()
     material.metal = texture(g_metal, texCoord);
   }
 
-  //bool skipLight = material.ambient >= 1.0;
-
   vec4 color;
   bool emission = false;
   if (skipLight) {
@@ -108,7 +106,7 @@ void main()
 
   if (emission) {
     o_fragBright = vec4(material.emission.xyz, 1.0);
-  } else if (brightness > 1.0) {
+  } else if (brightness > 1.0 && !skipLight) {
     o_fragBright = vec4(color.xyz, 1.0);
   } else {
     o_fragBright = vec4(0.0, 0.0, 0.0, 1.0);
