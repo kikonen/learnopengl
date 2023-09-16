@@ -31,6 +31,5 @@ void main()
   // also gamma correct while we're at it
   result = pow(result, vec3(1.0 / u_hdrGamma));
 
-//  result = vec3(1, 0, 0);
   o_fragColor = vec4(result, 1.0);
 }

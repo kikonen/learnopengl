@@ -133,6 +133,9 @@ int Program::prepare(const Assets& assets)
 
     u_drawParametersIndex = std::make_unique< uniform::UInt>("u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX);
 
+    u_toneHdri = std::make_unique< uniform::Bool>("u_toneHdri", UNIFORM_TONE_HDRI);
+    u_gammaCorrect = std::make_unique< uniform::Bool>("u_gammaCorrect", UNIFORM_GAMMA_CORRECT);
+
     u_stencilMode = std::make_unique< uniform::Int>("u_stencilMode", UNIFORM_STENCIL_MODE);
 
     u_effectBloomIteration = std::make_unique< uniform::UInt>("u_effectBloomIteration", UNIFORM_EFFECT_BLOOM_ITERATION);

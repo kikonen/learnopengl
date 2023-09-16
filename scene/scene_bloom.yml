@@ -3,7 +3,7 @@ name: Origo
 viewports:
 skybox:
   program: g_skybox
-  material: skybox
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 lights: {}
 cube_maps: {}
 root:
@@ -58,6 +58,7 @@ entities:
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 50000
       specular: [0.7, 0.7, 0.7, 1.0]
       enabled: true
     enabled: true

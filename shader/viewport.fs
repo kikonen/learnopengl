@@ -7,6 +7,8 @@
 #define EFF_BLUR 4
 #define EFF_EDGE 5
 
+#include uniform_data.glsl
+
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
 layout(early_fragment_tests) in;
@@ -17,9 +19,12 @@ layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 
 subroutine vec4 sub_effect(vec4 color);
 
+layout(location = UNIFORM_TONE_HDRI) uniform bool u_toneHdri;
+layout(location = UNIFORM_GAMMA_CORRECT) uniform bool u_gammaCorrect;
+
 layout(location = SUBROUTINE_EFFECT) subroutine uniform sub_effect u_effect;
 
-layout (location = 0) out vec4 o_fragColor;
+layout(location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
@@ -180,5 +185,19 @@ vec4 effectX(in vec4 color)
 
 void main()
 {
-  o_fragColor = u_effect(texture(u_viewportTex, texCoord));
+  vec3 color = u_effect(texture(u_viewportTex, texCoord)).rgb;
+
+  if (u_toneHdri) {
+    // reinhard
+    // vec3 result = hdrColor / (hdrColor + vec3(1.0));
+    // exposure
+    color = vec3(1.0) - exp(-color * u_hdrExposure);
+  }
+
+  if (u_gammaCorrect) {
+    // also gamma correct while we're at it
+    color = pow(color, vec3(1.0 / u_hdrGamma));
+  }
+
+  o_fragColor = vec4(color, 1.0);
 }

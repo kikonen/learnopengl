@@ -20,6 +20,7 @@ namespace uniform {
     class Float;
     class Int;
     class UInt;
+    class Bool;
 }
 
 class Program final
@@ -109,6 +110,9 @@ public:
     std::unique_ptr<uniform::UInt> u_drawParametersIndex;
 
     std::unique_ptr<uniform::UInt> u_effectBloomIteration;
+
+    std::unique_ptr<uniform::Bool> u_toneHdri;
+    std::unique_ptr<uniform::Bool> u_gammaCorrect;
 
     std::unique_ptr<uniform::Int> u_stencilMode;
 

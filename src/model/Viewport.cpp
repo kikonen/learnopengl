@@ -118,6 +118,9 @@ void Viewport::bind(const RenderContext& ctx)
     //m_program->viewportTex.set(UNIT_VIEWPORT);
     ctx.m_state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
+    m_program->u_toneHdri->set(true);
+    m_program->u_gammaCorrect->set(true);
+
     if (m_effectEnabled) {
         m_program->u_effect->set(util::as_integer(m_effect));
     }

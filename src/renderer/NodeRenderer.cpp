@@ -60,7 +60,7 @@ void NodeRenderer::updateView(const RenderContext& ctx)
                 w, h,
                 {
                     // NOTE KI alpha NOT needed
-                    FrameBufferAttachment::getTextureRGB(),
+                    FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
                     // NOTE KI depth/stencil needed only for highlight/selecction
                     FrameBufferAttachment::getRBODepthStencil(),
                 }

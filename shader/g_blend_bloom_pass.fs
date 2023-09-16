@@ -24,8 +24,6 @@ void main()
   //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
   const vec2 texCoord = fs_in.texCoord;
 
-  const float gamma = 2.2;
-
   vec3 hdrColor = texture(effect_albedo, texCoord).rgb;
   vec3 bloomColor = texture(effect_work, texCoord).rgb;
 
@@ -35,12 +33,7 @@ void main()
     // additive blending
     hdrColor += bloomColor;
 
-    // tone mapping
-    float exposure = u_effectBloomExposure + sin(u_time * 2) * 0.3;
-    color = vec3(1.0) - exp(-hdrColor * exposure);
-
-    // also gamma correct while we're at it
-    color = pow(color, vec3(1.0 / gamma));
+    color = hdrColor + hdrColor * (1.0 + sin(u_time * 2.4)) * 0.2;
   }
 
   o_fragColor = vec4(color, 1.0);

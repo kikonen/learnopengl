@@ -319,7 +319,8 @@ void NodeDraw::drawNodes(
                     EffectBuffer::ATT_ALBEDO_INDEX);
             }
             else {
-                bool hdr = targetFormat != GL_RGB16F && targetFormat != GL_RGBA16F;
+                // NOTE KI hdri tone & gamma correct done at the viewport render
+                bool hdr = false;// targetFormat != GL_RGB16F && targetFormat != GL_RGBA16F;
 
                 if (hdr) {
                     targetBuffer->bind(ctx);
