@@ -16,6 +16,12 @@ SET_FLOAT_PRECISION;
 
 const float PI = 3.14159265359;
 
+const float MIN_COL_VALUE = 0.0;
+const float MAX_COL_VALUE = 400.0;
+
+const float MIN_IRR_VALUE = 0.0;
+const float MAX_IRR_VALUE = 100.0;
+
 void main()
 {
   // the sample direction equals the hemisphere's orientation
@@ -36,11 +42,21 @@ void main()
       // tangent space to world
       vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * normal;
 
-      irradiance += texture(u_skybox, sampleVec).rgb * cos(theta) * sin(theta);
+      vec3 color = texture(u_skybox, sampleVec).rgb;
+      color.r = clamp(color.r, MIN_COL_VALUE, MAX_COL_VALUE);
+      color.g = clamp(color.g, MIN_COL_VALUE, MAX_COL_VALUE);
+      color.b = clamp(color.b, MIN_COL_VALUE, MAX_COL_VALUE);
+
+      irradiance += color * cos(theta) * sin(theta);
       nrSamples++;
     }
   }
+
   irradiance = PI * irradiance * (1.0 / float(nrSamples));
+
+  irradiance.r = clamp(irradiance.r, MIN_IRR_VALUE, MAX_IRR_VALUE);
+  irradiance.g = clamp(irradiance.g, MIN_IRR_VALUE, MAX_IRR_VALUE);
+  irradiance.b = clamp(irradiance.b, MIN_IRR_VALUE, MAX_IRR_VALUE);
 
   u_fragColor = vec4(irradiance, 1.0);
 }

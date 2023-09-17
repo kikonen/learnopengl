@@ -19,11 +19,14 @@ SET_FLOAT_PRECISION;
 #include fn_gbuffer_encode.glsl
 
 void main() {
-  vec4 texColor = texture(u_skybox, texCoord);
+  vec3 envColor = texture(u_skybox, texCoord).rgb;
+  vec3 irradianceColor = texture(u_irradianceMap, texCoord).rgb;
   //texColor = vec4(1.0, 0, 0, 1.0);
   //texColor.a = 0.0;
 
-  o_fragColor = vec4(texColor.xyz, 1.0);
+  vec3 texColor = mix(envColor, irradianceColor, 0.5);
+
+  o_fragColor = vec4(texColor.rgb, 1.0);
   //o_fragSpecular = vec4(0);
   o_fragMetal = vec4(0);
   o_fragEmission = vec3(0);
