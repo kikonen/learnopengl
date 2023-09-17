@@ -1,4 +1,7 @@
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
+//
+// http://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
+//
 struct DirLight {
   vec4 worldDir;
 
