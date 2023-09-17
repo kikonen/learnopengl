@@ -15,6 +15,7 @@ skybox:
     - Down_Tex.png
     - Front_Tex.png
     - Back_Tex.png
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 lights: {}
 cube_maps: {}
 root:
@@ -469,6 +470,7 @@ entities:
     material: cow
     material_modifier:
       reflection: 0.4
+      map_pbr: textures/Plastic 01 [4K]
     render_flags:
       render_back: false
     selected: false
@@ -493,6 +495,7 @@ entities:
     material: cow
     material_modifier:
       reflection: 0.1
+      map_pbr: textures/Plastic 01 [4K]
     render_flags:
       render_back: false
     selected: false
@@ -1099,8 +1102,7 @@ materials:
     ni: 1.450000
     d: 1.000000
     illum: 2
-    map_kd: textures/Dirt_vh_1024.png
-    map_bump: textures/Dirt_vh_1024_normal.png
+    map_pbr: textures/Metal008_1K-PNG
   - name: mirror
     type: model
     ns: 225.000000
