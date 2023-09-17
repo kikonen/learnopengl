@@ -35,8 +35,8 @@ struct FrameBufferAttachment {
     int internalFormat = GL_RGBA8;
     //int format = GL_RGBA;
 
-    GLint minFilter = GL_NEAREST;
-    GLint magFilter = GL_NEAREST;
+    GLint minFilter = GL_LINEAR_MIPMAP_NEAREST;
+    GLint magFilter = GL_LINEAR;
 
     int textureWrapS = GL_CLAMP_TO_EDGE;
     int textureWrapT = GL_CLAMP_TO_EDGE;

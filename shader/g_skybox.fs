@@ -24,7 +24,7 @@ void main() {
   //texColor = vec4(1.0, 0, 0, 1.0);
   //texColor.a = 0.0;
 
-  vec3 texColor = mix(envColor, irradianceColor, 0.5);
+  vec3 texColor = mix(envColor, irradianceColor, 0.0);
 
   o_fragColor = vec4(texColor.rgb, 1.0);
   //o_fragSpecular = vec4(0);
