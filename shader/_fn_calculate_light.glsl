@@ -81,11 +81,12 @@ vec4 calculateLightPbr(
   }
 
   for (int i = 0; i < u_spotLightCount; i++) {
-    Lo += calculateSpotLight(
+    Lo += calculateSpotLightPbr(
       u_spotLights[i],
       normal,
       viewDir,
-      worldPos);
+      worldPos,
+      shadowIndex);
   }
 
   // ambient lighting (we now use IBL as the ambient term)

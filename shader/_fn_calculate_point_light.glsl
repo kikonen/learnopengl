@@ -47,10 +47,6 @@ vec3 calculatePointLightPbr(
 
   if (dist > light.radius) return vec3(0.0);
 
-  // calculate shadow
-  const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
-  float shadow = calcShadow2_5(u_shadowMap[shadowIndex], shadowPos);
-
   const vec3 lightDir = normalize(toLight);
   const vec3 lightPos = light.worldPos.xyz;
 
@@ -74,7 +70,7 @@ vec3 calculatePointLightPbr(
     vec3 H = normalize(V + L);
     float distance = length(lightPos - worldPos);
     float attenuation = 1.0 / (distance * distance);
-    vec3 radiance = light.diffuse.rgb * attenuation;
+    vec3 radiance = light.diffuse.rgb * light.diffuse.a * attenuation;
 
     // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, roughness);
@@ -103,5 +99,5 @@ vec3 calculatePointLightPbr(
     Lo += (kD * albedo / PI + specular) * radiance * NdotL; // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
   }
 
-  return shadow * Lo;
+  return Lo;
 }

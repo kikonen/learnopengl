@@ -48,7 +48,7 @@ entities:
     enabled: true
   - name: Point light
     type: model
-    pos: [20, 35, 30]
+    pos: [10, 30, 25]
     scale: 0.5
     model: light
     program: g_light
@@ -59,10 +59,10 @@ entities:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: point
-      linear: 0.045
-      quadratic: 0.0075
+      linear: 0.14
+      quadratic: 0.07
       diffuse: [0.7, 0.7, 0.7, 1.0]
-      intensity: 10000
+      intensity: 1000
       enabled: true
     enabled: true
   - name: ball origo
