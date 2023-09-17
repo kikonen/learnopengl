@@ -165,6 +165,21 @@ entities:
       no_shadow: true
     scale: [100, 100, 1]
     enabled: true
+  - name: Fence
+    model: quad
+    material: fence
+    program: g_tex
+    pos: [20.0, 25, -25]
+    scale: 5
+    rotation: [0, 270, 0]
+    render_flags:
+      alpha: true
+      xxblend_oit: true
+      render_back: true
+    repeat:
+      z_count: 5
+      z_step: 10
+    enabled: true
 materials:
   - name: default_ball
     ns: 100.0
@@ -200,5 +215,19 @@ materials:
     map_pbr: textures\Planks 09 [8K]
     parallax_depth: 0.0
     tiling: 10
+    texture_spec:
+      wrap: GL_REPEAT
+  - name: fence
+    ns: 225.000000
+    type: model
+    ka: [0.400000, 0.400000, 0.400000, 1.0]
+    kd: [0.800000, 0.800000, 0.800000, 1.0]
+    ks: [0.500000, 0.500000, 0.500000, 1.0]
+    ni: 1.450000
+    d: 1.000000
+    illum: 2
+    map_pbr: textures\Fence007A_4K-JPG
+    parallax_depth: 0.0
+    tiling: 1
     texture_spec:
       wrap: GL_REPEAT
