@@ -102,7 +102,7 @@ entities:
       type: directional
       target_id: [auto, dir-light-target]
       diffuse: [0.4, 0.4, 0.4, 1.0]
-      intensity: 100000
+      intensity: 20000
       enabled: true
     enabled: true
   - name: Moving point light origo
@@ -184,6 +184,7 @@ entities:
       quadratic: 0.032
       target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
+      intensity: 1000
       enabled: true
     enabled: true
   - name: Rock light origo
@@ -207,6 +208,7 @@ entities:
       quadratic: 0.032
       target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
+      intensity: 1000
       enabled: true
     enabled: true
   - name: Active node
@@ -769,6 +771,7 @@ entities:
       linear: 0.014
       quadratic: 0.0007
       diffuse: [0.6, 1.2, 0.6, 1.0]
+      intensity: 1000
       enabled: false
     repeat:
       x_count: 9
