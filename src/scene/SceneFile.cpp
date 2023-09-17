@@ -1900,7 +1900,7 @@ void SceneFile::loadMaterialPbr(
     for (const auto& dirEntry : std::filesystem::directory_iterator(basePath)) {
         std::string fileName = dirEntry.path().filename().string();
         std::string assetPath = util::joinPath(pbrName,fileName);
-        std::cout << fmt::format("{} = {}\n", fileName, assetPath);
+        //std::cout << fmt::format("{} = {}\n", fileName, assetPath);
 
         if (matchAny(ignoreMatchers, fileName)) {
             continue;
