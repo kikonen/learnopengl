@@ -104,7 +104,8 @@ ChannelTexture::ChannelTexture(
     const TextureSpec& spec)
     : Texture(name, false, spec),
     m_sourceTextures{ sourceTextures },
-    m_defaults{ defaults }
+    m_defaults{ defaults },
+    m_is16Bbit{ is16Bbit }
 {
 }
 

@@ -41,7 +41,7 @@ public:
 private:
     const std::vector<ImageTexture*> m_sourceTextures;
     const glm::vec4 m_defaults;
-    const bool m_is16Bbit{ false };
+    const bool m_is16Bbit;
 
     int m_width{ 0 };
     int m_height{ 0 };
