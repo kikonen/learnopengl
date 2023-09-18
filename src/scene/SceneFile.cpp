@@ -64,9 +64,15 @@ namespace {
     };
 
     const std::vector<std::regex> ignoreMatchers{
+        std::regex(".*NOPE.*"),
         std::regex(".*[\\.]txt"),
         std::regex(".*[\\.]usda"),
         std::regex(".*PREVIEW.*"),
+    };
+
+    const std::vector<std::regex> validMatchers{
+        std::regex(".*[\\.][pP][nN][gG]"),
+        std::regex(".*[\\.][jJ][pP][gG]"),
     };
 
     const std::vector<std::regex> colorMatchers{
@@ -1903,6 +1909,10 @@ void SceneFile::loadMaterialPbr(
         //std::cout << fmt::format("{} = {}\n", fileName, assetPath);
 
         if (matchAny(ignoreMatchers, fileName)) {
+            continue;
+        }
+
+        if (!matchAny(validMatchers, fileName)) {
             continue;
         }
 
