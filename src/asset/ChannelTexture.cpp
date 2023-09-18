@@ -222,6 +222,8 @@ void ChannelTexture::load()
         dstByteData = m_data;
     }
 
+    const float dstPixelMax = m_is16Bbit ? 65535 : 255;
+
     int dstOffset = -1;
 
     m_width = w;
@@ -235,8 +237,9 @@ void ChannelTexture::load()
         auto* image = tex ? tex->m_image.get() : nullptr;
         //if (!image) continue;
 
-        const int srcPixelBytes = image && image->m_is16Bbit ? 2 : 1;
-        const float pixelRatio = dstPixelBytes / (float)srcPixelBytes;
+        //const int srcPixelBytes = image && image->m_is16Bbit ? 2 : 1;
+        const float srcPixelMax = image && image->m_is16Bbit ? 65535 : 255;
+        const float pixelRatio = dstPixelMax / (float)srcPixelMax;
 
         unsigned char* srcByteData{ nullptr };
         unsigned short* srcShortData{ nullptr };
@@ -256,10 +259,12 @@ void ChannelTexture::load()
 
                 int value;
                 if (srcByteData) {
-                    value = srcByteData[srcIndex] * pixelRatio;
+                    value = srcByteData[srcIndex];
+                    value *= pixelRatio;
                 }
                 else if (srcShortData) {
-                    value = srcShortData[srcIndex] * pixelRatio;
+                    value = srcShortData[srcIndex];
+                    value *= pixelRatio;
                 }
                 else {
                     value = defaultValue;
