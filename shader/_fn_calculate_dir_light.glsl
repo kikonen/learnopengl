@@ -49,14 +49,12 @@ vec3 calculateDirLightPbr(
   in vec3 worldPos,
   in uint shadowIndex)
 {
-  const vec3 lightDir = normalize(-light.worldDir.xyz);
-  const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
+  const vec3 toLight = -light.worldDir.xyz;
+  const float dist = 100.0;
 
   // calculate shadow
-  float shadow = calcShadow2_5(u_shadowMap[shadowIndex], shadowPos);
-
-  //const vec3 lightPos = vec3(1000, 0, 1000);
-  const float lightDistance = 100.0;
+  const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
+  const float shadow = calcShadow2_5(u_shadowMap[shadowIndex], shadowPos);
 
   const vec3 N = normal;
   const vec3 V = viewDir;
@@ -74,9 +72,9 @@ vec3 calculateDirLightPbr(
   vec3 Lo = vec3(0.0);
   {
     // calculate per-light radiance
-    vec3 L = lightDir; //normalize(light.worldPos - worldPos);
+    vec3 L = toLight; //normalize(light.worldPos - worldPos);
     vec3 H = normalize(V + L);
-    float distance = lightDistance; // length(lightPos - worldPos);
+    float distance = dist; // length(lightPos - worldPos);
     float attenuation = 1.0 / (distance * distance);
     vec3 radiance = light.diffuse.rgb * light.diffuse.a * attenuation;
 

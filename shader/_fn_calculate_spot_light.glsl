@@ -52,20 +52,21 @@ vec3 calculateSpotLightPbr(
   in vec3 worldPos,
   in uint shadowIndex)
 {
-  const vec3 toLight = light.worldPos.xyz - worldPos;
+  vec3 toLight = light.worldPos.xyz - worldPos;
   const float dist = length(toLight);
+
+  toLight = normalize(toLight);
 
   if (dist > light.radius) return vec3(0.0);
 
-  const vec3 lightDir = normalize(toLight);
   const vec3 lightPos = light.worldPos.xyz;
 
   const vec3 N = normal;
   const vec3 V = viewDir;
 
-  vec3 albedo = material.diffuse.rgb;
-  float metallic = material.metal.r;
-  float roughness = material.metal.g;
+  const vec3 albedo = material.diffuse.rgb;
+  const float metallic = material.metal.r;
+  const float roughness = 1.0 - material.metal.g;
 
   // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
   // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)
@@ -76,9 +77,9 @@ vec3 calculateSpotLightPbr(
   vec3 Lo = vec3(0.0);
   {
     // calculate per-light radiance
-    vec3 L = lightDir; //normalize(light.worldPos - worldPos);
+    vec3 L = toLight; //normalize(light.worldPos - worldPos);
     vec3 H = normalize(V + L);
-    float distance = length(lightPos - worldPos);
+    float distance = dist;
     float attenuation = 1.0 / (distance * distance);
     vec3 radiance = light.diffuse.rgb * light.diffuse.a * attenuation;
 
