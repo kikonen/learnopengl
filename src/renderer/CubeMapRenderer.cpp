@@ -98,15 +98,14 @@ void CubeMapRenderer::prepare(
     m_farPlane = assets.cubeMapFarPlane;
 
     int size = assets.cubeMapSize;
-    int scaledSize = assets.bufferScale * size;
 
     {
-        m_curr = std::make_unique<DynamicCubeMap>(scaledSize);
+        m_curr = std::make_unique<DynamicCubeMap>(size);
         m_curr->prepare(
             assets, registry,
             false, { 0, 0, 1.f, 1.f });
 
-        m_prev = std::make_unique<DynamicCubeMap>(scaledSize);
+        m_prev = std::make_unique<DynamicCubeMap>(size);
         m_prev->prepare(
             assets, registry,
             false,

@@ -7,11 +7,10 @@ assets:
   gl_no_error: false
   gl_use_fence: false
 
-  resolution_scale: 0.5
   g_buffer_scale: 0.5
-  water_buffer_scale: 0.25
-  mirror_buffer_scale: 0.5
-  buffer_scale: 1.0
+  water_reflection_buffer_scale: 0.125
+  water_refraction_buffer_scale: 0.25
+  mirror_reflection_buffer_scale: 0.25
 
   window_size: [800, 600]
   window_maximized: true
@@ -106,14 +105,14 @@ assets:
   shadow_planes: [0.1, 30, 120, 500]
   xxshadow_planes: [0.1, 20, 100]
   xxshadow_planes: [0.1, 100]
-  shadow_map_sizes: [2048, 2048, 2048, 2048]
+  shadow_map_sizes: [1024, 1024, 1024, 1024]
   shadow_render_frame_start: 0
   shadow_render_frame_step: 1
 
   cube_map_enabled: true
   cube_map_seamless: true
   cube_map_skip_others: true
-  cube_map_size: 2048
+  cube_map_size: 512
   cube_map_near_plane: 0.5
   cube_map_far_plane: 200
   cube_map_render_frame_start: 1

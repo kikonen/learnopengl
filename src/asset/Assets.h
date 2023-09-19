@@ -39,11 +39,10 @@ public:
 
     bool glUseFence;
 
-    float resolutionScale;
     float gBufferScale;
-    float waterBufferScale;
-    float mirrorBufferScale;
-    float bufferScale;
+    float waterReflectionBufferScale;
+    float waterRefractionBufferScale;
+    float mirrorReflectionBufferScale;
 
     glm::uvec2 windowSize;
     bool windowMaximized;

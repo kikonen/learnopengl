@@ -23,11 +23,10 @@ Assets::Assets()
     glNoError = false;
     glUseFence = true;
 
-    resolutionScale = 0.5f;
     gBufferScale = 0.5f;
-    waterBufferScale = 0.25f;
-    mirrorBufferScale = 0.5f;
-    bufferScale = 0.5f;
+    waterReflectionBufferScale = 0.125f;
+    waterRefractionBufferScale = 0.25f;
+    mirrorReflectionBufferScale = 0.25f;
 
     windowSize = { 800, 600 };
     windowMaximized = false;

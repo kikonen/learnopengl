@@ -87,10 +87,16 @@ void WaterMapRenderer::prepare(
 
 void WaterMapRenderer::updateView(const RenderContext& ctx)
 {
+    updateReflectionView(ctx);
+    updateRefractionView(ctx);
+}
+
+void WaterMapRenderer::updateReflectionView(const RenderContext& ctx)
+{
     const auto& res = ctx.m_resolution;
 
-    int w = ctx.m_assets.waterBufferScale * res.x;
-    int h = ctx.m_assets.waterBufferScale * res.y;
+    int w = ctx.m_assets.waterReflectionBufferScale * res.x;
+    int h = ctx.m_assets.waterReflectionBufferScale * res.y;
 
     if (m_squareAspectRatio) {
         h = w;
@@ -99,11 +105,10 @@ void WaterMapRenderer::updateView(const RenderContext& ctx)
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    bool changed = w != m_width || h != m_height;
+    bool changed = w != m_reflectionWidth || h != m_reflectionheight;
     if (!changed) return;
 
     m_reflectionBuffers.clear();
-    m_refractionBuffers.clear();
 
     auto albedo = FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
@@ -122,7 +127,45 @@ void WaterMapRenderer::updateView(const RenderContext& ctx)
 
             m_reflectionBuffers.push_back(std::make_unique<FrameBuffer>("water_reflect", spec));
         }
+    }
 
+    for (auto& buf : m_reflectionBuffers) {
+        buf->prepare(true);
+    }
+
+    m_reflectionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
+    m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
+
+    m_reflectionWidth = w;
+    m_reflectionheight = h;
+}
+
+void WaterMapRenderer::updateRefractionView(const RenderContext& ctx)
+{
+    const auto& res = ctx.m_resolution;
+
+    int w = ctx.m_assets.waterRefractionBufferScale * res.x;
+    int h = ctx.m_assets.waterRefractionBufferScale * res.y;
+
+    if (m_squareAspectRatio) {
+        h = w;
+    }
+
+    if (w < 1) w = 1;
+    if (h < 1) h = 1;
+
+    bool changed = w != m_refractionWidth || h != m_refractionHeight;
+    if (!changed) return;
+
+    m_refractionBuffers.clear();
+
+    auto albedo = FrameBufferAttachment::getTextureRGBHdr();
+    albedo.minFilter = GL_LINEAR;
+    albedo.magFilter = GL_LINEAR;
+    albedo.textureWrapS = GL_REPEAT;
+    albedo.textureWrapT = GL_REPEAT;
+
+    for (int i = 0; i < m_bufferCount; i++) {
         {
             FrameBufferSpecification spec = {
                 w, h,
@@ -135,22 +178,15 @@ void WaterMapRenderer::updateView(const RenderContext& ctx)
         }
     }
 
-    for (auto& buf : m_reflectionBuffers) {
-        buf->prepare(true);
-    }
-
     for (auto& buf : m_refractionBuffers) {
         buf->prepare(true);
     }
 
-    m_reflectionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
-    m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
-
     m_refractionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
     m_refractionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
 
-    m_width = w;
-    m_height = h;
+    m_refractionWidth = w;
+    m_refractionHeight = h;
 }
 
 void WaterMapRenderer::bindTexture(const RenderContext& ctx)

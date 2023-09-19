@@ -57,8 +57,8 @@ private:
 
     std::vector<Camera> m_cameras;
 
-    int m_width{ -1 };
-    int m_height{ -1 };
+    int m_reflectionWidth{ -1 };
+    int m_reflectionheight{ -1 };
 
     int m_currIndex{ 0 };
     int m_prevIndex{ 0 };

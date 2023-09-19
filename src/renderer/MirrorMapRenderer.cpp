@@ -102,8 +102,8 @@ void MirrorMapRenderer::updateView(const RenderContext& ctx)
 
     const auto& res = ctx.m_resolution;
 
-    int w = ctx.m_assets.mirrorBufferScale * res.x;
-    int h = ctx.m_assets.mirrorBufferScale * res.y;
+    int w = ctx.m_assets.mirrorReflectionBufferScale * res.x;
+    int h = ctx.m_assets.mirrorReflectionBufferScale * res.y;
 
     if (m_squareAspectRatio) {
         h = w;
@@ -112,7 +112,7 @@ void MirrorMapRenderer::updateView(const RenderContext& ctx)
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    bool changed = w != m_width || h != m_height;
+    bool changed = w != m_reflectionWidth || h != m_reflectionheight;
     if (!changed) return;
 
     auto albedo = FrameBufferAttachment::getTextureRGBHdr();
@@ -143,8 +143,8 @@ void MirrorMapRenderer::updateView(const RenderContext& ctx)
     m_reflectionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
     m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
 
-    m_width = w;
-    m_height = h;
+    m_reflectionWidth = w;
+    m_reflectionheight = h;
 }
 
 void MirrorMapRenderer::bindTexture(const RenderContext& ctx)

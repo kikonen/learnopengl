@@ -57,20 +57,17 @@ void AssetsFile::loadAssets(
         else if (k == "glfw_swap_interval") {
             data.glfwSwapInterval = readInt(v);
         }
-        else if (k == "resolution_scale") {
-            data.resolutionScale = readFloat(v);
-        }
         else if (k == "g_buffer_scale") {
             data.gBufferScale = readFloat(v);
         }
-        else if (k == "water_buffer_scale") {
-            data.waterBufferScale = readFloat(v);
+        else if (k == "water_reflection_buffer_scale") {
+            data.waterReflectionBufferScale = readFloat(v);
         }
-        else if (k == "mirror_buffer_scale") {
-            data.mirrorBufferScale = readFloat(v);
+        else if (k == "water_refraction_buffer_scale") {
+            data.waterRefractionBufferScale = readFloat(v);
         }
-        else if (k == "buffer_scale") {
-            data.bufferScale = readFloat(v);
+        else if (k == "mirror_reflection_buffer_scale") {
+            data.mirrorReflectionBufferScale = readFloat(v);
         }
         else if (k == "window_size") {
             data.windowSize = readUVec2(v);

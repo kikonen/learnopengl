@@ -36,6 +36,9 @@ public:
         const RenderContext& ctx);
 
 private:
+    void updateReflectionView(const RenderContext& ctx);
+    void updateRefractionView(const RenderContext& ctx);
+
     void drawNodes(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
@@ -60,8 +63,11 @@ private:
 
     std::vector<Camera> m_cameras;
 
-    int m_width{ -1 };
-    int m_height{ -1 };
+    int m_reflectionWidth{ -1 };
+    int m_reflectionheight{ -1 };
+
+    int m_refractionWidth{ -1 };
+    int m_refractionHeight{ -1 };
 
     int m_currIndex{ 0 };
     int m_prevIndex{ 0 };
