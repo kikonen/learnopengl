@@ -1842,6 +1842,10 @@ void SceneFile::loadMaterial(
             material.map_opacity = resolveTexturePath(line);
             fields.map_opacity = true;
         }
+        else if (k == "metal") {
+            material.metal = readVec4(v);
+            fields.metal = true;
+        }
         else if (k == "pattern") {
             material.pattern = readInt(v);
             fields.pattern = true;

@@ -92,19 +92,21 @@ vec4 calculateLightPbr(
   // ambient lighting (we now use IBL as the ambient term)
   vec3 ambient = vec3(0.0);
   if (true) {
-    float metallic = material.metal.r;
-    float ao = material.metal.a;
+    const vec3 albedo = material.diffuse.rgb;
+    const float metallic = material.metal.r;
+    const float roughness = material.metal.g;
+    const float ao = material.metal.a;
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)
     vec3 F0 = vec3(0.04);
-    F0 = mix(F0, material.diffuse.rgb, metallic);
+    F0 = mix(F0, albedo, metallic);
 
     vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
     vec3 irradiance = texture(u_irradianceMap, N).rgb;
-    vec3 diffuse      = irradiance * material.diffuse.rgb;
+    vec3 diffuse      = irradiance * albedo;
     ambient = (kD * diffuse) * ao;
     // vec3 ambient = vec3(0.002);
   }
@@ -112,6 +114,8 @@ vec4 calculateLightPbr(
   vec3 color = ambient + Lo + material.emission.rgb;
   //color = Lo + material.emission.rgb;
   //color = ambient;
+  //Color = ambient;
+  //color = material.diffuse.rgb;
 
   // NOTE KI keep blending from material
   return vec4(color, material.diffuse.a);

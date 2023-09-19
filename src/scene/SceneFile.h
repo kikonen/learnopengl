@@ -97,6 +97,8 @@ class SceneFile
         bool layersDepth = false;
         bool parallaxDepth = false;
 
+        bool metal = false;
+
         bool map_dudv = false;
         bool map_height = false;
         bool map_noise = false;

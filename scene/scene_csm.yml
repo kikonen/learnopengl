@@ -3,7 +3,7 @@ name: Origo
 viewports:
 skybox:
   program: g_skybox
-  material: skybox/Skybox_3
+  xmaterial: skybox/Skybox_3
   faces:
     - Left_Tex.png
     - Right_Tex.png
@@ -11,6 +11,7 @@ skybox:
     - Down_Tex.png
     - Front_Tex.png
     - Back_Tex.png
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 lights: {}
 cube_maps: {}
 root:
