@@ -327,11 +327,17 @@ void AssetsFile::loadAssets(
         else if (k == "skybox_size") {
               data.skyboxSize = readInt(v);
         }
-        else if (k == "irradiance_map_enabled") {
-            data.irradianceMapEnabled = readBool(v);
+        else if (k == "environment_map_enabled") {
+            data.environmentMapEnabled = readBool(v);
         }
         else if (k == "irradiance_map_size") {
             data.irradianceMapSize = readInt(v);
+        }
+        else if (k == "prefilter_map_size") {
+            data.prefilterMapSize = readInt(v);
+        }
+        else if (k == "brdf_lut_size") {
+            data.brdfLutSize = readInt(v);
         }
         else if (k == "viewport_effect_enabled") {
             data.viewportEffectEnabled = readBool(v);

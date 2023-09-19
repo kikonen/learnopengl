@@ -15,7 +15,8 @@ layout(std140, binding = UBO_DATA) uniform Data {
 
   bool u_cubeMapExist;
   bool u_skyboxExist;
-  bool u_irradianceMapExist;
+
+  bool u_environmentMapExist;
 
   bool u_frustumVisual;
 

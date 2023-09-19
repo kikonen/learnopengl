@@ -220,7 +220,7 @@ void CubeMap::createIrradiance(
         program->prepare(assets);
 
         program->bind(state);
-        state.bindTexture(UNIT_SKYBOX, *m_envCubeMapRef, false);
+        state.bindTexture(UNIT_ENVIRONMENT_MAP, *m_envCubeMapRef, false);
 
         renderCube(state, program);
     }

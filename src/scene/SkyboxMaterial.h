@@ -57,4 +57,6 @@ public:
 private:
     CubeMap m_cubeMap{ false };
     CubeMap m_irradianceMap{ false };
+    CubeMap m_prefiltereMap{ false };
+    GLTextureHandle m_brdfLutTexture;
 };

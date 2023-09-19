@@ -38,7 +38,8 @@ struct DataUBO {
 
     int u_cubeMapExist; // bool as 4 bytes
     int u_skyboxExist; // bool as 4 bytes
-    int u_irradianceMapExist; // bool as 4 bytes
+
+    int u_environmentMapExist; // bool as 4 bytes
 
     int u_frustumVisual; // bool as 4 bytes
 

@@ -169,8 +169,10 @@ public:
     bool skyboxEnabled;
     int skyboxSize;
 
-    bool irradianceMapEnabled;
+    bool environmentMapEnabled;
     int irradianceMapSize;
+    int prefilterMapSize;
+    int brdfLutSize;
 
     bool viewportEffectEnabled;
     ViewportEffect viewportEffect;

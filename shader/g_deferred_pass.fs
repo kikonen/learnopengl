@@ -15,6 +15,8 @@ in VS_OUT {
 LAYOUT_G_BUFFER_SAMPLERS;
 
 layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradianceMap;
+layout(binding = UNIT_PREFILTER_MAP) uniform samplerCube u_prefilterMap;
+layout(binding = UNIT_BRDF_LUT) uniform sampler2D u_brdfLut;
 
 layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
 

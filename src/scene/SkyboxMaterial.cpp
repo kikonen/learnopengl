@@ -111,7 +111,7 @@ void SkyboxMaterial::prepareIrradiance(
     const Assets& assets,
     Registry* registry)
 {
-    if (assets.irradianceMapEnabled && m_cubeMap.valid()) {
+    if (assets.environmentMapEnabled && m_cubeMap.valid()) {
         // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
         // - hdri is *linear*
         m_irradianceMap.m_internalFormat = GL_RGB16F;

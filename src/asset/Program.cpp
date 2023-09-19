@@ -348,6 +348,14 @@ void Program::setInt(const std::string& name, int value) noexcept
     }
 }
 
+void Program::setFloat(const std::string& name, float value) noexcept
+{
+    GLint vi = getUniformLoc(name);
+    if (vi != -1) {
+        glUniform1f(vi, value);
+    }
+}
+
 void Program::setMat4(const std::string& name, const glm::mat4& value) noexcept
 {
     GLint vi = getUniformLoc(name);

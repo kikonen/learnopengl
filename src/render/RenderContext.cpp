@@ -174,7 +174,8 @@ RenderContext::RenderContext(
 
         assets.cubeMapEnabled,
         assets.skyboxEnabled,
-        assets.irradianceMapEnabled,
+
+        assets.environmentMapEnabled,
 
         assets.frustumVisual,
 

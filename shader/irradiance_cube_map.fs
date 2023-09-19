@@ -4,7 +4,7 @@ in VS_OUT {
   vec3 worldPos;
 } fs_in;
 
-layout(binding = UNIT_SKYBOX) uniform samplerCube u_skybox;
+layout(binding = UNIT_ENVIRONMENT_MAP) uniform samplerCube u_environmentMap;
 
 out vec4 u_fragColor;
 
@@ -42,7 +42,7 @@ void main()
       // tangent space to world
       vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * normal;
 
-      vec3 color = texture(u_skybox, sampleVec).rgb;
+      vec3 color = texture(u_environmentMap, sampleVec).rgb;
       color.r = clamp(color.r, MIN_COL_VALUE, MAX_COL_VALUE);
       color.g = clamp(color.g, MIN_COL_VALUE, MAX_COL_VALUE);
       color.b = clamp(color.b, MIN_COL_VALUE, MAX_COL_VALUE);

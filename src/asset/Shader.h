@@ -122,11 +122,15 @@ constexpr int UNIT_WATER_NOISE = 64;
 constexpr int UNIT_WATER_REFLECTION = 65;
 constexpr int UNIT_WATER_REFRACTION = 66;
 constexpr int UNIT_MIRROR_REFLECTION = 67;
-//constexpr int UNIT_MIRROR_RERACTION = 68;
-constexpr int UNIT_CUBE_MAP = 69;
-constexpr int UNIT_IRRADIANCE_MAP = 70;
-constexpr int UNIT_SKYBOX = 71;
-constexpr int UNIT_VIEWPORT = 72;
+constexpr int UNIT_CUBE_MAP = 68;
+constexpr int UNIT_SKYBOX = 69;
+
+constexpr int UNIT_ENVIRONMENT_MAP = 70;
+constexpr int UNIT_IRRADIANCE_MAP = 71;
+constexpr int UNIT_PREFILTER_MAP = 72;
+constexpr int UNIT_BDRF_LUT = 73;
+
+constexpr int UNIT_VIEWPORT = 74;
 
 constexpr int MAX_SHADOW_MAP_COUNT = 3;
 constexpr int UNIT_SHADOW_MAP_FIRST = 75;
