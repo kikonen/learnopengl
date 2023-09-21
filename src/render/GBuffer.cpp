@@ -47,7 +47,7 @@ void GBuffer::updateView(const RenderContext& ctx)
             });
 
         m_buffer.reset(buffer);
-        m_buffer->prepare(true);
+        m_buffer->prepare();
 
         unbindTexture(ctx);
     }

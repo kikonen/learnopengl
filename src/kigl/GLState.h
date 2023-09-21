@@ -37,7 +37,7 @@ public:
         const GLuint textureID,
         bool force) noexcept;
 
-    int getFrameBuffer() noexcept;
+    int getFrameBuffer();
 
     // @return true if bind was done
     bool bindFrameBuffer(GLuint fbo, bool force) noexcept;

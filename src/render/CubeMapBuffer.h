@@ -15,7 +15,7 @@ public:
 
     void bindFace();
 
-    virtual void bind(const RenderContext& ctx);
+    virtual void bind(const RenderContext& ctx) override;
 
 private:
     const int m_face;

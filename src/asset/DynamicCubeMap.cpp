@@ -16,7 +16,6 @@ DynamicCubeMap::DynamicCubeMap(int size)
 
 DynamicCubeMap::~DynamicCubeMap()
 {
-    glDeleteFramebuffers(1, &m_fbo);
 }
 
 void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
@@ -50,41 +49,11 @@ void DynamicCubeMap::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    {
-        glCreateFramebuffers(1, &m_fbo);
-        KI_INFO(fmt::format("CREATE: FBO={}, dynamic_cube_map", m_fbo));
-    }
-
-    //GLenum status = glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER);
-    //if (status != GL_FRAMEBUFFER_COMPLETE) {
-    //    std::string msg = fmt::format(
-    //        "FRAMEBUFFER:: Framebuffer is not complete! status=0x{:x} ({})",
-    //        status, status);
-    //    KI_ERROR(msg);
-    //    throw std::runtime_error{ msg };
-    //}
-
-    //// NOTE KI clear buffer to avoid showing garbage
-    //if (clear) {
-    //    glClearNamedFramebufferfv(m_fbo, GL_COLOR, 0, glm::value_ptr(clearColor));
-    //}
+    m_fbo.create("dynamic_cube_map");
 
     m_cubeMap.m_size = m_size;
     m_cubeMap.m_internalFormat = GL_RGB16F;
     m_cubeMap.prepare(assets, registry);
-
-    //glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-    //for (unsigned int face = 0; face < 6; face++)
-    //{
-    //    // https://registry.khronos.org/OpenGL-Refpages/es2.0/xhtml/glFramebufferTexture2D.xml
-    //    glFramebufferTexture2D(
-    //        GL_FRAMEBUFFER,
-    //        GL_COLOR_ATTACHMENT0,
-    //        (GLenum)GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
-    //        m_cubeMap.m_textureID,
-    //        0);
-    //}
-    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     m_valid = true;
 }
@@ -92,9 +61,9 @@ void DynamicCubeMap::prepare(
 CubeMapBuffer DynamicCubeMap::asFrameBuffer(int face)
 {
     return {
-        m_fbo,
+        (GLuint)m_fbo,
         m_size,
         face,
-        m_cubeMap.m_cubeTexture.m_textureID,
+        (GLuint)m_cubeMap,
     };
 }

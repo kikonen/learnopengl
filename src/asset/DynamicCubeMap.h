@@ -4,6 +4,8 @@
 
 #include "ki/GL.h"
 
+#include "kigl/GLFrameBufferHandle.h"
+
 #include "render/CubeMap.h"
 #include "render/CubeMapBuffer.h"
 
@@ -34,14 +36,14 @@ public:
 
     CubeMap m_cubeMap{ true };
 
-    bool m_valid = false;
+    bool m_valid{ false };
 
-    bool m_rendered = false;
-    int m_updateFace = -1;
+    bool m_rendered{ false };
+    int m_updateFace{ -1 };
 
-    GLuint m_fbo = 0;
+    GLFrameBufferHandle m_fbo;
 
 private:
-    bool m_prepared = false;
+    bool m_prepared{ false };
 
 };

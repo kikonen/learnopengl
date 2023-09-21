@@ -55,10 +55,10 @@ int ObjectIdRenderer::getObjectId(
     {
         m_idBuffer->bind(ctx);
 
-        glReadBuffer(GL_COLOR_ATTACHMENT0);
+        glNamedFramebufferReadBuffer(*m_idBuffer, GL_COLOR_ATTACHMENT0);
 
-        int readFormat;
-        glGetFramebufferParameteriv(GL_FRAMEBUFFER, GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
+        //int readFormat;
+        //glGetFramebufferParameteriv(GL_FRAMEBUFFER, GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
 
         glReadPixels(posx, m_idBuffer->m_spec.height - posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
@@ -127,7 +127,7 @@ void ObjectIdRenderer::updateView(const RenderContext& ctx)
         });
 
     m_idBuffer.reset(buffer);
-    m_idBuffer->prepare(true);
+    m_idBuffer->prepare();
 
     m_debugViewport->setTextureId(m_idBuffer->m_spec.attachments[0].textureID);
     m_debugViewport->setSourceFrameBuffer(m_idBuffer.get());

@@ -130,7 +130,7 @@ void WaterMapRenderer::updateReflectionView(const RenderContext& ctx)
     }
 
     for (auto& buf : m_reflectionBuffers) {
-        buf->prepare(true);
+        buf->prepare();
     }
 
     m_reflectionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
@@ -179,7 +179,7 @@ void WaterMapRenderer::updateRefractionView(const RenderContext& ctx)
     }
 
     for (auto& buf : m_refractionBuffers) {
-        buf->prepare(true);
+        buf->prepare();
     }
 
     m_refractionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);

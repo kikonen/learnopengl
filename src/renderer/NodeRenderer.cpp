@@ -67,7 +67,7 @@ void NodeRenderer::updateView(const RenderContext& ctx)
             });
 
         m_buffer.reset(buffer);
-        m_buffer->prepare(true);
+        m_buffer->prepare();
 
         if (m_viewport) {
             m_viewport->setTextureId(m_buffer->m_spec.attachments[NodeRenderer::ATT_ALBEDO_INDEX].textureID);

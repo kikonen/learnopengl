@@ -43,8 +43,7 @@ const std::string FrameBuffer::str() const noexcept
         m_spec.attachments.size());
 }
 
-void FrameBuffer::prepare(
-    const bool clear)
+void FrameBuffer::prepare()
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -83,8 +82,6 @@ void FrameBuffer::prepare(
             }
             else if (att.shared->type == FrameBufferAttachmentType::depth_texture) {
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
-                glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
-                glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
             }
         } else if (att.type == FrameBufferAttachmentType::draw_buffer) {
             if (att.useDrawBuffer) {
@@ -114,33 +111,6 @@ void FrameBuffer::prepare(
                 m_drawBuffers.push_back(att.attachment);
             }
         }
-        //else if (att.type == FrameBufferAttachmentType::cube_map_texture) {
-        //    glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &att.textureID);
-
-        //    glTextureStorage2D(att.textureID, 0, att.internalFormat, m_spec.width, m_spec.height);
-
-        //    glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
-        //    glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
-        //    glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_R, att.textureWrapR);
-
-        //    glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
-        //    glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
-
-        //    //glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
-
-        //    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-        //    glFramebufferTexture2D(
-        //        GL_FRAMEBUFFER,
-        //        GL_COLOR_ATTACHMENT0,
-        //        GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0,
-        //        att.textureID,
-        //        0);
-
-        //    if (att.useDrawBuffer) {
-        //        att.drawBufferIndex = m_drawBuffers.size();
-        //        m_drawBuffers.push_back(att.attachment);
-        //    }
-        //}
         else if (att.type == FrameBufferAttachmentType::rbo) {
             glCreateRenderbuffers(1, &att.rbo);
             glObjectLabel(GL_RENDERBUFFER, att.rbo, attName.length(), attName.c_str());
@@ -171,8 +141,6 @@ void FrameBuffer::prepare(
 
             {
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
-                glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
-                glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
             }
 
             m_hasDepth = true;
@@ -202,15 +170,18 @@ void FrameBuffer::prepare(
 
             {
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
-                glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
-                glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
             }
 
             m_hasDepth = true;
         }
     }
 
-    resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+    {
+        glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
+        glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
+
+        resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+    }
 
     if (m_drawBuffers.size() > 0) {
         glNamedFramebufferDrawBuffers(m_fbo, m_drawBuffers.size(), m_drawBuffers.data());
@@ -224,13 +195,6 @@ void FrameBuffer::prepare(
                 str(), status, status);
             KI_ERROR(msg);
             throw std::runtime_error{ msg };
-        }
-    }
-
-    // NOTE KI clear buffer to avoid showing garbage
-    if (clear) {
-        for (auto& att : m_spec.attachments) {
-            att.clearBuffer(m_fbo);
         }
     }
 }

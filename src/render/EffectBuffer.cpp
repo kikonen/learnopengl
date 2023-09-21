@@ -51,7 +51,7 @@ void EffectBuffer::updateView(const RenderContext& ctx)
             });
 
         m_primary.reset(buffer);
-        m_primary->prepare(true);
+        m_primary->prepare();
     }
 
     // secondary
@@ -71,7 +71,7 @@ void EffectBuffer::updateView(const RenderContext& ctx)
             });
 
         m_secondary.reset(buffer);
-        m_secondary->prepare(true);
+        m_secondary->prepare();
     }
 
     // work buffers
@@ -92,7 +92,7 @@ void EffectBuffer::updateView(const RenderContext& ctx)
         }
 
         for (auto& buf : m_buffers) {
-            buf->prepare(true);
+            buf->prepare();
         }
     }
 

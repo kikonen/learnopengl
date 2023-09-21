@@ -29,8 +29,7 @@ public:
 
     const std::string str() const noexcept;
 
-    virtual void prepare(
-        const bool clear);
+    virtual void prepare();
 
     // @param activeCount
     // FrameBuffer::RESET_DRAW_ACTIVE keep current active count

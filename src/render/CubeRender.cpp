@@ -27,7 +27,7 @@ void CubeRender::render(
                 }
             });
         captureFBO.reset(buffer);
-        captureFBO->prepare(true);
+        captureFBO->prepare();
     }
 
 

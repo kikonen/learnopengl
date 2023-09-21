@@ -91,7 +91,7 @@ void ShadowCascade::prepare(
             { FrameBufferAttachment::getShadow() }
         });
 
-    m_buffer->prepare(true);
+    m_buffer->prepare();
 }
 
 void ShadowCascade::bindTexture(const RenderContext& ctx)

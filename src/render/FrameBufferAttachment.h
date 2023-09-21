@@ -8,7 +8,6 @@ enum class FrameBufferAttachmentType {
     shared,
     draw_buffer,
     texture,
-    //cube_map_texture,
     depth_texture,
     rbo,
     shadow,
@@ -111,8 +110,6 @@ struct FrameBufferAttachment {
 
     static FrameBufferAttachment getOITAccumulatorTexture(GLenum attachment);
     static FrameBufferAttachment getOITRevealTexture(GLenum attachment);
-
-    //static FrameBufferAttachment getCubeMapHdri(GLenum attachment);
 };
 
 struct FrameBufferSpecification {

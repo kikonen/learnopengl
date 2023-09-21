@@ -12,9 +12,9 @@ public:
     {}
 
     ~GLFrameBufferHandle() {
-        if (m_fbo > 0) {
-            glDeleteFramebuffers(1, &m_fbo);
-        }
+        if (m_fbo <= 0) return;
+
+        glDeleteFramebuffers(1, &m_fbo);
     }
 
     GLFrameBufferHandle(GLFrameBufferHandle& handle) = delete;
@@ -38,6 +38,8 @@ public:
         glCreateFramebuffers(1, &m_fbo);
 
         glObjectLabel(GL_FRAMEBUFFER, m_fbo, name.length(), name.c_str());
+
+        KI_INFO(fmt::format("CREATE: name={}, FBO={},", name, m_fbo));
     }
 
     operator int() const { return m_fbo; }
