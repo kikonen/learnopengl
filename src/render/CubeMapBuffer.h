@@ -8,7 +8,7 @@ public:
     CubeMapBuffer(
         GLuint fbo,
         int size,
-        GLenum side,
+        int face,
         GLuint textureID);
 
     virtual ~CubeMapBuffer() override = default;
@@ -16,6 +16,6 @@ public:
     virtual void bind(const RenderContext& ctx);
 
 private:
-    GLenum m_side;
-    GLuint m_textureID;
+    const int m_face;
+    const GLuint m_textureID;
 };

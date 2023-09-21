@@ -2,12 +2,12 @@
 
 class Program;
 class GLState;
-class GLTextureHandle;
 
 class CubeRender {
 public:
     void render(
         GLState& state,
         Program* program,
-        GLTextureHandle cubeTexture);
+        int cubeTextureID,
+        int size);
 };

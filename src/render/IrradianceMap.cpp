@@ -53,7 +53,7 @@ void IrradianceMap::prepare(
         state.bindTexture(UNIT_ENVIRONMENT_MAP, m_envCubeMapID, false);
 
         CubeRender renderer;
-        renderer.render(state, program, m_cubeTexture);
+        renderer.render(state, program, m_cubeTexture, m_size);
     }
 
     {

@@ -51,7 +51,7 @@ void EnvironmentMap::prepare(
         state.bindTexture(UNIT_HDR_TEXTURE, m_hdriTextureID, false);
 
         CubeRender renderer;
-        renderer.render(state, program, m_cubeTexture);
+        renderer.render(state, program, m_cubeTexture, m_size);
     }
 }
 

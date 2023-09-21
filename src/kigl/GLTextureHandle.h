@@ -11,6 +11,28 @@ public:
         : m_textureID(textureID) {
     }
 
+    GLTextureHandle(GLTextureHandle& handle) = delete;
+    GLTextureHandle& operator=(GLTextureHandle& handle) = delete;
+
+    GLTextureHandle(GLTextureHandle&& handle) noexcept
+        : m_textureID(handle.m_textureID)
+    {
+        handle.m_textureID = 0;
+    }
+
+    GLTextureHandle& operator=(GLTextureHandle&& handle)
+    {
+        m_textureID = handle.m_textureID;
+        handle.m_textureID = 0;
+        return *this;
+    }
+
+    ~GLTextureHandle() {
+        if (m_textureID > 0) {
+            glDeleteTextures(1, &m_textureID);
+        }
+    }
+
     bool valid() { return m_textureID > 0;  }
 
     void create(
@@ -27,12 +49,6 @@ public:
         m_height = height;
 
         glObjectLabel(GL_TEXTURE, m_textureID, name.length(), name.c_str());
-    }
-
-    ~GLTextureHandle() {
-        if (m_textureID > 0) {
-            glDeleteTextures(1, &m_textureID);
-        }
     }
 
     operator int() const { return m_textureID; }

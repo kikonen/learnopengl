@@ -12,14 +12,15 @@
 void CubeRender::render(
     GLState& state,
     Program* program,
-    GLTextureHandle cubeTexture)
+    int cubeTextureID,
+    int size)
 {
     std::unique_ptr<FrameBuffer> captureFBO{ nullptr };
     {
         auto buffer = new FrameBuffer(
             "captureFBO",
             {
-                cubeTexture.m_width, cubeTexture.m_height,
+                size, size,
                 {
                     FrameBufferAttachment::getDrawBuffer(),
                     FrameBufferAttachment::getRBODepth(),
@@ -47,22 +48,29 @@ void CubeRender::render(
 
         //program->setMat4("projection", captureProjection);
 
-        glViewport(0, 0, cubeTexture.m_width, cubeTexture.m_height);
-        glBindFramebuffer(GL_FRAMEBUFFER, *captureFBO);
+        glViewport(0, 0, size, size);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, *captureFBO);
 
-        for (unsigned int i = 0; i < 6; ++i)
+        const glm::vec4 clearColor{ 0.f };
+        const float clearDepth{ 1.f };
+
+        for (unsigned int face = 0; face < 6; ++face)
         {
-            //program->setMat4("view", captureViews[i]);
-            auto projected = captureProjection * captureViews[i];
+            //program->setMat4("view", captureViews[face]);
+            auto projected = captureProjection * captureViews[face];
             program->setMat4("projected", projected);
 
-            glFramebufferTexture2D(
-                GL_FRAMEBUFFER,
+            // NOTE KI side vs. face difference
+            // https://stackoverflow.com/questions/55169053/opengl-render-to-cubemap-using-dsa-direct-state-access
+            glNamedFramebufferTextureLayer(
+                *captureFBO,
                 GL_COLOR_ATTACHMENT0,
-                GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                cubeTexture,
-                0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                cubeTextureID,
+                0,
+                face);
+
+            glClearNamedFramebufferfv(*captureFBO, GL_COLOR, 0, glm::value_ptr(clearColor));
+            glClearNamedFramebufferfv(*captureFBO, GL_DEPTH, 0, &clearDepth);
 
             cube.draw(state);
         }
