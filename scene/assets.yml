@@ -122,9 +122,10 @@ assets:
   skybox_size: 1024
 
   environment_map_enabled: true
+  environment_map_size: 512
   irradiance_map_size: 32
-  prefilter_map_size: 265
-  brdf_lut_size: 256
+  prefilter_map_size: 128
+  brdf_lut_size: 512
 
   viewport_effect_enabled: true
   viewport_effect: none

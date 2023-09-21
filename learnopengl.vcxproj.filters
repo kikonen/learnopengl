@@ -426,6 +426,27 @@
     <ClCompile Include="src\render\TextureCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\PrefilterMap.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\PrefilterMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\CubeRender.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\CubeRender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\IrradianceMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\EnvironmentMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asset\HdriTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -960,6 +981,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\TextureCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\IrradianceMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\EnvironmentMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\HdriTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

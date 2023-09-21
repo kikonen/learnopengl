@@ -22,6 +22,8 @@ const std::string SHADER_SKYBOX{ "skybox" };
 
 const std::string SHADER_HDRI_CUBE_MAP{ "hdri_cube_map" };
 const std::string SHADER_IRRADIANCE_CUBE_MAP{ "irradiance_cube_map" };
+const std::string SHADER_PREFILTER_CUBE_MAP{ "prefilter_cube_map" };
+const std::string SHADER_BRDF_LUT{ "brdf_lut" };
 
 const std::string SHADER_GEOMETRY_PASS{ "g_geometry_pass" };
 const std::string SHADER_DEFERRED_PASS{ "g_deferred_pass" };

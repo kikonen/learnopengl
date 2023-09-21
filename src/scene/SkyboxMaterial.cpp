@@ -39,12 +39,14 @@ void SkyboxMaterial::prepare(
 {
     if (m_hdri) {
         prepareHdri(assets, registry);
+        prepareEnvironment(assets, registry);
     }
     else {
         prepareFaces(assets, registry);
     }
 
     prepareIrradiance(assets, registry);
+    //preparePrefilter(assets, registry);
 }
 
 void SkyboxMaterial::prepareFaces(
@@ -85,45 +87,78 @@ void SkyboxMaterial::prepareHdri(
     const Assets& assets,
     Registry* registry)
 {
+    // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
+    std::string filePath;
     {
-        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-        std::string filePath;
-        {
-            filePath = util::joinPath(
-                assets.assetsDir,
-                m_materialName);
-        }
-
-        m_cubeMap.m_faces = {
-            filePath,
-        };
-
-        // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
-        // - hdri is *linear*
-        m_cubeMap.m_internalFormat = GL_RGB16F;
-        m_cubeMap.m_hdri = true;
-
-        m_cubeMap.prepare(assets, registry);
+        filePath = util::joinPath(
+            assets.assetsDir,
+            m_materialName);
     }
+
+    m_hdriTexture.m_path = filePath;
+    m_hdriTexture.prepare(assets, registry);
+}
+
+void SkyboxMaterial::prepareEnvironment(
+    const Assets& assets,
+    Registry* registry)
+{
+    if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
+
+    m_environmentMap.m_hdriTextureID = m_hdriTexture;
+    m_environmentMap.prepare(assets, registry);
 }
 
 void SkyboxMaterial::prepareIrradiance(
     const Assets& assets,
     Registry* registry)
 {
-    if (assets.environmentMapEnabled && m_cubeMap.valid()) {
-        // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
-        // - hdri is *linear*
-        m_irradianceMap.m_internalFormat = GL_RGB16F;
-        m_irradianceMap.m_irradiance = true;
-        m_irradianceMap.m_envCubeMapRef = &m_cubeMap;
+    if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
 
-        m_irradianceMap.prepare(assets, registry);
-    }
+    m_irradianceMap.m_envCubeMapID = m_environmentMap;
+    m_irradianceMap.prepare(assets, registry);
+}
+
+void SkyboxMaterial::preparePrefilter(
+    const Assets& assets,
+    Registry* registry)
+{
+    if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
+
+    m_prefilterMap.m_envCubeMapID = m_environmentMap;
+    m_prefilterMap.prepare(assets, registry);
+}
+
+void SkyboxMaterial::prepareBrdfLut(
+    const Assets& assets,
+    Registry* registry)
+{
+    if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
+
+    //m_prefilterMap.m_envCubeMapID = m_cubeMap;
+    //m_prefilterMap.prepare(assets, registry);
 }
 
 void SkyboxMaterial::bindTextures(const RenderContext& ctx)
 {
-    m_cubeMap.bindTexture(ctx, UNIT_SKYBOX);
-    m_irradianceMap.bindTexture(ctx, UNIT_IRRADIANCE_MAP);
+    if (m_environmentMap.valid()) {
+        m_environmentMap.bindTexture(ctx, UNIT_SKYBOX);
+    } else {
+        if (m_cubeMap.valid()) {
+            m_cubeMap.bindTexture(ctx, UNIT_SKYBOX);
+        }
+    }
+
+    if (m_environmentMap.valid()) {
+        //m_environmentMap.bindTexture(ctx, UNIT_ENVIRONMENT_MAP);
+    }
+    if (m_irradianceMap.valid()) {
+        m_irradianceMap.bindTexture(ctx, UNIT_IRRADIANCE_MAP);
+    }
+    if (m_prefilterMap.valid()) {
+        m_prefilterMap.bindTexture(ctx, UNIT_PREFILTER_MAP);
+    }
+    if (m_brdfLutTexture.valid()) {
+        ctx.m_state.bindTexture(m_brdfLutTexture, UNIT_BDRF_LUT, false);
+    }
 }

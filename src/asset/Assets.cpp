@@ -152,9 +152,10 @@ Assets::Assets()
     skyboxSize = 1024;
 
     environmentMapEnabled = true;
+    environmentMapSize = 512;
     irradianceMapSize = 32;
-    prefilterMapSize = 256;
-    brdfLutSize = 256;
+    prefilterMapSize = 128;
+    brdfLutSize = 512;
 
     viewportEffectEnabled = false;
     viewportEffect = ViewportEffect::none;

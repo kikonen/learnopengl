@@ -184,9 +184,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\asset\ChannelTexture.cpp" />
+    <ClCompile Include="src\asset\HdriTexture.cpp" />
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
     <ClCompile Include="src\registry\SpriteRegistry.cpp" />
+    <ClCompile Include="src\render\CubeRender.cpp" />
+    <ClCompile Include="src\render\CubeRender.h" />
     <ClCompile Include="src\render\EffectBuffer.cpp" />
     <ClCompile Include="src\asset\Frustum.cpp" />
     <ClCompile Include="src\asset\Plane.cpp" />
@@ -247,9 +250,13 @@
     <ClCompile Include="src\registry\ViewportRegistry.h" />
     <ClCompile Include="src\renderer\ShadowCascade.cpp" />
     <ClCompile Include="src\renderer\ShadowCascade.h" />
+    <ClCompile Include="src\render\EnvironmentMap.cpp" />
     <ClCompile Include="src\render\GBuffer.cpp" />
+    <ClCompile Include="src\render\IrradianceMap.cpp" />
     <ClCompile Include="src\render\NodeDraw.cpp" />
     <ClCompile Include="src\render\OITBuffer.cpp" />
+    <ClCompile Include="src\render\PrefilterMap.cpp" />
+    <ClCompile Include="src\render\PrefilterMap.h" />
     <ClCompile Include="src\render\TextureCube.cpp" />
     <ClCompile Include="src\render\PlainQuad.cpp" />
     <ClCompile Include="src\render\TextureQuad.cpp" />
@@ -421,7 +428,10 @@
     <ClInclude Include="src\model\Group.h" />
     <ClInclude Include="src\registry\SpriteRegistry.h" />
     <ClInclude Include="src\render\EffectBuffer.h" />
+    <ClInclude Include="src\render\EnvironmentMap.h" />
     <ClInclude Include="src\render\GBuffer.h" />
+    <ClInclude Include="src\asset\HdriTexture.h" />
+    <ClInclude Include="src\render\IrradianceMap.h" />
     <ClInclude Include="src\render\NodeDraw.h" />
     <ClInclude Include="src\render\OITBuffer.h" />
     <ClInclude Include="src\render\TextureCube.h" />

@@ -37,21 +37,21 @@ public:
     const bool m_gammaCorrect;
     const TextureSpec m_spec;
 
-    GLuint m_textureID = 0;
-    int m_texIndex = -1;
-    GLuint64 m_handle = 0;
+    GLuint m_textureID{ 0 };
+    int m_texIndex{ -1 };
+    GLuint64 m_handle{ 0 };
 
-    mutable bool m_sent = false;
+    mutable bool m_sent{ false };
 
-    bool m_specialTexture = false;
+    bool m_specialTexture{ false };
 
 protected:
-    bool m_prepared = false;
+    bool m_prepared{ false };
 
-    int m_width = 0;
-    int m_height = 0;
-    int m_format = 0;
-    int m_internalFormat = 0;
+    int m_width{ 0 };
+    int m_height{ 0 };
+    int m_format{ 0 };
+    int m_internalFormat{ 0 };
 
-    GLenum m_pixelFormat = 0;
+    GLenum m_pixelFormat{ 0 };
 };

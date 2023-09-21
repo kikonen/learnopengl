@@ -5,8 +5,12 @@
 
 #include "asset/Assets.h"
 #include "asset/CustomMaterial.h"
+#include "asset/HdriTexture.h"
 
 #include "render/CubeMap.h"
+#include "render/EnvironmentMap.h"
+#include "render/IrradianceMap.h"
+#include "render/PrefilterMap.h"
 
 class Assets;
 class Registry;
@@ -38,7 +42,19 @@ private:
         const Assets& assets,
         Registry* registry);
 
+    void prepareEnvironment(
+        const Assets& assets,
+        Registry* registry);
+
     void prepareIrradiance(
+        const Assets& assets,
+        Registry* registry);
+
+    void preparePrefilter(
+        const Assets& assets,
+        Registry* registry);
+
+    void prepareBrdfLut(
         const Assets& assets,
         Registry* registry);
 
@@ -56,7 +72,12 @@ public:
 
 private:
     CubeMap m_cubeMap{ false };
-    CubeMap m_irradianceMap{ false };
-    CubeMap m_prefiltereMap{ false };
+
+    HdriTexture m_hdriTexture;
+
+    EnvironmentMap m_environmentMap;
+    IrradianceMap m_irradianceMap;
+    PrefilterMap m_prefilterMap;
+
     GLTextureHandle m_brdfLutTexture;
 };

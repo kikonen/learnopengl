@@ -170,6 +170,7 @@ public:
     int skyboxSize;
 
     bool environmentMapEnabled;
+    int environmentMapSize;
     int irradianceMapSize;
     int prefilterMapSize;
     int brdfLutSize;

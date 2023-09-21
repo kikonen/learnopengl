@@ -7,21 +7,22 @@
 
 #include "kigl/GLTextureHandle.h"
 
-
+class CubeMap;
 class RenderContext;
 class Assets;
 class Registry;
 class Program;
 class GLState;
 
-class CubeMap
+// NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
+// - hdri is *linear*
+class EnvironmentMap
 {
 public:
-    CubeMap(bool empty);
+    EnvironmentMap() = default;
+    ~EnvironmentMap() = default;
 
-    ~CubeMap();
-
-    bool valid() { return m_cubeTexture > 0; }
+    bool valid() { return m_cubeTexture.valid(); }
 
     void prepare(
         const Assets& assets,
@@ -31,18 +32,10 @@ public:
 
     operator int() const { return m_cubeTexture; }
 
-private:
-    void createEmpty();
-
-    void createFaces();
-
 public:
-    const bool m_empty;
-
-    std::vector<std::string> m_faces;
-    int m_size = 0;
-
-    GLenum m_internalFormat = GL_RGB8;
+    int m_size{ 0 };
 
     GLTextureHandle m_cubeTexture;
+
+    GLuint m_hdriTextureID;
 };

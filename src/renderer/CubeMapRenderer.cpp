@@ -257,7 +257,7 @@ void CubeMapRenderer::clearCubeMap(
             GL_FRAMEBUFFER,
             GL_COLOR_ATTACHMENT0,
             GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
-            cube.m_cubeMap.m_textureID,
+            cube.m_cubeMap.m_cubeTexture,
             0);
 
         glClear(GL_COLOR_BUFFER_BIT);

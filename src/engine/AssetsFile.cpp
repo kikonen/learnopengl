@@ -330,6 +330,9 @@ void AssetsFile::loadAssets(
         else if (k == "environment_map_enabled") {
             data.environmentMapEnabled = readBool(v);
         }
+        else if (k == "environment_map_size") {
+            data.environmentMapSize = readInt(v);
+        }
         else if (k == "irradiance_map_size") {
             data.irradianceMapSize = readInt(v);
         }
