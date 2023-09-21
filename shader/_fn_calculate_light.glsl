@@ -53,6 +53,7 @@ vec4 calculateLightPbr(
 {
   const vec3 N = normal;
   const vec3 V = viewDir;
+  const vec3 R = reflect(-V, N);
 
   vec3 Lo = vec3(0.0);
 
@@ -102,13 +103,27 @@ vec4 calculateLightPbr(
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, metallic);
 
-    vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
+    // ambient lighting (we now use IBL as the ambient term)
+    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+
+    vec3 kS = F;
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
+
     vec3 irradiance = texture(u_irradianceMap, N).rgb;
     vec3 diffuse      = irradiance * albedo;
-    ambient = (kD * diffuse) * ao;
-    // vec3 ambient = vec3(0.002);
+
+    // sample both the pre-filter map and the BRDF lut and combine them together
+    // as per the Split-Sum approximation to get the IBL specular part.
+    const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(u_prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;
+
+    vec2 brdf  = texture(u_brdfLut, vec2(max(dot(N, V), 0.0), roughness)).rg;
+    brdf = vec2(0.04);
+
+    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+
+    ambient = (kD * diffuse + specular) * ao;
   }
 
   vec3 color = ambient + Lo + material.emission.rgb;
