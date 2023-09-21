@@ -18,6 +18,7 @@ root:
   type: origo
 entities:
   - name: Origo
+    id: [auto, player]
     type: origo
     pos: [0, 1, 15]
     camera:

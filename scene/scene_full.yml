@@ -47,6 +47,7 @@ entities:
     enabled: true
     script_file: scripts/seq_zero
   - name: Player
+    id: [auto, player]
     xxmodel: player
     type: origo
     pos: [-10, 12, -20.0]
@@ -67,16 +68,12 @@ entities:
       type: camera
       enabled: true
     enabled: true
-  - name: Cube map 1
+  - name: Player cube map 1
     type: origo
-    pos: [-200, 20, -200]
+    parent_id: [auto, player]
+    pos: [0, 0, 0]
     render_flags:
       cube_map: true
-    repeat:
-      x_count: 16
-      z_count: 16
-      x_step: 50
-      z_step: 50
     enabled: true
   - name: Sun light origo
     id: [auto, light-dir-origo]
@@ -236,7 +233,7 @@ entities:
     pos: [0.0, 4.5, 0.0]
     render_flags:
       cube_map: true
-    enabled: true
+    xenabled: true
   - name: EXAMPLE
     model: glass_ball
     program: g_tex
@@ -313,7 +310,7 @@ entities:
     pos: [-1.0, 13.5, 14.0]
     render_flags:
       cube_map: true
-    enabled: true
+    xenabled: true
   - name: Brick wall
     model: quad
     material: brickwall
@@ -511,13 +508,13 @@ entities:
     pos: [0.0, 28.0, 8.0]
     render_flags:
       cube_map: true
-    enabled: true
+    xenabled: true
   - name: Cube map 2 - refract ball
     type: origo
     pos: [5.0, 25.0, 0.0]
     render_flags:
       cube_map: true
-    enabled: true
+    xenabled: true
   - name: Refract ball
     model: glass_ball
     program: g_tex
@@ -533,7 +530,7 @@ entities:
     pos: [-10.0, 25.0, 0.0]
     render_flags:
       cube_map: true
-    enabled: true
+    xenabled: true
   - name: Reflect ball
     model: glass_ball
     program: g_tex
@@ -846,7 +843,7 @@ entities:
     pos: [0.0, -50.0, 0.0]
     render_flags:
       cube_map: true
-    enabled: true
+    xenabled: true
   - name: Rock
     parent_id: [auto, rock-origo]
     model: [rock, rock]
