@@ -381,14 +381,14 @@ void FrameBuffer::clear(
     const bool useDebugColor = ctx.m_assets.useDebugColor;
     const bool hasAttachments = !m_spec.attachments.empty();
 
-    if (clearMask & GL_COLOR_BUFFER_BIT) {
-        if (useDebugColor) {
-            ctx.m_state.clearColor(debugColor);
-        }
-        else {
-            ctx.m_state.clearColor(BLACK_COLOR);
-        }
-    }
+    //if (clearMask & GL_COLOR_BUFFER_BIT) {
+    //    if (useDebugColor) {
+    //        ctx.m_state.clearColor(debugColor);
+    //    }
+    //    else {
+    //        ctx.m_state.clearColor(BLACK_COLOR);
+    //    }
+    //}
 
     // NOTE KI if no attachments cannot know
     if (hasAttachments) {
@@ -400,24 +400,24 @@ void FrameBuffer::clear(
         }
     }
 
-    if (clearMask != 0) {
-        if (hasAttachments) {
-            for (auto& att : m_spec.attachments) {
-                if (useDebugColor && att.clearMask & GL_COLOR_BUFFER_BIT) {
-                    glm::vec4 oldColor = att.clearColor;
-                    att.clearColor = debugColor;
-                    att.clearWithMask(m_fbo, clearMask);
-                    att.clearColor = oldColor;
-                }
-                else {
-                    att.clearWithMask(m_fbo, clearMask);
-                }
+    if (clearMask == 0) return;
+
+    if (hasAttachments) {
+        for (auto& att : m_spec.attachments) {
+            if (useDebugColor && att.clearMask & GL_COLOR_BUFFER_BIT) {
+                glm::vec4 oldColor = att.clearColor;
+                att.clearColor = debugColor;
+                att.clearWithMask(m_fbo, clearMask);
+                att.clearColor = oldColor;
+            }
+            else {
+                att.clearWithMask(m_fbo, clearMask);
             }
         }
-        else {
-            // NOTE KI *FAILS* if buffer is not bound
-            glClear(clearMask);
-        }
+    }
+    else {
+        // NOTE KI *FAILS* if buffer is not bound
+        glClear(clearMask);
     }
 }
 

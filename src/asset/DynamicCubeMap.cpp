@@ -94,7 +94,7 @@ CubeMapBuffer DynamicCubeMap::asFrameBuffer(int face)
     return {
         m_fbo,
         m_size,
-        (GLenum)GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
+        face,
         m_cubeMap.m_cubeTexture.m_textureID,
     };
 }

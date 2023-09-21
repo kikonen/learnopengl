@@ -14,6 +14,14 @@ WindowBuffer::WindowBuffer(
 {
     m_fbo = fbo;
     m_forceBind = forceBind;
+
+    //{
+    //    auto albedo = FrameBufferAttachment::getDrawBuffer(GL_COLOR_ATTACHMENT0);
+    //    albedo.clearType = ClearType::FLOAT;
+    //    albedo.externalDelete = true;
+
+    //    m_spec.attachments.emplace_back(albedo);
+    //}
 }
 
 void WindowBuffer::updateView(const RenderContext& ctx)

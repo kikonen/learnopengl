@@ -55,6 +55,7 @@ struct FrameBufferAttachment {
 
     GLbitfield clearMask = 0;
 
+    bool externalDelete{ false };
     FrameBufferAttachment* shared{ nullptr };
 
     FrameBufferAttachment();

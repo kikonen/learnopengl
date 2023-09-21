@@ -13,6 +13,8 @@ public:
 
     virtual ~CubeMapBuffer() override = default;
 
+    void bindFace();
+
     virtual void bind(const RenderContext& ctx);
 
 private:

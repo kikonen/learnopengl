@@ -247,20 +247,21 @@ void CubeMapRenderer::clearCubeMap(
     const RenderContext& ctx,
     DynamicCubeMap& cube)
 {
-    cube.bind(ctx);
-
-    glm::vec4 clearColor{ 0.f };
-    ctx.m_state.clearColor(clearColor);
+    const glm::vec4 clearColor{ 0.f };
+    const float clearDepth{ 1.f };
 
     for (int face = 0; face < 6; face++) {
-        glFramebufferTexture2D(
-            GL_FRAMEBUFFER,
+        // NOTE KI side vs. face difference
+        // https://stackoverflow.com/questions/55169053/opengl-render-to-cubemap-using-dsa-direct-state-access
+        glNamedFramebufferTextureLayer(
+            cube.m_fbo,
             GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
             cube.m_cubeMap.m_cubeTexture,
-            0);
+            0,
+            face);
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClearNamedFramebufferfv(cube.m_fbo, GL_COLOR, 0, glm::value_ptr(clearColor));
+        glClearNamedFramebufferfv(cube.m_fbo, GL_DEPTH, 0, &clearDepth);
     }
 
     cube.unbind(ctx);
@@ -268,7 +269,7 @@ void CubeMapRenderer::clearCubeMap(
 
 void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer,
+    CubeMapBuffer* targetBuffer,
     const Node* current,
     const glm::vec4& debugColor)
 {
@@ -295,7 +296,7 @@ void CubeMapRenderer::drawNodes(
     }
 
     // TODO KI to match special logic in CubeMapBuffer
-    targetBuffer->bind(ctx);
+    targetBuffer->bindFace();
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
 
     ctx.m_nodeDraw->drawNodes(

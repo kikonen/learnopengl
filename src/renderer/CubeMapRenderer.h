@@ -7,6 +7,7 @@
 #include "component/Camera.h"
 
 class FrameBuffer;
+class CubeMapBuffer;
 class DynamicCubeMap;
 class WaterMapRenderer;
 class MirrorMapRenderer;
@@ -35,7 +36,7 @@ private:
 
     void drawNodes(
         const RenderContext& ctx,
-        FrameBuffer* targetBuffer,
+        CubeMapBuffer* targetBuffer,
         const Node* centerNode,
         const glm::vec4& debugColor);
 

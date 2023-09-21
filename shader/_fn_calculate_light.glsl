@@ -114,7 +114,6 @@ vec4 calculateLightPbr(
   vec3 color = ambient + Lo + material.emission.rgb;
   //color = Lo + material.emission.rgb;
   //color = Lo;
-  //color = ambient;
   //Color = ambient;
   //color = material.diffuse.rgb;
 

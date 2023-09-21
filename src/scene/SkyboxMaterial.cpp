@@ -150,7 +150,7 @@ void SkyboxMaterial::bindTextures(const RenderContext& ctx)
     }
 
     if (m_environmentMap.valid()) {
-        //m_environmentMap.bindTexture(ctx, UNIT_ENVIRONMENT_MAP);
+        m_environmentMap.bindTexture(ctx, UNIT_ENVIRONMENT_MAP);
     }
     if (m_irradianceMap.valid()) {
         m_irradianceMap.bindTexture(ctx, UNIT_IRRADIANCE_MAP);

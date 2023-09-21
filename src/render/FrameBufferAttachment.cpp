@@ -14,6 +14,7 @@ FrameBufferAttachment::~FrameBufferAttachment()
 {
     // NOTE KI don't touch shared buffer
     if (shared) return;
+    if (externalDelete) return;
 
     if (textureID) {
         glDeleteTextures(1, &textureID);

@@ -82,7 +82,7 @@ public:
 
     void invalidateAll();
 
-    int getDrawBufferCount() const noexcept {
+    size_t getDrawBufferCount() const noexcept {
         return m_drawBuffers.size();
     }
 
