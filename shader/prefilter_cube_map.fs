@@ -8,7 +8,7 @@ layout(binding = UNIT_ENVIRONMENT_MAP) uniform samplerCube u_environmentMap;
 
 uniform float u_roughness;
 
-out vec4 u_fragColor;
+layout(location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
@@ -17,7 +17,7 @@ out vec4 u_fragColor;
 const float PI = 3.14159265359;
 
 // ----------------------------------------------------------------------------
-float DistributionGGX(vec3 N, vec3 H, float roughness)
+float distributionGGX(vec3 N, vec3 H, float roughness)
 {
   float a = roughness*roughness;
   float a2 = a*a;
@@ -99,7 +99,7 @@ void main()
     if (NdotL > 0.0)
     {
       // sample from the environment's mip level based on roughness/pdf
-      float D   = DistributionGGX(N, H, u_roughness);
+      float D   = distributionGGX(N, H, u_roughness);
       float NdotH = max(dot(N, H), 0.0);
       float HdotV = max(dot(H, V), 0.0);
       float pdf = D * NdotH / (4.0 * HdotV) + 0.0001;

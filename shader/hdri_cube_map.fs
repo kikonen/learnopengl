@@ -7,7 +7,7 @@ in VS_OUT {
 // equirectangularMap
 layout(binding = UNIT_HDR_TEXTURE) uniform sampler2D u_hdriTexture;
 
-out vec4 u_fragColor;
+layout(location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
@@ -38,5 +38,5 @@ void main()
   color.g = clamp(color.g, MIN_VALUE, MAX_VALUE);
   color.b = clamp(color.b, MIN_VALUE, MAX_VALUE);
 
-  u_fragColor = vec4(color, 1.0);
+  o_fragColor = vec4(color, 1.0);
 }

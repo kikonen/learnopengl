@@ -7,6 +7,7 @@ layout(early_fragment_tests) in;
 
 layout(binding = UNIT_SKYBOX) uniform samplerCube u_skybox;
 layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradianceMap;
+layout(binding = UNIT_PREFILTER_MAP) uniform samplerCube u_prefilterMap;
 
 LAYOUT_G_BUFFER_OUT;
 
@@ -21,6 +22,7 @@ SET_FLOAT_PRECISION;
 void main() {
   vec3 envColor = texture(u_skybox, texCoord).rgb;
   vec3 irradianceColor = texture(u_irradianceMap, texCoord).rgb;
+  vec3 prefilterColor = texture(u_prefilterMap, texCoord).rgb;
   //texColor = vec4(1.0, 0, 0, 1.0);
   //texColor.a = 0.0;
 

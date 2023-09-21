@@ -46,7 +46,7 @@ void SkyboxMaterial::prepare(
     }
 
     prepareIrradiance(assets, registry);
-    //preparePrefilter(assets, registry);
+    preparePrefilter(assets, registry);
 }
 
 void SkyboxMaterial::prepareFaces(

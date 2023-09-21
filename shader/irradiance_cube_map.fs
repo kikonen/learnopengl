@@ -6,7 +6,7 @@ in VS_OUT {
 
 layout(binding = UNIT_ENVIRONMENT_MAP) uniform samplerCube u_environmentMap;
 
-out vec4 u_fragColor;
+layout(location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
@@ -58,5 +58,5 @@ void main()
   irradiance.g = clamp(irradiance.g, MIN_IRR_VALUE, MAX_IRR_VALUE);
   irradiance.b = clamp(irradiance.b, MIN_IRR_VALUE, MAX_IRR_VALUE);
 
-  u_fragColor = vec4(irradiance, 1.0);
+  o_fragColor = vec4(irradiance, 1.0);
 }
