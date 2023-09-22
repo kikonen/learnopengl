@@ -22,7 +22,8 @@ SET_FLOAT_PRECISION;
 void main() {
   vec3 envColor = texture(u_skybox, texCoord).rgb;
   vec3 irradianceColor = texture(u_irradianceMap, texCoord).rgb;
-  vec3 prefilterColor = texture(u_prefilterMap, texCoord).rgb;
+  vec3 prefilterColor = textureLod(u_prefilterMap, texCoord, 0).rgb;
+
   //texColor = vec4(1.0, 0, 0, 1.0);
   //texColor.a = 0.0;
 

@@ -377,6 +377,7 @@
     <ClInclude Include="src\command\api\ResumeNode.h" />
     <ClInclude Include="src\generator\NodeGenerator.h" />
     <ClInclude Include="src\generator\TerrainGenerator.h" />
+    <ClInclude Include="src\kigl\GLRenderBufferHandle.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.h" />
     <ClInclude Include="src\kigl\GLBuffer.h" />
     <ClInclude Include="src\kigl\GLBufferRange.h" />

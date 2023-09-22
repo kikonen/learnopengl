@@ -32,6 +32,13 @@ public:
 
     operator int() const { return m_cubeTexture; }
 
+private:
+    void render(
+        GLState& state,
+        Program* program,
+        int cubeTextureID,
+        int baseSize);
+
 public:
     int m_size{ 0 };
 

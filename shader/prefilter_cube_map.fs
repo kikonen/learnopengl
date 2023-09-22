@@ -16,6 +16,12 @@ layout(location = 0) out vec4 o_fragColor;
 
 const float PI = 3.14159265359;
 
+const float MIN_COL_VALUE = 0.0;
+const float MAX_COL_VALUE = 400.0;
+
+const float MIN_IRR_VALUE = 0.0;
+const float MAX_IRR_VALUE = 100.0;
+
 // ----------------------------------------------------------------------------
 float distributionGGX(vec3 N, vec3 H, float roughness)
 {
@@ -110,12 +116,21 @@ void main()
 
       float mipLevel = u_roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel);
 
-      prefilteredColor += textureLod(u_environmentMap, L, mipLevel).rgb * NdotL;
+      vec3 color = textureLod(u_environmentMap, L, mipLevel).rgb;
+      color.r = clamp(color.r, MIN_COL_VALUE, MAX_COL_VALUE);
+      color.g = clamp(color.g, MIN_COL_VALUE, MAX_COL_VALUE);
+      color.b = clamp(color.b, MIN_COL_VALUE, MAX_COL_VALUE);
+
+      prefilteredColor += color * NdotL;
       totalWeight      += NdotL;
     }
   }
 
   prefilteredColor = prefilteredColor / totalWeight;
+
+  prefilteredColor.r = clamp(prefilteredColor.r, MIN_IRR_VALUE, MAX_IRR_VALUE);
+  prefilteredColor.g = clamp(prefilteredColor.g, MIN_IRR_VALUE, MAX_IRR_VALUE);
+  prefilteredColor.b = clamp(prefilteredColor.b, MIN_IRR_VALUE, MAX_IRR_VALUE);
 
   o_fragColor = vec4(prefilteredColor, 1.0);
 }

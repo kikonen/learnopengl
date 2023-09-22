@@ -58,7 +58,7 @@ void IrradianceMap::prepare(
 
     {
         // generate mipmaps for the cubemap so OpenGL automatically allocates the required memory.
-        glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+        glGenerateTextureMipmap(m_cubeTexture);
     }
 }
 
