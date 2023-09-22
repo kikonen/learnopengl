@@ -184,7 +184,7 @@ public:
     float map_bump_strength{ 1.f };
 
     // channel: metalness, roughness, displacement, ambient-occlusion
-    glm::vec4 metal{ 0.f, 0.f, 0.f, 1.f };
+    glm::vec4 metal{ 0.f, 1.f, 0.f, 1.f };
 
     std::string map_roughness;
     std::string map_metalness;
