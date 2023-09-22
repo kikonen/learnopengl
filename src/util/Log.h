@@ -29,15 +29,15 @@ public:
     static void init();
     static void flush() noexcept;
 
-    static void critical(const std::string_view msg) noexcept;
-    static void error(const std::string_view msg) noexcept;
-    static void warn(const std::string_view msg) noexcept;
-    static void info(const std::string_view msg) noexcept;
-    static void debug(const std::string_view msg) noexcept;
-    static void trace(const std::string_view msg) noexcept;
+    static void critical(std::string_view msg) noexcept;
+    static void error(std::string_view msg) noexcept;
+    static void warn(std::string_view msg) noexcept;
+    static void info(std::string_view msg) noexcept;
+    static void debug(std::string_view msg) noexcept;
+    static void trace(std::string_view msg) noexcept;
 
-    static void info_out(const std::string_view msg) noexcept;
-    static void warn_out(const std::string_view msg) noexcept;
+    static void info_out(std::string_view msg) noexcept;
+    static void warn_out(std::string_view msg) noexcept;
 
-    static void out(const std::string_view msg) noexcept;
+    static void out(std::string_view msg) noexcept;
 };

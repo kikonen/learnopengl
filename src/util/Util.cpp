@@ -52,24 +52,24 @@ namespace util {
         }
     }
 
-    bool fileExists(std::string filePath)
+    bool fileExists(const std::string& filePath)
     {
         std::ifstream f(filePath.c_str());
         return f.good();
     }
 
-    std::string dirName(const std::string& filePath)
+    std::string dirName(std::string_view filePath)
     {
-        std::string path = filePath;
+        std::string path{ filePath };
         std::replace(path.begin(), path.end(), '/', '\\');
 
         std::filesystem::path p{ path };
         return p.parent_path().string();
     }
 
-    std::string baseName(const std::string& filePath)
+    std::string baseName(std::string_view filePath)
     {
-        std::string path = filePath;
+        std::string path{ filePath };
         std::replace(path.begin(), path.end(), '/', '\\');
 
         std::filesystem::path p{ path };
@@ -77,27 +77,30 @@ namespace util {
     }
 
     std::string joinPath(
-        const std::string& rootDir,
-        const std::string& parentDir,
-        const std::string& baseName,
-        const std::string& fileExt)
+        std::string_view rootDir,
+        std::string_view parentDir,
+        std::string_view baseName,
+        std::string_view fileExt)
     {
         std::filesystem::path filePath;
 
         if (!rootDir.empty()) {
-            std::string path = rootDir;
+            std::string path{ rootDir };
             std::replace(path.begin(), path.end(), '/', '\\');
             filePath /= path;
         }
 
         if (!parentDir.empty()) {
-            std::string path = parentDir;
+            std::string path{ parentDir };
             std::replace(path.begin(), path.end(), '/', '\\');
             filePath /= path;
         }
 
         if (!baseName.empty()) {
-            std::string path = fileExt.empty() ? baseName : baseName + fileExt;
+            std::string path{ baseName };
+            if (!fileExt.empty()) {
+                path += fileExt;
+            }
             std::replace(path.begin(), path.end(), '/', '\\');
             filePath /= path;
         }
@@ -106,19 +109,19 @@ namespace util {
     }
 
     std::string joinPath(
-        const std::string& rootDir,
-        const std::string& baseName)
+        std::string_view rootDir,
+        std::string_view baseName)
     {
         std::filesystem::path filePath;
 
         if (!rootDir.empty()) {
-            std::string path = rootDir;
+            std::string path{ rootDir };
             std::replace(path.begin(), path.end(), '/', '\\');
             filePath /= path;
         }
 
         if (!baseName.empty()) {
-            std::string path = baseName;
+            std::string path{ baseName };
             std::replace(path.begin(), path.end(), '/', '\\');
             filePath /= path;
         }

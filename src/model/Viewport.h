@@ -20,7 +20,7 @@ class Viewport final
 {
 public:
     Viewport(
-        const std::string_view& name,
+        std::string_view name,
         const glm::vec3& pos,
         const glm::vec3& rotation,
         const glm::vec2& size,
