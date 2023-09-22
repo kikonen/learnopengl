@@ -221,10 +221,11 @@ materials:
     d: 1.000000
     illum: 2
     map_kd: textures/wood_1024.png
-    reflection: 0.1
+    xreflection: 0.1
     tiling: 60
     texture_spec:
       wrap: GL_REPEAT
+    metal: [0, 0.5, 0, 1]
   - name: woodwall
     ns: 225.000000
     type: model
@@ -235,7 +236,8 @@ materials:
     d: 1.000000
     illum: 2
     map_kd: textures/wood_1024.png
-    reflection: 0.4
+    xreflection: 0.4
+    metal: [1, 0, 0, 1]
   - name: linden_tree
     type: sprite
     ns: 0
@@ -249,3 +251,4 @@ materials:
     ka: [0.7, 0.7, 0.7, 1.0]
     ks: [0.2, 0.2, 0.2, 1.0]
     map_kd: skeleton.png
+    metal: [1, 0, 0, 1]

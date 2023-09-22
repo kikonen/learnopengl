@@ -89,7 +89,8 @@ entities:
     material_modifier:
       xreflection: 0.05
       map_pbr: textures\Metal007_1K-PNG
-      tiling: 6
+      xmap_pbr: textures\Graffiti
+      tiling: 9
       parallax_depth: 0.0
     xxrender_flags:
       render_back: true

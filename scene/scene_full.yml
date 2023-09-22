@@ -451,9 +451,11 @@ entities:
     scale: 1.0
     material: teapot
     material_modifier:
-      reflection: 0.7
-      refraction: 0.05
-      refraction_ratio: [1.0, 1.52]
+      xreflection: 0.7
+      xrefraction: 0.05
+      xrefraction_ratio: [1.0, 1.52]
+      map_pbr: textures/Metal008_1K-PNG
+      tiling: 6
     render_flags:
       render_back: true
     selected: false
@@ -466,7 +468,7 @@ entities:
     scale: 0.8
     material: cow
     material_modifier:
-      reflection: 0.4
+      xreflection: 0.4
       map_pbr: textures/Plastic 01 [4K]
     render_flags:
       render_back: false
@@ -491,7 +493,7 @@ entities:
     scale: 0.8
     material: cow
     material_modifier:
-      reflection: 0.1
+      xreflection: 0.1
       map_pbr: textures/Plastic 01 [4K]
     render_flags:
       render_back: false
@@ -549,7 +551,7 @@ entities:
       - //pd.material = Sprite::getMaterial(assets, "Skeleton_VH.PNG", "");
       - node->particleGenerator = new ParticleGenerator(assets, pd);
     material_modifier:
-      reflection: 0.3
+      xreflection: 0.3
     enabled: true
   - name: Basic ball
     model: water_ball
@@ -570,6 +572,7 @@ entities:
     material: gold_ball
     material_modifier:
       reflection: 0.05
+      map_pbr: textures\Metal007_1K-PNG
     enabled: true
   - name: ball origo
     type: origo
@@ -585,6 +588,7 @@ entities:
     material: silver_ball
     material_modifier:
       reflection: 0.05
+      metal: [1, 0.1, 0, 1]
     enabled: true
   - name: Bronze ball
     parent_id: [auto, ball-origo]
@@ -596,6 +600,7 @@ entities:
     material: bronze_ball
     material_modifier:
       reflection: 0.05
+      metal: [1, 0.1, 0, 1]
     enabled: true
   - name: Copper ball
     parent_id: [auto, ball-origo]
@@ -607,6 +612,7 @@ entities:
     material: copper
     material_modifier:
       reflection: 0.05
+      metal: [1, 0.1, 0, 1]
     enabled: true
   - name: Plasma ball
     parent_id: [auto, cube-3]
@@ -851,7 +857,7 @@ entities:
     pos: [0.0, 0, 0.0]
     scale: 1.5
     material_modifier:
-      reflection: 0.6
+      xreflection: 0.6
     enabled: true
   - name: Asteroid belt
     parent_id: [auto, planet-origo]
@@ -859,7 +865,7 @@ entities:
     instanced: true
     program: g_tex
     material_modifier:
-      reflection: 0.4
+      xreflection: 0.4
     pos: [0, 0, 0]
     generator:
       type: asteroid_belt
@@ -1136,7 +1142,7 @@ materials:
     map_bump: textures/brickwall_1024_normal.png
     map_displacement: textures/brickwall_1024_height.jpg
     parallax_depth: 0.017
-    reflection: 0.02
+    xreflection: 0.02
   - name: woodwall
     ns: 225.000000
     type: model
@@ -1148,7 +1154,7 @@ materials:
     d: 1.000000
     illum: 2
     map_kd: textures/wood_1024.png
-    reflection: 0.1
+    xreflection: 0.1
   - name: giant_woodbox
     ns: 225.000000
     type: model
@@ -1160,7 +1166,7 @@ materials:
     d: 1.000000
     illum: 2
     map_kd: textures/wood_1024.png
-    reflection: 0.1
+    xreflection: 0.1
   - name: window_1
     ns: 225.000000
     type: model
