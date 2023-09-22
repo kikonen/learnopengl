@@ -68,11 +68,8 @@ struct GLBufferRange {
 
         if (m_debug) {
             if (count > 1) {
-                std::cout << '[' << count << ']';
+                KI_OUT(fmt::format("[{}]", count));
             }
-            //else {
-            //    std::cout << '.';
-            //}
         }
 
         glDeleteSync(m_sync);

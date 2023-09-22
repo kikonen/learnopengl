@@ -1,4 +1,5 @@
-#include <iostream>
+#include "AssetsFile.h"
+
 #include <string>
 #include <vector>
 #include <fstream>
@@ -9,7 +10,6 @@
 
 #include "util/Util.h"
 
-#include "AssetsFile.h"
 
 namespace {
 }

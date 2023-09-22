@@ -1,7 +1,5 @@
 #include "ScriptEngine.h"
 
-#include <iostream>
-
 #include <fmt/format.h>
 
 #include "util/Util.h"

@@ -33,7 +33,7 @@ void CommandEngine::prepare(Registry* registry)
         event::Type::animate_wait,
         [this](const event::Event& e) {
             auto& anim = e.body.animate;
-            std::cout << "ANIM:wait " << anim.target << "\n";
+            KI_OUT(fmt::format("ANIM:wait {}\n", anim.target));
             addCommand(
                 std::make_unique<Wait>(
                     anim.after,
@@ -44,7 +44,7 @@ void CommandEngine::prepare(Registry* registry)
         event::Type::animate_move,
         [this](const event::Event& e) {
             auto& anim = e.body.animate;
-            std::cout << "ANIM:move " << anim.target << "\n";
+            KI_OUT(fmt::format("ANIM:move {}\n", anim.target));
             addCommand(
                 std::make_unique<MoveNode>(
                     anim.after,
@@ -58,7 +58,7 @@ void CommandEngine::prepare(Registry* registry)
         event::Type::animate_rotate,
         [this](const event::Event& e) {
             auto& anim = e.body.animate;
-            std::cout << "ANIM:rotate " << anim.target << "\n";
+            KI_OUT(fmt::format("ANIM:rotate {}\n", anim.target));
             addCommand(
                 std::make_unique<RotateNode>(
                     anim.after,

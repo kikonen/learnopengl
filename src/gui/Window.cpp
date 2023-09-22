@@ -1,7 +1,5 @@
 #include "Window.h"
 
-#include <iostream>
-
 #include "kigl/GLState.h"
 
 #include "engine/Engine.h"

@@ -1,7 +1,5 @@
 #include "WindowBuffer.h"
 
-#include <iostream>
-
 #include "glm/glm.hpp"
 
 #include "render/RenderContext.h"

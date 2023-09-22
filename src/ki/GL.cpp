@@ -1,6 +1,5 @@
 #include "GL.h"
 
-#include <iostream>
 #include <sstream>
 
 #include <fmt/format.h>

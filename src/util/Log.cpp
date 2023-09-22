@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <iosfwd>
 
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
@@ -56,32 +57,49 @@ void Log::flush() noexcept
     g_logger->flush();
 }
 
-void Log::critical(const std::string& msg) noexcept
+void Log::critical(const std::string_view msg) noexcept
 {
     g_logger->critical(msg);
 }
 
-void Log::error(const std::string& msg) noexcept
+void Log::error(const std::string_view msg) noexcept
 {
     g_logger->error(msg);
 }
 
-void Log::warn(const std::string& msg) noexcept
+void Log::warn(const std::string_view msg) noexcept
 {
     g_logger->warn(msg);
 }
 
-void Log::info(const std::string& msg) noexcept
+void Log::info(const std::string_view msg) noexcept
 {
     g_logger->info(msg);
 }
 
-void Log::debug(const std::string& msg) noexcept
+void Log::debug(const std::string_view msg) noexcept
 {
     g_logger->debug(msg);
 }
 
-void Log::trace(const std::string& msg) noexcept
+void Log::trace(const std::string_view msg) noexcept
 {
     g_logger->trace(msg);
+}
+
+void Log::info_out(const std::string_view msg) noexcept
+{
+    Log::info(msg);
+    std::cout << "INFO: " << msg << '\n';
+}
+
+void Log::warn_out(const std::string_view msg) noexcept
+{
+    Log::warn(msg);
+    std::cout << "WARN: " << msg << '\n';
+}
+
+void Log::out(const std::string_view msg) noexcept
+{
+    std::cout << msg;
 }

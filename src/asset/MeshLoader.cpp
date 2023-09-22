@@ -3,7 +3,6 @@
 #include <fstream>
 #include <istream>
 #include <sstream>
-#include <iostream>
 #include <filesystem>
 
 #include "util/Util.h"
@@ -65,8 +64,6 @@ void MeshLoader::loadData(
     ModelMesh& mesh)
 {
     if (!*m_alive) return;
-
-    //std::cout << "==========================\n";
 
     ki::Timer t("loadData: mesh=" + mesh.str());
 
@@ -307,8 +304,6 @@ unsigned int MeshLoader::resolveVertexIndex(
             vertexMapping.insert(std::make_pair(pos, std::vector<int>{}));
         }
     }
-
-    //std::cout << v.str() << "\n";
 
     size_t index = vertices.size();
     {

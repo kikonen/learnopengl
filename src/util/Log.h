@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
-#include <iostream>
-#include <sstream>
+#include <string_view>
 
 #define KI_FLUSH() Log::flush();
 
@@ -13,8 +11,10 @@
 #define KI_DEBUG(msg) Log::debug(msg);
 #define KI_TRACE(msg) Log::trace(msg);
 
-#define KI_INFO_OUT(msg) { std::cout << msg << '\n'; Log::info(msg); }
-#define KI_WARN_OUT(msg) { std::cout << msg << '\n'; Log::warn(msg); }
+#define KI_INFO_OUT(msg) Log::info_out(msg);
+#define KI_WARN_OUT(msg) Log::warn_out(msg);
+
+#define KI_OUT(msg) Log::out(msg);
 
 //#define KI_CRITICAL_SB(msg) { std::stringstream sb; sb << msg; Log::critical(sb.str()); }
 //#define KI_ERROR_SB(msg) { std::stringstream sb; sb << msg; Log::error(sb.str()); }
@@ -29,12 +29,15 @@ public:
     static void init();
     static void flush() noexcept;
 
-    static void critical(const std::string& msg) noexcept;
-    static void error(const std::string& msg) noexcept;
-    static void warn(const std::string& msg) noexcept;
-    static void info(const std::string& msg) noexcept;
-    static void debug(const std::string& msg) noexcept;
-    static void trace(const std::string& msg) noexcept;
+    static void critical(const std::string_view msg) noexcept;
+    static void error(const std::string_view msg) noexcept;
+    static void warn(const std::string_view msg) noexcept;
+    static void info(const std::string_view msg) noexcept;
+    static void debug(const std::string_view msg) noexcept;
+    static void trace(const std::string_view msg) noexcept;
 
-private:
+    static void info_out(const std::string_view msg) noexcept;
+    static void warn_out(const std::string_view msg) noexcept;
+
+    static void out(const std::string_view msg) noexcept;
 };

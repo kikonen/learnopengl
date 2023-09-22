@@ -1,7 +1,5 @@
 #include "FrameBuffer.h"
 
-#include <iostream>
-
 #include <fmt/format.h>
 
 #include "glm/glm.hpp"

@@ -160,7 +160,6 @@ bool CubeMapRenderer::render(
 
     Node* centerNode = findCenter(parentCtx);
     if (m_lastClosest && setClosest(centerNode, -1)) {
-        //std::cout << "NEW_CENTER\n";
         m_curr->m_updateFace = -1;
         m_prev->m_updateFace = -1;
         m_curr->m_rendered = false;
@@ -191,12 +190,8 @@ bool CubeMapRenderer::render(
     bool full = true;// fromFace == -1;
 
     if (full) {
-        //std::cout << "FULL\n";
         fromFace = 0;
         updateCount = 6;
-    }
-    else {
-        //std::cout << "update: " << m_updateFace << "\n";
     }
 
     for (unsigned int face = fromFace; face < fromFace + updateCount; face++) {

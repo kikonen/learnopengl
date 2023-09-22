@@ -1,6 +1,5 @@
 #include "Image.h"
 
-#include <iostream>
 #include <map>
 #include <mutex>
 

@@ -1,6 +1,5 @@
 #include "SceneFile.h"
 
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -1259,8 +1258,6 @@ void SceneFile::loadEntityClone(
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;
 
-        //std::cout << k << " = " << v << "\n";
-
         if (k == "type") {
             std::string type = v.as<std::string>();
             if (type == "origo") {
@@ -1910,7 +1907,6 @@ void SceneFile::loadMaterialPbr(
     for (const auto& dirEntry : std::filesystem::directory_iterator(basePath)) {
         std::string fileName = dirEntry.path().filename().string();
         std::string assetPath = util::joinPath(pbrName,fileName);
-        //std::cout << fmt::format("{} = {}\n", fileName, assetPath);
 
         if (matchAny(ignoreMatchers, fileName)) {
             continue;
