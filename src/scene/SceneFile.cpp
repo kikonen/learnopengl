@@ -77,6 +77,7 @@ namespace {
     const std::vector<std::regex> colorMatchers{
         std::regex(".*[-_ ][cC]olor[-_ \\.].*"),
         std::regex(".*[-_ ][cC]ol[-_ \\.].*"),
+        std::regex(".*[-_ ][bB]asecolor[-_ \\.].*"),
     };
 
     const std::vector<std::regex> normalMatchers{
@@ -88,6 +89,7 @@ namespace {
     const std::vector<std::regex> metalnessMatchers{
         std::regex(".*[-_ ][mM]etalness[-_ \\.].*"),
         std::regex(".*[-_ ][mM]et[-_ \\.].*"),
+        std::regex(".*[-_ ][mM]etallic[-_ \\.].*"),
     };
 
     const std::vector<std::regex> roughnessMatchers{
