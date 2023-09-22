@@ -11,6 +11,7 @@
 #include "render/EnvironmentMap.h"
 #include "render/IrradianceMap.h"
 #include "render/PrefilterMap.h"
+#include "render/BrdfLutTexture.h"
 
 class Assets;
 class Registry;
@@ -79,5 +80,5 @@ private:
     IrradianceMap m_irradianceMap;
     PrefilterMap m_prefilterMap;
 
-    GLTextureHandle m_brdfLutTexture;
+    BrdfLutTexture m_brdfLutTexture;
 };

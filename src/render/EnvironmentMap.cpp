@@ -1,18 +1,12 @@
 #include "EnvironmentMap.h"
 
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
-
 #include "ki/GL.h"
 
 #include "kigl/GLTextureHandle.h"
 #include "kigl/GLState.h"
 
-#include "asset/Image.h"
 #include "asset/Program.h"
 
-#include "render/TextureCube.h"
-#include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"

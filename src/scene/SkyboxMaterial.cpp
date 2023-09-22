@@ -47,6 +47,7 @@ void SkyboxMaterial::prepare(
 
     prepareIrradiance(assets, registry);
     preparePrefilter(assets, registry);
+    prepareBrdfLut(assets, registry);
 }
 
 void SkyboxMaterial::prepareFaces(
@@ -133,10 +134,9 @@ void SkyboxMaterial::prepareBrdfLut(
     const Assets& assets,
     Registry* registry)
 {
-    if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
+    if (!(assets.environmentMapEnabled)) return;
 
-    //m_prefilterMap.m_envCubeMapID = m_cubeMap;
-    //m_prefilterMap.prepare(assets, registry);
+    m_brdfLutTexture.prepare(assets, registry);
 }
 
 void SkyboxMaterial::bindTextures(const RenderContext& ctx)
@@ -159,6 +159,6 @@ void SkyboxMaterial::bindTextures(const RenderContext& ctx)
         m_prefilterMap.bindTexture(ctx, UNIT_PREFILTER_MAP);
     }
     if (m_brdfLutTexture.valid()) {
-        ctx.m_state.bindTexture(m_brdfLutTexture, UNIT_BDRF_LUT, false);
+        m_brdfLutTexture.bindTexture(ctx, UNIT_BDRF_LUT);
     }
 }

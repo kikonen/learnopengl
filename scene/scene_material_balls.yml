@@ -4,9 +4,11 @@ viewports:
 skybox:
   program: g_skybox
   xmaterial: skybox
-  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
   material: skybox/polyhaven/borghese_gardens_2k.hdr
+  xmaterial: skybox/polyhaven/circus_arena_2k.hdr
   xmaterial: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+  xmaterial: skybox/polyhaven/gray_pier_2k.hdr
+  xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 lights: {}
 cube_maps: {}
 root:

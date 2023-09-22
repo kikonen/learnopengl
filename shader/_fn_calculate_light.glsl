@@ -119,7 +119,6 @@ vec4 calculateLightPbr(
     vec3 prefilteredColor = textureLod(u_prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;
 
     vec2 brdf  = texture(u_brdfLut, vec2(max(dot(N, V), 0.0), roughness)).rg;
-    brdf = vec2(0.04);
 
     vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
 

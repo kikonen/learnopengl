@@ -447,6 +447,9 @@
     <ClCompile Include="src\asset\HdriTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\BrdfLutTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -993,6 +996,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLRenderBufferHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\BrdfLutTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

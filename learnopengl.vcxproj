@@ -188,6 +188,7 @@
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
     <ClCompile Include="src\registry\SpriteRegistry.cpp" />
+    <ClCompile Include="src\render\BrdfLutTexture.cpp" />
     <ClCompile Include="src\render\CubeRender.cpp" />
     <ClCompile Include="src\render\CubeRender.h" />
     <ClCompile Include="src\render\EffectBuffer.cpp" />
@@ -428,6 +429,7 @@
     <ClInclude Include="src\ki\uuid.h" />
     <ClInclude Include="src\model\Group.h" />
     <ClInclude Include="src\registry\SpriteRegistry.h" />
+    <ClInclude Include="src\render\BrdfLutTexture.h" />
     <ClInclude Include="src\render\EffectBuffer.h" />
     <ClInclude Include="src\render\EnvironmentMap.h" />
     <ClInclude Include="src\render\GBuffer.h" />
