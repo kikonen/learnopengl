@@ -35,14 +35,14 @@ class RenderContext final
 {
 public:
     RenderContext(
-        const std::string& name,
+        std::string_view name,
         const RenderContext* parent,
         Camera* camera,
         int width,
         int height);
 
     RenderContext(
-        const std::string& name,
+        std::string_view name,
         const RenderContext* parent,
         Camera* camera,
         float nearPlane,
@@ -51,7 +51,7 @@ public:
         int height);
 
     RenderContext(
-        const std::string& name,
+        std::string_view name,
         const RenderContext* parent,
         const ki::RenderClock& clock,
         const Assets& assets,
@@ -79,7 +79,7 @@ public:
     void updateLightsUBO() const;
 
     // Ensure context is in sane state for start rendering
-    void validateRender(const std::string& label) const;
+    void validateRender(std::string_view label) const;
 
     void copyShadowFrom(const RenderContext& b);
 

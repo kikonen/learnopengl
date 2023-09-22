@@ -22,7 +22,7 @@ public:
 
 public:
     FrameBuffer(
-        const std::string& name,
+        std::string_view name,
         const FrameBufferSpecification& spec);
 
     virtual ~FrameBuffer();

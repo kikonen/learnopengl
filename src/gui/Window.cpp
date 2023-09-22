@@ -56,10 +56,10 @@ const glm::uvec2& Window::getSize()
     return m_safeSize;
 }
 
-void Window::setTitle(const std::string& title)
+void Window::setTitle(std::string_view title)
 {
     m_title = title;
-    glfwSetWindowTitle(m_glfwWindow, title.c_str());
+    glfwSetWindowTitle(m_glfwWindow, std::string{ title }.c_str());
 }
 
 void Window::close()

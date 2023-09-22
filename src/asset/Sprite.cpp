@@ -32,7 +32,7 @@ Sprite::~Sprite()
 }
 
 Sprite* Sprite::find(
-    const std::string& name,
+    std::string_view name,
     std::vector<Sprite>& sprites)
 {
     const auto& it = std::find_if(

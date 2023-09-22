@@ -24,43 +24,44 @@ ProgramRegistry::~ProgramRegistry()
 }
 
 Program* ProgramRegistry::getProgram(
-    const std::string& name)
+    std::string_view name)
 {
     return getProgram(name, false, "", {});
 }
 
 Program* ProgramRegistry::getProgram(
-    const std::string& name,
-    const std::map<std::string, std::string>& defines)
+    std::string_view name,
+    const std::map<std::string, std::string, std::less<>>& defines)
 {
     return getProgram(name, false, "", defines);
 }
 
 Program* ProgramRegistry::getComputeProgram(
-    const std::string& name,
-    const std::map<std::string, std::string>& defines)
+    std::string_view name,
+    const std::map<std::string, std::string, std::less<>>& defines)
 {
     return getProgram(name, true, "", defines);
 }
 
 Program* ProgramRegistry::getProgram(
-    const std::string& name,
+    std::string_view name,
     const bool compute,
-    const std::string& geometryType,
-    const std::map<std::string, std::string>& defines)
+    std::string_view geometryType,
+    const std::map<std::string, std::string, std::less<>>& defines)
 {
     if (!*m_alive) return nullptr;
 
     std::lock_guard<std::mutex> lock(m_programs_lock);
 
-    std::string key = name;
+    std::string key{ name };
 
     if (compute) {
         key += "_CS_";
     }
 
     if (!geometryType.empty()) {
-        key += "_" + geometryType;
+        key += "_";
+        key +=geometryType;
     }
 
     for (const auto& [k, v] : defines)

@@ -48,7 +48,7 @@ namespace {
 }
 
 std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
-    const std::string& name,
+    std::string_view name,
     const std::vector<ImageTexture*>& sourceTextures,
     const glm::vec4& defaults,
     bool is16Bbit,
@@ -97,7 +97,7 @@ const std::pair<int, const std::vector<const ChannelTexture*>&> ChannelTexture::
 }
 
 ChannelTexture::ChannelTexture(
-    const std::string& name,
+    std::string_view name,
     const std::vector<ImageTexture*>& sourceTextures,
     const glm::vec4& defaults,
     bool is16Bbit,

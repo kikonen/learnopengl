@@ -100,7 +100,7 @@ public:
     static Material createMaterial(BasicMaterial type);
 
     static Material* find(
-        const std::string& name,
+        std::string_view name,
         std::vector<Material>& materials);
 
     static Material* findID(
@@ -113,7 +113,7 @@ public:
 
     const std::string getTexturePath(
         const Assets& assets,
-        const std::string& textureName);
+        std::string_view textureName);
 
 private:
     std::string resolveBaseDir(const Assets& assets);
@@ -121,14 +121,14 @@ private:
     void loadTexture(
         const Assets& assets,
         int idx,
-        const std::string& name,
+        std::string_view name,
         bool gammaCorrect,
         bool usePlaceholder);
 
     void loadChannelTexture(
         const Assets& assets,
         int idx,
-        const std::string& name,
+        std::string_view name,
         const std::vector<int>& textureIndeces,
         const glm::vec4& defaults);
 

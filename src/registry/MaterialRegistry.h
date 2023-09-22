@@ -31,7 +31,7 @@ public:
     size_t getBaseIndex() { return m_materials.size(); }
 
     Material* find(
-        const std::string& name);
+        std::string_view);
 
     Material* findID(
         const int objectID);

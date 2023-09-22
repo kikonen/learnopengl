@@ -31,7 +31,7 @@ public:
     void close();
     bool isClosed();
 
-    void setTitle(const std::string& title);
+    void setTitle(std::string_view title);
 
     void processInput(const ki::RenderClock& clock);
 

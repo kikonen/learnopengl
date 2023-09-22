@@ -20,21 +20,21 @@ public:
     ~ProgramRegistry();
 
     Program* getProgram(
-        const std::string& name);
+        std::string_view name);
 
     Program* getProgram(
-        const std::string& name,
-        const std::map<std::string, std::string>& defines);
+        std::string_view name,
+        const std::map<std::string, std::string, std::less<>>& defines);
 
     Program* getComputeProgram(
-        const std::string& name,
-        const std::map<std::string, std::string>& defines);
+        std::string_view name,
+        const std::map<std::string, std::string, std::less<>>& defines);
 
     Program* getProgram(
-        const std::string& name,
+        std::string_view name,
         const bool compute,
-        const std::string& geometryType,
-        const std::map<std::string, std::string>& defines);
+        std::string_view geometryType,
+        const std::map<std::string, std::string, std::less<>>& defines);
 
     void validate();
 

@@ -37,16 +37,16 @@ void ModelRegistry::update(const UpdateContext& ctx)
 }
 
 std::shared_future<ModelMesh*> ModelRegistry::getMesh(
-    const std::string& meshName,
-    const std::string& rootDir)
+    std::string_view meshName,
+    std::string_view rootDir)
 {
     return getMesh(meshName, rootDir, "");
 }
 
 std::shared_future<ModelMesh*> ModelRegistry::getMesh(
-    const std::string& meshName,
-    const std::string& rootDir,
-    const std::string& meshPath)
+    std::string_view meshName,
+    std::string_view rootDir,
+    std::string_view meshPath)
 {
     if (!*m_alive) return {};
 

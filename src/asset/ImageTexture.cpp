@@ -53,8 +53,8 @@ return f;
 }
 
 std::shared_future<ImageTexture*> ImageTexture::getTexture(
-    const std::string& name,
-    const std::string& path,
+    std::string_view name,
+    std::string_view path,
     bool gammaCorrect,
     const TextureSpec& spec)
 {
@@ -94,8 +94,8 @@ const std::pair<int, const std::vector<const ImageTexture*>&> ImageTexture::getP
 }
 
 ImageTexture::ImageTexture(
-    const std::string& name,
-    const std::string& path,
+    std::string_view name,
+    std::string_view path,
     bool gammaCorrect,
     const TextureSpec& spec)
     : Texture(name, gammaCorrect, spec),

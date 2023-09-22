@@ -16,10 +16,10 @@ namespace {
 
 
 FrameBuffer::FrameBuffer(
-    const std::string& name,
+    std::string_view name,
     const FrameBufferSpecification& spec)
-    : m_name(name),
-    m_spec(spec)
+    : m_name{ name },
+    m_spec{ spec }
 {
     m_bufferInfo.u_bufferResolution = { m_spec.width, m_spec.height };
 }

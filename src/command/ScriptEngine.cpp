@@ -113,7 +113,7 @@ void ScriptEngine::registerNode(
 void ScriptEngine::registerScript(
     Node* node,
     const NodeScriptId scriptId,
-    const std::string& script)
+    std::string_view script)
 {
     if (script.empty()) return;
 
@@ -138,7 +138,7 @@ end)", nodeFnName, script);
 
 bool ScriptEngine::hasFunction(
     Node* node,
-    const std::string& name)
+    std::string_view name)
 {
     sol::table luaNode = m_lua["nodes"][node->m_objectID];
 
@@ -148,7 +148,7 @@ bool ScriptEngine::hasFunction(
 
 void ScriptEngine::invokeFunction(
     Node* node,
-    const std::string& name)
+    std::string_view name)
 {
     //KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->m_objectID, name));
     sol::table luaNode = m_lua["nodes"][node->m_objectID];

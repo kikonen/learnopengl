@@ -13,7 +13,7 @@ public:
     ImageRegistry() = default;
     ~ImageRegistry() = default;
 
-    Image* getImage(const std::string& path);
+    Image* getImage(std::string_view path);
 public:
 
 private:

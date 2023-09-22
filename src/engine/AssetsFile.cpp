@@ -15,8 +15,8 @@ namespace {
 }
 
 AssetsFile::AssetsFile(
-    const std::string& filename)
-    : m_filename(filename)
+    std::string_view filename)
+    : m_filename{ filename }
 {
 }
 
@@ -506,8 +506,8 @@ glm::vec2 AssetsFile::readScale2(const YAML::Node& node) const
 }
 
 void AssetsFile::reportUnknown(
-    const std::string& scope,
-    const std::string& k,
+    std::string_view scope,
+    std::string_view k,
     const YAML::Node& v) const
 {
     std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";

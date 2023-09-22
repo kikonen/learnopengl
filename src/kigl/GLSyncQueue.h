@@ -14,15 +14,15 @@ template <class T, bool mappedMode>
 class GLSyncQueue {
 public:
     GLSyncQueue(
-        const std::string& name,
+        std::string_view name,
         size_t entryCount,
         size_t rangeCount,
         bool useFence)
-        : m_rangeCount(rangeCount),
-        m_entryCount(entryCount),
-        m_useFence(useFence),
-        m_entrySize(sizeof(T)),
-        m_buffer{ "syncQueue_" + name }
+        : m_rangeCount{ rangeCount },
+        m_entryCount{ entryCount },
+        m_useFence{ useFence },
+        m_entrySize{ sizeof(T) },
+        m_buffer{ std::string{ "syncQueue_" } + std::string{ name } }
     {
     }
 

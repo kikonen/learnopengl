@@ -14,11 +14,11 @@ struct GLVertexArray {
 
     operator int() const { return m_id; }
 
-    void create(const std::string& name) {
+    void create(std::string_view name) {
         if (m_created) return;
         glCreateVertexArrays(1, &m_id);
         m_created = true;
-        glObjectLabel(GL_VERTEX_ARRAY, m_id, name.length(), name.c_str());
+        glObjectLabel(GL_VERTEX_ARRAY, m_id, name.length(), name.data());
     }
 
     bool m_created{ false };

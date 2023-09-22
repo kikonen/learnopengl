@@ -6,7 +6,7 @@
 
 
 PlainTexture::PlainTexture(
-    const std::string& name,
+    std::string_view name,
     bool gammaCorrect,
     const TextureSpec& spec,
     int width,

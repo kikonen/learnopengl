@@ -37,9 +37,9 @@ public:
 
     int prepared() noexcept { return m_prepared; }
 
-    void setInt(const std::string& name, int value) noexcept;
-    void setFloat(const std::string& name, float value) noexcept;
-    void setMat4(const std::string& name, const glm::mat4& value) noexcept;
+    void setInt(std::string_view name, int value) noexcept;
+    void setFloat(std::string_view name, float value) noexcept;
+    void setMat4(std::string_view name, const glm::mat4& value) noexcept;
 
     void setupUBO(
         const char* name,
@@ -52,11 +52,11 @@ public:
     // public due to shared_ptr
     Program(
         const Assets& assets,
-        const std::string& key,
-        const std::string& name,
+        std::string_view key,
+        std::string_view name,
         const bool compute,
-        const std::string& geometryType,
-        const std::map<std::string, std::string>& defines);
+        std::string_view geometryType,
+        const std::map<std::string, std::string, std::less<>>& defines);
 
     // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
     Program(const Program&) = delete;
@@ -79,16 +79,16 @@ private:
 
     void appendDefines(std::vector<std::string>& lines);
 
-    std::string loadSource(const std::string& filename, bool optional);
-    std::vector<std::string> loadSourceLines(const std::string& path, bool optional);
-    std::vector<std::string> processInclude(const std::string& includePath, int lineNumber);
+    std::string loadSource(std::string_view filename, bool optional);
+    std::vector<std::string> loadSourceLines(std::string_view path, bool optional);
+    std::vector<std::string> processInclude(std::string_view includePath, int lineNumber);
 
     //void prepareTextureUniform();
     //void prepareTextureUniforms();
 
-    GLint getUniformLoc(const std::string& name);
-    GLint getUniformSubroutineLoc(const std::string& name, GLenum shadertype);
-    GLint getSubroutineIndex(const std::string& name, GLenum shadertype);
+    GLint getUniformLoc(std::string_view name);
+    GLint getUniformSubroutineLoc(std::string_view name, GLenum shadertype);
+    GLint getSubroutineIndex(std::string_view name, GLenum shadertype);
 
 public:
     const int m_objectID;
@@ -123,13 +123,13 @@ private:
     int m_prepareResult = -1;
     bool m_prepared = false;
 
-    mutable std::map<std::string, std::string> m_defines;
+    mutable std::map<std::string, std::string, std::less<> > m_defines;
 
     std::unordered_map<GLenum, std::string> m_paths;
     std::unordered_map<GLenum, bool> m_required;
     std::unordered_map<GLenum, std::string> m_sources;
 
-    std::unordered_map<std::string, GLint> m_uniformLocations;
-    std::unordered_map<GLenum, std::unordered_map<std::string, GLuint>> m_subroutineIndeces;
-    std::unordered_map<GLenum, std::unordered_map<std::string, GLuint>> m_subroutineLocations;
+    std::map<std::string, GLint, std::less<> > m_uniformLocations;
+    std::unordered_map<GLenum, std::map<std::string, GLuint, std::less<>> > m_subroutineIndeces;
+    std::unordered_map<GLenum, std::map<std::string, GLuint, std::less<>> > m_subroutineLocations;
 };

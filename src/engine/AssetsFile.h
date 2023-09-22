@@ -20,7 +20,7 @@ class AssetsFile final
 {
 public:
     AssetsFile(
-        const std::string& filename);
+        std::string_view filename);
     ~AssetsFile();
 
     Assets load();
@@ -47,8 +47,8 @@ private:
     glm::vec2 readScale2(const YAML::Node& node) const;
 
     void reportUnknown(
-        const std::string& scope,
-        const std::string& k,
+        std::string_view scope,
+        std::string_view k,
         const YAML::Node&) const;
 
     std::string renderNode(

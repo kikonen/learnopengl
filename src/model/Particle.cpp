@@ -3,8 +3,8 @@
 
 //Material Particle::getMaterial(
 //    const Assets& assets,
-//    const std::string& path,
-//    const std::string& normalMapPath)
+//    std::string_view path,
+//    std::string_view normalMapPath)
 //{
 //    Material material;
 //    material.name = path;
@@ -19,8 +19,8 @@
 //
 //MeshType* Particle::getMeshType(
 //    const Assets& assets,
-//    const std::string& path,
-//    const std::string& normalMapPath)
+//    std::string_view path,
+//    std::string_view normalMapPath)
 //{
 //    auto type = std::make_shared<MeshType>(MeshType::nextID(), Program::getProgram(assets, TEX_TEXTURE, ""));
 //    type->renderBack = true;

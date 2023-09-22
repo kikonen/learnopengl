@@ -606,7 +606,7 @@ MeshType* SceneFile::createType(
         useTBN = useNormalTex || useDudvTex || useDisplacementTex;
 
         if (!data.programName.empty()) {
-            std::map<std::string, std::string> definitions;
+            std::map<std::string, std::string, std::less<>> definitions;
             for (const auto& [k, v] : data.programDefinitions) {
                 definitions[k] = v;
             }
@@ -2380,12 +2380,12 @@ uuids::uuid SceneFile::readUUID(const YAML::Node& node)
     }
 }
 
-const std::string SceneFile::resolveTexturePath(const std::string& path) const
+const std::string SceneFile::resolveTexturePath(std::string_view path) const
 {
-    return path;
+    return std::string{ path };
 }
 
-std::string SceneFile::readFile(const std::string& filename) const
+std::string SceneFile::readFile(std::string_view filename) const
 {
     std::stringstream buffer;
 
@@ -2416,8 +2416,8 @@ std::string SceneFile::readFile(const std::string& filename) const
 }
 
 void SceneFile::reportUnknown(
-    const std::string& scope,
-    const std::string& k,
+    std::string_view scope,
+    std::string_view k,
     const YAML::Node& v) const
 {
     std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";

@@ -411,7 +411,7 @@ void MeshLoader::createTangents(
 void MeshLoader::loadMaterials(
     const ModelMesh& mesh,
     std::vector<Material>& materials,
-    const std::string& libraryName)
+    std::string_view libraryName)
 {
     KI_INFO(fmt::format(
         "LOADER::LOAD_MATERIAL_LIB: lib={}", libraryName));
@@ -515,10 +515,10 @@ void MeshLoader::loadMaterials(
         materials.size()));
 }
 
-std::string MeshLoader::resolveTexturePath(const std::string& line, int skipCount)
+std::string MeshLoader::resolveTexturePath(std::string_view line, int skipCount)
 {
     std::string k;
-    std::stringstream is2(line);
+    std::stringstream is2(std::string{ line });
     is2 >> k;
     for (int i = 0; i < skipCount; i++) {
         is2 >> k;

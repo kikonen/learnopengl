@@ -121,7 +121,7 @@ Material Material::createMaterial(BasicMaterial type)
 }
 
 Material* Material::find(
-    const std::string& name,
+    std::string_view name,
     std::vector<Material>& materials)
 {
     const auto& it = std::find_if(
@@ -215,7 +215,7 @@ std::string Material::resolveBaseDir(const Assets& assets)
 void Material::loadTexture(
     const Assets& assets,
     int idx,
-    const std::string& textureName,
+    std::string_view textureName,
     bool gammaCorrect,
     bool usePlaceholder)
 {
@@ -256,7 +256,7 @@ void Material::loadTexture(
 void Material::loadChannelTexture(
     const Assets& assets,
     int idx,
-    const std::string& name,
+    std::string_view name,
     const std::vector<int>& textureIndeces,
     const glm::vec4& defaults)
 {
@@ -304,7 +304,7 @@ void Material::loadChannelTexture(
 
 const std::string Material::getTexturePath(
     const Assets& assets,
-    const std::string& textureName)
+    std::string_view textureName)
 {
     if (textureName.empty()) return {};
 

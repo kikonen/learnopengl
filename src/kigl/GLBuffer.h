@@ -5,8 +5,8 @@
 #include "ki/GL.h"
 
 struct GLBuffer {
-    GLBuffer(const std::string& name)
-        : m_name(name)
+    GLBuffer(std::string_view name)
+        : m_name{ name }
     {
     }
 

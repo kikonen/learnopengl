@@ -27,9 +27,9 @@ namespace {
 }
 
 
-MeshType::MeshType(const std::string& name)
-    : typeID(nextID()),
-    m_name(name)
+MeshType::MeshType(std::string_view name)
+    : typeID{ nextID() },
+    m_name{ name }
 {
 }
 

@@ -22,18 +22,18 @@ namespace {
     std::mutex load_lock{};
 }
 
-Image::Image(const std::string& path, bool flipped)
+Image::Image(std::string_view path, bool flipped)
     :Image(path, flipped, false)
 {
 }
 
 Image::Image(
-    const std::string& path,
+    std::string_view path,
     bool flipped,
     bool hdri)
-    : m_path(path),
-    m_flipped(flipped),
-    m_hdri(hdri)
+    : m_path{ path },
+    m_flipped{ flipped },
+    m_hdri{ hdri }
 {
 }
 

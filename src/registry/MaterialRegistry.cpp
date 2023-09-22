@@ -87,7 +87,7 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 }
 
 Material* MaterialRegistry::find(
-    const std::string& name)
+    std::string_view name)
 {
     const auto& it = std::find_if(
         m_materials.begin(),

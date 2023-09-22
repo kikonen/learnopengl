@@ -23,13 +23,13 @@ class ModelMesh final : public Mesh {
 
 public:
     ModelMesh(
-        const std::string& meshName,
-        const std::string& rootDir);
+        std::string_view meshName,
+        std::string_view rootDir);
 
     ModelMesh(
-        const std::string& meshName,
-        const std::string& rootDir,
-        const std::string& meshPath);
+        std::string_view meshName,
+        std::string_view rootDir,
+        std::string_view meshPath);
 
     virtual ~ModelMesh();
 

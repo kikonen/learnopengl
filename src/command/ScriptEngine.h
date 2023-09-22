@@ -32,15 +32,15 @@ public:
     void registerScript(
         Node* node,
         const NodeScriptId scriptId,
-        const std::string& script);
+        std::string_view script);
 
     bool hasFunction(
         Node* node,
-        const std::string& name);
+        std::string_view name);
 
     void invokeFunction(
         Node* node,
-        const std::string& name);
+        std::string_view name);
 
 private:
     void registerTypes();

@@ -36,7 +36,7 @@ public:
     bool valid() { return m_textureID > 0;  }
 
     void create(
-            const std::string& name,
+            std::string_view name,
             GLenum target,
             int width,
             int height
@@ -48,7 +48,7 @@ public:
         m_width = width;
         m_height = height;
 
-        glObjectLabel(GL_TEXTURE, m_textureID, name.length(), name.c_str());
+        glObjectLabel(GL_TEXTURE, m_textureID, name.length(), name.data());
     }
 
     operator int() const { return m_textureID; }

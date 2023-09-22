@@ -52,13 +52,13 @@ public:
 
     const std::string getTexturePath(
         const Assets& assets,
-        const std::string& textureName);
+        std::string_view textureName);
 
 private:
     void loadTexture(
         const Assets& assets,
         int idx,
-        const std::string& name,
+        std::string_view name,
         bool gammaCorrect,
         bool usePlaceholder);
 

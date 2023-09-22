@@ -46,18 +46,18 @@ namespace {
 
 Program::Program(
     const Assets& assets,
-    const std::string& key,
-    const std::string& name,
+    std::string_view key,
+    std::string_view name,
     const bool compute,
-    const std::string& geometryType,
-    const std::map<std::string, std::string>& defines)
+    std::string_view geometryType,
+    const std::map<std::string, std::string, std::less<> >& defines)
     : m_objectID(nextID()),
-    m_assets(assets),
-    m_key(key),
-    m_programName(name),
-    m_compute(compute),
-    m_geometryType(geometryType),
-    m_defines(defines)
+    m_assets{ assets },
+    m_key{ key },
+    m_programName{ name },
+    m_compute{ compute },
+    m_geometryType{ geometryType },
+    m_defines{ defines }
 {
     std::string basePath;
     {
@@ -77,7 +77,7 @@ Program::Program(
             m_paths[GL_GEOMETRY_SHADER] = basePath + ".gs.glsl";
         }
         else {
-            m_paths[GL_GEOMETRY_SHADER] = basePath + "_" + geometryType + ".gs.glsl";
+            m_paths[GL_GEOMETRY_SHADER] = basePath + "_" + std::string{ geometryType } + ".gs.glsl";
         }
 
         m_paths[GL_TESS_CONTROL_SHADER] = basePath + ".tcs.glsl";
@@ -145,15 +145,16 @@ int Program::prepare(const Assets& assets)
     return m_prepareResult;
 }
 
-GLint Program::getUniformLoc(const std::string& name)
+GLint Program::getUniformLoc(std::string_view name)
 {
     const auto& e = m_uniformLocations.find(name);
     if (e != m_uniformLocations.end()) {
         return e->second;
     }
 
-    GLint vi = glGetUniformLocation(m_programId, name.c_str());
-    m_uniformLocations[name] = vi;
+    std::string key{ name };
+    GLint vi = glGetUniformLocation(m_programId, key.c_str());
+    m_uniformLocations.insert({ key, vi });
     if (vi < 0) {
         KI_DEBUG(fmt::format(
             "PROGRAM::MISSING_UNIFORM: {} - uniform={}",
@@ -162,7 +163,7 @@ GLint Program::getUniformLoc(const std::string& name)
     return vi;
 }
 
-GLint Program::getUniformSubroutineLoc(const std::string& name, GLenum shaderType)
+GLint Program::getUniformSubroutineLoc(std::string_view name, GLenum shaderType)
 {
     auto& map = m_subroutineLocations[shaderType];
     const auto& e = map.find(name);
@@ -170,8 +171,10 @@ GLint Program::getUniformSubroutineLoc(const std::string& name, GLenum shaderTyp
         return e->second;
     }
 
-    GLint vi = glGetSubroutineUniformLocation(m_programId, shaderType, name.c_str());
-    map[name] = vi;
+    std::string key{ name };
+    GLint vi = glGetSubroutineUniformLocation(m_programId, shaderType, key.c_str());
+    map.insert({ key, vi });
+
     if (vi < 0) {
         KI_DEBUG(fmt::format(
             "PROGRAM::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
@@ -180,7 +183,7 @@ GLint Program::getUniformSubroutineLoc(const std::string& name, GLenum shaderTyp
     return vi;
 }
 
-GLint Program::getSubroutineIndex(const std::string& name, GLenum shaderType)
+GLint Program::getSubroutineIndex(std::string_view name, GLenum shaderType)
 {
     auto& map = m_subroutineIndeces[shaderType];
     const auto& e = map.find(name);
@@ -188,8 +191,10 @@ GLint Program::getSubroutineIndex(const std::string& name, GLenum shaderType)
         return e->second;
     }
 
-    GLint vi = glGetSubroutineIndex(m_programId, shaderType, name.c_str());
-    map[name] = vi;
+    std::string key{ name };
+    GLint vi = glGetSubroutineIndex(m_programId, shaderType, key.c_str());
+    map.insert({ key, vi });
+
     if (vi < 0) {
         KI_DEBUG(fmt::format(
             "PROGRAM::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
@@ -339,7 +344,7 @@ void Program::appendDefines(std::vector<std::string>& lines)
     }
 }
 
-void Program::setInt(const std::string& name, int value) noexcept
+void Program::setInt(std::string_view name, int value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
@@ -347,7 +352,7 @@ void Program::setInt(const std::string& name, int value) noexcept
     }
 }
 
-void Program::setFloat(const std::string& name, float value) noexcept
+void Program::setFloat(std::string_view name, float value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
@@ -355,7 +360,7 @@ void Program::setFloat(const std::string& name, float value) noexcept
     }
 }
 
-void Program::setMat4(const std::string& name, const glm::mat4& value) noexcept
+void Program::setMat4(std::string_view name, const glm::mat4& value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
@@ -407,7 +412,7 @@ void Program::setupUBO(
 * Load shader file
 */
 std::string Program::loadSource(
-    const std::string& path,
+    std::string_view path,
     bool optional)
 {
     std::vector<std::string> lines = loadSourceLines(path, optional);
@@ -428,7 +433,7 @@ std::string Program::loadSource(
 * Load shader file
 */
 std::vector<std::string> Program::loadSourceLines(
-    const std::string& path,
+    std::string_view path,
     bool optional)
 {
     bool exists = util::fileExists(path);
@@ -500,14 +505,16 @@ std::vector<std::string> Program::loadSourceLines(
 }
 
 std::vector<std::string> Program::processInclude(
-    const std::string& includePath,
+    std::string_view includePath,
     int lineNumber)
 {
     std::string path;
     {
         path = util::joinPath(
             m_assets.shadersDir,
-            "_" + includePath);
+            "",
+            "_",
+            includePath);
     }
 
     std::vector<std::string> lines = loadSourceLines(path, false);

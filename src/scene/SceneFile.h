@@ -514,13 +514,13 @@ private:
 
     uuids::uuid readUUID(const YAML::Node& node);
 
-    std::string readFile(const std::string& filename) const;
+    std::string readFile(std::string_view filename) const;
 
-    const std::string resolveTexturePath(const std::string& line) const;
+    const std::string resolveTexturePath(std::string_view line) const;
 
     void reportUnknown(
-        const std::string& scope,
-        const std::string& k,
+        std::string_view scope,
+        std::string_view k,
         const YAML::Node&) const;
 
     std::string renderNode(

@@ -33,11 +33,11 @@ public:
         return *this;
     }
 
-    void create(const std::string& name) {
+    void create(std::string_view name) {
         if (m_fbo > 0) return;
         glCreateFramebuffers(1, &m_fbo);
 
-        glObjectLabel(GL_FRAMEBUFFER, m_fbo, name.length(), name.c_str());
+        glObjectLabel(GL_FRAMEBUFFER, m_fbo, name.length(), name.data());
 
         KI_INFO(fmt::format("CREATE: name={}, FBO={},", name, m_fbo));
     }

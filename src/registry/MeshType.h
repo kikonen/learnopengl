@@ -60,7 +60,7 @@ class MeshType final
     friend class MeshTypeRegistry;
 
 public:
-    MeshType(const std::string& name);
+    MeshType(std::string_view name);
     ~MeshType();
 
     const std::string str() const noexcept;

@@ -21,20 +21,20 @@ namespace {
 }
 
 ModelMesh::ModelMesh(
-    const std::string& meshName,
-    const std::string& rootDir)
+    std::string_view meshName,
+    std::string_view rootDir)
     : ModelMesh(meshName, rootDir, "")
 {
 }
 
 ModelMesh::ModelMesh(
-    const std::string& meshName,
-    const std::string& rootDir,
-    const std::string& meshPath)
+    std::string_view meshName,
+    std::string_view rootDir,
+    std::string_view meshPath)
     : Mesh(),
-    m_meshName(meshName),
-    m_rootDir(rootDir),
-    m_meshPath(meshPath)
+    m_meshName{ meshName },
+    m_rootDir{ rootDir },
+    m_meshPath{ meshPath }
 {
 }
 

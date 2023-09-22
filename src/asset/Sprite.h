@@ -13,7 +13,7 @@ public:
     ~Sprite();
 
     static Sprite* find(
-        const std::string& name,
+        std::string_view name,
         std::vector<Sprite>& sprites);
 
     static Sprite* findID(

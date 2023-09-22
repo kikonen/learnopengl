@@ -52,9 +52,9 @@ namespace util {
         }
     }
 
-    bool fileExists(const std::string& filePath)
+    bool fileExists(std::string_view filePath)
     {
-        std::ifstream f(filePath.c_str());
+        std::ifstream f(std::string{ filePath });
         return f.good();
     }
 

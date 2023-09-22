@@ -83,10 +83,10 @@ private:
     void loadMaterials(
         const ModelMesh& mesh,
         std::vector<Material>& materials,
-        const std::string& libraryName);
+        std::string_view libraryName);
 
     std::string resolveTexturePath(
-        const std::string& line,
+        std::string_view line,
         int skipCount);
 
 private:

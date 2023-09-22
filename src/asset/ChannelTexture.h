@@ -14,7 +14,7 @@ class ChannelTexture final : public Texture
 {
 public:
     static std::shared_future<ChannelTexture*> getTexture(
-        const std::string& name,
+        std::string_view name,
         const std::vector<ImageTexture*>& sourceTextures,
         const glm::vec4& defaults,
         bool is16Bbit,
@@ -23,7 +23,7 @@ public:
     static const std::pair<int, const std::vector<const ChannelTexture*>&> getPreparedTextures();
 
     ChannelTexture(
-        const std::string& name,
+        std::string_view name,
         const std::vector<ImageTexture*>& sourceTextures,
         const glm::vec4& defaults,
         bool is16Bbit,

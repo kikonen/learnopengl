@@ -26,7 +26,7 @@
 
 
 RenderContext::RenderContext(
-    const std::string& name,
+    std::string_view name,
     const RenderContext* parent,
     Camera* camera,
     int width,
@@ -51,7 +51,7 @@ RenderContext::RenderContext(
 {}
 
 RenderContext::RenderContext(
-    const std::string& name,
+    std::string_view name,
     const RenderContext* parent,
     Camera* camera,
     float nearPlane,
@@ -78,7 +78,7 @@ RenderContext::RenderContext(
 {}
 
 RenderContext::RenderContext(
-    const std::string& name,
+    std::string_view name,
     const RenderContext* parent,
     const ki::RenderClock& clock,
     const Assets& assets,
@@ -94,22 +94,22 @@ RenderContext::RenderContext(
     float farPlane,
     int width,
     int height)
-    : m_name(name),
-    m_parent(parent),
-    m_assets(assets),
-    m_clock(clock),
-    m_state(state),
-    m_renderData(renderData),
-    m_nodeDraw(nodeDraw),
-    m_batch(batch),
-    m_registry(registry),
-    m_commandEngine(commandEngine),
-    m_scriptEngine(scriptEngine),
-    m_camera(camera),
-    m_nearPlane(nearPlane),
-    m_farPlane(farPlane),
+    : m_name{ name },
+    m_parent{ parent },
+    m_assets{ assets },
+    m_clock{ clock },
+    m_state{ state },
+    m_renderData{ renderData },
+    m_nodeDraw{ nodeDraw },
+    m_batch{ batch },
+    m_registry{ registry },
+    m_commandEngine{ commandEngine },
+    m_scriptEngine{ scriptEngine },
+    m_camera{ camera },
+    m_nearPlane{ nearPlane },
+    m_farPlane{ farPlane },
     m_resolution({ width, height }),
-    m_aspectRatio((float)width / (float)height)
+    m_aspectRatio{ (float)width / (float)height }
 {
     if (m_parent) {
         m_forceWireframe = m_parent->m_forceWireframe;
@@ -239,7 +239,7 @@ void RenderContext::updateLightsUBO() const
     m_renderData->updateLights(m_registry, m_useLight);
 }
 
-void RenderContext::validateRender(const std::string& label) const
+void RenderContext::validateRender(std::string_view label) const
 {
     if (!m_batch->isFlushed()) {
         throw std::runtime_error{ fmt::format("CONTEXT: Batch was NOT flushed: name={}, label={}", m_name, label)};

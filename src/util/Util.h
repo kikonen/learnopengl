@@ -28,7 +28,7 @@ namespace util
         std::vector<std::string>& result,
         char separator);
 
-    bool fileExists(const std::string& filePath);
+    bool fileExists(std::string_view filePath);
 
     std::string dirName(std::string_view filePath);
 

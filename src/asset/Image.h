@@ -6,14 +6,14 @@
 class Image final
 {
 public:
-    Image(const std::string& path);
+    Image(std::string_view path);
 
     Image(
-        const std::string& path,
+        std::string_view path,
         bool flipped);
 
     Image(
-        const std::string& path,
+        std::string_view path,
         bool flipped,
         bool hdri);
 

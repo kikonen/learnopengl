@@ -44,7 +44,7 @@ void Shape::loadTextures(const Assets& assets)
 void Shape::loadTexture(
     const Assets& assets,
     int idx,
-    const std::string& textureName,
+    std::string_view textureName,
     bool gammaCorrect,
     bool usePlaceholder)
 {
@@ -83,7 +83,7 @@ void Shape::loadTexture(
 
 const std::string Shape::getTexturePath(
     const Assets& assets,
-    const std::string& textureName)
+    std::string_view textureName)
 {
     if (textureName.empty()) return {};
 
