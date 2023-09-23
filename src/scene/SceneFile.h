@@ -40,6 +40,10 @@ class AsyncLoader;
 
 class SceneFile
 {
+public:
+    using BaseUUID = std::vector<std::string>;
+
+private:
     struct MetaData {
         std::string name;
 
@@ -191,10 +195,7 @@ class SceneFile
 
         glm::vec3 pos{ 0.f };
 
-        // NOTE KI debug only
-        std::string targetId_str;
-
-        uuids::uuid targetId{};
+        BaseUUID targetIdBase;
 
         float linear{ 0.f };
         float quadratic{ 0.f };
@@ -218,13 +219,8 @@ class SceneFile
 
         int priority{ 0 };
 
-        // NOTE KI debug only
-        std::string id_str;
-        // NOTE KI debug only
-        std::string parentId_str;
-
-        uuids::uuid id{};
-        uuids::uuid parentId{};
+        BaseUUID idBase;
+        BaseUUID parentIdBase;
 
         std::string meshName;
         std::string meshPath;
@@ -246,7 +242,7 @@ class SceneFile
         Tiling tiling;
         glm::uvec3 tile{ 0 };
 
-        glm::vec3 clonePosition{ 0.f };
+        glm::vec3 clonePositionOffset{ 0.f };
 
         bool loadTextures{ true };
         std::string materialName;
@@ -333,7 +329,7 @@ private:
         bool cloned,
         int cloneIndex,
         const glm::uvec3& tile,
-        const glm::vec3& posAdjustment,
+        const glm::vec3& tilePositionOffset,
         std::vector<Material>& materials,
         std::vector<Sprite>& sprites);
 
@@ -372,12 +368,12 @@ private:
         MeshType* type,
         const EntityData& root,
         const EntityCloneData& data,
-        bool cloned,
-        int cloneIndex,
+        const bool cloned,
+        const int cloneIndex,
         const glm::uvec3& tile,
-        const glm::vec3& clonePosition,
-        const glm::vec3& posAdjustment,
-        bool isRoot);
+        const glm::vec3& clonePositionOffset,
+        const glm::vec3& tilePositionOffset,
+        const bool isRoot);
 
     std::unique_ptr<Camera> createCamera(
         const EntityCloneData& entity,
@@ -385,7 +381,9 @@ private:
 
     std::unique_ptr<Light> createLight(
         const EntityCloneData& entity,
-        const LightData& data);
+        const LightData& data,
+        const int cloneIndex,
+        const glm::uvec3& tile);
 
     NodeController* createController(
         const EntityCloneData& entity,
@@ -512,7 +510,17 @@ private:
     glm::vec4 readRGBA(const YAML::Node& node) const;
     glm::vec2 readRefractionRatio(const YAML::Node& node) const;
 
-    uuids::uuid readUUID(const YAML::Node& node);
+    uuids::uuid resolveUUID(
+        const BaseUUID& parts,
+        const int cloneIndex,
+        const glm::uvec3& tile);
+
+    std::string expandMacros(
+        const std::string& str,
+        const int cloneIndex,
+        const glm::uvec3& tile);
+
+    BaseUUID readUUID(const YAML::Node& node);
 
     std::string readFile(std::string_view filename) const;
 

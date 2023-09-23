@@ -55,8 +55,14 @@ namespace {
     const std::string VOLUME_UUID{ "VOLUME" };
     const std::string CUBE_MAP_UUID{ "CUBE_MAP" };
 
+    const std::string MACRO_STEP_X{ "X" };
+    const std::string MACRO_STEP_Y{ "Y" };
+    const std::string MACRO_STEP_Z{ "Z" };
+
     const std::string QUAD_MESH_NAME{ "quad" };
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
+
+    std::mutex uuid_lock{};
 
     const std::vector<std::regex> hdriMatchers{
         std::regex(".*[\\.]hdr"),
@@ -124,7 +130,32 @@ namespace {
         }
         return false;
     }
+
 }
+
+template <> struct fmt::formatter<SceneFile::BaseUUID> {
+    // Parses format specifications of the form ['f' | 'e'].
+    constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
+        auto it = ctx.begin();
+        return it;
+    }
+
+    template <typename FormatContext>
+    auto format(const SceneFile::BaseUUID& p, FormatContext& ctx) const -> decltype(ctx.out()) {
+        if (p.empty()) {
+            return ctx.out();
+        }
+        else if (p.size() == 1) {
+            return fmt::format_to(
+                ctx.out(),
+                "{}", p[0]);
+        } else {
+            return fmt::format_to(
+                ctx.out(),
+                "{}-{}", p[0], p[1]);
+        }
+    }
+};
 
 SceneFile::SceneFile(
     const Assets& assets,
@@ -245,7 +276,7 @@ void SceneFile::attachSkybox(
     {
         event::Event evt { event::Type::node_add };
         evt.body.node.target = node;
-        evt.body.node.parentId = root.base.id;
+        evt.body.node.parentId = resolveUUID(root.base.idBase, 0, { 0, 0, 0 });
         m_dispatcher->send(evt);
     }
 }
@@ -301,7 +332,7 @@ void SceneFile::attachVolume(
     {
         event::Event evt { event::Type::node_add };
         evt.body.node.target = node;
-        evt.body.node.parentId = root.base.id;
+        evt.body.node.parentId = resolveUUID(root.base.idBase, 0, { 0, 0, 0 });
         m_dispatcher->send(evt);
     }
     {
@@ -371,7 +402,7 @@ void SceneFile::attachCubeMapCenter(
     {
         event::Event evt { event::Type::node_add };
         evt.body.node.target = node;
-        evt.body.node.parentId = root.base.id;
+        evt.body.node.parentId = resolveUUID(root.base.idBase, 0, { 0, 0, 0 });
         m_dispatcher->send(evt);
     }
 }
@@ -430,9 +461,12 @@ MeshType* SceneFile::attachEntityClone(
                 if (!*m_alive) return type;
 
                 const glm::uvec3 tile = { x, y, z };
-                const glm::vec3 posAdjustment{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
+                const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
-                type = SceneFile::attachEntityCloneRepeat(
+                if (x > 0 && z > 0)
+                    int zz = 0;
+
+                type = attachEntityCloneRepeat(
                     type,
                     root,
                     entity,
@@ -440,7 +474,7 @@ MeshType* SceneFile::attachEntityClone(
                     cloned,
                     cloneIndex,
                     tile,
-                    posAdjustment,
+                    tilePositionOffset,
                     materials,
                     sprites);
 
@@ -461,7 +495,7 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     bool cloned,
     int cloneIndex,
     const glm::uvec3& tile,
-    const glm::vec3& posAdjustment,
+    const glm::vec3& tilePositionOffset,
     std::vector<Material>& materials,
     std::vector<Sprite>& sprites)
 {
@@ -487,14 +521,18 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     auto node = createNode(
         type, root, data,
         cloned, cloneIndex, tile,
-        data.clonePosition, posAdjustment,
+        data.clonePositionOffset,
+        tilePositionOffset,
         entity.isRoot);
 
     {
         event::Event evt { event::Type::node_add };
         evt.body.node.target = node;
         if (!entity.isRoot) {
-            evt.body.node.parentId = data.parentId.is_nil() ? root.base.id : data.parentId;
+            evt.body.node.parentId = resolveUUID(
+                data.parentIdBase.empty() ? root.base.idBase : data.parentIdBase,
+                cloneIndex,
+                tile);
         }
         m_dispatcher->send(evt);
     }
@@ -570,7 +608,7 @@ MeshType* SceneFile::createType(
             if (!type->getMesh()) {
                 KI_WARN(fmt::format(
                     "SCENE_FILEIGNORE: NO_MESH id={} ({})",
-                    KI_UUID_STR(data.id), data.name));
+                    data.idBase, data.name));
                 return nullptr;
             }
         }
@@ -724,7 +762,7 @@ void SceneFile::resolveMesh(
 
         KI_INFO(fmt::format(
             "SCENE_FILE ATTACH: id={}, type={}",
-            data.id_str, type->str()));
+            data.idBase, type->str()));
     }
     else if (data.type == EntityType::quad) {
         auto future = m_registry->m_modelRegistry->getMesh(
@@ -769,24 +807,24 @@ Node* SceneFile::createNode(
     MeshType* type,
     const EntityData& root,
     const EntityCloneData& data,
-    bool cloned,
-    int cloneIndex,
+    const bool cloned,
+    const int cloneIndex,
     const glm::uvec3& tile,
-    const glm::vec3& clonePosition,
-    const glm::vec3& posAdjustment,
-    bool isRoot)
+    const glm::vec3& clonePositionOffset,
+    const glm::vec3& tilePositionOffset,
+    const bool isRoot)
 {
     Node* node = new Node(type);
 
     node->setCloneIndex(cloneIndex);
     //node->setTile(tile);
 
-    glm::vec3 pos = data.position + clonePosition + posAdjustment;
+    glm::vec3 pos = data.position + clonePositionOffset + tilePositionOffset;
 
     // NOTE KI no id for clones; would duplicate base id => conflicts
     // => except if clone defines own ID
-    if (root.base.id != data.id || isRoot) {
-        node->m_id = data.id;
+    if (root.base.idBase != data.idBase || isRoot) {
+        node->m_id = resolveUUID(data.idBase, cloneIndex, tile);
     }
 
     node->setPosition(pos);
@@ -805,7 +843,7 @@ Node* SceneFile::createNode(
     }
 
     if (data.light.enabled) {
-        node->m_light = createLight(data, data.light);
+        node->m_light = createLight(data, data.light, cloneIndex, tile);
     }
 
     if (data.generator.enabled) {
@@ -1023,7 +1061,9 @@ std::unique_ptr<Camera> SceneFile::createCamera(
 
 std::unique_ptr<Light> SceneFile::createLight(
     const EntityCloneData& entity,
-    const LightData& data)
+    const LightData& data,
+    const int cloneIndex,
+    const glm::uvec3& tile)
 {
     if (!data.enabled) return std::unique_ptr<Light>();
 
@@ -1031,7 +1071,7 @@ std::unique_ptr<Light> SceneFile::createLight(
 
     light->m_enabled = true;
     light->setPosition(data.pos);
-    light->setTargetId(data.targetId);
+    light->setTargetId(resolveUUID(data.targetIdBase, cloneIndex, tile));
 
     light->linear = data.linear;
     light->quadratic = data.quadratic;
@@ -1224,8 +1264,7 @@ void SceneFile::loadRoot(
     auto& node = doc["root"];
     loadEntity(node, root);
 
-    root.base.id_str = KI_UUID_STR(m_assets.rootUUID);
-    root.base.id = m_assets.rootUUID;
+    root.base.idBase = { ROOT_UUID };
     root.base.type = EntityType::origo;
     root.isRoot = true;
     root.base.enabled = true;
@@ -1297,12 +1336,10 @@ void SceneFile::loadEntityClone(
             data.desc = v.as<std::string>();
         }
         else if (k == "id") {
-            data.id_str = renderNode(v);
-            data.id = readUUID(v);
+            data.idBase = readUUID(v);
         }
         else if (k == "parent_id") {
-            data.parentId_str = renderNode(v);
-            data.parentId = readUUID(v);
+            data.parentIdBase = readUUID(v);
         }
         else if (k == "model") {
             if (v.Type() == YAML::NodeType::Sequence) {
@@ -1393,8 +1430,8 @@ void SceneFile::loadEntityClone(
         else if (k == "enabled") {
             data.enabled = readBool(v);
         }
-        else if (k == "clone_position") {
-            data.clonePosition = readVec3(v);
+        else if (k == "clone_position_offset") {
+            data.clonePositionOffset = readVec3(v);
         }
         else if (k == "clone_mesh") {
             data.cloneMesh = readBool(v);
@@ -1552,8 +1589,7 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
 void SceneFile::loadLight(const YAML::Node& node, LightData& data)
 {
     // Default to center
-    data.targetId_str = KI_UUID_STR(m_assets.rootUUID);
-    data.targetId = m_assets.rootUUID;
+    data.targetIdBase = { AUTO_UUID, ROOT_UUID };
 
     // pos relative to owning node
     for (const auto& pair : node) {
@@ -1585,8 +1621,7 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
             data.pos = readVec3(v);
         }
         else if (k == "target_id") {
-            data.targetId_str = renderNode(v);
-            data.targetId = readUUID(v);
+            data.targetIdBase = readUUID(v);
         }
         else if (k == "linear") {
             data.linear = readFloat(v);
@@ -2332,17 +2367,13 @@ glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) const
     return glm::vec2{ a[0], a[1] };
 }
 
-uuids::uuid SceneFile::readUUID(const YAML::Node& node)
+uuids::uuid SceneFile::resolveUUID(
+    const BaseUUID& parts,
+    const int cloneIndex,
+    const glm::uvec3& tile)
 {
-    std::vector<std::string> parts;
-
-    if (node.IsSequence()) {
-        for (const auto& e : node) {
-            parts.push_back(e.as<std::string>());
-        }
-    }
-    else {
-        parts.push_back(node.as<std::string>());
+    if (parts.empty()) {
+        return {};
     }
 
     std::string key = parts[0];
@@ -2353,14 +2384,19 @@ uuids::uuid SceneFile::readUUID(const YAML::Node& node)
     if (key == AUTO_UUID) {
         uuids::uuid uuid;
         if (parts.size() > 1) {
-            const auto& name = parts[1];
-            const auto& it = m_autoIds.find(name);
-            if (it == m_autoIds.end()) {
-                uuid = uuids::uuid_system_generator{}();
-                m_autoIds[name] = uuid;
-            }
-            else {
-                uuid = it->second;
+            std::string name = expandMacros(parts[1], cloneIndex, tile);
+
+            {
+                std::lock_guard<std::mutex> lock(uuid_lock);
+
+                const auto& it = m_autoIds.find(name);
+                if (it == m_autoIds.end()) {
+                    uuid = uuids::uuid_system_generator{}();
+                    m_autoIds[name] = uuid;
+                }
+                else {
+                    uuid = it->second;
+                }
             }
         }
         if (uuid.is_nil()) {
@@ -2380,6 +2416,51 @@ uuids::uuid SceneFile::readUUID(const YAML::Node& node)
     else {
         return KI_UUID(key);
     }
+}
+
+std::string SceneFile::expandMacros(
+    const std::string& str,
+    const int cloneIndex,
+    const glm::uvec3& tile)
+{
+    std::string out{ str };
+
+    {
+        const auto pos = out.find("{x}");
+        if (pos != std::string::npos) {
+            out.replace(pos, 3, fmt::format("{}", tile.x));
+        }
+    }
+    {
+        const auto pos = out.find("{y}");
+        if (pos != std::string::npos) {
+            out.replace(pos, 3, fmt::format("{}", tile.y));
+        }
+    }
+    {
+        const auto pos = out.find("{z}");
+        if (pos != std::string::npos) {
+            out.replace(pos, 3, fmt::format("{}", tile.z));
+        }
+    }
+
+    return out;
+}
+
+SceneFile::BaseUUID SceneFile::readUUID(const YAML::Node& node)
+{
+    BaseUUID parts;
+
+    if (node.IsSequence()) {
+        for (const auto& e : node) {
+            parts.push_back(e.as<std::string>());
+        }
+    }
+    else {
+        parts.push_back(node.as<std::string>());
+    }
+
+    return parts;
 }
 
 const std::string SceneFile::resolveTexturePath(std::string_view path) const

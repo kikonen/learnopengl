@@ -135,7 +135,7 @@ entities:
     xmodel: woodwall
     material: giant_woodbox
     program: g_tex
-    clone_position: [0, 40, 0]
+    clone_position_offset: [0, 40, 0]
     render_flags:
       render_back: true
       no_shadow: true
