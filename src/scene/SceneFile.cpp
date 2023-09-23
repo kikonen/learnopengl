@@ -1589,7 +1589,7 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
 void SceneFile::loadLight(const YAML::Node& node, LightData& data)
 {
     // Default to center
-    data.targetIdBase = { AUTO_UUID, ROOT_UUID };
+    data.targetIdBase = { ROOT_UUID };
 
     // pos relative to owning node
     for (const auto& pair : node) {
