@@ -118,8 +118,8 @@ public:
         //*ptr = entry;
         memcpy(ptr, &entry, sizeof(T));
 
-        if (idx > range.m_usedCount) {
-            range.m_usedCount = idx;
+        if (idx >= range.m_usedCount) {
+            range.m_usedCount = idx + 1;
         }
     }
 

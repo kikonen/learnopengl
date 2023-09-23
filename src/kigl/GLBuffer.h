@@ -86,6 +86,7 @@ struct GLBuffer {
     }
 
     void update(size_t offset, size_t length, void* data) {
+        if (length <= 0) return;
         glNamedBufferSubData(m_id, offset, length, data);
     }
 
