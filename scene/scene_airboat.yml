@@ -46,9 +46,8 @@ entities:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
-      ambient: [0.3, 0.32, 0.32, 1.0]
       diffuse: [0.9, 0.9, 0.7, 1.0]
-      specular: [0.9, 0.9, 0.5, 1.0]
+      intensity: 40000
       enabled: true
     enabled: true
   - name: Giant wooden box
@@ -87,4 +86,4 @@ materials:
     d: 1.000000
     illum: 2
     map_kd: textures/wood_1024.png
-    reflection: 0.1
+    xreflection: 0.1
