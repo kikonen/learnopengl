@@ -44,7 +44,8 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
                 return node->m_id != ctx.m_assets.volumeUUID &&
                     node->m_id != ctx.m_assets.cubeMapUUID &&
                     node->m_id != ctx.m_assets.skyboxUUID;
-            });
+            },
+            NodeDraw::KIND_ALL);
     }
 
     ctx.m_batch->flush(ctx);

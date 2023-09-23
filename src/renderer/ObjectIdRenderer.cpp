@@ -160,7 +160,8 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
             //m_idProgramPointSprite,
             nullptr,
             [](const MeshType* type) { return !type->m_flags.noSelect && !type->m_flags.tessellation; },
-            [](const Node* node) { return true; });
+            [](const Node* node) { return true; },
+            NodeDraw::KIND_ALL);
     }
 
     ctx.m_batch->flush(ctx);

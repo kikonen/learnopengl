@@ -237,49 +237,42 @@ void ShadowCascade::drawNodes(
     const RenderContext& ctx)
 {
     // NOTE KI *NO* G-buffer in shadow
-    auto renderTypes = [this, &ctx](const MeshTypeMap& typeMap, Program* program) {
-        for (const auto& it : typeMap) {
-            auto* type = it.first.type;
-            auto& batch = ctx.m_batch;
+    const auto typeFilter = [](const MeshType* type) {
+        // NOTE KI tessellation not suppported
+        // NOTE KI point sprite currently not supported
+        return !type->m_flags.noShadow &&
+            !type->m_flags.tessellation &&
+            type->m_entityType != EntityType::point_sprite;
+    };
 
-            if (type->m_flags.noShadow) continue;
-
-            // NOTE KI tessellation not suppported
-            if (type->m_flags.tessellation) continue;
-
-            // NOTE KI point sprite currently not supported
-            if (type->m_entityType == EntityType::point_sprite) continue;
-
-            for (auto& node : it.second) {
-                batch->draw(ctx, *node, program);
-            }
-        }
+    const auto nodeFilter = [](const Node* node) {
+        return true;
     };
 
     {
         m_solidShadowProgram->bind(ctx.m_state);
         m_solidShadowProgram->u_shadowIndex->set(m_index);
 
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-            renderTypes(all.second, m_solidShadowProgram);
-        }
+        ctx.m_nodeDraw->drawProgram(
+            ctx,
+            m_solidShadowProgram,
+            nullptr,
+            typeFilter,
+            nodeFilter,
+            NodeDraw::KIND_SOLID);
     }
 
     {
         m_alphaShadowProgram->bind(ctx.m_state);
         m_alphaShadowProgram->u_shadowIndex->set(m_index);
 
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->spriteNodes) {
-            renderTypes(all.second, m_alphaShadowProgram);
-        }
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-            renderTypes(all.second, m_alphaShadowProgram);
-        }
-
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-            renderTypes(all.second, m_alphaShadowProgram);
-        }
+        ctx.m_nodeDraw->drawProgram(
+            ctx,
+            m_alphaShadowProgram,
+            nullptr,
+            typeFilter,
+            nodeFilter,
+            NodeDraw::KIND_SPRITE | NodeDraw::KIND_ALPHA | NodeDraw::KIND_BLEND);
     }
 
     ctx.m_batch->flush(ctx);

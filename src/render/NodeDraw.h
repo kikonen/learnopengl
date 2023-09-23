@@ -22,6 +22,13 @@ class Registry;
 
 class NodeDraw final {
 public:
+    static const unsigned int KIND_SOLID{1 << 0};
+    static const unsigned int KIND_SPRITE{ 1 << 1 };
+    static const unsigned int KIND_ALPHA{ 1 << 2 };
+    static const unsigned int KIND_BLEND{ 1 << 3 };
+    static const unsigned int KIND_ALL{ KIND_SOLID | KIND_SPRITE | KIND_ALPHA | KIND_BLEND };
+
+public:
     void prepare(
         const Assets& assets,
         Registry* registry);
@@ -33,6 +40,7 @@ public:
         FrameBuffer* targetBuffer,
         const std::function<bool(const MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
+        unsigned int kindBits,
         GLbitfield copyMask);
 
     void drawDebug(
@@ -50,13 +58,15 @@ public:
         Program* program,
         Program* programPointSprite,
         const std::function<bool(const MeshType*)>& typeSelector,
-        const std::function<bool(const Node*)>& nodeSelector);
+        const std::function<bool(const Node*)>& nodeSelector,
+        unsigned int kindBits);
 
 private:
     bool drawNodesImpl(
         const RenderContext& ctx,
         const std::function<bool(const MeshType*)>& typeSelector,
-        const std::function<bool(const Node*)>& nodeSelector);
+        const std::function<bool(const Node*)>& nodeSelector,
+        unsigned int kindBits);
 
     void drawBlendedImpl(
         const RenderContext& ctx,

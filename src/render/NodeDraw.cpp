@@ -63,6 +63,7 @@ void NodeDraw::drawNodes(
     FrameBuffer* targetBuffer,
     const std::function<bool(const MeshType*)>& typeSelector,
     const std::function<bool(const Node*)>& nodeSelector,
+    unsigned int kindBits,
     GLbitfield copyMask)
 {
     // pass 1.1 - draw geometry
@@ -78,7 +79,8 @@ void NodeDraw::drawNodes(
         drawNodesImpl(
             ctx,
             [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
-            nodeSelector);
+            nodeSelector,
+            kindBits);
 
         ctx.m_batch->flush(ctx);
 
@@ -142,7 +144,8 @@ void NodeDraw::drawNodes(
         bool rendered = drawNodesImpl(
             ctx,
             [&typeSelector](const MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
-            nodeSelector);
+            nodeSelector,
+            kindBits);
 
         if (rendered) {
             ctx.m_batch->flush(ctx);
@@ -190,7 +193,8 @@ void NodeDraw::drawNodes(
             m_oitProgram,
             nullptr,
             [&typeSelector](const MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
-            nodeSelector);
+            nodeSelector,
+            NodeDraw::KIND_BLEND);
 
         ctx.m_batch->flush(ctx);
 
@@ -450,7 +454,8 @@ void NodeDraw::drawBlended(
 bool NodeDraw::drawNodesImpl(
     const RenderContext& ctx,
     const std::function<bool(const MeshType*)>& typeSelector,
-    const std::function<bool(const Node*)>& nodeSelector)
+    const std::function<bool(const Node*)>& nodeSelector,
+    unsigned int kindBits)
 {
     bool rendered{ false };
 
@@ -474,16 +479,22 @@ bool NodeDraw::drawNodesImpl(
         }
     };
 
-    for (const auto& all : nodeRegistry->solidNodes) {
-        renderTypes(all.second);
+    if (kindBits & NodeDraw::KIND_SOLID) {
+        for (const auto& all : nodeRegistry->solidNodes) {
+            renderTypes(all.second);
+        }
     }
 
-    for (const auto& all : nodeRegistry->spriteNodes) {
-        renderTypes(all.second);
+    if (kindBits & NodeDraw::KIND_SPRITE) {
+        for (const auto& all : nodeRegistry->spriteNodes) {
+            renderTypes(all.second);
+        }
     }
 
-    for (const auto& all : nodeRegistry->alphaNodes) {
-        renderTypes(all.second);
+    if (kindBits & NodeDraw::KIND_ALPHA) {
+        for (const auto& all : nodeRegistry->alphaNodes) {
+            renderTypes(all.second);
+        }
     }
 
     return rendered;
@@ -533,7 +544,8 @@ void NodeDraw::drawProgram(
     Program* program,
     Program* programPointSprite,
     const std::function<bool(const MeshType*)>& typeSelector,
-    const std::function<bool(const Node*)>& nodeSelector)
+    const std::function<bool(const Node*)>& nodeSelector,
+    unsigned int kindBits)
 {
     auto renderTypes = [this, &ctx, &program, &programPointSprite, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
@@ -558,19 +570,27 @@ void NodeDraw::drawProgram(
         }
     };
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
-        renderTypes(all.second);
+    if (kindBits & NodeDraw::KIND_SOLID) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->solidNodes) {
+            renderTypes(all.second);
+        }
     }
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->spriteNodes) {
-        renderTypes(all.second);
+    if (kindBits & NodeDraw::KIND_SPRITE) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->spriteNodes) {
+            renderTypes(all.second);
+        }
     }
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
-        renderTypes(all.second);
+    if (kindBits & NodeDraw::KIND_ALPHA) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->alphaNodes) {
+            renderTypes(all.second);
+        }
     }
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
-        renderTypes(all.second);
+    if (kindBits & NodeDraw::KIND_BLEND) {
+        for (const auto& all : ctx.m_registry->m_nodeRegistry->blendedNodes) {
+            renderTypes(all.second);
+        }
     }
 }
