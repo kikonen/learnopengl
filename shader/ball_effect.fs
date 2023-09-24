@@ -53,13 +53,16 @@ void main() {
   iMouse = u_bufferResolution * 0.5;
   iChannel0 = material.diffuseTex;
 
-  mainImage(o_fragColor, gl_FragCoord.xy);
+  vec4 color;
+  mainImage(color, gl_FragCoord.xy);
 
-  if (o_fragColor.r < 0.1 && o_fragColor.g < 0.1 && o_fragColor.b < 0.1) {
-    o_fragColor = vec4(o_fragColor.rgb, 0.0);
+  clamp_color(color);
+
+  if (color.r < 0.1 && color.g < 0.1 && color.b < 0.1) {
+    color = vec4(color.rgb, 0.0);
   }
 
 #ifdef USE_BLEND
-  o_fragColor = vec4(o_fragColor.rgb, 0.2);
+  o_fragColor = vec4(color.rgb, 0.2);
 #endif
 }

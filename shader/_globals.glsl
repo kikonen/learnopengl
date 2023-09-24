@@ -121,6 +121,13 @@
 //#define SET_FLOAT_PRECISION
 #define SET_FLOAT_PRECISION precision mediump float;
 
+#define MIN_CLAMP_COL_VALUE 0.0
+#define MAX_CLAMP_COL_VALUE 10000.0
+#define clamp_color(color)\
+  color.r = clamp(color.r, MIN_CLAMP_COL_VALUE, MAX_CLAMP_COL_VALUE);\
+  color.g = clamp(color.g, MIN_CLAMP_COL_VALUE, MAX_CLAMP_COL_VALUE);\
+  color.b = clamp(color.b, MIN_CLAMP_COL_VALUE, MAX_CLAMP_COL_VALUE);
+
 #define LAYOUT_G_BUFFER_OUT\
  layout (location = 0) out vec4 o_fragColor;\
  layout (location = 1) out vec3 o_fragEmission;\

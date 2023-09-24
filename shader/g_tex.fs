@@ -83,7 +83,9 @@ void main() {
   #include var_calculate_cube_map_diffuse.glsl
 #endif
 
-  vec4 texColor = material.diffuse;
+  vec4 color = material.diffuse;
+
+  clamp_color(color);
 
   // if (!gl_FrontFacing) {
   //   float alpha = texColor.a;
@@ -91,7 +93,7 @@ void main() {
   //   texColor.a = alpha;
   // }
 
-  o_fragColor = vec4(texColor.xyz, material.ambient);
+  o_fragColor = vec4(color.xyz, material.ambient);
   //o_fragSpecular = material.specular;
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;

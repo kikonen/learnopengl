@@ -61,9 +61,11 @@ void main() {
     material.diffuse = mix(material.diffuse, mixColor, 0.9);
   }
 
-  vec4 texColor = material.diffuse;
+  vec4 color = material.diffuse;
 
-  o_fragColor = vec4(texColor.xyz, material.ambient);
+  clamp_color(color);
+
+  o_fragColor = vec4(color.xyz, material.ambient);
   //o_fragSpecular = material.specular;
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;
