@@ -119,7 +119,7 @@ void Viewport::bind(const RenderContext& ctx)
     ctx.m_state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
     m_program->u_toneHdri->set(true);
-    m_program->u_gammaCorrect->set(true);
+    m_program->u_gammaCorrect->set(false);
 
     if (m_effectEnabled) {
         m_program->u_effect->set(util::as_integer(m_effect));
@@ -142,6 +142,8 @@ void Viewport::draw(const RenderContext& ctx)
     else
     {
         if (m_textureId == 0) return;
+        glEnable(GL_FRAMEBUFFER_SRGB);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glDisable(GL_FRAMEBUFFER_SRGB);
     }
 }
