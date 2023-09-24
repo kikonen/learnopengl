@@ -2,10 +2,14 @@
 
 #include <unordered_map>
 #include <mutex>
+#include <regex>
 
+#include <regex>
 #include "fmt/format.h"
 
 #include "asset/Image.h"
+
+#include "util/Util.h"
 
 #include "ki/GL.h"
 
@@ -50,6 +54,10 @@ return f;
 
         return future;
     }
+
+    const std::vector<std::regex> hdrMatchers{
+        std::regex(".*[\\.]hdr"),
+    };
 }
 
 std::shared_future<ImageTexture*> ImageTexture::getTexture(
@@ -131,11 +139,19 @@ void ImageTexture::prepare(
             m_internalFormat = GL_R8;
         }
         //m_specialTexture = true;
-    } else if (m_image->m_channels == 2) {
+    }
+    else if (m_image->m_channels == 2) {
         m_format = GL_RG;
         m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
-    } else if (m_image->m_channels == 3) {
-        if (m_image->m_is16Bbit) {
+    }
+    else if (m_image->m_channels == 3) {
+        if (m_image->m_hdri) {
+            // NOTE KI hdri is *linear* (no gamma)
+            m_format = GL_RGB;
+            m_internalFormat = GL_RGB16F;
+            m_pixelFormat = GL_FLOAT;
+        }
+        else if (m_image->m_is16Bbit) {
             m_format = GL_RGB;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
@@ -145,7 +161,8 @@ void ImageTexture::prepare(
             m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB8;
             //m_internalFormat = assets.glPreferredTextureFormatRGB;
         }
-    } else if (m_image->m_channels == 4) {
+    }
+    else if (m_image->m_channels == 4) {
         if (m_image->m_is16Bbit) {
             m_format = GL_RGBA;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA16;
@@ -156,7 +173,8 @@ void ImageTexture::prepare(
             m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA8;
             //m_internalFormat = assets.glPreferredTextureFormatRGBA;
         }
-    } else {
+    }
+    else {
         KI_WARN(fmt::format("IMAGE: unsupported channels {}", m_image->m_channels));
         m_valid = false;
         m_image.reset();
@@ -203,20 +221,14 @@ void ImageTexture::prepare(
 }
 
 void ImageTexture::load() {
-    m_image = std::make_unique<Image>(m_path, true);
+    m_hdri = util::matchAny(hdrMatchers, m_path);
+
+    m_image = std::make_unique<Image>(m_path, true, m_hdri);
     int res = m_image->load();
     if (res) {
         m_image.reset();
         return;
     }
-
-    // NOTE KI 1 & 2 channels have issues
-    // => need to convert manually to RGB(A) format
-    //if (m_image->m_channels != 3 && m_image->m_channels != 4) {
-    //    KI_WARN(fmt::format("IMAGE: unsupported channels {}", m_image->m_channels));
-    //    m_image.reset();
-    //    return;
-    //}
 
     m_valid = true;
 }

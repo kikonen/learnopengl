@@ -39,6 +39,8 @@ public:
 
     std::unique_ptr<Image> m_image;
 
+    bool m_hdri{ false };
+
 private:
     bool m_valid = false;
 };

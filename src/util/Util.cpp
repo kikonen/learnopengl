@@ -52,6 +52,18 @@ namespace util {
         }
     }
 
+    bool matchAny(
+        const std::vector<std::regex>& matchers,
+        const std::string& str)
+    {
+        for (auto& re : matchers) {
+            if (std::regex_match(str, re)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     bool fileExists(std::string_view filePath)
     {
         std::ifstream f(std::string{ filePath });

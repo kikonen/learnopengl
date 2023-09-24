@@ -3,6 +3,8 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <regex>
+
 
 namespace util
 {
@@ -27,6 +29,10 @@ namespace util
         const std::string& v,
         std::vector<std::string>& result,
         char separator);
+
+    bool matchAny(
+        const std::vector<std::regex>& matchers,
+        const std::string& str);
 
     bool fileExists(std::string_view filePath);
 

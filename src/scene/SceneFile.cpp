@@ -64,73 +64,70 @@ namespace {
 
     std::mutex uuid_lock{};
 
+    const std::vector<std::regex> texturesMatchers{
+        std::regex("textures"),
+    };
+
     const std::vector<std::regex> hdriMatchers{
         std::regex(".*[\\.]hdr"),
     };
 
     const std::vector<std::regex> ignoreMatchers{
-        std::regex(".*NOPE.*"),
+        std::regex(".*nope.*"),
+        std::regex(".*[\\.]blend"),
+        std::regex(".*[\\.]exr"),
         std::regex(".*[\\.]txt"),
         std::regex(".*[\\.]usda"),
-        std::regex(".*PREVIEW.*"),
+        std::regex(".*preview.*"),
     };
 
     const std::vector<std::regex> validMatchers{
-        std::regex(".*[\\.][pP][nN][gG]"),
-        std::regex(".*[\\.][jJ][pP][gG]"),
+        std::regex(".*[\\.]hdr"),
+        std::regex(".*[\\.]png"),
+        std::regex(".*[\\.]jpg"),
     };
 
     const std::vector<std::regex> colorMatchers{
-        std::regex(".*[-_ ][cC]olor[-_ \\.].*"),
-        std::regex(".*[-_ ][cC]ol[-_ \\.].*"),
-        std::regex(".*[-_ ][bB]asecolor[-_ \\.].*"),
+        std::regex(".*[-_ ]color[-_ \\.].*"),
+        std::regex(".*[-_ ]col[-_ \\.].*"),
+        std::regex(".*[-_ ]basecolor[-_ \\.].*"),
+        std::regex(".*[-_ ]diff[-_ \\.].*"),
     };
 
     const std::vector<std::regex> normalMatchers{
-        std::regex(".*[-_ ][nN]ormal[-_ \\.].*"),
-        std::regex(".*[-_ ][nN]ormalGL[-_ \\.].*"),
-        std::regex(".*[-_ ][nN]rm[-_ \\.].*"),
+        std::regex(".*[-_ ]normal[-_ \\.].*"),
+        std::regex(".*[-_ ]normalgl[-_ \\.].*"),
+        std::regex(".*[-_ ]nrm[-_ \\.].*"),
+        std::regex(".*[-_ ]nor[-_ \\.].*"),
     };
 
     const std::vector<std::regex> metalnessMatchers{
-        std::regex(".*[-_ ][mM]etalness[-_ \\.].*"),
-        std::regex(".*[-_ ][mM]et[-_ \\.].*"),
-        std::regex(".*[-_ ][mM]etallic[-_ \\.].*"),
+        std::regex(".*[-_ ]metalness[-_ \\.].*"),
+        std::regex(".*[-_ ]met[-_ \\.].*"),
+        std::regex(".*[-_ ]metallic[-_ \\.].*"),
     };
 
     const std::vector<std::regex> roughnessMatchers{
-        std::regex(".*[-_ ][rR]oughness[-_ \\.].*"),
-        std::regex(".*[-_ ][rR]gh[-_ \\.].*"),
+        std::regex(".*[-_ ]roughness[-_ \\.].*"),
+        std::regex(".*[-_ ]rough[-_ \\.].*"),
+        std::regex(".*[-_ ]rgh[-_ \\.].*"),
     };
 
     const std::vector<std::regex> occlusionMatchers{
-        std::regex(".*[-_ ][aA]mbientOcclusion[-_ \\.].*"),
-        std::regex(".*[-_ ][oO]cclusion[-_ \\.].*"),
-        std::regex(".*[-_ ][aA][Oo][-_ \\.].*"),
+        std::regex(".*[-_ ]ambientocclusion[-_ \\.].*"),
+        std::regex(".*[-_ ]occlusion[-_ \\.].*"),
+        std::regex(".*[-_ ]ao[-_ \\.].*"),
     };
 
     const std::vector<std::regex> displacementMatchers{
-        std::regex(".*[-_ ][dD]isplacement[-_ \\.].*"),
-        std::regex(".*[-_ ][dD]isp[-_ \\.].*"),
+        std::regex(".*[-_ ]displacement[-_ \\.].*"),
+        std::regex(".*[-_ ]disp[-_ \\.].*"),
     };
 
     const std::vector<std::regex> opacityMatchers{
-        std::regex(".*[-_ ][oO]pacity[-_ \\.].*"),
-        std::regex(".*[-_ ][oO]ps[-_ \\.].*"),
+        std::regex(".*[-_ ]opacity[-_ \\.].*"),
+        std::regex(".*[-_ ]ops[-_ \\.].*"),
     };
-
-    bool matchAny(
-        const std::vector<std::regex>& matchers,
-        const std::string& str)
-    {
-        for (auto& re : matchers) {
-            if (std::regex_match(str, re)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }
 
 template <> struct fmt::formatter<SceneFile::BaseUUID> {
@@ -1231,7 +1228,7 @@ void SceneFile::loadSkybox(
         }
     }
 
-    if (matchAny(hdriMatchers, data.materialName)) {
+    if (util::matchAny(hdriMatchers, data.materialName)) {
         data.hdri = true;
     }
 
@@ -1945,53 +1942,60 @@ void SceneFile::loadMaterialPbr(
         std::string fileName = dirEntry.path().filename().string();
         std::string assetPath = util::joinPath(pbrName,fileName);
 
-        if (matchAny(ignoreMatchers, fileName)) {
+        std::string matchName{ util::toLower(fileName) };
+
+        if (util::matchAny(texturesMatchers, matchName)) {
+            loadMaterialPbr(pbrName + "\\" + fileName, fields, material);
+            return;
+        }
+
+        if (util::matchAny(ignoreMatchers, matchName)) {
             continue;
         }
 
-        if (!matchAny(validMatchers, fileName)) {
+        if (!util::matchAny(validMatchers, matchName)) {
             continue;
         }
 
         bool found = false;
 
-        if (!found && matchAny(colorMatchers, fileName)) {
+        if (!found && util::matchAny(colorMatchers, matchName)) {
             fields.map_kd = true;
             material.map_kd = assetPath;
             found = true;
         }
 
-        if (!found && matchAny(normalMatchers, fileName)) {
+        if (!found && util::matchAny(normalMatchers, matchName)) {
             fields.map_bump = true;
             material.map_bump = assetPath;
             found = true;
         }
 
-        if (!found && matchAny(metalnessMatchers, fileName)) {
+        if (!found && util::matchAny(metalnessMatchers, matchName)) {
             fields.map_metalness = true;
             material.map_metalness = assetPath;
             found = true;
         }
 
-        if (!found && matchAny(roughnessMatchers, fileName)) {
+        if (!found && util::matchAny(roughnessMatchers, matchName)) {
             fields.map_roughness = true;
             material.map_roughness = assetPath;
             found = true;
         }
 
-        if (!found && matchAny(occlusionMatchers, fileName)) {
+        if (!found && util::matchAny(occlusionMatchers, matchName)) {
             fields.map_occlusion = true;
             material.map_occlusion = assetPath;
             found = true;
         }
 
-        if (!found && matchAny(displacementMatchers, fileName)) {
+        if (!found && util::matchAny(displacementMatchers, matchName)) {
             fields.map_displacement = true;
             material.map_displacement = assetPath;
             found = true;
         }
 
-        if (!found && matchAny(opacityMatchers, fileName)) {
+        if (!found && util::matchAny(opacityMatchers, matchName)) {
             fields.map_opacity = true;
             material.map_opacity = assetPath;
             found = true;
