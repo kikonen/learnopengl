@@ -352,12 +352,10 @@ const MaterialSSBO Material::toSSBO() const
         kd,
         ke,
 
-        glm::vec4{ ks, ns },
         metal,
 
         m_textures[MATERIAL_DIFFUSE_IDX].m_handle,
         m_textures[MATERIAL_EMISSION_IDX].m_handle,
-        //m_textures[MATERIAL_SPECULAR_IDX].m_handle,
         m_textures[MATERIAL_NORMAL_MAP_IDX].m_handle,
 
         m_textures[MATERIAL_DUDV_MAP_IDX].m_handle,
@@ -367,7 +365,6 @@ const MaterialSSBO Material::toSSBO() const
 
         m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle,
 
-        calculateAmbient(ka),
         pattern,
 
         reflection,

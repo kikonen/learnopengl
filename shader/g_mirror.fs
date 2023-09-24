@@ -65,8 +65,7 @@ void main() {
 
   clamp_color(color);
 
-  o_fragColor = vec4(color.xyz, material.ambient);
-  //o_fragSpecular = material.specular;
+  o_fragColor = vec4(color.xyz, 1.0);
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;
 

@@ -1,6 +1,6 @@
 // NOTE KI
 // https://computergraphics.stackexchange.com/questions/4354/exponential-shadow-maps-sampling-with-pcf-for-sampler2dshadow-instead-of-sampler
-float calcShadow2_5(
+float calcShadow(
   in sampler2DShadow shadowMap,
   in vec4 shadowPos)
 {
@@ -10,36 +10,6 @@ float calcShadow2_5(
   // With GL_LINEAR & sampler2dshadow & textureProj
   // => free HW PCF
   return textureProj(shadowMap, shadowPos);
-}
-
-vec3 calculateDirLight(
-  in DirLight light,
-  in vec3 normal,
-  in vec3 viewDir,
-  in vec3 worldPos,
-  in uint shadowIndex)
-{
-  const vec3 lightDir = normalize(-light.worldDir.xyz);
-  const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
-
-  // diffuse
-  float diff = max(dot(normal, lightDir), 0.0);
-  vec3 diffuse = diff * light.diffuse.rgb * material.diffuse.rgb;
-
-  // specular
-  vec3 specular = vec3(0);
-  const float shininess = material.specular.a;
-  if (shininess > 0) {
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-    specular = spec * light.diffuse.rgb * material.specular.rgb;
-  }
-
-  // calculate shadow
-  //float shadow = calcShadow2_3(worldPos, shadowIndex, shadowPos, normal, lightDir);
-  float shadow = calcShadow2_5(u_shadowMap[shadowIndex], shadowPos);
-
-  return shadow * (diffuse + specular);
 }
 
 vec3 calculateDirLightPbr(
@@ -54,7 +24,7 @@ vec3 calculateDirLightPbr(
 
   // calculate shadow
   const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
-  const float shadow = calcShadow2_5(u_shadowMap[shadowIndex], shadowPos);
+  const float shadow = calcShadow(u_shadowMap[shadowIndex], shadowPos);
 
   const vec3 N = normal;
   const vec3 V = viewDir;

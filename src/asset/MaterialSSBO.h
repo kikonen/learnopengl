@@ -25,9 +25,6 @@ struct MaterialSSBO {
     glm::vec4 u_diffuse; // 16
     glm::vec4 u_emission; // 16
 
-    // specular + shininess
-    glm::vec4 u_specular; // 16
-
     // G buffer: metalness, roughness, displacement, ambient-occlusion
     glm::vec4 u_metal; // 16
 
@@ -44,7 +41,6 @@ struct MaterialSSBO {
 
     GLuint64 u_metalMap;
 
-    float u_ambient;
     int u_pattern;
 
     float u_reflection;
@@ -60,6 +56,6 @@ struct MaterialSSBO {
 
     int pad3_1;
     int pad3_2;
-    //int pad3_3;
+    int pad3_3;
 };
 #pragma pack(pop)

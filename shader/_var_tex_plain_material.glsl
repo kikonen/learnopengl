@@ -15,11 +15,6 @@
     material.emission.a = 1.0;
   }
 
-  // if (material.specularTex.x > 0) {
-  //   sampler2D sampler = sampler2D(material.specularTex);
-  //   material.specular = vec4(texture(sampler, texCoord).xyz, material.specular.a);
-  // }
-
   if (material.metalMapTex.x > 0) {
     sampler2D sampler = sampler2D(material.metalMapTex);
     material.metal = texture(sampler, texCoord);

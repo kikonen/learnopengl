@@ -26,12 +26,12 @@ vec3 calculateSpotLight(
     diffuse = light.diffuse.rgb * (diff * material.diffuse.rgb);
 
     // specular
-    const float shininess = material.specular.a;
-    if (shininess > 0) {
-      vec3 reflectDir = reflect(-lightDir, normal);
-      float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-      specular = spec * light.diffuse.rgb * material.specular.rgb;
-    }
+    // const float shininess = material.specular.a;
+    // if (shininess > 0) {
+    //   vec3 reflectDir = reflect(-lightDir, normal);
+    //   float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+    //   specular = spec * light.diffuse.rgb * material.specular.rgb;
+    // }
 
     diffuse  *= intensity;
     specular *= intensity;

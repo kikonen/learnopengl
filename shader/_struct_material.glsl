@@ -3,15 +3,11 @@ struct Material {
   vec4 diffuse;
   vec4 emission;
 
-  // specular + shininess
-  vec4 specular;
-
   // G buffer: metalness, roughness, displacement, ambient-occlusion
   vec4 metal;
 
   uvec2 diffuseTex;
   uvec2 emissionTex;
-  //uvec2 specularTex;
   uvec2 normalMapTex;
 
   uvec2 dudvMapTex;
@@ -20,8 +16,6 @@ struct Material {
   uvec2 opacityMapTex;
 
   uvec2 metalMapTex;
-
-  float ambient;
 
   int pattern;
 
