@@ -321,64 +321,29 @@ entities:
     enabled: true
 materials:
   - name: pool_surface
-    type: texture
-    ns: 150
-    ka: [0.25, 0.25, 0.65, 1.0]
-    ks: [0.55, 0.55, 0.95, 1.0]
     kd: [0.55, 0.55, 0.95, 1.0]
-    map_bump: water_surface_512_normal.png
-    map_dudv: waterDUDV_512.png
+    map_bump: textures/water_surface_512_normal.png
+    map_dudv: textures/waterDUDV_512.png
     tiling: 2
     texture_spec:
       wrap: GL_REPEAT
   - name: pool_floor
-    type: texture
-    ns: 225
-    ka: [0.5, 0.5, 0.5, 1.0]
-    kd: [0.8, 0.8, 0.8, 1.0]
-    ks: [0.5, 0.5, 0.5, 1.0]
-    ke: [0.0, 0.0, 0.0, 1.0]
-    ni: 1.45
-    d: 1.0
-    illum: 2
-    xxmap_kd: textures/Marble White_VH_512.PNG
-    map_kd: tiles_1024.png
+    map_kd: textures/tiles_1024.png
     tiling: 8
     texture_spec:
       wrap: GL_REPEAT
   - name: terrain_grass_2
-    type: texture
-    ns: 50
-    ka: [0.6, 0.6, 0.6, 1.0]
-    ks: [0.6, 0.6, 0.6, 1.0]
-    map_kd: terrain_2/terrain_2_TX.jpg
-    map_ks: terrain_2/terrain_2_SpecLM.png
-    map_bump: terrain_2/terrain_2_TN.png
-    map_height: terrain_2/terrain_2_height.png
+    map_kd: textures/terrain_2/terrain_2_TX.jpg
+    map_ks: textures/terrain_2/terrain_2_SpecLM.png
+    map_bump: textures/terrain_2/terrain_2_TN.png
+    map_height: textures/terrain_2/terrain_2_height.png
   - name: linden_tree
-    type: sprite
-    ns: 0
-    ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.2, 0.2, 0.2, 1.0]
-    map_kd: linden_tree_512.png
-    map_bump: linden_tree_512_normal.png
+    map_kd: sprites/linden_tree_512.png
+    map_bump: sprites/linden_tree_512_normal.png
   - name: mirror
-    type: model
-    ns: 225.000000
-    ka: [0.500000, 0.500000, 0.500000, 1.0]
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.500000, 0.500000, 0.500000, 1.0]
-    ke: [0.000000, 0.000000, 0.000000, 1.0]
-    ni: 1.450000
-    d: 1.000000
-    illum: 2
     map_kd: textures/Marble White_VH_512.PNG
     reflection: 0.5
     refraction: 0.05
     refraction_ratio: [1.0, 1.52]
   - name: skeleton
-    type: sprite
-    ns: 20
-    ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.2, 0.2, 0.2, 1.0]
-    map_kd: skeleton.png
+    map_kd: sprites/skeleton.png

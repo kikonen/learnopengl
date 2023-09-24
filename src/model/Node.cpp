@@ -77,7 +77,9 @@ void Node::prepare(
         }
         if (m_type->m_entityType == EntityType::sprite) {
             flags |= ENTITY_SPRITE_BIT;
-            m_instance.m_shapeIndex = m_type->m_sprite.m_shapes[m_type->m_sprite.m_shapes.size() - 1].m_registeredIndex;
+            auto& shape = m_type->m_sprite.m_shapes[m_type->m_sprite.m_shapes.size() - 1];
+            m_instance.m_shapeIndex = shape.m_registeredIndex;
+            //m_instance.m_materialIndex = shape.m_materialIndex;
         }
         if (m_type->m_entityType == EntityType::skybox) {
             flags |= ENTITY_SKYBOX_BIT;

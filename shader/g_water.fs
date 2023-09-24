@@ -70,7 +70,7 @@ void main() {
   material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
-  #include var_tex_plain_material.glsl
+  #include var_tex_material.glsl
 
   const vec3 viewDir = normalize(u_mainViewWorldPos - fs_in.worldPos);
 

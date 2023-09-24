@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "ki/GL.h"
+
 // NOTE KI align 16 for UBO struct
 //
 // NOTE KI SSBO array alignment

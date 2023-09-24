@@ -35,55 +35,31 @@ entities:
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
-      specular: [0.7, 0.7, 0.6, 1.0]
+      intensity: 30000
       enabled: true
     enabled: true
 materials:
   - name: default
-    ns: 100.0
-    ks: [0.9, 0.9, 0.0, 1.0]
-    ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.8, 0.8, 0.0, 1.0]
     reflection: 0.05
   - name: teapot
-    ns: 100.0
-    ks: [0.9, 0.9, 0.0, 1.0]
-    ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.578, 0.578, 0.168, 1.0]
     reflection: 0.05
   - name: cow
-    ns: 100.0
-    ks: [0.9, 0.9, 0.0, 1.0]
-    ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.160, 0.578, 0.168, 1.0]
     reflection: 0.05
   - name: default_ball
-    ns: 100.0
-    ks: [0.9, 0.9, 0.0, 1.0]
-    ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.8, 0.8, 0.0, 1.0]
     reflection: 0.05
   - name: default_ball
-    ns: 100.0
-    ks: [0.9, 0.9, 0.0, 1.0]
-    ka: [0.3, 0.3, 0.0, 1.0]
     kd: [0.8, 0.8, 0.0, 1.0]
     reflection: 0.05
   - name: gold_ball
-    ns: 51.2
-    ks: [0.6283, 0.5559, 0.3661, 1.0]
-    ka: [0.2473, 0.1995, 0.0745, 1.0]
     kd: [0.7516, 0.6065, 0.2265, 1.0]
     reflection: 0.05
   - name: silver_ball
-    ns: 51.2
-    ks: [0.5083, 0.5083, 0.5083, 1.0]
-    ka: [0.1923, 0.1923, 0.1923, 1.0]
     kd: [0.5075, 0.5075, 0.5075, 1.0]
     reflection: 0.05
   - name: bronze_ball
-    ns: 25.6
-    ks: [0.3936, 0.2719, 0.1667, 1.0]
-    ka: [0.2125, 0.1275, 0.0540, 1.0]
     kd: [0.7140, 0.4284, 0.1814, 1.0]
     reflection: 0.05

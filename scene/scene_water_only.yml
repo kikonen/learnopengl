@@ -62,28 +62,14 @@ entities:
     enabled: true
 materials:
   - name: water_surface
-    type: texture
-    ns: 150
-    ka: [0.25, 0.25, 0.65, 1.0]
-    ks: [0.55, 0.55, 0.95, 1.0]
     kd: [0.55, 0.55, 0.95, 1.0]
-    map_bump: water_surface_512_normal.png
-    map_dudv: waterDUDV_512.png
+    map_bump: textures/water_surface_512_normal.png
+    map_dudv: textures/waterDUDV_512.png
     tiling: 2
     texture_spec:
       wrap: GL_REPEAT
   - name: pool_floor
-    type: texture
-    ns: 225
-    ka: [0.5, 0.5, 0.5, 1.0]
-    kd: [0.8, 0.8, 0.8, 1.0]
-    ks: [0.5, 0.5, 0.5, 1.0]
-    ke: [0.0, 0.0, 0.0, 1.0]
-    ni: 1.45
-    d: 1.0
-    illum: 2
-    xxmap_kd: textures/Marble White_VH_512.PNG
-    map_kd: tiles_1024.png
+    map_kd: textures/tiles_1024.png
     tiling: 8
     texture_spec:
       wrap: GL_REPEAT

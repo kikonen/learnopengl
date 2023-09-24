@@ -41,7 +41,7 @@ entities:
       outer_cutoff_angle: 25.0
       target_pos: [0, 0, 0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
-      specular: [1.0, 1.0, 0.9, 1.0]
+      intensity: 2a000
       enabled: true
     enabled: true
 materials:

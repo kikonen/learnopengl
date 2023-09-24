@@ -26,8 +26,6 @@ public:
 
     void prepare(const Assets& assets);
 
-    void loadTextures(const Assets& assets);
-
     std::vector<Shape>& getShapes() {
         return m_shapes;
     }

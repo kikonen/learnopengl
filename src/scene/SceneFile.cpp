@@ -740,7 +740,6 @@ void SceneFile::resolveSprite(
     }
 
     if (sprite) {
-        sprite->loadTextures(m_assets);
         type->m_sprite = *sprite;
     }
 }
@@ -1790,7 +1789,7 @@ void SceneFile::loadMaterial(
             fields.ks = true;
         }
         else if (k == "ke") {
-            material.ke = readRGBA(v);
+            material.ke = glm::vec4(readRGB(v), 1.f);
             fields.ke = true;
         }
         else if (k == "ni") {
@@ -2051,26 +2050,13 @@ void SceneFile::loadShape(
         const std::string k = util::toLower(key);
 
         if (k == "rotation") {
-            shape.rotation = readFloat(v);
+            shape.m_rotation = readFloat(v);
         }
-        else if (k == "map_kd") {
-            std::string line = v.as<std::string>();
-            shape.map_kd = resolveTexturePath(line);
-        }
-        else if (k == "map_ke") {
-            std::string line = v.as<std::string>();
-            shape.map_ke = resolveTexturePath(line);
-        }
-        else if (k == "map_ks") {
-            std::string line = v.as<std::string>();
-            shape.map_ks = resolveTexturePath(line);
-        }
-        else if (k == "map_bump") {
-            std::string line = v.as<std::string>();
-            shape.map_bump = resolveTexturePath(line);
-        }
-        else if (k == "map_bump_strength") {
-            shape.map_bump_strength = readFloat(v);
+        else if (k == "material") {
+            loadMaterial(
+                v,
+                shape.m_materialFields,
+                shape.m_material);
         }
         else {
             reportUnknown("shape_entry", k, v);
