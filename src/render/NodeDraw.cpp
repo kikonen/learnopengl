@@ -194,7 +194,7 @@ void NodeDraw::drawNodes(
             nullptr,
             [&typeSelector](const MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
             nodeSelector,
-            NodeDraw::KIND_BLEND);
+            NodeDraw::KIND_ALL);
 
         ctx.m_batch->flush(ctx);
 

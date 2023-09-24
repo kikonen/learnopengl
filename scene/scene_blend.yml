@@ -2,7 +2,7 @@
 name: Test
 skybox:
   program: g_skybox
-  material: skybox
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 entities:
   - name: Camera
     type: origo
@@ -98,7 +98,7 @@ entities:
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
-      specular: [0.7, 0.7, 0.6, 1.0]
+      intensity: 40000
       enabled: true
     enabled: true
 materials:

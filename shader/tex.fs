@@ -37,6 +37,10 @@ in VS_OUT {
 #endif
 } fs_in;
 
+layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradianceMap;
+layout(binding = UNIT_PREFILTER_MAP) uniform samplerCube u_prefilterMap;
+layout(binding = UNIT_BRDF_LUT) uniform sampler2D u_brdfLut;
+
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
 layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
 
@@ -50,6 +54,7 @@ SET_FLOAT_PRECISION;
 
 Material material;
 
+#include pbr.glsl
 #include fn_calculate_dir_light.glsl
 #include fn_calculate_point_light.glsl
 #include fn_calculate_spot_light.glsl
@@ -93,8 +98,7 @@ void main() {
 
   vec4 texColor = calculateLight(
     normal, viewDir, fs_in.worldPos,
-    fs_in.shadowIndex,
-    material);
+    fs_in.shadowIndex);
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND_OIT
