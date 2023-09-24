@@ -36,6 +36,8 @@ bool Renderer::setClosest(Node* closest, int tagIndex)
 
 bool Renderer::needRender(const RenderContext& ctx)
 {
+    if (!m_enabled) return false;
+
     if (!m_useFrameStep) return true;
     if (m_renderFrameStep <= 0) return true;
 

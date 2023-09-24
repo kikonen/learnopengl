@@ -136,6 +136,8 @@ void CubeMapRenderer::prepare(
 
 void CubeMapRenderer::updateView(const RenderContext& ctx)
 {
+    if (!isEnabled()) return;
+
     m_waterMapRenderer->updateView(ctx);
     m_mirrorMapRenderer->updateView(ctx);
 }
@@ -150,6 +152,8 @@ bool CubeMapRenderer::render(
     const RenderContext& parentCtx)
 {
     parentCtx.validateRender("cube_map");
+
+    if (!isEnabled()) return false;
 
     if (!m_cleared) {
         clearCubeMap(parentCtx, *m_prev.get());

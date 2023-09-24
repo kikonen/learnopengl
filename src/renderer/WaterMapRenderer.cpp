@@ -87,6 +87,8 @@ void WaterMapRenderer::prepare(
 
 void WaterMapRenderer::updateView(const RenderContext& ctx)
 {
+    if (!isEnabled()) return;
+
     updateReflectionView(ctx);
     updateRefractionView(ctx);
 }

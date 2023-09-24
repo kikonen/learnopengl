@@ -284,6 +284,7 @@ void Scene::updateView(const RenderContext& ctx)
     m_cubeMapRenderer->updateView(ctx);
     m_mirrorMapRenderer->updateView(ctx);
     m_waterMapRenderer->updateView(ctx);
+
     m_nodeDraw->updateView(ctx);
     m_windowBuffer->updateView(ctx);
 }
