@@ -127,6 +127,11 @@ public:
         return m_ranges[m_current];
     }
 
+    inline T& data() {
+        auto& range = current();
+        return (T&)m_data[range.m_baseOffset];
+    }
+
     //
     // @return true if current range is full
     //

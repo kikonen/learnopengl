@@ -17,38 +17,45 @@
 #include "registry/NodeRegistry.h"
 
 namespace {
-    constexpr size_t UNIFORM_BUFFER_OFFSET_ALIGNMENT = 256;
+}
+
+RenderData::RenderData()
+{
+    m_lightsUbo = std::make_unique<LightsUBO>();
 }
 
 void RenderData::prepare()
 {
-    m_matrices.createEmpty(sizeof(MatricesUBO), GL_DYNAMIC_STORAGE_BIT);
-    m_data.createEmpty(sizeof(DataUBO), GL_DYNAMIC_STORAGE_BIT);
-    m_bufferInfo.createEmpty(sizeof(BufferInfoUBO), GL_DYNAMIC_STORAGE_BIT);
-    m_clipPlanes.createEmpty(sizeof(ClipPlanesUBO), GL_DYNAMIC_STORAGE_BIT);
-    m_lights.createEmpty(sizeof(LightsUBO), GL_DYNAMIC_STORAGE_BIT);
+    int bufferAlignment;
+    glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &bufferAlignment);
 
+    m_matrices.prepare(bufferAlignment, false);
+    m_data.prepare(bufferAlignment, false);
+    m_bufferInfo.prepare(bufferAlignment, false);
+    m_clipPlanes.prepare(bufferAlignment, false);
+    m_lights.prepare(bufferAlignment, false);
+
+    // NOTE KI m_textures *NOT* needede any longer
+    // => 64bit index stored directly in material
     // Textures
     // OpenGL Superbible, 7th Edition, page 552
     // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
     // https://www.khronos.org/opengl/wiki/Bindless_Texture
     // https://www.geeks3d.com/20140704/tutorial-introduction-to-opengl-4-3-shader-storage-buffers-objects-ssbo-demo/        //glGenBuffers(1, &ssbo);
-    //glGenBuffers(1, &m_ubo.textures);
-    //glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ubo.textures);
-    //glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(TexturesUBO), &m_textures, GL_DYNAMIC_COPY);
-    //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    m_textures.prepare(1, false);
+    //m_textures.prepare(1, false);
 }
 
 void RenderData::bind()
 {
-    m_matrices.bind(UBO_MATRICES);
-    m_data.bind(UBO_DATA);
-    m_bufferInfo.bind(UBO_BUFFER_INFO);
-    m_clipPlanes.bind(UBO_CLIP_PLANES);
-    m_lights.bind(UBO_LIGHTS);
+    //MatricesUBO& ubo = m_matrices.data();
 
-    m_textures.m_buffer.bind(UBO_TEXTURES);
+    //m_matrices.bind(UBO_MATRICES, false, 1);
+    //m_data.bind(UBO_DATA, false, 1);
+    //m_bufferInfo.bind(UBO_BUFFER_INFO, false, 1);
+    //m_clipPlanes.bind(UBO_CLIP_PLANES, false, 1);
+    //m_lights.bind(UBO_LIGHTS, false, 1);
+
+    //m_textures.m_buffer.bind(UBO_TEXTURES);
 }
 
 void RenderData::update()
@@ -59,28 +66,40 @@ void RenderData::update()
 
 void RenderData::updateMatrices(MatricesUBO& data)
 {
-    //m_matrices.update(0, sizeof(MatricesUBO), &data);
-    m_matrices.update(0, sizeof(MatricesUBO), &data);
+    m_matrices.set(0, data);
+    m_matrices.flush();
+    m_matrices.bind(UBO_MATRICES, false, 1);
+    m_matrices.next(false, false);
 }
 
 void RenderData::updateData(DataUBO& data)
 {
-    m_data.update(0, sizeof(DataUBO), &data);
+    m_data.set(0, data);
+    m_data.flush();
+    m_data.bind(UBO_DATA, false, 1);
+    m_data.next(false, false);
 }
 
 void RenderData::updateBufferInfo(BufferInfoUBO& data)
 {
-    m_bufferInfo.update(0, sizeof(BufferInfoUBO), & data);
+    m_bufferInfo.set(0, data);
+    m_bufferInfo.flush();
+    m_bufferInfo.bind(UBO_BUFFER_INFO, false, 1);
+    m_bufferInfo.next(false, false);
 }
 
 void RenderData::updateClipPlanes(ClipPlanesUBO& data)
 {
-    m_clipPlanes.update(0, sizeof(ClipPlanesUBO), &data);
+    m_clipPlanes.set(0, data);
+    m_clipPlanes.flush();
+    m_clipPlanes.bind(UBO_CLIP_PLANES, false, 1);
+    m_clipPlanes.next(false, false);
 }
 
 void RenderData::updateLights(Registry* registry, bool useLight)
 {
-    LightsUBO lightsUbo{};
+    LightsUBO& lightsUbo = *m_lightsUbo;
+
     if (!useLight) {
         lightsUbo.u_dirCount = 0;
         lightsUbo.u_pointCount = 0;
@@ -132,7 +151,10 @@ void RenderData::updateLights(Registry* registry, bool useLight)
         }
     }
 
-    m_lights.update(0, sizeof(LightsUBO), &lightsUbo);
+    m_lights.set(0, lightsUbo);
+    m_lights.flush();
+    m_lights.bind(UBO_LIGHTS, false, 1);
+    m_lights.next(false, false);
 }
 
 void RenderData::updateImageTextures()

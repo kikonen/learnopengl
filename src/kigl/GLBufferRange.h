@@ -22,7 +22,7 @@ struct GLBufferRange {
     }
 
     inline size_t offset(size_t idx) const {
-        return m_baseIndex + (m_entrySize * idx);
+        return m_baseOffset + (m_entrySize * idx);
     }
 
     inline bool full() const {
