@@ -71,7 +71,7 @@ entities:
   - name: Player cube map 1
     type: origo
     parent_id: [auto, player]
-    pos: [0, 0, 0]
+    pos: [0, 0, 1]
     render_flags:
       cube_map: true
     enabled: true
