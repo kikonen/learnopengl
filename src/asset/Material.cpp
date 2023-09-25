@@ -264,7 +264,7 @@ void Material::loadChannelTexture(
         name,
         sourceTextures,
         defaults,
-        true,
+        false,
         textureSpec);
 
     future.wait();

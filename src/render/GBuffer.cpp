@@ -37,7 +37,7 @@ void GBuffer::updateView(const RenderContext& ctx)
                     FrameBufferAttachment::getGBufferAlbedoHdr(GL_COLOR_ATTACHMENT0),
                     // NOTE KI no specular in metal workflow
                     //FrameBufferAttachment::getGBufferSpecularHdr(GL_COLOR_ATTACHMENT1),
-                    FrameBufferAttachment::getGBufferEmissionHdr(GL_COLOR_ATTACHMENT1),
+                    FrameBufferAttachment::getGBufferEmission(GL_COLOR_ATTACHMENT1),
                     //FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT3),
                     FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT2),
                     FrameBufferAttachment::getGBufferMetal(GL_COLOR_ATTACHMENT3),
