@@ -70,7 +70,7 @@ void main() {
   material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
-  #include var_tex_plain_material.glsl
+  #include var_tex_material.glsl
 
   const vec3 viewDir = normalize(u_mainViewWorldPos - fs_in.worldPos);
 
@@ -145,10 +145,11 @@ void main() {
   vec4 origDiffuse = material.diffuse;
   material.diffuse = mix(material.diffuse, mixColor, 0.9);
 
-  vec4 texColor = material.diffuse;
+  vec4 color = material.diffuse;
 
-  o_fragColor = vec4(texColor.xyz, material.ambient);
-  //o_fragSpecular = material.specular;
+  clamp_color(color);
+
+  o_fragColor = vec4(color.xyz, 1.0);
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;
 

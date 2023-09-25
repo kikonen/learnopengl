@@ -154,19 +154,13 @@ entities:
     enabled: true
 materials:
   - name: fur_base
-    ns: 51.2
-    ka: [0.2923, 0.2923, 0.2923, 1.0]
     kd: [0.5075, 0.5075, 0.5075, 1.0]
-    ks: [0.5083, 0.5083, 0.5083, 1.0]
     map_kd: textures/Dirt_vh_1024.png
     tiling: 1
     texture_spec:
       wrap: GL_REPEAT
   - name: fur
-    ns: 1
-    ka: [0.4923, 0.4923, 0.4923, 1.0]
     kd: [0.5075, 0.5075, 0.5075, 1.0]
-    ks: [0.1, 0.1, 0.1, 1.0]
     map_kd: textures/Dirt_vh_1024.png
     map_noise: textures/noise2_256.png
     tiling: 1

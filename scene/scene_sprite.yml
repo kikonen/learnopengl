@@ -98,7 +98,7 @@ entities:
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
-      specular: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
       enabled: true
     enabled: true
   - name: Cube map
@@ -121,57 +121,32 @@ entities:
     enabled: true
 materials:
   - name: wood_floor
-    ns: 225.000000
-    type: model
-    ka: [0.400000, 0.400000, 0.400000, 1.0]
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.500000, 0.500000, 0.500000, 1.0]
-    ni: 1.450000
-    d: 1.000000
-    illum: 2
-    map_kd: textures/wood_1024.png
-    reflection: 0.1
+    map_pbr: textures\Planks 09 [8K]
     tiling: 60
     texture_spec:
       wrap: GL_REPEAT
   - name: skeleton
-    type: sprite
-    ns: 20
-    ka: [0.1, 0.1, 0.1, 1.0]
-    ks: [0.2, 0.2, 0.2, 1.0]
-    map_kd: skeleton/skeleton_front.png
+    map_kd: sprites/skeleton/skeleton_front.png
   - name: skeleton_front
-    type: sprite
-    ns: 20
-    ka: [0.1, 0.1, 0.1, 1.0]
-    ks: [0.2, 0.2, 0.2, 1.0]
-    map_kd: skeleton/skeleton_front.png
+    map_kd: sprites/skeleton/skeleton_front.png
   - name: skeleton_back
-    type: sprite
-    ns: 20
-    ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.2, 0.2, 0.2, 1.0]
-    map_kd: skeleton/skeleton_back.png
+    map_kd: sprites/skeleton/skeleton_back.png
   - name: skeleton_left
-    type: sprite
-    ns: 20
-    ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.2, 0.2, 0.2, 1.0]
-    map_kd: skeleton/skeleton_left.png
+    map_kd: sprites/skeleton/skeleton_left.png
   - name: skeleton_right
-    type: sprite
-    ns: 20
-    ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.2, 0.2, 0.2, 1.0]
-    map_kd: skeleton/skeleton_right.png
+    map_kd: sprites/skeleton/skeleton_right.png
 sprites:
   - name: skeleton
     shapes:
       - rotation: 0
-        map_kd: skeleton/skeleton_front.png
+        material:
+          map_kd: sprites/skeleton/skeleton_front.png
       - rotation: 90
-        map_kd: skeleton/skeleton_right.png
+        material:
+          map_kd: sprites/skeleton/skeleton_right.png
       - rotation: 180
-        map_kd: skeleton/skeleton_back.png
+        material:
+          map_kd: sprites/skeleton/skeleton_back.png
       - rotation: 270
-        map_kd: skeleton/skeleton_left.png
+        material:
+          map_kd: sprites/skeleton/skeleton_left.png

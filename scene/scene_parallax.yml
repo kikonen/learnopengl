@@ -47,7 +47,7 @@ entities:
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
-      specular: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
       enabled: true
     enabled: true
   - name: Cube map - mirror_ball
@@ -177,55 +177,22 @@ entities:
     enabled: true
 materials:
   - name: giant_woodbox
-    ns: 225.000000
-    type: model
-    ka: [0.400000, 0.400000, 0.400000, 1.0]
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.500000, 0.500000, 0.500000, 1.0]
-    ni: 1.450000
-    d: 1.000000
-    illum: 2
     map_kd: textures/wood_1024.png
     reflection: 0.1
     tiling: 60
     texture_spec:
       wrap: GL_REPEAT
   - name: brickwall
-    ns: 225.000000
-    type: model
-    ka: [0.500000, 0.500000, 0.500000, 1.0]
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.500000, 0.500000, 0.500000, 1.0]
-    ke: [0.000000, 0.000000, 0.000000, 1.0]
-    ni: 1.450000
-    d: 1.000000
-    illum: 2
     map_kd: textures/brickwall_1024.png
     map_bump: textures/brickwall_1024_normal.png
     xreflection: 0.2
     parallax_depth: 0.02
   - name: brickwall2
-    ns: 225.000000
-    type: texture
-    ka: [0.500000, 0.500000, 0.500000, 1.0]
     kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.500000, 0.500000, 0.500000, 1.0]
-    ke: [0.000000, 0.000000, 0.000000, 1.0]
-    ni: 1.450000
-    d: 1.000000
-    illum: 2
-    map_kd: bricks2.jpg
-    map_bump: bricks2_normal.jpg
+    map_kd: textures/bricks2.jpg
+    map_bump: textures/bricks2_normal.jpg
     xreflection: 0.2
     parallax_depth: 0.07
   - name: woodwall
-    ns: 225.000000
-    type: model
-    ka: [0.500000, 0.500000, 0.500000, 1.0]
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.500000, 0.500000, 0.500000, 1.0]
-    ni: 1.450000
-    d: 1.000000
-    illum: 2
     map_kd: textures/wood_1024.png
     reflection: 0.4

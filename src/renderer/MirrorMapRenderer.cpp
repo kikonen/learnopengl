@@ -95,6 +95,8 @@ void MirrorMapRenderer::prepare(
 
 void MirrorMapRenderer::updateView(const RenderContext& ctx)
 {
+    if (!isEnabled()) return;
+
     m_waterMapRenderer->updateView(ctx);
     if (m_mirrorMapRenderer) {
         m_mirrorMapRenderer->updateView(ctx);

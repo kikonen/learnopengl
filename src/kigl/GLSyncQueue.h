@@ -118,13 +118,18 @@ public:
         //*ptr = entry;
         memcpy(ptr, &entry, sizeof(T));
 
-        if (idx > range.m_usedCount) {
-            range.m_usedCount = idx;
+        if (idx >= range.m_usedCount) {
+            range.m_usedCount = idx + 1;
         }
     }
 
     inline GLBufferRange& current() {
         return m_ranges[m_current];
+    }
+
+    inline T& data() {
+        auto& range = current();
+        return (T&)m_data[range.m_baseOffset];
     }
 
     //

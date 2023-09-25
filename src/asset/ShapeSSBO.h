@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "ki/GL.h"
+
 // NOTE KI align 16 for UBO struct
 //
 // NOTE KI SSBO array alignment
@@ -22,15 +24,10 @@
 //
 #pragma pack(push, 1)
 struct ShapeSSBO {
-    // NOTE KI "tex index", not "unit index"
-    GLuint64 u_diffuseTex;
-    GLuint64 u_emissionTex;
-    //GLuint64 u_specularTex;
-    GLuint64 u_normalMap;
+    float u_rotation;
 
-    //float u_mapBumpStrength;
-
-    int pad1;
-    int pad2;
+    int pad2_1;
+    int pad2_2;
+    int pad2_3;
 };
 #pragma pack(pop)

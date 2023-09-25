@@ -50,12 +50,12 @@ void main() {
   material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
-  #include var_tex_plain_material.glsl
+  #include var_tex_material.glsl
 
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
   entity = u_entities[fs_in.entityIndex];
 
-  #include var_tex_plain_material_normal.glsl
+  #include var_tex_material_normal.glsl
 
 #ifdef USE_NORMAL_PATTERN
   if (material.pattern == 1) {
@@ -73,8 +73,7 @@ void main() {
 
   vec4 texColor = material.diffuse;
 
-  o_fragColor = vec4(texColor.xyz, material.ambient);
-  //o_fragSpecular = material.specular;
+  o_fragColor = vec4(texColor.xyz, 1.0);
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;
 

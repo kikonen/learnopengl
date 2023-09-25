@@ -66,7 +66,7 @@ void main() {
   material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
-  #include var_tex_sprite_material.glsl
+  #include var_tex_material.glsl
 
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
 
@@ -80,7 +80,7 @@ void main() {
 #endif
 #endif
 
-  #include var_tex_sprite_material_normal.glsl
+  #include var_tex_material_normal.glsl
 
 #ifdef USE_NORMAL_PATTERN
   if (material.pattern == 1) {

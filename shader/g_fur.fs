@@ -33,7 +33,7 @@ void main() {
   material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
-  #include var_tex_plain_material.glsl
+  #include var_tex_material.glsl
 
   sampler2D sampler = sampler2D(material.noiseMapTex);
   vec4 noiseColor = texture(sampler, texCoord * 8.0);
@@ -59,8 +59,7 @@ void main() {
 
   texColor *= vec4(1.0, 1.0, 1.0, t);
 
-  o_fragColor = vec4(texColor.xyz, material.ambient);
-  //o_fragSpecular = material.specular;
+  o_fragColor = vec4(texColor.xyz, 1.0);
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;
 

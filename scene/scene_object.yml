@@ -36,7 +36,7 @@ entities:
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
-      specular: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
       enabled: true
     enabled: true
   - name: Cube map
@@ -59,16 +59,7 @@ entities:
     enabled: true
 materials:
   - name: wood_floor
-    ns: 225.000000
-    type: model
-    ka: [0.400000, 0.400000, 0.400000, 1.0]
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.500000, 0.500000, 0.500000, 1.0]
-    ni: 1.450000
-    d: 1.000000
-    illum: 2
-    map_kd: textures/wood_1024.png
-    reflection: 0.1
+    map_pbr: textures\Planks 09 [8K]
     tiling: 60
     texture_spec:
       wrap: GL_REPEAT

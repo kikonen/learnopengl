@@ -53,9 +53,9 @@ int ObjectIdRenderer::getObjectId(
 
 
     {
-        m_idBuffer->bind(ctx);
-
-        glNamedFramebufferReadBuffer(*m_idBuffer, GL_COLOR_ATTACHMENT0);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, *m_idBuffer);
+        glReadBuffer(GL_COLOR_ATTACHMENT0);
+        //glNamedFramebufferReadBuffer(*m_idBuffer, GL_COLOR_ATTACHMENT0);
 
         //int readFormat;
         //glGetFramebufferParameteriv(GL_FRAMEBUFFER, GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);

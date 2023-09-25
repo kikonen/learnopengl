@@ -5,7 +5,7 @@
 
 #include "kigl/GLSyncQueue.h"
 
-constexpr int RENDER_DATA_QUEUE_SIZE = 16;
+constexpr int RENDER_DATA_BUFFER_COUNT = 16;
 
 class Registry;
 
@@ -18,7 +18,7 @@ struct TesturUBO;
 
 class RenderData {
 public:
-    RenderData() = default;
+    RenderData();
 
     void prepare();
     void bind();
@@ -37,11 +37,13 @@ private:
 public:
 
 private:
-    GLBuffer m_matrices{ "matricesUBO" };
-    GLBuffer m_data{ "dataUBO" };
-    GLBuffer m_bufferInfo{ "bufferInfoUBO" };
-    GLBuffer m_clipPlanes{ "clipPlanesUBO" };
-    GLBuffer m_lights{ "lightsUBO" };
+    std::unique_ptr<LightsUBO> m_lightsUbo;
+
+    GLSyncQueue<MatricesUBO, false> m_matrices{ "matrices", 1, RENDER_DATA_BUFFER_COUNT, false };
+    GLSyncQueue<DataUBO, false> m_data{ "dataUBO", 1, RENDER_DATA_BUFFER_COUNT, false };
+    GLSyncQueue<BufferInfoUBO, false> m_bufferInfo{ "bufferInfoUBO", 1, RENDER_DATA_BUFFER_COUNT, false };
+    GLSyncQueue<ClipPlanesUBO, false> m_clipPlanes{ "cliplanesUBO", 1, RENDER_DATA_BUFFER_COUNT, false };
+    GLSyncQueue<LightsUBO, false> m_lights{ "lightsUBO", 1, RENDER_DATA_BUFFER_COUNT, false };
 
     GLSyncQueue<TextureUBO, true> m_textures{ "textures", 1, MAX_TEXTURE_COUNT, false };
     int m_imageTextureLevel = -1;

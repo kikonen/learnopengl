@@ -10,8 +10,6 @@ namespace {
 
     std::mutex type_id_lock{};
 
-    TextureSpec textureSpec;
-
     int nextID()
     {
         std::lock_guard<std::mutex> lock(type_id_lock);
@@ -68,18 +66,4 @@ void Sprite::prepare(const Assets& assets)
 {
     if (m_prepared) return;
     m_prepared = true;
-
-    for (auto& shape : m_shapes) {
-        shape.prepare(assets);
-    }
-}
-
-void Sprite::loadTextures(const Assets& assets)
-{
-    if (m_loaded) return;
-    m_loaded = true;
-
-    for (auto& shape : m_shapes) {
-        shape.loadTextures(assets);
-    }
 }

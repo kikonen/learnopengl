@@ -336,6 +336,7 @@
     <ClInclude Include="src\asset\ChannelTexture.h" />
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
+    <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\kigl\GLFrameBufferHandle.h" />
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\FrustumNew.h" />

@@ -214,53 +214,20 @@ entities:
     enabled: true
 materials:
   - name: window_2
-    ns: 225.000000
-    type: model
-    ka: [0.500000, 0.500000, 0.500000, 1.0]
     kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.500000, 0.500000, 0.500000, 1.0]
-    ke: [0.000000, 0.000000, 0.000000, 1.0]
-    ni: 1.450000
-    d: 1.000000
-    illum: 2
     map_kd: textures/Window_Stained_Glass_lg_HI_256.PNG
   - name: wood_floor
-    ns: 225.000000
-    type: asset
-    ka: [0.400000, 0.400000, 0.400000, 1.0]
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.500000, 0.500000, 0.500000, 1.0]
-    ni: 1.450000
-    d: 1.000000
-    illum: 2
-    map_kd: textures/wood_1024.png
-    reflection: 0.1
+    map_pbr: textures\Planks 09 [8K]
     tiling: 60
     texture_spec:
       wrap: GL_REPEAT
   - name: woodwall
-    ns: 225.000000
-    type: asset
-    ka: [0.500000, 0.500000, 0.500000, 1.0]
     kd: [0.800000, 0.800000, 0.800000, 1.0]
-    ks: [0.500000, 0.500000, 0.500000, 1.0]
-    ni: 1.450000
-    d: 1.000000
-    illum: 2
     map_kd: textures/wood_1024.png
     reflection: 0.4
   - name: linden_tree
-    type: sprite
-    ns: 0
-    ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.2, 0.2, 0.2, 1.0]
-    map_kd: linden_tree_512.png
-    map_bump: linden_tree_512_normal.png
-    xxke: [0.0, 0.01, 0.0, 1.0]
+    map_kd: sprites/linden_tree_512.png
+    map_bump: sprites/linden_tree_512_normal.png
   - name: skeleton
-    type: sprite
-    ns: 20
-    ka: [0.7, 0.7, 0.7, 1.0]
-    ks: [0.2, 0.2, 0.2, 1.0]
-    map_kd: skeleton.png
-    ke: [0.0, 0.1, 0.0, 1.0]
+    map_kd: sprites/skeleton.png
+    ke: [0.0, 0.1, 0.0]

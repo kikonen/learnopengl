@@ -55,7 +55,7 @@ void main() {
   material = u_materials[fs_in.materialIndex];
 
   #include var_tex_coord.glsl
-  #include var_tex_sprite_material.glsl
+  #include var_tex_material.glsl
 
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
 
@@ -69,7 +69,7 @@ void main() {
 #endif
 #endif
 
-  #include var_tex_sprite_material_normal.glsl
+  #include var_tex_material_normal.glsl
 
 //  if (material.pattern == 1) {
 //    normal = calculateNormalPattern(fs_in.vertexPos, normal);
@@ -83,7 +83,9 @@ void main() {
   #include var_calculate_cube_map_diffuse.glsl
 #endif
 
-  vec4 texColor = material.diffuse;
+  vec4 color = material.diffuse;
+
+  clamp_color(color);
 
   // if (!gl_FrontFacing) {
   //   float alpha = texColor.a;
@@ -91,8 +93,7 @@ void main() {
   //   texColor.a = alpha;
   // }
 
-  o_fragColor = vec4(texColor.xyz, material.ambient);
-  //o_fragSpecular = material.specular;
+  o_fragColor = vec4(color.xyz, 1.0);
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;
 
