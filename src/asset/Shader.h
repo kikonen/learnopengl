@@ -142,6 +142,9 @@ constexpr unsigned int TEXTURE_UNIT_COUNT = 64;
 constexpr unsigned int FIRST_TEXTURE_UNIT = 0;
 constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_UNIT_COUNT - 1;
 
+constexpr unsigned int STENCIL_HIGHLIGHT = 1;
+constexpr unsigned int STENCIL_OIT = 2;
+
 #define ASSERT_TEX_INDEX(texIndex) assert(texIndex >= 0 && texIndex < MAX_TEXTURE_COUNT)
 
 #define ASSERT_TEX_UNIT(unitIndex) assert(unitIndex >= FIRST_TEXTURE_UNIT && unitIndex <= LAST_TEXTURE_UNIT)

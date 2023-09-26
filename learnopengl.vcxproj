@@ -337,6 +337,7 @@
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
+    <ClInclude Include="src\kigl\GLStencilMode.h" />
     <ClInclude Include="src\query\Query.h" />
     <ClInclude Include="src\kigl\GLFrameBufferHandle.h" />
     <ClInclude Include="src\asset\Frustum.h" />

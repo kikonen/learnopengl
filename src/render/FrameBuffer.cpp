@@ -81,6 +81,9 @@ void FrameBuffer::prepare()
             else if (att.shared->type == FrameBufferAttachmentType::depth_texture) {
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
             }
+            else if (att.shared->type == FrameBufferAttachmentType::depth_stencil_texture) {
+                glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
+            }
         } else if (att.type == FrameBufferAttachmentType::draw_buffer) {
             if (att.useDrawBuffer) {
                 att.drawBufferIndex = m_drawBuffers.size();
@@ -126,6 +129,29 @@ void FrameBuffer::prepare()
             glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
 
             KI_INFO(fmt::format("CREATE_DEPTH: FBO={}, DEPTH={}", str(), att.textureID));
+
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
+            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
+
+            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
+
+            {
+                glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
+            }
+
+            m_hasDepth = true;
+            m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
+        }
+        else if (att.type == FrameBufferAttachmentType::depth_stencil_texture) {
+            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
+            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
+
+            KI_INFO(fmt::format("CREATE_DEPTH_STENCIL: FBO={}, DEPTH={}", str(), att.textureID));
 
             glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
 
@@ -411,7 +437,7 @@ void FrameBuffer::invalidateAll()
 FrameBufferAttachment* FrameBuffer::getDepthAttachment()
 {
     for (auto& att : m_spec.attachments) {
-        if (att.attachment == GL_DEPTH_ATTACHMENT) {
+        if (att.attachment == GL_DEPTH_ATTACHMENT || att.attachment == GL_DEPTH_STENCIL_ATTACHMENT) {
             return &att;
         }
     }

@@ -8,6 +8,7 @@
 #include "ki/GL.h"
 
 #include "kigl/GLBlendMode.h"
+#include "kigl/GLStencilMode.h"
 
 class GLState final
 {
@@ -47,7 +48,13 @@ public:
     void clearViewport();
 
     GLBlendMode setBlendMode(const GLBlendMode& mode);
-    void clearBlendMode();
+    void invalidateBlendMode();
+
+    void enableStencil(const GLStencilMode& mode);
+    void disableStencil();
+
+    void setStencilMode(const GLStencilMode& mode);
+    void invalidateStencilMode();
 
     GLenum setDepthFunc(const GLenum func);
     GLenum setDepthMask(const GLenum mask);
@@ -73,6 +80,8 @@ private:
     glm::vec4 m_viewport{ 0.f };
 
     GLBlendMode m_blendMode{ 0, 0, 0, 0, 0 };
+
+    GLStencilMode m_stencilMode{};
 
     GLenum m_depthFunc = -1;
     GLenum m_depthMask = -1;

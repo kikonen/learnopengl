@@ -21,4 +21,12 @@ struct GLBlendMode
     bool operator!=(const GLBlendMode& o) {
         return !operator==(o);
     }
+
+    void apply() {
+        glBlendEquation(blendEquation);
+
+        // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+    }
 };

@@ -9,6 +9,7 @@ enum class FrameBufferAttachmentType {
     draw_buffer,
     texture,
     depth_texture,
+    depth_stencil_texture,
     rbo,
     shadow,
 };
@@ -103,10 +104,11 @@ struct FrameBufferAttachment {
     static FrameBufferAttachment getEffectTexture(GLenum attachment);
     static FrameBufferAttachment getEffectTextureHdr(GLenum attachment);
 
-    static FrameBufferAttachment getRBODepthStencil();
-    static FrameBufferAttachment getRBODepth();
+    static FrameBufferAttachment getDepthStencilRbo();
+    static FrameBufferAttachment getDepthRbo();
 
     static FrameBufferAttachment getDepthTexture();
+    static FrameBufferAttachment getDepthStencilTexture();
     static FrameBufferAttachment getShadow();
 
     static FrameBufferAttachment getOITAccumulatorTexture(GLenum attachment);

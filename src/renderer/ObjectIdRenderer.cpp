@@ -122,7 +122,7 @@ void ObjectIdRenderer::updateView(const RenderContext& ctx)
             w, h,
             {
                 FrameBufferAttachment::getObjectId(),
-                FrameBufferAttachment::getRBODepth(),
+                FrameBufferAttachment::getDepthRbo(),
             }
         });
 

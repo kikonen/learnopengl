@@ -46,7 +46,7 @@ void EffectBuffer::updateView(const RenderContext& ctx)
                 // NOTE KI depth needed since there may be "non gbuffer" render steps
                 // NOTE DepthTexture instead of RBODepth to allow *copy* instead of *blit*
                 //FrameBufferAttachment::getRBODepth(),
-                FrameBufferAttachment::getDepthTexture()
+                FrameBufferAttachment::getDepthStencilTexture()
             }
             });
 

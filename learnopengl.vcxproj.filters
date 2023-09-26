@@ -1010,6 +1010,9 @@
     <ClInclude Include="src\query\TimeElapsedQuery.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\kigl\GLStencilMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

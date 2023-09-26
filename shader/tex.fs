@@ -96,7 +96,7 @@ void main() {
   #include var_calculate_cube_map_diffuse.glsl
 #endif
 
-  vec4 texColor = calculateLight(
+  vec4 texColor = calculateLightPbr(
     normal, viewDir, fs_in.worldPos,
     fs_in.shadowIndex);
 

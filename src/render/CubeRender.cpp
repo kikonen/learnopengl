@@ -23,7 +23,7 @@ void CubeRender::render(
                 size, size,
                 {
                     FrameBufferAttachment::getDrawBuffer(),
-                    FrameBufferAttachment::getRBODepth(),
+                    FrameBufferAttachment::getDepthRbo(),
                 }
             });
         captureFBO.reset(buffer);

@@ -24,6 +24,7 @@ void GLState::clear() {
     m_viewport = { 0.f, 0.f, 0.f, 0.f };
 
     m_blendMode = { 0, 0, 0, 0, 0 };
+    m_stencilMode = { 0, 0, 0, 0, 0, 0, 0 };
 
     m_depthFunc = -1;
     m_depthMask = -1;
@@ -181,25 +182,45 @@ void GLState::clearViewport()
 
 GLBlendMode GLState::setBlendMode(const GLBlendMode& mode)
 {
-    GLBlendMode old= m_blendMode;
+    GLBlendMode old = m_blendMode;
 
     if (m_blendMode != mode)
     {
         m_blendMode = mode;
-
-        glBlendEquation(m_blendMode.blendEquation);
-
-        // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendFuncSeparate(mode.srcRGB, mode.dstRGB, mode.srcAlpha, mode.dstAlpha);
+        m_blendMode.apply();
     }
 
     return old;
 }
 
-void GLState::clearBlendMode()
+void GLState::invalidateBlendMode()
 {
     m_blendMode = { 0, 0, 0, 0 };
+}
+
+void GLState::enableStencil(const GLStencilMode& mode)
+{
+    setStencilMode(mode);
+    setEnabled(GL_STENCIL_TEST, true);
+}
+
+void GLState::disableStencil()
+{
+    setEnabled(GL_STENCIL_TEST, false);
+}
+
+void GLState::setStencilMode(const GLStencilMode& mode)
+{
+    if (m_stencilMode != mode)
+    {
+        m_stencilMode = mode;
+        m_stencilMode.apply();
+    }
+}
+
+void GLState::invalidateStencilMode()
+{
+    m_stencilMode = { 0, 0, 0, 0, 0, 0, 0 };
 }
 
 GLenum GLState::setDepthFunc(const GLenum func)

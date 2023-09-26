@@ -178,6 +178,8 @@ void NodeDraw::drawNodes(
     // NOTE KI OIT after *forward* pass to allow using depth texture from them
     if (ctx.m_assets.effectOitEnabled)
     {
+        ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT));
+
         m_oitBuffer.bind(ctx);
         m_oitBuffer.clearAll();
 
@@ -204,10 +206,10 @@ void NodeDraw::drawNodes(
         // ex. if not done OIT vs. bloom works strangely
         glBlendFunci(0, GL_ONE, GL_ONE);
         glBlendFunci(1, GL_ONE, GL_ONE);
-        ctx.m_state.clearBlendMode();
+        ctx.m_state.invalidateBlendMode();
         ctx.m_state.setDepthMask(oldDepthMask);
 
-        m_oitBuffer.bindTexture(ctx);
+        ctx.m_state.disableStencil();
     }
 
     activeBuffer->bind(ctx);
@@ -223,6 +225,7 @@ void NodeDraw::drawNodes(
             nodeSelector);
         ctx.m_batch->flush(ctx);
     }
+
 
     // pass 3 - blend screenspace effects
     if (ctx.m_allowBlend)
@@ -241,10 +244,20 @@ void NodeDraw::drawNodes(
             }
 
             if (ctx.m_assets.effectOitEnabled) {
+                ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_OIT));
+
                 activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
+                m_timeElapsedQuery.begin();
+
+                m_oitBuffer.bindTexture(ctx);
                 m_blendOitProgram->bind(ctx.m_state);
+
                 m_textureQuad.draw(ctx.m_state);
+
+                m_timeElapsedQuery.end();
+
+                ctx.m_state.disableStencil();
             }
 
             ctx.m_state.setEnabled(GL_BLEND, false);
@@ -346,7 +359,9 @@ void NodeDraw::drawNodes(
                 }
             }
         }
+    }
 
+    {
         // pass 5 - debug info
         drawDebug(ctx, targetBuffer);
     }
@@ -360,6 +375,10 @@ void NodeDraw::drawNodes(
         }
         m_effectBuffer.invalidateAll();
         m_gBuffer.invalidateAll();
+    }
+
+    if (m_timeElapsedQuery.count() % 1000 == 0) {
+        KI_INFO_OUT(fmt::format("AVG: {:.3} ms", m_timeElapsedQuery.avg(true) * 1.0e-6));
     }
 }
 

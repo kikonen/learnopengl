@@ -16,6 +16,7 @@
 #include "render/Batch.h"
 #include "render/NodeDraw.h"
 
+#include "kigl/GLStencilMode.h"
 
 
 void NodeRenderer::prepare(
@@ -62,7 +63,7 @@ void NodeRenderer::updateView(const RenderContext& ctx)
                     // NOTE KI alpha NOT needed
                     FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
                     // NOTE KI depth/stencil needed only for highlight/selecction
-                    FrameBufferAttachment::getRBODepthStencil(),
+                    FrameBufferAttachment::getDepthStencilRbo(),
                 }
             });
 
@@ -117,12 +118,7 @@ void NodeRenderer::renderStencil(
 
     targetBuffer->bind(ctx);
 
-    ctx.m_state.setEnabled(GL_STENCIL_TEST, true);
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-    glStencilFunc(GL_ALWAYS, 1, 0xFF);
-    glStencilMask(0xFF);
+    ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_HIGHLIGHT));
 
     // draw entity data mask
     {
@@ -143,9 +139,7 @@ void NodeRenderer::renderStencil(
     }
     ctx.m_batch->flush(ctx);
 
-    ctx.m_state.setEnabled(GL_STENCIL_TEST, false);
-
-    glStencilMask(0x00);
+    ctx.m_state.disableStencil();
 }
 
 // Render highlight over stencil masked nodes
@@ -158,12 +152,8 @@ void NodeRenderer::renderHighlight(
 
     targetBuffer->bind(ctx);
 
-    ctx.m_state.setEnabled(GL_STENCIL_TEST, true);
     ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
-
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    glStencilMask(0x00);
+    ctx.m_state.enableStencil(GLStencilMode::except(STENCIL_HIGHLIGHT));
 
     // draw selection color (scaled a bit bigger)
     {
@@ -189,5 +179,5 @@ void NodeRenderer::renderHighlight(
     glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
     ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
-    ctx.m_state.setEnabled(GL_STENCIL_TEST, false);
+    ctx.m_state.disableStencil();
 }

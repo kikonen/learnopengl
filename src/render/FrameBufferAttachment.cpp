@@ -352,6 +352,29 @@ FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthText
     return spec;
 }
 
+FrameBufferAttachment FrameBufferAttachment::FrameBufferAttachment::getDepthStencilTexture()
+{
+    FrameBufferAttachment spec;
+    spec.type = FrameBufferAttachmentType::depth_stencil_texture;
+    spec.internalFormat = GL_DEPTH24_STENCIL8;
+    spec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
+    spec.clearType = ClearType::DEPTH_STENCIL;
+
+    spec.minFilter = GL_NEAREST;
+    spec.magFilter = GL_NEAREST;
+
+    spec.textureWrapS = GL_CLAMP_TO_BORDER;
+    spec.textureWrapT = GL_CLAMP_TO_BORDER;
+
+    spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
+
+    // NOTE KI (depth, clear, _, _)
+    spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
+    spec.clearMask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+
+    return spec;
+}
+
 FrameBufferAttachment FrameBufferAttachment::getShadow()
 {
     // https://stackoverflow.com/questions/22419682/glsl-sampler2dshadow-and-shadow2d-clarification
@@ -381,7 +404,7 @@ FrameBufferAttachment FrameBufferAttachment::getShadow()
     return spec;
 }
 
-FrameBufferAttachment FrameBufferAttachment::getRBODepthStencil()
+FrameBufferAttachment FrameBufferAttachment::getDepthStencilRbo()
 {
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::rbo;
@@ -397,7 +420,7 @@ FrameBufferAttachment FrameBufferAttachment::getRBODepthStencil()
     return spec;
 }
 
-FrameBufferAttachment FrameBufferAttachment::getRBODepth()
+FrameBufferAttachment FrameBufferAttachment::getDepthRbo()
 {
     FrameBufferAttachment spec;
     spec.type = FrameBufferAttachmentType::rbo;
