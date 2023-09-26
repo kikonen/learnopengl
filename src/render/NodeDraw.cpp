@@ -176,40 +176,43 @@ void NodeDraw::drawNodes(
 
     // pass 1.2 - draw OIT
     // NOTE KI OIT after *forward* pass to allow using depth texture from them
-    if (ctx.m_assets.effectOitEnabled)
+    if (ctx.m_allowBlend)
     {
-        ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT));
+        if (ctx.m_assets.effectOitEnabled)
+        {
+            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT));
 
-        m_oitBuffer.bind(ctx);
-        m_oitBuffer.clearAll();
+            m_oitBuffer.bind(ctx);
+            m_oitBuffer.clearAll();
 
-        // NOTE KI do NOT modify depth with blend
-        auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
+            // NOTE KI do NOT modify depth with blend
+            auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
 
-        // NOTE KI different blend mode for each draw buffer
-        glBlendFunci(0, GL_ONE, GL_ONE);
-        glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
-        glBlendEquation(GL_FUNC_ADD);
+            // NOTE KI different blend mode for each draw buffer
+            glBlendFunci(0, GL_ONE, GL_ONE);
+            glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+            glBlendEquation(GL_FUNC_ADD);
 
-        // only "blend OIT" nodes
-        drawProgram(
-            ctx,
-            m_oitProgram,
-            nullptr,
-            [&typeSelector](const MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
-            nodeSelector,
-            NodeDraw::KIND_ALL);
+            // only "blend OIT" nodes
+            drawProgram(
+                ctx,
+                m_oitProgram,
+                nullptr,
+                [&typeSelector](const MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
+                nodeSelector,
+                NodeDraw::KIND_ALL);
 
-        ctx.m_batch->flush(ctx);
+            ctx.m_batch->flush(ctx);
 
-        // NOTE KI *MUST* reset blend mode (especially for attachment 1)
-        // ex. if not done OIT vs. bloom works strangely
-        glBlendFunci(0, GL_ONE, GL_ONE);
-        glBlendFunci(1, GL_ONE, GL_ONE);
-        ctx.m_state.invalidateBlendMode();
-        ctx.m_state.setDepthMask(oldDepthMask);
+            // NOTE KI *MUST* reset blend mode (especially for attachment 1)
+            // ex. if not done OIT vs. bloom works strangely
+            glBlendFunci(0, GL_ONE, GL_ONE);
+            glBlendFunci(1, GL_ONE, GL_ONE);
+            ctx.m_state.invalidateBlendMode();
+            ctx.m_state.setDepthMask(oldDepthMask);
 
-        ctx.m_state.disableStencil();
+            ctx.m_state.disableStencil();
+        }
     }
 
     activeBuffer->bind(ctx);

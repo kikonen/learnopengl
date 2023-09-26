@@ -207,6 +207,12 @@ void GLState::enableStencil(const GLStencilMode& mode)
 void GLState::disableStencil()
 {
     setEnabled(GL_STENCIL_TEST, false);
+
+    // NOTE KI *mask* affects clear
+    // https://community.khronos.org/t/how-to-clear-stencil-buffer-after-stencil-test/15882/2
+    //setStencilMode({});
+    invalidateBlendMode();
+    glStencilMask(0xff);
 }
 
 void GLState::setStencilMode(const GLStencilMode& mode)
