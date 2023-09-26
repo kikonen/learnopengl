@@ -49,6 +49,8 @@ void NodeDraw::prepare(
 
     m_hdrGammaProgram = registry->m_programRegistry->getProgram(SHADER_HDR_GAMMA_PASS);
     m_hdrGammaProgram->prepare(assets);
+
+    m_timeElapsedQuery.create();
 }
 
 void NodeDraw::updateView(const RenderContext& ctx)

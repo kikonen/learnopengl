@@ -337,6 +337,7 @@
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
+    <ClInclude Include="src\query\Query.h" />
     <ClInclude Include="src\kigl\GLFrameBufferHandle.h" />
     <ClInclude Include="src\asset\Frustum.h" />
     <ClInclude Include="src\asset\FrustumNew.h" />
@@ -394,6 +395,7 @@
     <ClInclude Include="src\physics\Plane.h" />
     <ClInclude Include="src\physics\Surface.h" />
     <ClInclude Include="src\physics\PhysicsEngine.h" />
+    <ClInclude Include="src\query\TimeElapsedQuery.h" />
     <ClInclude Include="src\registry\ControllerRegistry.h" />
     <ClInclude Include="src\registry\EntityType.h" />
     <ClInclude Include="src\registry\Registry.h" />

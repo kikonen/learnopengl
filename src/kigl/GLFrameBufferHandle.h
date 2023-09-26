@@ -26,7 +26,7 @@ public:
         handle.m_fbo = 0;
     }
 
-    GLFrameBufferHandle& operator=(GLFrameBufferHandle&& handle)
+    GLFrameBufferHandle& operator=(GLFrameBufferHandle&& handle) noexcept
     {
         m_fbo = handle.m_fbo;
         handle.m_fbo = 0;

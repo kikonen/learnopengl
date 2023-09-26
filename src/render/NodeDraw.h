@@ -10,6 +10,8 @@
 #include "PlainQuad.h"
 #include "TextureQuad.h"
 
+#include "query/TimeElapsedQuery.h"
+
 class RenderContext;
 class Program;
 class MeshType;
@@ -89,4 +91,6 @@ private:
     Program* m_emissionProgram{ nullptr };
     Program* m_fogProgram{ nullptr };
     Program* m_hdrGammaProgram{ nullptr };
+
+    TimeElapsedQuery m_timeElapsedQuery;
 };
