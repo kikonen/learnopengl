@@ -83,6 +83,7 @@ entities:
       alpha: true
       xblend_oit: true
       blend: true
+      effect: true
       no_select: true
     enabled: true
   - name: Directional light

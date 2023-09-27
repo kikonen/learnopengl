@@ -92,6 +92,7 @@ entities:
     program_definitions:
       effect_sun: 1
     render_flags:
+      effect: true
       no_shadow: true
     force_material: true
     material_modifier:
@@ -628,6 +629,7 @@ entities:
     render_flags:
       alpha: true
       blend: true
+      effect: true
       no_select: true
     enabled: true
   - name: Brickcube

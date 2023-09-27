@@ -45,7 +45,6 @@ void EffectBuffer::updateView(const RenderContext& ctx)
                 // => reading and "writing" same depth buffer in shader is undefined operation
                 // NOTE KI depth needed since there may be "non gbuffer" render steps
                 // NOTE DepthTexture instead of RBODepth to allow *copy* instead of *blit*
-                //FrameBufferAttachment::getRBODepth(),
                 FrameBufferAttachment::getDepthStencilTexture()
             }
             });

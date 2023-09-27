@@ -68,12 +68,20 @@ void NodeDraw::drawNodes(
     unsigned int kindBits,
     GLbitfield copyMask)
 {
+    constexpr bool useRboDepth = false;
+
+    m_timeElapsedQuery.begin();
+
+    // https://community.khronos.org/t/selectively-writing-to-buffers/71054
+    auto* primaryBuffer = m_effectBuffer.m_primary.get();
+    auto* secondaryBuffer = m_effectBuffer.m_secondary.get();
+
     // pass 1.1 - draw geometry
     // => nodes supporting G-buffer
     //if (false)
     {
-        m_gBuffer.bind(ctx);
         m_gBuffer.clearAll();
+        m_gBuffer.bind(ctx);
 
         // NOTE KI no blend in G-buffer
         auto oldAllowBlend = ctx.setAllowBlend(false);
@@ -91,18 +99,16 @@ void NodeDraw::drawNodes(
         m_gBuffer.bindTexture(ctx);
     }
 
-    // https://community.khronos.org/t/selectively-writing-to-buffers/71054
-    auto* activeBuffer = m_effectBuffer.m_primary.get();
-
     // pass 2 => effectBuffer
     {
-        activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
-
-        activeBuffer->bind(ctx);
         m_effectBuffer.clearAll();
 
-        activeBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
-        activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
+        //primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+
+        primaryBuffer->bind(ctx);
+
+        primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
+        primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
     }
 
     // pass 2.1 - light
@@ -116,9 +122,9 @@ void NodeDraw::drawNodes(
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
 
         // NOTE KI make depth available for "non gbuffer node" rendering
-        if (false) {
+        if (useRboDepth) {
             m_gBuffer.m_buffer->blit(
-                activeBuffer,
+                primaryBuffer,
                 GL_DEPTH_BUFFER_BIT,
                 { -1.f, 1.f },
                 { 2.f, 2.f },
@@ -127,12 +133,12 @@ void NodeDraw::drawNodes(
         else {
             // NOTE KI copy does not work with RBO
             m_gBuffer.m_buffer->copy(
-                activeBuffer,
+                primaryBuffer,
                 GBuffer::ATT_DEPTH_INDEX,
                 EffectBuffer::ATT_DEPTH_INDEX);
         }
 
-        m_effectBuffer.m_primary->resetDrawBuffers(1);
+        //primaryBuffer->resetDrawBuffers(1);
     }
 
     // pass 3 - non G-buffer nodes
@@ -152,17 +158,17 @@ void NodeDraw::drawNodes(
         if (rendered) {
             ctx.m_batch->flush(ctx);
 
-            if (false) {
-                activeBuffer->blit(
+            if (useRboDepth) {
+                primaryBuffer->blit(
                     m_gBuffer.m_buffer.get(),
-                    GL_DEPTH_BUFFER_BIT,
+                    GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT,
                     { -1.f, 1.f },
                     { 2.f, 2.f },
                     GL_NEAREST);
             }
             else {
                 // copy depth back
-                activeBuffer->copy(
+                primaryBuffer->copy(
                     m_gBuffer.m_buffer.get(),
                     EffectBuffer::ATT_DEPTH_INDEX,
                     GBuffer::ATT_DEPTH_INDEX);
@@ -180,13 +186,12 @@ void NodeDraw::drawNodes(
     {
         if (ctx.m_assets.effectOitEnabled)
         {
-            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT));
-
-            m_oitBuffer.bind(ctx);
             m_oitBuffer.clearAll();
+            m_oitBuffer.bind(ctx);
 
             // NOTE KI do NOT modify depth with blend
             auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
+            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT));
 
             // NOTE KI different blend mode for each draw buffer
             glBlendFunci(0, GL_ONE, GL_ONE);
@@ -209,33 +214,43 @@ void NodeDraw::drawNodes(
             glBlendFunci(0, GL_ONE, GL_ONE);
             glBlendFunci(1, GL_ONE, GL_ONE);
             ctx.m_state.invalidateBlendMode();
-            ctx.m_state.setDepthMask(oldDepthMask);
 
             ctx.m_state.disableStencil();
+            ctx.m_state.setDepthMask(oldDepthMask);
+
+            // NOTE KI copy stencil
+            m_gBuffer.m_buffer->copy(
+                primaryBuffer,
+                GBuffer::ATT_DEPTH_INDEX,
+                EffectBuffer::ATT_DEPTH_INDEX);
         }
     }
 
-    activeBuffer->bind(ctx);
+    primaryBuffer->bind(ctx);
 
-    // pass 4 - blend
+    // pass 4 - blend effects
     // => separate light calculations
     //if (false)
     if (ctx.m_allowBlend)
     {
         drawBlendedImpl(
             ctx,
-            [&typeSelector](const MeshType* type) { return !type->m_flags.blendOIT && typeSelector(type); },
+            [&typeSelector](const MeshType* type) {
+                return !type->m_flags.blendOIT &&
+                    type->m_flags.blend &&
+                    type->m_flags.effect &&
+                    typeSelector(type);
+            },
             nodeSelector);
         ctx.m_batch->flush(ctx);
     }
-
 
     // pass 3 - blend screenspace effects
     if (ctx.m_allowBlend)
     {
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
         // NOTE KI do NOT modify depth with blend (likely redundant)
-        auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
+        //auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
 
         {
             ctx.m_state.setEnabled(GL_BLEND, true);
@@ -249,16 +264,12 @@ void NodeDraw::drawNodes(
             if (ctx.m_assets.effectOitEnabled) {
                 ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_OIT));
 
-                activeBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+                //primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
-                m_timeElapsedQuery.begin();
-
-                m_oitBuffer.bindTexture(ctx);
                 m_blendOitProgram->bind(ctx.m_state);
+                m_oitBuffer.bindTexture(ctx);
 
                 m_textureQuad.draw(ctx.m_state);
-
-                m_timeElapsedQuery.end();
 
                 ctx.m_state.disableStencil();
             }
@@ -272,7 +283,7 @@ void NodeDraw::drawNodes(
             //m_textureQuad.draw(ctx);
 
             m_bloomProgram->bind(ctx.m_state);
-            activeBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
+            primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
 
             for (int i = 0; i < ctx.m_assets.effectBloomIterations; i++) {
                 auto& buf = m_effectBuffer.m_buffers[i % 2];
@@ -284,23 +295,22 @@ void NodeDraw::drawNodes(
                 buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);
             }
 
-            activeBuffer = m_effectBuffer.m_secondary.get();
-            activeBuffer->bind(ctx);
+            secondaryBuffer->bind(ctx);
 
             m_blendBloomProgram->bind(ctx.m_state);
             m_textureQuad.draw(ctx.m_state);
         }
         else {
-            activeBuffer->copy(
-                m_effectBuffer.m_secondary.get(),
+            primaryBuffer->copy(
+                secondaryBuffer,
                 EffectBuffer::ATT_ALBEDO_INDEX,
                 EffectBuffer::ATT_ALBEDO_INDEX);
 
-            activeBuffer = m_effectBuffer.m_secondary.get();
-            activeBuffer->bind(ctx);
+            // NOTE KI no need to bind; no draw to buffer
+            //secondaryBuffer->bind(ctx);
         }
 
-        ctx.m_state.setDepthMask(oldDepthMask);
+        //ctx.m_state.setDepthMask(oldDepthMask);
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
     }
 
@@ -309,19 +319,20 @@ void NodeDraw::drawNodes(
         // NOTE KI binding target buffer should be 100% redundant here
         // i.e. blit does not need it
         // NOTE KI *Exception* CubeMapBuffer::bind logic
+        // => cubemap is *NOT* exception any longer
         //targetBuffer->bind(ctx);
 
-        if (copyMask & GL_DEPTH_BUFFER_BIT) {
+        if (copyMask & (GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)) {
             m_gBuffer.m_buffer->blit(
                 targetBuffer,
-                GL_DEPTH_BUFFER_BIT,
+                copyMask & (GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT),
                 { -1.f, 1.f },
                 { 2.f, 2.f },
                 GL_NEAREST);
         }
 
         if (copyMask & GL_COLOR_BUFFER_BIT) {
-            GLenum sourceFormat = activeBuffer->m_spec.attachments[EffectBuffer::ATT_ALBEDO_INDEX].internalFormat;
+            GLenum sourceFormat = secondaryBuffer->m_spec.attachments[EffectBuffer::ATT_ALBEDO_INDEX].internalFormat;
             GLenum targetFormat = -1;
 
             if (!targetBuffer->m_spec.attachments.empty()) {
@@ -329,12 +340,12 @@ void NodeDraw::drawNodes(
             }
 
             const bool canCopy = !targetBuffer->m_spec.attachments.empty() &&
-                targetBuffer->m_spec.width == activeBuffer->m_spec.width &&
-                targetBuffer->m_spec.height == activeBuffer->m_spec.height &&
+                targetBuffer->m_spec.width == secondaryBuffer->m_spec.width &&
+                targetBuffer->m_spec.height == secondaryBuffer->m_spec.height &&
                 targetFormat == sourceFormat;
 
             if (canCopy) {
-                activeBuffer->copy(
+                secondaryBuffer->copy(
                     targetBuffer,
                     EffectBuffer::ATT_ALBEDO_INDEX,
                     // NOTE KI assumption; buffer is at index 0
@@ -347,11 +358,11 @@ void NodeDraw::drawNodes(
                 if (hdr) {
                     targetBuffer->bind(ctx);
                     m_hdrGammaProgram->bind(ctx.m_state);
-                    activeBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
+                    secondaryBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
                     m_textureQuad.draw(ctx.m_state);
                 }
                 else {
-                    activeBuffer->blit(
+                    secondaryBuffer->blit(
                         targetBuffer,
                         GL_COLOR_BUFFER_BIT,
                         GL_COLOR_ATTACHMENT0,
@@ -380,9 +391,12 @@ void NodeDraw::drawNodes(
         m_gBuffer.invalidateAll();
     }
 
-    if (m_timeElapsedQuery.count() % 1000 == 0) {
+    m_timeElapsedQuery.end();
+
+    if (m_timeElapsedQuery.count() % 100 == 0) {
         KI_INFO_OUT(fmt::format("AVG: {:.3} ms", m_timeElapsedQuery.avg(true) * 1.0e-6));
     }
+
 }
 
 void NodeDraw::drawDebug(
@@ -391,7 +405,7 @@ void NodeDraw::drawDebug(
 {
     if (!(ctx.m_allowDrawDebug && ctx.m_assets.drawDebug)) return;
 
-    m_effectBuffer.m_primary->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+    //m_effectBuffer.m_primary->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
     constexpr float SZ1 = 0.25f;
     //constexpr float SZ2 = 0.5f;

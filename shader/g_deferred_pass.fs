@@ -58,6 +58,7 @@ void main()
   //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
   const vec2 texCoord = fs_in.texCoord;
 
+  // https://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/
   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
   vec3 worldPos;
   vec3 viewPos;

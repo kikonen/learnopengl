@@ -72,7 +72,7 @@ void FrameBufferAttachment::invalidate(
 
     GLenum attachments[] = { attachment };
 
-    //glInvalidateNamedFramebufferData(fbo, 1, attachments);
+    glInvalidateNamedFramebufferData(fbo, 1, attachments);
 }
 
 void FrameBufferAttachment::clearWithMask(int fbo, GLbitfield mask) const

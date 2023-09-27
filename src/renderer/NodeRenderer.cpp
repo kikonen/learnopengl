@@ -101,7 +101,6 @@ void NodeRenderer::render(
                 [](const Node* node) { return true; },
                 NodeDraw::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
-                //GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 GL_COLOR_BUFFER_BIT);
         }
         renderHighlight(ctx, targetBuffer);

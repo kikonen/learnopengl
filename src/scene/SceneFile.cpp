@@ -958,6 +958,12 @@ void SceneFile::assignFlags(
         }
     }
     {
+        const auto& e = data.renderFlags.find("effect");
+        if (e != data.renderFlags.end()) {
+            flags.effect = e->second;
+        }
+    }
+    {
         const auto& e = data.renderFlags.find("tessellation");
         if (e != data.renderFlags.end()) {
             flags.tessellation = e->second;

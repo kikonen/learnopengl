@@ -205,10 +205,9 @@ void FrameBuffer::prepare()
         glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
 
         resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
-    }
-
-    if (m_drawBuffers.size() > 0) {
-        glNamedFramebufferDrawBuffers(m_fbo, m_drawBuffers.size(), m_drawBuffers.data());
+        //if (m_drawBuffers.size() > 0) {
+        //    glNamedFramebufferDrawBuffers(m_fbo, m_drawBuffers.size(), m_drawBuffers.data());
+        //}
     }
 
     if (m_checkComplete) {
@@ -405,6 +404,9 @@ void FrameBuffer::clear(
     }
     else {
         // NOTE KI *FAILS* if buffer is not bound
+        if (m_fbo != 0) {
+            KI_WARN_OUT(fmt::format("FBO clear: {}", str()));
+            }
         glClear(clearMask);
     }
 }
