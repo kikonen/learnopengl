@@ -63,8 +63,10 @@ void FrameBuffer::prepare()
     }
 
     for (auto& att : m_spec.attachments) {
-        std::string attName = fmt::format("{}-att-{}", m_name, att.index);
+        att.create(m_name, m_spec.width, m_spec.height);
+    }
 
+    for (auto& att : m_spec.attachments) {
         if (att.type == FrameBufferAttachmentType::shared) {
             // NOTE KI drawBuffer index *can* be different between fbos
             if (att.useDrawBuffer) {
@@ -85,26 +87,12 @@ void FrameBuffer::prepare()
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
             }
         } else if (att.type == FrameBufferAttachmentType::draw_buffer) {
+            // NOTE KI draw_buffer, "non attached" texture handled externally
             if (att.useDrawBuffer) {
                 att.drawBufferIndex = m_drawBuffers.size();
                 m_drawBuffers.push_back(att.attachment);
             }
         } else if (att.type == FrameBufferAttachmentType::texture) {
-            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
-            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
-
-            KI_INFO(fmt::format("CREATE_TEX: FBO={}, TEX={}", str(), att.textureID));
-
-            glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
-
-            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
-            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
-
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
-
-            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
-
             glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
             if (att.useDrawBuffer) {
@@ -113,88 +101,25 @@ void FrameBuffer::prepare()
             }
         }
         else if (att.type == FrameBufferAttachmentType::rbo) {
-            glCreateRenderbuffers(1, &att.rbo);
-            glObjectLabel(GL_RENDERBUFFER, att.rbo, attName.length(), attName.c_str());
-
-            KI_INFO(fmt::format("CREATE_RBO: FBO={}, RBO={}", str(), att.rbo));
-
-            glNamedRenderbufferStorage(att.rbo, att.internalFormat, m_spec.width, m_spec.height);
             glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, att.rbo);
 
             m_hasDepth = true;
             m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
         }
         else if (att.type == FrameBufferAttachmentType::depth_texture) {
-            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
-            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
-
-            KI_INFO(fmt::format("CREATE_DEPTH: FBO={}, DEPTH={}", str(), att.textureID));
-
-            glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
-
-            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
-            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
-
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
-
-            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
-
-            {
-                glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
-            }
+            glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
             m_hasDepth = true;
             m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
         }
         else if (att.type == FrameBufferAttachmentType::depth_stencil_texture) {
-            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
-            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
-
-            KI_INFO(fmt::format("CREATE_DEPTH_STENCIL: FBO={}, DEPTH={}", str(), att.textureID));
-
-            glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
-
-            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
-            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
-
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
-
-            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
-
-            {
-                glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
-            }
+            glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
             m_hasDepth = true;
             m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
         }
         else if (att.type == FrameBufferAttachmentType::shadow) {
-            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
-            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
-
-            KI_INFO(fmt::format("CREATE_SHADOW: FBO={}, DEPTH={}", str(), att.textureID));
-
-            glTextureStorage2D(att.textureID, 1, att.internalFormat, m_spec.width, m_spec.height);
-
-            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
-            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
-
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
-            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
-
-            // NOTE KI *IMPORTANT* for shadow map min/mag interpolation
-            // => sampler2DShadow init
-            // https://stackoverflow.com/questions/22419682/glsl-sampler2dshadow-and-shadow2d-clarification
-            glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-            glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-
-            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
-
-            {
-                glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
-            }
+            glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
             m_hasDepth = true;
         }

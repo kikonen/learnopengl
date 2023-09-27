@@ -219,10 +219,21 @@ void NodeDraw::drawNodes(
             ctx.m_state.setDepthMask(oldDepthMask);
 
             // NOTE KI copy stencil
-            m_gBuffer.m_buffer->copy(
-                primaryBuffer,
-                GBuffer::ATT_DEPTH_INDEX,
-                EffectBuffer::ATT_DEPTH_INDEX);
+            if (useRboDepth) {
+                m_gBuffer.m_buffer->blit(
+                    primaryBuffer,
+                    GL_DEPTH_BUFFER_BIT,
+                    { -1.f, 1.f },
+                    { 2.f, 2.f },
+                    GL_NEAREST);
+            }
+            else {
+                // NOTE KI copy does not work with RBO
+                m_gBuffer.m_buffer->copy(
+                    primaryBuffer,
+                    GBuffer::ATT_DEPTH_INDEX,
+                    EffectBuffer::ATT_DEPTH_INDEX);
+            }
         }
     }
 

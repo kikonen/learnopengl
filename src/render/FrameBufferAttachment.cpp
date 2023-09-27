@@ -24,6 +24,103 @@ FrameBufferAttachment::~FrameBufferAttachment()
     }
 }
 
+void FrameBufferAttachment::create(
+    std::string_view name,
+    int width,
+    int height)
+{
+    auto& att = *this;
+
+    {
+        std::string attName = fmt::format("{}-att-{}", name, att.index);
+
+        if (att.type == FrameBufferAttachmentType::shared) {
+            // NOTE KI nothing
+        }
+        else if (att.type == FrameBufferAttachmentType::draw_buffer) {
+            // NOTE KI nothing
+        }
+        else if (att.type == FrameBufferAttachmentType::texture) {
+            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
+            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
+
+            KI_INFO(fmt::format("CREATE_TEX: FBO={}, TEX={}", name, att.textureID));
+
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
+            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
+
+            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
+        }
+        else if (att.type == FrameBufferAttachmentType::rbo) {
+            glCreateRenderbuffers(1, &att.rbo);
+            glObjectLabel(GL_RENDERBUFFER, att.rbo, attName.length(), attName.c_str());
+
+            KI_INFO(fmt::format("CREATE_RBO: FBO={}, RBO={}", name, att.rbo));
+
+            glNamedRenderbufferStorage(att.rbo, att.internalFormat, width, height);
+        }
+        else if (att.type == FrameBufferAttachmentType::depth_texture) {
+            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
+            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
+
+            KI_INFO(fmt::format("CREATE_DEPTH: FBO={}, DEPTH={}", name, att.textureID));
+
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
+            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
+
+            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
+        }
+        else if (att.type == FrameBufferAttachmentType::depth_stencil_texture) {
+            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
+            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
+
+            KI_INFO(fmt::format("CREATE_DEPTH_STENCIL: FBO={}, DEPTH={}", name, att.textureID));
+
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
+            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
+
+            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
+        }
+        else if (att.type == FrameBufferAttachmentType::shadow) {
+            glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
+            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
+
+            KI_INFO(fmt::format("CREATE_SHADOW: FBO={}, DEPTH={}", name, att.textureID));
+
+            glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_MIN_FILTER, att.minFilter);
+            glTextureParameteri(att.textureID, GL_TEXTURE_MAG_FILTER, att.magFilter);
+
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_S, att.textureWrapS);
+            glTextureParameteri(att.textureID, GL_TEXTURE_WRAP_T, att.textureWrapT);
+
+            // NOTE KI *IMPORTANT* for shadow map min/mag interpolation
+            // => sampler2DShadow init
+            // https://stackoverflow.com/questions/22419682/glsl-sampler2dshadow-and-shadow2d-clarification
+            glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+            glTextureParameteri(att.textureID, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+
+            glTextureParameterfv(att.textureID, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(att.borderColor));
+        }
+    }
+}
+
 // NOTE KI *bindless* clear
 // i.e. "glClear" *requires* bind
 // => less changes of breaking state

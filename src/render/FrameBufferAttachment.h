@@ -61,6 +61,11 @@ struct FrameBufferAttachment {
     FrameBufferAttachment();
     ~FrameBufferAttachment();
 
+    void create(
+        std::string_view name,
+        int width,
+        int height);
+
     void clearBuffer(int fbo) const;
     void clearWithMask(int fbo, GLbitfield mask) const;
 
