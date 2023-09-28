@@ -260,29 +260,31 @@ void MirrorMapRenderer::drawNodes(
     FrameBuffer* targetBuffer,
     Node* current)
 {
-    bool renderedWater{ false };
-    bool renderedMirror{ false };
+    if (true) {
+        bool renderedWater{ false };
+        bool renderedMirror{ false };
 
-    if (m_waterMapRenderer->isEnabled()) {
-        // NOTE KI ignore mirror when not yet rendered
-        m_waterMapRenderer->m_sourceNode = current;
-        renderedWater = m_waterMapRenderer->render(ctx);
-        m_waterMapRenderer->m_sourceNode = nullptr;
-    }
+        if (m_waterMapRenderer->isEnabled()) {
+            // NOTE KI ignore mirror when not yet rendered
+            m_waterMapRenderer->m_sourceNode = current;
+            renderedWater = m_waterMapRenderer->render(ctx);
+            m_waterMapRenderer->m_sourceNode = nullptr;
+        }
 
-    if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled()) {
-        // NOTE KI ignore mirror when not yet rendered
-        m_mirrorMapRenderer->m_sourceNode = current;
-        renderedMirror = m_mirrorMapRenderer->render(ctx);
-        m_mirrorMapRenderer->m_sourceNode = nullptr;
-    }
+        if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled()) {
+            // NOTE KI ignore mirror when not yet rendered
+            m_mirrorMapRenderer->m_sourceNode = current;
+            renderedMirror = m_mirrorMapRenderer->render(ctx);
+            m_mirrorMapRenderer->m_sourceNode = nullptr;
+        }
 
-    if (m_waterMapRenderer->isEnabled() && renderedWater) {
-        m_waterMapRenderer->bindTexture(ctx);
-    }
+        if (m_waterMapRenderer->isEnabled() && renderedWater) {
+            m_waterMapRenderer->bindTexture(ctx);
+        }
 
-    if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled() && renderedMirror) {
-        m_mirrorMapRenderer->bindTexture(ctx);
+        if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled() && renderedMirror) {
+            m_mirrorMapRenderer->bindTexture(ctx);
+        }
     }
 
     const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
