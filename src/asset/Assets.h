@@ -38,6 +38,7 @@ public:
     bool glNoError;
 
     bool glUseFence;
+    bool glUseSingleFence;
 
     float gBufferScale;
     float waterReflectionBufferScale;

@@ -175,7 +175,10 @@ void Batch::prepare(
     m_batches.reserve(BATCH_COUNT);
     m_entityIndeces.reserve(ENTITY_COUNT);
 
-    m_draw = std::make_unique<backend::DrawBuffer>(assets.glUseFence);
+    m_draw = std::make_unique<backend::DrawBuffer>(
+        assets.glUseFence,
+        assets.glUseSingleFence);
+
     m_draw->prepare(assets, registry, entryCount, bufferCount);
 
     m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;

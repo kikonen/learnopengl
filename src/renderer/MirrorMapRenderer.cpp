@@ -142,8 +142,11 @@ void MirrorMapRenderer::updateView(const RenderContext& ctx)
         buf->prepare();
     }
 
-    m_reflectionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
-    m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
+    m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
+        auto& buffer = m_reflectionBuffers[m_prevIndex];
+        vp.setTextureId(buffer->m_spec.attachments[0].textureID);
+        vp.setSourceFrameBuffer(buffer.get());
+    });
 
     m_reflectionWidth = w;
     m_reflectionheight = h;

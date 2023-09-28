@@ -69,7 +69,7 @@ void RenderData::updateMatrices(MatricesUBO& data)
     m_matrices.set(0, data);
     m_matrices.flush();
     m_matrices.bind(UBO_MATRICES, false, 1);
-    m_matrices.next(false, false);
+    m_matrices.next();
 }
 
 void RenderData::updateData(DataUBO& data)
@@ -77,7 +77,7 @@ void RenderData::updateData(DataUBO& data)
     m_data.set(0, data);
     m_data.flush();
     m_data.bind(UBO_DATA, false, 1);
-    m_data.next(false, false);
+    m_data.next();
 }
 
 void RenderData::updateBufferInfo(BufferInfoUBO& data)
@@ -85,7 +85,7 @@ void RenderData::updateBufferInfo(BufferInfoUBO& data)
     m_bufferInfo.set(0, data);
     m_bufferInfo.flush();
     m_bufferInfo.bind(UBO_BUFFER_INFO, false, 1);
-    m_bufferInfo.next(false, false);
+    m_bufferInfo.next();
 }
 
 void RenderData::updateClipPlanes(ClipPlanesUBO& data)
@@ -93,7 +93,7 @@ void RenderData::updateClipPlanes(ClipPlanesUBO& data)
     m_clipPlanes.set(0, data);
     m_clipPlanes.flush();
     m_clipPlanes.bind(UBO_CLIP_PLANES, false, 1);
-    m_clipPlanes.next(false, false);
+    m_clipPlanes.next();
 }
 
 void RenderData::updateLights(Registry* registry, bool useLight)
@@ -154,7 +154,7 @@ void RenderData::updateLights(Registry* registry, bool useLight)
     m_lights.set(0, lightsUbo);
     m_lights.flush();
     m_lights.bind(UBO_LIGHTS, false, 1);
-    m_lights.next(false, false);
+    m_lights.next();
 }
 
 void RenderData::updateImageTextures()

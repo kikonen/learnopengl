@@ -22,6 +22,7 @@ Assets::Assets()
     glDebug = false;
     glNoError = false;
     glUseFence = true;
+    glUseSingleFence = true;
 
     gBufferScale = 0.5f;
     waterReflectionBufferScale = 0.125f;

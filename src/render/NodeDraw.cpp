@@ -68,7 +68,7 @@ void NodeDraw::drawNodes(
     unsigned int kindBits,
     GLbitfield copyMask)
 {
-    m_timeElapsedQuery.begin();
+    //m_timeElapsedQuery.begin();
 
     // https://community.khronos.org/t/selectively-writing-to-buffers/71054
     auto* primaryBuffer = m_effectBuffer.m_primary.get();
@@ -78,7 +78,7 @@ void NodeDraw::drawNodes(
     // => nodes supporting G-buffer
     //if (false)
     {
-        m_gBuffer.unbindTexture(ctx);
+        //m_gBuffer.unbindTexture(ctx);
         m_gBuffer.clearAll();
         m_gBuffer.bind(ctx);
 
@@ -363,12 +363,11 @@ void NodeDraw::drawNodes(
         m_gBuffer.invalidateAll();
     }
 
-    m_timeElapsedQuery.end();
+    //m_timeElapsedQuery.end();
 
-    if (m_timeElapsedQuery.count() % 100 == 0) {
-        KI_INFO_OUT(fmt::format("AVG: {:.3} ms", m_timeElapsedQuery.avg(true) * 1.0e-6));
-    }
-
+    //if (m_timeElapsedQuery.count() % 100 == 0) {
+    //    //KI_INFO_OUT(fmt::format("AVG: {:.3} ms", m_timeElapsedQuery.avg(true) * 1.0e-6));
+    //}
 }
 
 void NodeDraw::drawDebug(

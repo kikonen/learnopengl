@@ -6,6 +6,7 @@
 
 #include "GLBuffer.h"
 #include "GLBufferRange.h"
+#include "GLFence.h"
 
 //
 // SyncQueue, which is split into multiple ranges, which can be fence synced
@@ -17,10 +18,12 @@ public:
         std::string_view name,
         size_t entryCount,
         size_t rangeCount,
-        bool useFence)
+        bool useFence,
+        bool useSingleFence)
         : m_rangeCount{ rangeCount },
         m_entryCount{ entryCount },
         m_useFence{ useFence },
+            m_useSingleFence{ useSingleFence },
         m_entrySize{ sizeof(T) },
         m_buffer{ std::string{ "syncQueue_" } + std::string{ name } }
     {
@@ -33,6 +36,7 @@ public:
     }
 
     void prepare(int bindAlignment, bool debug) {
+        m_debug = debug;
         m_bindAlignment = bindAlignment;
         m_rangeLength = m_entryCount * m_entrySize;
 
@@ -67,7 +71,6 @@ public:
         for (size_t i = 0; i < m_rangeCount; i++) {
             auto& range = m_ranges.emplace_back();
             // static
-            range.m_debug = debug;
             range.m_index = i;
             range.m_baseIndex = i * m_entryCount;
             range.m_maxCount = m_entryCount;
@@ -77,6 +80,10 @@ public:
             range.m_paddedLength = m_paddedRangeLength;
             // dynamic
             range.m_usedCount = 0;
+
+            if (m_useFence) {
+                m_fences.emplace_back();
+            }
         }
     }
 
@@ -86,10 +93,9 @@ public:
     // @return true if current range is full (and ready to flush)
     //
     bool send(const T& entry) {
-        auto& range = m_ranges[m_current];
+        waitFence(m_current);
 
-        if (m_useFence)
-            range.waitFence();
+        auto& range = m_ranges[m_current];
 
         T* ptr = (T*)(m_data + range.nextOffset());
 
@@ -106,10 +112,9 @@ public:
     // NOTE KI with "set" it's upto caller to manage buffer full
     //
     void set(int idx, T& entry) {
-        auto& range = m_ranges[m_current];
+        waitFence(m_current);
 
-        if (m_useFence)
-            range.waitFence();
+        auto& range = m_ranges[m_current];
 
         //m_data[range.index(idx)] = entry;
 
@@ -148,7 +153,10 @@ public:
     }
 
     inline void flush() {
+        setFence(m_current);
+
         const auto& range = m_ranges[m_current];
+
         if (mappedMode) {
             m_buffer.flushRange(range.m_baseOffset, range.getUsedLength());
         }
@@ -181,14 +189,8 @@ public:
     // Switch to next range
     // @return next buffer
     //
-    inline GLBufferRange& next(bool clear, bool fence) {
-        if (clear) {
-            m_ranges[m_current].clear();
-        }
-
-        if (m_useFence)
-            if (fence)
-                m_ranges[m_current].setFence();
+    inline GLBufferRange& next() {
+        setFence(m_current);
 
         m_current = (m_current + 1) % m_ranges.size();
 
@@ -207,6 +209,26 @@ public:
         m_buffer.bindSSBORange(ssbo, range.m_baseOffset, range.getLengthFor(count));
     }
 
+private:
+    void setFence(int index) {
+        if (!m_useFence) return;
+
+        if (m_useSingleFence) {
+            if (index == m_ranges.size() - 1) {
+                m_fences[0].setFence();
+            }
+        }
+        else {
+            m_fences[index].setFence();
+        }
+    }
+
+    void waitFence(int index) {
+        if (!m_useFence) return;
+
+        m_fences[index].waitFence(m_debug);
+    }
+
 public:
     GLBuffer m_buffer;
 
@@ -214,6 +236,8 @@ private:
     const size_t m_entryCount;
     const size_t m_rangeCount;
     const bool m_useFence;
+    const bool m_useSingleFence;
+    bool m_debug{ false };
 
     const size_t m_entrySize;
 
@@ -225,5 +249,6 @@ private:
 
     size_t m_current = 0;
     std::vector<GLBufferRange> m_ranges;
+    std::vector<GLFence> m_fences;
 };
 

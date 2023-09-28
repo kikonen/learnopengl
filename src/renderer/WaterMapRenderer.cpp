@@ -135,8 +135,11 @@ void WaterMapRenderer::updateReflectionView(const RenderContext& ctx)
         buf->prepare();
     }
 
-    m_reflectionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
-    m_reflectionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
+    m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
+        auto& buffer = m_reflectionBuffers[m_prevIndex];
+        vp.setTextureId(buffer->m_spec.attachments[0].textureID);
+        vp.setSourceFrameBuffer(buffer.get());
+    });
 
     m_reflectionWidth = w;
     m_reflectionheight = h;
@@ -184,8 +187,11 @@ void WaterMapRenderer::updateRefractionView(const RenderContext& ctx)
         buf->prepare();
     }
 
-    m_refractionDebugViewport->setTextureId(m_reflectionBuffers[0]->m_spec.attachments[0].textureID);
-    m_refractionDebugViewport->setSourceFrameBuffer(m_reflectionBuffers[0].get());
+    m_refractionDebugViewport->setBindBefore([this](Viewport& vp) {
+        auto& buffer = m_refractionBuffers[m_prevIndex];
+        vp.setTextureId(buffer->m_spec.attachments[0].textureID);
+        vp.setSourceFrameBuffer(buffer.get());
+    });
 
     m_refractionWidth = w;
     m_refractionHeight = h;
@@ -272,9 +278,6 @@ bool WaterMapRenderer::render(
         localCtx.updateClipPlanesUBO();
 
         drawNodes(localCtx, reflectionBuffer.get(), closest, true);
-
-        m_reflectionDebugViewport->setTextureId(reflectionBuffer->m_spec.attachments[0].textureID);
-        m_reflectionDebugViewport->setSourceFrameBuffer(reflectionBuffer.get());
     }
 
     // refraction map
@@ -311,9 +314,6 @@ bool WaterMapRenderer::render(
         localCtx.updateClipPlanesUBO();
 
         drawNodes(localCtx, refractionBuffer.get(), closest, false);
-
-        m_refractionDebugViewport->setTextureId(refractionBuffer->m_spec.attachments[0].textureID);
-        m_refractionDebugViewport->setSourceFrameBuffer(refractionBuffer.get());
     }
 
     parentCtx.updateMatricesUBO();

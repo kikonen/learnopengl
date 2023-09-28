@@ -5,7 +5,8 @@ assets:
   glfw_swap_interval: 1
   gl_debug: true
   gl_no_error: false
-  gl_use_fence: false
+  gl_use_fence: true
+  gl_use_single_fence: false
 
   g_buffer_scale: 0.5
   water_reflection_buffer_scale: 0.125

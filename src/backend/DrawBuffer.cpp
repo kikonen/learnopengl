@@ -21,8 +21,11 @@
 namespace backend {
     constexpr int BUFFER_ALIGNMENT = 1;
 
-    DrawBuffer::DrawBuffer(bool useFence)
-        : m_useFence(useFence)
+    DrawBuffer::DrawBuffer(
+        bool useFence,
+        bool useSingleFence)
+        : m_useFence(useFence),
+        m_useSingleFence(useSingleFence)
     {
     }
 
@@ -82,7 +85,8 @@ namespace backend {
             "drawCommand",
             commandBatchCount,
             commandRangeCount,
-            m_useFence);
+            m_useFence,
+            m_useSingleFence);
         m_commands->prepare(BUFFER_ALIGNMENT, assets.batchDebug);
 
         m_drawRanges.reserve(rangeCount);
@@ -165,7 +169,7 @@ namespace backend {
 
         m_drawCounter += drawCount;
 
-        const auto& next = m_commands->next(false, false);
+        const auto& next = m_commands->next();
         if (!next.empty()) {
             // NOTE KI trigger draw pending if out of buffers
             drawPending(true);
@@ -246,9 +250,9 @@ namespace backend {
 
             // NOTE KI need to wait finishing of draw commands
             // TODO KI *very* odd that fence was set but not waited anywhere
-            if (m_useFence) {
-                cmdRange.setFence();
-            }
+            //if (m_useFence) {
+            //    cmdRange.setFence();
+            //}
         };
 
         m_commands->processPending(handler, drawCurrent, true);

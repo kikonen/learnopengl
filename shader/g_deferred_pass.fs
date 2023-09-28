@@ -62,10 +62,8 @@ void main()
   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
   vec3 worldPos;
   vec3 viewPos;
-  bool skipLight;
   {
     float depth = texture(g_depth, texCoord).x * 2.0 - 1.0;
-    skipLight = depth >= 1.0;
 
     vec4 clip = vec4(texCoord.x * 2.0 - 1.0, texCoord.y * 2.0 - 1.0, depth, 1.0);
     vec4 viewW  = u_invProjectionMatrix * clip;
@@ -92,9 +90,7 @@ void main()
 
   vec4 color;
   bool emission = false;
-  if (skipLight) {
-    color = material.diffuse;
-  } else {
+  {
     color = calculateLightPbr(
       normal, viewDir, worldPos,
       shadowIndex);
@@ -107,11 +103,11 @@ void main()
   }
 
   const vec3 T = vec3(0.2126, 0.7152, 0.0722);
-  const float brightness = dot(color.xyz, T);
+  const float brightness = 0;//dot(color.xyz, T);
 
   if (emission) {
     o_fragBright = vec4(material.emission.xyz, 1.0);
-  } else if (brightness > 1.0 && !skipLight) {
+  } else if (brightness > 1.0) {
     o_fragBright = vec4(color.xyz, 1.0);
   } else {
     o_fragBright = vec4(0.0, 0.0, 0.0, 1.0);

@@ -26,7 +26,9 @@ namespace backend {
 
     class DrawBuffer {
     public:
-        DrawBuffer(bool useFence);
+        DrawBuffer(
+            bool useFence,
+            bool useSingleFence);
 
         void prepare(
             const Assets& assets,
@@ -56,6 +58,7 @@ namespace backend {
 
     private:
         const bool m_useFence;
+        const bool m_useSingleFence;
 
         int m_batchCount = 0;
         int m_rangeCount = 0;
