@@ -23,7 +23,7 @@ void main() {
   // vec4 v = inverse(m) * inverse(u_projectionMatrix) * pos;
   vec4 v = u_viewMatrixSkybox * pos;
 
-  gl_Position = pos;
+  gl_Position = pos.xyww;
   texCoord = v.xyz;
 
   gl_ClipDistance[0] = 1;

@@ -141,7 +141,7 @@ private:
         Node* node,
         const uuids::uuid& parentId) noexcept;
 
-        void insertNode(NodeVector& list, Node* node);
+    void insertNode(NodeVector& list, Node* node);
 
     void bindPendingChildren();
 
@@ -155,6 +155,9 @@ private:
     void bindChildren(
         Node* parent);
 
+    void bindSkybox(
+        Node* node) noexcept;
+
 public:
     ProgramTypeMap allNodes;
     ProgramTypeMap solidNodes;
@@ -166,6 +169,8 @@ public:
 
     Node* m_root{ nullptr };
     Node* m_dirLight{ nullptr };
+
+    Node* m_skybox{ nullptr };
 
     NodeVector m_cameras;
 

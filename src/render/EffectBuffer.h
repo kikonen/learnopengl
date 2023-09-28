@@ -32,6 +32,8 @@ public:
     void clearAll();
     void invalidateAll();
 
+    void unbindTexture(const RenderContext& ctx);
+
 public:
     std::unique_ptr<FrameBuffer> m_primary{ nullptr };
     std::unique_ptr<FrameBuffer> m_secondary{ nullptr };

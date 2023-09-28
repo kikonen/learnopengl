@@ -75,6 +75,9 @@ private:
         const std::function<bool(const MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector);
 
+    void drawSkybox(
+        const RenderContext& ctx);
+
 private:
     GBuffer m_gBuffer;
     OITBuffer m_oitBuffer;

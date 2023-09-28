@@ -68,6 +68,10 @@ public:
         int sourceAttachmentIndex,
         int targetAttachmentIndex);
 
+    void copy(
+        FrameBufferAttachment* dstAtt,
+        int sourceAttachmentIndex);
+
     void clear(
         const RenderContext& ctx,
         GLbitfield clearMask,

@@ -45,7 +45,8 @@ void EffectBuffer::updateView(const RenderContext& ctx)
                 // => reading and "writing" same depth buffer in shader is undefined operation
                 // NOTE KI depth needed since there may be "non gbuffer" render steps
                 // NOTE DepthTexture instead of RBODepth to allow *copy* instead of *blit*
-                FrameBufferAttachment::getDepthStencilTexture()
+                // NOTE KI *SHARE* depth with gbuffer
+                FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
             }
             });
 
@@ -114,5 +115,18 @@ void EffectBuffer::invalidateAll()
     m_secondary->invalidateAll();
     for (auto& buf : m_buffers) {
         buf->invalidateAll();
+    }
+}
+
+void EffectBuffer::unbindTexture(const RenderContext& ctx)
+{
+    m_primary->unbindTexture(ctx, UNIT_EFFECT_ALBEDO);
+    m_primary->unbindTexture(ctx, UNIT_EFFECT_BRIGHT);
+
+    m_secondary->unbindTexture(ctx, UNIT_EFFECT_ALBEDO);
+    m_secondary->unbindTexture(ctx, UNIT_EFFECT_BRIGHT);
+
+    for (auto& buf : m_buffers) {
+        buf->unbindTexture(ctx, UNIT_EFFECT_WORK);
     }
 }

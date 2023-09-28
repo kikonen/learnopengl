@@ -2,6 +2,8 @@
 
 #include "glm/ext.hpp"
 
+#include "render/RenderContext.h"
+
 namespace {
 }
 
@@ -177,6 +179,20 @@ void FrameBufferAttachment::clearWithMask(int fbo, GLbitfield mask) const
     if (clearMask & mask) {
         clearBuffer(fbo);
     }
+}
+
+void FrameBufferAttachment::bindTexture(
+    const RenderContext& ctx,
+    int unitIndex)
+{
+    ctx.m_state.bindTexture(unitIndex, textureID, false);
+}
+
+void FrameBufferAttachment::unbindTexture(
+    const RenderContext& ctx,
+    int unitIndex)
+{
+    ctx.m_state.bindTexture(unitIndex, 0, true);
 }
 
 FrameBufferAttachment FrameBufferAttachment::getShared(FrameBufferAttachment* shared)

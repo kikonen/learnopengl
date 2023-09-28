@@ -25,6 +25,7 @@ struct NodeRenderFlags {
     bool water = false;
     bool cubeMap = false;
     bool effect = false;
+    bool skybox = false;
 
     bool noShadow = false;
     bool noSelect = false;

@@ -68,18 +68,17 @@ void NodeDraw::drawNodes(
     unsigned int kindBits,
     GLbitfield copyMask)
 {
-    constexpr bool useRboDepth = false;
-
     m_timeElapsedQuery.begin();
 
     // https://community.khronos.org/t/selectively-writing-to-buffers/71054
     auto* primaryBuffer = m_effectBuffer.m_primary.get();
     auto* secondaryBuffer = m_effectBuffer.m_secondary.get();
 
-    // pass 1.1 - draw geometry
+    // pass 1 - draw geometry
     // => nodes supporting G-buffer
     //if (false)
     {
+        m_gBuffer.unbindTexture(ctx);
         m_gBuffer.clearAll();
         m_gBuffer.bind(ctx);
 
@@ -96,22 +95,23 @@ void NodeDraw::drawNodes(
 
         ctx.setAllowBlend(oldAllowBlend);
 
+        m_gBuffer.m_buffer->copy(
+            m_gBuffer.m_depthTexture.get(),
+            GBuffer::ATT_DEPTH_INDEX);
+
         m_gBuffer.bindTexture(ctx);
     }
 
-    // pass 2 => effectBuffer
+    // pass 2 - target effectBuffer
     {
         m_effectBuffer.clearAll();
 
         //primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
         primaryBuffer->bind(ctx);
-
-        primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
-        primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
     }
 
-    // pass 2.1 - light
+    // pass 3 - light
     //if (false)
     {
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
@@ -121,28 +121,10 @@ void NodeDraw::drawNodes(
 
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
 
-        // NOTE KI make depth available for "non gbuffer node" rendering
-        if (useRboDepth) {
-            m_gBuffer.m_buffer->blit(
-                primaryBuffer,
-                GL_DEPTH_BUFFER_BIT,
-                { -1.f, 1.f },
-                { 2.f, 2.f },
-                GL_NEAREST);
-        }
-        else {
-            // NOTE KI copy does not work with RBO
-            m_gBuffer.m_buffer->copy(
-                primaryBuffer,
-                GBuffer::ATT_DEPTH_INDEX,
-                EffectBuffer::ATT_DEPTH_INDEX);
-        }
-
         //primaryBuffer->resetDrawBuffers(1);
     }
 
-    // pass 3 - non G-buffer nodes
-    // => for example, "skybox" (skybox is mostly via g_skybox now!)
+    // pass 4 - non G-buffer solid nodes
     // => separate light calculations
     // => currently these *CANNOT* work correctly
     //if (false)
@@ -158,34 +140,20 @@ void NodeDraw::drawNodes(
         if (rendered) {
             ctx.m_batch->flush(ctx);
 
-            if (useRboDepth) {
-                primaryBuffer->blit(
-                    m_gBuffer.m_buffer.get(),
-                    GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT,
-                    { -1.f, 1.f },
-                    { 2.f, 2.f },
-                    GL_NEAREST);
-            }
-            else {
-                // copy depth back
-                primaryBuffer->copy(
-                    m_gBuffer.m_buffer.get(),
-                    EffectBuffer::ATT_DEPTH_INDEX,
-                    GBuffer::ATT_DEPTH_INDEX);
-            }
-
             // NOTE KI need to reset possibly changed drawing modes
             // ex. selection volume changes to GL_LINE
             ctx.bindDefaults();
         }
     }
 
-    // pass 1.2 - draw OIT
+    // pass 5 - OIT 
     // NOTE KI OIT after *forward* pass to allow using depth texture from them
     if (ctx.m_allowBlend)
     {
         if (ctx.m_assets.effectOitEnabled)
         {
+            ctx.m_state.setEnabled(GL_BLEND, true);
+
             m_oitBuffer.clearAll();
             m_oitBuffer.bind(ctx);
 
@@ -218,28 +186,18 @@ void NodeDraw::drawNodes(
             ctx.m_state.disableStencil();
             ctx.m_state.setDepthMask(oldDepthMask);
 
-            // NOTE KI copy stencil
-            if (useRboDepth) {
-                m_gBuffer.m_buffer->blit(
-                    primaryBuffer,
-                    GL_DEPTH_BUFFER_BIT,
-                    { -1.f, 1.f },
-                    { 2.f, 2.f },
-                    GL_NEAREST);
-            }
-            else {
-                // NOTE KI copy does not work with RBO
-                m_gBuffer.m_buffer->copy(
-                    primaryBuffer,
-                    GBuffer::ATT_DEPTH_INDEX,
-                    EffectBuffer::ATT_DEPTH_INDEX);
-            }
+            ctx.m_state.setEnabled(GL_BLEND, false);
         }
     }
 
     primaryBuffer->bind(ctx);
 
-    // pass 4 - blend effects
+    // pass 6 - skybox (*before* blend)
+    {
+        drawSkybox(ctx);
+    }
+
+    // pass 7 - blend effects
     // => separate light calculations
     //if (false)
     if (ctx.m_allowBlend)
@@ -256,7 +214,7 @@ void NodeDraw::drawNodes(
         ctx.m_batch->flush(ctx);
     }
 
-    // pass 3 - blend screenspace effects
+    // pass 8 - screenspace effects
     if (ctx.m_allowBlend)
     {
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
@@ -290,6 +248,9 @@ void NodeDraw::drawNodes(
 
         if (ctx.m_assets.effectBloomEnabled)
         {
+            primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
+            primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
+
             //m_emissionProgram->bind(ctx.m_state);
             //m_textureQuad.draw(ctx);
 
@@ -325,7 +286,7 @@ void NodeDraw::drawNodes(
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
     }
 
-    // pass 5 - render to target
+    // pass 10 - render to target
     {
         // NOTE KI binding target buffer should be 100% redundant here
         // i.e. blit does not need it
@@ -386,12 +347,12 @@ void NodeDraw::drawNodes(
         }
     }
 
+    // pass 11 - debug info
     {
-        // pass 5 - debug info
         drawDebug(ctx, targetBuffer);
     }
 
-    // cleanup
+    // pass 12 - cleanup
     {
         //ctx.m_state.bindFrameBuffer(0, false);
 
@@ -642,4 +603,19 @@ void NodeDraw::drawProgram(
             renderTypes(all.second);
         }
     }
+}
+
+void NodeDraw::drawSkybox(
+    const RenderContext& ctx)
+{
+    Node* node = ctx.m_registry->m_nodeRegistry->m_skybox;
+    if (!node) return;
+
+    auto& batch = ctx.m_batch;
+    auto* program = node->m_type->m_program;
+
+    ctx.m_state.setDepthFunc(GL_LEQUAL);
+    program->bind(ctx.m_state);
+    m_textureQuad.draw(ctx.m_state);
+    ctx.m_state.setDepthFunc(ctx.m_depthFunc);
 }

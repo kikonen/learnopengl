@@ -106,7 +106,7 @@ public:
     NodeDraw* const m_nodeDraw;
     Batch* const m_batch;
 
-    GLenum m_depthFunc = GL_LESS;
+    GLenum m_depthFunc{ GL_LESS };
 
     GLState& m_state;
 

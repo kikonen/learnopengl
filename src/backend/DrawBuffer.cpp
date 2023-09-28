@@ -277,8 +277,6 @@ namespace backend {
         drawRange.m_program->bind(state);
         state.bindVAO(*drawRange.m_vao);
 
-        state.setDepthFunc(drawOptions.depthFunc);
-
         state.setEnabled(GL_CULL_FACE, !drawOptions.renderBack);
 
         const bool wireframe = drawOptions.wireframe || drawRange.m_forceWireframe;

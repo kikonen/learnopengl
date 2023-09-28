@@ -88,6 +88,10 @@ NodeRegistry::~NodeRegistry()
         }
     }
     m_pendingChildren.clear();
+
+    if (m_skybox) {
+        delete m_skybox;
+    }
 }
 
 void NodeRegistry::prepare(
@@ -148,6 +152,10 @@ void NodeRegistry::attachNode(
     const uuids::uuid& parentId) noexcept
 {
     m_objectIdToNode.insert(std::make_pair(node->m_objectID, node));
+
+    if (node->m_type->m_flags.skybox) {
+        return bindSkybox(node);
+    }
 
     // NOTE KI ignore children without parent; until parent is found
     if (!bindParent(node, parentId)) return;
@@ -403,4 +411,15 @@ Node* NodeRegistry::findDefaultCamera() const
         m_cameras.end(),
         [](Node* node) { return node->m_camera->isDefault(); });
     return it != m_cameras.end() ? *it : nullptr;
+}
+
+void NodeRegistry::bindSkybox(
+    Node* node) noexcept
+{
+    const auto& type = node->m_type;
+
+    type->prepare(m_assets, m_registry);
+    node->prepare(m_assets, m_registry);
+
+    m_skybox = node;
 }

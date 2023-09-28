@@ -4,6 +4,8 @@
 
 #include "ki/GL.h"
 
+class RenderContext;
+
 enum class FrameBufferAttachmentType {
     shared,
     draw_buffer,
@@ -71,6 +73,17 @@ struct FrameBufferAttachment {
 
     void invalidate(
         int fbo) const;
+
+    void bindTexture(
+        const RenderContext& ctx,
+        int unitIndex);
+
+    void unbindTexture(
+        const RenderContext& ctx,
+        int unitIndex);
+
+    bool valid() { return textureID > 0 || rbo > 0; }
+    operator int() const { return textureID || rbo; }
 
     static FrameBufferAttachment getShared(FrameBufferAttachment* shared);
     static FrameBufferAttachment getDrawBuffer(GLenum attachment = GL_COLOR_ATTACHMENT0);

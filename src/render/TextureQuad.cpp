@@ -7,12 +7,13 @@
 
 void TextureQuad::prepare()
 {
+    // NOTE KI z == 1.0 for skybox
     constexpr float vertices[] = {
         // positions        // texture Coords
-        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-         1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+        -1.0f,  1.0f, 1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+         1.0f,  1.0f, 1.0f, 1.0f, 1.0f,
+         1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
     };
 
     m_vao.create("texture_quad");

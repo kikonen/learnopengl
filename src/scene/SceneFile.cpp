@@ -238,6 +238,7 @@ void SceneFile::attachSkybox(
 
     auto& flags = type->m_flags;
 
+    flags.skybox = true;
     flags.wireframe = false;
     flags.renderBack = true;
     flags.noShadow = true;
@@ -246,9 +247,7 @@ void SceneFile::attachSkybox(
     //flags.noRefract = true;
     flags.noDisplay = false;
     flags.noSelect = true;
-    flags.gbuffer = data.programName.starts_with("g_");
-
-    type->m_drawOptions.depthFunc = GL_LEQUAL;
+    flags.gbuffer = false;// data.programName.starts_with("g_");
 
     type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
 
@@ -1209,6 +1208,7 @@ void SceneFile::loadSkybox(
 
         if (k == "program" || k == "shader") {
             data.programName = v.as<std::string>();
+            data.programName = "skybox";
         }
         else if (k == "material") {
             data.materialName = v.as<std::string>();

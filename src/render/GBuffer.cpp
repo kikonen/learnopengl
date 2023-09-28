@@ -4,6 +4,7 @@
 
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
+#include "render/FrameBufferAttachment.h"
 
 namespace {
 }
@@ -52,6 +53,12 @@ void GBuffer::updateView(const RenderContext& ctx)
         unbindTexture(ctx);
     }
 
+    {
+        m_depthTexture = std::make_unique< FrameBufferAttachment>();
+        *m_depthTexture = FrameBufferAttachment::getDepthStencilTexture();
+        m_depthTexture->create("gbuffer-ref-tex", w, h);
+    }
+
     m_width = w;
     m_height = h;
 }
@@ -69,7 +76,9 @@ void GBuffer::bindTexture(const RenderContext& ctx)
     //m_buffer->bindTexture(ctx, ATT_POSITION_INDEX, UNIT_G_POSITION);
     m_buffer->bindTexture(ctx, ATT_NORMAL_INDEX, UNIT_G_NORMAL);
     m_buffer->bindTexture(ctx, ATT_METAL_INDEX, UNIT_G_METAL);
-    m_buffer->bindTexture(ctx, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
+    //m_buffer->bindTexture(ctx, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
+
+    m_depthTexture->bindTexture(ctx, UNIT_G_DEPTH);
 }
 
 void GBuffer::unbindTexture(const RenderContext& ctx)
@@ -81,16 +90,18 @@ void GBuffer::unbindTexture(const RenderContext& ctx)
     m_buffer->unbindTexture(ctx, UNIT_G_METAL);
     m_buffer->unbindTexture(ctx, UNIT_G_NORMAL);
     m_buffer->unbindTexture(ctx, UNIT_G_DEPTH);
+
+    m_depthTexture->unbindTexture(ctx, UNIT_G_DEPTH);
 }
 
 void GBuffer::bindDepthTexture(const RenderContext& ctx)
 {
-    m_buffer->bindTexture(ctx, 4, UNIT_G_DEPTH);
+    m_depthTexture->bindTexture(ctx, UNIT_G_DEPTH);
 }
 
 void GBuffer::unbindDepthTexture(const RenderContext& ctx)
 {
-    m_buffer->unbindTexture(ctx, UNIT_G_DEPTH);
+    m_depthTexture->unbindTexture(ctx, UNIT_G_DEPTH);
 }
 
 void GBuffer::clearAll()
