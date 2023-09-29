@@ -228,6 +228,12 @@ void AssetsFile::loadAssets(
         else if (k == "mirror_fov") {
             data.mirrorFov = readFloat(v);
         }
+        else if (k == "mirror_render_mirror") {
+            data.mirrorRenderMirror = readBool(v);
+        }
+        else if (k == "mirror_render_water") {
+            data.mirrorRenderWater = readBool(v);
+        }
         else if (k == "mirror_render_frame_start") {
             data.mirrorRenderFrameStart = readInt(v);
         }
@@ -317,6 +323,12 @@ void AssetsFile::loadAssets(
         }
         else if (k == "cube_map_far_plane") {
             data.cubeMapFarPlane = readFloat(v);
+        }
+        else if (k == "cube_map_render_mirror") {
+            data.cubeMapRenderMirror = readBool(v);
+        }
+        else if (k == "cube_map_render_water") {
+            data.cubeMapRenderWater = readBool(v);
         }
         else if (k == "cube_map_render_frame_start") {
             data.cubeMapRenderFrameStart = readInt(v);

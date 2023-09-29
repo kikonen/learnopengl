@@ -272,28 +272,30 @@ void CubeMapRenderer::drawNodes(
     const Node* current,
     const glm::vec4& debugColor)
 {
-    if (true) {
-        bool renderedWater{ false };
-        bool renderedMirror{ false };
+    bool renderedWater{ false };
+    bool renderedMirror{ false };
 
+    if (ctx.m_assets.cubeMapRenderWater) {
         // NOTE KI notice if water was actually existing
         if (m_waterMapRenderer->isEnabled()) {
             renderedWater = m_waterMapRenderer->render(ctx);
         }
+    }
 
+    if (ctx.m_assets.cubeMapRenderMirror) {
         // NOTE KI mirror is *NOT* rendered in all cube sides
         // => only when eye reflect dir in mirror matches closest
         if (m_mirrorMapRenderer->isEnabled()) {
             renderedMirror = m_mirrorMapRenderer->render(ctx);
         }
+    }
 
-        if (m_waterMapRenderer->isEnabled() && renderedWater) {
-            m_waterMapRenderer->bindTexture(ctx);
-        }
+    if (m_waterMapRenderer->isEnabled() && renderedWater) {
+        m_waterMapRenderer->bindTexture(ctx);
+    }
 
-        if (m_mirrorMapRenderer->isEnabled() && renderedMirror) {
-            m_mirrorMapRenderer->bindTexture(ctx);
-        }
+    if (m_mirrorMapRenderer->isEnabled() && renderedMirror) {
+        m_mirrorMapRenderer->bindTexture(ctx);
     }
 
     // TODO KI to match special logic in CubeMapBuffer

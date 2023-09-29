@@ -118,6 +118,9 @@ public:
     int mirrorReflectionSize;
     float mirrorFov;
 
+    bool mirrorRenderMirror;
+    bool mirrorRenderWater;
+
     int mirrorRenderFrameStart;
     int mirrorRenderFrameStep;
 
@@ -160,6 +163,9 @@ public:
     bool cubeMapSeamless;
     bool cubeMapSkipOthers;
     int cubeMapSize;
+
+    bool cubeMapRenderMirror;
+    bool cubeMapRenderWater;
 
     int cubeMapRenderFrameStart;
     int cubeMapRenderFrameStep;

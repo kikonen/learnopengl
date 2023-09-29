@@ -101,6 +101,10 @@ Assets::Assets()
     mirrorMapEnabled = true;
     mirrorReflectionSize = 1024;
     mirrorFov = 30.f;
+
+    mirrorRenderMirror = true;
+    mirrorRenderWater = true;
+
     // NOTE KI mirror does not tolerate much skip
     mirrorRenderFrameStart = 0;
     mirrorRenderFrameStep = 2;
@@ -145,6 +149,9 @@ Assets::Assets()
     cubeMapSize = 1024;
     cubeMapNearPlane = 0.5;
     cubeMapFarPlane = 200;
+
+    cubeMapRenderMirror = true;
+    cubeMapRenderWater = true;
 
     cubeMapRenderFrameStart = 1;
     cubeMapRenderFrameStep = 2;

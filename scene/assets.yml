@@ -75,6 +75,8 @@ assets:
   mirror_map_enabled: true
   mirror_reflection_size: 2048
   mirror_fov: 30
+  mirror_render_mirror: true
+  mirror_render_water: true
   mirror_render_frame_start: 0
   mirror_render_frame_step: 4
 
@@ -116,6 +118,8 @@ assets:
   cube_map_size: 512
   cube_map_near_plane: 0.5
   cube_map_far_plane: 200
+  cube_map_render_mirror: true
+  cube_map_render_water: true
   cube_map_render_frame_start: 1
   cube_map_render_frame_step: 6
 
