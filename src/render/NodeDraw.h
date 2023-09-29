@@ -86,6 +86,9 @@ private:
     PlainQuad m_plainQuad;
     TextureQuad m_textureQuad;
 
+    Program* m_solidDepthProgram{ nullptr };
+    Program* m_alphaDepthProgram{ nullptr };
+
     Program* m_deferredProgram{ nullptr };
     Program* m_oitProgram{ nullptr };
     Program* m_blendOitProgram{ nullptr };

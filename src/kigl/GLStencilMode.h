@@ -69,7 +69,7 @@ struct GLStencilMode {
         return stencil;
     }
 
-    static GLStencilMode non_zero()
+    static GLStencilMode only_non_zero()
     {
         GLStencilMode stencil;
         stencil.op_dppass = GL_REPLACE;

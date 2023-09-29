@@ -26,6 +26,12 @@ void NodeDraw::prepare(
     m_plainQuad.prepare();
     m_textureQuad.prepare();
 
+    m_solidDepthProgram = registry->m_programRegistry->getProgram(SHADER_DEPTH_PASS);
+    m_alphaDepthProgram = registry->m_programRegistry->getProgram(SHADER_DEPTH_PASS, { { DEF_USE_ALPHA, "1" } });
+
+    m_solidDepthProgram->prepare(assets);
+    m_alphaDepthProgram->prepare(assets);
+
     m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
     m_deferredProgram ->prepare(assets);
 
@@ -85,6 +91,34 @@ void NodeDraw::drawNodes(
         // NOTE KI no blend in G-buffer
         auto oldAllowBlend = ctx.setAllowBlend(false);
 
+        if (false)
+        {
+            {
+                m_solidDepthProgram->bind(ctx.m_state);
+
+                ctx.m_nodeDraw->drawProgram(
+                    ctx,
+                    m_solidDepthProgram,
+                    nullptr,
+                    [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+                    nodeSelector,
+                    kindBits & NodeDraw::KIND_SOLID);
+            }
+
+            {
+                m_alphaDepthProgram->bind(ctx.m_state);
+
+                ctx.m_nodeDraw->drawProgram(
+                    ctx,
+                    m_alphaDepthProgram,
+                    nullptr,
+                    [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+                    nodeSelector,
+                    kindBits & (NodeDraw::KIND_SPRITE | NodeDraw::KIND_ALPHA | NodeDraw::KIND_BLEND));
+            }
+
+            ctx.m_batch->flush(ctx);
+        }
 
         {
             ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID));
@@ -123,7 +157,7 @@ void NodeDraw::drawNodes(
     // pass 3 - light
     //if (false)
     {
-        ctx.m_state.enableStencil(GLStencilMode::non_zero());
+        ctx.m_state.enableStencil(GLStencilMode::only_non_zero());
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
         m_deferredProgram->bind(ctx.m_state);
@@ -241,7 +275,7 @@ void NodeDraw::drawNodes(
             ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
             if (ctx.m_assets.effectFogEnabled) {
-                ctx.m_state.enableStencil(GLStencilMode::non_zero());
+                ctx.m_state.enableStencil(GLStencilMode::only_non_zero());
                 m_fogProgram->bind(ctx.m_state);
                 m_textureQuad.draw(ctx.m_state);
                 ctx.m_state.disableStencil();
