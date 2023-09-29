@@ -9,7 +9,7 @@ void ModelMaterialInit::prepare(
     ModelMesh& mesh,
     MaterialVBO& materialVBO)
 {
-    KI_INFO_OUT(fmt::format("PREPARE_MATERIAL: mesh={}, materials={}", mesh.str(), materialVBO.m_materials.size()));
+    KI_INFO(fmt::format("PREPARE_MATERIAL: mesh={}, materials={}", mesh.str(), materialVBO.m_materials.size()));
     prepareVertices(mesh.m_vertices, materialVBO);
 }
 

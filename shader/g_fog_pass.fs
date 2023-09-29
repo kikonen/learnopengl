@@ -4,8 +4,8 @@
 #include uniform_data.glsl
 //#include uniform_buffer_info.glsl
 
-// https://www.khronos.org/opengl/wiki/Early_Fragment_Test
-// https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
+// NOTE KI depth is *not* used
+// => for *stencil test
 layout(early_fragment_tests) in;
 
 in VS_OUT {
@@ -43,11 +43,6 @@ void main()
   vec3 viewPos;
   {
     float depth = texture(g_depth, texCoord).x * 2.0 - 1.0;
-
-    // NOTE KI no fog over skybox
-    if (depth >= 1.0) {
-      discard;
-    }
 
     vec4 clip = vec4(texCoord.x * 2.0 - 1.0, texCoord.y * 2.0 - 1.0, depth, 1.0);
     vec4 viewW  = u_invProjectionMatrix * clip;

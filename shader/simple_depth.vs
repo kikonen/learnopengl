@@ -21,7 +21,6 @@ layout(location = UNIFORM_SHADOW_MAP_INDEX) uniform uint u_shadowIndex;
 out VS_OUT {
   vec2 texCoord;
   flat uint materialIndex;
-  flat uint shapeIndex;
 } vs_out;
 #endif
 
@@ -71,7 +70,6 @@ void main()
   }
 
   vs_out.materialIndex = materialIndex;
-  vs_out.shapeIndex = entity.u_shapeIndex;
   vs_out.texCoord = a_texCoord;
 #endif
 }

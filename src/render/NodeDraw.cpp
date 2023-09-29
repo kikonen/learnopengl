@@ -85,13 +85,22 @@ void NodeDraw::drawNodes(
         // NOTE KI no blend in G-buffer
         auto oldAllowBlend = ctx.setAllowBlend(false);
 
-        drawNodesImpl(
-            ctx,
-            [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
-            nodeSelector,
-            kindBits);
 
-        ctx.m_batch->flush(ctx);
+        {
+            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID));
+            ctx.m_state.setDepthFunc(GL_LEQUAL);
+
+            drawNodesImpl(
+                ctx,
+                [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+                nodeSelector,
+                kindBits);
+
+            ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+            ctx.m_batch->flush(ctx);
+
+            ctx.m_state.disableStencil();
+        }
 
         ctx.setAllowBlend(oldAllowBlend);
 
@@ -226,8 +235,10 @@ void NodeDraw::drawNodes(
             ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
             if (ctx.m_assets.effectFogEnabled) {
+                ctx.m_state.enableStencil(GLStencilMode::non_zero());
                 m_fogProgram->bind(ctx.m_state);
                 m_textureQuad.draw(ctx.m_state);
+                ctx.m_state.disableStencil();
             }
 
             if (ctx.m_assets.effectOitEnabled) {

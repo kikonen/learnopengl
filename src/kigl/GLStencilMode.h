@@ -68,4 +68,15 @@ struct GLStencilMode {
 
         return stencil;
     }
+
+    static GLStencilMode non_zero()
+    {
+        GLStencilMode stencil;
+        stencil.op_dppass = GL_REPLACE;
+        stencil.func = GL_NOTEQUAL;
+        stencil.func_ref = 0;
+        stencil.mask = 0x00;
+
+        return stencil;
+    }
 };
