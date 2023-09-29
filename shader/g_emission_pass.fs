@@ -6,7 +6,9 @@
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
-layout(early_fragment_tests) in;
+// NOTE KI "early_fragment_tests" cannot be used at same same with alpha
+// => disables "discard" logic
+//layout(early_fragment_tests) in;
 
 in VS_OUT {
   vec2 texCoord;

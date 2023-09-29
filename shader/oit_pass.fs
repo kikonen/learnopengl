@@ -10,7 +10,9 @@
 
 // NOTE KI depth is *not* updated in OIT pass
 // => testing against solid depth
-layout(early_fragment_tests) in;
+// NOTE KI "early_fragment_tests" cannot be used at same same with alpha
+// => disables "discard" logic
+//layout(early_fragment_tests) in;
 
 in VS_OUT {
   vec2 texCoord;

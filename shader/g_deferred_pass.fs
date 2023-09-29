@@ -8,6 +8,8 @@
 //#include uniform_buffer_info.glsl
 #include uniform_lights.glsl
 
+// NOTE KI depth is *not* used
+// => for *stencil test
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
 layout(early_fragment_tests) in;
