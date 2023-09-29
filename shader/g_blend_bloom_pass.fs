@@ -37,7 +37,7 @@ void main()
     // additive blending
     hdrColor += bloomColor;
 
-    color = hdrColor + hdrColor * (1.0 + sin(u_time * 2.4)) * 0.2;
+    color = hdrColor;// + hdrColor * (1.0 + sin(u_time * 2.4)) * 0.2;
   }
 
   o_fragColor = vec4(color, 1.0);

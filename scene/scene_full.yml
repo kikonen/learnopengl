@@ -397,6 +397,9 @@ entities:
     model: spyro2
     program: g_tex
     pos: [0.0, 35.0, 30.0]
+    material_modifier:
+      map_pbr: textures/Lava 05 [8K]
+      tiling: 6
     scale: 0.06
     enabled: true
   - name: Backback
