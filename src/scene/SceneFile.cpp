@@ -94,6 +94,11 @@ namespace {
         std::regex(".*[-_ ]diff[-_ \\.].*"),
     };
 
+    const std::vector<std::regex> emissionMatchers{
+        std::regex(".*[-_ ]emission[-_ \\.].*"),
+        std::regex(".*[-_ ]emi[-_ \\.].*"),
+    };
+
     const std::vector<std::regex> normalMatchers{
         std::regex(".*[-_ ]normal[-_ \\.].*"),
         std::regex(".*[-_ ]normalgl[-_ \\.].*"),
@@ -1967,6 +1972,12 @@ void SceneFile::loadMaterialPbr(
         if (!found && util::matchAny(colorMatchers, matchName)) {
             fields.map_kd = true;
             material.map_kd = assetPath;
+            found = true;
+        }
+
+        if (!found && util::matchAny(emissionMatchers, matchName)) {
+            fields.map_ke = true;
+            material.map_ke = assetPath;
             found = true;
         }
 
