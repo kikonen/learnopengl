@@ -96,9 +96,9 @@ void NodeDraw::drawNodes(
                 nodeSelector,
                 kindBits);
 
-            ctx.m_state.setDepthFunc(ctx.m_depthFunc);
             ctx.m_batch->flush(ctx);
 
+            ctx.m_state.setDepthFunc(ctx.m_depthFunc);
             ctx.m_state.disableStencil();
         }
 
@@ -123,12 +123,14 @@ void NodeDraw::drawNodes(
     // pass 3 - light
     //if (false)
     {
+        ctx.m_state.enableStencil(GLStencilMode::non_zero());
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
         m_deferredProgram->bind(ctx.m_state);
         m_textureQuad.draw(ctx.m_state);
 
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+        ctx.m_state.disableStencil();
 
         //primaryBuffer->resetDrawBuffers(1);
     }
@@ -139,6 +141,8 @@ void NodeDraw::drawNodes(
     //if (false)
     {
         ctx.validateRender("non_gbuffer");
+
+        ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID));
 
         bool rendered = drawNodesImpl(
             ctx,
@@ -153,6 +157,8 @@ void NodeDraw::drawNodes(
             // ex. selection volume changes to GL_LINE
             ctx.bindDefaults();
         }
+
+        ctx.m_state.disableStencil();
     }
 
     // pass 5 - OIT 
@@ -161,14 +167,14 @@ void NodeDraw::drawNodes(
     {
         if (ctx.m_assets.effectOitEnabled)
         {
+            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT));
+            // NOTE KI do NOT modify depth with blend
+            auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
+
             ctx.m_state.setEnabled(GL_BLEND, true);
 
             m_oitBuffer.clearAll();
             m_oitBuffer.bind(ctx);
-
-            // NOTE KI do NOT modify depth with blend
-            auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
-            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT));
 
             // NOTE KI different blend mode for each draw buffer
             glBlendFunci(0, GL_ONE, GL_ONE);
@@ -192,10 +198,10 @@ void NodeDraw::drawNodes(
             glBlendFunci(1, GL_ONE, GL_ONE);
             ctx.m_state.invalidateBlendMode();
 
-            ctx.m_state.disableStencil();
-            ctx.m_state.setDepthMask(oldDepthMask);
-
             ctx.m_state.setEnabled(GL_BLEND, false);
+
+            ctx.m_state.setDepthMask(oldDepthMask);
+            ctx.m_state.disableStencil();
         }
     }
 
