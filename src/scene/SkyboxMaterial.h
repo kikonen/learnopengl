@@ -43,6 +43,10 @@ private:
         const Assets& assets,
         Registry* registry);
 
+    void prepareSkybox(
+        const Assets& assets,
+        Registry* registry);
+
     void prepareEnvironment(
         const Assets& assets,
         Registry* registry);
@@ -76,6 +80,7 @@ private:
 
     HdriTexture m_hdriTexture;
 
+    EnvironmentMap m_skyboxMap;
     EnvironmentMap m_environmentMap;
     IrradianceMap m_irradianceMap;
     PrefilterMap m_prefilterMap;

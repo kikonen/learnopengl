@@ -40,6 +40,7 @@ void SkyboxMaterial::prepare(
     if (m_hdri) {
         prepareHdri(assets, registry);
         prepareEnvironment(assets, registry);
+        prepareSkybox(assets, registry);
     }
     else {
         prepareFaces(assets, registry);
@@ -100,6 +101,16 @@ void SkyboxMaterial::prepareHdri(
     m_hdriTexture.prepare(assets, registry);
 }
 
+void SkyboxMaterial::prepareSkybox(
+    const Assets& assets,
+    Registry* registry)
+{
+    if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
+
+    m_skyboxMap.m_hdriTextureID = m_hdriTexture;
+    m_skyboxMap.prepare(assets, registry, assets.skyboxSize);
+}
+
 void SkyboxMaterial::prepareEnvironment(
     const Assets& assets,
     Registry* registry)
@@ -107,7 +118,7 @@ void SkyboxMaterial::prepareEnvironment(
     if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
 
     m_environmentMap.m_hdriTextureID = m_hdriTexture;
-    m_environmentMap.prepare(assets, registry);
+    m_environmentMap.prepare(assets, registry, assets.environmentMapSize);
 }
 
 void SkyboxMaterial::prepareIrradiance(
@@ -141,8 +152,8 @@ void SkyboxMaterial::prepareBrdfLut(
 
 void SkyboxMaterial::bindTextures(const RenderContext& ctx)
 {
-    if (m_environmentMap.valid()) {
-        m_environmentMap.bindTexture(ctx, UNIT_SKYBOX);
+    if (m_skyboxMap.valid()) {
+        m_skyboxMap.bindTexture(ctx, UNIT_SKYBOX);
     } else {
         if (m_cubeMap.valid()) {
             m_cubeMap.bindTexture(ctx, UNIT_SKYBOX);

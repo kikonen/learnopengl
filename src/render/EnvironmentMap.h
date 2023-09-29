@@ -26,7 +26,8 @@ public:
 
     void prepare(
         const Assets& assets,
-        Registry* registry);
+        Registry* registry,
+        int size);
 
     void bindTexture(const RenderContext& ctx, int unitIndex);
 

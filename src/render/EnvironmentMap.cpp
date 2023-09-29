@@ -16,11 +16,12 @@
 
 void EnvironmentMap::prepare(
     const Assets& assets,
-    Registry* registry)
+    Registry* registry,
+    int size)
 {
     if (m_hdriTextureID <= 0) return;
 
-    m_size = assets.environmentMapSize;
+    m_size = size;
 
     {
         m_cubeTexture.create("cube_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
