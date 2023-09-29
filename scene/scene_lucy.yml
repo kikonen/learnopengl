@@ -63,8 +63,9 @@ entities:
     model: pool_brick
     program: g_tex
     material_modifier:
-      tiling_x: 30
-      tiling_y: 2
+      map_pbr: textures\Tiles004_1K-PNG
+      tiling_x: 90
+      tiling_y: 6
     clones:
       - pos: [-100.0, -1, 0]
         scale: [0.3, 6, 100]
@@ -137,8 +138,9 @@ materials:
   - name: pool_floor
     kd: [0.8, 0.8, 0.8, 1.0]
     xxmap_kd: textures/Marble White_VH_512.PNG
-    map_kd: textures/tiles_1024.png
-    tiling: 8
+    xmap_kd: textures/tiles_1024.png
+    map_pbr: textures\Tiles074_1K-PNG
+    tiling: 16
   - name: mirror
     kd: [0.800000, 0.800000, 0.800000, 1.0]
     map_kd: textures/Marble White_VH_512.PNG

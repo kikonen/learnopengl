@@ -113,8 +113,9 @@ entities:
     model: pool_brick
     program: g_tex
     material_modifier:
+      map_pbr: textures\Tiles004_1K-PNG
       tiling_x: 30
-      tiling_y: 2
+      tiling_y: 4
     clones:
       - pos: [-30.0, 4, 20]
         scale: [0.3, 6, 60]
@@ -250,8 +251,9 @@ entities:
     model: pool_brick
     program: g_tex
     material_modifier:
+      map_pbr: textures\Tiles004_1K-PNG
       tiling_x: 30
-      tiling_y: 2
+      tiling_y: 4
     clones:
       - pos: [100.0, 4, 20]
         scale: [0.3, 6, 60]

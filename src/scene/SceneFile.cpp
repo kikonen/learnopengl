@@ -79,6 +79,7 @@ namespace {
         std::regex(".*[\\.]txt"),
         std::regex(".*[\\.]usda"),
         std::regex(".*preview.*"),
+        std::regex(".*normaldx.*"),
     };
 
     const std::vector<std::regex> validMatchers{
