@@ -91,6 +91,7 @@ void NodeDraw::drawNodes(
         // NOTE KI no blend in G-buffer
         auto oldAllowBlend = ctx.setAllowBlend(false);
 
+        // NOTE KI "pre pass depth" causes more artifacts than benefits
         if (false)
         {
             {
@@ -100,11 +101,16 @@ void NodeDraw::drawNodes(
                     ctx,
                     m_solidDepthProgram,
                     nullptr,
-                    [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+                    [&typeSelector](const MeshType* type) {
+                        return type->m_flags.gbuffer &&
+                            !type->m_flags.water &&
+                            typeSelector(type);
+                    },
                     nodeSelector,
                     kindBits & NodeDraw::KIND_SOLID);
             }
 
+            if (false)
             {
                 m_alphaDepthProgram->bind(ctx.m_state);
 
@@ -112,7 +118,11 @@ void NodeDraw::drawNodes(
                     ctx,
                     m_alphaDepthProgram,
                     nullptr,
-                    [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+                    [&typeSelector](const MeshType* type) {
+                        return type->m_flags.gbuffer &&
+                            //type->m_flags.terrain &&
+                            typeSelector(type);
+                    },
                     nodeSelector,
                     kindBits & (NodeDraw::KIND_SPRITE | NodeDraw::KIND_ALPHA | NodeDraw::KIND_BLEND));
             }

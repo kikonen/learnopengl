@@ -171,7 +171,8 @@ void FrameBufferAttachment::invalidate(
 
     GLenum attachments[] = { attachment };
 
-    glInvalidateNamedFramebufferData(fbo, 1, attachments);
+    // TODO KI based into NSight this consumes some time; perhaps irrelevant to do
+    //glInvalidateNamedFramebufferData(fbo, 1, attachments);
 }
 
 void FrameBufferAttachment::clearWithMask(int fbo, GLbitfield mask) const

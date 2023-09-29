@@ -23,6 +23,7 @@ struct NodeRenderFlags {
 
     bool mirror = false;
     bool water = false;
+    bool terrain = false;
     bool cubeMap = false;
     bool effect = false;
     bool skybox = false;

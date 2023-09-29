@@ -226,6 +226,7 @@ MeshType* TerrainGenerator::createType(
     flags = containerType->m_flags;
     flags.noDisplay = false;
     flags.invisible = false;
+    flags.terrain = true;
 
     type->m_priority = containerType->m_priority;
     type->m_script = containerType->m_script;
