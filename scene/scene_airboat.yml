@@ -24,8 +24,6 @@ entities:
     program: g_tex
     material_modifier:
       tiling: 5
-      texture_spec:
-        wrap: GL_REPEAT
     pos: [0.0, 0.0, -20.0]
     xxenabled: true
   - name: Airboat

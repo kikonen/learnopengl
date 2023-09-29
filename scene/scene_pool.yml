@@ -44,8 +44,6 @@ entities:
     program: g_tex
     material_modifier:
       tiling: 5
-      texture_spec:
-        wrap: GL_REPEAT
     pos: [0, 9.5, -10]
     scale: 2.5
     enabled: true
@@ -117,8 +115,6 @@ entities:
     material_modifier:
       tiling_x: 30
       tiling_y: 2
-      texture_spec:
-        wrap: GL_REPEAT
     clones:
       - pos: [-30.0, 4, 20]
         scale: [0.3, 6, 60]
@@ -224,8 +220,6 @@ entities:
     program: g_tex
     material_modifier:
       tiling: 5
-      texture_spec:
-        wrap: GL_REPEAT
     pos: [160, 9.5, 20]
     scale: 2.5
     enabled: true
@@ -258,8 +252,6 @@ entities:
     material_modifier:
       tiling_x: 30
       tiling_y: 2
-      texture_spec:
-        wrap: GL_REPEAT
     clones:
       - pos: [100.0, 4, 20]
         scale: [0.3, 6, 60]
@@ -325,13 +317,9 @@ materials:
     map_bump: textures/water_surface_512_normal.png
     map_dudv: textures/waterDUDV_512.png
     tiling: 2
-    texture_spec:
-      wrap: GL_REPEAT
   - name: pool_floor
     map_kd: textures/tiles_1024.png
     tiling: 8
-    texture_spec:
-      wrap: GL_REPEAT
   - name: terrain_grass_2
     map_kd: textures/terrain_2/terrain_2_TX.jpg
     map_ks: textures/terrain_2/terrain_2_SpecLM.png

@@ -216,8 +216,6 @@ entities:
     material_modifier:
       tiling_x: 2
       tiling_y: 2
-      texture_spec:
-        wrap: GL_REPEAT
     program: g_tex
     pos: [0, 15, 0]
     script_file: scripts/anim_node_path
@@ -641,8 +639,6 @@ entities:
     material_modifier:
       tiling_x: 2
       tiling_y: 2
-      texture_spec:
-        wrap: GL_REPEAT
     pos: [5.0, 25.0, 5.0]
     scale: 1
     enabled: true
@@ -735,8 +731,6 @@ entities:
     material_modifier:
       tiling_x: 100
       tiling_y: 10
-      texture_spec:
-        wrap: GL_REPEAT
     clones:
       - pos: [-30.0, 4, 20]
         scale: [0.3, 6, 60]
@@ -1067,8 +1061,6 @@ materials:
     tiling: 1
     layers: 25
     layers_depth: 0.2
-    texture_spec:
-      wrap: GL_REPEAT
   - name: default_ball
     kd: [0.8, 0.8, 0.0, 1.0]
   - name: gold_ball
@@ -1122,15 +1114,11 @@ materials:
     map_bump: textures/water_surface_512_normal.png
     map_dudv: textures/waterDUDV_512.png
     tiling: 2
-    texture_spec:
-      wrap: GL_REPEAT
   - name: pool_floor
     kd: [0.8, 0.8, 0.8, 1.0]
     xxmap_kd: textures/Marble White_VH_512.PNG
     map_kd: textures/tiles_1024.png
     tiling: 8
-    texture_spec:
-      wrap: GL_REPEAT
   - name: terrain_grass_2
     map_kd: textures/terrain_2/terrain_2_TX.jpg
     map_ks: textures/terrain_2/terrain_2_SpecLM.png
@@ -1141,12 +1129,8 @@ materials:
     map_bump: textures/water_surface_512_normal.png
     map_dudv: textures/waterDUDV_512.png
     tiling: 2
-    texture_spec:
-      wrap: GL_REPEAT
   - name: sea_floor
     map_kd: textures/tiles_1024.png
     tiling: 2
-    texture_spec:
-      wrap: GL_REPEAT
   - name: plasma_ball
     map_kd: textures/noise_256.png

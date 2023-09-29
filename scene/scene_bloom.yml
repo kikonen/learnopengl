@@ -219,8 +219,6 @@ materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
     tiling: 60
-    texture_spec:
-      wrap: GL_REPEAT
   - name: woodwall
     kd: [0.800000, 0.800000, 0.800000, 1.0]
     map_kd: textures/wood_1024.png

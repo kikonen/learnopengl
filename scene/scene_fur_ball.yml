@@ -157,8 +157,6 @@ materials:
     kd: [0.5075, 0.5075, 0.5075, 1.0]
     map_kd: textures/Dirt_vh_1024.png
     tiling: 1
-    texture_spec:
-      wrap: GL_REPEAT
   - name: fur
     kd: [0.5075, 0.5075, 0.5075, 1.0]
     map_kd: textures/Dirt_vh_1024.png
@@ -166,5 +164,3 @@ materials:
     tiling: 1
     layers: 25
     layers_depth: 0.2
-    texture_spec:
-      wrap: GL_REPEAT

@@ -199,12 +199,8 @@ materials:
     map_pbr: textures\Planks 09 [8K]
     parallax_depth: 0.0
     tiling: 10
-    texture_spec:
-      wrap: GL_REPEAT
   - name: fence
     kd: [0.800000, 0.800000, 0.800000, 1.0]
     map_pbr: textures\Fence007A_4K-JPG
     parallax_depth: 0.0
     tiling: 1
-    texture_spec:
-      wrap: GL_REPEAT

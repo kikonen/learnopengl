@@ -20,8 +20,6 @@ entities:
     material_modifier:
       tiling_x: 30
       tiling_y: 2
-      texture_spec:
-        wrap: GL_REPEAT
     clones:
       - pos: [0.0, 0, -40]
         scale: [60, 6, 0.3]

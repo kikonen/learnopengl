@@ -19,8 +19,6 @@ entities:
     program: g_tex
     material_modifier:
       tiling: 5
-      texture_spec:
-        wrap: GL_REPEAT
     pos: [0.0, 1.5, -14.0]
     enabled: true
   - name: Cube Forward
@@ -28,8 +26,6 @@ entities:
     program: tex
     material_modifier:
       tiling: 5
-      texture_spec:
-        wrap: GL_REPEAT
     pos: [0.0, -1.5, -14.0]
     enabled: true
   - name: Window 1

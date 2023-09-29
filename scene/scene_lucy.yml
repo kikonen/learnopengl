@@ -3,7 +3,6 @@ name: Lucy
 skybox:
   program: g_skybox
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
-  hdri: true
 entities:
   - name: Camera
     type: origo
@@ -66,8 +65,6 @@ entities:
     material_modifier:
       tiling_x: 30
       tiling_y: 2
-      texture_spec:
-        wrap: GL_REPEAT
     clones:
       - pos: [-100.0, -1, 0]
         scale: [0.3, 6, 100]
@@ -137,15 +134,11 @@ materials:
     map_bump: textures/water_surface_512_normal.png
     map_dudv: textures/waterDUDV_512.png
     tiling: 2
-    texture_spec:
-      wrap: GL_REPEAT
   - name: pool_floor
     kd: [0.8, 0.8, 0.8, 1.0]
     xxmap_kd: textures/Marble White_VH_512.PNG
     map_kd: textures/tiles_1024.png
     tiling: 8
-    texture_spec:
-      wrap: GL_REPEAT
   - name: mirror
     kd: [0.800000, 0.800000, 0.800000, 1.0]
     map_kd: textures/Marble White_VH_512.PNG

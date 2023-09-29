@@ -66,10 +66,6 @@ materials:
     map_bump: textures/water_surface_512_normal.png
     map_dudv: textures/waterDUDV_512.png
     tiling: 2
-    texture_spec:
-      wrap: GL_REPEAT
   - name: pool_floor
     map_kd: textures/tiles_1024.png
     tiling: 8
-    texture_spec:
-      wrap: GL_REPEAT

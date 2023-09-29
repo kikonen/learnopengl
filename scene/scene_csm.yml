@@ -34,8 +34,6 @@ entities:
     material_modifier:
       tiling: 3
       map_pbr: textures\Bricks007_1K-PNG
-      texture_spec:
-        wrap: GL_REPEAT
     pos: [0.0, 2.0, 0.0]
     enabled: true
     repeat:
@@ -214,8 +212,6 @@ materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
     tiling: 60
-    texture_spec:
-      wrap: GL_REPEAT
     metal: [0, 0.5, 0, 1]
   - name: woodwall
     map_kd: textures/wood_1024.png

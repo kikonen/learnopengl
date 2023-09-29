@@ -61,5 +61,3 @@ materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
     tiling: 60
-    texture_spec:
-      wrap: GL_REPEAT

@@ -14,8 +14,6 @@ entities:
     program: g_tex
     material_modifier:
       tiling: 5
-      texture_spec:
-        wrap: GL_REPEAT
     render_flags:
       allow_normals: false
     camera:
