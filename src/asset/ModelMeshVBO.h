@@ -28,10 +28,15 @@ private:
 
 public:
     // NOTE KI absolute offset into vbo
+    size_t m_positionOffset = 0;
+
+    // NOTE KI absolute offset into vbo
     size_t m_vertexOffset = 0;
+
     // NOTE KI absolute offset into vbo
     size_t m_indexOffset = 0;
 
+    std::vector<PositionEntry> m_positionEntries;
     std::vector<VertexEntry> m_vertexEntries;
     std::vector<IndexEntry> m_indexEntries;
 

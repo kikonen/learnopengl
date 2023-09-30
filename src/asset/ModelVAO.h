@@ -27,9 +27,11 @@ public:
 private:
     void prepareVAO(
         GLVertexArray& vao,
-        GLBuffer& vbo,
+        GLBuffer& positionVbo,
+        GLBuffer& vertexVbo,
         GLBuffer& ebo);
 
+    void updatePositionBuffer();
     void updateVertexBuffer();
     void updateIndexBuffer();
 
@@ -37,12 +39,17 @@ private:
     bool m_prepared = false;
 
     std::unique_ptr<GLVertexArray> m_vao;
-    GLBuffer m_vbo{ "modelVBO" };
+
+    GLBuffer m_positionVbo{ "positionVBO" };
+    GLBuffer m_vertexVbo{ "vertexVBO" };
+
     GLBuffer m_ebo{ "modelEBO" };
 
+    std::vector<PositionEntry> m_positionEntries;
     std::vector<VertexEntry> m_vertexEntries;
     std::vector<IndexEntry> m_indexEntries;
 
+    size_t m_lastPositionSize = 0;
     size_t m_lastVertexSize = 0;
     size_t m_lastIndexSize = 0;
 };

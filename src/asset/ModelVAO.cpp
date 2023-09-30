@@ -30,7 +30,12 @@ GLVertexArray* ModelVAO::prepare()
         m_vao->create("model");
     }
     {
-        m_vbo.createEmpty(VERTEX_BLOCK_SIZE * sizeof(VertexEntry), GL_DYNAMIC_STORAGE_BIT);
+        m_positionVbo.createEmpty(VERTEX_BLOCK_SIZE * sizeof(PositionEntry), GL_DYNAMIC_STORAGE_BIT);
+
+        m_positionEntries.reserve(VERTEX_BLOCK_SIZE);
+    }
+    {
+        m_vertexVbo.createEmpty(VERTEX_BLOCK_SIZE * sizeof(VertexEntry), GL_DYNAMIC_STORAGE_BIT);
 
         m_vertexEntries.reserve(VERTEX_BLOCK_SIZE);
     }
@@ -42,46 +47,69 @@ GLVertexArray* ModelVAO::prepare()
 
     // NOTE KI VBO & EBO are just empty buffers here
 
-    prepareVAO(*m_vao, m_vbo, m_ebo);
+    prepareVAO(*m_vao, m_positionVbo, m_vertexVbo, m_ebo);
     return m_vao.get();
 }
 
 void ModelVAO::prepareVAO(
     GLVertexArray& vao,
-    GLBuffer& vbo,
+    GLBuffer& positionVbo,
+    GLBuffer& vertexVbo,
     GLBuffer& ebo)
 {
-    glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, vbo, 0, sizeof(VertexEntry));
+    // "Tile" based GPU can benefit from having separate position stream VBO for improved caching
+    // https://solidpixel.github.io/2022/07/21/vertexpacking.html
+    // https://www.intel.com/content/www/us/en/developer/articles/guide/developer-and-optimization-guide-for-intel-processor-graphics-gen11-api.html
+
     {
-        glEnableVertexArrayAttrib(vao, ATTR_POS);
-        glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
-        glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
-        glEnableVertexArrayAttrib(vao, ATTR_TEX);
+        glVertexArrayVertexBuffer(vao, VBO_POSITION_BINDING, positionVbo, 0, sizeof(PositionEntry));
+        {
+            glEnableVertexArrayAttrib(vao, ATTR_POS);
 
-        // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
-        // https://www.khronos.org/opengl/wiki/Vertex_Specification
-        //
-        // vertex attr
-        glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, pos));
+            // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
+            // https://www.khronos.org/opengl/wiki/Vertex_Specification
+            //
+            // vertex attr
+            glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(PositionEntry, pos));
 
-        // normal attr
-        glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, normal));
+            glVertexArrayAttribBinding(vao, ATTR_POS, VBO_POSITION_BINDING);
 
-        // tangent attr
-        glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, tangent));
-
-        // texture attr
-        glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoords));
-
-        glVertexArrayAttribBinding(vao, ATTR_POS, VBO_VERTEX_BINDING);
-        glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_VERTEX_BINDING);
-        glVertexArrayAttribBinding(vao, ATTR_TANGENT, VBO_VERTEX_BINDING);
-        glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_VERTEX_BINDING);
-
-        // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
-        // https://www.khronos.org/opengl/wiki/Vertex_Specification
-        glVertexArrayBindingDivisor(vao, VBO_VERTEX_BINDING, 0);
+            // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
+            // https://www.khronos.org/opengl/wiki/Vertex_Specification
+            glVertexArrayBindingDivisor(vao, VBO_POSITION_BINDING, 0);
+        }
     }
+
+    {
+        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, vertexVbo, 0, sizeof(VertexEntry));
+        {
+            glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
+            glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
+            glEnableVertexArrayAttrib(vao, ATTR_TEX);
+
+            // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
+            // https://www.khronos.org/opengl/wiki/Vertex_Specification
+            //
+
+            // normal attr
+            glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, normal));
+
+            // tangent attr
+            glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, tangent));
+
+            // texture attr
+            glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoords));
+
+            glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_VERTEX_BINDING);
+            glVertexArrayAttribBinding(vao, ATTR_TANGENT, VBO_VERTEX_BINDING);
+            glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_VERTEX_BINDING);
+
+            // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
+            // https://www.khronos.org/opengl/wiki/Vertex_Specification
+            glVertexArrayBindingDivisor(vao, VBO_VERTEX_BINDING, 0);
+        }
+    }
+
     {
         glVertexArrayElementBuffer(vao, ebo);
     }
@@ -89,8 +117,32 @@ void ModelVAO::prepareVAO(
 
 GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
 {
+    assert(!meshVBO.m_positionEntries.empty());
     assert(!meshVBO.m_vertexEntries.empty());
     assert(!meshVBO.m_indexEntries.empty());
+
+    {
+        const size_t count = meshVBO.m_positionEntries.size();
+        const size_t baseIndex = m_positionEntries.size();
+        const size_t baseOffset = baseIndex * sizeof(PositionEntry);
+
+        if (m_positionEntries.size() + count >= MAX_VERTEX_COUNT)
+            throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
+
+        meshVBO.m_positionOffset = baseOffset;
+
+        {
+            size_t size = m_positionEntries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
+            size += VERTEX_BLOCK_SIZE - size % VERTEX_BLOCK_SIZE;
+            size = std::min(size, MAX_VERTEX_COUNT);
+            m_positionEntries.reserve(size);
+        }
+
+        m_positionEntries.insert(
+            m_positionEntries.end(),
+            meshVBO.m_positionEntries.begin(),
+            meshVBO.m_positionEntries.end());
+    }
 
     {
         const size_t count = meshVBO.m_vertexEntries.size();
@@ -143,8 +195,39 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
 
 void ModelVAO::update(const UpdateContext& ctx)
 {
+    updatePositionBuffer();
     updateVertexBuffer();
     updateIndexBuffer();
+}
+
+void ModelVAO::updatePositionBuffer()
+{
+    const size_t index = m_lastPositionSize;
+    const size_t totalCount = m_positionEntries.size();
+
+    if (index == totalCount) return;
+    if (totalCount == 0) return;
+
+    {
+        constexpr size_t sz = sizeof(PositionEntry);
+        int updateIndex = index;
+
+        // NOTE KI *reallocate* SSBO if needed
+        if (m_positionVbo.m_size < totalCount * sz) {
+            m_positionVbo.resizeBuffer(m_positionEntries.capacity() * sz);
+            glVertexArrayVertexBuffer(*m_vao, VBO_POSITION_BINDING, m_positionVbo, 0, sizeof(PositionEntry));
+            updateIndex = 0;
+        }
+
+        const int updateCount = totalCount - updateIndex;
+
+        m_positionVbo.update(
+            updateIndex * sz,
+            updateCount * sz,
+            &m_positionEntries[updateIndex]);
+    }
+
+    m_lastPositionSize = totalCount;
 }
 
 void ModelVAO::updateVertexBuffer()
@@ -160,15 +243,15 @@ void ModelVAO::updateVertexBuffer()
         int updateIndex = index;
 
         // NOTE KI *reallocate* SSBO if needed
-        if (m_vbo.m_size < totalCount * sz) {
-            m_vbo.resizeBuffer(m_vertexEntries.capacity() * sz);
-            glVertexArrayVertexBuffer(*m_vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(VertexEntry));
+        if (m_vertexVbo.m_size < totalCount * sz) {
+            m_vertexVbo.resizeBuffer(m_vertexEntries.capacity() * sz);
+            glVertexArrayVertexBuffer(*m_vao, VBO_VERTEX_BINDING, m_vertexVbo, 0, sizeof(VertexEntry));
             updateIndex = 0;
         }
 
         const int updateCount = totalCount - updateIndex;
 
-        m_vbo.update(
+        m_vertexVbo.update(
             updateIndex * sz,
             updateCount * sz,
             &m_vertexEntries[updateIndex]);
