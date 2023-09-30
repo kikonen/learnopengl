@@ -563,7 +563,7 @@ entities:
     material: default_ball
     force_material: true
     material_modifier:
-      reflection: 0.05
+      metal: [0.6, 0.3, 0, 1]
     enabled: true
   - name: Gold ball
     model: water_ball
@@ -573,7 +573,6 @@ entities:
     force_material: true
     material: gold_ball
     material_modifier:
-      reflection: 0.05
       map_pbr: textures\Metal007_1K-PNG
     enabled: true
   - name: ball origo
@@ -589,8 +588,7 @@ entities:
     force_material: true
     material: silver_ball
     material_modifier:
-      reflection: 0.05
-      metal: [1, 0.1, 0, 1]
+      metal: [1, 0.3, 0, 1]
     enabled: true
   - name: Bronze ball
     parent_id: [auto, ball-origo]
@@ -601,8 +599,7 @@ entities:
     force_material: true
     material: bronze_ball
     material_modifier:
-      reflection: 0.05
-      metal: [1, 0.1, 0, 1]
+      metal: [1, 0.3, 0, 1]
     enabled: true
   - name: Copper ball
     parent_id: [auto, ball-origo]
@@ -613,8 +610,7 @@ entities:
     force_material: true
     material: copper
     material_modifier:
-      reflection: 0.05
-      metal: [1, 0.1, 0, 1]
+      metal: [1, 0.3, 0, 1]
     enabled: true
   - name: Plasma ball
     parent_id: [auto, cube-3]
