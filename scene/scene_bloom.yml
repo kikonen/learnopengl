@@ -202,17 +202,20 @@ entities:
     enabled: true
   - name: wooden floor
     model: quad
-    xxmodel: woodwall
     material: wood_floor
     program: g_tex
     position: [0, 0, 0]
-    rot: [270, 0, 0]
+    rot: [270, 90, 0]
     render_flags:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
     enabled: true
 materials:
+  - name: wood_floor
+    map_pbr: textures\Planks 09 [8K]
+    tiling: 60
+    metal: [0, 0.5, 0, 1]
   - name: window_2
     kd: [0.800000, 0.800000, 0.800000, 1.0]
     map_kd: textures/Window_Stained_Glass_lg_HI_256.PNG

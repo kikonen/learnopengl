@@ -2,9 +2,7 @@
 name: Origo
 viewports:
 skybox:
-  program: g_skybox
-  priority: -100
-  material: skybox
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 lights: {}
 cube_maps: {}
 root:
@@ -24,7 +22,8 @@ entities:
     model: texture_cube
     program: g_tex
     material_modifier:
-      tiling: 5
+      tiling: 3
+      map_pbr: textures\Bricks007_1K-PNG
     pos: [0.0, 2.0, 0.0]
     enabled: true
     repeat:
@@ -117,7 +116,6 @@ entities:
       z_step: 5
       y_count: 2
       y_step: 5
-
   - name: Brick wall 1 - plain
     model: quad
     material: brickwall
@@ -161,27 +159,24 @@ entities:
       z_step: 5
       y_count: 2
       y_step: 5
-  - name: Giant wooden box
+  - name: wooden floor
     model: quad
-    xxmodel: woodwall
-    material: giant_woodbox
+    material: wood_floor
     program: g_tex
-    position: [0, 0, 0]
-    rot: [270, 0, 0]
+    pos: [0.0, 0.0, 0.0]
+    rot: [270, 90, 0]
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [100, 100, 100]
+    scale: [100, 100, 1]
     enabled: true
 materials:
-  - name: giant_woodbox
-    map_kd: textures/wood_1024.png
-    reflection: 0.1
+  - name: wood_floor
+    map_pbr: textures\Planks 09 [8K]
+    parallax_depth: 0.0
     tiling: 60
   - name: brickwall
-    map_kd: textures/brickwall_1024.png
-    map_bump: textures/brickwall_1024_normal.png
-    xreflection: 0.2
+    map_pbr: textures\Bricks007_1K-PNG
     parallax_depth: 0.02
   - name: brickwall2
     kd: [0.800000, 0.800000, 0.800000, 1.0]

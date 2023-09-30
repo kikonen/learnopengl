@@ -2,15 +2,6 @@
 name: Origo
 viewports:
 skybox:
-  program: g_skybox
-  xmaterial: skybox/Skybox_3
-  faces:
-    - Left_Tex.png
-    - Right_Tex.png
-    - Up_Tex.png
-    - Down_Tex.png
-    - Front_Tex.png
-    - Back_Tex.png
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 lights: {}
 cube_maps: {}
@@ -202,7 +193,7 @@ entities:
     material: wood_floor
     program: g_tex
     position: [0, 0, 0]
-    rot: [270, 0, 0]
+    rot: [270, 90, 0]
     render_flags:
       render_back: true
       no_shadow: true
