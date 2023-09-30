@@ -12,6 +12,7 @@
 #include <fmt/format.h>
 
 #include "util/Util.h"
+#include "util/glm_format.h"
 
 #include "asset/Material.h"
 #include "asset/ModelMesh.h"
@@ -1036,6 +1037,7 @@ void SceneFile::modifyMaterial(
     if (f.map_height) m.map_height = mod.map_height;
     if (f.map_noise) m.map_noise = mod.map_noise;
 
+    if (f.metal) m.metal = mod.metal;
     if (f.map_roughness) m.map_roughness = mod.map_roughness;
     if (f.map_metalness) m.map_metalness = mod.map_metalness;
     if (f.map_occlusion) m.map_occlusion = mod.map_occlusion;
@@ -1886,6 +1888,7 @@ void SceneFile::loadMaterial(
         }
         else if (k == "metal") {
             material.metal = readVec4(v);
+            KI_INFO_OUT(fmt::format("METAL: {}", material.metal));
             fields.metal = true;
         }
         else if (k == "pattern") {

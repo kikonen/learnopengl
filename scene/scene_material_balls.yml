@@ -84,7 +84,8 @@ entities:
     material: default_ball
     force_material: true
     material_modifier:
-      reflection: 0.05
+      xreflection: 0.05
+      metal: [0.2, 0.1, 0.0, 1.0]
     enabled: true
   - name: Gold ball
     parent_id: [auto, origo]
@@ -95,7 +96,7 @@ entities:
     force_material: true
     material: gold_ball
     material_modifier:
-      reflection: 0.05
+      xreflection: 0.05
       xmap_pbr: textures\Planks 09 [8K]
       map_pbr: textures\Metal007_1K-PNG
       parallax_depth: 0.0
@@ -114,7 +115,7 @@ entities:
       xblend: true
       render_back: true
     material_modifier:
-      reflection: 0.05
+      xreflection: 0.05
       map_pbr: textures\Fence007A_4K-JPG
       parallax_depth: 0.0
     enabled: true
@@ -127,7 +128,7 @@ entities:
     force_material: true
     material: bronze_ball
     material_modifier:
-      reflection: 0.05
+      xreflection: 0.05
       map_pbr: textures\Plastic 01 [4K]
       parallax_depth: 0.0
     enabled: true
@@ -140,7 +141,7 @@ entities:
     force_material: true
     material: bronze_ball
     material_modifier:
-      reflection: 0.05
+      xreflection: 0.05
       map_pbr: textures\Metal022_1K-PNG
       tiling: 3
       parallax_depth: 0.0
@@ -154,7 +155,7 @@ entities:
     force_material: true
     material: bronze_ball
     material_modifier:
-      reflection: 0.05
+      xreflection: 0.05
       map_pbr: textures\Metal008_1K-PNG
       tiling: 3
       parallax_depth: 0.0
