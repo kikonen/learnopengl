@@ -128,8 +128,8 @@ void main() {
   //refractCoord = clamp(refractCoord, 0., 1.0);
   //reflectCoord = clamp(reflectCoord, 0., 1.0);
 
-  vec4 refractColor = texture(u_refractionTex, refractCoord);
-  vec4 reflectColor = texture(u_reflectionTex, reflectCoord);
+  vec4 refractColor = textureLod(u_refractionTex, refractCoord, 0);
+  vec4 reflectColor = textureLod(u_reflectionTex, reflectCoord, 0);
 
   float refractiveFactor = dot(viewDir, normal);
 

@@ -81,7 +81,7 @@ vec4 effectSharpen(in vec4 color)
        );
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(texture(u_viewportTex, texCoord.st + offsets[i]));
+      sampleTex[i] = vec3(textureLod(u_viewportTex, texCoord.st + offsets[i], 0));
     }
 
     vec3 col = vec3(0.0);
@@ -117,7 +117,7 @@ vec4 effectBlur(in vec4 color)
 
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(texture(u_viewportTex, texCoord.st + offsets[i]));
+      sampleTex[i] = vec3(textureLod(u_viewportTex, texCoord.st + offsets[i], 0));
     }
 
     vec3 col = vec3(0.0);
@@ -153,7 +153,7 @@ vec4 effectEdge(in vec4 color)
 
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(texture(u_viewportTex, texCoord.st + offsets[i]));
+      sampleTex[i] = vec3(textureLod(u_viewportTex, texCoord.st + offsets[i], 0));
     }
 
     vec3 col = vec3(0.0);
@@ -185,7 +185,7 @@ vec4 effectX(in vec4 color)
 
 void main()
 {
-  vec3 color = u_effect(texture(u_viewportTex, texCoord)).rgb;
+  vec3 color = u_effect(textureLod(u_viewportTex, texCoord, 0)).rgb;
 
   if (u_toneHdri) {
     // reinhard

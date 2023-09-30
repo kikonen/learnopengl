@@ -54,7 +54,7 @@ void main() {
 
     vec2 reflectCoord = vec2(-ndc.x, ndc.y);
 
-    vec4 reflectColor = texture(u_reflectionTex, reflectCoord);
+    vec4 reflectColor = textureLod(u_reflectionTex, reflectCoord, 0);
 
     vec4 mixColor = reflectColor;
 

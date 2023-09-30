@@ -65,7 +65,7 @@ void main()
   vec3 worldPos;
   vec3 viewPos;
   {
-    float depth = texture(g_depth, texCoord).x * 2.0 - 1.0;
+    float depth = textureLod(g_depth, texCoord, 0).x * 2.0 - 1.0;
 
     vec4 clip = vec4(texCoord.x * 2.0 - 1.0, texCoord.y * 2.0 - 1.0, depth, 1.0);
     vec4 viewW  = u_invProjectionMatrix * clip;
@@ -80,14 +80,14 @@ void main()
   const vec3 viewDir = normalize(u_mainViewWorldPos - worldPos);
 
   {
-    material.diffuse = texture(g_albedo, texCoord);
+    material.diffuse = textureLod(g_albedo, texCoord, 0);
     material.diffuse.a = 1.0;
 
-    material.metal = texture(g_metal, texCoord);
-    material.emission = texture(g_emission, texCoord);
+    material.metal = textureLod(g_metal, texCoord, 0);
+    material.emission = textureLod(g_emission, texCoord, 0);
     material.emission.a = 1.0;
 
-    material.metal = texture(g_metal, texCoord);
+    material.metal = textureLod(g_metal, texCoord, 0);
   }
 
   vec4 color;

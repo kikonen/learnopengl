@@ -36,9 +36,9 @@ void main()
   //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
   const vec2 texCoord = fs_in.texCoord;
 
-  float revealage = texture(oit_reveal, texCoord).r;
+  float revealage = textureLod(oit_reveal, texCoord, 0).r;
 
-  vec4 accumulation = texture(oit_accumulator, texCoord, 0);
+  vec4 accumulation = textureLod(oit_accumulator, texCoord, 0);
 
   if (isinf(max3(abs(accumulation.rgb))))
     accumulation.rgb = vec3(accumulation.a);

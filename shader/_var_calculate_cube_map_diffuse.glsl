@@ -6,12 +6,12 @@
 
     if (material.reflection > 0) {
       vec3 r = reflect(-viewDir, normal);
-      diffuse += texture(u_cubeMap, r).rgb * material.reflection;
+      diffuse += textureLod(u_cubeMap, r, 0).rgb * material.reflection;
     }
 
     if (material.refraction > 0) {
       vec3 r = refract(-viewDir, normal, material.refractionRatio);
-      diffuse += texture(u_cubeMap, r).rgb * material.refraction;
+      diffuse += textureLod(u_cubeMap, r, 0).rgb * material.refraction;
     }
 
     material.diffuse = vec4(diffuse, material.diffuse.a);

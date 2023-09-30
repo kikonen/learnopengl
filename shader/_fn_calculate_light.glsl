@@ -63,7 +63,7 @@ vec4 calculateLightPbr(
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
 
-    vec3 irradiance = texture(u_irradianceMap, N).rgb;
+    vec3 irradiance = textureLod(u_irradianceMap, N, 0).rgb;
     vec3 diffuse      = irradiance * albedo;
 
     // sample both the pre-filter map and the BRDF lut and combine them together
@@ -71,7 +71,7 @@ vec4 calculateLightPbr(
     const float MAX_REFLECTION_LOD = 4.0;
     vec3 prefilteredColor = textureLod(u_prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;
 
-    vec2 brdf  = texture(u_brdfLut, vec2(max(dot(N, V), 0.0), roughness)).rg;
+    vec2 brdf  = textureLod(u_brdfLut, vec2(max(dot(N, V), 0.0), roughness), 0).rg;
 
     vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
 
