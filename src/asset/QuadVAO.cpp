@@ -25,7 +25,7 @@ namespace {
         glm::vec3 pos;
         ki::VEC10 normal;
         ki::VEC10 tangent;
-        ki::UV16 texCoords;
+        ki::UV16 texCoord;
     };
 #pragma pack(pop)
 }
@@ -66,7 +66,7 @@ void QuadVAO::prepareVAO(
         glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, tangent));
 
         // texture attr
-        glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoords));
+        glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoord));
 
         glVertexArrayAttribBinding(vao, ATTR_POS, VBO_VERTEX_BINDING);
         glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_VERTEX_BINDING);
@@ -90,20 +90,10 @@ void QuadVAO::prepareVBO(GLBuffer& vbo)
     for (int i = 0; i < VERTEX_COUNT; i++) {
         int base = i * row_size;
 
-        entry->pos.x = VERTICES[base++];
-        entry->pos.y = VERTICES[base++];
-        entry->pos.z = VERTICES[base++];
-
-        entry->normal.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-        entry->normal.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-        entry->normal.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-
-        entry->tangent.x = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-        entry->tangent.y = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-        entry->tangent.z = (int)(VERTICES[base++] * ki::SCALE_VEC10);
-
-        entry->texCoords.u = (int)(VERTICES[base++] * ki::SCALE_UV16);
-        entry->texCoords.v = (int)(VERTICES[base++] * ki::SCALE_UV16);
+        entry->pos = { VERTICES[base++], VERTICES[base++], VERTICES[base++] };
+        entry->normal = { VERTICES[base++], VERTICES[base++], VERTICES[base++] };
+        entry->tangent = { VERTICES[base++], VERTICES[base++], VERTICES[base++] };
+        entry->texCoord = { VERTICES[base++], VERTICES[base++] };
 
         entry++;
     }

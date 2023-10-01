@@ -7,20 +7,15 @@
 namespace {
 #pragma pack(push, 1)
     struct VertexEntry {
-        glm::vec3 pos;
+        ki::VEC10 pos;
         ki::VEC10 normal;
-        ki::UV16 texCoords;
+        ki::UV16 texCoord;
 
-        VertexEntry(glm::vec3 p, glm::vec3 n, glm::vec2 t) {
-            pos = p;
-
-            normal.x = (int)(n.x * ki::SCALE_VEC10);
-            normal.y = (int)(n.y * ki::SCALE_VEC10);
-            normal.z = (int)(n.z * ki::SCALE_VEC10);
-
-            texCoords.u = (int)(t.x * ki::SCALE_UV16);
-            texCoords.v = (int)(t.y * ki::SCALE_UV16);
-        }
+        VertexEntry(glm::vec3 p, glm::vec3 n, glm::vec2 t)
+            : pos{ p },
+            normal{ n },
+            texCoord{ t }
+        {}
     };
 #pragma pack(pop)
 }
@@ -83,9 +78,9 @@ void TextureCube::prepare()
     glEnableVertexArrayAttrib(m_vao, ATTR_NORMAL);
     glEnableVertexArrayAttrib(m_vao, ATTR_TEX);
 
-    glVertexArrayAttribFormat(m_vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, pos));
+    glVertexArrayAttribFormat(m_vao, ATTR_POS, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, pos));
     glVertexArrayAttribFormat(m_vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, normal));
-    glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoords));
+    glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoord));
 
     glVertexArrayAttribBinding(m_vao, ATTR_POS, VBO_VERTEX_BINDING);
     glVertexArrayAttribBinding(m_vao, ATTR_NORMAL, VBO_VERTEX_BINDING);

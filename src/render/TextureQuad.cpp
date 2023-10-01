@@ -7,14 +7,13 @@
 namespace {
 #pragma pack(push, 1)
     struct VertexEntry {
-        glm::vec3 pos;
-        ki::UV16 texCoords;
+        ki::VEC10 pos;
+        ki::UV16 texCoord;
 
-        VertexEntry(glm::vec3 p, glm::vec2 t) {
-            pos = p;
-            texCoords.u = (int)(t.x * ki::SCALE_UV16);
-            texCoords.v = (int)(t.y * ki::SCALE_UV16);
-        }
+        VertexEntry(glm::vec3 p, glm::vec2 t)
+            : pos{ p },
+            texCoord{ t }
+        {}
     };
 #pragma pack(pop)
 }
@@ -41,8 +40,8 @@ void TextureQuad::prepare()
         glEnableVertexArrayAttrib(m_vao, ATTR_POS);
         glEnableVertexArrayAttrib(m_vao, ATTR_TEX);
 
-        glVertexArrayAttribFormat(m_vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, pos));
-        glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoords));
+        glVertexArrayAttribFormat(m_vao, ATTR_POS, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, pos));
+        glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoord));
 
         glVertexArrayAttribBinding(m_vao, ATTR_POS, VBO_VERTEX_BINDING);
         glVertexArrayAttribBinding(m_vao, ATTR_TEX, VBO_VERTEX_BINDING);

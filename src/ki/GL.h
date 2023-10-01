@@ -15,6 +15,8 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+
 #include "util/Log.h"
 
 #include "ki/OpenGLInfo.h"
@@ -55,14 +57,33 @@
 
 
 namespace ki {
+    constexpr int SCALE_RGB10 = (1 << 9) - 1;
+    constexpr int SCALE_RGB10_A2 = (1 << 9) - 1;
+
     struct RGB10_A2
     {
-        unsigned int red : 10;
-        unsigned int green : 10;
-        unsigned int blue : 10;
-        unsigned int alpha : 2;
+        unsigned int r : 10;
+        unsigned int g : 10;
+        unsigned int b : 10;
+        unsigned int a : 2;
+
+        RGB10_A2(const glm::vec4& p) {
+            r = (int)(p.r * SCALE_RGB10);
+            g = (int)(p.g * SCALE_RGB10);
+            b = (int)(p.b * SCALE_RGB10);
+            a = (int)(p.a * SCALE_RGB10_A2);
+        }
+
+        RGB10_A2& operator=(const glm::vec4& p) {
+            r = (int)(p.r * SCALE_RGB10);
+            g = (int)(p.g * SCALE_RGB10);
+            b = (int)(p.b * SCALE_RGB10);
+            a = (int)(p.a * SCALE_RGB10_A2);
+            return *this;
+        }
     };
-    constexpr int SCALE_RGB10 = (1 << 9) - 1;
+
+    constexpr int SCALE_VEC10 = (1 << 9) - 1;
 
     struct VEC10
     {
@@ -70,16 +91,39 @@ namespace ki {
         int y : 10;
         int z : 10;
         unsigned int not_used : 2;
+
+        VEC10(const glm::vec3& p) {
+            x = (int)(p.x * SCALE_VEC10);
+            y = (int)(p.y * SCALE_VEC10);
+            z = (int)(p.z * SCALE_VEC10);
+        }
+
+        VEC10& operator=(const glm::vec3& p) {
+            x = (int)(p.x * SCALE_VEC10);
+            y = (int)(p.y * SCALE_VEC10);
+            z = (int)(p.z * SCALE_VEC10);
+            return *this;
+        }
     };
-    constexpr int SCALE_VEC10 = (1 << 9) - 1;
+
+    constexpr int SCALE_UV16 = (1 << 16) - 1;
 
     struct UV16
     {
         unsigned short u;
         unsigned short v;
-    };
-    constexpr int SCALE_UV16 = (1 << 16) - 1;
 
+        UV16(const glm::vec2& t) {
+            u = (int)(t.x * SCALE_UV16);
+            v = (int)(t.y * SCALE_UV16);
+        }
+
+        UV16& operator=(const glm::vec2& t) {
+            u = (int)(t.x * SCALE_UV16);
+            v = (int)(t.y * SCALE_UV16);
+            return *this;
+        }
+    };
 
     // https://gist.github.com/jdarpinian/d8fbaf7360be754016a287450364d738
     class GL final

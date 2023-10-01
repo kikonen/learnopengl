@@ -4,29 +4,38 @@
 
 #include "asset/Shader.h"
 
+namespace {
+#pragma pack(push, 1)
+    struct VertexEntry {
+        ki::VEC10 pos;
+
+        VertexEntry(glm::vec3 p)
+            : pos{ p }
+        {}
+    };
+#pragma pack(pop)
+}
 
 void PlainQuad::prepare()
 {
-    constexpr float vertices[] = {
-        // positions
-        -1.0f,  1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f,
-         1.0f,  1.0f, 0.0f,
-         1.0f, -1.0f, 0.0f,
+    // NOTE KI z == 1.0 for skybox
+    const VertexEntry vertices[4] = {
+        VertexEntry{ {-1.0f,  1.0f, 1.0f} },
+        VertexEntry{ {-1.0f, -1.0f, 1.0f} },
+        VertexEntry{ { 1.0f,  1.0f, 1.0f} },
+        VertexEntry{ { 1.0f, -1.0f, 1.0f} },
     };
 
     m_vao.create("plain_quad");
 
-    constexpr size_t VERTEX_ENTRY_SIZE = 3;
-
     m_vbo.create();
     m_vbo.init(sizeof(vertices), vertices, 0);
 
-    glVertexArrayVertexBuffer(m_vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(float) * VERTEX_ENTRY_SIZE);
+    glVertexArrayVertexBuffer(m_vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(VertexEntry));
 
     glEnableVertexArrayAttrib(m_vao, ATTR_POS);
 
-    glVertexArrayAttribFormat(m_vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribFormat(m_vao, ATTR_POS, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, pos));
 
     glVertexArrayAttribBinding(m_vao, ATTR_POS, VBO_VERTEX_BINDING);
 
