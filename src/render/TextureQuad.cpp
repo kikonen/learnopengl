@@ -4,33 +4,45 @@
 
 #include "asset/Shader.h"
 
+namespace {
+#pragma pack(push, 1)
+    struct VertexEntry {
+        glm::vec3 pos;
+        ki::UV16 texCoords;
+
+        VertexEntry(glm::vec3 p, glm::vec2 t) {
+            pos = p;
+            texCoords.u = (int)(t.x * ki::SCALE_UV16);
+            texCoords.v = (int)(t.y * ki::SCALE_UV16);
+        }
+    };
+#pragma pack(pop)
+}
 
 void TextureQuad::prepare()
 {
     // NOTE KI z == 1.0 for skybox
-    constexpr float vertices[] = {
-        // positions        // texture Coords
-        -1.0f,  1.0f, 1.0f, 0.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
-         1.0f,  1.0f, 1.0f, 1.0f, 1.0f,
-         1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
+    const VertexEntry vertices[4] = {
+        VertexEntry{ {-1.0f,  1.0f, 1.0f}, {0.0f, 1.0f} },
+        VertexEntry{ {-1.0f, -1.0f, 1.0f}, {0.0f, 0.0f} },
+        VertexEntry{ { 1.0f,  1.0f, 1.0f}, {1.0f, 1.0f} },
+        VertexEntry{ { 1.0f, -1.0f, 1.0f}, {1.0f, 0.0f} },
     };
 
     m_vao.create("texture_quad");
 
-    constexpr size_t VERTEX_ENTRY_SIZE = 5;
-
     m_vbo.create();
+
     m_vbo.init(sizeof(vertices), vertices, 0);
 
     {
-        glVertexArrayVertexBuffer(m_vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(float) * VERTEX_ENTRY_SIZE);
+        glVertexArrayVertexBuffer(m_vao, VBO_VERTEX_BINDING, m_vbo, 0, sizeof(VertexEntry));
 
         glEnableVertexArrayAttrib(m_vao, ATTR_POS);
         glEnableVertexArrayAttrib(m_vao, ATTR_TEX);
 
-        glVertexArrayAttribFormat(m_vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, 0);
-        glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
+        glVertexArrayAttribFormat(m_vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, pos));
+        glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoords));
 
         glVertexArrayAttribBinding(m_vao, ATTR_POS, VBO_VERTEX_BINDING);
         glVertexArrayAttribBinding(m_vao, ATTR_TEX, VBO_VERTEX_BINDING);
