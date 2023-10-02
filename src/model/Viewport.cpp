@@ -106,8 +106,9 @@ void Viewport::updateTransform(const UpdateContext& ctx)
         glm::mat4 rotate{ 1.f };
         glm::mat4 scale{ 1.f };
 
-        glm::vec3 pos{ -1.0f, 1.f, 0.f };
-        pos -= m_position;
+        glm::vec3 pos{ m_position };
+        pos.x += m_size.x / 2.f;
+        pos.y -= m_size.y / 2.f;
 
         auto& vec = translate[3];
         vec[0] = pos.x;
@@ -116,8 +117,8 @@ void Viewport::updateTransform(const UpdateContext& ctx)
 
         rotate = glm::toMat4(glm::quat(glm::radians(m_rotation)));
 
-        scale[0][0] = m_size.x;
-        scale[1][1] = m_size.y;
+        scale[0][0] = m_size.x / 2.f;
+        scale[1][1] = m_size.y / 2.f;
         scale[2][2] = 1.f;
 
         m_transformMatrix = translate * rotate * scale;
@@ -132,7 +133,7 @@ void Viewport::updateTransform(const UpdateContext& ctx)
 
         glm::mat4 view;
         {
-            float z = 2.f;
+            float z = 1.f;
             glm::vec3 pos{ 0.f, 0.f, z };
             glm::vec3 front{ 0.f, 0.f, -z };
             glm::vec3 up{ 0.f, 1.f, 0.f };

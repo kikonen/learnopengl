@@ -34,13 +34,13 @@ void ViewportRenderer::render(
 
     if (viewports.empty()) return;
 
-    ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
-    //ctx.m_state.setDepthFunc(GL_LEQUAL);
-    //ctx.m_state.setEnabled(GL_BLEND, true);
-
     bool forceWireframe = ctx.m_forceWireframe;
     ctx.m_forceWireframe = false;
     ctx.bindDefaults();
+
+    ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+    //ctx.m_state.setDepthFunc(GL_LEQUAL);
+    //ctx.m_state.setEnabled(GL_BLEND, true);
 
     for (auto& viewport : viewports) {
         viewport->setDestinationFrameBuffer(destinationBuffer);
