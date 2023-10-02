@@ -22,10 +22,10 @@ void TextureQuad::prepare()
 {
     // NOTE KI z == 1.0 for skybox
     const VertexEntry vertices[4] = {
-        VertexEntry{ {-1.0f,  1.0f, 1.0f}, {0.0f, 1.0f} },
-        VertexEntry{ {-1.0f, -1.0f, 1.0f}, {0.0f, 0.0f} },
-        VertexEntry{ { 1.0f,  1.0f, 1.0f}, {1.0f, 1.0f} },
-        VertexEntry{ { 1.0f, -1.0f, 1.0f}, {1.0f, 0.0f} },
+        VertexEntry{ {-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f} },
+        VertexEntry{ {-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f} },
+        VertexEntry{ { 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f} },
+        VertexEntry{ { 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f} },
     };
 
     m_vao.create("texture_quad");

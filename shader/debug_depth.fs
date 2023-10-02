@@ -9,6 +9,12 @@ layout(location = UNIFORM_FAR_PLANE) uniform float u_farPlane;
 
 layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
+
+SET_FLOAT_PRECISION;
+
 // required when using a perspective projection matrix
 float LinearizeDepth(float depth)
 {

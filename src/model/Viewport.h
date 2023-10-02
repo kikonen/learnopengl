@@ -6,7 +6,6 @@
 #include "asset/Assets.h"
 
 #include "kigl/GLBuffer.h"
-#include "kigl/GLVertexArray.h"
 
 
 class Program;
@@ -74,7 +73,7 @@ public:
     }
 
 private:
-    void prepareVBO();
+    void prepareTransform();
 
 public:
     const std::string m_name;
@@ -88,8 +87,7 @@ public:
 private:
     bool m_prepared = false;
 
-    GLVertexArray m_vao;
-    GLBuffer m_vbo{ "viewportVBO" };
+    glm::mat4 m_transformMatrix{ 1.f };
 
     FrameBuffer* m_sourceBuffer{ nullptr };
     FrameBuffer* m_destinationBuffer{ nullptr };

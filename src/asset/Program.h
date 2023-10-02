@@ -21,6 +21,7 @@ namespace uniform {
     class Int;
     class UInt;
     class Bool;
+    class Mat4;
 }
 
 class Program final
@@ -114,6 +115,7 @@ public:
 
     std::unique_ptr<uniform::Bool> u_toneHdri;
     std::unique_ptr<uniform::Bool> u_gammaCorrect;
+    std::unique_ptr<uniform::Mat4> u_viewportTransform;
 
     std::unique_ptr<uniform::Int> u_stencilMode;
 

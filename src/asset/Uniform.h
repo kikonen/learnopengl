@@ -19,6 +19,7 @@ constexpr int UNIFORM_EFFECT_BLOOM_ITERATION = 9;
 
 constexpr int UNIFORM_TONE_HDRI = 10;
 constexpr int UNIFORM_GAMMA_CORRECT = 11;
+constexpr int UNIFORM_VIEWPORT_TRANSFORM = 12;
 
 // NOTE KI subroutine uniform locations overlap other uniforms
 constexpr int SUBROUTINE_EFFECT = 0;

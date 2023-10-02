@@ -2,6 +2,9 @@
 
 #include <functional>
 
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 #include "util/Util.h"
 
 #include "asset/Program.h"
@@ -11,7 +14,21 @@
 #include "render/FrameBuffer.h"
 
 #include "render/RenderContext.h"
+#include "render/TextureQuad.h"
 
+
+namespace {
+    TextureQuad g_sharedQuad;
+
+    bool g_sharedQuadPrepared{ false };
+    TextureQuad& getSharedQuad() {
+        if (!g_sharedQuadPrepared) {
+            g_sharedQuadPrepared = true;
+            g_sharedQuad.prepare();
+        }
+        return g_sharedQuad;
+    }
+}
 
 Viewport::Viewport(
     std::string_view name,
@@ -61,45 +78,30 @@ void Viewport::prepare(const Assets& assets)
 
     m_program->prepare(assets);
 
-    prepareVBO();
+    prepareTransform();
 }
 
-void Viewport::prepareVBO()
+void Viewport::prepareTransform()
 {
-    m_vao.create("viewport");
-    m_vbo.create();
+    glm::mat4 translate{ 1.f };
+    glm::mat4 rotate{ 1.f };
+    glm::mat4 scale{ 1.f };
 
-    const float x = m_position.x;
-    const float y = m_position.y;
-    const float z = m_position.z;
+    glm::vec3 pos{ -1.0f, 1.f, 0.f };
+    pos -= m_position;
 
-    const float w = m_size.x;
-    const float h = m_size.y;
+    auto& vec = translate[3];
+    vec[0] = pos.x;
+    vec[1] = pos.y;
+    vec[2] = pos.z;
 
-    const float vertices[] = {
-        x,     y,     z, 0.0f, 1.0f,
-        x,     y - h, z, 0.0f, 0.0f,
-        x + w, y,     z, 1.0f, 1.0f,
-        x + w, y - h, z, 1.0f, 0.0f,
-    };
+    rotate = glm::toMat4(glm::quat(glm::radians(m_rotation)));
 
-    // setup plane VAO
-    const int vao = m_vao;
-    {
-        m_vbo.init(sizeof(vertices), (void*) & vertices, 0);
+    scale[0][0] = m_size.x;
+    scale[1][1] = m_size.y;
+    scale[2][2] = 1.f;
 
-        constexpr int stride_size = 5 * sizeof(float);
-        glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, m_vbo, 0, stride_size);
-
-        glEnableVertexArrayAttrib(vao, ATTR_POS);
-        glEnableVertexArrayAttrib(vao, ATTR_TEX);
-
-        glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, 0);
-        glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_FLOAT, GL_TRUE, 3 * sizeof(float));
-
-        glVertexArrayAttribBinding(vao, ATTR_POS, VBO_VERTEX_BINDING);
-        glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_VERTEX_BINDING);
-    }
+    m_transformMatrix = translate * rotate * scale;
 }
 
 void Viewport::update(const UpdateContext& ctx)
@@ -115,17 +117,16 @@ void Viewport::bind(const RenderContext& ctx)
 
     m_program->bind(ctx.m_state);
 
-    //m_program->viewportTex.set(UNIT_VIEWPORT);
     ctx.m_state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
     m_program->u_toneHdri->set(true);
     m_program->u_gammaCorrect->set(false);
+    m_program->u_viewportTransform->set(m_transformMatrix);
 
     if (m_effectEnabled) {
         m_program->u_effect->set(util::as_integer(m_effect));
     }
 
-    ctx.m_state.bindVAO(m_vao);
     m_bindAfter(*this);
 }
 
@@ -143,7 +144,7 @@ void Viewport::draw(const RenderContext& ctx)
     {
         if (m_textureId == 0) return;
         glEnable(GL_FRAMEBUFFER_SRGB);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        getSharedQuad().draw(ctx.m_state);
         glDisable(GL_FRAMEBUFFER_SRGB);
     }
 }

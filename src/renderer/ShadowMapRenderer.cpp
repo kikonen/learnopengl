@@ -46,9 +46,6 @@ void ShadowMapRenderer::prepare(
         m_cascades.push_back(cascade);
     }
 
-    m_shadowDebugProgram = registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH);
-    m_shadowDebugProgram->prepare(assets);
-
     for (auto& cascade : m_cascades) {
         cascade->prepare(assets, registry);
     }
@@ -63,7 +60,7 @@ void ShadowMapRenderer::prepare(
         glm::vec2(0.5f, 0.5f),
         false,
         0,
-        m_shadowDebugProgram);
+        registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH));
 
     m_debugViewport->setBindBefore([this, &assets](Viewport& vp) {
         auto& active = m_cascades[m_activeCascade];

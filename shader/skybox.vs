@@ -14,6 +14,7 @@ out float gl_ClipDistance[2];
 
 void main() {
   vec4 pos = vec4(a_pos, 1.0);
+  pos.z = 1.0;
 
   // https://www.rioki.org/2013/03/07/glsl-skybox.html
   // mat4 m = u_viewMatrix;

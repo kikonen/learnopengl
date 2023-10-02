@@ -32,11 +32,9 @@ private:
     // NOTE KI std::unique_ptr triggered exhaustive error loop
     std::vector<ShadowCascade*> m_cascades;
 
-    int m_activeCascade;
+    int m_activeCascade{ 0 };
 
     float m_rotateElapsedSecs{ 0.f };
-
-    Program* m_shadowDebugProgram{ nullptr };
 
     std::vector<float> m_planes;
     std::vector<int> m_mapSizes;
