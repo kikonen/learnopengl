@@ -65,16 +65,27 @@ void MirrorMapRenderer::prepare(
         camera.setFov(assets.mirrorFov);
     }
 
-    m_reflectionDebugViewport = std::make_shared<Viewport>(
-        "MirrorReflect",
-        glm::vec3(-1.0, 0.5, 0),
-        glm::vec3(0, 0, 0),
-        glm::vec2(0.5f, 0.5f),
-        false,
-        0,
-        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+    {
+        m_reflectionDebugViewport = std::make_shared<Viewport>(
+            "MirrorReflect",
+            glm::vec3(-1.0, 0.5, 0),
+            glm::vec3(0, 0, 0),
+            glm::vec2(0.5f, 0.5f),
+            false,
+            0,
+            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
-    m_reflectionDebugViewport->prepare(assets);
+        m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
+            auto& buffer = m_reflectionBuffers[m_prevIndex];
+            vp.setTextureId(buffer->m_spec.attachments[0].textureID);
+            vp.setSourceFrameBuffer(buffer.get());
+            });
+
+        m_reflectionDebugViewport->setGammaCorrect(true);
+        m_reflectionDebugViewport->setHardwareGamma(true);
+
+        m_reflectionDebugViewport->prepare(assets);
+    }
 
     m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, m_squareAspectRatio);
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
@@ -141,12 +152,6 @@ void MirrorMapRenderer::updateView(const RenderContext& ctx)
     for (auto& buf : m_reflectionBuffers) {
         buf->prepare();
     }
-
-    m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
-        auto& buffer = m_reflectionBuffers[m_prevIndex];
-        vp.setTextureId(buffer->m_spec.attachments[0].textureID);
-        vp.setSourceFrameBuffer(buffer.get());
-    });
 
     m_reflectionWidth = w;
     m_reflectionheight = h;

@@ -57,26 +57,49 @@ void WaterMapRenderer::prepare(
     //WaterNoiseGenerator generator;
     //noiseTextureID = generator.generate();
 
-    m_reflectionDebugViewport = std::make_shared<Viewport>(
-        "WaterReflect",
-        glm::vec3(0.5, 0.5, 0),
-        glm::vec3(0, 0, 0),
-        glm::vec2(0.5f, 0.5f),
-        false,
-        0,
-        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+    {
+        m_reflectionDebugViewport = std::make_shared<Viewport>(
+            "WaterReflect",
+            glm::vec3(0.5, 0.5, 0),
+            glm::vec3(0, 0, 0),
+            glm::vec2(0.5f, 0.5f),
+            false,
+            0,
+            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
-    m_refractionDebugViewport = std::make_shared<Viewport>(
-        "WaterRefract",
-        glm::vec3(0.5, 0.0, 0),
-        glm::vec3(0, 0, 0),
-        glm::vec2(0.5f, 0.5f),
-        false,
-        0,
-        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+        m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
+            auto& buffer = m_reflectionBuffers[m_prevIndex];
+            vp.setTextureId(buffer->m_spec.attachments[0].textureID);
+            vp.setSourceFrameBuffer(buffer.get());
+            });
 
-    m_reflectionDebugViewport->prepare(assets);
-    m_refractionDebugViewport->prepare(assets);
+        m_reflectionDebugViewport->setGammaCorrect(true);
+        m_reflectionDebugViewport->setHardwareGamma(true);
+
+        m_reflectionDebugViewport->prepare(assets);
+    }
+
+    {
+        m_refractionDebugViewport = std::make_shared<Viewport>(
+            "WaterRefract",
+            glm::vec3(0.5, 0.0, 0),
+            glm::vec3(0, 0, 0),
+            glm::vec2(0.5f, 0.5f),
+            false,
+            0,
+            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+
+        m_refractionDebugViewport->setBindBefore([this](Viewport& vp) {
+            auto& buffer = m_refractionBuffers[m_prevIndex];
+            vp.setTextureId(buffer->m_spec.attachments[0].textureID);
+            vp.setSourceFrameBuffer(buffer.get());
+            });
+
+        m_refractionDebugViewport->setGammaCorrect(true);
+        m_refractionDebugViewport->setHardwareGamma(true);
+
+        m_refractionDebugViewport->prepare(assets);
+    }
 
     glm::vec3 origo(0);
     for (int i = 0; i < 2; i++) {
@@ -135,12 +158,6 @@ void WaterMapRenderer::updateReflectionView(const RenderContext& ctx)
         buf->prepare();
     }
 
-    m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
-        auto& buffer = m_reflectionBuffers[m_prevIndex];
-        vp.setTextureId(buffer->m_spec.attachments[0].textureID);
-        vp.setSourceFrameBuffer(buffer.get());
-    });
-
     m_reflectionWidth = w;
     m_reflectionheight = h;
 }
@@ -186,12 +203,6 @@ void WaterMapRenderer::updateRefractionView(const RenderContext& ctx)
     for (auto& buf : m_refractionBuffers) {
         buf->prepare();
     }
-
-    m_refractionDebugViewport->setBindBefore([this](Viewport& vp) {
-        auto& buffer = m_refractionBuffers[m_prevIndex];
-        vp.setTextureId(buffer->m_spec.attachments[0].textureID);
-        vp.setSourceFrameBuffer(buffer.get());
-    });
 
     m_refractionWidth = w;
     m_refractionHeight = h;

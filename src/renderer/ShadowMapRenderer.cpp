@@ -52,29 +52,31 @@ void ShadowMapRenderer::prepare(
 
     m_activeCascade = 0;
 
-    m_debugViewport = std::make_shared<Viewport>(
-        "ShadowMap",
-        //glm::vec3(-1 + 0.01, 1 - 0.01, 0),
-        glm::vec3(0.5, -0.5, 0),
-        glm::vec3(0, 0, 0),
-        glm::vec2(0.5f, 0.5f),
-        false,
-        0,
-        registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH));
+    {
+        m_debugViewport = std::make_shared<Viewport>(
+            "ShadowMap",
+            //glm::vec3(-1 + 0.01, 1 - 0.01, 0),
+            glm::vec3(0.5, -0.5, 0),
+            glm::vec3(0, 0, 0),
+            glm::vec2(0.5f, 0.5f),
+            false,
+            0,
+            registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH));
 
-    m_debugViewport->setBindBefore([this, &assets](Viewport& vp) {
-        auto& active = m_cascades[m_activeCascade];
-        vp.setTextureId(active->getTextureID());
-    });
+        m_debugViewport->setBindBefore([this, &assets](Viewport& vp) {
+            auto& active = m_cascades[m_activeCascade];
+            vp.setTextureId(active->getTextureID());
+            });
 
-    m_debugViewport->setBindAfter([this, &assets](Viewport& vp) {
-        auto& active = m_cascades[m_activeCascade];
-        vp.getProgram()->u_nearPlane->set(active->getNearPlane());
-        vp.getProgram()->u_farPlane->set(active->getFarPlane());
-    });
+        m_debugViewport->setBindAfter([this, &assets](Viewport& vp) {
+            auto& active = m_cascades[m_activeCascade];
+            vp.getProgram()->u_nearPlane->set(active->getNearPlane());
+            vp.getProgram()->u_farPlane->set(active->getFarPlane());
+            });
 
-    m_debugViewport->setEffectEnabled(false);
-    m_debugViewport->prepare(assets);
+        m_debugViewport->setEffectEnabled(false);
+        m_debugViewport->prepare(assets);
+    }
 }
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
