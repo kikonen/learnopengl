@@ -5,8 +5,6 @@
 #include "Renderer.h"
 
 class FrameBuffer;
-class Viewport;
-
 
 class NodeRenderer final : public Renderer
 {
@@ -38,8 +36,6 @@ private:
 
 public:
     std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
-
-    Viewport* m_viewport{ nullptr };
 
 private:
     Program* m_selectionProgram{ nullptr };

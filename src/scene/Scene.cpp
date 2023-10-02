@@ -185,17 +185,22 @@ void Scene::prepare()
             0,
             m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
+        m_mainViewport->setUpdate([](Viewport& vp, const UpdateContext& ctx) {
+        });
+
+        m_mainViewport->setBindBefore([this](Viewport& vp) {
+            auto* buffer = m_mainRenderer->m_buffer.get();
+            vp.setTextureId(buffer->m_spec.attachments[NodeRenderer::ATT_ALBEDO_INDEX].textureID);
+            vp.setSourceFrameBuffer(buffer);
+        });
+
         m_mainViewport->setGammaCorrect(true);
         m_mainViewport->setHardwareGamma(true);
 
         m_mainViewport->setEffectEnabled(m_assets.viewportEffectEnabled);
         m_mainViewport->setEffect(m_assets.viewportEffect);
+
         m_mainViewport->prepare(m_assets);
-
-        m_mainViewport->setUpdate([](Viewport& vp, const UpdateContext& ctx) {
-        });
-
-        m_mainRenderer->m_viewport = m_mainViewport.get();
         m_registry->m_viewportRegistry->addViewport(m_mainViewport);
     }
 
@@ -209,11 +214,16 @@ void Scene::prepare()
             0,
             m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
+        m_rearViewport->setBindBefore([this](Viewport& vp) {
+            auto* buffer = m_rearRenderer->m_buffer.get();
+            vp.setTextureId(buffer->m_spec.attachments[NodeRenderer::ATT_ALBEDO_INDEX].textureID);
+            vp.setSourceFrameBuffer(buffer);
+        });
+
         m_rearViewport->setGammaCorrect(true);
         m_rearViewport->setHardwareGamma(true);
-        m_rearViewport->prepare(m_assets);
 
-        m_rearRenderer->m_viewport = m_rearViewport.get();
+        m_rearViewport->prepare(m_assets);
         m_registry->m_viewportRegistry->addViewport(m_rearViewport);
     }
 
