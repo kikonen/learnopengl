@@ -185,6 +185,9 @@ void Scene::prepare()
             0,
             m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
+        m_mainViewport->setGammaCorrect(true);
+        m_mainViewport->setHardwareGamma(true);
+
         m_mainViewport->setEffectEnabled(m_assets.viewportEffectEnabled);
         m_mainViewport->setEffect(m_assets.viewportEffect);
         m_mainViewport->prepare(m_assets);
@@ -206,6 +209,8 @@ void Scene::prepare()
             0,
             m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
+        m_rearViewport->setGammaCorrect(true);
+        m_rearViewport->setHardwareGamma(true);
         m_rearViewport->prepare(m_assets);
 
         m_rearRenderer->m_viewport = m_rearViewport.get();

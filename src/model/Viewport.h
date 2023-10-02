@@ -110,6 +110,24 @@ public:
         return m_size;
     }
 
+    void setGammaCorrect(bool gammaCorrect) {
+        m_gammaCorrect = gammaCorrect;
+    }
+
+    bool getGammaCorrect() {
+        return m_gammaCorrect;
+    }
+
+    void setHardwareGamma(bool hardwareGamma)
+    {
+        m_hardwareGamma = hardwareGamma;
+    }
+
+    bool getHardwareGamma()
+    {
+        return m_hardwareGamma;
+    }
+
 private:
     void prepareTransform();
     void updateTransform(const UpdateContext& ctx);
@@ -127,6 +145,9 @@ private:
     glm::vec2 m_size;
 
     glm::mat4 m_projected;
+
+    bool m_gammaCorrect{ false };
+    bool m_hardwareGamma{ false };
 
     bool m_dirty{ true };
 

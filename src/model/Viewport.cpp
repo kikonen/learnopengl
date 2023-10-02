@@ -55,13 +55,13 @@ Viewport::Viewport(
 
     setUpdate([this, origPosition, origRotation](Viewport& vp, const UpdateContext& ctx) {
         glm::vec3 rotation{ origRotation};
-        rotation.x = 10.f * sin(ctx.m_clock.ts);
+        rotation.x = 5.f * sin(ctx.m_clock.ts);
 
         glm::vec3 position{ origPosition };
-        position.z -= 0.1f;
+        position.z -= 0.2f;
 
-        setRotation(rotation);
-        setPosition(position);
+        //setRotation(rotation);
+        //setPosition(position);
     });
 }
 
@@ -165,7 +165,7 @@ void Viewport::bind(const RenderContext& ctx)
     ctx.m_state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
     m_program->u_toneHdri->set(true);
-    m_program->u_gammaCorrect->set(false);
+    m_program->u_gammaCorrect->set(m_hardwareGamma ? false : m_gammaCorrect);
 
     glm::mat4 transformed = m_projected * m_transformMatrix;
 
@@ -186,13 +186,21 @@ void Viewport::unbind(const RenderContext& ctx)
 void Viewport::draw(const RenderContext& ctx)
 {
     if (m_useDirectBlit) {
+        if (!m_sourceBuffer || !m_destinationBuffer) return;
+
         m_sourceBuffer->blit(m_destinationBuffer, GL_COLOR_BUFFER_BIT, m_position, m_size, GL_LINEAR);
     }
     else
     {
         if (m_textureId == 0) return;
-        glEnable(GL_FRAMEBUFFER_SRGB);
-        getSharedQuad().draw(ctx.m_state);
-        glDisable(GL_FRAMEBUFFER_SRGB);
+
+        if (m_gammaCorrect && m_hardwareGamma) {
+            glEnable(GL_FRAMEBUFFER_SRGB);
+            getSharedQuad().draw(ctx.m_state);
+            glDisable(GL_FRAMEBUFFER_SRGB);
+        }
+        else {
+            getSharedQuad().draw(ctx.m_state);
+        }
     }
 }
