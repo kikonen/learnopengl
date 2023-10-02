@@ -55,10 +55,10 @@ Viewport::Viewport(
 
     setUpdate([this, origPosition, origRotation](Viewport& vp, const UpdateContext& ctx) {
         glm::vec3 rotation{ origRotation};
-        rotation.x = 5.f * sin(ctx.m_clock.ts);
+        rotation.y = 5.f * sin(ctx.m_clock.ts);
 
         glm::vec3 position{ origPosition };
-        position.z -= 0.2f;
+        position.z -= 0.01f;
 
         //setRotation(rotation);
         //setPosition(position);

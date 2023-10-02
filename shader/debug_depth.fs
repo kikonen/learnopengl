@@ -1,13 +1,13 @@
 #version 460 core
 
-layout (location = 0) out vec4 o_fragColor;
-
 in vec2 texCoord;
 
 layout(location = UNIFORM_NEAR_PLANE) uniform float u_nearPlane;
 layout(location = UNIFORM_FAR_PLANE) uniform float u_farPlane;
 
 layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
+
+layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
 //
