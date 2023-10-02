@@ -189,6 +189,9 @@ void Scene::prepare()
         m_mainViewport->setEffect(m_assets.viewportEffect);
         m_mainViewport->prepare(m_assets);
 
+        m_mainViewport->setUpdate([](Viewport& vp, const UpdateContext& ctx) {
+        });
+
         m_mainRenderer->m_viewport = m_mainViewport.get();
         m_registry->m_viewportRegistry->addViewport(m_mainViewport);
     }

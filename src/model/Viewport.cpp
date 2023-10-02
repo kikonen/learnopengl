@@ -2,6 +2,8 @@
 
 #include <functional>
 
+#include <glm/ext.hpp>
+
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -10,6 +12,8 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
+
+#include "engine/UpdateContext.h"
 
 #include "render/FrameBuffer.h"
 
@@ -46,11 +50,24 @@ Viewport::Viewport(
     m_textureId(textureId),
     m_program(program)
 {
+    const glm::vec3 origPosition{ m_position };
+    const glm::vec3 origRotation{ m_rotation };
+
+    setUpdate([this, origPosition, origRotation](Viewport& vp, const UpdateContext& ctx) {
+        glm::vec3 rotation{ origRotation};
+        rotation.x = 10.f * sin(ctx.m_clock.ts);
+
+        glm::vec3 position{ origPosition };
+        position.z -= 0.1f;
+
+        setRotation(rotation);
+        setPosition(position);
+    });
 }
 
 Viewport::~Viewport()
 {
-    KI_INFO("VIEW_PORT: delete");
+    KI_INFO(fmt::format("VIEW_PORT: delete, name={}", m_name));
 }
 
 void Viewport::setSourceFrameBuffer(FrameBuffer* frameBuffer)
@@ -77,35 +94,63 @@ void Viewport::prepare(const Assets& assets)
     if (m_useDirectBlit) return;
 
     m_program->prepare(assets);
-
-    prepareTransform();
 }
 
-void Viewport::prepareTransform()
+void Viewport::updateTransform(const UpdateContext& ctx)
 {
-    glm::mat4 translate{ 1.f };
-    glm::mat4 rotate{ 1.f };
-    glm::mat4 scale{ 1.f };
+    if (!m_dirty) return;
+    m_dirty = false;
 
-    glm::vec3 pos{ -1.0f, 1.f, 0.f };
-    pos -= m_position;
+    {
+        glm::mat4 translate{ 1.f };
+        glm::mat4 rotate{ 1.f };
+        glm::mat4 scale{ 1.f };
 
-    auto& vec = translate[3];
-    vec[0] = pos.x;
-    vec[1] = pos.y;
-    vec[2] = pos.z;
+        glm::vec3 pos{ -1.0f, 1.f, 0.f };
+        pos -= m_position;
 
-    rotate = glm::toMat4(glm::quat(glm::radians(m_rotation)));
+        auto& vec = translate[3];
+        vec[0] = pos.x;
+        vec[1] = pos.y;
+        vec[2] = pos.z;
 
-    scale[0][0] = m_size.x;
-    scale[1][1] = m_size.y;
-    scale[2][2] = 1.f;
+        rotate = glm::toMat4(glm::quat(glm::radians(m_rotation)));
 
-    m_transformMatrix = translate * rotate * scale;
+        scale[0][0] = m_size.x;
+        scale[1][1] = m_size.y;
+        scale[2][2] = 1.f;
+
+        m_transformMatrix = translate * rotate * scale;
+    }
+    {
+        glm::mat4 projection = glm::perspective(
+            glm::radians(90.f),
+            //ctx.m_aspectRatio,
+            1.f,
+            0.1f,
+            10.f);
+
+        glm::mat4 view;
+        {
+            float z = 2.f;
+            glm::vec3 pos{ 0.f, 0.f, z };
+            glm::vec3 front{ 0.f, 0.f, -z };
+            glm::vec3 up{ 0.f, 1.f, 0.f };
+
+            view = glm::lookAt(
+                pos,
+                pos + front,
+                up);
+        }
+
+        m_projected = projection * view;
+    }
 }
 
 void Viewport::update(const UpdateContext& ctx)
 {
+    m_update(*this, ctx);
+    updateTransform(ctx);
 }
 
 void Viewport::bind(const RenderContext& ctx)
@@ -121,7 +166,10 @@ void Viewport::bind(const RenderContext& ctx)
 
     m_program->u_toneHdri->set(true);
     m_program->u_gammaCorrect->set(false);
-    m_program->u_viewportTransform->set(m_transformMatrix);
+
+    glm::mat4 transformed = m_projected * m_transformMatrix;
+
+    m_program->u_viewportTransform->set(transformed);
 
     if (m_effectEnabled) {
         m_program->u_effect->set(util::as_integer(m_effect));

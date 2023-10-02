@@ -16,6 +16,7 @@ SET_FLOAT_PRECISION;
 void main()
 {
   texCoord = a_texCoord;
-  vec4 pos = u_viewportTransform * vec4(a_pos, 1.0);
-  gl_Position = pos;
+  vec4 pos = vec4(a_pos, 1.0);
+  gl_Position = u_viewportTransform * pos;
+//  gl_Position = vec4(a_pos, 1.0);
 }

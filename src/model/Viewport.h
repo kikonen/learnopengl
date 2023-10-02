@@ -29,6 +29,11 @@ public:
 
     ~Viewport();
 
+    // NOTE KI called from update cycle
+    void setUpdate(std::function<void(Viewport&, const UpdateContext& ctx)> update) {
+        m_update = update;
+    }
+
     // NOTE KI called *before* binding program, to setup texture and such
     void setBindBefore(std::function<void(Viewport&)> binder) {
         m_bindBefore = binder;
@@ -72,20 +77,58 @@ public:
         return m_program;
     }
 
+    void setPosition(const glm::vec3& pos) {
+        if (m_position != pos) {
+            m_position = pos;
+            m_dirty = true;
+        }
+    }
+
+    const glm::vec3& getPosition() {
+        return m_position;
+    }
+
+    void setRotation(const glm::vec3& rot) {
+        if (m_rotation != rot) {
+            m_rotation = rot;
+            m_dirty = true;
+        }
+    }
+
+    const glm::vec3& getRotation() {
+        return m_rotation;
+    }
+
+    void setSize(const glm::vec2& size) {
+        if (m_size != size) {
+            m_size = size;
+            m_dirty = true;
+        }
+    }
+
+    const glm::vec2& getSize() {
+        return m_size;
+    }
+
 private:
     void prepareTransform();
+    void updateTransform(const UpdateContext& ctx);
 
 public:
     const std::string m_name;
-
-    const glm::vec3 m_position;
-    const glm::vec3 m_rotation;
-    const glm::vec2 m_size;
 
     const bool m_useDirectBlit;
 
 private:
     bool m_prepared = false;
+
+    glm::vec3 m_position;
+    glm::vec3 m_rotation;
+    glm::vec2 m_size;
+
+    glm::mat4 m_projected;
+
+    bool m_dirty{ true };
 
     glm::mat4 m_transformMatrix{ 1.f };
 
@@ -99,6 +142,7 @@ private:
     bool m_effectEnabled{ false };
     ViewportEffect m_effect = ViewportEffect::none;
 
+    std::function<void(Viewport&, const UpdateContext&)> m_update{ [](Viewport&, const UpdateContext& ctx) {} };
     std::function<void(Viewport&)> m_bindBefore{ [](Viewport&) {} };
     std::function<void(Viewport&)> m_bindAfter{ [](Viewport&) {} };
 };

@@ -37,14 +37,18 @@ int ObjectIdRenderer::getObjectId(
     const int screenW = res.x;
     const int screenH = res.y;
 
-    const float w = screenW * (mainViewport->m_size.x / GL_SCREEN_SIZE);
-    const float h = screenH * (mainViewport->m_size.y / GL_SCREEN_SIZE);
+    // NOTE KI this logic fails if rotation is applied in viewport
+    const auto& vpSize = mainViewport->getSize();
+    const auto& vpPos = mainViewport->getPosition();
+
+    const float w = screenW * (vpSize.x / GL_SCREEN_SIZE);
+    const float h = screenH * (vpSize.y / GL_SCREEN_SIZE);
 
     const float ratioX = m_idBuffer->m_spec.width / w;
     const float ratioY = m_idBuffer->m_spec.height / h;
 
-    const float offsetX = screenW * (mainViewport->m_position.x + 1.f) / GL_SCREEN_SIZE;
-    const float offsetY = screenH * (1.f - (mainViewport->m_position.y + 1.f) / GL_SCREEN_SIZE);
+    const float offsetX = screenW * (vpPos.x + 1.f) / GL_SCREEN_SIZE;
+    const float offsetY = screenH * (1.f - (vpPos.y + 1.f) / GL_SCREEN_SIZE);
 
     const float posx = (screenPosX - offsetX) * ratioX;
     const float posy = (screenPosY - offsetY) * ratioY;
