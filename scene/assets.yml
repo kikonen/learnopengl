@@ -8,6 +8,8 @@ assets:
   gl_use_fence: true
   gl_use_single_fence: true
 
+  prepass_depth_enabled: false
+
   g_buffer_scale: 0.5
   water_reflection_buffer_scale: 0.125
   water_refraction_buffer_scale: 0.25

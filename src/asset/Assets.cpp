@@ -24,6 +24,8 @@ Assets::Assets()
     glUseFence = true;
     glUseSingleFence = true;
 
+    prepassDepthEnabled = false;
+
     gBufferScale = 0.5f;
     waterReflectionBufferScale = 0.125f;
     waterRefractionBufferScale = 0.25f;

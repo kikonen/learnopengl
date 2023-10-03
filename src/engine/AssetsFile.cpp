@@ -87,6 +87,9 @@ void AssetsFile::loadAssets(
         else if (k == "gl_use_single_fence") {
             data.glUseSingleFence = readBool(v);
         }
+        else if (k == "prepass_depth_enabled") {
+            data.prepassDepthEnabled = readBool(v);
+        }
         else if (k == "camera_move_mormal") {
             data.cameraMoveNormal = readVec3(v);
         }

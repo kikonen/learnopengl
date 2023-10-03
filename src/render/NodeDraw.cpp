@@ -92,7 +92,7 @@ void NodeDraw::drawNodes(
         auto oldAllowBlend = ctx.setAllowBlend(false);
 
         // NOTE KI "pre pass depth" causes more artifacts than benefits
-        if (false)
+        if (ctx.m_assets.prepassDepthEnabled)
         {
             {
                 m_solidDepthProgram->bind(ctx.m_state);
@@ -110,7 +110,7 @@ void NodeDraw::drawNodes(
                     kindBits & NodeDraw::KIND_SOLID);
             }
 
-            if (false)
+            if (true)
             {
                 m_alphaDepthProgram->bind(ctx.m_state);
 
@@ -124,7 +124,7 @@ void NodeDraw::drawNodes(
                             typeSelector(type);
                     },
                     nodeSelector,
-                    kindBits & (NodeDraw::KIND_SPRITE | NodeDraw::KIND_ALPHA | NodeDraw::KIND_BLEND));
+                    kindBits & (NodeDraw::KIND_SPRITE | NodeDraw::KIND_ALPHA));
             }
 
             ctx.m_batch->flush(ctx);
@@ -132,7 +132,9 @@ void NodeDraw::drawNodes(
 
         {
             ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID));
-            ctx.m_state.setDepthFunc(GL_LEQUAL);
+            if (ctx.m_assets.prepassDepthEnabled) {
+                ctx.m_state.setDepthFunc(GL_EQUAL);
+            }
 
             drawNodesImpl(
                 ctx,
@@ -142,7 +144,9 @@ void NodeDraw::drawNodes(
 
             ctx.m_batch->flush(ctx);
 
-            ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+            if (ctx.m_assets.prepassDepthEnabled) {
+                ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+            }
             ctx.m_state.disableStencil();
         }
 

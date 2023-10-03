@@ -40,6 +40,8 @@ public:
     bool glUseFence;
     bool glUseSingleFence;
 
+    bool prepassDepthEnabled;
+
     float gBufferScale;
     float waterReflectionBufferScale;
     float waterRefractionBufferScale;
