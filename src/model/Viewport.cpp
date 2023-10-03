@@ -58,7 +58,7 @@ Viewport::Viewport(
         rotation.y = 5.f * sin(ctx.m_clock.ts);
 
         glm::vec3 position{ origPosition };
-        position.z -= 0.01f;
+        position.z += 0.001f;
 
         //setRotation(rotation);
         //setPosition(position);

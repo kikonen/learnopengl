@@ -199,5 +199,5 @@ void main()
     color = pow(color, vec3(1.0 / u_hdrGamma));
   }
 
-  o_fragColor = vec4(color, 1.0);
+  o_fragColor = vec4(color, 0.9);
 }

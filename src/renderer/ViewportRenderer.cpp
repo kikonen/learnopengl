@@ -38,22 +38,21 @@ void ViewportRenderer::render(
     ctx.m_forceWireframe = false;
     ctx.bindDefaults();
 
-    ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
-    ctx.m_state.setDepthMask(GL_FALSE);
-    //ctx.m_state.setDepthFunc(GL_LEQUAL);
-    //ctx.m_state.setEnabled(GL_BLEND, true);
+    ctx.m_state.setDepthFunc(GL_LEQUAL);
 
+    // NOTE KI don't blend MAIN buffer
+    bool blend = false;
     for (auto& viewport : viewports) {
         viewport->setDestinationFrameBuffer(destinationBuffer);
         viewport->bind(ctx);
+        ctx.m_state.setEnabled(GL_BLEND, blend);
         viewport->draw(ctx);
         viewport->unbind(ctx);
+        blend = true;
     }
 
-    //ctx.m_state.setEnabled(GL_BLEND, false);
-    //ctx.m_state.setDepthFunc(ctx.m_depthFunc);
-    ctx.m_state.setDepthMask(GL_TRUE);
-    ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+    ctx.m_state.setEnabled(GL_BLEND, false);
+    ctx.m_state.setDepthFunc(ctx.m_depthFunc);
 
     ctx.m_forceWireframe = forceWireframe;
     ctx.bindDefaults();
