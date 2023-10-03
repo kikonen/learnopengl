@@ -162,9 +162,6 @@ void NodeDraw::drawNodes(
     // pass 2 - target effectBuffer
     {
         m_effectBuffer.clearAll();
-
-        //primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
-
         primaryBuffer->bind(ctx);
     }
 
@@ -174,13 +171,15 @@ void NodeDraw::drawNodes(
         ctx.m_state.enableStencil(GLStencilMode::only_non_zero());
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
+        primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+
         m_deferredProgram->bind(ctx.m_state);
         m_textureQuad.draw(ctx.m_state);
 
+        primaryBuffer->resetDrawBuffers(1);
+
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
         ctx.m_state.disableStencil();
-
-        //primaryBuffer->resetDrawBuffers(1);
     }
 
     // pass 4 - non G-buffer solid nodes
@@ -217,7 +216,7 @@ void NodeDraw::drawNodes(
         {
             ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT));
             // NOTE KI do NOT modify depth with blend
-            auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
+            ctx.m_state.setDepthMask(GL_FALSE);
 
             ctx.m_state.setEnabled(GL_BLEND, true);
 
@@ -248,12 +247,14 @@ void NodeDraw::drawNodes(
 
             ctx.m_state.setEnabled(GL_BLEND, false);
 
-            ctx.m_state.setDepthMask(oldDepthMask);
+            ctx.m_state.setDepthMask(GL_TRUE);
             ctx.m_state.disableStencil();
         }
     }
 
-    primaryBuffer->bind(ctx);
+    {
+        primaryBuffer->bind(ctx);
+    }
 
     // pass 6 - skybox (*before* blend)
     {
@@ -282,18 +283,11 @@ void NodeDraw::drawNodes(
     {
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
         // NOTE KI do NOT modify depth with blend (likely redundant)
-        //auto oldDepthMask = ctx.m_state.setDepthMask(GL_FALSE);
+        ctx.m_state.setDepthMask(GL_FALSE);
 
         {
             ctx.m_state.setEnabled(GL_BLEND, true);
             ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
-
-            if (ctx.m_assets.effectFogEnabled) {
-                ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_SOLID));
-                m_fogProgram->bind(ctx.m_state);
-                m_textureQuad.draw(ctx.m_state);
-                ctx.m_state.disableStencil();
-            }
 
             if (ctx.m_assets.effectOitEnabled) {
                 ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_OIT));
@@ -305,6 +299,13 @@ void NodeDraw::drawNodes(
 
                 m_textureQuad.draw(ctx.m_state);
 
+                ctx.m_state.disableStencil();
+            }
+
+            if (ctx.m_assets.effectFogEnabled) {
+                ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_SOLID));
+                m_fogProgram->bind(ctx.m_state);
+                m_textureQuad.draw(ctx.m_state);
                 ctx.m_state.disableStencil();
             }
 
@@ -347,7 +348,7 @@ void NodeDraw::drawNodes(
             //secondaryBuffer->bind(ctx);
         }
 
-        //ctx.m_state.setDepthMask(oldDepthMask);
+        ctx.m_state.setDepthMask(GL_TRUE);
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
     }
 

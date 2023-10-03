@@ -203,7 +203,6 @@ materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
     tiling: 60
-    metal: [0, 0.5, 0, 1]
   - name: woodwall
     map_kd: textures/wood_1024.png
     xreflection: 0.4
@@ -213,4 +212,4 @@ materials:
     map_bump: sprites/linden_tree_512_normal.png
   - name: skeleton
     map_kd: sprites/skeleton.png
-    metal: [1, 0, 0, 1]
+    metal: [0.7, 0.2, 0, 1]

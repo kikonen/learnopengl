@@ -15,7 +15,7 @@ in VS_OUT {
 LAYOUT_OIT_SAMPLERS;
 
 layout (location = 0) out vec4 o_fragColor;
-layout (location = 1) out vec4 o_fragBright;
+//layout (location = 1) out vec4 o_fragBright;
 
 ////////////////////////////////////////////////////////////
 //
@@ -49,12 +49,12 @@ void main()
 
   o_fragColor = vec4(averageColor, alpha);
 
-  const vec3 T = vec3(0.2126, 0.7152, 0.0722);
-  const float brightness = dot(averageColor.xyz, T);
+  // const vec3 T = vec3(0.2126, 0.7152, 0.0722);
+  // const float brightness = dot(averageColor.xyz, T);
 
-  if (brightness > 1.0) {
-    o_fragBright = vec4(averageColor * 0.1, alpha);
-  } else {
-    o_fragBright = vec4(0.0);
-  }
+  // if (brightness > 1.0) {
+  //   o_fragBright = vec4(averageColor * 0.1, alpha);
+  // } else {
+  //   o_fragBright = vec4(0.0);
+  // }
 }

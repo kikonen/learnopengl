@@ -56,8 +56,8 @@ public:
     void setStencilMode(const GLStencilMode& mode);
     void invalidateStencilMode();
 
-    GLenum setDepthFunc(const GLenum func);
-    GLenum setDepthMask(const GLenum mask);
+    void setDepthFunc(const GLenum func);
+    void setDepthMask(const GLenum mask);
 
     void clearColor(const glm::vec4& clearColor);
 

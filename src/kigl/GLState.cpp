@@ -229,28 +229,20 @@ void GLState::invalidateStencilMode()
     m_stencilMode = { 0, 0, 0, 0, 0, 0, 0 };
 }
 
-GLenum GLState::setDepthFunc(const GLenum func)
+void GLState::setDepthFunc(const GLenum func)
 {
-    GLenum old = m_depthFunc;
-
     if (m_depthFunc != func) {
         m_depthFunc = func;
         glDepthFunc(func);
     }
-
-    return old;
 }
 
-GLenum GLState::setDepthMask(const GLenum mask)
+void GLState::setDepthMask(const GLenum mask)
 {
-    GLenum old = m_depthMask;
-
     if (m_depthMask != mask) {
         m_depthMask = mask;
         glDepthMask(mask);
     }
-
-    return old;
 }
 
 void GLState::clearColor(const glm::vec4& clearColor)

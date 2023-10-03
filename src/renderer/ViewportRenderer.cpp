@@ -39,6 +39,7 @@ void ViewportRenderer::render(
     ctx.bindDefaults();
 
     ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+    ctx.m_state.setDepthMask(GL_FALSE);
     //ctx.m_state.setDepthFunc(GL_LEQUAL);
     //ctx.m_state.setEnabled(GL_BLEND, true);
 
@@ -51,6 +52,7 @@ void ViewportRenderer::render(
 
     //ctx.m_state.setEnabled(GL_BLEND, false);
     //ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+    ctx.m_state.setDepthMask(GL_TRUE);
     ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
 
     ctx.m_forceWireframe = forceWireframe;
