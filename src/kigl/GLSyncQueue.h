@@ -173,10 +173,10 @@ public:
         bool processCurrent,
         bool clear)
     {
-        const int untilCount = processCurrent ? m_rangeCount : m_rangeCount - 1;
+        const size_t untilCount = processCurrent ? m_rangeCount : m_rangeCount - 1;
 
-        for (int i = 1; i <= untilCount; i++) {
-            int rangeIndex = (m_current + i) % m_rangeCount;
+        for (size_t i = 1; i <= untilCount; i++) {
+            size_t rangeIndex = (m_current + i) % m_rangeCount;
             auto& range = m_ranges[rangeIndex];
             if (range.empty()) continue;
             if (rangeIndex == m_current) flush();
@@ -210,7 +210,7 @@ public:
     }
 
 private:
-    void setFence(int index) {
+    void setFence(size_t index) {
         if (!m_useFence) return;
 
         if (m_useSingleFence) {
@@ -223,7 +223,7 @@ private:
         }
     }
 
-    void waitFence(int index) {
+    void waitFence(size_t index) {
         if (!m_useFence) return;
 
         m_fences[index].waitFence(m_debug);

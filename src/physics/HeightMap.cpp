@@ -28,8 +28,8 @@ namespace physics {
 
         int minH = 9999999;
         int maxH = -1;
-        float minY = 99999999;
-        float maxY = -1;
+        float minY = 99999999.f;
+        float maxY = -1.f;
 
         m_heights = new float[size];
 

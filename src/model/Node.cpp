@@ -6,7 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "component/Light.h"
 #include "component/Camera.h"

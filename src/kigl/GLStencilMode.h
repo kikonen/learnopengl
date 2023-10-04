@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glStencilOp.xhtml
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glStencilFunc.xhtml

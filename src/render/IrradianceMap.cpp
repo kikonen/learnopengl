@@ -1,6 +1,6 @@
 #include "IrradianceMap.h"
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "asset/Shader.h"
 

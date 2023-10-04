@@ -299,7 +299,7 @@
     <ClCompile Include="src\renderer\NodeRenderer.cpp" />
     <ClCompile Include="src\renderer\NormalRenderer.cpp" />
     <ClCompile Include="src\renderer\ShadowMapRenderer.cpp" />
-    <ClCompile Include="src\ki\GL.cpp" />
+    <ClCompile Include="src\kigl\kigl.cpp" />
     <ClCompile Include="src\sample_app\TestSceneSetup.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\asset\Assets.cpp" />
@@ -339,6 +339,7 @@
     <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\kigl\GLFence.h" />
     <ClInclude Include="src\kigl\GLStencilMode.h" />
+    <ClInclude Include="src\kigl\kigl.h" />
     <ClInclude Include="src\query\Query.h" />
     <ClInclude Include="src\kigl\GLFrameBufferHandle.h" />
     <ClInclude Include="src\asset\Frustum.h" />
@@ -389,7 +390,7 @@
     <ClInclude Include="src\kigl\GLTextureHandle.h" />
     <ClInclude Include="src\kigl\GLVertexArray.h" />
     <ClInclude Include="src\kigl\GLBlendMode.h" />
-    <ClInclude Include="src\ki\OpenGLInfo.h" />
+    <ClInclude Include="src\kigl\OpenGLInfo.h" />
     <ClInclude Include="src\ki\RenderClock.h" />
     <ClInclude Include="src\model\InstancePhysics.h" />
     <ClInclude Include="src\model\NodeInstance.h" />
@@ -486,7 +487,7 @@
     <ClInclude Include="src\renderer\NodeRenderer.h" />
     <ClInclude Include="src\renderer\NormalRenderer.h" />
     <ClInclude Include="src\renderer\ShadowMapRenderer.h" />
-    <ClInclude Include="src\ki\GL.h" />
+    <ClInclude Include="src\ki\ki.h" />
     <ClInclude Include="src\sample_app\TestSceneSetup.h" />
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\asset\Assets.h" />

@@ -1,11 +1,11 @@
-#include "GL.h"
+#include "kigl.h"
 
 #include <sstream>
 
 #include <fmt/format.h>
 
 
-namespace ki {
+namespace kigl {
     const std::string STR_GL_DEBUG_SOURCE_API{ "API" };
     const std::string STR_GL_DEBUG_SOURCE_WINDOW_SYSTEM{ "WINDOW" };
     const std::string STR_GL_DEBUG_SOURCE_SHADER_COMPILER{ "COMPILER" };

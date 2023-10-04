@@ -449,7 +449,7 @@ void NodeDraw::drawDebug(
     constexpr float SZ1 = 0.25f;
     //constexpr float SZ2 = 0.5f;
 
-    int count = 0;
+    size_t count = 0;
     float padding = 0.f;
     for (int i = 0; i < m_oitBuffer.m_buffer->getDrawBufferCount(); i++) {
         m_oitBuffer.m_buffer->blit(

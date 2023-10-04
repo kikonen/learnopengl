@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 namespace backend {
     // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDrawElementsInstanced.xhtml

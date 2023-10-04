@@ -35,7 +35,7 @@ namespace backend {
         int batchCount,
         int rangeCount)
     {
-        const auto info = ki::GL::getInfo();
+        const auto info = kigl::GL::getInfo();
 
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
 
@@ -136,9 +136,9 @@ namespace backend {
         const size_t paramsOffset = cmdRange.m_index * PARAMS_SZ;
         if (m_frustumGPU) {
             gl::DrawIndirectParameters params{
-                cmdRange.m_baseIndex,
+                (GLuint)cmdRange.m_baseIndex,
                 util::as_integer(drawRange.m_drawOptions->type),
-                drawCount
+                (GLuint)drawCount
             };
 
             auto* data = (gl::DrawIndirectParameters*)m_drawParameters.m_data;
@@ -222,11 +222,11 @@ namespace backend {
             glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
         }
 
-        int count = 0;
+        size_t count = 0;
         auto handler = [this, &count](GLBufferRange& cmdRange) {
             auto& drawRange = m_drawRanges[cmdRange.m_index];
             auto drawOptions = *drawRange.m_drawOptions;
-            const size_t drawCount = cmdRange.m_usedCount;
+            const GLsizei drawCount = (GLsizei)cmdRange.m_usedCount;
 
             bindDrawRange(drawRange);
 

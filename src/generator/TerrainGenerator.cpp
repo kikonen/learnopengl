@@ -152,8 +152,8 @@ void TerrainGenerator::createTiles(
     // NOTE KI only SINGLE material supported
     int materialIndex = -1;
     type->modifyMaterials([this, &materialIndex , &materialRegistry, &assets](Material& m) {
-        m.tilingX = m_worldTilesU;
-        m.tilingY = m_worldTilesV;
+        m.tilingX = (float)m_worldTilesU;
+        m.tilingY = (float)m_worldTilesV;
 
         m.loadTextures(assets);
 

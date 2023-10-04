@@ -2,7 +2,7 @@
 
 #include <mutex>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 
 PlainTexture::PlainTexture(

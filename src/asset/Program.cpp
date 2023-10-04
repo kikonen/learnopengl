@@ -215,7 +215,7 @@ int Program::compileSource(
 
     int shaderId = glCreateShader(shaderType);
 
-    glObjectLabel(GL_SHADER, shaderId, shaderPath.length(), shaderPath.c_str());
+    kigl::setLabel(GL_SHADER, shaderId, shaderPath);
     glShaderSource(shaderId, 1, &src, NULL);
     glCompileShader(shaderId);
 
@@ -259,12 +259,12 @@ int Program::createProgram() {
     {
         m_programId = glCreateProgram();
 
-        glObjectLabel(GL_PROGRAM, m_programId, m_programName.length(), m_programName.c_str());
+        kigl::setLabel(GL_PROGRAM, m_programId, m_programName);
 
         for (auto& [type, shaderId] : shaderIds) {
             if (shaderId == -1) continue;
             glAttachShader(m_programId, shaderId);
-            glObjectLabel(GL_SHADER, shaderId, m_paths[type].length(), m_paths[type].c_str());
+            kigl::setLabel(GL_SHADER, shaderId, m_paths[type]);
         }
 
         glLinkProgram(m_programId);

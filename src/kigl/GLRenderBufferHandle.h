@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 class GLRenderBufferHandle {
 public:
@@ -37,7 +37,7 @@ public:
         if (m_rbo > 0) return;
         glCreateRenderbuffers(1, &m_rbo);
 
-        glObjectLabel(GL_RENDERBUFFER, m_rbo, name.length(), name.data());
+        kigl::setLabel(GL_RENDERBUFFER, m_rbo, name);
 
         KI_INFO(fmt::format("CREATE: name={}, FBO={},", name, m_rbo));
     }

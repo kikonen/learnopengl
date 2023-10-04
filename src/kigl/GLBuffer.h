@@ -2,7 +2,7 @@
 
 #include <fmt/format.h>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 struct GLBuffer {
     GLBuffer(std::string_view name)
@@ -27,16 +27,16 @@ struct GLBuffer {
         glCreateBuffers(1, &m_id);
         m_created = true;
 
-        glObjectLabel(GL_BUFFER, m_id, m_name.length(), m_name.c_str());
+        kigl::setLabel(GL_BUFFER, m_id, m_name);
         KI_DEBUG(fmt::format("BUFFER: create - name={}, id={}", m_name, m_id));
     }
 
-    void createEmpty(int size, int flags) {
+    void createEmpty(size_t size, GLuint flags) {
         create();
         initEmpty(size, flags);
     }
 
-    void resizeBuffer(int size)
+    void resizeBuffer(size_t size)
     {
         KI_DEBUG(fmt::format(
             "BUFFER: resize - name={}, id={}, oldSize={}, newSize={}",
@@ -53,7 +53,7 @@ struct GLBuffer {
 
     // For mapped buffer
     // flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-    void initEmpty(int size, int flags) {
+    void initEmpty(size_t size, GLuint flags) {
         m_size = size;
         m_flags = flags;
 
@@ -64,7 +64,7 @@ struct GLBuffer {
         glNamedBufferStorage(m_id, size, nullptr, flags);
     }
 
-    void init(int size, const void* data, int flags) {
+    void init(size_t size, const void* data, GLuint flags) {
         m_size = size;
 
         KI_DEBUG(fmt::format(
@@ -142,18 +142,18 @@ struct GLBuffer {
         glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_id);
     }
 
-    void bindVBO(int vao, int binding, int strideSize) {
-        glVertexArrayVertexBuffer(vao, binding, m_id, 0, strideSize);
+    void bindVBO(GLuint vao, GLuint binding, size_t strideSize) {
+        glVertexArrayVertexBuffer(vao, binding, m_id, 0, (GLsizei)strideSize);
     }
 
     // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
     // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
-    unsigned char* map(int flags) {
+    unsigned char* map(GLuint flags) {
         //return (unsigned char*)glMapNamedBuffer(m_id, flags);
         return mapRange(0, m_size, flags);
     }
 
-    unsigned char* mapRange(size_t offset, size_t length, int flags) {
+    unsigned char* mapRange(size_t offset, size_t length, GLuint flags) {
         if (!m_created || m_mapped) return m_data;
 
         KI_DEBUG(fmt::format(
@@ -182,7 +182,7 @@ struct GLBuffer {
 
     GLuint m_id = 0;
     size_t m_size = 0;
-    int m_flags = 0;
+    GLuint m_flags = 0;
 
     int m_binding = -1;
 

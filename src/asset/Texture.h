@@ -5,7 +5,7 @@
 #include "asset/Assets.h"
 #include "TextureSpec.h"
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 /*
 * https://learnopengl.com/Getting-started/Textures

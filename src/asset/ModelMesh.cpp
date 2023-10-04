@@ -7,7 +7,7 @@
 
 #include <fmt/format.h>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "asset/Sphere.h"
 

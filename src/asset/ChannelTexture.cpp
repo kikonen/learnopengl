@@ -2,7 +2,7 @@
 
 #include <fmt/format.h>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "util/glm_format.h"
 
@@ -154,7 +154,7 @@ void ChannelTexture::prepare(
     // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
     glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
 
-    glObjectLabel(GL_TEXTURE, m_textureID, m_name.length(), m_name.c_str());
+    kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
 
     glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
     glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
@@ -205,7 +205,7 @@ void ChannelTexture::load()
     if (!m_valid) return;
 
     const int dstPixelBytes = m_is16Bbit ? 2 : 1;
-    const int dstRGBA = m_sourceTextures.size();
+    const int dstRGBA = (int)m_sourceTextures.size();
 
     const int bufferSize = w * dstPixelBytes * h * dstRGBA;
 
@@ -222,7 +222,7 @@ void ChannelTexture::load()
         dstByteData = m_data;
     }
 
-    const float dstPixelMax = m_is16Bbit ? 65535 : 255;
+    const int dstPixelMax = m_is16Bbit ? 65535 : 255;
 
     int dstOffset = -1;
 
@@ -231,14 +231,14 @@ void ChannelTexture::load()
 
     for (auto& tex : m_sourceTextures) {
         dstOffset++;
-        int defaultValue = m_defaults[dstOffset] * (m_is16Bbit ? 65535 : 255);
+        int defaultValue = (int)(m_defaults[dstOffset] * (m_is16Bbit ? 65535 : 255));
         //if (!tex) continue;
 
         auto* image = tex ? tex->m_image.get() : nullptr;
         //if (!image) continue;
 
         //const int srcPixelBytes = image && image->m_is16Bbit ? 2 : 1;
-        const float srcPixelMax = image && image->m_is16Bbit ? 65535 : 255;
+        const int srcPixelMax = image && image->m_is16Bbit ? 65535 : 255;
         const float pixelRatio = dstPixelMax / (float)srcPixelMax;
 
         unsigned char* srcByteData{ nullptr };
@@ -260,11 +260,11 @@ void ChannelTexture::load()
                 int value;
                 if (srcByteData) {
                     value = srcByteData[srcIndex];
-                    value *= pixelRatio;
+                    value = (int)(value * pixelRatio);
                 }
                 else if (srcShortData) {
                     value = srcShortData[srcIndex];
-                    value *= pixelRatio;
+                    value = (int)(value * pixelRatio);
                 }
                 else {
                     value = defaultValue;

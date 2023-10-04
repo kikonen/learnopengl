@@ -23,9 +23,9 @@ namespace {
 #pragma pack(push, 1)
     struct VertexEntry {
         glm::vec3 pos;
-        ki::VEC10 normal;
-        ki::VEC10 tangent;
-        ki::UV16 texCoord;
+        kigl::VEC10 normal;
+        kigl::VEC10 tangent;
+        kigl::UV16 texCoord;
     };
 #pragma pack(pop)
 }

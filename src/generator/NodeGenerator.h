@@ -5,7 +5,7 @@
 #include "model/NodeInstance.h"
 #include "model/InstancePhysics.h"
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 class Node;
 class Registry;

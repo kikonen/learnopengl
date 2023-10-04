@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "kigl/GLTextureHandle.h"
 

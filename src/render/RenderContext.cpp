@@ -4,7 +4,8 @@
 #include <glm/glm.hpp>
 //#include <glm/ext.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
+
 #include "component/Light.h"
 
 #include "asset/ImageTexture.h"

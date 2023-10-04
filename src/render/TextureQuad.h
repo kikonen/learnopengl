@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 struct GLBufferRange {
     size_t m_maxCount = 0;

@@ -43,8 +43,8 @@ void NodeRenderer::updateView(const RenderContext& ctx)
     const auto& res = ctx.m_resolution;
 
     // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
-    int w = ctx.m_assets.gBufferScale * res.x;
-    int h = ctx.m_assets.gBufferScale * res.y;
+    int w = (int)(ctx.m_assets.gBufferScale * res.x);
+    int h = (int)(ctx.m_assets.gBufferScale * res.y);
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 

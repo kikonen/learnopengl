@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 class GLTextureHandle {
 public:
@@ -48,7 +48,7 @@ public:
         m_width = width;
         m_height = height;
 
-        glObjectLabel(GL_TEXTURE, m_textureID, name.length(), name.data());
+        kigl::setLabel(GL_TEXTURE, m_textureID, name);
     }
 
     operator int() const { return m_textureID; }

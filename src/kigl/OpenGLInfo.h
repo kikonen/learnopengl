@@ -3,7 +3,7 @@
 #include <string>
 #include <fmt/format.h>
 
-namespace ki {
+namespace kigl {
     struct OpenGLInfo {
         std::string vendor;
         std::string renderer;

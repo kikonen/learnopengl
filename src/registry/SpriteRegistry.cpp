@@ -52,7 +52,7 @@ void SpriteRegistry::add(Sprite& sprite)
     }
 
     for (auto& shape : sprite.m_shapes) {
-        shape.m_registeredIndex = m_shapeIndex++;
+        shape.m_registeredIndex = (int)m_shapeIndex++;
     }
 
     auto& ref = m_sprites.emplace_back(sprite);
@@ -100,7 +100,7 @@ void SpriteRegistry::updateShapeBuffer()
     {
         constexpr size_t sz = sizeof(ShapeSSBO);
 
-        int updateIndex = shapeIndex;
+        size_t updateIndex = shapeIndex;
 
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.m_size < shapeCount * sz) {
@@ -108,7 +108,7 @@ void SpriteRegistry::updateShapeBuffer()
             updateIndex = 0;
         }
 
-        const int updateCount = shapeCount - updateIndex;
+        const size_t updateCount = shapeCount - updateIndex;
 
         m_ssbo.update(
             updateIndex * sz,

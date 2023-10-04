@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 constexpr int MIP_MAP_LEVELS = 5;
 

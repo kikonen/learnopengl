@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 // MAX textures used in shader
 constexpr unsigned int MAX_TEXTURE_COUNT = 256;

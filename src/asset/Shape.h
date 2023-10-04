@@ -25,7 +25,7 @@ public:
 private:
 
 public:
-    mutable int m_registeredIndex = -1;
+    mutable int m_registeredIndex{ -1 };
 
     float m_rotation{ 0.f };
 

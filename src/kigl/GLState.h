@@ -5,7 +5,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "kigl/GLBlendMode.h"
 #include "kigl/GLStencilMode.h"

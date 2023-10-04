@@ -5,7 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
+
 #include "editor/EditorFrame.h"
 
 #include "asset/DynamicCubeMap.h"

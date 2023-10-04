@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 constexpr unsigned int MAX_LIGHT_COUNT = 128;
 

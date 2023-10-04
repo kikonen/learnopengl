@@ -7,7 +7,7 @@
 namespace {
 #pragma pack(push, 1)
     struct VertexEntry {
-        ki::VEC10 pos;
+        kigl::VEC10 pos;
 
         VertexEntry(glm::vec3 p)
             : pos{ p }

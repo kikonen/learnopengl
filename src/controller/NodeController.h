@@ -2,8 +2,9 @@
 
 #include "asset/Assets.h"
 
-#include "ki/GL.h"
 #include "ki/RenderClock.h"
+
+#include "kigl/kigl.h"
 
 #include "gui/Input.h"
 

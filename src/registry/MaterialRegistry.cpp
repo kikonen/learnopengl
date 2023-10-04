@@ -54,7 +54,7 @@ void MaterialRegistry::add(Material& material)
         m_materialsSSBO.reserve(size);
     }
 
-    material.m_registeredIndex = m_materials.size();
+    material.m_registeredIndex = (int)m_materials.size();
     m_materials.emplace_back(material);
 }
 
@@ -146,7 +146,7 @@ void MaterialRegistry::updateMaterialBuffer()
     {
         constexpr size_t sz = sizeof(MaterialSSBO);
 
-        int updateIndex = index;
+        size_t updateIndex = index;
 
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.m_size < totalCount * sz) {
@@ -154,7 +154,7 @@ void MaterialRegistry::updateMaterialBuffer()
             updateIndex = 0;
         }
 
-        const int updateCount = totalCount - updateIndex;
+        const size_t updateCount = totalCount - updateIndex;
 
         m_ssbo.update(
             updateIndex * sz,
@@ -175,7 +175,7 @@ void MaterialRegistry::updateIndexBuffer()
 
     {
         constexpr size_t sz = sizeof(GLuint);
-        int updateIndex = index;
+        size_t updateIndex = index;
 
         // NOTE KI *reallocate* SSBO if needed
         if (m_indexBuffer.m_size < totalCount * sz) {
@@ -183,7 +183,7 @@ void MaterialRegistry::updateIndexBuffer()
             updateIndex = 0;
         }
 
-        const int updateCount = totalCount - updateIndex;
+        const size_t updateCount = totalCount - updateIndex;
 
         m_indexBuffer.update(
             updateIndex * sz,

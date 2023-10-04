@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "asset/Frustum.h"
 

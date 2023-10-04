@@ -5,9 +5,10 @@
 
 #include "imgui.h"
 
-#include "ki/GL.h"
 #include "ki/Timer.h"
-#include "ki/OpenGLInfo.h"
+
+#include "kigl/kigl.h"
+#include "kigl/OpenGLInfo.h"
 
 #include "asset/MaterialSSBO.h"
 
@@ -58,8 +59,8 @@ int Engine::setup() {
 }
 
 void Engine::run() {
-    const auto& info = ki::GL::getInfo();
-    const auto& extensions = ki::GL::getExtensions();
+    const auto& info = kigl::GL::getInfo();
+    const auto& extensions = kigl::GL::getExtensions();
     // NOTE KI https://www.khronos.org/opengl/wiki/Common_Mistakes
     // - preferredFormat is performnce topic
     KI_INFO_OUT(fmt::format(
@@ -97,12 +98,12 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
     KI_INFO("setup");
     if (!m_assets.glNoError) {
-        ki::GL::startError();
+        kigl::GL::startError();
     }
 
     if (m_assets.glDebug) {
         // NOTE KI MUST AFTER glfwWindow create
-        ki::GL::startDebug();
+        kigl::GL::startDebug();
     }
 
     int res = setup();

@@ -129,7 +129,7 @@ int EntityRegistry::addEntityRange(const size_t count)
         m_entries.reserve(size);
     }
 
-    int firstIndex = m_entries.size();
+    size_t firstIndex = m_entries.size();
 
     for (int i = 0; i < count; i++) {
         m_entries.emplace_back();

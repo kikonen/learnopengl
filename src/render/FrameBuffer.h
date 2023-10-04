@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "asset/BufferInfoUBO.h"
 

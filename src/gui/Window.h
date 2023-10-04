@@ -3,8 +3,9 @@
 #include <functional>
 #include <string>
 
-#include "ki/GL.h"
 #include "ki/RenderClock.h"
+
+#include "kigl/kigl.h"
 
 #include "imgui.h"
 

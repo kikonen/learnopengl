@@ -3,8 +3,8 @@
 #include <thread>
 #include <mutex>
 
-#include "ki/GL.h"
 #include "ki/Timer.h"
+#include "kigl/kigl.h"
 
 #include "asset/UBO.h"
 #include "asset/Shader.h"

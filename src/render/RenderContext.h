@@ -112,7 +112,7 @@ public:
 
     RenderContextDefaults m_defaults;
 
-    const glm::vec2 m_resolution;
+    const glm::uvec2 m_resolution;
 
     const float m_nearPlane;
     const float m_farPlane;

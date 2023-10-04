@@ -2,8 +2,8 @@
 
 #include <fmt/format.h>
 
-#include "ki/GL.h"
 #include "ki/uuid.h"
+#include "kigl/kigl.h"
 
 Assets::Assets()
 {

@@ -3,7 +3,7 @@
 #include <vector>
 #include <functional>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "kigl/GLVertexArray.h"
 

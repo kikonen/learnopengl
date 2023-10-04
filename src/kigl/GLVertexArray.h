@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 struct GLVertexArray {
     GLVertexArray() {
@@ -18,7 +18,7 @@ struct GLVertexArray {
         if (m_created) return;
         glCreateVertexArrays(1, &m_id);
         m_created = true;
-        glObjectLabel(GL_VERTEX_ARRAY, m_id, name.length(), name.data());
+        kigl::setLabel(GL_VERTEX_ARRAY, m_id, name);
     }
 
     bool m_created{ false };
