@@ -161,6 +161,8 @@ void NodeDraw::drawNodes(
 
     // pass 2 - target effectBuffer
     {
+        primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+
         m_effectBuffer.clearAll();
         primaryBuffer->bind(ctx);
     }
