@@ -144,6 +144,8 @@ constexpr unsigned int TEXTURE_UNIT_COUNT = 64;
 constexpr unsigned int FIRST_TEXTURE_UNIT = 0;
 constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_UNIT_COUNT - 1;
 
+constexpr unsigned int STENCIL_FOG = 1 << 7;
+constexpr unsigned int STENCIL_SKYBOX = 1 << 6;
 constexpr unsigned int STENCIL_HIGHLIGHT = 1;
 constexpr unsigned int STENCIL_OIT = 2;
 constexpr unsigned int STENCIL_SOLID = 3;

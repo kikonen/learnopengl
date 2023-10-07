@@ -33,50 +33,10 @@ struct GLStencilMode {
         return !operator==(o);
     }
 
-    void apply() {
-        glStencilOp(op_sfail, op_dpfail, op_dppass);
-        glStencilFunc(func, func_ref, func_mask);
-        glStencilMask(mask);
-    }
+    void apply();
 
-    static GLStencilMode fill(GLuint ref)
-    {
-        GLStencilMode stencil;
-        stencil.op_dppass = GL_REPLACE;
-        stencil.func_ref = ref;
-        return stencil;
-    }
-
-    static GLStencilMode only(GLuint ref)
-    {
-        GLStencilMode stencil;
-        stencil.op_dppass = GL_REPLACE;
-        stencil.func = GL_EQUAL;
-        stencil.func_ref = ref;
-        stencil.mask = 0x00;
-
-        return stencil;
-    }
-
-    static GLStencilMode except(GLuint ref)
-    {
-        GLStencilMode stencil;
-        stencil.op_dppass = GL_REPLACE;
-        stencil.func = GL_NOTEQUAL;
-        stencil.func_ref = ref;
-        stencil.mask = 0x00;
-
-        return stencil;
-    }
-
-    static GLStencilMode only_non_zero()
-    {
-        GLStencilMode stencil;
-        stencil.op_dppass = GL_REPLACE;
-        stencil.func = GL_NOTEQUAL;
-        stencil.func_ref = 0;
-        stencil.mask = 0x00;
-
-        return stencil;
-    }
+    static GLStencilMode fill(GLuint ref, GLuint funcMask = 0xff, GLuint mask = 0xff);
+    static GLStencilMode only(GLuint ref, GLuint funcMask = 0xff);
+    static GLStencilMode except(GLuint ref, GLuint funcMask = 0xff);
+    static GLStencilMode only_non_zero(GLuint funcMask = 0xff);
 };

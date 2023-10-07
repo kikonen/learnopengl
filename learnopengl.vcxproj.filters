@@ -24,9 +24,6 @@
     <ClCompile Include="src\sample_app\SampleApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ki\GL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\sample_app\TestSceneSetup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -450,6 +447,12 @@
     <ClCompile Include="src\render\BrdfLutTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\kigl\kigl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kigl\GLStencilMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -462,9 +465,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ki\GL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\sample_app\TestSceneSetup.h">
@@ -839,9 +839,6 @@
     <ClInclude Include="src\util\Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ki\OpenGLInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ki\RenderClock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1014,6 +1011,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLFence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kigl\kigl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kigl\OpenGLInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ki\ki.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -131,7 +131,7 @@ void NodeDraw::drawNodes(
         }
 
         {
-            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID));
+            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
             if (ctx.m_assets.prepassDepthEnabled) {
                 ctx.m_state.setDepthFunc(GL_EQUAL);
             }
@@ -191,7 +191,7 @@ void NodeDraw::drawNodes(
     {
         ctx.validateRender("non_gbuffer");
 
-        ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID));
+        ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
         bool rendered = drawNodesImpl(
             ctx,
@@ -216,7 +216,7 @@ void NodeDraw::drawNodes(
     {
         if (ctx.m_assets.effectOitEnabled)
         {
-            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT));
+            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
             // NOTE KI do NOT modify depth with blend
             ctx.m_state.setDepthMask(GL_FALSE);
 
@@ -291,8 +291,15 @@ void NodeDraw::drawNodes(
             ctx.m_state.setEnabled(GL_BLEND, true);
             ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
+            if (ctx.m_assets.effectFogEnabled) {
+                ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
+                m_fogProgram->bind(ctx.m_state);
+                m_textureQuad.draw(ctx.m_state);
+                ctx.m_state.disableStencil();
+            }
+
             if (ctx.m_assets.effectOitEnabled) {
-                ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_OIT));
+                ctx.m_state.enableStencil(GLStencilMode::only_non_zero(STENCIL_OIT));
 
                 //primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
@@ -301,13 +308,6 @@ void NodeDraw::drawNodes(
 
                 m_textureQuad.draw(ctx.m_state);
 
-                ctx.m_state.disableStencil();
-            }
-
-            if (ctx.m_assets.effectFogEnabled) {
-                ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_SOLID));
-                m_fogProgram->bind(ctx.m_state);
-                m_textureQuad.draw(ctx.m_state);
                 ctx.m_state.disableStencil();
             }
 
@@ -681,8 +681,10 @@ void NodeDraw::drawSkybox(
     auto& batch = ctx.m_batch;
     auto* program = node->m_type->m_program;
 
+    ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
     ctx.m_state.setDepthFunc(GL_LEQUAL);
     program->bind(ctx.m_state);
     m_textureQuad.draw(ctx.m_state);
     ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+    ctx.m_state.disableStencil();
 }
