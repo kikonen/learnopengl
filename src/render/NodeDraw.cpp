@@ -84,9 +84,10 @@ void NodeDraw::drawNodes(
     // => nodes supporting G-buffer
     //if (false)
     {
-        //m_gBuffer.unbindTexture(ctx);
-        m_gBuffer.clearAll();
+        // NOTE KI intel requires FBO to be bound to clearing draw buffers
+        // (nvidia seemingly does not)
         m_gBuffer.bind(ctx);
+        m_gBuffer.clearAll();
 
         // NOTE KI no blend in G-buffer
         auto oldAllowBlend = ctx.setAllowBlend(false);
@@ -163,8 +164,8 @@ void NodeDraw::drawNodes(
     {
         primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
-        m_effectBuffer.clearAll();
         primaryBuffer->bind(ctx);
+        primaryBuffer->clearAll();
     }
 
     // pass 3 - light
@@ -222,8 +223,8 @@ void NodeDraw::drawNodes(
 
             ctx.m_state.setEnabled(GL_BLEND, true);
 
-            m_oitBuffer.clearAll();
             m_oitBuffer.bind(ctx);
+            m_oitBuffer.clearAll();
 
             // NOTE KI different blend mode for each draw buffer
             glBlendFunci(0, GL_ONE, GL_ONE);
@@ -325,9 +326,16 @@ void NodeDraw::drawNodes(
             m_bloomProgram->bind(ctx.m_state);
             primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
 
+            bool cleared[2]{ false, false };
+
             for (int i = 0; i < ctx.m_assets.effectBloomIterations; i++) {
                 auto& buf = m_effectBuffer.m_buffers[i % 2];
                 buf->bind(ctx);
+
+                if (!cleared[i % 2]) {
+                    cleared[i % 2] = true;
+                    buf->clearAll();
+                }
 
                 m_bloomProgram->u_effectBloomIteration->set(i);
                 m_textureQuad.draw(ctx.m_state);
@@ -336,6 +344,7 @@ void NodeDraw::drawNodes(
             }
 
             secondaryBuffer->bind(ctx);
+            secondaryBuffer->clearAll();
 
             m_blendBloomProgram->bind(ctx.m_state);
             m_textureQuad.draw(ctx.m_state);
