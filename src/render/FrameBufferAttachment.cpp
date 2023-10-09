@@ -166,13 +166,12 @@ void FrameBufferAttachment::invalidate(
     //https://www.khronos.org/opengl/wiki/Framebuffer
     // https://community.arm.com/arm-community-blogs/b/graphics-gaming-and-vr-blog/posts/mali-performance-2-how-to-correctly-handle-framebuffers
 
-    //return;
     if (shared) return;
 
     GLenum attachments[] = { attachment };
 
     // TODO KI based into NSight this consumes some time; perhaps irrelevant to do
-    //glInvalidateNamedFramebufferData(fbo, 1, attachments);
+    glInvalidateNamedFramebufferData(fbo, 1, attachments);
 }
 
 void FrameBufferAttachment::clearWithMask(int fbo, GLbitfield mask) const

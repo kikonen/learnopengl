@@ -430,6 +430,7 @@ void NodeDraw::drawNodes(
     }
 
     // pass 12 - cleanup
+    if (ctx.m_assets.glUseInvalidate)
     {
         //ctx.m_state.bindFrameBuffer(0, false);
 
