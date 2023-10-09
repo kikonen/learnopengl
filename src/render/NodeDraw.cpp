@@ -84,6 +84,8 @@ void NodeDraw::drawNodes(
     // => nodes supporting G-buffer
     //if (false)
     {
+        ctx.m_state.setStencil({});
+
         // NOTE KI intel requires FBO to be bound to clearing draw buffers
         // (nvidia seemingly does not)
         m_gBuffer.bind(ctx);
@@ -111,7 +113,7 @@ void NodeDraw::drawNodes(
                     kindBits & NodeDraw::KIND_SOLID);
             }
 
-            if (true)
+            if (false)
             {
                 m_alphaDepthProgram->bind(ctx.m_state);
 
@@ -132,9 +134,9 @@ void NodeDraw::drawNodes(
         }
 
         {
-            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
+            ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
             if (ctx.m_assets.prepassDepthEnabled) {
-                ctx.m_state.setDepthFunc(GL_EQUAL);
+                ctx.m_state.setDepthFunc(GL_LEQUAL);
             }
 
             drawNodesImpl(
@@ -148,7 +150,6 @@ void NodeDraw::drawNodes(
             if (ctx.m_assets.prepassDepthEnabled) {
                 ctx.m_state.setDepthFunc(ctx.m_depthFunc);
             }
-            ctx.m_state.disableStencil();
         }
 
         ctx.setAllowBlend(oldAllowBlend);
@@ -171,7 +172,7 @@ void NodeDraw::drawNodes(
     // pass 3 - light
     //if (false)
     {
-        ctx.m_state.enableStencil(GLStencilMode::only_non_zero());
+        ctx.m_state.setStencil(GLStencilMode::only_non_zero());
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
         primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
@@ -182,7 +183,6 @@ void NodeDraw::drawNodes(
         primaryBuffer->resetDrawBuffers(1);
 
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
-        ctx.m_state.disableStencil();
     }
 
     // pass 4 - non G-buffer solid nodes
@@ -192,7 +192,7 @@ void NodeDraw::drawNodes(
     {
         ctx.validateRender("non_gbuffer");
 
-        ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
+        ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
         bool rendered = drawNodesImpl(
             ctx,
@@ -207,17 +207,15 @@ void NodeDraw::drawNodes(
             // ex. selection volume changes to GL_LINE
             ctx.bindDefaults();
         }
-
-        ctx.m_state.disableStencil();
     }
 
-    // pass 5 - OIT 
+    // pass 5 - OIT
     // NOTE KI OIT after *forward* pass to allow using depth texture from them
     if (ctx.m_allowBlend)
     {
         if (ctx.m_assets.effectOitEnabled)
         {
-            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
+            ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
             // NOTE KI do NOT modify depth with blend
             ctx.m_state.setDepthMask(GL_FALSE);
 
@@ -251,7 +249,6 @@ void NodeDraw::drawNodes(
             ctx.m_state.setEnabled(GL_BLEND, false);
 
             ctx.m_state.setDepthMask(GL_TRUE);
-            ctx.m_state.disableStencil();
         }
     }
 
@@ -261,6 +258,7 @@ void NodeDraw::drawNodes(
 
     // pass 6 - skybox (*before* blend)
     {
+        ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
         drawSkybox(ctx);
     }
 
@@ -269,6 +267,8 @@ void NodeDraw::drawNodes(
     //if (false)
     if (ctx.m_allowBlend)
     {
+        ctx.m_state.setStencil({});
+
         drawBlendedImpl(
             ctx,
             [&typeSelector](const MeshType* type) {
@@ -293,23 +293,18 @@ void NodeDraw::drawNodes(
             ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
             if (ctx.m_assets.effectFogEnabled) {
-                ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
+                ctx.m_state.setStencil(GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
                 m_fogProgram->bind(ctx.m_state);
                 m_textureQuad.draw(ctx.m_state);
-                ctx.m_state.disableStencil();
             }
 
             if (ctx.m_assets.effectOitEnabled) {
-                ctx.m_state.enableStencil(GLStencilMode::only_non_zero(STENCIL_OIT));
-
-                //primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+                ctx.m_state.setStencil(GLStencilMode::only_non_zero(STENCIL_OIT));
 
                 m_blendOitProgram->bind(ctx.m_state);
                 m_oitBuffer.bindTexture(ctx);
 
                 m_textureQuad.draw(ctx.m_state);
-
-                ctx.m_state.disableStencil();
             }
 
             ctx.m_state.setEnabled(GL_BLEND, false);
@@ -317,6 +312,8 @@ void NodeDraw::drawNodes(
 
         if (ctx.m_assets.effectBloomEnabled)
         {
+            ctx.m_state.setStencil({});
+
             primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
             primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
 
@@ -361,6 +358,13 @@ void NodeDraw::drawNodes(
 
         ctx.m_state.setDepthMask(GL_TRUE);
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+
+        ctx.m_state.setStencil({});
+    }
+
+    // pass 11 - debug info
+    {
+        drawDebug(ctx, secondaryBuffer);
     }
 
     // pass 10 - render to target
@@ -422,11 +426,6 @@ void NodeDraw::drawNodes(
                 }
             }
         }
-    }
-
-    // pass 11 - debug info
-    {
-        drawDebug(ctx, targetBuffer);
     }
 
     // pass 12 - cleanup
@@ -691,10 +690,8 @@ void NodeDraw::drawSkybox(
     auto& batch = ctx.m_batch;
     auto* program = node->m_type->m_program;
 
-    ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
     ctx.m_state.setDepthFunc(GL_LEQUAL);
     program->bind(ctx.m_state);
     m_textureQuad.draw(ctx.m_state);
     ctx.m_state.setDepthFunc(ctx.m_depthFunc);
-    ctx.m_state.disableStencil();
 }

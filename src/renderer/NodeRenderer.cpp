@@ -87,7 +87,7 @@ void NodeRenderer::render(
     {
         targetBuffer->clearAll();
 
-        renderStencil(ctx, targetBuffer);
+        fillHighlightMask(ctx, targetBuffer);
         {
             ctx.m_nodeDraw->drawNodes(
                 ctx,
@@ -103,7 +103,7 @@ void NodeRenderer::render(
 }
 
 // Render selected nodes into stencil mask
-void NodeRenderer::renderStencil(
+void NodeRenderer::fillHighlightMask(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer)
 {
@@ -112,7 +112,7 @@ void NodeRenderer::renderStencil(
 
     targetBuffer->bind(ctx);
 
-    ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_HIGHLIGHT));
+    ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_HIGHLIGHT));
 
     // draw entity data mask
     {
@@ -132,8 +132,6 @@ void NodeRenderer::renderStencil(
             NodeDraw::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
-
-    ctx.m_state.disableStencil();
 }
 
 // Render highlight over stencil masked nodes
@@ -147,7 +145,7 @@ void NodeRenderer::renderHighlight(
     targetBuffer->bind(ctx);
 
     ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
-    ctx.m_state.enableStencil(GLStencilMode::except(STENCIL_HIGHLIGHT));
+    ctx.m_state.setStencil(GLStencilMode::except(STENCIL_HIGHLIGHT));
 
     // draw selection color (scaled a bit bigger)
     {
@@ -169,9 +167,5 @@ void NodeRenderer::renderHighlight(
     }
     ctx.m_batch->flush(ctx);
 
-    glStencilMask(0xFF);
-    glStencilFunc(GL_ALWAYS, 0, 0xFF);
-
     ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
-    ctx.m_state.disableStencil();
 }

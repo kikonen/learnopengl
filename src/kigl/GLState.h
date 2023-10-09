@@ -50,11 +50,15 @@ public:
     GLBlendMode setBlendMode(const GLBlendMode& mode);
     void invalidateBlendMode();
 
-    void enableStencil(const GLStencilMode& mode);
-    void disableStencil();
+    //void enableStencil(const GLStencilMode& mode);
+    //void disableStencil();
 
-    void setStencilMode(const GLStencilMode& mode);
-    void invalidateStencilMode();
+    void setStencil(const GLStencilMode& mode);
+    //void invalidateStencil();
+
+    void setStencilOp(const GLStencilOp& op);
+    void setStencilFunc(const GLStencilFunc& func);
+    void setStencilMask(const GLStencilMask & mask);
 
     void setDepthFunc(const GLenum func);
     void setDepthMask(const GLenum mask);
@@ -81,7 +85,9 @@ private:
 
     GLBlendMode m_blendMode{ 0, 0, 0, 0, 0 };
 
-    GLStencilMode m_stencilMode{};
+    GLStencilOp m_stencilOp;
+    GLStencilFunc m_stencilFunc;
+    GLStencilMask m_stencilMask;
 
     GLenum m_depthFunc = -1;
     GLenum m_depthMask = -1;
