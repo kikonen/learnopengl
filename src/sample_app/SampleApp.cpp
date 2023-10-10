@@ -215,7 +215,7 @@ void SampleApp::frustumDebug(
             auto frameDraw = (float)m_drawCount / (float)clock.frameCount;
             auto frameSkip = (float)m_skipCount / (float)clock.frameCount;
 
-            KI_INFO(fmt::format(
+            KI_INFO_OUT(fmt::format(
                 "{}: total-frames={}, gpu-draw={}, gpu-skip={}, gpu-ratio={}",
                 ctx.m_name, clock.frameCount, m_drawCount, m_skipCount, ratio));
 

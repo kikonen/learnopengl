@@ -164,7 +164,8 @@ namespace backend {
                 if (drawCount % maxX != 0) groupY++;
             }
 
-            glDispatchCompute(m_computeGroups[0], groupY, 1);
+            //glDispatchCompute(m_computeGroups[0], groupY, 1);
+            glDispatchCompute(drawCount, 1, 1);
         }
 
         m_drawCounter += drawCount;
