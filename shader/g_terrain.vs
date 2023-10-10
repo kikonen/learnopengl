@@ -27,6 +27,7 @@ out VS_OUT {
   vec3 vertexPos;
 
   flat uint materialIndex;
+  flat float tilingX;
 
 #ifdef USE_TBN
   vec3 tangent;
@@ -76,6 +77,8 @@ void main() {
 
     vs_out.texCoord.x = sizeX * x + scaledX;
     vs_out.texCoord.y = sizeY * (tilingY - (y + 1)) + scaledY;
+
+    vs_out.tilingX = tilingX;
   }
 
   vs_out.worldPos = worldPos.xyz;
@@ -86,6 +89,7 @@ void main() {
 
 //  calculateClipping(worldPos);
 
+#ifdef USE_TBN
 #ifdef USE_NORMAL_TEX
   if (u_materials[materialIndex].normalMapTex.x > 0) {
     const vec3 N = normalize(vs_out.normal);
@@ -99,5 +103,8 @@ void main() {
 
     vs_out.tangent = T;
   }
+#else
+    vs_out.tangent = a_tangent;
+#endif
 #endif
 }
