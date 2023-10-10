@@ -28,13 +28,12 @@ out VS_OUT {
 
   flat uint materialIndex;
   flat float tilingX;
+  flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
   vec3 tangent;
 #endif
 } vs_out;
-
-//out float gl_ClipDistance[CLIP_COUNT];
 
 ////////////////////////////////////////////////////////////
 //
@@ -43,8 +42,7 @@ out VS_OUT {
 SET_FLOAT_PRECISION;
 
 Entity entity;
-
-//#include fn_calculate_clipping.glsl
+Material material;
 
 void main() {
   entity = u_entities[gl_BaseInstance + gl_InstanceID];
@@ -52,6 +50,8 @@ void main() {
   #include var_entity_normal_matrix.glsl
 
   int materialIndex = entity.u_materialIndex;
+
+  material = u_materials[materialIndex];
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
@@ -63,12 +63,13 @@ void main() {
 
   vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
   vs_out.materialIndex = materialIndex;
+  vs_out.heightMapTex = material.heightMapTex;
 
   {
     float x = entity.u_tileX;
     float y = entity.u_tileY;
-    float tilingX = u_materials[materialIndex].tilingX;
-    float tilingY = u_materials[materialIndex].tilingY;
+    float tilingX = material.tilingX;
+    float tilingY = material.tilingY;
     float sizeX = 1.0 / tilingX;
     float sizeY = 1.0 / tilingY;
 
@@ -87,11 +88,9 @@ void main() {
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normalMatrix * a_normal;
 
-//  calculateClipping(worldPos);
-
 #ifdef USE_TBN
 #ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex.x > 0) {
+  if (material.normalMapTex.x > 0) {
     const vec3 N = normalize(vs_out.normal);
     vec3 T = normalize(normalMatrix * a_tangent);
 

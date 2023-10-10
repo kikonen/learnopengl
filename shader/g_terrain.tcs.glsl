@@ -20,6 +20,7 @@ in VS_OUT {
 
   flat uint materialIndex;
   flat float tilingX;
+  flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
   vec3 tangent;
@@ -35,6 +36,7 @@ out TCS_OUT {
   vec3 vertexPos;
 
   flat uint materialIndex;
+  flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
   vec3 tangent;
@@ -51,14 +53,10 @@ SET_FLOAT_PRECISION;
 
 Entity entity;
 
-//#include fn_calculate_clipping.glsl
-
 void main()
 {
   entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
   #include var_entity_model_matrix.glsl
-
-  //calculateClipping(tcs_in[gl_InvocationID].worldPos);
 
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
@@ -68,6 +66,8 @@ void main()
   tcs_out[gl_InvocationID].texCoord = tcs_in[gl_InvocationID].texCoord;
   tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
   tcs_out[gl_InvocationID].materialIndex = tcs_in[gl_InvocationID].materialIndex;
+  tcs_out[gl_InvocationID].heightMapTex = tcs_in[gl_InvocationID].heightMapTex;
+
 #ifdef USE_TBN
   tcs_out[gl_InvocationID].tangent = tcs_in[gl_InvocationID].tangent;
 #endif

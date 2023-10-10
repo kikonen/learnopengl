@@ -3,12 +3,10 @@
 layout(triangles, fractional_odd_spacing, ccw) in;
 
 #include struct_clip_plane.glsl
-#include struct_material.glsl
 #include struct_entity.glsl
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
-#include uniform_materials.glsl
 #include uniform_textures.glsl
 #include uniform_clip_planes.glsl
 
@@ -21,6 +19,7 @@ in TCS_OUT {
   vec3 vertexPos;
 
   flat uint materialIndex;
+  flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
   vec3 tangent;
@@ -54,7 +53,6 @@ out float gl_ClipDistance[CLIP_COUNT];
 SET_FLOAT_PRECISION;
 
 Entity entity;
-Material material;
 
 #include fn_calculate_clipping.glsl
 
@@ -93,8 +91,7 @@ void main()
   entity = u_entities[tes_in[0].entityIndex];
   #include var_entity_model_matrix.glsl
 
-  material = u_materials[tes_in[0].materialIndex];
-  sampler2D heightMap = sampler2D(material.heightMapTex);
+  sampler2D heightMap = sampler2D(tes_in[0].heightMapTex);
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
   vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
