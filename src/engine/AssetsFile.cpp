@@ -246,6 +246,12 @@ void AssetsFile::loadAssets(
         else if (k == "mirror_render_frame_step") {
             data.mirrorRenderFrameStep = readInt(v);
         }
+        else if (k == "mirror_map_near_plane") {
+            data.mirrorMapNearPlane = readFloat(v);
+        }
+        else if (k == "mirror_map_far_plane") {
+            data.mirrorMapFarPlane = readFloat(v);
+        }
         else if (k == "water_map_enabled") {
             data.waterMapEnabled = readBool(v);
         }
@@ -257,6 +263,12 @@ void AssetsFile::loadAssets(
         }
         else if (k == "water_render_frame_step") {
             data.waterRenderFrameStep = readInt(v);
+        }
+        else if (k == "water_map_near_plane") {
+            data.waterMapNearPlane = readFloat(v);
+        }
+        else if (k == "water_map_far_plane") {
+            data.waterMapFarPlane = readFloat(v);
         }
         else if (k == "terrain_grid_size") {
             data.terrainGridSize = readInt(v);

@@ -89,13 +89,13 @@ void CubeMapRenderer::prepare(
     m_renderFrameStart = assets.cubeMapRenderFrameStart;
     m_renderFrameStep = assets.cubeMapRenderFrameStep;
 
+    m_nearPlane = assets.cubeMapNearPlane;
+    m_farPlane = assets.cubeMapFarPlane;
+
     m_tagID = assets.cubeMapUUID;
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
     m_registry->m_materialRegistry->add(m_tagMaterial);
-
-    m_nearPlane = assets.cubeMapNearPlane;
-    m_farPlane = assets.cubeMapFarPlane;
 
     int size = assets.cubeMapSize;
 

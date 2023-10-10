@@ -82,11 +82,15 @@ assets:
   mirror_render_water: true
   mirror_render_frame_start: 0
   mirror_render_frame_step: 4
+  mirror_map_near_plane: 0.1
+  mirror_map_far_plane: 600
 
   water_map_enabled: true
   water_tile_size: 100
   water_render_frame_start: 0
   water_render_frame_step: 1
+  water_map_near_plane: 0.1
+  water_map_far_plane: 500
 
   terrain_grid_size: 64
 

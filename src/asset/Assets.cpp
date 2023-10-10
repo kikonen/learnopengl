@@ -112,12 +112,18 @@ Assets::Assets()
     mirrorRenderFrameStart = 0;
     mirrorRenderFrameStep = 2;
 
+    mirrorMapNearPlane = 0.1;
+    mirrorMapFarPlane = 1000;
+
     waterMapEnabled = true;
     waterTileSize = 128;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
     waterRenderFrameStart = 0;
     waterRenderFrameStep = 2;
+
+    waterMapNearPlane = 0.1;
+    waterMapFarPlane = 1000;
 
     terrainGridSize = 32;
 

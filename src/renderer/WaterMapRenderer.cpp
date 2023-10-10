@@ -49,6 +49,9 @@ void WaterMapRenderer::prepare(
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
 
+    m_nearPlane = assets.waterMapNearPlane;
+    m_farPlane = assets.waterMapFarPlane;
+
     if (m_doubleBuffer) {
         m_bufferCount = 2;
         m_prevIndex = 1;
@@ -269,8 +272,13 @@ bool WaterMapRenderer::render(
         camera.setFov(parentCameraFov);
 
         RenderContext localCtx(
-            "WATER_REFLECT", &parentCtx, &camera,
-            reflectionBuffer->m_spec.width, reflectionBuffer->m_spec.height);
+            "WATER_REFLECT",
+            &parentCtx,
+            &camera,
+            m_nearPlane,
+            m_farPlane,
+            reflectionBuffer->m_spec.width,
+            reflectionBuffer->m_spec.height);
 
         localCtx.copyShadowFrom(parentCtx);
 
@@ -304,8 +312,13 @@ bool WaterMapRenderer::render(
         camera.setFov(parentCameraFov);
 
         RenderContext localCtx(
-            "WATER_REFRACT", &parentCtx, &camera,
-            refractionBuffer->m_spec.width, refractionBuffer->m_spec.height);
+            "WATER_REFRACT",
+            &parentCtx,
+            &camera,
+            m_nearPlane,
+            m_farPlane,
+            refractionBuffer->m_spec.width,
+            refractionBuffer->m_spec.height);
 
         localCtx.copyShadowFrom(parentCtx);
 

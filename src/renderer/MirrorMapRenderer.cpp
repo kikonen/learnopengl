@@ -54,6 +54,9 @@ void MirrorMapRenderer::prepare(
     m_renderFrameStart = assets.mirrorRenderFrameStart;
     m_renderFrameStep = assets.mirrorRenderFrameStep;
 
+    m_nearPlane = assets.mirrorMapNearPlane;
+    m_farPlane = assets.mirrorMapFarPlane;
+
     if (m_doubleBuffer) {
         m_bufferCount = 2;
         m_prevIndex = 1;
@@ -231,9 +234,10 @@ bool MirrorMapRenderer::render(
         RenderContext localCtx("MIRROR",
             &parentCtx,
             &camera,
-            dist,
-            parentCtx.m_assets.farPlane,
-            reflectionBuffer->m_spec.width, reflectionBuffer->m_spec.height);
+            m_nearPlane,
+            m_farPlane,
+            reflectionBuffer->m_spec.width,
+            reflectionBuffer->m_spec.height);
 
         localCtx.copyShadowFrom(parentCtx);
 
