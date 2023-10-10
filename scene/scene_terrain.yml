@@ -2,8 +2,7 @@
 name: Terrain
 viewports:
 skybox:
-  program: g_skybox
-  material: skybox
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 lights: {}
 cube_maps: {}
 root:

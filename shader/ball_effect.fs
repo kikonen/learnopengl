@@ -6,7 +6,6 @@
 #include uniform_data.glsl
 #include uniform_buffer_info.glsl
 #include uniform_materials.glsl
-#include uniform_textures.glsl
 
 in VS_OUT {
   flat uint entityIndex;

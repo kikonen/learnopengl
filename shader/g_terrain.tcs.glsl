@@ -3,12 +3,10 @@
 layout(vertices=3) out;
 
 #include struct_entity.glsl
-#include struct_clip_plane.glsl
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_clip_planes.glsl
 
 in VS_OUT {
   flat uint entityIndex;
@@ -43,7 +41,6 @@ out TCS_OUT {
 #endif
 } tcs_out[];
 
-//out float gl_ClipDistance[CLIP_COUNT];
 
 ////////////////////////////////////////////////////////////
 //

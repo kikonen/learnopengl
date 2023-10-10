@@ -6,7 +6,6 @@
 
 #include uniform_materials.glsl
 #include uniform_shapes.glsl
-#include uniform_textures.glsl
 #endif
 
 #ifndef USE_ALPHA

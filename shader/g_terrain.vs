@@ -8,14 +8,12 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_material.glsl
-#include struct_clip_plane.glsl
 #include struct_entity.glsl
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_materials.glsl
-#include uniform_clip_planes.glsl
 #include uniform_material_indeces.glsl
 
 out VS_OUT {

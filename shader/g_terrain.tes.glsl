@@ -7,7 +7,6 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 
 #include uniform_entities.glsl
 #include uniform_matrices.glsl
-#include uniform_textures.glsl
 #include uniform_clip_planes.glsl
 
 in TCS_OUT {
