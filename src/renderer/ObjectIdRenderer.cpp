@@ -160,9 +160,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
     {
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_idProgram,
-            //m_idProgramPointSprite,
-            nullptr,
+            [this](const MeshType* type) { return m_idProgram; },
             [](const MeshType* type) { return !type->m_flags.noSelect && !type->m_flags.tessellation; },
             [](const Node* node) { return true; },
             NodeDraw::KIND_ALL);

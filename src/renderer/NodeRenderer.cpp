@@ -124,9 +124,7 @@ void NodeRenderer::fillHighlightMask(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_selectionProgram,
-            //m_selectionProgramPointSprite,
-            nullptr,
+            [this](const MeshType* type) { return m_selectionProgram; },
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
             NodeDraw::KIND_ALL);
@@ -158,9 +156,7 @@ void NodeRenderer::renderHighlight(
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_selectionProgram,
-            //m_selectionProgramPointSprite,
-            nullptr,
+            [this](const MeshType* type) { return m_selectionProgram; },
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
             NodeDraw::KIND_ALL);

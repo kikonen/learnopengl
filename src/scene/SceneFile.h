@@ -17,6 +17,8 @@
 
 #include "asset/Material.h"
 #include "asset/MaterialField.h"
+#include "asset/Shader.h"
+
 #include "registry/EntityType.h"
 
 namespace event {
@@ -181,6 +183,8 @@ private:
 
         std::string programName{};
         std::string geometryType;
+
+        std::string depthProgramName{ SHADER_DEPTH_PASS };
 
         std::map<std::string, std::string> programDefinitions{};
         std::unordered_map<std::string, bool> renderFlags{};

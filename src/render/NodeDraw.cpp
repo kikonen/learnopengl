@@ -26,12 +26,6 @@ void NodeDraw::prepare(
     m_plainQuad.prepare();
     m_textureQuad.prepare();
 
-    m_solidDepthProgram = registry->m_programRegistry->getProgram(SHADER_DEPTH_PASS);
-    m_alphaDepthProgram = registry->m_programRegistry->getProgram(SHADER_DEPTH_PASS, { { DEF_USE_ALPHA, "1" } });
-
-    m_solidDepthProgram->prepare(assets);
-    m_alphaDepthProgram->prepare(assets);
-
     m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
     m_deferredProgram ->prepare(assets);
 
@@ -97,33 +91,29 @@ void NodeDraw::drawNodes(
         // NOTE KI "pre pass depth" causes more artifacts than benefits
         if (ctx.m_assets.prepassDepthEnabled)
         {
-            {
-                m_solidDepthProgram->bind(ctx.m_state);
+            m_gBuffer.m_buffer->resetDrawBuffers(0);
 
+            {
                 ctx.m_nodeDraw->drawProgram(
                     ctx,
-                    m_solidDepthProgram,
-                    nullptr,
+                    [this](const MeshType* type) { return type->m_depthProgram; },
                     [&typeSelector](const MeshType* type) {
                         return type->m_flags.gbuffer &&
-                            !type->m_flags.water &&
+                            type->m_flags.terrain &&
                             typeSelector(type);
                     },
                     nodeSelector,
                     kindBits & NodeDraw::KIND_SOLID);
             }
 
+            // NOTE KI only *solid* render in pre-pass
             if (false)
             {
-                m_alphaDepthProgram->bind(ctx.m_state);
-
                 ctx.m_nodeDraw->drawProgram(
                     ctx,
-                    m_alphaDepthProgram,
-                    nullptr,
+                    [this](const MeshType* type) { return type->m_depthProgram; },
                     [&typeSelector](const MeshType* type) {
                         return type->m_flags.gbuffer &&
-                            //type->m_flags.terrain &&
                             typeSelector(type);
                     },
                     nodeSelector,
@@ -134,6 +124,8 @@ void NodeDraw::drawNodes(
         }
 
         {
+            m_gBuffer.m_buffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+
             ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
             if (ctx.m_assets.prepassDepthEnabled) {
                 ctx.m_state.setDepthFunc(GL_LEQUAL);
@@ -143,7 +135,19 @@ void NodeDraw::drawNodes(
                 ctx,
                 [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
                 nodeSelector,
-                kindBits);
+                kindBits & NodeDraw::KIND_SOLID);
+
+            ctx.m_batch->flush(ctx);
+
+            if (ctx.m_assets.prepassDepthEnabled) {
+                ctx.m_state.setDepthFunc(GL_LEQUAL);
+            }
+
+            drawNodesImpl(
+                ctx,
+                [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+                nodeSelector,
+                kindBits & ~NodeDraw::KIND_SOLID);
 
             ctx.m_batch->flush(ctx);
 
@@ -232,8 +236,7 @@ void NodeDraw::drawNodes(
             // only "blend OIT" nodes
             drawProgram(
                 ctx,
-                m_oitProgram,
-                nullptr,
+                [this](const MeshType* type) { return m_oitProgram; },
                 [&typeSelector](const MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
                 nodeSelector,
                 NodeDraw::KIND_ALL);
@@ -627,26 +630,21 @@ void NodeDraw::drawBlendedImpl(
 
 void NodeDraw::drawProgram(
     const RenderContext& ctx,
-    Program* program,
-    Program* programPointSprite,
+    const std::function<Program*(const MeshType*)>& programSelector,
     const std::function<bool(const MeshType*)>& typeSelector,
     const std::function<bool(const Node*)>& nodeSelector,
     unsigned int kindBits)
 {
-    auto renderTypes = [this, &ctx, &program, &programPointSprite, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, &programSelector, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
             auto* type = it.first.type;
 
             if (!typeSelector(type)) continue;
 
-            auto& batch = ctx.m_batch;
-
-            auto activeProgram = program;
-            if (type->m_entityType == EntityType::point_sprite) {
-                activeProgram = programPointSprite;
-            }
-
+            auto activeProgram = programSelector(type);
             if (!activeProgram) continue;
+
+            auto& batch = ctx.m_batch;
 
             for (auto& node : it.second) {
                 if (!nodeSelector(node)) continue;

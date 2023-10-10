@@ -116,6 +116,10 @@ void MeshType::prepare(
         m_program->prepare(assets);
     }
 
+    if (m_depthProgram) {
+        m_depthProgram->prepare(assets);
+    }
+
     if (m_customMaterial) {
         m_customMaterial->prepare(assets, registry);
     }

@@ -255,8 +255,7 @@ void ShadowCascade::drawNodes(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_solidShadowProgram,
-            nullptr,
+            [this](const MeshType* type) { return m_solidShadowProgram; },
             typeFilter,
             nodeFilter,
             NodeDraw::KIND_SOLID);
@@ -268,8 +267,7 @@ void ShadowCascade::drawNodes(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_alphaShadowProgram,
-            nullptr,
+            [this](const MeshType* type) { return m_alphaShadowProgram; },
             typeFilter,
             nodeFilter,
             NodeDraw::KIND_SPRITE | NodeDraw::KIND_ALPHA | NodeDraw::KIND_BLEND);

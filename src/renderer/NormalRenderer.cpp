@@ -37,8 +37,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
     {
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_normalProgram,
-            nullptr,
+            [this](const MeshType* type) { return m_normalProgram; },
             [](const MeshType* type) { return !type->m_flags.tessellation && type->m_entityType != EntityType::point_sprite; },
             [&ctx](const Node* node) {
                 return node->m_id != ctx.m_assets.volumeUUID &&

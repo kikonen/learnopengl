@@ -701,6 +701,12 @@ MeshType* SceneFile::createType(
                 false,
                 data.geometryType,
                 definitions);
+
+            type->m_depthProgram = m_registry->m_programRegistry->getProgram(
+                data.depthProgramName,
+                false,
+                "",
+                definitions);
         }
     }
 
@@ -1365,6 +1371,9 @@ void SceneFile::loadEntityClone(
             if (data.programName == "texture") {
                 data.programName = SHADER_TEXTURE;
             }
+        }
+        else if (k == "depth_program") {
+            data.depthProgramName = v.as<std::string>();
         }
         else if (k == "geometry_type") {
             data.geometryType = v.as<std::string>();

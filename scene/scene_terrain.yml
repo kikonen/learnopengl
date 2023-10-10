@@ -43,6 +43,7 @@ entities:
     instanced: true
     material: terrain_grass_2
     program: g_terrain
+    depth_program: g_terrain_depth
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
     render_flags:

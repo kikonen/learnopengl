@@ -112,6 +112,7 @@ public:
     std::string m_script;
 
     Program* m_program{ nullptr };
+    Program* m_depthProgram{ nullptr };
 
     MaterialVBO m_materialVBO;
     Sprite m_sprite;

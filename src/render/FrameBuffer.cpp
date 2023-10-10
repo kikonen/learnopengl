@@ -155,7 +155,12 @@ void FrameBuffer::resetDrawBuffers(int activeCount)
 
     if (m_activeDrawBuffers != activeCount) {
         m_activeDrawBuffers = activeCount;
-        glNamedFramebufferDrawBuffers(m_fbo, activeCount, m_drawBuffers.data());
+        if (activeCount > 0) {
+            glNamedFramebufferDrawBuffers(m_fbo, activeCount, m_drawBuffers.data());
+        }
+        else {
+            glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
+        }
     }
 }
 

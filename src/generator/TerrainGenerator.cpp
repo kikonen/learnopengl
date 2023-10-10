@@ -242,6 +242,7 @@ MeshType* TerrainGenerator::createType(
     materialVBO.setMaterials(containerMaterials.getMaterials());
 
     type->m_program = containerType->m_program;
+    type->m_depthProgram = containerType->m_depthProgram;
 
     return type;
 }
