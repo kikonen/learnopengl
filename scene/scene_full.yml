@@ -4,7 +4,6 @@ meta:
 viewports:
 skybox:
   program: g_skybox
-  priority: -100
   #material: skybox/BluePinkNebular
   #swap_faces: true
   material: skybox/Skybox_3
@@ -737,13 +736,13 @@ entities:
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
     enabled: true
-  - name: Terrain grass v2.2
+  - name: Terrain grass v2
     id: auto
-    priority: -15
+    priority: 20
     type: container
     instanced: true
     material: terrain_grass_2
-    program: g_terrain2
+    program: g_terrain
     pos: [-1200, -5.5, -900]
     xxpos: [-1024, -5.5, -1024]
     render_flags:

@@ -39,10 +39,11 @@ entities:
     enabled: true
   - name: Terrain grass v2
     id: auto
+    priority: 20
     type: container
     instanced: true
     material: terrain_grass_2
-    program: g_terrain2
+    program: g_terrain
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
     render_flags:
