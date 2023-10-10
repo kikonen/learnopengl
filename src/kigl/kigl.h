@@ -59,18 +59,18 @@ namespace kigl {
         unsigned int b : 10;
         unsigned int a : 2;
 
-        RGB10_A2(const glm::vec4& p) {
-            r = (int)(p.r * SCALE_RGB10);
-            g = (int)(p.g * SCALE_RGB10);
-            b = (int)(p.b * SCALE_RGB10);
-            a = (int)(p.a * SCALE_RGB10_A2);
-        }
+        RGB10_A2(const glm::vec4& p)
+            : r{ (unsigned int)(p.r * SCALE_RGB10) },
+            g{ (unsigned int)(p.g * SCALE_RGB10) },
+            b{ (unsigned int)(p.b * SCALE_RGB10) },
+            a{ (unsigned int)(p.a * SCALE_RGB10_A2) }
+        {}
 
         RGB10_A2& operator=(const glm::vec4& p) {
-            r = (int)(p.r * SCALE_RGB10);
-            g = (int)(p.g * SCALE_RGB10);
-            b = (int)(p.b * SCALE_RGB10);
-            a = (int)(p.a * SCALE_RGB10_A2);
+            r = (unsigned int)(p.r * SCALE_RGB10);
+            g = (unsigned int)(p.g * SCALE_RGB10);
+            b = (unsigned int)(p.b * SCALE_RGB10);
+            a = (unsigned int)(p.a * SCALE_RGB10_A2);
             return *this;
         }
     };
@@ -84,16 +84,18 @@ namespace kigl {
         int z : 10;
         unsigned int not_used : 2;
 
-        VEC10(const glm::vec3& p) {
-            x = (int)(p.x * SCALE_VEC10);
-            y = (int)(p.y * SCALE_VEC10);
-            z = (int)(p.z * SCALE_VEC10);
-        }
+        VEC10(const glm::vec3& p)
+            : x{ (int)(p.x * SCALE_VEC10) },
+            y{ (int)(p.y * SCALE_VEC10) },
+            z{ (int)(p.z * SCALE_VEC10) },
+            not_used{ 0 }
+        {}
 
         VEC10& operator=(const glm::vec3& p) {
             x = (int)(p.x * SCALE_VEC10);
             y = (int)(p.y * SCALE_VEC10);
             z = (int)(p.z * SCALE_VEC10);
+            not_used = 0;
             return *this;
         }
     };
@@ -105,14 +107,14 @@ namespace kigl {
         unsigned short u;
         unsigned short v;
 
-        UV16(const glm::vec2& t) {
-            u = (int)(t.x * SCALE_UV16);
-            v = (int)(t.y * SCALE_UV16);
-        }
+        UV16(const glm::vec2& t)
+            : u{ (unsigned short)(t.x * SCALE_UV16) },
+            v{ (unsigned short)(t.y * SCALE_UV16) }
+        {}
 
         UV16& operator=(const glm::vec2& t) {
-            u = (int)(t.x * SCALE_UV16);
-            v = (int)(t.y * SCALE_UV16);
+            u = (unsigned short)(t.x * SCALE_UV16);
+            v = (unsigned short)(t.y * SCALE_UV16);
             return *this;
         }
     };
