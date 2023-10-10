@@ -509,13 +509,19 @@ std::vector<std::string> Program::processInclude(
     std::string_view includePath,
     int lineNumber)
 {
+    std::string simplifiedPath{ includePath };
+    if (simplifiedPath.starts_with('"'))
+        simplifiedPath = simplifiedPath.substr(1, simplifiedPath.length() - 1);
+    if (simplifiedPath.ends_with('"'))
+        simplifiedPath = simplifiedPath.substr(0, simplifiedPath.length() - 1);
+
     std::string path;
     {
         path = util::joinPath(
             m_assets.shadersDir,
             "",
             "_",
-            includePath);
+            simplifiedPath);
     }
 
     std::vector<std::string> lines = loadSourceLines(path, false);
