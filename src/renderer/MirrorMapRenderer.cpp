@@ -231,10 +231,11 @@ bool MirrorMapRenderer::render(
         //camera.setFov(ctx.m_camera.getFov());
         //camera.setFov(fovAngle);
 
+        // NOTE KI "dist" to cut-off render at mirror plane; camera is mirrored *behind* the mirror
         RenderContext localCtx("MIRROR",
             &parentCtx,
             &camera,
-            m_nearPlane,
+            dist + m_nearPlane,
             m_farPlane,
             reflectionBuffer->m_spec.width,
             reflectionBuffer->m_spec.height);
