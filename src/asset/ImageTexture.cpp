@@ -202,7 +202,8 @@ void ImageTexture::prepare(
         glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
         glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
 
-        glTextureStorage2D(m_textureID, m_spec.mipMapLevels, m_internalFormat, m_image->m_width, m_image->m_height);
+        const int mipMapLevels = log2(std::max(m_image->m_width, m_image->m_height));
+        glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, m_image->m_width, m_image->m_height);
         glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, m_pixelFormat, m_image->m_data);
         glGenerateTextureMipmap(m_textureID);
 
