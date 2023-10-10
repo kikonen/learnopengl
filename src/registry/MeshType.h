@@ -18,6 +18,7 @@ struct NodeRenderFlags {
 
     bool gbuffer = false;
     bool blendOIT = false;
+    bool depth = false;
 
     bool instanced = false;
 

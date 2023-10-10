@@ -654,14 +654,20 @@ MeshType* SceneFile::createType(
                 definitions[k] = v;
             }
 
+            std::map<std::string, std::string, std::less<>> depthDefinitions;
+            bool useDepth = type->m_flags.depth;
+
             if (type->m_flags.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
+                useDepth = false;
             }
             if (type->m_flags.blend) {
                 definitions[DEF_USE_BLEND] = "1";
+                useDepth = false;
             }
             if (type->m_flags.blendOIT) {
                 definitions[DEF_USE_BLEND_OIT] = "1";
+                useDepth = false;
             }
 
             //if (type->m_entityType == EntityType::billboard) {
@@ -702,11 +708,13 @@ MeshType* SceneFile::createType(
                 data.geometryType,
                 definitions);
 
-            type->m_depthProgram = m_registry->m_programRegistry->getProgram(
-                data.depthProgramName,
-                false,
-                "",
-                definitions);
+            if (useDepth) {
+                type->m_depthProgram = m_registry->m_programRegistry->getProgram(
+                    data.depthProgramName,
+                    false,
+                    "",
+                    depthDefinitions);
+            }
         }
     }
 
@@ -869,6 +877,12 @@ void SceneFile::assignFlags(
 
     flags.gbuffer = data.programName.starts_with("g_");
 
+    {
+        const auto& e = data.renderFlags.find("depth");
+        if (e != data.renderFlags.end()) {
+            flags.depth = e->second;
+        }
+    }
     {
         const auto& e = data.renderFlags.find("gbuffer");
         if (e != data.renderFlags.end()) {

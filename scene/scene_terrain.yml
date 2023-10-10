@@ -47,6 +47,7 @@ entities:
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
     render_flags:
+      depth: true
       xxwireframe: true
       xxno_shadow: true
       tessellation: true

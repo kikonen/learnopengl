@@ -93,39 +93,25 @@ void NodeDraw::drawNodes(
         {
             m_gBuffer.m_buffer->resetDrawBuffers(0);
 
+            // NOTE KI only *solid* render in pre-pass
             {
                 ctx.m_nodeDraw->drawProgram(
                     ctx,
                     [this](const MeshType* type) { return type->m_depthProgram; },
                     [&typeSelector](const MeshType* type) {
                         return type->m_flags.gbuffer &&
-                            type->m_flags.terrain &&
+                            type->m_flags.depth &&
                             typeSelector(type);
                     },
                     nodeSelector,
                     kindBits & NodeDraw::KIND_SOLID);
             }
 
-            // NOTE KI only *solid* render in pre-pass
-            if (false)
-            {
-                ctx.m_nodeDraw->drawProgram(
-                    ctx,
-                    [this](const MeshType* type) { return type->m_depthProgram; },
-                    [&typeSelector](const MeshType* type) {
-                        return type->m_flags.gbuffer &&
-                            typeSelector(type);
-                    },
-                    nodeSelector,
-                    kindBits & (NodeDraw::KIND_SPRITE | NodeDraw::KIND_ALPHA));
-            }
-
             ctx.m_batch->flush(ctx);
+            m_gBuffer.m_buffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
         }
 
         {
-            m_gBuffer.m_buffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
-
             ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
             if (ctx.m_assets.prepassDepthEnabled) {
                 ctx.m_state.setDepthFunc(GL_LEQUAL);
@@ -135,19 +121,7 @@ void NodeDraw::drawNodes(
                 ctx,
                 [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
                 nodeSelector,
-                kindBits & NodeDraw::KIND_SOLID);
-
-            ctx.m_batch->flush(ctx);
-
-            if (ctx.m_assets.prepassDepthEnabled) {
-                ctx.m_state.setDepthFunc(GL_LEQUAL);
-            }
-
-            drawNodesImpl(
-                ctx,
-                [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
-                nodeSelector,
-                kindBits & ~NodeDraw::KIND_SOLID);
+                kindBits);
 
             ctx.m_batch->flush(ctx);
 
