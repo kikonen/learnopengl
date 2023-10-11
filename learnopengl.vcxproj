@@ -187,6 +187,7 @@
     <ClCompile Include="src\asset\HdriTexture.cpp" />
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
+    <ClCompile Include="src\asset\TextMaterial.cpp" />
     <ClCompile Include="src\kigl\GLStencilMode.cpp" />
     <ClCompile Include="src\registry\SpriteRegistry.cpp" />
     <ClCompile Include="src\render\BrdfLutTexture.cpp" />
@@ -338,6 +339,7 @@
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
+    <ClInclude Include="src\asset\TextMaterial.h" />
     <ClInclude Include="src\kigl\GLFence.h" />
     <ClInclude Include="src\kigl\GLStencilMode.h" />
     <ClInclude Include="src\kigl\kigl.h" />

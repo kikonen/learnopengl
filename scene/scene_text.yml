@@ -1,0 +1,49 @@
+---
+name: Test
+skybox:
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+entities:
+  - name: Camera
+    type: origo
+    pos: [0, 0, 0]
+    camera:
+      default: true
+      enabled: true
+    enabled: true
+    controller:
+      type: camera
+      enabled: true
+  - name: Text plane
+    model: quad
+    material: metal
+    custom_material:
+      type: text
+      font: fonts/Vera.ttf
+      font_size: 64
+    program: g_tex
+    pos: [0.0, 0.0, -5.0]
+    render_flags:
+      render_back: true
+    enabled: true
+  - name: Directional light
+    pos: [0, 25, 40]
+    scale: 2.5
+    model: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    force_material: true
+    material_modifier:
+      kd: [0.8, 0.8, 0.6, 1.0]
+    light:
+      type: directional
+      diffuse: [0.9, 0.9, 0.7, 1.0]
+      intensity: 30000
+      enabled: true
+    enabled: true
+materials:
+  - name: default
+    kd: [0.8, 0.8, 0.0, 1.0]
+  - name: metal
+    kd: [0.8, 0.8, 0.0, 1.0]
+    metal: [1.0, 0.0, 0, 1]

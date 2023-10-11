@@ -104,6 +104,8 @@ constexpr int VBO_VERTEX_BINDING = 1;
 //constexpr int ATTR_INSTANCE_ENTITY_INDEX = 15;
 //constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
 
+constexpr int UNIT_FONT_ATLAS = 48;
+
 constexpr int UNIT_HDR_TEXTURE = 49;
 
 constexpr int UNIT_G_ALBEDO = 50;

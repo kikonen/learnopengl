@@ -18,6 +18,7 @@
 #include "asset/Material.h"
 #include "asset/MaterialField.h"
 #include "asset/Shader.h"
+#include "asset/CustomMaterial.h"
 
 #include "registry/EntityType.h"
 
@@ -163,6 +164,19 @@ private:
         float intensity{ 1.f };
     };
 
+    enum class CustomMaterialType {
+        none,
+        text,
+        skybox,
+    };
+
+    struct CustomMaterialData {
+        CustomMaterialType type{ CustomMaterialType::none };
+
+        std::string fontName;
+        float fontSize;
+    };
+
     struct EntityCloneData {
         bool valid{ false };
 
@@ -210,6 +224,8 @@ private:
         MaterialField materialModifierFields;
         Material materialModifiers;
         bool materialModifiers_enabled = false;
+
+        CustomMaterialData customMaterial;
 
         std::string spriteName;
 
@@ -343,6 +359,12 @@ private:
         const int cloneIndex,
         const glm::uvec3& tile);
 
+    std::unique_ptr<CustomMaterial> createCustomMaterial(
+        const EntityCloneData& entity,
+        const CustomMaterialData& data,
+        const int cloneIndex,
+        const glm::uvec3& tile);
+
     NodeController* createController(
         const EntityCloneData& entity,
         const ControllerData& data,
@@ -402,6 +424,10 @@ private:
     void loadLight(
         const YAML::Node& node,
         LightData& data);
+
+    void loadCustomMaterial(
+        const YAML::Node& node,
+        CustomMaterialData& data);
 
     void loadController(
         const YAML::Node& node,
