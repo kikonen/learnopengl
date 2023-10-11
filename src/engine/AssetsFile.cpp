@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <map>
+#include <filesystem>
 
 #include <fmt/format.h>
 
@@ -12,6 +14,8 @@
 
 
 namespace {
+    constexpr static inline std::string_view ROOT_DIR{ "{{root_dir}}" };
+    constexpr static inline std::string_view ASSETS_DIR{ "{{assets_dir}}" };
 }
 
 AssetsFile::AssetsFile(
@@ -32,8 +36,50 @@ Assets AssetsFile::load()
     Assets assets;
 
     loadAssets(doc, assets);
+    resolveDirs(assets);
 
     return assets;
+}
+
+void AssetsFile::resolveDirs(
+    Assets& data)
+{
+    KI_INFO_OUT(data.assetsDir);
+    {
+        std::map<const std::string_view, const std::string_view> replacements = {
+            { ROOT_DIR, std::filesystem::current_path().string() },
+        };
+
+        for (const auto& pair : replacements) {
+            const auto& from = pair.first;
+            const auto& to = pair.second;
+
+            data.assetsDir = util::replace(data.assetsDir, from, to);
+        }
+    }
+
+    KI_INFO_OUT(data.assetsDir);
+
+    {
+        std::map<const std::string_view, const std::string_view> replacements = {
+            { ASSETS_DIR, data.assetsDir },
+            { ROOT_DIR, std::filesystem::current_path().string() },
+        };
+
+        for (const auto& pair : replacements) {
+            const auto& from = pair.first;
+            const auto& to   = pair.second;
+
+            data.logFile = util::replace(data.logFile, from, to);
+            data.sceneFile = util::replace(data.sceneFile, from, to);
+
+            data.texturesDir = util::replace(data.texturesDir, from, to);
+            data.modelsDir = util::replace(data.modelsDir, from, to);
+            data.spritesDir = util::replace(data.spritesDir, from, to);
+            data.fontsDir = util::replace(data.fontsDir, from, to);
+            data.shadersDir = util::replace(data.shadersDir, from, to);
+        }
+    }
 }
 
 void AssetsFile::loadAssets(
@@ -131,6 +177,9 @@ void AssetsFile::loadAssets(
         }
         else if (k == "textures_dir") {
             data.texturesDir = v.as<std::string>();
+        }
+        else if (k == "fonts_dir") {
+            data.fontsDir = v.as<std::string>();
         }
         else if (k == "shaders_dir") {
             data.shadersDir = v.as<std::string>();

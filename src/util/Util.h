@@ -24,6 +24,11 @@ namespace util
     // @return reference of str param
     std::string& toLower(std::string& str);
 
+    std::string replace(
+        const std::string& str,
+        const std::string_view from,
+        const std::string_view to);
+
     // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
     void splitString(
         const std::string& v,

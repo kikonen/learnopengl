@@ -69,6 +69,7 @@ public:
     std::string modelsDir;
     std::string spritesDir;
     std::string texturesDir;
+    std::string fontsDir;
 
     std::string shadersDir;
 
