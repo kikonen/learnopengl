@@ -46,16 +46,16 @@ Assets::Assets()
     asyncLoaderEnabled = true;
     asyncLoaderDelay = 1000;
 
-    logFile = "{{root_dir}}/log/development.log";
-    sceneFile = "{{root_dir}}/scene/scene_full.yml";
+    logFile = "log/development.log";
+    sceneFile = "scene/scene_full.yml";
 
-    assetsDir = "{{root_dir}}/resources/assets";
+    assetsDir = "resources/assets";
     modelsDir = "{{assets_dir}}";
     spritesDir = "{{assets_dir}}/sprites";
     texturesDir = "{{assets_dir}}/textures";
     fontsDir = "{{assets_dir}}/fonts";
 
-    shadersDir = "{{root_dir}}/shader";
+    shadersDir = "shader";
 
     placeholderTextureAlways = false;
     placeholderTexture = "textures/tiles_1024.png";

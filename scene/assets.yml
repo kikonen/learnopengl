@@ -30,8 +30,8 @@ assets:
   async_loader_enabled: true
   async_loader_delay: 0
 
-  assets_dir: "{{root_dir}}/resources/assets"
-  shaders_dir: "{{root_dir}}/shader"
+  assets_dir: resources/assets
+  shaders_dir: shader
 
   placeholder_texture_always: false
   placeholder_texture: textures/tiles_1024.png
