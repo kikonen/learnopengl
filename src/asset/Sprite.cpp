@@ -1,5 +1,7 @@
 #include "Sprite.h"
 
+#include <mutex>
+
 #include <fmt/format.h>
 
 #include "Shape.h"
