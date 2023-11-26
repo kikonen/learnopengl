@@ -4,19 +4,17 @@
 
 #include "NodeCommand.h"
 
-class Coroutine;
-
-class ResumeNode final : public NodeCommand
+class InvokeLuaFunction final : public NodeCommand
 {
 public:
-    ResumeNode(
+    InvokeLuaFunction(
         int afterCommandId,
         int objectID,
-        Coroutine* coroutine) noexcept;
+        std::string_view functionName) noexcept;
 
     virtual void execute(
         const UpdateContext& ctx) noexcept override;
 
 private:
-    Coroutine* m_coroutine;
+    const std::string m_functionName;
 };

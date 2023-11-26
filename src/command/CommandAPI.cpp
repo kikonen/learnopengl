@@ -1,5 +1,13 @@
 #include "command/CommandAPI.h"
 
+#include <fmt/format.h>
+
+#include "util/Log.h"
+#include "util/glm_format.h"
+
+#include "model/Node.h"
+
+#include "ScriptEngine.h"
 
 #include "command/CommandEngine.h"
 
@@ -14,13 +22,16 @@
 #include "api/ResumeNode.h"
 #include "api/StartNode.h"
 
-
 namespace {
     struct CommandOptions {
         int afterId = 0;
         float duration = 0;
         bool relative = false;
         bool repeat = false;
+
+        const std::string str() const noexcept {
+            return fmt::format("<OPT: after={}, duration={}, relative={}, repeat={}>", afterId, duration, relative, repeat);
+        }
     };
 
     CommandOptions readOptions(const sol::table& lua_opt) noexcept {
@@ -62,10 +73,12 @@ namespace {
 
 
 CommandAPI::CommandAPI(
+    ScriptEngine* scriptEngine,
     CommandEngine* commandEngine,
-    sol::thread& runner)
-  : m_commandEngine(commandEngine),
-    m_runner(runner)
+    const int objectID)
+    :m_scriptEngine(scriptEngine),
+    m_commandEngine(commandEngine),
+    m_objectID(objectID)
 {}
 
 int CommandAPI::lua_cancel(
@@ -73,6 +86,8 @@ int CommandAPI::lua_cancel(
     float duration,
     int commandId) noexcept
 {
+    KI_INFO_OUT(fmt::format("wait: after={}, duration={}, command={}", afterCommandId, duration, commandId));
+
     return m_commandEngine->addCommand(
         std::make_unique<CancelCommand>(
             afterCommandId,
@@ -84,6 +99,8 @@ int CommandAPI::lua_wait(
     int afterCommandId,
     float duration) noexcept
 {
+    KI_INFO_OUT(fmt::format("wait: after={}, duration={}", afterCommandId, duration));
+
     return m_commandEngine->addCommand(
         std::make_unique<Wait>(
             afterCommandId,
@@ -97,6 +114,8 @@ int CommandAPI::lua_sync(
     const auto opt = readOptions(lua_opt);
     const auto commandIds = readIds(lua_ids);
 
+    KI_INFO_OUT(fmt::format("sync: commandIds={}, opt={}", commandIds[0], opt.str()));
+
     return m_commandEngine->addCommand(
         std::make_unique<Sync>(
             opt.afterId,
@@ -105,24 +124,26 @@ int CommandAPI::lua_sync(
 }
 
 int CommandAPI::lua_move(
-    int objectID,
+    int _,
     const sol::table& lua_opt,
     const sol::table& lua_pos) noexcept
 {
     const auto opt = readOptions(lua_opt);
     const auto pos = readVec3(lua_pos);
 
+    KI_INFO_OUT(fmt::format("move: node={}, pos={}, opt={}", m_objectID, pos, opt.str()));
+
     return m_commandEngine->addCommand(
         std::make_unique<MoveNode>(
             opt.afterId,
-            objectID,
+            m_objectID,
             opt.duration,
             opt.relative,
             pos));
 }
 
 int CommandAPI::lua_moveSpline(
-    int objectID,
+    int _,
     const sol::table& lua_opt,
     const sol::table& lua_p,
     const sol::table& lua_pos) noexcept
@@ -131,10 +152,12 @@ int CommandAPI::lua_moveSpline(
     const auto p = readVec3(lua_p);
     const auto pos = readVec3(lua_pos);
 
+    KI_INFO_OUT(fmt::format("move_spline: node={}, p={}, pos={}, opt={}", m_objectID, p, pos, opt.str()));
+
     return m_commandEngine->addCommand(
         std::make_unique<MoveSplineNode>(
             opt.afterId,
-            objectID,
+            m_objectID,
             opt.duration,
             opt.relative,
             p,
@@ -142,68 +165,83 @@ int CommandAPI::lua_moveSpline(
 }
 
 int CommandAPI::lua_rotate(
-    int objectID,
+    int _,
     const sol::table& lua_opt,
     const sol::table& lua_rot) noexcept
 {
     const auto opt = readOptions(lua_opt);
     const auto rot = readVec3(lua_rot);
 
+    KI_INFO_OUT(fmt::format("rotate: node={}, rot = {}, opt={}", m_objectID, rot, opt.str()));
+
     return m_commandEngine->addCommand(
         std::make_unique<RotateNode>(
             opt.afterId,
-            objectID,
+            m_objectID,
             opt.duration,
             opt.relative,
             rot));
 }
 
 int CommandAPI::lua_scale(
-    int objectID,
+    int _,
     const sol::table& lua_opt,
     const sol::table& lua_scale) noexcept
 {
     const auto opt = readOptions(lua_opt);
     const auto scale = readVec3(lua_scale);
 
+    KI_INFO_OUT(fmt::format("scale: node={}, scale={}, opt={}", m_objectID, scale, opt.str()));
+
     return m_commandEngine->addCommand(
         std::make_unique<ScaleNode>(
             opt.afterId,
-            objectID,
+            m_objectID,
             opt.duration,
             opt.relative,
             scale));
 }
 
 int CommandAPI::lua_start(
-    int objectID,
+    int _,
     const sol::table& lua_opt,
-    sol::function fn,
-    sol::variadic_args va) noexcept
+    sol::function fn) noexcept
 {
     const auto opt = readOptions(lua_opt);
 
-    auto task = std::make_unique<sol::coroutine>(m_runner.state(), fn);
-    //auto r = (*task)(va);
+    {
+        m_coroutines.emplace_back(new Coroutine(m_scriptEngine->getLua(), fn, m_coroutines.size()));
+    }
+    auto& coroutine = m_coroutines[m_coroutines.size() - 1];
+
+    KI_INFO_OUT(fmt::format("start: node={}, opt={}, coroutine={}", m_objectID, opt.str(), coroutine->m_id));
 
     return m_commandEngine->addCommand(
         std::make_unique<StartNode>(
             opt.afterId,
-            objectID,
-            std::move(task),
-            va));
+            m_objectID,
+            coroutine));    
 }
 
 int CommandAPI::lua_resume(
-    int objectID,
+    int coroutineID,
     const sol::table& lua_opt,
     const std::string& callbackFn) noexcept
 {
     const auto opt = readOptions(lua_opt);
 
+    if (coroutineID < 0 && coroutineID >= m_coroutines.size()){
+        KI_WARN_OUT(fmt::format("resume: Invalid coroutine - node={}, coroutineID={}, opt={}", m_objectID, coroutineID, opt.str()));
+        return 0;
+    }
+
+    KI_INFO_OUT(fmt::format("resume: node={}, coroutineID={}, opt={}", m_objectID, coroutineID, opt.str()));
+
+    auto& coroutine = m_coroutines[coroutineID];
+
     return m_commandEngine->addCommand(
         std::make_unique<ResumeNode>(
             opt.afterId,
-            objectID,
-            callbackFn));
+            m_objectID,
+            coroutine));
 }

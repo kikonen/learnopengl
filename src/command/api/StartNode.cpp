@@ -1,16 +1,19 @@
 #include "StartNode.h"
 
+#include <sol/sol.hpp>
+
+#include <sol/sol.hpp>
 #include "engine/UpdateContext.h"
+
+#include "command/Coroutine.h"
 
 
 StartNode::StartNode(
     int afterCommandId,
     int objectID,
-    std::unique_ptr<sol::coroutine> coroutine,
-    sol::variadic_args vargs) noexcept
+    Coroutine* coroutine) noexcept
     : NodeCommand(afterCommandId, objectID, 0, false),
-    m_coroutine(std::move(coroutine)),
-    m_vargs(vargs)
+    m_coroutine(coroutine)
 {
 }
 
@@ -26,7 +29,7 @@ void StartNode::execute(
 
     m_finished = m_elapsedTime >= m_duration;
     if (m_finished) {
-        // TODO KI start...
-        (*m_coroutine)(m_vargs);
+        // NOTE KI pass unique coroutine ID to allow multiple coroutines per node
+        (*(m_coroutine->m_coroutine))(m_coroutine->m_id);
     }
 }

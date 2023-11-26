@@ -58,7 +58,7 @@ entities:
       render_back: true
       water: true
     enabled: true
-    script_file: scripts/anim_water
+    script_file: scripts/anim_water_lucy
   - name: Pool side
     model: pool_brick
     program: g_tex

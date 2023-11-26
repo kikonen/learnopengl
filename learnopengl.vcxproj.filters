@@ -453,6 +453,15 @@
     <ClCompile Include="src\kigl\GLStencilMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\asset\TextMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\command\api\InvokeLuaFunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\command\Coroutine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1020,6 +1029,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\ki.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\TextMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\api\InvokeLuaFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\Coroutine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

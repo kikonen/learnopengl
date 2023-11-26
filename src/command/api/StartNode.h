@@ -1,8 +1,8 @@
 #pragma once
 
-#include <sol/sol.hpp>
-
 #include "NodeCommand.h"
+
+class Coroutine;
 
 class StartNode final : public NodeCommand
 {
@@ -10,8 +10,7 @@ public:
     StartNode(
         int afterCommandId,
         int objectID,
-        std::unique_ptr<sol::coroutine> coroutine,
-        sol::variadic_args vargs) noexcept;
+        Coroutine* coroutine) noexcept;
 
     virtual void bind(
         const UpdateContext& ctx,
@@ -21,6 +20,5 @@ public:
         const UpdateContext& ctx) noexcept override;
 
 private:
-    std::unique_ptr<sol::coroutine> m_coroutine;
-    sol::variadic_args m_vargs;
+    Coroutine* m_coroutine;
 };

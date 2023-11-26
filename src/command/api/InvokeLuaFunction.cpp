@@ -1,27 +1,26 @@
-#include "ResumeNode.h"
+#include "InvokeluaFunction.h"
 
 #include "engine/UpdateContext.h"
 
-#include "command/Coroutine.h"
+#include "command/ScriptEngine.h"
 
 
-ResumeNode::ResumeNode(
+InvokeLuaFunction::InvokeLuaFunction(
     int afterCommandId,
     int objectID,
-    Coroutine* coroutine) noexcept
+    std::string_view functionName) noexcept
     : NodeCommand(afterCommandId, objectID, 0, false),
-    m_coroutine(coroutine)
+    m_functionName(functionName)
 {
 }
 
-void ResumeNode::execute(
+void InvokeLuaFunction::execute(
     const UpdateContext& ctx) noexcept
 {
     m_elapsedTime += ctx.m_clock.elapsedSecs;
 
     m_finished = m_elapsedTime >= m_duration;
     if (m_finished) {
-        // NOTE KI basically should pass back "last result" from previous yield
-        (*(m_coroutine->m_coroutine))(0);
+        ctx.m_scriptEngine->invokeFunction(m_node, m_functionName);
     }
 }

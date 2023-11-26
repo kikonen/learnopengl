@@ -19,7 +19,7 @@
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
 #include "command/CommandAPI.h"
-#include "command/api/ResumeNode.h"
+#include "command/api/InvokeLuaFunction.h"
 
 #include "controller/NodeController.h"
 
@@ -511,7 +511,7 @@ void Scene::bindComponents(Node* node)
         // NOTE KI start via queue, in sync with next update cycle
         if (m_scriptEngine->hasFunction(node, "start")) {
             m_commandEngine->addCommand(
-                std::make_unique<ResumeNode>(
+                std::make_unique<InvokeLuaFunction>(
                     -1,
                     node->m_objectID,
                     "start"));

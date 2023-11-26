@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <memory>
+#include <map>
 
 #include <sol/sol.hpp>
 
@@ -42,6 +43,8 @@ public:
         Node* node,
         std::string_view name);
 
+    sol::state& getLua() { return m_lua; }
+
 private:
     void registerTypes();
 
@@ -49,10 +52,12 @@ private:
 private:
     const Assets& m_assets;
 
-    sol::state m_lua;
-    sol::thread m_runner;
+    CommandEngine* m_commandEngine;
 
-    std::unique_ptr<CommandAPI> m_commandAPI;
+    sol::state m_lua;
+    sol::table m_luaNodes;
+
+    std::unordered_map<int, std::unique_ptr<CommandAPI>> m_apis;
 
     std::unordered_map<int, std::unordered_map<NodeScriptId, std::string>> m_nodeScripts;
 };

@@ -1,15 +1,25 @@
 #pragma once
 
+#include <map>
+#include <vector>
+
 #include <sol/sol.hpp>
 
-class CommandEngine;
+#include "Coroutine.h"
 
+class CommandEngine;
+class Node;
+class ScriptEngine;
+
+// Wrapper for CommandEngine calls from script
+// => wrap reference to node so that no need to explicitly pass "id" from Lua
 class CommandAPI final
 {
 public:
     CommandAPI(
+        ScriptEngine* scriptEngine,
         CommandEngine* commandEngine,
-        sol::thread& m_runner);
+        int objectID);
     ~CommandAPI() = default;
 
 public:
@@ -50,15 +60,17 @@ public:
     int lua_start(
         int objectID,
         const sol::table& lua_opt,
-        sol::function fn,
-        sol::variadic_args va) noexcept;
+        sol::function fn) noexcept;
 
     int lua_resume(
-        int objectID,
+        int coroutineID,
         const sol::table& lua_opt,
         const std::string& callbackFn) noexcept;
 
 private:
    CommandEngine* const m_commandEngine;
-   sol::thread& m_runner;
+   ScriptEngine* const m_scriptEngine;
+   const int m_objectID;
+
+   std::vector<Coroutine*> m_coroutines;
 };
