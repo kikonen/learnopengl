@@ -21,7 +21,6 @@ void ResumeNode::execute(
 
     m_finished = m_elapsedTime >= m_duration;
     if (m_finished) {
-        // NOTE KI basically should pass back "last result" from previous yield
-        (*(m_coroutine->m_coroutine))(0);
+        (*(m_coroutine->m_coroutine))(m_id);
     }
 }

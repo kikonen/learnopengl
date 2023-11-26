@@ -8,46 +8,60 @@ local function attack(wid)
   local x = pos[1]
   local y = pos[2]
   local z = pos[3]
-  local cid = -1
+  local cid = 0
 
-  cid = cmd:move(id, { after=wid, time=10, relative=true }, { 25 - rnd(100), 0, 25 - rnd(100) })
+  cid = cmd:move(
+    { after=wid, time=10, relative=true },
+    { 25 - rnd(100), 0, 25 - rnd(100) })
 
-  wid = cmd:wait(0, 7)
-  cmd:cancel(wid, 0, cid)
+  wid = cmd:wait({ after=0, time=7 })
+  cmd:cancel({ after=wid, time=0 }, cid)
 
-  cid = cmd:move(id, { after=cid, time=10, relative=true }, { 25 - rnd(100), 0, 25 - rnd(100) })
-  cmd:cancel(-1, 0, cid)
+  cid = cmd:move(
+    { after=cid, time=10, relative=true },
+    { 25 - rnd(100), 0, 25 - rnd(100) })
 
-  cid = cmd:move(id, { after=cid, time=5, relative=true }, { 25 - rnd(50), 0, 25 - rnd(50) })
-  cid = cmd:move(id, { after=cid, time=5, relative=true }, { 10 - rnd(20), 0, 10 - rnd(20) })
-  cid = cmd:moveSpline(id, { after=cid, time=3, relative=true }, { 20, 0, 5 }, { 5 - rnd(10), 0, 5 - rnd(10) })
-  cid = cmd:move(id, { after=cid, time=2, relative=false }, { x, y, z })
+  cmd:cancel({ after=0, time=0 }, cid)
+
+  cid = cmd:move(
+    { after=cid, time=5, relative=true },
+    { 25 - rnd(50), 0, 25 - rnd(50) })
+
+  cid = cmd:move(
+    { after=cid, time=5, relative=true },
+    { 10 - rnd(20), 0, 10 - rnd(20) })
+
+  cid = cmd:moveSpline(
+    { after=cid, time=3, relative=true },
+    { 20, 0, 5 },
+    { 5 - rnd(10), 0, 5 - rnd(10) })
+
+  cid = cmd:move(
+    { after=cid, time=2, relative=false },
+    { x, y, z })
 
   return cid;
 end
 
-local function animation()
-  local wid = -1
-  local cid = -1
+local function animation(coid)
+  local wid = 0
+  local cid = 0
 
   local origPos = node:getPos()
 
   while true do
-    -- NOTE KI *WAIT* for resume to complete
-    wid = cmd:wait(cid, 1)
+    wid = cmd:wait({ after=cid, time=1 })
 
     cid = attack(wid)
 
-    wid = cmd:wait(cid, 10)
-    cid = cmd:resume(id, { after=wid }, "callback")
+    wid = cmd:wait({ after=cid, time=10 })
 
-    -- NOTE KI wait for callback
-    coroutine.yield()
+    cid = cmd:resume({ after=wid }, coid)
   end
 end
 
 luaNode.start = function()
   --print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
-  luaNode.callback = coroutine.wrap(animation)
-  cmd:resume(id, {}, "callback")
+
+  cmd:start({}, animation)
 end

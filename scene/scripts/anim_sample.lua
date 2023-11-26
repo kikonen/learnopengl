@@ -1,29 +1,26 @@
 local luaNode = nodes[id]
 
-local function animation()
-  local wid = -1
-  local cid = -1
+local function animation(coid)
+  local wid = 0
+  local cid = 0
 
   local origPos = node:getPos()
 
   while true do
-    -- NOTE KI *WAIT* for resume to complete
-    wid = cmd:wait(cid, 1)
+    wid = cmd:wait({ after=cid, time=1 })
 
-    cid = cmd:rotate(id, { after=wid, time=400, relative=true }, { 0.0, 360.0, 0.0 })
+    cid = cmd:rotate(
+      { after=wid, time=400, relative=true },
+      { 0.0, 360.0, 0.0 })
 
-    wid = cmd:wait(cid, 1)
-    cid = cmd:resume(id, { after=wid }, "callback")
+    wid = cmd:wait({ after=cid, time=1 })
 
-    -- NOTE KI wait for callback
-    coroutine.yield()
+    cid = cmd:resume({ after=wid }, coid)
   end
 end
 
 luaNode.start = function()
   --print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
-  luaNode.callback = coroutine.wrap(animation)
-  cmd:resume(id, {}, "callback")
+
+  cmd:start({}, animation)
 end
--- invoked by scene
---luaNode.start()

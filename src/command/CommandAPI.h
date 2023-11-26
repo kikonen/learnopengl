@@ -24,48 +24,40 @@ public:
 
 public:
     int lua_cancel(
-        int afterCommandId,
-        float secs,
+        const sol::table& lua_opt,
         int commandId) noexcept;
 
     int lua_wait(
-        int afterCommandId,
-        float secs) noexcept;
+        const sol::table& lua_opt) noexcept;
 
     int lua_sync(
         const sol::table& lua_opt,
         const sol::table& lua_ids) noexcept;
 
     int lua_move(
-        int objectID,
         const sol::table& lua_opt,
         const sol::table& pos) noexcept;
 
     int lua_moveSpline(
-        int objectID,
         const sol::table& lua_opt,
         const sol::table& p,
         const sol::table& pos) noexcept;
 
     int lua_rotate(
-        int objectID,
         const sol::table& lua_opt,
         const sol::table& rot) noexcept;
 
     int lua_scale(
-        int objectID,
         const sol::table& lua_opt,
         const sol::table& scale) noexcept;
 
     int lua_start(
-        int objectID,
         const sol::table& lua_opt,
         sol::function fn) noexcept;
 
     int lua_resume(
-        int coroutineID,
         const sol::table& lua_opt,
-        const std::string& callbackFn) noexcept;
+        int coroutineID) noexcept;
 
 private:
    CommandEngine* const m_commandEngine;
