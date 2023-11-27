@@ -1,11 +1,11 @@
 {
   "name": "learnopengl",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "dependencies": [
     {
       "name": "assimp",
       "platform": "windows & x64",
-      "version>=": "5.3.1"
+      "version>=": "5.3.1#3"
     },
     {
       "name": "entt",
@@ -40,12 +40,12 @@
     {
       "name": "glm",
       "platform": "windows & x64",
-      "version>=": "2023-06-08"
+      "version>=": "0.9.9.8#2"
     },
     {
       "name": "imgui",
       "platform": "windows & x64",
-      "version>=": "1.89.9",
+      "version>=": "1.90",
       "default-features": false,
       "features": [
         "docking-experimental",
@@ -81,8 +81,8 @@
     {
       "name": "yaml-cpp",
       "platform": "windows & x64",
-      "version>=": "0.7.0#1"
+      "version>=": "0.8.0#1"
     }
   ],
-  "builtin-baseline": "be2d7f886aad895e282b59088a2dfca5f6e1c88a"
+  "builtin-baseline": "13c3c0fcc203d179f4443fe48d252e3ff220cbeb"
 }
