@@ -299,7 +299,7 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     {
         if (!m_assets.sceneFile.empty()) {
-            std::unique_ptr<SceneLoader> loader = std::make_unique<SceneLoader>(m_assets, alive, m_asyncLoader, m_assets.sceneFile);
+            std::unique_ptr<loader::SceneLoader> loader = std::make_unique<loader::SceneLoader>(m_assets, alive, m_asyncLoader, m_assets.sceneFile);
             m_loaders.push_back(std::move(loader));
         }
     }

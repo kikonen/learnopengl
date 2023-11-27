@@ -9,7 +9,9 @@
 
 #include "TestSceneSetup.h"
 
-class SceneLoader;
+namespace loader {
+    class SceneLoader;
+}
 
 class SampleApp final : public Engine {
 public:
@@ -43,7 +45,7 @@ private:
     std::unique_ptr<Frame> m_frame;
     std::unique_ptr<FrameInit> m_frameInit;
 
-    std::vector<std::unique_ptr<SceneLoader>> m_loaders;
+    std::vector<std::unique_ptr<loader::SceneLoader>> m_loaders;
     std::unique_ptr<TestSceneSetup> m_testSetup;
 
     size_t m_drawCount = 0;
