@@ -24,8 +24,8 @@
 #include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
 
+#include "loader/SceneLoader.h"
 #include "scene/Scene.h"
-#include "scene/SceneFile.h"
 
 #include "TestSceneSetup.h"
 
@@ -299,14 +299,14 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     {
         if (!m_assets.sceneFile.empty()) {
-            std::unique_ptr<SceneFile> file = std::make_unique<SceneFile>(m_assets, alive, m_asyncLoader, m_assets.sceneFile);
-            m_files.push_back(std::move(file));
+            std::unique_ptr<SceneLoader> loader = std::make_unique<SceneLoader>(m_assets, alive, m_asyncLoader, m_assets.sceneFile);
+            m_loaders.push_back(std::move(loader));
         }
     }
 
-    for (auto& file : m_files) {
-        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", file->m_filename));
-        file->load(m_registry);
+    for (auto& loader : m_loaders) {
+        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", loader->m_filename));
+        loader->load(m_registry);
     }
 
     m_testSetup = std::make_unique<TestSceneSetup>(

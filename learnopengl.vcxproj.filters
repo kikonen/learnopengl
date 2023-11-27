@@ -180,7 +180,7 @@
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\SceneFile.cpp">
+    <ClCompile Include="src\loader\SceneLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\engine\AssetsFile.cpp">
@@ -635,7 +635,7 @@
     <ClInclude Include="src\renderer\ObjectIdRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\SceneFile.h">
+    <ClInclude Include="src\loader\SceneLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\AssetsFile.h">

@@ -1,4 +1,4 @@
-#include "SceneFile.h"
+#include "SceneLoader.h"
 
 #include <sstream>
 #include <string>
@@ -141,7 +141,7 @@ namespace {
     };
 }
 
-template <> struct fmt::formatter<SceneFile::BaseUUID> {
+template <> struct fmt::formatter<SceneLoader::BaseUUID> {
     // Parses format specifications of the form ['f' | 'e'].
     constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
         auto it = ctx.begin();
@@ -149,7 +149,7 @@ template <> struct fmt::formatter<SceneFile::BaseUUID> {
     }
 
     template <typename FormatContext>
-    auto format(const SceneFile::BaseUUID& p, FormatContext& ctx) const -> decltype(ctx.out()) {
+    auto format(const SceneLoader::BaseUUID& p, FormatContext& ctx) const -> decltype(ctx.out()) {
         if (p.empty()) {
             return ctx.out();
         }
@@ -165,7 +165,7 @@ template <> struct fmt::formatter<SceneFile::BaseUUID> {
     }
 };
 
-SceneFile::SceneFile(
+SceneLoader::SceneLoader(
     const Assets& assets,
     std::shared_ptr<std::atomic<bool>> alive,
     std::shared_ptr<AsyncLoader> asyncLoader,
@@ -178,14 +178,14 @@ SceneFile::SceneFile(
 {
 }
 
-SceneFile::~SceneFile()
+SceneLoader::~SceneLoader()
 {
     KI_INFO(fmt::format("SCENE_FILE: delete - file={}", m_filename));
 
     m_defaultMaterial = Material::createMaterial(BasicMaterial::basic);
 }
 
-void SceneFile::load(
+void SceneLoader::load(
     std::shared_ptr<Registry> registry)
 {
     m_registry = registry;
@@ -212,7 +212,7 @@ void SceneFile::load(
     });
 }
 
-void SceneFile::attach(
+void SceneLoader::attach(
     SkyboxData& skybox,
     const EntityData& root,
     const std::vector<EntityData>& entities,
@@ -230,7 +230,7 @@ void SceneFile::attach(
     }
 }
 
-void SceneFile::attachSkybox(
+void SceneLoader::attachSkybox(
     const EntityData& root,
     SkyboxData& data,
     std::vector<Material>& materials)
@@ -288,7 +288,7 @@ void SceneFile::attachSkybox(
     }
 }
 
-void SceneFile::attachVolume(
+void SceneLoader::attachVolume(
     const EntityData& root)
 {
     if (!m_assets.showVolume) return;
@@ -354,7 +354,7 @@ void SceneFile::attachVolume(
     }
 }
 
-void SceneFile::attachCubeMapCenter(
+void SceneLoader::attachCubeMapCenter(
     const EntityData& root)
 {
     if (!m_assets.showCubeMapCenter) return;
@@ -414,7 +414,7 @@ void SceneFile::attachCubeMapCenter(
     }
 }
 
-void SceneFile::attachEntity(
+void SceneLoader::attachEntity(
     const EntityData& root,
     const EntityData& data,
     std::vector<Material>& materials,
@@ -444,7 +444,7 @@ void SceneFile::attachEntity(
     });
 }
 
-MeshType* SceneFile::attachEntityClone(
+MeshType* SceneLoader::attachEntityClone(
     MeshType* type,
     const EntityData& root,
     const EntityData& entity,
@@ -494,7 +494,7 @@ MeshType* SceneFile::attachEntityClone(
     return type;
 }
 
-MeshType* SceneFile::attachEntityCloneRepeat(
+MeshType* SceneLoader::attachEntityCloneRepeat(
     MeshType* type,
     const EntityData& root,
     const EntityData& entity,
@@ -578,7 +578,7 @@ MeshType* SceneFile::attachEntityCloneRepeat(
     return type;
 }
 
-MeshType* SceneFile::createType(
+MeshType* SceneLoader::createType(
     bool isRoot,
     const EntityCloneData& data,
     const glm::uvec3& tile,
@@ -725,7 +725,7 @@ MeshType* SceneFile::createType(
     return type;
 }
 
-void SceneFile::resolveMaterial(
+void SceneLoader::resolveMaterial(
     MeshType* type,
     const EntityCloneData& data,
     std::vector<Material>& materials)
@@ -749,7 +749,7 @@ void SceneFile::resolveMaterial(
     materialVBO.m_forceDefaultMaterial = data.forceMaterial;
 }
 
-void SceneFile::resolveSprite(
+void SceneLoader::resolveSprite(
     MeshType* type,
     const EntityCloneData& data,
     std::vector<Sprite>& sprites)
@@ -765,7 +765,7 @@ void SceneFile::resolveSprite(
     }
 }
 
-void SceneFile::resolveMesh(
+void SceneLoader::resolveMesh(
     MeshType* type,
     const EntityCloneData& data,
     const glm::uvec3& tile)
@@ -823,7 +823,7 @@ void SceneFile::resolveMesh(
     }
 }
 
-Node* SceneFile::createNode(
+Node* SceneLoader::createNode(
     MeshType* type,
     const EntityData& root,
     const EntityCloneData& data,
@@ -875,7 +875,7 @@ Node* SceneFile::createNode(
     return node;
 }
 
-void SceneFile::assignFlags(
+void SceneLoader::assignFlags(
     const EntityCloneData& data,
     MeshType* type)
 {
@@ -1021,7 +1021,7 @@ void SceneFile::assignFlags(
     }
 }
 
-void SceneFile::modifyMaterial(
+void SceneLoader::modifyMaterial(
     Material& m,
     const MaterialField& f,
     const Material& mod)
@@ -1071,7 +1071,7 @@ void SceneFile::modifyMaterial(
     if (f.map_opacity) m.map_opacity = mod.map_opacity;
 }
 
-std::unique_ptr<Camera> SceneFile::createCamera(
+std::unique_ptr<Camera> SceneLoader::createCamera(
     const EntityCloneData& entity,
     const CameraData& data)
 {
@@ -1094,7 +1094,7 @@ std::unique_ptr<Camera> SceneFile::createCamera(
     return camera;
 }
 
-std::unique_ptr<Light> SceneFile::createLight(
+std::unique_ptr<Light> SceneLoader::createLight(
     const EntityCloneData& entity,
     const LightData& data,
     const int cloneIndex,
@@ -1132,7 +1132,7 @@ std::unique_ptr<Light> SceneFile::createLight(
     return light;
 }
 
-std::unique_ptr<CustomMaterial> SceneFile::createCustomMaterial(
+std::unique_ptr<CustomMaterial> SceneLoader::createCustomMaterial(
     const EntityCloneData& entity,
     const CustomMaterialData& data,
     const int cloneIndex,
@@ -1153,7 +1153,7 @@ std::unique_ptr<CustomMaterial> SceneFile::createCustomMaterial(
     return nullptr;
 }
 
-std::unique_ptr<physics::Object> SceneFile::createPhysicsObject(
+std::unique_ptr<physics::Object> SceneLoader::createPhysicsObject(
     const EntityCloneData& entity,
     const PhysicsData& data,
     const int cloneIndex,
@@ -1172,7 +1172,7 @@ std::unique_ptr<physics::Object> SceneFile::createPhysicsObject(
     return nullptr;
 }
 
-NodeController* SceneFile::createController(
+NodeController* SceneLoader::createController(
     const EntityCloneData& entity,
     const ControllerData& data,
     Node* node)
@@ -1191,7 +1191,7 @@ NodeController* SceneFile::createController(
     return nullptr;
 }
 
-std::unique_ptr<NodeGenerator> SceneFile::createGenerator(
+std::unique_ptr<NodeGenerator> SceneLoader::createGenerator(
     const EntityCloneData& entity,
     const GeneratorData& data,
     Node* node)
@@ -1238,7 +1238,7 @@ std::unique_ptr<NodeGenerator> SceneFile::createGenerator(
     return nullptr;
 }
 
-void SceneFile::loadMeta(
+void SceneLoader::loadMeta(
     const YAML::Node& doc,
     MetaData& data)
 {
@@ -1268,7 +1268,7 @@ void SceneFile::loadMeta(
     }
 }
 
-void SceneFile::loadSkybox(
+void SceneLoader::loadSkybox(
     const YAML::Node& doc,
     SkyboxData& data)
 {
@@ -1316,7 +1316,7 @@ void SceneFile::loadSkybox(
     }
 }
 
-void SceneFile::loadSkyboxFaces(
+void SceneLoader::loadSkyboxFaces(
     const YAML::Node& node,
     SkyboxData& data)
 {
@@ -1333,7 +1333,7 @@ void SceneFile::loadSkyboxFaces(
     data.loadedFaces = true;
 }
 
-void SceneFile::loadRoot(
+void SceneLoader::loadRoot(
     const YAML::Node& doc,
     EntityData& root)
 {
@@ -1346,7 +1346,7 @@ void SceneFile::loadRoot(
     root.base.enabled = true;
 }
 
-void SceneFile::loadEntities(
+void SceneLoader::loadEntities(
     const YAML::Node& doc,
     std::vector<EntityData>& entities)
 {
@@ -1356,14 +1356,14 @@ void SceneFile::loadEntities(
     }
 }
 
-void SceneFile::loadEntity(
+void SceneLoader::loadEntity(
     const YAML::Node& node,
     EntityData& data)
 {
     loadEntityClone(node, data.base, data.clones, true);
 }
 
-void SceneFile::loadEntityClone(
+void SceneLoader::loadEntityClone(
     const YAML::Node& node,
     EntityCloneData& data,
     std::vector<EntityCloneData>& clones,
@@ -1558,7 +1558,7 @@ void SceneFile::loadEntityClone(
     }
 }
 
-void SceneFile::loadMaterialModifiers(
+void SceneLoader::loadMaterialModifiers(
     const YAML::Node& node,
     EntityCloneData& data)
 {
@@ -1568,7 +1568,7 @@ void SceneFile::loadMaterialModifiers(
     loadMaterial(node, data.materialModifierFields, data.materialModifiers);
 }
 
-void SceneFile::loadRepeat(
+void SceneLoader::loadRepeat(
     const YAML::Node& node,
     Repeat& data)
 {
@@ -1600,7 +1600,7 @@ void SceneFile::loadRepeat(
     }
 }
 
-void SceneFile::loadTiling(
+void SceneLoader::loadTiling(
     const YAML::Node& node,
     Tiling& data)
 {
@@ -1629,7 +1629,7 @@ void SceneFile::loadTiling(
     }
 }
 
-void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
+void SceneLoader::loadCamera(const YAML::Node& node, CameraData& data)
 {
     data.fov = m_assets.cameraFov;
 
@@ -1671,7 +1671,7 @@ void SceneFile::loadCamera(const YAML::Node& node, CameraData& data)
     }
 }
 
-void SceneFile::loadLight(const YAML::Node& node, LightData& data)
+void SceneLoader::loadLight(const YAML::Node& node, LightData& data)
 {
     // Default to center
     data.targetIdBase = { ROOT_UUID };
@@ -1732,7 +1732,7 @@ void SceneFile::loadLight(const YAML::Node& node, LightData& data)
     }
 }
 
-void SceneFile::loadCustomMaterial(
+void SceneLoader::loadCustomMaterial(
     const YAML::Node& node,
     CustomMaterialData& data)
 {
@@ -1767,7 +1767,7 @@ void SceneFile::loadCustomMaterial(
     }
 }
 
-void SceneFile::loadPhysics(
+void SceneLoader::loadPhysics(
     const YAML::Node& node,
     PhysicsData& data)
 {
@@ -1793,7 +1793,7 @@ void SceneFile::loadPhysics(
     }
 }
 
-void SceneFile::loadBody(
+void SceneLoader::loadBody(
     const YAML::Node& node,
     BodyData& data)
 {
@@ -1837,7 +1837,7 @@ void SceneFile::loadBody(
     }
 }
 
-void SceneFile::loadGeom(
+void SceneLoader::loadGeom(
     const YAML::Node& node,
     GeomData& data)
 {
@@ -1887,7 +1887,7 @@ void SceneFile::loadGeom(
     }
 }
 
-void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
+void SceneLoader::loadController(const YAML::Node& node, ControllerData& data)
 {
     // pos relative to owning node
     for (const auto& pair : node) {
@@ -1921,7 +1921,7 @@ void SceneFile::loadController(const YAML::Node& node, ControllerData& data)
     }
 }
 
-void SceneFile::loadGenerator(
+void SceneLoader::loadGenerator(
     const YAML::Node& node,
     GeneratorData& data)
 {
@@ -1971,7 +1971,7 @@ void SceneFile::loadGenerator(
     }
 }
 
-void SceneFile::loadMaterials(
+void SceneLoader::loadMaterials(
     const YAML::Node& doc,
     std::vector<Material>& materials) {
     for (const auto& entry : doc["materials"]) {
@@ -1982,7 +1982,7 @@ void SceneFile::loadMaterials(
     }
 }
 
-void SceneFile::loadMaterial(
+void SceneLoader::loadMaterial(
     const YAML::Node& node,
     MaterialField& fields,
     Material& material)
@@ -2172,7 +2172,7 @@ void SceneFile::loadMaterial(
     }
 }
 
-void SceneFile::loadMaterialPbr(
+void SceneLoader::loadMaterialPbr(
     const std::string& pbrName,
     MaterialField& fields,
     Material& material)
@@ -2256,7 +2256,7 @@ void SceneFile::loadMaterialPbr(
     }
 }
 
-void SceneFile::loadSprites(
+void SceneLoader::loadSprites(
     const YAML::Node& doc,
     std::vector<Sprite>& sprites)
 {
@@ -2266,7 +2266,7 @@ void SceneFile::loadSprites(
     }
 }
 
-void SceneFile::loadSprite(
+void SceneLoader::loadSprite(
     const YAML::Node& node,
     Sprite& sprite)
 {
@@ -2284,7 +2284,7 @@ void SceneFile::loadSprite(
     }
 }
 
-void SceneFile::loadShapes(
+void SceneLoader::loadShapes(
     const YAML::Node& node,
     std::vector<Shape>& shapes)
 {
@@ -2294,7 +2294,7 @@ void SceneFile::loadShapes(
     }
 }
 
-void SceneFile::loadShape(
+void SceneLoader::loadShape(
     const YAML::Node& node,
     Shape& shape)
 {
@@ -2318,7 +2318,7 @@ void SceneFile::loadShape(
     }
 }
 
-void SceneFile::loadTextureSpec(
+void SceneLoader::loadTextureSpec(
     const YAML::Node& node,
     TextureSpec& textureSpec)
 {
@@ -2342,7 +2342,7 @@ void SceneFile::loadTextureSpec(
     }
 }
 
-void SceneFile::loadTextureWrap(
+void SceneLoader::loadTextureWrap(
     const std::string& k,
     const YAML::Node& v,
     GLint& wrapMode)
@@ -2360,7 +2360,7 @@ void SceneFile::loadTextureWrap(
     }
 }
 
-bool SceneFile::readBool(const YAML::Node& node) const
+bool SceneLoader::readBool(const YAML::Node& node) const
 {
     if (!util::isBool(node.as<std::string>())) {
         KI_WARN(fmt::format("invalid bool={}", renderNode(node)));
@@ -2370,7 +2370,7 @@ bool SceneFile::readBool(const YAML::Node& node) const
     return node.as<bool>();
 }
 
-int SceneFile::readInt(const YAML::Node& node) const
+int SceneLoader::readInt(const YAML::Node& node) const
 {
     if (!util::isInt(node.as<std::string>())) {
         KI_WARN(fmt::format("invalid int{}", renderNode(node)));
@@ -2380,7 +2380,7 @@ int SceneFile::readInt(const YAML::Node& node) const
     return node.as<int>();
 }
 
-float SceneFile::readFloat(const YAML::Node& node) const
+float SceneLoader::readFloat(const YAML::Node& node) const
 {
     if (!util::isFloat(node.as<std::string>())) {
         KI_WARN(fmt::format("invalid float {}", renderNode(node)));
@@ -2390,7 +2390,7 @@ float SceneFile::readFloat(const YAML::Node& node) const
     return node.as<float>();
 }
 
-std::vector<int> SceneFile::readIntVector(const YAML::Node& node, int reserve) const
+std::vector<int> SceneLoader::readIntVector(const YAML::Node& node, int reserve) const
 {
     std::vector<int> a;
     a.reserve(reserve);
@@ -2402,7 +2402,7 @@ std::vector<int> SceneFile::readIntVector(const YAML::Node& node, int reserve) c
     return a;
 }
 
-std::vector<float> SceneFile::readFloatVector(const YAML::Node& node, int reserve) const
+std::vector<float> SceneLoader::readFloatVector(const YAML::Node& node, int reserve) const
 {
     std::vector<float> a;
     a.reserve(reserve);
@@ -2414,7 +2414,7 @@ std::vector<float> SceneFile::readFloatVector(const YAML::Node& node, int reserv
     return a;
 }
 
-glm::vec2 SceneFile::readVec2(const YAML::Node& node) const
+glm::vec2 SceneLoader::readVec2(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
         auto a = readFloatVector(node, 2);
@@ -2435,7 +2435,7 @@ glm::vec2 SceneFile::readVec2(const YAML::Node& node) const
     return glm::vec2{ v };
 }
 
-glm::vec3 SceneFile::readVec3(const YAML::Node& node) const
+glm::vec3 SceneLoader::readVec3(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
         auto a = readFloatVector(node, 3);
@@ -2462,7 +2462,7 @@ glm::vec3 SceneFile::readVec3(const YAML::Node& node) const
     return glm::vec3{ v };
 }
 
-glm::vec4 SceneFile::readVec4(const YAML::Node& node) const
+glm::vec4 SceneLoader::readVec4(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
         auto a = readFloatVector(node, 4);
@@ -2497,7 +2497,7 @@ glm::vec4 SceneFile::readVec4(const YAML::Node& node) const
     return glm::vec4{ v };
 }
 
-glm::uvec3 SceneFile::readUVec3(const YAML::Node& node) const
+glm::uvec3 SceneLoader::readUVec3(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
         auto a = readIntVector(node, 3);
@@ -2525,7 +2525,7 @@ glm::uvec3 SceneFile::readUVec3(const YAML::Node& node) const
     return glm::uvec3{ v };
 }
 
-glm::vec3 SceneFile::readScale3(const YAML::Node& node) const
+glm::vec3 SceneLoader::readScale3(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
         auto a = readFloatVector(node, 3);
@@ -2541,7 +2541,7 @@ glm::vec3 SceneFile::readScale3(const YAML::Node& node) const
     return glm::vec3{ scale };
 }
 
-glm::vec3 SceneFile::readRGB(const YAML::Node& node) const
+glm::vec3 SceneLoader::readRGB(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
         auto a = readFloatVector(node, 3);
@@ -2566,7 +2566,7 @@ glm::vec3 SceneFile::readRGB(const YAML::Node& node) const
     return glm::vec3{ r, r, r };
 }
 
-glm::vec4 SceneFile::readRGBA(const YAML::Node& node) const
+glm::vec4 SceneLoader::readRGBA(const YAML::Node& node) const
 {
     if (node.IsSequence()) {
         auto a = readFloatVector(node, 4);
@@ -2596,7 +2596,7 @@ glm::vec4 SceneFile::readRGBA(const YAML::Node& node) const
     return glm::vec4{ r, r, r, DEF_ALPHA };
 }
 
-glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) const
+glm::vec2 SceneLoader::readRefractionRatio(const YAML::Node& node) const
 {
     auto a = readFloatVector(node, 2);
 
@@ -2607,7 +2607,7 @@ glm::vec2 SceneFile::readRefractionRatio(const YAML::Node& node) const
     return glm::vec2{ a[0], a[1] };
 }
 
-uuids::uuid SceneFile::resolveUUID(
+uuids::uuid SceneLoader::resolveUUID(
     const BaseUUID& parts,
     const int cloneIndex,
     const glm::uvec3& tile)
@@ -2658,7 +2658,7 @@ uuids::uuid SceneFile::resolveUUID(
     }
 }
 
-std::string SceneFile::expandMacros(
+std::string SceneLoader::expandMacros(
     const std::string& str,
     const int cloneIndex,
     const glm::uvec3& tile)
@@ -2687,7 +2687,7 @@ std::string SceneFile::expandMacros(
     return out;
 }
 
-SceneFile::BaseUUID SceneFile::readUUID(const YAML::Node& node)
+SceneLoader::BaseUUID SceneLoader::readUUID(const YAML::Node& node)
 {
     BaseUUID parts;
 
@@ -2703,12 +2703,12 @@ SceneFile::BaseUUID SceneFile::readUUID(const YAML::Node& node)
     return parts;
 }
 
-const std::string SceneFile::resolveTexturePath(std::string_view path) const
+const std::string SceneLoader::resolveTexturePath(std::string_view path) const
 {
     return std::string{ path };
 }
 
-std::string SceneFile::readFile(std::string_view filename) const
+std::string SceneLoader::readFile(std::string_view filename) const
 {
     std::stringstream buffer;
 
@@ -2738,7 +2738,7 @@ std::string SceneFile::readFile(std::string_view filename) const
     return buffer.str();
 }
 
-void SceneFile::reportUnknown(
+void SceneLoader::reportUnknown(
     std::string_view scope,
     std::string_view k,
     const YAML::Node& v) const
@@ -2747,7 +2747,7 @@ void SceneFile::reportUnknown(
     KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, renderNode(v)));
 }
 
-std::string SceneFile::renderNode(
+std::string SceneLoader::renderNode(
     const YAML::Node& v) const
 {
     std::stringstream ss;

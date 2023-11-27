@@ -46,7 +46,7 @@ class NodeController;
 
 class AsyncLoader;
 
-class SceneFile
+class SceneLoader
 {
 public:
     using BaseUUID = std::vector<std::string>;
@@ -310,13 +310,13 @@ private:
     };
 
 public:
-    SceneFile(
+    SceneLoader(
         const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive,
         std::shared_ptr<AsyncLoader> asyncLoader,
         const std::string& filename);
 
-    ~SceneFile();
+    ~SceneLoader();
 
     void load(
         std::shared_ptr<Registry> registry);

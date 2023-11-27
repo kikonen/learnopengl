@@ -265,7 +265,7 @@
     <ClCompile Include="src\render\TextureCube.cpp" />
     <ClCompile Include="src\render\PlainQuad.cpp" />
     <ClCompile Include="src\render\TextureQuad.cpp" />
-    <ClCompile Include="src\scene\SceneFile.cpp" />
+    <ClCompile Include="src\loader\SceneLoader.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
     <ClCompile Include="src\renderer\MirrorMapRenderer.cpp" />
     <ClCompile Include="src\kigl\GLState.cpp" />
@@ -455,7 +455,7 @@
     <ClInclude Include="src\render\TextureCube.h" />
     <ClInclude Include="src\render\PlainQuad.h" />
     <ClInclude Include="src\render\TextureQuad.h" />
-    <ClInclude Include="src\scene\SceneFile.h" />
+    <ClInclude Include="src\loader\SceneLoader.h" />
     <ClInclude Include="src\renderer\ObjectIdRenderer.h" />
     <ClInclude Include="src\renderer\MirrorMapRenderer.h" />
     <ClInclude Include="src\kigl\GLState.h" />
