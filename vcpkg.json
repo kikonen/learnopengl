@@ -60,6 +60,11 @@
       "version>=": "2023-01-04#4"
     },
     {
+      "name": "ode",
+      "platform": "windows & x64",
+      "version>=": "0.16.4#1"
+    },
+    {
       "name": "sol2",
       "platform": "windows & x64",
       "version>=": "3.3.0"
