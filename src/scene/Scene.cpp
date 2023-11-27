@@ -170,10 +170,6 @@ void Scene::prepare()
     }
 
     {
-        m_registry->m_physicsEngine->prepare();
-    }
-
-    {
         m_mainViewport = std::make_shared<Viewport>(
             "Node",
             //glm::vec3(-0.75, 0.75, 0),

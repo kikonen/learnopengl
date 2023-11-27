@@ -18,13 +18,32 @@ namespace physics {
 
     PhysicsEngine::PhysicsEngine(const Assets& assets)
         : m_assets(assets)
-    {}
+    {
+    }
 
     PhysicsEngine::~PhysicsEngine()
-    {}
+    {
+        if (m_space) {
+            dSpaceDestroy(m_space);
+        }
+        if (m_world) {
+            dWorldDestroy(m_world);
+        }
+        if (m_contactgroup) {
+            dJointGroupDestroy(m_contactgroup);
+        }
+        if (m_prepared) {
+            dCloseODE();
+        }
+    }
 
     void PhysicsEngine::prepare()
     {
+        m_prepared = true;
+        dInitODE2(0);
+        m_world = dWorldCreate();
+        m_space = dHashSpaceCreate(0);
+        m_contactgroup = dJointGroupCreate(0);
     }
 
     void PhysicsEngine::update(const UpdateContext& ctx)

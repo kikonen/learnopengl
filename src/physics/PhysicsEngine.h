@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include <ode/ode.h>
+
 #include "asset/Assets.h"
 
 class UpdateContext;
@@ -41,6 +43,12 @@ namespace physics {
 
     private:
         const Assets& m_assets;
+
+        bool m_prepared{ false };
+
+        dWorldID m_world{ nullptr };
+        dSpaceID m_space{ nullptr };
+        dJointGroupID m_contactgroup{ nullptr };
 
         int m_staticPhysicsLevel{ -1 };
         int m_physicsLevel{ -1 };
