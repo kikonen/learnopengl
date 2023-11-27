@@ -347,6 +347,8 @@
     <ClInclude Include="src\kigl\GLFence.h" />
     <ClInclude Include="src\kigl\GLStencilMode.h" />
     <ClInclude Include="src\kigl\kigl.h" />
+    <ClInclude Include="src\physics\Geom.h" />
+    <ClInclude Include="src\physics\Object.h" />
     <ClInclude Include="src\query\Query.h" />
     <ClInclude Include="src\kigl\GLFrameBufferHandle.h" />
     <ClInclude Include="src\asset\Frustum.h" />
