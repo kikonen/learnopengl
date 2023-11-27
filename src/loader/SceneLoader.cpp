@@ -3,8 +3,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <fstream>
 #include <algorithm>
+#include <fstream>
 #include <string>
 #include <filesystem>
 #include <regex>
@@ -13,6 +13,8 @@
 
 #include "util/Util.h"
 #include "util/glm_format.h"
+
+#include "ki/yaml.h"
 
 #include "asset/Material.h"
 #include "asset/ModelMesh.h"
@@ -53,95 +55,15 @@
 
 
 namespace {
-    const float DEF_ALPHA = 1.0;
-
-    const std::string AUTO_UUID{ "AUTO" };
-    const std::string ROOT_UUID{ "ROOT" };
-    const std::string VOLUME_UUID{ "VOLUME" };
-    const std::string CUBE_MAP_UUID{ "CUBE_MAP" };
-
-    const std::string MACRO_STEP_X{ "X" };
-    const std::string MACRO_STEP_Y{ "Y" };
-    const std::string MACRO_STEP_Z{ "Z" };
-
     const std::string QUAD_MESH_NAME{ "quad" };
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
-
-    std::mutex uuid_lock{};
-
-    const std::vector<std::regex> texturesMatchers{
-        std::regex("textures"),
-    };
 
     const std::vector<std::regex> hdriMatchers{
         std::regex(".*[\\.]hdr"),
     };
-
-    const std::vector<std::regex> ignoreMatchers{
-        std::regex(".*nope.*"),
-        std::regex(".*[\\.]blend"),
-        std::regex(".*[\\.]exr"),
-        std::regex(".*[\\.]txt"),
-        std::regex(".*[\\.]usda"),
-        std::regex(".*preview.*"),
-        std::regex(".*normaldx.*"),
-    };
-
-    const std::vector<std::regex> validMatchers{
-        std::regex(".*[\\.]hdr"),
-        std::regex(".*[\\.]png"),
-        std::regex(".*[\\.]jpg"),
-    };
-
-    const std::vector<std::regex> colorMatchers{
-        std::regex(".*[-_ ]color[-_ \\.].*"),
-        std::regex(".*[-_ ]col[-_ \\.].*"),
-        std::regex(".*[-_ ]basecolor[-_ \\.].*"),
-        std::regex(".*[-_ ]diff[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> emissionMatchers{
-        std::regex(".*[-_ ]emission[-_ \\.].*"),
-        std::regex(".*[-_ ]emi[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> normalMatchers{
-        std::regex(".*[-_ ]normal[-_ \\.].*"),
-        std::regex(".*[-_ ]normalgl[-_ \\.].*"),
-        std::regex(".*[-_ ]nrm[-_ \\.].*"),
-        std::regex(".*[-_ ]nor[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> metalnessMatchers{
-        std::regex(".*[-_ ]metalness[-_ \\.].*"),
-        std::regex(".*[-_ ]met[-_ \\.].*"),
-        std::regex(".*[-_ ]metallic[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> roughnessMatchers{
-        std::regex(".*[-_ ]roughness[-_ \\.].*"),
-        std::regex(".*[-_ ]rough[-_ \\.].*"),
-        std::regex(".*[-_ ]rgh[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> occlusionMatchers{
-        std::regex(".*[-_ ]ambientocclusion[-_ \\.].*"),
-        std::regex(".*[-_ ]occlusion[-_ \\.].*"),
-        std::regex(".*[-_ ]ao[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> displacementMatchers{
-        std::regex(".*[-_ ]displacement[-_ \\.].*"),
-        std::regex(".*[-_ ]disp[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> opacityMatchers{
-        std::regex(".*[-_ ]opacity[-_ \\.].*"),
-        std::regex(".*[-_ ]ops[-_ \\.].*"),
-    };
 }
 
-template <> struct fmt::formatter<loader::SceneLoader::BaseUUID> {
+template <> struct fmt::formatter<loader::BaseUUID> {
     // Parses format specifications of the form ['f' | 'e'].
     constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
         auto it = ctx.begin();
@@ -149,7 +71,7 @@ template <> struct fmt::formatter<loader::SceneLoader::BaseUUID> {
     }
 
     template <typename FormatContext>
-    auto format(const loader::SceneLoader::BaseUUID& p, FormatContext& ctx) const -> decltype(ctx.out()) {
+    auto format(const loader::BaseUUID& p, FormatContext& ctx) const -> decltype(ctx.out()) {
         if (p.empty()) {
             return ctx.out();
         }
@@ -168,23 +90,15 @@ template <> struct fmt::formatter<loader::SceneLoader::BaseUUID> {
 
 namespace loader {
     SceneLoader::SceneLoader(
-        const Assets& assets,
-        std::shared_ptr<std::atomic<bool>> alive,
-        std::shared_ptr<AsyncLoader> asyncLoader,
-        const std::string& filename)
-        : m_filename(filename),
-        m_dirname(util::dirName(filename)),
-        m_alive(alive),
-        m_assets(assets),
-        m_asyncLoader(asyncLoader)
+        Context ctx)
+        : BaseLoader(ctx),
+        m_materialLoader(ctx)
     {
     }
 
     SceneLoader::~SceneLoader()
     {
-        KI_INFO(fmt::format("SCENE_FILE: delete - file={}", m_filename));
-
-        m_defaultMaterial = Material::createMaterial(BasicMaterial::basic);
+        KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx.str()));
     }
 
     void SceneLoader::load(
@@ -193,24 +107,27 @@ namespace loader {
         m_registry = registry;
         m_dispatcher = registry->m_dispatcher;
 
-        if (!util::fileExists(m_filename)) {
-            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_filename) };
+        m_materialLoader.m_registry = registry;
+        m_materialLoader.m_dispatcher = registry->m_dispatcher;
+
+        if (!util::fileExists(m_ctx.m_filename)) {
+            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
         }
 
-        m_asyncLoader->addLoader(m_alive, [this]() {
-            std::ifstream fin(m_filename);
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
+            std::ifstream fin(this->m_ctx.m_filename);
             YAML::Node doc = YAML::Load(fin);
 
             loadMeta(doc, m_meta);
 
             loadSkybox(doc, m_skybox);
-            loadMaterials(doc, m_materials);
+            m_materialLoader.loadMaterials(doc);
             loadSprites(doc, m_sprites);
 
             loadRoot(doc, m_root);
             loadEntities(doc, m_entities);
 
-            attach(m_skybox, m_root, m_entities, m_materials, m_sprites);
+            attach(m_skybox, m_root, m_entities, m_sprites);
         });
     }
 
@@ -218,24 +135,22 @@ namespace loader {
         SkyboxData& skybox,
         const EntityData& root,
         const std::vector<EntityData>& entities,
-        std::vector<Material>& materials,
         std::vector<Sprite>& sprites)
     {
-        attachSkybox(root, skybox, materials);
+        attachSkybox(root, skybox);
 
-        attachEntity(root, root, materials, sprites);
+        attachEntity(root, root, sprites);
         attachVolume(root);
         attachCubeMapCenter(root);
 
         for (const auto& entity : entities) {
-            attachEntity(root, entity, materials, sprites);
+            attachEntity(root, entity, sprites);
         }
     }
 
     void SceneLoader::attachSkybox(
         const EntityData& root,
-        SkyboxData& data,
-        std::vector<Material>& materials)
+        SkyboxData& data)
     {
         if (!data.valid()) return;
 
@@ -419,25 +334,24 @@ namespace loader {
     void SceneLoader::attachEntity(
         const EntityData& root,
         const EntityData& data,
-        std::vector<Material>& materials,
         std::vector<Sprite>& sprites)
     {
         if (!data.base.enabled) {
             return;
         }
 
-        m_asyncLoader->addLoader(m_alive, [this, &root, &data, &materials, &sprites]() {
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &root, &data, &sprites]() {
             if (data.clones.empty()) {
                 MeshType* type{ nullptr };
-                attachEntityClone(type, root, data, data.base, false, 0, materials, sprites);
+                attachEntityClone(type, root, data, data.base, false, 0, sprites);
             }
             else {
                 MeshType* type{ nullptr };
 
                 int cloneIndex = 0;
                 for (auto& cloneData : data.clones) {
-                    if (!*m_alive) return;
-                    type = attachEntityClone(type, root, data, cloneData, true, cloneIndex, materials, sprites);
+                    if (!*m_ctx.m_alive) return;
+                    type = attachEntityClone(type, root, data, cloneData, true, cloneIndex, sprites);
                     if (!data.base.cloneMesh)
                         type = nullptr;
                     cloneIndex++;
@@ -453,10 +367,9 @@ namespace loader {
         const EntityCloneData& data,
         bool cloned,
         int cloneIndex,
-        std::vector<Material>& materials,
         std::vector<Sprite>& sprites)
     {
-        if (!*m_alive) return type;
+        if (!*m_ctx.m_alive) return type;
 
         if (!data.enabled) {
             return type;
@@ -467,7 +380,7 @@ namespace loader {
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
-                    if (!*m_alive) return type;
+                    if (!*m_ctx.m_alive) return type;
 
                     const glm::uvec3 tile = { x, y, z };
                     const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
@@ -484,7 +397,6 @@ namespace loader {
                         cloneIndex,
                         tile,
                         tilePositionOffset,
-                        materials,
                         sprites);
 
                     if (!entity.base.cloneMesh)
@@ -505,10 +417,9 @@ namespace loader {
         int cloneIndex,
         const glm::uvec3& tile,
         const glm::vec3& tilePositionOffset,
-        std::vector<Material>& materials,
         std::vector<Sprite>& sprites)
     {
-        if (!*m_alive) return type;
+        if (!*m_ctx.m_alive) return type;
 
         if (!data.enabled) {
             return type;
@@ -520,12 +431,11 @@ namespace loader {
                 entity.isRoot,
                 data,
                 tile,
-                materials,
                 sprites);
             if (!type) return type;
         }
 
-        if (!*m_alive) return type;
+        if (!*m_ctx.m_alive) return type;
 
         auto node = createNode(
             type, root, data,
@@ -584,7 +494,6 @@ namespace loader {
         bool isRoot,
         const EntityCloneData& data,
         const glm::uvec3& tile,
-        std::vector<Material>& materials,
         std::vector<Sprite>& sprites)
     {
         auto type = m_registry->m_typeRegistry->getType(data.name);
@@ -607,7 +516,7 @@ namespace loader {
             type->m_entityType = EntityType::origo;
         } else
         {
-            resolveMaterial(type, data, materials);
+            resolveMaterial(type, data);
             resolveSprite(type, data, sprites);
             resolveMesh(type, data, tile);
 
@@ -636,9 +545,7 @@ namespace loader {
                 &useNormalTex, &useCubeMap, &useDudvTex, &useHeightTex, &useDisplacementTex, &useNormalPattern, &useParallax,
                 &data
             ](Material& m) {
-                if (data.materialModifiers_enabled) {
-                    modifyMaterial(m, data.materialModifierFields, data.materialModifiers);
-                }
+                m_materialLoader.modifyMaterial(m, data.materialModifiers);
                 m.loadTextures(m_assets);
 
                 useDudvTex |= m.hasTex(MATERIAL_DUDV_MAP_IDX);
@@ -729,19 +636,18 @@ namespace loader {
 
     void SceneLoader::resolveMaterial(
         MeshType* type,
-        const EntityCloneData& data,
-        std::vector<Material>& materials)
+        const EntityCloneData& data)
     {
         // NOTE KI need to create copy *IF* modifiers
         // TODO KI should make copy *ALWAYS* for safety
         Material* material = nullptr;
 
         if (!data.materialName.empty()) {
-            material = Material::find(data.materialName, materials);
+            material = m_materialLoader.find(data.materialName);
         }
 
         if (!material) {
-            material = &m_defaultMaterial;
+            material = &m_materialLoader.m_defaultMaterial;
         }
 
         auto& materialVBO = type->m_materialVBO;
@@ -1023,56 +929,6 @@ namespace loader {
         }
     }
 
-    void SceneLoader::modifyMaterial(
-        Material& m,
-        const MaterialField& f,
-        const Material& mod)
-    {
-        if (f.type) m.m_type = mod.m_type;
-
-        if (f.textureSpec) m.textureSpec = mod.textureSpec;
-
-        if (f.pattern) m.pattern = mod.pattern;
-        if (f.reflection) m.reflection = mod.reflection;
-        if (f.refraction) m.refraction = mod.refraction;
-        if (f.refractionRatio) m.refractionRatio = mod.refractionRatio;
-
-        if (f.tilingX) m.tilingX = mod.tilingX;
-        if (f.tilingY) m.tilingY = mod.tilingY;
-
-        if (f.ns) m.ns = mod.ns;
-
-        if (f.ka) m.ka = mod.ka;
-
-        if (f.kd) m.kd = mod.kd;
-        if (f.map_kd) m.map_kd = mod.map_kd;
-
-        if (f.ks) m.ks = mod.ks;
-        if (f.map_ks) m.map_ks = mod.map_ks;
-        if (f.ke) m.ke = mod.ke;
-        if (f.map_ke) m.map_ke = mod.map_ke;
-        if (f.map_bump) m.map_bump = mod.map_bump;
-        if (f.map_bump_strength) m.map_bump_strength = mod.map_bump_strength;
-        if (f.ni) m.ni = mod.ni;
-        if (f.d) m.d = mod.d;
-        if (f.illum) m.illum = mod.illum;
-
-        if (f.layers) m.layers = mod.layers;
-        if (f.layersDepth) m.layersDepth = mod.layersDepth;
-        if (f.parallaxDepth) m.parallaxDepth = mod.parallaxDepth;
-
-        if (f.map_dudv) m.map_dudv = mod. map_dudv;
-        if (f.map_height) m.map_height = mod.map_height;
-        if (f.map_noise) m.map_noise = mod.map_noise;
-
-        if (f.metal) m.metal = mod.metal;
-        if (f.map_roughness) m.map_roughness = mod.map_roughness;
-        if (f.map_metalness) m.map_metalness = mod.map_metalness;
-        if (f.map_occlusion) m.map_occlusion = mod.map_occlusion;
-        if (f.map_displacement) m.map_displacement = mod.map_displacement;
-        if (f.map_opacity) m.map_opacity = mod.map_opacity;
-    }
-
     std::unique_ptr<Camera> SceneLoader::createCamera(
         const EntityCloneData& entity,
         const CameraData& data)
@@ -1256,13 +1112,13 @@ namespace loader {
             const YAML::Node& v = pair.second;
 
             if (k == "name") {
-                data.name= v.as<std::string>();
+                data.name= readString(v);
             }
             else if (k == "assetsDir") {
-                data.assetsDir = v.as<std::string>();
+                data.assetsDir = readString(v);
             }
             else if (k == "modelsDir") {
-                data.modelsDir = v.as<std::string>();
+                data.modelsDir = readString(v);
             }
             else {
                 reportUnknown("meta_entry", k, v);
@@ -1283,11 +1139,11 @@ namespace loader {
             const YAML::Node& v = pair.second;
 
             if (k == "program" || k == "shader") {
-                data.programName = v.as<std::string>();
+                data.programName = readString(v);
                 data.programName = "skybox";
             }
             else if (k == "material") {
-                data.materialName = v.as<std::string>();
+                data.materialName = readString(v);
             }
             else if (k == "priority") {
                 data.priority = readInt(v);
@@ -1378,7 +1234,7 @@ namespace loader {
             const YAML::Node& v = pair.second;
 
             if (k == "type") {
-                std::string type = v.as<std::string>();
+                std::string type = readString(v);
                 if (type == "origo") {
                     data.type = EntityType::origo;
                 }
@@ -1408,10 +1264,10 @@ namespace loader {
                 data.priority = readInt(v);
             }
             else if (k == "name") {
-                data.name = v.as<std::string>();
+                data.name = readString(v);
             }
             else if (k == "desc") {
-                data.desc = v.as<std::string>();
+                data.desc = readString(v);
             }
             else if (k == "id") {
                 data.idBase = readUUID(v);
@@ -1425,20 +1281,20 @@ namespace loader {
                     data.meshName = v[1].as<std::string>();
                 }
                 else {
-                    data.meshName = v.as<std::string>();
+                    data.meshName = readString(v);
                 }
             }
             else if (k == "program" || k == "shader") {
-                data.programName = v.as<std::string>();
+                data.programName = readString(v);
                 if (data.programName == "texture") {
                     data.programName = SHADER_TEXTURE;
                 }
             }
             else if (k == "depth_program") {
-                data.depthProgramName = v.as<std::string>();
+                data.depthProgramName = readString(v);
             }
             else if (k == "geometry_type") {
-                data.geometryType = v.as<std::string>();
+                data.geometryType = readString(v);
             }
             else if (k == "program_definitions" || k == "shader_definitions") {
                 for (const auto& defNode : v) {
@@ -1458,7 +1314,7 @@ namespace loader {
                 data.front = readVec3(v);
             }
             else if (k == "material") {
-                data.materialName = v.as<std::string>();
+                data.materialName = readString(v);
             }
             else if (k == "material_modifier") {
                 loadMaterialModifiers(v, data);
@@ -1467,7 +1323,7 @@ namespace loader {
                 data.forceMaterial = readBool(v);
             }
             else if (k == "sprite") {
-                data.spriteName = v.as<std::string>();
+                data.spriteName = readString(v);
             }
             else if (k == "batch_size") {
                 data.batchSize = readInt(v);
@@ -1531,10 +1387,10 @@ namespace loader {
                     hasClones = true;
             }
             else if (k == "script") {
-                data.script = v.as<std::string>();
+                data.script = readString(v);
             }
             else if (k == "script_file") {
-                std::string filename = v.as<std::string>() + ".lua";
+                std::string filename = readString(v) + ".lua";
                 data.script = readFile(filename);
             }
             else {
@@ -1564,10 +1420,10 @@ namespace loader {
         const YAML::Node& node,
         EntityCloneData& data)
     {
-        data.materialModifiers_enabled = true;
-        data.materialModifiers.m_name = "<modifier>";
+        data.materialModifiers.enabled = true;
+        data.materialModifiers.material.m_name = "<modifier>";
 
-        loadMaterial(node, data.materialModifierFields, data.materialModifiers);
+        m_materialLoader.loadMaterial(node, data.materialModifiers);
     }
 
     void SceneLoader::loadRepeat(
@@ -1687,7 +1543,7 @@ namespace loader {
                 data.enabled = readBool(v);
             }
             else if (k == "type") {
-                std::string type = v.as<std::string>();
+                std::string type = readString(v);
                 if (type == "none") {
                     data.type = LightType::none;
                 }
@@ -1743,7 +1599,7 @@ namespace loader {
             const YAML::Node& v = pair.second;
 
             if (k == "type") {
-                std::string type = v.as<std::string>();
+                std::string type = readString(v);
                 if (type == "none") {
                     data.type = CustomMaterialType::none;
                 }
@@ -1758,7 +1614,7 @@ namespace loader {
                 }
             }
             else if (k == "font") {
-                data.fontName = v.as<std::string>();
+                data.fontName = readString(v);
             }
             else if (k == "font_size") {
                 data.fontSize = readFloat(v);
@@ -1779,7 +1635,7 @@ namespace loader {
 
             // NOTE KI physics needs body or gem
             if (k == "space") {
-                data.space = v.as<std::string>();
+                data.space = readString(v);
             }
             else if (k == "body") {
                 data.enabled = true;
@@ -1804,7 +1660,7 @@ namespace loader {
             const YAML::Node& v = pair.second;
 
             if (k == "type") {
-                std::string type = v.as<std::string>();
+                std::string type = readString(v);
                 if (type == "none") {
                     data.type = BodyType::none;
                 }
@@ -1848,7 +1704,7 @@ namespace loader {
             const YAML::Node& v = pair.second;
 
             if (k == "type") {
-                std::string type = v.as<std::string>();
+                std::string type = readString(v);
                 if (type == "none") {
                     data.type = GeomType::none;
                 }
@@ -1900,7 +1756,7 @@ namespace loader {
                 data.enabled = readBool(v);
             }
             else if (k == "type") {
-                std::string type = v.as<std::string>();
+                std::string type = readString(v);
                 if (type == "none") {
                     data.type = ControllerType::none;
                 }
@@ -1935,7 +1791,7 @@ namespace loader {
                 data.enabled = readBool(v);
             }
             else if (k == "type") {
-                std::string type = v.as<std::string>();
+                std::string type = readString(v);
                 if (type == "none") {
                     data.type = GeneratorType::none;
                 }
@@ -1973,291 +1829,6 @@ namespace loader {
         }
     }
 
-    void SceneLoader::loadMaterials(
-        const YAML::Node& doc,
-        std::vector<Material>& materials) {
-        for (const auto& entry : doc["materials"]) {
-
-            MaterialField fields;
-            Material& material = materials.emplace_back();
-            loadMaterial(entry, fields, material);
-        }
-    }
-
-    void SceneLoader::loadMaterial(
-        const YAML::Node& node,
-        MaterialField& fields,
-        Material& material)
-    {
-        for (const auto& pair : node) {
-            auto key = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-            const std::string k = util::toLower(key);
-
-            if (k == "name") {
-                material.m_name = v.as<std::string>();
-            }
-            else if (k == "type") {
-                std::string type = v.as<std::string>();
-                if (type == "model") {
-                    material.m_type = MaterialType::model;
-                    fields.type = true;
-                }
-                else if (type == "texture") {
-                    material.m_type = MaterialType::texture;
-                    fields.type = true;
-                }
-                else if (type == "sprite") {
-                    material.m_type = MaterialType::sprite;
-                    fields.type = true;
-                }
-                else {
-                    reportUnknown("material_type", k, v);
-                }
-            }
-            else if (k == "ns") {
-                material.ns = readFloat(v);
-                fields.ns = true;
-            }
-            else if (k == "ka") {
-                material.ka = readRGB(v);
-                fields.ka = true;
-            }
-            else if (k == "kd") {
-                material.kd = readRGBA(v);
-                fields.kd = true;
-            }
-            else if (k == "ks") {
-                material.ks = readRGB(v);
-                fields.ks = true;
-            }
-            else if (k == "ke") {
-                material.ke = glm::vec4(readRGB(v), 1.f);
-                fields.ke = true;
-            }
-            else if (k == "ni") {
-                material.ni = readFloat(v);
-                fields.ni = true;
-            }
-            else if (k == "d") {
-                material.d = readFloat(v);
-                fields.d = true;
-            }
-            else if (k == "illum") {
-                material.d = readFloat(v);
-                fields.illum = true;
-            }
-            else if (k == "map_pbr") {
-                std::string line = v.as<std::string>();
-                loadMaterialPbr(
-                    line,
-                    fields,
-                    material);
-            }
-            else if (k == "map_kd") {
-                std::string line = v.as<std::string>();
-                material.map_kd = resolveTexturePath(line);
-                fields.map_kd = true;
-            }
-            else if (k == "map_ke") {
-                std::string line = v.as<std::string>();
-                material.map_ke = resolveTexturePath(line);
-                fields.map_ke = true;
-            }
-            else if (k == "map_ks") {
-                std::string line = v.as<std::string>();
-                material.map_ks = resolveTexturePath(line);
-                fields.map_ks = true;
-            }
-            else if (k == "map_bump" || k == "bump") {
-                std::string line = v.as<std::string>();
-                material.map_bump = resolveTexturePath(line);
-                fields.map_bump = true;
-            }
-            else if (k == "map_bump_strength") {
-                material.map_bump_strength = readFloat(v);
-                fields.map_bump_strength = true;
-            }
-            else if (k == "map_dudv") {
-                std::string line = v.as<std::string>();
-                material.map_dudv = resolveTexturePath(line);
-                fields.map_dudv = true;
-            }
-            else if (k == "map_height") {
-                std::string line = v.as<std::string>();
-                material.map_height = resolveTexturePath(line);
-                fields.map_height = true;
-            }
-            else if (k == "map_noise") {
-                std::string line = v.as<std::string>();
-                material.map_noise = resolveTexturePath(line);
-                fields.map_noise = true;
-            }
-            else if (k == "map_roughness") {
-                std::string line = v.as<std::string>();
-                material.map_roughness = resolveTexturePath(line);
-                fields.map_roughness = true;
-            }
-            else if (k == "map_metalness") {
-                std::string line = v.as<std::string>();
-                material.map_metalness = resolveTexturePath(line);
-                fields.map_metalness = true;
-            }
-            else if (k == "map_occlusion") {
-                std::string line = v.as<std::string>();
-                material.map_occlusion = resolveTexturePath(line);
-                fields.map_occlusion = true;
-            }
-            else if (k == "map_displacement") {
-                std::string line = v.as<std::string>();
-                material.map_displacement = resolveTexturePath(line);
-                fields.map_displacement = true;
-            }
-            else if (k == "map_opacity") {
-                std::string line = v.as<std::string>();
-                material.map_opacity = resolveTexturePath(line);
-                fields.map_opacity = true;
-            }
-            else if (k == "metal") {
-                material.metal = readVec4(v);
-                fields.metal = true;
-            }
-            else if (k == "pattern") {
-                material.pattern = readInt(v);
-                fields.pattern = true;
-            }
-            else if (k == "reflection") {
-                material.reflection = readFloat(v);
-                fields.reflection = true;
-            }
-            else if (k == "refraction") {
-                material.refraction = readFloat(v);
-                fields.refraction = true;
-            }
-            else if (k == "refraction_ratio") {
-                material.refractionRatio = readRefractionRatio(v);
-                fields.refractionRatio = true;
-            }
-            else if (k == "tiling") {
-                material.tilingX = readFloat(v);
-                material.tilingY = readFloat(v);
-                fields.tilingX = true;
-                fields.tilingY = true;
-            }
-            else if (k == "tiling_x") {
-                material.tilingX = readFloat(v);
-                fields.tilingX = true;
-            }
-            else if (k == "tiling_y") {
-                material.tilingY = readFloat(v);
-                fields.tilingY = true;
-            }
-            else if (k == "layers") {
-                material.layers = readInt(v);
-                fields.layers = true;
-            }
-            else if (k == "layers_depth") {
-                material.layersDepth = readFloat(v);
-                fields.layersDepth = true;
-            }
-            else if (k == "parallax_depth") {
-                material.parallaxDepth = readFloat(v);
-                fields.parallaxDepth = true;
-            }
-            else if (k == "texture_spec") {
-                loadTextureSpec(v, material.textureSpec);
-                fields.textureSpec = true;
-            }
-            else {
-                reportUnknown("material_entry", k, v);
-            }
-        }
-    }
-
-    void SceneLoader::loadMaterialPbr(
-        const std::string& pbrName,
-        MaterialField& fields,
-        Material& material)
-    {
-        const std::string basePath = util::joinPath(
-            m_assets.assetsDir,
-            pbrName);
-
-        for (const auto& dirEntry : std::filesystem::directory_iterator(basePath)) {
-            std::string fileName = dirEntry.path().filename().string();
-            std::string assetPath = util::joinPath(pbrName,fileName);
-
-            std::string matchName{ util::toLower(fileName) };
-
-            if (util::matchAny(texturesMatchers, matchName)) {
-                loadMaterialPbr(pbrName + "\\" + fileName, fields, material);
-                return;
-            }
-
-            if (util::matchAny(ignoreMatchers, matchName)) {
-                continue;
-            }
-
-            if (!util::matchAny(validMatchers, matchName)) {
-                continue;
-            }
-
-            bool found = false;
-
-            if (!found && util::matchAny(colorMatchers, matchName)) {
-                fields.map_kd = true;
-                material.map_kd = assetPath;
-                found = true;
-            }
-
-            if (!found && util::matchAny(emissionMatchers, matchName)) {
-                fields.map_ke = true;
-                material.map_ke = assetPath;
-                found = true;
-            }
-
-            if (!found && util::matchAny(normalMatchers, matchName)) {
-                fields.map_bump = true;
-                material.map_bump = assetPath;
-                found = true;
-            }
-
-            if (!found && util::matchAny(metalnessMatchers, matchName)) {
-                fields.map_metalness = true;
-                material.map_metalness = assetPath;
-                found = true;
-            }
-
-            if (!found && util::matchAny(roughnessMatchers, matchName)) {
-                fields.map_roughness = true;
-                material.map_roughness = assetPath;
-                found = true;
-            }
-
-            if (!found && util::matchAny(occlusionMatchers, matchName)) {
-                fields.map_occlusion = true;
-                material.map_occlusion = assetPath;
-                found = true;
-            }
-
-            if (!found && util::matchAny(displacementMatchers, matchName)) {
-                fields.map_displacement = true;
-                material.map_displacement = assetPath;
-                found = true;
-            }
-
-            if (!found && util::matchAny(opacityMatchers, matchName)) {
-                fields.map_opacity = true;
-                material.map_opacity = assetPath;
-                found = true;
-            }
-
-            if (!found) {
-                throw std::runtime_error{ fmt::format("UNKNOWN_PBR_FILE: {}", assetPath) };
-            }
-        }
-    }
-
     void SceneLoader::loadSprites(
         const YAML::Node& doc,
         std::vector<Sprite>& sprites)
@@ -2278,7 +1849,7 @@ namespace loader {
             const YAML::Node& v = pair.second;
 
             if (k == "name") {
-                sprite.m_name = v.as<std::string>();
+                sprite.m_name = readString(v);
             }
             else if (k == "shapes") {
                 loadShapes(v, sprite.m_shapes);
@@ -2308,452 +1879,15 @@ namespace loader {
             if (k == "rotation") {
                 shape.m_rotation = readFloat(v);
             }
-            else if (k == "material") {
-                loadMaterial(
-                    v,
-                    shape.m_materialFields,
-                    shape.m_material);
-            }
+            //else if (k == "material") {
+            //    loadMaterial(
+            //        v,
+            //        shape.m_materialFields,
+            //        shape.m_material);
+            //}
             else {
                 reportUnknown("shape_entry", k, v);
             }
         }
-    }
-
-    void SceneLoader::loadTextureSpec(
-        const YAML::Node& node,
-        TextureSpec& textureSpec)
-    {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-
-            if (k == "wrap") {
-                loadTextureWrap(k, v, textureSpec.wrapS);
-                loadTextureWrap(k, v, textureSpec.wrapT);
-            }
-            else if (k == "wrap_s") {
-                loadTextureWrap(k, v, textureSpec.wrapS);
-            }
-            else if (k == "wrap_t") {
-                loadTextureWrap(k, v, textureSpec.wrapT);
-            }
-            else {
-                reportUnknown("tex_spec", k, v);
-            }
-        }
-    }
-
-    void SceneLoader::loadTextureWrap(
-        const std::string& k,
-        const YAML::Node& v,
-        GLint& wrapMode)
-    {
-        const std::string& wrap = v.as<std::string>();
-        if (wrap == "GL_REPEAT") {
-            wrapMode = GL_REPEAT;
-        }
-        else if (wrap == "GL_CLAMP_TO_EDGE") {
-            wrapMode = GL_CLAMP_TO_EDGE;
-        }
-        else {
-            wrapMode = GL_CLAMP_TO_EDGE;
-            reportUnknown("wrap_mode", k, v);
-        }
-    }
-
-    bool SceneLoader::readBool(const YAML::Node& node) const
-    {
-        if (!util::isBool(node.as<std::string>())) {
-            KI_WARN(fmt::format("invalid bool={}", renderNode(node)));
-            return false;
-        }
-
-        return node.as<bool>();
-    }
-
-    int SceneLoader::readInt(const YAML::Node& node) const
-    {
-        if (!util::isInt(node.as<std::string>())) {
-            KI_WARN(fmt::format("invalid int{}", renderNode(node)));
-            return 0;
-        }
-
-        return node.as<int>();
-    }
-
-    float SceneLoader::readFloat(const YAML::Node& node) const
-    {
-        if (!util::isFloat(node.as<std::string>())) {
-            KI_WARN(fmt::format("invalid float {}", renderNode(node)));
-            return 0.f;
-        }
-
-        return node.as<float>();
-    }
-
-    std::vector<int> SceneLoader::readIntVector(const YAML::Node& node, int reserve) const
-    {
-        std::vector<int> a;
-        a.reserve(reserve);
-
-        for (const auto& e : node) {
-            a.push_back(readInt(e));
-        }
-
-        return a;
-    }
-
-    std::vector<float> SceneLoader::readFloatVector(const YAML::Node& node, int reserve) const
-    {
-        std::vector<float> a;
-        a.reserve(reserve);
-
-        for (const auto& e : node) {
-            a.push_back(readFloat(e));
-        }
-
-        return a;
-    }
-
-    glm::vec2 SceneLoader::readVec2(const YAML::Node& node) const
-    {
-        if (node.IsSequence()) {
-            auto a = readFloatVector(node, 2);
-
-            if (a.size() == 0) {
-                a.push_back(0.f);
-                a.push_back(0.f);
-            }
-            else if (a.size() == 1) {
-                // FILL x, x
-                a.push_back(a[0]);
-            }
-
-            return glm::vec2{ a[0], a[1] };
-        }
-
-        auto v = readFloat(node);
-        return glm::vec2{ v };
-    }
-
-    glm::vec3 SceneLoader::readVec3(const YAML::Node& node) const
-    {
-        if (node.IsSequence()) {
-            auto a = readFloatVector(node, 3);
-
-            if (a.size() == 0) {
-                a.push_back(0.f);
-                a.push_back(0.f);
-                a.push_back(0.f);
-            }
-            else if (a.size() == 1) {
-                // FILL x, x, x
-                a.push_back(a[0]);
-                a.push_back(a[0]);
-            }
-            else if (a.size() == 2) {
-                // FILL x, 0, z
-                a.push_back(a[1]);
-                a[1] = 0.f;
-            }
-            return glm::vec3{ a[0], a[1], a[2] };
-        }
-
-        auto v = readFloat(node);
-        return glm::vec3{ v };
-    }
-
-    glm::vec4 SceneLoader::readVec4(const YAML::Node& node) const
-    {
-        if (node.IsSequence()) {
-            auto a = readFloatVector(node, 4);
-
-            if (a.size() == 0) {
-                a.push_back(0.f);
-                a.push_back(0.f);
-                a.push_back(0.f);
-                a.push_back(1.f);
-            }
-            else if (a.size() == 1) {
-                a.push_back(a[0]);
-                a.push_back(a[0]);
-            }
-            else if (a.size() == 2) {
-                // FilL: x, 0, z, 1
-                a.push_back(a[1]);
-                a[1] = 0.f;
-                // w == 1.f
-                a.push_back(1.f);
-            }
-            else if (a.size() == 3) {
-                // FILL x, y, z, 1
-                // w == 1.f
-                a.push_back(1.f);
-            }
-
-            return glm::vec4{ a[0], a[1], a[2], a[3] };
-        }
-
-        auto v = readFloat(node);
-        return glm::vec4{ v };
-    }
-
-    glm::uvec3 SceneLoader::readUVec3(const YAML::Node& node) const
-    {
-        if (node.IsSequence()) {
-            auto a = readIntVector(node, 3);
-
-            if (a.size() == 0) {
-                a.push_back(0);
-                a.push_back(0);
-                a.push_back(0);
-            }
-            else if (a.size() == 1) {
-                // FILL x, x, x
-                a.push_back(a[0]);
-                a.push_back(a[0]);
-            }
-            else if (a.size() == 2) {
-                // FILL x, 0, z
-                a.push_back(a[1]);
-                a[1] = 0;
-            }
-
-            return glm::uvec3{ a[0], a[1], a[2] };
-        }
-
-        auto v = node.as<unsigned int>();
-        return glm::uvec3{ v };
-    }
-
-    glm::vec3 SceneLoader::readScale3(const YAML::Node& node) const
-    {
-        if (node.IsSequence()) {
-            auto a = readFloatVector(node, 3);
-
-            while (a.size() < 3) {
-                a.push_back(1.0f);
-            }
-
-            return glm::vec3{ a[0], a[1], a[2] };
-        }
-
-        auto scale = readFloat(node);
-        return glm::vec3{ scale };
-    }
-
-    glm::vec3 SceneLoader::readRGB(const YAML::Node& node) const
-    {
-        if (node.IsSequence()) {
-            auto a = readFloatVector(node, 3);
-
-            if (a.size() == 0) {
-                a.push_back(0.f);
-                a.push_back(0.f);
-                a.push_back(0.f);
-            }
-            else if (a.size() == 1) {
-                a.push_back(a[0]);
-                a.push_back(a[0]);
-            }
-            else if (a.size() == 2) {
-                a.push_back(a[0]);
-            }
-
-            return glm::vec3{ a[0], a[1], a[2] };
-        }
-
-        auto r = readFloat(node);
-        return glm::vec3{ r, r, r };
-    }
-
-    glm::vec4 SceneLoader::readRGBA(const YAML::Node& node) const
-    {
-        if (node.IsSequence()) {
-            auto a = readFloatVector(node, 4);
-
-            if (a.size() == 0) {
-                a.push_back(0.f);
-                a.push_back(0.f);
-                a.push_back(0.f);
-            }
-            else if (a.size() == 1) {
-                a.push_back(a[0]);
-                a.push_back(a[0]);
-            }
-            else if (a.size() == 2) {
-                a.push_back(a[0]);
-            }
-
-            // NOTE KI check if alpha is missing
-            if (a.size() < 4) {
-                a.push_back(DEF_ALPHA);
-            }
-
-            return glm::vec4{ a[0], a[1], a[2], a[3] };
-        }
-
-        auto r = readFloat(node);
-        return glm::vec4{ r, r, r, DEF_ALPHA };
-    }
-
-    glm::vec2 SceneLoader::readRefractionRatio(const YAML::Node& node) const
-    {
-        auto a = readFloatVector(node, 2);
-
-        // NOTE KI check if just single number
-        if (a.size() < 1) {
-            a.push_back(1.0);
-        }
-        return glm::vec2{ a[0], a[1] };
-    }
-
-    uuids::uuid SceneLoader::resolveUUID(
-        const BaseUUID& parts,
-        const int cloneIndex,
-        const glm::uvec3& tile)
-    {
-        if (parts.empty()) {
-            return {};
-        }
-
-        std::string key = parts[0];
-        key = util::toUpper(key);
-
-        if (key.empty()) return {};
-
-        if (key == AUTO_UUID) {
-            uuids::uuid uuid;
-            if (parts.size() > 1) {
-                std::string name = expandMacros(parts[1], cloneIndex, tile);
-
-                {
-                    std::lock_guard<std::mutex> lock(uuid_lock);
-
-                    const auto& it = m_autoIds.find(name);
-                    if (it == m_autoIds.end()) {
-                        uuid = uuids::uuid_system_generator{}();
-                        m_autoIds[name] = uuid;
-                    }
-                    else {
-                        uuid = it->second;
-                    }
-                }
-            }
-            if (uuid.is_nil()) {
-                uuid = uuids::uuid_system_generator{}();
-            }
-            return uuid;
-        }
-        else if (key == ROOT_UUID) {
-            return m_assets.rootUUID;
-        }
-        else if (key == VOLUME_UUID) {
-            return m_assets.volumeUUID;
-        }
-        else if (key == CUBE_MAP_UUID) {
-            return m_assets.cubeMapUUID;
-        }
-        else {
-            return KI_UUID(key);
-        }
-    }
-
-    std::string SceneLoader::expandMacros(
-        const std::string& str,
-        const int cloneIndex,
-        const glm::uvec3& tile)
-    {
-        std::string out{ str };
-
-        {
-            const auto pos = out.find("{x}");
-            if (pos != std::string::npos) {
-                out.replace(pos, 3, fmt::format("{}", tile.x));
-            }
-        }
-        {
-            const auto pos = out.find("{y}");
-            if (pos != std::string::npos) {
-                out.replace(pos, 3, fmt::format("{}", tile.y));
-            }
-        }
-        {
-            const auto pos = out.find("{z}");
-            if (pos != std::string::npos) {
-                out.replace(pos, 3, fmt::format("{}", tile.z));
-            }
-        }
-
-        return out;
-    }
-
-    SceneLoader::BaseUUID SceneLoader::readUUID(const YAML::Node& node)
-    {
-        BaseUUID parts;
-
-        if (node.IsSequence()) {
-            for (const auto& e : node) {
-                parts.push_back(e.as<std::string>());
-            }
-        }
-        else {
-            parts.push_back(node.as<std::string>());
-        }
-
-        return parts;
-    }
-
-    const std::string SceneLoader::resolveTexturePath(std::string_view path) const
-    {
-        return std::string{ path };
-    }
-
-    std::string SceneLoader::readFile(std::string_view filename) const
-    {
-        std::stringstream buffer;
-
-        std::string filePath = util::joinPath(
-            m_dirname,
-            filename);
-
-        if (!util::fileExists(filePath)) {
-            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
-        }
-
-        try {
-            std::ifstream t(filePath);
-            t.exceptions(std::ifstream::badbit);
-            //t.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-            buffer << t.rdbuf();
-        }
-        catch (std::ifstream::failure e) {
-            std::string what{ e.what() };
-            const auto msg = fmt::format(
-                "SCENE::FILE_NOT_SUCCESFULLY_READ: {}\n{}",
-                filePath, what);
-
-            throw std::runtime_error{ msg };
-        }
-        return buffer.str();
-    }
-
-    void SceneLoader::reportUnknown(
-        std::string_view scope,
-        std::string_view k,
-        const YAML::Node& v) const
-    {
-        std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";
-        KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, renderNode(v)));
-    }
-
-    std::string SceneLoader::renderNode(
-        const YAML::Node& v) const
-    {
-        std::stringstream ss;
-        ss << v;
-        return ss.str();
     }
 }

@@ -191,6 +191,9 @@
     <ClCompile Include="src\command\api\InvokeLuaFunction.cpp" />
     <ClCompile Include="src\command\Coroutine.cpp" />
     <ClCompile Include="src\kigl\GLStencilMode.cpp" />
+    <ClCompile Include="src\loader\BaseLoader.cpp" />
+    <ClCompile Include="src\loader\Contet.cpp" />
+    <ClCompile Include="src\loader\MaterialLoader.cpp" />
     <ClCompile Include="src\registry\SpriteRegistry.cpp" />
     <ClCompile Include="src\render\BrdfLutTexture.cpp" />
     <ClCompile Include="src\render\CubeRender.cpp" />
@@ -347,6 +350,10 @@
     <ClInclude Include="src\kigl\GLFence.h" />
     <ClInclude Include="src\kigl\GLStencilMode.h" />
     <ClInclude Include="src\kigl\kigl.h" />
+    <ClInclude Include="src\ki\yaml.h" />
+    <ClInclude Include="src\loader\BaseLoader.h" />
+    <ClInclude Include="src\loader\Context.h" />
+    <ClInclude Include="src\loader\MaterialLoader.h" />
     <ClInclude Include="src\physics\Geom.h" />
     <ClInclude Include="src\physics\Object.h" />
     <ClInclude Include="src\query\Query.h" />

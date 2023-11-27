@@ -299,13 +299,14 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     {
         if (!m_assets.sceneFile.empty()) {
-            std::unique_ptr<loader::SceneLoader> loader = std::make_unique<loader::SceneLoader>(m_assets, alive, m_asyncLoader, m_assets.sceneFile);
+            loader::Context ctx{ m_assets, alive, m_asyncLoader, m_assets.sceneFile };
+            std::unique_ptr<loader::SceneLoader> loader = std::make_unique<loader::SceneLoader>(ctx);
             m_loaders.push_back(std::move(loader));
         }
     }
 
     for (auto& loader : m_loaders) {
-        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", loader->m_filename));
+        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", loader->m_ctx.str()));
         loader->load(m_registry);
     }
 
