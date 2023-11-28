@@ -8,6 +8,7 @@
 
 #include "Context.h"
 #include "BaseUUID.h"
+#include "BaseData.h"
 
 namespace YAML {
     class Node;
@@ -31,24 +32,6 @@ namespace loader
     static const std::string MACRO_STEP_X{ "X" };
     static const std::string MACRO_STEP_Y{ "Y" };
     static const std::string MACRO_STEP_Z{ "Z" };
-
-    struct Repeat {
-        int xCount{ 1 };
-        int yCount{ 1 };
-        int zCount{ 1 };
-
-        double xStep{ 0.f };
-        double yStep{ 0.f };
-        double zStep{ 0.f };
-    };
-
-    struct Tiling {
-        int tile_size{ 100 };
-        glm::uvec3 tiles{ 1 };
-        float height_scale{ 32 };
-        float horizontal_scale{ 1 };
-        glm::vec2 vertical_range{ 0, 32 };
-    };
 
     class BaseLoader
     {

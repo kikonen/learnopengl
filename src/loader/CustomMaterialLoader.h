@@ -5,21 +5,9 @@
 #include "asset/CustomMaterial.h"
 
 #include "BaseLoader.h"
+#include "CustomMaterialData.h"
 
 namespace loader {
-    enum class CustomMaterialType {
-        none,
-        text,
-        skybox,
-    };
-
-    struct CustomMaterialData {
-        CustomMaterialType type{ CustomMaterialType::none };
-
-        std::string fontName;
-        float fontSize;
-    };
-
     class CustomMaterialLoader : public BaseLoader
     {
     public:

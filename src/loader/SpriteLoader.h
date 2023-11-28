@@ -4,13 +4,9 @@
 
 #include "BaseLoader.h"
 
-#include "asset/Sprite.h"
+#include "SpriteData.h"
 
 namespace loader {
-    struct SpriteData {
-        Sprite sprite;
-    };
-
     class SpriteLoader : public BaseLoader
     {
     public:
@@ -18,7 +14,8 @@ namespace loader {
             Context ctx);
 
         void loadSprites(
-            const YAML::Node& doc);
+            const YAML::Node& doc,
+            std::vector<SpriteData>& sprites);
 
         void loadSprite(
             const YAML::Node& doc,
@@ -31,11 +28,5 @@ namespace loader {
         void loadShape(
             const YAML::Node& node,
             Shape& shape);
-
-        Sprite* find(
-            std::string_view name);
-
-    private:
-        std::vector<SpriteData> m_sprites;
     };
 }

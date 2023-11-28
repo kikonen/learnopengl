@@ -12,6 +12,7 @@
 #include "registry/EntityType.h"
 
 #include "BaseLoader.h"
+#include "RootLoader.h"
 #include "SkyboxLoader.h"
 #include "VolumeLoader.h"
 #include "CubeMapLoader.h"
@@ -23,6 +24,7 @@
 #include "ControllerLoader.h"
 #include "GeneratorLoader.h"
 #include "PhysicsLoader.h"
+#include "EntityLoader.h"
 
 class Registry;
 
@@ -34,78 +36,8 @@ namespace loader {
     struct MetaData {
         std::string name;
 
-        std::string assetsDir;
-        std::string modelsDir;
-    };
-
-    struct EntityCloneData {
-        bool valid{ false };
-
-        bool enabled{ false };
-
-        EntityType type{ EntityType::model };
-
-        std::string name;
-        std::string desc;
-
-        int priority{ 0 };
-
-        BaseUUID idBase;
-        BaseUUID parentIdBase;
-
-        std::string meshName;
-        std::string meshPath;
-
-        std::string programName{};
-        std::string geometryType;
-
-        std::string depthProgramName{ SHADER_DEPTH_PASS };
-
-        std::map<std::string, std::string> programDefinitions{};
-        std::unordered_map<std::string, bool> renderFlags{};
-        glm::vec3 position{ 0.f };
-        glm::vec3 rotation{ 0.f };
-        glm::vec3 front{ 0.f, 0.f, 1.f };
-        glm::vec3 scale{ 1.f };
-
-        bool selected{ false };
-        bool instanced{ false };
-        bool cloneMesh{ true };
-
-        Tiling tiling;
-        glm::uvec3 tile{ 0 };
-
-        glm::vec3 clonePositionOffset{ 0.f };
-
-        bool loadTextures{ true };
-        std::string materialName;
-        // NOTE KI overrides *ALL* materials with defaultMaterial
-        bool forceMaterial{ false };
-
-        MaterialData materialModifiers;
-
-        CustomMaterialData customMaterial;
-        PhysicsData physics;
-
-        std::string spriteName;
-
-        int batchSize{ -1 };
-
-        Repeat repeat;
-
-        std::string script;
-
-        ControllerData controller;
-        CameraData camera;
-        LightData light;
-
-        GeneratorData generator;
-    };
-
-    struct EntityData {
-        bool isRoot{ false };
-        EntityCloneData base;
-        std::vector<EntityCloneData> clones;
+        //std::string assetsDir;
+        //std::string modelsDir;
     };
 
     class SceneLoader : public BaseLoader
@@ -116,12 +48,14 @@ namespace loader {
 
         ~SceneLoader();
 
-        void load(
+        void prepare(
             std::shared_ptr<Registry> registry);
+
+        void load();
 
     private:
         void attach(
-            const EntityData& root);
+            const RootData& root);
 
         void attachEntity(
             const uuids::uuid& rootId,
@@ -182,38 +116,31 @@ namespace loader {
             const YAML::Node& node,
             MetaData& data) const;
 
-        void loadRoot(
-            const YAML::Node& doc,
-            EntityData& root) const;
+        Material* findMaterial(
+            std::string_view name);
 
-        void loadEntities(
-            const YAML::Node& doc,
-            std::vector<EntityData>& entities);
-
-        void loadEntity(
-            const YAML::Node& node,
-            EntityData& data) const;
-
-        void loadEntityClone(
-            const YAML::Node& node,
-            EntityCloneData& data,
-            std::vector<EntityCloneData>& clones,
-            bool recurse) const;
-
-    public:
+        Sprite* findSprite(
+            std::string_view name);
 
     private:
         MetaData m_meta;
         SkyboxData m_skybox;
 
-        EntityData m_root;
-        uuids::uuid m_rootId;
-
+        RootData m_root;
         std::vector<EntityData> m_entities;
+
+        Material m_defaultMaterial;
+        std::vector<MaterialData> m_materials;
+
+        std::vector<SpriteData> m_sprites;
+
+        RootLoader m_rootLoader;
 
         SkyboxLoader m_skyboxLoader;
         VolumeLoader m_volumeLoader;
         CubeMapLoader m_cubeMapLoader;
+
+        EntityLoader m_entityLoader;
 
         MaterialLoader m_materialLoader;
         CustomMaterialLoader m_customMaterialLoader;

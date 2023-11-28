@@ -61,6 +61,7 @@ namespace loader {
     SceneLoader::SceneLoader(
         Context ctx)
         : BaseLoader(ctx),
+        m_rootLoader(ctx),
         m_skyboxLoader(ctx),
         m_volumeLoader(ctx),
         m_cubeMapLoader(ctx),
@@ -71,8 +72,10 @@ namespace loader {
         m_lightLoader(ctx),
         m_controllerLoader(ctx),
         m_generatorLoader(ctx),
-        m_physicsLoader(ctx)
+        m_physicsLoader(ctx),
+        m_entityLoader(ctx)
     {
+        m_defaultMaterial = Material::createMaterial(BasicMaterial::basic);
     }
 
     SceneLoader::~SceneLoader()
@@ -80,19 +83,29 @@ namespace loader {
         KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx.str()));
     }
 
-    void SceneLoader::load(
+    void SceneLoader::prepare(
         std::shared_ptr<Registry> registry)
     {
         m_registry = registry;
         m_dispatcher = registry->m_dispatcher;
 
         m_materialLoader.m_registry = m_registry;
+
+        m_rootLoader.m_registry = m_registry;
+        m_rootLoader.m_dispatcher = m_dispatcher;
+
         m_skyboxLoader.m_registry = m_registry;
         m_skyboxLoader.m_dispatcher = m_dispatcher;
 
         m_volumeLoader.m_registry = m_registry;
         m_volumeLoader.m_dispatcher = m_dispatcher;
 
+        m_cubeMapLoader.m_registry = m_registry;
+        m_cubeMapLoader.m_dispatcher = m_dispatcher;
+    }
+
+    void SceneLoader::load()
+    {
         if (!util::fileExists(m_ctx.m_filename)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
         }
@@ -104,27 +117,38 @@ namespace loader {
             loadMeta(doc, m_meta);
 
             m_skyboxLoader.loadSkybox(doc, m_skybox);
-            m_materialLoader.loadMaterials(doc);
-            m_spriteLoader.loadSprites(doc);
+            m_materialLoader.loadMaterials(doc, m_materials);
+            m_spriteLoader.loadSprites(doc, m_sprites);
 
-            loadRoot(doc, m_root);
-            loadEntities(doc, m_entities);
+            m_rootLoader.loadRoot(doc, m_root);
+
+            m_entityLoader.loadEntities(
+                doc,
+                m_entities,
+                m_materialLoader,
+                m_customMaterialLoader,
+                m_spriteLoader,
+                m_cameraLoader,
+                m_lightLoader,
+                m_controllerLoader,
+                m_generatorLoader,
+                m_physicsLoader);
+
             attach(m_root);
         });
     }
 
     void SceneLoader::attach(
-        const EntityData& root)
+        const RootData& root)
     {
-        m_rootId = resolveUUID(m_root.base.idBase, 0, { 0, 0, 0 });
-        m_skyboxLoader.attachSkybox(m_rootId, m_skybox);
-        m_volumeLoader.attachVolume(m_rootId);
-        m_cubeMapLoader.attachCubeMap(m_rootId);
+        m_skyboxLoader.attachSkybox(root.rootId, m_skybox);
+        m_volumeLoader.attachVolume(root.rootId);
+        m_cubeMapLoader.attachCubeMap(root.rootId);
 
-        attachEntity(m_rootId, root);
+        m_rootLoader.attachRoot(root);
 
         for (const auto& entity : m_entities) {
-            attachEntity(m_rootId, entity);
+            attachEntity(root.rootId, entity);
         }
     }
 
@@ -439,11 +463,11 @@ namespace loader {
         Material* material = nullptr;
 
         if (!data.materialName.empty()) {
-            material = m_materialLoader.find(data.materialName);
+            material = findMaterial(data.materialName);
         }
 
         if (!material) {
-            material = &m_materialLoader.m_defaultMaterial;
+            material = &m_defaultMaterial;
         }
 
         auto& materialVBO = type->m_materialVBO;
@@ -460,7 +484,7 @@ namespace loader {
         Sprite* sprite{ nullptr };
 
         if (!data.spriteName.empty()) {
-            sprite = m_spriteLoader.find(data.spriteName);
+            sprite = findSprite(data.spriteName);
         }
 
         if (sprite) {
@@ -477,7 +501,7 @@ namespace loader {
         if (data.type == EntityType::model) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 data.meshName,
-                m_meta.modelsDir,
+                m_assets.modelsDir,
                 data.meshPath);
             auto* mesh = future.get();
             type->setMesh(mesh);
@@ -490,7 +514,7 @@ namespace loader {
         else if (data.type == EntityType::quad) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
-                m_meta.modelsDir);
+                m_assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
             type->m_entityType = EntityType::quad;
@@ -498,7 +522,7 @@ namespace loader {
         else if (data.type == EntityType::billboard) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
-                m_meta.modelsDir);
+                m_assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
             type->m_entityType = EntityType::billboard;
@@ -506,7 +530,7 @@ namespace loader {
         else if (data.type == EntityType::sprite) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
-                m_meta.modelsDir);
+                m_assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
             type->m_entityType = EntityType::sprite;
@@ -724,7 +748,7 @@ namespace loader {
         MetaData& data) const
     {
         data.name = "<noname>";
-        data.modelsDir = m_assets.modelsDir;
+        //data.modelsDir = m_assets.modelsDir;
 
         auto& node = doc["meta"];
 
@@ -737,240 +761,35 @@ namespace loader {
             if (k == "name") {
                 data.name= readString(v);
             }
-            else if (k == "assetsDir") {
-                data.assetsDir = readString(v);
-            }
-            else if (k == "modelsDir") {
-                data.modelsDir = readString(v);
-            }
+            //else if (k == "assetsDir") {
+            //    data.assetsDir = readString(v);
+            //}
+            //else if (k == "modelsDir") {
+            //    data.modelsDir = readString(v);
+            //}
             else {
                 reportUnknown("meta_entry", k, v);
             }
         }
     }
 
-    void SceneLoader::loadRoot(
-        const YAML::Node& doc,
-        EntityData& root) const
+    Material* SceneLoader::findMaterial(
+        std::string_view name)
     {
-        auto& node = doc["root"];
-        loadEntity(node, root);
-
-        root.base.idBase = { ROOT_UUID };
-        root.base.type = EntityType::origo;
-        root.isRoot = true;
-        root.base.enabled = true;
+        const auto& it = std::find_if(
+            m_materials.begin(),
+            m_materials.end(),
+            [&name](MaterialData& m) { return m.material.m_name == name && !m.material.m_default; });
+        return it != m_materials.end() ? &(it->material) : nullptr;
     }
 
-    void SceneLoader::loadEntities(
-        const YAML::Node& doc,
-        std::vector<EntityData>& entities)
+    Sprite* SceneLoader::findSprite(
+        std::string_view name)
     {
-        for (const auto& entry : doc["entities"]) {
-            auto& data = entities.emplace_back();
-            loadEntity(entry, data);
-        }
-    }
-
-    void SceneLoader::loadEntity(
-        const YAML::Node& node,
-        EntityData& data) const
-    {
-        loadEntityClone(node, data.base, data.clones, true);
-    }
-
-    void SceneLoader::loadEntityClone(
-        const YAML::Node& node,
-        EntityCloneData& data,
-        std::vector<EntityCloneData>& clones,
-        bool recurse) const
-    {
-        bool hasClones = false;
-
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-
-            if (k == "type") {
-                std::string type = readString(v);
-                if (type == "origo") {
-                    data.type = EntityType::origo;
-                }
-                else if (type == "container") {
-                    data.type = EntityType::container;
-                }
-                else if (type == "model") {
-                    data.type = EntityType::model;
-                }
-                else if (type == "quad") {
-                    data.type = EntityType::quad;
-                }
-                else if (type == "billboard") {
-                    data.type = EntityType::billboard;
-                }
-                else if (type == "sprite") {
-                    data.type = EntityType::sprite;
-                }
-                else if (type == "terrain") {
-                    data.type = EntityType::terrain;
-                }
-                else {
-                    reportUnknown("entity_type", k, v);
-                }
-            }
-            else if (k == "priority") {
-                data.priority = readInt(v);
-            }
-            else if (k == "name") {
-                data.name = readString(v);
-            }
-            else if (k == "desc") {
-                data.desc = readString(v);
-            }
-            else if (k == "id") {
-                data.idBase = readUUID(v);
-            }
-            else if (k == "parent_id") {
-                data.parentIdBase = readUUID(v);
-            }
-            else if (k == "model") {
-                if (v.Type() == YAML::NodeType::Sequence) {
-                    data.meshPath = v[0].as<std::string>();
-                    data.meshName = v[1].as<std::string>();
-                }
-                else {
-                    data.meshName = readString(v);
-                }
-            }
-            else if (k == "program" || k == "shader") {
-                data.programName = readString(v);
-                if (data.programName == "texture") {
-                    data.programName = SHADER_TEXTURE;
-                }
-            }
-            else if (k == "depth_program") {
-                data.depthProgramName = readString(v);
-            }
-            else if (k == "geometry_type") {
-                data.geometryType = readString(v);
-            }
-            else if (k == "program_definitions" || k == "shader_definitions") {
-                for (const auto& defNode : v) {
-                    auto defName = defNode.first.as<std::string>();
-                    const auto& defValue = defNode.second.as<std::string>();
-                    data.programDefinitions[util::toUpper(defName)] = defValue;
-                }
-            }
-            else if (k == "render_flags") {
-                for (const auto& flagNode : v) {
-                    auto flagName = flagNode.first.as<std::string>();
-                    const auto flagValue = readBool(flagNode.second);
-                    data.renderFlags[util::toLower(flagName)] = flagValue;
-                }
-            }
-            else if (k == "front") {
-                data.front = readVec3(v);
-            }
-            else if (k == "material") {
-                data.materialName = readString(v);
-            }
-            else if (k == "material_modifier") {
-                m_materialLoader.loadMaterialModifiers(v, data.materialModifiers);
-            }
-            else if (k == "force_material") {
-                data.forceMaterial = readBool(v);
-            }
-            else if (k == "sprite") {
-                data.spriteName = readString(v);
-            }
-            else if (k == "batch_size") {
-                data.batchSize = readInt(v);
-            }
-            else if (k == "load_textures") {
-                data.loadTextures = readBool(v);
-            }
-            else if (k == "position" || k == "pos") {
-                data.position = readVec3(v);
-            }
-            else if (k == "rotation" || k == "rot") {
-                data.rotation = readVec3(v);
-            }
-            else if (k == "scale") {
-                data.scale = readScale3(v);
-            }
-            else if (k == "repeat") {
-                loadRepeat(v, data.repeat);
-            }
-            else if (k == "tiling") {
-                loadTiling(v, data.tiling);
-            }
-            else if (k == "camera") {
-                m_cameraLoader.loadCamera(v, data.camera);
-            }
-            else if (k == "light") {
-                m_lightLoader.loadLight(v, data.light);
-            }
-            else if (k == "custom_material") {
-                m_customMaterialLoader.loadCustomMaterial(v, data.customMaterial);
-            }
-            else if (k == "physics") {
-                m_physicsLoader.loadPhysics(v, data.physics);
-            }
-            else if (k == "controller") {
-                m_controllerLoader.loadController(v, data.controller);
-            }
-            else if (k == "generator") {
-                m_generatorLoader.loadGenerator(v, data.generator);
-            }
-            else if (k == "instanced") {
-                data.instanced = readBool(v);
-            }
-            else if (k == "selected") {
-                data.selected = readBool(v);
-            }
-            else if (k == "enabled") {
-                data.enabled = readBool(v);
-            }
-            else if (k == "clone_position_offset") {
-                data.clonePositionOffset = readVec3(v);
-            }
-            else if (k == "clone_mesh") {
-                data.cloneMesh = readBool(v);
-            }
-            else if (k == "tile") {
-                data.tile = readVec3(v);
-            }
-            else if (k == "clones") {
-                if (recurse)
-                    hasClones = true;
-            }
-            else if (k == "script") {
-                data.script = readString(v);
-            }
-            else if (k == "script_file") {
-                std::string filename = readString(v) + ".lua";
-                data.script = readFile(filename);
-            }
-            else {
-                reportUnknown("entity_entry", k, v);
-            }
-        }
-
-        if (hasClones) {
-            for (const auto& pair : node) {
-                const std::string& k = pair.first.as<std::string>();
-                const YAML::Node& v = pair.second;
-
-                if (k == "clones") {
-                    for (const auto& node : v) {
-                        // NOTE KI intialize with current data
-                        EntityCloneData clone = data;
-                        std::vector<EntityCloneData> dummy{};
-                        loadEntityClone(node, clone, dummy, false);
-                        clones.push_back(clone);
-                    }
-                }
-            }
-        }
+        const auto& it = std::find_if(
+            m_sprites.begin(),
+            m_sprites.end(),
+            [&name](SpriteData& m) { return m.sprite.m_name == name; });
+        return it != m_sprites.end() ? &(it->sprite) : nullptr;
     }
 }

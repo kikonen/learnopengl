@@ -1,35 +1,9 @@
 #pragma once
 
 #include "BaseLoader.h"
-
-class Light;
+#include "LightData.h"
 
 namespace loader {
-    enum class LightType {
-        none,
-        directional,
-        point,
-        spot
-    };
-
-    struct LightData {
-        bool enabled{ false };
-        LightType type{ LightType::none };
-
-        glm::vec3 pos{ 0.f };
-
-        BaseUUID targetIdBase;
-
-        float linear{ 0.f };
-        float quadratic{ 0.f };
-
-        float cutoffAngle{ 0.f };
-        float outerCutoffAngle{ 0.f };
-
-        glm::vec3 diffuse{ 0.5f, 0.5f, 0.5f };
-        float intensity{ 1.f };
-    };
-
     class LightLoader : public BaseLoader
     {
     public:

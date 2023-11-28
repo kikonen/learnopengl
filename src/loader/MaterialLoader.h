@@ -2,19 +2,10 @@
 
 #include <vector>
 
-#include "asset/Material.h"
-#include "asset/MaterialField.h"
-
 #include "BaseLoader.h"
+#include "MaterialData.h"
 
 namespace loader {
-    struct MaterialData
-    {
-        bool enabled{ false };
-        MaterialField fields;
-        Material material;
-    };
-
     class MaterialLoader : public BaseLoader
     {
     public:
@@ -26,7 +17,8 @@ namespace loader {
             MaterialData& data) const;
 
         void loadMaterials(
-            const YAML::Node& doc);
+            const YAML::Node& doc,
+            std::vector<MaterialData>& materials);
 
         void loadMaterial(
             const YAML::Node& node,
@@ -49,13 +41,5 @@ namespace loader {
             Material& m,
             const MaterialData& data);
 
-        Material* find(
-            std::string_view name);
-
-    public:
-        Material m_defaultMaterial;
-
-    private:
-        std::vector<MaterialData> m_materials;
     };
 }

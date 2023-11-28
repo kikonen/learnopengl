@@ -307,7 +307,8 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     for (auto& loader : m_loaders) {
         KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", loader->m_ctx.str()));
-        loader->load(m_registry);
+        loader->prepare(m_registry);
+        loader->load();
     }
 
     m_testSetup = std::make_unique<TestSceneSetup>(

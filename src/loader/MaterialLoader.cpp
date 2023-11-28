@@ -85,7 +85,6 @@ namespace loader {
         Context ctx)
         : BaseLoader(ctx)
     {
-        m_defaultMaterial = Material::createMaterial(BasicMaterial::basic);
     }
 
     void MaterialLoader::loadMaterialModifiers(
@@ -99,9 +98,11 @@ namespace loader {
     }
 
     void MaterialLoader::loadMaterials(
-        const YAML::Node& doc) {
+        const YAML::Node& doc,
+        std::vector<MaterialData>& materials)
+    {
         for (const auto& entry : doc["materials"]) {
-            MaterialData& data = m_materials.emplace_back();
+            MaterialData& data = materials.emplace_back();
             loadMaterial(entry, data);
         }
     }
@@ -479,15 +480,5 @@ namespace loader {
         if (f.map_occlusion) m.map_occlusion = mod.map_occlusion;
         if (f.map_displacement) m.map_displacement = mod.map_displacement;
         if (f.map_opacity) m.map_opacity = mod.map_opacity;
-    }
-
-    Material* MaterialLoader::find(
-        std::string_view name)
-    {
-        const auto& it = std::find_if(
-            m_materials.begin(),
-            m_materials.end(),
-            [&name](MaterialData& m) { return m.material.m_name == name && !m.material.m_default; });
-        return it != m_materials.end() ? &(it->material) : nullptr;
     }
 }
