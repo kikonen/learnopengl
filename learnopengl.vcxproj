@@ -200,6 +200,7 @@
     <ClCompile Include="src\loader\LightLoader.cpp" />
     <ClCompile Include="src\loader\MaterialLoader.cpp" />
     <ClCompile Include="src\loader\PhysicsLoader.cpp" />
+    <ClCompile Include="src\loader\SkyboxLoader.cpp" />
     <ClCompile Include="src\loader\SpriteLoader.cpp" />
     <ClCompile Include="src\registry\SpriteRegistry.cpp" />
     <ClCompile Include="src\render\BrdfLutTexture.cpp" />
@@ -367,6 +368,7 @@
     <ClInclude Include="src\loader\LightLoader.h" />
     <ClInclude Include="src\loader\MaterialLoader.h" />
     <ClInclude Include="src\loader\PhysicsLoader.h" />
+    <ClInclude Include="src\loader\SkyboxLoader.h" />
     <ClInclude Include="src\loader\SpriteLoader.h" />
     <ClInclude Include="src\physics\Geom.h" />
     <ClInclude Include="src\physics\Object.h" />

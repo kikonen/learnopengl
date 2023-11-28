@@ -12,6 +12,7 @@
 #include "registry/EntityType.h"
 
 #include "BaseLoader.h"
+#include "SkyboxLoader.h"
 #include "MaterialLoader.h"
 #include "CustomMaterialLoader.h"
 #include "SpriteLoader.h"
@@ -33,22 +34,6 @@ namespace loader {
 
         std::string assetsDir;
         std::string modelsDir;
-    };
-
-    struct SkyboxData {
-        std::string programName{ "skybox" };
-        std::string materialName{};
-        int priority{ -100 };
-
-        bool gammaCorrect{ true };
-        bool hdri{ false };
-        bool swapFaces{ false };
-        bool loadedFaces{ false };
-        std::array<std::string, 6> faces;
-
-        bool const valid() {
-            return !materialName.empty();
-        }
     };
 
     struct EntityCloneData {
@@ -134,27 +119,21 @@ namespace loader {
 
     private:
         void attach(
-            SkyboxData& skybox,
-            const EntityData& root,
-            const std::vector<EntityData>& entities);
-
-        void attachSkybox(
-            const EntityData& root,
-            SkyboxData& data);
+            const EntityData& root);
 
         void attachVolume(
-            const EntityData& root);
+            const uuids::uuid& rootId);
 
         void attachCubeMapCenter(
-            const EntityData& root);
+            const uuids::uuid& rootId);
 
         void attachEntity(
-            const EntityData& root,
+            const uuids::uuid& rootId,
             const EntityData& data);
 
         MeshType* attachEntityClone(
             MeshType* type,
-            const EntityData& root,
+            const uuids::uuid& rootId,
             const EntityData& entity,
             const EntityCloneData& data,
             bool cloned,
@@ -162,7 +141,7 @@ namespace loader {
 
         MeshType* attachEntityCloneRepeat(
             MeshType* type,
-            const EntityData& root,
+            const uuids::uuid& rootId,
             const EntityData& entity,
             const EntityCloneData& data,
             bool cloned,
@@ -194,7 +173,7 @@ namespace loader {
 
         Node* createNode(
             MeshType* type,
-            const EntityData& root,
+            const uuids::uuid& rootId,
             const EntityCloneData& data,
             const bool cloned,
             const int cloneIndex,
@@ -206,14 +185,6 @@ namespace loader {
         void loadMeta(
             const YAML::Node& node,
             MetaData& data);
-
-        void loadSkybox(
-            const YAML::Node& node,
-            SkyboxData& data);
-
-        void loadSkyboxFaces(
-            const YAML::Node& node,
-            SkyboxData& data);
 
         void loadRoot(
             const YAML::Node& doc,
@@ -244,7 +215,11 @@ namespace loader {
         SkyboxData m_skybox;
 
         EntityData m_root;
+        uuids::uuid m_rootId;
+
         std::vector<EntityData> m_entities;
+
+        SkyboxLoader m_skyboxLoader;
 
         MaterialLoader m_materialLoader;
         CustomMaterialLoader m_customMaterialLoader;

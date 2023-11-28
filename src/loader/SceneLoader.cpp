@@ -56,11 +56,6 @@
 
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
-    const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
-
-    const std::vector<std::regex> hdriMatchers{
-        std::regex(".*[\\.]hdr"),
-    };
 }
 
 template <> struct fmt::formatter<loader::BaseUUID> {
@@ -92,6 +87,7 @@ namespace loader {
     SceneLoader::SceneLoader(
         Context ctx)
         : BaseLoader(ctx),
+        m_skyboxLoader(ctx),
         m_materialLoader(ctx),
         m_customMaterialLoader(ctx),
         m_spriteLoader(ctx),
@@ -114,8 +110,9 @@ namespace loader {
         m_registry = registry;
         m_dispatcher = registry->m_dispatcher;
 
-        m_materialLoader.m_registry = registry;
-        m_materialLoader.m_dispatcher = registry->m_dispatcher;
+        m_materialLoader.m_registry = m_registry;
+        m_skyboxLoader.m_registry = m_registry;
+        m_skyboxLoader.m_dispatcher = m_dispatcher;
 
         if (!util::fileExists(m_ctx.m_filename)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
@@ -127,92 +124,33 @@ namespace loader {
 
             loadMeta(doc, m_meta);
 
-            loadSkybox(doc, m_skybox);
+            m_skyboxLoader.loadSkybox(doc, m_skybox);
             m_materialLoader.loadMaterials(doc);
             m_spriteLoader.loadSprites(doc);
 
             loadRoot(doc, m_root);
             loadEntities(doc, m_entities);
-
-            attach(m_skybox, m_root, m_entities);
+            attach(m_root);
         });
     }
 
     void SceneLoader::attach(
-        SkyboxData& skybox,
-        const EntityData& root,
-        const std::vector<EntityData>& entities)
+        const EntityData& root)
     {
-        attachSkybox(root, skybox);
+        m_rootId = resolveUUID(m_root.base.idBase, 0, { 0, 0, 0 });
+        m_skyboxLoader.attachSkybox(m_rootId, m_skybox);
 
-        attachEntity(root, root);
-        attachVolume(root);
-        attachCubeMapCenter(root);
+        attachEntity(m_rootId, root);
+        attachVolume(m_rootId);
+        attachCubeMapCenter(m_rootId);
 
-        for (const auto& entity : entities) {
-            attachEntity(root, entity);
-        }
-    }
-
-    void SceneLoader::attachSkybox(
-        const EntityData& root,
-        SkyboxData& data)
-    {
-        if (!data.valid()) return;
-
-        auto type = m_registry->m_typeRegistry->getType("<skybox>");
-        type->m_priority = data.priority;
-
-        auto future = m_registry->m_modelRegistry->getMesh(
-            SKYBOX_MESH_NAME,
-            m_meta.modelsDir);
-        auto* mesh = future.get();
-        type->setMesh(mesh);
-        type->m_entityType = EntityType::skybox;
-
-        auto& flags = type->m_flags;
-
-        flags.skybox = true;
-        flags.wireframe = false;
-        flags.renderBack = true;
-        flags.noShadow = true;
-        flags.noFrustum = true;
-        //flags.noReflect = true;
-        //flags.noRefract = true;
-        flags.noDisplay = false;
-        flags.noSelect = true;
-        flags.gbuffer = false;// data.programName.starts_with("g_");
-
-        type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
-
-        bool gammaCorrect = data.gammaCorrect;
-        if (data.hdri) {
-            gammaCorrect = false;
-        }
-
-        auto material{ std::make_unique<SkyboxMaterial>(
-            data.materialName,
-            gammaCorrect) };
-        material->m_swapFaces = data.swapFaces;
-        material->m_hdri = data.hdri;
-        if (data.loadedFaces) {
-            material->m_faces = data.faces;
-        }
-        type->setCustomMaterial(std::move(material));
-
-        auto node = new Node(type);
-        node->m_id = m_assets.skyboxUUID;
-
-        {
-            event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
-            evt.body.node.parentId = resolveUUID(root.base.idBase, 0, { 0, 0, 0 });
-            m_dispatcher->send(evt);
+        for (const auto& entity : m_entities) {
+            attachEntity(m_rootId, entity);
         }
     }
 
     void SceneLoader::attachVolume(
-        const EntityData& root)
+        const uuids::uuid& rootId)
     {
         if (!m_assets.showVolume) return;
 
@@ -262,7 +200,7 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node.target = node;
-            evt.body.node.parentId = resolveUUID(root.base.idBase, 0, { 0, 0, 0 });
+            evt.body.node.parentId = rootId;
             m_dispatcher->send(evt);
         }
         {
@@ -278,7 +216,7 @@ namespace loader {
     }
 
     void SceneLoader::attachCubeMapCenter(
-        const EntityData& root)
+        const uuids::uuid& rootId)
     {
         if (!m_assets.showCubeMapCenter) return;
 
@@ -332,23 +270,23 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node.target = node;
-            evt.body.node.parentId = resolveUUID(root.base.idBase, 0, { 0, 0, 0 });
+            evt.body.node.parentId = rootId;
             m_dispatcher->send(evt);
         }
     }
 
     void SceneLoader::attachEntity(
-        const EntityData& root,
+        const uuids::uuid& rootId,
         const EntityData& data)
     {
         if (!data.base.enabled) {
             return;
         }
 
-        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &root, &data]() {
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &rootId, &data]() {
             if (data.clones.empty()) {
                 MeshType* type{ nullptr };
-                attachEntityClone(type, root, data, data.base, false, 0);
+                attachEntityClone(type, rootId, data, data.base, false, 0);
             }
             else {
                 MeshType* type{ nullptr };
@@ -356,7 +294,7 @@ namespace loader {
                 int cloneIndex = 0;
                 for (auto& cloneData : data.clones) {
                     if (!*m_ctx.m_alive) return;
-                    type = attachEntityClone(type, root, data, cloneData, true, cloneIndex);
+                    type = attachEntityClone(type, rootId, data, cloneData, true, cloneIndex);
                     if (!data.base.cloneMesh)
                         type = nullptr;
                     cloneIndex++;
@@ -367,7 +305,7 @@ namespace loader {
 
     MeshType* SceneLoader::attachEntityClone(
         MeshType* type,
-        const EntityData& root,
+        const uuids::uuid& rootId,
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
@@ -394,7 +332,7 @@ namespace loader {
 
                     type = attachEntityCloneRepeat(
                         type,
-                        root,
+                        rootId,
                         entity,
                         data,
                         cloned,
@@ -413,7 +351,7 @@ namespace loader {
 
     MeshType* SceneLoader::attachEntityCloneRepeat(
         MeshType* type,
-        const EntityData& root,
+        const uuids::uuid& rootId,
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
@@ -439,7 +377,7 @@ namespace loader {
         if (!*m_ctx.m_alive) return type;
 
         auto node = createNode(
-            type, root, data,
+            type, rootId, data,
             cloned, cloneIndex, tile,
             data.clonePositionOffset,
             tilePositionOffset,
@@ -449,10 +387,15 @@ namespace loader {
             event::Event evt { event::Type::node_add };
             evt.body.node.target = node;
             if (!entity.isRoot) {
-                evt.body.node.parentId = resolveUUID(
-                    data.parentIdBase.empty() ? root.base.idBase : data.parentIdBase,
-                    cloneIndex,
-                    tile);
+                if (data.parentIdBase.empty()) {
+                    evt.body.node.parentId = rootId;
+                }
+                else {
+                    evt.body.node.parentId = resolveUUID(
+                        data.parentIdBase,
+                        cloneIndex,
+                        tile);
+                }
             }
             m_dispatcher->send(evt);
         }
@@ -732,7 +675,7 @@ namespace loader {
 
     Node* SceneLoader::createNode(
         MeshType* type,
-        const EntityData& root,
+        const uuids::uuid& rootId,
         const EntityCloneData& data,
         const bool cloned,
         const int cloneIndex,
@@ -750,7 +693,9 @@ namespace loader {
 
         // NOTE KI no id for clones; would duplicate base id => conflicts
         // => except if clone defines own ID
-        if (root.base.idBase != data.idBase || isRoot) {
+        if (isRoot) {
+            node->m_id = rootId;
+        } else if (!cloned) {
             node->m_id = resolveUUID(data.idBase, cloneIndex, tile);
         }
 
@@ -949,71 +894,6 @@ namespace loader {
                 reportUnknown("meta_entry", k, v);
             }
         }
-    }
-
-    void SceneLoader::loadSkybox(
-        const YAML::Node& doc,
-        SkyboxData& data)
-    {
-        auto& node = doc["skybox"];
-
-        if (!node) return;
-
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-
-            if (k == "program" || k == "shader") {
-                data.programName = readString(v);
-                data.programName = "skybox";
-            }
-            else if (k == "material") {
-                data.materialName = readString(v);
-            }
-            else if (k == "priority") {
-                data.priority = readInt(v);
-            }
-            else if (k == "gamma_correct") {
-                data.gammaCorrect = readBool(v);
-            }
-            else if (k == "hdri") {
-                data.hdri = readBool(v);
-            }
-            else if (k == "swap_faces") {
-                data.swapFaces = readBool(v);
-            }
-            else if (k == "faces") {
-                loadSkyboxFaces(v, data);
-            }
-            else {
-                reportUnknown("skybox_entry", k, v);
-            }
-        }
-
-        if (util::matchAny(hdriMatchers, data.materialName)) {
-            data.hdri = true;
-        }
-
-        if (data.hdri) {
-            data.gammaCorrect = false;
-        }
-    }
-
-    void SceneLoader::loadSkyboxFaces(
-        const YAML::Node& node,
-        SkyboxData& data)
-    {
-        if (!node.IsSequence()) {
-            return;
-        }
-
-        int idx = 0;
-        for (const auto& e : node) {
-            data.faces[idx] = e.as<std::string>();
-            idx++;
-        }
-
-        data.loadedFaces = true;
     }
 
     void SceneLoader::loadRoot(
