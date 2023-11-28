@@ -135,11 +135,11 @@ namespace loader {
     void SceneLoader::attach(
         const RootData& root)
     {
+        m_rootLoader.attachRoot(root);
+
         m_skyboxLoader.attachSkybox(root.rootId, m_skybox);
         m_volumeLoader.attachVolume(root.rootId);
         m_cubeMapLoader.attachCubeMap(root.rootId);
-
-        m_rootLoader.attachRoot(root);
 
         for (const auto& entity : m_entities) {
             attachEntity(root.rootId, entity);
@@ -345,23 +345,31 @@ namespace loader {
                 }
             }
 
-            bool useTBN = false;
-            bool useParallax = false;
-            bool useDudvTex = false;
-            bool useHeightTex = false;
-            bool useDisplacementTex = false;
-            bool useNormalTex = false;
-            bool useCubeMap = false;
-            bool useNormalPattern = false;
+            modifyMaterials(type, data);
+            resolveProgram(type, data);
+        }
 
-            type->modifyMaterials([
-                this,
+        return type;
+    }
+
+    void SceneLoader::resolveProgram(
+        MeshType* type,
+        const EntityCloneData& data)
+    {
+        bool useTBN = false;
+        bool useParallax = false;
+        bool useDudvTex = false;
+        bool useHeightTex = false;
+        bool useDisplacementTex = false;
+        bool useNormalTex = false;
+        bool useCubeMap = false;
+        bool useNormalPattern = false;
+
+        type->modifyMaterials([
+            this,
                 &useNormalTex, &useCubeMap, &useDudvTex, &useHeightTex, &useDisplacementTex, &useNormalPattern, &useParallax,
                 &data
             ](Material& m) {
-                m_materialLoader.modifyMaterial(m, data.materialModifiers);
-                m.loadTextures(m_assets);
-
                 useDudvTex |= m.hasTex(MATERIAL_DUDV_MAP_IDX);
                 useHeightTex |= m.hasTex(MATERIAL_HEIGHT_MAP_IDX);
                 useDisplacementTex |= m.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX);
@@ -373,79 +381,76 @@ namespace loader {
                     m.parallaxDepth = 0.f;
                 }
             });
-            useTBN = useNormalTex || useDudvTex || useDisplacementTex;
+        useTBN = useNormalTex || useDudvTex || useDisplacementTex;
 
-            if (!data.programName.empty()) {
-                std::map<std::string, std::string, std::less<>> definitions;
-                for (const auto& [k, v] : data.programDefinitions) {
-                    definitions[k] = v;
-                }
+        if (!data.programName.empty()) {
+            std::map<std::string, std::string, std::less<>> definitions;
+            for (const auto& [k, v] : data.programDefinitions) {
+                definitions[k] = v;
+            }
 
-                std::map<std::string, std::string, std::less<>> depthDefinitions;
-                bool useDepth = type->m_flags.depth;
+            std::map<std::string, std::string, std::less<>> depthDefinitions;
+            bool useDepth = type->m_flags.depth;
 
-                if (type->m_flags.alpha) {
-                    definitions[DEF_USE_ALPHA] = "1";
-                    useDepth = false;
-                }
-                if (type->m_flags.blend) {
-                    definitions[DEF_USE_BLEND] = "1";
-                    useDepth = false;
-                }
-                if (type->m_flags.blendOIT) {
-                    definitions[DEF_USE_BLEND_OIT] = "1";
-                    useDepth = false;
-                }
+            if (type->m_flags.alpha) {
+                definitions[DEF_USE_ALPHA] = "1";
+                useDepth = false;
+            }
+            if (type->m_flags.blend) {
+                definitions[DEF_USE_BLEND] = "1";
+                useDepth = false;
+            }
+            if (type->m_flags.blendOIT) {
+                definitions[DEF_USE_BLEND_OIT] = "1";
+                useDepth = false;
+            }
 
-                //if (type->m_entityType == EntityType::billboard) {
-                //    definitions[DEF_USE_BILLBOARD] = "1";
-                //}
-                //if (type->m_entityType == EntityType::sprite) {
-                //    definitions[DEF_USE_SPRITE] = "1";
-                //}
+            //if (type->m_entityType == EntityType::billboard) {
+            //    definitions[DEF_USE_BILLBOARD] = "1";
+            //}
+            //if (type->m_entityType == EntityType::sprite) {
+            //    definitions[DEF_USE_SPRITE] = "1";
+            //}
 
-                if (useTBN) {
-                    definitions[DEF_USE_TBN] = "1";
-                }
-                if (useDudvTex) {
-                    definitions[DEF_USE_DUDV_TEX] = "1";
-                }
-                if (useHeightTex) {
-                    definitions[DEF_USE_HEIGHT_TEX] = "1";
-                }
-                if (useDisplacementTex) {
-                    definitions[DEF_USE_DISPLACEMENT_TEX] = "1";
-                }
-                if (useNormalTex) {
-                    definitions[DEF_USE_NORMAL_TEX] = "1";
-                }
-                if (useParallax) {
-                    definitions[DEF_USE_PARALLAX] = "1";
-                }
-                if (useCubeMap) {
-                    definitions[DEF_USE_CUBE_MAP] = "1";
-                }
-                if (useNormalPattern) {
-                    definitions[DEF_USE_NORMAL_PATTERN] = "1";
-                }
+            if (useTBN) {
+                definitions[DEF_USE_TBN] = "1";
+            }
+            if (useDudvTex) {
+                definitions[DEF_USE_DUDV_TEX] = "1";
+            }
+            if (useHeightTex) {
+                definitions[DEF_USE_HEIGHT_TEX] = "1";
+            }
+            if (useDisplacementTex) {
+                definitions[DEF_USE_DISPLACEMENT_TEX] = "1";
+            }
+            if (useNormalTex) {
+                definitions[DEF_USE_NORMAL_TEX] = "1";
+            }
+            if (useParallax) {
+                definitions[DEF_USE_PARALLAX] = "1";
+            }
+            if (useCubeMap) {
+                definitions[DEF_USE_CUBE_MAP] = "1";
+            }
+            if (useNormalPattern) {
+                definitions[DEF_USE_NORMAL_PATTERN] = "1";
+            }
 
-                type->m_program = m_registry->m_programRegistry->getProgram(
-                    data.programName,
+            type->m_program = m_registry->m_programRegistry->getProgram(
+                data.programName,
+                false,
+                data.geometryType,
+                definitions);
+
+            if (useDepth) {
+                type->m_depthProgram = m_registry->m_programRegistry->getProgram(
+                    data.depthProgramName,
                     false,
-                    data.geometryType,
-                    definitions);
-
-                if (useDepth) {
-                    type->m_depthProgram = m_registry->m_programRegistry->getProgram(
-                        data.depthProgramName,
-                        false,
-                        "",
-                        depthDefinitions);
-                }
+                    "",
+                    depthDefinitions);
             }
         }
-
-        return type;
     }
 
     void SceneLoader::resolveMaterial(
@@ -469,6 +474,16 @@ namespace loader {
         materialVBO.m_defaultMaterial = *material;
         materialVBO.m_useDefaultMaterial = true;
         materialVBO.m_forceDefaultMaterial = data.forceMaterial;
+    }
+
+    void SceneLoader::modifyMaterials(
+        MeshType* type,
+        const EntityCloneData& data)
+    {
+        type->modifyMaterials([this, &data](Material& m) {
+            m_materialLoader.modifyMaterial(m, data.materialModifiers);
+            m.loadTextures(m_assets);
+        });
     }
 
     void SceneLoader::resolveSprite(

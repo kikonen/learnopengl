@@ -88,7 +88,15 @@ namespace loader {
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
+        void resolveProgram(
+            MeshType* type,
+            const EntityCloneData& data);
+
         void resolveMaterial(
+            MeshType* type,
+            const EntityCloneData& data);
+
+        void modifyMaterials(
             MeshType* type,
             const EntityCloneData& data);
 
