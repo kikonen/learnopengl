@@ -74,15 +74,15 @@ namespace loader {
 
         void loadPhysics(
             const YAML::Node& node,
-            PhysicsData& data);
+            PhysicsData& data) const;
 
         void loadBody(
             const YAML::Node& node,
-            BodyData& data);
+            BodyData& data) const;
 
         void loadGeom(
             const YAML::Node& node,
-            GeomData& data);
+            GeomData& data) const;
 
         std::unique_ptr<physics::Object> createPhysicsObject(
             const PhysicsData& data,

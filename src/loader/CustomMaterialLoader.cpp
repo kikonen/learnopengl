@@ -14,7 +14,7 @@ namespace loader {
 
     void CustomMaterialLoader::loadCustomMaterial(
         const YAML::Node& node,
-        CustomMaterialData& data)
+        CustomMaterialData& data) const
     {
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();

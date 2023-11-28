@@ -2,7 +2,6 @@
 
 #include "BaseLoader.h"
 
-
 namespace loader {
     struct SkyboxData {
         std::string programName{ "skybox" };

@@ -15,7 +15,7 @@ namespace loader {
 
     void PhysicsLoader::loadPhysics(
         const YAML::Node& node,
-        PhysicsData& data)
+        PhysicsData& data) const
     {
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -41,7 +41,7 @@ namespace loader {
 
     void PhysicsLoader::loadBody(
         const YAML::Node& node,
-        BodyData& data)
+        BodyData& data) const
     {
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -85,7 +85,7 @@ namespace loader {
 
     void PhysicsLoader::loadGeom(
         const YAML::Node& node,
-        GeomData& data)
+        GeomData& data) const
     {
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();

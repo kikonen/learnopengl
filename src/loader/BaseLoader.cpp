@@ -39,7 +39,7 @@ namespace loader
 
     void BaseLoader::loadTiling(
         const YAML::Node& node,
-        Tiling& data)
+        Tiling& data) const
     {
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -68,7 +68,7 @@ namespace loader
 
     void BaseLoader::loadRepeat(
         const YAML::Node& node,
-        Repeat& data)
+        Repeat& data) const
     {
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -430,7 +430,7 @@ namespace loader
         return out;
     }
 
-    BaseUUID BaseLoader::readUUID(const YAML::Node& node)
+    BaseUUID BaseLoader::readUUID(const YAML::Node& node) const
     {
         BaseUUID parts;
 

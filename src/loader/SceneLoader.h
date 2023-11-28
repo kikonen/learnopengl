@@ -13,6 +13,8 @@
 
 #include "BaseLoader.h"
 #include "SkyboxLoader.h"
+#include "VolumeLoader.h"
+#include "CubeMapLoader.h"
 #include "MaterialLoader.h"
 #include "CustomMaterialLoader.h"
 #include "SpriteLoader.h"
@@ -121,12 +123,6 @@ namespace loader {
         void attach(
             const EntityData& root);
 
-        void attachVolume(
-            const uuids::uuid& rootId);
-
-        void attachCubeMapCenter(
-            const uuids::uuid& rootId);
-
         void attachEntity(
             const uuids::uuid& rootId,
             const EntityData& data);
@@ -184,11 +180,11 @@ namespace loader {
 
         void loadMeta(
             const YAML::Node& node,
-            MetaData& data);
+            MetaData& data) const;
 
         void loadRoot(
             const YAML::Node& doc,
-            EntityData& root);
+            EntityData& root) const;
 
         void loadEntities(
             const YAML::Node& doc,
@@ -196,17 +192,13 @@ namespace loader {
 
         void loadEntity(
             const YAML::Node& node,
-            EntityData& data);
+            EntityData& data) const;
 
         void loadEntityClone(
             const YAML::Node& node,
             EntityCloneData& data,
             std::vector<EntityCloneData>& clones,
-            bool recurse);
-
-        void loadMaterialModifiers(
-            const YAML::Node& node,
-            EntityCloneData& data);
+            bool recurse) const;
 
     public:
 
@@ -220,6 +212,8 @@ namespace loader {
         std::vector<EntityData> m_entities;
 
         SkyboxLoader m_skyboxLoader;
+        VolumeLoader m_volumeLoader;
+        CubeMapLoader m_cubeMapLoader;
 
         MaterialLoader m_materialLoader;
         CustomMaterialLoader m_customMaterialLoader;

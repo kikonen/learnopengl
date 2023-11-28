@@ -18,7 +18,7 @@ namespace loader {
 
     void ControllerLoader::loadController(
         const YAML::Node& node,
-        ControllerData& data)
+        ControllerData& data) const
     {
         // pos relative to owning node
         for (const auto& pair : node) {

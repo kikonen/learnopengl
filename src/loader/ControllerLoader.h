@@ -27,7 +27,7 @@ namespace loader {
 
         void loadController(
             const YAML::Node& node,
-            ControllerData& data);
+            ControllerData& data) const;
 
         NodeController* createController(
             const ControllerData& data,

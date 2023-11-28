@@ -38,7 +38,7 @@ namespace loader {
 
         void loadLight(
             const YAML::Node& node,
-            LightData& data);
+            LightData& data) const;
 
         std::unique_ptr<Light> createLight(
             const LightData& data,

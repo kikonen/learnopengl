@@ -7,6 +7,7 @@
 #include "asset/Assets.h"
 
 #include "Context.h"
+#include "BaseUUID.h"
 
 namespace YAML {
     class Node;
@@ -20,8 +21,6 @@ class Registry;
 
 namespace loader
 {
-    using BaseUUID = std::vector<std::string>;
-
     static const float DEF_ALPHA = 1.0;
 
     static const std::string AUTO_UUID{ "AUTO" };
@@ -59,11 +58,11 @@ namespace loader
 
         void loadRepeat(
             const YAML::Node& node,
-            Repeat& data);
+            Repeat& data) const;
 
         void loadTiling(
             const YAML::Node& node,
-            Tiling& data);
+            Tiling& data) const;
 
         std::string readString(const YAML::Node& node) const;
         bool readBool(const YAML::Node& node) const;
@@ -94,7 +93,7 @@ namespace loader
             const int cloneIndex,
             const glm::uvec3& tile);
 
-        BaseUUID readUUID(const YAML::Node& node);
+        BaseUUID readUUID(const YAML::Node& node) const;
 
         std::string readFile(std::string_view filename) const;
 

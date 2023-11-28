@@ -88,6 +88,16 @@ namespace loader {
         m_defaultMaterial = Material::createMaterial(BasicMaterial::basic);
     }
 
+    void MaterialLoader::loadMaterialModifiers(
+        const YAML::Node& node,
+        MaterialData& data) const
+    {
+        data.enabled = true;
+        data.material.m_name = "<modifier>";
+
+        loadMaterial(node, data);
+    }
+
     void MaterialLoader::loadMaterials(
         const YAML::Node& doc) {
         for (const auto& entry : doc["materials"]) {
@@ -98,7 +108,7 @@ namespace loader {
 
     void MaterialLoader::loadMaterial(
         const YAML::Node& node,
-        MaterialData& data)
+        MaterialData& data) const
     {
         Material& material = data.material;
         MaterialField& fields = data.fields;
@@ -289,7 +299,7 @@ namespace loader {
 
     void MaterialLoader::loadMaterialPbr(
         const std::string& pbrName,
-        MaterialData& data)
+        MaterialData& data) const
     {
         Material& material = data.material;
         MaterialField& fields = data.fields;
@@ -375,7 +385,7 @@ namespace loader {
 
     void MaterialLoader::loadTextureSpec(
         const YAML::Node& node,
-        TextureSpec& textureSpec)
+        TextureSpec& textureSpec) const
     {
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -400,7 +410,7 @@ namespace loader {
     void MaterialLoader::loadTextureWrap(
         const std::string& k,
         const YAML::Node& v,
-        GLint& wrapMode)
+        GLint& wrapMode) const
     {
         const std::string& wrap = readString(v);
         if (wrap == "GL_REPEAT") {

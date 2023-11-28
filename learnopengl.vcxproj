@@ -192,9 +192,11 @@
     <ClCompile Include="src\command\Coroutine.cpp" />
     <ClCompile Include="src\kigl\GLStencilMode.cpp" />
     <ClCompile Include="src\loader\BaseLoader.cpp" />
+    <ClCompile Include="src\loader\BaseUUID.h" />
     <ClCompile Include="src\loader\CameraLoader.cpp" />
     <ClCompile Include="src\loader\Contet.cpp" />
     <ClCompile Include="src\loader\ControllerLoader.cpp" />
+    <ClCompile Include="src\loader\CubeMapLoader.cpp" />
     <ClCompile Include="src\loader\CustomMaterialLoader.cpp" />
     <ClCompile Include="src\loader\GeneratorLoader.cpp" />
     <ClCompile Include="src\loader\LightLoader.cpp" />
@@ -202,6 +204,7 @@
     <ClCompile Include="src\loader\PhysicsLoader.cpp" />
     <ClCompile Include="src\loader\SkyboxLoader.cpp" />
     <ClCompile Include="src\loader\SpriteLoader.cpp" />
+    <ClCompile Include="src\loader\VolumeLoader.cpp" />
     <ClCompile Include="src\registry\SpriteRegistry.cpp" />
     <ClCompile Include="src\render\BrdfLutTexture.cpp" />
     <ClCompile Include="src\render\CubeRender.cpp" />
@@ -363,6 +366,7 @@
     <ClInclude Include="src\loader\CameraLoader.h" />
     <ClInclude Include="src\loader\Context.h" />
     <ClInclude Include="src\loader\ControllerLoader.h" />
+    <ClInclude Include="src\loader\CubeMapLoader.h" />
     <ClInclude Include="src\loader\CustomMaterialLoader.h" />
     <ClInclude Include="src\loader\GeneratorLoader.h" />
     <ClInclude Include="src\loader\LightLoader.h" />
@@ -370,6 +374,7 @@
     <ClInclude Include="src\loader\PhysicsLoader.h" />
     <ClInclude Include="src\loader\SkyboxLoader.h" />
     <ClInclude Include="src\loader\SpriteLoader.h" />
+    <ClInclude Include="src\loader\VolumeLoader.h" />
     <ClInclude Include="src\physics\Geom.h" />
     <ClInclude Include="src\physics\Object.h" />
     <ClInclude Include="src\query\Query.h" />

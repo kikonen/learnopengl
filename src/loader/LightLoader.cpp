@@ -12,7 +12,9 @@ namespace loader{
     {
     }
 
-    void LightLoader::loadLight(const YAML::Node& node, LightData& data)
+    void LightLoader::loadLight(
+        const YAML::Node& node,
+        LightData& data) const
     {
         // Default to center
         data.targetIdBase = { ROOT_UUID };

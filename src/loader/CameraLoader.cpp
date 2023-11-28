@@ -13,7 +13,9 @@ namespace loader
     {
     }
 
-    void CameraLoader::loadCamera(const YAML::Node& node, CameraData& data)
+    void CameraLoader::loadCamera(
+        const YAML::Node& node,
+        CameraData& data) const
     {
         data.fov = m_assets.cameraFov;
 

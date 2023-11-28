@@ -495,6 +495,15 @@
     <ClCompile Include="src\loader\SkyboxLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\VolumeLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\CubeMapLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\BaseUUID.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1113,6 +1122,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\SkyboxLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\VolumeLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\CubeMapLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

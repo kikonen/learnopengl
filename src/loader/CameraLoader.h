@@ -31,7 +31,7 @@ namespace loader {
 
         void loadCamera(
             const YAML::Node& node,
-            CameraData& data);
+            CameraData& data) const;
 
         std::unique_ptr<Camera> createCamera(
             const CameraData& data);

@@ -21,25 +21,29 @@ namespace loader {
         MaterialLoader(
             Context ctx);
 
+        void loadMaterialModifiers(
+            const YAML::Node& node,
+            MaterialData& data) const;
+
         void loadMaterials(
             const YAML::Node& doc);
 
         void loadMaterial(
             const YAML::Node& node,
-            MaterialData& data);
+            MaterialData& data) const;
 
         void loadMaterialPbr(
             const std::string& pbrName,
-            MaterialData& data);
+            MaterialData& data) const;
 
         void loadTextureSpec(
             const YAML::Node& node,
-            TextureSpec& textureSpec);
+            TextureSpec& textureSpec) const;
 
         void loadTextureWrap(
             const std::string& k,
             const YAML::Node& v,
-            GLint& wrapMode);
+            GLint& wrapMode) const;
 
         void modifyMaterial(
             Material& m,

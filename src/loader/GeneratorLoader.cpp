@@ -21,7 +21,7 @@ namespace loader {
 
     void GeneratorLoader::loadGenerator(
         const YAML::Node& node,
-        GeneratorData& data)
+        GeneratorData& data) const
     {
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();

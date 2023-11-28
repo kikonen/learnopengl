@@ -40,7 +40,6 @@
 #include "generator/AsteroidBeltGenerator.h"
 
 #include "controller/CameraController.h"
-#include "controller/VolumeController.h"
 
 #include "event/Dispatcher.h"
 
@@ -58,36 +57,13 @@ namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
 }
 
-template <> struct fmt::formatter<loader::BaseUUID> {
-    // Parses format specifications of the form ['f' | 'e'].
-    constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
-        auto it = ctx.begin();
-        return it;
-    }
-
-    template <typename FormatContext>
-    auto format(const loader::BaseUUID& p, FormatContext& ctx) const -> decltype(ctx.out()) {
-        if (p.empty()) {
-            return ctx.out();
-        }
-        else if (p.size() == 1) {
-            return fmt::format_to(
-                ctx.out(),
-                "{}", p[0]);
-        }
-        else {
-            return fmt::format_to(
-                ctx.out(),
-                "{}-{}", p[0], p[1]);
-        }
-    }
-};
-
 namespace loader {
     SceneLoader::SceneLoader(
         Context ctx)
         : BaseLoader(ctx),
         m_skyboxLoader(ctx),
+        m_volumeLoader(ctx),
+        m_cubeMapLoader(ctx),
         m_materialLoader(ctx),
         m_customMaterialLoader(ctx),
         m_spriteLoader(ctx),
@@ -114,6 +90,9 @@ namespace loader {
         m_skyboxLoader.m_registry = m_registry;
         m_skyboxLoader.m_dispatcher = m_dispatcher;
 
+        m_volumeLoader.m_registry = m_registry;
+        m_volumeLoader.m_dispatcher = m_dispatcher;
+
         if (!util::fileExists(m_ctx.m_filename)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
         }
@@ -139,139 +118,13 @@ namespace loader {
     {
         m_rootId = resolveUUID(m_root.base.idBase, 0, { 0, 0, 0 });
         m_skyboxLoader.attachSkybox(m_rootId, m_skybox);
+        m_volumeLoader.attachVolume(m_rootId);
+        m_cubeMapLoader.attachCubeMap(m_rootId);
 
         attachEntity(m_rootId, root);
-        attachVolume(m_rootId);
-        attachCubeMapCenter(m_rootId);
 
         for (const auto& entity : m_entities) {
             attachEntity(m_rootId, entity);
-        }
-    }
-
-    void SceneLoader::attachVolume(
-        const uuids::uuid& rootId)
-    {
-        if (!m_assets.showVolume) return;
-
-        auto type = m_registry->m_typeRegistry->getType("<volume>");
-
-        auto future = m_registry->m_modelRegistry->getMesh(
-            "ball_volume",
-            m_meta.modelsDir);
-        auto* mesh = future.get();
-
-        type->setMesh(mesh);
-
-        {
-            auto material = Material::createMaterial(BasicMaterial::highlight);
-            material.m_name = "volume";
-            material.kd = glm::vec4(0.8f, 0.8f, 0.f, 1.f);
-
-            auto& materialVBO = type->m_materialVBO;
-            materialVBO.m_defaultMaterial = material;
-            materialVBO.m_useDefaultMaterial = true;
-            materialVBO.m_forceDefaultMaterial = true;
-            materialVBO.setMaterials({ material });
-        }
-
-        auto& flags = type->m_flags;
-
-        flags.wireframe = true;
-        flags.renderBack = true;
-        flags.noShadow = true;
-        flags.noFrustum = false;
-        flags.noReflect = true;
-        flags.noRefract = true;
-        flags.noDisplay = true;
-        flags.noSelect = true;
-        flags.gbuffer = SHADER_VOLUME.starts_with("g_");
-
-        type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
-
-        auto node = new Node(type);
-        node->m_id = m_assets.volumeUUID;
-
-        // NOTE KI m_radius = 1.73205078
-        mesh->prepareVolume();
-
-        node->setVolume(mesh->getAABB().getVolume());
-
-        {
-            event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
-            evt.body.node.parentId = rootId;
-            m_dispatcher->send(evt);
-        }
-        {
-            auto* controller = new VolumeController();
-
-                event::Event evt { event::Type::controller_add };
-            evt.body.control = {
-                .target = node->m_objectID,
-                .controller = controller
-            };
-            m_dispatcher->send(evt);
-        }
-    }
-
-    void SceneLoader::attachCubeMapCenter(
-        const uuids::uuid& rootId)
-    {
-        if (!m_assets.showCubeMapCenter) return;
-
-        auto type = m_registry->m_typeRegistry->getType("<cube_map>");
-
-        auto future = m_registry->m_modelRegistry->getMesh(
-            "ball_volume",
-            m_meta.modelsDir);
-        auto& mesh = future.get();
-
-        type->setMesh(mesh);
-
-        {
-            auto material = Material::createMaterial(BasicMaterial::highlight);
-            material.m_name = "cube_map";
-            //material.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
-            material.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
-
-            auto& materialVBO = type->m_materialVBO;
-            materialVBO.m_defaultMaterial = material;
-            materialVBO.m_useDefaultMaterial = true;
-            materialVBO.m_forceDefaultMaterial = true;
-            materialVBO.setMaterials({ material });
-        }
-
-        auto& flags = type->m_flags;
-
-        flags.wireframe = true;
-        flags.renderBack = true;
-        flags.noShadow = true;
-        flags.noFrustum = false;
-        flags.noReflect = true;
-        flags.noRefract = true;
-        flags.noDisplay = true;
-        flags.noSelect = true;
-        flags.gbuffer = SHADER_VOLUME.starts_with("g_");
-
-        type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
-
-        auto node = new Node(type);
-        node->m_id = m_assets.cubeMapUUID;
-
-        //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
-        node->setScale(4.f);
-
-        // NOTE KI m_radius = 1.73205078
-        mesh->prepareVolume();
-
-        node->setVolume(mesh->getAABB().getVolume());
-
-        {
-            event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
-            evt.body.node.parentId = rootId;
-            m_dispatcher->send(evt);
         }
     }
 
@@ -868,7 +721,7 @@ namespace loader {
 
     void SceneLoader::loadMeta(
         const YAML::Node& doc,
-        MetaData& data)
+        MetaData& data) const
     {
         data.name = "<noname>";
         data.modelsDir = m_assets.modelsDir;
@@ -898,7 +751,7 @@ namespace loader {
 
     void SceneLoader::loadRoot(
         const YAML::Node& doc,
-        EntityData& root)
+        EntityData& root) const
     {
         auto& node = doc["root"];
         loadEntity(node, root);
@@ -921,7 +774,7 @@ namespace loader {
 
     void SceneLoader::loadEntity(
         const YAML::Node& node,
-        EntityData& data)
+        EntityData& data) const
     {
         loadEntityClone(node, data.base, data.clones, true);
     }
@@ -930,7 +783,7 @@ namespace loader {
         const YAML::Node& node,
         EntityCloneData& data,
         std::vector<EntityCloneData>& clones,
-        bool recurse)
+        bool recurse) const
     {
         bool hasClones = false;
 
@@ -1022,7 +875,7 @@ namespace loader {
                 data.materialName = readString(v);
             }
             else if (k == "material_modifier") {
-                loadMaterialModifiers(v, data);
+                m_materialLoader.loadMaterialModifiers(v, data.materialModifiers);
             }
             else if (k == "force_material") {
                 data.forceMaterial = readBool(v);
@@ -1120,15 +973,4 @@ namespace loader {
             }
         }
     }
-
-    void SceneLoader::loadMaterialModifiers(
-        const YAML::Node& node,
-        EntityCloneData& data)
-    {
-        data.materialModifiers.enabled = true;
-        data.materialModifiers.material.m_name = "<modifier>";
-
-        m_materialLoader.loadMaterial(node, data.materialModifiers);
-    }
-
 }

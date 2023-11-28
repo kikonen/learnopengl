@@ -28,7 +28,7 @@ namespace loader {
 
         void loadCustomMaterial(
             const YAML::Node& node,
-            CustomMaterialData& data);
+            CustomMaterialData& data) const;
 
         std::unique_ptr<CustomMaterial> createCustomMaterial(
             const CustomMaterialData& data,

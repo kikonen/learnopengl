@@ -33,7 +33,7 @@ namespace loader {
 
          void loadGenerator(
             const YAML::Node& node,
-            GeneratorData& data);
+            GeneratorData& data) const;
 
        std::unique_ptr<NodeGenerator> createGenerator(
             const GeneratorData& data,
