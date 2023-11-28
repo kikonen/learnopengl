@@ -483,6 +483,9 @@
     <ClCompile Include="src\loader\GeneratorLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\SpriteLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1089,6 +1092,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\GeneratorLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\SpriteLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

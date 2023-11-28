@@ -93,6 +93,7 @@ namespace loader {
         Context ctx)
         : BaseLoader(ctx),
         m_materialLoader(ctx),
+        m_spriteLoader(ctx),
         m_cameraLoader(ctx),
         m_lightLoader(ctx),
         m_controllerLoader(ctx),
@@ -126,29 +127,28 @@ namespace loader {
 
             loadSkybox(doc, m_skybox);
             m_materialLoader.loadMaterials(doc);
-            loadSprites(doc, m_sprites);
+            m_spriteLoader.loadSprites(doc);
 
             loadRoot(doc, m_root);
             loadEntities(doc, m_entities);
 
-            attach(m_skybox, m_root, m_entities, m_sprites);
+            attach(m_skybox, m_root, m_entities);
         });
     }
 
     void SceneLoader::attach(
         SkyboxData& skybox,
         const EntityData& root,
-        const std::vector<EntityData>& entities,
-        std::vector<Sprite>& sprites)
+        const std::vector<EntityData>& entities)
     {
         attachSkybox(root, skybox);
 
-        attachEntity(root, root, sprites);
+        attachEntity(root, root);
         attachVolume(root);
         attachCubeMapCenter(root);
 
         for (const auto& entity : entities) {
-            attachEntity(root, entity, sprites);
+            attachEntity(root, entity);
         }
     }
 
@@ -337,17 +337,16 @@ namespace loader {
 
     void SceneLoader::attachEntity(
         const EntityData& root,
-        const EntityData& data,
-        std::vector<Sprite>& sprites)
+        const EntityData& data)
     {
         if (!data.base.enabled) {
             return;
         }
 
-        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &root, &data, &sprites]() {
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &root, &data]() {
             if (data.clones.empty()) {
                 MeshType* type{ nullptr };
-                attachEntityClone(type, root, data, data.base, false, 0, sprites);
+                attachEntityClone(type, root, data, data.base, false, 0);
             }
             else {
                 MeshType* type{ nullptr };
@@ -355,7 +354,7 @@ namespace loader {
                 int cloneIndex = 0;
                 for (auto& cloneData : data.clones) {
                     if (!*m_ctx.m_alive) return;
-                    type = attachEntityClone(type, root, data, cloneData, true, cloneIndex, sprites);
+                    type = attachEntityClone(type, root, data, cloneData, true, cloneIndex);
                     if (!data.base.cloneMesh)
                         type = nullptr;
                     cloneIndex++;
@@ -370,8 +369,7 @@ namespace loader {
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
-        int cloneIndex,
-        std::vector<Sprite>& sprites)
+        int cloneIndex)
     {
         if (!*m_ctx.m_alive) return type;
 
@@ -400,8 +398,7 @@ namespace loader {
                         cloned,
                         cloneIndex,
                         tile,
-                        tilePositionOffset,
-                        sprites);
+                        tilePositionOffset);
 
                     if (!entity.base.cloneMesh)
                         type = nullptr;
@@ -420,8 +417,7 @@ namespace loader {
         bool cloned,
         int cloneIndex,
         const glm::uvec3& tile,
-        const glm::vec3& tilePositionOffset,
-        std::vector<Sprite>& sprites)
+        const glm::vec3& tilePositionOffset)
     {
         if (!*m_ctx.m_alive) return type;
 
@@ -434,8 +430,7 @@ namespace loader {
             type = createType(
                 entity.isRoot,
                 data,
-                tile,
-                sprites);
+                tile);
             if (!type) return type;
         }
 
@@ -497,8 +492,7 @@ namespace loader {
     MeshType* SceneLoader::createType(
         bool isRoot,
         const EntityCloneData& data,
-        const glm::uvec3& tile,
-        std::vector<Sprite>& sprites)
+        const glm::uvec3& tile)
     {
         auto type = m_registry->m_typeRegistry->getType(data.name);
         assignFlags(data, type);
@@ -521,7 +515,7 @@ namespace loader {
         } else
         {
             resolveMaterial(type, data);
-            resolveSprite(type, data, sprites);
+            resolveSprite(type, data);
             resolveMesh(type, data, tile);
 
             // NOTE KI container does not have mesh itself, but it can setup
@@ -663,13 +657,12 @@ namespace loader {
 
     void SceneLoader::resolveSprite(
         MeshType* type,
-        const EntityCloneData& data,
-        std::vector<Sprite>& sprites)
+        const EntityCloneData& data)
     {
         Sprite* sprite{ nullptr };
 
         if (!data.spriteName.empty()) {
-            sprite = Sprite::find(data.spriteName, sprites);
+            sprite = m_spriteLoader.find(data.spriteName);
         }
 
         if (sprite) {
@@ -1450,65 +1443,4 @@ namespace loader {
         }
     }
 
-    void SceneLoader::loadSprites(
-        const YAML::Node& doc,
-        std::vector<Sprite>& sprites)
-    {
-        for (const auto& entry : doc["sprites"]) {
-            Sprite& sprite = sprites.emplace_back();
-            loadSprite(entry, sprite);
-        }
-    }
-
-    void SceneLoader::loadSprite(
-        const YAML::Node& node,
-        Sprite& sprite)
-    {
-        for (const auto& pair : node) {
-            auto key = pair.first.as<std::string>();
-            const std::string k = util::toLower(key);
-            const YAML::Node& v = pair.second;
-
-            if (k == "name") {
-                sprite.m_name = readString(v);
-            }
-            else if (k == "shapes") {
-                loadShapes(v, sprite.m_shapes);
-            }
-        }
-    }
-
-    void SceneLoader::loadShapes(
-        const YAML::Node& node,
-        std::vector<Shape>& shapes)
-    {
-        for (const auto& entry : node) {
-            Shape& shape = shapes.emplace_back();
-            loadShape(entry, shape);
-        }
-    }
-
-    void SceneLoader::loadShape(
-        const YAML::Node& node,
-        Shape& shape)
-    {
-        for (const auto& pair : node) {
-            auto key = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-            const std::string k = util::toLower(key);
-
-            if (k == "rotation") {
-                shape.m_rotation = readFloat(v);
-            }
-            //else if (k == "material") {
-            //    loadMaterial(
-            //        v,
-            //        shape.m_materialFields,
-            //        shape.m_material);
-            //}
-            else {
-                reportUnknown("shape_entry", k, v);
-            }
-        }
-    }
 }

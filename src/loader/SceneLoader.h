@@ -14,6 +14,7 @@
 
 #include "BaseLoader.h"
 #include "MaterialLoader.h"
+#include "SpriteLoader.h"
 #include "CameraLoader.h"
 #include "LightLoader.h"
 #include "ControllerLoader.h"
@@ -22,9 +23,6 @@
 namespace physics {
     class Object;
 }
-
-class Sprite;
-struct Shape;
 
 class Registry;
 
@@ -210,8 +208,7 @@ namespace loader {
         void attach(
             SkyboxData& skybox,
             const EntityData& root,
-            const std::vector<EntityData>& entities,
-            std::vector<Sprite>& sprited);
+            const std::vector<EntityData>& entities);
 
         void attachSkybox(
             const EntityData& root,
@@ -225,8 +222,7 @@ namespace loader {
 
         void attachEntity(
             const EntityData& root,
-            const EntityData& data,
-            std::vector<Sprite>& sprites);
+            const EntityData& data);
 
         MeshType* attachEntityClone(
             MeshType* type,
@@ -234,8 +230,7 @@ namespace loader {
             const EntityData& entity,
             const EntityCloneData& data,
             bool cloned,
-            int cloneIndex,
-            std::vector<Sprite>& sprites);
+            int cloneIndex);
 
         MeshType* attachEntityCloneRepeat(
             MeshType* type,
@@ -245,8 +240,7 @@ namespace loader {
             bool cloned,
             int cloneIndex,
             const glm::uvec3& tile,
-            const glm::vec3& tilePositionOffset,
-            std::vector<Sprite>& sprites);
+            const glm::vec3& tilePositionOffset);
 
         void assignFlags(
             const EntityCloneData& data,
@@ -255,8 +249,7 @@ namespace loader {
         MeshType* createType(
             bool isRoot,
             const EntityCloneData& data,
-            const glm::uvec3& tile,
-            std::vector<Sprite>& sprites);
+            const glm::uvec3& tile);
 
         void resolveMaterial(
             MeshType* type,
@@ -264,8 +257,7 @@ namespace loader {
 
         void resolveSprite(
             MeshType* type,
-            const EntityCloneData& data,
-            std::vector<Sprite>& sprites);
+            const EntityCloneData& data);
 
         void resolveMesh(
             MeshType* type,
@@ -345,22 +337,6 @@ namespace loader {
             const YAML::Node& node,
             GeomData& data);
 
-        void loadSprites(
-            const YAML::Node& doc,
-            std::vector<Sprite>& sprites);
-
-        void loadSprite(
-            const YAML::Node& doc,
-            Sprite& sprites);
-
-        void loadShapes(
-            const YAML::Node& doc,
-            std::vector<Shape>& shapes);
-
-        void loadShape(
-            const YAML::Node& node,
-            Shape& shape);
-
     public:
 
     private:
@@ -369,9 +345,10 @@ namespace loader {
 
         EntityData m_root;
         std::vector<EntityData> m_entities;
-        std::vector<Sprite> m_sprites;
 
         MaterialLoader m_materialLoader;
+        SpriteLoader m_spriteLoader;
+
         CameraLoader m_cameraLoader;
         LightLoader m_lightLoader;
         ControllerLoader m_controllerLoader;
