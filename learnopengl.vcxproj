@@ -195,6 +195,7 @@
     <ClCompile Include="src\loader\CameraLoader.cpp" />
     <ClCompile Include="src\loader\Contet.cpp" />
     <ClCompile Include="src\loader\ControllerLoader.cpp" />
+    <ClCompile Include="src\loader\CustomMaterialLoader.cpp" />
     <ClCompile Include="src\loader\GeneratorLoader.cpp" />
     <ClCompile Include="src\loader\LightLoader.cpp" />
     <ClCompile Include="src\loader\MaterialLoader.cpp" />
@@ -360,6 +361,7 @@
     <ClInclude Include="src\loader\CameraLoader.h" />
     <ClInclude Include="src\loader\Context.h" />
     <ClInclude Include="src\loader\ControllerLoader.h" />
+    <ClInclude Include="src\loader\CustomMaterialLoader.h" />
     <ClInclude Include="src\loader\GeneratorLoader.h" />
     <ClInclude Include="src\loader\LightLoader.h" />
     <ClInclude Include="src\loader\MaterialLoader.h" />

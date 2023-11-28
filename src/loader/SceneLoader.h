@@ -8,12 +8,12 @@
 #include "ki/uuid.h"
 
 #include "asset/Shader.h"
-#include "asset/CustomMaterial.h"
 
 #include "registry/EntityType.h"
 
 #include "BaseLoader.h"
 #include "MaterialLoader.h"
+#include "CustomMaterialLoader.h"
 #include "SpriteLoader.h"
 #include "CameraLoader.h"
 #include "LightLoader.h"
@@ -52,19 +52,6 @@ namespace loader {
         bool const valid() {
             return !materialName.empty();
         }
-    };
-
-    enum class CustomMaterialType {
-        none,
-        text,
-        skybox,
-    };
-
-    struct CustomMaterialData {
-        CustomMaterialType type{ CustomMaterialType::none };
-
-        std::string fontName;
-        float fontSize;
     };
 
     enum class BodyType {
@@ -275,12 +262,6 @@ namespace loader {
             const glm::vec3& tilePositionOffset,
             const bool isRoot);
 
-        std::unique_ptr<CustomMaterial> createCustomMaterial(
-            const EntityCloneData& entity,
-            const CustomMaterialData& data,
-            const int cloneIndex,
-            const glm::uvec3& tile);
-
         std::unique_ptr<physics::Object> createPhysicsObject(
             const EntityCloneData& entity,
             const PhysicsData& data,
@@ -321,10 +302,6 @@ namespace loader {
             const YAML::Node& node,
             EntityCloneData& data);
 
-        void loadCustomMaterial(
-            const YAML::Node& node,
-            CustomMaterialData& data);
-
         void loadPhysics(
             const YAML::Node& node,
             PhysicsData& data);
@@ -347,6 +324,7 @@ namespace loader {
         std::vector<EntityData> m_entities;
 
         MaterialLoader m_materialLoader;
+        CustomMaterialLoader m_customMaterialLoader;
         SpriteLoader m_spriteLoader;
 
         CameraLoader m_cameraLoader;

@@ -93,6 +93,7 @@ namespace loader {
         Context ctx)
         : BaseLoader(ctx),
         m_materialLoader(ctx),
+        m_customMaterialLoader(ctx),
         m_spriteLoader(ctx),
         m_cameraLoader(ctx),
         m_lightLoader(ctx),
@@ -767,7 +768,8 @@ namespace loader {
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
         node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
 
-        type->setCustomMaterial(createCustomMaterial(data, data.customMaterial, cloneIndex, tile));
+        type->setCustomMaterial(
+            m_customMaterialLoader.createCustomMaterial(data.customMaterial, cloneIndex, tile));
 
         return node;
     }
@@ -916,27 +918,6 @@ namespace loader {
                 flags.enforceBounds = e->second;
             }
         }
-    }
-
-    std::unique_ptr<CustomMaterial> SceneLoader::createCustomMaterial(
-        const EntityCloneData& entity,
-        const CustomMaterialData& data,
-        const int cloneIndex,
-        const glm::uvec3& tile)
-    {
-        if (data.type == CustomMaterialType::none) return nullptr;
-
-        switch (data.type) {
-        case CustomMaterialType::text: {
-            auto material{ std::make_unique<TextMaterial>() };
-            material->m_fontName = data.fontName;
-            material->m_fontSize = data.fontSize;
-
-            return material;
-        }
-        }
-
-        return nullptr;
     }
 
     std::unique_ptr<physics::Object> SceneLoader::createPhysicsObject(
@@ -1215,7 +1196,7 @@ namespace loader {
                 m_lightLoader.loadLight(v, data.light);
             }
             else if (k == "custom_material") {
-                loadCustomMaterial(v, data.customMaterial);
+                m_customMaterialLoader.loadCustomMaterial(v, data.customMaterial);
             }
             else if (k == "physics") {
                 loadPhysics(v, data.physics);
@@ -1286,41 +1267,6 @@ namespace loader {
         data.materialModifiers.material.m_name = "<modifier>";
 
         m_materialLoader.loadMaterial(node, data.materialModifiers);
-    }
-
-    void SceneLoader::loadCustomMaterial(
-        const YAML::Node& node,
-        CustomMaterialData& data)
-    {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-
-            if (k == "type") {
-                std::string type = readString(v);
-                if (type == "none") {
-                    data.type = CustomMaterialType::none;
-                }
-                else if (type == "skybox") {
-                    data.type = CustomMaterialType::skybox;
-                }
-                else if (type == "text") {
-                    data.type = CustomMaterialType::text;
-                }
-                else {
-                    reportUnknown("custom_material_type", k, v);
-                }
-            }
-            else if (k == "font") {
-                data.fontName = readString(v);
-            }
-            else if (k == "font_size") {
-                data.fontSize = readFloat(v);
-            }
-            else {
-                reportUnknown("custom_material_entry", k, v);
-            }
-        }
     }
 
     void SceneLoader::loadPhysics(
