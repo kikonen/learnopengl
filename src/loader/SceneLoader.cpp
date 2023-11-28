@@ -1,13 +1,9 @@
 #include "SceneLoader.h"
 
-#include <sstream>
 #include <string>
 #include <vector>
-#include <algorithm>
 #include <fstream>
 #include <string>
-#include <filesystem>
-#include <regex>
 
 #include <fmt/format.h>
 
@@ -47,8 +43,6 @@
 #include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
-
-#include "scene/SkyboxMaterial.h"
 
 #include <engine/AsyncLoader.h>
 
