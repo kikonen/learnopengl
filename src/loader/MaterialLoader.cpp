@@ -3,7 +3,6 @@
 #include <filesystem>
 
 #include "ki/yaml.h"
-
 #include "util/Util.h"
 
 namespace {
@@ -87,10 +86,6 @@ namespace loader {
         : BaseLoader(ctx)
     {
         m_defaultMaterial = Material::createMaterial(BasicMaterial::basic);
-    }
-
-    MaterialLoader::~MaterialLoader()
-    {
     }
 
     void MaterialLoader::loadMaterials(

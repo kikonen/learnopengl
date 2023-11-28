@@ -33,11 +33,37 @@ namespace loader
     static const std::string MACRO_STEP_Y{ "Y" };
     static const std::string MACRO_STEP_Z{ "Z" };
 
+    struct Repeat {
+        int xCount{ 1 };
+        int yCount{ 1 };
+        int zCount{ 1 };
+
+        double xStep{ 0.f };
+        double yStep{ 0.f };
+        double zStep{ 0.f };
+    };
+
+    struct Tiling {
+        int tile_size{ 100 };
+        glm::uvec3 tiles{ 1 };
+        float height_scale{ 32 };
+        float horizontal_scale{ 1 };
+        glm::vec2 vertical_range{ 0, 32 };
+    };
+
     class BaseLoader
     {
     public:
         BaseLoader(
             Context ctx);
+
+        void loadRepeat(
+            const YAML::Node& node,
+            Repeat& data);
+
+        void loadTiling(
+            const YAML::Node& node,
+            Tiling& data);
 
         std::string readString(const YAML::Node& node) const;
         bool readBool(const YAML::Node& node) const;

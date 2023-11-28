@@ -21,8 +21,6 @@ namespace loader {
         MaterialLoader(
             Context ctx);
 
-        ~MaterialLoader();
-
         void loadMaterials(
             const YAML::Node& doc);
 

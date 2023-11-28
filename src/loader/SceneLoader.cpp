@@ -92,7 +92,11 @@ namespace loader {
     SceneLoader::SceneLoader(
         Context ctx)
         : BaseLoader(ctx),
-        m_materialLoader(ctx)
+        m_materialLoader(ctx),
+        m_cameraLoader(ctx),
+        m_lightLoader(ctx),
+        m_controllerLoader(ctx),
+        m_generatorLoader(ctx)
     {
     }
 
@@ -464,7 +468,7 @@ namespace loader {
 
         if (data.controller.enabled)
         {
-            auto* controller = createController(data, data.controller, node);
+            auto* controller = m_controllerLoader.createController(data.controller, node);
 
             event::Event evt { event::Type::controller_add };
             evt.body.control = {
@@ -766,17 +770,9 @@ namespace loader {
             node->setVolume(mesh->getAABB().getVolume());
         }
 
-        if (data.camera.enabled) {
-            node->m_camera = createCamera(data, data.camera);
-        }
-
-        if (data.light.enabled) {
-            node->m_light = createLight(data, data.light, cloneIndex, tile);
-        }
-
-        if (data.generator.enabled) {
-            node->m_generator = createGenerator(data, data.generator, node);
-        }
+        node->m_camera = m_cameraLoader.createCamera(data.camera);
+        node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
+        node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
 
         type->setCustomMaterial(createCustomMaterial(data, data.customMaterial, cloneIndex, tile));
 
@@ -929,67 +925,6 @@ namespace loader {
         }
     }
 
-    std::unique_ptr<Camera> SceneLoader::createCamera(
-        const EntityCloneData& entity,
-        const CameraData& data)
-    {
-        if (!data.enabled) return std::unique_ptr<Camera>();
-
-        // NOTE only node cameras in scenefile for now
-        auto camera = std::make_unique<Camera>();
-
-        if (data.orthagonal) {
-            camera->setViewport(data.viewport);
-        }
-        camera->setPosition(data.pos);
-        camera->setAxis(data.front, data.up);
-        camera->setRotation(data.rotation);
-        camera->setFov(data.fov);
-
-        camera->setEnabled(data.enabled);
-        camera->setDefault(data.isDefault);
-
-        return camera;
-    }
-
-    std::unique_ptr<Light> SceneLoader::createLight(
-        const EntityCloneData& entity,
-        const LightData& data,
-        const int cloneIndex,
-        const glm::uvec3& tile)
-    {
-        if (!data.enabled) return std::unique_ptr<Light>();
-
-        auto light = std::make_unique<Light>();
-
-        light->m_enabled = true;
-        light->setPosition(data.pos);
-        light->setTargetId(resolveUUID(data.targetIdBase, cloneIndex, tile));
-
-        light->linear = data.linear;
-        light->quadratic = data.quadratic;
-
-        light->cutoffAngle = data.cutoffAngle;
-        light->outerCutoffAngle = data.outerCutoffAngle;
-
-        light->diffuse = data.diffuse;
-        light->intensity = data.intensity;
-
-        switch (data.type) {
-        case LightType::directional:
-            light->m_directional = true;
-            break;
-        case LightType::point:
-            light->m_point = true;
-            break;
-        case LightType::spot:
-            light->m_spot = true;
-            break;
-        }
-
-        return light;
-    }
-
     std::unique_ptr<CustomMaterial> SceneLoader::createCustomMaterial(
         const EntityCloneData& entity,
         const CustomMaterialData& data,
@@ -1026,72 +961,6 @@ namespace loader {
         //    return material;
         //}
         //}
-
-        return nullptr;
-    }
-
-    NodeController* SceneLoader::createController(
-        const EntityCloneData& entity,
-        const ControllerData& data,
-        Node* node)
-    {
-        if (!data.enabled) return nullptr;
-
-        const auto& center = node->getPosition();
-
-        switch (data.type) {
-            case ControllerType::camera: {
-                auto* controller = new CameraController();
-                return controller;
-            }
-        }
-
-        return nullptr;
-    }
-
-    std::unique_ptr<NodeGenerator> SceneLoader::createGenerator(
-        const EntityCloneData& entity,
-        const GeneratorData& data,
-        Node* node)
-    {
-        if (!data.enabled) return nullptr;
-
-        const auto& center = node->getPosition();
-
-        switch (data.type) {
-        case GeneratorType::terrain: {
-            auto generator{ std::make_unique<TerrainGenerator>() };
-
-            auto& materialVBO = node->m_type->m_materialVBO;
-            const auto& tiling = data.tiling;
-
-            generator->m_modelsDir = m_meta.modelsDir;
-            generator->m_worldTileSize = tiling.tile_size;
-            generator->m_worldTilesU = tiling.tiles.x;
-            generator->m_worldTilesV = tiling.tiles.z;
-            generator->m_verticalRange = tiling.vertical_range;
-            generator->m_horizontalScale = tiling.horizontal_scale;
-            generator->m_material = materialVBO.m_defaultMaterial;
-
-            return generator;
-        }
-        case GeneratorType::asteroid_belt: {
-            auto generator{ std::make_unique<AsteroidBeltGenerator>(data.count) };
-            return generator;
-        }
-        case GeneratorType::grid: {
-            auto generator{ std::make_unique<GridGenerator>() };
-            generator->m_xCount = data.repeat.xCount;
-            generator->m_yCount = data.repeat.yCount;
-            generator->m_zCount = data.repeat.zCount;
-
-            generator->m_xStep = data.repeat.xStep;
-            generator->m_yStep = data.repeat.yStep;
-            generator->m_zStep = data.repeat.zStep;
-
-            return generator;
-        }
-        }
 
         return nullptr;
     }
@@ -1347,10 +1216,10 @@ namespace loader {
                 loadTiling(v, data.tiling);
             }
             else if (k == "camera") {
-                loadCamera(v, data.camera);
+                m_cameraLoader.loadCamera(v, data.camera);
             }
             else if (k == "light") {
-                loadLight(v, data.light);
+                m_lightLoader.loadLight(v, data.light);
             }
             else if (k == "custom_material") {
                 loadCustomMaterial(v, data.customMaterial);
@@ -1359,10 +1228,10 @@ namespace loader {
                 loadPhysics(v, data.physics);
             }
             else if (k == "controller") {
-                loadController(v, data.controller);
+                m_controllerLoader.loadController(v, data.controller);
             }
             else if (k == "generator") {
-                loadGenerator(v, data.generator);
+                m_generatorLoader.loadGenerator(v, data.generator);
             }
             else if (k == "instanced") {
                 data.instanced = readBool(v);
@@ -1424,170 +1293,6 @@ namespace loader {
         data.materialModifiers.material.m_name = "<modifier>";
 
         m_materialLoader.loadMaterial(node, data.materialModifiers);
-    }
-
-    void SceneLoader::loadRepeat(
-        const YAML::Node& node,
-        Repeat& data)
-    {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-
-            if (k == "x_count") {
-                data.xCount = readInt(v);
-            }
-            else if (k == "y_count") {
-                data.yCount = readInt(v);
-            }
-            else if (k == "z_count") {
-                data.zCount = readInt(v);
-            }
-            else if (k == "x_step") {
-                data.xStep = readFloat(v);
-            }
-            else if (k == "y_step") {
-                data.yStep = readFloat(v);
-            }
-            else if (k == "z_step") {
-                data.zStep = readFloat(v);
-            }
-            else {
-                reportUnknown("repeat_entry", k, v);
-            }
-        }
-    }
-
-    void SceneLoader::loadTiling(
-        const YAML::Node& node,
-        Tiling& data)
-    {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-
-            if (k == "tiles") {
-                data.tiles = readUVec3(v);
-            }
-            else if (k == "tile_size") {
-                data.tile_size = readInt(v);
-            }
-            else if (k == "height_scale") {
-                data.height_scale = readFloat(v);
-            }
-            else if (k == "vertical_range" || k == "vert_range") {
-                data.vertical_range = readVec2(v);
-            }
-            else if (k == "horizontal_scale" || k == "horiz_scale") {
-                data.horizontal_scale = readFloat(v);
-            }
-            else {
-                reportUnknown("tiling_entry", k, v);
-            }
-        }
-    }
-
-    void SceneLoader::loadCamera(const YAML::Node& node, CameraData& data)
-    {
-        data.fov = m_assets.cameraFov;
-
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-
-            if (k == "enabled") {
-                data.enabled = readBool(v);
-            }
-            else if (k == "default") {
-                data.isDefault = readBool(v);
-            }
-            else if (k == "fov") {
-                data.fov = readFloat(v);
-            }
-            else if (k == "front") {
-                data.front = readVec3(v);
-            }
-            else if (k == "up") {
-                data.up = readVec3(v);
-            }
-            else if (k == "pos") {
-                data.pos = readVec3(v);
-            }
-            else if (k == "rotation") {
-                data.rotation = readVec3(v);
-            }
-            else if (k == "orthagonal") {
-                data.orthagonal = readBool(v);
-            }
-            else if (k == "viewport") {
-                const auto& vec = readVec4(v);
-                data.viewport = { vec[0], vec[1], vec[2], vec[3] };
-            }
-            else {
-                reportUnknown("controller_entry", k, v);
-            }
-        }
-    }
-
-    void SceneLoader::loadLight(const YAML::Node& node, LightData& data)
-    {
-        // Default to center
-        data.targetIdBase = { ROOT_UUID };
-
-        // pos relative to owning node
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-
-            if (k == "enabled") {
-                data.enabled = readBool(v);
-            }
-            else if (k == "type") {
-                std::string type = readString(v);
-                if (type == "none") {
-                    data.type = LightType::none;
-                }
-                else if (type == "directional") {
-                    data.type = LightType::directional;
-                }
-                else if (type == "point") {
-                    data.type = LightType::point;
-                }
-                else if (type == "spot") {
-                    data.type = LightType::spot;
-                }
-                else {
-                    reportUnknown("light_type", k, v);
-                }
-            }
-            else if (k == "pos") {
-                data.pos = readVec3(v);
-            }
-            else if (k == "target_id") {
-                data.targetIdBase = readUUID(v);
-            }
-            else if (k == "linear") {
-                data.linear = readFloat(v);
-            }
-            else if (k == "quadratic") {
-                data.quadratic = readFloat(v);
-            }
-            else if (k == "cutoff_angle") {
-                data.cutoffAngle = readFloat(v);
-            }
-            else if (k == "outer_cutoff_angle") {
-                data.outerCutoffAngle = readFloat(v);
-            }
-            else if (k == "diffuse") {
-                data.diffuse = readRGB(v);
-            }
-            else if (k == "intensity") {
-                data.intensity = readFloat(v);
-            }
-            else {
-                reportUnknown("light_entry", k, v);
-            }
-        }
     }
 
     void SceneLoader::loadCustomMaterial(
@@ -1741,90 +1446,6 @@ namespace loader {
             }
             else {
                 reportUnknown("geom_entry", k, v);
-            }
-        }
-    }
-
-    void SceneLoader::loadController(const YAML::Node& node, ControllerData& data)
-    {
-        // pos relative to owning node
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-
-            if (k == "enabled") {
-                data.enabled = readBool(v);
-            }
-            else if (k == "type") {
-                std::string type = readString(v);
-                if (type == "none") {
-                    data.type = ControllerType::none;
-                }
-                else if (type == "camera") {
-                    data.type = ControllerType::camera;
-                }
-                else {
-                    reportUnknown("controller_type", k, v);
-                }
-            }
-            else if (k == "speed") {
-                data.speed = readFloat(v);
-            }
-            else if (k == "mode") {
-                data.mode = readInt(v);
-            }
-            else {
-                reportUnknown("controller_entry", k, v);
-            }
-        }
-    }
-
-    void SceneLoader::loadGenerator(
-        const YAML::Node& node,
-        GeneratorData& data)
-    {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-
-            if (k == "enabled") {
-                data.enabled = readBool(v);
-            }
-            else if (k == "type") {
-                std::string type = readString(v);
-                if (type == "none") {
-                    data.type = GeneratorType::none;
-                }
-                else if (type == "terrain") {
-                    data.type = GeneratorType::terrain;
-                }
-                else if (type == "grid") {
-                    data.type = GeneratorType::grid;
-                }
-                else if (type == "asteroid_belt") {
-                    data.type = GeneratorType::asteroid_belt;
-                }
-                else {
-                    reportUnknown("generator_type", k, v);
-                }
-            }
-            else if (k == "count") {
-                data.count = readInt(v);
-            }
-            else if (k == "radius") {
-                data.radius = readFloat(v);
-            }
-            else if (k == "mode") {
-                data.mode = readInt(v);
-            }
-            else if (k == "repeat") {
-                loadRepeat(v, data.repeat);
-            }
-            else if (k == "tiling") {
-                loadTiling(v, data.tiling);
-            }
-            else {
-                reportUnknown("generator_entry", k, v);
             }
         }
     }

@@ -37,6 +37,67 @@ namespace loader
     {
     }
 
+    void BaseLoader::loadTiling(
+        const YAML::Node& node,
+        Tiling& data)
+    {
+        for (const auto& pair : node) {
+            const std::string& k = pair.first.as<std::string>();
+            const YAML::Node& v = pair.second;
+
+            if (k == "tiles") {
+                data.tiles = readUVec3(v);
+            }
+            else if (k == "tile_size") {
+                data.tile_size = readInt(v);
+            }
+            else if (k == "height_scale") {
+                data.height_scale = readFloat(v);
+            }
+            else if (k == "vertical_range" || k == "vert_range") {
+                data.vertical_range = readVec2(v);
+            }
+            else if (k == "horizontal_scale" || k == "horiz_scale") {
+                data.horizontal_scale = readFloat(v);
+            }
+            else {
+                reportUnknown("tiling_entry", k, v);
+            }
+        }
+    }
+
+    void BaseLoader::loadRepeat(
+        const YAML::Node& node,
+        Repeat& data)
+    {
+        for (const auto& pair : node) {
+            const std::string& k = pair.first.as<std::string>();
+            const YAML::Node& v = pair.second;
+
+            if (k == "x_count") {
+                data.xCount = readInt(v);
+            }
+            else if (k == "y_count") {
+                data.yCount = readInt(v);
+            }
+            else if (k == "z_count") {
+                data.zCount = readInt(v);
+            }
+            else if (k == "x_step") {
+                data.xStep = readFloat(v);
+            }
+            else if (k == "y_step") {
+                data.yStep = readFloat(v);
+            }
+            else if (k == "z_step") {
+                data.zStep = readFloat(v);
+            }
+            else {
+                reportUnknown("repeat_entry", k, v);
+            }
+        }
+    }
+
     std::string BaseLoader::readString(const YAML::Node& node) const
     {
         return node.as<std::string>();

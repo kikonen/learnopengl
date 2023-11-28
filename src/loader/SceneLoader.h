@@ -14,6 +14,10 @@
 
 #include "BaseLoader.h"
 #include "MaterialLoader.h"
+#include "CameraLoader.h"
+#include "LightLoader.h"
+#include "ControllerLoader.h"
+#include "GeneratorLoader.h"
 
 namespace physics {
     class Object;
@@ -22,16 +26,10 @@ namespace physics {
 class Sprite;
 struct Shape;
 
-class Light;
-class Camera;
-
 class Registry;
 
 class MeshType;
 class Node;
-
-class NodeGenerator;
-class NodeController;
 
 
 namespace loader {
@@ -56,99 +54,6 @@ namespace loader {
         bool const valid() {
             return !materialName.empty();
         }
-    };
-
-    struct Repeat {
-        int xCount{ 1 };
-        int yCount{ 1 };
-        int zCount{ 1 };
-
-        double xStep{ 0.f };
-        double yStep{ 0.f };
-        double zStep{ 0.f };
-    };
-
-    struct Tiling {
-        int tile_size{ 100 };
-        glm::uvec3 tiles{ 1 };
-        float height_scale{ 32 };
-        float horizontal_scale{ 1 };
-        glm::vec2 vertical_range{ 0, 32 };
-    };
-
-    enum class ControllerType {
-        none,
-        camera,
-    };
-
-    struct ControllerData {
-        bool enabled{ false };
-        ControllerType type{ ControllerType::none };
-
-        int mode{ 0 };
-        float speed{ 0.f };
-    };
-
-    enum class GeneratorType {
-        none,
-        grid,
-        terrain,
-        asteroid_belt,
-    };
-
-    struct GeneratorData {
-        bool enabled{ false };
-        GeneratorType type{ GeneratorType::none };
-
-        int count{ 0 };
-        int mode{ 0 };
-        float radius{ 0.f };
-
-        Repeat repeat;
-        Tiling tiling;
-    };
-
-    struct CameraData {
-        bool enabled{ false };
-
-        bool isDefault{ false };
-
-        bool orthagonal{ false };
-        std::array<float, 4> viewport{ 0.f };
-
-        float fov{ 45.f };
-
-        glm::vec3 front{ 0.f, 0.f, -1.f };
-        glm::vec3 up{ 0.f, 1.f, 0.f };
-
-        // pos relative to owning node
-        glm::vec3 pos{ 0.f };
-        glm::vec3 rotation{ 0.f };
-    };
-
-    enum class LightType {
-        none,
-        directional,
-        point,
-        spot
-    };
-
-    struct LightData {
-        bool enabled{ false };
-        LightType type{ LightType::none };
-
-        glm::vec3 pos{ 0.f };
-
-        BaseUUID targetIdBase;
-
-        float linear{ 0.f };
-        float quadratic{ 0.f };
-
-        float cutoffAngle{ 0.f };
-        float outerCutoffAngle{ 0.f };
-
-        glm::vec3 diffuse{ 0.5f, 0.5f, 0.5f };
-        float intensity{ 1.f };
     };
 
     enum class CustomMaterialType {
@@ -378,16 +283,6 @@ namespace loader {
             const glm::vec3& tilePositionOffset,
             const bool isRoot);
 
-        std::unique_ptr<Camera> createCamera(
-            const EntityCloneData& entity,
-            const CameraData& data);
-
-        std::unique_ptr<Light> createLight(
-            const EntityCloneData& entity,
-            const LightData& data,
-            const int cloneIndex,
-            const glm::uvec3& tile);
-
         std::unique_ptr<CustomMaterial> createCustomMaterial(
             const EntityCloneData& entity,
             const CustomMaterialData& data,
@@ -399,16 +294,6 @@ namespace loader {
             const PhysicsData& data,
             const int cloneIndex,
             const glm::uvec3& tile);
-
-        NodeController* createController(
-            const EntityCloneData& entity,
-            const ControllerData& data,
-            Node* node);
-
-        std::unique_ptr<NodeGenerator> createGenerator(
-            const EntityCloneData& entity,
-            const GeneratorData& data,
-            Node* node);
 
         void loadMeta(
             const YAML::Node& node,
@@ -444,22 +329,6 @@ namespace loader {
             const YAML::Node& node,
             EntityCloneData& data);
 
-        void loadRepeat(
-            const YAML::Node& node,
-            Repeat& data);
-
-        void loadTiling(
-            const YAML::Node& node,
-            Tiling& data);
-
-        void loadCamera(
-            const YAML::Node& node,
-            CameraData& data);
-
-        void loadLight(
-            const YAML::Node& node,
-            LightData& data);
-
         void loadCustomMaterial(
             const YAML::Node& node,
             CustomMaterialData& data);
@@ -475,14 +344,6 @@ namespace loader {
         void loadGeom(
             const YAML::Node& node,
             GeomData& data);
-
-        void loadController(
-            const YAML::Node& node,
-            ControllerData& data);
-
-        void loadGenerator(
-            const YAML::Node& node,
-            GeneratorData& data);
 
         void loadSprites(
             const YAML::Node& doc,
@@ -511,5 +372,9 @@ namespace loader {
         std::vector<Sprite> m_sprites;
 
         MaterialLoader m_materialLoader;
+        CameraLoader m_cameraLoader;
+        LightLoader m_lightLoader;
+        ControllerLoader m_controllerLoader;
+        GeneratorLoader m_generatorLoader;
     };
 }
