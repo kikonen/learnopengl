@@ -86,6 +86,12 @@ entities:
     material_modifier:
       xreflection: 0.05
       metal: [0.2, 0.1, 0.0, 1.0]
+    physics:
+      body:
+        type: sphere
+        density: 0.01
+      geom:
+        type: sphere
     enabled: true
   - name: Gold ball
     parent_id: [auto, origo]
@@ -100,6 +106,12 @@ entities:
       xmap_pbr: textures\Planks 09 [8K]
       map_pbr: textures\Metal007_1K-PNG
       parallax_depth: 0.0
+    physics:
+      body:
+        type: sphere
+        density: 0.1
+      geom:
+        type: sphere
     enabled: true
   - name: Silver ball
     parent_id: [auto, origo]
@@ -118,6 +130,12 @@ entities:
       xreflection: 0.05
       map_pbr: textures\Fence007A_4K-JPG
       parallax_depth: 0.0
+    physics:
+      body:
+        type: sphere
+        density: 0.05
+      geom:
+        type: sphere
     enabled: true
   - name: Bronze ball
     parent_id: [auto, origo]
@@ -131,6 +149,12 @@ entities:
       xreflection: 0.05
       map_pbr: textures\Plastic 01 [4K]
       parallax_depth: 0.0
+    physics:
+      body:
+        type: sphere
+        density: 0.3
+      geom:
+        type: sphere
     enabled: true
   - name: Rusted iron ball
     parent_id: [auto, origo]
@@ -145,6 +169,12 @@ entities:
       map_pbr: textures\Metal022_1K-PNG
       tiling: 3
       parallax_depth: 0.0
+    physics:
+      body:
+        type: sphere
+        density: 0.07
+      geom:
+        type: sphere
     enabled: true
   - name: Old gold ball
     parent_id: [auto, origo]
@@ -157,11 +187,9 @@ entities:
     physics:
       body:
         type: sphere
-        size: 1
         density: 0.01
       geom:
         type: sphere
-        size: 1
     material_modifier:
       xreflection: 0.05
       map_pbr: textures\Metal008_1K-PNG
