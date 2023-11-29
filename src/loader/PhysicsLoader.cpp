@@ -17,13 +17,16 @@ namespace loader {
         const YAML::Node& node,
         PhysicsData& data) const
     {
+        bool explicitEnable = false;
+        bool useExplicitEnable = false;
+
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
             const YAML::Node& v = pair.second;
 
-            // NOTE KI physics needs body or gem
-            if (k == "space") {
-                data.space = readString(v);
+            if (k == "enabled") {
+                explicitEnable = readBool(v);
+                useExplicitEnable = true;
             }
             else if (k == "body") {
                 data.enabled = true;
@@ -37,11 +40,16 @@ namespace loader {
                 reportUnknown("physics_entry", k, v);
             }
         }
+
+        // NOTE KI physics needs body or gem
+        if (useExplicitEnable && data.enabled) {
+            data.enabled = explicitEnable;
+        }
     }
 
     void PhysicsLoader::loadBody(
         const YAML::Node& node,
-        BodyData& data) const
+        physics::Body& data) const
     {
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -50,13 +58,13 @@ namespace loader {
             if (k == "type") {
                 std::string type = readString(v);
                 if (type == "none") {
-                    data.type = BodyType::none;
+                    data.type = physics::BodyType::none;
                 }
                 else if (type == "sphere") {
-                    data.type = BodyType::sphere;
+                    data.type = physics::BodyType::sphere;
                 }
                 else if (type == "box") {
-                    data.type = BodyType::box;
+                    data.type = physics::BodyType::box;
                 }
                 else {
                     reportUnknown("body_type", k, v);
@@ -65,8 +73,8 @@ namespace loader {
             else if (k == "size") {
                 data.size = readVec3(v);
             }
-            else if (k == "mass") {
-                data.mass = readFloat(v);
+            else if (k == "density") {
+                data.density = readFloat(v);
             }
             else if (k == "linear_vel") {
                 data.linearVel = readVec3(v);
@@ -85,7 +93,7 @@ namespace loader {
 
     void PhysicsLoader::loadGeom(
         const YAML::Node& node,
-        GeomData& data) const
+        physics::Geom& data) const
     {
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -94,22 +102,22 @@ namespace loader {
             if (k == "type") {
                 std::string type = readString(v);
                 if (type == "none") {
-                    data.type = GeomType::none;
+                    data.type = physics::GeomType::none;
                 }
                 else if (type == "plane") {
-                    data.type = GeomType::plane;
+                    data.type = physics::GeomType::plane;
                 }
                 else if (type == "sphere") {
-                    data.type = GeomType::sphere;
+                    data.type = physics::GeomType::sphere;
                 }
                 else if (type == "box") {
-                    data.type = GeomType::box;
+                    data.type = physics::GeomType::box;
                 }
                 else if (type == "capsule") {
-                    data.type = GeomType::capsule;
+                    data.type = physics::GeomType::capsule;
                 }
                 else if (type == "cylinder") {
-                    data.type = GeomType::cylinder;
+                    data.type = physics::GeomType::cylinder;
                 }
                 else {
                     reportUnknown("geom_type", k, v);
@@ -133,22 +141,12 @@ namespace loader {
         }
     }
 
-    std::unique_ptr<physics::Object> PhysicsLoader::createPhysicsObject(
+    std::unique_ptr<physics::Object> PhysicsLoader::createObject(
         const PhysicsData& data,
-        const int cloneIndex,
-        const glm::uvec3& tile)
+        Node* node)
     {
-        //switch (data.type) {
-        //case CustomMaterialType::text: {
-        //    auto material{ std::make_unique<TextMaterial>() };
-        //    material->m_fontName = data.fontName;
-        //    material->m_fontSize = data.fontSize;
+        if (!data.enabled) return nullptr;
 
-        //    return material;
-        //}
-        //}
-
-        return nullptr;
+        return std::make_unique<physics::Object>(data.body, data.geom);
     }
-
 }

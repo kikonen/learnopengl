@@ -19,16 +19,15 @@ namespace loader {
 
         void loadBody(
             const YAML::Node& node,
-            BodyData& data) const;
+            physics::Body& data) const;
 
         void loadGeom(
             const YAML::Node& node,
-            GeomData& data) const;
+            physics::Geom& data) const;
 
-        std::unique_ptr<physics::Object> createPhysicsObject(
+        std::unique_ptr<physics::Object> createObject(
             const PhysicsData& data,
-            const int cloneIndex,
-            const glm::uvec3& tile);
+            Node* node);
 
     };
 }

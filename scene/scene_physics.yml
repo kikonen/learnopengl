@@ -158,7 +158,7 @@ entities:
       body:
         type: sphere
         size: 1
-        mass: 1
+        density: 0.01
       geom:
         type: sphere
         size: 1

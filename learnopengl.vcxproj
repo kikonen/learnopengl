@@ -207,6 +207,7 @@
     <ClCompile Include="src\loader\SkyboxLoader.cpp" />
     <ClCompile Include="src\loader\SpriteLoader.cpp" />
     <ClCompile Include="src\loader\VolumeLoader.cpp" />
+    <ClCompile Include="src\physics\Object.cpp" />
     <ClCompile Include="src\registry\SpriteRegistry.cpp" />
     <ClCompile Include="src\render\BrdfLutTexture.cpp" />
     <ClCompile Include="src\render\CubeRender.cpp" />

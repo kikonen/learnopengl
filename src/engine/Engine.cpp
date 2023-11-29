@@ -132,11 +132,11 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
     // NOTE KI moving avg of render time and fps
     constexpr int FPS_FRAMES = 3;
     int avgIndex = 0;
-    std::array<float, FPS_FRAMES> fpsSecs;
-    std::array<float, FPS_FRAMES> renderSecs;
+    std::array<float, FPS_FRAMES> fpsSecs{ 0.f };
+    std::array<float, FPS_FRAMES> renderSecs{ 0.f };
     for (int i = 0; i < FPS_FRAMES; i++) {
-        fpsSecs[i] = 0;
-        renderSecs[i] = 0;
+        fpsSecs[i] = 0.f;
+        renderSecs[i] = 0.f;
     }
 
     // render loop

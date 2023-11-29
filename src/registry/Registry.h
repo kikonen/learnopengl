@@ -59,6 +59,8 @@ private:
 
     ProgramRegistry m_programRegistryImpl;
 
+    physics::PhysicsEngine m_physicsEngineImpl;
+
     MaterialRegistry m_materialRegistryImpl;
     SpriteRegistry m_spriteRegistryImpl;
     MeshTypeRegistry m_typeRegistryImpl;
@@ -67,8 +69,6 @@ private:
     EntityRegistry m_entityRegistryImpl;
     ViewportRegistry m_viewportRegistryImpl;
     ControllerRegistry m_controllerRegistryImpl;
-
-    physics::PhysicsEngine m_physicsEngineImpl;
 
     event::Dispatcher m_dispatcherImpl;
 };

@@ -14,6 +14,8 @@
 
 #include "generator/NodeGenerator.h"
 
+#include "physics/Object.h"
+
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -111,6 +113,11 @@ void Node::update(
         for (auto& child : *children) {
             child->update(ctx);
         }
+    }
+
+    if (m_physics && !m_physicsInitialized) {
+        m_physicsInitialized = true;
+        m_physics->create(ctx.m_registry->m_physicsEngine, this);
     }
 }
 

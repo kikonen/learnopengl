@@ -599,6 +599,7 @@ namespace loader {
         node->m_camera = m_cameraLoader.createCamera(data.camera);
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
         node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
+        node->m_physics = m_physicsLoader.createObject(data.physics, node);
 
         type->setCustomMaterial(
             m_customMaterialLoader.createCustomMaterial(data.customMaterial, cloneIndex, tile));

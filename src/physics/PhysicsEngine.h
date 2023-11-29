@@ -1,10 +1,13 @@
 #pragma once
 
 #include <vector>
+#include <map>
 
 #include <ode/ode.h>
 
 #include "asset/Assets.h"
+
+#include "Object.h"
 
 class UpdateContext;
 
@@ -25,6 +28,8 @@ namespace physics {
         void prepare();
         void update(const UpdateContext& ctx);
 
+        void registerObject(Object* obj);
+
         Surface* registerSurface(std::unique_ptr<Surface> surface);
         float getWorldSurfaceLevel(const glm::vec3& pos);
 
@@ -41,14 +46,22 @@ namespace physics {
             Node& node,
             NodeInstance& instance);
 
+    public:
+        dWorldID m_worldId{ nullptr };
+        dSpaceID m_spaceId{ nullptr };
+        dJointGroupID m_contactgroupId{ nullptr };
+
+        std::map<dGeomID, Object*> m_objects;
+
     private:
         const Assets& m_assets;
 
         bool m_prepared{ false };
 
-        dWorldID m_world{ nullptr };
-        dSpaceID m_space{ nullptr };
-        dJointGroupID m_contactgroup{ nullptr };
+        glm::vec3 m_gravity{ 0, -9.81f, 0 };
+
+        float m_initialDelay{ 0.f };
+        float m_remainder{ 0.f };
 
         int m_staticPhysicsLevel{ -1 };
         int m_physicsLevel{ -1 };
