@@ -10,12 +10,16 @@ namespace physics {
 
     enum class BodyType {
         none,
-        sphere,
         box,
+        sphere,
+        capsule,
+        cylinder,
     };
 
     struct Body {
         BodyType type{ BodyType::none };
+
+        bool kinematic{ false };
 
         // NOTE KI *SCALED* using scale of node
         // size{0] == radius
@@ -36,8 +40,8 @@ namespace physics {
     enum class GeomType {
         none,
         plane,
-        sphere,
         box,
+        sphere,
         capsule,
         cylinder,
     };
@@ -58,26 +62,26 @@ namespace physics {
     struct Object {
     public:
         Object(
+            bool update,
             Body body,
             Geom geom)
-        : m_body(body),
-        m_geom(geom)
+        : m_update(update),
+            m_body(body),
+            m_geom(geom)
         {}
 
         ~Object();
 
-        void create(
+        inline bool ready() const { return m_geomId || m_bodyId; }
+
+        void prepare(
             PhysicsEngine* engine,
             Node* node);
 
-        void updateToPhysics(
-            PhysicsEngine* engine,
-            Node* node);
+        void updateToPhysics(bool force);
+        void updateFromPhysics();
 
-        void updateFromPhysics(
-            PhysicsEngine* engine,
-            Node* node);
-
+        bool m_update{ false };
         Body m_body;
         Geom m_geom;
 

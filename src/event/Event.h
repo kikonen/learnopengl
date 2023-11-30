@@ -26,6 +26,8 @@ namespace event {
         animate_wait,
         animate_move,
         animate_rotate,
+
+        scene_loaded,
     };
 
     struct NodeAction {

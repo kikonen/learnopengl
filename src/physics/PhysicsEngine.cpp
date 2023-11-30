@@ -110,6 +110,8 @@ namespace physics
 
     void PhysicsEngine::update(const UpdateContext& ctx)
     {
+        if (!m_enabled)  return;
+
         m_initialDelay += ctx.m_clock.elapsedSecs;
 
         if (m_initialDelay > 10) {
@@ -146,20 +148,9 @@ namespace physics
 
                 for (const auto& it : m_objects) {
                     Object* obj = it.second;
-                    if (!obj->m_bodyId) continue;
+                    if (!(obj->m_bodyId || obj->m_node)) continue;
 
-                    const dReal* pos = dBodyGetPosition(obj->m_bodyId);
-                    glm::vec3 p = { pos[0], pos[1], pos[2] };
-                    if (p.y < -40) {
-                        p.y = -40;
-                        dBodySetPosition(obj->m_bodyId, p[0], p[1], p[2]);
-                    }
-                    if (p.y > 40) {
-                        p.y = 40;
-                        dBodySetPosition(obj->m_bodyId, p[0], p[1], p[2]);
-                    }
-                    p -= obj->m_node->getParent()->getWorldPosition();
-                    obj->m_node->setPosition(p);
+                    obj->updateFromPhysics();
                 }
             }
         }

@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <mutex>
 
 #include "ki/uuid.h"
 
@@ -54,6 +55,8 @@ namespace loader {
         void load();
 
     private:
+        void loadedEntity(const EntityData& data);
+
         void attach(
             const RootData& root);
 
@@ -131,10 +134,14 @@ namespace loader {
             std::string_view name);
 
     private:
+        int m_pendingCount{ 0 };
+        std::mutex m_ready_lock{};
+
         MetaData m_meta;
         SkyboxData m_skybox;
 
         RootData m_root;
+
         std::vector<EntityData> m_entities;
 
         Material m_defaultMaterial;

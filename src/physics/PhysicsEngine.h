@@ -28,6 +28,14 @@ namespace physics {
         void prepare();
         void update(const UpdateContext& ctx);
 
+        inline bool isEnabled(bool enabled) const {
+            return m_enabled;
+        }
+
+        inline void setEnabled(bool enabled) {
+            m_enabled = enabled;
+        }
+
         void registerObject(Object* obj);
 
         Surface* registerSurface(std::unique_ptr<Surface> surface);
@@ -60,6 +68,7 @@ namespace physics {
 
         glm::vec3 m_gravity{ 0, -9.81f, 0 };
 
+        bool m_enabled{ false };
         float m_initialDelay{ 0.f };
         float m_remainder{ 0.f };
 

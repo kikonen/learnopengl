@@ -28,6 +28,9 @@ namespace loader {
                 explicitEnable = readBool(v);
                 useExplicitEnable = true;
             }
+            if (k == "update") {
+                data.update = readBool(v);
+            }
             else if (k == "body") {
                 data.enabled = true;
                 loadBody(v, data.body);
@@ -60,15 +63,24 @@ namespace loader {
                 if (type == "none") {
                     data.type = physics::BodyType::none;
                 }
+                else if (type == "box") {
+                    data.type = physics::BodyType::box;
+                }
                 else if (type == "sphere") {
                     data.type = physics::BodyType::sphere;
                 }
-                else if (type == "box") {
-                    data.type = physics::BodyType::box;
+                else if (type == "capsule") {
+                    data.type = physics::BodyType::capsule;
+                }
+                else if (type == "cylinder") {
+                    data.type = physics::BodyType::cylinder;
                 }
                 else {
                     reportUnknown("body_type", k, v);
                 }
+            }
+            else if (k == "kinematic") {
+                data.kinematic = readBool(v);
             }
             else if (k == "size") {
                 data.size = readVec3(v);
@@ -107,11 +119,11 @@ namespace loader {
                 else if (type == "plane") {
                     data.type = physics::GeomType::plane;
                 }
-                else if (type == "sphere") {
-                    data.type = physics::GeomType::sphere;
-                }
                 else if (type == "box") {
                     data.type = physics::GeomType::box;
+                }
+                else if (type == "sphere") {
+                    data.type = physics::GeomType::sphere;
                 }
                 else if (type == "capsule") {
                     data.type = physics::GeomType::capsule;
@@ -147,6 +159,6 @@ namespace loader {
     {
         if (!data.enabled) return nullptr;
 
-        return std::make_unique<physics::Object>(data.body, data.geom);
+        return std::make_unique<physics::Object>(data.update, data.body, data.geom);
     }
 }

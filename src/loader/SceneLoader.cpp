@@ -132,6 +132,18 @@ namespace loader {
         });
     }
 
+    void SceneLoader::loadedEntity(const EntityData& data)
+    {
+        std::lock_guard<std::mutex> lock(m_ready_lock);
+
+        if (--m_pendingCount > 0) return;
+
+        // NOTE KI event will be put queue *AFTER* entity attach events
+        // => should they should be fully attached in scene at this point
+        event::Event evt { event::Type::scene_loaded };
+        m_dispatcher->send(evt);
+    }
+
     void SceneLoader::attach(
         const RootData& root)
     {
@@ -141,6 +153,7 @@ namespace loader {
         m_volumeLoader.attachVolume(root.rootId);
         m_cubeMapLoader.attachCubeMap(root.rootId);
 
+        m_pendingCount = m_entities.size();
         for (const auto& entity : m_entities) {
             attachEntity(root.rootId, entity);
         }
@@ -171,6 +184,8 @@ namespace loader {
                     cloneIndex++;
                 }
             }
+
+            loadedEntity(data);
         });
     }
 

@@ -23,6 +23,8 @@
 
 #include "controller/NodeController.h"
 
+#include "physics/PhysicsEngine.h"
+
 #include "registry/Registry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
@@ -114,6 +116,12 @@ void Scene::prepare()
         event::Type::node_added,
         [this](const event::Event& e) {
             this->bindComponents(e.body.node.target);
+        });
+
+    m_registry->m_dispatcher->addListener(
+        event::Type::scene_loaded,
+        [this](const event::Event& e) {
+            this->m_registry->m_physicsEngine->setEnabled(true);
         });
 
     m_renderData->prepare();

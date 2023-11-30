@@ -6,6 +6,12 @@
 #include "model/Node.h"
 #include "PhysicsEngine.h"
 
+namespace {
+    constexpr int DIR_X = 1;
+    constexpr int DIR_Y = 2;
+    constexpr int DIR_Z = 3;
+}
+
 namespace physics
 {
     Object::~Object()
@@ -18,36 +24,63 @@ namespace physics
         }
     }
 
-    void Object::create(
+    void Object::prepare(
         PhysicsEngine* engine,
         Node* node)
     {
-        const auto& scale = node->getScale();
-        const float radius = scale.x * m_geom.size.x;
+        if (ready()) return;
+
+        const auto& sz = m_geom.size;
+        const float radius = sz.x;
+        const float length = sz.y;
 
         if (m_body.type != BodyType::none) {
             m_bodyId = dBodyCreate(engine->m_worldId);
 
-            const glm::vec3& p = node->getWorldPosition();
-            dBodySetPosition(m_bodyId, p[0], p[1], p[2]);
-
             switch (m_body.type) {
-            case BodyType::sphere:
+            case BodyType::box: {
+                dMassSetBox(&m_mass, m_body.density, sz.x, sz.y, sz.z);
+                break;
+            }
+            case BodyType::sphere: {
                 dMassSetSphere(&m_mass, m_body.density, radius);
                 break;
+            }
+            case BodyType::capsule: {
+                dMassSetCapsule(&m_mass, m_body.density, DIR_Z, radius, length);
+                break;
+            }
+            case BodyType::cylinder: {
+                dMassSetCylinder(&m_mass, m_body.density, DIR_Z, radius, length);
+                break;
+            }
             }
 
             dBodySetMass(m_bodyId, &m_mass);
         }
 
         switch (m_geom.type) {
+        case GeomType::plane: {
+            const auto& plane = m_geom.plane;
+            m_geomId = dCreatePlane(engine->m_spaceId, plane.x, plane.y, plane.z, plane.a);
+            break;
+        }
+        case GeomType::box: {
+            m_geomId = dCreateBox(engine->m_spaceId, sz.x, sz.y, sz.z);
+            break;
+        }
         case GeomType::sphere: {
             m_geomId = dCreateSphere(engine->m_spaceId, radius);
             break;
         }
-        case GeomType::plane: {
-            auto& p = m_geom.plane;
-            m_geomId = dCreatePlane(engine->m_spaceId, p.x, p.y, p.z, p.a);
+        case GeomType::capsule: {
+            m_geomId = dCreateCapsule(engine->m_spaceId, radius, length);
+            break;
+        }
+        case GeomType::cylinder: {
+            const float radius = m_geom.size.x;
+            const float length = m_geom.size.y;
+            m_geomId = dCreateCylinder(engine->m_spaceId, radius, length);
             break;
         }
         }
@@ -60,19 +93,75 @@ namespace physics
             m_node = node;
             engine->registerObject(this);
         }
+        updateToPhysics(true);
     }
 
-    void Object::updateToPhysics(
-        PhysicsEngine* engine,
-        Node* node)
+    void Object::updateToPhysics(bool force)
     {
-        // TODO KI update physics if explicit move of object
+        if (!(force || m_update)) return;
+
+        const glm::vec3& pos = m_node->getWorldPosition();
+
+        if (m_bodyId) {
+            dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
+            if (m_body.kinematic) {
+                dBodySetKinematic(m_bodyId);
+            }
+            else {
+                dBodySetDynamic(m_bodyId);
+            }
+        }
+
+        if (m_geomId) {
+            const auto& scale = m_node->getScale();
+
+            const auto& size = m_geom.size;
+            const auto& sz = scale * m_geom.size;
+            const float radius = sz.x;
+            const float length = sz.y;
+
+            switch (m_geom.type) {
+            case GeomType::plane: {
+                const auto& plane = m_geom.plane;
+                dGeomPlaneSetParams(m_geomId, plane.x, plane.y, plane.z, pos.y);
+                break;
+            }
+            case GeomType::box: {
+                dGeomBoxSetLengths(m_geomId, sz.x, sz.y, sz.z);
+                break;
+            }
+            case GeomType::sphere: {
+                dGeomSphereSetRadius(m_geomId, radius);
+                break;
+            }
+            case GeomType::capsule: {
+                dGeomCapsuleSetParams(m_geomId, radius, length);
+                break;
+            }
+            case GeomType::cylinder: {
+                dGeomCylinderSetParams(m_geomId, radius, length);
+                break;
+            }
+            }
+        }
     }
 
-    void Object::updateFromPhysics(
-        PhysicsEngine* engine,
-        Node* node)
+    void Object::updateFromPhysics()
     {
-        // TODO KI update node based into physics
+        if (!m_bodyId) return;
+
+        const dReal* dpos = dBodyGetPosition(m_bodyId);
+
+        glm::vec3 pos = { dpos[0], dpos[1], dpos[2] };
+        if (pos.y < -40) {
+            pos.y = -40;
+            dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
+        }
+        if (pos.y > 40) {
+            pos.y = 40;
+            dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
+        }
+        pos -= m_node->getParent()->getWorldPosition();
+        m_node->setPosition(pos);
     }
 }

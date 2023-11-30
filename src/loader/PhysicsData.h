@@ -10,6 +10,7 @@ namespace loader {
     struct PhysicsData {
         bool enabled{ false };
 
+        bool update{ false };
         physics::Body body;
         physics::Geom geom;
     };

@@ -115,9 +115,9 @@ void Node::update(
         }
     }
 
-    if (m_physics && !m_physicsInitialized) {
-        m_physicsInitialized = true;
-        m_physics->create(ctx.m_registry->m_physicsEngine, this);
+    if (m_physics) {
+        m_physics->prepare(ctx.m_registry->m_physicsEngine, this);
+        m_physics->updateToPhysics(false);
     }
 }
 

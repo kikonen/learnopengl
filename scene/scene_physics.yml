@@ -26,13 +26,25 @@ entities:
     enabled: true
   - name: Player
     type: origo
+    xmodel: water_ball
+    program: g_tex
     pos: [0, 25, 40]
+    scale: 0.25
     camera:
+      pos: [0, 1.2, 5.4]
       default: true
       enabled: true
     controller:
       type: camera
       enabled: true
+    xphysics:
+      update: true
+      body:
+        type: capsule
+        density: 0.1
+      geom:
+        type: capsule
+        size: [0.5, 1, 0]
     enabled: true
   - name: Directional light
     type: model
@@ -86,7 +98,7 @@ entities:
     material_modifier:
       xreflection: 0.05
       metal: [0.2, 0.1, 0.0, 1.0]
-    physics:
+    xphysics:
       body:
         type: sphere
         density: 0.01
@@ -106,7 +118,7 @@ entities:
       xmap_pbr: textures\Planks 09 [8K]
       map_pbr: textures\Metal007_1K-PNG
       parallax_depth: 0.0
-    physics:
+    xphysics:
       body:
         type: sphere
         density: 0.1
@@ -130,7 +142,7 @@ entities:
       xreflection: 0.05
       map_pbr: textures\Fence007A_4K-JPG
       parallax_depth: 0.0
-    physics:
+    xphysics:
       body:
         type: sphere
         density: 0.05
@@ -149,7 +161,7 @@ entities:
       xreflection: 0.05
       map_pbr: textures\Plastic 01 [4K]
       parallax_depth: 0.0
-    physics:
+    xphysics:
       body:
         type: sphere
         density: 0.3
@@ -169,7 +181,7 @@ entities:
       map_pbr: textures\Metal022_1K-PNG
       tiling: 3
       parallax_depth: 0.0
-    physics:
+    xphysics:
       body:
         type: sphere
         density: 0.07
@@ -186,10 +198,11 @@ entities:
     material: bronze_ball
     physics:
       body:
-        type: sphere
+        type: cylinder
         density: 0.01
       geom:
-        type: sphere
+        type: cylinder
+        size: [0.5, 1, 0]
     material_modifier:
       xreflection: 0.05
       map_pbr: textures\Metal008_1K-PNG
@@ -206,7 +219,7 @@ entities:
     physics:
       geom:
         type: plane
-        plane: [0, 1, 0, 20]
+        plane: [0, 1, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true
