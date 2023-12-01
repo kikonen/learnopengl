@@ -1,7 +1,7 @@
 #include "Object.h"
 
 #include <glm/glm.hpp>
-#include <glm/ext.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "model/Node.h"
 #include "PhysicsEngine.h"
@@ -57,6 +57,10 @@ namespace physics
             }
 
             dBodySetMass(m_bodyId, &m_mass);
+
+            const auto& q = m_body.quat;
+            dQuaternion quat{ q.w, q.x, q.y, q.z };
+            dBodySetQuaternion(m_bodyId, quat);
         }
 
         switch (m_geom.type) {

@@ -25,8 +25,8 @@ entities:
       kd: [0.0, 0.2, 0.8, 1.0]
     enabled: true
   - name: Player
-    type: origo
-    xmodel: water_ball
+    Xtype: origo
+    model: water_ball
     program: g_tex
     pos: [0, 25, 40]
     scale: 0.25
@@ -37,14 +37,13 @@ entities:
     controller:
       type: camera
       enabled: true
-    xphysics:
+    physics:
       update: true
       body:
-        type: capsule
+        type: sphere
         density: 0.1
       geom:
-        type: capsule
-        size: [0.5, 1, 0]
+        type: sphere
     enabled: true
   - name: Directional light
     type: model
@@ -198,11 +197,12 @@ entities:
     material: bronze_ball
     physics:
       body:
-        type: cylinder
+        type: capsule
         density: 0.01
+        quat: [1, 0, 0, 0]
       geom:
-        type: cylinder
-        size: [0.5, 1, 0]
+        type: capsule
+        size: [1, 2, 0]
     material_modifier:
       xreflection: 0.05
       map_pbr: textures\Metal008_1K-PNG

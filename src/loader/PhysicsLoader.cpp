@@ -54,6 +54,8 @@ namespace loader {
         const YAML::Node& node,
         physics::Body& data) const
     {
+        data.quat = glm::quat_identity<float, glm::packed_highp>();
+
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
             const YAML::Node& v = pair.second;
@@ -93,6 +95,9 @@ namespace loader {
             }
             else if (k == "angular_vel") {
                 data.angularVel = readVec3(v);
+            }
+            else if (k == "quat") {
+                data.quat = glm::quat(readVec4(v));
             }
             else if (k == "rotation") {
                 data.rotation = readVec3(v);
@@ -159,6 +164,9 @@ namespace loader {
     {
         if (!data.enabled) return nullptr;
 
-        return std::make_unique<physics::Object>(data.update, data.body, data.geom);
+        return std::make_unique<physics::Object>(
+            data.update,
+            data.body,
+            data.geom);
     }
 }

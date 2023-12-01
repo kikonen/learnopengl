@@ -1,6 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 #include <ode/ode.h>
 
 class Node;
@@ -33,7 +35,8 @@ namespace physics {
 
         // NOTE KI *ROTATED* using rotation of node
         // axis + angle
-        //glm::vec4 quat{ 0.f };
+        glm::quat quat;
+
         glm::vec3 rotation{ 0.f };
     };
 
