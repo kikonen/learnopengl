@@ -134,7 +134,7 @@ namespace loader {
             std::string_view name);
 
     private:
-        int m_pendingCount{ 0 };
+        size_t m_pendingCount{ 0 };
         std::mutex m_ready_lock{};
 
         MetaData m_meta;

@@ -86,7 +86,7 @@ namespace physics {
             }
         }
 
-        return total / 9.0;
+        return total / 9.0f;
     }
 
     float HeightMap::getLevel(const glm::vec3& pos)

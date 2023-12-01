@@ -94,7 +94,7 @@ void AsteroidBeltGenerator::createAsteroids(
 
         auto& asteroid = m_instances.emplace_back();
 
-        asteroid.m_entityIndex = m_reservedFirst + i;
+        asteroid.m_entityIndex = static_cast<int>(m_reservedFirst + i);
 
         asteroid.setMaterialIndex(container.m_type->getMaterialIndex());
         asteroid.setVolume(volume);
@@ -115,7 +115,7 @@ void AsteroidBeltGenerator::initAsteroids(
     Node& container)
 {
     // initialize random seed
-    srand(glfwGetTime());
+    srand(static_cast<unsigned int>(glfwGetTime()));
 
     const size_t count = m_instances.size();
 

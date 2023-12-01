@@ -73,7 +73,8 @@ int MeshType::resolveMaterialIndex() const
         // NOTE KI *NO* indeces if single material
         return materialVBO.getFirst().m_registeredIndex;
     }
-    return -materialVBO.m_bufferIndex;
+    // NOTE KI special trick; -1 to indicate "multi material" index
+    return -static_cast<int>(materialVBO.m_bufferIndex);
 }
 
 void MeshType::prepare(

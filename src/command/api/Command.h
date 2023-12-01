@@ -4,6 +4,8 @@
 
 #include <string>
 
+typedef unsigned int t_command_id;
+
 class UpdateContext;
 class CommandEngine;
 

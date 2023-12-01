@@ -364,6 +364,7 @@
     <ClInclude Include="src\kigl\GLFence.h" />
     <ClInclude Include="src\kigl\GLStencilMode.h" />
     <ClInclude Include="src\kigl\kigl.h" />
+    <ClInclude Include="src\ki\size.h" />
     <ClInclude Include="src\ki\yaml.h" />
     <ClInclude Include="src\loader\BaseData.h" />
     <ClInclude Include="src\loader\BaseLoader.h" />

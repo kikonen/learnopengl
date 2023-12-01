@@ -113,7 +113,7 @@ Assets::Assets()
     mirrorRenderFrameStart = 0;
     mirrorRenderFrameStep = 2;
 
-    mirrorMapNearPlane = 0.1;
+    mirrorMapNearPlane = 0.1f;
     mirrorMapFarPlane = 1000;
 
     waterMapEnabled = true;
@@ -123,7 +123,7 @@ Assets::Assets()
     waterRenderFrameStart = 0;
     waterRenderFrameStep = 2;
 
-    waterMapNearPlane = 0.1;
+    waterMapNearPlane = 0.1f;
     waterMapFarPlane = 1000;
 
     terrainGridSize = 32;
@@ -178,8 +178,8 @@ Assets::Assets()
     viewportEffectEnabled = false;
     viewportEffect = ViewportEffect::none;
 
-    hdrGamma = 2.2;
-    hdrExposure = 1.0;
+    hdrGamma = 2.2f;
+    hdrExposure = 1.0f;
 
     effectBloomEnabled = true;
     effectBloomExposure = 1.0f;

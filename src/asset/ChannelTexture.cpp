@@ -164,7 +164,7 @@ void ChannelTexture::prepare(
     glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
     glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
 
-    const int mipMapLevels = log2(std::max(m_width, m_height));
+    const int mipMapLevels = static_cast<int>(log2(std::max(m_width, m_height)));
     glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, m_width, m_height);
     glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, m_format, m_pixelFormat, m_data);
     glGenerateTextureMipmap(m_textureID);
@@ -206,7 +206,7 @@ void ChannelTexture::load()
     if (!m_valid) return;
 
     const int dstPixelBytes = m_is16Bbit ? 2 : 1;
-    const int dstRGBA = (int)m_sourceTextures.size();
+    const int dstRGBA = static_cast<int>(m_sourceTextures.size());
 
     const int bufferSize = w * dstPixelBytes * h * dstRGBA;
 

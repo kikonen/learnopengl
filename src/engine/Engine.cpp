@@ -152,7 +152,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             elapsedDuration = loopTime - prevLoopTime;
 
             clock.frameCount += 1;
-            clock.ts = glfwGetTime();
+            clock.ts = static_cast<float>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
             // input

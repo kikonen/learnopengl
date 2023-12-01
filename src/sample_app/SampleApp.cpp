@@ -103,7 +103,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
     if (!cameraNode) return 0;
 
 
-    glm::vec2 size = window->getSize();
+    const glm::uvec2& size = window->getSize();
 
     RenderContext ctx(
         "TOP",

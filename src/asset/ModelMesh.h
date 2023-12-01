@@ -62,7 +62,7 @@ public:
     bool m_valid = false;
 
 protected:
-    size_t m_triCount = 0;
+    ki::uint m_triCount = 0;
     std::vector<glm::uvec3> m_tris;
     std::vector<Vertex> m_vertices;
     std::vector<Material> m_materials;

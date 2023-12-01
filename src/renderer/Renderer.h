@@ -53,9 +53,9 @@ protected:
     int m_renderFrameStart = 0;
     int m_renderFrameStep = 0;
 
-    double m_elapsedSecs = -1;
+    float m_elapsedSecs = -1;
 
-    double m_lastHitTime = 0.f;
+    float m_lastHitTime = 0.f;
     unsigned long m_lastHitFrame = 0;
 
     bool m_rendered = false;

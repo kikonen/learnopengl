@@ -21,8 +21,8 @@ namespace {
     //VERTEX_COUNT = 1906 - <MODEL: 5, mesh = / light>
     //
 
-    constexpr float DOT_NORMAL_SAME = 0.9;
-    constexpr float DOT_TANGENT_SAME = 0.5;
+    constexpr float DOT_NORMAL_SAME = 0.9f;
+    constexpr float DOT_TANGENT_SAME = 0.5f;
 }
 
 bool Vertex::operator==(const Vertex& b) const noexcept

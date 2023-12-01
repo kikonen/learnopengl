@@ -6,6 +6,7 @@
 
 #include <glm/vec3.hpp>
 
+#include "ki/size.h"
 #include "ki/uuid.h"
 
 

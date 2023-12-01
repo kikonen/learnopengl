@@ -33,7 +33,7 @@ struct GLBufferRange {
         return m_entrySize * m_usedCount;
     }
 
-    inline size_t getLengthFor(int count) const {
+    inline size_t getLengthFor(size_t count) const {
         return m_entrySize * count;
     }
 

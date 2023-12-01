@@ -6,6 +6,8 @@
 
 #include <glm/glm.hpp>
 
+#include "ki/size.h"
+
 #include "util/Log.h"
 
 #ifdef _DEBUG

@@ -14,8 +14,8 @@ public:
 
     int getObjectId(
         const RenderContext& ctx,
-        double screenPosX,
-        double screenPosY,
+        float screenPosX,
+        float screenPosY,
         Viewport* mainViewport);
 
     virtual void prepare(

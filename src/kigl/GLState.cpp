@@ -172,7 +172,8 @@ bool GLState::setViewport(const glm::vec4& viewport)
 {
     if (m_viewport != viewport) {
         m_viewport = viewport;
-        glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+        glm::uvec4 vp{ viewport };
+        glViewport(vp[0], vp[1], vp[2], vp[3]);
         return true;
     }
     return false;

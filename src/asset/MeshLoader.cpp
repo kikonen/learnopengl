@@ -305,7 +305,7 @@ unsigned int MeshLoader::resolveVertexIndex(
         }
     }
 
-    size_t index = vertices.size();
+    unsigned int index = static_cast<unsigned int>(vertices.size());
     {
         auto& mappedIndeces = vertexMapping[pos];
         mappedIndeces.push_back(index);
@@ -400,7 +400,7 @@ void MeshLoader::createTangents(
 
         tangents.push_back(nt);
 
-        tangenti[i] = tangents.size() - 1;
+        tangenti[i] = static_cast<glm::uint>(tangents.size()) - 1;
 
         lastNI = ni[i];
         lastTI = tangenti[i];

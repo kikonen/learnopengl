@@ -143,7 +143,9 @@ void Window::bindGLFWCallbacks()
     glfwSetCursorPosCallback(
         m_glfwWindow,
         [](GLFWwindow* gw, double xpos, double ypos) {
-            static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseMove(xpos, ypos);
+            static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseMove(
+                static_cast<float>(xpos),
+                static_cast<float>(ypos));
         });
 
     glfwSetMouseButtonCallback(
@@ -155,7 +157,9 @@ void Window::bindGLFWCallbacks()
     glfwSetScrollCallback(
         m_glfwWindow,
         [](GLFWwindow* gw, double xoffset, double yoffset) {
-            static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseWheel(xoffset, yoffset);
+            static_cast<Window*>(glfwGetWindowUserPointer(gw))->onMouseWheel(
+                static_cast<float>(xoffset),
+                static_cast<float>(yoffset));
         });
 }
 
@@ -185,7 +189,7 @@ void Window::onWindowResize(int width, int height)
     m_state.clear();
 }
 
-void Window::onMouseMove(double xpos, double ypos)
+void Window::onMouseMove(float xpos, float ypos)
 {
     m_input->onMouseMove(xpos, ypos);
 
@@ -210,7 +214,7 @@ void Window::onMouseButton(int button, int action, int modifiers)
     m_input->onMouseButton(button, action, modifiers);
 }
 
-void Window::onMouseWheel(double xoffset, double yoffset)
+void Window::onMouseWheel(float xoffset, float yoffset)
 {
     auto* controller = m_engine.m_currentScene->getActiveCameraController();
     if (controller) {

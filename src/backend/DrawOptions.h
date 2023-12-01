@@ -35,8 +35,8 @@ namespace backend {
         GLsizei indexCount = 0;
         GLsizei indexFirst = 0;
 
-        int vertexOffset = 0;
-        int indexOffset = 0;
+        ki::uint vertexOffset = 0;
+        ki::uint indexOffset = 0;
 
         inline bool isSameDrawCommand(
             const DrawOptions& b,

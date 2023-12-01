@@ -102,7 +102,7 @@ bool Input::isModifierPressed(Modifier modifier)
     return m_modifierPressed[modifier];
 }
 
-void Input::onMouseMove(double xpos, double ypos)
+void Input::onMouseMove(float xpos, float ypos)
 {
     if (m_firstMouse) {
         mouseX = xpos;

@@ -9,9 +9,9 @@ namespace loader
         int yCount{ 1 };
         int zCount{ 1 };
 
-        double xStep{ 0.f };
-        double yStep{ 0.f };
-        double zStep{ 0.f };
+        float xStep{ 0.f };
+        float yStep{ 0.f };
+        float zStep{ 0.f };
     };
 
     struct Tiling {

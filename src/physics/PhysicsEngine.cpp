@@ -18,7 +18,7 @@
 #include "Surface.h"
 
 namespace {
-    constexpr float STEP_SIZE = 0.01;
+    constexpr float STEP_SIZE = 0.01f;
 
     constexpr int MAX_CONTACTS = 10;
     constexpr int CONTACT_GROUP_ID = 0;
@@ -116,7 +116,7 @@ namespace physics
 
         if (m_initialDelay > 10) {
             const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
-            const long n = dtTotal / STEP_SIZE;
+            const int n = static_cast<int>(dtTotal / STEP_SIZE);
             m_remainder = dtTotal - n * STEP_SIZE;
 
             if (n > 0) {

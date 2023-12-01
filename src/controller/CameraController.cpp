@@ -126,7 +126,7 @@ void CameraController::onKey(Input* input, const ki::RenderClock& clock)
     }
 }
 
-void CameraController::onMouseMove(Input* input, double xoffset, double yoffset)
+void CameraController::onMouseMove(Input* input, float xoffset, float yoffset)
 {
     if (!m_node) return;
 
@@ -138,7 +138,7 @@ void CameraController::onMouseMove(Input* input, double xoffset, double yoffset)
     if (xoffset != 0) {
         auto yaw = rotation.y - m_cameraMouseSensitivity.x * xoffset;
 
-        rotation.y = yaw;
+        rotation.y = static_cast<float>(yaw);
         changed = true;
     }
 
@@ -152,7 +152,7 @@ void CameraController::onMouseMove(Input* input, double xoffset, double yoffset)
             pitch = MAX_ANGLE;
         }
 
-        rotation.x = pitch;
+        rotation.x = static_cast<float>(pitch);
         changed = true;
     }
 
@@ -161,12 +161,12 @@ void CameraController::onMouseMove(Input* input, double xoffset, double yoffset)
     }
 }
 
-void CameraController::onMouseScroll(Input* input, double xoffset, double yoffset)
+void CameraController::onMouseScroll(Input* input, float xoffset, float yoffset)
 {
     if (!m_node) return;
     auto* camera = m_node->m_camera.get();
 
     auto adjustment = m_cameraMouseSensitivity.z * yoffset;
 
-    camera->adjustFov(-adjustment);
+    camera->adjustFov(static_cast<float>(-adjustment));
 }

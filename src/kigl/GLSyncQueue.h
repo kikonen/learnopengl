@@ -197,13 +197,13 @@ public:
         return m_ranges[m_current];
     }
 
-    inline void bind(GLuint ubo, bool used, int count) {
+    inline void bind(GLuint ubo, bool used, size_t count) {
         auto& range = m_ranges[m_current];
         count = used ? range.m_usedCount : count;
         m_buffer.bindRange(ubo, range.m_baseOffset, range.getLengthFor(count));
     }
 
-    inline void bindSSBO(GLuint ssbo, bool used, int count) {
+    inline void bindSSBO(GLuint ssbo, bool used, size_t count) {
         auto& range = m_ranges[m_current];
         count = used ? range.m_usedCount : count;
         m_buffer.bindSSBORange(ssbo, range.m_baseOffset, range.getLengthFor(count));

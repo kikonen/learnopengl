@@ -119,7 +119,7 @@ namespace backend {
     {
         const auto& cmdRange = m_commands->current();
         const auto& drawRange = m_drawRanges[cmdRange.m_index];
-        const size_t drawCount = cmdRange.m_usedCount;
+        const int drawCount = static_cast<int>(cmdRange.m_usedCount);
 
         if (drawCount == 0) return;
 
@@ -136,9 +136,9 @@ namespace backend {
         const size_t paramsOffset = cmdRange.m_index * PARAMS_SZ;
         if (m_frustumGPU) {
             gl::DrawIndirectParameters params{
-                (GLuint)cmdRange.m_baseIndex,
-                util::as_integer(drawRange.m_drawOptions->type),
-                (GLuint)drawCount
+                static_cast<GLuint>(cmdRange.m_baseIndex),
+                static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions->type)),
+                static_cast<GLuint>(drawCount)
             };
 
             auto* data = (gl::DrawIndirectParameters*)m_drawParameters.m_data;
@@ -153,7 +153,7 @@ namespace backend {
         if (m_frustumGPU) {
             m_cullingCompute->bind(*drawRange.m_state);
 
-            m_cullingCompute->u_drawParametersIndex->set(cmdRange.m_index);
+            m_cullingCompute->u_drawParametersIndex->set(static_cast<GLuint>(cmdRange.m_index));
 
             const int maxX = m_computeGroups[0];
             int groupX = drawCount;

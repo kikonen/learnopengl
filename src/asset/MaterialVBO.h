@@ -30,7 +30,7 @@ public:
     bool m_forceDefaultMaterial = false;
 
     //GLBuffer* m_buffer{ nullptr };
-    int m_bufferIndex = 0;
+    size_t m_bufferIndex = 0;
 
     std::vector<Material> m_materials;
     std::vector<GLuint> m_indeces;

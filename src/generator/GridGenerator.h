@@ -33,7 +33,7 @@ public:
     int m_yCount{ 1 };
     int m_zCount{ 1 };
 
-    double m_xStep{ 0 };
-    double m_yStep{ 0 };
-    double m_zStep{ 0 };
+    float m_xStep{ 0 };
+    float m_yStep{ 0 };
+    float m_zStep{ 0 };
 };
