@@ -78,7 +78,7 @@ bool Input::isKeyDown(Key key)
             if (glfwGetKey(window->m_glfwWindow, *code) == GLFW_PRESS) {
                 return true;
             }
-            *code++;
+            code++;
         }
     }
     return false;
@@ -91,7 +91,7 @@ bool Input::isModifierDown(Modifier modifier) {
             if (glfwGetKey(window->m_glfwWindow, *code) == GLFW_PRESS) {
                 return true;
             }
-            *code++;
+            code++;
         }
     }
     return false;

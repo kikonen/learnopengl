@@ -86,7 +86,7 @@ Assets::Assets()
     useDebugColor = false;
 
     frustumEnabled = true;
-    frustumCPU = false;
+    frustumGPU = false;
     frustumCPU = true;
     frustumAny = frustumEnabled && (frustumCPU || frustumGPU);
 

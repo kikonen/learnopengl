@@ -38,5 +38,5 @@ public:
 
     GLTextureHandle m_cubeTexture;
 
-    GLuint m_hdriTextureID;
+    GLuint m_hdriTextureID{ 0 };
 };

@@ -15,5 +15,5 @@ public:
     void setTarget(int targetID);
 
 private:
-    int m_targetID;
+    int m_targetID{ 0 };
 };

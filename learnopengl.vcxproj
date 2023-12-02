@@ -351,7 +351,6 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Group.h" />
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\BufferInfoUBO.h" />
     <ClInclude Include="src\asset\ChannelTexture.h" />

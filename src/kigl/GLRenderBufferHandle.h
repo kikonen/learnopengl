@@ -26,7 +26,7 @@ public:
         handle.m_rbo = 0;
     }
 
-    GLRenderBufferHandle& operator=(GLRenderBufferHandle&& handle)
+    GLRenderBufferHandle& operator=(GLRenderBufferHandle&& handle) noexcept
     {
         m_rbo = handle.m_rbo;
         handle.m_rbo = 0;

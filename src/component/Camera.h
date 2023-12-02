@@ -150,7 +150,7 @@ private:
 private:
     bool m_orthagonal{ false };
     // left, right, bottom, top
-    std::array<float, 4> m_viewport;
+    std::array<float, 4> m_viewport{ 0.f };
 
     bool m_enabled = false;
     bool m_default = false;

@@ -63,7 +63,9 @@ public:
                 m_rangeCount * m_paddedRangeLength,
                 GL_DYNAMIC_STORAGE_BIT);
             m_data = (unsigned char*)malloc(m_rangeCount * m_paddedRangeLength);
-            memset(m_data, 0, m_rangeCount * m_paddedRangeLength);
+            if (m_data) {
+                memset(m_data, 0, m_rangeCount * m_paddedRangeLength);
+            }
         }
 
         m_ranges.reserve(m_rangeCount);

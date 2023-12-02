@@ -52,7 +52,7 @@ private:
 private:
     const Assets& m_assets;
 
-    CommandEngine* m_commandEngine;
+    CommandEngine* m_commandEngine{ nullptr };
 
     sol::state m_lua;
     sol::table m_luaNodes;

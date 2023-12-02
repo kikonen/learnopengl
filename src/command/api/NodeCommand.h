@@ -21,5 +21,5 @@ public:
     const int m_objectID;
     const bool m_relative;
 
-    Node* m_node;
+    Node* m_node{ nullptr };
 };

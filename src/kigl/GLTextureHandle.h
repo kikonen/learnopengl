@@ -20,7 +20,7 @@ public:
         handle.m_textureID = 0;
     }
 
-    GLTextureHandle& operator=(GLTextureHandle&& handle)
+    GLTextureHandle& operator=(GLTextureHandle&& handle) noexcept
     {
         m_textureID = handle.m_textureID;
         handle.m_textureID = 0;

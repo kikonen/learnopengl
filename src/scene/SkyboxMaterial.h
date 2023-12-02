@@ -73,7 +73,7 @@ public:
     //basePath + "/back.jpg"
     std::array<std::string, 6> m_faces;
     bool m_swapFaces{ false };
-    bool m_hdri;
+    bool m_hdri{ false };
 
 private:
     CubeMap m_cubeMap{ false };
