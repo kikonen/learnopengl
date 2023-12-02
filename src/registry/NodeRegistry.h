@@ -127,6 +127,8 @@ public:
     inline Node* getActiveNode() const noexcept { return m_activeNode; }
     inline Node* getActiveCamera2() const noexcept { return m_activeCamera; }
 
+    Node* getNextCamera(Node* srcNode, int offset) const noexcept;
+
     Node* findDefaultCamera() const;
 
     inline const Material& getSelectionMaterial() const noexcept {

@@ -6,6 +6,11 @@
 
 #include "component/Camera.h"
 
+#include "event/Dispatcher.h"
+
+#include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
+
 
 CameraZoomController::CameraZoomController()
 {
@@ -17,6 +22,8 @@ void CameraZoomController::prepare(
     Node& node)
 {
     if (!node.m_camera) return;
+
+    m_registry = registry;
 
     m_node = &node;
 
@@ -37,16 +44,43 @@ void CameraZoomController::onKey(Input* input, const ki::RenderClock& clock)
 {
     if (!m_node) return;
     auto* camera = m_node->m_camera.get();
-
     const float dt = clock.elapsedSecs;
 
     glm::vec3 zoomSpeed{ m_cameraZoomNormal };
 
-    if (input->isModifierDown(Modifier::SHIFT)) {
-        zoomSpeed = m_cameraZoomRun;
-    }
 
-    {
+    if (input->isModifierDown(Modifier::CONTROL)) {
+        int offset = 0;
+        if (input->isKeyDown(Key::ZOOM_IN) || input->isKeyDown(Key::ZOOM_OUT)) {
+            if (input->isKeyDown(Key::ZOOM_IN)) {
+                offset = 1;
+            }
+            if (input->isKeyDown(Key::ZOOM_OUT)) {
+                offset = -1;
+            }
+        } else {
+            m_cameraSwitchDown = false;
+        }
+
+        if (m_cameraSwitchDown) {
+            offset = 0;
+        }
+
+        if (offset != 0) {
+            m_cameraSwitchDown = true;
+            Node* nextCamera = m_registry->m_nodeRegistry->getNextCamera(m_node, offset);
+
+            // NOTE KI null == default camera
+            event::Event evt { event::Type::camera_activate };
+            evt.body.node.target = nextCamera;
+            m_registry->m_dispatcher->send(evt);
+        }
+    } else {
+
+        if (input->isModifierDown(Modifier::SHIFT)) {
+            zoomSpeed = m_cameraZoomRun;
+        }
+
         if (input->isKeyDown(Key::ZOOM_IN)) {
             camera->adjustFov(-zoomSpeed.z * dt);
         }

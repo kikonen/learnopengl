@@ -1,5 +1,7 @@
 #include "NodeRegistry.h"
 
+#include <algorithm>
+
 #include <fmt/format.h>
 
 #include "kigl/kigl.h"
@@ -425,6 +427,19 @@ void NodeRegistry::setActiveCamera(Node* node)
     if (!node->m_camera) return;
 
     m_activeCamera = node;
+}
+
+Node* NodeRegistry::getNextCamera(Node* srcNode, int offset) const noexcept
+{
+    int index = 0;
+    int size = static_cast<int>(m_cameras.size());
+    for (int i = 0; i < size; i++) {
+        if (m_cameras[i] == srcNode) {
+            index = std::max(0, (i + offset) % size);
+            break;
+        }
+    }
+    return m_cameras[index];
 }
 
 Node* NodeRegistry::findDefaultCamera() const

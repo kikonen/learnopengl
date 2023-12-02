@@ -24,7 +24,11 @@ public:
     virtual void onMouseScroll(Input* input, float xoffset, float yoffset) override;
 
 private:
+    Registry* m_registry{ nullptr };
+
     Node* m_node{ nullptr };
+
+    bool m_cameraSwitchDown{ false };
 
     glm::vec3 m_cameraZoomNormal{ 0.f };
     glm::vec3 m_cameraZoomRun{ 0.f };
