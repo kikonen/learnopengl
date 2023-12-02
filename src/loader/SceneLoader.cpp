@@ -134,6 +134,7 @@ namespace loader {
     {
         std::lock_guard<std::mutex> lock(m_ready_lock);
 
+        KI_INFO_OUT(fmt::format("pending={}", m_pendingCount));
         if (--m_pendingCount > 0) return;
 
         // NOTE KI event will be put queue *AFTER* entity attach events
@@ -151,7 +152,11 @@ namespace loader {
         m_volumeLoader.attachVolume(root.rootId);
         m_cubeMapLoader.attachCubeMap(root.rootId);
 
-        m_pendingCount = m_entities.size();
+        m_pendingCount = 0;
+        for (const auto& entity : m_entities) {
+            if (!entity.base.enabled) continue;
+            m_pendingCount++;
+        }
         for (const auto& entity : m_entities) {
             attachEntity(root.rootId, entity);
         }
