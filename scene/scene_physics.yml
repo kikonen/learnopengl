@@ -83,12 +83,12 @@ entities:
     enabled: true
   - name: ball origo
     type: origo
-    id: [auto, origo]
+    id: origo
     pos: [0.0, 25.0, 0.0]
     enabled: true
   - name: Basic ball
     model: water_ball
-    parent_id: [auto, origo]
+    parent_id: origo
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.3
@@ -105,7 +105,7 @@ entities:
         type: sphere
     enabled: true
   - name: Gold ball
-    parent_id: [auto, origo]
+    parent_id: origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 5.0]
@@ -125,7 +125,7 @@ entities:
         type: sphere
     enabled: true
   - name: Silver ball
-    parent_id: [auto, origo]
+    parent_id: origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 10.0]
@@ -149,7 +149,7 @@ entities:
         type: sphere
     enabled: true
   - name: Bronze ball
-    parent_id: [auto, origo]
+    parent_id: origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 15.0]
@@ -168,7 +168,7 @@ entities:
         type: sphere
     enabled: true
   - name: Rusted iron ball
-    parent_id: [auto, origo]
+    parent_id: origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 20.0]
@@ -188,7 +188,7 @@ entities:
         type: sphere
     enabled: true
   - name: Old gold ball
-    parent_id: [auto, origo]
+    parent_id: origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 25.0]

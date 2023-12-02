@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <fstream>
+#include <regex>
 
 #include <fmt/format.h>
 
@@ -15,6 +16,8 @@
 
 namespace {
     std::mutex uuid_lock{};
+
+    std::regex UUID_RE = std::regex("[0-9]{8}-[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{8}");
 }
 
 namespace loader
@@ -365,27 +368,7 @@ namespace loader
         if (key.empty()) return {};
 
         if (key == AUTO_UUID) {
-            uuids::uuid uuid;
-            if (parts.size() > 1) {
-                std::string name = expandMacros(parts[1], cloneIndex, tile);
-
-                {
-                    std::lock_guard<std::mutex> lock(uuid_lock);
-
-                    const auto& it = m_ctx.m_autoIds->find(name);
-                    if (it == m_ctx.m_autoIds->end()) {
-                        uuid = uuids::uuid_system_generator{}();
-                        (*m_ctx.m_autoIds)[name] = uuid;
-                    }
-                    else {
-                        uuid = it->second;
-                    }
-                }
-            }
-            if (uuid.is_nil()) {
-                uuid = uuids::uuid_system_generator{}();
-            }
-            return uuid;
+            return resolveAutoUUID(parts, cloneIndex, tile, 1);
         }
         else if (key == ROOT_UUID) {
             return m_ctx.m_assets.rootUUID;
@@ -396,9 +379,41 @@ namespace loader
         else if (key == CUBE_MAP_UUID) {
             return m_ctx.m_assets.cubeMapUUID;
         }
-        else {
+        else if (std::regex_match(key, UUID_RE)) {
             return KI_UUID(key);
         }
+        else {
+            return resolveAutoUUID(parts, cloneIndex, tile, 0);
+        }
+    }
+
+    uuids::uuid BaseLoader::resolveAutoUUID(
+        const BaseUUID& parts,
+        const int cloneIndex,
+        const glm::uvec3& tile,
+        int index)
+    {
+        uuids::uuid uuid;
+        if (parts.size() > index) {
+            std::string name = expandMacros(parts[index], cloneIndex, tile);
+
+            {
+                std::lock_guard<std::mutex> lock(uuid_lock);
+
+                const auto& it = m_ctx.m_autoIds->find(name);
+                if (it == m_ctx.m_autoIds->end()) {
+                    uuid = uuids::uuid_system_generator{}();
+                    (*m_ctx.m_autoIds)[name] = uuid;
+                }
+                else {
+                    uuid = it->second;
+                }
+            }
+        }
+        if (uuid.is_nil()) {
+            uuid = uuids::uuid_system_generator{}();
+        }
+        return uuid;
     }
 
     std::string BaseLoader::expandMacros(

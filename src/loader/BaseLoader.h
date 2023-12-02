@@ -71,6 +71,12 @@ namespace loader
             const int cloneIndex,
             const glm::uvec3& tile);
 
+        uuids::uuid resolveAutoUUID(
+            const BaseUUID& parts,
+            const int cloneIndex,
+            const glm::uvec3& tile,
+            int index);
+
         std::string expandMacros(
             const std::string& str,
             const int cloneIndex,
