@@ -642,9 +642,8 @@ entities:
       fov: 80
       pos: [0, 0, 0]
       enabled: true
-    xxcontroller:
-      type: camera
-      enabled: true
+    controllers:
+      - type: camera_zoom
     script_file: scripts/anim_four_cubes
     enabled: true
     clones:
