@@ -7,13 +7,12 @@ entities:
   - name: Camera
     type: origo
     pos: [0, 8, 30]
+    active: true
     camera:
       default: true
-      enabled: true
-    enabled: true
-    controller:
-      type: camera
-      enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Pool side
     model: pool_brick
     program: g_tex

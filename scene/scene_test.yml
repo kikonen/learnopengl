@@ -4,16 +4,15 @@ skybox:
   material: skybox
   program: g_skybox
 entities:
-  - name: Camera
+  - name: Player
     type: origo
     pos: [0, 0, 0]
+    active: true
     camera:
       default: true
-      enabled: true
-    enabled: true
-    controller:
-      type: camera
-      enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Window 1
     model: window1
     program: g_tex

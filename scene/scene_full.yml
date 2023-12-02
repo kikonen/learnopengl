@@ -53,20 +53,17 @@ entities:
     rotation: [0, 180, 0.0]
     scale: 0.8
     program: g_tex
+    active: true
     render_flags:
       allow_normals: false
-    camera:
-      pos: [0, 0, 0]
-      xxrotation: [0, 180, 0.0]
-      default: true
-      enabled: true
     particle_generator:
       - "ParticleDefinition pd;"
       - "node->particleGenerator = std::make_unique<ParticleGenerator>(pd);"
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Player cube map 1
     type: origo
     parent_id: [auto, player]

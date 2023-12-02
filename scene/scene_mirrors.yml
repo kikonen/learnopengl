@@ -7,16 +7,15 @@ skybox:
 lights: {}
 cube_maps: {}
 entities:
-  - name: Origo
+  - name: Player
     type: origo
     pos: [0, 0, 5]
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
@@ -148,6 +147,7 @@ entities:
     pos: [-40.0, 10.0, -10.0]
     rotation: [0.0, 45.0, 0.0]
     scale: 15.0
+    front: [0, 0, 1]
     render_flags:
       render_back: true
       mirror: true
@@ -161,6 +161,7 @@ entities:
     pos: [40.0, 10.0, -10.0]
     rotation: [0.0, 270.0, 0.0]
     scale: 15.0
+    front: [0, 0, 1]
     render_flags:
       render_back: true
       mirror: true

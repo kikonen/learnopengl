@@ -27,13 +27,12 @@ entities:
   - name: Player
     type: origo
     pos: [0, 25, 40]
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Directional light
     type: model
     pos: [-25, 45, 0]

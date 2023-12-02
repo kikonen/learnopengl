@@ -9,16 +9,15 @@ cube_maps: {}
 root:
   type: origo
 entities:
-  - name: Origo
+  - name: Player
     type: origo
     pos: [0, 0, 10]
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Stacked Base
     model: cow
     force_material: true

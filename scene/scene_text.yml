@@ -3,16 +3,15 @@ name: Test
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 entities:
-  - name: Camera
+  - name: Player
     type: origo
     pos: [0, 0, 0]
+    active: true
     camera:
       default: true
-      enabled: true
-    enabled: true
-    controller:
-      type: camera
-      enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Text plane
     model: quad
     material: metal

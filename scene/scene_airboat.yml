@@ -9,16 +9,15 @@ cube_maps: {}
 root:
   type: origo
 entities:
-  - name: Origo
+  - name: Player
     type: origo
     pos: [0, 1, 15]
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Other
     model: texture_cube
     program: g_tex

@@ -10,19 +10,16 @@ cube_maps: {}
 root:
   type: origo
 entities:
-  - name: Origo
+  - name: Player
     type: origo
     xxpos: [50, 30, 40]
     pos: [0, 9.5, 10]
-    rotation: [0, 0, 0]
+    active: true
     camera:
-      pos: [0, 12, 0]
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Directional light
     pos: [0, 45, 100]
     scale: 2.5
@@ -68,6 +65,7 @@ entities:
     pos: [50, 20.5, -10]
     rotation: [0.0, -60.0, 0.0]
     scale: 10.0
+    front: [0, 0, 1]
     render_flags:
       render_back: true
       mirror: true

@@ -8,18 +8,15 @@ cube_maps: {}
 root:
   type: origo
 entities:
-  - name: Origo
+  - name: Plauer
     type: origo
     pos: [0, 200, 100]
+    active: true
     camera:
-      fov: 45
-      pos: [0, 0, 0]
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Directional light
     pos: [0, 400, 500]
     scale: 2.5

@@ -23,7 +23,6 @@ entities:
     force_material: true
     material_modifier:
       kd: [0.0, 0.2, 0.8, 1.0]
-    enabled: true
   - name: Player
     id: player
     Xtype: origo
@@ -35,15 +34,13 @@ entities:
     active: true
     controller:
       type: pawn
-      enabled: true
-    physics:
+    xphysics:
       update: true
       body:
         type: sphere
         density: 0.1
       geom:
         type: sphere
-    enabled: true
   - name: Player Camera
     parent_id: player
     type: origo
@@ -51,20 +48,16 @@ entities:
     rotation: [-15, 0, 0]
     controller:
       type: camera_zoom
-      enabled: true
     camera:
       default: true
-      enabled: true
-    enabled: true
   - name: Camera
-    type: origo
+    model: water_ball
+    program: g_tex
     pos: [20, 28, 38]
     rotation: [-15, 45, 0]
     front: [0, 0, -1]
     camera:
-      xdefault: true
-      enabled: true
-    enabled: true
+      default: false
   - name: Directional light
     type: model
     pos: [-25, 45, 0]
@@ -80,8 +73,6 @@ entities:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
-      enabled: true
-    enabled: true
   - name: Point light
     type: model
     pos: [10, 30, 25]
@@ -99,13 +90,10 @@ entities:
       quadratic: 0.07
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 1000
-      enabled: true
-    enabled: true
   - name: ball origo
     type: origo
     id: origo
     pos: [0.0, 25.0, 0.0]
-    enabled: true
   - name: Basic ball
     model: water_ball
     parent_id: origo
@@ -123,7 +111,6 @@ entities:
         density: 0.01
       geom:
         type: sphere
-    enabled: true
   - name: Gold ball
     parent_id: origo
     model: water_ball
@@ -139,14 +126,12 @@ entities:
       parallax_depth: 0.0
     controller:
       type: pawn
-      enabled: true
     xphysics:
       body:
         type: sphere
         density: 0.1
       geom:
         type: sphere
-    enabled: true
   - name: Silver ball
     parent_id: origo
     model: water_ball
@@ -170,7 +155,6 @@ entities:
         density: 0.05
       geom:
         type: sphere
-    enabled: true
   - name: Bronze ball
     parent_id: origo
     model: water_ball
@@ -189,7 +173,6 @@ entities:
         density: 0.3
       geom:
         type: sphere
-    enabled: true
   - name: Rusted iron ball
     parent_id: origo
     model: water_ball
@@ -209,7 +192,6 @@ entities:
         density: 0.07
       geom:
         type: sphere
-    enabled: true
   - name: Old gold ball
     parent_id: origo
     model: water_ball
@@ -231,7 +213,6 @@ entities:
       map_pbr: textures\Metal008_1K-PNG
       tiling: 3
       parallax_depth: 0.0
-    enabled: true
   - name: wooden floor
     model: quad
     xxmodel: woodwall
@@ -247,7 +228,6 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 1]
-    enabled: true
   - name: Fence
     model: quad
     material: fence
@@ -262,7 +242,6 @@ entities:
     repeat:
       z_count: 5
       z_step: 10
-    enabled: true
 materials:
   - name: default_ball
     kd: [0.8, 0.8, 0.0, 1.0]

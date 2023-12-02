@@ -16,14 +16,12 @@ entities:
     program: g_tex
     render_flags:
       allow_normals: false
+    active: true
     camera:
-      pos: [0, 3, -3]
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Water surface
     type: quad
     material: water_surface

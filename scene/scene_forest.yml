@@ -4,16 +4,15 @@ skybox:
   program: g_skybox
   material: skybox
 entities:
-  - name: Camera
+  - name: Player
     type: origo
     pos: [0, 10, 20]
+    active: true
     camera:
       default: true
-      enabled: true
-    enabled: true
-    controller:
-      type: camera
-      enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5

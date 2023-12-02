@@ -16,13 +16,12 @@ entities:
       tiling: 5
     render_flags:
       allow_normals: false
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Four cubes
     model: texture_cube_3
     program: g_tex

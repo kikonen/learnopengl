@@ -5,20 +5,24 @@ skybox:
   program: g_skybox
   material: skybox
 entities:
-  - name: Camera
+  - name: Player
     type: origo
     pos: [0, 30, 0]
+    active: true
     camera:
       default: true
-      enabled: true
-    enabled: true
-    controller:
-      type: camera
-      enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Mountains
-    id: 63ca20c5-dce1-4400-8968-6484cb4af8ca
     model: texture_mountains
     program: g_tex
+    material_modifier:
+      map_pbr: textures/Fence007A_4K-JPG
+      tiling: 6
+    render_flags:
+      alpha: true
+      render_back: true
     pos: [0.0, 0.0, 0.0]
     scale: 1.0
     enabled: true
