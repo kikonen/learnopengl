@@ -19,6 +19,8 @@ namespace loader{
         // Default to center
         data.targetIdBase = { ROOT_UUID };
 
+        data.enabled = true;
+
         // pos relative to owning node
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -26,6 +28,10 @@ namespace loader{
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
+            }
+            else if (k == "xxenabled" || k == "xenabled") {
+                // NOTE compat with old "disable" logic
+                data.enabled = false;
             }
             else if (k == "type") {
                 std::string type = readString(v);

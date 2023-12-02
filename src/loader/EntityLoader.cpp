@@ -106,6 +106,8 @@ namespace loader {
     {
         bool hasClones = false;
 
+        data.enabled = true;
+
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
             const YAML::Node& v = pair.second;
@@ -256,6 +258,10 @@ namespace loader {
             }
             else if (k == "enabled") {
                 data.enabled = readBool(v);
+            }
+            else if (k == "xxenabled" || k == "xenabled") {
+                // NOTE compat with old "disable" logic
+                data.enabled = false;
             }
             else if (k == "clone_position_offset") {
                 data.clonePositionOffset = readVec3(v);

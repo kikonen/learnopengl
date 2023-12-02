@@ -28,6 +28,11 @@ namespace loader {
                 explicitEnable = readBool(v);
                 useExplicitEnable = true;
             }
+            else if (k == "xxenabled" || k == "xenabled") {
+                // NOTE compat with old "disable" logic
+                explicitEnable = false;
+                useExplicitEnable = true;
+            }
             if (k == "update") {
                 data.update = readBool(v);
             }
