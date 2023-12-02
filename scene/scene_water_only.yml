@@ -40,7 +40,6 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
-    enabled: true
   - name: Pool floor
     model: quad
     material: pool_floor
@@ -57,7 +56,6 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
-    enabled: true
 materials:
   - name: water_surface
     kd: [0.55, 0.55, 0.95, 1.0]

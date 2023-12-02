@@ -36,10 +36,7 @@ entities:
       type: directional
       diffuse: [0.8, 0.8, 0.7, 1.0]
       intensity: 30000
-      enabled: true
     camera:
-      enabled: true
-    enabled: true
   - name: Silver ball
     model: water_ball
     material: silver_ball
@@ -65,7 +62,6 @@ entities:
     render_flags:
       render_back: true
     scale: 1
-    enabled: true
     clones:
       - pos: [-5.0, 0.0, -5.0]
         rotation: [0, 180, 0]
@@ -93,7 +89,6 @@ entities:
     pos: [0.0, 3.0, 0.0]
     render_flags:
       cube_map: true
-    enabled: true
   - name: Glass ball
     model: glass_ball
     program: g_tex
@@ -103,7 +98,6 @@ entities:
       reflection: 0.8
       refraction: 0.05
       refraction_ratio: [1.0, 1.52]
-    enabled: true
   - name: Brick wall
     type: quad
     material: brickwall
@@ -165,7 +159,6 @@ entities:
       mirror: true
       no_reflect: true
       no_refract: true
-    enabled: true
 materials:
   - name: silver_ball
     kd: [0.5075, 0.5075, 0.5075, 1.0]

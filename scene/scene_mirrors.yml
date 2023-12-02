@@ -30,8 +30,6 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-      enabled: true
-    enabled: true
   - name: Silver ball
     model: water_ball
     material: silver_ball
@@ -41,7 +39,6 @@ entities:
     scale: 1.3
     material_modifier:
       reflection: 0.05
-    enabled: true
   - name: Woodcube
     model: texture_cube
     program: g_tex
@@ -49,12 +46,10 @@ entities:
     force_material: true
     pos: [5.0, 5.0, -5.0]
     scale: 1
-    enabled: true
   - name: Four cubes
     model: texture_cube_3
     program: g_tex
     scale: 1
-    enabled: true
     clones:
       - pos: [-5.0, 0.0, -5.0]
       - pos: [5.0, 0.0, -5.0]
@@ -75,13 +70,11 @@ entities:
       z_count: 101
       x_step: -4
       z_step: 1.5
-    enabled: true
   - name: Cube map 1
     type: origo
     pos: [5.0, 3.0, 0.0]
     render_flags:
       cube_map: true
-    enabled: true
   - name: Glass ball
     model: glass_ball
     program: g_tex
@@ -91,7 +84,6 @@ entities:
       reflection: 0.8
       refraction: 0.05
       refraction_ratio: [1.0, 1.52]
-    enabled: true
   - name: Brick wall
     type: quad
     material: brickwall
@@ -102,7 +94,6 @@ entities:
     repeat:
       x_count: 3
       x_step: 4
-    enabled: true
   - name: Wood wall
     type: quad
     material: woodwall
@@ -113,7 +104,6 @@ entities:
     repeat:
       x_count: 2
       x_step: 4
-    enabled: true
   - name: Giant wooden box
     id: e264f27f-d949-4504-b862-583213484d7c
     type: quad
@@ -125,7 +115,6 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
-    enabled: false
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [90, 0, 0]
@@ -153,7 +142,6 @@ entities:
       mirror: true
       no_reflect: true
       no_refract: true
-    enabled: true
   - name: Big mirror 2
     type: quad
     material: mirror
@@ -167,7 +155,6 @@ entities:
       mirror: true
       no_reflect: true
       no_refract: true
-    enabled: true
 materials:
   - name: silver_ball
     kd: [0.5075, 0.5075, 0.5075, 1.0]

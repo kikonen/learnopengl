@@ -139,16 +139,21 @@ namespace loader {
                     reportUnknown("entity_type", k, v);
                 }
             }
+            else if (k == "name") {
+                data.name = readString(v);
+            }
+			else if (k == "xxname" || k == "xname") {
+				// NOTE quick disable logic
+				data.name = readString(v);
+				data.enabled = false;
+			}
             else if (k == "active") {
                 data.active = readBool(v);
             }
             else if (k == "priority") {
                 data.priority = readInt(v);
             }
-            else if (k == "name") {
-                data.name = readString(v);
-            }
-            else if (k == "desc") {
+			else if (k == "desc") {
                 data.desc = readString(v);
             }
             else if (k == "id") {

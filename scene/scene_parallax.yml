@@ -24,7 +24,6 @@ entities:
       tiling: 3
       map_pbr: textures\Bricks007_1K-PNG
     pos: [0.0, 2.0, 0.0]
-    enabled: true
     repeat:
       z_count: 20
       z_step: -10
@@ -44,20 +43,16 @@ entities:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-      enabled: true
-    enabled: true
   - name: Cube map - mirror_ball
     type: origo
     pos: [0, 5, 10]
     render_flags:
       cube_map: true
-    enabled: true
   - name: Planet 1
     model: [planet, planet]
     program: g_tex
     pos: [0, 0, 20]
     scale: 1
-    enabled: true
   - name: Planet 2
     model: [planet, planet]
     program: g_tex
@@ -65,13 +60,11 @@ entities:
     material_modifier:
       map_bump: mars_normal.png
     scale: 1
-    enabled: true
   - name: Cube map - wood_wall
     type: origo
     pos: [35.0, 2.5, 5.0]
     render_flags:
       cube_map: true
-    enabled: true
   - name: Brick wall 2 - plain
     model: quad
     material: brickwall2
@@ -86,7 +79,6 @@ entities:
     repeat:
       x_count: 1
       x_step: 1
-    enabled: true
   - name: Brick wall 2 - normal
     model: quad
     material: brickwall2
@@ -96,7 +88,6 @@ entities:
     rotation: [0, 270, 0]
     render_flags:
       render_back: true
-    enabled: true
   - name: Brick wall 2 - parallax
     model: quad
     material: brickwall2
@@ -109,7 +100,6 @@ entities:
     render_flags:
       xalpha: true
       render_back: true
-    enabled: true
     repeat:
       z_count: 5
       z_step: 5
@@ -129,7 +119,6 @@ entities:
     repeat:
       x_count: 1
       x_step: 1
-    enabled: true
   - name: Brick wall 1 - normal
     model: quad
     material: brickwall
@@ -139,7 +128,6 @@ entities:
     rotation: [0, 270, 0]
     render_flags:
       render_back: true
-    enabled: true
   - name: Brick wall 1 - parallax
     model: quad
     material: brickwall
@@ -152,7 +140,6 @@ entities:
     render_flags:
       xalpha: true
       render_back: true
-    enabled: true
     repeat:
       z_count: 5
       z_step: 5
@@ -168,7 +155,6 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 1]
-    enabled: true
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]

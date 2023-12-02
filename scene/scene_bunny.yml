@@ -18,7 +18,6 @@ entities:
     pos: [0.0, 0.0, -10.0]
     render_flags:
       cube_map: true
-    enabled: true
   - name: Bunny
     model: bunny
     program: g_tex
@@ -32,7 +31,6 @@ entities:
     render_flags:
       no_reflect: true
       render_back: true
-    enabled: true
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
@@ -47,8 +45,6 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 40000
-      enabled: true
-    enabled: true
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]

@@ -31,8 +31,6 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-      enabled: true
-    enabled: true
   - name: Terrain grass v2
     id: auto
     priority: 20
@@ -57,8 +55,6 @@ entities:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
-      enabled: true
-    enabled: true
   - name: grid points
     model: glass_ball
     program: g_tex
@@ -73,7 +69,6 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-    enabled: true
   - name: Sea surface
     type: quad
     material: sea_surface
@@ -85,7 +80,6 @@ entities:
       no_shadow: true
       render_back: true
       water: true
-    enabled: true
   - name: Sea floor
     model: quad
     material: sea_floor
@@ -96,7 +90,6 @@ entities:
     render_flags:
       no_shadow: true
       render_back: true
-    enabled: false
   - name: Linden tree forest - part 1
     type: model
     model: quad
@@ -114,14 +107,11 @@ entities:
     scale: [7, 10, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 20
         z_count: 20
         x_step: -20
         z_step: 20
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 2
     type: model
     model: quad
@@ -140,14 +130,11 @@ entities:
     scale: [7, 10, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 20
         z_count: 20
         x_step: -20
         z_step: 20
-      enabled: true
-    enabled: true
   - name: Skeleton army
     type: billboard
     priority: 1
@@ -165,7 +152,6 @@ entities:
       z_count: 101
       x_step: 3
       z_step: -2
-    enabled: true
 materials:
   - name: terrain_grass_2
     map_kd: textures/terrain_2/terrain_2_TX.jpg

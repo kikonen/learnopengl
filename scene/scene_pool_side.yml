@@ -31,7 +31,6 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [-30.0, 4, 40]
         scale: [60, 6, 0.3]
-    enabled: true
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]

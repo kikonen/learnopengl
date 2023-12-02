@@ -22,7 +22,6 @@ entities:
     parent_id: 11111111-1111-1111-1111-111111111111
     type: origo
     pos: [0, 0, 0]
-    enabled: true
   - name: light
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     pos: [0, 0, 0]
@@ -40,6 +39,4 @@ entities:
       target_pos: [0, 0, 0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
       intensity: 2a000
-      enabled: true
-    enabled: true
 materials:

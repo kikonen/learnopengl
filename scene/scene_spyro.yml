@@ -21,7 +21,6 @@ entities:
       tiling: 6
     pos: [0.0, 0.0, -30.0]
     scale: 0.06
-    enabled: true
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]

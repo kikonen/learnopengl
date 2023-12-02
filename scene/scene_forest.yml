@@ -27,8 +27,6 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 1
     type: model
     model: quad
@@ -45,14 +43,11 @@ entities:
     scale: [7, 10, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 200
         z_count: 200
         x_step: 20
         z_step: -20
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 2
     type: model
     model: quad
@@ -70,14 +65,11 @@ entities:
     scale: [7, 10, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 200
         z_count: 200
         x_step: 20
         z_step: -20
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 3
     type: model
     model: quad
@@ -95,14 +87,11 @@ entities:
     scale: [7, 10, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 200
         z_count: 200
         x_step: 20
         z_step: -20
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 4
     type: model
     model: quad
@@ -120,14 +109,11 @@ entities:
     scale: [7, 10, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 200
         z_count: 200
         x_step: 20
         z_step: -20
-      enabled: true
-    enabled: true
   - name: wooden floor
     model: quad
     xxmodel: woodwall
@@ -139,7 +125,6 @@ entities:
       render_back: true
       no_shadow: true
     scale: [2000, 2000, 2000]
-    enabled: true
 materials:
   - name: linden_tree
     map_kd: sprites/linden_tree_512.png

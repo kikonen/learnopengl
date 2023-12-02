@@ -34,8 +34,6 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-      enabled: true
-    enabled: true
   - name: Other
     model: texture_cube
     program: g_tex
@@ -43,13 +41,11 @@ entities:
       tiling: 5
     pos: [0, 9.5, -10]
     scale: 2.5
-    enabled: true
   - name: Cube map - mirror_ball
     type: origo
     pos: [0, 30.5, -10]
     render_flags:
       cube_map: true
-    enabled: true
   - name: Mirror ball
     model: glass_ball
     program: g_tex
@@ -57,7 +53,6 @@ entities:
     scale: 10
     material_modifier:
       reflection: 0.8
-    enabled: true
   - name: Big mirror 2
     model: quad
     material: mirror
@@ -69,7 +64,6 @@ entities:
     render_flags:
       render_back: true
       mirror: true
-    enabled: true
   - name: Pool floor
     model: quad
     material: pool_floor
@@ -86,7 +80,6 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
-    enabled: true
   - name: Pool surface
     type: quad
     material: pool_surface
@@ -105,7 +98,6 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
-    enabled: true
     script_file: scripts/anim_water
   - name: Pool side
     model: pool_brick
@@ -123,7 +115,6 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
-    enabled: true
   - name: Linden tree forest - part 1
     type: model
     model: quad
@@ -140,14 +131,11 @@ entities:
     scale: [14, 20, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 1
         z_count: 3
         x_step: 20
         z_step: -40
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 2
     type: model
     model: quad
@@ -165,14 +153,11 @@ entities:
     scale: [14, 20, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 1
         z_count: 3
         x_step: 20
         z_step: -40
-      enabled: true
-    enabled: true
   - name: Skeleton army
     type: quad
     priority: 1
@@ -190,7 +175,6 @@ entities:
       z_count: 1
       x_step: 10
       z_step: 0
-    enabled: true
   - name: Terrain grass v2
     id: auto
     priority: 20
@@ -215,8 +199,6 @@ entities:
         tiles: [8, 0, 8]
         vert_range: [-32.54, 31.9]
         horiz_scale: 2
-      enabled: true
-    enabled: true
   - name: Other
     model: texture_cube
     program: g_tex
@@ -224,7 +206,6 @@ entities:
       tiling: 5
     pos: [160, 9.5, 20]
     scale: 2.5
-    enabled: true
   - name: Pool floor - SINGLE
     model: quad
     material: pool_floor
@@ -234,7 +215,6 @@ entities:
     scale: 60
     render_flags:
       no_shadow: true
-    enabled: true
   - name: Pool surface - SINGLE
     type: quad
     material: pool_surface
@@ -246,7 +226,6 @@ entities:
       no_shadow: true
       render_back: true
       water: true
-    enabled: true
     xxscript_file: scripts/cycle_water
   - name: Pool side - SINGLE
     model: pool_brick
@@ -264,7 +243,6 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
-    enabled: true
   - name: Linden tree forest - part 1
     type: model
     model: quad
@@ -281,14 +259,11 @@ entities:
     scale: [14, 20, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 1
         z_count: 3
         x_step: 20
         z_step: -40
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 2
     type: model
     model: quad
@@ -306,14 +281,11 @@ entities:
     scale: [14, 20, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 1
         z_count: 3
         x_step: 20
         z_step: -40
-      enabled: true
-    enabled: true
 materials:
   - name: pool_surface
     kd: [0.55, 0.55, 0.95, 1.0]

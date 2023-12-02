@@ -20,7 +20,7 @@ entities:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Object
+  - xname: Object
     type: sprite
     program: g_tex
     pos: [0, 0, 0]
@@ -32,7 +32,6 @@ entities:
       enforce_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
-    xenabled: true
   - name: Object front
     type: sprite
     program: g_tex
@@ -46,7 +45,6 @@ entities:
       render_back: true
     scale: [0.8, 1.8, 1]
     script_file: scripts/anim_rotate_object
-    enabled: true
   - name: Object back
     type: billboard
     program: g_tex
@@ -59,7 +57,6 @@ entities:
       enforce_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
-    enabled: true
   - name: Object right
     type: quad
     program: g_tex
@@ -72,7 +69,6 @@ entities:
       enforce_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
-    enabled: true
   - name: Object left
     type: sprite
     program: g_tex
@@ -85,7 +81,6 @@ entities:
       enforce_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
-    enabled: true
   - name: Directional light
     type: origo
     pos: [-25, 25, 25]
@@ -98,14 +93,11 @@ entities:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-      enabled: true
-    enabled: true
   - name: Cube map
     type: origo
     pos: [0, 5, 10]
     render_flags:
       cube_map: true
-    enabled: true
   - name: wooden floor
     model: quad
     xxmodel: woodwall
@@ -117,7 +109,6 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
-    enabled: true
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]

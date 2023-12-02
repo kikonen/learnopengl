@@ -25,4 +25,3 @@ entities:
       render_back: true
     pos: [0.0, 0.0, 0.0]
     scale: 1.0
-    enabled: true
