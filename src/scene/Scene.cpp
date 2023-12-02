@@ -121,6 +121,7 @@ void Scene::prepare()
     m_registry->m_dispatcher->addListener(
         event::Type::scene_loaded,
         [this](const event::Event& e) {
+            m_loaded = true;
             this->m_registry->m_physicsEngine->setEnabled(true);
         });
 
@@ -265,7 +266,7 @@ void Scene::processEvents(const UpdateContext& ctx)
 void Scene::update(const UpdateContext& ctx)
 {
     //if (ctx.clock.frameCount > 120) {
-    if (getActiveCamera()) {
+    if (m_loaded) {
         m_commandEngine->update(ctx);
     }
 
@@ -484,14 +485,25 @@ void Scene::drawScene(
     }
 }
 
-Node* Scene::getActiveCamera() const
+Node* Scene::getActiveNode() const
 {
-    return m_registry->m_nodeRegistry->getActiveCamera();
+    return m_registry->m_nodeRegistry->getActiveNode();
 }
 
-NodeController* Scene::getActiveCameraController() const
+NodeController* Scene::getActiveNodeController() const
 {
-    auto* node = getActiveCamera();
+    auto* node = getActiveNode();
+    return node ? m_registry->m_controllerRegistry->get<NodeController>(node) : nullptr;
+}
+
+Node* Scene::getActiveCamera2() const
+{
+    return m_registry->m_nodeRegistry->getActiveCamera2();
+}
+
+NodeController* Scene::getActiveCameraController2() const
+{
+    auto* node = getActiveCamera2();
     return node ? m_registry->m_controllerRegistry->get<NodeController>(node) : nullptr;
 }
 

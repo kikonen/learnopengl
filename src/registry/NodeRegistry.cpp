@@ -61,6 +61,7 @@ NodeRegistry::~NodeRegistry()
         blendedNodes.clear();
         invisibleNodes.clear();
 
+        m_activeNode = nullptr;
         m_activeCamera = nullptr;
         m_cameras.clear();
 
@@ -121,6 +122,21 @@ void NodeRegistry::prepare(
         [this](const event::Event& e) {
             auto& node = e.body.node.target;
             node->setSelectionMaterialIndex(getSelectionMaterial().m_registeredIndex);
+        });
+
+    m_registry->m_dispatcher->addListener(
+        event::Type::node_activate,
+        [this](const event::Event& e) {
+            auto* node = e.body.node.target;
+            setActiveNode(e.body.node.target);
+        });
+
+    m_registry->m_dispatcher->addListener(
+        event::Type::camera_activate,
+        [this](const event::Event& e) {
+            auto* node = e.body.node.target;
+            if (!node) node = findDefaultCamera();
+            setActiveCamera(node);
         });
 }
 
@@ -394,6 +410,13 @@ void NodeRegistry::bindChildren(
     }
 
     m_pendingChildren.erase(parent->m_id);
+}
+
+void NodeRegistry::setActiveNode(Node* node)
+{
+    if (!node) return;
+
+    m_activeNode = node;
 }
 
 void NodeRegistry::setActiveCamera(Node* node)

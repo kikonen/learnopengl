@@ -99,7 +99,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
     if (!scene) return 0;
 
-    Node* cameraNode = scene->getActiveCamera();
+    Node* cameraNode = scene->getActiveCamera2();
     if (!cameraNode) return 0;
 
 
@@ -156,6 +156,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         InputState state{
             window->m_input->isModifierDown(Modifier::CONTROL),
             window->m_input->isModifierDown(Modifier::SHIFT),
+            window->m_input->isModifierDown(Modifier::ALT),
             glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT),
             glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT),
         };
@@ -164,7 +165,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
             state.mouseLeft == GLFW_PRESS &&
             state.ctrl)
         {
-            if (state.ctrl && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+            if ((state.shift || state.ctrl || state.alt) && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
                 selectNode(ctx, scene, state, m_lastInputState);
             }
         }
@@ -267,6 +268,26 @@ void SampleApp::selectNode(
 
     KI_INFO(fmt::format("selected: {}", objectID));
 
+    if (node && inputState.ctrl) {
+        auto* controller = m_registry->m_controllerRegistry->get<NodeController>(node);
+        if (controller) {
+            event::Event evt { event::Type::node_activate };
+            evt.body.node.target = node;
+            ctx.m_registry->m_dispatcher->send(evt);
+        }
+
+        node = nullptr;
+    }
+
+    if (inputState.alt) {
+        // NOTE KI null == default camera
+        event::Event evt { event::Type::camera_activate };
+        evt.body.node.target = node;
+        ctx.m_registry->m_dispatcher->send(evt);
+
+        node = nullptr;
+    }
+
     if (node) {
         event::Event evt { event::Type::animate_rotate };
         evt.body.animate = {
@@ -275,13 +296,6 @@ void SampleApp::selectNode(
             .data = { 0, 360.f, 0 }
         };
         ctx.m_registry->m_dispatcher->send(evt);
-    }
-
-    if (node) {
-        nodeRegistry.setActiveCamera(node);
-    }
-    else {
-        nodeRegistry.setActiveCamera(nodeRegistry.findDefaultCamera());
     }
 }
 

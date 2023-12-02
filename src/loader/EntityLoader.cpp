@@ -137,6 +137,9 @@ namespace loader {
                     reportUnknown("entity_type", k, v);
                 }
             }
+            else if (k == "active") {
+                data.active = readBool(v);
+            }
             else if (k == "priority") {
                 data.priority = readInt(v);
             }

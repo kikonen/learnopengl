@@ -286,8 +286,20 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
+        if (data.active) {
+            event::Event evt { event::Type::node_activate };
+            evt.body.node.target = node;
+            m_dispatcher->send(evt);
+        }
+
         if (data.selected) {
             event::Event evt { event::Type::node_select };
+            evt.body.node.target = node;
+            m_dispatcher->send(evt);
+        }
+
+        if (data.camera.isDefault) {
+            event::Event evt { event::Type::camera_activate };
             evt.body.node.target = node;
             m_dispatcher->send(evt);
         }

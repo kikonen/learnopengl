@@ -26,6 +26,7 @@ namespace loader {
         bool valid{ false };
 
         bool enabled{ false };
+        bool active{ false };
 
         EntityType type{ EntityType::model };
 

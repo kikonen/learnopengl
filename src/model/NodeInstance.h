@@ -48,9 +48,9 @@ struct NodeInstance {
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
     glm::vec3 m_front{ 0.f, 0.f, 1.f };
 
+    mutable glm::vec3 m_viewUp{ 0.f };
     mutable glm::vec3 m_viewFront{ 0.f };
     mutable glm::vec3 m_viewRight{ 0.f };
-    mutable glm::vec3 m_viewUp{ 0.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::mat4 m_modelScale{ 1.f };
@@ -293,8 +293,8 @@ struct NodeInstance {
         // NOTE KI w == 0; only rotation
         m_viewFront = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_front, 0.f)));
 
-        auto viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
-        m_viewUp = glm::normalize(glm::cross(viewRight, m_viewFront));
+        m_viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
+        m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
     }
 
     void updateRotationMatrix() noexcept;

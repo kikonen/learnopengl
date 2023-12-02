@@ -29,13 +29,11 @@ entities:
     model: water_ball
     program: g_tex
     pos: [0, 25, 40]
+    front: [0, 0, -1]
     scale: 0.25
-    camera:
-      pos: [0, 1.2, 5.4]
-      default: true
-      enabled: true
+    active: true
     controller:
-      type: camera
+      type: pawn
       enabled: true
     physics:
       update: true
@@ -44,6 +42,15 @@ entities:
         density: 0.1
       geom:
         type: sphere
+    enabled: true
+  - name: Camera
+    type: origo
+    pos: [20, 28, 38]
+    rotation: [-15, 45, 0]
+    front: [0, 0, -1]
+    camera:
+      default: true
+      enabled: true
     enabled: true
   - name: Directional light
     type: model
@@ -117,6 +124,9 @@ entities:
       xmap_pbr: textures\Planks 09 [8K]
       map_pbr: textures\Metal007_1K-PNG
       parallax_depth: 0.0
+    controller:
+      type: pawn
+      enabled: true
     xphysics:
       body:
         type: sphere

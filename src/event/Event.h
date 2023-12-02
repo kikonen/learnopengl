@@ -21,6 +21,10 @@ namespace event {
         node_added,
         node_change_parent,
         node_select,
+        node_activate,
+
+        // NOTE KI allow camera to vary independent of active node
+        camera_activate,
 
         controller_add,
 

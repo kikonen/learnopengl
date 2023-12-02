@@ -123,8 +123,8 @@ public:
         return it != m_parentToChildren.end() ? &it->second : nullptr;
     }
 
-    inline Node* getActiveCamera() const noexcept { return m_activeCamera; }
-    void setActiveCamera(Node* node);
+    inline Node* getActiveNode() const noexcept { return m_activeNode; }
+    inline Node* getActiveCamera2() const noexcept { return m_activeCamera; }
 
     Node* findDefaultCamera() const;
 
@@ -137,6 +137,9 @@ public:
     }
 
 private:
+    void setActiveNode(Node* node);
+    void setActiveCamera(Node* node);
+
     void attachNode(
         Node* node,
         const uuids::uuid& parentId) noexcept;
@@ -191,6 +194,7 @@ private:
 
     std::unordered_map<int, NodeVector> m_parentToChildren;
 
+    Node* m_activeNode{ nullptr };
     Node* m_activeCamera{ nullptr };
 
     Material m_selectionMaterial;

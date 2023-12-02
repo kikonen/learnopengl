@@ -81,8 +81,11 @@ public:
         const RenderContext& ctx,
         NodeRenderer* nodeRenderer);
 
-    Node* getActiveCamera() const;
-    NodeController* getActiveCameraController() const;
+    Node* getActiveNode() const;
+    NodeController* getActiveNodeController() const;
+
+    Node* getActiveCamera2() const;
+    NodeController* getActiveCameraController2() const;
 
     void bindComponents(Node* node);
     int getObjectID(const RenderContext& ctx, float posx, float posy);
@@ -110,6 +113,8 @@ public:
 protected:
 
 private:
+    bool m_loaded{ false };
+
     std::unique_ptr<NodeRenderer> m_mainRenderer{ nullptr };
     std::unique_ptr<NodeRenderer> m_rearRenderer{ nullptr };
 

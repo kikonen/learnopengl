@@ -24,6 +24,14 @@ enum class Modifier {
     ALT,
 };
 
+struct InputState {
+    bool ctrl{ false };
+    bool shift{ false };
+    bool alt{ false };
+    bool mouseLeft{ false };
+    bool mouseRight{ false };
+};
+
 //
 // Handle keyboard mapping
 //

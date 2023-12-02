@@ -173,9 +173,18 @@ void Window::processInput(const ki::RenderClock& clock)
         return;
     }
 
-    auto* controller = m_engine.m_currentScene->getActiveCameraController();
-    if (controller) {
-        controller->onKey(m_input.get(), clock);
+    // NOTE KI logic into NodeRegistry to get all active controllers as list
+    {
+        auto* controller = m_engine.m_currentScene->getActiveNodeController();
+        if (controller) {
+            controller->onKey(m_input.get(), clock);
+        }
+    }
+    {
+        auto* controller = m_engine.m_currentScene->getActiveCameraController2();
+        if (controller) {
+            controller->onKey(m_input.get(), clock);
+        }
     }
 }
 
@@ -199,9 +208,17 @@ void Window::onMouseMove(float xpos, float ypos)
     if ((isAlt || state == GLFW_PRESS) && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-        auto* controller = m_engine.m_currentScene->getActiveCameraController();
-        if (controller) {
-            controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+        {
+            auto* controller = m_engine.m_currentScene->getActiveNodeController();
+            if (controller) {
+                controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+            }
+        }
+        {
+            auto* controller = m_engine.m_currentScene->getActiveCameraController2();
+            if (controller) {
+                controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+            }
         }
     }
     else {
@@ -216,8 +233,17 @@ void Window::onMouseButton(int button, int action, int modifiers)
 
 void Window::onMouseWheel(float xoffset, float yoffset)
 {
-    auto* controller = m_engine.m_currentScene->getActiveCameraController();
-    if (controller) {
-        controller->onMouseScroll(m_input.get(), xoffset, yoffset);
+    {
+        auto* controller = m_engine.m_currentScene->getActiveNodeController();
+        if (controller) {
+            controller->onMouseScroll(m_input.get(), xoffset, yoffset);
+        }
+    }
+
+    {
+        auto* controller = m_engine.m_currentScene->getActiveCameraController2();
+        if (controller) {
+            controller->onMouseScroll(m_input.get(), xoffset, yoffset);
+        }
     }
 }
