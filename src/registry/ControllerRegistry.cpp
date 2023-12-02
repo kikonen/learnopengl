@@ -10,7 +10,9 @@ class Node;
 ControllerRegistry::~ControllerRegistry()
 {
     for (const auto& it : m_controllers) {
-        delete it.second;
+        for (auto* controller : it.second) {
+            delete controller;
+        }
     }
     m_controllers.clear();
 }
@@ -32,7 +34,13 @@ void ControllerRegistry::update(const UpdateContext& ctx)
     for (const auto& it : m_controllers) {
         Node* node = m_registry->m_nodeRegistry->getNode(it.first);
         if (!node) continue;
-        if (it.second->update(ctx, *node)) {
+
+        bool changed = false;
+        for (auto* controller : it.second) {
+            changed |= controller->update(ctx, *node);
+        }
+
+        if (changed) {
             // TODO KI *ALL* children must be updated also
             node->updateModelMatrix();
         }
@@ -43,6 +51,8 @@ void ControllerRegistry::addController(
     ki::object_id targetId,
     NodeController* controller)
 {
+    if (!controller) return;
+
     Node* node = m_registry->m_nodeRegistry->getNode(targetId);
 
     if (!node) {
@@ -52,5 +62,15 @@ void ControllerRegistry::addController(
 
     controller->prepare(m_assets, m_registry, *node);
 
-    m_controllers.insert(std::make_pair(targetId, controller));
+    {
+        const auto& it = m_controllers.find(targetId);
+        if (it == m_controllers.end()) {
+            m_controllers.insert(std::make_pair(targetId, std::vector<NodeController*>{}));
+        }
+    }
+
+    {
+        const auto& it = m_controllers.find(targetId);
+        it->second.emplace_back(controller);
+    }
 }

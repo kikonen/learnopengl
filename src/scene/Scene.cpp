@@ -490,21 +490,21 @@ Node* Scene::getActiveNode() const
     return m_registry->m_nodeRegistry->getActiveNode();
 }
 
-NodeController* Scene::getActiveNodeController() const
+const std::vector<NodeController*>* Scene::getActiveNodeControllers() const
 {
     auto* node = getActiveNode();
-    return node ? m_registry->m_controllerRegistry->get<NodeController>(node) : nullptr;
+    return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
 }
 
-Node* Scene::getActiveCamera2() const
+Node* Scene::getActiveCamera() const
 {
     return m_registry->m_nodeRegistry->getActiveCamera2();
 }
 
-NodeController* Scene::getActiveCameraController2() const
+const std::vector<NodeController*>* Scene::getActiveCameraControllers() const
 {
-    auto* node = getActiveCamera2();
-    return node ? m_registry->m_controllerRegistry->get<NodeController>(node) : nullptr;
+    auto* node = getActiveCamera();
+    return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
 }
 
 void Scene::bindComponents(Node* node)

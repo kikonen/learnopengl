@@ -5,6 +5,7 @@
 #include "engine/Engine.h"
 
 #include "controller/NodeController.h"
+#include "controller/VolumeController.h"
 
 #include "asset/DynamicCubeMap.h"
 
@@ -173,17 +174,21 @@ void Window::processInput(const ki::RenderClock& clock)
         return;
     }
 
-    // NOTE KI logic into NodeRegistry to get all active controllers as list
+    auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
+    auto* cameraControllers = m_engine.m_currentScene->getActiveCameraControllers();
+
     {
-        auto* controller = m_engine.m_currentScene->getActiveNodeController();
-        if (controller) {
-            controller->onKey(m_input.get(), clock);
+        if (nodeControllers) {
+            for (auto* controller : *nodeControllers) {
+                controller->onKey(m_input.get(), clock);
+            }
         }
     }
     {
-        auto* controller = m_engine.m_currentScene->getActiveCameraController2();
-        if (controller) {
-            controller->onKey(m_input.get(), clock);
+        if (cameraControllers && cameraControllers != nodeControllers) {
+            for (auto* controller : *cameraControllers) {
+                controller->onKey(m_input.get(), clock);
+            }
         }
     }
 }
@@ -208,16 +213,21 @@ void Window::onMouseMove(float xpos, float ypos)
     if ((isAlt || state == GLFW_PRESS) && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+        auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
+        auto* cameraControllers = m_engine.m_currentScene->getActiveCameraControllers();
+
         {
-            auto* controller = m_engine.m_currentScene->getActiveNodeController();
-            if (controller) {
-                controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+            if (nodeControllers) {
+                for (auto* controller : *nodeControllers) {
+                    controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+                }
             }
         }
         {
-            auto* controller = m_engine.m_currentScene->getActiveCameraController2();
-            if (controller) {
-                controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+            if (cameraControllers && cameraControllers != nodeControllers) {
+                for (auto* controller : *cameraControllers) {
+                    controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+                }
             }
         }
     }
@@ -233,17 +243,21 @@ void Window::onMouseButton(int button, int action, int modifiers)
 
 void Window::onMouseWheel(float xoffset, float yoffset)
 {
-    {
-        auto* controller = m_engine.m_currentScene->getActiveNodeController();
-        if (controller) {
-            controller->onMouseScroll(m_input.get(), xoffset, yoffset);
-        }
-    }
+    auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
+    auto* cameraControllers = m_engine.m_currentScene->getActiveCameraControllers();
 
     {
-        auto* controller = m_engine.m_currentScene->getActiveCameraController2();
-        if (controller) {
-            controller->onMouseScroll(m_input.get(), xoffset, yoffset);
+        if (nodeControllers) {
+            for (auto* controller : *nodeControllers) {
+                controller->onMouseScroll(m_input.get(), xoffset, yoffset);
+            }
+        }
+    }
+    {
+        if (cameraControllers && cameraControllers != nodeControllers) {
+            for (auto* controller : *cameraControllers) {
+                controller->onMouseScroll(m_input.get(), xoffset, yoffset);
+            }
         }
     }
 }

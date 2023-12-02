@@ -99,7 +99,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
     if (!scene) return 0;
 
-    Node* cameraNode = scene->getActiveCamera2();
+    Node* cameraNode = scene->getActiveCamera();
     if (!cameraNode) return 0;
 
 
@@ -238,64 +238,69 @@ void SampleApp::selectNode(
     const InputState& inputState,
     const InputState& lastInputState)
 {
+    const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
+    const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
+    const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
+
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
     ki::object_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
-
-    auto* volumeNode = nodeRegistry.getNode(ctx.m_assets.volumeUUID);
     auto* node = nodeRegistry.getNode(nodeId);
 
-    // deselect
-    if (node && node->isSelected()) {
-        nodeRegistry.selectNodeById(-1, false);
+    if (selectMode) {
+        auto* volumeNode = nodeRegistry.getNode(ctx.m_assets.volumeUUID);
+
+        // deselect
+        if (node && node->isSelected()) {
+            nodeRegistry.selectNodeById(-1, false);
+
+            if (volumeNode) {
+                auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
+                if (controller) {
+                    controller->setTarget(-1);
+                }
+            }
+
+            return;
+        }
+
+        // select
+        nodeRegistry.selectNodeById(nodeId, inputState.shift);
 
         if (volumeNode) {
             auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
-            if (controller->getTarget() == node->m_id) {
-                controller->setTarget(-1);
+            if (controller) {
+                controller->setTarget(node ? node->m_id : -1);
             }
         }
+        KI_INFO(fmt::format("selected: {}", nodeId));
 
-        return;
-    }
-
-    // select
-    nodeRegistry.selectNodeById(nodeId, inputState.shift);
-
-    if (volumeNode) {
-        auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
-        controller->setTarget(node ? node->m_id : -1);
-    }
-
-    KI_INFO(fmt::format("selected: {}", nodeId));
-
-    if (node && inputState.ctrl) {
-        auto* controller = m_registry->m_controllerRegistry->get<NodeController>(node);
-        if (controller) {
-            event::Event evt { event::Type::node_activate };
-            evt.body.node.target = node;
+        if (node) {
+            event::Event evt { event::Type::animate_rotate };
+            evt.body.animate = {
+                .target = node->m_id,
+                .duration = 5,
+                .data = { 0, 360.f, 0 }
+            };
             ctx.m_registry->m_dispatcher->send(evt);
         }
+    } else if (playerMode) {
+        if (node && inputState.ctrl) {
+            auto exists = m_registry->m_controllerRegistry->hasController(node);
+            if (exists) {
+                event::Event evt { event::Type::node_activate };
+                evt.body.node.target = node;
+                ctx.m_registry->m_dispatcher->send(evt);
+            }
 
-        node = nullptr;
-    }
-
-    if (inputState.alt) {
+            node = nullptr;
+        }
+    } else if (cameraMode) {
         // NOTE KI null == default camera
         event::Event evt { event::Type::camera_activate };
         evt.body.node.target = node;
         ctx.m_registry->m_dispatcher->send(evt);
 
         node = nullptr;
-    }
-
-    if (node) {
-        event::Event evt { event::Type::animate_rotate };
-        evt.body.animate = {
-            .target = node->m_id,
-            .duration = 5,
-            .data = { 0, 360.f, 0 }
-        };
-        ctx.m_registry->m_dispatcher->send(evt);
     }
 }
 

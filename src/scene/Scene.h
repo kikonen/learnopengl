@@ -82,10 +82,10 @@ public:
         NodeRenderer* nodeRenderer);
 
     Node* getActiveNode() const;
-    NodeController* getActiveNodeController() const;
+    const std::vector<NodeController*>* getActiveNodeControllers() const;
 
-    Node* getActiveCamera2() const;
-    NodeController* getActiveCameraController2() const;
+    Node* getActiveCamera() const;
+    const std::vector<NodeController*>* getActiveCameraControllers() const;
 
     void bindComponents(Node* node);
     ki::object_id getObjectID(const RenderContext& ctx, float posx, float posy);
