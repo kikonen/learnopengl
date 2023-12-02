@@ -11,7 +11,7 @@ namespace loader {
             Context ctx);
 
         void loadRoot(
-            const YAML::Node& doc,
+            const YAML::Node& node,
             RootData& data) const;
 
         void attachRoot(

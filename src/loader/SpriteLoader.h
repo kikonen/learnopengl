@@ -14,15 +14,15 @@ namespace loader {
             Context ctx);
 
         void loadSprites(
-            const YAML::Node& doc,
+            const YAML::Node& node,
             std::vector<SpriteData>& sprites);
 
         void loadSprite(
-            const YAML::Node& doc,
+            const YAML::Node& node,
             SpriteData& data);
 
         void loadShapes(
-            const YAML::Node& doc,
+            const YAML::Node& node  ,
             std::vector<Shape>& shapes);
 
         void loadShape(

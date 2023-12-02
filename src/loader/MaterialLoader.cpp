@@ -98,10 +98,10 @@ namespace loader {
     }
 
     void MaterialLoader::loadMaterials(
-        const YAML::Node& doc,
+        const YAML::Node& node,
         std::vector<MaterialData>& materials)
     {
-        for (const auto& entry : doc["materials"]) {
+        for (const auto& entry : node) {
             MaterialData& data = materials.emplace_back();
             loadMaterial(entry, data);
         }

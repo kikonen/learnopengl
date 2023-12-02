@@ -80,7 +80,7 @@ namespace loader {
 
         std::string script;
 
-        ControllerData controller;
+        std::vector<ControllerData> controllers;
         CameraData camera;
         LightData light;
 

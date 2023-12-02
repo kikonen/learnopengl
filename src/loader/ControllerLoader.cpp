@@ -17,6 +17,16 @@ namespace loader {
     {
     }
 
+    void ControllerLoader::loadControllers(
+        const YAML::Node& node,
+        std::vector<ControllerData>& controllers) const
+    {
+        for (const auto& entry : node) {
+            ControllerData& data = controllers.emplace_back();
+            loadController(entry, data);
+        }
+    }
+
     void ControllerLoader::loadController(
         const YAML::Node& node,
         ControllerData& data) const

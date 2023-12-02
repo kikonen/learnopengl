@@ -22,7 +22,7 @@ namespace loader {
             Context ctx);
 
         void loadEntities(
-            const YAML::Node& doc,
+            const YAML::Node& node,
             std::vector<EntityData>& entities,
             MaterialLoader& materialLoader,
             CustomMaterialLoader& customMaterialLoader,

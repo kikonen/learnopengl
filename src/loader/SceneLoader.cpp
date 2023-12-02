@@ -106,16 +106,16 @@ namespace loader {
             std::ifstream fin(this->m_ctx.m_filename);
             YAML::Node doc = YAML::Load(fin);
 
-            loadMeta(doc, m_meta);
+            loadMeta(doc["meta"], m_meta);
 
-            m_skyboxLoader.loadSkybox(doc, m_skybox);
-            m_materialLoader.loadMaterials(doc, m_materials);
-            m_spriteLoader.loadSprites(doc, m_sprites);
+            m_skyboxLoader.loadSkybox(doc["skybox"], m_skybox);
+            m_materialLoader.loadMaterials(doc["materials"], m_materials);
+            m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
 
-            m_rootLoader.loadRoot(doc, m_root);
+            m_rootLoader.loadRoot(doc["root"], m_root);
 
             m_entityLoader.loadEntities(
-                doc,
+                doc["entities"],
                 m_entities,
                 m_materialLoader,
                 m_customMaterialLoader,
@@ -302,9 +302,10 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
-        if (data.controller.enabled)
-        {
-            auto* controller = m_controllerLoader.createController(data.controller, node);
+        for (auto& controllerData : data.controllers) {
+            if (!controllerData.enabled) continue;
+
+            auto* controller = m_controllerLoader.createController(controllerData, node);
 
             event::Event evt { event::Type::controller_add };
             evt.body.control = {
@@ -779,15 +780,11 @@ namespace loader {
     }
 
     void SceneLoader::loadMeta(
-        const YAML::Node& doc,
+        const YAML::Node& node,
         MetaData& data) const
     {
         data.name = "<noname>";
         //data.modelsDir = m_assets.modelsDir;
-
-        auto& node = doc["meta"];
-
-        if (!node) return;
 
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();

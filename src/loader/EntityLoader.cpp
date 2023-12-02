@@ -36,7 +36,7 @@ namespace loader {
     }
 
     void EntityLoader::loadEntities(
-        const YAML::Node& doc,
+        const YAML::Node& node,
         std::vector<EntityData>& entities,
         MaterialLoader& materialLoader,
         CustomMaterialLoader& customMaterialLoader,
@@ -47,7 +47,7 @@ namespace loader {
         GeneratorLoader& generatorLoader,
         PhysicsLoader& physicsLoader)
     {
-        for (const auto& entry : doc["entities"]) {
+        for (const auto& entry : node) {
             auto& data = entities.emplace_back();
             loadEntity(
                 entry,
@@ -238,8 +238,12 @@ namespace loader {
             else if (k == "physics") {
                 physicsLoader.loadPhysics(v, data.physics);
             }
+            else if (k == "controllers") {
+                controllerLoader.loadControllers(v, data.controllers);
+            }
             else if (k == "controller") {
-                controllerLoader.loadController(v, data.controller);
+                auto& controllerDaata = data.controllers.emplace_back();
+                controllerLoader.loadController(v, controllerDaata);
             }
             else if (k == "generator") {
                 generatorLoader.loadGenerator(v, data.generator);

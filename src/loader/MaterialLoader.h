@@ -17,7 +17,7 @@ namespace loader {
             MaterialData& data) const;
 
         void loadMaterials(
-            const YAML::Node& doc,
+            const YAML::Node& node,
             std::vector<MaterialData>& materials);
 
         void loadMaterial(

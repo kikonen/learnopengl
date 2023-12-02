@@ -17,11 +17,9 @@ namespace loader
     }
 
     void RootLoader::loadRoot(
-        const YAML::Node& doc,
+        const YAML::Node& node,
         RootData& data) const
     {
-        auto& node = doc["root"];
-
         data.rootId = m_assets.rootUUID;
 
         for (const auto& pair : node) {

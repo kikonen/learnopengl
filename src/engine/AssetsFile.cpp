@@ -35,7 +35,7 @@ Assets AssetsFile::load()
 
     Assets assets;
 
-    loadAssets(doc, assets);
+    loadAssets(doc["assets"], assets);
     resolveDirs(assets);
 
     return assets;
@@ -80,13 +80,9 @@ void AssetsFile::resolveDirs(
 }
 
 void AssetsFile::loadAssets(
-    const YAML::Node& doc,
+    const YAML::Node& node,
     Assets& data)
 {
-    auto& node = doc["assets"];
-
-    if (!node) return;
-
     for (const auto& pair : node) {
         const std::string& k = pair.first.as<std::string>();
         const YAML::Node& v = pair.second;

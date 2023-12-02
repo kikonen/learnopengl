@@ -14,10 +14,10 @@ namespace loader {
     }
 
     void SpriteLoader::loadSprites(
-        const YAML::Node& doc,
+        const YAML::Node& node,
         std::vector<SpriteData>& sprites)
     {
-        for (const auto& entry : doc["sprites"]) {
+        for (const auto& entry : node) {
             SpriteData& data = sprites.emplace_back();
             loadSprite(entry, data);
         }

@@ -32,13 +32,9 @@ namespace loader {
     }
 
     void SkyboxLoader::loadSkybox(
-        const YAML::Node& doc,
+        const YAML::Node& node,
         SkyboxData& data)
     {
-        auto& node = doc["skybox"];
-
-        if (!node) return;
-
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
             const YAML::Node& v = pair.second;
@@ -143,7 +139,7 @@ namespace loader {
         type->setCustomMaterial(std::move(material));
 
         auto node = new Node(type);
-        node->m_id = m_assets.skyboxUUID;
+        node->m_uuid = m_assets.skyboxUUID;
 
         {
             event::Event evt { event::Type::node_add };
