@@ -539,6 +539,12 @@ entities:
     material: silver_ball
     material_modifier:
       metal: [1, 0.3, 0, 1]
+    physics:
+      body:
+        type: sphere
+        density: 0.07
+      geom:
+        type: sphere
   - name: Bronze ball
     parent_id: [auto, ball-origo]
     model: water_ball
@@ -658,6 +664,13 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
+  - name: Pool floor plane
+    type: origo
+    pos: [0.0, 3.7, -10.0]
+    physics:
+      geom:
+        type: plane
+        plane: [0, 1, 0, 0]
   - name: Pool side
     model: pool_brick
     program: g_tex
@@ -924,14 +937,22 @@ entities:
     render_flags:
       alpha: true
       render_back: true
-      enforce_bounds: true
-      physics: true
+      xenforce_bounds: true
+      xphysics: true
     scale: [1.5, 3, 1]
     repeat:
       x_count: 20
       z_count: 101
       x_step: -3
       z_step: 2
+    physics:
+      body:
+        type: capsule
+        density: 0.01
+        quat: [1, 0, 0, 0]
+      geom:
+        type: capsule
+        size: [0.5, 1, 0]
     script_file: scripts/seq_skeleton_army
   - name: Giant wooden box
     model: quad
