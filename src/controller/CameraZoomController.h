@@ -5,10 +5,10 @@
 
 class Camera;
 
-class CameraController final : public NodeController
+class CameraZoomController final : public NodeController
 {
 public:
-    CameraController();
+    CameraZoomController();
 
     virtual void prepare(
         const Assets& assets,
@@ -26,10 +26,6 @@ public:
 private:
     Node* m_node{ nullptr };
 
-    glm::vec3 m_cameraMoveNormal{ 0.f };
-    glm::vec3 m_cameraMoveRun{ 0.f };
-    glm::vec3 m_cameraRotateNormal{ 0.f };
-    glm::vec3 m_cameraRotateRun{ 0.f };
     glm::vec3 m_cameraZoomNormal{ 0.f };
     glm::vec3 m_cameraZoomRun{ 0.f };
 

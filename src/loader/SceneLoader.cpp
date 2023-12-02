@@ -35,8 +35,6 @@
 #include "generator/TerrainGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
 
-#include "controller/CameraController.h"
-
 #include "event/Dispatcher.h"
 
 #include "registry/Registry.h"

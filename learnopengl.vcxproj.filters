@@ -54,7 +54,7 @@
     <ClCompile Include="src\generator\AsteroidBeltGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\controller\CameraController.cpp">
+    <ClCompile Include="src\controller\CameraZoomController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\component\Light.cpp">
@@ -560,7 +560,7 @@
     <ClInclude Include="src\generator\AsteroidBeltGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\controller\CameraController.h">
+    <ClInclude Include="src\controller\CameraZoomController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\component\Light.h">

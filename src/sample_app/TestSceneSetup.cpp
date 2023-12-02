@@ -5,8 +5,6 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
-#include "controller/CameraController.h"
-
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/MeshTypeRegistry.h"

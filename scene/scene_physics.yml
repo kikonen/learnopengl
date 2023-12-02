@@ -49,6 +49,9 @@ entities:
     type: origo
     pos: [0, 3, 5]
     rotation: [-15, 0, 0]
+    controller:
+      type: camera_zoom
+      enabled: true
     camera:
       default: true
       enabled: true

@@ -6,7 +6,7 @@
 #include "model/Node.h"
 
 #include "controller/PawnController.h"
-#include "controller/CameraController.h"
+#include "controller/CameraZoomController.h"
 #include "controller/VolumeController.h"
 
 
@@ -37,8 +37,8 @@ namespace loader {
                 else if (type == "pawn") {
                     data.type = ControllerType::pawn;
                 }
-                else if (type == "camera") {
-                    data.type = ControllerType::camera;
+                else if (type == "camera_zoom") {
+                    data.type = ControllerType::camera_zoom;
                 }
                 else {
                     reportUnknown("controller_type", k, v);
@@ -69,8 +69,8 @@ namespace loader {
             auto* controller = new PawnController();
             return controller;
         }
-        case ControllerType::camera: {
-            auto* controller = new CameraController();
+        case ControllerType::camera_zoom: {
+            auto* controller = new CameraZoomController();
             return controller;
         }
         }

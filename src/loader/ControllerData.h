@@ -4,7 +4,7 @@ namespace loader {
     enum class ControllerType {
         none,
         pawn,
-        camera,
+        camera_zoom,
     };
 
     struct ControllerData {
