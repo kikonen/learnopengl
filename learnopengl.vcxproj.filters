@@ -513,6 +513,9 @@
     <ClCompile Include="src\physics\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\controller\PawnController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1179,6 +1182,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\size.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controller\PawnController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

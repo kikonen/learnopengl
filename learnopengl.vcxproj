@@ -190,6 +190,7 @@
     <ClCompile Include="src\asset\TextMaterial.cpp" />
     <ClCompile Include="src\command\api\InvokeLuaFunction.cpp" />
     <ClCompile Include="src\command\Coroutine.cpp" />
+    <ClCompile Include="src\controller\PawnController.cpp" />
     <ClCompile Include="src\kigl\GLStencilMode.cpp" />
     <ClCompile Include="src\loader\BaseLoader.cpp" />
     <ClCompile Include="src\loader\BaseUUID.h" />
@@ -360,6 +361,7 @@
     <ClInclude Include="src\asset\TextMaterial.h" />
     <ClInclude Include="src\command\api\InvokeLuaFunction.h" />
     <ClInclude Include="src\command\Coroutine.h" />
+    <ClInclude Include="src\controller\PawnController.h" />
     <ClInclude Include="src\kigl\GLFence.h" />
     <ClInclude Include="src\kigl\GLStencilMode.h" />
     <ClInclude Include="src\kigl\kigl.h" />

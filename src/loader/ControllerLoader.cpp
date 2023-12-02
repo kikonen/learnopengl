@@ -5,6 +5,7 @@
 
 #include "model/Node.h"
 
+#include "controller/PawnController.h"
 #include "controller/CameraController.h"
 #include "controller/VolumeController.h"
 
@@ -32,6 +33,9 @@ namespace loader {
                 std::string type = readString(v);
                 if (type == "none") {
                     data.type = ControllerType::none;
+                }
+                else if (type == "pawn") {
+                    data.type = ControllerType::pawn;
                 }
                 else if (type == "camera") {
                     data.type = ControllerType::camera;
@@ -61,6 +65,10 @@ namespace loader {
         const auto& center = node->getPosition();
 
         switch (data.type) {
+        case ControllerType::pawn: {
+            auto* controller = new PawnController();
+            return controller;
+        }
         case ControllerType::camera: {
             auto* controller = new CameraController();
             return controller;

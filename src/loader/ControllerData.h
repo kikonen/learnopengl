@@ -3,6 +3,7 @@
 namespace loader {
     enum class ControllerType {
         none,
+        pawn,
         camera,
     };
 
