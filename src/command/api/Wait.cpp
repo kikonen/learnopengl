@@ -5,7 +5,7 @@
 #include "engine/UpdateContext.h"
 
 Wait::Wait(
-    int afterCommandId,
+    ki::command_id afterCommandId,
     float duration) noexcept
     : Command(afterCommandId, duration)
 {

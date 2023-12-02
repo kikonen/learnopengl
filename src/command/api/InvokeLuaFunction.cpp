@@ -6,10 +6,10 @@
 
 
 InvokeLuaFunction::InvokeLuaFunction(
-    int afterCommandId,
-    int objectID,
+    ki::command_id afterCommandId,
+    ki::object_id nodeId,
     std::string_view functionName) noexcept
-    : NodeCommand(afterCommandId, objectID, 0, false),
+    : NodeCommand(afterCommandId, nodeId, 0, false),
     m_functionName(functionName)
 {
 }

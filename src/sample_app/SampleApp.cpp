@@ -157,8 +157,8 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
             window->m_input->isModifierDown(Modifier::CONTROL),
             window->m_input->isModifierDown(Modifier::SHIFT),
             window->m_input->isModifierDown(Modifier::ALT),
-            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT),
-            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT),
+            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT) != 0,
+            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT) != 0,
         };
 
         if (state.mouseLeft != m_lastInputState.mouseLeft &&
@@ -239,18 +239,18 @@ void SampleApp::selectNode(
     const InputState& lastInputState)
 {
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-    int objectID = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
+    ki::object_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
 
     auto* volumeNode = nodeRegistry.getNode(ctx.m_assets.volumeUUID);
-    auto* node = nodeRegistry.getNode(objectID);
+    auto* node = nodeRegistry.getNode(nodeId);
 
     // deselect
     if (node && node->isSelected()) {
-        nodeRegistry.selectNodeByObjectId(-1, false);
+        nodeRegistry.selectNodeById(-1, false);
 
         if (volumeNode) {
             auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
-            if (controller->getTarget() == node->m_objectID) {
+            if (controller->getTarget() == node->m_id) {
                 controller->setTarget(-1);
             }
         }
@@ -259,14 +259,14 @@ void SampleApp::selectNode(
     }
 
     // select
-    nodeRegistry.selectNodeByObjectId(objectID, inputState.shift);
+    nodeRegistry.selectNodeById(nodeId, inputState.shift);
 
     if (volumeNode) {
         auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
-        controller->setTarget(node ? node->m_objectID : -1);
+        controller->setTarget(node ? node->m_id : -1);
     }
 
-    KI_INFO(fmt::format("selected: {}", objectID));
+    KI_INFO(fmt::format("selected: {}", nodeId));
 
     if (node && inputState.ctrl) {
         auto* controller = m_registry->m_controllerRegistry->get<NodeController>(node);
@@ -291,7 +291,7 @@ void SampleApp::selectNode(
     if (node) {
         event::Event evt { event::Type::animate_rotate };
         evt.body.animate = {
-            .target = node->m_objectID,
+            .target = node->m_id,
             .duration = 5,
             .data = { 0, 360.f, 0 }
         };

@@ -44,7 +44,7 @@ namespace loader
         flags.invisible = true;
 
         auto node = new Node(type);
-        node->m_id = data.rootId;
+        node->m_uuid = data.rootId;
 
         {
             event::Event evt { event::Type::node_add };

@@ -4,6 +4,8 @@
 
 #include "asset/Sphere.h"
 
+#include "ki/size.h"
+
 class UpdateContext;
 class RenderContext;
 
@@ -27,7 +29,7 @@ struct NodeInstance {
     int m_physicsMatrixLevel = -1;
     int m_physicsLevel = -1;
 
-    int m_objectID{ 0 };
+    ki::object_id m_id{ 0 };
     int m_entityIndex{ -1 };
     int m_flags = { 0 };
 
@@ -55,14 +57,14 @@ struct NodeInstance {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::mat4 m_modelScale{ 1.f };
 
-    inline int getObjectID() const noexcept
+    inline ki::object_id getId() const noexcept
     {
-        return m_objectID;
+        return m_id;
     }
 
-    inline void setObjectID(int objectID) noexcept
+    inline void setId(ki::object_id id) noexcept
     {
-        m_objectID = objectID;
+        m_id = id;
     }
 
     inline int getFlags() const noexcept

@@ -5,9 +5,9 @@
 #include "engine/UpdateContext.h"
 
 CancelCommand::CancelCommand(
-    int afterCommandId,
+    ki::command_id afterCommandId,
     float duration,
-    int commandId) noexcept
+    ki::command_id commandId) noexcept
     : Command(afterCommandId, duration),
     m_commandId(commandId)
 {

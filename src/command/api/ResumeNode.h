@@ -10,8 +10,8 @@ class ResumeNode final : public NodeCommand
 {
 public:
     ResumeNode(
-        int afterCommandId,
-        int objectID,
+        ki::command_id afterCommandId,
+        ki::object_id nodeId,
         Coroutine* coroutine) noexcept;
 
     virtual void execute(

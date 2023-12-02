@@ -6,12 +6,12 @@
 
 
 ScaleNode::ScaleNode(
-    int afterCommandId,
-    int objectID,
+    ki::command_id afterCommandId,
+    ki::object_id nodeId,
     float duration,
     bool relative,
     const glm::vec3& scale) noexcept
-    : NodeCommand(afterCommandId, objectID, duration, relative),
+    : NodeCommand(afterCommandId, nodeId, duration, relative),
     m_scale(scale)
 {
 }

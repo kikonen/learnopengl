@@ -28,22 +28,22 @@
 #include "render/Batch.h"
 
 namespace {
-    int objectIDbase = 100;
+    ki::object_id idBase = 100;
 
     std::mutex object_id_lock{};
 
     const static glm::mat4 IDENTITY_MATRIX{ 1.f };
 
-    int nextID() noexcept
+    ki::object_id nextID() noexcept
     {
         std::lock_guard<std::mutex> lock(object_id_lock);
-        return ++objectIDbase;
+        return ++idBase;
     }
 }
 
 Node::Node(MeshType* type)
     : m_type(type),
-    m_objectID(nextID())
+    m_id(nextID())
 {
 }
 
@@ -55,8 +55,8 @@ Node::~Node()
 const std::string Node::str() const noexcept
 {
     return fmt::format(
-        "<NODE: objectID={}, id={}, entity={}, type={}>",
-        m_objectID, KI_UUID_STR(m_id), m_instance.m_entityIndex, m_type->str());
+        "<NODE: id={}, id={}, entity={}, type={}>",
+        m_id, KI_UUID_STR(m_uuid), m_instance.m_entityIndex, m_type->str());
 }
 
 void Node::prepare(
@@ -91,7 +91,7 @@ void Node::prepare(
         }
 
         m_instance.setFlags(flags);
-        m_instance.setObjectID(m_objectID);
+        m_instance.setId(m_id);
     }
 
     if (m_generator) {
@@ -187,9 +187,9 @@ void Node::setSelectionMaterialIndex(int index)
     }
 }
 
-int Node::lua_getId() const noexcept
+ki::object_id Node::lua_getId() const noexcept
 {
-    return m_objectID;
+    return m_id;
 }
 
 const std::string& Node::lua_getName() const noexcept

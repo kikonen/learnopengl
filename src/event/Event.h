@@ -41,12 +41,12 @@ namespace event {
     };
 
     struct ControlAction {
-        int target{ 0 };
+		ki::object_id target{ 0 };
         NodeController* controller{ nullptr };
     };
 
     struct AnimateAction {
-        int target{ 0 };
+		ki::object_id target{ 0 };
 
         int after{ 0 };
         float duration{ 0 };
@@ -56,7 +56,7 @@ namespace event {
 
     struct Event {
         Type type;
-        int id;
+        ki::event_id id;
 
         union {
             NodeAction node;

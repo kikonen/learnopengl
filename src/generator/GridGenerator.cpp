@@ -57,7 +57,7 @@ void GridGenerator::updateInstances(
 
                 instance.setPosition(containerInstance.getPosition() + pos);
 
-                instance.setObjectID(containerInstance.getObjectID());
+                instance.setId(containerInstance.getId());
                 instance.setFlags(containerInstance.getFlags());
                 instance.setMaterialIndex(containerInstance.getMaterialIndex());
                 instance.setVolume(containerInstance.getVolume());

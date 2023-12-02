@@ -26,13 +26,13 @@ public:
     template<typename T>
     inline T* get(Node* node) const noexcept
     {
-        const auto& it = m_controllers.find(node->m_objectID);
+        const auto& it = m_controllers.find(node->m_id);
         if (it == m_controllers.end()) return nullptr;
         return dynamic_cast<T*>(it->second);
     }
 
     void addController(
-        int targetObjectID,
+        ki::object_id targetId,
         NodeController* controller);
 
 private:
@@ -40,5 +40,5 @@ private:
 
     Registry* m_registry{ nullptr };
 
-    std::unordered_map<int, NodeController*> m_controllers;
+    std::unordered_map<ki::object_id, NodeController*> m_controllers;
 };

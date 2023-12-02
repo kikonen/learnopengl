@@ -7,6 +7,7 @@
 
 #include <fmt/format.h>
 
+#include "ki/size.h"
 #include "ki/uuid.h"
 
 #include "backend/DrawOptions.h"
@@ -26,7 +27,7 @@ class Registry;
 //
  struct ProgramKey {
     ProgramKey(
-        int programID,
+        ki::program_id programID,
         int typePriority,
         const backend::DrawOptions& drawOptions) noexcept
         : programID(programID),
@@ -50,7 +51,7 @@ class Registry;
     }
 
     const int typePriority;
-    const int programID;
+    const ki::program_id programID;
     const bool renderBack;
     const bool wireframe;
 };
@@ -81,28 +82,28 @@ public:
     void prepare(
         Registry* registry);
 
-    inline bool containsNode(const int objectID) const noexcept
-    {
-        const auto& it = m_objectIdToNode.find(objectID);
-        return it != m_objectIdToNode.end();
-    }
+    //inline bool containsNode(const int id) const noexcept
+    //{
+    //    const auto& it = m_idToNode.find(id);
+    //    return it != m_idToNode.end();
+    //}
 
     // @return node null if not found
-    inline Node* getNode(const int objectID) const noexcept
+    inline Node* getNode(const ki::object_id id) const noexcept
     {
-        const auto& it = m_objectIdToNode.find(objectID);
-        return it != m_objectIdToNode.end() ? it->second : nullptr;
+        const auto& it = m_idToNode.find(id);
+        return it != m_idToNode.end() ? it->second : nullptr;
     }
 
 
     // @return node null if not found
     inline Node* getNode(const uuids::uuid& id) const noexcept
     {
-        const auto& it = m_idToNode.find(id);
-        return it != m_idToNode.end() ? it->second : nullptr;
+        const auto& it = m_uuidToNode.find(id);
+        return it != m_uuidToNode.end() ? it->second : nullptr;
     }
 
-    void selectNodeByObjectId(int objectID, bool append) const noexcept;
+    void selectNodeById(ki::object_id id, bool append) const noexcept;
 
     int countTagged() const noexcept;
     int countSelected() const noexcept;
@@ -119,7 +120,7 @@ public:
         const uuids::uuid& parentId) noexcept;
 
     inline const NodeVector* getChildren(const Node& parent) const noexcept {
-        const auto& it = m_parentToChildren.find(parent.m_objectID);
+        const auto& it = m_parentToChildren.find(parent.m_id);
         return it != m_parentToChildren.end() ? &it->second : nullptr;
     }
 
@@ -187,12 +188,12 @@ private:
 
     Registry* m_registry{ nullptr };
 
-    std::unordered_map<int, Node*> m_objectIdToNode;
-    std::unordered_map<uuids::uuid, Node*> m_idToNode;
+    std::unordered_map<ki::object_id, Node*> m_idToNode;
+    std::unordered_map<uuids::uuid, Node*> m_uuidToNode;
 
     std::unordered_map<uuids::uuid, NodeVector> m_pendingChildren;
 
-    std::unordered_map<int, NodeVector> m_parentToChildren;
+    std::unordered_map<ki::object_id, NodeVector> m_parentToChildren;
 
     Node* m_activeNode{ nullptr };
     Node* m_activeCamera{ nullptr };

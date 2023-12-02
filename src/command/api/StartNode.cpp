@@ -9,10 +9,10 @@
 
 
 StartNode::StartNode(
-    int afterCommandId,
-    int objectID,
+    ki::command_id afterCommandId,
+    ki::object_id nodeId,
     Coroutine* coroutine) noexcept
-    : NodeCommand(afterCommandId, objectID, 0, false),
+    : NodeCommand(afterCommandId, nodeId, 0, false),
     m_coroutine(coroutine)
 {
 }

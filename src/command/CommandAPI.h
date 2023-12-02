@@ -5,6 +5,8 @@
 
 #include <sol/sol.hpp>
 
+#include "ki/size.h"
+
 #include "Coroutine.h"
 
 class CommandEngine;
@@ -19,7 +21,7 @@ public:
     CommandAPI(
         ScriptEngine* scriptEngine,
         CommandEngine* commandEngine,
-        int objectID);
+        ki::object_id nodeId);
     ~CommandAPI() = default;
 
 public:
@@ -62,7 +64,7 @@ public:
 private:
    CommandEngine* const m_commandEngine;
    ScriptEngine* const m_scriptEngine;
-   const int m_objectID;
+   const ki::object_id m_nodeId;
 
    std::vector<Coroutine*> m_coroutines;
 };

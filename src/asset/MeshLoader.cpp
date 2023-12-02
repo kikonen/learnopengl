@@ -90,7 +90,7 @@ void MeshLoader::loadData(
     {
         m_defaultMaterial.m_default = true;
         m_defaultMaterial.m_used = false;
-        m_defaultMaterial.m_objectID = Material::DEFAULT_ID;
+        m_defaultMaterial.m_id = Material::DEFAULT_ID;
     }
 
     std::string filePath = util::joinPath(
@@ -285,7 +285,7 @@ unsigned int MeshLoader::resolveVertexIndex(
         textures.empty() ? EMPTY_TEX : textures[ti],
         normals.empty() ? EMPTY_NORMAL : normals[ni],
         tangents.empty() ? EMPTY_NORMAL : tangents[tangenti],
-        material->m_objectID);
+        material->m_id);
 
     {
         const auto& it = vertexMapping.find(pos);

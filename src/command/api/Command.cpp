@@ -5,11 +5,11 @@
 #include "engine/UpdateContext.h"
 
 namespace {
-    int idBase = 0;
+    ki::command_id idBase = 0;
 
     std::mutex id_lock{};
 
-    int nextID()
+    ki::command_id nextID()
     {
         std::lock_guard<std::mutex> lock(id_lock);
         return ++idBase;
@@ -18,7 +18,7 @@ namespace {
 
 
 Command::Command(
-    int afterCommandId,
+    ki::command_id afterCommandId,
     float duration) noexcept
     : m_id(nextID()),
     m_afterCommandId(afterCommandId),

@@ -15,11 +15,11 @@
 #include "ModelRegistry.h"
 
 namespace {
-    int idBase = 0;
+    ki::type_id idBase{ 0 };
 
     std::mutex type_id_lock{};
 
-    int nextID()
+    ki::type_id nextID()
     {
         std::lock_guard<std::mutex> lock(type_id_lock);
         return ++idBase;

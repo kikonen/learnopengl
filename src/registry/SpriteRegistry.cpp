@@ -29,7 +29,7 @@ SpriteRegistry::SpriteRegistry(
 
 void SpriteRegistry::add(Sprite& sprite)
 {
-    auto it = m_idToSprites.find(sprite.m_objectID);
+    auto it = m_idToSprites.find(sprite.m_id);
     if (it != m_idToSprites.end()) {
         auto& ref = it->second;
         for (int i = 0; i < ref->m_shapes.size(); i++) {
@@ -56,7 +56,7 @@ void SpriteRegistry::add(Sprite& sprite)
     }
 
     auto& ref = m_sprites.emplace_back(sprite);
-    m_idToSprites[sprite.m_objectID] = &ref;
+    m_idToSprites[sprite.m_id] = &ref;
 }
 
 void SpriteRegistry::update(const UpdateContext& ctx)

@@ -8,8 +8,8 @@ class NodeCommand : public Command
 {
 public:
     NodeCommand(
-        int afterCommandId,
-        int objectID,
+        ki::command_id afterCommandId,
+        ki::object_id nodeId,
         float duration,
         bool relative) noexcept;
 
@@ -18,7 +18,7 @@ public:
     virtual void bind(const UpdateContext& ctx, Node* node) noexcept;
 
 public:
-    const int m_objectID;
+    const ki::object_id m_nodeId;
     const bool m_relative;
 
     Node* m_node{ nullptr };

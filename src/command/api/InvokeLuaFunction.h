@@ -8,8 +8,8 @@ class InvokeLuaFunction final : public NodeCommand
 {
 public:
     InvokeLuaFunction(
-        int afterCommandId,
-        int objectID,
+        ki::command_id afterCommandId,
+        ki::object_id nodeId,
         std::string_view functionName) noexcept;
 
     virtual void execute(

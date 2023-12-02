@@ -222,7 +222,7 @@ namespace physics
         instance.m_physicsMatrixLevel = instance.m_matrixLevel;
         instance.m_physicsLevel = physicsLevel;
 
-        //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_objectID, level));
+        //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));
     }
 
     void PhysicsEngine::updateNode(

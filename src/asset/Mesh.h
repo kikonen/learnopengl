@@ -55,7 +55,7 @@ public:
     }
 
 public:
-    const int m_objectID;
+    const ki::mesh_id m_id;
 
 protected:
     bool m_prepared = false;

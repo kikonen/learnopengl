@@ -27,7 +27,7 @@ void NodeInstance::updateEntity(
 {
     if (!m_entityDirty) return;
 
-    entity->setObjectID(m_objectID);
+    entity->setId(m_id);
     entity->u_flags = m_flags;
     entity->u_materialIndex = m_materialIndex;
     entity->u_shapeIndex = m_shapeIndex;

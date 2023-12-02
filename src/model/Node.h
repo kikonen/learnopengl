@@ -185,7 +185,7 @@ public:
     inline bool isTagged() { return m_tagMaterialIndex > -1; }
 
 public:
-    int lua_getId() const noexcept;
+    ki::object_id lua_getId() const noexcept;
     const std::string& lua_getName() const noexcept;
 
     int lua_getCloneIndex() const noexcept;
@@ -197,11 +197,11 @@ protected:
 public:
     // *INTERNAL* LUID in scene
     // used for object identity in shader
-    const int m_objectID;
+    const ki::object_id m_id;
 
     // UUID of node for persistency
     // => *CAN* be empty for auto generated nodes
-    uuids::uuid m_id;
+    uuids::uuid m_uuid;
 
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };

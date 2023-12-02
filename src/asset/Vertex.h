@@ -12,7 +12,7 @@ public:
         const glm::vec2& texture,
         const glm::vec3& normal,
         const glm::vec3& tangent,
-        const int materialID)
+        const ki::material_id materialID)
         : pos(pos),
         texture(texture),
         normal(normal),
@@ -33,5 +33,5 @@ public:
     const glm::vec3 normal;
     const glm::vec3 tangent;
 
-    const int materialID;
+    const ki::material_id materialID;
 };

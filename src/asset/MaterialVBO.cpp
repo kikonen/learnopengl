@@ -25,7 +25,7 @@ void MaterialVBO::setMaterials(const std::vector<Material>& materials)
     m_materials = materials;
     if (m_useDefaultMaterial) {
         m_defaultMaterial.m_default = true;
-        m_defaultMaterial.m_objectID = Material::DEFAULT_ID;
+        m_defaultMaterial.m_id = Material::DEFAULT_ID;
 
         if (m_forceDefaultMaterial) {
             m_materials.clear();

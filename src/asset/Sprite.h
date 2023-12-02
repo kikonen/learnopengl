@@ -17,11 +17,11 @@ public:
         std::vector<Sprite>& sprites);
 
     static Sprite* findID(
-        const int objectID,
+        const ki::sprite_id id,
         std::vector<Sprite>& sprites);
 
     static const Sprite* findID(
-        const int objectID,
+        const ki::sprite_id id,
         const std::vector<Sprite>& sprites);
 
     void prepare(const Assets& assets);
@@ -31,7 +31,7 @@ public:
     }
 
 public:
-    int m_objectID;
+    ki::sprite_id m_id;
 
     std::string m_name;
     std::vector<Shape> m_shapes;

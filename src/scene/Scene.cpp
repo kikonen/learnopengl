@@ -529,13 +529,13 @@ void Scene::bindComponents(Node* node)
             m_commandEngine->addCommand(
                 std::make_unique<InvokeLuaFunction>(
                     -1,
-                    node->m_objectID,
+                    node->m_id,
                     "start"));
         }
     }
 }
 
-int Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)
+ki::object_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)
 {
     if (m_objectIdRenderer->isEnabled()) {
         m_objectIdRenderer->render(ctx);

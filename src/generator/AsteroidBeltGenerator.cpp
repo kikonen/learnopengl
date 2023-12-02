@@ -99,10 +99,10 @@ void AsteroidBeltGenerator::createAsteroids(
         asteroid.setMaterialIndex(container.m_type->getMaterialIndex());
         asteroid.setVolume(volume);
 
-        asteroid.setObjectID(containerInstance.getObjectID());
+        asteroid.setId(containerInstance.getId());
         asteroid.setFlags(containerInstance.getFlags());
 
-        asteroid.setObjectID(container.m_objectID);
+        asteroid.setId(container.m_id);
     }
 
     initAsteroids(assets, registry, container);

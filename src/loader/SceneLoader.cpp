@@ -308,7 +308,7 @@ namespace loader {
 
             event::Event evt { event::Type::controller_add };
             evt.body.control = {
-                .target = node->m_objectID,
+                .target = node->m_id,
                 .controller = controller
             };
             m_dispatcher->send(evt);
@@ -320,7 +320,7 @@ namespace loader {
         {
             event::Event evt { event::Type::animate_rotate };
             evt.body.animate = {
-                .target = node->m_objectID,
+                .target = node->m_id,
                 .duration = 20,
                 .data = { 0, 360.f, 0 },
             };
@@ -605,9 +605,9 @@ namespace loader {
         // NOTE KI no id for clones; would duplicate base id => conflicts
         // => except if clone defines own ID
         if (isRoot) {
-            node->m_id = rootId;
+            node->m_uuid = rootId;
         } else if (!cloned) {
-            node->m_id = resolveUUID(data.idBase, cloneIndex, tile);
+            node->m_uuid = resolveUUID(data.idBase, cloneIndex, tile);
         }
 
         node->setPosition(pos);

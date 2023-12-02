@@ -8,8 +8,8 @@ class StartNode final : public NodeCommand
 {
 public:
     StartNode(
-        int afterCommandId,
-        int objectID,
+        ki::command_id afterCommandId,
+        ki::object_id nodeId,
         Coroutine* coroutine) noexcept;
 
     virtual void bind(

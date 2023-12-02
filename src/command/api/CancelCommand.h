@@ -7,13 +7,13 @@ class CancelCommand final : public Command
 {
 public:
     CancelCommand(
-        int afterCommandId,
+        ki::command_id afterCommandId,
         float duration,
-        int commandId) noexcept;
+        ki::command_id commandId) noexcept;
 
     virtual void execute(
         const UpdateContext& ctx) noexcept override;
 
 private:
-    const int m_commandId;
+    const ki::command_id m_commandId;
 };

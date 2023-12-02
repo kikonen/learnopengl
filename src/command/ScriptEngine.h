@@ -8,6 +8,8 @@
 
 #include "asset/Assets.h"
 
+#include "ki/size.h"
+
 
 class CommandEngine;
 class CommandAPI;
@@ -57,7 +59,7 @@ private:
     sol::state m_lua;
     sol::table m_luaNodes;
 
-    std::unordered_map<int, std::unique_ptr<CommandAPI>> m_apis;
+    std::unordered_map<ki::object_id, std::unique_ptr<CommandAPI>> m_apis;
 
-    std::unordered_map<int, std::unordered_map<NodeScriptId, std::string>> m_nodeScripts;
+    std::unordered_map<ki::object_id, std::unordered_map<NodeScriptId, std::string>> m_nodeScripts;
 };

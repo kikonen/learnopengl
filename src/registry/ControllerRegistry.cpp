@@ -40,17 +40,17 @@ void ControllerRegistry::update(const UpdateContext& ctx)
 }
 
 void ControllerRegistry::addController(
-    int targetObjectID,
+    ki::object_id targetId,
     NodeController* controller)
 {
-    Node* node = m_registry->m_nodeRegistry->getNode(targetObjectID);
+    Node* node = m_registry->m_nodeRegistry->getNode(targetId);
 
     if (!node) {
-        KI_WARN(fmt::format("ADD_CONTROLLER: MISSING_NODE - objectID={}", targetObjectID));
+        KI_WARN(fmt::format("ADD_CONTROLLER: MISSING_NODE - targetId={}", targetId));
         return;
     }
 
     controller->prepare(m_assets, m_registry, *node);
 
-    m_controllers.insert(std::make_pair(targetObjectID, controller));
+    m_controllers.insert(std::make_pair(targetId, controller));
 }

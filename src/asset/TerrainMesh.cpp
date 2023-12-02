@@ -28,7 +28,7 @@ TerrainMesh::~TerrainMesh()
 
 const std::string TerrainMesh::str() const noexcept
 {
-    return fmt::format("<TERRAIN: id={}>", m_objectID);
+    return fmt::format("<TERRAIN: id={}>", m_id);
 }
 
 const AABB TerrainMesh::calculateAABB() const

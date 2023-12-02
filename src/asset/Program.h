@@ -92,7 +92,7 @@ private:
     GLint getSubroutineIndex(std::string_view name, GLenum shadertype);
 
 public:
-    const int m_objectID;
+    const int m_id;
 
     const std::string m_programName;
     const std::string m_key;

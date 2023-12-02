@@ -14,7 +14,7 @@
 #include "registry/NodeRegistry.h"
 
 
-int ObjectIdRenderer::getObjectId(
+ki::object_id ObjectIdRenderer::getObjectId(
     const RenderContext& ctx,
     float screenPosX,
     float screenPosY,
@@ -69,16 +69,15 @@ int ObjectIdRenderer::getObjectId(
             static_cast<GLint>(m_idBuffer->m_spec.height - posy),
             1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-        int x = 0;
         m_idBuffer->unbind(ctx);
     }
 
-    const int objectID =
+    const ki::object_id nodeId =
         data[0] +
         data[1] * 256 +
         data[2] * 256 * 256;
 
-    return objectID;
+    return nodeId;
 }
 
 void ObjectIdRenderer::prepare(

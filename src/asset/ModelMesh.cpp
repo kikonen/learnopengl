@@ -48,7 +48,7 @@ const std::string ModelMesh::str() const noexcept
 {
     return fmt::format(
         "<MODEL: id={}, rootDir={}, meshPath={}, name={}>",
-        m_objectID, m_rootDir, m_meshPath, m_meshName);
+        m_id, m_rootDir, m_meshPath, m_meshName);
 }
 
 const AABB ModelMesh::calculateAABB() const {

@@ -8,11 +8,11 @@
 
 
 namespace {
-    int idBase = 0;
+    ki::sprite_id idBase = 0;
 
     std::mutex type_id_lock{};
 
-    int nextID()
+    ki::sprite_id nextID()
     {
         std::lock_guard<std::mutex> lock(type_id_lock);
         return ++idBase;
@@ -20,7 +20,7 @@ namespace {
 }
 
 Sprite::Sprite()
-    : m_objectID(nextID())
+    : m_id(nextID())
 {
 }
 
@@ -28,7 +28,7 @@ Sprite::~Sprite()
 {
     KI_INFO(fmt::format(
         "Sprite: delete - ID={}",
-        m_objectID));
+        m_id));
 }
 
 Sprite* Sprite::find(
@@ -43,24 +43,24 @@ Sprite* Sprite::find(
 }
 
 Sprite* Sprite::findID(
-    const int objectID,
+    const ki::sprite_id id,
     std::vector<Sprite>& sprites)
 {
     const auto& it = std::find_if(
         sprites.begin(),
         sprites.end(),
-        [objectID](Sprite& m) { return m.m_objectID == objectID; });
+        [id](Sprite& m) { return m.m_id == id; });
     return it != sprites.end() ? &(*it) : nullptr;
 }
 
 const Sprite* Sprite::findID(
-    const int objectID,
+    const ki::sprite_id id,
     const std::vector<Sprite>& sprites)
 {
     const auto& it = std::find_if(
         sprites.begin(),
         sprites.end(),
-        [objectID](const Sprite& m) { return m.m_objectID == objectID; });
+        [id](const Sprite& m) { return m.m_id == id; });
     return it != sprites.end() ? &(*it) : nullptr;
 }
 

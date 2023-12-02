@@ -65,7 +65,7 @@ namespace loader {
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
         auto node = new Node(type);
-        node->m_id = m_assets.volumeUUID;
+        node->m_uuid = m_assets.volumeUUID;
 
         // NOTE KI m_radius = 1.73205078
         mesh->prepareVolume();
@@ -83,7 +83,7 @@ namespace loader {
 
             event::Event evt { event::Type::controller_add };
             evt.body.control = {
-                .target = node->m_objectID,
+                .target = node->m_id,
                 .controller = controller
             };
             m_dispatcher->send(evt);

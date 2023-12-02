@@ -6,13 +6,13 @@
 
 
 MoveSplineNode::MoveSplineNode(
-    int afterCommandId,
-    int objectID,
+    ki::command_id afterCommandId,
+    ki::object_id nodeId,
     float duration,
     bool relative,
     const glm::vec3& controlPoint,
     const glm::vec3& position) noexcept
-    : NodeCommand(afterCommandId, objectID, duration, relative),
+    : NodeCommand(afterCommandId, nodeId, duration, relative),
     m_controlPoint(controlPoint),
     m_position(position)
 {
@@ -30,7 +30,7 @@ void MoveSplineNode::bind(const UpdateContext& ctx, Node* node) noexcept
         //if (m_node->m_id == KI_UUID("65ce67c8-3efe-4b04-aaf9-fe384152c547")) {
         //    KI_INFO_OUT(fmt::format(
         //        "BIND-{}-{}-{}: pos=({}, {}, {}), target=({}, {}, {}), relative={}",
-        //        m_id, m_node->m_objectID, KI_UUID_STR(m_node->m_id),
+        //        m_id, m_node->m_id, KI_UUID_STR(m_node->m_id),
         //        nodePosition.x, nodePosition.y, nodePosition.z,
         //        m_end.x, m_end.y, m_end.z, m_relative));
         //}
@@ -75,7 +75,7 @@ void MoveSplineNode::execute(
     //        const auto& nodePosition = m_node->getPosition();
     //        KI_INFO_OUT(fmt::format(
     //            "FINISH-{}-{}-{}: pos=({}, {}, {}), target=({}, {}, {}), relative={}",
-    //            m_id, m_node->m_objectID, KI_UUID_STR(m_node->m_id),
+    //            m_id, m_node->m_id, KI_UUID_STR(m_node->m_id),
     //            nodePosition.x, nodePosition.y, nodePosition.z,
     //            m_end.x, m_end.y, m_end.z, m_relative));
     //    }

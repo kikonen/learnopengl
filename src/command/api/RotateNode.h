@@ -8,8 +8,8 @@ class RotateNode final : public NodeCommand
 {
 public:
     RotateNode(
-        int afterCommandId,
-        int objectID,
+        ki::command_id afterCommandId,
+        ki::object_id nodeId,
         float duration,
         bool relative,
         const glm::vec3& rotation) noexcept;

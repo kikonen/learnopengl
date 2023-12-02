@@ -97,12 +97,12 @@ Material* MaterialRegistry::find(
 }
 
 Material* MaterialRegistry::findID(
-    const int objectID)
+    const int id)
 {
     const auto& it = std::find_if(
         m_materials.begin(),
         m_materials.end(),
-        [objectID](Material& m) { return m.m_objectID == objectID; });
+        [id](Material& m) { return m.m_id == id; });
     return it != m_materials.end() ? &(*it) : nullptr;
 }
 

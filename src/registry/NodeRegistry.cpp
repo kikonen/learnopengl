@@ -20,7 +20,7 @@
 namespace {
     const NodeVector EMPTY_NODE_LIST;
 
-    const int NULL_PROGRAM_ID = 0;
+    const ki::program_id NULL_PROGRAM_ID = 0;
 }
 
 
@@ -50,8 +50,8 @@ NodeRegistry::~NodeRegistry()
 {
     // NOTE KI forbid access into deleted nodes
     {
-        m_objectIdToNode.clear();
         m_idToNode.clear();
+        m_uuidToNode.clear();
 
         m_parentToChildren.clear();
     }
@@ -140,25 +140,25 @@ void NodeRegistry::prepare(
         });
 }
 
-void NodeRegistry::selectNodeByObjectId(int objectID, bool append) const noexcept
+void NodeRegistry::selectNodeById(ki::object_id id, bool append) const noexcept
 {
     if (!append) {
-        for (auto& x : m_objectIdToNode) {
+        for (auto& x : m_idToNode) {
             x.second->setSelectionMaterialIndex(-1);
         }
     }
 
     clearSelectedCount();
 
-    Node* node = getNode(objectID);
+    Node* node = getNode(id);
     if (!node) return;
 
     if (append && node->isSelected()) {
-        KI_INFO(fmt::format("DESELECT: objectID={}", objectID));
+        KI_INFO(fmt::format("DESELECT: id={}", id));
         node->setSelectionMaterialIndex(-1);
     }
     else {
-        KI_INFO(fmt::format("SELECT: objectID={}", objectID));
+        KI_INFO(fmt::format("SELECT: id={}", id));
         node->setSelectionMaterialIndex(m_selectionMaterial.m_registeredIndex);
     }
 }
@@ -167,7 +167,7 @@ void NodeRegistry::attachNode(
     Node* node,
     const uuids::uuid& parentId) noexcept
 {
-    m_objectIdToNode.insert(std::make_pair(node->m_objectID, node));
+    m_idToNode.insert(std::make_pair(node->m_id, node));
 
     if (node->m_type->m_flags.skybox) {
         return bindSkybox(node);
@@ -227,19 +227,19 @@ void NodeRegistry::changeParent(
         Node* oldParent = node->getParent();
         if (oldParent == parent) return;
 
-        auto& oldChildren = m_parentToChildren[oldParent->m_objectID];
+        auto& oldChildren = m_parentToChildren[oldParent->m_id];
         const auto& it = std::remove_if(
             oldChildren.begin(),
             oldChildren.end(),
             [&node](auto& n) {
-                return n->m_objectID == node->m_objectID;
+                return n->m_id == node->m_id;
             });
         oldChildren.erase(it, oldChildren.end());
     }
 
     node->setParent(parent);
 
-    auto& children = m_parentToChildren[parent->m_objectID];
+    auto& children = m_parentToChildren[parent->m_id];
     children.push_back(node);
 }
 
@@ -262,7 +262,7 @@ void NodeRegistry::bindNode(
     {
         // NOTE KI more optimal to not switch between culling mode (=> group by it)
         const ProgramKey programKey(
-            program ? program->m_objectID : NULL_PROGRAM_ID,
+            program ? program->m_id : NULL_PROGRAM_ID,
             -type->m_priority,
             type->m_drawOptions);
 
@@ -272,7 +272,7 @@ void NodeRegistry::bindNode(
 
         const MeshTypeKey typeKey(type);
 
-        if (!node->m_id.is_nil()) m_idToNode[node->m_id] = node;
+        if (!node->m_uuid.is_nil()) m_uuidToNode[node->m_uuid] = node;
 
         {
             auto& vAll = allNodes[programKey][typeKey];
@@ -324,7 +324,7 @@ void NodeRegistry::bindNode(
             }
         }
 
-        if (node->m_id == m_assets.rootUUID) {
+        if (node->m_uuid == m_assets.rootUUID) {
             m_root = node;
         }
     }
@@ -351,8 +351,8 @@ void NodeRegistry::bindPendingChildren()
     std::vector<uuids::uuid> boundIds;
 
     for (const auto& [parentId, children] : m_pendingChildren) {
-        const auto& parentIt = m_idToNode.find(parentId);
-        if (parentIt == m_idToNode.end()) continue;
+        const auto& parentIt = m_uuidToNode.find(parentId);
+        if (parentIt == m_uuidToNode.end()) continue;
 
         boundIds.push_back(parentId);
 
@@ -362,7 +362,7 @@ void NodeRegistry::bindPendingChildren()
             bindNode(child);
 
             child->setParent(parent);
-            m_parentToChildren[parent->m_objectID].push_back(child);
+            m_parentToChildren[parent->m_id].push_back(child);
         }
     }
 
@@ -378,8 +378,8 @@ bool NodeRegistry::bindParent(
 {
     if (parentId.is_nil()) return true;
 
-    const auto& parentIt = m_idToNode.find(parentId);
-    if (parentIt == m_idToNode.end()) {
+    const auto& parentIt = m_uuidToNode.find(parentId);
+    if (parentIt == m_uuidToNode.end()) {
         KI_INFO(fmt::format("PENDING_CHILD: node={}", child->str()));
 
         m_pendingChildren[parentId].push_back(child);
@@ -390,7 +390,7 @@ bool NodeRegistry::bindParent(
     KI_INFO(fmt::format("BIND_PARENT: parent={}, child={}", parent->str(), child->str()));
 
     child->setParent(parent);
-    m_parentToChildren[parent->m_objectID].push_back(child);
+    m_parentToChildren[parent->m_id].push_back(child);
 
     return true;
 }
@@ -398,7 +398,7 @@ bool NodeRegistry::bindParent(
 void NodeRegistry::bindChildren(
     Node* parent)
 {
-    const auto& it = m_pendingChildren.find(parent->m_id);
+    const auto& it = m_pendingChildren.find(parent->m_uuid);
     if (it == m_pendingChildren.end()) return;
 
     for (auto& child : it->second) {
@@ -406,10 +406,10 @@ void NodeRegistry::bindChildren(
         bindNode(child);
 
         child->setParent(parent);
-        m_parentToChildren[parent->m_objectID].push_back(child);
+        m_parentToChildren[parent->m_id].push_back(child);
     }
 
-    m_pendingChildren.erase(parent->m_id);
+    m_pendingChildren.erase(parent->m_uuid);
 }
 
 void NodeRegistry::setActiveNode(Node* node)

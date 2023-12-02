@@ -6,6 +6,8 @@
 
 #include "asset/Assets.h"
 
+#include "ki/size.h"
+
 
 class UpdateContext;
 class Registry;
@@ -21,13 +23,13 @@ public:
 
     void update(const UpdateContext& ctx);
 
-    int addCommand(std::unique_ptr<Command> cmd) noexcept;
-    void cancel(int commandId) noexcept;
+    ki::command_id addCommand(std::unique_ptr<Command> cmd) noexcept;
+    void cancel(ki::command_id commandId) noexcept;
 
-    bool isAlive(int commandId) noexcept;
+    bool isAlive(ki::command_id commandId) noexcept;
 
 private:
-    bool isCanceled(int commandId) noexcept;
+    bool isCanceled(ki::command_id commandId) noexcept;
     bool isValid(const UpdateContext& ctx, Command* cmd) noexcept;
 
     void activateNext(const Command* cmd) noexcept;
@@ -56,9 +58,9 @@ private:
     int m_cleanupIndex = 0;
     int m_cleanupStep = 0;
 
-    std::unordered_map<int, Command*> m_commands;
+    std::unordered_map<ki::command_id, Command*> m_commands;
 
-    std::vector<int> m_canceled;
+    std::vector<ki::command_id> m_canceled;
 
-    //int m_oldestAliveCommandId = -1;
+    //ki::command_id m_oldestAliveCommandId = -1;
 };

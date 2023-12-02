@@ -102,7 +102,7 @@ public:
     void bind(const RenderContext& ctx);
 
 public:
-    const int typeID;
+    const ki::type_id typeID;
     const std::string m_name;
 
     EntityType m_entityType{ EntityType::origo };

@@ -64,7 +64,7 @@ namespace loader {
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
         auto node = new Node(type);
-        node->m_id = m_assets.cubeMapUUID;
+        node->m_uuid = m_assets.cubeMapUUID;
 
         //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
         node->setScale(4.f);
