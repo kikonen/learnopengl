@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "ki/uuid.h"
 #include "asset/Assets.h"
@@ -62,8 +63,13 @@ namespace loader
         glm::uvec3 readUVec3(const YAML::Node& node) const;
 
         glm::vec3 readScale3(const YAML::Node& node) const;
+
         glm::vec3 readRGB(const YAML::Node& node) const;
         glm::vec4 readRGBA(const YAML::Node& node) const;
+
+        // SPEC: [w, x, y, z]
+        glm::quat readQuat(const YAML::Node& node) const;
+
         glm::vec2 readRefractionRatio(const YAML::Node& node) const;
 
         uuids::uuid resolveUUID(

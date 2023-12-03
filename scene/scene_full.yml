@@ -950,7 +950,7 @@ entities:
       body:
         type: capsule
         density: 0.01
-        quat: [1, 0, 0, 0]
+        quat: [1, 0, 1, 0]
       geom:
         type: capsule
         size: [1, 0.5, 0]

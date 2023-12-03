@@ -102,7 +102,7 @@ namespace loader {
                 data.angularVel = readVec3(v);
             }
             else if (k == "quat") {
-                data.quat = glm::quat(readVec4(v));
+                data.quat = readQuat(v);
             }
             else if (k == "rotation") {
                 data.rotation = readVec3(v);

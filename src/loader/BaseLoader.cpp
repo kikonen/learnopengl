@@ -342,6 +342,26 @@ namespace loader
         return glm::vec4{ r, r, r, DEF_ALPHA };
     }
 
+    glm::quat BaseLoader::readQuat(const YAML::Node& node) const
+    {
+        if (node.IsSequence()) {
+            auto a = readFloatVector(node, 4);
+
+            while (a.size() < 3) {
+                a.push_back(0.0f);
+            }
+
+            // NOTE KI {w, x, y, z }
+            glm::quat q{ a[0], a[1], a[2], a[3] };
+            return q;// glm::normalize(q);
+        }
+
+        auto v = readFloat(node);
+        // NOTE KI {w, x, y, z }
+        glm::quat q{ v, 0.f, 0.f, 0.f };
+        return q;// glm::normalize(q);
+    }
+
     glm::vec2 BaseLoader::readRefractionRatio(const YAML::Node& node) const
     {
         auto a = readFloatVector(node, 2);
