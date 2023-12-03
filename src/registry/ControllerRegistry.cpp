@@ -63,14 +63,14 @@ void ControllerRegistry::addController(
     controller->prepare(m_assets, m_registry, *node);
 
     {
-        const auto& it = m_controllers.find(targetId);
-        if (it == m_controllers.end()) {
+        if (const auto& it = m_controllers.find(targetId);
+            it == m_controllers.end())
+        {
             m_controllers.insert(std::make_pair(targetId, std::vector<NodeController*>{}));
         }
     }
 
     {
-        const auto& it = m_controllers.find(targetId);
-        it->second.emplace_back(controller);
+        m_controllers.find(targetId)->second.emplace_back(controller);
     }
 }

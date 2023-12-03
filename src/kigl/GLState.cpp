@@ -62,8 +62,9 @@ void GLState::setEnabled(GLenum key, bool enabled) noexcept
 
 bool GLState::isEnabled(GLenum key) noexcept
 {
-    const auto& it = m_enabled.find(key);
-    if (it != m_enabled.end()) {
+    if (const auto& it = m_enabled.find(key);
+        it != m_enabled.end())
+    {
         return it->second == 1;
     }
     return false;

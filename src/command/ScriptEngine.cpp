@@ -102,8 +102,7 @@ void ScriptEngine::runScript(
 
     sol::function fn = m_lua[nodeFnName];
 
-    const auto& it = m_apis.find(node->m_id);
-    auto* api = it->second.get();
+    auto* api = m_apis.find(node->m_id)->second.get();
 
     fn(std::ref(node), std::ref(api), node->m_id);
 }

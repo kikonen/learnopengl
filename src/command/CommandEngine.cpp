@@ -113,8 +113,9 @@ void CommandEngine::activateNext(const Command* cmd) noexcept
     if (cmd->m_next.empty()) return;
 
     for (auto nextId : cmd->m_next) {
-        const auto& it = m_commands.find(nextId);
-        if (it != m_commands.end()) {
+        if (const auto& it = m_commands.find(nextId);
+            it != m_commands.end())
+        {
             it->second->m_ready = true;
         }
     }
@@ -157,8 +158,9 @@ void CommandEngine::processPending(const UpdateContext& ctx) noexcept
 
         bool ready = true;
         if (cmd->m_afterCommandId > 0) {
-            const auto& it = m_commands.find(cmd->m_afterCommandId);
-            if (it != m_commands.end()) {
+            if (const auto& it = m_commands.find(cmd->m_afterCommandId);
+                it != m_commands.end())
+            {
                 it->second->m_next.push_back(cmd->m_id);
                 ready = false;
             }

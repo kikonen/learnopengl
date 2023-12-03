@@ -49,8 +49,7 @@ public:
         if (!node) return nullptr;
 
         const auto& it = m_controllers.find(node->m_id);
-        if (it == m_controllers.end()) return nullptr;
-        return it->second[0];
+        return it != m_controllers.end() ? it->second[0] : nullptr;
     }
 
 	inline const std::vector<NodeController*>* getControllers(Node* node) const noexcept
@@ -58,8 +57,7 @@ public:
         if (!node) return nullptr;
 
         const auto& it = m_controllers.find(node->m_id);
-		if (it == m_controllers.end()) return nullptr;
-		return &it->second;
+		return it != m_controllers.end() ? &it->second : nullptr;
 	}
 
     void addController(

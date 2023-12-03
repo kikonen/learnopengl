@@ -288,10 +288,11 @@ unsigned int MeshLoader::resolveVertexIndex(
         material->m_id);
 
     {
-        const auto& it = vertexMapping.find(pos);
-        if (it != vertexMapping.end()) {
-            if (pos == glm::vec3{ 1, 1, 1 })
-                int x = 0;
+        if (const auto& it = vertexMapping.find(pos);
+            it != vertexMapping.end())
+        {
+            //if (pos == glm::vec3{ 1, 1, 1 })
+            //    int x = 0;
 
             for (const auto idx : it->second) {
                 const auto& old = vertices[idx];

@@ -29,8 +29,9 @@ SpriteRegistry::SpriteRegistry(
 
 void SpriteRegistry::add(Sprite& sprite)
 {
-    auto it = m_idToSprites.find(sprite.m_id);
-    if (it != m_idToSprites.end()) {
+    if (const auto& it = m_idToSprites.find(sprite.m_id);
+        it != m_idToSprites.end())
+    {
         auto& ref = it->second;
         for (int i = 0; i < ref->m_shapes.size(); i++) {
             sprite.m_shapes[i].m_registeredIndex = ref->m_shapes[i].m_registeredIndex;

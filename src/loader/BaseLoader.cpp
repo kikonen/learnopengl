@@ -400,8 +400,9 @@ namespace loader
             {
                 std::lock_guard<std::mutex> lock(uuid_lock);
 
-                const auto& it = m_ctx.m_autoIds->find(name);
-                if (it == m_ctx.m_autoIds->end()) {
+                if (const auto& it = m_ctx.m_autoIds->find(name);
+                    it == m_ctx.m_autoIds->end())
+                {
                     uuid = uuids::uuid_system_generator{}();
                     (*m_ctx.m_autoIds)[name] = uuid;
                 }

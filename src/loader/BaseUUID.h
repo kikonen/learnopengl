@@ -12,8 +12,7 @@ namespace loader {
 template <> struct fmt::formatter<loader::BaseUUID> {
     // Parses format specifications of the form ['f' | 'e'].
     constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
-        auto it = ctx.begin();
-        return it;
+        return ctx.begin();
     }
 
     template <typename FormatContext>
