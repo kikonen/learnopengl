@@ -104,8 +104,8 @@ namespace loader {
             else if (k == "quat") {
                 data.quat = readQuat(v);
             }
-            else if (k == "rotation") {
-                data.rotation = readVec3(v);
+            else if (k == "rot" || k == "rotation") {
+                data.quat = readRotation(v);
             }
             else {
                 reportUnknown("body_entry", k, v);
@@ -147,6 +147,12 @@ namespace loader {
             }
             else if (k == "size") {
                 data.size = readVec3(v);
+            }
+            else if (k == "quat") {
+                data.quat = readQuat(v);
+            }
+            else if (k == "rot" || k == "rotation") {
+                data.quat = readRotation(v);
             }
             else if (k == "plane") {
                 data.plane = readVec4(v);

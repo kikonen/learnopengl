@@ -36,8 +36,6 @@ namespace physics {
         // NOTE KI *ROTATED* using rotation of node
         // axis + angle
         glm::quat quat;
-
-        glm::vec3 rotation{ 0.f };
     };
 
     enum class GeomType {
@@ -55,6 +53,8 @@ namespace physics {
         // NOTE KI *SCALED* using scale of node
         // size{0] == radius
         glm::vec3 size{ 1.f };
+
+        glm::quat quat;
 
         glm::vec4 plane{ 0.f, 1.f, 0.f, 0.f };
 

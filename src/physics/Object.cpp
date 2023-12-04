@@ -10,6 +10,8 @@ namespace {
     constexpr int DIR_X = 1;
     constexpr int DIR_Y = 2;
     constexpr int DIR_Z = 3;
+
+    const glm::quat NULL_QUAT{ 0.f, 0.f, 0.f, 0.f };
 }
 
 namespace physics
@@ -57,16 +59,16 @@ namespace physics
             }
 
             dBodySetMass(m_bodyId, &m_mass);
-
-            const auto& q = m_body.quat;
-            dQuaternion quat{ q.w, q.x, q.y, q.z };
-            dBodySetQuaternion(m_bodyId, quat);
         }
 
         switch (m_geom.type) {
         case GeomType::plane: {
-            const auto& plane = m_geom.plane;
-            m_geomId = dCreatePlane(engine->m_spaceId, plane.x, plane.y, plane.z, plane.a);
+            const auto& q = m_geom.quat;
+            //const auto& plane = m_geom.plane;
+            //auto plane = glm::vec4(0, 0, 1, 0) * q;
+            const auto rotM = glm::toMat4(q);
+            auto plane = rotM * glm::vec4(0, 1, 0, 1);
+            m_geomId = dCreatePlane(engine->m_spaceId, plane.x, plane.y, plane.z, 0);
             break;
         }
         case GeomType::box: {
@@ -82,8 +84,6 @@ namespace physics
             break;
         }
         case GeomType::cylinder: {
-            const float radius = m_geom.size.x;
-            const float length = m_geom.size.y;
             m_geomId = dCreateCylinder(engine->m_spaceId, radius, length);
             break;
         }
@@ -94,9 +94,35 @@ namespace physics
             if (m_bodyId) {
                 dGeomSetBody(m_geomId, m_bodyId);
             }
-            m_node = node;
-            engine->registerObject(this);
+
+            //if (const auto& q = m_geom.quat;
+            //    m_geom.quat != NULL_QUAT)
+            //{
+            //    dQuaternion quat{ q.w, q.x, q.y, q.z };
+            //    dGeomSetQuaternion(m_geomId, quat);
+
+            //    dQuaternion quat2;
+            //    dGeomGetQuaternion(m_geomId, quat2);
+            //    int x = 0;
+            //}
         }
+
+        if (m_bodyId) {
+            if (const auto& q = m_body.quat;
+                q != NULL_QUAT)
+            {
+                dQuaternion quat{ q.w, q.x, q.y, q.z };
+                dBodySetQuaternion(m_bodyId, quat);
+
+                const dReal* qp = dBodyGetQuaternion(m_bodyId);
+                dQuaternion quat2{ qp[0], qp[1] , qp[2] , qp[3] };
+                int x = 0;
+            }
+        }
+
+        m_node = node;
+        engine->registerObject(this);
+
         updateToPhysics(true);
     }
 
@@ -105,47 +131,47 @@ namespace physics
         if (!(force || m_update)) return;
 
         const glm::vec3& pos = m_node->getWorldPosition();
+        {
 
-        if (m_bodyId) {
-            dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
-            if (m_body.kinematic) {
-                dBodySetKinematic(m_bodyId);
-            }
-            else {
-                dBodySetDynamic(m_bodyId);
+            if (m_bodyId) {
+                dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
+                if (m_body.kinematic) {
+                    dBodySetKinematic(m_bodyId);
+                }
+                else {
+                    dBodySetDynamic(m_bodyId);
+                }
             }
         }
 
         if (m_geomId) {
-            const auto& scale = m_node->getScale();
-
-            const auto& size = m_geom.size;
-            const auto& sz = scale * m_geom.size;
+            const auto& sz = m_geom.size;
             const float radius = sz.x;
             const float length = sz.y;
 
             switch (m_geom.type) {
             case GeomType::plane: {
-                const auto& plane = m_geom.plane;
-                dGeomPlaneSetParams(m_geomId, plane.x, plane.y, plane.z, pos.y);
+                dVector4 plane;
+                dGeomPlaneGetParams(m_geomId, plane);
+                dGeomPlaneSetParams(m_geomId, plane[0], plane[1], plane[2], pos.y);
                 break;
             }
-            case GeomType::box: {
-                dGeomBoxSetLengths(m_geomId, sz.x, sz.y, sz.z);
-                break;
-            }
-            case GeomType::sphere: {
-                dGeomSphereSetRadius(m_geomId, radius);
-                break;
-            }
-            case GeomType::capsule: {
-                dGeomCapsuleSetParams(m_geomId, radius, length);
-                break;
-            }
-            case GeomType::cylinder: {
-                dGeomCylinderSetParams(m_geomId, radius, length);
-                break;
-            }
+            //case GeomType::box: {
+            //    dGeomBoxSetLengths(m_geomId, sz.x, sz.y, sz.z);
+            //    break;
+            //}
+            //case GeomType::sphere: {
+            //    dGeomSphereSetRadius(m_geomId, radius);
+            //    break;
+            //}
+            //case GeomType::capsule: {
+            //    dGeomCapsuleSetParams(m_geomId, radius, length);
+            //    break;
+            //}
+            //case GeomType::cylinder: {
+            //    dGeomCylinderSetParams(m_geomId, radius, length);
+            //    break;
+            //}
             }
         }
     }

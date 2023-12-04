@@ -69,6 +69,7 @@ namespace loader
 
         // SPEC: [w, x, y, z]
         glm::quat readQuat(const YAML::Node& node) const;
+        glm::quat readRotation(const YAML::Node& node) const;
 
         glm::vec2 readRefractionRatio(const YAML::Node& node) const;
 

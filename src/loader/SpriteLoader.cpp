@@ -62,7 +62,7 @@ namespace loader {
             const YAML::Node& v = pair.second;
             const std::string k = util::toLower(key);
 
-            if (k == "rotation") {
+            if (k == "rot" || k == "rotation") {
                 shape.m_rotation = readFloat(v);
             }
             //else if (k == "material") {

@@ -362,6 +362,34 @@ namespace loader
         return q;// glm::normalize(q);
     }
 
+    glm::quat BaseLoader::readRotation(const YAML::Node& node) const
+    {
+        if (node.IsSequence()) {
+            auto a = readFloatVector(node, 3);
+
+            if (a.size() == 0) {
+                a.push_back(0.f);
+                a.push_back(0.f);
+                a.push_back(0.f);
+            }
+            else if (a.size() == 1) {
+                a.push_back(0);
+                a.push_back(a[0]);
+                a.push_back(0);
+            }
+            else if (a.size() == 2) {
+                a.push_back(a[0]);
+            }
+
+            glm::vec3 v{ a[0], a[1], a[2] };
+            return glm::quat(glm::radians(v));
+        }
+
+        auto a = readFloat(node);
+        glm::vec3 v{ 0, a, 0 };
+        return glm::quat(glm::radians(v));
+    }
+
     glm::vec2 BaseLoader::readRefractionRatio(const YAML::Node& node) const
     {
         auto a = readFloatVector(node, 2);

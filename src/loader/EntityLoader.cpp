@@ -221,7 +221,7 @@ namespace loader {
             else if (k == "position" || k == "pos") {
                 data.position = readVec3(v);
             }
-            else if (k == "rotation" || k == "rot") {
+            else if (k == "rot" || k == "rotation") {
                 data.rotation = readVec3(v);
             }
             else if (k == "scale") {

@@ -47,7 +47,7 @@ namespace loader
             else if (k == "pos") {
                 data.pos = readVec3(v);
             }
-            else if (k == "rotation") {
+            else if (k == "rot" || k == "rotation") {
                 data.rotation = readVec3(v);
             }
             else if (k == "orthagonal") {
