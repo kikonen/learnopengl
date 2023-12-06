@@ -47,16 +47,6 @@ public:
         return m_worldDir;
     }
 
-    const glm::vec3& getPosition() const noexcept {
-        return m_position;
-    }
-
-    void setPosition(const glm::vec3& pos) noexcept
-    {
-        m_position = pos;
-        m_nodeMatrixLevel = -1;
-    }
-
     DirLightUBO toDirLightUBO() const noexcept;
     PointLightUBO toPointightUBO() const noexcept;
     SpotLightUBO toSpotLightUBO() const noexcept;
@@ -87,9 +77,6 @@ private:
     glm::vec3 m_worldDir{ 0.0f };
     glm::vec3 m_worldPosition{ 0.0f };
     glm::vec3 m_worldTargetPosition{ 0.0f };
-
-    // pos relative to owning node
-    glm::vec3 m_position{ 0.0f };
 
     uuids::uuid m_targetId;
 

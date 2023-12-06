@@ -129,7 +129,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
         }
         center /= corners.size();
 
-        m_camera.setPosition(center - node->m_light->getWorldDirection());
+        m_camera.setWorldPosition(center - node->m_light->getWorldDirection());
         m_camera.setAxis(
             node->m_light->getWorldDirection(),
             glm::vec3{ 0.0f, 1.0f, 0.0f });

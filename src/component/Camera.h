@@ -114,14 +114,6 @@ public:
     void setFov(float fov) noexcept;
     void adjustFov(float adjustement) noexcept;
 
-    // NOTE KI for node camera; relative to node
-    void setPosition(const glm::vec3& pos) noexcept;
-
-    // NOTE KI for node camera; relative to node
-    inline const glm::vec3& getPosition() const noexcept {
-        return m_position;
-    }
-
     void setRotation(const glm::vec3& rotation) noexcept;
     inline const glm::vec3& getRotation() const noexcept {
         return m_rotation;
@@ -156,13 +148,11 @@ private:
     bool m_default = false;
 
     // NOTE KI *identity* matrix for standalone camera
-    glm::mat4 m_nodeModelMatrix{ 1.f };
+    glm::quat m_nodeQuat{ 1.f, 0.f, 0.f, 0.f };
     int m_nodeLevel = -1;
 
     float m_fov{ 45.f };
     float m_fovProjection = -1.0f;
-
-    glm::vec3 m_position{ 0.f };
 
     // *DIRECTION* at camera is pointing at (== target)
     // *NOT* required to be orthogonal to up

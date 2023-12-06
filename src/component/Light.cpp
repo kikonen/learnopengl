@@ -20,7 +20,7 @@ void Light::update(const UpdateContext& ctx, Node& node) noexcept
     const bool nodeChanged = m_nodeMatrixLevel != node.getMatrixLevel();
 
     if (nodeChanged) {
-        m_worldPosition = node.getModelMatrix() * glm::vec4(m_position, 1.f);
+        m_worldPosition = node.getWorldPosition();
     }
 
     if (m_spot || m_directional) {

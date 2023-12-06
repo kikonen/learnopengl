@@ -18,8 +18,6 @@ namespace loader {
         glm::vec3 front{ 0.f, 0.f, -1.f };
         glm::vec3 up{ 0.f, 1.f, 0.f };
 
-        // pos relative to owning node
-        glm::vec3 pos{ 0.f };
         glm::vec3 rotation{ 0.f };
     };
 }

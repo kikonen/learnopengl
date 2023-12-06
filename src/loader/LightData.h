@@ -18,8 +18,6 @@ namespace loader {
         bool enabled{ false };
         LightType type{ LightType::none };
 
-        glm::vec3 pos{ 0.f };
-
         BaseUUID targetIdBase;
 
         float linear{ 0.f };

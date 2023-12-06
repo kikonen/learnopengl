@@ -270,8 +270,8 @@ void Scene::update(const UpdateContext& ctx)
         m_commandEngine->update(ctx);
     }
 
-    if (m_registry->m_nodeRegistry->m_root) {
-        m_registry->m_nodeRegistry->m_root->update(ctx);
+    if (auto root = m_registry->m_nodeRegistry->m_root) {
+        root->update(ctx);
         m_registry->m_physicsEngine->update(ctx);
     }
 

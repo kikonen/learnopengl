@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "asset/Sphere.h"
 
@@ -42,9 +43,9 @@ struct NodeInstance {
     glm::mat4 m_translateMatrix{ 1.f };
     glm::mat4 m_scaleMatrix{ 1.f };
 
-    glm::vec3 m_rotation{ 0.f };
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    // quaternion rotation matrix
+    glm::quat m_quat{ 1.f, 0.f, 0.f, 0.f };
+    glm::vec3 m_rotation{ 0.f };
     glm::mat4 m_rotationMatrix{ 1.f };
 
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
@@ -126,6 +127,11 @@ struct NodeInstance {
         return m_rotation;
     }
 
+    inline const glm::quat& getQuat() const noexcept
+    {
+        return m_quat;
+    }
+
     inline void setPosition(const glm::vec3& pos) noexcept
     {
         auto& vec = m_translateMatrix[3];
@@ -204,6 +210,7 @@ struct NodeInstance {
     {
         if (m_rotation != rotation) {
             m_rotation = rotation;
+            m_quat = glm::quat(glm::radians(m_rotation));
             m_rotationDirty = true;
             m_dirty = true;
         }
@@ -293,7 +300,7 @@ struct NodeInstance {
     inline void updateModelAxis() noexcept
     {
         // NOTE KI w == 0; only rotation
-        m_viewFront = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_front, 0.f)));
+        m_viewFront = glm::normalize(m_quat * m_front);
 
         m_viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
         m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));

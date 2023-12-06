@@ -120,6 +120,10 @@ public:
         return m_instance.getRotation();
     }
 
+    inline const glm::quat& getQuat() const noexcept {
+        return m_instance.getQuat();
+    }
+
     inline void setScale(float scale) noexcept {
         m_instance.setScale(scale);
     }

@@ -167,8 +167,6 @@ void Node::updateModelMatrix() noexcept
     else {
         m_instance.updateRootMatrix();
     }
-
-    if (oldLevel == m_instance.m_matrixLevel) return;
 }
 
 void Node::setTagMaterialIndex(int index)

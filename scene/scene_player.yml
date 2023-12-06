@@ -9,21 +9,27 @@ cube_maps: {}
 entities:
   - name: Player
     id: player
-    model: texture_cube
-    pos: [0, 0, 0.0]
-    scale: 1.0
+    model: water_ball
     program: g_tex
+    pos: [0, 2, 0.0]
+    scale: 1.0
     material_modifier:
       tiling: 5
     render_flags:
       allow_normals: false
     active: true
-    camera:
-      default: true
     controllers:
       - type: pawn
-      - type: camera_zoom
-  - name: Four cubes
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    pos: [0, 3, 5]
+    rotation: [-15, 0, 0]
+    controller:
+      type: camera_zoom
+    camera:
+      default: true
+  - xname: Four cubes
     model: texture_cube_3
     program: g_tex
     scale: 1
@@ -32,4 +38,17 @@ entities:
       - pos: [5.0, 0.0, -5.0]
       - pos: [-5.0, 0.0, 5.0]
       - pos: [5.0, 0.0, 5.0]
+  - name: wooden floor
+    model: quad
+    xxmodel: woodwall
+    material: wood_floor
+    program: g_tex
+    rot: [270, 0, 0]
+    render_flags:
+      no_shadow: true
+    scale: [100, 100, 1]
 materials:
+  - name: wood_floor
+    map_pbr: textures\Planks 09 [8K]
+    parallax_depth: 0.0
+    tiling: 10

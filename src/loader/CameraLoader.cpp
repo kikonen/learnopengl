@@ -45,7 +45,7 @@ namespace loader
                 data.up = readVec3(v);
             }
             else if (k == "pos") {
-                data.pos = readVec3(v);
+                throw std::runtime_error{ fmt::format("POS obsolete: {}", renderNode(node)) };
             }
             else if (k == "rot" || k == "rotation") {
                 data.rotation = readVec3(v);
@@ -74,7 +74,6 @@ namespace loader
         if (data.orthagonal) {
             camera->setViewport(data.viewport);
         }
-        camera->setPosition(data.pos);
         camera->setAxis(data.front, data.up);
         camera->setRotation(data.rotation);
         camera->setFov(data.fov);

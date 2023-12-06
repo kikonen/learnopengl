@@ -52,7 +52,7 @@ namespace loader{
                 }
             }
             else if (k == "pos") {
-                data.pos = readVec3(v);
+                throw std::runtime_error{ fmt::format("POS obsolete: {}", renderNode(node)) };
             }
             else if (k == "target_id") {
                 data.targetIdBase = readUUID(v);
@@ -91,7 +91,6 @@ namespace loader{
         auto light = std::make_unique<Light>();
 
         light->m_enabled = true;
-        light->setPosition(data.pos);
         light->setTargetId(resolveUUID(data.targetIdBase, cloneIndex, tile));
 
         light->linear = data.linear;
