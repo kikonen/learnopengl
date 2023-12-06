@@ -113,7 +113,7 @@ entities:
         density: 0.01
       geom:
         type: sphere
-        size: 1,3
+        size: 1.3
   - name: Gold ball
     parent_id: origo
     model: water_ball
@@ -135,7 +135,7 @@ entities:
         density: 0.1
       geom:
         type: sphere
-        size: 1,3
+        size: 1.3
   - name: Silver ball
     parent_id: origo
     model: water_ball
@@ -159,7 +159,7 @@ entities:
         density: 0.05
       geom:
         type: sphere
-        size: 1,3
+        size: 1.3
   - name: Bronze ball
     parent_id: origo
     model: water_ball
@@ -178,7 +178,7 @@ entities:
         density: 0.3
       geom:
         type: sphere
-        size: 1,3
+        size: 1.3
   - name: Rusted iron ball
     parent_id: origo
     model: water_ball
@@ -226,12 +226,11 @@ entities:
     material: wood_floor
     program: g_tex
     pos: [0.0, 20.0, 0.0]
-    rot: [270, 0, 15]
+    rot: [270, 0, 0]
     physics:
       geom:
         type: plane
-        plane: [0, 1, 0, 0]
-        rot: [0, 0, 15]
+        rot: [0, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true
@@ -240,7 +239,7 @@ entities:
     model: quad
     material: fence
     program: g_tex
-    pos: [20.0, 25, -25]
+    pos: [-30.0, 0, -50]
     scale: 5
     rotation: [0, 270, 0]
     render_flags:
@@ -248,8 +247,14 @@ entities:
       xxblend_oit: true
       render_back: true
     repeat:
-      z_count: 5
+      z_count: 10
+      y_count: 4
       z_step: 10
+      y_step: 10
+    xphysics:
+      geom:
+        type: plane
+        rot: [0, 0, 270]
   - name: Object front
     type: sprite
     program: g_tex
