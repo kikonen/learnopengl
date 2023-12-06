@@ -24,6 +24,7 @@ entities:
     material_modifier:
       kd: [0.0, 0.2, 0.8, 1.0]
   - name: Player
+    id: player
     type: origo
     pos: [0, 25, 40]
     active: true

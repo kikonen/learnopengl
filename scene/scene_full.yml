@@ -43,7 +43,7 @@ entities:
     scale: 0.3
     script_file: scripts/seq_zero
   - name: Player
-    id: [auto, player]
+    id: player
     xxmodel: player
     type: origo
     pos: [-10, 12, -20.0]

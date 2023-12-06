@@ -5,6 +5,7 @@ skybox:
   material: skybox/polyhaven/borghese_gardens_2k.hdr
 entities:
   - name: Player
+    id: player
     type: origo
     pos: [0, 0, 0]
     active: true

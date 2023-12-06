@@ -9,6 +9,7 @@ root:
   type: origo
 entities:
   - name: Player
+    id: player
     type: origo
     pos: [0, 1, 15]
     active: true

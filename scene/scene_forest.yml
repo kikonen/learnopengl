@@ -5,6 +5,7 @@ skybox:
   material: skybox
 entities:
   - name: Player
+    id: player
     type: origo
     pos: [0, 10, 20]
     active: true

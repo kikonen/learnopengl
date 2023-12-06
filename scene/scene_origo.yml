@@ -10,6 +10,7 @@ root:
   type: origo
 entities:
   - name: Player
+    id: player
     type: origo
     model: water_ball
     material: silver_ball

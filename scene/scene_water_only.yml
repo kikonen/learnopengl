@@ -10,6 +10,7 @@ root:
   type: origo
 entities:
   - name: Player
+    id: player
     model: player
     pos: [0, 5, 5]
     scale: 0.8

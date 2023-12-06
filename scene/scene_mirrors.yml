@@ -8,6 +8,7 @@ lights: {}
 cube_maps: {}
 entities:
   - name: Player
+    id: player
     type: origo
     pos: [0, 0, 5]
     active: true

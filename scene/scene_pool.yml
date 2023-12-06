@@ -11,6 +11,7 @@ root:
   type: origo
 entities:
   - name: Player
+    id: player
     type: origo
     xxpos: [50, 30, 40]
     pos: [0, 9.5, 10]
