@@ -153,7 +153,9 @@ namespace physics
             case GeomType::plane: {
                 dVector4 plane;
                 dGeomPlaneGetParams(m_geomId, plane);
-                dGeomPlaneSetParams(m_geomId, plane[0], plane[1], plane[2], pos.y);
+                // NOTE KI distance into direction of plane normal
+                const auto dist = glm::dot(pos, glm::vec3{ plane[0], plane[1], plane[2] });
+                dGeomPlaneSetParams(m_geomId, plane[0], plane[1], plane[2], dist);
                 break;
             }
             //case GeomType::box: {
