@@ -87,12 +87,12 @@ entities:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
   - name: Point light origo 1
-    id: [auto, point-light-origo-1]
+    id: point-light-origo-1
     type: origo
     pos: [0.0, 4.0, 0.0]
     script_file: scripts/anim_rotate_light
   - name: Point light - green 1
-    parent_id: [auto, point-light-origo-1]
+    parent_id: point-light-origo-1
     pos: [-10, 0, 0]
     scale: 0.5
     model: light
@@ -109,7 +109,7 @@ entities:
       diffuse: [0.1, 0.8, 0.1, 1.0]
       intensity: 2000
   - name: Point light origo - quad
-    id: [auto, "point-light-origo-quad-{x}-{z}"]
+    id: "point-light-origo-quad-{x}-{z}"
     type: origo
     pos: [30.0, 4.0, -30.0]
     script_file: scripts/anim_rotate_light
@@ -119,7 +119,7 @@ entities:
       x_count: 2
       z_count: 2
   - name: Point light - quad
-    parent_id: [auto, "point-light-origo-quad-{x}-{z}"]
+    parent_id: "point-light-origo-quad-{x}-{z}"
     pos: [10, 0, 0]
     scale: 0.5
     model: light
@@ -132,7 +132,7 @@ entities:
       type: point
       linear: 0.35
       quadratic: 0.44
-      xtarget_id: [auto, "point-light-origo-quad-{x}-{z}"]
+      xtarget_id: "point-light-origo-quad-{x}-{z}"
       target_id: ROOT
       diffuse: [0.1, 0.1, 0.9, 1.0]
       intensity: 3000

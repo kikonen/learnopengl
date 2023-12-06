@@ -23,7 +23,7 @@ root:
   xxscript_file: scripts/seq_spin_root
 entities:
   - name: zero origo
-    id: [auto, zero-origo]
+    id: zero-origo
     type: origo
     pos: [0.0, 0.0, 0.0]
     script_file: scripts/seq_zero_origo
@@ -36,7 +36,7 @@ entities:
     pos: [0.0, 0.0, 0.0]
     scale: 0.2
   - name: Moving water ball
-    parent_id: [auto, zero-origo]
+    parent_id: zero-origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 0.0]
@@ -63,19 +63,19 @@ entities:
       - type: camera_zoom
   - name: Player cube map 1
     type: origo
-    parent_id: [auto, player]
+    parent_id: player
     pos: [0, 0, 1]
     render_flags:
       cube_map: true
   - name: Sun light origo
-    id: [auto, light-dir-origo]
-    parent_id: [auto, planet-origo]
+    id: light-dir-origo
+    parent_id: planet-origo
     type: origo
     pos: [0.0, 400.0, 0.0]
     rotation: [0.0, 25.0, 0.0]
     script_file: scripts/anim_sun_light
   - name: Sun light
-    parent_id: [auto, light-dir-origo]
+    parent_id: light-dir-origo
     pos: [0, 0, 600]
     scale: 20
     model: light
@@ -90,34 +90,34 @@ entities:
       kd: [0.0, 0.7, 0.0, 1.0]
     light:
       type: directional
-      target_id: [auto, dir-light-target]
+      target_id: dir-light-target
       diffuse: [0.4, 0.4, 0.4, 1.0]
       intensity: 20000
   - name: Moving point light origo
-    parent_id: [auto, zero-origo]
+    parent_id: zero-origo
     type: origo
     pos: [0, 14, 0]
     clones:
       - pos: [-15.0, 14.0, -15.0]
-        id: [auto, light-1]
+        id: light-1
       - pos: [15.0, 14.0, -15.0]
-        id: [auto, light-2]
+        id: light-2
       - pos: [-15.0, 14.0, 15.0]
-        id: [auto, light-3]
+        id: light-3
       - pos: [15.0, 14.0, 15.0]
-        id: [auto, light-4]
+        id: light-4
       - pos: [-25.0, 10.0, -25.0]
-        id: [auto, light-5]
+        id: light-5
       - pos: [25.0, 10.0, -25.0]
-        id: [auto, light-6]
+        id: light-6
       - pos: [-25, 10.0, 25.0]
-        id: [auto, light-7]
+        id: light-7
       - pos: [25.0, 10.0, 25.0]
-        id: [auto, light-8]
+        id: light-8
     script_file: scripts/anim_moving_point_light
   - name: Moving point light
     desc: "NOTE overriding material in clones is *NOT* supported"
-    parent_id: [auto, zero-origo]
+    parent_id: zero-origo
     pos: [0, 0, 0]
     scale: 0.5
     model: light
@@ -126,15 +126,15 @@ entities:
       no_shadow: true
     clones:
       - pos: [0.0, 0.0, 10.0]
-        parent_id: [auto, light-1]
+        parent_id: light-1
       - pos: [0.0, 0.0, 10.0]
-        parent_id: [auto, light-2]
+        parent_id: light-2
       - pos: [0.0, 0.0, 10.0]
-        parent_id: [auto, light-3]
+        parent_id: light-3
       - pos: [0.0, 0.0, 10.0]
-        parent_id: [auto, light-4]
+        parent_id: light-4
       - pos: [0.0, 0.0, 15.0]
-        parent_id: [auto, light-5]
+        parent_id: light-5
         material_modifier:
           kd: [0.8, 0.0, 0.0, 1.0]
         light:
@@ -142,7 +142,7 @@ entities:
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
-        parent_id: [auto, light-6]
+        parent_id: light-6
         material_modifier:
           kd: [0.0, 0.9, 0.0, 1.0]
         light:
@@ -150,7 +150,7 @@ entities:
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
-        parent_id: [auto, light-7]
+        parent_id: light-7
         material_modifier:
           kd: [0.0, 0.0, 0.9, 1.0]
         light:
@@ -158,7 +158,7 @@ entities:
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
-        parent_id: [auto, light-8]
+        parent_id: light-8
         material_modifier:
           kd: [0.9, 0.0, 0.9, 1.0]
         light:
@@ -173,13 +173,13 @@ entities:
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
   - name: Rock light origo
-    id: [auto, rock-light-origo]
-    parent_id: [auto, rock-origo]
+    id: rock-light-origo
+    parent_id: rock-origo
     type: origo
     pos: [0.0, 10.0, 0.0]
     script_file: scripts/anim_rock_light
   - name: Rock light
-    parent_id: [auto, rock-light-origo]
+    parent_id: rock-light-origo
     pos: [-10, 0, 0]
     scale: 0.5
     model: light
@@ -194,7 +194,7 @@ entities:
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
   - name: Active node
-    parent_id: [auto, zero-origo]
+    parent_id: zero-origo
     model: texture_cube
     material_modifier:
       tiling_x: 2
@@ -203,7 +203,7 @@ entities:
     pos: [0, 15, 0]
     script_file: scripts/anim_node_path
   - name: Active node around rock
-    parent_id: [auto, rock-origo]
+    parent_id: rock-origo
     model: texture_cube
     program: g_tex
     pos: [0, -5, 0]
@@ -410,7 +410,7 @@ entities:
     scale: 1.0
   - name: Teapot
     desc: Dir light target (back needed due to gap in lid)
-    id: [auto, dir-light-target]
+    id: dir-light-target
     model: smooth_teapot
     program: g_tex
     pos: [-5.0, 25.0, -5.0]
@@ -528,7 +528,7 @@ entities:
       map_pbr: textures\Metal007_1K-PNG
   - name: ball origo
     type: origo
-    id: [auto, ball-origo]
+    id: ball-origo
     pos: [5.0, 30.0, 15.0]
   - name: Silver ball
     model: water_ball
@@ -546,7 +546,7 @@ entities:
       geom:
         type: sphere
   - name: Bronze ball
-    parent_id: [auto, ball-origo]
+    parent_id: ball-origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 5.0]
@@ -556,7 +556,7 @@ entities:
     material_modifier:
       metal: [1, 0.3, 0, 1]
   - name: Copper ball
-    parent_id: [auto, ball-origo]
+    parent_id: ball-origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 10.0]
@@ -566,7 +566,7 @@ entities:
     material_modifier:
       metal: [1, 0.3, 0, 1]
   - name: Plasma ball
-    parent_id: [auto, cube-3]
+    parent_id: cube-3
     model: ball_volume
     material: plasma_ball
     force_material: true
@@ -600,13 +600,13 @@ entities:
     script_file: scripts/anim_four_cubes
     clones:
       - pos: [-5.0, 20.0, -5.0]
-        id: [auto, cube-1]
+        id: cube-1
       - pos: [5.0, 20.0, -5.0]
-        id: [auto, cube-2]
+        id: cube-2
       - pos: [-5.0, 20.0, 5.0]
-        id: [auto, cube-3]
+        id: cube-3
       - pos: [5.0, 20.0, 5.0]
-        id: [auto, cube-4]
+        id: cube-4
   - name: Blend cubes
     model: rubik_cube
     program: g_tex
@@ -769,11 +769,11 @@ entities:
       y_step: 0
       z_step: 256
   - name: Planet origo
-    id: [auto, planet-origo]
+    id: planet-origo
     type: origo
     pos: [10.0, 150.0, 200.0]
   - name: Planet
-    parent_id: [auto, planet-origo]
+    parent_id: planet-origo
     model: [planet, planet]
     program: g_tex
     material_modifier:
@@ -782,14 +782,14 @@ entities:
     scale: 10
     script_file: scripts/anim_planet
   - xname: Rock origo
-    id: [auto, rock-origo]
-    parent_id: [auto, planet-origo]
+    id: rock-origo
+    parent_id: planet-origo
     type: origo
     pos: [0.0, -50.0, 0.0]
     render_flags:
       cube_map: true
   - name: Rock
-    parent_id: [auto, rock-origo]
+    parent_id: rock-origo
     model: [rock, rock]
     program: g_tex
     pos: [0.0, 0, 0.0]
@@ -797,7 +797,7 @@ entities:
     material_modifier:
       xreflection: 0.6
   - name: Asteroid belt
-    parent_id: [auto, planet-origo]
+    parent_id: planet-origo
     model: [rock, rock]
     instanced: true
     program: g_tex
