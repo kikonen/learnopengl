@@ -259,15 +259,15 @@ entities:
     material: wood_floor
     program: g_tex
     pos: [0.0, 20.0, 0.0]
-    rot: [270, 0, 0]
+    rot: [270, 0, 15]
     physics:
       geom:
         type: plane
-        rot: [0, 0, 0]
+        rot: [0, 0, 15]
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [100, 100, 1]
+    scale: [200, 200, 1]
   - name: Fence
     model: quad
     material: fence
@@ -307,12 +307,13 @@ entities:
         type: capsule
         size: [0.5, 3, 0]
   - name: world_x_minus
-    type: origo
+    xtype: origo
     model: quad
     program: g_tex
-    material: pool_floor
-    scale: 1000
+    material: world_barrier
+    scale: 100
     render_flags:
+      alpha: true
       no_shadow: true
     pos: [-100, 0, 0]
     rot: [0, 90, 0]
@@ -321,12 +322,13 @@ entities:
         type: plane
         rot: [0, 0, 270]
   - name: world_x_plus
-    type: origo
+    xtype: origo
     model: quad
     program: g_tex
-    material: pool_floor
-    scale: 1000
+    material: world_barrier
+    scale: 100
     render_flags:
+      alpha: true
       no_shadow: true
     pos: [100, 0, 0]
     rot: [0, 270, 0]
@@ -335,12 +337,13 @@ entities:
         type: plane
         rot: [0, 0, 90]
   - name: world_z_minus
-    type: origo
+    xtype: origo
     model: quad
     program: g_tex
-    material: pool_floor
-    scale: 1000
+    material: world_barrier
+    scale: 100
     render_flags:
+      alpha: true
       no_shadow: true
     pos: [0, 0, -100]
     rot: [0, 0, 0]
@@ -349,12 +352,13 @@ entities:
         type: plane
         rot: [90, 0, 0]
   - name: world_z_plus
-    type: origo
+    xtype: origo
     program: g_tex
     model: quad
-    material: pool_floor
-    scale: 1000
+    material: world_barrier
+    scale: 100
     render_flags:
+      alpha: true
       no_shadow: true
     pos: [0, 0, 100]
     rot: [180, 0, 0]
@@ -374,12 +378,15 @@ materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
     parallax_depth: 0.0
-    tiling: 10
+    tiling: 20
   - name: fence
     kd: [0.800000, 0.800000, 0.800000, 1.0]
     map_pbr: textures\Fence007A_4K-JPG
     parallax_depth: 0.0
     tiling: 1
+  - name: world_barrier
+    map_pbr: textures\Fence007A_4K-JPG
+    tiling: 4
   - name: skeleton_front
     map_kd: sprites/skeleton/skeleton_front.png
   - name: skeleton_back
