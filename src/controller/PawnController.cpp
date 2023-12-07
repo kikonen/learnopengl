@@ -43,6 +43,11 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
     if (input->isModifierDown(Modifier::SHIFT)) {
         moveSpeed = m_speedMoveRun;
         rotateSpeed = m_speedRotateRun;
+
+        if (input->isModifierDown(Modifier::ALT)) {
+            moveSpeed *= 10;
+            rotateSpeed *= 2;
+        }
     }
 
     {
