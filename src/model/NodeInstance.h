@@ -20,8 +20,8 @@ struct EntitySSBO;
 //
 struct NodeInstance {
     bool m_dirty = true;
-    bool m_rotationDirty = true;
-    bool m_entityDirty = true;
+    bool m_dirtyRotation = true;
+    bool m_dirtyEntity = true;
     bool m_uniformScale = false;
 
     int m_parentMatrixLevel = -1;
@@ -77,7 +77,7 @@ struct NodeInstance {
     {
         if (m_flags != flags) {
             m_flags = flags;
-            m_entityDirty = true;
+            m_dirtyEntity = true;
         }
     }
 
@@ -90,7 +90,7 @@ struct NodeInstance {
     {
         if (m_materialIndex != materialIndex) {
             m_materialIndex = materialIndex;
-            m_entityDirty = true;
+            m_dirtyEntity = true;
         }
     }
 
@@ -103,7 +103,7 @@ struct NodeInstance {
     {
         if (m_volume.getVolume() != volume) {
             m_volume = volume;
-            m_entityDirty = true;
+            m_dirtyEntity = true;
         }
     }
 
@@ -211,7 +211,7 @@ struct NodeInstance {
         if (m_rotation != rotation) {
             m_rotation = rotation;
             m_quat = glm::quat(glm::radians(m_rotation));
-            m_rotationDirty = true;
+            m_dirtyRotation = true;
             m_dirty = true;
         }
     }
@@ -278,7 +278,7 @@ struct NodeInstance {
 
         m_dirty = false;
         m_matrixLevel++;
-        m_entityDirty = true;
+        m_dirtyEntity = true;
     }
 
     inline void updateModelMatrix(const NodeInstance& parent) noexcept
@@ -294,7 +294,7 @@ struct NodeInstance {
         m_dirty = false;
         m_parentMatrixLevel = parent.m_matrixLevel;
         m_matrixLevel++;
-        m_entityDirty = true;
+        m_dirtyEntity = true;
     }
 
     inline void updateModelAxis() noexcept

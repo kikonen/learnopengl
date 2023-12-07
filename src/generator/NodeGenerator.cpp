@@ -18,7 +18,7 @@ void NodeGenerator::updateEntity(
     int entityIndex = m_reservedFirst;
 
     for (auto& instance : m_instances) {
-        if (!instance.m_entityDirty) continue;
+        if (!instance.m_dirtyEntity) continue;
         if (instance.m_entityIndex == -1) continue;
 
         auto* entity = entityRegistry->updateEntity(instance.m_entityIndex, true);

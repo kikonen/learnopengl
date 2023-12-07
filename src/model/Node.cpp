@@ -133,7 +133,7 @@ void Node::updateEntity(
 {
     if (m_instance.m_entityIndex != -1)
     {
-        if (m_instance.m_entityDirty) {
+        if (m_instance.m_dirtyEntity) {
             auto* entity = entityRegistry->updateEntity(m_instance.m_entityIndex, true);
 
             entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
@@ -173,7 +173,7 @@ void Node::setTagMaterialIndex(int index)
 {
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
-        m_instance.m_entityDirty = true;
+        m_instance.m_dirtyEntity = true;
     }
 }
 
@@ -181,7 +181,7 @@ void Node::setSelectionMaterialIndex(int index)
 {
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
-        m_instance.m_entityDirty = true;
+        m_instance.m_dirtyEntity = true;
     }
 }
 
