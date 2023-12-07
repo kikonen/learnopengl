@@ -670,7 +670,7 @@ entities:
     physics:
       geom:
         type: plane
-        plane: [0, 1, 0, 0]
+        rot: [0, 0, 0]
   - name: Pool side
     model: pool_brick
     program: g_tex
@@ -979,6 +979,62 @@ entities:
         rot: [0, 180, 0]
       - pos: [0.0, 0.0, -100.0]
         rot: [0, 0, 0]
+  - name: world_x_minus
+    type: origo
+    model: quad
+    program: g_tex
+    material: pool_floor
+    scale: 1000
+    render_flags:
+      no_shadow: true
+    pos: [-1200, 0, 0]
+    rot: [0, 90, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [0, 0, 270]
+  - name: world_x_plus
+    type: origo
+    model: quad
+    program: g_tex
+    material: pool_floor
+    scale: 1000
+    render_flags:
+      no_shadow: true
+    pos: [850, 0, 0]
+    rot: [0, 270, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [0, 0, 90]
+  - name: world_z_minus
+    type: origo
+    model: quad
+    program: g_tex
+    material: pool_floor
+    scale: 1000
+    render_flags:
+      no_shadow: true
+    pos: [0, 0, -900]
+    rot: [0, 0, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [90, 0, 0]
+  - name: world_z_plus
+    type: origo
+    program: g_tex
+    model: quad
+    material: pool_floor
+    scale: 1000
+    render_flags:
+      no_shadow: true
+    pos: [0, 0, 1150]
+    rot: [180, 0, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [270, 0, 0]
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]
