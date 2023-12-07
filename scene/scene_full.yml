@@ -950,10 +950,10 @@ entities:
       body:
         type: capsule
         density: 0.01
-        quat: [1, 0, 1, 0]
+        rot: [90, 0, 0]
       geom:
         type: capsule
-        size: [1, 0.5, 0]
+        size: [1, 4, 0]
     script_file: scripts/seq_skeleton_army
   - name: Giant wooden box
     model: quad
