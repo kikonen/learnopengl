@@ -185,12 +185,12 @@ namespace physics
         const dReal* dpos = dBodyGetPosition(m_bodyId);
 
         glm::vec3 pos = { dpos[0], dpos[1], dpos[2] };
-        if (pos.y < -40) {
-            pos.y = -40;
+        if (pos.y < -400) {
+            pos.y = -400;
             dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
         }
-        if (pos.y > 40) {
-            pos.y = 40;
+        if (pos.y > 400) {
+            pos.y = 400;
             dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
         }
         pos -= m_node->getParent()->getWorldPosition();
