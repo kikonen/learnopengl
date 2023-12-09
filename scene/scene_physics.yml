@@ -254,12 +254,12 @@ entities:
       tiling: 3
       parallax_depth: 0.0
   - name: wooden floor
-    model: quad
+    model: plane
     xxmodel: woodwall
     material: wood_floor
     program: g_tex
     pos: [0.0, 20.0, 0.0]
-    rot: [270, 0, 15]
+    rot: [0, 0, 15]
     physics:
       geom:
         type: plane
@@ -267,7 +267,7 @@ entities:
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [200, 200, 1]
+    scale: 200
   - name: Fence
     model: quad
     material: fence
