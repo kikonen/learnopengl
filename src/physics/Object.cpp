@@ -115,7 +115,14 @@ namespace physics
                 dBodySetQuaternion(m_bodyId, quat);
 
                 const dReal* qp = dBodyGetQuaternion(m_bodyId);
-                dQuaternion quat2{ qp[0], qp[1] , qp[2] , qp[3] };
+
+                glm::quat quat2{
+                    static_cast<float>(qp[0]),
+                    static_cast<float>(qp[1]),
+                    static_cast<float>(qp[2]),
+                    static_cast<float>(qp[3]) };
+                auto deg = util::quatToDegrees(quat2);
+
                 int x = 0;
             }
         }
@@ -187,7 +194,7 @@ namespace physics
         const dReal* dquat = dBodyGetQuaternion(m_bodyId);
 
         glm::vec3 pos = { dpos[0], dpos[1], dpos[2] };
-        const glm::quat rot{
+        glm::quat rot{
             static_cast<float>(dquat[0]),
             static_cast<float>(dquat[1]),
             static_cast<float>(dquat[2]),
@@ -203,9 +210,10 @@ namespace physics
         }
         pos -= m_node->getParent()->getWorldPosition();
 
-        // TODO KI how to remove parent rotation from quat?
+        // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
+        auto rotBase = glm::normalize(glm::conjugate(m_body.quat) * rot);
 
         m_node->setPosition(pos);
-        m_node->setQuatRotation(rot);
+        m_node->setQuatRotation(rotBase);
     }
 }
