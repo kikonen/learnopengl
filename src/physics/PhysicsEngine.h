@@ -72,6 +72,9 @@ namespace physics {
         float m_initialDelay{ 0.f };
         float m_remainder{ 0.f };
 
+        size_t m_invokeCount{ 0 };
+        size_t m_stepCount{ 0 };
+
         int m_staticPhysicsLevel{ -1 };
         int m_physicsLevel{ -1 };
 

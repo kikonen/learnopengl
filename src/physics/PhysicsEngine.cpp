@@ -120,6 +120,9 @@ namespace physics
             m_remainder = dtTotal - n * STEP_SIZE;
 
             if (n > 0) {
+                m_invokeCount++;
+                m_stepCount += n;
+
                 //std::cout << ctx.m_clock.elapsedSecs << " - " << n << '\n';
 
                 //std::cout << "[BEFORE]\n";
