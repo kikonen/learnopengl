@@ -1007,6 +1007,36 @@ entities:
       geom:
         type: plane
         rot: [0, 0, 90]
+  - xname: world_y_minus
+    type: origo
+    model: quad
+    program: g_tex
+    material: world_barrier
+    scale: 100
+    render_flags:
+      alpha: true
+      no_shadow: true
+    pos: [0, -400, 0]
+    rot: [270, 0, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [0, 0, 0]
+  - xname: world_y_plus
+    type: origo
+    program: g_tex
+    model: quad
+    material: world_barrier
+    scale: 100
+    render_flags:
+      alpha: true
+      no_shadow: true
+    pos: [0, 400, 0]
+    rot: [90, 0, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [90, 0, 0]
   - name: world_z_minus
     type: origo
     model: quad
