@@ -37,30 +37,30 @@ namespace {
 Viewport::Viewport(
     std::string_view name,
     const glm::vec3& pos,
-    const glm::vec3& rotation,
+    const glm::vec3& degrees,
     const glm::vec2& size,
     bool m_useDirectBlit,
     unsigned int textureId,
     Program* program)
     : m_name(name),
     m_position(pos),
-    m_rotation(rotation),
+    m_degreesRotation(degrees),
     m_size(size),
     m_useDirectBlit(false && m_useDirectBlit),
     m_textureId(textureId),
     m_program(program)
 {
     const glm::vec3 origPosition{ m_position };
-    const glm::vec3 origRotation{ m_rotation };
+    const glm::vec3 origDegrees{ m_degreesRotation };
 
-    setUpdate([this, origPosition, origRotation](Viewport& vp, const UpdateContext& ctx) {
-        glm::vec3 rotation{ origRotation};
-        rotation.y = 5.f * sinf(static_cast<float>(ctx.m_clock.ts));
+    setUpdate([this, origPosition, origDegrees](Viewport& vp, const UpdateContext& ctx) {
+        glm::vec3 rot{ origDegrees};
+        rot.y = 5.f * sinf(static_cast<float>(ctx.m_clock.ts));
 
         glm::vec3 position{ origPosition };
         position.z += 0.001f;
 
-        //setRotation(rotation);
+        //setDegreesRotation(rot);
         //setPosition(position);
     });
 }
@@ -115,7 +115,7 @@ void Viewport::updateTransform(const UpdateContext& ctx)
         vec[1] = pos.y;
         vec[2] = pos.z;
 
-        rotate = glm::toMat4(glm::quat(glm::radians(m_rotation)));
+        rotate = glm::toMat4(glm::quat(glm::radians(m_degreesRotation)));
 
         scale[0][0] = m_size.x / 2.f;
         scale[1][1] = m_size.y / 2.f;

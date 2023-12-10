@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "NodeCommand.h"
 
@@ -12,7 +13,7 @@ public:
         ki::object_id nodeId,
         float duration,
         bool relative,
-        const glm::vec3& rotation) noexcept;
+        const glm::vec3& degrees) noexcept;
 
     virtual void bind(
         const UpdateContext& ctx,
@@ -22,7 +23,7 @@ public:
         const UpdateContext& ctx) noexcept override;
 
 private:
-    const glm::vec3 m_rotation;
-    glm::vec3 m_end{ 0.f };
-    glm::vec3 m_previous{ 0.f };
+    const glm::vec3 m_degreesRotation;
+    glm::quat m_end{ 1.f, 0.f, 0.f, 0.f };
+    glm::quat m_previous{ 1.f, 0.f, 0.f, 0.f };
 };

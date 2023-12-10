@@ -34,7 +34,7 @@ void Camera::update(const UpdateContext& ctx, Node& node) noexcept
     const bool nodeChanged = m_nodeLevel != node.getMatrixLevel();
     if (!nodeChanged) return;
 
-    m_nodeQuat = node.getParent()->getQuat() * node.getQuat();
+    m_nodeQuat = node.getParent()->getQuatRotation() * node.getQuatRotation();
     m_worldPosition = node.getWorldPosition();
 
     m_dirty = true;
@@ -161,11 +161,11 @@ void Camera::setWorldPosition(const glm::vec3& pos) noexcept
     }
 }
 
-void Camera::setRotation(const glm::vec3& rotation) noexcept
+void Camera::setDegreesRotation(const glm::vec3& euler) noexcept
 {
-    if (m_rotation != rotation)
+    if (m_degreesRotation != euler)
     {
-        m_rotation = rotation;
+        m_degreesRotation = euler;
         m_dirty = true;
     }
 }
@@ -192,7 +192,7 @@ void Camera::updateCamera() const noexcept
         glm::vec3 viewFront;
         {
             // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-            glm::quat quat = glm::quat(glm::radians(m_rotation));
+            glm::quat quat = glm::quat(glm::radians(m_degreesRotation));
             viewFront = m_nodeQuat * quat * m_front;
         }
 

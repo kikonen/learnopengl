@@ -114,9 +114,9 @@ public:
     void setFov(float fov) noexcept;
     void adjustFov(float adjustement) noexcept;
 
-    void setRotation(const glm::vec3& rotation) noexcept;
-    inline const glm::vec3& getRotation() const noexcept {
-        return m_rotation;
+    void setDegreesRotation(const glm::vec3& rotation) noexcept;
+    inline const glm::vec3& getDegreesRotation() const noexcept {
+        return m_degreesRotation;
     }
 
     void updateCamera() const noexcept;
@@ -185,7 +185,7 @@ private:
     //m_yaw = rotation.y;
     //m_pitch = rotation.x;
     //m_roll = rotation.z;
-    glm::vec3 m_rotation{ 0.f };
+    glm::vec3 m_degreesRotation{ 0.f };
 
     mutable Frustum m_frustum;
 

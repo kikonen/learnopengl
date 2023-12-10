@@ -1,5 +1,7 @@
 #include "PawnController.h"
 
+#include "util/glm_util.h"
+
 #include "model/Node.h"
 
 #include "engine/UpdateContext.h"
@@ -52,16 +54,21 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
 
     {
         if (true) {
-            glm::vec3 rotation = m_node->getRotation();
+            bool changed = false;
+            glm::vec3 adjust{ 0.f };
 
             if (input->isKeyDown(Key::ROTATE_LEFT)) {
-                rotation.y += rotateSpeed.y * dt;
+                adjust.y = rotateSpeed.y * dt;
+                changed = true;
             }
             if (input->isKeyDown(Key::ROTATE_RIGHT)) {
-                rotation.y -= rotateSpeed.y * dt;
+                adjust.y = -rotateSpeed.y * dt;
+                changed = true;
             }
 
-            m_node->setRotation({ rotation.x, rotation.y, rotation.z });
+            if (changed) {
+                m_node->adjustQuatRotation(util::degreesToQuat(adjust));
+            }
         }
     }
 
@@ -122,17 +129,17 @@ void PawnController::onMouseMove(Input* input, float xoffset, float yoffset)
     bool changed = false;
     const float MAX_ANGLE = 89.f;
 
-    glm::vec3 rotation = m_node->getRotation();
+    glm::vec3 rot = m_node->getDegreesRotation();
 
     if (xoffset != 0) {
-        auto yaw = rotation.y - m_speedMouseSensitivity.x * xoffset;
+        auto yaw = rot.y - m_speedMouseSensitivity.x * xoffset;
 
-        rotation.y = static_cast<float>(yaw);
+        rot.y = static_cast<float>(yaw);
         changed = true;
     }
 
     if (yoffset != 0) {
-        auto pitch = rotation.x + m_speedMouseSensitivity.y * yoffset;
+        auto pitch = rot.x + m_speedMouseSensitivity.y * yoffset;
 
         if (pitch < -MAX_ANGLE) {
             pitch = -MAX_ANGLE;
@@ -141,11 +148,11 @@ void PawnController::onMouseMove(Input* input, float xoffset, float yoffset)
             pitch = MAX_ANGLE;
         }
 
-        rotation.x = static_cast<float>(pitch);
+        rot.x = static_cast<float>(pitch);
         changed = true;
     }
 
     if (changed) {
-        m_node->setRotation(rotation);
+        m_node->setDegreesRotation(rot);
     }
 }

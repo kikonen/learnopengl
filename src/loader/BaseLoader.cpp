@@ -362,7 +362,7 @@ namespace loader
         return q;// glm::normalize(q);
     }
 
-    glm::quat BaseLoader::readRotation(const YAML::Node& node) const
+    glm::vec3 BaseLoader::readDegreesRotation(const YAML::Node& node) const
     {
         if (node.IsSequence()) {
             auto a = readFloatVector(node, 3);
@@ -381,13 +381,11 @@ namespace loader
                 a.push_back(a[0]);
             }
 
-            glm::vec3 v{ a[0], a[1], a[2] };
-            return glm::quat(glm::radians(v));
+            return { a[0], a[1], a[2] };
         }
 
         auto a = readFloat(node);
-        glm::vec3 v{ 0, a, 0 };
-        return glm::quat(glm::radians(v));
+        return { 0, a, 0 };
     }
 
     glm::vec2 BaseLoader::readRefractionRatio(const YAML::Node& node) const

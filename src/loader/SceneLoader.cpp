@@ -9,6 +9,7 @@
 
 #include "util/Util.h"
 #include "util/glm_format.h"
+#include "util/glm_util.h"
 
 #include "ki/yaml.h"
 
@@ -617,7 +618,8 @@ namespace loader {
         }
 
         node->setPosition(pos);
-        node->setRotation(data.rotation);
+        node->setBaseRotation(util::degreesToQuat(data.baseRotation));
+        node->setQuatRotation(util::degreesToQuat(data.rotation));
         node->setScale(data.scale);
 
         node->setFront(data.front);

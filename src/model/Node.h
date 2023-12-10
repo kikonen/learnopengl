@@ -108,20 +108,32 @@ public:
         return m_instance.getPosition();
     }
 
-    inline void setRotation(const glm::vec3& rotation) noexcept {
-        m_instance.setRotation(rotation);
+    inline void setBaseRotation(const glm::quat& rot) noexcept {
+        m_instance.setBaseRotation(rot);
     }
 
-    inline void adjustRotation(const glm::vec3& adjust) noexcept {
-        m_instance.adjustRotation(adjust);
+    inline void setQuatRotation(const glm::quat& rot) noexcept {
+        m_instance.setQuatRotation(rot);
     }
 
-    inline const glm::vec3& getRotation() const noexcept {
-        return m_instance.getRotation();
+    inline void adjustQuatRotation(const glm::quat& adjust) noexcept {
+        m_instance.adjustQuatRotation(adjust);
     }
 
-    inline const glm::quat& getQuat() const noexcept {
-        return m_instance.getQuat();
+    inline void setDegreesRotation(const glm::vec3& rot) noexcept {
+        m_instance.setDegreesRotation(rot);
+    }
+
+    inline void adjustDegreesRotation(const glm::vec3& adjust) noexcept {
+        m_instance.adjustDegreesRotation(adjust);
+    }
+
+    inline const glm::vec3& getDegreesRotation() const noexcept {
+        return m_instance.getDegreesRotation();
+    }
+
+    inline const glm::quat& getQuatRotation() const noexcept {
+        return m_instance.getQuatRotation();
     }
 
     inline void setScale(float scale) noexcept {
@@ -194,7 +206,7 @@ public:
 
     int lua_getCloneIndex() const noexcept;
 
-    const std::array<float, 3> lua_getPos() const noexcept;
+        const std::array<float, 3> lua_getPos() const noexcept;
 
 protected:
 

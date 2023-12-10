@@ -164,6 +164,13 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             {
                 renderStart = std::chrono::system_clock::now();
 
+                // serious sync issue entity data vs. drawing
+                // - looks like camera is jerky, but it's lack of sync between
+                //   draw loop and update of UBOs & mapped buffers in next frame
+                // => INEFFICIENT, need to improve this
+                // https://forums.developer.nvidia.com/t/persistent-buffer-synchronization-doesnt-work/66636/5
+                glFinish();
+
                 if (!close) {
                     close = onUpdate(clock);
                 }
@@ -178,13 +185,6 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 renderDuration = renderEnd - renderStart;
                 renderSecs[avgIndex] = renderDuration.count();
             }
-
-            // serious sync issue entity data vs. drawing
-            // - looks like camera is jerky, but it's lack of sync between
-            //   draw loop and update of UBOs & mapped buffers in next frame
-            // => INEFFICIENT, need to improve this
-            // https://forums.developer.nvidia.com/t/persistent-buffer-synchronization-doesnt-work/66636/5
-            glFinish();
 
             if (close) {
                 m_window->close();

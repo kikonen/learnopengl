@@ -1,5 +1,7 @@
 #include "Registry.h"
 
+#include <glm/gtx/quaternion.hpp>
+
 #include "asset/MaterialSSBO.h"
 
 

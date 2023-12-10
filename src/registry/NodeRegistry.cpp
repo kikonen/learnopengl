@@ -1,6 +1,7 @@
 #include "NodeRegistry.h"
 
 #include <algorithm>
+#include <glm/gtx/quaternion.hpp>
 
 #include <fmt/format.h>
 

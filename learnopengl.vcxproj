@@ -293,6 +293,7 @@
     <ClCompile Include="src\render\RenderData.cpp" />
     <ClCompile Include="src\engine\UpdateContext.cpp" />
     <ClCompile Include="src\render\WindowBuffer.cpp" />
+    <ClCompile Include="src\util\glm_util.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
     <ClCompile Include="src\asset\ImageTexture.cpp" />
     <ClCompile Include="src\asset\PlainTexture.cpp" />
@@ -515,6 +516,7 @@
     <ClInclude Include="src\engine\UpdateContext.h" />
     <ClInclude Include="src\render\WindowBuffer.h" />
     <ClInclude Include="src\util\glm_format.h" />
+    <ClInclude Include="src\util\glm_util.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\asset\ImageTexture.h" />
     <ClInclude Include="src\asset\PlainTexture.h" />

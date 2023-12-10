@@ -62,7 +62,7 @@ void GridGenerator::updateInstances(
                 instance.setMaterialIndex(containerInstance.getMaterialIndex());
                 instance.setVolume(containerInstance.getVolume());
 
-                instance.setRotation(containerInstance.getRotation());
+                instance.setDegreesRotation(containerInstance.getDegreesRotation());
                 instance.setScale(containerInstance.getScale());
 
                 instance.updateModelMatrix(parentInstance);

@@ -88,15 +88,15 @@ public:
         return m_position;
     }
 
-    void setRotation(const glm::vec3& rot) {
-        if (m_rotation != rot) {
-            m_rotation = rot;
+    void setDegreesRotation(const glm::vec3& euler) {
+        if (m_degreesRotation != euler) {
+            m_degreesRotation = euler;
             m_dirty = true;
         }
     }
 
-    const glm::vec3& getRotation() {
-        return m_rotation;
+    const glm::vec3& getDegreesRotation() {
+        return m_degreesRotation;
     }
 
     void setSize(const glm::vec2& size) {
@@ -141,7 +141,7 @@ private:
     bool m_prepared = false;
 
     glm::vec3 m_position;
-    glm::vec3 m_rotation;
+    glm::vec3 m_degreesRotation;
     glm::vec2 m_size;
 
     glm::mat4 m_projected;

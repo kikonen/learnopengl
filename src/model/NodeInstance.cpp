@@ -17,7 +17,7 @@
 void NodeInstance::updateRotationMatrix() noexcept
 {
     if (!m_dirtyRotation) return;
-    m_rotationMatrix = glm::toMat4(m_quat);
+    m_rotationMatrix = glm::toMat4(m_baseRotation * m_quatRotation);
     m_dirtyRotation = false;
 }
 

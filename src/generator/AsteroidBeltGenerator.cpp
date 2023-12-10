@@ -152,7 +152,7 @@ void AsteroidBeltGenerator::initAsteroids(
 
         {
             // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
-            asteroid.setRotation({ rand() % 360, rand() % 360, rand() % 360 });
+            asteroid.setDegreesRotation({ rand() % 360, rand() % 360, rand() % 360 });
         }
 
         {

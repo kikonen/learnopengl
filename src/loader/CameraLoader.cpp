@@ -48,7 +48,7 @@ namespace loader
                 throw std::runtime_error{ fmt::format("POS obsolete: {}", renderNode(node)) };
             }
             else if (k == "rot" || k == "rotation") {
-                data.rotation = readVec3(v);
+                data.degreesRotation = readVec3(v);
             }
             else if (k == "orthagonal") {
                 data.orthagonal = readBool(v);
@@ -75,7 +75,7 @@ namespace loader
             camera->setViewport(data.viewport);
         }
         camera->setAxis(data.front, data.up);
-        camera->setRotation(data.rotation);
+        camera->setDegreesRotation(data.degreesRotation);
         camera->setFov(data.fov);
 
         camera->setEnabled(data.enabled);

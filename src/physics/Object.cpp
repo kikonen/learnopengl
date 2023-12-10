@@ -181,10 +181,18 @@ namespace physics
     void Object::updateFromPhysics()
     {
         if (!m_bodyId) return;
+        if (m_body.kinematic) return;
 
         const dReal* dpos = dBodyGetPosition(m_bodyId);
+        const dReal* dquat = dBodyGetQuaternion(m_bodyId);
 
         glm::vec3 pos = { dpos[0], dpos[1], dpos[2] };
+        const glm::quat rot{
+            static_cast<float>(dquat[0]),
+            static_cast<float>(dquat[1]),
+            static_cast<float>(dquat[2]),
+            static_cast<float>(dquat[3]) };
+
         if (pos.y < -400) {
             pos.y = -400;
             dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
@@ -194,6 +202,10 @@ namespace physics
             dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
         }
         pos -= m_node->getParent()->getWorldPosition();
+
+        // TODO KI how to remove parent rotation from quat?
+
         m_node->setPosition(pos);
+        m_node->setQuatRotation(rot);
     }
 }

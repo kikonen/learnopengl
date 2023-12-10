@@ -48,9 +48,13 @@ namespace loader {
 
         std::map<std::string, std::string> programDefinitions{};
         std::unordered_map<std::string, bool> renderFlags{};
+
+        glm::vec3 baseRotation{ 0.f };
+
         glm::vec3 position{ 0.f };
         glm::vec3 rotation{ 0.f };
-        glm::vec3 front{ 0.f, 0.f, -1.f };
+        // NOTE KI default == positive Z dir
+        glm::vec3 front{ 0.f, 0.f, 1.f };
         glm::vec3 scale{ 1.f };
 
         bool selected{ false };

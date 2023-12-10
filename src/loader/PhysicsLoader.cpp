@@ -2,6 +2,7 @@
 
 #include "ki/yaml.h"
 #include "util/Util.h"
+#include "util/glm_util.h"
 
 #include "physics/Object.h"
 #include "physics/PhysicsEngine.h"
@@ -101,11 +102,8 @@ namespace loader {
             else if (k == "angular_vel") {
                 data.angularVel = readVec3(v);
             }
-            else if (k == "quat") {
-                data.quat = readQuat(v);
-            }
             else if (k == "rot" || k == "rotation") {
-                data.quat = readRotation(v);
+                data.quat = util::degreesToQuat(readDegreesRotation(v));
             }
             else {
                 reportUnknown("body_entry", k, v);
@@ -148,11 +146,8 @@ namespace loader {
             else if (k == "size") {
                 data.size = readVec3(v);
             }
-            else if (k == "quat") {
-                data.quat = readQuat(v);
-            }
             else if (k == "rot" || k == "rotation") {
-                data.quat = readRotation(v);
+                data.quat = util::degreesToQuat(readDegreesRotation(v));
             }
             else if (k == "plane") {
                 data.plane = readVec4(v);

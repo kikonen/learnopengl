@@ -259,15 +259,38 @@ entities:
     material: wood_floor
     program: g_tex
     pos: [0.0, 20.0, 0.0]
-    rot: [0, 0, 15]
+    rot: [0, 0, 5]
     physics:
       geom:
         type: plane
-        rot: [0, 0, 15]
+        rot: [0, 0, 5]
     render_flags:
       render_back: true
       no_shadow: true
     scale: 200
+  - name: cube origo
+    type: origo
+    id: cube_origo
+    pos: [0.0, 30.0, 0.0]
+  - name: Four cubes
+    parent_id: cube_origo
+    model: texture_cube_3
+    program: g_tex
+    scale: 1
+    base_rot: [-90, 0, 0]
+    clones:
+      - pos: [10.0, 0, -10]
+      - pos: [10.0, 0, 10]
+      - pos: [-10.0, 0, -10]
+      - pos: [-10.0, 0, 10]
+    physics:
+      body:
+        type: box
+        density: 0.1
+        rot: [0, 0, 0]
+      geom:
+        type: box
+        size: [2, 2, 2]
   - name: Fence
     model: quad
     material: fence

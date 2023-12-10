@@ -516,6 +516,9 @@
     <ClCompile Include="src\controller\PawnController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\util\glm_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1185,6 +1188,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\PawnController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\glm_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
