@@ -519,6 +519,18 @@
     <ClCompile Include="src\util\glm_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\audio\AudoEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\Audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\Listener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1191,6 +1203,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util\glm_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\AudioEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\Source.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\Audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\size.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\Listener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -70,6 +70,15 @@ int SampleApp::onSetup() {
         m_frame = std::make_unique<EditorFrame>(*m_window);
     }
 
+    {
+        auto engine = m_registry->m_audioEngine;
+        audio::audio_id audioId = engine->registerAudio("audio/Stream Medium 01_8CC7FF9E_normal.wav");
+        audio::source_id sourceId = engine->registerSource(audioId);
+        audio::listener_id listenerId = engine->registerListener();
+        engine->setActiveListener(listenerId);
+        engine->playSource(sourceId);
+    }
+
     return 0;
 }
 

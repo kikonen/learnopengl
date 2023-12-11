@@ -188,6 +188,10 @@
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
     <ClCompile Include="src\asset\TextMaterial.cpp" />
+    <ClCompile Include="src\audio\Listener.cpp" />
+    <ClCompile Include="src\audio\Source.cpp" />
+    <ClCompile Include="src\audio\AudoEngine.cpp" />
+    <ClCompile Include="src\audio\Audio.cpp" />
     <ClCompile Include="src\command\api\InvokeLuaFunction.cpp" />
     <ClCompile Include="src\command\Coroutine.cpp" />
     <ClCompile Include="src\controller\PawnController.cpp" />
@@ -360,6 +364,11 @@
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\asset\TextMaterial.h" />
+    <ClInclude Include="src\audio\Listener.h" />
+    <ClInclude Include="src\audio\size.h" />
+    <ClInclude Include="src\audio\Source.h" />
+    <ClInclude Include="src\audio\AudioEngine.h" />
+    <ClInclude Include="src\audio\Audio.h" />
     <ClInclude Include="src\command\api\InvokeLuaFunction.h" />
     <ClInclude Include="src\command\Coroutine.h" />
     <ClInclude Include="src\controller\PawnController.h" />
