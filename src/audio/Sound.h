@@ -8,15 +8,17 @@
 
 namespace audio
 {
-    struct Audio {
-        Audio(std::string_view path);
-        ~Audio();
+    struct Sound {
+        Sound(std::string_view path);
+        ~Sound();
 
         void load(const std::string_view assetsPath);
 
-        audio::audio_id m_id;
+        audio::sound_id m_id;
 
         std::string m_path;
+
+        ALuint m_bufferId{ 0 };
 
         int m_sampleRate{ 0 };
         int m_bitDepth{ 0 };

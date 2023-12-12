@@ -2,8 +2,9 @@
 
 #include <glm/glm.hpp>
 
-#include "size.h"
+#include <AL/al.h>
 
+#include "size.h"
 
 namespace audio
 {
@@ -11,8 +12,17 @@ namespace audio
         Listener();
         ~Listener();
 
+        void prepare();
+        void update();
+
         audio::listener_id m_id;
 
+        float m_gain = 1.f;
+
         glm::vec3 m_pos{ 0.f };
+        glm::vec3 m_vel{ 0.f };
+
+        glm::vec3 m_front{ 0.f, 0.f, -1.f };
+        glm::vec3 m_up{ 0.f, 1.f, 0.f };
     };
 }

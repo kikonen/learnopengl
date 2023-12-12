@@ -522,13 +522,16 @@
     <ClCompile Include="src\audio\AudoEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\audio\Audio.cpp">
+    <ClCompile Include="src\audio\Sound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\audio\Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\audio\Listener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\al_call.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1211,13 +1214,16 @@
     <ClInclude Include="src\audio\Source.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\audio\Audio.h">
+    <ClInclude Include="src\audio\Sound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\audio\size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\audio\Listener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\al_call.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

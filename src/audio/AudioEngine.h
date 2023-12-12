@@ -3,19 +3,23 @@
 #include <map>
 #include <memory>
 
-#include <glm/glm.hpp>
+#include "AL/alc.h"
 
 #include "asset/Assets.h"
 
 #include "size.h"
-#include "Audio.h"
-#include "Source.h"
-#include "Listener.h"
 
 class UpdateContext;
 
 namespace audio
 {
+    struct Listener;
+    struct Source;
+    struct Sound;
+
+    //
+    // https://indiegamedev.net/2020/02/15/the-complete-guide-to-openal-with-c-part-1-playing-a-sound/
+    //
     class AudioEngine {
     public:
         AudioEngine(const Assets& assets);
@@ -34,21 +38,25 @@ namespace audio
 
         void playSource(audio::source_id);
         void stopSource(audio::source_id);
+        bool isPlaying(audio::source_id);
 
-        void setActiveListener(audio::listener_id listenerId);
+        void setActiveListener(audio::listener_id id);
 
         audio::listener_id registerListener();
 
-        Listener* updateListener(
-            audio::listener_id listenerId);
+        Listener* getListener(
+            audio::listener_id id);
 
         audio::source_id registerSource(
-            audio::audio_id audioId);
+            audio::sound_id soundId);
 
-        Source* updateSource(
-            audio::source_id sourceId);
+        Source* getSource(
+            audio::source_id id);
 
-        audio::audio_id registerAudio(std::string_view path);
+        audio::sound_id registerSound(std::string_view path);
+
+        Sound* getSound(
+            audio::sound_id id);
 
     private:
         const Assets& m_assets;
@@ -56,10 +64,13 @@ namespace audio
         bool m_prepared{ false };
         bool m_enabled{ false };
 
-        audio::listener_id m_activeListenerId;
+        ALCdevice* m_device{ nullptr };
+        ALCcontext* m_context{ nullptr };
+
+        audio::listener_id m_activeListenerId{ 0 };
 
         std::map<audio::listener_id, std::unique_ptr<Listener>> m_listeners;
         std::map<audio::source_id, std::unique_ptr<Source>> m_sources;
-        std::map<audio::audio_id, std::unique_ptr<Audio>> m_audios;
+        std::map<audio::sound_id, std::unique_ptr<Sound>> m_sounds;
     };
 }

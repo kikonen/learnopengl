@@ -15,6 +15,8 @@
 
 #include "controller/VolumeController.h"
 
+#include "audio/Source.h"
+
 #include "registry/MeshType.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
@@ -72,10 +74,19 @@ int SampleApp::onSetup() {
 
     {
         auto engine = m_registry->m_audioEngine;
-        audio::audio_id audioId = engine->registerAudio("audio/Stream Medium 01_8CC7FF9E_normal.wav");
-        audio::source_id sourceId = engine->registerSource(audioId);
+        audio::sound_id soundId = engine->registerSound("audio/Stream Medium 01_8CC7FF9E_normal_mono.wav");
+
+        audio::source_id sourceId = engine->registerSource(soundId);
+        auto* source = engine->getSource(sourceId);
+        if (source) {
+            // TODO KI spatial left/right requires *MONO* sound
+            source->m_pos = { 0.1f, 0.0f, 0.0f };
+            source->update();
+        }
+
         audio::listener_id listenerId = engine->registerListener();
         engine->setActiveListener(listenerId);
+
         engine->playSource(sourceId);
     }
 
