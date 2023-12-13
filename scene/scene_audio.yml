@@ -53,11 +53,20 @@ entities:
     program: g_tex
     scale: 1
     base_rot: [-90, 0, 0]
+    audio:
+      source:
+        path: audio/Squeaking Toy Duck 2_DD868BE_normal.wav
     clones:
       - pos: [-5.0, 2.0, -5.0]
       - pos: [5.0, 2.0, -5.0]
       - pos: [-5.0, 2.0, 5.0]
+        audio:
+          source:
+            path: audio/Spring Wind Up_EF911B61_normal.wav
       - pos: [5.0, 2.0, 5.0]
+        audio:
+          source:
+            path: audio/Spring Wind Up_EF911B61_normal.wav
   - name: wooden floor
     model: quad
     xxmodel: woodwall
