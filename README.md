@@ -122,6 +122,29 @@ https://glad.dav1d.de
 - https://www.khronos.org/opengl/wiki/Built-in_Variable_(GLSL)
   + pass "gl_ClipDistance[CLIP_COUNT]" to pass through gs shader
 
+## Physics
+- Open Dynamis Engine
+  * https://ode.org/wiki/index.php
+  * https://ode.org/wiki/index.php/Special:ShortPages
+- Quaternions
+  * https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
+  * https://glm.g-truc.net/0.9.0/api/a00135.html
+
+## Audio
+- OpenAL
+  * https://www.openal.org
+  * https://en.wikipedia.org/wiki/OpenAL
+- OpenAL tutorial
+  * https://indiegamedev.net/2020/02/15/the-complete-guide-to-openal-with-c-part-1-playing-a-sound/
+  * https://indiegamedev.net/2020/02/25/the-complete-guide-to-openal-with-c-part-2-streaming-audio/
+  * https://indiegamedev.net/2020/04/12/the-complete-guide-to-openal-with-c-part-3-positioning-sounds/
+- Video tutorial 2
+  * https://www.youtube.com/watch?v=ptjIf_9CKGE&list=PLRIWtICgwaX2VNpAFjAZdlQw2pA1-5kU8&index=2
+- Libaries
+  * https://github.com/kcat/openal-soft
+  * https://github.com/adamstark/AudioFile
+  * https://github.com/mackron/dr_libs
+
 ## Misc
 - https://stackoverflow.com/questions/5532595/about-opengl-texture-coordinates
 - https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
