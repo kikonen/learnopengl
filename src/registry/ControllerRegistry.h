@@ -26,13 +26,42 @@ public:
     template<typename T>
     inline T* get(Node* node) const noexcept
     {
-        const auto& it = m_controllers.find(node->m_objectID);
+        const auto& it = m_controllers.find(node->m_id);
         if (it == m_controllers.end()) return nullptr;
-        return dynamic_cast<T*>(it->second);
+
+        for (auto* controller : it->second) {
+            T* ptr = dynamic_cast<T*>(controller);
+            if (ptr) return ptr;
+        }
+        return nullptr;
     }
 
+    inline bool hasController(Node* node) const noexcept
+    {
+        if (!node) return false;
+
+        const auto& it = m_controllers.find(node->m_id);
+        return it != m_controllers.end() && !it->second.empty();
+    }
+
+    inline NodeController* getFirst(Node* node) const noexcept
+    {
+        if (!node) return nullptr;
+
+        const auto& it = m_controllers.find(node->m_id);
+        return it != m_controllers.end() ? it->second[0] : nullptr;
+    }
+
+	inline const std::vector<NodeController*>* getControllers(Node* node) const noexcept
+	{
+        if (!node) return nullptr;
+
+        const auto& it = m_controllers.find(node->m_id);
+		return it != m_controllers.end() ? &it->second : nullptr;
+	}
+
     void addController(
-        int targetObjectID,
+        ki::object_id targetId,
         NodeController* controller);
 
 private:
@@ -40,5 +69,5 @@ private:
 
     Registry* m_registry{ nullptr };
 
-    std::unordered_map<int, NodeController*> m_controllers;
+    std::unordered_map<ki::object_id, std::vector<NodeController*>> m_controllers;
 };

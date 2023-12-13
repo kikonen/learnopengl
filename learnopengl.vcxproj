@@ -138,7 +138,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS;WIN32</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -161,7 +161,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS;WIN32</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -187,6 +187,35 @@
     <ClCompile Include="src\asset\HdriTexture.cpp" />
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
+    <ClCompile Include="src\asset\TextMaterial.cpp" />
+    <ClCompile Include="src\audio\al_call.cpp" />
+    <ClCompile Include="src\audio\Listener.cpp" />
+    <ClCompile Include="src\audio\SoundRegistry.cpp" />
+    <ClCompile Include="src\audio\Source.cpp" />
+    <ClCompile Include="src\audio\AudoEngine.cpp" />
+    <ClCompile Include="src\audio\Sound.cpp" />
+    <ClCompile Include="src\command\api\InvokeLuaFunction.cpp" />
+    <ClCompile Include="src\command\Coroutine.cpp" />
+    <ClCompile Include="src\controller\PawnController.cpp" />
+    <ClCompile Include="src\kigl\GLStencilMode.cpp" />
+    <ClCompile Include="src\loader\AudioLoader.cpp" />
+    <ClCompile Include="src\loader\BaseLoader.cpp" />
+    <ClCompile Include="src\loader\BaseUUID.h" />
+    <ClCompile Include="src\loader\CameraLoader.cpp" />
+    <ClCompile Include="src\loader\Contet.cpp" />
+    <ClCompile Include="src\loader\ControllerLoader.cpp" />
+    <ClCompile Include="src\loader\CubeMapLoader.cpp" />
+    <ClCompile Include="src\loader\CustomMaterialLoader.cpp" />
+    <ClCompile Include="src\loader\EntityLoader.cpp" />
+    <ClCompile Include="src\loader\GeneratorLoader.cpp" />
+    <ClCompile Include="src\loader\LightLoader.cpp" />
+    <ClCompile Include="src\loader\MaterialLoader.cpp" />
+    <ClCompile Include="src\loader\PhysicsLoader.cpp" />
+    <ClCompile Include="src\loader\RootLoader.cpp" />
+    <ClCompile Include="src\loader\SkyboxLoader.cpp" />
+    <ClCompile Include="src\loader\SpriteLoader.cpp" />
+    <ClCompile Include="src\loader\VolumeLoader.cpp" />
+    <ClCompile Include="src\physics\Object.cpp" />
     <ClCompile Include="src\registry\SpriteRegistry.cpp" />
     <ClCompile Include="src\render\BrdfLutTexture.cpp" />
     <ClCompile Include="src\render\CubeRender.cpp" />
@@ -261,7 +290,7 @@
     <ClCompile Include="src\render\TextureCube.cpp" />
     <ClCompile Include="src\render\PlainQuad.cpp" />
     <ClCompile Include="src\render\TextureQuad.cpp" />
-    <ClCompile Include="src\scene\SceneFile.cpp" />
+    <ClCompile Include="src\loader\SceneLoader.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
     <ClCompile Include="src\renderer\MirrorMapRenderer.cpp" />
     <ClCompile Include="src\kigl\GLState.cpp" />
@@ -271,12 +300,13 @@
     <ClCompile Include="src\render\RenderData.cpp" />
     <ClCompile Include="src\engine\UpdateContext.cpp" />
     <ClCompile Include="src\render\WindowBuffer.cpp" />
+    <ClCompile Include="src\util\glm_util.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
     <ClCompile Include="src\asset\ImageTexture.cpp" />
     <ClCompile Include="src\asset\PlainTexture.cpp" />
     <ClCompile Include="src\scene\Raycast.cpp" />
     <ClCompile Include="src\registry\NodeRegistry.cpp" />
-    <ClCompile Include="src\controller\CameraController.cpp" />
+    <ClCompile Include="src\controller\CameraZoomController.cpp" />
     <ClCompile Include="src\render\CubeMap.cpp" />
     <ClCompile Include="src\engine\AsyncLoader.cpp" />
     <ClCompile Include="src\gui\FrameInit.cpp" />
@@ -299,7 +329,7 @@
     <ClCompile Include="src\renderer\NodeRenderer.cpp" />
     <ClCompile Include="src\renderer\NormalRenderer.cpp" />
     <ClCompile Include="src\renderer\ShadowMapRenderer.cpp" />
-    <ClCompile Include="src\ki\GL.cpp" />
+    <ClCompile Include="src\kigl\kigl.cpp" />
     <ClCompile Include="src\sample_app\TestSceneSetup.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\asset\Assets.cpp" />
@@ -330,15 +360,59 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Group.h" />
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\BufferInfoUBO.h" />
     <ClInclude Include="src\asset\ChannelTexture.h" />
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
+    <ClInclude Include="src\asset\TextMaterial.h" />
+    <ClInclude Include="src\audio\al_call.h" />
+    <ClInclude Include="src\audio\Listener.h" />
+    <ClInclude Include="src\audio\size.h" />
+    <ClInclude Include="src\audio\SoundRegistry.h" />
+    <ClInclude Include="src\audio\Source.h" />
+    <ClInclude Include="src\audio\AudioEngine.h" />
+    <ClInclude Include="src\audio\Sound.h" />
+    <ClInclude Include="src\command\api\InvokeLuaFunction.h" />
+    <ClInclude Include="src\command\Coroutine.h" />
+    <ClInclude Include="src\controller\PawnController.h" />
     <ClInclude Include="src\kigl\GLFence.h" />
     <ClInclude Include="src\kigl\GLStencilMode.h" />
+    <ClInclude Include="src\kigl\kigl.h" />
+    <ClInclude Include="src\ki\size.h" />
+    <ClInclude Include="src\ki\yaml.h" />
+    <ClInclude Include="src\loader\AudioData.h" />
+    <ClInclude Include="src\loader\AudioLoader.h" />
+    <ClInclude Include="src\loader\BaseData.h" />
+    <ClInclude Include="src\loader\BaseLoader.h" />
+    <ClInclude Include="src\loader\CameraData.h" />
+    <ClInclude Include="src\loader\CameraLoader.h" />
+    <ClInclude Include="src\loader\Context.h" />
+    <ClInclude Include="src\loader\ControllerData.h" />
+    <ClInclude Include="src\loader\ControllerLoader.h" />
+    <ClInclude Include="src\loader\CubeMapLoader.h" />
+    <ClInclude Include="src\loader\CustomMaterialData.h" />
+    <ClInclude Include="src\loader\CustomMaterialLoader.h" />
+    <ClInclude Include="src\loader\EntityData.h" />
+    <ClInclude Include="src\loader\EntityLoader.h" />
+    <ClInclude Include="src\loader\GeneratorData.h" />
+    <ClInclude Include="src\loader\GeneratorLoader.h" />
+    <ClInclude Include="src\loader\LightData.h" />
+    <ClInclude Include="src\loader\LightLoader.h" />
+    <ClInclude Include="src\loader\MaterialData.h" />
+    <ClInclude Include="src\loader\MaterialLoader.h" />
+    <ClInclude Include="src\loader\PhysicsData.h" />
+    <ClInclude Include="src\loader\PhysicsLoader.h" />
+    <ClInclude Include="src\loader\RootData.h" />
+    <ClInclude Include="src\loader\RootLoader.h" />
+    <ClInclude Include="src\loader\SkyboxData.h" />
+    <ClInclude Include="src\loader\SkyboxLoader.h" />
+    <ClInclude Include="src\loader\SpriteData.h" />
+    <ClInclude Include="src\loader\SpriteLoader.h" />
+    <ClInclude Include="src\loader\VolumeLoader.h" />
+    <ClInclude Include="src\physics\Geom.h" />
+    <ClInclude Include="src\physics\Object.h" />
     <ClInclude Include="src\query\Query.h" />
     <ClInclude Include="src\kigl\GLFrameBufferHandle.h" />
     <ClInclude Include="src\asset\Frustum.h" />
@@ -389,7 +463,7 @@
     <ClInclude Include="src\kigl\GLTextureHandle.h" />
     <ClInclude Include="src\kigl\GLVertexArray.h" />
     <ClInclude Include="src\kigl\GLBlendMode.h" />
-    <ClInclude Include="src\ki\OpenGLInfo.h" />
+    <ClInclude Include="src\kigl\OpenGLInfo.h" />
     <ClInclude Include="src\ki\RenderClock.h" />
     <ClInclude Include="src\model\InstancePhysics.h" />
     <ClInclude Include="src\model\NodeInstance.h" />
@@ -445,7 +519,7 @@
     <ClInclude Include="src\render\TextureCube.h" />
     <ClInclude Include="src\render\PlainQuad.h" />
     <ClInclude Include="src\render\TextureQuad.h" />
-    <ClInclude Include="src\scene\SceneFile.h" />
+    <ClInclude Include="src\loader\SceneLoader.h" />
     <ClInclude Include="src\renderer\ObjectIdRenderer.h" />
     <ClInclude Include="src\renderer\MirrorMapRenderer.h" />
     <ClInclude Include="src\kigl\GLState.h" />
@@ -458,12 +532,13 @@
     <ClInclude Include="src\engine\UpdateContext.h" />
     <ClInclude Include="src\render\WindowBuffer.h" />
     <ClInclude Include="src\util\glm_format.h" />
+    <ClInclude Include="src\util\glm_util.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\asset\ImageTexture.h" />
     <ClInclude Include="src\asset\PlainTexture.h" />
     <ClInclude Include="src\scene\Raycast.h" />
     <ClInclude Include="src\registry\NodeRegistry.h" />
-    <ClInclude Include="src\controller\CameraController.h" />
+    <ClInclude Include="src\controller\CameraZoomController.h" />
     <ClInclude Include="src\render\CubeMap.h" />
     <ClInclude Include="src\engine\AsyncLoader.h" />
     <ClInclude Include="src\gui\FrameInit.h" />
@@ -486,7 +561,7 @@
     <ClInclude Include="src\renderer\NodeRenderer.h" />
     <ClInclude Include="src\renderer\NormalRenderer.h" />
     <ClInclude Include="src\renderer\ShadowMapRenderer.h" />
-    <ClInclude Include="src\ki\GL.h" />
+    <ClInclude Include="src\ki\ki.h" />
     <ClInclude Include="src\sample_app\TestSceneSetup.h" />
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\asset\Assets.h" />

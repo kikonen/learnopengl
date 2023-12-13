@@ -104,11 +104,11 @@ public:
         std::vector<Material>& materials);
 
     static Material* findID(
-        const int objectID,
+        const ki::material_id id,
         std::vector<Material>& materials);
 
     static const Material* findID(
-        const int objectID,
+        const ki::material_id id,
         const std::vector<Material>& materials);
 
     const std::string getTexturePath(
@@ -133,7 +133,7 @@ private:
         const glm::vec4& defaults);
 
 public:
-    int m_objectID;
+    ki::material_id m_id;
 
     std::string m_name;
     std::string m_path;
@@ -223,7 +223,7 @@ public:
     std::string map_height;
     std::string map_noise;
 
-    static const int DEFAULT_ID = 0;
+    static const ki::material_id DEFAULT_ID = 0;
 private:
     bool m_prepared = false;
 

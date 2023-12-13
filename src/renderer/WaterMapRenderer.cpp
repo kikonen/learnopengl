@@ -49,6 +49,9 @@ void WaterMapRenderer::prepare(
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
 
+    m_nearPlane = assets.waterMapNearPlane;
+    m_farPlane = assets.waterMapFarPlane;
+
     if (m_doubleBuffer) {
         m_bufferCount = 2;
         m_prevIndex = 1;
@@ -120,8 +123,8 @@ void WaterMapRenderer::updateReflectionView(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
-    int w = ctx.m_assets.waterReflectionBufferScale * res.x;
-    int h = ctx.m_assets.waterReflectionBufferScale * res.y;
+    int w = (int)(ctx.m_assets.waterReflectionBufferScale * res.x);
+    int h = (int)(ctx.m_assets.waterReflectionBufferScale * res.y);
 
     if (m_squareAspectRatio) {
         h = w;
@@ -166,8 +169,8 @@ void WaterMapRenderer::updateRefractionView(const RenderContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
-    int w = ctx.m_assets.waterRefractionBufferScale * res.x;
-    int h = ctx.m_assets.waterRefractionBufferScale * res.y;
+    int w = (int)(ctx.m_assets.waterRefractionBufferScale * res.x);
+    int h = (int)(ctx.m_assets.waterRefractionBufferScale * res.y);
 
     if (m_squareAspectRatio) {
         h = w;
@@ -269,8 +272,13 @@ bool WaterMapRenderer::render(
         camera.setFov(parentCameraFov);
 
         RenderContext localCtx(
-            "WATER_REFLECT", &parentCtx, &camera,
-            reflectionBuffer->m_spec.width, reflectionBuffer->m_spec.height);
+            "WATER_REFLECT",
+            &parentCtx,
+            &camera,
+            m_nearPlane,
+            m_farPlane,
+            reflectionBuffer->m_spec.width,
+            reflectionBuffer->m_spec.height);
 
         localCtx.copyShadowFrom(parentCtx);
 
@@ -304,8 +312,13 @@ bool WaterMapRenderer::render(
         camera.setFov(parentCameraFov);
 
         RenderContext localCtx(
-            "WATER_REFRACT", &parentCtx, &camera,
-            refractionBuffer->m_spec.width, refractionBuffer->m_spec.height);
+            "WATER_REFRACT",
+            &parentCtx,
+            &camera,
+            m_nearPlane,
+            m_farPlane,
+            refractionBuffer->m_spec.width,
+            refractionBuffer->m_spec.height);
 
         localCtx.copyShadowFrom(parentCtx);
 

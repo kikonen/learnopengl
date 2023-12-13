@@ -34,7 +34,7 @@ public:
         std::string_view);
 
     Material* findID(
-        const int objectID);
+        const int id);
 
     void prepare();
 

@@ -94,15 +94,15 @@ void AsteroidBeltGenerator::createAsteroids(
 
         auto& asteroid = m_instances.emplace_back();
 
-        asteroid.m_entityIndex = m_reservedFirst + i;
+        asteroid.m_entityIndex = static_cast<int>(m_reservedFirst + i);
 
         asteroid.setMaterialIndex(container.m_type->getMaterialIndex());
         asteroid.setVolume(volume);
 
-        asteroid.setObjectID(containerInstance.getObjectID());
+        asteroid.setId(containerInstance.getId());
         asteroid.setFlags(containerInstance.getFlags());
 
-        asteroid.setObjectID(container.m_objectID);
+        asteroid.setId(container.m_id);
     }
 
     initAsteroids(assets, registry, container);
@@ -115,7 +115,7 @@ void AsteroidBeltGenerator::initAsteroids(
     Node& container)
 {
     // initialize random seed
-    srand(glfwGetTime());
+    srand(static_cast<unsigned int>(glfwGetTime()));
 
     const size_t count = m_instances.size();
 
@@ -152,7 +152,7 @@ void AsteroidBeltGenerator::initAsteroids(
 
         {
             // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
-            asteroid.setRotation({ rand() % 360, rand() % 360, rand() % 360 });
+            asteroid.setDegreesRotation({ rand() % 360, rand() % 360, rand() % 360 });
         }
 
         {

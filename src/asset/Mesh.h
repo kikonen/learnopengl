@@ -3,7 +3,7 @@
 #include <vector>
 #include <functional>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "kigl/GLVertexArray.h"
 
@@ -55,7 +55,7 @@ public:
     }
 
 public:
-    const int m_objectID;
+    const ki::mesh_id m_id;
 
 protected:
     bool m_prepared = false;

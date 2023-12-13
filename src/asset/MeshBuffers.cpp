@@ -2,7 +2,7 @@
 
 #include <fmt/format.h>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 MeshBuffers::MeshBuffers()
 {
@@ -16,7 +16,7 @@ const std::string MeshBuffers::str() const
 {
     return fmt::format(
         "<BUFFERS: vao={}, vbo={}, vbo_material={}, ebo={}>",
-        VAO, VBO, VBO_MATERIAL, EBO);
+        (int)VAO, (int)VBO, (int)VBO_MATERIAL, (int)EBO);
 }
 
 void MeshBuffers::prepare(bool useVertex, bool useMaterial, bool useIndeces)

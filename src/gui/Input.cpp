@@ -78,7 +78,7 @@ bool Input::isKeyDown(Key key)
             if (glfwGetKey(window->m_glfwWindow, *code) == GLFW_PRESS) {
                 return true;
             }
-            *code++;
+            code++;
         }
     }
     return false;
@@ -91,7 +91,7 @@ bool Input::isModifierDown(Modifier modifier) {
             if (glfwGetKey(window->m_glfwWindow, *code) == GLFW_PRESS) {
                 return true;
             }
-            *code++;
+            code++;
         }
     }
     return false;
@@ -102,7 +102,7 @@ bool Input::isModifierPressed(Modifier modifier)
     return m_modifierPressed[modifier];
 }
 
-void Input::onMouseMove(double xpos, double ypos)
+void Input::onMouseMove(float xpos, float ypos)
 {
     if (m_firstMouse) {
         mouseX = xpos;

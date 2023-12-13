@@ -10,7 +10,9 @@ class Node;
 ControllerRegistry::~ControllerRegistry()
 {
     for (const auto& it : m_controllers) {
-        delete it.second;
+        for (auto* controller : it.second) {
+            delete controller;
+        }
     }
     m_controllers.clear();
 }
@@ -32,7 +34,13 @@ void ControllerRegistry::update(const UpdateContext& ctx)
     for (const auto& it : m_controllers) {
         Node* node = m_registry->m_nodeRegistry->getNode(it.first);
         if (!node) continue;
-        if (it.second->update(ctx, *node)) {
+
+        bool changed = false;
+        for (auto* controller : it.second) {
+            changed |= controller->update(ctx, *node);
+        }
+
+        if (changed) {
             // TODO KI *ALL* children must be updated also
             node->updateModelMatrix();
         }
@@ -40,17 +48,29 @@ void ControllerRegistry::update(const UpdateContext& ctx)
 }
 
 void ControllerRegistry::addController(
-    int targetObjectID,
+    ki::object_id targetId,
     NodeController* controller)
 {
-    Node* node = m_registry->m_nodeRegistry->getNode(targetObjectID);
+    if (!controller) return;
+
+    Node* node = m_registry->m_nodeRegistry->getNode(targetId);
 
     if (!node) {
-        KI_WARN(fmt::format("ADD_CONTROLLER: MISSING_NODE - objectID={}", targetObjectID));
+        KI_WARN(fmt::format("ADD_CONTROLLER: MISSING_NODE - targetId={}", targetId));
         return;
     }
 
     controller->prepare(m_assets, m_registry, *node);
 
-    m_controllers.insert(std::make_pair(targetObjectID, controller));
+    {
+        if (const auto& it = m_controllers.find(targetId);
+            it == m_controllers.end())
+        {
+            m_controllers.insert(std::make_pair(targetId, std::vector<NodeController*>{}));
+        }
+    }
+
+    {
+        m_controllers.find(targetId)->second.emplace_back(controller);
+    }
 }

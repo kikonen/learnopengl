@@ -4,22 +4,21 @@ skybox:
   program: g_skybox
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 entities:
-  - name: Camera
+  - name: Player
+    id: player
     type: origo
     pos: [0, 20, 60]
+    active: true
     camera:
       default: true
-      enabled: true
-    enabled: true
-    controller:
-      type: camera
-      enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Cube map 1
     type: origo
     pos: [0.0, 35.0, 0.0]
     render_flags:
       cube_map: true
-    enabled: true
   - name: Directional light
     pos: [0, 55, 60]
     scale: 2.5
@@ -34,8 +33,6 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.8, 1.0]
       intensity: 50000
-      enabled: true
-    enabled: true
   - name: Pool floor
     model: quad
     material: pool_floor
@@ -45,7 +42,6 @@ entities:
     scale: 100
     render_flags:
       no_shadow: true
-    enabled: true
   - name: Pool surface
     type: quad
     material: pool_surface
@@ -57,8 +53,7 @@ entities:
       no_shadow: true
       render_back: true
       water: true
-    enabled: true
-    script_file: scripts/anim_water
+    script_file: scripts/anim_water_lucy
   - name: Pool side
     model: pool_brick
     program: g_tex
@@ -75,7 +70,6 @@ entities:
         scale: [100, 6, 0.3]
       - pos: [0.0, -1, 100]
         scale: [100, 6, 0.3]
-    enabled: true
   - name: Lucy statue
     model: lucy
     program: g_tex
@@ -93,7 +87,6 @@ entities:
     xxrender_flags:
       render_back: true
     script_file: scripts/anim_lucy
-    enabled: true
   - name: Big mirror 2
     model: quad
     material: mirror
@@ -104,7 +97,6 @@ entities:
     render_flags:
       render_back: true
       mirror: true
-    enabled: true
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]

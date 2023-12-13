@@ -1,31 +1,46 @@
 {
   "name": "learnopengl",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "dependencies": [
+    {
+      "name": "audiofile",
+      "platform": "windows & x64",
+      "version>=": "1.1.0"
+    },
+    {
+      "name": "assimp",
+      "platform": "windows & x64",
+      "version>=": "5.3.1#3"
+    },
     {
       "name": "entt",
       "platform": "windows & x64",
-      "version>=": "3.10.1#1"
+      "version>=": "3.12.2"
     },
     {
       "name": "eventpp",
       "platform": "windows & x64",
-      "version>=": "0.1.2"
+      "version>=": "0.1.3"
     },
     {
       "name": "fmt",
       "platform": "windows & x64",
-      "version>=": "9.0.0"
+      "version>=": "10.1.1"
     },
     {
       "name": "freetype",
       "platform": "windows & x64",
-      "version>=": "2.12.1#2"
+      "version>=": "2.12.1#4"
+    },
+    {
+      "name": "freetype-gl",
+      "platform": "windows & x64",
+      "version>=": "2022-01-17#2"
     },
     {
       "name": "glfw3",
       "platform": "windows & x64",
-      "version>=": "3.3.8"
+      "version>=": "3.3.8#2"
     },
     {
       "name": "glm",
@@ -35,7 +50,7 @@
     {
       "name": "imgui",
       "platform": "windows & x64",
-      "version>=": "1.81#2",
+      "version>=": "1.90",
       "default-features": false,
       "features": [
         "docking-experimental",
@@ -47,7 +62,17 @@
     {
       "name": "luajit",
       "platform": "windows & x64",
-      "version>=": "2022-08-11#1"
+      "version>=": "2023-01-04#4"
+    },
+    {
+      "name": "ode",
+      "platform": "windows & x64",
+      "version>=": "0.16.4#1"
+    },
+    {
+      "name": "openal-soft",
+      "platform": "windows & x64",
+      "version>=": "1.23.1"
     },
     {
       "name": "sol2",
@@ -57,12 +82,12 @@
     {
       "name": "spdlog",
       "platform": "windows & x64",
-      "version>=": "1.10.0#1"
+      "version>=": "1.12.0"
     },
     {
       "name": "stduuid",
       "platform": "windows & x64",
-      "version>=": "1.2.2",
+      "version>=": "1.2.3",
       "features": [
         "gsl-span",
         "system-gen"
@@ -71,8 +96,8 @@
     {
       "name": "yaml-cpp",
       "platform": "windows & x64",
-      "version>=": "0.7.0#1"
+      "version>=": "0.8.0#1"
     }
   ],
-  "builtin-baseline": "b3e0a1e625a0cc00073efb763e39088e5b75939e"
+  "builtin-baseline": "13c3c0fcc203d179f4443fe48d252e3ff220cbeb"
 }

@@ -9,16 +9,16 @@ cube_maps: {}
 root:
   type: origo
 entities:
-  - name: Origo
+  - name: Player
+    id: player
     type: origo
     pos: [9.95, 0, 10]
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Base
     model: cow
     xxmodel: cube
@@ -35,7 +35,6 @@ entities:
       z_count: 2
       x_step: 15
       z_step: -15
-    enabled: true
   - name: Directional light
     type: origo
     pos: [0, 25, 40]
@@ -51,8 +50,6 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-      enabled: true
-    enabled: true
 materials:
   - name: fur_base
     kd: [0.5075, 0.5075, 0.5075, 1.0]

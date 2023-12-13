@@ -4,22 +4,24 @@ skybox:
   program: g_skybox
   material: skybox
 entities:
-  - name: Camera
+  - name: Player
+    id: player
     type: origo
     pos: [0, 0, 0]
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Spyro
     model: spyro2
     program: g_tex
+    material_modifier:
+      map_pbr: textures/Lava 05 [8K]
+      tiling: 6
     pos: [0.0, 0.0, -30.0]
     scale: 0.06
-    enabled: true
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]

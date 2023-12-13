@@ -2,15 +2,15 @@
 
 #include "engine/UpdateContext.h"
 
-#include "command/ScriptEngine.h"
+#include "command/Coroutine.h"
 
 
 ResumeNode::ResumeNode(
-    int afterCommandId,
-    int objectID,
-    const std::string& callbackFn) noexcept
-    : NodeCommand(afterCommandId, objectID, 0, false),
-    m_callbackFn(callbackFn)
+    ki::command_id afterCommandId,
+    ki::object_id nodeId,
+    Coroutine* coroutine) noexcept
+    : NodeCommand(afterCommandId, nodeId, 0, false),
+    m_coroutine(coroutine)
 {
 }
 
@@ -21,6 +21,6 @@ void ResumeNode::execute(
 
     m_finished = m_elapsedTime >= m_duration;
     if (m_finished) {
-        ctx.m_scriptEngine->invokeFunction(m_node, m_callbackFn);
+        (*(m_coroutine->m_coroutine))(m_id);
     }
 }

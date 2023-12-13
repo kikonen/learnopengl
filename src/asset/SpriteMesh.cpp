@@ -2,7 +2,7 @@
 
 #include <fmt/format.h>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "asset/Sphere.h"
 #include "asset/SpriteVAO.h"
@@ -33,7 +33,7 @@ SpriteMesh::~SpriteMesh()
 
 const std::string SpriteMesh::str() const noexcept
 {
-    return fmt::format("<SPRITE: id={}>", m_objectID);
+    return fmt::format("<SPRITE: id={}>", m_id);
 }
 
 const AABB SpriteMesh::calculateAABB() const

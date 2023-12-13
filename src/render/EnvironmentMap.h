@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "kigl/GLTextureHandle.h"
 
@@ -38,5 +38,5 @@ public:
 
     GLTextureHandle m_cubeTexture;
 
-    GLuint m_hdriTextureID;
+    GLuint m_hdriTextureID{ 0 };
 };

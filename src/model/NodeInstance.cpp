@@ -16,18 +16,18 @@
 
 void NodeInstance::updateRotationMatrix() noexcept
 {
-    if (!m_rotationDirty) return;
-    m_rotationMatrix = glm::toMat4(glm::quat(glm::radians(m_rotation)));
-    m_rotationDirty = false;
+    if (!m_dirtyRotation) return;
+    m_rotationMatrix = glm::toMat4(m_baseRotation * m_quatRotation);
+    m_dirtyRotation = false;
 }
 
 void NodeInstance::updateEntity(
     const UpdateContext& ctx,
     EntitySSBO* entity)
 {
-    if (!m_entityDirty) return;
+    if (!m_dirtyEntity) return;
 
-    entity->setObjectID(m_objectID);
+    entity->setId(m_id);
     entity->u_flags = m_flags;
     entity->u_materialIndex = m_materialIndex;
     entity->u_shapeIndex = m_shapeIndex;
@@ -57,5 +57,5 @@ void NodeInstance::updateEntity(
 
     entity->u_worldScale = getWorldScale();
 
-    m_entityDirty = false;
+    m_dirtyEntity = false;
 }

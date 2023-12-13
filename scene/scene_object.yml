@@ -9,22 +9,21 @@ cube_maps: {}
 root:
   type: origo
 entities:
-  - name: Origo
+  - name: Player
+    id: player
     type: origo
     pos: [0, 1, 15]
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Object
     model: texture_cube_4
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 180, 0]
-    enabled: true
   - name: Directional light
     type: origo
     pos: [-25, 25, 25]
@@ -37,14 +36,11 @@ entities:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-      enabled: true
-    enabled: true
-  - name: Cube map
+  - xname: Cube map
     type: origo
     pos: [0, 5, 10]
     render_flags:
       cube_map: true
-    xenabled: true
   - name: wooden floor
     model: quad
     xxmodel: woodwall
@@ -56,7 +52,6 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
-    enabled: true
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]

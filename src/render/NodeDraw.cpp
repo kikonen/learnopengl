@@ -26,12 +26,6 @@ void NodeDraw::prepare(
     m_plainQuad.prepare();
     m_textureQuad.prepare();
 
-    m_solidDepthProgram = registry->m_programRegistry->getProgram(SHADER_DEPTH_PASS);
-    m_alphaDepthProgram = registry->m_programRegistry->getProgram(SHADER_DEPTH_PASS, { { DEF_USE_ALPHA, "1" } });
-
-    m_solidDepthProgram->prepare(assets);
-    m_alphaDepthProgram->prepare(assets);
-
     m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
     m_deferredProgram ->prepare(assets);
 
@@ -84,9 +78,12 @@ void NodeDraw::drawNodes(
     // => nodes supporting G-buffer
     //if (false)
     {
-        //m_gBuffer.unbindTexture(ctx);
-        m_gBuffer.clearAll();
+        ctx.m_state.setStencil({});
+
+        // NOTE KI intel requires FBO to be bound to clearing draw buffers
+        // (nvidia seemingly does not)
         m_gBuffer.bind(ctx);
+        m_gBuffer.clearAll();
 
         // NOTE KI no blend in G-buffer
         auto oldAllowBlend = ctx.setAllowBlend(false);
@@ -94,46 +91,30 @@ void NodeDraw::drawNodes(
         // NOTE KI "pre pass depth" causes more artifacts than benefits
         if (ctx.m_assets.prepassDepthEnabled)
         {
-            {
-                m_solidDepthProgram->bind(ctx.m_state);
+            m_gBuffer.m_buffer->resetDrawBuffers(0);
 
+            // NOTE KI only *solid* render in pre-pass
+            {
                 ctx.m_nodeDraw->drawProgram(
                     ctx,
-                    m_solidDepthProgram,
-                    nullptr,
+                    [this](const MeshType* type) { return type->m_depthProgram; },
                     [&typeSelector](const MeshType* type) {
                         return type->m_flags.gbuffer &&
-                            !type->m_flags.water &&
+                            type->m_flags.depth &&
                             typeSelector(type);
                     },
                     nodeSelector,
                     kindBits & NodeDraw::KIND_SOLID);
             }
 
-            if (true)
-            {
-                m_alphaDepthProgram->bind(ctx.m_state);
-
-                ctx.m_nodeDraw->drawProgram(
-                    ctx,
-                    m_alphaDepthProgram,
-                    nullptr,
-                    [&typeSelector](const MeshType* type) {
-                        return type->m_flags.gbuffer &&
-                            //type->m_flags.terrain &&
-                            typeSelector(type);
-                    },
-                    nodeSelector,
-                    kindBits & (NodeDraw::KIND_SPRITE | NodeDraw::KIND_ALPHA));
-            }
-
             ctx.m_batch->flush(ctx);
+            m_gBuffer.m_buffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
         }
 
         {
-            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID));
+            ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
             if (ctx.m_assets.prepassDepthEnabled) {
-                ctx.m_state.setDepthFunc(GL_EQUAL);
+                ctx.m_state.setDepthFunc(GL_LEQUAL);
             }
 
             drawNodesImpl(
@@ -147,7 +128,6 @@ void NodeDraw::drawNodes(
             if (ctx.m_assets.prepassDepthEnabled) {
                 ctx.m_state.setDepthFunc(ctx.m_depthFunc);
             }
-            ctx.m_state.disableStencil();
         }
 
         ctx.setAllowBlend(oldAllowBlend);
@@ -163,14 +143,14 @@ void NodeDraw::drawNodes(
     {
         primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
-        m_effectBuffer.clearAll();
         primaryBuffer->bind(ctx);
+        primaryBuffer->clearAll();
     }
 
     // pass 3 - light
     //if (false)
     {
-        ctx.m_state.enableStencil(GLStencilMode::only_non_zero());
+        ctx.m_state.setStencil(GLStencilMode::only_non_zero());
         ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
         primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
@@ -181,7 +161,6 @@ void NodeDraw::drawNodes(
         primaryBuffer->resetDrawBuffers(1);
 
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
-        ctx.m_state.disableStencil();
     }
 
     // pass 4 - non G-buffer solid nodes
@@ -191,7 +170,7 @@ void NodeDraw::drawNodes(
     {
         ctx.validateRender("non_gbuffer");
 
-        ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_SOLID));
+        ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
         bool rendered = drawNodesImpl(
             ctx,
@@ -206,24 +185,22 @@ void NodeDraw::drawNodes(
             // ex. selection volume changes to GL_LINE
             ctx.bindDefaults();
         }
-
-        ctx.m_state.disableStencil();
     }
 
-    // pass 5 - OIT 
+    // pass 5 - OIT
     // NOTE KI OIT after *forward* pass to allow using depth texture from them
     if (ctx.m_allowBlend)
     {
         if (ctx.m_assets.effectOitEnabled)
         {
-            ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_OIT));
+            ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
             // NOTE KI do NOT modify depth with blend
             ctx.m_state.setDepthMask(GL_FALSE);
 
             ctx.m_state.setEnabled(GL_BLEND, true);
 
-            m_oitBuffer.clearAll();
             m_oitBuffer.bind(ctx);
+            m_oitBuffer.clearAll();
 
             // NOTE KI different blend mode for each draw buffer
             glBlendFunci(0, GL_ONE, GL_ONE);
@@ -233,8 +210,7 @@ void NodeDraw::drawNodes(
             // only "blend OIT" nodes
             drawProgram(
                 ctx,
-                m_oitProgram,
-                nullptr,
+                [this](const MeshType* type) { return m_oitProgram; },
                 [&typeSelector](const MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
                 nodeSelector,
                 NodeDraw::KIND_ALL);
@@ -250,7 +226,6 @@ void NodeDraw::drawNodes(
             ctx.m_state.setEnabled(GL_BLEND, false);
 
             ctx.m_state.setDepthMask(GL_TRUE);
-            ctx.m_state.disableStencil();
         }
     }
 
@@ -260,6 +235,7 @@ void NodeDraw::drawNodes(
 
     // pass 6 - skybox (*before* blend)
     {
+        ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
         drawSkybox(ctx);
     }
 
@@ -268,6 +244,8 @@ void NodeDraw::drawNodes(
     //if (false)
     if (ctx.m_allowBlend)
     {
+        ctx.m_state.setStencil({});
+
         drawBlendedImpl(
             ctx,
             [&typeSelector](const MeshType* type) {
@@ -291,24 +269,19 @@ void NodeDraw::drawNodes(
             ctx.m_state.setEnabled(GL_BLEND, true);
             ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-            if (ctx.m_assets.effectOitEnabled) {
-                ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_OIT));
+            if (ctx.m_assets.effectFogEnabled) {
+                ctx.m_state.setStencil(GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
+                m_fogProgram->bind(ctx.m_state);
+                m_textureQuad.draw(ctx.m_state);
+            }
 
-                //primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+            if (ctx.m_assets.effectOitEnabled) {
+                ctx.m_state.setStencil(GLStencilMode::only_non_zero(STENCIL_OIT));
 
                 m_blendOitProgram->bind(ctx.m_state);
                 m_oitBuffer.bindTexture(ctx);
 
                 m_textureQuad.draw(ctx.m_state);
-
-                ctx.m_state.disableStencil();
-            }
-
-            if (ctx.m_assets.effectFogEnabled) {
-                ctx.m_state.enableStencil(GLStencilMode::only(STENCIL_SOLID));
-                m_fogProgram->bind(ctx.m_state);
-                m_textureQuad.draw(ctx.m_state);
-                ctx.m_state.disableStencil();
             }
 
             ctx.m_state.setEnabled(GL_BLEND, false);
@@ -316,6 +289,8 @@ void NodeDraw::drawNodes(
 
         if (ctx.m_assets.effectBloomEnabled)
         {
+            ctx.m_state.setStencil({});
+
             primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
             primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
 
@@ -325,9 +300,16 @@ void NodeDraw::drawNodes(
             m_bloomProgram->bind(ctx.m_state);
             primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
 
+            bool cleared[2]{ false, false };
+
             for (int i = 0; i < ctx.m_assets.effectBloomIterations; i++) {
                 auto& buf = m_effectBuffer.m_buffers[i % 2];
                 buf->bind(ctx);
+
+                if (!cleared[i % 2]) {
+                    cleared[i % 2] = true;
+                    buf->clearAll();
+                }
 
                 m_bloomProgram->u_effectBloomIteration->set(i);
                 m_textureQuad.draw(ctx.m_state);
@@ -336,6 +318,7 @@ void NodeDraw::drawNodes(
             }
 
             secondaryBuffer->bind(ctx);
+            secondaryBuffer->clearAll();
 
             m_blendBloomProgram->bind(ctx.m_state);
             m_textureQuad.draw(ctx.m_state);
@@ -352,6 +335,13 @@ void NodeDraw::drawNodes(
 
         ctx.m_state.setDepthMask(GL_TRUE);
         ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+
+        ctx.m_state.setStencil({});
+    }
+
+    // pass 11 - debug info
+    {
+        drawDebug(ctx, secondaryBuffer);
     }
 
     // pass 10 - render to target
@@ -415,12 +405,8 @@ void NodeDraw::drawNodes(
         }
     }
 
-    // pass 11 - debug info
-    {
-        drawDebug(ctx, targetBuffer);
-    }
-
     // pass 12 - cleanup
+    if (ctx.m_assets.glUseInvalidate)
     {
         //ctx.m_state.bindFrameBuffer(0, false);
 
@@ -449,7 +435,7 @@ void NodeDraw::drawDebug(
     constexpr float SZ1 = 0.25f;
     //constexpr float SZ2 = 0.5f;
 
-    int count = 0;
+    size_t count = 0;
     float padding = 0.f;
     for (int i = 0; i < m_oitBuffer.m_buffer->getDrawBufferCount(); i++) {
         m_oitBuffer.m_buffer->blit(
@@ -618,26 +604,21 @@ void NodeDraw::drawBlendedImpl(
 
 void NodeDraw::drawProgram(
     const RenderContext& ctx,
-    Program* program,
-    Program* programPointSprite,
+    const std::function<Program*(const MeshType*)>& programSelector,
     const std::function<bool(const MeshType*)>& typeSelector,
     const std::function<bool(const Node*)>& nodeSelector,
     unsigned int kindBits)
 {
-    auto renderTypes = [this, &ctx, &program, &programPointSprite, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
+    auto renderTypes = [this, &ctx, &programSelector, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
         for (const auto& it : typeMap) {
             auto* type = it.first.type;
 
             if (!typeSelector(type)) continue;
 
-            auto& batch = ctx.m_batch;
-
-            auto activeProgram = program;
-            if (type->m_entityType == EntityType::point_sprite) {
-                activeProgram = programPointSprite;
-            }
-
+            auto activeProgram = programSelector(type);
             if (!activeProgram) continue;
+
+            auto& batch = ctx.m_batch;
 
             for (auto& node : it.second) {
                 if (!nodeSelector(node)) continue;

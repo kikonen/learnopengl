@@ -2,7 +2,7 @@
 
 #include "glm/glm.hpp"
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #pragma pack(push, 1)
 struct PositionEntry {
@@ -12,8 +12,8 @@ struct PositionEntry {
 
 #pragma pack(push, 1)
 struct VertexEntry {
-    ki::VEC10 normal;
-    ki::VEC10 tangent;
-    ki::UV16 texCoord;
+    kigl::VEC10 normal;
+    kigl::VEC10 tangent;
+    kigl::UV16 texCoord;
 };
 #pragma pack(pop)

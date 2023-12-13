@@ -32,5 +32,5 @@ private:
 
     Program* particleProgram{ nullptr };
 
-    MeshType* type;
+    MeshType* type{ nullptr };
 };

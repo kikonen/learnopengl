@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 class GLFrameBufferHandle {
 public:
@@ -37,7 +37,7 @@ public:
         if (m_fbo > 0) return;
         glCreateFramebuffers(1, &m_fbo);
 
-        glObjectLabel(GL_FRAMEBUFFER, m_fbo, name.length(), name.data());
+        kigl::setLabel(GL_FRAMEBUFFER, m_fbo, name);
 
         KI_INFO(fmt::format("CREATE: name={}, FBO={},", name, m_fbo));
     }

@@ -28,8 +28,8 @@ namespace physics {
 
         int minH = 9999999;
         int maxH = -1;
-        float minY = 99999999;
-        float maxY = -1;
+        float minY = 99999999.f;
+        float maxY = -1.f;
 
         m_heights = new float[size];
 
@@ -86,7 +86,7 @@ namespace physics {
             }
         }
 
-        return total / 9.0;
+        return total / 9.0f;
     }
 
     float HeightMap::getLevel(const glm::vec3& pos)

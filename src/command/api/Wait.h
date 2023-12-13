@@ -7,7 +7,7 @@ class Wait final : public Command
 {
 public:
     Wait(
-        int afterCommandId,
+        ki::command_id afterCommandId,
         float duration) noexcept;
 
     virtual void execute(

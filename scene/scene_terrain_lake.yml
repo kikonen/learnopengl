@@ -9,16 +9,16 @@ cube_maps: {}
 root:
   type: origo
 entities:
-  - name: Origo
+  - name: Player
+    id: player
     type: origo
     pos: [0, 100, 50]
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Directional light
     pos: [-300, 200, -400]
     scale: 2.5
@@ -33,18 +33,19 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.8, 1.0]
       intensity: 30000
-      enabled: true
     script_file: scripts/anim_lake_light
-    enabled: true
   - name: Terrain grass v2
     id: auto
+    priority: 20
     type: container
     instanced: true
     material: terrain_grass_2
-    program: g_terrain2
+    program: g_terrain
+    depth_program: g_terrain_depth
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
     render_flags:
+      depth: true
       xxwireframe: true
       xxno_shadow: true
       tessellation: true
@@ -57,8 +58,6 @@ entities:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
-      enabled: true
-    enabled: true
   - name: Water surface - SINGLE
     type: quad
     material: water_surface
@@ -70,7 +69,6 @@ entities:
       no_shadow: true
       render_back: true
       water: true
-    enabled: false
     script_file: scripts/anim_water
   - name: Sea
     type: quad
@@ -83,7 +81,6 @@ entities:
       no_shadow: true
       render_back: true
       water: true
-    enabled: true
     script_file: scripts/anim_water
   - name: Sea floor
     model: quad
@@ -95,7 +92,6 @@ entities:
     render_flags:
       no_shadow: true
       render_back: true
-    enabled: true
 materials:
   - name: terrain_grass_2
     map_kd: textures/terrain_2/terrain_2_TX.jpg

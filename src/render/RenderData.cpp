@@ -128,7 +128,7 @@ void RenderData::updateLights(Registry* registry, bool useLight)
         }
         lightsUbo.u_pointCount = count;
 
-        int diff = registry->m_nodeRegistry->m_pointLights.size() - MAX_LIGHT_COUNT;
+        int diff = static_cast<int>(registry->m_nodeRegistry->m_pointLights.size()) - MAX_LIGHT_COUNT;
         if (diff > 0) {
             KI_INFO_OUT(fmt::format("SKIPPED POINT_LIGHTS: {}", diff));
         }
@@ -145,7 +145,7 @@ void RenderData::updateLights(Registry* registry, bool useLight)
         }
         lightsUbo.u_spotCount = count;
 
-        int diff = registry->m_nodeRegistry->m_spotLights.size() - MAX_LIGHT_COUNT;
+        int diff = static_cast<int>(registry->m_nodeRegistry->m_spotLights.size()) - MAX_LIGHT_COUNT;
         if (diff > 0) {
             KI_INFO_OUT(fmt::format("SKIPPED SPOT_LIGHTS: {}", diff));
         }

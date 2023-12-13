@@ -24,7 +24,10 @@ void GLState::clear() {
     m_viewport = { 0.f, 0.f, 0.f, 0.f };
 
     m_blendMode = { 0, 0, 0, 0, 0 };
-    m_stencilMode = { 0, 0, 0, 0, 0, 0, 0 };
+
+    m_stencilOp = { 0, 0, 0 };
+    m_stencilFunc = { 0, 0, 0 };
+    m_stencilMask = { 0xffff };
 
     m_depthFunc = -1;
     m_depthMask = -1;
@@ -59,8 +62,9 @@ void GLState::setEnabled(GLenum key, bool enabled) noexcept
 
 bool GLState::isEnabled(GLenum key) noexcept
 {
-    const auto& it = m_enabled.find(key);
-    if (it != m_enabled.end()) {
+    if (const auto& it = m_enabled.find(key);
+        it != m_enabled.end())
+    {
         return it->second == 1;
     }
     return false;
@@ -169,7 +173,8 @@ bool GLState::setViewport(const glm::vec4& viewport)
 {
     if (m_viewport != viewport) {
         m_viewport = viewport;
-        glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+        glm::uvec4 vp{ viewport };
+        glViewport(vp[0], vp[1], vp[2], vp[3]);
         return true;
     }
     return false;
@@ -198,36 +203,59 @@ void GLState::invalidateBlendMode()
     m_blendMode = { 0, 0, 0, 0 };
 }
 
-void GLState::enableStencil(const GLStencilMode& mode)
+//void GLState::enableStencil(const GLStencilMode& mode)
+//{
+//    setStencilMode(mode);
+//    setEnabled(GL_STENCIL_TEST, true);
+//}
+//
+//void GLState::disableStencil()
+//{
+//    setEnabled(GL_STENCIL_TEST, false);
+//
+//    // NOTE KI *mask* affects clear
+//    // https://community.khronos.org/t/how-to-clear-stencil-buffer-after-stencil-test/15882/2
+//    //setStencilMode({});
+//    invalidateBlendMode();
+//    glStencilMask(0xff);
+//}
+
+void GLState::setStencil(const GLStencilMode& mode)
 {
-    setStencilMode(mode);
-    setEnabled(GL_STENCIL_TEST, true);
+    setStencilOp(mode.op);
+    setStencilFunc(mode.func);
+    setStencilMask(mode.mask);
+    setEnabled(GL_STENCIL_TEST, mode.testEnabled);
 }
 
-void GLState::disableStencil()
-{
-    setEnabled(GL_STENCIL_TEST, false);
-
-    // NOTE KI *mask* affects clear
-    // https://community.khronos.org/t/how-to-clear-stencil-buffer-after-stencil-test/15882/2
-    //setStencilMode({});
-    invalidateBlendMode();
-    glStencilMask(0xff);
-}
-
-void GLState::setStencilMode(const GLStencilMode& mode)
-{
-    if (m_stencilMode != mode)
+void GLState::setStencilOp(const GLStencilOp& op) {
+    if (m_stencilOp != op)
     {
-        m_stencilMode = mode;
-        m_stencilMode.apply();
+        m_stencilOp = op;
+        glStencilOp(op.sfail, op.dpfail, op.dppass);
     }
 }
 
-void GLState::invalidateStencilMode()
-{
-    m_stencilMode = { 0, 0, 0, 0, 0, 0, 0 };
+void GLState::setStencilFunc(const GLStencilFunc& func) {
+    if (m_stencilFunc != func)
+    {
+        m_stencilFunc = func;
+        glStencilFunc(func.func, func.ref, func.mask);
+    }
 }
+
+void GLState::setStencilMask(const GLStencilMask& mask) {
+    if (m_stencilMask != mask)
+    {
+        m_stencilMask = mask;
+        glStencilMask(mask.mask);
+    }
+}
+
+//void GLState::invalidateStencil()
+//{
+//    //m_stencilMode = { 0, 0, 0, 0, 0, 0, 0 };
+//}
 
 void GLState::setDepthFunc(const GLenum func)
 {

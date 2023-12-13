@@ -3,11 +3,11 @@
 #include "fmt/format.h"
 
 namespace {
-    int idBase = 0;
+    ki::mesh_id idBase = 0;
 
     std::mutex id_lock{};
 
-    int nextID()
+    ki::mesh_id nextID()
     {
         std::lock_guard<std::mutex> lock(id_lock);
         return ++idBase;
@@ -15,7 +15,7 @@ namespace {
 }
 
 Mesh::Mesh()
-    : m_objectID(nextID())
+    : m_id(nextID())
 {
 }
 
@@ -26,7 +26,7 @@ Mesh::~Mesh()
 
 const std::string Mesh::str() const noexcept
 {
-    return fmt::format("<MESH: id={}>", m_objectID);
+    return fmt::format("<MESH: id={}>", m_id);
 }
 
 void Mesh::prepareVolume() {

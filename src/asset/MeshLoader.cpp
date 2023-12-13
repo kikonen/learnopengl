@@ -90,7 +90,7 @@ void MeshLoader::loadData(
     {
         m_defaultMaterial.m_default = true;
         m_defaultMaterial.m_used = false;
-        m_defaultMaterial.m_objectID = Material::DEFAULT_ID;
+        m_defaultMaterial.m_id = Material::DEFAULT_ID;
     }
 
     std::string filePath = util::joinPath(
@@ -285,13 +285,14 @@ unsigned int MeshLoader::resolveVertexIndex(
         textures.empty() ? EMPTY_TEX : textures[ti],
         normals.empty() ? EMPTY_NORMAL : normals[ni],
         tangents.empty() ? EMPTY_NORMAL : tangents[tangenti],
-        material->m_objectID);
+        material->m_id);
 
     {
-        const auto& it = vertexMapping.find(pos);
-        if (it != vertexMapping.end()) {
-            if (pos == glm::vec3{ 1, 1, 1 })
-                int x = 0;
+        if (const auto& it = vertexMapping.find(pos);
+            it != vertexMapping.end())
+        {
+            //if (pos == glm::vec3{ 1, 1, 1 })
+            //    int x = 0;
 
             for (const auto idx : it->second) {
                 const auto& old = vertices[idx];
@@ -305,7 +306,7 @@ unsigned int MeshLoader::resolveVertexIndex(
         }
     }
 
-    size_t index = vertices.size();
+    unsigned int index = static_cast<unsigned int>(vertices.size());
     {
         auto& mappedIndeces = vertexMapping[pos];
         mappedIndeces.push_back(index);
@@ -400,7 +401,7 @@ void MeshLoader::createTangents(
 
         tangents.push_back(nt);
 
-        tangenti[i] = tangents.size() - 1;
+        tangenti[i] = static_cast<glm::uint>(tangents.size()) - 1;
 
         lastNI = ni[i];
         lastTI = tangenti[i];

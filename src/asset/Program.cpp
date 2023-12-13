@@ -27,17 +27,17 @@
 
 
 namespace {
-    constexpr int LOG_SIZE = 4096;
+    constexpr size_t LOG_SIZE = 4096;
 
     const std::string INC_GLOBALS{ "globals.glsl" };
 
     const std::string GEOM_NONE{ "" };
 
-    int idBase = 0;
+    ki::program_id idBase = 0;
 
     std::mutex type_id_lock{};
 
-    int nextID()
+    ki::program_id nextID()
     {
         std::lock_guard<std::mutex> lock(type_id_lock);
         return ++idBase;
@@ -51,7 +51,7 @@ Program::Program(
     const bool compute,
     std::string_view geometryType,
     const std::map<std::string, std::string, std::less<> >& defines)
-    : m_objectID(nextID()),
+    : m_id(nextID()),
     m_assets{ assets },
     m_key{ key },
     m_programName{ name },
@@ -135,7 +135,7 @@ int Program::prepare(const Assets& assets)
     u_toneHdri = std::make_unique< uniform::Bool>("u_toneHdri", UNIFORM_TONE_HDRI);
     u_gammaCorrect = std::make_unique< uniform::Bool>("u_gammaCorrect", UNIFORM_GAMMA_CORRECT);
     u_viewportTransform = std::make_unique< uniform::Mat4>("u_viewportTransform", UNIFORM_VIEWPORT_TRANSFORM);
-    
+
     u_stencilMode = std::make_unique< uniform::Int>("u_stencilMode", UNIFORM_STENCIL_MODE);
 
     u_effectBloomIteration = std::make_unique< uniform::UInt>("u_effectBloomIteration", UNIFORM_EFFECT_BLOOM_ITERATION);
@@ -213,9 +213,9 @@ int Program::compileSource(
 
     const char* src = source.c_str();
 
-    int shaderId = glCreateShader(shaderType);
+    GLuint shaderId = glCreateShader(shaderType);
 
-    glObjectLabel(GL_SHADER, shaderId, shaderPath.length(), shaderPath.c_str());
+    kigl::setLabel(GL_SHADER, shaderId, shaderPath);
     glShaderSource(shaderId, 1, &src, NULL);
     glCompileShader(shaderId);
 
@@ -259,12 +259,12 @@ int Program::createProgram() {
     {
         m_programId = glCreateProgram();
 
-        glObjectLabel(GL_PROGRAM, m_programId, m_programName.length(), m_programName.c_str());
+        kigl::setLabel(GL_PROGRAM, m_programId, m_programName);
 
         for (auto& [type, shaderId] : shaderIds) {
             if (shaderId == -1) continue;
             glAttachShader(m_programId, shaderId);
-            glObjectLabel(GL_SHADER, shaderId, m_paths[type].length(), m_paths[type].c_str());
+            kigl::setLabel(GL_SHADER, shaderId, m_paths[type]);
         }
 
         glLinkProgram(m_programId);
@@ -509,13 +509,19 @@ std::vector<std::string> Program::processInclude(
     std::string_view includePath,
     int lineNumber)
 {
+    std::string simplifiedPath{ includePath };
+    if (simplifiedPath.starts_with('"'))
+        simplifiedPath = simplifiedPath.substr(1, simplifiedPath.length() - 1);
+    if (simplifiedPath.ends_with('"'))
+        simplifiedPath = simplifiedPath.substr(0, simplifiedPath.length() - 1);
+
     std::string path;
     {
         path = util::joinPath(
             m_assets.shadersDir,
             "",
             "_",
-            includePath);
+            simplifiedPath);
     }
 
     std::vector<std::string> lines = loadSourceLines(path, false);

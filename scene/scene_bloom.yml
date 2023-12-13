@@ -9,22 +9,21 @@ cube_maps: {}
 root:
   type: origo
 entities:
-  - name: Origo
+  - name: Player
+    id: player
     type: origo
     pos: [0, 1, 15]
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Other
     model: texture_cube_4
     program: g_tex
     pos: [0.0, 2.0, 0.0]
     rotation: [0, 90, 0]
-    enabled: true
     repeat:
       z_count: 20
       z_step: -10
@@ -42,7 +41,6 @@ entities:
     repeat:
       z_count: 10
       z_step: 2
-    enabled: true
   - name: Directional light
     type: model
     xxpos: [0, 25, 25]
@@ -59,8 +57,6 @@ entities:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 50000
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 1
     type: model
     model: quad
@@ -79,14 +75,11 @@ entities:
     scale: [5, 5, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 2
         z_count: 2
         x_step: 20
         z_step: -20
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 2
     type: model
     model: quad
@@ -104,14 +97,11 @@ entities:
     scale: [5, 5, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 2
         z_count: 2
         x_step: 20
         z_step: -20
-      enabled: true
-    enabled: true
   - name: Skeleton army - grid
     type: billboard
     priority: 1
@@ -127,14 +117,11 @@ entities:
     scale: [1.5, 3, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 2
         z_count: 2
         x_step: 10
         z_step: -10
-      enabled: true
-    enabled: true
   - name: Skeleton army
     type: billboard
     priority: 1
@@ -152,13 +139,11 @@ entities:
       z_count: 2
       x_step: 10
       z_step: -10
-    enabled: true
   - name: Cube map - mirror_ball
     type: origo
     pos: [0, 5, 10]
     render_flags:
       cube_map: true
-    enabled: true
   - name: Mirror ball
     model: glass_ball
     program: g_tex
@@ -166,13 +151,11 @@ entities:
     scale: 1
     material_modifier:
       reflection: 0.8
-    enabled: true
   - name: Planet 1
     model: [planet, planet]
     program: g_tex
     pos: [0, 0, 20]
     scale: 1
-    enabled: true
   - name: Planet 2
     model: [planet, planet]
     program: g_tex
@@ -180,13 +163,11 @@ entities:
     material_modifier:
       map_bump: mars_normal.png
     scale: 1
-    enabled: true
   - name: Cube map - wood_wall
     type: origo
     pos: [35.0, 2.5, 5.0]
     render_flags:
       cube_map: true
-    enabled: true
   - name: Wood wall
     model: quad
     material: woodwall
@@ -199,7 +180,6 @@ entities:
     repeat:
       x_count: 1
       x_step: 1
-    enabled: true
   - name: wooden floor
     model: quad
     material: wood_floor
@@ -210,7 +190,6 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
-    enabled: true
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]

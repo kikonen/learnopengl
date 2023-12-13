@@ -57,8 +57,7 @@ public:
 
     void drawProgram(
         const RenderContext& ctx,
-        Program* program,
-        Program* programPointSprite,
+        const std::function<Program* (const MeshType*)>& programSelector,
         const std::function<bool(const MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         unsigned int kindBits);
@@ -85,9 +84,6 @@ private:
 
     PlainQuad m_plainQuad;
     TextureQuad m_textureQuad;
-
-    Program* m_solidDepthProgram{ nullptr };
-    Program* m_alphaDepthProgram{ nullptr };
 
     Program* m_deferredProgram{ nullptr };
     Program* m_oitProgram{ nullptr };

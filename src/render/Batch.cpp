@@ -197,7 +197,7 @@ void Batch::addCommand(
     cmd.m_vao = type->m_vao;
     cmd.m_program = program;
     cmd.m_drawOptions = &type->m_drawOptions;
-    cmd.m_index = m_entityIndeces.size();
+    cmd.m_index = static_cast<int>(m_entityIndeces.size());
 }
 
 void Batch::draw(

@@ -39,6 +39,7 @@ public:
 
     bool glUseFence;
     bool glUseSingleFence;
+    bool glUseInvalidate;
 
     bool prepassDepthEnabled;
 
@@ -68,6 +69,7 @@ public:
     std::string modelsDir;
     std::string spritesDir;
     std::string texturesDir;
+    std::string fontsDir;
 
     std::string shadersDir;
 
@@ -126,12 +128,18 @@ public:
     int mirrorRenderFrameStart;
     int mirrorRenderFrameStep;
 
+    float mirrorMapNearPlane;
+    float mirrorMapFarPlane;
+
     bool waterMapEnabled;
     int waterTileSize;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
     int waterRenderFrameStart;
     int waterRenderFrameStep;
+
+    float waterMapNearPlane;
+    float waterMapFarPlane;
 
     int terrainGridSize;
 

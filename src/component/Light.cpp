@@ -20,7 +20,7 @@ void Light::update(const UpdateContext& ctx, Node& node) noexcept
     const bool nodeChanged = m_nodeMatrixLevel != node.getMatrixLevel();
 
     if (nodeChanged) {
-        m_worldPosition = node.getModelMatrix() * glm::vec4(m_position, 1.f);
+        m_worldPosition = node.getWorldPosition();
     }
 
     if (m_spot || m_directional) {
@@ -55,7 +55,7 @@ void Light::update(const UpdateContext& ctx, Node& node) noexcept
 
     if (!m_directional) {
         const float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
-        radius = (-linear + std::sqrtf(linear * linear - 4 * quadratic * (constant - (256.0 / 5.0) * lightMax))) / (2 * quadratic);
+        radius = (-linear + std::sqrtf(linear * linear - 4.f * quadratic * (constant - (256.f / 5.f) * lightMax))) / (2.f * quadratic);
     }
 
     m_nodeMatrixLevel = node.getMatrixLevel();

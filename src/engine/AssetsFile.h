@@ -26,6 +26,9 @@ public:
     Assets load();
 
 private:
+    void resolveDirs(
+        Assets& data);
+
     void loadAssets(
         const YAML::Node& node,
         Assets& data);

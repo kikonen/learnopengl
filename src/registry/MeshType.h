@@ -18,6 +18,7 @@ struct NodeRenderFlags {
 
     bool gbuffer = false;
     bool blendOIT = false;
+    bool depth = false;
 
     bool instanced = false;
 
@@ -101,7 +102,7 @@ public:
     void bind(const RenderContext& ctx);
 
 public:
-    const int typeID;
+    const ki::type_id typeID;
     const std::string m_name;
 
     EntityType m_entityType{ EntityType::origo };
@@ -112,6 +113,7 @@ public:
     std::string m_script;
 
     Program* m_program{ nullptr };
+    Program* m_depthProgram{ nullptr };
 
     MaterialVBO m_materialVBO;
     Sprite m_sprite;

@@ -7,7 +7,7 @@
 
 #include <fmt/format.h>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "asset/Sphere.h"
 
@@ -48,7 +48,7 @@ const std::string ModelMesh::str() const noexcept
 {
     return fmt::format(
         "<MODEL: id={}, rootDir={}, meshPath={}, name={}>",
-        m_objectID, m_rootDir, m_meshPath, m_meshName);
+        m_id, m_rootDir, m_meshPath, m_meshName);
 }
 
 const AABB ModelMesh::calculateAABB() const {
@@ -85,7 +85,7 @@ GLVertexArray* ModelMesh::prepare(
 
     // NOTE KI no need for thexe any longer (they are in buffers now)
     // NOTE KI CANNOT clear vertices due to mesh sharing via ModelRegistry
-    m_triCount = m_tris.size();
+    m_triCount = static_cast<ki::uint>(m_tris.size());
     m_tris.clear();
     //m_vertices.clear();
 
@@ -106,6 +106,6 @@ void ModelMesh::prepareDrawOptions(
     drawOptions.type = backend::DrawOptions::Type::elements;
     drawOptions.mode = drawOptions.tessellation ? GL_PATCHES : GL_TRIANGLES;
     drawOptions.indexCount = m_triCount * 3;
-    drawOptions.vertexOffset = m_vertexVBO.m_vertexOffset;
-    drawOptions.indexOffset = m_vertexVBO.m_indexOffset;
+    drawOptions.vertexOffset = static_cast<ki::uint>(m_vertexVBO.m_vertexOffset);
+    drawOptions.indexOffset = static_cast<ki::uint>(m_vertexVBO.m_indexOffset);
 }

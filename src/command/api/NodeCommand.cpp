@@ -1,12 +1,12 @@
 #include "NodeCommand.h"
 
 NodeCommand::NodeCommand(
-    int afterCommandId,
-    int objectID,
+    ki::command_id afterCommandId,
+    ki::object_id nodeId,
     float duration,
     bool relative) noexcept
     : Command(afterCommandId, duration),
-    m_objectID(objectID),
+    m_nodeId(nodeId),
     m_relative(relative)
 {
 }

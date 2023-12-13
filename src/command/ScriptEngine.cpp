@@ -1,5 +1,7 @@
 #include "ScriptEngine.h"
 
+#include <map>
+
 #include <fmt/format.h>
 
 #include "util/Util.h"
@@ -36,8 +38,7 @@ ScriptEngine::ScriptEngine(const Assets& assets)
 void ScriptEngine::prepare(
     CommandEngine* commandEngine)
 {
-    m_runner = sol::thread::create(m_lua);
-    m_commandAPI = std::make_unique<CommandAPI>(commandEngine, m_runner);
+    m_commandEngine = commandEngine;
 
     m_lua.open_libraries(sol::lib::base);
     m_lua.open_libraries(sol::lib::math);
@@ -47,8 +48,8 @@ void ScriptEngine::prepare(
 
     registerTypes();
 
-    m_lua.set("cmd", m_commandAPI.get());
     m_lua["nodes"] = m_lua.create_table_with();
+    m_luaNodes = m_lua["nodes"];
 }
 
 void ScriptEngine::registerTypes()
@@ -68,7 +69,7 @@ void ScriptEngine::registerTypes()
         ut["rotate"] = &CommandAPI::lua_rotate;
         ut["scale"] = &CommandAPI::lua_scale;
 
-        ut["resume"] = &CommandAPI::lua_resume;
+        ut["resume"] = sol::yielding(& CommandAPI::lua_resume);
         ut["start"] = &CommandAPI::lua_start;
     }
 
@@ -91,7 +92,7 @@ void ScriptEngine::runScript(
     Node* node,
     const NodeScriptId scriptId)
 {
-    const auto& nodeIt = m_nodeScripts.find(node->m_objectID);
+    const auto& nodeIt = m_nodeScripts.find(node->m_id);
     if (nodeIt == m_nodeScripts.end()) return;
 
     const auto& fnIt = nodeIt->second.find(scriptId);
@@ -100,14 +101,16 @@ void ScriptEngine::runScript(
     const auto& nodeFnName = fnIt->second;
 
     sol::function fn = m_lua[nodeFnName];
-    fn(std::ref(node), node->m_objectID);
+
+    auto* api = m_apis.find(node->m_id)->second.get();
+
+    fn(std::ref(node), std::ref(api), node->m_id);
 }
 
 void ScriptEngine::registerNode(
     Node* node)
 {
-    sol::table nodes = m_lua["nodes"];
-    nodes[node->m_objectID] = m_lua.create_table_with();
+    m_luaNodes[node->m_id] = m_lua.create_table_with();
 }
 
 void ScriptEngine::registerScript(
@@ -120,27 +123,30 @@ void ScriptEngine::registerScript(
     const auto& scriptName = scriptIdToString(scriptId);
 
     // NOTE KI unique wrapperFn for node
-    const std::string nodeFnName = fmt::format("fn_{}_{}", scriptName, node->m_objectID);
+    const std::string nodeFnName = fmt::format("fn_{}_{}", scriptName, node->m_id);
+
+    // NOTE KI pass context as closure to Node
+    // - node, cmd, id
     const auto scriptlet = fmt::format(R"(
-function {}(node, id)
+function {}(node, cmd, id)
 {}
 end)", nodeFnName, script);
 
     m_lua.script(scriptlet);
 
-    sol::table luaNode = m_lua["nodes"][node->m_objectID];
+    sol::table luaNode = m_luaNodes[node->m_id];
     luaNode[scriptName] = m_lua[nodeFnName];
 
-    sol::function fn = luaNode[scriptName];
+    m_nodeScripts[node->m_id][scriptId] = nodeFnName;
 
-    m_nodeScripts[node->m_objectID][scriptId] = nodeFnName;
+    m_apis.insert({ node->m_id, std::make_unique<CommandAPI>(this, m_commandEngine, node->m_id) });
 }
 
 bool ScriptEngine::hasFunction(
     Node* node,
     std::string_view name)
 {
-    sol::table luaNode = m_lua["nodes"][node->m_objectID];
+    sol::table luaNode = m_luaNodes[node->m_id];
 
     sol::optional<sol::function> fnPtr = luaNode[name];
     return fnPtr != sol::nullopt;
@@ -150,12 +156,11 @@ void ScriptEngine::invokeFunction(
     Node* node,
     std::string_view name)
 {
-    //KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->m_objectID, name));
-    sol::table luaNode = m_lua["nodes"][node->m_objectID];
+    //KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->m_id, name));
+    sol::table luaNode = m_luaNodes[node->m_id];
 
     sol::optional<sol::function> fnPtr = luaNode[name];
     if (fnPtr != sol::nullopt) {
-        sol::function fn = luaNode[name];
-        fn(std::ref(node), node->m_objectID);
+        fnPtr.value()(std::ref(node), node->m_id);
     }
 }

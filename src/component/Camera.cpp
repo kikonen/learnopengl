@@ -22,7 +22,6 @@ Camera::Camera(
     const glm::vec3 up)
 {
     m_enabled = true;
-    m_position = worldPos;
     m_worldPosition = worldPos;
 
     setAxis(front, up);
@@ -35,15 +34,8 @@ void Camera::update(const UpdateContext& ctx, Node& node) noexcept
     const bool nodeChanged = m_nodeLevel != node.getMatrixLevel();
     if (!nodeChanged) return;
 
-    m_nodeModelMatrix = node.getModelMatrix();
-
-    // NOTE KI *IGNORE* scale
-    const auto& scale = node.getScale();
-    m_nodeModelMatrix[0][0] /= scale[0];
-    m_nodeModelMatrix[1][1] /= scale[1];
-    m_nodeModelMatrix[2][2] /= scale[2];
-
-    m_worldPosition = m_nodeModelMatrix * glm::vec4(m_position, 1.f);
+    m_nodeQuat = node.getParent()->getQuatRotation() * node.getQuatRotation();
+    m_worldPosition = node.getWorldPosition();
 
     m_dirty = true;
     m_dirtyView = true;
@@ -169,20 +161,11 @@ void Camera::setWorldPosition(const glm::vec3& pos) noexcept
     }
 }
 
-void Camera::setPosition(const glm::vec3& pos) noexcept
+void Camera::setDegreesRotation(const glm::vec3& euler) noexcept
 {
-    if (m_position != pos) {
-        m_position = pos;
-        m_worldPosition = pos;
-        m_dirty = true;
-    }
-}
-
-void Camera::setRotation(const glm::vec3& rotation) noexcept
-{
-    if (m_rotation != rotation)
+    if (m_degreesRotation != euler)
     {
-        m_rotation = rotation;
+        m_degreesRotation = euler;
         m_dirty = true;
     }
 }
@@ -205,17 +188,19 @@ void Camera::updateCamera() const noexcept
 {
     if (!m_dirty) return;
 
-    glm::vec3 viewFront;
     {
-        // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-        glm::mat3 rotateMatrix = glm::toMat3(glm::quat(glm::radians(m_rotation)));
-        viewFront = glm::mat3(m_nodeModelMatrix) * rotateMatrix * m_front;
-    }
+        glm::vec3 viewFront;
+        {
+            // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
+            glm::quat quat = glm::quat(glm::radians(m_degreesRotation));
+            viewFront = m_nodeQuat * quat * m_front;
+        }
 
-    // NOTE KI glm::normalize for vec4 *IS* incorrect (4d len...)
-    m_viewFront = glm::normalize(viewFront);
-    m_viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
-    m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
+        // NOTE KI glm::normalize for vec4 *IS* incorrect (4d len...)
+        m_viewFront = glm::normalize(viewFront);
+        m_viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
+        m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
+    }
 
     m_dirty = false;
     m_dirtyView = true;

@@ -152,8 +152,8 @@ void TerrainGenerator::createTiles(
     // NOTE KI only SINGLE material supported
     int materialIndex = -1;
     type->modifyMaterials([this, &materialIndex , &materialRegistry, &assets](Material& m) {
-        m.tilingX = m_worldTilesU;
-        m.tilingY = m_worldTilesV;
+        m.tilingX = (float)m_worldTilesU;
+        m.tilingY = (float)m_worldTilesV;
 
         m.loadTextures(assets);
 
@@ -210,7 +210,7 @@ void TerrainGenerator::createTiles(
     {
         event::Event evt { event::Type::node_add };
         evt.body.node.target = m_node;
-        evt.body.node.parentId = container.m_id;
+        evt.body.node.parentId = container.m_uuid;
         registry->m_dispatcher->send(evt);
     }
 }
@@ -242,6 +242,7 @@ MeshType* TerrainGenerator::createType(
     materialVBO.setMaterials(containerMaterials.getMaterials());
 
     type->m_program = containerType->m_program;
+    type->m_depthProgram = containerType->m_depthProgram;
 
     return type;
 }

@@ -42,7 +42,7 @@ private:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::vector<Sprite> m_sprites;
-    std::map<int, Sprite*> m_idToSprites;
+    std::map<ki::sprite_id, Sprite*> m_idToSprites;
 
     std::vector<ShapeSSBO> m_shapesSSBO;
 

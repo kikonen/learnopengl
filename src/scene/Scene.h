@@ -81,11 +81,14 @@ public:
         const RenderContext& ctx,
         NodeRenderer* nodeRenderer);
 
+    Node* getActiveNode() const;
+    const std::vector<NodeController*>* getActiveNodeControllers() const;
+
     Node* getActiveCamera() const;
-    NodeController* getActiveCameraController() const;
+    const std::vector<NodeController*>* getActiveCameraControllers() const;
 
     void bindComponents(Node* node);
-    int getObjectID(const RenderContext& ctx, double posx, double posy);
+    ki::object_id getObjectID(const RenderContext& ctx, float posx, float posy);
 
     std::shared_ptr<Viewport> m_mainViewport{ nullptr };
     std::shared_ptr<Viewport> m_rearViewport{ nullptr };
@@ -110,6 +113,8 @@ public:
 protected:
 
 private:
+    bool m_loaded{ false };
+
     std::unique_ptr<NodeRenderer> m_mainRenderer{ nullptr };
     std::unique_ptr<NodeRenderer> m_rearRenderer{ nullptr };
 

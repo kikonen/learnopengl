@@ -5,9 +5,9 @@
 #include "engine/UpdateContext.h"
 
 Sync::Sync(
-    int afterCommandId,
+    ki::command_id afterCommandId,
     float duration,
-    std::vector<int> commandIds) noexcept
+    const std::vector<ki::command_id>& commandIds) noexcept
     : Command(afterCommandId, duration),
     m_commandIds(commandIds)
 {

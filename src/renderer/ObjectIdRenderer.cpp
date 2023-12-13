@@ -14,10 +14,10 @@
 #include "registry/NodeRegistry.h"
 
 
-int ObjectIdRenderer::getObjectId(
+ki::object_id ObjectIdRenderer::getObjectId(
     const RenderContext& ctx,
-    double screenPosX,
-    double screenPosY,
+    float screenPosX,
+    float screenPosY,
     Viewport* mainViewport)
 {
     // https://stackoverflow.com/questions/10123601/opengl-read-pixels-from-framebuffer-for-ing-rounded-up-to-255-0xff
@@ -50,8 +50,8 @@ int ObjectIdRenderer::getObjectId(
     const float offsetX = screenW * (vpPos.x + 1.f) / GL_SCREEN_SIZE;
     const float offsetY = screenH * (1.f - (vpPos.y + 1.f) / GL_SCREEN_SIZE);
 
-    const float posx = (screenPosX - offsetX) * ratioX;
-    const float posy = (screenPosY - offsetY) * ratioY;
+    const float posx = (static_cast<float>(screenPosX) - offsetX) * ratioX;
+    const float posy = (static_cast<float>(screenPosY) - offsetY) * ratioY;
 
     if (posx < 0 || posx > w || posy < 0 || posy > h) return -1;
 
@@ -64,18 +64,20 @@ int ObjectIdRenderer::getObjectId(
         //int readFormat;
         //glGetFramebufferParameteriv(GL_FRAMEBUFFER, GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
 
-        glReadPixels(posx, m_idBuffer->m_spec.height - posy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glReadPixels(
+            static_cast<GLint>(posx),
+            static_cast<GLint>(m_idBuffer->m_spec.height - posy),
+            1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-        int x = 0;
         m_idBuffer->unbind(ctx);
     }
 
-    const int objectID =
+    const ki::object_id nodeId =
         data[0] +
         data[1] * 256 +
         data[2] * 256 * 256;
 
-    return objectID;
+    return nodeId;
 }
 
 void ObjectIdRenderer::prepare(
@@ -111,8 +113,8 @@ void ObjectIdRenderer::updateView(const RenderContext& ctx)
     const auto& res = ctx.m_resolution;
 
     // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
-    int w = ctx.m_assets.gBufferScale * res.x;
-    int h = ctx.m_assets.gBufferScale * res.y;
+    int w = (int)(ctx.m_assets.gBufferScale * res.x);
+    int h = (int)(ctx.m_assets.gBufferScale * res.y);
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
@@ -160,9 +162,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
     {
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_idProgram,
-            //m_idProgramPointSprite,
-            nullptr,
+            [this](const MeshType* type) { return m_idProgram; },
             [](const MeshType* type) { return !type->m_flags.noSelect && !type->m_flags.tessellation; },
             [](const Node* node) { return true; },
             NodeDraw::KIND_ALL);

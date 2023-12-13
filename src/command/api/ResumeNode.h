@@ -4,17 +4,19 @@
 
 #include "NodeCommand.h"
 
+class Coroutine;
+
 class ResumeNode final : public NodeCommand
 {
 public:
     ResumeNode(
-        int afterCommandId,
-        int objectID,
-        const std::string& callbackFn) noexcept;
+        ki::command_id afterCommandId,
+        ki::object_id nodeId,
+        Coroutine* coroutine) noexcept;
 
     virtual void execute(
         const UpdateContext& ctx) noexcept override;
 
 private:
-    const std::string m_callbackFn;
+    Coroutine* m_coroutine;
 };

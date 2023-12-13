@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 constexpr int UNIFORM_PROJECTION_MATRIX = 1;
 constexpr int UNIFORM_VIEW_MATRIX = 2;

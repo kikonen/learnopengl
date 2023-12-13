@@ -26,7 +26,7 @@ public:
         FrameBuffer* targetBuffer);
 
 private:
-    void renderStencil(
+    void fillHighlightMask(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer);
 

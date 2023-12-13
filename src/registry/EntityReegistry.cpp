@@ -18,7 +18,7 @@ namespace {
 
     constexpr size_t MAX_ENTITY_COUNT = ENTITY_BLOCK_SIZE * ENTITY_BLOCK_COUNT;
 
-    constexpr int MAX_SKIP = 20;
+    constexpr size_t MAX_SKIP = 20;
 }
 
 EntityRegistry::EntityRegistry(const Assets& assets)
@@ -129,7 +129,7 @@ int EntityRegistry::addEntityRange(const size_t count)
         m_entries.reserve(size);
     }
 
-    int firstIndex = m_entries.size();
+    size_t firstIndex = m_entries.size();
 
     for (int i = 0; i < count; i++) {
         m_entries.emplace_back();
@@ -141,7 +141,7 @@ int EntityRegistry::addEntityRange(const size_t count)
 
     KI_INFO(fmt::format("Entity: ADDED_RANGE: firstIndex={}, count={}, newSize={}", firstIndex, count, m_entries.size()));
 
-    return firstIndex;
+    return static_cast<int>(firstIndex);
 }
 
 EntitySSBO* EntityRegistry::getEntity(int index)

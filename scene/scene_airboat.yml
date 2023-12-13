@@ -9,28 +9,26 @@ cube_maps: {}
 root:
   type: origo
 entities:
-  - name: Origo
+  - name: Player
+    id: player
     type: origo
     pos: [0, 1, 15]
+    active: true
     camera:
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
-  - name: Other
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - xname: Other
     model: texture_cube
     program: g_tex
     material_modifier:
       tiling: 5
     pos: [0.0, 0.0, -20.0]
-    xxenabled: true
   - name: Airboat
     model: airboat_fixed_colors
     program: g_tex
     pos: [0.0, 0.0, 0.0]
-    enabled: true
   - name: Directional light
     type: origo
     pos: [0, 25, 25]
@@ -46,8 +44,6 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 40000
-      enabled: true
-    enabled: true
   - name: Giant wooden box
     model: quad
     xxmodel: woodwall
@@ -58,7 +54,6 @@ entities:
       render_back: true
       no_shadow: true
     scale: [100, 100, 100]
-    enabled: true
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [90, 0, 0]

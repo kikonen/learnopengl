@@ -52,6 +52,20 @@ namespace util {
         }
     }
 
+    std::string replace(
+        const std::string& str,
+        const std::string_view from,
+        const std::string_view to)
+    {
+        std::string s{ str };
+
+        size_t start_pos = str.find(from);
+        if (start_pos == std::string::npos)
+            return s;
+        s.replace(start_pos, from.length(), to);
+        return s;
+    }
+
     bool matchAny(
         const std::vector<std::regex>& matchers,
         const std::string& str)

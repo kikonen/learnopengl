@@ -1,8 +1,14 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "asset/Sphere.h"
+
+#include "ki/size.h"
+
+#include "util/glm_util.h"
+
 
 class UpdateContext;
 class RenderContext;
@@ -17,8 +23,8 @@ struct EntitySSBO;
 //
 struct NodeInstance {
     bool m_dirty = true;
-    bool m_rotationDirty = true;
-    bool m_entityDirty = true;
+    bool m_dirtyRotation = true;
+    bool m_dirtyEntity = true;
     bool m_uniformScale = false;
 
     int m_parentMatrixLevel = -1;
@@ -27,7 +33,7 @@ struct NodeInstance {
     int m_physicsMatrixLevel = -1;
     int m_physicsLevel = -1;
 
-    int m_objectID{ 0 };
+    ki::object_id m_id{ 0 };
     int m_entityIndex{ -1 };
     int m_flags = { 0 };
 
@@ -40,29 +46,33 @@ struct NodeInstance {
     glm::mat4 m_translateMatrix{ 1.f };
     glm::mat4 m_scaleMatrix{ 1.f };
 
-    glm::vec3 m_rotation{ 0.f };
+    // Rotation for geometry, to align it correct way
+    // i.e. not affecting "front"
+    glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
+
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    // quaternion rotation matrix
+    glm::quat m_quatRotation{ 1.f, 0.f, 0.f, 0.f };
+    glm::vec3 m_degreesRotation{ 0.f };
     glm::mat4 m_rotationMatrix{ 1.f };
 
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
     glm::vec3 m_front{ 0.f, 0.f, 1.f };
 
+    mutable glm::vec3 m_viewUp{ 0.f };
     mutable glm::vec3 m_viewFront{ 0.f };
     mutable glm::vec3 m_viewRight{ 0.f };
-    mutable glm::vec3 m_viewUp{ 0.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::mat4 m_modelScale{ 1.f };
 
-    inline int getObjectID() const noexcept
+    inline ki::object_id getId() const noexcept
     {
-        return m_objectID;
+        return m_id;
     }
 
-    inline void setObjectID(int objectID) noexcept
+    inline void setId(ki::object_id id) noexcept
     {
-        m_objectID = objectID;
+        m_id = id;
     }
 
     inline int getFlags() const noexcept
@@ -74,7 +84,7 @@ struct NodeInstance {
     {
         if (m_flags != flags) {
             m_flags = flags;
-            m_entityDirty = true;
+            m_dirtyEntity = true;
         }
     }
 
@@ -87,7 +97,7 @@ struct NodeInstance {
     {
         if (m_materialIndex != materialIndex) {
             m_materialIndex = materialIndex;
-            m_entityDirty = true;
+            m_dirtyEntity = true;
         }
     }
 
@@ -100,7 +110,7 @@ struct NodeInstance {
     {
         if (m_volume.getVolume() != volume) {
             m_volume = volume;
-            m_entityDirty = true;
+            m_dirtyEntity = true;
         }
     }
 
@@ -119,9 +129,14 @@ struct NodeInstance {
         return { m_scaleMatrix[0][0], m_scaleMatrix[1][1], m_scaleMatrix[2][2] };
     }
 
-    inline const glm::vec3& getRotation() const noexcept
+    inline const glm::vec3& getDegreesRotation() const noexcept
     {
-        return m_rotation;
+        return m_degreesRotation;
+    }
+
+    inline const glm::quat& getQuatRotation() const noexcept
+    {
+        return m_quatRotation;
     }
 
     inline void setPosition(const glm::vec3& pos) noexcept
@@ -198,24 +213,42 @@ struct NodeInstance {
         setScale(scale);
     }
 
-    void setRotation(const glm::vec3& rotation) noexcept
+    void setBaseRotation(const glm::quat& quat) noexcept
     {
-        if (m_rotation != rotation) {
-            m_rotation = rotation;
-            m_rotationDirty = true;
+        m_baseRotation = quat;
+        m_dirtyRotation = true;
+        m_dirty = true;
+    }
+
+    void setQuatRotation(const glm::quat& quat) noexcept
+    {
+        if (m_quatRotation != quat) {
+            m_quatRotation = quat;
+            m_degreesRotation = util::quatToDegrees(quat);
+            m_dirtyRotation = true;
             m_dirty = true;
         }
     }
 
-    inline void adjustRotation(const glm::vec3& adjust) noexcept
+    inline void adjustQuatRotation(const glm::quat& adjust) noexcept
     {
-        glm::vec3 rotation{ adjust };
+        setQuatRotation(adjust * m_quatRotation);
+    }
+
+    void setDegreesRotation(const glm::vec3& rot) noexcept
+    {
+        setQuatRotation(glm::quat(glm::radians(rot)));
+    }
+
+    inline void adjustDegreesRotation(const glm::vec3& adjust) noexcept
+    {
+        glm::vec3 rot{ adjust };
         {
-            rotation.x += m_rotation.x;
-            rotation.y += m_rotation.y;
-            rotation.z += m_rotation.z;
+            rot.x += m_degreesRotation.x;
+            rot.y += m_degreesRotation.y;
+            rot.z += m_degreesRotation.z;
         }
-        setRotation(rotation);
+        setDegreesRotation(rot);
     }
 
     inline const glm::vec3& getFront() const noexcept {
@@ -269,7 +302,7 @@ struct NodeInstance {
 
         m_dirty = false;
         m_matrixLevel++;
-        m_entityDirty = true;
+        m_dirtyEntity = true;
     }
 
     inline void updateModelMatrix(const NodeInstance& parent) noexcept
@@ -285,16 +318,16 @@ struct NodeInstance {
         m_dirty = false;
         m_parentMatrixLevel = parent.m_matrixLevel;
         m_matrixLevel++;
-        m_entityDirty = true;
+        m_dirtyEntity = true;
     }
 
     inline void updateModelAxis() noexcept
     {
         // NOTE KI w == 0; only rotation
-        m_viewFront = glm::normalize(glm::vec3(m_rotationMatrix * glm::vec4(m_front, 0.f)));
+        m_viewFront = glm::normalize(m_quatRotation * m_front);
 
-        auto viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
-        m_viewUp = glm::normalize(glm::cross(viewRight, m_viewFront));
+        m_viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
+        m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
     }
 
     void updateRotationMatrix() noexcept;

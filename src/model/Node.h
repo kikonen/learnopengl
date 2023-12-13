@@ -5,6 +5,8 @@
 
 #include "asset/Assets.h"
 
+#include "audio/size.h"
+
 #include "model/NodeInstance.h"
 
 class Camera;
@@ -22,6 +24,10 @@ class ParticleGenrator;
 class Batch;
 
 struct EntitySSBO;
+
+namespace physics {
+    struct Object;
+}
 
 class Node final
 {
@@ -104,16 +110,32 @@ public:
         return m_instance.getPosition();
     }
 
-    inline void setRotation(const glm::vec3& rotation) noexcept {
-        m_instance.setRotation(rotation);
+    inline void setBaseRotation(const glm::quat& rot) noexcept {
+        m_instance.setBaseRotation(rot);
     }
 
-    inline void adjustRotation(const glm::vec3& adjust) noexcept {
-        m_instance.adjustRotation(adjust);
+    inline void setQuatRotation(const glm::quat& rot) noexcept {
+        m_instance.setQuatRotation(rot);
     }
 
-    inline const glm::vec3& getRotation() const noexcept {
-        return m_instance.getRotation();
+    inline void adjustQuatRotation(const glm::quat& adjust) noexcept {
+        m_instance.adjustQuatRotation(adjust);
+    }
+
+    inline void setDegreesRotation(const glm::vec3& rot) noexcept {
+        m_instance.setDegreesRotation(rot);
+    }
+
+    inline void adjustDegreesRotation(const glm::vec3& adjust) noexcept {
+        m_instance.adjustDegreesRotation(adjust);
+    }
+
+    inline const glm::vec3& getDegreesRotation() const noexcept {
+        return m_instance.getDegreesRotation();
+    }
+
+    inline const glm::quat& getQuatRotation() const noexcept {
+        return m_instance.getQuatRotation();
     }
 
     inline void setScale(float scale) noexcept {
@@ -181,23 +203,26 @@ public:
     inline bool isTagged() { return m_tagMaterialIndex > -1; }
 
 public:
-    int lua_getId() const noexcept;
+    ki::object_id lua_getId() const noexcept;
     const std::string& lua_getName() const noexcept;
 
     int lua_getCloneIndex() const noexcept;
 
-    const std::array<float, 3> lua_getPos() const noexcept;
+        const std::array<float, 3> lua_getPos() const noexcept;
 
 protected:
 
 public:
     // *INTERNAL* LUID in scene
     // used for object identity in shader
-    const int m_objectID;
+    const ki::object_id m_id;
 
     // UUID of node for persistency
     // => *CAN* be empty for auto generated nodes
-    uuids::uuid m_id;
+    uuids::uuid m_uuid;
+
+    audio::listener_id m_audioListenerId{ 0 };
+    audio::source_id m_audioSourceId{ 0 };
 
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };
@@ -207,6 +232,8 @@ public:
     std::unique_ptr<ParticleGenerator> m_particleGenerator{ nullptr };
 
     std::unique_ptr<NodeGenerator> m_generator{ nullptr };
+
+    std::unique_ptr<physics::Object> m_physics{ nullptr };
 
     NodeGenerator* m_instancer{ nullptr };
 

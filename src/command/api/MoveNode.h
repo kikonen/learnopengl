@@ -9,8 +9,8 @@ class MoveNode final : public NodeCommand
 {
 public:
     MoveNode(
-        int afterCommandId,
-        int objectID,
+        ki::command_id afterCommandId,
+        ki::object_id nodeId,
         float duration,
         bool relative,
         const glm::vec3& position) noexcept;

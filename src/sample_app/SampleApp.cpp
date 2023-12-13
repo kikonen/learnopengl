@@ -5,7 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
+
 #include "editor/EditorFrame.h"
 
 #include "asset/DynamicCubeMap.h"
@@ -13,6 +14,8 @@
 #include "backend/gl/PerformanceCounters.h"
 
 #include "controller/VolumeController.h"
+
+#include "audio/Source.h"
 
 #include "registry/MeshType.h"
 #include "registry/NodeRegistry.h"
@@ -23,8 +26,8 @@
 #include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
 
+#include "loader/SceneLoader.h"
 #include "scene/Scene.h"
-#include "scene/SceneFile.h"
 
 #include "TestSceneSetup.h"
 
@@ -69,6 +72,24 @@ int SampleApp::onSetup() {
         m_frame = std::make_unique<EditorFrame>(*m_window);
     }
 
+    if (false) {
+        auto engine = m_registry->m_audioEngine;
+        audio::sound_id soundId = engine->registerSound("audio/Stream Medium 01_8CC7FF9E_normal_mono.wav");
+
+        audio::source_id sourceId = engine->registerSource(soundId);
+        auto* source = engine->getSource(sourceId);
+        if (source) {
+            // TODO KI spatial left/right requires *MONO* sound
+            source->m_pos = { 0.1f, 0.0f, 0.0f };
+            source->update();
+        }
+
+        audio::listener_id listenerId = engine->registerListener();
+        engine->setActiveListener(listenerId);
+
+        engine->playSource(sourceId);
+    }
+
     return 0;
 }
 
@@ -102,7 +123,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
     if (!cameraNode) return 0;
 
 
-    glm::vec2 size = window->getSize();
+    const glm::uvec2& size = window->getSize();
 
     RenderContext ctx(
         "TOP",
@@ -155,15 +176,16 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         InputState state{
             window->m_input->isModifierDown(Modifier::CONTROL),
             window->m_input->isModifierDown(Modifier::SHIFT),
-            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT),
-            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT),
+            window->m_input->isModifierDown(Modifier::ALT),
+            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT) != 0,
+            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT) != 0,
         };
 
         if (state.mouseLeft != m_lastInputState.mouseLeft &&
             state.mouseLeft == GLFW_PRESS &&
             state.ctrl)
         {
-            if (state.ctrl && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+            if ((state.shift || state.ctrl || state.alt) && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
                 selectNode(ctx, scene, state, m_lastInputState);
             }
         }
@@ -214,7 +236,7 @@ void SampleApp::frustumDebug(
             auto frameDraw = (float)m_drawCount / (float)clock.frameCount;
             auto frameSkip = (float)m_skipCount / (float)clock.frameCount;
 
-            KI_INFO(fmt::format(
+            KI_INFO_OUT(fmt::format(
                 "{}: total-frames={}, gpu-draw={}, gpu-skip={}, gpu-ratio={}",
                 ctx.m_name, clock.frameCount, m_drawCount, m_skipCount, ratio));
 
@@ -236,51 +258,83 @@ void SampleApp::selectNode(
     const InputState& inputState,
     const InputState& lastInputState)
 {
+    const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
+    const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
+    const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
+
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-    int objectID = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
+    ki::object_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
+    auto* node = nodeRegistry.getNode(nodeId);
 
-    auto* volumeNode = nodeRegistry.getNode(ctx.m_assets.volumeUUID);
-    auto* node = nodeRegistry.getNode(objectID);
+    if (selectMode) {
+        auto* volumeNode = nodeRegistry.getNode(ctx.m_assets.volumeUUID);
 
-    // deselect
-    if (node && node->isSelected()) {
-        nodeRegistry.selectNodeByObjectId(-1, false);
+        // deselect
+        if (node && node->isSelected()) {
+            nodeRegistry.selectNodeById(-1, false);
+
+            if (volumeNode) {
+                auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
+                if (controller) {
+                    controller->setTarget(-1);
+                }
+            }
+
+            if (node->m_audioSourceId) {
+                event::Event evt { event::Type::audio_source_pause };
+                evt.body.audioSource.id = node->m_audioSourceId;
+                ctx.m_registry->m_dispatcher->send(evt);
+            }
+
+            return;
+        }
+
+        // select
+        nodeRegistry.selectNodeById(nodeId, inputState.shift);
 
         if (volumeNode) {
             auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
-            if (controller->getTarget() == node->m_objectID) {
-                controller->setTarget(-1);
+            if (controller) {
+                controller->setTarget(node ? node->m_id : -1);
             }
         }
+        KI_INFO(fmt::format("selected: {}", nodeId));
 
-        return;
-    }
+        if (node) {
+            {
+                event::Event evt { event::Type::animate_rotate };
+                evt.body.animate = {
+                    .target = node->m_id,
+                    .duration = 5,
+                    .data = { 0, 360.f, 0 }
+                };
+                ctx.m_registry->m_dispatcher->send(evt);
+            }
 
-    // select
-    nodeRegistry.selectNodeByObjectId(objectID, inputState.shift);
+            if (node->m_audioSourceId) {
+                event::Event evt { event::Type::audio_source_play };
+                evt.body.audioSource.id = node->m_audioSourceId;
+                ctx.m_registry->m_dispatcher->send(evt);
+            }
+        }
+    } else if (playerMode) {
+        if (node && inputState.ctrl) {
+            auto exists = m_registry->m_controllerRegistry->hasController(node);
+            if (exists) {
+                event::Event evt { event::Type::node_activate };
+                evt.body.node.target = node;
+                ctx.m_registry->m_dispatcher->send(evt);
+            }
 
-    if (volumeNode) {
-        auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
-        controller->setTarget(node ? node->m_objectID : -1);
-    }
-
-    KI_INFO(fmt::format("selected: {}", objectID));
-
-    if (node) {
-        event::Event evt { event::Type::animate_rotate };
-        evt.body.animate = {
-            .target = node->m_objectID,
-            .duration = 5,
-            .data = { 0, 360.f, 0 }
-        };
+            node = nullptr;
+        }
+    } else if (cameraMode) {
+        // NOTE KI null == default camera
+        event::Event evt { event::Type::camera_activate };
+        evt.body.node.target = node;
         ctx.m_registry->m_dispatcher->send(evt);
-    }
 
-    if (node) {
-        nodeRegistry.setActiveCamera(node);
-    }
-    else {
-        nodeRegistry.setActiveCamera(nodeRegistry.findDefaultCamera());
+        node = nullptr;
     }
 }
 
@@ -298,14 +352,16 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     {
         if (!m_assets.sceneFile.empty()) {
-            std::unique_ptr<SceneFile> file = std::make_unique<SceneFile>(m_assets, alive, m_asyncLoader, m_assets.sceneFile);
-            m_files.push_back(std::move(file));
+            loader::Context ctx{ m_assets, alive, m_asyncLoader, m_assets.sceneFile };
+            std::unique_ptr<loader::SceneLoader> loader = std::make_unique<loader::SceneLoader>(ctx);
+            m_loaders.push_back(std::move(loader));
         }
     }
 
-    for (auto& file : m_files) {
-        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", file->m_filename));
-        file->load(m_registry);
+    for (auto& loader : m_loaders) {
+        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", loader->m_ctx.str()));
+        loader->prepare(m_registry);
+        loader->load();
     }
 
     m_testSetup = std::make_unique<TestSceneSetup>(

@@ -9,7 +9,6 @@
 #include uniform_lights.glsl
 #include uniform_materials.glsl
 #include uniform_shapes.glsl
-#include uniform_textures.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test

@@ -23,7 +23,7 @@ public:
         m_elapsedTotal += elapsed;
     }
 
-    unsigned long elapsed(bool block) {
+    size_t elapsed(bool block) {
         if (block) fetchResult();
         return m_elapsedTotal;
     }
@@ -35,5 +35,5 @@ public:
 
 private:
     // will be in nanoseconds
-    unsigned long m_elapsedTotal{ 0 };
+    size_t m_elapsedTotal{ 0 };
 };

@@ -43,8 +43,8 @@ void NodeRenderer::updateView(const RenderContext& ctx)
     const auto& res = ctx.m_resolution;
 
     // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
-    int w = ctx.m_assets.gBufferScale * res.x;
-    int h = ctx.m_assets.gBufferScale * res.y;
+    int w = (int)(ctx.m_assets.gBufferScale * res.x);
+    int h = (int)(ctx.m_assets.gBufferScale * res.y);
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
@@ -87,7 +87,7 @@ void NodeRenderer::render(
     {
         targetBuffer->clearAll();
 
-        renderStencil(ctx, targetBuffer);
+        fillHighlightMask(ctx, targetBuffer);
         {
             ctx.m_nodeDraw->drawNodes(
                 ctx,
@@ -103,7 +103,7 @@ void NodeRenderer::render(
 }
 
 // Render selected nodes into stencil mask
-void NodeRenderer::renderStencil(
+void NodeRenderer::fillHighlightMask(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer)
 {
@@ -112,7 +112,7 @@ void NodeRenderer::renderStencil(
 
     targetBuffer->bind(ctx);
 
-    ctx.m_state.enableStencil(GLStencilMode::fill(STENCIL_HIGHLIGHT));
+    ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_HIGHLIGHT));
 
     // draw entity data mask
     {
@@ -124,16 +124,12 @@ void NodeRenderer::renderStencil(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_selectionProgram,
-            //m_selectionProgramPointSprite,
-            nullptr,
+            [this](const MeshType* type) { return m_selectionProgram; },
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
             NodeDraw::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
-
-    ctx.m_state.disableStencil();
 }
 
 // Render highlight over stencil masked nodes
@@ -147,7 +143,7 @@ void NodeRenderer::renderHighlight(
     targetBuffer->bind(ctx);
 
     ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
-    ctx.m_state.enableStencil(GLStencilMode::except(STENCIL_HIGHLIGHT));
+    ctx.m_state.setStencil(GLStencilMode::except(STENCIL_HIGHLIGHT));
 
     // draw selection color (scaled a bit bigger)
     {
@@ -160,18 +156,12 @@ void NodeRenderer::renderHighlight(
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_selectionProgram,
-            //m_selectionProgramPointSprite,
-            nullptr,
+            [this](const MeshType* type) { return m_selectionProgram; },
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
             NodeDraw::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
 
-    glStencilMask(0xFF);
-    glStencilFunc(GL_ALWAYS, 0, 0xFF);
-
     ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
-    ctx.m_state.disableStencil();
 }

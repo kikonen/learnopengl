@@ -6,8 +6,10 @@
 
 #include <glm/vec3.hpp>
 
+#include "ki/size.h"
 #include "ki/uuid.h"
 
+#include "audio/size.h"
 
 class UpdateContext;
 class Node;
@@ -20,12 +22,28 @@ namespace event {
         node_added,
         node_change_parent,
         node_select,
+        node_activate,
+
+        // NOTE KI allow camera to vary independent of active node
+        camera_activate,
 
         controller_add,
+
+        audio_listener_add,
+        audio_source_add,
+        audio_listener_update,
+        audio_source_update,
+        audio_listener_activate,
+
+        audio_source_play,
+        audio_source_stop,
+        audio_source_pause,
 
         animate_wait,
         animate_move,
         animate_rotate,
+
+        scene_loaded,
     };
 
     struct NodeAction {
@@ -34,12 +52,37 @@ namespace event {
     };
 
     struct ControlAction {
-        int target{ 0 };
+		ki::object_id target{ 0 };
         NodeController* controller{ nullptr };
     };
 
+    struct NodeAudioSourceAction {
+        ki::object_id target{ 0 };
+
+        audio::sound_id soundId{ 0 };
+        bool isAutoPlay{ false };
+        bool looping{ false };
+        float pitch{ 1.f };
+        float gain{ 1.f };
+    };
+
+    struct NodeAudioListenerAction {
+        ki::object_id target{ 0 };
+
+        bool isDefault{ false };
+        float gain{ 1.f };
+    };
+
+    struct AudioSourceAction {
+        audio::source_id id{ 0 };
+    };
+
+    struct AudioListenerAction {
+        audio::listener_id id{ 0 };
+    };
+
     struct AnimateAction {
-        int target{ 0 };
+		ki::object_id target{ 0 };
 
         int after{ 0 };
         float duration{ 0 };
@@ -49,11 +92,15 @@ namespace event {
 
     struct Event {
         Type type;
-        int id;
+        ki::event_id id;
 
         union {
             NodeAction node;
             ControlAction control;
+            NodeAudioSourceAction nodeAudioSource;
+            NodeAudioListenerAction nodeAudioListener;
+            AudioSourceAction audioSource;
+            AudioListenerAction audioListener;
             AnimateAction animate;
         } body;
     };

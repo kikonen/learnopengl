@@ -3,8 +3,8 @@
 #include <thread>
 #include <mutex>
 
-#include "ki/GL.h"
 #include "ki/Timer.h"
+#include "kigl/kigl.h"
 
 #include "asset/UBO.h"
 #include "asset/Shader.h"
@@ -19,9 +19,11 @@
 #include "command/CommandEngine.h"
 #include "command/ScriptEngine.h"
 #include "command/CommandAPI.h"
-#include "command/api/ResumeNode.h"
+#include "command/api/InvokeLuaFunction.h"
 
 #include "controller/NodeController.h"
+
+#include "physics/PhysicsEngine.h"
 
 #include "registry/Registry.h"
 #include "registry/MaterialRegistry.h"
@@ -116,6 +118,13 @@ void Scene::prepare()
             this->bindComponents(e.body.node.target);
         });
 
+    m_registry->m_dispatcher->addListener(
+        event::Type::scene_loaded,
+        [this](const event::Event& e) {
+            m_loaded = true;
+            this->m_registry->m_physicsEngine->setEnabled(true);
+        });
+
     m_renderData->prepare();
 
     auto* registry = m_registry.get();
@@ -167,10 +176,6 @@ void Scene::prepare()
 
     {
         m_windowBuffer = std::make_unique<WindowBuffer>(true);
-    }
-
-    {
-        m_registry->m_physicsEngine->prepare();
     }
 
     {
@@ -261,12 +266,12 @@ void Scene::processEvents(const UpdateContext& ctx)
 void Scene::update(const UpdateContext& ctx)
 {
     //if (ctx.clock.frameCount > 120) {
-    if (getActiveCamera()) {
+    if (m_loaded) {
         m_commandEngine->update(ctx);
     }
 
-    if (m_registry->m_nodeRegistry->m_root) {
-        m_registry->m_nodeRegistry->m_root->update(ctx);
+    if (auto root = m_registry->m_nodeRegistry->m_root) {
+        root->update(ctx);
         m_registry->m_physicsEngine->update(ctx);
     }
 
@@ -480,15 +485,26 @@ void Scene::drawScene(
     }
 }
 
-Node* Scene::getActiveCamera() const
+Node* Scene::getActiveNode() const
 {
-    return m_registry->m_nodeRegistry->getActiveCamera();
+    return m_registry->m_nodeRegistry->getActiveNode();
 }
 
-NodeController* Scene::getActiveCameraController() const
+const std::vector<NodeController*>* Scene::getActiveNodeControllers() const
+{
+    auto* node = getActiveNode();
+    return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
+}
+
+Node* Scene::getActiveCamera() const
+{
+    return m_registry->m_nodeRegistry->getActiveCamera2();
+}
+
+const std::vector<NodeController*>* Scene::getActiveCameraControllers() const
 {
     auto* node = getActiveCamera();
-    return node ? m_registry->m_controllerRegistry->get<NodeController>(node) : nullptr;
+    return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
 }
 
 void Scene::bindComponents(Node* node)
@@ -511,15 +527,15 @@ void Scene::bindComponents(Node* node)
         // NOTE KI start via queue, in sync with next update cycle
         if (m_scriptEngine->hasFunction(node, "start")) {
             m_commandEngine->addCommand(
-                std::make_unique<ResumeNode>(
+                std::make_unique<InvokeLuaFunction>(
                     -1,
-                    node->m_objectID,
+                    node->m_id,
                     "start"));
         }
     }
 }
 
-int Scene::getObjectID(const RenderContext& ctx, double screenPosX, double screenPosY)
+ki::object_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)
 {
     if (m_objectIdRenderer->isEnabled()) {
         m_objectIdRenderer->render(ctx);

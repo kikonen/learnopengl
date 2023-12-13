@@ -1,18 +1,20 @@
 #include "RotateNode.h"
 
+#include "util/glm_util.h"
+
 #include "model/Node.h"
 
 #include "engine/UpdateContext.h"
 
 
 RotateNode::RotateNode(
-    int afterCommandId,
-    int objectID,
+    ki::command_id afterCommandId,
+    ki::object_id nodeId,
     float duration,
     bool relative,
-    const glm::vec3& rotation) noexcept
-    : NodeCommand(afterCommandId, objectID, duration, relative),
-    m_rotation(rotation)
+    const glm::vec3& degrees) noexcept
+    : NodeCommand(afterCommandId, nodeId, duration, relative),
+    m_degreesRotation(degrees)
 {
 }
 
@@ -20,9 +22,9 @@ void RotateNode::bind(const UpdateContext& ctx, Node* node) noexcept
 {
     NodeCommand::bind(ctx, node);
 
-    m_end = m_rotation;
+    m_end = util::degreesToQuat(m_degreesRotation);
     if (!m_relative) {
-        m_end -= m_node->getRotation();
+        m_end -= m_node->getQuatRotation();
     }
 }
 
@@ -34,20 +36,20 @@ void RotateNode::execute(
 
     // NOTE KI keep steps relative to previous
     // => in case there is N concurrent commands
-    glm::vec3 rotation;
+    glm::quat rotation{ 1.f, 0.f, 0.f, 0.f };
     if (m_finished) {
         rotation = m_end;
     }
     else {
         const auto t = (m_elapsedTime / m_duration);
 
-        glm::vec3 p0{ 0 };
-        glm::vec3 p1{ m_end };
+        glm::quat p0{ 1.f, 0.f, 0.f, 0.f };
+        glm::quat p1{ m_end };
 
         rotation = (1 - t) * p0 + t * p1;
     }
 
     auto adjust = rotation - m_previous;
-    m_node->adjustRotation(adjust);
+    m_node->adjustQuatRotation(adjust);
     m_previous = rotation;
 }

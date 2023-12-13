@@ -5,9 +5,10 @@
 
 #include "imgui.h"
 
-#include "ki/GL.h"
 #include "ki/Timer.h"
-#include "ki/OpenGLInfo.h"
+
+#include "kigl/kigl.h"
+#include "kigl/OpenGLInfo.h"
 
 #include "asset/MaterialSSBO.h"
 
@@ -58,8 +59,8 @@ int Engine::setup() {
 }
 
 void Engine::run() {
-    const auto& info = ki::GL::getInfo();
-    const auto& extensions = ki::GL::getExtensions();
+    const auto& info = kigl::GL::getInfo();
+    const auto& extensions = kigl::GL::getExtensions();
     // NOTE KI https://www.khronos.org/opengl/wiki/Common_Mistakes
     // - preferredFormat is performnce topic
     KI_INFO_OUT(fmt::format(
@@ -97,12 +98,12 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
     KI_INFO("setup");
     if (!m_assets.glNoError) {
-        ki::GL::startError();
+        kigl::GL::startError();
     }
 
     if (m_assets.glDebug) {
         // NOTE KI MUST AFTER glfwWindow create
-        ki::GL::startDebug();
+        kigl::GL::startDebug();
     }
 
     int res = setup();
@@ -131,11 +132,11 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
     // NOTE KI moving avg of render time and fps
     constexpr int FPS_FRAMES = 3;
     int avgIndex = 0;
-    std::array<float, FPS_FRAMES> fpsSecs;
-    std::array<float, FPS_FRAMES> renderSecs;
+    std::array<float, FPS_FRAMES> fpsSecs{ 0.f };
+    std::array<float, FPS_FRAMES> renderSecs{ 0.f };
     for (int i = 0; i < FPS_FRAMES; i++) {
-        fpsSecs[i] = 0;
-        renderSecs[i] = 0;
+        fpsSecs[i] = 0.f;
+        renderSecs[i] = 0.f;
     }
 
     // render loop
@@ -151,7 +152,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             elapsedDuration = loopTime - prevLoopTime;
 
             clock.frameCount += 1;
-            clock.ts = glfwGetTime();
+            clock.ts = static_cast<float>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
             // input
@@ -162,6 +163,13 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             // ------
             {
                 renderStart = std::chrono::system_clock::now();
+
+                // serious sync issue entity data vs. drawing
+                // - looks like camera is jerky, but it's lack of sync between
+                //   draw loop and update of UBOs & mapped buffers in next frame
+                // => INEFFICIENT, need to improve this
+                // https://forums.developer.nvidia.com/t/persistent-buffer-synchronization-doesnt-work/66636/5
+                glFinish();
 
                 if (!close) {
                     close = onUpdate(clock);

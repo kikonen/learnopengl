@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 // https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
 

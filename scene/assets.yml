@@ -1,12 +1,13 @@
 assets:
   log_file: log/development.log
-  scene_file: scene/scene_material_balls.yml
+  scene_file: scene/scene_physics.yml
 
   glfw_swap_interval: 1
   gl_debug: true
   gl_no_error: false
   gl_use_fence: true
   gl_use_single_fence: true
+  gl_use_invalidate: false
 
   prepass_depth_enabled: false
 
@@ -30,10 +31,7 @@ assets:
   async_loader_delay: 0
 
   assets_dir: resources/assets
-  models_dir: resources/assets
   shaders_dir: shader
-  sprites_dir: resources/assets/sprites
-  textures_dir: resources/assets/textures
 
   placeholder_texture_always: false
   placeholder_texture: textures/tiles_1024.png
@@ -81,11 +79,15 @@ assets:
   mirror_render_water: true
   mirror_render_frame_start: 0
   mirror_render_frame_step: 4
+  mirror_map_near_plane: 0.1
+  mirror_map_far_plane: 600
 
   water_map_enabled: true
   water_tile_size: 100
   water_render_frame_start: 0
   water_render_frame_step: 1
+  water_map_near_plane: 0.1
+  water_map_far_plane: 500
 
   terrain_grid_size: 64
 

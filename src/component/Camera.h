@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "asset/Frustum.h"
 
@@ -114,17 +114,9 @@ public:
     void setFov(float fov) noexcept;
     void adjustFov(float adjustement) noexcept;
 
-    // NOTE KI for node camera; relative to node
-    void setPosition(const glm::vec3& pos) noexcept;
-
-    // NOTE KI for node camera; relative to node
-    inline const glm::vec3& getPosition() const noexcept {
-        return m_position;
-    }
-
-    void setRotation(const glm::vec3& rotation) noexcept;
-    inline const glm::vec3& getRotation() const noexcept {
-        return m_rotation;
+    void setDegreesRotation(const glm::vec3& rotation) noexcept;
+    inline const glm::vec3& getDegreesRotation() const noexcept {
+        return m_degreesRotation;
     }
 
     void updateCamera() const noexcept;
@@ -150,19 +142,17 @@ private:
 private:
     bool m_orthagonal{ false };
     // left, right, bottom, top
-    std::array<float, 4> m_viewport;
+    std::array<float, 4> m_viewport{ 0.f };
 
     bool m_enabled = false;
     bool m_default = false;
 
     // NOTE KI *identity* matrix for standalone camera
-    glm::mat4 m_nodeModelMatrix{ 1.f };
+    glm::quat m_nodeQuat{ 1.f, 0.f, 0.f, 0.f };
     int m_nodeLevel = -1;
 
     float m_fov{ 45.f };
     float m_fovProjection = -1.0f;
-
-    glm::vec3 m_position{ 0.f };
 
     // *DIRECTION* at camera is pointing at (== target)
     // *NOT* required to be orthogonal to up
@@ -195,7 +185,7 @@ private:
     //m_yaw = rotation.y;
     //m_pitch = rotation.x;
     //m_roll = rotation.z;
-    glm::vec3 m_rotation{ 0.f };
+    glm::vec3 m_degreesRotation{ 0.f };
 
     mutable Frustum m_frustum;
 

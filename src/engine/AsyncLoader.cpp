@@ -1,7 +1,8 @@
 #include "AsyncLoader.h"
 
 #include "util/Log.h"
-#include "ki/GL.h"
+
+#include "kigl/kigl.h"
 
 AsyncLoader::AsyncLoader(
     const Assets& assets,

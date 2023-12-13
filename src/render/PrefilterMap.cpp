@@ -1,6 +1,6 @@
 #include "PrefilterMap.h"
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "kigl/GLTextureHandle.h"
 #include "kigl/GLFrameBufferHandle.h"

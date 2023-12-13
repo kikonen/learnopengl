@@ -50,7 +50,7 @@ void FrameBuffer::prepare()
 
     {
         glCreateFramebuffers(1, &m_fbo);
-        glObjectLabel(GL_FRAMEBUFFER, m_fbo, m_name.length(), m_name.c_str());
+        kigl::setLabel(GL_FRAMEBUFFER, m_fbo, m_name);
 
         KI_INFO(fmt::format("CREATE: FBO={}", str()));
     }
@@ -70,7 +70,7 @@ void FrameBuffer::prepare()
         if (att.type == FrameBufferAttachmentType::shared) {
             // NOTE KI drawBuffer index *can* be different between fbos
             if (att.useDrawBuffer) {
-                att.drawBufferIndex = m_drawBuffers.size();
+                att.drawBufferIndex = static_cast<int>(m_drawBuffers.size());
                 m_drawBuffers.push_back(att.attachment);
             }
 
@@ -89,14 +89,14 @@ void FrameBuffer::prepare()
         } else if (att.type == FrameBufferAttachmentType::draw_buffer) {
             // NOTE KI draw_buffer, "non attached" texture handled externally
             if (att.useDrawBuffer) {
-                att.drawBufferIndex = m_drawBuffers.size();
+                att.drawBufferIndex = static_cast<int>(m_drawBuffers.size());
                 m_drawBuffers.push_back(att.attachment);
             }
         } else if (att.type == FrameBufferAttachmentType::texture) {
             glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
             if (att.useDrawBuffer) {
-                att.drawBufferIndex = m_drawBuffers.size();
+                att.drawBufferIndex = static_cast<int>(m_drawBuffers.size());
                 m_drawBuffers.push_back(att.attachment);
             }
         }
@@ -150,12 +150,17 @@ void FrameBuffer::prepare()
 void FrameBuffer::resetDrawBuffers(int activeCount)
 {
     if (activeCount == FrameBuffer::RESET_DRAW_ACTIVE) activeCount = m_activeDrawBuffers;
-    if (activeCount < 0) activeCount = m_drawBuffers.size();
-    if (activeCount > m_drawBuffers.size()) activeCount = m_drawBuffers.size();
+    if (activeCount < 0) activeCount = static_cast<int>(m_drawBuffers.size());
+    if (activeCount > m_drawBuffers.size()) activeCount = static_cast<int>(m_drawBuffers.size());
 
     if (m_activeDrawBuffers != activeCount) {
         m_activeDrawBuffers = activeCount;
-        glNamedFramebufferDrawBuffers(m_fbo, activeCount, m_drawBuffers.data());
+        if (activeCount > 0) {
+            glNamedFramebufferDrawBuffers(m_fbo, activeCount, m_drawBuffers.data());
+        }
+        else {
+            glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
+        }
     }
 }
 
@@ -220,11 +225,11 @@ void FrameBuffer::blit(
     const glm::vec2& size,
     GLenum filter)
 {
-    const float srcW = m_spec.width;
-    const float srcH = m_spec.height;
+    const float srcW = static_cast<float>(m_spec.width);
+    const float srcH = static_cast<float>(m_spec.height);
 
-    const float dstW = target->m_spec.width;
-    const float dstH = target->m_spec.height;
+    const float dstW = static_cast<float>(target->m_spec.width);
+    const float dstH = static_cast<float>(target->m_spec.height);
 
     const glm::vec2 s0{ 0 };
     const glm::vec2 s1{ srcW, srcH };
@@ -249,14 +254,14 @@ void FrameBuffer::blit(
     glBlitNamedFramebuffer(
         m_fbo,
         target->m_fbo,
-        s0.x,
-        s0.y,
-        s1.x,
-        s1.y,
-        d0.x,
-        d0.y,
-        d1.x,
-        d1.y,
+        static_cast<GLuint>(s0.x),
+        static_cast<GLuint>(s0.y),
+        static_cast<GLuint>(s1.x),
+        static_cast<GLuint>(s1.y),
+        static_cast<GLuint>(d0.x),
+        static_cast<GLuint>(d0.y),
+        static_cast<GLuint>(d1.x),
+        static_cast<GLuint>(d1.y),
         mask,
         filter);
 

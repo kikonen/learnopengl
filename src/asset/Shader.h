@@ -104,6 +104,8 @@ constexpr int VBO_VERTEX_BINDING = 1;
 //constexpr int ATTR_INSTANCE_ENTITY_INDEX = 15;
 //constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
 
+constexpr int UNIT_FONT_ATLAS = 48;
+
 constexpr int UNIT_HDR_TEXTURE = 49;
 
 constexpr int UNIT_G_ALBEDO = 50;
@@ -144,6 +146,8 @@ constexpr unsigned int TEXTURE_UNIT_COUNT = 64;
 constexpr unsigned int FIRST_TEXTURE_UNIT = 0;
 constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_UNIT_COUNT - 1;
 
+constexpr unsigned int STENCIL_FOG = 1 << 7;
+constexpr unsigned int STENCIL_SKYBOX = 1 << 6;
 constexpr unsigned int STENCIL_HIGHLIGHT = 1;
 constexpr unsigned int STENCIL_OIT = 2;
 constexpr unsigned int STENCIL_SOLID = 3;

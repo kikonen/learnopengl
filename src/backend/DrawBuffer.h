@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "kigl/GLState.h"
 #include "kigl/GLBuffer.h"
@@ -78,6 +78,6 @@ namespace backend {
         GLBuffer m_drawParameters{ "drawParameters" };
         GLBuffer m_performanceCounters{ "performanceCounters" };
 
-        unsigned long m_drawCounter = 0;
+        size_t m_drawCounter = 0;
     };
 }

@@ -3,8 +3,9 @@
 #include <functional>
 #include <string>
 
-#include "ki/GL.h"
 #include "ki/RenderClock.h"
+
+#include "kigl/kigl.h"
 
 #include "imgui.h"
 
@@ -36,9 +37,9 @@ public:
     void processInput(const ki::RenderClock& clock);
 
     void onWindowResize(int width, int height);
-    void onMouseMove(double xpos, double ypos);
+    void onMouseMove(float xpos, float ypos);
     void onMouseButton(int button, int action, int modifiers);
-    void onMouseWheel(double xoffset, double yoffset);
+    void onMouseWheel(float xoffset, float yoffset);
 private:
     void createGLFWWindow();
     void destroyGLFWWindow();

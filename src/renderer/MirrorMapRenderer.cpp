@@ -54,6 +54,9 @@ void MirrorMapRenderer::prepare(
     m_renderFrameStart = assets.mirrorRenderFrameStart;
     m_renderFrameStep = assets.mirrorRenderFrameStep;
 
+    m_nearPlane = assets.mirrorMapNearPlane;
+    m_farPlane = assets.mirrorMapFarPlane;
+
     if (m_doubleBuffer) {
         m_bufferCount = 2;
         m_prevIndex = 1;
@@ -115,8 +118,8 @@ void MirrorMapRenderer::updateView(const RenderContext& ctx)
 
     const auto& res = ctx.m_resolution;
 
-    int w = ctx.m_assets.mirrorReflectionBufferScale * res.x;
-    int h = ctx.m_assets.mirrorReflectionBufferScale * res.y;
+    int w = (int)(ctx.m_assets.mirrorReflectionBufferScale * res.x);
+    int h = (int)(ctx.m_assets.mirrorReflectionBufferScale * res.y);
 
     if (m_squareAspectRatio) {
         h = w;
@@ -228,12 +231,14 @@ bool MirrorMapRenderer::render(
         //camera.setFov(ctx.m_camera.getFov());
         //camera.setFov(fovAngle);
 
+        // NOTE KI "dist" to cut-off render at mirror plane; camera is mirrored *behind* the mirror
         RenderContext localCtx("MIRROR",
             &parentCtx,
             &camera,
-            dist,
-            parentCtx.m_assets.farPlane,
-            reflectionBuffer->m_spec.width, reflectionBuffer->m_spec.height);
+            dist + m_nearPlane,
+            m_farPlane,
+            reflectionBuffer->m_spec.width,
+            reflectionBuffer->m_spec.height);
 
         localCtx.copyShadowFrom(parentCtx);
 

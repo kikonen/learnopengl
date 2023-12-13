@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "ki/size.h"
+#include "kigl/kigl.h"
 
 #include <glm/glm.hpp>
 #include <algorithm>
@@ -105,16 +106,16 @@ struct EntitySSBO {
         c.z += adjust.z;
     }
 
-    inline void setObjectID(int objectID) {
-    //    int r = (objectID & 0x000000FF) >> 0;
-    //    int g = (objectID & 0x0000FF00) >> 8;
-    //    int b = (objectID & 0x00FF0000) >> 16;
+    inline void setId(ki::object_id id) {
+    //    int r = (id & 0x000000FF) >> 0;
+    //    int g = (id & 0x0000FF00) >> 8;
+    //    int b = (id & 0x00FF0000) >> 16;
 
-    //    u_objectID.r = r / 255.0f;
-    //    u_objectID.g = g / 255.0f;
-    //    u_objectID.b = b / 255.0f;
-    //    u_objectID.a = 1.0f;
-        u_objectID = objectID;
+    //    u_id.r = r / 255.0f;
+    //    u_id.g = g / 255.0f;
+    //    u_id.b = b / 255.0f;
+    //    u_id.a = 1.0f;
+        u_objectID = id;
     }
 };
 #pragma pack(pop)

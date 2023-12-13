@@ -129,7 +129,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
         }
         center /= corners.size();
 
-        m_camera.setPosition(center - node->m_light->getWorldDirection());
+        m_camera.setWorldPosition(center - node->m_light->getWorldDirection());
         m_camera.setAxis(
             node->m_light->getWorldDirection(),
             glm::vec3{ 0.0f, 1.0f, 0.0f });
@@ -255,8 +255,7 @@ void ShadowCascade::drawNodes(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_solidShadowProgram,
-            nullptr,
+            [this](const MeshType* type) { return m_solidShadowProgram; },
             typeFilter,
             nodeFilter,
             NodeDraw::KIND_SOLID);
@@ -268,8 +267,7 @@ void ShadowCascade::drawNodes(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            m_alphaShadowProgram,
-            nullptr,
+            [this](const MeshType* type) { return m_alphaShadowProgram; },
             typeFilter,
             nodeFilter,
             NodeDraw::KIND_SPRITE | NodeDraw::KIND_ALPHA | NodeDraw::KIND_BLEND);

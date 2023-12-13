@@ -50,8 +50,8 @@ public:
 private:
     //glm::vec3 center{ 0, 0, 0 };
 
-    float m_nearPlane = 0.1f;
-    float m_farPlane = 1000.0f;
+    float m_nearPlane{ 0.1f };
+    float m_farPlane{ 500.0f };
 
     bool m_cleared{ false };
 

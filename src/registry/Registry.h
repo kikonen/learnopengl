@@ -16,6 +16,7 @@
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
 
+#include "audio/AudioEngine.h"
 #include "physics/PhysicsEngine.h"
 
 
@@ -47,6 +48,7 @@ public:
     ControllerRegistry* const m_controllerRegistry;
 
     physics::PhysicsEngine* const m_physicsEngine;
+    audio::AudioEngine* const m_audioEngine;
 
     event::Dispatcher* const m_dispatcher;
 
@@ -59,6 +61,9 @@ private:
 
     ProgramRegistry m_programRegistryImpl;
 
+    physics::PhysicsEngine m_physicsEngineImpl;
+    audio::AudioEngine m_audioEngineImpl;
+
     MaterialRegistry m_materialRegistryImpl;
     SpriteRegistry m_spriteRegistryImpl;
     MeshTypeRegistry m_typeRegistryImpl;
@@ -67,8 +72,6 @@ private:
     EntityRegistry m_entityRegistryImpl;
     ViewportRegistry m_viewportRegistryImpl;
     ControllerRegistry m_controllerRegistryImpl;
-
-    physics::PhysicsEngine m_physicsEngineImpl;
 
     event::Dispatcher m_dispatcherImpl;
 };

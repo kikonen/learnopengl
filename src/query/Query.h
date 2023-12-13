@@ -1,7 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
-
+#include "kigl/kigl.h"
 
 class Query {
 public:

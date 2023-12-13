@@ -11,7 +11,7 @@ namespace ki {
      {
         std::string label;
         std::chrono::time_point<std::chrono::steady_clock> start, end;
-        std::chrono::duration<float> duration;
+        std::chrono::duration<float> duration{ 0.f };
 
         Timer(std::string&& label) {
             this->label = label;

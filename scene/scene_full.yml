@@ -4,7 +4,6 @@ meta:
 viewports:
 skybox:
   program: g_skybox
-  priority: -100
   #material: skybox/BluePinkNebular
   #swap_faces: true
   material: skybox/Skybox_3
@@ -24,10 +23,9 @@ root:
   xxscript_file: scripts/seq_spin_root
 entities:
   - name: zero origo
-    id: [auto, zero-origo]
+    id: zero-origo
     type: origo
     pos: [0.0, 0.0, 0.0]
-    enabled: true
     script_file: scripts/seq_zero_origo
   - name: ZERO
     model: ball_volume
@@ -37,54 +35,47 @@ entities:
       kd: [0, 0.8, 0]
     pos: [0.0, 0.0, 0.0]
     scale: 0.2
-    enabled: true
   - name: Moving water ball
-    parent_id: [auto, zero-origo]
+    parent_id: zero-origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 0.3
-    enabled: true
     script_file: scripts/seq_zero
   - name: Player
-    id: [auto, player]
+    id: player
     xxmodel: player
     type: origo
     pos: [-10, 12, -20.0]
     rotation: [0, 180, 0.0]
     scale: 0.8
     program: g_tex
+    active: true
     render_flags:
       allow_normals: false
-    camera:
-      pos: [0, 0, 0]
-      xxrotation: [0, 180, 0.0]
-      default: true
-      enabled: true
     particle_generator:
       - "ParticleDefinition pd;"
       - "node->particleGenerator = std::make_unique<ParticleGenerator>(pd);"
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Player cube map 1
     type: origo
-    parent_id: [auto, player]
+    parent_id: player
     pos: [0, 0, 1]
     render_flags:
       cube_map: true
-    enabled: true
   - name: Sun light origo
-    id: [auto, light-dir-origo]
-    parent_id: [auto, planet-origo]
+    id: light-dir-origo
+    parent_id: planet-origo
     type: origo
     pos: [0.0, 400.0, 0.0]
     rotation: [0.0, 25.0, 0.0]
-    enabled: true
     script_file: scripts/anim_sun_light
   - name: Sun light
-    parent_id: [auto, light-dir-origo]
+    parent_id: light-dir-origo
     pos: [0, 0, 600]
     scale: 20
     model: light
@@ -99,37 +90,34 @@ entities:
       kd: [0.0, 0.7, 0.0, 1.0]
     light:
       type: directional
-      target_id: [auto, dir-light-target]
+      target_id: dir-light-target
       diffuse: [0.4, 0.4, 0.4, 1.0]
       intensity: 20000
-      enabled: true
-    enabled: true
   - name: Moving point light origo
-    parent_id: [auto, zero-origo]
+    parent_id: zero-origo
     type: origo
     pos: [0, 14, 0]
     clones:
       - pos: [-15.0, 14.0, -15.0]
-        id: [auto, light-1]
+        id: light-1
       - pos: [15.0, 14.0, -15.0]
-        id: [auto, light-2]
+        id: light-2
       - pos: [-15.0, 14.0, 15.0]
-        id: [auto, light-3]
+        id: light-3
       - pos: [15.0, 14.0, 15.0]
-        id: [auto, light-4]
+        id: light-4
       - pos: [-25.0, 10.0, -25.0]
-        id: [auto, light-5]
+        id: light-5
       - pos: [25.0, 10.0, -25.0]
-        id: [auto, light-6]
+        id: light-6
       - pos: [-25, 10.0, 25.0]
-        id: [auto, light-7]
+        id: light-7
       - pos: [25.0, 10.0, 25.0]
-        id: [auto, light-8]
+        id: light-8
     script_file: scripts/anim_moving_point_light
-    enabled: true
   - name: Moving point light
     desc: "NOTE overriding material in clones is *NOT* supported"
-    parent_id: [auto, zero-origo]
+    parent_id: zero-origo
     pos: [0, 0, 0]
     scale: 0.5
     model: light
@@ -138,15 +126,15 @@ entities:
       no_shadow: true
     clones:
       - pos: [0.0, 0.0, 10.0]
-        parent_id: [auto, light-1]
+        parent_id: light-1
       - pos: [0.0, 0.0, 10.0]
-        parent_id: [auto, light-2]
+        parent_id: light-2
       - pos: [0.0, 0.0, 10.0]
-        parent_id: [auto, light-3]
+        parent_id: light-3
       - pos: [0.0, 0.0, 10.0]
-        parent_id: [auto, light-4]
+        parent_id: light-4
       - pos: [0.0, 0.0, 15.0]
-        parent_id: [auto, light-5]
+        parent_id: light-5
         material_modifier:
           kd: [0.8, 0.0, 0.0, 1.0]
         light:
@@ -154,7 +142,7 @@ entities:
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
-        parent_id: [auto, light-6]
+        parent_id: light-6
         material_modifier:
           kd: [0.0, 0.9, 0.0, 1.0]
         light:
@@ -162,7 +150,7 @@ entities:
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
-        parent_id: [auto, light-7]
+        parent_id: light-7
         material_modifier:
           kd: [0.0, 0.0, 0.9, 1.0]
         light:
@@ -170,7 +158,7 @@ entities:
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
-        parent_id: [auto, light-8]
+        parent_id: light-8
         material_modifier:
           kd: [0.9, 0.0, 0.9, 1.0]
         light:
@@ -184,17 +172,14 @@ entities:
       target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
-      enabled: true
-    enabled: true
   - name: Rock light origo
-    id: [auto, rock-light-origo]
-    parent_id: [auto, rock-origo]
+    id: rock-light-origo
+    parent_id: rock-origo
     type: origo
     pos: [0.0, 10.0, 0.0]
-    enabled: true
     script_file: scripts/anim_rock_light
   - name: Rock light
-    parent_id: [auto, rock-light-origo]
+    parent_id: rock-light-origo
     pos: [-10, 0, 0]
     scale: 0.5
     model: light
@@ -208,10 +193,8 @@ entities:
       target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
-      enabled: true
-    enabled: true
   - name: Active node
-    parent_id: [auto, zero-origo]
+    parent_id: zero-origo
     model: texture_cube
     material_modifier:
       tiling_x: 2
@@ -219,20 +202,17 @@ entities:
     program: g_tex
     pos: [0, 15, 0]
     script_file: scripts/anim_node_path
-    enabled: true
   - name: Active node around rock
-    parent_id: [auto, rock-origo]
+    parent_id: rock-origo
     model: texture_cube
     program: g_tex
     pos: [0, -5, 0]
     script_file: scripts/anim_node_path
-    enabled: true
-  - name: Cube map 1
+  - xname: Cube map 1
     type: origo
     pos: [0.0, 4.5, 0.0]
     render_flags:
       cube_map: true
-    xenabled: true
   - name: EXAMPLE
     model: glass_ball
     program: g_tex
@@ -251,7 +231,6 @@ entities:
       x_step: 3
       y_step: 0
       z_step: 3
-    enabled: true
   - name: Window 1
     model: quad
     material: window_1
@@ -263,7 +242,6 @@ entities:
       alpha: true
       blend_oit: true
       render_back: true
-    enabled: true
   - name: Window 1_1
     model: quad
     type: billboard
@@ -276,7 +254,6 @@ entities:
       alpha: true
       blend_oit: true
       render_back: true
-    enabled: true
   - name: Window 2
     model: quad
     material: window_2
@@ -288,7 +265,6 @@ entities:
       alpha: true
       blend_oit: true
       render_back: true
-    enabled: true
   - name: Stained windows
     model: quad
     material: window_2
@@ -303,13 +279,11 @@ entities:
     repeat:
       x_count: 10
       x_step: 2
-    enabled: true
-  - name: Cube map - brick_wood_wall
+  - xname: Cube map - brick_wood_wall
     type: origo
     pos: [-1.0, 13.5, 14.0]
     render_flags:
       cube_map: true
-    xenabled: true
   - name: Brick wall
     model: quad
     material: brickwall
@@ -320,7 +294,6 @@ entities:
     repeat:
       x_count: 3
       x_step: 4
-    enabled: true
   - name: Brick wall - one
     model: quad
     material: brickwall
@@ -329,7 +302,6 @@ entities:
     rotation: [0, 180, 0]
     render_flags:
       render_back: true
-    enabled: true
   - name: Wood wall
     model: quad
     material: woodwall
@@ -340,7 +312,6 @@ entities:
     repeat:
       x_count: 2
       x_step: 4
-    enabled: true
   - name: Wood wall - upper - normal
     model: quad
     material: woodwall
@@ -354,7 +325,6 @@ entities:
     repeat:
       x_count: 2
       x_step: 4
-    enabled: true
   - name: Big mirror 1
     model: quad
     material: mirror
@@ -362,10 +332,10 @@ entities:
     pos: [-55.0, 25.0, 10.0]
     rotation: [0.0, 45.0, 0.0]
     scale: 15.0
+    front: [0, 0, 1]
     render_flags:
       render_back: true
       mirror: true
-    enabled: true
     script_file: scripts/anim_mirror
   - name: Big mirror 2
     model: quad
@@ -374,23 +344,21 @@ entities:
     pos: [55.0, 25.0, 10.0]
     rotation: [0.0, 215.0, 0.0]
     scale: 15.0
+    front: [0, 0, 1]
     render_flags:
       render_back: true
       mirror: true
-    enabled: true
     script_file: scripts/anim_mirror
   - name: Airboat
     model: airboat_fixed_colors
     program: g_tex
     pos: [24.0, 11.0, 15.0]
     scale: 1.0
-    enabled: true
   - name: Airboat 2
     model: airboat_fixed_colors
     program: g_tex
     pos: [6.0, 19.0, 22.0]
     scale: 0.5
-    enabled: true
   - name: Spyro
     model: spyro2
     program: g_tex
@@ -399,7 +367,6 @@ entities:
       map_pbr: textures/Lava 05 [8K]
       tiling: 6
     scale: 0.06
-    enabled: true
   - name: Backback
     desc: TODO not showing up
     model: [backpack, backpack]
@@ -430,23 +397,20 @@ entities:
     program: g_tex
     pos: [20.0, 40.0, -50.0]
     scale: 20.0
-    enabled: true
   - name: Sword 2
     model: sword2
     program: g_tex
     pos: [0.0, 40.0, -50.0]
     scale: 1.0
-    enabled: true
   - name: Sword - Excalibur
     model: sword2
     program: g_tex
     rotation: [223, 28, 24]
     pos: [250.0, 10.0, -190.0]
     scale: 1.0
-    enabled: true
   - name: Teapot
     desc: Dir light target (back needed due to gap in lid)
-    id: [auto, dir-light-target]
+    id: dir-light-target
     model: smooth_teapot
     program: g_tex
     pos: [-5.0, 25.0, -5.0]
@@ -461,7 +425,6 @@ entities:
     render_flags:
       render_back: true
     selected: false
-    enabled: true
   - name: Cow
     model: cow
     program: g_tex
@@ -475,7 +438,6 @@ entities:
     render_flags:
       render_back: false
     selected: false
-    enabled: true
   - name: Cow fur
     model: cow
     program: g_fur
@@ -486,7 +448,6 @@ entities:
     force_material: true
     render_flags:
       alpha: true
-    enabled: true
   - name: Cow 2
     model: cow
     program: g_tex
@@ -500,25 +461,21 @@ entities:
     render_flags:
       render_back: false
     selected: false
-    enabled: true
   - name: Ball
     model: texture_ball
     program: g_tex
     pos: [0.0, 13.0, 0.0]
     scale: 2.0
-    enabled: true
-  - name: Cube map 2 - common
+  - xname: Cube map 2 - common
     type: origo
     pos: [0.0, 28.0, 8.0]
     render_flags:
       cube_map: true
-    xenabled: true
-  - name: Cube map 2 - refract ball
+  - xname: Cube map 2 - refract ball
     type: origo
     pos: [5.0, 25.0, 0.0]
     render_flags:
       cube_map: true
-    xenabled: true
   - name: Refract ball
     model: glass_ball
     program: g_tex
@@ -528,13 +485,11 @@ entities:
       reflection: 0.05
       refraction: 0.85
       refraction_ratio: [1.0, 1.52]
-    enabled: true
-  - name: Cube map 2 - refract ball
+  - xname: Cube map 2 - refract ball
     type: origo
     pos: [-10.0, 25.0, 0.0]
     render_flags:
       cube_map: true
-    xenabled: true
   - name: Reflect ball
     model: glass_ball
     program: g_tex
@@ -542,7 +497,6 @@ entities:
     scale: 1.3
     material_modifier:
       reflection: 0.8
-    enabled: true
   - name: Water ball
     model: water_ball
     program: g_tex
@@ -554,7 +508,6 @@ entities:
       - node->particleGenerator = new ParticleGenerator(assets, pd);
     material_modifier:
       xreflection: 0.3
-    enabled: true
   - name: Basic ball
     model: water_ball
     program: g_tex
@@ -564,7 +517,6 @@ entities:
     force_material: true
     material_modifier:
       metal: [0.6, 0.3, 0, 1]
-    enabled: true
   - name: Gold ball
     model: water_ball
     program: g_tex
@@ -574,12 +526,10 @@ entities:
     material: gold_ball
     material_modifier:
       map_pbr: textures\Metal007_1K-PNG
-    enabled: true
   - name: ball origo
     type: origo
-    id: [auto, ball-origo]
+    id: ball-origo
     pos: [5.0, 30.0, 15.0]
-    enabled: true
   - name: Silver ball
     model: water_ball
     program: g_tex
@@ -589,9 +539,14 @@ entities:
     material: silver_ball
     material_modifier:
       metal: [1, 0.3, 0, 1]
-    enabled: true
+    physics:
+      body:
+        type: sphere
+        density: 0.07
+      geom:
+        type: sphere
   - name: Bronze ball
-    parent_id: [auto, ball-origo]
+    parent_id: ball-origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 5.0]
@@ -600,9 +555,8 @@ entities:
     material: bronze_ball
     material_modifier:
       metal: [1, 0.3, 0, 1]
-    enabled: true
   - name: Copper ball
-    parent_id: [auto, ball-origo]
+    parent_id: ball-origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 10.0]
@@ -611,9 +565,8 @@ entities:
     material: copper
     material_modifier:
       metal: [1, 0.3, 0, 1]
-    enabled: true
   - name: Plasma ball
-    parent_id: [auto, cube-3]
+    parent_id: cube-3
     model: ball_volume
     material: plasma_ball
     force_material: true
@@ -628,7 +581,6 @@ entities:
       blend: true
       effect: true
       no_select: true
-    enabled: true
   - name: Brickcube
     model: texture_cube
     program: g_tex
@@ -637,29 +589,24 @@ entities:
       tiling_y: 2
     pos: [5.0, 25.0, 5.0]
     scale: 1
-    enabled: true
   - name: Four cubes
     model: texture_cube_3
     program: g_tex
     scale: 1
     camera:
       fov: 80
-      pos: [0, 0, 0]
-      enabled: true
-    xxcontroller:
-      type: camera
-      enabled: true
+    controllers:
+      - type: camera_zoom
     script_file: scripts/anim_four_cubes
-    enabled: true
     clones:
       - pos: [-5.0, 20.0, -5.0]
-        id: [auto, cube-1]
+        id: cube-1
       - pos: [5.0, 20.0, -5.0]
-        id: [auto, cube-2]
+        id: cube-2
       - pos: [-5.0, 20.0, 5.0]
-        id: [auto, cube-3]
+        id: cube-3
       - pos: [5.0, 20.0, 5.0]
-        id: [auto, cube-4]
+        id: cube-4
   - name: Blend cubes
     model: rubik_cube
     program: g_tex
@@ -668,7 +615,6 @@ entities:
       blend_oit: true
       render_back: true
     script_file: scripts/anim_four_cubes
-    enabled: true
     clones:
       - pos: [-5.0, 30.0, -5.0]
       - pos: [5.0, 30.0, -5.0]
@@ -681,7 +627,6 @@ entities:
     rotation: [0, 180, 0]
     scale: 1
     selected: false
-    enabled: true
   - name: Pool surface
     type: quad
     priority: -5
@@ -701,7 +646,6 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
-    enabled: true
     script_file: scripts/anim_water
   - name: Pool floor
     model: quad
@@ -720,7 +664,13 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
-    enabled: true
+  - name: Pool floor plane
+    type: origo
+    pos: [0.0, 3.7, -10.0]
+    physics:
+      geom:
+        type: plane
+        rot: [0, 0, 0]
   - name: Pool side
     model: pool_brick
     program: g_tex
@@ -736,17 +686,18 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
-    enabled: true
-  - name: Terrain grass v2.2
+  - name: Terrain grass v2
     id: auto
-    priority: -15
+    priority: 20
     type: container
     instanced: true
     material: terrain_grass_2
-    program: g_terrain2
+    program: g_terrain
+    depth_program: g_terrain_depth
     pos: [-1200, -5.5, -900]
     xxpos: [-1024, -5.5, -1024]
     render_flags:
+      depth: true
       xxwireframe: true
       tessellation: true
     generator:
@@ -756,8 +707,6 @@ entities:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
-      enabled: true
-    enabled: true
   - name: grid points
     model: glass_ball
     program: g_tex
@@ -781,8 +730,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-    enabled: true
-  - name: Sea surface
+  - xname: Sea surface
     desc: TODO KI conflicting water reflect with pool
     priority: -20
     type: quad
@@ -802,7 +750,6 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-    xenabled: true
   - name: Sea floor
     priority: -25
     model: quad
@@ -821,41 +768,36 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-    enabled: true
   - name: Planet origo
-    id: [auto, planet-origo]
+    id: planet-origo
     type: origo
     pos: [10.0, 150.0, 200.0]
-    enabled: true
   - name: Planet
-    parent_id: [auto, planet-origo]
+    parent_id: planet-origo
     model: [planet, planet]
     program: g_tex
     material_modifier:
       map_bump: mars_normal.png
     pos: [0, 0, 0]
     scale: 10
-    enabled: true
     script_file: scripts/anim_planet
-  - name: Rock origo
-    id: [auto, rock-origo]
-    parent_id: [auto, planet-origo]
+  - xname: Rock origo
+    id: rock-origo
+    parent_id: planet-origo
     type: origo
     pos: [0.0, -50.0, 0.0]
     render_flags:
       cube_map: true
-    xenabled: true
   - name: Rock
-    parent_id: [auto, rock-origo]
+    parent_id: rock-origo
     model: [rock, rock]
     program: g_tex
     pos: [0.0, 0, 0.0]
     scale: 1.5
     material_modifier:
       xreflection: 0.6
-    enabled: true
   - name: Asteroid belt
-    parent_id: [auto, planet-origo]
+    parent_id: planet-origo
     model: [rock, rock]
     instanced: true
     program: g_tex
@@ -865,8 +807,6 @@ entities:
     generator:
       type: asteroid_belt
       count: 1000
-      enabled: true
-    enabled: true
   - name: Scale 1
     model: quad
     material: brickwall
@@ -911,14 +851,11 @@ entities:
     scale: [7, 10, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 40
         z_count: 40
         x_step: -20
         z_step: 20
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 2
     type: model
     model: quad
@@ -938,14 +875,11 @@ entities:
     scale: [7, 10, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 40
         z_count: 40
         x_step: -20
         z_step: 20
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 3
     type: model
     model: quad
@@ -965,14 +899,11 @@ entities:
     scale: [7, 10, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 40
         z_count: 40
         x_step: -20
         z_step: 20
-      enabled: true
-    enabled: true
   - name: Linden tree forest - part 4
     type: model
     model: quad
@@ -992,14 +923,11 @@ entities:
     scale: [7, 10, 1]
     generator:
       type: grid
-      enabled: true
       repeat:
         x_count: 40
         z_count: 40
         x_step: -20
         z_step: 20
-      enabled: true
-    enabled: true
   - name: Skeleton army
     type: billboard
     priority: 1
@@ -1017,7 +945,15 @@ entities:
       z_count: 101
       x_step: -3
       z_step: 2
-    enabled: true
+    physics:
+      update: true
+      body:
+        type: capsule
+        density: 0.01
+        rot: [90, 0, 0]
+      geom:
+        type: capsule
+        size: [1, 4, 0]
     script_file: scripts/seq_skeleton_army
   - name: Giant wooden box
     model: quad
@@ -1043,6 +979,92 @@ entities:
         rot: [0, 180, 0]
       - pos: [0.0, 0.0, -100.0]
         rot: [0, 0, 0]
+  - name: world_x_minus
+    type: origo
+    model: quad
+    program: g_tex
+    material: pool_floor
+    scale: 1000
+    render_flags:
+      no_shadow: true
+    pos: [-1200, 0, 0]
+    rot: [0, 90, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [0, 0, 270]
+  - name: world_x_plus
+    type: origo
+    model: quad
+    program: g_tex
+    material: pool_floor
+    scale: 1000
+    render_flags:
+      no_shadow: true
+    pos: [850, 0, 0]
+    rot: [0, 270, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [0, 0, 90]
+  - xname: world_y_minus
+    type: origo
+    model: quad
+    program: g_tex
+    material: world_barrier
+    scale: 100
+    render_flags:
+      alpha: true
+      no_shadow: true
+    pos: [0, -400, 0]
+    rot: [270, 0, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [0, 0, 0]
+  - xname: world_y_plus
+    type: origo
+    program: g_tex
+    model: quad
+    material: world_barrier
+    scale: 100
+    render_flags:
+      alpha: true
+      no_shadow: true
+    pos: [0, 400, 0]
+    rot: [90, 0, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [90, 0, 0]
+  - name: world_z_minus
+    type: origo
+    model: quad
+    program: g_tex
+    material: pool_floor
+    scale: 1000
+    render_flags:
+      no_shadow: true
+    pos: [0, 0, -900]
+    rot: [0, 0, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [90, 0, 0]
+  - name: world_z_plus
+    type: origo
+    program: g_tex
+    model: quad
+    material: pool_floor
+    scale: 1000
+    render_flags:
+      no_shadow: true
+    pos: [0, 0, 1150]
+    rot: [180, 0, 0]
+    physics:
+      geom:
+        type: plane
+        rot: [270, 0, 0]
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]

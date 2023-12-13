@@ -5,7 +5,6 @@
 #ifdef USE_ALPHA
 #include struct_shape.glsl
 
-#include uniform_textures.glsl
 #include uniform_shapes.glsl
 #endif
 

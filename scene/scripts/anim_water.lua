@@ -1,40 +1,34 @@
 local luaNode = nodes[id]
 
-local function animation()
-   local wid = -1
-   local cid = -1
+local function animation(coid)
+  local wid = 0
+  local cid = 0
 
-   local origPos = node:getPos()
+  local origPos = node:getPos()
 
-   while(true) do
-      -- NOTE KI *WAIT* for resume to complete
-      wid = cmd:wait(cid, 3)
+  while true do
+    wid = cmd:wait({ after=cid, time=3 })
 
-      cid = cmd:moveSpline(
-         id,
-         { after=wid, time=10, relative=true },
-         { 0, 1.5, 0 },
-         { 0, -2.5, 0 })
+    cid = cmd:moveSpline(
+      { after=wid, time=10, relative=true },
+      { 0, 1.5, 0 },
+      { 0, -2.5, 0 })
 
-      wid = cmd:wait(cid, 1)
-      cid = cmd:moveSpline(
-         id,
-         { after=wid, time=10, relative=false },
-         { 0, -1.5, 0 },
-         origPos)
+    wid = cmd:wait({ after=cid, time=1 })
 
-      wid = cmd:wait(cid, 1)
-      cid = cmd:resume(id, { after=wid }, "callback")
+    cid = cmd:moveSpline(
+      { after=wid, time=10, relative=false },
+      { 0, -1.5, 0 },
+      origPos)
 
-      -- NOTE KI wait for callback
-      coroutine.yield()
-   end
+    wid = cmd:wait({ after=cid, time=1 })
+
+    cid = cmd:resume({ after=wid }, coid)
+  end
 end
 
 luaNode.start = function()
-   --print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
-   luaNode.callback = coroutine.wrap(animation)
-   cmd:resume(id, {}, "callback")
+  --print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
+
+  cmd:start({}, animation)
 end
--- invoked by scene
---luaNode.start()

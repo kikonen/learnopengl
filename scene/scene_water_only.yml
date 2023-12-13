@@ -10,20 +10,19 @@ root:
   type: origo
 entities:
   - name: Player
+    id: player
     model: player
     pos: [0, 5, 5]
     scale: 0.8
     program: g_tex
     render_flags:
       allow_normals: false
+    active: true
     camera:
-      pos: [0, 3, -3]
       default: true
-      enabled: true
-    controller:
-      type: camera
-      enabled: true
-    enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Water surface
     type: quad
     material: water_surface
@@ -42,7 +41,6 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
-    enabled: true
   - name: Pool floor
     model: quad
     material: pool_floor
@@ -59,7 +57,6 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
-    enabled: true
 materials:
   - name: water_surface
     kd: [0.55, 0.55, 0.95, 1.0]

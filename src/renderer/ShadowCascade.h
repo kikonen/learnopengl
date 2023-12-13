@@ -7,7 +7,7 @@
 
 #include "component/Camera.h"
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 
 class FrameBuffer;
@@ -60,7 +60,7 @@ private:
     // NOTE KI std::unique_ptr triggered exhaustive error loop
     FrameBuffer* m_buffer{ nullptr };
 
-    int m_cascadeCount{ 0 };
+    size_t m_cascadeCount{ 0 };
 
     Camera m_camera;
 

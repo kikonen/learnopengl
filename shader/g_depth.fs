@@ -6,7 +6,6 @@
 
 #include uniform_materials.glsl
 #include uniform_shapes.glsl
-#include uniform_textures.glsl
 #endif
 
 #ifndef USE_ALPHA
@@ -33,13 +32,10 @@ SET_FLOAT_PRECISION;
 void main()
 {
 #ifdef USE_ALPHA
-  {
     const vec2 texCoord = fs_in.texCoord;
     #include var_tex_material_alpha.glsl
 
-    // NOtE KI experimental value; depends from few aspects in blended windows
-    if (alpha < 0.95)
-      discard;
-  }
+  if (alpha < 0.05)
+    discard;
 #endif
 }

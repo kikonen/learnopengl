@@ -6,13 +6,15 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "component/Light.h"
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
 #include "generator/NodeGenerator.h"
+
+#include "physics/Object.h"
 
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
@@ -26,22 +28,22 @@
 #include "render/Batch.h"
 
 namespace {
-    int objectIDbase = 100;
+    ki::object_id idBase = 100;
 
     std::mutex object_id_lock{};
 
     const static glm::mat4 IDENTITY_MATRIX{ 1.f };
 
-    int nextID() noexcept
+    ki::object_id nextID() noexcept
     {
         std::lock_guard<std::mutex> lock(object_id_lock);
-        return ++objectIDbase;
+        return ++idBase;
     }
 }
 
 Node::Node(MeshType* type)
     : m_type(type),
-    m_objectID(nextID())
+    m_id(nextID())
 {
 }
 
@@ -53,8 +55,8 @@ Node::~Node()
 const std::string Node::str() const noexcept
 {
     return fmt::format(
-        "<NODE: objectID={}, id={}, entity={}, type={}>",
-        m_objectID, KI_UUID_STR(m_id), m_instance.m_entityIndex, m_type->str());
+        "<NODE: id={}, id={}, entity={}, type={}>",
+        m_id, KI_UUID_STR(m_uuid), m_instance.m_entityIndex, m_type->str());
 }
 
 void Node::prepare(
@@ -89,7 +91,7 @@ void Node::prepare(
         }
 
         m_instance.setFlags(flags);
-        m_instance.setObjectID(m_objectID);
+        m_instance.setId(m_id);
     }
 
     if (m_generator) {
@@ -112,6 +114,11 @@ void Node::update(
             child->update(ctx);
         }
     }
+
+    if (m_physics) {
+        m_physics->prepare(ctx.m_registry->m_physicsEngine, this);
+        m_physics->updateToPhysics(false);
+    }
 }
 
 bool Node::isEntity() const noexcept
@@ -126,7 +133,7 @@ void Node::updateEntity(
 {
     if (m_instance.m_entityIndex != -1)
     {
-        if (m_instance.m_entityDirty) {
+        if (m_instance.m_dirtyEntity) {
             auto* entity = entityRegistry->updateEntity(m_instance.m_entityIndex, true);
 
             entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
@@ -160,15 +167,13 @@ void Node::updateModelMatrix() noexcept
     else {
         m_instance.updateRootMatrix();
     }
-
-    if (oldLevel == m_instance.m_matrixLevel) return;
 }
 
 void Node::setTagMaterialIndex(int index)
 {
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
-        m_instance.m_entityDirty = true;
+        m_instance.m_dirtyEntity = true;
     }
 }
 
@@ -176,13 +181,13 @@ void Node::setSelectionMaterialIndex(int index)
 {
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
-        m_instance.m_entityDirty = true;
+        m_instance.m_dirtyEntity = true;
     }
 }
 
-int Node::lua_getId() const noexcept
+ki::object_id Node::lua_getId() const noexcept
 {
-    return m_objectID;
+    return m_id;
 }
 
 const std::string& Node::lua_getName() const noexcept

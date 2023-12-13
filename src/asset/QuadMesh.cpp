@@ -2,7 +2,7 @@
 
 #include <fmt/format.h>
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "asset/Sphere.h"
 #include "asset/QuadMaterialInit.h"
@@ -35,7 +35,7 @@ QuadMesh::~QuadMesh()
 
 const std::string QuadMesh::str() const noexcept
 {
-    return fmt::format("<QUAD: id={}>", m_objectID);
+    return fmt::format("<QUAD: id={}>", m_id);
 }
 
 const AABB QuadMesh::calculateAABB() const

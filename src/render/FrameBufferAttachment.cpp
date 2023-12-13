@@ -44,7 +44,7 @@ void FrameBufferAttachment::create(
         }
         else if (att.type == FrameBufferAttachmentType::texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
-            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
+            kigl::setLabel(GL_TEXTURE, att.textureID, attName);
 
             KI_INFO(fmt::format("CREATE_TEX: FBO={}, TEX={}", name, att.textureID));
 
@@ -60,7 +60,7 @@ void FrameBufferAttachment::create(
         }
         else if (att.type == FrameBufferAttachmentType::rbo) {
             glCreateRenderbuffers(1, &att.rbo);
-            glObjectLabel(GL_RENDERBUFFER, att.rbo, attName.length(), attName.c_str());
+            kigl::setLabel(GL_RENDERBUFFER, att.rbo, attName);
 
             KI_INFO(fmt::format("CREATE_RBO: FBO={}, RBO={}", name, att.rbo));
 
@@ -68,7 +68,7 @@ void FrameBufferAttachment::create(
         }
         else if (att.type == FrameBufferAttachmentType::depth_texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
-            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
+            kigl::setLabel(GL_TEXTURE, att.textureID, attName);
 
             KI_INFO(fmt::format("CREATE_DEPTH: FBO={}, DEPTH={}", name, att.textureID));
 
@@ -84,7 +84,7 @@ void FrameBufferAttachment::create(
         }
         else if (att.type == FrameBufferAttachmentType::depth_stencil_texture) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
-            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
+            kigl::setLabel(GL_TEXTURE, att.textureID, attName);
 
             KI_INFO(fmt::format("CREATE_DEPTH_STENCIL: FBO={}, DEPTH={}", name, att.textureID));
 
@@ -100,7 +100,7 @@ void FrameBufferAttachment::create(
         }
         else if (att.type == FrameBufferAttachmentType::shadow) {
             glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
-            glObjectLabel(GL_TEXTURE, att.textureID, attName.length(), attName.c_str());
+            kigl::setLabel(GL_TEXTURE, att.textureID, attName);
 
             KI_INFO(fmt::format("CREATE_SHADOW: FBO={}, DEPTH={}", name, att.textureID));
 
@@ -166,13 +166,12 @@ void FrameBufferAttachment::invalidate(
     //https://www.khronos.org/opengl/wiki/Framebuffer
     // https://community.arm.com/arm-community-blogs/b/graphics-gaming-and-vr-blog/posts/mali-performance-2-how-to-correctly-handle-framebuffers
 
-    //return;
     if (shared) return;
 
     GLenum attachments[] = { attachment };
 
     // TODO KI based into NSight this consumes some time; perhaps irrelevant to do
-    //glInvalidateNamedFramebufferData(fbo, 1, attachments);
+    glInvalidateNamedFramebufferData(fbo, 1, attachments);
 }
 
 void FrameBufferAttachment::clearWithMask(int fbo, GLbitfield mask) const

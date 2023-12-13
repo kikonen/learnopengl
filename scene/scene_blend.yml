@@ -4,30 +4,28 @@ skybox:
   program: g_skybox
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 entities:
-  - name: Camera
+  - name: Player
+    id: player
     type: origo
     pos: [0, 0, 0]
+    active: true
     camera:
       default: true
-      enabled: true
-    enabled: true
-    controller:
-      type: camera
-      enabled: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
   - name: Cube Gbuffer
     model: texture_cube
     program: g_tex
     material_modifier:
       tiling: 5
     pos: [0.0, 1.5, -14.0]
-    enabled: true
   - name: Cube Forward
     model: texture_cube
     program: tex
     material_modifier:
       tiling: 5
     pos: [0.0, -1.5, -14.0]
-    enabled: true
   - name: Window 1
     model: quad
     material: window_1
@@ -38,7 +36,6 @@ entities:
       blend_oit: true
       alpha: true
       render_back: true
-    enabled: true
   - name: Window 2
     model: quad
     material: window_2
@@ -49,7 +46,6 @@ entities:
       blend_oit: true
       alpha: true
       render_back: true
-    enabled: true
   - name: Blend cubes
     model: rubik_cube
     program: g_tex
@@ -65,7 +61,6 @@ entities:
       x_step: 8
       z_step: -8
     script_file: scripts/anim_rotate_object
-    enabled: true
   - name: Plasma ball
     model: ball_volume
     material: plasma_ball
@@ -81,7 +76,6 @@ entities:
       blend: true
       effect: true
       no_select: true
-    enabled: true
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
@@ -96,8 +90,6 @@ entities:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 40000
-      enabled: true
-    enabled: true
 materials:
   - name: window_1
     kd: [0.800000, 0.800000, 0.800000, 1.0]

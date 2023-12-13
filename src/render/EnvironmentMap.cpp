@@ -1,6 +1,6 @@
 #include "EnvironmentMap.h"
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 #include "kigl/GLTextureHandle.h"
 #include "kigl/GLState.h"

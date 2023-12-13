@@ -1,6 +1,6 @@
 #include "RenderSystem.h"
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 namespace backend {
     RenderSystem::RenderSystem(const Assets& assets)

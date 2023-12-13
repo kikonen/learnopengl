@@ -63,7 +63,9 @@ public:
                 m_rangeCount * m_paddedRangeLength,
                 GL_DYNAMIC_STORAGE_BIT);
             m_data = (unsigned char*)malloc(m_rangeCount * m_paddedRangeLength);
-            memset(m_data, 0, m_rangeCount * m_paddedRangeLength);
+            if (m_data) {
+                memset(m_data, 0, m_rangeCount * m_paddedRangeLength);
+            }
         }
 
         m_ranges.reserve(m_rangeCount);
@@ -173,10 +175,10 @@ public:
         bool processCurrent,
         bool clear)
     {
-        const int untilCount = processCurrent ? m_rangeCount : m_rangeCount - 1;
+        const size_t untilCount = processCurrent ? m_rangeCount : m_rangeCount - 1;
 
-        for (int i = 1; i <= untilCount; i++) {
-            int rangeIndex = (m_current + i) % m_rangeCount;
+        for (size_t i = 1; i <= untilCount; i++) {
+            size_t rangeIndex = (m_current + i) % m_rangeCount;
             auto& range = m_ranges[rangeIndex];
             if (range.empty()) continue;
             if (rangeIndex == m_current) flush();
@@ -197,20 +199,20 @@ public:
         return m_ranges[m_current];
     }
 
-    inline void bind(GLuint ubo, bool used, int count) {
+    inline void bind(GLuint ubo, bool used, size_t count) {
         auto& range = m_ranges[m_current];
         count = used ? range.m_usedCount : count;
         m_buffer.bindRange(ubo, range.m_baseOffset, range.getLengthFor(count));
     }
 
-    inline void bindSSBO(GLuint ssbo, bool used, int count) {
+    inline void bindSSBO(GLuint ssbo, bool used, size_t count) {
         auto& range = m_ranges[m_current];
         count = used ? range.m_usedCount : count;
         m_buffer.bindSSBORange(ssbo, range.m_baseOffset, range.getLengthFor(count));
     }
 
 private:
-    void setFence(int index) {
+    void setFence(size_t index) {
         if (!m_useFence) return;
 
         if (m_useSingleFence) {
@@ -223,7 +225,7 @@ private:
         }
     }
 
-    void waitFence(int index) {
+    void waitFence(size_t index) {
         if (!m_useFence) return;
 
         m_fences[index].waitFence(m_debug);

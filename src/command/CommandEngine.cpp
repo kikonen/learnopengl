@@ -79,13 +79,13 @@ void CommandEngine::update(const UpdateContext& ctx)
     processCleanup(ctx);
 }
 
-int CommandEngine::addCommand(std::unique_ptr<Command> pcmd) noexcept
+ki::command_id CommandEngine::addCommand(std::unique_ptr<Command> pcmd) noexcept
 {
     auto& cmd = m_pending.emplace_back(std::move(pcmd));
     return cmd->m_id;
 }
 
-bool CommandEngine::isCanceled(int commandId) noexcept
+bool CommandEngine::isCanceled(ki::command_id commandId) noexcept
 {
     return std::find(m_canceled.begin(), m_canceled.end(), commandId) != m_canceled.end();
 }
@@ -94,16 +94,16 @@ bool CommandEngine::isValid(const UpdateContext& ctx, Command* cmd) noexcept
 {
     if (!cmd->isNode()) return true;
 
-    auto objectID = (dynamic_cast<NodeCommand*>(cmd))->m_objectID;
-    return ctx.m_registry->m_nodeRegistry->getNode(objectID);
+    auto nodeId = (dynamic_cast<NodeCommand*>(cmd))->m_nodeId;
+    return ctx.m_registry->m_nodeRegistry->getNode(nodeId);
 }
 
-void CommandEngine::cancel(int commandId) noexcept
+void CommandEngine::cancel(ki::command_id commandId) noexcept
 {
     m_canceled.push_back(commandId);
 }
 
-bool CommandEngine::isAlive(int commandId) noexcept
+bool CommandEngine::isAlive(ki::command_id commandId) noexcept
 {
     return m_commands.find(commandId) != m_commands.end();
 }
@@ -113,8 +113,9 @@ void CommandEngine::activateNext(const Command* cmd) noexcept
     if (cmd->m_next.empty()) return;
 
     for (auto nextId : cmd->m_next) {
-        const auto& it = m_commands.find(nextId);
-        if (it != m_commands.end()) {
+        if (const auto& it = m_commands.find(nextId);
+            it != m_commands.end())
+        {
             it->second->m_ready = true;
         }
     }
@@ -157,8 +158,9 @@ void CommandEngine::processPending(const UpdateContext& ctx) noexcept
 
         bool ready = true;
         if (cmd->m_afterCommandId > 0) {
-            const auto& it = m_commands.find(cmd->m_afterCommandId);
-            if (it != m_commands.end()) {
+            if (const auto& it = m_commands.find(cmd->m_afterCommandId);
+                it != m_commands.end())
+            {
                 it->second->m_next.push_back(cmd->m_id);
                 ready = false;
             }
@@ -189,7 +191,7 @@ void CommandEngine::processBlocked(const UpdateContext& ctx) noexcept
 
         if (cmd->isNode()) {
             auto* nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
-            auto* node = ctx.m_registry->m_nodeRegistry->getNode(nodeCmd->m_objectID);
+            auto* node = ctx.m_registry->m_nodeRegistry->getNode(nodeCmd->m_nodeId);
             if (!node) {
                 activateNext(cmd.get());
                 cmd->m_canceled = true;

@@ -15,11 +15,11 @@
 #include "ModelRegistry.h"
 
 namespace {
-    int idBase = 0;
+    ki::type_id idBase{ 0 };
 
     std::mutex type_id_lock{};
 
-    int nextID()
+    ki::type_id nextID()
     {
         std::lock_guard<std::mutex> lock(type_id_lock);
         return ++idBase;
@@ -73,7 +73,8 @@ int MeshType::resolveMaterialIndex() const
         // NOTE KI *NO* indeces if single material
         return materialVBO.getFirst().m_registeredIndex;
     }
-    return -materialVBO.m_bufferIndex;
+    // NOTE KI special trick; -1 to indicate "multi material" index
+    return -static_cast<int>(materialVBO.m_bufferIndex);
 }
 
 void MeshType::prepare(
@@ -114,6 +115,10 @@ void MeshType::prepare(
 
     if (m_program) {
         m_program->prepare(assets);
+    }
+
+    if (m_depthProgram) {
+        m_depthProgram->prepare(assets);
     }
 
     if (m_customMaterial) {

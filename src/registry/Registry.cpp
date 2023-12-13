@@ -1,5 +1,7 @@
 #include "Registry.h"
 
+#include <glm/gtx/quaternion.hpp>
+
 #include "asset/MaterialSSBO.h"
 
 
@@ -19,6 +21,7 @@ Registry::Registry(
     m_viewportRegistryImpl(assets),
     m_controllerRegistryImpl(assets),
     m_physicsEngineImpl(assets),
+    m_audioEngineImpl(assets),
     m_dispatcherImpl(assets),
     // pointers
     m_programRegistry(&m_programRegistryImpl),
@@ -31,6 +34,7 @@ Registry::Registry(
     m_viewportRegistry(&m_viewportRegistryImpl),
     m_controllerRegistry(&m_controllerRegistryImpl),
     m_physicsEngine(&m_physicsEngineImpl),
+    m_audioEngine(&m_audioEngineImpl),
     m_dispatcher(&m_dispatcherImpl)
 {
 }
@@ -53,6 +57,7 @@ void Registry::prepare()
     m_nodeRegistryImpl.prepare(this);
 
     m_physicsEngineImpl.prepare();
+    m_audioEngineImpl.prepare();
 }
 
 void Registry::update(const UpdateContext& ctx)

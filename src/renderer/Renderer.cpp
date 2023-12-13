@@ -44,7 +44,7 @@ bool Renderer::needRender(const RenderContext& ctx)
     bool hit = ((ctx.m_clock.frameCount + m_renderFrameStart) % m_renderFrameStep) == 0;
 
     if (hit) {
-        m_elapsedSecs = m_elapsedSecs == -1 ? 0 : m_lastHitTime - ctx.m_clock.ts;
+        m_elapsedSecs = m_elapsedSecs <= -1.f ? 0 : m_lastHitTime - ctx.m_clock.ts;
         m_lastHitTime = ctx.m_clock.ts;
         m_lastHitFrame = ctx.m_clock.frameCount;
     }

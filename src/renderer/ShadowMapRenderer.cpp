@@ -36,7 +36,7 @@ void ShadowMapRenderer::prepare(
     m_planes = assets.shadowPlanes;
     m_mapSizes = assets.shadowMapSizes;
 
-    int maxCount = std::min(m_planes.size() - 1, (size_t)MAX_SHADOW_MAP_COUNT);
+    int maxCount = std::min(static_cast<int>(m_planes.size()) - 1, MAX_SHADOW_MAP_COUNT);
     for (int index = 0; index < maxCount; index++) {
         auto* cascade = new ShadowCascade(
             index,
@@ -91,7 +91,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
         cascade->bind(ctx);
     }
 
-    ctx.m_data.u_shadowCount = m_planes.size() - 1;
+    ctx.m_data.u_shadowCount = static_cast<int>(m_planes.size()) - 1;
 
     for (int i = 0; i < m_planes.size(); i++) {
         ctx.m_data.u_shadowPlanes[i] = { 0.f, 0.f, m_planes[i], 0.f };

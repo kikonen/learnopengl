@@ -210,7 +210,7 @@ void ModelVAO::updatePositionBuffer()
 
     {
         constexpr size_t sz = sizeof(PositionEntry);
-        int updateIndex = index;
+        size_t updateIndex = index;
 
         // NOTE KI *reallocate* SSBO if needed
         if (m_positionVbo.m_size < totalCount * sz) {
@@ -219,7 +219,7 @@ void ModelVAO::updatePositionBuffer()
             updateIndex = 0;
         }
 
-        const int updateCount = totalCount - updateIndex;
+        const size_t updateCount = totalCount - updateIndex;
 
         m_positionVbo.update(
             updateIndex * sz,
@@ -240,7 +240,7 @@ void ModelVAO::updateVertexBuffer()
 
     {
         constexpr size_t sz = sizeof(VertexEntry);
-        int updateIndex = index;
+        size_t updateIndex = index;
 
         // NOTE KI *reallocate* SSBO if needed
         if (m_vertexVbo.m_size < totalCount * sz) {
@@ -249,7 +249,7 @@ void ModelVAO::updateVertexBuffer()
             updateIndex = 0;
         }
 
-        const int updateCount = totalCount - updateIndex;
+        const size_t updateCount = totalCount - updateIndex;
 
         m_vertexVbo.update(
             updateIndex * sz,
@@ -270,7 +270,7 @@ void ModelVAO::updateIndexBuffer()
 
     {
         constexpr size_t sz = sizeof(IndexEntry);
-        int updateIndex = index;
+        size_t updateIndex = index;
 
         // NOTE KI *reallocate* SSBO if needed
         if (m_ebo.m_size < totalCount * sz) {
@@ -279,7 +279,7 @@ void ModelVAO::updateIndexBuffer()
             updateIndex = 0;
         }
 
-        const int updateCount = totalCount - updateIndex;
+        const size_t updateCount = totalCount - updateIndex;
 
         m_ebo.update(
             updateIndex * sz,

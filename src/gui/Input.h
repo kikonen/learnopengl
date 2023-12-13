@@ -24,6 +24,14 @@ enum class Modifier {
     ALT,
 };
 
+struct InputState {
+    bool ctrl{ false };
+    bool shift{ false };
+    bool alt{ false };
+    bool mouseLeft{ false };
+    bool mouseRight{ false };
+};
+
 //
 // Handle keyboard mapping
 //
@@ -42,15 +50,15 @@ public:
 
     bool isModifierPressed(Modifier modifier);
 
-    void onMouseMove(double xpos, double ypos);
+    void onMouseMove(float xpos, float ypos);
     void onMouseButton(int button, int action, int modifiers);
 
 public:
-    double mouseX = 0;
-    double mouseY = 0;
+    float mouseX = 0;
+    float mouseY = 0;
 
-    double mouseXoffset = 0;
-    double mouseYoffset = 0;
+    float mouseXoffset = 0;
+    float mouseYoffset = 0;
 
     Window* window;
 
@@ -68,4 +76,3 @@ private:
     bool m_firstMouse = true;
 
 };
-

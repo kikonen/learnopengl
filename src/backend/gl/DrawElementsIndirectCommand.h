@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ki/GL.h"
+#include "kigl/kigl.h"
 
 namespace backend::gl {
     struct DrawElementsIndirectCommand

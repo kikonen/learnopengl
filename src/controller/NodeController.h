@@ -2,8 +2,9 @@
 
 #include "asset/Assets.h"
 
-#include "ki/GL.h"
 #include "ki/RenderClock.h"
+
+#include "kigl/kigl.h"
 
 #include "gui/Input.h"
 
@@ -34,8 +35,8 @@ public:
     }
 
     virtual void onKey(Input* input, const ki::RenderClock& clock) {};
-    virtual void onMouseMove(Input* input, double xoffset, double yoffset) {};
-    virtual void onMouseScroll(Input* input, double xoffset, double yoffset) {};
+    virtual void onMouseMove(Input* input, float xoffset, float yoffset) {};
+    virtual void onMouseScroll(Input* input, float xoffset, float yoffset) {};
 
 protected:
     bool m_prepared = false;

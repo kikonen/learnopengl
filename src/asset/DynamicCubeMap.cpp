@@ -28,7 +28,7 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
     // NOTE KI must flush before changing render target
     //ctx.m_batch->flush(ctx);
     if (!ctx.m_batch->isFlushed()) {
-        throw std::runtime_error{ fmt::format("BIND_ERROR: Batch was NOT flushed: FBO={}", m_fbo) };
+        throw std::runtime_error{ fmt::format("BIND_ERROR: Batch was NOT flushed: FBO={}", (int)m_fbo) };
     }
 
     ctx.m_state.bindFrameBuffer(m_fbo, false);
@@ -61,9 +61,9 @@ void DynamicCubeMap::prepare(
 CubeMapBuffer DynamicCubeMap::asFrameBuffer(int face)
 {
     return {
-        (GLuint)m_fbo,
+        static_cast<GLuint>(m_fbo),
         m_size,
         face,
-        (GLuint)m_cubeMap,
+        static_cast<GLuint>(m_cubeMap),
     };
 }

@@ -21,11 +21,11 @@
 
 
 namespace {
-    int idBase = 0;
+    ki::material_id idBase = 0;
 
     std::mutex type_id_lock{};
 
-    int nextID()
+    ki::material_id nextID()
     {
         std::lock_guard<std::mutex> lock(type_id_lock);
         return ++idBase;
@@ -111,29 +111,29 @@ Material* Material::find(
 }
 
 Material* Material::findID(
-    const int objectID,
+    const ki::material_id id,
     std::vector<Material>& materials)
 {
     const auto& it = std::find_if(
         materials.begin(),
         materials.end(),
-        [objectID](Material& m) { return m.m_objectID == objectID; });
+        [id](Material& m) { return m.m_id == id; });
     return it != materials.end() ? &(*it) : nullptr;
 }
 
 const Material* Material::findID(
-    const int objectID,
+    const ki::material_id id,
     const std::vector<Material>& materials)
 {
     const auto& it = std::find_if(
         materials.begin(),
         materials.end(),
-        [objectID](const Material& m) { return m.m_objectID == objectID; });
+        [id](const Material& m) { return m.m_id == id; });
     return it != materials.end() ? &(*it) : nullptr;
 }
 
 Material::Material()
-    : m_objectID(nextID())
+    : m_id(nextID())
 {
 }
 
@@ -141,7 +141,7 @@ Material::~Material()
 {
     KI_INFO(fmt::format(
         "MATERIAL: delete - ID={}, name={}, index={}",
-        m_objectID, m_name, m_registeredIndex));
+        m_id, m_name, m_registeredIndex));
 }
 
 void Material::loadTextures(const Assets& assets)
@@ -202,7 +202,7 @@ void Material::loadTexture(
 
     std::string texturePath = getTexturePath(assets, textureName);
 
-    KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_objectID, m_name, texturePath));
+    KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_id, m_name, texturePath));
 
     const std::string& placeholderPath = assets.placeholderTexture;
 
@@ -254,7 +254,7 @@ void Material::loadChannelTexture(
         }
     }
 
-    KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}, validCount={}", m_objectID, m_name, name, validCount));
+    KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}, validCount={}", m_id, m_name, name, validCount));
 
     if (validCount == 0) return;
 
