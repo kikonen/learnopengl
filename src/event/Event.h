@@ -34,7 +34,10 @@ namespace event {
         audio_listener_update,
         audio_source_update,
         audio_listener_activate,
+
         audio_source_play,
+        audio_source_stop,
+        audio_source_pause,
 
         animate_wait,
         animate_move,

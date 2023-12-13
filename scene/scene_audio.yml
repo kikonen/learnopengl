@@ -46,8 +46,8 @@ entities:
     audio:
       source:
         path: audio/Stream Medium 01_8CC7FF9E_normal_mono.wav
-        autoplay: true
-        looping: true
+        xautoplay: true
+        xlooping: true
   - name: Four cubes
     model: texture_cube_3
     program: g_tex

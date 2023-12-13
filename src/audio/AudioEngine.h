@@ -39,7 +39,10 @@ namespace audio
 
         void playSource(audio::source_id);
         void stopSource(audio::source_id);
+        void pauseSource(audio::source_id);
+
         bool isPlaying(audio::source_id);
+        bool isPaused(audio::source_id);
 
         void setActiveListener(audio::listener_id id);
 

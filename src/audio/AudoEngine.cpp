@@ -113,10 +113,24 @@ namespace audio
         source->stop();
     }
 
+    void AudioEngine::pauseSource(audio::source_id id)
+    {
+        auto* source = getSource(id);
+        if (!source) return;
+
+        source->pause();
+    }
+
     bool AudioEngine::isPlaying(audio::source_id id)
     {
         auto* source = getSource(id);
         return source && source->isPlaying();
+    }
+
+    bool AudioEngine::isPaused(audio::source_id id)
+    {
+        auto* source = getSource(id);
+        return source && source->isPaused();
     }
 
     audio::listener_id AudioEngine::registerListener()

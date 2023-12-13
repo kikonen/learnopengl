@@ -206,6 +206,20 @@ void NodeRegistry::attachListeners()
             auto& data = e.body.audioSource;
             m_registry->m_audioEngine->playSource(data.id);
         });
+
+    dispatcher->addListener(
+        event::Type::audio_source_stop,
+        [this](const event::Event& e) {
+            auto& data = e.body.audioSource;
+            m_registry->m_audioEngine->stopSource(data.id);
+        });
+
+    dispatcher->addListener(
+        event::Type::audio_source_pause,
+        [this](const event::Event& e) {
+            auto& data = e.body.audioSource;
+            m_registry->m_audioEngine->pauseSource(data.id);
+        });
 }
 
 void NodeRegistry::selectNodeById(ki::object_id id, bool append) const noexcept

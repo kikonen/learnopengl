@@ -280,6 +280,12 @@ void SampleApp::selectNode(
                 }
             }
 
+            if (node->m_audioSourceId) {
+                event::Event evt { event::Type::audio_source_pause };
+                evt.body.audioSource.id = node->m_audioSourceId;
+                ctx.m_registry->m_dispatcher->send(evt);
+            }
+
             return;
         }
 
@@ -295,13 +301,21 @@ void SampleApp::selectNode(
         KI_INFO(fmt::format("selected: {}", nodeId));
 
         if (node) {
-            event::Event evt { event::Type::animate_rotate };
-            evt.body.animate = {
-                .target = node->m_id,
-                .duration = 5,
-                .data = { 0, 360.f, 0 }
-            };
-            ctx.m_registry->m_dispatcher->send(evt);
+            {
+                event::Event evt { event::Type::animate_rotate };
+                evt.body.animate = {
+                    .target = node->m_id,
+                    .duration = 5,
+                    .data = { 0, 360.f, 0 }
+                };
+                ctx.m_registry->m_dispatcher->send(evt);
+            }
+
+            if (node->m_audioSourceId) {
+                event::Event evt { event::Type::audio_source_play };
+                evt.body.audioSource.id = node->m_audioSourceId;
+                ctx.m_registry->m_dispatcher->send(evt);
+            }
         }
     } else if (playerMode) {
         if (node && inputState.ctrl) {

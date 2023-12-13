@@ -59,6 +59,7 @@ namespace audio
 
     void Source::play()
     {
+        if (isPlaying()) return;
         alSourcePlay(m_sourceId);
     }
 
