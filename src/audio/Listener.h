@@ -17,7 +17,7 @@ namespace audio
 
         audio::listener_id m_id;
 
-        float m_gain = 1.f;
+        float m_gain{ 1.f };
 
         glm::vec3 m_pos{ 0.f };
         glm::vec3 m_vel{ 0.f };

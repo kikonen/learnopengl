@@ -13,9 +13,10 @@ class UpdateContext;
 
 namespace audio
 {
+    class SoundRegistry;
+
     struct Listener;
     struct Source;
-    struct Sound;
 
     //
     // https://indiegamedev.net/2020/02/15/the-complete-guide-to-openal-with-c-part-1-playing-a-sound/
@@ -53,10 +54,7 @@ namespace audio
         Source* getSource(
             audio::source_id id);
 
-        audio::sound_id registerSound(std::string_view path);
-
-        Sound* getSound(
-            audio::sound_id id);
+        audio::sound_id registerSound(std::string_view fullPath);
 
     private:
         const Assets& m_assets;
@@ -71,6 +69,7 @@ namespace audio
 
         std::map<audio::listener_id, std::unique_ptr<Listener>> m_listeners;
         std::map<audio::source_id, std::unique_ptr<Source>> m_sources;
-        std::map<audio::sound_id, std::unique_ptr<Sound>> m_sounds;
+
+        std::unique_ptr<SoundRegistry> m_soundRegistry;
     };
 }

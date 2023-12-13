@@ -1,9 +1,11 @@
 #include "AudioEngine.h"
 
 #include "util/Log.h"
+#include "util/Util.h"
 
 #include "al_call.h"
 
+#include "SoundRegistry.h"
 #include "Sound.h"
 #include "Source.h"
 #include "Listener.h"
@@ -13,8 +15,11 @@ namespace {
 
 namespace audio
 {
+    struct Sound;
+
     AudioEngine::AudioEngine(const Assets& assets)
-        : m_assets(assets)
+        : m_assets(assets),
+        m_soundRegistry(std::make_unique<SoundRegistry>())
     {}
 
     AudioEngine::~AudioEngine()
@@ -25,7 +30,6 @@ namespace audio
 
         m_listeners.clear();
         m_sources.clear();
-        m_sounds.clear();
 
         if (m_context) {
             alcDestroyContext(m_context);
@@ -131,8 +135,13 @@ namespace audio
 
     audio::source_id AudioEngine::registerSource(audio::sound_id soundId)
     {
+        auto* sound = m_soundRegistry->getSound(soundId);
+        if (!sound) return 0;
+
+        sound->prepare();
+
         auto source = std::make_unique<Source>();
-        source->prepare(getSound(soundId));
+        source->prepare(sound);
 
         if (!source->m_sourceId) return 0;
 
@@ -147,21 +156,8 @@ namespace audio
         return it != m_sources.end() ? it->second.get() : nullptr;
     }
 
-    audio::sound_id AudioEngine::registerSound(std::string_view path)
+    audio::sound_id AudioEngine::registerSound(std::string_view fullPath)
     {
-        auto sound = std::make_unique<Sound>(path);
-        sound->load(m_assets.assetsDir);
-
-        if (!sound->m_bufferId) return 0;
-
-        const auto& [it, _] = m_sounds.insert({ sound->m_id, std::move(sound) });
-        return it->first;
-    }
-
-    Sound* AudioEngine::getSound(
-        audio::sound_id id)
-    {
-        const auto& it = m_sounds.find(id);
-        return it != m_sounds.end() ? it->second.get() : nullptr;
+        return m_soundRegistry->registerSound(fullPath);
     }
 }

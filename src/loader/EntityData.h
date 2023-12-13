@@ -17,6 +17,7 @@
 #include "CustomMaterialData.h"
 #include "CameraData.h"
 #include "LightData.h"
+#include "AudioData.h"
 #include "ControllerData.h"
 #include "GeneratorData.h"
 #include "PhysicsData.h"
@@ -87,6 +88,7 @@ namespace loader {
         std::vector<ControllerData> controllers;
         CameraData camera;
         LightData light;
+        AudioData audio;
 
         GeneratorData generator;
     };

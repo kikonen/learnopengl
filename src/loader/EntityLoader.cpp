@@ -24,6 +24,7 @@
 #include "SpriteLoader.h"
 #include "CameraLoader.h"
 #include "LightLoader.h"
+#include "AudioLoader.h"
 #include "ControllerLoader.h"
 #include "GeneratorLoader.h"
 #include "PhysicsLoader.h"
@@ -43,6 +44,7 @@ namespace loader {
         SpriteLoader& spriteLoader,
         CameraLoader& cameraLoader,
         LightLoader& lightLoader,
+        AudioLoader& audioLoader,
         ControllerLoader& controllerLoader,
         GeneratorLoader& generatorLoader,
         PhysicsLoader& physicsLoader)
@@ -57,6 +59,7 @@ namespace loader {
                 spriteLoader,
                 cameraLoader,
                 lightLoader,
+                audioLoader,
                 controllerLoader,
                 generatorLoader,
                 physicsLoader);
@@ -71,6 +74,7 @@ namespace loader {
         SpriteLoader& spriteLoader,
         CameraLoader& cameraLoader,
         LightLoader& lightLoader,
+        AudioLoader& audioLoader,
         ControllerLoader& controllerLoader,
         GeneratorLoader& generatorLoader,
         PhysicsLoader& physicsLoader) const
@@ -85,6 +89,7 @@ namespace loader {
             spriteLoader,
             cameraLoader,
             lightLoader,
+            audioLoader,
             controllerLoader,
             generatorLoader,
             physicsLoader);
@@ -100,6 +105,7 @@ namespace loader {
         SpriteLoader& spriteLoader,
         CameraLoader& cameraLoader,
         LightLoader& lightLoader,
+        AudioLoader& audioLoader,
         ControllerLoader& controllerLoader,
         GeneratorLoader& generatorLoader,
         PhysicsLoader& physicsLoader) const
@@ -242,6 +248,9 @@ namespace loader {
             else if (k == "light") {
                 lightLoader.loadLight(v, data.light);
             }
+            else if (k == "audio") {
+                audioLoader.loadAudio(v, data.audio);
+            }
             else if (k == "custom_material") {
                 customMaterialLoader.loadCustomMaterial(v, data.customMaterial);
             }
@@ -316,6 +325,7 @@ namespace loader {
                             spriteLoader,
                             cameraLoader,
                             lightLoader,
+                            audioLoader,
                             controllerLoader,
                             generatorLoader,
                             physicsLoader);

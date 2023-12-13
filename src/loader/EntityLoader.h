@@ -11,6 +11,7 @@ namespace loader {
     class SpriteLoader;
     class CameraLoader;
     class LightLoader;
+    class AudioLoader;
     class ControllerLoader;
     class GeneratorLoader;
     class PhysicsLoader;
@@ -29,6 +30,7 @@ namespace loader {
             SpriteLoader& spriteLoader,
             CameraLoader& cameraLoader,
             LightLoader& lightLoader,
+            AudioLoader& audioLoader,
             ControllerLoader& controllerLoader,
             GeneratorLoader& generatorLoader,
             PhysicsLoader& physicsLoader);
@@ -41,6 +43,7 @@ namespace loader {
             SpriteLoader& spriteLoader,
             CameraLoader& cameraLoader,
             LightLoader& lightLoader,
+            AudioLoader& audioLoader,
             ControllerLoader& controllerLoader,
             GeneratorLoader& generatorLoader,
             PhysicsLoader& physicsLoader) const;
@@ -55,6 +58,7 @@ namespace loader {
             SpriteLoader& spriteLoader,
             CameraLoader& cameraLoader,
             LightLoader& lightLoader,
+            AudioLoader& audioLoader,
             ControllerLoader& controllerLoader,
             GeneratorLoader& generatorLoader,
             PhysicsLoader& physicsLoader) const;

@@ -72,7 +72,7 @@ int SampleApp::onSetup() {
         m_frame = std::make_unique<EditorFrame>(*m_window);
     }
 
-    {
+    if (false) {
         auto engine = m_registry->m_audioEngine;
         audio::sound_id soundId = engine->registerSound("audio/Stream Medium 01_8CC7FF9E_normal_mono.wav");
 

@@ -82,6 +82,8 @@ public:
     void prepare(
         Registry* registry);
 
+    void attachListeners();
+
     //inline bool containsNode(const int id) const noexcept
     //{
     //    const auto& it = m_idToNode.find(id);

@@ -23,6 +23,7 @@
 #include "CameraLoader.h"
 #include "LightLoader.h"
 #include "ControllerLoader.h"
+#include "AudioLoader.h"
 #include "GeneratorLoader.h"
 #include "PhysicsLoader.h"
 #include "EntityLoader.h"
@@ -164,6 +165,7 @@ namespace loader {
         CameraLoader m_cameraLoader;
         LightLoader m_lightLoader;
         ControllerLoader m_controllerLoader;
+        AudioLoader m_audioLoader;
         GeneratorLoader m_generatorLoader;
         PhysicsLoader m_physicsLoader;
     };

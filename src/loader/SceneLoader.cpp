@@ -63,6 +63,7 @@ namespace loader {
         m_spriteLoader(ctx),
         m_cameraLoader(ctx),
         m_lightLoader(ctx),
+        m_audioLoader(ctx),
         m_controllerLoader(ctx),
         m_generatorLoader(ctx),
         m_physicsLoader(ctx),
@@ -95,6 +96,9 @@ namespace loader {
 
         m_cubeMapLoader.m_registry = m_registry;
         m_cubeMapLoader.m_dispatcher = m_dispatcher;
+
+        m_audioLoader.m_registry = m_registry;
+        m_audioLoader.m_dispatcher = m_dispatcher;
     }
 
     void SceneLoader::load()
@@ -123,6 +127,7 @@ namespace loader {
                 m_spriteLoader,
                 m_cameraLoader,
                 m_lightLoader,
+                m_audioLoader,
                 m_controllerLoader,
                 m_generatorLoader,
                 m_physicsLoader);
@@ -288,6 +293,10 @@ namespace loader {
                 }
             }
             m_dispatcher->send(evt);
+        }
+
+        {
+            m_audioLoader.createAudio(data.audio, node->m_id);
         }
 
         if (data.active) {

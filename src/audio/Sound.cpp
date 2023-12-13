@@ -25,23 +25,38 @@ namespace {
 
 namespace audio
 {
-    Sound::Sound(std::string_view path)
+    Sound::Sound(std::string_view fullPath)
         : m_id(nextID()),
-        m_path(path)
+        m_fullPath(fullPath)
     {
     }
 
     Sound::~Sound()
     {
-        alDeleteBuffers(1, &m_bufferId);
+        if (m_bufferId) {
+            alDeleteBuffers(1, &m_bufferId);
+        }
     }
 
-    void Sound::load(const std::string_view assetsPath)
+    void Sound::prepare()
     {
-        std::string soundPath = util::joinPath(assetsPath, m_path);
+        // empty == either fail or prepared
+        if (m_data.empty()) return;
 
+        alGenBuffers(1, &m_bufferId);
+        alBufferData(
+            m_bufferId,
+            m_format,
+            (ALvoid*)m_data.data(),
+            static_cast<ALsizei>(m_data.size() * sizeof(ALint)),
+            m_sampleRate);
+        m_data.clear();
+    }
+
+    bool Sound::load()
+    {
         AudioFile<float> audioFile;
-        audioFile.load(soundPath);
+        audioFile.load(m_fullPath);
 
         {
             m_sampleRate = audioFile.getSampleRate();
@@ -57,7 +72,7 @@ namespace audio
             audioFile.printSummary();
         }
 
-        ALenum format;
+        auto& format = m_format;
         if (m_channelCount == 1 && m_bitDepth == 8)
             //format = AL_FORMAT_MONO8;
             format = AL_FORMAT_MONO16;
@@ -73,13 +88,13 @@ namespace audio
             KI_CRITICAL(
                 fmt::format("ERROR: unrecognised wave format: channels={}, bps={}",
                 m_channelCount, m_bitDepth));
-            return;
+            return false;
         }
 
         // NOTE KI convert to AL compatible format
         // http://forum.lwjgl.org/index.php?topic=4058.0
         // Stereo data is expressed in interleaved format,
-        std::vector<ALint> buffer;
+        auto& buffer = m_data;
         {
             buffer.reserve(m_sampleCount * m_channelCount);
 
@@ -93,12 +108,6 @@ namespace audio
             }
         }
 
-        alGenBuffers(1, &m_bufferId);
-        alBufferData(
-            m_bufferId,
-            format,
-            (ALvoid*)buffer.data(),
-            static_cast<ALsizei>(buffer.size() * sizeof(ALint)),
-            m_sampleRate);
+        return true;
     }
 }

@@ -534,6 +534,12 @@
     <ClCompile Include="src\audio\al_call.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\AudioLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\SoundRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1224,6 +1230,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\audio\al_call.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\AudioLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\AudioData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\SoundRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

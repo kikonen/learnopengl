@@ -5,6 +5,8 @@
 
 #include "asset/Assets.h"
 
+#include "audio/size.h"
+
 #include "model/NodeInstance.h"
 
 class Camera;
@@ -218,6 +220,9 @@ public:
     // UUID of node for persistency
     // => *CAN* be empty for auto generated nodes
     uuids::uuid m_uuid;
+
+    audio::listener_id m_audioListenerId{ 0 };
+    audio::source_id m_audioSourceId{ 0 };
 
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };

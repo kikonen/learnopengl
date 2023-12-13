@@ -9,6 +9,7 @@
 #include "ki/size.h"
 #include "ki/uuid.h"
 
+#include "audio/size.h"
 
 class UpdateContext;
 class Node;
@@ -28,6 +29,13 @@ namespace event {
 
         controller_add,
 
+        audio_listener_add,
+        audio_source_add,
+        audio_listener_update,
+        audio_source_update,
+        audio_listener_activate,
+        audio_source_play,
+
         animate_wait,
         animate_move,
         animate_rotate,
@@ -43,6 +51,31 @@ namespace event {
     struct ControlAction {
 		ki::object_id target{ 0 };
         NodeController* controller{ nullptr };
+    };
+
+    struct NodeAudioSourceAction {
+        ki::object_id target{ 0 };
+
+        audio::sound_id soundId{ 0 };
+        bool isAutoPlay{ false };
+        bool looping{ false };
+        float pitch{ 1.f };
+        float gain{ 1.f };
+    };
+
+    struct NodeAudioListenerAction {
+        ki::object_id target{ 0 };
+
+        bool isDefault{ false };
+        float gain{ 1.f };
+    };
+
+    struct AudioSourceAction {
+        audio::source_id id{ 0 };
+    };
+
+    struct AudioListenerAction {
+        audio::listener_id id{ 0 };
     };
 
     struct AnimateAction {
@@ -61,6 +94,10 @@ namespace event {
         union {
             NodeAction node;
             ControlAction control;
+            NodeAudioSourceAction nodeAudioSource;
+            NodeAudioListenerAction nodeAudioListener;
+            AudioSourceAction audioSource;
+            AudioListenerAction audioListener;
             AnimateAction animate;
         } body;
     };

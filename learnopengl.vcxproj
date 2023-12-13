@@ -190,6 +190,7 @@
     <ClCompile Include="src\asset\TextMaterial.cpp" />
     <ClCompile Include="src\audio\al_call.cpp" />
     <ClCompile Include="src\audio\Listener.cpp" />
+    <ClCompile Include="src\audio\SoundRegistry.cpp" />
     <ClCompile Include="src\audio\Source.cpp" />
     <ClCompile Include="src\audio\AudoEngine.cpp" />
     <ClCompile Include="src\audio\Sound.cpp" />
@@ -197,6 +198,7 @@
     <ClCompile Include="src\command\Coroutine.cpp" />
     <ClCompile Include="src\controller\PawnController.cpp" />
     <ClCompile Include="src\kigl\GLStencilMode.cpp" />
+    <ClCompile Include="src\loader\AudioLoader.cpp" />
     <ClCompile Include="src\loader\BaseLoader.cpp" />
     <ClCompile Include="src\loader\BaseUUID.h" />
     <ClCompile Include="src\loader\CameraLoader.cpp" />
@@ -368,6 +370,7 @@
     <ClInclude Include="src\audio\al_call.h" />
     <ClInclude Include="src\audio\Listener.h" />
     <ClInclude Include="src\audio\size.h" />
+    <ClInclude Include="src\audio\SoundRegistry.h" />
     <ClInclude Include="src\audio\Source.h" />
     <ClInclude Include="src\audio\AudioEngine.h" />
     <ClInclude Include="src\audio\Sound.h" />
@@ -379,6 +382,8 @@
     <ClInclude Include="src\kigl\kigl.h" />
     <ClInclude Include="src\ki\size.h" />
     <ClInclude Include="src\ki\yaml.h" />
+    <ClInclude Include="src\loader\AudioData.h" />
+    <ClInclude Include="src\loader\AudioLoader.h" />
     <ClInclude Include="src\loader\BaseData.h" />
     <ClInclude Include="src\loader\BaseLoader.h" />
     <ClInclude Include="src\loader\CameraData.h" />

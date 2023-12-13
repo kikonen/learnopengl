@@ -15,6 +15,10 @@
 
 #include "event/Dispatcher.h"
 
+#include "audio/Listener.h"
+#include "audio/Source.h"
+#include "audio/AudioEngine.h"
+
 #include "Registry.h"
 #include "MaterialRegistry.h"
 #include "EntityRegistry.h"
@@ -106,7 +110,14 @@ void NodeRegistry::prepare(
     m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
     registry->m_materialRegistry->add(m_selectionMaterial);
 
-    m_registry->m_dispatcher->addListener(
+    attachListeners();
+}
+
+void NodeRegistry::attachListeners()
+{
+    auto* dispatcher = m_registry->m_dispatcher;
+
+    dispatcher->addListener(
         event::Type::node_add,
         [this](const event::Event& e) {
             attachNode(
@@ -114,32 +125,86 @@ void NodeRegistry::prepare(
                 e.body.node.parentId);
         });
 
-    m_registry->m_dispatcher->addListener(
+    dispatcher->addListener(
         event::Type::node_change_parent,
         [this](const event::Event& e) {
             changeParent(e.body.node.target, e.body.node.parentId);
         });
 
-    m_registry->m_dispatcher->addListener(
+    dispatcher->addListener(
         event::Type::node_select,
         [this](const event::Event& e) {
             auto& node = e.body.node.target;
             node->setSelectionMaterialIndex(getSelectionMaterial().m_registeredIndex);
         });
 
-    m_registry->m_dispatcher->addListener(
+    dispatcher->addListener(
         event::Type::node_activate,
         [this](const event::Event& e) {
             auto* node = e.body.node.target;
             setActiveNode(e.body.node.target);
         });
 
-    m_registry->m_dispatcher->addListener(
+    dispatcher->addListener(
         event::Type::camera_activate,
         [this](const event::Event& e) {
             auto* node = e.body.node.target;
             if (!node) node = findDefaultCamera();
             setActiveCamera(node);
+        });
+
+    dispatcher->addListener(
+        event::Type::audio_listener_add,
+        [this](const event::Event& e) {
+            auto& data = e.body.nodeAudioListener;
+            auto* node = getNode(data.target);
+            auto* ae = m_registry->m_audioEngine;
+            auto id = ae->registerListener();
+            if (id) {
+                node->m_audioListenerId = id;
+                auto* listener = ae->getListener(id);
+                listener->m_gain = data.gain;
+                listener->update();
+
+                if (data.isDefault) {
+                    ae->setActiveListener(id);
+                }
+            }
+        });
+
+    dispatcher->addListener(
+        event::Type::audio_source_add,
+        [this](const event::Event& e) {
+            auto& data = e.body.nodeAudioSource;
+            auto* node = getNode(data.target);
+            auto* ae = m_registry->m_audioEngine;
+            auto id = ae->registerSource(data.soundId);
+            if (id) {
+                node->m_audioSourceId = id;
+                auto* source = ae->getSource(id);
+                source->m_looping = data.looping;
+                source->m_gain = data.gain;
+                source->m_pitch = data.pitch;
+                source->update();
+
+                if (data.isAutoPlay) {
+                    ae->playSource(id);
+                }
+            }
+        });
+
+    dispatcher->addListener(
+        event::Type::audio_listener_activate,
+        [this](const event::Event& e) {
+            auto& data = e.body.audioSource;
+            m_registry->m_audioEngine->setActiveListener(data.id);
+        });
+
+    dispatcher->addListener(
+        event::Type::audio_source_play,
+        [this](const event::Event& e) {
+            auto& data = e.body.audioSource;
+            m_registry->m_audioEngine->playSource(data.id);
         });
 }
 

@@ -27,7 +27,9 @@ namespace audio
 
     Source::~Source()
     {
-        alDeleteSources(1, &m_sourceId);
+        if (m_sourceId) {
+            alDeleteSources(1, &m_sourceId);
+        }
     }
 
     void Source::prepare(const Sound* sound) {

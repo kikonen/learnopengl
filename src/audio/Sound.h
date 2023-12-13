@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <string>
 
 #include <AL/al.h>
@@ -9,14 +10,19 @@
 namespace audio
 {
     struct Sound {
-        Sound(std::string_view path);
+        Sound() = default;
+        Sound(std::string_view fullPath);
         ~Sound();
 
-        void load(const std::string_view assetsPath);
+        // main thread
+        void prepare();
 
-        audio::sound_id m_id;
+        // worker thread
+        bool load();
 
-        std::string m_path;
+        audio::sound_id m_id{ 0 };
+
+        std::string m_fullPath;
 
         ALuint m_bufferId{ 0 };
 
@@ -30,5 +36,7 @@ namespace audio
         bool m_isMono{ false };
         bool m_isStereo{ false };
 
+        ALenum m_format{ 0 };
+        std::vector<ALint> m_data{};
     };
 }
