@@ -22,9 +22,14 @@ void RotateNode::bind(const UpdateContext& ctx, Node* node) noexcept
 {
     NodeCommand::bind(ctx, node);
 
-    m_end = util::degreesToQuat(m_degreesRotation);
-    if (!m_relative) {
-        m_end -= m_node->getQuatRotation();
+    m_start = m_node->getQuatRotation();
+
+    const auto quat = util::degreesToQuat(m_degreesRotation);
+    if (m_relative) {
+        m_end = quat * m_start;
+    }
+    else {
+        m_end = quat;
     }
 }
 
@@ -36,20 +41,15 @@ void RotateNode::execute(
 
     // NOTE KI keep steps relative to previous
     // => in case there is N concurrent commands
-    glm::quat rotation{ 1.f, 0.f, 0.f, 0.f };
-    if (m_finished) {
-        rotation = m_end;
-    }
-    else {
-        const auto t = (m_elapsedTime / m_duration);
+    // TODO KI needd to fix "relative" logic for quat
+    // TODO KI rotating more tan 180 degrees with quat
+    {
+        const auto t = m_finished ? 1.f : (m_elapsedTime / m_duration);
 
-        glm::quat p0{ 1.f, 0.f, 0.f, 0.f };
+        glm::quat p0{ m_start };
         glm::quat p1{ m_end };
 
-        rotation = (1 - t) * p0 + t * p1;
+        const auto rot = glm::normalize(glm::lerp(p0, p1, t));
+        m_node->setQuatRotation(rot);
     }
-
-    auto adjust = rotation - m_previous;
-    m_node->adjustQuatRotation(adjust);
-    m_previous = rotation;
 }

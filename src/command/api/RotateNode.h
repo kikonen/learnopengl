@@ -24,6 +24,7 @@ public:
 
 private:
     const glm::vec3 m_degreesRotation;
+    glm::quat m_start{ 1.f, 0.f, 0.f, 0.f };
     glm::quat m_end{ 1.f, 0.f, 0.f, 0.f };
-    glm::quat m_previous{ 1.f, 0.f, 0.f, 0.f };
+    //glm::quat m_previous{ 1.f, 0.f, 0.f, 0.f };
 };

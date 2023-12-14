@@ -126,9 +126,12 @@ https://glad.dav1d.de
 - Open Dynamis Engine
   * https://ode.org/wiki/index.php
   * https://ode.org/wiki/index.php/Special:ShortPages
-- Quaternions
-  * https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
-  * https://glm.g-truc.net/0.9.0/api/a00135.html
+
+## Quaternions
+- https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
+- https://glm.g-truc.net/0.9.0/api/a00135.html
+- https://miz-ar.info/glm-notes/gtc/quaternion.html
+- https://www.3dgep.com/understanding-quaternions/
 
 ## Audio
 - OpenAL
