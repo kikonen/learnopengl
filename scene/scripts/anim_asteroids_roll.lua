@@ -9,7 +9,8 @@ local function animationX(coid)
 
     cid = cmd:rotate(
       { after=wid, time=120, relative=true },
-      { 180.0, 0, 0.0 })
+      { 1.0, 0.0, 0.0 },
+      180.0)
 
     wid = cmd:wait({ after=cid, time=0 })
 
@@ -26,7 +27,8 @@ local function animationY(coid)
 
     cid = cmd:rotate(
       { after=wid, time=100, relative=true },
-      { 0.0, 180.0, 0.0 })
+      { 0.0, 1.0, 0.0 }
+      180.0)
 
     wid = cmd:wait({ after=cid, time=0 })
 
@@ -43,7 +45,8 @@ local function animationZ(coid)
 
     cid = cmd:rotate(
       { after=wid, time=140, relative=true },
-      { 0, 0, 180.0 })
+      { 0.0, 0.0, 1.0 },
+      180.0)
 
     wid = cmd:wait({ after=cid, time=0 })
 

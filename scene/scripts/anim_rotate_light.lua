@@ -11,7 +11,8 @@ local function animation(coid)
 
     cid = cmd:rotate(
       { time=30, relative=true },
-      { 0.0, 360.0, 0.0 })
+      { 0.0, 1.0, 0.0 },
+      360.0)
 
     wid = cmd:wait({ after=cid, time=0 })
 

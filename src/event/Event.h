@@ -88,6 +88,7 @@ namespace event {
         float duration{ 0 };
         bool relative{ true };
         glm::vec3 data{ 0.f };
+        glm::vec3 data2{ 0.f };
     };
 
     struct Event {

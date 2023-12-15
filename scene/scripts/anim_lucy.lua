@@ -13,7 +13,8 @@ local function animation(coid)
 
     cid = cmd:rotate(
       { after=wid, time=10, relative=true },
-      { 0, dir * 360, 0 })
+      { 0, 1, 0 },
+      dir * 360)
 
     cid = cmd:resume({ after=cid }, coid)
     dir = -dir
@@ -46,5 +47,5 @@ luaNode.start = function()
   --print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
 
   cmd:start({}, animation)
-  cmd:start({}, animation_2)
+--  cmd:start({}, animation_2)
 end

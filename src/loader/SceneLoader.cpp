@@ -338,7 +338,8 @@ namespace loader {
             evt.body.animate = {
                 .target = node->m_id,
                 .duration = 20,
-                .data = { 0, 360.f, 0 },
+                .data = { 0, 1.f, 0 },
+                .data2 = { 360.f, 0.f, 0.f },
             };
             m_dispatcher->send(evt);
         }

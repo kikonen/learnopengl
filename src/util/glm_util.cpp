@@ -33,4 +33,19 @@ namespace util
     {
         return glm::radians(rot);
     }
+
+    // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
+    // https://gamedev.stackexchange.com/questions/149006/direction-vector-to-quaternion
+    glm::quat degreesDirToQuat(const glm::vec3& dir, float degrees)
+    {
+        const auto v = glm::normalize(dir);
+        const auto halfAngle = glm::radians(degrees / 2.f);
+        const auto sinHalf = sin(halfAngle);
+        return glm::normalize(glm::quat{
+            cos(halfAngle),
+            v.x * sinHalf,
+            v.y * sinHalf,
+            v.z * sinHalf
+        });
+    }
 }

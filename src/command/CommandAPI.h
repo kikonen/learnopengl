@@ -47,7 +47,8 @@ public:
 
     int lua_rotate(
         const sol::table& lua_opt,
-        const sol::table& rot) noexcept;
+        const sol::table& lua_dir,
+        const float lua_degrees) noexcept;
 
     int lua_scale(
         const sol::table& lua_opt,

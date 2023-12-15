@@ -65,7 +65,8 @@ void CommandEngine::prepare(Registry* registry)
                     anim.target,
                     anim.duration,
                     anim.relative,
-                    anim.data));
+                    anim.data,
+                    anim.data2.x));
         });
 }
 

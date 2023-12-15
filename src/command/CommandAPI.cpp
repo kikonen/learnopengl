@@ -166,10 +166,11 @@ int CommandAPI::lua_moveSpline(
 
 int CommandAPI::lua_rotate(
     const sol::table& lua_opt,
-    const sol::table& lua_rot) noexcept
+    const sol::table& lua_dir,
+    const float lua_degrees) noexcept
 {
     const auto opt = readOptions(lua_opt);
-    const auto rot = readVec3(lua_rot);
+    const auto dir = readVec3(lua_dir);
 
     //KI_INFO_OUT(fmt::format("rotate: node={}, rot = {}, opt={}", m_nodeId, rot, opt.str()));
 
@@ -179,7 +180,8 @@ int CommandAPI::lua_rotate(
             m_nodeId,
             opt.duration,
             opt.relative,
-            rot));
+            dir,
+            lua_degrees));
 }
 
 int CommandAPI::lua_scale(

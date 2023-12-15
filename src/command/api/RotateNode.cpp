@@ -6,15 +6,27 @@
 
 #include "engine/UpdateContext.h"
 
+namespace {
+    const glm::vec3 UP{ 0, 1, 0 };
+
+    // https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another
+    glm::quat toQuat(const glm::vec3& v1, const glm::vec3& v2)
+    {
+        const glm::vec3 a = glm::cross(v1, v2);
+        return glm::normalize(glm::quat{ glm::dot(v1, v2), a.x, a.y, a.z });
+    }
+}
 
 RotateNode::RotateNode(
     ki::command_id afterCommandId,
     ki::object_id nodeId,
     float duration,
     bool relative,
-    const glm::vec3& degrees) noexcept
+    const glm::vec3& axis,
+    const float degrees) noexcept
     : NodeCommand(afterCommandId, nodeId, duration, relative),
-    m_degreesRotation(degrees)
+    m_axis(glm::normalize(axis)),
+    m_degrees(degrees)
 {
 }
 
@@ -22,15 +34,10 @@ void RotateNode::bind(const UpdateContext& ctx, Node* node) noexcept
 {
     NodeCommand::bind(ctx, node);
 
-    m_start = m_node->getQuatRotation();
+    m_original = m_node->getQuatRotation();
 
-    const auto quat = util::degreesToQuat(m_degreesRotation);
-    if (m_relative) {
-        m_end = quat * m_start;
-    }
-    else {
-        m_end = quat;
-    }
+    m_start = util::degreesDirToQuat(m_axis, 0);
+    m_end = util::degreesDirToQuat(m_axis, m_degrees);
 }
 
 void RotateNode::execute(
@@ -46,10 +53,11 @@ void RotateNode::execute(
     {
         const auto t = m_finished ? 1.f : (m_elapsedTime / m_duration);
 
-        glm::quat p0{ m_start };
-        glm::quat p1{ m_end };
+        const auto& p0 = m_start;
+        const auto& p1 = m_end;
 
-        const auto rot = glm::normalize(glm::lerp(p0, p1, t));
-        m_node->setQuatRotation(rot);
+        const auto rot = glm::lerp(p0, p1, t);
+        m_node->setQuatRotation(rot * m_start);
+        //m_node->adjustQuatRotation(rot);
     }
 }
