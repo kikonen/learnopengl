@@ -25,10 +25,10 @@ public:
 
 private:
     const glm::vec3 m_axis;
-    const float m_degrees;
-
-    glm::quat m_original{ 1.f, 0.f, 0.f, 0.f };
+    const float m_radians;
 
     glm::quat m_start{ 1.f, 0.f, 0.f, 0.f };
     glm::quat m_end{ 1.f, 0.f, 0.f, 0.f };
+
+    glm::quat m_base{ 1.f, 0.f, 0.f, 0.f };
 };

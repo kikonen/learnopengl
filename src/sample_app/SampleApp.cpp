@@ -306,8 +306,8 @@ void SampleApp::selectNode(
                 evt.body.animate = {
                     .target = node->m_id,
                     .duration = 5,
-                    .data = { 0.f, 1.f, 0.f },
-                    .data2 = { 180.f, 0, 0 },
+                    .data = { 1.f, 1.f, 1.f },
+                    .data2 = { 360.f, 0, 0 },
                 };
                 ctx.m_registry->m_dispatcher->send(evt);
             }
