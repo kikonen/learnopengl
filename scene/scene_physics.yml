@@ -34,6 +34,9 @@ entities:
     active: true
     controller:
       type: pawn
+    audio:
+      listener:
+        default: true
     physics:
       update: true
       body:

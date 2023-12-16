@@ -14,6 +14,9 @@ entities:
     active: true
     camera:
       default: true
+    audio:
+      listener:
+        default: true
     controllers:
       - type: pawn
       - type: camera_zoom
