@@ -67,6 +67,15 @@ entities:
         audio:
           source:
             path: audio/Spring Wind Up_EF911B61_normal_mono.wav
+  - name: CowJump
+    model: cow
+    program: g_tex
+    material_modifier:
+      map_pbr: textures/Plastic 01 [4K]
+    pos: [0, 4, -10]
+    rot: [-45, 180, 0]
+    base_rot: [0, -90, 0]
+    scale: 1.0
   - name: wooden floor
     model: quad
     xxmodel: woodwall

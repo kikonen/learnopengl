@@ -290,46 +290,9 @@ struct NodeInstance {
         return std::max(std::max(m_modelScale[0][0], m_modelScale[1][1]), m_modelScale[2][2]);
     }
 
-    inline void updateRootMatrix() noexcept
-    {
-        if (!m_dirty) return;
-
-        updateRotationMatrix();
-        m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
-        m_modelScale = m_scaleMatrix;
-
-        updateModelAxis();
-
-        m_dirty = false;
-        m_matrixLevel++;
-        m_dirtyEntity = true;
-    }
-
-    inline void updateModelMatrix(const NodeInstance& parent) noexcept
-    {
-        if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
-
-        updateRotationMatrix();
-        m_modelMatrix = parent.m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
-        m_modelScale = parent.m_modelScale * m_scaleMatrix;
-
-        updateModelAxis();
-
-        m_dirty = false;
-        m_parentMatrixLevel = parent.m_matrixLevel;
-        m_matrixLevel++;
-        m_dirtyEntity = true;
-    }
-
-    inline void updateModelAxis() noexcept
-    {
-        // NOTE KI w == 0; only rotation
-        m_viewFront = glm::normalize(m_quatRotation * m_front);
-
-        m_viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
-        m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
-    }
-
+    void updateRootMatrix() noexcept;
+    void updateModelMatrix(const NodeInstance& parent) noexcept;
+    void updateModelAxis() noexcept;
     void updateRotationMatrix() noexcept;
 
     void updateEntity(

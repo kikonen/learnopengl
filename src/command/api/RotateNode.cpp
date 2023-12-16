@@ -39,7 +39,16 @@ void RotateNode::bind(const UpdateContext& ctx, Node* node) noexcept
     NodeCommand::bind(ctx, node);
 
     m_base = node->getQuatRotation();
-    m_start = util::axisDegreesToQuat(m_axis, 0);
+
+    // NOTE KI relative means now "relative to axis of node"
+    if (m_relative) {
+        m_relativeAxis = glm::mat3(m_base) * m_axis;
+    }
+    else {
+        m_relativeAxis = m_axis;
+    }
+
+    m_start = util::axisRadiansToQuat(m_relativeAxis, 0);
 }
 
 void RotateNode::execute(
@@ -51,12 +60,11 @@ void RotateNode::execute(
     // NOTE KI keep steps relative to previous
     // => in case there is N concurrent commands
     // TODO KI needd to fix "relative" logic for quat
-    // TODO KI rotating more tan 180 degrees with quat
     {
         const auto t = m_finished ? 1.f : (m_elapsedTime / m_duration);
         const auto radians = t * m_radians;
 
-        const auto rot = util::axisRadiansToQuat(m_axis, radians);
+        const auto rot = util::axisRadiansToQuat(m_relativeAxis, radians);
 
         m_node->setQuatRotation(rot * m_base);
     }
