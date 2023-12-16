@@ -93,8 +93,9 @@ entities:
       render_back: true
     audio:
       sources:
-        - path: audio/Spring Wind Up_EF911B61_normal.wav
-        - path: audio/Stream Medium 01_8CC7FF9E_normal_mono.wav
+        - path: audio/Spring Wind Up_EF911B61_normal_mono.wav
+          gain: 0.5
+        - path: audio/Music Box Swan Lake_D4BAFC9B_normal_mono.wav
           loop: true
     script_file: scripts/anim_lucy
   - name: Big mirror 2

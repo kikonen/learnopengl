@@ -18,9 +18,9 @@ local function animation(coid)
       { after=cid, index=AUDIO_ROTATE })
 
     cid = cmd:rotate(
-      { after=wid, time=10, relative=true },
+      { after=wid, time=20, relative=true },
       { 0, 1, 0 },
-      dir * 360)
+      dir * 720)
 
     cid = cmd:audioPause(
       { after=cid, index=AUDIO_ROTATE })
