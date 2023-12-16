@@ -32,9 +32,11 @@ namespace loader
             if (k == "listener") {
                 loadListener(v, data.listener);
             } else if (k == "source") {
-                SourceData& source = data.sources.emplace_back();
+                SourceData& source = data.sources.empty() ? data.sources.emplace_back() : data.sources[0];
                 loadSource(v, source);
             } else if (k == "sources") {
+                // NOTE KI no sensible strategy to merge lists
+                data.sources.clear();
                 loadSources(v, data.sources);
             } else {
                 reportUnknown("audio_entry", k, v);
