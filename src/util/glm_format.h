@@ -1,7 +1,9 @@
 #pragma once
 
 #include <fmt/format.h>
+
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 
 //
@@ -129,5 +131,32 @@ template <> struct fmt::formatter<glm::mat4> {
                 m[1].x, m[1].y, m[1].z, m[1].w,
                 m[2].x, m[2].y, m[2].z, m[2].w,
                 m[3].x, m[3].y, m[3].z, m[3].w);
+    }
+};
+
+template <> struct fmt::formatter<glm::quat> {
+    // Presentation format: 'f' - fixed, 'e' - exponential.
+    char presentation = 'f';
+
+    constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
+        auto it = ctx.begin(), end = ctx.end();
+        if (it != end && (*it == 'f' || *it == 'e')) presentation = *it++;
+
+        if (it != end && *it != '}') throw fmt::format_error("invalid format");
+
+        return it;
+    }
+
+    template <typename FormatContext>
+    auto format(const glm::quat& p, FormatContext& ctx) const -> decltype(ctx.out()) {
+        return presentation == 'f'
+            ? fmt::format_to(
+                ctx.out(),
+                "({:.3f}, {:.3f}, {:.3f}, {:.3f})",
+                p.x, p.y, p.z, p.w)
+            : fmt::format_to(
+                ctx.out(),
+                "({:.3e}, {:.3e}, {:.3e}, {:.3e})",
+                p.x, p.y, p.z, p.w);
     }
 };

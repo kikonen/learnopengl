@@ -20,6 +20,9 @@ entities:
     render_flags:
       allow_normals: false
     active: true
+    audio:
+      listener:
+        default: true
     controllers:
       - type: pawn
   - name: Player Camera

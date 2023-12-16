@@ -16,6 +16,10 @@
 #include "api/ResumeNode.h"
 #include "api/StartNode.h"
 
+#include "api/AudioPlay.h"
+#include "api/AudioPause.h"
+#include "api/AudioStop.h"
+
 #include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
@@ -65,7 +69,8 @@ void CommandEngine::prepare(Registry* registry)
                     anim.target,
                     anim.duration,
                     anim.relative,
-                    anim.data));
+                    anim.data,
+                    anim.data2.x));
         });
 }
 

@@ -194,6 +194,9 @@
     <ClCompile Include="src\audio\Source.cpp" />
     <ClCompile Include="src\audio\AudoEngine.cpp" />
     <ClCompile Include="src\audio\Sound.cpp" />
+    <ClCompile Include="src\command\api\AudioPause.cpp" />
+    <ClCompile Include="src\command\api\AudioPlay.cpp" />
+    <ClCompile Include="src\command\api\AudioStop.cpp" />
     <ClCompile Include="src\command\api\InvokeLuaFunction.cpp" />
     <ClCompile Include="src\command\Coroutine.cpp" />
     <ClCompile Include="src\controller\PawnController.cpp" />
@@ -374,12 +377,16 @@
     <ClInclude Include="src\audio\Source.h" />
     <ClInclude Include="src\audio\AudioEngine.h" />
     <ClInclude Include="src\audio\Sound.h" />
+    <ClInclude Include="src\command\api\AudioPause.h" />
+    <ClInclude Include="src\command\api\AudioPlay.h" />
+    <ClInclude Include="src\command\api\AudioStop.h" />
     <ClInclude Include="src\command\api\InvokeLuaFunction.h" />
     <ClInclude Include="src\command\Coroutine.h" />
     <ClInclude Include="src\controller\PawnController.h" />
     <ClInclude Include="src\kigl\GLFence.h" />
     <ClInclude Include="src\kigl\GLStencilMode.h" />
     <ClInclude Include="src\kigl\kigl.h" />
+    <ClInclude Include="src\ki\limits.h" />
     <ClInclude Include="src\ki\size.h" />
     <ClInclude Include="src\ki\yaml.h" />
     <ClInclude Include="src\loader\AudioData.h" />

@@ -215,7 +215,7 @@ struct NodeInstance {
 
     void setBaseRotation(const glm::quat& quat) noexcept
     {
-        m_baseRotation = quat;
+        m_baseRotation = glm::normalize(quat);
         m_dirtyRotation = true;
         m_dirty = true;
     }

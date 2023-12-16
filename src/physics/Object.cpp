@@ -11,7 +11,7 @@ namespace {
     constexpr int DIR_Y = 2;
     constexpr int DIR_Z = 3;
 
-    const glm::quat NULL_QUAT{ 0.f, 0.f, 0.f, 0.f };
+    const glm::quat IDENTITY_QUAT{ 0.f, 0.f, 0.f, 0.f };
 }
 
 namespace physics
@@ -109,7 +109,7 @@ namespace physics
 
         if (m_bodyId) {
             if (const auto& q = m_body.quat;
-                q != NULL_QUAT)
+                q != IDENTITY_QUAT)
             {
                 dQuaternion quat{ q.w, q.x, q.y, q.z };
                 dBodySetQuaternion(m_bodyId, quat);

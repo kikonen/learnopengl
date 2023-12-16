@@ -30,8 +30,8 @@ private:
 
     bool m_cameraSwitchDown{ false };
 
-    glm::vec3 m_cameraZoomNormal{ 0.f };
-    glm::vec3 m_cameraZoomRun{ 0.f };
+    glm::vec3 m_speedZoomNormal{ 0.f };
+    glm::vec3 m_speedZoomRun{ 0.f };
 
-    glm::vec3 m_cameraMouseSensitivity{ 0.f };
+    glm::vec3 m_speedMouseSensitivity{ 0.f };
 };

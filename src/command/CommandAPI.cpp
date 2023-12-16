@@ -22,12 +22,18 @@
 #include "api/ResumeNode.h"
 #include "api/StartNode.h"
 
+#include "api/AudioPlay.h"
+#include "api/AudioPause.h"
+#include "api/AudioStop.h"
+
 namespace {
     struct CommandOptions {
         ki::command_id afterId = 0;
+        int index = 0;
         float duration = 0;
         bool relative = false;
         bool repeat = false;
+        bool sync = false;
 
         const std::string str() const noexcept {
             return fmt::format("<OPT: after={}, duration={}, relative={}, repeat={}>", afterId, duration, relative, repeat);
@@ -41,6 +47,9 @@ namespace {
             if (k == "after") {
                 opt.afterId = value.as<ki::command_id>();
             }
+            else if (k == "index") {
+                opt.index = value.as<int>();
+            }
             else if (k == "time") {
                 opt.duration = value.as<float>();
             }
@@ -53,7 +62,10 @@ namespace {
             else if (k == "loop") {
                 opt.repeat = value.as<bool>();
             }
-        });
+            else if (k == "sync") {
+                opt.sync = value.as<bool>();
+            }
+            });
         return opt;
     }
 
@@ -166,10 +178,11 @@ int CommandAPI::lua_moveSpline(
 
 int CommandAPI::lua_rotate(
     const sol::table& lua_opt,
-    const sol::table& lua_rot) noexcept
+    const sol::table& lua_dir,
+    const float lua_degrees) noexcept
 {
     const auto opt = readOptions(lua_opt);
-    const auto rot = readVec3(lua_rot);
+    const auto dir = readVec3(lua_dir);
 
     //KI_INFO_OUT(fmt::format("rotate: node={}, rot = {}, opt={}", m_nodeId, rot, opt.str()));
 
@@ -179,7 +192,8 @@ int CommandAPI::lua_rotate(
             m_nodeId,
             opt.duration,
             opt.relative,
-            rot));
+            dir,
+            lua_degrees));
 }
 
 int CommandAPI::lua_scale(
@@ -198,6 +212,43 @@ int CommandAPI::lua_scale(
             opt.duration,
             opt.relative,
             scale));
+}
+
+int CommandAPI::lua_audioPlay(
+    const sol::table& lua_opt) noexcept
+{
+    const auto opt = readOptions(lua_opt);
+
+    return m_commandEngine->addCommand(
+        std::make_unique<AudioPlay>(
+            opt.afterId,
+            m_nodeId,
+            opt.index,
+            opt.sync));
+}
+
+int CommandAPI::lua_audioPause(
+    const sol::table& lua_opt) noexcept
+{
+    const auto opt = readOptions(lua_opt);
+
+    return m_commandEngine->addCommand(
+        std::make_unique<AudioPause>(
+            opt.afterId,
+            m_nodeId,
+            opt.index));
+}
+
+int CommandAPI::lua_audioStop(
+    const sol::table& lua_opt) noexcept
+{
+    const auto opt = readOptions(lua_opt);
+
+    return m_commandEngine->addCommand(
+        std::make_unique<AudioStop>(
+            opt.afterId,
+            m_nodeId,
+            opt.index));
 }
 
 int CommandAPI::lua_start(

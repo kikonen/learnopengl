@@ -1,6 +1,7 @@
 #include "PawnController.h"
 
 #include "util/glm_util.h"
+#include "util/glm_format.h"
 
 #include "model/Node.h"
 
@@ -127,32 +128,17 @@ void PawnController::onMouseMove(Input* input, float xoffset, float yoffset)
     if (!m_node) return;
 
     bool changed = false;
-    const float MAX_ANGLE = 89.f;
 
-    glm::vec3 rot = m_node->getDegreesRotation();
+    glm::vec3 adjust{ 0.f };
 
     if (xoffset != 0) {
-        auto yaw = rot.y - m_speedMouseSensitivity.x * xoffset;
+        auto yaw = -m_speedMouseSensitivity.y * xoffset;
 
-        rot.y = static_cast<float>(yaw);
-        changed = true;
-    }
-
-    if (yoffset != 0) {
-        auto pitch = rot.x + m_speedMouseSensitivity.y * yoffset;
-
-        if (pitch < -MAX_ANGLE) {
-            pitch = -MAX_ANGLE;
-        }
-        if (pitch > MAX_ANGLE) {
-            pitch = MAX_ANGLE;
-        }
-
-        rot.x = static_cast<float>(pitch);
+        adjust.y = static_cast<float>(yaw);
         changed = true;
     }
 
     if (changed) {
-        m_node->setDegreesRotation(rot);
+        m_node->adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }
