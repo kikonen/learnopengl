@@ -13,5 +13,6 @@ namespace util
     glm::vec3 radiansToDegrees(const glm::vec3& rot);
     glm::vec3 degreesToRadians(const glm::vec3& rot);
 
-    glm::quat degreesDirToQuat(const glm::vec3& dir, float degrees);
+    glm::quat axisDegreesToQuat(const glm::vec3& axis, float degrees);
+    glm::quat axisRadiansToQuat(const glm::vec3& axis, float radians);
 }

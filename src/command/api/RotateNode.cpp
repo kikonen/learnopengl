@@ -1,6 +1,10 @@
 #include "RotateNode.h"
 
+#include <fmt/format.h>
+
 #include "util/glm_util.h"
+#include "util/Log.h"
+#include "util/glm_format.h"
 
 #include "model/Node.h"
 
@@ -34,10 +38,12 @@ void RotateNode::bind(const UpdateContext& ctx, Node* node) noexcept
 {
     NodeCommand::bind(ctx, node);
 
-    m_original = m_node->getQuatRotation();
+    m_original = glm::normalize(m_node->getQuatRotation());
 
-    m_start = util::degreesDirToQuat(m_axis, 0);
-    m_end = util::degreesDirToQuat(m_axis, m_degrees);
+    m_start = util::axisDegreesToQuat(m_axis, 0);
+    m_end = util::axisDegreesToQuat(m_axis, m_degrees);
+
+    KI_INFO_OUT(fmt::format("orig_deg={} orig={}, start={}, end={}", m_node->getDegreesRotation(), m_original, m_start, m_end));
 }
 
 void RotateNode::execute(
@@ -56,8 +62,8 @@ void RotateNode::execute(
         const auto& p0 = m_start;
         const auto& p1 = m_end;
 
-        const auto rot = glm::normalize(glm::lerp(p0, p1, t));
-        m_node->setQuatRotation(rot * m_start);
+        const auto rot = glm::normalize(glm::slerp(p1, p0, t));
+        m_node->setQuatRotation(rot * m_original);
         //m_node->adjustQuatRotation(rot);
     }
 }

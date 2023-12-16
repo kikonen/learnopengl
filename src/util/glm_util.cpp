@@ -34,18 +34,23 @@ namespace util
         return glm::radians(rot);
     }
 
+    glm::quat axisDegreesToQuat(const glm::vec3& axis, float degrees)
+    {
+        return axisRadiansToQuat(axis, glm::radians(degrees));
+    }
+
     // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
     // https://gamedev.stackexchange.com/questions/149006/direction-vector-to-quaternion
-    glm::quat degreesDirToQuat(const glm::vec3& dir, float degrees)
+    glm::quat axisRadiansToQuat(const glm::vec3& axis, float radians)
     {
-        const auto v = glm::normalize(dir);
-        const auto halfAngle = glm::radians(degrees / 2.f);
+        const auto v = glm::normalize(axis);
+        const auto halfAngle = radians / 2.f;
         const auto sinHalf = sin(halfAngle);
         return glm::normalize(glm::quat{
             cos(halfAngle),
             v.x * sinHalf,
             v.y * sinHalf,
             v.z * sinHalf
-        });
+            });
     }
 }
