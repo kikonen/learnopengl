@@ -5,6 +5,8 @@
 
 #include <fmt/format.h>
 
+#include "ki/limits.h"
+
 #include "kigl/kigl.h"
 
 #include "asset/Program.h"
@@ -176,11 +178,14 @@ void NodeRegistry::attachListeners()
         event::Type::audio_source_add,
         [this](const event::Event& e) {
             auto& data = e.body.nodeAudioSource;
+            if (data.index < 0 || data.index >= ki::MAX_NODE_AUDIO_SOURCE) {
+                return;
+            }
             auto* node = getNode(data.target);
             auto* ae = m_registry->m_audioEngine;
             auto id = ae->registerSource(data.soundId);
             if (id) {
-                node->m_audioSourceId = id;
+                node->m_audioSourceIds[data.index] = id;
                 auto* source = ae->getSource(id);
                 source->m_looping = data.looping;
                 source->m_gain = data.gain;

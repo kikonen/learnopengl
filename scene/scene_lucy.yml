@@ -91,6 +91,11 @@ entities:
       parallax_depth: 0.0
     xxrender_flags:
       render_back: true
+    audio:
+      sources:
+        - path: audio/Spring Wind Up_EF911B61_normal.wav
+        - path: audio/Stream Medium 01_8CC7FF9E_normal_mono.wav
+          loop: true
     script_file: scripts/anim_lucy
   - name: Big mirror 2
     model: quad

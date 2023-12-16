@@ -60,6 +60,7 @@ namespace event {
         ki::object_id target{ 0 };
 
         audio::sound_id soundId{ 0 };
+        int index{ 0 };
         bool isAutoPlay{ false };
         bool looping{ false };
         float pitch{ 1.f };

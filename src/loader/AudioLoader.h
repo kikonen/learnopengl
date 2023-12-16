@@ -22,20 +22,29 @@ namespace loader {
             const YAML::Node& node,
             ListenerData& data) const;
 
+        void loadSources(
+            const YAML::Node& node,
+            std::vector<SourceData>& sources) const;
+
         void loadSource(
             const YAML::Node& node,
             SourceData& data) const;
 
         void createAudio(
             const AudioData& data,
-            ki::object_id nodeId);
+            const ki::object_id nodeId);
+
+        void createSources(
+            const std::vector<SourceData>& sources,
+            const ki::object_id nodeId);
 
         void createSource(
             const SourceData& data,
-            ki::object_id nodeId);
+            const ki::object_id nodeId,
+            const int index);
 
         void createListener(
             const ListenerData& data,
-            ki::object_id nodeId);
+            const ki::object_id nodeId);
     };
 }

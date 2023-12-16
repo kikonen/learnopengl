@@ -1,7 +1,11 @@
 #pragma once
 
+#include <array>
+
 #include <glm/glm.hpp>
 #include <ki/uuid.h>
+
+#include "ki/limits.h"
 
 #include "asset/Assets.h"
 
@@ -222,7 +226,7 @@ public:
     uuids::uuid m_uuid;
 
     audio::listener_id m_audioListenerId{ 0 };
-    audio::source_id m_audioSourceId{ 0 };
+    std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds;
 
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };

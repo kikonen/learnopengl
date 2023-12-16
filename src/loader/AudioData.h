@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-
+#include <vector>
 
 namespace loader
 {
@@ -37,6 +37,6 @@ namespace loader
 
     struct AudioData {
         ListenerData listener;
-        SourceData source;
+        std::vector<SourceData> sources;
     };
 }

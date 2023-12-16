@@ -54,6 +54,15 @@ public:
         const sol::table& lua_opt,
         const sol::table& scale) noexcept;
 
+    int lua_audioPlay(
+        const sol::table& lua_opt) noexcept;
+
+    int lua_audioPause(
+        const sol::table& lua_opt) noexcept;
+
+    int lua_audioStop(
+        const sol::table& lua_opt) noexcept;
+
     int lua_start(
         const sol::table& lua_opt,
         sol::function fn) noexcept;
