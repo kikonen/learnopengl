@@ -42,7 +42,8 @@ local function animationRotate(coid)
 
     cid = cmd:rotate(
       { after=wid, time=speed, relative=true },
-      {0.0, dir * 360, 0.0 })
+      {0.0, 1.0, 0.0 },
+      dir * 360)
 
     cid = cmd:resume({ after=cid }, coid)
     dir = -1 * dir

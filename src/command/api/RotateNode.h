@@ -13,7 +13,8 @@ public:
         ki::object_id nodeId,
         float duration,
         bool relative,
-        const glm::vec3& degrees) noexcept;
+        const glm::vec3& axis,
+        const float degrees) noexcept;
 
     virtual void bind(
         const UpdateContext& ctx,
@@ -23,7 +24,11 @@ public:
         const UpdateContext& ctx) noexcept override;
 
 private:
-    const glm::vec3 m_degreesRotation;
+    const glm::vec3 m_axis;
+    const float m_radians;
+
+    glm::quat m_start{ 1.f, 0.f, 0.f, 0.f };
     glm::quat m_end{ 1.f, 0.f, 0.f, 0.f };
-    glm::quat m_previous{ 1.f, 0.f, 0.f, 0.f };
+
+    glm::quat m_base{ 1.f, 0.f, 0.f, 0.f };
 };

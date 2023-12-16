@@ -1,6 +1,8 @@
 #include "AudioLoader.h"
 
 #include "ki/yaml.h"
+#include "ki/limits.h"
+
 #include "util/Util.h"
 
 #include "audio/Source.h"
@@ -30,9 +32,13 @@ namespace loader
             if (k == "listener") {
                 loadListener(v, data.listener);
             } else if (k == "source") {
-                loadSource(v, data.source);
-            }
-            else {
+                SourceData& source = data.sources.empty() ? data.sources.emplace_back() : data.sources[0];
+                loadSource(v, source);
+            } else if (k == "sources") {
+                // NOTE KI no sensible strategy to merge lists
+                data.sources.clear();
+                loadSources(v, data.sources);
+            } else {
                 reportUnknown("audio_entry", k, v);
             }
         }
@@ -63,6 +69,17 @@ namespace loader
         }
     }
 
+    void AudioLoader::loadSources(
+        const YAML::Node& node,
+        std::vector<SourceData>& sources) const
+    {
+        int index = 0;
+        for (const auto& entry : node) {
+            SourceData& data = sources.emplace_back();
+            loadSource(entry, data);
+        }
+    }
+
     void AudioLoader::loadSource(
         const YAML::Node& node,
         SourceData& data) const
@@ -88,7 +105,7 @@ namespace loader
             else if (k == "pitch") {
                 data.pitch = readFloat(v);
             }
-            else if (k == "looping") {
+            else if (k == "looping" || k == "loop") {
                 data.looping = readBool(v);
             }
             else {
@@ -102,12 +119,23 @@ namespace loader
         ki::object_id nodeId)
     {
         createListener(data.listener, nodeId);
-        createSource(data.source, nodeId);
+        createSources(data.sources, nodeId);
+    }
+
+    void AudioLoader::createSources(
+        const std::vector<SourceData>& sources,
+        const ki::object_id nodeId)
+    {
+        int index = 0;
+        for (const auto& data : sources) {
+            createSource(data, nodeId, index++);
+        }
     }
 
     void AudioLoader::createSource(
         const SourceData& data,
-        ki::object_id nodeId)
+        const ki::object_id nodeId,
+        const int index)
     {
         if (!data.enabled) return;
 
@@ -121,6 +149,7 @@ namespace loader
             auto& body = evt.body.nodeAudioSource = {
                 .target = nodeId,
                 .soundId = soundId,
+                .index = index,
                 .isAutoPlay = data.isAutoPlay,
                 .looping = data.looping,
                 .pitch = data.pitch,
@@ -132,7 +161,7 @@ namespace loader
 
     void AudioLoader::createListener(
         const ListenerData& data,
-        ki::object_id nodeId)
+        const ki::object_id nodeId)
     {
         if (!data.enabled) return;
 

@@ -12,9 +12,13 @@ entities:
     id: player
     type: origo
     pos: [0, 1, 15]
+    front: [0, 0, -1]
     active: true
     camera:
       default: true
+    audio:
+      listener:
+        default: true
     controllers:
       - type: pawn
       - type: camera_zoom

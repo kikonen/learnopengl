@@ -48,6 +48,7 @@ entities:
     type: origo
     pos: [-10, 12, -20.0]
     rotation: [0, 180, 0.0]
+    front: [0, 0, -1]
     scale: 0.8
     program: g_tex
     active: true
@@ -58,6 +59,9 @@ entities:
       - "node->particleGenerator = std::make_unique<ParticleGenerator>(pd);"
     camera:
       default: true
+    audio:
+      listener:
+        default: true
     controllers:
       - type: pawn
       - type: camera_zoom

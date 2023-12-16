@@ -47,9 +47,24 @@ local function animationRotate(coid)
     local rotY = 180 - rnd(360)
     local rotZ = 180 - rnd(360)
 
-    cid = cmd:rotate(
+    cid1 = cmd:rotate(
       { after=wid, time=5, relative=true },
-      { rotX, rotY, rotZ })
+      { 1, 0, 0},
+      rotX)
+
+    cid2 = cmd:rotate(
+      { after=wid, time=5, relative=true },
+      { 0, 1, 0},
+      rotY)
+
+    cid3 = cmd:rotate(
+      { after=wid, time=5, relative=true },
+      { 0, 0, 1 },
+      rotZ)
+
+    cid = cmd:sync(
+      { after=wid },
+      { cid1, cid2, cid3 })
 
     wid = cmd:wait({ after=cid, time=0 })
 

@@ -47,11 +47,21 @@ public:
 
     int lua_rotate(
         const sol::table& lua_opt,
-        const sol::table& rot) noexcept;
+        const sol::table& lua_dir,
+        const float lua_degrees) noexcept;
 
     int lua_scale(
         const sol::table& lua_opt,
         const sol::table& scale) noexcept;
+
+    int lua_audioPlay(
+        const sol::table& lua_opt) noexcept;
+
+    int lua_audioPause(
+        const sol::table& lua_opt) noexcept;
+
+    int lua_audioStop(
+        const sol::table& lua_opt) noexcept;
 
     int lua_start(
         const sol::table& lua_opt,

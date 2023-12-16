@@ -14,7 +14,7 @@ entities:
     pos: [0, 2, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
-    scale: 1.0
+    scale: 0.5
     material_modifier:
       tiling: 5
     render_flags:
@@ -28,7 +28,7 @@ entities:
   - name: Player Camera
     parent_id: player
     type: origo
-    pos: [0, 3, 5]
+    pos: [0, 3, 3]
     rotation: [-15, 0, 0]
     controller:
       type: camera_zoom
@@ -55,18 +55,18 @@ entities:
     base_rot: [-90, 0, 0]
     audio:
       source:
-        path: audio/Squeaking Toy Duck 2_DD868BE_normal.wav
+        path: audio/Squeaking Toy Duck 2_DD868BE_normal_mono.wav
     clones:
       - pos: [-5.0, 2.0, -5.0]
       - pos: [5.0, 2.0, -5.0]
       - pos: [-5.0, 2.0, 5.0]
         audio:
           source:
-            path: audio/Spring Wind Up_EF911B61_normal.wav
+            path: audio/Spring Wind Up_EF911B61_normal_mono.wav
       - pos: [5.0, 2.0, 5.0]
         audio:
           source:
-            path: audio/Spring Wind Up_EF911B61_normal.wav
+            path: audio/Spring Wind Up_EF911B61_normal_mono.wav
   - name: wooden floor
     model: quad
     xxmodel: woodwall

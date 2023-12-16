@@ -27,10 +27,10 @@ void CameraZoomController::prepare(
 
     m_node = &node;
 
-    m_cameraZoomNormal = assets.cameraZoomNormal;
-    m_cameraZoomRun = assets.cameraZoomRun;
+    m_speedZoomNormal = assets.cameraZoomNormal;
+    m_speedZoomRun = assets.cameraZoomRun;
 
-    m_cameraMouseSensitivity = assets.cameraMouseSensitivity;
+    m_speedMouseSensitivity = assets.cameraMouseSensitivity;
 }
 
 bool CameraZoomController::update(
@@ -46,8 +46,7 @@ void CameraZoomController::onKey(Input* input, const ki::RenderClock& clock)
     auto* camera = m_node->m_camera.get();
     const float dt = clock.elapsedSecs;
 
-    glm::vec3 zoomSpeed{ m_cameraZoomNormal };
-
+    glm::vec3 zoomSpeed{ m_speedZoomNormal };
 
     if (input->isModifierDown(Modifier::CONTROL)) {
         int offset = 0;
@@ -78,7 +77,7 @@ void CameraZoomController::onKey(Input* input, const ki::RenderClock& clock)
     } else {
 
         if (input->isModifierDown(Modifier::SHIFT)) {
-            zoomSpeed = m_cameraZoomRun;
+            zoomSpeed = m_speedZoomRun;
         }
 
         if (input->isKeyDown(Key::ZOOM_IN)) {
@@ -97,31 +96,29 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
     bool changed = false;
     const float MAX_ANGLE = 89.f;
 
-    glm::vec3 rot = m_node->getDegreesRotation();
+    glm::vec3 adjust{ 0.f };
 
-    if (xoffset != 0) {
-        auto yaw = rot.y - m_cameraMouseSensitivity.x * xoffset;
+    const auto& curr = m_node->getDegreesRotation();
 
-        rot.y = static_cast<float>(yaw);
-        changed = true;
-    }
+    const auto maxUp = MAX_ANGLE - curr.x;
+    const auto maxDown = -MAX_ANGLE - curr.x;
 
     if (yoffset != 0) {
-        auto pitch = rot.x + m_cameraMouseSensitivity.y * yoffset;
+        auto pitch = m_speedMouseSensitivity.y * yoffset;
 
-        if (pitch < -MAX_ANGLE) {
-            pitch = -MAX_ANGLE;
+        if (pitch < maxDown) {
+            pitch = maxDown;
         }
-        if (pitch > MAX_ANGLE) {
-            pitch = MAX_ANGLE;
+        if (pitch > maxUp) {
+            pitch = maxUp;
         }
 
-        rot.x = static_cast<float>(pitch);
+        adjust.x = static_cast<float>(pitch);
         changed = true;
     }
 
     if (changed) {
-        m_node->setDegreesRotation(rot);
+        m_node->adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }
 
@@ -130,7 +127,7 @@ void CameraZoomController::onMouseScroll(Input* input, float xoffset, float yoff
     if (!m_node) return;
     auto* camera = m_node->m_camera.get();
 
-    auto adjustment = m_cameraMouseSensitivity.z * yoffset;
+    auto adjustment = m_speedMouseSensitivity.z * yoffset;
 
     camera->adjustFov(static_cast<float>(-adjustment));
 }

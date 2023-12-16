@@ -12,12 +12,14 @@ local function animation(coid)
     -- slow for frontside of mirror
     cid = cmd:rotate(
       { after=wid, time=120, relative=true },
-      { 0.0, 120.0, 0.0 })
+      { 0.0, 1.0, 0.0 },
+      120.0)
 
     -- fast for backside of mirror
     cid = cmd:rotate(
       { after=cid, time=8, relative=true },
-      { 0.0, 240.0, 0.0 })
+      { 0.0, 1.0, 0.0 },
+      240.0)
 
     wid = cmd:wait({ after=cid, time=1 })
 
