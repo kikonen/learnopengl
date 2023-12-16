@@ -56,7 +56,7 @@ void RotateNode::execute(
         const auto& p0 = m_start;
         const auto& p1 = m_end;
 
-        const auto rot = glm::lerp(p0, p1, t);
+        const auto rot = glm::normalize(glm::lerp(p0, p1, t));
         m_node->setQuatRotation(rot * m_start);
         //m_node->adjustQuatRotation(rot);
     }

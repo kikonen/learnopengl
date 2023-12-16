@@ -6,12 +6,12 @@ namespace util
 {
     glm::quat degreesToQuat(const glm::vec3& rot)
     {
-        return glm::quat(glm::radians(rot));
+        return glm::normalize(glm::quat(glm::radians(rot)));
     }
 
     glm::quat radiansToQuat(const glm::vec3& rot)
     {
-        return glm::quat(rot);
+        return glm::normalize(glm::quat(rot));
     }
 
     glm::vec3 quatToDegrees(const glm::quat& rot)

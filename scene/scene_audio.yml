@@ -14,7 +14,7 @@ entities:
     pos: [0, 2, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
-    scale: 1.0
+    scale: 0.5
     material_modifier:
       tiling: 5
     render_flags:
@@ -28,7 +28,7 @@ entities:
   - name: Player Camera
     parent_id: player
     type: origo
-    pos: [0, 3, 5]
+    pos: [0, 3, 3]
     rotation: [-15, 0, 0]
     controller:
       type: camera_zoom
