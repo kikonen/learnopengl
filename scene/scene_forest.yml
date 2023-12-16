@@ -8,6 +8,7 @@ entities:
     id: player
     type: origo
     pos: [0, 10, 20]
+    front: [0, 0, -1]
     active: true
     camera:
       default: true

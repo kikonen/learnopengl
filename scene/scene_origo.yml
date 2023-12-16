@@ -16,6 +16,7 @@ entities:
     material: silver_ball
     program: g_tex
     pos: [10, 0, 20]
+    front: [0, 0, -1]
     scale: 0.5
     active: true
     camera:

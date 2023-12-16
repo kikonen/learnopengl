@@ -13,6 +13,7 @@ entities:
     id: player
     type: origo
     pos: [9.95, 0, 10]
+    front: [0, 0, -1]
     active: true
     camera:
       default: true

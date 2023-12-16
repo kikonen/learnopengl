@@ -13,6 +13,7 @@ entities:
     id: player
     model: player
     pos: [0, 5, 5]
+    front: [0, 0, -1]
     scale: 0.8
     program: g_tex
     render_flags:
