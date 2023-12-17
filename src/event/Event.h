@@ -48,7 +48,8 @@ namespace event {
 
         scene_loaded,
 
-        script_add,
+        script_bind,
+        script_run,
     };
 
     struct NodeAction {

@@ -82,7 +82,7 @@ entities:
     audio:
       source:
         path: audio/Cow_CE882860_normal_mono.wav
-        gain: 0.8
+        gain: 0.6
     script_file: scripts/cow_audio
   - name: wooden floor
     model: quad

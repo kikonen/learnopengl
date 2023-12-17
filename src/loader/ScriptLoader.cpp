@@ -120,19 +120,28 @@ namespace loader {
         if (!data.path.empty()) {
             std::string filename = data.path + ".lua";
             auto script = readFile(filename);
+            auto scriptId = m_registry->m_scriptEngine->registerScript(script);
 
-            //m_registry->m_
-            //{
-            //    event::Event evt { event::Type::script_add };
-            //    auto& body = evt.body.script = {
-            //        .script = script,
-            //    };
-            //    m_dispatcher->send(evt);
-            //}
+            {
+                event::Event evt { event::Type::script_bind };
+                auto& body = evt.body.script = {
+                    .target = nodeId,
+                    .id = scriptId,
+                };
+                m_dispatcher->send(evt);
+            }
         }
 
         if (!data.script.empty()) {
-            m_registry->m_scriptEngine;
+            auto scriptId = m_registry->m_scriptEngine->registerScript(data.script);
+            {
+                event::Event evt { event::Type::script_bind };
+                auto& body = evt.body.script = {
+                    .target = nodeId,
+                    .id = scriptId,
+                };
+                m_dispatcher->send(evt);
+            }
         }
     }
 }

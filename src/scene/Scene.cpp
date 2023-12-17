@@ -518,16 +518,18 @@ void Scene::bindComponents(Node* node)
 
     if (m_assets.useScript) {
         auto* se = m_registry->m_scriptEngine;
-        se->registerNode(node);
 
-        const auto& functions = se->runScripts(node);
+        const auto& scripts = se->getNodeScripts(node->m_id);
 
-        for (const auto& fnName : functions) {
-            m_registry->m_commandEngine->addCommand(
-                std::make_unique<script::InvokeLuaFunction>(
-                    -1,
-                    node->m_id,
-                    fnName));
+        for (const auto& scriptId : scripts) {
+            {
+                event::Event evt { event::Type::script_run };
+                auto& body = evt.body.script = {
+                    .target = node->m_id,
+                    .id = scriptId,
+                };
+                m_registry->m_dispatcher->send(evt);
+            }
         }
     }
 }

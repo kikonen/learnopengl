@@ -32,15 +32,19 @@ namespace script
 
         script::script_id registerScript(std::string_view source);
 
-        void registerNodeScript(
+        void bindNodeScript(
             ki::object_id nodeId,
             script::script_id scriptId);
 
-        std::vector<std::string> runScripts(
-            Node* node);
+        std::vector<script::script_id> getNodeScripts(
+            ki::object_id nodeId);
 
-        void registerNode(
-            Node* node);
+        void runGlobalScript(
+            script::script_id scriptId);
+
+        void runNodeScript(
+            Node* node,
+            script::script_id scriptId);
 
         bool hasFunction(
             Node* node,

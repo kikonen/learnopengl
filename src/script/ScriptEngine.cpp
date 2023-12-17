@@ -91,7 +91,7 @@ namespace script
         return script.m_id;
     }
 
-    void ScriptEngine::registerNodeScript(
+    void ScriptEngine::bindNodeScript(
         ki::object_id nodeId,
         script::script_id scriptId)
     {
@@ -103,6 +103,23 @@ namespace script
         m_nodeFunctions.insert({ nodeId, fnMap });
 
         m_apis.insert({ nodeId, std::make_unique<CommandAPI>(this, m_commandEngine, nodeId) });
+
+        //if (!m_luaNodes[nodeId]) {
+        //    m_luaNodes[nodeId] = m_lua.create_table_with();
+        //}
+    }
+
+    std::vector<script::script_id> ScriptEngine::getNodeScripts(
+        ki::object_id nodeId)
+    {
+        const auto it = m_nodeFunctions.find(nodeId);
+        if (it == m_nodeFunctions.end()) return {};
+
+        std::vector<script::script_id> scripts;
+        for (const auto& fnIt : it->second) {
+            scripts.push_back(fnIt.first);
+        }
+        return scripts;
     }
 
     std::string ScriptEngine::createNodeFunction(
@@ -123,43 +140,49 @@ namespace script
         // - node, cmd, id
         const auto scriptlet = fmt::format(R"(
 function {}(node, cmd, id)
+nodes[id] = nodes[id] or {}
 local luaNode = nodes[id]
 {}
-end)", nodeFnName, script.m_source);
+end)", nodeFnName, "{}", script.m_source);
 
         m_lua.script(scriptlet);
 
         return nodeFnName;
     }
 
-    std::vector<std::string> ScriptEngine::runScripts(
-        Node* node)
+    void ScriptEngine::runGlobalScript(
+        script::script_id scriptId)
     {
-        std::vector<std::string> functions;
+        const auto& it = m_nodeFunctions.find(0);
 
+        if (it == m_nodeFunctions.end()) return;
+
+        if (const auto& fnIt = it->second.find(scriptId);
+            fnIt != it->second.end())
+        {
+            auto& fnName = fnIt->second;
+            sol::function fn = m_lua[fnName];
+            fn();
+        }
+    }
+
+    void ScriptEngine::runNodeScript(
+        Node* node,
+        script::script_id scriptId)
+    {
         const auto nodeId = node->m_id;
         const auto& it = m_nodeFunctions.find(nodeId);
 
-        if (it == m_nodeFunctions.end()) return {};
+        if (it == m_nodeFunctions.end()) return;
 
-        for (const auto& fnIt : it->second)
+        if (const auto& fnIt = it->second.find(scriptId);
+            fnIt != it->second.end())
         {
-            const auto& fnName = fnIt.second;
-
+            auto& fnName = fnIt->second;
             sol::function fn = m_lua[fnName];
             auto* api = m_apis.find(nodeId)->second.get();
             fn(std::ref(node), std::ref(api), nodeId);
-
-            functions.push_back(fnName);
         }
-
-        return functions;
-    }
-
-    void ScriptEngine::registerNode(
-        Node* node)
-    {
-        m_luaNodes[node->m_id] = m_lua.create_table_with();
     }
 
     bool ScriptEngine::hasFunction(

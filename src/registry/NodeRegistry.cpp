@@ -21,6 +21,8 @@
 #include "audio/Source.h"
 #include "audio/AudioEngine.h"
 
+#include "script/ScriptEngine.h"
+
 #include "Registry.h"
 #include "MaterialRegistry.h"
 #include "EntityRegistry.h"
@@ -225,6 +227,29 @@ void NodeRegistry::attachListeners()
             auto& data = e.body.audioSource;
             m_registry->m_audioEngine->pauseSource(data.id);
         });
+
+    if (m_assets.useScript) {
+        dispatcher->addListener(
+            event::Type::script_bind,
+            [this](const event::Event& e) {
+                auto& data = e.body.script;
+                auto* node = getNode(data.target);
+                m_registry->m_scriptEngine->bindNodeScript(data.target, data.id);
+            });
+
+        dispatcher->addListener(
+            event::Type::script_run,
+            [this](const event::Event& e) {
+                auto& data = e.body.script;
+                if (data.target) {
+                    auto* node = getNode(data.target);
+                    m_registry->m_scriptEngine->runNodeScript(node, data.id);
+                }
+                else {
+                    m_registry->m_scriptEngine->runGlobalScript(data.id);
+                }
+            });
+    }
 }
 
 void NodeRegistry::selectNodeById(ki::object_id id, bool append) const noexcept
