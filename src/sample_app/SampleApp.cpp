@@ -15,7 +15,10 @@
 
 #include "controller/VolumeController.h"
 
+#include "event/Dispatcher.h"
+
 #include "audio/Source.h"
+#include "audio/AudioEngine.h"
 
 #include "registry/MeshType.h"
 #include "registry/NodeRegistry.h"
@@ -101,8 +104,6 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
         UpdateContext ctx(
             clock,
             m_assets,
-            m_currentScene->m_commandEngine.get(),
-            m_currentScene->m_scriptEngine.get(),
             m_currentScene->m_registry.get());
 
         scene->processEvents(ctx);
@@ -130,8 +131,6 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         nullptr,
         clock,
         m_assets,
-        m_currentScene->m_commandEngine.get(),
-        m_currentScene->m_scriptEngine.get(),
         m_currentScene->m_registry.get(),
         m_currentScene->m_renderData.get(),
         m_currentScene->m_nodeDraw.get(),
@@ -306,7 +305,8 @@ void SampleApp::selectNode(
                 evt.body.animate = {
                     .target = node->m_id,
                     .duration = 5,
-                    .data = { 1.f, 1.f, 1.f },
+                    .relative = true,
+                    .data = { 0.f, 1.f, 0.f },
                     .data2 = { 360.f, 0, 0 },
                 };
                 ctx.m_registry->m_dispatcher->send(evt);

@@ -12,8 +12,8 @@
 
 #include "component/Camera.h"
 
-#include "command/CommandEngine.h"
-#include "command/ScriptEngine.h"
+#include "script/CommandEngine.h"
+#include "script/ScriptEngine.h"
 
 #include "backend/RenderSystem.h"
 
@@ -37,8 +37,6 @@ RenderContext::RenderContext(
         parent,
         parent->m_clock,
         parent->m_assets,
-        parent->m_commandEngine,
-        parent->m_scriptEngine,
         parent->m_registry,
         parent->m_renderData,
         parent->m_nodeDraw,
@@ -64,8 +62,6 @@ RenderContext::RenderContext(
         parent,
         parent->m_clock,
         parent->m_assets,
-        parent->m_commandEngine,
-        parent->m_scriptEngine,
         parent->m_registry,
         parent->m_renderData,
         parent->m_nodeDraw,
@@ -83,8 +79,6 @@ RenderContext::RenderContext(
     const RenderContext* parent,
     const ki::RenderClock& clock,
     const Assets& assets,
-    CommandEngine* commandEngine,
-    ScriptEngine* scriptEngine,
     Registry* registry,
     RenderData* renderData,
     NodeDraw* nodeDraw,
@@ -104,8 +98,6 @@ RenderContext::RenderContext(
     m_nodeDraw{ nodeDraw },
     m_batch{ batch },
     m_registry{ registry },
-    m_commandEngine{ commandEngine },
-    m_scriptEngine{ scriptEngine },
     m_camera{ camera },
     m_nearPlane{ nearPlane },
     m_farPlane{ farPlane },

@@ -1,7 +1,7 @@
 #pragma once
 
 typedef unsigned int size_t32;
-typedef unsigned long t_id;
+//typedef unsigned long t_id;
 
 namespace ki
 {
@@ -11,7 +11,6 @@ namespace ki
     typedef unsigned int material_id;
     typedef unsigned int sprite_id;
     typedef unsigned int program_id;
-    typedef unsigned int command_id;
     typedef unsigned int event_id;
 
     typedef unsigned int uint;

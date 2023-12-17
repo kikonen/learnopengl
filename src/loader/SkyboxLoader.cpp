@@ -13,6 +13,7 @@
 #include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
+#include "registry/ProgramRegistry.h"
 
 #include "scene/SkyboxMaterial.h"
 

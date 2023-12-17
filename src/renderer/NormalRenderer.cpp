@@ -10,6 +10,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/ProgramRegistry.h"
 
 
 

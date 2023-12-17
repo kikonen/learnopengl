@@ -14,6 +14,48 @@
 #include "render/RenderContext.h"
 
 
+void NodeInstance::updateRootMatrix() noexcept
+{
+    if (!m_dirty) return;
+
+    updateRotationMatrix();
+    m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
+    m_modelScale = m_scaleMatrix;
+
+    updateModelAxis();
+
+    m_dirty = false;
+    m_matrixLevel++;
+    m_dirtyEntity = true;
+}
+
+void NodeInstance::updateModelMatrix(const NodeInstance& parent) noexcept
+{
+    if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
+
+    updateRotationMatrix();
+    m_modelMatrix = parent.m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
+    m_modelScale = parent.m_modelScale * m_scaleMatrix;
+
+    updateModelAxis();
+
+    m_dirty = false;
+    m_parentMatrixLevel = parent.m_matrixLevel;
+    m_matrixLevel++;
+    m_dirtyEntity = true;
+}
+
+void NodeInstance::updateModelAxis() noexcept
+{
+    // NOTE KI "base quat" is assumed to have establish "normal" front dir
+    // => thus no "base quad" here!
+    // NOTE KI w == 0; only rotation
+    m_viewFront = glm::normalize(glm::mat3(m_quatRotation) * m_front);
+
+    m_viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
+    m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
+}
+
 void NodeInstance::updateRotationMatrix() noexcept
 {
     if (!m_dirtyRotation) return;

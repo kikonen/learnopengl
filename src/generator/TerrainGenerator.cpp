@@ -13,12 +13,15 @@
 
 #include "engine/UpdateContext.h"
 
+#include "event/Dispatcher.h"
+
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
+#include "registry/MeshTypeRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/MaterialRegistry.h"
-
+#include "registry/ModelRegistry.h"
 
 namespace {
     const std::string TERRAIN_QUAD_MESH_NAME{ "quad_terrain" };
@@ -229,7 +232,7 @@ MeshType* TerrainGenerator::createType(
     flags.terrain = true;
 
     type->m_priority = containerType->m_priority;
-    type->m_script = containerType->m_script;
+    //type->m_script = containerType->m_script;
 
     // TODO KI *redundant* copy of material
     auto& containerMaterials = containerType->m_materialVBO;

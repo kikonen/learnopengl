@@ -1,4 +1,4 @@
-local luaNode = nodes[id]
+--printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
 
 local function animation(coid)
   local wid = 0
@@ -20,8 +20,4 @@ local function animation(coid)
   end
 end
 
-luaNode.start = function()
-  --print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
-
-  cmd:start({}, animation)
-end
+cmd:start({}, animation)

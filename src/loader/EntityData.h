@@ -21,6 +21,7 @@
 #include "ControllerData.h"
 #include "GeneratorData.h"
 #include "PhysicsData.h"
+#include "ScriptData.h"
 
 namespace loader {
     struct EntityCloneData {
@@ -83,7 +84,7 @@ namespace loader {
 
         Repeat repeat;
 
-        std::string script;
+        ScriptData script;
 
         std::vector<ControllerData> controllers;
         CameraData camera;

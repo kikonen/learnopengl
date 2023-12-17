@@ -9,10 +9,15 @@
 
 #include "controller/VolumeController.h"
 
+#include "event/Dispatcher.h"
+
+#include "model/Node.h"
+
 #include "registry/Registry.h"
 #include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
+#include "registry/ProgramRegistry.h"
 
 namespace {
 }

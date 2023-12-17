@@ -10,7 +10,9 @@
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
-#
+#include "registry/NodeRegistry.h"
+#include "registry/ProgramRegistry.h"
+
 #include "renderer/ShadowCascade.h"
 
 
