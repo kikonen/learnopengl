@@ -6,6 +6,9 @@ skybox:
   material: skybox
 lights: {}
 cube_maps: {}
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Player
     id: player
@@ -76,6 +79,11 @@ entities:
     rot: [-45, 180, 0]
     base_rot: [0, -90, 0]
     scale: 1.0
+    audio:
+      source:
+        path: audio/Cow_CE882860_normal_mono.wav
+        gain: 0.8
+    script_file: scripts/cow_audio
   - name: wooden floor
     model: quad
     xxmodel: woodwall
