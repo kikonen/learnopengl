@@ -32,6 +32,7 @@ namespace script
         m_lua.open_libraries(sol::lib::base);
         m_lua.open_libraries(sol::lib::math);
         m_lua.open_libraries(sol::lib::os);
+        m_lua.open_libraries(sol::lib::io);
         m_lua.open_libraries(sol::lib::coroutine);
         m_lua.open_libraries(sol::lib::string);
 
@@ -162,7 +163,7 @@ end)", nodeFnName, "{}", script.m_source);
         {
             auto& fnName = fnIt->second;
             sol::function fn = m_lua[fnName];
-            fn();
+            fn(nullptr, nullptr, 0);
         }
     }
 

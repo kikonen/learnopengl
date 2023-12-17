@@ -117,11 +117,18 @@ namespace loader {
     {
         if (!data.enabled) return;
 
+        std::vector<std::string> scripts;
+
         if (!data.path.empty()) {
             std::string filename = data.path + ".lua";
-            auto script = readFile(filename);
-            auto scriptId = m_registry->m_scriptEngine->registerScript(script);
+            scripts.push_back(readFile(filename));
+        }
+        scripts.push_back(data.script);
 
+        for (const auto& script : scripts) {
+            if (script.empty()) continue;
+
+            auto scriptId = m_registry->m_scriptEngine->registerScript(script);
             {
                 event::Event evt { event::Type::script_bind };
                 auto& body = evt.body.script = {
@@ -130,14 +137,11 @@ namespace loader {
                 };
                 m_dispatcher->send(evt);
             }
-        }
 
-        if (!data.script.empty()) {
-            auto scriptId = m_registry->m_scriptEngine->registerScript(data.script);
-            {
-                event::Event evt { event::Type::script_bind };
+            if (nodeId == 0) {
+                event::Event evt { event::Type::script_run };
                 auto& body = evt.body.script = {
-                    .target = nodeId,
+                    .target = 0,
                     .id = scriptId,
                 };
                 m_dispatcher->send(evt);
