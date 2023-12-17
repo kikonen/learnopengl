@@ -1,4 +1,4 @@
-local luaNode = nodes[id]
+--printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
 
 local cloneIndex = node:getCloneIndex()
 local origPos = node:getPos()
@@ -50,9 +50,5 @@ local function animationRotate(coid)
   end
 end
 
-luaNode.start = function()
-  --print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
-
-  cmd:start({}, animationMove)
-  cmd:start({}, animationRotate)
-end
+cmd:start({}, animationMove)
+cmd:start({}, animationRotate)

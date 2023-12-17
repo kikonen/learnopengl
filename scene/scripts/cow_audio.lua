@@ -1,3 +1,5 @@
+--printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
+
 local function animation(coid)
   print("cow run")
   while true do
