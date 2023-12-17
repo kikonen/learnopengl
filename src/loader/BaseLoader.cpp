@@ -515,32 +515,7 @@ namespace loader
 
     std::string BaseLoader::readFile(std::string_view filename) const
     {
-        std::stringstream buffer;
-
-        std::string filePath = util::joinPath(
-            m_ctx.m_dirname,
-            filename);
-
-        if (!util::fileExists(filePath)) {
-            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
-        }
-
-        try {
-            std::ifstream t(filePath);
-            t.exceptions(std::ifstream::badbit);
-            //t.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-            buffer << t.rdbuf();
-        }
-        catch (std::ifstream::failure e) {
-            std::string what{ e.what() };
-            const auto msg = fmt::format(
-                "SCENE::FILE_NOT_SUCCESFULLY_READ: {}\n{}",
-                filePath, what);
-
-            throw std::runtime_error{ msg };
-        }
-        return buffer.str();
+        return util::readFile(m_ctx.m_dirname, filename);
     }
 
     void BaseLoader::reportUnknown(

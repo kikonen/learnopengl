@@ -56,6 +56,11 @@ entities:
     priority: 1
     pos: [0, 0, 0]
     scale: 1.0
+    audio:
+      source:
+        path: audio/Cow_CE882860_normal_mono.wav
+        gain: 0.4
+    script_file: scripts/cow_audio
     repeat:
       x_count: 5
       z_count: 5

@@ -30,9 +30,6 @@ class NodeDraw;
 
 class Registry;
 
-class CommandEngine;
-class ScriptEngine;
-
 class UpdateContext;
 class RenderContext;
 class FrameBuffer;
@@ -103,9 +100,6 @@ public:
     std::unique_ptr<RenderData> m_renderData;
 
     std::shared_ptr<Registry> m_registry;
-
-    std::unique_ptr<CommandEngine> m_commandEngine;
-    std::unique_ptr<ScriptEngine> m_scriptEngine;
 
     std::unique_ptr<Batch> m_batch;
     std::unique_ptr<NodeDraw> m_nodeDraw;

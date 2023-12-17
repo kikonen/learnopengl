@@ -15,6 +15,7 @@ namespace loader {
     class ControllerLoader;
     class GeneratorLoader;
     class PhysicsLoader;
+    class ScriptLoader;
 
     class EntityLoader : public BaseLoader
     {
@@ -33,7 +34,8 @@ namespace loader {
             AudioLoader& audioLoader,
             ControllerLoader& controllerLoader,
             GeneratorLoader& generatorLoader,
-            PhysicsLoader& physicsLoader);
+            PhysicsLoader& physicsLoader,
+            ScriptLoader& scriptLoader) const;
 
         void loadEntity(
             const YAML::Node& node,
@@ -46,7 +48,8 @@ namespace loader {
             AudioLoader& audioLoader,
             ControllerLoader& controllerLoader,
             GeneratorLoader& generatorLoader,
-            PhysicsLoader& physicsLoader) const;
+            PhysicsLoader& physicsLoader,
+            ScriptLoader& scriptLoader) const;
 
         void loadEntityClone(
             const YAML::Node& node,
@@ -61,6 +64,7 @@ namespace loader {
             AudioLoader& audioLoader,
             ControllerLoader& controllerLoader,
             GeneratorLoader& generatorLoader,
-            PhysicsLoader& physicsLoader) const;
+            PhysicsLoader& physicsLoader,
+            ScriptLoader& scriptLoader) const;
     };
 }

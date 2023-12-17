@@ -14,6 +14,8 @@
 
 #include "engine/AsyncLoader.h"
 
+#include "registry/ProgramRegistry.h"
+
 #include "gui/Window.h"
 
 

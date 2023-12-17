@@ -1,4 +1,4 @@
-local luaNode = nodes[id]
+--printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
 
 local rnd = math.random
 
@@ -99,10 +99,6 @@ local function animationScale(coid)
   end
 end
 
-luaNode.start = function()
-  --print(string.format("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex()))
-
-  cmd:start({}, animationTranslate)
-  cmd:start({}, animationRotate)
-  cmd:start({}, animationScale)
-end
+cmd:start({}, animationTranslate)
+cmd:start({}, animationRotate)
+cmd:start({}, animationScale)

@@ -13,6 +13,7 @@
 #include "engine/UpdateContext.h"
 #include "render/Batch.h"
 
+#include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/EntitySSBO.h"

@@ -42,6 +42,7 @@
 #include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
+#include "registry/ProgramRegistry.h"
 
 #include <engine/AsyncLoader.h>
 
@@ -55,6 +56,7 @@ namespace loader {
         Context ctx)
         : BaseLoader(ctx),
         m_rootLoader(ctx),
+        m_scriptLoader(ctx),
         m_skyboxLoader(ctx),
         m_volumeLoader(ctx),
         m_cubeMapLoader(ctx),
@@ -88,6 +90,9 @@ namespace loader {
         m_rootLoader.m_registry = m_registry;
         m_rootLoader.m_dispatcher = m_dispatcher;
 
+        m_scriptLoader.m_registry = m_registry;
+        m_scriptLoader.m_dispatcher = m_dispatcher;
+
         m_skyboxLoader.m_registry = m_registry;
         m_skyboxLoader.m_dispatcher = m_dispatcher;
 
@@ -118,6 +123,7 @@ namespace loader {
             m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
 
             m_rootLoader.loadRoot(doc["root"], m_root);
+            m_scriptLoader.loadScriptEngine(doc["script"], m_scriptEngineData);
 
             m_entityLoader.loadEntities(
                 doc["entities"],
@@ -130,7 +136,8 @@ namespace loader {
                 m_audioLoader,
                 m_controllerLoader,
                 m_generatorLoader,
-                m_physicsLoader);
+                m_physicsLoader,
+                m_scriptLoader);
 
             attach(m_root);
         });
@@ -153,6 +160,7 @@ namespace loader {
         const RootData& root)
     {
         m_rootLoader.attachRoot(root);
+        m_scriptLoader.createScriptEngine(root.rootId, m_scriptEngineData);
 
         m_skyboxLoader.attachSkybox(root.rootId, m_skybox);
         m_volumeLoader.attachVolume(root.rootId);
@@ -356,7 +364,6 @@ namespace loader {
         assignFlags(data, type);
 
         type->m_priority = data.priority;
-        type->m_script = data.script;
 
         if (isRoot) {
             type->m_flags.invisible = true;
@@ -643,6 +650,11 @@ namespace loader {
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
         node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
         node->m_physics = m_physicsLoader.createObject(data.physics, node);
+
+        m_scriptLoader.createScript(
+            rootId,
+            node->m_id,
+            data.script);
 
         type->setCustomMaterial(
             m_customMaterialLoader.createCustomMaterial(data.customMaterial, cloneIndex, tile));

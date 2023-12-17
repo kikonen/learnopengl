@@ -69,6 +69,7 @@ namespace audio
             m_isMono = audioFile.isMono();
             m_isStereo = audioFile.isStereo();
 
+            std::cout << "file=" << m_fullPath << '\n';
             audioFile.printSummary();
         }
 

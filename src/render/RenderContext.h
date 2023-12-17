@@ -15,8 +15,6 @@
 
 
 class Camera;
-class CommandEngine;
-class ScriptEngine;
 class Registry;
 class Batch;
 class NodeDraw;
@@ -55,8 +53,6 @@ public:
         const RenderContext* parent,
         const ki::RenderClock& clock,
         const Assets& assets,
-        CommandEngine* commandEngine,
-        ScriptEngine* scriptEngine,
         Registry* registry,
         RenderData* renderData,
         NodeDraw* nodeDraw,
@@ -120,9 +116,6 @@ public:
     const float m_aspectRatio;
 
     Registry* const m_registry;
-
-    CommandEngine* const m_commandEngine;
-    ScriptEngine* const m_scriptEngine;
 
     Camera* const m_camera;
 

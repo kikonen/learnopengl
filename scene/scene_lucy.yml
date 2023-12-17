@@ -3,6 +3,9 @@ name: Lucy
 skybox:
   program: g_skybox
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Player
     id: player

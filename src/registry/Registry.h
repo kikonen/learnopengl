@@ -4,21 +4,37 @@
 
 #include "asset/Assets.h"
 
-#include "event/Dispatcher.h"
+namespace event
+{
+    class Dispatcher;
+}
 
-#include "registry/ProgramRegistry.h"
-#include "registry/MaterialRegistry.h"
-#include "registry/SpriteRegistry.h"
-#include "registry/NodeRegistry.h"
-#include "registry/MeshTypeRegistry.h"
-#include "registry/ModelRegistry.h"
-#include "registry/EntityRegistry.h"
-#include "registry/ViewportRegistry.h"
-#include "registry/ControllerRegistry.h"
+namespace audio
+{
+    class AudioEngine;
+}
 
-#include "audio/AudioEngine.h"
-#include "physics/PhysicsEngine.h"
+namespace script
+{
+    class CommandEngine;
+    class ScriptEngine;
+}
 
+namespace physics
+{
+    class PhysicsEngine;
+}
+
+class ProgramRegistry;
+class MaterialRegistry;
+class SpriteRegistry;
+class MeshTypeRegistry;
+class ModelRegistry;
+class NodeRegistry;
+class EntityRegistry;
+class ViewportRegistry;
+class ControllerRegistry;
+class ProgramRegistry;
 
 class UpdateContext;
 
@@ -31,12 +47,49 @@ public:
         const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive);
 
+    ~Registry();
+
     void prepare();
 
     void update(const UpdateContext& ctx);
 
+private:
+    const Assets& m_assets;
+
+    bool m_prepared = false;
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
+
+    std::unique_ptr<event::Dispatcher> m_dispatcherImpl;
+
+    std::unique_ptr<ProgramRegistry> m_programRegistryImpl;
+
+    std::unique_ptr<audio::AudioEngine> m_audioEngineImpl;
+    std::unique_ptr<physics::PhysicsEngine> m_physicsEngineImpl;
+
+    std::unique_ptr<script::CommandEngine> m_commandEngineImpl;
+    std::unique_ptr<script::ScriptEngine> m_scriptEngineImpl;
+
+    std::unique_ptr<MaterialRegistry> m_materialRegistryImpl;
+    std::unique_ptr<SpriteRegistry> m_spriteRegistryImpl;
+    std::unique_ptr<MeshTypeRegistry> m_typeRegistryImpl;
+    std::unique_ptr<ModelRegistry> m_modelRegistryImpl;
+    std::unique_ptr<NodeRegistry> m_nodeRegistryImpl;
+    std::unique_ptr<EntityRegistry> m_entityRegistryImpl;
+    std::unique_ptr<ViewportRegistry> m_viewportRegistryImpl;
+    std::unique_ptr<ControllerRegistry> m_controllerRegistryImpl;
+
 public:
+    // NOTE KI initialization order!
+    event::Dispatcher* const m_dispatcher;
+
     ProgramRegistry* const m_programRegistry;
+
+    audio::AudioEngine* const m_audioEngine;
+    physics::PhysicsEngine* const m_physicsEngine;
+
+    script::CommandEngine* const m_commandEngine;
+    script::ScriptEngine* const m_scriptEngine;
 
     MaterialRegistry* const m_materialRegistry;
     SpriteRegistry* const m_spriteRegistry;
@@ -46,32 +99,4 @@ public:
     EntityRegistry* const m_entityRegistry;
     ViewportRegistry* const m_viewportRegistry;
     ControllerRegistry* const m_controllerRegistry;
-
-    physics::PhysicsEngine* const m_physicsEngine;
-    audio::AudioEngine* const m_audioEngine;
-
-    event::Dispatcher* const m_dispatcher;
-
-private:
-    const Assets& m_assets;
-
-    bool m_prepared = false;
-
-    std::shared_ptr<std::atomic<bool>> m_alive;
-
-    ProgramRegistry m_programRegistryImpl;
-
-    physics::PhysicsEngine m_physicsEngineImpl;
-    audio::AudioEngine m_audioEngineImpl;
-
-    MaterialRegistry m_materialRegistryImpl;
-    SpriteRegistry m_spriteRegistryImpl;
-    MeshTypeRegistry m_typeRegistryImpl;
-    ModelRegistry m_modelRegistryImpl;
-    NodeRegistry m_nodeRegistryImpl;
-    EntityRegistry m_entityRegistryImpl;
-    ViewportRegistry m_viewportRegistryImpl;
-    ControllerRegistry m_controllerRegistryImpl;
-
-    event::Dispatcher m_dispatcherImpl;
 };

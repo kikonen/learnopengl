@@ -13,6 +13,8 @@
 #include "NodeRegistry.h"
 #include "MaterialRegistry.h"
 #include "ModelRegistry.h"
+#include "SpriteRegistry.h"
+
 
 namespace {
     ki::type_id idBase{ 0 };

@@ -129,7 +129,10 @@ https://glad.dav1d.de
 
 ## Quaternions
 - https://eater.net/quaternions
+- https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
+- http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
 - https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
+- https://gamedev.stackexchange.com/questions/149006/direction-vector-to-quaternion
 - https://glm.g-truc.net/0.9.0/api/a00135.html
 - https://miz-ar.info/glm-notes/gtc/quaternion.html
 - https://www.3dgep.com/understanding-quaternions/

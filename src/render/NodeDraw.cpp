@@ -9,6 +9,7 @@
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/ProgramRegistry.h"
 
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
