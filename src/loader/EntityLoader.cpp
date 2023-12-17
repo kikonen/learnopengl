@@ -28,6 +28,7 @@
 #include "ControllerLoader.h"
 #include "GeneratorLoader.h"
 #include "PhysicsLoader.h"
+#include "ScriptLoader.h"
 
 namespace loader {
     EntityLoader::EntityLoader(
@@ -47,7 +48,8 @@ namespace loader {
         AudioLoader& audioLoader,
         ControllerLoader& controllerLoader,
         GeneratorLoader& generatorLoader,
-        PhysicsLoader& physicsLoader)
+        PhysicsLoader& physicsLoader,
+        ScriptLoader& scriptLoader) const
     {
         for (const auto& entry : node) {
             auto& data = entities.emplace_back();
@@ -62,7 +64,8 @@ namespace loader {
                 audioLoader,
                 controllerLoader,
                 generatorLoader,
-                physicsLoader);
+                physicsLoader,
+                scriptLoader);
         }
     }
 
@@ -77,7 +80,8 @@ namespace loader {
         AudioLoader& audioLoader,
         ControllerLoader& controllerLoader,
         GeneratorLoader& generatorLoader,
-        PhysicsLoader& physicsLoader) const
+        PhysicsLoader& physicsLoader,
+        ScriptLoader& scriptLoader) const
     {
         loadEntityClone(
             node,
@@ -92,7 +96,8 @@ namespace loader {
             audioLoader,
             controllerLoader,
             generatorLoader,
-            physicsLoader);
+            physicsLoader,
+            scriptLoader);
     }
 
     void EntityLoader::loadEntityClone(
@@ -108,7 +113,8 @@ namespace loader {
         AudioLoader& audioLoader,
         ControllerLoader& controllerLoader,
         GeneratorLoader& generatorLoader,
-        PhysicsLoader& physicsLoader) const
+        PhysicsLoader& physicsLoader,
+        ScriptLoader& scriptLoader) const
     {
         bool hasClones = false;
 
@@ -294,11 +300,10 @@ namespace loader {
                     hasClones = true;
             }
             else if (k == "script") {
-                data.script = readString(v);
+                scriptLoader.loadScript(v, data.script);
             }
             else if (k == "script_file") {
-                std::string filename = readString(v) + ".lua";
-                data.script = readFile(filename);
+                scriptLoader.loadScript(v, data.script);
             }
             else {
                 reportUnknown("entity_entry", k, v);
@@ -328,7 +333,8 @@ namespace loader {
                             audioLoader,
                             controllerLoader,
                             generatorLoader,
-                            physicsLoader);
+                            physicsLoader,
+                            scriptLoader);
                         clones.push_back(clone);
                     }
                 }

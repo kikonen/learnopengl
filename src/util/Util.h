@@ -41,6 +41,10 @@ namespace util
 
     bool fileExists(std::string_view filePath);
 
+    std::string readFile(
+        std::string_view basePath,
+        std::string_view filename);
+
     std::string dirName(std::string_view filePath);
 
     std::string baseName(std::string_view filePath);

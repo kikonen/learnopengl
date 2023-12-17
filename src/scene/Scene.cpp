@@ -16,10 +16,11 @@
 
 #include "model/Viewport.h"
 
-#include "command/CommandEngine.h"
-#include "command/ScriptEngine.h"
-#include "command/CommandAPI.h"
-#include "command/api/InvokeLuaFunction.h"
+#include "event/Dispatcher.h"
+
+#include "script/ScriptEngine.h"
+#include "script/CommandEngine.h"
+#include "script/api/InvokeLuaFunction.h"
 
 #include "controller/NodeController.h"
 
@@ -27,10 +28,13 @@
 
 #include "registry/Registry.h"
 #include "registry/MaterialRegistry.h"
+#include "registry/SpriteRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
+#include "registry/ProgramRegistry.h"
+#include "registry/MeshTypeRegistry.h"
 
 #include "engine/UpdateContext.h"
 
@@ -64,9 +68,6 @@ Scene::Scene(
     m_alive(std::make_shared<std::atomic<bool>>(true)),
     m_registry(registry)
 {
-    m_commandEngine = std::make_unique<CommandEngine>(assets);
-    m_scriptEngine = std::make_unique<ScriptEngine>(assets);
-
     {
         m_mainRenderer = std::make_unique<NodeRenderer>(true);
         m_rearRenderer = std::make_unique<NodeRenderer>(true);
@@ -128,9 +129,6 @@ void Scene::prepare()
     m_renderData->prepare();
 
     auto* registry = m_registry.get();
-
-    m_commandEngine->prepare(registry);
-    m_scriptEngine->prepare(m_commandEngine.get());
 
     m_batch->prepare(m_assets, registry);
     m_nodeDraw->prepare(m_assets, registry);
@@ -267,7 +265,7 @@ void Scene::update(const UpdateContext& ctx)
 {
     //if (ctx.clock.frameCount > 120) {
     if (m_loaded) {
-        m_commandEngine->update(ctx);
+        m_registry->m_commandEngine->update(ctx);
     }
 
     if (auto root = m_registry->m_nodeRegistry->m_root) {
@@ -519,18 +517,17 @@ void Scene::bindComponents(Node* node)
     }
 
     if (m_assets.useScript) {
-        m_scriptEngine->registerNode(node);
-        m_scriptEngine->registerScript(node, NodeScriptId::init, type->m_script);
+        auto* se = m_registry->m_scriptEngine;
+        se->registerNode(node);
 
-        m_scriptEngine->runScript(node, NodeScriptId::init);
+        const auto& functions = se->runScripts(node);
 
-        // NOTE KI start via queue, in sync with next update cycle
-        if (m_scriptEngine->hasFunction(node, "start")) {
-            m_commandEngine->addCommand(
-                std::make_unique<InvokeLuaFunction>(
+        for (const auto& fnName : functions) {
+            m_registry->m_commandEngine->addCommand(
+                std::make_unique<script::InvokeLuaFunction>(
                     -1,
                     node->m_id,
-                    "start"));
+                    fnName));
         }
     }
 }

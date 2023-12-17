@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <filesystem>
 
+#include <fmt/format.h>
+
 namespace util {
     bool isBool(std::string_view s)
     {
@@ -82,6 +84,36 @@ namespace util {
     {
         std::ifstream f(std::string{ filePath });
         return f.good();
+    }
+
+    std::string readFile(std::string_view basePath, std::string_view filename)
+    {
+        std::stringstream buffer;
+
+        std::string filePath = util::joinPath(
+            basePath,
+            filename);
+
+        if (!util::fileExists(filePath)) {
+            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
+        }
+
+        try {
+            std::ifstream t(filePath);
+            t.exceptions(std::ifstream::badbit);
+            //t.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+            buffer << t.rdbuf();
+        }
+        catch (std::ifstream::failure e) {
+            std::string what{ e.what() };
+            const auto msg = fmt::format(
+                "FILE_NOT_SUCCESFULLY_READ: {}\n{}",
+                filePath, what);
+
+            throw std::runtime_error{ msg };
+        }
+        return buffer.str();
     }
 
     std::string dirName(std::string_view filePath)

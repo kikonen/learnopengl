@@ -15,6 +15,7 @@
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
+#include "registry/ProgramRegistry.h"
 
 namespace {
 }

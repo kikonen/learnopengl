@@ -46,11 +46,6 @@ struct NodeRenderFlags {
     bool physics = false;
 };
 
-enum class NodeScriptId {
-    init,
-    run
-};
-
 class CustomMaterial;
 class Program;
 class Registry;
@@ -109,8 +104,6 @@ public:
     NodeRenderFlags m_flags;
 
     int m_priority = { 0 };
-
-    std::string m_script;
 
     Program* m_program{ nullptr };
     Program* m_depthProgram{ nullptr };

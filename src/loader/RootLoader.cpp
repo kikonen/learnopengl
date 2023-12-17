@@ -4,6 +4,8 @@
 
 #include "model/Node.h"
 
+#include "event/Dispatcher.h"
+
 #include "registry/Registry.h"
 #include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"

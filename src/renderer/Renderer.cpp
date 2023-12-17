@@ -2,7 +2,10 @@
 
 #include "render/RenderContext.h"
 
+#include "model/Node.h"
+
 #include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
 
 
 Renderer::~Renderer()

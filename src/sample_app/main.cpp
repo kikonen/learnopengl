@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <exception>
+#include <thread>
 
 #include "asset/AABB.h"
 

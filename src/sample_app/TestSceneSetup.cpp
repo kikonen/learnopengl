@@ -5,6 +5,8 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "event/Dispatcher.h"
+
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/MeshTypeRegistry.h"
@@ -12,6 +14,7 @@
 #include "registry/ModelRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ViewportRegistry.h"
+#include "registry/ProgramRegistry.h"
 
 #include "engine/AsyncLoader.h"
 

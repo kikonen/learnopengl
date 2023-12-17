@@ -12,6 +12,7 @@
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
+#include "registry/ProgramRegistry.h"
 
 #include "CubeRender.h"
 

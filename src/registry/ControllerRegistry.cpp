@@ -2,8 +2,12 @@
 
 #include "engine/UpdateContext.h"
 
+#include "event/Dispatcher.h"
+
 #include "controller/NodeController.h"
+
 #include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
 
 class Node;
 

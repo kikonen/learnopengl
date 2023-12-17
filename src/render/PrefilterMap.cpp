@@ -13,6 +13,8 @@
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
+#include "registry/ProgramRegistry.h"
+
 
 namespace {
     constexpr unsigned int MAX_MIP_LEVELS = 5;

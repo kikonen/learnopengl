@@ -14,6 +14,7 @@
 
 #include "BaseLoader.h"
 #include "RootLoader.h"
+#include "ScriptLoader.h"
 #include "SkyboxLoader.h"
 #include "VolumeLoader.h"
 #include "CubeMapLoader.h"
@@ -142,6 +143,7 @@ namespace loader {
         SkyboxData m_skybox;
 
         RootData m_root;
+        ScriptEngineData m_scriptEngineData;
 
         std::vector<EntityData> m_entities;
 
@@ -151,6 +153,8 @@ namespace loader {
         std::vector<SpriteData> m_sprites;
 
         RootLoader m_rootLoader;
+
+        ScriptLoader m_scriptLoader;
 
         SkyboxLoader m_skyboxLoader;
         VolumeLoader m_volumeLoader;

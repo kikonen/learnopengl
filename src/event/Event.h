@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <string>
 #include <variant>
 #include <memory>
 
@@ -10,6 +11,7 @@
 #include "ki/uuid.h"
 
 #include "audio/size.h"
+#include "script/size.h"
 
 class UpdateContext;
 class Node;
@@ -18,6 +20,7 @@ class NodeController;
 namespace event {
     enum class Type {
         none = 0,
+
         node_add,
         node_added,
         node_change_parent,
@@ -44,6 +47,8 @@ namespace event {
         animate_rotate,
 
         scene_loaded,
+
+        script_add,
     };
 
     struct NodeAction {
@@ -92,6 +97,11 @@ namespace event {
         glm::vec3 data2{ 0.f };
     };
 
+    struct ScriptAction {
+        ki::object_id target{ 0 };
+        script::script_id id{ 0 };
+    };
+
     struct Event {
         Type type;
         ki::event_id id;
@@ -104,6 +114,7 @@ namespace event {
             AudioSourceAction audioSource;
             AudioListenerAction audioListener;
             AnimateAction animate;
+            ScriptAction script;
         } body;
     };
 

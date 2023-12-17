@@ -13,6 +13,7 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
+#include "registry/ProgramRegistry.h"
 
 #include "renderer/WaterMapRenderer.h"
 
