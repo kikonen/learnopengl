@@ -5,8 +5,9 @@ skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 lights: {}
 cube_maps: {}
-root:
-  type: origo
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Plauer
     type: origo

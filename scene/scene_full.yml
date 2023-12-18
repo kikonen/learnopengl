@@ -21,6 +21,9 @@ root:
   type: origo
   pos: [200, 0, 200]
   xxscript_file: scripts/seq_spin_root
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: zero origo
     id: zero-origo

@@ -11,8 +11,9 @@ skybox:
   xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 lights: {}
 cube_maps: {}
-root:
-  type: origo
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: origo
     model: water_ball

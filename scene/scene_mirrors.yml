@@ -6,6 +6,9 @@ skybox:
   material: skybox
 lights: {}
 cube_maps: {}
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Player
     id: player

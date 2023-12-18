@@ -3,6 +3,9 @@ name: Bunny
 skybox:
   program: g_skybox
   material: skybox/polyhaven/borghese_gardens_2k.hdr
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Player
     id: player

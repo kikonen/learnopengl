@@ -3,6 +3,9 @@ name: Test
 skybox:
   material: skybox
   program: g_skybox
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Player
     id: player
