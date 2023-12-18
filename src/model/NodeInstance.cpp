@@ -22,6 +22,13 @@ void NodeInstance::updateRootMatrix() noexcept
     m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
     m_modelScale = m_scaleMatrix;
 
+    {
+        const auto& wp = m_modelMatrix[3];
+        m_worldPos.x = wp.x;
+        m_worldPos.y = wp.y;
+        m_worldPos.z = wp.z;
+    }
+
     updateModelAxis();
 
     m_dirty = false;
@@ -36,6 +43,13 @@ void NodeInstance::updateModelMatrix(const NodeInstance& parent) noexcept
     updateRotationMatrix();
     m_modelMatrix = parent.m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
     m_modelScale = parent.m_modelScale * m_scaleMatrix;
+
+    {
+        const auto& wp = m_modelMatrix[3];
+        m_worldPos.x = wp.x;
+        m_worldPos.y = wp.y;
+        m_worldPos.z = wp.z;
+    }
 
     updateModelAxis();
 

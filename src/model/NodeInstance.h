@@ -46,6 +46,8 @@ struct NodeInstance {
     glm::mat4 m_translateMatrix{ 1.f };
     glm::mat4 m_scaleMatrix{ 1.f };
 
+    glm::vec3 m_worldPos{ 0.f };
+
     // Rotation for geometry, to align it correct way
     // i.e. not affecting "front"
     glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
@@ -58,9 +60,9 @@ struct NodeInstance {
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
     glm::vec3 m_front{ 0.f, 0.f, 1.f };
 
-    mutable glm::vec3 m_viewUp{ 0.f };
-    mutable glm::vec3 m_viewFront{ 0.f };
-    mutable glm::vec3 m_viewRight{ 0.f };
+    glm::vec3 m_viewUp{ 0.f };
+    glm::vec3 m_viewFront{ 0.f };
+    glm::vec3 m_viewRight{ 0.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::mat4 m_modelScale{ 1.f };
@@ -275,9 +277,9 @@ struct NodeInstance {
         return m_viewRight;
     }
 
-    inline const glm::vec3 getWorldPosition() const noexcept
+    inline const glm::vec3& getWorldPosition() const noexcept
     {
-        return m_modelMatrix[3];
+        return m_worldPos;
     }
 
     inline const glm::vec3 getWorldScale() const noexcept

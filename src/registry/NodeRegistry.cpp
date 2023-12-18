@@ -187,7 +187,7 @@ void NodeRegistry::attachListeners()
             auto* ae = m_registry->m_audioEngine;
             auto id = ae->registerSource(data.soundId);
             if (id) {
-                node->m_audioSourceCount = std::max(data.index, node->m_audioSourceCount);
+                node->m_audioSourceCount = std::max((ki::size_t8)(data.index + 1), node->m_audioSourceCount);
                 node->m_audioSourceIds[data.index] = id;
                 auto* source = ae->getSource(id);
                 source->m_looping = data.looping;

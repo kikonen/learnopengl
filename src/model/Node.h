@@ -69,7 +69,7 @@ public:
         return m_instance.m_entityIndex;
     }
 
-    inline const glm::vec3 getWorldPosition() const noexcept {
+    inline const glm::vec3& getWorldPosition() const noexcept {
         return m_instance.getWorldPosition();
     }
 

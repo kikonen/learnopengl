@@ -151,13 +151,17 @@ namespace audio
 
     void AudioEngine::setListenerPos(
         audio::source_id id,
-        const glm::vec3& pos)
+        const glm::vec3& pos,
+        const glm::vec3& front,
+        const glm::vec3& up)
     {
         const auto& it = m_listeners.find(id);
         if (it == m_listeners.end()) return;
 
         auto& listener = it->second;
         listener->m_pos = pos;
+        listener->m_front = front;
+        listener->m_up = up;
         listener->update();
     }
 
@@ -188,13 +192,15 @@ namespace audio
 
     void AudioEngine::setSourcePos(
         audio::source_id id,
-        const glm::vec3& pos)
+        const glm::vec3& pos,
+        const glm::vec3& front)
     {
         const auto& it = m_sources.find(id);
         if (it == m_sources.end()) return;
 
         auto& source = it->second;
         source->m_pos = pos;
+        source->m_dir = front;
         source->update();
     }
 

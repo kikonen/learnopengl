@@ -53,7 +53,9 @@ namespace audio
 
         void setListenerPos(
             audio::source_id id,
-            const glm::vec3& pos);
+            const glm::vec3& pos,
+            const glm::vec3& front,
+            const glm::vec3& up);
 
         audio::source_id registerSource(
             audio::sound_id soundId);
@@ -63,7 +65,8 @@ namespace audio
 
         void setSourcePos(
             audio::source_id id,
-            const glm::vec3& pos);
+            const glm::vec3& pos,
+            const glm::vec3& front);
 
         audio::sound_id registerSound(std::string_view fullPath);
 
