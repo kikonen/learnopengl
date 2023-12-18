@@ -80,6 +80,7 @@ Assets::Assets()
     showShadowMapView = false;
     showReflectionView = false;
     showRefractionView = false;
+    showObjectIDView = false;
 
     showVolume = false;
     showSelectionVolume = false;
