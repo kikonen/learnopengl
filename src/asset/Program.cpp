@@ -517,7 +517,7 @@ std::vector<std::string> Program::processInclude(
 
     std::string path;
     {
-        path = util::joinPath(
+        path = util::joinPathExt(
             m_assets.shadersDir,
             "",
             "_",

@@ -93,7 +93,7 @@ void MeshLoader::loadData(
         m_defaultMaterial.m_id = Material::DEFAULT_ID;
     }
 
-    std::string filePath = util::joinPath(
+    std::string filePath = util::joinPathExt(
         mesh.m_rootDir,
         mesh.m_meshPath,
         mesh.m_meshName, ".obj");
@@ -417,7 +417,7 @@ void MeshLoader::loadMaterials(
     KI_INFO(fmt::format(
         "LOADER::LOAD_MATERIAL_LIB: lib={}", libraryName));
 
-    std::string filePath = util::joinPath(
+    std::string filePath = util::joinPathExt(
         mesh.m_rootDir,
         mesh.m_meshPath,
         libraryName, "");

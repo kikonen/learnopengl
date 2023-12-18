@@ -353,7 +353,13 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     {
         if (!m_assets.sceneFile.empty()) {
-            loader::Context ctx{ m_assets, alive, m_asyncLoader, m_assets.sceneFile };
+            loader::Context ctx{
+                m_assets,
+                alive,
+                m_asyncLoader,
+                m_assets.sceneDir,
+                m_assets.sceneFile,
+            };
             std::unique_ptr<loader::SceneLoader> loader = std::make_unique<loader::SceneLoader>(ctx);
             m_loaders.push_back(std::move(loader));
         }

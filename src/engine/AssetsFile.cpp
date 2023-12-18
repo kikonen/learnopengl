@@ -46,7 +46,7 @@ void AssetsFile::resolveDirs(
 {
     {
         std::map<const std::string, const std::string> replacements = {
-            { ROOT_DIR, std::filesystem::current_path().string() },
+            { ROOT_DIR, data.rootDir },
         };
 
         for (const auto& pair : replacements) {
@@ -60,7 +60,7 @@ void AssetsFile::resolveDirs(
     {
         std::map<const std::string, const std::string> replacements = {
             { ASSETS_DIR, data.assetsDir },
-            { ROOT_DIR, std::filesystem::current_path().string() },
+            { ROOT_DIR, data.rootDir },
         };
 
         for (const auto& pair : replacements) {
@@ -68,6 +68,8 @@ void AssetsFile::resolveDirs(
             const auto& to   = pair.second;
 
             data.logFile = util::replace(data.logFile, from, to);
+
+            data.sceneDir = util::replace(data.sceneDir, from, to);
             data.sceneFile = util::replace(data.sceneFile, from, to);
 
             data.texturesDir = util::replace(data.texturesDir, from, to);
@@ -90,6 +92,10 @@ void AssetsFile::loadAssets(
         {
             if (k == "log_file") {
                 data.logFile = v.as<std::string>();
+                continue;
+            }
+            if (k == "scene_dir") {
+                data.sceneDir = v.as<std::string>();
                 continue;
             }
             if (k == "scene_file") {

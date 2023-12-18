@@ -1,3 +1,4 @@
+require "module_1"
 
 print("COMMON: init")
 
