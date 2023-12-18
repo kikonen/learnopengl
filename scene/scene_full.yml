@@ -637,7 +637,8 @@ entities:
     material: pool_surface
     program: g_water
     pos: [0, 9.5, -10]
-    rotation: [270.0, 0.0, 0.0]
+    base_rot: [270.0, 0.0, 0.0]
+    front: [0, 1, 0]
     scale: 30
     render_flags:
       no_shadow: true
@@ -657,7 +658,8 @@ entities:
     material: pool_floor
     program: g_tex
     pos: [0.0, 3.7, -10.0]
-    rotation: [270.0, 0.0, 0.0]
+    base_rot: [270.0, 0.0, 0.0]
+    front: [0, 1, 0]
     scale: 30
     render_flags:
       no_shadow: true
@@ -700,6 +702,7 @@ entities:
     depth_program: g_terrain_depth
     pos: [-1200, -5.5, -900]
     xxpos: [-1024, -5.5, -1024]
+    front: [0, 1, 0]
     render_flags:
       depth: true
       xxwireframe: true
@@ -741,7 +744,8 @@ entities:
     material: sea_surface
     program: g_water
     pos: [-1024, 0.0, -1024]
-    rotation: [270.0, 0.0, 0.0]
+    base_rot: [270.0, 0.0, 0.0]
+    front: [0, 1, 0]
     scale: 128
     render_flags:
       no_shadow: true
