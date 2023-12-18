@@ -32,6 +32,12 @@ namespace audio
     void Listener::update()
     {
         alListenerf(AL_GAIN, m_gain);
+
+        updatePos();
+    }
+
+    void Listener::updatePos()
+    {
         alListener3f(AL_POSITION, m_pos.x, m_pos.y, m_pos.z);
         alListener3f(AL_VELOCITY, m_vel.x, m_vel.y, m_vel.z);
 

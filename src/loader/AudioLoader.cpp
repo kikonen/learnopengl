@@ -99,6 +99,21 @@ namespace loader
             else if (k == "path") {
                 data.path = readString(v);
             }
+            else if (k == "reference_distance") {
+                data.referenceDistance = readFloat(v);
+            }
+            else if (k == "max_distance") {
+                data.maxDistance = readFloat(v);
+            }
+            else if (k == "rolloff_factor") {
+                data.rolloffFactor = readFloat(v);
+            }
+            else if (k == "min_gain") {
+                data.minGain = readFloat(v);
+            }
+            else if (k == "max_gain") {
+                data.maxGain = readFloat(v);
+            }
             else if (k == "gain") {
                 data.gain = readFloat(v);
             }
@@ -151,6 +166,11 @@ namespace loader
                 .soundId = soundId,
                 .index = index,
                 .isAutoPlay = data.isAutoPlay,
+                .referenceDistance = data.referenceDistance,
+                .maxDistance = data.maxDistance,
+                .rolloffFactor = data.rolloffFactor,
+                .minGain = data.minGain,
+                .maxGain = data.maxGain,
                 .looping = data.looping,
                 .pitch = data.pitch,
                 .gain = data.gain,

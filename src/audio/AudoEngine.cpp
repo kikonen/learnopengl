@@ -67,7 +67,10 @@ namespace audio
         }
 
         // default: AL_INVERSE_DISTANCE_CLAMPED
-        // alDistanceModel
+        // => NOTE KI *NOT* configurable since changing this requires adjusting *all* other params also
+        alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+        alDopplerFactor(1.f);
+        alSpeedOfSound(343.3);
     }
 
     void AudioEngine::update(const UpdateContext& ctx)
@@ -162,7 +165,7 @@ namespace audio
         listener->m_pos = pos;
         listener->m_front = front;
         listener->m_up = up;
-        listener->update();
+        listener->updatePos();
     }
 
     audio::source_id AudioEngine::registerSource(audio::sound_id soundId)
@@ -201,7 +204,7 @@ namespace audio
         auto& source = it->second;
         source->m_pos = pos;
         source->m_dir = front;
-        source->update();
+        source->updatePos();
     }
 
     audio::sound_id AudioEngine::registerSound(std::string_view fullPath)

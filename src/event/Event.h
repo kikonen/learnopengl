@@ -11,6 +11,8 @@
 #include "ki/uuid.h"
 
 #include "audio/size.h"
+#include "audio/limits.h"
+
 #include "script/size.h"
 
 class UpdateContext;
@@ -68,6 +70,14 @@ namespace event {
         audio::sound_id soundId{ 0 };
         ki::size_t8 index{ 0 };
         bool isAutoPlay{ false };
+
+        float referenceDistance{ audio::REFERENCE_DISTANCE };
+        float maxDistance{ audio::MAX_DISTANCE };
+        float rolloffFactor{ audio::ROLLOFF_FACTOR };
+
+        float minGain{ audio::MIN_GAIN };
+        float maxGain{ audio::MAX_GAIN };
+
         bool looping{ false };
         float pitch{ 1.f };
         float gain{ 1.f };

@@ -5,6 +5,7 @@
 #include "AL/al.h"
 
 #include "size.h"
+#include "limits.h"
 
 
 namespace audio
@@ -16,7 +17,9 @@ namespace audio
         ~Source();
 
         void prepare(const Sound* sound);
+
         void update();
+        void updatePos();
 
         void play();
         void stop();
@@ -30,6 +33,13 @@ namespace audio
         ALuint m_sourceId{ 0 };
 
         audio::sound_id m_soundId{ 0 };
+
+        float m_referenceDistance{ audio::REFERENCE_DISTANCE };
+        float m_maxDistance{ audio::MAX_DISTANCE };
+        float m_rolloffFactor{ audio::ROLLOFF_FACTOR };
+
+        float m_minGain{ audio::MIN_GAIN };
+        float m_maxGain{ audio::MAX_GAIN };
 
         bool m_looping{ false };
 

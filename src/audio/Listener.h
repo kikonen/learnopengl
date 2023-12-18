@@ -13,7 +13,9 @@ namespace audio
         ~Listener();
 
         void prepare();
+
         void update();
+        void updatePos();
 
         audio::listener_id m_id;
 

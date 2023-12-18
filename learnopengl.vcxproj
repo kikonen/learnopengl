@@ -373,6 +373,7 @@
     <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\asset\TextMaterial.h" />
     <ClInclude Include="src\audio\al_call.h" />
+    <ClInclude Include="src\audio\limits.h" />
     <ClInclude Include="src\audio\Listener.h" />
     <ClInclude Include="src\audio\size.h" />
     <ClInclude Include="src\audio\SoundRegistry.h" />

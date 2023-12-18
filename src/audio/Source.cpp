@@ -2,7 +2,10 @@
 
 #include <mutex>
 
+#include <fmt/format.h>
 #include "al_call.h"
+
+#include "util/Log.h"
 
 #include "Sound.h"
 
@@ -41,6 +44,23 @@ namespace audio
         alGenSources(1, &m_sourceId);
         alSourcei(m_sourceId, AL_BUFFER, sound->m_bufferId);
 
+        ALfloat referenceDistance;
+        ALfloat maxDistance;
+        ALfloat rolloffFactor;
+        ALfloat minGain;
+        ALfloat maxGain;
+
+        alGetSourcef(m_sourceId, AL_REFERENCE_DISTANCE, &referenceDistance);
+        alGetSourcef(m_sourceId, AL_MAX_DISTANCE, &maxDistance);
+        alGetSourcef(m_sourceId, AL_ROLLOFF_FACTOR, &rolloffFactor);
+        alGetSourcef(m_sourceId, AL_MIN_GAIN, &minGain);
+        alGetSourcef(m_sourceId, AL_MAX_GAIN, &minGain);
+
+        KI_INFO_OUT(
+            fmt::format(
+            "SOURCE: id={}, referenceDistance={}, maxDistance={}, rolloffFactor={}, minGain={}, maxGain={}",
+            m_id, referenceDistance, maxDistance, rolloffFactor, minGain, maxGain));
+
         // NOTE KI ensure defaults are in place
         update();
     }
@@ -48,10 +68,21 @@ namespace audio
     void Source::update() {
         if (!m_sourceId) return;
 
+        alSourcef(m_sourceId, AL_REFERENCE_DISTANCE, m_referenceDistance);
+        alSourcef(m_sourceId, AL_MAX_DISTANCE, m_maxDistance);
+        alSourcef(m_sourceId, AL_ROLLOFF_FACTOR, m_rolloffFactor);
+
+        alSourcef(m_sourceId, AL_MIN_GAIN, m_minGain);
+        alSourcef(m_sourceId, AL_MAX_GAIN, m_maxGain);
+
         alSourcei(m_sourceId, AL_LOOPING, m_looping ? AL_TRUE : AL_FALSE);
         alSourcef(m_sourceId, AL_PITCH, m_pitch);
         alSourcef(m_sourceId, AL_GAIN, m_gain);
 
+        updatePos();
+    }
+
+    void Source::updatePos() {
         alSource3f(m_sourceId, AL_POSITION, m_pos.x, m_pos.y, m_pos.z);
         alSource3f(m_sourceId, AL_VELOCITY, m_vel.x, m_vel.y, m_vel.z);
         alSource3f(m_sourceId, AL_DIRECTION, m_dir.x, m_dir.y, m_dir.z);
