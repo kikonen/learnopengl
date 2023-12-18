@@ -1,5 +1,7 @@
 #include "AudioEngine.h"
 
+#include <fmt/format.h>
+
 #include "util/Log.h"
 #include "util/Util.h"
 
@@ -158,6 +160,8 @@ namespace audio
         source->prepare(sound);
 
         if (!source->m_sourceId) return 0;
+
+        KI_INFO_OUT(fmt::format("AUDIO: source={}, sound={}", source->m_sourceId, soundId));
 
         const auto& [it, _] = m_sources.insert({ source->m_id, std::move(source) });
         return it->first;
