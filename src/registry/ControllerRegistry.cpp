@@ -52,7 +52,7 @@ void ControllerRegistry::update(const UpdateContext& ctx)
 }
 
 void ControllerRegistry::addController(
-    ki::object_id targetId,
+    ki::node_id targetId,
     NodeController* controller)
 {
     if (!controller) return;

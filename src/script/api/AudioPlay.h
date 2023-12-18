@@ -12,7 +12,7 @@ namespace script
     public:
         AudioPlay(
             script::command_id afterCommandId,
-            ki::object_id nodeId,
+            ki::node_id nodeId,
             int index,
             bool sync) noexcept;
 

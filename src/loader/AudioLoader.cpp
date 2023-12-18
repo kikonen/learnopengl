@@ -116,7 +116,7 @@ namespace loader
 
     void AudioLoader::createAudio(
         const AudioData& data,
-        ki::object_id nodeId)
+        ki::node_id nodeId)
     {
         createListener(data.listener, nodeId);
         createSources(data.sources, nodeId);
@@ -124,7 +124,7 @@ namespace loader
 
     void AudioLoader::createSources(
         const std::vector<SourceData>& sources,
-        const ki::object_id nodeId)
+        const ki::node_id nodeId)
     {
         int index = 0;
         for (const auto& data : sources) {
@@ -134,7 +134,7 @@ namespace loader
 
     void AudioLoader::createSource(
         const SourceData& data,
-        const ki::object_id nodeId,
+        const ki::node_id nodeId,
         const int index)
     {
         if (!data.enabled) return;
@@ -161,7 +161,7 @@ namespace loader
 
     void AudioLoader::createListener(
         const ListenerData& data,
-        const ki::object_id nodeId)
+        const ki::node_id nodeId)
     {
         if (!data.enabled) return;
 

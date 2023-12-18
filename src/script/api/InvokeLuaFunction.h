@@ -11,7 +11,7 @@ namespace script
     public:
         InvokeLuaFunction(
             script::command_id afterCommandId,
-            ki::object_id nodeId,
+            ki::node_id nodeId,
             std::string_view functionName) noexcept;
 
         virtual void execute(

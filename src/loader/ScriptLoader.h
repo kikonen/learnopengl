@@ -37,12 +37,12 @@ namespace loader {
 
         void createScripts(
             const uuids::uuid& rootId,
-            ki::object_id nodeId,
+            ki::node_id nodeId,
             const std::vector<ScriptData>& scripts) const;
 
         void createScript(
             const uuids::uuid& rootId,
-            ki::object_id nodeId,
+            ki::node_id nodeId,
             const ScriptData& data) const;
     };
 }

@@ -33,7 +33,7 @@ struct NodeInstance {
     int m_physicsMatrixLevel = -1;
     int m_physicsLevel = -1;
 
-    ki::object_id m_id{ 0 };
+    ki::node_id m_id{ 0 };
     int m_entityIndex{ -1 };
     int m_flags = { 0 };
 
@@ -65,12 +65,12 @@ struct NodeInstance {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::mat4 m_modelScale{ 1.f };
 
-    inline ki::object_id getId() const noexcept
+    inline ki::node_id getId() const noexcept
     {
         return m_id;
     }
 
-    inline void setId(ki::object_id id) noexcept
+    inline void setId(ki::node_id id) noexcept
     {
         m_id = id;
     }

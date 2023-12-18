@@ -116,7 +116,7 @@ namespace script
     }
 
     void ScriptEngine::bindNodeScript(
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         script::script_id scriptId)
     {
         auto fnName = createNodeFunction(nodeId, scriptId);
@@ -134,7 +134,7 @@ namespace script
     }
 
     std::vector<script::script_id> ScriptEngine::getNodeScripts(
-        ki::object_id nodeId)
+        ki::node_id nodeId)
     {
         const auto it = m_nodeFunctions.find(nodeId);
         if (it == m_nodeFunctions.end()) return {};
@@ -147,7 +147,7 @@ namespace script
     }
 
     std::string ScriptEngine::createNodeFunction(
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         script::script_id scriptId)
     {
         std::lock_guard<std::mutex> lock(m_lock);

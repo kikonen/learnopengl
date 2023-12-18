@@ -13,7 +13,7 @@ namespace script
     public:
         ResumeNode(
             script::command_id afterCommandId,
-            ki::object_id nodeId,
+            ki::node_id nodeId,
             Coroutine* coroutine) noexcept;
 
         virtual void execute(

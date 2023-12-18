@@ -5,7 +5,7 @@ typedef unsigned int size_t32;
 
 namespace ki
 {
-    typedef unsigned int object_id;
+    typedef unsigned int node_id;
     typedef unsigned int mesh_id;
     typedef unsigned int type_id;
     typedef unsigned int material_id;

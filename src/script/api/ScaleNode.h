@@ -11,7 +11,7 @@ namespace script
     public:
         ScaleNode(
             script::command_id afterCommandId,
-            ki::object_id nodeId,
+            ki::node_id nodeId,
             float duration,
             bool relative,
             const glm::vec3& scale) noexcept;

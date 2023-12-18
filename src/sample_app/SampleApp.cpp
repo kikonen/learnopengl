@@ -262,7 +262,7 @@ void SampleApp::selectNode(
     const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
 
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-    ki::object_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
+    ki::node_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
     auto* node = nodeRegistry.getNode(nodeId);
 
     if (selectMode) {

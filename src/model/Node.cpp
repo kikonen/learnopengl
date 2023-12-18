@@ -28,13 +28,13 @@
 #include "render/Batch.h"
 
 namespace {
-    ki::object_id idBase = 100;
+    ki::node_id idBase = 100;
 
     std::mutex object_id_lock{};
 
     const static glm::mat4 IDENTITY_MATRIX{ 1.f };
 
-    ki::object_id nextID() noexcept
+    ki::node_id nextID() noexcept
     {
         std::lock_guard<std::mutex> lock(object_id_lock);
         return ++idBase;
@@ -185,7 +185,7 @@ void Node::setSelectionMaterialIndex(int index)
     }
 }
 
-ki::object_id Node::lua_getId() const noexcept
+ki::node_id Node::lua_getId() const noexcept
 {
     return m_id;
 }

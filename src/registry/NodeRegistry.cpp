@@ -252,7 +252,7 @@ void NodeRegistry::attachListeners()
     }
 }
 
-void NodeRegistry::selectNodeById(ki::object_id id, bool append) const noexcept
+void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
 {
     if (!append) {
         for (auto& x : m_idToNode) {

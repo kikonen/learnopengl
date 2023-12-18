@@ -130,10 +130,6 @@ public:
         m_instance.setDegreesRotation(rot);
     }
 
-    inline void adjustDegreesRotation(const glm::vec3& adjust) noexcept {
-        m_instance.adjustDegreesRotation(adjust);
-    }
-
     inline const glm::vec3& getDegreesRotation() const noexcept {
         return m_instance.getDegreesRotation();
     }
@@ -207,7 +203,7 @@ public:
     inline bool isTagged() { return m_tagMaterialIndex > -1; }
 
 public:
-    ki::object_id lua_getId() const noexcept;
+    ki::node_id lua_getId() const noexcept;
     const std::string& lua_getName() const noexcept;
 
     int lua_getCloneIndex() const noexcept;
@@ -219,7 +215,7 @@ protected:
 public:
     // *INTERNAL* LUID in scene
     // used for object identity in shader
-    const ki::object_id m_id;
+    const ki::node_id m_id;
 
     // UUID of node for persistency
     // => *CAN* be empty for auto generated nodes

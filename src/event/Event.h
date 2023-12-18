@@ -58,12 +58,12 @@ namespace event {
     };
 
     struct ControlAction {
-		ki::object_id target{ 0 };
+		ki::node_id target{ 0 };
         NodeController* controller{ nullptr };
     };
 
     struct NodeAudioSourceAction {
-        ki::object_id target{ 0 };
+        ki::node_id target{ 0 };
 
         audio::sound_id soundId{ 0 };
         int index{ 0 };
@@ -74,7 +74,7 @@ namespace event {
     };
 
     struct NodeAudioListenerAction {
-        ki::object_id target{ 0 };
+        ki::node_id target{ 0 };
 
         bool isDefault{ false };
         float gain{ 1.f };
@@ -89,7 +89,7 @@ namespace event {
     };
 
     struct AnimateAction {
-		ki::object_id target{ 0 };
+		ki::node_id target{ 0 };
 
         int after{ 0 };
         float duration{ 0 };
@@ -99,7 +99,7 @@ namespace event {
     };
 
     struct ScriptAction {
-        ki::object_id target{ 0 };
+        ki::node_id target{ 0 };
         script::script_id id{ 0 };
     };
 

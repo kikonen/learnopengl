@@ -61,7 +61,7 @@ public:
 	}
 
     void addController(
-        ki::object_id targetId,
+        ki::node_id targetId,
         NodeController* controller);
 
 private:
@@ -69,5 +69,5 @@ private:
 
     Registry* m_registry{ nullptr };
 
-    std::unordered_map<ki::object_id, std::vector<NodeController*>> m_controllers;
+    std::unordered_map<ki::node_id, std::vector<NodeController*>> m_controllers;
 };
