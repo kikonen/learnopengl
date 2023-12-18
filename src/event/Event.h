@@ -66,7 +66,7 @@ namespace event {
         ki::node_id target{ 0 };
 
         audio::sound_id soundId{ 0 };
-        int index{ 0 };
+        ki::size_t8 index{ 0 };
         bool isAutoPlay{ false };
         bool looping{ false };
         float pitch{ 1.f };
@@ -91,7 +91,7 @@ namespace event {
     struct AnimateAction {
 		ki::node_id target{ 0 };
 
-        int after{ 0 };
+        script::command_id after{ 0 };
         float duration{ 0 };
         bool relative{ true };
         glm::vec3 data{ 0.f };

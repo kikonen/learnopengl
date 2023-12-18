@@ -16,6 +16,8 @@
 
 #include "physics/Object.h"
 
+#include "audio/AudioEngine.h"
+
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -118,6 +120,20 @@ void Node::update(
     if (m_physics) {
         m_physics->prepare(ctx.m_registry->m_physicsEngine, this);
         m_physics->updateToPhysics(false);
+    }
+
+    if (m_audioSourceCount > 0) {
+        auto* ae = ctx.m_registry->m_audioEngine;
+        const auto& pos = getWorldPosition();
+        for (char i = 0; i < m_audioSourceCount; i++) {
+            ae->setSourcePos(m_audioSourceIds[i], pos);
+        }
+    }
+
+    if (m_audioListenerId > 0) {
+        auto* ae = ctx.m_registry->m_audioEngine;
+        const auto& pos = getWorldPosition();
+        ae->setSourcePos(m_audioListenerId, pos);
     }
 }
 

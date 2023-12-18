@@ -149,6 +149,18 @@ namespace audio
         return it != m_listeners.end() ? it->second.get() : nullptr;
     }
 
+    void AudioEngine::setListenerPos(
+        audio::source_id id,
+        const glm::vec3& pos)
+    {
+        const auto& it = m_listeners.find(id);
+        if (it == m_listeners.end()) return;
+
+        auto& listener = it->second;
+        listener->m_pos = pos;
+        listener->update();
+    }
+
     audio::source_id AudioEngine::registerSource(audio::sound_id soundId)
     {
         auto* sound = m_soundRegistry->getSound(soundId);
@@ -172,6 +184,18 @@ namespace audio
     {
         const auto& it = m_sources.find(id);
         return it != m_sources.end() ? it->second.get() : nullptr;
+    }
+
+    void AudioEngine::setSourcePos(
+        audio::source_id id,
+        const glm::vec3& pos)
+    {
+        const auto& it = m_sources.find(id);
+        if (it == m_sources.end()) return;
+
+        auto& source = it->second;
+        source->m_pos = pos;
+        source->update();
     }
 
     audio::sound_id AudioEngine::registerSound(std::string_view fullPath)

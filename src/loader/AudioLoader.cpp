@@ -126,7 +126,7 @@ namespace loader
         const std::vector<SourceData>& sources,
         const ki::node_id nodeId)
     {
-        int index = 0;
+        ki::size_t8 index = 0;
         for (const auto& data : sources) {
             createSource(data, nodeId, index++);
         }
@@ -135,7 +135,7 @@ namespace loader
     void AudioLoader::createSource(
         const SourceData& data,
         const ki::node_id nodeId,
-        const int index)
+        const ki::size_t8 index)
     {
         if (!data.enabled) return;
 

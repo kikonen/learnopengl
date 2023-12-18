@@ -41,7 +41,7 @@ namespace loader {
         void createSource(
             const SourceData& data,
             const ki::node_id nodeId,
-            const int index);
+            const ki::size_t8 index);
 
         void createListener(
             const ListenerData& data,

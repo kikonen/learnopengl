@@ -51,11 +51,19 @@ namespace audio
         Listener* getListener(
             audio::listener_id id);
 
+        void setListenerPos(
+            audio::source_id id,
+            const glm::vec3& pos);
+
         audio::source_id registerSource(
             audio::sound_id soundId);
 
         Source* getSource(
             audio::source_id id);
+
+        void setSourcePos(
+            audio::source_id id,
+            const glm::vec3& pos);
 
         audio::sound_id registerSound(std::string_view fullPath);
 

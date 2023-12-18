@@ -1,10 +1,12 @@
 #pragma once
 
-typedef unsigned int size_t32;
-//typedef unsigned long t_id;
 
 namespace ki
 {
+    typedef unsigned int size_t32;
+    typedef unsigned char size_t8;
+    //typedef unsigned long t_id;
+
     typedef unsigned int node_id;
     typedef unsigned int mesh_id;
     typedef unsigned int type_id;
