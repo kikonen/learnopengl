@@ -14,15 +14,9 @@ namespace {
 
 namespace audio
 {
-    Sound::Sound(std::string_view fullPath)
-        : m_fullPath(fullPath)
-    {
-    }
-
     Sound::Sound(Sound&& b) noexcept
         : m_id{ b.m_id },
         m_bufferId{ b.m_bufferId },
-        m_fullPath{ b.m_fullPath },
         m_sampleRate{ b.m_sampleRate },
         m_bitDepth{ b.m_bitDepth },
         m_sampleCount{ b.m_sampleCount },
@@ -59,10 +53,10 @@ namespace audio
         m_data.clear();
     }
 
-    bool Sound::load()
+    bool Sound::load(std::string_view fullPath)
     {
         AudioFile<float> audioFile;
-        audioFile.load(m_fullPath);
+        audioFile.load(std::string{ fullPath });
 
         {
             m_sampleRate = audioFile.getSampleRate();
@@ -75,7 +69,7 @@ namespace audio
             m_isMono = audioFile.isMono();
             m_isStereo = audioFile.isStereo();
 
-            std::cout << "file=" << m_fullPath << '\n';
+            KI_INFO_OUT(fmt::format("SOUND: file={}", fullPath));
             audioFile.printSummary();
         }
 

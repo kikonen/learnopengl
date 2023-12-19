@@ -32,10 +32,10 @@ namespace audio
         const auto& it = m_pathToId.find(std::string{ fullPath });
         if (it != m_pathToId.end()) return it->second;
 
-        auto& sound = m_sounds.emplace_back<Sound>({ fullPath });
+        auto& sound = m_sounds.emplace_back<Sound>({});
         sound.m_id = static_cast<audio::sound_id>(m_sounds.size() - 1);
 
-        if (!sound.load()) {
+        if (!sound.load(fullPath)) {
             m_sounds.pop_back();
             return 0;
         }
