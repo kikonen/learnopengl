@@ -11,7 +11,7 @@ namespace script
 {
     StartNode::StartNode(
         script::command_id afterCommandId,
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         Coroutine* coroutine) noexcept
         : NodeCommand(afterCommandId, nodeId, 0, false),
         m_coroutine(coroutine)

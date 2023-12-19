@@ -83,6 +83,7 @@ https://glad.dav1d.de
 - http://lua-users.org/wiki/ScopeTutorial
 - https://sol2.readthedocs.io/en/latest/tutorial/all-the-things.html
 - https://sol2.readthedocs.io/en/latest/tutorial/functions.html
+- https://github.com/ThePhD/sol2/issues/90
 
 ## SKybox
 - https://www.flipcode.com/archives/Skybox_With_A_Single_Quad.shtml

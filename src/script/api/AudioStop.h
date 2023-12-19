@@ -12,7 +12,7 @@ namespace script
     public:
         AudioStop(
             script::command_id afterCommandId,
-            ki::object_id nodeId,
+            ki::node_id nodeId,
             int index) noexcept;
 
         virtual void bind(

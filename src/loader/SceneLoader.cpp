@@ -108,12 +108,12 @@ namespace loader {
 
     void SceneLoader::load()
     {
-        if (!util::fileExists(m_ctx.m_filename)) {
+        if (!util::fileExists(m_ctx.m_fullPath)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
         }
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
-            std::ifstream fin(this->m_ctx.m_filename);
+            std::ifstream fin(this->m_ctx.m_fullPath);
             YAML::Node doc = YAML::Load(fin);
 
             loadMeta(doc["meta"], m_meta);

@@ -11,7 +11,7 @@ namespace script
     public:
         NodeCommand(
             script::command_id afterCommandId,
-            ki::object_id nodeId,
+            ki::node_id nodeId,
             float duration,
             bool relative) noexcept;
 
@@ -20,7 +20,7 @@ namespace script
         virtual void bind(const UpdateContext& ctx, Node* node) noexcept;
 
     public:
-        const ki::object_id m_nodeId;
+        const ki::node_id m_nodeId;
         const bool m_relative;
 
         Node* m_node{ nullptr };

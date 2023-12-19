@@ -106,7 +106,7 @@ struct EntitySSBO {
         c.z += adjust.z;
     }
 
-    inline void setId(ki::object_id id) {
+    inline void setId(ki::node_id id) {
     //    int r = (id & 0x000000FF) >> 0;
     //    int g = (id & 0x0000FF00) >> 8;
     //    int b = (id & 0x00FF0000) >> 16;

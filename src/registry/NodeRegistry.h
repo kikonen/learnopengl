@@ -91,7 +91,7 @@ public:
     //}
 
     // @return node null if not found
-    inline Node* getNode(const ki::object_id id) const noexcept
+    inline Node* getNode(const ki::node_id id) const noexcept
     {
         const auto& it = m_idToNode.find(id);
         return it != m_idToNode.end() ? it->second : nullptr;
@@ -105,7 +105,7 @@ public:
         return it != m_uuidToNode.end() ? it->second : nullptr;
     }
 
-    void selectNodeById(ki::object_id id, bool append) const noexcept;
+    void selectNodeById(ki::node_id id, bool append) const noexcept;
 
     int countTagged() const noexcept;
     int countSelected() const noexcept;
@@ -192,12 +192,12 @@ private:
 
     Registry* m_registry{ nullptr };
 
-    std::unordered_map<ki::object_id, Node*> m_idToNode;
+    std::unordered_map<ki::node_id, Node*> m_idToNode;
     std::unordered_map<uuids::uuid, Node*> m_uuidToNode;
 
     std::unordered_map<uuids::uuid, NodeVector> m_pendingChildren;
 
-    std::unordered_map<ki::object_id, NodeVector> m_parentToChildren;
+    std::unordered_map<ki::node_id, NodeVector> m_parentToChildren;
 
     Node* m_activeNode{ nullptr };
     Node* m_activeCamera{ nullptr };

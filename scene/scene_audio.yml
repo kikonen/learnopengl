@@ -49,6 +49,7 @@ entities:
     audio:
       source:
         path: audio/Stream Medium 01_8CC7FF9E_normal_mono.wav
+        reference_distance: 6
         xautoplay: true
         xlooping: true
   - name: Four cubes
@@ -59,6 +60,7 @@ entities:
     audio:
       source:
         path: audio/Squeaking Toy Duck 2_DD868BE_normal_mono.wav
+        reference_distance: 3
     clones:
       - pos: [-5.0, 2.0, -5.0]
       - pos: [5.0, 2.0, -5.0]
@@ -82,7 +84,8 @@ entities:
     audio:
       source:
         path: audio/Cow_CE882860_normal_mono.wav
-        gain: 0.6
+        reference_distance: 3
+        gain: 1.0
     script_file: scripts/cow_audio
   - name: wooden floor
     model: quad

@@ -8,7 +8,7 @@ namespace script
 {
     MoveNode::MoveNode(
         script::command_id afterCommandId,
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         float duration,
         bool relative,
         const glm::vec3& position) noexcept

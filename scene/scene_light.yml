@@ -5,8 +5,9 @@ skybox:
   program: g_skybox
   material: skybox
 lights: {}
-root:
-  type: origo
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Player
     id: player

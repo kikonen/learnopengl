@@ -15,7 +15,7 @@ namespace script
 {
     AudioPause::AudioPause(
         script::command_id afterCommandId,
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         int index) noexcept
         : NodeCommand(afterCommandId, nodeId, 0, false),
         m_index(index)

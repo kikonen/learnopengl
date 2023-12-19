@@ -33,7 +33,7 @@ struct NodeInstance {
     int m_physicsMatrixLevel = -1;
     int m_physicsLevel = -1;
 
-    ki::object_id m_id{ 0 };
+    ki::node_id m_id{ 0 };
     int m_entityIndex{ -1 };
     int m_flags = { 0 };
 
@@ -45,6 +45,8 @@ struct NodeInstance {
     glm::vec3 m_position{ 0.f, 0.f, 0.f };
     glm::mat4 m_translateMatrix{ 1.f };
     glm::mat4 m_scaleMatrix{ 1.f };
+
+    glm::vec3 m_worldPos{ 0.f };
 
     // Rotation for geometry, to align it correct way
     // i.e. not affecting "front"
@@ -58,19 +60,19 @@ struct NodeInstance {
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
     glm::vec3 m_front{ 0.f, 0.f, 1.f };
 
-    mutable glm::vec3 m_viewUp{ 0.f };
-    mutable glm::vec3 m_viewFront{ 0.f };
-    mutable glm::vec3 m_viewRight{ 0.f };
+    glm::vec3 m_viewUp{ 0.f };
+    glm::vec3 m_viewFront{ 0.f };
+    glm::vec3 m_viewRight{ 0.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::mat4 m_modelScale{ 1.f };
 
-    inline ki::object_id getId() const noexcept
+    inline ki::node_id getId() const noexcept
     {
         return m_id;
     }
 
-    inline void setId(ki::object_id id) noexcept
+    inline void setId(ki::node_id id) noexcept
     {
         m_id = id;
     }
@@ -275,9 +277,9 @@ struct NodeInstance {
         return m_viewRight;
     }
 
-    inline const glm::vec3 getWorldPosition() const noexcept
+    inline const glm::vec3& getWorldPosition() const noexcept
     {
-        return m_modelMatrix[3];
+        return m_worldPos;
     }
 
     inline const glm::vec3 getWorldScale() const noexcept

@@ -4,7 +4,8 @@
 #include <string_view>
 #include <vector>
 #include <regex>
-
+#include <functional>
+#include <ranges>
 
 namespace util
 {
@@ -35,6 +36,15 @@ namespace util
         std::vector<std::string>& result,
         char separator);
 
+    std::string join(
+        const std::string& s1,
+        const std::string& s2,
+        std::string_view sep);
+
+    std::string join(
+        const std::vector<std::string>& arr,
+        std::string_view sep);
+
     bool matchAny(
         const std::vector<std::regex>& matchers,
         const std::string& str);
@@ -49,7 +59,8 @@ namespace util
 
     std::string baseName(std::string_view filePath);
 
-    std::string joinPath(
+    // Join path and fileExt into end
+    std::string joinPathExt(
         std::string_view rootDir,
         std::string_view parentDir,
         std::string_view baseName,
@@ -58,6 +69,9 @@ namespace util
     std::string joinPath(
         std::string_view rootDir,
         std::string_view baseName);
+
+    std::string joinPath(
+        std::vector<std::string_view> paths);
 
     // https://stackoverflow.com/questions/11421432/how-can-i-output-the-value-of-an-enum-class-in-c11
     template <typename Enumeration>

@@ -3,6 +3,9 @@ name: Test
 skybox:
   program: g_skybox
   material: skybox
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Camera
     type: origo

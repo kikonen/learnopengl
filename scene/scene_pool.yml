@@ -7,8 +7,9 @@ skybox:
   hdri: true
 lights: {}
 cube_maps: {}
-root:
-  type: origo
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Player
     id: player

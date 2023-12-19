@@ -14,7 +14,7 @@ namespace script
 {
     AudioPlay::AudioPlay(
         script::command_id afterCommandId,
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         int index,
         bool sync) noexcept
         : NodeCommand(afterCommandId, nodeId, 0, false),

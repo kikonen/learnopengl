@@ -4,7 +4,7 @@ namespace script
 {
     NodeCommand::NodeCommand(
         script::command_id afterCommandId,
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         float duration,
         bool relative) noexcept
         : Command(afterCommandId, duration),

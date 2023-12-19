@@ -102,7 +102,7 @@ namespace loader {
 
     void ScriptLoader::createScripts(
         const uuids::uuid& rootId,
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         const std::vector<ScriptData>& scripts) const
     {
         for (auto& data : scripts) {
@@ -112,7 +112,7 @@ namespace loader {
 
     void ScriptLoader::createScript(
         const uuids::uuid& rootId,
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         const ScriptData& data) const
     {
         if (!data.enabled) return;

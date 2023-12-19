@@ -11,7 +11,11 @@
 #include "ki/uuid.h"
 
 #include "audio/size.h"
+#include "audio/limits.h"
+
 #include "script/size.h"
+
+#include "size.h"
 
 class UpdateContext;
 class Node;
@@ -58,23 +62,31 @@ namespace event {
     };
 
     struct ControlAction {
-		ki::object_id target{ 0 };
+		ki::node_id target{ 0 };
         NodeController* controller{ nullptr };
     };
 
     struct NodeAudioSourceAction {
-        ki::object_id target{ 0 };
+        ki::node_id target{ 0 };
 
         audio::sound_id soundId{ 0 };
-        int index{ 0 };
+        ki::size_t8 index{ 0 };
         bool isAutoPlay{ false };
+
+        float referenceDistance{ audio::REFERENCE_DISTANCE };
+        float maxDistance{ audio::MAX_DISTANCE };
+        float rolloffFactor{ audio::ROLLOFF_FACTOR };
+
+        float minGain{ audio::MIN_GAIN };
+        float maxGain{ audio::MAX_GAIN };
+
         bool looping{ false };
         float pitch{ 1.f };
         float gain{ 1.f };
     };
 
     struct NodeAudioListenerAction {
-        ki::object_id target{ 0 };
+        ki::node_id target{ 0 };
 
         bool isDefault{ false };
         float gain{ 1.f };
@@ -89,9 +101,9 @@ namespace event {
     };
 
     struct AnimateAction {
-		ki::object_id target{ 0 };
+		ki::node_id target{ 0 };
 
-        int after{ 0 };
+        script::command_id after{ 0 };
         float duration{ 0 };
         bool relative{ true };
         glm::vec3 data{ 0.f };
@@ -99,13 +111,13 @@ namespace event {
     };
 
     struct ScriptAction {
-        ki::object_id target{ 0 };
+        ki::node_id target{ 0 };
         script::script_id id{ 0 };
     };
 
     struct Event {
         Type type;
-        ki::event_id id;
+        event::event_id id;
 
         union {
             NodeAction node;

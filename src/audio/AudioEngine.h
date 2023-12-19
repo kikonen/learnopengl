@@ -1,6 +1,5 @@
 #pragma once
 
-#include <map>
 #include <memory>
 
 #include "AL/alc.h"
@@ -51,11 +50,22 @@ namespace audio
         Listener* getListener(
             audio::listener_id id);
 
+        void setListenerPos(
+            audio::source_id id,
+            const glm::vec3& pos,
+            const glm::vec3& front,
+            const glm::vec3& up);
+
         audio::source_id registerSource(
             audio::sound_id soundId);
 
         Source* getSource(
             audio::source_id id);
+
+        void setSourcePos(
+            audio::source_id id,
+            const glm::vec3& pos,
+            const glm::vec3& front);
 
         audio::sound_id registerSound(std::string_view fullPath);
 
@@ -70,8 +80,8 @@ namespace audio
 
         audio::listener_id m_activeListenerId{ 0 };
 
-        std::map<audio::listener_id, std::unique_ptr<Listener>> m_listeners;
-        std::map<audio::source_id, std::unique_ptr<Source>> m_sources;
+        std::vector<Listener>  m_listeners;
+        std::vector<Source> m_sources;
 
         std::unique_ptr<SoundRegistry> m_soundRegistry;
     };

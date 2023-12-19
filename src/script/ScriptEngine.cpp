@@ -2,6 +2,8 @@
 
 #include <map>
 
+#include <ranges>
+
 #include <fmt/format.h>
 
 #include "util/Util.h"
@@ -29,12 +31,33 @@ namespace script
     {
         m_commandEngine = commandEngine;
 
-        m_lua.open_libraries(sol::lib::base);
-        m_lua.open_libraries(sol::lib::math);
-        m_lua.open_libraries(sol::lib::os);
-        m_lua.open_libraries(sol::lib::io);
-        m_lua.open_libraries(sol::lib::coroutine);
-        m_lua.open_libraries(sol::lib::string);
+        m_lua.open_libraries(
+            sol::lib::base,
+            sol::lib::package,
+            sol::lib::math,
+            sol::lib::os,
+            sol::lib::io,
+            sol::lib::coroutine,
+            sol::lib::string);
+
+        // https://github.com/ThePhD/sol2/issues/90
+        {
+            const std::vector<std::string> paths{
+                m_lua["package"]["path"],
+                util::joinPath({ m_assets.rootDir, m_assets.sceneDir, "scripts", "?.lua" }),
+                util::joinPath({ m_assets.rootDir, m_assets.sceneDir, "lib", "?.lua" }),
+            };
+
+            const auto notEmpty = [](const std::string& s){ return !s.empty(); };
+            auto filtered = paths | std::views::filter(notEmpty);
+
+            const auto packagePath = util::join(
+                std::vector<std::string>{ filtered.begin(), filtered.end() },
+                ";");
+
+            KI_INFO_OUT(fmt::format("LUA: package.path={}", packagePath));
+            m_lua["package"]["path"] = packagePath;
+        }
 
         registerTypes();
 
@@ -93,7 +116,7 @@ namespace script
     }
 
     void ScriptEngine::bindNodeScript(
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         script::script_id scriptId)
     {
         auto fnName = createNodeFunction(nodeId, scriptId);
@@ -111,7 +134,7 @@ namespace script
     }
 
     std::vector<script::script_id> ScriptEngine::getNodeScripts(
-        ki::object_id nodeId)
+        ki::node_id nodeId)
     {
         const auto it = m_nodeFunctions.find(nodeId);
         if (it == m_nodeFunctions.end()) return {};
@@ -124,7 +147,7 @@ namespace script
     }
 
     std::string ScriptEngine::createNodeFunction(
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         script::script_id scriptId)
     {
         std::lock_guard<std::mutex> lock(m_lock);

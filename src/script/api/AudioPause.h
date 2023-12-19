@@ -11,7 +11,7 @@ namespace script
     public:
         AudioPause(
             script::command_id afterCommandId,
-            ki::object_id nodeId,
+            ki::node_id nodeId,
             int index) noexcept;
 
         virtual void bind(

@@ -1,5 +1,7 @@
 #include "Assets.h"
 
+#include <filesystem>
+
 #include <fmt/format.h>
 
 #include "ki/uuid.h"
@@ -47,7 +49,11 @@ Assets::Assets()
     asyncLoaderDelay = 1000;
 
     logFile = "log/development.log";
-    sceneFile = "scene/scene_full.yml";
+
+    sceneDir = "scene";
+    sceneFile = "scene_full.yml";
+
+    rootDir = std::filesystem::current_path().string();
 
     assetsDir = "resources/assets";
     modelsDir = "{{assets_dir}}";
@@ -74,6 +80,7 @@ Assets::Assets()
     showShadowMapView = false;
     showReflectionView = false;
     showRefractionView = false;
+    showObjectIDView = false;
 
     showVolume = false;
     showSelectionVolume = false;

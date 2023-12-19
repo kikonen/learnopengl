@@ -4,6 +4,8 @@
 #include <fstream>
 #include <algorithm>
 #include <filesystem>
+#include <functional>
+#include <ranges>
 
 #include <fmt/format.h>
 
@@ -52,6 +54,27 @@ namespace util {
         while (std::getline(f, s, separator)) {
             result.emplace_back(s);
         }
+    }
+
+    std::string join(
+        const std::string& s1,
+        const std::string& s2,
+        std::string_view sep)
+    {
+        if (s1.empty()) return s2;
+        if (s2.empty()) return s1;
+
+        return fmt::format("{}{}{}", s1, sep, s2);
+    }
+
+    std::string join(
+        const std::vector<std::string>& arr,
+        std::string_view sep)
+    {
+        // https://stackoverflow.com/questions/5689003/how-to-implode-a-vector-of-strings-into-a-string-the-elegant-way
+        return fmt::format(
+            "{}",
+            fmt::join(arr, sep));
     }
 
     std::string replace(
@@ -134,7 +157,7 @@ namespace util {
         return p.string();
     }
 
-    std::string joinPath(
+    std::string joinPathExt(
         std::string_view rootDir,
         std::string_view parentDir,
         std::string_view baseName,
@@ -180,6 +203,21 @@ namespace util {
 
         if (!baseName.empty()) {
             std::string path{ baseName };
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        return filePath.string();
+    }
+
+    std::string joinPath(
+        std::vector<std::string_view> parts)
+    {
+        std::filesystem::path filePath;
+
+        for (const auto& part : parts) {
+            if (part.empty()) continue;
+            std::string path{ part };
             std::replace(path.begin(), path.end(), '/', '\\');
             filePath /= path;
         }

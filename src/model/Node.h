@@ -69,7 +69,7 @@ public:
         return m_instance.m_entityIndex;
     }
 
-    inline const glm::vec3 getWorldPosition() const noexcept {
+    inline const glm::vec3& getWorldPosition() const noexcept {
         return m_instance.getWorldPosition();
     }
 
@@ -128,10 +128,6 @@ public:
 
     inline void setDegreesRotation(const glm::vec3& rot) noexcept {
         m_instance.setDegreesRotation(rot);
-    }
-
-    inline void adjustDegreesRotation(const glm::vec3& adjust) noexcept {
-        m_instance.adjustDegreesRotation(adjust);
     }
 
     inline const glm::vec3& getDegreesRotation() const noexcept {
@@ -207,7 +203,7 @@ public:
     inline bool isTagged() { return m_tagMaterialIndex > -1; }
 
 public:
-    ki::object_id lua_getId() const noexcept;
+    ki::node_id lua_getId() const noexcept;
     const std::string& lua_getName() const noexcept;
 
     int lua_getCloneIndex() const noexcept;
@@ -219,13 +215,14 @@ protected:
 public:
     // *INTERNAL* LUID in scene
     // used for object identity in shader
-    const ki::object_id m_id;
+    const ki::node_id m_id;
 
     // UUID of node for persistency
     // => *CAN* be empty for auto generated nodes
     uuids::uuid m_uuid;
 
     audio::listener_id m_audioListenerId{ 0 };
+    ki::size_t8 m_audioSourceCount{ 0 };
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds;
 
     // NOTE KI type needed with node for practicality reasons

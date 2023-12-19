@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "audio/limits.h"
+
 namespace loader
 {
     struct ListenerData {
@@ -17,6 +19,13 @@ namespace loader
         bool isAutoPlay{ false };
 
         std::string path;
+
+        float referenceDistance{ audio::REFERENCE_DISTANCE };
+        float maxDistance{ audio::MAX_DISTANCE };
+        float rolloffFactor{ audio::ROLLOFF_FACTOR };
+
+        float minGain{ audio::MIN_GAIN };
+        float maxGain{ audio::MAX_GAIN };
 
         bool looping{ false };
 
