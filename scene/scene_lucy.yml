@@ -98,15 +98,13 @@ entities:
       sources:
         - path: audio/Spring Wind Up_EF911B61_normal_mono.wav
           gain: 0.6
-          reference_distance: 1
-          max_distance: 10
-        - path: audio/Music Box Swan Lake_D4BAFC9B_normal_mono.wav
           reference_distance: 10
-          max_distance: 100
-          rolloff_factor: 1
-          min_gain: 1
-          max_gain: 100
-          gain: 1
+          rolloff_factor: 2
+        - path: audio/Music Box Swan Lake_D4BAFC9B_normal_mono.wav
+          reference_distance: 15
+          rolloff_factor: 4
+          gain: 2
+          max_gain: 1
           loop: true
     script_file: scripts/anim_lucy
   - name: Big mirror 2

@@ -44,25 +44,27 @@ namespace audio
         alGenSources(1, &m_sourceId);
         alSourcei(m_sourceId, AL_BUFFER, sound->m_bufferId);
 
-        ALfloat referenceDistance;
-        ALfloat maxDistance;
-        ALfloat rolloffFactor;
-        ALfloat minGain;
-        ALfloat maxGain;
+        {
+            ALfloat referenceDistance;
+            ALfloat maxDistance;
+            ALfloat rolloffFactor;
+            ALfloat minGain;
+            ALfloat maxGain;
 
-        alGetSourcef(m_sourceId, AL_REFERENCE_DISTANCE, &referenceDistance);
-        alGetSourcef(m_sourceId, AL_MAX_DISTANCE, &maxDistance);
-        alGetSourcef(m_sourceId, AL_ROLLOFF_FACTOR, &rolloffFactor);
-        alGetSourcef(m_sourceId, AL_MIN_GAIN, &minGain);
-        alGetSourcef(m_sourceId, AL_MAX_GAIN, &minGain);
+            alGetSourcef(m_sourceId, AL_REFERENCE_DISTANCE, &referenceDistance);
+            alGetSourcef(m_sourceId, AL_MAX_DISTANCE, &maxDistance);
+            alGetSourcef(m_sourceId, AL_ROLLOFF_FACTOR, &rolloffFactor);
+            alGetSourcef(m_sourceId, AL_MIN_GAIN, &minGain);
+            alGetSourcef(m_sourceId, AL_MAX_GAIN, &maxGain);
 
-        KI_INFO_OUT(
-            fmt::format(
-            "SOURCE: id={}, referenceDistance={}, maxDistance={}, rolloffFactor={}, minGain={}, maxGain={}",
-            m_id, referenceDistance, maxDistance, rolloffFactor, minGain, maxGain));
+            KI_INFO_OUT(
+                fmt::format(
+                    "SOURCE: id={}, soundId={}, referenceDistance={}, maxDistance={}, rolloffFactor={}, minGain={}, maxGain={}",
+                    m_id, m_soundId, referenceDistance, maxDistance, rolloffFactor, minGain, maxGain));
+        }
 
-        // NOTE KI ensure defaults are in place
-        update();
+        //// NOTE KI ensure defaults are in place
+        //update();
     }
 
     void Source::update() {

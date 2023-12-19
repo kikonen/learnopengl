@@ -2,6 +2,10 @@
 
 #include <mutex>
 
+#include <fmt/format.h>
+
+#include "util/Log.h"
+
 
 namespace {
     audio::listener_id idBase{ 0 };
@@ -27,6 +31,7 @@ namespace audio
     void Listener::prepare()
     {
         // NOTE KI no auto activate
+        KI_INFO_OUT(fmt::format("LISTENER: id={}", m_id));
     }
 
     void Listener::update()

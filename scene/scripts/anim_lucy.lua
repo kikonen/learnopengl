@@ -1,6 +1,6 @@
 printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
 
-local function animation(coid)
+local function animation_rotate(coid)
   local wid = 0
   local cid = 0
   local dir = 1
@@ -18,9 +18,9 @@ local function animation(coid)
       { after=cid, index=AUDIO_ROTATE })
 
     cid = cmd:rotate(
-      { after=wid, time=20, relative=true },
+      { after=wid, time=40, relative=true },
       { 0, 1, 0 },
-      dir * 720)
+      dir * 720 * 2)
 
     cid = cmd:audioPause(
       { after=cid, index=AUDIO_ROTATE })
@@ -33,7 +33,7 @@ local function animation(coid)
   end
 end
 
-local function animation_2(coid)
+local function animation_scale(coid)
   local wid = 0
   local cid = 0
   local dir = 1
@@ -55,5 +55,5 @@ local function animation_2(coid)
   end
 end
 
-cmd:start({}, animation)
---  cmd:start({}, animation_2)
+cmd:start({}, animation_rotate)
+cmd:start({}, animation_scale)
