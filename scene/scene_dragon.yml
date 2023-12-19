@@ -3,6 +3,9 @@ name: Dragon
 skybox:
   program: g_skybox
   material: skybox
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Player
     id: player

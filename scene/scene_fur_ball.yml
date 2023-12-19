@@ -6,8 +6,9 @@ skybox:
   material: skybox/polyhaven/circus_arena_2k.hdr
 lights: {}
 cube_maps: {}
-root:
-  type: origo
+script:
+  scripts:
+    - path: lib/common
 entities:
   - name: Player
     id: player
@@ -59,7 +60,7 @@ entities:
     audio:
       source:
         path: audio/Cow_CE882860_normal_mono.wav
-        gain: 0.4
+        gain: 1.0
     script_file: scripts/cow_audio
     repeat:
       x_count: 5

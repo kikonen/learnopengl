@@ -24,7 +24,7 @@ namespace script
         CommandAPI(
             ScriptEngine* scriptEngine,
             CommandEngine* commandEngine,
-            ki::object_id nodeId);
+            ki::node_id nodeId);
         ~CommandAPI() = default;
 
     public:
@@ -77,7 +77,7 @@ namespace script
     private:
         CommandEngine* const m_commandEngine;
         ScriptEngine* const m_scriptEngine;
-        const ki::object_id m_nodeId;
+        const ki::node_id m_nodeId;
 
         std::vector<Coroutine*> m_coroutines;
     };

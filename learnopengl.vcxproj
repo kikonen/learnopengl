@@ -373,12 +373,14 @@
     <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\asset\TextMaterial.h" />
     <ClInclude Include="src\audio\al_call.h" />
+    <ClInclude Include="src\audio\limits.h" />
     <ClInclude Include="src\audio\Listener.h" />
     <ClInclude Include="src\audio\size.h" />
     <ClInclude Include="src\audio\SoundRegistry.h" />
     <ClInclude Include="src\audio\Source.h" />
     <ClInclude Include="src\audio\AudioEngine.h" />
     <ClInclude Include="src\audio\Sound.h" />
+    <ClInclude Include="src\event\size.h" />
     <ClInclude Include="src\script\api\AudioPause.h" />
     <ClInclude Include="src\script\api\AudioPlay.h" />
     <ClInclude Include="src\script\api\AudioStop.h" />

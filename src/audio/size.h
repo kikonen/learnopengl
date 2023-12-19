@@ -2,7 +2,7 @@
 
 namespace audio
 {
-    typedef unsigned int sound_id;
-    typedef unsigned int source_id;
-    typedef unsigned int listener_id;
+    typedef unsigned short sound_id;
+    typedef unsigned short source_id;
+    typedef unsigned short listener_id;
 }

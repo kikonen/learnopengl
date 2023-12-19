@@ -11,19 +11,16 @@ namespace audio
 {
     struct Sound {
         Sound() = default;
-        Sound(std::string_view fullPath);
+        Sound(Sound&&) noexcept;
         ~Sound();
 
         // main thread
         void prepare();
 
         // worker thread
-        bool load();
+        bool load(std::string_view fullPath);
 
         audio::sound_id m_id{ 0 };
-
-        std::string m_fullPath;
-
         ALuint m_bufferId{ 0 };
 
         int m_sampleRate{ 0 };

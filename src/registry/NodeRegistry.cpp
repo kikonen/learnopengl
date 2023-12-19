@@ -187,8 +187,14 @@ void NodeRegistry::attachListeners()
             auto* ae = m_registry->m_audioEngine;
             auto id = ae->registerSource(data.soundId);
             if (id) {
+                node->m_audioSourceCount = std::max((ki::size_t8)(data.index + 1), node->m_audioSourceCount);
                 node->m_audioSourceIds[data.index] = id;
                 auto* source = ae->getSource(id);
+                source->m_referenceDistance = data.referenceDistance;
+                source->m_maxDistance = data.maxDistance;
+                source->m_rolloffFactor = data.rolloffFactor;
+                source->m_minGain = data.minGain;
+                source->m_maxGain = data.maxGain;
                 source->m_looping = data.looping;
                 source->m_gain = data.gain;
                 source->m_pitch = data.pitch;
@@ -252,7 +258,7 @@ void NodeRegistry::attachListeners()
     }
 }
 
-void NodeRegistry::selectNodeById(ki::object_id id, bool append) const noexcept
+void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
 {
     if (!append) {
         for (auto& x : m_idToNode) {

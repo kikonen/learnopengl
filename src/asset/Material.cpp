@@ -290,7 +290,7 @@ const std::string Material::getTexturePath(
     std::string texturePath;
     {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-        texturePath = util::joinPath(
+        texturePath = util::joinPathExt(
             resolveBaseDir(assets),
             m_path,
             textureName, "");

@@ -10,7 +10,7 @@ namespace script
 {
     InvokeLuaFunction::InvokeLuaFunction(
         script::command_id afterCommandId,
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         std::string_view functionName) noexcept
         : NodeCommand(afterCommandId, nodeId, 0, false),
         m_functionName(functionName)

@@ -99,6 +99,21 @@ namespace loader
             else if (k == "path") {
                 data.path = readString(v);
             }
+            else if (k == "reference_distance") {
+                data.referenceDistance = readFloat(v);
+            }
+            else if (k == "max_distance") {
+                data.maxDistance = readFloat(v);
+            }
+            else if (k == "rolloff_factor") {
+                data.rolloffFactor = readFloat(v);
+            }
+            else if (k == "min_gain") {
+                data.minGain = readFloat(v);
+            }
+            else if (k == "max_gain") {
+                data.maxGain = readFloat(v);
+            }
             else if (k == "gain") {
                 data.gain = readFloat(v);
             }
@@ -116,7 +131,7 @@ namespace loader
 
     void AudioLoader::createAudio(
         const AudioData& data,
-        ki::object_id nodeId)
+        ki::node_id nodeId)
     {
         createListener(data.listener, nodeId);
         createSources(data.sources, nodeId);
@@ -124,9 +139,9 @@ namespace loader
 
     void AudioLoader::createSources(
         const std::vector<SourceData>& sources,
-        const ki::object_id nodeId)
+        const ki::node_id nodeId)
     {
-        int index = 0;
+        ki::size_t8 index = 0;
         for (const auto& data : sources) {
             createSource(data, nodeId, index++);
         }
@@ -134,8 +149,8 @@ namespace loader
 
     void AudioLoader::createSource(
         const SourceData& data,
-        const ki::object_id nodeId,
-        const int index)
+        const ki::node_id nodeId,
+        const ki::size_t8 index)
     {
         if (!data.enabled) return;
 
@@ -151,6 +166,11 @@ namespace loader
                 .soundId = soundId,
                 .index = index,
                 .isAutoPlay = data.isAutoPlay,
+                .referenceDistance = data.referenceDistance,
+                .maxDistance = data.maxDistance,
+                .rolloffFactor = data.rolloffFactor,
+                .minGain = data.minGain,
+                .maxGain = data.maxGain,
                 .looping = data.looping,
                 .pitch = data.pitch,
                 .gain = data.gain,
@@ -161,7 +181,7 @@ namespace loader
 
     void AudioLoader::createListener(
         const ListenerData& data,
-        const ki::object_id nodeId)
+        const ki::node_id nodeId)
     {
         if (!data.enabled) return;
 

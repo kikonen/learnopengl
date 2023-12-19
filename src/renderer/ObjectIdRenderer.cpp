@@ -15,7 +15,7 @@
 #include "registry/ProgramRegistry.h"
 
 
-ki::object_id ObjectIdRenderer::getObjectId(
+ki::node_id ObjectIdRenderer::getObjectId(
     const RenderContext& ctx,
     float screenPosX,
     float screenPosY,
@@ -73,7 +73,7 @@ ki::object_id ObjectIdRenderer::getObjectId(
         m_idBuffer->unbind(ctx);
     }
 
-    const ki::object_id nodeId =
+    const ki::node_id nodeId =
         data[0] +
         data[1] * 256 +
         data[2] * 256 * 256;

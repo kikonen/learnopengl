@@ -32,19 +32,19 @@ namespace loader {
 
         void createAudio(
             const AudioData& data,
-            const ki::object_id nodeId);
+            const ki::node_id nodeId);
 
         void createSources(
             const std::vector<SourceData>& sources,
-            const ki::object_id nodeId);
+            const ki::node_id nodeId);
 
         void createSource(
             const SourceData& data,
-            const ki::object_id nodeId,
-            const int index);
+            const ki::node_id nodeId,
+            const ki::size_t8 index);
 
         void createListener(
             const ListenerData& data,
-            const ki::object_id nodeId);
+            const ki::node_id nodeId);
     };
 }

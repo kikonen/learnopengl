@@ -63,7 +63,11 @@ public:
     int asyncLoaderDelay;
 
     std::string logFile;
+
+    std::string sceneDir;
     std::string sceneFile;
+
+    std::string rootDir;
 
     std::string assetsDir;
     std::string modelsDir;

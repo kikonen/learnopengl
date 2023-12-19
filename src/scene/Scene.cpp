@@ -534,7 +534,7 @@ void Scene::bindComponents(Node* node)
     }
 }
 
-ki::object_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)
+ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)
 {
     if (m_objectIdRenderer->isEnabled()) {
         m_objectIdRenderer->render(ctx);

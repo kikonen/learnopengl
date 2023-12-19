@@ -88,7 +88,7 @@ namespace script
     CommandAPI::CommandAPI(
         ScriptEngine* scriptEngine,
         CommandEngine* commandEngine,
-        ki::object_id nodeId)
+        ki::node_id nodeId)
         :m_scriptEngine(scriptEngine),
         m_commandEngine(commandEngine),
         m_nodeId(nodeId)

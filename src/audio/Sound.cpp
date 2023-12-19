@@ -1,7 +1,5 @@
 #include "Sound.h"
 
-#include <mutex>
-
 #include <fmt/format.h>
 #include <AudioFile.h>
 
@@ -12,23 +10,25 @@
 
 
 namespace {
-    audio::sound_id idBase{ 0 };
-
-    std::mutex id_lock{};
-
-    audio::sound_id nextID()
-    {
-        std::lock_guard<std::mutex> lock(id_lock);
-        return ++idBase;
-    }
 }
 
 namespace audio
 {
-    Sound::Sound(std::string_view fullPath)
-        : m_id(nextID()),
-        m_fullPath(fullPath)
+    Sound::Sound(Sound&& b) noexcept
+        : m_id{ b.m_id },
+        m_bufferId{ b.m_bufferId },
+        m_sampleRate{ b.m_sampleRate },
+        m_bitDepth{ b.m_bitDepth },
+        m_sampleCount{ b.m_sampleCount },
+        m_lengthInSeconds{ b.m_lengthInSeconds },
+        m_channelCount{ b.m_channelCount },
+        m_isMono{ b.m_isMono },
+        m_isStereo{ b.m_isStereo },
+        m_format{ b.m_format },
+        m_data{ std::move(b.m_data) }
     {
+        // b is moved now
+        b.m_bufferId = 0;
     }
 
     Sound::~Sound()
@@ -53,10 +53,10 @@ namespace audio
         m_data.clear();
     }
 
-    bool Sound::load()
+    bool Sound::load(std::string_view fullPath)
     {
         AudioFile<float> audioFile;
-        audioFile.load(m_fullPath);
+        audioFile.load(std::string{ fullPath });
 
         {
             m_sampleRate = audioFile.getSampleRate();
@@ -69,7 +69,7 @@ namespace audio
             m_isMono = audioFile.isMono();
             m_isStereo = audioFile.isStereo();
 
-            std::cout << "file=" << m_fullPath << '\n';
+            KI_INFO_OUT(fmt::format("SOUND: file={}", fullPath));
             audioFile.printSummary();
         }
 

@@ -53,7 +53,7 @@ std::shared_future<ModelMesh*> ModelRegistry::getMesh(
     std::lock_guard<std::mutex> lock(m_meshes_lock);
 
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-    std::string key = util::joinPath(
+    std::string key = util::joinPathExt(
         rootDir,
         meshPath,
         meshName, "");

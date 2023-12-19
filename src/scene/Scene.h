@@ -85,7 +85,7 @@ public:
     const std::vector<NodeController*>* getActiveCameraControllers() const;
 
     void bindComponents(Node* node);
-    ki::object_id getObjectID(const RenderContext& ctx, float posx, float posy);
+    ki::node_id getObjectID(const RenderContext& ctx, float posx, float posy);
 
     std::shared_ptr<Viewport> m_mainViewport{ nullptr };
     std::shared_ptr<Viewport> m_rearViewport{ nullptr };

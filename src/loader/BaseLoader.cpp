@@ -515,7 +515,7 @@ namespace loader
 
     std::string BaseLoader::readFile(std::string_view filename) const
     {
-        return util::readFile(m_ctx.m_dirname, filename);
+        return util::readFile(m_ctx.m_dirName, filename);
     }
 
     void BaseLoader::reportUnknown(

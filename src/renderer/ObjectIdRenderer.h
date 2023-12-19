@@ -12,7 +12,7 @@ public:
     ObjectIdRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
     virtual ~ObjectIdRenderer() {};
 
-    ki::object_id getObjectId(
+    ki::node_id getObjectId(
         const RenderContext& ctx,
         float screenPosX,
         float screenPosY,

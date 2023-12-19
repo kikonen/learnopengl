@@ -8,7 +8,7 @@ namespace script
 {
     ResumeNode::ResumeNode(
         script::command_id afterCommandId,
-        ki::object_id nodeId,
+        ki::node_id nodeId,
         Coroutine* coroutine) noexcept
         : NodeCommand(afterCommandId, nodeId, 0, false),
         m_coroutine(coroutine)
