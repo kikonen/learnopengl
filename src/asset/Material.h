@@ -11,7 +11,7 @@
 
 struct MaterialSSBO;
 
-enum class BasicMaterial {
+enum class BasicMaterial : std::underlying_type_t<std::byte> {
     basic,
     gold,
     silver,
@@ -20,7 +20,7 @@ enum class BasicMaterial {
     selection
 };
 
-enum class MaterialType {
+enum class MaterialType : std::underlying_type_t<std::byte> {
     asset,
     model,
     texture,

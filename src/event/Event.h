@@ -22,7 +22,7 @@ class Node;
 class NodeController;
 
 namespace event {
-    enum class Type {
+    enum class Type : std::underlying_type_t<std::byte> {
         none = 0,
 
         node_add,

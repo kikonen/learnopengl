@@ -3,7 +3,7 @@
 #include "DrawCommands.h"
 
 namespace backend {
-    enum class RenderType {
+    enum class RenderType : std::underlying_type_t<std::byte> {
         buffer,
         flush,
         draw

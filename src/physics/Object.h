@@ -10,7 +10,7 @@ class Node;
 namespace physics {
     class PhysicsEngine;
 
-    enum class BodyType {
+    enum class BodyType : std::underlying_type_t<std::byte> {
         none,
         box,
         sphere,
@@ -38,7 +38,7 @@ namespace physics {
         glm::quat quat{ 1.f, 0.f, 0.f, 0.f };
     };
 
-    enum class GeomType {
+    enum class GeomType : std::underlying_type_t<std::byte> {
         none,
         plane,
         box,

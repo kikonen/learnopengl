@@ -5,7 +5,7 @@
 #include "glm/glm.hpp"
 #include <stduuid/uuid.h>
 
-enum class ViewportEffect {
+enum class ViewportEffect : std::underlying_type_t<std::byte> {
     none = 0,
     invert = 1,
     grayScale = 2,

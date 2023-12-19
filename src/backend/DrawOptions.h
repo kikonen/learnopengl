@@ -5,7 +5,7 @@
 namespace backend {
     // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDrawElementsInstanced.xhtml
     struct DrawOptions {
-        enum class Type {
+        enum class Type : std::underlying_type_t<std::byte> {
             none,
             elements,
             arrays,

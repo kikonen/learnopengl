@@ -1,6 +1,6 @@
 #pragma once
 
-enum class EntityType {
+enum class EntityType : std::underlying_type_t<std::byte> {
     origo,
     container,
     model,
