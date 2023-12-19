@@ -380,6 +380,7 @@
     <ClInclude Include="src\audio\Source.h" />
     <ClInclude Include="src\audio\AudioEngine.h" />
     <ClInclude Include="src\audio\Sound.h" />
+    <ClInclude Include="src\event\size.h" />
     <ClInclude Include="src\script\api\AudioPause.h" />
     <ClInclude Include="src\script\api\AudioPlay.h" />
     <ClInclude Include="src\script\api\AudioStop.h" />

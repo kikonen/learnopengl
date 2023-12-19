@@ -15,6 +15,8 @@
 
 #include "script/size.h"
 
+#include "size.h"
+
 class UpdateContext;
 class Node;
 class NodeController;
@@ -115,7 +117,7 @@ namespace event {
 
     struct Event {
         Type type;
-        ki::event_id id;
+        event::event_id id;
 
         union {
             NodeAction node;

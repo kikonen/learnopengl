@@ -20,7 +20,7 @@ namespace event {
 
         void dispatchEvents(const UpdateContext& ctx);
 
-        inline ki::event_id send(Event& evt)
+        inline event::event_id send(Event& evt)
         {
             evt.id = nextID();
             m_queue.enqueue(evt);
@@ -34,14 +34,14 @@ namespace event {
         }
 
     private:
-        inline ki::event_id nextID() {
+        inline event::event_id nextID() {
             return m_baseId++;
         }
 
     private:
         const Assets& m_assets;
 
-        std::atomic<ki::event_id> m_baseId{ 1 };
+        std::atomic<event::event_id> m_baseId{ 1 };
 
         eventpp::EventQueue<
             Type,
