@@ -10,6 +10,7 @@ namespace audio
 {
     struct Listener {
         Listener();
+        Listener(Listener&&) noexcept;
         ~Listener();
 
         void prepare();
@@ -17,7 +18,7 @@ namespace audio
         void update();
         void updatePos();
 
-        audio::listener_id m_id;
+        audio::listener_id m_id{ 0 };
 
         float m_gain{ 1.f };
 

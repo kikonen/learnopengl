@@ -1,7 +1,5 @@
 #include "Source.h"
 
-#include <mutex>
-
 #include <fmt/format.h>
 #include "al_call.h"
 
@@ -10,22 +8,32 @@
 #include "Sound.h"
 
 namespace {
-    audio::source_id idBase{ 0 };
-
-    std::mutex id_lock{};
-
-    audio::source_id nextID()
-    {
-        std::lock_guard<std::mutex> lock(id_lock);
-        return ++idBase;
-    }
 }
 
 namespace audio
 {
     Source::Source()
-        : m_id{ nextID() }
     {
+    }
+
+    Source::Source(Source&& b) noexcept
+        : m_id{ b.m_id },
+        m_sourceId{ b.m_sourceId },
+        m_soundId{ b.m_soundId },
+        m_referenceDistance{ b.m_referenceDistance },
+        m_maxDistance{ b.m_maxDistance },
+        m_rolloffFactor{ b.m_rolloffFactor },
+        m_minGain{ b.m_minGain  },
+        m_maxGain{ b.m_maxGain },
+        m_looping{ b.m_looping },
+        m_pitch{ b.m_pitch },
+        m_gain{ b.m_gain },
+        m_pos{ b.m_pos },
+        m_vel{ b.m_vel },
+        m_dir{ b.m_dir }
+    {
+        // NOTE KI b is moved now
+        b.m_sourceId = 0;
     }
 
     Source::~Source()
@@ -36,10 +44,9 @@ namespace audio
     }
 
     void Source::prepare(const Sound* sound) {
-        if (!sound) return;
+        if (m_sourceId) return;
 
         m_soundId = sound->m_id;
-        if (!sound->m_bufferId) return;
 
         alGenSources(1, &m_sourceId);
         alSourcei(m_sourceId, AL_BUFFER, sound->m_bufferId);
@@ -90,30 +97,30 @@ namespace audio
         alSource3f(m_sourceId, AL_DIRECTION, m_dir.x, m_dir.y, m_dir.z);
     }
 
-    void Source::play()
+    void Source::play() const
     {
         if (isPlaying()) return;
         alSourcePlay(m_sourceId);
     }
 
-    void Source::stop()
+    void Source::stop() const
     {
         alSourceStop(m_sourceId);
     }
 
-    void Source::pause()
+    void Source::pause() const
     {
         alSourcePause(m_sourceId);
     }
 
-    bool Source::isPlaying()
+    bool Source::isPlaying() const
     {
         ALint state;
         alGetSourcei(m_sourceId, AL_SOURCE_STATE, &state);
         return state == AL_PLAYING;
     }
 
-    bool Source::isPaused()
+    bool Source::isPaused() const
     {
         ALint state;
         alGetSourcei(m_sourceId, AL_SOURCE_STATE, &state);

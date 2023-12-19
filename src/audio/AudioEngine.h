@@ -1,6 +1,5 @@
 #pragma once
 
-#include <map>
 #include <memory>
 
 #include "AL/alc.h"
@@ -81,8 +80,8 @@ namespace audio
 
         audio::listener_id m_activeListenerId{ 0 };
 
-        std::map<audio::listener_id, std::unique_ptr<Listener>> m_listeners;
-        std::map<audio::source_id, std::unique_ptr<Source>> m_sources;
+        std::vector<Listener>  m_listeners;
+        std::vector<Source> m_sources;
 
         std::unique_ptr<SoundRegistry> m_soundRegistry;
     };

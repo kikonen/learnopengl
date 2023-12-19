@@ -4,18 +4,25 @@
 
 namespace audio
 {
+    SoundRegistry::SoundRegistry()
+    {
+        // NOTE KI null entries to avoid need for "- 1" math
+        m_sounds.emplace_back<Sound>({});
+    }
+
+    void SoundRegistry::clear()
+    {
+        std::lock_guard<std::mutex> lock(m_lock);
+        m_sounds.clear();
+    }
+
     Sound* SoundRegistry::getSound(
         audio::sound_id id)
     {
         std::lock_guard<std::mutex> lock(m_lock);
 
-        const auto& it = m_sounds.find(id);
-        if (it == m_sounds.end()) return nullptr;
-
-        auto& sound = it->second;
-        sound.prepare();
-
-        return &sound;
+        if (id < 1 || id >= m_sounds.size()) return nullptr;
+        return &m_sounds[id];
     }
 
     audio::sound_id SoundRegistry::registerSound(std::string_view fullPath)
@@ -25,11 +32,14 @@ namespace audio
         const auto& it = m_pathToId.find(std::string{ fullPath });
         if (it != m_pathToId.end()) return it->second;
 
-        Sound sound{ fullPath };
+        auto& sound = m_sounds.emplace_back<Sound>({ fullPath });
+        sound.m_id = static_cast<audio::sound_id>(m_sounds.size() - 1);
 
-        if (!sound.load()) return 0;
+        if (!sound.load()) {
+            m_sounds.pop_back();
+            return 0;
+        }
 
-        m_sounds.insert({ sound.m_id, sound });
         m_pathToId.insert({ std::string{ fullPath }, sound.m_id });
 
         return sound.m_id;

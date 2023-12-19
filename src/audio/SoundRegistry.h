@@ -13,8 +13,10 @@ namespace audio
     class SoundRegistry final
     {
     public:
-        SoundRegistry() = default;
+        SoundRegistry();;
         ~SoundRegistry() = default;
+
+        void clear();
 
         // main thread
         Sound* getSound(audio::sound_id id);
@@ -24,7 +26,7 @@ namespace audio
 
     private:
         std::unordered_map<std::string, audio::sound_id> m_pathToId;
-        std::unordered_map<audio::sound_id, Sound> m_sounds;
+        std::vector<Sound> m_sounds;
 
         std::mutex m_lock{};
     };

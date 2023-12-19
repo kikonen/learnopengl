@@ -14,6 +14,7 @@ namespace audio
 
     struct Source {
         Source();
+        Source(Source&&) noexcept;
         ~Source();
 
         void prepare(const Sound* sound);
@@ -21,14 +22,14 @@ namespace audio
         void update();
         void updatePos();
 
-        void play();
-        void stop();
-        void pause();
+        void play() const;
+        void stop() const;
+        void pause() const;
 
-        bool isPlaying();
-        bool isPaused();
+        bool isPlaying() const;
+        bool isPaused() const;
 
-        audio::source_id m_id;
+        audio::source_id m_id{ 0 };
 
         ALuint m_sourceId{ 0 };
 

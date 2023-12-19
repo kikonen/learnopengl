@@ -22,16 +22,24 @@ namespace audio
     AudioEngine::AudioEngine(const Assets& assets)
         : m_assets(assets),
         m_soundRegistry(std::make_unique<SoundRegistry>())
-    {}
+    {
+        // NOTE KI null entries to avoid need for "- 1" math
+        m_listeners.emplace_back<Listener>({});
+        m_sources.emplace_back<Source>({});
+    }
 
     AudioEngine::~AudioEngine()
     {
-        for (const auto& it : m_sources) {
-            it.second->stop();
+        for (const auto& source : m_sources) {
+            if (!source.m_id) continue;
+            source.stop();
         }
 
         m_listeners.clear();
         m_sources.clear();
+
+        // NOTE KI MUST close buffers before closing context
+        m_soundRegistry->clear();
 
         if (m_context) {
             alcDestroyContext(m_context);
@@ -70,7 +78,7 @@ namespace audio
         // => NOTE KI *NOT* configurable since changing this requires adjusting *all* other params also
         alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
         alDopplerFactor(1.f);
-        alSpeedOfSound(343.3);
+        alSpeedOfSound(343.3f);
     }
 
     void AudioEngine::update(const UpdateContext& ctx)
@@ -86,17 +94,19 @@ namespace audio
         auto* listener = getListener(m_activeListenerId);
 
         if (!listener) {
-            for (const auto& it : m_sources) {
-                it.second->pause();
+            for (const auto& source : m_sources) {
+                if (!source.m_id) continue;
+                source.pause();
             }
             return;
         }
 
         listener->update();
 
-        for (const auto& it : m_sources) {
-            if (!it.second->isPaused()) continue;
-            it.second->play();
+        for (const auto& source : m_sources) {
+            if (!source.m_id) continue;
+            if (!source.isPaused()) continue;
+            source.play();
         }
     }
 
@@ -140,16 +150,16 @@ namespace audio
 
     audio::listener_id AudioEngine::registerListener()
     {
-        auto listener = std::make_unique<Listener>();
-        const auto& [it, _]  = m_listeners.insert({ listener->m_id, std::move(listener) });
-        return it->first;
+        Listener& listener = m_listeners.emplace_back<Listener>({});
+        listener.m_id = static_cast<audio::listener_id>(m_listeners.size() - 1);
+        return listener.m_id;
     }
 
     Listener* AudioEngine::getListener(
         audio::listener_id id)
     {
-        const auto& it = m_listeners.find(id);
-        return it != m_listeners.end() ? it->second.get() : nullptr;
+        if (id < 1 || id >= m_listeners.size()) return nullptr;
+        return &m_listeners[id];
     }
 
     void AudioEngine::setListenerPos(
@@ -158,14 +168,13 @@ namespace audio
         const glm::vec3& front,
         const glm::vec3& up)
     {
-        const auto& it = m_listeners.find(id);
-        if (it == m_listeners.end()) return;
+        if (id < 1 || id >= m_listeners.size()) return;
+        auto& listener = m_listeners[id];
 
-        auto& listener = it->second;
-        listener->m_pos = pos;
-        listener->m_front = front;
-        listener->m_up = up;
-        listener->updatePos();
+        listener.m_pos = pos;
+        listener.m_front = front;
+        listener.m_up = up;
+        listener.updatePos();
     }
 
     audio::source_id AudioEngine::registerSource(audio::sound_id soundId)
@@ -174,23 +183,23 @@ namespace audio
         if (!sound) return 0;
 
         sound->prepare();
+        if (!sound->m_bufferId) return 0;
 
-        auto source = std::make_unique<Source>();
-        source->prepare(sound);
+        Source& source = m_sources.emplace_back<Source>({});
+        source.m_id = static_cast<audio::source_id>(m_sources.size() - 1);
 
-        if (!source->m_sourceId) return 0;
+        source.prepare(sound);
 
-        KI_INFO_OUT(fmt::format("AUDIO: source={}, sound={}", source->m_sourceId, soundId));
+        KI_INFO_OUT(fmt::format("AUDIO: id={}, source={}, sound={}", source.m_id, source.m_sourceId, soundId));
 
-        const auto& [it, _] = m_sources.insert({ source->m_id, std::move(source) });
-        return it->first;
+        return source.m_id;
     }
 
     Source* AudioEngine::getSource(
         audio::source_id id)
     {
-        const auto& it = m_sources.find(id);
-        return it != m_sources.end() ? it->second.get() : nullptr;
+        if (id < 1 || id >= m_sources.size()) return nullptr;
+        return &m_sources[id];
     }
 
     void AudioEngine::setSourcePos(
@@ -198,13 +207,12 @@ namespace audio
         const glm::vec3& pos,
         const glm::vec3& front)
     {
-        const auto& it = m_sources.find(id);
-        if (it == m_sources.end()) return;
+        if (id < 1 || id >= m_sources.size()) return;
+        auto& source = m_sources[id];
 
-        auto& source = it->second;
-        source->m_pos = pos;
-        source->m_dir = front;
-        source->updatePos();
+        source.m_pos = pos;
+        source.m_dir = front;
+        source.updatePos();
     }
 
     audio::sound_id AudioEngine::registerSound(std::string_view fullPath)
