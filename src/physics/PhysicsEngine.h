@@ -8,6 +8,7 @@
 #include "asset/Assets.h"
 
 #include "Object.h"
+#include "HeightMap.h"
 
 class UpdateContext;
 
@@ -18,8 +19,6 @@ struct NodeInstance;
 
 
 namespace physics {
-    class Surface;
-
     class PhysicsEngine {
     public:
         PhysicsEngine(const Assets& assets);
@@ -36,12 +35,17 @@ namespace physics {
             m_enabled = enabled;
         }
 
-        void registerObject(Object* obj);
+        physics::physics_id registerObject();
+        Object* getObject(physics::physics_id id);
 
-        Surface* registerSurface(std::unique_ptr<Surface> surface);
+        physics::height_map_id registerHeightMap();
+        HeightMap* getHeightMap(physics::height_map_id id);
+
         float getWorldSurfaceLevel(const glm::vec3& pos);
 
     private:
+        void preparePending(const UpdateContext& ctx);
+
         void enforceBounds(
             const UpdateContext& ctx,
             const MeshType& type,
@@ -59,7 +63,7 @@ namespace physics {
         dSpaceID m_spaceId{ nullptr };
         dJointGroupID m_contactgroupId{ nullptr };
 
-        std::map<dGeomID, Object*> m_objects;
+        std::map<dGeomID, Object*> m_geomToObject;
 
     private:
         const Assets& m_assets;
@@ -78,7 +82,12 @@ namespace physics {
         int m_staticPhysicsLevel{ -1 };
         int m_physicsLevel{ -1 };
 
-        std::vector<std::unique_ptr<Surface>> m_surfaces;
+        std::vector<physics::physics_id> m_pending;
+
+        std::vector<Object*> m_updateObjects;
+        std::vector<Object> m_objects;
+
+        std::vector<HeightMap> m_heightMaps;
     };
 
 }

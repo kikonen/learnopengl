@@ -22,6 +22,22 @@ namespace {
     std::mutex load_lock{};
 }
 
+Image::Image(Image&& o)
+    : m_path{ o.m_path },
+    m_flipped{ o.m_flipped },
+    m_hdri{ o.m_hdri },
+    m_width{ o.m_width },
+    m_height{ o.m_height },
+    m_channels{ o.m_channels },
+    m_is16Bbit{ o.m_is16Bbit },
+    m_data{ o.m_data },
+    m_loaded{ o.m_loaded },
+    m_res{ o.m_res }
+{
+    // NOTE KI o is moved now
+    o.m_data = nullptr;
+}
+
 Image::Image(std::string_view path, bool flipped)
     :Image(path, flipped, false)
 {

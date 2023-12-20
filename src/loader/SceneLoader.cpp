@@ -29,9 +29,6 @@
 
 #include "model/Node.h"
 
-#include "physics/Object.h"
-#include "physics/PhysicsEngine.h"
-
 #include "generator/GridGenerator.h"
 #include "generator/TerrainGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
@@ -85,25 +82,15 @@ namespace loader {
         m_registry = registry;
         m_dispatcher = registry->m_dispatcher;
 
-        m_materialLoader.m_registry = m_registry;
-
-        m_rootLoader.m_registry = m_registry;
-        m_rootLoader.m_dispatcher = m_dispatcher;
-
-        m_scriptLoader.m_registry = m_registry;
-        m_scriptLoader.m_dispatcher = m_dispatcher;
-
-        m_skyboxLoader.m_registry = m_registry;
-        m_skyboxLoader.m_dispatcher = m_dispatcher;
-
-        m_volumeLoader.m_registry = m_registry;
-        m_volumeLoader.m_dispatcher = m_dispatcher;
-
-        m_cubeMapLoader.m_registry = m_registry;
-        m_cubeMapLoader.m_dispatcher = m_dispatcher;
-
-        m_audioLoader.m_registry = m_registry;
-        m_audioLoader.m_dispatcher = m_dispatcher;
+        m_materialLoader.setRegistry(registry);
+        m_rootLoader.setRegistry(registry);
+        m_scriptLoader.setRegistry(registry);
+        m_skyboxLoader.setRegistry(registry);
+        m_volumeLoader.setRegistry(registry);
+        m_cubeMapLoader.setRegistry(registry);
+        m_audioLoader.setRegistry(registry);
+        m_physicsLoader.setRegistry(registry);
+        m_entityLoader.setRegistry(registry);
     }
 
     void SceneLoader::load()
@@ -303,10 +290,6 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
-        {
-            m_audioLoader.createAudio(data.audio, node->m_id);
-        }
-
         if (data.active) {
             event::Event evt { event::Type::node_activate };
             evt.body.node.target = node;
@@ -350,6 +333,11 @@ namespace loader {
                 .data2 = { 360.f, 0.f, 0.f },
             };
             m_dispatcher->send(evt);
+        }
+
+        {
+            m_audioLoader.createAudio(data.audio, node->m_id);
+            m_physicsLoader.createObject(data.physics, node->m_id);
         }
 
         return type;
@@ -649,7 +637,6 @@ namespace loader {
         node->m_camera = m_cameraLoader.createCamera(data.camera);
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
         node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
-        node->m_physics = m_physicsLoader.createObject(data.physics, node);
 
         m_scriptLoader.createScript(
             rootId,

@@ -57,8 +57,8 @@ namespace physics
         if (int numc = dCollide(o1, o2, MAX_CONTACTS, &contact[0].geom, sizeof(dContact)))
         {
             PhysicsEngine* engine = (PhysicsEngine*)data;
-            auto* obj1 = engine->m_objects[o1];
-            auto* obj2 = engine->m_objects[o2];
+            auto* obj1 = engine->m_geomToObject[o1];
+            auto* obj2 = engine->m_geomToObject[o2];
 
             dMatrix3 RI;
             dRSetIdentity(RI);
@@ -77,10 +77,15 @@ namespace physics
     PhysicsEngine::PhysicsEngine(const Assets& assets)
         : m_assets(assets)
     {
+        // NOTE KI null entries to avoid need for "- 1" math
+        m_objects.emplace_back<Object>({});
+        m_heightMaps.emplace_back<HeightMap>({});
     }
 
     PhysicsEngine::~PhysicsEngine()
     {
+        m_objects.clear();
+
         if (m_spaceId) {
             dSpaceDestroy(m_spaceId);
         }
@@ -115,6 +120,12 @@ namespace physics
         m_initialDelay += ctx.m_clock.elapsedSecs;
 
         if (m_initialDelay > 10) {
+            preparePending(ctx);
+
+            for (auto* obj : m_updateObjects) {
+                obj->updateToPhysics(false);
+            }
+
             const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
             const int n = static_cast<int>(dtTotal / STEP_SIZE);
             m_remainder = dtTotal - n * STEP_SIZE;
@@ -149,11 +160,10 @@ namespace physics
                 //    std::cout << pos[0] << ", " << pos[1] << ", " << pos[2] << '\n';
                 //}
 
-                for (const auto& it : m_objects) {
-                    Object* obj = it.second;
-                    if (!(obj->m_bodyId || obj->m_node)) continue;
+                for (const auto& obj : m_objects) {
+                    if (!(obj.m_bodyId || obj.m_node)) continue;
 
-                    obj->updateFromPhysics();
+                    obj.updateFromPhysics();
                 }
             }
         }
@@ -188,6 +198,37 @@ namespace physics
                     }
                 }
             }
+        }
+    }
+
+    void PhysicsEngine::preparePending(const UpdateContext& ctx)
+    {
+        std::map<physics::physics_id, bool> prepared;
+
+        for (const auto& id : m_pending) {
+            auto& obj = m_objects[id];
+            const auto level = obj.m_node->getMatrixLevel();
+            if (obj.m_matrixLevel == level) continue;
+
+            obj.prepare(m_worldId, m_spaceId);
+            obj.updateToPhysics(false);
+
+            if (obj.m_update) {
+                m_updateObjects.push_back(&obj);
+            }
+
+            prepared.insert({ id, true });
+        }
+
+        if (!prepared.empty()) {
+            // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
+            const auto& it = std::remove_if(
+                m_pending.begin(),
+                m_pending.end(),
+                [&prepared](auto& id) {
+                    return prepared.find(id) != prepared.end();
+                });
+            m_pending.erase(it, m_pending.end());
         }
     }
 
@@ -236,17 +277,34 @@ namespace physics
     {
     }
 
-    void PhysicsEngine::registerObject(Object* obj)
+    physics::physics_id PhysicsEngine::registerObject()
     {
-        m_objects.insert({ obj->m_geomId, obj });
+        auto& obj = m_objects.emplace_back<Object>({});
+        obj.m_id = static_cast<physics::physics_id>(m_objects.size() - 1);
+
+        m_pending.push_back(obj.m_id);
+
+        return obj.m_id;
     }
 
-    Surface* PhysicsEngine::registerSurface(std::unique_ptr<Surface> surface)
+    Object* PhysicsEngine::getObject(physics::physics_id id)
     {
-        m_surfaces.push_back(std::move(surface));
-        m_physicsLevel++;
-        m_staticPhysicsLevel++;
-        return m_surfaces.back().get();
+        if (id < 1 || id >= m_objects.size()) return nullptr;
+        return &m_objects[id];
+    }
+
+    physics::height_map_id PhysicsEngine::registerHeightMap()
+    {
+        auto& map = m_heightMaps.emplace_back<HeightMap>({});
+        map.m_id = static_cast<physics::height_map_id>(m_heightMaps.size() - 1);
+
+        return map.m_id;
+    }
+
+    HeightMap* PhysicsEngine::getHeightMap(physics::height_map_id id)
+    {
+        if (id < 1 || id >= m_heightMaps.size()) return nullptr;
+        return &m_heightMaps[id];
     }
 
     float PhysicsEngine::getWorldSurfaceLevel(const glm::vec3& pos)
@@ -254,10 +312,10 @@ namespace physics
         float min = 0.f;
         bool hit = false;
 
-        for (auto& surface : m_surfaces) {
+        for (auto& surface : m_heightMaps) {
             //if (!surface->withinBounds(pos)) continue;
 
-            float level = surface->getLevel(pos);
+            float level = surface.getLevel(pos);
             if (!hit || level > min) min = level;
             hit = true;
         }

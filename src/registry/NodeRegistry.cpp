@@ -21,6 +21,8 @@
 #include "audio/Source.h"
 #include "audio/AudioEngine.h"
 
+#include "physics/PhysicsEngine.h"
+
 #include "script/ScriptEngine.h"
 
 #include "Registry.h"
@@ -232,6 +234,24 @@ void NodeRegistry::attachListeners()
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
             m_registry->m_audioEngine->pauseSource(data.id);
+        });
+
+    dispatcher->addListener(
+        event::Type::physics_add,
+        [this](const event::Event& e) {
+            auto& data = e.body.physics;
+            auto* pe = m_registry->m_physicsEngine;
+            auto* node = getNode(data.target);
+
+            auto id = pe->registerObject();
+
+            if (id) {
+                auto* obj = pe->getObject(id);
+                obj->m_update = data.update;
+                obj->m_body = data.body;
+                obj->m_geom = data.geom;
+                obj->m_node = node;
+            }
         });
 
     if (m_assets.useScript) {

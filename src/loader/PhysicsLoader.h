@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "ki/size.h"
+
 #include "BaseLoader.h"
 
 #include "PhysicsData.h"
@@ -25,9 +27,8 @@ namespace loader {
             const YAML::Node& node,
             physics::Geom& data) const;
 
-        std::unique_ptr<physics::Object> createObject(
+        void createObject(
             const PhysicsData& data,
-            Node* node);
-
+            const ki::node_id nodeId);
     };
 }

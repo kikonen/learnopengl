@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 
+#include "size.h"
 #include "Surface.h"
 
 class Image;
@@ -10,18 +11,12 @@ class Node;
 namespace physics {
     class HeightMap : public Surface {
     public:
-        HeightMap(
-            std::unique_ptr<Image> image)
-            : m_image(std::move(image))
-        {
-        }
+        HeightMap();
+        HeightMap(HeightMap&& o);
 
-        ~HeightMap()
-        {
-            delete[] m_heights;
-        }
+        ~HeightMap();
 
-        void prepare();
+        void prepare(Image* image);
 
         virtual float getLevel(const glm::vec3& pos) override;
 
@@ -32,7 +27,9 @@ namespace physics {
         float getTerrainHeight(float u, float v);
 
     public:
-        const std::unique_ptr<Image> m_image;
+        physics::height_map_id m_id{ 0 };
+
+        //const std::unique_ptr<Image> m_image;
 
         Node* m_origin{ nullptr };
 

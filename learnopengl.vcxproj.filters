@@ -1286,6 +1286,12 @@
     <ClInclude Include="src\event\size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\physics\size.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\Body.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

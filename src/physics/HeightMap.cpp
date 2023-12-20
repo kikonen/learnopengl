@@ -1,5 +1,7 @@
 #include "HeightMap.h"
 
+#include <memory>
+
 #include "util/Log.h"
 #include <fmt/format.h>
 
@@ -8,9 +10,34 @@
 #include "model/Node.h"
 
 namespace physics {
-    void HeightMap::prepare()
+    HeightMap::HeightMap()
+    {}
+
+    HeightMap::HeightMap(HeightMap&& o)
+        : m_id{ o.m_id },
+        //m_image{ std::move(o.m_image) },
+        m_origin{ o.m_origin },
+        m_worldTileSize{ o.m_worldTileSize },
+        m_worldSizeU{ o.m_worldSizeU },
+        m_worldSizeV{ o.m_worldSizeV },
+        m_verticalRange{ o.m_verticalRange },
+        m_horizontalScale{ o.m_horizontalScale },
+        m_height{ o.m_height },
+        m_width{ o.m_width },
+        m_heights{ o.m_heights }
     {
-        const auto& image = *m_image;
+        // NOTE KI o is moved now
+        o.m_heights = nullptr;
+    }
+
+    HeightMap::~HeightMap()
+    {
+        delete[] m_heights;
+    }
+
+    void HeightMap::prepare(Image* _image)
+    {
+        const auto& image = *_image;
 
         const int imageH = image.m_height;
         const int imageW = image.m_width;

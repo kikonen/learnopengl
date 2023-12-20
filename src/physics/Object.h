@@ -1,97 +1,41 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
-
 #include <ode/ode.h>
+
+#include "size.h"
+#include "Body.h"
+#include "Geom.h"
 
 class Node;
 
 namespace physics {
     class PhysicsEngine;
 
-    enum class BodyType : std::underlying_type_t<std::byte> {
-        none,
-        box,
-        sphere,
-        capsule,
-        cylinder,
-    };
-
-    struct Body {
-        BodyType type{ BodyType::none };
-
-        bool kinematic{ false };
-
-        // NOTE KI *SCALED* using scale of node
-        // size{0] == radius
-        glm::vec3 size{ 1.f };
-
-        float density{ 1.f };
-
-        // initial values for physics
-        glm::vec3 linearVel{ 0.f };
-        glm::vec3 angularVel{ 0.f };
-
-        // NOTE KI *ROTATED* using rotation of node
-        // axis + angle
-        glm::quat quat{ 1.f, 0.f, 0.f, 0.f };
-    };
-
-    enum class GeomType : std::underlying_type_t<std::byte> {
-        none,
-        plane,
-        box,
-        sphere,
-        capsule,
-        cylinder,
-    };
-
-    struct Geom {
-        GeomType type{ GeomType::none };
-
-        // NOTE KI *SCALED* using scale of node
-        // size{0] == radius
-        glm::vec3 size{ 1.f };
-
-        glm::quat quat{ 1.f, 0.f, 0.f, 0.f };
-
-        glm::vec4 plane{ 0.f, 1.f, 0.f, 0.f };
-
-        unsigned int category{ UINT_MAX };
-        unsigned int collide{ UINT_MAX };
-    };
-
     struct Object {
-    public:
-        Object(
-            bool update,
-            Body body,
-            Geom geom)
-        : m_update(update),
-            m_body(body),
-            m_geom(geom)
-        {}
-
+        Object();
+        Object(Object&& b) noexcept;
         ~Object();
 
         inline bool ready() const { return m_geomId || m_bodyId; }
 
         void prepare(
-            PhysicsEngine* engine,
-            Node* node);
+            dWorldID worldId,
+            dSpaceID spaceId);
 
         void updateToPhysics(bool force);
-        void updateFromPhysics();
+        void updateFromPhysics() const;
+
+        physics::physics_id m_id{ 0 };
 
         bool m_update{ false };
-        Body m_body;
-        Geom m_geom;
+        Body m_body{};
+        Geom m_geom{};
 
         dMass m_mass;
         dBodyID m_bodyId{ nullptr };
         dGeomID m_geomId{ nullptr };
 
+        int m_matrixLevel{ -1 };
         Node* m_node{ nullptr };
     };
 }

@@ -13,6 +13,9 @@
 #include "audio/size.h"
 #include "audio/limits.h"
 
+#include "physics/Geom.h"
+#include "physics/Body.h"
+
 #include "script/size.h"
 
 #include "size.h"
@@ -45,6 +48,8 @@ namespace event {
         audio_source_play,
         audio_source_stop,
         audio_source_pause,
+
+        physics_add,
 
         animate_wait,
         animate_move,
@@ -92,6 +97,14 @@ namespace event {
         float gain{ 1.f };
     };
 
+    struct PhysicsAction {
+        ki::node_id target{ 0 };
+
+        bool update{ false };
+        physics::Body body;
+        physics::Geom geom;
+    };
+
     struct AudioSourceAction {
         audio::source_id id{ 0 };
     };
@@ -126,6 +139,7 @@ namespace event {
             NodeAudioListenerAction nodeAudioListener;
             AudioSourceAction audioSource;
             AudioListenerAction audioListener;
+            PhysicsAction physics;
             AnimateAction animate;
             ScriptAction script;
         } body;

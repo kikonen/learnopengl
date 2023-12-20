@@ -14,8 +14,6 @@
 
 #include "generator/NodeGenerator.h"
 
-#include "physics/Object.h"
-
 #include "audio/AudioEngine.h"
 
 #include "registry/MeshType.h"
@@ -115,11 +113,6 @@ void Node::update(
         for (auto& child : *children) {
             child->update(ctx);
         }
-    }
-
-    if (m_physics) {
-        m_physics->prepare(ctx.m_registry->m_physicsEngine, this);
-        m_physics->updateToPhysics(false);
     }
 
     if (m_audioSourceCount > 0) {

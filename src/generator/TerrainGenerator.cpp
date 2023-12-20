@@ -70,7 +70,10 @@ void TerrainGenerator::prepareHeightMap(
     // NOTE KI don't flip, otherwise have to reverse offsets
     int res = image->load();
 
-    auto heightMap = std::make_unique<physics::HeightMap>(std::move(image));
+    auto* pe = registry->m_physicsEngine;
+    auto id = pe->registerHeightMap();
+    auto* heightMap = pe->getHeightMap(id);
+
     {
         heightMap->m_origin = &container;
         heightMap->m_verticalRange = m_verticalRange;
@@ -86,8 +89,7 @@ void TerrainGenerator::prepareHeightMap(
 
         heightMap->setAABB(aabb);
     }
-    m_heightMap = static_cast<physics::HeightMap*>(registry->m_physicsEngine->registerSurface(std::move(heightMap)));
-    m_heightMap->prepare();
+    heightMap->prepare(image.get());
 }
 
 void TerrainGenerator::updateTiles(

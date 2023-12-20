@@ -27,11 +27,6 @@ class EntityRegistry;
 class ParticleGenrator;
 class Batch;
 
-struct EntitySSBO;
-
-namespace physics {
-    struct Object;
-}
 
 class Node final
 {
@@ -233,8 +228,6 @@ public:
     std::unique_ptr<ParticleGenerator> m_particleGenerator{ nullptr };
 
     std::unique_ptr<NodeGenerator> m_generator{ nullptr };
-
-    std::unique_ptr<physics::Object> m_physics{ nullptr };
 
     NodeGenerator* m_instancer{ nullptr };
 
