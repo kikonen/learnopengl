@@ -14,8 +14,6 @@
 
 #include "generator/NodeGenerator.h"
 
-#include "audio/AudioEngine.h"
-
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -113,25 +111,6 @@ void Node::update(
         for (auto& child : *children) {
             child->update(ctx);
         }
-    }
-
-    if (m_audioSourceCount > 0) {
-        auto* ae = ctx.m_registry->m_audioEngine;
-        for (ki::size_t8 i = 0; i < m_audioSourceCount; i++) {
-            ae->setSourcePos(
-                m_audioSourceIds[i],
-                getWorldPosition(),
-                getViewFront());
-        }
-    }
-
-    if (m_audioListenerId > 0) {
-        auto* ae = ctx.m_registry->m_audioEngine;
-        ae->setListenerPos(
-            m_audioListenerId,
-            getWorldPosition(),
-            getViewFront(),
-            getViewUp());
     }
 }
 

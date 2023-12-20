@@ -4,6 +4,7 @@
 
 #include "util/Log.h"
 
+#include "model/Node.h"
 
 namespace {
 }
@@ -13,13 +14,16 @@ namespace audio
     Listener::Listener()
     {}
 
-    Listener::Listener(Listener&& b) noexcept
-        : m_id{ b.m_id },
-        m_gain{ b.m_gain },
-        m_pos{ b.m_pos },
-        m_vel{ b.m_vel },
-        m_front{ b.m_front },
-        m_up{ b.m_up }
+    Listener::Listener(Listener&& o) noexcept
+        : m_id{ o.m_id },
+        m_default( o.m_default ),
+        m_gain{ o.m_gain },
+        m_pos{ o.m_pos },
+        m_vel{ o.m_vel },
+        m_front{ o.m_front },
+        m_up{ o.m_up },
+        m_matrixLevel{ o.m_matrixLevel },
+        m_node{ o.m_node }
     {}
 
     Listener::~Listener()
@@ -29,6 +33,19 @@ namespace audio
     {
         // NOTE KI no auto activate
         KI_INFO_OUT(fmt::format("LISTENER: id={}", m_id));
+    }
+
+    void Listener::updateFromNode()
+    {
+        const auto level = m_node ? m_node->getMatrixLevel() : 0;
+        if (m_matrixLevel == level) return;
+        m_matrixLevel = level;
+
+        m_pos = m_node->getWorldPosition();
+        m_front = m_node->getViewFront();
+        m_up = m_node->getViewUp();
+
+        updatePos();
     }
 
     void Listener::update()

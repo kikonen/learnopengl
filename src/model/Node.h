@@ -216,9 +216,7 @@ public:
     // => *CAN* be empty for auto generated nodes
     uuids::uuid m_uuid;
 
-    audio::listener_id m_audioListenerId{ 0 };
-    ki::size_t8 m_audioSourceCount{ 0 };
-    std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds;
+    std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
     // NOTE KI type needed with node for practicality reasons
     MeshType* m_type{ nullptr };

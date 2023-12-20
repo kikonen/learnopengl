@@ -6,6 +6,8 @@
 
 #include "size.h"
 
+class Node;
+
 namespace audio
 {
     struct Listener {
@@ -13,13 +15,18 @@ namespace audio
         Listener(Listener&&) noexcept;
         ~Listener();
 
+        inline bool isReady() const { return m_matrixLevel > -1; }
+
         void prepare();
+
+        void updateFromNode();
 
         void update();
         void updatePos();
 
         audio::listener_id m_id{ 0 };
 
+        bool m_default{ false };
         float m_gain{ 1.f };
 
         glm::vec3 m_pos{ 0.f };
@@ -27,5 +34,8 @@ namespace audio
 
         glm::vec3 m_front{ 0.f, 0.f, -1.f };
         glm::vec3 m_up{ 0.f, 1.f, 0.f };
+
+        int m_matrixLevel{ -1 };
+        Node* m_node{ nullptr };
     };
 }

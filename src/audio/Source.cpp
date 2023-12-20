@@ -5,6 +5,8 @@
 
 #include "util/Log.h"
 
+#include "model/Node.h"
+
 #include "Sound.h"
 
 namespace {
@@ -30,7 +32,9 @@ namespace audio
         m_gain{ o.m_gain },
         m_pos{ o.m_pos },
         m_vel{ o.m_vel },
-        m_dir{ o.m_dir }
+        m_dir{ o.m_dir },
+        m_matrixLevel{ o.m_matrixLevel},
+        m_node{ o.m_node }
     {
         // NOTE KI o is moved now
             o.m_sourceId = 0;
@@ -72,6 +76,18 @@ namespace audio
 
         //// NOTE KI ensure defaults are in place
         //update();
+    }
+
+    void Source::updateFromNode()
+    {
+        const auto level = m_node ? m_node->getMatrixLevel() : 0;
+        if (m_matrixLevel == level) return;
+        m_matrixLevel = level;
+
+        m_pos = m_node->getWorldPosition();
+        m_dir = m_node->getViewFront();
+
+        updatePos();
     }
 
     void Source::update() {

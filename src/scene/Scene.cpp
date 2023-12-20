@@ -24,6 +24,7 @@
 
 #include "controller/NodeController.h"
 
+#include "audio/AudioEngine.h"
 #include "physics/PhysicsEngine.h"
 
 #include "registry/Registry.h"
@@ -271,6 +272,7 @@ void Scene::update(const UpdateContext& ctx)
     if (auto root = m_registry->m_nodeRegistry->m_root) {
         root->update(ctx);
         m_registry->m_physicsEngine->update(ctx);
+        m_registry->m_audioEngine->update(ctx);
     }
 
     for (auto& generator : m_particleGenerators) {

@@ -1,5 +1,7 @@
 #include "AudioEngine.h"
 
+#include <map>
+
 #include <fmt/format.h>
 
 #include "util/Log.h"
@@ -24,8 +26,11 @@ namespace audio
         m_soundRegistry(std::make_unique<SoundRegistry>())
     {
         // NOTE KI null entries to avoid need for "- 1" math
-        m_listeners.emplace_back<Listener>({});
-        m_sources.emplace_back<Source>({});
+        auto& nullListener = m_listeners.emplace_back<Listener>({});
+        auto& nullSource = m_sources.emplace_back<Source>({});
+
+        nullListener.m_matrixLevel = 0;
+        nullSource.m_matrixLevel = 0;
     }
 
     AudioEngine::~AudioEngine()
@@ -83,6 +88,16 @@ namespace audio
 
     void AudioEngine::update(const UpdateContext& ctx)
     {
+        preparePendingListeners(ctx);
+        preparePendingSources(ctx);
+
+        for (auto& listener : m_listeners) {
+            listener.updateFromNode();
+        }
+
+        for (auto& source : m_sources) {
+            source.updateFromNode();
+        }
     }
 
     void AudioEngine::setActiveListener(audio::listener_id id)
@@ -152,6 +167,9 @@ namespace audio
     {
         Listener& listener = m_listeners.emplace_back<Listener>({});
         listener.m_id = static_cast<audio::listener_id>(m_listeners.size() - 1);
+
+        m_pendingListeners.push_back(listener.m_id);
+
         return listener.m_id;
     }
 
@@ -190,6 +208,8 @@ namespace audio
 
         source.prepare(sound);
 
+        m_pendingSources.push_back(source.m_id);
+
         KI_INFO_OUT(fmt::format("AUDIO: id={}, source={}, sound={}", source.m_id, source.m_sourceId, soundId));
 
         return source.m_id;
@@ -218,5 +238,65 @@ namespace audio
     audio::sound_id AudioEngine::registerSound(std::string_view fullPath)
     {
         return m_soundRegistry->registerSound(fullPath);
+    }
+
+    void AudioEngine::preparePendingListeners(const UpdateContext& ctx)
+    {
+        std::map<audio::listener_id, bool> prepared;
+
+        for (const auto& id : m_pendingListeners) {
+            auto& obj = m_listeners[id];
+
+            obj.updateFromNode();
+
+            if (obj.isReady()) {
+                obj.update();
+                if (obj.m_default) {
+                    setActiveListener(obj.m_id);
+                }
+                prepared.insert({ id, true });
+            }
+        }
+
+        if (!prepared.empty()) {
+            // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
+            const auto& it = std::remove_if(
+                m_pendingListeners.begin(),
+                m_pendingListeners.end(),
+                [&prepared](auto& id) {
+                    return prepared.find(id) != prepared.end();
+                });
+            m_pendingListeners.erase(it, m_pendingListeners.end());
+        }
+    }
+
+    void AudioEngine::preparePendingSources(const UpdateContext& ctx)
+    {
+        std::map<audio::source_id, bool> prepared;
+
+        for (const auto& id : m_pendingSources) {
+            auto& obj = m_sources[id];
+
+            obj.updateFromNode();
+
+            if (obj.isReady()) {
+                obj.update();
+                if (obj.m_autoPlay) {
+                    playSource(obj.m_id);
+                }
+                prepared.insert({ id, true });
+            }
+        }
+
+        if (!prepared.empty()) {
+            // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
+            const auto& it = std::remove_if(
+                m_pendingSources.begin(),
+                m_pendingSources.end(),
+                [&prepared](auto& id) {
+                    return prepared.find(id) != prepared.end();
+                });
+            m_pendingSources.erase(it, m_pendingSources.end());
+        }
     }
 }
