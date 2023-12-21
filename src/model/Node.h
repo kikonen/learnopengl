@@ -31,7 +31,7 @@ class Batch;
 class Node final
 {
 public:
-    Node(MeshType* type);
+    Node(const MeshType* type);
     ~Node();
 
     const std::string str() const noexcept;
@@ -218,8 +218,9 @@ public:
 
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
+    bool m_visible{ true };
     // NOTE KI type needed with node for practicality reasons
-    MeshType* m_type{ nullptr };
+    const MeshType* m_type{ nullptr };
 
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };

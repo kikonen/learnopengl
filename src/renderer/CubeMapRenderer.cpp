@@ -178,7 +178,7 @@ bool CubeMapRenderer::render(
             const auto& centerPos = centerNode->getWorldPosition();
             const auto tagPos = centerPos - rootPos;
             tagNode->setPosition(tagPos);
-            tagNode->m_type->m_flags.noDisplay = false;
+            tagNode->m_visible = true;
             //tagNode->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;
         }
     }

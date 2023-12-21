@@ -189,7 +189,7 @@ void Batch::prepare(
 
 void Batch::addCommand(
     const RenderContext& ctx,
-    MeshType* type,
+    const MeshType* type,
     Program* program) noexcept
 {
     auto& cmd = m_batches.emplace_back();
@@ -207,7 +207,7 @@ void Batch::draw(
 {
     const auto type = node.m_type;
 
-    if (type->m_flags.invisible || type->m_flags.noDisplay) return;
+    if (type->m_flags.invisible || !node.m_visible) return;
 
     {
         const bool allowBlend = ctx.m_allowBlend;

@@ -19,7 +19,6 @@
 
 class Registry;
 
-
 //
 // NOTE KI program key is REQUIRED for sorting "gull back face" draws
 // next to each other to avoid redundant state changes
@@ -58,7 +57,7 @@ class Registry;
 
 // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
 struct MeshTypeKey {
-    MeshTypeKey(MeshType* type);
+    MeshTypeKey(const MeshType* type);
 
     bool operator<(const MeshTypeKey& o) const;
 

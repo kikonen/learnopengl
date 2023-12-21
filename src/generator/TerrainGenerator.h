@@ -45,9 +45,9 @@ private:
         Registry* registry,
         Node& container);
 
-    MeshType* createType(
+    ki::type_id createType(
         Registry* registry,
-        MeshType* containerType);
+        const MeshType* containerType);
 
 public:
     int m_worldTileSize{ 100 };

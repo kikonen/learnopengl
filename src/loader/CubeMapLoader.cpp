@@ -32,7 +32,7 @@ namespace loader {
     {
         if (!m_assets.showCubeMapCenter) return;
 
-        auto type = m_registry->m_typeRegistry->getType("<cube_map>");
+        auto* type = m_registry->m_typeRegistry->registerType("<cube_map>");
 
         auto future = m_registry->m_modelRegistry->getMesh(
             "ball_volume",
@@ -62,7 +62,6 @@ namespace loader {
         flags.noFrustum = false;
         flags.noReflect = true;
         flags.noRefract = true;
-        flags.noDisplay = true;
         flags.noSelect = true;
         flags.gbuffer = SHADER_VOLUME.starts_with("g_");
 
@@ -70,6 +69,7 @@ namespace loader {
 
         auto node = new Node(type);
         node->m_uuid = m_assets.cubeMapUUID;
+        node->m_visible = false;
 
         //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
         node->setScale(4.f);

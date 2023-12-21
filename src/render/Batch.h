@@ -76,7 +76,7 @@ public:
 private:
     void addCommand(
         const RenderContext& ctx,
-        MeshType* type,
+        const MeshType* type,
         Program* program) noexcept;
 
     bool inFrustum(

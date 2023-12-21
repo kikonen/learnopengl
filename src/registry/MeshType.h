@@ -35,8 +35,6 @@ struct NodeRenderFlags {
     bool noRefract = false;
     // invisible == permanently invisible
     bool invisible = false;
-    // noDisplay == temporarily hidden
-    bool noDisplay = false;
     bool noFrustum = false;
 
     bool tessellation = false;
@@ -60,11 +58,12 @@ class MeshType final
 
 public:
     MeshType(std::string_view name);
+    MeshType(MeshType&& o);
     ~MeshType();
 
     const std::string str() const noexcept;
 
-    void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
+    //void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
     void setMesh(Mesh* mesh);
 
     inline const Mesh* getMesh() const noexcept {
@@ -97,7 +96,7 @@ public:
     void bind(const RenderContext& ctx);
 
 public:
-    const ki::type_id typeID;
+    ki::type_id m_id{ 0 };
     const std::string m_name;
 
     EntityType m_entityType{ EntityType::origo };
@@ -122,7 +121,7 @@ private:
     bool m_preparedBatch = false;
 
     Mesh* m_mesh{ nullptr };
-    std::unique_ptr<Mesh> m_deleter;
+    //std::unique_ptr<Mesh> m_deleter;
 
     std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
@@ -134,6 +133,6 @@ struct MeshTypeComparator {
     bool operator()(const MeshType* a, const MeshType* b) const {
         if (a->m_drawOptions < b->m_drawOptions) return true;
         else if (b->m_drawOptions < a->m_drawOptions) return false;
-        return a->typeID < b->typeID;
+        return a->m_id < b->m_id;
     }
 };

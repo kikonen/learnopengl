@@ -313,6 +313,7 @@ namespace physics
         bool hit = false;
 
         for (auto& surface : m_heightMaps) {
+            if (!surface.m_id) continue;
             //if (!surface->withinBounds(pos)) continue;
 
             float level = surface.getLevel(pos);

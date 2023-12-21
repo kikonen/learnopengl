@@ -142,29 +142,36 @@ void TerrainGenerator::createTiles(
 
     KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
 
-    auto type = createType(registry, container.m_type);
+    auto typeId = createType(registry, container.m_type);
     {
         auto future = registry->m_modelRegistry->getMesh(
             TERRAIN_QUAD_MESH_NAME,
             m_modelsDir);
         auto* mesh = future.get();
         mesh->setAABB(aabb);
-        type->setMesh(mesh);
-        type->m_drawOptions.patchVertices = 3;
+
+        {
+            auto type = registry->m_typeRegistry->modifyType(typeId);
+            type->setMesh(mesh);
+            type->m_drawOptions.patchVertices = 3;
+        }
     }
 
     // NOTE KI must laod textures in the context of *THIS* material
     // NOTE KI only SINGLE material supported
     int materialIndex = -1;
-    type->modifyMaterials([this, &materialIndex , &materialRegistry, &assets](Material& m) {
-        m.tilingX = (float)m_worldTilesU;
-        m.tilingY = (float)m_worldTilesV;
+    {
+        auto type = registry->m_typeRegistry->modifyType(typeId);
+        type->modifyMaterials([this, &materialIndex, &materialRegistry, &assets](Material& m) {
+            m.tilingX = (float)m_worldTilesU;
+            m.tilingY = (float)m_worldTilesV;
 
-        m.loadTextures(assets);
+            m.loadTextures(assets);
 
-        materialRegistry->add(m);
-        materialIndex = m.m_registeredIndex;
-    });
+            materialRegistry->add(m);
+            materialIndex = m.m_registeredIndex;
+            });
+    }
 
     const glm::vec4 tileVolume = aabb.getVolume();
     const int step = m_worldTileSize;
@@ -207,6 +214,7 @@ void TerrainGenerator::createTiles(
     }
 
     {
+        const auto type = registry->m_typeRegistry->getType(typeId);
         m_node = new Node(type);
         m_node->setVolume(minmax.getVolume());
         m_node->m_instancer = this;
@@ -220,16 +228,15 @@ void TerrainGenerator::createTiles(
     }
 }
 
-MeshType* TerrainGenerator::createType(
+ki::type_id TerrainGenerator::createType(
     Registry* registry,
-    MeshType* containerType)
+    const MeshType* containerType)
 {
-    auto type = registry->m_typeRegistry->getType(containerType->m_name);
+    auto type = registry->m_typeRegistry->registerType(containerType->m_name);
     type->m_entityType = EntityType::terrain;
 
     auto& flags = type->m_flags;
     flags = containerType->m_flags;
-    flags.noDisplay = false;
     flags.invisible = false;
     flags.terrain = true;
 
@@ -249,5 +256,5 @@ MeshType* TerrainGenerator::createType(
     type->m_program = containerType->m_program;
     type->m_depthProgram = containerType->m_depthProgram;
 
-    return type;
+    return type->m_id;
 }

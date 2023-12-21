@@ -66,16 +66,16 @@ namespace loader {
             const uuids::uuid& rootId,
             const EntityData& data);
 
-        MeshType* attachEntityClone(
-            MeshType* type,
+        const MeshType* attachEntityClone(
+            const MeshType* type,
             const uuids::uuid& rootId,
             const EntityData& entity,
             const EntityCloneData& data,
             bool cloned,
             int cloneIndex);
 
-        MeshType* attachEntityCloneRepeat(
-            MeshType* type,
+        const MeshType* attachEntityCloneRepeat(
+            const MeshType* type,
             const uuids::uuid& rootId,
             const EntityData& entity,
             const EntityCloneData& data,
@@ -88,7 +88,7 @@ namespace loader {
             const EntityCloneData& data,
             MeshType* type);
 
-        MeshType* createType(
+        const MeshType* createType(
             bool isRoot,
             const EntityCloneData& data,
             const glm::uvec3& tile);
@@ -115,7 +115,7 @@ namespace loader {
             const glm::uvec3& tile);
 
         Node* createNode(
-            MeshType* type,
+            const MeshType* type,
             const uuids::uuid& rootId,
             const EntityCloneData& data,
             const bool cloned,

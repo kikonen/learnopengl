@@ -99,7 +99,7 @@ namespace loader {
     {
         if (!data.valid()) return;
 
-        auto type = m_registry->m_typeRegistry->getType("<skybox>");
+        auto* type = m_registry->m_typeRegistry->registerType("<skybox>");
         type->m_priority = data.priority;
 
         auto future = m_registry->m_modelRegistry->getMesh(
@@ -118,7 +118,6 @@ namespace loader {
         flags.noFrustum = true;
         //flags.noReflect = true;
         //flags.noRefract = true;
-        flags.noDisplay = false;
         flags.noSelect = true;
         flags.gbuffer = false;// data.programName.starts_with("g_");
 

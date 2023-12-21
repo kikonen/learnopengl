@@ -26,6 +26,7 @@
 #include "script/ScriptEngine.h"
 
 #include "Registry.h"
+#include "MeshTypeRegistry.h"
 #include "MaterialRegistry.h"
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
@@ -38,7 +39,7 @@ namespace {
 
 
 // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-MeshTypeKey::MeshTypeKey(MeshType* type)
+MeshTypeKey::MeshTypeKey(const MeshType* type)
     : type(type)
 {}
 
@@ -47,7 +48,7 @@ bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
     const auto& b = o.type;
     if (a->m_drawOptions < b->m_drawOptions) return true;
     else if (b->m_drawOptions < a->m_drawOptions) return false;
-    return a->typeID < b->typeID;
+    return a->m_id < b->m_id;
 }
 
 
@@ -381,16 +382,23 @@ void NodeRegistry::bindNode(
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    const auto& type = node->m_type;
+    const MeshType* type;
+    {
+        auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
+        t->prepare(m_assets, m_registry);
+
+        type = t;
+        node->m_type = type;
+    }
+    node->prepare(m_assets, m_registry);
+
+    //const auto& type = node->m_type;
     auto* program = type->m_program;
 
     if (type->m_entityType != EntityType::origo) {
         assert(program);
         if (!program) return;
     }
-
-    type->prepare(m_assets, m_registry);
-    node->prepare(m_assets, m_registry);
 
     {
         // NOTE KI more optimal to not switch between culling mode (=> group by it)
@@ -585,9 +593,14 @@ Node* NodeRegistry::findDefaultCamera() const
 void NodeRegistry::bindSkybox(
     Node* node) noexcept
 {
-    const auto& type = node->m_type;
+    const MeshType* type;
+    {
+        auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
+        t->prepare(m_assets, m_registry);
 
-    type->prepare(m_assets, m_registry);
+        type = t;
+        node->m_type = type;
+    }
     node->prepare(m_assets, m_registry);
 
     m_skybox = node;

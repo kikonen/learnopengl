@@ -18,7 +18,7 @@ bool VolumeController::update(
     Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetID);
 
     if (!targetNode) {
-        volumeNode.m_type->m_flags.noDisplay = true;
+        volumeNode.m_visible = false;
         return false;
     }
 
@@ -39,7 +39,7 @@ bool VolumeController::update(
     volumeNode.setPosition(pos);
     volumeNode.setScale(volumeScale);
 
-    volumeNode.m_type->m_flags.noDisplay = false;
+    volumeNode.m_visible = true;
 
     return true;
 }

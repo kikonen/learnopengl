@@ -34,7 +34,7 @@ namespace loader {
     {
         if (!m_assets.showVolume) return;
 
-        auto type = m_registry->m_typeRegistry->getType("<volume>");
+        auto type = m_registry->m_typeRegistry->registerType("<volume>");
 
         auto future = m_registry->m_modelRegistry->getMesh(
             "ball_volume",
@@ -63,7 +63,6 @@ namespace loader {
         flags.noFrustum = false;
         flags.noReflect = true;
         flags.noRefract = true;
-        flags.noDisplay = true;
         flags.noSelect = true;
         flags.gbuffer = SHADER_VOLUME.starts_with("g_");
 
@@ -71,6 +70,7 @@ namespace loader {
 
         auto node = new Node(type);
         node->m_uuid = m_assets.volumeUUID;
+        node->m_visible = false;
 
         // NOTE KI m_radius = 1.73205078
         mesh->prepareVolume();

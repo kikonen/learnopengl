@@ -39,7 +39,7 @@ namespace {
     }
 }
 
-Node::Node(MeshType* type)
+Node::Node(const MeshType* type)
     : m_type(type),
     m_id(nextID())
 {

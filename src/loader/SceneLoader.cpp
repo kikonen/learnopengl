@@ -173,11 +173,11 @@ namespace loader {
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &rootId, &data]() {
             if (data.clones.empty()) {
-                MeshType* type{ nullptr };
+                const MeshType* type{ nullptr };
                 attachEntityClone(type, rootId, data, data.base, false, 0);
             }
             else {
-                MeshType* type{ nullptr };
+                const MeshType* type{ nullptr };
 
                 int cloneIndex = 0;
                 for (auto& cloneData : data.clones) {
@@ -193,8 +193,8 @@ namespace loader {
         });
     }
 
-    MeshType* SceneLoader::attachEntityClone(
-        MeshType* type,
+    const MeshType* SceneLoader::attachEntityClone(
+        const MeshType* type,
         const uuids::uuid& rootId,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -239,8 +239,8 @@ namespace loader {
         return type;
     }
 
-    MeshType* SceneLoader::attachEntityCloneRepeat(
-        MeshType* type,
+    const MeshType* SceneLoader::attachEntityCloneRepeat(
+        const MeshType* type,
         const uuids::uuid& rootId,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -343,12 +343,12 @@ namespace loader {
         return type;
     }
 
-    MeshType* SceneLoader::createType(
+    const MeshType* SceneLoader::createType(
         bool isRoot,
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
-        auto type = m_registry->m_typeRegistry->getType(data.name);
+        auto* type = m_registry->m_typeRegistry->registerType(data.name);
         assignFlags(data, type);
 
         type->m_priority = data.priority;
@@ -597,7 +597,7 @@ namespace loader {
     }
 
     Node* SceneLoader::createNode(
-        MeshType* type,
+        const MeshType* type,
         const uuids::uuid& rootId,
         const EntityCloneData& data,
         const bool cloned,
@@ -643,8 +643,13 @@ namespace loader {
             node->m_id,
             data.script);
 
-        type->setCustomMaterial(
-            m_customMaterialLoader.createCustomMaterial(data.customMaterial, cloneIndex, tile));
+        {
+            auto* t = m_registry->m_typeRegistry->modifyType(type->m_id);
+            t->setCustomMaterial(
+                m_customMaterialLoader.createCustomMaterial(data.customMaterial, cloneIndex, tile));
+            type = t;
+            node->m_type = type;
+        }
 
         return node;
     }

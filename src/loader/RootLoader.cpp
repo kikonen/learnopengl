@@ -37,7 +37,7 @@ namespace loader
     void RootLoader::attachRoot(
         const RootData& data)
     {
-        auto type = m_registry->m_typeRegistry->getType("<root>");
+        auto* type = m_registry->m_typeRegistry->registerType("<root>");
         type->m_entityType = EntityType::origo;
 
         auto& flags = type->m_flags;

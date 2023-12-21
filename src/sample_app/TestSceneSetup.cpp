@@ -49,7 +49,7 @@ void TestSceneSetup::setupEffectExplosion()
     m_asyncLoader->addLoader(m_alive, [this]() {
         Program* program = m_registry->m_programRegistry->getProgram(SHADER_EFFECT);
 
-        auto type = m_registry->m_typeRegistry->getType("<effect>");
+        auto type = m_registry->m_typeRegistry->registerType("<effect>");
         type->m_program = program;
         type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;
