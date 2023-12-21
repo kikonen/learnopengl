@@ -172,11 +172,14 @@ namespace loader {
 
         {
             event::Event evt { event::Type::physics_add };
-            auto& body = evt.body.physics = {
-                .target = nodeId,
+            evt.blob = std::make_shared<event::BlobData>();
+            evt.blob->physics = {
                 .update = data.update,
                 .body = data.body,
                 .geom = data.geom,
+            };
+            auto& body = evt.body.physics = {
+                .target = nodeId,
             };
             m_dispatcher->send(evt);
         }

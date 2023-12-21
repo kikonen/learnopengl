@@ -61,17 +61,13 @@ namespace event {
         script_run,
     };
 
-    struct NodeAction {
-        Node* target{ nullptr };
-        uuids::uuid parentId;
+    struct PhysicsData {
+        bool update{ false };
+        physics::Body body;
+        physics::Geom geom;
     };
 
-    struct ControlAction {
-		ki::node_id target{ 0 };
-        NodeController* controller{ nullptr };
-    };
-
-    struct NodeAudioSourceAction {
+    struct AudioSourceData {
         ki::node_id target{ 0 };
 
         audio::sound_id soundId{ 0 };
@@ -90,19 +86,38 @@ namespace event {
         float gain{ 1.f };
     };
 
-    struct NodeAudioListenerAction {
+    struct AudioListenerData {
         ki::node_id target{ 0 };
 
         bool isDefault{ false };
         float gain{ 1.f };
     };
 
+    // Blobdata is for doing passing abnormally large event blobs
+    // for initalization, which are not needed in normal event logic
+    // => To reduce bloating of Event struct size
+    struct BlobData {
+        PhysicsData physics;
+        AudioSourceData audioSource;
+        AudioListenerData audioListener;
+    };
+
+    struct NodeAction {
+        Node* target{ nullptr };
+        uuids::uuid parentId;
+    };
+
+    struct ControlAction {
+		ki::node_id target{ 0 };
+        NodeController* controller{ nullptr };
+    };
+
+    struct AudioInitAction {
+        ki::node_id target{ 0 };
+    };
+
     struct PhysicsAction {
         ki::node_id target{ 0 };
-
-        bool update{ false };
-        physics::Body body;
-        physics::Geom geom;
     };
 
     struct AudioSourceAction {
@@ -132,11 +147,11 @@ namespace event {
         Type type;
         event::event_id id;
 
-        union {
+        std::shared_ptr<BlobData> blob;
+        union Body {
             NodeAction node;
             ControlAction control;
-            NodeAudioSourceAction nodeAudioSource;
-            NodeAudioListenerAction nodeAudioListener;
+            AudioInitAction audioInit;
             AudioSourceAction audioSource;
             AudioListenerAction audioListener;
             PhysicsAction physics;
