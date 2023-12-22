@@ -2,7 +2,8 @@
 #include "NodeRenderer.h"
 
 #include "asset/Program.h"
-#include "asset/ProgramUniforms.h"#include "asset/Shader.h"
+#include "asset/ProgramUniforms.h"
+#include "asset/Shader.h"
 #include "asset/Uniform.h"
 
 #include "registry/Registry.h"

@@ -96,7 +96,11 @@ namespace loader {
             generator->m_worldTilesV = tiling.tiles.z;
             generator->m_verticalRange = tiling.vertical_range;
             generator->m_horizontalScale = tiling.horizontal_scale;
-            generator->m_material = materialVBO.m_defaultMaterial;
+
+            auto* material = materialVBO.getDefaultMaterial();
+            if (material) {
+                generator->m_material = *material;
+            }
 
             return generator;
         }

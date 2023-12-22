@@ -227,7 +227,7 @@ void Batch::draw(
         }
 
         auto& top = m_batches.back();
-        top.m_materialVBO = &type->m_materialVBO;
+        //top.m_materialVBO = &type->m_materialVBO;
     }
 
     node.bindBatch(ctx, *this);

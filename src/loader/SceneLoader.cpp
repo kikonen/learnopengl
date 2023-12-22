@@ -505,9 +505,7 @@ namespace loader {
 
         auto& materialVBO = type->m_materialVBO;
 
-        materialVBO.m_defaultMaterial = *material;
-        materialVBO.m_useDefaultMaterial = true;
-        materialVBO.m_forceDefaultMaterial = data.forceMaterial;
+        materialVBO.setDefaultMaterial(*material, true, data.forceMaterial);
     }
 
     void SceneLoader::modifyMaterials(

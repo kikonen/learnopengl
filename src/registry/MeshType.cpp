@@ -32,7 +32,7 @@ MeshType::MeshType(MeshType&& o)
     m_priority { o.m_priority },
     m_program{ o.m_program },
     m_depthProgram{ o.m_depthProgram },
-    m_materialVBO{ o.m_materialVBO },
+    m_materialVBO{ std::move(o.m_materialVBO) },
     m_sprite{ o.m_sprite },
     m_materialIndex{ o.m_materialIndex },
     m_drawOptions{ o.m_drawOptions  },
