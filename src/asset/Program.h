@@ -108,7 +108,7 @@ private:
     int m_prepareResult = -1;
     bool m_prepared = false;
 
-    mutable std::map<std::string, std::string, std::less<> > m_defines;
+    std::map<std::string, std::string, std::less<> > m_defines;
 
     std::unordered_map<GLenum, std::string> m_paths;
     std::unordered_map<GLenum, bool> m_required;

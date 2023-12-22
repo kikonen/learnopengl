@@ -286,6 +286,11 @@ int Program::createProgram() {
 
     if (m_programId == -1) return -1;
 
+    m_defines.clear();
+    m_paths.clear();
+    m_required.clear();
+    m_sources.clear();
+
     initProgram();
     return 0;
 }
