@@ -53,17 +53,14 @@ Node::~Node()
 const std::string Node::str() const noexcept
 {
     return fmt::format(
-        "<NODE: id={}, id={}, entity={}, type={}>",
-        m_id, KI_UUID_STR(m_uuid), m_instance.m_entityIndex, m_type->str());
+        "<NODE: id={}, entity={}, type={}>",
+        m_id, m_instance.m_entityIndex, m_type->str());
 }
 
 void Node::prepare(
     const Assets& assets,
     Registry* registry)
 {
-    if (m_prepared) return;
-    m_prepared = true;
-
     if (m_type->getMesh()) {
         m_instance.m_entityIndex = registry->m_entityRegistry->addEntity();
         m_instance.setMaterialIndex(m_type->getMaterialIndex());

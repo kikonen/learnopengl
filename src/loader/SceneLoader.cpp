@@ -258,7 +258,6 @@ namespace loader {
         // NOTE KI overriding material in clones is *NOT* supported"
         if (!type) {
             type = createType(
-                entity.isRoot,
                 data,
                 tile);
             if (!type) return type;
@@ -270,18 +269,22 @@ namespace loader {
             type, rootId, data,
             cloned, cloneIndex, tile,
             data.clonePositionOffset,
-            tilePositionOffset,
-            entity.isRoot);
+            tilePositionOffset);
 
         {
+            // NOTE KI no id for clones; would duplicate base id => conflicts
+            // => except if clone defines own ID
+            const auto uuid = resolveUUID(data.idBase, cloneIndex, tile);
+
             event::Event evt { event::Type::node_add };
             evt.body.node.target = node;
-            if (!entity.isRoot) {
+            evt.body.node.uuid = uuid;
+            {
                 if (data.parentIdBase.empty()) {
-                    evt.body.node.parentId = rootId;
+                    evt.body.node.parentUUID = rootId;
                 }
                 else {
-                    evt.body.node.parentId = resolveUUID(
+                    evt.body.node.parentUUID = resolveUUID(
                         data.parentIdBase,
                         cloneIndex,
                         tile);
@@ -344,7 +347,6 @@ namespace loader {
     }
 
     const MeshType* SceneLoader::createType(
-        bool isRoot,
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
@@ -352,11 +354,6 @@ namespace loader {
         assignFlags(data, type);
 
         type->m_priority = data.priority;
-
-        if (isRoot) {
-            type->m_flags.invisible = true;
-            type->m_entityType = EntityType::origo;
-        }
 
         if (data.instanced) {
             type->m_flags.instanced = true;
@@ -604,8 +601,7 @@ namespace loader {
         const int cloneIndex,
         const glm::uvec3& tile,
         const glm::vec3& clonePositionOffset,
-        const glm::vec3& tilePositionOffset,
-        const bool isRoot)
+        const glm::vec3& tilePositionOffset)
     {
         Node* node = new Node(type);
 
@@ -613,14 +609,6 @@ namespace loader {
         //node->setTile(tile);
 
         glm::vec3 pos = data.position + clonePositionOffset + tilePositionOffset;
-
-        // NOTE KI no id for clones; would duplicate base id => conflicts
-        // => except if clone defines own ID
-        if (isRoot) {
-            node->m_uuid = rootId;
-        } else if (!cloned) {
-            node->m_uuid = resolveUUID(data.idBase, cloneIndex, tile);
-        }
 
         node->setPosition(pos);
         node->setBaseRotation(util::degreesToQuat(data.baseRotation));

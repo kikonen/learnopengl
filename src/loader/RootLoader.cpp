@@ -44,11 +44,13 @@ namespace loader
         flags.invisible = true;
 
         auto node = new Node(type);
-        node->m_uuid = data.rootId;
 
         {
             event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
+            evt.body.node = {
+                .target = node,
+                .uuid = data.rootId,
+            };
             m_dispatcher->send(evt);
         }
     }

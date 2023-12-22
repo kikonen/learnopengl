@@ -220,10 +220,15 @@ void TerrainGenerator::createTiles(
         m_node->m_instancer = this;
     }
 
+
     {
         event::Event evt { event::Type::node_add };
-        evt.body.node.target = m_node;
-        evt.body.node.parentId = container.m_uuid;
+        evt.body.node = {
+            .target = m_node,
+            .uuid = {},
+            .parentUUID = {},
+            .parentId = container.m_id,
+        };
         registry->m_dispatcher->send(evt);
     }
 }

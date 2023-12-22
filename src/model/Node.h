@@ -3,7 +3,6 @@
 #include <array>
 
 #include <glm/glm.hpp>
-#include <ki/uuid.h>
 
 #include "ki/limits.h"
 
@@ -212,10 +211,6 @@ public:
     // used for object identity in shader
     const ki::node_id m_id;
 
-    // UUID of node for persistency
-    // => *CAN* be empty for auto generated nodes
-    uuids::uuid m_uuid;
-
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
     bool m_visible{ true };
@@ -229,9 +224,6 @@ public:
     std::unique_ptr<NodeGenerator> m_generator{ nullptr };
 
     NodeGenerator* m_instancer{ nullptr };
-
-protected:
-    bool m_prepared = false;
 
 private:
     Node* m_parent{ nullptr };

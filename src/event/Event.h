@@ -30,7 +30,7 @@ namespace event {
 
         node_add,
         node_added,
-        node_change_parent,
+        //node_change_parent,
         node_select,
         node_activate,
 
@@ -108,7 +108,11 @@ namespace event {
 
     struct NodeAction {
         Node* target{ nullptr };
-        uuids::uuid parentId;
+        // UUID of node for persistency
+        // => *CAN* be empty for auto generated nodes
+        uuids::uuid uuid{};
+        uuids::uuid parentUUID{};
+        ki::node_id parentId{ 0 };
     };
 
     struct ControlAction {

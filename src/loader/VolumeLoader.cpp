@@ -64,12 +64,12 @@ namespace loader {
         flags.noReflect = true;
         flags.noRefract = true;
         flags.noSelect = true;
+        flags.noNormals = true;
         flags.gbuffer = SHADER_VOLUME.starts_with("g_");
 
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
         auto node = new Node(type);
-        node->m_uuid = m_assets.volumeUUID;
         node->m_visible = false;
 
         // NOTE KI m_radius = 1.73205078
@@ -79,8 +79,11 @@ namespace loader {
 
         {
             event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
-            evt.body.node.parentId = rootId;
+            evt.body.node = {
+                .target = node,
+                .uuid = m_assets.volumeUUID,
+                .parentUUID = rootId,
+            };
             m_dispatcher->send(evt);
         }
         {

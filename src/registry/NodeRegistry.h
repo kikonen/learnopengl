@@ -96,7 +96,6 @@ public:
         return it != m_idToNode.end() ? it->second : nullptr;
     }
 
-
     // @return node null if not found
     inline Node* getNode(const uuids::uuid& id) const noexcept
     {
@@ -146,21 +145,26 @@ private:
 
     void attachNode(
         Node* node,
-        const uuids::uuid& parentId) noexcept;
+        const uuids::uuid& uuid,
+        const uuids::uuid& parentUUID,
+        ki::node_id parentId) noexcept;
 
     void insertNode(NodeVector& list, Node* node);
 
     void bindPendingChildren();
 
     void bindNode(
+        const uuids::uuid& uuid,
         Node* node);
 
     bool bindParent(
-        Node* child,
-        const uuids::uuid& parentId);
+        Node* node,
+        const uuids::uuid& uuid,
+        const uuids::uuid& parentUUID,
+        ki::node_id parentId);
 
     void bindChildren(
-        Node* parent);
+        const uuids::uuid& parentUUID);
 
     void bindSkybox(
         Node* node) noexcept;
@@ -194,7 +198,7 @@ private:
     std::unordered_map<ki::node_id, Node*> m_idToNode;
     std::unordered_map<uuids::uuid, Node*> m_uuidToNode;
 
-    std::unordered_map<uuids::uuid, NodeVector> m_pendingChildren;
+    std::unordered_map<uuids::uuid, std::vector<std::tuple<const uuids::uuid, Node*>>> m_pendingChildren;
 
     std::unordered_map<ki::node_id, NodeVector> m_parentToChildren;
 

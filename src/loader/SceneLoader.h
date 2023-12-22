@@ -89,7 +89,6 @@ namespace loader {
             MeshType* type);
 
         const MeshType* createType(
-            bool isRoot,
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
@@ -122,8 +121,7 @@ namespace loader {
             const int cloneIndex,
             const glm::uvec3& tile,
             const glm::vec3& clonePositionOffset,
-            const glm::vec3& tilePositionOffset,
-            const bool isRoot);
+            const glm::vec3& tilePositionOffset);
 
         void loadMeta(
             const YAML::Node& node,

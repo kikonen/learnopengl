@@ -59,8 +59,11 @@ void TestSceneSetup::setupEffectExplosion()
 
         {
             event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
-            evt.body.node.parentId = m_assets.rootUUID;
+            evt.body.node = {
+                .target = node,
+                .uuid = {},
+                .parentUUID = m_assets.rootUUID,
+            };
             m_registry->m_dispatcher->send(evt);
         }
     });

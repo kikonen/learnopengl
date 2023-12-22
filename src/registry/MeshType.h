@@ -36,6 +36,7 @@ struct NodeRenderFlags {
     // invisible == permanently invisible
     bool invisible = false;
     bool noFrustum = false;
+    bool noNormals = false;
 
     bool tessellation = false;
 
