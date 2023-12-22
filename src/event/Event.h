@@ -68,8 +68,6 @@ namespace event {
     };
 
     struct AudioSourceData {
-        ki::node_id target{ 0 };
-
         audio::sound_id soundId{ 0 };
         ki::size_t8 index{ 0 };
         bool isAutoPlay{ false };
@@ -87,8 +85,6 @@ namespace event {
     };
 
     struct AudioListenerData {
-        ki::node_id target{ 0 };
-
         bool isDefault{ false };
         float gain{ 1.f };
     };
@@ -97,9 +93,17 @@ namespace event {
     // for initalization, which are not needed in normal event logic
     // => To reduce bloating of Event struct size
     struct BlobData {
-        PhysicsData physics;
-        AudioSourceData audioSource;
-        AudioListenerData audioListener;
+        BlobData() {};
+        ~BlobData() {};
+
+        union Body {
+            Body() {};
+            ~Body() {};
+
+            PhysicsData physics;
+            AudioSourceData audioSource;
+            AudioListenerData audioListener;
+        } body;
     };
 
     struct NodeAction {

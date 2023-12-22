@@ -163,7 +163,7 @@ void NodeRegistry::attachListeners()
     dispatcher->addListener(
         event::Type::audio_listener_add,
         [this](const event::Event& e) {
-            auto& data = e.blob->audioListener;
+            auto& data = e.blob->body.audioListener;
             auto* node = getNode(e.body.audioInit.target);
             auto* ae = m_registry->m_audioEngine;
             auto id = ae->registerListener();
@@ -179,7 +179,7 @@ void NodeRegistry::attachListeners()
     dispatcher->addListener(
         event::Type::audio_source_add,
         [this](const event::Event& e) {
-            auto& data = e.blob->audioSource;
+            auto& data = e.blob->body.audioSource;
             if (data.index < 0 || data.index >= ki::MAX_NODE_AUDIO_SOURCE) {
                 return;
             }
@@ -235,7 +235,7 @@ void NodeRegistry::attachListeners()
     dispatcher->addListener(
         event::Type::physics_add,
         [this](const event::Event& e) {
-            auto& data = e.blob->physics;
+            auto& data = e.blob->body.physics;
             auto* pe = m_registry->m_physicsEngine;
             auto* node = getNode(e.body.physics.target);
 

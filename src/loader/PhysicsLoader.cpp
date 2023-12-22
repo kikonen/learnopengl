@@ -173,7 +173,7 @@ namespace loader {
         {
             event::Event evt { event::Type::physics_add };
             evt.blob = std::make_shared<event::BlobData>();
-            evt.blob->physics = {
+            evt.blob->body.physics = {
                 .update = data.update,
                 .body = data.body,
                 .geom = data.geom,
