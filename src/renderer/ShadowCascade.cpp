@@ -3,6 +3,7 @@
 #include "util/glm_format.h"
 
 #include "asset/Program.h"
+#include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
@@ -252,7 +253,7 @@ void ShadowCascade::drawNodes(
 
     {
         m_solidShadowProgram->bind(ctx.m_state);
-        m_solidShadowProgram->u_shadowIndex->set(m_index);
+        m_solidShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
@@ -264,7 +265,7 @@ void ShadowCascade::drawNodes(
 
     {
         m_alphaShadowProgram->bind(ctx.m_state);
-        m_alphaShadowProgram->u_shadowIndex->set(m_index);
+        m_alphaShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
 
         ctx.m_nodeDraw->drawProgram(
             ctx,

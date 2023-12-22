@@ -1,6 +1,7 @@
 #include "NodeDraw.h"
 
 #include "asset/Program.h"
+#include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
@@ -312,7 +313,7 @@ void NodeDraw::drawNodes(
                     buf->clearAll();
                 }
 
-                m_bloomProgram->u_effectBloomIteration->set(i);
+                m_bloomProgram->m_uniforms->u_effectBloomIteration.set(i);
                 m_textureQuad.draw(ctx.m_state);
 
                 buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);

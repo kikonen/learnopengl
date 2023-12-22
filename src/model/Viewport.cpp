@@ -10,6 +10,7 @@
 #include "util/Util.h"
 
 #include "asset/Program.h"
+#include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
@@ -165,15 +166,17 @@ void Viewport::bind(const RenderContext& ctx)
 
     ctx.m_state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
-    m_program->u_toneHdri->set(true);
-    m_program->u_gammaCorrect->set(m_hardwareGamma ? false : m_gammaCorrect);
+    auto* uniforms = m_program->m_uniforms.get();
+
+    uniforms->u_toneHdri.set(true);
+    uniforms->u_gammaCorrect.set(m_hardwareGamma ? false : m_gammaCorrect);
 
     glm::mat4 transformed = m_projected * m_transformMatrix;
 
-    m_program->u_viewportTransform->set(transformed);
+    uniforms->u_viewportTransform.set(transformed);
 
     if (m_effectEnabled) {
-        m_program->u_effect->set(util::as_integer(m_effect));
+        uniforms->u_effect.set(util::as_integer(m_effect));
     }
 
     m_bindAfter(*this);

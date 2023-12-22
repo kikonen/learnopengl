@@ -1,6 +1,7 @@
 #include "ShadowMapRenderer.h"
 
 #include "asset/Program.h"
+#include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
@@ -72,8 +73,8 @@ void ShadowMapRenderer::prepare(
 
         m_debugViewport->setBindAfter([this, &assets](Viewport& vp) {
             auto& active = m_cascades[m_activeCascade];
-            vp.getProgram()->u_nearPlane->set(active->getNearPlane());
-            vp.getProgram()->u_farPlane->set(active->getFarPlane());
+            vp.getProgram()->m_uniforms->u_nearPlane.set(active->getNearPlane());
+            vp.getProgram()->m_uniforms->u_farPlane.set(active->getFarPlane());
             });
 
         m_debugViewport->setEffectEnabled(false);

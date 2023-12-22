@@ -2,7 +2,7 @@
 #include "NodeRenderer.h"
 
 #include "asset/Program.h"
-#include "asset/Shader.h"
+#include "asset/ProgramUniforms.h"#include "asset/Shader.h"
 #include "asset/Uniform.h"
 
 #include "registry/Registry.h"
@@ -121,7 +121,7 @@ void NodeRenderer::fillHighlightMask(
         //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_MASK);
 
         m_selectionProgram->bind(ctx.m_state);
-        m_selectionProgram->u_stencilMode->set(STENCIL_MODE_MASK);
+        m_selectionProgram->m_uniforms->u_stencilMode.set(STENCIL_MODE_MASK);
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
@@ -152,7 +152,7 @@ void NodeRenderer::renderHighlight(
         //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
 
         m_selectionProgram->bind(ctx.m_state);
-        m_selectionProgram->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
+        m_selectionProgram->m_uniforms->u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);
 
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(

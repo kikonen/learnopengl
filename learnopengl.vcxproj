@@ -185,6 +185,7 @@
   <ItemGroup>
     <ClCompile Include="src\asset\ChannelTexture.cpp" />
     <ClCompile Include="src\asset\HdriTexture.cpp" />
+    <ClCompile Include="src\asset\ProgramUniforms.cpp" />
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
     <ClCompile Include="src\asset\TextMaterial.cpp" />
@@ -371,6 +372,7 @@
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
+    <ClInclude Include="src\asset\ProgramUniforms.h" />
     <ClInclude Include="src\asset\TextMaterial.h" />
     <ClInclude Include="src\audio\al_call.h" />
     <ClInclude Include="src\audio\limits.h" />
