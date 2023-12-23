@@ -35,7 +35,7 @@ struct NodeInstance {
 
     ki::node_id m_id{ 0 };
     int m_entityIndex{ -1 };
-    int m_flags = { 0 };
+    ki::size_t_entity_flags m_flags{ 0 };
 
     int m_materialIndex{ 0 };
     int m_shapeIndex{ 0 };
@@ -77,12 +77,12 @@ struct NodeInstance {
         m_id = id;
     }
 
-    inline int getFlags() const noexcept
+    inline ki::size_t_entity_flags getFlags() const noexcept
     {
         return m_flags;
     }
 
-    inline void setFlags(int flags) noexcept
+    inline void setFlags(ki::size_t_entity_flags flags) noexcept
     {
         if (m_flags != flags) {
             m_flags = flags;

@@ -14,6 +14,8 @@ namespace ki
     typedef unsigned int sprite_id;
     typedef unsigned int program_id;
 
+    typedef unsigned int size_t_entity_flags;
+
     typedef unsigned int uint;
 
     typedef unsigned short level_id;

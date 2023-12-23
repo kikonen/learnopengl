@@ -67,7 +67,7 @@ void Node::prepare(
 
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
-        int flags = 0;
+        ki::size_t_entity_flags flags = 0;
 
         if (m_type->m_entityType == EntityType::billboard) {
             flags |= ENTITY_BILLBOARD_BIT;
