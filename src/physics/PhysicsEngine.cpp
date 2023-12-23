@@ -238,7 +238,7 @@ namespace physics
         Node& node,
         NodeInstance& instance)
     {
-        int physicsLevel = type.m_flags.staticPhysics ? m_staticPhysicsLevel : m_physicsLevel;
+        ki::level_id physicsLevel = type.m_flags.staticPhysics ? m_staticPhysicsLevel : m_physicsLevel;
         if (instance.m_physicsLevel == m_staticPhysicsLevel &&
             instance.m_matrixLevel == instance.m_physicsMatrixLevel) return;
 

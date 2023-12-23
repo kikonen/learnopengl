@@ -7,6 +7,8 @@
 
 #include "asset/Assets.h"
 
+#include "ki/size.h"
+
 #include "Object.h"
 #include "HeightMap.h"
 
@@ -79,8 +81,8 @@ namespace physics {
         size_t m_invokeCount{ 0 };
         size_t m_stepCount{ 0 };
 
-        int m_staticPhysicsLevel{ -1 };
-        int m_physicsLevel{ -1 };
+        ki::level_id m_staticPhysicsLevel{ (ki::level_id)-1 };
+        ki::level_id m_physicsLevel{ (ki::level_id)-1 };
 
         std::vector<physics::physics_id> m_pending;
 

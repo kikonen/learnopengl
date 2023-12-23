@@ -2,6 +2,8 @@
 
 #include <ode/ode.h>
 
+#include "ki/size.h"
+
 #include "size.h"
 #include "Body.h"
 #include "Geom.h"
@@ -35,7 +37,7 @@ namespace physics {
         dBodyID m_bodyId{ nullptr };
         dGeomID m_geomId{ nullptr };
 
-        int m_matrixLevel{ -1 };
+        ki::level_id m_matrixLevel{ (ki::level_id)-1 };
         Node* m_node{ nullptr };
     };
 }

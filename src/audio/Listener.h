@@ -4,6 +4,8 @@
 
 #include <AL/al.h>
 
+#include "ki/size.h"
+
 #include "size.h"
 
 class Node;
@@ -35,7 +37,7 @@ namespace audio
         glm::vec3 m_front{ 0.f, 0.f, -1.f };
         glm::vec3 m_up{ 0.f, 1.f, 0.f };
 
-        int m_matrixLevel{ -1 };
+        ki::level_id m_matrixLevel{ (ki::level_id)-1 };
         Node* m_node{ nullptr };
     };
 }

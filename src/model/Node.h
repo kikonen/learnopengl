@@ -148,11 +148,11 @@ public:
         return m_instance.getScale();
     }
 
-    inline int getParentMatrixLevel() const noexcept {
+    inline ki::level_id getParentMatrixLevel() const noexcept {
         return m_instance.m_parentMatrixLevel;
     }
 
-    inline int getMatrixLevel() const noexcept {
+    inline ki::level_id getMatrixLevel() const noexcept {
         return m_instance.m_matrixLevel;
     }
 

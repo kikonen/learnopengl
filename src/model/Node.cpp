@@ -150,7 +150,7 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 
 void Node::updateModelMatrix() noexcept
 {
-    int oldLevel = m_instance.m_matrixLevel;
+    auto oldLevel = m_instance.m_matrixLevel;
     if (m_parent) {
         m_instance.updateModelMatrix(m_parent->getInstance());
     }

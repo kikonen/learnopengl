@@ -15,4 +15,6 @@ namespace ki
     typedef unsigned int program_id;
 
     typedef unsigned int uint;
+
+    typedef unsigned short level_id;
 }

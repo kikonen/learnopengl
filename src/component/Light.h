@@ -80,6 +80,6 @@ private:
 
     uuids::uuid m_targetId;
 
-    int m_nodeMatrixLevel = -1;
-    int m_targetMatrixLevel = -1;
+    ki::level_id m_nodeMatrixLevel{ (ki::level_id)-1 };
+    ki::level_id m_targetMatrixLevel{ (ki::level_id)-1 };
 };

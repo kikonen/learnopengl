@@ -41,7 +41,7 @@ void AsteroidBeltGenerator::update(
     const UpdateContext& ctx,
     Node& container)
 {
-    const int parentLevel = container.getParent()->getMatrixLevel();
+    const auto parentLevel = container.getParent()->getMatrixLevel();
     const bool rotate = m_updateIndex% m_updateStep == 0 || parentLevel != m_containerMatrixLevel;
 
     if (rotate) {

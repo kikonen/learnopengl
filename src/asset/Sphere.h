@@ -3,6 +3,8 @@
 #include <memory>
 #include <string>
 
+#include "ki/size.h"
+
 #include "Volume.h"
 
 
@@ -55,7 +57,7 @@ struct Sphere final : public Volume
     };
 
     virtual void updateVolume(
-        const int matrixLevel,
+        const ki::level_id matrixLevel,
         const glm::mat4& modelMatrix,
         float maxScale) const noexcept override;
 

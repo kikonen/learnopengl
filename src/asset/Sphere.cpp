@@ -4,6 +4,8 @@
 
 #include <fmt/format.h>
 
+#include "ki/size.h"
+
 #include "util/glm_format.h"
 
 #include "Sphere.h"
@@ -77,7 +79,7 @@ const std::string Sphere::str() const noexcept
 //};
 
 void Sphere::updateVolume(
-    const int matrixLevel,
+    const ki::level_id matrixLevel,
     const glm::mat4& modelMatrix,
     float maxScale) const noexcept
 {
