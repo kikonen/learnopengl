@@ -77,6 +77,13 @@ void NodeInstance::updateRotationMatrix() noexcept
     m_dirtyRotation = false;
 }
 
+void NodeInstance::updateDegrees() const noexcept
+{
+    if (!m_dirtyDegrees) return;
+    m_degreesRotation = util::quatToDegrees(m_quatRotation);
+    m_dirtyDegrees = false;
+}
+
 void NodeInstance::updateEntity(
     const UpdateContext& ctx,
     EntitySSBO* entity)

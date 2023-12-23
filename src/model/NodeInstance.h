@@ -24,6 +24,7 @@ struct EntitySSBO;
 struct NodeInstance {
     bool m_dirty = true;
     bool m_dirtyRotation = true;
+    mutable bool m_dirtyDegrees = true;
     bool m_dirtyEntity = true;
     bool m_uniformScale = false;
 
@@ -54,7 +55,7 @@ struct NodeInstance {
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     glm::quat m_quatRotation{ 1.f, 0.f, 0.f, 0.f };
-    glm::vec3 m_degreesRotation{ 0.f };
+    mutable glm::vec3 m_degreesRotation{ 0.f };
     glm::mat4 m_rotationMatrix{ 1.f };
 
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
@@ -133,6 +134,7 @@ struct NodeInstance {
 
     inline const glm::vec3& getDegreesRotation() const noexcept
     {
+        updateDegrees();
         return m_degreesRotation;
     }
 
@@ -226,8 +228,8 @@ struct NodeInstance {
     {
         if (m_quatRotation != quat) {
             m_quatRotation = quat;
-            m_degreesRotation = util::quatToDegrees(quat);
             m_dirtyRotation = true;
+            m_dirtyDegrees = true;
             m_dirty = true;
         }
     }
@@ -293,6 +295,7 @@ struct NodeInstance {
     }
 
     void updateRootMatrix() noexcept;
+    void updateDegrees() const noexcept;
     void updateModelMatrix(const NodeInstance& parent) noexcept;
     void updateModelAxis() noexcept;
     void updateRotationMatrix() noexcept;
