@@ -16,8 +16,8 @@
 namespace {
     std::unordered_map<std::string, std::shared_future<ImageTexture*>> textures;
 
-    bool preparedTexturesReady = false;
-    int preparedTexturesLevel = 0;
+    bool preparedTexturesReady{ false };
+    int preparedTexturesLevel{ 0 };
     std::vector<const ImageTexture*> preparedTextures;
 
     std::mutex textures_lock{};
@@ -214,7 +214,7 @@ void ImageTexture::prepare(
         glMakeTextureHandleResidentARB(m_handle);
     }
 
-    m_texIndex = Texture::nextIndex();
+    //m_texIndex = Texture::nextIndex();
 
     preparedTexturesReady = false;
 

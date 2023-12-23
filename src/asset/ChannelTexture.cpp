@@ -175,7 +175,7 @@ void ChannelTexture::prepare(
     m_handle = glGetTextureHandleARB(m_textureID);
     glMakeTextureHandleResidentARB(m_handle);
 
-    m_texIndex = Texture::nextIndex();
+    //m_texIndex = Texture::nextIndex();
 }
 
 void ChannelTexture::load()

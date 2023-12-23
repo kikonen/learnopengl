@@ -314,7 +314,7 @@ void Material::prepare(const Assets& assets)
         if (tex.m_channelPart) continue;
 
         tex.m_texture->prepare(assets);
-        tex.m_texIndex = tex.m_texture->m_texIndex;
+        //tex.m_texIndex = tex.m_texture->m_texIndex;
         tex.m_handle = tex.m_texture->m_handle;
     }
 }
@@ -324,7 +324,7 @@ const MaterialSSBO Material::toSSBO() const
     for (auto& tex : m_textures) {
         if (!tex.m_texture) continue;
         if (tex.m_channelPart) continue;
-        ASSERT_TEX_INDEX(tex.m_texIndex);
+        //ASSERT_TEX_INDEX(tex.m_texIndex);
     }
 
     return {

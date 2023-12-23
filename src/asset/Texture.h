@@ -34,19 +34,19 @@ public:
 
 public:
     const std::string m_name;
-    const bool m_gammaCorrect;
+    const bool m_gammaCorrect : 1;
     const TextureSpec m_spec;
 
     GLuint m_textureID{ 0 };
-    int m_texIndex{ -1 };
+    //int m_texIndex{ -1 };
     GLuint64 m_handle{ 0 };
 
-    mutable bool m_sent{ false };
+    mutable bool m_sent : 1 { false };
 
-    bool m_specialTexture{ false };
+    bool m_specialTexture : 1 { false };
 
 protected:
-    bool m_prepared{ false };
+    bool m_prepared : 1 { false };
 
     int m_width{ 0 };
     int m_height{ 0 };
