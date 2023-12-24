@@ -2,9 +2,10 @@
 
 #include "asset/Shader.h"
 
-#include "render/GBuffer.h"
+#include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
+#include "render/GBuffer.h"
 #include "render/FrameBuffer.h"
 
 
@@ -15,7 +16,7 @@ void OITBuffer::prepare(
     m_gBuffer = gBuffer;
 }
 
-void OITBuffer::updateView(const RenderContext& ctx)
+void OITBuffer::updateView(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
@@ -47,7 +48,7 @@ void OITBuffer::updateView(const RenderContext& ctx)
         m_buffer.reset(buffer);
         m_buffer->prepare();
 
-        unbindTexture(ctx);
+        //unbindTexture(ctx);
     }
 
     m_width = w;

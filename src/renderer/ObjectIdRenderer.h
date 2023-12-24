@@ -23,7 +23,7 @@ public:
         Registry* registry) override;
 
     void updateView(
-        const RenderContext& ctx);
+        const UpdateViewContext& ctx);
 
     void render(
         const RenderContext& ctx);

@@ -11,6 +11,8 @@
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
 
+#include "engine/UpdateViewContext.h"
+
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"
@@ -44,7 +46,7 @@ void WaterMapRenderer::prepare(
     Renderer::prepare(assets, registry);
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-    m_registry->m_materialRegistry->add(m_tagMaterial);
+    m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
 
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
@@ -111,7 +113,7 @@ void WaterMapRenderer::prepare(
     }
 }
 
-void WaterMapRenderer::updateView(const RenderContext& ctx)
+void WaterMapRenderer::updateView(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
 
@@ -119,7 +121,7 @@ void WaterMapRenderer::updateView(const RenderContext& ctx)
     updateRefractionView(ctx);
 }
 
-void WaterMapRenderer::updateReflectionView(const RenderContext& ctx)
+void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
@@ -165,7 +167,7 @@ void WaterMapRenderer::updateReflectionView(const RenderContext& ctx)
     m_reflectionheight = h;
 }
 
-void WaterMapRenderer::updateRefractionView(const RenderContext& ctx)
+void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 

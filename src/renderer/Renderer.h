@@ -7,6 +7,7 @@ class Program;
 class Registry;
 
 class UpdateContext;
+class UpdateViewContext;
 class RenderContext;
 
 class Node;

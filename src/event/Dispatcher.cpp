@@ -1,7 +1,5 @@
 #include "Dispatcher.h"
 
-#include "engine/UpdateContext.h"
-
 namespace event {
     //constexpr std::array<Type, 8> EVENT_TYPES{
     //    Type::none,
@@ -26,7 +24,7 @@ namespace event {
     {
     }
 
-    void Dispatcher::dispatchEvents(const UpdateContext& ctx)
+    void Dispatcher::dispatchEvents()
     {
         //for (auto type : EVENT_TYPES) {
         //    m_queue.process();

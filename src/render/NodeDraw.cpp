@@ -55,7 +55,7 @@ void NodeDraw::prepare(
     m_timeElapsedQuery.create();
 }
 
-void NodeDraw::updateView(const RenderContext& ctx)
+void NodeDraw::updateView(const UpdateViewContext& ctx)
 {
     m_gBuffer.updateView(ctx);
     m_oitBuffer.updateView(ctx);

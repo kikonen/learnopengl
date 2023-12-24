@@ -87,7 +87,7 @@ void AsteroidBeltGenerator::createAsteroids(
     const auto& containerInstance = container.getInstance();
 
     m_reservedCount = m_asteroidCount;
-    m_reservedFirst = registry->m_entityRegistry->addEntityRange(m_reservedCount);
+    m_reservedFirst = registry->m_entityRegistry->registerEntityRange(m_reservedCount);
 
     for (size_t i = 0; i < m_asteroidCount; i++)
     {

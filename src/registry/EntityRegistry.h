@@ -2,6 +2,7 @@
 
 #include <bitset>
 #include <vector>
+#include <mutex>
 
 #include "kigl/GLBuffer.h"
 
@@ -11,6 +12,7 @@
 #include "EntitySSBO.h"
 
 class UpdateContext;
+class UpdateViewContext;
 class RenderContext;
 
 //
@@ -24,15 +26,16 @@ public:
 
     void prepare();
     void update(const UpdateContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
     void bind(const RenderContext& ctx);
 
     // index of entity
-    int addEntity();
+    int registerEntity();
 
     // @return first index of range
-    int addEntityRange(const size_t count);
+    int registerEntityRange(const size_t count);
 
-    EntitySSBO* getEntity(int index);
+    const EntitySSBO* getEntity(int index) const;
     EntitySSBO* updateEntity(int index, bool dirty);
 
     void markDirty(int index);
@@ -47,6 +50,8 @@ private:
     std::vector<bool> m_dirty;
     int m_minDirty = -1;
     int m_maxDirty = -1;
+
+    std::mutex m_lock{};
 
     GLBuffer m_ssbo{ "entitySSBO" };
 };

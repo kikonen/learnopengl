@@ -10,7 +10,7 @@
 
 class Program;
 
-class UpdateContext;
+class UpdateViewContext;
 class RenderContext;
 
 class FrameBuffer;
@@ -30,7 +30,7 @@ public:
     ~Viewport();
 
     // NOTE KI called from update cycle
-    void setUpdate(std::function<void(Viewport&, const UpdateContext& ctx)> update) {
+    void setUpdate(std::function<void(Viewport&, const UpdateViewContext& ctx)> update) {
         m_update = update;
     }
 
@@ -51,7 +51,7 @@ public:
 
     void prepare(const Assets& assets);
 
-    void update(const UpdateContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
@@ -130,7 +130,7 @@ public:
 
 private:
     void prepareTransform();
-    void updateTransform(const UpdateContext& ctx);
+    void updateTransform(const UpdateViewContext& ctx);
 
 public:
     const std::string m_name;
@@ -163,7 +163,7 @@ private:
     bool m_effectEnabled{ false };
     ViewportEffect m_effect = ViewportEffect::none;
 
-    std::function<void(Viewport&, const UpdateContext&)> m_update{ [](Viewport&, const UpdateContext& ctx) {} };
+    std::function<void(Viewport&, const UpdateViewContext&)> m_update{ [](Viewport&, const UpdateViewContext& ctx) {} };
     std::function<void(Viewport&)> m_bindBefore{ [](Viewport&) {} };
     std::function<void(Viewport&)> m_bindAfter{ [](Viewport&) {} };
 };

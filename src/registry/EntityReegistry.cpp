@@ -35,7 +35,14 @@ void EntityRegistry::prepare()
 
 void EntityRegistry::update(const UpdateContext& ctx)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     processNodes(ctx);
+}
+
+void EntityRegistry::updateView(const UpdateViewContext& ctx)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
 
     if (m_minDirty < 0) return;
 
@@ -112,14 +119,16 @@ void EntityRegistry::bind(
 }
 
 // index of entity
-int EntityRegistry::addEntity()
+int EntityRegistry::registerEntity()
 {
-    return addEntityRange(1);
+    return registerEntityRange(1);
 }
 
 // @return first index of range
-int EntityRegistry::addEntityRange(const size_t count)
+int EntityRegistry::registerEntityRange(const size_t count)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     if (m_entries.size() + count > MAX_ENTITY_COUNT)
         throw std::runtime_error{ fmt::format("MAX_ENTITY_COUNT: {}", MAX_ENTITY_COUNT) };
 
@@ -144,7 +153,7 @@ int EntityRegistry::addEntityRange(const size_t count)
     return static_cast<int>(firstIndex);
 }
 
-EntitySSBO* EntityRegistry::getEntity(int index)
+const EntitySSBO* EntityRegistry::getEntity(int index) const
 {
     return &m_entries[index];
 }

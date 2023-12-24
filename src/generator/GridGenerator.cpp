@@ -84,7 +84,7 @@ void GridGenerator::prepareInstances(
     auto& entityRegistry = *registry->m_entityRegistry;
 
     m_reservedCount = m_zCount * m_xCount * m_yCount;
-    m_reservedFirst = entityRegistry.addEntityRange(m_reservedCount);
+    m_reservedFirst = entityRegistry.registerEntityRange(m_reservedCount);
 
     m_instances.reserve(m_reservedCount);
 

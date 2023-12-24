@@ -12,6 +12,7 @@
 
 #include "query/TimeElapsedQuery.h"
 
+class UpdateViewContext;
 class RenderContext;
 class Program;
 class MeshType;
@@ -35,7 +36,7 @@ public:
         const Assets& assets,
         Registry* registry);
 
-    void updateView(const RenderContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void drawNodes(
         const RenderContext& ctx,

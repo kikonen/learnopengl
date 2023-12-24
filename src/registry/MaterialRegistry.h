@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <mutex>
 
 #include "asset/Assets.h"
 #include "asset/Material.h"
@@ -10,6 +11,7 @@
 class MaterialVBO;
 
 class UpdateContext;
+class UpdateViewContext;
 class RenderContext;
 
 struct MaterialSSBO;
@@ -24,7 +26,7 @@ public:
     ~MaterialRegistry() = default;
 
     // Updates m_registeredIndex of Material
-    void add(Material& material);
+    void registerMaterial(Material& material);
 
     void registerMaterialVBO(MaterialVBO& materialVBO);
 
@@ -33,12 +35,12 @@ public:
     Material* find(
         std::string_view);
 
-    Material* findID(
+    Material* findById(
         const int id);
 
     void prepare();
 
-    void update(const UpdateContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void bind(
         const RenderContext& ctx);
@@ -51,6 +53,8 @@ private:
     const Assets& m_assets;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
+
+    std::mutex m_lock{};
 
     Material m_zero;
 

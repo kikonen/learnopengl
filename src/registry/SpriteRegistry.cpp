@@ -60,7 +60,7 @@ void SpriteRegistry::add(Sprite& sprite)
     m_idToSprites[sprite.m_id] = &ref;
 }
 
-void SpriteRegistry::update(const UpdateContext& ctx)
+void SpriteRegistry::updateView(const UpdateViewContext& ctx)
 {
     updateShapeBuffer();
 }

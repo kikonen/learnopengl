@@ -31,7 +31,9 @@ class NodeDraw;
 class Registry;
 
 class UpdateContext;
+class UpdateViewContext;
 class RenderContext;
+
 class FrameBuffer;
 class WindowBuffer;
 
@@ -58,9 +60,8 @@ public:
 
     void prepare();
 
-    void processEvents(const UpdateContext& ctx);
     void update(const UpdateContext& ctx);
-    void updateView(const RenderContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);

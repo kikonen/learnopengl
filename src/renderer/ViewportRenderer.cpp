@@ -1,6 +1,7 @@
 #include "ViewportRenderer.h"
 
-#include "engine/UpdateContext.h"
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 
 #include "render/FrameBuffer.h"
@@ -19,10 +20,10 @@ void ViewportRenderer::prepare(
     Renderer::prepare(assets, registry);
 }
 
-void ViewportRenderer::update(const UpdateContext& ctx)
+void ViewportRenderer::updateView(const UpdateViewContext& ctx)
 {
     for (auto& viewport : ctx.m_registry->m_viewportRegistry->getViewports()) {
-        viewport->update(ctx);
+        viewport->updateView(ctx);
     }
 }
 

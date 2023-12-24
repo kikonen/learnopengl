@@ -18,7 +18,7 @@
 #include "Surface.h"
 
 namespace {
-    constexpr float STEP_SIZE = 0.03f;
+    constexpr float STEP_SIZE = 0.05f;
 
     constexpr int MAX_CONTACTS = 8;
     constexpr int CONTACT_GROUP_ID = 0;

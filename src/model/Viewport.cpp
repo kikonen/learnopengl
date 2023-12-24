@@ -14,7 +14,7 @@
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
-#include "engine/UpdateContext.h"
+#include "engine/UpdateViewContext.h"
 
 #include "render/FrameBuffer.h"
 
@@ -54,7 +54,7 @@ Viewport::Viewport(
     const glm::vec3 origPosition{ m_position };
     const glm::vec3 origDegrees{ m_degreesRotation };
 
-    setUpdate([this, origPosition, origDegrees](Viewport& vp, const UpdateContext& ctx) {
+    setUpdate([this, origPosition, origDegrees](Viewport& vp, const UpdateViewContext& ctx) {
         glm::vec3 rot{ origDegrees};
         rot.y = 5.f * sinf(static_cast<float>(ctx.m_clock.ts));
 
@@ -97,7 +97,7 @@ void Viewport::prepare(const Assets& assets)
     m_program->prepare(assets);
 }
 
-void Viewport::updateTransform(const UpdateContext& ctx)
+void Viewport::updateTransform(const UpdateViewContext& ctx)
 {
     if (!m_dirty) return;
     m_dirty = false;
@@ -149,7 +149,7 @@ void Viewport::updateTransform(const UpdateContext& ctx)
     }
 }
 
-void Viewport::update(const UpdateContext& ctx)
+void Viewport::updateView(const UpdateViewContext& ctx)
 {
     m_update(*this, ctx);
     updateTransform(ctx);

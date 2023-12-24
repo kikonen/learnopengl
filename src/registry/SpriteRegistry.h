@@ -10,6 +10,7 @@
 #include "kigl/GLBuffer.h"
 
 class UpdateContext;
+class UpdateViewContext;
 class RenderContext;
 
 class Sprite;
@@ -28,7 +29,7 @@ public:
 
     void prepare();
 
-    void update(const UpdateContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void bind(
         const RenderContext& ctx);

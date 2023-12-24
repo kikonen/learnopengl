@@ -5,6 +5,8 @@
 
 #include "component/Camera.h"
 
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
@@ -109,7 +111,7 @@ void ObjectIdRenderer::prepare(
     m_debugViewport->prepare(assets);
 }
 
-void ObjectIdRenderer::updateView(const RenderContext& ctx)
+void ObjectIdRenderer::updateView(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 

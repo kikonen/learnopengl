@@ -193,7 +193,7 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
     return m_vao.get();
 }
 
-void ModelVAO::update(const UpdateContext& ctx)
+void ModelVAO::updateView(const UpdateViewContext& ctx)
 {
     updatePositionBuffer();
     updateVertexBuffer();

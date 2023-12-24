@@ -5,6 +5,8 @@
 #include "model/Node.h"
 #include "model/Viewport.h"
 
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
@@ -50,7 +52,7 @@ void MirrorMapRenderer::prepare(
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
-    m_registry->m_materialRegistry->add(m_tagMaterial);
+    m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
 
     m_renderFrameStart = assets.mirrorRenderFrameStart;
     m_renderFrameStep = assets.mirrorRenderFrameStep;
@@ -108,7 +110,7 @@ void MirrorMapRenderer::prepare(
     }
 }
 
-void MirrorMapRenderer::updateView(const RenderContext& ctx)
+void MirrorMapRenderer::updateView(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
 

@@ -9,7 +9,6 @@
 
 #include "Event.h"
 
-class UpdateContexxt;
 
 namespace event {
     class Dispatcher final {
@@ -18,7 +17,7 @@ namespace event {
 
         void prepare();
 
-        void dispatchEvents(const UpdateContext& ctx);
+        void dispatchEvents();
 
         inline event::event_id send(Event& evt)
         {

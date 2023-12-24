@@ -13,7 +13,7 @@ public:
         const Assets& assets,
         Registry* registry) override;
 
-    void update(const UpdateContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void render(
         const RenderContext& ctx,

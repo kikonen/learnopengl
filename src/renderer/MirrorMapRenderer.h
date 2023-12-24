@@ -28,7 +28,7 @@ public:
         const Assets& assets,
         Registry* registry) override;
 
-    void updateView(const RenderContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void bindTexture(const RenderContext& ctx);
 

@@ -27,6 +27,8 @@
 #include "engine/AssetsFile.h"
 
 #include "engine/UpdateContext.h"
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 
 #include "loader/SceneLoader.h"
@@ -106,8 +108,6 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
             m_assets,
             m_currentScene->m_registry.get());
 
-        scene->processEvents(ctx);
-
         scene->update(ctx);
     }
 
@@ -125,6 +125,17 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
 
     const glm::uvec2& size = window->getSize();
+
+    {
+        UpdateViewContext ctx(
+            clock,
+            m_assets,
+            m_currentScene->m_registry.get(),
+            size.x,
+            size.y);
+
+        scene->updateView(ctx);
+    }
 
     RenderContext ctx(
         "TOP",
@@ -165,7 +176,6 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         }
         m_state.clear();
 
-        scene->updateView(ctx);
         scene->bind(ctx);
         scene->draw(ctx);
         scene->unbind(ctx);

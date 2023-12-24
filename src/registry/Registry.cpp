@@ -95,8 +95,13 @@ void Registry::prepare()
 void Registry::update(const UpdateContext& ctx)
 {
     m_controllerRegistry->update(ctx);
-    m_materialRegistry->update(ctx);
-    m_spriteRegistry->update(ctx);
-    m_modelRegistry->update(ctx);
     m_entityRegistry->update(ctx);
+}
+
+void Registry::updateView(const UpdateViewContext& ctx)
+{
+    m_materialRegistry->updateView(ctx);
+    m_spriteRegistry->updateView(ctx);
+    m_modelRegistry->updateView(ctx);
+    m_entityRegistry->updateView(ctx);
 }

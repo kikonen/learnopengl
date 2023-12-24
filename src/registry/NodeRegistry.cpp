@@ -115,7 +115,7 @@ void NodeRegistry::prepare(
     m_registry = registry;
 
     m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
-    registry->m_materialRegistry->add(m_selectionMaterial);
+    registry->m_materialRegistry->registerMaterial(m_selectionMaterial);
 
     attachListeners();
 }

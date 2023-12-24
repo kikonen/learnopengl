@@ -62,7 +62,7 @@ void Node::prepare(
     Registry* registry)
 {
     if (m_type->getMesh()) {
-        m_instance.m_entityIndex = registry->m_entityRegistry->addEntity();
+        m_instance.m_entityIndex = registry->m_entityRegistry->registerEntity();
         m_instance.setMaterialIndex(m_type->getMaterialIndex());
 
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));

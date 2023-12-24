@@ -4,8 +4,9 @@
 
 
 class FrameBuffer;
-class RenderContext;
 class GBuffer;
+class UpdateViewContext;
+class RenderContext;
 
 class OITBuffer {
 public:
@@ -20,7 +21,7 @@ public:
         const Assets& assets,
         GBuffer* gBuffer);
 
-    void updateView(const RenderContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void bind(const RenderContext& ctx);
 

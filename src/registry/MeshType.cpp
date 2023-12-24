@@ -101,7 +101,7 @@ void MeshType::prepare(
     //m_privateVAO.create();
 
     for (auto& material : m_materialVBO.m_materials) {
-        registry->m_materialRegistry->add(material);
+        registry->m_materialRegistry->registerMaterial(material);
     }
 
     if (m_entityType == EntityType::sprite) {

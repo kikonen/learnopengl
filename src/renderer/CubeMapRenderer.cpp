@@ -95,7 +95,7 @@ void CubeMapRenderer::prepare(
     m_tagID = assets.cubeMapUUID;
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
-    m_registry->m_materialRegistry->add(m_tagMaterial);
+    m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
 
     int size = assets.cubeMapSize;
 
@@ -134,7 +134,7 @@ void CubeMapRenderer::prepare(
     }
 }
 
-void CubeMapRenderer::updateView(const RenderContext& ctx)
+void CubeMapRenderer::updateView(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
 

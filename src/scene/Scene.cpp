@@ -62,6 +62,10 @@
 
 #include "scene/ParticleSystem.h"
 
+namespace {
+	size_t count = 0;
+}
+
 Scene::Scene(
     const Assets& assets,
     std::shared_ptr<Registry> registry)
@@ -189,7 +193,7 @@ void Scene::prepare()
             0,
             m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
-        m_mainViewport->setUpdate([](Viewport& vp, const UpdateContext& ctx) {
+        m_mainViewport->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
         });
 
         m_mainViewport->setBindBefore([this](Viewport& vp) {
@@ -257,30 +261,25 @@ void Scene::prepare()
     }
 }
 
-void Scene::processEvents(const UpdateContext& ctx)
-{
-    m_registry->m_dispatcher->dispatchEvents(ctx);
-}
-
 void Scene::update(const UpdateContext& ctx)
 {
     //if (ctx.clock.frameCount > 120) {
-    if (m_loaded) {
-        m_registry->m_commandEngine->update(ctx);
-    }
+	count++;
+	if (count < 100) {
+		std::cout << count << '\n';
+		if (m_loaded) {
+			m_registry->m_commandEngine->update(ctx);
+		}
 
-    if (auto root = m_registry->m_nodeRegistry->m_root) {
-        root->update(ctx);
-        m_registry->m_physicsEngine->update(ctx);
-        m_registry->m_audioEngine->update(ctx);
-    }
+		if (auto root = m_registry->m_nodeRegistry->m_root) {
+			root->update(ctx);
+			m_registry->m_physicsEngine->update(ctx);
+			m_registry->m_audioEngine->update(ctx);
+		}
+	}
 
     for (auto& generator : m_particleGenerators) {
         generator->update(ctx);
-    }
-
-    if (m_viewportRenderer->isEnabled()) {
-        m_viewportRenderer->update(ctx);
     }
 
     if (m_particleSystem) {
@@ -288,12 +287,17 @@ void Scene::update(const UpdateContext& ctx)
     }
 
     m_registry->update(ctx);
-
-    m_renderData->update();
 }
 
-void Scene::updateView(const RenderContext& ctx)
+void Scene::updateView(const UpdateViewContext& ctx)
 {
+    m_registry->updateView(ctx);
+    m_renderData->update();
+
+    if (m_viewportRenderer->isEnabled()) {
+        m_viewportRenderer->updateView(ctx);
+    }
+
     if (m_objectIdRenderer->isEnabled()) {
         m_objectIdRenderer->updateView(ctx);
     }

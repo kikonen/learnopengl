@@ -33,13 +33,15 @@ MaterialRegistry::MaterialRegistry(
     // NOTE KI *reserve* index 0
     // => multi-material needs to do "-index" trick, does not work for zero
     m_zero = Material::createMaterial(BasicMaterial::basic);
-    add(m_zero);
+    registerMaterial(m_zero);
     m_indeces.emplace_back(m_zero.m_registeredIndex);
 }
 
-void MaterialRegistry::add(Material& material)
+void MaterialRegistry::registerMaterial(Material& material)
 {
     if (material.m_registeredIndex >= 0) return;
+
+    std::lock_guard<std::mutex> lock(m_lock);
 
     const size_t count = 1;
 
@@ -62,6 +64,8 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 {
     // NOTE KI *NO* indeces if single material
     if (materialVBO.isSingle()) return;
+
+    std::lock_guard<std::mutex> lock(m_lock);
 
     const size_t count = materialVBO.m_indeces.size();
     const size_t index = m_indeces.size();
@@ -89,6 +93,8 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 Material* MaterialRegistry::find(
     std::string_view name)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     const auto& it = std::find_if(
         m_materials.begin(),
         m_materials.end(),
@@ -96,9 +102,11 @@ Material* MaterialRegistry::find(
     return it != m_materials.end() ? &(*it) : nullptr;
 }
 
-Material* MaterialRegistry::findID(
+Material* MaterialRegistry::findById(
     const int id)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     const auto& it = std::find_if(
         m_materials.begin(),
         m_materials.end(),
@@ -106,8 +114,10 @@ Material* MaterialRegistry::findID(
     return it != m_materials.end() ? &(*it) : nullptr;
 }
 
-void MaterialRegistry::update(const UpdateContext& ctx)
+void MaterialRegistry::updateView(const UpdateViewContext& ctx)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     updateMaterialBuffer();
     updateIndexBuffer();
 }

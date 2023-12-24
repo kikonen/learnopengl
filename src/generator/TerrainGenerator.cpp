@@ -168,7 +168,7 @@ void TerrainGenerator::createTiles(
 
             m.loadTextures(assets);
 
-            materialRegistry->add(m);
+            materialRegistry->registerMaterial(m);
             materialIndex = m.m_registeredIndex;
             });
     }
@@ -178,7 +178,7 @@ void TerrainGenerator::createTiles(
     AABB minmax{ true };
 
     m_reservedCount = m_worldTilesU * m_worldTilesV;
-    m_reservedFirst = entityRegistry->addEntityRange(m_reservedCount);
+    m_reservedFirst = entityRegistry->registerEntityRange(m_reservedCount);
 
     m_instances.reserve(m_reservedCount);
 

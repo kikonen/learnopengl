@@ -28,7 +28,7 @@ public:
         const Assets& assets,
         Registry* registry) override;
 
-    void updateView(const RenderContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void bindTexture(const RenderContext& ctx);
 
@@ -36,8 +36,8 @@ public:
         const RenderContext& ctx);
 
 private:
-    void updateReflectionView(const RenderContext& ctx);
-    void updateRefractionView(const RenderContext& ctx);
+    void updateReflectionView(const UpdateViewContext& ctx);
+    void updateRefractionView(const UpdateViewContext& ctx);
 
     void drawNodes(
         const RenderContext& ctx,

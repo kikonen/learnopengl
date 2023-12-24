@@ -13,6 +13,8 @@
 
 #include "component/Camera.h"
 
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
@@ -40,7 +42,7 @@ void NodeRenderer::prepare(
     //m_selectionProgramPointSprite->prepare(assets);
 }
 
-void NodeRenderer::updateView(const RenderContext& ctx)
+void NodeRenderer::updateView(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
