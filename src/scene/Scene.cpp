@@ -118,17 +118,16 @@ Scene::~Scene()
 
 void Scene::prepare()
 {
-    m_registry->m_dispatcher->addListener(
-        event::Type::node_added,
-        [this](const event::Event& e) {
-            this->bindComponents(e.body.node.target);
-        });
+    //m_registry->m_dispatcher->addListener(
+    //    event::Type::node_added,
+    //    [this](const event::Event& e) {
+    //        this->bindComponents(e.body.node.target);
+    //    });
 
     m_registry->m_dispatcher->addListener(
         event::Type::scene_loaded,
         [this](const event::Event& e) {
             m_loaded = true;
-            this->m_registry->m_physicsEngine->setEnabled(true);
         });
 
     m_renderData->prepare();
@@ -356,21 +355,21 @@ void Scene::draw(const RenderContext& ctx)
     bool wasCubeMap = false;
     int renderCount = 0;
 
-    if (m_shadowMapRenderer->isEnabled() && m_shadowMapRenderer->render(ctx)) {
+    if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;
         m_shadowMapRenderer->bindTexture(ctx);
     }
 
     ctx.m_state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, ctx.m_assets.cubeMapSeamless);
 
-    if (m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->render(ctx)) {
+    if (m_cubeMapRenderer->render(ctx)) {
         wasCubeMap = ctx.m_assets.cubeMapSkipOthers;
     }
 
-    if (!wasCubeMap && m_waterMapRenderer->isEnabled() && m_waterMapRenderer->render(ctx))
+    if (!wasCubeMap && m_waterMapRenderer->render(ctx))
         renderCount++;
 
-    if (!wasCubeMap && m_mirrorMapRenderer->isEnabled() && m_mirrorMapRenderer->render(ctx))
+    if (!wasCubeMap && m_mirrorMapRenderer->render(ctx))
         renderCount++;
 
     // NOTE KI skip main render if special update cycle
@@ -511,34 +510,17 @@ const std::vector<NodeController*>* Scene::getActiveCameraControllers() const
     return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
 }
 
-void Scene::bindComponents(Node* node)
-{
-    auto& type = node->m_type;
-
-    if (node->m_particleGenerator) {
-        if (m_particleSystem) {
-            node->m_particleGenerator->setSystem(m_particleSystem.get());
-            m_particleGenerators.push_back(node);
-        }
-    }
-
-    if (m_assets.useScript) {
-        auto* se = m_registry->m_scriptEngine;
-
-        const auto& scripts = se->getNodeScripts(node->m_id);
-
-        for (const auto& scriptId : scripts) {
-            {
-                event::Event evt { event::Type::script_run };
-                auto& body = evt.body.script = {
-                    .target = node->m_id,
-                    .id = scriptId,
-                };
-                m_registry->m_dispatcher->send(evt);
-            }
-        }
-    }
-}
+//void Scene::bindComponents(Node* node)
+//{
+//    auto& type = node->m_type;
+//
+//    if (node->m_particleGenerator) {
+//        if (m_particleSystem) {
+//            node->m_particleGenerator->setSystem(m_particleSystem.get());
+//            m_particleGenerators.push_back(node);
+//        }
+//    }
+//}
 
 ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)
 {

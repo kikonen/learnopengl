@@ -134,6 +134,29 @@ void NodeRegistry::attachListeners()
                 e.body.node.parentId);
         });
 
+    if (m_assets.useScript) {
+        dispatcher->addListener(
+            event::Type::node_added,
+            [this](const event::Event& e) {
+                auto& data = e.body.node;
+                auto* node = data.target;
+
+                auto* se = m_registry->m_scriptEngine;
+                const auto& scripts = se->getNodeScripts(node->m_id);
+
+                for (const auto& scriptId : scripts) {
+                    {
+                        event::Event evt { event::Type::script_run };
+                        auto& body = evt.body.script = {
+                            .target = node->m_id,
+                            .id = scriptId,
+                        };
+                        m_registry->m_dispatcher->send(evt);
+                    }
+                }
+            });
+    }
+
     //dispatcher->addListener(
     //    event::Type::node_change_parent,
     //    [this](const event::Event& e) {
@@ -250,6 +273,12 @@ void NodeRegistry::attachListeners()
                 obj->m_geom = data.geom;
                 obj->m_node = node;
             }
+        });
+
+    m_registry->m_dispatcher->addListener(
+        event::Type::scene_loaded,
+        [this](const event::Event& e) {
+            this->m_registry->m_physicsEngine->setEnabled(true);
         });
 
     if (m_assets.useScript) {
@@ -477,9 +506,11 @@ void NodeRegistry::bindNode(
 
     clearSelectedCount();
 
-    event::Event evt { event::Type::node_added };
-    evt.body.node.target = node;
-    m_registry->m_dispatcher->send(evt);
+    {
+        event::Event evt { event::Type::node_added };
+        evt.body.node.target = node;
+        m_registry->m_dispatcher->send(evt);
+    }
 
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
 }
