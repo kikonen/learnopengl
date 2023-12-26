@@ -37,6 +37,7 @@ Assets::Assets()
 
     windowSize = { 800, 600 };
     windowMaximized = false;
+    windowFullScreen = false;
 
     cameraMoveNormal = { 4.5, 4.5, 4.5 };
     cameraMoveRun = { 8, 8, 8 };

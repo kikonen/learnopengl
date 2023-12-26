@@ -134,6 +134,10 @@ void AssetsFile::loadAssets(
                 data.windowMaximized = readBool(v);
                 continue;
             }
+            if (k == "window_full_screen") {
+                data.windowFullScreen = readBool(v);
+                continue;
+            }
         }
         {
             if (k == "gl_debug") {

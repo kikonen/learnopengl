@@ -109,6 +109,23 @@ void Window::createGLFWWindow()
         return;
     }
 
+    if (m_assets.windowFullScreen) {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        glm::uvec2 size{ 0 };
+        const auto* mode = glfwGetVideoMode(monitor);
+        size.x = mode->width;
+        size.y = mode->height;
+
+        glfwSetWindowMonitor(
+            m_glfwWindow,
+            monitor,
+            0,
+            0,
+            size.x,
+            size.y,
+            GLFW_DONT_CARE);
+    }
+
     glfwSetWindowUserPointer(m_glfwWindow, this);
     glfwMakeContextCurrent(m_glfwWindow);
 

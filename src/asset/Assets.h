@@ -51,6 +51,7 @@ public:
 
     glm::uvec2 windowSize;
     bool windowMaximized;
+    bool windowFullScreen;
 
     glm::vec3 cameraMoveNormal;
     glm::vec3 cameraMoveRun;

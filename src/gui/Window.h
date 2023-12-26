@@ -59,7 +59,7 @@ protected:
     Engine& m_engine;
 
     bool m_sizeValid{ false };
-    glm::uvec2 m_size{ 0 } ;
+    glm::uvec2 m_size{ 0 };
     glm::uvec2 m_safeSize{ 1 };
 
     std::string m_title;

@@ -19,6 +19,7 @@ assets:
 
   window_size: [800, 600]
   window_maximized: true
+  window_full_screen: false
 
   camera_move_mormal: [5.5, 7.5, 7.5]
   camera_move_run: [10, 14, 14]
@@ -96,7 +97,7 @@ assets:
   batch_buffers: 1000
   batch_debug: true
 
-  draw_debug: true
+  draw_debug: false
 
   near_plane: 0.1
   far_plane: 2000.0
