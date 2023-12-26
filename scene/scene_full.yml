@@ -57,6 +57,7 @@ entities:
     active: true
     render_flags:
       allow_normals: false
+      xenforce_bounds: true
     particle_generator:
       - "ParticleDefinition pd;"
       - "node->particleGenerator = std::make_unique<ParticleGenerator>(pd);"
