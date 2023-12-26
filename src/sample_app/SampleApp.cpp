@@ -68,7 +68,7 @@ int SampleApp::onSetup() {
     m_sceneUpdater = std::make_shared<SceneUpdater>(
         m_assets,
         m_registry,
-        m_currentScene->m_alive);
+        m_alive);
 
     m_sceneUpdater->start();
 
@@ -267,12 +267,40 @@ void SampleApp::frustumDebug(
 
 void SampleApp::onDestroy()
 {
-    if (!m_currentScene) return;
+    KI_INFO_OUT("APP: destroy");
 
-    m_currentScene->destroy();
+    *m_alive = false;
 
-    // NOTE KI wait for worker threads to shutdown
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    if (!m_loaders.empty()) {
+        KI_INFO_OUT("APP: stopping loaders...");
+        for (auto& loader : m_loaders) {
+            loader->destroy();
+        }
+        for (auto& loader : m_loaders) {
+            // NOTE KI wait for worker threads to shutdown
+            while (loader->isRunning()) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+        }
+        KI_INFO_OUT("APP: loaders stopped!");
+    }
+
+    if (m_sceneUpdater) {
+        KI_INFO_OUT("APP: stopping worker...");
+        m_sceneUpdater->destroy();
+
+        // NOTE KI wait for worker threads to shutdown
+        while (m_sceneUpdater->isRunning()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        KI_INFO_OUT("APP: worker stopped!");
+    }
+
+    if (m_currentScene) {
+        m_currentScene->destroy();
+    }
+
+    KI_INFO_OUT("APP: stopped all!");
 }
 
 void SampleApp::selectNode(
@@ -371,15 +399,13 @@ Assets SampleApp::loadAssets()
 
 std::shared_ptr<Scene> SampleApp::loadScene()
 {
-    auto scene = std::make_shared<Scene>(m_assets, m_registry);
-
-    auto& alive = scene->m_alive;
+    auto scene = std::make_shared<Scene>(m_assets, m_registry, m_alive);
 
     {
         if (!m_assets.sceneFile.empty()) {
             loader::Context ctx{
                 m_assets,
-                alive,
+                m_alive,
                 m_asyncLoader,
                 m_assets.sceneDir,
                 m_assets.sceneFile,
@@ -395,14 +421,14 @@ std::shared_ptr<Scene> SampleApp::loadScene()
         loader->load();
     }
 
-    m_testSetup = std::make_unique<TestSceneSetup>(
-        m_assets,
-        alive,
-        m_asyncLoader);
+    //m_testSetup = std::make_unique<TestSceneSetup>(
+    //    m_assets,
+    //    m_alive,
+    //    m_asyncLoader);
 
-    m_testSetup->setup(
-        scene->m_registry
-    );
+    //m_testSetup->setup(
+    //    scene->m_registry
+    //);
 
     scene->prepareView();
 

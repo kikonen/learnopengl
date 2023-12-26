@@ -73,7 +73,15 @@ namespace loader {
 
     SceneLoader::~SceneLoader()
     {
-        KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx.str()));
+        //KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx.str()));
+    }
+
+    void SceneLoader::destroy()
+    {}
+
+    bool SceneLoader::isRunning()
+    {
+        return m_runningCount > 0;
     }
 
     void SceneLoader::prepare(
@@ -98,6 +106,8 @@ namespace loader {
         if (!util::fileExists(m_ctx.m_fullPath)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
         }
+
+        m_runningCount++;
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
             std::ifstream fin(this->m_ctx.m_fullPath);
@@ -127,6 +137,8 @@ namespace loader {
                 m_scriptLoader);
 
             attach(m_root);
+
+            m_runningCount--;
         });
     }
 

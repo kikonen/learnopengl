@@ -50,7 +50,7 @@ namespace backend {
 
         void drawPending(bool drawCurrent);
 
-        gl::PerformanceCounters getCounters(bool clear);
+        gl::PerformanceCounters getCounters(bool clear) const;
 
     private:
         void bindDrawRange(

@@ -26,9 +26,10 @@ MaterialRegistry::MaterialRegistry(
     : m_assets(assets),
     m_alive(alive)
 {
-    m_materials.reserve(MATERIAL_BLOCK_SIZE);
-    m_materialsSSBO.reserve(MATERIAL_BLOCK_SIZE);
-    m_indeces.reserve(INDEX_BLOCK_SIZE);
+    // HACK KI reserve nax to avoid memory alloc issue main vs. worker
+    m_materials.reserve(MAX_MATERIAL_COUNT);
+    m_materialsSSBO.reserve(MAX_MATERIAL_COUNT);
+    m_indeces.reserve(MAX_INDEX_COUNT);
 
     // NOTE KI *reserve* index 0
     // => multi-material needs to do "-index" trick, does not work for zero
@@ -52,8 +53,10 @@ void MaterialRegistry::registerMaterial(Material& material)
         size_t size = m_materials.size() + std::max(MATERIAL_BLOCK_SIZE, count) + MATERIAL_BLOCK_SIZE;
         size += MATERIAL_BLOCK_SIZE - size % MATERIAL_BLOCK_SIZE;
         size = std::min(size, MAX_MATERIAL_COUNT);
-        m_materials.reserve(size);
-        m_materialsSSBO.reserve(size);
+        if (size > m_materials.capacity()) {
+            m_materials.reserve(size);
+            m_materialsSSBO.reserve(size);
+        }
     }
 
     material.m_registeredIndex = (int)m_materials.size();

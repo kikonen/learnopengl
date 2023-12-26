@@ -327,12 +327,12 @@ void Batch::flush(
     m_entityIndeces.clear();
 }
 
-backend::gl::PerformanceCounters Batch::getCounters(bool clear)
+backend::gl::PerformanceCounters Batch::getCounters(bool clear) const
 {
     return m_draw->getCounters(clear);
 }
 
-backend::gl::PerformanceCounters Batch::getCountersLocal(bool clear)
+backend::gl::PerformanceCounters Batch::getCountersLocal(bool clear) const
 {
     backend::gl::PerformanceCounters counters{ m_drawCount, m_skipCount };
     if (clear) {

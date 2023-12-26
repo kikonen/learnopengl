@@ -5,6 +5,7 @@
 #include <map>
 #include <unordered_map>
 #include <mutex>
+#include <atomic>
 
 #include "ki/uuid.h"
 
@@ -50,6 +51,10 @@ namespace loader {
             Context ctx);
 
         ~SceneLoader();
+
+        void destroy();
+
+        bool isRunning();
 
         void prepare(
             std::shared_ptr<Registry> registry);
@@ -136,6 +141,8 @@ namespace loader {
     private:
         size_t m_pendingCount{ 0 };
         std::mutex m_ready_lock{};
+
+        std::atomic<size_t> m_runningCount;
 
         MetaData m_meta;
         SkyboxData m_skybox;

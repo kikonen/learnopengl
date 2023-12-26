@@ -55,7 +55,8 @@ class Scene final
 public:
     Scene(
         const Assets& assets,
-        std::shared_ptr<Registry> registry);
+        std::shared_ptr<Registry> registry,
+        std::shared_ptr<std::atomic<bool>> alive);
     ~Scene();
 
     void destroy();
@@ -68,8 +69,8 @@ public:
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
 
-    backend::gl::PerformanceCounters getCounters(bool clear);
-    backend::gl::PerformanceCounters getCountersLocal(bool clear);
+    backend::gl::PerformanceCounters getCounters(bool clear) const;
+    backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
     void draw(const RenderContext& ctx);
 
@@ -97,8 +98,6 @@ public:
 public:
     const Assets& m_assets;
 
-    std::shared_ptr<std::atomic<bool>> m_alive;
-
     std::unique_ptr<RenderData> m_renderData;
 
     std::shared_ptr<Registry> m_registry;
@@ -110,6 +109,8 @@ protected:
 
 private:
     bool m_loaded{ false };
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::unique_ptr<NodeRenderer> m_mainRenderer{ nullptr };
     std::unique_ptr<NodeRenderer> m_rearRenderer{ nullptr };

@@ -86,10 +86,10 @@ NodeRegistry::~NodeRegistry()
         m_root = nullptr;
     }
 
-    KI_INFO("NODE_REGISTRY: delete");
+    //KI_INFO("NODE_REGISTRY: delete");
     for (auto& all : allNodes) {
         for (auto& [key, nodes] : all.second) {
-            KI_INFO(fmt::format("NODE_REGISTRY: delete {}", key.type->str()));
+            //KI_INFO(fmt::format("NODE_REGISTRY: delete {}", key.type->str()));
             for (auto& node : nodes) {
                 delete node;
             }

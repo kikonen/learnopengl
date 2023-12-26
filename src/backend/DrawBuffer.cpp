@@ -261,7 +261,7 @@ namespace backend {
         m_commands->processPending(handler, drawCurrent, true);
     }
 
-    gl::PerformanceCounters DrawBuffer::getCounters(bool clear)
+    gl::PerformanceCounters DrawBuffer::getCounters(bool clear) const
     {
         gl::PerformanceCounters counters;
 

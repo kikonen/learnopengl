@@ -42,6 +42,11 @@ void SceneUpdater::destroy()
 {
 }
 
+bool SceneUpdater::isRunning() const
+{
+    return m_running;
+}
+
 void SceneUpdater::prepare()
 {
     m_registry->m_dispatcher->addListener(
@@ -56,12 +61,15 @@ void SceneUpdater::start()
     auto th = std::thread{
         [this]() mutable {
             try {
+                m_running = true;
                 run();
+                m_running = false;
             }
             catch (const std::exception& ex) {
                 KI_CRITICAL(ex.what());
             }
             catch (...) {
+                m_running = false;
             }
         }
     };

@@ -70,8 +70,8 @@ public:
     void flush(
         const RenderContext& ctx);
 
-    backend::gl::PerformanceCounters getCounters(bool clear);
-    backend::gl::PerformanceCounters getCountersLocal(bool clear);
+    backend::gl::PerformanceCounters getCounters(bool clear) const;
+    backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
 private:
     void addCommand(

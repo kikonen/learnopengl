@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include <atomic>
 
 #include "asset/Assets.h"
 

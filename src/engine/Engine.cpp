@@ -255,4 +255,5 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
 void Engine::onDestroy()
 {
+    *m_alive = false;
 }

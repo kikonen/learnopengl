@@ -24,7 +24,8 @@ namespace {
 EntityRegistry::EntityRegistry(const Assets& assets)
     : m_assets(assets)
 {
-    m_entries.reserve(ENTITY_BLOCK_SIZE);
+    // HACK KI reserve nax to avoid memory alloc issue main vs. worker
+    m_entries.reserve(MAX_ENTITY_COUNT);
 }
 
 void EntityRegistry::prepare()

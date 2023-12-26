@@ -19,6 +19,8 @@ public:
 
     void destroy();
 
+    bool isRunning() const;
+
     void prepare();
     void start();
     void run();
@@ -30,6 +32,7 @@ private:
 
     bool m_loaded{ false };
 
+    std::atomic<bool> m_running;
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::shared_ptr<Registry> m_registry;

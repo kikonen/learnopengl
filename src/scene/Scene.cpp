@@ -58,9 +58,10 @@ namespace {
 
 Scene::Scene(
     const Assets& assets,
-    std::shared_ptr<Registry> registry)
+    std::shared_ptr<Registry> registry,
+    std::shared_ptr<std::atomic<bool>> alive)
     : m_assets(assets),
-    m_alive(std::make_shared<std::atomic<bool>>(true)),
+    m_alive(alive),
     m_registry(registry)
 {
     {
@@ -103,13 +104,11 @@ Scene::~Scene()
     *m_alive = false;
     m_particleGenerators.clear();
 
-    KI_INFO("SCENE: deleted");
+    //KI_INFO("SCENE: deleted");
 }
 
 void Scene::destroy()
 {
-    *m_alive = false;
-
     KI_INFO("SCENE: destroy");
 }
 
@@ -316,12 +315,12 @@ void Scene::unbind(const RenderContext& ctx)
 {
 }
 
-backend::gl::PerformanceCounters Scene::getCounters(bool clear)
+backend::gl::PerformanceCounters Scene::getCounters(bool clear) const
 {
     return m_batch->getCounters(clear);
 }
 
-backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear)
+backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear) const
 {
     return m_batch->getCountersLocal(clear);
 }

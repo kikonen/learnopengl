@@ -101,7 +101,7 @@ Program::Program(
 
 Program::~Program()
 {
-    KI_INFO(fmt::format("DELETE: program={}", m_key));
+    //KI_INFO(fmt::format("DELETE: program={}", m_key));
     if (m_programId != -1) {
         glDeleteProgram(m_programId);
     }
