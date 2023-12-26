@@ -51,6 +51,7 @@ public:
     ~Registry();
 
     void prepare();
+    void prepareWorker();
 
     void update(const UpdateContext& ctx);
     void updateView(const UpdateViewContext& ctx);

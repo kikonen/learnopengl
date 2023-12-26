@@ -49,6 +49,8 @@ bool SceneUpdater::isRunning() const
 
 void SceneUpdater::prepare()
 {
+    m_registry->prepareWorker();
+
     m_registry->m_dispatcher->addListener(
         event::Type::scene_loaded,
         [this](const event::Event& e) {
@@ -80,6 +82,8 @@ void SceneUpdater::run()
 {
     ki::RenderClock clock;
 
+    prepare();
+
     //const int delay = (int)(1000.f / 60.f);
     const int delay = 10;
 
@@ -90,9 +94,15 @@ void SceneUpdater::run()
     while (*m_alive) {
         loopTime = std::chrono::system_clock::now();
         elapsedDuration = loopTime - prevLoopTime;
+        prevLoopTime = loopTime;
 
-        clock.ts = static_cast<float>(glfwGetTime());
+        auto ts = duration_cast<std::chrono::seconds>(
+            std::chrono::system_clock::now().time_since_epoch()
+        );
+        clock.ts = static_cast<float>(ts.count());
         clock.elapsedSecs = elapsedDuration.count();
+
+        //std::cout << "elapsed=" << clock.elapsedSecs << '\n';
 
         UpdateContext ctx(
             clock,
@@ -119,8 +129,10 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
         if (auto root = m_registry->m_nodeRegistry->m_root) {
             root->update(ctx);
-            m_registry->m_physicsEngine->update(ctx);
-            m_registry->m_audioEngine->update(ctx);
+            if (m_loaded) {
+                m_registry->m_physicsEngine->update(ctx);
+                m_registry->m_audioEngine->update(ctx);
+            }
         }
     }
 

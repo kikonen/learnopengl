@@ -18,7 +18,7 @@
 #include "Surface.h"
 
 namespace {
-    constexpr float STEP_SIZE = 0.05f;
+    constexpr float STEP_SIZE = 0.03f;
 
     constexpr int MAX_CONTACTS = 8;
     constexpr int CONTACT_GROUP_ID = 0;
@@ -133,6 +133,8 @@ namespace physics
             if (n > 0) {
                 m_invokeCount++;
                 m_stepCount += n;
+
+                std::cout << "n=" << n << '\n';
 
                 //std::cout << ctx.m_clock.elapsedSecs << " - " << n << '\n';
 

@@ -75,18 +75,7 @@ void Registry::prepare()
     if (m_prepared) return;
     m_prepared = true;
 
-    // NOTE KI "eorker" init
-    {
-        m_dispatcher->prepare();
-
-        // NOTE KI does not matter which thread does prepare
-        m_physicsEngine->prepare();
-        m_audioEngine->prepare();
-
-        m_commandEngine->prepare(this);
-        m_scriptEngine->prepare(m_commandEngine);
-    }
-
+    m_dispatcher->prepare();
     m_dispatcherView->prepare();
 
     m_materialRegistry->prepare();
@@ -98,6 +87,16 @@ void Registry::prepare()
     m_controllerRegistry->prepare(this);
 
     m_nodeRegistry->prepare(this);
+}
+
+void Registry::prepareWorker()
+{
+    // NOTE KI does not matter which thread does prepare
+    m_physicsEngine->prepare();
+    m_audioEngine->prepare();
+
+    m_commandEngine->prepare(this);
+    m_scriptEngine->prepare(m_commandEngine);
 }
 
 void Registry::update(const UpdateContext& ctx)

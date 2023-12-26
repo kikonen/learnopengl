@@ -116,7 +116,10 @@ void AsteroidBeltGenerator::initAsteroids(
     Node& container)
 {
     // initialize random seed
-    srand(static_cast<unsigned int>(glfwGetTime()));
+    auto ts = duration_cast<std::chrono::seconds>(
+        std::chrono::system_clock::now().time_since_epoch()
+    );
+    srand(static_cast<unsigned int>(ts.count()));
 
     const size_t count = m_instances.size();
 
