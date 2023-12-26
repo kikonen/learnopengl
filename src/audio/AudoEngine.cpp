@@ -242,6 +242,8 @@ namespace audio
 
     void AudioEngine::preparePendingListeners(const UpdateContext& ctx)
     {
+        if (m_pendingListeners.empty()) return;
+
         std::map<audio::listener_id, bool> prepared;
 
         for (const auto& id : m_pendingListeners) {
@@ -272,6 +274,8 @@ namespace audio
 
     void AudioEngine::preparePendingSources(const UpdateContext& ctx)
     {
+        if (m_pendingSources.empty()) return;
+
         std::map<audio::source_id, bool> prepared;
 
         for (const auto& id : m_pendingSources) {

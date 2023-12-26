@@ -67,7 +67,7 @@ NodeRegistry::~NodeRegistry()
         m_idToNode.clear();
         m_uuidToNode.clear();
 
-        m_parentToChildren.clear();
+        //m_parentToChildren.clear();
     }
 
     {
@@ -395,20 +395,25 @@ void NodeRegistry::changeParent(
         Node* oldParent = node->getParent();
         if (oldParent == parent) return;
 
-        auto& oldChildren = m_parentToChildren[oldParent->m_id];
-        const auto& it = std::remove_if(
-            oldChildren.begin(),
-            oldChildren.end(),
-            [&node](auto& n) {
-                return n->m_id == node->m_id;
-            });
-        oldChildren.erase(it, oldChildren.end());
+        if (oldParent) {
+            oldParent->removeChild(node);
+        }
+
+        //auto& oldChildren = m_parentToChildren[oldParent->m_id];
+        //const auto& it = std::remove_if(
+        //    oldChildren.begin(),
+        //    oldChildren.end(),
+        //    [&node](auto& n) {
+        //        return n->m_id == node->m_id;
+        //    });
+        //oldChildren.erase(it, oldChildren.end());
     }
 
     node->setParent(parent);
+    parent->addChild(node);
 
-    auto& children = m_parentToChildren[parent->m_id];
-    children.push_back(node);
+    //auto& children = m_parentToChildren[parent->m_id];
+    //children.push_back(node);
 }
 
 void NodeRegistry::bindNode(
@@ -550,7 +555,8 @@ void NodeRegistry::bindPendingChildren()
             bindNode(uuid, child);
 
             child->setParent(parent);
-            m_parentToChildren[parent->m_id].push_back(child);
+            parent->addChild(child);
+            //m_parentToChildren[parent->m_id].push_back(child);
         }
     }
 
@@ -569,7 +575,8 @@ bool NodeRegistry::bindParent(
     if (parentId) {
         auto* parent = m_idToNode.find(parentId)->second;
         child->setParent(parent);
-        m_parentToChildren[parent->m_id].push_back(child);
+        parent->addChild(child);
+        //m_parentToChildren[parent->m_id].push_back(child);
         return true;
     }
 
@@ -587,7 +594,8 @@ bool NodeRegistry::bindParent(
     KI_INFO(fmt::format("BIND_PARENT: parent={}, child={}", parent->str(), child->str()));
 
     child->setParent(parent);
-    m_parentToChildren[parent->m_id].push_back(child);
+    parent->addChild(child);
+    //m_parentToChildren[parent->m_id].push_back(child);
 
     return true;
 }
@@ -605,7 +613,8 @@ void NodeRegistry::bindChildren(
         bindNode(uuid, child);
 
         child->setParent(parent);
-        m_parentToChildren[parent->m_id].push_back(child);
+        parent->addChild(child);
+        //m_parentToChildren[parent->m_id].push_back(child);
     }
 
     m_pendingChildren.erase(parentUUID);

@@ -119,10 +119,10 @@ public:
         Node* node,
         const uuids::uuid& parentId) noexcept;
 
-    inline const NodeVector* getChildren(const Node& parent) const noexcept {
-        const auto& it = m_parentToChildren.find(parent.m_id);
-        return it != m_parentToChildren.end() ? &it->second : nullptr;
-    }
+    //inline const NodeVector* getChildren(const Node& parent) const noexcept {
+    //    const auto& it = m_parentToChildren.find(parent.m_id);
+    //    return it != m_parentToChildren.end() ? &it->second : nullptr;
+    //}
 
     inline Node* getActiveNode() const noexcept { return m_activeNode; }
     inline Node* getActiveCamera2() const noexcept { return m_activeCamera; }
@@ -207,7 +207,7 @@ private:
 
     std::unordered_map<uuids::uuid, std::vector<std::tuple<const uuids::uuid, Node*>>> m_pendingChildren;
 
-    std::unordered_map<ki::node_id, NodeVector> m_parentToChildren;
+    //std::unordered_map<ki::node_id, NodeVector> m_parentToChildren;
 
     Node* m_activeNode{ nullptr };
     Node* m_activeCamera{ nullptr };

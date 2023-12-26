@@ -197,6 +197,8 @@ namespace physics
 
     void PhysicsEngine::preparePending(const UpdateContext& ctx)
     {
+        if (m_pending.empty()) return;
+
         std::map<physics::physics_id, bool> prepared;
 
         for (const auto& id : m_pending) {

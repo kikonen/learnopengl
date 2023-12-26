@@ -24,7 +24,10 @@ void Light::update(const UpdateContext& ctx, Node& node) noexcept
     }
 
     if (m_spot || m_directional) {
-        Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetId);
+        if (!m_targetNode) {
+            m_targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetId);
+        }
+        auto* targetNode = m_targetNode;
 
         if (!targetNode) {
             KI_WARN(fmt::format("´LIGHT: MISSING TARGET: {}", KI_UUID_STR(m_targetId)));

@@ -15,6 +15,8 @@ bool VolumeController::update(
     const UpdateContext& ctx,
     Node& volumeNode) noexcept
 {
+    if (!m_targetID) return false;
+
     Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetID);
 
     if (!targetNode) {

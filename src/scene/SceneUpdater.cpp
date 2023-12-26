@@ -80,6 +80,9 @@ void SceneUpdater::run()
 {
     ki::RenderClock clock;
 
+    //const int delay = (int)(1000.f / 60.f);
+    const int delay = 10;
+
     auto prevLoopTime = std::chrono::system_clock::now();
     auto loopTime = std::chrono::system_clock::now();
     std::chrono::duration<float> elapsedDuration;
@@ -98,7 +101,7 @@ void SceneUpdater::run()
 
         update(ctx);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     }
 }
 

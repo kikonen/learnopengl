@@ -103,9 +103,8 @@ void Node::update(
     if (m_light) m_light->update(ctx, *this);
     if (m_generator) m_generator->update(ctx, *this);
 
-    const auto* children = ctx.m_registry->m_nodeRegistry->getChildren(*this);
-    if (children) {
-        for (auto& child : *children) {
+    if (!m_children.empty()) {
+        for (auto& child : m_children) {
             child->update(ctx);
         }
     }

@@ -55,6 +55,19 @@ public:
         m_parent = parent;
     }
 
+    inline const std::vector<Node*>& getChildren()
+    {
+        return m_children;
+    }
+
+    inline void addChild(Node* child) {
+        m_children.emplace_back(child);
+    }
+
+    inline void removeChild(Node* node) {
+        // TODO KI
+    }
+
     inline NodeInstance& getInstance() noexcept {
         return m_instance;
     }
@@ -227,6 +240,7 @@ public:
 
 private:
     Node* m_parent{ nullptr };
+    std::vector<Node*> m_children;
 
     NodeInstance m_instance;
 
