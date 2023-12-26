@@ -151,8 +151,11 @@ namespace loader {
 
         // NOTE KI event will be put queue *AFTER* entity attach events
         // => should they should be fully attached in scene at this point
-        event::Event evt { event::Type::scene_loaded };
-        m_dispatcher->send(evt);
+        // => worker will trigger event into UI thread after processing all updates
+        {
+            event::Event evt { event::Type::scene_loaded };
+            m_dispatcher->send(evt);
+        }
     }
 
     void SceneLoader::attach(
@@ -644,7 +647,10 @@ namespace loader {
         {
             auto* t = m_registry->m_typeRegistry->modifyType(type->m_id);
             t->setCustomMaterial(
-                m_customMaterialLoader.createCustomMaterial(data.customMaterial, cloneIndex, tile));
+                m_customMaterialLoader.createCustomMaterial(
+                    data.customMaterial,
+                    cloneIndex,
+                    tile));
             m_registry->m_typeRegistry->registerCustomMaterial(type->m_id);
             type = t;
             node->m_type = type;

@@ -114,16 +114,18 @@ void Scene::destroy()
 
 void Scene::prepareView()
 {
-    //m_registry->m_dispatcher->addListener(
-    //    event::Type::node_added,
-    //    [this](const event::Event& e) {
-    //        this->bindComponents(e.body.node.target);
-    //    });
+    auto* dispatcherView = m_registry->m_dispatcherView;
 
-    m_registry->m_dispatcher->addListener(
+    dispatcherView->addListener(
         event::Type::scene_loaded,
         [this](const event::Event& e) {
             m_loaded = true;
+        });
+
+    dispatcherView->addListener(
+        event::Type::node_added,
+        [this](const event::Event& e) {
+            this->handleNodeAdded(e.body.node.target);
         });
 
     m_renderData->prepare();
@@ -290,6 +292,22 @@ void Scene::updateView(const UpdateViewContext& ctx)
 
     m_nodeDraw->updateView(ctx);
     m_windowBuffer->updateView(ctx);
+}
+
+void Scene::handleNodeAdded(Node* node)
+{
+    m_mirrorMapRenderer->handleNodeAdded(node);
+    m_waterMapRenderer->handleNodeAdded(node);
+    m_cubeMapRenderer->handleNodeAdded(node);
+
+    //    auto& type = node->m_type;
+    //
+    //    if (node->m_particleGenerator) {
+    //        if (m_particleSystem) {
+    //            node->m_particleGenerator->setSystem(m_particleSystem.get());
+    //            m_particleGenerators.push_back(node);
+    //        }
+    //    }
 }
 
 void Scene::bind(const RenderContext& ctx)
@@ -486,18 +504,6 @@ const std::vector<NodeController*>* Scene::getActiveCameraControllers() const
     auto* node = getActiveCamera();
     return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
 }
-
-//void Scene::bindComponents(Node* node)
-//{
-//    auto& type = node->m_type;
-//
-//    if (node->m_particleGenerator) {
-//        if (m_particleSystem) {
-//            node->m_particleGenerator->setSystem(m_particleSystem.get());
-//            m_particleGenerators.push_back(node);
-//        }
-//    }
-//}
 
 ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)
 {

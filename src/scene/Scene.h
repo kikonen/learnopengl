@@ -66,6 +66,8 @@ public:
     void update(const UpdateContext& ctx);
     void updateView(const UpdateViewContext& ctx);
 
+    void handleNodeAdded(Node* node);
+
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
 
@@ -90,10 +92,9 @@ public:
 
     ki::node_id getObjectID(const RenderContext& ctx, float posx, float posy);
 
+public:
     std::shared_ptr<Viewport> m_mainViewport{ nullptr };
     std::shared_ptr<Viewport> m_rearViewport{ nullptr };
-
-    //void bindPendingChildren();
 
 public:
     const Assets& m_assets;

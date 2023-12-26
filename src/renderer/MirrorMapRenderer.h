@@ -35,6 +35,8 @@ public:
     bool render(
         const RenderContext& ctx);
 
+    void handleNodeAdded(Node* node);
+
 private:
     void drawNodes(
         const RenderContext& ctx,
@@ -70,4 +72,6 @@ private:
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
 
     Material m_tagMaterial;
+
+    std::vector<Node*> m_nodes;
 };

@@ -139,6 +139,8 @@ namespace loader {
         }
         type->setCustomMaterial(std::move(material));
 
+        m_registry->m_typeRegistry->registerCustomMaterial(type->m_id);
+
         auto node = new Node(type);
 
         {

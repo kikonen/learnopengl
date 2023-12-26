@@ -21,7 +21,8 @@ SpriteRegistry::SpriteRegistry(
     : m_assets(assets),
     m_alive(alive)
 {
-    m_shapesSSBO.reserve(SHAPE_BLOCK_SIZE);
+    // HACK KI reserve nax to avoid memory alloc issue main vs. worker
+    m_shapesSSBO.reserve(MAX_SHAPE_COUNT);
     Shape shape;
     m_shapesSSBO.emplace_back(shape.toSSBO());
     m_shapeIndex++;

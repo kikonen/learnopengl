@@ -162,7 +162,7 @@ bool CubeMapRenderer::render(
 
     if (!needRender(parentCtx)) return false;
 
-    Node* centerNode = findCenter(parentCtx);
+    Node* centerNode = findClosest(parentCtx);
     if (m_lastClosest && setClosest(centerNode, -1)) {
         m_curr->m_updateFace = -1;
         m_prev->m_updateFace = -1;
@@ -242,6 +242,20 @@ bool CubeMapRenderer::render(
     return true;
 }
 
+void CubeMapRenderer::handleNodeAdded(Node* node)
+{
+    if (!node->m_type->m_flags.cubeMap) return;
+
+    if (m_waterMapRenderer->isEnabled()) {
+        m_waterMapRenderer->handleNodeAdded(node);
+    }
+    if (m_mirrorMapRenderer->isEnabled()) {
+        m_mirrorMapRenderer->handleNodeAdded(node);
+    }
+
+    m_nodes.push_back(node);
+}
+
 void CubeMapRenderer::clearCubeMap(
     const RenderContext& ctx,
     DynamicCubeMap& cube)
@@ -315,32 +329,26 @@ void CubeMapRenderer::drawNodes(
     targetBuffer->unbind(ctx);
 }
 
-Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
+Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 {
+    if (m_nodes.empty()) return nullptr;
+
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
-        for (const auto& [key, nodes] : all.second) {
-            auto& type = key.type;
+    for (const auto& node : m_nodes) {
+        const glm::vec3 ray = node->getWorldPosition() - cameraPos;
+        const float distance = std::abs(glm::length(ray));
 
-            if (!type->m_flags.cubeMap) continue;
-
-            for (const auto& node : nodes) {
-                const glm::vec3 ray = node->getWorldPosition() - cameraPos;
-                const float distance = std::abs(glm::length(ray));
-
-                if (false) {
-                    const glm::vec3 fromCamera = glm::normalize(ray);
-                    const float dot = glm::dot(fromCamera, cameraDir);
-                    if (dot < 0) continue;
-                }
-
-                sorted[distance] = node;
-            }
+        if (false) {
+            const glm::vec3 fromCamera = glm::normalize(ray);
+            const float dot = glm::dot(fromCamera, cameraDir);
+            if (dot < 0) continue;
         }
+
+        sorted[distance] = node;
     }
 
     for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {

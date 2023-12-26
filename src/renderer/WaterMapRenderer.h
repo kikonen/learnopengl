@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Renderer.h"
 
 #include "asset/Material.h"
@@ -34,6 +36,8 @@ public:
 
     bool render(
         const RenderContext& ctx);
+
+    void handleNodeAdded(Node* node);
 
 private:
     void updateReflectionView(const UpdateViewContext& ctx);
@@ -79,4 +83,6 @@ private:
     unsigned int m_noiseTextureID{ 0 };
 
     Material m_tagMaterial;
+
+    std::vector<Node*> m_nodes;
 };

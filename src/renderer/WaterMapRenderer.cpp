@@ -356,6 +356,13 @@ bool WaterMapRenderer::render(
     return true;
 }
 
+void WaterMapRenderer::handleNodeAdded(Node* node)
+{
+    if (!node->m_type->m_flags.water) return;
+
+    m_nodes.push_back(node);
+}
+
 void WaterMapRenderer::drawNodes(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer,
@@ -392,26 +399,20 @@ void WaterMapRenderer::drawNodes(
 Node* WaterMapRenderer::findClosest(
     const RenderContext& ctx)
 {
+    if (m_nodes.empty()) return nullptr;
+
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
-        for (const auto& [key, nodes] : all.second) {
-            auto& type = key.type;
-
-            if (!type->m_flags.water) continue;
-
-            for (const auto& node : nodes) {
-                const glm::vec3 ray = node->getWorldPosition() - cameraPos;
-                const float distance = glm::length(ray);
-                //glm::vec3 fromCamera = glm::normalize(ray);
-                //float dot = glm::dot(fromCamera, cameraDir);
-                //if (dot < 0) continue;
-                sorted[distance] = node;
-            }
-        }
+    for (const auto& node : m_nodes) {
+        const glm::vec3 ray = node->getWorldPosition() - cameraPos;
+        const float distance = glm::length(ray);
+        //glm::vec3 fromCamera = glm::normalize(ray);
+        //float dot = glm::dot(fromCamera, cameraDir);
+        //if (dot < 0) continue;
+        sorted[distance] = node;
     }
 
     for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {

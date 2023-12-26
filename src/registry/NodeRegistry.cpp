@@ -276,10 +276,16 @@ void NodeRegistry::attachListeners()
             }
         });
 
-    m_registry->m_dispatcher->addListener(
+    dispatcher->addListener(
         event::Type::scene_loaded,
         [this](const event::Event& e) {
             this->m_registry->m_physicsEngine->setEnabled(true);
+
+            // NOTE KI trigger UI sidew update *after* all worker side processing done
+            {
+                event::Event evt { event::Type::scene_loaded };
+                m_registry->m_dispatcherView->send(evt);
+            }
         });
 
     if (m_assets.useScript) {
@@ -522,6 +528,12 @@ void NodeRegistry::bindNode(
     }
 
     {
+        event::Event evt { event::Type::node_added };
+        evt.body.node.target = node;
+        m_registry->m_dispatcherView->send(evt);
+    }
+
+    {
         event::Event evt { event::Type::type_prepare_view };
         evt.body.meshType.target = node->m_type->m_id;
         m_registry->m_dispatcherView->send(evt);
@@ -666,4 +678,10 @@ void NodeRegistry::bindSkybox(
     node->prepare(m_assets, m_registry);
 
     m_skybox = node;
+
+    {
+        event::Event evt { event::Type::type_prepare_view };
+        evt.body.meshType.target = node->m_type->m_id;
+        m_registry->m_dispatcherView->send(evt);
+    }
 }
