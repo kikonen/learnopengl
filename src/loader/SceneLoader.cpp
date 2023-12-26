@@ -792,12 +792,6 @@ namespace loader {
             }
         }
         {
-            const auto& e = data.renderFlags.find("physics");
-            if (e != data.renderFlags.end()) {
-                flags.physics = e->second;
-            }
-        }
-        {
             const auto& e = data.renderFlags.find("enforce_bounds");
             if (e != data.renderFlags.end()) {
                 flags.enforceBounds = e->second;

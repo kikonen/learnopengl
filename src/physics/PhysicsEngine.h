@@ -28,6 +28,7 @@ namespace physics {
 
         void prepare();
         void update(const UpdateContext& ctx);
+        void updateBounds(const UpdateContext& ctx);
 
         inline bool isEnabled(bool enabled) const {
             return m_enabled;
@@ -49,12 +50,6 @@ namespace physics {
         void preparePending(const UpdateContext& ctx);
 
         void enforceBounds(
-            const UpdateContext& ctx,
-            const MeshType& type,
-            Node& node,
-            NodeInstance& instance);
-
-        void updateNode(
             const UpdateContext& ctx,
             const MeshType& type,
             Node& node,

@@ -42,7 +42,6 @@ struct NodeRenderFlags {
 
     bool staticPhysics : 1 {false};
     bool enforceBounds : 1 {false};
-    bool physics : 1 {false};
 };
 
 class CustomMaterial;

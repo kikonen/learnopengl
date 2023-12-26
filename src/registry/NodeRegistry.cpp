@@ -478,7 +478,7 @@ void NodeRegistry::bindNode(
             insertNode(vTyped, node);
         }
 
-        if (type->m_flags.enforceBounds || type->m_flags.physics) {
+        if (type->m_flags.enforceBounds) {
             m_physicsNodes.push_back(node);
         }
 

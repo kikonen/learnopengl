@@ -115,7 +115,7 @@ namespace physics
 
     void PhysicsEngine::update(const UpdateContext& ctx)
     {
-        if (!m_enabled)  return;
+        if (!m_enabled) return;
 
         m_initialDelay += ctx.m_clock.elapsedSecs;
 
@@ -134,7 +134,7 @@ namespace physics
                 m_invokeCount++;
                 m_stepCount += n;
 
-                std::cout << "n=" << n << '\n';
+                //std::cout << "n=" << n << '\n';
 
                 //std::cout << ctx.m_clock.elapsedSecs << " - " << n << '\n';
 
@@ -163,35 +163,25 @@ namespace physics
                 //}
 
                 for (const auto& obj : m_objects) {
-                    if (!(obj.m_bodyId || obj.m_node)) continue;
-
                     obj.updateFromPhysics();
                 }
             }
         }
+    }
 
+    void PhysicsEngine::updateBounds(const UpdateContext& ctx)
+    {
         for (auto* node : ctx.m_registry->m_nodeRegistry->m_physicsNodes) {
             const auto& type = *node->m_type;
 
-            if (type.m_flags.physics) {
+            if (type.m_flags.enforceBounds) {
                 if (node->m_instancer) {
                     for (auto& instance : node->m_instancer->getInstances()) {
-                        updateNode(ctx, type, *node, instance);
+                        enforceBounds(ctx, type, *node, instance);
                     }
                 }
                 else {
-                    updateNode(ctx, type, *node, node->getInstance());
-                }
-
-                if (type.m_flags.enforceBounds) {
-                    if (node->m_instancer) {
-                        for (auto& instance : node->m_instancer->getInstances()) {
-                            enforceBounds(ctx, type, *node, instance);
-                        }
-                    }
-                    else {
-                        enforceBounds(ctx, type, *node, node->getInstance());
-                    }
+                    enforceBounds(ctx, type, *node, node->getInstance());
                 }
             }
         }
@@ -265,14 +255,6 @@ namespace physics
         instance.m_physicsLevel = physicsLevel;
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));
-    }
-
-    void PhysicsEngine::updateNode(
-        const UpdateContext& ctx,
-        const MeshType& type,
-        Node& node,
-        NodeInstance& instance)
-    {
     }
 
     physics::physics_id PhysicsEngine::registerObject()
