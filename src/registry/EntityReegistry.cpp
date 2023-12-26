@@ -180,11 +180,7 @@ void EntityRegistry::markDirty(int index)
 
 void EntityRegistry::processNodes(const UpdateContext& ctx)
 {
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
-        for (const auto& it : all.second) {
-            for (auto& node : it.second) {
-                node->updateEntity(ctx, this);
-            }
-        }
+    for (auto* node : ctx.m_registry->m_nodeRegistry->m_allNodes) {
+        node->updateEntity(ctx, this);
     }
 }

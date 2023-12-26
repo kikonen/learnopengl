@@ -109,7 +109,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
     count++;
     //if (count < 100)
     {
-        std::cout << count << '\n';
+        //std::cout << count << '\n';
         if (m_loaded) {
             m_registry->m_commandEngine->update(ctx);
         }

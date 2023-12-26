@@ -170,13 +170,20 @@ private:
         Node* node) noexcept;
 
 public:
-    ProgramTypeMap allNodes;
+    // EntityRegistry
+    std::vector<Node*> m_allNodes;
+    // PhysicsEngine
+    std::vector<Node*> m_physicsNodes;
+    // NodeDraw
     ProgramTypeMap solidNodes;
+    // NodeDraw
     ProgramTypeMap alphaNodes;
+    // NodeDraw
     ProgramTypeMap spriteNodes;
+    // NodeDraw
     ProgramTypeMap blendedNodes;
+    // OBSOLETTE
     ProgramTypeMap invisibleNodes;
-    ProgramTypeMap physicsNodes;
 
     Node* m_root{ nullptr };
     Node* m_dirLight{ nullptr };

@@ -86,16 +86,10 @@ NodeRegistry::~NodeRegistry()
         m_root = nullptr;
     }
 
-    //KI_INFO("NODE_REGISTRY: delete");
-    for (auto& all : allNodes) {
-        for (auto& [key, nodes] : all.second) {
-            //KI_INFO(fmt::format("NODE_REGISTRY: delete {}", key.type->str()));
-            for (auto& node : nodes) {
-                delete node;
-            }
-        }
+    for (auto* node : m_allNodes) {
+        delete node;
     }
-    allNodes.clear();
+    m_allNodes.clear();
 
     for (auto& [parentId, nodes] : m_pendingChildren) {
         for (auto& [uuid, node] : nodes) {
@@ -369,12 +363,8 @@ int NodeRegistry::countTagged() const noexcept
     int count = m_taggedCount;
     if (count < 0) {
         count = 0;
-        for (const auto& all : allNodes) {
-            for (const auto& x : all.second) {
-                for (auto& node : x.second) {
-                    if (node->isTagged()) count++;
-                }
-            }
+        for (auto* node : m_allNodes) {
+            if (node->isTagged()) count++;
         }
         m_taggedCount = count;
     }
@@ -386,12 +376,8 @@ int NodeRegistry::countSelected() const noexcept
     int count = m_selectedCount;
     if (count < 0) {
         count = 0;
-        for (const auto& all : allNodes) {
-            for (const auto& x : all.second) {
-                for (auto& node : x.second) {
-                    if (node->isSelected()) count++;
-                }
-            }
+        for (auto* node : m_allNodes) {
+            if (node->isSelected()) count++;
         }
         m_selectedCount = count;
     }
@@ -465,8 +451,7 @@ void NodeRegistry::bindNode(
         if (!uuid.is_nil()) m_uuidToNode[uuid] = node;
 
         {
-            auto& vAll = allNodes[programKey][typeKey];
-            insertNode(vAll, node);
+            m_allNodes.push_back(node);
         }
 
         {
@@ -489,8 +474,7 @@ void NodeRegistry::bindNode(
         }
 
         if (type->m_flags.enforceBounds || type->m_flags.physics) {
-            auto& vPhysics = physicsNodes[programKey][typeKey];
-            insertNode(vPhysics, node);
+            m_physicsNodes.push_back(node);
         }
 
         if (node->m_camera) {

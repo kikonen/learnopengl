@@ -168,33 +168,27 @@ namespace physics
             }
         }
 
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->physicsNodes) {
-            for (const auto& it : all.second) {
-                const MeshType& type = *it.first.type;
+        for (auto* node : ctx.m_registry->m_nodeRegistry->m_physicsNodes) {
+            const auto& type = *node->m_type;
 
-                if (type.m_flags.physics) {
-                    for (auto& node : it.second) {
-                        if (node->m_instancer) {
-                            for (auto& instance : node->m_instancer->getInstances()) {
-                                updateNode(ctx, type, *node, instance);
-                            }
-                        }
-                        else {
-                            updateNode(ctx, type, *node, node->getInstance());
-                        }
+            if (type.m_flags.physics) {
+                if (node->m_instancer) {
+                    for (auto& instance : node->m_instancer->getInstances()) {
+                        updateNode(ctx, type, *node, instance);
                     }
+                }
+                else {
+                    updateNode(ctx, type, *node, node->getInstance());
                 }
 
                 if (type.m_flags.enforceBounds) {
-                    for (auto& node : it.second) {
-                        if (node->m_instancer) {
-                            for (auto& instance : node->m_instancer->getInstances()) {
-                                enforceBounds(ctx, type, *node, instance);
-                            }
+                    if (node->m_instancer) {
+                        for (auto& instance : node->m_instancer->getInstances()) {
+                            enforceBounds(ctx, type, *node, instance);
                         }
-                        else {
-                            enforceBounds(ctx, type, *node, node->getInstance());
-                        }
+                    }
+                    else {
+                        enforceBounds(ctx, type, *node, node->getInstance());
                     }
                 }
             }
