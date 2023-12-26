@@ -40,6 +40,7 @@ public:
     bool glUseFence;
     bool glUseSingleFence;
     bool glUseInvalidate;
+    bool glUseFinish;
 
     bool prepassDepthEnabled;
 

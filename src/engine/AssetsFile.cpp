@@ -156,6 +156,10 @@ void AssetsFile::loadAssets(
                 data.glUseInvalidate = readBool(v);
                 continue;
             }
+            if (k == "gl_use_finish") {
+                data.glUseFinish = readBool(v);
+                continue;
+            }
             if (k == "prepass_depth_enabled") {
                 data.prepassDepthEnabled = readBool(v);
                 continue;

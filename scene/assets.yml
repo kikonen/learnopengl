@@ -8,6 +8,7 @@ assets:
   gl_use_fence: true
   gl_use_single_fence: true
   gl_use_invalidate: false
+  gl_use_finish: true
 
   prepass_depth_enabled: false
 

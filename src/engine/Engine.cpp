@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 #include "imgui.h"
 
@@ -171,7 +172,10 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 //   draw loop and update of UBOs & mapped buffers in next frame
                 // => INEFFICIENT, need to improve this
                 // https://forums.developer.nvidia.com/t/persistent-buffer-synchronization-doesnt-work/66636/5
-                glFinish();
+                if (m_assets.glUseFinish) {
+                    std::cout << ".";
+                    glFinish();
+                }
 
                 if (!close) {
                     close = onUpdate(clock);
@@ -199,7 +203,6 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             // -------------------------------------------------------------------------------
             glfwSwapBuffers(m_window->m_glfwWindow);
             glfwPollEvents();
-            //glFinish();
         }
 
         if (!close) {

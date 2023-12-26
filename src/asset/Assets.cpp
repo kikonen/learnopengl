@@ -26,6 +26,7 @@ Assets::Assets()
     glUseFence = true;
     glUseSingleFence = true;
     glUseInvalidate = false;
+    glUseFinish = false;
 
     prepassDepthEnabled = false;
 
