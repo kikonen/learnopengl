@@ -16,6 +16,7 @@
 
 #include "registry/MeshType.h"
 
+#include "component/NodeComponent.h"
 
 class Registry;
 
@@ -208,6 +209,8 @@ private:
     std::unordered_map<uuids::uuid, std::vector<std::tuple<const uuids::uuid, Node*>>> m_pendingChildren;
 
     //std::unordered_map<ki::node_id, NodeVector> m_parentToChildren;
+
+    std::vector<NodeComponent<Camera>> m_cameraComponents;
 
     Node* m_activeNode{ nullptr };
     Node* m_activeCamera{ nullptr };

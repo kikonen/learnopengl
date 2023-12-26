@@ -386,6 +386,7 @@
     <ClInclude Include="src\audio\Sound.h" />
     <ClInclude Include="src\scene\SceneUpdater.h" />
     <ClInclude Include="src\engine\UpdateViewContext.h" />
+    <ClInclude Include="src\component\NodeComponent.h" />
     <ClInclude Include="src\event\size.h" />
     <ClInclude Include="src\physics\Body.h" />
     <ClInclude Include="src\physics\size.h" />
