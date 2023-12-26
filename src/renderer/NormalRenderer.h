@@ -7,7 +7,7 @@ class NormalRenderer final : public Renderer
 public:
     NormalRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
 
-    virtual void prepare(
+    virtual void prepareView(
         const Assets& assets,
         Registry* registry) override;
 

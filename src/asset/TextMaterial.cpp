@@ -7,7 +7,7 @@
 
 //#include "render/FrameBuffer.h"
 
-void TextMaterial::prepare(
+void TextMaterial::prepareView(
     const Assets& assets,
     Registry* registry)
 {

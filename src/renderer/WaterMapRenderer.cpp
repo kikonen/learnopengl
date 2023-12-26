@@ -36,14 +36,14 @@ namespace {
 }
 
 
-void WaterMapRenderer::prepare(
+void WaterMapRenderer::prepareView(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareView(assets, registry);
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
@@ -81,7 +81,7 @@ void WaterMapRenderer::prepare(
         m_reflectionDebugViewport->setGammaCorrect(true);
         m_reflectionDebugViewport->setHardwareGamma(true);
 
-        m_reflectionDebugViewport->prepare(assets);
+        m_reflectionDebugViewport->prepareView(assets);
     }
 
     {
@@ -103,7 +103,7 @@ void WaterMapRenderer::prepare(
         m_refractionDebugViewport->setGammaCorrect(true);
         m_refractionDebugViewport->setHardwareGamma(true);
 
-        m_refractionDebugViewport->prepare(assets);
+        m_refractionDebugViewport->prepareView(assets);
     }
 
     glm::vec3 origo(0);

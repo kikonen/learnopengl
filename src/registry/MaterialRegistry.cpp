@@ -116,6 +116,7 @@ Material* MaterialRegistry::findById(
 
 void MaterialRegistry::updateView(const UpdateViewContext& ctx)
 {
+    //if (!m_dirty) return;
     std::lock_guard<std::mutex> lock(m_lock);
 
     updateMaterialBuffer();

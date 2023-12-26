@@ -18,7 +18,7 @@ public:
     DynamicCubeMap(int size);
     ~DynamicCubeMap();
 
-    void prepare(
+    void prepareView(
         const Assets& assets,
         Registry* registry,
         const bool clear,

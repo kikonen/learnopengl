@@ -74,15 +74,15 @@ ShadowCascade::~ShadowCascade()
     delete m_buffer;
 }
 
-void ShadowCascade::prepare(
+void ShadowCascade::prepareView(
     const Assets& assets,
     Registry* registry)
 {
     m_solidShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
     m_alphaShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
 
-    m_solidShadowProgram->prepare(assets);
-    m_alphaShadowProgram->prepare(assets);
+    m_solidShadowProgram->prepareView(assets);
+    m_alphaShadowProgram->prepareView(assets);
 
     m_cascadeCount = assets.shadowPlanes.size() - 1;
 

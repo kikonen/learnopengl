@@ -25,9 +25,32 @@ class Program final
     friend uniform::Subroutine;
 
 public:
+    // public due to shared_ptr
+    Program(
+        const Assets& assets,
+        std::string_view key,
+        std::string_view name,
+        const bool compute,
+        std::string_view geometryType,
+        const std::map<std::string, std::string, std::less<>>& defines);
+
+    Program(Program&& o) noexcept;
+
+    // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
+    Program(const Program&) = delete;
+    Program& operator=(const Program&) = delete;
+
+    // public due to shared_ptr
+    ~Program();
+
+    void validateProgram() const;
+
+public:
+    inline bool isReady() const { return m_prepareResult == 0; }
+
     void load();
 
-    int prepare(const Assets& assets);
+    int prepareView(const Assets& assets);
 
     void bind(GLState& state) const noexcept;
 
@@ -43,27 +66,6 @@ public:
         unsigned int expectedSize);
 
     operator int() const { return m_programId; }
-
-public:
-    // public due to shared_ptr
-    Program(
-        const Assets& assets,
-        std::string_view key,
-        std::string_view name,
-        const bool compute,
-        std::string_view geometryType,
-        const std::map<std::string, std::string, std::less<>>& defines);
-
-    Program(Program&& o);
-
-    // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
-    Program(const Program&) = delete;
-    Program& operator=(const Program&) = delete;
-
-    // public due to shared_ptr
-    ~Program();
-
-    void validateProgram() const;
 
 private:
     // @return shaderId

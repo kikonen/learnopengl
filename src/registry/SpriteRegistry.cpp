@@ -27,8 +27,10 @@ SpriteRegistry::SpriteRegistry(
     m_shapeIndex++;
 }
 
-void SpriteRegistry::add(Sprite& sprite)
+void SpriteRegistry::registerSprite(Sprite& sprite)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     if (const auto& it = m_idToSprites.find(sprite.m_id);
         it != m_idToSprites.end())
     {
@@ -62,6 +64,9 @@ void SpriteRegistry::add(Sprite& sprite)
 
 void SpriteRegistry::updateView(const UpdateViewContext& ctx)
 {
+    //if (!m_dirty) return;
+    std::lock_guard<std::mutex> lock(m_lock);
+
     updateShapeBuffer();
 }
 

@@ -36,12 +36,12 @@ public:
     virtual const std::vector<Material>& getMaterials() const = 0;
 
     // @return VAO for mesh
-    virtual GLVertexArray* prepare(
+    virtual GLVertexArray* prepareView(
         const Assets& assets,
         Registry* registry) = 0;
 
     virtual void prepareMaterials(
-        MaterialVBO& materialVBO) = 0;
+        MaterialVBO& materialVBO) {};
 
     virtual void prepareDrawOptions(
         backend::DrawOptions& drawOptions) = 0;

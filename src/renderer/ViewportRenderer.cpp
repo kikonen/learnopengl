@@ -10,14 +10,14 @@
 #include "registry/ViewportRegistry.h"
 
 
-void ViewportRenderer::prepare(
+void ViewportRenderer::prepareView(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareView(assets, registry);
 }
 
 void ViewportRenderer::updateView(const UpdateViewContext& ctx)

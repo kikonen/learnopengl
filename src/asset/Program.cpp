@@ -109,7 +109,7 @@ Program::~Program()
 
 void Program::bind(GLState& state) const noexcept
 {
-    assert(m_prepared);
+    assert(isReady());
     state.useProgram(m_programId);
 }
 
@@ -120,7 +120,7 @@ void Program::load()
     }
 }
 
-int Program::prepare(const Assets& assets)
+int Program::prepareView(const Assets& assets)
 {
     if (m_prepared) return m_prepareResult;
     m_prepared = true;

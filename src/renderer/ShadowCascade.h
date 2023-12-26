@@ -30,7 +30,7 @@ public:
 
     ~ShadowCascade();
 
-    void prepare(
+    void prepareView(
         const Assets& assets,
         Registry* registry);
 

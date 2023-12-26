@@ -49,7 +49,7 @@ public:
 
     void setTextureId(GLuint textureId);
 
-    void prepare(const Assets& assets);
+    void prepareView(const Assets& assets);
 
     void updateView(const UpdateViewContext& ctx);
 

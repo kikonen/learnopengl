@@ -24,7 +24,7 @@ public:
 
     ~MirrorMapRenderer() = default;
 
-    virtual void prepare(
+    virtual void prepareView(
         const Assets& assets,
         Registry* registry) override;
 

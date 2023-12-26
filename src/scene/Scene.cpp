@@ -12,20 +12,11 @@
 
 #include "backend/DrawBuffer.h"
 
-#include "component/ParticleGenerator.h"
-
 #include "model/Viewport.h"
 
 #include "event/Dispatcher.h"
 
-#include "script/ScriptEngine.h"
-#include "script/CommandEngine.h"
-#include "script/api/InvokeLuaFunction.h"
-
 #include "controller/NodeController.h"
-
-#include "audio/AudioEngine.h"
-#include "physics/PhysicsEngine.h"
 
 #include "registry/Registry.h"
 #include "registry/MaterialRegistry.h"
@@ -63,7 +54,6 @@
 #include "scene/ParticleSystem.h"
 
 namespace {
-	size_t count = 0;
 }
 
 Scene::Scene(
@@ -116,7 +106,14 @@ Scene::~Scene()
     KI_INFO("SCENE: deleted");
 }
 
-void Scene::prepare()
+void Scene::destroy()
+{
+    *m_alive = false;
+
+    KI_INFO("SCENE: destroy");
+}
+
+void Scene::prepareView()
 {
     //m_registry->m_dispatcher->addListener(
     //    event::Type::node_added,
@@ -134,46 +131,46 @@ void Scene::prepare()
 
     auto* registry = m_registry.get();
 
-    m_batch->prepare(m_assets, registry);
-    m_nodeDraw->prepare(m_assets, registry);
+    m_batch->prepareView(m_assets, registry);
+    m_nodeDraw->prepareView(m_assets, registry);
 
-    m_mainRenderer->prepare(m_assets, registry);
+    m_mainRenderer->prepareView(m_assets, registry);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_rearRenderer->isEnabled()) {
-        m_rearRenderer->prepare(m_assets, registry);
+        m_rearRenderer->prepareView(m_assets, registry);
     }
     if (m_rearRenderer->isEnabled()) {
-        m_rearRenderer->prepare(m_assets, registry);
+        m_rearRenderer->prepareView(m_assets, registry);
     }
 
     if (m_viewportRenderer->isEnabled()) {
-        m_viewportRenderer->prepare(m_assets, registry);
+        m_viewportRenderer->prepareView(m_assets, registry);
     }
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepare(m_assets, registry);
+        m_waterMapRenderer->prepareView(m_assets, registry);
     }
     if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->prepare(m_assets, registry);
+        m_mirrorMapRenderer->prepareView(m_assets, registry);
     }
     if (m_cubeMapRenderer->isEnabled()) {
-        m_cubeMapRenderer->prepare(m_assets, registry);
+        m_cubeMapRenderer->prepareView(m_assets, registry);
     }
     if (m_shadowMapRenderer->isEnabled()) {
-        m_shadowMapRenderer->prepare(m_assets, registry);
+        m_shadowMapRenderer->prepareView(m_assets, registry);
     }
 
     if (m_objectIdRenderer->isEnabled()) {
-        m_objectIdRenderer->prepare(m_assets, registry);
+        m_objectIdRenderer->prepareView(m_assets, registry);
     }
 
     if (m_normalRenderer->isEnabled()) {
-        m_normalRenderer->prepare(m_assets, registry);
+        m_normalRenderer->prepareView(m_assets, registry);
     }
 
     if (m_particleSystem) {
-        m_particleSystem->prepare(m_assets, registry);
+        m_particleSystem->prepareView(m_assets, registry);
     }
 
     {
@@ -207,7 +204,7 @@ void Scene::prepare()
         m_mainViewport->setEffectEnabled(m_assets.viewportEffectEnabled);
         m_mainViewport->setEffect(m_assets.viewportEffect);
 
-        m_mainViewport->prepare(m_assets);
+        m_mainViewport->prepareView(m_assets);
         m_registry->m_viewportRegistry->addViewport(m_mainViewport);
     }
 
@@ -230,7 +227,7 @@ void Scene::prepare()
         m_rearViewport->setGammaCorrect(true);
         m_rearViewport->setHardwareGamma(true);
 
-        m_rearViewport->prepare(m_assets);
+        m_rearViewport->prepareView(m_assets);
         m_registry->m_viewportRegistry->addViewport(m_rearViewport);
     }
 
@@ -262,30 +259,11 @@ void Scene::prepare()
 
 void Scene::update(const UpdateContext& ctx)
 {
-    //if (ctx.clock.frameCount > 120) {
-	count++;
-	if (count < 100) {
-		std::cout << count << '\n';
-		if (m_loaded) {
-			m_registry->m_commandEngine->update(ctx);
-		}
+    m_registry->m_dispatcherView->dispatchEvents();
 
-		if (auto root = m_registry->m_nodeRegistry->m_root) {
-			root->update(ctx);
-			m_registry->m_physicsEngine->update(ctx);
-			m_registry->m_audioEngine->update(ctx);
-		}
-	}
-
-    for (auto& generator : m_particleGenerators) {
-        generator->update(ctx);
-    }
-
-    if (m_particleSystem) {
-        m_particleSystem->update(ctx);
-    }
-
-    m_registry->update(ctx);
+    //if (m_particleSystem) {
+    //    m_particleSystem->update(ctx);
+    //}
 }
 
 void Scene::updateView(const UpdateViewContext& ctx)

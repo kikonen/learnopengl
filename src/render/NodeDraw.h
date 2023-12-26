@@ -32,7 +32,7 @@ public:
     static const unsigned int KIND_ALL{ KIND_SOLID | KIND_SPRITE | KIND_ALPHA | KIND_BLEND };
 
 public:
-    void prepare(
+    void prepareView(
         const Assets& assets,
         Registry* registry);
 

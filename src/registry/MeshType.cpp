@@ -24,7 +24,7 @@ MeshType::MeshType(std::string_view name)
 {
 }
 
-MeshType::MeshType(MeshType&& o)
+MeshType::MeshType(MeshType&& o) noexcept
     : m_id{ o.m_id },
     m_name{ o.m_name },
     m_entityType{ o.m_entityType },
@@ -98,21 +98,22 @@ void MeshType::prepare(
     if (m_prepared) return;
     m_prepared = true;
 
-    //m_privateVAO.create();
-
     for (auto& material : m_materialVBO.m_materials) {
         registry->m_materialRegistry->registerMaterial(material);
     }
 
     if (m_entityType == EntityType::sprite) {
-        registry->m_spriteRegistry->add(m_sprite);
+        registry->m_spriteRegistry->registerSprite(m_sprite);
     }
 
-    m_vao = m_mesh->prepare(assets, registry);
-    m_mesh->prepareMaterials(m_materialVBO);
+    m_vao = m_mesh->prepareView(assets, registry);
 
-    registry->m_materialRegistry->registerMaterialVBO(m_materialVBO);
-    m_materialIndex = resolveMaterialIndex();
+    {
+        m_mesh->prepareMaterials(m_materialVBO);
+
+        registry->m_materialRegistry->registerMaterialVBO(m_materialVBO);
+        m_materialIndex = resolveMaterialIndex();
+    }
 
     {
         m_drawOptions.renderBack = m_flags.renderBack;
@@ -124,22 +125,38 @@ void MeshType::prepare(
 
         m_mesh->prepareDrawOptions(m_drawOptions);
     }
+}
+
+void MeshType::prepareView(
+    const Assets& assets,
+    Registry* registry)
+{
+    if (!m_mesh) return;
+
+    if (m_preparedView) return;
+    m_preparedView = true;
+
+    //m_privateVAO.create();
+
+    m_vao = m_mesh->prepareView(assets, registry);
 
     if (m_program) {
-        m_program->prepare(assets);
+        m_program->prepareView(assets);
     }
 
     if (m_depthProgram) {
-        m_depthProgram->prepare(assets);
+        m_depthProgram->prepareView(assets);
     }
 
     if (m_customMaterial) {
-        m_customMaterial->prepare(assets, registry);
+        m_customMaterial->prepareView(assets, registry);
     }
 }
 
 void MeshType::bind(const RenderContext& ctx)
 {
+    assert(isReady());
+
     if (m_customMaterial) {
         m_customMaterial->bindTextures(ctx);
     }

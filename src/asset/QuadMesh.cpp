@@ -48,7 +48,7 @@ const std::vector<Material>& QuadMesh::getMaterials() const
     return m_material;
 }
 
-GLVertexArray* QuadMesh::prepare(
+GLVertexArray* QuadMesh::prepareView(
     const Assets& assets,
     Registry* registry)
 {
@@ -57,13 +57,6 @@ GLVertexArray* QuadMesh::prepare(
 
     m_vao = quadVAO.prepare();
     return m_vao;
-}
-
-void QuadMesh::prepareMaterials(
-    MaterialVBO& materialVBO)
-{
-    QuadMaterialInit init;
-    init.prepare(*this, materialVBO);
 }
 
 void QuadMesh::prepareDrawOptions(

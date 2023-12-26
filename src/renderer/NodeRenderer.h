@@ -15,7 +15,7 @@ public:
 public:
     NodeRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
 
-    void prepare(
+    void prepareView(
         const Assets& assets,
         Registry* registry) override;
 

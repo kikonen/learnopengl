@@ -20,7 +20,7 @@
 namespace {
 }
 
-void BrdfLutTexture::prepare(
+void BrdfLutTexture::prepareView(
     const Assets& assets,
     Registry* registry)
 {
@@ -42,7 +42,7 @@ void BrdfLutTexture::prepare(
         GLState state;
 
         auto program = registry->m_programRegistry->getProgram(SHADER_BRDF_LUT);
-        program->prepare(assets);
+        program->prepareView(assets);
 
         program->bind(state);
 

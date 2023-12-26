@@ -32,7 +32,9 @@
 #include "render/RenderContext.h"
 
 #include "loader/SceneLoader.h"
+
 #include "scene/Scene.h"
+#include "scene/SceneUpdater.h"
 
 #include "TestSceneSetup.h"
 
@@ -63,6 +65,12 @@ int SampleApp::onInit()
 
 int SampleApp::onSetup() {
     m_currentScene = loadScene();
+    m_sceneUpdater = std::make_shared<SceneUpdater>(
+        m_assets,
+        m_registry,
+        m_currentScene->m_alive);
+
+    m_sceneUpdater->start();
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -99,8 +107,8 @@ int SampleApp::onSetup() {
 }
 
 int SampleApp::onUpdate(const ki::RenderClock& clock) {
-    auto* scene = m_currentScene.get();
-    if (!scene) return 0;
+    auto* updater = m_currentScene.get();
+    if (!updater) return 0;
 
     {
         UpdateContext ctx(
@@ -108,7 +116,7 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
             m_assets,
             m_currentScene->m_registry.get());
 
-        scene->update(ctx);
+        updater->update(ctx);
     }
 
     return 0;
@@ -259,6 +267,12 @@ void SampleApp::frustumDebug(
 
 void SampleApp::onDestroy()
 {
+    if (!m_currentScene) return;
+
+    m_currentScene->destroy();
+
+    // NOTE KI wait for worker threads to shutdown
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
 }
 
 void SampleApp::selectNode(
@@ -390,7 +404,7 @@ std::shared_ptr<Scene> SampleApp::loadScene()
         scene->m_registry
     );
 
-    scene->prepare();
+    scene->prepareView();
 
     return scene;
 }

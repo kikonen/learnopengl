@@ -15,7 +15,7 @@
 #include "CubeRender.h"
 
 
-void EnvironmentMap::prepare(
+void EnvironmentMap::prepareView(
     const Assets& assets,
     Registry* registry,
     int size)
@@ -41,7 +41,7 @@ void EnvironmentMap::prepare(
         GLState state;
 
         auto program = registry->m_programRegistry->getProgram(SHADER_HDRI_CUBE_MAP);
-        program->prepare(assets);
+        program->prepareView(assets);
 
         program->bind(state);
         state.bindTexture(UNIT_HDR_TEXTURE, m_hdriTextureID, false);

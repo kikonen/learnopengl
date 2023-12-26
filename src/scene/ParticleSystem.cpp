@@ -20,7 +20,7 @@ ParticleSystem::ParticleSystem()
 {
 }
 
-void ParticleSystem::prepare(
+void ParticleSystem::prepareView(
     const Assets& assets,
     Registry* registry)
 {
@@ -28,7 +28,7 @@ void ParticleSystem::prepare(
     m_prepared = true;
 
     particleProgram = registry->m_programRegistry->getProgram(SHADER_PARTICLE, {});
-    particleProgram->prepare(assets);
+    particleProgram->prepareView(assets);
 }
 
 void ParticleSystem::update(const UpdateContext& ctx)

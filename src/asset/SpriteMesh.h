@@ -20,12 +20,9 @@ public:
 
     const std::vector<Material>& getMaterials() const override;
 
-    virtual GLVertexArray* prepare(
+    virtual GLVertexArray* prepareView(
         const Assets& assets,
         Registry* registry) override;
-
-    virtual void prepareMaterials(
-        MaterialVBO& materialVBO) override;
 
     virtual void prepareDrawOptions(
         backend::DrawOptions& drawOptions) override;

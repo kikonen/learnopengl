@@ -633,6 +633,7 @@ namespace loader {
             auto* t = m_registry->m_typeRegistry->modifyType(type->m_id);
             t->setCustomMaterial(
                 m_customMaterialLoader.createCustomMaterial(data.customMaterial, cloneIndex, tile));
+            m_registry->m_typeRegistry->registerCustomMaterial(type->m_id);
             type = t;
             node->m_type = type;
         }

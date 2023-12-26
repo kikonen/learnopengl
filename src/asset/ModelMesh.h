@@ -43,7 +43,7 @@ public:
 
     virtual const std::vector<Material>& getMaterials() const override;
 
-    virtual GLVertexArray* prepare(
+    virtual GLVertexArray* prepareView(
         const Assets& assets,
         Registry* registry) override;
 

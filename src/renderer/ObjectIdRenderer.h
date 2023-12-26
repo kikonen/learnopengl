@@ -18,7 +18,7 @@ public:
         float screenPosY,
         Viewport* mainViewport);
 
-    virtual void prepare(
+    virtual void prepareView(
         const Assets& assets,
         Registry* registry) override;
 

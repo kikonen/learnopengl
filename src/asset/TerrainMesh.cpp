@@ -41,7 +41,7 @@ const std::vector<Material>& TerrainMesh::getMaterials() const
     return m_material;
 }
 
-GLVertexArray* TerrainMesh::prepare(
+GLVertexArray* TerrainMesh::prepareView(
     const Assets& assets,
     Registry* registry)
 {
@@ -50,13 +50,6 @@ GLVertexArray* TerrainMesh::prepare(
 
     m_vao = terrainVAO.prepare();
     return m_vao;
-}
-
-void TerrainMesh::prepareMaterials(
-    MaterialVBO& materialVBO)
-{
-    TerrainMaterialInit init;
-    init.prepare(*this, materialVBO);
 }
 
 void TerrainMesh::prepareDrawOptions(

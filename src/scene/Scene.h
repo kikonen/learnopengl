@@ -58,7 +58,9 @@ public:
         std::shared_ptr<Registry> registry);
     ~Scene();
 
-    void prepare();
+    void destroy();
+
+    void prepareView();
 
     void update(const UpdateContext& ctx);
     void updateView(const UpdateViewContext& ctx);

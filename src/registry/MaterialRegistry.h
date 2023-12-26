@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <mutex>
+#include <atomic>
 
 #include "asset/Assets.h"
 #include "asset/Material.h"
@@ -54,6 +55,7 @@ private:
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
+    std::atomic<bool> m_dirtyFlag;
     std::mutex m_lock{};
 
     Material m_zero;

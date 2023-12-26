@@ -150,7 +150,7 @@ void Batch::bind() noexcept
     m_draw->bind();
 }
 
-void Batch::prepare(
+void Batch::prepareView(
     const Assets& assets,
     Registry* registry,
     int entryCount,
@@ -179,7 +179,7 @@ void Batch::prepare(
         assets.glUseFence,
         assets.glUseSingleFence);
 
-    m_draw->prepare(assets, registry, entryCount, bufferCount);
+    m_draw->prepareView(assets, registry, entryCount, bufferCount);
 
     m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
     m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;

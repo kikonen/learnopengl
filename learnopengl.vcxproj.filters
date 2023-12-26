@@ -558,6 +558,12 @@
     <ClCompile Include="src\asset\ProgramUniforms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\UpdateViewContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\SceneUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1296,6 +1302,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\ProgramUniforms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\UpdateViewContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\SceneUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

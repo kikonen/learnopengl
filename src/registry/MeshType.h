@@ -59,8 +59,10 @@ class MeshType final
 
 public:
     MeshType(std::string_view name);
-    MeshType(MeshType&& o);
+    MeshType(MeshType&& o) noexcept;
     ~MeshType();
+
+    inline bool isReady() const { return m_preparedView; }
 
     const std::string str() const noexcept;
 
@@ -85,12 +87,15 @@ public:
         return m_materialVBO.m_materials.size();
     }
 
-
     CustomMaterial* getCustomMaterial() { return m_customMaterial.get(); }
 
     void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
 
     void prepare(
+        const Assets& assets,
+        Registry* registry);
+
+    void prepareView(
         const Assets& assets,
         Registry* registry);
 
@@ -119,6 +124,7 @@ public:
 
 private:
     bool m_prepared : 1 {false};
+    bool m_preparedView : 1 {false};
 
     Mesh* m_mesh{ nullptr };
     //std::unique_ptr<Mesh> m_deleter;

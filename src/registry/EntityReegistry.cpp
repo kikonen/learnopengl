@@ -42,6 +42,7 @@ void EntityRegistry::update(const UpdateContext& ctx)
 
 void EntityRegistry::updateView(const UpdateViewContext& ctx)
 {
+    //if (!m_dirty) return;
     std::lock_guard<std::mutex> lock(m_lock);
 
     if (m_minDirty < 0) return;

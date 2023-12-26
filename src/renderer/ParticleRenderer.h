@@ -7,7 +7,7 @@ class ParticleRenderer final : public Renderer
 public:
     ParticleRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
 
-    virtual void prepare(
+    virtual void prepareView(
         const Assets& assets,
         Registry* registry) override;
 

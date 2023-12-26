@@ -14,8 +14,6 @@
 
 #include "engine/AsyncLoader.h"
 
-#include "event/Dispatcher.h"
-
 #include "registry/ProgramRegistry.h"
 
 #include "gui/Window.h"
@@ -167,8 +165,6 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             // ------
             {
                 renderStart = std::chrono::system_clock::now();
-
-                m_registry->m_dispatcher->dispatchEvents();
 
                 // serious sync issue entity data vs. drawing
                 // - looks like camera is jerky, but it's lack of sync between

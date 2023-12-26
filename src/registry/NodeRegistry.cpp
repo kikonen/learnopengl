@@ -123,6 +123,7 @@ void NodeRegistry::prepare(
 void NodeRegistry::attachListeners()
 {
     auto* dispatcher = m_registry->m_dispatcher;
+    auto* dispatcherView = m_registry->m_dispatcherView;
 
     dispatcher->addListener(
         event::Type::node_add,
@@ -303,6 +304,14 @@ void NodeRegistry::attachListeners()
                 }
             });
     }
+
+    dispatcherView->addListener(
+        event::Type::type_prepare_view,
+        [this](const event::Event& e) {
+            auto& data = e.body.meshType;
+            auto* type = m_registry->m_typeRegistry->modifyType(data.target);
+            type->prepareView(m_assets, m_registry);
+        });
 }
 
 void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
@@ -510,6 +519,12 @@ void NodeRegistry::bindNode(
         event::Event evt { event::Type::node_added };
         evt.body.node.target = node;
         m_registry->m_dispatcher->send(evt);
+    }
+
+    {
+        event::Event evt { event::Type::type_prepare_view };
+        evt.body.meshType.target = node->m_type->m_id;
+        m_registry->m_dispatcherView->send(evt);
     }
 
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));

@@ -34,6 +34,8 @@ namespace event {
         node_select,
         node_activate,
 
+        type_prepare_view,
+
         // NOTE KI allow camera to vary independent of active node
         camera_activate,
 
@@ -59,6 +61,8 @@ namespace event {
 
         script_bind,
         script_run,
+
+        app_shutdown,
     };
 
     struct PhysicsData {
@@ -115,6 +119,10 @@ namespace event {
         ki::node_id parentId{ 0 };
     };
 
+    struct MeshTypeAction {
+        ki::type_id target{ 0 };
+    };
+
     struct ControlAction {
 		ki::node_id target{ 0 };
         NodeController* controller{ nullptr };
@@ -158,6 +166,7 @@ namespace event {
         std::shared_ptr<BlobData> blob;
         union Body {
             NodeAction node;
+            MeshTypeAction meshType;
             ControlAction control;
             AudioInitAction audioInit;
             AudioSourceAction audioSource;

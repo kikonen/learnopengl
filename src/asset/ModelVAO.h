@@ -1,5 +1,8 @@
 #pragma once
 
+#include <mutex>
+#include <atomic>
+
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
@@ -38,6 +41,9 @@ private:
 
 private:
     bool m_prepared = false;
+
+    std::atomic<bool> m_dirty;
+    std::mutex m_lock{};
 
     std::unique_ptr<GLVertexArray> m_vao;
 

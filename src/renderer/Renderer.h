@@ -21,7 +21,7 @@ public:
 
     virtual ~Renderer();
 
-    virtual void prepare(
+    virtual void prepareView(
         const Assets& assets,
         Registry* registry);
 

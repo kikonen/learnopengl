@@ -196,6 +196,7 @@
     <ClCompile Include="src\audio\AudoEngine.cpp" />
     <ClCompile Include="src\audio\Sound.cpp" />
     <ClCompile Include="src\engine\UpdateViewContext.cpp" />
+    <ClCompile Include="src\scene\SceneUpdater.cpp" />
     <ClCompile Include="src\script\api\AudioPause.cpp" />
     <ClCompile Include="src\script\api\AudioPlay.cpp" />
     <ClCompile Include="src\script\api\AudioStop.cpp" />
@@ -383,6 +384,7 @@
     <ClInclude Include="src\audio\Source.h" />
     <ClInclude Include="src\audio\AudioEngine.h" />
     <ClInclude Include="src\audio\Sound.h" />
+    <ClInclude Include="src\scene\SceneUpdater.h" />
     <ClInclude Include="src\engine\UpdateViewContext.h" />
     <ClInclude Include="src\event\size.h" />
     <ClInclude Include="src\physics\Body.h" />

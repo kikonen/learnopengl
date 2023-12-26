@@ -41,14 +41,14 @@ namespace {
     static const int ATT_ALBEDO_INDEX = 0;
 }
 
-void MirrorMapRenderer::prepare(
+void MirrorMapRenderer::prepareView(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareView(assets, registry);
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
@@ -90,14 +90,14 @@ void MirrorMapRenderer::prepare(
         m_reflectionDebugViewport->setGammaCorrect(true);
         m_reflectionDebugViewport->setHardwareGamma(true);
 
-        m_reflectionDebugViewport->prepare(assets);
+        m_reflectionDebugViewport->prepareView(assets);
     }
 
     m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, m_squareAspectRatio);
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepare(assets, registry);
+        m_waterMapRenderer->prepareView(assets, registry);
     }
 
     if (m_doubleBuffer) {
@@ -105,7 +105,7 @@ void MirrorMapRenderer::prepare(
         m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
         if (m_mirrorMapRenderer->isEnabled()) {
-            m_mirrorMapRenderer->prepare(assets, registry);
+            m_mirrorMapRenderer->prepareView(assets, registry);
         }
     }
 }

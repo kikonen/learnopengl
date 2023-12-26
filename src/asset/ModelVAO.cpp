@@ -117,6 +117,8 @@ void ModelVAO::prepareVAO(
 
 GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     assert(!meshVBO.m_positionEntries.empty());
     assert(!meshVBO.m_vertexEntries.empty());
     assert(!meshVBO.m_indexEntries.empty());
@@ -195,6 +197,8 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
 
 void ModelVAO::updateView(const UpdateViewContext& ctx)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     updatePositionBuffer();
     updateVertexBuffer();
     updateIndexBuffer();

@@ -19,7 +19,7 @@ public:
 
     bool valid() { return m_texture.valid(); }
 
-    void prepare(
+    void prepareView(
         const Assets& assets,
         Registry* registry);
 

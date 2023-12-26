@@ -14,8 +14,4 @@ public:
     virtual void prepare(
         TerrainMesh& mesh,
         MaterialVBO& materialVBO);
-
-private:
-    void prepareVertices(
-        MaterialVBO& materialVBO);
 };

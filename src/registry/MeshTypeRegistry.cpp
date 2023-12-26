@@ -43,10 +43,21 @@ MeshType* MeshTypeRegistry::registerType(
     return &type;
 }
 
+void MeshTypeRegistry::registerCustomMaterial(
+    ki::type_id typeId)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+
+    m_customMaterialTypes.push_back(typeId);
+}
+
 void MeshTypeRegistry::bind(const RenderContext& ctx)
 {
     std::lock_guard<std::mutex> lock(m_lock);
-    for (auto& type : m_types) {
+
+    for (auto& typeId : m_customMaterialTypes) {
+        auto& type = m_types[typeId];
+        if (!type.isReady()) continue;
         type.bind(ctx);
     }
 }

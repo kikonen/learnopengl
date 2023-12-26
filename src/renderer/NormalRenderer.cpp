@@ -14,17 +14,17 @@
 
 
 
-void NormalRenderer::prepare(
+void NormalRenderer::prepareView(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareView(assets, registry);
 
     m_normalProgram = m_registry->m_programRegistry->getProgram(SHADER_NORMAL);
-    m_normalProgram->prepare(assets);
+    m_normalProgram->prepareView(assets);
 }
 
 void NormalRenderer::render(

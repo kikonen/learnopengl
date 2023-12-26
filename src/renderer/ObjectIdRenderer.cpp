@@ -83,17 +83,17 @@ ki::node_id ObjectIdRenderer::getObjectId(
     return nodeId;
 }
 
-void ObjectIdRenderer::prepare(
+void ObjectIdRenderer::prepareView(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareView(assets, registry);
 
     m_idProgram = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
-    m_idProgram->prepare(assets);
+    m_idProgram->prepareView(assets);
 
     //m_idProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID_POINT_SPRITE, { { DEF_USE_ALPHA, "1"} });
     //m_idProgramPointSprite->prepare(assets);
@@ -108,7 +108,7 @@ void ObjectIdRenderer::prepare(
         0,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
-    m_debugViewport->prepare(assets);
+    m_debugViewport->prepareView(assets);
 }
 
 void ObjectIdRenderer::updateView(const UpdateViewContext& ctx)

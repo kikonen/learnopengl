@@ -17,7 +17,7 @@
 #include "render/Batch.h"
 
 
-void NodeDraw::prepare(
+void NodeDraw::prepareView(
     const Assets& assets,
     Registry* registry)
 {
@@ -29,28 +29,28 @@ void NodeDraw::prepare(
     m_textureQuad.prepare();
 
     m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
-    m_deferredProgram ->prepare(assets);
+    m_deferredProgram ->prepareView(assets);
 
     m_oitProgram = registry->m_programRegistry->getProgram(SHADER_OIT_PASS);
-    m_oitProgram->prepare(assets);
+    m_oitProgram->prepareView(assets);
 
     m_blendOitProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_OIT_PASS);
-    m_blendOitProgram->prepare(assets);
+    m_blendOitProgram->prepareView(assets);
 
     m_bloomProgram = registry->m_programRegistry->getProgram(SHADER_BLOOM_PASS);
-    m_bloomProgram->prepare(assets);
+    m_bloomProgram->prepareView(assets);
 
     m_blendBloomProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_BLOOM_PASS);
-    m_blendBloomProgram->prepare(assets);
+    m_blendBloomProgram->prepareView(assets);
 
     m_emissionProgram = registry->m_programRegistry->getProgram(SHADER_EMISSION_PASS);
-    m_emissionProgram->prepare(assets);
+    m_emissionProgram->prepareView(assets);
 
     m_fogProgram = registry->m_programRegistry->getProgram(SHADER_FOG_PASS);
-    m_fogProgram->prepare(assets);
+    m_fogProgram->prepareView(assets);
 
     m_hdrGammaProgram = registry->m_programRegistry->getProgram(SHADER_HDR_GAMMA_PASS);
-    m_hdrGammaProgram->prepare(assets);
+    m_hdrGammaProgram->prepareView(assets);
 
     m_timeElapsedQuery.create();
 }
@@ -532,6 +532,7 @@ bool NodeDraw::drawNodesImpl(
         for (const auto& it : typeMap) {
             auto* type = it.first.type;
 
+            if (!type->isReady()) continue;
             if (!typeSelector(type)) continue;
 
             auto& batch = ctx.m_batch;
@@ -580,6 +581,7 @@ void NodeDraw::drawBlendedImpl(
         for (const auto& map : all.second) {
             auto* type = map.first.type;
 
+            if (!type->isReady()) continue;
             if (!typeSelector(type)) continue;
 
             for (const auto& node : map.second) {
@@ -615,6 +617,7 @@ void NodeDraw::drawProgram(
         for (const auto& it : typeMap) {
             auto* type = it.first.type;
 
+            if (!type->isReady()) continue;
             if (!typeSelector(type)) continue;
 
             auto activeProgram = programSelector(type);
@@ -660,6 +663,8 @@ void NodeDraw::drawSkybox(
 {
     Node* node = ctx.m_registry->m_nodeRegistry->m_skybox;
     if (!node) return;
+
+    if (!node->m_type->isReady()) return;
 
     auto& batch = ctx.m_batch;
     auto* program = node->m_type->m_program;

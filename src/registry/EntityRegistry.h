@@ -3,6 +3,7 @@
 #include <bitset>
 #include <vector>
 #include <mutex>
+#include <atomic>
 
 #include "kigl/GLBuffer.h"
 
@@ -51,6 +52,7 @@ private:
     int m_minDirty = -1;
     int m_maxDirty = -1;
 
+    std::atomic<bool> m_dirtyFlag;
     std::mutex m_lock{};
 
     GLBuffer m_ssbo{ "entitySSBO" };

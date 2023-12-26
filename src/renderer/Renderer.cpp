@@ -11,7 +11,7 @@
 Renderer::~Renderer()
 {}
 
-void Renderer::prepare(
+void Renderer::prepareView(
     const Assets& assets,
     Registry* registry)
 {

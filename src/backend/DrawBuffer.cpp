@@ -31,7 +31,7 @@ namespace backend {
     {
     }
 
-    void DrawBuffer::prepare(
+    void DrawBuffer::prepareView(
         const Assets& assets,
         Registry* registry,
         int batchCount,
@@ -62,7 +62,7 @@ namespace backend {
                 { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
             });
 
-        m_cullingCompute->prepare(assets);
+        m_cullingCompute->prepareView(assets);
 
         {
             constexpr int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;

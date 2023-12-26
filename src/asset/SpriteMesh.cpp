@@ -46,7 +46,7 @@ const std::vector<Material>& SpriteMesh::getMaterials() const
     return m_material;
 }
 
-GLVertexArray* SpriteMesh::prepare(
+GLVertexArray* SpriteMesh::prepareView(
     const Assets& assets,
     Registry* registry)
 {
@@ -55,11 +55,6 @@ GLVertexArray* SpriteMesh::prepare(
 
     m_vao = spriteVAO.prepare();
     return m_vao;
-}
-
-void SpriteMesh::prepareMaterials(
-    MaterialVBO& materialVBO)
-{
 }
 
 void SpriteMesh::prepareDrawOptions(
