@@ -14,6 +14,7 @@ Input::Input(Window* window)
     : window(window)
 {
     m_keyMappings[Key::EXIT] = new int[] { GLFW_KEY_ESCAPE, 0 };
+    m_keyMappings[Key::FULL_SCREEN_TOGGLE] = new int[] { GLFW_KEY_F1, GLFW_KEY_F12, 0 };
     m_keyMappings[Key::FORWARD] = new int[] { GLFW_KEY_W, GLFW_KEY_UP, 0 };
     m_keyMappings[Key::BACKWARD] = new int[] { GLFW_KEY_S, GLFW_KEY_DOWN, 0 };
     m_keyMappings[Key::LEFT] = new int[] { GLFW_KEY_A, GLFW_KEY_LEFT, 0 };

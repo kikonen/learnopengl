@@ -34,6 +34,8 @@ public:
 
     void setTitle(std::string_view title);
 
+    void toggleFullScreen();
+
     void processInput(const ki::RenderClock& clock);
 
     void onWindowResize(int width, int height);
@@ -61,6 +63,9 @@ protected:
     bool m_sizeValid{ false };
     glm::uvec2 m_size{ 0 };
     glm::uvec2 m_safeSize{ 1 };
+
+    glm::uvec2 m_windowedSize{ 0 };
+    bool m_windowedWasMaximized{ false };
 
     std::string m_title;
 };

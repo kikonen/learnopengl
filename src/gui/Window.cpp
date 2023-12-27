@@ -63,6 +63,44 @@ void Window::setTitle(std::string_view title)
     glfwSetWindowTitle(m_glfwWindow, std::string{ title }.c_str());
 }
 
+void Window::toggleFullScreen()
+{
+    bool fullScreen = glfwGetWindowMonitor(m_glfwWindow) == nullptr;
+
+    if (fullScreen) {
+        int w, h;
+        glfwGetWindowSize(m_glfwWindow, &w, &h);
+        m_windowedSize.x = w;
+        m_windowedSize.y = h;
+        m_windowedWasMaximized = glfwGetWindowAttrib(m_glfwWindow, GLFW_MAXIMIZED);
+
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        glm::uvec2 size{ 0 };
+        const auto* mode = glfwGetVideoMode(monitor);
+        size.x = mode->width;
+        size.y = mode->height;
+
+        glfwSetWindowMonitor(
+            m_glfwWindow,
+            monitor,
+            0,
+            0,
+            size.x,
+            size.y,
+            GLFW_DONT_CARE);
+    }
+    else {
+        glfwSetWindowMonitor(
+            m_glfwWindow,
+            nullptr,
+            0,
+            0,
+            m_size.x,
+            m_size.y,
+            GLFW_DONT_CARE);
+    }
+}
+
 void Window::close()
 {
     glfwSetWindowShouldClose(m_glfwWindow, true);
@@ -110,20 +148,7 @@ void Window::createGLFWWindow()
     }
 
     if (m_assets.windowFullScreen) {
-        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-        glm::uvec2 size{ 0 };
-        const auto* mode = glfwGetVideoMode(monitor);
-        size.x = mode->width;
-        size.y = mode->height;
-
-        glfwSetWindowMonitor(
-            m_glfwWindow,
-            monitor,
-            0,
-            0,
-            size.x,
-            size.y,
-            GLFW_DONT_CARE);
+        toggleFullScreen();
     }
 
     glfwSetWindowUserPointer(m_glfwWindow, this);
@@ -188,6 +213,12 @@ void Window::processInput(const ki::RenderClock& clock)
     if (m_input->isKeyDown(Key::EXIT)) {
         KI_INFO("INPUT: USER EXIT via [ESCAPE]");
         close();
+        return;
+    }
+
+    if (m_input->isKeyDown(Key::FULL_SCREEN_TOGGLE)) {
+        KI_INFO("INPUT: FULL_SCREEN_TOGGLE");
+        toggleFullScreen();
         return;
     }
 

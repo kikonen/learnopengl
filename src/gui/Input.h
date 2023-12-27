@@ -6,6 +6,7 @@ class Window;
 
 enum class Key : std::underlying_type_t<std::byte> {
     EXIT,
+    FULL_SCREEN_TOGGLE,
     UP,
     DOWN,
     LEFT,
