@@ -46,8 +46,11 @@ namespace physics {
 
         float getWorldSurfaceLevel(const glm::vec3& pos);
 
+        void handleNodeAdded(Node* node);
+
     private:
         void preparePending(const UpdateContext& ctx);
+        void preparePendingNodes(const UpdateContext& ctx);
 
         void enforceBounds(
             const UpdateContext& ctx,
@@ -76,8 +79,11 @@ namespace physics {
         size_t m_invokeCount{ 0 };
         size_t m_stepCount{ 0 };
 
-        ki::level_id m_staticPhysicsLevel{ (ki::level_id)-1 };
-        ki::level_id m_physicsLevel{ (ki::level_id)-1 };
+        std::vector<Node*> m_enforceBoundsDynamic;
+
+        std::vector<Node*> m_enforceBoundsStatic;
+
+        std::vector<Node*> m_pendingNodes;
 
         std::vector<physics::physics_id> m_pending;
 
@@ -85,6 +91,6 @@ namespace physics {
         std::vector<Object> m_objects;
 
         std::vector<HeightMap> m_heightMaps;
-    };
 
+    };
 }

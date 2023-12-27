@@ -270,18 +270,6 @@ void NodeRegistry::attachListeners()
             }
         });
 
-    dispatcher->addListener(
-        event::Type::scene_loaded,
-        [this](const event::Event& e) {
-            this->m_registry->m_physicsEngine->setEnabled(true);
-
-            // NOTE KI trigger UI sidew update *after* all worker side processing done
-            {
-                event::Event evt { event::Type::scene_loaded };
-                m_registry->m_dispatcherView->send(evt);
-            }
-        });
-
     if (m_assets.useScript) {
         dispatcher->addListener(
             event::Type::script_bind,
@@ -476,10 +464,6 @@ void NodeRegistry::bindNode(
 
             auto& vTyped = (*map)[programKey][typeKey];
             insertNode(vTyped, node);
-        }
-
-        if (type->m_flags.enforceBounds) {
-            m_physicsNodes.push_back(node);
         }
 
         if (node->m_camera) {

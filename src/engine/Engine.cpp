@@ -133,7 +133,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
     char titleSB[256];
 
     // NOTE KI moving avg of render time and fps
-    constexpr int FPS_FRAMES = 3;
+    constexpr int FPS_FRAMES = 10;
     int avgIndex = 0;
     std::array<float, FPS_FRAMES> fpsSecs{ 0.f };
     std::array<float, FPS_FRAMES> renderSecs{ 0.f };
@@ -241,12 +241,16 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 sprintf_s(
                     titleSB,
                     256,
-                    "%s - FPS: %-5.2f - RENDER: %-5.2fms",
+                    "%s - FPS: %-5.0f - RENDER: %-5.1fms",
                     m_title.c_str(),
-                    fpsAvg,
+                    round(fpsAvg),
                     renderAvg);
 
                 m_window->setTitle(titleSB);
+
+                if (m_assets.windowFullScreen) {
+                    std::cout << "FPS: " << fpsAvg << '\n';
+                }
             }
         }
 

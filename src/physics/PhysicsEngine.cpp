@@ -171,18 +171,35 @@ namespace physics
 
     void PhysicsEngine::updateBounds(const UpdateContext& ctx)
     {
-        for (auto* node : ctx.m_registry->m_nodeRegistry->m_physicsNodes) {
+        if (!m_enabled) return;
+        preparePendingNodes(ctx);
+
+        auto enforce = [&ctx, this](Node* node) {
             const auto& type = *node->m_type;
 
-            if (type.m_flags.enforceBounds) {
-                if (node->m_instancer) {
-                    for (auto& instance : node->m_instancer->getInstances()) {
-                        enforceBounds(ctx, type, *node, instance);
-                    }
+            if (node->m_instancer) {
+                for (auto& instance : node->m_instancer->getInstances()) {
+                    enforceBounds(ctx, type, *node, instance);
                 }
-                else {
-                    enforceBounds(ctx, type, *node, node->getInstance());
-                }
+            }
+            else {
+                enforceBounds(ctx, type, *node, node->getInstance());
+            }
+        };
+
+        if (!m_enforceBoundsStatic.empty()) {
+            std::cout << "static: " << m_enforceBoundsStatic.size() << '\n';
+            for (auto* node : m_enforceBoundsStatic) {
+                enforce(node);
+            }
+            // NOTE KI static is enforced only once (after initial model setup)
+            m_enforceBoundsStatic.clear();
+        }
+
+        if (!m_enforceBoundsDynamic.empty()) {
+            //std::cout << "dynamic: " << m_enforceBoundsDynamic.size() << '\n';
+            for (auto* node : m_enforceBoundsDynamic) {
+                enforce(node);
             }
         }
     }
@@ -220,15 +237,45 @@ namespace physics
         }
     }
 
+    void PhysicsEngine::preparePendingNodes(const UpdateContext& ctx)
+    {
+        if (m_pendingNodes.empty()) return;
+
+        std::map<Node*, bool> prepared;
+
+        for (auto* node : m_pendingNodes) {
+            if (node->getMatrixLevel() < 0) continue;
+
+            if (node->m_type->m_flags.staticPhysics) {
+                m_enforceBoundsStatic.push_back(node);
+            }
+            else {
+                m_enforceBoundsDynamic.push_back(node);
+            }
+
+            prepared.insert({ node, true });
+        }
+
+        if (!prepared.empty()) {
+            // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
+            const auto& it = std::remove_if(
+                m_pendingNodes.begin(),
+                m_pendingNodes.end(),
+                [&prepared](auto& id) {
+                    return prepared.find(id) != prepared.end();
+                });
+            m_pendingNodes.erase(it, m_pendingNodes.end());
+        }
+    }
+
     void PhysicsEngine::enforceBounds(
         const UpdateContext& ctx,
         const MeshType& type,
         Node& node,
         NodeInstance& instance)
     {
-        ki::level_id physicsLevel = type.m_flags.staticPhysics ? m_staticPhysicsLevel : m_physicsLevel;
-        if (instance.m_physicsLevel == m_staticPhysicsLevel &&
-            instance.m_matrixLevel == instance.m_physicsMatrixLevel) return;
+        if (instance.m_matrixLevel == instance.m_physicsLevel) return;
+        instance.m_physicsLevel = instance.m_matrixLevel;
 
         const auto& worldPos = instance.getWorldPosition();
         glm::vec3 pos = instance.getPosition();
@@ -250,9 +297,6 @@ namespace physics
         if (instance.m_dirty) {
             instance.updateModelMatrix(parent->getInstance());
         }
-
-        instance.m_physicsMatrixLevel = instance.m_matrixLevel;
-        instance.m_physicsLevel = physicsLevel;
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));
     }
@@ -302,5 +346,11 @@ namespace physics
         }
 
         return hit ? min : 0.f;
+    }
+
+    void PhysicsEngine::handleNodeAdded(Node* node)
+    {
+        if (!node->m_type->m_flags.enforceBounds) return;
+        m_pendingNodes.push_back(node);
     }
 }

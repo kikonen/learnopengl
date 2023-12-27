@@ -6,6 +6,7 @@
 
 class UpdateContext;
 class Registry;
+class Node;
 
 class SceneUpdater
 {
@@ -22,10 +23,14 @@ public:
     bool isRunning() const;
 
     void prepare();
+
     void start();
     void run();
 
     void update(const UpdateContext& ctx);
+
+private:
+    void handleNodeAdded(Node* node);
 
 private:
     const Assets& m_assets;

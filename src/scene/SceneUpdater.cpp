@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include "ki/RenderClock.h"
+#include "ki/Timer.h"
 
 #include "util/Log.h"
 
@@ -51,10 +52,25 @@ void SceneUpdater::prepare()
 {
     m_registry->prepareWorker();
 
-    m_registry->m_dispatcher->addListener(
+    auto* dispatcher = m_registry->m_dispatcher;
+
+    dispatcher->addListener(
         event::Type::scene_loaded,
         [this](const event::Event& e) {
             m_loaded = true;
+            this->m_registry->m_physicsEngine->setEnabled(true);
+
+            // NOTE KI trigger UI sidew update *after* all worker side processing done
+            {
+                event::Event evt { event::Type::scene_loaded };
+                m_registry->m_dispatcherView->send(evt);
+            }
+        });
+
+    dispatcher->addListener(
+        event::Type::node_added,
+        [this](const event::Event& e) {
+            this->handleNodeAdded(e.body.node.target);
         });
 }
 
@@ -85,7 +101,7 @@ void SceneUpdater::run()
     prepare();
 
     //const int delay = (int)(1000.f / 60.f);
-    const int delay = 10;
+    const int delay = 5;
 
     auto prevLoopTime = std::chrono::system_clock::now();
     auto loopTime = std::chrono::system_clock::now();
@@ -117,22 +133,39 @@ void SceneUpdater::run()
 
 void SceneUpdater::update(const UpdateContext& ctx)
 {
-    m_registry->m_dispatcher->dispatchEvents();
+    ki::Timer t("loop    ");
+    {
+        ki::Timer t("event   ");
+        m_registry->m_dispatcher->dispatchEvents();
+    }
 
     count++;
     //if (count < 100)
     {
         //std::cout << count << '\n';
         if (m_loaded) {
+            ki::Timer t("command ");
             m_registry->m_commandEngine->update(ctx);
         }
 
         if (auto root = m_registry->m_nodeRegistry->m_root) {
-            root->update(ctx);
+            {
+                ki::Timer t("model   ");
+                root->update(ctx);
+            }
             if (m_loaded) {
-                m_registry->m_physicsEngine->updateBounds(ctx);
-                m_registry->m_physicsEngine->update(ctx);
-                m_registry->m_audioEngine->update(ctx);
+                {
+                    ki::Timer t("bounds  ");
+                    m_registry->m_physicsEngine->updateBounds(ctx);
+                }
+                {
+                    ki::Timer t("physics ");
+                    m_registry->m_physicsEngine->update(ctx);
+                }
+                {
+                    ki::Timer t("audio   ");
+                    m_registry->m_audioEngine->update(ctx);
+                }
             }
         }
     }
@@ -145,5 +178,13 @@ void SceneUpdater::update(const UpdateContext& ctx)
     //    m_particleSystem->update(ctx);
     //}
 
-    m_registry->update(ctx);
+    {
+        ki::Timer t("registry");
+        m_registry->update(ctx);
+    }
+}
+
+void SceneUpdater::handleNodeAdded(Node* node)
+{
+    m_registry->m_physicsEngine->handleNodeAdded(node);
 }

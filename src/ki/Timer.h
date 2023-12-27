@@ -23,7 +23,7 @@ namespace ki {
             duration = end - start;
 
             float ms = duration.count() * 1000.f;
-            KI_INFO(fmt::format("{}: {}ms", label, ms));
+            KI_INFO(fmt::format("{}: {:-f} ms", label, ms));
         }
     };
 }

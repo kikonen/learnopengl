@@ -173,8 +173,6 @@ private:
 public:
     // EntityRegistry
     std::vector<Node*> m_allNodes;
-    // PhysicsEngine
-    std::vector<Node*> m_physicsNodes;
     // NodeDraw
     ProgramTypeMap solidNodes;
     // NodeDraw

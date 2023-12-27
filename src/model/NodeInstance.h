@@ -31,7 +31,6 @@ struct NodeInstance {
     ki::level_id m_parentMatrixLevel{ (ki::level_id)-1 };
     ki::level_id m_matrixLevel{ (ki::level_id)-1 };
 
-    ki::level_id m_physicsMatrixLevel{ (ki::level_id)-1 };
     ki::level_id m_physicsLevel{ (ki::level_id)-1 };
 
     ki::node_id m_id{ 0 };
