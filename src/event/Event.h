@@ -160,10 +160,29 @@ namespace event {
     };
 
     struct Event {
+        Event(Type a_type)
+            : type{ a_type },
+              body{}
+        {}
+
+        Event(Event& o) noexcept
+            : type{ o.type },
+            id{ o.id },
+            blob{ std::move(o.blob) },
+            body{ o.body }
+        {}
+
+        Event(Event&& o) noexcept
+            : type{ o.type },
+            id{ o.id },
+            blob{ std::move(o.blob) },
+            body{o.body}
+        {}
+
         Type type;
         event::event_id id;
 
-        std::shared_ptr<BlobData> blob;
+        std::unique_ptr<BlobData> blob;
         union Body {
             NodeAction node;
             MeshTypeAction meshType;

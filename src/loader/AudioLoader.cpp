@@ -161,7 +161,7 @@ namespace loader
 
         {
             event::Event evt { event::Type::audio_source_add };
-            evt.blob = std::make_shared<event::BlobData>();
+            evt.blob = std::make_unique<event::BlobData>();
             evt.blob->body.audioSource = {
                 .soundId = soundId,
                 .index = index,
@@ -190,7 +190,7 @@ namespace loader
 
         {
             event::Event evt { event::Type::audio_listener_add };
-            evt.blob = std::make_shared<event::BlobData>();
+            evt.blob = std::make_unique<event::BlobData>();
             evt.blob->body.audioListener = {
                 .isDefault = data.isDefault,
                 .gain = data.gain,
