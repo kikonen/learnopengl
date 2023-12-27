@@ -99,9 +99,13 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
     glm::vec3 adjust{ 0.f };
 
     const auto& curr = m_node->getDegreesRotation();
+    float currX = curr.x;
+    if (currX == 180.f) {
+        currX = 0.f;
+    }
 
-    const auto maxUp = MAX_ANGLE - curr.x;
-    const auto maxDown = -MAX_ANGLE - curr.x;
+    const auto maxUp = MAX_ANGLE - currX;
+    const auto maxDown = -MAX_ANGLE - currX;
 
     if (yoffset != 0) {
         auto pitch = m_speedMouseSensitivity.y * yoffset;

@@ -132,7 +132,7 @@ void PawnController::onMouseMove(Input* input, float xoffset, float yoffset)
     glm::vec3 adjust{ 0.f };
 
     if (xoffset != 0) {
-        auto yaw = -m_speedMouseSensitivity.y * xoffset;
+        auto yaw = -m_speedMouseSensitivity.x * xoffset;
 
         adjust.y = static_cast<float>(yaw);
         changed = true;
