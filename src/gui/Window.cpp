@@ -68,11 +68,17 @@ void Window::toggleFullScreen()
     bool fullScreen = glfwGetWindowMonitor(m_glfwWindow) == nullptr;
 
     if (fullScreen) {
-        int w, h;
-        glfwGetWindowSize(m_glfwWindow, &w, &h);
-        m_windowedSize.x = w;
-        m_windowedSize.y = h;
-        m_windowedWasMaximized = glfwGetWindowAttrib(m_glfwWindow, GLFW_MAXIMIZED);
+        {
+            int x, y;
+            int w, h;
+            glfwGetWindowPos(m_glfwWindow, &x, &y);
+            glfwGetWindowSize(m_glfwWindow, &w, &h);
+            m_windowedPos.x = x;
+            m_windowedPos.y = y;
+            m_windowedSize.x = w;
+            m_windowedSize.y = h;
+            m_windowedWasMaximized = glfwGetWindowAttrib(m_glfwWindow, GLFW_MAXIMIZED);
+        }
 
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         glm::uvec2 size{ 0 };
@@ -88,17 +94,26 @@ void Window::toggleFullScreen()
             size.x,
             size.y,
             GLFW_DONT_CARE);
+
+        m_fullScreen = true;
     }
     else {
         glfwSetWindowMonitor(
             m_glfwWindow,
             nullptr,
-            0,
-            0,
-            m_size.x,
-            m_size.y,
-            GLFW_DONT_CARE);
+            m_windowedPos.x,
+            m_windowedPos.y,
+            m_windowedSize.x,
+            m_windowedSize.y,
+            0);
+        if (m_windowedWasMaximized) {
+            glfwMaximizeWindow(m_glfwWindow);
+        }
+        m_fullScreen = false;
     }
+
+    // https://community.khronos.org/t/glfw-fullscreen-problem/51536
+    glfwSwapInterval(m_assets.glfwSwapInterval);
 }
 
 void Window::close()
@@ -106,7 +121,7 @@ void Window::close()
     glfwSetWindowShouldClose(m_glfwWindow, true);
 }
 
-bool Window::isClosed()
+bool Window::isClosed() const
 {
     return glfwWindowShouldClose(m_glfwWindow);
 }
@@ -211,15 +226,27 @@ void Window::processInput(const ki::RenderClock& clock)
     m_input->updateKeyStates();
 
     if (m_input->isKeyDown(Key::EXIT)) {
-        KI_INFO("INPUT: USER EXIT via [ESCAPE]");
-        close();
-        return;
+        if (!m_was_EXIT) {
+            KI_INFO("INPUT: USER EXIT via [ESCAPE]");
+            m_was_EXIT = true;
+            close();
+            return;
+        }
+    }
+    else {
+        m_was_EXIT = false;
     }
 
     if (m_input->isKeyDown(Key::FULL_SCREEN_TOGGLE)) {
-        KI_INFO("INPUT: FULL_SCREEN_TOGGLE");
-        toggleFullScreen();
-        return;
+        if (!m_was_FULL_SCREEN_TOGGLE) {
+            KI_INFO("INPUT: FULL_SCREEN_TOGGLE");
+            m_was_FULL_SCREEN_TOGGLE = true;
+            toggleFullScreen();
+            return;
+        }
+    }
+    else {
+        m_was_FULL_SCREEN_TOGGLE = false;
     }
 
     auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();

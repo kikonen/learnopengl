@@ -6,6 +6,8 @@
 
 #include "util/Log.h"
 
+#define KI_TIMER(x) ki::Timer t(x)
+
 namespace ki {
     struct Timer final
      {

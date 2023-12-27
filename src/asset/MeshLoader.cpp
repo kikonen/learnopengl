@@ -65,7 +65,7 @@ void MeshLoader::loadData(
 {
     if (!*m_alive) return;
 
-    ki::Timer t("loadData: mesh=" + mesh.str());
+    KI_TIMER("loadData: mesh=" + mesh.str());
 
     auto& tris = mesh.m_tris;
     auto& vertices = mesh.m_vertices;

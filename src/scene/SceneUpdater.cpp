@@ -24,6 +24,8 @@
 
 #include "component/ParticleGenerator.h"
 
+#define KI_TIMER(x)
+
 namespace {
     size_t count = 0;
 }
@@ -135,9 +137,9 @@ void SceneUpdater::run()
 
 void SceneUpdater::update(const UpdateContext& ctx)
 {
-    ki::Timer t("loop    ");
+    KI_TIMER("loop    ");
     {
-        ki::Timer t("event   ");
+        KI_TIMER("event   ");
         m_registry->m_dispatcher->dispatchEvents();
     }
 
@@ -146,26 +148,26 @@ void SceneUpdater::update(const UpdateContext& ctx)
     {
         //std::cout << count << '\n';
         if (m_loaded) {
-            ki::Timer t("command ");
+            KI_TIMER("command ");
             m_registry->m_commandEngine->update(ctx);
         }
 
         if (auto root = m_registry->m_nodeRegistry->m_root) {
             {
-                ki::Timer t("model   ");
+                KI_TIMER("model   ");
                 root->update(ctx);
             }
             if (m_loaded) {
                 {
-                    ki::Timer t("bounds  ");
+                    KI_TIMER("bounds  ");
                     m_registry->m_physicsEngine->updateBounds(ctx);
                 }
                 {
-                    ki::Timer t("physics ");
+                    KI_TIMER("physics ");
                     m_registry->m_physicsEngine->update(ctx);
                 }
                 {
-                    ki::Timer t("audio   ");
+                    KI_TIMER("audio   ");
                     m_registry->m_audioEngine->update(ctx);
                 }
             }
@@ -181,7 +183,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
     //}
 
     {
-        ki::Timer t("registry");
+        KI_TIMER("registry");
         m_registry->update(ctx);
     }
 }

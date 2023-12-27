@@ -149,7 +149,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
         int close = 0;
 
         {
-            //ki::Timer t("loop");
+            //KI_TIMER("loop");
 
             loopTime = std::chrono::system_clock::now();
             elapsedDuration = loopTime - prevLoopTime;
