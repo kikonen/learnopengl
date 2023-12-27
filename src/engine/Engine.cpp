@@ -249,7 +249,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 m_window->setTitle(titleSB);
 
                 if (m_assets.windowFullScreen) {
-                    std::cout << "FPS: " << fpsAvg << '\n';
+                    std::cout << titleSB << '\n';
                 }
             }
         }
