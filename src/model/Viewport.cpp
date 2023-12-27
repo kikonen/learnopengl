@@ -68,7 +68,7 @@ Viewport::Viewport(
 
 Viewport::~Viewport()
 {
-    //KI_INFO(fmt::format("VIEW_PORT: delete, name={}", m_name));
+    KI_INFO(fmt::format("VIEW_PORT: delete, name={}", m_name));
 }
 
 void Viewport::setSourceFrameBuffer(FrameBuffer* frameBuffer)

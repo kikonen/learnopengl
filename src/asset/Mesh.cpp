@@ -23,7 +23,7 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
-    //KI_INFO(fmt::format("MESH: delete {}", str()));
+    KI_INFO(fmt::format("MESH: delete {}", str()));
 }
 
 const std::string Mesh::str() const noexcept

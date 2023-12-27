@@ -37,7 +37,9 @@ SceneUpdater::SceneUpdater(const Assets& assets,
 {}
 
 SceneUpdater::~SceneUpdater()
-{}
+{
+    KI_INFO("SCENE_UPDATER: destroy");
+}
 
 void SceneUpdater::destroy()
 {

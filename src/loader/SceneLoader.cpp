@@ -73,7 +73,7 @@ namespace loader {
 
     SceneLoader::~SceneLoader()
     {
-        //KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx.str()));
+        KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx.str()));
     }
 
     void SceneLoader::destroy()

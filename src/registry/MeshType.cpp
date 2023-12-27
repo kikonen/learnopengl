@@ -47,7 +47,7 @@ MeshType::MeshType(MeshType&& o) noexcept
 
 MeshType::~MeshType()
 {
-    //KI_INFO(fmt::format("NODE_TYPE: delete iD={}", m_id));
+    KI_INFO(fmt::format("NODE_TYPE: delete iD={}", m_id));
 }
 
 const std::string MeshType::str() const noexcept

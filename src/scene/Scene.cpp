@@ -104,7 +104,7 @@ Scene::~Scene()
     *m_alive = false;
     m_particleGenerators.clear();
 
-    //KI_INFO("SCENE: deleted");
+    KI_INFO("SCENE: deleted");
 }
 
 void Scene::destroy()
