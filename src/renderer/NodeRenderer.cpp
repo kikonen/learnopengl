@@ -98,7 +98,7 @@ void NodeRenderer::render(
                 targetBuffer,
                 [](const MeshType* type) { return true; },
                 [](const Node* node) { return true; },
-                NodeDraw::KIND_ALL,
+                render::NodeDraw::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
                 GL_COLOR_BUFFER_BIT);
         }
@@ -131,7 +131,7 @@ void NodeRenderer::fillHighlightMask(
             [this](const MeshType* type) { return m_selectionProgram; },
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
-            NodeDraw::KIND_ALL);
+            render::NodeDraw::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
 }
@@ -163,7 +163,7 @@ void NodeRenderer::renderHighlight(
             [this](const MeshType* type) { return m_selectionProgram; },
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
-            NodeDraw::KIND_ALL);
+            render::NodeDraw::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
 

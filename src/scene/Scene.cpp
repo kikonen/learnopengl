@@ -95,7 +95,7 @@ Scene::Scene(
     m_particleSystem = std::make_unique<ParticleSystem>();
 
     m_batch = std::make_unique<Batch>();
-    m_nodeDraw = std::make_unique<NodeDraw>();
+    m_nodeDraw = std::make_unique<render::NodeDraw>();
     m_renderData = std::make_unique<RenderData>();
 }
 
@@ -296,6 +296,7 @@ void Scene::updateView(const UpdateViewContext& ctx)
 
 void Scene::handleNodeAdded(Node* node)
 {
+    m_nodeDraw->handleNodeAdded(node);
     m_mirrorMapRenderer->handleNodeAdded(node);
     m_waterMapRenderer->handleNodeAdded(node);
     m_cubeMapRenderer->handleNodeAdded(node);

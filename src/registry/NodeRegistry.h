@@ -20,55 +20,7 @@
 
 class Registry;
 
-//
-// NOTE KI program key is REQUIRED for sorting "gull back face" draws
-// next to each other to avoid redundant state changes
-// => relies into fact that std::map is sorted by this
-//
- struct ProgramKey {
-    ProgramKey(
-        ki::program_id programID,
-        int typePriority,
-        const backend::DrawOptions& drawOptions) noexcept
-        : programID(programID),
-        typePriority(typePriority),
-        renderBack(drawOptions.renderBack),
-        wireframe(drawOptions.wireframe)
-    {};
-
-    const std::string str() const noexcept
-    {
-        return fmt::format(
-            "<PROGRAM_KEY: id={}, pri={}, renderBack={}, wireframe={}>",
-            programID, typePriority, renderBack, wireframe);
-    }
-
-    bool operator<(const ProgramKey & o) const noexcept {
-        // NOTE KI renderBack & wireframe goes into separate render always due to GL state
-        // => reduce state changes via sorting
-        return std::tie(typePriority, programID, renderBack, wireframe) <
-            std::tie(o.typePriority, o.programID, o.renderBack, o.wireframe);
-    }
-
-    const int typePriority;
-    const ki::program_id programID;
-    const bool renderBack;
-    const bool wireframe;
-};
-
-// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-struct MeshTypeKey {
-    MeshTypeKey(const MeshType* type);
-
-    bool operator<(const MeshTypeKey& o) const;
-
-    const MeshType* type;
-};
-
 using NodeVector = std::vector<Node*>;
-using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
-using ProgramTypeMap = std::map<ProgramKey, MeshTypeMap>;
-
 
 class NodeRegistry final
 {
@@ -150,8 +102,6 @@ private:
         const uuids::uuid& parentUUID,
         ki::node_id parentId) noexcept;
 
-    void insertNode(NodeVector& list, Node* node);
-
     void bindPendingChildren();
 
     void bindNode(
@@ -173,16 +123,6 @@ private:
 public:
     // EntityRegistry
     std::vector<Node*> m_allNodes;
-    // NodeDraw
-    ProgramTypeMap solidNodes;
-    // NodeDraw
-    ProgramTypeMap alphaNodes;
-    // NodeDraw
-    ProgramTypeMap spriteNodes;
-    // NodeDraw
-    ProgramTypeMap blendedNodes;
-    // OBSOLETTE
-    ProgramTypeMap invisibleNodes;
 
     Node* m_root{ nullptr };
     Node* m_dirLight{ nullptr };

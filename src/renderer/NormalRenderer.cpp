@@ -45,7 +45,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
                     type->m_entityType != EntityType::point_sprite;
             },
             [](const Node* node) { return true; },
-            NodeDraw::KIND_ALL);
+            render::NodeDraw::KIND_ALL);
     }
 
     ctx.m_batch->flush(ctx);

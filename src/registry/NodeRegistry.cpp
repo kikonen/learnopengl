@@ -37,21 +37,6 @@ namespace {
     const ki::program_id NULL_PROGRAM_ID = 0;
 }
 
-
-// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-MeshTypeKey::MeshTypeKey(const MeshType* type)
-    : type(type)
-{}
-
-bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
-    const auto& a = type;
-    const auto& b = o.type;
-    if (a->m_drawOptions < b->m_drawOptions) return true;
-    else if (b->m_drawOptions < a->m_drawOptions) return false;
-    return a->m_id < b->m_id;
-}
-
-
 NodeRegistry::NodeRegistry(
     const Assets& assets,
     std::shared_ptr<std::atomic<bool>> alive)
@@ -71,10 +56,6 @@ NodeRegistry::~NodeRegistry()
     }
 
     {
-        solidNodes.clear();
-        blendedNodes.clear();
-        invisibleNodes.clear();
-
         m_activeNode = nullptr;
         m_activeCamera = nullptr;
         m_cameras.clear();
@@ -420,50 +401,15 @@ void NodeRegistry::bindNode(
     }
     node->prepare(m_assets, m_registry);
 
-    //const auto& type = node->m_type;
-    auto* program = type->m_program;
-
-    if (type->m_entityType != EntityType::origo) {
-        assert(program);
-        if (!program) return;
-    }
-
     {
-        // NOTE KI more optimal to not switch between culling mode (=> group by it)
-        const ProgramKey programKey(
-            program ? program->m_id : NULL_PROGRAM_ID,
-            -type->m_priority,
-            type->m_drawOptions);
-
         //KI_INFO_OUT(fmt::format(
         //    "REGISTER: {}-{}",
         //    program ? program->m_key : "<na>", programKey.str()));
-
-        const MeshTypeKey typeKey(type);
 
         if (!uuid.is_nil()) m_uuidToNode[uuid] = node;
 
         {
             m_allNodes.push_back(node);
-        }
-
-        {
-            auto* map = &solidNodes;
-
-            if (type->m_flags.alpha)
-                map = &alphaNodes;
-
-            if (type->m_flags.blend)
-                map = &blendedNodes;
-
-            if (type->m_entityType == EntityType::sprite)
-                map = &spriteNodes;
-
-            if (type->m_flags.invisible)
-                map = &invisibleNodes;
-
-            auto& vTyped = (*map)[programKey][typeKey];
-            insertNode(vTyped, node);
         }
 
         if (node->m_camera) {
@@ -513,12 +459,6 @@ void NodeRegistry::bindNode(
     }
 
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
-}
-
-void NodeRegistry::insertNode(NodeVector& list, Node* node)
-{
-    list.reserve(100);
-    list.push_back(node);
 }
 
 void NodeRegistry::bindPendingChildren()

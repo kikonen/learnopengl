@@ -323,7 +323,7 @@ void CubeMapRenderer::drawNodes(
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
         [&current](const Node* node) { return node != current; },
-        NodeDraw::KIND_ALL,
+        render::NodeDraw::KIND_ALL,
         GL_COLOR_BUFFER_BIT);
 
     targetBuffer->unbind(ctx);

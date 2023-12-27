@@ -168,7 +168,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
             [this](const MeshType* type) { return m_idProgram; },
             [](const MeshType* type) { return !type->m_flags.noSelect && !type->m_flags.tessellation; },
             [](const Node* node) { return true; },
-            NodeDraw::KIND_ALL);
+            render::NodeDraw::KIND_ALL);
     }
 
     ctx.m_batch->flush(ctx);

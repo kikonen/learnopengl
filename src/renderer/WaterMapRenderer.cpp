@@ -391,7 +391,7 @@ void WaterMapRenderer::drawNodes(
                 return node != current &&
                     node != sourceNode;
             },
-            NodeDraw::KIND_ALL,
+            render::NodeDraw::KIND_ALL,
             GL_COLOR_BUFFER_BIT);
     }
 }

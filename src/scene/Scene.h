@@ -15,6 +15,10 @@ namespace event {
     class Dispatcher;
 }
 
+namespace render {
+    class NodeDraw;
+}
+
 class Camera;
 class Light;
 class ParticleGenerator;
@@ -26,7 +30,6 @@ class NodeController;
 
 class RenderData;
 class Batch;
-class NodeDraw;
 
 class Registry;
 
@@ -104,7 +107,7 @@ public:
     std::shared_ptr<Registry> m_registry;
 
     std::unique_ptr<Batch> m_batch;
-    std::unique_ptr<NodeDraw> m_nodeDraw;
+    std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
 protected:
 
