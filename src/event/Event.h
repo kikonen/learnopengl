@@ -167,20 +167,17 @@ namespace event {
 
         Event(Event& o) noexcept
             : type{ o.type },
-            id{ o.id },
             blob{ std::move(o.blob) },
             body{ o.body }
         {}
 
         Event(Event&& o) noexcept
             : type{ o.type },
-            id{ o.id },
             blob{ std::move(o.blob) },
             body{o.body}
         {}
 
         Type type;
-        event::event_id id;
 
         std::unique_ptr<BlobData> blob;
         union Body {
