@@ -248,7 +248,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
                 m_window->setTitle(titleSB);
 
-                if (m_assets.windowFullScreen) {
+                if (m_window->isFullScreen()) {
                     std::cout << titleSB << '\n';
                 }
             }
