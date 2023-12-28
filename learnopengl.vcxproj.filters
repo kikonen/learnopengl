@@ -564,6 +564,9 @@
     <ClCompile Include="src\scene\SceneUpdater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\util\thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1311,6 +1314,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\component\NodeComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\thread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -215,7 +215,7 @@ public:
 
     int lua_getCloneIndex() const noexcept;
 
-        const std::array<float, 3> lua_getPos() const noexcept;
+    const std::array<float, 3> lua_getPos() const noexcept;
 
 protected:
 

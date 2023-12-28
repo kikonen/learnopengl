@@ -173,7 +173,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 // => INEFFICIENT, need to improve this
                 // https://forums.developer.nvidia.com/t/persistent-buffer-synchronization-doesnt-work/66636/5
                 if (m_assets.glUseFinish) {
-                    std::cout << ".";
+                    //std::cout << ".";
                     glFinish();
                 }
 

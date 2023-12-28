@@ -8,6 +8,8 @@
 
 #include "asset/Sphere.h"
 
+#include "util/thread.h"
+
 #include "registry/EntitySSBO.h"
 
 #include "engine/UpdateContext.h"
@@ -72,6 +74,7 @@ void NodeInstance::updateModelAxis() noexcept
 
 void NodeInstance::updateRotationMatrix() noexcept
 {
+    ASSERT_WORKER();
     if (!m_dirtyRotation) return;
     m_rotationMatrix = glm::toMat4(m_quatRotation * m_baseRotation);
     m_dirtyRotation = false;
@@ -79,6 +82,7 @@ void NodeInstance::updateRotationMatrix() noexcept
 
 void NodeInstance::updateDegrees() const noexcept
 {
+    ASSERT_WORKER();
     if (!m_dirtyDegrees) return;
     m_degreesRotation = util::quatToDegrees(m_quatRotation);
     m_dirtyDegrees = false;
@@ -88,6 +92,7 @@ void NodeInstance::updateEntity(
     const UpdateContext& ctx,
     EntitySSBO* entity)
 {
+    ASSERT_WORKER();
     if (!m_dirtyEntity) return;
 
     entity->setId(m_id);

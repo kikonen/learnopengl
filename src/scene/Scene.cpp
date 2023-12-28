@@ -1,7 +1,8 @@
 #include "Scene.h"
 
-#include <thread>
-#include <mutex>
+#include <iostream>
+
+#include "util/thread.h"
 
 #include "ki/Timer.h"
 #include "kigl/kigl.h"
@@ -114,6 +115,8 @@ void Scene::destroy()
 
 void Scene::prepareRT()
 {
+    std::cout << "RT: worker=" << util::isWorkerThread() << '\n';
+
     auto* dispatcherView = m_registry->m_dispatcherView;
 
     dispatcherView->addListener(

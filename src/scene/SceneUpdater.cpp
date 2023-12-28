@@ -7,6 +7,7 @@
 #include "ki/RenderClock.h"
 #include "ki/Timer.h"
 
+#include "util/thread.h"
 #include "util/Log.h"
 
 #include "event/Dispatcher.h"
@@ -84,6 +85,7 @@ void SceneUpdater::start()
         [this]() mutable {
             try {
                 m_running = true;
+                util::markWorkerThread();
                 run();
                 m_running = false;
             }
@@ -102,6 +104,7 @@ void SceneUpdater::run()
 {
     ki::RenderClock clock;
 
+    std::cout << "WT: worker=" << util::isWorkerThread() << '\n';
     prepare();
 
     //const int delay = (int)(1000.f / 60.f);
