@@ -4,6 +4,8 @@
 
 #include "asset/MaterialSSBO.h"
 
+#include "util/thread.h"
+
 #include "event/Dispatcher.h"
 
 #include "audio/AudioEngine.h"
@@ -90,6 +92,8 @@ void Registry::prepareShared()
 
 void Registry::prepareWT()
 {
+    ASSERT_WT();
+
     // NOTE KI does not matter which thread does prepare
     m_physicsEngine->prepare();
     m_audioEngine->prepare();
@@ -102,12 +106,14 @@ void Registry::prepareWT()
 
 void Registry::updateWT(const UpdateContext& ctx)
 {
+    ASSERT_WT();
     m_controllerRegistry->updateWT(ctx);
     m_entityRegistry->updateWT(ctx);
 }
 
 void Registry::updateRT(const UpdateViewContext& ctx)
 {
+    ASSERT_RT();
     m_materialRegistry->updateRT(ctx);
     m_spriteRegistry->updateRT(ctx);
     m_modelRegistry->updateRT(ctx);
